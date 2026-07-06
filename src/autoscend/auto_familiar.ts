@@ -79,6 +79,7 @@ import {
   auto_handleJillOfAllTrades,
   auto_haveCCSC,
 } from "./iotms/mr2023";
+import { auto_haveChestMimic } from "./iotms/mr2024";
 import { auto_haveCupidBow } from "./iotms/mr2025";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_wantMeat, in_amw } from "./paths/adventurer_meats_world";
@@ -97,7 +98,6 @@ import { in_quantumTerrarium } from "./paths/quantum_terrarium";
 import { in_robot } from "./paths/you_robot";
 import { fileAsMap } from "./utils/kolmafiaUtils";
 import { AshMatcher } from "./utils/kolmafiaUtils";
-import { auto_haveChestMimic } from "./iotms/mr2024";
 
 //Defined in autoscend/auto_familiar.ash
 export function is100FamRun(): boolean {

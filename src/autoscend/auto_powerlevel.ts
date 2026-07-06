@@ -1,7 +1,6 @@
 import {
   abort,
   appearanceRates,
-  Class,
   cliExecute,
   Familiar,
   floor,
@@ -10,7 +9,6 @@ import {
   itemAmount,
   Location,
   min,
-  Monster,
   myAdventures,
   myBasestat,
   myBjornedFamiliar,
@@ -23,7 +21,6 @@ import {
   myTurncount,
   print,
   setProperty,
-  Thrall,
   toBoolean,
   toInt,
   toThrall,
@@ -31,13 +28,16 @@ import {
   wait,
 } from "kolmafia";
 import {
+  $class,
   $element,
   $familiar,
   $item,
   $location,
+  $monster,
   $phylum,
   $skill,
   $stat,
+  $thrall,
 } from "libram";
 
 import { auto_advToReserve } from "../autoscend";
@@ -67,6 +67,7 @@ import {
   meatReserve,
   pm_updateThrall,
 } from "./auto_util";
+import { zone_isAvailable } from "./auto_zone";
 import { canUse$2 } from "./combat/auto_combat_util";
 import { elementalPlanes_access } from "./iotms/elementalPlanes";
 import { handleBjornify } from "./iotms/mr2014";
@@ -105,7 +106,6 @@ import {
 import { is_professor } from "./paths/wereprofessor";
 import { in_robot, LX_robot_powerlevel } from "./paths/you_robot";
 import { candyBlock, freeCandyFightsLeft } from "./quests/level_any";
-import { zone_isAvailable } from "./auto_zone";
 
 //Defined in autoscend/auto_powerlevel.ash
 export function isAboutToPowerlevel(): boolean {
@@ -482,18 +482,17 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
   }
 
   let adv_done: boolean = false;
-  let burrow: Location = Location.get("The Batrat and Ratbat Burrow");
+  const burrow: Location = $location`The Batrat and Ratbat Burrow`;
   if (
-    myClass() === Class.get("Pastamancer") &&
+    myClass() === $class`Pastamancer` &&
     toThrall("ver").level > 10 &&
     toInt(getProperty("_legendaryVermincelliFreeRats")) < 3 &&
     zone_isAvailable(burrow, true) &&
-    (appearanceRates(burrow)[Monster.get("screambat").toString()] ??= 0.0) <
-      0.01
+    (appearanceRates(burrow)[$monster`screambat`.toString()] ??= 0.0) < 0.01
   ) {
     // first three fights each day with Vermincelli vs rats are guaranteed free. Choosing to go to the burrow, but need it to be available and no screambats.
     pm_updateThrall(burrow, false);
-    if (myThrall() === Thrall.get("Vermincelli")) {
+    if (myThrall() === $thrall`Vermincelli`) {
       auto_log_debug$1(
         "LX_freeCombats is adventuring in [The Batrat and Ratbat Burrow] with Vermincelli",
       );

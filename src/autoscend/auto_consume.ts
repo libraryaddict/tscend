@@ -9,7 +9,6 @@ import {
   canInteract,
   ceil,
   chew,
-  Class,
   cliExecute,
   containsText,
   creatableAmount,
@@ -36,7 +35,6 @@ import {
   inHardcore,
   Item,
   itemAmount,
-  Location,
   mallPrice,
   max,
   min,
@@ -86,6 +84,7 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   $path,
   $skill,
   $slot,
@@ -160,6 +159,13 @@ import {
   auto_haveSeptEmberCenser,
   consumeBlackAndWhiteApronKit,
 } from "./iotms/mr2024";
+import {
+  auto_havePastaWand,
+  auto_willEatLegendaryNoodles,
+  legendaryNoodleDishes,
+  numBaseLegendaryNoodleDishes,
+  numPreparedLegendaryNoodleDishes,
+} from "./iotms/mr2026";
 import { ed_eatStuff, isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_buyAdv, in_amw } from "./paths/adventurer_meats_world";
 import { borisDemandSandwich, is_boris } from "./paths/avatar_of_boris";
@@ -186,13 +192,6 @@ import { towerKeyCount } from "./quests/level_13";
 import { estimateDailyDungeonAdvNeeded } from "./quests/level_any";
 import { LX_doingPirates } from "./quests/optional";
 import { ctor, fileAsMap } from "./utils/kolmafiaUtils";
-import {
-  legendaryNoodleDishes,
-  auto_havePastaWand,
-  numPreparedLegendaryNoodleDishes,
-  numBaseLegendaryNoodleDishes,
-  auto_willEatLegendaryNoodles,
-} from "./iotms/mr2026";
 
 //
 //	Handler for in-run consumption
@@ -632,9 +631,9 @@ function autoEat$1(howMany: number, toEat: Item, silent: boolean): boolean {
   acquireMilkOfMagnesiumIfUnused(true);
   consumeMilkOfMagnesiumIfUnused();
   wantDietPill(toEat);
-  if (myClass() === Class.get("Pastamancer")) {
+  if (myClass() === $class`Pastamancer`) {
     // might switch to spice ghost for advs
-    pm_updateThrall(Location.get("Noob Cave"), true);
+    pm_updateThrall($location`Noob Cave`, true);
   }
 
   if (possessEquipment($item`Wrist-Boy`) && myMeat() > 6500) {
@@ -1222,20 +1221,20 @@ function loadConsumables(
   }
 
   if (internalQuestStatus("questL08Trapper") < 3 && auto_havePastaWand()) {
-    let legendary_noodle_dishes: Map<Item, Item> = legendaryNoodleDishes();
+    const legendary_noodle_dishes: Map<Item, Item> = legendaryNoodleDishes();
     // consider blacklisting legendary noodles so we have some available for combat forcing if we still need to climb slope and have the wand
     if (numPreparedLegendaryNoodleDishes() === 1) {
-      for (let dish of legendary_noodle_dishes.keys()) {
+      for (const dish of legendary_noodle_dishes.keys()) {
         blacklist.set(dish, true);
       }
     } else if (
       numPreparedLegendaryNoodleDishes() < 1 &&
       min(
         numBaseLegendaryNoodleDishes(),
-        itemAmount(Item.get("legendary noodles")),
+        itemAmount($item`legendary noodles`),
       ) < 2
     ) {
-      for (let dish of legendary_noodle_dishes.keys()) {
+      for (const dish of legendary_noodle_dishes.keys()) {
         blacklist.set(dish, true);
         blacklist.set(
           legendary_noodle_dishes.get(dish) ??
@@ -1288,17 +1287,17 @@ function loadConsumables(
 
   add_mutex_craftables(
     new Map([
-      [Item.get("perfect cosmopolitan"), true],
-      [Item.get("perfect old-fashioned"), true],
-      [Item.get("perfect mimosa"), true],
-      [Item.get("perfect dark and stormy"), true],
-      [Item.get("perfect paloma"), true],
-      [Item.get("perfect negroni"), true],
+      [$item`perfect cosmopolitan`, true],
+      [$item`perfect old-fashioned`, true],
+      [$item`perfect mimosa`, true],
+      [$item`perfect dark and stormy`, true],
+      [$item`perfect paloma`, true],
+      [$item`perfect negroni`, true],
     ]),
   );
   // Step 2: move items to categorized source maps, and add turnsave
 
-  let potentialTurnGain: Map<Item, number> = new Map(); // for anything the charges up a banish, YR, sniff, etc.
+  const potentialTurnGain: Map<Item, number> = new Map(); // for anything the charges up a banish, YR, sniff, etc.
 
   for (const it of $items.all()) {
     if (
@@ -1661,7 +1660,7 @@ function loadConsumables(
         }
       }
       if (obtain_mode === AUTO_OBTAIN_CRAFT) {
-        let turns_to_craft: number =
+        const turns_to_craft: number =
           creatableTurns(it, i + 1, false) - creatableTurns(it, i, false);
         (
           actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
@@ -1669,9 +1668,9 @@ function loadConsumables(
       } else {
         if (
           i === 0 &&
-          ((it === Item.get("Boris's key lime pie") && wantBorisPie) ||
-            (it === Item.get("Jarlsberg's key lime pie") && wantJarlsbergPie) ||
-            (it === Item.get("Sneaky Pete's key lime pie") && wantPetePie))
+          ((it === $item`Boris's key lime pie` && wantBorisPie) ||
+            (it === $item`Jarlsberg's key lime pie` && wantJarlsbergPie) ||
+            (it === $item`Sneaky Pete's key lime pie` && wantPetePie))
         ) {
           auto_log_info$1(
             `If we ate a ${it} we could skip getting a fat loot token...`,
@@ -1684,8 +1683,7 @@ function loadConsumables(
       // below code not included next to the KLPs because sometime legendary noodles want crafting
       if (
         i === 0 &&
-        (it === Item.get("pheromone cocktail") ||
-          legendaryNoodleDishes().has(it)) &&
+        (it === $item`pheromone cocktail` || legendaryNoodleDishes().has(it)) &&
         (potentialTurnGain.get(it) ?? potentialTurnGain.set(it, 0.0).get(it)) >
           0
       ) {
@@ -1715,6 +1713,7 @@ function loadConsumables(
     add(it, AUTO_OBTAIN_CRAFT, howmany);
   }
   // Step 5: Special adds
+  // Add still suit if we are looking to drink
   if (
     type_1 === AUTO_ORGAN_LIVER &&
     auto_hasStillSuit() &&

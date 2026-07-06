@@ -330,8 +330,8 @@ export function auto_burnRemainingSpadeDigs(): boolean {
 
 export function auto_havePastaWand(): boolean {
   if (
-    auto_is_valid(Item.get("legendary pasta wand")) &&
-    availableAmount(Item.get("legendary pasta wand")) > 0
+    auto_is_valid($item`legendary pasta wand`) &&
+    availableAmount($item`legendary pasta wand`) > 0
   ) {
     return true;
   }
@@ -339,29 +339,29 @@ export function auto_havePastaWand(): boolean {
 }
 // keys are the legendary dishes, values are their respective base dishes
 export function legendaryNoodleDishes(): Map<Item, Item> {
-  let dishes: Map<Item, Item> = new Map();
-  dishes.set(Item.get("Tubetto Gelatto"), Item.get("tomb aspic"));
-  dishes.set(Item.get("Formica e Pepe"), Item.get("hot honey ant"));
-  dishes.set(Item.get("Gnocci Domani"), Item.get("later tots"));
-  dishes.set(Item.get("Linguini Ubriacapa"), Item.get("sauced mutton"));
-  dishes.set(Item.get("Pasta Grimavera"), Item.get("haunted crudit&eacute;s"));
-  dishes.set(Item.get("Orzo di Riso"), Item.get("spicy onigiri"));
-  dishes.set(Item.get("Arrattabbattabiata"), Item.get("ratbatatouille"));
-  dishes.set(Item.get("Pesto alla Marziano"), Item.get("alien salad"));
-  dishes.set(Item.get("Frutti di Scatoletta"), Item.get("can of tuna"));
+  const dishes: Map<Item, Item> = new Map();
+  dishes.set($item`Tubetto Gelatto`, $item`tomb aspic`);
+  dishes.set($item`Formica e Pepe`, $item`hot honey ant`);
+  dishes.set($item`Gnocci Domani`, $item`later tots`);
+  dishes.set($item`Linguini Ubriacapa`, $item`sauced mutton`);
+  dishes.set($item`Pasta Grimavera`, $item`haunted crudités`);
+  dishes.set($item`Orzo di Riso`, $item`spicy onigiri`);
+  dishes.set($item`Arrattabbattabiata`, $item`ratbatatouille`);
+  dishes.set($item`Pesto alla Marziano`, $item`alien salad`);
+  dishes.set($item`Frutti di Scatoletta`, $item`can of tuna`);
   return dishes;
 }
 
 export function numPreparedLegendaryNoodleDishes(): number {
   let num: number = 0;
-  for (let dish of legendaryNoodleDishes().keys()) {
+  for (const dish of legendaryNoodleDishes().keys()) {
     num += itemAmount(dish);
   }
   return num;
 }
 // pick a legendary noodle to consume (or to check that we have one avail. to consume)
 export function auto_findPreparedLegendaryNoods(): Item {
-  for (let it of legendaryNoodleDishes().keys()) {
+  for (const it of legendaryNoodleDishes().keys()) {
     if (itemAmount(it) > 0) {
       return it;
     }
@@ -371,7 +371,7 @@ export function auto_findPreparedLegendaryNoods(): Item {
 
 export function numBaseLegendaryNoodleDishes(): number {
   let num: number = 0;
-  for (let preparedDish of legendaryNoodleDishes().keys()) {
+  for (const preparedDish of legendaryNoodleDishes().keys()) {
     num += itemAmount(
       legendaryNoodleDishes().get(preparedDish) ??
         legendaryNoodleDishes().set(preparedDish, Item.none).get(preparedDish),
@@ -382,10 +382,10 @@ export function numBaseLegendaryNoodleDishes(): number {
 // pick a base noodle to consume, to be crafted into legendary (or to check that we have one avail. to consume)
 // returns the legendary dish the noods are crafted into
 export function auto_findBaseLegendaryNoods(): Item {
-  if (itemAmount(Item.get("legendary noodles")) < 1) {
+  if (itemAmount($item`legendary noodles`) < 1) {
     return Item.none;
   }
-  for (let it of legendaryNoodleDishes().keys()) {
+  for (const it of legendaryNoodleDishes().keys()) {
     if (
       itemAmount(
         legendaryNoodleDishes().get(it) ??
@@ -402,7 +402,7 @@ export function auto_willEatLegendaryNoodles(): boolean {
   // the specific dish we check for canEat doesn't matter, just that it's *A* legendary pasta dish
   // We exclude small because we want to be careful about maximizing the quality of our food when we only have two space, and we exclude plumber because plumber consumption is weird
   return (
-    canEat$1(Item.get("Orzo di Riso")) &&
+    canEat$1($item`Orzo di Riso`) &&
     !toBoolean(getProperty("auto_limitConsume")) &&
     !in_small() &&
     !in_plumber()
@@ -426,12 +426,12 @@ export function auto_forceCombatLegendaryNoodles(): boolean {
   // we are overriding the normal consumption loop due to the nature of the food's effect (eating when we are ready to force)
   // so we make a ConsumeAction record to record what we want to eat and then feed it into auto_autoConsumeOne()
   // values taken from auto_consume.ash
-  let AUTO_ORGAN_STOMACH_1: number = 1;
-  let AUTO_OBTAIN_NULL_1: number = 100;
-  let AUTO_OBTAIN_CRAFT_1: number = 101;
+  const AUTO_ORGAN_STOMACH_1: number = 1;
+  const AUTO_OBTAIN_NULL_1: number = 100;
+  const AUTO_OBTAIN_CRAFT_1: number = 101;
   let action: ConsumeAction = new ConsumeAction();
   // select a dish and then create a record, prioritizing dishes that are already crafted first
-  let prospective_dish: Item = auto_findPreparedLegendaryNoods();
+  const prospective_dish: Item = auto_findPreparedLegendaryNoods();
   if (prospective_dish !== Item.none) {
     action = new ConsumeAction(
       prospective_dish,
@@ -443,7 +443,7 @@ export function auto_forceCombatLegendaryNoodles(): boolean {
       AUTO_OBTAIN_NULL_1,
     );
   } else {
-    let prospective_dish_1: Item = auto_findBaseLegendaryNoods();
+    const prospective_dish_1: Item = auto_findBaseLegendaryNoods();
     if (prospective_dish_1 !== Item.none) {
       action = new ConsumeAction(
         prospective_dish_1,

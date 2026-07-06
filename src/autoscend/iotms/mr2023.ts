@@ -1042,7 +1042,7 @@ export function auto_habitatTarget(target: Monster): boolean {
             13
         );
       case $monster`lobsterfrogman`:
-        let sonofa_complete: boolean =
+        const sonofa_complete: boolean =
           getProperty("sidequestLighthouseCompleted") === "hippy" ||
           getProperty("sidequestLighthouseCompleted") === "fratboy";
         return !sonofa_complete && itemAmount($item`barrel of gunpowder`) < 4;

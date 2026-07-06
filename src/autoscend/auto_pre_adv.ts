@@ -4,7 +4,6 @@ import {
   canEat,
   ceil,
   changeMcd,
-  Class,
   cliExecute,
   combatRateModifier,
   containsText,
@@ -74,7 +73,6 @@ import {
   toMonster,
   use,
   useFamiliar,
-  useSkill,
 } from "kolmafia";
 import {
   $class,
@@ -86,12 +84,10 @@ import {
   $location,
   $locations,
   $monster,
-  $skill,
   $skills,
   $slot,
   $slots,
   $stat,
-  $thrall,
 } from "libram";
 
 import { speculative_pool_skill } from "../autoscend";
@@ -562,7 +558,7 @@ function auto_pre_adventure(): boolean {
     }
   }
 
-  if (myClass() === Class.get("Pastamancer")) {
+  if (myClass() === $class`Pastamancer`) {
     pm_updateThrall(place, false); //maybe dismiss Vampieroghi, maybe bind Spice Ghost or Vermincelli
   }
   //save some MP while buffing

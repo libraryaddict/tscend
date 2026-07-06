@@ -6,7 +6,6 @@ import {
   haveEquipped,
   Item,
   itemAmount,
-  Location,
   myAdventures,
   myMeat,
   myPath,

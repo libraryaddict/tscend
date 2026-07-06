@@ -17,7 +17,6 @@ import {
   Item,
   itemAmount,
   jumpChance,
-  Location,
   myAdventures,
   myDaycount,
   myLevel,
@@ -716,7 +715,7 @@ export function L8_trapperNinjaLair(): boolean {
       "Not trying to force combat again at Lair of the Ninja Showmen because we already have a forced combat queued",
     );
   } else {
-    CForced = auto_forceNextCombat$1(Location.get("Lair of the Ninja Snowmen"));
+    CForced = auto_forceNextCombat$1($location`Lair of the Ninja Snowmen`);
     auto_log_info(
       `Trying to force combat at Lair of the Ninja Snowmen: ${CForced.toString()}`,
       "blue",
@@ -726,7 +725,7 @@ export function L8_trapperNinjaLair(): boolean {
     !CForced &&
     providePlusCombat(
       auto_combatModCap(),
-      Location.get("Lair of the Ninja Snowmen"),
+      $location`Lair of the Ninja Snowmen`,
       true,
       true,
     ) <= 0.0
@@ -752,9 +751,9 @@ export function L8_trapperNinjaLair(): boolean {
     adjustEdHat("myst");
   }
 
-  auto_getCitizenZone(Location.get("Lair of the Ninja Snowmen"), false); //since we want to adventure in the Lair anyway
+  auto_getCitizenZone($location`Lair of the Ninja Snowmen`, false); //since we want to adventure in the Lair anyway
 
-  if (autoAdv$2(Location.get("Lair of the Ninja Snowmen"))) {
+  if (autoAdv$2($location`Lair of the Ninja Snowmen`)) {
     return true;
   }
   auto_log_warning(
@@ -893,13 +892,13 @@ export function L8_trapperGroar(): boolean {
 
 export function ninjaItemsRemaining(): number {
   let items_remaining: number = 3;
-  if (itemAmount(Item.get("ninja carabiner")) > 0) {
+  if (itemAmount($item`ninja carabiner`) > 0) {
     items_remaining -= 1;
   }
-  if (itemAmount(Item.get("ninja crampons")) > 0) {
+  if (itemAmount($item`ninja crampons`) > 0) {
     items_remaining -= 1;
   }
-  if (itemAmount(Item.get("ninja rope")) > 0) {
+  if (itemAmount($item`ninja rope`) > 0) {
     items_remaining -= 1;
   }
   return items_remaining;
@@ -954,7 +953,7 @@ export function L8_trapperPeak(): boolean {
 
 export function L8_forceExtremeInstead(): boolean {
   // If for some reason we've already got 2 ninja items, no need to get forcey
-  if (availableAmount(Item.get("ninja crampons")) > 0) {
+  if (availableAmount($item`ninja crampons`) > 0) {
     return false;
   }
   // Set the variable if we're doing McHugeLarge items and aren't already forcing combats for lair

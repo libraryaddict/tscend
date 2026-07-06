@@ -1243,7 +1243,7 @@ export function LX_unlockKnobMenagerie(): boolean {
   return autoAdv$1(1, $location`Cobb's Knob Laboratory`);
 }
 
-let $_f_epicWeapons: Map<Class, Item> = new Map([
+const $_f_epicWeapons: Map<Class, Item> = new Map([
   [$class`Seal Clubber`, $item`Hammer of Smiting`],
   [$class`Turtle Tamer`, $item`Chelonian Morningstar`],
   [$class`Pastamancer`, $item`Greek Pasta Spoon of Peril`],

@@ -94,10 +94,7 @@ function zone_unlock(loc: Location): boolean {
   let unlocked: boolean = false;
   if (loc === $location`The Thinknerd Warehouse`) {
     unlocked = LX_unlockThinknerdWarehouse(false);
-  } else if (
-    loc === Location.get("Lair of the Ninja Snowmen") &&
-    L8_trapperTalk()
-  ) {
+  } else if (loc === $location`Lair of the Ninja Snowmen` && L8_trapperTalk()) {
     unlocked = true;
   } else {
     auto_log_debug$1(`Don't know how to unlock ${loc}`);
@@ -450,7 +447,7 @@ export function zone_needItem(loc: Location): generic_t {
       case $location`Barf Mountain`:
         retval._float = 15.0;
         break;
-      case Location.get("The Velvet / Gold Mine"):
+      case $location`The Velvet / Gold Mine`:
         if (!canYellowRay$1()) {
           //Just a guess
           retval._float = 10.0;
@@ -1789,7 +1786,7 @@ export function zone_available(loc: Location): boolean {
       break;
     case $location`The SMOOCH Army HQ`:
     case $location`LavaCo™ Lamp Factory`:
-    case Location.get("The Velvet / Gold Mine"):
+    case $location`The Velvet / Gold Mine`:
     case $location`The Bubblin' Caldera`:
       retval =
         toBoolean(getProperty("hotAirportAlways")) ||
@@ -2165,7 +2162,7 @@ function zone_difficulty(loc: Location): generic_t {
       break;
     case $location`The SMOOCH Army HQ`:
     case $location`LavaCo™ Lamp Factory`:
-    case Location.get("The Velvet / Gold Mine"):
+    case $location`The Velvet / Gold Mine`:
     case $location`The Bubblin' Caldera`:
       break;
     case $location`The X-32-F Combat Training Snowman`:
@@ -2337,9 +2334,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
         return hasMcCluskyFile && delayForNextNoncombat === 0;
       case $location`The Hidden Apartment Building`:
         cursed = haveEffect($effect`Thrice-Cursed`) > 0;
-        totalTurnsSpent = Location.get(
-          "The Hidden Apartment Building",
-        ).turnsSpent;
+        totalTurnsSpent = $location`The Hidden Apartment Building`.turnsSpent;
         delayForNextNoncombat = 7 - ((totalTurnsSpent - 9) % 8);
         if (totalTurnsSpent < 9) {
           delayForNextNoncombat = 8 - totalTurnsSpent;

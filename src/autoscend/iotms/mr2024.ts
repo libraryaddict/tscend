@@ -38,7 +38,6 @@ import {
   toLowerCase,
   toSkill,
   use,
-  useFamiliar,
   useSkill,
   visitUrl,
 } from "kolmafia";

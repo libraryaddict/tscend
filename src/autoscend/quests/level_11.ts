@@ -256,9 +256,9 @@ import { in_robot, robot_delay } from "../paths/you_robot";
 import { in_zootomist } from "../paths/zootomist";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { L3_tavern } from "./level_03";
+import { L8_trapperNinjaLair } from "./level_08";
 import { L9_chasmBuild } from "./level_09";
 import { L10_holeInTheSkyUnlock, L10_topFloor } from "./level_10";
-import { L8_trapperNinjaLair } from "./level_08";
 
 class desert_buff_record {
   constructor(
@@ -3544,7 +3544,7 @@ export function L11_shenCopperhead(): boolean {
       }
       // similar if statements exist in the L8 quest file (see comments over there)
       // before delayburn because we *want* to fight NSAs if we're going ninja lair, not avoid them by burning delay
-      if (goal === Location.get("Lair of the Ninja Snowmen")) {
+      if (goal === $location`Lair of the Ninja Snowmen`) {
         if (auto_canForceNextCombat() || auto_haveQueuedForcedCombat()) {
           if (L8_trapperNinjaLair()) {
             return true;

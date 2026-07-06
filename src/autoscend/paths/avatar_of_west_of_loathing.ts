@@ -194,7 +194,7 @@ export function awol_buySkills(): boolean {
   }
 
   if (itemAmount($item`Tales of the West: Cow Punching`) > 0) {
-    let page: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=8955");
+    const page: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=8955");
     //The rest of the book is too filled<br>with jargon for you to be able<br>to understand it.
     const slang: AshMatcher = new AshMatcher(
       "The rest of the book is too filled",
@@ -340,7 +340,7 @@ export function awol_buySkills(): boolean {
     }
   }
   if (itemAmount($item`Tales of the West: Beanslinging`) > 0) {
-    let page: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=8956");
+    const page: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=8956");
 
     const slang: AshMatcher = new AshMatcher(
       "The rest of the book is too filled",
@@ -486,7 +486,7 @@ export function awol_buySkills(): boolean {
     }
   }
   if (itemAmount($item`Tales of the West: Snake Oiling`) > 0) {
-    let page: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=8957");
+    const page: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=8957");
 
     const slang: AshMatcher = new AshMatcher(
       "The rest of the book is too filled",

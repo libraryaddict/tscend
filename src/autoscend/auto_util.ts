@@ -165,6 +165,7 @@ import {
   $slots,
   $stat,
   $stats,
+  $thrall,
 } from "libram";
 
 import { LX_calculateTheUniverse } from "../autoscend";
@@ -6038,7 +6039,7 @@ export function auto_forceNextCombat$1(loc: Location): boolean {
     return true;
   }
   if (_auto_forceNextCombat$1(loc)) {
-    let forceCMethod: string = getProperty("auto_forceCombatSource");
+    const forceCMethod: string = getProperty("auto_forceCombatSource");
     auto_log_info(
       `Next combat adventure has been forced with ${forceCMethod}`,
       "blue",
@@ -6884,10 +6885,10 @@ export function auto_remainingShantyTurns(): number {
 }
 
 export function rat_locations(): Map<Location, boolean> {
-  let rats: Map<Location, boolean> = new Map();
-  rats.set(Location.get("The Batrat and Ratbat Burrow"), true);
-  rats.set(Location.get("The Typical Tavern Cellar"), true);
-  rats.set(Location.get("The Middle Chamber"), true);
+  const rats: Map<Location, boolean> = new Map();
+  rats.set($location`The Batrat and Ratbat Burrow`, true);
+  rats.set($location`The Typical Tavern Cellar`, true);
+  rats.set($location`The Middle Chamber`, true);
   return rats;
 }
 // when updating this function, update the corresponding comment in auto_pre_adv
@@ -6897,15 +6898,15 @@ export function pm_updateThrall(
   going_to_eat: boolean,
 ): boolean {
   if (
-    myThrall() === Thrall.get("Vampieroghi") &&
-    place === Location.get("The Hidden Apartment Building") &&
+    myThrall() === $thrall`Vampieroghi` &&
+    place === $location`The Hidden Apartment Building` &&
     auto_have_skill(Skill.get("Dismiss Pasta Thrall"))
   ) {
     // vampieroghi can dispell the shaman curse, preventing us from making quest progress
     useSkill(Skill.get("Dismiss Pasta Thrall"));
   }
 
-  let cur: Thrall = myThrall();
+  const cur: Thrall = myThrall();
   let consider: Thrall = Thrall.none;
   /*							Cost		L1				L5				L10				L11
 		Vampieroghi			12			1-2 (Dmg, Heal)	Dispel Neg		+60 Max HP		Slight Spooky Resistance
@@ -6917,11 +6918,11 @@ export function pm_updateThrall(
 		Lasagmbie			200			20+2 Meat		Spooky Dmg		+10 spooky spell dmg	Occasionally refills MP (capped at 10k, 11/day)
 		Spice Ghost			250			10+1 Item		Spices			Stun Increase	+2 advs to the first food eaten each day with spice ghost active
 */
-  let baseline_ver: boolean =
+  const baseline_ver: boolean =
     myMp() >= 1.2 * mpCost(Skill.get("Bind Vermincelli")) &&
     auto_have_skill(Skill.get("Bind Vermincelli"));
-  let ver_level: number = toThrall("ver").level;
-  let base_spice: boolean =
+  const ver_level: number = toThrall("ver").level;
+  const base_spice: boolean =
     myMp() >= 1.2 * mpCost(Skill.get("Bind Spice Ghost")) &&
     auto_have_skill(Skill.get("Bind Spice Ghost")) &&
     myDaycount() > 1 &&
@@ -6933,24 +6934,24 @@ export function pm_updateThrall(
       toThrall("spice").level > 10 &&
       !toBoolean(getProperty("_legendarySpiceGhostFood"))
     ) {
-      consider = Thrall.get("Spice Ghost");
+      consider = $thrall`Spice Ghost`;
     }
   } else {
     if (baseline_ver && cur === Thrall.none) {
-      consider = Thrall.get("Vermincelli");
+      consider = $thrall`Vermincelli`;
     }
     if (base_spice) {
-      consider = Thrall.get("Spice Ghost");
+      consider = $thrall`Spice Ghost`;
     }
     if (baseline_ver && ver_level > 10 && rat_locations().has(place)) {
-      consider = Thrall.get("Vermincelli");
+      consider = $thrall`Vermincelli`;
     } else if (baseline_ver && ver_level < 11 && auto_havePastaWand()) {
-      consider = Thrall.get("Vermincelli");
+      consider = $thrall`Vermincelli`;
     }
   }
 
   if (consider !== cur && consider !== Thrall.none) {
-    let toEquip: Skill = toSkill(`Bind ${consider}`);
+    const toEquip: Skill = toSkill(`Bind ${consider}`);
     if (toEquip !== Skill.none) {
       if (myMp() >= mpCost(toEquip)) {
         useSkill(1, toEquip);

@@ -41,7 +41,6 @@ import {
   myServant,
   mySessionAdv,
   mySoulsauce,
-  myThrall,
   myThunder,
   myTurncount,
   numericModifier,
@@ -50,12 +49,10 @@ import {
   Servant,
   setProperty,
   Skill,
-  Thrall,
   toBoolean,
   toFloat,
   toInt,
   toMonster,
-  toSkill,
   use,
   useSkill,
   visitUrl,
@@ -75,7 +72,6 @@ import {
   $skills,
   $slot,
   $stat,
-  $thrall,
 } from "libram";
 
 import {

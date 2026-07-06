@@ -88,18 +88,18 @@ import {
   LX_lastChance,
 } from "../quests/level_any";
 
-let $_f_ZOOPART_NONE: number = 0;
-let $_f_ZOOPART_HEAD: number = 1;
-let $_f_ZOOPART_L_SHOULDER: number = 2;
-let $_f_ZOOPART_R_SHOULDER: number = 3;
-let $_f_ZOOPART_L_HAND: number = 4;
-let $_f_ZOOPART_R_HAND: number = 5;
-let $_f_ZOOPART_R_NIPPLE: number = 6;
-let $_f_ZOOPART_L_NIPPLE: number = 7;
-let $_f_ZOOPART_L_BUTTOCK: number = 8;
-let $_f_ZOOPART_R_BUTTOCK: number = 9;
-let $_f_ZOOPART_L_FOOT: number = 10;
-let $_f_ZOOPART_R_FOOT: number = 11;
+const $_f_ZOOPART_NONE: number = 0;
+const $_f_ZOOPART_HEAD: number = 1;
+const $_f_ZOOPART_L_SHOULDER: number = 2;
+const $_f_ZOOPART_R_SHOULDER: number = 3;
+const $_f_ZOOPART_L_HAND: number = 4;
+const $_f_ZOOPART_R_HAND: number = 5;
+const $_f_ZOOPART_R_NIPPLE: number = 6;
+const $_f_ZOOPART_L_NIPPLE: number = 7;
+const $_f_ZOOPART_L_BUTTOCK: number = 8;
+const $_f_ZOOPART_R_BUTTOCK: number = 9;
+const $_f_ZOOPART_L_FOOT: number = 10;
+const $_f_ZOOPART_R_FOOT: number = 11;
 
 //Defined in autoscend/paths/zootomist.ash
 export function in_zootomist(): boolean {
