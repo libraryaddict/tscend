@@ -1041,7 +1041,7 @@ export function auto_waveTheZone(): boolean {
     $locations`Shadow Rift (The Ancient Buried Pyramid), Shadow Rift (The Hidden City), Shadow Rift (The Misspelled Cemetary), Cyberzone 1, Cyberzone 2, Cyberzone 3`.includes(
       myLocation(),
     ) &&
-    myPath() === $path`11\,037 Leagues Under the Sea`
+    myPath() === $path`11,037 Leagues Under the Sea`
   ) {
     autoForceEquip$2($item`Monodent of the Sea`, true);
     waveTheZone = true;

@@ -116,11 +116,11 @@ export function solveDelayZone(skipOutdoorZones: boolean): Location {
   // Shorten the time before finding Gnasir, so that we can start acquiring desert pages sooner
   if (
     !skipOutdoorZones &&
-    zone_isAvailable$1($location`The Arid\, Extra-Dry Desert`) &&
-    $location`The Arid\, Extra-Dry Desert`.turnsSpent >= 1 &&
-    $location`The Arid\, Extra-Dry Desert`.turnsSpent < 10
+    zone_isAvailable$1($location`The Arid, Extra-Dry Desert`) &&
+    $location`The Arid, Extra-Dry Desert`.turnsSpent >= 1 &&
+    $location`The Arid, Extra-Dry Desert`.turnsSpent < 10
   ) {
-    burnZone = $location`The Arid\, Extra-Dry Desert`;
+    burnZone = $location`The Arid, Extra-Dry Desert`;
   }
   // Shorten the time until the first "burn a food or drink" noncombat
   // There's some opportunity to be clever here, but this is probably good enough.

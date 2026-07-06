@@ -1171,18 +1171,18 @@ export function zone_available(loc: Location): boolean {
       }
       break;
     case $location`South of the Border`:
-    case $location`The Shore\, Inc. Travel Agency`:
+    case $location`The Shore, Inc. Travel Agency`:
       if (isDesertAvailable()) {
         retval = true;
       }
       break;
-    case $location`The Arid\, Extra-Dry Desert`:
+    case $location`The Arid, Extra-Dry Desert`:
       if (internalQuestStatus("questL11Desert") >= 0) {
         retval = true;
       }
       break;
     case $location`The Oasis`:
-      if ($location`The Arid\, Extra-Dry Desert`.turnsSpent > 0) {
+      if ($location`The Arid, Extra-Dry Desert`.turnsSpent > 0) {
         retval = true;
       }
       break;
@@ -1809,9 +1809,9 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case $location`Cobb's Knob Menagerie\, Level 1`:
-    case $location`Cobb's Knob Menagerie\, Level 2`:
-    case $location`Cobb's Knob Menagerie\, Level 3`:
+    case $location`Cobb's Knob Menagerie, Level 1`:
+    case $location`Cobb's Knob Menagerie, Level 2`:
+    case $location`Cobb's Knob Menagerie, Level 3`:
       if (itemAmount($item`Cobb's Knob Menagerie key`) > 0) {
         retval = true;
       }
@@ -1941,14 +1941,14 @@ function zone_difficulty(loc: Location): generic_t {
   }
 
   switch (loc) {
-    case $location`The Shore\, Inc. Travel Agency`:
+    case $location`The Shore, Inc. Travel Agency`:
       retval._int = 0;
       break;
     case $location`Super Villain's Lair`:
       break;
     case $location`South of the Border`:
       break;
-    case $location`The Arid\, Extra-Dry Desert`:
+    case $location`The Arid, Extra-Dry Desert`:
       break;
     case $location`The Oasis`:
       if (haveEffect($effect`Ultrahydrated`) === 0) {

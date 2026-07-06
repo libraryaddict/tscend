@@ -165,14 +165,14 @@ lowKeys.set($item`clown car key`, $location`The "Fun" House`);
 lowKeys.set($item`batting cage key`, $location`The Bat Hole Entrance`);
 lowKeys.set($item`aquí`, $location`South of the Border`);
 lowKeys.set($item`knob labinet key`, $location`Cobb's Knob Laboratory`);
-lowKeys.set($item`weremoose key`, $location`Cobb's Knob Menagerie\, Level 2`);
+lowKeys.set($item`weremoose key`, $location`Cobb's Knob Menagerie, Level 2`);
 lowKeys.set($item`peg key`, $location`The Obligatory Pirate's Cove`);
 lowKeys.set($item`kekekey`, $location`The Valley of Rof L'm Fao`);
 lowKeys.set($item`rabbit's foot key`, $location`The Dire Warren`);
 lowKeys.set($item`knob shaft skate key`, $location`The Knob Shaft`);
 lowKeys.set($item`ice key`, $location`The Icy Peak`);
 lowKeys.set($item`anchovy can key`, $location`The Haunted Pantry`);
-lowKeys.set($item`cactus key`, $location`The Arid\, Extra-Dry Desert`);
+lowKeys.set($item`cactus key`, $location`The Arid, Extra-Dry Desert`);
 lowKeys.set($item`f'c'le sh'c'le k'y`, $location`The F'c'le`);
 lowKeys.set($item`treasure chest key`, $location`Belowdecks`);
 lowKeys.set($item`demonic key`, $location`Pandamonium Slums`);
@@ -236,7 +236,7 @@ function lowkey_keysRemaining(): number {
 function lowkey_levelNeededToUnlockZone(loc: Location): number {
   // returns level under which it is normal for the key zones not to be accessible in the path
   switch (loc) {
-    case $location`The Arid\, Extra-Dry Desert`:
+    case $location`The Arid, Extra-Dry Desert`:
       return 11;
     case $location`Belowdecks`:
       return 11;
@@ -248,7 +248,7 @@ function lowkey_levelNeededToUnlockZone(loc: Location): number {
       return 6;
     case $location`Cobb's Knob Laboratory`:
       return 5;
-    case $location`Cobb's Knob Menagerie\, Level 2`:
+    case $location`Cobb's Knob Menagerie, Level 2`:
       return 5;
     case $location`The Knob Shaft`:
       return 5;

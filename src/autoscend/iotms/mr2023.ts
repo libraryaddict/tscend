@@ -1241,10 +1241,10 @@ export function auto_canRWBBlast(): boolean {
   if (!auto_haveEagle()) {
     return false;
   }
-  if (!auto_is_valid$2($skill`%fn\, fire a Red\, White and Blue Blast`)) {
+  if (!auto_is_valid$2($skill`%fn, fire a Red, White and Blue Blast`)) {
     return false;
   }
-  if (haveEffect($effect`Everything Looks Red\, White and Blue`) > 0) {
+  if (haveEffect($effect`Everything Looks Red, White and Blue`) > 0) {
     //Already have ELRWB
     return false;
   }
@@ -1683,7 +1683,7 @@ export function auto_handleCCSC(): boolean {
       itemAmount($item`bowling ball`) > 0 &&
       toInt(getProperty("hiddenBowlingAlleyProgress")) < 5 &&
       !toBoolean(getProperty("candyCaneSwordBowlingAlley"))) ||
-    (place === $location`The Shore\, Inc. Travel Agency` &&
+    (place === $location`The Shore, Inc. Travel Agency` &&
       itemAmount($item`forged identification documents`) === 0 &&
       !toBoolean(getProperty("candyCaneSwordShore"))) ||
     (place === $location`The eXtreme Slope` &&

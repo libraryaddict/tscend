@@ -593,7 +593,7 @@ export function buffMaintain$2(
     case $effect`Cinnamon Challenger`:
       useItem_1 = $item`pulled red taffy`;
       break;
-    case $effect`Clear Ears\, Can't Lose`:
+    case $effect`Clear Ears, Can't Lose`:
       useItem_1 = $item`ear candle`;
       break;
     case $effect`Cletus's Canticle of Celerity`:
@@ -771,7 +771,7 @@ export function buffMaintain$2(
     case $effect`Erudite`:
       useItem_1 = $item`black sheepskin diploma`;
       break;
-    case $effect`Ew\, The Humanity`:
+    case $effect`Ew, The Humanity`:
       useItem_1 = $item`Scent of a Human™ candle`;
       break;
     case $effect`Expert Oiliness`:
@@ -843,7 +843,7 @@ export function buffMaintain$2(
     case $effect`Fire Inside`:
       useItem_1 = $item`hot coal`;
       break;
-    case $effect`Fishy\, Oily`:
+    case $effect`Fishy, Oily`:
       if (in_heavyrains()) {
         useItem_1 = $item`gourmet gourami oil`;
       }
@@ -880,7 +880,7 @@ export function buffMaintain$2(
         buff = $effect`Shield of the Pastalord`;
       }
       break;
-    case $effect`Float Like a Butterfly\, Smell Like a Bee`:
+    case $effect`Float Like a Butterfly, Smell Like a Bee`:
       if (in_bhy()) {
         useItem_1 = $item`honeypot`;
       }
@@ -894,7 +894,7 @@ export function buffMaintain$2(
     case $effect`Fortunate Resolve`:
       useItem_1 = $item`resolution: be luckier`;
       break;
-    case $effect`Frenzied\, Bloody`:
+    case $effect`Frenzied, Bloody`:
       useSkill_1 = $skill`Blood Frenzy`;
       break;
     case $effect`Fresh Breath`:
@@ -949,10 +949,10 @@ export function buffMaintain$2(
     case $effect`Glowing Hands`:
       useItem_1 = $item`emergency glowstick`;
       break;
-    case $effect`Go Get 'Em\, Tiger!`:
+    case $effect`Go Get 'Em, Tiger!`:
       useItem_1 = $item`Ben-Gal™ Balm`;
       break;
-    case $effect`Good Things Are Coming\, You Can Smell It`:
+    case $effect`Good Things Are Coming, You Can Smell It`:
       useItem_1 = $item`Smoldering Clover™ candle`;
       break;
     case $effect`Got Milk`:
@@ -1227,7 +1227,7 @@ export function buffMaintain$2(
     case $effect`Lucky Struck`:
       useItem_1 = $item`Lucky Strikes holo-record`;
       break;
-    case $effect`Lycanthropy\, Eh?`:
+    case $effect`Lycanthropy, Eh?`:
       useItem_1 = $item`weremoose spit`;
       break;
     case $effect`Keep Free Hate in your Heart`:
@@ -1503,7 +1503,7 @@ export function buffMaintain$2(
         ret = true;
       }
       break;
-    case $effect`Power\, Man`:
+    case $effect`Power, Man`:
       useItem_1 = $item`Power-Guy 2000 holo-record`;
       break;
     case $effect`Power Ballad of the Arrowsmith`:
@@ -1977,7 +1977,7 @@ export function buffMaintain$2(
     case $effect`Sweet Heart`:
       useItem_1 = $item`love song of sugary cuteness`;
       break;
-    case $effect`Sweet\, Nuts`:
+    case $effect`Sweet, Nuts`:
       useItem_1 = $item`Crimbo candied pecan`;
       break;
     case $effect`Sweetbreads Flambé`:

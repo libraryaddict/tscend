@@ -1068,7 +1068,7 @@ export function LX_doVacation(): boolean {
     equipMaximizedGear();
   }
 
-  return autoAdv$1(1, $location`The Shore\, Inc. Travel Agency`);
+  return autoAdv$1(1, $location`The Shore, Inc. Travel Agency`);
 }
 
 export function auto_doTempleSummit(): boolean {

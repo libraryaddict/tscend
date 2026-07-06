@@ -80,7 +80,7 @@ export function makeStartingSmiths(): void {
           $item`sword hilt`,
         );
       }
-      if (!possessEquipment($item`Ouija Board\, Ouija Board`)) {
+      if (!possessEquipment($item`Ouija Board, Ouija Board`)) {
         autoCraft(
           "smith",
           1,
@@ -261,7 +261,7 @@ export function oldPeoplePlantStuff(): void {
   } else if (myLocation() === $location`A Massive Ziggurat`) {
     cliExecute("florist plant skunk cabbage");
     cliExecute("florist plant deadly cinnamon");
-  } else if (myLocation() === $location`The Arid\, Extra-Dry Desert`) {
+  } else if (myLocation() === $location`The Arid, Extra-Dry Desert`) {
     cliExecute("florist plant rad-ish radish");
     cliExecute("florist plant lettuce spray");
   } else if (myLocation() === $location`The Hidden Apartment Building`) {

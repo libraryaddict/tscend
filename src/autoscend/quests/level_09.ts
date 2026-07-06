@@ -773,7 +773,7 @@ export function L9_aBooPeak(): boolean {
     }
 
     if (doThisBoo) {
-      buffMaintain$4($effect`Go Get 'Em\, Tiger!`);
+      buffMaintain$4($effect`Go Get 'Em, Tiger!`);
       bat_formMist$1();
       if (0 === haveEffect($effect`Mist Form`)) {
         buffMaintain$3($effect`Spectral Awareness`, 10, 1, 1);
@@ -1032,7 +1032,7 @@ export function L9_twinPeak(): boolean {
 
   buffMaintain$4($effect`Fishy Whiskers`); //heavy rains specific reduce item drop penalty by 10%
   //BHY specific prevent wandering bees from skipping the burning the hotel down choice and wasting turns
-  buffMaintain$4($effect`Float Like a Butterfly\, Smell Like a Bee`);
+  buffMaintain$4($effect`Float Like a Butterfly, Smell Like a Bee`);
 
   if (in_bhy()) {
     // we can't make an oil jar to solve the quest, just adventure until the hotel is burned down

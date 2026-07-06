@@ -1713,7 +1713,7 @@ export function L11_aridDesert(): boolean {
     buffMaintain$4($effect`Butt-Rock Hair`);
     if (myPrimestat() === $stat`Muscle`) {
       auto_buyUpTo(1, $item`Ben-Gal™ Balm`);
-      buffMaintain$4($effect`Go Get 'Em\, Tiger!`);
+      buffMaintain$4($effect`Go Get 'Em, Tiger!`);
       auto_buyUpTo(1, $item`blood of the Wereseal`);
       buffMaintain$4($effect`Temporary Lycanthropy`);
     }
@@ -1783,7 +1783,7 @@ export function L11_aridDesert(): boolean {
 
     if (
       !toBoolean(getProperty("auto_gnasirUnlocked")) &&
-      $location`The Arid\, Extra-Dry Desert`.turnsSpent > 10 &&
+      $location`The Arid, Extra-Dry Desert`.turnsSpent > 10 &&
       toInt(getProperty("desertExploration")) > 10
     ) {
       auto_log_info(
@@ -1824,7 +1824,7 @@ export function L11_aridDesert(): boolean {
       return true;
     }
 
-    autoAdv$1(1, $location`The Arid\, Extra-Dry Desert`);
+    autoAdv$1(1, $location`The Arid, Extra-Dry Desert`);
 
     if (containsText(getProperty("lastEncounter"), "A Sietch in Time")) {
       auto_log_info(
@@ -1857,7 +1857,7 @@ export function L11_aridDesert(): boolean {
       !toBoolean(getProperty("oasisAvailable")) &&
       haveEffect($effect`Ultrahydrated`) === 0
     ) {
-      return autoAdv$1(1, $location`The Arid\, Extra-Dry Desert`);
+      return autoAdv$1(1, $location`The Arid, Extra-Dry Desert`);
     }
 
     if (auto_haveBofa() && !isAboutToPowerlevel()) {
@@ -3149,7 +3149,7 @@ function L11_redZeppelin(): boolean {
   }
 
   addToMaximize("100sleaze damage,100sleaze spell damage");
-  if (auto_is_valid$3($effect`Oiled\, Slick`)) {
+  if (auto_is_valid$3($effect`Oiled, Slick`)) {
     auto_beachCombHead("sleaze");
   }
   for (const sl of $slots`acc1, acc2, acc3`) {

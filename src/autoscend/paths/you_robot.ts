@@ -91,7 +91,7 @@ import { LX_galaktikSubQuest } from "../quests/optional";
 
 //Defined in autoscend/paths/you_robot.ash
 export function in_robot(): boolean {
-  return myPath() === $path`You\, Robot`;
+  return myPath() === $path`You, Robot`;
 }
 
 export function robot_initializeSettings(): void {

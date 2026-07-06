@@ -55,7 +55,7 @@ export function auto_combatMeatGolemStage3(
     (((!canSurvive$1(8.0) || monsterHp() >= 500) && canSurvive$1(0.7)) ||
       enemy === $monster`The Manwich` ||
       enemy === $monster`The Big Mac Wisniewski` ||
-      enemy === $monster`Naughty Sorceress\, all sausage`)
+      enemy === $monster`Naughty Sorceress, all sausage`)
   ) {
     // hardcoded bosses to trigger
     return useSkill$2($skill`Meat Cleaver`);
@@ -94,7 +94,7 @@ export function auto_combatMeatGolemStage5(
     (monsterHp() >= 400 ||
       enemy === $monster`The Manwich` ||
       enemy === $monster`The Big Mac Wisniewski` ||
-      enemy === $monster`Naughty Sorceress\, all sausage`)
+      enemy === $monster`Naughty Sorceress, all sausage`)
   ) {
     return useSkill$1($skill`Wet Rub`, true);
   }
@@ -103,7 +103,7 @@ export function auto_combatMeatGolemStage5(
     (monsterHp() >= 400 ||
       enemy === $monster`The Manwich` ||
       enemy === $monster`The Big Mac Wisniewski` ||
-      enemy === $monster`Naughty Sorceress\, all sausage`)
+      enemy === $monster`Naughty Sorceress, all sausage`)
   ) {
     return useSkill$1($skill`Meat Cleaver`, true);
   }

@@ -846,10 +846,10 @@ export function provideInitiative(
 
   let ef_to_try: Map<Effect, boolean> = new Map([
     //organized by %/turn and %. Items
-    [$effect`Clear Ears\, Can't Lose`, true], //100%, 80 turns
+    [$effect`Clear Ears, Can't Lose`, true], //100%, 80 turns
     [$effect`Poppy Performance`, true], //100%, 30 turns
     [$effect`Patent Alacrity`, true], //100%, 20 turns
-    [$effect`Fishy\, Oily`, true], //60%, 40 turns
+    [$effect`Fishy, Oily`, true], //60%, 40 turns
     [$effect`Alacri Tea`, true], //50%, 30 turns
     [$effect`Adorable Lookout`, true], //30%, 10 turns
     [$effect`All Fired Up`, true], //30%, 10 turns
@@ -1510,8 +1510,8 @@ function provideStats(
           [$effect`Feroci Tea`, true],
           [$effect`Fishy Fortification`, true],
           [$effect`Football Eyes`, true],
-          [$effect`Go Get 'Em\, Tiger!`, true],
-          [$effect`Lycanthropy\, Eh?`, true],
+          [$effect`Go Get 'Em, Tiger!`, true],
+          [$effect`Lycanthropy, Eh?`, true],
           [$effect`Marinated`, true],
           [$effect`Phorcefullness`, true],
           [$effect`Rainy Soul Miasma`, true],
@@ -1539,7 +1539,7 @@ function provideStats(
           [$effect`Ready to Snap`, true],
           [$effect`Rosewater Mark`, true],
           [$effect`Seeing Colors`, true],
-          [$effect`Sweet\, Nuts`, true],
+          [$effect`Sweet, Nuts`, true],
           // moxie effects
           [$effect`Almost Cool`, true],
           [$effect`Bandersnatched`, true],
@@ -1548,7 +1548,7 @@ function provideStats(
           [$effect`Funky Coal Patina`, true],
           [$effect`Liquidy Smoky`, true],
           [$effect`Locks Like the Raven`, true],
-          [$effect`Lycanthropy\, Eh?`, true],
+          [$effect`Lycanthropy, Eh?`, true],
           [$effect`Memories of Puppy Love`, true],
           [$effect`Newt Gets In Your Eyes`, true],
           [$effect`Notably Lovely`, true],

@@ -563,7 +563,7 @@ export function L7_crypt(): boolean {
 
     if (myPrimestat() === $stat`Muscle`) {
       auto_buyUpTo(1, $item`Ben-Gal™ Balm`);
-      buffMaintain$4($effect`Go Get 'Em\, Tiger!`);
+      buffMaintain$4($effect`Go Get 'Em, Tiger!`);
       auto_buyUpTo(1, $item`blood of the Wereseal`);
       buffMaintain$4($effect`Temporary Lycanthropy`);
     }

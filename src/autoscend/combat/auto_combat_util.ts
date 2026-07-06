@@ -592,7 +592,7 @@ function isCopied(enemy: Monster, sk: Skill): boolean {
         enemy.toString(),
       );
       break;
-    case $skill`%fn\, fire a Red\, White and Blue Blast`:
+    case $skill`%fn, fire a Red, White and Blue Blast`:
       retval = auto_RWBMonster() === enemy;
     default:
       abort(`isCopied was asked to check an unidentified skill: ${sk}`);
@@ -621,11 +621,11 @@ export function getCopier(enemy: Monster, inCombat: boolean): Skill {
   }
   if (
     auto_haveEagle() &&
-    canUse($skill`%fn\, fire a Red\, White and Blue Blast`, true, inCombat) &&
-    !(haveEffect($effect`Everything Looks Red\, White and Blue`) > 0) &&
+    canUse($skill`%fn, fire a Red, White and Blue Blast`, true, inCombat) &&
+    !(haveEffect($effect`Everything Looks Red, White and Blue`) > 0) &&
     enemy.copyable
   ) {
-    return $skill`%fn\, fire a Red\, White and Blue Blast`;
+    return $skill`%fn, fire a Red, White and Blue Blast`;
   }
   return Skill.none;
 }
@@ -921,7 +921,7 @@ export function banisherCombatString(
         toInt(getProperty("screechCombats")) === 0 &&
         !in_glover()
   ) {
-    return `skill${$skill`%fn\, Release the Patriotic Screech!`}`;
+    return `skill${$skill`%fn, Release the Patriotic Screech!`}`;
   }
 
   return "";
@@ -1902,7 +1902,7 @@ export function canSurviveShootGhost(enemy: Monster, shots: number): boolean {
         (myMaxhp() * 0.9 * elementalResistance($element`hot`)) / 100,
       );
       break;
-    case $monster`Emily Koops\, a spooky lime`:
+    case $monster`Emily Koops, a spooky lime`:
       damage = toInt(
         (myMaxhp() * 0.95 * elementalResistance($element`spooky`)) / 100,
       );

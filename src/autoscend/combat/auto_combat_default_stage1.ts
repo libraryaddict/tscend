@@ -341,14 +341,14 @@ export function auto_combatDefaultStage1(
   if (
     auto_canRWBBlast() &&
     auto_RWBBlastTarget(enemy) &&
-    canUse$2($skill`%fn\, fire a Red\, White and Blue Blast`)
+    canUse$2($skill`%fn, fire a Red, White and Blue Blast`)
   ) {
     handleTracker$1(
-      $skill`%fn\, fire a Red\, White and Blue Blast`.toString(),
+      $skill`%fn, fire a Red, White and Blue Blast`.toString(),
       enemy.toString(),
       "auto_copies",
     );
-    return useSkill$2($skill`%fn\, fire a Red\, White and Blue Blast`);
+    return useSkill$2($skill`%fn, fire a Red, White and Blue Blast`);
   }
 
   const backedUpMonster: Monster = toMonster(
@@ -391,19 +391,19 @@ export function auto_combatDefaultStage1(
     $monsters`pygmy bowler, bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, red butler`.includes(
       enemy,
     ) &&
-    canUse$2($skill`%fn\, spit on them!`)
+    canUse$2($skill`%fn, spit on them!`)
   ) {
     handleTracker$1(
-      $skill`%fn\, spit on them!`.toString(),
+      $skill`%fn, spit on them!`.toString(),
       enemy.toString(),
       "auto_otherstuff",
     );
-    return useSkill$1($skill`%fn\, spit on them!`, true);
+    return useSkill$1($skill`%fn, spit on them!`, true);
   }
   //[Patriotic Eagle] familiar skill that gives a useful buff
-  if (canUse$2($skill`%fn\, let's pledge allegiance to a Zone`)) {
+  if (canUse$2($skill`%fn, let's pledge allegiance to a Zone`)) {
     auto_getCitizenZone(myLocation(), true);
-    return useSkill$1($skill`%fn\, let's pledge allegiance to a Zone`, true);
+    return useSkill$1($skill`%fn, let's pledge allegiance to a Zone`, true);
   }
   //duplicate turns the enemy from a single enemy into a mob containing 2 copies of this enemy. Doubling their stats and doubling their drops
   if (

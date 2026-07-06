@@ -1045,8 +1045,8 @@ export function auto_FireExtinguisherCombatString(place: Location): string {
   }
 
   if (
-    place === $location`The Arid\, Extra-Dry Desert` &&
-    $location`The Arid\, Extra-Dry Desert`.turnsSpent > 0 &&
+    place === $location`The Arid, Extra-Dry Desert` &&
+    $location`The Arid, Extra-Dry Desert`.turnsSpent > 0 &&
     !toBoolean(getProperty("fireExtinguisherDesertUsed")) &&
     !auto_haveBofa()
   ) {

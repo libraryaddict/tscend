@@ -516,7 +516,7 @@ function auto_post_adventure(): boolean {
   }
 
   if (isActuallyEd()) {
-    if ($location`The Shore\, Inc. Travel Agency` !== myLocation()) {
+    if ($location`The Shore, Inc. Travel Agency` !== myLocation()) {
       if (myServant() !== Servant.none) {
         buffMaintain$3($effect`Purr of the Feline`, 10, 1, 10);
       }
@@ -630,7 +630,7 @@ function auto_post_adventure(): boolean {
 
   if (monsterLevelAdjustment() > 140 && !inAftercore()) {
     buffMaintain$4($effect`Butt-Rock Hair`);
-    buffMaintain$4($effect`Go Get 'Em\, Tiger!`);
+    buffMaintain$4($effect`Go Get 'Em, Tiger!`);
   }
 
   if (in_theSource()) {

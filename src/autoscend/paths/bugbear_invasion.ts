@@ -484,7 +484,7 @@ function LX_bugbearBridge(): boolean {
   cliExecute("scripts/autoscend/auto_post_adv.js");
 
   if (myClass() === $class`Turtle Tamer`) {
-    autoEquip$1($item`Ouija Board\, Ouija Board`);
+    autoEquip$1($item`Ouija Board, Ouija Board`);
   }
 
   if (pullsRemaining() === -1 || pullsRemaining() > 0) {

@@ -175,7 +175,7 @@ export function L5_goblinKing(): boolean {
 
   if (myPrimestat() === $stat`Muscle`) {
     auto_buyUpTo(1, $item`Ben-Gal™ Balm`);
-    buffMaintain$4($effect`Go Get 'Em\, Tiger!`);
+    buffMaintain$4($effect`Go Get 'Em, Tiger!`);
   }
   auto_buyUpTo(1, $item`hair spray`);
   buffMaintain$4($effect`Butt-Rock Hair`);

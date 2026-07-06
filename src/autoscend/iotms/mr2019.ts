@@ -896,7 +896,7 @@ function auto_beachCombHeadEffectFromNum(num: number): Effect {
     case 4:
       return $effect`Does It Have a Skull In There??`;
     case 5:
-      return $effect`Oiled\, Slick`;
+      return $effect`Oiled, Slick`;
     case 6:
       return $effect`Lack of Body-Building`;
     case 7:

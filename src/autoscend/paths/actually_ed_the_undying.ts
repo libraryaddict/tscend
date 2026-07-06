@@ -689,8 +689,8 @@ function ed_nextUpgrade(): Skill {
     return $skill`Replacement Stomach`; // 30 Ka
   } else if (!haveSkill($skill`Elemental Wards`)) {
     return $skill`Elemental Wards`; // 10 Ka
-  } else if (!haveSkill($skill`Okay Seriously\, This is the Last Spleen`)) {
-    return $skill`Okay Seriously\, This is the Last Spleen`; // 30 Ka
+  } else if (!haveSkill($skill`Okay Seriously, This is the Last Spleen`)) {
+    return $skill`Okay Seriously, This is the Last Spleen`; // 30 Ka
   } else if (
     !possessEquipment($item`The Crown of Ed the Undying`) &&
     !haveSkill($skill`Tougher Skin`)
@@ -764,7 +764,7 @@ function ed_KaCost(upgrade: Skill): number {
     [$skill`Just One More Extra Spleen`, 25],
     [$skill`Replacement Stomach`, 30],
     [$skill`Replacement Liver`, 30],
-    [$skill`Okay Seriously\, This is the Last Spleen`, 30],
+    [$skill`Okay Seriously, This is the Last Spleen`, 30],
     [$skill`Even More Elemental Wards`, 30],
   ]);
   if ($_ed_KaCost_kaNeeded.has(upgrade)) {
@@ -831,7 +831,7 @@ export function ed_needShop(): boolean {
     );
     return true;
   } else if (
-    haveSkill($skill`Okay Seriously\, This is the Last Spleen`) &&
+    haveSkill($skill`Okay Seriously, This is the Last Spleen`) &&
     canEat_1 < 1
   ) {
     if (
@@ -900,7 +900,7 @@ function ed_shopping(): boolean {
       [$skill`Yet Another Extra Spleen`, 32],
       [$skill`Still Another Extra Spleen`, 33],
       [$skill`Just One More Extra Spleen`, 34],
-      [$skill`Okay Seriously\, This is the Last Spleen`, 35],
+      [$skill`Okay Seriously, This is the Last Spleen`, 35],
       [$skill`Upgraded Legs`, 36],
       [$skill`Upgraded Arms`, 37],
       [$skill`Upgraded Spine`, 38],
@@ -996,7 +996,7 @@ function ed_shopping(): boolean {
         coins -= requiredKa;
       }
     } else if (
-      haveSkill($skill`Okay Seriously\, This is the Last Spleen`) &&
+      haveSkill($skill`Okay Seriously, This is the Last Spleen`) &&
       canEat_1 < 1
     ) {
       while (
@@ -1270,7 +1270,7 @@ function L1_ed_islandFallback(): boolean {
 
   if (
     myLevel() >= 10 ||
-    haveSkill($skill`Okay Seriously\, This is the Last Spleen`)
+    haveSkill($skill`Okay Seriously, This is the Last Spleen`)
   ) {
     if (spleen_left() < 5 || myAdventures() > 10) {
       return false;

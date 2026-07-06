@@ -1223,9 +1223,7 @@ function canBanish$1(enemyphylum: Phylum, loc: Location): boolean {
 }
 
 function adjustForBanish(combat_string: string): boolean {
-  if (
-    combat_string === `skill${$skill`%fn\, Release the Patriotic Screech!`}`
-  ) {
+  if (combat_string === `skill${$skill`%fn, Release the Patriotic Screech!`}`) {
     return useFamiliar($familiar`Patriotic Eagle`);
   }
   if (combat_string === `skill${$skill`Mark Your Territory`}`) {
@@ -1723,7 +1721,7 @@ export function adjustForCopyIfPossible(target: Monster): boolean {
   if (copier === $skill`Blow the Purple Candle!`) {
     return autoEquip$1($item`Roman Candelabra`);
   }
-  if (copier === $skill`%fn\, fire a Red\, White and Blue Blast`) {
+  if (copier === $skill`%fn, fire a Red, White and Blue Blast`) {
     handleFamiliar$1($familiar`Patriotic Eagle`);
   }
   return false;

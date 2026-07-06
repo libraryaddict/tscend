@@ -642,7 +642,7 @@ function auto_pre_adventure(): boolean {
   if (isActuallyEd()) {
     // make sure we have enough MP to cast our most expensive spells
     // Wrath of Ra (yellow ray) is 40 MP, Curse of Stench (sniff) is 35 MP & Curse of Vacation (banish) is 30 MP.
-    if (place !== $location`The Shore\, Inc. Travel Agency`) {
+    if (place !== $location`The Shore, Inc. Travel Agency`) {
       acquireMP$2(40, 1000);
       // ensure we can cast at least Fist of the Mummy or Storm of the Scarab.
       // so we don't waste adventures when we can't actually kill a monster.
@@ -1267,7 +1267,7 @@ function auto_pre_adventure(): boolean {
     equipStatgainIncreasers$2();
     plumber_forceEquipTool();
   } else if (
-    place === $location`The Shore\, Inc. Travel Agency` &&
+    place === $location`The Shore, Inc. Travel Agency` &&
     itemAmount($item`forged identification documents`) === 0
   ) {
     equipStatgainIncreasers$1(myPrimestat(), true); //The Shore, Inc. Travel Agency choice 793 is configured to pick main stat or all stats

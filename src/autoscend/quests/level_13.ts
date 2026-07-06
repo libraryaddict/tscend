@@ -1991,7 +1991,7 @@ export function L13_towerNSFinal(): boolean {
   }
 
   if (myClass() === $class`Turtle Tamer`) {
-    autoEquip$1($item`Ouija Board\, Ouija Board`);
+    autoEquip$1($item`Ouija Board, Ouija Board`);
   }
 
   if (auto_can_equip($item`Oscus's garbage can lid`)) {

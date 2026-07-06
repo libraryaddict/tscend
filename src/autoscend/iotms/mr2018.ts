@@ -1166,7 +1166,7 @@ export function auto_latteDropName(l: Location): string {
       return "grobold";
     case $location`The Bat Hole Entrance`:
       return "guarna";
-    case $location`1st Floor\, Shiawase-Mitsuhama Building`:
+    case $location`1st Floor, Shiawase-Mitsuhama Building`:
       return "gunpowder";
     case $location`Hobopolis Town Square`:
       return "hobo";
@@ -1176,7 +1176,7 @@ export function auto_latteDropName(l: Location): string {
       return "kombucha";
     case $location`The Defiled Niche`:
       return "lihc";
-    case $location`The Arid\, Extra-Dry Desert`:
+    case $location`The Arid, Extra-Dry Desert`:
       return "lizard";
     case $location`Cobb's Knob Laboratory`:
       return "mega";
