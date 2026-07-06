@@ -1,105 +1,104 @@
-import { getProperty, haveSkill, Item, itemAmount, myDaycount, myPath, Path, setProperty, Skill, toBoolean, toInt, use, visitUrl } from "kolmafia";
+import {
+  getProperty,
+  haveSkill,
+  Item,
+  itemAmount,
+  myDaycount,
+  myPath,
+  Path,
+  setProperty,
+  Skill,
+  toBoolean,
+  toInt,
+  use,
+  visitUrl,
+} from "kolmafia";
 import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
 import { equipBaseline } from "../auto_equipment";
 import { ovenHandle } from "../auto_util";
 import { auto_sourceTerminalRequest } from "../iotms/mr2016";
 
 //Defined in autoscend/paths/nuclear_autumn.ash
-export function in_nuclear(): boolean
-{
-	return myPath() === Path.get("Nuclear Autumn");
+export function in_nuclear(): boolean {
+  return myPath() === Path.get("Nuclear Autumn");
 }
 
-export function nuclear_initializeSettings(): void
-{
-	if (in_nuclear())
-	{
-		setProperty("auto_getBeehive", true.toString());
-	}
+export function nuclear_initializeSettings(): void {
+  if (in_nuclear()) {
+    setProperty("auto_getBeehive", true.toString());
+  }
 }
 
+export function nuclear_initializeDay(day: number): void {
+  if (!in_nuclear()) {
+    return;
+  }
 
-export function nuclear_initializeDay(day: number): void
-{
-	if (!in_nuclear())
-	{
-		return;
-	}
+  if (
+    !toBoolean(getProperty("falloutShelterChronoUsed")) &&
+    toInt(getProperty("falloutShelterLevel")) >= 6
+  ) {
+    const temp: string = visitUrl(
+      "place.php?whichplace=falloutshelter&action=vault5",
+    );
+  }
 
-	if (!toBoolean(getProperty("falloutShelterChronoUsed")) && toInt(getProperty("falloutShelterLevel")) >= 6)
-	{
-		const temp: string = visitUrl("place.php?whichplace=falloutshelter&action=vault5");
-	}
+  if (
+    !toBoolean(getProperty("falloutShelterCoolingTankUsed")) &&
+    toInt(getProperty("falloutShelterLevel")) >= 8
+  ) {
+  }
 
-	if (!toBoolean(getProperty("falloutShelterCoolingTankUsed")) && toInt(getProperty("falloutShelterLevel")) >= 8)
-	{}
+  if (myDaycount() % 2 === 1) {
+    auto_sourceTerminalRequest("enquiry stats.enq");
+  } else {
+    auto_sourceTerminalRequest("enquiry familiar.enq");
+  }
 
-	if (myDaycount() % 2 === 1)
-	{
-		auto_sourceTerminalRequest("enquiry stats.enq");
-	}
-	else {
-		auto_sourceTerminalRequest("enquiry familiar.enq");
-	}
+  if (day === 2) {
+    equipBaseline();
+    ovenHandle();
 
-	if (day === 2)
-	{
-		equipBaseline();
-		ovenHandle();
+    if (toInt(getProperty("auto_day_init")) < 2) {
+      if (itemAmount(Item.get("gym membership card")) > 0) {
+        use(1, Item.get("gym membership card"));
+      }
 
-		if (toInt(getProperty("auto_day_init")) < 2)
-		{
-			if (itemAmount(Item.get("gym membership card")) > 0)
-			{
-				use(1, Item.get("gym membership card"));
-			}
-
-			if (itemAmount(Item.get("seal tooth")) === 0)
-			{
-				acquireHermitItem(Item.get("seal tooth"));
-			}
-			while (acquireHermitItem(Item.get("11-leaf clover"))) {}
-			pullXWhenHaveY(Item.get("Hand in Glove"), 1, 0);
-			pullXWhenHaveY(Item.get("blackberry galoshes"), 1, 0);
-		}
-	}
-	else if (day === 3)
-	{
-		if (toInt(getProperty("auto_day_init")) < 3)
-		{
-			while (acquireHermitItem(Item.get("11-leaf clover"))) {}
-			setProperty("auto_day_init", (3).toString());
-		}
-	}
-	else if (day === 4)
-	{
-		if (toInt(getProperty("auto_day_init")) < 4)
-		{
-			while (acquireHermitItem(Item.get("11-leaf clover"))) {}
-			setProperty("auto_day_init", (4).toString());
-		}
-	}
+      if (itemAmount(Item.get("seal tooth")) === 0) {
+        acquireHermitItem(Item.get("seal tooth"));
+      }
+      while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+      pullXWhenHaveY(Item.get("Hand in Glove"), 1, 0);
+      pullXWhenHaveY(Item.get("blackberry galoshes"), 1, 0);
+    }
+  } else if (day === 3) {
+    if (toInt(getProperty("auto_day_init")) < 3) {
+      while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+      setProperty("auto_day_init", (3).toString());
+    }
+  } else if (day === 4) {
+    if (toInt(getProperty("auto_day_init")) < 4) {
+      while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+      setProperty("auto_day_init", (4).toString());
+    }
+  }
 }
 
-function nuclear_buySkills(): boolean
-{
-	if (!in_nuclear())
-	{
-		return false;
-	}
+function nuclear_buySkills(): boolean {
+  if (!in_nuclear()) {
+    return false;
+  }
 
-	if (itemAmount(Item.get("rad")) < 30)
-	{
-		return false;
-	}
+  if (itemAmount(Item.get("rad")) < 30) {
+    return false;
+  }
 
-	if (haveSkill(Skill.get("Internal Soda Machine")))
-	{
-		return false;
-	}
+  if (haveSkill(Skill.get("Internal Soda Machine"))) {
+    return false;
+  }
 
-	let toBuy: number = 0;
-/*
+  let toBuy: number = 0;
+  /*
 22012 Boiling Tear Ducts  doublewater.gif 5   10  0				30		Hot Damage
 22013 Throat Refrigerant  snowflake.gif   5   10  0				30		Cold Damage
 22014 Skunk Glands    stench.gif  5   10  0						30		Stench Damage
@@ -128,206 +127,158 @@ function nuclear_buySkills(): boolean
 22036 Extremely Punchable Face wink.gif 3 30 10 				90		Noncombat (30): 10 adv pf Punchable Face: +30 ML
 Missing: 858, 866
 */
-	if (!haveSkill(Skill.get("Extra Gall Bladder")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 60)
-		{
-			toBuy = 877;
-		}
-	}
-	else if (!haveSkill(Skill.get("Extra Kidney")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 60)
-		{
-			toBuy = 878;
-		}
-	}
-	else if (!haveSkill(Skill.get("Extra Muscles")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 90)
-		{
-			toBuy = 861;
-		}
-	}
-	else if (!haveSkill(Skill.get("Magnetic Ears")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
-	{
-		if (itemAmount(Item.get("rad")) >= 90)
-		{
-			toBuy = 873;
-		}
-	}
-	else if (!haveSkill(Skill.get("Hypno-Eyes")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 90)
-		{
-			toBuy = 863;
-		}
-	}
-	else if (!haveSkill(Skill.get("Metallic Skin")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 90)
-		{
-			toBuy = 859;
-		}
-	}
-	else if (!haveSkill(Skill.get("Adipose Polymers")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 90)
-		{
-			toBuy = 860;
-		}
-	}
-	else if (!haveSkill(Skill.get("Sucker Fingers")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
-	{
-		if (itemAmount(Item.get("rad")) >= 120)
-		{
-			toBuy = 865;
-		}
-	}
-	else if (!haveSkill(Skill.get("Squid Glands")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
-	{
-		if (itemAmount(Item.get("rad")) >= 120)
-		{
-			toBuy = 875;
-		}
-	}
-	else if (!haveSkill(Skill.get("Steroid Bladder")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 60)
-		{
-			toBuy = 869;
-		}
-	}
-	else if (!haveSkill(Skill.get("Self-Combing Hair")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 60)
-		{
-			toBuy = 871;
-		}
-	}
-	else if (!haveSkill(Skill.get("Flappy Ears")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 60)
-		{
-			toBuy = 867;
-		}
-	}
-	else if (!haveSkill(Skill.get("Magic Sweat")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 60)
-		{
-			toBuy = 868;
-		}
-	}
-	else if (!haveSkill(Skill.get("Mind Bullets")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 60)
-		{
-			toBuy = 857;
-		}
-	}
-	else if (!haveSkill(Skill.get("Extra Brain")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 90)
-		{
-			toBuy = 862;
-		}
-	}
-	else if (!haveSkill(Skill.get("Intracranial Eye")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 60)
-		{
-			toBuy = 870;
-		}
-	}
-	else if (!haveSkill(Skill.get("Boiling Tear Ducts")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 30)
-		{
-			toBuy = 852;
-		}
-	}
-	else if (!haveSkill(Skill.get("Throat Refrigerant")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 30)
-		{
-			toBuy = 853;
-		}
-	}
-	else if (!haveSkill(Skill.get("Extremely Punchable Face")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
-	{
-		if (itemAmount(Item.get("rad")) >= 90)
-		{
-			toBuy = 876;
-		}
-	}
-	else if (!haveSkill(Skill.get("Firefly Abdomen")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
-	{
-		if (itemAmount(Item.get("rad")) >= 90)
-		{
-			toBuy = 874;
-		}
-	}
-	else if (!haveSkill(Skill.get("Backwards Knees")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
-	{
-		if (itemAmount(Item.get("rad")) >= 120)
-		{
-			toBuy = 864;
-		}
-	}
-	else if (!haveSkill(Skill.get("Bone Springs")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
-	{
-		if (itemAmount(Item.get("rad")) >= 90)
-		{
-			toBuy = 872;
-		}
-	}
-	else if (!haveSkill(Skill.get("Skunk Glands")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 30)
-		{
-			toBuy = 854;
-		}
-	}
-	else if (!haveSkill(Skill.get("Translucent Skin")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 30)
-		{
-			toBuy = 855;
-		}
-	}
-	else if (!haveSkill(Skill.get("Projectile Salivary Glands")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 30)
-		{
-			toBuy = 856;
-		}
-	}
-	else if (!haveSkill(Skill.get("Internal Soda Machine")) && toBuy === 0)
-	{
-		if (itemAmount(Item.get("rad")) >= 30)
-		{
-			toBuy = 879;
-		}
-	}
+  if (!haveSkill(Skill.get("Extra Gall Bladder")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 60) {
+      toBuy = 877;
+    }
+  } else if (!haveSkill(Skill.get("Extra Kidney")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 60) {
+      toBuy = 878;
+    }
+  } else if (!haveSkill(Skill.get("Extra Muscles")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 90) {
+      toBuy = 861;
+    }
+  } else if (
+    !haveSkill(Skill.get("Magnetic Ears")) &&
+    toBuy === 0 &&
+    toInt(getProperty("falloutShelterLevel")) >= 6
+  ) {
+    if (itemAmount(Item.get("rad")) >= 90) {
+      toBuy = 873;
+    }
+  } else if (!haveSkill(Skill.get("Hypno-Eyes")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 90) {
+      toBuy = 863;
+    }
+  } else if (!haveSkill(Skill.get("Metallic Skin")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 90) {
+      toBuy = 859;
+    }
+  } else if (!haveSkill(Skill.get("Adipose Polymers")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 90) {
+      toBuy = 860;
+    }
+  } else if (
+    !haveSkill(Skill.get("Sucker Fingers")) &&
+    toBuy === 0 &&
+    toInt(getProperty("falloutShelterLevel")) >= 6
+  ) {
+    if (itemAmount(Item.get("rad")) >= 120) {
+      toBuy = 865;
+    }
+  } else if (
+    !haveSkill(Skill.get("Squid Glands")) &&
+    toBuy === 0 &&
+    toInt(getProperty("falloutShelterLevel")) >= 6
+  ) {
+    if (itemAmount(Item.get("rad")) >= 120) {
+      toBuy = 875;
+    }
+  } else if (!haveSkill(Skill.get("Steroid Bladder")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 60) {
+      toBuy = 869;
+    }
+  } else if (!haveSkill(Skill.get("Self-Combing Hair")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 60) {
+      toBuy = 871;
+    }
+  } else if (!haveSkill(Skill.get("Flappy Ears")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 60) {
+      toBuy = 867;
+    }
+  } else if (!haveSkill(Skill.get("Magic Sweat")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 60) {
+      toBuy = 868;
+    }
+  } else if (!haveSkill(Skill.get("Mind Bullets")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 60) {
+      toBuy = 857;
+    }
+  } else if (!haveSkill(Skill.get("Extra Brain")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 90) {
+      toBuy = 862;
+    }
+  } else if (!haveSkill(Skill.get("Intracranial Eye")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 60) {
+      toBuy = 870;
+    }
+  } else if (!haveSkill(Skill.get("Boiling Tear Ducts")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 30) {
+      toBuy = 852;
+    }
+  } else if (!haveSkill(Skill.get("Throat Refrigerant")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 30) {
+      toBuy = 853;
+    }
+  } else if (
+    !haveSkill(Skill.get("Extremely Punchable Face")) &&
+    toBuy === 0 &&
+    toInt(getProperty("falloutShelterLevel")) >= 6
+  ) {
+    if (itemAmount(Item.get("rad")) >= 90) {
+      toBuy = 876;
+    }
+  } else if (
+    !haveSkill(Skill.get("Firefly Abdomen")) &&
+    toBuy === 0 &&
+    toInt(getProperty("falloutShelterLevel")) >= 6
+  ) {
+    if (itemAmount(Item.get("rad")) >= 90) {
+      toBuy = 874;
+    }
+  } else if (
+    !haveSkill(Skill.get("Backwards Knees")) &&
+    toBuy === 0 &&
+    toInt(getProperty("falloutShelterLevel")) >= 6
+  ) {
+    if (itemAmount(Item.get("rad")) >= 120) {
+      toBuy = 864;
+    }
+  } else if (
+    !haveSkill(Skill.get("Bone Springs")) &&
+    toBuy === 0 &&
+    toInt(getProperty("falloutShelterLevel")) >= 6
+  ) {
+    if (itemAmount(Item.get("rad")) >= 90) {
+      toBuy = 872;
+    }
+  } else if (!haveSkill(Skill.get("Skunk Glands")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 30) {
+      toBuy = 854;
+    }
+  } else if (!haveSkill(Skill.get("Translucent Skin")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 30) {
+      toBuy = 855;
+    }
+  } else if (
+    !haveSkill(Skill.get("Projectile Salivary Glands")) &&
+    toBuy === 0
+  ) {
+    if (itemAmount(Item.get("rad")) >= 30) {
+      toBuy = 856;
+    }
+  } else if (!haveSkill(Skill.get("Internal Soda Machine")) && toBuy === 0) {
+    if (itemAmount(Item.get("rad")) >= 30) {
+      toBuy = 879;
+    }
+  }
 
-	if (toBuy !== 0)
-	{
-		let page: string = visitUrl("shop.php?whichshop=mutate");
-		page = visitUrl(`shop.php?whichshop=mutate&action=buyitem&quantity=1&pwd=&whichrow=${toBuy}`);
-	}
-	return true;
+  if (toBuy !== 0) {
+    let page: string = visitUrl("shop.php?whichshop=mutate");
+    page = visitUrl(
+      `shop.php?whichshop=mutate&action=buyitem&quantity=1&pwd=&whichrow=${toBuy}`,
+    );
+  }
+  return true;
 }
 
+export function LM_nuclear(): boolean {
+  if (!in_nuclear()) {
+    return false;
+  }
 
-export function LM_nuclear(): boolean
-{
-	if (!in_nuclear())
-	{
-		return false;
-	}
+  nuclear_buySkills();
 
-	nuclear_buySkills();
-
-	return false;
+  return false;
 }
