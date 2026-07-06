@@ -37,7 +37,7 @@ export function LX_quantumTerrarium(): boolean
 	switch (myFamiliar())
 	{
 		case Familiar.get("Machine Elf"):
-			
+
 		// lets order this by familiar ID in ascending order
 			// use free fights for experience and abstractions
 if (toInt(getProperty("_machineTunnelsAdv")) < 5)
@@ -46,7 +46,7 @@ if (toInt(getProperty("_machineTunnelsAdv")) < 5)
 			}
 			break;
 		case Familiar.get("God Lobster"):
-			
+
 			// use free fights for experience
 if (auto_godLobsterFightsRemaining() > 0)
 			{

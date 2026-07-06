@@ -249,7 +249,7 @@ function LX_kolhs_school(): boolean
 export function kolhsChoiceHandler(choice: number): void
 {
 	auto_log_debug$1("Running kolhsChoiceHandler");
-	{ 
+	{
 		// Delirium in the Cafeterium (KOLHS 22nd adventure every day)
 				// get XP
 				// get XP

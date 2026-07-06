@@ -49,7 +49,7 @@ export function auto_combat_nanorhinoBuff(round_1: number, enemy: Monster, text:
 			}
 			break;
 		case Stat.get("Mysticality"): //get [Nanobrainy]: Mysticality +50%, Spell Damage +20, Regenerate 2-4 MP per Adventure
-			
+
 			//TODO
 break;
 		case Stat.get("Moxie"): //get [Nanoballsy]: Moxie +25%, +20% Combat Initiative, +30% Pickpocket Chance

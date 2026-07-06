@@ -38,7 +38,7 @@ function auto_run_choice(choice: number, page: string): boolean
 	auto_log_debug$1("Running auto_choice_adv.js");
 	const options: Map<number, string> = new Map(Object.entries(availableChoiceOptions()).map(([_k, _v]) => [toInt(_k), _v]));
 
-	{ 
+	{
 		// Yeti Nother Hippy (The eXtreme Slope)
 		// Saint Beernard (The eXtreme Slope)
 		// Generic Teen Comedy Snowboarding Adventure (The eXtreme Slope)

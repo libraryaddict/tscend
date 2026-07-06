@@ -184,7 +184,7 @@ export function auto_combatDefaultStage5(round_1: number, enemy: Monster, text: 
 		return useSkill$2(Skill.get("Blow the Red Candle!"));
 	}
 	//general killing code
-	{ 
+	{
 		//let mortar deal the killing blow so we get more MP from the exploding curse of weaksauce
 
 		let mortar_round: number = 0;

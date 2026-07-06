@@ -1097,16 +1097,16 @@ export function auto_wantToBCZ(sk: Skill): boolean
 			case in_amw() && casts >= 5:
 				return false;
 			case st === myPrimestat():
-				
+
 				//Don't want to use so many substats we go down too many levels or we have cast more than we really need to/should
 				//Don't go beneath our current level or level 13 if we cast the skill
 return myBasestat(stat_to_substat(st)) - level_to_min_substat(level) > auto_bczCastMath(casts);
 			case myBasestat(st) < 70 && casts < 3:
-				 
+
 				//For an offstat that is not yet to 70, allow if the cost is less than 1 full stat in cost. don't cast more than 3 times per day
 return myBasestat(stat_to_substat(st)) - myBasestat(st) ** 2 > auto_bczCastMath(casts);
 			default:
-				
+
 				//don't go below 70 of the other stats
 return myBasestat(st) ** 2 - 70 ** 2 > auto_bczCastMath(casts);
 		}
@@ -1116,7 +1116,7 @@ return myBasestat(st) ** 2 - 70 ** 2 > auto_bczCastMath(casts);
 	switch (sk)
 	{
 		case Skill.get("BCZ: Blood Geyser"):
-			
+
 		//Muscle Casts
 return statChange(Stat.get("Muscle"), bloodGeyserCasts) && bloodGeyserCasts < 6;
 		case Skill.get("BCZ: Blood Bath"):
@@ -1127,7 +1127,7 @@ return statChange(Stat.get("Muscle"), bloodGeyserCasts) && bloodGeyserCasts < 6;
 			}
 			return statChange(Stat.get("Muscle"), bloodThinnerCasts) && bloodThinnerCasts === 0;
 		case Skill.get("BCZ: Dial it up to 11"):
-			
+
 		//Mysticality Casts
 return statChange(Stat.get("Mysticality"), dialItUpCasts) && dialItUpCasts < 3;
 		case Skill.get("BCZ: Refracted Gaze"):
@@ -1138,7 +1138,7 @@ return statChange(Stat.get("Mysticality"), dialItUpCasts) && dialItUpCasts < 3;
 			}
 			return statChange(Stat.get("Mysticality"), spinalTapasCasts) && spinalTapasCasts < 3;
 		case Skill.get("BCZ: Sweat Bullets"):
-			
+
 		//Moxie Casts
 return statChange(Stat.get("Moxie"), sweatBulletsCasts) && sweatBulletsCasts < 6;
 		case Skill.get("BCZ: Sweat Equity"):

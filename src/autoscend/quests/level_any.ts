@@ -858,7 +858,7 @@ export function LX_getDesiredWorkshed(): Item {
 		case "dnalab":
 			return Item.get("Little Geneticist DNA-Splicing Lab");
 		case "snow machine":
-			
+
 		//passive worksheds
 return Item.get("snow machine"); //but you need a garden
 
@@ -881,7 +881,7 @@ return Item.get("snow machine"); //but you need a garden
 
 		case "auto":
 		default:
-			
+
 			// auto_workshed is invalid or none/false/whatever to say don't do this
 return Item.none;
 	}

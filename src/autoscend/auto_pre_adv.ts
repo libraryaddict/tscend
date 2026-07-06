@@ -1007,7 +1007,7 @@ function auto_pre_adventure(): boolean
 	switch (myClass())
 	{
 		case Class.get("Disco Bandit"):
-			
+
 		// expand this for other cases where we need more MP for combat.
 		// ideally we could ask the combat function to tell us how much MP it will need for an example encounter in the zone we are going to.
 if (Location.get(["Shadow Rift (The Ancient Buried Pyramid)", "Shadow Rift (The Hidden City)", "Shadow Rift (The Misspelled Cemetary)"]).includes(place))

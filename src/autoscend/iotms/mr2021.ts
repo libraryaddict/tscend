@@ -368,7 +368,7 @@ export function auto_backupTarget(): boolean
 				{ return true; }
 			break;
 		case Monster.get("Eldritch Tentacle"):
-			
+
 			//backup tentacles if lots of backups remaining or use all remaining charges if at end of day
 if (auto_backupUsesLeft() > 6)
 				{ return true; }

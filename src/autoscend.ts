@@ -2199,12 +2199,12 @@ export function main(...input: string[]): void
 		switch ((input[0] ??= ""))
 		{
 			case "sim":
-				
+
 				// display useful items/skills/perms/etc and if the user has them
 printSim();
 				return;
 			case "turbo":
-				
+
 			// gotta go faaaaaast. Doing a double confirm because of the nature of this parameter.
 if (userConfirm("This will get expensive for you. This should only be used if you are trying to go for a 1-day and don't care about expenses. Do you really want to do this? Will default to 'No' in 15 seconds.", 15000, false))
 				{

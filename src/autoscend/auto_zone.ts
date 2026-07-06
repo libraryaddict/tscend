@@ -81,7 +81,7 @@ export function zone_needItem(loc: Location): generic_t
 	// (so L13 quest stuff first then L12 then L11 and so on).
 	const retval: generic_t = new generic_t();
 	let value: number = 0.0;
-	{ 
+	{
 		// bonus points cap at +400% item. Equivalent to a 20% item drop
 		//already in the other war outfit means only there to start the war
 		//already in the other war outfit means only there to start the war
@@ -256,7 +256,7 @@ export function zone_needItem(loc: Location): generic_t
 			value = 10.0;
 		}
 	case Location.get("The Defiled Nook"):
-		
+
 		// Handle for a gravy boat?
 if (toInt(getProperty("cyrptNookEvilness")) > 14)
 		{
@@ -362,7 +362,7 @@ if (toInt(getProperty("cyrptNookEvilness")) > 14)
 	case Location.get("The Secret Government Laboratory"):
 		break;
 	case Location.get("Waste Processing"):
-		
+
 	// Bugbear Invasion Locations
 if (!possessEquipment(Item.get("bugbear communicator badge")))
 		{
@@ -376,7 +376,7 @@ if (!possessEquipment(Item.get("bugbear communicator badge")))
 		retval._float = 50.0;
 		break;
 	case Location.get("Fight in the Dirt"):
-		
+
 	// End Bugbear Invasion Locations
 	// A Shrunken Adventurer Am I (Small) Locations
 value = 50.0;
@@ -390,13 +390,13 @@ value = 50.0;
 	case Location.get("Shadow Rift (The Ancient Buried Pyramid)"):
 	case Location.get("Shadow Rift (The Hidden City)"):
 	case Location.get("Shadow Rift (The Misspelled Cemetary)"):
-		
+
 	// End A Shrunken Adventurer Am I (Small) Locations
 	// Shadow Rifts via cursed payphone or AoSOL path
 value = 10.0;
 		break;
 	default:
-		
+
 	// End Shadow Rifts
 retval._error = true;
 		break;
@@ -462,7 +462,7 @@ export function zone_needItemFood(loc: Location): generic_t
 	// these matching a location case in zone_needItem will be called if the general item bonus could not be reached
 	const retval: generic_t = new generic_t();
 	let value: number = 0.0;
-	{ 
+	{
 		let getMilk: boolean = false;
 		let milksPerMilk: number = 0;
 		let milkUsed: number = 0;
@@ -553,7 +553,7 @@ export function zone_combatMod(loc: Location): generic_t
 		value = -80;
 		break;
 	case Location.get("Sonofa Beach"):
-		
+
 		//when wanderer replacing strategy is about to be used, combat modifier is useless. these are the replaced wanderers
 if (auto_voteMonster())
 		{ for (const sl of Slot.get(["acc3", "acc2", "acc1"]))
@@ -567,7 +567,7 @@ if (auto_voteMonster())
 		{ value = 0;
 			break;
 		}
-		
+
 		//otherwise if no wanderer replace
 value = 90;
 		break;
@@ -678,7 +678,7 @@ value = 90;
 		value = -85;
 		break;
 	case Location.get("The Typical Tavern Cellar"):
-		
+
 		//We could cut it off early if the Rat Faucet is the last one
 		//And marginally if we know the 3rd/6th square are forced events.
 		//actual desired value for combat or non combat is decided by level_03.ash based on elemental damage bonus
@@ -762,7 +762,7 @@ break;
 		value = -85;
 		break;
 	case Location.get("Sonar"):
-		
+
 	// Bugbear Invasion Locations
 value = -70;
 		break;
@@ -773,7 +773,7 @@ value = -70;
 		}
 		break;
 	default:
-		
+
 	// End Bugbear Invasion Locations
 retval._error = true;
 		break;
@@ -806,7 +806,7 @@ export function zone_delay(loc: Location): generic_t
 	switch (loc)
 	{
 	case Location.get("The Oasis"):
-		
+
 		// Superlikely adventures take priority over all wanderers now.
 if (toInt(getProperty("desertExploration")) < 100 && haveEffect(Effect.get("Ultrahydrated")) > 0)
 		{
@@ -1629,7 +1629,7 @@ export function zone_available(loc: Location): boolean
 		}
 		break;
 	case Location.get("The Spooky Gravy Burrow"):
-		
+
 		//May need to be corrected
 if (internalQuestStatus("questM03Bugbear") >= 99)
 		{
@@ -1655,7 +1655,7 @@ if (internalQuestStatus("questM03Bugbear") >= 99)
 		}
 		break;
 	case Location.get("Camp Logging Camp"):
-		
+
 	// We go here to get the Logging Hatchet
 if (!in_koe() && canadiaAvailable())
 		{
@@ -2109,7 +2109,7 @@ export function is_ghost_in_zone(loc: Location): boolean
 	{
 		return false; //we are grabbing a Lucky! so we will not encounter a ghost unless it is a wandering monster
 	}
-	{ 
+	{
 			//forced noncombat of lighting the peak
 		//internal tracking by autoscend
 			//our next visit to the peak will be The Horror NC adventure

@@ -103,49 +103,49 @@ function robot_top(choice: number): boolean
 	switch (choice)
 	{
 		case 1:
-			
+
 			//Deal 20 damage + 10% of your Mox
 name = "[Pea Shooter]";
 			scrap_cost = 5;
 			break;
 		case 2:
-			
+
 			//Allows the use of a familiar
 name = "[Bird Cage]";
 			scrap_cost = 5;
 			break;
 		case 3:
-			
+
 			//Gain 1 energy after each fight
 name = "[Solar Panel]";
 			scrap_cost = 5;
 			break;
 		case 4:
-			
+
 			//Allows you to equip a hat
 name = "[Mannequin Head]";
 			scrap_cost = 15;
 			break;
 		case 5:
-			
+
 			//+50% Meat Drop
 name = "[Meat Radar]";
 			scrap_cost = 30;
 			break;
 		case 6:
-			
+
 			//Spend 1 Scrap to deal 100% of your Moxie in damage
 name = "[Junk Cannon]";
 			scrap_cost = 30;
 			break;
 		case 7:
-			
+
 			//Spend 1 Energy to deal 100% of your Moxie in damage
 name = "[Tesla Blaster]";
 			scrap_cost = 30;
 			break;
 		case 8:
-			
+
 			//Spend 1 energy to deal 100% of your Muscle in Cold damage
 name = "[Snow Blower]";
 			scrap_cost = 40;
@@ -188,49 +188,49 @@ function robot_left(choice: number): boolean
 	switch (choice)
 	{
 		case 1:
-			
+
 			//Deal 20 damage + 10% of your Mus
 name = "[Pound-O-Tron]";
 			scrap_cost = 5;
 			break;
 		case 2:
-			
+
 			//+3 Resistance to All Elements
 name = "[Reflective Shard]";
 			scrap_cost = 5;
 			break;
 		case 3:
-			
+
 			//+30% Item Drop
 name = "[Metal Detector]";
 			scrap_cost = 5;
 			break;
 		case 4:
-			
+
 			//Allows you to equip a weapon
 name = "[Vice Grips]";
 			scrap_cost = 15;
 			break;
 		case 5:
-			
+
 			//Spend 1 Scrap to deal 100% of your Mysticality in damage
 name = "[Sniper Rifle]";
 			scrap_cost = 30;
 			break;
 		case 6:
-			
+
 			//Spend 1 Scrap to deal 100% of your Muscle in damage
 name = "[Junk Mace]";
 			scrap_cost = 30;
 			break;
 		case 7:
-			
+
 			//-15% Combat Rate
 name = "[Camoflage Curtain]";
 			scrap_cost = 30;
 			break;
 		case 8:
-			
+
 			//Spend 1 energy to deal 100% of your Moxie in Sleaze damage
 name = "[Grease Gun]";
 			scrap_cost = 40;
@@ -273,49 +273,49 @@ function robot_right(choice: number): boolean
 	switch (choice)
 	{
 		case 1:
-			
+
 			//+30 Maximum HP
 name = "[Slab-O-Matic]";
 			scrap_cost = 5;
 			break;
 		case 2:
-			
+
 			//+10 DR, +50 DA
 name = "[Junk Shield]";
 			scrap_cost = 5;
 			break;
 		case 3:
-			
+
 			//+1 Scrap after each combat
 name = "[Horseshoe Magnet]";
 			scrap_cost = 5;
 			break;
 		case 4:
-			
+
 			//Allows you to equip an offhand item
 name = "[Omni-Claw]";
 			scrap_cost = 15;
 			break;
 		case 5:
-			
+
 			//Spend 1 energy to deal 100% of your Myst in damage
 name = "[Mammal Prod]";
 			scrap_cost = 30;
 			break;
 		case 6:
-			
+
 			//Spend 1 energy to deal 100% of your Mus in damage
 name = "[Solenoid Piston]";
 			scrap_cost = 30;
 			break;
 		case 7:
-			
+
 			//+30 ML
 name = "[Blaring Speaker]";
 			scrap_cost = 30;
 			break;
 		case 8:
-			
+
 			//Spend 1 energy to deal 100% of your Myst in hot damage
 name = "[Surplus Flamethrower]";
 			scrap_cost = 40;
@@ -357,43 +357,43 @@ function robot_bottom(choice: number): boolean
 	switch (choice)
 	{
 		case 1:
-			
+
 			//+10 Maximum HP
 name = "[Bald Tires]";
 			scrap_cost = 5;
 			break;
 		case 2:
-			
+
 			//Deal 20 Hot Damage + 10% of your Myst
 name = "[Rocket Crotch]";
 			scrap_cost = 5;
 			break;
 		case 3:
-			
+
 			//+30% Combat Initiative
 name = "[Motorcycle Wheel]";
 			scrap_cost = 5;
 			break;
 		case 4:
-			
+
 			//Allows you to equip pants
 name = "[Robo-Legs]";
 			scrap_cost = 15;
 			break;
 		case 5:
-			
+
 			//+30% Item Drop
 name = "[Magno-Lev]";
 			scrap_cost = 30;
 			break;
 		case 6:
-			
+
 			//+50 Maximum HP, +10 DR
 name = "[Tank Treads]";
 			scrap_cost = 30;
 			break;
 		case 7:
-			
+
 			//Gain 1 Scrap after each fight
 name = "[Snowplow]";
 			scrap_cost = 30;
@@ -433,84 +433,84 @@ export function robot_cpu(choice: number, want_buy: boolean): boolean
 	switch (choice)
 	{
 		case 1:
-			
+
 			//+15 Buffed Muscle
 name = "[Leverage Coprocessing]";
 			upgrade = "robot_muscle";
 			energy_cost = 30;
 			break;
 		case 2:
-			
+
 			//+15 Buffed Mysticality
 name = "[Dynamic Arcane Flux Modeling]";
 			upgrade = "robot_mysticality";
 			energy_cost = 30;
 			break;
 		case 3:
-			
+
 			//+15 Buffed Moxie
 name = "[Upgraded Fashion Sensor]";
 			upgrade = "robot_moxie";
 			energy_cost = 30;
 			break;
 		case 4:
-			
+
 			//+20% Meat Drops
 name = "[Financial Neural Net]";
 			upgrade = "robot_meat";
 			energy_cost = 30;
 			break;
 		case 5:
-			
+
 			//+30 Maximum HP
 name = "[Spatial Compression Functions]";
 			upgrade = "robot_hp1";
 			energy_cost = 40;
 			break;
 		case 6:
-			
+
 			//Regenerate +10 HP per Adventure
 name = "[Self-Repair Routines]";
 			upgrade = "robot_regen";
 			energy_cost = 40;
 			break;
 		case 7:
-			
+
 			//+2 Resistance to all elements
 name = "[Weather Control Algorithms]";
 			upgrade = "robot_resist";
 			energy_cost = 40;
 			break;
 		case 8:
-			
+
 			//+20% Item Drops
 name = "[Improved Optical Processing]";
 			upgrade = "robot_items";
 			energy_cost = 40;
 			break;
 		case 9:
-			
+
 			//Allows you to equip shirts
 name = "[Topology Grid]";
 			upgrade = "robot_shirt";
 			energy_cost = 50;
 			break;
 		case 10:
-			
+
 			//Gain 1 Energy per fight
 name = "[Overclocking]";
 			upgrade = "robot_energy";
 			energy_cost = 50;
 			break;
 		case 11:
-			
+
 			//Allows use of potions
 name = "[Biomass Processing Function]";
 			upgrade = "robot_potions";
 			energy_cost = 50;
 			break;
 		case 12:
-			
+
 			//+30 Maximum HP
 name = "[Holographic Deflector Projection]";
 			upgrade = "robot_hp2";
@@ -1158,7 +1158,7 @@ export function robot_choice_adv(choice: number, page: string): boolean
 	}
 	auto_log_debug$1("Running robot_choice_adv");
 
-	{ 
+	{
 		// One Simple Nightstand (The Haunted Bedroom)
 
 			let robot_need_mus: boolean = false;
@@ -1227,7 +1227,7 @@ export function robot_choice_adv(choice: number, page: string): boolean
 			}
 			break;
 		default:
-			
+
 			//none of the overrides was used. so we return false
 return false;
 	} }

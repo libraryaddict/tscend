@@ -526,7 +526,7 @@ function auto_spoonGetDesiredSign(): string
 		case "packrat":
 			return spoonsign;
 		case "clover":
-			
+
 		// a couple extra alternate labels
 return "marmot";
 		case "famweight":
@@ -540,7 +540,7 @@ return "marmot";
 		case "booze":
 			return "blender";
 		default:
-			
+
 			// spoonsign is invalid or none/false/whatever to say don't do this
 return "";
 	}
@@ -1156,7 +1156,7 @@ export function auto_snapperPreAdventure(loc: Location): void
 
 				break;
 			case Location.get("Twin Peak"):
-				
+
 				// this is actually a dude heavy zone *but* we want to fight the topiary monsters for rusty hedge trimmers.
 desiredPhylum = (Phylum.get("beast")).toString();
 				break;

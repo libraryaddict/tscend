@@ -793,7 +793,7 @@ export function auto_habitatTarget(target: Monster): boolean
 		// already habitating this monster
 		return false;
 	}
-	{ 
+	{
 			// only worth it if we need all 5.
 		 	// only worth it if we need 30 or more evilness reduced.
 		 	// only worth it if we need 18 or more evilness reduced.
@@ -812,14 +812,14 @@ export function auto_habitatTarget(target: Monster): boolean
 		case Monster.get("lobsterfrogman"):		 	sonofa_complete = getProperty("sidequestLighthouseCompleted") === "hippy" || getProperty("sidequestLighthouseCompleted") === "fratboy";
 			return !sonofa_complete && itemAmount(Item.get("barrel of gunpowder")) < 4;
 		case Monster.get("Eldritch Tentacle"):
-			
+
 			// Max tentacles fought being free is 11, so don't habitat if we've fought more than 6
 			// This variable increments at the end of combat, so we need 5 here.
 if (toInt(getProperty("_eldritchTentaclesFoughtToday")) > 5)
 			{
 				return false;
 			}
-			
+
 			// don't habitat free fights in avant guard
 return !in_avantGuard() && (toMonster(getProperty("auto_habitatMonster")) === target || toMonster(getProperty("_monsterHabitatsMonster")) === target && toInt(getProperty("_monsterHabitatsFightsLeft")) === 0);
 		default:
@@ -1015,11 +1015,11 @@ export function auto_RWBBlastTarget(target: Monster): boolean
 	switch (target)
 	{
 		case Monster.get("modern zmobie"):
-			
+
 			// only worth it if we need 15 or more evilness reduced
 return toInt(getProperty("cyrptAlcoveEvilness")) - 3 * (5 + cyrptEvilBonus$1()) > 13;
 		case Monster.get("dirty old lihc"):
-			
+
 			// only worth it if we need 9 or more evilness reduced.
 return toInt(getProperty("cyrptNicheEvilness")) - 3 * (3 + cyrptEvilBonus$1()) > 13;
 		default:

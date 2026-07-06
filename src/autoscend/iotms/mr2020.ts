@@ -361,7 +361,7 @@ export function auto_latheAppropriateWeapon(): boolean
 	switch (myClass())
 	{
 		case Class.get("Plumber"):
-			
+
 		// autoscend likes Plumber to go for moxie, so let's make sure it
 		// does even if another stat is ahead at the start of the day.
 toLathe = Item.get("beechwood blowgun");

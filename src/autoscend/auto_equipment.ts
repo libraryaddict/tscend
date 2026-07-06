@@ -222,7 +222,7 @@ function tryAddItemToMaximize(s: Slot, it: Item): boolean
 			{
 				setProperty(getMaximizeSlotPref(Slot.get("weapon")), "");
 			}
-			
+
 			// TODO: Ranged/melee mismatch handling
 break;
 	}

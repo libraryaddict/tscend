@@ -160,7 +160,7 @@ function wildfire_water_cost(target: string): number
 	switch (target)
 	{
 		case "hose":
-			
+
 			//how much does having cpt hangk send firefighers to hose down an area cost.
 return 10 + 10 * toInt(getProperty("_captainHagnkUsed"));
 		case "dust":

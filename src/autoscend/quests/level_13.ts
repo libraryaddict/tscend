@@ -169,13 +169,13 @@ function EightBitRealmHandler(): boolean
 	switch (color)
 	{
 		case "black":
-			
+
 			// limited buff that is helpful for 3 of 4 8-bit zones
 buffMaintain$4(Effect.get("Shadow Waters"));
 			adv_spent = autoAdv$2(Location.get("Vanya's Castle"));
 			break;
 		case "red":
-			
+
 			// limited buff that is helpful for 3 of 4 8-bit zones
 buffMaintain$4(Effect.get("Shadow Waters"));
 			if (meatDropModifier() < 395) {
@@ -188,7 +188,7 @@ buffMaintain$4(Effect.get("Shadow Waters"));
 			adv_spent = autoAdv$2(Location.get("Megalo-City"));
 			break;
 		case "green":
-			
+
 			// limited buff that is helpful for 3 of 4 8-bit zones
 buffMaintain$4(Effect.get("Shadow Waters"));
 			adv_spent = autoAdv$2(Location.get("Hero's Field"));
@@ -718,7 +718,7 @@ export function L13_towerNSContests(): boolean
 				if (crowd3Insufficient()) { auto_beachCombHead("spooky"); }
 				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Spooky Hands")); }
 				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Spooky Weapon")); }
-				
+
 				// at this point, an example list of songs is phat loot / polka / celerity / madrigal
 if (crowd3Insufficient()) {
 					// specify normal effect to avoid failing the skill check

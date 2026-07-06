@@ -207,7 +207,7 @@ export function buffMaintain$2(buff: Effect, mp_min: number, casts: number, turn
 	let ret: boolean = false;
 	switch (buff)
 	{
-	case Effect.get("A Few Extra Pounds"):	
+	case Effect.get("A Few Extra Pounds"):
 	//Jalapeno Saucesphere
 useSkill_1 = Skill.get("Holiday Weight Gain");	break;
 	case Effect.get("A Little Bit Poisoned"):	useSkill_1 = Skill.get("Disco Nap");	break;

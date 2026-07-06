@@ -406,7 +406,7 @@ export function organsFull(): boolean
 	}
 	return true;
 }
- 
+
 
 export function backupSetting(setting: string, newValue: string): boolean
 {
@@ -4039,7 +4039,7 @@ export function auto_check_conditions(conds: string): boolean
 			{ abort(`"${cond}" is not proper condition formatting!`); }
 		const condition_type: string = m.group(1);
 		const condition_data: string = m.group(2);
-		{ 
+		{
 			// data: The text name of the class, as used by to_class()
 			// You must be the given class
 			// As a precaution, autoscend aborts if to_class returns $class[none]
@@ -4248,7 +4248,7 @@ export function auto_check_conditions(conds: string): boolean
 					{ abort(`"${condition_data}" is not a proper ML condition format!`); }
 				return compare_numbers(monsterLevelAdjustment(), toInt(m4.group(2)), m4.group(1));
 			case "consume":
-				
+
 			// data: eat\drink\chew
 			// True if we can eat\drink\chew anything today
 switch (condition_data)
@@ -4573,13 +4573,13 @@ function autoFlavour(place: Location): boolean
 	switch (place)
 	{
 		case Location.get("Hobopolis Town Square"):
-			
+
 			// don't mess with scare hobos
 return false;
 		case Location.get("Dreadsylvanian Woods"):
 		case Location.get("Dreadsylvanian Castle"):
 		case Location.get("Dreadsylvanian Village"):
-			
+
 			// dread is complicated
 return setFlavour(Element.none);
 	}
@@ -4603,7 +4603,7 @@ return setFlavour(Element.none);
 				return true;
 			}
 		case Location.get("VYKEA"):
-			
+
 			// INTENTIONAL LACK OF BREAK
 if (getProperty("walfordBucketItem") === "ice" && equippedItem(Slot.get("off-hand")) === Item.get("Walford's bucket"))
 			{

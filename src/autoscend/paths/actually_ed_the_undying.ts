@@ -802,7 +802,7 @@ export function ed_needShop(): boolean
 function ed_shopping(): boolean
 {
 
-	
+
 let $_ed_skillID_skillIDs: Map<Skill, number> | undefined;
 
 	function ed_skillID(upgrade: Skill): number
