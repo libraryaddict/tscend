@@ -33,9 +33,9 @@ jobs:
       run: |
         git config user.name "Build Script"
         git config user.email "<>"
-        git fetch origin releases
-        git worktree add /tmp/releases releases
-        cd /tmp/releases
+        git fetch origin release
+        git worktree add /tmp/release release
+        cd /tmp/release
 
         git rm -rf --quiet . >/dev/null 2>&1 || true
         cp -r "$GITHUB_WORKSPACE/RELEASE/." .
@@ -45,8 +45,8 @@ jobs:
           echo "No changes to publish."
         else
           git commit -m "Build $GITHUB_SHA"
-          git push origin HEAD:releases
+          git push origin HEAD:release
         fi
 
         cd "$GITHUB_WORKSPACE"
-        git worktree remove /tmp/releases --force
+        git worktree remove /tmp/release --force
