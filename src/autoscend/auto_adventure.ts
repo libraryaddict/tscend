@@ -37,7 +37,7 @@ export function autoAdv(num: number, loc: Location, option: CombatMacro): boolea
 	// undo all this when (if?) that ever gets fixed
 	const previousEncounter: string = getProperty("lastEncounter");
 	const turncount: number = myTurncount();
-	print("Doing option " + option);
+	print(`Doing option ${  option}`);
 	let advReturn: boolean = adv1(loc, -1, option);
 	if (!advReturn)
 	{throw "aborts";

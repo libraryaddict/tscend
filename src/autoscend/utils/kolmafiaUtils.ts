@@ -99,7 +99,7 @@ export class AshMatcher {
     end(group: number = 0)   { return this._span(group)[1]; }
 
     groupCount() {
-        return (new RegExp(this.pattern.source + '|').exec('')?.length || 1) - 1;
+        return (new RegExp(`${this.pattern.source  }|`).exec('')?.length || 1) - 1;
     }
 
     groupNames() {
@@ -114,8 +114,8 @@ export class AshMatcher {
     private _toReplacement(replacement: string): string {
         return replacement.replace(/\\(.)|\$([0-9]+)|\$\{([a-zA-Z][a-zA-Z0-9]*)\}/g, (m, esc, g, n) => {
             if (esc !== undefined) return esc === '$' ? '$$' : esc; // \$ -> literal $, \x -> x
-            if (g !== undefined) return g === '0' ? '$&' : '$' + g;  // $0 -> whole match, $n -> group n
-            if (n !== undefined) return '$<' + n + '>';              // ${name} -> $<name>
+            if (g !== undefined) return g === '0' ? '$&' : `$${  g}`;  // $0 -> whole match, $n -> group n
+            if (n !== undefined) return `$<${  n  }>`;              // ${name} -> $<name>
             return m;
         });
     }
