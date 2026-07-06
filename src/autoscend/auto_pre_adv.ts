@@ -664,7 +664,7 @@ function auto_pre_adventure(): boolean {
         use(1, $item`hair spray`);
       }
       // below no longer applicable due to current seed, will find new source
-      //	if (0 == have_effect($effect[Minerva\'s Zen]))
+      //	if (0===have_effect($effect[Minerva\'s Zen]))
       //	{
       //		auto_buyUpTo(1, $item[glittery mascara]);
       //		use(1, $item[glittery mascara]);

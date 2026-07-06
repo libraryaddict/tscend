@@ -166,7 +166,6 @@ function gnoob_buySkills(): void {
     }
 
     let possible: Map<number, Item> = new Map();
-    const count_1: number = 0;
     for (const it of available.keys()) {
       if (
         !(blacklist.get(it) ?? blacklist.set(it, false).get(it)) &&

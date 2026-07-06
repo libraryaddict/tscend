@@ -55,7 +55,6 @@ import {
   auto_autosell,
   auto_get_campground,
   auto_is_valid,
-  auto_is_valid$2,
   auto_log_error,
   auto_log_info,
   auto_log_warning,
@@ -91,22 +90,6 @@ import { auto_haveTrainSet } from "./mr2022";
 //
 
 //Defined in autoscend/iotms/mr2015.ash
-function auto_haveLovebugs(): boolean {
-  return (
-    toBoolean(getProperty("lovebugsUnlocked")) &&
-    auto_is_valid$2($skill`Summon Love Stinkbug`)
-  );
-}
-
-function mayo_acquireMayo(it: Item): boolean {
-  if (!isUnrestricted($item`portable Mayo Clinic`)) {
-    return false;
-  }
-  if (!auto_get_campground().has($item`portable Mayo Clinic`)) {
-    return false;
-  }
-  return true;
-}
 
 export function auto_barrelPrayers(): boolean {
   if (!isUnrestricted($item`shrine to the Barrel god`)) {
@@ -116,7 +99,7 @@ export function auto_barrelPrayers(): boolean {
     return false;
   }
   if (!toBoolean(getProperty("barrelShrineUnlocked"))) {
-    const temp: string = visitUrl("da.php");
+    visitUrl("da.php");
     if (!toBoolean(getProperty("barrelShrineUnlocked"))) {
       return false;
     }
@@ -893,24 +876,6 @@ function deck_draws_left(): number {
     return 0;
   }
   return 15 - toInt(getProperty("_deckCardsDrawn"));
-}
-
-function deck_draw(): boolean {
-  if (!deck_available()) {
-    return false;
-  }
-  if (deck_draws_left() <= 0) {
-    return false;
-  }
-  if (myHp() === 0) {
-    return false;
-  }
-  const deck: Item = wrap_item($item`Deck of Every Card`);
-  let page: string = visitUrl(
-    `inv_use.php?pwd=&which=3&whichitem=${toInt(deck)}`,
-  );
-  page = visitUrl("choice.php?pwd=&whichchoice=1085&option=1", true);
-  return true;
 }
 
 let $_deck_cheat_cards: Map<string, number> | undefined;

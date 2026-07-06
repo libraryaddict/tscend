@@ -153,7 +153,7 @@ export function auto_JunkyardCombatHandler(
       flyerWith = $item`Time-Spinner`;
       staggeringFlyer = true;
     } else if (canUse$4($item`beehive`)) {
-      let canBeehiveGremlin: boolean = false;
+      let canBeehiveGremlin: boolean;
       const beehiveDamage: number = ceil(
         30 * combatItemDamageMultiplier() * MLDamageToMonsterMultiplier(),
       );

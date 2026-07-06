@@ -509,7 +509,7 @@ function LX_wildfire_water(): boolean {
     );
     // below is code for automation that is not functional due to mafia not tracking fire levels correctly. When fixed upstream remove the the abort and uncomment the code
     //  https://github.com/loathers/autoscend/issues/892#issuecomment-934059485
-    //		if(auto_warSide() == "fratboy")
+    //		if(auto_warSide()==="fratboy")
     //		{
     //			LX_wildfire_hose($location[Wartime Frat House (Hippy Disguise)]);
     //		}

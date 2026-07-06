@@ -166,28 +166,6 @@ export function auto_heartstoneLuckRemaining(): number {
   return 1;
 }
 
-function auto_heartstonePalsRemaining(): number {
-  if (!auto_haveHeartstone()) {
-    return 0;
-  }
-  if (getProperty("heartstonePalsUnlocked") !== "true") {
-    return 0;
-  }
-
-  return 5 - toInt(getProperty("_heartstonePalsUsed"));
-}
-
-function auto_heartstoneStunRemaining(): number {
-  if (!auto_haveHeartstone()) {
-    return 0;
-  }
-  if (getProperty("heartstoneStunUnlocked") !== "true") {
-    return 0;
-  }
-
-  return 5 - toInt(getProperty("_heartstoneStunUsed"));
-}
-
 export function auto_haveArchaeologistSpade(): boolean {
   if (
     auto_is_valid($item`Archaeologist's Spade`) &&

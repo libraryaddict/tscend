@@ -14,7 +14,6 @@ import {
   myMp,
   toInt,
   useSkill,
-  visitUrl,
 } from "kolmafia";
 import { $class, $effect, $item, $location, $skill } from "libram";
 
@@ -160,16 +159,6 @@ function didWePlantHere(loc: Location): boolean {
     }
   }
   return false;
-}
-
-function trickMafiaAboutFlorist(): void {
-  // This only works if you actually have the Florist Friar but it isn\'t detected by Mafia
-  // This may not be the most optimal way to do it.
-  visitUrl("choice.php?whichchoice=720&pwd=&option=4");
-  visitUrl("place.php?whichplace=forestvillage&action=fv_friar");
-  visitUrl("choice.php?whichchoice=720&pwd=&option=4");
-  //We might not need to do this last one...
-  visitUrl("choice.php?whichchoice=720&pwd=&option=4");
 }
 
 export function oldPeoplePlantStuff(): void {

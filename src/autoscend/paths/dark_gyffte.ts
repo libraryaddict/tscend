@@ -26,12 +26,10 @@ import {
   myLevel,
   myLocation,
   myPath,
-  Phylum,
   sell,
   setProperty,
   Skill,
   toInt,
-  toMonster,
   toSkill,
   useSkill,
   visitUrl,
@@ -139,10 +137,6 @@ export function bat_formWolf(speculative: boolean): boolean {
   }
   setProperty("auto_bat_desiredForm", "wolf");
   return bat_switchForm($effect`Wolf Form`, speculative);
-}
-
-function bat_formWolf$1(): boolean {
-  return bat_formWolf(false);
 }
 
 export function bat_formMist(speculative: boolean): boolean {
@@ -455,11 +449,6 @@ function bat_haveEnsorcelee(): boolean {
   }
 
   return getProperty("ensorcelee") !== "";
-}
-
-function bat_ensorceledMonster(): Phylum {
-  //returns phylum of current Ensorceled Monster (if you have one)
-  return monsterPhylum(toMonster(getProperty("ensorcelee")));
 }
 
 export function bat_shouldEnsorcel(m: Monster): boolean {

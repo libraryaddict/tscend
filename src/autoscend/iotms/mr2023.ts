@@ -482,29 +482,6 @@ export function auto_makeMonkeyPawWish$1(wish: Item): boolean {
   return success;
 }
 
-function auto_makeMonkeyPawWish$2(wish: string): boolean {
-  if (!auto_haveMonkeyPaw()) {
-    auto_log_info$1(
-      `Requested monkey paw wish without paw available, skipping ${wish}`,
-    );
-    return false;
-  }
-  if (auto_monkeyPawWishesLeft() < 1) {
-    auto_log_info$1(`Out of monkey paw wishes, skipping ${wish}`);
-    return false;
-  }
-  const success: boolean = monkeyPaw(wish);
-  if (success) {
-    handleTracker$2(
-      $item`cursed monkey's paw`.toString(),
-      myLocation().toString(),
-      wish,
-      "auto_wishes",
-    );
-  }
-  return success;
-}
-
 let $_auto_haveCincho_cincho: Item | undefined;
 
 export function auto_haveCincho(): boolean {
@@ -1048,7 +1025,6 @@ export function auto_habitatTarget(target: Monster): boolean {
     // avant guard makes free fights cost a turn. Use DOL in place of tentacle
     // only worth it if we need 3+ barrels
 
-    let sonofa_complete: boolean = false;
     switch (target) {
       case $monster`fantasy bandit`:
         return fantasyBanditsFought() === 0;
@@ -1066,7 +1042,7 @@ export function auto_habitatTarget(target: Monster): boolean {
             13
         );
       case $monster`lobsterfrogman`:
-        sonofa_complete =
+        let sonofa_complete: boolean =
           getProperty("sidequestLighthouseCompleted") === "hippy" ||
           getProperty("sidequestLighthouseCompleted") === "fratboy";
         return !sonofa_complete && itemAmount($item`barrel of gunpowder`) < 4;

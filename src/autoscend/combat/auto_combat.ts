@@ -155,7 +155,6 @@ export function auto_combatHandler(
 
   auto_combatInitialize(round_1, enemy, text); //reset properties on round 0 of a new combat
   let retval: string = "";
-  const blocked: boolean = containsText(text, "(STUN RESISTED)");
   setProperty("auto_combatHP", myHp().toString());
   setProperty("auto_diag_round", round_1.toString());
 

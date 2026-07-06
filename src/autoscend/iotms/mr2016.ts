@@ -259,10 +259,8 @@ export function snojoFightAvailable(): boolean {
       getProperty("snojoSetting") !==
         toUpperCase(standard.get(3) ?? standard.set(3, "").get(3))
     ) {
-      let temp: string = visitUrl(
-        "place.php?whichplace=snojo&action=snojo_controller",
-      );
-      temp = runChoice(
+      visitUrl("place.php?whichplace=snojo&action=snojo_controller");
+      runChoice(
         controls.get(standard.get(3) ?? standard.set(3, "").get(3)) ??
           controls
             .set(standard.get(3) ?? standard.set(3, "").get(3), 0)
@@ -335,9 +333,7 @@ export function auto_sourceTerminalRequest(request: string): boolean {
       const temp_1: string = visitUrl("campground.php?action=terminal");
     }
     //		temp = visit_url("choice.php?pwd=&whichchoice=1191&option=1&input=reset");
-    const temp: string = visitUrl(
-      `choice.php?pwd=&whichchoice=1191&option=1&input=${request}`,
-    );
+    visitUrl(`choice.php?pwd=&whichchoice=1191&option=1&input=${request}`);
     //		temp = visit_url("choice.php?pwd=&whichchoice=1191&option=1&input=reset");
     return true;
   }
@@ -516,10 +512,12 @@ function auto_sourceTerminalMissing(): Map<string, number> {
 function auto_sourceTerminalStatus(): Map<string, number> {
   const status: Map<string, number> = new Map();
   if (auto_haveSourceTerminal()) {
-    let temp: string = visitUrl("campground.php?action=terminal");
-    temp = visitUrl("choice.php?pwd=&whichchoice=1191&option=1&input=reset");
-    temp = visitUrl("choice.php?pwd=&whichchoice=1191&option=1&input=status");
-    temp = visitUrl("choice.php?pwd=&whichchoice=1191&option=1&input=ls");
+    visitUrl("campground.php?action=terminal");
+    visitUrl("choice.php?pwd=&whichchoice=1191&option=1&input=reset");
+    visitUrl("choice.php?pwd=&whichchoice=1191&option=1&input=status");
+    const temp: string = visitUrl(
+      "choice.php?pwd=&whichchoice=1191&option=1&input=ls",
+    );
 
     const ramMatcher: AshMatcher = new AshMatcher(
       "<div>((?:[A-Z]*?)?[RP]AM) (chip(?:s?)) installed([:,]) ((?:\\d+)|(?:\\w))",
@@ -716,7 +714,7 @@ function auto_advWitchessTargets(target: string): number {
     return 1938;
   }
 
-  if (toInt(target) == 1942 && myPath() === $path`Teetotaler`) {
+  if (toInt(target) === 1942 && myPath() === $path`Teetotaler`) {
     return 1936;
   }
 
@@ -1359,10 +1357,6 @@ export function LX_ghostBusting(): boolean {
   }
   acquireHP();
   return autoAdv$2(goal);
-}
-
-function timeSpinnerRemaining(): number {
-  return timeSpinnerRemaining$1(false);
 }
 
 function timeSpinnerRemaining$1(verify: boolean): number {

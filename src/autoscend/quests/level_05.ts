@@ -51,9 +51,9 @@ import { in_zootomist } from "../paths/zootomist";
 
 // L5 quest progress notes:
 // unstarted
-// started == acquired [Cobb's Knob map] from council
-// step1 == used [Cobb's Knob map] with [Knob Goblin encryption key] to unlock internal zones.
-// finished == killed the king. you still need to visit council afterwards to get rewarded.
+// started===acquired [Cobb's Knob map] from council
+// step1===used [Cobb's Knob map] with [Knob Goblin encryption key] to unlock internal zones.
+// finished===killed the king. you still need to visit council afterwards to get rewarded.
 
 //Defined in autoscend/quests/level_05.ash
 export function L5_getEncryptionKey(): boolean {

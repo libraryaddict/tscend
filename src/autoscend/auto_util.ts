@@ -531,7 +531,7 @@ function debugMaximize(req: string, meat: number): void {
         if (indexOf(entry.display, "chew ") === 0) {
           doThis = false;
         }
-        //				if(entry.display.index_of("...or ") == 0)
+        //				if(entry.display.index_of("...or ")===0)
         //				{
         //					doThis = false;
         //				}
@@ -1705,17 +1705,6 @@ export function adjustForSniffingIfPossible(target: Monster): boolean {
   return false;
 }
 
-function adjustForSniffingIfPossible$1(): boolean {
-  return adjustForSniffingIfPossible(Monster.none);
-}
-
-function canCopy(enemy: Monster, loc: Location): boolean {
-  if (!auto_wantToCopy(enemy, loc)) {
-    return false;
-  }
-  return getCopier(enemy, false) !== Skill.none;
-}
-
 export function adjustForCopyIfPossible(target: Monster): boolean {
   const copier: Skill = getCopier(target, false);
   if (copier === $skill`Blow the Purple Candle!`) {
@@ -1725,10 +1714,6 @@ export function adjustForCopyIfPossible(target: Monster): boolean {
     handleFamiliar$1($familiar`Patriotic Eagle`);
   }
   return false;
-}
-
-function adjustForCopyIfPossible$1(): boolean {
-  return adjustForCopyIfPossible(Monster.none);
 }
 
 export function banishSources(): number {
@@ -4197,7 +4182,7 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
     }
 
     if (in_wildfire()) {
-      let wildfireBurnChance: number = 0;
+      let wildfireBurnChance: number;
       switch (myLocation().fireLevel) {
         case 5:
           wildfireBurnChance = 1;
@@ -5578,7 +5563,7 @@ export function auto_reserveAmount(it: Item): number {
   if (!itemdata.size) {
     auto_log_error("Could not load autoscend_items.txt! This is bad!");
   }
-  for (const [i, _v0] of itemdata.get("reserve") ??
+  for (const [, _v0] of itemdata.get("reserve") ??
     itemdata.set("reserve", new Map()).get("reserve")) {
     for (const [counteditem, _v1] of _v0) {
       const conds = _v1;

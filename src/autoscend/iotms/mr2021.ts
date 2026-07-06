@@ -280,7 +280,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
       toMonster(getProperty("auto_nextEncounter")),
     );
   } else {
-    for (const [i, mon] of getMonsters(place).entries()) {
+    for (const [, mon] of getMonsters(place).entries()) {
       if ((appearanceRates(place)[mon.toString()] ??= 0.0) > 0) {
         possible_monsters.set(possible_monsters.size, mon);
       }
@@ -291,7 +291,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
   let zoneHasWantedMonsters: boolean = false;
   if (!auto_queueIgnore()) {
     //next encounter is a monster from the zone
-    for (const [i, mon] of possible_monsters) {
+    for (const [, mon] of possible_monsters) {
       if (auto_wantToYellowRay(mon, place)) {
         zoneHasWantedMonsters = true;
       }
@@ -347,77 +347,6 @@ export function auto_canFeelHatred(): boolean {
   }
   return (
     auto_haveEmotionChipSkills() && toInt(getProperty("_feelHatredUsed")) < 3
-  );
-}
-
-function auto_canFeelNostalgic(): boolean {
-  // Combat Skill - adds drop table from last copyable monster to the current (see lastCopyableMonster property)
-  if (!auto_is_valid$2($skill`Feel Nostalgic`)) {
-    return false;
-  }
-  return (
-    auto_haveEmotionChipSkills() && toInt(getProperty("_feelNostalgicUsed")) < 3
-  );
-}
-
-function auto_canFeelPride(): boolean {
-  // Combat Skill - Triples stat gain from the current fight.
-  if (!auto_is_valid$2($skill`Feel Pride`)) {
-    return false;
-  }
-  return (
-    auto_haveEmotionChipSkills() && toInt(getProperty("_feelPrideUsed")) < 3
-  );
-}
-
-function auto_canFeelSuperior(): boolean {
-  // Combat Skill - Does 20% of monsters max HP as damage and gives +1 PvP fight if it kills the monster.
-  if (!auto_is_valid$2($skill`Feel Superior`)) {
-    return false;
-  }
-  return (
-    auto_haveEmotionChipSkills() && toInt(getProperty("_feelSuperiorUsed")) < 3
-  );
-}
-
-function auto_canFeelLonely(): boolean {
-  // Non-Combat Skill - -5% combat rate (20 adventures)
-  if (!auto_is_valid$2($skill`Feel Lonely`)) {
-    return false;
-  }
-  return (
-    auto_haveEmotionChipSkills() && toInt(getProperty("_feelLonelyUsed")) < 3
-  );
-}
-
-function auto_canFeelExcitement(): boolean {
-  // Non-Combat Skill - +25 to all stats (20 adventures)
-  if (!auto_is_valid$2($skill`Feel Excitement`)) {
-    return false;
-  }
-  return (
-    auto_haveEmotionChipSkills() &&
-    toInt(getProperty("_feelExcitementUsed")) < 3
-  );
-}
-
-function auto_canFeelNervous(): boolean {
-  // Non-Combat Skill - deals passive damage on hit starting at 20 decrementing by 1 every proc (20 adventures)
-  if (!auto_is_valid$2($skill`Feel Nervous`)) {
-    return false;
-  }
-  return (
-    auto_haveEmotionChipSkills() && toInt(getProperty("_feelNervousUsed")) < 3
-  );
-}
-
-function auto_canFeelPeaceful(): boolean {
-  // Non-Combat Skill - +2 all res, +10 DR, +100 DA (20 adventures)
-  if (!auto_is_valid$2($skill`Feel Peaceful`)) {
-    return false;
-  }
-  return (
-    auto_haveEmotionChipSkills() && toInt(getProperty("_feelPeacefulUsed")) < 3
   );
 }
 

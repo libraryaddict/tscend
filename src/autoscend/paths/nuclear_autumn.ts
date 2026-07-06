@@ -37,9 +37,7 @@ export function nuclear_initializeDay(day: number): void {
     !toBoolean(getProperty("falloutShelterChronoUsed")) &&
     toInt(getProperty("falloutShelterLevel")) >= 6
   ) {
-    const temp: string = visitUrl(
-      "place.php?whichplace=falloutshelter&action=vault5",
-    );
+    visitUrl("place.php?whichplace=falloutshelter&action=vault5");
   }
 
   if (

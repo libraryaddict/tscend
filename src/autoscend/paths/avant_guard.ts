@@ -94,10 +94,7 @@ export function ag_bgChat(): void {
   if (title.find()) {
     auto_log_info("Trying to chat with your Bodyguard", "blue");
     const mon: Monster = ag_bgToChat();
-    const url: string = visitUrl(
-      `choice.php?pwd=&whichchoice=1532&option=1&bgid=${mon.id}`,
-      true,
-    );
+    visitUrl(`choice.php?pwd=&whichchoice=1532&option=1&bgid=${mon.id}`, true);
     auto_log_info(`Making the next bodyguard a ${mon.toString()}`, "blue");
     handleTracker$1(
       $familiar`Burly Bodyguard`.toString(),

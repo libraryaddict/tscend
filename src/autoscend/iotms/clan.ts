@@ -1,6 +1,4 @@
 import {
-  abort,
-  buyUsingStorage,
   canFaxbot,
   cliExecute,
   containsText,
@@ -12,7 +10,6 @@ import {
   getPlayerName,
   getProperty,
   haveEffect,
-  historicalPrice,
   isOnline,
   isUnrestricted,
   Item,
@@ -27,7 +24,6 @@ import {
   Path,
   setProperty,
   splitString,
-  storageAmount,
   toBoolean,
   toInt,
   toItem,
@@ -40,7 +36,7 @@ import {
 import { $effect, $effects, $item, $items, $location } from "libram";
 
 import { autoAdvBypass$2, CombatMacro } from "../auto_adventure";
-import { fullness_left, inebriety_left } from "../auto_consume";
+import { inebriety_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
 import {
   auto_interruptCheck$1,
@@ -51,7 +47,6 @@ import {
   auto_log_info$1,
   auto_log_warning,
   auto_log_warning$1,
-  handleTracker,
   handleTracker$1,
   trim,
 } from "../auto_util";
@@ -279,10 +274,9 @@ export function canReturnToCurrentClan(): boolean {
 }
 
 function changeClan(clanName: string): number {
-  let toClan: number = 0;
   const canReturn: boolean = canReturnToCurrentClan();
 
-  toClan = whitelistedClanToID(clanName);
+  const toClan: number = whitelistedClanToID(clanName);
 
   if (toClan === 0) {
     auto_log_warning$1(
@@ -656,163 +650,6 @@ export function zataraClanmate(): boolean {
   return true;
 }
 
-let $_eatFancyDog_dogFull: Map<string, number> | undefined;
-let $_eatFancyDog_dogReq: Map<string, Item> | undefined;
-let $_eatFancyDog_dogAmt: Map<string, number> | undefined;
-let $_eatFancyDog_dogID: Map<string, number> | undefined;
-
-function eatFancyDog(dog: string): boolean {
-  if (itemAmount($item`Clan VIP Lounge key`) === 0) {
-    return false;
-  }
-  if (toBoolean(getProperty("_fancyHotDogEaten")) && dog !== "basic hot dog") {
-    return false;
-  }
-
-  if (!auto_get_clan_lounge().has($item`Clan hot dog stand`)) {
-    return false;
-  }
-
-  dog = toLowerCase(dog);
-
-  $_eatFancyDog_dogFull ??= new Map();
-  $_eatFancyDog_dogReq ??= new Map();
-  $_eatFancyDog_dogAmt ??= new Map();
-  $_eatFancyDog_dogID ??= new Map();
-  $_eatFancyDog_dogFull.set("basic hot dog", 1);
-  $_eatFancyDog_dogFull.set("savage macho dog", 2);
-  $_eatFancyDog_dogFull.set("one with everything", 2);
-  $_eatFancyDog_dogFull.set("sly dog", 2);
-  $_eatFancyDog_dogFull.set("devil dog", 3);
-  $_eatFancyDog_dogFull.set("chilly dog", 3);
-  $_eatFancyDog_dogFull.set("ghost dog", 3);
-  $_eatFancyDog_dogFull.set("junkyard dog", 3);
-  $_eatFancyDog_dogFull.set("wet dog", 3);
-  $_eatFancyDog_dogFull.set("optimal dog", 1);
-  $_eatFancyDog_dogFull.set("sleeping dog", 2);
-  $_eatFancyDog_dogFull.set("video games hot dog", 3);
-
-  $_eatFancyDog_dogReq.set("basic hot dog", Item.none);
-  $_eatFancyDog_dogReq.set("savage macho dog", $item`furry fur`);
-  $_eatFancyDog_dogReq.set("one with everything", $item`cranberries`);
-  $_eatFancyDog_dogReq.set("sly dog", $item`skeleton bone`);
-  $_eatFancyDog_dogReq.set("devil dog", $item`hot wad`);
-  $_eatFancyDog_dogReq.set("chilly dog", $item`cold wad`);
-  $_eatFancyDog_dogReq.set("ghost dog", $item`spooky wad`);
-  $_eatFancyDog_dogReq.set("junkyard dog", $item`stench wad`);
-  $_eatFancyDog_dogReq.set("wet dog", $item`sleaze wad`);
-  $_eatFancyDog_dogReq.set("optimal dog", $item`tattered scrap of paper`);
-  $_eatFancyDog_dogReq.set("sleeping dog", $item`gauze hammock`);
-  $_eatFancyDog_dogReq.set(
-    "video games hot dog",
-    $item`GameInformPowerDailyPro magazine`,
-  );
-
-  $_eatFancyDog_dogAmt.set("basic hot dog", 0);
-  $_eatFancyDog_dogAmt.set("savage macho dog", 10);
-  $_eatFancyDog_dogAmt.set("one with everything", 10);
-  $_eatFancyDog_dogAmt.set("sly dog", 10);
-  $_eatFancyDog_dogAmt.set("devil dog", 25);
-  $_eatFancyDog_dogAmt.set("chilly dog", 25);
-  $_eatFancyDog_dogAmt.set("ghost dog", 25);
-  $_eatFancyDog_dogAmt.set("junkyard dog", 25);
-  $_eatFancyDog_dogAmt.set("wet dog", 25);
-  $_eatFancyDog_dogAmt.set("optimal dog", 25);
-  $_eatFancyDog_dogAmt.set("sleeping dog", 10);
-  $_eatFancyDog_dogAmt.set("video games hot dog", 3);
-
-  $_eatFancyDog_dogID.set("basic hot dog", 0);
-  $_eatFancyDog_dogID.set("savage macho dog", -93);
-  $_eatFancyDog_dogID.set("one with everything", -94);
-  $_eatFancyDog_dogID.set("sly dog", -95);
-  $_eatFancyDog_dogID.set("devil dog", -96);
-  $_eatFancyDog_dogID.set("chilly dog", -97);
-  $_eatFancyDog_dogID.set("ghost dog", -98);
-  $_eatFancyDog_dogID.set("junkyard dog", -99);
-  $_eatFancyDog_dogID.set("wet dog", -100);
-  $_eatFancyDog_dogID.set("optimal dog", -102);
-  $_eatFancyDog_dogID.set("sleeping dog", -101);
-  $_eatFancyDog_dogID.set("video games hot dog", -103);
-
-  if (!$_eatFancyDog_dogFull.has(dog)) {
-    abort(`Invalid hot dog: ${dog}`);
-  }
-
-  const page: string = visitUrl("clan_viplounge.php?action=hotdogstand");
-  if (!containsText(page, dog)) {
-    return false;
-  }
-
-  if (
-    fullness_left() <
-    ($_eatFancyDog_dogFull.get(dog) ??
-      $_eatFancyDog_dogFull.set(dog, 0).get(dog))
-  ) {
-    return false;
-  }
-
-  const need: number =
-    ($_eatFancyDog_dogAmt.get(dog) ??
-      $_eatFancyDog_dogAmt.set(dog, 0).get(dog)) -
-    storageAmount(
-      $_eatFancyDog_dogReq.get(dog) ??
-        $_eatFancyDog_dogReq.set(dog, Item.none).get(dog),
-    );
-  if (need > 0) {
-    if (
-      buyUsingStorage(
-        need,
-        $_eatFancyDog_dogReq.get(dog) ??
-          $_eatFancyDog_dogReq.set(dog, Item.none).get(dog),
-        toInt(
-          min(
-            1.5 *
-              historicalPrice(
-                $_eatFancyDog_dogReq.get(dog) ??
-                  $_eatFancyDog_dogReq.set(dog, Item.none).get(dog),
-              ),
-            30000,
-          ),
-        ),
-      ) === 0
-    ) {
-      auto_log_warning(
-        `Could not buy ${$_eatFancyDog_dogReq.get(dog) ?? $_eatFancyDog_dogReq.set(dog, Item.none).get(dog)} for a fancy dog. Price may have been manipulated.`,
-        "red",
-      );
-      wait(5);
-      return false;
-    }
-  }
-
-  if (
-    storageAmount(
-      $_eatFancyDog_dogReq.get(dog) ??
-        $_eatFancyDog_dogReq.set(dog, Item.none).get(dog),
-    ) <
-    ($_eatFancyDog_dogAmt.get(dog) ?? $_eatFancyDog_dogAmt.set(dog, 0).get(dog))
-  ) {
-    return false;
-  }
-
-  visitUrl("clan_viplounge.php?action=hotdogstand");
-
-  if (
-    ($_eatFancyDog_dogAmt.get(dog) ??
-      $_eatFancyDog_dogAmt.set(dog, 0).get(dog)) > 0
-  ) {
-    visitUrl(
-      `clan_viplounge.php?preaction=hotdogsupply&hagnks=1&whichdog=${$_eatFancyDog_dogID.get(dog) ?? $_eatFancyDog_dogID.set(dog, 0).get(dog)}&quantity=${$_eatFancyDog_dogAmt.get(dog) ?? $_eatFancyDog_dogAmt.set(dog, 0).get(dog)}`,
-    );
-  }
-
-  visitUrl("clan_viplounge.php?action=hotdogstand");
-
-  cliExecute(`eatsilent 1 ${dog}`);
-  handleTracker(dog, "auto_eaten");
-  return true;
-}
-
 export function auto_floundryUse(): boolean {
   if (!toBoolean(getProperty("_floundryItemUsed"))) {
     for (const it of $items`bass clarinet, codpiece, fish hatchet`) {
@@ -877,7 +714,7 @@ function auto_floundryAction$1(it: Item): boolean {
   }
   const fish: Map<Item, number> = auto_get_clan_lounge();
   if ((fish.get(it) ?? fish.set(it, 0).get(it)) > 0) {
-    const temp: string = visitUrl(
+    visitUrl(
       `clan_viplounge.php?preaction=buyfloundryitem&whichitem=${toInt(it)}`,
     );
     return true;

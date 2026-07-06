@@ -103,7 +103,7 @@ export function autoscend_migrate(): boolean {
           getProperty(p) !== getProperty(old_prop)
         ) {
           auto_log_warning$1(
-            `Conflict: ${old_prop} (${getProperty(old_prop)}) != ${p} (${getProperty(p)})`,
+            `Conflict: ${old_prop} (${getProperty(old_prop)}) !== ${p} (${getProperty(p)})`,
           );
           prop_conflicts++;
         }
@@ -153,7 +153,7 @@ export function autoscend_migrate(): boolean {
           setProperty(p, getProperty(old_prop));
         } else if (getProperty(old_prop) !== getProperty(p)) {
           auto_log_warning(
-            `Conflict: ${old_prop} (${getProperty(old_prop)}) != ${p} (${getProperty(p)})`,
+            `Conflict: ${old_prop} (${getProperty(old_prop)}) !== ${p} (${getProperty(p)})`,
             "red",
           );
           prop_conflicts++;

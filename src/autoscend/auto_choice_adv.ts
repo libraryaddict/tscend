@@ -660,7 +660,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         runChoice(1);
         break;
       case 597:
-        auto_reagnimatedGetPart(choice);
+        auto_reagnimatedGetPart();
         break;
       case 604:
       case 605:

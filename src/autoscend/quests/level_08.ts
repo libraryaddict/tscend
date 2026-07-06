@@ -289,7 +289,7 @@ function getCellToMine(oreGoal: Item): number {
     while (potentialCells.size === 0 && rowLimit < 5) {
       for (const oreCell of oreSeen.keys()) {
         const orthogonals: number[] = getOrthogonals(oreCell);
-        for (const [_, orthoCell] of orthogonals.entries()) {
+        for (const [, orthoCell] of orthogonals.entries()) {
           if (canMine(orthoCell, rowLimit) && sparklingCells.has(orthoCell)) {
             potentialCells.set(potentialCount, orthoCell);
             potentialCount++;
@@ -978,7 +978,7 @@ export function L8_trapperTalk(): boolean {
   }
 
   if (initial_step === 0) {
-    // step0 == quest started. we do not know what ores we need yet.
+    // step0===quest started. we do not know what ores we need yet.
     auto_log_info(
       "Talkint to the trapper to find out what kind of Ore he wants",
       "blue",
@@ -986,7 +986,7 @@ export function L8_trapperTalk(): boolean {
     visitUrl("place.php?whichplace=mclargehuge&action=trappercabin"); // talk to the trapper to advance quest
   }
   if (initial_step === 1) {
-    // step1 == we know what ore to get. so go get ore and cheese
+    // step1===we know what ore to get. so go get ore and cheese
     if (
       itemAmount(toItem(getProperty("trapperOre"))) >= 3 &&
       itemAmount($item`goat cheese`) >= 3

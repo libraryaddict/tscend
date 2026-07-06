@@ -70,7 +70,7 @@ export function auto_combatWereProfessorStage4(
     getProperty("wereProfessorAdvancedResearch"),
     ",",
   )) {
-    if (toInt(str) == enemy.id) {
+    if (toInt(str) === enemy.id) {
       return "";
     }
   }

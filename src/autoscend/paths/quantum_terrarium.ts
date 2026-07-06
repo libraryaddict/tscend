@@ -9,7 +9,6 @@ import {
   myPrimestat,
   print,
   setProperty,
-  toFamiliar,
   toInt,
   totalTurnsPlayed,
   visitUrl,
@@ -30,14 +29,6 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 //Defined in autoscend/paths/quantum_terrarium.ash
 export function in_quantumTerrarium(): boolean {
   return myPath() === $path`Quantum Terrarium`;
-}
-
-function qt_currentFamiliar(fam: Familiar): boolean {
-  return in_quantumTerrarium() && myFamiliar() === fam;
-}
-
-function qt_nextQuantumFamiliar(): Familiar {
-  return toFamiliar(getProperty("nextQuantumFamiliar"));
 }
 
 function qt_turnsToNextQuantumAlignment(): number {

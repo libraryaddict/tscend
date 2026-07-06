@@ -1188,7 +1188,7 @@ export function doBedtime(): boolean {
     auto_get_campground().has($item`portable Mayo Clinic`) &&
     isUnrestricted($item`portable Mayo Clinic`)
   ) {
-    const temp: string = visitUrl("shop.php?action=bacta&whichshop=mayoclinic");
+    visitUrl("shop.php?action=bacta&whichshop=mayoclinic");
   }
 
   if (
@@ -1196,9 +1196,7 @@ export function doBedtime(): boolean {
     toInt(getProperty("falloutShelterLevel")) >= 3 &&
     !toBoolean(getProperty("_falloutShelterSpaUsed"))
   ) {
-    const temp: string = visitUrl(
-      "place.php?whichplace=falloutshelter&action=vault3",
-    );
+    visitUrl("place.php?whichplace=falloutshelter&action=vault3");
   }
   //	Also use "nunsVisits", as long as they were won by the Frat (sidequestNunsCompleted="fratboy").
   ed_doResting();
@@ -1344,10 +1342,7 @@ export function doBedtime(): boolean {
     getProperty("_grimBuff") === "false" &&
     auto_have_familiar($familiar`Grim Brother`)
   ) {
-    const temp: string = visitUrl(
-      "choice.php?pwd=&whichchoice=835&option=1",
-      true,
-    );
+    visitUrl("choice.php?pwd=&whichchoice=835&option=1", true);
   }
 
   dailyEvents();
@@ -1380,7 +1375,7 @@ export function doBedtime(): boolean {
         isUnrestricted($item`Clan looking glass`) &&
         !toBoolean(getProperty("_lookingGlass"))
       ) {
-        const temp: string = visitUrl("clan_viplounge.php?action=lookingglass");
+        visitUrl("clan_viplounge.php?action=lookingglass");
       }
       if (toInt(getProperty("_deluxeKlawSummons")) === 0) {
         cliExecute("clan_viplounge.php?action=klaw");
@@ -1681,9 +1676,7 @@ export function doBedtime(): boolean {
     !toBoolean(getProperty("_lyleFavored")) &&
     auto_is_valid$3($effect`Favored by Lyle`)
   ) {
-    const temp: string = visitUrl(
-      "place.php?whichplace=monorail&action=monorail_lyle",
-    );
+    visitUrl("place.php?whichplace=monorail&action=monorail_lyle");
   }
 
   if (

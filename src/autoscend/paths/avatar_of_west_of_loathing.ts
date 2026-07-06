@@ -213,61 +213,61 @@ export function awol_buySkills(): boolean {
         if (myClass() === $class`Cow Puncher`) {
           if (!haveSkill($skill`Rugged Survivalist`)) {
             //restore some HP/MP after combat
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=5",
               true,
             );
           } else if (!haveSkill($skill`Larger Than Life`)) {
             //+100% maxHP/maxMP
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=6",
               true,
             );
           } else if (!haveSkill($skill`Cowcall`)) {
             //10MP deal spooky damage
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=1",
               true,
             );
           } else if (!haveSkill($skill`[18008]Hard Drinker`) && cowSlang) {
             //+5 max liver
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=8",
               true,
             );
           } else if (!haveSkill($skill`One-Two Punch`)) {
             //3MP two unarmed attacks
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=0",
               true,
             );
           } else if (!haveSkill($skill`Pistolwhip`)) {
             //3MP damage and stun enemy 1/fight
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=2",
               true,
             );
           } else if (!haveSkill($skill`Walk: Cautious Prowl`) && cowSlang) {
             //40MP/20adv +50% item drop
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=9",
               true,
             );
           } else if (!haveSkill($skill`Hogtie`)) {
             //10MP stun for several rounds
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=3",
               true,
             );
           } else if (!haveSkill($skill`True Outdoorsperson`)) {
             //+3 all res
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=4",
               true,
             );
           } else if (!haveSkill($skill`Unleash Cowrruption`) && cowSlang) {
             //yellow ray
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=7",
               true,
             );
@@ -275,61 +275,61 @@ export function awol_buySkills(): boolean {
         } else {
           if (!haveSkill($skill`[18008]Hard Drinker`) && cowSlang) {
             //+5 max liver
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=8",
               true,
             );
           } else if (!haveSkill($skill`Rugged Survivalist`)) {
             //restore some HP/MP after combat
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=5",
               true,
             );
           } else if (!haveSkill($skill`Walk: Cautious Prowl`) && cowSlang) {
             //40MP/20adv +50% item drop
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=9",
               true,
             );
           } else if (!haveSkill($skill`Larger Than Life`)) {
             //+100% maxHP/maxMP
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=6",
               true,
             );
           } else if (!haveSkill($skill`Cowcall`)) {
             //10MP deal spooky damage
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=1",
               true,
             );
           } else if (!haveSkill($skill`One-Two Punch`)) {
             //3MP two unarmed attacks
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=0",
               true,
             );
           } else if (!haveSkill($skill`Pistolwhip`)) {
             //3MP damage and stun enemy 1/fight
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=2",
               true,
             );
           } else if (!haveSkill($skill`Hogtie`)) {
             //10MP stun for several rounds
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=3",
               true,
             );
           } else if (!haveSkill($skill`True Outdoorsperson`)) {
             //+3 all res
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=4",
               true,
             );
           } else if (!haveSkill($skill`Unleash Cowrruption`) && cowSlang) {
             //yellow ray
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1177&whichskill=7",
               true,
             );
@@ -359,61 +359,61 @@ export function awol_buySkills(): boolean {
         if (myClass() === $class`Beanslinger`) {
           if (!haveSkill($skill`Lavafava`)) {
             //3MP deal minor hot dmg twice
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=0",
               true,
             );
           } else if (!haveSkill($skill`Walk: Prideful Strut`) && beanSlang) {
             //40MP/20adv +10 stats per fight
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=9",
               true,
             );
           } else if (!haveSkill($skill`Bean Runner`)) {
             //+75% init
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=4",
               true,
             );
           } else if (!haveSkill($skill`Canhandle`)) {
             //0MP shake offhand beans for heal or dmg and stagger
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=2",
               true,
             );
           } else if (!haveSkill($skill`Prodigious Appetite`) && beanSlang) {
             //+5 max stomach
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=8",
               true,
             );
           } else if (!haveSkill($skill`Beanstorm`)) {
             //15MP AoE 2 hits high dmg.
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=6",
               true,
             );
           } else if (!haveSkill($skill`Beanscreen`)) {
             //10MP block 3 next attacks
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=3",
               true,
             );
           } else if (!haveSkill($skill`Beancannon`) && beanSlang) {
             //banish
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=7",
               true,
             );
           } else if (!haveSkill($skill`Beanweaver`)) {
             //2x bean enchantment, +2adv +substats bean plates
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=5",
               true,
             );
           } else if (!haveSkill($skill`Pungent Mung`)) {
             //5MP moderate stench dmg
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=1",
               true,
             );
@@ -421,61 +421,61 @@ export function awol_buySkills(): boolean {
         } else {
           if (!haveSkill($skill`Prodigious Appetite`) && beanSlang) {
             //+5 max stomach
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=8",
               true,
             );
           } else if (!haveSkill($skill`Walk: Prideful Strut`) && beanSlang) {
             //40MP/20adv +10 stats per fight
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=9",
               true,
             );
           } else if (!haveSkill($skill`Bean Runner`)) {
             //+75% init
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=4",
               true,
             );
           } else if (!haveSkill($skill`Beanscreen`)) {
             //10MP block 3 next attacks
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=3",
               true,
             );
           } else if (!haveSkill($skill`Canhandle`)) {
             //0MP shake offhand beans for heal or dmg and stagger
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=2",
               true,
             );
           } else if (!haveSkill($skill`Lavafava`)) {
             //3MP deal minor hot dmg twice
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=0",
               true,
             );
           } else if (!haveSkill($skill`Beanstorm`)) {
             //15MP AoE 2 hits high dmg.
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=6",
               true,
             );
           } else if (!haveSkill($skill`Beancannon`) && beanSlang) {
             //banish
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=7",
               true,
             );
           } else if (!haveSkill($skill`Beanweaver`)) {
             //2x bean enchantment, +2adv +substats bean plates
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=5",
               true,
             );
           } else if (!haveSkill($skill`Pungent Mung`)) {
             //5MP moderate stench dmg
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1178&whichskill=1",
               true,
             );
@@ -505,61 +505,61 @@ export function awol_buySkills(): boolean {
         if (myClass() === $class`Snake Oiler`) {
           if (!haveSkill($skill`Good Medicine`)) {
             //5MP heal and stagger
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=6",
               true,
             );
           } else if (!haveSkill($skill`Bad Medicine`)) {
             //5MP big debuff
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=3",
               true,
             );
           } else if (!haveSkill($skill`Extract Oil`)) {
             //10MP extract oil. 15/day max
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=2",
               true,
             );
           } else if (!haveSkill($skill`Tolerant Constitution`) && snakeSlang) {
             //+5 spleen
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=8",
               true,
             );
           } else if (!haveSkill($skill`Snakewhip`)) {
             //3MP physical dmg + poison
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=0",
               true,
             );
           } else if (!haveSkill($skill`Patent Medicine`)) {
             //craft oils and tonics.
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=4",
               true,
             );
           } else if (!haveSkill($skill`Long Con`) && snakeSlang) {
             //sniff monster 5/day
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=7",
               true,
             );
           } else if (!haveSkill($skill`Walk: Leisurely Amble`) && snakeSlang) {
             //40MP/20adv +100% meat drop
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=9",
               true,
             );
           } else if (!haveSkill($skill`Well-Oiled Guns`)) {
             //all sixgun skills more effective
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=5",
               true,
             );
           } else if (!haveSkill($skill`Fan Hammer`)) {
             //3 attacks with gun
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=1",
               true,
             );
@@ -567,61 +567,61 @@ export function awol_buySkills(): boolean {
         } else {
           if (!haveSkill($skill`Tolerant Constitution`) && snakeSlang) {
             //+5 spleen
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=8",
               true,
             );
           } else if (!haveSkill($skill`Long Con`) && snakeSlang) {
             //sniff monster 5/day
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=7",
               true,
             );
           } else if (!haveSkill($skill`Good Medicine`)) {
             //5MP heal and stagger
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=6",
               true,
             );
           } else if (!haveSkill($skill`Snakewhip`)) {
             //3MP physical dmg + poison
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=0",
               true,
             );
           } else if (!haveSkill($skill`Bad Medicine`)) {
             //5MP big debuff
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=3",
               true,
             );
           } else if (!haveSkill($skill`Extract Oil`)) {
             //10MP extract oil. 15/day max
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=2",
               true,
             );
           } else if (!haveSkill($skill`Patent Medicine`)) {
             //craft oils and tonics.
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=4",
               true,
             );
           } else if (!haveSkill($skill`Walk: Leisurely Amble`) && snakeSlang) {
             //40MP/20adv +100% meat drop
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=9",
               true,
             );
           } else if (!haveSkill($skill`Well-Oiled Guns`)) {
             //all sixgun skills more effective
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=5",
               true,
             );
           } else if (!haveSkill($skill`Fan Hammer`)) {
             //3 attacks with gun
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd=&option=1&whichchoice=1179&whichskill=1",
               true,
             );

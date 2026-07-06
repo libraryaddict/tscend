@@ -223,8 +223,6 @@ function lowkey_keysRemaining(): number {
 
   let found: number = 0;
   for (const key of lowKeys.keys()) {
-    const loc: Location =
-      lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key);
     if (!lowkey_needKey(key)) {
       found++;
     }
@@ -279,10 +277,6 @@ function lowkey_nextKeyLocation(checkAvailable: boolean): Location {
   }
 
   return Location.none;
-}
-
-function lowkey_nextKeyLocation$1(): Location {
-  return lowkey_nextKeyLocation(false);
 }
 
 function lowkey_nextAvailableKeyLocation(): Location {

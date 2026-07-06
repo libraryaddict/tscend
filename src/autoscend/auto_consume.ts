@@ -950,7 +950,7 @@ export function consumptionProgress(): number {
     organs_used += mySpleenUse();
     organs_max += spleenLimit();
   }
-  // if(my_path() == $path[Avatar of Sneaky Pete]), autoscend doesn't try to use molotov soda or create Hate to produce them
+  // if(my_path()===$path[Avatar of Sneaky Pete]), autoscend doesn't try to use molotov soda or create Hate to produce them
 
   if (organs_max === 0) {
     return 1;

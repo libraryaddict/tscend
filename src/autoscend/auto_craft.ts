@@ -2,9 +2,6 @@ import {
   abort,
   cliExecute,
   craftType,
-  creatableAmount,
-  creatableTurns,
-  create,
   getProperty,
   getRelated,
   Item,
@@ -19,7 +16,6 @@ import {
   auto_is_valid,
   auto_log_debug$1,
   auto_log_warning$1,
-  handleTracker$1,
 } from "./auto_util";
 import { hasLegionKnife } from "./iotms/mr2011";
 
@@ -192,18 +188,5 @@ function untinker$1(amount: number, target: Item): boolean {
   auto_log_warning$1(
     `Untinkering ${amount} [${target}] mysteriously failed. Only ${success_amt} were untinkered`,
   );
-  return false;
-}
-
-function auto_craftIfFree(it: Item): boolean {
-  if (creatableAmount(it) > 0 && creatableTurns(it, 1, true) === 0) {
-    const success: boolean = create(it);
-    handleTracker$1(
-      `${success ? "F" : "Failed to f"}ree craft item`,
-      it.toString(),
-      "auto_otherstuff",
-    );
-    return success;
-  }
   return false;
 }

@@ -381,15 +381,15 @@ export function shenSnakeLocations(
     const ret: Map<Location, boolean> = new Map();
     switch (n_items_returned) {
       case 0:
-        for (const [z, _] of one) {
+        for (const [z] of one) {
           ret.set(z, true);
         }
       case 1:
-        for (const [z, _] of two) {
+        for (const [z] of two) {
           ret.set(z, true);
         }
       case 2:
-        for (const [z, _] of three) {
+        for (const [z] of three) {
           ret.set(z, true);
         }
       case 3:
@@ -466,7 +466,7 @@ function shenZonesToAvoidBecauseMaybeSnake(): Map<Location, boolean> {
       }
     } else {
       // if we're already level 11, well either be starting ASAP
-      for (const [z, _] of shenSnakeLocations(myDaycount(), 0)) {
+      for (const [z] of shenSnakeLocations(myDaycount(), 0)) {
         zones_to_avoid.set(z, true);
       }
     }
@@ -505,7 +505,7 @@ export function getShenZonesTurnsSpent(): Map<Location, number> {
         (_v, _i) => [_i, _v],
       ),
     );
-    for (const [_, zone] of zones) {
+    for (const [, zone] of zones) {
       const loc: Location = toLocation(substring(zone, 0, indexOf(zone, ":")));
       const turns_spent: number = toInt(
         substring(zone, indexOf(zone, ":") + 1),

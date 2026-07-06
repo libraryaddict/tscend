@@ -177,8 +177,8 @@ export function LX_handleIntroAdventures(): void {
     if (1230 === choice) {
       // 1230 is "Welcome to the Kingdom, Gelatinous Noob", intro for Gelatinous Noob (Spring 2017 challenge path).
       // TODO: This should be refactored to use the choiceAdventureScript instead of this terrible hack.
-      let page: string = visitUrl("main.php");
-      page = visitUrl("api.php?what=status&for=4", false);
+      visitUrl("main.php");
+      const page: string = visitUrl("api.php?what=status&for=4", false);
       gnoob_startAscension(page);
     }
 
@@ -424,9 +424,6 @@ export function LX_islandAccess(): boolean {
     use(1, $item`pirate dinghy`);
     return true;
   }
-
-  const canDesert: boolean =
-    toInt(getProperty("lastDesertUnlock")) === myAscensions();
 
   if (
     itemAmount($item`Shore Inc. Ship Trip Scrip`) >= 3 &&

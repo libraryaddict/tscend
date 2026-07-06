@@ -86,7 +86,7 @@ import {
   wrap_item,
   zoneRank$1,
 } from "../auto_util";
-import { in_plumber, plumber_nothingToBuy } from "../paths/path_of_the_plumber";
+import { in_plumber } from "../paths/path_of_the_plumber";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
 // This is meant for items that have a date of 2020
@@ -116,7 +116,7 @@ function auto_birdIsValid(): boolean {
   // however, if they already overwrote favorite bird manually today
   // and we somehow have enough mp to continue casting
   // it might as well be an option
-  // hence == 0 and not <= 0
+  // hence===0 and not <= 0
   if (auto_birdsLeftToday() === 0) {
     return false;
   }
@@ -230,9 +230,6 @@ export function auto_powerfulGloveReplacesAvailable(inCombat: boolean): number {
   return toInt(auto_powerfulGloveCharges() / 10);
 }
 // Returns if replaces are available if the Powerful Glove was equipped
-function auto_powerfulGloveReplacesAvailable$1(): number {
-  return auto_powerfulGloveReplacesAvailable(false);
-}
 
 export function auto_powerfulGloveNoncombat(): boolean {
   if (0 < haveEffect($effect`Invisible Avatar`)) {
@@ -244,18 +241,6 @@ export function auto_powerfulGloveNoncombat(): boolean {
 
 export function auto_powerfulGloveStats(): boolean {
   return auto_powerfulGloveNoncombatSkill($skill`CHEAT CODE: Triple Size`);
-}
-
-function auto_wantToEquipPowerfulGlove(): boolean {
-  if (!auto_hasPowerfulGlove()) {
-    return false;
-  }
-
-  if (in_plumber() && !plumber_nothingToBuy()) {
-    return true;
-  }
-
-  return false;
 }
 
 function auto_willEquipPowerfulGlove(): boolean {

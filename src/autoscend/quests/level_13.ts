@@ -766,9 +766,7 @@ export function L13_towerNSContests(): boolean {
         !toBoolean(getProperty("_lyleFavored")) &&
         auto_is_valid$3($effect`Favored by Lyle`)
       ) {
-        const temp: string = visitUrl(
-          "place.php?whichplace=monorail&action=monorail_lyle",
-        );
+        visitUrl("place.php?whichplace=monorail&action=monorail_lyle");
       }
       acquireMP$1(150); // only uses free rests or items on hand by default
       if (in_darkGyffte()) {
@@ -1185,7 +1183,7 @@ export function L13_towerNSContests(): boolean {
 }
 
 function maximize_hedge(): void {
-  const data: string = visitUrl("campground.php?action=telescopelow");
+  visitUrl("campground.php?action=telescopelow");
 
   const first: Element = ns_hedge1();
   const second: Element = ns_hedge2();
@@ -1347,7 +1345,7 @@ export function L13_sorceressDoor(): boolean {
 
   if (containsText(page, "ns_lock4")) {
     if (itemAmount($item`Richard's star key`) === 0) {
-      const temp: boolean = cliExecute("make richard's star key");
+      cliExecute("make richard's star key");
     }
     if (itemAmount($item`Richard's star key`) === 0) {
       if (!toBoolean(getProperty("auto_getStarKey"))) {
@@ -1714,7 +1712,7 @@ function L13_towerNSTowerBones(): boolean {
     addToMaximize("-familiar");
     equip($slot`familiar`, Item.none);
     // Try just boosting weight
-    for (const [i, it] of auto_getListOfNonDamagingFamiliarEquipment()) {
+    for (const [, it] of auto_getListOfNonDamagingFamiliarEquipment()) {
       if (canEquip(myFamiliar(), it)) {
         equip($slot`familiar`, it);
         break;

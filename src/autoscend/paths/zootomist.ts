@@ -88,30 +88,18 @@ import {
   LX_lastChance,
 } from "../quests/level_any";
 
-let $_f_ZOOPART_NONE: number | undefined;
-$_f_ZOOPART_NONE ??= 0;
-let $_f_ZOOPART_HEAD: number | undefined;
-$_f_ZOOPART_HEAD ??= 1;
-let $_f_ZOOPART_L_SHOULDER: number | undefined;
-$_f_ZOOPART_L_SHOULDER ??= 2;
-let $_f_ZOOPART_R_SHOULDER: number | undefined;
-$_f_ZOOPART_R_SHOULDER ??= 3;
-let $_f_ZOOPART_L_HAND: number | undefined;
-$_f_ZOOPART_L_HAND ??= 4;
-let $_f_ZOOPART_R_HAND: number | undefined;
-$_f_ZOOPART_R_HAND ??= 5;
-let $_f_ZOOPART_R_NIPPLE: number | undefined;
-$_f_ZOOPART_R_NIPPLE ??= 6;
-let $_f_ZOOPART_L_NIPPLE: number | undefined;
-$_f_ZOOPART_L_NIPPLE ??= 7;
-let $_f_ZOOPART_L_BUTTOCK: number | undefined;
-$_f_ZOOPART_L_BUTTOCK ??= 8;
-let $_f_ZOOPART_R_BUTTOCK: number | undefined;
-$_f_ZOOPART_R_BUTTOCK ??= 9;
-let $_f_ZOOPART_L_FOOT: number | undefined;
-$_f_ZOOPART_L_FOOT ??= 10;
-let $_f_ZOOPART_R_FOOT: number | undefined;
-$_f_ZOOPART_R_FOOT ??= 11;
+let $_f_ZOOPART_NONE: number = 0;
+let $_f_ZOOPART_HEAD: number = 1;
+let $_f_ZOOPART_L_SHOULDER: number = 2;
+let $_f_ZOOPART_R_SHOULDER: number = 3;
+let $_f_ZOOPART_L_HAND: number = 4;
+let $_f_ZOOPART_R_HAND: number = 5;
+let $_f_ZOOPART_R_NIPPLE: number = 6;
+let $_f_ZOOPART_L_NIPPLE: number = 7;
+let $_f_ZOOPART_L_BUTTOCK: number = 8;
+let $_f_ZOOPART_R_BUTTOCK: number = 9;
+let $_f_ZOOPART_L_FOOT: number = 10;
+let $_f_ZOOPART_R_FOOT: number = 11;
 
 //Defined in autoscend/paths/zootomist.ash
 export function in_zootomist(): boolean {
@@ -282,7 +270,7 @@ function zoo_isGrafted(f: Familiar): boolean {
   if (f === Familiar.none) {
     return false;
   }
-  for (const [i, fam] of zoo_graftedFams()) {
+  for (const [, fam] of zoo_graftedFams()) {
     if (fam === f) {
       return true;
     }
@@ -325,10 +313,6 @@ function zoo_getBodyPartPriority(): Map<number, number> {
     ]);
   }
   return priority;
-}
-
-function zoo_getBestFam(bodyPart: number): Familiar {
-  return zoo_getBestFam$1(bodyPart, false);
 }
 
 function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {

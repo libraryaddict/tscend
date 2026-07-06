@@ -904,9 +904,7 @@ export function provideInitiative(
   ) {
     if (!speculative) {
       equip($item`candy cane sword cane`);
-      const temp: string = visitUrl(
-        "place.php?whichplace=monorail&action=monorail_lyle",
-      );
+      visitUrl("place.php?whichplace=monorail&action=monorail_lyle");
     }
     handleEffect$1($effect`Peppermint Rush`);
     if (pass$1()) {

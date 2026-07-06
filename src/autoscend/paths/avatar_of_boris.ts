@@ -84,10 +84,8 @@ export function boris_initializeSettings(): void {
     setProperty("auto_wandOfNagamar", false.toString());
     // Mafia r16876 does not see the Boris Helms in storage and will not pull them.
     // We have to force the issue.
-    let temp: string = visitUrl(
-      "storage.php?action=pull&whichitem1=5648&howmany1=1&pwd",
-    );
-    temp = visitUrl("storage.php?action=pull&whichitem1=5650&howmany1=1&pwd");
+    visitUrl("storage.php?action=pull&whichitem1=5648&howmany1=1&pwd");
+    visitUrl("storage.php?action=pull&whichitem1=5650&howmany1=1&pwd");
   }
 }
 
@@ -140,8 +138,6 @@ export function boris_buySkills(): void {
     return;
   }
 
-  let possBorisPoints: number = 0;
-
   const page: string = visitUrl("da.php?place=gate1");
   const my_skillPoints: AshMatcher = new AshMatcher(
     "You can learn (\\d+) more skill",
@@ -150,7 +146,6 @@ export function boris_buySkills(): void {
   if (my_skillPoints.find()) {
     let skillPoints: number = toInt(my_skillPoints.group(1));
     auto_log_info$1(`Skill points found: ${skillPoints}`);
-    possBorisPoints = skillPoints - 1;
 
     while (skillPoints > 0) {
       skillPoints = skillPoints - 1;

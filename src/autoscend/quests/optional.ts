@@ -162,7 +162,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
     if (!hasShirt) {
       return false;
     }
-    const temp: string = visitUrl(
+    visitUrl(
       `inv_equip.php?pwd&which=2&action=equip&whichitem=${toInt(target_shirt)}`,
     );
     if (useLetter()) {
@@ -265,10 +265,7 @@ function LX_melvignShirt(): boolean {
   if (itemAmount($item`Professor What garment`) === 0) {
     return autoAdv$2($location`The Thinknerd Warehouse`);
   }
-  const temp: string = visitUrl(
-    "place.php?whichplace=mountains&action=mts_melvin",
-    false,
-  );
+  visitUrl("place.php?whichplace=mountains&action=mts_melvin", false);
   return true;
 }
 
@@ -322,13 +319,13 @@ export function LX_steelOrgan(): boolean {
   provideItem$2(567, $location`The Laugh Floor`, true);
 
   if (getProperty("questM10Azazel") === "unstarted") {
-    let temp: string = visitUrl("pandamonium.php");
-    temp = visitUrl("pandamonium.php?action=moan");
-    temp = visitUrl("pandamonium.php?action=infe");
-    temp = visitUrl("pandamonium.php?action=sven");
-    temp = visitUrl("pandamonium.php?action=sven");
-    temp = visitUrl("pandamonium.php?action=beli");
-    temp = visitUrl("pandamonium.php?action=mourn");
+    visitUrl("pandamonium.php");
+    visitUrl("pandamonium.php?action=moan");
+    visitUrl("pandamonium.php?action=infe");
+    visitUrl("pandamonium.php?action=sven");
+    visitUrl("pandamonium.php?action=sven");
+    visitUrl("pandamonium.php?action=beli");
+    visitUrl("pandamonium.php?action=mourn");
   }
   if (getProperty("questM10Azazel") === "started") {
     if (
@@ -389,19 +386,19 @@ export function LX_steelOrgan(): boolean {
       }
 
       if (need === 0 && itemAmount($item`Azazel's unicorn`) === 0) {
-        let temp: string = visitUrl("pandamonium.php?action=sven");
+        visitUrl("pandamonium.php?action=sven");
         visitUrl(
           `pandamonium.php?action=sven&bandmember=Jim&togive=${jim}&preaction=try`,
         );
-        temp = visitUrl("pandamonium.php?action=sven");
+        visitUrl("pandamonium.php?action=sven");
         visitUrl(
           `pandamonium.php?action=sven&bandmember=Flargwurm&togive=${flargwurm}&preaction=try`,
         );
-        temp = visitUrl("pandamonium.php?action=sven");
+        visitUrl("pandamonium.php?action=sven");
         visitUrl(
           `pandamonium.php?action=sven&bandmember=Bognort&togive=${bognort}&preaction=try`,
         );
-        temp = visitUrl("pandamonium.php?action=sven");
+        visitUrl("pandamonium.php?action=sven");
         visitUrl(
           `pandamonium.php?action=sven&bandmember=Stinkface&togive=${stinkface}&preaction=try`,
         );
@@ -426,13 +423,13 @@ export function LX_steelOrgan(): boolean {
       itemAmount($item`bus pass`) >= 5 &&
       itemAmount($item`imp air`) >= 5
     ) {
-      const temp: string = visitUrl("pandamonium.php?action=moan");
+      visitUrl("pandamonium.php?action=moan");
     } else if (
       itemAmount($item`Azazel's tutu`) > 0 &&
       itemAmount($item`Azazel's lollipop`) > 0 &&
       itemAmount($item`Azazel's unicorn`) > 0
     ) {
-      const temp: string = visitUrl("pandamonium.php?action=temp");
+      visitUrl("pandamonium.php?action=temp");
     } else {
       auto_log_warning(
         "Stuck in the Steel Organ quest and can't continue, moving on.",
@@ -528,7 +525,7 @@ export function LX_guildUnlock(): boolean {
   }
   if (loc !== Location.none) {
     if (getProperty(pref) !== "started") {
-      const temp: string = visitUrl("guild.php?place=challenge");
+      visitUrl("guild.php?place=challenge");
     }
     if (internalQuestStatus(pref) < 0) {
       auto_log_warning("Visiting the guild failed to set guild quest.", "red");
@@ -573,7 +570,7 @@ export function startArmorySubQuest(): boolean {
 
 function finishArmorySideQuest(): boolean {
   if (internalQuestStatus("questM25Armorer") !== 4) {
-    //step4 == have [no-handed pie]. need to turn it in.
+    //step4===have [no-handed pie]. need to turn it in.
     return false;
   }
   auto_log_info$1("finishing quest [Lending a Hand (and a Foot)]");
@@ -1246,8 +1243,7 @@ export function LX_unlockKnobMenagerie(): boolean {
   return autoAdv$1(1, $location`Cobb's Knob Laboratory`);
 }
 
-let $_f_epicWeapons: Map<Class, Item> | undefined;
-$_f_epicWeapons ??= new Map([
+let $_f_epicWeapons: Map<Class, Item> = new Map([
   [$class`Seal Clubber`, $item`Hammer of Smiting`],
   [$class`Turtle Tamer`, $item`Chelonian Morningstar`],
   [$class`Pastamancer`, $item`Greek Pasta Spoon of Peril`],
@@ -1256,8 +1252,7 @@ $_f_epicWeapons ??= new Map([
   [$class`Accordion Thief`, $item`Squeezebox of the Ages`],
 ]); // usage: item epicWeapon = epicWeapons[my_class()];
 
-let $_f_starterWeapons: Map<Class, Item> | undefined;
-$_f_starterWeapons ??= new Map([
+const $_f_starterWeapons: Map<Class, Item> = new Map([
   [$class`Seal Clubber`, $item`seal-clubbing club`],
   [$class`Turtle Tamer`, $item`turtle totem`],
   [$class`Pastamancer`, $item`pasta spoon`],

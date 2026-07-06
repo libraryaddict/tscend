@@ -43,7 +43,6 @@ import {
   toItem,
   toLowerCase,
   turnsPlayed,
-  urlEncode,
   use,
   useFamiliar,
   visitUrl,
@@ -128,7 +127,7 @@ function mummifyFamiliar(fam: Familiar, bonus: string): boolean {
   bonus = toLowerCase(bonus);
   // I don't want to alter CS behaviour so I'm leaving a couple things in that are otherwise irrelevant.
   const last: Familiar = myFamiliar();
-  let goal: number = 0;
+  let goal: number;
 
   switch (bonus) {
     case "1":
@@ -220,10 +219,6 @@ function mummifyFamiliar$1(fam: Familiar): boolean {
 
 export function mummifyFamiliar$2(): boolean {
   return mummifyFamiliar$1(myFamiliar());
-}
-
-function pantogramPants(): boolean {
-  return pantogramPants$1(myPrimestat(), $element`cold`, 1, 2, 1);
 }
 
 export function pantogramPants$1(
@@ -684,7 +679,7 @@ function kgbKnownEffects(): string {
   );
   if (
     tracker.size < 13 ||
-    toInt(tracker.get(0) ?? tracker.set(0, "").get(0)) != myAscensions()
+    toInt(tracker.get(0) ?? tracker.set(0, "").get(0)) !== myAscensions()
   ) {
     setProperty("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
@@ -727,7 +722,7 @@ function kgbTryEffect(ef: Effect): boolean {
   );
   if (
     tracker.size < 13 ||
-    toInt(tracker.get(0) ?? tracker.set(0, "").get(0)) != myAscensions()
+    toInt(tracker.get(0) ?? tracker.set(0, "").get(0)) !== myAscensions()
   ) {
     setProperty("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
@@ -738,10 +733,7 @@ function kgbTryEffect(ef: Effect): boolean {
   for (let i: number = 1; i < 13; i++) {
     if (toEffect(tracker.get(i) ?? tracker.set(i, "").get(i)) === ef) {
       const button: number = (i + 1) / 2;
-      const page: string = visitUrl(
-        `place.php?whichplace=kgb&action=kgb_tab${button}`,
-        false,
-      );
+      visitUrl(`place.php?whichplace=kgb&action=kgb_tab${button}`, false);
       return true;
     }
   }
@@ -767,7 +759,7 @@ function kgbDiscovery(): boolean {
   );
   if (
     tracker.size < 13 ||
-    toInt(tracker.get(0) ?? tracker.set(0, "").get(0)) != myAscensions()
+    toInt(tracker.get(0) ?? tracker.set(0, "").get(0)) !== myAscensions()
   ) {
     setProperty("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
@@ -1137,199 +1129,6 @@ function kgbDial(dial: number, curVal: number, target: number): boolean {
   return true;
 }
 
-function solveKGBMastermind(): boolean {
-  if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
-    return false;
-  }
-  if (!auto_is_valid($item`Kremlin's Greatest Briefcase`)) {
-    return false;
-  }
-
-  const page: string = visitUrl("place.php?whichplace=kgb");
-  if (containsText(page, "A pair of antennae")) {
-    return false;
-  }
-  if (containsText(page, "kgb_daily")) {
-    return false;
-  }
-  if (containsText(getProperty("_auto_kgbScoresLeft"), "3 0")) {
-    if (containsText(getProperty("_auto_kgbScoresRight"), "3 0")) {
-      return false;
-    }
-  }
-
-  if (containsText(page, "kgb_handledown")) {
-    const temp: string = visitUrl(
-      "place.php?whichplace=kgb&action=kgb_handledown",
-    );
-  }
-  if (!containsText(page, "kgb_handleup")) {
-    abort("KGB Handle borken!!");
-  }
-
-  let guessString: string = "";
-  let clicks: number = 0;
-  while (!containsText(page, "A pair of antennae")) {
-    const dials: Map<number, number> = new Map();
-    let count_1: number = 0;
-    const dial_matcher: AshMatcher = new AshMatcher(
-      'title="Weird Character (.)',
-      page,
-    );
-    while (dial_matcher.find()) {
-      const temp: string = dial_matcher.group(1);
-      if (temp === "a") {
-        dials.set(count_1, 10);
-      } else {
-        dials.set(count_1, toInt(dial_matcher.group(1)));
-      }
-      count_1++;
-    }
-
-    auto_log_info(
-      `Left side: ${dials.get(0) ?? dials.set(0, 0).get(0)} ${dials.get(1) ?? dials.set(1, 0).get(1)} ${dials.get(2) ?? dials.set(2, 0).get(2)}`,
-      "green",
-    );
-    auto_log_info(
-      `Right side: ${dials.get(3) ?? dials.set(3, 0).get(3)} ${dials.get(4) ?? dials.set(4, 0).get(4)} ${dials.get(5) ?? dials.set(5, 0).get(5)}`,
-      "green",
-    );
-
-    const guess: Map<number, number> = new Map();
-    if (guessString === "") {
-      guess.set(1, 0);
-      guess.set(2, 1);
-      guess.set(3, 2);
-    } else {
-      const digits: Map<number, string> = new Map(
-        splitString(guessString, " ").map((_v, _i) => [_i, _v]),
-      );
-      guess.set(
-        1,
-        toInt(
-          digits.get(digits.size - 3) ??
-            digits.set(digits.size - 3, "").get(digits.size - 3),
-        ),
-      );
-      guess.set(
-        2,
-        toInt(
-          digits.get(digits.size - 2) ??
-            digits.set(digits.size - 2, "").get(digits.size - 2),
-        ),
-      );
-      guess.set(
-        3,
-        toInt(
-          digits.get(digits.size - 1) ??
-            digits.set(digits.size - 1, "").get(digits.size - 1),
-        ),
-      );
-    }
-
-    let prop: string = "_auto_kgbScoresLeft";
-    let dialOffset: number = 0;
-    const action: string = "1";
-
-    if (containsText(getProperty("_auto_kgbScoresLeft"), "3 0")) {
-      prop = "_auto_kgbScoresRight";
-      dialOffset = 3;
-      const action_1: string = "2";
-    }
-    //Which one are we doing, if ScoresLeft has 3 0, we are done with it.
-    auto_log_info(
-      `About to guess: ${guess.get(1) ?? guess.set(1, 0).get(1)}, ${guess.get(2) ?? guess.set(2, 0).get(2)}, ${guess.get(3) ?? guess.set(3, 0).get(3)}`,
-      "green",
-    );
-    for (let i: number = 1; i <= 3; i++) {
-      kgbDial(
-        dialOffset + i,
-        dials.get(dialOffset + i) ??
-          dials.set(dialOffset + i, 0).get(dialOffset + i),
-        guess.get(i) ?? guess.set(i, 0).get(i),
-      );
-    }
-    //Verify the dials are correct before pushing anything!
-    const vDials: Map<number, number> = new Map();
-    let vCount: number = 0;
-    const vDial_matcher: AshMatcher = new AshMatcher(
-      'title="Weird Character (.)',
-      page,
-    );
-    while (vDial_matcher.find()) {
-      const temp: string = vDial_matcher.group(1);
-      if (temp === "a") {
-        vDials.set(vCount, 10);
-      } else {
-        vDials.set(vCount, toInt(vDial_matcher.group(1)));
-      }
-      vCount++;
-    }
-
-    if (
-      (vDials.get(dialOffset + 1) ??
-        vDials.set(dialOffset + 1, 0).get(dialOffset + 1)) !==
-        (guess.get(1) ?? guess.set(1, 0).get(1)) ||
-      (vDials.get(dialOffset + 2) ??
-        vDials.set(dialOffset + 2, 0).get(dialOffset + 2)) !==
-        (guess.get(2) ?? guess.set(2, 0).get(2)) ||
-      (vDials.get(dialOffset + 3) ??
-        vDials.set(dialOffset + 3, 0).get(dialOffset + 3)) !==
-        (guess.get(3) ?? guess.set(3, 0).get(3))
-    ) {
-      abort("Dials not set correctly");
-    }
-
-    const page_1: string = visitUrl(
-      `place.php?whichplace=kgb&action=kgb_actuator${action}`,
-      false,
-    );
-    if (containsText(page_1, "Nothing happens")) {
-      auto_log_warning("Out of clicks. Derp.", "red");
-      return false;
-    }
-    let correct: number = 0;
-    let blink: number = 0;
-    const light_match: AshMatcher = new AshMatcher(
-      'kgb_mastermind(\\d)(?:.*?)A light (.*?)"',
-      page_1,
-    );
-    while (light_match.find()) {
-      const bulb: number = toInt(light_match.group(1));
-      const status: string = light_match.group(2);
-      auto_log_info(`Light ${bulb}: ${status}`, "blue");
-      if (status === "(on)") {
-        correct++;
-      }
-      if (status === "(blinking)") {
-        blink++;
-      }
-    }
-    auto_log_info(`Correct: ${correct} Blinking: ${blink}`, "blue");
-
-    clicks++;
-
-    if (getProperty(prop) === "") {
-      setProperty(prop, `${correct} ${blink}`);
-    } else {
-      setProperty(prop, `${getProperty(prop)} ${correct} ${blink}`);
-    }
-
-    guessString = visitUrl(
-      `http://cheesellc.com/kol/kgb.php?data=${urlEncode(getProperty(prop))}`,
-      false,
-    );
-    auto_log_info(`Subresult: ${guessString}`, "green");
-
-    if (containsText(guessString, "3 0")) {
-      guessString = "";
-    }
-  }
-  auto_log_info(`Clicks used: ${clicks}`, "red");
-
-  return containsText(page, "A pair of antennae");
-}
-
 export function getSpaceJelly(): boolean {
   if (!canChangeToFamiliar($familiar`Space Jellyfish`)) {
     return false;
@@ -1350,14 +1149,14 @@ export function getSpaceJelly(): boolean {
   }
 
   if (internalQuestStatus("questS01OldGuy") < 0) {
-    let temp_1: string = visitUrl("oldman.php");
-    temp_1 = visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+    visitUrl("oldman.php");
+    visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
   }
   const old: Familiar = myFamiliar();
   useFamiliar($familiar`Space Jellyfish`);
-  let temp: string = visitUrl("place.php?whichplace=thesea");
-  temp = visitUrl("place.php?whichplace=thesea&action=thesea_left2");
-  temp = visitUrl("choice.php?pwd=&whichchoice=1219&option=1");
+  visitUrl("place.php?whichplace=thesea");
+  visitUrl("place.php?whichplace=thesea&action=thesea_left2");
+  visitUrl("choice.php?pwd=&whichchoice=1219&option=1");
   useFamiliar(old);
   return true;
 }
@@ -1476,7 +1275,7 @@ export function asdonBuff$1(goal: Effect): boolean {
   }
 
   if (needShrug) {
-    const temp_1: string = visitUrl("campground.php?pwd=&preaction=undrive");
+    visitUrl("campground.php?pwd=&preaction=undrive");
   }
 
   let effectNum: number = -1;
@@ -1509,9 +1308,7 @@ export function asdonBuff$1(goal: Effect): boolean {
       effectNum = 8;
       break;
   }
-  const temp: string = visitUrl(
-    `campground.php?pwd=&preaction=drive&whichdrive=${effectNum}`,
-  );
+  visitUrl(`campground.php?pwd=&preaction=drive&whichdrive=${effectNum}`);
 
   return true;
 }
@@ -1637,7 +1434,7 @@ function asdonFeed(it: Item, qty: number): boolean {
   }
 
   const oldFuel: number = getFuel();
-  const temp: string = visitUrl(
+  visitUrl(
     `campground.php?pwd=&action=fuelconvertor&qty=${qty}&iid=${toInt(it)}`,
   );
   const newFuel: number = getFuel();
@@ -1647,10 +1444,6 @@ function asdonFeed(it: Item, qty: number): boolean {
     "green",
   );
   return true;
-}
-
-function asdonFeed$1(it: Item): boolean {
-  return asdonFeed(it, 1);
 }
 
 export function asdonCanMissile(): boolean {
@@ -1772,10 +1565,8 @@ function getHorse(type_1: string): boolean {
   if (choice === -1) {
     return false;
   }
-  let temp: string = visitUrl(
-    "place.php?whichplace=town_right&action=town_horsery",
-  );
-  temp = visitUrl(`choice.php?pwd=&whichchoice=1266&option=${choice}`);
+  visitUrl("place.php?whichplace=town_right&action=town_horsery");
+  visitUrl(`choice.php?pwd=&whichchoice=1266&option=${choice}`);
   if (choice <= 4) {
     setProperty(
       "_horseryRented",
@@ -1812,18 +1603,6 @@ function horseNormal(): void {
 export function horseDark(): void {
   if (isHorseryAvailable()) {
     setProperty("auto_desiredHorse", "dark");
-  }
-}
-
-function horseCrazy(): void {
-  if (isHorseryAvailable()) {
-    setProperty("auto_desiredHorse", "crazy");
-  }
-}
-
-function horsePale(): void {
-  if (isHorseryAvailable()) {
-    setProperty("auto_desiredHorse", "pale");
   }
 }
 

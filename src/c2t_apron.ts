@@ -22,7 +22,6 @@ import { AshMatcher } from "./autoscend/utils/kolmafiaUtils";
 //deals with the black and white apron meal kit
 //simply selects meal based on stat and selects all the extra ingredients that are available
 //cli flag
-const c2t_apron_cli: boolean = false;
 //eats a meal kit with a provided stat
 export function c2t_apron$1(): boolean {
   return c2t_apron(myPrimestat());
@@ -106,7 +105,7 @@ function c2t_apron_allowlist(): Map<string, boolean> {
     );
   }
 
-  for (const [i, x] of split) {
+  for (const [, x] of split) {
     out.set(x, true);
   }
 

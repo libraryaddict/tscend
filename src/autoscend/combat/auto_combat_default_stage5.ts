@@ -1142,7 +1142,6 @@ export function auto_combatDefaultStage5(
   // note preadv *should* ensure we can damage physically immune monsters via a spell or attack
   // this check could be redundant. If preadv worked as intended and we haven't picked a spell yet, attack should deal damage
   if (enemy.physicalResistance >= 80 && attackMinor === "attack with weapon") {
-    const success: boolean = false;
     let m_hot: number = 1;
     let m_cold: number = 1;
     let m_spooky: number = 1;

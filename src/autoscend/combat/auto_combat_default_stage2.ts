@@ -670,7 +670,7 @@ export function auto_combatDefaultStage2(
       10 &&
     $location`The Middle Chamber`.fireLevel < 3
   ) {
-    //wildfire path. ratchets do not burn. king ratchets burn. fire == 0 in other paths
+    //wildfire path. ratchets do not burn. king ratchets burn. fire===0 in other paths
     //actually need ratchets
     let res: string = `item ${$item`tangle of rat tails`}`;
     if (auto_have_skill($skill`Ambidextrous Funkslinging`)) {

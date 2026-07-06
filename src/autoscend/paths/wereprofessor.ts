@@ -408,7 +408,6 @@ export function LX_wereprof_getSmashedEquip(): boolean {
     return false;
   }
 
-  const smashedLocs: Map<number, Location> = new Map();
   const alreadySmashedLocs: string = getProperty("antiScientificMethod");
   //There's a couple other locations, but we shouldn't EVER visit them
   for (const sl of $locations`The Hidden Hospital, The Castle in the Clouds in the Sky (Top Floor), Noob Cave, The Haunted Pantry, The Thinknerd Warehouse, Vanya's Castle`) {

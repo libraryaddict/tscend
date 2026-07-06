@@ -229,10 +229,8 @@ export function theSource_oracle(): boolean {
         break;
     }
   } else if (itemAmount($item`no spoon`) > 0) {
-    let temp: string = visitUrl(
-      "place.php?whichplace=town_wrong&action=townwrong_oracle",
-    );
-    temp = visitUrl("choice.php?pwd=&whichchoice=1190&option=2");
+    visitUrl("place.php?whichplace=town_wrong&action=townwrong_oracle");
+    visitUrl("choice.php?pwd=&whichchoice=1190&option=2");
     return true;
   }
 

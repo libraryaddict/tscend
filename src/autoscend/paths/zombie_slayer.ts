@@ -283,16 +283,6 @@ export function zombieSlayer_acquireHP(goal: number): boolean {
   return myHp() >= goal;
 }
 
-function zombieSlayer_canInfect(enemy: Monster): boolean {
-  for (const phy of $phyla`plant, bug, constellation, construct, elemental, slime`) {
-    if (monsterPhylum(enemy) === phy) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
 export function zombieSlayer_usable(fam: Familiar): boolean {
   if (!in_zombieSlayer()) {
     return true;

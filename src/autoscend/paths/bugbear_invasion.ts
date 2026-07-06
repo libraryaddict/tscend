@@ -499,12 +499,13 @@ function LX_bugbearBridge(): boolean {
 
   addToMaximize("10dr,3moxie,0.5da 1000max,-5ml,1.5hp,0item,0meat");
 
-  let ret: boolean = false;
   if (itemAmount($item`Jeff Goldblum larva`) > 0) {
-    ret = autoAdvBypass$6("place.php?whichplace=bugbearship&action=bb_bridge");
+    autoAdvBypass$6("place.php?whichplace=bugbearship&action=bb_bridge");
   }
 
-  ret = autoAdvBypass$6("place.php?whichplace=bugbearship&action=bb_bridge");
+  let ret: boolean = autoAdvBypass$6(
+    "place.php?whichplace=bugbearship&action=bb_bridge",
+  );
 
   if (toBoolean(getProperty("auto_stayInRun"))) {
     abort("User wanted to stay in run (auto_stayInRun), we are done.");

@@ -1094,23 +1094,6 @@ function auto_getClanPhotoBoothEffectString(ef: Effect): string {
   return "none";
 }
 
-function auto_getClanPhotoBoothEffect(ef: Effect): boolean {
-  return auto_getClanPhotoBoothEffect$1(ef, 1);
-}
-
-function auto_getClanPhotoBoothEffect$1(ef: Effect, n_times: number): boolean {
-  const effect_string: string = auto_getClanPhotoBoothEffectString(ef);
-  if (effect_string === "none") {
-    auto_log_error(`Invalid effect for photo booth ${ef.toString()}`);
-    return false;
-  }
-  return auto_getClanPhotoBoothEffect$2(effect_string);
-}
-
-function auto_getClanPhotoBoothEffect$2(ef_string: string): boolean {
-  return auto_getClanPhotoBoothEffect$3(ef_string, 1);
-}
-
 export function auto_getClanPhotoBoothEffect$3(
   ef_string: string,
   n_times: number,

@@ -66,7 +66,6 @@ import {
 } from "../auto_consume";
 import {
   autoEquip,
-  equipmentAmount,
   equipStatgainIncreasers$1,
   possessEquipment,
   removeFromMaximize,
@@ -893,10 +892,7 @@ export function cheeseWarMachine(
   if (first.find()) {
     let setting: number = toInt(first.group(1));
     while (setting !== stats) {
-      const temp_1: string = visitUrl(
-        `choice.php?whichchoice=1313&option=1&pwd=${myHash()}`,
-        false,
-      );
+      visitUrl(`choice.php?whichchoice=1313&option=1&pwd=${myHash()}`, false);
       setting++;
       if (setting > 3) {
         setting = 1;
@@ -949,10 +945,7 @@ export function cheeseWarMachine(
     }
   }
 
-  const temp: string = visitUrl(
-    `choice.php?whichchoice=1313&option=5&pwd=${myHash()}`,
-    false,
-  );
+  visitUrl(`choice.php?whichchoice=1313&option=5&pwd=${myHash()}`, false);
 
   for (let i: number = 0; i < 5; i++) {
     visitUrl(`choice.php?whichchoice=1314&option=3&pwd=${myHash()}`);
@@ -1331,7 +1324,7 @@ function auto_latteRefill(
 
   function haveWant(want: string): boolean {
     want = auto_latteTranslate(want);
-    for (const [i, s] of wants) {
+    for (const [, s] of wants) {
       if (s === want) {
         return true;
       }
@@ -1427,14 +1420,6 @@ export function auto_haveVotingBooth(): boolean {
       toBoolean(getProperty("voteAlways"))) &&
     isUnrestricted($item`voter registration form`)
   );
-}
-
-function auto_voteSetup(): boolean {
-  return auto_voteSetup$2(0, 0, 0);
-}
-
-function auto_voteSetup$1(candidate: number): boolean {
-  return auto_voteSetup$2(candidate, 0, 0);
 }
 
 export function auto_voteSetup$2(
@@ -1700,24 +1685,6 @@ function isPokeFertilizerAvailable(): boolean {
 
 let $_haveAnyPokeFamiliarEquipment_poke_fam_equipment:
   Map<Item, boolean> | undefined;
-
-function haveAnyPokeFamiliarEquipment(): boolean {
-  $_haveAnyPokeFamiliarEquipment_poke_fam_equipment ??= new Map([
-    [$item`amulet coin`, true],
-    [$item`luck incense`, true],
-    [$item`muscle band`, true],
-    [$item`razor fang`, true],
-    [$item`shell bell`, true],
-    [$item`smoke ball`, true],
-  ]);
-  for (const [i, _] of $_haveAnyPokeFamiliarEquipment_poke_fam_equipment) {
-    if (equipmentAmount(i) > 0) {
-      auto_log_debug$1(`Found Tall Grass familiar equipment: ${i}`);
-      return true;
-    }
-  }
-  return false;
-}
 
 function pokeFertilizeAndHarvest(): boolean {
   if (!isPokeFertilizerAvailable()) {

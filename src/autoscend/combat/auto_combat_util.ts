@@ -26,7 +26,6 @@ import {
   meatCost,
   Monster,
   monsterHp,
-  monsterPhylum,
   mpCost,
   myAudience,
   myClass,
@@ -790,61 +789,6 @@ export function hasClubEquipped(): boolean {
     (itemType(equippedItem($slot`weapon`)) === "sword" &&
       haveEffect($effect`Iron Palms`) > 0)
   );
-}
-
-function auto_saberTrickMeteorShowerCombatHandler(
-  round_1: number,
-  enemy: Monster,
-  text: string,
-): string {
-  if (
-    canUse$2($skill`Use the Force`) &&
-    auto_saberChargesAvailable() > 0 &&
-    auto_have_skill($skill`Meteor Lore`)
-  ) {
-    if (canUse$2($skill`Meteor Shower`)) {
-      return useSkill$2($skill`Meteor Shower`);
-    } else {
-      return auto_combatSaberYR();
-    }
-  }
-  abort("Unable to perform saber trick (meteor shower)");
-  return "abort"; //must have a return
-}
-
-function findPhylumBanisher$1(
-  round_1: number,
-  enemy: Monster,
-  text: string,
-): string {
-  const banishAction: string = banisherCombatString(
-    monsterPhylum(enemy),
-    myLocation(),
-    true,
-  );
-  if (banishAction !== "") {
-    auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
-    if (indexOf(banishAction, "skill") === 0) {
-      handleTracker$1(
-        monsterPhylum(enemy).toString(),
-        toSkill(substring(banishAction, 6)).toString(),
-        "auto_banishes",
-      );
-    } else if (indexOf(banishAction, "item") === 0) {
-      handleTracker$1(
-        monsterPhylum(enemy).toString(),
-        toItem(substring(banishAction, 5)).toString(),
-        "auto_banishes",
-      );
-    } else {
-      auto_log_warning(
-        `Unable to track banisher behavior: ${banishAction}`,
-        "red",
-      );
-    }
-    return banishAction;
-  }
-  return auto_combatHandler(round_1, enemy, text);
 }
 
 export function findBanisher(

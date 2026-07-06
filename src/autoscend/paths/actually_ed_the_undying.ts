@@ -41,7 +41,6 @@ import {
   takeCloset,
   toBoolean,
   toInt,
-  toLowerCase,
   use,
   useServant,
   useSkill,
@@ -357,45 +356,6 @@ export function handleServant(who: Servant): boolean {
     return useServant(who);
   }
   return true;
-}
-
-function handleServant$1(name: string): boolean {
-  if (!isActuallyEd()) {
-    return false;
-  }
-  name = toLowerCase(name);
-  if (name === "priest" || name === "ka") {
-    return handleServant($servant`Priest`);
-  }
-  if (name === "maid" || name === "meat") {
-    return handleServant($servant`Maid`);
-  }
-  if (
-    name === "belly-dancer" ||
-    name === "belly" ||
-    name === "dancer" ||
-    name === "bellydancer" ||
-    name === "pickpocket" ||
-    name === "steal"
-  ) {
-    return handleServant($servant`Belly-Dancer`);
-  }
-  if (name === "cat" || name === "item" || name === "itemdrop") {
-    return handleServant($servant`Cat`);
-  }
-  if (name === "bodyguard" || name === "block") {
-    return handleServant($servant`Bodyguard`);
-  }
-  if (name === "scribe" || name === "stats" || name === "stat") {
-    return handleServant($servant`Scribe`);
-  }
-  if (name === "assassin" || name === "stagger") {
-    return handleServant($servant`Assassin`);
-  }
-  if (name === "none") {
-    return handleServant(Servant.none);
-  }
-  return false;
 }
 
 export function ed_doResting(): boolean {
@@ -1417,7 +1377,7 @@ export function L9_ed_chasmStart(): boolean {
 }
 
 export function ed_DelayNC_DailyDungeon(): boolean {
-  //Ed will be doing daily dungeon if auto_forceFatLootToken == true
+  //Ed will be doing daily dungeon if auto_forceFatLootToken===true
   //return true if we should delay daily dungeon as Ed because we cannot handle the NCs
   if (!isActuallyEd()) {
     return false;

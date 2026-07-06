@@ -424,26 +424,6 @@ function auto_estimatedAdventuresForDooks(): number {
   return advCost_1;
 }
 
-function warplan_from_bitmask(mask: number): WarPlan {
-  const ret: WarPlan = new WarPlan();
-  if (auto_warSide() === "fratboy") {
-    ret.doArena = toBoolean((mask >> 0) & 1);
-    ret.doJunkyard = toBoolean((mask >> 1) & 1);
-    ret.doLighthouse = toBoolean((mask >> 2) & 1);
-    ret.doOrchard = toBoolean((mask >> 3) & 1);
-    ret.doNuns = toBoolean((mask >> 4) & 1);
-    ret.doFarm = toBoolean((mask >> 5) & 1);
-  } else {
-    ret.doArena = toBoolean((mask >> 5) & 1);
-    ret.doJunkyard = toBoolean((mask >> 4) & 1);
-    ret.doLighthouse = toBoolean((mask >> 3) & 1);
-    ret.doOrchard = toBoolean((mask >> 2) & 1);
-    ret.doNuns = toBoolean((mask >> 1) & 1);
-    ret.doFarm = toBoolean((mask >> 0) & 1);
-  }
-  return ret;
-}
-
 function bitmask_from_warplan(plan: WarPlan): number {
   let bitmask: number = 0;
   if (auto_warSide() === "fratboy") {
@@ -733,7 +713,7 @@ export function warAdventure(): boolean {
         "hippiesDefeated",
         (toInt(getProperty("hippiesDefeated")) + 1).toString(),
       );
-      const temp: string = visitUrl("island.php");
+      visitUrl("island.php");
     }
   } else {
     if (!autoAdv$1(1, $location`The Battlefield (Hippy Uniform)`)) {
@@ -741,7 +721,7 @@ export function warAdventure(): boolean {
         "fratboysDefeated",
         (toInt(getProperty("fratboysDefeated")) + 1).toString(),
       );
-      const temp: string = visitUrl("island.php");
+      visitUrl("island.php");
     }
   }
   return true;
@@ -2095,7 +2075,7 @@ export function L12_themtharHills(): boolean {
     auto_log_info(`Meat drop to start: ${meatDropModifier()}`, "blue");
     if (!autoAdv$1(1, $location`The Themthar Hills`)) {
       //Maybe we passed it!
-      const temp: string = visitUrl("bigisland.php?place=nunnery");
+      visitUrl("bigisland.php?place=nunnery");
     }
     if (lastMonster() !== $monster`dirty thieving brigand`) {
       return true;
@@ -2116,7 +2096,6 @@ export function L12_themtharHills(): boolean {
     const advs: number = $location`The Themthar Hills`.turnsSpent + 1;
 
     let diffMeat: number = curMeat - lastMeat;
-    const needMeat: number = 100000 - curMeat;
     let average: number = curMeat / advs;
     auto_log_info(`Cur Meat: ${curMeat} Average: ${average}`, "blue");
 
@@ -2609,7 +2588,7 @@ export function L12_finalizeWar(): boolean {
   }
 
   if (in_pokefam()) {
-    const temp: string = visitUrl("island.php");
+    visitUrl("island.php");
     council();
   }
 

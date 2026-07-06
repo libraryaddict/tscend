@@ -15,7 +15,6 @@ import {
   $class,
   $familiar,
   $item,
-  $items,
   $location,
   $monster,
   $path,
@@ -113,7 +112,6 @@ export function auto_smallCampgroundGear(): boolean {
     [$item`daddy shortlegs leg`, true],
     [$item`kilopede skull`, true],
   ]);
-  const veryTallGrassGear: Item[] = $items`beetle antenna, mantis skull, spider leg`;
   function haveGear(gear: Map<Item, boolean>): boolean {
     for (const it of gear.keys()) {
       if (itemAmount(it) === 0 && !haveEquipped(it)) {

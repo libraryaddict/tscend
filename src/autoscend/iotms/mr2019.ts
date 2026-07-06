@@ -145,7 +145,7 @@ export function auto_sausageBlocked(): boolean {
   }
 
   if (stomach_left() < 0) {
-    //can still be eaten with == 0
+    //can still be eaten with===0
     return true;
   }
 
@@ -383,10 +383,6 @@ export function auto_sausageGoblin(): boolean {
   return auto_sausageGoblin$2(Location.none, null);
 }
 
-function auto_sausageGoblin$1(loc: Location): boolean {
-  return auto_sausageGoblin$2(loc, null);
-}
-
 export function auto_sausageGoblin$2(
   loc: Location,
   option: CombatMacro,
@@ -512,8 +508,8 @@ function auto_saberChoice(choice: string): boolean {
       break;
   }
 
-  let page: string = visitUrl("main.php?action=may4", false);
-  page = visitUrl(`choice.php?pwd=&whichchoice=1386&option=${choiceNum}`);
+  visitUrl("main.php?action=may4", false);
+  visitUrl(`choice.php?pwd=&whichchoice=1386&option=${choiceNum}`);
   return true;
 }
 
@@ -553,11 +549,6 @@ export function auto_saberChargesAvailable(): number {
 
 export function auto_combatSaberBanish(): string {
   setProperty("choiceAdventure1387", (1).toString());
-  return `skill ${$skill`Use the Force`}`;
-}
-
-function auto_combatSaberCopy(): string {
-  setProperty("choiceAdventure1387", (2).toString());
   return `skill ${$skill`Use the Force`}`;
 }
 
@@ -1161,7 +1152,7 @@ function auto_pizza_ingredients(plan: PizzaPlan): Map<number, Item> {
 // Note this doesn't clamp to 15 - that's enforced elsewhere.
 function auto_pizza_unclamped_advs(plan: PizzaPlan): number {
   let char_sum: number = 0;
-  for (const [i, ing] of auto_pizza_ingredients(plan)) {
+  for (const [, ing] of auto_pizza_ingredients(plan)) {
     char_sum += length(ing.toString());
   }
   const advs: number = round(char_sum / 10.0);
@@ -1173,7 +1164,7 @@ function auto_pizza_stats(plan: PizzaPlan): Map<Stat, number> {
   const ret: Map<Stat, number> = new Map();
   ret.set($stat`Muscle`, 0.0);
   ret.set($stat`Moxie`, 0.0);
-  for (const [i, ing] of auto_pizza_ingredients(plan)) {
+  for (const [, ing] of auto_pizza_ingredients(plan)) {
     ret.set($stat`Muscle`, (ret.get($stat`Muscle`) ?? 0.0) + 10 * ing.fullness);
     ret.set($stat`Moxie`, (ret.get($stat`Moxie`) ?? 0.0) + 10 * ing.inebriety);
   }

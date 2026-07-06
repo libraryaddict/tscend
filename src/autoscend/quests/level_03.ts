@@ -100,7 +100,7 @@ function auto_tavern(): boolean {
         flipped = true;
       }
 
-      page = visitUrl("place.php?whichplace=kgb&action=kgb_button1", false);
+      visitUrl("place.php?whichplace=kgb&action=kgb_button1", false);
       page = visitUrl("place.php?whichplace=kgb&action=kgb_button1", false);
       if (flipped) {
         page = visitUrl(
@@ -208,7 +208,7 @@ function auto_tavern(): boolean {
   let tavern_1: string = getProperty("tavernLayout");
   if (tavern_1 === "0000000000000000000000000") {
     // visit cellar then refresh layout property
-    const temp_1: string = visitUrl("cellar.php");
+    visitUrl("cellar.php");
     tavern_1 = getProperty("tavernLayout");
     if (tavern_1 === "0000000000000000000000000") {
       abort(

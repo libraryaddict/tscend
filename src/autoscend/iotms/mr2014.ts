@@ -313,31 +313,31 @@ export function dna_sorceressTest(): boolean {
     getProperty("nsChallenge2") === $element`cold`.toString() &&
     itemAmount($item`Gene Tonic: Plant`) === 0
   ) {
-    const temp: boolean = cliExecute("camp dnainject");
+    cliExecute("camp dnainject");
   } else if (
     getProperty("dnaSyringe") === $phylum`demon`.toString() &&
     getProperty("nsChallenge2") === $element`hot`.toString() &&
     itemAmount($item`Gene Tonic: Demon`) === 0
   ) {
-    const temp: boolean = cliExecute("camp dnainject");
+    cliExecute("camp dnainject");
   } else if (
     getProperty("dnaSyringe") === $phylum`slime`.toString() &&
     getProperty("nsChallenge2") === $element`sleaze`.toString() &&
     itemAmount($item`Gene Tonic: Slime`) === 0
   ) {
-    const temp: boolean = cliExecute("camp dnainject");
+    cliExecute("camp dnainject");
   } else if (
     getProperty("dnaSyringe") === $phylum`undead`.toString() &&
     getProperty("nsChallenge2") === $element`spooky`.toString() &&
     itemAmount($item`Gene Tonic: Undead`) === 0
   ) {
-    const temp: boolean = cliExecute("camp dnainject");
+    cliExecute("camp dnainject");
   } else if (
     getProperty("dnaSyringe") === $phylum`hobo`.toString() &&
     getProperty("nsChallenge2") === $element`stench`.toString() &&
     itemAmount($item`Gene Tonic: Hobo`) === 0
   ) {
-    const temp: boolean = cliExecute("camp dnainject");
+    cliExecute("camp dnainject");
   }
 
   return false;
@@ -353,7 +353,7 @@ export function dna_bedtime(): boolean {
   if ($item`Little Geneticist DNA-Splicing Lab`.toString() in getCampground()) {
     let potionsMade: number = toInt(getProperty("_dnaPotionsMade"));
     while (potionsMade < 3) {
-      const temp: boolean = cliExecute("camp dnapotion");
+      cliExecute("camp dnapotion");
       potionsMade += 1;
     }
   }
@@ -522,17 +522,6 @@ export function fancyOilPainting(): boolean {
 
 function turkeyBooze(): number {
   return toInt(getProperty("_turkeyBooze"));
-}
-
-function amountTurkeyBooze(): number {
-  if (isUnrestricted($item`fist turkey outline`)) {
-    return (
-      itemAmount($item`Agitated Turkey`) +
-      itemAmount($item`Ambitious Turkey`) +
-      itemAmount($item`Friendly Turkey`)
-    );
-  }
-  return 0;
 }
 
 let $_f_importantMonsters: Monster[] | undefined;

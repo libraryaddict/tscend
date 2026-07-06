@@ -1120,12 +1120,10 @@ function initializeDay(day: number): void {
     isUnrestricted($item`LT&T telegraph office deed`)
   ) {
     //string temp = visit_url("desc_item.php?whichitem=529185925");
-    //if(equipped_item($slot[bootspur]) == $item[Nicksilver spurs])
+    //if(equipped_item($slot[bootspur])===$item[Nicksilver spurs])
     //if(contains_text(temp, "Item Drops from Monsters"))
     //{
-    const temp: string = visitUrl(
-      "place.php?whichplace=town_right&action=townright_ltt",
-    );
+    visitUrl("place.php?whichplace=town_right&action=townright_ltt");
     //}
   }
 
@@ -1164,7 +1162,7 @@ function initializeDay(day: number): void {
         "Lady Spookyraven quest not started and we have a Telegram so let us use it.",
         "red",
       );
-      const temp: boolean = use(1, $item`telegram from Lady Spookyraven`);
+      use(1, $item`telegram from Lady Spookyraven`);
     } else {
       auto_log_warning(
         "Lady Spookyraven quest not detected as started but we don't have the telegram, assuming it is... If you are not in an Ed run, report this. Otherwise, it is expected.",
@@ -1247,7 +1245,7 @@ function initializeDay(day: number): void {
     itemAmount($item`cop dollar`) >= 10 &&
     itemAmount($item`shoe gum`) === 0
   ) {
-    const temp: boolean = cliExecute("make shoe gum");
+    cliExecute("make shoe gum");
   }
   //a free to cast intrinsic that makes swords count as clubs. there is no reason to ever have it on if not a seal clubber?
   //regardless of class there is a reason not to if auto_configureRetrocape("vampire", "kill") can be used. it needs the sword to count as a sword and not as a club
@@ -1402,7 +1400,7 @@ function initializeDay(day: number): void {
       handleBjornify(Familiar.none);
       handleBjornify($familiar`El Vibrato Megadrone`);
 
-      const temp: string = visitUrl("guild.php?place=challenge");
+      visitUrl("guild.php?place=challenge");
 
       auto_beachCombHead("exp");
     }
@@ -1651,7 +1649,7 @@ export function dailyEvents(): boolean {
       !toBoolean(getProperty("_lookingGlass")) &&
       isUnrestricted($item`Clan looking glass`)
     ) {
-      const temp: string = visitUrl("clan_viplounge.php?action=lookingglass");
+      visitUrl("clan_viplounge.php?action=lookingglass");
     }
     if (toInt(getProperty("_deluxeKlawSummons")) === 0) {
       cliExecute("clan_viplounge.php?action=klaw");

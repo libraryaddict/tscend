@@ -286,7 +286,7 @@ function auto_post_adventure(): boolean {
   if (in_theSource()) {
     if (toInt(getProperty("auto_diag_round")) === 0) {
       const last: Monster = lastMonster();
-      const temp: string = visitUrl("main.php");
+      visitUrl("main.php");
       if (last !== lastMonster()) {
         auto_log_warning(
           "Interrupted battle detected at post combat time",
@@ -740,7 +740,7 @@ function auto_post_adventure(): boolean {
       $skill`Cannelloni Cocoon`,
     )
   ) {
-    //!cocoon == expensive heal. +durability to save meat even when maxhp > 100
+    //!cocoon===expensive heal. +durability to save meat even when maxhp > 100
     buffMaintain$3($effect`Ghostly Shell`, 30, 1, 5); //+80 DA. 6 MP. totem based duration
     buffMaintain$3($effect`Astral Shell`, 30, 1, 5); //+80 DA, +1 all res. 10 MP. totem based duration
     buffMaintain$3($effect`Reptilian Fortitude`, 30, 1, 5); //+30HP. 10 MP. totem based duration

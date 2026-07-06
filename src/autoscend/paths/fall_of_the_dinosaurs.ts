@@ -1,7 +1,6 @@
-import { myPath, runChoice, setProperty, visitUrl } from "kolmafia";
+import { myPath, setProperty } from "kolmafia";
 import { $path } from "libram";
 
-import { AshMatcher } from "../utils/kolmafiaUtils";
 
 /* TODO - banishing chickens prior to Nuns
 		- wearing chicken hat (and ensuring chickens arent banished) for tower
@@ -20,28 +19,4 @@ export function fotd_initializeSettings(): void {
     setProperty("auto_getBoningKnife", false.toString()); // can birdseed hat the tower monsters
     setProperty("auto_wandOfNagamar", false.toString()); // naughty saursaurus does not need the wand
   }
-}
-
-function fotd_gameWarden(): boolean {
-  if (!in_fotd()) {
-    return false;
-  }
-  let warden: string = visitUrl(
-    "place.php?whichplace=dinorf&action=dinorf_hunter",
-  );
-  const target: AshMatcher = new AshMatcher(
-    'what I need is ([0-9])+ ([A-Za-z ])+"',
-    warden,
-  ); // TODO add some logic meaning we only check at start of day and then once we know we have enough of the target item?
-  const can_collect: AshMatcher = new AshMatcher(
-    "Looks like you have [0-9]+. Want",
-    warden,
-  );
-
-  while (can_collect.find()) {
-    warden = runChoice(1);
-  }
-
-  runChoice(2);
-  return true;
 }
