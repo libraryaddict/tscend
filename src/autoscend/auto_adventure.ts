@@ -78,7 +78,6 @@ export function autoAdv(
   print(`Doing option ${option}`);
   let advReturn: boolean = adv1(loc, -1, option);
   if (!advReturn) {
-    throw "aborts";
     auto_log_debug(
       "adv1 returned false for some reason. Did we actually adventure though?",
       "blue",
