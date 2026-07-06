@@ -38,7 +38,7 @@ jobs:
         git fetch --all
         git switch releases
 
-        git rm -r .
+        git rm -rf --ignore-unmatch .
         cp -r /tmp/release/. .
         git add .
         git commit -m "Build Mafia files for commit $GITHUB_SHA"
