@@ -292,13 +292,13 @@ WarPlan auto_bestWarPlan()
 	{
 		considerArena = false;
 	}
+	if(auto_warSide() == "hippy")		//arena not implemented for hippies yet. TODO implement it then remove this
+	{
+		considerArena = false;
+	}
 	if(get_property("auto_skipNuns").to_boolean())
 	{
 		considerNuns = false;
-	}
-	if(get_property("auto_skipL12Farm").to_boolean())
-	{
-		considerFarm = false;
 	}
 	if(get_property("auto_ignoreFlyer").to_boolean())
 	{
@@ -1357,20 +1357,7 @@ boolean L12_sonofaBeach()
 		pulverizeThing($item[Goatskin Umbrella]);
 	}
 
-	boolean CForced = false;
-	// skills/items that let us select monsters can have the effect of forcing 
-	// combat here too. Think PoP is the only one implemented for this quest (map the monsters being the other, not implemented).
-	if (!auto_havePeridot() || haveUsedPeridot($location[Sonofa Beach])) {
-		if (auto_haveQueuedForcedCombat()) {
-			CForced = true;
-			auto_log_info("Not trying to force combat again at Sonofa Beach because we already have a forced combat queued");
-		}
-		else {
-			CForced = auto_forceNextCombat($location[Sonofa Beach]);
-			auto_log_info("Trying to force combat at Sonofa Beach: "+CForced.to_string(), "blue");
-		}
-	}
-	if(!in_lar() && !CForced)
+	if(!in_lar())
 	{
 		float combat_bonus = providePlusCombat(auto_combatModCap(), $location[Sonofa Beach], true, true);
 		if(combat_bonus <= 0.0)
@@ -1618,11 +1605,6 @@ boolean L12_lastDitchFlyer()
 	{
 		return false;		//let the powerlevel lock release first so we can do quests that are waiting for optimal conditions.
 	}
-	//Does hippy side have access to arena yet?
-	if (get_property("auto_hippyInstead").to_boolean() && (get_property("fratboysDefeated").to_int() < 458))
-	{
-		return false;
-	}
 
 	auto_log_info("Not enough flyer ML but we are ready for the war... uh oh", "blue");
 	if(LX_freeCombats(true)) return true;	//try to use free combats to make up the difference.
@@ -1693,11 +1675,6 @@ boolean L12_flyerFinish()
 	if(robot_delay("outfit"))
 	{
 		return false;	//delay for You, Robot path
-	}
-	//Does hippy side have access to arena yet?
-	if (get_property("auto_hippyInstead").to_boolean() && (get_property("fratboysDefeated").to_int() < 458))
-	{
-		return false;
 	}
 	
 	auto_log_info("Done with this Flyer crap", "blue");

@@ -17,7 +17,7 @@ boolean haveUsed(item it)
 
 int usedCount(skill sk)
 {
-	matcher m = create_matcher("\\(sk" + sk.to_int().to_string() + "\\)", get_property("_auto_combatState"));
+	matcher m = create_matcher("(sk" + sk.to_int().to_string() + ")", get_property("_auto_combatState"));
 	int count = 0;
 	while(m.find())
 	{
@@ -28,7 +28,7 @@ int usedCount(skill sk)
 
 int usedCount(item it)
 {
-	matcher m = create_matcher("\\(it" + it.to_int().to_string() + "\\)", get_property("_auto_combatState"));
+	matcher m = create_matcher("(it" + it.to_int().to_string() + ")", get_property("_auto_combatState"));
 	int count = 0;
 	while(m.find())
 	{
@@ -841,11 +841,6 @@ string banisherCombatString(monster enemy, location loc, boolean inCombat)
 	if((inCombat ? auto_have_skill($skill[Sea *dent: Throw a Lightning Bolt]) : possessEquipment($item[Monodent of the Sea])) && auto_throwLightningRemaining() > 0 && !(used contains "Sea *dent: Throw a Lightning Bolt"))
 	{
 		return "skill " + $skill[Sea *dent: Throw a Lightning Bolt];
-	}
-
-	if(auto_have_skill($skill[Order a Kneecapping]) && (my_mp() > mp_cost($skill[Order a Kneecapping])) && !get_property("_kneecappingOrdered").to_boolean() && !(used contains "Order a Kneecapping"))
-	{
-		return "skill " + $skill[Order a Kneecapping];
 	}
 	
 	//[Nanorhino] familiar specific banish. fairly low priority as it consumes 40 to 50 adv worth of a decent buff.

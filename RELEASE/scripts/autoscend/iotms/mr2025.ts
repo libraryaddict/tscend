@@ -193,8 +193,7 @@ boolean auto_setLeprecondo()
 
 boolean auto_useLeprecondoDrops()
 {
-	// picked 4 as craft threshold due to cup of 13s (as implemented) sometimes wanting up to 3 crafts
-	while (available_amount($item[crafting plans])>0 && free_crafts() < 4)
+	while (available_amount($item[crafting plans])>0 && free_crafts() < 2)
 	{
 		use($item[crafting plans]);
 	}
@@ -236,11 +235,6 @@ boolean auto_equipAprilShieldBuff()
 {
 	if(!auto_haveAprilShowerShield())
 	{
-		return false;
-	}
-	if(is_boris())
-	{
-		auto_log_debug('Boris would neither be caught dead with a shield, nor showering', "gold");
 		return false;
 	}
 	//force equip the shield if this is called
@@ -1049,7 +1043,7 @@ boolean auto_BCZEquipped()
 boolean auto_wantToBCZ(skill sk)
 {
 	// zootomist doesn't have substats
-	if(!auto_haveBCZ() || !(auto_is_valid(sk)) || in_zootomist())
+	if(!auto_haveBCZ() || !(canUse(sk)) || in_zootomist())
 	{
 		return false;
 	}

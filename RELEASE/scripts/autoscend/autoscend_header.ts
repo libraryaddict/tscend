@@ -720,24 +720,8 @@ boolean auto_spadeDigSkeleton();
 boolean auto_wantToSpadeDigSkeleton(location loc);
 boolean[location] spadeDelayZones();
 boolean auto_burnRemainingSpadeDigs();
-boolean auto_havePastaWand();
-item[item] legendaryNoodleDishes();
-int numPreparedLegendaryNoodleDishes();
-item auto_findPreparedLegendaryNoods();
-int numBaseLegendaryNoodleDishes();
-item auto_findBaseLegendaryNoods();
-boolean canEatSomeLegNoods();
-boolean auto_willEatLegendaryNoodles();
-boolean auto_legendaryNoodlesAvailable();
-boolean auto_forceCombatLegendaryNoodles();
 void legendaryNoodlesChoiceHandler();
-boolean auto_haveCupOf13s();
-item[int] auto_pickCupOf13sIngredients();
-boolean auto_canMakeCupOf13sDrink();
-float auto_CupOf13sDesirability();
-boolean auto_acquireCupOf13sIngredients(item[int] ingredients);
-boolean consumeCupOf13s();
-boolean wantToThrowInterestingCoin(location loc, monster enemy);
+
 
 ########################################################################################################
 //Defined in autoscend/iotms/ttt.ash
@@ -1275,13 +1259,6 @@ boolean rightKickHasInstaKill();
 boolean LX_zootoFight();
 
 ########################################################################################################
-//Defined in autoscend/paths/blue_vs_read.ash
-boolean in_bluevsred();
-boolean bluevsred_isBlue();
-boolean bluevsred_isRed();
-void bluevsred_initializeSettings();
-
-########################################################################################################
 //Defined in autoscend/quests/level_01.ash
 void tootOriole();
 void tootGetMeat();
@@ -1763,8 +1740,6 @@ int auto_famWeight();
 float auto_famModifiers(familiar fam, string mod, item famEquip);
 float auto_famModifiers(familiar fam, string mod);
 float auto_famModifiers(string mod);
-boolean auto_wantFamXP(int max_fam_experience);
-void switchToFamXP(int max_fam_experience);
 
 ########################################################################################################
 //Defined in autoscend/auto_list.ash
@@ -2224,11 +2199,6 @@ boolean auto_MaxMLToCap(int ToML, boolean doAltML);
 boolean auto_canForceNextNoncombat();
 boolean auto_forceNextNoncombat();
 boolean auto_haveQueuedForcedNonCombat();
-boolean auto_canForceNextCombat();
-boolean auto_forceNextCombat();
-boolean auto_haveQueuedForcedCombat();
-int auto_numQueuedForcedCombat();
-boolean auto_haveCombatForceSource();
 int auto_predictAccordionTurns();
 boolean hasTTBlessing();
 void effectAblativeArmor(boolean passive_dmg_allowed);
@@ -2267,6 +2237,4 @@ modifier damageModifier     (element el);
 modifier spellDamageModifier(element el);
 float auto_getElementalDamageMultiplier(element source, element target);
 int auto_remainingShantyTurns();
-boolean[location] rat_locations();
-boolean pm_updateThrall(location place, boolean going_to_eat);
 boolean auto_meetsMinimumRequirements();

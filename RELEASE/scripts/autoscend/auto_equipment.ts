@@ -60,7 +60,6 @@ boolean autoEquip(item it)
 // mostly for the Antique Machete and unstable fulminate
 boolean autoForceEquip(slot s, item it, boolean noMaximize)
 {
-	auto_log_debug('Forcing equip of "' + it + '"', "gold");
 	if(it == $item[none])
 	{
 		return equip(s, it);
@@ -891,10 +890,6 @@ void finalizeMaximize(boolean speculative)
 		addBonusToMaximize($item[bat wings], 200); // get the 5 free fights
 	}
 
-	if(my_class() == $class[Pastamancer] && auto_havePastaWand() && my_thrall().level < 11 && (my_thrall() == $thrall[Vermincelli] || my_thrall() == $thrall[Spice Ghost])) {
-		addToMaximize("40 Pasta Thrall Experience"); // bonus for the thrallxp, if we have a thrall we wanna lvl up
-	}
-
 	// We still need pixels in KoE, badly.
 	if(in_koe() && auto_hasPowerfulGlove())
 	{
@@ -1314,11 +1309,6 @@ void equipRollover(boolean silent)
 
 boolean auto_forceEquipSword(boolean speculative) {
 	item swordToEquip = $item[none];
-	// Boris won't be caught dead with a sword
-	if (is_boris()) {
-		return false;
-	}
-
 	// use the ebony epee if we have it
 	if (possessEquipment($item[ebony epee]))
 	{

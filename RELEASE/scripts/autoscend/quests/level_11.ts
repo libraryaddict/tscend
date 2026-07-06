@@ -2956,16 +2956,6 @@ boolean L11_shenCopperhead()
 			else if (auto_wantToSpadeDigSkeleton(goal)) {
 				return auto_spadeDigSkeleton();
 			}
-			// similar if statements exist in the L8 quest file (see comments over there)
-			// before delayburn because we *want* to fight NSAs if we're going ninja lair, not avoid them by burning delay
-			if (goal == $location[Lair of the Ninja Snowmen]) { 
-				if (auto_canForceNextCombat() || auto_haveQueuedForcedCombat()) {
-					if (L8_trapperNinjaLair()){ return true; } 
-				}
-				if (internalQuestStatus("questL08Trapper").to_int() == 2 && auto_haveCombatForceSource() && !isAboutToPowerlevel() && !get_property("auto_L8_extremeInstead").to_boolean()) {
-					return false;
-				}
-			}
 			if (canBurnDelay(goal))
 			{
 				// Snakes have variable delay of 3-5 adventures but we can burn at least 3 of that.
@@ -3500,21 +3490,10 @@ boolean L11_unlockEd()
 		}
 		return true;
 	}
-
-	// Crumbling wooden wheels are more consistent for Blue vs. Red
-	if(in_bluevsred())
+	if(total < 10)
 	{
-		if(!get_property("controlRoomUnlock").to_boolean())
-		{
-			// Blue team can't fight tomb rats
-			if(bluevsred_isRed() && total < 10)
-			{
-				provideItem(400, $location[The Middle Chamber], true);
-			}
-			return autoAdv(1, $location[The Middle Chamber]);
-		}
-		providePlusNonCombat(auto_combatModCap(), $location[The Upper Chamber], true);
-		return autoAdv(1, $location[The Upper Chamber]);
+		// tomb ratchets have 20% drop rate
+		provideItem(400, $location[The Middle Chamber], true);
 	}
 
 	if(get_property("controlRoomUnlock").to_boolean())
@@ -3523,12 +3502,6 @@ boolean L11_unlockEd()
 		{
 			return autoAdv(1, $location[The Upper Chamber]);
 		}
-	}
-
-	if(total < 10)
-	{
-		// tomb ratchets have 20% drop rate
-		provideItem(400, $location[The Middle Chamber], true);
 	}
 
 	if (canSniff($monster[Tomb Rat], $location[The Middle Chamber]) && auto_mapTheMonsters())

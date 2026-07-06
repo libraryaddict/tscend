@@ -168,13 +168,6 @@ string auto_combatDefaultStage2(int round, monster enemy, string text)
 		}
 	}
 	
-	//throw interesting coin to free kill the enemy but don't get any items
-	if(canUse($item[interesting coin]) && wantToThrowInterestingCoin(my_location(), enemy))
-	{
-		handleTracker(enemy, $item[interesting coin], "auto_instakill");
-		return useItem($item[interesting coin]);
-	}
-
 	//throw gravel to free kill the enemy but don't get any items
 	if(wantToThrowGravel(my_location(), enemy))
 	{
@@ -524,7 +517,7 @@ string auto_combatDefaultStage2(int round, monster enemy, string text)
 			return useSkill($skill[Fire the Jokester\'s Gun]);
 		}
 
-		if(canUse($skill[BCZ: Sweat Bullets]) && auto_wantToBCZ($skill[BCZ: Sweat Bullets]) && (wantFreeKillNowEspecially || !reserveFreekills))
+		if(auto_wantToBCZ($skill[BCZ: Sweat Bullets]) && (wantFreeKillNowEspecially || !reserveFreekills))
 		{
 			handleTracker(enemy, $skill[BCZ: Sweat Bullets], "auto_instakill");
 			loopHandlerDelayAll();
