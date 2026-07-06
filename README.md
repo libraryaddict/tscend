@@ -2,6 +2,14 @@
 
 This is a typescript adaption of https://github.com/loathers/autoscend
 
+Install it with
+
+```
+git checkout libraryaddict/autoscend release
+```
+
+It's somewhat advised that you remove the old autoscend installation first, as they still share the same filenames for data files and so on.
+
 The reasons behind a typescript edition are manifold, but it largely comes down to a better development experience for those experienced in typescript, and access to typescript libraries for advanced features. More significantly, typescript has advanced IDE support.
 
 This script was transpiled using an unpublished tool that tried to remain as close to a 1:1 transpilation of the original autoscend.ash script, with further fixes made where the transpiler didn't suffice.
