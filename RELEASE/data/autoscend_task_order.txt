@@ -562,7 +562,7 @@ WereProfessor	26	LX_spookyravenManorFirstFloor
 WereProfessor	27	L5_getEncryptionKey
 WereProfessor	28	L5_findKnob
 # Quests with Werewolf/Professor specific limitations should have higher priority so we do those when we can
-WereProfessor	29	L12_Gremlins	is_werewolf
+WereProfessor	29	L12_gremlins	is_werewolf
 WereProfessor	30	L11_forgedDocuments	is_professor
 WereProfessor	31	L11_mcmuffinDiary	is_professor
 WereProfessor	32	L11_getUVCompass	is_professor
