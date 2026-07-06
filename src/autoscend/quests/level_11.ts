@@ -460,7 +460,7 @@ function shenZonesToAvoidBecauseMaybeSnake(): Map<Location, boolean> {
       //if level 10, assume shen today or tomorrow, otherwise up to two days from now
       const beforeThatDay: number = myLevel() >= 10 ? 2 : 3;
       for (let day: number = 0; day < beforeThatDay; day++) {
-        for (const [z, _] of shenSnakeLocations(day + myDaycount(), 0)) {
+        for (const [z] of shenSnakeLocations(day + myDaycount(), 0)) {
           zones_to_avoid.set(z, true);
         }
       }
@@ -2048,7 +2048,7 @@ export function liana_cleared(loc: Location): boolean {
   const area_combats_seen: Map<number, string> = new Map(
     splitString(loc.combatQueue, "; ").map((_v, _i) => [_i, _v]),
   );
-  for (const [key, s] of area_combats_seen) {
+  for (const [, s] of area_combats_seen) {
     if (s === "dense liana") {
       dense_liana_defeated += 1;
     }
@@ -3379,7 +3379,7 @@ export function L11_shenStartQuest(): boolean {
         "I am going to avoid the following zones until Shen tells me to go there or until I run out of other things to do:",
       );
       let linec: number = 1;
-      for (const [z, _] of shenZonesToAvoidBecauseMaybeSnake()) {
+      for (const [z] of shenZonesToAvoidBecauseMaybeSnake()) {
         auto_log_info$1(`${linec++}. ${z}`);
         setProperty(
           "auto_shenZonesTurnsSpent",

@@ -296,7 +296,7 @@ export function autoOutfit(toWear: string): boolean {
   const CommonOutfitAccessories: Item[] = $items`eXtreme mittens, bejeweled pledge pin, round purple sunglasses, Oscus's pelt, stuffed shoulder parrot`;
 
   let pass_1: boolean = true;
-  for (const [i, it] of outfitPieces(toWear).entries()) {
+  for (const [, it] of outfitPieces(toWear).entries()) {
     // Keep required accessories in acc3 slot to preserve our format
     if (CommonOutfitAccessories.includes(it)) {
       pass_1 = pass_1 && autoEquip($slot`acc3`, it);
@@ -317,7 +317,7 @@ export function autoStripOutfit(toRemove: string): boolean {
     return false;
   }
   auto_log_info(`Removing your ${toRemove} outfit as requested.`, "blue");
-  for (const [_, piece] of outfit_pieces) {
+  for (const [, piece] of outfit_pieces) {
     if (toSlot(piece) !== $slot`acc1`) {
       equip(toSlot(piece), Item.none);
     } else {
@@ -612,12 +612,12 @@ export function equipStatgainIncreasers(
     }
   }
   //equipment would be equipped in the order it was listed. check if HP or MP would be lost by equipping
-  let HPlost: number = 0;
+  let HPlost: number;
   let mostHPlost: number = 0;
-  let MPlost: number = 0;
+  let MPlost: number;
   let mostMPlost: number = 0;
-  let speculateOneItem: string = "";
-  let speculateAllItems: string = "";
+  let speculateOneItem: string;
+  let speculateAllItems: string;
   for (const sl of statgainIncreasers.keys()) {
     speculateOneItem = `equip ${sl.toString()} ${(statgainIncreasers.get(sl) ?? statgainIncreasers.set(sl, Item.none).get(sl)).toString()}; `;
     cliExecute(`speculate quiet; ${speculateOneItem}`);
@@ -1359,7 +1359,7 @@ export function simMaximize(): boolean {
 }
 
 export function simMaximize$1(loc: Location): boolean {
-  let res: boolean = false;
+  let res: boolean;
   if (myLocation() !== loc) {
     //set the simulated location while maximizing
     const locCache: Location = myLocation();
@@ -1453,7 +1453,7 @@ export function equipOverrides(): void {
       continue;
     }
 
-    let s: Slot = Slot.none;
+    let s: Slot;
     if (slot_str === "acc") {
       s = $slot`acc3`;
     } else {
@@ -1463,7 +1463,7 @@ export function equipOverrides(): void {
     const overrides_split: Map<number, string> = new Map(
       splitString(overrides, ";").map((_v, _i) => [_i, _v]),
     );
-    for (const [i, item_str] of overrides_split) {
+    for (const [, item_str] of overrides_split) {
       const it: Item = toItem(item_str);
       if (it === Item.none) {
         auto_log_warning(
@@ -1525,7 +1525,7 @@ export function possessOutfit(
     return false;
   }
 
-  for (const [key, piece] of outfitPieces(outfitToCheck).entries()) {
+  for (const [, piece] of outfitPieces(outfitToCheck).entries()) {
     if (!possessEquipment(piece)) {
       return false;
     }
@@ -1675,10 +1675,6 @@ export function is_watch(it: Item): boolean {
   return booleanModifier(it, Modifier.get("Nonstackable Watch"));
 }
 
-function auto_getAllEquipabble(): Map<Item, number> {
-  return auto_getAllEquipabble$1(Slot.none);
-}
-
 export function auto_getAllEquipabble$1(s: Slot): Map<Item, number> {
   const ignore_slot: boolean = s === Slot.none;
   s = s === $slot`acc2` || s === $slot`acc3` ? $slot`acc1` : s; // all accessories checked against slot 1
@@ -1721,7 +1717,7 @@ export function auto_getAllEquipabble$1(s: Slot): Map<Item, number> {
 }
 
 export function auto_saveEquipped(): Map<number, Item> {
-  let my_slots: Map<Slot, boolean> = new Map();
+  let my_slots: Map<Slot, boolean>;
   if (in_hattrick()) {
     my_slots = new Map([
       [$slot`off-hand`, true],
@@ -1748,7 +1744,6 @@ export function auto_saveEquipped(): Map<number, Item> {
       [$slot`familiar`, true],
     ]);
   }
-  const i: number = 0;
   const equipped: Map<number, Item> = new Map();
   for (const sl of my_slots.keys()) {
     equipped.set(equipped.size, equippedItem(sl));
@@ -1759,12 +1754,12 @@ export function auto_saveEquipped(): Map<number, Item> {
 export function auto_loadEquipped(loadEquip: Map<number, Item>): boolean {
   let loadAccCount: number = 0;
   let accCount: number = 0;
-  for (const [i, it] of loadEquip) {
+  for (const [, it] of loadEquip) {
     if (toSlot(it) === $slot`acc1`) {
       loadAccCount += 1;
     }
   }
-  for (const [i, it] of loadEquip) {
+  for (const [, it] of loadEquip) {
     //remove off-hand if we need to equip a 2 handed weapon from our saved load out
     if (it === Item.none) {
       continue;

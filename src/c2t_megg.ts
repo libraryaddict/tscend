@@ -21,7 +21,6 @@ import {
   setProperty,
   splitString,
   toInt,
-  toLowerCase,
   toMonster,
   useFamiliar,
   visitUrl,
@@ -59,10 +58,6 @@ export function c2t_megg_extract(target: Monster): boolean {
   const egg: Item = $item`mimic egg`;
   const mimic: Familiar = $familiar`Chest Mimic`;
   const pref: string = "_mimicEggsObtained";
-  let page: string = null;
-  let maxlist: Map<string, boolean> = new Map();
-  let monstring: string = "";
-  let start_1: number = 0;
 
   c2t_megg_init();
   //maybe don't need to go
@@ -86,7 +81,7 @@ export function c2t_megg_extract(target: Monster): boolean {
   }
   //go
   useFamiliar(mimic);
-  page = visitUrl(
+  const page: string = visitUrl(
     "place.php?whichplace=town_right&action=townright_dna",
     false,
     true,
@@ -100,16 +95,17 @@ export function c2t_megg_extract(target: Monster): boolean {
     return c2t_megg_error("couldn't find the extract egg interface");
   }
   //make maxlist
-  maxlist = c2t_megg_readPage(page);
+  const maxlist: Map<string, boolean> = c2t_megg_readPage(page);
   c2t_megg_writeFile(maxlist);
-  monstring = target.id.toString();
+
+  const monstring: string = target.id.toString();
   //is it extractable
   if (!maxlist.has(monstring)) {
     return c2t_megg_error(`${target} not extractable (yet?)`);
   }
 
-  start_1 = itemAmount(egg);
-  page = visitUrl(
+  const start_1: number = itemAmount(egg);
+  visitUrl(
     `choice.php?pwd&whichchoice=1517&option=2&mid=${monstring}`,
     true,
     true,
@@ -129,7 +125,6 @@ export function c2t_megg_preAdv(): boolean {
   const mimic: Familiar = $familiar`Chest Mimic`;
   const prefLast: string = "_c2t_megg_lastCheck";
   const prefLimit: string = "c2t_megg_timeLimit";
-  let maxlist: Map<string, boolean> = new Map();
   const last: number = toInt(getProperty(prefLast));
   let limit: number = toInt(getProperty(prefLimit)) * 60000;
   const now: number = nowToInt();
@@ -174,7 +169,7 @@ export function c2t_megg_preAdv(): boolean {
     );
   }
   //read/write
-  maxlist = c2t_megg_readPage(page);
+  const maxlist: Map<string, boolean> = c2t_megg_readPage(page);
   c2t_megg_writeFile(maxlist);
   //make sure it actually happened
   if (maxlist.size === 0) {
@@ -220,42 +215,8 @@ function c2t_megg_print(s: string): void {
 }
 
 //prints list of mimic eggs on hand and their quanity as read from item description
-function c2t_megg_printEggs(): void {
-  const eggs: Map<Monster, number> = c2t_megg_eggs();
-  const order: Map<string, Map<string, number>> = new Map();
-
-  for (const [i, x] of eggs) {
-    (
-      order.get(toLowerCase(i.name)) ??
-      order.set(toLowerCase(i.name), new Map()).get(toLowerCase(i.name))
-    ).set(i.name, x);
-  }
-
-  c2t_megg_print("list of eggs on hand:");
-  for (const [i, _v0] of order) {
-    for (const [j, _v1] of _v0) {
-      const x = _v1;
-      print(`${j} => ${x}`);
-    }
-  }
-  c2t_megg_print(`total eggs on hand: ${itemAmount($item`mimic egg`)}`);
-}
 
 //print list of maxed eggs as read from data file
-function c2t_megg_printMaxed(): void {
-  const maxlist: Map<Monster, boolean> = c2t_megg_maxed();
-  const order: Map<string, string> = new Map();
-
-  for (const x of maxlist.keys()) {
-    order.set(toLowerCase(x.name), x.name);
-  }
-
-  c2t_megg_print("list of maxed eggs:");
-  for (const [i, x] of order) {
-    print(`${x}`);
-  }
-  c2t_megg_print(`total maxed eggs: ${maxlist.size}`);
-}
 
 //mafia's xpath won't let me just grab from one form directly without this workaround
 function c2t_megg_isExtractPage(page: string): boolean {
@@ -265,28 +226,15 @@ function c2t_megg_isExtractPage(page: string): boolean {
   );
 }
 
-function c2t_megg_isDonatePage(page: string): boolean {
-  return containsText(page, 'Donate the egg of <select name="mid">');
-}
-
-function c2t_megg_numForms(page: string): number {
-  return (
-    toInt(c2t_megg_isDonatePage(page)) + toInt(c2t_megg_isExtractPage(page))
-  );
-}
-
 //gets list of max eggs from page
 function c2t_megg_readPage(page: string): Map<string, boolean> {
   const out: Map<string, boolean> = new Map();
-  let m: AshMatcher = null;
-  let part: string = "";
-
-  m = new AshMatcher(
+  let m: AshMatcher = new AshMatcher(
     'Extract an egg containing the dna of <select name="mid">(.*)<small>\\(\\d+/11 eggs? spawned today\\)</small>',
     page,
   );
   m.find();
-  part = m.group(1);
+  const part: string = m.group(1);
   m = new AshMatcher('<option value="(\\d+)"\\s*>', part);
   while (m.find()) {
     out.set(m.group(1), true);
@@ -297,15 +245,13 @@ function c2t_megg_readPage(page: string): Map<string, boolean> {
 //read/write data file for keeping track of maxed eggs
 function c2t_megg_readFile(): Map<string, boolean> {
   const out: Map<string, boolean> = new Map();
-  let raw: Map<number, string> = new Map();
-
-  raw = new Map(
+  const raw: Map<number, string> = new Map(
     Object.entries(fileToArray("c2t_megg_maxlist.txt")).map(([_k, _v]) => [
       toInt(_k),
       _v,
     ]),
   );
-  for (const [i, x] of raw) {
+  for (const [, x] of raw) {
     out.set(x, true);
   }
   return out;

@@ -1362,9 +1362,7 @@ export function L9_ed_chasmStart(): boolean {
   if (isActuallyEd() && !toBoolean(getProperty("auto_chasmBusted"))) {
     auto_log_info("It's a troll on a bridge!!!!", "blue");
 
-    const page: string = visitUrl(
-      "place.php?whichplace=orc_chasm&action=bridge_done",
-    );
+    visitUrl("place.php?whichplace=orc_chasm&action=bridge_done");
     autoAdvBypass$1(
       "place.php?whichplace=orc_chasm&action=bridge_done",
       $location`The Smut Orc Logging Camp`,

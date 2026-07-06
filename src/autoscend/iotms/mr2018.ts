@@ -38,7 +38,6 @@ import {
   toItem,
   toLowerCase,
   totalTurnsPlayed,
-  use,
   useFamiliar,
   visitUrl,
 } from "kolmafia";
@@ -77,10 +76,8 @@ import {
 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
-  auto_get_campground,
   auto_is_valid,
   auto_is_valid$1,
-  auto_log_debug$1,
   auto_log_info,
   auto_log_warning,
   handleTracker$1,
@@ -344,7 +341,7 @@ export function fantasyRealmAvailable(): boolean {
 
 export function fantasyBanditsFought(): number {
   if (containsText(getProperty("_frMonstersKilled"), "fantasy bandit")) {
-    for (const [idx, it] of splitString(
+    for (const [, it] of splitString(
       getProperty("_frMonstersKilled"),
       ",",
     ).entries()) {
@@ -904,10 +901,7 @@ export function cheeseWarMachine(
   if (second.find()) {
     let setting: number = toInt(second.group(1));
     while (setting !== it) {
-      const temp_1: string = visitUrl(
-        `choice.php?whichchoice=1313&option=2&pwd=${myHash()}`,
-        false,
-      );
+      visitUrl(`choice.php?whichchoice=1313&option=2&pwd=${myHash()}`, false);
       setting++;
       if (setting > 3) {
         setting = 1;
@@ -919,10 +913,7 @@ export function cheeseWarMachine(
   if (third.find()) {
     let setting: number = toInt(third.group(1));
     while (setting !== eff) {
-      const temp_1: string = visitUrl(
-        `choice.php?whichchoice=1313&option=3&pwd=${myHash()}`,
-        false,
-      );
+      visitUrl(`choice.php?whichchoice=1313&option=3&pwd=${myHash()}`, false);
       setting++;
       if (setting > 3) {
         setting = 1;
@@ -934,10 +925,7 @@ export function cheeseWarMachine(
   if (fourth.find()) {
     let setting: number = toInt(fourth.group(1));
     while (setting !== potion) {
-      const temp_1: string = visitUrl(
-        `choice.php?whichchoice=1313&option=4&pwd=${myHash()}`,
-        false,
-      );
+      visitUrl(`choice.php?whichchoice=1313&option=4&pwd=${myHash()}`, false);
       setting++;
       if (setting > 3) {
         setting = 1;
@@ -1294,7 +1282,7 @@ function auto_latteRefill(
   const unlocked_array: Map<number, string> = new Map(
     splitString(getProperty("latteUnlocks"), ",").map((_v, _i) => [_i, _v]),
   );
-  for (const [i, s] of unlocked_array) {
+  for (const [, s] of unlocked_array) {
     unlocked.set(s, true);
   }
 
@@ -1381,24 +1369,12 @@ function auto_latteRefill(
   return true;
 }
 
-function auto_latteRefill$1(
-  want1: string,
-  want2: string,
-  want3: string,
-): boolean {
-  return auto_latteRefill(want1, want2, want3, false);
-}
-
 function auto_latteRefill$2(
   want1: string,
   want2: string,
   force: boolean,
 ): boolean {
   return auto_latteRefill(want1, want2, "", force);
-}
-
-function auto_latteRefill$3(want1: string, want2: string): boolean {
-  return auto_latteRefill$2(want1, want2, false);
 }
 
 function auto_latteRefill$4(want1: string, force: boolean): boolean {
@@ -1465,11 +1441,8 @@ export function auto_voteSetup$2(
   }
   //When using random, should we check for negative initiatives?
 
-  let temp: string = visitUrl(
-    "place.php?whichplace=town_right&action=townright_vote",
-    false,
-  );
-  temp = visitUrl(
+  visitUrl("place.php?whichplace=town_right&action=townright_vote", false);
+  visitUrl(
     `choice.php?whichchoice=1331&pwd=&option=1&g=${candidate}&local[]=${first}&local[]=${second}`,
   );
   return true;
@@ -1533,17 +1506,17 @@ export function fightClubNap(): boolean {
     return false;
   }
 
-  let page: string = visitUrl(
+  visitUrl(
     "place.php?whichplace=town_wrong&action=townwrong_boxingdaycare",
     false,
   );
-  page = visitUrl("choice.php?pwd=&whichchoice=1334&option=1");
+  visitUrl("choice.php?pwd=&whichchoice=1334&option=1");
 
   if (!toBoolean(getProperty("_daycareNap"))) {
     abort("fightClubtracking failed");
   }
   //Do I need to leave as well, I think I do...
-  page = visitUrl("choice.php?pwd=&whichchoice=1334&option=4");
+  visitUrl("choice.php?pwd=&whichchoice=1334&option=4");
 
   return true;
 }
@@ -1610,18 +1583,18 @@ function fightClubSpa$2(option: number): boolean {
     return false;
   }
 
-  let page: string = visitUrl(
+  visitUrl(
     "place.php?whichplace=town_wrong&action=townwrong_boxingdaycare",
     false,
   );
-  page = visitUrl("choice.php?pwd=&whichchoice=1334&option=2");
-  page = visitUrl(`choice.php?pwd=&whichchoice=1335&option=${option}`);
+  visitUrl("choice.php?pwd=&whichchoice=1334&option=2");
+  visitUrl(`choice.php?pwd=&whichchoice=1335&option=${option}`);
 
   if (!toBoolean(getProperty("_daycareSpa"))) {
     abort("fightClubtracking failed");
   }
   //Do I need to leave as well, I think I do...
-  page = visitUrl("choice.php?pwd=&whichchoice=1334&option=4");
+  visitUrl("choice.php?pwd=&whichchoice=1334&option=4");
 
   return true;
 }
@@ -1637,14 +1610,14 @@ export function fightClubStats(): boolean {
     return false;
   }
 
-  let page: string = visitUrl(
+  visitUrl(
     "place.php?whichplace=town_wrong&action=townwrong_boxingdaycare",
     false,
   );
   // Enter the Boxing Daycare
-  page = visitUrl("choice.php?pwd=&whichchoice=1334&option=3");
+  visitUrl("choice.php?pwd=&whichchoice=1334&option=3");
   // Scavenge for gym equipment
-  page = visitUrl("choice.php?pwd=&whichchoice=1336&option=2");
+  visitUrl("choice.php?pwd=&whichchoice=1336&option=2");
 
   if (toInt(getProperty("_daycareGymScavenges")) !== 1) {
     // Seems like we can't trust KoLmafia to set this for us
@@ -1652,45 +1625,7 @@ export function fightClubStats(): boolean {
     setProperty("_daycareGymScavenges", (1).toString());
   }
   //Do I need to leave as well, I think I do...
-  page = visitUrl("choice.php?pwd=&whichchoice=1334&option=4");
+  visitUrl("choice.php?pwd=&whichchoice=1334&option=4");
 
   return true;
-}
-
-let $_isTallGrassAvailable_tallGrass: Item | undefined;
-
-function isTallGrassAvailable(): boolean {
-  $_isTallGrassAvailable_tallGrass ??= $item`packet of tall grass seeds`;
-  return (
-    auto_is_valid($_isTallGrassAvailable_tallGrass) &&
-    auto_get_campground().has($_isTallGrassAvailable_tallGrass)
-  );
-}
-
-let $_pokeFertilizerAmountAvailable_fertilizer: Item | undefined;
-
-function pokeFertilizerAmountAvailable(): number {
-  $_pokeFertilizerAmountAvailable_fertilizer ??= Item.get(
-    "Pok&eacute;-Gro fertilizer",
-  );
-  if (!auto_is_valid($_pokeFertilizerAmountAvailable_fertilizer)) {
-    return 0;
-  }
-  return itemAmount($_pokeFertilizerAmountAvailable_fertilizer);
-}
-
-function isPokeFertilizerAvailable(): boolean {
-  return isTallGrassAvailable() && pokeFertilizerAmountAvailable() > 0;
-}
-
-let $_haveAnyPokeFamiliarEquipment_poke_fam_equipment:
-  Map<Item, boolean> | undefined;
-
-function pokeFertilizeAndHarvest(): boolean {
-  if (!isPokeFertilizerAvailable()) {
-    return false;
-  }
-
-  auto_log_debug$1("sew and reap.");
-  return use(1, $item`Poké-Gro fertilizer`) && cliExecute("garden pick");
 }

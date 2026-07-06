@@ -100,7 +100,6 @@ import {
   addBonusToMaximize,
   addToMaximize,
   auto_equipFreekill,
-  auto_saveEquipped,
   autoEquip,
   autoEquip$1,
   autoForceEquip$1,
@@ -409,7 +408,7 @@ function auto_ghost_prep(place: Location): void {
     place,
     true,
   );
-  for (const [idx, mob] of getMonsters(place).entries()) {
+  for (const [, mob] of getMonsters(place).entries()) {
     if ((apprates.get(mob) ?? apprates.set(mob, 0.0).get(mob)) <= 0) {
       //won't show up because banished or req's not fulfilled
       continue;
@@ -569,7 +568,6 @@ function auto_pre_adventure(): boolean {
     useSkill($skill`Dismiss Pasta Thrall`);
   }
   //save some MP while buffing
-  const beforeBuffs: Map<number, Item> = auto_saveEquipped();
   addToMaximize("-1000mana cost, -tie");
   equipMaximizedGear();
 
@@ -725,7 +723,7 @@ function auto_pre_adventure(): boolean {
       toMonster(getProperty("auto_nextEncounter")),
     );
   } else {
-    for (const [i, mon] of getMonsters(place).entries()) {
+    for (const [, mon] of getMonsters(place).entries()) {
       //consider all possible monsters, with queue effects argument false
       //	queue argument true would return only crystal ball prediction if there is one and equipped,
       //	but here keeping ball equipped will be either not guaranteed if monsters don't matter, or forbidden
@@ -739,7 +737,7 @@ function auto_pre_adventure(): boolean {
   let zoneHasWantedMonsters: boolean = false;
   if (!auto_queueIgnore()) {
     //next encounter is a monster from the zone
-    for (const [i, mon] of possible_monsters) {
+    for (const [, mon] of possible_monsters) {
       if (auto_wantToYellowRay(mon, place)) {
         adjustForYellowRayIfPossible(mon);
         zoneHasWantedMonsters = true;
@@ -948,7 +946,7 @@ function auto_pre_adventure(): boolean {
     // machete in mainhand and use boots.
     if (place === $location`A Massive Ziggurat`) {
       let lianaFought: number = 0;
-      for (const [i, s] of splitString(place.combatQueue, "; ").entries()) {
+      for (const [, s] of splitString(place.combatQueue, "; ").entries()) {
         if (s === "dense liana") {
           ++lianaFought;
         }

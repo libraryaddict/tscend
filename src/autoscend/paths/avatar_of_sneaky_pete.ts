@@ -228,12 +228,12 @@ export function pete_buySkills(): void {
       break;
     }
 
-    page = visitUrl(`choice.php?pwd=&whichchoice=859&option=${firstChoice}`);
+    visitUrl(`choice.php?pwd=&whichchoice=859&option=${firstChoice}`);
 
     if (lastChoice() === 859) {
       abort("Mafia is not handling this correctly, sorry");
     }
-    page = visitUrl(
+    visitUrl(
       `choice.php?pwd=&whichchoice=${lastChoice()}&option=${secondChoice}`,
     );
 

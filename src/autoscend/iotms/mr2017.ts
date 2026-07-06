@@ -460,12 +460,12 @@ export function pantogramPants$1(
     return false;
   }
 
-  let page: string = visitUrl(
+  visitUrl(
     `inv_use.php?pwd=${myHash()}&which=3&whichitem=${toInt($item`portable pantogram`)}`,
   );
   //<tr><td style="color: white;" align=center bgcolor=blue><b>Results:</b></td></tr><tr><td style="padding: 5px; border: 1px solid blue;"><center><table><tr><td><span class='guts'>Something went awry.</span></td></tr>
 
-  page = visitUrl(
+  visitUrl(
     `choice.php?pwd=&whichchoice=1270&option=1&m=${m}&e=${e}&s1=${s1}&s2=${s2}&s3=${s3}`,
   );
   return true;
@@ -670,39 +670,6 @@ export function kgbWasteClicks(): boolean {
   return clicked > 0;
 }
 
-function kgbKnownEffects(): string {
-  if (getProperty("auto_kgbTracker") === "") {
-    setProperty("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
-  }
-  let tracker: Map<number, string> = new Map(
-    splitString(getProperty("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
-  );
-  if (
-    tracker.size < 13 ||
-    toInt(tracker.get(0) ?? tracker.set(0, "").get(0)) !== myAscensions()
-  ) {
-    setProperty("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
-  }
-  tracker = new Map(
-    splitString(getProperty("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
-  );
-
-  let retval: string = "";
-
-  for (let i: number = 1; i < 13; i++) {
-    const tabNum: number = (i + 1) / 2;
-    const lowHigh: number = (i + 1) % 2;
-    const ef: Effect = toEffect(tracker.get(i) ?? tracker.set(i, "").get(i));
-    let efname: string = ef.toString();
-    if (ef === $effect`Light!`) {
-      efname = "Random";
-    }
-
-    retval += `Tab: ${tabNum} Height: ${lowHigh} with effect: ${efname}<br>`;
-  }
-  return retval;
-}
-
 function kgbTryEffect(ef: Effect): boolean {
   if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
@@ -782,10 +749,7 @@ function kgbDiscovery(): boolean {
       for (let i: number = 2296; i <= 2306; i++) {
         curEff[i - 2296] = haveEffect(toEffect(i));
       }
-      const page_1: string = visitUrl(
-        `place.php?whichplace=kgb&action=kgb_tab${id}`,
-        false,
-      );
+      visitUrl(`place.php?whichplace=kgb&action=kgb_tab${id}`, false);
       for (let i: number = 2296; i <= 2306; i++) {
         if (haveEffect(toEffect(i)) !== (curEff[i - 2296] ??= 0)) {
           if (haveEffect(toEffect(i)) === (curEff[i - 2296] ??= 0) + 100) {
@@ -881,33 +845,33 @@ export function kgbSetup(): boolean {
     kgbDial(4, -1, 6);
     kgbDial(5, -1, 6);
     kgbDial(6, -1, 6);
-    page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
-    page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${2}`, false);
-    page = visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
-    page = visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
+    visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
+    visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${2}`, false);
+    visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
+    visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${2}`, false);
     //Crank extruded.
     if (!containsText(page, "kgb_crank")) {
       abort("Failed to unlock kgb_crank");
     }
-    page = visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
+    visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
     for (let i: number = 0; i < 11; i++) {
       page = visitUrl("place.php?whichplace=kgb&action=kgb_crank", false);
     }
     if (!containsText(page, "...........")) {
       abort("11 cranks failed");
     }
-    page = visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
+    visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
 
-    page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
-    page = visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
+    visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
+    visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
     if (!containsText(page, "kgb_dispenser")) {
       abort("Failed to unlock kgb_dispenser");
     }
     //Martini Hose extruded.
 
-    page = visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
+    visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
     kgbDial(1, -1, 3);
     kgbDial(2, -1, 3);
     kgbDial(3, -1, 3);
@@ -915,7 +879,7 @@ export function kgbSetup(): boolean {
     if (!containsText(page, "kgb_drawer2")) {
       abort("Failed to unlock kgb_drawer2");
     }
-    page = visitUrl("place.php?whichplace=kgb&action=kgb_drawer2", false);
+    visitUrl("place.php?whichplace=kgb&action=kgb_drawer2", false);
 
     kgbDial(4, -1, 2);
     kgbDial(5, -1, 2);
@@ -924,7 +888,7 @@ export function kgbSetup(): boolean {
     if (!containsText(page, "kgb_drawer1")) {
       abort("Failed to unlock kgb_drawer1");
     }
-    page = visitUrl("place.php?whichplace=kgb&action=kgb_drawer1", false);
+    visitUrl("place.php?whichplace=kgb&action=kgb_drawer1", false);
 
     kgbDial(1, -1, 7);
     kgbDial(2, -1, 9);
@@ -1018,23 +982,23 @@ function kgb_getMartini$2(page: string, dontCare: boolean): boolean {
     if (!containsText(page, "...........")) {
       auto_log_warning("Cranking did not work, uh oh!", "red");
     } else {
-      page = visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
-      page = visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
+      visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
+      visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
       auto_log_info("Crank power!!", "green");
     }
 
     if (flipped) {
-      page = visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
+      visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
     }
 
     if (!toBoolean(getProperty("_kgbRightDrawerUsed"))) {
-      page = visitUrl("place.php?whichplace=kgb&action=kgb_drawer1", false);
+      visitUrl("place.php?whichplace=kgb&action=kgb_drawer1", false);
     }
     if (!toBoolean(getProperty("_kgbLeftDrawerUsed"))) {
-      page = visitUrl("place.php?whichplace=kgb&action=kgb_drawer2", false);
+      visitUrl("place.php?whichplace=kgb&action=kgb_drawer2", false);
     }
     if (!toBoolean(getProperty("_kgbOpened"))) {
-      page = visitUrl("place.php?whichplace=kgb&action=kgb_daily", false);
+      visitUrl("place.php?whichplace=kgb&action=kgb_daily", false);
     }
     setProperty("_kgbDailyStuff", true.toString());
   }
@@ -1163,74 +1127,6 @@ export function getSpaceJelly(): boolean {
 
 export function auto_breatheOutsLeft(): number {
   return toInt(getProperty("_hotJellyUses"));
-}
-
-function haveAsdonBuff(): boolean {
-  for (const eff of $effects`Driving Intimidatingly, Driving Obnoxiously, Driving Observantly, Driving Quickly, Driving Recklessly, Driving Safely, Driving Stealthily, Driving Wastefully, Driving Waterproofly`) {
-    if (haveEffect(eff) !== 0) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function asdonBuff(goal: string): boolean {
-  if (
-    goal === $effect`Driving Obnoxiously`.toString() ||
-    goal === "combat" ||
-    goal === "+combat"
-  ) {
-    return asdonBuff$1($effect`Driving Obnoxiously`);
-  }
-  if (
-    goal === $effect`Driving Stealthily`.toString() ||
-    goal === "noncombat" ||
-    goal === "-combat" ||
-    goal === "non-combat"
-  ) {
-    return asdonBuff$1($effect`Driving Stealthily`);
-  }
-  if (goal === $effect`Driving Wastefully`.toString() || goal === "oil") {
-    return asdonBuff$1($effect`Driving Wastefully`);
-  }
-  if (
-    goal === $effect`Driving Safely`.toString() ||
-    goal === "resistance" ||
-    goal === "absorb" ||
-    goal === "res"
-  ) {
-    return asdonBuff$1($effect`Driving Safely`);
-  }
-  if (goal === $effect`Driving Recklessly`.toString() || goal === "ml") {
-    return asdonBuff$1($effect`Driving Recklessly`);
-  }
-  if (goal === $effect`Driving Intimidatingly`.toString() || goal === "-ml") {
-    return asdonBuff$1($effect`Driving Intimidatingly`);
-  }
-  if (goal === $effect`Driving Quickly`.toString() || goal === "init") {
-    return asdonBuff$1($effect`Driving Quickly`);
-  }
-  if (
-    goal === $effect`Driving Observantly`.toString() ||
-    goal === "drops" ||
-    goal === "meat" ||
-    goal === "item" ||
-    goal === "items" ||
-    goal === "booze"
-  ) {
-    return asdonBuff$1($effect`Driving Observantly`);
-  }
-  if (
-    goal === $effect`Driving Waterproofly`.toString() ||
-    goal === "sea" ||
-    goal === "breathe" ||
-    goal === "dive" ||
-    goal === "diver" ||
-    goal === "underwater"
-  ) {
-    return asdonBuff$1($effect`Driving Waterproofly`);
-  }
-  return false;
 }
 
 export function canAsdonBuff(goal: Effect): boolean {
@@ -1594,12 +1490,6 @@ export function horseNone(): void {
   }
 }
 
-function horseNormal(): void {
-  if (isHorseryAvailable()) {
-    setProperty("auto_desiredHorse", "normal");
-  }
-}
-
 export function horseDark(): void {
   if (isHorseryAvailable()) {
     setProperty("auto_desiredHorse", "dark");
@@ -1681,11 +1571,11 @@ export function makeGenieWish(wish: string): boolean {
     return false;
   }
 
-  let page: string = visitUrl(
+  visitUrl(
     `inv_use.php?pwd=${myHash()}&which=3&whichitem=${wish_provider}`,
     false,
   );
-  page = visitUrl(`choice.php?pwd=&whichchoice=1267&option=1&wish=${wish}`);
+  visitUrl(`choice.php?pwd=&whichchoice=1267&option=1&wish=${wish}`);
 
   if (auto_wishesAvailable() === starting_wishes) {
     auto_log_warning(`Wish: '${wish}' failed`, "red");
@@ -1811,13 +1701,11 @@ export function makeGeniePocket(): boolean {
   const count_1: number = itemAmount($item`pocket wish`);
 
   const wish: string = "for more wishes";
-  let page: string = visitUrl(
+  visitUrl(
     `inv_use.php?pwd=${myHash()}&which=3&whichitem=${toInt(bottle)}`,
     false,
   );
-  page = visitUrl(
-    `choice.php?pwd=${myHash()}&whichchoice=1267&option=1&wish=${wish}`,
-  );
+  visitUrl(`choice.php?pwd=${myHash()}&whichchoice=1267&option=1&wish=${wish}`);
 
   if (count_1 === itemAmount($item`pocket wish`)) {
     return false;
@@ -1895,18 +1783,6 @@ function auto_hasMeteorLore(): boolean {
   );
 }
 
-function auto_meteorShowersUsed(): number {
-  return toInt(getProperty("_meteorShowerUses"));
-}
-
-function auto_meteorShowersAvailable(): number {
-  if (!auto_hasMeteorLore()) {
-    return 0;
-  }
-
-  return 5 - auto_meteorShowersUsed();
-}
-
 function auto_macroMeteoritesUsed(): number {
   return toInt(getProperty("_macrometeoriteUses"));
 }
@@ -1917,8 +1793,4 @@ export function auto_macrometeoritesAvailable(): number {
   }
 
   return 10 - auto_macroMeteoritesUsed();
-}
-
-function auto_meteoriteAdesUsed(): number {
-  return toInt(getProperty("_meteoriteAdesUsed"));
 }

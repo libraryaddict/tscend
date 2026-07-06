@@ -1,11 +1,4 @@
-import {
-  abort,
-  Effect,
-  Item,
-  Modifier,
-  numericModifier,
-} from "kolmafia";
-
+import { abort, Effect, Item, Modifier, numericModifier } from "kolmafia";
 
 // familiar, int, item, effect, location defined. Define the rest at some point.
 //	All lists have the construct type[int] and are 0-indexed, like nature intended.
@@ -60,7 +53,7 @@ export function List$8(data: Map<number, Item>): Map<number, Item> {
   temp = new Map([...temp.entries()].sort((a, b) => a[0] - b[0]));
 
   let index: number = 0;
-  for (const [idx, el] of temp) {
+  for (const [, el] of temp) {
     retval.set(index, el);
     index = index + 1;
   }
@@ -101,7 +94,7 @@ function List$5(data: Map<number, Effect>): Map<number, Effect> {
   temp = new Map([...temp.entries()].sort((a, b) => a[0] - b[0]));
 
   let index: number = 0;
-  for (const [idx, el] of temp) {
+  for (const [, el] of temp) {
     retval.set(index, el);
     index = index + 1;
   }

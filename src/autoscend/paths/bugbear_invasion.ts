@@ -503,7 +503,7 @@ function LX_bugbearBridge(): boolean {
     autoAdvBypass$6("place.php?whichplace=bugbearship&action=bb_bridge");
   }
 
-  let ret: boolean = autoAdvBypass$6(
+  const ret: boolean = autoAdvBypass$6(
     "place.php?whichplace=bugbearship&action=bb_bridge",
   );
 

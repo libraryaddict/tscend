@@ -22,7 +22,7 @@ export function ht_equip_hats(): boolean {
     return false;
   }
   const availableHats: Map<Item, number> = auto_getAllEquipabble$1($slot`hat`);
-  for (const [it, i] of availableHats) {
+  for (const [it] of availableHats) {
     let skip: boolean = false;
     //don't equip the following because they can mess us up later in the run or are useful for consumption (+/- combat and Thorns)
     for (const bl of $items`Mer-kin sneakmask, coconut shell`) {

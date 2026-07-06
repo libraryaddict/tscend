@@ -30,7 +30,6 @@ export function tcrs_expectedAdvPerFill(quality: string): number {
         `could not calculate expected adventures for quality ${quality} in 2CRS`,
       );
   }
-  return -1; // makes the compiler shut up
 }
 
 export function tcrs_maximize_with_items(maximizerString: string): boolean {
@@ -39,7 +38,7 @@ export function tcrs_maximize_with_items(maximizerString: string): boolean {
   }
   // in TCRS, items give random effects. Instead of hard-coding a list of effects for each path/class combination, we look at what we got.
   let used_anything: boolean = false;
-  for (const [i, rec] of maximize(
+  for (const [, rec] of maximize(
     maximizerString,
     300,
     0,

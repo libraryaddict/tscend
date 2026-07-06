@@ -43,7 +43,7 @@ function bond_buySkills(): boolean {
   if (!in_lta()) {
     return false;
   }
-  let page: string = visitUrl(
+  const page: string = visitUrl(
     "place.php?whichplace=town_right&action=town_bondhq",
     false,
   );
@@ -59,24 +59,24 @@ function bond_buySkills(): boolean {
     if (!toBoolean(getProperty("bondSymbols"))) {
       if (points >= 3) {
         auto_log_info("Getting bondSymbols", "blue");
-        page = visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=10&w=s");
+        visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=10&w=s");
         points -= 3;
       }
     } else if (!toBoolean(getProperty("bondJetpack"))) {
       if (points >= 3) {
         auto_log_info("Getting bondJetpack", "blue");
-        page = visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=12&w=s");
+        visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=12&w=s");
         points -= 3;
       }
     } else if (!toBoolean(getProperty("bondMartiniDelivery")) && inHardcore()) {
       if (points >= 1) {
         auto_log_info("Getting bondMartiniDelivery", "blue");
-        page = visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=9&w=p");
+        visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=9&w=p");
         points -= 1;
       }
     } else if (!toBoolean(getProperty("bondAdv"))) {
       if (points >= 1) {
-        page = visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=1&w=s");
+        visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=1&w=s");
         points -= 1;
       }
     } else if (
@@ -85,25 +85,25 @@ function bond_buySkills(): boolean {
     ) {
       if (points >= 3) {
         auto_log_info("Getting bondMartiniPlus", "blue");
-        page = visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=13&w=p");
+        visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=13&w=p");
         points -= 3;
       }
     } else if (!toBoolean(getProperty("bondMartiniTurn"))) {
       if (points >= 1) {
         auto_log_info("Getting bondMartiniTurn", "blue");
-        page = visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=1&w=p");
+        visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=1&w=p");
         points -= 1;
       }
     } else if (!toBoolean(getProperty("bondDrunk2"))) {
       if (points >= 3) {
         auto_log_info("Getting bondDrunk2", "blue");
-        page = visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=11&w=s");
+        visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=11&w=s");
         points -= 3;
       }
     } else if (!toBoolean(getProperty("bondDrunk1"))) {
       if (points >= 2) {
         auto_log_info("Getting bondDrunk1", "blue");
-        page = visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=8&w=s");
+        visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=8&w=s");
         points -= 2;
       }
     } else if (
@@ -112,7 +112,7 @@ function bond_buySkills(): boolean {
     ) {
       if (points >= 3) {
         auto_log_info("Getting bondBridge", "blue");
-        page = visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=14&w=s");
+        visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=14&w=s");
         points -= 3;
       }
     } else if (
@@ -121,25 +121,25 @@ function bond_buySkills(): boolean {
     ) {
       if (points >= 5) {
         auto_log_info("Getting bondDesert", "blue");
-        page = visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=18&w=s");
+        visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=18&w=s");
         points -= 5;
       }
     } else if (!toBoolean(getProperty("bondMeat"))) {
       if (points >= 1) {
         auto_log_info("Getting bondMeat", "blue");
-        page = visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=2&w=p");
+        visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=2&w=p");
         points -= 1;
       }
     } else if (!toBoolean(getProperty("bondItem1"))) {
       if (points >= 1) {
         auto_log_info("Getting bondItem1", "blue");
-        page = visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=3&w=p");
+        visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=3&w=p");
         points -= 1;
       }
     } else if (!toBoolean(getProperty("bondItem2"))) {
       if (points >= 2) {
         auto_log_info("Getting bondItem2", "blue");
-        page = visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=6&w=s");
+        visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=6&w=s");
         points -= 2;
       }
     }

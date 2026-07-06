@@ -154,12 +154,12 @@ export function auto_combatHandler(
   }
 
   auto_combatInitialize(round_1, enemy, text); //reset properties on round 0 of a new combat
-  let retval: string = "";
+
   setProperty("auto_combatHP", myHp().toString());
   setProperty("auto_diag_round", round_1.toString());
 
   if (in_ocrs()) {
-    enemy = ocrs_combat_helper(text);
+    ocrs_combat_helper(text);
     enemy = lastMonster();
   }
 
@@ -170,7 +170,7 @@ export function auto_combatHandler(
   if (in_pokefam()) {
     if (gitExists("Ezandora-Helix-Fossil")) {
       auto_log_info("Combat via Ezandora:", "green");
-      const ignore: boolean = cliExecute("Pocket Familiars");
+      cliExecute("Pocket Familiars");
       return ""; //does not matter what it returns here. the cli_execute above does the entire combat
     }
   }
@@ -237,7 +237,7 @@ export function auto_combatHandler(
     }
   }
   // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
-  retval = auto_combatDefaultStage1(round_1, enemy, text);
+  let retval: string = auto_combatDefaultStage1(round_1, enemy, text);
   if (retval !== "") {
     return retval;
   }

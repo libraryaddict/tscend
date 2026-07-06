@@ -70,14 +70,6 @@ export function auto_get_clan_lounge(): Map<Item, number> {
   return retval;
 }
 
-function handleFaxMonster(enemy: Monster): boolean {
-  return handleFaxMonster$3(enemy, true, null);
-}
-
-function handleFaxMonster$1(enemy: Monster, option: CombatMacro): boolean {
-  return handleFaxMonster$3(enemy, true, option);
-}
-
 export function handleFaxMonster$2(enemy: Monster, fightIt: boolean): boolean {
   return handleFaxMonster$3(enemy, fightIt, null);
 }
@@ -323,7 +315,7 @@ export function changeClan$1(toClan: number): number {
     return oldClan;
   }
 
-  let page: string = visitUrl("clan_signup.php");
+  const page: string = visitUrl("clan_signup.php");
   if (!containsText(page, `option value=${oldClan}>`)) {
     auto_log_warning$1(
       "Do not have a whitelist to our own clan, can not change clans.",
@@ -337,7 +329,7 @@ export function changeClan$1(toClan: number): number {
     return 0;
   }
 
-  page = visitUrl(
+  visitUrl(
     `showclan.php?pwd=&recruiter=1&action=joinclan&apply=Apply+to+this+Clan&confirm=on&whichclan=${toClan}`,
     true,
   );
@@ -437,18 +429,6 @@ export function drinkSpeakeasyDrink(drink_1: Item): boolean {
   return cliExecute(`drink 1 ${drink_1}`);
 }
 
-function drinkSpeakeasyDrink$1(drink_1: string): boolean {
-  if (!auto_get_clan_lounge().has($item`Clan speakeasy`)) {
-    return false;
-  }
-
-  const realDrink: Item = toItem(drink_1);
-  if (realDrink === Item.none) {
-    return false;
-  }
-  return drinkSpeakeasyDrink(realDrink);
-}
-
 export function zataraAvailable(): boolean {
   if (itemAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
@@ -531,8 +511,8 @@ export function zataraSeaside(who: string): boolean {
     return false;
   }
 
-  let temp: string = visitUrl("clan_viplounge.php?preaction=lovetester", false);
-  temp = visitUrl(`choice.php?pwd=&whichchoice=1278&option=1&which=${id}`);
+  visitUrl("clan_viplounge.php?preaction=lovetester", false);
+  visitUrl(`choice.php?pwd=&whichchoice=1278&option=1&which=${id}`);
   setProperty("_clanFortuneBuffUsed", true.toString());
   return true;
 }
@@ -591,10 +571,7 @@ export function zataraClanmate(): boolean {
   let needWait: boolean = true;
 
   while (attempts < 5) {
-    let temp: string = visitUrl(
-      "clan_viplounge.php?preaction=lovetester",
-      false,
-    );
+    visitUrl("clan_viplounge.php?preaction=lovetester", false);
     let choices: string = "&q1=pizza&q2=batman&q3=thick";
     if (
       toBoolean(getProperty("auto_optimizeConsultsInRun")) &&
@@ -602,7 +579,7 @@ export function zataraClanmate(): boolean {
     ) {
       choices = "&q1=cake&q2=wonderwoman&q3=thick";
     }
-    temp = visitUrl(
+    const temp: string = visitUrl(
       `choice.php?pwd=&whichchoice=1278&option=1&which=1&whichid=${player}${choices}`,
     );
 

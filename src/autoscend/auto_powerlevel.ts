@@ -472,8 +472,6 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
     }
   }
 
-  let adv_done: boolean = false;
-
   if (
     !in_koe() &&
     toInt(getProperty("_machineTunnelsAdv")) < 5 &&
@@ -487,7 +485,7 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
     if (bjorn === $familiar`Machine Elf`) {
       handleBjornify($familiar`Grinning Turtle`);
     }
-    adv_done = autoAdv$1(1, $location`The Deep Machine Tunnels`);
+    const adv_done: boolean = autoAdv$1(1, $location`The Deep Machine Tunnels`);
     if (bjorn === $familiar`Machine Elf`) {
       handleBjornify(bjorn);
     }
@@ -500,7 +498,10 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
 
   if (snojoFightAvailable()) {
     auto_log_debug$1("LX_freeCombats is adventuring in [The Snojo]");
-    adv_done = autoAdv$1(1, $location`The X-32-F Combat Training Snowman`);
+    const adv_done: boolean = autoAdv$1(
+      1,
+      $location`The X-32-F Combat Training Snowman`,
+    );
     loopHandlerDelayAll();
     if (adv_done) {
       return true;
@@ -528,7 +529,10 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
     auto_log_debug$1(
       "LX_freeCombats is adventuring in [An Unusually Quiet Barroom Brawl]",
     );
-    adv_done = autoAdv$1(1, $location`An Unusually Quiet Barroom Brawl`);
+    const adv_done: boolean = autoAdv$1(
+      1,
+      $location`An Unusually Quiet Barroom Brawl`,
+    );
     if (adv_done) {
       return true;
     }

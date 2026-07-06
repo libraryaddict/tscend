@@ -206,7 +206,6 @@ export function bat_formPreAdventure(): boolean {
   }
 
   const desiredForm: string = getProperty("auto_bat_desiredForm");
-  const form: Effect = Effect.none;
   switch (desiredForm) {
     case "wolf":
       return bat_switchForm$1($effect`Wolf Form`);
@@ -412,7 +411,7 @@ export function bat_reallyPickSkills$1(
     requiredSkills,
   );
   let url: string = `choice.php?whichchoice=1342&option=2&pwd=${myHash()}`;
-  for (const [sk, _] of picks) {
+  for (const [sk] of picks) {
     url += "&sk[]=";
     url += (toInt(sk) - 24000).toString();
   }

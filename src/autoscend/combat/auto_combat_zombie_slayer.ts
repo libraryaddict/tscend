@@ -36,32 +36,6 @@ function wantKodiakMoment(enemy: Monster): boolean {
   return canUse$2($skill`Kodiak Moment`) && enemy.physicalResistance >= 80;
 }
 
-function auto_combatZombieSlayerStage1(
-  round_1: number,
-  enemy: Monster,
-  text: string,
-): string {
-  // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
-  if (!in_zombieSlayer()) {
-    return "";
-  }
-
-  return "";
-}
-
-function auto_combatZombieSlayerStage2(
-  round_1: number,
-  enemy: Monster,
-  text: string,
-): string {
-  // stage 2 = enders: escape, replace, instakill, yellowray and other actions that instantly end combat
-  if (!in_zombieSlayer()) {
-    return "";
-  }
-
-  return "";
-}
-
 //defined in /autoscend/combat/auto_combat_zombie_slayer.ash
 export function auto_combatZombieSlayerStage3(
   round_1: number,

@@ -113,7 +113,6 @@ export function auto_combatDefaultStage3(
   text: string,
 ): string {
   // stage 3 = debuff: delevel, stun, curse, damage over time
-  let retval: string = "";
   // Set to false because instakills are in stage 2 and if we get here, it was not successful
   setProperty("auto_instakillSuccess", false.toString());
   //Unskip stage 2
@@ -125,7 +124,7 @@ export function auto_combatDefaultStage3(
     return "";
   }
   // Path = Heavy Rains
-  retval = auto_combatHeavyRainsStage3(round_1, enemy, text);
+  let retval: string = auto_combatHeavyRainsStage3(round_1, enemy, text);
   if (retval !== "") {
     return retval;
   }

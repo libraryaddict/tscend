@@ -171,7 +171,7 @@ function amw_buySubstat(st: Stat, numberToBuy: number): boolean {
 // reserves meat from being spent on stats
 function amw_calculateReserve(): number {
   const current_level: number = myLevel();
-  let reserve: number = 0;
+  let reserve: number;
   if (current_level <= 6) {
     reserve = 500;
   } else if (current_level <= 8) {
@@ -338,9 +338,8 @@ function amw_nextSkillSubstats(): amw_statAmount {
 }
 // returns substats needed to get to next level
 function amw_nextLevelSubstats(): amw_statAmount {
-  let next_level: number = 0;
   const goal: amw_statAmount = new amw_statAmount();
-  next_level = myLevel() + 1;
+  const next_level: number = myLevel() + 1;
   let mainstat: Stat = $stat`SubMysticality`;
   // which stat is our mainstat should be mostly consistent with the priority of amw_nextSkillSubstats()
   // the difference between that function and this one is that this focuses on leveling priority if we have to meatlevel,
@@ -357,7 +356,7 @@ function amw_substatsBuyable(
   goal: amw_statAmount,
   meatleveling: boolean,
 ): number {
-  let meat_reserve: number = 0;
+  let meat_reserve: number;
   // make sure to save some meat. but at lvl 10 no point in going to lvl 11 if we can't shore anyway, so no point in lowering our reserve to meatlevel then
   if (!meatleveling || myLevel() === 10) {
     meat_reserve = amw_calculateReserve();
@@ -384,12 +383,9 @@ function amw_substatsBuyable(
   }
 }
 // by default we aren't meatleveling
-function amw_substatsBuyable$1(goal: amw_statAmount): number {
-  return amw_substatsBuyable(goal, false);
-}
 // decides whether or not to buy stats, and how much. Acts differently if we're meatleveling. amw_buySubstats does the actual purchasing
 function amw_buyStats(meatleveling: boolean): boolean {
-  let next: amw_statAmount = new amw_statAmount();
+  let next: amw_statAmount;
   if (meatleveling) {
     // fetch substats to get to next level
     next = amw_nextLevelSubstats();

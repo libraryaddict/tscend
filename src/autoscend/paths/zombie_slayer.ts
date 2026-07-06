@@ -8,8 +8,6 @@ import {
   itemAmount,
   max,
   min,
-  Monster,
-  monsterPhylum,
   mpCost,
   myFullness,
   myHp,
@@ -23,7 +21,7 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $path, $phyla, $skill } from "libram";
+import { $effect, $item, $path, $skill } from "libram";
 
 import { autoEat } from "../auto_consume";
 import {

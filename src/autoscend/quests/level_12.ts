@@ -311,7 +311,7 @@ function auto_warSideQuestsState(): WarPlan {
 export function auto_warEnemiesRemaining(): number {
   // Returns the number of enemies left to defeat in the fratboy-hippy war.
 
-  let enemiesRemaining: number = 1000;
+  let enemiesRemaining: number;
   if (auto_warSide() === "hippy") {
     enemiesRemaining = 1000 - toInt(getProperty("fratboysDefeated"));
   } else {
@@ -499,7 +499,7 @@ export function auto_bestWarPlan(): WarPlan {
     //every single loop we want a prospective plan that starts out the same as retval. and adds the best sidequest for that loop. unless all of the sidequests cause us to lose adv in which case it should remain as retval
     copy_warplan(prospective_plan, retval);
     let bestQuestProfit: number = 0;
-    let profit: number = 0;
+    let profit: number;
 
     if (considerFarm) {
       copy_warplan(test, retval);
@@ -574,7 +574,6 @@ export function auto_bestWarPlan(): WarPlan {
         auto_warTotalBattles$1(test) -
         advCostArena;
       if (profit > bestQuestProfit) {
-        bestQuestProfit = profit;
         copy_warplan(prospective_plan, test);
       }
     }
@@ -647,7 +646,7 @@ function equipWarOutfit$1(lock: boolean): void {
   //sometimes we wear the outfit. visit url. fail and want to continue on to do another quest instead of aborting or returning true.
   //in such cases we want lock to be false
 
-  let parts: Map<Item, boolean> = new Map();
+  let parts: Map<Item, boolean>;
   if (auto_warSide() === "hippy") {
     parts = new Map([
       [$item`reinforced beaded headband`, true],
@@ -863,7 +862,7 @@ export function L12_preOutfit(): boolean {
     }
   }
 
-  let adventure_status: boolean = false;
+  let adventure_status: boolean;
   // fighting for fratboys, adventure in hippy camp for [filthy hippy disguise] outfit to then adventure in frat house for frat war outfit
   if (!toBoolean(getProperty("auto_hippyInstead"))) {
     auto_log_info("Trying to acquire a filthy hippy outfit", "blue");
@@ -931,9 +930,7 @@ export function L12_startWar(): boolean {
   if (!toBoolean(getProperty("auto_hippyInstead"))) {
     auto_log_info("Must save the ferret!!", "blue");
     if (L12_singleNCForWarStart()) {
-      const NCForced: boolean = auto_forceNextNoncombat$1(
-        $location`Wartime Hippy Camp`,
-      );
+      auto_forceNextNoncombat$1($location`Wartime Hippy Camp`);
     }
     autoAdv$1(1, $location`Wartime Hippy Camp`);
     //if war started, accept flyer quest for fratboys.
@@ -946,9 +943,7 @@ export function L12_startWar(): boolean {
     // start the war when siding with hippies
     auto_log_info("Must save the goldfish!!", "blue");
     if (L12_singleNCForWarStart()) {
-      const NCForced: boolean = auto_forceNextNoncombat$1(
-        $location`Wartime Frat House`,
-      );
+      auto_forceNextNoncombat$1($location`Wartime Frat House`);
     }
     autoAdv$1(1, $location`Wartime Frat House`);
   }
@@ -1136,7 +1131,7 @@ export function L12_filthworms(): boolean {
 
   preventFratOutfitsIfNeeded();
 
-  let retval: boolean = false;
+  let retval: boolean;
   if (haveEffect($effect`Filthworm Drone Stench`) > 0) {
     //last gland
     if (haveEffect($effect`Filthworm Drone Stench`) === 1 && !glandGuaranteed) {
@@ -2095,12 +2090,8 @@ export function L12_themtharHills(): boolean {
 
     const advs: number = $location`The Themthar Hills`.turnsSpent + 1;
 
-    let diffMeat: number = curMeat - lastMeat;
-    let average: number = curMeat / advs;
+    const average: number = curMeat / advs;
     auto_log_info(`Cur Meat: ${curMeat} Average: ${average}`, "blue");
-
-    diffMeat = toInt(diffMeat * 1.2);
-    average = toInt(average * 1.2);
   }
   return true;
 }

@@ -30,14 +30,11 @@ export function c2t_apron$1(): boolean {
 
 //returns true on success
 function c2t_apron(select: Stat): boolean {
-  let meal: number = 0;
+  let meal: number;
   const kit: Item = $item`Black and White Apron Meal Kit`;
   let page: string;
-  let mat: AshMatcher;
-  let sendit: string = "";
   const start_1: number = myFullness();
   const startKits: number = itemAmount(kit);
-  let allowlist: Map<string, boolean> = new Map();
 
   switch (select) {
     default:
@@ -64,13 +61,14 @@ function c2t_apron(select: Stat): boolean {
     false,
     true,
   );
-  mat = new AshMatcher(
+
+  const mat: AshMatcher = new AshMatcher(
     `name="ingredients${meal}\\[\\]"\\s+value="(\\d+)"\\s+data-has="(\\d)"`,
     page,
   );
-  allowlist = c2t_apron_allowlist();
+  const allowlist: Map<string, boolean> = c2t_apron_allowlist();
 
-  sendit = `choice.php?pwd&whichchoice=1518&option=1&meal=${meal}`;
+  let sendit: string = `choice.php?pwd&whichchoice=1518&option=1&meal=${meal}`;
   while (mat.find()) {
     if (mat.group(2) === "1" && allowlist.has(mat.group(1))) {
       sendit += `&ingredients${meal}[]=${mat.group(1)}`;

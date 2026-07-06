@@ -44,7 +44,6 @@ export function auto_haveEternityCodpiece(): boolean {
 
 export function auto_isInEternityCodpiece(it: Item): boolean {
   for (const s of $slots`codpiece1, codpiece2, codpiece3, codpiece4, codpiece5`) {
-    const b = true;
     if (equippedItem(s) === it) {
       return true;
     }
@@ -69,22 +68,6 @@ export function auto_clubEmBackInTimesRemaining(): number {
   }
 
   return 5 - toInt(getProperty("_clubEmTimeUsed"));
-}
-
-function auto_clubEmAcrossTheBattlefieldsRemaining(): number {
-  if (!auto_haveLegendarySealClubbingClub()) {
-    return 0;
-  }
-
-  return 5 - toInt(getProperty("_clubEmBattlefieldUsed"));
-}
-
-function auto_clubEmIntoNextWeeksRemaining(): number {
-  if (!auto_haveLegendarySealClubbingClub()) {
-    return 0;
-  }
-
-  return 5 - toInt(getProperty("_clubEmNextWeekUsed"));
 }
 
 export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean {
@@ -117,39 +100,6 @@ function auto_haveHeartstone(): boolean {
     return true;
   }
   return false;
-}
-
-function auto_heartstoneBanishRemaining(): number {
-  if (!auto_haveHeartstone()) {
-    return 0;
-  }
-  if (getProperty("heartstoneBanishUnlocked") !== "true") {
-    return 0;
-  }
-
-  return 5 - toInt(getProperty("_heartstoneBanishUsed"));
-}
-
-function auto_heartstoneBuffsRemaining(): number {
-  if (!auto_haveHeartstone()) {
-    return 0;
-  }
-  if (getProperty("heartstoneBuffUnlocked") !== "true") {
-    return 0;
-  }
-
-  return 5 - toInt(getProperty("_heartstoneBuffUsed"));
-}
-
-function auto_heartstoneKillRemaining(): number {
-  if (!auto_haveHeartstone()) {
-    return 0;
-  }
-  if (getProperty("heartstoneKillUnlocked") !== "true") {
-    return 0;
-  }
-
-  return 5 - toInt(getProperty("_heartstoneKillUsed"));
 }
 
 export function auto_heartstoneLuckRemaining(): number {
@@ -320,7 +270,7 @@ export function auto_burnRemainingSpadeDigs(): boolean {
 }
 
 export function legendaryNoodlesChoiceHandler(): void {
-  let target_choice: number = 0;
+  let target_choice: number;
   // force combats if requested
   if (toBoolean(getProperty("auto_forceCombatWithLegendaryNoodles"))) {
     target_choice = 2;

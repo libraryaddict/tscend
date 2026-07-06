@@ -264,17 +264,6 @@ export function auto_setAprilBandCombat(): boolean {
   return toBoolean(haveEffect($effect`Apriling Band Battle Cadence`));
 }
 
-function auto_setAprilBandDrops(): boolean {
-  if (toBoolean(haveEffect($effect`Apriling Band Celebration Bop`))) {
-    return true;
-  }
-  if (!auto_haveAprilingBandHelmet()) {
-    return false;
-  }
-  cliExecute("aprilband effect drop");
-  return toBoolean(haveEffect($effect`Apriling Band Celebration Bop`));
-}
-
 export function auto_AprilSaxLuckyLeft(): number {
   if (!auto_haveAprilingBandHelmet()) {
     return 0;
@@ -344,35 +333,9 @@ export function dartChoiceHandler(
   runChoice(dcchoice);
 }
 
-function dartBullseyeChance(): number {
-  let perks: Map<number, string> = new Map();
-  let chance: number = 25; // base bullseye chance is 25%
-  perks = new Map(
-    splitString(toLowerCase(getProperty("everfullDartPerks")), ",").map(
-      (_v, _i) => [_i, _v],
-    ),
-  );
-  for (const perk of perks.keys()) {
-    if (
-      containsText(
-        perks.get(perk) ?? perks.set(perk, "").get(perk),
-        "better",
-      ) ||
-      containsText(
-        perks.get(perk) ?? perks.set(perk, "").get(perk),
-        "targeting",
-      )
-    ) {
-      chance += 25;
-    }
-  }
-  return chance;
-}
-
 export function dartELRcd(): number {
-  let perks: Map<number, string> = new Map();
   let cd: number = 50; // base cd is 50 turns
-  perks = new Map(
+  const perks: Map<number, string> = new Map(
     splitString(toLowerCase(getProperty("everfullDartPerks")), ",").map(
       (_v, _i) => [_i, _v],
     ),
@@ -388,8 +351,7 @@ export function dartELRcd(): number {
 }
 
 export function dartSkill(): Skill {
-  let curDartboard: Map<number, string> = new Map();
-  curDartboard = new Map(
+  const curDartboard: Map<number, string> = new Map(
     splitString(toLowerCase(getProperty("_currentDartboard")), ",").map(
       (_v, _i) => [_i, _v],
     ),
@@ -462,7 +424,7 @@ export function auto_MayamIsUsed(glyph: string): boolean {
       _v,
     ]),
   );
-  for (const [idx, str] of used) {
+  for (const [, str] of used) {
     if (glyph === str) {
       return true;
     }
@@ -486,7 +448,7 @@ export function auto_MayamClaim(str: string): boolean {
   const rings: Map<number, string> = new Map(
     splitString(str, " ").map((_v, _i) => [_i, _v]),
   );
-  for (const [i, s] of rings) {
+  for (const [, s] of rings) {
     if (auto_MayamIsUsed(s)) {
       return false;
     }
@@ -723,7 +685,6 @@ export function auto_buyFromSeptEmberStore(): void {
   auto_openMcLargeHugeSkis(); // make sure our skis are open for cold res
   for (let imw: number = 0; imw < 3; imw++) {
     // We can use up to 3 mouthwash
-    const last_res: number = 0;
     if (auto_goingToMouthwashLevel()) {
       // get as much cold res as possible
       const resGoal: Map<Element, number> = new Map();
@@ -808,12 +769,6 @@ export function auto_buyFromSeptEmberStore(): void {
   return;
 }
 
-function expected_mouthwash_main_substat(): number {
-  return expected_mouthwash_main_substat$1(
-    numericModifier(Modifier.get("Cold Resistance")),
-  );
-}
-
 function expected_mouthwash_main_substat$1(cold_res: number): number {
   const boost_factor: number = 1 + stat_exp_percent(myPrimestat()) / 100;
   return (boost_factor * 14 * cold_res ** 1.7) / 2;
@@ -822,13 +777,6 @@ function expected_mouthwash_main_substat$1(cold_res: number): number {
 export function expected_level_after_mouthwash(): number {
   return expected_level_after_mouthwash$2(
     1,
-    numericModifier(Modifier.get("Cold Resistance")),
-  );
-}
-
-function expected_level_after_mouthwash$1(n_mouthwash: number): number {
-  return expected_level_after_mouthwash$2(
-    n_mouthwash,
     numericModifier(Modifier.get("Cold Resistance")),
   );
 }
@@ -997,7 +945,7 @@ function auto_thisClanPhotoBoothHasItem(it: Item): boolean {
 
 function auto_thisClanPhotoBoothHasItems(its: Map<Item, boolean>): boolean {
   let success: boolean = true;
-  for (const [it, b] of its) {
+  for (const [it] of its) {
     success = success && auto_thisClanPhotoBoothHasItem(it);
   }
   return false;
@@ -1007,7 +955,7 @@ export function auto_getClanPhotoBoothDefaultItems(): boolean {
   if (!auto_haveClanPhotoBooth()) {
     return false;
   }
-  let items_to_claim: Map<Item, boolean> = new Map();
+  let items_to_claim: Map<Item, boolean>;
   if (!in_hattrick()) {
     items_to_claim = new Map([
       [$item`fake arrow-through-the-head`, true],
@@ -1034,7 +982,7 @@ export function auto_getClanPhotoBoothDefaultItems(): boolean {
     changeClan$2();
   }
   let success: boolean = true;
-  for (const [it, b] of items_to_claim) {
+  for (const [it] of items_to_claim) {
     success = success && auto_getClanPhotoBoothItem(it);
   }
   if (orig_clan_id !== getClanId()) {
@@ -1082,18 +1030,6 @@ function auto_remainingClanPhotoBoothEffects(): number {
   return 3 - toInt(getProperty("_photoBoothEffects"));
 }
 
-function auto_getClanPhotoBoothEffectString(ef: Effect): string {
-  switch (ef) {
-    case $effect`Wild and Westy!`:
-      return "wild";
-    case $effect`Towering Muscles`:
-      return "tower";
-    case $effect`Spaced Out`:
-      return "space";
-  }
-  return "none";
-}
-
 export function auto_getClanPhotoBoothEffect$3(
   ef_string: string,
   n_times: number,
@@ -1111,7 +1047,6 @@ export function auto_getClanPhotoBoothEffect$3(
   }
   // Handle whether we want to jump to BAFH
   const orig_clan_id: number = getClanId();
-  const in_bafh: boolean = orig_clan_id === getBAFHID();
   const bafh_available: boolean =
     isWhitelistedToBAFH() && canReturnToCurrentClan(); // bafh has it fully stocked
 
@@ -1184,7 +1119,7 @@ export function auto_haveChestMimic(): boolean {
 }
 
 function auto_haveMeggEgg(mon: Monster): boolean {
-  for (const [megg_mon, i] of c2t_megg_eggs()) {
+  for (const [megg_mon] of c2t_megg_eggs()) {
     if (megg_mon === mon) {
       return true;
     }
@@ -1225,10 +1160,8 @@ export function auto_meggFight(mon: Monster, speculative: boolean): boolean {
   }
   // From here adapted from c2t_megg_fight
   const egg: Item = $item`mimic egg`;
-  let page: string = null;
-  let monstring: string = "";
   //go
-  page = visitUrl(
+  const page: string = visitUrl(
     `inv_use.php?pwd=${myHash()}&which=3&whichitem=${egg.id}`,
     false,
     true,
@@ -1239,7 +1172,7 @@ export function auto_meggFight(mon: Monster, speculative: boolean): boolean {
     return false;
   }
   //check if available
-  monstring = mon.id.toString();
+  const monstring: string = mon.id.toString();
   if (!containsText(page, `<option value="${monstring}">`)) {
     visitUrl("main.php", false, true); //don't get stuck in choice
     auto_log_error(`${mon} not found to fight`);

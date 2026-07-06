@@ -186,26 +186,6 @@ class __RestorationOptimization {
   ) {}
 }
 // Real ugly to_string, probably only enable for debugging
-function to_string(r: __RestorationMetadata): string {
-  function list_to_string$1(e_list: Map<Effect, boolean>): string {
-    let s: string = "[";
-    let first: boolean = true;
-    for (const e of e_list.keys()) {
-      if (first) {
-        first = false;
-      } else {
-        s += ", ";
-      }
-      s += e.toString();
-    }
-    s += "]";
-    return s;
-  }
-
-  const removes_effects_str: string = list_to_string$1(r.removesEffects);
-  const gives_effects_str: string = list_to_string$1(r.givesEffects);
-  return `__RestorationMetadata(name: ${r.name}, type: ${r.type}, hp_restored: ${r.hpRestored}, restores_variable_hp: ${r.restoresVariableHp}, mp_restored: ${r.mpRestored}, restores_variable_mp: ${r.restoresVariableMp}, removes_beaten_up: ${r.removesBeatenUp}, removes_effects: ${removes_effects_str}, gives_effects: ${gives_effects_str})`;
-}
 
 function to_string$1(o: __RestorationOptimization, simple: boolean): string {
   function list_to_string$2(values: Map<string, number>): string {
@@ -276,26 +256,18 @@ function auto_log_restore_debug(s: string, level: number): void {
   }
 }
 
-let $_f___all_negative_effects: Map<Effect, boolean> | undefined;
-$_f___all_negative_effects ??= new Map();
-let $_f___known_restoration_sources:
-  Map<string, __RestorationMetadata> | undefined;
-$_f___known_restoration_sources ??= new Map();
-let $_f___restore_maximizer_cache:
-  Map<number, __RestorationOptimization> | undefined;
-$_f___restore_maximizer_cache ??= new Map();
+let $_f___all_negative_effects: Map<Effect, boolean> = new Map();
+const $_f___known_restoration_sources: Map<string, __RestorationMetadata> =
+  new Map();
+const $_f___restore_maximizer_cache: Map<number, __RestorationOptimization> =
+  new Map();
 // TODO: would be nice to replace this concept with just putting a simple formula in place of the hp/mp fields, e.g. ${my_level}*1.5
 // currently custom formulas need to be coded into an if statement
-let $_f___RESTORE_ALL: string | undefined;
-$_f___RESTORE_ALL ??= "all";
-let $_f___RESTORE_HALF: string | undefined;
-$_f___RESTORE_HALF ??= "half";
-let $_f___RESTORE_SCALING: string | undefined;
-$_f___RESTORE_SCALING ??= "scaling";
-let $_f___HOT_TUB: string | undefined;
-$_f___HOT_TUB ??= "a relaxing hot tub";
-let $_f___NUNS: string | undefined;
-$_f___NUNS ??= "the nunnery";
+const $_f___RESTORE_ALL: string = "all";
+const $_f___RESTORE_HALF: string = "half";
+const $_f___RESTORE_SCALING: string = "scaling";
+const $_f___HOT_TUB: string = "a relaxing hot tub";
+const $_f___NUNS: string = "the nunnery";
 /**
  * Parse autoscend_restoration.txt into __known_restoration_sources.
  *
@@ -320,7 +292,7 @@ function __init_restoration_metadata(): void {
     if (effects_list === "all negative") {
       parsed_effects = $_f___all_negative_effects;
     } else if (effects_list !== "none" && effects_list !== "") {
-      for (const [_, s] of splitString(effects_list, ",").entries()) {
+      for (const [, s] of splitString(effects_list, ",").entries()) {
         const e: Effect = toEffect(s);
         if (e !== Effect.none) {
           parsed_effects.set(e, true);
@@ -364,7 +336,6 @@ function __init_restoration_metadata(): void {
       $___init_restoration_metadata_negative_effects_filename,
       [toEffect, toBoolean],
     );
-    const parsed_records: Map<string, __RestorationMetadata> = new Map();
     //type[idx,name,hp_restored,mp_restored,soft_reserve_limit,hard_reserve_limit,removes_effects,gives_effects]
     const raw_data: Map<
       string,
@@ -391,7 +362,7 @@ function __init_restoration_metadata(): void {
     ]);
 
     for (const type_1 of ["item", "skill", "clan", "dwelling", "place"]) {
-      for (const [idx, _v0] of raw_data.get(type_1) ??
+      for (const [, _v0] of raw_data.get(type_1) ??
         raw_data.set(type_1, new Map()).get(type_1)) {
         for (const [name, _v1] of _v0) {
           for (const [hp_restored, _v2] of _v1) {
@@ -928,7 +899,6 @@ function __calculate_objective_values(
   }
 
   function blood_adjusted_waste(goal: number): number {
-    const blood_cost: number = hpCost($skill`Blood Bond`);
     const casts: number = blood_skill_opportunity_casts(goal);
     const waste: number = total_wasted("hp", goal);
     if (casts < 1) {
@@ -995,7 +965,7 @@ function __calculate_objective_values(
 
   function negative_status_effects_remaining(): number {
     let negative_effects_active: number = 0;
-    for (const [e, _] of Object.entries(myEffects()).map(
+    for (const [e] of Object.entries(myEffects()).map(
       ([_k, _v]) => [Effect.get(_k), _v] as [Effect, number],
     )) {
       if (
@@ -1266,20 +1236,6 @@ function __maximize_restore_options(
     return slice(p, 0, p.size);
   }
   // adds all elements in right to left, does not create a new aggregate. left is returned for convenience
-  function combine(
-    left: Map<number, __RestorationOptimization>,
-    right: Map<number, __RestorationOptimization>,
-  ): Map<number, __RestorationOptimization> {
-    let i: number = 0;
-    while (i < right.size) {
-      left.set(
-        left.size,
-        right.get(i) ?? right.set(i, new __RestorationOptimization()).get(i),
-      );
-      i++;
-    }
-    return left;
-  }
 
   function weighted_sum(
     o: __RestorationOptimization,
@@ -1287,7 +1243,7 @@ function __maximize_restore_options(
     value_ranks: Map<string, number>,
   ): number {
     let sum: number = 0.0;
-    for (const [s, _] of keys) {
+    for (const [s] of keys) {
       sum +=
         (o.objectiveValues.get(s) ?? o.objectiveValues.set(s, 0.0).get(s)) *
         (value_ranks.get(s) ?? value_ranks.set(s, 0).get(s));
@@ -1298,7 +1254,7 @@ function __maximize_restore_options(
   function ordered_ranks(weights: Map<string, number>): Map<number, number> {
     let unordered: Map<number, number> = new Map();
     const value_set: Map<number, boolean> = new Map();
-    for (const [s, w] of weights) {
+    for (const [, w] of weights) {
       if (!value_set.has(w)) {
         value_set.set(w, true);
         unordered.set(unordered.size, w);
@@ -1336,7 +1292,7 @@ function __maximize_restore_options(
     const dominated: Map<string, boolean> = new Map();
 
     let Ti: number = 0;
-    let Bi: number = 0;
+    let Bi: number;
 
     while (Ti < T.size) {
       Bi = 0;
@@ -1546,7 +1502,7 @@ function __maximize_restore_options(
       `${ranked.size} options before optimization: ${to_string$2(ranked, false)}`,
       2,
     );
-    for (const [_, rank] of ranks) {
+    for (const [, rank] of ranks) {
       const desc: string = __RANKED_GOAL_DESCRIPTIONS.has(rank)
         ? (__RANKED_GOAL_DESCRIPTIONS.get(rank) ??
           __RANKED_GOAL_DESCRIPTIONS.set(rank, "").get(rank))
@@ -1587,7 +1543,6 @@ function __maximize_restore_options(
     let l: number = left_index + 1;
     let r: number = right_index;
     let done: boolean = false;
-    let swap: __RestorationOptimization = new __RestorationOptimization();
 
     while (!done) {
       while (l <= r) {
@@ -1621,13 +1576,14 @@ function __maximize_restore_options(
       if (r < l) {
         done = true;
       } else {
-        swap = p.get(l) ?? p.set(l, new __RestorationOptimization()).get(l);
+        const swap: __RestorationOptimization =
+          p.get(l) ?? p.set(l, new __RestorationOptimization()).get(l);
         p.set(l, p.get(r) ?? p.set(r, new __RestorationOptimization()).get(r));
         p.set(r, swap);
       }
     }
 
-    swap =
+    const swap: __RestorationOptimization =
       p.get(left_index) ??
       p.set(left_index, new __RestorationOptimization()).get(left_index);
     p.set(
@@ -1682,9 +1638,9 @@ function __maximize_restore_options(
 
     const constrained: Map<number, __RestorationOptimization> = new Map();
 
-    for (const [_, o] of p) {
+    for (const [, o] of p) {
       let fail: boolean = false;
-      for (const [c_1, __1] of constraint_keys) {
+      for (const [c_1] of constraint_keys) {
         if (!(
           o.constraints.get(c_1) ?? o.constraints.set(c_1, false).get(c_1)
         )) {
@@ -1715,21 +1671,18 @@ function __maximize_restore_options(
         0,
       );
       for (const [i, o] of $_f___restore_maximizer_cache) {
-        const recalculated: __RestorationOptimization = (() => {
-          const _val = __calculate_objective_values(
-            hp_goal,
-            mp_goal,
-            meat_reserve,
-            useFreeRests,
-            o.metadata,
-          );
-          $_f___restore_maximizer_cache.set(i, _val);
-          return _val;
-        })();
+        const _val = __calculate_objective_values(
+          hp_goal,
+          mp_goal,
+          meat_reserve,
+          useFreeRests,
+          o.metadata,
+        );
+        $_f___restore_maximizer_cache.set(i, _val);
       }
     } else {
       auto_log_restore_debug("Calculating restore objective values.", 0);
-      for (const [name, metadata] of __restoration_methods()) {
+      for (const [, metadata] of __restoration_methods()) {
         const o: __RestorationOptimization = __calculate_objective_values(
           hp_goal,
           mp_goal,
@@ -1951,7 +1904,7 @@ function __restore(
 
   function negative_effects(): Map<Effect, boolean> {
     const negative: Map<Effect, boolean> = new Map();
-    for (const [e, _] of Object.entries(myEffects()).map(
+    for (const [e] of Object.entries(myEffects()).map(
       ([_k, _v]) => [Effect.get(_k), _v] as [Effect, number],
     )) {
       if ($_f___all_negative_effects.has(e)) {
@@ -2014,7 +1967,7 @@ function __restore(
     }
 
     let success: boolean = false;
-    for (const [i, o] of options) {
+    for (const [, o] of options) {
       if (
         o.metadata.type === "item" &&
         itemAmount(toItem(o.metadata.name)) === 0
@@ -2129,14 +2082,6 @@ export function __cure_bad_stuff(): void {
 export function invalidateRestoreOptionCache(): void {
   $_f___known_restoration_sources.clear();
   $_f___restore_maximizer_cache.clear();
-}
-/**
- * Try to acquire your max mp (useFreeRests: true). Will also cure poisoned and beaten up before restoring any mp.
- *
- * returns true if my_mp() >= my_maxmp() after attempting to restore.
- */
-function acquireMP(): boolean {
-  return acquireMP$4(min(0.95 * myMaxmp(), 300));
 }
 /**
  * Try to acquire up to the mp goal (useFreeRests: true). Will also cure poisoned and beaten up before restoring any mp.
@@ -2265,40 +2210,6 @@ function acquireMP$3(
 
   __restore("mp", goal, meat_reserve, useFreeRests);
   return myMp() >= goal;
-}
-/**
- * Try to acquire up to the mp goal expressed as a percentage (out of either 1.0 or 100.0) (useFreeRests: true). Will also cure poisoned and beaten up before restoring any mp.
- *
- * returns true if my_mp() >= goalPercent after attempting to restore.
- */
-function acquireMP$4(goalPercent: number): boolean {
-  return acquireMP$5(goalPercent, meatReserve());
-}
-/**
- * Try to acquire up to the mp goal expressed as a percentage, optionally buying items (useFreeRests: true). Will also cure poisoned and beaten up before restoring any mp.
- *
- * returns true if my_mp() >= goalPercent after attempting to restore.
- */
-function acquireMP$5(goalPercent: number, meat_reserve: number): boolean {
-  return acquireMP$6(goalPercent, meat_reserve, true);
-}
-/**
- * Try to acquire up to the mp goal expressed as a percentage (out of either 1.0 or 100.0), optionally buying items and using free rests. Will also cure poisoned and beaten up before restoring any mp.
- *
- * returns true if my_mp() >= goalPercent after attempting to restore.
- */
-function acquireMP$6(
-  goalPercent: number,
-  meat_reserve: number,
-  useFreeRests: boolean,
-): boolean {
-  let goal: number = myMaxmp();
-  if (goalPercent > 1.0) {
-    goal = ceil((goalPercent / 100.0) * myMaxmp());
-  } else {
-    goal = ceil(goalPercent * myMaxmp());
-  }
-  return acquireMP$3(toInt(goal), meat_reserve, useFreeRests);
 }
 /**
  * Try to acquire the smaller of your max HP and 800 HP (useFreeRests: true). Will also cure poisoned and beaten up before restoring any hp.
@@ -2447,40 +2358,6 @@ function acquireHP$3(
 
   return myHp() >= goal;
 }
-/**
- * Try to acquire up to the hp goal expressed as a percentage (out of either 1.0 or 100.0) (useFreeRests: true). Will also cure poisoned and beaten up before restoring any hp.
- *
- * returns true if my_hp() >= goalPercent after attempting to restore.
- */
-function acquireHP$4(goalPercent: number): boolean {
-  return acquireHP$5(goalPercent, meatReserve());
-}
-/**
- * Try to acquire up to the hp goal expressed as a percentage (out of either 1.0 or 100.0), optionally buying items (useFreeRests: true). Will also cure poisoned and beaten up before restoring any hp.
- *
- * returns true if my_hp() >= goalPercent after attempting to restore.
- */
-function acquireHP$5(goalPercent: number, meat_reserve: number): boolean {
-  return acquireHP$6(goalPercent, meat_reserve, true);
-}
-/**
- * Try to acquire up to the hp goal expressed as a percentage (out of either 1.0 or 100.0), optionally buying items and using free rests. Will also cure poisoned and beaten up before restoring any hp.
- *
- * returns true if my_hp() >= goalPercent after attempting to restore.
- */
-function acquireHP$6(
-  goalPercent: number,
-  meat_reserve: number,
-  useFreeRests: boolean,
-): boolean {
-  let goal: number = myMaxhp();
-  if (goalPercent > 1.0) {
-    goal = ceil((goalPercent / 100.0) * myMaxhp());
-  } else {
-    goal = ceil(goalPercent * myMaxhp());
-  }
-  return acquireHP$3(toInt(goal), meat_reserve, useFreeRests);
-}
 /*
  * Use a rest (can consume adventures if no free rests remain). Also attempts to maximize
  * chateau bonus from resting if possible.
@@ -2616,7 +2493,7 @@ export function doFreeRest(): boolean {
   if (haveFreeRestAvailable()) {
     // burn MP if possible prior to resting
     const restorableMp: number = myMaxmp() - myMp();
-    let mpToBurn: number = 0;
+    let mpToBurn: number;
     if (chateaumantegna_available() || auto_campawayAvailable()) {
       // will restore at least 100 MP
       mpToBurn = 100 - restorableMp;
@@ -2689,17 +2566,4 @@ export function uneffect(toRemove: Effect): boolean {
     return true;
   }
   return false;
-}
-/**
- * we could in theory set this as our restore script, but autoscend is not currently designed to heal this way and changing this now would probably break assumptions people have anticipated in their code, causing undefined behavior. I assume this is why we have the warning about autoscend not playing well with restore scripts and disabling them when it starts.
- *
- * Additionally this script would require some number of imports of other methods (mostly auto_util.ash) which may or may not be easy to do. I did try once by just importing autoscend, but I ended up with an infinite loop. At least thats what it seemed like, I didnt try very hard to make it work. My understanding of ash leads me to believe it should work and I was just doing something stupid. So for now this is just here for posterity.
- */
-function main$auto_restore(type_1: string, amount: number): boolean {
-  if (type_1 === "MP") {
-    acquireMP$1(amount);
-  } else if (type_1 === "HP") {
-    acquireHP$1(amount);
-  }
-  return true; // This ensures that mafia does not attempt to heal with resources that are being conserved.
 }

@@ -72,7 +72,7 @@ export function gnoob_startAscension(page: string): void {
         }
       }
 
-      page = visitUrl(`choice.php?pwd=&option=1&whichchoice=1230${goal}`);
+      visitUrl(`choice.php?pwd=&option=1&whichchoice=1230${goal}`);
     }
   }
 }

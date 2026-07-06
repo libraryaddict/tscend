@@ -514,12 +514,10 @@ export function startHippyBoatmanSubQuest(): boolean {
     getProperty("questM19Hippy") === "unstarted" &&
     !in_koe()
   ) {
-    let temp: string = visitUrl(
-      "place.php?whichplace=woods&action=woods_smokesignals",
-    );
-    temp = visitUrl("choice.php?pwd=&whichchoice=798&option=1");
-    temp = visitUrl("choice.php?pwd=&whichchoice=798&option=2");
-    temp = visitUrl("woods.php");
+    visitUrl("place.php?whichplace=woods&action=woods_smokesignals");
+    visitUrl("choice.php?pwd=&whichchoice=798&option=1");
+    visitUrl("choice.php?pwd=&whichchoice=798&option=2");
+    visitUrl("woods.php");
     return true;
   }
   return false;
@@ -1344,9 +1342,7 @@ export function freeCandyFightsLeft(): number {
   ) {
     return 5;
   }
-  const blockHtml: string = visitUrl(
-    "place.php?whichplace=town&action=town_trickortreat",
-  );
+  visitUrl("place.php?whichplace=town&action=town_trickortreat");
   const block: string = getProperty("_trickOrTreatBlock");
   const m: AshMatcher = new AshMatcher("D", block);
   let n_unused_dark: number = 0;
@@ -1501,7 +1497,7 @@ export function candyBlockOutfit(type_1: string): string {
       }
     }
     if (["mongoose", "wallaby", "vole"].includes(toLowerCase(mySign()))) {
-      for (const [i, it] of outfitPieces("Bugbear Costume").entries()) {
+      for (const [, it] of outfitPieces("Bugbear Costume").entries()) {
         if (possessEquipment(it)) {
           continue;
         }

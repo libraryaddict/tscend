@@ -523,7 +523,7 @@ export function L7_crypt(): boolean {
   visitUrl("crypt.php");
   use(1, $item`Evilometer`);
 
-  const evilBonus: number = cyrptEvilBonus$1();
+  cyrptEvilBonus$1();
 
   if (L7_defiledAlcove()) {
     return true;

@@ -47,23 +47,10 @@ export function plumber_initializeSettings(): boolean {
   return false;
 }
 
-function plumber_haveHammer(): boolean {
-  return (
-    possessEquipment($item`hammer`) || possessEquipment($item`heavy hammer`)
-  );
-}
-
 function plumber_equippedHammer(): boolean {
   return (
     equippedItem($slot`weapon`) === $item`hammer` ||
     equippedItem($slot`weapon`) === $item`heavy hammer`
-  );
-}
-
-function plumber_haveFlower(): boolean {
-  return (
-    possessEquipment($item`[10462]fire flower`) ||
-    possessEquipment($item`bonfire flower`)
   );
 }
 
@@ -369,7 +356,7 @@ export function plumber_canDealScalingDamage(): boolean {
   const expected_scaler_hp: number = myBuffedstat(myPrimestat());
 
   for (const st of $stats.all()) {
-    let level: number = 0;
+    let level: number;
     if (
       possessEquipment(
         items_lv2.get(st) ?? items_lv2.set(st, Item.none).get(st),

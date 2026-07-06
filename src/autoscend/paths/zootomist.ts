@@ -88,18 +88,18 @@ import {
   LX_lastChance,
 } from "../quests/level_any";
 
-let $_f_ZOOPART_NONE: number = 0;
-let $_f_ZOOPART_HEAD: number = 1;
-let $_f_ZOOPART_L_SHOULDER: number = 2;
-let $_f_ZOOPART_R_SHOULDER: number = 3;
-let $_f_ZOOPART_L_HAND: number = 4;
-let $_f_ZOOPART_R_HAND: number = 5;
-let $_f_ZOOPART_R_NIPPLE: number = 6;
-let $_f_ZOOPART_L_NIPPLE: number = 7;
-let $_f_ZOOPART_L_BUTTOCK: number = 8;
-let $_f_ZOOPART_R_BUTTOCK: number = 9;
-let $_f_ZOOPART_L_FOOT: number = 10;
-let $_f_ZOOPART_R_FOOT: number = 11;
+const $_f_ZOOPART_NONE: number = 0;
+const $_f_ZOOPART_HEAD: number = 1;
+const $_f_ZOOPART_L_SHOULDER: number = 2;
+const $_f_ZOOPART_R_SHOULDER: number = 3;
+const $_f_ZOOPART_L_HAND: number = 4;
+const $_f_ZOOPART_R_HAND: number = 5;
+const $_f_ZOOPART_R_NIPPLE: number = 6;
+const $_f_ZOOPART_L_NIPPLE: number = 7;
+const $_f_ZOOPART_L_BUTTOCK: number = 8;
+const $_f_ZOOPART_R_BUTTOCK: number = 9;
+const $_f_ZOOPART_L_FOOT: number = 10;
+const $_f_ZOOPART_R_FOOT: number = 11;
 
 //Defined in autoscend/paths/zootomist.ash
 export function in_zootomist(): boolean {
@@ -126,7 +126,6 @@ function zoo_prepareSpecimen(): boolean {
     visitUrl("place.php?whichplace=graftinglab&action=graftinglab_prep");
     visitUrl("choice.php?pwd=&whichchoice=1555&option=1", true);
     refreshStatus();
-    const new_exp: number = f.experience;
     const new_weight: number = familiarWeight(f);
     handleTracker$1(
       f.toString(),
@@ -279,7 +278,7 @@ function zoo_isGrafted(f: Familiar): boolean {
 }
 
 function zoo_getBodyPartPriority(): Map<number, number> {
-  let priority: Map<number, number> = new Map();
+  let priority: Map<number, number>;
   if (
     auto_have_familiar($familiar`Burly Bodyguard`) ||
     zoo_isGrafted($familiar`Burly Bodyguard`)
@@ -321,7 +320,6 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {
   const famAttributes: Map<Familiar, string> = new Map();
   //priority, familiar
   const intrinsicFams: Map<Familiar, number> = new Map();
-  const punchFams: Map<Familiar, number> = new Map();
   const lbuffFams: Map<Familiar, number> = new Map();
   const rbuffFams: Map<Familiar, number> = new Map();
   const kickFams: Map<Familiar, number> = new Map();
@@ -524,7 +522,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {
       splitString(attr, "; ").map((_v, _i) => [_i, _v]),
     );
     //buffs
-    for (const [k, a] of attrs) {
+    for (const [, a] of attrs) {
       intrinsicFams.set(
         fam,
         (intrinsicFams.get(fam) ?? 0.0) +
@@ -585,7 +583,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {
   let rpunchFam: Familiar = zoo_graftedToPart($_f_ZOOPART_R_HAND);
 
   if (rbuffFam === Familiar.none) {
-    for (const [i, fam] of sortFams(rbuffFams)) {
+    for (const [, fam] of sortFams(rbuffFams)) {
       if (!used.has(fam)) {
         rbuffFam = fam;
         used.set(fam, true);
@@ -595,7 +593,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {
   }
 
   if (lbuffFam === Familiar.none) {
-    for (const [i, fam] of sortFams(lbuffFams)) {
+    for (const [, fam] of sortFams(lbuffFams)) {
       if (!used.has(fam)) {
         lbuffFam = fam;
         used.set(fam, true);
@@ -615,7 +613,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {
   }
 
   if (lkickFam === Familiar.none) {
-    for (const [i, fam] of sortFams(kickFams)) {
+    for (const [, fam] of sortFams(kickFams)) {
       if (!used.has(fam)) {
         lkickFam = fam;
         used.set(fam, true);
@@ -625,7 +623,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {
   }
 
   let intrinsic_index: number = 0;
-  for (const [i, fam] of sortFams(intrinsicFams)) {
+  for (const [, fam] of sortFams(intrinsicFams)) {
     // We only need enough to fill our empty graft slots
     if (intrinsicFam.size >= 5 - zoo_graftedIntrinsicFams().size) {
       break;
@@ -647,7 +645,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {
   }
   // Backup right kick options
   if (rkickFam === Familiar.none) {
-    for (const [i, fam] of sortFams(kickFams)) {
+    for (const [, fam] of sortFams(kickFams)) {
       if (!used.has(fam)) {
         rkickFam = fam;
         used.set(fam, true);
@@ -702,7 +700,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {
     );
     auto_log_info("Best Head, Shoulder, and Butt Fam", "orange");
     if (intrinsicFam.size > 0) {
-      for (const [i, fam] of intrinsicFam) {
+      for (const [, fam] of intrinsicFam) {
         auto_log_info(
           `${fam}:${intrinsicFams.get(fam) ?? intrinsicFams.set(fam, 0.0).get(fam)}`,
           "orange",
@@ -791,19 +789,7 @@ export function zoo_graftFam(): boolean {
 	rbuff is right nipple buff
 	combat is a useful combat skill (yr, olfact, banish)
 	*/
-  const bodyPartType: Map<number, string> = new Map([
-    [$_f_ZOOPART_HEAD, "intrinsic"],
-    [$_f_ZOOPART_L_SHOULDER, "intrinsic"],
-    [$_f_ZOOPART_R_SHOULDER, "intrinsic"],
-    [$_f_ZOOPART_L_HAND, "punch"],
-    [$_f_ZOOPART_R_HAND, "punch"],
-    [$_f_ZOOPART_L_NIPPLE, "lbuff"],
-    [$_f_ZOOPART_R_NIPPLE, "rbuff"],
-    [$_f_ZOOPART_L_BUTTOCK, "intrinsic"],
-    [$_f_ZOOPART_R_BUTTOCK, "intrinsic"],
-    [$_f_ZOOPART_L_FOOT, "kick"],
-    [$_f_ZOOPART_R_FOOT, "kick"],
-  ]);
+
   const bodyPartName: Map<number, string> = new Map([
     [$_f_ZOOPART_HEAD, "head"],
     [$_f_ZOOPART_L_SHOULDER, "left shoulder"],
@@ -853,10 +839,6 @@ export function zoo_graftFam(): boolean {
 
 function zoo_nextGraftWeight(): number {
   return min(myLevel() + 2, 13);
-}
-
-function zoo_boostWeight(f: Familiar): boolean {
-  return zoo_boostWeight$1(f, zoo_nextGraftWeight());
 }
 
 function zoo_boostWeight$1(f: Familiar, target_weight: number): boolean {
@@ -942,23 +924,6 @@ export function getZooKickYR(): Skill {
   return Skill.none;
 }
 
-function getZooKickFreeKill(): Skill {
-  //different than YR. Better than instakill
-  function isYR(fam_id: number): boolean {
-    const fam: Familiar = toFamiliar(fam_id);
-    return $familiars`Quantum Entangler, Foul Ball, Defective Childrens' Stapler`.includes(
-      fam,
-    );
-  }
-  if (isYR(toInt(getProperty("zootGraftedFootLeftFamiliar")))) {
-    return $skill`Left %n Kick`;
-  }
-  if (isYR(toInt(getProperty("zootGraftedFootRightFamiliar")))) {
-    return $skill`Right %n Kick`;
-  }
-  return Skill.none;
-}
-
 export function getZooKickSniff(): Skill {
   const haveYR: boolean = yellowRayCombatString$1(Monster.none, false) !== ""; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
   if (leftKickHasSniff() && leftKickHasInstaKill() && !haveYR) {
@@ -984,27 +949,6 @@ export function getZooKickBanish(): Skill {
     return $skill`Left %n Kick`;
   }
   if (isBanish(toInt(getProperty("zootGraftedFootRightFamiliar")))) {
-    return $skill`Right %n Kick`;
-  }
-  return Skill.none;
-}
-
-function getZooKickPickpocket(): Skill {
-  const haveYR: boolean = yellowRayCombatString$1(Monster.none, false) !== ""; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
-  if (
-    leftKickHasPickpocket() &&
-    leftKickHasInstaKill() &&
-    !haveYR &&
-    getZooKickBanish() !== $skill`Left %n Kick`
-  ) {
-    return $skill`Left %n Kick`;
-  }
-  if (
-    rightKickHasPickpocket() &&
-    rightKickHasInstaKill() &&
-    !haveYR &&
-    getZooKickBanish() !== $skill`Right %n Kick`
-  ) {
     return $skill`Right %n Kick`;
   }
   return Skill.none;
@@ -1055,34 +999,9 @@ function leftKickHasSniff(): boolean {
     [6, "sentient"],
     [7, "software"],
   ]);
-  for (const [i, attr] of attrs) {
-    for (const [j, sniff] of sniffs) {
+  for (const [, attr] of attrs) {
+    for (const [, sniff] of sniffs) {
       if (sniff === attr) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-function leftKickHasPickpocket(): boolean {
-  const fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
-  const attrs: Map<number, string> = new Map(
-    splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]),
-  );
-  const pps: Map<number, string> = new Map([
-    [0, "hasbeak"],
-    [1, "hasclaws"],
-    [2, "hashands"],
-    [3, "isclothes"],
-    [4, "polygonal"],
-    [5, "sleaze"],
-    [6, "technological"],
-    [7, "wearsclothes"],
-  ]);
-  for (const [i, attr] of attrs) {
-    for (const [j, pp] of pps) {
-      if (pp === attr) {
         return true;
       }
     }
@@ -1105,8 +1024,8 @@ function leftKickHasInstaKill(): boolean {
     [6, "reallyevil"],
     [7, "stench"],
   ]);
-  for (const [i, attr] of attrs) {
-    for (const [j, instakill] of instakills) {
+  for (const [, attr] of attrs) {
+    for (const [, instakill] of instakills) {
       if (instakill === attr) {
         return true;
       }
@@ -1130,34 +1049,9 @@ function rightKickHasSniff(): boolean {
     [6, "sentient"],
     [7, "software"],
   ]);
-  for (const [i, attr] of attrs) {
-    for (const [j, sniff] of sniffs) {
+  for (const [, attr] of attrs) {
+    for (const [, sniff] of sniffs) {
       if (sniff === attr) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-function rightKickHasPickpocket(): boolean {
-  const fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
-  const attrs: Map<number, string> = new Map(
-    splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]),
-  );
-  const pps: Map<number, string> = new Map([
-    [0, "hasbeak"],
-    [1, "hasclaws"],
-    [2, "hashands"],
-    [3, "isclothes"],
-    [4, "polygonal"],
-    [5, "sleaze"],
-    [6, "technological"],
-    [7, "wearsclothes"],
-  ]);
-  for (const [i, attr] of attrs) {
-    for (const [j, pp] of pps) {
-      if (pp === attr) {
         return true;
       }
     }
@@ -1180,8 +1074,8 @@ function rightKickHasInstaKill(): boolean {
     [6, "reallyevil"],
     [7, "stench"],
   ]);
-  for (const [i, attr] of attrs) {
-    for (const [j, instakill] of instakills) {
+  for (const [, attr] of attrs) {
+    for (const [, instakill] of instakills) {
       if (instakill === attr) {
         return true;
       }

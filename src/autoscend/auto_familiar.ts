@@ -269,7 +269,7 @@ export function auto_have_familiar(fam: Familiar): boolean {
         _v,
       ]),
     );
-    for (const [index, fam_1] of noFams) {
+    for (const [, fam_1] of noFams) {
       blacklist.set(toFamiliar(trim(fam_1)), 1);
     }
   }
@@ -951,7 +951,7 @@ export function preAdvUpdateFamiliar(place: Location): void {
       true,
     );
     for (const [mon, it] of heistDesires) {
-      for (const [i, mmon] of getMonsters(place).entries()) {
+      for (const [, mmon] of getMonsters(place).entries()) {
         if ((apprates.get(mon) ?? apprates.set(mon, 0.0).get(mon)) <= 0) {
           //won't show up because banished or req's not fulfilled
           continue;

@@ -212,7 +212,7 @@ function getLastCombatEnvironmentCounts(offset: number): Map<string, number> {
   // property is always 20 characters long. Uses a queue (FIFO).
   // lastCombatEnvironments = xxxxxxxxxxxxxxxxxxxx
   // i = indoor, o = outdoor, u = underground, x = underwater, ? = unknown/none
-  for (const [_, env] of environments) {
+  for (const [, env] of environments) {
     counts.set(env, (counts.get(env) ?? 0) + 1);
   }
   return counts;
@@ -289,47 +289,6 @@ export function auto_waitForDay2(): boolean {
 
 function allowSoftblockOutdoorAdvs(): boolean {
   return toInt(getProperty("auto_breathitinLastLevel")) < myLevel();
-}
-
-function auto_reserveOutdoorAdventures(): boolean {
-  // this function should return true when we *don't* want to spend adventures in outdoor zones.
-  if (
-    !allowSoftblockOutdoorAdvs() ||
-    (auto_haveColdMedCabinet() &&
-      auto_CMCconsultsLeft() === 0 &&
-      myDaycount() > 1) ||
-    !auto_is_valid($item`cold medicine cabinet`) ||
-    toInt(getProperty("breathitinCharges")) > 0
-  ) {
-    // softblock has been released or we have no more Breathitins to collect (or we have Breathitin charges to use).
-    return false;
-  }
-  if (
-    getWorkshed() !== $item`cold medicine cabinet` &&
-    auto_is_valid($item`cold medicine cabinet`) &&
-    itemAmount($item`cold medicine cabinet`) > 0 &&
-    !toBoolean(getProperty("_workshedItemUsed")) &&
-    (LX_getDesiredWorkshed() === $item`cold medicine cabinet` ||
-      LX_getDesiredWorkshed() === Item.none)
-  ) {
-    auto_log_debug$1(
-      "Reserving outdoor adventures as we will be switching to the CMC.",
-    );
-    // Don't have the CMC installed yet but we can still switch today and want to switch to it so save outdoor zones until then.
-    return true;
-  }
-  if (
-    auto_haveColdMedCabinet() &&
-    auto_CMCconsultsLeft() > 0 &&
-    myDaycount() < 3
-  ) {
-    auto_log_debug$1(
-      "Reserving outdoor adventures as we can still get more Breathitins today.",
-    );
-    // have the CMC installed and still have consults left to grab on day 1
-    return true;
-  }
-  return false;
 }
 
 export function auto_earlyRoutingHandling(): boolean {
@@ -483,14 +442,4 @@ export function auto_softBlockHandler(): boolean {
     return true;
   }
   return false;
-}
-
-function auto_workshedStrategy(): Map<number, Item> {
-  // return the worksheds, in order, that we want to use today.
-  const strat: Map<number, Item> = new Map();
-  if (toBoolean(getProperty("_workshedItemUsed"))) {
-    // we already changed workshed today. Just return whatever is in our workshed currently.
-    strat.set(0, getWorkshed());
-  }
-  return strat;
 }

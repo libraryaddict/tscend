@@ -120,14 +120,6 @@ import { LX_dolphinKingMap, LX_meatMaid } from "./quests/level_any";
 // functions that deal with acquiring items. via buying or pulling
 
 //Defined in autoscend/auto_acquire.ash
-function haveAny(array: Map<Item, boolean>): boolean {
-  for (const thing of array.keys()) {
-    if (itemAmount(thing) > 0) {
-      return true;
-    }
-  }
-  return false;
-}
 
 export function acquireOrPull(it: Item): boolean {
   //this function is for when you want to make sure you have 1 of an item
@@ -255,7 +247,7 @@ export function auto_mall_price(it: Item): number {
     return historicalPrice(it);
   }
   if (isTradeable(it)) {
-    let retval: number = 0;
+    let retval: number;
     const it_type: string = itemType(it);
     if (it_type === "food" || it_type === "booze") {
       //autoscend does Bulk cache mall prices for food,booze,hprestore,mprestore so that when asking for mall_price it gets a cached mafia session price
@@ -423,10 +415,6 @@ export function pulverizeThing(it: Item): boolean {
   }
   cliExecute(`pulverize 1 ${it}`);
   return true;
-}
-
-function buyableMaintain(toMaintain: Item, howMany: number): boolean {
-  return buyableMaintain$2(toMaintain, howMany, 0, true);
 }
 
 export function buyableMaintain$1(
@@ -1235,8 +1223,8 @@ export function LX_craftAcquireItems(): boolean {
     let it: Item = $item`meteorthopedic shoes`;
     if (!possessEquipment(it)) {
       const choice: number = 1 + toInt(it) - toInt($item`meteortarboard`);
-      let temp: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
-      temp = visitUrl(`choice.php?pwd=&whichchoice=1264&option=${choice}`);
+      visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
+      visitUrl(`choice.php?pwd=&whichchoice=1264&option=${choice}`);
     }
 
     it = $item`meteortarboard`;
@@ -1246,8 +1234,8 @@ export function LX_craftAcquireItems(): boolean {
       toInt(getProperty("auto_beatenUpCount")) >= 5
     ) {
       const choice: number = 1 + toInt(it) - toInt($item`meteortarboard`);
-      let temp: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
-      temp = visitUrl(`choice.php?pwd=&whichchoice=1264&option=${choice}`);
+      visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
+      visitUrl(`choice.php?pwd=&whichchoice=1264&option=${choice}`);
     }
 
     it = $item`meteorite guard`;
@@ -1257,8 +1245,8 @@ export function LX_craftAcquireItems(): boolean {
       toInt(getProperty("auto_beatenUpCount")) >= 5
     ) {
       const choice: number = 1 + toInt(it) - toInt($item`meteortarboard`);
-      let temp: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
-      temp = visitUrl(`choice.php?pwd=&whichchoice=1264&option=${choice}`);
+      visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
+      visitUrl(`choice.php?pwd=&whichchoice=1264&option=${choice}`);
     }
   }
 

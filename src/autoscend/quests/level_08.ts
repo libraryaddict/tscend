@@ -150,7 +150,7 @@ function getCellToMine(oreGoal: Item): number {
     const minedCells: Map<number, Item> = new Map();
     const mineLayout: string = getProperty("mineLayout1");
     if (mineLayout !== "") {
-      for (const [iter, str] of splitString(
+      for (const [, str] of splitString(
         substring(mineLayout, 1),
         "#",
       ).entries()) {
@@ -310,7 +310,7 @@ function getCellToMine(oreGoal: Item): number {
       }
       // now add all twinkling cells adjacent to the loadstone in the top 4 rows to the potential cells
       const orthogonals: number[] = getOrthogonals(loadstoneCell);
-      for (const [_, orthoCell] of orthogonals.entries()) {
+      for (const [, orthoCell] of orthogonals.entries()) {
         if (canMine(orthoCell, 4) && sparklingCells.has(orthoCell)) {
           potentialCells.set(potentialCount, orthoCell);
           potentialCount++;
@@ -815,10 +815,8 @@ export function L8_trapperGroar(): boolean {
     );
 
     const initial_step: number = internalQuestStatus("questL08Trapper");
-    const initial_s: string = getProperty("questL08Trapper");
     cliExecute("refresh quests");
     const current_step: number = internalQuestStatus("questL08Trapper");
-    const current_s: string = getProperty("questL08Trapper");
     const track_error: boolean = initial_step !== current_step;
 
     if (track_error) {

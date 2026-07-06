@@ -6,7 +6,6 @@ import {
   haveEquipped,
   Item,
   itemAmount,
-  Location,
   myAdventures,
   myMeat,
   myPath,
@@ -96,7 +95,7 @@ function wereprof_buySkills(): void {
     auto_log_info("Need more organs", "blue");
     do_skills = true; //If organs are full, should do skills if we need more organ space and don't have all organ expanding skills and limited adventures left
   }
-  let cantbuy: number = 0;
+  let cantbuy: number;
   /* Taken from wereprofessor.txt in Mafia src
 	// Muscle Skill Tree
 	mus1	10	none	Osteocalcin injection	Mus +20%

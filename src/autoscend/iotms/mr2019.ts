@@ -16,11 +16,9 @@ import {
   isUnrestricted,
   Item,
   itemAmount,
-  length,
   Location,
   max,
   min,
-  Monster,
   myAdventures,
   myAscensions,
   myDaycount,
@@ -37,17 +35,14 @@ import {
   myTurncount,
   Phylum,
   removeProperty,
-  round,
   setProperty,
   Skill,
   Slot,
   splitString,
-  Stat,
   toBoolean,
   toFloat,
   toInt,
   toLowerCase,
-  toMonster,
   toPhylum,
   totalTurnsPlayed,
   userConfirm,
@@ -171,8 +166,8 @@ export function auto_sausageWanted(): boolean {
   }
 
   const sausageMade: number = toInt(getProperty("_sausagesMade"));
-  let sausageForBreakfast: number = 0; // estimate up to how many sausages before drinks and food?
-  let totalSausageEstimated: number = 0; // estimate up to how many sausages by the time liver and stomach will be full?
+  let sausageForBreakfast: number; // estimate up to how many sausages before drinks and food?
+  let totalSausageEstimated: number; // estimate up to how many sausages by the time liver and stomach will be full?
   // are there more casings from previous days or copied goblins?
   const extraCasings: number =
     itemAmount($item`magical sausage casing`) +
@@ -367,10 +362,6 @@ export function auto_sausageEatEmUp(maxToEat: number): boolean {
   return true;
 }
 
-function auto_sausageEatEmUp$1(): boolean {
-  return auto_sausageEatEmUp(0);
-}
-
 export function auto_haveKramcoSausageOMatic(): boolean {
   const kramco: Item = wrap_item($item`Kramco Sausage-o-Matic™`);
   if (possessEquipment(kramco) && auto_can_equip(kramco)) {
@@ -525,12 +516,6 @@ export function auto_saberDailyUpgrade(day: number): boolean {
   return auto_saberChoice("fam");
 }
 
-function auto_saberCurrentMonster(): Monster {
-  if (getProperty("_saberForceMonsterCount") === "0") {
-    return Monster.none;
-  }
-  return toMonster(getProperty("_saberForceMonster"));
-}
 /* Out-of-combat Saber check: doesn't check that it's equipped
  */
 export function auto_saberChargesAvailable(): number {
@@ -916,7 +901,7 @@ export function auto_canBeachCombHead(name: string): boolean {
     return false;
   }
   const head: number = auto_beachCombHeadNumFrom(name);
-  for (const [_, usedHead] of splitString(
+  for (const [, usedHead] of splitString(
     getProperty("_beachHeadsUsed"),
     ",",
   ).entries()) {
@@ -996,12 +981,10 @@ export function auto_campawayGrabBuffs(): boolean {
       create(1, $item`campfire smoke`);
     }
     const message: string = "why is my computer on fire?";
-    let temp: string = visitUrl(
+    visitUrl(
       `inv_use.php?pwd=&which=3&whichitem=${toInt($item`campfire smoke`)}`,
     );
-    temp = visitUrl(
-      `choice.php?pwd=&whichchoice=1394&option=1&message=${message}`,
-    );
+    visitUrl(`choice.php?pwd=&whichchoice=1394&option=1&message=${message}`);
     visitUrl("place.php?whichplace=campaway&action=campaway_sky");
   }
 
@@ -1039,8 +1022,11 @@ function auto_pillKeeper(pill: number): boolean {
     return false;
   }
   auto_log_info(`Using pill keeper: consuming pill #${pill}`, "blue");
-  let page: string = visitUrl("main.php?eowkeeper=1", false);
-  page = visitUrl(`choice.php?pwd=&whichchoice=1395&pwd&option=${pill}`, true);
+  visitUrl("main.php?eowkeeper=1", false);
+  const page: string = visitUrl(
+    `choice.php?pwd=&whichchoice=1395&pwd&option=${pill}`,
+    true,
+  );
   // Succeeded in consuming a pill
   if (containsText(page, "You grab the day")) {
     let detail: string = "unknown";
@@ -1132,55 +1118,7 @@ export function auto_pillKeeper$1(pill: string): boolean {
   return auto_pillKeeper(pillId);
 }
 
-class PizzaPlan {
-  constructor(
-    public ing1: Item = Item.none,
-    public ing2: Item = Item.none,
-    public ing3: Item = Item.none,
-    public ing4: Item = Item.none,
-  ) {}
-}
-
-function auto_pizza_ingredients(plan: PizzaPlan): Map<number, Item> {
-  const ret: Map<number, Item> = new Map();
-  ret.set(0, plan.ing1);
-  ret.set(1, plan.ing2);
-  ret.set(2, plan.ing3);
-  ret.set(3, plan.ing4);
-  return ret;
-}
 // Note this doesn't clamp to 15 - that's enforced elsewhere.
-function auto_pizza_unclamped_advs(plan: PizzaPlan): number {
-  let char_sum: number = 0;
-  for (const [, ing] of auto_pizza_ingredients(plan)) {
-    char_sum += length(ing.toString());
-  }
-  const advs: number = round(char_sum / 10.0);
-
-  return advs;
-}
-
-function auto_pizza_stats(plan: PizzaPlan): Map<Stat, number> {
-  const ret: Map<Stat, number> = new Map();
-  ret.set($stat`Muscle`, 0.0);
-  ret.set($stat`Moxie`, 0.0);
-  for (const [, ing] of auto_pizza_ingredients(plan)) {
-    ret.set($stat`Muscle`, (ret.get($stat`Muscle`) ?? 0.0) + 10 * ing.fullness);
-    ret.set($stat`Moxie`, (ret.get($stat`Moxie`) ?? 0.0) + 10 * ing.inebriety);
-  }
-  return ret;
-}
-
-function auto_score_pizza(plan: PizzaPlan): number {
-  const unclamped_advs: number = auto_pizza_unclamped_advs(plan);
-  const advs: number = min(15, unclamped_advs);
-  const waste: number = max(0, 15 - unclamped_advs);
-  const total_stat: number =
-    auto_pizza_stats(plan).get(myPrimestat()) ??
-    auto_pizza_stats(plan).set(myPrimestat(), 0.0).get(myPrimestat());
-
-  return 15 * advs + 0.1 * total_stat - 3 * waste;
-}
 
 export function auto_changeSnapperPhylum(toChange: Phylum): boolean {
   // Calling this function with a suitable phylum (anything other than none)

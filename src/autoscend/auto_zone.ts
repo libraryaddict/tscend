@@ -3,9 +3,7 @@ import {
   canadiaAvailable,
   canAdventure,
   containsText,
-  equippedItem,
   fullnessLimit,
-  getLocationMonsters,
   getMonsters,
   getProperty,
   gnomadsAvailable,
@@ -16,10 +14,7 @@ import {
   haveSkill,
   inHardcore,
   isWearingOutfit,
-  Item,
   itemAmount,
-  itemDrops,
-  itemDropsArray,
   Location,
   Monster,
   monsterLevelAdjustment,
@@ -38,11 +33,9 @@ import {
   $element,
   $familiar,
   $item,
-  $items,
   $location,
   $locations,
   $skill,
-  $slot,
   $slots,
   $stat,
 } from "libram";
@@ -1919,292 +1912,6 @@ export function zone_available(loc: Location): boolean {
   return retval;
 }
 
-function zone_difficulty(loc: Location): generic_t {
-  const retval: generic_t = new generic_t();
-  //Should we handle when we are expecting a wanderer?
-
-  retval._int = 0;
-  retval._monster = Monster.none;
-
-  const mobs: Map<Monster, boolean> = new Map(
-    Object.entries(getLocationMonsters(loc)).map(([_k, _v]) => [
-      Monster.get(_k),
-      _v,
-    ]),
-  );
-  if (mobs.size > 0) {
-    for (const mon of mobs.keys()) {
-      retval._int = mon.baseDefense;
-      retval._monster = mon;
-      break;
-    }
-  }
-
-  switch (loc) {
-    case $location`The Shore, Inc. Travel Agency`:
-      retval._int = 0;
-      break;
-    case $location`Super Villain's Lair`:
-      break;
-    case $location`South of the Border`:
-      break;
-    case $location`The Arid, Extra-Dry Desert`:
-      break;
-    case $location`The Oasis`:
-      if (haveEffect($effect`Ultrahydrated`) === 0) {
-        retval._int = 0;
-      }
-      break;
-    case $location`The Upper Chamber`:
-      break;
-    case $location`The Middle Chamber`:
-      break;
-    case $location`The Lower Chambers`:
-      break;
-    case $location`The Daily Dungeon`:
-      break;
-    case $location`The Overgrown Lot`:
-      break;
-    case $location`The Skeleton Store`:
-      break;
-    case $location`Madness Bakery`:
-      break;
-    case $location`The Deep Machine Tunnels`:
-      break;
-    case $location`The Haunted Pantry`:
-      break;
-    case $location`The Haunted Kitchen`:
-      break;
-    case $location`The Haunted Conservatory`:
-      break;
-    case $location`The Haunted Gallery`:
-    case $location`The Haunted Bathroom`:
-    case $location`The Haunted Bedroom`:
-      break;
-    case $location`The Haunted Billiards Room`:
-      break;
-    case $location`The Haunted Library`:
-      break;
-    case $location`The Haunted Ballroom`:
-      break;
-    case $location`The Haunted Boiler Room`:
-    case $location`The Haunted Laundry Room`:
-    case $location`The Haunted Wine Cellar`:
-      break;
-    case $location`Summoning Chamber`:
-      break;
-    case $location`The Hidden Park`:
-      break;
-    case $location`An Overgrown Shrine (Northwest)`:
-    case $location`An Overgrown Shrine (Southwest)`:
-    case $location`An Overgrown Shrine (Northeast)`:
-    case $location`An Overgrown Shrine (Southeast)`:
-      if (
-        $items`antique machete, muculent machete`.includes(
-          equippedItem($slot`weapon`),
-        )
-      ) {
-        retval._int = 0;
-      }
-      break;
-    case $location`A Massive Ziggurat`:
-      break;
-    case $location`The Hidden Apartment Building`:
-      break;
-    case $location`The Hidden Hospital`:
-      break;
-    case $location`The Hidden Office Building`:
-      break;
-    case $location`The Hidden Bowling Alley`:
-      break;
-    case $location`The Typical Tavern Cellar`:
-      break;
-    case $location`The Spooky Forest`:
-      break;
-    case $location`The Hidden Temple`:
-      break;
-    case $location`The Black Forest`:
-      break;
-    case $location`The Bat Hole Entrance`:
-      break;
-    case $location`Guano Junction`:
-      break;
-    case $location`The Batrat and Ratbat Burrow`:
-      break;
-    case $location`The Beanbat Chamber`:
-      break;
-    case $location`The Boss Bat's Lair`:
-      break;
-    case $location`The VERY Unquiet Garves`:
-      break;
-    case $location`Whitey's Grove`:
-      break;
-    case $location`Inside the Palindome`:
-      break;
-    case $location`Noob Cave`:
-    case $location`The Outskirts of Cobb's Knob`:
-      retval._boolean = true;
-      break;
-    case $location`Cobb's Knob Barracks`:
-    case $location`Cobb's Knob Kitchens`:
-    case $location`Cobb's Knob Harem`:
-    case $location`Cobb's Knob Treasury`:
-    case $location`Throne Room`:
-      break;
-    case $location`The Dark Neck of the Woods`:
-    case $location`The Dark Heart of the Woods`:
-    case $location`The Dark Elbow of the Woods`:
-      break;
-    case $location`The Defiled Nook`:
-    case $location`The Defiled Cranny`:
-    case $location`The Defiled Alcove`:
-    case $location`The Defiled Niche`:
-      break;
-    case $location`Pandamonium Slums`:
-    case $location`The Laugh Floor`:
-    case $location`Infernal Rackets Backstage`:
-      break;
-    case $location`The Obligatory Pirate's Cove`:
-      break;
-    case $location`Barrrney's Barrr`:
-      break;
-    case $location`The F'c'le`:
-      break;
-    case $location`The Poop Deck`:
-      break;
-    case $location`Belowdecks`:
-      break;
-    case $location`The Smut Orc Logging Camp`:
-      break;
-    case $location`A-Boo Peak`:
-    case $location`Twin Peak`:
-    case $location`Oil Peak`:
-      break;
-    case $location`Wartime Hippy Camp (Frat Disguise)`:
-      break;
-    case $location`The Battlefield (Frat Uniform)`:
-      break;
-    case $location`Next to that Barrel with Something Burning in it`:
-    case $location`Near an Abandoned Refrigerator`:
-    case $location`Over Where the Old Tires Are`:
-    case $location`Out by that Rusted-Out Car`:
-      break;
-    case $location`Sonofa Beach`:
-      break;
-    case $location`The Themthar Hills`:
-      break;
-    case $location`The Hatching Chamber`:
-      break;
-    case $location`The Feeding Chamber`:
-      break;
-    case $location`The Royal Guard Chamber`:
-      break;
-    case $location`The Filthworm Queen's Chamber`:
-      break;
-    case $location`Itznotyerzitz Mine`:
-    case $location`The Goatlet`:
-      break;
-    case $location`The eXtreme Slope`:
-    case $location`Lair of the Ninja Snowmen`:
-      break;
-    case $location`Mist-Shrouded Peak`:
-      break;
-    case $location`The Icy Peak`:
-      break;
-    case $location`The Penultimate Fantasy Airship`:
-      break;
-    case $location`The Castle in the Clouds in the Sky (Basement)`:
-      break;
-    case $location`The Castle in the Clouds in the Sky (Ground Floor)`:
-      break;
-    case $location`The Castle in the Clouds in the Sky (Top Floor)`:
-      break;
-    case $location`The Hole in the Sky`:
-      break;
-    case $location`Fastest Adventurer Contest`:
-      break;
-    case $location`The Enormous Greater-Than Sign`:
-      break;
-    case $location`The Dungeons of Doom`:
-      break;
-    case $location`The Limerick Dungeon`:
-    case $location`The Sleazy Back Alley`:
-    case $location`The Haiku Dungeon`:
-      break;
-    case $location`Smartest Adventurer Contest`:
-    case $location`Strongest Adventurer Contest`:
-    case $location`Smoothest Adventurer Contest`:
-      break;
-    case $location`Coldest Adventurer Contest`:
-    case $location`Hottest Adventurer Contest`:
-    case $location`Sleaziest Adventurer Contest`:
-    case $location`Spookiest Adventurer Contest`:
-    case $location`Stinkiest Adventurer Contest`:
-      break;
-    case $location`Barf Mountain`:
-    case $location`Pirates of the Garbage Barges`:
-    case $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`:
-    case $location`The Toxic Teacups`:
-      break;
-    case $location`The Fun-Guy Mansion`:
-    case $location`The Sunken Party Yacht`:
-    case $location`Sloppy Seconds Diner`:
-      break;
-    case $location`The Secret Government Laboratory`:
-    case $location`The Deep Dark Jungle`:
-    case $location`The Mansion of Dr. Weirdeaux`:
-      break;
-    case $location`The Ice Hotel`:
-    case $location`VYKEA`:
-    case $location`The Ice Hole`:
-      break;
-    case $location`The SMOOCH Army HQ`:
-    case $location`LavaCo™ Lamp Factory`:
-    case Location.get("The Velvet / Gold Mine"):
-    case $location`The Bubblin' Caldera`:
-      break;
-    case $location`The X-32-F Combat Training Snowman`:
-      break;
-    case $location`Through the Spacegate`:
-      break;
-    case $location`The Old Landfill`:
-      break;
-    case $location`The Red Queen's Garden`:
-      break;
-    case $location`The Bugbear Pen`:
-      break;
-    case $location`The Spooky Gravy Burrow`:
-      break;
-    case $location`Investigating a Plaintive Telegram`:
-      break;
-    case $location`Drunken Stupor`:
-      retval._int = 0;
-      break;
-    case $location`Thugnderdome`:
-      break;
-    case $location`The Thinknerd Warehouse`:
-      break;
-    case $location`Gingerbread Upscale Retail District`:
-      break;
-    case $location`Gingerbread Sewers`:
-      break;
-    case $location`Gingerbread Civic Center`:
-    case $location`Gingerbread Industrial Zone`:
-    case $location`Gingerbread Train Station`:
-      break;
-    case $location`Monorail Work Site`:
-      break;
-    case $location`A Maze of Sewer Tunnels`:
-      break;
-  }
-  //	This is just to do a mass test.
-  //	default:
-  //		abort("Can't find " + loc);
-  //		break;
-
-  return retval;
-}
-
 export function zone_hasLuckyAdventure(loc: Location): boolean {
   if (
     $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field, A Maze of Sewer Tunnels, A Mob of Zeppelin Protesters, A-Boo Peak, An Octopus's Garden, Art Class, Cola Wars Battlefield (Cloaca Uniform), Cola Wars Battlefield (Dyspepsi Uniform), The Cola Wars Battlefield, Burnbarrel Blvd., Camp Logging Camp, Chemistry Class, Cobb's Knob Barracks, Cobb's Knob Harem, Cobb's Knob Kitchens, Cobb's Knob Laboratory, Cobb's Knob Menagerie\, Level 2, Cobb's Knob Treasury, Elf Alley, Exposure Esplanade, The Orcish Frat House, The Orcish Frat House (In Disguise), Guano Junction, The Hippy Camp, The Hippy Camp (In Disguise), Itznotyerzitz Mine, Lair of the Ninja Snowmen, Lemon Party, Madness Reef, Oil Peak, Outskirts of Camp Logging Camp, Pandamonium Slums, Shop Class, South of the Border, The "Fun" House, The Ancient Hobo Burial Ground, The Batrat and Ratbat Burrow, The Black Forest, The Brinier Deepers, The Briny Deeps, The Bugbear Pen, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Castle in the Clouds in the Sky (Top Floor), The Copperhead Club, The Dark Elbow of the Woods, The Dark Heart of the Woods, The Dark Neck of the Woods, The Dive Bar, The Goatlet, The Hallowed Halls, The Haunted Ballroom, The Haunted Billiards Room, The Haunted Boiler Room, The Haunted Conservatory, The Haunted Gallery, The Haunted Kitchen, The Haunted Library, The Haunted Pantry, The Haunted Storage Room, The Heap, The Hidden Park, The Hidden Temple, The Icy Peak, The Knob Shaft, The Limerick Dungeon, The Mer-Kin Outpost, The Oasis, The Obligatory Pirate's Cove, The Outskirts of Cobb's Knob, The Poker Room, The Primordial Soup, The Purple Light District, The Red Zeppelin, The Roulette Tables, The Sleazy Back Alley, The Smut Orc Logging Camp, The Spectral Pickle Factory, The Spooky Forest, The Spooky Gravy Burrow, The Unquiet Garves, The VERY Unquiet Garves, The Valley of Rof L'm Fao, The Wreck of the Edgar Fitzsimmons, Thugnderdome, Tower Ruins, Twin Peak, Vanya's Castle Chapel, Whitey's Grove, Ye Olde Medievale Villagee`.includes(
@@ -2216,70 +1923,8 @@ export function zone_hasLuckyAdventure(loc: Location): boolean {
   return false;
 }
 
-function zones_available(): Map<number, Location> {
-  const retval: Map<number, Location> = new Map();
-  for (const loc of $locations.all()) {
-    if (zone_isAvailable(loc, false)) {
-      retval.set(retval.size, loc);
-    }
-  }
-  return retval;
-}
-
-function mobs_available(): Map<number, Monster> {
-  const list: Map<Monster, boolean> = new Map();
-  const retval: Map<number, Monster> = new Map();
-  for (const [idx, loc] of zones_available()) {
-    for (const [idx_1, mob] of getMonsters(loc).entries()) {
-      list.set(mob, true);
-    }
-  }
-  for (const mob of list.keys()) {
-    retval.set(retval.size, mob);
-  }
-  return retval;
-}
-
-function drops_available(): Map<number, Item> {
-  const list: Map<Item, boolean> = new Map();
-  const retval: Map<number, Item> = new Map();
-  for (const [idx, mob] of mobs_available()) {
-    for (const it of Item.get(Object.keys(itemDrops(mob)))) {
-      list.set(it, true);
-    }
-  }
-  for (const it of list.keys()) {
-    retval.set(retval.size, it);
-  }
-  return retval;
-}
-
-function hugpocket_available(): Map<number, Item> {
-  const list: Map<Item, boolean> = new Map();
-  const retval: Map<number, Item> = new Map();
-  for (const [idx, mob] of mobs_available()) {
-    for (const [idx_1, drop] of itemDropsArray(mob).entries()) {
-      if (drop.type === "0") {
-        list.set(drop.drop, true);
-      } else if (
-        drop.rate > 0 &&
-        drop.type !== "n" &&
-        drop.type !== "c" &&
-        drop.type !== "b"
-      ) {
-        list.set(drop.drop, true);
-      }
-    }
-  }
-  for (const it of list.keys()) {
-    retval.set(retval.size, it);
-  }
-  return retval;
-}
-
 export function is_ghost_in_zone(loc: Location): boolean {
   //special location handling
-  let totalTurnsSpent: number = 0;
   let delayForNextNoncombat: number = 0;
   if (haveEffect($effect`Lucky!`) > 0) {
     return false; //we are grabbing a Lucky! so we will not encounter a ghost unless it is a wandering monster
@@ -2322,17 +1967,19 @@ export function is_ghost_in_zone(loc: Location): boolean {
           toInt(getProperty("hiddenHospitalProgress")) > 0 &&
           toInt(getProperty("hiddenHospitalProgress")) < 7
         );
-      case $location`The Hidden Office Building`:
+      case $location`The Hidden Office Building`: {
         hasMcCluskyFile = availableAmount($item`McClusky file (complete)`) > 0;
-        totalTurnsSpent = $location`The Hidden Office Building`.turnsSpent;
+        const totalTurnsSpent: number = $location`The Hidden Office Building`
+          .turnsSpent;
         delayForNextNoncombat = 4 - ((totalTurnsSpent - 1) % 5);
         if (auto_haveQueuedForcedNonCombat()) {
           delayForNextNoncombat = 0;
         }
         return hasMcCluskyFile && delayForNextNoncombat === 0;
-      case $location`The Hidden Apartment Building`:
+      }
+      case $location`The Hidden Apartment Building`: {
         cursed = haveEffect($effect`Thrice-Cursed`) > 0;
-        totalTurnsSpent = Location.get(
+        const totalTurnsSpent: number = Location.get(
           "The Hidden Apartment Building",
         ).turnsSpent;
         delayForNextNoncombat = 7 - ((totalTurnsSpent - 9) % 8);
@@ -2343,6 +1990,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
           delayForNextNoncombat = 0;
         }
         return cursed && delayForNextNoncombat === 0;
+      }
       case $location`The Hidden Bowling Alley`:
         return (
           toInt(getProperty("hiddenBowlingAlleyProgress")) === 6 &&
@@ -2358,7 +2006,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
         );
       default:
         apprates = auto_combat_appearance_rates(loc, true);
-        for (const [idx, mob] of getMonsters(loc).entries()) {
+        for (const [, mob] of getMonsters(loc).entries()) {
           if ((apprates.get(mob) ?? apprates.set(mob, 0.0).get(mob)) <= 0) {
             //won't show up because banished or req's not fulfilled
             continue;
@@ -2377,7 +2025,7 @@ export function monster_to_location(target: Monster): Map<Location, boolean> {
   const retval: Map<Location, boolean> = new Map();
   for (const loc of $locations.all()) {
     //check all locations in the game
-    for (const [idx, mon] of getMonsters(loc).entries()) {
+    for (const [, mon] of getMonsters(loc).entries()) {
       if (target === mon) {
         retval.set(loc, true);
         break;

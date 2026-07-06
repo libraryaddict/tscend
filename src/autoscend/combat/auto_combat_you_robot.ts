@@ -33,7 +33,7 @@ export function auto_combat_robot_stage5(
     monsterElement(enemy) === $element`hot` ||
     enemy === $monster`Protector S. P. E. C. T. R. E.`;
   const enemy_physical_res: number = 1 - enemy.physicalResistance * 0.01; //convert % into float
-  let dmg: number = 0;
+  let dmg: number;
   //scrap using attacks. reserved for beefier monsters with at least 40 HP
   if (canUse$1($skill`Snipe`, false) && !enemy_physical_immune) {
     //Spend 1 Scrap to deal 100% of your Mysticality in damage

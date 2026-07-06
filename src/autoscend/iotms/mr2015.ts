@@ -472,7 +472,7 @@ export function auto_barrelPrayers(): boolean {
       return false;
     }
     if (!toBoolean(getProperty(`prayedFor${prayer}`))) {
-      const buff: boolean = cliExecute(`barrelprayer ${prayer}`);
+      cliExecute(`barrelprayer ${prayer}`);
       return true;
     }
   }
@@ -495,11 +495,6 @@ export function auto_mayoItems(): boolean {
   }
   if (myMeat() < 10000) {
     return false;
-  }
-
-  let haveYR: boolean = false;
-  if (haveFamiliar($familiar`Crimbo Shrub`)) {
-    haveYR = true;
   }
 
   let mayos: Map<Item, boolean> = new Map();
@@ -1003,7 +998,7 @@ function deck_cheat(cheat: string): boolean {
       _v,
     ]),
   );
-  for (const [idx, cheat_1] of cheated) {
+  for (const [, cheat_1] of cheated) {
     if (toInt(cheat_1) === card) {
       auto_log_warning("Already cheated this card, failing gracefully.", "red");
       return false;
@@ -1011,16 +1006,14 @@ function deck_cheat(cheat: string): boolean {
   }
 
   const deck: Item = wrap_item($item`Deck of Every Card`);
-  const page: string = visitUrl(
-    `inv_use.php?cheat=1&pwd=&whichitem=${toInt(deck)}`,
-  );
+  visitUrl(`inv_use.php?cheat=1&pwd=&whichitem=${toInt(deck)}`);
   // Check that a valid card was selected, otherwise this wastes 5 draws.
   if (card !== 0) {
-    let page_1: string = visitUrl(
-      `choice.php?pwd=&option=1&whichchoice=1086&which=${card}`,
+    visitUrl(`choice.php?pwd=&option=1&whichchoice=1086&which=${card}`, true);
+    const page_1: string = visitUrl(
+      "choice.php?pwd=&whichchoice=1085&option=1",
       true,
     );
-    page_1 = visitUrl("choice.php?pwd=&whichchoice=1085&option=1", true);
     if (containsText(page_1, "Combat")) {
       // Can we resolve this combat here? Should we?
       // Do we need to accept a combat filter?
@@ -1035,7 +1028,7 @@ function deck_cheat(cheat: string): boolean {
         _v,
       ]),
     );
-    for (const [idx, cheat_1] of cheated_1) {
+    for (const [, cheat_1] of cheated_1) {
       if (toInt(cheat_1) === card) {
         found = true;
       }

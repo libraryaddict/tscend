@@ -85,7 +85,6 @@ function auto_tavern(): boolean {
   // infrequent compounding issue, reset maximizer
   resetMaximize();
 
-  let maximized: boolean = false;
   // sleaze is the only one we don't care about
   if (possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     const mod: string = stringModifier(
@@ -93,20 +92,17 @@ function auto_tavern(): boolean {
       "Modifiers",
     );
     if (containsText(mod, "Weapon Damage Percent")) {
-      let page: string = visitUrl("place.php?whichplace=kgb");
+      const page: string = visitUrl("place.php?whichplace=kgb");
       let flipped: boolean = false;
       if (containsText(page, "handleup")) {
-        page = visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
+        visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
         flipped = true;
       }
 
       visitUrl("place.php?whichplace=kgb&action=kgb_button1", false);
-      page = visitUrl("place.php?whichplace=kgb&action=kgb_button1", false);
+      visitUrl("place.php?whichplace=kgb&action=kgb_button1", false);
       if (flipped) {
-        page = visitUrl(
-          "place.php?whichplace=kgb&action=kgb_handledown",
-          false,
-        );
+        visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
       }
     }
   }
@@ -148,13 +144,10 @@ function auto_tavern(): boolean {
     }
   }
 
-  if (!maximized) {
-    // Tails are a better time saving investment. Add -combat to ensure sim and real maximizer results match
-    simMaximizeWith$1(
-      `80cold damage 20max,80hot damage 20max,80spooky damage 20max,80stench damage 20max,500ml ${auto_convertDesiredML(max_ml_target)}max,-200combat 25max`,
-    );
-    maximized = true;
-  }
+  // Tails are a better time saving investment. Add -combat to ensure sim and real maximizer results match
+  simMaximizeWith$1(
+    `80cold damage 20max,80hot damage 20max,80spooky damage 20max,80stench damage 20max,500ml ${auto_convertDesiredML(max_ml_target)}max,-200combat 25max`,
+  );
 
   function n_passed(): number {
     // We pass an elemental damage check if we have 20 damage for that element

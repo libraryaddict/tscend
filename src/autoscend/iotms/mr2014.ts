@@ -203,7 +203,7 @@ export function dna_generic(): boolean {
     return false;
   }
 
-  let potion: Map<Phylum, boolean> = new Map();
+  let potion: Map<Phylum, boolean>;
 
   if (in_heavyrains()) {
     switch (myDaycount()) {
@@ -520,12 +520,7 @@ export function fancyOilPainting(): boolean {
   return true;
 }
 
-function turkeyBooze(): number {
-  return toInt(getProperty("_turkeyBooze"));
-}
-
-let $_f_importantMonsters: Monster[] | undefined;
-$_f_importantMonsters ??= Monster.get([
+const $_f_importantMonsters: Monster[] = Monster.get([
   // L4:
   "beanbat",
   // L5:

@@ -689,14 +689,8 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
       runChoice(2); // choosing frat-paddle + cargo shorts to complete outfit
     } else if (itemAmount($item`Orcish cargo shorts`) > 0) {
       runChoice(3); // choosing frat-paddle + baseball cap to complete outfit
-    } else if (
-      itemAmount($item`Orcish frat-paddle`) > 0 &&
-      itemAmount($item`Orcish baseball cap`) > 0 &&
-      itemAmount($item`Orcish cargo shorts`) > 0
-    ) {
-      runChoice(4); // if you have each outfit piece, just fight the orcs
     } else {
-      runChoice(1); // if nothing, just grab the first option. could consider opt 4 and YR?
+      runChoice(4); // if you have each outfit piece, just fight the orcs
     }
   } else if (choice === 1427) {
     // The Hidden Junction (Guano Junction)

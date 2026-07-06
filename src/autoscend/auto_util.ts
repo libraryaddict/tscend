@@ -13,7 +13,6 @@ import {
   canEquip,
   canInteract,
   changeMcd,
-  charAt,
   chew,
   Class,
   cliExecute,
@@ -383,7 +382,7 @@ export function almostRollover(): boolean {
 
 export function needToConsumeForEmergencyRollover(): boolean {
   let max_bonus_adv: number = round(numericModifier("adventures"));
-  for (const [n, rec] of maximize("adventures", 0, 0, true, true).entries()) {
+  for (const [, rec] of maximize("adventures", 0, 0, true, true).entries()) {
     if (rec.item !== Item.none) {
       max_bonus_adv += toInt(rec.score);
     }
@@ -417,20 +416,6 @@ export function autoMaximize$1(
   return maximize(req, maxPrice, priceLevel, simulate);
 }
 
-function autoMaximize$2(
-  req: string,
-  maxPrice: number,
-  priceLevel: number,
-  simulate: boolean,
-  includeEquip: boolean,
-): any {
-  if (!simulate) {
-    debugMaximize(req, maxPrice);
-    tcrs_maximize_with_items(req);
-  }
-  return maximize(req, maxPrice, priceLevel, simulate, includeEquip);
-}
-
 function debugMaximize(req: string, meat: number): void {
   //This function will be removed.
   if (indexOf(req, "-tie") === -1) {
@@ -454,7 +439,7 @@ function debugMaximize(req: string, meat: number): void {
   tableDont +=
     "<tr><td>Score</td><td>Effect</td><td>Command</td><td>Skill</td><td>Item</td><td>Display</td></tr>";
 
-  for (const [it, entry] of maximize(req, 0, 0, true, true).entries()) {
+  for (const [, entry] of maximize(req, 0, 0, true, true).entries()) {
     let output: string = "";
 
     entry.display = replaceString(entry.display, "<html>", "");
@@ -676,9 +661,8 @@ export function backupSetting(setting: string, newValue: string): boolean {
 
   let found: number = 0;
   let oldValue: string = "";
-  for (const [domain, _v0] of defaults) {
-    for (const [name, _v1] of _v0) {
-      const value = _v1;
+  for (const [, _v0] of defaults) {
+    for (const [name] of _v0) {
       if (name === setting) {
         found = 1;
         oldValue = getProperty(name);
@@ -712,9 +696,8 @@ export function restoreAllSettings(): boolean {
   );
 
   let retval: boolean = false;
-  for (const [domain, _v0] of defaults) {
-    for (const [name, _v1] of _v0) {
-      const value = _v1;
+  for (const [, _v0] of defaults) {
+    for (const [name] of _v0) {
       retval = toBoolean(toInt(retval) | toInt(restoreSetting(name)));
     }
   }
@@ -758,15 +741,6 @@ export function loopHandler(
   return false;
 }
 
-function loopHandler$1(
-  turnSetting: string,
-  counterSetting: string,
-  threshold: number,
-): boolean {
-  const abortMessage: string = `Infinite loop possibly detected for setting: ${counterSetting}. Use up a turn to get us to consider this loop broken. This may be a more severe issue.`;
-  return loopHandler(turnSetting, counterSetting, abortMessage, threshold);
-}
-
 function loopHandlerDelay(counterSetting: string): boolean {
   return loopHandlerDelay$1(counterSetting, 3);
 }
@@ -791,14 +765,6 @@ export function loopHandlerDelayAll(): boolean {
   return boo || digitize;
 }
 
-function reverse(s: string): string {
-  let ret: string = "";
-  for (let i: number = length(s) - 1; i >= 0; i--) {
-    ret += charAt(s, i);
-  }
-  return ret;
-}
-
 export function banishedMonsters(): Map<Monster, number> {
   const retval: Map<Monster, number> = new Map();
   const data: Map<number, string> = new Map(
@@ -819,48 +785,6 @@ export function banishedMonsters(): Map<Monster, number> {
   }
 
   return retval;
-}
-
-function isBanished$1(enemy: Monster): boolean {
-  return banishedMonsters().has(enemy);
-}
-
-function banishedPhyla(): Map<Phylum, number> {
-  const retval: Map<Phylum, number> = new Map();
-  const data: Map<number, string> = new Map(
-    splitString(getProperty("banishedPhyla"), ":").map((_v, _i) => [_i, _v]),
-  );
-
-  if (getProperty("banishedPhyla") === "") {
-    return retval;
-  }
-
-  let i: number = 0;
-  while (i < data.size) {
-    retval.set(
-      toPhylum(data.get(i) ?? data.set(i, "").get(i)),
-      toInt(data.get(i + 2) ?? data.set(i + 2, "").get(i + 2)),
-    );
-    i += 3;
-  }
-
-  return retval;
-}
-
-function phylumBanishTurnsRemaining(): number {
-  const banishedPhy: Map<Phylum, number> = banishedPhyla();
-
-  for (const [banPhy, i] of banishedPhy) {
-    if ((banPhy.toString() as string) !== "") {
-      return (
-        99 -
-        (myTurncount() -
-          (banishedPhy.get(banPhy) ?? banishedPhy.set(banPhy, 0).get(banPhy)))
-      );
-    }
-  }
-
-  return 0;
 }
 
 export function autoCraft(
@@ -1042,8 +966,8 @@ export function canYellowRay(target: Monster): boolean {
         getProperty("shrubGifts") !== "yellow" &&
         !toBoolean(getProperty("_shrubDecorated"))
       ) {
-        let temp: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=7958");
-        temp = visitUrl(
+        visitUrl("inv_use.php?pwd=&which=3&whichitem=7958");
+        visitUrl(
           "choice.php?pwd=&whichchoice=999&option=1&topper=1&lights=1&garland=1&gift=1",
         );
       }
@@ -1651,10 +1575,6 @@ export function adjustForYellowRayIfPossible$1(): boolean {
 function canReplace(target: Monster): boolean {
   //Use this to determine if it is safe to enter a replace monster combat.
   return replaceMonsterCombatString$1(target) !== "";
-}
-
-function canReplace$1(): boolean {
-  return canReplace(Monster.none);
 }
 
 function adjustForReplace(combat_string: string): boolean {
@@ -3407,10 +3327,6 @@ export function maxSealSummons(): number {
   return 5;
 }
 
-function acquireCombatMods(amt: number): boolean {
-  return acquireCombatMods$1(amt, true);
-}
-
 export function acquireCombatMods$1(amt: number, doEquips: boolean): boolean {
   if (amt < 0) {
     return providePlusNonCombat$3(min(auto_combatModCap(), -1 * amt), doEquips);
@@ -3541,9 +3457,7 @@ export function fightScienceTentacle(): boolean {
     handleServant($servant`Cat`);
   }
 
-  let temp: string = visitUrl(
-    "place.php?whichplace=forestvillage&action=fv_scientist",
-  );
+  visitUrl("place.php?whichplace=forestvillage&action=fv_scientist");
 
   const choices: Map<number, string> = new Map(
     Object.entries(availableChoiceOptions()).map(([_k, _v]) => [toInt(_k), _v]),
@@ -3562,12 +3476,12 @@ export function fightScienceTentacle(): boolean {
     abortChoice === 0
   ) {
     setProperty("_eldritchTentacleFought", true.toString());
-    temp = visitUrl(`choice.php?whichchoice=1201&pwd=&option=${abortChoice}`);
+    visitUrl(`choice.php?whichchoice=1201&pwd=&option=${abortChoice}`);
     return false;
   }
 
   setProperty("auto_nonAdvLoc", true.toString());
-  temp = visitUrl(`choice.php?whichchoice=1201&pwd=&option=${abortChoice}`);
+  visitUrl(`choice.php?whichchoice=1201&pwd=&option=${abortChoice}`);
   setProperty("auto_nextEncounter", "Eldritch Tentacle");
   const pages: Map<number, string> = new Map();
   pages.set(0, "place.php?whichplace=forestvillage&action=fv_scientist");
@@ -3695,7 +3609,6 @@ export function handleBarrelFullOfBarrels(daily: boolean): boolean {
     return false;
   }
 
-  const locations: Map<string, boolean> = new Map();
   let smashed: number = 0;
   const mimic_matcher: AshMatcher = new AshMatcher(
     '<div class="ex">((?:<div class="mimic">!</div>)|)<a class="spot" href="choice.php[?]whichchoice=1099[&]pwd=(?:.*?)[&]option=1[&]slot=(\\d\\d)"><img title="(.*?)"',
@@ -3788,10 +3701,6 @@ export function runChoice$1(page_text: string): string {
 
 export function doNumberology(goal: string): number {
   return doNumberology$3(goal, true, null);
-}
-
-function doNumberology$1(goal: string, option: CombatMacro): number {
-  return doNumberology$3(goal, true, option);
 }
 
 export function doNumberology$2(goal: string, doIt: boolean): number {
@@ -3972,14 +3881,6 @@ export function auto_have_skill(sk: Skill): boolean {
   return auto_is_valid$2(sk) && haveSkill(sk);
 }
 
-function have_skills(array: Map<Skill, boolean>): boolean {
-  for (const sk of array.keys()) {
-    if (!auto_have_skill(sk)) {
-      return false;
-    }
-  }
-  return true;
-}
 //From Bale\'s woods.ash relay script.
 export function woods_questStart(): boolean {
   if (myLevel() < 2) {
@@ -4245,10 +4146,6 @@ export function ATSongList(): Map<Effect, boolean> {
   return songs;
 }
 
-function shrugAT(): void {
-  shrugAT$1(Effect.none);
-}
-
 export function shrugAT$1(anticipated: Effect): void {
   if (
     is_boris() ||
@@ -4295,7 +4192,6 @@ export function shrugAT$1(anticipated: Effect): void {
 
   let count_1: number = 1;
 
-  const last: Effect = Effect.none;
   for (const ATsong of ATSongList().keys()) {
     if (haveEffect(ATsong) > 0) {
       count_1 += 1;
@@ -4596,7 +4492,6 @@ export function auto_check_conditions(conds: string): boolean {
   const conditions: Map<number, string> = new Map(
     splitString(conds, ";").map((_v, _i) => [_i, _v]),
   );
-  const failure: boolean = false;
 
   function compare_numbers(
     num1: number,
@@ -4692,12 +4587,10 @@ export function auto_check_conditions(conds: string): boolean {
       // data: <location><comparison operator><integer value>
       // As a precaution, autoscend aborts if to_location returns $location[none]
 
-      let m6: AshMatcher = undefined;
       let loc: Location = Location.none;
       // data: <propname><comparison operator><value>
       // >/</>=/<= only supported for integer properties!
 
-      let m2: AshMatcher = undefined;
       let prop: string = "";
       // data: <propname>
       // gets propname and converts to a boolean
@@ -4818,8 +4711,11 @@ export function auto_check_conditions(conds: string): boolean {
             );
           }
           return myLocation() === req_loc;
-        case "turnsspent":
-          m6 = new AshMatcher("([^=<>]+)([=<>]+)(.+)", condition_data);
+        case "turnsspent": {
+          const m6: AshMatcher = new AshMatcher(
+            "([^=<>]+)([=<>]+)(.+)",
+            condition_data,
+          );
           if (!m6.find()) {
             abort(
               `"${condition_data}" is not a proper turnsspent condition format!`,
@@ -4839,8 +4735,12 @@ export function auto_check_conditions(conds: string): boolean {
             );
           }
           return loc.turnsSpent === toInt(m6.group(3));
-        case "prop":
-          m2 = new AshMatcher("([^=<>]+)([=<>]+)(.+)", condition_data);
+        }
+        case "prop": {
+          const m2: AshMatcher = new AshMatcher(
+            "([^=<>]+)([=<>]+)(.+)",
+            condition_data,
+          );
           if (!m2.find()) {
             abort(`"${condition_data}" is not a proper prop condition format!`);
           }
@@ -4853,6 +4753,7 @@ export function auto_check_conditions(conds: string): boolean {
             );
           }
           return prop === m2.group(3);
+        }
         case "prop_boolean":
           return toBoolean(getProperty(condition_data));
         case "quest":
@@ -4956,10 +4857,9 @@ export function auto_check_conditions(conds: string): boolean {
           abort(`Invalid condition type "${condition_type}" found!`);
       }
     }
-    return false;
   }
 
-  for (const [i, cond] of conditions) {
+  for (const [, cond] of conditions) {
     const m: AshMatcher = new AshMatcher("^(!?)(.+)$", cond);
     if (!m.find()) {
       abort(`"${cond}" is not a proper condition!`);
@@ -4984,7 +4884,7 @@ function auto_getMonsters(category: string): Map<Monster, boolean> {
   if (!monsters_text.size) {
     auto_log_error("Could not load autoscend_monsters.txt. This is bad!");
   }
-  for (const [i, _v0] of monsters_text.get(category) ??
+  for (const [, _v0] of monsters_text.get(category) ??
     monsters_text.set(category, new Map()).get(category)) {
     for (const [name, _v1] of _v0) {
       const conds = _v1;
@@ -5014,7 +4914,7 @@ function auto_getPhylum(category: string): Map<Phylum, boolean> {
   if (!phylum_text.size) {
     auto_log_error("Could not load autoscend_phylums.txt. This is bad!");
   }
-  for (const [i, _v0] of phylum_text.get(category) ??
+  for (const [, _v0] of phylum_text.get(category) ??
     phylum_text.set(category, new Map()).get(category)) {
     for (const [name, _v1] of _v0) {
       const conds = _v1;
@@ -5153,7 +5053,7 @@ function auto_interruptZoneCheck(): boolean {
     return false;
   }
 
-  for (const [i, zone] of splitString(interruptZones, ";").entries()) {
+  for (const [, zone] of splitString(interruptZones, ";").entries()) {
     if (toLocation(zone) === myLocation()) {
       append(interruptedZones, `${currentZone};`);
       setProperty("auto_interruptedZones", interruptedZones);
@@ -5644,7 +5544,7 @@ export function auto_convertDesiredML(DML: number): number {
 }
 // Uses MCD in the constraints of a Cap
 export function auto_setMCDToCap(): boolean {
-  let targetMcd: number = 0;
+  let targetMcd: number;
 
   if (getProperty("auto_MLSafetyLimit") === "") {
     // No ML limit was given, so use the max MCD value
@@ -6032,13 +5932,14 @@ export function auto_predictAccordionTurns(): number {
   const accordions: Map<Item, boolean> =
     myClass() === $class`Accordion Thief` ? All_Accordions : NonAT_Accordions;
 
-  let expTurns: number = 0;
   let CurrentBestTurns: number = 0;
 
   for (const squeezebox of accordions.keys()) {
     // Verify that we have the accordion and that it is allowed to be use in path
     if (equipmentAmount(squeezebox) > 0 && auto_is_valid(squeezebox)) {
-      expTurns = toInt(numericModifier(squeezebox, "Song Duration"));
+      const expTurns: number = toInt(
+        numericModifier(squeezebox, "Song Duration"),
+      );
 
       if (expTurns > CurrentBestTurns) {
         CurrentBestTurns = expTurns;
@@ -6459,10 +6360,6 @@ export function turnsUsedByRemainingNCForcesToday(): number {
   return forces;
 }
 
-function substat_to_level(): number {
-  return substat_to_level$1(myBasestat(stat_to_substat(myPrimestat())));
-}
-
 export function substat_to_level$1(n: number): number {
   if (n <= 16) {
     return 1; // All substats less than 16 are level 1, before the formula takes effect
@@ -6472,10 +6369,6 @@ export function substat_to_level$1(n: number): number {
 
 export function level_to_min_substat(n: number): number {
   return ((n - 1) ** 2 + 4) ** 2;
-}
-
-function level_to_min_substat$1(): number {
-  return level_to_min_substat(myLevel());
 }
 
 export function stat_to_substat(s: Stat): Stat {
@@ -6545,44 +6438,6 @@ export function auto_getListOfNonDamagingFamiliarEquipment(): Map<
     Modifier.get("Familiar Weight"),
     true,
   );
-}
-
-function auto_getOffStatChallengeFromTelescope(): Stat {
-  const musc: string = "standing around flexing";
-  const myst: string = "sitting around playing chess";
-  const moxie: string = "all wearing sunglasses and dancing";
-  const scope: string = getProperty("telescope1");
-
-  if (containsText(scope, musc)) {
-    return $stat`Muscle`;
-  } else if (containsText(scope, myst)) {
-    return $stat`Mysticality`;
-  } else if (containsText(scope, moxie)) {
-    return $stat`Moxie`;
-  }
-  return Stat.none;
-}
-
-function auto_getElementChallengeFromTelescope(): Element {
-  const hot: string = "fire";
-  const cold: string = "igloos";
-  const spooky: string = "eldritch";
-  const sleaze: string = "greasy";
-  const stench: string = "garbage";
-  const scope: string = getProperty("telescope2");
-
-  if (containsText(scope, hot)) {
-    return $element`hot`;
-  } else if (containsText(scope, cold)) {
-    return $element`cold`;
-  } else if (containsText(scope, spooky)) {
-    return $element`spooky`;
-  } else if (containsText(scope, sleaze)) {
-    return $element`sleaze`;
-  } else if (containsText(scope, stench)) {
-    return $element`stench`;
-  }
-  return Element.none;
 }
 
 export function auto_amIRich(): boolean {
@@ -6726,22 +6581,6 @@ export function auto_inRonin(): boolean {
   return !(canInteract() || inHardcore());
 }
 
-function resistanceModifier(el: Element): Modifier {
-  switch (el) {
-    case $element`hot`:
-      return Modifier.get("Hot Resistance");
-    case $element`cold`:
-      return Modifier.get("Cold Resistance");
-    case $element`stench`:
-      return Modifier.get("Stench Resistance");
-    case $element`spooky`:
-      return Modifier.get("Spooky Resistance");
-    case $element`sleaze`:
-      return Modifier.get("Sleaze Resistance");
-  }
-  return Modifier.none;
-}
-
 export function damageModifier(el: Element): Modifier {
   switch (el) {
     case $element`hot`:
@@ -6756,47 +6595,6 @@ export function damageModifier(el: Element): Modifier {
       return Modifier.get("Sleaze Damage");
   }
   return Modifier.none;
-}
-
-function spellDamageModifier(el: Element): Modifier {
-  switch (el) {
-    case $element`hot`:
-      return Modifier.get("Hot Spell Damage");
-    case $element`cold`:
-      return Modifier.get("Cold Spell Damage");
-    case $element`stench`:
-      return Modifier.get("Stench Spell Damage");
-    case $element`spooky`:
-      return Modifier.get("Spooky Spell Damage");
-    case $element`sleaze`:
-      return Modifier.get("Sleaze Spell Damage");
-  }
-  return Modifier.none;
-}
-
-function auto_getElementalDamageMultiplier(
-  source: Element,
-  target: Element,
-): number {
-  if (source === target) {
-    return 0.0;
-  }
-  if (source === $element`cold` && $elements`sleaze, stench`.includes(target)) {
-    return 2.0;
-  }
-  if (source === $element`hot` && $elements`cold, spooky`.includes(target)) {
-    return 2.0;
-  }
-  if (source === $element`sleaze` && $elements`hot, stench`.includes(target)) {
-    return 2.0;
-  }
-  if (source === $element`spooky` && $elements`cold, sleaze`.includes(target)) {
-    return 2.0;
-  }
-  if (source === $element`stench` && $elements`hot, spooky`.includes(target)) {
-    return 2.0;
-  }
-  return 1.0;
 }
 
 export function auto_remainingShantyTurns(): number {

@@ -85,9 +85,8 @@ export function auto_combatDefaultStage1(
   text: string,
 ): string {
   // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
-  let retval: string = "";
   // Path = Heavy Rains
-  retval = auto_combatHeavyRainsStage1(round_1, enemy, text);
+  let retval: string = auto_combatHeavyRainsStage1(round_1, enemy, text);
   if (retval !== "") {
     return retval;
   }
@@ -276,7 +275,7 @@ export function auto_combatDefaultStage1(
     canSurvive$1(4.0)
   ) {
     let tryIt: boolean = false;
-    for (const [i, drop] of itemDropsArray(enemy).entries()) {
+    for (const [, drop] of itemDropsArray(enemy).entries()) {
       if (drop.type === "0") {
         tryIt = true;
       }
@@ -304,7 +303,7 @@ export function auto_combatDefaultStage1(
     }
     if (tryIt) {
       combat_status_add("pickpocket");
-      const attemptSteal: string = steal();
+      steal();
       return "pickpocket";
     }
   }
