@@ -368,7 +368,7 @@ export function plumber_canDealScalingDamage(): boolean {
   // This is a pretty rough guesstimate.
   const expected_scaler_hp: number = myBuffedstat(myPrimestat());
 
-  for (const st of $stats`Muscle, Mysticality, Moxie`) {
+  for (const st of $stats.all()) {
     let level: number = 0;
     if (
       possessEquipment(

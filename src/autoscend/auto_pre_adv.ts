@@ -335,7 +335,7 @@ function print_footer(): void {
   );
   //current equipment
   next_line = "equipment: ";
-  for (const sl of $slots`hat, weapon, holster, off-hand, back, shirt, pants, acc1, acc2, acc3, familiar, crown-of-thrones, sticker1, sticker2, sticker3, card-sleeve, folder1, folder2, folder3, folder4, folder5, buddy-bjorn, bootskin, bootspur, codpiece1, codpiece2, codpiece3, codpiece4, codpiece5, fakehand, hats`) {
+  for (const sl of $slots.all()) {
     if (
       $slots`hat, weapon, off-hand, back, shirt, pants, acc1, acc2, acc3, familiar`.includes(
         sl,

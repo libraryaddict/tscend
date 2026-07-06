@@ -81,7 +81,6 @@ import {
   auto_have_familiar,
   pathAllowsChangingFamiliar,
 } from "../auto_familiar";
-import { hasLeg } from "../auto_monsterparts";
 import {
   auto_banishesUsedAt,
   auto_can_equip,
@@ -703,7 +702,7 @@ export function getStunner(enemy: Monster): Skill {
       if (
         canUse$2($skill`Hogtie`) &&
         !haveUsed($skill`Beanscreen`) &&
-        hasLeg(enemy)
+        enemy.parts.includes("leg")
       ) {
         return $skill`Hogtie`;
       }
