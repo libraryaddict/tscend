@@ -2188,6 +2188,10 @@ function safe_preference_reset_wrapper(level: number): void
 
 export function main(...input: string[]): void
 {
+	if (getRevision() < 29094) {
+		throw `Requires KoLMafia 29094 or newer, please update your KoLMafia`;
+	}
+
 	backupSetting("printStackOnAbort", true.toString());
 	// parse input
 	if (input.length > 0)

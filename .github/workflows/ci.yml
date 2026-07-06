@@ -31,15 +31,22 @@ jobs:
     - name: Publish release
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
-        cp -r RELEASE /tmp/release
-
         git config user.name "Build Script"
         git config user.email "<>"
-        git fetch --all
-        git switch releases
+        git fetch origin releases
+        git worktree add /tmp/releases releases
+        cd /tmp/releases
 
-        git rm -rf --ignore-unmatch .
-        cp -r /tmp/release/. .
-        git add .
-        git commit -m "Build Mafia files for commit $GITHUB_SHA"
-        git push origin releases
+        git rm -rf --quiet . >/dev/null 2>&1 || true
+        cp -r "$GITHUB_WORKSPACE/RELEASE/." .
+        git add -A
+
+        if git diff --cached --quiet; then
+          echo "No changes to publish."
+        else
+          git commit -m "Build $GITHUB_SHA"
+          git push origin HEAD:releases
+        fi
+
+        cd "$GITHUB_WORKSPACE"
+        git worktree remove /tmp/releases --force
