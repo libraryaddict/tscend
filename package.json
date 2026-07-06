@@ -5,7 +5,8 @@
     "typecheck": "tsc --noEmit",
     "bundle": "node esbuild.mjs",
     "build": "yarn typecheck && yarn bundle",
-    "knip": "knip"
+    "lint": "eslint src && prettier --check .",
+    "format": "eslint src --fix && prettier --write ."
   },
   "devDependencies": {
     "@babel/cli": "^7.29.7",
@@ -15,15 +16,22 @@
     "@babel/preset-env": "^7.29.7",
     "@babel/preset-typescript": "^7.29.7",
     "@babel/runtime": "^7.29.7",
+    "@eslint/js": "^10.0.1",
     "@types/babel__core": "^7",
     "@types/babel__preset-env": "^7",
     "@types/node": "^26.1.0",
     "esbuild": "^0.28.1",
     "esbuild-plugin-babel": "^0.2.3",
-    "knip": "^6.24.0",
-    "typescript": "^6.0.3"
+    "eslint": "^10.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-libram": "^0.6.0",
+    "jiti": "^2.7.0",
+    "prettier": "3.9.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.62.1"
   },
   "dependencies": {
-    "kolmafia": "^5.29089.0"
+    "kolmafia": "^5.29089.0",
+    "libram": "^0.11.23"
   }
 }
