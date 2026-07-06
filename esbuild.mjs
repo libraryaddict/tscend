@@ -5,13 +5,13 @@ import { readFileSync } from "fs";
 
 await esbuild.build({
   entryPoints: {
-    autoscend: "RELEASE/scripts/index.ts",
-    "autoscend/auto_choice_adv": "RELEASE/scripts/autoscend/auto_choice_adv.ts",
-    "autoscend/auto_post_adv": "RELEASE/scripts/autoscend/auto_post_adv.ts",
-    "autoscend/auto_pre_adv": "RELEASE/scripts/autoscend/auto_pre_adv.ts",
+    "autoscend": "src/index.ts",
+    "autoscend/auto_choice_adv": "src/autoscend/auto_choice_adv.ts",
+    "autoscend/auto_post_adv": "src/autoscend/auto_post_adv.ts",
+    "autoscend/auto_pre_adv": "src/autoscend/auto_pre_adv.ts",
   },
   bundle: true,
-  outdir: "dist",
+  outdir: "RELEASE/scripts/",
   external: ["kolmafia"],
   "mainFields": ["main"],
   format:"cjs",

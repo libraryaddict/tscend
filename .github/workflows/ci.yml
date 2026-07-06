@@ -1,87 +1,45 @@
-# This is a workflow to perform basic verification for KoLmafia ASH scripts
-
 name: CI
-env:
-  SCRIPT_NAMES: "autoscend.ash auto_pre_adv.ash auto_post_adv.ash auto_choice_adv.ash relay_autoscend.ash autoscend_settings_extra.ash"
 
 on: [push, pull_request]
 
+permissions:
+  contents: write
+
 jobs:
-  verify:
-    name: Verify
+  build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
-    - name: Setup Java 21
-      uses: actions/setup-java@v4.6.0
+    - name: Setup Node
+      uses: actions/setup-node@v4
       with:
-        distribution: "temurin"
-        java-version: "21"
+        node-version: 26
+        cache: yarn
 
-    - name: Determine KoLmafia version
-      id: mafia
+    - name: Enable Corepack
+      run: corepack enable
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Build
+      run: yarn build
+
+    - name: Publish release
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
-        set -o pipefail
-        export GITHUB_RELEASE=$(curl --fail --silent --globoff 'https://api.github.com/repos/kolmafia/kolmafia/releases/latest')
-        if [[ -z "$GITHUB_RELEASE" ]]; then
-          echo "Could not get KoLmafia latst release from GitHub!"
-          exit 1
-        fi
-        export GITHUB_BUILD=$(echo $GITHUB_RELEASE | jq --raw-output '.name')
-        export GITHUB_URL=$(echo $GITHUB_RELEASE | jq --raw-output '.assets[] | select(.browser_download_url | contains(".jar")).browser_download_url')
-        echo "github=$GITHUB_URL" >> $GITHUB_OUTPUT
-        echo "GitHub URL = ${GITHUB_URL}"
-        echo "build=$GITHUB_BUILD" >> $GITHUB_OUTPUT
-        echo "GitHub Mafia Build = ${GITHUB_BUILD}"
-    - name: Cache KoLmafia
-      id: cache
-      uses: actions/cache@v4
-      with:
-        path: .github/kolmafia.jar
-        key: kolmafia-${{steps.mafia.outputs.build}}
+        cp -r RELEASE /tmp/release
 
-    - name: Download KoLmafia
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: |
-        curl -L "${{steps.mafia.outputs.github}}" --output .github/kolmafia.jar
+        git config user.name "Build Script"
+        git config user.email "<>"
+        git fetch --all
+        git switch releases
 
-    - name: Install and verify
-      run: |
-        cd RELEASE
-
-        if [[ -f "dependencies.txt" ]]; then
-          # Install dependencies
-          echo "Installing dependencies..."
-
-          output_file="scripts/_ci_dependencies.ash"
-          while read -r line || [ -n "$line" ]; do
-            if [[ "$line" == *".git"* ]]; then
-              echo "cli_execute('git checkout ${line}');" >> "$output_file"
-            elif [[ "$line" == "github "* ]]; then
-              echo "cli_execute('git checkout ${line:7}');" >> "$output_file"
-            else
-              echo "cli_execute('svn checkout ${line}');" >> "$output_file"
-            fi
-          done < "dependencies.txt"
-          echo "cli_execute('exit');" >> "$output_file"
-          java -DuseCWDasROOT=true -jar ../.github/kolmafia.jar --CLI _ci_dependencies
-        fi
-
-        errors=0
-        for ashfile in ${SCRIPT_NAMES}; do
-            # Run the verification
-            echo "Verifying ${ashfile}..."
-
-            echo "try { cli_execute('verify ${ashfile}'); } finally { cli_execute('exit'); }" > scripts/_ci_verify.ash
-            output=$(java -DuseCWDasROOT=true -jar ../.github/kolmafia.jar --CLI _ci_verify)
-            if [[ $output == *"Script verification complete." ]]; then
-                echo "Verified ${ashfile}!"
-            else
-                echo $output
-                errors=$((errors+1))
-            fi
-        done
-
-        exit ${errors}
+        git rm -r .
+        cp -r /tmp/release/. .
+        git add .
+        git commit -m "Build Mafia files for commit $GITHUB_SHA"
+        git push origin releases

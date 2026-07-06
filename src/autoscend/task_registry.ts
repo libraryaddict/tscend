@@ -1,5 +1,5 @@
 import { auto_log_error, LX_summonMonster, woods_questStart } from "./auto_util";
-import { LX_burnDelay, Lsc_flyerSeals } from "./../autoscend";
+import { LX_burnDelay, Lsc_flyerSeals } from "../autoscend";
 import { auto_breakfastCounterVisit } from "./auto_consume";
 import { LX_attemptPowerLevel, LX_freeCombatsTask } from "./auto_powerlevel";
 import { allowSoftblockDelay, auto_earlyRoutingHandling, auto_softBlockHandler } from "./auto_routing";
