@@ -1,68 +1,71 @@
+import { Class, Effect, Element, Familiar, Item, Location, Monster, Phylum, Skill, Slot, Stat } from "kolmafia";
+
 //A record is a data structure for storing a fixed number of elements. It is similar to a structure in C language.
 //If we want to have a function return a custom data structure we need to first define it before the function.
 //To avoid conflict with our unified header (define cross-dependent functions without circular importing) we first define all records here.
 //We then import them to the very begining of autoscend_header.ash
 //Note that we only do this for cross dependent functions. If a record is only going to be used in a single file, define it inside that file.
-########################################################################################
-
+//#######################################################################################
 // Used in autoscend/quests/level_12.ash
-record WarPlan
-{
-	boolean do_arena;
-	boolean do_junkyard;
-	boolean do_lighthouse;
-	boolean do_orchard;
-	boolean do_nuns;
-	boolean do_farm;
-};
-
+export class WarPlan {
+	constructor(
+		public doArena: boolean = false,
+		public doJunkyard: boolean = false,
+		public doLighthouse: boolean = false,
+		public doOrchard: boolean = false,
+		public doNuns: boolean = false,
+		public doFarm: boolean = false
+	) {}
+}
 //From Zlib Stuff
-record kmailObject {
-	int id;                   // message id
-	string type;              // possible values observed thus far: normal, giftshop
-	int fromid;               // sender\'s playerid (0 for npcs)
-	int azunixtime;           // KoL server\'s unix timestamp
-	string message;           // message (not including items/meat)
-	int[item] items;          // items included in the message
-	int meat;                 // meat included in the message
-	string fromname;          // sender\'s playername
-	string localtime;         // your local time according to your KoL account, human-readable string
-};
-
+export class kmailObject {
+	constructor(
+		public id: number = 0,                     // message id
+		public type: string = "",                  // possible values observed thus far: normal, giftshop
+		public fromid: number = 0,                 // sender\'s playerid (0 for npcs)
+		public azunixtime: number = 0,             // KoL server\'s unix timestamp
+		public message: string = "",               // message (not including items/meat)
+		public items: Map<Item, number> = new Map(), // items included in the message
+		public meat: number = 0,                   // meat included in the message
+		public fromname: string = "",              // sender\'s playername
+		public localtime: string = ""              // your local time according to your KoL account, human-readable string
+	) {}
+}
 //Record from autoscend/auto_zone.ash
-record generic_t
-{
-	boolean _error;
-	boolean _boolean;
-	int _int;
-	float _float;
-	string _string;
-	item _item;
-	location _location;
-	class _class;
-	stat _stat;
-	skill _skill;
-	effect _effect;
-	familiar _familiar;
-	slot _slot;
-	monster _monster;
-	element _element;
-	phylum _phylum;
-};
-
+export class generic_t {
+	constructor(
+		public _error: boolean = false,
+		public _boolean: boolean = false,
+		public _int: number = 0,
+		public _float: number = 0.0,
+		public _string: string = "",
+		public _item: Item = Item.none,
+		public _location: Location = Location.none,
+		public _class: Class = Class.none,
+		public _stat: Stat = Stat.none,
+		public _skill: Skill = Skill.none,
+		public _effect: Effect = Effect.none,
+		public _familiar: Familiar = Familiar.none,
+		public _slot: Slot = Slot.none,
+		public _monster: Monster = Monster.none,
+		public _element: Element = Element.none,
+		public _phylum: Phylum = Phylum.none
+	) {}
+}
 //used in auto_consume.ash
-record ConsumeAction
-{
+export class ConsumeAction {
+	constructor(
 	// exactly one of these is non-none
-	item it;
-	int cafeId;
+		public it: Item = Item.none,
+		public cafeid: number = 0,
 
-	int size;           // how much of organ is used
-	float adventures;   // expected adv from (thing)
+		public size: number = 0,                   // how much of organ is used
+		public adventures: number = 0.0,           // expected adv from (thing)
 
-	float desirability; // adv count that will be used for optimization
+		public desirability: number = 0.0,         // adv count that will be used for optimization
 	                    // (lower for pulls, higher for buffs/tower keys)
 
-	int organ;          // AUTO_ORGAN_*
-	int howToGet;       // AUTO_OBTAIN_*
-};
+		public organ: number = 0,                  // AUTO_ORGAN_*
+		public howtoget: number = 0                // AUTO_OBTAIN_*
+	) {}
+}

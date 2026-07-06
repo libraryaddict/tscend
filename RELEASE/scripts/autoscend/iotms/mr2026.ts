@@ -1,19 +1,25 @@
-# This is meant for items that have a date of 2026
+import { Item, Location, Monster, Slot, availableAmount, availableChoiceOptions, canInteract, equippedItem, extractItems, getProperty, myLocation, runChoice, setProperty, toBoolean, toInt, toLocation, visitUrl } from "kolmafia";
+import { autoAdvBypass } from "../auto_adventure";
+import { spleen_left } from "../auto_consume";
+import { auto_is_valid, auto_log_error, auto_wantToFreeKillWithNoDrops, handleTracker$1, handleTracker$2, isFreeMonster$1 } from "../auto_util";
+import { zone_delay } from "../auto_zone";
 
-boolean auto_haveEternityCodpiece()
+// This is meant for items that have a date of 2026
+
+export function auto_haveEternityCodpiece(): boolean
 {
-	if(auto_is_valid($item[the eternity codpiece]) && available_amount($item[the eternity codpiece]) > 0 )
+	if (auto_is_valid(Item.get("The Eternity Codpiece")) && availableAmount(Item.get("The Eternity Codpiece")) > 0)
 	{
 		return true;
 	}
 	return false;
 }
 
-boolean auto_isInEternityCodpiece(item it)
+export function auto_isInEternityCodpiece(it: Item): boolean
 {
-	foreach s,b in $slots[codpiece1,codpiece2,codpiece3,codpiece4,codpiece5]
-	{
-		if (equipped_item(s)==it)
+	for (let s of Slot.get(["codpiece1", "codpiece2", "codpiece3", "codpiece4", "codpiece5"])) {
+		let b = true;
+		if (equippedItem(s) === it)
 		{
 			return true;
 		}
@@ -21,261 +27,264 @@ boolean auto_isInEternityCodpiece(item it)
 	return false;
 }
 
-boolean auto_haveLegendarySealClubbingClub()
+//Defined in autoscend/iotms/mr2026.ash
+export function auto_haveLegendarySealClubbingClub(): boolean
 {
-	if(auto_is_valid($item[legendary seal-clubbing club]) && available_amount($item[legendary seal-clubbing club]) > 0 )
+	if (auto_is_valid(Item.get("legendary seal-clubbing club")) && availableAmount(Item.get("legendary seal-clubbing club")) > 0)
 	{
 		return true;
 	}
 	return false;
 }
 
-int auto_clubEmBackInTimesRemaining()
+export function auto_clubEmBackInTimesRemaining(): number
 {
-	if (!auto_haveLegendarySealClubbingClub()) return 0;
-	
-	return 5-to_int(get_property("_clubEmTimeUsed"));
+	if (!auto_haveLegendarySealClubbingClub()) { return 0; }
+
+	return 5 - toInt(getProperty("_clubEmTimeUsed"));
 }
 
-int auto_clubEmAcrossTheBattlefieldsRemaining()
+export function auto_clubEmAcrossTheBattlefieldsRemaining(): number
 {
-	if (!auto_haveLegendarySealClubbingClub()) return 0;
-	
-	return 5-to_int(get_property("_clubEmBattlefieldUsed"));
+	if (!auto_haveLegendarySealClubbingClub()) { return 0; }
+
+	return 5 - toInt(getProperty("_clubEmBattlefieldUsed"));
 }
 
-int auto_clubEmIntoNextWeeksRemaining()
+export function auto_clubEmIntoNextWeeksRemaining(): number
 {
-	if (!auto_haveLegendarySealClubbingClub()) return 0;
-	
-	return 5-to_int(get_property("_clubEmNextWeekUsed"));
+	if (!auto_haveLegendarySealClubbingClub()) { return 0; }
+
+	return 5 - toInt(getProperty("_clubEmNextWeekUsed"));
 }
 
-boolean wantToClubEmBackInTime(location loc, monster enemy)
+export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean
 {
 	// returns true if we want to use Club Em Back In Time, based off wantToThrowGravel
 
-	if (auto_clubEmBackInTimesRemaining()==0) return false;
+	if (auto_clubEmBackInTimesRemaining() === 0) { return false; }
 
-	if (isFreeMonster(enemy, loc)) { return false; } // don't use free kills against inherently free fights
+	if (isFreeMonster$1(enemy, loc)) { // don't use free kills against inherently free fights
+	return false; }
 
-	if(can_interact()) return false;
-	
+	if (canInteract()) { return false; }
+
 	return auto_wantToFreeKillWithNoDrops(loc, enemy);
 }
 
-boolean auto_haveHeartstone()
+export function auto_haveHeartstone(): boolean
 {
-	if(!auto_is_valid($item[heartstone]))
+	if (!auto_is_valid(Item.get("Heartstone")))
 	{
 		return false;
 	}
-	if (available_amount($item[heartstone]) > 0 )
+	if (availableAmount(Item.get("Heartstone")) > 0)
 	{
 		return true;
 	}
-	if (auto_isInEternityCodpiece($item[heartstone]))
+	if (auto_isInEternityCodpiece(Item.get("Heartstone")))
 	{
 		return true;
 	}
 	return false;
 }
 
-int auto_heartstoneBanishRemaining()
+export function auto_heartstoneBanishRemaining(): number
 {
-	if (!auto_haveHeartstone()) return 0;
-	if (get_property("heartstoneBanishUnlocked") != "true") return 0;
-	
-	return 5-to_int(get_property("_heartstoneBanishUsed"));
+	if (!auto_haveHeartstone()) { return 0; }
+	if (getProperty("heartstoneBanishUnlocked") !== "true") { return 0; }
+
+	return 5 - toInt(getProperty("_heartstoneBanishUsed"));
 }
 
-int auto_heartstoneBuffsRemaining()
+export function auto_heartstoneBuffsRemaining(): number
 {
-	if (!auto_haveHeartstone()) return 0;
-	if (get_property("heartstoneBuffUnlocked") != "true") return 0;
-	
-	return 5-to_int(get_property("_heartstoneBuffUsed"));
+	if (!auto_haveHeartstone()) { return 0; }
+	if (getProperty("heartstoneBuffUnlocked") !== "true") { return 0; }
+
+	return 5 - toInt(getProperty("_heartstoneBuffUsed"));
 }
 
-int auto_heartstoneKillRemaining()
+export function auto_heartstoneKillRemaining(): number
 {
-	if (!auto_haveHeartstone()) return 0;
-	if (get_property("heartstoneKillUnlocked") != "true") return 0;
-	
-	return 5-to_int(get_property("_heartstoneKillUsed"));
+	if (!auto_haveHeartstone()) { return 0; }
+	if (getProperty("heartstoneKillUnlocked") !== "true") { return 0; }
+
+	return 5 - toInt(getProperty("_heartstoneKillUsed"));
 }
 
-int auto_heartstoneLuckRemaining()
+export function auto_heartstoneLuckRemaining(): number
 {
-	if (!auto_haveHeartstone()) return 0;
-	if (get_property("heartstoneLuckUnlocked") != "true") return 0;
-	
-	if (to_boolean(get_property("_heartstoneLuckUsed")))
+	if (!auto_haveHeartstone()) { return 0; }
+	if (getProperty("heartstoneLuckUnlocked") !== "true") { return 0; }
+
+	if (toBoolean(getProperty("_heartstoneLuckUsed")))
 	{
 		return 0;
 	}
 	return 1;
 }
 
-int auto_heartstonePalsRemaining()
+export function auto_heartstonePalsRemaining(): number
 {
-	if (!auto_haveHeartstone()) return 0;
-	if (get_property("heartstonePalsUnlocked") != "true") return 0;
-	
-	return 5-to_int(get_property("_heartstonePalsUsed"));
+	if (!auto_haveHeartstone()) { return 0; }
+	if (getProperty("heartstonePalsUnlocked") !== "true") { return 0; }
+
+	return 5 - toInt(getProperty("_heartstonePalsUsed"));
 }
 
-int auto_heartstoneStunRemaining()
+export function auto_heartstoneStunRemaining(): number
 {
-	if (!auto_haveHeartstone()) return 0;
-	if (get_property("heartstoneStunUnlocked") != "true") return 0;
-	
-	return 5-to_int(get_property("_heartstoneStunUsed"));
+	if (!auto_haveHeartstone()) { return 0; }
+	if (getProperty("heartstoneStunUnlocked") !== "true") { return 0; }
+
+	return 5 - toInt(getProperty("_heartstoneStunUsed"));
 }
 
-boolean auto_haveArchaeologistSpade()
+export function auto_haveArchaeologistSpade(): boolean
 {
-	if(auto_is_valid($item[Archaeologist's Spade]) && available_amount($item[Archaeologist's Spade]) > 0 )
+	if (auto_is_valid(Item.get("Archaeologist's Spade")) && availableAmount(Item.get("Archaeologist's Spade")) > 0)
 	{
 		return true;
 	}
 	return false;
 }
 
-int auto_spadeDigsRemaining()
+export function auto_spadeDigsRemaining(): number
 {
-	if (!auto_haveArchaeologistSpade()) { return 0;}
-	
-	return 11-to_int(get_property("_archSpadeDigs"));
+	if (!auto_haveArchaeologistSpade()) { return 0; }
+
+	return 11 - toInt(getProperty("_archSpadeDigs"));
 }
 
-boolean auto_spadeDigItem()
+export function auto_spadeDigItem(): boolean
 {
-	item SPADE = $item[Archaeologist's Spade];
-	int choice_adv_num = 1596;
-	int choice_num = 1;
-	string choice_url = "choice.php?pwd&whichchoice=" + choice_adv_num + "&option=" + choice_num;
-	string use_url = "inv_use.php?pwd&which=3&whichitem="+SPADE.id;
-	
-	int n_digs = auto_spadeDigsRemaining();
+	let SPADE: Item = Item.get("Archaeologist's Spade");
+	let choice_adv_num: number = 1596;
+	let choice_num: number = 1;
+	let choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
+	let use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
+
+	let n_digs: number = auto_spadeDigsRemaining();
 	if (n_digs > 0)
 	{
-		visit_url(use_url);
-		buffer result = visit_url(choice_url);
-		int[item] drops = extract_items(result);
-		item my_drop = $item[none];
-		int total_items_dropped = 0;
-		foreach it,n in drops
+		visitUrl(use_url);
+		let result_1: string = visitUrl(choice_url);
+		let drops: Map<Item, number> = new Map(Object.entries(extractItems(result_1)).map(([_k, _v]) => [Item.get(_k), _v]));
+		let my_drop: Item = Item.none;
+		let total_items_dropped: number = 0;
+		for (let [it, n] of drops)
 		{
 			my_drop = it;
 			total_items_dropped += n;
 		}
-		if (total_items_dropped!=1)
+		if (total_items_dropped !== 1)
 		{
-			auto_log_error("Seem to have got "+total_items_dropped+" from spade dig nearby, expecting 1.");
-			handleTracker(SPADE, my_location(), "Dig up something nearby reported "+total_items_dropped+" drops", "auto_otherstuff");
-			return total_items_dropped != 0;
+			auto_log_error(`Seem to have got ${total_items_dropped} from spade dig nearby, expecting 1.`);
+			handleTracker$2(SPADE.toString(), myLocation().toString(), `Dig up something nearby reported ${total_items_dropped} drops`, "auto_otherstuff");
+			return total_items_dropped !== 0;
 		}
-		if (n_digs > auto_spadeDigsRemaining()) // check we actually have fewer digs left now before returning
-		{
-			handleTracker(SPADE, "Dig up something nearby - "+my_location(), my_drop, "auto_otherstuff");
+		if (n_digs > auto_spadeDigsRemaining())
+		{ // check we actually have fewer digs left now before returning
+			handleTracker$2(SPADE.toString(), `Dig up something nearby - ${myLocation()}`, my_drop.toString(), "auto_otherstuff");
 			return true;
 		}
-		handleTracker(SPADE, "FAILED: Dig up something nearby", "auto_otherstuff");
+		handleTracker$1(SPADE.toString(), "FAILED: Dig up something nearby", "auto_otherstuff");
 	}
 	return false;
 }
 
-boolean auto_spadeDigAncient()
+export function auto_spadeDigAncient(): boolean
 {
-	item SPADE = $item[Archaeologist's Spade];
-	int choice_adv_num = 1596;
-	int choice_num = 2;
-	string choice_url = "choice.php?pwd&whichchoice=" + choice_adv_num + "&option=" + choice_num;
-	string use_url = "inv_use.php?pwd&which=3&whichitem="+SPADE.id;
-	int n_digs = auto_spadeDigsRemaining();
+	let SPADE: Item = Item.get("Archaeologist's Spade");
+	let choice_adv_num: number = 1596;
+	let choice_num: number = 2;
+	let choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
+	let use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
+	let n_digs: number = auto_spadeDigsRemaining();
 	if (n_digs > 0)
 	{
-		visit_url(use_url);
-		visit_url(choice_url);
-		if (n_digs > auto_spadeDigsRemaining()) // check we actually have fewer digs left now before returning
-		{
-			handleTracker(SPADE, "Dig up something ancient", "auto_otherstuff");
+		visitUrl(use_url);
+		visitUrl(choice_url);
+		if (n_digs > auto_spadeDigsRemaining())
+		{ // check we actually have fewer digs left now before returning
+			handleTracker$1(SPADE.toString(), "Dig up something ancient", "auto_otherstuff");
 			return true;
 		}
 	}
 	return false;
 }
 
-boolean auto_spadeDigSkeleton()
+export function auto_spadeDigSkeleton(): boolean
 {
-	item SPADE = $item[Archaeologist's Spade];
-	int choice_adv_num = 1596;
-	int choice_num = 3;
-	string choice_url = "choice.php?pwd&whichchoice=" + choice_adv_num + "&option=" + choice_num;
-	string use_url = "inv_use.php?pwd&which=3&whichitem="+SPADE.id;
-	
-	int n_digs = auto_spadeDigsRemaining();
+	let SPADE: Item = Item.get("Archaeologist's Spade");
+	let choice_adv_num: number = 1596;
+	let choice_num: number = 3;
+	let choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
+	let use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
+
+	let n_digs: number = auto_spadeDigsRemaining();
 	if (n_digs > 0)
 	{
-		string[int] pages;
-		pages[0] = use_url;
-		pages[1] = choice_url;
-		location loc = my_location();
-		if (autoAdvBypass(0, pages, $location[Noob Cave], "")){
-			handleTracker(SPADE, "Dig up a skeleton - "+loc, "auto_otherstuff");
+		let pages: Map<number, string> = new Map();
+		pages.set(0, use_url);
+		pages.set(1, choice_url);
+		let loc: Location = myLocation();
+		if (autoAdvBypass(0, pages, Location.get("Noob Cave"), null)) {
+			handleTracker$1(SPADE.toString(), `Dig up a skeleton - ${loc}`, "auto_otherstuff");
 			return true;
 		}
-		handleTracker(SPADE, "FAILED: Dig up a skeleton", "auto_otherstuff");
+		handleTracker$1(SPADE.toString(), "FAILED: Dig up a skeleton", "auto_otherstuff");
 	}
 	return false;
 }
 
-boolean auto_wantToSpadeDigSkeleton(location loc) {
+export function auto_wantToSpadeDigSkeleton(loc: Location): boolean {
 	// haunted kitchen is the only zone that calls auto_spadeDigSkeleton() and does not call this function
 	// (because it's the only non-delay zone currently supported)
-	boolean valid_loc = spadeDelayZones() contains loc;
-	boolean have_digs = auto_spadeDigsRemaining() > 0;
-	boolean delay_left = zone_delay(loc)._boolean;
-	boolean zone_set = get_property("lastAdventure").to_location() == loc;
+	let valid_loc: boolean = spadeDelayZones().has(loc);
+	let have_digs: boolean = auto_spadeDigsRemaining() > 0;
+	let delay_left: boolean = zone_delay(loc)._boolean;
+	let zone_set: boolean = toLocation(getProperty("lastAdventure")) === loc;
 	if (valid_loc && have_digs && delay_left && zone_set) {
 		return true;
 	}
 	return false;
 }
 
-boolean[location] spadeDelayZones() {
-	boolean[location] desired_zones;
-	desired_zones[$location[The Unquiet Garves]] = true;
-	desired_zones[$location[The Haunted Ballroom]] = true;
+export function spadeDelayZones(): Map<Location, boolean> {
+	let desired_zones: Map<Location, boolean> = new Map();
+	desired_zones.set(Location.get("The Unquiet Garves"), true);
+	desired_zones.set(Location.get("The Haunted Ballroom"), true);
 	return desired_zones;
 }
 
-boolean auto_burnRemainingSpadeDigs()
+export function auto_burnRemainingSpadeDigs(): boolean
 {
-	int n_digs = auto_spadeDigsRemaining();
-	for (int ii = 0 ; ii < n_digs ; ii++)
+	let n_digs: number = auto_spadeDigsRemaining();
+	for (let ii: number = 0; ii < n_digs; ii++)
 	{
 		auto_spadeDigAncient();
 	}
-	return auto_spadeDigsRemaining()==0;
+	return auto_spadeDigsRemaining() === 0;
 }
 
-void legendaryNoodlesChoiceHandler() {
-	int target_choice;
+export function legendaryNoodlesChoiceHandler(): void {
+	let target_choice: number = 0;
 	// force combats if requested
-	if (get_property("auto_forceCombatWithLegendaryNoodles").to_boolean()) { 
+	if (toBoolean(getProperty("auto_forceCombatWithLegendaryNoodles"))) {
 			target_choice = 2;
-			set_property("auto_forceCombatWithLegendaryNoodles", false);
+			setProperty("auto_forceCombatWithLegendaryNoodles", false.toString());
 	}
+	else if (!toBoolean(
 	// or use a spleen instead of a stomach
-	else if (!get_property("_legendaryNoodlesSpleen").to_boolean() && spleen_left() > 0){ target_choice = 1; }
+	getProperty("_legendaryNoodlesSpleen")) && spleen_left() > 0) { target_choice = 1; }
+	else {
 	// take famxp if nothing else
-	else { target_choice = 4; }
-
+	target_choice = 4; }
 	// sometimes options 1 and 4 aren't available, so fallback to 5 (double food effects) which always is and shouldn't ever? be detrimental
-	if (available_choice_options() contains target_choice) {
-		run_choice(target_choice);
+	if ((target_choice) in availableChoiceOptions()) {
+		runChoice(target_choice);
 	}
-	else {run_choice(5);}
+	else { runChoice(5); }
 }

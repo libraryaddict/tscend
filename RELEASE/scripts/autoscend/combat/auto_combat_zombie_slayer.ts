@@ -1,20 +1,23 @@
+import { Item, Location, Monster, Skill, containsText, getProperty, itemAmount, myLevel, myLocation, toInt, toItem } from "kolmafia";
+import { possessEquipment } from "../auto_equipment";
+import { auto_have_skill, handleTracker$1, internalQuestStatus } from "../auto_util";
+import { canSurvive$1, canUse$2, useSkill$2 } from "./auto_combat_util";
+import { in_zombieSlayer } from "../paths/zombie_slayer";
+import { cyrptEvilBonus } from "../quests/level_07";
+
 //Path specific combat handling for Zombie Slayer
 
-boolean wantBearHug(monster enemy)
+export function wantBearHug(enemy: Monster): boolean
 {
-	return canUse($skill[Bear Hug]) && 
-		get_property("_bearHugs").to_int() < 10 && 
-		!enemy.boss && 
-		!contains_text(enemy.attributes, "FREE") && 
-		enemy.group > 1;
+	return canUse$2(Skill.get("Bear Hug")) && toInt(getProperty("_bearHugs")) < 10 && !enemy.boss && !containsText(enemy.attributes, "FREE") && enemy.group > 1;
 }
 
-boolean wantKodiakMoment(monster enemy)
+export function wantKodiakMoment(enemy: Monster): boolean
 {
-	return canUse($skill[Kodiak Moment]) && enemy.physical_resistance >= 80;
-} 
+	return canUse$2(Skill.get("Kodiak Moment")) && enemy.physicalResistance >= 80;
+}
 
-string auto_combatZombieSlayerStage1(int round, monster enemy, string text)
+export function auto_combatZombieSlayerStage1(round_1: number, enemy: Monster, text: string): string
 {
 	// stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
 	if (!in_zombieSlayer())
@@ -25,7 +28,7 @@ string auto_combatZombieSlayerStage1(int round, monster enemy, string text)
 	return "";
 }
 
-string auto_combatZombieSlayerStage2(int round, monster enemy, string text)
+export function auto_combatZombieSlayerStage2(round_1: number, enemy: Monster, text: string): string
 {
 	// stage 2 = enders: escape, replace, instakill, yellowray and other actions that instantly end combat
 	if (!in_zombieSlayer())
@@ -36,7 +39,8 @@ string auto_combatZombieSlayerStage2(int round, monster enemy, string text)
 	return "";
 }
 
-string auto_combatZombieSlayerStage3(int round, monster enemy, string text)
+//defined in /autoscend/combat/auto_combat_zombie_slayer.ash
+export function auto_combatZombieSlayerStage3(round_1: number, enemy: Monster, text: string): string
 {
 	// stage 3 = debuff: delevel, stun, curse, damage over time
 	if (!in_zombieSlayer())
@@ -44,174 +48,172 @@ string auto_combatZombieSlayerStage3(int round, monster enemy, string text)
 		return "";
 	}
 
-	if(canUse($skill[Infectious Bite]) && canSurvive(4.0))
+	if (canUse$2(Skill.get("Infectious Bite")) && canSurvive$1(4.0))
 	{
-		return useSkill($skill[Infectious Bite]);
-	}
-	
-	if(canUse($skill[Meat Shields]) && enemy.boss && canSurvive(4.0))
-	{
-		return useSkill($skill[Meat Shields]);
+		return useSkill$2(Skill.get("Infectious Bite"));
 	}
 
-	// Just always use Bear-ly Legal for the delevel + meat, unless we want to Bear Hug or Kodiak Moment
-	if (canUse($skill[Bear-ly Legal]) && !wantBearHug(enemy) && !wantKodiakMoment(enemy))
+	if (canUse$2(Skill.get("Meat Shields")) && enemy.boss && canSurvive$1(4.0))
 	{
-		return useSkill($skill[Bear-ly Legal]);
+		return useSkill$2(Skill.get("Meat Shields"));
+	}
+	// Just always use Bear-ly Legal for the delevel + meat, unless we want to Bear Hug or Kodiak Moment
+	if (canUse$2(Skill.get("Bear-ly Legal")) && !wantBearHug(enemy) && !wantKodiakMoment(enemy))
+	{
+		return useSkill$2(Skill.get("Bear-ly Legal"));
 	}
 
 	return "";
 }
 
-string auto_combatZombieSlayerStage4(int round, monster enemy, string text)
+export function auto_combatZombieSlayerStage4(round_1: number, enemy: Monster, text: string): string
 {
 	// stage 4 = prekill. copy, sing along, flyer and other things that need to be done after delevel but before killing
 	if (!in_zombieSlayer())
 	{
 		return "";
 	}
-	
 	// Basically stolen from Ed's Lash targets
-	if(canUse($skill[Smash & Graaagh]) && get_property("_zombieSmashPocketsUsed").to_int() < 30 && canSurvive(2.0)) 
+	if (canUse$2(Skill.get("Smash & Graaagh")) && toInt(getProperty("_zombieSmashPocketsUsed")) < 30 && canSurvive$1(2.0))
 	{
-		boolean doSmash = false;
+		let doSmash: boolean = false;
 
-		if((enemy == $monster[Big Wheelin\' Twins]) && !possessEquipment($item[Badge Of Authority]))
+		if (enemy === Monster.get("Big Wheelin' Twins") && !possessEquipment(Item.get("badge of authority")))
 		{
 			doSmash = true;
 		}
-		if((enemy == $monster[Mountain Man]) && (item_amount(get_property("trapperOre").to_item()) < 3))
+		if (enemy === Monster.get("mountain man") && itemAmount(toItem(getProperty("trapperOre"))) < 3)
 		{
 			doSmash = true;
 		}
-		if((enemy == $monster[Fishy Pirate]) && !possessEquipment($item[Perfume-Soaked Bandana]))
+		if (enemy === Monster.get("fishy pirate") && !possessEquipment(Item.get("perfume-soaked bandana")))
 		{
 			doSmash = true;
 		}
-		if((enemy == $monster[Garbage Tourist]) && (item_amount($item[Bag of Park Garbage]) == 0))
+		if (enemy === Monster.get("garbage tourist") && itemAmount(Item.get("bag of park garbage")) === 0)
 		{
 			doSmash = true;
 		}
-		if (enemy == $monster[Dairy Goat] && item_amount($item[Goat Cheese]) < 3)
+		if (enemy === Monster.get("dairy goat") && itemAmount(Item.get("goat cheese")) < 3)
 		{
 			doSmash = true;
 		}
-		if (enemy == $monster[Monstrous Boiler] && item_amount($item[Red-Hot Boilermaker]) < 1 && get_property("booPeakProgress").to_int() > 0)
+		if (enemy === Monster.get("monstrous boiler") && itemAmount(Item.get("red-hot boilermaker")) < 1 && toInt(getProperty("booPeakProgress")) > 0)
 		{
 			doSmash = true;
 		}
-		if (enemy == $monster[Fitness Giant] && item_amount($item[Pec Oil]) < 1 && get_property("booPeakProgress").to_int() > 0)
+		if (enemy === Monster.get("Fitness Giant") && itemAmount(Item.get("pec oil")) < 1 && toInt(getProperty("booPeakProgress")) > 0)
 		{
 			doSmash = true;
 		}
-		if (enemy == $monster[Renaissance Giant] && item_amount($item[Ye Olde Meade]) < 1)
+		if (enemy === Monster.get("Renaissance Giant") && itemAmount(Item.get("Ye Olde Meade")) < 1)
 		{
 			doSmash = true;
 		}
-		if($monsters[Bearpig Topiary Animal, Elephant (Meatcar?) Topiary Animal, Spider (Duck?) Topiary Animal] contains enemy)
+		if (Monster.get(["bearpig topiary animal", "elephant (meatcar?) topiary animal", "spider (duck?) topiary animal"]).includes(enemy))
 		{
 			doSmash = true;
 		}
-		if($monsters[Beanbat, Bookbat] contains enemy)
+		if (Monster.get(["beanbat", "bookbat"]).includes(enemy))
 		{
 			doSmash = true;
 		}
-		if((enemy == $monster[Banshee Librarian]) && (item_amount($item[killing jar]) < 1) && (get_property("desertExploration").to_int() < 100) && ((get_property("gnasirProgress").to_int() & 4) == 0))
+		if (enemy === Monster.get("banshee librarian") && itemAmount(Item.get("killing jar")) < 1 && toInt(getProperty("desertExploration")) < 100 && (toInt(getProperty("gnasirProgress")) & 4) === 0)
 		{
 			doSmash = true;
 		}
-		if(((enemy == $monster[Toothy Sklelton]) || (enemy == $monster[Spiny Skelelton])) && (get_property("cyrptNookEvilness").to_int() > 14 + cyrptEvilBonus(true)))
+		if ((enemy === Monster.get("toothy sklelton") || enemy === Monster.get("spiny skelelton")) && toInt(getProperty("cyrptNookEvilness")) > 14 + cyrptEvilBonus(true))
 		{
 			doSmash = true;
 		}
-		if((enemy == $monster[Oil Baron]) && (item_amount($item[Bubblin\' Crude]) < 12) && (item_amount($item[Jar of Oil]) == 0))
+		if (enemy === Monster.get("oil baron") && itemAmount(Item.get("bubblin' crude")) < 12 && itemAmount(Item.get("jar of oil")) === 0)
 		{
 			doSmash = true;
 		}
-		if((enemy == $monster[Blackberry Bush]) && (item_amount($item[Blackberry]) < 3) && !possessEquipment($item[Blackberry Galoshes]))
+		if (enemy === Monster.get("blackberry bush") && itemAmount(Item.get("blackberry")) < 3 && !possessEquipment(Item.get("blackberry galoshes")))
 		{
 			doSmash = true;
 		}
-		if((enemy == $monster[Pygmy Bowler]) && (get_property("_zombieSmashPocketsUsed").to_int() < 26))
+		if (enemy === Monster.get("pygmy bowler") && toInt(getProperty("_zombieSmashPocketsUsed")) < 26)
 		{
 			doSmash = true;
 		}
-		if($monsters[Filthworm Drone, Filthworm Royal Guard, Larval Filthworm] contains enemy)
+		if (Monster.get(["filthworm drone", "filthworm royal guard", "larval filthworm"]).includes(enemy))
 		{
 			doSmash = true;
 		}
-		if(enemy == $monster[Knob Goblin Madam])
+		if (enemy === Monster.get("Knob Goblin Madam"))
 		{
-			if(item_amount($item[Knob Goblin Perfume]) == 0)
+			if (itemAmount(Item.get("Knob Goblin perfume")) === 0)
 			{
 				doSmash = true;
 			}
 		}
-		if(enemy == $monster[Knob Goblin Harem Girl])
+		if (enemy === Monster.get("Knob Goblin Harem Girl"))
 		{
-			if(!possessEquipment($item[Knob Goblin Harem Veil]) || !possessEquipment($item[Knob Goblin Harem Pants]))
+			if (!possessEquipment(Item.get("Knob Goblin harem veil")) || !possessEquipment(Item.get("Knob Goblin harem pants")))
 			{
 				doSmash = true;
 			}
 		}
-		if ((my_location() == $location[The Hippy Camp] || my_location() == $location[Wartime Hippy Camp]) && contains_text(enemy, "hippy") && my_level() >= 12)
+		if ((myLocation() === Location.get("The Hippy Camp") || myLocation() === Location.get("Wartime Hippy Camp")) && containsText(enemy.toString(), "hippy") && myLevel() >= 12)
 		{
-			if(!possessEquipment($item[Filthy Knitted Dread Sack]) || !possessEquipment($item[Filthy Corduroys]))
+			if (!possessEquipment(Item.get("filthy knitted dread sack")) || !possessEquipment(Item.get("filthy corduroys")))
 			{
 
 				doSmash = true;
 
 			}
 		}
-		if(my_location() == $location[Wartime Frat House])
+		if (myLocation() === Location.get("Wartime Frat House"))
 		{
-			if(!possessEquipment($item[Beer Helmet]) || !possessEquipment($item[Bejeweled Pledge Pin]) || !possessEquipment($item[Distressed Denim Pants]))
+			if (!possessEquipment(Item.get("beer helmet")) || !possessEquipment(Item.get("bejeweled pledge pin")) || !possessEquipment(Item.get("distressed denim pants")))
 			{
 				doSmash = true;
 			}
 		}
-		if((enemy == $monster[Dopey 7-Foot Dwarf]) && !possessEquipment($item[Miner\'s Helmet]))
+		if (enemy === Monster.get("dopey 7-Foot Dwarf") && !possessEquipment(Item.get("miner's helmet")))
 		{
 			doSmash = true;
 		}
-		if((enemy == $monster[Grumpy 7-Foot Dwarf]) && !possessEquipment($item[7-Foot Dwarven Mattock]))
+		if (enemy === Monster.get("grumpy 7-Foot Dwarf") && !possessEquipment(Item.get("7-Foot Dwarven mattock")))
 		{
 			doSmash = true;
 		}
-		if((enemy == $monster[Sleepy 7-Foot Dwarf]) && !possessEquipment($item[Miner\'s Pants]))
+		if (enemy === Monster.get("sleepy 7-Foot Dwarf") && !possessEquipment(Item.get("miner's pants")))
 		{
 			doSmash = true;
 		}
-		if((enemy == $monster[Burly Sidekick]) && !possessEquipment($item[Mohawk Wig]))
+		if (enemy === Monster.get("Burly Sidekick") && !possessEquipment(Item.get("Mohawk wig")))
 		{
 			doSmash = true;
 		}
-		if((enemy == $monster[Spunky Princess]) && !possessEquipment($item[Titanium Assault Umbrella]) && !possessEquipment($item[unbreakable umbrella]))
+		if (enemy === Monster.get("Spunky Princess") && !possessEquipment(Item.get("titanium assault umbrella")) && !possessEquipment(Item.get("unbreakable umbrella")))
 		{
 			doSmash = true;
 		}
-		if((enemy == $monster[Quiet Healer]) && !possessEquipment($item[Amulet of Extreme Plot Significance]))
+		if (enemy === Monster.get("Quiet Healer") && !possessEquipment(Item.get("amulet of extreme plot significance")))
 		{
 			doSmash = true;
 		}
-		if (enemy == $monster[Copperhead Club bartender] && internalQuestStatus("questL11Ron") < 2)
+		if (enemy === Monster.get("Copperhead Club bartender") && internalQuestStatus("questL11Ron") < 2)
 		{
 			doSmash = true;
 		}
 
 		if (doSmash)
 		{
-			handleTracker(enemy, $skill[Smash & Graaagh], "auto_otherstuff");
-			return useSkill($skill[Smash & Graaagh]);			
+			handleTracker$1(enemy.toString(), Skill.get("Smash & Graaagh").toString(), "auto_otherstuff");
+			return useSkill$2(Skill.get("Smash & Graaagh"));
 		}
-		
+
 	}
 
 
 	return "";
 }
 
-string auto_combatZombieSlayerStage5(int round, monster enemy, string text)
+export function auto_combatZombieSlayerStage5(round_1: number, enemy: Monster, text: string): string
 {
 	if (!in_zombieSlayer())
 	{
@@ -220,23 +222,22 @@ string auto_combatZombieSlayerStage5(int round, monster enemy, string text)
 
 	if (wantBearHug(enemy))
 	{
-		return useSkill($skill[Bear Hug]);
+		return useSkill$2(Skill.get("Bear Hug"));
 	}
-
 	// Spam plague claws if we won't die
-	if(round < 20 && canSurvive(5.0) && auto_have_skill($skill[Plague Claws]) && enemy.physical_resistance < 80)
+	if (round_1 < 20 && canSurvive$1(5.0) && auto_have_skill(Skill.get("Plague Claws")) && enemy.physicalResistance < 80)
 	{
-		return useSkill($skill[Plague Claws]);
+		return useSkill$2(Skill.get("Plague Claws"));
 	}
 
 	if (wantKodiakMoment(enemy))
 	{
-		return useSkill($skill[Kodiak Moment]);
+		return useSkill$2(Skill.get("Kodiak Moment"));
 	}
 
-	if (canUse($skill[Bilious Burst]) && enemy.physical_resistance >= 80)
+	if (canUse$2(Skill.get("Bilious Burst")) && enemy.physicalResistance >= 80)
 	{
-		return useSkill($skill[Bilious Burst]);
+		return useSkill$2(Skill.get("Bilious Burst"));
 	}
 
 	return "";

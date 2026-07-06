@@ -1,3 +1,25 @@
+import { Class, Coinmaster, Effect, Familiar, Item, Path, Skill, Slot, Stat, abort, availableAmount, blackMarketAvailable, canEquip, canInteract, ceil, cliExecute, closetAmount, creatableAmount, dispensaryAvailable, equip, equippedItem, floor, getCampground, getDwelling, getProperty, haveEffect, haveSkill, hpCost, isAccessible, isTradeable, itemAmount, max, min, mpCost, myBuffedstat, myClass, myEffects, myHp, myLevel, myMaxhp, myMaxmp, myMeat, myMp, myPath, mySoulsauce, npcPrice, numericModifier, print, putCloset, retrieveItem, sellPrice, setProperty, splitString, takeCloset, toBoolean, toEffect, toFloat, toInt, toItem, toLowerCase, toSkill, totalFreeRests, use, useFamiliar, useSkill, visitUrl } from "kolmafia";
+import { auto_mall_price } from "./auto_acquire";
+import { buffMaintain$4 } from "./auto_buff";
+import { equipStatgainIncreasers$1, possessEquipment } from "./auto_equipment";
+import { pathHasFamiliar } from "./auto_familiar";
+import { auto_burnMP, auto_get_campground, auto_have_skill, auto_is_valid, auto_is_valid$2, auto_log_debug$1, auto_log_error, auto_log_info, auto_log_info$1, auto_log_warning, auto_log_warning$1, isMystGuildStoreAvailable, meatReserve } from "./auto_util";
+import { fileAsMap } from "./utils/kolmafiaUtils";
+import { doHottub, hotTubSoaksRemaining, isHotTubAvailable } from "./iotms/clan";
+import { chateaumantegna_available, chateaumantegna_decorations, chateaumantegna_nightstandSet } from "./iotms/mr2015";
+import { auto_campawayAvailable, auto_sausageBlocked, auto_sausageEatEmUp, auto_sausageGrind } from "./iotms/mr2019";
+import { auto_canUseJuneCleaver, canUseSweatpants, getSweat } from "./iotms/mr2022";
+import { auto_haveBurningLeaves, auto_haveCincho, auto_nextRestOverCinch } from "./iotms/mr2023";
+import { auto_equipAprilShieldBuff, auto_haveAprilShowerShield, auto_haveCrimboSkeleton } from "./iotms/mr2025";
+import { edAcquireHP, isActuallyEd } from "./paths/actually_ed_the_undying";
+import { in_amw } from "./paths/adventurer_meats_world";
+import { borisAcquireHP, is_boris } from "./paths/avatar_of_boris";
+import { auto_cheeseWizardAcquireHP, auto_jazzAgentAcquireHP, auto_pigSkinnerAcquireHP } from "./paths/avatar_of_shadows_over_loathing";
+import { bat_reallyPickSkills, in_darkGyffte } from "./paths/dark_gyffte";
+import { in_pokefam } from "./paths/pocket_familiars";
+import { is_professor } from "./paths/wereprofessor";
+import { in_zombieSlayer, zombieSlayer_acquireHP, zombieSlayer_acquireMP } from "./paths/zombie_slayer";
+
 /**
  * Functions designed to deal with restoring hp/mp, removing status effects, etc.
  *
@@ -11,364 +33,369 @@
  *  - npc purchasable items (meat and coinmasters)
  *  - mall purchasable items (out of ronin)
  */
-
 /**
  * Private Interface
  */
-
 // Loosely maps to autoscend_restoration.txt data, after a little parsing/coercing
-record __RestorationMetadata{
-	string name;
-	string type;
-	float hp_restored;
-	string restores_variable_hp;
-	float mp_restored;
-	string restores_variable_mp;
-	int soft_reserve_limit;
-	int hard_reserve_limit;
-	boolean removes_beaten_up;
-	boolean[effect] removes_effects;
-	boolean[effect] gives_effects;
-	int[string] maxima_values;
-};
-
-
+export class __RestorationMetadata {
+	constructor(
+		public name: string = "",
+		public type: string = "",
+		public hpRestored: number = 0.0,
+		public restoresVariableHp: string = "",
+		public mpRestored: number = 0.0,
+		public restoresVariableMp: string = "",
+		public softReserveLimit: number = 0,
+		public hardReserveLimit: number = 0,
+		public removesBeatenUp: boolean = false,
+		public removesEffects: Map<Effect, boolean> = new Map(),
+		public givesEffects: Map<Effect, boolean> = new Map(),
+		public maximaValues: Map<string, number> = new Map()
+	) {}
+}
 // Holds values used to determine a restoration option's efficacy
-record __RestorationOptimization{
-	__RestorationMetadata metadata;
-	float[string] vars;             // cache, not used for optimization
-	float[string] objective_values;
-	boolean[string] constraints;  // constraints that much be met, all must be true
-};
-
+export class __RestorationOptimization {
+	constructor(
+		public metadata: __RestorationMetadata = new __RestorationMetadata(),
+		public vars: Map<string, number> = new Map(), // cache, not used for optimization
+		public objectiveValues: Map<string, number> = new Map(),
+		public constraints: Map<string, boolean> = new Map() // constraints that much be met, all must be true
+	) {}
+}
 // Real ugly to_string, probably only enable for debugging
-string to_string(__RestorationMetadata r)
+export function to_string(r: __RestorationMetadata): string
 {
-	string list_to_string(boolean[effect] e_list)
+	function list_to_string$1(e_list: Map<Effect, boolean>): string
 	{
-		string s = "[";
-		boolean first = true;
-		foreach e in e_list
+		let s: string = "[";
+		let first: boolean = true;
+		for (let e of e_list.keys())
 		{
-			if(first)
+			if (first)
 			{
 				first = false;
 			}
-			else
-			{
+			else {
 				s += ", ";
 			}
-			s += e.to_string();
+			s += e.toString();
 		}
 		s += "]";
 		return s;
 	}
 
-	string removes_effects_str = list_to_string(r.removes_effects);
-	string gives_effects_str = list_to_string(r.gives_effects);
-	return "__RestorationMetadata(name: "+r.name+", type: "+r.type+", hp_restored: "+r.hp_restored+", restores_variable_hp: "+r.restores_variable_hp+", mp_restored: "+r.mp_restored+", restores_variable_mp: "+r.restores_variable_mp+", removes_beaten_up: "+r.removes_beaten_up+", removes_effects: "+removes_effects_str+", gives_effects: "+gives_effects_str+")";
+	let removes_effects_str: string = list_to_string$1(r.removesEffects);
+	let gives_effects_str: string = list_to_string$1(r.givesEffects);
+	return `__RestorationMetadata(name: ${r.name}, type: ${r.type}, hp_restored: ${r.hpRestored}, restores_variable_hp: ${r.restoresVariableHp}, mp_restored: ${r.mpRestored}, restores_variable_mp: ${r.restoresVariableMp}, removes_beaten_up: ${r.removesBeatenUp}, removes_effects: ${removes_effects_str}, gives_effects: ${gives_effects_str})`;
 }
 
-string to_string(__RestorationOptimization o, boolean simple)
+export function to_string$1(o: __RestorationOptimization, simple: boolean): string
 {
-	string list_to_string(float[string] values)
+	function list_to_string$2(values: Map<string, number>): string
 	{
-		string s = "{";
-		boolean first = true;
-		foreach k, v in values
+		let s: string = "{";
+		let first: boolean = true;
+		for (let [k, v] of values)
 		{
-			if(first)
+			if (first)
 			{
 				first = false;
 			}
-			else
-			{
+			else {
 				s += ", ";
 			}
-			s += k + ": " + v;
+			s += `${k}: ${v}`;
 		}
 		s += "}";
 		return s;
 	}
 
-	string list_to_string(boolean[string] values)
+	function list_to_string$3(values: Map<string, boolean>): string
 	{
-		string s = "{";
-		boolean first = true;
-		foreach k, v in values
+		let s: string = "{";
+		let first: boolean = true;
+		for (let [k, v] of values)
 		{
-			if(first)
+			if (first)
 			{
 				first = false;
 			}
-			else
-			{
+			else {
 				s += ", ";
 			}
-			s += k + ": " + v;
+			s += `${k}: ${v}`;
 		}
 		s += "}";
 		return s;
 	}
 
-	if(simple)
+	if (simple)
 	{
-		return "("+o.metadata.name + ", hp: " + o.objective_values["hp_total_restored"] + ", mp: " + o.objective_values["mp_total_restored"] + ", negative effects remaining: "+o.objective_values["negative_status_effects_remaining"]+")";
+		return `(${o.metadata.name}, hp: ${(o.objectiveValues.get("hp_total_restored") ?? o.objectiveValues.set("hp_total_restored", 0.0).get("hp_total_restored"))}, mp: ${(o.objectiveValues.get("mp_total_restored") ?? o.objectiveValues.set("mp_total_restored", 0.0).get("mp_total_restored"))}, negative effects remaining: ${(o.objectiveValues.get("negative_status_effects_remaining") ?? o.objectiveValues.set("negative_status_effects_remaining", 0.0).get("negative_status_effects_remaining"))})`;
 	}
 
-	string vars_str = list_to_string(o.vars);
-	string constraints_str = list_to_string(o.constraints);
-	string objective_values_str = list_to_string(o.objective_values);
-	return "__RestorationOptimization(name: "+o.metadata.name+", vars: "+vars_str+", constraints: "+constraints_str+", objective_values: "+objective_values_str+")";
+	let vars_str: string = list_to_string$2(o.vars);
+	let constraints_str: string = list_to_string$3(o.constraints);
+	let objective_values_str: string = list_to_string$2(o.objectiveValues);
+	return `__RestorationOptimization(name: ${o.metadata.name}, vars: ${vars_str}, constraints: ${constraints_str}, objective_values: ${objective_values_str})`;
 }
 
-string to_string(__RestorationOptimization[int] optima, boolean simple)
+export function to_string$2(optima: Map<number, __RestorationOptimization>, simple: boolean): string
 {
-	string val = "";
-	boolean first = true;
-	foreach i, o in optima
+	let val: string = "";
+	let first: boolean = true;
+	for (let [i, o] of optima)
 	{
-		if(first)
+		if (first)
 		{
 			first = false;
 		}
-		else
-		{
+		else {
 			val += "; ";
 		}
-		val += i + " - " + to_string(o, simple);
+		val += `${i} - ${to_string$1(o, simple)}`;
 	}
 	return val;
 }
 
-void auto_log_restore_debug(string s, int level)
+export function auto_log_restore_debug(s: string, level: number): void
 {
 	//restore debug log is extremely girthy and usually not needed. as such it has its own custom setting for displaying it.
 	//0 = no extra debugging. 1 = log the stages and their results 2 = log restorer data dump.
-	if(get_property("auto_log_level").to_int() < 3)
+	if (toInt(getProperty("auto_log_level")) < 3)
 	{
-		return;		//regular debugging is off. so extra debugging is also off.
+		return; //regular debugging is off. so extra debugging is also off.
 	}
-	if(get_property("auto_log_level_restore").to_int() >= level)
+	if (toInt(getProperty("auto_log_level_restore")) >= level)
 	{
-		auto_log_debug(s);
+		auto_log_debug$1(s);
 	}
 }
 
-static boolean[effect] __all_negative_effects;
-static __RestorationMetadata[string] __known_restoration_sources;
-static __RestorationOptimization[int] __restore_maximizer_cache;
-
+export let $_f___all_negative_effects: Map<Effect, boolean> | undefined;
+$_f___all_negative_effects ??= new Map();
+export let $_f___known_restoration_sources: Map<string, __RestorationMetadata> | undefined;
+$_f___known_restoration_sources ??= new Map();
+export let $_f___restore_maximizer_cache: Map<number, __RestorationOptimization> | undefined;
+$_f___restore_maximizer_cache ??= new Map();
 // TODO: would be nice to replace this concept with just putting a simple formula in place of the hp/mp fields, e.g. ${my_level}*1.5
 // currently custom formulas need to be coded into an if statement
-static string __RESTORE_ALL = "all";
-static string __RESTORE_HALF = "half";
-static string __RESTORE_SCALING = "scaling";
-static string __HOT_TUB = "a relaxing hot tub";
-static string __NUNS = "the nunnery";
-
+export let $_f___RESTORE_ALL: string | undefined;
+$_f___RESTORE_ALL ??= "all";
+export let $_f___RESTORE_HALF: string | undefined;
+$_f___RESTORE_HALF ??= "half";
+export let $_f___RESTORE_SCALING: string | undefined;
+$_f___RESTORE_SCALING ??= "scaling";
+export let $_f___HOT_TUB: string | undefined;
+$_f___HOT_TUB ??= "a relaxing hot tub";
+export let $_f___NUNS: string | undefined;
+$_f___NUNS ??= "the nunnery";
 /**
  * Parse autoscend_restoration.txt into __known_restoration_sources.
  *
  * Uses an intermediate record for the initial file_to_map, then parses it to make working with __RestorationMetadata friendlier.
  */
-void __init_restoration_metadata()
+let $___init_restoration_metadata_resotration_filename: string | undefined;
+let $___init_restoration_metadata_negative_effects_filename: string | undefined;
+
+export function __init_restoration_metadata(): void
 {
-	static string resotration_filename = "autoscend_restoration.txt";
-	static string negative_effects_filename = "autoscend_negative_effects.txt";
+	$___init_restoration_metadata_resotration_filename ??= "autoscend_restoration.txt";
+	$___init_restoration_metadata_negative_effects_filename ??= "autoscend_negative_effects.txt";
 
-	boolean[effect] parse_effects(string name, string effects_list)
+	function parse_effects(name: string, effects_list: string): Map<Effect, boolean>
 	{
-		effects_list = effects_list.to_lower_case();
-		boolean[effect] parsed_effects;
+		effects_list = toLowerCase(effects_list);
+		let parsed_effects: Map<Effect, boolean> = new Map();
 
-		if(effects_list == "all negative")
+		if (effects_list === "all negative")
 		{
-			parsed_effects = __all_negative_effects;
+			parsed_effects = $_f___all_negative_effects;
 		}
-		else if(effects_list != "none" && effects_list != "")
+		else if (effects_list !== "none" && effects_list !== "")
 		{
-			foreach _, s in split_string(effects_list, ",")
+			for (let [_, s] of splitString(effects_list, ",").entries())
 			{
-				effect e = to_effect(s);
-				if(e != $effect[none])
+				let e: Effect = toEffect(s);
+				if (e !== Effect.none)
 				{
-					parsed_effects[e] = true;
+					parsed_effects.set(e, true);
 				}
-				else
-				{
-					auto_log_warning("Unknown effect found parsing restoration metadata: " + name + " removes effect: " + s);
+				else {
+					auto_log_warning$1(`Unknown effect found parsing restoration metadata: ${name} removes effect: ${s}`);
 				}
 			}
 		}
 		return parsed_effects;
 	}
 
-	float parse_restored_amount(string restored_str)
+	function parse_restored_amount(restored_str: string): number
 	{
-		restored_str = restored_str.to_lower_case();
-		if(restored_str == "all" || restored_str == "half" || restored_str == "scaling")
+		restored_str = toLowerCase(restored_str);
+		if (restored_str === "all" || restored_str === "half" || restored_str === "scaling")
 		{
 			return 0;
 		}
-		else
-		{
-			return to_float(restored_str);
+		else {
+			return toFloat(restored_str);
 		}
 	}
 
-	string parse_restores_variable(string restored_str)
+	function parse_restores_variable(restored_str: string): string
 	{
-		restored_str = restored_str.to_lower_case();
-		if(restored_str == "all")
+		restored_str = toLowerCase(restored_str);
+		if (restored_str === "all")
 		{
-			return __RESTORE_ALL;
+			return $_f___RESTORE_ALL;
 		}
-		else if(restored_str == "half")
+		else if (restored_str === "half")
 		{
-			return __RESTORE_HALF;
+			return $_f___RESTORE_HALF;
 		}
-		else if(restored_str == "scaling")
+		else if (restored_str === "scaling")
 		{
-			return __RESTORE_SCALING;
+			return $_f___RESTORE_SCALING;
 		}
 		return "";
 	}
 
-	void init()
+	function init(): void
 	{
-		file_to_map(negative_effects_filename, __all_negative_effects);
-		__RestorationMetadata[string] parsed_records;
-		
-		#type[idx,name,hp_restored,mp_restored,soft_reserve_limit,hard_reserve_limit,removes_effects,gives_effects]
-		string[string,string,string,string,string,string,string,string] raw_data;
-		file_to_map(resotration_filename, raw_data);
+		$_f___all_negative_effects = fileAsMap($___init_restoration_metadata_negative_effects_filename, [toEffect, toBoolean]);
+		let parsed_records: Map<string, __RestorationMetadata> = new Map();
+		//type[idx,name,hp_restored,mp_restored,soft_reserve_limit,hard_reserve_limit,removes_effects,gives_effects]
+		let raw_data: Map<string, Map<string, Map<string, Map<string, Map<string, Map<string, Map<string, Map<string, string>>>>>>>> = fileAsMap($___init_restoration_metadata_resotration_filename, [String, String, String, String, String, String, String, String, String]);
 
-		foreach type in $strings[item,skill,clan,dwelling,place]
+		for (let type_1 of ["item", "skill", "clan", "dwelling", "place"])
 		{
-			foreach idx,name,hp_restored,mp_restored,soft_reserve_limit,hard_reserve_limit,removes_effects,gives_effects in raw_data[type]
-			{
-				__RestorationMetadata parsed;
-				parsed.type = type;
-				parsed.name = name.to_lower_case();
-				parsed.hp_restored = parse_restored_amount(hp_restored);
-				parsed.restores_variable_hp = parse_restores_variable(hp_restored);
-				parsed.mp_restored = parse_restored_amount(mp_restored);
-				parsed.restores_variable_mp = parse_restores_variable(mp_restored);
-				parsed.soft_reserve_limit = to_int(soft_reserve_limit);
-				parsed.hard_reserve_limit = to_int(hard_reserve_limit);
-				parsed.removes_effects = parse_effects(parsed.name, removes_effects);
-				parsed.removes_beaten_up = (parsed.removes_effects contains $effect[Beaten Up]);
-				parsed.gives_effects = parse_effects(parsed.name, gives_effects);
+			for (let [idx, _v0] of (raw_data.get(type_1) ?? raw_data.set(type_1, new Map()).get(type_1))) {
+				for (let [name, _v1] of _v0) {
+					for (let [hp_restored, _v2] of _v1) {
+						for (let [mp_restored, _v3] of _v2) {
+							for (let [soft_reserve_limit, _v4] of _v3) {
+								for (let [hard_reserve_limit, _v5] of _v4) {
+									for (let [removes_effects, _v6] of _v5) {
+										let gives_effects = _v6;
+				let parsed: __RestorationMetadata = new __RestorationMetadata();
+				parsed.type = type_1;
+				parsed.name = toLowerCase(name);
+				parsed.hpRestored = parse_restored_amount(hp_restored);
+				parsed.restoresVariableHp = parse_restores_variable(hp_restored);
+				parsed.mpRestored = parse_restored_amount(mp_restored);
+				parsed.restoresVariableMp = parse_restores_variable(mp_restored);
+				parsed.softReserveLimit = toInt(soft_reserve_limit);
+				parsed.hardReserveLimit = toInt(hard_reserve_limit);
+				parsed.removesEffects = parse_effects(parsed.name, removes_effects);
+				parsed.removesBeatenUp = parsed.removesEffects.has(Effect.get("Beaten Up"));
+				parsed.givesEffects = parse_effects(parsed.name, gives_effects);
 
-				__known_restoration_sources[parsed.name] = parsed;
+				$_f___known_restoration_sources.set(parsed.name, parsed);
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		}
-
 		// add mp restore to nunnery if did as fratboy
-		if(get_property("sidequestNunsCompleted") == "fratboy")
+		if (getProperty("sidequestNunsCompleted") === "fratboy")
 		{
-			__known_restoration_sources["the nunnery"].mp_restored = 1000;
+			($_f___known_restoration_sources.get("the nunnery") ?? $_f___known_restoration_sources.set("the nunnery", new __RestorationMetadata()).get("the nunnery")).mpRestored = 1000;
 		}
 
-		if(my_path() == $path[Disguises Delimit])
-		{	
+		if (myPath() === Path.get("Disguises Delimit"))
+		{
 			//shadow has double HP in this path so larger reserve needed
-			foreach specialname in $strings[gauze garter,filthy poultice]
-			{	__RestorationMetadata parsedSpecial = __known_restoration_sources[specialname];
-				if(parsedSpecial.hard_reserve_limit < 4) continue;
-				parsedSpecial.hard_reserve_limit += 4;	//shallow copy passes edit
+			for (let specialname of ["gauze garter", "filthy poultice"])
+			{ let parsedSpecial: __RestorationMetadata = ($_f___known_restoration_sources.get(specialname) ?? $_f___known_restoration_sources.set(specialname, new __RestorationMetadata()).get(specialname));
+				if (parsedSpecial.hardReserveLimit < 4) { continue; }
+				parsedSpecial.hardReserveLimit += 4; //shallow copy passes edit
 			}
 		}
 	}
 
-	auto_log_info("Loading restoration data.");
+	auto_log_info$1("Loading restoration data.");
 	init();
-	clear(__restore_maximizer_cache);
+	$_f___restore_maximizer_cache.clear();
 }
 
-__RestorationMetadata[string] __restoration_methods()
+export function __restoration_methods(): Map<string, __RestorationMetadata>
 {
 	//Safe way to access __known_restoration_sources, ensuring it is initialized if not already.
-	if(count(__known_restoration_sources) == 0)
+	if ($_f___known_restoration_sources.size === 0)
 	{
 		__init_restoration_metadata();
 	}
-	return __known_restoration_sources;
+	return $_f___known_restoration_sources;
 }
-
 // primary attributes we want to sort by (maximize), you probably shouldnt add anything to this
-boolean[string] __PRIMARY_SORT_KEYS = {
-	"hp_total_restored": true,
-	"mp_total_restored": true
-};
-
+export let __PRIMARY_SORT_KEYS: Map<string, boolean> = new Map([
+	["hp_total_restored", true],
+	["mp_total_restored", true]
+]);
 // values we want to maximize when optimizing
-boolean[string] __MAXIMIZE_KEYS = {
-	"total_uses_available": true,
-	"hp_per_meat_spent": true,
-	"hp_per_coinmaster_token_spent": true,
-	"hp_per_mp_spent": true,
-	"mp_per_meat_spent": true,
-	"mp_per_coinmaster_token_spent": true
-};
-
+export let __MAXIMIZE_KEYS: Map<string, boolean> = new Map([
+	["total_uses_available", true],
+	["hp_per_meat_spent", true],
+	["hp_per_coinmaster_token_spent", true],
+	["hp_per_mp_spent", true],
+	["mp_per_meat_spent", true],
+	["mp_per_coinmaster_token_spent", true]
+]);
 // values we want to minimize when optimizing
-boolean[string] __MINIMIZE_KEYS = {
-	"total_uses_needed": true,
-	"hp_total_wasted_goal": true, // candidate for removal
-	"hp_total_short_goal": true,
-	"mp_total_wasted_goal": true, // candidate for removal
-	"mp_total_short_goal": true,
-	"hp_total_wasted_max": true,
-	"hp_total_short_max": true, // candidate for removal
-	"mp_total_wasted_max": true,
-	"mp_total_short_max": true, // candidate for removal
-	"total_mp_used": true,
-	"total_meat_used": true,
-	"total_coinmaster_tokens_used": true,
-	"negative_status_effects_remaining": true,
-	"soft_reserve_limit_uses": true,
-};
-
+export let __MINIMIZE_KEYS: Map<string, boolean> = new Map([
+	["total_uses_needed", true],
+	["hp_total_wasted_goal", true], // candidate for removal
+	["hp_total_short_goal", true],
+	["mp_total_wasted_goal", true], // candidate for removal
+	["mp_total_short_goal", true],
+	["hp_total_wasted_max", true],
+	["hp_total_short_max", true], // candidate for removal
+	["mp_total_wasted_max", true],
+	["mp_total_short_max", true], // candidate for removal
+	["total_mp_used", true],
+	["total_meat_used", true],
+	["total_coinmaster_tokens_used", true],
+	["negative_status_effects_remaining", true],
+	["soft_reserve_limit_uses", true]
+]);
 // Not used for much, mostly a cache so we dont have to keep recalculating values and print out for debugging
-boolean[string] __VARS_KEYS = {
-	"hp_goal": true,
-	"hp_starting": true,
-	"hp_max": true,
-	"hp_restored_per_use": true,
-	"hp_uses_needed_for_goal": true,
-	"mp_goal": true,
-	"mp_starting": true,
-	"mp_max": true,
-	"mp_restored_per_use": true,
-	"mp_uses_needed_for_goal": true,
-	"blood_skill_opportunity_casts_goal": true,
-	"blood_skill_opportunity_casts_max": true,
-	"amount_creatable": true,
-	"amount_buyable": true,
-	"meat_per_use": true,
-	"tokens_per_use": true,
-	"total_creatable": true,
-	"total_buyable": true,
-	"reserve_limit_hard": true,
-	"total_uses_remaining": true, // candidate for removal
-	"soft_reserve_limit": true,
-	"hard_reserve_limit": true,
-	"hp_max_restorable": true,
-	"mp_max_restorable": true,
-	"meat_available_to_spend": true
-};
-
+export let __VARS_KEYS: Map<string, boolean> = new Map([
+	["hp_goal", true],
+	["hp_starting", true],
+	["hp_max", true],
+	["hp_restored_per_use", true],
+	["hp_uses_needed_for_goal", true],
+	["mp_goal", true],
+	["mp_starting", true],
+	["mp_max", true],
+	["mp_restored_per_use", true],
+	["mp_uses_needed_for_goal", true],
+	["blood_skill_opportunity_casts_goal", true],
+	["blood_skill_opportunity_casts_max", true],
+	["amount_creatable", true],
+	["amount_buyable", true],
+	["meat_per_use", true],
+	["tokens_per_use", true],
+	["total_creatable", true],
+	["total_buyable", true],
+	["reserve_limit_hard", true],
+	["total_uses_remaining", true], // candidate for removal
+	["soft_reserve_limit", true],
+	["hard_reserve_limit", true],
+	["hp_max_restorable", true],
+	["mp_max_restorable", true],
+	["meat_available_to_spend", true]
+]);
 // values used to constrain or quickly eliminate methods as not options (e.g. skill not available in a path)
-boolean[string] __CONSTRAINT_KEYS = {
-	"is_ever_useable": true,
-	"is_currently_useable": true,
-	"have_required_resources": true,
-	"restores_needed_resources": true,
-	"meets_hard_reserve_limit": true
-};
-
+export let __CONSTRAINT_KEYS: Map<string, boolean> = new Map([
+	["is_ever_useable", true],
+	["is_currently_useable", true],
+	["have_required_resources", true],
+	["restores_needed_resources", true],
+	["meets_hard_reserve_limit", true]
+]);
 /**
  * This one is very important. Do not change unless you are prepared to test thoroughly.
  *
@@ -376,36 +403,34 @@ boolean[string] __CONSTRAINT_KEYS = {
  *
  * __RANKED_GOAL_DESCRIPTIONS below should be updated to reflect the intended goal each rank is attempting to achieve.
  */
-int[string] __OBJECTIVE_RANKS = {
-	"hp_total_restored": 1,
-	"mp_total_restored": 1,
-	"negative_status_effects_remaining": 1,
-	"soft_reserve_limit_uses": 2,
-	"total_coinmaster_tokens_used": 3,
-	"hp_per_coinmaster_token_spent": 3,
-	"mp_per_coinmaster_token_spent": 3,
-	"total_meat_used": 4,
-	"hp_per_meat_spent": 4,
-	"mp_per_meat_spent": 4,
-	"hp_per_mp_spent": 5,
-	"hp_total_short_goal": 6,
-	"mp_total_short_goal": 6,
-	"mp_total_wasted_max": 6,
-	"hp_total_wasted_max": 6,
-	"total_uses_needed": 7,
-};
-
+export let __OBJECTIVE_RANKS: Map<string, number> = new Map([
+	["hp_total_restored", 1],
+	["mp_total_restored", 1],
+	["negative_status_effects_remaining", 1],
+	["soft_reserve_limit_uses", 2],
+	["total_coinmaster_tokens_used", 3],
+	["hp_per_coinmaster_token_spent", 3],
+	["mp_per_coinmaster_token_spent", 3],
+	["total_meat_used", 4],
+	["hp_per_meat_spent", 4],
+	["mp_per_meat_spent", 4],
+	["hp_per_mp_spent", 5],
+	["hp_total_short_goal", 6],
+	["mp_total_short_goal", 6],
+	["mp_total_wasted_max", 6],
+	["hp_total_wasted_max", 6],
+	["total_uses_needed", 7]
+]);
 // describes what each ranking in __OBJECTIVE_RANKS is attempting to optimize for
-string[int] __RANKED_GOAL_DESCRIPTIONS = {
-	1: "remove negative status effects",
-	2: "maintain soft reserve limit (keep at least N on hand if possible)",
-	3: "try not to spend coinmaster tokens, maximizing hp/mp restored per token spent if we must spend",
-	4: "try not to spend meat, maximizing hp/mp restored per meat spent if we must spend",
-	5: "try to spend less mp, maximizing hp restored per mp spent if we must spend",
-	6: "minimize hp/mp shortage to goal and wasted hp/mp over max",
-	7: "minimize number of uses needed to reach goal"
-};
-
+export let __RANKED_GOAL_DESCRIPTIONS: Map<number, string> = new Map([
+	[1, "remove negative status effects"],
+	[2, "maintain soft reserve limit (keep at least N on hand if possible)"],
+	[3, "try not to spend coinmaster tokens, maximizing hp/mp restored per token spent if we must spend"],
+	[4, "try not to spend meat, maximizing hp/mp restored per meat spent if we must spend"],
+	[5, "try to spend less mp, maximizing hp restored per mp spent if we must spend"],
+	[6, "minimize hp/mp shortage to goal and wasted hp/mp over max"],
+	[7, "minimize number of uses needed to reach goal"]
+]);
 /**
  * Precalculate values we will later use to narrow down our restoration options to the most effective and least costly.
  *
@@ -417,78 +442,76 @@ string[int] __RANKED_GOAL_DESCRIPTIONS = {
  *  - add april shower
  *  - integrate with https://sourceforge.net/p/kolmafia/code/HEAD/tree/src/data/restores.txt
  */
-__RestorationOptimization __calculate_objective_values(int hp_goal, int mp_goal, int meat_reserve, boolean useFreeRests, __RestorationMetadata metadata)
+export function __calculate_objective_values(hp_goal: number, mp_goal: number, meat_reserve: number, useFreeRests: boolean, metadata: __RestorationMetadata): __RestorationOptimization
 {
-	__RestorationOptimization optimization_parameters;
+	let optimization_parameters: __RestorationOptimization = new __RestorationOptimization();
 
-	void set_value(string name, float value)
+	function set_value(name: string, value: number): void
 	{
-		if(__MAXIMIZE_KEYS contains name || __MINIMIZE_KEYS contains name || __PRIMARY_SORT_KEYS contains name)
+		if (__MAXIMIZE_KEYS.has(name) || __MINIMIZE_KEYS.has(name) || __PRIMARY_SORT_KEYS.has(name))
 		{
-			optimization_parameters.objective_values[name] = value;
+			optimization_parameters.objectiveValues.set(name, value);
 		}
-		else if(__VARS_KEYS contains name)
+		else if (__VARS_KEYS.has(name))
 		{
-			optimization_parameters.vars[name] = value;
+			optimization_parameters.vars.set(name, value);
 		}
-		else
-		{
+		else {
 			//we must have [name] defined in one of the above keys or it will not be stored/retrieved.
-			abort("void set_value(string name, float value) was asked to store the undefined key = " + name);
+			abort(`void set_value(string name, float value) was asked to store the undefined key = ${name}`);
 		}
 	}
 
-	void set_value(string name, boolean value)
+	function set_value$1(name: string, value: boolean): void
 	{
-		if(__CONSTRAINT_KEYS contains name)
+		if (__CONSTRAINT_KEYS.has(name))
 		{
-			optimization_parameters.constraints[name] = value;
+			optimization_parameters.constraints.set(name, value);
 		}
-		else
-		{
+		else {
 			//we must have [name] defined in one of the above keys or it will not be stored/retrieved.
-			abort("void set_value(string name, boolean value) was asked to store the undefined key = " + name);
+			abort(`void set_value(string name, boolean value) was asked to store the undefined key = ${name}`);
 		}
 	}
 
-	float get_value(string name)
+	function get_value(name: string): number
 	{
-		if(__MAXIMIZE_KEYS contains name || __MINIMIZE_KEYS contains name || __PRIMARY_SORT_KEYS contains name)
+		if (__MAXIMIZE_KEYS.has(name) || __MINIMIZE_KEYS.has(name) || __PRIMARY_SORT_KEYS.has(name))
 		{
-			return optimization_parameters.objective_values[name];
+			return (optimization_parameters.objectiveValues.get(name) ?? optimization_parameters.objectiveValues.set(name, 0.0).get(name));
 		}
-		else if(__VARS_KEYS contains name)
+		else if (__VARS_KEYS.has(name))
 		{
-			return optimization_parameters.vars[name];
+			return (optimization_parameters.vars.get(name) ?? optimization_parameters.vars.set(name, 0.0).get(name));
 		}
 		//we must have [name] defined in one of the above keys or it will not be stored/retrieved.
-		abort("float get_value(string name) was asked to return the undefined key = " + name);
+		abort(`float get_value(string name) was asked to return the undefined key = ${name}`);
 		return 0.0;
 	}
 
-	float get_value(string resource_type, string name)
+	function get_value$1(resource_type: string, name: string): number
 	{
-		return get_value(resource_type + "_" + name);
+		return get_value(`${resource_type}_${name}`);
 	}
 
-	float hp_restored_per_use()
+	function hp_restored_per_use(): number
 	{
-		float restored_amount = metadata.hp_restored;
-		if(metadata.restores_variable_hp == __RESTORE_ALL)
+		let restored_amount: number = metadata.hpRestored;
+		if (metadata.restoresVariableHp === $_f___RESTORE_ALL)
 		{
-			restored_amount = my_maxhp();
+			restored_amount = myMaxhp();
 		}
-		else if(metadata.restores_variable_hp == __RESTORE_HALF)
+		else if (metadata.restoresVariableHp === $_f___RESTORE_HALF)
 		{
-			restored_amount = floor(my_maxhp() / 2);
-		}
-
-		if(metadata.type == "dwelling")
-		{
-			restored_amount += numeric_modifier("Bonus Resting HP");
+			restored_amount = floor(myMaxhp() / 2);
 		}
 
-		if (metadata.name == "disco nap" && auto_have_skill($skill[Adventurer of Leisure]))
+		if (metadata.type === "dwelling")
+		{
+			restored_amount += numericModifier("Bonus Resting HP");
+		}
+
+		if (metadata.name === "disco nap" && auto_have_skill(Skill.get("Adventurer of Leisure")))
 		{
 			restored_amount = 40;
 		}
@@ -496,172 +519,170 @@ __RestorationOptimization __calculate_objective_values(int hp_goal, int mp_goal,
 		return restored_amount;
 	}
 
-	float mp_restored_per_use()
+	function mp_restored_per_use(): number
 	{
-		float restored_amount = metadata.mp_restored;
-		if(metadata.restores_variable_mp == __RESTORE_ALL)
+		let restored_amount: number = metadata.mpRestored;
+		if (metadata.restoresVariableMp === $_f___RESTORE_ALL)
 		{
-			restored_amount = my_maxmp();
+			restored_amount = myMaxmp();
 		}
-		else if(metadata.restores_variable_mp == __RESTORE_HALF)
+		else if (metadata.restoresVariableMp === $_f___RESTORE_HALF)
 		{
-			restored_amount = floor(my_maxmp() / 2);
-		} else if(metadata.restores_variable_mp == __RESTORE_SCALING)
+			restored_amount = floor(myMaxmp() / 2);
+		} else if (metadata.restoresVariableMp === $_f___RESTORE_SCALING)
 		{
-			if(metadata.name == "magical mystery juice")
+			if (metadata.name === "magical mystery juice")
 			{
-				restored_amount = my_level() * 1.5 + 5;
+				restored_amount = myLevel() * 1.5 + 5;
 			}
-			else if(metadata.name == "generic mana potion")
+			else if (metadata.name === "generic mana potion")
 			{
-				restored_amount = my_level() * 2.5;
+				restored_amount = myLevel() * 2.5;
 			}
 		}
 
-		if(metadata.type == "dwelling")
+		if (metadata.type === "dwelling")
 		{
-			restored_amount += numeric_modifier("Bonus Resting MP");
+			restored_amount += numericModifier("Bonus Resting MP");
 		}
 
-		if (metadata.name == "disco nap" && auto_haveAprilShowerShield() && get_property("_aprilShowerDiscoNap").to_int() < 5 && my_mp() > mp_cost($skill[disco nap]))
+		if (metadata.name === "disco nap" && auto_haveAprilShowerShield() && toInt(getProperty("_aprilShowerDiscoNap")) < 5 && myMp() > mpCost(Skill.get("Disco Nap")))
 		{
-			restored_amount = 100 - 20 * get_property("_aprilShowerDiscoNap").to_int();
+			restored_amount = 100 - 20 * toInt(getProperty("_aprilShowerDiscoNap"));
 		}
 
 		return restored_amount;
 	}
 
-	float uses_needed_to_reach_goal(string resource_type)
+	function uses_needed_to_reach_goal(resource_type: string): number
 	{
-		float goal = get_value(resource_type, "goal");
-		float starting = get_value(resource_type, "starting");
-		float per_use = get_value(resource_type, "restored_per_use");
+		let goal: number = get_value$1(resource_type, "goal");
+		let starting: number = get_value$1(resource_type, "starting");
+		let per_use: number = get_value$1(resource_type, "restored_per_use");
 
-		if(per_use < 1.0)
+		if (per_use < 1.0)
 		{
 			return 0.0;
 		}
 		return max(ceil((goal - starting) / per_use), 1.0);
 	}
 
-	float total_uses_needed()
+	function total_uses_needed(): number
 	{
-		return max(get_value("hp", "uses_needed_for_goal"), get_value("mp", "uses_needed_for_goal"));
+		return max(get_value$1("hp", "uses_needed_for_goal"), get_value$1("mp", "uses_needed_for_goal"));
 	}
 
-	float meat_per_use()
+	function meat_per_use(): number
 	{
-		if (metadata.type == "item")
+		if (metadata.type === "item")
 		{
-			item i = to_item(metadata.name);
-			if(can_interact() || my_meat() > 20000)
+			let i: Item = toItem(metadata.name);
+			if (canInteract() || myMeat() > 20000)
 			{
 				//we have unlimited mall access = casual, aftercore, or postronin. or we are just rich with over 20k meat.
 				//In either case we want to conserve rare items and consider an item's mall value rather than conserving our current meat stocks.
 				//ex: scroll of drastic healing will be considered to be worth its mall price here.
-				int price = 999999;		//do not use items that cannot be bought
-				if(is_tradeable(i))		//is possible to trade in the mall
-				{
+				let price: number = 999999; //do not use items that cannot be bought
+				if (isTradeable(i))
+				{ //is possible to trade in the mall
 					price = min(price, auto_mall_price(i));
 				}
-				if(npc_price(i) > 0)	//is possible to buy from an NPC store
-				{
-					price = min(price, npc_price(i));
+				if (npcPrice(i) > 0)
+				{ //is possible to buy from an NPC store
+					price = min(price, npcPrice(i));
 				}
 				return price;
 			}
-			else
-			{
+			else {
 				//mall access is limited, this means pulls are limited too. also meat < 20k so we want to spend items to preserve meat
 				//ex: scroll of drastic healing will be considered free. since we spent no meat for it to drop.
-				return npc_price(i);	//this will set items that cannot be purchased from an NPC store to free.
+				return npcPrice(i); //this will set items that cannot be purchased from an NPC store to free.
 			}
 		}
-		else if (metadata.type == "skill")
+		else if (metadata.type === "skill")
 		{
-			float meat_per_mp = 9.0; // default to Doc Galaktik's Invigorating Tonic at 90 meat/10 MP
-			if (dispensary_available() || black_market_available())
+			let meat_per_mp: number = 9.0; // default to Doc Galaktik's Invigorating Tonic at 90 meat/10 MP
+			if (dispensaryAvailable() || blackMarketAvailable())
 			{
 				meat_per_mp = 8.0; // Knob Goblin seltzer or Black cherry soda at 80 meat/10 MP
 			}
-			if (get_property("questM24Doc") == "finished")
+			if (getProperty("questM24Doc") === "finished")
 			{
 				meat_per_mp = 6.0; // Doc Galaktik's Invigorating Tonic reduced to 60 meat/10 MP
 			}
-			if (auto_have_skill($skill[Five Finger Discount]))
+			if (auto_have_skill(Skill.get("Five Finger Discount")))
 			{
 				meat_per_mp = meat_per_mp * 0.95; // this isn't quite right for discounted Doc Galaktik but I don't care.
 			}
 			if (isMystGuildStoreAvailable())
 			{
-				int mmj_cost = auto_have_skill($skill[Five Finger Discount]) ? 95 : 100;
-				int mmj_mp_restored = my_level() * 1.5 + 5;
-				float mmj_meat_per_mp = mmj_cost / mmj_mp_restored;
+				let mmj_cost: number = (auto_have_skill(Skill.get("Five Finger Discount")) ? 95 : 100);
+				let mmj_mp_restored: number = toInt(myLevel() * 1.5 + 5);
+				let mmj_meat_per_mp: number = mmj_cost / mmj_mp_restored;
 				meat_per_mp = min(meat_per_mp, mmj_meat_per_mp);
 				// at level 6 and above, MMJ is better than all but discounted doc galaktik
 				// and at level 8 and above it's better than everything
 			}
-			if (my_class() == $class[Sauceror] || can_interact())
+			if (myClass() === Class.get("Sauceror") || canInteract())
 			{
 				// your MP cup runneth over
 				meat_per_mp = 0;
 			}
-			skill s = to_skill(metadata.name);
-			return (mp_cost(s) * meat_per_mp);
+			let s: Skill = toSkill(metadata.name);
+			return mpCost(s) * meat_per_mp;
 		}
-		else
-		{
+		else {
 			return 0.0;
 		}
 	}
 
-	float tokens_per_use()
+	function tokens_per_use(): number
 	{
-		if(metadata.type != "item")
+		if (metadata.type !== "item")
 		{
 			return 0.0;
 		}
-		item i = to_item(metadata.name);
-		if(i.seller != $coinmaster[none])
+		let i: Item = toItem(metadata.name);
+		if (i.seller !== Coinmaster.none)
 		{
-			return sell_price(i.seller, i);
+			return sellPrice(i.seller, i);
 		}
 		return 0.0;
 	}
 
-	float total_creatable()
+	function total_creatable(): number
 	{
-		if(metadata.type != "item")
+		if (metadata.type !== "item")
 		{
 			return 0.0;
 		}
-		return creatable_amount(to_item(metadata.name));
+		return creatableAmount(toItem(metadata.name));
 	}
 
-	float total_buyable()
+	function total_buyable(): number
 	{
-		if(metadata.type != "item")
+		if (metadata.type !== "item")
 		{
 			return 0.0;
 		}
 
-		float price_per = 0.0;
-		float currency_available = 0.0;
-		item it = to_item(metadata.name);
+		let price_per: number = 0.0;
+		let currency_available: number = 0.0;
+		let it: Item = toItem(metadata.name);
 
-		boolean mall_buyable = can_interact() && is_tradeable(it);
-		if(mall_buyable || npc_price(it) > 0)
+		let mall_buyable: boolean = canInteract() && isTradeable(it);
+		if (mall_buyable || npcPrice(it) > 0)
 		{
 			price_per = get_value("meat_per_use");
-			currency_available = max(0.0, my_meat() - meat_reserve);
+			currency_available = max(0.0, myMeat() - meat_reserve);
 		}
-		else if(get_value("tokens_per_use") > 0.0)
+		else if (get_value("tokens_per_use") > 0.0)
 		{
 			price_per = get_value("tokens_per_use");
-			currency_available = it.seller.available_tokens;
+			currency_available = it.seller.availableTokens;
 		}
 
-		if(currency_available == 0)
+		if (currency_available === 0)
 		{
 			return 0.0;
 		}
@@ -669,150 +690,145 @@ __RestorationOptimization __calculate_objective_values(int hp_goal, int mp_goal,
 		return floor(currency_available / price_per);
 	}
 
-	float total_uses_available()
+	function total_uses_available(): number
 	{
-		float available = 0.0;
-		if(metadata.type == "dwelling")
+		let available: number = 0.0;
+		if (metadata.type === "dwelling")
 		{
 			available = freeRestsRemaining();
 		}
-		else if(metadata.type == "item")
+		else if (metadata.type === "item")
 		{
-			available = item_amount(to_item(metadata.name)) + get_value("total_buyable") + get_value("total_creatable");
+			available = itemAmount(toItem(metadata.name)) + get_value("total_buyable") + get_value("total_creatable");
 		}
-		else if(metadata.type == "skill")
+		else if (metadata.type === "skill")
 		{
-			int dailyLimit = to_skill(metadata.name).dailylimit;
-			int mpCost = mp_cost(to_skill(metadata.name));
-			if(dailyLimit != -1 && mpCost > 0)
+			let dailyLimit: number = toSkill(metadata.name).dailylimit;
+			let mpCost_1: number = mpCost(toSkill(metadata.name));
+			if (dailyLimit !== -1 && mpCost_1 > 0)
 			{
-				available = min(dailyLimit, floor(get_value("mp_starting") / mpCost));
+				available = min(dailyLimit, floor(get_value("mp_starting") / mpCost_1));
 			}
-			else if(dailyLimit != -1)
+			else if (dailyLimit !== -1)
 			{
 				available = dailyLimit;
 			}
-			else
-			{
-				available = floor(get_value("mp_starting") / mpCost);
+			else {
+				available = floor(get_value("mp_starting") / mpCost_1);
 			}
 		}
-		else if(metadata.name == __HOT_TUB)
+		else if (metadata.name === $_f___HOT_TUB)
 		{
 			available = hotTubSoaksRemaining();
 		}
-		else if(metadata.name == __NUNS)
+		else if (metadata.name === $_f___NUNS)
 		{
-			available = 3 - get_property("nunsVisits").to_int();
+			available = 3 - toInt(getProperty("nunsVisits"));
 		}
 		return max(0.0, available);
 	}
 
-	float total_uses_remaining()
+	function total_uses_remaining(): number
 	{
 		return max(0.0, get_value("total_uses_available") - get_value("total_uses_needed"));
 	}
 
-	float soft_reserve_limit_uses()
+	function soft_reserve_limit_uses(): number
 	{
 		return max(0.0, get_value("soft_reserve_limit") - get_value("total_uses_remaining"));
 	}
 
-	float max_restorable(string resource_type)
+	function max_restorable(resource_type: string): number
 	{
-		return get_value("total_uses_needed") * get_value(resource_type, "restored_per_use");
+		return get_value("total_uses_needed") * get_value$1(resource_type, "restored_per_use");
 	}
 
-	float total_wasted(string resource_type, float goal)
+	function total_wasted(resource_type: string, goal: number): number
 	{
-		if((resource_type == "hp" && metadata.restores_variable_hp == __RESTORE_ALL) ||
-		(resource_type == "mp" && metadata.restores_variable_mp == __RESTORE_ALL))
+		if (resource_type === "hp" && metadata.restoresVariableHp === $_f___RESTORE_ALL || resource_type === "mp" && metadata.restoresVariableMp === $_f___RESTORE_ALL)
 		{
 			return 0.0;
 		}
-		if (resource_type == "hp" && metadata.type == "skill")
+		if (resource_type === "hp" && metadata.type === "skill")
 		{
 			// don't consider excess healing from spells as "waste".
 			// It would be better to price this in meat terms across all healing but that's not easy to do right now.
 			return 0.0;
 		}
-		return max(0.0, get_value(resource_type, "starting") + get_value(resource_type, "max_restorable") - goal);
+		return max(0.0, get_value$1(resource_type, "starting") + get_value$1(resource_type, "max_restorable") - goal);
 	}
-
 	// TODO: doesnt account properly for multiuse situations where we could have more blood skill casts and less waste than this formula suggests
-	float blood_skill_opportunity_casts(float goal)
+	function blood_skill_opportunity_casts(goal: number): number
 	{
-		boolean bloodBondAvailable = auto_have_skill($skill[Blood Bond]) &&
-		pathHasFamiliar() && //checks if player can use familiars in this run
-		my_maxhp() > hp_cost($skill[Blood Bond]) &&
-		goal > ((9-hp_regen())*10) && // blood bond drains hp after combat, make sure we dont accidentally kill the player
-		get_property("auto_restoreUseBloodBond").to_boolean();
+		let bloodBondAvailable: boolean = auto_have_skill(Skill.get("Blood Bond")) && pathHasFamiliar() && myMaxhp() > hpCost(
+		//checks if player can use familiars in this run
+		Skill.get("Blood Bond")) && goal > (9 - hp_regen()) * 10 && toBoolean(
+		// blood bond drains hp after combat, make sure we dont accidentally kill the player
+		getProperty("auto_restoreUseBloodBond"));
 
-		boolean bloodBubbleAvailable = auto_have_skill($skill[Blood Bubble]) &&
-		my_maxhp() > hp_cost($skill[Blood Bubble]);
+		let bloodBubbleAvailable: boolean = auto_have_skill(Skill.get("Blood Bubble")) && myMaxhp() > hpCost(Skill.get("Blood Bubble"));
 
-		float waste = total_wasted("hp", goal);
-		float blood_cost = hp_cost($skill[Blood Bond]);
-		if(waste <= blood_cost || !(bloodBubbleAvailable || bloodBondAvailable))
+		let waste: number = total_wasted("hp", goal);
+		let blood_cost: number = hpCost(Skill.get("Blood Bond"));
+		if (waste <= blood_cost || !(bloodBubbleAvailable || bloodBondAvailable))
 		{
 			return 0.0;
 		}
 
-		float hp_to_burn = 0.0;
-		if(my_hp() > 0)
+		let hp_to_burn: number = 0.0;
+		if (myHp() > 0)
 		{
-			hp_to_burn = min(my_hp()-1, waste);
+			hp_to_burn = min(myHp() - 1, waste);
 		}
 		return floor(hp_to_burn / blood_cost);
 	}
 
-	float blood_adjusted_waste(float goal)
+	function blood_adjusted_waste(goal: number): number
 	{
-		float blood_cost = hp_cost($skill[Blood Bond]);
-		float casts = blood_skill_opportunity_casts(goal);
-		float waste = total_wasted("hp", goal);
-		if(casts < 1)
+		let blood_cost: number = hpCost(Skill.get("Blood Bond"));
+		let casts: number = blood_skill_opportunity_casts(goal);
+		let waste: number = total_wasted("hp", goal);
+		if (casts < 1)
 		{
 			return waste;
 		}
-		else
-		{
-			return waste - (casts * hp_cost($skill[Blood Bond]));
+		else {
+			return waste - casts * hpCost(Skill.get("Blood Bond"));
 		}
 	}
 
-	float total_short(string resource_type, float goal)
+	function total_short(resource_type: string, goal: number): number
 	{
-		return max(0.0, goal - (get_value(resource_type, "starting") + get_value(resource_type, "max_restorable")));
+		return max(0.0, goal - (get_value$1(resource_type, "starting") + get_value$1(resource_type, "max_restorable")));
 	}
 
-	float total_mp_used()
+	function total_mp_used(): number
 	{
-		if(metadata.type != "skill")
+		if (metadata.type !== "skill")
 		{
 			return -1.0;
 		}
-		return total_uses_needed() * mp_cost(to_skill(metadata.name));
+		return total_uses_needed() * mpCost(toSkill(metadata.name));
 	}
 
-	float total_meat_used()
+	function total_meat_used(): number
 	{
-		if(metadata.type != "item" && metadata.type != "skill")
+		if (metadata.type !== "item" && metadata.type !== "skill")
 		{
 			return -1.0;
 		}
-		float needed;
-		if(metadata.type == "item")
+		let needed: number = 0;
+		if (metadata.type === "item")
 		{
-			item i = to_item(metadata.name);
-			needed = max(0.0, total_uses_needed() - item_amount(i));
+			let i: Item = toItem(metadata.name);
+			needed = max(0.0, total_uses_needed() - itemAmount(i));
 		}
-		else if (metadata.type == "skill")
+		else if (metadata.type === "skill")
 		{
 			needed = total_uses_needed();
 		}
 
-		float price = get_value("meat_per_use");
+		let price: number = get_value("meat_per_use");
 		if (price < 0.0)
 		{
 			return -1.0;
@@ -820,36 +836,36 @@ __RestorationOptimization __calculate_objective_values(int hp_goal, int mp_goal,
 		return price * needed;
 	}
 
-	float meat_available_to_spend()
+	function meat_available_to_spend(): number
 	{
-		return max(0.0, my_meat()-meat_reserve);
+		return max(0.0, myMeat() - meat_reserve);
 	}
 
-	float total_coinmaster_tokens_used()
+	function total_coinmaster_tokens_used(): number
 	{
-		if(metadata.type != "item")
+		if (metadata.type !== "item")
 		{
 			return -1.0;
 		}
-		item i = to_item(metadata.name);
+		let i: Item = toItem(metadata.name);
 
-		if(i.seller != $coinmaster[none])
+		if (i.seller !== Coinmaster.none)
 		{
 			return -1.0;
 		}
 
-		float needed = max(0.0, total_uses_needed() - item_amount(i));
-		float price = sell_price(i.seller, i);
+		let needed: number = max(0.0, total_uses_needed() - itemAmount(i));
+		let price: number = sellPrice(i.seller, i);
 
 		return needed * price;
 	}
 
-	float negative_status_effects_remaining()
+	function negative_status_effects_remaining(): number
 	{
-		float negative_effects_active = 0;
-		foreach e, _ in my_effects()
+		let negative_effects_active: number = 0;
+		for (let [e, _] of Object.entries(myEffects()).map(([_k, _v]) => [Effect.get(_k), _v] as [Effect, number]))
 		{
-			if(e != $effect[Beaten Up] && __all_negative_effects contains e && !(metadata.removes_effects contains e))
+			if (e !== Effect.get("Beaten Up") && $_f___all_negative_effects.has(e) && !(metadata.removesEffects.has(e)))
 			{
 				negative_effects_active++;
 			}
@@ -857,29 +873,29 @@ __RestorationOptimization __calculate_objective_values(int hp_goal, int mp_goal,
 		return negative_effects_active;
 	}
 
-	float resource_value_per_meat_spent(string resource_type)
+	function resource_value_per_meat_spent(resource_type: string): number
 	{
-		if(get_value("total_meat_used") <= 0.0)
+		if (get_value("total_meat_used") <= 0.0)
 		{
 			return -1.0;
 		}
 
-		return get_value(resource_type, "total_restored") / get_value("total_meat_used");
+		return get_value$1(resource_type, "total_restored") / get_value("total_meat_used");
 	}
 
-	float resource_value_per_coinmaster_token_spent(string resource_type)
+	function resource_value_per_coinmaster_token_spent(resource_type: string): number
 	{
-		if(get_value("total_coinmaster_tokens_used") <= 0.0)
+		if (get_value("total_coinmaster_tokens_used") <= 0.0)
 		{
 			return -1.0;
 		}
 
-		return get_value(resource_type, "total_restored") / get_value("total_coinmaster_tokens_used");
+		return get_value$1(resource_type, "total_restored") / get_value("total_coinmaster_tokens_used");
 	}
 
-	float hp_per_mp_spent()
+	function hp_per_mp_spent(): number
 	{
-		if(get_value("total_mp_used") <= 0.0)
+		if (get_value("total_mp_used") <= 0.0)
 		{
 			return -1.0;
 		}
@@ -887,16 +903,16 @@ __RestorationOptimization __calculate_objective_values(int hp_goal, int mp_goal,
 		return get_value("hp_total_restored") / get_value("total_mp_used");
 	}
 
-	float total_restored(string resource_type)
+	function total_restored(resource_type: string): number
 	{
-		float starting = get_value(resource_type, "starting");
-		float goal = min(get_value(resource_type, "max_restorable") + starting, get_value(resource_type, "max"));
+		let starting: number = get_value$1(resource_type, "starting");
+		let goal: number = min(get_value$1(resource_type, "max_restorable") + starting, get_value$1(resource_type, "max"));
 
-		if(resource_type == "hp" && goal > starting)
+		if (resource_type === "hp" && goal > starting)
 		{
-			float blood_cost = hp_cost($skill[Blood Bond]);
-			float casts = blood_skill_opportunity_casts(goal);
-			if(casts > 0.0)
+			let blood_cost: number = hpCost(Skill.get("Blood Bond"));
+			let casts: number = blood_skill_opportunity_casts(goal);
+			if (casts > 0.0)
 			{
 				starting = max(starting - casts * blood_cost, 0.0);
 			}
@@ -905,118 +921,114 @@ __RestorationOptimization __calculate_objective_values(int hp_goal, int mp_goal,
 		return goal - starting;
 	}
 
-	boolean is_ever_useable()
+	function is_ever_useable(): boolean
 	{
-		if(metadata.type == "item")
+		if (metadata.type === "item")
 		{
-			item i = to_item(metadata.name);
+			let i: Item = toItem(metadata.name);
 			return auto_is_valid(i);
 		}
-		if(metadata.type == "skill")
+		if (metadata.type === "skill")
 		{
-			return auto_is_valid(to_skill(metadata.name));
+			return auto_is_valid$2(toSkill(metadata.name));
 		}
-		if(metadata.type == "dwelling")
+		if (metadata.type === "dwelling")
 		{
-			item d = to_item(metadata.name);
-			return (d == $item[Chateau Mantegna Room Key] && chateaumantegna_available()) ||
-			(d == $item[Distant Woods Getaway Brochure] && auto_campawayAvailable()) ||
-			(d == get_dwelling() && !haveAnyIotmAlternativeRestSiteAvailable());
+			let d: Item = toItem(metadata.name);
+			return d === Item.get("Chateau Mantegna room key") && chateaumantegna_available() || d === Item.get("Distant Woods Getaway Brochure") && auto_campawayAvailable() || d === getDwelling() && !haveAnyIotmAlternativeRestSiteAvailable();
 		}
-		if(metadata.name == __HOT_TUB)
+		if (metadata.name === $_f___HOT_TUB)
 		{
 			return isHotTubAvailable();
 		}
-		if(metadata.name == __NUNS)
+		if (metadata.name === $_f___NUNS)
 		{
-			return get_property("sidequestNunsCompleted") != "none";
+			return getProperty("sidequestNunsCompleted") !== "none";
 		}
 		return true;
 	}
 
-	boolean is_currently_useable()
+	function is_currently_useable(): boolean
 	{
-		if(metadata.type == "item")
+		if (metadata.type === "item")
 		{
-			item i = to_item(metadata.name);
-			if (i.dailyusesleft == 0) {
+			let i: Item = toItem(metadata.name);
+			if (i.dailyusesleft === 0) {
 				return false;
 			}
-			boolean mall_buyable = can_interact() && auto_mall_price(i) > 0;
-			boolean npc_meat_buyable = npc_price(i) > 0;
-			boolean coinmaster_buyable = i.seller != $coinmaster[none] && is_accessible(i.seller) && get_property("autoSatisfyWithCoinmasters").to_boolean();
-			
-			boolean can_buy = meat_reserve < my_meat() && (npc_meat_buyable || mall_buyable);
-			return (available_amount(i) > 0 || can_buy || coinmaster_buyable);
+			let mall_buyable: boolean = canInteract() && auto_mall_price(i) > 0;
+			let npc_meat_buyable: boolean = npcPrice(i) > 0;
+			let coinmaster_buyable: boolean = i.seller !== Coinmaster.none && isAccessible(i.seller) && toBoolean(getProperty("autoSatisfyWithCoinmasters"));
+
+			let can_buy: boolean = meat_reserve < myMeat() && (npc_meat_buyable || mall_buyable);
+			return availableAmount(i) > 0 || can_buy || coinmaster_buyable;
 		}
-		if(metadata.type == "skill")
+		if (metadata.type === "skill")
 		{
-			return auto_have_skill(to_skill(metadata.name));
+			return auto_have_skill(toSkill(metadata.name));
 		}
-		if(metadata.type == "dwelling")
+		if (metadata.type === "dwelling")
 		{
 			return useFreeRests && haveFreeRestAvailable();
 		}
-		if(metadata.name == __HOT_TUB)
+		if (metadata.name === $_f___HOT_TUB)
 		{
 			return hotTubSoaksRemaining() > 0;
 		}
-		if(metadata.name == __NUNS)
+		if (metadata.name === $_f___NUNS)
 		{
-			return get_property("nunsVisits").to_int() < 3;
+			return toInt(getProperty("nunsVisits")) < 3;
 		}
 		return true;
 	}
 
-	boolean have_required_resources()
+	function have_required_resources(): boolean
 	{
 		//this is used to quickly remove unavailable restorers from consideration before we even do any optimization.
-		
 		//for skills, the value of total_uses_available assumes we will not restore_mp to cast. so we overrule it in this function by comparing to our maxmp instead.
-		if(metadata.type == "skill")
+		if (metadata.type === "skill")
 		{
-			skill s = to_skill(metadata.name);
-			if(s.dailylimit != -1)
+			let s: Skill = toSkill(metadata.name);
+			if (s.dailylimit !== -1)
 			{
 				return s.dailylimit > 0;
 			}
-			if(my_maxmp() >= mp_cost(s))
+			if (myMaxmp() >= mpCost(s))
 			{
 				return true;
 			}
 		}
-		
 		//for everything that is not a skill we trust total_uses_available.
 		return get_value("total_uses_available") > 0.0;
 	}
 
-	boolean restores_needed_resources()
+	function restores_needed_resources(): boolean
 	{
-		if(hp_goal > my_hp() && get_value("hp_restored_per_use") == 0)
+		if (hp_goal > myHp() && get_value("hp_restored_per_use") === 0)
 		{
 			return false;
 		}
-		if(mp_goal > my_mp() && get_value("mp_restored_per_use") == 0)
+		if (mp_goal > myMp() && get_value("mp_restored_per_use") === 0)
 		{
 			return false;
 		}
 		return true;
 	}
 
-	boolean meets_hard_reserve_limit()
+	function meets_hard_reserve_limit(): boolean
 	{
 		return get_value("total_uses_remaining") >= get_value("hard_reserve_limit");
 	}
 
 	optimization_parameters.metadata = metadata;
 	set_value("hp_goal", hp_goal);
-	set_value("hp_starting", my_hp());
-	set_value("hp_max", my_maxhp());
+	set_value("hp_starting", myHp());
+	set_value("hp_max", myMaxhp());
 	set_value("hp_restored_per_use", hp_restored_per_use());
 	set_value("hp_uses_needed_for_goal", uses_needed_to_reach_goal("hp"));
 	set_value("mp_goal", mp_goal);
-	set_value("mp_starting", my_mp());
-	set_value("mp_max", my_maxmp());
+	set_value("mp_starting", myMp());
+	set_value("mp_max", myMaxmp());
 	set_value("mp_restored_per_use", mp_restored_per_use());
 	set_value("mp_uses_needed_for_goal", uses_needed_to_reach_goal("mp"));
 	set_value("meat_per_use", meat_per_use());
@@ -1024,8 +1036,8 @@ __RestorationOptimization __calculate_objective_values(int hp_goal, int mp_goal,
 	set_value("total_uses_needed", total_uses_needed());
 	set_value("total_buyable", total_buyable());
 	set_value("total_creatable", total_creatable());
-	set_value("soft_reserve_limit", metadata.soft_reserve_limit);
-	set_value("hard_reserve_limit", metadata.hard_reserve_limit);
+	set_value("soft_reserve_limit", metadata.softReserveLimit);
+	set_value("hard_reserve_limit", metadata.hardReserveLimit);
 	set_value("total_uses_available", total_uses_available());
 	set_value("total_uses_remaining", total_uses_remaining()); // candidate for removal
 	set_value("soft_reserve_limit_uses", soft_reserve_limit_uses());
@@ -1033,14 +1045,14 @@ __RestorationOptimization __calculate_objective_values(int hp_goal, int mp_goal,
 	set_value("hp_total_restored", total_restored("hp"));
 	set_value("hp_total_wasted_goal", blood_adjusted_waste(hp_goal)); // candidate for removal
 	set_value("hp_total_short_goal", total_short("hp", hp_goal));
-	set_value("hp_total_wasted_max", blood_adjusted_waste(my_maxhp()));
-	set_value("hp_total_short_max", total_short("hp", my_maxhp())); // candidate for removal
+	set_value("hp_total_wasted_max", blood_adjusted_waste(myMaxhp()));
+	set_value("hp_total_short_max", total_short("hp", myMaxhp())); // candidate for removal
 	set_value("mp_max_restorable", max_restorable("mp"));
 	set_value("mp_total_restored", total_restored("mp"));
 	set_value("mp_total_wasted_goal", total_wasted("mp", mp_goal)); // candidate for removal
 	set_value("mp_total_short_goal", total_short("mp", mp_goal));
-	set_value("mp_total_wasted_max", total_wasted("mp", my_maxmp()));
-	set_value("mp_total_short_max", total_short("mp", my_maxmp())); // candidate for removal
+	set_value("mp_total_wasted_max", total_wasted("mp", myMaxmp()));
+	set_value("mp_total_short_max", total_short("mp", myMaxmp())); // candidate for removal
 	set_value("total_mp_used", total_mp_used());
 	set_value("total_meat_used", total_meat_used());
 	set_value("meat_available_to_spend", meat_available_to_spend());
@@ -1050,18 +1062,17 @@ __RestorationOptimization __calculate_objective_values(int hp_goal, int mp_goal,
 	set_value("hp_per_mp_spent", hp_per_mp_spent());
 	set_value("mp_per_meat_spent", resource_value_per_meat_spent("mp"));
 	set_value("mp_per_coinmaster_token_spent", resource_value_per_coinmaster_token_spent("mp"));
-	set_value("is_ever_useable", is_ever_useable());
-	set_value("is_currently_useable", is_currently_useable());
-	set_value("have_required_resources", have_required_resources());
-	set_value("restores_needed_resources", restores_needed_resources());
-	set_value("meets_hard_reserve_limit", meets_hard_reserve_limit());
+	set_value$1("is_ever_useable", is_ever_useable());
+	set_value$1("is_currently_useable", is_currently_useable());
+	set_value$1("have_required_resources", have_required_resources());
+	set_value$1("restores_needed_resources", restores_needed_resources());
+	set_value$1("meets_hard_reserve_limit", meets_hard_reserve_limit());
 	set_value("blood_skill_opportunity_casts_goal", blood_skill_opportunity_casts(hp_goal));
-	set_value("blood_skill_opportunity_casts_max", blood_skill_opportunity_casts(my_maxhp()));
+	set_value("blood_skill_opportunity_casts_max", blood_skill_opportunity_casts(myMaxhp()));
 	set_value("negative_status_effects_remaining", negative_status_effects_remaining());
 
 	return optimization_parameters;
 }
-
 /**
  * Given a set of hp/mp goals and restoration options, determine which options are available to us and sort them from best to worst. Returns a set of options that the algorithm has determined are "equivalent" in value. Generally this should lead to an obvious best choice but when options are limited you may get several back.
  *
@@ -1080,70 +1091,68 @@ __RestorationOptimization __calculate_objective_values(int hp_goal, int mp_goal,
  *  https://www.youtube.com/watch?v=xLjfa8NXQD8
  *  https://www.youtube.com/watch?v=Hm2LK4vJzRw
  */
-__RestorationOptimization[int] __maximize_restore_options(int hp_goal, int mp_goal, int meat_reserve, boolean useFreeRests)
+export function __maximize_restore_options(hp_goal: number, mp_goal: number, meat_reserve: number, useFreeRests: boolean): Map<number, __RestorationOptimization>
 {
-
 	// returns a sublist of p from [start, stop)
-	__RestorationOptimization[int] slice(__RestorationOptimization[int] p, int start, int stop)
+	function slice(p: Map<number, __RestorationOptimization>, start_1: number, stop: number): Map<number, __RestorationOptimization>
 	{
-		__RestorationOptimization[int] subset;
-		if(start >= 0 && start <= count(p) && stop >= 0 && stop <= count(p))
+		let subset: Map<number, __RestorationOptimization> = new Map();
+		if (start_1 >= 0 && start_1 <= p.size && stop >= 0 && stop <= p.size)
 		{
-			int i = start;
-			while(i < stop)
+			let i: number = start_1;
+			while (i < stop)
 			{
-				subset[count(subset)] = p[i];
+				subset.set(subset.size, (p.get(i) ?? p.set(i, new __RestorationOptimization()).get(i)));
 				i++;
 			}
 		}
 		return subset;
 	}
-
 	// returns a copy of p
-	__RestorationOptimization[int] copy(__RestorationOptimization[int] p)
+	function copy(p: Map<number, __RestorationOptimization>): Map<number, __RestorationOptimization>
 	{
-		return slice(p, 0, count(p));
+		return slice(p, 0, p.size);
 	}
-
 	// adds all elements in right to left, does not create a new aggregate. left is returned for convenience
-	__RestorationOptimization[int] combine(__RestorationOptimization[int] left, __RestorationOptimization[int] right)
+	function combine(left: Map<number, __RestorationOptimization>, right: Map<number, __RestorationOptimization>): Map<number, __RestorationOptimization>
 	{
-		int i = 0;
-		while(i < count(right))
+		let i: number = 0;
+		while (i < right.size)
 		{
-			left[count(left)] = right[i];
+			left.set(left.size, (right.get(i) ?? right.set(i, new __RestorationOptimization()).get(i)));
 			i++;
 		}
 		return left;
 	}
 
-	float weighted_sum(__RestorationOptimization o, boolean[string] keys, int[string] value_ranks)
+	function weighted_sum(o: __RestorationOptimization, keys: Map<string, boolean>, value_ranks: Map<string, number>): number
 	{
-		float sum = 0.0;
-		foreach s, _ in keys
+		let sum: number = 0.0;
+		for (let [s, _] of keys)
 		{
-			sum += o.objective_values[s] * value_ranks[s];
+			sum += (o.objectiveValues.get(s) ?? o.objectiveValues.set(s, 0.0).get(s)) * (value_ranks.get(s) ?? value_ranks.set(s, 0).get(s));
 		}
 		return sum;
 	}
-
 	// return a set of ranks for the given keys (e.g. __OBJECTIVE_RANKS) in ascending order
-	int[int] ordered_ranks(int[string] weights)
+	function ordered_ranks(weights: Map<string, number>): Map<number, number>
 	{
-		int[int] unordered;
-		boolean[int] value_set;
-		foreach s, w in weights
+		let unordered: Map<number, number> = new Map();
+		let value_set: Map<number, boolean> = new Map();
+		for (let [s, w] of weights)
 		{
-			if(!(value_set contains w))
+			if (!(value_set.has(w)))
 			{
-				value_set[w] = true;
-				unordered[count(unordered)] = w;
+				value_set.set(w, true);
+				unordered.set(unordered.size, w);
 			}
 		}
-		sort unordered by value;
+		unordered = new Map(
+			[...unordered.entries()]
+				.sort((a, b) => a[1] - b[1])
+		);
 		return unordered;
 	}
-
 	/**
 	* Returns a set of __RestorationOptimization which are not dominated by any other element in the set. In other words it combines T and B into a single set, removing any elements that are demonstrably worse than another element. Naming conventions come from commonly used symbols in the algorithms implementation, so if they feel weird blame mathemeticians.
 	*
@@ -1161,130 +1170,127 @@ __RestorationOptimization[int] __maximize_restore_options(int hp_goal, int mp_go
 	*  3. All elements in T and B have already had their relevant objective valus calculated
 	*  4. All keys in `maximize_keys` and `minimize_keys` are present in every element of both T and B
 	*/
-	__RestorationOptimization[int] non_dominated_set(__RestorationOptimization[int] T, __RestorationOptimization[int] B, int[string] value_ranks, int rank, boolean[string] maximize_keys, boolean[string] minimize_keys)
+	function non_dominated_set(T: Map<number, __RestorationOptimization>, B: Map<number, __RestorationOptimization>, value_ranks: Map<string, number>, rank: number, maximize_keys: Map<string, boolean>, minimize_keys: Map<string, boolean>): Map<number, __RestorationOptimization>
 	{
-		__RestorationOptimization[int] M;
-		boolean[string] dominated;
+		let M: Map<number, __RestorationOptimization> = new Map();
+		let dominated: Map<string, boolean> = new Map();
 
-		int Ti = 0;
-		int Bi = 0;
+		let Ti: number = 0;
+		let Bi: number = 0;
 
-		while(Ti < count(T))
+		while (Ti < T.size)
 		{
 			Bi = 0;
-			while(Bi < count(B))
+			while (Bi < B.size)
 			{
-				if(dominated contains B[Bi].metadata.name)
+				if (dominated.has((B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)).metadata.name))
 				{
 					Bi++;
 					continue;
 				}
 
-				int T_dominance = 0;
-				int B_dominance = 0;
-				foreach key, r in value_ranks
+				let T_dominance: number = 0;
+				let B_dominance: number = 0;
+				for (let [key, r] of value_ranks)
 				{
-					if(r == rank)
+					if (r === rank)
 					{
-						if(T[Ti].objective_values[key] == -1.0 || B[Bi].objective_values[key] == -1.0)
+						if (((T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti)).objectiveValues.get(key) ?? (T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti)).objectiveValues.set(key, 0.0).get(key)) === -1.0 || ((B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)).objectiveValues.get(key) ?? (B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)).objectiveValues.set(key, 0.0).get(key)) === -1.0)
 						{
 							continue; // -1.0 means the key is not applicable to an option, e.g. hp_per_mp_spent on free rests which dont cost mp
 						}
-						if(T[Ti].objective_values[key] < B[Bi].objective_values[key])
+						if (((T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti)).objectiveValues.get(key) ?? (T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti)).objectiveValues.set(key, 0.0).get(key)) < ((B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)).objectiveValues.get(key) ?? (B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)).objectiveValues.set(key, 0.0).get(key)))
 						{
-							if(maximize_keys contains key)
+							if (maximize_keys.has(key))
 							{
 								B_dominance++;
 							}
-							else if(minimize_keys contains key)
+							else if (minimize_keys.has(key))
 							{
 								T_dominance++;
 							}
 						}
-						else if(T[Ti].objective_values[key] > B[Bi].objective_values[key])
+						else if (((T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti)).objectiveValues.get(key) ?? (T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti)).objectiveValues.set(key, 0.0).get(key)) > ((B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)).objectiveValues.get(key) ?? (B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)).objectiveValues.set(key, 0.0).get(key)))
 						{
-							if(maximize_keys contains key)
+							if (maximize_keys.has(key))
 							{
 								T_dominance++;
 							}
-							else if(minimize_keys contains key)
+							else if (minimize_keys.has(key))
 							{
 								B_dominance++;
 							}
 						}
 					}
 				}
-				
-				if(T_dominance > B_dominance)
+
+				if (T_dominance > B_dominance)
 				{
-					dominated[B[Bi].metadata.name] = true;
+					dominated.set((B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)).metadata.name, true);
 				}
-				else if(B_dominance > T_dominance)
+				else if (B_dominance > T_dominance)
 				{
-					dominated[T[Ti].metadata.name] = true;
+					dominated.set((T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti)).metadata.name, true);
 					break;
 				}
 				Bi++;
 			}
-			
-			if(!(dominated contains T[Ti].metadata.name))
+
+			if (!(dominated.has((T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti)).metadata.name)))
 			{
-				M[count(M)] = T[Ti];
+				M.set(M.size, (T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti)));
 			}
-			else
-			{
-				auto_log_restore_debug("Removed from consideration: " + to_string(T[Ti], true), 1);
+			else {
+				auto_log_restore_debug(`Removed from consideration: ${to_string$1((T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti)), true)}`, 1);
 			}
 			Ti++;
 		}
 
 		Bi = 0;
-		while(Bi < count(B))
+		while (Bi < B.size)
 		{
-			if(!(dominated contains B[Bi].metadata.name))
+			if (!(dominated.has((B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)).metadata.name)))
 			{
-				M[count(M)] = B[Bi];
+				M.set(M.size, (B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)));
 			}
-			else
-			{
-				auto_log_restore_debug("Removed from consideration: " + to_string(B[Bi], true), 1);
+			else {
+				auto_log_restore_debug(`Removed from consideration: ${to_string$1((B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)), true)}`, 1);
 			}
 			Bi++;
 		}
 		return M;
 	}
 
-	__RestorationOptimization[int] ranked_optimization(__RestorationOptimization[int] p, int[string] value_ranks, int rank, boolean[string] maximize_keys, boolean[string] minimize_keys)
+	function ranked_optimization(p: Map<number, __RestorationOptimization>, value_ranks: Map<string, number>, rank: number, maximize_keys: Map<string, boolean>, minimize_keys: Map<string, boolean>): Map<number, __RestorationOptimization>
 	{
-		if(count(p) == 1)
+		if (p.size === 1)
 		{
 			return p;
 		}
-		else
-		{
-			int mid = floor(count(p)/2);
-			__RestorationOptimization[int] T = ranked_optimization(slice(p, 0, mid), value_ranks, rank, maximize_keys, minimize_keys);
-			__RestorationOptimization[int] B = ranked_optimization(slice(p, mid, count(p)), value_ranks, rank, maximize_keys, minimize_keys);
+		else {
+			let mid: number = floor(p.size / 2);
+			let T: Map<number, __RestorationOptimization> = ranked_optimization(slice(p, 0, mid), value_ranks, rank, maximize_keys, minimize_keys);
+			let B: Map<number, __RestorationOptimization> = ranked_optimization(slice(p, mid, p.size), value_ranks, rank, maximize_keys, minimize_keys);
 			return non_dominated_set(T, B, value_ranks, rank, maximize_keys, minimize_keys);
 		}
 	}
 
-	__RestorationOptimization[int] ranked_optimization(__RestorationOptimization[int] p, int[string] value_ranks, boolean[string] maximize_keys, boolean[string] minimize_keys)
+	function ranked_optimization$1(p: Map<number, __RestorationOptimization>, value_ranks: Map<string, number>, maximize_keys: Map<string, boolean>, minimize_keys: Map<string, boolean>): Map<number, __RestorationOptimization>
 	{
-		auto_log_restore_debug("Beginning optimization of "+count(p)+" restoration options.", 1);
-		if(count(p) == 0)
+		auto_log_restore_debug(`Beginning optimization of ${p.size} restoration options.`, 1);
+		if (p.size === 0)
 		{
 			return p;
 		}
 
-		__RestorationOptimization[int] ranked = copy(p);
-		int[int] ranks = ordered_ranks(value_ranks);
-		auto_log_restore_debug(count(ranked)+" options before optimization: " + to_string(ranked, false), 2);
-		foreach _, rank in ranks
+		let ranked: Map<number, __RestorationOptimization> = copy(p);
+		let ranks: Map<number, number> = ordered_ranks(value_ranks);
+		auto_log_restore_debug(`${ranked.size} options before optimization: ${to_string$2(ranked, false)}`, 2);
+		for (let [_, rank] of ranks)
 		{
-			string desc = (__RANKED_GOAL_DESCRIPTIONS contains rank) ?  __RANKED_GOAL_DESCRIPTIONS[rank] : "whoops, someone changed things and didnt update the descriptions. Bad dev.";
-			auto_log_restore_debug("Rank " + rank + " optimization, prefer to... " + desc, 1);
-			if(count(ranked) <= 1)
+			let desc: string = (__RANKED_GOAL_DESCRIPTIONS.has(rank) ? (__RANKED_GOAL_DESCRIPTIONS.get(rank) ?? __RANKED_GOAL_DESCRIPTIONS.set(rank, "").get(rank)) : "whoops, someone changed things and didnt update the descriptions. Bad dev.");
+			auto_log_restore_debug(`Rank ${rank} optimization, prefer to... ${desc}`, 1);
+			if (ranked.size <= 1)
 			{
 				break;
 			}
@@ -1293,444 +1299,431 @@ __RestorationOptimization[int] __maximize_restore_options(int hp_goal, int mp_go
 		return ranked;
 	}
 
-	int partition(__RestorationOptimization[int] p, boolean[string] sort_keys, int[string] value_ranks, int left_index, int right_index)
+	function partition(p: Map<number, __RestorationOptimization>, sort_keys: Map<string, boolean>, value_ranks: Map<string, number>, left_index: number, right_index: number): number
 	{
-		int pivot_value = weighted_sum(p[left_index], sort_keys, value_ranks);
-		int l = left_index + 1;
-		int r = right_index;
-		boolean done = false;
-		__RestorationOptimization swap;
+		let pivot_value: number = toInt(weighted_sum((p.get(left_index) ?? p.set(left_index, new __RestorationOptimization()).get(left_index)), sort_keys, value_ranks));
+		let l: number = left_index + 1;
+		let r: number = right_index;
+		let done: boolean = false;
+		let swap: __RestorationOptimization = new __RestorationOptimization();
 
-		while(!done)
+		while (!done)
 		{
-			while(l <= r)
+			while (l <= r)
 			{
-				if(weighted_sum(p[l], sort_keys, value_ranks) >= pivot_value)
+				if (weighted_sum((p.get(l) ?? p.set(l, new __RestorationOptimization()).get(l)), sort_keys, value_ranks) >= pivot_value)
 				{
 					l++;
 				}
-				else
-				{
+				else {
 					break;
 				}
 			}
 
-			while(r >= l)
+			while (r >= l)
 			{
-				if(weighted_sum(p[r], sort_keys, value_ranks) <= pivot_value)
+				if (weighted_sum((p.get(r) ?? p.set(r, new __RestorationOptimization()).get(r)), sort_keys, value_ranks) <= pivot_value)
 				{
 					r--;
 				}
-				else
-				{
+				else {
 					break;
 				}
 			}
 
-			if(r < l)
+			if (r < l)
 			{
 				done = true;
 			}
-			else
-			{
-				swap = p[l];
-				p[l] = p[r];
-				p[r] = swap;
+			else {
+				swap = (p.get(l) ?? p.set(l, new __RestorationOptimization()).get(l));
+				p.set(l, (p.get(r) ?? p.set(r, new __RestorationOptimization()).get(r)));
+				p.set(r, swap);
 			}
 		}
 
-		swap = p[left_index];
-		p[left_index] = p[r];
-		p[r] = swap;
+		swap = (p.get(left_index) ?? p.set(left_index, new __RestorationOptimization()).get(left_index));
+		p.set(left_index, (p.get(r) ?? p.set(r, new __RestorationOptimization()).get(r)));
+		p.set(r, swap);
 
 		return r;
 	}
 
-	void quick_sort_maximize(__RestorationOptimization[int] p, boolean[string] sort_keys, int[string] value_ranks, int left_index, int right_index)
+	function quick_sort_maximize(p: Map<number, __RestorationOptimization>, sort_keys: Map<string, boolean>, value_ranks: Map<string, number>, left_index: number, right_index: number): void
 	{
-		if(left_index < right_index)
+		if (left_index < right_index)
 		{
-			int pivot = partition(p, sort_keys, value_ranks, left_index, right_index);
-			quick_sort_maximize(p, sort_keys, value_ranks, left_index, pivot-1);
-			quick_sort_maximize(p, sort_keys, value_ranks, pivot+1, right_index);
+			let pivot: number = partition(p, sort_keys, value_ranks, left_index, right_index);
+			quick_sort_maximize(p, sort_keys, value_ranks, left_index, pivot - 1);
+			quick_sort_maximize(p, sort_keys, value_ranks, pivot + 1, right_index);
 		}
 	}
 
-	void quick_sort_maximize(__RestorationOptimization[int] p, boolean[string] sort_keys, int[string] value_ranks)
+	function quick_sort_maximize$1(p: Map<number, __RestorationOptimization>, sort_keys: Map<string, boolean>, value_ranks: Map<string, number>): void
 	{
-		auto_log_restore_debug("Sorting "+count(p)+" options by primary objectives.", 1);
-		if(count(p) > 1)
+		auto_log_restore_debug(`Sorting ${p.size} options by primary objectives.`, 1);
+		if (p.size > 1)
 		{
-			quick_sort_maximize(p, sort_keys, value_ranks, 0, count(p)-1);
+			quick_sort_maximize(p, sort_keys, value_ranks, 0, p.size - 1);
 		}
 	}
 
-	__RestorationOptimization[int] apply_constraints(__RestorationOptimization[int] p, boolean[string] constraint_keys)
+	function apply_constraints(p: Map<number, __RestorationOptimization>, constraint_keys: Map<string, boolean>): Map<number, __RestorationOptimization>
 	{
-		int c = count(p);
-		auto_log_restore_debug("Applying constraints to "+c+" objective values.", 1);
+		let c: number = p.size;
+		auto_log_restore_debug(`Applying constraints to ${c} objective values.`, 1);
 
-		__RestorationOptimization[int] constrained;
+		let constrained: Map<number, __RestorationOptimization> = new Map();
 
-		foreach _, o in p
+		for (let [_, o] of p)
 		{
-			boolean fail = false;
-			foreach c, _ in constraint_keys
+			let fail: boolean = false;
+			for (let [c_1, __1] of constraint_keys)
 			{
-				if(!o.constraints[c])
+				if (!(o.constraints.get(c_1) ?? o.constraints.set(c_1, false).get(c_1)))
 				{
 					fail = true;
 					break;
 				}
 			}
-			if(!fail)
+			if (!fail)
 			{
-				constrained[count(constrained)] = o;
+				constrained.set(constrained.size, o);
 			}
 		}
 
-		auto_log_restore_debug("Removed  "+(c-count(constrained))+" restore options from consideration.", 1);
+		auto_log_restore_debug(`Removed  ${c - constrained.size} restore options from consideration.`, 1);
 
 		return constrained;
 	}
 
-	__RestorationOptimization[int] calculate_objective_values()
+	function calculate_objective_values(): Map<number, __RestorationOptimization>
 	{
-		if(count(__restore_maximizer_cache) > 0)
+		if ($_f___restore_maximizer_cache.size > 0)
 		{
 			auto_log_restore_debug("Recalculating cached restore objective values.", 0);
-			foreach i, o in __restore_maximizer_cache
+			for (let [i, o] of $_f___restore_maximizer_cache)
 			{
-				__RestorationOptimization recalculated =
-				__restore_maximizer_cache[i] = __calculate_objective_values(hp_goal, mp_goal, meat_reserve, useFreeRests, o.metadata);
+				let recalculated: __RestorationOptimization = (() => { let _val = __calculate_objective_values(hp_goal, mp_goal, meat_reserve, useFreeRests, o.metadata); $_f___restore_maximizer_cache.set(i, _val); return _val; })();
 			}
 		}
-		else
-		{
+		else {
 			auto_log_restore_debug("Calculating restore objective values.", 0);
-			foreach name, metadata in __restoration_methods()
+			for (let [name, metadata] of __restoration_methods())
 			{
-				__RestorationOptimization o = __calculate_objective_values(hp_goal, mp_goal, meat_reserve, useFreeRests, metadata);
-				if(o.constraints["is_ever_useable"])
+				let o: __RestorationOptimization = __calculate_objective_values(hp_goal, mp_goal, meat_reserve, useFreeRests, metadata);
+				if ((o.constraints.get("is_ever_useable") ?? o.constraints.set("is_ever_useable", false).get("is_ever_useable")))
 				{
-					__restore_maximizer_cache[count(__restore_maximizer_cache)] = o;
+					$_f___restore_maximizer_cache.set($_f___restore_maximizer_cache.size, o);
 				}
 			}
 		}
 
-		return __restore_maximizer_cache;
+		return $_f___restore_maximizer_cache;
 	}
 
-	__RestorationOptimization[int] optimized = calculate_objective_values();
+	let optimized: Map<number, __RestorationOptimization> = calculate_objective_values();
 	optimized = apply_constraints(optimized, __CONSTRAINT_KEYS);
-	quick_sort_maximize(optimized, __PRIMARY_SORT_KEYS, __OBJECTIVE_RANKS);
-	return ranked_optimization(optimized, __OBJECTIVE_RANKS, __MAXIMIZE_KEYS, __MINIMIZE_KEYS);
+	quick_sort_maximize$1(optimized, __PRIMARY_SORT_KEYS, __OBJECTIVE_RANKS);
+	return ranked_optimization$1(optimized, __OBJECTIVE_RANKS, __MAXIMIZE_KEYS, __MINIMIZE_KEYS);
 }
 
-boolean __restore(string resource_type, int goal, int meat_reserve, boolean useFreeRests)
+export function __restore(resource_type: string, goal: number, meat_reserve: number, useFreeRests: boolean): boolean
 {
-	int current_resource()
+	function current_resource(): number
 	{
-		if(resource_type == "hp")
+		if (resource_type === "hp")
 		{
-			return my_hp();
+			return myHp();
 		}
-		else if(resource_type == "mp")
+		else if (resource_type === "mp")
 		{
-			return my_mp();
+			return myMp();
 		}
 		return -1;
 	}
-	
-	int max_resource()
-	{
-		if(resource_type == "hp")
-		{
-			return my_maxhp();
-		}
-		else if(resource_type == "mp")
-		{
-			return my_maxmp();
-		}
-		return -1;
-	}
-	
-	int hp_target()
-	{
-		if(resource_type == "hp")
-		{
-			return goal;
-		}
-		else
-		{
-			return my_hp();
-		}
-	}
-	
-	int mp_target()
-	{
-		if(resource_type == "mp")
-		{
-			return goal;
-		}
-		else
-		{
-			return my_mp();
-		}
-	}
-	
-	skill pick_blood_skill(int final_hp)
-	{
-		boolean bloodBondAvailable = auto_have_skill($skill[Blood Bond]) &&
-		pathHasFamiliar() &&
-		my_maxhp() > hp_cost($skill[Blood Bond]) &&
-		final_hp > ((9-hp_regen())*10) && // blood bond drains hp after combat, make sure we dont accidentally kill the player
-		get_property("auto_restoreUseBloodBond").to_boolean();
-	
-		boolean bloodBubbleAvailable = auto_have_skill($skill[Blood Bubble]) &&
-		my_maxhp() > hp_cost($skill[Blood Bubble]);
 
-		skill blood_skill = $skill[none];
-		if(bloodBondAvailable && bloodBubbleAvailable)
+	function max_resource(): number
+	{
+		if (resource_type === "hp")
 		{
-			if(have_effect($effect[Blood Bond]) > have_effect($effect[Blood Bubble]))
+			return myMaxhp();
+		}
+		else if (resource_type === "mp")
+		{
+			return myMaxmp();
+		}
+		return -1;
+	}
+
+	function hp_target(): number
+	{
+		if (resource_type === "hp")
+		{
+			return goal;
+		}
+		else {
+			return myHp();
+		}
+	}
+
+	function mp_target(): number
+	{
+		if (resource_type === "mp")
+		{
+			return goal;
+		}
+		else {
+			return myMp();
+		}
+	}
+
+	function pick_blood_skill(final_hp: number): Skill
+	{
+		let bloodBondAvailable: boolean = auto_have_skill(Skill.get("Blood Bond")) && pathHasFamiliar() && myMaxhp() > hpCost(Skill.get("Blood Bond")) && final_hp > (9 - hp_regen()) * 10 && toBoolean(
+		// blood bond drains hp after combat, make sure we dont accidentally kill the player
+		getProperty("auto_restoreUseBloodBond"));
+
+		let bloodBubbleAvailable: boolean = auto_have_skill(Skill.get("Blood Bubble")) && myMaxhp() > hpCost(Skill.get("Blood Bubble"));
+
+		let blood_skill: Skill = Skill.none;
+		if (bloodBondAvailable && bloodBubbleAvailable)
+		{
+			if (haveEffect(Effect.get("Blood Bond")) > haveEffect(Effect.get("Blood Bubble")))
 			{
-				blood_skill = $skill[Blood Bubble];
+				blood_skill = Skill.get("Blood Bubble");
 			}
-			else
-			{
-				blood_skill = $skill[Blood Bond];
+			else {
+				blood_skill = Skill.get("Blood Bond");
 			}
 		}
-		else if(bloodBondAvailable)
+		else if (bloodBondAvailable)
 		{
-			blood_skill = $skill[Blood Bond];
+			blood_skill = Skill.get("Blood Bond");
 		}
-		else if(bloodBubbleAvailable)
+		else if (bloodBubbleAvailable)
 		{
-			blood_skill = $skill[Blood Bubble];
+			blood_skill = Skill.get("Blood Bubble");
 		}
 		return blood_skill;
 	}
 
-	boolean use_opportunity_blood_skills(int hp_restored_per_use, int final_hp)
+	function use_opportunity_blood_skills(hp_restored_per_use_1: number, final_hp: number): boolean
 	{
-		if (!auto_have_skill($skill[Blood Bond]) && !auto_have_skill($skill[Blood Bubble]))
+		if (!auto_have_skill(Skill.get("Blood Bond")) && !auto_have_skill(Skill.get("Blood Bubble")))
 		{
 			return false;
 		}
-		int restored = my_hp() + hp_restored_per_use;
-		int waste = min(my_hp()-1, restored-my_maxhp());
-		if(waste <= 0) return true;
+		let restored: number = myHp() + hp_restored_per_use_1;
+		let waste: number = min(myHp() - 1, restored - myMaxhp());
+		if (waste <= 0) { return true; }
 		// both blood skills we care about cost 30
-		int casts_total = waste / 30;
-		if(casts_total <= 0) return true;
+		let casts_total: number = waste / 30;
+		if (casts_total <= 0) { return true; }
 		// ratio should be 1 / the number of turns of that effect per cast
-		float [skill] skill_ratios;
-		float total_ratio = 0.0;
-		if(auto_have_skill($skill[Blood Bubble]))
+		let skill_ratios: Map<Skill, number> = new Map();
+		let total_ratio: number = 0.0;
+		if (auto_have_skill(Skill.get("Blood Bubble")))
 		{
-			float bubble_ratio = 1.0 / 3.0;
-			skill_ratios[$skill[Blood Bubble]] = bubble_ratio;
+			let bubble_ratio: number = 1.0 / 3.0;
+			skill_ratios.set(Skill.get("Blood Bubble"), bubble_ratio);
 			total_ratio += bubble_ratio;
 		}
-		if(auto_have_skill($skill[Blood Bond]))
+		if (auto_have_skill(Skill.get("Blood Bond")))
 		{
-			float bond_ratio = 1.0 / 10.0;
-			skill_ratios[$skill[Blood Bond]] = bond_ratio;
+			let bond_ratio: number = 1.0 / 10.0;
+			skill_ratios.set(Skill.get("Blood Bond"), bond_ratio);
 			total_ratio += bond_ratio;
 		}
-		int casts_so_far;
-		int [skill] to_cast;
-		foreach sk, ratio in skill_ratios
+		let casts_so_far: number = 0;
+		let to_cast: Map<Skill, number> = new Map();
+		for (let [sk, ratio] of skill_ratios)
 		{
-			int times_to_cast = floor(casts_total * ratio / total_ratio);
-			to_cast[sk] = times_to_cast;
+			let times_to_cast: number = floor(casts_total * ratio / total_ratio);
+			to_cast.set(sk, times_to_cast);
 			casts_so_far += times_to_cast;
 		}
-		if(casts_so_far < casts_total)
+		if (casts_so_far < casts_total)
 		{
-			to_cast[pick_blood_skill(final_hp)] += casts_total - casts_so_far;
+			to_cast.set(pick_blood_skill(final_hp), (to_cast.get(pick_blood_skill(final_hp)) ?? 0) + casts_total - casts_so_far);
 		}
-		boolean success = true;
-		foreach sk, times in to_cast
+		let success: boolean = true;
+		for (let [sk, times] of to_cast)
 		{
-			success &= use_skill(times, sk);
+			success = toBoolean(toInt(success) & toInt(useSkill(times, sk)));
 		}
 		return success;
 	}
 
-	boolean use_restore(__RestorationMetadata metadata, int meat_reserve, boolean useFreeRests)
+	function use_restore(metadata: __RestorationMetadata, meat_reserve: number, useFreeRests: boolean): boolean
 	{
-		if(metadata.name == "")
+		if (metadata.name === "")
 		{
 			return false;
 		}
 
-		auto_log_info("Using " + metadata.type + " " + metadata.name + " as restore.", "blue");
-		if(metadata.type == "item")
+		auto_log_info(`Using ${metadata.type} ${metadata.name} as restore.`, "blue");
+		if (metadata.type === "item")
 		{
-			item i = to_item(metadata.name);
-			return retrieve_item(1, i) && use(1, i);
+			let i: Item = toItem(metadata.name);
+			return retrieveItem(1, i) && use(1, i);
 		}
 
-		if(metadata.type == "dwelling")
+		if (metadata.type === "dwelling")
 		{
 			return doFreeRest();
 		}
 
-		if(metadata.name == __HOT_TUB)
+		if (metadata.name === $_f___HOT_TUB)
 		{
-			int pre_soaks = hotTubSoaksRemaining();
-			return doHottub() == pre_soaks - 1;
+			let pre_soaks: number = hotTubSoaksRemaining();
+			return doHottub() === pre_soaks - 1;
 		}
-		if(metadata.name == __NUNS)
+		if (metadata.name === $_f___NUNS)
 		{
-			int pre_visits = get_property("nunsVisits").to_int();
-			cli_execute("nuns");
-			int post_visits = get_property("nunsVisits").to_int();
-			return pre_visits == post_visits - 1;
+			let pre_visits: number = toInt(getProperty("nunsVisits"));
+			cliExecute("nuns");
+			let post_visits: number = toInt(getProperty("nunsVisits"));
+			return pre_visits === post_visits - 1;
 		}
 
-		if(metadata.type == "skill")
+		if (metadata.type === "skill")
 		{
-			skill s = to_skill(metadata.name);
-			if(my_mp() < mp_cost(s) && !acquireMP(mp_cost(s), 0, useFreeRests))
+			let s: Skill = toSkill(metadata.name);
+			if (myMp() < mpCost(s) && !acquireMP$3(mpCost(s), 0, useFreeRests))
 			{
-				auto_log_warning("Couldnt acquire enough MP to cast " + s, "red");
+				auto_log_warning(`Couldnt acquire enough MP to cast ${s}`, "red");
 				return false;
 			}
-			return use_skill(1, s);
+			return useSkill(1, s);
 		}
 
 		return false;
 	}
 
-	string list_to_string(boolean[effect] e_list)
+	function list_to_string(e_list: Map<Effect, boolean>): string
 	{
-		string s = "[";
-		boolean first = true;
-		foreach e in e_list
+		let s: string = "[";
+		let first: boolean = true;
+		for (let e of e_list.keys())
 		{
-			if(first)
+			if (first)
 			{
 				first = false;
 			}
-			else
-			{
+			else {
 				s += ", ";
 			}
-			s += e.to_string();
+			s += e.toString();
 		}
 		s += "]";
 		return s;
 	}
 
-	boolean[effect] negative_effects()
+	function negative_effects(): Map<Effect, boolean>
 	{
-		boolean[effect] negative;
-		foreach e, _ in my_effects()
+		let negative: Map<Effect, boolean> = new Map();
+		for (let [e, _] of Object.entries(myEffects()).map(([_k, _v]) => [Effect.get(_k), _v] as [Effect, number]))
 		{
-			if(__all_negative_effects contains e)
+			if ($_f___all_negative_effects.has(e))
 			{
-				negative[e] = true;
+				negative.set(e, true);
 			}
 		}
 		return negative;
 	}
 
-	void recover_discount_pants()
+	function recover_discount_pants(): void
 	{
-		foreach discountpants in $items[designer sweatpants,Travoltan trousers]
+		for (let discountpants of Item.get(["designer sweatpants", "Travoltan trousers"]))
 		{
-			if(closet_amount(discountpants) > 0)
+			if (closetAmount(discountpants) > 0)
 			{
-				take_closet(1,discountpants);
+				takeCloset(1, discountpants);
 			}
 		}
 	}
 
-	auto_log_info("Target "+resource_type+" => "+goal+" - Considering restore options at " + my_hp() + "/" + my_maxhp() + " HP with " + my_mp() + "/" + my_maxmp() + " MP", "blue");
-	auto_log_info("Active Negative Effects => " + list_to_string(negative_effects()));
+	auto_log_info(`Target ${resource_type} => ${goal} - Considering restore options at ${myHp()}/${myMaxhp()} HP with ${myMp()}/${myMaxmp()} MP`, "blue");
+	auto_log_info$1(`Active Negative Effects => ${list_to_string(negative_effects())}`);
 
-	while(current_resource() < goal)
+	while (current_resource() < goal)
 	{
-		if(goal > max_resource())	//prevent infinite loop in case maxHP or maxMP dropped below goal
-		{
+		if (goal > max_resource())
+		{ //prevent infinite loop in case maxHP or maxMP dropped below goal
 			goal = max_resource();
 		}
-		__RestorationOptimization[int] options = __maximize_restore_options(hp_target(), mp_target(), meat_reserve, useFreeRests);
-		if(count(options) == 0)
+		let options: Map<number, __RestorationOptimization> = __maximize_restore_options(hp_target(), mp_target(), meat_reserve, useFreeRests);
+		if (options.size === 0)
 		{
-			auto_log_error("Target "+resource_type+" => " + goal + " - couldnt determine an effective restoration mechanism");
-			if(get_property("auto_ignoreRestoreFailure").to_boolean() || get_property("_auto_ignoreRestoreFailureToday").to_boolean())
+			auto_log_error(`Target ${resource_type} => ${goal} - couldnt determine an effective restoration mechanism`);
+			if (toBoolean(getProperty("auto_ignoreRestoreFailure")) || toBoolean(getProperty("_auto_ignoreRestoreFailureToday")))
 			{
 				auto_log_error("Ignoring the error as per user instructions");
  				return false;
 			}
-			print("Aborting due to restore failure... you can override this setting for today by entering in gCLI:" ,"blue");
-			print("set _auto_ignoreRestoreFailureToday = true" ,"blue");
-			print("You can override this setting forever by entering in gCLI:" ,"blue");
-			print("set auto_ignoreRestoreFailure = true" ,"blue");
+			print("Aborting due to restore failure... you can override this setting for today by entering in gCLI:", "blue");
+			print("set _auto_ignoreRestoreFailureToday = true", "blue");
+			print("You can override this setting forever by entering in gCLI:", "blue");
+			print("set auto_ignoreRestoreFailure = true", "blue");
 			abort();
 		}
 
-		boolean success = false;
-		foreach i, o in options
+		let success: boolean = false;
+		for (let [i, o] of options)
 		{
-			if(o.metadata.type == "item" && item_amount(to_item(o.metadata.name)) == 0)	//prevent infinite loop by discount pants when buying from NPC store
-			{
-				foreach discountpants in $items[designer sweatpants,Travoltan trousers]
+			if (o.metadata.type === "item" && itemAmount(toItem(o.metadata.name)) === 0)
+			{ //prevent infinite loop by discount pants when buying from NPC store
+				for (let discountpants of Item.get(["designer sweatpants", "Travoltan trousers"]))
 				{
-					if(item_amount(discountpants) > 0)
+					if (itemAmount(discountpants) > 0)
 					{
-						boolean mustnotpants = false;
-						cli_execute("whatif equip " + discountpants + "; quiet");
-						if(resource_type == "hp" && goal > numeric_modifier("_spec", "Buffed HP Maximum"))
+						let mustnotpants: boolean = false;
+						cliExecute(`whatif equip ${discountpants}; quiet`);
+						if (resource_type === "hp" && goal > numericModifier("_spec", "Buffed HP Maximum"))
 						{
 							mustnotpants = true;
 						}
-						if(resource_type == "mp" && goal > numeric_modifier("_spec", "Buffed MP Maximum"))
+						if (resource_type === "mp" && goal > numericModifier("_spec", "Buffed MP Maximum"))
 						{
 							mustnotpants = true;
 						}
-						if(mustnotpants)
+						if (mustnotpants)
 						{
-							auto_log_info("Avoiding any discount pants restore loops");
-							put_closet(1,discountpants);	//yes this was the recommended and only? way to make mafia not auto equip the discount pants
+							auto_log_info$1("Avoiding any discount pants restore loops");
+							putCloset(1, discountpants); //yes this was the recommended and only? way to make mafia not auto equip the discount pants
 						}
 					}
 				}
 			}
-			use_opportunity_blood_skills(o.vars["hp_restored_per_use"], my_hp()+o.vars["hp_total_restored"]);
+			use_opportunity_blood_skills(toInt((o.vars.get("hp_restored_per_use") ?? o.vars.set("hp_restored_per_use", 0.0).get("hp_restored_per_use"))), toInt(myHp() + (o.vars.get("hp_total_restored") ?? o.vars.set("hp_total_restored", 0.0).get("hp_total_restored"))));
 			success = use_restore(o.metadata, meat_reserve, useFreeRests);
-			if(success)
+			if (success)
 			{
 				break;
 			}
-			else
-			{
-				auto_log_warning("Target "+resource_type+" => " + goal + " option " + o.metadata.name + " failed. Trying next option (if available).");
+			else {
+				auto_log_warning$1(`Target ${resource_type} => ${goal} option ${o.metadata.name} failed. Trying next option (if available).`);
 			}
 		}
 
-		if(!success)
+		if (!success)
 		{
 			// did we have exactly one option and fail to cast rest upside down because we have a back item with +HP/MP?
-			if (count(options) == 1 && options[0].metadata.name == "rest upside down") {
-				item current_back = equipped_item($slot[back]);
+			if (options.size === 1 && (options.get(0) ?? options.set(0, new __RestorationOptimization()).get(0)).metadata.name === "rest upside down") {
+				let current_back: Item = equippedItem(Slot.get("back"));
 				// do we have less than max minus what the back item provides
-				if (current_resource() < max_resource() - numeric_modifier(current_back, "Maximum " + resource_type))
+				if (current_resource() < max_resource() - numericModifier(current_back, `Maximum ${resource_type}`))
 				{
-					auto_log_info("Manually equipping the bat wings");
-					equip($item[bat wings]);
+					auto_log_info$1("Manually equipping the bat wings");
+					equip(Item.get("bat wings"));
 					recover_discount_pants();
-					success = use_skill(1, $skill[rest upside down]);
+					success = useSkill(1, Skill.get("Rest upside down"));
 					equip(current_back);
 					return success;
 				}
 			}
-			auto_log_warning("Target "+resource_type+" => " + goal + " - Uh oh. All restore options tried ("+count(options)+") failed. Sorry.", "red");
+			auto_log_warning(`Target ${resource_type} => ${goal} - Uh oh. All restore options tried (${options.size}) failed. Sorry.`, "red");
 			recover_discount_pants();
 			return false;
 		}
@@ -1739,290 +1732,273 @@ boolean __restore(string resource_type, int goal, int meat_reserve, boolean useF
 	return true;
 }
 
-void __cure_bad_stuff()
+export function __cure_bad_stuff(): void
 {
-	foreach e in $effects[Hardly Poisoned at All, A Little Bit Poisoned, Somewhat Poisoned, Really Quite Poisoned, Majorly Poisoned, Toad In The Hole]
+	for (let e of Effect.get(["Hardly Poisoned at All", "A Little Bit Poisoned", "Somewhat Poisoned", "Really Quite Poisoned", "Majorly Poisoned", "Toad In The Hole"]))
 	{
-		if(have_effect(e) > 0)
+		if (haveEffect(e) > 0)
 		{
 			uneffect(e);
 		}
 	}
-
 	// let mafia figure out how to best remove beaten up
-	if(have_effect($effect[Beaten Up]) > 0){
-		auto_log_info("Ouch, you got beaten up. Lets get you patched up, if we can.");
-		uneffect($effect[Beaten Up]);
+	if (haveEffect(Effect.get("Beaten Up")) > 0) {
+		auto_log_info$1("Ouch, you got beaten up. Lets get you patched up, if we can.");
+		uneffect(Effect.get("Beaten Up"));
 
-		if(have_effect($Effect[Beaten Up]) > 0){
+		if (haveEffect(Effect.get("Beaten Up")) > 0) {
 			auto_log_warning("Well, you're still beaten up, thats probably not great...", "red");
 		}
 	}
 }
-
 /**
  * Public Interface
  */
 
-void invalidateRestoreOptionCache()
+//Restoration (hp/mp) functions
+export function invalidateRestoreOptionCache(): void
 {
-	clear(__known_restoration_sources);
-	clear(__restore_maximizer_cache);
+	$_f___known_restoration_sources.clear();
+	$_f___restore_maximizer_cache.clear();
 }
-
-
 /**
  * Try to acquire your max mp (useFreeRests: true). Will also cure poisoned and beaten up before restoring any mp.
  *
  * returns true if my_mp() >= my_maxmp() after attempting to restore.
  */
-boolean acquireMP()
+export function acquireMP(): boolean
 {
-	return acquireMP(min(0.95 * my_maxmp(),300));
+	return acquireMP$4(min(0.95 * myMaxmp(), 300));
 }
-
 /**
  * Try to acquire up to the mp goal (useFreeRests: true). Will also cure poisoned and beaten up before restoring any mp.
  *
  * returns true if my_mp() >= goal after attempting to restore.
  */
-boolean acquireMP(int goal)
+export function acquireMP$1(goal: number): boolean
 {
-	return acquireMP(goal, meatReserve());
+	return acquireMP$2(goal, meatReserve());
 }
-
 /**
  * Try to acquire up to the mp goal, optionally buying items (useFreeRests: true). Will also cure poisoned and beaten up before restoring any mp.
  *
  * returns true if my_mp() >= goal after attempting to restore.
  */
-boolean acquireMP(int goal, int meat_reserve)
+export function acquireMP$2(goal: number, meat_reserve: number): boolean
 {
-	return acquireMP(goal, meat_reserve, true);
+	return acquireMP$3(goal, meat_reserve, true);
 }
-
 /**
  * Try to acquire up to the mp goal, optionally buying items and using free rests. Will also cure poisoned and beaten up before restoring any mp.
  *
  * returns true if my_mp() >= goal after attempting to restore.
  */
-boolean acquireMP(int goal, int meat_reserve, boolean useFreeRests)
+export function acquireMP$3(goal: number, meat_reserve: number, useFreeRests: boolean): boolean
 {
 	//vampyres don't use MP
-	if(in_darkGyffte())
+	if (in_darkGyffte())
 	{
 		return false;
 	}
-	else if (in_zombieSlayer()) // zombies have hordes not mp
-	{
+	else if (in_zombieSlayer())
+	{ // zombies have hordes not mp
 		return zombieSlayer_acquireMP(goal, meat_reserve);
 	}
 
-	boolean isMax = (goal == my_maxmp());
+	let isMax: boolean = goal === myMaxmp();
 
 	__cure_bad_stuff();
 
-	if(isMax)
+	if (isMax)
 	{
-		goal = my_maxmp(); //in case max rose after curing the bad stuff
+		goal = myMaxmp(); //in case max rose after curing the bad stuff
 	}
-	else if(goal > my_maxmp())
+	else if (goal > myMaxmp())
 	{
 		return false;
 	}
-	else if(my_mp() >= goal)
+	else if (myMp() >= goal)
 	{
 		return true;
 	}
-
 	//since we need to restore, lets reduce MP cost of future skills
-	buffMaintain($effect[The Odour of Magick]);
-	buffMaintain($effect[Using Protection]);
+	buffMaintain$4(Effect.get("The Odour of Magick"));
+	buffMaintain$4(Effect.get("Using Protection"));
 	//also use items/skills which give free mp regen
-	buffMaintain($effect[Tingly Tongue]);
-	buffMaintain($effect[Tingling Insides]);
-	buffMaintain($effect[Wisdom of the Autumn Years]);
-	if(auto_equipAprilShieldBuff() && !(get_property("_aprilShowerSimmer").to_boolean()))
+	buffMaintain$4(Effect.get("Tingly Tongue"));
+	buffMaintain$4(Effect.get("Tingling Insides"));
+	buffMaintain$4(Effect.get("Wisdom of the Autumn Years"));
+	if (auto_equipAprilShieldBuff() && !toBoolean(getProperty("_aprilShowerSimmer")))
 	{
 		//Free mp regen on the first cast of the day with the April Shower Thoughts Shield equipped
-		buffMaintain($effect[Simmering]);
+		buffMaintain$4(Effect.get("Simmering"));
 	}
-
 	// Sausages restore 999MP, this is a pretty arbitrary cutoff but it should reduce pain
 	// TODO: move this to general effectiveness method
-	if(my_maxmp() - my_mp() > 300)
+	if (myMaxmp() - myMp() > 300)
 	{
 		if (!auto_sausageBlocked())
 		{
-			if(item_amount($item[magical sausage]) < 1 && get_property("_sausagesMade").to_int() < 23)
+			if (itemAmount(Item.get("magical sausage")) < 1 && toInt(getProperty("_sausagesMade")) < 23)
 			{
 				auto_sausageGrind(1);
 			}
-			auto_sausageEatEmUp(1);		//this involve outfit changes which can lower our maxMP to below what goal was. which would cause infinite loop
-			goal = min(goal, my_maxmp());
+			auto_sausageEatEmUp(1); //this involve outfit changes which can lower our maxMP to below what goal was. which would cause infinite loop
+			goal = min(goal, myMaxmp());
 		}
 	}
-	
 	// 5 Soulsauce restores 15 MP and only has opportunity cost against its other uses as buff or combat stun
 	// unless objective value of combat stun exists there is no way to compare to other restore methods so it's always the best if available?
-	if(my_class() == $class[Sauceror])
+	if (myClass() === Class.get("Sauceror"))
 	{
-		int MPtoRestore = goal - my_mp();
-		int casts = ceil(MPtoRestore.to_float() / 15.0);	//soul food restores 15 MP per cast.
-		casts = min(casts, my_soulsauce() / 5);	//soul food costs 5 soulsauce per cast.
-		if(casts > 0)
+		let MPtoRestore: number = goal - myMp();
+		let casts: number = ceil(toFloat(MPtoRestore) / 15.0); //soul food restores 15 MP per cast.
+		casts = min(casts, mySoulsauce() / 5); //soul food costs 5 soulsauce per cast.
+		if (casts > 0)
 		{
-			int excessMP = my_mp() + 15*casts - my_maxmp();	//if some of the restored MP would be wasted over max
-			if(excessMP > 0)	//try to burn the excess on buffs
-			{
-				if(my_mp() < excessMP && casts > 1)	//can't burn MP we don't have yet
-				{
+			let excessMP: number = myMp() + 15 * casts - myMaxmp(); //if some of the restored MP would be wasted over max
+			if (excessMP > 0)
+			{ //try to burn the excess on buffs
+				if (myMp() < excessMP && casts > 1)
+				{ //can't burn MP we don't have yet
 					casts -= 1;
-					use_skill(1, $skill[Soul Food]);
+					useSkill(1, Skill.get("Soul Food"));
 				}
-				if(my_mp() > 0)
+				if (myMp() > 0)
 				{
-					auto_burnMP(min(excessMP,my_mp()));
+					auto_burnMP(min(excessMP, myMp()));
 				}
 			}
-			use_skill(casts, $skill[Soul Food]);
-			if(my_mp() >= goal)
+			useSkill(casts, Skill.get("Soul Food"));
+			if (myMp() >= goal)
 			{
 				return true;
 			}
 		}
 	}
-	if (canUseSweatpants() && (getSweat() >= 95 || my_meat() < (meatReserve() + 500))) {
-		int MPtoRestore = goal - my_mp();
-		int casts = ceil(MPtoRestore.to_float() / 50.0);
+	if (canUseSweatpants() && (getSweat() >= 95 || myMeat() < meatReserve() + 500)) {
+		let MPtoRestore: number = goal - myMp();
+		let casts: number = ceil(toFloat(MPtoRestore) / 50.0);
 		casts = min(casts, (getSweat() - 90) / 5);
 		if (casts > 0) {
-			int excessMP = my_mp() + 50*casts - my_maxmp();	//if some of the restored MP would be wasted over max
-			if(excessMP > 0)	//try to burn the excess on buffs
-			{
-				if(my_mp() < excessMP && casts > 1)	//can't burn MP we don't have yet
-				{
+			let excessMP: number = myMp() + 50 * casts - myMaxmp(); //if some of the restored MP would be wasted over max
+			if (excessMP > 0)
+			{ //try to burn the excess on buffs
+				if (myMp() < excessMP && casts > 1)
+				{ //can't burn MP we don't have yet
 					casts -= 1;
-					use_skill(1, $skill[Sip Some Sweat]);
+					useSkill(1, Skill.get("Sip Some Sweat"));
 				}
-				if(my_mp() > 0)
+				if (myMp() > 0)
 				{
-					auto_burnMP(min(excessMP,my_mp()));
+					auto_burnMP(min(excessMP, myMp()));
 				}
 			}
-			use_skill(casts, $skill[Sip Some Sweat]);
-			if(my_mp() >= goal)
+			useSkill(casts, Skill.get("Sip Some Sweat"));
+			if (myMp() >= goal)
 			{
 				return true;
 			}
 		}
 	}
-	
-	__restore("mp", goal, meat_reserve, useFreeRests);
-	return (my_mp() >= goal);
-}
 
+	__restore("mp", goal, meat_reserve, useFreeRests);
+	return myMp() >= goal;
+}
 /**
  * Try to acquire up to the mp goal expressed as a percentage (out of either 1.0 or 100.0) (useFreeRests: true). Will also cure poisoned and beaten up before restoring any mp.
  *
  * returns true if my_mp() >= goalPercent after attempting to restore.
  */
-boolean acquireMP(float goalPercent)
+export function acquireMP$4(goalPercent: number): boolean
 {
-	return acquireMP(goalPercent, meatReserve());
+	return acquireMP$5(goalPercent, meatReserve());
 }
-
 /**
  * Try to acquire up to the mp goal expressed as a percentage, optionally buying items (useFreeRests: true). Will also cure poisoned and beaten up before restoring any mp.
  *
  * returns true if my_mp() >= goalPercent after attempting to restore.
  */
-boolean acquireMP(float goalPercent, int meat_reserve)
+export function acquireMP$5(goalPercent: number, meat_reserve: number): boolean
 {
-	return acquireMP(goalPercent, meat_reserve, true);
+	return acquireMP$6(goalPercent, meat_reserve, true);
 }
-
 /**
  * Try to acquire up to the mp goal expressed as a percentage (out of either 1.0 or 100.0), optionally buying items and using free rests. Will also cure poisoned and beaten up before restoring any mp.
  *
  * returns true if my_mp() >= goalPercent after attempting to restore.
  */
-boolean acquireMP(float goalPercent, int meat_reserve, boolean useFreeRests)
+export function acquireMP$6(goalPercent: number, meat_reserve: number, useFreeRests: boolean): boolean
 {
-	int goal = my_maxmp();
-	if(goalPercent > 1.0){
-		goal = ceil((goalPercent/100.0) * my_maxmp());
-	} else{
-		goal = ceil(goalPercent*my_maxmp());
+	let goal: number = myMaxmp();
+	if (goalPercent > 1.0) {
+		goal = ceil(goalPercent / 100.0 * myMaxmp());
+	} else {
+		goal = ceil(goalPercent * myMaxmp());
 	}
-	return acquireMP(goal.to_int(), meat_reserve, useFreeRests);
+	return acquireMP$3(toInt(goal), meat_reserve, useFreeRests);
 }
-
 /**
  * Try to acquire the smaller of your max HP and 800 HP (useFreeRests: true). Will also cure poisoned and beaten up before restoring any hp.
  *
  * returns true if my_hp() >= min(my_maxhp(), 800) after attempting to restore.
  */
-boolean acquireHP()
+export function acquireHP(): boolean
 {
-	int goal = min(my_maxhp(), 800);
-	if(my_path() == $path[Disguises Delimit])
+	let goal: number = min(myMaxhp(), 800);
+	if (myPath() === Path.get("Disguises Delimit"))
 	{
 		// hockey mask deals 75% hp damage at the start of combat so we need to maintain a high percentage of hp
-		goal = my_maxhp() * 0.80;
+		goal = toInt(myMaxhp() * 0.8);
 	}
-	if(in_amw()) // limited restores & meat is important, needs lower default
-	{
-		goal = my_maxhp() * 0.6;
+	if (in_amw())
+	{ // limited restores & meat is important, needs lower default
+		goal = toInt(myMaxhp() * 0.6);
 	}
-	return acquireHP(goal);
+	return acquireHP$1(goal);
 }
-
 /**
  * Try to acquire your max hp (useFreeRests: true). Will also cure poisoned and beaten up before restoring any hp.
  *
  * returns true if my_hp() >= my_maxhp() after attempting to restore.
  */
-boolean acquireFullHP()
+export function acquireFullHP(): boolean
 {
-	return acquireHP(my_maxhp());
+	return acquireHP$1(myMaxhp());
 }
-
 /**
  * Try to acquire up to the hp goal (useFreeRests: true). Will also cure poisoned and beaten up before restoring any hp.
  *
  * returns true if my_hp() >= goal after attempting to restore.
  */
-boolean acquireHP(int goal)
+export function acquireHP$1(goal: number): boolean
 {
-	return acquireHP(goal, meatReserve());
+	return acquireHP$2(goal, meatReserve());
 }
-
 /**
  * Try to acquire up to the hp goal, optionally buying items (useFreeRests: true). Will also cure poisoned and beaten up before restoring any hp.
  *
  * returns true if my_hp() >= goal after attempting to restore.
  */
-boolean acquireHP(int goal, int meat_reserve)
+export function acquireHP$2(goal: number, meat_reserve: number): boolean
 {
-	return acquireHP(goal, meat_reserve, true);
+	return acquireHP$3(goal, meat_reserve, true);
 }
 
-boolean acquireHP(int goal, int meat_reserve, boolean useFreeRests)
+export function acquireHP$3(goal: number, meat_reserve: number, useFreeRests: boolean): boolean
 {
 	//Try to acquire up to the hp goal, optionally buying items and using free rests. Will also cure poisoned and beaten up before restoring any hp.
 	//returns true if my_hp() >= goal after attempting to restore.
 
-	if(isActuallyEd())
+	if (isActuallyEd())
 	{
 		return edAcquireHP();
 	}
-
 	//vampyres can only be restored using blood bags, which are too valuable to waste on healing HP.
 	//better to make food/drink from them and then rest in your coffin
-	if(in_darkGyffte())
+	if (in_darkGyffte())
 	{
-		if(my_hp() == 0)
+		if (myHp() === 0)
 		{
 			//if currently at 0, can't adventure. Use an adventure to rest in your coffin. Might as well check for skill changes
 			bat_reallyPickSkills(20);
@@ -2030,63 +2006,60 @@ boolean acquireHP(int goal, int meat_reserve, boolean useFreeRests)
 		}
 		return false;
 	}
-	
 	// HP is irrelevant in Pocket Familiars, this removes the function to restore HP
 	// except in the case of A-Boo Peak, meeting Dr. Awkward, and the hedge maze
-	if(in_pokefam() && !get_property("_auto_forcePokefamRestore").to_boolean())
+	if (in_pokefam() && !toBoolean(getProperty("_auto_forcePokefamRestore")))
 	{
 		return false;
 	}
-	set_property("_auto_forcePokefamRestore", false);
-
+	setProperty("_auto_forcePokefamRestore", false.toString());
 	//owning a hand in glove breaks maxHP tracking. need to check possession rather than equipped because unequipping it also breaks it. in fact it causes us to get stuck in an infinite loop of trying to restore hp when already at max HP.
 	//mafia devs think it is actually a kol bug so they won't fix it. https://kolmafia.us/showthread.php?25214
-	if(possessEquipment($item[Hand in Glove]))
+	if (possessEquipment(Item.get("Hand in Glove")))
 	{
-		int initial_maxHP = my_maxhp();
-		cli_execute("refresh status");
-		if(initial_maxHP == my_maxhp())
+		let initial_maxHP: number = myMaxhp();
+		cliExecute("refresh status");
+		if (initial_maxHP === myMaxhp())
 		{
 			auto_log_restore_debug("I just refreshed status because I detected [Hand in Glove]. But it turned out to not have been necessary", 1);
 		}
-		else
-		{
+		else {
 			auto_log_restore_debug("I just refreshed status because I detected [Hand in Glove] and it corrected my maxHP value. This prevented an infinite loop", 0);
 		}
 	}
 
-	boolean isMax = (goal == my_maxhp());
+	let isMax: boolean = goal === myMaxhp();
 
 	__cure_bad_stuff();
 
-	if(isMax)
+	if (isMax)
 	{
-		goal = my_maxhp(); //in case max rose after curing the bad stuff
+		goal = myMaxhp(); //in case max rose after curing the bad stuff
 	}
-	else if(goal > my_maxhp())
+	else if (goal > myMaxhp())
 	{
 		return false;
 	}
-	else if(my_hp() >= goal*0.95)
+	else if (myHp() >= goal * 0.95)
 	{
 		return true;
 	}
 
-	buffMaintain($effect[extra-green]);
+	buffMaintain$4(Effect.get("Extra-Green"));
 
-	if(my_class() == $class[Pig Skinner] && have_skill($skill[Second Wind]))
+	if (myClass() === Class.get("Pig Skinner") && haveSkill(Skill.get("Second Wind")))
 	{
-		return auto_pigSkinnerAcquireHP(0.7 * goal);
+		return auto_pigSkinnerAcquireHP(toInt(0.7 * goal));
 	}
-	if(my_class() == $class[Cheese Wizard] && have_skill($skill[Emmental Elemental]))
+	if (myClass() === Class.get("Cheese Wizard") && haveSkill(Skill.get("Emmental Elemental")))
 	{
-		return auto_cheeseWizardAcquireHP(goal - 0.3*my_buffedstat($stat[Moxie]));
+		return auto_cheeseWizardAcquireHP(toInt(goal - 0.3 * myBuffedstat(Stat.get("Moxie"))));
 	}
-	if(my_class() == $class[Jazz Agent] && have_skill($skill[Grit Teeth]))
+	if (myClass() === Class.get("Jazz Agent") && haveSkill(Skill.get("Grit Teeth")))
 	{
 		return auto_jazzAgentAcquireHP(goal - 60);
 	}
-	if(is_boris())
+	if (is_boris())
 	{
 		return borisAcquireHP(goal);
 	}
@@ -2094,72 +2067,67 @@ boolean acquireHP(int goal, int meat_reserve, boolean useFreeRests)
 	{
 		return zombieSlayer_acquireHP(goal);
 	}
-	if (my_class() == $class[Plumber])
+	if (myClass() === Class.get("Plumber"))
 	{
-		while (my_hp() < goal && my_hp() < my_maxhp() && item_amount($item[coin]) > 400)
+		while (myHp() < goal && myHp() < myMaxhp() && itemAmount(Item.get("coin")) > 400)
 		{
-			retrieve_item(1, $item[super deluxe mushroom]);
-			use(1, $item[super deluxe mushroom]);
+			retrieveItem(1, Item.get("super deluxe mushroom"));
+			use(1, Item.get("super deluxe mushroom"));
 		}
-		if(my_hp() <= 10)
+		if (myHp() <= 10)
 		{
-			auto_log_info("Spending a turn to heal.");
-			visit_url("place.php?whichplace=mario&action=mush_saveblock");
+			auto_log_info$1("Spending a turn to heal.");
+			visitUrl("place.php?whichplace=mario&action=mush_saveblock");
 		}
 	}
-	else
-	{
+	else {
 		// Simplifies restoration massively, make that our first choice
-		if (have_skill($skill[Cannelloni Cocoon]))
+		if (haveSkill(Skill.get("Cannelloni Cocoon")))
 		{
-			int coc_tries = 0;
-			while (goal-my_hp() > 20 && coc_tries++ < 3)
+			let coc_tries: number = 0;
+			while (goal - myHp() > 20 && coc_tries++ < 3)
 			{
-				use_skill($skill[Cannelloni Cocoon]);
+				useSkill(Skill.get("Cannelloni Cocoon"));
 			}
 		}
 		__restore("hp", goal, meat_reserve, useFreeRests);
 	}
 
-	return my_hp() >= goal;
+	return myHp() >= goal;
 }
-
 /**
  * Try to acquire up to the hp goal expressed as a percentage (out of either 1.0 or 100.0) (useFreeRests: true). Will also cure poisoned and beaten up before restoring any hp.
  *
  * returns true if my_hp() >= goalPercent after attempting to restore.
  */
-boolean acquireHP(float goalPercent)
+export function acquireHP$4(goalPercent: number): boolean
 {
-	return acquireHP(goalPercent, meatReserve());
+	return acquireHP$5(goalPercent, meatReserve());
 }
-
 /**
  * Try to acquire up to the hp goal expressed as a percentage (out of either 1.0 or 100.0), optionally buying items (useFreeRests: true). Will also cure poisoned and beaten up before restoring any hp.
  *
  * returns true if my_hp() >= goalPercent after attempting to restore.
  */
-boolean acquireHP(float goalPercent, int meat_reserve)
+export function acquireHP$5(goalPercent: number, meat_reserve: number): boolean
 {
-	return acquireHP(goalPercent, meat_reserve, true);
+	return acquireHP$6(goalPercent, meat_reserve, true);
 }
-
 /**
  * Try to acquire up to the hp goal expressed as a percentage (out of either 1.0 or 100.0), optionally buying items and using free rests. Will also cure poisoned and beaten up before restoring any hp.
  *
  * returns true if my_hp() >= goalPercent after attempting to restore.
  */
-boolean acquireHP(float goalPercent, int meat_reserve, boolean useFreeRests)
+export function acquireHP$6(goalPercent: number, meat_reserve: number, useFreeRests: boolean): boolean
 {
-	int goal = my_maxhp();
-	if(goalPercent > 1.0){
-		goal = ceil((goalPercent/100.0) * my_maxhp());
-	} else{
-		goal = ceil(goalPercent*my_maxhp());
+	let goal: number = myMaxhp();
+	if (goalPercent > 1.0) {
+		goal = ceil(goalPercent / 100.0 * myMaxhp());
+	} else {
+		goal = ceil(goalPercent * myMaxhp());
 	}
-	return acquireHP(goal.to_int(), meat_reserve, useFreeRests);
+	return acquireHP$3(toInt(goal), meat_reserve, useFreeRests);
 }
-
 /*
  * Use a rest (can consume adventures if no free rests remain). Also attempts to maximize
  * chateau bonus from resting if possible.
@@ -2168,122 +2136,121 @@ boolean acquireHP(float goalPercent, int meat_reserve, boolean useFreeRests)
  *
  * returns the number of times rested today (caller will have to work out if it rested or not)
  */
-int doRest()
+export function doRest(): number
 {
-	if(auto_haveCrimboSkeleton() && get_property("_knuckleboneRests").to_int() < 5)
+	if (auto_haveCrimboSkeleton() && toInt(getProperty("_knuckleboneRests")) < 5)
 	{
-		use_familiar($familiar[Skeleton of Crimbo Past]);
+		useFamiliar(Familiar.get("Skeleton of Crimbo Past"));
 	}
-	if(chateaumantegna_available())
+	if (chateaumantegna_available())
 	{
-		cli_execute("outfit save Backup");
+		cliExecute("outfit save Backup");
 		chateaumantegna_nightstandSet();
 
-		boolean[item] restBonus = chateaumantegna_decorations();
-		stat bonus = $stat[none];
-		if(restBonus contains $item[Electric Muscle Stimulator])
+		let restBonus: Map<Item, boolean> = chateaumantegna_decorations();
+		let bonus: Stat = Stat.none;
+		if (restBonus.has(Item.get("electric muscle stimulator")))
 		{
-			bonus = $stat[Muscle];
+			bonus = Stat.get("Muscle");
 		}
-		else if(restBonus contains $item[Foreign Language Tapes])
+		else if (restBonus.has(Item.get("foreign language tapes")))
 		{
-			bonus = $stat[Mysticality];
+			bonus = Stat.get("Mysticality");
 		}
-		else if(restBonus contains $item[Bowl of Potpourri])
+		else if (restBonus.has(Item.get("bowl of potpourri")))
 		{
-			bonus = $stat[Moxie];
-		}
-
-		boolean closet = false;
-		item grab = $item[none];
-		item replace = $item[none];
-		switch(bonus)
-		{
-		case $stat[Muscle]:
-			replace = equipped_item($slot[off-hand]);
-			grab = $item[Fake Washboard];
-			break;
-		case $stat[Mysticality]:
-			replace = equipped_item($slot[off-hand]);
-			grab = $item[Basaltamander Buckler];
-			break;
-		case $stat[Moxie]:
-			replace = equipped_item($slot[weapon]);
-			grab = $item[Backwoods Banjo];
-			break;
+			bonus = Stat.get("Moxie");
 		}
 
-		if((grab != $item[none]) && possessEquipment(grab) && (replace != grab) && can_equip(grab))
+		let closet: boolean = false;
+		let grab: Item = Item.none;
+		let replace_1: Item = Item.none;
+		switch (bonus)
+		{
+		case Stat.get("Muscle"):
+			replace_1 = equippedItem(Slot.get("off-hand"));
+			grab = Item.get("fake washboard");
+			break;
+		case Stat.get("Mysticality"):
+			replace_1 = equippedItem(Slot.get("off-hand"));
+			grab = Item.get("basaltamander buckler");
+			break;
+		case Stat.get("Moxie"):
+			replace_1 = equippedItem(Slot.get("weapon"));
+			grab = Item.get("backwoods banjo");
+			break;
+		}
+
+		if (grab !== Item.none && possessEquipment(grab) && replace_1 !== grab && canEquip(grab))
 		{
 			equip(grab);
 		}
-		if(!possessEquipment(grab) && (replace != grab) && (closet_amount(grab) > 0) && can_equip(grab))
+		if (!possessEquipment(grab) && replace_1 !== grab && closetAmount(grab) > 0 && canEquip(grab))
 		{
 			closet = true;
-			take_closet(1, grab);
+			takeCloset(1, grab);
 			equip(grab);
 		}
 
-		equipStatgainIncreasers(bonus, true);
+		equipStatgainIncreasers$1(bonus, true);
 
-		cli_execute("rest chateau");
+		cliExecute("rest chateau");
 
-		if((replace != grab) && (replace != $item[none]))
+		if (replace_1 !== grab && replace_1 !== Item.none)
 		{
-			equip(replace);
+			equip(replace_1);
 		}
-		cli_execute("outfit Backup");
-		if(closet)
+		cliExecute("outfit Backup");
+		if (closet)
 		{
-			if(item_amount(grab) > 0)
+			if (itemAmount(grab) > 0)
 			{
-				put_closet(1, grab);
+				putCloset(1, grab);
 			}
 		}
 
 	}
-	else if(is_professor())
+	else if (is_professor())
 	{
-		visit_url("place.php?whichplace=wereprof_cottage&action=wereprof_sleep");
+		visitUrl("place.php?whichplace=wereprof_cottage&action=wereprof_sleep");
 	}
-	else
-	{
-		set_property("restUsingChateau", false);
-		cli_execute("rest");
-		set_property("restUsingChateau", true);
+	else {
+		setProperty("restUsingChateau", false.toString());
+		cliExecute("rest");
+		setProperty("restUsingChateau", true.toString());
 	}
-	return get_property("timesRested").to_int();
+	return toInt(getProperty("timesRested"));
 }
 
-boolean haveFreeRestAvailable(){
+export function haveFreeRestAvailable(): boolean {
 	// save free rests to charge cincho
-	if(auto_haveCincho() && auto_nextRestOverCinch())
+	if (auto_haveCincho() && auto_nextRestOverCinch())
 	{
 		return false;
 	}
-	return get_property("timesRested").to_int() < total_free_rests();
+	return toInt(getProperty("timesRested")) < totalFreeRests();
 }
 
-int freeRestsRemaining(){
+export function freeRestsRemaining(): number {
 	// save free rests to charge cincho
-	if(auto_haveCincho() && auto_nextRestOverCinch())
+	if (auto_haveCincho() && auto_nextRestOverCinch())
 	{
 		return 0;
 	}
-	return max(0, total_free_rests() - get_property("timesRested").to_int());
+	return max(0, totalFreeRests() - toInt(getProperty("timesRested")));
 }
 
-int auto_potentialMaxFreeRests()
+export function auto_potentialMaxFreeRests(): number
 {
 	// return the number of free rests we could potentially have if we get all the stuff that gives them from IotMs.
 	// we can get the count of "intrinsic" free rests e.g perm'd skills & rests you get just from having something available in run
-	int potential = numeric_modifier("Free Rests");
+	let potential: number = toInt(numericModifier("Free Rests"));
 
-	if (auto_canUseJuneCleaver() && !possessEquipment($item[mother\'s necklace]))
+	if (auto_canUseJuneCleaver() && !possessEquipment(Item.get("mother's necklace")))
 	{
 		potential += 5;
 	}
-	if (auto_haveBurningLeaves() && !(get_campground() contains $item[forest canopy bed]))
+	if (auto_haveBurningLeaves() && !((Item.get("forest canopy bed").toString()) in getCampground()))
 	{
 		potential += 5;
 	}
@@ -2291,32 +2258,30 @@ int auto_potentialMaxFreeRests()
 	return potential;
 }
 
-boolean haveAnyIotmAlternativeRestSiteAvailable(){
+export function haveAnyIotmAlternativeRestSiteAvailable(): boolean {
 	return chateaumantegna_available() || auto_campawayAvailable();
 }
-
 /*
  * Try to use a free rest.
  *
  * returns true if a rest was used false if it wasnt (for any reason)
  */
-boolean doFreeRest(){
-	if(haveFreeRestAvailable()){
-
+export function doFreeRest(): boolean {
+	if (haveFreeRestAvailable()) {
 		// burn MP if possible prior to resting
-		int restorableMp = my_maxmp() - my_mp();
-		int mpToBurn = 0;
-		if (chateaumantegna_available() || auto_campawayAvailable()) // will restore at least 100 MP
-		{
+		let restorableMp: number = myMaxmp() - myMp();
+		let mpToBurn: number = 0;
+		if (chateaumantegna_available() || auto_campawayAvailable())
+		{ // will restore at least 100 MP
 			mpToBurn = 100 - restorableMp;
-		} else if (get_dwelling() == $item[Frobozz Real-Estate Company Instant House (TM)])
+		} else if (getDwelling() === Item.get("Frobozz Real-Estate Company Instant House (TM)"))
 		{
 			mpToBurn = 40 - restorableMp;
-		} else if (get_dwelling() == $item[Newbiesport&trade; tent])
+		} else if (getDwelling() === Item.get("Newbiesport&trade; tent"))
 		{
 			mpToBurn = 10 - restorableMp;
-		} else // assume resting on the ground
-		{
+		} else {
+		// assume resting on the ground
 			mpToBurn = 5 - restorableMp;
 		}
 
@@ -2324,75 +2289,73 @@ boolean doFreeRest(){
 		{
 			auto_burnMP(mpToBurn);
 		}
-
 		// resting and success check
-		int hpMp_before = my_hp() + my_mp();
-		int rest_count = get_property("timesRested").to_int();
-		boolean result = doRest() > rest_count;
-		int hpMp_after = my_hp() + my_mp();
-		boolean success = (hpMp_after > hpMp_before) || result;
+		let hpMp_before: number = myHp() + myMp();
+		let rest_count: number = toInt(getProperty("timesRested"));
+		let result_1: boolean = doRest() > rest_count;
+		let hpMp_after: number = myHp() + myMp();
+		let success: boolean = hpMp_after > hpMp_before || result_1;
 		return success;
 	}
 	return false;
 }
 
-float mp_regen()
+export function mp_regen(): number
 {
-	return 0.5 * (numeric_modifier("MP Regen Min") + numeric_modifier("MP Regen Max"));
+	return 0.5 * (numericModifier("MP Regen Min") + numericModifier("MP Regen Max"));
 }
 
-float hp_regen()
+export function hp_regen(): number
 {
-	return 0.5 * (numeric_modifier("HP Regen Min") + numeric_modifier("HP Regen Max"));
+	return 0.5 * (numericModifier("HP Regen Min") + numericModifier("HP Regen Max"));
 }
 
-boolean uneffect(effect toRemove)
+export function uneffect(toRemove: Effect): boolean
 {
-	if(have_effect(toRemove) == 0)
+	if (haveEffect(toRemove) === 0)
 	{
 		return true;
 	}
-	if(($effects[Driving Intimidatingly, Driving Obnoxiously, Driving Observantly, Driving Quickly, Driving Recklessly, Driving Safely, Driving Stealthily, Driving Wastefully, Driving Waterproofly] contains toRemove) && (auto_get_campground() contains $item[Asdon Martin keyfob (on ring)]))
+	if (Effect.get(["Driving Intimidatingly", "Driving Obnoxiously", "Driving Observantly", "Driving Quickly", "Driving Recklessly", "Driving Safely", "Driving Stealthily", "Driving Wastefully", "Driving Waterproofly"]).includes(toRemove) && auto_get_campground().has(Item.get("Asdon Martin keyfob (on ring)")))
 	{
-		visit_url("campground.php?pwd=&preaction=undrive");
+		visitUrl("campground.php?pwd=&preaction=undrive");
 		return true;
 	}
 
-	if(cli_execute("uneffect " + toRemove))
+	if (cliExecute(`uneffect ${toRemove}`))
 	{
 		//Either we don\'t have the effect or it is shruggable.
 		return true;
 	}
 
-	if(item_amount($item[Soft Green Echo Eyedrop Antidote]) > 0)
+	if (itemAmount(Item.get("soft green echo eyedrop antidote")) > 0)
 	{
-		visit_url("uneffect.php?pwd=&using=Yep.&whicheffect=" + to_int(toRemove));
+		visitUrl(`uneffect.php?pwd=&using=Yep.&whicheffect=${toInt(toRemove)}`);
 		auto_log_info("Effect removed by Soft Green Echo Eyedrop Antidote.", "blue");
 		return true;
 	}
-	else if(item_amount($item[Ancient Cure-All]) > 0)
+	else if (itemAmount(Item.get("ancient cure-all")) > 0)
 	{
-		visit_url("uneffect.php?pwd=&using=Yep.&whicheffect=" + to_int(toRemove));
+		visitUrl(`uneffect.php?pwd=&using=Yep.&whicheffect=${toInt(toRemove)}`);
 		auto_log_info("Effect removed by Ancient Cure-All.", "blue");
 		return true;
 	}
 	return false;
 }
-
 /**
  * we could in theory set this as our restore script, but autoscend is not currently designed to heal this way and changing this now would probably break assumptions people have anticipated in their code, causing undefined behavior. I assume this is why we have the warning about autoscend not playing well with restore scripts and disabling them when it starts.
  *
  * Additionally this script would require some number of imports of other methods (mostly auto_util.ash) which may or may not be easy to do. I did try once by just importing autoscend, but I ended up with an infinite loop. At least thats what it seemed like, I didnt try very hard to make it work. My understanding of ash leads me to believe it should work and I was just doing something stupid. So for now this is just here for posterity.
  */
-boolean main(string type, int amount)
+export function main$auto_restore(type_1: string, amount: number): boolean
 {
-	if(type == "MP")
+	if (type_1 === "MP")
 	{
-		acquireMP(amount);
+		acquireMP$1(amount);
 	}
-	else if(type == "HP")
+	else if (type_1 === "HP")
 	{
-		acquireHP(amount);
+		acquireHP$1(amount);
 	}
-	return true;	// This ensures that mafia does not attempt to heal with resources that are being conserved.
+	return true; // This ensures that mafia does not attempt to heal with resources that are being conserved.
 }

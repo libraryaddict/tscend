@@ -1,51 +1,63 @@
-#	This is meant for items that have a date of 2014.
-#	Handling: Bjorn, Little Geneticist DNA-Splicing Lab, Xi-Receiver Unit
-#
+import { Effect, Element, Familiar, Item, Location, Monster, Phylum, Slot, abort, bjornifyFamiliar, cliExecute, containsText, create, equippedItem, getCampground, getCounters, getProperty, haveEffect, haveFamiliar, inHardcore, isUnrestricted, itemAmount, myAdventures, myBjornedFamiliar, myDaycount, myFamiliar, myLevel, print, runChoice, setProperty, splitString, storageAmount, toBoolean, toInt, toMonster, use, userConfirm, visitUrl } from "kolmafia";
+import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
+import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
+import { fullness_left, inebriety_left } from "../auto_consume";
+import { possessEquipment } from "../auto_equipment";
+import { canChangeFamiliar, canChangeToFamiliar, handleFamiliar$1 } from "../auto_familiar";
+import { isAboutToPowerlevel } from "../auto_powerlevel";
+import { auto_can_equip, auto_is_valid, auto_log_info, auto_log_warning, internalQuestStatus } from "../auto_util";
+import { elementalPlanes_access } from "./elementalPlanes";
+import { in_heavyrains } from "../paths/heavy_rains";
+import { in_robot } from "../paths/you_robot";
+import { bridgeGoal } from "../quests/level_09";
+import { ns_crowd3 } from "../quests/level_13";
 
-boolean handleBjornify(familiar fam)
+//	This is meant for items that have a date of 2014.
+//	Handling: Bjorn, Little Geneticist DNA-Splicing Lab, Xi-Receiver Unit
+//
+
+//Defined in autoscend/iotms/mr2014.ash
+export function handleBjornify(fam: Familiar): boolean
 {
-	if(in_hardcore())
+	if (inHardcore())
 	{
 		return false;
 	}
 
-	if(equipped_item($slot[back]) != $item[buddy bjorn])
+	if (equippedItem(Slot.get("back")) !== Item.get("Buddy Bjorn"))
 	{
 		return false;
 	}
-	
-	if(my_bjorned_familiar() == fam)
+
+	if (myBjornedFamiliar() === fam)
 	{
 		return true;
 	}
 
-	if(!canChangeFamiliar() && (fam == my_familiar()))
+	if (!canChangeFamiliar() && fam === myFamiliar())
 	{
 		return false;
 	}
 
-	if(have_familiar(fam))
+	if (haveFamiliar(fam))
 	{
-		bjornify_familiar(fam);
+		bjornifyFamiliar(fam);
 	}
-	else
-	{
-		if(have_familiar($familiar[El Vibrato Megadrone]))
+	else {
+		if (haveFamiliar(Familiar.get("El Vibrato Megadrone")))
 		{
-			bjornify_familiar($familiar[El Vibrato Megadrone]);
+			bjornifyFamiliar(Familiar.get("El Vibrato Megadrone"));
 		}
-		else
-		{
-			if((my_familiar() != $familiar[Grimstone Golem]) && have_familiar($familiar[Grimstone Golem]))
+		else {
+			if (myFamiliar() !== Familiar.get("Grimstone Golem") && haveFamiliar(Familiar.get("Grimstone Golem")))
 			{
-				bjornify_familiar($familiar[Grimstone Golem]);
+				bjornifyFamiliar(Familiar.get("Grimstone Golem"));
 			}
-			else if(have_familiar($familiar[Adorable Seal Larva]))
+			else if (haveFamiliar(Familiar.get("Adorable Seal Larva")))
 			{
-				bjornify_familiar($familiar[Adorable Seal Larva]);
+				bjornifyFamiliar(Familiar.get("Adorable Seal Larva"));
 			}
-			else
-			{
+			else {
 				return false;
 			}
 		}
@@ -53,46 +65,46 @@ boolean handleBjornify(familiar fam)
 	return true;
 }
 
-boolean considerGrimstoneGolem(boolean bjornCrown)
+export function considerGrimstoneGolem(bjornCrown: boolean): boolean
 {
-	if(!have_familiar($familiar[Grimstone Golem]))
+	if (!haveFamiliar(Familiar.get("Grimstone Golem")))
 	{
 		return false;
 	}
-	if(!auto_is_valid($item[Grimstone Mask]))
-	{
-		return false;
-	}
-
-	if(bjornCrown && (get_property("_grimstoneMaskDropsCrown").to_int() != 0))
+	if (!auto_is_valid(Item.get("grimstone mask")))
 	{
 		return false;
 	}
 
-	if((get_property("desertExploration").to_int() >= 70) && (get_property("chasmBridgeProgress").to_int() >= (bridgeGoal() - 1)))
+	if (bjornCrown && toInt(getProperty("_grimstoneMaskDropsCrown")) !== 0)
 	{
 		return false;
 	}
 
-	if(get_property("chasmBridgeProgress").to_int() >= (bridgeGoal() - 1))
+	if (toInt(getProperty("desertExploration")) >= 70 && toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal() - 1)
 	{
-		if(!get_property("auto_grimstoneOrnateDowsingRod").to_boolean())
+		return false;
+	}
+
+	if (toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal() - 1)
+	{
+		if (!toBoolean(getProperty("auto_grimstoneOrnateDowsingRod")))
 		{
 			return false;
 		}
-		if(!auto_is_valid($item[Grimstone Mask]))
+		if (!auto_is_valid(Item.get("grimstone mask")))
 		{
 			return false;
 		}
-		if(possessEquipment($item[Ornate Dowsing Rod]))
+		if (possessEquipment(Item.get("ornate dowsing rod")))
 		{
 			return false;
 		}
 	}
 
-	if(get_property("desertExploration").to_int() >= 70)
+	if (toInt(getProperty("desertExploration")) >= 70)
 	{
-		if(!get_property("auto_grimstoneFancyOilPainting").to_boolean())
+		if (!toBoolean(getProperty("auto_grimstoneFancyOilPainting")))
 		{
 			return false;
 		}
@@ -101,104 +113,102 @@ boolean considerGrimstoneGolem(boolean bjornCrown)
 	return true;
 }
 
-boolean dna_startAcquire()
+export function dna_startAcquire(): boolean
 {
-	if(!is_unrestricted($item[Little Geneticist DNA-Splicing Lab]))
+	if (!isUnrestricted(Item.get("Little Geneticist DNA-Splicing Lab")))
 	{
 		return false;
 	}
-	if((get_property("auto_day1_dna") == "finished") || (my_daycount() != 1))
+	if (getProperty("auto_day1_dna") === "finished" || myDaycount() !== 1)
 	{
 		return false;
 	}
-	if(have_effect($effect[Human-Weird Thing Hybrid]) == 2147483647)
+	if (haveEffect(Effect.get("Human-Weird Thing Hybrid")) === 2147483647)
 	{
 		return false;
 	}
-	if(item_amount($item[DNA Extraction Syringe]) == 0)
+	if (itemAmount(Item.get("DNA extraction syringe")) === 0)
 	{
 		return false;
 	}
 
-	if(get_property("dnaSyringe") == $phylum[weird])
+	if (getProperty("dnaSyringe") === Phylum.get("weird").toString())
 	{
-		cli_execute("camp dnainject");
+		cliExecute("camp dnainject");
 	}
-	else
-	{
-		if(!canChangeToFamiliar($familiar[Machine Elf]))
+	else {
+		if (!canChangeToFamiliar(Familiar.get("Machine Elf")))
 		{
-			familiar bjorn = my_bjorned_familiar();
-			if(bjorn == $familiar[Machine Elf])
+			let bjorn: Familiar = myBjornedFamiliar();
+			if (bjorn === Familiar.get("Machine Elf"))
 			{
-				handleBjornify($familiar[Grinning Turtle]);
+				handleBjornify(Familiar.get("Grinning Turtle"));
 			}
-			handleFamiliar($familiar[Machine Elf]);
-			autoAdv(1, $location[The Deep Machine Tunnels]);
-			if(bjorn == $familiar[Machine Elf])
+			handleFamiliar$1(Familiar.get("Machine Elf"));
+			autoAdv$1(1, Location.get("The Deep Machine Tunnels"));
+			if (bjorn === Familiar.get("Machine Elf"))
 			{
 				handleBjornify(bjorn);
 			}
-			cli_execute("camp dnainject");
+			cliExecute("camp dnainject");
 		}
-		else if(elementalPlanes_access($element[sleaze]))
+		else if (elementalPlanes_access(Element.get("sleaze")))
 		{
-			if($location[Sloppy Seconds Diner].turns_spent == 0)
+			if ((Location.get("Sloppy Seconds Diner")).turnsSpent === 0)
 			{
-				autoAdv(1, $location[Sloppy Seconds Diner]);
+				autoAdv$1(1, Location.get("Sloppy Seconds Diner"));
 			}
-			autoAdv(1, $location[Sloppy Seconds Diner]);
-			cli_execute("camp dnainject");
+			autoAdv$1(1, Location.get("Sloppy Seconds Diner"));
+			cliExecute("camp dnainject");
 		}
 	}
-	set_property("auto_day1_dna", "finished");
-	if(have_effect($effect[Human-Weird Thing Hybrid]) != 2147483647)
+	setProperty("auto_day1_dna", "finished");
+	if (haveEffect(Effect.get("Human-Weird Thing Hybrid")) !== 2147483647)
 	{
 		auto_log_warning("DNA Hybridization failed, perhaps it was due to ML which is annoying us right now.", "red");
 	}
 	return true;
 }
 
-boolean dna_generic()
+export function dna_generic(): boolean
 {
-	if(!is_unrestricted($item[Little Geneticist DNA-Splicing Lab]))
+	if (!isUnrestricted(Item.get("Little Geneticist DNA-Splicing Lab")))
 	{
 		return false;
 	}
-	if(get_property("dnaSyringe") == $phylum[none])
+	if (getProperty("dnaSyringe") === Phylum.none.toString())
 	{
 		return false;
 	}
 
-	boolean[phylum] potion;
+	let potion: Map<Phylum, boolean> = new Map();
 
-	if(in_heavyrains())
+	if (in_heavyrains())
 	{
-		switch(my_daycount())
+		switch (myDaycount())
 		{
-		case 1:			potion = $phylums[construct, construct, fish];		break;
-		case 2:			potion = $phylums[fish, constellation, dude];		break;
-		case 3:			potion = $phylums[construct, humanoid, dude];		break;
-		default:		potion = $phylums[humanoid, construct, dude];		break;
+		case 1:		potion = new Map([[Phylum.get("construct"), true], [Phylum.get("construct"), true], [Phylum.get("fish"), true]]);		break;
+		case 2:		potion = new Map([[Phylum.get("fish"), true], [Phylum.get("constellation"), true], [Phylum.get("dude"), true]]);		break;
+		case 3:		potion = new Map([[Phylum.get("construct"), true], [Phylum.get("humanoid"), true], [Phylum.get("dude"), true]]);		break;
+		default:		potion = new Map([[Phylum.get("humanoid"), true], [Phylum.get("construct"), true], [Phylum.get("dude"), true]]);		break;
 		}
 	}
-	else
-	{
-		switch(my_daycount())
+	else {
+		switch (myDaycount())
 		{
-		case 1:			potion = $phylums[construct, construct, fish];		break;
-		case 2:			potion = $phylums[fish, constellation, dude];		break;
-		case 3:			potion = $phylums[construct, humanoid, dude];		break;
-		default:		potion = $phylums[humanoid, construct, dude];		break;
+		case 1:		potion = new Map([[Phylum.get("construct"), true], [Phylum.get("construct"), true], [Phylum.get("fish"), true]]);		break;
+		case 2:		potion = new Map([[Phylum.get("fish"), true], [Phylum.get("constellation"), true], [Phylum.get("dude"), true]]);		break;
+		case 3:		potion = new Map([[Phylum.get("construct"), true], [Phylum.get("humanoid"), true], [Phylum.get("dude"), true]]);		break;
+		default:		potion = new Map([[Phylum.get("humanoid"), true], [Phylum.get("construct"), true], [Phylum.get("dude"), true]]);		break;
 		}
 	}
 
-	int i = 0;
-	foreach phy in potion
+	let i: number = 0;
+	for (let phy of potion.keys())
 	{
-		if((get_property("dnaSyringe") == phy) && (get_property("_dnaPotionsMade").to_int() == i))
+		if (getProperty("dnaSyringe") === phy.toString() && toInt(getProperty("_dnaPotionsMade")) === i)
 		{
-			cli_execute("camp dnapotion");
+			cliExecute("camp dnapotion");
 		}
 		i = i + 1;
 	}
@@ -208,128 +218,127 @@ boolean dna_generic()
 }
 
 
-boolean dna_sorceressTest()
+export function dna_sorceressTest(): boolean
 {
-	# FIXME: Can we do this earlier? This isn't even all that useful, to be fair.
-	# When is the last time we encounter each of these types?
-	if(!is_unrestricted($item[Little Geneticist DNA-Splicing Lab]))
+	// FIXME: Can we do this earlier? This isn't even all that useful, to be fair.
+	// When is the last time we encounter each of these types?
+	if (!isUnrestricted(Item.get("Little Geneticist DNA-Splicing Lab")))
 	{
 		return false;
 	}
-	if(get_property("dnaSyringe") == $phylum[none])
+	if (getProperty("dnaSyringe") === Phylum.none.toString())
 	{
 		return false;
 	}
-	if(my_level() < 13)
+	if (myLevel() < 13)
 	{
 		return false;
 	}
-	if(get_property("_dnaPotionsMade").to_int() >= 3)
+	if (toInt(getProperty("_dnaPotionsMade")) >= 3)
 	{
 		return false;
 	}
-	if(get_property("choiceAdventure1003").to_int() < 3)
+	if (toInt(getProperty("choiceAdventure1003")) < 3)
 	{
 		return false;
 	}
-	if((get_property("nsChallenge2") == "") && (get_property("telescopeUpgrades").to_int() >= 2))
+	if (getProperty("nsChallenge2") === "" && toInt(getProperty("telescopeUpgrades")) >= 2)
 	{
 		ns_crowd3();
 	}
 
-	if((get_property("dnaSyringe") == $phylum[plant]) && (get_property("nsChallenge2") == $element[cold]) && (item_amount($item[Gene Tonic: Plant]) == 0))
+	if (getProperty("dnaSyringe") === Phylum.get("plant").toString() && getProperty("nsChallenge2") === Element.get("cold").toString() && itemAmount(Item.get("Gene Tonic: Plant")) === 0)
 	{
-		boolean temp = cli_execute("camp dnainject");
+		let temp: boolean = cliExecute("camp dnainject");
 	}
-	else if((get_property("dnaSyringe") == $phylum[demon]) && (get_property("nsChallenge2") == $element[hot]) && (item_amount($item[Gene Tonic: Demon]) == 0))
+	else if (getProperty("dnaSyringe") === Phylum.get("demon").toString() && getProperty("nsChallenge2") === Element.get("hot").toString() && itemAmount(Item.get("Gene Tonic: Demon")) === 0)
 	{
-		boolean temp = cli_execute("camp dnainject");
+		let temp: boolean = cliExecute("camp dnainject");
 	}
-	else if((get_property("dnaSyringe") == $phylum[slime]) && (get_property("nsChallenge2") == $element[sleaze]) && (item_amount($item[Gene Tonic: Slime]) == 0))
+	else if (getProperty("dnaSyringe") === Phylum.get("slime").toString() && getProperty("nsChallenge2") === Element.get("sleaze").toString() && itemAmount(Item.get("Gene Tonic: Slime")) === 0)
 	{
-		boolean temp = cli_execute("camp dnainject");
+		let temp: boolean = cliExecute("camp dnainject");
 	}
-	else if((get_property("dnaSyringe") == $phylum[undead]) && (get_property("nsChallenge2") == $element[spooky]) && (item_amount($item[Gene Tonic: Undead]) == 0))
+	else if (getProperty("dnaSyringe") === Phylum.get("undead").toString() && getProperty("nsChallenge2") === Element.get("spooky").toString() && itemAmount(Item.get("Gene Tonic: Undead")) === 0)
 	{
-		boolean temp = cli_execute("camp dnainject");
+		let temp: boolean = cliExecute("camp dnainject");
 	}
-	else if((get_property("dnaSyringe") == $phylum[hobo]) && (get_property("nsChallenge2") == $element[stench]) && (item_amount($item[Gene Tonic: Hobo]) == 0))
+	else if (getProperty("dnaSyringe") === Phylum.get("hobo").toString() && getProperty("nsChallenge2") === Element.get("stench").toString() && itemAmount(Item.get("Gene Tonic: Hobo")) === 0)
 	{
-		boolean temp = cli_execute("camp dnainject");
+		let temp: boolean = cliExecute("camp dnainject");
 	}
 
 	return false;
 }
 
-boolean dna_bedtime()
+export function dna_bedtime(): boolean
 {
-	if(!is_unrestricted($item[Little Geneticist DNA-Splicing Lab]))
+	if (!isUnrestricted(Item.get("Little Geneticist DNA-Splicing Lab")))
 	{
 		return false;
 	}
-	if(get_property("dnaSyringe") == $phylum[none])
+	if (getProperty("dnaSyringe") === Phylum.none.toString())
 	{
 		return false;
 	}
-	if(get_campground() contains $item[Little Geneticist DNA-Splicing Lab])
+	if ((Item.get("Little Geneticist DNA-Splicing Lab").toString()) in getCampground())
 	{
-		int potionsMade = get_property("_dnaPotionsMade").to_int();
-		while(potionsMade < 3)
+		let potionsMade: number = toInt(getProperty("_dnaPotionsMade"));
+		while (potionsMade < 3)
 		{
-			boolean temp = cli_execute("camp dnapotion");
+			let temp: boolean = cliExecute("camp dnapotion");
 			potionsMade += 1;
 		}
 	}
 	return false;
 }
 
-boolean LX_ornateDowsingRod(boolean doing_desert_now)
+export function LX_ornateDowsingRod$1(doing_desert_now: boolean): boolean
 {
-	if(!get_property("auto_grimstoneOrnateDowsingRod").to_boolean())
+	if (!toBoolean(getProperty("auto_grimstoneOrnateDowsingRod")))
 	{
 		return false;
 	}
-	if (get_property("desertExploration").to_int() >= 100 || internalQuestStatus("questL11Desert") > 0)
+	if (toInt(getProperty("desertExploration")) >= 100 || internalQuestStatus("questL11Desert") > 0)
 	{
 		// don't need a dowsing rod if we've finished the desert.
 		return false;
 	}
-	if(!auto_is_valid($item[Grimstone Mask]))
+	if (!auto_is_valid(Item.get("grimstone mask")))
 	{
 		return false;
 	}
-	if(!auto_can_equip($item[Ornate Dowsing Rod]) && !in_robot())
+	if (!auto_can_equip(Item.get("ornate dowsing rod")) && !in_robot())
 	{
 		return false;
 	}
-	if(possessEquipment($item[Ornate Dowsing Rod]))
+	if (possessEquipment(Item.get("ornate dowsing rod")))
 	{
 		return false;
 	}
-	if(possessEquipment($item[UV-resistant compass]))
+	if (possessEquipment(Item.get("UV-resistant compass")))
 	{
-		return false;		//already chose the other off-hand
+		return false; //already chose the other off-hand
 	}
-	if(in_hardcore())		//will we be able to pull at any point in the run. not just right now (we might be out of pulls today)
-	{
-		if(!canChangeToFamiliar($familiar[Grimstone Golem]))	//no golem, or not allowed in path
-		{
-			set_property("auto_grimstoneOrnateDowsingRod", false);	
+	if (inHardcore())
+	{ //will we be able to pull at any point in the run. not just right now (we might be out of pulls today)
+		if (!canChangeToFamiliar(Familiar.get("Grimstone Golem")))
+		{ //no golem, or not allowed in path
+			setProperty("auto_grimstoneOrnateDowsingRod", false.toString());
 			return false;
 		}
 	}
-	
 	//because it requires continuous adventures in the same day, then we want to do pre do this before we even get to the desert.
 	//but we do not want to do it too early either. so we wait until we are at least day 2 and level 7 to get the dowsing rod.
 	//unless we are doing desert now. in which case we ignore this limitation and do it now
-	if(!doing_desert_now && (my_level() < 8 || my_daycount() < 2))
+	if (!doing_desert_now && (myLevel() < 8 || myDaycount() < 2))
 	{
 		return false;
 	}
-	
-	if(item_amount($item[Grimstone Mask]) == 0 && !canChangeToFamiliar($familiar[Grimstone Golem]) && canPull($item[Grimstone Mask]))
+
+	if (itemAmount(Item.get("grimstone mask")) === 0 && !canChangeToFamiliar(Familiar.get("Grimstone Golem")) && canPull$1(Item.get("grimstone mask")))
 	{
-		if(canPull($item[Shore Inc. Ship Trip Scrip]) && storage_amount($item[Shore Inc. Ship Trip Scrip]) > 2)
+		if (canPull$1(Item.get("Shore Inc. Ship Trip Scrip")) && storageAmount(Item.get("Shore Inc. Ship Trip Scrip")) > 2)
 		{
 			//since drum machine and killing jar get pulled it's not useful to explore faster than compass just to need more fights gathering pages anyway
 			//not worth spending the 5 adv to acquire rod in addition to the pull if Trip Scrip aren't in short supply
@@ -339,229 +348,226 @@ boolean LX_ornateDowsingRod(boolean doing_desert_now)
 		// {
 		// 	//with Melodramedary, drum machine, killing jar and no Scrip pull, pulling the mask saves 2 turns compared to vacationing for Scrip? is that good enough?
 		// }
-		pullXWhenHaveY($item[Grimstone Mask], 1, 0);		//pull the mask if you do not have it and cannot use the golem
+		pullXWhenHaveY(Item.get("grimstone mask"), 1, 0); //pull the mask if you do not have it and cannot use the golem
 	}
-	if(item_amount($item[Grimstone Mask]) == 0)
+	if (itemAmount(Item.get("grimstone mask")) === 0)
 	{
 		return false;
 	}
-	
-	if(my_adventures() <= 6)
+
+	if (myAdventures() <= 6)
 	{
-		auto_log_info("I need at least 6 adv to get [Ornate Dowsing Rod] and I only have " + my_adventures(), "blue");
-		if(doing_desert_now)
+		auto_log_info(`I need at least 6 adv to get [Ornate Dowsing Rod] and I only have ${myAdventures()}`, "blue");
+		if (doing_desert_now)
 		{
-			if(fullness_left() + inebriety_left() > 0)
+			if (fullness_left() + inebriety_left() > 0)
 			{
 				abort("I am trying to do desert now so I cannot delay getting [Ornate Dowsing Rod]. I still have stomch and and liver left. Eat and drink until at least 6 adv and then run me again");
 			}
-			if(isAboutToPowerlevel())
+			if (isAboutToPowerlevel())
 			{
 				auto_log_info("I have nothing else to do except the desert. So I am ending the day early", "blue");
-				set_property("_auto_doneToday", true);
-				return true;	//want to restart the loop so it can properly exit it and do bedtime.
+				setProperty("_auto_doneToday", true.toString());
+				return true; //want to restart the loop so it can properly exit it and do bedtime.
 			}
 		}
 		return false;
 	}
 
 	auto_log_info("Acquiring a Dowsing Rod!", "blue");
-	use(1, $item[grimstone mask]);
+	use(1, Item.get("grimstone mask"));
 
-	while(item_amount($item[odd silver coin]) < 1)
+	while (itemAmount(Item.get("odd silver coin")) < 1)
 	{
-		autoAdv($location[The Prince\'s Balcony]);
+		autoAdv$2(Location.get("The Prince's Balcony"));
 	}
-	while(item_amount($item[odd silver coin]) < 2)
+	while (itemAmount(Item.get("odd silver coin")) < 2)
 	{
-		autoAdv($location[The Prince\'s Dance Floor]);
+		autoAdv$2(Location.get("The Prince's Dance Floor"));
 	}
-	while(item_amount($item[odd silver coin]) < 3)
+	while (itemAmount(Item.get("odd silver coin")) < 3)
 	{
-		autoAdv($location[The Prince\'s Lounge]);
+		autoAdv$2(Location.get("The Prince's Lounge"));
 	}
-	while(item_amount($item[odd silver coin]) < 4)
+	while (itemAmount(Item.get("odd silver coin")) < 4)
 	{
-		autoAdv($location[The Prince\'s Kitchen]);
+		autoAdv$2(Location.get("The Prince's Kitchen"));
 	}
-	while(item_amount($item[odd silver coin]) < 5)
+	while (itemAmount(Item.get("odd silver coin")) < 5)
 	{
-		autoAdv($location[The Prince\'s Restroom]);
+		autoAdv$2(Location.get("The Prince's Restroom"));
 	}
 
-	if(create(1, $item[Ornate Dowsing Rod]))
+	if (create(1, Item.get("ornate dowsing rod")))
 	{
 		return true;
 	}
-	if(item_amount($item[Ornate Dowsing Rod]) == 0)
+	if (itemAmount(Item.get("ornate dowsing rod")) === 0)
 	{
 		abort("Failed to craft [Ornate Dowsing Rod]. craft it manually and run me again");
 	}
 	return false;
 }
 
-boolean LX_ornateDowsingRod()
+export function LX_ornateDowsingRod(): boolean
 {
-	return LX_ornateDowsingRod(false);
+	return LX_ornateDowsingRod$1(false);
 }
 
-boolean fancyOilPainting()
+export function fancyOilPainting(): boolean
 {
-	if(get_property("chasmBridgeProgress").to_int() >= bridgeGoal())
+	if (toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal())
 	{
 		return false;
 	}
-	if(my_adventures() <= 4)
+	if (myAdventures() <= 4)
 	{
 		return false;
 	}
-	if(!auto_is_valid($item[Grimstone Mask]) || !auto_is_valid($item[fancy oil painting]))
+	if (!auto_is_valid(Item.get("grimstone mask")) || !auto_is_valid(Item.get("fancy oil painting")))
 	{
 		return false;
 	}
-	if(item_amount($item[Grimstone Mask]) == 0)
+	if (itemAmount(Item.get("grimstone mask")) === 0)
 	{
 		return false;
 	}
-	if(!get_property("auto_grimstoneFancyOilPainting").to_boolean())
+	if (!toBoolean(getProperty("auto_grimstoneFancyOilPainting")))
 	{
 		return false;
 	}
-	if(get_counters("", 0, 6) != "")
+	if (getCounters("", 0, 6) !== "")
 	{
 		return false;
 	}
 	auto_log_info("Acquiring a Fancy Oil Painting!", "blue");
-	use(1, $item[grimstone mask]);
+	use(1, Item.get("grimstone mask"));
 
-	while(item_amount($item[odd silver coin]) < 1)
+	while (itemAmount(Item.get("odd silver coin")) < 1)
 	{
-		autoAdv(1, $location[The Prince\'s Balcony]);
+		autoAdv$1(1, Location.get("The Prince's Balcony"));
 	}
-	while(item_amount($item[odd silver coin]) < 2)
+	while (itemAmount(Item.get("odd silver coin")) < 2)
 	{
-		autoAdv(1, $location[The Prince\'s Dance Floor]);
+		autoAdv$1(1, Location.get("The Prince's Dance Floor"));
 	}
-	while(item_amount($item[odd silver coin]) < 3)
+	while (itemAmount(Item.get("odd silver coin")) < 3)
 	{
-		autoAdv(1, $location[The Prince\'s Lounge]);
+		autoAdv$1(1, Location.get("The Prince's Lounge"));
 	}
-	while(item_amount($item[odd silver coin]) < 4)
+	while (itemAmount(Item.get("odd silver coin")) < 4)
 	{
-		autoAdv(1, $location[The Prince\'s Kitchen]);
+		autoAdv$1(1, Location.get("The Prince's Kitchen"));
 	}
-	cli_execute("make fancy oil painting");
-	set_property("auto_grimstoneFancyOilPainting", false);
+	cliExecute("make fancy oil painting");
+	setProperty("auto_grimstoneFancyOilPainting", false.toString());
 	return true;
 }
 
-int turkeyBooze()
+export function turkeyBooze(): number
 {
-	return get_property("_turkeyBooze").to_int();
+	return toInt(getProperty("_turkeyBooze"));
 }
 
-int amountTurkeyBooze()
+export function amountTurkeyBooze(): number
 {
-	if(is_unrestricted($item[Fist Turkey Outline]))
+	if (isUnrestricted(Item.get("fist turkey outline")))
 	{
-		return item_amount($item[Agitated Turkey]) + item_amount($item[Ambitious Turkey]) + item_amount($item[Friendly Turkey]);
+		return itemAmount(Item.get("Agitated Turkey")) + itemAmount(Item.get("Ambitious Turkey")) + itemAmount(Item.get("Friendly Turkey"));
 	}
 	return 0;
 }
 
-static boolean[monster] importantMonsters = $monsters[
+export let $_f_importantMonsters: Monster[] | undefined;
+$_f_importantMonsters ??= Monster.get([
 	// L4:
-	beanbat,
+	"beanbat",
 	// L5:
-	knob goblin harem girl,
+	"Knob Goblin Harem Girl",
 	// L7:
-	dirty old lihc,
+	"dirty old lihc",
 	// L8:
-	dairy goat,
+	"dairy goat",
 	// L9:
-	bearpig topiary animal,
-	elephant (meatcar?) topiary animal,
-	spider (duck?) topiary animal,
+	"bearpig topiary animal",
+	"elephant (meatcar?) topiary animal",
+	"spider (duck?) topiary animal",
 	// L10:
-	Quiet Healer,
-	burly sidekick,
+	"Quiet Healer",
+	"Burly Sidekick",
 	// L11:
 	// Hidden City:
-	baa-relief sheep,
-	pygmy bowler,
-	pygmy shaman,
-	pygmy janitor,
-	pygmy witch accountant,
-	pygmy witch surgeon,
+	"baa-relief sheep",
+	"pygmy bowler",
+	"pygmy shaman",
+	"pygmy janitor",
+	"pygmy witch accountant",
+	"pygmy witch surgeon",
 	// Spookyraven:
-	animated ornate nightstand,
-	elegant animated nightstand,
-	Cabinet of Dr. Limpieza,
-	possessed wine rack,
-	monstrous boiler,
-	writing desk,
-	chalkdust wraith,
-	banshee librarian,
+	"animated ornate nightstand",
+	"elegant animated nightstand",
+	"cabinet of Dr. Limpieza",
+	"possessed wine rack",
+	"monstrous boiler",
+	"writing desk",
+	"chalkdust wraith",
+	"banshee librarian",
 	// Palindome:
-	whitesnake,
-	white lion,
+	"whitesnake",
+	"white lion",
 	// Zeppelin:
-	man with the red buttons,
-	red butler,
-	red skeleton,
+	"man with the red buttons",
+	"red butler",
+	"red skeleton",
 	// Desert:
-	blur,
-	tomb rat,
+	"blur",
+	"tomb rat",
 	// L12:
-	batwinged gremlin (tool),
-	erudite gremlin (tool),
-	spider gremlin (tool),
-	vegetable gremlin (tool)
-];
+	"batwinged gremlin (tool)",
+	"erudite gremlin (tool)",
+	"spider gremlin (tool)",
+	"vegetable gremlin (tool)"]);
 
-monster icehouseMonster()
+export function icehouseMonster(): Monster
 {
-	visit_url("museum.php?action=icehouse");
-	if (!get_property("banishedMonsters").contains_text("ice house")) 
+	visitUrl("museum.php?action=icehouse");
+	if (!containsText(getProperty("banishedMonsters"), "ice house"))
 	{
-		return $monster[none];
+		return Monster.none;
 	}
-	else
-	{
-		string [int] banishMap = split_string(get_property("banishedMonsters"), ":");
-		for (int i = 0; i < count(banishMap); i++)
+	else {
+		let banishMap: Map<number, string> = new Map(splitString(getProperty("banishedMonsters"), ":").map((_v, _i) => [_i, _v]));
+		for (let i: number = 0; i < banishMap.size; i++)
 		{
-			if (banishMap[i] == "ice house")
+			if ((banishMap.get(i) ?? banishMap.set(i, "").get(i)) === "ice house")
 			{
-				return to_monster(banishMap[i-1]);
-			} 
+				return toMonster((banishMap.get(i - 1) ?? banishMap.set(i - 1, "").get(i - 1)));
+			}
 		}
 	}
-	return $monster[none];
+	return Monster.none;
 }
 
-boolean icehouseUserErrorProtection()
+export function icehouseUserErrorProtection(): boolean
 {
-	if (icehouseMonster() == $monster[none])
+	if (icehouseMonster() === Monster.none)
 	{
 		return true;
 	}
-	else if (importantMonsters contains icehouseMonster())
+	else if ($_f_importantMonsters.includes(icehouseMonster()))
 	{
-		if(user_confirm("You have a " + icehouseMonster().to_string() + " frozen in your icehouse. Autoscend thinks it might cause problems, do you want us to melt it? Will default to 'Yes' in 15 seconds.", 15000, true))
+		if (userConfirm(`You have a ${icehouseMonster().toString()} frozen in your icehouse. Autoscend thinks it might cause problems, do you want us to melt it? Will default to 'Yes' in 15 seconds.`, 15000, true))
 		{
-			visit_url("museum.php?action=icehouse");
-			run_choice(1);
+			visitUrl("museum.php?action=icehouse");
+			runChoice(1);
 			return true;
 		}
-		else
-		{
+		else {
 			print("If autoscend runs into problems, it's on you!");
 			return false;
 		}
 	}
-	else
-	{
+	else {
 		return true;
 	}
 }

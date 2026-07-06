@@ -1,141 +1,145 @@
-boolean is_jarlsberg()
+import { Item, Path, Skill, create, getProperty, haveSkill, itemAmount, mpCost, myCompanion, myLevel, myMp, myPath, setProperty, toBoolean, toInt, use, useSkill, visitUrl } from "kolmafia";
+import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
+import { equipBaseline } from "../auto_equipment";
+import { auto_have_skill, auto_log_info, auto_log_info$1, ovenHandle } from "../auto_util";
+import { AshMatcher } from "../utils/kolmafiaUtils";
+
+//Defined in autoscend/paths/avatar_of_jarlsberg.ash
+export function is_jarlsberg(): boolean
 {
-	return my_path() == $path[Avatar of Jarlsberg];
+	return myPath() === Path.get("Avatar of Jarlsberg");
 }
 
-void jarlsberg_initializeSettings()
+export function jarlsberg_initializeSettings(): void
 {
-    	if(is_jarlsberg())
+    	if (is_jarlsberg())
 	{
 		auto_log_info("Initializing Avatar of Jarlsberg settings", "blue");
-		set_property("auto_wandOfNagamar", false);
+		setProperty("auto_wandOfNagamar", false.toString());
 	}
 }
 
-void jarlsberg_initializeDay(int day)
+export function jarlsberg_initializeDay(day: number): void
 {
-	if(!is_jarlsberg())
+	if (!is_jarlsberg())
 	{
 		return;
 	}
-	if(day == 2)
+	if (day === 2)
 	{
-		equipBaseline(); 
-		ovenHandle(); 
+		equipBaseline();
+		ovenHandle();
 
-		if(get_property("auto_day_init").to_int() < 2)
+		if (toInt(getProperty("auto_day_init")) < 2)
 		{
-			if(item_amount($item[gym membership card]) > 0)
+			if (itemAmount(Item.get("gym membership card")) > 0)
 			{
-				use(1, $item[gym membership card]);
+				use(1, Item.get("gym membership card"));
 			}
 
-			if(item_amount($item[Seal Tooth]) == 0)
+			if (itemAmount(Item.get("seal tooth")) === 0)
 			{
-				acquireHermitItem($item[Seal Tooth]);
+				acquireHermitItem(Item.get("seal tooth"));
 			}
-			while(acquireHermitItem($item[11-Leaf Clover]));
-			pullXWhenHaveY($item[hand in glove], 1, 0);
-			pullXWhenHaveY($item[blackberry galoshes], 1, 0); 
+			while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+			pullXWhenHaveY(Item.get("Hand in Glove"), 1, 0);
+			pullXWhenHaveY(Item.get("blackberry galoshes"), 1, 0);
 		}
 	}
-	else if(day == 3)
+	else if (day === 3)
 	{
-		if(get_property("auto_day_init").to_int() < 3)
+		if (toInt(getProperty("auto_day_init")) < 3)
 		{
-			while(acquireHermitItem($item[11-Leaf Clover]));
-			set_property("auto_day_init", 3);
+			while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+			setProperty("auto_day_init", (3).toString());
 		}
 	}
-	else if(day == 4)
+	else if (day === 4)
 	{
-		if(get_property("auto_day_init").to_int() < 4)
+		if (toInt(getProperty("auto_day_init")) < 4)
 		{
-			while(acquireHermitItem($item[11-Leaf Clover]));
-			set_property("auto_day_init", 4);
+			while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+			setProperty("auto_day_init", (4).toString());
 		}
 	}
 }
 
-void jarlsberg_buySkills() //Not certain of Skill Priority Order. Current is a good start, will see how it goes.
-{
-	if(!is_jarlsberg())
+export function jarlsberg_buySkills(): void
+{ //Not certain of Skill Priority Order. Current is a good start, will see how it goes.
+	if (!is_jarlsberg())
 	{
 		return;
 	}
-	if(my_level() <= get_property("_auto_jarlsbergSkills").to_int())
+	if (myLevel() <= toInt(getProperty("_auto_jarlsbergSkills")))
 	{
 		return;
-		
+
 	}
-	if(get_property("_auto_completedJarlsbergSkillTree").to_boolean()) //Prevent us from running through the full list of skills checks more than once per day if we already have all skills
-	{
+	if (toBoolean(getProperty("_auto_completedJarlsbergSkillTree")))
+	{ //Prevent us from running through the full list of skills checks more than once per day if we already have all skills
 		return;
 	}
 
-	string page = visit_url("da.php?place=gate2");
-	matcher my_skillPoints = create_matcher("(\\d+) skill point", page);
-	if(my_skillPoints.find())
+	let page: string = visitUrl("da.php?place=gate2");
+	let my_skillPoints: AshMatcher = new AshMatcher("(\\d+) skill point", page);
+	if (my_skillPoints.find())
 	{
-		int skillPoints = to_int(my_skillPoints.group(1));
-		auto_log_info("Skill points found: " + skillPoints);
+		let skillPoints: number = toInt(my_skillPoints.group(1));
+		auto_log_info$1(`Skill points found: ${skillPoints}`);
 
-		while(skillPoints > 0)
+		while (skillPoints > 0)
 		{
 			skillPoints = skillPoints - 1;
-			int skillid = 0;
-
+			let skillid: number = 0;
 			//skills are listed in reverse order. from last to first to buy..
 
-			foreach sk in $skills[Radish Horse, Working Lunch, Gristlesphere, Oilsphere, Coffeesphere, Chocolatesphere, Cream Puff, Blend, 
-			Nightcap, Conjure Cream, Early Riser, Fry, Conjure Dough, Lunch Like A King, Slice, Conjure Cheese, 
-			Egg man, Conjure Eggs, Food Coma, Chop, Grill, Best Served Cold, Never Late For Dinner, Conjure Meat Product, 
-			Conjure Vegetables, Hippotatomous, Conjure Potato, Bake, Freeze, Conjure Fruit, The Most Important Meal, Boil]
+			for (let sk of Skill.get(["Radish Horse", "Working Lunch", "Gristlesphere", "Oilsphere", "Coffeesphere", "Chocolatesphere", "Cream Puff", "Blend",
+			"Nightcap", "Conjure Cream", "Early Riser", "Fry", "Conjure Dough", "Lunch Like a King", "Slice", "Conjure Cheese",
+			"Egg Man", "Conjure Eggs", "Food Coma", "Chop", "Grill", "Best Served Cold", "Never Late for Dinner", "Conjure Meat Product",
+			"Conjure Vegetables", "Hippotatomous", "Conjure Potato", "Bake", "Freeze", "Conjure Fruit", "The Most Important Meal", "Boil"]))
 			{
-				if(!have_skill(sk))
+				if (!haveSkill(sk))
 				{
-					skillid = to_int(sk);
+					skillid = toInt(sk);
 				}
 			}
 
-			if( skillid != 0)
+			if (skillid !== 0)
 			{
-				visit_url("jarlskills.php?action=getskill&getskid=" + skillid);
+				visitUrl(`jarlskills.php?action=getskill&getskid=${skillid}`);
 			}
-			else
-			{
-				set_property("_auto_completedJarlsbergSkillTree", true);
+			else {
+				setProperty("_auto_completedJarlsbergSkillTree", true.toString());
 				return;
 			}
 
 		}
 	}
 
-	set_property("_auto_jarlsbergSkills", my_level());
+	setProperty("_auto_jarlsbergSkills", myLevel().toString());
 }
 
-boolean LM_jarlsberg()
+export function LM_jarlsberg(): boolean
 {
 	//this function is called early once every loop of doTasks() in autoscend.ash
 	//if something in this function returns true then it will restart the loop and get called again.
-	
-	if(!is_jarlsberg())
+
+	if (!is_jarlsberg())
 	{
 		return false;
 	}
-	
+
 
 	jarlsberg_buySkills();
-
 	// Use egg man for drops
-	if(auto_have_skill($skill[Egg Man]) && mp_cost($skill[Egg Man]) <= my_mp() && item_amount($item[cosmic egg]) > 0 && my_companion() == "")
+	if (auto_have_skill(Skill.get("Egg Man")) && mpCost(Skill.get("Egg Man")) <= myMp() && itemAmount(Item.get("cosmic egg")) > 0 && myCompanion() === "")
 	{
-		use_skill(1, $skill[Egg Man]);
+		useSkill(1, Skill.get("Egg Man"));
 	}
 
-	if (!get_property("_cosmicSixPackConjured").to_boolean())
+	if (!toBoolean(getProperty("_cosmicSixPackConjured")))
 	{
-		create(1, $item[cosmic six-pack]);
+		create(1, Item.get("cosmic six-pack"));
 	}
 
 	return false;

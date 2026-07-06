@@ -1,4 +1,7 @@
-boolean in_journeyman()
+import { Path, myPath } from "kolmafia";
+
+//Defined in autoscend/paths/journeyman.ash
+export function in_journeyman(): boolean
 {
-	return my_path() == $path[Journeyman];
+	return myPath() === Path.get("Journeyman");
 }

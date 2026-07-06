@@ -1,23 +1,27 @@
+import { containsText, getProperty, myDaycount, myTurncount, setProperty, toInt } from "kolmafia";
+import { combat_status_add, combat_status_check } from "./auto_combat_util";
+
 //Path specific combat handling functions for Avatar of West of Loathing
 
-void awol_combat_helper(string page)
+//defined in /autoscend/combat/auto_combat_awol.ash
+export function awol_combat_helper(page: string): void
 {
 	//Let us self-contain this so it is quick to remove later.
-	if((my_daycount() == 1) && (my_turncount() < 10))
+	if (myDaycount() === 1 && myTurncount() < 10)
 	{
-		set_property("auto_noSnakeOil", 0);
+		setProperty("auto_noSnakeOil", (0).toString());
 	}
 
-	if(contains_text(page, "Your oil extractor is completely clogged up at this point"))
+	if (containsText(page, "Your oil extractor is completely clogged up at this point"))
 	{
-		set_property("auto_noSnakeOil", my_daycount());
+		setProperty("auto_noSnakeOil", myDaycount().toString());
 	}
-	if(get_property("_oilExtracted").to_int() >= 100)
+	if (toInt(getProperty("_oilExtracted")) >= 100)
 	{
-		set_property("auto_noSnakeOil", my_daycount());
+		setProperty("auto_noSnakeOil", myDaycount().toString());
 	}
 
-	if(!combat_status_check("extractSnakeOil") && (get_property("auto_noSnakeOil").to_int() == my_daycount()))
+	if (!combat_status_check("extractSnakeOil") && toInt(getProperty("auto_noSnakeOil")) === myDaycount())
 	{
 		combat_status_add("extractSnakeOil");
 	}

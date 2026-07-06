@@ -1,345 +1,347 @@
-boolean in_heavyrains()
+import { Class, Effect, Element, Familiar, Item, Location, Monster, Path, Skill, Slot, abort, cliExecute, containsText, equip, getProperty, haveEffect, haveSkill, inebrietyLimit, itemAmount, lastMonster, max, min, monsterFactoidsAvailable, myClass, myInebriety, myLightning, myPath, myRain, myThunder, numericModifier, runChoice, setProperty, toBoolean, toInt, useFamiliar, useSkill, visitUrl } from "kolmafia";
+import { acquireOrPull, auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
+import { autoAdvBypass, autoAdvBypass$1 } from "../auto_adventure";
+import { buffMaintain$4 } from "../auto_buff";
+import { addToMaximize, autoEquip, equipMaximizedGear, possessEquipment } from "../auto_equipment";
+import { canChangeToFamiliar } from "../auto_familiar";
+import { acquireHP, acquireMP$1 } from "../auto_restore";
+import { auto_have_skill, auto_log_info, effectAblativeArmor, executeFlavour, handleTracker$1, internalQuestStatus, runChoice$1, setFlavour } from "../auto_util";
+import { inAftercore } from "./casual";
+
+//Defined in autoscend/paths/heavy_rains.ash
+export function in_heavyrains(): boolean
 {
-	return my_path() == $path[Heavy Rains];
+	return myPath() === Path.get("Heavy Rains");
 }
 
-void heavyrains_initializeSettings()
+export function heavyrains_initializeSettings(): void
 {
-	if(in_heavyrains())
+	if (in_heavyrains())
 	{
-		#Rain Man (Heavy Rains) Related settings
-		set_property("auto_holeinthesky", false);
-		set_property("auto_mountainmen", "");
-		set_property("auto_ninjasnowmanassassin", false);	//are we done with ninja snowman assassins
-		set_property("auto_orcishfratboyspy", "");
-		set_property("auto_warhippyspy", "");
+		//Rain Man (Heavy Rains) Related settings
+		setProperty("auto_holeinthesky", false.toString());
+		setProperty("auto_mountainmen", "");
+		setProperty("auto_ninjasnowmanassassin", false.toString()); //are we done with ninja snowman assassins
+		setProperty("auto_orcishfratboyspy", "");
+		setProperty("auto_warhippyspy", "");
 
-		set_property("auto_lastthunder", "100");
-		set_property("auto_lastthunderturn", "0");
+		setProperty("auto_lastthunder", "100");
+		setProperty("auto_lastthunderturn", "0");
 
-		set_property("auto_wandOfNagamar", false);
-		set_property("auto_writingDeskSummon", true);
+		setProperty("auto_wandOfNagamar", false.toString());
+		setProperty("auto_writingDeskSummon", true.toString());
 
-		set_property("auto_day1_desk", "");
-		set_property("auto_day1_skills", "");
+		setProperty("auto_day1_desk", "");
+		setProperty("auto_day1_skills", "");
 	}
 }
 
 
-void heavyrains_initializeDay(int day)
+export function heavyrains_initializeDay(day: number): void
 {
-	if(in_heavyrains())
+	if (in_heavyrains())
 	{
-		if((day == 1) && (get_property("auto_day1_skills") != "finished"))
+		if (day === 1 && getProperty("auto_day1_skills") !== "finished")
 		{
-			set_property("choiceAdventure967", "1");
-			set_property("choiceAdventure968", "1");
-			set_property("choiceAdventure969", "3");
+			setProperty("choiceAdventure967", "1");
+			setProperty("choiceAdventure968", "1");
+			setProperty("choiceAdventure969", "3");
 
-			if(item_amount($item[thunder thigh]) > 0) //Thunder Clap, Thunder Bird, Thunder Strike
-			{
-				visit_url("inv_use.php?which=3&whichitem=7648&pwd");
-				visit_url("choice.php?pwd&whichchoice=967&option=1", true);
-				if (item_amount($item[thunder thigh]) > 0) {
-					visit_url("choice.php?pwd&whichchoice=967&option=3", true);
+			if (itemAmount(Item.get("thunder thigh")) > 0)
+			{ //Thunder Clap, Thunder Bird, Thunder Strike
+				visitUrl("inv_use.php?which=3&whichitem=7648&pwd");
+				visitUrl("choice.php?pwd&whichchoice=967&option=1", true);
+				if (itemAmount(Item.get("thunder thigh")) > 0) {
+					visitUrl("choice.php?pwd&whichchoice=967&option=3", true);
 				}
-				if (item_amount($item[thunder thigh]) > 0) {
-					visit_url("choice.php?pwd&whichchoice=967&option=5", true);
+				if (itemAmount(Item.get("thunder thigh")) > 0) {
+					visitUrl("choice.php?pwd&whichchoice=967&option=5", true);
 				}
-				set_property("choiceAdventure967", "7");
+				setProperty("choiceAdventure967", "7");
 			}
 
-			if(item_amount($item[aquaconda brain]) > 0) // Rain Man, Make it Rain, Rain Dance
-			{
-				visit_url("inv_use.php?which=3&whichitem=7647&pwd");
-				visit_url("choice.php?pwd&whichchoice=968&option=1", true);
-				if (item_amount($item[aquaconda brain]) > 0) {
-					visit_url("choice.php?pwd&whichchoice=968&option=3", true);
+			if (itemAmount(Item.get("aquaconda brain")) > 0)
+			{ // Rain Man, Make it Rain, Rain Dance
+				visitUrl("inv_use.php?which=3&whichitem=7647&pwd");
+				visitUrl("choice.php?pwd&whichchoice=968&option=1", true);
+				if (itemAmount(Item.get("aquaconda brain")) > 0) {
+					visitUrl("choice.php?pwd&whichchoice=968&option=3", true);
 				}
-				if (item_amount($item[aquaconda brain]) > 0) {
-					visit_url("choice.php?pwd&whichchoice=968&option=4", true);
+				if (itemAmount(Item.get("aquaconda brain")) > 0) {
+					visitUrl("choice.php?pwd&whichchoice=968&option=4", true);
 				}
-				set_property("choiceAdventure968", "2");
+				setProperty("choiceAdventure968", "2");
 			}
 
-			if(item_amount($item[lightning milk]) > 0) // Ball Lightning, Lightning Strike, Riding the Lightning
-			{
-				visit_url("inv_use.php?which=3&whichitem=7646&pwd");
-				visit_url("choice.php?pwd&whichchoice=969&option=3", true);
-				if (item_amount($item[lightning milk]) > 0) {
-					visit_url("choice.php?pwd&whichchoice=969&option=1", true);
+			if (itemAmount(Item.get("lightning milk")) > 0)
+			{ // Ball Lightning, Lightning Strike, Riding the Lightning
+				visitUrl("inv_use.php?which=3&whichitem=7646&pwd");
+				visitUrl("choice.php?pwd&whichchoice=969&option=3", true);
+				if (itemAmount(Item.get("lightning milk")) > 0) {
+					visitUrl("choice.php?pwd&whichchoice=969&option=1", true);
 				}
-				if (item_amount($item[lightning milk]) > 0) {
-					visit_url("choice.php?pwd&whichchoice=969&option=7", true);
+				if (itemAmount(Item.get("lightning milk")) > 0) {
+					visitUrl("choice.php?pwd&whichchoice=969&option=7", true);
 				}
-				set_property("choiceAdventure969", "2");
+				setProperty("choiceAdventure969", "2");
 			}
 
-			if(item_amount($item[miniature life preserver]) == 0)
+			if (itemAmount(Item.get("miniature life preserver")) === 0)
 			{
-				auto_buyUpTo(1, $item[miniature life preserver]);
+				auto_buyUpTo(1, Item.get("miniature life preserver"));
 			}
-			set_property("auto_day1_skills", "finished");
-			visit_url("main.php");
+			setProperty("auto_day1_skills", "finished");
+			visitUrl("main.php");
 		}
 	}
 }
 
-void heavyrains_doBedtime()
+export function heavyrains_doBedtime(): void
 {
-	if(my_inebriety() > inebriety_limit())
+	if (myInebriety() > inebrietyLimit())
 	{
-		while((have_skill($skill[Rain Dance])) && (my_rain() >= 10))
+		while (haveSkill(Skill.get("Rain Dance")) && myRain() >= 10)
 		{
-			use_skill(1, $skill[Rain Dance]);
+			useSkill(1, Skill.get("Rain Dance"));
 		}
-		while((have_skill($skill[thunderheart])) && (my_thunder() >= 20))
+		while (haveSkill(Skill.get("Thunderheart")) && myThunder() >= 20)
 		{
-			use_skill(1, $skill[thunderheart]);
+			useSkill(1, Skill.get("Thunderheart"));
 		}
-		while((have_skill($skill[Clean-Hair Lightning])) && (my_lightning() >= 10))
+		while (haveSkill(Skill.get("Clean-Hair Lightning")) && myLightning() >= 10)
 		{
-			use_skill(1, $skill[Clean-Hair Lightning]);
+			useSkill(1, Skill.get("Clean-Hair Lightning"));
 		}
 	}
 }
 
-boolean heavyrains_buySkills()
+export function heavyrains_buySkills(): boolean
 {
-	if(!in_heavyrains())
+	if (!in_heavyrains())
 	{
 		return false;
 	}
-	else
-	{
-		if(item_amount($item[thunder thigh]) > 0)
+	else {
+		if (itemAmount(Item.get("thunder thigh")) > 0)
 		{
 			auto_log_info("Trying to use a thunder thigh", "blue");
-			string page = visit_url("inv_use.php?which=3&whichitem=7648&pwd");
-			int skillChoice = 8;
-			if(!have_skill($skill[Thunder Down Underwear])){
+			let page: string = visitUrl("inv_use.php?which=3&whichitem=7648&pwd");
+			let skillChoice: number = 8;
+			if (!haveSkill(Skill.get("Thunder Down Underwear"))) {
 				skillChoice = 6;
 			}
-			if(!have_skill($skill[Thundercloud])){
+			if (!haveSkill(Skill.get("Thundercloud"))) {
 				skillChoice = 2;
 			}
-			if(!have_skill($skill[Thunderheart])){
+			if (!haveSkill(Skill.get("Thunderheart"))) {
 				skillChoice = 4;
 			}
-			if(!have_skill($skill[Thunder Thighs])){
+			if (!haveSkill(Skill.get("Thunder Thighs"))) {
 				skillChoice = 7;
 			}
-			if(!have_skill($skill[Thunderstrike])){
+			if (!haveSkill(Skill.get("Thunderstrike"))) {
 				skillChoice = 5;
 			}
-			if(!have_skill($skill[Thunder Bird])){
+			if (!haveSkill(Skill.get("Thunder Bird"))) {
 				skillChoice = 3;
 			}
-			if(!have_skill($skill[Thunder Clap])){
+			if (!haveSkill(Skill.get("Thunder Clap"))) {
 				skillChoice = 1;
 			}
-			
-			set_property("choiceAdventure967", skillChoice);
-			runChoice(page);
-			visit_url("main.php");
+
+			setProperty("choiceAdventure967", skillChoice.toString());
+			runChoice$1(page);
+			visitUrl("main.php");
 			return true;
 		}
 
-		if(item_amount($item[aquaconda brain]) > 0)
+		if (itemAmount(Item.get("aquaconda brain")) > 0)
 		{
 			auto_log_info("Trying to use a aquaconda brain", "blue");
-			string page = visit_url("inv_use.php?which=3&whichitem=7647&pwd");
-			int skillChoice = 8;
-			if(!have_skill($skill[Rain Delay])){
+			let page: string = visitUrl("inv_use.php?which=3&whichitem=7647&pwd");
+			let skillChoice: number = 8;
+			if (!haveSkill(Skill.get("Rain Delay"))) {
 				skillChoice = 7;
 			}
-			if(!have_skill($skill[Rain Coat])){
+			if (!haveSkill(Skill.get("Rain Coat"))) {
 				skillChoice = 6;
 			}
-			if(!have_skill($skill[Rainbow])){
+			if (!haveSkill(Skill.get("Rainbow"))) {
 				skillChoice = 5;
 			}
-			if(!have_skill($skill[Rainy Day])){
+			if (!haveSkill(Skill.get("Rainy Day"))) {
 				skillChoice = 2;
 			}
-			if(!have_skill($skill[Rain Dance])){
+			if (!haveSkill(Skill.get("Rain Dance"))) {
 				skillChoice = 4;
 			}
-			if(!have_skill($skill[Make it Rain])){
+			if (!haveSkill(Skill.get("Make it Rain"))) {
 				skillChoice = 3;
 			}
-			if(!have_skill($skill[Rain Man])){
+			if (!haveSkill(Skill.get("Rain Man"))) {
 				skillChoice = 1;
 			}
-			
-			set_property("choiceAdventure968", skillChoice);
-			runChoice(page);
-			visit_url("main.php");
+
+			setProperty("choiceAdventure968", skillChoice.toString());
+			runChoice$1(page);
+			visitUrl("main.php");
 			return true;
 		}
 
-		if(item_amount($item[lightning milk]) > 0)
+		if (itemAmount(Item.get("lightning milk")) > 0)
 		{
 			auto_log_info("Trying to use a lightning milk", "blue");
-			string page = visit_url("inv_use.php?which=3&whichitem=7646&pwd");
-			int skillChoice = 8;
-			if(get_property("_fireworksShop").to_boolean() && !have_skill($skill[Ball Lightning])){
+			let page: string = visitUrl("inv_use.php?which=3&whichitem=7646&pwd");
+			let skillChoice: number = 8;
+			if (toBoolean(getProperty("_fireworksShop")) && !haveSkill(Skill.get("Ball Lightning"))) {
 				skillChoice = 3;
 			}
-			if(!have_skill($skill[Lightning Rod])){
+			if (!haveSkill(Skill.get("Lightning Rod"))) {
 				skillChoice = 6;
 			}
-			if(!have_skill($skill[[16025]Lightning Bolt])){
+			if (!haveSkill(Skill.get("[16025]Lightning Bolt"))) {
 				skillChoice = 5;
 			}
-			if(!have_skill($skill[Sheet Lightning])){
+			if (!haveSkill(Skill.get("Sheet Lightning"))) {
 				skillChoice = 4;
 			}
-			if(!have_skill($skill[Clean-Hair Lightning])){
+			if (!haveSkill(Skill.get("Clean-Hair Lightning"))) {
 				skillChoice = 2;
 			}
-			if(!have_skill($skill[Riding the Lightning])){
+			if (!haveSkill(Skill.get("Riding the Lightning"))) {
 				skillChoice = 7;
 			}
-			if(!have_skill($skill[Lightning Strike])){
+			if (!haveSkill(Skill.get("Lightning Strike"))) {
 				skillChoice = 1;
 			}
-			if(!get_property("_fireworksShop").to_boolean() && !have_skill($skill[Ball Lightning])){
+			if (!toBoolean(getProperty("_fireworksShop")) && !haveSkill(Skill.get("Ball Lightning"))) {
 				skillChoice = 3;
 			}
 
-			set_property("choiceAdventure969", skillChoice);
-			runChoice(page);
-			visit_url("main.php");
+			setProperty("choiceAdventure969", skillChoice.toString());
+			runChoice$1(page);
+			visitUrl("main.php");
 			return true;
 		}
 	}
 	return false;
 }
 
-boolean canRainManSummon(monster target)
+export function canRainManSummon(target: Monster): boolean
 {
-	if(!have_skill($skill[Rain Man]) || my_rain() < 50)
+	if (!haveSkill(Skill.get("Rain Man")) || myRain() < 50)
 	{
 		return false;
 	}
-
 	// Can only rain man summon copyable monsters
-	if(!target.copyable || target.id < 0)
+	if (!target.copyable || target.id < 0)
 	{
 		return false;
 	}
-
 	// Can summon any monster with available factoids
-	if (target.monster_factoids_available(false) > 0)
+	if (monsterFactoidsAvailable(target, false) > 0)
 	{
 		return true;
 	}
-
 	// Check the page text
-	auto_log_info(target + " factoids unavailable, checking Rain Man if summon is possible", "blue");
-	buffer page = visit_url("runskillz.php?pwd&action=Skillz&whichskill=16011&quantity=1");
+	auto_log_info(`${target} factoids unavailable, checking Rain Man if summon is possible`, "blue");
+	let page: string = visitUrl("runskillz.php?pwd&action=Skillz&whichskill=16011&quantity=1");
 	// Escape
-	run_choice(2);
+	runChoice(2);
 
-	return page.contains_text("<option value=" + target.id + ">");
+	return containsText(page, `<option value=${target.id}>`);
 }
 
-boolean rainManSummon(monster target, boolean speculative)
+export function rainManSummon(target: Monster, speculative: boolean): boolean
 {
-	boolean canSummon = canRainManSummon(target);
+	let canSummon: boolean = canRainManSummon(target);
 	if (!canSummon || speculative)
 	{
 		return canSummon;
 	}
-
 	//use the rainman to summon a monster
-	auto_log_info("Rain Man will summon: " +target, "blue");
-	string[int] pages;
-	pages[0] = "runskillz.php?pwd&action=Skillz&whichskill=16011&quantity=1";
-	pages[1] = "choice.php?pwd&whichchoice=970&whichmonster=" + target.id + "&option=1&choice2=and+Fight%21";
+	auto_log_info(`Rain Man will summon: ${target}`, "blue");
+	let pages: Map<number, string> = new Map();
+	pages.set(0, "runskillz.php?pwd&action=Skillz&whichskill=16011&quantity=1");
+	pages.set(1, `choice.php?pwd&whichchoice=970&whichmonster=${target.id}&option=1&choice2=and+Fight%21`);
 	// autoAdvBypass will escape from the choice and return false if the monster cannot be fought
-	if(autoAdvBypass(0, pages, $location[Noob Cave], ""))
+	if (autoAdvBypass(0, pages, Location.get("Noob Cave"), null))
 	{
-		handleTracker(target, $skill[Rain Man], "auto_copies");
+		handleTracker$1(target.toString(), Skill.get("Rain Man").toString(), "auto_copies");
 		return true;
 	}
 	return false;
 }
 
-boolean L13_heavyrains_towerFinal()
+export function L13_heavyrains_towerFinal(): boolean
 {
 	//Prepare for and defeat the final boss for Heavy Rains run. Which has special rules for engagement.
-	if (internalQuestStatus("questL13Final") != 11)
+	if (internalQuestStatus("questL13Final") !== 11)
 	{
 		return false;
 	}
-	
 	//use a damage dealing familiar
-	if(canChangeToFamiliar($familiar[warbear drone]))			//old event item. still farmable. up to 6 attacks per round
-	{
-		use_familiar($familiar[Warbear Drone]);
+	if (canChangeToFamiliar(Familiar.get("Warbear Drone")))
+	{ //old event item. still farmable. up to 6 attacks per round
+		useFamiliar(Familiar.get("Warbear Drone"));
 		//TODO does rain king stripping at begining of combat remove familiar equipment? if yes remove the part below
-		pullXWhenHaveY($item[warbear drone codes], 1, 0);
-		if(possessEquipment($item[warbear drone codes]))
+		pullXWhenHaveY(Item.get("warbear drone codes"), 1, 0);
+		if (possessEquipment(Item.get("warbear drone codes")))
 		{
-			equip($item[warbear drone codes]);
+			equip(Item.get("warbear drone codes"));
 		}
 	}
-	else if(canChangeToFamiliar($familiar[Sludgepuppy]))		//IOTM derivative, infinitely farmable. attacks 3 times per round
-	{
-		use_familiar($familiar[Sludgepuppy]);
+	else if (canChangeToFamiliar(Familiar.get("Sludgepuppy")))
+	{ //IOTM derivative, infinitely farmable. attacks 3 times per round
+		useFamiliar(Familiar.get("Sludgepuppy"));
 	}
-	else if(canChangeToFamiliar($familiar[Imitation Crab]))		//cheap, easily acquired. attacks 2 times per round
-	{
-		use_familiar($familiar[Imitation Crab]);
+	else if (canChangeToFamiliar(Familiar.get("Imitation Crab")))
+	{ //cheap, easily acquired. attacks 2 times per round
+		useFamiliar(Familiar.get("Imitation Crab"));
 	}
-	else if(canChangeToFamiliar($familiar[Angry Goat]))			//super cheap. high chance to attack each round.
-	{
-		use_familiar($familiar[Angry Goat]);
+	else if (canChangeToFamiliar(Familiar.get("Angry Goat")))
+	{ //super cheap. high chance to attack each round.
+		useFamiliar(Familiar.get("Angry Goat"));
 	}
-	
 	//buff up before the boss
-	buffMaintain($effect[Benetton's Medley of Diversity]);			//15 prismatic weapon dmg.
-	buffMaintain($effect[Dirge of Dreadfulness (Remastered)]);		//36 spooky spell & weapon dmg
-	buffMaintain($effect[Dirge of Dreadfulness]);					//12 spooky weapon dmg
-	buffMaintain($effect[Boner Battalion]);						//32-33 sleaze and spooky passive dmg
-	buffMaintain($effect[Frigidalmatian]);							//40 (due to cap) cold passive dmg
-	effectAblativeArmor(true);					//Unimportant effects protect your important one from being removed.
-	
+	buffMaintain$4(Effect.get("Benetton's Medley of Diversity")); //15 prismatic weapon dmg.
+	buffMaintain$4(Effect.get("Dirge of Dreadfulness (Remastered)")); //36 spooky spell & weapon dmg
+	buffMaintain$4(Effect.get("Dirge of Dreadfulness")); //12 spooky weapon dmg
+	buffMaintain$4(Effect.get("Boner Battalion")); //32-33 sleaze and spooky passive dmg
+	buffMaintain$4(Effect.get("Frigidalmatian")); //40 (due to cap) cold passive dmg
+	effectAblativeArmor(true); //Unimportant effects protect your important one from being removed.
 	//Calculate melee/ranged damage. Each element is capped at 40. assume you will be able to deal 40 physical damage.
-	cli_execute("outfit Birthday Suit");			//Need to get naked so we can check our stats properly.
+	cliExecute("outfit Birthday Suit"); //Need to get naked so we can check our stats properly.
 	addToMaximize("1000prismatic damage, +weapon, +offhand");
 	equipMaximizedGear();
 
-	int hot_dmg = min(40,numeric_modifier("hot damage"));
-	int cold_dmg = min(40,numeric_modifier("cold damage"));
-	int stench_dmg = min(40,numeric_modifier("stench damage"));
-	int sleaze_dmg = min(40,numeric_modifier("sleaze damage"));
-	int spooky_dmg = min(40,numeric_modifier("spooky damage"));
-	if(auto_have_skill($skill[Cold Shoulder]))
+	let hot_dmg: number = toInt(min(40, numericModifier("hot damage")));
+	let cold_dmg: number = toInt(min(40, numericModifier("cold damage")));
+	let stench_dmg: number = toInt(min(40, numericModifier("stench damage")));
+	let sleaze_dmg: number = toInt(min(40, numericModifier("sleaze damage")));
+	let spooky_dmg: number = toInt(min(40, numericModifier("spooky damage")));
+	if (auto_have_skill(Skill.get("Cold Shoulder")))
 	{
-		cold_dmg = min(40, (5+cold_dmg));
+		cold_dmg = min(40, 5 + cold_dmg);
 	}
-	
 	//lunging thrust smack as a seal clubber with a club triples elemental damage. this applies to damage that does not come from weapon, excluding cold shoulder.
-	boolean want_club = false;
-	if(my_class() == $class[Seal Clubber] && auto_have_skill($skill[Lunging Thrust-Smack]))
+	let want_club: boolean = false;
+	if (myClass() === Class.get("Seal Clubber") && auto_have_skill(Skill.get("Lunging Thrust-Smack")))
 	{
 		addToMaximize("prismatic damage, +weapon, +offhand, +club");
 		equipMaximizedGear();
-		int club_hot_dmg = min(40,(3*numeric_modifier("hot damage")));
-		int club_cold_dmg = min(40,(3*numeric_modifier("cold damage")));
-		int club_stench_dmg = min(40,(3*numeric_modifier("stench damage")));
-		int club_sleaze_dmg = min(40,(3*numeric_modifier("sleaze damage")));
-		int club_spooky_dmg = min(40,(3*numeric_modifier("spooky damage")));
-		
-		if(auto_have_skill($skill[Cold Shoulder]))
+		let club_hot_dmg: number = toInt(min(40, 3 * numericModifier("hot damage")));
+		let club_cold_dmg: number = toInt(min(40, 3 * numericModifier("cold damage")));
+		let club_stench_dmg: number = toInt(min(40, 3 * numericModifier("stench damage")));
+		let club_sleaze_dmg: number = toInt(min(40, 3 * numericModifier("sleaze damage")));
+		let club_spooky_dmg: number = toInt(min(40, 3 * numericModifier("spooky damage")));
+
+		if (auto_have_skill(Skill.get("Cold Shoulder")))
 		{
-			club_cold_dmg = min(40, (5+club_cold_dmg));
+			club_cold_dmg = min(40, 5 + club_cold_dmg);
 		}
 
-		if((hot_dmg + cold_dmg + stench_dmg + sleaze_dmg + spooky_dmg) < (club_hot_dmg + club_cold_dmg + club_stench_dmg + club_sleaze_dmg + club_spooky_dmg))
+		if (hot_dmg + cold_dmg + stench_dmg + sleaze_dmg + spooky_dmg < club_hot_dmg + club_cold_dmg + club_stench_dmg + club_sleaze_dmg + club_spooky_dmg)
 		{
 			want_club = true;
 			hot_dmg = club_hot_dmg;
@@ -349,142 +351,135 @@ boolean L13_heavyrains_towerFinal()
 			spooky_dmg = club_spooky_dmg;
 		}
 	}
-	
-	int attack_dmg = 40 + min(40,hot_dmg) + min(40,cold_dmg) + min(40,stench_dmg) + min(40,sleaze_dmg) + min(40,spooky_dmg);
-	
+
+	let attack_dmg: number = 40 + min(40, hot_dmg) + min(40, cold_dmg) + min(40, stench_dmg) + min(40, sleaze_dmg) + min(40, spooky_dmg);
 	//check magic damage
-	boolean spell_extra_element = false;
-	if(item_amount($item[Rain-Doh green lantern]) > 0 || item_amount($item[meteorb]) > 0 || item_amount($item[snow mobile]) > 0)
+	let spell_extra_element: boolean = false;
+	if (itemAmount(Item.get("Rain-Doh green lantern")) > 0 || itemAmount(Item.get("meteorb")) > 0 || itemAmount(Item.get("snow mobile")) > 0)
 	{
 		spell_extra_element = true;
 	}
-	else foreach it in $items[Rain-Doh green lantern, meteorb, snow mobile]
+	else { for (let it of Item.get(["Rain-Doh green lantern", "meteorb", "snow mobile"]))
 	{
-		if(acquireOrPull(it))
+		if (acquireOrPull(it))
 		{
 			spell_extra_element = true;
 			break;
 		}
-	}
+	} }
 
-	int	spell_dmg = 0;
-	string best_spell = "";
-	if(auto_have_skill($skill[Saucestorm]))
+	let spell_dmg: number = 0;
+	let best_spell: string = "";
+	if (auto_have_skill(Skill.get("Saucestorm")))
 	{
-		if(80>spell_dmg)
+		if (80 > spell_dmg)
 		{
 			best_spell = "saucestorm";
-			spell_dmg = max(80,spell_dmg);
+			spell_dmg = max(80, spell_dmg);
 		}
 		//IIRC hot and cold extra elements don't work for saucestorm, so only want green lantern. TODO verify
-		if(item_amount($item[Rain-Doh green lantern]) > 0 && 120>spell_dmg)
+		if (itemAmount(Item.get("Rain-Doh green lantern")) > 0 && 120 > spell_dmg)
 		{
 			best_spell = "saucestorm";
-			spell_dmg = max(120,spell_dmg);
+			spell_dmg = max(120, spell_dmg);
 		}
 	}
-	if(auto_have_skill($skill[Weapon of the Pastalord]) && auto_have_skill($skill[Flavour of Magic]))
+	if (auto_have_skill(Skill.get("Weapon of the Pastalord")) && auto_have_skill(Skill.get("Flavour of Magic")))
 	{
-		if(80>spell_dmg)
+		if (80 > spell_dmg)
 		{
 			best_spell = "weapon_of_the_pastalord";
-			spell_dmg = max(80,spell_dmg);
+			spell_dmg = max(80, spell_dmg);
 		}
-		if(spell_extra_element && 120>spell_dmg)
+		if (spell_extra_element && 120 > spell_dmg)
 		{
 			best_spell = "weapon_of_the_pastalord";
-			spell_dmg = max(120,spell_dmg);
+			spell_dmg = max(120, spell_dmg);
 		}
 	}
-	if(auto_have_skill($skill[Turtleini]))
+	if (auto_have_skill(Skill.get("Turtleini")))
 	{
-		if(120>spell_dmg)
+		if (120 > spell_dmg)
 		{
 			best_spell = "turtleini";
-			spell_dmg = max(120,spell_dmg);
+			spell_dmg = max(120, spell_dmg);
 		}
-		if(spell_extra_element && 160>spell_dmg)
+		if (spell_extra_element && 160 > spell_dmg)
 		{
 			//how does [Turtleini] get affected by extra elements? I am guessing it increases it to 160. TODO verify
 			best_spell = "turtleini";
-			spell_dmg = max(160,spell_dmg);
+			spell_dmg = max(160, spell_dmg);
 		}
 	}
-	
-	boolean plan_on_spells = false;
-	if(attack_dmg < spell_dmg)
+
+	let plan_on_spells: boolean = false;
+	if (attack_dmg < spell_dmg)
 	{
 		plan_on_spells = true;
 	}
-	
 	//final dressup for the boss
-	if(plan_on_spells)
+	if (plan_on_spells)
 	{
-		set_property("auto_rain_king_combat", best_spell);
-		setFlavour($element[sleaze]);		//a safe element that does not conflict with offhand items.
+		setProperty("auto_rain_king_combat", best_spell);
+		setFlavour(Element.get("sleaze")); //a safe element that does not conflict with offhand items.
 		executeFlavour();
-		if(spell_extra_element)
+		if (spell_extra_element)
 		{
 			addToMaximize("spell damage percent, +weapon");
-			if(item_amount($item[Rain-Doh green lantern]) > 0)
+			if (itemAmount(Item.get("Rain-Doh green lantern")) > 0)
 			{
-				autoEquip($slot[off-hand], $item[Rain-Doh green lantern]);
+				autoEquip(Slot.get("off-hand"), Item.get("Rain-Doh green lantern"));
 			}
-			else if(item_amount($item[meteorb]) > 0)
+			else if (itemAmount(Item.get("meteorb")) > 0)
 			{
-				autoEquip($slot[off-hand], $item[meteorb]);
+				autoEquip(Slot.get("off-hand"), Item.get("meteorb"));
 			}
-			else if(item_amount($item[snow mobile]) > 0)
+			else if (itemAmount(Item.get("snow mobile")) > 0)
 			{
-				autoEquip($slot[off-hand], $item[snow mobile]);
+				autoEquip(Slot.get("off-hand"), Item.get("snow mobile"));
 			}
 		}
-		else
-		{
+		else {
 			addToMaximize("spell damage percent, +weapon, +offhand");
 		}
 	}
-	else
-	{
-		set_property("auto_rain_king_combat", "attack");
-		if(want_club)
+	else {
+		setProperty("auto_rain_king_combat", "attack");
+		if (want_club)
 		{
 			addToMaximize("prismatic damage, +weapon, +offhand, +club");
 		}
-		else
-		{
+		else {
 			addToMaximize("prismatic damage, +weapon, +offhand");
 		}
 	}
 	//Rain King strips all equipment other than weapon and offhand.
 	//Stripped equipment can only provide you with -ML which is applied before the stripping
-	auto_buyUpTo(3, $item[water wings for babies]);
+	auto_buyUpTo(3, Item.get("water wings for babies"));
 	addToMaximize("-ml, -weapon, -offhand");
 	equipMaximizedGear();
-	
 	//Fight!
 	//auto_disableAdventureHandling because we don't want maximize, switch familiar, change buffs, or anything else that might break our specific prepwork.
 	acquireHP();
-	acquireMP(200);
-	set_property("auto_disableAdventureHandling", true);		
-	autoAdvBypass("place.php?whichplace=nstower&action=ns_10_sorcfight", $location[Noob Cave]);
-	set_property("auto_disableAdventureHandling", false);
-	if(last_monster() != $monster[The Rain King])
+	acquireMP$1(200);
+	setProperty("auto_disableAdventureHandling", true.toString());
+	autoAdvBypass$1("place.php?whichplace=nstower&action=ns_10_sorcfight", Location.get("Noob Cave"));
+	setProperty("auto_disableAdventureHandling", false.toString());
+	if (lastMonster() !== Monster.get("The Rain King"))
 	{
 		abort("Failed to start the battle with The Rain King");
 	}
-	if(have_effect($effect[Beaten Up]) > 0)
+	if (haveEffect(Effect.get("Beaten Up")) > 0)
 	{
 		abort("The Rain King beat me up! please finish him off manually");
 	}
-	if(get_property("auto_stayInRun").to_boolean())
+	if (toBoolean(getProperty("auto_stayInRun")))
 	{
 		abort("User wanted to stay in run (auto_stayInRun), we are done.");
 	}
-	else
-	{
-		visit_url("place.php?whichplace=nstower&action=ns_11_prism");
-		if(inAftercore())
+	else {
+		visitUrl("place.php?whichplace=nstower&action=ns_11_prism");
+		if (inAftercore())
 		{
 			abort("All done. King Ralph has been freed");
 		}

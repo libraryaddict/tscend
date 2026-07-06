@@ -1,164 +1,136 @@
-since r29012; // non-thrifty familiars are unusable in thrifty
+import { Class, Coinmaster, Effect, Element, Familiar, Item, Location, Monster, Skill, Slot, Stat, abort, availableAmount, buy, canDrink, canEat, canInteract, ceil, cliExecute, combatRateModifier, containsText, council, currentMcd, equip, equippedItem, experienceBonus, familiarEquippedEquipment, fullnessLimit, getAutoAttack, getClanRumpus, getProperty, getRevision, getWorkshed, gitInfo, guildStoreAvailable, haveEffect, haveEquipped, haveFamiliar, haveSkill, hiddenTempleUnlocked, hippyStoneBroken, inBadMoon, inHardcore, inebrietyLimit, isUnrestricted, itemAmount, itemDropModifier, knollAvailable, lastMonster, mallPrices, max, meatDropModifier, min, minstrelInstrument, monsterLevelAdjustment, mpCost, myAdventures, myAscensions, myBuffedstat, myClass, myDaycount, myFamiliar, myFullness, myHp, myInebriety, myLevel, myLightning, myLocation, myMaxhp, myMaxmp, myMeat, myMp, myName, myPath, myRain, mySessionAdv, mySoulsauce, mySpleenUse, myThunder, myTurncount, npcPrice, print, printHtml, pullsRemaining, putCloset, removeProperty, runChoice, setAutoAttack, setLocation, setProperty, spleenLimit, splitString, squareRoot, storageAmount, substring, toBoolean, toFamiliar, toFloat, toInt, toItem, toMonster, toSlot, todayToString, totalTurnsPlayed, use, useFamiliar, useSkill, userConfirm, visitUrl, wait } from "kolmafia";
+import { LX_craftAcquireItems, acquireGumItem, acquireHermitItem, acquireTotem, auto_buyUpTo, handlePulls, pullXWhenHaveY, pulverizeThing } from "./autoscend/auto_acquire";
+import { autoAdv$1, autoAdv$2 } from "./autoscend/auto_adventure";
+import { doBedtime } from "./autoscend/auto_bedtime";
+import { buffMaintain$4 } from "./autoscend/auto_buff";
+import { autoCleanse, consumeStuff, consumptionProgress } from "./autoscend/auto_consume";
+import { addToMaximize, ensureSealClubs, equipBaseline, equipMaximizedGear, equipStatgainIncreasers$2, possessEquipment, possessOutfit$1, resetMaximize } from "./autoscend/auto_equipment";
+import { auto_have_familiar, canChangeToFamiliar, doNotBuffFamiliar100Run, findNonRockFamiliarInTerrarium, handleFamiliar$1, is100FamRun, pathAllowsChangingFamiliar, pathHasFamiliar } from "./autoscend/auto_familiar";
+import { auto_freeCombatsRemaining } from "./autoscend/auto_powerlevel";
+import { acquireHP, invalidateRestoreOptionCache } from "./autoscend/auto_restore";
+import { solveDelayZone } from "./autoscend/auto_routing";
+import { auto_settings, auto_settingsFix } from "./autoscend/auto_settings";
+import { printSim } from "./autoscend/auto_sim";
+import { adjustForYellowRayIfPossible, almostRollover, autoCraft, auto_amIRich, auto_autosell, auto_get_campground, auto_have_skill, auto_interruptCheck, auto_is_valid, auto_log_debug, auto_log_debug$1, auto_log_info, auto_log_info$1, auto_log_warning, auto_meetsMinimumRequirements, auto_needAccordion, auto_predictAccordionTurns, backupSetting, banishSources, basicAdjustML, can_read_skillbook, copySources, doNumberology, doNumberology$2, freeCrafts$1, freeKillSources, freeRunSources, handleBarrelFullOfBarrels, handleSealElement, handleSealNormal, instaKillSources, internalQuestStatus, isArmoryAvailable, isFreeMonster, isHermitAvailable, isUnclePAvailable, maxSealSummons, meatReserveMessage, needToConsumeForEmergencyRollover, ovenHandle, restoreAllSettings, sniffSources, trim, use_barrels, yellowRaySources } from "./autoscend/auto_util";
+import { fileAsMap } from "./autoscend/utils/kolmafiaUtils";
+import { autoscend_migrate } from "./autoscend/autoscend_migration";
+import { auto_floundryAction, auto_get_clan_lounge, zataraClanmate } from "./autoscend/iotms/clan";
+import { elementalPlanes_access } from "./autoscend/iotms/elementalPlanes";
+import { eudora_initializeSettings } from "./autoscend/iotms/eudora";
+import { makeStartingSmiths, oldPeoplePlantStuff } from "./autoscend/iotms/mr2013";
+import { dna_generic, dna_sorceressTest, dna_startAcquire, handleBjornify, icehouseUserErrorProtection } from "./autoscend/iotms/mr2014";
+import { auto_barrelPrayers, chateaumantegna_havePainting, chateaumantegna_useDesk, chateaumantegna_usePainting, deck_useScheme } from "./autoscend/iotms/mr2015";
+import { LX_ghostBusting, auto_chapeau, auto_doPrecinct, auto_sourceTerminalEducate, auto_sourceTerminalRequest, isOverdueDigitize, witchessFights } from "./autoscend/iotms/mr2016";
+import { asdonAutoFeed, horseDefault, kgbSetup, kgb_getMartini, loveTunnelAcquire, makeGeniePocket } from "./autoscend/iotms/mr2017";
+import { auto_latteRefill$6, auto_setSongboom, auto_voteMonster$1, auto_voteMonster$2, auto_voteSetup$2, cheeseWarMachine, fightClubNap, fightClubStats, neverendingPartyAvailable } from "./autoscend/iotms/mr2018";
+import { auto_beachCombHead, auto_campawayGrabBuffs, auto_saberDailyUpgrade, auto_sausageGoblin, auto_sausageGoblin$2, auto_spoonTuneConfirm, auto_spoonTuneMoon } from "./autoscend/iotms/mr2019";
+import { auto_birdOfTheDay, auto_buyCrimboCommerceMallItem, auto_getGuzzlrCocktailSet, auto_latheAppropriateWeapon } from "./autoscend/iotms/mr2020";
+import { auto_CMCconsult, auto_backupTarget, auto_backupToYourLastEnemy, auto_buyFireworksHat, auto_enableBackupCameraReverser, auto_harvestBatteries } from "./autoscend/iotms/mr2021";
+import { auto_autumnatonQuest, auto_checkTrainSet, auto_juneCleaverAdventure, auto_voidMonster, auto_voidMonster$1, prioritizeGoose } from "./autoscend/iotms/mr2022";
+import { auto_SITCourse, auto_buyFrom2002MrStore, auto_defaultBurnLeaves, auto_doPhoneQuest, auto_habitatMonster, auto_initBurningLeaves, auto_lostStomach$1, auto_scepterSkills, auto_useBlackMonolith, pickRocks, rockGardenEnd } from "./autoscend/iotms/mr2023";
+import { auto_MayamAllUsed, auto_MayamClaimAll, auto_buyFromSeptEmberStore, auto_getAprilingBandItems, auto_getClanPhotoBoothDefaultItems, auto_getClanPhotoBoothEffect$3, auto_haveMayamCalendar } from "./autoscend/iotms/mr2024";
+import { auto_getBCZItems, auto_getGlobs, auto_openMcLargeHugeSkis, auto_setLeprecondo, auto_useLeprecondoDrops, auto_waveTheZone } from "./autoscend/iotms/mr2025";
+import { auto_useWardrobe } from "./autoscend/iotms/ttt";
+import { ed_initializeDay, ed_initializeSession, ed_initializeSettings, isActuallyEd } from "./autoscend/paths/actually_ed_the_undying";
+import { LM_adventurerMeatsWorld, amw_initializeSettings, in_amw } from "./autoscend/paths/adventurer_meats_world";
+import { auto_buySkills, pathDroppedCheck } from "./autoscend/paths/auto_path_util";
+import { ag_initializeSettings, in_avantGuard } from "./autoscend/paths/avant_guard";
+import { LM_boris, boris_buySkills, boris_initializeDay, boris_initializeSettings, is_boris } from "./autoscend/paths/avatar_of_boris";
+import { LM_jarlsberg, is_jarlsberg, jarlsberg_buySkills, jarlsberg_initializeDay, jarlsberg_initializeSettings } from "./autoscend/paths/avatar_of_jarlsberg";
+import { aosol_buySkills, aosol_initializeSettings, aosol_unCurse } from "./autoscend/paths/avatar_of_shadows_over_loathing";
+import { LM_pete, is_pete, pete_buySkills, pete_initializeDay, pete_initializeSettings } from "./autoscend/paths/avatar_of_sneaky_pete";
+import { awol_buySkills, awol_initializeSettings, awol_useStuff } from "./autoscend/paths/avatar_of_west_of_loathing";
+import { LM_bhy, bhy_initializeSettings, in_bhy } from "./autoscend/paths/bees_hate_you";
+import { bugbear_initializeSettings } from "./autoscend/paths/bugbear_invasion";
+import { LM_canInteract, casualCheck, inAftercore } from "./autoscend/paths/casual";
+import { in_community } from "./autoscend/paths/community_service";
+import { LM_batpath, bat_formNone, bat_initializeDay, bat_initializeSession, bat_initializeSettings, in_darkGyffte } from "./autoscend/paths/dark_gyffte";
+import { disguises_initializeSettings } from "./autoscend/paths/disguises_delimit";
+import { fotd_initializeSettings } from "./autoscend/paths/fall_of_the_dinosaurs";
+import { LM_glover, glover_initializeDay, glover_initializeSettings, in_glover } from "./autoscend/paths/g_lover";
+import { LM_gnoob } from "./autoscend/paths/gelatinous_noob";
+import { LA_grey_goo_tasks, in_ggoo } from "./autoscend/paths/grey_goo";
+import { ht_equip_hats } from "./autoscend/paths/hattrick";
+import { heavyrains_buySkills, heavyrains_initializeDay, heavyrains_initializeSettings, in_heavyrains } from "./autoscend/paths/heavy_rains";
+import { iluh_buyEquiq } from "./autoscend/paths/i_love_u_hate";
+import { in_koe, koe_acquire_rmi$1, koe_initializeSettings, koe_rmi_count } from "./autoscend/paths/kingdom_of_exploathing";
+import { LM_kolhs, kolhs_initializeSettings } from "./autoscend/paths/kolhs";
+import { auto_LegacyOfLoathingDailies, lol_buyReplicas, lol_initializeSettings } from "./autoscend/paths/legacy_of_loathing";
+import { LM_bond, bond_initializeSettings } from "./autoscend/paths/license_to_adventure";
+import { LM_lar, in_lar, lar_safeguard } from "./autoscend/paths/live_ascend_repeat";
+import { lowkey_initializeSettings } from "./autoscend/paths/low_key_summer";
+import { LM_nuclear, nuclear_initializeDay, nuclear_initializeSettings } from "./autoscend/paths/nuclear_autumn";
+import { ocrs_postCombatResolve } from "./autoscend/paths/one_crazy_random_summer";
+import { LM_plumber, in_plumber, plumber_canDealScalingDamage, plumber_equipTool$1, plumber_initializeSettings } from "./autoscend/paths/path_of_the_plumber";
+import { picky_pulls } from "./autoscend/paths/picky";
+import { in_pokefam, pokefam_getHats, pokefam_initializeSettings } from "./autoscend/paths/pocket_familiars";
+import { auto_refreshQTFam, qt_initializeSettings } from "./autoscend/paths/quantum_terrarium";
+import { auto_smallCampgroundGear, small_initializeSettings } from "./autoscend/paths/small";
+import { LX_theSource, in_theSource, theSource_buySkills, theSource_initializeSettings, theSource_oracle } from "./autoscend/paths/the_source";
+import { in_wotsf } from "./autoscend/paths/way_of_the_surprising_fist";
+import { in_wereprof, is_werewolf, wereprof_initializeSettings } from "./autoscend/paths/wereprofessor";
+import { LA_wildfire, LX_wildfire_calculateTheUniverse, in_wildfire, wildfire_initializeSettings } from "./autoscend/paths/wildfire";
+import { LA_robot, LM_robot, in_robot, robot_initializeSettings } from "./autoscend/paths/you_robot";
+import { LM_zombieSlayer, zombieSlayer_buySkills, zombieSlayer_initializeSettings } from "./autoscend/paths/zombie_slayer";
+import { LX_zootoFight, zoo_graftFam } from "./autoscend/paths/zootomist";
+import { tootGetMeat, tootOriole } from "./autoscend/quests/level_01";
+import { L8_mountainManSummon } from "./autoscend/quests/level_08";
+import { finishBuildingSmutOrcBridge } from "./autoscend/quests/level_09";
+import { auto_warSide } from "./autoscend/quests/level_12";
+import { beehiveConsider, ns_crowd3 } from "./autoscend/quests/level_13";
+import { LX_ForceNC, LX_dronesOut, LX_handleIntroAdventures, useTonicDjinn } from "./autoscend/quests/level_any";
+import { houseUpgrade } from "./autoscend/quests/optional";
+import { callRegisteredTaskFunction } from "./autoscend/task_registry";
+import { AshMatcher } from "./autoscend/utils/kolmafiaUtils";
 
+// non-thrifty familiars are unusable in thrifty
 /***
 	autoscend_header.ash must be first import
 	All non-accessory scripts must be imported here
-
 	Accessory scripts can import autoscend.ash
 ***/
+//this file contains its own header. so it needs to be imported early
 
-
-import <autoscend/autoscend_header.ash>
-import <autoscend/combat/auto_combat.ash>		//this file contains its own header. so it needs to be imported early
-import <autoscend/autoscend_migration.ash>
-
-import <autoscend/auto_acquire.ash>
-import <autoscend/auto_adventure.ash>
-import <autoscend/auto_bedtime.ash>
-import <autoscend/auto_buff.ash>
-import <autoscend/auto_consume.ash>
-import <autoscend/auto_craft.ash>
-import <autoscend/auto_equipment.ash>
-import <autoscend/auto_familiar.ash>
-import <autoscend/auto_list.ash>
-import <autoscend/auto_monsterparts.ash>
-import <autoscend/auto_powerlevel.ash>
-import <autoscend/auto_providers.ash>
-import <autoscend/auto_restore.ash>
-import <autoscend/auto_routing.ash>
-import <autoscend/auto_settings.ash>
-import <autoscend/auto_sim.ash>
-import <autoscend/auto_util.ash>
-import <autoscend/auto_zlib.ash>
-import <autoscend/auto_zone.ash>
-
-import <autoscend/iotms/clan.ash>
-import <autoscend/iotms/elementalPlanes.ash>
-import <autoscend/iotms/eudora.ash>
-import <autoscend/iotms/mr2007.ash>
-import <autoscend/iotms/mr2011.ash>
-import <autoscend/iotms/mr2012.ash>
-import <autoscend/iotms/mr2013.ash>
-import <autoscend/iotms/mr2014.ash>
-import <autoscend/iotms/mr2015.ash>
-import <autoscend/iotms/mr2016.ash>
-import <autoscend/iotms/mr2017.ash>
-import <autoscend/iotms/mr2018.ash>
-import <autoscend/iotms/mr2019.ash>
-import <autoscend/iotms/mr2020.ash>
-import <autoscend/iotms/mr2021.ash>
-import <autoscend/iotms/mr2022.ash>
-import <autoscend/iotms/mr2023.ash>
-import <autoscend/iotms/mr2024.ash>
-import <autoscend/iotms/mr2025.ash>
-import <autoscend/iotms/mr2026.ash>
-import <autoscend/iotms/ttt.ash>
-
-import <autoscend/paths/actually_ed_the_undying.ash>
-import <autoscend/paths/adventurer_meats_world.ash>
-import <autoscend/paths/auto_path_util.ash>
-import <autoscend/paths/avant_guard.ash>
-import <autoscend/paths/avatar_of_boris.ash>
-import <autoscend/paths/avatar_of_jarlsberg.ash>
-import <autoscend/paths/avatar_of_sneaky_pete.ash>
-import <autoscend/paths/avatar_of_shadows_over_loathing.ash>
-import <autoscend/paths/avatar_of_west_of_loathing.ash>
-import <autoscend/paths/bees_hate_you.ash>
-import <autoscend/paths/bugbear_invasion.ash>
-import <autoscend/paths/casual.ash>
-import <autoscend/paths/class_act.ash>
-import <autoscend/paths/class_act_two.ash>
-import <autoscend/paths/community_service.ash>
-import <autoscend/paths/dark_gyffte.ash>
-import <autoscend/paths/disguises_delimit.ash>
-import <autoscend/paths/fall_of_the_dinosaurs.ash>
-import <autoscend/paths/g_lover.ash>
-import <autoscend/paths/gelatinous_noob.ash>
-import <autoscend/paths/grey_goo.ash>
-import <autoscend/paths/hattrick.ash>
-import <autoscend/paths/heavy_rains.ash>
-import <autoscend/paths/i_love_u_hate.ash>
-import <autoscend/paths/journeyman.ash>
-import <autoscend/paths/kingdom_of_exploathing.ash>
-import <autoscend/paths/kolhs.ash>
-import <autoscend/paths/legacy_of_loathing.ash>
-import <autoscend/paths/license_to_adventure.ash>
-import <autoscend/paths/live_ascend_repeat.ash>
-import <autoscend/paths/low_key_summer.ash>
-import <autoscend/paths/nuclear_autumn.ash>
-import <autoscend/paths/one_crazy_random_summer.ash>
-import <autoscend/paths/path_of_the_plumber.ash>
-import <autoscend/paths/picky.ash>
-import <autoscend/paths/pocket_familiars.ash>
-import <autoscend/paths/quantum_terrarium.ash>
-import <autoscend/paths/small.ash>
-import <autoscend/paths/the_source.ash>
-import <autoscend/paths/two_crazy_random_summer.ash>
-import <autoscend/paths/way_of_the_surprising_fist.ash>
-import <autoscend/paths/wereprofessor.ash>
-import <autoscend/paths/wildfire.ash>
-import <autoscend/paths/you_robot.ash>
-import <autoscend/paths/zombie_slayer.ash>
-import <autoscend/paths/zootomist.ash>
-
-import <autoscend/quests/level_01.ash>
-import <autoscend/quests/level_02.ash>
-import <autoscend/quests/level_03.ash>
-import <autoscend/quests/level_04.ash>
-import <autoscend/quests/level_05.ash>
-import <autoscend/quests/level_06.ash>
-import <autoscend/quests/level_07.ash>
-import <autoscend/quests/level_08.ash>
-import <autoscend/quests/level_09.ash>
-import <autoscend/quests/level_10.ash>
-import <autoscend/quests/level_11.ash>
-import <autoscend/quests/level_12.ash>
-import <autoscend/quests/level_13.ash>
-import <autoscend/quests/level_any.ash>
-import <autoscend/quests/optional.ash>
-
-void initializeSettings() {
+//Defined in autoscend.ash
+export function initializeSettings(): void {
 
 	if (inAftercore()) {
 		return;
 	}
-
 	// called once per ascension on the first launch of the script.
 	// should not handle anything other than intialising properties etc.
 	// all paths that have extra settings should call their path specific
 	// initialise function at the end of this function (may override properties set in here).
-	
 	//if we detected a path drop we need to reinitialize. either due to dropping a path or breaking ronin in some paths.
-	boolean reinitialize = get_property("_auto_reinitialize").to_boolean();
-	if(!reinitialize && my_ascensions() == get_property("auto_doneInitialize").to_int())
+	let reinitialize: boolean = toBoolean(getProperty("_auto_reinitialize"));
+	if (!reinitialize && myAscensions() === toInt(getProperty("auto_doneInitialize")))
 	{
-		return;		//already initialized settings this ascension
+		return; //already initialized settings this ascension
 	}
-	set_location($location[none]);
+	setLocation(Location.none);
 	invalidateRestoreOptionCache();
 
-	if(!reinitialize)
+	if (!reinitialize)
 	{
-		set_property("auto_100familiar", $familiar[none]);
-		if(my_familiar() != $familiar[none] && pathAllowsChangingFamiliar()) //If we can't control familiar changes, no point setting 100% familiar data
-		{
-			boolean userAnswer = user_confirm("Familiar already set, is this a 100% familiar run? Will default to 'No' in 15 seconds.", 15000, false);
-			if(userAnswer)
+		setProperty("auto_100familiar", Familiar.none.toString());
+		if (myFamiliar() !== Familiar.none && pathAllowsChangingFamiliar())
+		{ //If we can't control familiar changes, no point setting 100% familiar data
+			let userAnswer: boolean = userConfirm("Familiar already set, is this a 100% familiar run? Will default to 'No' in 15 seconds.", 15000, false);
+			if (userAnswer)
 			{
-				set_property("auto_100familiar", my_familiar());
+				setProperty("auto_100familiar", myFamiliar().toString());
 			}
 		}
 		//check for a workshed
-		if(get_workshed() != $item[none])
+		if (getWorkshed() !== Item.none)
 		{
-			boolean userAnswer = user_confirm("Workshed already set, do you want Autoscend to handle your workshed? Will default to 'Yes' in 15 seconds.", 15000, true);
-			if(userAnswer)
+			let userAnswer: boolean = userConfirm("Workshed already set, do you want Autoscend to handle your workshed? Will default to 'Yes' in 15 seconds.", 15000, true);
+			if (userAnswer)
 			{
-				set_property("auto_workshed", "auto");
+				setProperty("auto_workshed", "auto");
 			}
-			else
-			{
-				set_property("auto_workshed", get_workshed().to_string());
+			else {
+				setProperty("auto_workshed", getWorkshed().toString());
 			}
 		}
 	}
@@ -167,116 +139,116 @@ void initializeSettings() {
 
 	icehouseUserErrorProtection();
 
-	string pool = visit_url("questlog.php?which=3");
-	matcher my_pool = create_matcher("a skill level of (\\d+) at shooting pool", pool);
-	if(my_pool.find() && (my_turncount() == 0))
+	let pool: string = visitUrl("questlog.php?which=3");
+	let my_pool: AshMatcher = new AshMatcher("a skill level of (\\d+) at shooting pool", pool);
+	if (my_pool.find() && myTurncount() === 0)
 	{
-		int curSkill = to_int(my_pool.group(1));
-		int sharkCountMin = ceil((curSkill * curSkill) / 4);
-		int sharkCountMax = ceil((curSkill + 1) * (curSkill + 1) / 4);
+		let curSkill: number = toInt(my_pool.group(1));
+		let sharkCountMin: number = ceil(curSkill * curSkill / 4);
+		let sharkCountMax: number = ceil((curSkill + 1) * (curSkill + 1) / 4);
 	}
 
-	set_property("auto_abooclover", true);
-	set_property("auto_aboopending", 0);
-	set_property("auto_avalancheDeployed", false);
-	set_property("auto_banishes", "");
-	set_property("auto_batoomerangDay", 0);
-	set_property("auto_beatenUpCount", 0);
-	set_property("auto_beatenUpLastAdv", false);
-	remove_property("auto_beatenUpLocations");
-	set_property("auto_getBeehive", false);
-	set_property("auto_bruteForcePalindome", false);
-	set_property("auto_doWhiteys", false);
-	set_property("auto_cabinetsencountered", 0);
-	set_property("auto_chasmBusted", true);
-	set_property("auto_chewed", "");
-	set_property("auto_clanstuff", "0");
-	set_property("auto_considerCCSCShore", true);
-	set_property("auto_copies", "");
-	set_property("auto_dakotaFanning", false);
-	set_property("auto_day_init", 0);
-	set_property("auto_day1_dna", "");
-	set_property("auto_day2WaitLastLevel", "0");
-	set_property("auto_debuffAsdonDelay", 0);
-	set_property("auto_disableAdventureHandling", false);
-	set_property("auto_doCombatCopy", "no");
-	set_property("auto_dontPhylumBanish", false);
-	set_property("auto_runDayCount", 2);
-	set_property("auto_drunken", "");
-	set_property("auto_eaten", "");
-	set_property("auto_familiarChoice", "");
-	remove_property("auto_forcedNC");
-	set_property("auto_forceNonCombatLocation", "");
-	set_property("auto_forceNonCombatSource", "");
-	set_property("auto_forceNonCombatTurn", -1);
-	set_property("auto_forceTavern", false);
-	set_property("auto_freeruns", "");
-	set_property("auto_funTracker", "");
-	set_property("auto_getBoningKnife", false);
-	set_property("auto_getStarKey", true);
-	set_property("auto_getSteelOrgan", get_property("auto_getSteelOrgan_initialize"));
-	set_property("auto_gnasirUnlocked", false);
-	set_property("auto_grimstoneFancyOilPainting", true);
-	set_property("auto_grimstoneOrnateDowsingRod", true);
-	set_property("auto_haveoven", false);
-	set_property("auto_doGalaktik", get_property("auto_doGalaktik_initialize"));
-	set_property("auto_L8_ninjaAssassinFail", false);
-	set_property("auto_L8_extremeInstead", false);
-	set_property("auto_L9_smutOrcPervert", false);
-	set_property("auto_haveSourceTerminal", false);
-	set_property("auto_hedge", "fast");
-	set_property("auto_hippyInstead", false);
-	set_property("auto_holeinthesky", true);
-	set_property("auto_ignoreCombat", "");
-	set_property("auto_ignoreFlyer", false);
-	set_property("auto_instakill", "");
-	set_property("auto_instakillSource", "");
-	set_property("auto_instakillSuccess", false);
-	set_property("auto_interruptedZones", "");
-	set_property("auto_iotm_claim", "");
-	set_property("auto_leaflet_done", false);
-	set_property("auto_lucky", "");
-	set_property("auto_luckySource", "none");
-	set_property("auto_mapperidot", "");
-	set_property("auto_modernzmobiecount", "");
-	set_property("auto_powerfulglove", "");
-	set_property("auto_otherstuff", "");
-	set_property("auto_paranoia", -1);
-	set_property("auto_paranoia_counter", 0);
-	set_property("auto_parkaSpikesDeployed", false);
-	set_property("auto_priorCharpaneMode", "0");
-	set_property("auto_powerLevelAdvCount", "0");
-	set_property("auto_powerLevelLastAttempted", "0");
-	set_property("auto_pulls", "");
-	remove_property("auto_shenZonesTurnsSpent");
-	remove_property("auto_lastShenTurn");
-	set_property("auto_sniffs", "");
-	set_property("auto_stopMinutesToRollover", "5");
-	set_property("auto_tracker_path","");
-	set_property("auto_wandOfNagamar", true);
-	set_property("auto_wineracksencountered", 0);
-	set_property("auto_wishes", "");
-	set_property("auto_writingDeskSummon", false);
-	set_property("auto_yellowRays", "");
-	set_property("auto_replaces", "");
-	set_property("auto_skipNuns", "false");
-	set_property("auto_skipL12Farm", "false");
-	set_property("auto_L12FarmStage", "0");
-	set_property("choiceAdventure1003", 0);
-	set_property("auto_junkspritesencountered", 0);
-	set_property("auto_openedziggurat", false);
-	remove_property("auto_minedCells");
-	remove_property("auto_shinningStarted");
-	remove_property("auto_boughtCommerceGhostItem");
-	remove_property("auto_saveMargarita");
-	remove_property("auto_csDoWheel");
-	remove_property("auto_hccsTurnSave");
-	remove_property("auto_hccsNoConcludeDay");
-	remove_property("auto_saveSausage");
-	remove_property("auto_saveVintage");
-	set_property("auto_dontUseCookBookBat", false);
-	set_property("auto_dietpills", 0);
-	set_property("_auto_candyMapCompleted", false);
+	setProperty("auto_abooclover", true.toString());
+	setProperty("auto_aboopending", (0).toString());
+	setProperty("auto_avalancheDeployed", false.toString());
+	setProperty("auto_banishes", "");
+	setProperty("auto_batoomerangDay", (0).toString());
+	setProperty("auto_beatenUpCount", (0).toString());
+	setProperty("auto_beatenUpLastAdv", false.toString());
+	removeProperty("auto_beatenUpLocations");
+	setProperty("auto_getBeehive", false.toString());
+	setProperty("auto_bruteForcePalindome", false.toString());
+	setProperty("auto_doWhiteys", false.toString());
+	setProperty("auto_cabinetsencountered", (0).toString());
+	setProperty("auto_chasmBusted", true.toString());
+	setProperty("auto_chewed", "");
+	setProperty("auto_clanstuff", "0");
+	setProperty("auto_considerCCSCShore", true.toString());
+	setProperty("auto_copies", "");
+	setProperty("auto_dakotaFanning", false.toString());
+	setProperty("auto_day_init", (0).toString());
+	setProperty("auto_day1_dna", "");
+	setProperty("auto_day2WaitLastLevel", "0");
+	setProperty("auto_debuffAsdonDelay", (0).toString());
+	setProperty("auto_disableAdventureHandling", false.toString());
+	setProperty("auto_doCombatCopy", "no");
+	setProperty("auto_dontPhylumBanish", false.toString());
+	setProperty("auto_runDayCount", (2).toString());
+	setProperty("auto_drunken", "");
+	setProperty("auto_eaten", "");
+	setProperty("auto_familiarChoice", "");
+	removeProperty("auto_forcedNC");
+	setProperty("auto_forceNonCombatLocation", "");
+	setProperty("auto_forceNonCombatSource", "");
+	setProperty("auto_forceNonCombatTurn", (-1).toString());
+	setProperty("auto_forceTavern", false.toString());
+	setProperty("auto_freeruns", "");
+	setProperty("auto_funTracker", "");
+	setProperty("auto_getBoningKnife", false.toString());
+	setProperty("auto_getStarKey", true.toString());
+	setProperty("auto_getSteelOrgan", getProperty("auto_getSteelOrgan_initialize"));
+	setProperty("auto_gnasirUnlocked", false.toString());
+	setProperty("auto_grimstoneFancyOilPainting", true.toString());
+	setProperty("auto_grimstoneOrnateDowsingRod", true.toString());
+	setProperty("auto_haveoven", false.toString());
+	setProperty("auto_doGalaktik", getProperty("auto_doGalaktik_initialize"));
+	setProperty("auto_L8_ninjaAssassinFail", false.toString());
+	setProperty("auto_L8_extremeInstead", false.toString());
+	setProperty("auto_L9_smutOrcPervert", false.toString());
+	setProperty("auto_haveSourceTerminal", false.toString());
+	setProperty("auto_hedge", "fast");
+	setProperty("auto_hippyInstead", false.toString());
+	setProperty("auto_holeinthesky", true.toString());
+	setProperty("auto_ignoreCombat", "");
+	setProperty("auto_ignoreFlyer", false.toString());
+	setProperty("auto_instakill", "");
+	setProperty("auto_instakillSource", "");
+	setProperty("auto_instakillSuccess", false.toString());
+	setProperty("auto_interruptedZones", "");
+	setProperty("auto_iotm_claim", "");
+	setProperty("auto_leaflet_done", false.toString());
+	setProperty("auto_lucky", "");
+	setProperty("auto_luckySource", "none");
+	setProperty("auto_mapperidot", "");
+	setProperty("auto_modernzmobiecount", "");
+	setProperty("auto_powerfulglove", "");
+	setProperty("auto_otherstuff", "");
+	setProperty("auto_paranoia", (-1).toString());
+	setProperty("auto_paranoia_counter", (0).toString());
+	setProperty("auto_parkaSpikesDeployed", false.toString());
+	setProperty("auto_priorCharpaneMode", "0");
+	setProperty("auto_powerLevelAdvCount", "0");
+	setProperty("auto_powerLevelLastAttempted", "0");
+	setProperty("auto_pulls", "");
+	removeProperty("auto_shenZonesTurnsSpent");
+	removeProperty("auto_lastShenTurn");
+	setProperty("auto_sniffs", "");
+	setProperty("auto_stopMinutesToRollover", "5");
+	setProperty("auto_tracker_path", "");
+	setProperty("auto_wandOfNagamar", true.toString());
+	setProperty("auto_wineracksencountered", (0).toString());
+	setProperty("auto_wishes", "");
+	setProperty("auto_writingDeskSummon", false.toString());
+	setProperty("auto_yellowRays", "");
+	setProperty("auto_replaces", "");
+	setProperty("auto_skipNuns", "false");
+	setProperty("auto_skipL12Farm", "false");
+	setProperty("auto_L12FarmStage", "0");
+	setProperty("choiceAdventure1003", (0).toString());
+	setProperty("auto_junkspritesencountered", (0).toString());
+	setProperty("auto_openedziggurat", false.toString());
+	removeProperty("auto_minedCells");
+	removeProperty("auto_shinningStarted");
+	removeProperty("auto_boughtCommerceGhostItem");
+	removeProperty("auto_saveMargarita");
+	removeProperty("auto_csDoWheel");
+	removeProperty("auto_hccsTurnSave");
+	removeProperty("auto_hccsNoConcludeDay");
+	removeProperty("auto_saveSausage");
+	removeProperty("auto_saveVintage");
+	setProperty("auto_dontUseCookBookBat", false.toString());
+	setProperty("auto_dietpills", (0).toString());
+	setProperty("_auto_candyMapCompleted", false.toString());
 	beehiveConsider(false);
 
 	eudora_initializeSettings();
@@ -311,105 +283,99 @@ void initializeSettings() {
 	ag_initializeSettings();
 	amw_initializeSettings();
 
-	set_property("auto_doneInitializePath", my_path().name);		//which path we initialized as
-	set_property("auto_doneInitialize", my_ascensions());
-	remove_property("_auto_reinitialize");
+	setProperty("auto_doneInitializePath", myPath().name); //which path we initialized as
+	setProperty("auto_doneInitialize", myAscensions().toString());
+	removeProperty("_auto_reinitialize");
 }
 
-void initializeSession() {
+export function initializeSession(): void {
 	// called once every time the script is started.
 	// anything that needs to be set only for the duration the script is running
 	// should be set in here.
 
 	auto_enableBackupCameraReverser();
-	set_property("_auto_organSpace", -1.0);
+	setProperty("_auto_organSpace", (-1.0).toString());
 	ed_initializeSession();
 	bat_initializeSession();
 }
 
-int auto_advToReserve()
+export function auto_advToReserve(): number
 {
 	// Calculates how many adventures we should aim to keep in reserve
-	
 	// if auto_save_adv_override value is 0 or higher then use the override
-	if(get_property("auto_save_adv_override").to_int() > -1)
+	if (toInt(getProperty("auto_save_adv_override")) > -1)
 	{
-		return get_property("auto_save_adv_override").to_int();
+		return toInt(getProperty("auto_save_adv_override"));
 	}
-
 	// automatically calculate how many adv to reserve at end of day
 	// free crafting require at least 1 adventure to do.
 	// To enter free fights we need at least 1 adventure remaining. Dying costs an adventure, so we reserve 2 adventures so the user can manually complete the remaining fights even if we lose.
 	// cocktailcrafting and pasta cooking require 2 adventures.
-	
-	int reserveadv = 1;
-	
-	if(auto_freeCombatsRemaining() > 0)
+
+	let reserveadv: number = 1;
+
+	if (auto_freeCombatsRemaining() > 0)
 	{
 		reserveadv = max(2, reserveadv);
 	}
-	
-	if(freeCrafts() < 2)
+
+	if (freeCrafts$1() < 2)
 	{
 		//smallest Pasta dish that takes 2 adv to craft is 3 fullness.
 		//Pastamastery is required for all pasta and having it alone is enough to craft foods that take 2 adv to craft
-		if(can_eat() && my_fullness()+3 <= fullness_limit() && auto_have_skill($skill[Pastamastery]))
+		if (canEat() && myFullness() + 3 <= fullnessLimit() && auto_have_skill(Skill.get("Pastamastery")))
 		{
 			reserveadv = max(2, reserveadv);
 		}
-		
 		//Advanced Cocktailcrafting skill is enough to make drinks that cost 2 adv to craft
 		//because of nightcap, there is no point in checking your inebrity limits.
-		if(can_drink() && auto_have_skill($skill[Advanced Cocktailcrafting]))
+		if (canDrink() && auto_have_skill(Skill.get("Advanced Cocktailcrafting")))
 		{
 			reserveadv = max(2, reserveadv);
 		}
-		
 		//sneaky pete specific check. Mixologist lets you spend 2 adv on crafting. cocktail magic makes crafting free.
-		if(auto_have_skill($skill[Mixologist]) && !auto_have_skill($skill[Cocktail Magic]))
+		if (auto_have_skill(Skill.get("Mixologist")) && !auto_have_skill(Skill.get("Cocktail Magic")))
 		{
 			reserveadv = max(2, reserveadv);
 		}
 	}
-	
+
 	return reserveadv;
 }
 
-boolean auto_unreservedAdvRemaining()
+export function auto_unreservedAdvRemaining(): boolean
 {
 	// should the main loop continue to run or not, based on how many adv we wish to reserve.
-	if(my_adventures() > auto_advToReserve())
+	if (myAdventures() > auto_advToReserve())
 	{
 		return true;
 	}
 	return false;
 }
 
-boolean LX_burnDelay()
+export function LX_burnDelay(): boolean
 {
-	boolean voteMonsterAvailable = auto_voteMonster(true);
-	boolean digitizeMonsterNext = isOverdueDigitize();
-	boolean sausageGoblinAvailable = auto_sausageGoblin();
-	boolean backupTargetAvailable = auto_backupTarget();
-	boolean voidMonsterAvailable = auto_voidMonster();
-	boolean habitatingMonsters = auto_habitatMonster() != $monster[none];
-
+	let voteMonsterAvailable: boolean = auto_voteMonster$1(true);
+	let digitizeMonsterNext: boolean = isOverdueDigitize();
+	let sausageGoblinAvailable: boolean = auto_sausageGoblin();
+	let backupTargetAvailable: boolean = auto_backupTarget();
+	let voidMonsterAvailable: boolean = auto_voidMonster();
+	let habitatingMonsters: boolean = auto_habitatMonster() !== Monster.none;
 	// if we're a plumber and we're still stuck doing a flat 15 damage per attack
 	// then a scaling monster is probably going to be a bad time
-	if(in_plumber() && !plumber_canDealScalingDamage())
+	if (in_plumber() && !plumber_canDealScalingDamage())
 	{
 		// unless we can still kill it in one hit, then it should probably be fine?
-		int predictedScalerHP = to_int(0.75 * (my_buffedstat($stat[Muscle]) + monster_level_adjustment()));
-		if(predictedScalerHP > 15)
+		let predictedScalerHP: number = toInt(0.75 * (myBuffedstat(Stat.get("Muscle")) + monsterLevelAdjustment()));
+		if (predictedScalerHP > 15)
 		{
-			auto_log_info("Want to burn delay with scaling wanderers, but we can't deal scaling damage yet and it would be too strong :(");
+			auto_log_info$1("Want to burn delay with scaling wanderers, but we can't deal scaling damage yet and it would be too strong :(");
 			voteMonsterAvailable = false;
 			sausageGoblinAvailable = false;
 			addToMaximize("-equip Kramco Sausage O-Matic");
 			addToMaximize("-equip &quot;I Voted!&quot; sticker");
 		}
 	}
-
 	// See the encounter priority flowcharts available at https://i.imgur.com/sdVH4SPh.jpg
 	// and https://github.com/loathers/encounter/blob/main/heirarchy.mermaid if adding handling for more stuff
 
@@ -417,16 +383,16 @@ boolean LX_burnDelay()
 	{
 		// Voting monsters are inherently free (the ones we fight anyway).
 		// don't fight them if we're going to backup because they will overwrite the monster we want to backup
-		location voterZone = solveDelayZone(get_property("breathitinCharges").to_int() > 0);
-		if (voterZone != $location[none])
+		let voterZone: Location = solveDelayZone(toInt(getProperty("breathitinCharges")) > 0);
+		if (voterZone !== Location.none)
 		{
-			auto_log_info(`Fighting a free {get_property("_voteMonster")} in {voterZone.to_string()} to burn delay!`, "green");
-			set_property("auto_nextEncounter",get_property("_voteMonster"));
-			if (auto_voteMonster(true, voterZone))
+			auto_log_info(`Fighting a free ${getProperty("_voteMonster")} in ${voterZone.toString()} to burn delay!`, "green");
+			setProperty("auto_nextEncounter", getProperty("_voteMonster"));
+			if (auto_voteMonster$2(true, voterZone))
 			{
 				return true;
 			}
-			set_property("auto_nextEncounter","");
+			setProperty("auto_nextEncounter", "");
 		}
 	}
 
@@ -434,34 +400,34 @@ boolean LX_burnDelay()
 	{
 		// Digitize Wanderers will happen regardless so prioritize handling them.
 		// hopefully they don't overwrite something we want to backup.
-		location digitizeZone = solveDelayZone(isFreeMonster(get_property("_sourceTerminalDigitizeMonster").to_monster()) && get_property("breathitinCharges").to_int() > 0);
-		if (digitizeZone == $location[none])
+		let digitizeZone: Location = solveDelayZone(isFreeMonster(toMonster(getProperty("_sourceTerminalDigitizeMonster"))) && toInt(getProperty("breathitinCharges")) > 0);
+		if (digitizeZone === Location.none)
 		{
 			// if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
 			// and we likely want to fight it. Noob Cave is available from turn 0 & is not outdoors so Breathitin won't trigger.
-			digitizeZone = $location[Noob Cave];
+			digitizeZone = Location.get("Noob Cave");
 		}
-		auto_log_info(`Fighting a {get_property("_sourceTerminalDigitizeMonster")} in {digitizeZone.to_string()} to burn delay!`, "green");
-		set_property("auto_nextEncounter",get_property("_sourceTerminalDigitizeMonster"));
-		if (autoAdv(digitizeZone))
+		auto_log_info(`Fighting a ${getProperty("_sourceTerminalDigitizeMonster")} in ${digitizeZone.toString()} to burn delay!`, "green");
+		setProperty("auto_nextEncounter", getProperty("_sourceTerminalDigitizeMonster"));
+		if (autoAdv$2(digitizeZone))
 		{
 			return true;
 		}
-		set_property("auto_nextEncounter","");
+		setProperty("auto_nextEncounter", "");
 	}
 
 	if (backupTargetAvailable)
 	{
-		boolean skipOutdoorZones = isFreeMonster(get_property("lastCopyableMonster").to_monster()) && get_property("breathitinCharges").to_int() > 0;
-		location backupZone = solveDelayZone(skipOutdoorZones);
-		if (backupZone == $location[none] && skipOutdoorZones && !in_koe())
+		let skipOutdoorZones: boolean = isFreeMonster(toMonster(getProperty("lastCopyableMonster"))) && toInt(getProperty("breathitinCharges")) > 0;
+		let backupZone: Location = solveDelayZone(skipOutdoorZones);
+		if (backupZone === Location.none && skipOutdoorZones && !in_koe())
 		{
 			// if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
 			// and we likely want to fight it. Noob Cave is available from turn 0 & is not outdoors so Breathitin won't trigger.
-			backupZone = $location[Noob Cave];
+			backupZone = Location.get("Noob Cave");
 		}
 
-		auto_log_info(`Fighting a {get_property("lastCopyableMonster")} in {backupZone.to_string()} to burn delay!`, "green");
+		auto_log_info(`Fighting a ${getProperty("lastCopyableMonster")} in ${backupZone.toString()} to burn delay!`, "green");
 		if (auto_backupToYourLastEnemy(backupZone))
 		{
 			return true;
@@ -471,11 +437,11 @@ boolean LX_burnDelay()
 	if (sausageGoblinAvailable)
 	{
 		// Sausage Goblins are inherently free
-		location goblinZone = solveDelayZone(get_property("breathitinCharges").to_int() > 0);
-		if (goblinZone != $location[none])
+		let goblinZone: Location = solveDelayZone(toInt(getProperty("breathitinCharges")) > 0);
+		if (goblinZone !== Location.none)
 		{
-			auto_log_info(`Fighting a Sausage Goblin in {goblinZone.to_string()} to burn delay!`, "green");
-			if (auto_sausageGoblin(goblinZone, ""))
+			auto_log_info(`Fighting a Sausage Goblin in ${goblinZone.toString()} to burn delay!`, "green");
+			if (auto_sausageGoblin$2(goblinZone, null))
 			{
 				return true;
 			}
@@ -485,11 +451,11 @@ boolean LX_burnDelay()
 	if (voidMonsterAvailable)
 	{
 		// Void monsters are inherently free (the ones we fight anyway).
-		location voidZone = solveDelayZone(get_property("breathitinCharges").to_int() > 0);
-		if (voidZone != $location[none])
+		let voidZone: Location = solveDelayZone(toInt(getProperty("breathitinCharges")) > 0);
+		if (voidZone !== Location.none)
 		{
-			auto_log_info(`Fighting a Void monster in {voidZone.to_string()} to burn delay!`, "green");
-			if (auto_voidMonster(voidZone))
+			auto_log_info(`Fighting a Void monster in ${voidZone.toString()} to burn delay!`, "green");
+			if (auto_voidMonster$1(voidZone))
 			{
 				return true;
 			}
@@ -498,11 +464,11 @@ boolean LX_burnDelay()
 
 	if (habitatingMonsters)
 	{
-		location habitatZone = solveDelayZone(isFreeMonster(auto_habitatMonster()) && get_property("breathitinCharges").to_int() > 0);
-		if (habitatZone != $location[none])
+		let habitatZone: Location = solveDelayZone(isFreeMonster(auto_habitatMonster()) && toInt(getProperty("breathitinCharges")) > 0);
+		if (habitatZone !== Location.none)
 		{
-			auto_log_info(`Might be fighting a {auto_habitatMonster()} in {habitatZone.to_string()} to burn delay!`, "green");
-			if (autoAdv(habitatZone))
+			auto_log_info(`Might be fighting a ${auto_habitatMonster()} in ${habitatZone.toString()} to burn delay!`, "green");
+			if (autoAdv$2(habitatZone))
 			{
 				return true;
 			}
@@ -513,7 +479,7 @@ boolean LX_burnDelay()
 	{
 		auto_log_warning("Had overdue voting monster but couldn't find a zone to burn delay", "red");
 	}
-	if (digitizeMonsterNext) 
+	if (digitizeMonsterNext)
 	{
 		auto_log_warning("Had overdue digitize but couldn't find a zone to burn delay", "red");
 	}
@@ -532,335 +498,324 @@ boolean LX_burnDelay()
 	return false;
 }
 
-boolean LX_calculateTheUniverse(boolean speculative)
+export function LX_calculateTheUniverse(speculative: boolean): boolean
 {
-	if(in_wildfire())
+	if (in_wildfire())
 	{
 		return LX_wildfire_calculateTheUniverse();
 	}
-	if(my_mp() < mp_cost($skill[Calculate the Universe]))
+	if (myMp() < mpCost(Skill.get("Calculate the Universe")))
 	{
 		return false;
 	}
-	if(get_property("_universeCalculated").to_int() >= min(3, get_property("skillLevel144").to_int()))
+	if (toInt(getProperty("_universeCalculated")) >= min(3, toInt(getProperty("skillLevel144"))))
 	{
 		return false;
 	}
-	
 	//do we want to summon a [War Frat 151st Infantryman] for the frat warrior outfit?
-	if(!possessOutfit("Frat Warrior Fatigues") && auto_warSide() == "fratboy")
+	if (!possessOutfit$1("Frat Warrior Fatigues") && auto_warSide() === "fratboy")
 	{
-		if(doNumberology("battlefield", false) != -1 && adjustForYellowRayIfPossible($monster[War Frat 151st Infantryman]))
+		if (doNumberology$2("battlefield", false) !== -1 && adjustForYellowRayIfPossible(Monster.get("War Frat 151st Infantryman")))
 		{
-			if(speculative)
+			if (speculative)
 			{
 				return true;
 			}
-			else
-			{
-				return (doNumberology("battlefield") != -1);
+			else {
+				return doNumberology("battlefield") !== -1;
 			}
 		}
-		return false;	//we want 151 and can get it in general. but not right now. so save it for later
+		return false; //we want 151 and can get it in general. but not right now. so save it for later
 	}
-	
+
 	doNumberology("adventures3");
-	return false;	//we do not want to restart the loop as all we're doing is generating 3 adventures
+	return false; //we do not want to restart the loop as all we're doing is generating 3 adventures
 }
 
-boolean tophatMaker()
+export function tophatMaker(): boolean
 {
-	if(!knoll_available() || (item_amount($item[Brass Gear]) == 0) || possessEquipment($item[Mark V Steam-Hat]))
+	if (!knollAvailable() || itemAmount(Item.get("brass gear")) === 0 || possessEquipment(Item.get("Mark V Steam-Hat")))
 	{
 		return false;
 	}
-	item reEquip = $item[none];
+	let reEquip: Item = Item.none;
 
-	if(possessEquipment($item[Mark IV Steam-Hat]))
+	if (possessEquipment(Item.get("Mark IV Steam-Hat")))
 	{
-		if(equipped_item($slot[Hat]) == $item[Mark IV Steam-Hat])
+		if (equippedItem(Slot.get("hat")) === Item.get("Mark IV Steam-Hat"))
 		{
-			reEquip = $item[Mark V Steam-Hat];
-			equip($slot[hat], $item[none]);
+			reEquip = Item.get("Mark V Steam-Hat");
+			equip(Slot.get("hat"), Item.none);
 		}
-		autoCraft("combine", 1, $item[Brass Gear], $item[Mark IV Steam-Hat]);
+		autoCraft("combine", 1, Item.get("brass gear"), Item.get("Mark IV Steam-Hat"));
 	}
-	else if(possessEquipment($item[Mark III Steam-Hat]))
+	else if (possessEquipment(Item.get("Mark III Steam-Hat")))
 	{
-		if(equipped_item($slot[Hat]) == $item[Mark III Steam-Hat])
+		if (equippedItem(Slot.get("hat")) === Item.get("Mark III Steam-Hat"))
 		{
-			reEquip = $item[Mark IV Steam-Hat];
-			equip($slot[hat], $item[none]);
+			reEquip = Item.get("Mark IV Steam-Hat");
+			equip(Slot.get("hat"), Item.none);
 		}
-		autoCraft("combine", 1, $item[Brass Gear], $item[Mark III Steam-Hat]);
+		autoCraft("combine", 1, Item.get("brass gear"), Item.get("Mark III Steam-Hat"));
 	}
-	else if(possessEquipment($item[Mark II Steam-Hat]))
+	else if (possessEquipment(Item.get("Mark II Steam-Hat")))
 	{
-		if(equipped_item($slot[Hat]) == $item[Mark II Steam-Hat])
+		if (equippedItem(Slot.get("hat")) === Item.get("Mark II Steam-Hat"))
 		{
-			reEquip = $item[Mark III Steam-Hat];
-			equip($slot[hat], $item[none]);
+			reEquip = Item.get("Mark III Steam-Hat");
+			equip(Slot.get("hat"), Item.none);
 		}
-		autoCraft("combine", 1, $item[Brass Gear], $item[Mark II Steam-Hat]);
+		autoCraft("combine", 1, Item.get("brass gear"), Item.get("Mark II Steam-Hat"));
 	}
-	else if(possessEquipment($item[Mark I Steam-Hat]))
+	else if (possessEquipment(Item.get("Mark I Steam-Hat")))
 	{
-		if(equipped_item($slot[Hat]) == $item[Mark I Steam-Hat])
+		if (equippedItem(Slot.get("hat")) === Item.get("Mark I Steam-Hat"))
 		{
-			reEquip = $item[Mark II Steam-Hat];
-			equip($slot[hat], $item[none]);
+			reEquip = Item.get("Mark II Steam-Hat");
+			equip(Slot.get("hat"), Item.none);
 		}
-		autoCraft("combine", 1, $item[Brass Gear], $item[Mark I Steam-Hat]);
+		autoCraft("combine", 1, Item.get("brass gear"), Item.get("Mark I Steam-Hat"));
 	}
-	else if(possessEquipment($item[Brown Felt Tophat]))
+	else if (possessEquipment(Item.get("brown felt tophat")))
 	{
-		if(equipped_item($slot[Hat]) == $item[Brown Felt Tophat])
+		if (equippedItem(Slot.get("hat")) === Item.get("brown felt tophat"))
 		{
-			reEquip = $item[Mark I Steam-Hat];
-			equip($slot[hat], $item[none]);
+			reEquip = Item.get("Mark I Steam-Hat");
+			equip(Slot.get("hat"), Item.none);
 		}
-		autoCraft("combine", 1, $item[Brass Gear], $item[Brown Felt Tophat]);
+		autoCraft("combine", 1, Item.get("brass gear"), Item.get("brown felt tophat"));
 	}
-	else
-	{
+	else {
 		return false;
 	}
 
 	auto_log_info("Mark Steam-Hat upgraded!", "blue");
-	if(reEquip != $item[none])
+	if (reEquip !== Item.none)
 	{
-		equip($slot[hat], reEquip);
+		equip(Slot.get("hat"), reEquip);
 	}
 	return true;
 }
 
-boolean LX_doVacation()
+export function LX_doVacation(): boolean
 {
-	if(in_koe() || is_werewolf())
+	if (in_koe() || is_werewolf())
 	{
-		return false;		//cannot vacation in kingdom of exploathing path or are a werewolf in wereprofessor
+		return false; //cannot vacation in kingdom of exploathing path or are a werewolf in wereprofessor
 	}
-	
-	int meat_needed = 500;
-	int adv_needed = 3;
-	int adv_budget = my_adventures() - auto_advToReserve();
-	if(in_wotsf())
+
+	let meat_needed: number = 500;
+	let adv_needed: number = 3;
+	let adv_budget: number = myAdventures() - auto_advToReserve();
+	if (in_wotsf())
 	{
 		meat_needed = 5;
 		adv_needed = 5;
 	}
-	if(adv_needed > adv_budget)
+	if (adv_needed > adv_budget)
 	{
 		auto_log_info("I want to vacation but I do not have enough adventures left", "red");
 		return false;
 	}
-	if(meat_needed > my_meat())
+	if (meat_needed > myMeat())
 	{
 		auto_log_info("I want to vacation but I do not have enough meat", "red");
 		return false;
 	}
-	if(in_plumber())	//avoid error for not having plumber gear equipped.
-	{
-		plumber_equipTool($stat[moxie]);
+	if (in_plumber())
+	{ //avoid error for not having plumber gear equipped.
+		plumber_equipTool$1(Stat.get("Moxie"));
 		equipMaximizedGear();
 	}
 
-	return autoAdv(1, $location[The Shore\, Inc. Travel Agency]);
+	return autoAdv$1(1, Location.get("The Shore, Inc. Travel Agency"));
 }
 
-boolean auto_doTempleSummit()
+export function auto_doTempleSummit(): boolean
 {
-	if(!hidden_temple_unlocked())
+	if (!hiddenTempleUnlocked())
 	{
 		return false;
 	}
-	if(available_amount($item[stone wool])==0)
+	if (availableAmount(Item.get("stone wool")) === 0)
 	{
 		return false;
 	}
-	if (get_property("lastTempleAdventures").to_int()>=my_ascensions())
+	if (toInt(getProperty("lastTempleAdventures")) >= myAscensions())
 	{
 		return false;
 	}
 	if (auto_haveMayamCalendar() && !auto_MayamAllUsed())
 	{
-		auto_log_info("Not getting temple summit adventures since our Mayam calendar isn't spent.");
+		auto_log_info$1("Not getting temple summit adventures since our Mayam calendar isn't spent.");
 		return false;
 	}
-	buffMaintain($effect[Stone-Faced]);
-	if(have_effect($effect[Stone-Faced]) == 0)
+	buffMaintain$4(Effect.get("Stone-Faced"));
+	if (haveEffect(Effect.get("Stone-Faced")) === 0)
 	{
 		return false;
 	}
-	return autoAdv($location[The Hidden Temple]);
+	return autoAdv$2(Location.get("The Hidden Temple"));
 }
 
-void initializeDay(int day)
+export function initializeDay(day: number): void
 {
-	if(inAftercore())
+	if (inAftercore())
 	{
 		return;
 	}
 
 	invalidateRestoreOptionCache();
 
-	if(get_property("auto_pvpEnable").to_boolean() && !hippy_stone_broken())
+	if (toBoolean(getProperty("auto_pvpEnable")) && !hippyStoneBroken())
 	{
-		visit_url("peevpee.php?action=smashstone&pwd&confirm=on", true);
-		visit_url("peevpee.php?place=fight");
+		visitUrl("peevpee.php?action=smashstone&pwd&confirm=on", true);
+		visitUrl("peevpee.php?place=fight");
 	}
 
-	if (get_property("auto_day_init").to_int() < day)
+	if (toInt(getProperty("auto_day_init")) < day)
 	{
-		set_property("auto_powerLevelLastLevel", "0");
-		set_property("auto_delayLastLevel", "0");
-		set_property("auto_cmcConsultLastLevel", "0");
-		set_property("auto_breathitinLastLevel", "0");
-		set_property("_auto_candyMapCompleted", false);
+		setProperty("auto_powerLevelLastLevel", "0");
+		setProperty("auto_delayLastLevel", "0");
+		setProperty("auto_cmcConsultLastLevel", "0");
+		setProperty("auto_breathitinLastLevel", "0");
+		setProperty("_auto_candyMapCompleted", false.toString());
 	}
 
-	if(!possessEquipment($item[Your Cowboy Boots]) && get_property("telegraphOfficeAvailable").to_boolean() && is_unrestricted($item[LT&T Telegraph Office Deed]))
+	if (!possessEquipment(Item.get("your cowboy boots")) && toBoolean(getProperty("telegraphOfficeAvailable")) && isUnrestricted(Item.get("LT&T telegraph office deed")))
 	{
-		#string temp = visit_url("desc_item.php?whichitem=529185925");
-		#if(equipped_item($slot[bootspur]) == $item[Nicksilver spurs])
-		#if(contains_text(temp, "Item Drops from Monsters"))
-		#{
-			string temp = visit_url("place.php?whichplace=town_right&action=townright_ltt");
-		#}
+		//string temp = visit_url("desc_item.php?whichitem=529185925");
+		//if(equipped_item($slot[bootspur]) == $item[Nicksilver spurs])
+		//if(contains_text(temp, "Item Drops from Monsters"))
+		//{
+			let temp: string = visitUrl("place.php?whichplace=town_right&action=townright_ltt");
+		//}
 	}
 
-	if(auto_is_valid($item[Fourth of May cosplay saber]))
+	if (auto_is_valid(Item.get("Fourth of May Cosplay Saber")))
 	{
 		auto_saberDailyUpgrade(day);
 	}
 
-	if((item_amount($item[cursed microwave]) >= 1) && !get_property("_cursedMicrowaveUsed").to_boolean())
+	if (itemAmount(Item.get("cursed microwave")) >= 1 && !toBoolean(getProperty("_cursedMicrowaveUsed")))
 	{
-		use(1, $item[cursed microwave]);
+		use(1, Item.get("cursed microwave"));
 	}
-	if((item_amount($item[cursed pony keg]) >= 1) && !get_property("_cursedKegUsed").to_boolean())
+	if (itemAmount(Item.get("cursed pony keg")) >= 1 && !toBoolean(getProperty("_cursedKegUsed")))
 	{
-		use(1, $item[cursed pony keg]);
+		use(1, Item.get("cursed pony keg"));
 	}
-	if(storage_amount($item[Talking Spade]) > 0)
+	if (storageAmount(Item.get("talking spade")) > 0)
 	{
-		pullXWhenHaveY($item[Talking Spade], 1, 0);
+		pullXWhenHaveY(Item.get("talking spade"), 1, 0);
 	}
 
-	if(item_amount($item[Telegram From Lady Spookyraven]) > 0)
+	if (itemAmount(Item.get("telegram from Lady Spookyraven")) > 0)
 	{
 		auto_log_warning("Lady Spookyraven quest not detected as started should have been auto-started. Starting it. If you are not in an Ed run, report this. Otherwise, it is expected.", "red");
-		use(1, $item[Telegram From Lady Spookyraven]);
-		set_property("questM20Necklace", "started");
+		use(1, Item.get("telegram from Lady Spookyraven"));
+		setProperty("questM20Necklace", "started");
 	}
 
-	if(internalQuestStatus("questM20Necklace") == -1)
+	if (internalQuestStatus("questM20Necklace") === -1)
 	{
-		if(item_amount($item[Telegram From Lady Spookyraven]) > 0)
+		if (itemAmount(Item.get("telegram from Lady Spookyraven")) > 0)
 		{
 			auto_log_warning("Lady Spookyraven quest not started and we have a Telegram so let us use it.", "red");
-			boolean temp = use(1, $item[Telegram From Lady Spookyraven]);
+			let temp: boolean = use(1, Item.get("telegram from Lady Spookyraven"));
 		}
-		else
-		{
+		else {
 			auto_log_warning("Lady Spookyraven quest not detected as started but we don't have the telegram, assuming it is... If you are not in an Ed run, report this. Otherwise, it is expected.", "red");
-			set_property("questM20Necklace", "started");
+			setProperty("questM20Necklace", "started");
 		}
 	}
 
 	auto_barrelPrayers();
 
-	if(!get_property("_pottedTeaTreeUsed").to_boolean() && (auto_get_campground() contains $item[Potted Tea Tree]) && !inAftercore())
+	if (!toBoolean(getProperty("_pottedTeaTreeUsed")) && auto_get_campground().has(Item.get("potted tea tree")) && !inAftercore())
 	{
-		if(get_property("auto_teaChoice") != "")
+		if (getProperty("auto_teaChoice") !== "")
 		{
-			string[int] teaChoice = split_string(get_property("auto_teaChoice"), ";");
-			string myTea = trim(teaChoice[min(count(teaChoice), my_daycount()) - 1]);
-			if (myTea.to_item() != $item[none] || myTea == "shake")
+			let teaChoice: Map<number, string> = new Map(splitString(getProperty("auto_teaChoice"), ";").map((_v, _i) => [_i, _v]));
+			let myTea: string = trim((teaChoice.get(min(teaChoice.size, myDaycount()) - 1) ?? teaChoice.set(min(teaChoice.size, myDaycount()) - 1, "").get(min(teaChoice.size, myDaycount()) - 1)));
+			if (toItem(myTea) !== Item.none || myTea === "shake")
 			{
-				boolean buff = cli_execute("teatree " + myTea);
+				let buff: boolean = cliExecute(`teatree ${myTea}`);
 			}
 		}
-		else if (day == 1 && auto_is_valid($item[Potted Tea Tree]))
+		else if (day === 1 && auto_is_valid(Item.get("potted tea tree")))
 		{
-			if(fullness_limit() > 0)
+			if (fullnessLimit() > 0)
 			{
-				boolean buff = cli_execute("teatree " + $item[Cuppa Voraci Tea]);
+				let buff: boolean = cliExecute(`teatree ${Item.get("cuppa Voraci tea")}`);
 			}
-			else if(inebriety_limit() > 0)
+			else if (inebrietyLimit() > 0)
 			{
-				boolean buff = cli_execute("teatree " + $item[Cuppa Sobrie Tea]);
+				let buff: boolean = cliExecute(`teatree ${Item.get("cuppa Sobrie tea")}`);
 			}
-			else
-			{
-				boolean buff = cli_execute("teatree " + $item[Cuppa Royal Tea]);
+			else {
+				let buff: boolean = cliExecute(`teatree ${Item.get("cuppa Royal tea")}`);
 			}
 		}
-		else if (day == 2 && auto_is_valid($item[Potted Tea Tree]))
+		else if (day === 2 && auto_is_valid(Item.get("potted tea tree")))
 		{
-			if(inebriety_limit() > 0)
+			if (inebrietyLimit() > 0)
 			{
-				boolean buff = cli_execute("teatree " + $item[Cuppa Sobrie Tea]);
+				let buff: boolean = cliExecute(`teatree ${Item.get("cuppa Sobrie tea")}`);
 			}
-			else if(fullness_limit() > 0)
+			else if (fullnessLimit() > 0)
 			{
-				boolean buff = cli_execute("teatree " + $item[Cuppa Voraci Tea]);
+				let buff: boolean = cliExecute(`teatree ${Item.get("cuppa Voraci tea")}`);
 			}
-			else
-			{
-				boolean buff = cli_execute("teatree " + $item[Cuppa Royal Tea]);
+			else {
+				let buff: boolean = cliExecute(`teatree ${Item.get("cuppa Royal tea")}`);
 			}
 		}
-		else
-		{
-			visit_url("campground.php?action=teatree");
-			run_choice(1);
+		else {
+			visitUrl("campground.php?action=teatree");
+			runChoice(1);
 		}
 	}
 
 	auto_floundryAction();
-	
+
 	auto_MayamClaimAll(); // Want Mayam before booth to decide if we want a feather boa given yamtility.
 	auto_getClanPhotoBoothDefaultItems();
-	auto_getClanPhotoBoothEffect("space",3);
+	auto_getClanPhotoBoothEffect$3("space", 3);
 
 	auto_initBurningLeaves();
 
-	if((item_amount($item[GameInformPowerDailyPro Magazine]) > 0) && (my_daycount() == 1))
+	if (itemAmount(Item.get("GameInformPowerDailyPro magazine")) > 0 && myDaycount() === 1)
 	{
-		visit_url("inv_use.php?pwd=&which=3&whichitem=6174", true);
-		visit_url("inv_use.php?pwd=&which=3&whichitem=6174&confirm=Yep.", true);
-		set_property("auto_disableAdventureHandling", true);
-		autoAdv(1, $location[[DungeonFAQ - Level 1]]);
-		set_property("auto_disableAdventureHandling", false);
-		if(item_amount($item[Dungeoneering Kit]) > 0)
+		visitUrl("inv_use.php?pwd=&which=3&whichitem=6174", true);
+		visitUrl("inv_use.php?pwd=&which=3&whichitem=6174&confirm=Yep.", true);
+		setProperty("auto_disableAdventureHandling", true.toString());
+		autoAdv$1(1, Location.get("[DungeonFAQ - Level 1]"));
+		setProperty("auto_disableAdventureHandling", false.toString());
+		if (itemAmount(Item.get("dungeoneering kit")) > 0)
 		{
-			use(1, $item[Dungeoneering Kit]);
+			use(1, Item.get("dungeoneering kit"));
 		}
 	}
 
 	auto_doPrecinct();
-	if(!(in_koe() || in_lar()) && (item_amount($item[Cop Dollar]) >= 10) && (item_amount($item[Shoe Gum]) == 0))
+	if (!(in_koe() || in_lar()) && itemAmount(Item.get("cop dollar")) >= 10 && itemAmount(Item.get("shoe gum")) === 0)
 	{
-		boolean temp = cli_execute("make shoe gum");
+		let temp: boolean = cliExecute("make shoe gum");
 	}
-	
 	//a free to cast intrinsic that makes swords count as clubs. there is no reason to ever have it on if not a seal clubber?
 	//regardless of class there is a reason not to if auto_configureRetrocape("vampire", "kill") can be used. it needs the sword to count as a sword and not as a club
-	if(my_class() == $class[seal clubber] && auto_have_skill($skill[Iron Palm Technique]) && (have_effect($effect[Iron Palms]) == 0))
+	if (myClass() === Class.get("Seal Clubber") && auto_have_skill(Skill.get("Iron Palm Technique")) && haveEffect(Effect.get("Iron Palms")) === 0)
 	{
-		use_skill(1, $skill[Iron Palm Technique]);
+		useSkill(1, Skill.get("Iron Palm Technique"));
 	}
-
 	// Get emotionally chipped if you have the item.  boris\jarlsberg\sneaky pete\zombie slayer\ed cannot use this skill so excluding.
-	if (!have_skill($skill[Emotionally Chipped]) && item_amount($item[spinal-fluid-covered emotion chip]) > 0 && can_read_skillbook($item[spinal-fluid-covered emotion chip]))
+	if (!haveSkill(Skill.get("Emotionally Chipped")) && itemAmount(Item.get("spinal-fluid-covered emotion chip")) > 0 && can_read_skillbook(Item.get("spinal-fluid-covered emotion chip")))
 	{
-		use(1, $item[spinal-fluid-covered emotion chip]);
+		use(1, Item.get("spinal-fluid-covered emotion chip"));
 	}
-	
 	// Open our duffel bag
 	auto_openMcLargeHugeSkis();
-	
 	//you must finish the Toot Oriole quest to unlock council quests.
 	tootOriole();
 
@@ -872,97 +827,96 @@ void initializeDay(int day)
 	bat_initializeDay(day);
 	jarlsberg_initializeDay(day);
 	ht_equip_hats(); //equip hats in Hat Trick
-
 	// Bulk cache mall prices
-	if(!in_hardcore() && get_property("auto_day_init").to_int() < day)
+	if (!inHardcore() && toInt(getProperty("auto_day_init")) < day)
 	{
-		auto_log_info("Bulk caching mall prices for consumables");
-		if(get_property("auto_last_mallcached") != today_to_string())
+		auto_log_info$1("Bulk caching mall prices for consumables");
+		if (getProperty("auto_last_mallcached") !== todayToString())
 		{
-			mall_prices("food");
-			mall_prices("booze");
-			set_property("auto_last_mallcached",today_to_string());	//should not cache food,booze again after starting a new ascension on the same day
+			mallPrices("food");
+			mallPrices("booze");
+			setProperty("auto_last_mallcached", todayToString()); //should not cache food,booze again after starting a new ascension on the same day
 		}
 		//food,booze will explicitly request historical_price to avoid making individual mall searches, in case a new mafia session gets started
 		//hprestore and mprestore types corresponding with mall_prices search categories are not available. but it's not as many searches as food,booze
 		//so cache those again even in a new ascension in case it's getting started in a new session
-		mall_prices("hprestore");
-		mall_prices("mprestore");
+		mallPrices("hprestore");
+		mallPrices("mprestore");
 	}
 
-	if(day == 1)
+	if (day === 1)
 	{
-		if(get_property("auto_day_init").to_int() < 1)
+		if (toInt(getProperty("auto_day_init")) < 1)
 		{
-			auto_sourceTerminalEducate($skill[Extract], $skill[Digitize]);
-			if(contains_text(get_property("sourceTerminalEnquiryKnown"), "monsters.enq") && in_pokefam())
+			auto_sourceTerminalEducate(Skill.get("Extract"), Skill.get("Digitize"));
+			if (containsText(getProperty("sourceTerminalEnquiryKnown"), "monsters.enq") && in_pokefam())
 			{
 				auto_sourceTerminalRequest("enquiry monsters.enq");
 			}
-			else if(contains_text(get_property("sourceTerminalEnquiryKnown"), "familiar.enq") && pathHasFamiliar())
+			else if (containsText(getProperty("sourceTerminalEnquiryKnown"), "familiar.enq") && pathHasFamiliar())
 			{
 				auto_sourceTerminalRequest("enquiry familiar.enq");
 			}
-			else if(contains_text(get_property("sourceTerminalEnquiryKnown"), "stats.enq"))
+			else if (containsText(getProperty("sourceTerminalEnquiryKnown"), "stats.enq"))
 			{
 				auto_sourceTerminalRequest("enquiry stats.enq");
 			}
-			else if(contains_text(get_property("sourceTerminalEnquiryKnown"), "protect.enq"))
+			else if (containsText(getProperty("sourceTerminalEnquiryKnown"), "protect.enq"))
 			{
 				auto_sourceTerminalRequest("enquiry protect.enq");
 			}
 
 			kgbSetup();
-			if(item_amount($item[transmission from planet Xi]) > 0)
+			if (itemAmount(Item.get("transmission from planet Xi")) > 0)
 			{
-				use(1, $item[transmission from planet xi]);
+				use(1, Item.get("transmission from planet Xi"));
 			}
-			if(item_amount($item[Xiblaxian holo-wrist-puter simcode]) > 0)
+			if (itemAmount(Item.get("Xiblaxian holo-wrist-puter simcode")) > 0)
 			{
-				use(1, $item[Xiblaxian holo-wrist-puter simcode]);
+				use(1, Item.get("Xiblaxian holo-wrist-puter simcode"));
 			}
-			if(item_amount($item[baby bodyguard]) > 0 && !have_familiar($familiar[burly bodyguard])) //will only happen in Avant Guard
-			{
-				use(1, $item[baby bodyguard]);
+			if (itemAmount(Item.get("baby bodyguard")) > 0 && !haveFamiliar(Familiar.get("Burly Bodyguard")))
+			{ //will only happen in Avant Guard
+				use(1, Item.get("baby bodyguard"));
 			}
 
-			if((auto_get_clan_lounge() contains $item[Clan Floundry]) && (item_amount($item[Fishin\' Pole]) == 0))
+			if (auto_get_clan_lounge().has(Item.get("Clan Floundry")) && itemAmount(Item.get("fishin' pole")) === 0)
 			{
-				visit_url("clan_viplounge.php?action=floundry");
+				visitUrl("clan_viplounge.php?action=floundry");
 			}
 
 			tootGetMeat();
 
 			heavyrains_initializeDay(day);
 			// It's nice to have a moxie weapon for Flock of Bats form
-			if(in_darkGyffte() && get_property("darkGyfftePoints").to_int() < 21 && !possessEquipment($item[disco ball]))
+			if (in_darkGyffte() && toInt(getProperty("darkGyfftePoints")) < 21 && !possessEquipment(Item.get("disco ball")))
 			{
-				acquireGumItem($item[disco ball]);
+				acquireGumItem(Item.get("disco ball"));
 			}
-			if(auto_needAccordion())
+			if (auto_needAccordion())
 			{
-				if((item_amount($item[Antique Accordion]) == 0) && (item_amount($item[Aerogel Accordion]) == 0) && (auto_predictAccordionTurns() < 5) && ((my_meat() > npc_price($item[Toy Accordion])) && (npc_price($item[Toy Accordion]) != 0)))
+				if (itemAmount(Item.get("antique accordion")) === 0 && itemAmount(Item.get("aerogel accordion")) === 0 && auto_predictAccordionTurns() < 5 && (myMeat() > npcPrice(Item.get("toy accordion")) && npcPrice(Item.get("toy accordion")) !== 0))
 				{
 					//Try to get Antique Accordion early if we possibly can.
-					if(isUnclePAvailable() && ((my_meat() > npc_price($item[Antique Accordion])) && (npc_price($item[Antique Accordion]) != 0)) && !in_glover())
+					if (isUnclePAvailable() && (myMeat() > npcPrice(Item.get("antique accordion")) && npcPrice(Item.get("antique accordion")) !== 0) && !in_glover())
 					{
-						auto_buyUpTo(1, $item[Antique Accordion]);
+						auto_buyUpTo(1, Item.get("antique accordion"));
 					}
 					// Removed "else". In some situations when mafia or supporting scripts are behaving wonky we may completely fail to get an accordion
-					if((isArmoryAvailable()) && (item_amount($item[Antique Accordion]) == 0))
+					if (isArmoryAvailable() && itemAmount(Item.get("antique accordion")) === 0)
 					{
-						auto_buyUpTo(1, $item[Toy Accordion]);
+						auto_buyUpTo(1, Item.get("toy accordion"));
 					}
 				}
-				if((in_koe()) && (item_amount($item[Antique Accordion]) == 0) && (koe_rmi_count() >= 10))
+				if (in_koe() && itemAmount(Item.get("antique accordion")) === 0 && koe_rmi_count() >= 10)
 				{
-					koe_acquire_rmi(10);
-					buy($coinmaster[Cosmic Ray\'s Bazaar], 1, $item[Antique Accordion]);
+					koe_acquire_rmi$1(10);
+					buy(Coinmaster.get("Cosmic Ray's Bazaar"), 1, Item.get("antique accordion"));
 				}
 				acquireTotem();
-				if(!possessEquipment($item[Saucepan]))
+				if (!possessEquipment(Item.get("saucepan")))
 				{
-					acquireGumItem($item[Saucepan]);
+					acquireGumItem(Item.get("saucepan"));
 				}
 			}
 
@@ -970,146 +924,145 @@ void initializeDay(int day)
 
 			equipBaseline();
 
-			handleBjornify($familiar[none]);
-			handleBjornify($familiar[El Vibrato Megadrone]);
+			handleBjornify(Familiar.none);
+			handleBjornify(Familiar.get("El Vibrato Megadrone"));
 
-			string temp = visit_url("guild.php?place=challenge");
+			let temp: string = visitUrl("guild.php?place=challenge");
 
 			auto_beachCombHead("exp");
 		}
 
-		if((get_property("lastCouncilVisit").to_int() < my_level()))
+		if (toInt(getProperty("lastCouncilVisit")) < myLevel())
 		{
-			cli_execute("counters");
+			cliExecute("counters");
 			council();
 		}
-		
 		// If we have the shortest order cook, loop familiars that will benefit from that.
 		if (pathHasFamiliar() && pathAllowsChangingFamiliar())
 		{
-			familiar init_fam = my_familiar();
-			if (have_familiar($familiar[shorter-order cook]))
+			let init_fam: Familiar = myFamiliar();
+			if (haveFamiliar(Familiar.get("Shorter-Order Cook")))
 			{
-				foreach fam in $familiars[ghost of crimbo carols, ghost of crimbo commerce, ghost of crimbo cheer]
+				for (let fam of Familiar.get(["Ghost of Crimbo Carols", "Ghost of Crimbo Commerce", "Ghost of Crimbo Cheer"]))
 				{
-					if (have_familiar(fam) && !in_bhy())
+					if (haveFamiliar(fam) && !in_bhy())
 					{
-						use_familiar(fam);
+						useFamiliar(fam);
 					}
 				}
-				foreach fam in $familiars[chest mimic, cooler yeti]
+				for (let fam of Familiar.get(["Chest Mimic", "Cooler Yeti"]))
 				{
-					if (have_familiar(fam))
+					if (haveFamiliar(fam))
 					{
-						use_familiar(fam);
+						useFamiliar(fam);
 					}
 				}
 			}
-			use_familiar(init_fam);
+			useFamiliar(init_fam);
 		}
-	}//day1
-	else if(day == 2)
+	}
+	else if (day === 2)
 	{
+	//day1
 		equipBaseline();
-		
-		if(get_property("auto_day_init").to_int() < 2)
+
+		if (toInt(getProperty("auto_day_init")) < 2)
 		{
 			useTonicDjinn();
-			
-			if(item_amount($item[gym membership card]) > 0)
+
+			if (itemAmount(Item.get("gym membership card")) > 0)
 			{
-				equipStatgainIncreasers();
-				use(1, $item[gym membership card]);
+				equipStatgainIncreasers$2();
+				use(1, Item.get("gym membership card"));
 			}
 
 			heavyrains_initializeDay(day);
 
-			if(!in_hardcore() && (item_amount($item[Handful of Smithereens]) <= 5))
+			if (!inHardcore() && itemAmount(Item.get("handful of Smithereens")) <= 5)
 			{
-				pulverizeThing($item[Hairpiece On Fire]);
-				pulverizeThing($item[Vicar\'s Tutu]);
+				pulverizeThing(Item.get("Hairpiece On Fire"));
+				pulverizeThing(Item.get("Vicar's Tutu"));
 			}
-			while(acquireHermitItem($item[11-Leaf Clover]));
-			if((item_amount($item[Antique Accordion]) == 0) && (item_amount($item[Aerogel Accordion]) == 0) && isUnclePAvailable() && ((my_meat() > npc_price($item[Antique Accordion])) && (npc_price($item[Antique Accordion]) != 0)) && (auto_predictAccordionTurns() < 10) && !(is_boris() || is_jarlsberg() || is_pete() || isActuallyEd() || in_darkGyffte() || in_plumber() || !in_glover()))
+			while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+			if (itemAmount(Item.get("antique accordion")) === 0 && itemAmount(Item.get("aerogel accordion")) === 0 && isUnclePAvailable() && (myMeat() > npcPrice(Item.get("antique accordion")) && npcPrice(Item.get("antique accordion")) !== 0) && auto_predictAccordionTurns() < 10 && !(is_boris() || is_jarlsberg() || is_pete() || isActuallyEd() || in_darkGyffte() || in_plumber() || !in_glover()))
 			{
-				auto_buyUpTo(1, $item[Antique Accordion]);
+				auto_buyUpTo(1, Item.get("antique accordion"));
 			}
-			if(is_boris())
+			if (is_boris())
 			{
-				if((item_amount($item[Clancy\'s Crumhorn]) == 0) && (minstrel_instrument() != $item[Clancy\'s Crumhorn]))
+				if (itemAmount(Item.get("Clancy's crumhorn")) === 0 && minstrelInstrument() !== Item.get("Clancy's crumhorn"))
 				{
-					auto_buyUpTo(1, $item[Clancy\'s Crumhorn]);
+					auto_buyUpTo(1, Item.get("Clancy's crumhorn"));
 				}
 			}
-			if(auto_have_skill($skill[Summon Smithsness]) && (my_mp() > (3 * mp_cost($skill[Summon Smithsness]))))
+			if (auto_have_skill(Skill.get("Summon Smithsness")) && myMp() > 3 * mpCost(Skill.get("Summon Smithsness")))
 			{
-				use_skill(3, $skill[Summon Smithsness]);
+				useSkill(3, Skill.get("Summon Smithsness"));
 			}
 
-			if(item_amount($item[handful of smithereens]) >= 2)
+			if (itemAmount(Item.get("handful of Smithereens")) >= 2)
 			{
-				auto_buyUpTo(2, $item[Ben-Gal&trade; Balm]);
-				cli_execute("make 2 louder than bomb");
+				auto_buyUpTo(2, Item.get("Ben-Gal&trade; Balm"));
+				cliExecute("make 2 louder than bomb");
 			}
 		}
 		if (chateaumantegna_havePainting() && !isActuallyEd())
 		{
-			if(auto_have_familiar($familiar[Reanimated Reanimator]))
+			if (auto_have_familiar(Familiar.get("Reanimated Reanimator")))
 			{
-				handleFamiliar($familiar[Reanimated Reanimator]);
+				handleFamiliar$1(Familiar.get("Reanimated Reanimator"));
 			}
 			chateaumantegna_usePainting();
-			handleFamiliar($familiar[Angry Jung Man]);
+			handleFamiliar$1(Familiar.get("Angry Jung Man"));
 		}
 	}
-	else if(day == 3)
+	else if (day === 3)
 	{
-		if(get_property("auto_day_init").to_int() < 3)
+		if (toInt(getProperty("auto_day_init")) < 3)
 		{
-			while(acquireHermitItem($item[11-leaf Clover]));
+			while (acquireHermitItem(Item.get("11-leaf clover"))) {}
 
 			picky_pulls();
 		}
 	}
-	else if(day == 4)
+	else if (day === 4)
 	{
-		if(get_property("auto_day_init").to_int() < 4)
+		if (toInt(getProperty("auto_day_init")) < 4)
 		{
-			while(acquireHermitItem($item[11-leaf Clover]));
+			while (acquireHermitItem(Item.get("11-leaf clover"))) {}
 		}
 	}
-	if(day >= 2)
+	if (day >= 2)
 	{
 		ovenHandle();
 	}
 
-	string campground = visit_url("campground.php");
-	if(contains_text(campground, "beergarden7.gif") && is_unrestricted($item[packet of beer seeds]))
+	let campground: string = visitUrl("campground.php");
+	if (containsText(campground, "beergarden7.gif") && isUnrestricted(Item.get("packet of beer seeds")))
 	{
-		cli_execute("garden pick");
+		cliExecute("garden pick");
 	}
-	if(contains_text(campground, "wintergarden3.gif") && is_unrestricted($item[packet of winter seeds]))
+	if (containsText(campground, "wintergarden3.gif") && isUnrestricted(Item.get("packet of winter seeds")))
 	{
-		cli_execute("garden pick");
+		cliExecute("garden pick");
 	}
-	if(contains_text(campground, "thanksgardenmega.gif") && is_unrestricted($item[packet of thanksgarden seeds]))
+	if (containsText(campground, "thanksgardenmega.gif") && isUnrestricted(Item.get("packet of thanksgarden seeds")))
 	{
-		cli_execute("garden pick");
+		cliExecute("garden pick");
 	}
 
-	set_property("auto_forceNonCombatSource", "");
+	setProperty("auto_forceNonCombatSource", "");
 
-	set_property("auto_day_init", day);
+	setProperty("auto_day_init", day.toString());
 }
 
-boolean dailyEvents()
+export function dailyEvents(): boolean
 {
 	//Daily Events that should happen at start and not end.
-	
+
 	auto_birdOfTheDay();
-	while(auto_doPrecinct());
+	while (auto_doPrecinct()) {}
 	handleBarrelFullOfBarrels(true);
-	
 	// Hit bastille, then council in case we levelled up (and unlocked getaway camp)
 	cheeseWarMachine(0, 0, 0, 0);
 	council();
@@ -1121,119 +1074,119 @@ boolean dailyEvents()
 
 	chateaumantegna_useDesk();
 
-	if((item_amount($item[Burned Government Manual Fragment]) > 0) && is_unrestricted($item[Burned Government Manual Fragment]) && get_property("auto_alienLanguage").to_boolean())
+	if (itemAmount(Item.get("burned government manual fragment")) > 0 && isUnrestricted(Item.get("burned government manual fragment")) && toBoolean(getProperty("auto_alienLanguage")))
 	{
-		use(item_amount($item[Burned Government Manual Fragment]), $item[Burned Government Manual Fragment]);
+		use(itemAmount(Item.get("burned government manual fragment")), Item.get("burned government manual fragment"));
 	}
 
-	if((item_amount($item[glass gnoll eye]) > 0) && !get_property("_gnollEyeUsed").to_boolean())
+	if (itemAmount(Item.get("glass gnoll eye")) > 0 && !toBoolean(getProperty("_gnollEyeUsed")))
 	{
-		use(1, $item[Glass gnoll Eye]);
+		use(1, Item.get("glass gnoll eye"));
 	}
-	if((item_amount($item[chroner trigger]) > 0) && !get_property("_chronerTriggerUsed").to_boolean())
+	if (itemAmount(Item.get("Chroner trigger")) > 0 && !toBoolean(getProperty("_chronerTriggerUsed")))
 	{
-		use(1, $item[chroner trigger]);
+		use(1, Item.get("Chroner trigger"));
 	}
-	if((item_amount($item[chroner cross]) > 0) && !get_property("_chronerCrossUsed").to_boolean())
+	if (itemAmount(Item.get("Chroner cross")) > 0 && !toBoolean(getProperty("_chronerCrossUsed")))
 	{
-		use(1, $item[chroner cross]);
+		use(1, Item.get("Chroner cross"));
 	}
-	if((item_amount($item[chester\'s bag of candy]) > 0) && !get_property("_bagOfCandyUsed").to_boolean())
+	if (itemAmount(Item.get("Chester's bag of candy")) > 0 && !toBoolean(getProperty("_bagOfCandyUsed")))
 	{
-		use(1, $item[chester\'s bag of candy]);
+		use(1, Item.get("Chester's bag of candy"));
 	}
-	if((item_amount($item[cheap toaster]) > 0) && !get_property("_toastSummoned").to_boolean())
+	if (itemAmount(Item.get("cheap toaster")) > 0 && !toBoolean(getProperty("_toastSummoned")))
 	{
-		use(1, $item[cheap toaster]);
+		use(1, Item.get("cheap toaster"));
 	}
-	if((item_amount($item[warbear breakfast machine]) > 0) && !get_property("_warbearBreakfastMachineUsed").to_boolean())
+	if (itemAmount(Item.get("warbear breakfast machine")) > 0 && !toBoolean(getProperty("_warbearBreakfastMachineUsed")))
 	{
-		use(1, $item[warbear breakfast machine]);
+		use(1, Item.get("warbear breakfast machine"));
 	}
-	if((item_amount($item[warbear soda machine]) > 0) && !get_property("_warbearSodaMachineUsed").to_boolean())
+	if (itemAmount(Item.get("warbear soda machine")) > 0 && !toBoolean(getProperty("_warbearSodaMachineUsed")))
 	{
-		use(1, $item[warbear soda machine]);
+		use(1, Item.get("warbear soda machine"));
 	}
-	if((item_amount($item[the cocktail shaker]) > 0) && !get_property("_cocktailShakerUsed").to_boolean())
+	if (itemAmount(Item.get("The Cocktail Shaker")) > 0 && !toBoolean(getProperty("_cocktailShakerUsed")))
 	{
-		use(1, $item[the cocktail shaker]);
+		use(1, Item.get("The Cocktail Shaker"));
 	}
-	if((item_amount($item[taco dan\'s taco stand flier]) > 0) && !get_property("_tacoFlierUsed").to_boolean())
+	if (itemAmount(Item.get("Taco Dan's Taco Stand Flier")) > 0 && !toBoolean(getProperty("_tacoFlierUsed")))
 	{
-		use(1, $item[taco dan\'s taco stand flier]);
+		use(1, Item.get("Taco Dan's Taco Stand Flier"));
 	}
-	if((item_amount($item[Festive Warbear Bank]) > 0) && !get_property("_warbearBankUsed").to_boolean())
+	if (itemAmount(Item.get("festive warbear bank")) > 0 && !toBoolean(getProperty("_warbearBankUsed")))
 	{
-		use(1, $item[Festive Warbear Bank]);
-	}
-
-	if((item_amount($item[etched hourglass]) > 0) && !get_property("_etchedHourglassUsed").to_boolean())
-	{
-		use(1, $item[etched hourglass]);
+		use(1, Item.get("festive warbear bank"));
 	}
 
-	if((item_amount($item[Can of Rain-doh]) > 0) && (item_amount($item[Rain-Doh Red Wings]) == 0))
+	if (itemAmount(Item.get("etched hourglass")) > 0 && !toBoolean(getProperty("_etchedHourglassUsed")))
 	{
-		use(1, $item[can of Rain-doh]);
-		put_closet(1, $item[empty rain-doh can]);
+		use(1, Item.get("etched hourglass"));
 	}
 
-	if(item_amount($item[Clan VIP Lounge Key]) > 0)
+	if (itemAmount(Item.get("can of Rain-Doh")) > 0 && itemAmount(Item.get("Rain-Doh red wings")) === 0)
 	{
-		int[item] furn = auto_get_clan_lounge();
-		if(furn contains $item[Olympic-sized Clan crate] && !get_property("_olympicSwimmingPoolItemFound").to_boolean() && is_unrestricted($item[Olympic-sized Clan Crate]))
+		use(1, Item.get("can of Rain-Doh"));
+		putCloset(1, Item.get("empty Rain-Doh can"));
+	}
+
+	if (itemAmount(Item.get("Clan VIP Lounge key")) > 0)
+	{
+		let furn: Map<Item, number> = auto_get_clan_lounge();
+		if (furn.has(Item.get("Olympic-sized Clan crate")) && !toBoolean(getProperty("_olympicSwimmingPoolItemFound")) && isUnrestricted(Item.get("Olympic-sized Clan crate")))
 		{
-			cli_execute("swim item");
+			cliExecute("swim item");
 		}
-		if(furn contains $item[Clan looking glass] && !get_property("_lookingGlass").to_boolean() && is_unrestricted($item[Clan Looking Glass]))
+		if (furn.has(Item.get("Clan looking glass")) && !toBoolean(getProperty("_lookingGlass")) && isUnrestricted(Item.get("Clan looking glass")))
 		{
-			string temp = visit_url("clan_viplounge.php?action=lookingglass");
+			let temp: string = visitUrl("clan_viplounge.php?action=lookingglass");
 		}
-		if(get_property("_deluxeKlawSummons").to_int() == 0)
+		if (toInt(getProperty("_deluxeKlawSummons")) === 0)
 		{
-			cli_execute("clan_viplounge.php?action=klaw");
-			cli_execute("clan_viplounge.php?action=klaw");
-			cli_execute("clan_viplounge.php?action=klaw");
+			cliExecute("clan_viplounge.php?action=klaw");
+			cliExecute("clan_viplounge.php?action=klaw");
+			cliExecute("clan_viplounge.php?action=klaw");
 		}
-		if(furn contains $item[Crimbough] && furn[$item[Crimbough]]==5 && !get_property("_crimboTree").to_boolean() && is_unrestricted($item[Crimbough]))
+		if (furn.has(Item.get("Crimbough")) && (furn.get(Item.get("Crimbough")) ?? furn.set(Item.get("Crimbough"), 0).get(Item.get("Crimbough"))) === 5 && !toBoolean(getProperty("_crimboTree")) && isUnrestricted(Item.get("Crimbough")))
 		{
-			cli_execute("crimbotree get");
+			cliExecute("crimbotree get");
 		}
 	}
 
-	if (get_property("_klawSummons").to_int() == 0 && get_clan_rumpus() contains 'Mr. Klaw "Skill" Crane Game') {
-		cli_execute("clan_rumpus.php?action=click&spot=3&furni=3");
-		cli_execute("clan_rumpus.php?action=click&spot=3&furni=3");
-		cli_execute("clan_rumpus.php?action=click&spot=3&furni=3");
+	if (toInt(getProperty("_klawSummons")) === 0 && ("Mr. Klaw \"Skill\" Crane Game") in getClanRumpus()) {
+		cliExecute("clan_rumpus.php?action=click&spot=3&furni=3");
+		cliExecute("clan_rumpus.php?action=click&spot=3&furni=3");
+		cliExecute("clan_rumpus.php?action=click&spot=3&furni=3");
 	}
 
-	if((item_amount($item[Infinite BACON Machine]) > 0) && !get_property("_baconMachineUsed").to_boolean())
+	if (itemAmount(Item.get("infinite BACON machine")) > 0 && !toBoolean(getProperty("_baconMachineUsed")))
 	{
-		use(1, $item[Infinite BACON Machine]);
+		use(1, Item.get("infinite BACON machine"));
 	}
-	if((item_amount($item[Picky Tweezers]) > 0) && !get_property("_pickyTweezersUsed").to_boolean())
+	if (itemAmount(Item.get("picky tweezers")) > 0 && !toBoolean(getProperty("_pickyTweezersUsed")))
 	{
-		use(1, $item[Picky Tweezers]);
+		use(1, Item.get("picky tweezers"));
 	}
 
-	if(have_skill($skill[That\'s Not a Knife]) && !get_property("_discoKnife").to_boolean())
+	if (haveSkill(Skill.get("That's Not a Knife")) && !toBoolean(getProperty("_discoKnife")))
 	{
-		foreach it in $items[Boot Knife, Broken Beer Bottle, Candy Knife, Sharpened Spoon, Soap Knife]
+		for (let it of Item.get(["boot knife", "broken beer bottle", "candy knife", "sharpened spoon", "soap knife"]))
 		{
-			if(item_amount(it) == 1)
+			if (itemAmount(it) === 1)
 			{
-				put_closet(1, it);
+				putCloset(1, it);
 			}
 		}
-		use_skill(1, $skill[That\'s Not a Knife]);
+		useSkill(1, Skill.get("That's Not a Knife"));
 	}
 
-	while(zataraClanmate());
+	while (zataraClanmate()) {}
 
-	if(item_amount($item[Genie Bottle]) > 0 && auto_is_valid($item[genie bottle]) && auto_is_valid($item[pocket wish]) && !in_glover())
+	if (itemAmount(Item.get("genie bottle")) > 0 && auto_is_valid(Item.get("genie bottle")) && auto_is_valid(Item.get("pocket wish")) && !in_glover())
 	{
 	//if bottle is valid and pocket wishes are not (such as in glover) then we should save the wishes for use and only convert leftovers into pocket wishes at bedtime
-		for(int i=get_property("_genieWishesUsed").to_int(); i<3; i++)
+		for (let i: number = toInt(getProperty("_genieWishesUsed")); i < 3; i++)
 		{
 			makeGeniePocket();
 		}
@@ -1254,104 +1207,104 @@ boolean dailyEvents()
 	auto_getGlobs();
 	auto_setLeprecondo();
 	auto_getBCZItems();
-	
+
 	return true;
 }
 
-boolean Lsc_flyerSeals()
+export function Lsc_flyerSeals(): boolean
 {
-	if(my_class() != $class[Seal Clubber])
+	if (myClass() !== Class.get("Seal Clubber"))
 	{
 		return false;
 	}
-	if(get_property("auto_ignoreFlyer").to_boolean())
+	if (toBoolean(getProperty("auto_ignoreFlyer")))
 	{
 		return false;
 	}
 	// although seals can be fought drunk, it complicates code without serving a purpose
-	if(my_inebriety() > inebriety_limit())
+	if (myInebriety() > inebrietyLimit())
 	{
 		return false;
 	}
-	if (internalQuestStatus("questL12War") != 1)
+	if (internalQuestStatus("questL12War") !== 1)
 	{
 		return false;
 	}
-	if(get_property("flyeredML").to_int() >= 10000)
+	if (toInt(getProperty("flyeredML")) >= 10000)
 	{
 		return false;
 	}
-	if((item_amount($item[Rock Band Flyers]) == 0) && (item_amount($item[Jam Band Flyers]) == 0))
+	if (itemAmount(Item.get("rock band flyers")) === 0 && itemAmount(Item.get("jam band flyers")) === 0)
 	{
 		return false;
 	}
-	if(get_property("choiceAdventure1003").to_int() >= 3)
+	if (toInt(getProperty("choiceAdventure1003")) >= 3)
 	{
 		return false;
 	}
 
-	if((get_property("_sealsSummoned").to_int() < maxSealSummons()) && (my_meat() > 500))
+	if (toInt(getProperty("_sealsSummoned")) < maxSealSummons() && myMeat() > 500)
 	{
-		element towerTest = ns_crowd3();
-		boolean doElement = false;
-		if(item_amount($item[powdered sealbone]) > 0)
+		let towerTest: Element = ns_crowd3();
+		let doElement: boolean = false;
+		if (itemAmount(Item.get("powdered sealbone")) > 0)
 		{
-			if((towerTest == $element[cold]) && (item_amount($item[frost-rimed seal hide]) < 2) && (item_amount($item[figurine of a cold seal]) > 0))
+			if (towerTest === Element.get("cold") && itemAmount(Item.get("frost-rimed seal hide")) < 2 && itemAmount(Item.get("figurine of a cold seal")) > 0)
 			{
 				doElement = true;
 			}
-			if((towerTest == $element[hot]) && (item_amount($item[sizzling seal fat]) < 2) && (item_amount($item[figurine of a charred seal]) > 0))
+			if (towerTest === Element.get("hot") && itemAmount(Item.get("sizzling seal fat")) < 2 && itemAmount(Item.get("figurine of a charred seal")) > 0)
 			{
 				doElement = true;
 			}
-			if((towerTest == $element[sleaze]) && (item_amount($item[seal lube]) < 2) && (item_amount($item[figurine of a slippery seal]) > 0))
+			if (towerTest === Element.get("sleaze") && itemAmount(Item.get("seal lube")) < 2 && itemAmount(Item.get("figurine of a slippery seal")) > 0)
 			{
 				doElement = true;
 			}
-			if((towerTest == $element[spooky]) && (item_amount($item[scrap of shadow]) < 2) && (item_amount($item[figurine of a shadowy seal]) > 0))
+			if (towerTest === Element.get("spooky") && itemAmount(Item.get("scrap of shadow")) < 2 && itemAmount(Item.get("figurine of a shadowy seal")) > 0)
 			{
 				doElement = true;
 			}
-			if((towerTest == $element[stench]) && (item_amount($item[fustulent seal grulch]) < 2) && (item_amount($item[figurine of a stinking seal]) > 0))
+			if (towerTest === Element.get("stench") && itemAmount(Item.get("fustulent seal grulch")) < 2 && itemAmount(Item.get("figurine of a stinking seal")) > 0)
 			{
 				doElement = true;
 			}
 		}
 
-		boolean clubbedSeal = false;
-		if(doElement)
+		let clubbedSeal: boolean = false;
+		if (doElement)
 		{
-			if((item_amount($item[imbued seal-blubber candle]) == 0) && guild_store_available())
+			if (itemAmount(Item.get("imbued seal-blubber candle")) === 0 && guildStoreAvailable())
 			{
-				auto_buyUpTo(1, $item[seal-blubber candle]);
-				cli_execute("make imbued seal-blubber candle");
+				auto_buyUpTo(1, Item.get("seal-blubber candle"));
+				cliExecute("make imbued seal-blubber candle");
 			}
-			if(item_amount($item[Imbued Seal-Blubber Candle]) > 0)
+			if (itemAmount(Item.get("imbued seal-blubber candle")) > 0)
 			{
 				ensureSealClubs();
 				handleSealElement(towerTest);
 				clubbedSeal = true;
 			}
 		}
-		else if(guild_store_available() && isHermitAvailable())
+		else if (guildStoreAvailable() && isHermitAvailable())
 		{
-			auto_buyUpTo(1, $item[figurine of an armored seal]);
-			auto_buyUpTo(10, $item[seal-blubber candle]);
-			if((item_amount($item[Figurine of an Armored Seal]) > 0) && (item_amount($item[Seal-Blubber Candle]) >= 10))
+			auto_buyUpTo(1, Item.get("figurine of an armored seal"));
+			auto_buyUpTo(10, Item.get("seal-blubber candle"));
+			if (itemAmount(Item.get("figurine of an armored seal")) > 0 && itemAmount(Item.get("seal-blubber candle")) >= 10)
 			{
-				handleSealNormal($item[Figurine of an Armored Seal]);
+				handleSealNormal(Item.get("figurine of an armored seal"));
 				clubbedSeal = true;
 			}
 		}
-		if((item_amount($item[bad-ass club]) == 0) && (item_amount($item[ingot of seal-iron]) > 0) && have_skill($skill[Super-Advanced Meatsmithing]))
+		if (itemAmount(Item.get("bad-ass club")) === 0 && itemAmount(Item.get("ingot of seal-iron")) > 0 && haveSkill(Skill.get("Super-Advanced Meatsmithing")))
 		{
-			if((item_amount($item[Tenderizing Hammer]) == 0) && ((my_meat() >= (npc_price($item[Tenderizing Hammer]) * 2)) && (npc_price($item[Tenderizing Hammer]) != 0)))
+			if (itemAmount(Item.get("tenderizing hammer")) === 0 && (myMeat() >= npcPrice(Item.get("tenderizing hammer")) * 2 && npcPrice(Item.get("tenderizing hammer")) !== 0))
 			{
-				auto_buyUpTo(1, $item[Tenderizing Hammer]);
+				auto_buyUpTo(1, Item.get("tenderizing hammer"));
 			}
-			if(item_amount($item[Tenderizing Hammer]) > 0)
+			if (itemAmount(Item.get("tenderizing hammer")) > 0)
 			{
-				use(1, $item[ingot of seal-iron]);
+				use(1, Item.get("ingot of seal-iron"));
 			}
 		}
 		return clubbedSeal;
@@ -1359,74 +1312,68 @@ boolean Lsc_flyerSeals()
 	return false;
 }
 
-boolean councilMaintenance()
+export function councilMaintenance(): boolean
 {
 	if (in_koe())
 	{
 		return false;
 	}
-	if(my_level() > get_property("lastCouncilVisit").to_int())
+	if (myLevel() > toInt(getProperty("lastCouncilVisit")))
 	{
 		council();
-		if (isActuallyEd() && my_level() == 11 && item_amount($item[7961]) > 0)
+		if (isActuallyEd() && myLevel() === 11 && itemAmount(Item.get("[7961]Staff of Ed")) > 0)
 		{
-			cli_execute("refresh inv");
+			cliExecute("refresh inv");
 		}
 		return true;
 	}
 	return false;
 }
 
-boolean adventureFailureHandler()
+export function adventureFailureHandler(): boolean
 {
-	location place = my_location();
-	int limit = (in_avantGuard() ? 100 : 50);
-	if(place.turns_spent > limit)
+	let place: Location = myLocation();
+	let limit: number = (in_avantGuard() ? 100 : 50);
+	if (place.turnsSpent > limit)
 	{
-		boolean tooManyAdventures = true;
-		
+		let tooManyAdventures: boolean = true;
 		//general override function
-		if ($locations[
+		if (Location.get([
 		//Many places do not have a proper ID which makes them indistinguishable from noob cave
-		Noob Cave,
-		
+		"Noob Cave",
 		//quest locations where you spend lots of adventures and can not over adventure either
-		The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform),
-		
+		"The Battlefield (Frat Uniform)", "The Battlefield (Hippy Uniform)",
 		//kingdom of exploathing specific location for the hippy-frat war
-		The Exploaded Battlefield,
-		
+		"The Exploaded Battlefield",
 		//IOTM zones only used to powerlevel
-		The Deep Dark Jungle, The Neverending Party, Pirates of the Garbage Barges, The Secret Government Laboratory, Sloppy Seconds Diner, The SMOOCH Army HQ, Super Villain\'s Lair, Uncle Gator\'s Country Fun-Time Liquid Waste Sluice, VYKEA, The X-32-F Combat Training Snowman,
-		
+		"The Deep Dark Jungle", "The Neverending Party", "Pirates of the Garbage Barges", "The Secret Government Laboratory", "Sloppy Seconds Diner", "The SMOOCH Army HQ", "Super Villain's Lair", "Uncle Gator's Country Fun-Time Liquid Waste Sluice", "VYKEA", "The X-32-F Combat Training Snowman",
 		//in KOLHS path you must spend 40 adv per day split between those locations. zones only exist in kolhs
-		The Hallowed Halls, Art Class, Chemistry Class, Shop Class,
-		
+		"The Hallowed Halls", "Art Class", "Chemistry Class", "Shop Class",
 		//holiday events
-		The Arrrboretum, The Spectral Pickle Factory] contains place)
+		"The Arrrboretum", "The Spectral Pickle Factory"]).includes(place))
 		{
 			tooManyAdventures = false;
 		}
 
-		if(tooManyAdventures && in_theSource())
+		if (tooManyAdventures && in_theSource())
 		{
-			if($locations[The Haunted Ballroom, The Haunted Bathroom, The Haunted Bedroom, The Haunted Gallery] contains place)
+			if (Location.get(["The Haunted Ballroom", "The Haunted Bathroom", "The Haunted Bedroom", "The Haunted Gallery"]).includes(place))
 			{
 				tooManyAdventures = false;
 			}
 		}
 
-		if(tooManyAdventures && isActuallyEd())
+		if (tooManyAdventures && isActuallyEd())
 		{
-			if ($location[The Hippy Camp] == place)
+			if (Location.get("The Hippy Camp") === place)
 			{
 				tooManyAdventures = false;
 			}
 		}
-		
-		if(tooManyAdventures && in_bhy())
+
+		if (tooManyAdventures && in_bhy())
 		{
-			if($locations[A-Boo Peak, Twin Peak] contains place)
+			if (Location.get(["A-Boo Peak", "Twin Peak"]).includes(place))
 			{
 				//bees prevent doing these quickly
 				tooManyAdventures = false;
@@ -1435,104 +1382,100 @@ boolean adventureFailureHandler()
 
 		if (tooManyAdventures && in_glover())
 		{
-			if ($locations[The Penultimate Fantasy Airship, The Smut Orc Logging Camp, The Hidden Temple] contains place)
+			if (Location.get(["The Penultimate Fantasy Airship", "The Smut Orc Logging Camp", "The Hidden Temple"]).includes(place))
 			{
 				tooManyAdventures = false;
 			}
 		}
-		
+
 		if (tooManyAdventures && in_robot())
 		{
-			if ($locations[The Penultimate Fantasy Airship, The Smut Orc Logging Camp, The Haunted Bedroom, The Haunted Billiards Room] contains place)
+			if (Location.get(["The Penultimate Fantasy Airship", "The Smut Orc Logging Camp", "The Haunted Bedroom", "The Haunted Billiards Room"]).includes(place))
 			{
 				tooManyAdventures = false;
 			}
 		}
 
-		if ($locations[The Haunted Gallery] contains place && place.turns_spent < 100)
+		if (Location.get(["The Haunted Gallery"]).includes(place) && place.turnsSpent < 100)
 		{
 			tooManyAdventures = false;
 		}
 
-		if ($locations[The Daily Dungeon] contains place && get_property("auto_forceFatLootToken").to_boolean())
+		if (Location.get(["The Daily Dungeon"]).includes(place) && toBoolean(getProperty("auto_forceFatLootToken")))
 		{
 			tooManyAdventures = false;
 		}
-		
-		boolean can_powerlevel_stench = elementalPlanes_access($element[stench]) && auto_have_skill($skill[Summon Smithsness]) && get_property("auto_beatenUpCount").to_int() == 0;
-		boolean has_powerlevel_iotm = can_powerlevel_stench || elementalPlanes_access($element[spooky]) || elementalPlanes_access($element[cold]) || elementalPlanes_access($element[sleaze]) || elementalPlanes_access($element[hot]) || neverendingPartyAvailable();
-		if(!has_powerlevel_iotm && $locations[The Haunted Gallery, The Haunted Bedroom] contains place)
+
+		let can_powerlevel_stench: boolean = elementalPlanes_access(Element.get("stench")) && auto_have_skill(Skill.get("Summon Smithsness")) && toInt(getProperty("auto_beatenUpCount")) === 0;
+		let has_powerlevel_iotm: boolean = can_powerlevel_stench || elementalPlanes_access(Element.get("spooky")) || elementalPlanes_access(Element.get("cold")) || elementalPlanes_access(Element.get("sleaze")) || elementalPlanes_access(Element.get("hot")) || neverendingPartyAvailable();
+		if (!has_powerlevel_iotm && Location.get(["The Haunted Gallery", "The Haunted Bedroom"]).includes(place))
 		{
-			tooManyAdventures = false;		//if we do not have iotm powerlevel zones then we are forced to use haunted gallery or bedroom
-		}
-		
-		if(my_session_adv() < get_property("_auto_override_tooManyAdv").to_int())
-		{
-			tooManyAdventures = false;		//currently in override for too many adv
+			tooManyAdventures = false; //if we do not have iotm powerlevel zones then we are forced to use haunted gallery or bedroom
 		}
 
-		if(tooManyAdventures)
+		if (mySessionAdv() < toInt(getProperty("_auto_override_tooManyAdv")))
 		{
-			if(get_property("auto_newbieOverride").to_boolean())
+			tooManyAdventures = false; //currently in override for too many adv
+		}
+
+		if (tooManyAdventures)
+		{
+			if (toBoolean(getProperty("auto_newbieOverride")))
 			{
-				set_property("auto_newbieOverride", false);
-				set_property("_auto_override_tooManyAdv", my_session_adv()+5);		//override 5 adv at a time
-				auto_log_warning("We have spent " + place.turns_spent + " turns at '" + place + "' and that is bad... override accepted.", "red");
+				setProperty("auto_newbieOverride", false.toString());
+				setProperty("_auto_override_tooManyAdv", (mySessionAdv() + 5).toString()); //override 5 adv at a time
+				auto_log_warning(`We have spent ${place.turnsSpent} turns at '${place}' and that is bad... override accepted.`, "red");
 			}
-			else
-			{
+			else {
 				print("You can bypass this once by executing the gCLI command:", "blue");
 				print("set auto_newbieOverride = true", "blue");
-				abort("We have spent " + place.turns_spent + " turns at '" + place + "' and that is bad... aborting.");
+				abort(`We have spent ${place.turnsSpent} turns at '${place}' and that is bad... aborting.`);
 			}
 		}
 	}
 
-	if(last_monster() == $monster[Crate] && get_property("screechDelay") != "" && (in_wereprof() && !($location[Noob Cave].turns_spent < 8))) //want 7 turns of Noob Cave in Wereprof for Smashed Scientific Equipment
-	{
-		if(get_property("auto_newbieOverride").to_boolean())
+	if (lastMonster() === Monster.get("crate") && getProperty("screechDelay") !== "" && (in_wereprof() && !((Location.get("Noob Cave")).turnsSpent < 8)))
+	{ //want 7 turns of Noob Cave in Wereprof for Smashed Scientific Equipment
+		if (toBoolean(getProperty("auto_newbieOverride")))
 		{
-			set_property("auto_newbieOverride", false);
+			setProperty("auto_newbieOverride", false.toString());
 		}
-		else
-		{
+		else {
 			abort("We went to the Noob Cave for reals... uh oh");
 		}
 	}
-	else
-	{
-		set_property("auto_newbieOverride", false);
+	else {
+		setProperty("auto_newbieOverride", false.toString());
 	}
 	return false;
 }
 
-void beatenUpResolution()
+export function beatenUpResolution(): void
 {
-	if(have_effect($effect[Beaten Up]) > 0)
+	if (haveEffect(Effect.get("Beaten Up")) > 0)
 	{
-		if(get_property("auto_beatenUpCount").to_int() > 10 && get_property("lastEncounter") != "Poetic Justice")
+		if (toInt(getProperty("auto_beatenUpCount")) > 10 && getProperty("lastEncounter") !== "Poetic Justice")
 		{
 			abort("We are getting beaten up too much, this is not good. Aborting.");
 		}
 		acquireHP();
 	}
 
-	if(have_effect($effect[Beaten Up]) > 0)
+	if (haveEffect(Effect.get("Beaten Up")) > 0)
 	{
-		if(have_effect($effect[Beaten Up]) == 2 && get_property("lastEncounter") == "Dr. Awkward" && internalQuestStatus("questL11Palindome") > 5)
+		if (haveEffect(Effect.get("Beaten Up")) === 2 && getProperty("lastEncounter") === "Dr. Awkward" && internalQuestStatus("questL11Palindome") > 5)
 		{
 			//beaten up by the quest item when unlocking Dr. Awkward, not by failing a fight
-			set_property("_auto_AwkwardBeatenUp",my_turncount().to_string());
-			auto_log_info("We must have failed to remove beaten up before defeating Dr. Awkward and that hasn't stopped us so far...");
+			setProperty("_auto_AwkwardBeatenUp", myTurncount().toString());
+			auto_log_info$1("We must have failed to remove beaten up before defeating Dr. Awkward and that hasn't stopped us so far...");
 		}
-		else if(have_effect($effect[Beaten Up]) == 1 && get_property("_auto_AwkwardBeatenUp").to_int() != 0 && my_turncount() - get_property("_auto_AwkwardBeatenUp").to_int() <= 1)
+		else if (haveEffect(Effect.get("Beaten Up")) === 1 && toInt(getProperty("_auto_AwkwardBeatenUp")) !== 0 && myTurncount() - toInt(getProperty("_auto_AwkwardBeatenUp")) <= 1)
 		{
-			auto_log_info("This should be the last turn of beaten up from Dr. Awkward");
+			auto_log_info$1("This should be the last turn of beaten up from Dr. Awkward");
 		}
-		else
-		{
-			cli_execute("refresh all");
-			if(have_effect($effect[Beaten Up]) > 0)
+		else {
+			cliExecute("refresh all");
+			if (haveEffect(Effect.get("Beaten Up")) > 0)
 			{
 				abort("We failed to remove beaten up. Adventuring in the same place that we got beaten in with half stats will just result in us dying again");
 			}
@@ -1540,421 +1483,411 @@ void beatenUpResolution()
 	}
 }
 
-int speculative_pool_skill()
+export function speculative_pool_skill(): number
 {
-	int expectPool = get_property("poolSkill").to_int();
-	expectPool += min(10,to_int(2 * square_root(get_property("poolSharkCount").to_int())));
-	if(my_inebriety() >= 10)
+	let expectPool: number = toInt(getProperty("poolSkill"));
+	expectPool += min(10, toInt(2 * squareRoot(toInt(getProperty("poolSharkCount")))));
+	if (myInebriety() >= 10)
 	{
-		expectPool += (30 - (2 * my_inebriety()));
+		expectPool += 30 - 2 * myInebriety();
 	}
-	else
-	{
-		expectPool += my_inebriety();
+	else {
+		expectPool += myInebriety();
 	}
-	if(auto_is_valid($item[Handful of Hand Chalk]) && (have_effect($effect[Chalky Hand]) > 0 || item_amount($item[Handful of Hand Chalk]) > 0))
+	if (auto_is_valid(Item.get("handful of hand chalk")) && (haveEffect(Effect.get("Chalky Hand")) > 0 || itemAmount(Item.get("handful of hand chalk")) > 0))
 	{
 		expectPool += 3;
 	}
-	if(have_effect($effect[Chalked Weapon]) > 0)
+	if (haveEffect(Effect.get("Chalked Weapon")) > 0)
 	{
 		expectPool += 5;
 	}
-	if(have_effect($effect[Influence of Sphere]) > 0)
+	if (haveEffect(Effect.get("Influence of Sphere")) > 0)
 	{
 		expectPool += 5;
 	}
-	if(have_effect($effect[Video... Games?]) > 0)
+	if (haveEffect(Effect.get("Video... Games?")) > 0)
 	{
 		expectPool += 5;
 	}
-	if(have_effect($effect[Swimming with Sharks]) > 0)
+	if (haveEffect(Effect.get("Swimming with Sharks")) > 0)
 	{
 		expectPool += 3;
 	}
 	return expectPool;
 }
 
-boolean autosellCrap()
+export function autosellCrap(): boolean
 {
-	if(can_interact() && my_meat() > 20000)
+	if (canInteract() && myMeat() > 20000)
 	{
-		return false;		//do not autosell stuff in casual or postronin unless you are very poor
+		return false; //do not autosell stuff in casual or postronin unless you are very poor
 	}
-	if(in_wotsf())
+	if (in_wotsf())
 	{
-		return false;		//selling things in the way of the surprising fist only donates the money to charity, so we should not autosell anything automatically
+		return false; //selling things in the way of the surprising fist only donates the money to charity, so we should not autosell anything automatically
 	}
 
-	foreach it in $items[Ancient Vinyl Coin Purse, Black Pension Check, CSA Discount Card, Fat Wallet, Gathered Meat-Clip, Loose Meats, Old Leather Wallet, Penultimate Fantasy Chest, Pixellated Moneybag, Old Coin Purse, Shiny Stones, Warm Subject Gift Certificate]
+	for (let it of Item.get(["ancient vinyl coin purse", "black pension check", "CSA discount card", "fat wallet", "Gathered Meat-Clip", "loose Meats", "old leather wallet", "Penultimate Fantasy chest", "pixellated moneybag", "old coin purse", "shiny stones", "Warm Subject gift certificate"]))
 	{
-		if(item_amount(it) > 0 && auto_is_valid(it))
+		if (itemAmount(it) > 0 && auto_is_valid(it))
 		{
-			use(min(10,item_amount(it)), it);
+			use(min(10, itemAmount(it)), it);
 		}
 	}
 	//keeping 1 garbage in stock to avoid possible harmful loop with dinseylandfill_garbageMoney()
 	//keeping 1 briefcase in stock for the Infiltrationist choice 2
-	foreach it in $items[Bag Of Park Garbage, briefcase]
+	for (let it of Item.get(["bag of park garbage", "briefcase"]))
 	{
-		if(item_amount(it) > 1 && auto_is_valid(it))		//for these items we want to keep 1 in stock. use the rest
-		{
-			use(min(10,item_amount(it)-1), it);
+		if (itemAmount(it) > 1 && auto_is_valid(it))
+		{ //for these items we want to keep 1 in stock. use the rest
+			use(min(10, itemAmount(it) - 1), it);
 		}
 	}
-	if (!get_property("_governmentPerDiemUsed").to_boolean() && item_amount($item[government per-diem]) > 0) {
-		use(1, $item[government per-diem]);
+	if (!toBoolean(getProperty("_governmentPerDiemUsed")) && itemAmount(Item.get("government per-diem")) > 0) {
+		use(1, Item.get("government per-diem"));
 	}
-	if (get_property("handfulOfTipsMeat").to_int() < 9600 && item_amount($item[handful of tips]) > 0) {
-		use(1, $item[handful of tips]);
+	if (toInt(getProperty("handfulOfTipsMeat")) < 9600 && itemAmount(Item.get("handful of tips")) > 0) {
+		use(1, Item.get("handful of tips"));
 	}
-	if (item_amount($item[stock certificate]) > 0) {
-		string turns = get_property("stockCertificateTurns");
-		if (turns != "") {
-			int earliestTurns = split_string(turns, ",")[0].to_int();
-			if (total_turns_played() - earliestTurns >= 500) {
-				use(1, $item[Stock Certificate]);
+	if (itemAmount(Item.get("Stock Certificate")) > 0) {
+		let turns: string = getProperty("stockCertificateTurns");
+		if (turns !== "") {
+			let earliestTurns: number = toInt((splitString(turns, ",")[0] ??= ""));
+			if (totalTurnsPlayed() - earliestTurns >= 500) {
+				use(1, Item.get("Stock Certificate"));
 			}
 		}
 	}
 
-	if(in_amw())
+	if (in_amw())
 	{
 		return false; // don't bother trying to autosell in Adventurer Meats World
 	}
-	
 	// Function to sell all of our items, optionally keeping some.
-	void sell_except(int n_to_keep, boolean[item] items_to_sell)
+	function sell_except(n_to_keep: number, items_to_sell: Map<Item, boolean>): void
 	{
-		foreach it in items_to_sell
+		for (let it of items_to_sell.keys())
 		{
-			if(item_amount(it) > n_to_keep)
+			if (itemAmount(it) > n_to_keep)
 			{
-				auto_autosell(min(10,item_amount(it)-n_to_keep), it);
+				auto_autosell(min(10, itemAmount(it) - n_to_keep), it);
 			}
 		}
 	}
-	
 	// keep none of these
-	boolean[item] items_considered = $items[dense meat stack, meat stack,  //quest rewards that are better off as meat. If we ever need it we can freely recreate them at no loss.
-	  Blue Money Bag, Red Money Bag, White Money Bag,  //vampyre path boss rewards and major source of meat in run.
-	  Space Blanket, //can be inside MayDay package. Only purpose is to sell for meat
-	  Void Stone];//dropped by Void Fights when Cursed Magnifying Glass is equiped. Only purpose is to sell for meat
-	
-	sell_except(0,items_considered);
+	let items_considered: Map<Item, boolean> = new Map([[Item.get("dense meat stack"), true], [Item.get("meat stack"), true], //quest rewards that are better off as meat. If we ever need it we can freely recreate them at no loss.
+	  [Item.get("blue money bag"), true], [Item.get("red money bag"), true], [Item.get("white money bag"), true], //vampyre path boss rewards and major source of meat in run.
+	  [Item.get("space blanket"), true], //can be inside MayDay package. Only purpose is to sell for meat
+	  [Item.get("void stone"), true]]); //dropped by Void Fights when Cursed Magnifying Glass is equiped. Only purpose is to sell for meat
 
-	sell_except(2,$items[elegant nightstick]);	//keeping 2 nightsticks in stock for double fisting
+	sell_except(0, items_considered);
 
+	sell_except(2, new Map([[Item.get("elegant nightstick"), true]])); //keeping 2 nightsticks in stock for double fisting
 	// below this point are items we only want to sell if we are desperate for meat.
-	if(auto_amIRich())
+	if (auto_amIRich())
 	{
 		return false;
 	}
-	
 	// Keep none
-	items_considered = $items[Anticheese, Awful Poetry Journal, Azurite, Beach Glass Bead, Beer Bomb, Bit-o-Cactus,
-	  Clay Peace-Sign Bead, Clockwork key, Cocoa Eggshell Fragment, Datastick, Decorative Fountain, Dense Meat Stack,
-	  Empty Cloaca-Cola Bottle, Enchanted Barbell, Eye Agate, Fancy Bath Salts, Frigid Ninja Stars,
-	  Feng Shui For Big Dumb Idiots, Frat Army FGF, Giant Moxie Weed, Half of a Gold Tooth,
-	  Headless Sparrow, Keel-Haulin\' Knife, Knob Goblin pants, Knob goblin scimitar, Knob Goblin tongs,
-	  Kokomo Resort Pass, Lapis Lazuli, Leftovers Of Indeterminate Origin, Mad Train Wine, Mangled Squirrel, Margarita,
-	  Meat Paste, Mineapple, Moxie Weed, PADL Phone, Patchouli Incense Stick, Phat Turquoise Bead,
-	  Photoprotoneutron Torpedo, Plot Hole, Procrastination Potion, Rat Carcass, Sausage Bomb,
-	  Sea Honeydew, Sea Lychee, Sea Persimmon, Sea Tangelo,
-	  Shiny Hood Ornament, Slingshot, Smelted Roe, Spicy Jumping Bean Burrito, Spicy Bean Burrito, Spooky Stick,
-	  Strongness Elixir, Sunken Chest, Tambourine Bells, Tequila Sunrise, Uncle Jick\'s Brownie Mix, Windchimes];
-	  
-	sell_except(0,items_considered);
+	items_considered = new Map([[Item.get("anticheese"), true], [Item.get("awful poetry journal"), true], [Item.get("Azurite"), true], [Item.get("beach glass bead"), true], [Item.get("beer bomb"), true], [Item.get("bit-o-cactus"), true],
+	  [Item.get("clay peace-sign bead"), true], [Item.get("clockwork key"), true], [Item.get("cocoa eggshell fragment"), true], [Item.get("datastick"), true], [Item.get("decorative fountain"), true], [Item.get("dense meat stack"), true],
+	  [Item.get("empty Cloaca-Cola bottle"), true], [Item.get("enchanted barbell"), true], [Item.get("Eye Agate"), true], [Item.get("fancy bath salts"), true], [Item.get("frigid ninja stars"), true],
+	  [Item.get("Feng Shui for Big Dumb Idiots"), true], [Item.get("Frat Army FGF"), true], [Item.get("giant moxie weed"), true], [Item.get("half of a gold tooth"), true],
+	  [Item.get("headless sparrow"), true], [Item.get("keel-haulin' knife"), true], [Item.get("Knob Goblin pants"), true], [Item.get("Knob Goblin scimitar"), true], [Item.get("Knob Goblin tongs"), true],
+	  [Item.get("Kokomo Resort Pass"), true], [Item.get("Lapis Lazuli"), true], [Item.get("leftovers of indeterminate origin"), true], [Item.get("Mad Train wine"), true], [Item.get("mangled squirrel"), true], [Item.get("margarita"), true],
+	  [Item.get("meat paste"), true], [Item.get("mineapple"), true], [Item.get("moxie weed"), true], [Item.get("PADL Phone"), true], [Item.get("patchouli incense stick"), true], [Item.get("phat turquoise bead"), true],
+	  [Item.get("photoprotoneutron torpedo"), true], [Item.get("plot hole"), true], [Item.get("procrastination potion"), true], [Item.get("rat carcass"), true], [Item.get("sausage bomb"), true],
+	  [Item.get("sea honeydew"), true], [Item.get("sea lychee"), true], [Item.get("sea persimmon"), true], [Item.get("sea tangelo"), true],
+	  [Item.get("shiny hood ornament"), true], [Item.get("slingshot"), true], [Item.get("smelted roe"), true], [Item.get("spicy jumping bean burrito"), true], [Item.get("spicy bean burrito"), true], [Item.get("spooky stick"), true],
+	  [Item.get("strongness elixir"), true], [Item.get("sunken chest"), true], [Item.get("tambourine bells"), true], [Item.get("tequila sunrise"), true], [Item.get("Uncle Jick's Brownie Mix"), true], [Item.get("windchimes"), true]]);
 
-	if(auto_amIRich())
+	sell_except(0, items_considered);
+
+	if (auto_amIRich())
 	{
 		return false;
 	}
-	
 	// Pixels, keep all in KoE, none otherwise (black and red saved for red pixel potions)
 	if (!in_koe())
 	{
-		items_considered = $items[blue pixel, green pixel, white pixel];
-		sell_except(0,items_considered);
+		items_considered = new Map([[Item.get("blue pixel"), true], [Item.get("green pixel"), true], [Item.get("white pixel"), true]]);
+		sell_except(0, items_considered);
 	}
-	
 	// Keep none
-	items_considered = $items[Imp ale, Shot of grapefruit schnapps, shot of orange schnapps, shot of tomato schnapps];
-	sell_except(0,items_considered);
-	
+	items_considered = new Map([[Item.get("Imp Ale"), true], [Item.get("shot of grapefruit schnapps"), true], [Item.get("shot of orange schnapps"), true], [Item.get("shot of tomato schnapps"), true]]);
+	sell_except(0, items_considered);
 	// Keep one
-	items_considered = $items[Big Hot Pepper, Chaos Butterfly];
-	sell_except(1,items_considered);
-	
+	items_considered = new Map([[Item.get("big hot pepper"), true], [Item.get("chaos butterfly"), true]]);
+	sell_except(1, items_considered);
 	// Keep three
-	items_considered = $items[energized spores, hot wing];
-	sell_except(3,items_considered);
+	items_considered = new Map([[Item.get("energized spores"), true], [Item.get("hot wing"), true]]);
+	sell_except(3, items_considered);
 
 	return true;
 }
 
-void print_header()
+export function print_header(): void
 {
-	if(my_thunder() > get_property("auto_lastthunder").to_int())
+	if (myThunder() > toInt(getProperty("auto_lastthunder")))
 	{
-		set_property("auto_lastthunderturn", "" + my_turncount());
-		set_property("auto_lastthunder", "" + my_thunder());
+		setProperty("auto_lastthunderturn", `${myTurncount()}`);
+		setProperty("auto_lastthunder", `${myThunder()}`);
 	}
-	if(in_hardcore())
+	if (inHardcore())
 	{
-		auto_log_info("Turn(" + my_turncount() + "): Starting with " + my_adventures() + " left at Level: " + my_level(), "cyan");
+		auto_log_info(`Turn(${myTurncount()}): Starting with ${myAdventures()} left at Level: ${myLevel()}`, "cyan");
 	}
-	else
-	{
-		auto_log_info("Turn(" + my_turncount() + "): Starting with " + my_adventures() + " left and " + pulls_remaining() + " pulls left at Level: " + my_level(), "cyan");
+	else {
+		auto_log_info(`Turn(${myTurncount()}): Starting with ${myAdventures()} left and ${pullsRemaining()} pulls left at Level: ${myLevel()}`, "cyan");
 	}
-	if(((item_amount($item[Rock Band Flyers]) == 1) || (item_amount($item[Jam Band Flyers]) == 1)) && (get_property("flyeredML").to_int() < 10000) && !get_property("auto_ignoreFlyer").to_boolean())
+	if ((itemAmount(Item.get("rock band flyers")) === 1 || itemAmount(Item.get("jam band flyers")) === 1) && toInt(getProperty("flyeredML")) < 10000 && !toBoolean(getProperty("auto_ignoreFlyer")))
 	{
-		auto_log_info("Still flyering: " + get_property("flyeredML"), "blue");
+		auto_log_info(`Still flyering: ${getProperty("flyeredML")}`, "blue");
 	}
-	auto_log_info("Encounter: " + combat_rate_modifier() + "   Exp Bonus: " + experience_bonus(), "blue");
-	auto_log_info("Meat Drop: " + meat_drop_modifier() + "	 Item Drop: " + item_drop_modifier(), "blue");
-	auto_log_info("HP: " + my_hp() + "/" + my_maxhp() + ", MP: " + my_mp() + "/" + my_maxmp() + ", Meat: " + my_meat(), "blue");
-	auto_log_info("Tummy: " + my_fullness() + "/" + fullness_limit() + " Liver: " + my_inebriety() + "/" + inebriety_limit() + " Spleen: " + my_spleen_use() + "/" + spleen_limit(), "blue");
-	auto_log_info("ML: " + monster_level_adjustment() + " control: " + current_mcd(), "blue");
-	if(my_class() == $class[Sauceror])
+	auto_log_info(`Encounter: ${combatRateModifier()}   Exp Bonus: ${experienceBonus()}`, "blue");
+	auto_log_info(`Meat Drop: ${meatDropModifier()}\t Item Drop: ${itemDropModifier()}`, "blue");
+	auto_log_info(`HP: ${myHp()}/${myMaxhp()}, MP: ${myMp()}/${myMaxmp()}, Meat: ${myMeat()}`, "blue");
+	auto_log_info(`Tummy: ${myFullness()}/${fullnessLimit()} Liver: ${myInebriety()}/${inebrietyLimit()} Spleen: ${mySpleenUse()}/${spleenLimit()}`, "blue");
+	auto_log_info(`ML: ${monsterLevelAdjustment()} control: ${currentMcd()}`, "blue");
+	if (myClass() === Class.get("Sauceror"))
 	{
-		auto_log_info("Soulsauce: " + my_soulsauce(), "blue");
+		auto_log_info(`Soulsauce: ${mySoulsauce()}`, "blue");
 	}
-	if((have_effect($effect[Ultrahydrated]) > 0) && (get_property("desertExploration").to_int() < 100))
+	if (haveEffect(Effect.get("Ultrahydrated")) > 0 && toInt(getProperty("desertExploration")) < 100)
 	{
-		auto_log_info("Ultrahydrated: " + have_effect($effect[Ultrahydrated]), "violet");
+		auto_log_info(`Ultrahydrated: ${haveEffect(Effect.get("Ultrahydrated"))}`, "violet");
 	}
-	if(have_effect($effect[Everything Looks Yellow]) > 0)
+	if (haveEffect(Effect.get("Everything Looks Yellow")) > 0)
 	{
-		auto_log_info("Everything Looks Yellow: " + have_effect($effect[Everything Looks Yellow]), "blue");
+		auto_log_info(`Everything Looks Yellow: ${haveEffect(Effect.get("Everything Looks Yellow"))}`, "blue");
 	}
-	if(equipped_item($slot[familiar]) == $item[Snow Suit])
+	if (equippedItem(Slot.get("familiar")) === Item.get("Snow Suit"))
 	{
-		auto_log_info("Snow suit usage: " + get_property("_snowSuitCount") + " carrots: " + get_property("_carrotNoseDrops"), "blue");
+		auto_log_info(`Snow suit usage: ${getProperty("_snowSuitCount")} carrots: ${getProperty("_carrotNoseDrops")}`, "blue");
 	}
-	if(in_heavyrains())
+	if (in_heavyrains())
 	{
-		auto_log_info("Thunder: " + my_thunder() + " Rain: " + my_rain() + " Lightning: " + my_lightning(), "green");
+		auto_log_info(`Thunder: ${myThunder()} Rain: ${myRain()} Lightning: ${myLightning()}`, "green");
 	}
-	if(isActuallyEd())
+	if (isActuallyEd())
 	{
-		auto_log_info("Ka Coins: " + item_amount($item[Ka Coin]) + " Lashes used: " + get_property("_edLashCount"), "green");
+		auto_log_info(`Ka Coins: ${itemAmount(Item.get("Ka coin"))} Lashes used: ${getProperty("_edLashCount")}`, "green");
 	}
-	if(in_plumber())
+	if (in_plumber())
 	{
-		auto_log_info("Coins: " + item_amount($item[Coin]), "green");
+		auto_log_info(`Coins: ${itemAmount(Item.get("coin"))}`, "green");
 	}
 }
 
-void resetState() {
+export function resetState(): void {
 	//These settings should never persist into another turn, ever. They only track something for a single instance of the main loop.
 	//We use boolean instead of adventure count because of free combats.
-	
-	remove_property("auto_combatDirective");		//An action to execute at the start of next combat. resets every loop.
-	remove_property("auto_digitizeDirective");		//digitize a specified monster on the next combat.
-	set_property("auto_doCombatCopy", "no");
-	set_property("_auto_thisLoopHandleFamiliar", false); // have we called handleFamiliar this loop
-	set_property("auto_disableAdventureHandling", false); // used to stop auto_pre_adv and auto_post_adv from doing anything.
-	set_property("auto_disableFamiliarChanging", false); // disable autoscend making changes to familiar
-	set_property("auto_familiarChoice", ""); // which familiar do we want to switch to during pre_adventure
-	set_property("choiceAdventure1387", -1); // using the force non-combat
-	set_property("_auto_tunedElement", ""); // Flavour of Magic elemental alignment
-	set_property("auto_nextEncounter", ""); // monster that was expected last turn
-	set_property("auto_habitatMonster", ""); // monster we want to cast Recall Facts: Monster Habitats
-	set_property("auto_purple_candled", ""); //monster we want to cast Blow the Purple Candle
-	set_property("auto_nonAdvLoc", false); // location is a non-adventure.php location
 
-	if(doNotBuffFamiliar100Run())		//some familiars are always bad
-	{
-		set_property("_auto_bad100Familiar", true);			//disable buffing familiar
+	removeProperty("auto_combatDirective"); //An action to execute at the start of next combat. resets every loop.
+	removeProperty("auto_digitizeDirective"); //digitize a specified monster on the next combat.
+	setProperty("auto_doCombatCopy", "no");
+	setProperty("_auto_thisLoopHandleFamiliar", false.toString()); // have we called handleFamiliar this loop
+	setProperty("auto_disableAdventureHandling", false.toString()); // used to stop auto_pre_adv and auto_post_adv from doing anything.
+	setProperty("auto_disableFamiliarChanging", false.toString()); // disable autoscend making changes to familiar
+	setProperty("auto_familiarChoice", ""); // which familiar do we want to switch to during pre_adventure
+	setProperty("choiceAdventure1387", (-1).toString()); // using the force non-combat
+	setProperty("_auto_tunedElement", ""); // Flavour of Magic elemental alignment
+	setProperty("auto_nextEncounter", ""); // monster that was expected last turn
+	setProperty("auto_habitatMonster", ""); // monster we want to cast Recall Facts: Monster Habitats
+	setProperty("auto_purple_candled", ""); //monster we want to cast Blow the Purple Candle
+	setProperty("auto_nonAdvLoc", false.toString()); // location is a non-adventure.php location
+
+	if (doNotBuffFamiliar100Run())
+	{ //some familiars are always bad
+		setProperty("_auto_bad100Familiar", true.toString()); //disable buffing familiar
 	}
-	else		//some familiars are only bad at certain locations
-	{
-		set_property("_auto_bad100Familiar", false); 		//reset to not bad. target location might set them as bad again
+	else {
+	//some familiars are only bad at certain locations
+		setProperty("_auto_bad100Familiar", false.toString()); //reset to not bad. target location might set them as bad again
 	}
 
-	set_property("auto_parkaSetting", ""); // jurassic parka setting
-	set_property("auto_retrocapeSettings", ""); // retrocape config
-	set_property("auto_januaryToteAcquireCalledThisTurn", false); // january tote item switching
+	setProperty("auto_parkaSetting", ""); // jurassic parka setting
+	setProperty("auto_retrocapeSettings", ""); // retrocape config
+	setProperty("auto_januaryToteAcquireCalledThisTurn", false.toString()); // january tote item switching
 
 	horseDefault(); // horsery tracking
 
-	set_property("auto_snapperPhylum", ""); // internal Red-Nosed Snapper phylum tracking. Ensures we only change it maximum once per adventure (and don't lose charges)
+	setProperty("auto_snapperPhylum", ""); // internal Red-Nosed Snapper phylum tracking. Ensures we only change it maximum once per adventure (and don't lose charges)
 
 	bat_formNone(); // Vampyre form tracking
 
 	resetMaximize();
 
-	if (canChangeToFamiliar($familiar[Left-Hand Man]) && familiar_equipped_equipment($familiar[Left-Hand Man]) != $item[none])
+	if (canChangeToFamiliar(Familiar.get("Left-Hand Man")) && familiarEquippedEquipment(Familiar.get("Left-Hand Man")) !== Item.none)
 	{
 		// Leaving something equipped on the Left-Hand man like the Latte is currently bugged in mafia
 		// as it will show any skills the equipment gives as available even when you have a completely different familiar
 		// see https://kolmafia.us/showthread.php?24780-April-2020-IOTM-sinistral-homunculus&p=158453&viewfull=1#post158453
-		auto_log_info(`Unequipping your {familiar_equipped_equipment($familiar[Left-Hand Man])} from the Left-Hand Man`, "blue");
-		use_familiar($familiar[Left-Hand Man]);
-		equip($slot[familiar], $item[none]);
+		auto_log_info(`Unequipping your ${familiarEquippedEquipment(Familiar.get("Left-Hand Man"))} from the Left-Hand Man`, "blue");
+		useFamiliar(Familiar.get("Left-Hand Man"));
+		equip(Slot.get("familiar"), Item.none);
 	}
 
-	foreach it in $items[staph of homophones, sword behind inappropriate prepositions]
+	for (let it of Item.get(["staph of homophones", "sword behind inappropriate prepositions"]))
 	{
 		// these screw with text in the game which breaks mafia's parsing in a lot of places.
-		if (have_equipped(it))
+		if (haveEquipped(it))
 		{
-			equip($item[none], it.to_slot());
+			equip(Item.none, toSlot(it));
 		}
 	}
-	foreach eff in $effects[Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo, Yes\, Can Haz]
+	for (let eff of Effect.get(["Dis Abled", "Haiku State of Mind", "Just the Best Anapests", "O Hai!", "Robocamo", "Yes, Can Haz"]))
 	{
 		// as do these which can all be freely shrugged.
-		if (have_effect(eff) > 0)
+		if (haveEffect(eff) > 0)
 		{
-			cli_execute(`uneffect {eff.to_string()}`);
+			cliExecute(`uneffect ${eff.toString()}`);
 		}
 	}
 }
 
-boolean process_tasks()
+export function process_tasks(): boolean
 {
-	string [string,int,string] task_order;
-	if(!file_to_map("autoscend_task_order.txt", task_order))
+	let task_order: Map<string, Map<number, Map<string, string>>> = fileAsMap("autoscend_task_order.txt", [String, Number, String, String]);
+	if (!task_order.size)
 	{
 		abort("Could not load /data/autoscend_task_order.txt");
 	}
 
-	string task_path = my_path().name;
-	if (!(task_order contains task_path))
+	let task_path: string = myPath().name;
+	if (!(task_order.has(task_path)))
 	{
 		task_path = "default";
 	}
 
-	foreach i,task_function,condition_function in task_order[task_path]
-	{
-		auto_log_debug("Attempting to execute task " + i + " " + task_function);
-		if (condition_function == "" || (call boolean condition_function()))
+	for (let [i, _v0] of (task_order.get(task_path) ?? task_order.set(task_path, new Map()).get(task_path))) {
+		for (let [task_function, _v1] of _v0) {
+			let condition_function = _v1;
+		auto_log_debug$1(`Attempting to execute task ${i} ${task_function}`);
+		if (condition_function === "" || callRegisteredTaskFunction(condition_function))
 		{
-			boolean result = call boolean task_function();
-			if (result)
+			let result_1: boolean = callRegisteredTaskFunction(task_function);
+			if (result_1)
 			{
 				return true;
 			}
+		}
 		}
 	}
 
 	return false;
 }
 
-boolean doTasks()
+export function doTasks(): boolean
 {
 	//this is the main loop for autoscend. returning true will restart from the begining. returning false will quit the loop and go on to do bedtime
 
-	auto_settingsFix();		//check and correct invalid configuration inputs made by users
-	if(!auto_unreservedAdvRemaining())
+	auto_settingsFix(); //check and correct invalid configuration inputs made by users
+	if (!auto_unreservedAdvRemaining())
 	{
 		auto_log_warning("No more unreserved adventures left", "red");
-		return false;	//we are out of adventures
+		return false; //we are out of adventures
 	}
-	if(get_property("_auto_doneToday").to_boolean())
+	if (toBoolean(getProperty("_auto_doneToday")))
 	{
 		auto_log_warning("According to property _auto_doneToday I am done for today", "red");
 		return false;
 	}
-	if(my_familiar() == $familiar[Stooper] && pathAllowsChangingFamiliar())
+	if (myFamiliar() === Familiar.get("Stooper") && pathAllowsChangingFamiliar())
 	{
 		auto_log_info("Avoiding stooper stupor...", "blue");
-		familiar fam = (is100FamRun() ? get_property("auto_100familiar").to_familiar() : findNonRockFamiliarInTerrarium());
-		use_familiar(fam);
+		let fam: Familiar = (is100FamRun() ? toFamiliar(getProperty("auto_100familiar")) : findNonRockFamiliarInTerrarium());
+		useFamiliar(fam);
 	}
-	if(my_inebriety() > inebriety_limit())
+	if (myInebriety() > inebrietyLimit())
 	{
 		auto_log_warning("I am overdrunk", "red");
 		return false;
 	}
-	if(inAftercore())
+	if (inAftercore())
 	{
 		auto_log_warning("I am in aftercore", "red");
 		return false;
 	}
 	// Check if rollover's coming up soon
-	if(almostRollover())
+	if (almostRollover())
 	{
 		print("Rollover's coming!  Gotta consume what we can and go to bed!", "red");
 		// How much organ space left?  If none, go to bed
-		float organ_space = consumptionProgress();
-		auto_log_debug(`{organ_space} organ space`, "blue");
-		if(organ_space >= 0.999)
+		let organ_space: number = consumptionProgress();
+		auto_log_debug(`${organ_space} organ space`, "blue");
+		if (organ_space >= 0.999)
 		{
 		  return false;
 		}
 		// How much organ space was available the last time we were here?
-		float previous_space = get_property("_auto_organSpace").to_float();
-		float organ_space_change = organ_space - previous_space;
-		auto_log_debug(`{previous_space} previous space`, "blue");
-		auto_log_debug(`{organ_space_change} organ space change`, "blue");
-		set_property("_auto_organSpace", organ_space);
+		let previous_space: number = toFloat(getProperty("_auto_organSpace"));
+		let organ_space_change: number = organ_space - previous_space;
+		auto_log_debug(`${previous_space} previous space`, "blue");
+		auto_log_debug(`${organ_space_change} organ space change`, "blue");
+		setProperty("_auto_organSpace", organ_space.toString());
 		// If no space used the last time consumption was done, don't bother trying again
-		if(organ_space_change < 0.001)
+		if (organ_space_change < 0.001)
 		{
 		  return false;
 		}
 		// There's space left to fill, but let's continue only if we don't have enough adventures
 		return needToConsumeForEmergencyRollover();
 	}
-	
+
 	casualCheck();
-	
+
 	print_header();
 
 	auto_interruptCheck(false);
 
-	int delay = get_property("auto_delayTimer").to_int();
-	if(delay > 0)
+	let delay: number = toInt(getProperty("auto_delayTimer"));
+	if (delay > 0)
 	{
 		auto_log_info("Delay between adventures... beep boop... ", "blue");
 		wait(delay);
 	}
 
-	int paranoia = get_property("auto_paranoia").to_int();
-	boolean is_april_fools = today_to_string().substring(4) == "0401";
+	let paranoia: number = toInt(getProperty("auto_paranoia"));
+	let is_april_fools: boolean = substring(todayToString(), 4) === "0401";
 	if (is_april_fools)
 	{
-		auto_log_info("Salad april fools, so we paranoid salad.");
-		cli_execute("refresh quests");
+		auto_log_info$1("Salad april fools, so we paranoid salad.");
+		cliExecute("refresh quests");
 	}
-	else if(paranoia != -1)
+	else if (paranoia !== -1)
 	{
-		int paranoia_counter = get_property("auto_paranoia_counter").to_int();
-		if(paranoia_counter >= paranoia)
+		let paranoia_counter: number = toInt(getProperty("auto_paranoia_counter"));
+		if (paranoia_counter >= paranoia)
 		{
 			auto_log_info("I think I'm paranoid and complicated", "blue");
 			auto_log_info("I think I'm paranoid, manipulated", "blue");
-			cli_execute("refresh quests");
-			set_property("auto_paranoia_counter", 0);
+			cliExecute("refresh quests");
+			setProperty("auto_paranoia_counter", (0).toString());
 		}
-		else
-		{
-			set_property("auto_paranoia_counter", paranoia_counter + 1);
+		else {
+			setProperty("auto_paranoia_counter", (paranoia_counter + 1).toString());
 		}
 	}
-	if(get_property("auto_inv_paranoia").to_boolean())
+	if (toBoolean(getProperty("auto_inv_paranoia")))
 	{
-		cli_execute("refresh inv");
+		cliExecute("refresh inv");
 	}
 	if (in_wereprof()) {
 		// wereprof doesn't update wereProfessorTransformTurns unless you hit the charpane
-		visit_url("charpane.php", false);
+		visitUrl("charpane.php", false);
 	}
-
 	// actually doing stuff should start from here onwards.
 	resetState();
 
 	basicAdjustML();
 
-	if (zoo_GraftFam()) { return true; }
+	if (zoo_graftFam()) { return true; }
 
 	finishBuildingSmutOrcBridge();
 	councilMaintenance();
-	auto_buySkills();		// formerly picky_buyskills() now moved here
+	auto_buySkills(); // formerly picky_buyskills() now moved here
 	awol_buySkills();
 	awol_useStuff();
 	aosol_unCurse();
@@ -1972,14 +1905,13 @@ boolean doTasks()
 
 	oldPeoplePlantStuff();
 	use_barrels();
-	auto_latteRefill();
+	auto_latteRefill$6();
 	auto_buyCrimboCommerceMallItem();
 	houseUpgrade();
-
 	//This just closets stuff so G-Lover does not mess with us.
-	if(LM_glover())						return true;
+	if (LM_glover()) { return true; }
 	//This just closets stuff that bees don't like
-	if(LM_bhy())						return true;
+	if (LM_bhy()) { return true; }
 
 	tophatMaker();
 	deck_useScheme("");
@@ -1996,136 +1928,131 @@ boolean doTasks()
 	auto_MayamClaimAll();
 	auto_defaultBurnLeaves();
 	auto_waveTheZone();
-	
+
 	ocrs_postCombatResolve();
 	beatenUpResolution();
 	lar_safeguard();
-	
+
 	auto_useLeprecondoDrops();
 
 	if (LX_zootoFight()) { return true; }
-
-
 	//Early adventure options that we probably want
-	if(dna_startAcquire())				return true;
-	if(LM_boris())						return true;
-	if(LM_pete())						return true;
-	if(LM_gnoob())						return true;
-	if(LM_nuclear())					return true;
-	if(LM_lar())						return true;
-	if(LM_batpath()) 					return true;
-	if(heavyrains_buySkills())			return true;
-	if(LM_canInteract()) 				return true;
-	if(LM_kolhs()) 						return true;
-	if(LM_jarlsberg())					return true;
-	if(LM_robot())						return true;
-	if(LM_plumber())					return true;
-	if(LM_zombieSlayer())				return true;
-	if(LM_adventurerMeatsWorld())		return true;
+	if (dna_startAcquire()) { return true; }
+	if (LM_boris()) { return true; }
+	if (LM_pete()) { return true; }
+	if (LM_gnoob()) { return true; }
+	if (LM_nuclear()) { return true; }
+	if (LM_lar()) { return true; }
+	if (LM_batpath()) { return true; }
+	if (heavyrains_buySkills()) { return true; }
+	if (LM_canInteract()) { return true; }
+	if (LM_kolhs()) { return true; }
+	if (LM_jarlsberg()) { return true; }
+	if (LM_robot()) { return true; }
+	if (LM_plumber()) { return true; }
+	if (LM_zombieSlayer()) { return true; }
+	if (LM_adventurerMeatsWorld()) { return true; }
 
-	{
+	 {
 		cheeseWarMachine(0, 0, 0, 0);
 
-		int turnGoal = 0;
-		if (isActuallyEd() && !possessEquipment($item[The Crown Of Ed The Undying]))
+		let turnGoal: number = 0;
+		if (isActuallyEd() && !possessEquipment(Item.get("The Crown of Ed the Undying")))
 		{
 			turnGoal = 15;
 		}
 
-		if(my_turncount() >= turnGoal)
+		if (myTurncount() >= turnGoal)
 		{
-			switch(my_daycount())
+			switch (myDaycount())
 			{
-			case 1:		loveTunnelAcquire(true, $stat[none], true, 1, true, 3);		break;
-			case 2:		loveTunnelAcquire(true, $stat[none], true, 3, true, 1);		break;
-			default:	loveTunnelAcquire(true, $stat[none], true, 2, true, 1);		break;
+			case 1:			loveTunnelAcquire(true, Stat.none, true, 1, true, 3);			break;
+			case 2:			loveTunnelAcquire(true, Stat.none, true, 3, true, 1);			break;
+			default:			loveTunnelAcquire(true, Stat.none, true, 2, true, 1);			break;
 			}
 		}
 	}
 
-	if(theSource_oracle())				return true;
-	if(LX_theSource())					return true;
-	if(LX_ghostBusting())				return true;
-	if(witchessFights())				return true;
-
+	if (theSource_oracle()) { return true; }
+	if (LX_theSource()) { return true; }
+	if (LX_ghostBusting()) { return true; }
+	if (witchessFights()) { return true; }
 	//
 	//Adventuring actually starts here.
 	//
 
-	if(LA_grey_goo_tasks())
+	if (LA_grey_goo_tasks())
 	{
 		return true;
 	}
-	if(in_ggoo())
+	if (in_ggoo())
 	{
 		abort("Should not have gotten here, aborted LA_grey_goo_tasks method allowed return to caller. Uh oh.");
 	}
 
-	auto_voteSetup(0,0,0);
+	auto_voteSetup$2(0, 0, 0);
 	auto_setSongboom();
 	if (auto_juneCleaverAdventure()) { return true; }
-	if(LX_ForceNC())					return true;
-	if(LX_dronesOut())					return true;
-	if(LM_bond())						return true;
-	if(LX_calculateTheUniverse(false))	return true;
+	if (LX_ForceNC()) { return true; }
+	if (LX_dronesOut()) { return true; }
+	if (LM_bond()) { return true; }
+	if (LX_calculateTheUniverse(false)) { return true; }
 	rockGardenEnd();
 	adventureFailureHandler();
 	dna_sorceressTest();
 	dna_generic();
-	if(LA_wildfire())					return true;
-	if(LA_robot())						return true;
-	if(auto_autumnatonQuest())			return true;
-	if(auto_smallCampgroundGear())		return true;
-	auto_lostStomach(false);
+	if (LA_wildfire()) { return true; }
+	if (LA_robot()) { return true; }
+	if (auto_autumnatonQuest()) { return true; }
+	if (auto_smallCampgroundGear()) { return true; }
+	auto_lostStomach$1(false);
 	autoCleanse(); //running turbo only
-	if(auto_doPhoneQuest())				return true;
-	
-	if(auto_doTempleSummit())		return true;
-	if(L8_mountainManSummon())		return true;
-	
-	if (process_tasks()) return true;
+	if (auto_doPhoneQuest()) { return true; }
+
+	if (auto_doTempleSummit()) { return true; }
+	if (L8_mountainManSummon()) { return true; }
+
+	if (process_tasks()) { return true; }
 
 	meatReserveMessage();
 	auto_log_info("I should not get here more than once because I pretty much just finished all my in-run stuff. Beep", "blue");
 	return false;
 }
 
-void auto_begin()
+export function auto_begin(): void
 {
-	if(get_auto_attack() != 0)
+	if (getAutoAttack() !== 0)
 	{
-		boolean shouldUnset = user_confirm("You have an auto attack enabled. This can cause issues. Would you like us to disable it? Will default to 'No' in 30 seconds.", 30000, false);
-		if(shouldUnset)
+		let shouldUnset: boolean = userConfirm("You have an auto attack enabled. This can cause issues. Would you like us to disable it? Will default to 'No' in 30 seconds.", 30000, false);
+		if (shouldUnset)
 		{
-			set_auto_attack(0);
+			setAutoAttack(0);
 		}
-		else
-		{
+		else {
 			auto_log_warning("Okay, but the warranty is off.", "red");
 		}
 	}
 
-	if(in_community())
+	if (in_community())
 	{
 		abort("Community Service is no longer supported.");
 	}
 
-	if (in_bad_moon())
+	if (inBadMoon())
 	{
-		boolean nope = user_confirm("Bad moon is not a thing we will ever support even if you can somehow meet the scripts minimum requirements. Do you understand?");
-		string failure = (nope ? "Just no." : "Even if you don't understand, it's still no.");
+		let nope: boolean = userConfirm("Bad moon is not a thing we will ever support even if you can somehow meet the scripts minimum requirements. Do you understand?");
+		let failure: string = (nope ? "Just no." : "Even if you don't understand, it's still no.");
 		abort(failure);
 	}
 
 	if (!auto_meetsMinimumRequirements())
 	{
 		auto_log_warning("Minimum skill requirements to run autoscend are not met.", "red");
-		if(get_property("_auto_im_cool_with_dying_a_lot").to_int() == -1)
+		if (toInt(getProperty("_auto_im_cool_with_dying_a_lot")) === -1)
 		{
 			auto_log_warning("Don't come crying to us when you get beat up.", "red");
 		}
-		else
-		{
+		else {
 			auto_log_warning("Aborting to avoid dying a lot and making very little progress. To override:", "red");
 			auto_log_warning("set _auto_im_cool_with_dying_a_lot = -1", "red");
 			abort();
@@ -2133,142 +2060,134 @@ void auto_begin()
 	}
 
 	LX_handleIntroAdventures(); // handle early non-combats in challenge paths.
-	cli_execute("refresh all");
+	cliExecute("refresh all");
 
-	if(to_string(my_class()) == "Astral Spirit")
+	if (myClass().toString() === "Astral Spirit")
 	{
-		# my_class() can report Astral Spirit even though it is not a valid class....
+		// my_class() can report Astral Spirit even though it is not a valid class....
 		//workaround for this bug specifically https://kolmafia.us/showthread.php?25579
 		abort("Mafia thinks you are an astral spirit. Type \"logout\" in gCLI and then log back in afterwards. as this is needed to fix this and identify what your class actually is");
 	}
 
-	auto_log_info("Hello " + my_name() + ", time to explode!");
-	auto_log_info("This is version: " + git_info("autoscend").commit + " Mafia: " + get_revision());
-	auto_log_info("This is day " + my_daycount() + ".");
-	auto_log_info("Turns played: " + my_turncount() + " current adventures: " + my_adventures());
-	auto_log_info("Current Ascension: " + my_path().name);
-	auto_log_info("You have: " + banishSources() + " banish sources, " + freeRunSources() + " free-run sources, " +
-	freeKillSources() + " free kill sources, " + instaKillSources() + " insta-kill sources, " + yellowRaySources() +
-	" yellow ray sources, " + copySources() + " copy sources, and " + sniffSources() + " sniff sources.");
+	auto_log_info$1(`Hello ${myName()}, time to explode!`);
+	auto_log_info$1(`This is version: ${gitInfo("autoscend").commit} Mafia: ${getRevision()}`);
+	auto_log_info$1(`This is day ${myDaycount()}.`);
+	auto_log_info$1(`Turns played: ${myTurncount()} current adventures: ${myAdventures()}`);
+	auto_log_info$1(`Current Ascension: ${myPath().name}`);
+	auto_log_info$1(`You have: ${banishSources()} banish sources, ${freeRunSources()} free-run sources, ${freeKillSources()} free kill sources, ${instaKillSources()} insta-kill sources, ${yellowRaySources()} yellow ray sources, ${copySources()} copy sources, and ${sniffSources()} sniff sources.`);
 
 	auto_settings();
 
-	backupSetting("promptAboutCrafting", 0);
-	backupSetting("requireBoxServants", false);
-	backupSetting("breakableHandling", 4);
-	backupSetting("trackLightsOut", false);
-	backupSetting("autoSatisfyWithCloset", false);
-	backupSetting("autoSatisfyWithCoinmasters", true);
-	backupSetting("autoSatisfyWithNPCs", true);
-	backupSetting("removeMalignantEffects", false);
-	backupSetting("autoAntidote", 0);
-	backupSetting("dontStopForCounters", true);
+	backupSetting("promptAboutCrafting", (0).toString());
+	backupSetting("requireBoxServants", false.toString());
+	backupSetting("breakableHandling", (4).toString());
+	backupSetting("trackLightsOut", false.toString());
+	backupSetting("autoSatisfyWithCloset", false.toString());
+	backupSetting("autoSatisfyWithCoinmasters", true.toString());
+	backupSetting("autoSatisfyWithNPCs", true.toString());
+	backupSetting("removeMalignantEffects", false.toString());
+	backupSetting("autoAntidote", (0).toString());
+	backupSetting("dontStopForCounters", true.toString());
 	backupSetting("maximizerCombinationLimit", "100000");
-	backupSetting("afterAdventureScript", "scripts/autoscend/auto_post_adv.ash");
-	backupSetting("choiceAdventureScript", "scripts/autoscend/auto_choice_adv.ash");
-	backupSetting("betweenBattleScript", "scripts/autoscend/auto_pre_adv.ash");
+	backupSetting("afterAdventureScript", "scripts/autoscend/auto_post_adv.js");
+	backupSetting("choiceAdventureScript", "scripts/autoscend/auto_choice_adv.js");
+	backupSetting("betweenBattleScript", "scripts/autoscend/auto_pre_adv.js");
 	backupSetting("recoveryScript", "");
 	backupSetting("counterScript", "");
-	if (!get_property("auto_disableExcavator").to_boolean())
+	if (!toBoolean(getProperty("auto_disableExcavator")))
 	{
 		backupSetting("spadingScript", "excavator.js");
 	}
-	backupSetting("hpAutoRecovery", -0.05);
-	backupSetting("hpAutoRecoveryTarget", -0.05);
-	backupSetting("mpAutoRecovery", -0.05);
-	backupSetting("mpAutoRecoveryTarget", -0.05);
-	backupSetting("manaBurningTrigger", -0.05);
-	backupSetting("manaBurningThreshold", -0.05);
-	backupSetting("autoAbortThreshold", -0.05);
+	backupSetting("hpAutoRecovery", (-0.05).toString());
+	backupSetting("hpAutoRecoveryTarget", (-0.05).toString());
+	backupSetting("mpAutoRecovery", (-0.05).toString());
+	backupSetting("mpAutoRecoveryTarget", (-0.05).toString());
+	backupSetting("manaBurningTrigger", (-0.05).toString());
+	backupSetting("manaBurningThreshold", (-0.05).toString());
+	backupSetting("autoAbortThreshold", (-0.05).toString());
 	backupSetting("currentMood", "apathetic");
 	backupSetting("logPreferenceChange", "true");
 	backupSetting("logPreferenceChangeFilter", "maximizerMRUList,testudinalTeachings,auto_maximize_current");
-	backupSetting("maximizerMRUSize", 0); // shuts the maximizer spam up!
-	backupSetting("allowNonMoodBurning", true); // required to be true for burn cli cmd to work properly
-	backupSetting("lastChanceThreshold", 1); // burn command will always use last chance skill, if we have no active buffs
-	backupSetting("lastChanceBurn",""); // clear default mana burn skill so mafia doesn't attempt to cast a skill we don't currently have
+	backupSetting("maximizerMRUSize", (0).toString()); // shuts the maximizer spam up!
+	backupSetting("allowNonMoodBurning", true.toString()); // required to be true for burn cli cmd to work properly
+	backupSetting("lastChanceThreshold", (1).toString()); // burn command will always use last chance skill, if we have no active buffs
+	backupSetting("lastChanceBurn", ""); // clear default mana burn skill so mafia doesn't attempt to cast a skill we don't currently have
 
-	string charpane = visit_url("charpane.php");
-	if(contains_text(charpane, "<hr width=50%><table"))
+	let charpane: string = visitUrl("charpane.php");
+	if (containsText(charpane, "<hr width=50%><table"))
 	{
-		auto_log_info("Switching off Compact Character Mode, will resume during bedtime");
-		set_property("auto_priorCharpaneMode", 1);
-		visit_url("account.php?am=1&pwd=&action=flag_compactchar&value=0&ajax=0", true);
+		auto_log_info$1("Switching off Compact Character Mode, will resume during bedtime");
+		setProperty("auto_priorCharpaneMode", (1).toString());
+		visitUrl("account.php?am=1&pwd=&action=flag_compactchar&value=0&ajax=0", true);
 	}
 
 	initializeSettings(); // sets properties (once) for the entire run (all paths).
-	pathDroppedCheck();		//detects path changing. such as due to being dropped. and reinitialize appropriate settings
+	pathDroppedCheck(); //detects path changing. such as due to being dropped. and reinitialize appropriate settings
 
 	initializeSession(); // sets properties for the current session (should all be reset when we're done)
 
-	if(my_familiar() == $familiar[Stooper] && pathAllowsChangingFamiliar())
+	if (myFamiliar() === Familiar.get("Stooper") && pathAllowsChangingFamiliar())
 	{
 		auto_log_info("Avoiding stooper stupor...", "blue");
-		familiar fam = (is100FamRun() ? get_property("auto_100familiar").to_familiar() : findNonRockFamiliarInTerrarium());
-		use_familiar(fam);
+		let fam: Familiar = (is100FamRun() ? toFamiliar(getProperty("auto_100familiar")) : findNonRockFamiliarInTerrarium());
+		useFamiliar(fam);
 	}
-
 	// =================================================
 	// Actually doing stuff should start from here down.
 	// =================================================
 
 	resetMaximize(); // initializeDay calls equipBaseline for some reason so this is needed until it is refactored.
-	initializeDay(my_daycount());
-	handlePulls(my_daycount());
+	initializeDay(myDaycount());
+	handlePulls(myDaycount());
 
 	dailyEvents(); // All once-per-day stuff (which doesn't spend adventures) should go in here
-
 	// Try to consume something if not enough adventures to get going
 	if (!auto_unreservedAdvRemaining())
 	{
 		consumeStuff();
 	}
-	
 	// the main loop of autoscend is doTasks() which is actually called as part of the while.
-	while(doTasks())
+	while (doTasks())
 	{
 		consumeStuff();
 	}
 
-	if(doBedtime())
+	if (doBedtime())
 	{
-		auto_log_info("Done for today (" + my_daycount() + "), beep boop");
+		auto_log_info$1(`Done for today (${myDaycount()}), beep boop`);
 	}
 }
 
-void print_help_text()
+export function print_help_text(): void
 {
-	print_html("Thank you for using autoscend!");
-	print_html("If you need to configure or interrupt the script, choose <b>autoscend</b> from the drop-down \"run script\" menu in your browser.");
-	print_html("If you want to contribute, please open an issue <a href=\"https://github.com/loathers/autoscend/issues\">on Github</a>");
-	print_html("A FAQ with common issues (and tips for a great bug report) <a href=\"https://docs.google.com/document/d/1AfyKDHSDl-fogGSeNXTwbC6A06BG-gTkXUAdUta9_Ns\">can be found here</a>");
-	print_html("The developers also hang around <a href=\"https://discord.gg/96xZxv3\">on the Ascension Speed Society discord server</a>");
-	print_html("");
+	printHtml("Thank you for using autoscend!");
+	printHtml("If you need to configure or interrupt the script, choose <b>autoscend</b> from the drop-down \"run script\" menu in your browser.");
+	printHtml("If you want to contribute, please open an issue <a href=\"https://github.com/loathers/autoscend/issues\">on Github</a>");
+	printHtml("A FAQ with common issues (and tips for a great bug report) <a href=\"https://docs.google.com/document/d/1AfyKDHSDl-fogGSeNXTwbC6A06BG-gTkXUAdUta9_Ns\">can be found here</a>");
+	printHtml("The developers also hang around <a href=\"https://discord.gg/96xZxv3\">on the Ascension Speed Society discord server</a>");
+	printHtml("");
 }
 
-void sad_times()
+export function sad_times(): void
 {
-	print_html('autoscend (formerly sl_ascend) is under new management. Soolar (the maintainer of sl_ascend) and Jeparo (the most active contributor) have decided to cease development of sl_ascend in response to Jick\'s behavior that has recently <a href="https://www.reddit.com/r/kol/comments/d0cq9s/allegations_of_misconduct_by_asymmetric_members/">come to light</a>. New developers have taken over maintenance and rebranded sl_ascend to autoscend as per Soolar\'s request. Please be patient with us during this transition period. Please see the readme on the <a href="https://github.com/loathers/autoscend">github</a> page for more information.');
+	printHtml("autoscend (formerly sl_ascend) is under new management. Soolar (the maintainer of sl_ascend) and Jeparo (the most active contributor) have decided to cease development of sl_ascend in response to Jick's behavior that has recently <a href=\"https://www.reddit.com/r/kol/comments/d0cq9s/allegations_of_misconduct_by_asymmetric_members/\">come to light</a>. New developers have taken over maintenance and rebranded sl_ascend to autoscend as per Soolar's request. Please be patient with us during this transition period. Please see the readme on the <a href=\"https://github.com/loathers/autoscend\">github</a> page for more information.");
 }
 
-void safe_preference_reset_wrapper(int level)
+export function safe_preference_reset_wrapper(level: number): void
 {
-	if(level <= 0)
+	if (level <= 0)
 	{
 		auto_begin();
 	}
-	else
-	{
-		boolean succeeded;
-		try
-		{
-			safe_preference_reset_wrapper(level-1);
+	else {
+		let succeeded: boolean = false;
+		try {
+			safe_preference_reset_wrapper(level - 1);
 			succeeded = true;
-		}
-		finally
+		} finally
 		{
 			restoreAllSettings();
-			if(level == 1)
+			if (level === 1)
 			{
 				sad_times();
 			}
@@ -2276,38 +2195,39 @@ void safe_preference_reset_wrapper(int level)
 	}
 }
 
-void main(string... input)
+export function main(...input: string[]): void
 {
-	backupSetting("printStackOnAbort", true);
-
+	backupSetting("printStackOnAbort", true.toString());
 	// parse input
-	if(count(input) > 0)
+	if (input.length > 0)
 	{
-		switch(input[0])
+		switch ((input[0] ??= ""))
 		{
 			case "sim":
+				
 				// display useful items/skills/perms/etc and if the user has them
-				printSim();
+printSim();
 				return;
 			case "turbo":
+				
 			// gotta go faaaaaast. Doing a double confirm because of the nature of this parameter.
-				if(user_confirm("This will get expensive for you. This should only be used if you are trying to go for a 1-day and don't care about expenses. Do you really want to do this? Will default to 'No' in 15 seconds.", 15000, false))
+if (userConfirm("This will get expensive for you. This should only be used if you are trying to go for a 1-day and don't care about expenses. Do you really want to do this? Will default to 'No' in 15 seconds.", 15000, false))
 				{
-					if(user_confirm("This will use UMSBs and Spice Melanges if you have them. If you are ok with this, you have 15 seconds to hit 'Yes'", 15000, false))
+					if (userConfirm("This will use UMSBs and Spice Melanges if you have them. If you are ok with this, you have 15 seconds to hit 'Yes'", 15000, false))
 					{
-						set_property("auto_turbo", "true");
-						auto_log_info("Ka-chow! Gotta go fast.");
+						setProperty("auto_turbo", "true");
+						auto_log_info$1("Ka-chow! Gotta go fast.");
 						break;
 					}
 				}
 			default:
-				auto_log_info("Running normal autoscend because you didn't enter in a valid parameter");
+				auto_log_info$1("Running normal autoscend because you didn't enter in a valid parameter");
 		}
 	}
 
 	print_help_text();
 	sad_times();
-	if(!autoscend_migrate() && !user_confirm("autoscend might not have upgraded from a previous version correctly, do you want to continue? Will default to true in 10 seconds.", 10000, true)){
+	if (!autoscend_migrate() && !userConfirm("autoscend might not have upgraded from a previous version correctly, do you want to continue? Will default to true in 10 seconds.", 10000, true)) {
 		abort("User aborted script after failed migration.");
 	}
 	safe_preference_reset_wrapper(3);

@@ -1,13 +1,16 @@
-boolean in_disguises()
+import { Path, myPath, setProperty } from "kolmafia";
+
+//Defined in autoscend/paths/fall_of_the_dinosaurs.ash
+export function in_disguises(): boolean
 {
-	return my_path() == $path[Disguises Delimit];
+	return myPath() === Path.get("Disguises Delimit");
 }
 
-void disguises_initializeSettings()
+export function disguises_initializeSettings(): void
 {
-	if(in_disguises())
+	if (in_disguises())
 	{
-		set_property("auto_getBeehive", true);
-		set_property("auto_getBoningKnife", true);
+		setProperty("auto_getBeehive", true.toString());
+		setProperty("auto_getBoningKnife", true.toString());
 	}
 }

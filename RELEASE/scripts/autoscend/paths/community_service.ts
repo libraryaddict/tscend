@@ -1,6 +1,9 @@
-# community service is no longer supported
+import { Path, myPath } from "kolmafia";
 
-boolean in_community()
+// community service is no longer supported
+
+//Defined in autoscend/paths/community_service.ash
+export function in_community(): boolean
 {
-	return my_path() == $path[Community Service];
+	return myPath() === Path.get("Community Service");
 }

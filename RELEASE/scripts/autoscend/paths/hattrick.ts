@@ -1,55 +1,60 @@
-boolean in_hattrick()
+import { Item, Path, Slot, equip, equippedAmount, getProperty, myPath, numericModifier, toInt } from "kolmafia";
+import { auto_getAllEquipabble$1 } from "../auto_equipment";
+import { auto_can_equip } from "../auto_util";
+
+//Defined in autoscend/paths/hattrick.ash
+export function in_hattrick(): boolean
 {
-	return my_path() == $path[Hat Trick];
+	return myPath() === Path.get("Hat Trick");
 }
 
-boolean ht_equip_hats()
+export function ht_equip_hats(): boolean
 {
-    if(!in_hattrick())
+    if (!in_hattrick())
     {
         return false;
     }
-    int[item] availableHats = auto_getAllEquipabble($slot[hat]);
-    foreach it, i in availableHats
+    let availableHats: Map<Item, number> = auto_getAllEquipabble$1(Slot.get("hat"));
+    for (let [it, i] of availableHats)
     {
-        boolean skip;
+        let skip: boolean = false;
         //don't equip the following because they can mess us up later in the run or are useful for consumption (+/- combat and Thorns)
-        foreach bl in $items[Mer-kin sneakmask, coconut shell]
+        for (let bl of Item.get(["Mer-kin sneakmask", "coconut shell"]))
         {
-            if(it == bl)
+            if (it === bl)
             {
                 skip = true;
             }
         }
-        if(numeric_modifier(it, "Thorns") > 0)
+        if (numericModifier(it, "Thorns") > 0)
         {
             skip = true;
         }
-        if(numeric_modifier(it, "Combat Rate") != 0)
+        if (numericModifier(it, "Combat Rate") !== 0)
         {
             skip = true;
         }
         //Only check to not equip these if MLSafetyLimit is not set or is not set low (-ML hats)
-        if(get_property("auto_MLSafetyLimit") == "" || get_property("auto_MLSafetyLimit").to_int() >= 25)
+        if (getProperty("auto_MLSafetyLimit") === "" || toInt(getProperty("auto_MLSafetyLimit")) >= 25)
         {
-            if(numeric_modifier(it, "Monster Level") < 0)
+            if (numericModifier(it, "Monster Level") < 0)
             {
                 skip = true;
             }
         }
         //Only check to not equip these if MLSafetyLimit is set low (+ML hats)
-        if(get_property("auto_MLSafetyLimit").to_int() < 25)
+        if (toInt(getProperty("auto_MLSafetyLimit")) < 25)
         {
-            if(numeric_modifier(it, "Monster Level") > 0)
+            if (numericModifier(it, "Monster Level") > 0)
             {
                 skip = true;
             }
         }
-        if(equipped_amount(it) > 0)
+        if (equippedAmount(it) > 0)
         {
             skip = true;
         }
-        if(!skip && auto_can_equip(it))
+        if (!skip && auto_can_equip(it))
         {
             equip(it);
         }

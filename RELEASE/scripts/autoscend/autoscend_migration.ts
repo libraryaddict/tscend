@@ -1,74 +1,83 @@
-static string __autoscend_version = "1.8.0";
-static int __autoscend_confirm_timeoutMS = 10000;
-static string __remove_sl_ascend_confirmation = "Looks like you have the old sl_ascend project installed as well. Would you like to remove it? (it is no longer maintained). Will default to false in 10 seconds.";
-static string __migrate_sl_ascend_properties_confirmation = "Looks like you may be migrating from sl_ascend. Starting with a fresh run using autoscend is adviable but we can try to migrate all the sl_ascend properties (results may vary). Will default to true in 10 seconds.";
-static string __migrate_sl_ascend_properties_remove_confirmation = "Would you like to clean up old sl_ascend properties after migrating them? Will default to false in 10 seconds.";
+import { cliExecute, getProperty, propertyExists, removeProperty, replaceString, setProperty, svnExists, svnInfo, toBoolean, userConfirm } from "kolmafia";
+import { auto_log_error, auto_log_info, auto_log_info$1, auto_log_warning, auto_log_warning$1 } from "./auto_util";
+import { fileAsMap } from "./utils/kolmafiaUtils";
 
-string autoscend_current_version(){
-  if(!property_exists("auto_current_version")){
-    set_property("auto_current_version", __autoscend_version);
+export let $_f___autoscend_version: string | undefined;
+$_f___autoscend_version ??= "1.8.0";
+export let $_f___autoscend_confirm_timeoutMS: number | undefined;
+$_f___autoscend_confirm_timeoutMS ??= 10000;
+export let $_f___remove_sl_ascend_confirmation: string | undefined;
+$_f___remove_sl_ascend_confirmation ??= "Looks like you have the old sl_ascend project installed as well. Would you like to remove it? (it is no longer maintained). Will default to false in 10 seconds.";
+export let $_f___migrate_sl_ascend_properties_confirmation: string | undefined;
+$_f___migrate_sl_ascend_properties_confirmation ??= "Looks like you may be migrating from sl_ascend. Starting with a fresh run using autoscend is adviable but we can try to migrate all the sl_ascend properties (results may vary). Will default to true in 10 seconds.";
+export let $_f___migrate_sl_ascend_properties_remove_confirmation: string | undefined;
+$_f___migrate_sl_ascend_properties_remove_confirmation ??= "Would you like to clean up old sl_ascend properties after migrating them? Will default to false in 10 seconds.";
+
+//Defined in autoscend/autoscend_migration.ash
+export function autoscend_current_version(): string {
+  if (!propertyExists("auto_current_version")) {
+    setProperty("auto_current_version", $_f___autoscend_version);
   }
-  return get_property("auto_current_version");
+  return getProperty("auto_current_version");
 }
 
-string autoscend_previous_version(){
-  if(!property_exists("auto_prev_version")){
-    set_property("auto_prev_version", "0.0.0");
+export function autoscend_previous_version(): string {
+  if (!propertyExists("auto_prev_version")) {
+    setProperty("auto_prev_version", "0.0.0");
   }
-  return get_property("auto_prev_version");
+  return getProperty("auto_prev_version");
 }
 
-boolean autoscend_needs_update(){
-  if(autoscend_previous_version() == "0.0.0" || autoscend_current_version() != __autoscend_version){
-    if(get_property("auto_need_update").to_boolean()){
-      auto_log_info("Forcing migration (partially complete migration or user set flag): auto_need_update => true");
+export function autoscend_needs_update(): boolean {
+  if (autoscend_previous_version() === "0.0.0" || autoscend_current_version() !== $_f___autoscend_version) {
+    if (toBoolean(getProperty("auto_need_update"))) {
+      auto_log_info$1("Forcing migration (partially complete migration or user set flag): auto_need_update => true");
     }
-    set_property("auto_need_update", true);
+    setProperty("auto_need_update", true.toString());
   }
-  return get_property("auto_need_update").to_boolean();
+  return toBoolean(getProperty("auto_need_update"));
 }
 
-boolean autoscend_migrate(){
+let $_autoscend_migrate_props: Map<number, string> | undefined;
 
-  static string[int] props;
-  file_to_map("autoscend_properties.txt", props);
+export function autoscend_migrate(): boolean {
 
-  boolean repo_present(string repo){
-    return svn_exists(repo) || svn_info(repo).url != "";
+  $_autoscend_migrate_props = fileAsMap("autoscend_properties.txt", [Number, String]);
+
+  function repo_present(repo: string): boolean {
+    return svnExists(repo) || svnInfo(repo).url !== "";
   }
 
-  string repo_name(string repo){
-    if(svn_exists(repo)){
+  function repo_name(repo: string): string {
+    if (svnExists(repo)) {
       return repo;
     }
-
     // the svn ash functions dont seem very reliable in my experience
     // construct mafia's repo naming from the repo url
-    string name = replace_string(svn_info(repo).url, "https://github.com/", "");
-    name = replace_string(name, "http://github.com/", "");
-    name = replace_string(name, "/", "-");
+    let name: string = replaceString(svnInfo(repo).url, "https://github.com/", "");
+    name = replaceString(name, "http://github.com/", "");
+    name = replaceString(name, "/", "-");
     return name;
   }
 
-  boolean sanity_check_sl_ascend_autoscend_properties(){
-    int prop_conflicts = 0;
-    foreach _, p in props{
-      string old_prop = replace_string(p ,"auto_" , "sl_");
-      if(property_exists(old_prop)){
-        if(property_exists(p) && property_exists(old_prop) && get_property(p) != get_property(old_prop)){
-          auto_log_warning("Conflict: " + old_prop + " ("+get_property(old_prop)+") != " + p + " ("+get_property(p)+")");
+  function sanity_check_sl_ascend_autoscend_properties(): boolean {
+    let prop_conflicts: number = 0;
+    for (let [_, p] of $_autoscend_migrate_props) {
+      let old_prop: string = replaceString(p, "auto_", "sl_");
+      if (propertyExists(old_prop)) {
+        if (propertyExists(p) && propertyExists(old_prop) && getProperty(p) !== getProperty(old_prop)) {
+          auto_log_warning$1(`Conflict: ${old_prop} (${getProperty(old_prop)}) != ${p} (${getProperty(p)})`);
           prop_conflicts++;
         }
       }
     }
 
-    if(prop_conflicts > 0){
-      auto_log_error("Found " + prop_conflicts + " conflicting property values while migrating from sl_ascend properties to autoscend properties. Old property value will be ignored. Please do not use sl_ascend and autoscend at the same time.");
+    if (prop_conflicts > 0) {
+      auto_log_error(`Found ${prop_conflicts} conflicting property values while migrating from sl_ascend properties to autoscend properties. Old property value will be ignored. Please do not use sl_ascend and autoscend at the same time.`);
       return false;
     }
     return true;
   }
-
   /*
    * Migrate sl_* properties to auto_* properties. Attempts to look for and warn about conflicts.
    *
@@ -76,64 +85,63 @@ boolean autoscend_migrate(){
    * false if the user declined the migration or the migration ran and saw conflicting
    * property values.
    */
-  boolean autoscend_migrate_properties(){
-    if(!user_confirm(__migrate_sl_ascend_properties_confirmation, __autoscend_confirm_timeoutMS, true)){
+  function autoscend_migrate_properties(): boolean {
+    if (!userConfirm($_f___migrate_sl_ascend_properties_confirmation, $_f___autoscend_confirm_timeoutMS, true)) {
       return false;
     }
 
-    boolean cleanup = user_confirm(__migrate_sl_ascend_properties_remove_confirmation, __autoscend_confirm_timeoutMS, false);
+    let cleanup: boolean = userConfirm($_f___migrate_sl_ascend_properties_remove_confirmation, $_f___autoscend_confirm_timeoutMS, false);
 
-    int prop_conflicts = 0;
-    foreach _, p in props{
-      string old_prop = replace_string(p ,"auto_" , "sl_");
-      if(property_exists(old_prop)){
-        if(!property_exists(p)){
-          auto_log_info("Migrating " + old_prop + " => " + p + " ("+get_property(old_prop)+")");
-          set_property(p, get_property(old_prop));
-        } else if(get_property(old_prop) != get_property(p)){
-          auto_log_warning("Conflict: " + old_prop + " ("+get_property(old_prop)+") != " + p + " ("+get_property(p)+")", "red");
+    let prop_conflicts: number = 0;
+    for (let [_, p] of $_autoscend_migrate_props) {
+      let old_prop: string = replaceString(p, "auto_", "sl_");
+      if (propertyExists(old_prop)) {
+        if (!propertyExists(p)) {
+          auto_log_info$1(`Migrating ${old_prop} => ${p} (${getProperty(old_prop)})`);
+          setProperty(p, getProperty(old_prop));
+        } else if (getProperty(old_prop) !== getProperty(p)) {
+          auto_log_warning(`Conflict: ${old_prop} (${getProperty(old_prop)}) != ${p} (${getProperty(p)})`, "red");
           prop_conflicts++;
         }
-        if(cleanup) remove_property(old_prop);
+        if (cleanup) { removeProperty(old_prop); }
       }
     }
 
-    if(prop_conflicts > 0){
-      auto_log_error("Found " + prop_conflicts + " conflicting property values while migrating from sl_ascend properties to autoscend properties. Old property value will be ignored. Please do not use sl_ascend and autoscend at the same time.");
+    if (prop_conflicts > 0) {
+      auto_log_error(`Found ${prop_conflicts} conflicting property values while migrating from sl_ascend properties to autoscend properties. Old property value will be ignored. Please do not use sl_ascend and autoscend at the same time.`);
       return false;
     }
     return true;
   }
-
   /*
    * Look for and remove sl_ascend repo if it exists, prompting the user for confirmation.
    *
    * Returns true if sl_ascend repo is abscent after the function runs or false if it is
    * present.
    */
-  boolean remove_sl_ascend_repos(){
-    if(repo_present("sl_ascend")){
-      if(user_confirm(__remove_sl_ascend_confirmation, __autoscend_confirm_timeoutMS, false)){
-        cli_execute("svn delete " + repo_name("sl_ascend"));
+  function remove_sl_ascend_repos(): boolean {
+    if (repo_present("sl_ascend")) {
+      if (userConfirm($_f___remove_sl_ascend_confirmation, $_f___autoscend_confirm_timeoutMS, false)) {
+        cliExecute(`svn delete ${repo_name("sl_ascend")}`);
       }
     }
     return !repo_present("sl_ascend");
   }
 
-  void finalize_update(){
-    set_property("auto_need_update", false);
-    set_property("auto_prev_version", get_property("auto_current_version"));
-    set_property("auto_current_version", __autoscend_version);
+  function finalize_update(): void {
+    setProperty("auto_need_update", false.toString());
+    setProperty("auto_prev_version", getProperty("auto_current_version"));
+    setProperty("auto_current_version", $_f___autoscend_version);
   }
 
-  boolean all_good = true;
-  if(autoscend_needs_update()){
-    auto_log_info("Migrating from " + autoscend_previous_version() + " to " + __autoscend_version, "blue");
-    if(autoscend_previous_version() == "0.0.0" && repo_present("sl_ascend")){
+  let all_good: boolean = true;
+  if (autoscend_needs_update()) {
+    auto_log_info(`Migrating from ${autoscend_previous_version()} to ${$_f___autoscend_version}`, "blue");
+    if (autoscend_previous_version() === "0.0.0" && repo_present("sl_ascend")) {
       all_good = autoscend_migrate_properties() && remove_sl_ascend_repos();
     }
     finalize_update();
-  } else if(repo_present("sl_ascend")){
+  } else if (repo_present("sl_ascend")) {
     all_good = sanity_check_sl_ascend_autoscend_properties();
   }
   return all_good;

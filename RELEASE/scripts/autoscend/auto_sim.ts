@@ -1,121 +1,123 @@
+import { Familiar, Item, Monster, Skill, getProperty, haveFamiliar, haveSkill, itemAmount, print, toBoolean, toInt, toItem } from "kolmafia";
+import { possessEquipment } from "./auto_equipment";
+import { auto_haveCombatLoversLocket, auto_monsterInLocket } from "./iotms/mr2022";
 
-void printSim()
+//Defined in autoscend/auto_sim.ash
+export function printSim(): void
 {
-	printSimRequired();
+	PrintSimRequired();
 	printSimSuggested();
 	printSimMarginal();
 	print();
 	print("Note: Recommended to run in aftercore to properly detect everything");
 }
 
-void PrintSimRequired()
+export function PrintSimRequired(): void
 {
 	print("Required Things:");
-	
-	skill sk = $skill[Saucestorm];
-	formattedSimPrint(have_skill(sk), sk.to_string(), "Critical for autoscend combat");
-	sk = $skill[Itchy Curse Finger];
-	formattedSimPrint(have_skill(sk), sk.to_string(), "Critical for autoscend combat");
-	sk = $skill[Curse of Weaksauce];
-	formattedSimPrint(have_skill(sk), sk.to_string(), "Critical for autoscend combat");
-	sk = $skill[Tongue of the Walrus];
-	formattedSimPrint(have_skill(sk), sk.to_string(), "Healing skill which cures beaten up");
-	sk = $skill[Cannelloni Cocoon];
-	formattedSimPrint(have_skill(sk), sk.to_string(), "Heals up to 1000 HP for 20 MP. Very cost effective");
+
+	let sk: Skill = Skill.get("Saucestorm");
+	formattedSimPrint(haveSkill(sk), sk.toString(), "Critical for autoscend combat");
+	sk = Skill.get("Itchy Curse Finger");
+	formattedSimPrint(haveSkill(sk), sk.toString(), "Critical for autoscend combat");
+	sk = Skill.get("Curse of Weaksauce");
+	formattedSimPrint(haveSkill(sk), sk.toString(), "Critical for autoscend combat");
+	sk = Skill.get("Tongue of the Walrus");
+	formattedSimPrint(haveSkill(sk), sk.toString(), "Healing skill which cures beaten up");
+	sk = Skill.get("Cannelloni Cocoon");
+	formattedSimPrint(haveSkill(sk), sk.toString(), "Heals up to 1000 HP for 20 MP. Very cost effective");
 }
 
-void printSimSuggested()
+export function printSimSuggested(): void
 {
 	print();
 	print("Suggested Things:");
 
-	skill sk = $skill[Transcendent Olfaction];
-	formattedSimPrint(have_skill(sk), sk.to_string(), "Significantly increases chance of encountering a monster");
-	sk = $skill[Stuffed Mortar Shell];
-	formattedSimPrint(have_skill(sk), sk.to_string(), "MP efficient and high damage");
-	sk = $skill[Saucegeyser];
-	formattedSimPrint(have_skill(sk), sk.to_string(), "High damage spell. Helpful for bosses");
-	sk = $skill[Lock Picking];
-	formattedSimPrint(have_skill(sk), sk.to_string(), "Out of standard easy key source");
+	let sk: Skill = Skill.get("Transcendent Olfaction");
+	formattedSimPrint(haveSkill(sk), sk.toString(), "Significantly increases chance of encountering a monster");
+	sk = Skill.get("Stuffed Mortar Shell");
+	formattedSimPrint(haveSkill(sk), sk.toString(), "MP efficient and high damage");
+	sk = Skill.get("Saucegeyser");
+	formattedSimPrint(haveSkill(sk), sk.toString(), "High damage spell. Helpful for bosses");
+	sk = Skill.get("Lock Picking");
+	formattedSimPrint(haveSkill(sk), sk.toString(), "Out of standard easy key source");
 
-	familiar fam = $familiar[Nosy Nose];
-	formattedSimPrint(have_familiar(fam), fam.to_string(), "Familiar with olfaction-lite ability");
-	fam = $familiar[Gelatinous Cubeling];
-	formattedSimPrint(have_familiar(fam), fam.to_string(), "Familiar which speeds up the daily dungeon");
+	let fam: Familiar = Familiar.get("Nosy Nose");
+	formattedSimPrint(haveFamiliar(fam), fam.toString(), "Familiar with olfaction-lite ability");
+	fam = Familiar.get("Gelatinous Cubeling");
+	formattedSimPrint(haveFamiliar(fam), fam.toString(), "Familiar which speeds up the daily dungeon");
 
-	boolean maxedPoolSkill = get_property("poolSharkCount").to_int() >= 25;
+	let maxedPoolSkill: boolean = toInt(getProperty("poolSharkCount")) >= 25;
 	formattedSimPrint(maxedPoolSkill, "Pool Shark", "Lucky! adv which permanently increases your pool skill. It is possible for Mafia to not realize you have maxed this. If you are confident you have, enter the following in the CLI: `set poolSharkCount=25`");
-
 	// if we have combat locket, check if we have used monsters in there
-	if(auto_haveCombatLoversLocket())
+	if (auto_haveCombatLoversLocket())
 	{
-		monster mon = $monster[Fantasy Bandit];
-		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: {mon.to_string()}`, "Fighting 5x in a day will get you a fat loot token");
-		mon = $monster[screambat];
-		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: {mon.to_string()}`, "Lets you break a wall in the Bat Hole");
-		mon = $monster[lobsterfrogman];
-		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: {mon.to_string()}`, "Need 5x for war sidequest");
-		mon = $monster[Astronomer];
-		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: {mon.to_string()}`, "Helpful for star key");
-		mon = $monster[Skinflute];
-		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: {mon.to_string()}`, "Helpful for star key");
-		mon = $monster[Camel\'s Toe];
-		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: {mon.to_string()}`, "Helpful for star key");
-		mon = $monster[War Frat Mobile Grill Unit];
-		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: {mon.to_string()}`, "Frat warrior war start outfit");
-		mon = $monster[War Hippy Airborne Commander];
-		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: {mon.to_string()}`, "War hippy war start outfit");
-		mon = $monster[Baa\'baa\'bu\'ran];
-		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: {mon.to_string()}`, "3x Stone Wool for L12 quest");
-		mon = $monster[Green Ops Soldier];
-		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: {mon.to_string()}`, "Get war progress even when copied into other zones, plus smoke bombs");
+		let mon: Monster = Monster.get("fantasy bandit");
+		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: ${mon.toString()}`, "Fighting 5x in a day will get you a fat loot token");
+		mon = Monster.get("screambat");
+		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: ${mon.toString()}`, "Lets you break a wall in the Bat Hole");
+		mon = Monster.get("lobsterfrogman");
+		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: ${mon.toString()}`, "Need 5x for war sidequest");
+		mon = Monster.get("Astronomer");
+		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: ${mon.toString()}`, "Helpful for star key");
+		mon = Monster.get("Skinflute");
+		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: ${mon.toString()}`, "Helpful for star key");
+		mon = Monster.get("Camel's Toe");
+		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: ${mon.toString()}`, "Helpful for star key");
+		mon = Monster.get("War Frat Mobile Grill Unit");
+		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: ${mon.toString()}`, "Frat warrior war start outfit");
+		mon = Monster.get("War Hippy Airborne Commander");
+		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: ${mon.toString()}`, "War hippy war start outfit");
+		mon = Monster.get("Baa'baa'bu'ran");
+		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: ${mon.toString()}`, "3x Stone Wool for L12 quest");
+		mon = Monster.get("Green Ops Soldier");
+		formattedSimPrint(auto_monsterInLocket(mon), `Locket Monster: ${mon.toString()}`, "Get war progress even when copied into other zones, plus smoke bombs");
 	}
-
 	// if we have cookbookbat, make sure we have all its recipes
-	if(have_familiar($familiar[Cookbookbat]))
+	if (haveFamiliar(Familiar.get("Cookbookbat")))
 	{
-		boolean[string] recipes = $strings[Boris's beer, honey bun of Boris, ratatouille de Jarlsberg, Jarlsberg's vegetable soup, Pete's wiley whey bar,
-				St. Pete's sneaky smoothie, Boris's bread, roasted vegetable of Jarlsberg, Pete's rich ricotta, roasted vegetable focaccia, 
-				plain calzone, baked veggie ricotta casserole];
-		foreach recipe in recipes
+		let recipes: string[] = ["Boris's beer", "honey bun of Boris", "ratatouille de Jarlsberg", "Jarlsberg's vegetable soup", "Pete's wiley whey bar",
+				"St. Pete's sneaky smoothie", "Boris's bread", "roasted vegetable of Jarlsberg", "Pete's rich ricotta", "roasted vegetable focaccia",
+				"plain calzone", "baked veggie ricotta casserole"];
+		for (let recipe of recipes)
 		{
-			boolean haveRecipe = !get_property(`unknownRecipe${recipe.to_item().to_int()}`).to_boolean();
-			formattedSimPrint(haveRecipe, `Recipe: {recipe}`, "Cookbookbat recipes need to be learned, even if you have the familiar");
+			let haveRecipe: boolean = !toBoolean(getProperty(`unknownRecipe$${toInt(toItem(recipe))}`));
+			formattedSimPrint(haveRecipe, `Recipe: ${recipe}`, "Cookbookbat recipes need to be learned, even if you have the familiar");
 		}
 	}
 
 }
 
-void printSimMarginal()
+export function printSimMarginal(): void
 {
 	print();
 	print("Marginal Things:");
 
-	familiar fam = $familiar[Oily Woim];
-	formattedSimPrint(have_familiar(fam), fam.to_string(), "Familiar which provides init");
-	fam = $familiar[Exotic Parrot];
-	formattedSimPrint(have_familiar(fam), fam.to_string(), "Familiar which provides elemental resistance");
-	fam = $familiar[Hobo Monkey];
-	formattedSimPrint(have_familiar(fam), fam.to_string(), "Familiar that's a 1.25x leprechaun");
+	let fam: Familiar = Familiar.get("Oily Woim");
+	formattedSimPrint(haveFamiliar(fam), fam.toString(), "Familiar which provides init");
+	fam = Familiar.get("Exotic Parrot");
+	formattedSimPrint(haveFamiliar(fam), fam.toString(), "Familiar which provides elemental resistance");
+	fam = Familiar.get("Hobo Monkey");
+	formattedSimPrint(haveFamiliar(fam), fam.toString(), "Familiar that's a 1.25x leprechaun");
 
-	item it = $item[Etched Hourglass];
-	formattedSimPrint(item_amount(it) > 0, `Potential Pull: {it.to_string()}`, "Extra RO adventures");
-	it = $item[Potato Alarm Clock];
-	formattedSimPrint(item_amount(it) > 0, `Potential Pull: {it.to_string()}`, "Extra RO adventures");
-	it = $item[Mafia Thumb Ring];
-	formattedSimPrint(possessEquipment(it), `Potential Pull: {it.to_string()}`, "Accessory which generates an adv 4% of combats");
-	it = $item[Numberwang];
-	formattedSimPrint(possessEquipment(it), `Potential Pull: {it.to_string()}`, "Good all around accessory");
-	it = $item[Deck of Lewd Playing Cards];
-	formattedSimPrint(possessEquipment(it), `Potential Pull: {it.to_string()}`, "Sleaze dmg helps Belch House, Zeppelin Mob, and sometimes tower test");
-	it = $item[Infinite BACON Machine];
-	formattedSimPrint(item_amount(it) > 0, `Potential Pull: {it.to_string()}`, "Might make milk for big stats. Poor, for modern standards, yellow ray source");
-	it = $item[Mime Army Shotglass];
-	formattedSimPrint(item_amount(it) > 0, `Potential Pull: {it.to_string()}`, "Only pulled for Dark Gyffte as every organ space is really good");
+	let it: Item = Item.get("etched hourglass");
+	formattedSimPrint(itemAmount(it) > 0, `Potential Pull: ${it.toString()}`, "Extra RO adventures");
+	it = Item.get("potato alarm clock");
+	formattedSimPrint(itemAmount(it) > 0, `Potential Pull: ${it.toString()}`, "Extra RO adventures");
+	it = Item.get("mafia thumb ring");
+	formattedSimPrint(possessEquipment(it), `Potential Pull: ${it.toString()}`, "Accessory which generates an adv 4% of combats");
+	it = Item.get("numberwang");
+	formattedSimPrint(possessEquipment(it), `Potential Pull: ${it.toString()}`, "Good all around accessory");
+	it = Item.get("deck of lewd playing cards");
+	formattedSimPrint(possessEquipment(it), `Potential Pull: ${it.toString()}`, "Sleaze dmg helps Belch House, Zeppelin Mob, and sometimes tower test");
+	it = Item.get("infinite BACON machine");
+	formattedSimPrint(itemAmount(it) > 0, `Potential Pull: ${it.toString()}`, "Might make milk for big stats. Poor, for modern standards, yellow ray source");
+	it = Item.get("mime army shotglass");
+	formattedSimPrint(itemAmount(it) > 0, `Potential Pull: ${it.toString()}`, "Only pulled for Dark Gyffte as every organ space is really good");
 }
 
-void formattedSimPrint(boolean have, string name, string description)
+export function formattedSimPrint(have: boolean, name: string, description: string): void
 {
-	string symbol = have ? "✓" : "X";
-	print(`{symbol} {name} - {description}`, have ? "blue" : "red");
+	let symbol_1: string = (have ? "✓" : "X");
+	print(`${symbol_1} ${name} - ${description}`, (have ? "blue" : "red"));
 }

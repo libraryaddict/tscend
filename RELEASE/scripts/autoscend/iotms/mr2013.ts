@@ -1,93 +1,101 @@
-#	This is meant for items that have a date of 2013
+import { Class, Effect, Item, Location, Skill, cliExecute, floristAvailable, getFloristPlants, getProperty, itemAmount, knollAvailable, monsterLevelAdjustment, mpCost, myClass, myDaycount, myLocation, myMp, toInt, useSkill, visitUrl } from "kolmafia";
+import { auto_buyUpTo } from "../auto_acquire";
+import { buffMaintain$3 } from "../auto_buff";
+import { possessEquipment } from "../auto_equipment";
+import { autoCraft, auto_have_skill, auto_log_warning } from "../auto_util";
+import { is_professor } from "../paths/wereprofessor";
 
-void makeStartingSmiths()
+//	This is meant for items that have a date of 2013
+
+//Defined in autoscend/iotms/mr2013.ash
+export function makeStartingSmiths(): void
 {
-	if(!auto_have_skill($skill[Summon Smithsness]))
+	if (!auto_have_skill(Skill.get("Summon Smithsness")))
 	{
 		return;
 	}
 
-	if(item_amount($item[Lump of Brituminous Coal]) == 0)
+	if (itemAmount(Item.get("lump of Brituminous coal")) === 0)
 	{
-		if(my_mp() < (3 * mp_cost($skill[Summon Smithsness])))
+		if (myMp() < 3 * mpCost(Skill.get("Summon Smithsness")))
 		{
 			auto_log_warning("You don't have enough MP for initialization, it might be ok but probably not.", "red");
 		}
-		use_skill(3, $skill[Summon Smithsness]);
+		useSkill(3, Skill.get("Summon Smithsness"));
 	}
 
-	if(knoll_available())
+	if (knollAvailable())
 	{
-		auto_buyUpTo(1, $item[maiden wig]);
+		auto_buyUpTo(1, Item.get("maiden wig"));
 	}
 
-	switch(my_class())
+	switch (myClass())
 	{
-	case $class[Seal Clubber]:
-		if(!possessEquipment($item[Meat Tenderizer is Murder]))
+	case Class.get("Seal Clubber"):
+		if (!possessEquipment(Item.get("Meat Tenderizer is Murder")))
 		{
-			autoCraft("smith", 1, $item[lump of Brituminous coal], $item[seal-clubbing club]);
+			autoCraft("smith", 1, Item.get("lump of Brituminous coal"), Item.get("seal-clubbing club"));
 		}
-		if(!possessEquipment($item[Vicar\'s Tutu]) && (item_amount($item[Lump of Brituminous Coal]) > 0) && knoll_available())
+		if (!possessEquipment(Item.get("Vicar's Tutu")) && itemAmount(Item.get("lump of Brituminous coal")) > 0 && knollAvailable())
 		{
-			auto_buyUpTo(1, $item[Frilly Skirt]);
-			autoCraft("smith", 1, $item[Lump of Brituminous Coal], $item[Frilly Skirt]);
-		}
-		break;
-	case $class[Turtle Tamer]:
-		if(!possessEquipment($item[Work is a Four Letter Sword]))
-		{
-			auto_buyUpTo(1, $item[Sword Hilt]);
-			autoCraft("smith", 1, $item[lump of Brituminous coal], $item[sword hilt]);
-		}
-		if(!possessEquipment($item[Ouija Board\, Ouija Board]))
-		{
-			autoCraft("smith", 1, $item[lump of Brituminous coal], $item[turtle totem]);
+			auto_buyUpTo(1, Item.get("frilly skirt"));
+			autoCraft("smith", 1, Item.get("lump of Brituminous coal"), Item.get("frilly skirt"));
 		}
 		break;
-	case $class[Sauceror]:
-		if(!possessEquipment($item[Saucepanic]))
+	case Class.get("Turtle Tamer"):
+		if (!possessEquipment(Item.get("Work is a Four Letter Sword")))
 		{
-			autoCraft("smith", 1, $item[lump of Brituminous coal], $item[Saucepan]);
+			auto_buyUpTo(1, Item.get("sword hilt"));
+			autoCraft("smith", 1, Item.get("lump of Brituminous coal"), Item.get("sword hilt"));
 		}
-		if(!possessEquipment($item[A Light that Never Goes Out]) && (item_amount($item[Lump of Brituminous Coal]) > 0))
+		if (!possessEquipment(Item.get("Ouija Board, Ouija Board")))
 		{
-			autoCraft("smith", 1, $item[Lump of Brituminous Coal], $item[Third-hand Lantern]);
-		}
-		break;
-	case $class[Pastamancer]:
-		if(!possessEquipment($item[Hand That Rocks the Ladle]))
-		{
-			autoCraft("smith", 1, $item[lump of Brituminous coal], $item[Pasta Spoon]);
+			autoCraft("smith", 1, Item.get("lump of Brituminous coal"), Item.get("turtle totem"));
 		}
 		break;
-	case $class[Disco Bandit]:
-		if(!possessEquipment($item[Frankly Mr. Shank]))
+	case Class.get("Sauceror"):
+		if (!possessEquipment(Item.get("Saucepanic")))
 		{
-			autoCraft("smith", 1, $item[lump of Brituminous coal], $item[Disco Ball]);
+			autoCraft("smith", 1, Item.get("lump of Brituminous coal"), Item.get("saucepan"));
+		}
+		if (!possessEquipment(Item.get("A Light that Never Goes Out")) && itemAmount(Item.get("lump of Brituminous coal")) > 0)
+		{
+			autoCraft("smith", 1, Item.get("lump of Brituminous coal"), Item.get("third-hand lantern"));
 		}
 		break;
-	case $class[Accordion Thief]:
-		if(!possessEquipment($item[Shakespeare\'s Sister\'s Accordion]))
+	case Class.get("Pastamancer"):
+		if (!possessEquipment(Item.get("Hand that Rocks the Ladle")))
 		{
-			autoCraft("smith", 1, $item[lump of Brituminous coal], $item[Stolen Accordion]);
+			autoCraft("smith", 1, Item.get("lump of Brituminous coal"), Item.get("pasta spoon"));
+		}
+		break;
+	case Class.get("Disco Bandit"):
+		if (!possessEquipment(Item.get("Frankly Mr. Shank")))
+		{
+			autoCraft("smith", 1, Item.get("lump of Brituminous coal"), Item.get("disco ball"));
+		}
+		break;
+	case Class.get("Accordion Thief"):
+		if (!possessEquipment(Item.get("Shakespeare's Sister's Accordion")))
+		{
+			autoCraft("smith", 1, Item.get("lump of Brituminous coal"), Item.get("stolen accordion"));
 		}
 		break;
 	}
 
-	if(knoll_available() && !possessEquipment($item[Hairpiece on Fire]) && (item_amount($item[lump of Brituminous Coal]) > 0))
+	if (knollAvailable() && !possessEquipment(Item.get("Hairpiece On Fire")) && itemAmount(Item.get("lump of Brituminous coal")) > 0)
 	{
-		autoCraft("smith", 1, $item[lump of Brituminous coal], $item[maiden wig]);
+		autoCraft("smith", 1, Item.get("lump of Brituminous coal"), Item.get("maiden wig"));
 	}
-	buffMaintain($effect[Merry Smithsness], 0, 1, 10);
+	buffMaintain$3(Effect.get("Merry Smithsness"), 0, 1, 10);
 }
 
-boolean didWePlantHere(location loc)
+export function didWePlantHere(loc: Location): boolean
 {
-	string [location, 3] places = get_florist_plants();
-	foreach place in places
+	let places: Map<Location, string[]> = new Map(Object.entries(getFloristPlants()).map(([_k, _v]) => [Location.get(_k), _v]));
+	for (let place of places.keys())
 	{
-		if(loc == place)
+		if (loc === place)
 		{
 			return true;
 		}
@@ -95,190 +103,190 @@ boolean didWePlantHere(location loc)
 	return false;
 }
 
-void trickMafiaAboutFlorist()
+export function trickMafiaAboutFlorist(): void
 {
 	// This only works if you actually have the Florist Friar but it isn\'t detected by Mafia
 	// This may not be the most optimal way to do it.
-	visit_url("choice.php?whichchoice=720&pwd=&option=4");
-	visit_url("place.php?whichplace=forestvillage&action=fv_friar");
-	visit_url("choice.php?whichchoice=720&pwd=&option=4");
+	visitUrl("choice.php?whichchoice=720&pwd=&option=4");
+	visitUrl("place.php?whichplace=forestvillage&action=fv_friar");
+	visitUrl("choice.php?whichchoice=720&pwd=&option=4");
 	//We might not need to do this last one...
-	visit_url("choice.php?whichchoice=720&pwd=&option=4");
+	visitUrl("choice.php?whichchoice=720&pwd=&option=4");
 }
 
-void oldPeoplePlantStuff()
+export function oldPeoplePlantStuff(): void
 {
-	if(!florist_available())
+	if (!floristAvailable())
 	{
 		return;
 	}
 
-	if(didWePlantHere(my_location()))
+	if (didWePlantHere(myLocation()))
 	{
 		return;
 	}
-	boolean addml = true;
-	if((monster_level_adjustment() > get_property("auto_MLSafetyLimit").to_int() && get_property("auto_MLSafetyLimit") != "") || get_property("auto_MLSafetyLimit").to_int() == -1)
+	let addml: boolean = true;
+	if (monsterLevelAdjustment() > toInt(getProperty("auto_MLSafetyLimit")) && getProperty("auto_MLSafetyLimit") !== "" || toInt(getProperty("auto_MLSafetyLimit")) === -1)
 	{
 		addml = false;
 	}
-	if(is_professor())
+	if (is_professor())
 	{
 		addml = false;
 	}
 
-	if((my_location() == $location[The Outskirts of Cobb\'s Knob]))
+	if (myLocation() === Location.get("The Outskirts of Cobb's Knob"))
 	{
-		cli_execute("florist plant rad-ish radish");
-		cli_execute("florist plant celery stalker");
+		cliExecute("florist plant rad-ish radish");
+		cliExecute("florist plant celery stalker");
 	}
-	else if((my_location() == $location[The Spooky Forest]))
+	else if (myLocation() === Location.get("The Spooky Forest"))
 	{
-		cli_execute("florist plant seltzer watercress");
-		cli_execute("florist plant lettuce spray");
-		cli_execute("florist plant deadly cinnamon");
+		cliExecute("florist plant seltzer watercress");
+		cliExecute("florist plant lettuce spray");
+		cliExecute("florist plant deadly cinnamon");
 	}
-	else if((my_location() == $location[The Haunted Bathroom]))
+	else if (myLocation() === Location.get("The Haunted Bathroom"))
 	{
-		if(addml){
-			cli_execute("florist plant war lily");
+		if (addml) {
+			cliExecute("florist plant war lily");
 		}
-		cli_execute("florist plant Impatiens");
-		cli_execute("florist plant arctic moss");
+		cliExecute("florist plant Impatiens");
+		cliExecute("florist plant arctic moss");
 	}
-	else if((my_location() == $location[The Haunted Ballroom]))
+	else if (myLocation() === Location.get("The Haunted Ballroom"))
 	{
-		cli_execute("florist plant stealing magnolia");
-		cli_execute("florist plant aloe guv'nor");
-		cli_execute("florist plant pitcher plant");
+		cliExecute("florist plant stealing magnolia");
+		cliExecute("florist plant aloe guv'nor");
+		cliExecute("florist plant pitcher plant");
 	}
-	else if((my_location() == $location[The Defiled Nook]))
+	else if (myLocation() === Location.get("The Defiled Nook"))
 	{
-		cli_execute("florist plant horn of plenty");
+		cliExecute("florist plant horn of plenty");
 	}
-	else if((my_location() == $location[The Defiled Alcove]))
+	else if (myLocation() === Location.get("The Defiled Alcove"))
 	{
-		cli_execute("florist plant shuffle truffle");
+		cliExecute("florist plant shuffle truffle");
 	}
-	else if((my_location() == $location[The Defiled Niche]))
+	else if (myLocation() === Location.get("The Defiled Niche"))
 	{
-		cli_execute("florist plant wizard's wig");
+		cliExecute("florist plant wizard's wig");
 	}
-	else if((my_location() == $location[The Obligatory Pirate\'s Cove]))
+	else if (myLocation() === Location.get("The Obligatory Pirate's Cove"))
 	{
-		if(addml){
-			cli_execute("florist plant rabid dogwood");
+		if (addml) {
+			cliExecute("florist plant rabid dogwood");
 		}
-		cli_execute("florist plant artichoker");
+		cliExecute("florist plant artichoker");
 	}
-	else if((my_location() == $location[Barrrney\'s Barrr]) && (my_class() != $class[Ed the Undying]))
+	else if (myLocation() === Location.get("Barrrney's Barrr") && myClass() !== Class.get("Ed the Undying"))
 	{
-		cli_execute("florist plant spider plant");
-		cli_execute("florist plant red fern");
-		cli_execute("florist plant bamboo!");
+		cliExecute("florist plant spider plant");
+		cliExecute("florist plant red fern");
+		cliExecute("florist plant bamboo!");
 	}
-	else if((my_location() == $location[The Penultimate Fantasy Airship]))
+	else if (myLocation() === Location.get("The Penultimate Fantasy Airship"))
 	{
-		cli_execute("florist plant rutabeggar");
-		cli_execute("florist plant smoke-ra");
-		cli_execute("florist plant skunk cabbage");
+		cliExecute("florist plant rutabeggar");
+		cliExecute("florist plant smoke-ra");
+		cliExecute("florist plant skunk cabbage");
 	}
-	else if((my_location() == $location[The Castle in the Clouds in the Sky (Basement)]) && (my_daycount() == 1))
+	else if (myLocation() === Location.get("The Castle in the Clouds in the Sky (Basement)") && myDaycount() === 1)
 	{
-		if(addml){
-			cli_execute("florist plant blustery puffball");
+		if (addml) {
+			cliExecute("florist plant blustery puffball");
 		}
-		cli_execute("florist plant dis lichen");
-		cli_execute("florist plant max headshroom");
+		cliExecute("florist plant dis lichen");
+		cliExecute("florist plant max headshroom");
 	}
-	else if((my_location() == $location[The Castle in the Clouds in the Sky (Ground Floor)]))
+	else if (myLocation() === Location.get("The Castle in the Clouds in the Sky (Ground Floor)"))
 	{
-		cli_execute("florist plant canned spinach");
+		cliExecute("florist plant canned spinach");
 	}
-	else if((my_location() == $location[Oil Peak]))
+	else if (myLocation() === Location.get("Oil Peak"))
 	{
-		if(addml){
-			cli_execute("florist plant rabid dogwood");
+		if (addml) {
+			cliExecute("florist plant rabid dogwood");
 		}
-		cli_execute("florist plant artichoker");
-		cli_execute("florist plant celery stalker");
+		cliExecute("florist plant artichoker");
+		cliExecute("florist plant celery stalker");
 	}
-	else if((my_location() == $location[The Haunted Boiler Room]))
+	else if (myLocation() === Location.get("The Haunted Boiler Room"))
 	{
-		if(addml){
-			cli_execute("florist plant war lily");
+		if (addml) {
+			cliExecute("florist plant war lily");
 		}
-		cli_execute("florist plant red fern");
-		cli_execute("florist plant arctic moss");
+		cliExecute("florist plant red fern");
+		cliExecute("florist plant arctic moss");
 	}
-	else if((my_location() == $location[A Massive Ziggurat]))
+	else if (myLocation() === Location.get("A Massive Ziggurat"))
 	{
-		cli_execute("florist plant skunk cabbage");
-		cli_execute("florist plant deadly cinnamon");
+		cliExecute("florist plant skunk cabbage");
+		cliExecute("florist plant deadly cinnamon");
 	}
-	else if((my_location() == $location[The Arid\, Extra-Dry Desert]))
+	else if (myLocation() === Location.get("The Arid, Extra-Dry Desert"))
 	{
-		cli_execute("florist plant rad-ish radish");
-		cli_execute("florist plant lettuce spray");
+		cliExecute("florist plant rad-ish radish");
+		cliExecute("florist plant lettuce spray");
 	}
-	else if((my_location() == $location[The Hidden Apartment Building]))
+	else if (myLocation() === Location.get("The Hidden Apartment Building"))
 	{
-		cli_execute("florist plant impatiens");
-		cli_execute("florist plant spider plant");
-		cli_execute("florist plant pitcher plant");
+		cliExecute("florist plant impatiens");
+		cliExecute("florist plant spider plant");
+		cliExecute("florist plant pitcher plant");
 	}
-	else if((my_location() == $location[The Hidden Office Building]))
+	else if (myLocation() === Location.get("The Hidden Office Building"))
 	{
-		cli_execute("florist plant canned spinach");
+		cliExecute("florist plant canned spinach");
 	}
-	else if((my_location() == $location[The Hidden Bowling Alley]))
+	else if (myLocation() === Location.get("The Hidden Bowling Alley"))
 	{
-		cli_execute("florist plant Stealing Magnolia");
+		cliExecute("florist plant Stealing Magnolia");
 	}
-	else if((my_location() == $location[The Hidden Hospital]))
+	else if (myLocation() === Location.get("The Hidden Hospital"))
 	{
-		cli_execute("florist plant bamboo!");
-		cli_execute("florist plant aloe guv'nor");
+		cliExecute("florist plant bamboo!");
+		cliExecute("florist plant aloe guv'nor");
 	}
-	else if((my_location() == $location[The Upper Chamber]))
+	else if (myLocation() === Location.get("The Upper Chamber"))
 	{
-		if(addml){
-			cli_execute("florist plant Blustery Puffball");
+		if (addml) {
+			cliExecute("florist plant Blustery Puffball");
 		}
-		cli_execute("florist plant Loose Morels");
-		cli_execute("florist plant Foul Toadstool");
+		cliExecute("florist plant Loose Morels");
+		cliExecute("florist plant Foul Toadstool");
 	}
-	else if((my_location() == $location[The Middle Chamber]))
+	else if (myLocation() === Location.get("The Middle Chamber"))
 	{
-		cli_execute("florist plant Horn of Plenty");
-		cli_execute("florist plant max headshroom");
-		cli_execute("florist plant Dis Lichen");
+		cliExecute("florist plant Horn of Plenty");
+		cliExecute("florist plant max headshroom");
+		cliExecute("florist plant Dis Lichen");
 	}
-	else if((my_location() == $location[The Battlefield (Frat Uniform)]))
+	else if (myLocation() === Location.get("The Battlefield (Frat Uniform)"))
 	{
-		cli_execute("florist plant Seltzer Watercress");
-		cli_execute("florist plant Smoke-ra");
-		cli_execute("florist plant Rutabeggar");
+		cliExecute("florist plant Seltzer Watercress");
+		cliExecute("florist plant Smoke-ra");
+		cliExecute("florist plant Rutabeggar");
 	}
-	else if((my_location() == $location[The Secret Government Laboratory]) && (my_daycount() == 1))
+	else if (myLocation() === Location.get("The Secret Government Laboratory") && myDaycount() === 1)
 	{
-		cli_execute("florist plant Pitcher Plant");
-		cli_execute("florist plant Canned Spinach");
+		cliExecute("florist plant Pitcher Plant");
+		cliExecute("florist plant Canned Spinach");
 	}
-	else if((my_location() == $location[The Hippy Camp]) && (my_daycount() == 1))
+	else if (myLocation() === Location.get("The Hippy Camp") && myDaycount() === 1)
 	{
-		cli_execute("florist plant Seltzer Watercress");
-		cli_execute("florist plant Rad-ish Radish");
+		cliExecute("florist plant Seltzer Watercress");
+		cliExecute("florist plant Rad-ish Radish");
 	}
-	else if((my_location() == $location[Pirates of the Garbage Barges]) && (my_daycount() == 1))
+	else if (myLocation() === Location.get("Pirates of the Garbage Barges") && myDaycount() === 1)
 	{
-		cli_execute("florist plant Pitcher Plant");
-		cli_execute("florist plant Canned Spinach");
+		cliExecute("florist plant Pitcher Plant");
+		cliExecute("florist plant Canned Spinach");
 	}
-	else if((my_location() == $location[The Battlefield (Hippy Uniform)]))
+	else if (myLocation() === Location.get("The Battlefield (Hippy Uniform)"))
 	{
-		cli_execute("florist plant Seltzer Watercress");
-		cli_execute("florist plant Smoke-ra");
-		cli_execute("florist plant Rutabeggar");
+		cliExecute("florist plant Seltzer Watercress");
+		cliExecute("florist plant Smoke-ra");
+		cliExecute("florist plant Rutabeggar");
 	}
 }

@@ -1,104 +1,108 @@
-item[element] getCharterIndexable()
+import { Element, Item, getProperty, indexOf, isUnrestricted, toBoolean, visitUrl } from "kolmafia";
+import { auto_log_info } from "../auto_util";
+import { AshMatcher } from "../utils/kolmafiaUtils";
+
+//Defined in autoscend/iotms/auto_elementalPlanes.ash
+export function getCharterIndexable(): Map<Element, Item>
 {
-	item[element] charters;
-	charters[$element[cold]] = $item[Airplane Charter: The Glaciest];
-	charters[$element[hot]] = $item[Airplane Charter: That 70s Volcano];
-	charters[$element[sleaze]] = $item[Airplane Charter: Spring Break Beach];
-	charters[$element[spooky]] = $item[Airplane Charter: Conspiracy Island];
-	charters[$element[stench]] = $item[Airplane Charter: Dinseylandfill];
+	let charters: Map<Element, Item> = new Map();
+	charters.set(Element.get("cold"), Item.get("airplane charter: The Glaciest"));
+	charters.set(Element.get("hot"), Item.get("airplane charter: That 70s Volcano"));
+	charters.set(Element.get("sleaze"), Item.get("airplane charter: Spring Break Beach"));
+	charters.set(Element.get("spooky"), Item.get("airplane charter: Conspiracy Island"));
+	charters.set(Element.get("stench"), Item.get("airplane charter: Dinseylandfill"));
 	return charters;
 }
 
-boolean elementalPlanes_access(element ele)
+export function elementalPlanes_access(ele: Element): boolean
 {
-	item[element] charters = getCharterIndexable();
-	return get_property(ele + "AirportAlways").to_boolean() && is_unrestricted(charters[ele]);
+	let charters: Map<Element, Item> = getCharterIndexable();
+	return toBoolean(getProperty(`${ele}AirportAlways`)) && isUnrestricted((charters.get(ele) ?? charters.set(ele, Item.none).get(ele)));
 }
 
-boolean elementalPlanes_takeJob(element ele)
+export function elementalPlanes_takeJob(ele: Element): boolean
 {
-	if(!elementalPlanes_access(ele))
+	if (!elementalPlanes_access(ele))
 	{
 		return false;
 	}
 
-	if((ele == $element[spooky]) && elementalPlanes_access(ele))
+	if (ele === Element.get("spooky") && elementalPlanes_access(ele))
 	{
-		visit_url("place.php?whichplace=airport_spooky&action=airport2_radio");
-		visit_url("choice.php?pwd&whichchoice=984&option=1", true);
+		visitUrl("place.php?whichplace=airport_spooky&action=airport2_radio");
+		visitUrl("choice.php?pwd&whichchoice=984&option=1", true);
 		return true;
 	}
-	else if((ele == $element[stench]) && elementalPlanes_access(ele))
+	else if (ele === Element.get("stench") && elementalPlanes_access(ele))
 	{
-		string page = visit_url("place.php?whichplace=airport_stench&action=airport3_kiosk");
-		int choice = 1;
-		int at = index_of(page, "Available Assignments");
-		if(at == -1)
+		let page: string = visitUrl("place.php?whichplace=airport_stench&action=airport3_kiosk");
+		let choice: number = 1;
+		let at: number = indexOf(page, "Available Assignments");
+		if (at === -1)
 		{
 			return false;
 		}
 
-		int sustenance = index_of(page, "Guest Sustenance Assurance", at);
-		boolean[string] jobs = $strings[Racism Reduction, Compulsory Fun, Waterway Debris Removal, Bear Removal, Electrical Maintenance, Track Maintenance, Sexism Reduction];
+		let sustenance: number = indexOf(page, "Guest Sustenance Assurance", at);
+		let jobs: string[] = ["Racism Reduction", "Compulsory Fun", "Waterway Debris Removal", "Bear Removal", "Electrical Maintenance", "Track Maintenance", "Sexism Reduction"];
 
-		if(sustenance != -1)
+		if (sustenance !== -1)
 		{
 			auto_log_info("Trying to avoid Guest Sustenance Assurance Dinseylandfill job.", "blue");
-			foreach job in jobs
+			for (let job of jobs)
 			{
-				int newAt = index_of(page, job, at);
-				if(newAt != -1)
+				let newAt: number = indexOf(page, job, at);
+				if (newAt !== -1)
 				{
-					auto_log_info("Found new job option: " + job, "blue");
-					if(newAt < sustenance)
+					auto_log_info(`Found new job option: ${job}`, "blue");
+					if (newAt < sustenance)
 					{
 						choice = 1;
 					}
-					else
-					{
+					else {
 						choice = 2;
 					}
 				}
 			}
 		}
 
-		visit_url("choice.php?pwd=&whichchoice=1066&option=" + choice,true);
+		visitUrl(`choice.php?pwd=&whichchoice=1066&option=${choice}`, true);
 		return true;
 	}
-	else if((ele == $element[cold]) && elementalPlanes_access(ele))
+	else if (ele === Element.get("cold") && elementalPlanes_access(ele))
 	{
-		if(get_property("_walfordQuestStartedToday").to_boolean())
+		if (toBoolean(getProperty("_walfordQuestStartedToday")))
 		{
 			return false;
 		}
 
-		string page = visit_url("place.php?whichplace=airport_cold&action=glac_walrus");
+		let page: string = visitUrl("place.php?whichplace=airport_cold&action=glac_walrus");
 
-		matcher bucket = create_matcher("I'll get you some (\\w+)", page);
+		let bucket: AshMatcher = new AshMatcher("I'll get you some (\\w+)", page);
 
-		int choice = 0;
-		int best = 0;
+		let choice: number = 0;
+		let best: number = 0;
 
-		boolean[string] jobs = $strings[balls, blood, bolts, chum, ice, milk, moonbeams, chicken, rain];
-		int at = 1;
-		while(bucket.find())
+		let jobs: string[] = ["balls", "blood", "bolts", "chum", "ice", "milk", "moonbeams", "chicken", "rain"];
+		let at: number = 1;
+		while (bucket.find())
 		{
 			at = at + 1;
-			auto_log_info("Found bucket " + bucket.group(1) + ".", "blue");
-			int i = 0;
-			foreach job in jobs
+			auto_log_info(`Found bucket ${bucket.group(1)}.`, "blue");
+			let i: number = 0;
+			for (let job of jobs)
 			{
 				i = i + 1;
-				if((bucket.group(1) == job) && (i > best))
+				if (bucket.group(1) === job && i > best)
 				{
-					auto_log_info("Considering job " + job, "blue");
+					auto_log_info(`Considering job ${job}`, "blue");
 					best = i;
 					choice = at;
 				}
 			}
 		}
 
-		visit_url("choice.php?pwd=&whichchoice=1114&option=" + choice,true);
+		visitUrl(`choice.php?pwd=&whichchoice=1114&option=${choice}`, true);
 		return true;
 	}
 	return false;

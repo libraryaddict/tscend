@@ -1,161 +1,164 @@
-boolean is_foldable(item target)
+import { Item, abort, cliExecute, craftType, creatableAmount, creatableTurns, create, getProperty, getRelated, itemAmount, myHash, toInt, visitUrl } from "kolmafia";
+import { auto_is_valid, auto_log_debug$1, auto_log_warning$1, handleTracker$1 } from "./auto_util";
+import { hasLegionKnife } from "./iotms/mr2011";
+
+//Defined in autoscend/auto_craft.ash
+export function is_foldable(target: Item): boolean
 {
 	//mafia does not provide an easy means of checking if an item possesses the foldable property.
 	//This function checks if the item possesses that property. It does not care if you actually have it
-	return count(get_related(target, "fold")) > 1;
+	return getRelated(target, "fold").size > 1;
 }
 
-int foldable_amount(item target)
+export function foldable_amount(target: Item): number
 {
 	//counts how many copies we can fold of a certain item.
-	if(!is_foldable(target))
+	if (!is_foldable(target))
 	{
 		return 0;
 	}
-	int retval = 0;
-	foreach it in get_related(target, "fold")
+	let retval: number = 0;
+	for (let it of Item.get(Object.keys(getRelated(target, "fold"))))
 	{
-		retval += item_amount(it);
+		retval += itemAmount(it);
 	}
 	return retval;
 }
 
-boolean auto_fold(item target)
+export function auto_fold(target: Item): boolean
 {
 	//fold an item using mafia fold cli command. with checks to ensure everything worked as expected.
-	if(!is_foldable(target))
+	if (!is_foldable(target))
 	{
-		auto_log_debug("[" +target+ "] is not foldable");
+		auto_log_debug$1(`[${target}] is not foldable`);
 		return false;
 	}
-	if(item_amount(target) > 0)
+	if (itemAmount(target) > 0)
 	{
-		return true;	//we already have the desired item
+		return true; //we already have the desired item
 	}
-	if(foldable_amount(target) == 0)
+	if (foldable_amount(target) === 0)
 	{
-		auto_log_debug("Can not fold [" +target+ "] because we do not possess the required items");
+		auto_log_debug$1(`Can not fold [${target}] because we do not possess the required items`);
 		return false;
 	}
-	auto_log_debug("folding [" +target+ "]");
-	int start_amt = item_amount(target);
-	cli_execute("fold " +target);
-	if(item_amount(target) == start_amt+1)
+	auto_log_debug$1(`folding [${target}]`);
+	let start_amt: number = itemAmount(target);
+	cliExecute(`fold ${target}`);
+	if (itemAmount(target) === start_amt + 1)
 	{
 		return true;
 	}
-	abort("Mysteriously failed to fold [" +target+ "]. please fold it manually and run me again");
+	abort(`Mysteriously failed to fold [${target}]. please fold it manually and run me again`);
 	return false;
 }
 
-boolean untinkerable(item target)
+export function untinkerable(target: Item): boolean
 {
 	//does the item target possess the untinkerable property. this does not care if we actually have it or can untinker. only the property.
 	//exceptions that can be untinkered even though they are no longer pasteable
-	if($items[31337 scroll] contains target)
+	if (Item.get(["31337 scroll"]).includes(target))
 	{
 		return true;
-	}	
+	}
 	//exceptions that can not be untinkered even though they are pasteable exist.
 	//most return craft_type of "Meatpasting (not untinkerable)" and as such need no special handling.
 	//this is special handling for those whom mafia incorrectly returns "Meatpasting" for
-	if($items[chaos popcorn, cold clusterbomb, hot clusterbomb, sleaze clusterbomb, spooky clusterbomb, stench clusterbomb] contains target)
+	if (Item.get(["chaos popcorn", "cold clusterbomb", "hot clusterbomb", "sleaze clusterbomb", "spooky clusterbomb", "stench clusterbomb"]).includes(target))
 	{
 		return false;
-	}	
-	return craft_type(target) == "Meatpasting";
+	}
+	return craftType(target) === "Meatpasting";
 }
 
-boolean canUntinker()
+export function canUntinker(): boolean
 {
 	//do we possess the means to untinker.
-	if(hasLegionKnife() && auto_is_valid($item[Loathing Legion universal screwdriver]))
+	if (hasLegionKnife() && auto_is_valid(Item.get("Loathing Legion universal screwdriver")))
 	{
-		return true;		//universal screwdriver can be used to untinker items
+		return true; //universal screwdriver can be used to untinker items
 	}
-	return get_property("questM01Untinker") == "finished";
+	return getProperty("questM01Untinker") === "finished";
 }
 
-boolean canUntinker(item target)
+export function canUntinker$1(target: Item): boolean
 {
-	if(!canUntinker())
+	if (!canUntinker())
 	{
-		auto_log_debug("We can not untinker [" +target+ "] because we can not untinker anything right now");
+		auto_log_debug$1(`We can not untinker [${target}] because we can not untinker anything right now`);
 		return false;
 	}
-	if(item_amount(target) == 0)
+	if (itemAmount(target) === 0)
 	{
-		auto_log_debug("We can not untinker [" +target+ "] because we do not have any");
+		auto_log_debug$1(`We can not untinker [${target}] because we do not have any`);
 		return false;
 	}
 	return untinkerable(target);
 }
 
-boolean untinker(item target)
+export function untinker(target: Item): boolean
 {
-	return untinker(1, target);
+	return untinker$1(1, target);
 }
 
-boolean untinker(int amount, item target)
+export function untinker$1(amount: number, target: Item): boolean
 {
-	if(!canUntinker(target))
+	if (!canUntinker$1(target))
 	{
 		return false;
 	}
-	if(amount < 1)
+	if (amount < 1)
 	{
-		auto_log_debug("Attempted to untinker [" +target+ "] and detected an invalid desired untinker amount of " +amount);
+		auto_log_debug$1(`Attempted to untinker [${target}] and detected an invalid desired untinker amount of ${amount}`);
 		return false;
 	}
-	if(item_amount(target) < amount)
+	if (itemAmount(target) < amount)
 	{
-		auto_log_warning("Attempted to untinker " +amount+ " [" +target+ "] but we only have " +item_amount(target)+ ". which is how many we will untinker instead");
-		amount = item_amount(target);		//we can not untinker more than we have
+		auto_log_warning$1(`Attempted to untinker ${amount} [${target}] but we only have ${itemAmount(target)}. which is how many we will untinker instead`);
+		amount = itemAmount(target); //we can not untinker more than we have
 	}
-	
-	boolean untinker_all = (amount == item_amount(target));
-	auto_log_debug("Attempted to untinker " +amount+ " [" +target+ "]");
-	int start_amt = item_amount(target);
-	item LLUS = $item[Loathing Legion universal screwdriver];
 
-	if(get_property("questM01Untinker") == "finished")
+	let untinker_all: boolean = amount === itemAmount(target);
+	auto_log_debug$1(`Attempted to untinker ${amount} [${target}]`);
+	let start_amt: number = itemAmount(target);
+	let LLUS: Item = Item.get("Loathing Legion universal screwdriver");
+
+	if (getProperty("questM01Untinker") === "finished")
 	{
-		if(untinker_all)
+		if (untinker_all)
 		{
-			visit_url("place.php?whichplace=forestvillage&action=fv_untinker&pwd=&preaction=untinker&whichitem=" +target.to_int()+ "&untinkerall=on");
+			visitUrl(`place.php?whichplace=forestvillage&action=fv_untinker&pwd=&preaction=untinker&whichitem=${toInt(target)}&untinkerall=on`);
 		}
-		else for i from 1 to amount
-		{
-			visit_url("place.php?whichplace=forestvillage&action=fv_untinker&pwd=&preaction=untinker&whichitem=" +target.to_int());
-		}
+		else { for (let i = 1, _last = amount, _step = 1, _up = i <= _last, _inc = _up ? Math.abs(_step) : -Math.abs(_step); _up ? i <= _last : i >= _last; i += _inc) {
+			visitUrl(`place.php?whichplace=forestvillage&action=fv_untinker&pwd=&preaction=untinker&whichitem=${toInt(target)}`);
+		} }
 	}
-	else if(hasLegionKnife() && auto_is_valid(LLUS) && auto_fold(LLUS))
+	else if (hasLegionKnife() && auto_is_valid(LLUS) && auto_fold(LLUS))
 	{
-		if(untinker_all)
+		if (untinker_all)
 		{
-			visit_url("inv_use.php?pwd=" +my_hash()+ "&whichitem=4926&action=screw&dowhichitem=" +target.to_int()+ "&untinkerall=on", false);
+			visitUrl(`inv_use.php?pwd=${myHash()}&whichitem=4926&action=screw&dowhichitem=${toInt(target)}&untinkerall=on`, false);
 		}
-		else for i from 1 to amount
-		{
-			visit_url("inv_use.php?pwd=" +my_hash()+ "&whichitem=4926&action=screw&dowhichitem=" +target.to_int(), false);
-		}
+		else { for (let i = 1, _last_1 = amount, _step_1 = 1, _up_1 = i <= _last_1, _inc_1 = _up_1 ? Math.abs(_step_1) : -Math.abs(_step_1); _up_1 ? i <= _last_1 : i >= _last_1; i += _inc_1) {
+			visitUrl(`inv_use.php?pwd=${myHash()}&whichitem=4926&action=screw&dowhichitem=${toInt(target)}`, false);
+		} }
 	}
-	
-	int success_amt = start_amt - item_amount(target);
-	if(success_amt == amount)
+
+	let success_amt: number = start_amt - itemAmount(target);
+	if (success_amt === amount)
 	{
 		return true;
 	}
-	auto_log_warning("Untinkering " +amount+ " [" +target+ "] mysteriously failed. Only " +success_amt+ " were untinkered");
+	auto_log_warning$1(`Untinkering ${amount} [${target}] mysteriously failed. Only ${success_amt} were untinkered`);
 	return false;
 }
 
-boolean auto_craftIfFree(item it)
+export function auto_craftIfFree(it: Item): boolean
 {
-	if (creatable_amount(it) > 0 && creatable_turns(it,1,true)==0)
+	if (creatableAmount(it) > 0 && creatableTurns(it, 1, true) === 0)
 	{
-		boolean success = create(it);
-		handleTracker((success?"F":"Failed to f")+"ree craft item",it,"auto_otherstuff");
+		let success: boolean = create(it);
+		handleTracker$1(`${(success ? "F" : "Failed to f")}ree craft item`, it.toString(), "auto_otherstuff");
 		return success;
 	}
 	return false;

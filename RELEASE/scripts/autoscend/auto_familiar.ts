@@ -1,115 +1,138 @@
-boolean is100FamRun()
+import { Familiar, Item, Location, Monster, Slot, abort, availableAmount, equip, equippedItem, familiarEquippedEquipment, familiarWeight, floor, getMonsters, getProperty, haveFamiliar, inHardcore, inTerrarium, isInteger, itemAmount, monsterHp, myAscensions, myBjornedFamiliar, myEnthronedFamiliar, myFamiliar, myLevel, myMaxmp, myMeat, myMp, numericModifier, runChoice, setProperty, splitString, toBoolean, toFamiliar, toInt, useFamiliar, visitUrl, weightAdjustment } from "kolmafia";
+import { auto_spleenFamiliarAdvItemsPossessed, spleen_left } from "./auto_consume";
+import { autoEquip, autoEquip$1, possessEquipment, possessOutfit$1 } from "./auto_equipment";
+import { auto_check_conditions, auto_combat_appearance_rates, auto_combat_appearance_rates$1, auto_is_valid$1, auto_log_debug$1, auto_log_error, auto_log_info$1, auto_turbo, internalQuestStatus, trim } from "./auto_util";
+import { fileAsMap } from "./utils/kolmafiaUtils";
+import { considerGrimstoneGolem } from "./iotms/mr2014";
+import { auto_checkFamiliarMummery, mummifyFamiliar$2 } from "./iotms/mr2017";
+import { catBurglarHeistDesires, catBurglarHeistsLeft } from "./iotms/mr2018";
+import { auto_hasStillSuit, auto_haveGreyGoose } from "./iotms/mr2022";
+import { auto_availableBrickRift, auto_forceEagle, auto_handleJillOfAllTrades, auto_haveCCSC } from "./iotms/mr2023";
+import { auto_haveCupidBow } from "./iotms/mr2025";
+import { isActuallyEd } from "./paths/actually_ed_the_undying";
+import { amw_wantMeat, in_amw } from "./paths/adventurer_meats_world";
+import { in_avantGuard } from "./paths/avant_guard";
+import { is_boris } from "./paths/avatar_of_boris";
+import { is_jarlsberg } from "./paths/avatar_of_jarlsberg";
+import { is_pete } from "./paths/avatar_of_sneaky_pete";
+import { in_bhy } from "./paths/bees_hate_you";
+import { in_darkGyffte } from "./paths/dark_gyffte";
+import { in_heavyrains } from "./paths/heavy_rains";
+import { kolhs_mandatorySchool } from "./paths/kolhs";
+import { in_lta } from "./paths/license_to_adventure";
+import { in_lowkeysummer } from "./paths/low_key_summer";
+import { in_pokefam } from "./paths/pocket_familiars";
+import { in_quantumTerrarium } from "./paths/quantum_terrarium";
+import { in_robot } from "./paths/you_robot";
+import { AshMatcher } from "./utils/kolmafiaUtils";
+
+//Defined in autoscend/auto_familiar.ash
+export function is100FamRun(): boolean
 {
 	// answers the question of "is this a 100% familiar run"
-	
-	if(get_property("auto_100familiar").to_familiar() == $familiar[none])
+
+	if (toFamiliar(getProperty("auto_100familiar")) === Familiar.none)
 	{
 		return false;
 	}
-	
 	// if you reached this line, then it means that auto_100familiar is set to some specific familiar.
 	return true;
 }
 
-boolean doNotBuffFamiliar100Run()
+export function doNotBuffFamiliar100Run(): boolean
 {
 	//indicates that we are in a 100% familiar run with a familiar that should not be buffed. Either because it hinders you or is useless.
 	//this list was last updated after ghost of crimbo commerce familiar was added.
-	if(!is100FamRun())
+	if (!is100FamRun())
 	{
 		return false;
 	}
-	familiar hundred_fam = to_familiar(get_property("auto_100familiar"));
-	
+	let hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
 	//these familiars always harm you and never aid you
-	if($familiars[black cat, O.A.F.] contains hundred_fam)
+	if (Familiar.get(["Black Cat", "O.A.F."]).includes(hundred_fam))
 	{
 		return true;
 	}
-	
 	//these familiars sometimes harm you and sometimes attack the enemy
-	if($familiars[Fuzzy Dice, Stab Bat, Killer Bee, Scary Death Orb, RoboGoose] contains hundred_fam)
+	if (Familiar.get(["Fuzzy Dice", "Stab Bat", "Killer Bee", "Scary Death Orb", "RoboGoose"]).includes(hundred_fam))
 	{
 		return true;
 	}
-	
 	//these familiars do not actively hinder you. insead they simply do nothing. should not be buffed to save on MP.
-	if($familiars[Pet Rock, Toothsome Rock, Bulky Buddy Box, Holiday Log, Homemade Robot, Software Bug, Bad Vibe, Pet Coral] contains hundred_fam)
+	if (Familiar.get(["Pet Rock", "Toothsome Rock", "Bulky Buddy Box", "Holiday Log", "Homemade Robot", "Software Bug", "Bad Vibe", "Pet Coral"]).includes(hundred_fam))
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
-boolean isAttackFamiliar(familiar fam)
+export function isAttackFamiliar(fam: Familiar): boolean
 {
 	//is the familiar called fam able to deal damage to the enemy
-	if(fam.physical_damage || fam.elemental_damage)
+	if (fam.physicalDamage || fam.elementalDamage)
 	{
 		return true;
 	}
-	
 	//these familiars vary by configuration. TODO actually check their configuration
-	if($familiars[Mini-Crimbot,
-	El Vibrato Megadrone,
-	Reanimated Reanimator,
-	Comma Chameleon,
-	Mad Hatrack,
-	Fancypants Scarecrow
-	] contains fam)
+	if (Familiar.get(["Mini-Crimbot",
+	"El Vibrato Megadrone",
+	"Reanimated Reanimator",
+	"Comma Chameleon",
+	"Mad Hatrack",
+	"Fancypants Scarecrow"]).includes(fam))
 	{
 		return true;
 	}
-	if(fam == $familiar[Mini-Adventurer])
+	if (fam === Familiar.get("Mini-Adventurer"))
 	{
-		int miniAdvClass = get_property("miniAdvClass").to_int();
-		if(miniAdvClass == 1 ||		//seal clubber
-		(miniAdvClass == 2 && my_level() >= 5) ||		//turtle tamer
-		(miniAdvClass == 3 && my_level() >= 15) ||		//pastamancer
-		(miniAdvClass == 4 && my_level() >= 5) ||		//sauceror
-		(miniAdvClass == 5 && my_level() >= 10))		//disco bandit
-		{
+		let miniAdvClass: number = toInt(getProperty("miniAdvClass"));
+		if (miniAdvClass === 1 || miniAdvClass === 2 && myLevel() >= 5 || miniAdvClass === 3 && myLevel() >= 15 || miniAdvClass === 4 && myLevel() >= 5 || miniAdvClass === 5 && myLevel() >= 10)
+		{ //disco bandit
+		//seal clubber
+		//turtle tamer
+		//pastamancer
+		//sauceror
 			return true;
 		}
 		return false;
 	}
-	if(fam == $familiar[Reagnimated Gnome])
+	if (fam === Familiar.get("Reagnimated Gnome"))
 	{
 		//can be an attack familiar with this part equipped
 		//todo: is it possible to know if it will be equipped after this check?
-		if(possessEquipment($item[gnomish athlete\'s foot]))
+		if (possessEquipment(Item.get("gnomish athlete's foot")))
 		{
 			return true;
 		}
 		//but not if the part is not even owned
 		return false;
 	}
-	
-	if($familiars[Doppelshifter,				//random familiar every fight. can be an attack familiar
-	Dandy Lion									//attacks if you equip a whip.
-	] contains fam)
+
+	if (Familiar.get(["Doppelshifter", //random familiar every fight. can be an attack familiar
+	"Dandy Lion" //attacks if you equip a whip.
+	]).includes(fam))
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
-boolean auto_famKill(familiar fam, location place)
+export function auto_famKill(fam: Familiar, place: Location): boolean
 {
-	if(!isAttackFamiliar(fam))
+	if (!isAttackFamiliar(fam))
 	{
 		return false;
 	}
 
-	int passiveDamage = numeric_modifier("Damage Aura") + numeric_modifier("Sporadic Damage Aura ") + numeric_modifier("Thorns") + numeric_modifier("Sporadic Thorns");
-	
-	foreach mon, freq in auto_combat_appearance_rates(place)
+	let passiveDamage: number = toInt(numericModifier("Damage Aura") + numericModifier("Sporadic Damage Aura ") + numericModifier("Thorns") + numericModifier("Sporadic Thorns"));
+
+	for (let [mon, freq] of auto_combat_appearance_rates$1(place))
 	{
-		if(freq<=0) continue;
+		if (freq <= 0) { continue; }
 		//Mafia doesn't output the expected damage of the familiar so going with the highest possible for most users (NPZR)
-		if(mon != $monster[none] && monster_hp(mon) < (floor(1.5 * (auto_famWeight(fam) + 3)) + passiveDamage))
+		if (mon !== Monster.none && monsterHp(mon) < floor(1.5 * (auto_famWeight$1(fam) + 3)) + passiveDamage)
 		{
 			return true;
 		}
@@ -117,31 +140,29 @@ boolean auto_famKill(familiar fam, location place)
 	return false;
 }
 
-boolean pathHasFamiliar() 	// check for cases where the path bans traditional familiars.
-{
-	if(is_boris() || is_jarlsberg() || is_pete() || isActuallyEd() || in_darkGyffte() || in_lta() || in_pokefam())
+export function pathHasFamiliar(): boolean
+{ // check for cases where the path bans traditional familiars.
+	if (is_boris() || is_jarlsberg() || is_pete() || isActuallyEd() || in_darkGyffte() || in_lta() || in_pokefam())
 	{
 		return false;
 	}
-	
 	//You, Robot has familiars... but only if your head attachment is set to birdcage.
-	if(in_robot() && get_property("youRobotTop").to_int() != 2)
+	if (in_robot() && toInt(getProperty("youRobotTop")) !== 2)
 	{
-		return false;	//our top is not currently set to birdcage so familiars are disabled.
+		return false; //our top is not currently set to birdcage so familiars are disabled.
 	}
-	
+
 	return true;
 }
 
-boolean pathAllowsChangingFamiliar()
+export function pathAllowsChangingFamiliar(): boolean
 {
-		if(!pathHasFamiliar())
+		if (!pathHasFamiliar())
 		{
 			return false;
 		}
-
 		// path check for case(s) where Path has familiars but forces you to use one of its choice
-		if(in_quantumTerrarium())
+		if (in_quantumTerrarium())
 		{
 			return false;
 		}
@@ -149,534 +170,501 @@ boolean pathAllowsChangingFamiliar()
 	return true;
 }
 
-boolean auto_have_familiar(familiar fam)
+export function auto_have_familiar(fam: Familiar): boolean
 {
-	if(!pathHasFamiliar())
+	if (!pathHasFamiliar())
 	{
 		return false;
 	}
-	if(!auto_is_valid(fam))
+	if (!auto_is_valid$1(fam))
 	{
 		return false;
 	}
-	
 	//handle blacklisting of familiars by users
-	int[familiar] blacklist;
-	if(get_property("auto_blacklistFamiliar") != "")
+	let blacklist: Map<Familiar, number> = new Map();
+	if (getProperty("auto_blacklistFamiliar") !== "")
 	{
-		string[int] noFams = split_string(get_property("auto_blacklistFamiliar"), ";");
-		foreach index, fam in noFams
+		let noFams: Map<number, string> = new Map(splitString(getProperty("auto_blacklistFamiliar"), ";").map((_v, _i) => [_i, _v]));
+		for (let [index, fam_1] of noFams)
 		{
-			blacklist[to_familiar(trim(fam))] = 1;
+			blacklist.set(toFamiliar(trim(fam_1)), 1);
 		}
 	}
-	if(blacklist contains fam)
+	if (blacklist.has(fam))
 	{
 		return false;
 	}
-	
-	return have_familiar(fam);
+
+	return haveFamiliar(fam);
 }
 
-boolean canChangeFamiliar()
+export function canChangeFamiliar(): boolean
 {
 	// answers the question "am I allowed to change familiar?" in the general sense
-	
-	if(!pathHasFamiliar() || !pathAllowsChangingFamiliar())
+
+	if (!pathHasFamiliar() || !pathAllowsChangingFamiliar())
 	{
 		return false;
 	}
-	
-	if(is100FamRun())
+
+	if (is100FamRun())
 	{
 		return false;
 	}
-	
-	if(get_property("auto_disableFamiliarChanging").to_boolean())
+
+	if (toBoolean(getProperty("auto_disableFamiliarChanging")))
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 
-boolean canChangeToFamiliar(familiar target)
+export function canChangeToFamiliar(target: Familiar): boolean
 {
 	// answers the question of "am I allowed to change familiar to a familiar named target"
-	
-	if(my_familiar() == target)
+
+	if (myFamiliar() === target)
 	{
 		return true;
 	}
 
-	if(get_property("auto_disableFamiliarChanging").to_boolean())
+	if (toBoolean(getProperty("auto_disableFamiliarChanging")))
 	{
 		return false;
 	}
-	
 	// if you don't have a familiar, you can't change to it.
-	if(!auto_have_familiar(target))
+	if (!auto_have_familiar(target))
 	{
 		return false;
 	}
-	
 	// if this path doesn't allow this familiar, you can't change to it
-	if(!auto_is_valid(target))
+	if (!auto_is_valid$1(target))
 	{
 		return false;
 	}
-	
 	// You are allowed to change to a familiar if it is also the goal of the current 100% run.
-	if(get_property("auto_100familiar").to_familiar() == target)
+	if (toFamiliar(getProperty("auto_100familiar")) === target)
 	{
 		return true;
 	}
-	
 	//kolhs specific check that needs to go here specifically. can not take familiars >10 lbs base weight into school zone.
-	if(kolhs_mandatorySchool() || 				//we are in kolhs and are adventuring in a school zone
-	get_property("_NC772_directive") != "")		//we are in kolhs and doing saved by the bell NC
-	{
-		if(target != $familiar[Steam-Powered Cheerleader] &&	//sole exception to the rule
-		familiar_weight(target) > 10)
+	if (kolhs_mandatorySchool() || getProperty(
+	//we are in kolhs and are adventuring in a school zone
+	"_NC772_directive") !== "")
+	{ //we are in kolhs and doing saved by the bell NC
+		if (target !== Familiar.get("Steam-Powered Cheerleader") && familiarWeight(
+		//sole exception to the rule
+		target) > 10)
 		{
 			return false;
 		}
 	}
-
 	// Avant Guard specific allowance of familiars for non-adv.php zones
 	if (in_avantGuard())
 	{
-		if ($familiar[Burly Bodyguard] == target)
+		if (Familiar.get("Burly Bodyguard") === target)
 		{
 			return true; // always allowed
 		}
-		else if (get_property("auto_nonAdvLoc").to_boolean())
+		else if (toBoolean(getProperty("auto_nonAdvLoc")))
 		{
-			if ($familiar[Gelatinous Cubeling] == target && in_hardcore())
+			if (Familiar.get("Gelatinous Cubeling") === target && inHardcore())
 			{
 				return true; // don't need Gel Cube in Normal
 			}
-			else if ($familiars[Cookbookbat, Mini Kiwi] contains target)
+			else if (Familiar.get(["Cookbookbat", "Mini Kiwi"]).includes(target))
 			{
 				return true; // might be worth farming some of these drops if we can?
 			}
 		}
 		return false;
 	}
-
 	// Don't allow switching to a target of none.
-	if(target == $familiar[none])	
-	{	
-		return false;	
+	if (target === Familiar.none)
+	{
+		return false;
 	}
-	
 	// You are allowed to use your /current/ familiar in Quantum Terrarium runs.
-	if(target == my_familiar() && in_quantumTerrarium())
+	if (target === myFamiliar() && in_quantumTerrarium())
 	{
 		return true;
 	}
-
 	// check path limitations, as well as 100% runs for a different familiar than target
-	if(!canChangeFamiliar())
+	if (!canChangeFamiliar())
 	{
 		return false;
 	}
-	
 	// If target is in the Crown of Thrones or Buddy Bjorn, we can't switch to it either.
-	if (target == my_enthroned_familiar() || target == my_bjorned_familiar())
+	if (target === myEnthronedFamiliar() || target === myBjornedFamiliar())
 	{
 		return false;
 	}
-
 	// if you reached this point, then auto_100familiar must not be set to anything, you are allowed to change familiar.
 	return true;
 }
 
-familiar findNonRockFamiliarInTerrarium()
-{
-	static boolean[familiar] blacklistFamiliars = $familiars[pet rock,
-		toothsome rock,
-		bulky buddy box,
-		holiday log,
-		software bug,
-		bad vibe,
-		pet coral,
-		synthetic rock,
-		pixel rock];
+let $_findNonRockFamiliarInTerrarium_blacklistFamiliars: Familiar[] | undefined;
 
-	foreach fam in $familiars[]
+export function findNonRockFamiliarInTerrarium(): Familiar
+{
+	$_findNonRockFamiliarInTerrarium_blacklistFamiliars ??= Familiar.get(["Pet Rock",
+		"Toothsome Rock",
+		"Bulky Buddy Box",
+		"Holiday Log",
+		"Software Bug",
+		"Bad Vibe",
+		"Pet Coral",
+		"Synthetic Rock",
+		"Pixel Rock"]);
+
+	for (let fam of Familiar.get(["Mosquito", "Leprechaun", "Levitating Potato", "Angry Goat", "Sabre-Toothed Lime", "Fuzzy Dice", "Spooky Pirate Skeleton", "Barrrnacle", "Howling Balloon Monkey", "Stab Bat", "Grue", "Blood-Faced Volleyball", "Ghuol Whelp", "Baby Gravy Fairy", "Cocoabo", "Star Starfish", "Hovering Sombrero", "Ghost Pickle on a Stick", "Killer Bee", "Whirling Maple Leaf", "Coffee Pixie", "Cheshire Bat", "Jill-O-Lantern", "Hand Turkey", "Crimbo Elf", "Hanukkimbo Dreidl", "Baby Yeti", "Feather Boa Constrictor", "Emo Squid", "Personal Raincloud", "Clockwork Grapefruit", "MagiMechTech MicroMechaMech", "Flaming Gravy Fairy", "Frozen Gravy Fairy", "Stinky Gravy Fairy", "Spooky Gravy Fairy", "Inflatable Dodecapede", "Pygmy Bugbear Shaman", "Doppelshifter", "Attention-Deficit Demon", "Cymbal-Playing Monkey", "Temporal Riftlet", "Sweet Nutcracker", "Pet Rock", "Snowy Owl", "Teddy Bear", "Ninja Pirate Zombie Robot", "Sleazy Gravy Fairy", "Wild Hare", "Wind-up Chattering Teeth", "Spirit Hobo", "Astral Badger", "Comma Chameleon", "Misshapen Animal Skeleton", "Scary Death Orb", "Jitterbug", "Nervous Tick", "Reassembled Blackbird", "Origami Towel Crane", "Ninja Snowflake", "Evil Teddy Bear", "Toothsome Rock", "Ancient Yuletide Troll", "Dandy Lion", "O.A.F.", "Penguin Goodfella", "Jumpsuited Hound Dog", "Green Pixie", "Ragamuffin Imp", "Exotic Parrot", "Wizard Action Figure", "Gluttonous Green Ghost", "Casagnova Gnome", "Hunchbacked Minion", "Crimbo P. R. E. S. S. I. E.", "Bulky Buddy Box", "Teddy Borg", "RoboGoose", "El Vibrato Megadrone", "Mad Hatrack", "Adorable Seal Larva", "Untamed Turtle", "Animated Macaroni Duck", "Pet Cheezling", "Autonomous Disco Ball", "Mariachi Chihuahua", "Hobo Monkey", "Llama Lama", "Cotton Candy Carnie", "Disembodied Hand", "Black Cat", "Uniclops", "Psychedelic Bear", "Baby Mutant Rattlesnake", "Mutant Fire Ant", "Mutant Cactus Bud", "Mutant Gila Monster", "Cuddlefish", "Sugar Fruit Fairy", "Imitation Crab", "Pair of Ragged Claws", "Magic Dragonfish", "Frumious Bandersnatch", "Midget Clownfish", "Syncopated Turtle", "Grinning Turtle", "Purse Rat", "Wereturtle", "Baby Sandworm", "Slimeling", "He-Boulder", "Rock Lobster", "Urchin Urchin", "Grouper Groupie", "Squamous Gibberer", "Dancing Frog", "Chauvinist Pig", "Stocking Mimic", "Snow Angel", "Jack-in-the-Box", "BRICKO chick", "Baby Bugged Bugbear", "Money-Making Goblin", "Floating Eye", "Vampire Bat", "Oyster Bunny", "Egg Benedict", "Bank Piggy", "Worm Doctor", "Snowhitman", "Plastic Grocery Bag", "Underworld Bonsai", "Rogue Program", "Mini-Hipster", "Pottery Barn Owl", "Hippo Ballerina", "Knob Goblin Organ Grinder", "Piano Cat", "Dramatic Hedgehog", "Smiling Rat", "Robot Reindeer", "Holiday Log", "Obtuse Angel", "Reconstituted Crow", "Li'l Xenomorph", "Dataspider", "Pair of Stomping Boots", "Feral Kobold", "Fancypants Scarecrow", "Bloovian Groose", "Blavious Kloop", "Peppermint Rhino", "Tickle-Me Emilio", "Steam-Powered Cheerleader", "Happy Medium", "Artistic Goth Kid", "Flaming Face", "Reagnimated Gnome", "Hovering Skull", "Mini-Skulldozer", "Angry Jung Man", "Unconscious Collective", "Nanorhino", "Oily Woim", "Homemade Robot", "MiniMechaElf", "Gelatinous Cubeling", "Adorable Space Buddy", "Nosy Nose", "Mini-Adventurer", "Mechanical Songbird", "Reanimated Reanimator", "Warbear Drone", "Grimstone Golem", "Grim Brother", "Miniature Sword & Martini Guy", "Putty Buddy", "Twitching Space Critter", "Galloping Grill", "Helix Fossil", "Xiblaxian Holo-Companion", "Baby Z-Rex", "Fist Turkey", "Crimbo Shrub", "Mini-Crimbot", "Topiary Skunk", "Golden Monkey", "Adventurous Spelunker", "Sludgepuppy", "Baby Mayonnaise Wasp", "Puck Man", "Ms. Puck Man", "Lil' Barrel Mimic", "Machine Elf", "Choctopus", "Rockin' Robin", "Restless Cow Skull", "Intergnat", "Software Bug", "Bark Scorpion", "Trick-or-Treating Tot", "Chocolate Lab", "Bad Vibe", "Space Jellyfish", "Optimistic Candle", "Robortender", "Cute Meteor", "XO Skeleton", "Garbage Fire", "Globmule", "Bluzzard", "Faux", "Sledgehamster", "Pimpsqueak", "Pillowbug", "Dressage", "Sequestrian", "Carpricorn", "Turpin", "Morphan", "Cycloney", "Peaclock", "Turtive", "Lepardner", "Aiolion", "Waifuton", "Gorillape", "Wendtigo", "Snoutlet", "Ruffalo", "Vaporpoise", "Ghosprey", "Straypler", "Flan", "Mustardigrade", "Ched", "Gazelleton", "Mechamelion", "Bicycle", "Vamprey", "Wullabye", "Nursine", "Cantelope", "Ungulant", "Caramel", "Oppossum", "Amanitee", "Smashmoth", "Vulgure", "Squib", "Trafikoan", "Slotter", "Shudder", "Glamare", "Unspeakachu", "Stooper", "Disgeist", "Bowlet", "Cornbeefadon", "Mu", "God Lobster", "Cat Burglar", "Party Mouse", "Yule Hound", "Sausage Golem", "Elf Operative", "Plastic Pirate Skull", "Pet Coral", "Pocket Professor", "Red-Nosed Snapper", "Antique Nutcracker", "Piranha Plant", "Left-Hand Man", "Melodramedary", "Ghost of Crimbo Carols", "Ghost of Crimbo Cheer", "Ghost of Crimbo Commerce", "Shorter-Order Cook", "Vampire Vintner", "Arachnelf", "Synthetic Rock", "Grey Goose", "Cookbookbat", "Mini-Trainbot", "Hobo in Sheep's Clothing", "Pixel Rock", "Patriotic Eagle", "Jill-of-All-Trades", "Flaming Leafcutter Ant", "Rigging Snake", "Pet Anchor", "Chest Mimic", "Mini Kiwi", "Proto-Protozoa", "Evolving Organism", "Burly Bodyguard", "Doll Moll", "Emberiza Aureola", "Peace Turkey", "Quantum Entangler", "Golden Pet Rock", "Profane Parrot", "Significant Bit", "Heat Wave", "Cold Cut", "Shame Spiral", "Phantom Limb", "Foul Ball", "Dire Cassava", "Observer", "Cool Cucumber", "Defective Childrens' Stapler", "Glover", "Zapper Bug", "Wet Paper Tiger", "Cooler Yeti", "Baby Skeleton", "Skeleton of Crimbo Past", "Tiny Plastic Santa Claus Skeleton", "Cute Skeletal Dinosaur", "Sword of S Words"]))
 	{
-		if(blacklistFamiliars contains fam)
+		if ($_findNonRockFamiliarInTerrarium_blacklistFamiliars.includes(fam))
 		{
 			continue;
 		}
-		if(in_terrarium(fam) && have_familiar(fam))
+		if (inTerrarium(fam) && haveFamiliar(fam))
 		{
 			return fam;
 		}
 	}
-	return $familiar[none];
+	return Familiar.none;
 }
 
-familiar findRockFamiliarInTerrarium()
+let $_findRockFamiliarInTerrarium_petRockFamiliars: Familiar[] | undefined;
+
+export function findRockFamiliarInTerrarium(): Familiar
 {
-	static boolean[familiar] petRockFamiliars = $familiars[pet rock,
-		toothsome rock,
-		bulky buddy box,
-		holiday log,
-		software bug,
-		bad vibe,
-		pet coral,
-		synthetic rock,
-		pixel rock];
+	$_findRockFamiliarInTerrarium_petRockFamiliars ??= Familiar.get(["Pet Rock",
+		"Toothsome Rock",
+		"Bulky Buddy Box",
+		"Holiday Log",
+		"Software Bug",
+		"Bad Vibe",
+		"Pet Coral",
+		"Synthetic Rock",
+		"Pixel Rock"]);
 
-	foreach fam in $familiars[]
+	for (let fam of Familiar.get(["Mosquito", "Leprechaun", "Levitating Potato", "Angry Goat", "Sabre-Toothed Lime", "Fuzzy Dice", "Spooky Pirate Skeleton", "Barrrnacle", "Howling Balloon Monkey", "Stab Bat", "Grue", "Blood-Faced Volleyball", "Ghuol Whelp", "Baby Gravy Fairy", "Cocoabo", "Star Starfish", "Hovering Sombrero", "Ghost Pickle on a Stick", "Killer Bee", "Whirling Maple Leaf", "Coffee Pixie", "Cheshire Bat", "Jill-O-Lantern", "Hand Turkey", "Crimbo Elf", "Hanukkimbo Dreidl", "Baby Yeti", "Feather Boa Constrictor", "Emo Squid", "Personal Raincloud", "Clockwork Grapefruit", "MagiMechTech MicroMechaMech", "Flaming Gravy Fairy", "Frozen Gravy Fairy", "Stinky Gravy Fairy", "Spooky Gravy Fairy", "Inflatable Dodecapede", "Pygmy Bugbear Shaman", "Doppelshifter", "Attention-Deficit Demon", "Cymbal-Playing Monkey", "Temporal Riftlet", "Sweet Nutcracker", "Pet Rock", "Snowy Owl", "Teddy Bear", "Ninja Pirate Zombie Robot", "Sleazy Gravy Fairy", "Wild Hare", "Wind-up Chattering Teeth", "Spirit Hobo", "Astral Badger", "Comma Chameleon", "Misshapen Animal Skeleton", "Scary Death Orb", "Jitterbug", "Nervous Tick", "Reassembled Blackbird", "Origami Towel Crane", "Ninja Snowflake", "Evil Teddy Bear", "Toothsome Rock", "Ancient Yuletide Troll", "Dandy Lion", "O.A.F.", "Penguin Goodfella", "Jumpsuited Hound Dog", "Green Pixie", "Ragamuffin Imp", "Exotic Parrot", "Wizard Action Figure", "Gluttonous Green Ghost", "Casagnova Gnome", "Hunchbacked Minion", "Crimbo P. R. E. S. S. I. E.", "Bulky Buddy Box", "Teddy Borg", "RoboGoose", "El Vibrato Megadrone", "Mad Hatrack", "Adorable Seal Larva", "Untamed Turtle", "Animated Macaroni Duck", "Pet Cheezling", "Autonomous Disco Ball", "Mariachi Chihuahua", "Hobo Monkey", "Llama Lama", "Cotton Candy Carnie", "Disembodied Hand", "Black Cat", "Uniclops", "Psychedelic Bear", "Baby Mutant Rattlesnake", "Mutant Fire Ant", "Mutant Cactus Bud", "Mutant Gila Monster", "Cuddlefish", "Sugar Fruit Fairy", "Imitation Crab", "Pair of Ragged Claws", "Magic Dragonfish", "Frumious Bandersnatch", "Midget Clownfish", "Syncopated Turtle", "Grinning Turtle", "Purse Rat", "Wereturtle", "Baby Sandworm", "Slimeling", "He-Boulder", "Rock Lobster", "Urchin Urchin", "Grouper Groupie", "Squamous Gibberer", "Dancing Frog", "Chauvinist Pig", "Stocking Mimic", "Snow Angel", "Jack-in-the-Box", "BRICKO chick", "Baby Bugged Bugbear", "Money-Making Goblin", "Floating Eye", "Vampire Bat", "Oyster Bunny", "Egg Benedict", "Bank Piggy", "Worm Doctor", "Snowhitman", "Plastic Grocery Bag", "Underworld Bonsai", "Rogue Program", "Mini-Hipster", "Pottery Barn Owl", "Hippo Ballerina", "Knob Goblin Organ Grinder", "Piano Cat", "Dramatic Hedgehog", "Smiling Rat", "Robot Reindeer", "Holiday Log", "Obtuse Angel", "Reconstituted Crow", "Li'l Xenomorph", "Dataspider", "Pair of Stomping Boots", "Feral Kobold", "Fancypants Scarecrow", "Bloovian Groose", "Blavious Kloop", "Peppermint Rhino", "Tickle-Me Emilio", "Steam-Powered Cheerleader", "Happy Medium", "Artistic Goth Kid", "Flaming Face", "Reagnimated Gnome", "Hovering Skull", "Mini-Skulldozer", "Angry Jung Man", "Unconscious Collective", "Nanorhino", "Oily Woim", "Homemade Robot", "MiniMechaElf", "Gelatinous Cubeling", "Adorable Space Buddy", "Nosy Nose", "Mini-Adventurer", "Mechanical Songbird", "Reanimated Reanimator", "Warbear Drone", "Grimstone Golem", "Grim Brother", "Miniature Sword & Martini Guy", "Putty Buddy", "Twitching Space Critter", "Galloping Grill", "Helix Fossil", "Xiblaxian Holo-Companion", "Baby Z-Rex", "Fist Turkey", "Crimbo Shrub", "Mini-Crimbot", "Topiary Skunk", "Golden Monkey", "Adventurous Spelunker", "Sludgepuppy", "Baby Mayonnaise Wasp", "Puck Man", "Ms. Puck Man", "Lil' Barrel Mimic", "Machine Elf", "Choctopus", "Rockin' Robin", "Restless Cow Skull", "Intergnat", "Software Bug", "Bark Scorpion", "Trick-or-Treating Tot", "Chocolate Lab", "Bad Vibe", "Space Jellyfish", "Optimistic Candle", "Robortender", "Cute Meteor", "XO Skeleton", "Garbage Fire", "Globmule", "Bluzzard", "Faux", "Sledgehamster", "Pimpsqueak", "Pillowbug", "Dressage", "Sequestrian", "Carpricorn", "Turpin", "Morphan", "Cycloney", "Peaclock", "Turtive", "Lepardner", "Aiolion", "Waifuton", "Gorillape", "Wendtigo", "Snoutlet", "Ruffalo", "Vaporpoise", "Ghosprey", "Straypler", "Flan", "Mustardigrade", "Ched", "Gazelleton", "Mechamelion", "Bicycle", "Vamprey", "Wullabye", "Nursine", "Cantelope", "Ungulant", "Caramel", "Oppossum", "Amanitee", "Smashmoth", "Vulgure", "Squib", "Trafikoan", "Slotter", "Shudder", "Glamare", "Unspeakachu", "Stooper", "Disgeist", "Bowlet", "Cornbeefadon", "Mu", "God Lobster", "Cat Burglar", "Party Mouse", "Yule Hound", "Sausage Golem", "Elf Operative", "Plastic Pirate Skull", "Pet Coral", "Pocket Professor", "Red-Nosed Snapper", "Antique Nutcracker", "Piranha Plant", "Left-Hand Man", "Melodramedary", "Ghost of Crimbo Carols", "Ghost of Crimbo Cheer", "Ghost of Crimbo Commerce", "Shorter-Order Cook", "Vampire Vintner", "Arachnelf", "Synthetic Rock", "Grey Goose", "Cookbookbat", "Mini-Trainbot", "Hobo in Sheep's Clothing", "Pixel Rock", "Patriotic Eagle", "Jill-of-All-Trades", "Flaming Leafcutter Ant", "Rigging Snake", "Pet Anchor", "Chest Mimic", "Mini Kiwi", "Proto-Protozoa", "Evolving Organism", "Burly Bodyguard", "Doll Moll", "Emberiza Aureola", "Peace Turkey", "Quantum Entangler", "Golden Pet Rock", "Profane Parrot", "Significant Bit", "Heat Wave", "Cold Cut", "Shame Spiral", "Phantom Limb", "Foul Ball", "Dire Cassava", "Observer", "Cool Cucumber", "Defective Childrens' Stapler", "Glover", "Zapper Bug", "Wet Paper Tiger", "Cooler Yeti", "Baby Skeleton", "Skeleton of Crimbo Past", "Tiny Plastic Santa Claus Skeleton", "Cute Skeletal Dinosaur", "Sword of S Words"]))
 	{
-		if(in_terrarium(fam) && have_familiar(fam) && petRockFamiliars contains fam)
+		if (inTerrarium(fam) && haveFamiliar(fam) && $_findRockFamiliarInTerrarium_petRockFamiliars.includes(fam))
 		{
 			return fam;
 		}
 	}
-	return $familiar[none];
+	return Familiar.none;
 }
 
-familiar lookupFamiliarDatafile(string type)
+export function lookupFamiliarDatafile(type_1: string): Familiar
 {
 	//This function looks through /data/autoscend_familiars.txt for the matching "type" in order and selects the first match whose conditions are met. Said conditions typically include path exclusions and a check to see if that familiar dropped something today.
 	//we do not want a fallback here. if no matching familiar is found then do nothing here, a familiar will be automatically set in pre adventure
-	
-	auto_log_debug("lookupFamiliarDatafile is checking for type [" + type + "]");
+
+	auto_log_debug$1(`lookupFamiliarDatafile is checking for type [${type_1}]`);
 	// store what type of fam we are looking for
-	set_property("auto_lastFamiliarLookupType",type);
-	string [string,int,string] familiars_text;
-	if(!file_to_map("autoscend_familiars.txt", familiars_text))
+	setProperty("auto_lastFamiliarLookupType", type_1);
+	let familiars_text: Map<string, Map<number, Map<string, string>>> = fileAsMap("autoscend_familiars.txt", [String, Number, String, String]);
+	if (!familiars_text.size)
 	{
 		abort("Could not load /data/autoscend_familiars.txt");
 	}
-	foreach i,name,conds in familiars_text[type]
-	{
-		familiar thisFamiliar = name.to_familiar();
-		if(thisFamiliar == $familiar[none])
+	for (let [i, _v0] of (familiars_text.get(type_1) ?? familiars_text.set(type_1, new Map()).get(type_1))) {
+		for (let [name, _v1] of _v0) {
+			let conds = _v1;
+		let thisFamiliar: Familiar = toFamiliar(name);
+		if (thisFamiliar === Familiar.none)
 		{
-			if(name != "none")
+			if (name !== "none")
 			{
-				auto_log_error("lookupFamiliarDatafile failed to convert string [" + name + "] to familiar");
-				auto_log_error(type + "; " + i + "; " + conds);
+				auto_log_error(`lookupFamiliarDatafile failed to convert string [${name}] to familiar`);
+				auto_log_error(`${type_1}; ${i}; ${conds}`);
 			}
 			continue;
 		}
-		if(!auto_check_conditions(conds))		//checks for the conditions specified in the data file
-			continue;
-		if(!canChangeToFamiliar(thisFamiliar))	//check various things that could prevent us from changing to it
-			continue;
+		if (!auto_check_conditions(conds))
+			{ //checks for the conditions specified in the data file
+			continue; }
+		if (!canChangeToFamiliar(thisFamiliar))
+			{ //check various things that could prevent us from changing to it
+			continue; }
 		return thisFamiliar;
+		}
 	}
-	
 	//no suitable familiars found in datafile
-	auto_log_debug(`Could not find any "{type}" type familiars!`);
-	return $familiar[none];
+	auto_log_debug$1(`Could not find any "${type_1}" type familiars!`);
+	return Familiar.none;
 }
 
-boolean handleFamiliar(string type)
+export function handleFamiliar(type_1: string): boolean
 {
 	//This function calls familiar lookupFamiliarDatafile(string type) and if a result is found will send it over to handleFamiliar(familiar fam) so it can be set as our target familiar to be used during pre adventure.
 	//we do not want a fallback here. if no matching familiar is found then do nothing here, a familiar will be automatically set in pre adventure
-	
-	if(get_property("auto_disableFamiliarChanging").to_boolean())
+
+	if (toBoolean(getProperty("auto_disableFamiliarChanging")))
 	{
-		return false;	//familiar changing temporarily disabled.
+		return false; //familiar changing temporarily disabled.
 	}
-	if(!pathHasFamiliar() || !pathAllowsChangingFamiliar())
+	if (!pathHasFamiliar() || !pathAllowsChangingFamiliar())
 	{
 		return false;
 	}
-	
-	familiar target = lookupFamiliarDatafile(type);
-	
-	if(target != $familiar[none])
+
+	let target: Familiar = lookupFamiliarDatafile(type_1);
+
+	if (target !== Familiar.none)
 	{
-		return handleFamiliar(target);
+		return handleFamiliar$1(target);
 	}
 	return false;
 }
 
-boolean handleFamiliar(familiar fam)
+export function handleFamiliar$1(fam: Familiar): boolean
 {
 	//This function takes a specific named familiar and sets it as our target familiar. To be changed during pre_adventure.
 
-	if(!pathHasFamiliar() || !pathAllowsChangingFamiliar())
+	if (!pathHasFamiliar() || !pathAllowsChangingFamiliar())
 	{
 		return false;
 	}
-	if(fam == $familiar[none])
+	if (fam === Familiar.none)
 	{
 		return false;
 	}
-	if(get_property("auto_familiarChoice").to_familiar() == fam)	//this should go after $familiar[none] check
-	{
-		return true;	//desired target is already set as the familiar I will be switching to.
+	if (toFamiliar(getProperty("auto_familiarChoice")) === fam)
+	{ //this should go after $familiar[none] check
+		return true; //desired target is already set as the familiar I will be switching to.
 	}
-	
 	//[Ms. Puck Man] and [Puck Man] are interchangeable. so interchange them if needed.
-	if((fam == $familiar[Ms. Puck Man]) && !auto_have_familiar($familiar[Ms. Puck Man]) && auto_have_familiar($familiar[Puck Man]))
+	if (fam === Familiar.get("Ms. Puck Man") && !auto_have_familiar(Familiar.get("Ms. Puck Man")) && auto_have_familiar(Familiar.get("Puck Man")))
 	{
-		fam = $familiar[Puck Man];
+		fam = Familiar.get("Puck Man");
 	}
-	if((fam == $familiar[Puck Man]) && !auto_have_familiar($familiar[Puck Man]) && auto_have_familiar($familiar[Ms. Puck Man]))
+	if (fam === Familiar.get("Puck Man") && !auto_have_familiar(Familiar.get("Puck Man")) && auto_have_familiar(Familiar.get("Ms. Puck Man")))
 	{
-		fam = $familiar[Ms. Puck Man];
+		fam = Familiar.get("Ms. Puck Man");
 	}
-	
-	if(!canChangeToFamiliar(fam))
+
+	if (!canChangeToFamiliar(fam))
 	{
 		return false;
 	}
-	
 	//bjorning has priority
-	if(my_bjorned_familiar() == fam)
+	if (myBjornedFamiliar() === fam)
 	{
 		return false;
 	}
 
-	set_property("auto_familiarChoice", fam);
-	set_property("_auto_thisLoopHandleFamiliar", true);
+	setProperty("auto_familiarChoice", fam.toString());
+	setProperty("_auto_thisLoopHandleFamiliar", true.toString());
 	return true;
 }
 
-boolean autoChooseFamiliar(location place)
+export function autoChooseFamiliar(place: Location): boolean
 {
 	//if no familiar target was set this loop. then automatically determine which familiar to use
-	
-	if(get_property("auto_disableFamiliarChanging").to_boolean())
+
+	if (toBoolean(getProperty("auto_disableFamiliarChanging")))
 	{
 		return false;
 	}
-	if(!pathHasFamiliar() || !pathAllowsChangingFamiliar())
+	if (!pathHasFamiliar() || !pathAllowsChangingFamiliar())
 	{
-		return false;		//will just error in those paths
+		return false; //will just error in those paths
 	}
-	familiar familiar_target_100 = get_property("auto_100familiar").to_familiar();
-	if(familiar_target_100 != $familiar[none])
+	let familiar_target_100: Familiar = toFamiliar(getProperty("auto_100familiar"));
+	if (familiar_target_100 !== Familiar.none)
 	{
-		return handleFamiliar(familiar_target_100);		//do not break 100 familiar runs
+		return handleFamiliar$1(familiar_target_100); //do not break 100 familiar runs
 	}
-	
 	// Can only use burly bodyguard, except in non-adventure.php zones. In those, we want the Gelatinous Cubeling for Daily Dungeon drops
 	if (in_avantGuard())
 	{
-		if (get_property("auto_nonAdvLoc").to_boolean())
+		if (toBoolean(getProperty("auto_nonAdvLoc")))
 		{
 			if (wantCubeling())
 			{
-				return handleFamiliar($familiar[Gelatinous Cubeling]);
+				return handleFamiliar$1(Familiar.get("Gelatinous Cubeling"));
 			}
-			else
-			{
-				foreach fam in $familiars[Cookbookbat, Mini Kiwi, Hobo in Sheep's Clothing]
+			else {
+				for (let fam of Familiar.get(["Cookbookbat", "Mini Kiwi", "Hobo in Sheep's Clothing"]))
 				{
 					if (canChangeToFamiliar(fam))
 					{
-						return handleFamiliar(fam);
+						return handleFamiliar$1(fam);
 					}
 				}
 			}
 		}
-		return handleFamiliar($familiar[Burly Bodyguard]);
+		return handleFamiliar$1(Familiar.get("Burly Bodyguard"));
 	}
-	
 	//High priority checks that are too complicated for the datafile
-	familiar famChoice = $familiar[none];
-
+	let famChoice: Familiar = Familiar.none;
 	// Blackbird/Crow cut turns in the Black Forest but we only need to equip them
 	// if we don't have them in inventory.
-	if($location[The Black Forest] == place)
+	if (Location.get("The Black Forest") === place)
 	{
-		if(!in_bhy())
+		if (!in_bhy())
 		{
-			if(item_amount($item[Reassembled Blackbird]) == 0 && canChangeToFamiliar($familiar[Reassembled Blackbird]))
+			if (itemAmount(Item.get("reassembled blackbird")) === 0 && canChangeToFamiliar(Familiar.get("Reassembled Blackbird")))
 			{
-				famChoice = $familiar[Reassembled Blackbird];
+				famChoice = Familiar.get("Reassembled Blackbird");
 			}
 		}
-		else
-		{
-			if(item_amount($item[Reconstituted Crow]) == 0 && canChangeToFamiliar($familiar[Reconstituted Crow]))
+		else {
+			if (itemAmount(Item.get("reconstituted crow")) === 0 && canChangeToFamiliar(Familiar.get("Reconstituted Crow")))
 			{
-				famChoice = $familiar[Reconstituted Crow];
+				famChoice = Familiar.get("Reconstituted Crow");
 			}
 		}
 	}
-
 	// Gremlins have special familiar handling.
-	if ($locations[Next to that Barrel with Something Burning in it, Out By that Rusted-Out Car, Over Where the Old Tires Are, Near an Abandoned Refrigerator] contains place) {
+	if (Location.get(["Next to that Barrel with Something Burning in it", "Out by that Rusted-Out Car", "Over Where the Old Tires Are", "Near an Abandoned Refrigerator"]).includes(place)) {
 		famChoice = lookupFamiliarDatafile("gremlins");
 	}
-	
 	// places where item drop is required to help save adventures.
-	if ($locations[Guano Junction, The Beanbat Chamber, Cobb's Knob Harem, The Goatlet, Itznotyerzitz Mine,
-	Twin Peak, The Penultimate Fantasy Airship, The Hidden Temple, The Hidden Bowling Alley, The Haunted Wine Cellar,
-	The Haunted Laundry Room, The Copperhead Club, A Mob of Zeppelin Protesters, Whitey's Grove, The Oasis, The Middle Chamber,
-	The Orcish Frat House, The Hippy Camp, The Hatching Chamber,
-	The Feeding Chamber, The Royal Guard Chamber, The Hole in the Sky, Hero's Field, The Degrassi Knoll Garage, The Old Landfill,
-	The Laugh Floor, Infernal Rackets Backstage] contains place) {
+	if (Location.get(["Guano Junction", "The Beanbat Chamber", "Cobb's Knob Harem", "The Goatlet", "Itznotyerzitz Mine",
+	"Twin Peak", "The Penultimate Fantasy Airship", "The Hidden Temple", "The Hidden Bowling Alley", "The Haunted Wine Cellar",
+	"The Haunted Laundry Room", "The Copperhead Club", "A Mob of Zeppelin Protesters", "Whitey's Grove", "The Oasis", "The Middle Chamber",
+	"The Orcish Frat House", "The Hippy Camp", "The Hatching Chamber",
+	"The Feeding Chamber", "The Royal Guard Chamber", "The Hole in the Sky", "Hero's Field", "The Degrassi Knoll Garage", "The Old Landfill",
+	"The Laugh Floor", "Infernal Rackets Backstage"]).includes(place)) {
 		famChoice = lookupFamiliarDatafile("item");
 	}
-	if (place == $location[Inside the Palindome] && item_amount($item[Stunt Nuts]) == 0 && item_amount($item[Wet Stunt Nut Stew]) == 0) {
+	if (place === Location.get("Inside the Palindome") && itemAmount(Item.get("stunt nuts")) === 0 && itemAmount(Item.get("wet stunt nut stew")) === 0) {
 		famChoice = lookupFamiliarDatafile("item");
 	}
-	if (place == $location[The Red Zeppelin] && internalQuestStatus("questL11Ron") < 4)	{
-		famChoice = lookupFamiliarDatafile("item");	//not useful for Ron Copperhead
+	if (place === Location.get("The Red Zeppelin") && internalQuestStatus("questL11Ron") < 4) {
+		famChoice = lookupFamiliarDatafile("item"); //not useful for Ron Copperhead
 	}
-	if (place == auto_availableBrickRift()) {
+	if (place === auto_availableBrickRift()) {
 		famChoice = lookupFamiliarDatafile("item"); // get more shadow bricks
 	}
-	if ($location[The Defiled Cranny] == place && auto_turbo() && item_amount($item[dieting pill]) + get_property("auto_dietpills").to_int() < 3)
+	if (Location.get("The Defiled Cranny") === place && auto_turbo() && itemAmount(Item.get("dieting pill")) + toInt(getProperty("auto_dietpills")) < 3)
 	{
 		famChoice = lookupFamiliarDatafile("item"); // get dieting pills faster if in turbo
 	}
-
 	// If we're down to 1 evilness left before the boss in the Nook, it doesn't matter if we get an Evil Eye or not.
-	if ($location[The Defiled Nook] == place && get_property("cyrptNookEvilness").to_int() > 14)
+	if (Location.get("The Defiled Nook") === place && toInt(getProperty("cyrptNookEvilness")) > 14)
 	{
 		famChoice = lookupFamiliarDatafile("item");
 	}
-
 	// only need +item in the pirates cove if we're faming the outfit (may be farming insults here or getting the key in LKS otherwise)
-	if ($location[The Obligatory Pirate's Cove] == place && !possessOutfit("Swashbuckling Getup")) {
+	if (Location.get("The Obligatory Pirate's Cove") === place && !possessOutfit$1("Swashbuckling Getup")) {
 		famChoice = lookupFamiliarDatafile("item");
 	}
-
 	// Only need +item in the F'c'le if we're getting the fledges (could still be getting the key in LKS)
-	if ($location[The F'c'le] == place && internalQuestStatus("questM12Pirate") < 6) {
+	if (Location.get("The F'c'le") === place && internalQuestStatus("questM12Pirate") < 6) {
 		famChoice = lookupFamiliarDatafile("item");
 	}
-
-	// if we somehow end up in The Valley of Rof L'm Fao might as well try to get N 
-	if ($location[The Valley of Rof L\'m Fao] == place && item_amount($item[lowercase N]) == 0 && item_amount($item[ND]) == 0 && item_amount($item[Wand of Nagamar]) == 0 && get_property("auto_wandOfNagamar").to_boolean()) {
+	// if we somehow end up in The Valley of Rof L'm Fao might as well try to get N
+	if (Location.get("The Valley of Rof L'm Fao") === place && itemAmount(Item.get("lowercase N")) === 0 && itemAmount(Item.get("ND")) === 0 && itemAmount(Item.get("Wand of Nagamar")) === 0 && toBoolean(getProperty("auto_wandOfNagamar"))) {
 		famChoice = lookupFamiliarDatafile("item");
 	}
 	// the D is only individually useful in paths that also visit The Valley of Rof L\'m Fao for N
 	// this is only in Low Key Summer for now, but can be in other paths if they get support: Journeyman, Grey You
-	if ($location[The Castle in the Clouds in the Sky (Basement)] == place && item_amount($item[heavy D]) == 0 && item_amount($item[ND]) == 0 && item_amount($item[Wand of Nagamar]) == 0 && get_property("auto_wandOfNagamar").to_boolean()) {
-		boolean wantTheD = in_lowkeysummer() && (item_amount($item[lowercase N]) > 0 || $location[The Valley of Rof L\'m Fao].turns_spent < 11);	//!possessEquipment($item[Kekekey])
-		if(wantTheD)
+	if (Location.get("The Castle in the Clouds in the Sky (Basement)") === place && itemAmount(Item.get("heavy D")) === 0 && itemAmount(Item.get("ND")) === 0 && itemAmount(Item.get("Wand of Nagamar")) === 0 && toBoolean(getProperty("auto_wandOfNagamar"))) {
+		let wantTheD: boolean = in_lowkeysummer() && (itemAmount(Item.get("lowercase N")) > 0 || (Location.get("The Valley of Rof L'm Fao")).turnsSpent < 11); //!possessEquipment($item[Kekekey])
+		if (wantTheD)
 		{
 			famChoice = lookupFamiliarDatafile("item");
 		}
 	}
-
 	// The World's Biggest Jerk can send us here so only use +item if we're farming sonars.
-	if ($location[The Batrat and Ratbat Burrow] == place && internalQuestStatus("questL04Bat") < 3 && auto_haveGreyGoose()) {
-		auto_log_info("Bringing the Grey Goose to emit some drones at a bat to get Sonar.");
-		famChoice = $familiar[Grey Goose];
+	if (Location.get("The Batrat and Ratbat Burrow") === place && internalQuestStatus("questL04Bat") < 3 && auto_haveGreyGoose()) {
+		auto_log_info$1("Bringing the Grey Goose to emit some drones at a bat to get Sonar.");
+		famChoice = Familiar.get("Grey Goose");
 	}
-	else if ($location[The Batrat and Ratbat Burrow] == place && internalQuestStatus("questL04Bat") < 3) {
+	else if (Location.get("The Batrat and Ratbat Burrow") === place && internalQuestStatus("questL04Bat") < 3) {
 		famChoice = lookupFamiliarDatafile("item");
 	}
-
 	// only need +item on the extreme slope if we're faming the outfit.
-	if ($location[The eXtreme Slope] == place && !possessOutfit("eXtreme Cold-Weather Gear")) {
+	if (Location.get("The eXtreme Slope") === place && !possessOutfit$1("eXtreme Cold-Weather Gear")) {
 		famChoice = lookupFamiliarDatafile("item");
 	}
-	
 	// only use +item in A-Boo Peak when adventuring (so we don't accidentally override resistance familiars when doing The Horror).
-	if ($location[A-Boo Peak] == place && get_property("auto_aboopending").to_int() == 0) {
+	if (Location.get("A-Boo Peak") === place && toInt(getProperty("auto_aboopending")) === 0) {
 		famChoice = lookupFamiliarDatafile("item");
 	}
-
 	// only need +item at Oil Peak if we need Bubblin' Crude (TODO: it might be useful in HC for food?).
-	if ($location[Oil Peak] == place &&
-	((get_property("twinPeakProgress").to_int() & 4) == 0 &&
-		item_amount($item[Jar Of Oil]) < 1 && item_amount($item[Bubblin\' Crude]) < 12))  {
+	if (Location.get("Oil Peak") === place && ((toInt(getProperty("twinPeakProgress")) & 4) === 0 && itemAmount(Item.get("jar of oil")) < 1 && itemAmount(Item.get("bubblin' crude")) < 12)) {
 		famChoice = lookupFamiliarDatafile("item");
 	}
-
 	// If we have Grey Goose and we're farming bridge parts and Smut Orc Pervert is coming up, we should use the Goose to dupe the Keepsake box
-	if ($location[The Smut Orc Logging Camp] == place && internalQuestStatus("questL09Topping") < 1 && is_integer(($location[The Smut Orc Logging Camp].turns_spent - 1)/20) && auto_haveGreyGoose())
+	if (Location.get("The Smut Orc Logging Camp") === place && internalQuestStatus("questL09Topping") < 1 && isInteger((((Location.get("The Smut Orc Logging Camp")).turnsSpent - 1) / 20).toString()) && auto_haveGreyGoose())
 	{
-		auto_log_info("Bringing the Grey Goose to emit some drones at smut orc pervert to dupe a Box.");
-		famChoice = $familiar[Grey Goose];
+		auto_log_info$1("Bringing the Grey Goose to emit some drones at smut orc pervert to dupe a Box.");
+		famChoice = Familiar.get("Grey Goose");
 	}
-
 	// The World's Biggest Jerk can also send us here so only use +item if we're farming bridge parts.
-	if ($location[The Smut Orc Logging Camp] == place && internalQuestStatus("questL09Topping") < 1) {
+	if (Location.get("The Smut Orc Logging Camp") === place && internalQuestStatus("questL09Topping") < 1) {
 		famChoice = lookupFamiliarDatafile("item");
 	}
-
 	// Killing jar saves adventures unlocking the Pyramid.
-	if ($location[The Haunted Library] == place && item_amount($item[killing jar]) < 1 && (get_property("gnasirProgress").to_int() & 4) == 0 && get_property("desertExploration").to_int() < 100) {
+	if (Location.get("The Haunted Library") === place && itemAmount(Item.get("killing jar")) < 1 && (toInt(getProperty("gnasirProgress")) & 4) === 0 && toInt(getProperty("desertExploration")) < 100) {
 		famChoice = lookupFamiliarDatafile("item");
 	}
-
 	// +item helps if we still need the book of matches
-	if ($location[The Hidden Park] == place && get_property("hiddenTavernUnlock").to_int() != my_ascensions()) {
+	if (Location.get("The Hidden Park") === place && toInt(getProperty("hiddenTavernUnlock")) !== myAscensions()) {
 		famChoice = lookupFamiliarDatafile("item");
 	}
-
 	// only need +item in the war camps if we are farming the outfit.
-	if ($locations[Wartime Frat House, Wartime Hippy Camp] contains place) {
-		if (!possessOutfit("Frat Warrior Fatigues") || !possessOutfit("War Hippy Fatigues")) {
+	if (Location.get(["Wartime Frat House", "Wartime Hippy Camp"]).includes(place)) {
+		if (!possessOutfit$1("Frat Warrior Fatigues") || !possessOutfit$1("War Hippy Fatigues")) {
 			famChoice = lookupFamiliarDatafile("item");
 		}
 	}
-
 	// want to ensure we get small gear. Only requires +100 item drop, fam essentially ensures this
-	if ($locations[Fight in the Dirt, Fight in the Tall Grass, Fight in the Very Tall Grass] contains place) {
+	if (Location.get(["Fight in the Dirt", "Fight in the Tall Grass", "Fight in the Very Tall Grass"]).includes(place)) {
 		famChoice = lookupFamiliarDatafile("item");
 	}
-
 	// places where meat drop is required to help save adventures.
-	if ($location[The Themthar Hills] == place) {
+	if (Location.get("The Themthar Hills") === place) {
 		famChoice = lookupFamiliarDatafile("meat");
 	}
-	if ($location[The Fungus Plains] == place) {
+	if (Location.get("The Fungus Plains") === place) {
 		famChoice = lookupFamiliarDatafile("meat");
 	}
-	
 	// places where initiative is required to help save adventures.
-	if ($location[The Defiled Alcove] == place && get_property("cyrptAlcoveEvilness").to_int() > 14)
+	if (Location.get("The Defiled Alcove") === place && toInt(getProperty("cyrptAlcoveEvilness")) > 14)
 	{
 		famChoice = lookupFamiliarDatafile("init");
 	}
-	if($location[Vanya\'s Castle] == place)
+	if (Location.get("Vanya's Castle") === place)
 	{
 		famChoice = lookupFamiliarDatafile("init");
 	}
 
 	famChoice = auto_forceEagle(famChoice); // force Patriotic Eagle if we have a >0 combats until we can screech again
-
 	//Gelatinous Cubeling drops items that save turns in the daily dungeon
-	if(famChoice == $familiar[none] &&
-	wantCubeling() &&
-	lookupFamiliarDatafile("item") != $familiar[Gelatinous Cubeling]) // don't farm the drops if this is the best +item familiar we have. We will get them regardless.
-	{
-		famChoice = $familiar[Gelatinous Cubeling];
+	if (famChoice === Familiar.none && wantCubeling() && lookupFamiliarDatafile("item") !== Familiar.get("Gelatinous Cubeling"))
+	{ // don't farm the drops if this is the best +item familiar we have. We will get them regardless.
+		famChoice = Familiar.get("Gelatinous Cubeling");
 	}
-		
 	//grab spleen consumables early if you do not have enough such items to fill up your spleen. Extras will be handled by "drop" datafile
 	//Should take around 10 combats to grab enough on day 1 and on subsequent days you should already have them from previous days.
-	if(famChoice == $familiar[none])
+	if (famChoice === Familiar.none)
 	{
-		int available_spleen_items_size = 4 * auto_spleenFamiliarAdvItemsPossessed();
-		
-		if(spleen_left() >= (4 + available_spleen_items_size) && haveSpleenFamiliar())
+		let available_spleen_items_size: number = 4 * auto_spleenFamiliarAdvItemsPossessed();
+
+		if (spleen_left() >= 4 + available_spleen_items_size && haveSpleenFamiliar())
 		{
-			int spleenFamiliarsAvailable = 0;
-			foreach fam in $familiars[Baby Sandworm, Rogue Program, Pair of Stomping Boots, Bloovian Groose, Unconscious Collective, Grim Brother, Golden Monkey]
+			let spleenFamiliarsAvailable: number = 0;
+			for (let fam of Familiar.get(["Baby Sandworm", "Rogue Program", "Pair of Stomping Boots", "Bloovian Groose", "Unconscious Collective", "Grim Brother", "Golden Monkey"]))
 			{
-				if(canChangeToFamiliar(fam))
+				if (canChangeToFamiliar(fam))
 				{
 					spleenFamiliarsAvailable++;
 				}
 			}
-			
-			if(spleenFamiliarsAvailable > 0)
+
+			if (spleenFamiliarsAvailable > 0)
 			{
-				int spleen_drops_need = (spleen_left() + 3)/4;
-				int bound = (spleen_drops_need + spleenFamiliarsAvailable - 1) / spleenFamiliarsAvailable;
-				foreach fam in $familiars[Baby Sandworm, Rogue Program, Pair of Stomping Boots, Bloovian Groose, Unconscious Collective, Grim Brother, Golden Monkey]
+				let spleen_drops_need: number = (spleen_left() + 3) / 4;
+				let bound: number = (spleen_drops_need + spleenFamiliarsAvailable - 1) / spleenFamiliarsAvailable;
+				for (let fam of Familiar.get(["Baby Sandworm", "Rogue Program", "Pair of Stomping Boots", "Bloovian Groose", "Unconscious Collective", "Grim Brother", "Golden Monkey"]))
 				{
-					if((fam.drops_today < bound) && canChangeToFamiliar(fam))
+					if (fam.dropsToday < bound && canChangeToFamiliar(fam))
 					{
 						famChoice = fam;
 						break;
@@ -685,78 +673,63 @@ boolean autoChooseFamiliar(location place)
 			}
 		}
 	}
-
 	//[grimstone mask] for an [ornate dowsing rod] for the desert. if still needed
-	if(famChoice == $familiar[none] &&
-	canChangeToFamiliar($familiar[Grimstone Golem]) &&
-	!possessEquipment($item[Ornate Dowsing Rod]) &&
-	item_amount($item[Odd Silver Coin]) < 5 &&
-	item_amount($item[Grimstone Mask]) == 0 &&
-	$familiar[Grimstone Golem].drops_today < 1 &&
-	considerGrimstoneGolem(false))
+	if (famChoice === Familiar.none && canChangeToFamiliar(Familiar.get("Grimstone Golem")) && !possessEquipment(Item.get("ornate dowsing rod")) && itemAmount(Item.get("odd silver coin")) < 5 && itemAmount(Item.get("grimstone mask")) === 0 && (Familiar.get("Grimstone Golem")).dropsToday < 1 && considerGrimstoneGolem(false))
 	{
-		famChoice = $familiar[Grimstone Golem];
+		famChoice = Familiar.get("Grimstone Golem");
 	}
-	
 	// places where meat drop is desirable due to high meat drop monsters.
-	if ($locations[The Boss Bat's Lair, The Icy Peak, The Filthworm Queen's Chamber, Cobb's Knob Treasury] contains place) {
+	if (Location.get(["The Boss Bat's Lair", "The Icy Peak", "The Filthworm Queen's Chamber", "Cobb's Knob Treasury"]).includes(place)) {
 		famChoice = lookupFamiliarDatafile("meat");
 	}
-	if (place == $location[Mist-Shrouded Peak] && place.turns_spent < 3) {
-		famChoice = lookupFamiliarDatafile("meat");	//not useful for Groar
+	if (place === Location.get("Mist-Shrouded Peak") && place.turnsSpent < 3) {
+		famChoice = lookupFamiliarDatafile("meat"); //not useful for Groar
 	}
-
 	//if critically low on MP and meat. use restore familiar to avoid going bankrupt
-	boolean poor = my_meat() < 1000;
-	if(internalQuestStatus("questL11MacGuffin") < 2)
+	let poor: boolean = myMeat() < 1000;
+	if (internalQuestStatus("questL11MacGuffin") < 2)
 	{
-		poor = my_meat() < 7000;
+		poor = myMeat() < 7000;
 	}
-	if(famChoice == $familiar[none] && 	my_maxmp() > 50 && 	my_mp()*5 < my_maxmp() && poor)
+	if (famChoice === Familiar.none && myMaxmp() > 50 && myMp() * 5 < myMaxmp() && poor)
 	{
 		famChoice = lookupFamiliarDatafile("regen");
 	}
-
 	//in meatpath, prioritize meat if meat is a constraint
-	if (in_amw() && famChoice == $familiar[none] && amw_wantMeat()) 
+	if (in_amw() && famChoice === Familiar.none && amw_wantMeat())
 	{
 		famChoice = lookupFamiliarDatafile("meat");
 	}
-	
 	//select the best familiar that drops items directly. Will prioritize useful items and awesome+ food and drink and then other drops.
-	if(famChoice == $familiar[none])
+	if (famChoice === Familiar.none)
 	{
 		famChoice = lookupFamiliarDatafile("drop");
 	}
-
 	//If a fam was selected that is contrary to the Combat Rate we want, deselect it. Probably won't select it in stat or regen but user should get better free-ish fams if it does
-	float famComRate = auto_famModifiers(famChoice, "Combat Rate");
-	boolean plusCombatInMaximize = create_matcher("(?<!-)200 ?combat", get_property("auto_maximize_current")).find();
-	boolean minusCombatInMaximize = create_matcher("-200 ?combat", get_property("auto_maximize_current")).find();
-	if(minusCombatInMaximize && famComRate > 0)
+	let famComRate: number = auto_famModifiers$1(famChoice, "Combat Rate");
+	let plusCombatInMaximize: boolean = new AshMatcher("(?<!-)200 ?combat", getProperty("auto_maximize_current")).find();
+	let minusCombatInMaximize: boolean = new AshMatcher("-200 ?combat", getProperty("auto_maximize_current")).find();
+	if (minusCombatInMaximize && famComRate > 0)
 	{
-		famChoice = $familiar[none];
+		famChoice = Familiar.none;
 	}
-	else if(plusCombatInMaximize && famComRate < 0)
+	else if (plusCombatInMaximize && famComRate < 0)
 	{
-		famChoice = $familiar[none];
+		famChoice = Familiar.none;
 	}
-	
 	// Stats from combats makes runs go faster apparently, except in meatpath
-	if (famChoice == $familiar[none] && !in_amw() && (my_level() < 13 || get_property("auto_disregardInstantKarma").to_boolean())) {
+	if (famChoice === Familiar.none && !in_amw() && (myLevel() < 13 || toBoolean(getProperty("auto_disregardInstantKarma")))) {
 		famChoice = lookupFamiliarDatafile("stat");
 	}
-	
 	// fallback to regen if nothing else. At worst the player will have something like a Ghuol Whelp or Starfish.
-	if (famChoice == $familiar[none]) {
+	if (famChoice === Familiar.none) {
 		famChoice = lookupFamiliarDatafile("regen");
 	}
-
 	// in legacy of loathing, may only have 1 of the 2004 fams
-	if (famChoice == $familiar[none]) {
-		foreach fam in $familiars[Jill-O-Lantern, Hand Turkey, Crimbo Elf]
+	if (famChoice === Familiar.none) {
+		for (let fam of Familiar.get(["Jill-O-Lantern", "Hand Turkey", "Crimbo Elf"]))
 		{
-			if(canChangeToFamiliar(fam))
+			if (canChangeToFamiliar(fam))
 			{
 				famChoice = fam;
 				break;
@@ -764,14 +737,14 @@ boolean autoChooseFamiliar(location place)
 		}
 	}
 
-	return handleFamiliar(famChoice);
+	return handleFamiliar$1(famChoice);
 }
 
-boolean haveSpleenFamiliar()
+export function haveSpleenFamiliar(): boolean
 {
-	foreach fam in $familiars[Baby Sandworm, Rogue Program, Pair of Stomping Boots, Bloovian Groose, Unconscious Collective, Grim Brother, Golden Monkey]
+	for (let fam of Familiar.get(["Baby Sandworm", "Rogue Program", "Pair of Stomping Boots", "Bloovian Groose", "Unconscious Collective", "Grim Brother", "Golden Monkey"]))
 	{
-		if(auto_have_familiar(fam))
+		if (auto_have_familiar(fam))
 		{
 			return true;
 		}
@@ -779,170 +752,168 @@ boolean haveSpleenFamiliar()
 	return false;
 }
 
-boolean wantCubeling()
+export function wantCubeling(): boolean
 {
 	//do we still want to use a gelatinous cubeling familiar specifically for it to drop the daily dungeon tools
-	if (!canChangeToFamiliar($familiar[Gelatinous Cubeling]))
+	if (!canChangeToFamiliar(Familiar.get("Gelatinous Cubeling")))
 	{
-		return false;	//can not use it so we do not want it.
+		return false; //can not use it so we do not want it.
 	}
-	if(get_property("cubelingProgress").to_int() > 11)
+	if (toInt(getProperty("cubelingProgress")) > 11)
 	{
-		return false;	//cubeling already dropped tools in this ascension. It cannot drop more until you ascend again.
+		return false; //cubeling already dropped tools in this ascension. It cannot drop more until you ascend again.
 	}
-	
-	boolean need_lockpicks = item_amount($item[pick-o-matic lockpicks]) == 0 && item_amount($item[Platinum Yendorian Express Card]) == 0;
-	boolean need_ring = !possessEquipment($item[Ring of Detect Boring Doors]);	//do not try for a second one if you already have one
-	boolean need_pole = !auto_haveCCSC() && item_amount($item[eleven-foot pole]) == 0;
+
+	let need_lockpicks: boolean = itemAmount(Item.get("Pick-O-Matic lockpicks")) === 0 && itemAmount(Item.get("Platinum Yendorian Express Card")) === 0;
+	let need_ring: boolean = !possessEquipment(Item.get("ring of Detect Boring Doors")); //do not try for a second one if you already have one
+	let need_pole: boolean = !auto_haveCCSC() && itemAmount(Item.get("eleven-foot pole")) === 0;
 	return need_pole || need_ring || need_lockpicks;
 }
 
-void preAdvUpdateFamiliar(location place)
+export function preAdvUpdateFamiliar(place: Location): void
 {
-	if(get_property("auto_disableFamiliarChanging").to_boolean())
+	if (toBoolean(getProperty("auto_disableFamiliarChanging")))
 	{
 		return;
 	}
-	if(!pathHasFamiliar() || !pathAllowsChangingFamiliar())
+	if (!pathHasFamiliar() || !pathAllowsChangingFamiliar())
 	{
-		return;		//will just error in those paths
+		return; //will just error in those paths
 	}
-	if(is100FamRun())
+	if (is100FamRun())
 	{
-		handleFamiliar(get_property("auto_100familiar").to_familiar());			//do not break 100 familiar runs
+		handleFamiliar$1(toFamiliar(getProperty("auto_100familiar"))); //do not break 100 familiar runs
 	}
-	
 	//familiar requirement to adventure in a zone, override everything else.
-	if(place == $location[The Deep Machine Tunnels])
+	if (place === Location.get("The Deep Machine Tunnels"))
 	{
-		handleFamiliar($familiar[Machine Elf]);
+		handleFamiliar$1(Familiar.get("Machine Elf"));
 	}
 	// Can't take familiars with you to FantasyRealm
-	if (place == $location[The Bandit Crossroads])
+	if (place === Location.get("The Bandit Crossroads"))
 	{
-		if(my_familiar() == $familiar[none]) return;		//avoid mafia error from trying to change none into none.
-		use_familiar($familiar[none]);
-		return;		//no familiar means no equipment, we are done.
+		if (myFamiliar() === Familiar.none) { //avoid mafia error from trying to change none into none.
+		return; }
+		useFamiliar(Familiar.none);
+		return; //no familiar means no equipment, we are done.
 	}
-	
 	//if familiar not set yet, first check stealing familiar
-	if(!get_property("_auto_thisLoopHandleFamiliar").to_boolean() && canChangeToFamiliar($familiar[cat burglar]) && catBurglarHeistsLeft() > 0)
+	if (!toBoolean(getProperty("_auto_thisLoopHandleFamiliar")) && canChangeToFamiliar(Familiar.get("Cat Burglar")) && catBurglarHeistsLeft() > 0)
 	{
 		//Stealing with familiar. TODO add XO Skelton here too
-		
-		item[monster] heistDesires = catBurglarHeistDesires();
-		boolean wannaHeist = false;
-		float [monster] apprates = auto_combat_appearance_rates(place, true);
-		foreach mon, it in heistDesires
+
+		let heistDesires: Map<Monster, Item> = catBurglarHeistDesires();
+		let wannaHeist: boolean = false;
+		let apprates: Map<Monster, number> = auto_combat_appearance_rates(place, true);
+		for (let [mon, it] of heistDesires)
 		{
-			foreach i, mmon in get_monsters(place)
+			for (let [i, mmon] of getMonsters(place).entries())
 			{
-				if(apprates[mon] <= 0) continue; //won't show up because banished or req's not fulfilled
-				if(mmon == mon)
+				if ((apprates.get(mon) ?? apprates.set(mon, 0.0).get(mon)) <= 0) { //won't show up because banished or req's not fulfilled
+				continue; }
+				if (mmon === mon)
 				{
-					auto_log_debug("Using cat burglar because we want to burgle a " + it + " from " + mon);
+					auto_log_debug$1(`Using cat burglar because we want to burgle a ${it} from ${mon}`);
 					wannaHeist = true;
 				}
 			}
 		}
-		if(wannaHeist)
+		if (wannaHeist)
 		{
-			handleFamiliar($familiar[cat burglar]);
+			handleFamiliar$1(Familiar.get("Cat Burglar"));
 		}
 	}
-	
 	//if familiar not set choose a familiar using general logic
-	if(!get_property("_auto_thisLoopHandleFamiliar").to_boolean())		//check that we didn't already set familiar target this loop
-	{
+	if (!toBoolean(getProperty("_auto_thisLoopHandleFamiliar")))
+	{ //check that we didn't already set familiar target this loop
 		autoChooseFamiliar(place);
 	}
-	
-	familiar famChoice = to_familiar(get_property("auto_familiarChoice"));
-	if(famChoice == $familiar[none])
+
+	let famChoice: Familiar = toFamiliar(getProperty("auto_familiarChoice"));
+	if (famChoice === Familiar.none)
 	{
-		if(get_property("auto_familiarChoice") == "")
+		if (getProperty("auto_familiarChoice") === "")
 		{
 			abort("void preAdvUpdateFamiliar failed because property auto_familiarChoice is empty for some reason");
 		}
-		abort("void preAdvUpdateFamiliar failed to convert auto_familiarChoice of [" + get_property("auto_familiarChoice") + "] into a $familiar");
+		abort(`void preAdvUpdateFamiliar failed to convert auto_familiarChoice of [${getProperty("auto_familiarChoice")}] into a $familiar`);
 	}
-	
-	if(famChoice != my_familiar() && canChangeToFamiliar(famChoice))
+
+	if (famChoice !== myFamiliar() && canChangeToFamiliar(famChoice))
 	{
-		use_familiar(famChoice);
+		useFamiliar(famChoice);
 	}
-	
 	//familiar equipment overrides
-	if(in_heavyrains())
+	if (in_heavyrains())
 	{
-		if(famChoice != $familiar[Left-Hand Man])
+		if (famChoice !== Familiar.get("Left-Hand Man"))
 		{
-			autoEquip($slot[familiar], $item[miniature life preserver]);
+			autoEquip(Slot.get("familiar"), Item.get("miniature life preserver"));
 		}
 	}
 
-	if (my_familiar() == $familiar[Reagnimated Gnome])
+	if (myFamiliar() === Familiar.get("Reagnimated Gnome"))
 	{
 		// This arena visit to obtain gnome familiar equips is turn free and can be done once a day.
-		boolean visitArena = false;
-		foreach it in $items[gnomish swimmer's ears, gnomish coal miner's lung, gnomish tennis elbow, gnomish housemaid's kgnee, gnomish athlete's foot]
+		let visitArena: boolean = false;
+		for (let it of Item.get(["gnomish swimmer's ears", "gnomish coal miner's lung", "gnomish tennis elbow", "gnomish housemaid's kgnee", "gnomish athlete's foot"]))
 		{
-			if (available_amount(it) == 0)
+			if (availableAmount(it) === 0)
 			{
 				visitArena = true;
 				break;
 			}
 		}
 		// only visit the cake-shaped arena if we need to pickup an equipment.
-		if (!get_property("_auto_gnomeArenaVisited").to_boolean() && visitArena)
+		if (!toBoolean(getProperty("_auto_gnomeArenaVisited")) && visitArena)
 		{
-			visit_url("arena.php");
-			run_choice(-1);
-			set_property("_auto_gnomeArenaVisited", "true");
+			visitUrl("arena.php");
+			runChoice(-1);
+			setProperty("_auto_gnomeArenaVisited", "true");
 		}
-		autoEquip($slot[familiar], $item[gnomish housemaid\'s kgnee]);
+		autoEquip(Slot.get("familiar"), Item.get("gnomish housemaid's kgnee"));
 	}
 
-	if (my_familiar() == $familiar[Baby Bugged Bugbear])
+	if (myFamiliar() === Familiar.get("Baby Bugged Bugbear"))
 	{
-		if (!possessEquipment($item[Bugged beanie]))
+		if (!possessEquipment(Item.get("bugged beanie")))
 		{
 			// Once per day, if you don't have the Bugged Beanie equipped, in inventory or closet
 			// you can get one for free by visiting the arena
-			visit_url("arena.php");
+			visitUrl("arena.php");
 		}
 	}
 
-	if(my_familiar() == $familiar[Trick-Or-Treating Tot])
+	if (myFamiliar() === Familiar.get("Trick-or-Treating Tot"))
 	{
-		if($locations[A-Boo Peak, The Haunted Kitchen] contains place)
+		if (Location.get(["A-Boo Peak", "The Haunted Kitchen"]).includes(place))
 		{
-			if(equipped_item($slot[Familiar]) != $item[Li\'l Candy Corn Costume])
+			if (equippedItem(Slot.get("familiar")) !== Item.get("li'l candy corn costume"))
 			{
-				if(item_amount($item[Li\'l Candy Corn Costume]) > 0)
+				if (itemAmount(Item.get("li'l candy corn costume")) > 0)
 				{
-					equip($slot[Familiar], $item[Li\'l Candy Corn Costume]);
+					equip(Slot.get("familiar"), Item.get("li'l candy corn costume"));
 				}
 			}
 		}
 	}
 
-	if (my_familiar() == $familiar[Jill-of-All-Trades] && possessEquipment($item[LED candle]))
+	if (myFamiliar() === Familiar.get("Jill-of-All-Trades") && possessEquipment(Item.get("LED candle")))
 	{
 		// maximizer uses whatever mode LED candle is in, won't change it
 		// so ensure in correct mode prior to maximizing
 		auto_handleJillOfAllTrades();
-		autoEquip($item[LED Candle]); // force maximizer to equip it when we have it.
+		autoEquip$1(Item.get("LED candle")); // force maximizer to equip it when we have it.
 	}
-	
-	if(auto_checkFamiliarMummery(my_familiar()))
+
+	if (auto_checkFamiliarMummery(myFamiliar()))
 	{
-		mummifyFamiliar();
+		mummifyFamiliar$2();
 	}
 }
 
-boolean auto_needsGoodFamiliarEquipment() {
-	if (possessEquipment($item[Astral pet sweater])) {
+export function auto_needsGoodFamiliarEquipment(): boolean {
+	if (possessEquipment(Item.get("astral pet sweater"))) {
 		return false;
 	}
 	if (auto_hasStillSuit()) {
@@ -954,46 +925,46 @@ boolean auto_needsGoodFamiliarEquipment() {
 	return true;
 }
 
-int auto_famWeight(familiar fam, boolean include_equip)
+export function auto_famWeight(fam: Familiar, include_equip: boolean): number
 {
-	int famEquipWeight = 0;
-	if(fam == $familiar[none])
+	let famEquipWeight: number = 0;
+	if (fam === Familiar.none)
 	{
 		return 0;
 	}
-	if(!include_equip)
+	if (!include_equip)
 	{
-		famEquipWeight = numeric_modifier(familiar_equipped_equipment(fam), "Familiar Weight");
+		famEquipWeight = toInt(numericModifier(familiarEquippedEquipment(fam), "Familiar Weight"));
 	}
-	return familiar_weight(fam) + weight_adjustment() - famEquipWeight;
+	return familiarWeight(fam) + weightAdjustment() - famEquipWeight;
 }
 
-int auto_famWeight(familiar fam)
+export function auto_famWeight$1(fam: Familiar): number
 {
 	return auto_famWeight(fam, true);
 }
 
-int auto_famWeight()
+export function auto_famWeight$2(): number
 {
-	return auto_famWeight(my_familiar(), true);
+	return auto_famWeight(myFamiliar(), true);
 }
 
-float auto_famModifiers(familiar fam, string mod, item famEquip)
+export function auto_famModifiers(fam: Familiar, mod: string, famEquip: Item): number
 {
-	if(fam == $familiar[none])
+	if (fam === Familiar.none)
 	{
 		return 0.0;
 	}
-	return numeric_modifier(fam, mod, auto_famWeight(fam, false), famEquip);
+	return numericModifier(fam, mod, auto_famWeight(fam, false), famEquip);
 }
 
-float auto_famModifiers(familiar fam, string mod)
+export function auto_famModifiers$1(fam: Familiar, mod: string): number
 {
-	return numeric_modifier(fam, mod, auto_famWeight(fam, false), familiar_equipped_equipment(fam));
+	return numericModifier(fam, mod, auto_famWeight(fam, false), familiarEquippedEquipment(fam));
 }
 
-float auto_famModifiers(string mod)
+export function auto_famModifiers$2(mod: string): number
 {
-	familiar fam = my_familiar();
-	return numeric_modifier(fam, mod, auto_famWeight(fam, false), familiar_equipped_equipment(fam));
+	let fam: Familiar = myFamiliar();
+	return numericModifier(fam, mod, auto_famWeight(fam, false), familiarEquippedEquipment(fam));
 }

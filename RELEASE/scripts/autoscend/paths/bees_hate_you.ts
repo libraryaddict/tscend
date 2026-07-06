@@ -1,29 +1,35 @@
-boolean in_bhy()
+import { Effect, Item, Location, Monster, Path, Slot, abort, cliExecute, containsText, getProperty, haveEffect, isUnrestricted, itemAmount, lastMonster, myPath, putCloset, setProperty, toBoolean, toSlot, visitUrl } from "kolmafia";
+import { autoAdvBypass$1 } from "../auto_adventure";
+import { internalQuestStatus } from "../auto_util";
+import { inAftercore } from "./casual";
+
+//Defined in autoscend/paths/bees_hate_you.ash
+export function in_bhy(): boolean
 {
-	return my_path() == $path[Bees Hate You];
+	return myPath() === Path.get("Bees Hate You");
 }
 
-void bhy_initializeSettings()
+export function bhy_initializeSettings(): void
 {
-	if(in_bhy())
+	if (in_bhy())
 	{
-		set_property("auto_abooclover", false);
-		set_property("auto_wandOfNagamar", false);
-		set_property("auto_hippyInstead", true);
-		set_property("auto_getBeehive", true);
-		set_property("auto_getBoningKnife", true);
-		set_property("auto_ignoreFlyer", true);
+		setProperty("auto_abooclover", false.toString());
+		setProperty("auto_wandOfNagamar", false.toString());
+		setProperty("auto_hippyInstead", true.toString());
+		setProperty("auto_getBeehive", true.toString());
+		setProperty("auto_getBoningKnife", true.toString());
+		setProperty("auto_ignoreFlyer", true.toString());
 	}
 }
 
-boolean bhy_usable(string str)
+export function bhy_usable(str: string): boolean
 {
-	if(!in_bhy())
+	if (!in_bhy())
 	{
 		return true;
 	}
 
-	switch(str)
+	switch (str)
 	{
 	case "Cobb's Knob map":
 	case "ball polish":
@@ -42,88 +48,87 @@ boolean bhy_usable(string str)
 		return true;
 	}
 
-	if(contains_text(str, "b"))
+	if (containsText(str, "b"))
 	{
 		return false;
 	}
-	if(contains_text(str, "B"))
+	if (containsText(str, "B"))
 	{
 		return false;
 	}
 	return true;
 }
 
-boolean bhy_is_item_valid(item it)
+export function bhy_is_item_valid(it: Item): boolean
 {
 	//returns whether an item is valid while you are in a bees hate you run. Do not call it outside BHY.
-	if(!in_bhy())		//returning true or false here would cause mistakes. so just abort if this ever happens. which it should not.
-	{
+	if (!in_bhy())
+	{ //returning true or false here would cause mistakes. so just abort if this ever happens. which it should not.
 		abort("bhy_is_item_valid(item it) should never be called outside of bees hate you path.");
 	}
-	if(it.to_slot() != $slot[none])
+	if (toSlot(it) !== Slot.none)
 	{
-		return is_unrestricted(it);		//this is equipment. equipment can be worn. you take backlash damage from it
+		return isUnrestricted(it); //this is equipment. equipment can be worn. you take backlash damage from it
 	}
-	if($items[Cobb\'s Knob map, Enchanted bean, Ball polish, Black market map, boring binder clip, beehive, electric boning knife] contains it)
+	if (Item.get(["Cobb's Knob map", "enchanted bean", "ball polish", "black market map", "boring binder clip", "beehive", "electric boning knife"]).includes(it))
 	{
-		return true;					//these items are explicit exceptions which are allowed in BHY
+		return true; //these items are explicit exceptions which are allowed in BHY
 	}
 	//familiar hatchlings are always allowed. testing is too complicated and it does not really matter
 	//food, drink, combat items, and useable items are forbidden if contain the letter B in the name:
-	return bhy_usable(it.to_string()) && is_unrestricted(it);
+	return bhy_usable(it.toString()) && isUnrestricted(it);
 }
 
-boolean LM_bhy()
+export function LM_bhy(): boolean
 {
-	if(!in_bhy())
+	if (!in_bhy())
 	{
 		return false;
 	}
 	// pension check keeps trying to be used
-	foreach it in $items[black pension check]
+	for (let it of Item.get(["black pension check"]))
 	{
-		if(item_amount(it) > 0)
+		if (itemAmount(it) > 0)
 		{
-			put_closet(item_amount(it), it);
+			putCloset(itemAmount(it), it);
 		}
 	}
 
 	return false;
 }
 
-boolean L13_bhy_towerFinal()
+export function L13_bhy_towerFinal(): boolean
 {
 	//Prepare for and defeat the final boss for a Bees hate You run. Which has special rules for engagement.
-	if(internalQuestStatus("questL13Final") != 11)
+	if (internalQuestStatus("questL13Final") !== 11)
 	{
 		return false;
 	}
-	
-	if(item_amount($item[antique hand mirror]) < 1 )
+
+	if (itemAmount(Item.get("antique hand mirror")) < 1)
 	{
 		abort("Need the [antique hand mirror] to defeat the guy made of bees. Please get one from the jewelry of the animated rustic nightstand and try again.");
 	}
-	
-	cli_execute("scripts/autoscend/auto_pre_adv.ash");
-	set_property("auto_disableAdventureHandling", true);
-	autoAdvBypass("place.php?whichplace=nstower&action=ns_10_sorcfight", $location[Noob Cave]);
-	
-	if(last_monster() != $monster[Guy Made Of Bees])
+
+	cliExecute("scripts/autoscend/auto_pre_adv.js");
+	setProperty("auto_disableAdventureHandling", true.toString());
+	autoAdvBypass$1("place.php?whichplace=nstower&action=ns_10_sorcfight", Location.get("Noob Cave"));
+
+	if (lastMonster() !== Monster.get("Guy Made Of Bees"))
 	{
 		abort("Failed to start the battle with Guy Made Of Bees");
 	}
-	if(have_effect($effect[Beaten Up]) > 0)
+	if (haveEffect(Effect.get("Beaten Up")) > 0)
 	{
 		abort("The Guy Made Of Bees beat me up! Please finish him off manually");
 	}
-	if(get_property("auto_stayInRun").to_boolean())
+	if (toBoolean(getProperty("auto_stayInRun")))
 	{
 		abort("User wanted to stay in run (auto_stayInRun), we are done.");
 	}
-	else
-	{
-		visit_url("place.php?whichplace=nstower&action=ns_11_prism");
-		if(inAftercore())
+	else {
+		visitUrl("place.php?whichplace=nstower&action=ns_11_prism");
+		if (inAftercore())
 		{
 			abort("All done. King Ralph has been freed");
 		}

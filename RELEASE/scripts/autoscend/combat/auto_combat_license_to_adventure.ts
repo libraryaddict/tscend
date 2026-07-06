@@ -1,25 +1,29 @@
+import { Item, Location, Monster, getProperty, itemAmount, myLocation, toBoolean } from "kolmafia";
+import { canSurvive$1 } from "./auto_combat_util";
+import { in_lta } from "../paths/license_to_adventure";
+
 //Path specific combat handling for license to adventure
 
-string auto_combatLicenseToAdventureStage4(int round, monster enemy, string text)
+//defined in /autoscend/combat/auto_combat_license_to_adventure.ash
+export function auto_combatLicenseToAdventureStage4(round_1: number, enemy: Monster, text: string): string
 {
 	// stage 4 = prekill. copy, sing along, flyer and other things that need to be done after delevel but before killing
-	
 	//each of the 3 items reduces minion count by 3. does NOT auto defeat current minion you are fighting
-	if((my_location() == $location[Super Villain\'s Lair]) && in_lta() && canSurvive(2.0) && (enemy == $monster[Villainous Minion]))
+	if (myLocation() === Location.get("Super Villain's Lair") && in_lta() && canSurvive$1(2.0) && enemy === Monster.get("Villainous Minion"))
 	{
-		if(!get_property("_villainLairCanLidUsed").to_boolean() && (item_amount($item[Razor-Sharp Can Lid]) > 0))
+		if (!toBoolean(getProperty("_villainLairCanLidUsed")) && itemAmount(Item.get("razor-sharp can lid")) > 0)
 		{
-			return "item " + $item[Razor-Sharp Can Lid];
+			return `item ${Item.get("razor-sharp can lid")}`;
 		}
-		if(!get_property("_villainLairWebUsed").to_boolean() && (item_amount($item[Spider Web]) > 0))
+		if (!toBoolean(getProperty("_villainLairWebUsed")) && itemAmount(Item.get("spider web")) > 0)
 		{
-			return "item " + $item[Spider Web];
+			return `item ${Item.get("spider web")}`;
 		}
-		if(!get_property("_villainLairFirecrackerUsed").to_boolean() && (item_amount($item[Knob Goblin Firecracker]) > 0))
+		if (!toBoolean(getProperty("_villainLairFirecrackerUsed")) && itemAmount(Item.get("Knob Goblin firecracker")) > 0)
 		{
-			return "item " + $item[Knob Goblin Firecracker];
+			return `item ${Item.get("Knob Goblin firecracker")}`;
 		}
 	}
-	
+
 	return "";
 }

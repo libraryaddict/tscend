@@ -1,85 +1,89 @@
-boolean in_iluh()
+import { Item, Path, containsText, create, itemAmount, myPath, storageAmount, toLowerCase } from "kolmafia";
+import { pullXWhenHaveY } from "../auto_acquire";
+import { possessEquipment } from "../auto_equipment";
+import { auto_is_valid } from "../auto_util";
+
+//Defined in autoscend/paths/heavy_rains.ash
+export function in_iluh(): boolean
 {
-	return my_path() == $path[11 Things I Hate About U];
+	return myPath() === Path.get("11 Things I Hate About U");
 }
 
-boolean iluh_foodConsumable(string str)
+export function iluh_foodConsumable(str: string): boolean
 {
-	if(!in_iluh())
+	if (!in_iluh())
 	{
 		return true;
 	}
 
-	string foodConsume = str.to_lower_case();
-
+	let foodConsume: string = toLowerCase(str);
 	//Not actually going to ever be consumed but need this exception to actually make it for the Palindome quest
-	if(contains_text(foodConsume, "stunt nut") || contains_text(foodConsume, "wet stew") || contains_text(foodConsume, "wet stunt nut stew"))
+	if (containsText(foodConsume, "stunt nut") || containsText(foodConsume, "wet stew") || containsText(foodConsume, "wet stunt nut stew"))
 	{
 		return true;
 	}
-
 	//can't consume anything with a u in it. Must have an i in it
-	if(contains_text(foodConsume, "u"))
+	if (containsText(foodConsume, "u"))
 	{
 		return false;
 	}
-	if(contains_text(foodConsume, "i"))
+	if (containsText(foodConsume, "i"))
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
-boolean iluh_famAllowed(string fam)
+export function iluh_famAllowed(fam: string): boolean
 {
-	if(!in_iluh())
+	if (!in_iluh())
 	{
 		return true;
 	}
 	//Is there an acceptable number of u's? Familiars with u's in name deal 10-20 sleaze damage per U each round
-	if(contains_text(fam.to_lower_case(), "u"))
+	if (containsText(toLowerCase(fam), "u"))
 	{
 		return false;
 	}
 	return true;
 }
 
-void iluh_buyEquiq()
+export function iluh_buyEquiq(): void
 {
-	if(!in_iluh())
+	if (!in_iluh())
 	{
 		return;
 	}
 
-	if(item_amount($item[mini kiwi]) >= 4 && !possessEquipment($item[mini kiwi whipping stick]))
+	if (itemAmount(Item.get("mini kiwi")) >= 4 && !possessEquipment(Item.get("mini kiwi whipping stick")))
 	{
-		create(1, $item[mini kiwi whipping stick]);
+		create(1, Item.get("mini kiwi whipping stick"));
 	}
-	if(item_amount($item[mini kiwi]) >= 3 && !possessEquipment($item[mini kiwi invisible dirigible]))
+	if (itemAmount(Item.get("mini kiwi")) >= 3 && !possessEquipment(Item.get("mini kiwi invisible dirigible")))
 	{
-		create(1, $item[mini kiwi invisible dirigible]);
+		create(1, Item.get("mini kiwi invisible dirigible"));
 	}
 	 return;
 }
 
-void iluh_pulls()
+export function iluh_pulls(): void
 {
-	if(!in_iluh())
+	if (!in_iluh())
 	{
 		return;
 	}
 
-	if(storage_amount($item[mini kiwi whipping stick]) > 0 && auto_is_valid($item[mini kiwi whipping stick]))
+	if (storageAmount(Item.get("mini kiwi whipping stick")) > 0 && auto_is_valid(Item.get("mini kiwi whipping stick")))
 	{
-		pullXWhenHaveY($item[mini kiwi whipping stick], 1, 0);
+		pullXWhenHaveY(Item.get("mini kiwi whipping stick"), 1, 0);
 	}
-	if(storage_amount($item[mini kiwi bikini]) > 0 && auto_is_valid($item[mini kiwi bikini]))
+	if (storageAmount(Item.get("mini kiwi bikini")) > 0 && auto_is_valid(Item.get("mini kiwi bikini")))
 	{
-		pullXWhenHaveY($item[mini kiwi bikini], 1, 0);
+		pullXWhenHaveY(Item.get("mini kiwi bikini"), 1, 0);
 	}
-	if(storage_amount($item[mini kiwi invisible dirigible]) > 0 && auto_is_valid($item[mini kiwi invisible dirigible]))
+	if (storageAmount(Item.get("mini kiwi invisible dirigible")) > 0 && auto_is_valid(Item.get("mini kiwi invisible dirigible")))
 	{
-		pullXWhenHaveY($item[mini kiwi invisible dirigible], 1, 0);
+		pullXWhenHaveY(Item.get("mini kiwi invisible dirigible"), 1, 0);
 	}
 }

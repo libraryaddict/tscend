@@ -1,76 +1,80 @@
-## These functions are used to either upgrade format on properties. delete obsolete properties. or set default values for new properties
+import { Familiar, getProperty, myAscensions, myFamiliar, propertyExists, removeProperty, renameProperty, setProperty, splitString, toBoolean, toInt, toLowerCase } from "kolmafia";
+import { auto_log_debug, auto_log_info$1 } from "./auto_util";
+import { AshMatcher } from "./utils/kolmafiaUtils";
 
-boolean trackingSplitterFixer(string oldSetting, int day, string newSetting)
+//# These functions are used to either upgrade format on properties. delete obsolete properties. or set default values for new properties
+
+//Defined in autoscend/auto_settings.ash
+export function trackingSplitterFixer(oldSetting: string, day: number, newSetting: string): boolean
 {
-	string setting = get_property(oldSetting);
-	if(setting == "")
+	let setting: string = getProperty(oldSetting);
+	if (setting === "")
 	{
 		return false;
 	}
 
-	matcher cleanSpaces = create_matcher(", ", setting);
-	setting = replace_all(cleanSpaces, ",");
-	string[int] retval = split_string(setting, ",");
-	foreach x in retval
+	let cleanSpaces: AshMatcher = new AshMatcher(", ", setting);
+	setting = cleanSpaces.replaceAll(",");
+	let retval: Map<number, string> = new Map(splitString(setting, ",").map((_v, _i) => [_i, _v]));
+	for (let x of retval.keys())
 	{
-		if(retval[x] == "")
+		if ((retval.get(x) ?? retval.set(x, "").get(x)) === "")
 		{
 			continue;
 		}
-		matcher dayAdder = create_matcher("[(]", retval[x]);
-		retval[x] = replace_all(dayAdder, "(" + day + ":");
-		if(get_property(newSetting) != "")
+		let dayAdder: AshMatcher = new AshMatcher("[(]", (retval.get(x) ?? retval.set(x, "").get(x)));
+		retval.set(x, dayAdder.replaceAll(`(${day}:`));
+		if (getProperty(newSetting) !== "")
 		{
-			set_property(newSetting, get_property(newSetting) + "," + retval[x]);
+			setProperty(newSetting, `${getProperty(newSetting)},${(retval.get(x) ?? retval.set(x, "").get(x))}`);
 		}
-		else
-		{
-			set_property(newSetting, retval[x]);
+		else {
+			setProperty(newSetting, (retval.get(x) ?? retval.set(x, "").get(x)));
 		}
 	}
-	set_property(oldSetting, "");
+	setProperty(oldSetting, "");
 	return true;
 }
 
-void cleanup_property(string target)
+export function cleanup_property(target: string): void
 {
 	//we need to clear out empty property that exist with an empty value.
 	//aside from being messy they also cause problems such as rename_property refusing to work.
-	if(get_property(target) == "" && property_exists(target))
+	if (getProperty(target) === "" && propertyExists(target))
 	{
-		remove_property(target);
+		removeProperty(target);
 	}
 }
 
-void auto_rename_property(string oldprop, string newprop)
+export function auto_rename_property(oldprop: string, newprop: string): void
 {
 	cleanup_property(oldprop);
 	cleanup_property(newprop);
-	if(!property_exists(oldprop) || property_exists(newprop))
+	if (!propertyExists(oldprop) || propertyExists(newprop))
 	{
 		return;
 	}
-	rename_property(oldprop,newprop);
+	renameProperty(oldprop, newprop);
 }
 
-void boolFix(string p)
+export function boolFix(p: string): void
 {
-	string p_val = get_property(p);
-	if(p_val == "need" || p_val == "yes")
+	let p_val: string = getProperty(p);
+	if (p_val === "need" || p_val === "yes")
 	{
-		set_property(p, true);
+		setProperty(p, true.toString());
 	}
-	if(p_val == "no")
+	if (p_val === "no")
 	{
-		set_property(p, false);
+		setProperty(p, false.toString());
 	}
 }
 
-void auto_settingsUpgrade()
+export function auto_settingsUpgrade(): void
 {
 	//upgrade settings from old format to new format.
 	//do not forget to add each old setting to auto_settingsDelete() so it can be deleted after the upgrade is done.
-	
+
 	trackingSplitterFixer("auto_banishes_day1", 1, "auto_banishes");
 	trackingSplitterFixer("auto_banishes_day2", 2, "auto_banishes");
 	trackingSplitterFixer("auto_banishes_day3", 3, "auto_banishes");
@@ -88,256 +92,255 @@ void auto_settingsUpgrade()
 	trackingSplitterFixer("auto_renenutet_day3", 3, "auto_renenutet");
 	trackingSplitterFixer("auto_renenutet_day4", 4, "auto_renenutet");
 
-	if(get_property("auto_100familiar") == "yes")
+	if (getProperty("auto_100familiar") === "yes")
 	{
-		set_property("auto_100familiar", my_familiar());
+		setProperty("auto_100familiar", myFamiliar().toString());
 	}
-	if(get_property("auto_100familiar") == "no")
+	if (getProperty("auto_100familiar") === "no")
 	{
-		set_property("auto_100familiar", $familiar[none]);
+		setProperty("auto_100familiar", Familiar.none.toString());
 	}
-	if(get_property("auto_100familiar") == "false")
+	if (getProperty("auto_100familiar") === "false")
 	{
-		set_property("auto_100familiar", $familiar[none]);
+		setProperty("auto_100familiar", Familiar.none.toString());
 	}
-	if(get_property("auto_killingjar") == "done")
+	if (getProperty("auto_killingjar") === "done")
 	{
-		set_property("auto_killingjar", "finished");
+		setProperty("auto_killingjar", "finished");
 	}
-	
+
 	boolFix("auto_wandOfNagamar");
 	boolFix("auto_chasmBusted");
 	auto_rename_property("auto_edDelayTimer", "auto_delayTimer");
 	boolFix("auto_grimstoneFancyOilPainting");
 	boolFix("auto_grimstoneOrnateDowsingRod");
 
-	if(get_property("auto_abooclover") == "used")
+	if (getProperty("auto_abooclover") === "used")
 	{
-		set_property("auto_abooclover", false);
+		setProperty("auto_abooclover", false.toString());
 	}
-	if(get_property("lastPlusSignUnlock") == "true")
+	if (getProperty("lastPlusSignUnlock") === "true")
 	{
 		auto_log_debug("lastPlusSignUnlock was changed to a boolean, fixing...", "red");
-		set_property("lastPlusSignUnlock", my_ascensions());
+		setProperty("lastPlusSignUnlock", myAscensions().toString());
 	}
-	if(get_property("lastTempleUnlock") == "true")
+	if (getProperty("lastTempleUnlock") === "true")
 	{
 		auto_log_debug("lastTempleUnlock was changed to a boolean, fixing...", "red");
-		set_property("lastTempleUnlock", my_ascensions());
+		setProperty("lastTempleUnlock", myAscensions().toString());
 	}
-	if(property_exists("auto_consumeKeyLimePies"))
+	if (propertyExists("auto_consumeKeyLimePies"))
 	{
-		set_property("auto_dontConsumeKeyLimePies", !get_property("auto_consumeKeyLimePies").to_boolean());
+		setProperty("auto_dontConsumeKeyLimePies", (!toBoolean(getProperty("auto_consumeKeyLimePies"))).toString());
 	}
-	if(property_exists("auto_alwaysGetSteelOrgan"))
+	if (propertyExists("auto_alwaysGetSteelOrgan"))
 	{
-		set_property("auto_getSteelOrgan_initialize", get_property("auto_alwaysGetSteelOrgan"));
+		setProperty("auto_getSteelOrgan_initialize", getProperty("auto_alwaysGetSteelOrgan"));
 	}
-	
-	if(get_property("auto_debug") == "true")
+
+	if (getProperty("auto_debug") === "true")
 	{
-		set_property("auto_log_level", 3);
+		setProperty("auto_log_level", (3).toString());
 	}
 	//migrate log level from the string property auto_logLevel to the int property auto_log_level
-	if(property_exists("auto_logLevel"))
+	if (propertyExists("auto_logLevel"))
 	{
-		switch(get_property("auto_logLevel").to_lower_case())
+		switch (toLowerCase(getProperty("auto_logLevel")))
 		{
 			case "critical":
 			case "crit":
 			case "error":
 			case "err":
-				set_property("auto_log_level", 0);
+				setProperty("auto_log_level", (0).toString());
 				break;
 			case "warning":
 			case "warn":
-				set_property("auto_log_level", 1);
+				setProperty("auto_log_level", (1).toString());
 				break;
 			case "info":
-				set_property("auto_log_level", 2);
+				setProperty("auto_log_level", (2).toString());
 				break;
 			case "debug":
-				set_property("auto_log_level", 3);
+				setProperty("auto_log_level", (3).toString());
 				break;
 		}
 	}
-
 	//this supports the default logging level change from info(2) to debug(3)
 	//default only effects new users, this migrates current users to the new default level of logging
-	if(!property_exists("logLevelDefaultChangedToDebug"))
+	if (!propertyExists("logLevelDefaultChangedToDebug"))
 	{
-		set_property("auto_log_level", 3);
-		set_property("logLevelDefaultChangedToDebug",true);
+		setProperty("auto_log_level", (3).toString());
+		setProperty("logLevelDefaultChangedToDebug", true.toString());
 	}
 }
 
-void auto_settingsFix()
+export function auto_settingsFix(): void
 {
 	//fix settings where user inputted an invalid value
-	if(get_property("auto_save_adv_override").to_int() < -1)
+	if (toInt(getProperty("auto_save_adv_override")) < -1)
 	{
-		set_property("auto_save_adv_override", -1);		//values lower than -1 are not valid
+		setProperty("auto_save_adv_override", (-1).toString()); //values lower than -1 are not valid
 	}
-	if(get_property("auto_log_level").to_int() < 0)
+	if (toInt(getProperty("auto_log_level")) < 0)
 	{
-		set_property("auto_log_level", 0);		//values lower than 0 are not valid
+		setProperty("auto_log_level", (0).toString()); //values lower than 0 are not valid
 	}
-	if(get_property("auto_log_level").to_int() > 3)
+	if (toInt(getProperty("auto_log_level")) > 3)
 	{
-		set_property("auto_log_level", 3);		//values higher than 3 are not valid
+		setProperty("auto_log_level", (3).toString()); //values higher than 3 are not valid
 	}
-	if(get_property("auto_log_level_restore").to_int() < 0)
+	if (toInt(getProperty("auto_log_level_restore")) < 0)
 	{
-		set_property("auto_log_level_restore", 0);		//values lower than 0 are not valid
+		setProperty("auto_log_level_restore", (0).toString()); //values lower than 0 are not valid
 	}
-	if(get_property("auto_log_level_restore").to_int() > 2)
+	if (toInt(getProperty("auto_log_level_restore")) > 2)
 	{
-		set_property("auto_log_level_restore", 2);		//values higher than 2 are not valid
+		setProperty("auto_log_level_restore", (2).toString()); //values higher than 2 are not valid
 	}
 }
 
-void auto_settingsDelete()
+export function auto_settingsDelete(): void
 {
 	//delete obsolete settings
-	remove_property("auto_debug");
-	remove_property("auto_sonata");
-	remove_property("auto_edDelayTimer");	//replaced with auto_delayTimer that works in all paths
-	remove_property("auto_cubeItems");
-	remove_property("auto_useCubeling");
-	remove_property("auto_pullPVPJunk");
-	remove_property("auto_day1_init");		//old day initialization trackers
-	remove_property("auto_day2_init");		//old day initialization trackers
-	remove_property("auto_day3_init");		//old day initialization trackers
-	remove_property("auto_day4_init");		//old day initialization trackers
-	remove_property("auto_gaudy");		//Some lingering stuff from when gaudy pirates mattered is still here
-	remove_property("auto_beta_test");		//Beta testing features should be guarded behind their own individual properties
-	remove_property("auto_invaderKilled");		//No longer need to track the invaders status ourselves as mafia does it now
-	remove_property("auto_airship");
-	remove_property("auto_ballroom");
-	remove_property("auto_ballroomflat");
-	remove_property("auto_ballroomopen");
-	remove_property("auto_ballroomsong");
-	remove_property("auto_bat");
-	remove_property("auto_bean");
-	remove_property("auto_blackfam");
-	remove_property("auto_blackmap");
-	remove_property("auto_boopeak");
-	remove_property("auto_castlebasement");
-	remove_property("auto_castleground");
-	remove_property("auto_castletop");
-	remove_property("auto_consumption");
-	remove_property("auto_crypt");
-	remove_property("auto_day1_cobb");
-	remove_property("auto_fcle");
-	remove_property("auto_friars");
-	remove_property("auto_goblinking");
-	remove_property("auto_gremlins");
-	remove_property("auto_gremlinBanishes");
-	remove_property("auto_gunpowder");
-	remove_property("auto_hiddenapartment");
-	remove_property("auto_hiddenbowling");
-	remove_property("auto_hiddencity");
-	remove_property("auto_hiddenhospital");
-	remove_property("auto_hiddenoffice");
-	remove_property("auto_hiddenunlock");
-	remove_property("auto_hiddenzones");
-	remove_property("auto_highlandlord");
-	remove_property("auto_masonryWall");
-	remove_property("auto_mcmuffin");
-	remove_property("auto_mistypeak");
-	remove_property("auto_mosquito");
-	remove_property("auto_nuns");
-	remove_property("auto_oilpeak");
-	remove_property("auto_orchard");
-	remove_property("auto_palindome");
-	remove_property("auto_phatloot");
-	remove_property("auto_forcePhatLootToken");
-	remove_property("auto_prewar");
-	remove_property("auto_prehippy");
-	remove_property("auto_pirateoutfit");
-	remove_property("auto_trytower");
-	remove_property("auto_shenCopperhead");
-	remove_property("auto_spookyfertilizer");
-	remove_property("auto_spookymap");
-	remove_property("auto_spookyravensecond");
-	remove_property("auto_spookysapling");
-	remove_property("auto_sonofa");
-	remove_property("auto_sorceress");
-	remove_property("auto_swordfish");
-	remove_property("auto_tavern");
-	remove_property("auto_trapper");
-	remove_property("auto_treecoin");
-	remove_property("auto_twinpeak");
-	remove_property("auto_twinpeakprogress");
-	remove_property("auto_war");
-	remove_property("auto_winebomb");
-	remove_property("auto_clearCombatScripts");
-	remove_property("auto_legacyConsumeStuff");		//Knapsack consumption algorithm is now for everyone
-	remove_property("betweenAdventureScript");		//might be an old mafia property that was renamed but it does nothing now
-	remove_property("auto_copperhead");		//Mafia added tracking for the Copperhead Club non-combat so this is no longer necesssary
-	remove_property("auto_mineForOres");		//Automated Ore mining in hardcore is now for everyone!
-	remove_property("auto_hpAutoRecoveryItems");
-	remove_property("auto_hpAutoRecovery");
-	remove_property("auto_hpAutoRecoveryTarget");
-	remove_property("auto_skipDesert");
-	remove_property("auto_shenStarted");
-	remove_property("auto_breakstone");
-	remove_property("auto_aftercore");
-	remove_property("auto_aboocount");
-	remove_property("auto_dinseyGarbageMoney");
-	remove_property("auto_lastABooConsider");
-	remove_property("auto_lastABooCycleFix");
-	remove_property("auto_longConMonster");
-	remove_property("auto_voidWarranty");
-	remove_property("auto_kingLiberation");
-	remove_property("auto_borrowedTimeOnLiberation");
-	remove_property("auto_xiblaxianChoice");
-	remove_property("auto_extrudeChoice");
-	remove_property("auto_consumeKeyLimePies");
-	remove_property("auto_shareMaximizer");
-	remove_property("auto_allowSharingData");
-	remove_property("auto_mummeryChoice");
-	remove_property("auto_choice1119");
-	remove_property("auto_useTatter");				//obsolete combat directive to use [Tattered Scrap Of Paper] to escape combat
-	remove_property("auto_alwaysGetSteelOrgan");	//renamed to auto_getSteelOrgan_initialize
-	remove_property("auto_logLevel");		//replaced string auto_logLevel with int auto_log_level
-	remove_property("auto_bedtime_pulls_skip_clover"); //replaced option of pulling multiple ten-leaf clovers with always pulling an 11-leaf clover
-	remove_property("cloverProtectActive"); //obsolete with change to Lucky! adventures
-	remove_property("auto_edCombatHandler");	//ed can use the same tracking preference as all other paths
-	remove_property("auto_combatHandler");		//replaced with _auto_combatState
-	remove_property("auto_skipNEPOverride"); // unnecessary. Resources on hand should be used to progress quests.
-	remove_property("auto_dickstab"); // Just no.
-	remove_property("auto_getDinseyGarbageMoney"); // irrelevant in-run.
-	remove_property("auto_hatchRagamuffinImp"); // remnant which should've been removed along with the code.
-	remove_property("auto_saveMagicalSausage"); // unnecessary. Resources on hand should be used to progress quests.
-	remove_property("auto_useWishes"); // unnecessary. Resources on hand should be used to progress quests.
-	remove_property("auto_doNotUseCMC"); // unnecessary. Predates 2023 ascension workshed changes & as above resources on hand should be used to progress quests.
-	remove_property("auto_doArtistQuest"); // irrelevant in-run.
-	remove_property("auto_noSleepingDog"); // old & unused since consumption was rewritten 3-4 years ago.
-	remove_property("auto_cookie"); // old & unused since the semirare & clover revamp.
-	remove_property("auto_doArmory"); // irrelevant in-run.
-	remove_property("auto_doMeatsmith"); // irrelevant in-run.
-	remove_property("auto_waitingArrowAlcove"); // easier methods of handling this. Mafia has tracking properties for 10+ year old IotMs.
-	remove_property("auto_combatHandlerFingernailClippers"); // irrelevant in-run.
-	remove_property("auto_delayHauntedKitchen"); // We shouldn't need to rely on the user to tell us how to play because users are often terrible at the game.
+	removeProperty("auto_debug");
+	removeProperty("auto_sonata");
+	removeProperty("auto_edDelayTimer"); //replaced with auto_delayTimer that works in all paths
+	removeProperty("auto_cubeItems");
+	removeProperty("auto_useCubeling");
+	removeProperty("auto_pullPVPJunk");
+	removeProperty("auto_day1_init"); //old day initialization trackers
+	removeProperty("auto_day2_init"); //old day initialization trackers
+	removeProperty("auto_day3_init"); //old day initialization trackers
+	removeProperty("auto_day4_init"); //old day initialization trackers
+	removeProperty("auto_gaudy"); //Some lingering stuff from when gaudy pirates mattered is still here
+	removeProperty("auto_beta_test"); //Beta testing features should be guarded behind their own individual properties
+	removeProperty("auto_invaderKilled"); //No longer need to track the invaders status ourselves as mafia does it now
+	removeProperty("auto_airship");
+	removeProperty("auto_ballroom");
+	removeProperty("auto_ballroomflat");
+	removeProperty("auto_ballroomopen");
+	removeProperty("auto_ballroomsong");
+	removeProperty("auto_bat");
+	removeProperty("auto_bean");
+	removeProperty("auto_blackfam");
+	removeProperty("auto_blackmap");
+	removeProperty("auto_boopeak");
+	removeProperty("auto_castlebasement");
+	removeProperty("auto_castleground");
+	removeProperty("auto_castletop");
+	removeProperty("auto_consumption");
+	removeProperty("auto_crypt");
+	removeProperty("auto_day1_cobb");
+	removeProperty("auto_fcle");
+	removeProperty("auto_friars");
+	removeProperty("auto_goblinking");
+	removeProperty("auto_gremlins");
+	removeProperty("auto_gremlinBanishes");
+	removeProperty("auto_gunpowder");
+	removeProperty("auto_hiddenapartment");
+	removeProperty("auto_hiddenbowling");
+	removeProperty("auto_hiddencity");
+	removeProperty("auto_hiddenhospital");
+	removeProperty("auto_hiddenoffice");
+	removeProperty("auto_hiddenunlock");
+	removeProperty("auto_hiddenzones");
+	removeProperty("auto_highlandlord");
+	removeProperty("auto_masonryWall");
+	removeProperty("auto_mcmuffin");
+	removeProperty("auto_mistypeak");
+	removeProperty("auto_mosquito");
+	removeProperty("auto_nuns");
+	removeProperty("auto_oilpeak");
+	removeProperty("auto_orchard");
+	removeProperty("auto_palindome");
+	removeProperty("auto_phatloot");
+	removeProperty("auto_forcePhatLootToken");
+	removeProperty("auto_prewar");
+	removeProperty("auto_prehippy");
+	removeProperty("auto_pirateoutfit");
+	removeProperty("auto_trytower");
+	removeProperty("auto_shenCopperhead");
+	removeProperty("auto_spookyfertilizer");
+	removeProperty("auto_spookymap");
+	removeProperty("auto_spookyravensecond");
+	removeProperty("auto_spookysapling");
+	removeProperty("auto_sonofa");
+	removeProperty("auto_sorceress");
+	removeProperty("auto_swordfish");
+	removeProperty("auto_tavern");
+	removeProperty("auto_trapper");
+	removeProperty("auto_treecoin");
+	removeProperty("auto_twinpeak");
+	removeProperty("auto_twinpeakprogress");
+	removeProperty("auto_war");
+	removeProperty("auto_winebomb");
+	removeProperty("auto_clearCombatScripts");
+	removeProperty("auto_legacyConsumeStuff"); //Knapsack consumption algorithm is now for everyone
+	removeProperty("betweenAdventureScript"); //might be an old mafia property that was renamed but it does nothing now
+	removeProperty("auto_copperhead"); //Mafia added tracking for the Copperhead Club non-combat so this is no longer necesssary
+	removeProperty("auto_mineForOres"); //Automated Ore mining in hardcore is now for everyone!
+	removeProperty("auto_hpAutoRecoveryItems");
+	removeProperty("auto_hpAutoRecovery");
+	removeProperty("auto_hpAutoRecoveryTarget");
+	removeProperty("auto_skipDesert");
+	removeProperty("auto_shenStarted");
+	removeProperty("auto_breakstone");
+	removeProperty("auto_aftercore");
+	removeProperty("auto_aboocount");
+	removeProperty("auto_dinseyGarbageMoney");
+	removeProperty("auto_lastABooConsider");
+	removeProperty("auto_lastABooCycleFix");
+	removeProperty("auto_longConMonster");
+	removeProperty("auto_voidWarranty");
+	removeProperty("auto_kingLiberation");
+	removeProperty("auto_borrowedTimeOnLiberation");
+	removeProperty("auto_xiblaxianChoice");
+	removeProperty("auto_extrudeChoice");
+	removeProperty("auto_consumeKeyLimePies");
+	removeProperty("auto_shareMaximizer");
+	removeProperty("auto_allowSharingData");
+	removeProperty("auto_mummeryChoice");
+	removeProperty("auto_choice1119");
+	removeProperty("auto_useTatter"); //obsolete combat directive to use [Tattered Scrap Of Paper] to escape combat
+	removeProperty("auto_alwaysGetSteelOrgan"); //renamed to auto_getSteelOrgan_initialize
+	removeProperty("auto_logLevel"); //replaced string auto_logLevel with int auto_log_level
+	removeProperty("auto_bedtime_pulls_skip_clover"); //replaced option of pulling multiple ten-leaf clovers with always pulling an 11-leaf clover
+	removeProperty("cloverProtectActive"); //obsolete with change to Lucky! adventures
+	removeProperty("auto_edCombatHandler"); //ed can use the same tracking preference as all other paths
+	removeProperty("auto_combatHandler"); //replaced with _auto_combatState
+	removeProperty("auto_skipNEPOverride"); // unnecessary. Resources on hand should be used to progress quests.
+	removeProperty("auto_dickstab"); // Just no.
+	removeProperty("auto_getDinseyGarbageMoney"); // irrelevant in-run.
+	removeProperty("auto_hatchRagamuffinImp"); // remnant which should've been removed along with the code.
+	removeProperty("auto_saveMagicalSausage"); // unnecessary. Resources on hand should be used to progress quests.
+	removeProperty("auto_useWishes"); // unnecessary. Resources on hand should be used to progress quests.
+	removeProperty("auto_doNotUseCMC"); // unnecessary. Predates 2023 ascension workshed changes & as above resources on hand should be used to progress quests.
+	removeProperty("auto_doArtistQuest"); // irrelevant in-run.
+	removeProperty("auto_noSleepingDog"); // old & unused since consumption was rewritten 3-4 years ago.
+	removeProperty("auto_cookie"); // old & unused since the semirare & clover revamp.
+	removeProperty("auto_doArmory"); // irrelevant in-run.
+	removeProperty("auto_doMeatsmith"); // irrelevant in-run.
+	removeProperty("auto_waitingArrowAlcove"); // easier methods of handling this. Mafia has tracking properties for 10+ year old IotMs.
+	removeProperty("auto_combatHandlerFingernailClippers"); // irrelevant in-run.
+	removeProperty("auto_delayHauntedKitchen"); // We shouldn't need to rely on the user to tell us how to play because users are often terrible at the game.
 }
 
-void defaultConfig(string prop, string val)
+export function defaultConfig(prop: string, val: string): void
 {
 	//this function is used to configure default values. it only makes a change if the current value is nothing
-	if(!property_exists(prop))
+	if (!propertyExists(prop))
 	{
-		auto_log_info(prop+ " has no value set. setting it to the default value of " +val);
-		set_property(prop,val);
+		auto_log_info$1(`${prop} has no value set. setting it to the default value of ${val}`);
+		setProperty(prop, val);
 	}
 }
 
-void auto_settingsDefaults()
+export function auto_settingsDefaults(): void
 {
 	//set default values for settings which have not yet been configured
 	defaultConfig("auto_delayTimer", "1");
-	defaultConfig("auto_abooclover", "true");		//Are we considering using a clover at A-Boo Peak?
-	defaultConfig("auto_consumablePriceLimit", "12000");	// Max mall price for consumables to eat/drink (also won't exceed mafia's autobuy limit).
+	defaultConfig("auto_abooclover", "true"); //Are we considering using a clover at A-Boo Peak?
+	defaultConfig("auto_consumablePriceLimit", "12000"); // Max mall price for consumables to eat/drink (also won't exceed mafia's autobuy limit).
 	defaultConfig("auto_paranoia", "-1");
 	defaultConfig("auto_inv_paranoia", "false");
 	defaultConfig("auto_save_adv_override", "-1");
@@ -348,10 +351,10 @@ void auto_settingsDefaults()
 	defaultConfig("auto_bedtime_pulls_min_desirability", "1.0");
 }
 
-void auto_settings()
+export function auto_settings(): void
 {
-	auto_settingsUpgrade();		//upgrade settings from old format to new format
-	auto_settingsFix();			//fix settings where user inputted an invalid value
-	auto_settingsDelete();		//delete obsolete settings
-	auto_settingsDefaults();	//set default values for settings which have not yet been configured
+	auto_settingsUpgrade(); //upgrade settings from old format to new format
+	auto_settingsFix(); //fix settings where user inputted an invalid value
+	auto_settingsDelete(); //delete obsolete settings
+	auto_settingsDefaults(); //set default values for settings which have not yet been configured
 }

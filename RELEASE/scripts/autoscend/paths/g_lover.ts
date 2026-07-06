@@ -1,62 +1,64 @@
-boolean in_glover()
+import { Effect, Item, Path, Skill, cliExecute, containsText, getProperty, haveSkill, itemAmount, myHp, myMaxhp, myMp, myPath, putCloset, setProperty, toInt, toItem, useSkill } from "kolmafia";
+
+//Defined in autoscend/paths/g_lover.ash
+export function in_glover(): boolean
 {
-	return my_path() == $path[G-Lover];
+	return myPath() === Path.get("G-Lover");
 }
 
-void glover_initializeDay(int day)
+export function glover_initializeDay(day: number): void
 {
-	if(!in_glover()) 
+	if (!in_glover())
 	{
 		return;
 	}
 }
 
-void glover_initializeSettings()
+export function glover_initializeSettings(): void
 {
-	if(in_glover())
+	if (in_glover())
 	{
-		set_property("auto_getBeehive", true);
-		set_property("auto_getBoningKnife", true);
-		set_property("auto_dakotaFanning", true);
-		set_property("auto_ignoreFlyer", true);
-		set_property("gnasirProgress", get_property("gnasirProgress").to_int() | 16);
-
+		setProperty("auto_getBeehive", true.toString());
+		setProperty("auto_getBoningKnife", true.toString());
+		setProperty("auto_dakotaFanning", true.toString());
+		setProperty("auto_ignoreFlyer", true.toString());
+		setProperty("gnasirProgress", (toInt(getProperty("gnasirProgress")) | 16).toString());
 		//Buy Crude Oil Congealer and um... A-Boo Glues.
-		if((item_amount($item[Crude Oil Congealer]) == 0) && (item_amount($item[G]) > 0))
+		if (itemAmount(Item.get("crude oil congealer")) === 0 && itemAmount(Item.get("G")) > 0)
 		{
-			cli_execute("make " + $item[Crude Oil Congealer]);
+			cliExecute(`make ${Item.get("crude oil congealer")}`);
 		}
-		while((item_amount($item[A-Boo Glue]) < 3) && (item_amount($item[G]) > 0))
+		while (itemAmount(Item.get("A-Boo glue")) < 3 && itemAmount(Item.get("G")) > 0)
 		{
-			cli_execute("make " + $item[A-Boo Glue]);
+			cliExecute(`make ${Item.get("A-Boo glue")}`);
 		}
 
 	}
 }
 
-boolean glover_usable(string it)
+export function glover_usable(it: string): boolean
 {
-	if(!in_glover())
+	if (!in_glover())
 	{
 		return true;
 	}
-	if(contains_text(it, "g"))
+	if (containsText(it, "g"))
 	{
 		return true;
 	}
-	if(contains_text(it, "G"))
+	if (containsText(it, "G"))
 	{
 		return true;
 	}
-	item checkItem = it.to_item();
-	if(checkItem != $item[none] && $items[SpinMaster&trade; lathe, // it works since there's no "use" link
-	&quot;I voted!&quot; sticker, // free fights still work for I voted! sticker
-	ninja Carabiner, ninja Crampons, ninja Rope,
-	eXtreme scarf, snowboarder pants, eXtreme mittens, linoleum ore, chrome ore, asbestos ore,
-	loadstone, amulet of extreme plot significance, titanium assault umbrella, antique machete,
-	half-size scalpel, head mirror, wet stew, UV-resistant compass, Talisman o' Namsilat, Unstable Fulminate,
-	Orcish baseball cap, Orcish frat-paddle, filthy knitted dread sack, filthy corduroys, continuum transfunctioner,
-	beer helmet, distressed denim pants, reinforced beaded headband, bullet-proof corduroys] contains checkItem)
+	let checkItem: Item = toItem(it);
+	if (checkItem !== Item.none && Item.get(["SpinMaster&trade; lathe", // it works since there's no "use" link
+	"&quot;I Voted!&quot; sticker", // free fights still work for I voted! sticker
+	"ninja carabiner", "ninja crampons", "ninja rope",
+	"eXtreme scarf", "snowboarder pants", "eXtreme mittens", "linoleum ore", "chrome ore", "asbestos ore",
+	"loadstone", "amulet of extreme plot significance", "titanium assault umbrella", "antique machete",
+	"half-size scalpel", "head mirror", "wet stew", "UV-resistant compass", "Talisman o' Namsilat", "unstable fulminate",
+	"Orcish baseball cap", "Orcish frat-paddle", "filthy knitted dread sack", "filthy corduroys", "continuum transfunctioner",
+	"beer helmet", "distressed denim pants", "reinforced beaded headband", "bullet-proof corduroys"]).includes(checkItem))
 	{
 		// these are all used for quest furthering porpoises so they still "work" even though they don't contain G's
 		return true;
@@ -64,36 +66,36 @@ boolean glover_usable(string it)
 	return false;
 }
 
-boolean glover_usable(effect eff)
+export function glover_usable$1(eff: Effect): boolean
 {
-	if(!in_glover())
+	if (!in_glover())
 	{
 		return true;
 	}
-	if($effects[Stone-Faced] contains eff)
+	if (Effect.get(["Stone-Faced"]).includes(eff))
 	{
-		return true;	//explicit exceptions that work in glover despite not having G in the name
+		return true; //explicit exceptions that work in glover despite not having G in the name
 	}
-	return glover_usable(eff.to_string());
+	return glover_usable(eff.toString());
 }
 
-boolean LM_glover()
+export function LM_glover(): boolean
 {
-	if(!in_glover())
+	if (!in_glover())
 	{
 		return false;
 	}
-	foreach it in $items[Chaos Butterfly, Cornucopia, Disassembled Clover, Filthy Poultice, Metal Meteoroid, Oil Of Parrrlay, Pec Oil, Polysniff Perfume, Smut Orc Keepsake Box, Sonar-In-A-Biscuit, T.U.R.D.S. Key, 11-Leaf Clover, Tonic Djinn, Turtle Wax]
+	for (let it of Item.get(["chaos butterfly", "cornucopia", "disassembled clover", "filthy poultice", "metal meteoroid", "Oil of Parrrlay", "pec oil", "Polysniff Perfume", "smut orc keepsake box", "sonar-in-a-biscuit", "T.U.R.D.S. Key", "11-leaf clover", "tonic djinn", "turtle wax"]))
 	{
-		if(item_amount(it) > 0)
+		if (itemAmount(it) > 0)
 		{
-			put_closet(item_amount(it), it);
+			putCloset(itemAmount(it), it);
 		}
 	}
 
-	if(((my_maxhp() - my_hp()) > 40) && have_skill($skill[Tongue Of The Walrus]) && (my_mp() > 100))
+	if (myMaxhp() - myHp() > 40 && haveSkill(Skill.get("Tongue of the Walrus")) && myMp() > 100)
 	{
-		use_skill(1, $skill[Tongue Of The Walrus]);
+		useSkill(1, Skill.get("Tongue of the Walrus"));
 	}
 
 	return false;

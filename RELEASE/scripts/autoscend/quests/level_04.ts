@@ -1,9 +1,31 @@
-boolean provideGuanoStenchResistance()
+import { Effect, Element, Familiar, Item, Location, canInteract, cliExecute, council, getProperty, itemAmount, toBoolean, use, visitUrl } from "kolmafia";
+import { auto_buyUpTo } from "../auto_acquire";
+import { autoAdv$2 } from "../auto_adventure";
+import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
+import { autoForceEquip$3 } from "../auto_equipment";
+import { handleFamiliar$1 } from "../auto_familiar";
+import { provideFamExp$2, provideMeat$2, provideResistances$4 } from "../auto_providers";
+import { auto_reserveUndergroundAdventures } from "../auto_routing";
+import { auto_badassBelt, auto_change_mcd, auto_is_valid, auto_log_debug$1, auto_log_info, auto_log_warning, handleTracker$1, internalQuestStatus } from "../auto_util";
+import { zone_available } from "../auto_zone";
+import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
+import { auto_haveGreyGoose } from "../iotms/mr2022";
+import { auto_makeMonkeyPawWish$1 } from "../iotms/mr2023";
+import { auto_haveBatWings, auto_haveChestMimic } from "../iotms/mr2024";
+import { isActuallyEd } from "../paths/actually_ed_the_undying";
+import { in_amw } from "../paths/adventurer_meats_world";
+import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
+import { bat_formBats$1 } from "../paths/dark_gyffte";
+import { in_koe } from "../paths/kingdom_of_exploathing";
+import { in_lol } from "../paths/legacy_of_loathing";
+import { shenShouldDelayZone } from "./level_11";
+
+export function provideGuanoStenchResistance(): boolean
 {
-	int [element] resGoal;
-	resGoal[$element[stench]] = 1;
+	let resGoal: Map<Element, number> = new Map();
+	resGoal.set(Element.get("stench"), 1);
 	// try to get the stench res without equipment, but use equipment if we must
-	if(!provideResistances(resGoal, $location[Guano Junction], false) && !provideResistances(resGoal, $location[Guano Junction], true))
+	if (!provideResistances$4(resGoal, Location.get("Guano Junction"), false) && !provideResistances$4(resGoal, Location.get("Guano Junction"), true))
 	{
 		auto_log_warning("I cannae handle the stench of the Guano Junction!", "green");
 		return false;
@@ -11,9 +33,10 @@ boolean provideGuanoStenchResistance()
 	return true;
 }
 
-boolean L4_batCave()
+//Defined in autoscend/quests/level_04.ash
+export function L4_batCave(): boolean
 {
-	if(internalQuestStatus("questL04Bat") < 0 || internalQuestStatus("questL04Bat") > 4)
+	if (internalQuestStatus("questL04Bat") < 0 || internalQuestStatus("questL04Bat") > 4)
 	{
 		return false;
 	}
@@ -22,159 +45,157 @@ boolean L4_batCave()
 
 	if (auto_haveBatWings())
 	{
-		if (!get_property("batWingsBatHoleEntrance").to_boolean() && zone_available($location[The Bat Hole Entrance]))
+		if (!toBoolean(getProperty("batWingsBatHoleEntrance")) && zone_available(Location.get("The Bat Hole Entrance")))
 		{
-			autoForceEquip($item[bat wings]);
+			autoForceEquip$3(Item.get("bat wings"));
 			auto_log_info("Wearing bat wings to get a free bat wing", "green");
-			handleTracker($item[bat wings], $item[bat wing], "auto_otherstuff");
-			return autoAdv($location[The Bat Hole Entrance]);
+			handleTracker$1(Item.get("bat wings").toString(), Item.get("bat wing").toString(), "auto_otherstuff");
+			return autoAdv$2(Location.get("The Bat Hole Entrance"));
 		}
-		else if (!get_property("batWingsGuanoJunction").to_boolean() && zone_available($location[Guano Junction]) && provideGuanoStenchResistance())
+		else if (!toBoolean(getProperty("batWingsGuanoJunction")) && zone_available(Location.get("Guano Junction")) && provideGuanoStenchResistance())
 		{
-			autoForceEquip($item[bat wings]);
+			autoForceEquip$3(Item.get("bat wings"));
 			auto_log_info("Wearing bat wings to get a free sonar-in-a-biscuit", "green");
-			handleTracker($item[bat wings], $item[sonar-in-a-biscuit], "auto_otherstuff");
-			return autoAdv($location[Guano Junction]);
+			handleTracker$1(Item.get("bat wings").toString(), Item.get("sonar-in-a-biscuit").toString(), "auto_otherstuff");
+			return autoAdv$2(Location.get("Guano Junction"));
 		}
-		else if (!get_property("batWingsBatratBurrow").to_boolean() && zone_available($location[The Batrat and Ratbat Burrow]))
+		else if (!toBoolean(getProperty("batWingsBatratBurrow")) && zone_available(Location.get("The Batrat and Ratbat Burrow")))
 		{
-			autoForceEquip($item[bat wings]);
+			autoForceEquip$3(Item.get("bat wings"));
 			auto_log_info("Wearing bat wings to get another free sonar-in-a-biscuit", "green");
-			handleTracker($item[bat wings], $item[sonar-in-a-biscuit], "auto_otherstuff");
-			return autoAdv($location[The Batrat and Ratbat Burrow]);
+			handleTracker$1(Item.get("bat wings").toString(), Item.get("sonar-in-a-biscuit").toString(), "auto_otherstuff");
+			return autoAdv$2(Location.get("The Batrat and Ratbat Burrow"));
 		}
-		else if (!get_property("batWingsBeanbatChamber").to_boolean() && zone_available($location[The Beanbat Chamber]))
+		else if (!toBoolean(getProperty("batWingsBeanbatChamber")) && zone_available(Location.get("The Beanbat Chamber")))
 		{
-			autoForceEquip($item[bat wings]);
+			autoForceEquip$3(Item.get("bat wings"));
 			auto_log_info("Wearing bat wings to get a free enchanted bean", "green");
-			handleTracker($item[bat wings], $item[enchanted bean], "auto_otherstuff");
-			return autoAdv($location[The Beanbat Chamber]);
+			handleTracker$1(Item.get("bat wings").toString(), Item.get("enchanted bean").toString(), "auto_otherstuff");
+			return autoAdv$2(Location.get("The Beanbat Chamber"));
 		}
 	}
 
-	if(considerGrimstoneGolem(true))
+	if (considerGrimstoneGolem(true))
 	{
-		handleBjornify($familiar[Grimstone Golem]);
+		handleBjornify(Familiar.get("Grimstone Golem"));
 	}
-	buffMaintain($effect[Fishy Whiskers]);
+	buffMaintain$4(Effect.get("Fishy Whiskers"));
 
-	int batStatus = internalQuestStatus("questL04Bat");
-	if(batStatus < 3)
+	let batStatus: number = internalQuestStatus("questL04Bat");
+	if (batStatus < 3)
 	{
-		if(auto_is_valid($item[Sonar-In-A-Biscuit]))
+		if (auto_is_valid(Item.get("sonar-in-a-biscuit")))
 		{
-			if(item_amount($item[Sonar-In-A-Biscuit]) == 0 && can_interact())
+			if (itemAmount(Item.get("sonar-in-a-biscuit")) === 0 && canInteract())
 			{
-				auto_buyUpTo(1, $item[Sonar-In-A-Biscuit]);
+				auto_buyUpTo(1, Item.get("sonar-in-a-biscuit"));
 			}
-			if(item_amount($item[Sonar-In-A-Biscuit]) == 0)
+			if (itemAmount(Item.get("sonar-in-a-biscuit")) === 0)
 			{
 				// attempt to monkey wish for sonars
-				auto_makeMonkeyPawWish($item[Sonar-In-A-Biscuit]);
+				auto_makeMonkeyPawWish$1(Item.get("sonar-in-a-biscuit"));
 			}
-			if(item_amount($item[Sonar-In-A-Biscuit]) > 0)
+			if (itemAmount(Item.get("sonar-in-a-biscuit")) > 0)
 			{
-				if(use(1, $item[Sonar-In-A-Biscuit]))
+				if (use(1, Item.get("sonar-in-a-biscuit")))
 				{
 					return true;
 				}
-				else
-				{
+				else {
 					auto_log_warning("Failed to use Sonar-In-A-Biscuit for some reason. refreshing inventory and skipping", "red");
-					visit_url("place.php?whichplace=bathole");
-					cli_execute("refresh inv");
+					visitUrl("place.php?whichplace=bathole");
+					cliExecute("refresh inv");
 					return false;
 				}
 			}
 		}
 	}
 
-	if(batStatus >= 4)
+	if (batStatus >= 4)
 	{
-		if(item_amount($item[Enchanted Bean]) == 0 && internalQuestStatus("questL10Garbage") < 1 && !isActuallyEd())
+		if (itemAmount(Item.get("enchanted bean")) === 0 && internalQuestStatus("questL10Garbage") < 1 && !isActuallyEd())
 		{
-			return autoAdv($location[The Beanbat Chamber]);
+			return autoAdv$2(Location.get("The Beanbat Chamber"));
 		}
 		council();
-		if(in_koe())
+		if (in_koe())
 		{
-			cli_execute("refresh quests");
+			cliExecute("refresh quests");
 		}
 		return true;
 	}
-	
-	if(batStatus >= 3)
+
+	if (batStatus >= 3)
 	{
 		if (auto_reserveUndergroundAdventures() && !in_lol())
 		{
 			return false;
 		}
 
-		provideMeat(50, $location[The Boss Bat\'s Lair], false);
+		provideMeat$2(50, Location.get("The Boss Bat's Lair"), false);
 		//AoSOL buffs
-		if(in_aosol())
+		if (in_aosol())
 		{
-			buffMaintain($effect[Queso Fustulento], 10, 1, 10);
-			buffMaintain($effect[Tricky Timpani], 30, 1, 10);
-			if(auto_haveGreyGoose() && $location[The Boss Bat\'s Lair].turns_spent >=4){
-				handleFamiliar($familiar[Grey Goose]);
+			buffMaintain$3(Effect.get("Queso Fustulento"), 10, 1, 10);
+			buffMaintain$3(Effect.get("Tricky Timpani"), 30, 1, 10);
+			if (auto_haveGreyGoose() && (Location.get("The Boss Bat's Lair")).turnsSpent >= 4) {
+				handleFamiliar$1(Familiar.get("Grey Goose"));
 			}
 		}
-		int batskinBelt = item_amount($item[Batskin Belt]);
+		let batskinBelt: number = itemAmount(Item.get("batskin belt"));
 		auto_change_mcd(4); // get the pants from the Boss Bat.
-		
 		// Let's whack some free XP on our Chest Mimic (it's a chaun)
 		if (auto_haveChestMimic())
 		{
-			handleFamiliar($familiar[Chest Mimic]);
-			provideFamExp(50, $location[The Boss Bat\'s Lair], true, false);
+			handleFamiliar$1(Familiar.get("Chest Mimic"));
+			provideFamExp$2(50, Location.get("The Boss Bat's Lair"), true, false);
 		}
-		autoAdv($location[The Boss Bat\'s Lair]);
-		# POCKET FAMILIARS remove once mafia tracks this
-		if(item_amount($item[Batskin Belt]) != batskinBelt)
+		autoAdv$2(Location.get("The Boss Bat's Lair"));
+		// POCKET FAMILIARS remove once mafia tracks this
+		if (itemAmount(Item.get("batskin belt")) !== batskinBelt)
 		{
 			auto_badassBelt(); // mafia doesn't make this any more even if autoCraft = true for some random reason so lets do it manually.
 		}
 		// TODO: Mafia currently does not advance the quest tracker when the Plumber boss is defeated.
 		// this breaks that infinite loop, while "refresh quests" apparently doesn't. Who knows?
-		visit_url("place.php?whichplace=bathole");
+		visitUrl("place.php?whichplace=bathole");
 		return true;
 	}
-	if(batStatus >= 2)
+	if (batStatus >= 2)
 	{
-		bat_formBats();
-		if(item_amount($item[Enchanted Bean]) == 0 && internalQuestStatus("questL10Garbage") < 2 && !isActuallyEd())
+		bat_formBats$1();
+		if (itemAmount(Item.get("enchanted bean")) === 0 && internalQuestStatus("questL10Garbage") < 2 && !isActuallyEd())
 		{
-			autoAdv($location[The Beanbat Chamber]);
+			autoAdv$2(Location.get("The Beanbat Chamber"));
 			return true;
 		}
 		// prioritize getting replica Mr. A in LoL
 		// prioritize boss meat in amw
-		if(shenShouldDelayZone($location[The Batrat and Ratbat Burrow]) && !in_lol() && !in_amw())
+		if (shenShouldDelayZone(Location.get("The Batrat and Ratbat Burrow")) && !in_lol() && !in_amw())
 		{
-			auto_log_debug("Delaying Batrat Burrow in case of Shen.");
+			auto_log_debug$1("Delaying Batrat Burrow in case of Shen.");
 			return false;
 		}
-		if(auto_haveGreyGoose()){
-			handleFamiliar($familiar[Grey Goose]);
+		if (auto_haveGreyGoose()) {
+			handleFamiliar$1(Familiar.get("Grey Goose"));
 		}
-		autoAdv($location[The Batrat and Ratbat Burrow]);
+		autoAdv$2(Location.get("The Batrat and Ratbat Burrow"));
 		return true;
 	}
-	if(batStatus >= 1)
+	if (batStatus >= 1)
 	{
 		// prioritize getting replica Mr. A in LoL
 		// prioritize boss meat in amw
-		if(shenShouldDelayZone($location[The Batrat and Ratbat Burrow]) && !in_lol() && !in_amw())
+		if (shenShouldDelayZone(Location.get("The Batrat and Ratbat Burrow")) && !in_lol() && !in_amw())
 		{
-			auto_log_debug("Delaying Batrat Burrow in case of Shen.");
+			auto_log_debug$1("Delaying Batrat Burrow in case of Shen.");
 			return false;
 		}
-		bat_formBats();
-		if(auto_haveGreyGoose()){
-			handleFamiliar($familiar[Grey Goose]);
+		bat_formBats$1();
+		if (auto_haveGreyGoose()) {
+			handleFamiliar$1(Familiar.get("Grey Goose"));
 		}
-		autoAdv($location[The Batrat and Ratbat Burrow]);
+		autoAdv$2(Location.get("The Batrat and Ratbat Burrow"));
 		return true;
 	}
 
@@ -183,9 +204,9 @@ boolean L4_batCave()
 		return false;
 	}
 
-	bat_formBats();
-	if(auto_haveGreyGoose()){
-		handleFamiliar($familiar[Grey Goose]);
+	bat_formBats$1();
+	if (auto_haveGreyGoose()) {
+		handleFamiliar$1(Familiar.get("Grey Goose"));
 	}
-	return autoAdv($location[Guano Junction]);
+	return autoAdv$2(Location.get("Guano Junction"));
 }

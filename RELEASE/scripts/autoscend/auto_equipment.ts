@@ -1,618 +1,639 @@
-string getMaximizeSlotPref(slot s)
+import { Class, Effect, Familiar, Item, Location, Modifier, Monster, Path, Skill, Slot, Stat, abort, appearanceRates, booleanModifier, canEquip, cliExecute, containsText, endsWith, equip, equippedAmount, equippedItem, familiarWeight, fullnessLimit, getInventory, getProperty, getRelated, haveEffect, haveSkill, hippyStoneBroken, inHardcore, inebrietyLimit, isUnrestricted, isWearingOutfit, itemAmount, itemType, length, max, maximize, min, myAdventures, myBasestat, myClass, myFamiliar, myHp, myLevel, myLocation, myMaxhp, myMaxmp, myMeat, myMp, myPath, myPrimestat, npcPrice, numericModifier, outfitPieces, replaceString, retrieveItem, setLocation, setProperty, splitString, startsWith, substring, toBoolean, toFloat, toInt, toItem, toLocation, toLowerCase, toMonster, toSlot, weaponHands, weaponType } from "kolmafia";
+import { consumptionProgress } from "./auto_consume";
+import { auto_have_familiar, findNonRockFamiliarInTerrarium, pathHasFamiliar } from "./auto_familiar";
+import { disregardInstantKarma } from "./auto_powerlevel";
+import { solveDelayZone$1 } from "./auto_routing";
+import { autoMaximize, auto_burnMP, auto_can_equip, auto_can_equip$1, auto_have_skill, auto_ignoreExperience, auto_is_valid, auto_log_debug, auto_log_error, auto_log_info, auto_log_info$1, auto_log_warning, auto_log_warning$1, instakillable, isArmoryAndLeggeryStoreAvailable, isFreeMonster, meatReserve, wrap_item } from "./auto_util";
+import { zone_delay } from "./auto_zone";
+import { auto_jokesterGunFreeKillAvailable } from "./iotms/mr2016";
+import { isjanuaryToteAvailable, januaryToteTurnsLeft } from "./iotms/mr2018";
+import { auto_chestXraysRemaining, auto_haveKramcoSausageOMatic, auto_sausageFightsToday } from "./iotms/mr2019";
+import { auto_hasPowerfulGlove } from "./iotms/mr2020";
+import { auto_backupTarget, auto_haveCrystalBall, simulatePreAdvForCrystalBall } from "./iotms/mr2021";
+import { auto_canUseJuneCleaver, auto_expectedStillsuitAdvs, auto_hasStillSuit, auto_haveCursedMagnifyingGlass, canUseSweatpants, getSweat } from "./iotms/mr2022";
+import { auto_haveBurningLeaves } from "./iotms/mr2023";
+import { auto_haveBatWings, auto_haveDarts, auto_haveSpringShoes } from "./iotms/mr2024";
+import { auto_getItemToEquipBCZ, auto_haveCupidBow, auto_haveMobiusRing, auto_timeCopFights, auto_timeIsAStripPossible, auto_wantToBCZ } from "./iotms/mr2025";
+import { auto_clubEmBackInTimesRemaining } from "./iotms/mr2026";
+import { isActuallyEd } from "./paths/actually_ed_the_undying";
+import { in_amw } from "./paths/adventurer_meats_world";
+import { in_avantGuard } from "./paths/avant_guard";
+import { borisTrusty, is_boris } from "./paths/avatar_of_boris";
+import { in_bhy } from "./paths/bees_hate_you";
+import { in_darkGyffte } from "./paths/dark_gyffte";
+import { in_glover } from "./paths/g_lover";
+import { in_gnoob } from "./paths/gelatinous_noob";
+import { in_hattrick } from "./paths/hattrick";
+import { in_heavyrains } from "./paths/heavy_rains";
+import { in_koe, koe_NeedWhitePixels } from "./paths/kingdom_of_exploathing";
+import { in_kolhs } from "./paths/kolhs";
+import { in_plumber } from "./paths/path_of_the_plumber";
+import { in_pokefam, pokefam_defaultMaximizeStatement } from "./paths/pocket_familiars";
+import { in_small } from "./paths/small";
+import { in_wereprof, is_professor, is_werewolf } from "./paths/wereprofessor";
+import { in_wildfire } from "./paths/wildfire";
+import { in_robot, robot_defaultMaximizeStatement } from "./paths/you_robot";
+import { getZooBestPunch, in_zootomist } from "./paths/zootomist";
+
+//Defined in autoscend/auto_equipment.ash
+export function getMaximizeSlotPref(s: Slot): string
 {
-	return "_auto_maximize_equip_" + s.to_string();
+	return `_auto_maximize_equip_${s.toString()}`;
 }
 
-item getTentativeMaximizeEquip(slot s)
+export function getTentativeMaximizeEquip(s: Slot): Item
 {
-	return get_property(getMaximizeSlotPref(s)).to_item();
+	return toItem(getProperty(getMaximizeSlotPref(s)));
 }
 
-boolean autoEquip(slot s, item it)
+export function autoEquip(s: Slot, it: Item): boolean
 {
-	if(!possessEquipment(it) || !auto_can_equip(it))
+	if (!possessEquipment(it) || !auto_can_equip(it))
 	{
 		return false;
 	}
 
-	if(s == $slot[acc3] &&
-		(it.to_string() == get_property("_auto_maximize_equip_acc1")) ||
-		(it.to_string() == get_property("_auto_maximize_equip_acc2")) ||
-		(it.to_string() == get_property("_auto_maximize_equip_acc3")))
+	if (s === Slot.get("acc3") && it.toString() === getProperty("_auto_maximize_equip_acc1") || it.toString() === getProperty("_auto_maximize_equip_acc2") || it.toString() === getProperty("_auto_maximize_equip_acc3"))
 	{
-		auto_log_warning("Ignoring duplicate equip of accessory " + it);
+		auto_log_warning$1(`Ignoring duplicate equip of accessory ${it}`);
 		return true;
 	}
-
 	// This logic lets us force the equipping of multiple accessories with minimal conflict
-	boolean acc1_empty = ("" == get_property("_auto_maximize_equip_acc1")) && !contains_text(get_property("auto_maximize_current"), "acc1");
-	boolean acc2_empty = ("" == get_property("_auto_maximize_equip_acc2")) && !contains_text(get_property("auto_maximize_current"), "acc2");
-	boolean acc3_empty = ("" == get_property("_auto_maximize_equip_acc3")) && !contains_text(get_property("auto_maximize_current"), "acc3");
-	if((item_type(it) == "accessory") && s == $slot[acc3] && !acc3_empty)
+	let acc1_empty: boolean = "" === getProperty("_auto_maximize_equip_acc1") && !containsText(getProperty("auto_maximize_current"), "acc1");
+	let acc2_empty: boolean = "" === getProperty("_auto_maximize_equip_acc2") && !containsText(getProperty("auto_maximize_current"), "acc2");
+	let acc3_empty: boolean = "" === getProperty("_auto_maximize_equip_acc3") && !containsText(getProperty("auto_maximize_current"), "acc3");
+	if (itemType(it) === "accessory" && s === Slot.get("acc3") && !acc3_empty)
 	{
-		if(acc2_empty)
+		if (acc2_empty)
 		{
-			s = $slot[acc2];
+			s = Slot.get("acc2");
 		}
-		else if(acc1_empty)
+		else if (acc1_empty)
 		{
-			s = $slot[acc1];
+			s = Slot.get("acc1");
 		}
-		else
-		{
-			auto_log_warning("We can not equip " + it + " because our slots are all full.", "red");
+		else {
+			auto_log_warning(`We can not equip ${it} because our slots are all full.`, "red");
 			return false;
 		}
 	}
 
-	auto_log_info("Equipping " + it + " to slot " + s, "gold");
+	auto_log_info(`Equipping ${it} to slot ${s}`, "gold");
 
 	return tryAddItemToMaximize(s, it);
 }
 
-boolean autoEquip(item it)
+export function autoEquip$1(it: Item): boolean
 {
-	return autoEquip(it.to_slot(), it);
+	return autoEquip(toSlot(it), it);
 }
-
 // specifically intended for forcing something in to a specific slot,
 // instead of just forcing it to be equipped in general
 // mostly for the Antique Machete and unstable fulminate
-boolean autoForceEquip(slot s, item it, boolean noMaximize)
+export function autoForceEquip(s: Slot, it: Item, noMaximize: boolean): boolean
 {
-	if(it == $item[none])
+	if (it === Item.none)
 	{
 		return equip(s, it);
 	}
-	if(!possessEquipment(it) || !auto_can_equip(it))
+	if (!possessEquipment(it) || !auto_can_equip(it))
 	{
 		return false;
 	}
-	if($slot[off-hand] == s)
+	if (Slot.get("off-hand") === s)
 	{
-		if (weapon_hands(equipped_item($slot[weapon])) > 1)
+		if (weaponHands(equippedItem(Slot.get("weapon"))) > 1)
 		{
-			if(!noMaximize) removeFromMaximize("+equip " + equipped_item($slot[weapon]));
-			equip($slot[weapon], $item[none]);
+			if (!noMaximize) { removeFromMaximize(`+equip ${equippedItem(Slot.get("weapon"))}`); }
+			equip(Slot.get("weapon"), Item.none);
 		}
-		if(!noMaximize)
+		if (!noMaximize)
 		{
-			removeFromMaximize("-equip " + it);
+			removeFromMaximize(`-equip ${it}`);
 			addToMaximize("-off-hand, 1hand");
 		}
-		return equip($slot[off-hand], it);
+		return equip(Slot.get("off-hand"), it);
 	}
-	if(equip(s, it))
+	if (equip(s, it))
 	{
-		if(!noMaximize)
+		if (!noMaximize)
 		{
-			removeFromMaximize("-equip " + it);
-			addToMaximize("-" + s);
+			removeFromMaximize(`-equip ${it}`);
+			addToMaximize(`-${s}`);
 		}
 		return true;
 	}
 	return false;
 }
 
-boolean autoForceEquip(slot s, item it)
+export function autoForceEquip$1(s: Slot, it: Item): boolean
 {
 	return autoForceEquip(s, it, false);
 }
 
-boolean autoForceEquip(item it, boolean noMaximize)
+export function autoForceEquip$2(it: Item, noMaximize: boolean): boolean
 {
 	// Maximizer will put its preferred accessories in order acc1,acc2,acc3
 	// So for accessories, use acc3 for a force as that will get the best remaining maximizer score.
-	if (it.to_slot()==$slot[acc1])
+	if (toSlot(it) === Slot.get("acc1"))
 	{
-		return autoForceEquip($slot[acc3], it, noMaximize);
+		return autoForceEquip(Slot.get("acc3"), it, noMaximize);
 	}
-	return autoForceEquip(it.to_slot(), it, noMaximize);
+	return autoForceEquip(toSlot(it), it, noMaximize);
 }
 
-boolean autoForceEquip(item it)
+export function autoForceEquip$3(it: Item): boolean
 {
 	// Maximizer will put its preferred accessories in order acc1,acc2,acc3
 	// So for accessories, use acc3 for a force as that will get the best remaining maximizer score.
-	if (it.to_slot()==$slot[acc1])
+	if (toSlot(it) === Slot.get("acc1"))
 	{
-		return autoForceEquip($slot[acc3], it);
+		return autoForceEquip$1(Slot.get("acc3"), it);
 	}
-	return autoForceEquip(it, false);
+	return autoForceEquip$2(it, false);
 }
 
-boolean autoOutfit(string toWear)
+export function autoOutfit(toWear: string): boolean
 {
-	if(!possessOutfit(toWear, true))
+	if (!possessOutfit(toWear, true))
 	{
 		return false;
 	}
-
 	// yes I could use +outfit instead here but this makes it simpler to avoid failed maximize calls
-	auto_log_debug('Adding outfit "' + toWear + '" to maximizer statement', "gold");
-
+	auto_log_debug(`Adding outfit "${toWear}" to maximizer statement`, "gold");
 	// Accessory items from outfits we commonly wear
-	boolean[item] CommonOutfitAccessories = $items[eXtreme mittens, bejeweled pledge pin, round purple sunglasses, Oscus\'s pelt, Stuffed Shoulder Parrot];
+	let CommonOutfitAccessories: Item[] = Item.get(["eXtreme mittens", "bejeweled pledge pin", "round purple sunglasses", "Oscus's pelt", "stuffed shoulder parrot"]);
 
-	boolean pass = true;
-	foreach i,it in outfit_pieces(toWear)
+	let pass_1: boolean = true;
+	for (let [i, it] of outfitPieces(toWear).entries())
 	{
 		// Keep required accessories in acc3 slot to preserve our format
-		if(CommonOutfitAccessories contains it)
+		if (CommonOutfitAccessories.includes(it))
 		{
-			pass = pass && autoEquip($slot[acc3], it);
+			pass_1 = pass_1 && autoEquip(Slot.get("acc3"), it);
 		}
-		else
-		{
-			pass = pass && autoEquip(it);
+		else {
+			pass_1 = pass_1 && autoEquip$1(it);
 		}
 	}
-	return pass;
+	return pass_1;
 }
 
-boolean autoStripOutfit(string toRemove) {
+export function autoStripOutfit(toRemove: string): boolean {
 	// removes an outfit if you have it equipped
 
-	item[int] outfit_pieces = outfit_pieces(toRemove);
-	if (count(outfit_pieces) == 0 || !is_wearing_outfit(toRemove)) {
+	let outfit_pieces: Map<number, Item> = new Map(outfitPieces(toRemove).map((_v, _i) => [_i, _v]));
+	if (outfit_pieces.size === 0 || !isWearingOutfit(toRemove)) {
 		return false;
 	}
-	auto_log_info(`Removing your {toRemove} outfit as requested.`, "blue");
-	foreach _, piece in outfit_pieces {
-		if (to_slot(piece) != $slot[acc1]) {
-			equip(to_slot(piece), $item[none]);
+	auto_log_info(`Removing your ${toRemove} outfit as requested.`, "blue");
+	for (let [_, piece] of outfit_pieces) {
+		if (toSlot(piece) !== Slot.get("acc1")) {
+			equip(toSlot(piece), Item.none);
 		} else {
-			foreach accSlot in $slots[acc1, acc2, acc3] {
-				if (equipped_item(accSlot) == piece) {
-					equip(accSlot, $item[none]);
+			for (let accSlot of Slot.get(["acc1", "acc2", "acc3"])) {
+				if (equippedItem(accSlot) === piece) {
+					equip(accSlot, Item.none);
 					break;
 				}
 			}
 		}
 	}
-	return is_wearing_outfit(toRemove);
+	return isWearingOutfit(toRemove);
 }
 
-boolean tryAddItemToMaximize(slot s, item it)
+export function tryAddItemToMaximize(s: Slot, it: Item): boolean
 {
-	if(!($slots[hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar] contains s))
+	if (!(Slot.get(["hat", "back", "shirt", "weapon", "off-hand", "pants", "acc1", "acc2", "acc3", "familiar"]).includes(s)))
 	{
-		auto_log_error("But " + s + " is an invalid equip slot... What?");
+		auto_log_error(`But ${s} is an invalid equip slot... What?`);
 		return false;
 	}
-	switch(s)
+	switch (s)
 	{
-		case $slot[weapon]:
-			if(it.weapon_hands() > 1)
+		case Slot.get("weapon"):
+			if (weaponHands(it) > 1)
 			{
-				set_property(getMaximizeSlotPref($slot[off-hand]), "");
+				setProperty(getMaximizeSlotPref(Slot.get("off-hand")), "");
 			}
 			break;
-		case $slot[off-hand]:
-			if(getTentativeMaximizeEquip($slot[weapon]).weapon_hands() > 1)
+		case Slot.get("off-hand"):
+			if (weaponHands(getTentativeMaximizeEquip(Slot.get("weapon"))) > 1)
 			{
-				set_property(getMaximizeSlotPref($slot[weapon]), "");
+				setProperty(getMaximizeSlotPref(Slot.get("weapon")), "");
 			}
+			
 			// TODO: Ranged/melee mismatch handling
-			break;
+break;
 	}
 
-	string itString = it.to_string();
+	let itString: string = it.toString();
 	// maximizer uses commas, so can't have a comma in an item name
 	// fortunately fuzzy matching means just stripping out the comma is fine
-	itString = itString.replace_string(",", "");
-	set_property(getMaximizeSlotPref(s), itString);
+	itString = replaceString(itString, ",", "");
+	setProperty(getMaximizeSlotPref(s), itString);
 	return true;
 }
 
-item[slot] speculatedMaximizerEquipment(string statement)
+export function speculatedMaximizerEquipment(statement: string): Map<Slot, Item>
 {
 	//make maximizer simulate with the given statement then return the list of equipment it has chosen
-	item [slot] res;
-	boolean weaponPicked;
-	boolean offhandPicked;
-	foreach i,entry in maximize(statement,0,0,true,true)	//can't use autoMaximize "Aggregate reference expected"
-	{
-		if(i>15)
+	let res: Map<Slot, Item> = new Map();
+	let weaponPicked: boolean = false;
+	let offhandPicked: boolean = false;
+	for (let [i, entry] of maximize(statement, 0, 0, true, true).entries())
+	{ //can't use autoMaximize "Aggregate reference expected"
+		if (i > 15)
 		{
 			//there should not be more than 9 or 10 equipment slots and equipment entries come first. so equipment list is done
 			break;
 		}
-		string maximizerText = entry.display;
-		if(contains_text(maximizerText,"unequip "))	continue;
-		if(!contains_text(maximizerText,"equip "))
+		let maximizerText: string = entry.display;
+		if (containsText(maximizerText, "unequip ")) { continue; }
+		if (!containsText(maximizerText, "equip "))
 		{
-			boolean keeping = (entry.command == "" && contains_text(maximizerText,"keep "));	//already equipped item can be recorded
-			if(!keeping) continue; 	//will not know how to handle other special actions like "fold ", "umbrella ", ...
+			let keeping: boolean = entry.command === "" && containsText(maximizerText, "keep "); //already equipped item can be recorded
+			if (!keeping) { //will not know how to handle other special actions like "fold ", "umbrella ", ...
+			continue; }
 		}
-		item maximizerItem = entry.item;
-		if(maximizerItem == $item[none]) continue;
-		slot maximizerItemSlot = maximizerItem.to_slot();
-		if(maximizerItemSlot == $slot[none]) continue;
-		slot overrideSlot;
-		if(maximizerItemSlot == $slot[weapon])
+		let maximizerItem: Item = entry.item;
+		if (maximizerItem === Item.none) { continue; }
+		let maximizerItemSlot: Slot = toSlot(maximizerItem);
+		if (maximizerItemSlot === Slot.none) { continue; }
+		let overrideSlot: Slot = Slot.none;
+		if (maximizerItemSlot === Slot.get("weapon"))
 		{
-			if(weaponPicked)
+			if (weaponPicked)
 			{
-				if(!offhandPicked && auto_have_skill($skill[Double-Fisted Skull Smashing]) && 
-				weapon_type(maximizerItem) == weapon_type(res[$slot[weapon]]) && item_type(maximizerItem) != "chefstaff")
+				if (!offhandPicked && auto_have_skill(Skill.get("Double-Fisted Skull Smashing")) && weaponType(maximizerItem) === weaponType((res.get(Slot.get("weapon")) ?? res.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon")))) && itemType(maximizerItem) !== "chefstaff")
 				{
 					//this must be offhand weapon
-					overrideSlot = $slot[off-hand];
+					overrideSlot = Slot.get("off-hand");
 					offhandPicked = true;
 				}
-				else if(my_familiar() == $familiar[Disembodied Hand] && weapon_hands(maximizerItem) == 1 &&
-				item_type(maximizerItem) != "chefstaff" && item_type(maximizerItem) != "accordion")
+				else if (myFamiliar() === Familiar.get("Disembodied Hand") && weaponHands(maximizerItem) === 1 && itemType(maximizerItem) !== "chefstaff" && itemType(maximizerItem) !== "accordion")
 				{
 					//this must be familiar weapon
-					overrideSlot = $slot[familiar];
+					overrideSlot = Slot.get("familiar");
 				}
-				else
-				{
+				else {
 					auto_log_debug("There are more weapons than we can wear in speculatedMaximizerEquipment, something must be wrong", "gold");
 					continue;
 				}
 			}
-			else
-			{
+			else {
 				weaponPicked = true;
-				if(weapon_hands(maximizerItem) > 1)	offhandPicked = true;
+				if (weaponHands(maximizerItem) > 1) { offhandPicked = true; }
 			}
 		}
-		else if(maximizerItemSlot == $slot[off-hand])
+		else if (maximizerItemSlot === Slot.get("off-hand"))
 		{
-			if(offhandPicked)
+			if (offhandPicked)
 			{
 				//this must be familiar offhand
-				if(my_familiar() == $familiar[Left-Hand Man])
+				if (myFamiliar() === Familiar.get("Left-Hand Man"))
 				{
-					overrideSlot = $slot[familiar];
+					overrideSlot = Slot.get("familiar");
 				}
-				else
-				{
+				else {
 					auto_log_debug("Off-hand slot is getting more than one use in speculatedMaximizerEquipment but familiar is not Left-Hand Man, something must be wrong", "gold");
 					continue;
 				}
 			}
-			else
-			{
+			else {
 				offhandPicked = true;
 			}
 		}
-		else if(maximizerItemSlot == $slot[acc1] && res[$slot[acc1]] != $item[none])
+		else if (maximizerItemSlot === Slot.get("acc1") && (res.get(Slot.get("acc1")) ?? res.set(Slot.get("acc1"), Item.none).get(Slot.get("acc1"))) !== Item.none)
 		{
 			//accessory to slot always returns acc1 and has to be switched if more than one, go from 1 to 3 because that is the equip order the maximizer will use
-			if(res[$slot[acc2]] != $item[none])
+			if ((res.get(Slot.get("acc2")) ?? res.set(Slot.get("acc2"), Item.none).get(Slot.get("acc2"))) !== Item.none)
 			{
-				overrideSlot = $slot[acc3];
+				overrideSlot = Slot.get("acc3");
 			}
-			else
-			{
-				overrideSlot = $slot[acc2];
+			else {
+				overrideSlot = Slot.get("acc2");
 			}
 		}
-		if(overrideSlot != $slot[none])
+		if (overrideSlot !== Slot.none)
 		{
 			maximizerItemSlot = overrideSlot;
 		}
-		if(res[maximizerItemSlot] != $item[none])
+		if ((res.get(maximizerItemSlot) ?? res.set(maximizerItemSlot, Item.none).get(maximizerItemSlot)) !== Item.none)
 		{
-			auto_log_debug("Duplicate entry skipped for slot " + maximizerItemSlot.to_string() + " in speculatedMaximizerEquipment, something must be wrong", "gold");
+			auto_log_debug(`Duplicate entry skipped for slot ${maximizerItemSlot.toString()} in speculatedMaximizerEquipment, something must be wrong`, "gold");
 			continue;
 		}
-		res[maximizerItemSlot] = maximizerItem;
+		res.set(maximizerItemSlot, maximizerItem);
 	}
 	return res;
 }
 
-void equipStatgainIncreasers(boolean[stat] increaseThisStat, boolean alwaysEquip)
+export function equipStatgainIncreasers(increaseThisStat: Map<Stat, boolean>, alwaysEquip: boolean): void
 {
 	if (auto_ignoreExperience()) { return; }
 	//want to equip best equipment that increases specified stat gains including out of combat
 	//should be frequently called by consume actions so try not to lose HP or MP, but will equip anyway if argument alwaysEquip is true
-	string maximizerStatement;
-	foreach st in increaseThisStat
+	let maximizerStatement: string = "";
+	for (let st of increaseThisStat.keys())
 	{
-		if(!increaseThisStat[st])	continue;
-		string statWeight = "";
-		if(st == my_primestat())
+		if (!(increaseThisStat.get(st) ?? increaseThisStat.set(st, false).get(st))) { continue; }
+		let statWeight: string = "";
+		if (st === myPrimestat())
 		{
-			if(disregardInstantKarma())
+			if (disregardInstantKarma())
 			{
 				statWeight = "2";
 			}
 		}
-		else if(my_basestat(my_primestat()) > 122 && my_basestat(st) < 70)
+		else if (myBasestat(myPrimestat()) > 122 && myBasestat(st) < 70)
 		{
 			//>= level 12 or almost there, more offstat experience may be needed for the war outfit (requires 70 mox and 70 mys)
-			if(st == $stat[mysticality] || st == $stat[moxie])
+			if (st === Stat.get("Mysticality") || st === Stat.get("Moxie"))
 			{
 				statWeight = "3";
 			}
 		}
-		maximizerStatement += statWeight + st.to_string() + " experience percent,";
+		maximizerStatement += `${statWeight}${st.toString()} experience percent,`;
 	}
-	item [slot] simulatedEquipment = speculatedMaximizerEquipment(maximizerStatement);	//simulate and get list of relevant equipment
-	boolean canIncreaseStatgains = false;
-	foreach st in increaseThisStat
+	let simulatedEquipment: Map<Slot, Item> = speculatedMaximizerEquipment(maximizerStatement); //simulate and get list of relevant equipment
+	let canIncreaseStatgains: boolean = false;
+	for (let st of increaseThisStat.keys())
 	{
-		if(!increaseThisStat[st])	continue;
-		string modifierString = st.to_string() + " experience percent";
-		if(simValue(modifierString) > numeric_modifier(modifierString))
+		if (!(increaseThisStat.get(st) ?? increaseThisStat.set(st, false).get(st))) { continue; }
+		let modifierString: string = `${st.toString()} experience percent`;
+		if (simValue(modifierString) > numericModifier(modifierString))
 		{
 			canIncreaseStatgains = true;
 			break;
 		}
 	}
-	if(!canIncreaseStatgains)
+	if (!canIncreaseStatgains)
 	{
 		return;
 	}
-	
 	//list only the maximized equipment that increases statgain
-	item [slot] statgainIncreasers;
-	foreach sl in simulatedEquipment
+	let statgainIncreasers: Map<Slot, Item> = new Map();
+	for (let sl of simulatedEquipment.keys())
 	{
-		foreach st in increaseThisStat
+		for (let st of increaseThisStat.keys())
 		{
-			if(!increaseThisStat[st])	continue;
-			if(numeric_modifier(simulatedEquipment[sl],st.to_string() + " experience percent") != 0)
+			if (!(increaseThisStat.get(st) ?? increaseThisStat.set(st, false).get(st))) { continue; }
+			if (numericModifier((simulatedEquipment.get(sl) ?? simulatedEquipment.set(sl, Item.none).get(sl)), `${st.toString()} experience percent`) !== 0)
 			{
-				statgainIncreasers[sl] = simulatedEquipment[sl];
+				statgainIncreasers.set(sl, (simulatedEquipment.get(sl) ?? simulatedEquipment.set(sl, Item.none).get(sl)));
 				break;
 			}
 		}
 	}
 	//solve incompatible hand slots, since only statgain equipment is taken from simulation which leaves potentially incompatible hand equipment remaining
-	if(statgainIncreasers[$slot[off-hand]] != $item[none] && statgainIncreasers[$slot[weapon]] == $item[none])
+	if ((statgainIncreasers.get(Slot.get("off-hand")) ?? statgainIncreasers.set(Slot.get("off-hand"), Item.none).get(Slot.get("off-hand"))) !== Item.none && (statgainIncreasers.get(Slot.get("weapon")) ?? statgainIncreasers.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon"))) === Item.none)
 	{
-		boolean currentWeaponIncompatibleWithSimulatedOffHand = (weapon_hands(equipped_item($slot[weapon])) > 1) || 
-		(statgainIncreasers[$slot[off-hand]].to_slot() == $slot[weapon] && weapon_type(statgainIncreasers[$slot[off-hand]]) != weapon_type(equipped_item($slot[weapon])));
-		if(currentWeaponIncompatibleWithSimulatedOffHand)	statgainIncreasers[$slot[weapon]] = simulatedEquipment[$slot[weapon]];	//add maximizer simulated compatible weapon
+		let currentWeaponIncompatibleWithSimulatedOffHand: boolean = weaponHands(equippedItem(Slot.get("weapon"))) > 1 || toSlot((statgainIncreasers.get(Slot.get("off-hand")) ?? statgainIncreasers.set(Slot.get("off-hand"), Item.none).get(Slot.get("off-hand")))) === Slot.get("weapon") && weaponType((statgainIncreasers.get(Slot.get("off-hand")) ?? statgainIncreasers.set(Slot.get("off-hand"), Item.none).get(Slot.get("off-hand")))) !== weaponType(equippedItem(Slot.get("weapon")));
+		if (currentWeaponIncompatibleWithSimulatedOffHand) { //add maximizer simulated compatible weapon
+		statgainIncreasers.set(Slot.get("weapon"), (simulatedEquipment.get(Slot.get("weapon")) ?? simulatedEquipment.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon")))); }
 	}
-	else if(statgainIncreasers[$slot[weapon]] != $item[none] && statgainIncreasers[$slot[off-hand]] == $item[none] && equipped_item($slot[off-hand]).to_slot() == $slot[weapon])
-	{	
-		boolean currentOffHandIncompatibleWithSimulatedWeapon = weapon_type(statgainIncreasers[$slot[weapon]]) != weapon_type(equipped_item($slot[off-hand]));
-		if(currentOffHandIncompatibleWithSimulatedWeapon)	statgainIncreasers[$slot[off-hand]] = simulatedEquipment[$slot[off-hand]];	//add maximizer simulated compatible off-hand
+	else if ((statgainIncreasers.get(Slot.get("weapon")) ?? statgainIncreasers.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon"))) !== Item.none && (statgainIncreasers.get(Slot.get("off-hand")) ?? statgainIncreasers.set(Slot.get("off-hand"), Item.none).get(Slot.get("off-hand"))) === Item.none && toSlot(equippedItem(Slot.get("off-hand"))) === Slot.get("weapon"))
+	{
+		let currentOffHandIncompatibleWithSimulatedWeapon: boolean = weaponType((statgainIncreasers.get(Slot.get("weapon")) ?? statgainIncreasers.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon")))) !== weaponType(equippedItem(Slot.get("off-hand")));
+		if (currentOffHandIncompatibleWithSimulatedWeapon) { //add maximizer simulated compatible off-hand
+		statgainIncreasers.set(Slot.get("off-hand"), (simulatedEquipment.get(Slot.get("off-hand")) ?? simulatedEquipment.set(Slot.get("off-hand"), Item.none).get(Slot.get("off-hand")))); }
 	}
-	
 	//equipment would be equipped in the order it was listed. check if HP or MP would be lost by equipping
-	int HPlost;	int mostHPlost;
-	int MPlost;	int mostMPlost;
-	string speculateOneItem;
-	string speculateAllItems;
-	foreach sl in statgainIncreasers
+	let HPlost: number = 0; let mostHPlost: number = 0;
+	let MPlost: number = 0; let mostMPlost: number = 0;
+	let speculateOneItem: string = "";
+	let speculateAllItems: string = "";
+	for (let sl of statgainIncreasers.keys())
 	{
-		speculateOneItem = "equip " + sl.to_string() + " " + statgainIncreasers[sl].to_string() + "; ";
-		cli_execute("speculate quiet; " + speculateOneItem);
-		HPlost = my_hp() - simValue("Buffed HP Maximum");
-		MPlost = my_mp() - simValue("Buffed MP Maximum");
-		if(HPlost <= 0 && MPlost <= 0)
-		{	equip(statgainIncreasers[sl],sl);	//causes no loss so it can be equipped right now
+		speculateOneItem = `equip ${sl.toString()} ${(statgainIncreasers.get(sl) ?? statgainIncreasers.set(sl, Item.none).get(sl)).toString()}; `;
+		cliExecute(`speculate quiet; ${speculateOneItem}`);
+		HPlost = toInt(myHp() - simValue("Buffed HP Maximum"));
+		MPlost = toInt(myMp() - simValue("Buffed MP Maximum"));
+		if (HPlost <= 0 && MPlost <= 0)
+		{ //causes no loss so it can be equipped right now
+		equip((statgainIncreasers.get(sl) ?? statgainIncreasers.set(sl, Item.none).get(sl)), sl);
 			continue;
 		}
-		speculateAllItems += speculateOneItem;	//otherwise speculate with all items that have been left out
-		if(speculateAllItems != speculateOneItem)
+		speculateAllItems += speculateOneItem; //otherwise speculate with all items that have been left out
+		if (speculateAllItems !== speculateOneItem)
 		{
-			cli_execute("speculate quiet; " + speculateAllItems);
-			HPlost = my_hp() - simValue("Buffed HP Maximum");
-			MPlost = my_mp() - simValue("Buffed MP Maximum");
+			cliExecute(`speculate quiet; ${speculateAllItems}`);
+			HPlost = toInt(myHp() - simValue("Buffed HP Maximum"));
+			MPlost = toInt(myMp() - simValue("Buffed MP Maximum"));
 		}
-		if(HPlost > mostHPlost)	mostHPlost = HPlost;
-		if(MPlost > mostMPlost)	mostMPlost = MPlost;
+		if (HPlost > mostHPlost) { mostHPlost = HPlost; }
+		if (MPlost > mostMPlost) { mostMPlost = MPlost; }
 	}
-	if(mostHPlost == 0 && mostMPlost == 0)
+	if (mostHPlost === 0 && mostMPlost === 0)
 	{
 		auto_log_debug("Done increasing incoming stat gains using equipment", "gold");
 		return;
 	}
-
 	//else try to prevent the HP or MP loss by increasing max HP and MP first using remaining slots
-	int targetedHP = my_hp()+mostHPlost;
-	int targetedMP = my_mp()+mostMPlost;
-	maximizerStatement = "HP " + targetedHP + "min " + targetedHP + "max, MP " + targetedMP + "min " + targetedMP + "max,";
-	foreach sl in statgainIncreasers
+	let targetedHP: number = myHp() + mostHPlost;
+	let targetedMP: number = myMp() + mostMPlost;
+	maximizerStatement = `HP ${targetedHP}min ${targetedHP}max, MP ${targetedMP}min ${targetedMP}max,`;
+	for (let sl of statgainIncreasers.keys())
 	{
-		maximizerStatement += "-" + sl.to_string() + ",";	//ignore slots where statgain increasers should be equipped
-		if(statgainIncreasers[sl].to_slot() == $slot[weapon])	//ignore slots that will be incompatible
-		{
-			if(weapon_hands(statgainIncreasers[sl]) > 1)		maximizerStatement += "-off-hand,";
-			if(weapon_type(statgainIncreasers[sl]) == $stat[moxie])	maximizerStatement += "-melee,";
-			else							maximizerStatement += "+melee,";
+		maximizerStatement += `-${sl.toString()},`; //ignore slots where statgain increasers should be equipped
+		if (toSlot((statgainIncreasers.get(sl) ?? statgainIncreasers.set(sl, Item.none).get(sl))) === Slot.get("weapon"))
+		{ //ignore slots that will be incompatible
+			if (weaponHands((statgainIncreasers.get(sl) ?? statgainIncreasers.set(sl, Item.none).get(sl))) > 1) { maximizerStatement += "-off-hand,"; }
+			if (weaponType((statgainIncreasers.get(sl) ?? statgainIncreasers.set(sl, Item.none).get(sl))) === Stat.get("Moxie")) { maximizerStatement += "-melee,"; }
+			else { maximizerStatement += "+melee,"; }
 		}
-		if(sl == $slot[off-hand] && statgainIncreasers[$slot[weapon]] == $item[none])
+		if (sl === Slot.get("off-hand") && (statgainIncreasers.get(Slot.get("weapon")) ?? statgainIncreasers.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon"))) === Item.none)
 		{
-			maximizerStatement += "1handed,";		//ignore incompatible weapons
+			maximizerStatement += "1handed,"; //ignore incompatible weapons
 		}
 	}
-	if(!maximize(maximizerStatement,true))
+	if (!maximize(maximizerStatement, true))
 	{
-		if(!alwaysEquip)
-		{	//can't do it, give up
+		if (!alwaysEquip)
+		{ //can't do it, give up
 			return;
 		}
 	}
 	auto_log_info("Trying to put on some more equipment first to avoid losing HP or MP before equipping to increase incoming statgains", "blue");
-	clear(simulatedEquipment);
+	simulatedEquipment.clear();
 	simulatedEquipment = speculatedMaximizerEquipment(maximizerStatement);
-	foreach sl in simulatedEquipment
+	for (let sl of simulatedEquipment.keys())
 	{
-		speculateOneItem = "equip " + sl.to_string() + " " + simulatedEquipment[sl].to_string() + "; ";
-		cli_execute("speculate quiet; " + speculateOneItem);
-		if(simValue("Buffed HP Maximum") < my_hp())	continue;	//skip on collateral loss
-		if(simValue("Buffed MP Maximum") < my_mp())	continue;
-		equip(simulatedEquipment[sl],sl);
+		speculateOneItem = `equip ${sl.toString()} ${(simulatedEquipment.get(sl) ?? simulatedEquipment.set(sl, Item.none).get(sl)).toString()}; `;
+		cliExecute(`speculate quiet; ${speculateOneItem}`);
+		if (simValue("Buffed HP Maximum") < myHp()) { //skip on collateral loss
+		continue; }
+		if (simValue("Buffed MP Maximum") < myMp()) { continue; }
+		equip((simulatedEquipment.get(sl) ?? simulatedEquipment.set(sl, Item.none).get(sl)), sl);
 	}
-	boolean doEquips;
-	if(my_maxhp() >= targetedHP && my_maxmp() >= targetedMP)
+	let doEquips: boolean = false;
+	if (myMaxhp() >= targetedHP && myMaxmp() >= targetedMP)
 	{
 		//finished raising max HP and MP so can now equip all statgain equipment hopefully with no HP or MP loss
 		doEquips = true;
 	}
-	else if(alwaysEquip)
+	else if (alwaysEquip)
 	{
-		auto_burnMP(targetedMP - my_maxmp());
+		auto_burnMP(targetedMP - myMaxmp());
 		doEquips = true;
 	}
-	
-	if(doEquips)
+
+	if (doEquips)
 	{
-		foreach sl in statgainIncreasers
+		for (let sl of statgainIncreasers.keys())
 		{
-			equip(statgainIncreasers[sl],sl);
+			equip((statgainIncreasers.get(sl) ?? statgainIncreasers.set(sl, Item.none).get(sl)), sl);
 		}
 	}
 }
 
-void equipStatgainIncreasers(stat increaseThisStat, boolean alwaysEquip)
+export function equipStatgainIncreasers$1(increaseThisStat: Stat, alwaysEquip: boolean): void
 {
-	boolean[stat] increaseThisStatAggregate;
-	increaseThisStatAggregate[increaseThisStat] = true;
+	let increaseThisStatAggregate: Map<Stat, boolean> = new Map();
+	increaseThisStatAggregate.set(increaseThisStat, true);
 	equipStatgainIncreasers(increaseThisStatAggregate, alwaysEquip);
 }
 
-void equipStatgainIncreasers()
+export function equipStatgainIncreasers$2(): void
 {
-	if(!disregardInstantKarma())	//exclude primestat if level 13
-	{
-		if(my_primestat() == $stat[muscle])
+	if (!disregardInstantKarma())
+	{ //exclude primestat if level 13
+		if (myPrimestat() === Stat.get("Muscle"))
 		{
-			equipStatgainIncreasers($stats[mysticality,moxie],false);
+			equipStatgainIncreasers(new Map([[Stat.get("Mysticality"), true], [Stat.get("Moxie"), true]]), false);
 			return;
 		}
-		else if(my_primestat() == $stat[mysticality])
+		else if (myPrimestat() === Stat.get("Mysticality"))
 		{
-			equipStatgainIncreasers($stats[muscle,moxie],false);
+			equipStatgainIncreasers(new Map([[Stat.get("Muscle"), true], [Stat.get("Moxie"), true]]), false);
 			return;
 		}
-		else if(my_primestat() == $stat[moxie])
+		else if (myPrimestat() === Stat.get("Moxie"))
 		{
-			equipStatgainIncreasers($stats[muscle,mysticality],false);
+			equipStatgainIncreasers(new Map([[Stat.get("Muscle"), true], [Stat.get("Mysticality"), true]]), false);
 			return;
 		}
 	}
-	equipStatgainIncreasers($stats[muscle,mysticality,moxie],false);
+	equipStatgainIncreasers(new Map([[Stat.get("Muscle"), true], [Stat.get("Mysticality"), true], [Stat.get("Moxie"), true]]), false);
 }
 
-void equipStatgainIncreasersFor(item it)
+export function equipStatgainIncreasersFor(it: Item): void
 {
 	//check what stats a consumable will give and equip increasers for it
-	boolean [stat] increaseThisStat;
-	stat excludedStat = disregardInstantKarma() ? $stat[none] : my_primestat();	//exclude primestat if level 13
-	if(it.muscle != "" && excludedStat != $stat[muscle])			increaseThisStat[$stat[muscle]] = true;
-	if(it.mysticality != "" && excludedStat != $stat[mysticality])		increaseThisStat[$stat[mysticality]] = true;
-	if(it.moxie != "" && excludedStat != $stat[moxie])			increaseThisStat[$stat[moxie]] = true;
+	let increaseThisStat: Map<Stat, boolean> = new Map();
+	let excludedStat: Stat = (disregardInstantKarma() ? Stat.none : myPrimestat()); //exclude primestat if level 13
+	if (it.muscle !== "" && excludedStat !== Stat.get("Muscle")) { increaseThisStat.set(Stat.get("Muscle"), true); }
+	if (it.mysticality !== "" && excludedStat !== Stat.get("Mysticality")) { increaseThisStat.set(Stat.get("Mysticality"), true); }
+	if (it.moxie !== "" && excludedStat !== Stat.get("Moxie")) { increaseThisStat.set(Stat.get("Moxie"), true); }
 
-	if(count(increaseThisStat) != 0)
+	if (increaseThisStat.size !== 0)
 	{
-		equipStatgainIncreasers(increaseThisStat,false);
+		equipStatgainIncreasers(increaseThisStat, false);
 	}
 }
 
-string defaultMaximizeStatement()
+export function defaultMaximizeStatement(): string
 {
-	if(in_pokefam())
+	if (in_pokefam())
 	{
 		return pokefam_defaultMaximizeStatement();
 	}
-	if(in_robot())
+	if (in_robot())
 	{
 		return robot_defaultMaximizeStatement();
 	}
-	
-	string res = "5item,meat,0.5initiative,0.1da 1000max,dr,0.5all res,1.5mainstat,-fumble";
-	if(my_primestat() != $stat[Moxie])
+
+	let res: string = "5item,meat,0.5initiative,0.1da 1000max,dr,0.5all res,1.5mainstat,-fumble";
+	if (myPrimestat() !== Stat.get("Moxie"))
 	{
 		res += ",mox";
 	}
 
-	if(in_darkGyffte())
+	if (in_darkGyffte())
 	{
 		res += ",0.8hp,4hp regen";
 	}
-	else
-	{
+	else {
 		res += ",0.4hp,0.2mp 1000max";
-		res += isActuallyEd() ? ",6mp regen" : ",3mp regen";
+		res += (isActuallyEd() ? ",6mp regen" : ",3mp regen");
 	}
-	if(in_bhy())
+	if (in_bhy())
 	{
 		res += ", 1 beeosity";
 	}
-
 	//weapon handling
-	if(is_boris())
+	if (is_boris())
 	{
-		borisTrusty();						//forceequip trusty. the modification it makes to the maximizer string will be lost so also do next line
-		res +=	",-weapon,-offhand";		//we do not want maximizer trying to touch weapon or offhand slot in boris
+		borisTrusty(); //forceequip trusty. the modification it makes to the maximizer string will be lost so also do next line
+		res += ",-weapon,-offhand"; //we do not want maximizer trying to touch weapon or offhand slot in boris
 	}
-	else if(!(in_plumber() || in_zootomist()))
+	else if (!(in_plumber() || in_zootomist()))
 	{
-		if(my_primestat() == $stat[Mysticality])
+		if (myPrimestat() === Stat.get("Mysticality"))
 		{
 			res += ",0.25spell damage,1.75spell damage percent";
 		}
-		else
-		{
+		else {
 			res += ",1.5weapon damage,0.75weapon damage percent,1.5elemental damage";
 		}
 	}
 
-	if(pathHasFamiliar())
+	if (pathHasFamiliar())
 	{
-		if(!(in_zootomist() && my_level() < 13))
+		if (!(in_zootomist() && myLevel() < 13))
 		{
 			res += ",2familiar weight";
 		}
-		if(my_familiar().familiar_weight() < 20)
+		if (familiarWeight(myFamiliar()) < 20)
 		{
 			res += ",5familiar exp";
 		}
 	}
-	if(in_wildfire())
+	if (in_wildfire())
 	{
 		res += ",water,hot res";
 	}
-	
-	stat primeStat = my_primestat();
-	if(in_plumber())
+
+	let primeStat: Stat = myPrimestat();
+	if (in_plumber())
 	{
 		res += ",plumber,-ml";
 	}
-	else if(auto_ignoreExperience())
+	else if (auto_ignoreExperience())
 	{
 		// Nothing to do here
 	}
-	else if((my_level() < 13) || (get_property("auto_disregardInstantKarma").to_boolean()))
+	else if (myLevel() < 13 || toBoolean(getProperty("auto_disregardInstantKarma")))
 	{
 		//experience scores for the default maximizer statement
-		
-		if(get_property("auto_MLSafetyLimit") == "")
+
+		if (getProperty("auto_MLSafetyLimit") === "")
 		{
 			//"exp" includes bonus from "ml" sources and values mainstat experience with a variable? score comparable to 0.25ML?
 			//in general "10exp" gives a score equivalent to "15(primeStat) experience"
 			//"exp" does not value "+(offstat) experience"
 			res += ",10exp";
 		}
-		else	//a value is given for ML safety limit
-		{
+		else {
+		//a value is given for ML safety limit
 			//use "(primeStat) experience" instead of "exp" in the hope that it will not include ML however this is not consistently true
 			//the conditions under which it still adds value to ML are unclear (level? not ronin? volleyball familiar??)
 			//the maximizer score for limited ML is added later by pre_adv
 			//pre_adv will tell the maximizer to not value ML over the safety limit (though enforcing that limit is not possible with the maximizer syntax and scoring system)
-			res += ",15" + primeStat + " experience";
+			res += `,15${primeStat} experience`;
 		}
 		//TODO the score to give to experience VS percent depends on how much experience is expected from fights
-		res += ",5" + primeStat + " experience percent";
+		res += `,5${primeStat} experience percent`;
 	}
-	if(my_basestat(primeStat) > 122)
+	if (myBasestat(primeStat) > 122)
 	{
 		//>= level 12 or almost there, more offstat experience may be needed for the war outfit (requires 70 mox and 70 mys)
-		if(my_basestat($stat[moxie]) < 70 && get_property("warProgress") != "finished")
+		if (myBasestat(Stat.get("Moxie")) < 70 && getProperty("warProgress") !== "finished")
 		{
 			res += ",10moxie experience,3moxie experience percent";
 		}
-		if(my_basestat($stat[mysticality]) < 70 && get_property("warProgress") != "finished")
+		if (myBasestat(Stat.get("Mysticality")) < 70 && getProperty("warProgress") !== "finished")
 		{
 			res += ",10mysticality experience,3mysticality experience percent";
 		}
@@ -621,28 +642,27 @@ string defaultMaximizeStatement()
 	return res;
 }
 
-void resetMaximize()
+export function resetMaximize(): void
 {
-	string res = get_property("auto_maximize_baseline");	//user configured override baseline statement.
-	if (res == "" || res.to_lower_case() == "default" || res.to_lower_case() == "disabled")
+	let res: string = getProperty("auto_maximize_baseline"); //user configured override baseline statement.
+	if (res === "" || toLowerCase(res) === "default" || toLowerCase(res) === "disabled")
 	{
-		res = defaultMaximizeStatement();		//automatically generated baseline statement
+		res = defaultMaximizeStatement(); //automatically generated baseline statement
 	}
-	
-	void exclude(item it)
+
+	function exclude(it: Item): void
 	{
-		if(res != "")
+		if (res !== "")
 		{
 			res += ",";
 		}
-		res += "-equip " + it;
+		res += `-equip ${it}`;
 	}
-	
 	// don't want to equip these items automatically
 	// snow suit bonus drops every 5 combats so is best saved for important things
 	// sword, and staph are text scramblers which cause errors in mafia tracking
 	// bathysphere gives -20 lbs familiar weight. under certain circumstances maximizer decides to equip it
-	foreach it in $items[sword behind inappropriate prepositions, staph of homophones, snow suit, little bitty bathysphere]
+	for (let it of Item.get(["sword behind inappropriate prepositions", "staph of homophones", "Snow Suit", "little bitty bathysphere"]))
 	{
 		if (possessEquipment(it))
 		{
@@ -650,542 +670,534 @@ void resetMaximize()
 		}
 	}
 	//IOTM [january's garbage tote] specific handling.
-	if(isjanuaryToteAvailable())
+	if (isjanuaryToteAvailable())
 	{
 		//preserve leftover charges, prevent mafia halting automation for confirmation.
-		if(!get_property("_garbageItemChanged").to_boolean())	//did not change tote item today
-		{
-			foreach it in $items[Deceased Crimbo Tree, Broken Champagne Bottle, Tinsel Tights, Wad Of Used Tape, Makeshift Garbage Shirt]
+		if (!toBoolean(getProperty("_garbageItemChanged")))
+		{ //did not change tote item today
+			for (let it of Item.get(["deceased crimbo tree", "broken champagne bottle", "tinsel tights", "wad of used tape", "makeshift garbage shirt"]))
 			{
 				exclude(it);
 			}
 		}
+		else {
 		//preserve current charges
-		else foreach it in $items[Deceased Crimbo Tree, Broken Champagne Bottle, Makeshift Garbage Shirt]
+		for (let it of Item.get(["deceased crimbo tree", "broken champagne bottle", "makeshift garbage shirt"]))
 		{
-			if(januaryToteTurnsLeft(it) > 0)
+			if (januaryToteTurnsLeft(it) > 0)
 			{
 				exclude(it);
 			}
-		}
+		} }
 	}
-	else if (item_amount(wrap_item($item[January\'s Garbage Tote])) > 0 && in_bhy())
+	else if (itemAmount(wrap_item(Item.get("January's Garbage Tote"))) > 0 && in_bhy())
 	{
 		// workaround mafia bug with the maximizer where it tries to equip tote items even though the tote is unusable
-		foreach it in $items[Deceased Crimbo Tree, Broken Champagne Bottle, Tinsel Tights, Wad Of Used Tape, Makeshift Garbage Shirt]
+		for (let it of Item.get(["deceased crimbo tree", "broken champagne bottle", "tinsel tights", "wad of used tape", "makeshift garbage shirt"]))
 		{
 			exclude(it);
 		}
 	}
-	
-	set_property("auto_maximize_current", res);
-	auto_log_debug("Resetting auto_maximize_current to " + res, "gold");
 
-	foreach s in $slots[hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar]
+	setProperty("auto_maximize_current", res);
+	auto_log_debug(`Resetting auto_maximize_current to ${res}`, "gold");
+
+	for (let s of Slot.get(["hat", "back", "shirt", "weapon", "off-hand", "pants", "acc1", "acc2", "acc3", "familiar"]))
 	{
-		set_property(getMaximizeSlotPref(s), "");
+		setProperty(getMaximizeSlotPref(s), "");
 	}
 }
 
-void addBonusToMaximize(item it, int amt)
+export function addBonusToMaximize(it: Item, amt: number): void
 {
-	if(possessEquipment(it) && auto_can_equip(it))
-		addToMaximize("+" + amt + "bonus " + it);
+	if (possessEquipment(it) && auto_can_equip(it))
+		{ addToMaximize(`+${amt}bonus ${it}`); }
 }
 
-void finalizeMaximize(boolean speculative)
+export function finalizeMaximize(speculative: boolean): void
 {
-	if(auto_hasStillSuit() && pathHasFamiliar() && inebriety_limit() > 0 && !in_kolhs() && !in_small())
+	if (auto_hasStillSuit() && pathHasFamiliar() && inebrietyLimit() > 0 && !in_kolhs() && !in_small())
 	{
 		//always enough bonus to beat the 25 default maximizer score of miniature crystal ball's +initiative enchantment
 		//100 to 200 bonus for diminishing returns when drams already high
-		addBonusToMaximize($item[tiny stillsuit], (100 + to_int(100*min(1,(10.0 / max(1,auto_expectedStillsuitAdvs()))))));
+		addBonusToMaximize(Item.get("tiny stillsuit"), 100 + toInt(100 * min(1, 10.0 / max(1, auto_expectedStillsuitAdvs()))));
 	}
-	if(speculative && auto_haveCrystalBall())
-	{	//when doing simMaximize, in order to know if miniature crystal ball will be allowed in the simulated location, 
+	if (speculative && auto_haveCrystalBall())
+	{ //when doing simMaximize, in order to know if miniature crystal ball will be allowed in the simulated location,
 		//location queue checks that would normally be done by pre_adv before maximizing equipment need to be simulated here too
-		//		TODO consider if simulating all pre_adv equipment changes needs to done in general instead of only the queue part for crystal ball, 
+		//		TODO consider if simulating all pre_adv equipment changes needs to done in general instead of only the queue part for crystal ball,
 		//		crystal ball directly needs this because it has an initiative bonus relevant in a zone where it can be forbidden (twin peak)
 		//		but other equipment could be wanted by simulation then replaced by something forced in pre_adv?
-		simulatePreAdvForCrystalBall(my_location());
+		simulatePreAdvForCrystalBall(myLocation());
 	}
 	//otherwise miniature crystal ball is handled along with monster goals in pre_adv
-	
-	monster nextMonster = get_property("auto_nextEncounter").to_monster();
-	boolean nextMonsterIsFree = (nextMonster != $monster[none] && isFreeMonster(nextMonster)) || (get_property("breathitinCharges").to_int() > 0 && my_location().environment == "outdoor");
+
+	let nextMonster: Monster = toMonster(getProperty("auto_nextEncounter"));
+	let nextMonsterIsFree: boolean = nextMonster !== Monster.none && isFreeMonster(nextMonster) || toInt(getProperty("breathitinCharges")) > 0 && myLocation().environment === "outdoor";
 
 	if (auto_haveKramcoSausageOMatic())
 	{
 		// Save the first 8 sausage goblins for delay burning, if current location isn't itself a delay zone after SoftblockDelay released
-		boolean saveGoblinForDelay = (auto_sausageFightsToday() < 8 && !zone_delay(my_location())._boolean && solveDelayZone() != $location[none]);
+		let saveGoblinForDelay: boolean = auto_sausageFightsToday() < 8 && !zone_delay(myLocation())._boolean && solveDelayZone$1() !== Location.none;
 		// don't interfere with backups unless they're equivalent or worse
-		boolean dontSausageBackups = auto_backupTarget() && !($monsters[sausage goblin,eldritch tentacle] contains get_property("lastCopyableMonster").to_monster());
+		let dontSausageBackups: boolean = auto_backupTarget() && !(Monster.get(["sausage goblin", "Eldritch Tentacle"]).includes(toMonster(getProperty("lastCopyableMonster"))));
 		// also don't equip Kramco when using Map the Monsters as sausage goblins override the NC
-		if (saveGoblinForDelay || dontSausageBackups || get_property("mappingMonsters").to_boolean())
+		if (saveGoblinForDelay || dontSausageBackups || toBoolean(getProperty("mappingMonsters")))
 		{
-			addToMaximize("-equip " + wrap_item($item[Kramco Sausage-o-Matic&trade;]).to_string());
+			addToMaximize(`-equip ${wrap_item(Item.get("Kramco Sausage-o-Matic&trade;")).toString()}`);
 		}
 	}
 	if (auto_haveMobiusRing())
 	{
 		if (auto_timeCopFights() >= 11)
 		{
-			if(get_property("mappingMonsters").to_boolean() || auto_backupTarget() || !in_hardcore())
+			if (toBoolean(getProperty("mappingMonsters")) || auto_backupTarget() || !inHardcore())
 			{
 				// don't equip for non free fights in softcore? (pending allowed conditions like delay zone && none of the monsters in the zone is a sniff/YR target?)
 				// don't interfere with backups or Map the Monsters
-				addToMaximize("-equip " + $item[M&ouml;bius ring].to_string());
+				addToMaximize(`-equip ${(Item.get("M&ouml;bius ring")).toString()}`);
 			}
 		}
 		else {
 			// we want to make sure we equip mobius ring in meatpath when it's important,
 			// so we increse the bonus we give to the ring in meatpath for the priming and the NC
-			int mobius_bonus = 200;
-			if (in_amw()){
+			let mobius_bonus: number = 200;
+			if (in_amw()) {
 				mobius_bonus = 1000;
 			}
 			// if the ring hasn't been primed today, we want to prime it to kick the whole thing off
-			if (!get_property("_mobiusRingPrimed").to_boolean()) {
-				addBonusToMaximize($item[M&ouml;bius ring], mobius_bonus);
+			if (!toBoolean(getProperty("_mobiusRingPrimed"))) {
+				addBonusToMaximize(Item.get("M&ouml;bius ring"), mobius_bonus);
 			}
+			else if (!nextMonsterIsFree && zone_delay(
 			// If the current zone has any delay, equip the ring for a chance at a free time cop or +paradoxicity
 			// time cop chance is conjectured to be a flat chance, doubling every 5 paradoxicity, starting at 2%
 			// we probably want to target 15 for 16% chance
-			else if (!nextMonsterIsFree && zone_delay(my_location())._boolean)
+			myLocation())._boolean)
 			{
-				addBonusToMaximize($item[M&ouml;bius ring], 200);
+				addBonusToMaximize(Item.get("M&ouml;bius ring"), 200);
 			}
-			// otherwise, equip the ring if we can get the NC
 			else if (auto_timeIsAStripPossible()) {
-				addBonusToMaximize($item[M&ouml;bius ring], mobius_bonus);
+			// otherwise, equip the ring if we can get the NC
+				addBonusToMaximize(Item.get("M&ouml;bius ring"), mobius_bonus);
 			}
 		}
 	}
 	if (auto_haveCursedMagnifyingGlass())
 	{
-		if (get_property("cursedMagnifyingGlassCount").to_int() == 13)
+		if (toInt(getProperty("cursedMagnifyingGlassCount")) === 13)
 		{
-			if(get_property("mappingMonsters").to_boolean() || auto_backupTarget() || (get_property("_voidFreeFights").to_int() >= 5 && get_property("cursedMagnifyingGlassCount").to_int() >= 13 && !in_hardcore()))
+			if (toBoolean(getProperty("mappingMonsters")) || auto_backupTarget() || toInt(getProperty("_voidFreeFights")) >= 5 && toInt(getProperty("cursedMagnifyingGlassCount")) >= 13 && !inHardcore())
 			{
 				// don't equip for non free fights in softcore? (pending allowed conditions like delay zone && none of the monsters in the zone is a sniff/YR target?)
 				// don't interfere with backups or Map the Monsters
-				addToMaximize("-equip " + $item[Cursed Magnifying Glass].to_string());
+				addToMaximize(`-equip ${(Item.get("cursed magnifying glass")).toString()}`);
 			}
 		}
-		else if (!nextMonsterIsFree && get_property("cursedMagnifyingGlassCount").to_int() < 13 && solveDelayZone() != $location[none])
+		else if (!nextMonsterIsFree && toInt(getProperty("cursedMagnifyingGlassCount")) < 13 && solveDelayZone$1() !== Location.none)
 		{
 			// add bonus to charge free fights. charge is added when completing nonfree fights only
 			// also we can pre-charge it for the next day once we have used our 5 free fights.
-			addBonusToMaximize($item[Cursed Magnifying Glass], 200);
+			addBonusToMaximize(Item.get("cursed magnifying glass"), 200);
 		}
 	}
-	foreach s in $slots[hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar]
+	for (let s of Slot.get(["hat", "back", "shirt", "weapon", "off-hand", "pants", "acc1", "acc2", "acc3", "familiar"]))
 	{
-		string pref = getMaximizeSlotPref(s);
-		string toEquip = get_property(pref);
-		if(toEquip != "")
+		let pref: string = getMaximizeSlotPref(s);
+		let toEquip: string = getProperty(pref);
+		if (toEquip !== "")
 		{
-			removeFromMaximize("-equip " + toEquip);
-			addToMaximize("+equip " + toEquip);
-		}
-	}
-
-	if(in_wereprof() && auto_haveDarts()) //Absolutely need darts for Professor. Should level up darts while Werewolf too
-	{
-		if(is_werewolf())
-		{
-			addBonusToMaximize($item[Everfull Dart Holster], 1000);
-		}
-		else
-		{
-			addToMaximize("+equip " + $item[Everfull Dart Holster]);
+			removeFromMaximize(`-equip ${toEquip}`);
+			addToMaximize(`+equip ${toEquip}`);
 		}
 	}
 
-	if(is_professor() && (possessEquipment($item[biphasic molecular oculus]) || possessEquipment($item[triphasic molecular oculus]))) //Want that Advanced Research as a professor
-	{
-		float [monster] monster_list = appearance_rates(my_location());
-		string advresearch = get_property("wereProfessorAdvancedResearch");
-		boolean nooculus = false;
-		int monseen = 0;
-		int totalmob = 0;
+	if (in_wereprof() && auto_haveDarts())
+	{ //Absolutely need darts for Professor. Should level up darts while Werewolf too
+		if (is_werewolf())
+		{
+			addBonusToMaximize(Item.get("Everfull Dart Holster"), 1000);
+		}
+		else {
+			addToMaximize(`+equip ${Item.get("Everfull Dart Holster")}`);
+		}
+	}
+
+	if (is_professor() && (possessEquipment(Item.get("biphasic molecular oculus")) || possessEquipment(Item.get("triphasic molecular oculus"))))
+	{ //Want that Advanced Research as a professor
+		let monster_list: Map<Monster, number> = new Map(Object.entries(appearanceRates(myLocation())).map(([_k, _v]) => [Monster.get(_k), _v]));
+		let advresearch: string = getProperty("wereProfessorAdvancedResearch");
+		let nooculus: boolean = false;
+		let monseen: number = 0;
+		let totalmob: number = 0;
 		//calculate total non-boss and non-UR mobs
-		foreach mob, freq in monster_list {
-			if(freq > 0 && mob.id > 0 && mob.copyable && !mob.boss) totalmob += 1;
+		for (let [mob, freq] of monster_list) {
+			if (freq > 0 && mob.id > 0 && mob.copyable && !mob.boss) { totalmob += 1; }
 		}
 		//find how many mobs we've already researched and if the count matches total non-boss/non-UR mobs, don't equip the oculus
-		foreach mob, freq in monster_list {
-			if(freq > 0 && mob.id > 0 && mob.copyable && !mob.boss)
+		for (let [mob, freq] of monster_list) {
+			if (freq > 0 && mob.id > 0 && mob.copyable && !mob.boss)
 			{
-				if(contains_text(advresearch, mob.id))
+				if (containsText(advresearch, mob.id.toString()))
 				{
 					monseen += 1;
 				}
-			}			
-			if(monseen == totalmob) nooculus = true;
+			}
+			if (monseen === totalmob) { nooculus = true; }
 		}
 		//exclude certain locations as professor that require specific outfits (the War, the Goblin King)
 		//as we go through the hidden hospital we equip surgeon gear on the pants slot, so we can end up dying if we cast advanced research
-		if(($locations[The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform), The Orcish Frat House, The Hippy Camp, The Orcish Frat House (In Disguise), The Hippy Camp (In Disguise), Next to that barrel with something burning in it,
-		Out by that rusted-out car, over where the old tires are, near an abandoned refrigerator, Sonofa Beach, The Themthar Hills, McMillicancuddy's Barn, McMillicancuddy's Pond, McMillicancuddy's Back 40,
-		McMillicancuddy's Other Back 40, Cobb\'s Knob Barracks, Cobb\'s Knob Harem, Throne Room, The Hidden Hospital] contains my_location())) nooculus = true;
-		if(!nooculus)
+		if (Location.get(["The Battlefield (Frat Uniform)", "The Battlefield (Hippy Uniform)", "The Orcish Frat House", "The Hippy Camp", "The Orcish Frat House (In Disguise)", "The Hippy Camp (In Disguise)", "Next to that Barrel with Something Burning in it",
+		"Out by that Rusted-Out Car", "Over Where the Old Tires Are", "Near an Abandoned Refrigerator", "Sonofa Beach", "The Themthar Hills", "McMillicancuddy's Barn", "McMillicancuddy's Pond", "McMillicancuddy's Back 40",
+		"McMillicancuddy's Other Back 40", "Cobb's Knob Barracks", "Cobb's Knob Harem", "Throne Room", "The Hidden Hospital"]).includes(myLocation())) { nooculus = true; }
+		if (!nooculus)
 		{
-			if(possessEquipment($item[biphasic molecular oculus]))
+			if (possessEquipment(Item.get("biphasic molecular oculus")))
 			{
-				addToMaximize("+equip " + $item[biphasic molecular oculus]);
+				addToMaximize(`+equip ${Item.get("biphasic molecular oculus")}`);
 			}
-			else
-			{
-				addToMaximize("+equip " + $item[triphasic molecular oculus]);
+			else {
+				addToMaximize(`+equip ${Item.get("triphasic molecular oculus")}`);
 			}
 		}
 	}
 
-	if(is_professor() && (possessEquipment($item[high-tension exoskeleton]) || possessEquipment($item[ultra-high-tension exoskeleton]) || possessEquipment($item[irresponsible-tension exoskeleton]))) //Want that damage avoidance
-	{
+	if (is_professor() && (possessEquipment(Item.get("high-tension exoskeleton")) || possessEquipment(Item.get("ultra-high-tension exoskeleton")) || possessEquipment(Item.get("irresponsible-tension exoskeleton"))))
+	{ //Want that damage avoidance
 		//exclude certain locations as professor that require specific outfits (the War, the Goblin King)
-		if(!($locations[The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform), The Orcish Frat House, The Hippy Camp, The Orcish Frat House (In Disguise), The Hippy Camp (In Disguise), Next to that barrel with something burning in it,
-		Out by that rusted-out car, over where the old tires are, near an abandoned refrigerator, Sonofa Beach, The Themthar Hills, McMillicancuddy's Barn, McMillicancuddy's Pond, McMillicancuddy's Back 40,
-		McMillicancuddy's Other Back 40, Cobb\'s Knob Barracks, Cobb\'s Knob Harem, Throne Room] contains my_location()))
+		if (!(Location.get(["The Battlefield (Frat Uniform)", "The Battlefield (Hippy Uniform)", "The Orcish Frat House", "The Hippy Camp", "The Orcish Frat House (In Disguise)", "The Hippy Camp (In Disguise)", "Next to that Barrel with Something Burning in it",
+		"Out by that Rusted-Out Car", "Over Where the Old Tires Are", "Near an Abandoned Refrigerator", "Sonofa Beach", "The Themthar Hills", "McMillicancuddy's Barn", "McMillicancuddy's Pond", "McMillicancuddy's Back 40",
+		"McMillicancuddy's Other Back 40", "Cobb's Knob Barracks", "Cobb's Knob Harem", "Throne Room"]).includes(myLocation())))
 		{
-			if(possessEquipment($item[high-tension exoskeleton]))
+			if (possessEquipment(Item.get("high-tension exoskeleton")))
 			{
-				addToMaximize("+equip " + $item[high-tension exoskeleton]);
+				addToMaximize(`+equip ${Item.get("high-tension exoskeleton")}`);
 			}
-			else if(possessEquipment($item[ultra-high-tension exoskeleton]))
+			else if (possessEquipment(Item.get("ultra-high-tension exoskeleton")))
 			{
-				addToMaximize("+equip " + $item[ultra-high-tension exoskeleton]);
+				addToMaximize(`+equip ${Item.get("ultra-high-tension exoskeleton")}`);
 			}
-			else
-			{
-				addToMaximize("+equip " + $item[irresponsible-tension exoskeleton]);
+			else {
+				addToMaximize(`+equip ${Item.get("irresponsible-tension exoskeleton")}`);
 			}
 		}
 	}
 
-	
-	if(auto_haveSpringShoes())
+
+	if (auto_haveSpringShoes())
 	{
-		if(item_amount($item[ultra-soft ferns])<4 || item_amount($item[crunchy brush])<4) // collect the spring shoes potions
-		{
-			addBonusToMaximize($item[spring shoes], 200);
+		if (itemAmount(Item.get("ultra-soft ferns")) < 4 || itemAmount(Item.get("crunchy brush")) < 4)
+		{ // collect the spring shoes potions
+			addBonusToMaximize(Item.get("spring shoes"), 200);
 		}
-		else if(my_meat() < meatReserve()) // those fruit drops can autosell for a lot
-		{
-			addBonusToMaximize($item[spring shoes], 200);
+		else if (myMeat() < meatReserve())
+		{ // those fruit drops can autosell for a lot
+			addBonusToMaximize(Item.get("spring shoes"), 200);
 		}
-		else if(my_hp() < 0.5*my_maxhp() && my_hp() > 0)
+		else if (myHp() < 0.5 * myMaxhp() && myHp() > 0)
 		{
-			addBonusToMaximize($item[spring shoes], 200); // bonus to heal in wereprof as the werewolf after transition from Professor
+			addBonusToMaximize(Item.get("spring shoes"), 200); // bonus to heal in wereprof as the werewolf after transition from Professor
 		}
-		else // just add a little bonus for the MP generation
-		{
-			addBonusToMaximize($item[spring shoes], 50);
+		else {
+		// just add a little bonus for the MP generation
+			addBonusToMaximize(Item.get("spring shoes"), 50);
 		}
 	}
 
-	if(auto_haveBatWings() && get_property("_batWingsFreeFights").to_int() < 5)
+	if (auto_haveBatWings() && toInt(getProperty("_batWingsFreeFights")) < 5)
 	{
-		addBonusToMaximize($item[bat wings], 200); // get the 5 free fights
+		addBonusToMaximize(Item.get("bat wings"), 200); // get the 5 free fights
 	}
-
 	// We still need pixels in KoE, badly.
-	if(in_koe() && auto_hasPowerfulGlove())
+	if (in_koe() && auto_hasPowerfulGlove())
 	{
-		if(koe_NeedWhitePixels())
+		if (koe_NeedWhitePixels())
 		{
-			addBonusToMaximize($item[powerful glove], 250);
+			addBonusToMaximize(Item.get("Powerful Glove"), 250);
 		}
 	}
-	if(pathHasFamiliar())
+	if (pathHasFamiliar())
 	{
-		addBonusToMaximize($item[familiar scrapbook], 200); // scrap generation for banish/exp
+		addBonusToMaximize(Item.get("familiar scrapbook"), 200); // scrap generation for banish/exp
 	}
-	if(!nextMonsterIsFree) //does not trigger on free fights
-	{
-		addBonusToMaximize($item[mafia thumb ring], 200); // 4% chance +1 adventure
+	if (!nextMonsterIsFree)
+	{ //does not trigger on free fights
+		addBonusToMaximize(Item.get("mafia thumb ring"), 200); // 4% chance +1 adventure
 	}
-	if(possessEquipment($item[carnivorous potted plant]))
+	if (possessEquipment(Item.get("carnivorous potted plant")))
 	{
-		if(get_property("mappingMonsters").to_boolean() || auto_backupTarget())
+		if (toBoolean(getProperty("mappingMonsters")) || auto_backupTarget())
 		{
 			// don't interfere with backups or Map the Monsters
 			// should also block equipping if support is added for Feel Nostalgic, Lecture on relativity, or fax for YR or other special combat actions
-			addToMaximize("-equip " + $item[carnivorous potted plant].to_string());
+			addToMaximize(`-equip ${(Item.get("carnivorous potted plant")).toString()}`);
 		}
-		else if((nextMonster == $monster[none] || instakillable(nextMonster)) && !in_pokefam() && 
-		get_property("auto_MLSafetyLimit") == "" || get_property("auto_MLSafetyLimit").to_int() >= 25)
+		else if ((nextMonster === Monster.none || instakillable(nextMonster)) && !in_pokefam() && getProperty("auto_MLSafetyLimit") === "" || toInt(getProperty("auto_MLSafetyLimit")) >= 25)
 		{
-			addBonusToMaximize($item[carnivorous potted plant], 200); // 4% chance free kill but also 25 ML
+			addBonusToMaximize(Item.get("carnivorous potted plant"), 200); // 4% chance free kill but also 25 ML
 		}
 	}
-	addBonusToMaximize($item[Mr. Screege\'s spectacles], 100); // meat stuff
-	addBonusToMaximize($item[can of mixed everything], 100); // random stuff
-	if(have_effect($effect[blood bubble]) == 0)
+	addBonusToMaximize(Item.get("Mr. Screege's spectacles"), 100); // meat stuff
+	addBonusToMaximize(Item.get("can of mixed everything"), 100); // random stuff
+	if (haveEffect(Effect.get("Blood Bubble")) === 0)
 	{
 		// blocks first hit, but doesn't stack with blood bubble
-		addBonusToMaximize($item[Eight Days a Week Pill Keeper], 100);
+		addBonusToMaximize(Item.get("Eight Days a Week Pill Keeper"), 100);
 	}
 
 	if (in_heavyrains()) {
-		if (possessEquipment($item[Thor\'s Pliers])) {
-			addBonusToMaximize($item[Thor\'s Pliers], 400); // regenerate lightning
+		if (possessEquipment(Item.get("Thor's Pliers"))) {
+			addBonusToMaximize(Item.get("Thor's Pliers"), 400); // regenerate lightning
 		}
 	}
-	
+
 	if (auto_canUseJuneCleaver()) {
-		if (get_property("_juneCleaverFightsLeft").to_int() < my_adventures() * 1.1 || (fullness_limit() == 0 && inebriety_limit() == 0) || consumptionProgress() < 1) {
-			addBonusToMaximize($item[June cleaver], 200); // We want to ramp this up and the NCs are nice as well
+		if (toInt(getProperty("_juneCleaverFightsLeft")) < myAdventures() * 1.1 || fullnessLimit() === 0 && inebrietyLimit() === 0 || consumptionProgress() < 1) {
+			addBonusToMaximize(Item.get("June cleaver"), 200); // We want to ramp this up and the NCs are nice as well
 		}
 	}
 
 	if (canUseSweatpants()) {
 		if (getSweat() < 90) {
-			addBonusToMaximize($item[designer sweatpants], 200);
+			addBonusToMaximize(Item.get("designer sweatpants"), 200);
 		}
 	}
 
-	if(my_location() == get_property("_seadentWaveZone").to_location())
+	if (myLocation() === toLocation(getProperty("_seadentWaveZone")))
 	{
-		addToMaximize("+equip " + $item[Monodent of the Sea]); //Don't want to spend an extra turn if we don't have to
+		addToMaximize(`+equip ${Item.get("Monodent of the Sea")}`); //Don't want to spend an extra turn if we don't have to
 	}
 
-	if(!in_plumber() && get_property(getMaximizeSlotPref($slot[weapon])) == "" && !maximizeContains("-weapon") && my_primestat() != $stat[Mysticality])
+	if (!in_plumber() && getProperty(getMaximizeSlotPref(Slot.get("weapon"))) === "" && !maximizeContains("-weapon") && myPrimestat() !== Stat.get("Mysticality"))
 	{
-		if (my_class() == $class[Seal Clubber] && in_glover())
+		if (myClass() === Class.get("Seal Clubber") && in_glover())
 		{
 			addToMaximize("club");
 		}
-		else if (in_zootomist() && getZooBestPunch()!=$skill[none])
+		else if (in_zootomist() && getZooBestPunch() !== Skill.none)
 		{
 			// Nothing to do here. Should be a more general case of "classes that never attack with weapon"?
 		}
-		else
-		{
+		else {
 			addToMaximize("effective");
 		}
 	}
-	
-	if ( auto_haveCupidBow() && !maximizeContains("bonus "+$item[toy cupid bow]) )
-	{	// Small bonus here, we have a big bonus in pre_adv if we need a drop we can't cap.
-		addBonusToMaximize($item[toy cupid bow],100);
+
+	if (auto_haveCupidBow() && !maximizeContains(`bonus ${Item.get("toy Cupid bow")}`))
+	{ // Small bonus here, we have a big bonus in pre_adv if we need a drop we can't cap.
+		addBonusToMaximize(Item.get("toy Cupid bow"), 100);
 	}
-	
-	if (auto_haveBurningLeaves() && item_amount($item[inflammable leaf]) < 111)
+
+	if (auto_haveBurningLeaves() && itemAmount(Item.get("inflammable leaf")) < 111)
 	{
-		int bonus = 20;
-		if (in_zootomist() && my_level()<13)
+		let bonus: number = 20;
+		if (in_zootomist() && myLevel() < 13)
 		{
 			bonus = 100;
 		}
-		foreach it in $items[rake,tiny rake]
+		for (let it of Item.get(["rake", "tiny rake"]))
 		{
-			if (!maximizeContains("bonus "+it))
+			if (!maximizeContains(`bonus ${it}`))
 			{
-				addBonusToMaximize(it,bonus);
+				addBonusToMaximize(it, bonus);
 			}
 		}
 	}
-	
 	// We could have added LED Candle to maximizer earlier when Jill was our familiar, but it's been replaced.
-	if (my_familiar()!=$familiar[jill-of-all-trades])
+	if (myFamiliar() !== Familiar.get("Jill-of-All-Trades"))
 	{
-		string candle_force = "+equip "+$item[LED candle];
+		let candle_force: string = `+equip ${Item.get("LED candle")}`;
 		if (maximizeContains(candle_force))
 		{
 			removeFromMaximize(candle_force);
 		}
 	}
 }
-		 
-void finalizeMaximize()
+
+export function finalizeMaximize$1(): void
 {
 	finalizeMaximize(false);
 }
 
-void addToMaximize(string add)
+export function addToMaximize(add_1: string): void
 {
-	if(maximizeContains(add))	//skip if trying to add duplicate
-	{
-		auto_log_debug('Tried to add a duplicate of "' + add + '" to current maximizer statement... skipping', "gold");
+	if (maximizeContains(add_1))
+	{ //skip if trying to add duplicate
+		auto_log_debug(`Tried to add a duplicate of "${add_1}" to current maximizer statement... skipping`, "gold");
 		return;
 	}
-	auto_log_debug('Adding "' + add + '" to current maximizer statement', "gold");
-	string res = get_property("auto_maximize_current");
-	boolean addHasComma = add.starts_with(",");
-	if(res != "" && !addHasComma)
+	auto_log_debug(`Adding "${add_1}" to current maximizer statement`, "gold");
+	let res: string = getProperty("auto_maximize_current");
+	let addHasComma: boolean = startsWith(add_1, ",");
+	if (res !== "" && !addHasComma)
 	{
 		res += ",";
 	}
-	else if(res == "" && addHasComma)
+	else if (res === "" && addHasComma)
 	{
 		// maximizer fails on a leading comma
-		add = add.substring(1);
+		add_1 = substring(add_1, 1);
 	}
-	res += add;
-	set_property("auto_maximize_current", res);
+	res += add_1;
+	setProperty("auto_maximize_current", res);
 }
 
-void removeFromMaximize(string rem)
+export function removeFromMaximize(rem: string): void
 {
-	auto_log_debug('Removing "' + rem + '" from current maximizer statement', "gold");
-	string res = get_property("auto_maximize_current");
-	res = res.replace_string(rem, "");
+	auto_log_debug(`Removing "${rem}" from current maximizer statement`, "gold");
+	let res: string = getProperty("auto_maximize_current");
+	res = replaceString(res, rem, "");
 	// let's be safe here
-	res = res.replace_string(" ,", ",");
-	res = res.replace_string(", ", ",");
-	res = res.replace_string(",,", ",");
-	if(res.ends_with(","))
+	res = replaceString(res, " ,", ",");
+	res = replaceString(res, ", ", ",");
+	res = replaceString(res, ",,", ",");
+	if (endsWith(res, ","))
 	{
-		res = res.substring(0, res.length() - 1);
+		res = substring(res, 0, length(res) - 1);
 	}
-	if(res.starts_with(","))
+	if (startsWith(res, ","))
 	{
-		res = res.substring(1);
+		res = substring(res, 1);
 	}
-	set_property("auto_maximize_current", res);
+	setProperty("auto_maximize_current", res);
 }
 
-boolean maximizeContains(string check)
+export function maximizeContains(check_1: string): boolean
 {
-	return get_property("auto_maximize_current").contains_text(check);
+	return containsText(getProperty("auto_maximize_current"), check_1);
 }
 
-boolean simMaximize()
+export function simMaximize(): boolean
 {
-	string backup = get_property("auto_maximize_current");
-	string backupNextMonster = get_property("auto_nextEncounter");
+	let backup: string = getProperty("auto_maximize_current");
+	let backupNextMonster: string = getProperty("auto_nextEncounter");
 	finalizeMaximize(true);
-	boolean res = autoMaximize(get_property("auto_maximize_current"), true);
-	set_property("auto_maximize_current", backup);
-	set_property("auto_nextEncounter", backupNextMonster);
+	let res: boolean = autoMaximize(getProperty("auto_maximize_current"), true);
+	setProperty("auto_maximize_current", backup);
+	setProperty("auto_nextEncounter", backupNextMonster);
 	return res;
 }
 
-boolean simMaximize(location loc)
+export function simMaximize$1(loc: Location): boolean
 {
-	boolean res;
-	if (my_location() != loc)
+	let res: boolean = false;
+	if (myLocation() !== loc)
 	{
 		//set the simulated location while maximizing
-		location locCache = my_location();
-		set_location(loc);
+		let locCache: Location = myLocation();
+		setLocation(loc);
 		res = simMaximize();
-		set_location(locCache);
+		setLocation(locCache);
 	}
-	else
-	{
+	else {
 		res = simMaximize();
 	}
 	return res;
 }
 
-boolean simMaximizeWith(location loc, string add)
+export function simMaximizeWith(loc: Location, add_1: string): boolean
 {
-	string backup = get_property("auto_maximize_current");
-	addToMaximize(add);
-	auto_log_debug("Simulating: " + get_property("auto_maximize_current"), "gold");
-	boolean res = simMaximize(loc);
-	set_property("auto_maximize_current", backup);
+	let backup: string = getProperty("auto_maximize_current");
+	addToMaximize(add_1);
+	auto_log_debug(`Simulating: ${getProperty("auto_maximize_current")}`, "gold");
+	let res: boolean = simMaximize$1(loc);
+	setProperty("auto_maximize_current", backup);
 	return res;
 }
 
-boolean simMaximizeWith(string add)
+export function simMaximizeWith$1(add_1: string): boolean
 {
-	return simMaximizeWith(my_location(), add);
+	return simMaximizeWith(myLocation(), add_1);
 }
 
-float simValue(string mod)
+export function simValue(mod: string): number
 {
-	return numeric_modifier("Generated:_spec", mod);
+	return numericModifier("Generated:_spec", mod);
 }
 
-float simValue(modifier mod)
+export function simValue$1(mod: Modifier): number
 {
-	return numeric_modifier("Generated:_spec", mod);
+	return numericModifier("Generated:_spec", mod);
 }
 
-void equipMaximizedGear()
+export function equipMaximizedGear(): void
 {
-	finalizeMaximize();
-	maximize(get_property("auto_maximize_current"), 2500, 0, false);
+	finalizeMaximize$1();
+	maximize(getProperty("auto_maximize_current"), 2500, 0, false);
 	// below code is to help diagnose, debug and workaround the intermittent issue where the maximizer fails to equip anything in hand slots
 	// if this is confirmed as fixed by mafia devs, remove the below code.
-	if (equipped_item($slot[weapon]) == $item[none] && my_path() != $path[Way of the Surprising Fist]) {
+	if (equippedItem(Slot.get("weapon")) === Item.none && myPath() !== Path.get("Way of the Surprising Fist")) {
 		// do we actually have a weapon we can equip?
-		item equippableWeapon = $item[none];
-		foreach it in get_inventory() {
-			if (it.to_slot() == $slot[weapon] && can_equip(it)) {
+		let equippableWeapon: Item = Item.none;
+		for (let it of Item.get(Object.keys(getInventory()))) {
+			if (toSlot(it) === Slot.get("weapon") && canEquip(it)) {
 				// found a weapon and we should be able to equip it.
 				equippableWeapon = it;
 				break;
 			}
 		}
-		if (equippableWeapon != $item[none]) {
+		if (equippableWeapon !== Item.none) {
 			auto_log_error("It looks like the maximizer didn't equip any weapons for you. Lets dump some debugging info to help the KolMafia devs look into this.");
 			addToMaximize("2 dump"); // maximizer will dump a bunch of stuff to the session log with this
-			maximize(get_property("auto_maximize_current"), 2500, 0, false);
+			maximize(getProperty("auto_maximize_current"), 2500, 0, false);
 			removeFromMaximize("2 dump");
-			if(get_property("auto_debug_maximizer").to_boolean())
+			if (toBoolean(getProperty("auto_debug_maximizer")))
 			{
 				abort("NO WEAPON WAS EQUIPPED BY THE MAXIMIZER. REPORT THIS IN DISCORD AND INCLUDE YOUR SESSION LOG! YOU CAN RE-RUN AUTOSCEND AND IT SHOULD RUN OK (possibly).");
 			}
-			if (equipped_item($slot[weapon]) == $item[none]) {
+			if (equippedItem(Slot.get("weapon")) === Item.none) {
 				// workaround. equip a weapon & re-running maximizer appears to fix the issue.
 				equip(equippableWeapon);
-				maximize(get_property("auto_maximize_current"), 2500, 0, false);
+				maximize(getProperty("auto_maximize_current"), 2500, 0, false);
 				auto_log_error("No weapon was equipped by the maximizer. If you want to report this to the mafia devs at kolmafia.us include your session log. We have attempted a work around.");
 			}
 		}
 	}
 }
 
-void equipOverrides()
+export function equipOverrides(): void
 {
-	foreach slot_str in $strings[hat, back, shirt, weapon, off-hand, pants, acc, familiar]
+	for (let slot_str of ["hat", "back", "shirt", "weapon", "off-hand", "pants", "acc", "familiar"])
 	{
-		string overrides = get_property("auto_equipment_override_" + slot_str);
-		if(overrides == "")
+		let overrides: string = getProperty(`auto_equipment_override_${slot_str}`);
+		if (overrides === "")
 		{
 			continue;
 		}
 
-		slot s;
-		if(slot_str == "acc")
+		let s: Slot = Slot.none;
+		if (slot_str === "acc")
 		{
-			s = $slot[acc3];
+			s = Slot.get("acc3");
 		}
-		else
-		{
-			s = slot_str.to_slot();
+		else {
+			s = toSlot(slot_str);
 		}
 
-		string [int] overrides_split = overrides.split_string(";");
-		foreach i,item_str in overrides_split
+		let overrides_split: Map<number, string> = new Map(splitString(overrides, ";").map((_v, _i) => [_i, _v]));
+		for (let [i, item_str] of overrides_split)
 		{
-			item it = item_str.to_item();
-			if(it == $item[none])
+			let it: Item = toItem(item_str);
+			if (it === Item.none)
 			{
-				auto_log_warning('"' + item_str + '" does not properly convert to an item (found in auto_equipment_override_' + slot_str + ')', "red");
+				auto_log_warning(`"${item_str}" does not properly convert to an item (found in auto_equipment_override_${slot_str})`, "red");
 				continue;
 			}
-			if(autoEquip(s, it))
+			if (autoEquip(s, it))
 			{
 				// if equipping to accessories, now move on to the next slot
 				// otherwise, stop equipping, since items are listed from highest
 				// to lowest priority
 				// Run from acc3 to acc1, since maximizer prioritises the other way.
-				if(s == $slot[acc3])
+				if (s === Slot.get("acc3"))
 				{
-					s = $slot[acc2];
+					s = Slot.get("acc2");
 				}
-				else if(s == $slot[acc2])
+				else if (s === Slot.get("acc2"))
 				{
-					s = $slot[acc1];
+					s = Slot.get("acc1");
 				}
-				else
-				{
+				else {
 					break;
 				}
 			}
@@ -1193,48 +1205,48 @@ void equipOverrides()
 	}
 }
 
-int equipmentAmount(item equipment)
+export function equipmentAmount(equipment: Item): number
 {
-	if(equipment == $item[none])
+	if (equipment === Item.none)
 	{
 		return 0;
 	}
 
-	int amount = item_amount(equipment) + equipped_amount(equipment, true);
+	let amount: number = itemAmount(equipment) + equippedAmount(equipment, true);
 
-	if (get_related($item[broken champagne bottle], "fold") contains equipment)
+	if ((equipment.toString()) in getRelated(Item.get("broken champagne bottle"), "fold"))
 	{
-		amount = item_amount(wrap_item($item[January\'s Garbage Tote]));
+		amount = itemAmount(wrap_item(Item.get("January's Garbage Tote")));
 	}
 
 	return amount;
 }
 
-boolean possessEquipment(item equipment)
+export function possessEquipment(equipment: Item): boolean
 {
 	return equipmentAmount(equipment) > 0;
 }
 
-boolean possessUnrestricted(item it)
+export function possessUnrestricted(it: Item): boolean
 {
-	return possessEquipment(it) && is_unrestricted(it);
+	return possessEquipment(it) && isUnrestricted(it);
 }
 
-boolean possessOutfit(string outfitToCheck, boolean checkCanEquip) {
+export function possessOutfit(outfitToCheck: string, checkCanEquip: boolean): boolean {
 	// have_outfit will report false if you're wearing some of the items
 	// it will only report true if you have all in inventory or are wearing the whole thing
 	// hence this now exists.
-	if (count(outfit_pieces(outfitToCheck)) == 0) {
-		auto_log_warning(outfitToCheck + " is not a valid outfit!");
+	if (outfitPieces(outfitToCheck).length === 0) {
+		auto_log_warning$1(`${outfitToCheck} is not a valid outfit!`);
 		return false;
 	}
-	
-	foreach key, piece in outfit_pieces(outfitToCheck) {
+
+	for (let [key, piece] of outfitPieces(outfitToCheck).entries()) {
 		if (!possessEquipment(piece))
 		{
 			return false;
 		}
-		if(checkCanEquip && !can_equip(piece))
+		if (checkCanEquip && !canEquip(piece))
 		{
 			return false;
 		}
@@ -1242,85 +1254,85 @@ boolean possessOutfit(string outfitToCheck, boolean checkCanEquip) {
 	return true;
 }
 
-boolean possessOutfit(string outfitToCheck) {
-	return possessOutfit(outfitToCheck, false);	
+export function possessOutfit$1(outfitToCheck: string): boolean {
+	return possessOutfit(outfitToCheck, false);
 }
 
-void equipBaseline()
+export function equipBaseline(): void
 {
 	equipMaximizedGear();
 }
 
-void ensureSealClubs()
+export function ensureSealClubs(): void
 {
-	cli_execute("acquire 1 seal-clubbing club");
-	foreach club in $items[legendary seal-clubbing club, Meat Tenderizer Is Murder, Lead Pipe, Porcelain Police Baton, Stainless STeel Shillelagh, Frozen Seal Spine, Ghast Iron Cleaver, Oversized Pipe, Curmudgel, Elegant Nightstick, Maxwell's Silver Hammer, Red-Hot Poker, Giant Foam Finger, Hilarious Comedy Prop, Infernal Toilet Brush, Mannequin Leg, Gnawed-Up Dog Bone, Severed Flipper, Spiked Femur, Corrupt Club of Corrupt Corruption, Kneecapping Stick, Orcish frat-paddle, Flaming Crutch, Corrupt Club of Corruption, Skeleton Bone, Remaindered Axe, Club of Corruption, Gnollish Flyswatter, Seal-Clubbing Club]
+	cliExecute("acquire 1 seal-clubbing club");
+	for (let club of Item.get(["legendary seal-clubbing club", "Meat Tenderizer is Murder", "lead pipe", "porcelain police baton", "stainless steel shillelagh", "frozen seal spine", "ghast iron cleaver", "oversized pipe", "curmudgel", "elegant nightstick", "Maxwell's Silver Hammer", "red-hot poker", "giant foam finger", "hilarious comedy prop", "infernal toilet brush", "mannequin leg", "gnawed-up dog bone", "severed flipper", "spiked femur", "corrupt club of corrupt corruption", "kneecapping stick", "Orcish frat-paddle", "flaming crutch", "corrupt club of corruption", "skeleton bone", "remaindered axe", "club of corruption", "Gnollish flyswatter", "seal-clubbing club"]))
 	{
-		if(possessEquipment(club))
+		if (possessEquipment(club))
 		{
-			autoForceEquip($slot[weapon], club);
+			autoForceEquip$1(Slot.get("weapon"), club);
 			return;
 		}
 	}
 }
 
-void equipRollover(boolean silent)
+export function equipRollover(silent: boolean): void
 {
-	if(in_gnoob())
+	if (in_gnoob())
 	{
 		return;
 	}
 
-	if(auto_have_familiar($familiar[Trick-or-Treating Tot]) && !possessEquipment($item[Li\'l Unicorn Costume]) && (my_meat() > 3000 + npc_price($item[Li\'l Unicorn Costume])) && auto_is_valid($item[Li\'l Unicorn Costume]) && !in_pokefam())
+	if (auto_have_familiar(Familiar.get("Trick-or-Treating Tot")) && !possessEquipment(Item.get("li'l unicorn costume")) && myMeat() > 3000 + npcPrice(Item.get("li'l unicorn costume")) && auto_is_valid(Item.get("li'l unicorn costume")) && !in_pokefam())
 	{
-		cli_execute("buy Li'l Unicorn Costume");
+		cliExecute("buy Li'l Unicorn Costume");
 	}
 
-	if(!silent)
+	if (!silent)
 	{
 		auto_log_info("Putting on pajamas...", "blue");
 	}
 
-	string to_max = "-tie,adv";
-	if(hippy_stone_broken() && my_path() != $path[Oxygenarian] && get_property("auto_bedtime_pulls_pvp_multi").to_float() > 0)
+	let to_max: string = "-tie,adv";
+	if (hippyStoneBroken() && myPath() !== Path.get("Oxygenarian") && toFloat(getProperty("auto_bedtime_pulls_pvp_multi")) > 0)
 	{
-		to_max += "," +get_property("auto_bedtime_pulls_pvp_multi")+ "fites";
+		to_max += `,${getProperty("auto_bedtime_pulls_pvp_multi")}fites`;
 	}
-	if(auto_have_familiar($familiar[Trick-or-Treating Tot]))
-		to_max += ",switch Trick-or-Treating Tot";
-	if(auto_have_familiar($familiar[Left-Hand Man]))
-		to_max += ",switch Left-Hand Man";
-	if(my_familiar() == $familiar[none])
+	if (auto_have_familiar(Familiar.get("Trick-or-Treating Tot")))
+		{ to_max += ",switch Trick-or-Treating Tot"; }
+	if (auto_have_familiar(Familiar.get("Left-Hand Man")))
+		{ to_max += ",switch Left-Hand Man"; }
+	if (myFamiliar() === Familiar.none)
 	{
-		familiar anyFam = findNonRockFamiliarInTerrarium();
-		if(anyFam != $familiar[none])
+		let anyFam: Familiar = findNonRockFamiliarInTerrarium();
+		if (anyFam !== Familiar.none)
 		{
-			to_max += ",switch " + anyFam.to_string();
+			to_max += `,switch ${anyFam.toString()}`;
 		}
 	}
 
 	maximize(to_max, false);
 
-	if(!in_hardcore() && !silent)
+	if (!inHardcore() && !silent)
 	{
 		auto_log_info("Done putting on jammies, if you pulled anything with a rollover effect you might want to make sure it's equipped before you log out.", "red");
 	}
 }
 
-boolean auto_forceEquipSword(boolean speculative) {
-	item swordToEquip = $item[none];
+export function auto_forceEquipSword(speculative: boolean): boolean {
+	let swordToEquip: Item = Item.none;
 	// use the ebony epee if we have it
-	if (possessEquipment($item[ebony epee]))
+	if (possessEquipment(Item.get("ebony epee")))
 	{
-		swordToEquip = $item[ebony epee];
+		swordToEquip = Item.get("ebony epee");
 	}
 
-	if (swordToEquip == $item[none])
+	if (swordToEquip === Item.none)
 	{
 		// check for some swords that we might have acquired in run already. Yes machetes are actually swords.
-		foreach it in $items[antique machete, black sword, broken sword, cardboard katana, cardboard wakizashi,
-		knob goblin deluxe scimitar, knob goblin scimitar, lupine sword, muculent machete, serpentine sword,
-		vorpal blade, white sword, sweet ninja sword, drowsy sword, ridiculously huge sword]
+		for (let it of Item.get(["antique machete", "black sword", "broken sword", "cardboard katana", "cardboard wakizashi",
+		"Knob Goblin deluxe scimitar", "Knob Goblin scimitar", "lupine sword", "muculent machete", "serpentine sword",
+		"vorpal blade", "white sword", "sweet ninja sword", "Drowsy Sword", "ridiculously huge sword"]))
 		{
 			if (possessEquipment(it) && auto_can_equip(it))
 			{
@@ -1330,215 +1342,209 @@ boolean auto_forceEquipSword(boolean speculative) {
 		}
 	}
 
-	if (swordToEquip == $item[none] && isArmoryAndLeggeryStoreAvailable() && my_meat() > 49)
+	if (swordToEquip === Item.none && isArmoryAndLeggeryStoreAvailable() && myMeat() > 49)
 	{
 		// if we still don't have a sword available, buy one for a trivial amount of meat.
 		// we must check availability first. retrieve_item does not return false on failure. it aborts on failure.
-		if (retrieve_item(1, $item[sweet ninja sword])) // costs 50 meat from the armorer and leggerer
-		{
-			swordToEquip = $item[sweet ninja sword];
+		if (retrieveItem(1, Item.get("sweet ninja sword")))
+		{ // costs 50 meat from the armorer and leggerer
+			swordToEquip = Item.get("sweet ninja sword");
 		}
 	}
-	
-	if (swordToEquip == $item[none])	//we do not want to force equip none and then report success.
-	{
+
+	if (swordToEquip === Item.none)
+	{ //we do not want to force equip none and then report success.
 		return false;
 	}
 
-	if (get_property("auto_equipment_override_weapon").to_item() != $item[none] && auto_can_equip(get_property("auto_equipment_override_weapon").to_item(),$slot[weapon]))
+	if (toItem(getProperty("auto_equipment_override_weapon")) !== Item.none && auto_can_equip$1(toItem(getProperty("auto_equipment_override_weapon")), Slot.get("weapon")))
 	{
-		if (item_type(get_property("auto_equipment_override_weapon").to_item()) == "sword")
+		if (itemType(toItem(getProperty("auto_equipment_override_weapon"))) === "sword")
 		{
 			return true;
 		}
-		else
-		{
+		else {
 			auto_log_debug("Can not successfully force equip a sword because user defined override weapon will replace it before combat", "gold");
 			return false;
 		}
 	}
-	
+
 	if (speculative)
 	{
-		return auto_can_equip(swordToEquip, $slot[weapon]);
+		return auto_can_equip$1(swordToEquip, Slot.get("weapon"));
 	}
-	return autoForceEquip($slot[weapon], swordToEquip);
+	return autoForceEquip$1(Slot.get("weapon"), swordToEquip);
 }
 
-boolean auto_forceEquipSword() {
+export function auto_forceEquipSword$1(): boolean {
 	return auto_forceEquipSword(false);
 }
 
-boolean is_watch(item it)
+export function is_watch(it: Item): boolean
 {
 	//watches are accessories that conflict with each other. you can only equip one watch total.
-	return boolean_modifier(it, $modifier[Nonstackable Watch]);
+	return booleanModifier(it, Modifier.get("Nonstackable Watch"));
 }
 
-int[item] auto_getAllEquipabble()
+export function auto_getAllEquipabble(): Map<Item, number>
 {
-	return auto_getAllEquipabble($slot[none]);
+	return auto_getAllEquipabble$1(Slot.none);
 }
 
-int[item] auto_getAllEquipabble(slot s)
+export function auto_getAllEquipabble$1(s: Slot): Map<Item, number>
 {
-	boolean ignore_slot = s==$slot[none];
-	s = (s==$slot[acc2] || s==$slot[acc3]?$slot[acc1]:s);// all accessories checked against slot 1
-	int[item] valid_and_equippable;
-	foreach it,n in get_inventory()
+	let ignore_slot: boolean = s === Slot.none;
+	s = (s === Slot.get("acc2") || s === Slot.get("acc3") ? Slot.get("acc1") : s); // all accessories checked against slot 1
+	let valid_and_equippable: Map<Item, number> = new Map();
+	for (let [it, n] of Object.entries(getInventory()).map(([_k, _v]) => [Item.get(_k), _v] as [Item, number]))
 	{
-		slot it_s = to_slot(it);
-		if(can_equip(it) && auto_is_valid(it) && (s==it_s || ignore_slot))
+		let it_s: Slot = toSlot(it);
+		if (canEquip(it) && auto_is_valid(it) && (s === it_s || ignore_slot))
 		{
-			valid_and_equippable[it] = n;
+			valid_and_equippable.set(it, n);
 		}
 	}
 	// Add equipped
-	boolean[slot] my_slots;
+	let my_slots: Map<Slot, boolean> = new Map();
 	if (ignore_slot)
 	{
-		my_slots = $slots[hat, weapon, off-hand, back, shirt, pants, acc1, acc2, acc3, familiar];
+		my_slots = new Map([[Slot.get("hat"), true], [Slot.get("weapon"), true], [Slot.get("off-hand"), true], [Slot.get("back"), true], [Slot.get("shirt"), true], [Slot.get("pants"), true], [Slot.get("acc1"), true], [Slot.get("acc2"), true], [Slot.get("acc3"), true], [Slot.get("familiar"), true]]);
 	}
-	else
-	{
-		my_slots[s] = true;
-		if (s==$slot[acc1])
+	else {
+		my_slots.set(s, true);
+		if (s === Slot.get("acc1"))
 		{
-			my_slots[$slot[acc2]] = true;
-			my_slots[$slot[acc3]] = true;
+			my_slots.set(Slot.get("acc2"), true);
+			my_slots.set(Slot.get("acc3"), true);
 		}
 	}
-	foreach my_slot in my_slots
+	for (let my_slot of my_slots.keys())
 	{
-		item it = equipped_item(my_slot);
-		valid_and_equippable[it]++;
+		let it: Item = equippedItem(my_slot);
+		valid_and_equippable.set(it, (valid_and_equippable.get(it) ?? 0) + 1);
 	}
 	return valid_and_equippable;
 }
 
-item[int] auto_saveEquipped()
+export function auto_saveEquipped(): Map<number, Item>
 {
-	boolean[slot] my_slots;
-	if(in_hattrick())
+	let my_slots: Map<Slot, boolean> = new Map();
+	if (in_hattrick())
 	{
-		my_slots = $slots[off-hand, weapon, back, shirt, pants, acc1, acc2, acc3, familiar];
+		my_slots = new Map([[Slot.get("off-hand"), true], [Slot.get("weapon"), true], [Slot.get("back"), true], [Slot.get("shirt"), true], [Slot.get("pants"), true], [Slot.get("acc1"), true], [Slot.get("acc2"), true], [Slot.get("acc3"), true], [Slot.get("familiar"), true]]);
 	}
-	else
-	{
-		 my_slots = $slots[hat, off-hand, weapon, back, shirt, pants, acc1, acc2, acc3, familiar];
+	else {
+		 my_slots = new Map([[Slot.get("hat"), true], [Slot.get("off-hand"), true], [Slot.get("weapon"), true], [Slot.get("back"), true], [Slot.get("shirt"), true], [Slot.get("pants"), true], [Slot.get("acc1"), true], [Slot.get("acc2"), true], [Slot.get("acc3"), true], [Slot.get("familiar"), true]]);
 	}
-	int i = 0;
-	item[int] equipped;
-	foreach sl in my_slots
+	let i: number = 0;
+	let equipped: Map<number, Item> = new Map();
+	for (let sl of my_slots.keys())
 	{
-		equipped[count(equipped)] = equipped_item(sl);
+		equipped.set(equipped.size, equippedItem(sl));
 	}
 	return equipped;
 }
 
-boolean auto_loadEquipped(item[int] loadEquip)
+export function auto_loadEquipped(loadEquip: Map<number, Item>): boolean
 {
-	int loadAccCount = 0;
-	int accCount = 0;
-	foreach i, it in loadEquip
+	let loadAccCount: number = 0;
+	let accCount: number = 0;
+	for (let [i, it] of loadEquip)
 	{
-		if(it.to_slot() == $slot[acc1]) loadAccCount += 1;
+		if (toSlot(it) === Slot.get("acc1")) { loadAccCount += 1; }
 	}
-	foreach i, it in loadEquip
+	for (let [i, it] of loadEquip)
 	{
 		//remove off-hand if we need to equip a 2 handed weapon from our saved load out
-		if (it == $item[none]) continue;
-		if(loadAccCount > 0 && it.to_slot() == $slot[acc1] && (it != equipped_item($slot[acc1]) || it != equipped_item($slot[acc2]) || it != equipped_item($slot[acc3])))
+		if (it === Item.none) { continue; }
+		if (loadAccCount > 0 && toSlot(it) === Slot.get("acc1") && (it !== equippedItem(Slot.get("acc1")) || it !== equippedItem(Slot.get("acc2")) || it !== equippedItem(Slot.get("acc3"))))
 		{
 			accCount += 1;
-			switch(accCount)
-			{				
+			switch (accCount)
+			{
 				case 1:
-					autoForceEquip($slot[acc1], it, true);
+					autoForceEquip(Slot.get("acc1"), it, true);
 					break;
 				case 2:
-					autoForceEquip($slot[acc2], it, true);
+					autoForceEquip(Slot.get("acc2"), it, true);
 					break;
 				default:
-					autoForceEquip($slot[acc3], it, true);
+					autoForceEquip(Slot.get("acc3"), it, true);
 					break;
 			}
 		}
-		else
-		{
-			autoForceEquip(it, true);
+		else {
+			autoForceEquip$2(it, true);
 		}
 	}
 	return true;
 }
 
-int[slot] powerMultipliers()
+export function powerMultipliers(): Map<Slot, number>
 {
-	int[slot] multiplier;
-	multiplier[$slot[hat]] = 1;
-    multiplier[$slot[pants]] = 1;
-    if(have_skill($skill[Tao of the Terrapin]))
+	let multiplier: Map<Slot, number> = new Map();
+	multiplier.set(Slot.get("hat"), 1);
+    multiplier.set(Slot.get("pants"), 1);
+    if (haveSkill(Skill.get("Tao of the Terrapin")))
     {
-        multiplier[$slot[hat]] += 1;
-        multiplier[$slot[pants]] += 1;
+        multiplier.set(Slot.get("hat"), (multiplier.get(Slot.get("hat")) ?? 0) + 1);
+        multiplier.set(Slot.get("pants"), (multiplier.get(Slot.get("pants")) ?? 0) + 1);
     }
-    if(have_effect($effect[Hammertime]) > 0)
+    if (haveEffect(Effect.get("Hammertime")) > 0)
     {
-        multiplier[$slot[pants]] += 3;
+        multiplier.set(Slot.get("pants"), (multiplier.get(Slot.get("pants")) ?? 0) + 3);
     }
 
 	return multiplier;
 }
-
 /**
-	Handles selecting and equiping an equipment that would allow a free kill skill to be cast, if able. 
-	Only selects one free kill at a time. 
+	Handles selecting and equiping an equipment that would allow a free kill skill to be cast, if able.
+	Only selects one free kill at a time.
 	Doesn't allow freekill equips in Advant guard or PocketFamiliars paths
 */
-void auto_equipFreekill()
-{	
+export function auto_equipFreekill(): void
+{
 	// Pocket familiars combat doesn't permit skills, and bodyguards in Advant Guard make freekills un-free, so we're not doing that.
-	if(in_avantGuard() || in_pokefam())
+	if (in_avantGuard() || in_pokefam())
 	{
 		return;
-	} 
+	}
 
-	auto_log_info("Looking for an equipment with free kills available...");
-	item dartHolster = $item[Everfull Dart Holster];
-	item doctorBag = $item[Lil\' Doctor&trade; Bag];
-	item joksterGun = $item[The Jokester\'s Gun];
-	item bcz = auto_getItemToEquipBCZ();
-	item legendClub = $item[legendary seal-clubbing club];
+	auto_log_info$1("Looking for an equipment with free kills available...");
+	let dartHolster: Item = Item.get("Everfull Dart Holster");
+	let doctorBag: Item = Item.get("Lil' Doctor&trade; bag");
+	let joksterGun: Item = Item.get("The Jokester's gun");
+	let bcz: Item = auto_getItemToEquipBCZ();
+	let legendClub: Item = Item.get("legendary seal-clubbing club");
 
-	boolean redDartAvailable = auto_haveDarts() && have_effect($effect[Everything Looks Red]) == 0;
-	boolean chestXrayAvailable = auto_chestXraysRemaining() > 0;
-	boolean fireGunAvailable = auto_jokesterGunFreeKillAvailable();
-	boolean sweatBulletsAvailable = auto_wantToBCZ($skill[BCZ: Sweat Bullets]);
-	boolean clubBackAvailable = auto_clubEmBackInTimesRemaining() > 0;
+	let redDartAvailable: boolean = auto_haveDarts() && haveEffect(Effect.get("Everything Looks Red")) === 0;
+	let chestXrayAvailable: boolean = auto_chestXraysRemaining() > 0;
+	let fireGunAvailable: boolean = auto_jokesterGunFreeKillAvailable();
+	let sweatBulletsAvailable: boolean = auto_wantToBCZ(Skill.get("BCZ: Sweat Bullets"));
+	let clubBackAvailable: boolean = auto_clubEmBackInTimesRemaining() > 0;
 
-	if(redDartAvailable)
+	if (redDartAvailable)
 	{
-		auto_log_info("We don't have ELR so let's hit a bullseye. Equipping Everful Dart holster.");
-		autoEquip($slot[acc3], dartHolster);
+		auto_log_info$1("We don't have ELR so let's hit a bullseye. Equipping Everful Dart holster.");
+		autoEquip(Slot.get("acc3"), dartHolster);
 	} else if (chestXrayAvailable)
 	{
-		auto_log_info("We still have Chest X-Rays available. Equipping Lil' Doctor bag.");
-		autoEquip($slot[acc3], doctorBag);
+		auto_log_info$1("We still have Chest X-Rays available. Equipping Lil' Doctor bag.");
+		autoEquip(Slot.get("acc3"), doctorBag);
 	} else if (fireGunAvailable)
 	{
-		auto_log_info("Let's be a jokester. Equipping The Jokester's gun.");
-		autoEquip($slot[weapon], joksterGun);
-	} else if (sweatBulletsAvailable) 
+		auto_log_info$1("Let's be a jokester. Equipping The Jokester's gun.");
+		autoEquip(Slot.get("weapon"), joksterGun);
+	} else if (sweatBulletsAvailable)
 	{
-		auto_log_info("Man, we about to sweat bullets up in here. Equipping BCZ.");
-		autoEquip($slot[acc3], bcz);
+		auto_log_info$1("Man, we about to sweat bullets up in here. Equipping BCZ.");
+		autoEquip(Slot.get("acc3"), bcz);
 	} else if (clubBackAvailable)
+	{
 	// club back is last because it destroys drops, so we may choose to not use it
-	{
-		auto_log_info("They may not be seals, but we're gonna kill them last week. Equipping Legendary Seal Clubbing Club.");
-		autoEquip($slot[weapon], legendClub);
-	} else 
-	{
-		auto_log_info("No free kill sources found to equip, maybe you have some others, but we'll let combat figure that out.");
+		auto_log_info$1("They may not be seals, but we're gonna kill them last week. Equipping Legendary Seal Clubbing Club.");
+		autoEquip(Slot.get("weapon"), legendClub);
+	} else {
+		auto_log_info$1("No free kill sources found to equip, maybe you have some others, but we'll let combat figure that out.");
 	}
 }

@@ -1,799 +1,809 @@
-boolean needStarKey()
+import { Class, Coinmaster, Effect, Element, Familiar, Item, Location, Modifier, Monster, Skill, Slot, Stat, abort, availableAmount, availableChoiceOptions, buy, canEquip, canInteract, ceil, cliExecute, containsText, council, creatableAmount, create, equip, equippedItem, getProperty, gnomadsAvailable, haveEffect, haveEquipped, haveFamiliar, haveSkill, inHardcore, itemAmount, lastChoice, lastMonster, max, meatDropModifier, min, myAscensions, myBuffedstat, myClass, myDaycount, myFamiliar, myHp, myMaxhp, myMeat, myPrimestat, numericModifier, propertyExists, pullsRemaining, removeProperty, retrieveItem, runChoice, setProperty, toBoolean, toElement, toFamiliar, toInt, toLowerCase, toStat, useFamiliar, useSkill, visitUrl } from "kolmafia";
+import { acquireOrPull, auto_buyUpTo, canPull$1, pullXWhenHaveY } from "../auto_acquire";
+import { autoAdv$1, autoAdv$2, autoAdvBypass$1, autoLuckyAdv } from "../auto_adventure";
+import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
+import { addToMaximize, autoEquip, autoEquip$1, autoForceEquip$1, autoForceEquip$3, equipBaseline, equipMaximizedGear, possessEquipment, resetMaximize } from "../auto_equipment";
+import { auto_have_familiar, canChangeFamiliar, handleFamiliar, handleFamiliar$1, isAttackFamiliar, lookupFamiliarDatafile, preAdvUpdateFamiliar } from "../auto_familiar";
+import { provideInitiative$2, provideMeat$1, provideResistances$4, provideStats$2 } from "../auto_providers";
+import { acquireFullHP, acquireMP$1, acquireMP$2, uneffect } from "../auto_restore";
+import { MLDamageToMonsterMultiplier, autoMaximize$1, auto_can_equip, auto_equalizeStats, auto_getListOfNonDamagingFamiliarEquipment, auto_have_skill, auto_is_valid, auto_is_valid$3, auto_log_error, auto_log_info, auto_log_info$1, auto_log_warning, auto_log_warning$1, auto_turbo, auto_wishForEffect, auto_wishForEffectIfNeeded, canSummonMonster, cloverUsageFinish, cloverUsageInit$1, cloverUsageRestart, hasTorso$1, hasUsefulShirt, internalQuestStatus, isGuildClass, shrugAT$1, summonMonster, summonedMonsterToday, woods_questStart } from "../auto_util";
+import { zone_isAvailable$1 } from "../auto_zone";
+import { canUse$2 } from "../combat/auto_combat_util";
+import { fightClubSpa$1 } from "../iotms/mr2018";
+import { auto_beachCombHead } from "../iotms/mr2019";
+import { auto_backupUsesLeft, auto_haveBackupCamera } from "../iotms/mr2021";
+import { auto_haveGreyGoose } from "../iotms/mr2022";
+import { auto_getCitizenZone$1, auto_makeAutumnalAegis, auto_remainingCandyCaneSlashes } from "../iotms/mr2023";
+import { beretBusk } from "../iotms/mr2025";
+import { isActuallyEd } from "../paths/actually_ed_the_undying";
+import { in_amw } from "../paths/adventurer_meats_world";
+import { is_boris } from "../paths/avatar_of_boris";
+import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
+import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
+import { is_pete } from "../paths/avatar_of_sneaky_pete";
+import { L13_bhy_towerFinal, in_bhy } from "../paths/bees_hate_you";
+import { in_bugbear } from "../paths/bugbear_invasion";
+import { inAftercore } from "../paths/casual";
+import { bat_reallyPickSkills$1, in_darkGyffte } from "../paths/dark_gyffte";
+import { in_disguises } from "../paths/disguises_delimit";
+import { L13_heavyrains_towerFinal, in_heavyrains } from "../paths/heavy_rains";
+import { L13_koe_towerNSNagamar, in_koe } from "../paths/kingdom_of_exploathing";
+import { in_kolhs } from "../paths/kolhs";
+import { in_lol } from "../paths/legacy_of_loathing";
+import { lar_repeat } from "../paths/live_ascend_repeat";
+import { L13_sorceressDoorLowKey, in_lowkeysummer } from "../paths/low_key_summer";
+import { in_plumber } from "../paths/path_of_the_plumber";
+import { in_pokefam } from "../paths/pocket_familiars";
+import { in_small } from "../paths/small";
+import { in_theSource } from "../paths/the_source";
+import { in_wotsf } from "../paths/way_of_the_surprising_fist";
+import { in_wereprof } from "../paths/wereprofessor";
+import { in_robot } from "../paths/you_robot";
+import { in_zombieSlayer } from "../paths/zombie_slayer";
+import { in_zootomist } from "../paths/zootomist";
+import { shenShouldDelayZone } from "./level_11";
+import { auto_warSide, equipWarOutfit } from "./level_12";
+
+//Defined in autoscend/quests/level_13.ash
+export function needStarKey(): boolean
 {
-	if(contains_text(get_property("nsTowerDoorKeysUsed"),"star key"))
+	if (containsText(getProperty("nsTowerDoorKeysUsed"), "star key"))
 	{
 		return false;
 	}
-	if(item_amount($item[Richard\'s Star Key]) > 0 || creatable_amount($item[Richard\'s Star Key]) > 0)
+	if (itemAmount(Item.get("Richard's star key")) > 0 || creatableAmount(Item.get("Richard's star key")) > 0)
 	{
 		return false;
 	}
 	return true;
 }
 
-boolean needDigitalKey()
+export function needDigitalKey(): boolean
 {
-	if(isActuallyEd())
+	if (isActuallyEd())
 	{
 		return false;
 	}
-	if(contains_text(get_property("nsTowerDoorKeysUsed"),"digital key"))
+	if (containsText(getProperty("nsTowerDoorKeysUsed"), "digital key"))
 	{
 		return false;
 	}
-	if(item_amount($item[Digital Key]) > 0)
+	if (itemAmount(Item.get("digital key")) > 0)
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 
-boolean need8BitPoints()
+export function need8BitPoints(): boolean
 {
-	if(get_property("8BitScore").to_int() >= 10000)
+	if (toInt(getProperty("8BitScore")) >= 10000)
 	{
 		return false;
 	}
 	return needDigitalKey();
 }
 
-int towerKeyCount()
+export function towerKeyCount(): number
 {
-	return towerKeyCount(true);
+	return towerKeyCount$1(true);
 }
 
-int towerKeyCount(boolean effective)
+export function towerKeyCount$1(effective: boolean): number
 {
 	//Returns how many Hero Keys and Fat Loot tokens we have.
 	//effective count (with malware) vs true count.
-	
+
 	if (isActuallyEd())
 	{
 		return 3;
 	}
 
-	int tokens = item_amount($item[Fat Loot Token]);
-	if((item_amount($item[Boris\'s Key]) > 0) || contains_text(get_property("nsTowerDoorKeysUsed"), $item[Boris\'s Key]))
+	let tokens: number = itemAmount(Item.get("fat loot token"));
+	if (itemAmount(Item.get("Boris's key")) > 0 || containsText(getProperty("nsTowerDoorKeysUsed"), Item.get("Boris's key").toString()))
 	{
 		tokens = tokens + 1;
 	}
-	if((item_amount($item[Jarlsberg\'s Key]) > 0) || contains_text(get_property("nsTowerDoorKeysUsed"), $item[Jarlsberg\'s Key]))
+	if (itemAmount(Item.get("Jarlsberg's key")) > 0 || containsText(getProperty("nsTowerDoorKeysUsed"), Item.get("Jarlsberg's key").toString()))
 	{
 		tokens = tokens + 1;
 	}
-	if((item_amount($item[Sneaky Pete\'s Key]) > 0) || contains_text(get_property("nsTowerDoorKeysUsed"), $item[Sneaky Pete\'s Key]))
+	if (itemAmount(Item.get("Sneaky Pete's key")) > 0 || containsText(getProperty("nsTowerDoorKeysUsed"), Item.get("Sneaky Pete's key").toString()))
 	{
 		tokens = tokens + 1;
 	}
-	if(effective && (item_amount($item[Daily Dungeon Malware]) > 0) && !get_property("_dailyDungeonMalwareUsed").to_boolean() && !get_property("dailyDungeonDone").to_boolean() && (get_property("_lastDailyDungeonRoom").to_int() < 14) && (!in_pokefam()))
+	if (effective && itemAmount(Item.get("daily dungeon malware")) > 0 && !toBoolean(getProperty("_dailyDungeonMalwareUsed")) && !toBoolean(getProperty("dailyDungeonDone")) && toInt(getProperty("_lastDailyDungeonRoom")) < 14 && !in_pokefam())
 	{
 		tokens = tokens + 1;
 	}
 	return tokens;
 }
 
-int EightBitScore()
+export function EightBitScore(): number
 {
-	int score = get_property("8BitScore").to_int();
+	let score: number = toInt(getProperty("8BitScore"));
 	return score;
 }
 
-boolean prepForMegaloCity() // low DA is punishing here, so if you're a non-guild class get torso and potentially autumn aegis
-{
+export function prepForMegaloCity(): boolean
+{ // low DA is punishing here, so if you're a non-guild class get torso and potentially autumn aegis
 	if (isGuildClass())
 	{
 		return true; // nothing to do here as guild class
 	}
 	// If we can buy Torso and should, do that here, ignoring reserve
-	if((my_meat() >= 6000)
-	   && gnomads_available()
-	   && (!hasTorso())
-	   && hasUsefulShirt() )
+	if (myMeat() >= 6000 && gnomadsAvailable() && !hasTorso$1() && hasUsefulShirt())
 	{
-		visit_url("gnomes.php?action=trainskill&whichskill=12");
+		visitUrl("gnomes.php?action=trainskill&whichskill=12");
 	}
-	
 	// After this consider the aegis
-	item aegis = $item[autumnal aegis];
-	if (available_amount(aegis) > 0 || !auto_is_valid(aegis))
+	let aegis: Item = Item.get("autumnal aegis");
+	if (availableAmount(aegis) > 0 || !auto_is_valid(aegis))
 	{
 		return true; // no point doing anything further here
 	}
-	if (!isGuildClass() && available_amount(aegis)==0)
+	if (!isGuildClass() && availableAmount(aegis) === 0)
 	{
 		auto_makeAutumnalAegis();
 	}
-	if (in_zootomist() && available_amount(aegis)==0)
+	if (in_zootomist() && availableAmount(aegis) === 0)
 	{
 		pullXWhenHaveY(aegis, 1, 0);
 	}
-	return available_amount(aegis)>0;
+	return availableAmount(aegis) > 0;
 }
 
-boolean EightBitRealmHandler()
+export function EightBitRealmHandler(): boolean
 {
 	//Spend adventures to get the digital key
 	//Preparing for each zone is handled in auto_pre_adv.ash
-	boolean adv_spent = false;
+	let adv_spent: boolean = false;
 
-	string color = get_property("8BitColor");
-	if((internalQuestStatus("questL02Larva") < 0 && internalQuestStatus("questG02Whitecastle") < 0) && available_amount($item[Continuum Transfunctioner]) == 0)
+	let color: string = getProperty("8BitColor");
+	if (internalQuestStatus("questL02Larva") < 0 && internalQuestStatus("questG02Whitecastle") < 0 && availableAmount(Item.get("continuum transfunctioner")) === 0)
 	{
 		// need distant woods and continuum transfunctioner
 		return false;
 	}
-	switch(color)
+	switch (color)
 	{
 		case "black":
+			
 			// limited buff that is helpful for 3 of 4 8-bit zones
-			buffMaintain($effect[shadow waters]);
-			adv_spent = autoAdv($location[Vanya\'s Castle]);
+buffMaintain$4(Effect.get("Shadow Waters"));
+			adv_spent = autoAdv$2(Location.get("Vanya's Castle"));
 			break;
 		case "red":
+			
 			// limited buff that is helpful for 3 of 4 8-bit zones
-			buffMaintain($effect[shadow waters]);
-			if(meat_drop_modifier() < 395){
-				auto_getCitizenZone("meat");
+buffMaintain$4(Effect.get("Shadow Waters"));
+			if (meatDropModifier() < 395) {
+				auto_getCitizenZone$1("meat");
 			}
-			adv_spent = autoAdv($location[The Fungus Plains]);
+			adv_spent = autoAdv$2(Location.get("The Fungus Plains"));
 			break;
 		case "blue":
 			prepForMegaloCity();
-			adv_spent = autoAdv($location[Megalo-City]);
+			adv_spent = autoAdv$2(Location.get("Megalo-City"));
 			break;
 		case "green":
+			
 			// limited buff that is helpful for 3 of 4 8-bit zones
-			buffMaintain($effect[shadow waters]);
-			adv_spent = autoAdv($location[Hero\'s Field]);
+buffMaintain$4(Effect.get("Shadow Waters"));
+			adv_spent = autoAdv$2(Location.get("Hero's Field"));
 			break;
 		default:
 			abort("Property 8BitColor not set to a valid value");
 			break;
 	}
-	auto_log_info("Current 8bit score: " + EightBitScore() + "/10000");
+	auto_log_info$1(`Current 8bit score: ${EightBitScore()}/10000`);
 
 	return adv_spent;
 }
 
-boolean get8BitFatLootToken()
+export function get8BitFatLootToken(): boolean
 {
 	//Acquire the [Fat Loot Token] from 8 bit realm
-	
 	// start quest and equip to refresh mafia's prefs
 	woods_questStart();
-	autoForceEquip($slot[acc3], $item[Continuum Transfunctioner]);
-
+	autoForceEquip$1(Slot.get("acc3"), Item.get("continuum transfunctioner"));
 	// buy fat loot token if you can
-	if(EightBitScore() >= 20000)
+	if (EightBitScore() >= 20000)
 	{
-		equip($slot[Acc3], $item[continuum transfunctioner]);
-		visit_url("place.php?whichplace=8bit&action=8treasure");
-		if(available_choice_options() contains 2)
+		equip(Slot.get("acc3"), Item.get("continuum transfunctioner"));
+		visitUrl("place.php?whichplace=8bit&action=8treasure");
+		if ((2) in availableChoiceOptions())
 		{
-			run_choice(2);
+			runChoice(2);
 			return true;
 		}
-		else
-		{
-			auto_log_warning("Thought we could buy fat loot token in 8-Bit Realm but was unable.");
-			auto_log_warning("Current score = " + EightBitScore());
+		else {
+			auto_log_warning$1("Thought we could buy fat loot token in 8-Bit Realm but was unable.");
+			auto_log_warning$1(`Current score = ${EightBitScore()}`);
 			return false;
 		}
 	}
-	
+
 	return EightBitRealmHandler();
 }
 
-boolean LX_getDigitalKey()
+export function LX_getDigitalKey(): boolean
 {
 	//Acquire the [Digital Key]
-	
-	if(!needDigitalKey())
+
+	if (!needDigitalKey())
 	{
 		return false;
 	}
-	if(item_amount($item[Digital Key]) > 0)
+	if (itemAmount(Item.get("digital key")) > 0)
 	{
-		if(have_effect($effect[Consumed By Fear]) > 0)
+		if (haveEffect(Effect.get("Consumed by Fear")) > 0)
 		{
-			uneffect($effect[Consumed By Fear]);
+			uneffect(Effect.get("Consumed by Fear"));
 			council();
 		}
 		return false;
 	}
-	if(in_koe())
+	if (in_koe())
 	{
-		if(item_amount($item[Digital Key]) == 0 && internalQuestStatus("questL13Final") == 5)
+		if (itemAmount(Item.get("digital key")) === 0 && internalQuestStatus("questL13Final") === 5)
 		{
-			return buy($coinmaster[Cosmic Ray\'s Bazaar], 1, $item[Digital Key]);
+			return buy(Coinmaster.get("Cosmic Ray's Bazaar"), 1, Item.get("digital key"));
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}
-	
 	// start quest and equip to refresh mafia's prefs
 	woods_questStart();
-	autoForceEquip($slot[acc3], $item[Continuum Transfunctioner]);
-
+	autoForceEquip$1(Slot.get("acc3"), Item.get("continuum transfunctioner"));
 	// buy key if you can
-	if(EightBitScore() >= 10000)
+	if (EightBitScore() >= 10000)
 	{
-		equip($slot[Acc3], $item[continuum transfunctioner]);
-		visit_url("place.php?whichplace=8bit&action=8treasure");
-		run_choice(1);
-		if(!needDigitalKey())
+		equip(Slot.get("acc3"), Item.get("continuum transfunctioner"));
+		visitUrl("place.php?whichplace=8bit&action=8treasure");
+		runChoice(1);
+		if (!needDigitalKey())
 		{
 			return true;
 		}
 	}
-	
+
 	return EightBitRealmHandler();
 }
 
-void LX_buyStarKeyParts()
+export function LX_buyStarKeyParts(): void
 {
-	if(item_amount($item[Richard\'s Star Key]) > 0 || get_property("nsTowerDoorKeysUsed").contains_text("Richard's star key"))
+	if (itemAmount(Item.get("Richard's star key")) > 0 || containsText(getProperty("nsTowerDoorKeysUsed"), "Richard's star key"))
 	{
-		return;	//already have it
+		return; //already have it
 	}
-	if(!can_interact())
+	if (!canInteract())
 	{
-		return;	//no unrestricted mall access
+		return; //no unrestricted mall access
 	}
-	auto_buyUpTo(1, $item[Star Chart]);
-	auto_buyUpTo(8, $item[Star]);
-	auto_buyUpTo(7, $item[line]);
+	auto_buyUpTo(1, Item.get("star chart"));
+	auto_buyUpTo(8, Item.get("star"));
+	auto_buyUpTo(7, Item.get("line"));
 }
 
-boolean LX_getStarKey()
+export function LX_getStarKey(): boolean
 {
-	if(!get_property("auto_getStarKey").to_boolean())
+	if (!toBoolean(getProperty("auto_getStarKey")))
 	{
+		return false;
+	}
+	//needStarKey() checks if you own or have used the star key
+	if (!needStarKey())
+	{
+		setProperty("auto_getStarKey", false.toString());
 		return false;
 	}
 
-	//needStarKey() checks if you own or have used the star key
-	if(!needStarKey())
-	{
-		set_property("auto_getStarKey", false);
-		return false;
-	}
-	
-	boolean hole_in_sky_unreachable = internalQuestStatus("questL10Garbage") < 9;
-	boolean shen_might_request_hole = shenShouldDelayZone($location[The Hole in the Sky]);
+	let hole_in_sky_unreachable: boolean = internalQuestStatus("questL10Garbage") < 9;
+	let shen_might_request_hole: boolean = shenShouldDelayZone(Location.get("The Hole in the Sky"));
 	if (hole_in_sky_unreachable || shen_might_request_hole)
 	{
 		return false;
 	}
-	
 	//kingdom of exploathing does not need rocketship to reach hole in the sky
-	if(item_amount($item[Steam-Powered Model Rocketship]) == 0 && !in_koe())
+	if (itemAmount(Item.get("steam-powered model rocketship")) === 0 && !in_koe())
 	{
 		return false;
 	}
-	
-	LX_buyStarKeyParts();
 
+	LX_buyStarKeyParts();
 	// summon Skinflute or Camel's Toe to get both stars and lines. We can copy them into delay zones like the 8-bit realm.
-	int copiesNeeded = max((8 - item_amount($item[star])) / 2, (7 - item_amount($item[line])) / 2);
-	if (needStarKey() && item_amount($item[star]) < 8 && item_amount($item[line]) < 7 && auto_haveBackupCamera() && auto_backupUsesLeft() >= copiesNeeded)
+	let copiesNeeded: number = max((8 - itemAmount(Item.get("star"))) / 2, (7 - itemAmount(Item.get("line"))) / 2);
+	if (needStarKey() && itemAmount(Item.get("star")) < 8 && itemAmount(Item.get("line")) < 7 && auto_haveBackupCamera() && auto_backupUsesLeft() >= copiesNeeded)
 	{
 		// in case it matters later, summon only the monster we can naturally encounter in this ascension.
-		if(my_ascensions() % 2 == 1 && !summonedMonsterToday($monster[Skinflute]) && canSummonMonster($monster[Skinflute]) && summonMonster($monster[Skinflute])) return true;
-		if(my_ascensions() % 2 == 0 && !summonedMonsterToday($monster[Camel's Toe]) && canSummonMonster($monster[Camel's Toe]) && summonMonster($monster[Camel's Toe])) return true;
+		if (myAscensions() % 2 === 1 && !summonedMonsterToday(Monster.get("Skinflute")) && canSummonMonster(Monster.get("Skinflute")) && summonMonster(Monster.get("Skinflute"))) { return true; }
+		if (myAscensions() % 2 === 0 && !summonedMonsterToday(Monster.get("Camel's Toe")) && canSummonMonster(Monster.get("Camel's Toe")) && summonMonster(Monster.get("Camel's Toe"))) { return true; }
 	}
 
-	boolean at_tower_door = internalQuestStatus("questL13Final") == 5;
-	if (!in_hardcore() && at_tower_door && needStarKey() && item_amount($item[Star Chart]) == 0 && item_amount($item[Star]) >= 8 && item_amount($item[Line]) >= 7)
+	let at_tower_door: boolean = internalQuestStatus("questL13Final") === 5;
+	if (!inHardcore() && at_tower_door && needStarKey() && itemAmount(Item.get("star chart")) === 0 && itemAmount(Item.get("star")) >= 8 && itemAmount(Item.get("line")) >= 7)
 	{
-		pullXWhenHaveY($item[Star Chart], 1, 0);
+		pullXWhenHaveY(Item.get("star chart"), 1, 0);
 	}
-	
-	if (item_amount($item[Richard\'s Star Key]) == 0 && creatable_amount($item[Richard\'s Star Key]) > 0 && !get_property("nsTowerDoorKeysUsed").contains_text("Richard's star key"))
+
+	if (itemAmount(Item.get("Richard's star key")) === 0 && creatableAmount(Item.get("Richard's star key")) > 0 && !containsText(getProperty("nsTowerDoorKeysUsed"), "Richard's star key"))
 	{
-		return create(1, $item[Richard\'s Star Key]);
+		return create(1, Item.get("Richard's star key"));
 	}
-	
 	//if only star chart is missing and you will pull it at tower door, then you are done for now.
-	if((item_amount($item[Star]) >= 8) && (item_amount($item[Line]) >= 7) && !in_hardcore() && !at_tower_door)
+	if (itemAmount(Item.get("star")) >= 8 && itemAmount(Item.get("line")) >= 7 && !inHardcore() && !at_tower_door)
 	{
 		return false;
 	}
-	
-	if(!zone_isAvailable($location[The Hole In The Sky]))
+
+	if (!zone_isAvailable$1(Location.get("The Hole in the Sky")))
 	{
 		auto_log_warning("The Hole In The Sky is not available, we have to do something else...", "red");
 		return false;
 	}
 
-	if(auto_have_familiar($familiar[Space Jellyfish]))
+	if (auto_have_familiar(Familiar.get("Space Jellyfish")))
 	{
-		handleFamiliar($familiar[Space Jellyfish]);
-		if(item_amount($item[Star Chart]) == 0)
+		handleFamiliar$1(Familiar.get("Space Jellyfish"));
+		if (itemAmount(Item.get("star chart")) === 0)
 		{
-			set_property("choiceAdventure1221", 1);
+			setProperty("choiceAdventure1221", (1).toString());
 		}
-		else
-		{
-			set_property("choiceAdventure1221", 2 + (my_ascensions() % 2));
+		else {
+			setProperty("choiceAdventure1221", (2 + myAscensions() % 2).toString());
 		}
 	}
-	if(auto_haveGreyGoose()){
-		auto_log_info("Bringing the Grey Goose to emit some drones at some Constellations.");
-		handleFamiliar($familiar[Grey Goose]);
+	if (auto_haveGreyGoose()) {
+		auto_log_info$1("Bringing the Grey Goose to emit some drones at some Constellations.");
+		handleFamiliar$1(Familiar.get("Grey Goose"));
 	}
-	return autoAdv(1, $location[The Hole In The Sky]);
+	return autoAdv$1(1, Location.get("The Hole in the Sky"));
 }
 
-boolean beehiveConsider(boolean at_tower) // returns true if we can kill without a beehive
-{
-	int damage_sources = 1; // basic hit
-	
+export function beehiveConsider(at_tower: boolean): boolean
+{ // returns true if we can kill without a beehive
+	let damage_sources: number = 1; // basic hit
 	// Familiars
-	if (auto_have_familiar($familiar[glover]))
+	if (auto_have_familiar(Familiar.get("Glover")))
 	{
 		damage_sources += 11;
 	}
-	if (auto_have_familiar($familiar[shorter-order cook]))
+	if (auto_have_familiar(Familiar.get("Shorter-Order Cook")))
 	{
 		damage_sources += 6;
 	}
-	else if (auto_have_familiar($familiar[mu]))
+	else if (auto_have_familiar(Familiar.get("Mu")))
 	{
 		damage_sources += 5;
 	}
-	else if (auto_have_familiar($familiar[imitation crab]))
+	else if (auto_have_familiar(Familiar.get("Imitation Crab")))
 	{
 		damage_sources += 4;
 	}
-	
 	// Combat skill to use
-	if (have_skill($skill[kneebutt]) || have_skill($skill[headbutt]))
+	if (haveSkill(Skill.get("Kneebutt")) || haveSkill(Skill.get("Headbutt")))
 	{
 		damage_sources += 1;
 	}
-	
 	// Retatiatory skills
-	foreach sk in $skills[the psalm of pointiness, spiky shell, scarysauce, Jalape&ntilde;o Saucesphere]
+	for (let sk of Skill.get(["The Psalm of Pointiness", "Spiky Shell", "Scarysauce", "Jalape&ntilde;o Saucesphere"]))
 	{
-		if (have_skill(sk))
+		if (haveSkill(sk))
 		{
 			damage_sources += 1;
 		}
 	}
-	
 	// Damage skills
-	foreach sk in $skills[dirge of dreadfulness, icy glare]
+	for (let sk of Skill.get(["Dirge of Dreadfulness", "Icy Glare"]))
 	{
-		if (have_skill(sk))
+		if (haveSkill(sk))
 		{
 			damage_sources += 1;
 		}
 	}
 	// Sleaze and stench will be taken care of war gear.
 	damage_sources += 2;
-	
 	// Now check stuff we get in run.
 	// Hot and another retaliation will be taken care of by hot plate (guaranteed from friars)
-	if (!at_tower || (available_amount($item[hot plate])>0))
+	if (!at_tower || availableAmount(Item.get("hot plate")) > 0)
 	{
 		damage_sources += 2;
 	}
-	else // or maybe we just have hot damage already
-	{
-		if (numeric_modifier($modifier[hot damage])>0)
+	else {
+	// or maybe we just have hot damage already
+		if (numericModifier(Modifier.get("Hot Damage")) > 0)
 		{
 			damage_sources += 1;
 		}
 	}
-	
 	// Tiny bowler gives familiar damage
-	if (available_amount($item[tiny bowler])>0)
+	if (availableAmount(Item.get("tiny bowler")) > 0)
 	{
 		damage_sources += 1;
 	}
-	
 	// We can't assume we get this, so don't count it speculatively.
-	if (available_amount($item[hippy protest button])>0)
+	if (availableAmount(Item.get("hippy protest button")) > 0)
 	{
 		damage_sources += 1;
 	}
-	
-	#~ auto_log_info("Investigating chance of towerkilling wall of skin, need 13 damage, expecting to have "+to_string(damage_sources), "blue");
-	
+	//~ auto_log_info("Investigating chance of towerkilling wall of skin, need 13 damage, expecting to have "+to_string(damage_sources), "blue");
+
 	if (damage_sources >= 13)
 	{
-		set_property("auto_getBeehive", false);
+		setProperty("auto_getBeehive", false.toString());
 		return true;
 	}
-	set_property("auto_getBeehive", true);
+	setProperty("auto_getBeehive", true.toString());
 	return false;
 }
 
-int ns_crowd1()
+export function ns_crowd1(): number
 {
-	if(get_property("nsContestants1").to_int() != 0)
+	if (toInt(getProperty("nsContestants1")) !== 0)
 	{
 		auto_log_info("Default Test: Initiative", "red");
 	}
 	return 1;
 }
 
-stat ns_crowd2()
+export function ns_crowd2(): Stat
 {
-	if(get_property("nsContestants2").to_int() != 0)
+	if (toInt(getProperty("nsContestants2")) !== 0)
 	{
-		auto_log_info("Off-Stat Test: " + get_property("nsChallenge1"), "red");
+		auto_log_info(`Off-Stat Test: ${getProperty("nsChallenge1")}`, "red");
 	}
-	return to_stat(get_property("nsChallenge1"));
+	return toStat(getProperty("nsChallenge1"));
 }
 
-element ns_crowd3()
+export function ns_crowd3(): Element
 {
-	if(get_property("nsContestants3").to_int() != 0)
+	if (toInt(getProperty("nsContestants3")) !== 0)
 	{
-		auto_log_info("Elemental Test: " + get_property("nsChallenge2"), "red");
+		auto_log_info(`Elemental Test: ${getProperty("nsChallenge2")}`, "red");
 	}
-	return to_element(get_property("nsChallenge2"));
+	return toElement(getProperty("nsChallenge2"));
 }
 
-element ns_hedge1()
+export function ns_hedge1(): Element
 {
-	auto_log_info("Hedge Maze 1: " + get_property("nsChallenge3"), "red");
-	return to_element(get_property("nsChallenge3"));
+	auto_log_info(`Hedge Maze 1: ${getProperty("nsChallenge3")}`, "red");
+	return toElement(getProperty("nsChallenge3"));
 }
 
-element ns_hedge2()
+export function ns_hedge2(): Element
 {
-	auto_log_info("Hedge Maze 2: " + get_property("nsChallenge4"), "red");
-	return to_element(get_property("nsChallenge4"));
+	auto_log_info(`Hedge Maze 2: ${getProperty("nsChallenge4")}`, "red");
+	return toElement(getProperty("nsChallenge4"));
 }
 
-element ns_hedge3()
+export function ns_hedge3(): Element
 {
-	auto_log_info("Hedge Maze 3: " + get_property("nsChallenge5"), "red");
-	return to_element(get_property("nsChallenge5"));
+	auto_log_info(`Hedge Maze 3: ${getProperty("nsChallenge5")}`, "red");
+	return toElement(getProperty("nsChallenge5"));
 }
 
-boolean L13_towerNSContests()
+export function L13_towerNSContests(): boolean
 {
 	if (internalQuestStatus("questL13Final") < 0 || internalQuestStatus("questL13Final") > 3)
 	{
 		return false;
 	}
 
-	if(contains_text(visit_url("place.php?whichplace=nstower"), "ns_02_coronation"))
+	if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_02_coronation"))
 	{
-		set_property("choiceAdventure1020", "1");
-		set_property("choiceAdventure1021", "1");
-		set_property("choiceAdventure1022", "1");
-		visit_url("place.php?whichplace=nstower&action=ns_02_coronation");
-		visit_url("choice.php?pwd=&whichchoice=1020&option=1", true);
-		visit_url("choice.php?pwd=&whichchoice=1021&option=1", true);
-		visit_url("choice.php?pwd=&whichchoice=1022&option=1", true);
+		setProperty("choiceAdventure1020", "1");
+		setProperty("choiceAdventure1021", "1");
+		setProperty("choiceAdventure1022", "1");
+		visitUrl("place.php?whichplace=nstower&action=ns_02_coronation");
+		visitUrl("choice.php?pwd=&whichchoice=1020&option=1", true);
+		visitUrl("choice.php?pwd=&whichchoice=1021&option=1", true);
+		visitUrl("choice.php?pwd=&whichchoice=1022&option=1", true);
 		return true;
 	}
-	
 	//if you do not have a telescope you need to actually visit the contest booth once to find out what element and offstat is needed
-	if(get_property("nsChallenge1") == "none" || get_property("nsChallenge2") == "none")
+	if (getProperty("nsChallenge1") === "none" || getProperty("nsChallenge2") === "none")
 	{
-		visit_url("place.php?whichplace=nstower&action=ns_01_contestbooth");
+		visitUrl("place.php?whichplace=nstower&action=ns_01_contestbooth");
 	}
 
-	boolean crowd1Insufficient()
+	function crowd1Insufficient(): boolean
 	{
-		return numeric_modifier("Initiative") < 400.0;
+		return numericModifier("Initiative") < 400.0;
 	}
 
-	stat crowd_stat = ns_crowd2();
+	let crowd_stat: Stat = ns_crowd2();
 
-	boolean crowd2Insufficient()
+	function crowd2Insufficient(): boolean
 	{
-		return my_buffedstat(crowd_stat) < 600;
+		return myBuffedstat(crowd_stat) < 600;
 	}
 
-	element challenge = ns_crowd3();
-	boolean crowd3Insufficient()
+	let challenge: Element = ns_crowd3();
+	function crowd3Insufficient(): boolean
 	{
-		return numeric_modifier(challenge + " Damage") + numeric_modifier(challenge + " Spell Damage") < 100;
+		return numericModifier(`${challenge} Damage`) + numericModifier(`${challenge} Spell Damage`) < 100;
 	}
 
-	if(contains_text(visit_url("place.php?whichplace=nstower"), "ns_01_contestbooth"))
+	if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_contestbooth"))
 	{
-		if(in_wereprof() && get_property("wereProfessorTransformTurns").to_int() < 48)
+		if (in_wereprof() && toInt(getProperty("wereProfessorTransformTurns")) < 48)
 		{
-			visit_url("place.php?whichplace=nstower&action=ns_01_contestbooth");
-			visit_url("choice.php?pwd=&whichchoice=1003&option=5", true); //want as many turns of werewolf as possible at the contest booth so refresh with this choice
-			visit_url("main.php");
+			visitUrl("place.php?whichplace=nstower&action=ns_01_contestbooth");
+			visitUrl("choice.php?pwd=&whichchoice=1003&option=5", true); //want as many turns of werewolf as possible at the contest booth so refresh with this choice
+			visitUrl("main.php");
 		}
-		if(get_property("nsContestants1").to_int() == -1)
+		if (toInt(getProperty("nsContestants1")) === -1)
 		{
 			resetMaximize();
-			if(!get_property("_grimBuff").to_boolean() && auto_have_familiar($familiar[Grim Brother]))
+			if (!toBoolean(getProperty("_grimBuff")) && auto_have_familiar(Familiar.get("Grim Brother")))
 			{
-				cli_execute("grim init");
+				cliExecute("grim init");
 			}
-			if((get_property("telescopeUpgrades").to_int() > 0) && (!get_property("telescopeLookedHigh").to_boolean()) && auto_is_valid($effect[Starry-Eyed]))
+			if (toInt(getProperty("telescopeUpgrades")) > 0 && !toBoolean(getProperty("telescopeLookedHigh")) && auto_is_valid$3(Effect.get("Starry-Eyed")))
 			{
-				cli_execute("telescope high");
+				cliExecute("telescope high");
 			}
-			switch(ns_crowd1())
+			switch (ns_crowd1())
 			{
 			case 1:
-				acquireMP(160); // only uses free rests or items on hand by default
+				acquireMP$1(160); // only uses free rests or items on hand by default
 
-
-				autoMaximize("initiative -equip snow suit", 1500, 0, false);
-
-				provideInitiative(400, $location[Noob Cave], true);
-
-				if(crowd1Insufficient() && (get_property("sidequestArenaCompleted") == "fratboy"))
+				autoMaximize$1("initiative -equip snow suit", 1500, 0, false);
+				provideInitiative$2(400, Location.get("Noob Cave"), true);
+				if (crowd1Insufficient() && getProperty("sidequestArenaCompleted") === "fratboy")
 				{
-					cli_execute("concert White-boy Angst");
+					cliExecute("concert White-boy Angst");
 				}
-
-			if(crowd1Insufficient())
+			if (crowd1Insufficient())
 			{
-				auto_wishForEffectIfNeeded($effect[New and Improved]);
+				auto_wishForEffectIfNeeded(Effect.get("New and Improved"));
 			}
-
-				if(crowd1Insufficient())
+				if (crowd1Insufficient())
 				{
-					if(get_property("auto_secondPlaceOrBust").to_boolean())
-						abort("Not enough initiative for the initiative test, aborting since auto_secondPlaceOrBust=true");
-					else
-						auto_log_warning("Not enough initiative for the initiative test, but continuing since auto_secondPlaceOrBust=false", "red");
+					if (toBoolean(getProperty("auto_secondPlaceOrBust")))
+						{ abort("Not enough initiative for the initiative test, aborting since auto_secondPlaceOrBust=true"); }
+					else { auto_log_warning("Not enough initiative for the initiative test, but continuing since auto_secondPlaceOrBust=false", "red"); }
 				}
 				break;
 			}
-
 			// Adjust us to the initiative familiar selected in provideInitiative().
-			preAdvUpdateFamiliar($location[None]);
+			preAdvUpdateFamiliar(Location.none);
 
-			visit_url("place.php?whichplace=nstower&action=ns_01_contestbooth");
-			visit_url("choice.php?pwd=&whichchoice=1003&option=1", true);
-			visit_url("main.php");
+			visitUrl("place.php?whichplace=nstower&action=ns_01_contestbooth");
+			visitUrl("choice.php?pwd=&whichchoice=1003&option=1", true);
+			visitUrl("main.php");
 		}
-		if(get_property("nsContestants2").to_int() == -1)
+		if (toInt(getProperty("nsContestants2")) === -1)
 		{
 			resetMaximize();
-			if(!get_property("_lyleFavored").to_boolean() && auto_is_valid($effect[Favored by Lyle]))
+			if (!toBoolean(getProperty("_lyleFavored")) && auto_is_valid$3(Effect.get("Favored by Lyle")))
 			{
-				string temp = visit_url("place.php?whichplace=monorail&action=monorail_lyle");
+				let temp: string = visitUrl("place.php?whichplace=monorail&action=monorail_lyle");
 			}
-			acquireMP(150); // only uses free rests or items on hand by default
+			acquireMP$1(150); // only uses free rests or items on hand by default
 			if (in_darkGyffte())
 			{
-				if(crowd_stat == $stat[muscle] && !have_skill($skill[Preternatural Strength]))
+				if (crowd_stat === Stat.get("Muscle") && !haveSkill(Skill.get("Preternatural Strength")))
 				{
-					boolean[skill] requirements;
-					requirements[$skill[Preternatural Strength]] = true;
+					let requirements: Map<Skill, boolean> = new Map();
+					requirements.set(Skill.get("Preternatural Strength"), true);
 					auto_log_info("Torporing, since we want to get Preternatural Strength.", "blue");
-					bat_reallyPickSkills(20, requirements);
+					bat_reallyPickSkills$1(20, requirements);
 				}
 				// This could be generalized for stat equalizer potions, but that seems marginal
-				if (crowd_stat == $stat[muscle] && have_skill($skill[Preternatural Strength]))
-					crowd_stat = $stat[mysticality];
-				if (crowd_stat == $stat[moxie] && have_skill($skill[Sinister Charm]))
-					crowd_stat = $stat[mysticality];
+				if (crowd_stat === Stat.get("Muscle") && haveSkill(Skill.get("Preternatural Strength")))
+					{ crowd_stat = Stat.get("Mysticality"); }
+				if (crowd_stat === Stat.get("Moxie") && haveSkill(Skill.get("Sinister Charm")))
+					{ crowd_stat = Stat.get("Mysticality"); }
 			}
-			int [stat] statGoal;
-			statGoal[crowd_stat] = 600;
-			provideStats(statGoal, $location[Noob Cave], true);
-			switch(crowd_stat)
+			let statGoal: Map<Stat, number> = new Map();
+			statGoal.set(crowd_stat, 600);
+			provideStats$2(statGoal, Location.get("Noob Cave"), true);
+			switch (crowd_stat)
 			{
-			case $stat[moxie]:
-				autoMaximize("moxie -equip snow suit", 1500, 0, false);
-
-				if(have_effect($effect[Ten out of Ten]) == 0 && auto_is_valid($effect[Ten out of Ten]))
+			case Stat.get("Moxie"):
+				autoMaximize$1("moxie -equip snow suit", 1500, 0, false);
+				if (haveEffect(Effect.get("Ten out of Ten")) === 0 && auto_is_valid$3(Effect.get("Ten out of Ten")))
 				{
-					if(crowd2Insufficient()) fightClubSpa($effect[Ten out of Ten]);
+					if (crowd2Insufficient()) { fightClubSpa$1(Effect.get("Ten out of Ten")); }
 				}
-
-				if(in_small() && crowd2Insufficient() && have_effect($effect[Piratastic])==0)
+				if (in_small() && crowd2Insufficient() && haveEffect(Effect.get("Piratastic")) === 0)
 				{
-					auto_wishForEffect($effect[Piratastic]);
+					auto_wishForEffect(Effect.get("Piratastic"));
 				}
 				break;
-			case $stat[muscle]:
-				autoMaximize("muscle -equip snow suit", 1500, 0, false);
-
-				if(have_effect($effect[Muddled]) == 0 && auto_is_valid($effect[Muddled]))
+			case Stat.get("Muscle"):
+				autoMaximize$1("muscle -equip snow suit", 1500, 0, false);
+				if (haveEffect(Effect.get("Muddled")) === 0 && auto_is_valid$3(Effect.get("Muddled")))
 				{
-					if(crowd2Insufficient()) fightClubSpa($effect[Muddled]);
+					if (crowd2Insufficient()) { fightClubSpa$1(Effect.get("Muddled")); }
 				}
-
-				if(in_small() && crowd2Insufficient() && have_effect($effect[\'Roids of the Rhinoceros])==0)
+				if (in_small() && crowd2Insufficient() && haveEffect(Effect.get("'Roids of the Rhinoceros")) === 0)
 				{
-					auto_wishForEffect($effect[\'Roids of the Rhinoceros]);
+					auto_wishForEffect(Effect.get("'Roids of the Rhinoceros"));
 				}
 				break;
-			case $stat[mysticality]:
-				autoMaximize("myst -equip snow suit", 1500, 0, false);
-
-				if(have_effect($effect[Uncucumbered]) == 0 && auto_is_valid($effect[Uncucumbered]))
+			case Stat.get("Mysticality"):
+				autoMaximize$1("myst -equip snow suit", 1500, 0, false);
+				if (haveEffect(Effect.get("Uncucumbered")) === 0 && auto_is_valid$3(Effect.get("Uncucumbered")))
 				{
-					if(crowd2Insufficient()) fightClubSpa($effect[Uncucumbered]);
+					if (crowd2Insufficient()) { fightClubSpa$1(Effect.get("Uncucumbered")); }
 				}
-
-				if(in_small() && crowd2Insufficient() && have_effect($effect[Happy Trails])==0)
+				if (in_small() && crowd2Insufficient() && haveEffect(Effect.get("Happy Trails")) === 0)
 				{
-					auto_wishForEffect($effect[Happy Trails]);
+					auto_wishForEffect(Effect.get("Happy Trails"));
 				}
 				break;
 			}
-			
-			if(crowd2Insufficient())
+
+			if (crowd2Insufficient())
 			{
 				auto_equalizeStats();
 			}
-			if(crowd2Insufficient() && !in_small())
+			if (crowd2Insufficient() && !in_small())
 			{
 				if (!in_small())
 				{
-					auto_wishForEffectIfNeeded($effect[New and Improved]);
+					auto_wishForEffectIfNeeded(Effect.get("New and Improved"));
 				}
 			}
 
-			if(crowd2Insufficient())
+			if (crowd2Insufficient())
 			{
-				if(get_property("auto_secondPlaceOrBust").to_boolean())
-					abort("Not enough " + crowd_stat + " for the stat test, aborting since auto_secondPlaceOrBust=true");
-				else
-					auto_log_warning("Not enough " + crowd_stat + " for the stat test, but continuing since auto_secondPlaceOrBust=false", "red");
+				if (toBoolean(getProperty("auto_secondPlaceOrBust")))
+					{ abort(`Not enough ${crowd_stat} for the stat test, aborting since auto_secondPlaceOrBust=true`); }
+				else { auto_log_warning(`Not enough ${crowd_stat} for the stat test, but continuing since auto_secondPlaceOrBust=false`, "red"); }
 			}
-			visit_url("place.php?whichplace=nstower&action=ns_01_contestbooth");
-			visit_url("choice.php?pwd=&whichchoice=1003&option=2", true);
-			visit_url("main.php");
+			visitUrl("place.php?whichplace=nstower&action=ns_01_contestbooth");
+			visitUrl("choice.php?pwd=&whichchoice=1003&option=2", true);
+			visitUrl("main.php");
 		}
-		if(get_property("nsContestants3").to_int() == -1)
+		if (toInt(getProperty("nsContestants3")) === -1)
 		{
 			resetMaximize();
-			acquireMP(125); // only uses free rests or items on hand by default
+			acquireMP$1(125); // only uses free rests or items on hand by default
 
-			if(challenge != $element[none])
+			if (challenge !== Element.none)
 			{
-				autoMaximize(challenge + " dmg, " + challenge + " spell dmg -equip snow suit", 1500, 0, false);
+				autoMaximize$1(`${challenge} dmg, ${challenge} spell dmg -equip snow suit`, 1500, 0, false);
 			}
 
-			beretBusk("5.0:Spell Damage;5.0:" + challenge + " Damage;5.0:" + challenge + " Spell Damage");
+			beretBusk(`5.0:Spell Damage;5.0:${challenge} Damage;5.0:${challenge} Spell Damage`);
 
-			if(crowd3Insufficient()) buffMaintain($effect[All Glory To the Toad]);
-			if(crowd3Insufficient()) buffMaintain($effect[Bendin\' Hell], 120, 1, 1);
-			switch(challenge)
+			if (crowd3Insufficient()) { buffMaintain$4(Effect.get("All Glory To the Toad")); }
+			if (crowd3Insufficient()) { buffMaintain$3(Effect.get("Bendin' Hell"), 120, 1, 1); }
+			switch (challenge)
 			{
-			case $element[cold]:
-				if(crowd3Insufficient()) auto_beachCombHead("cold");
-				if(crowd3Insufficient()) buffMaintain($effect[Cold Hard Skin]);
-				if(crowd3Insufficient()) buffMaintain($effect[Frostbeard], 15, 1, 1);
-				if(crowd3Insufficient()) buffMaintain($effect[Icy Glare], 10, 1, 1);
-				if(crowd3Insufficient()) buffMaintain($effect[Song of the North], 100, 1, 1);
+			case Element.get("cold"):
+				if (crowd3Insufficient()) { auto_beachCombHead("cold"); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Cold Hard Skin")); }
+				if (crowd3Insufficient()) { buffMaintain$3(Effect.get("Frostbeard"), 15, 1, 1); }
+				if (crowd3Insufficient()) { buffMaintain$3(Effect.get("Icy Glare"), 10, 1, 1); }
+				if (crowd3Insufficient()) { buffMaintain$3(Effect.get("Song of the North"), 100, 1, 1); }
 				break;
-			case $element[hot]:
-				if(crowd3Insufficient()) auto_beachCombHead("hot");
-				if(crowd3Insufficient()) buffMaintain($effect[Song of Sauce], 100, 1, 1);
-				if(crowd3Insufficient()) buffMaintain($effect[Flamibili Tea]);
-				if(crowd3Insufficient()) buffMaintain($effect[Flaming Weapon]);
-				if(crowd3Insufficient()) buffMaintain($effect[Human-Demon Hybrid]);
-				if(crowd3Insufficient()) buffMaintain($effect[Lit Up]);
-				if(crowd3Insufficient()) buffMaintain($effect[Fire Inside]);
-				if(crowd3Insufficient()) buffMaintain($effect[Pyromania], 15, 1, 1);
-				if(crowd3Insufficient()) buffMaintain($effect[Your Fifteen Minutes], 50, 1, 1);
+			case Element.get("hot"):
+				if (crowd3Insufficient()) { auto_beachCombHead("hot"); }
+				if (crowd3Insufficient()) { buffMaintain$3(Effect.get("Song of Sauce"), 100, 1, 1); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Flamibili Tea")); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Flaming Weapon")); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Human-Demon Hybrid")); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Lit Up")); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Fire Inside")); }
+				if (crowd3Insufficient()) { buffMaintain$3(Effect.get("Pyromania"), 15, 1, 1); }
+				if (crowd3Insufficient()) { buffMaintain$3(Effect.get("Your Fifteen Minutes"), 50, 1, 1); }
 				break;
-			case $element[sleaze]:
-				if(crowd3Insufficient()) auto_beachCombHead("sleaze");
-				if(crowd3Insufficient()) buffMaintain($effect[Takin\' It Greasy], 15, 1, 1);
-				if(crowd3Insufficient()) buffMaintain($effect[Blood-Gorged]);
-				if(crowd3Insufficient()) buffMaintain($effect[Greasy Peasy]);
+			case Element.get("sleaze"):
+				if (crowd3Insufficient()) { auto_beachCombHead("sleaze"); }
+				if (crowd3Insufficient()) { buffMaintain$3(Effect.get("Takin' It Greasy"), 15, 1, 1); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Blood-Gorged")); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Greasy Peasy")); }
 				break;
-			case $element[stench]:
-				if(crowd3Insufficient()) auto_beachCombHead("stench");
-				if(crowd3Insufficient()) buffMaintain($effect[Drenched With Filth]);
-				if(crowd3Insufficient()) buffMaintain($effect[Musky]);
-				if(crowd3Insufficient()) buffMaintain($effect[Stinky Hands]);
-				if(crowd3Insufficient()) buffMaintain($effect[Stinky Weapon]);
-				if(crowd3Insufficient()) buffMaintain($effect[Rotten Memories], 15, 1, 1);
-				if(canPull($item[Halibut]) && auto_can_equip($item[Halibut]))
+			case Element.get("stench"):
+				if (crowd3Insufficient()) { auto_beachCombHead("stench"); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Drenched With Filth")); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Musky")); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Stinky Hands")); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Stinky Weapon")); }
+				if (crowd3Insufficient()) { buffMaintain$3(Effect.get("Rotten Memories"), 15, 1, 1); }
+				if (canPull$1(Item.get("halibut")) && auto_can_equip(Item.get("halibut")))
 				{
-					pullXWhenHaveY($item[Halibut], 1, 0);
-					autoMaximize(challenge + " dmg, " + challenge + " spell dmg -equip snow suit", 1500, 0, false);
+					pullXWhenHaveY(Item.get("halibut"), 1, 0);
+					autoMaximize$1(`${challenge} dmg, ${challenge} spell dmg -equip snow suit`, 1500, 0, false);
 				}
 				break;
-			case $element[spooky]:
-				if(crowd3Insufficient()) auto_beachCombHead("spooky");
-				if(crowd3Insufficient()) buffMaintain($effect[Spooky Hands]);
-				if(crowd3Insufficient()) buffMaintain($effect[Spooky Weapon]);
+			case Element.get("spooky"):
+				if (crowd3Insufficient()) { auto_beachCombHead("spooky"); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Spooky Hands")); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Spooky Weapon")); }
+				
 				// at this point, an example list of songs is phat loot / polka / celerity / madrigal
-				if(crowd3Insufficient()) {
+if (crowd3Insufficient()) {
 					// specify normal effect to avoid failing the skill check
-					shrugAT($effect[Dirge of Dreadfulness]);
-					buffMaintain($effect[Dirge of Dreadfulness (Remastered)]);
+					shrugAT$1(Effect.get("Dirge of Dreadfulness"));
+					buffMaintain$4(Effect.get("Dirge of Dreadfulness (Remastered)"));
 				}
-				if(crowd3Insufficient()) {
-					shrugAT($effect[Dirge of Dreadfulness]);
-					buffMaintain($effect[Dirge of Dreadfulness], 10, 1, 1);
+				if (crowd3Insufficient()) {
+					shrugAT$1(Effect.get("Dirge of Dreadfulness"));
+					buffMaintain$3(Effect.get("Dirge of Dreadfulness"), 10, 1, 1);
 				}
-				if(crowd3Insufficient()) buffMaintain($effect[Intimidating Mien], 15, 1, 1);
-				if(crowd3Insufficient()) buffMaintain($effect[Snarl of Three Timberwolves]);
-				if(crowd3Insufficient()) buffMaintain($effect[Snarl of the Timberwolf], 10, 1, 1);
+				if (crowd3Insufficient()) { buffMaintain$3(Effect.get("Intimidating Mien"), 15, 1, 1); }
+				if (crowd3Insufficient()) { buffMaintain$4(Effect.get("Snarl of Three Timberwolves")); }
+				if (crowd3Insufficient()) { buffMaintain$3(Effect.get("Snarl of the Timberwolf"), 10, 1, 1); }
 				break;
 			}
 
-			float score = numeric_modifier(challenge + " damage");
-			score += numeric_modifier(challenge + " spell damage");
-			if((score > 20.0) && (score < 85.0))
+			let score: number = numericModifier(`${challenge} damage`);
+			score += numericModifier(`${challenge} spell damage`);
+			if (score > 20.0 && score < 85.0)
 			{
-				buffMaintain($effect[Bendin\' Hell], 100, 1, 1);
+				buffMaintain$3(Effect.get("Bendin' Hell"), 100, 1, 1);
 			}
 
-			score = numeric_modifier(challenge + " damage");
-			score += numeric_modifier(challenge + " spell damage");
-			if((score < 80))
+			score = numericModifier(`${challenge} damage`);
+			score += numericModifier(`${challenge} spell damage`);
+			if (score < 80)
 			{
-				switch(challenge)
+				switch (challenge)
 				{
-				case $element[cold]:
-					auto_wishForEffect($effect[Staying Frosty]);
+				case Element.get("cold"):
+					auto_wishForEffect(Effect.get("Staying Frosty"));
 					break;
-				case $element[hot]:
-					auto_wishForEffect($effect[Dragged Through the Coals]);
+				case Element.get("hot"):
+					auto_wishForEffect(Effect.get("Dragged Through the Coals"));
 					break;
-				case $element[sleaze]:
-					auto_wishForEffect($effect[Fifty Ways to Bereave your Lover]);
+				case Element.get("sleaze"):
+					auto_wishForEffect(Effect.get("Fifty Ways to Bereave Your Lover"));
 					break;
-				case $element[stench]:
-					auto_wishForEffect($effect[Sewer-Drenched]);
+				case Element.get("stench"):
+					auto_wishForEffect(Effect.get("Sewer-Drenched"));
 					break;
-				case $element[spooky]:
-					auto_wishForEffect($effect[You\'re Back...]);
+				case Element.get("spooky"):
+					auto_wishForEffect(Effect.get("You're Back..."));
 					break;
 				}
 			}
 			//Busk one final time to try to be sufficient
-			if(crowd3Insufficient()) beretBusk("5.0:Spell Damage;5.0:" + challenge + " Damage;5.0:" + challenge + " Spell Damage");
+			if (crowd3Insufficient()) { beretBusk(`5.0:Spell Damage;5.0:${challenge} Damage;5.0:${challenge} Spell Damage`); }
 
-			if(crowd3Insufficient())
+			if (crowd3Insufficient())
 			{
-				if(get_property("auto_secondPlaceOrBust").to_boolean())
-					abort("Not enough " + challenge + " for the elemental test, aborting since auto_secondPlaceOrBust=true");
-				else
-					auto_log_warning("Not enough " + challenge + " for the elemental test, but continuing since auto_secondPlaceOrBust=false", "red");
+				if (toBoolean(getProperty("auto_secondPlaceOrBust")))
+					{ abort(`Not enough ${challenge} for the elemental test, aborting since auto_secondPlaceOrBust=true`); }
+				else { auto_log_warning(`Not enough ${challenge} for the elemental test, but continuing since auto_secondPlaceOrBust=false`, "red"); }
 			}
 
-			visit_url("place.php?whichplace=nstower&action=ns_01_contestbooth");
-			visit_url("choice.php?pwd=&whichchoice=1003&option=3", true);
-			visit_url("main.php");
+			visitUrl("place.php?whichplace=nstower&action=ns_01_contestbooth");
+			visitUrl("choice.php?pwd=&whichchoice=1003&option=3", true);
+			visitUrl("main.php");
 		}
 
-		set_property("choiceAdventure1003",  4);
-		if((get_property("nsContestants1").to_int() == 0) && (get_property("nsContestants2").to_int() == 0) && (get_property("nsContestants3").to_int() == 0))
+		setProperty("choiceAdventure1003", (4).toString());
+		if (toInt(getProperty("nsContestants1")) === 0 && toInt(getProperty("nsContestants2")) === 0 && toInt(getProperty("nsContestants3")) === 0)
 		{
 			auto_log_info("The NS Challenges are over! Victory is ours!", "blue");
-			visit_url("place.php?whichplace=nstower&action=ns_01_contestbooth");
-			visit_url("choice.php?pwd=&whichchoice=1003&option=4", true);
-			visit_url("main.php");
-			if((get_property("nsContestants1").to_int() != 0) || (get_property("nsContestants2").to_int() != 0) || (get_property("nsContestants3").to_int() != 0))
+			visitUrl("place.php?whichplace=nstower&action=ns_01_contestbooth");
+			visitUrl("choice.php?pwd=&whichchoice=1003&option=4", true);
+			visitUrl("main.php");
+			if (toInt(getProperty("nsContestants1")) !== 0 || toInt(getProperty("nsContestants2")) !== 0 || toInt(getProperty("nsContestants3")) !== 0)
 			{
-				if(internalQuestStatus("questL13Final") == 2)
+				if (internalQuestStatus("questL13Final") === 2)
 				{
-					if(in_theSource())
+					if (in_theSource())
 					{
 						//As of r17048, encountering a Source Agent on the Challenge line results in nsContestants being decremented twice.
 						//Since we were using Mafia\'s tracking here, we have to compensate for when it fails...
 						auto_log_warning("Probably encountered a Source Agent during the NS Contestants and Mafia's tracking fails on this. Let's try to correct it...", "red");
-						set_property("questL13Final", "step1");
+						setProperty("questL13Final", "step1");
 					}
-					else
-					{
+					else {
 						auto_log_error("Error not recoverable (as not antipicipated) outside of The Source (Source Agents during NS Challenges), aborting.");
 						abort("questL13Final error in unexpected path.");
 					}
 				}
-				else
-				{
+				else {
 					auto_log_error("Unresolvable error: Mafia thinks the NS challenges are complete but something is very wrong.");
 					abort("Unknown questL13Final state.");
 				}
@@ -804,164 +814,161 @@ boolean L13_towerNSContests()
 
 	equipBaseline();
 
-	if(contains_text(visit_url("place.php?whichplace=nstower"), "ns_01_crowd1"))
+	if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_crowd1"))
 	{
-		autoAdv(1, $location[Fastest Adventurer Contest]);
+		autoAdv$1(1, Location.get("Fastest Adventurer Contest"));
 		return true;
 	}
 
-	if(contains_text(visit_url("place.php?whichplace=nstower"), "ns_01_crowd2"))
+	if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_crowd2"))
 	{
-		location toCompete = $location[none];
-		switch(get_property("nsChallenge1"))
+		let toCompete: Location = Location.none;
+		switch (getProperty("nsChallenge1"))
 		{
-		case "Mysticality":	toCompete = $location[Smartest Adventurer Contest];		break;
-		case "Moxie":		toCompete = $location[Smoothest Adventurer Contest];	break;
-		case "Muscle":		toCompete = $location[Strongest Adventurer Contest];	break;
+		case "Mysticality":		toCompete = Location.get("Smartest Adventurer Contest");		break;
+		case "Moxie":		toCompete = Location.get("Smoothest Adventurer Contest");		break;
+		case "Muscle":		toCompete = Location.get("Strongest Adventurer Contest");		break;
 		}
-		if(toCompete == $location[none])
+		if (toCompete === Location.none)
 		{
 			abort("nsChallenge1 is invalid. This is a severe error.");
 		}
-		autoAdv(1, toCompete);
+		autoAdv$1(1, toCompete);
 		return true;
 	}
 
-	if(contains_text(visit_url("place.php?whichplace=nstower"), "ns_01_crowd3"))
+	if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_crowd3"))
 	{
-		location toCompete = $location[none];
-		switch(get_property("nsChallenge2"))
+		let toCompete: Location = Location.none;
+		switch (getProperty("nsChallenge2"))
 		{
-		case "cold":		toCompete = $location[Coldest Adventurer Contest];		break;
-		case "hot":			toCompete = $location[Hottest Adventurer Contest];		break;
-		case "sleaze":		toCompete = $location[Sleaziest Adventurer Contest];	break;
-		case "spooky":		toCompete = $location[Spookiest Adventurer Contest];	break;
-		case "stench":		toCompete = $location[Stinkiest Adventurer Contest];	break;
+		case "cold":		toCompete = Location.get("Coldest Adventurer Contest");		break;
+		case "hot":		toCompete = Location.get("Hottest Adventurer Contest");		break;
+		case "sleaze":		toCompete = Location.get("Sleaziest Adventurer Contest");		break;
+		case "spooky":		toCompete = Location.get("Spookiest Adventurer Contest");		break;
+		case "stench":		toCompete = Location.get("Stinkiest Adventurer Contest");		break;
 		}
-		if(toCompete == $location[none])
+		if (toCompete === Location.none)
 		{
 			abort("nsChallenge1 is invalid. This is a severe error.");
 		}
-		autoAdv(1, toCompete);
+		autoAdv$1(1, toCompete);
 		return true;
 	}
 	auto_log_info("No challenges left!", "green");
-	if(in_pokefam())
+	if (in_pokefam())
 	{
-		if(get_property("nsContestants1").to_int() == 0)
+		if (toInt(getProperty("nsContestants1")) === 0)
 		{
 			return false;
 		}
-		set_property("nsContestants1", 0);
-		set_property("nsContestants2", 0);
-		set_property("nsContestants3", 0);
+		setProperty("nsContestants1", (0).toString());
+		setProperty("nsContestants2", (0).toString());
+		setProperty("nsContestants3", (0).toString());
 		return true;
 	}
 	return false;
 }
 
-void maximize_hedge()
+export function maximize_hedge(): void
 {
-	string data = visit_url("campground.php?action=telescopelow");
+	let data: string = visitUrl("campground.php?action=telescopelow");
 
-	element first = ns_hedge1();
-	element second = ns_hedge2();
-	element third = ns_hedge3();
-	int [element] resGoal;
-	if((first == $element[none]) || (second == $element[none]) || (third == $element[none]))
+	let first: Element = ns_hedge1();
+	let second: Element = ns_hedge2();
+	let third: Element = ns_hedge3();
+	let resGoal: Map<Element, number> = new Map();
+	if (first === Element.none || second === Element.none || third === Element.none)
 	{
-		foreach ele in $elements[hot, cold, stench, sleaze, spooky]
+		for (let ele of Element.get(["hot", "cold", "stench", "sleaze", "spooky"]))
 		{
-			resGoal[ele] = 9;
+			resGoal.set(ele, 9);
 		}
 	}
-	else
-	{
-		resGoal[first] = 9;
-		resGoal[second] = 9;
-		resGoal[third] = 9;
+	else {
+		resGoal.set(first, 9);
+		resGoal.set(second, 9);
+		resGoal.set(third, 9);
 	}
 
-	provideResistances(resGoal, $location[Noob Cave], true);
+	provideResistances$4(resGoal, Location.get("Noob Cave"), true);
 }
 
-boolean L13_towerNSHedge()
+export function L13_towerNSHedge(): boolean
 {
-	if(internalQuestStatus("questL13Final") == 5 && contains_text(visit_url("place.php?whichplace=nstower"), "hedgemaze"))
+	if (internalQuestStatus("questL13Final") === 5 && containsText(visitUrl("place.php?whichplace=nstower"), "hedgemaze"))
 	{
 		//If we got beaten up by the last hedgemaze, mafia might set questL13Final to step5 anyway. Fix that.
-		set_property("questL13Final", "step4");
-		if(have_effect($effect[Beaten Up]) > 0 || my_hp() < 150)
+		setProperty("questL13Final", "step4");
+		if (haveEffect(Effect.get("Beaten Up")) > 0 || myHp() < 150)
 		{
 			auto_log_error("Hedge maze not solved, the mysteries are still there (correcting step5 -> step4)");
 			abort("Heal yourself and try again...");
 		}
 	}
-	if(internalQuestStatus("questL13Final") != 4)
+	if (internalQuestStatus("questL13Final") !== 4)
 	{
 		return false;
 	}
-
-	# Set this so it aborts if not enough adventures. Otherwise, well, we end up in a loop.
-	set_property("choiceAdventure1004", "3");
-	set_property("choiceAdventure1005", "2");			# 'Allo
-	set_property("choiceAdventure1006", "2");			# One Small Step For Adventurer
-	set_property("choiceAdventure1007", "2");			# Twisty Little Passages, All Hedge
-	set_property("choiceAdventure1008", "2");			# Pooling Your Resources
-	set_property("choiceAdventure1009", "2");			# Gold Ol' 44% Duck
-	set_property("choiceAdventure1010", "2");			# Another Day, Another Fork
-	set_property("choiceAdventure1011", "2");			# Of Mouseholes and Manholes
-	set_property("choiceAdventure1012", "2");			# The Last Temptation
-	set_property("choiceAdventure1013", "1");			# Masel Tov!
+	// Set this so it aborts if not enough adventures. Otherwise, well, we end up in a loop.
+	setProperty("choiceAdventure1004", "3");
+	setProperty("choiceAdventure1005", "2"); // 'Allo
+	setProperty("choiceAdventure1006", "2"); // One Small Step For Adventurer
+	setProperty("choiceAdventure1007", "2"); // Twisty Little Passages, All Hedge
+	setProperty("choiceAdventure1008", "2"); // Pooling Your Resources
+	setProperty("choiceAdventure1009", "2"); // Gold Ol' 44% Duck
+	setProperty("choiceAdventure1010", "2"); // Another Day, Another Fork
+	setProperty("choiceAdventure1011", "2"); // Of Mouseholes and Manholes
+	setProperty("choiceAdventure1012", "2"); // The Last Temptation
+	setProperty("choiceAdventure1013", "1"); // Masel Tov!
 
 	maximize_hedge();
-	cli_execute("auto_pre_adv");
-	set_property("_auto_forcePokefamRestore", true);
-	if(!acquireFullHP())
+	cliExecute("auto_pre_adv.js");
+	setProperty("_auto_forcePokefamRestore", true.toString());
+	if (!acquireFullHP())
 	{
 		// couldn't heal so do slow route. May die to fast route
-		set_property("auto_hedge", "slow");
+		setProperty("auto_hedge", "slow");
 	}
-	visit_url("place.php?whichplace=nstower&action=ns_03_hedgemaze");
-	if(get_property("lastEncounter") == "This Maze is... Mazelike...")
+	visitUrl("place.php?whichplace=nstower&action=ns_03_hedgemaze");
+	if (getProperty("lastEncounter") === "This Maze is... Mazelike...")
 	{
-		run_choice(2);
+		runChoice(2);
 		abort("May not have enough adventures for the hedge maze. Failing");
 	}
 
-	if(get_property("auto_hedge") == "slow")
+	if (getProperty("auto_hedge") === "slow")
 	{
-		visit_url("choice.php?pwd=&whichchoice=1005&option=1", true);
-		visit_url("choice.php?pwd=&whichchoice=1006&option=1", true);
-		visit_url("choice.php?pwd=&whichchoice=1007&option=1", true);
-		visit_url("choice.php?pwd=&whichchoice=1008&option=1", true);
-		visit_url("choice.php?pwd=&whichchoice=1009&option=1", true);
-		visit_url("choice.php?pwd=&whichchoice=1010&option=1", true);
-		visit_url("choice.php?pwd=&whichchoice=1011&option=1", true);
-		visit_url("choice.php?pwd=&whichchoice=1012&option=1", true);
-		visit_url("choice.php?pwd=&whichchoice=1013&option=1", true);
+		visitUrl("choice.php?pwd=&whichchoice=1005&option=1", true);
+		visitUrl("choice.php?pwd=&whichchoice=1006&option=1", true);
+		visitUrl("choice.php?pwd=&whichchoice=1007&option=1", true);
+		visitUrl("choice.php?pwd=&whichchoice=1008&option=1", true);
+		visitUrl("choice.php?pwd=&whichchoice=1009&option=1", true);
+		visitUrl("choice.php?pwd=&whichchoice=1010&option=1", true);
+		visitUrl("choice.php?pwd=&whichchoice=1011&option=1", true);
+		visitUrl("choice.php?pwd=&whichchoice=1012&option=1", true);
+		visitUrl("choice.php?pwd=&whichchoice=1013&option=1", true);
 	}
-	else if(get_property("auto_hedge") == "fast")
+	else if (getProperty("auto_hedge") === "fast")
 	{
-		visit_url("choice.php?pwd=&whichchoice=1005&option=2", true);
-		visit_url("choice.php?pwd=&whichchoice=1008&option=2", true);
-		visit_url("choice.php?pwd=&whichchoice=1011&option=2", true);
-		visit_url("choice.php?pwd=&whichchoice=1013&option=1", true);
+		visitUrl("choice.php?pwd=&whichchoice=1005&option=2", true);
+		visitUrl("choice.php?pwd=&whichchoice=1008&option=2", true);
+		visitUrl("choice.php?pwd=&whichchoice=1011&option=2", true);
+		visitUrl("choice.php?pwd=&whichchoice=1013&option=1", true);
 	}
-	else
-	{
+	else {
 		abort("auto_hedge not set properly (slow/fast), assuming manual handling desired");
 	}
-	if(have_effect($effect[Beaten Up]) > 0)
+	if (haveEffect(Effect.get("Beaten Up")) > 0)
 	{
 		abort("Failed the hedge maze, may want to do this manually...");
 	}
 	return true;
 }
 
-boolean L13_sorceressDoor()
+export function L13_sorceressDoor(): boolean
 {
-	if(internalQuestStatus("questL13Final") != 5)
+	if (internalQuestStatus("questL13Final") !== 5)
 	{
 		return false;
 	}
@@ -969,125 +976,121 @@ boolean L13_sorceressDoor()
 	if (LX_getStarKey() || LX_getDigitalKey()) { // should attempt Star Key first as 8-bit zones can be progressed with backups etc.
 		return true;
 	}
-
 	// Low Key Summer has an entirely different door.
-	if(in_lowkeysummer())
+	if (in_lowkeysummer())
 	{
 		return L13_sorceressDoorLowKey();
 	}
 
-	string page = visit_url("place.php?whichplace=nstower_door");
-	if(contains_text(page, "ns_lock6"))
+	let page: string = visitUrl("place.php?whichplace=nstower_door");
+	if (containsText(page, "ns_lock6"))
 	{
-		if(item_amount($item[Skeleton Key]) == 0)
+		if (itemAmount(Item.get("skeleton key")) === 0)
 		{
-			cli_execute("make skeleton key");
+			cliExecute("make skeleton key");
 		}
-		if(item_amount($item[Skeleton Key]) == 0)
+		if (itemAmount(Item.get("skeleton key")) === 0)
 		{
 			abort("Need Skeleton Key for the Sorceress door :(");
 		}
-		visit_url("place.php?whichplace=nstower_door&action=ns_lock6");
+		visitUrl("place.php?whichplace=nstower_door&action=ns_lock6");
 	}
 
-	if(towerKeyCount() < 3)
+	if (towerKeyCount() < 3)
 	{
 		abort("Do not have enough hero keys");
 	}
 
-	if(contains_text(page, "ns_lock1"))
+	if (containsText(page, "ns_lock1"))
 	{
-		if(item_amount($item[Boris\'s Key]) == 0)
+		if (itemAmount(Item.get("Boris's key")) === 0)
 		{
-			if(in_koe() && item_amount($item[fat loot token]) > 0)
+			if (in_koe() && itemAmount(Item.get("fat loot token")) > 0)
 			{
-				buy($coinmaster[Cosmic Ray\'s Bazaar], 1, $item[Boris\'s Key]);
+				buy(Coinmaster.get("Cosmic Ray's Bazaar"), 1, Item.get("Boris's key"));
 			}
 			else {
-				cli_execute("make Boris's Key");
+				cliExecute("make Boris's Key");
 			}
 		}
-		if(item_amount($item[Boris\'s Key]) == 0)
+		if (itemAmount(Item.get("Boris's key")) === 0)
 		{
 			abort("Need Boris's Key for the Sorceress door :(");
 		}
-		visit_url("place.php?whichplace=nstower_door&action=ns_lock1");
+		visitUrl("place.php?whichplace=nstower_door&action=ns_lock1");
 	}
-	if(contains_text(page, "ns_lock2"))
+	if (containsText(page, "ns_lock2"))
 	{
-		if(item_amount($item[Jarlsberg\'s Key]) == 0)
+		if (itemAmount(Item.get("Jarlsberg's key")) === 0)
 		{
-			if(in_koe() && item_amount($item[fat loot token]) > 0)
+			if (in_koe() && itemAmount(Item.get("fat loot token")) > 0)
 			{
-				buy($coinmaster[Cosmic Ray\'s Bazaar], 1, $item[Jarlsberg\'s Key]);
+				buy(Coinmaster.get("Cosmic Ray's Bazaar"), 1, Item.get("Jarlsberg's key"));
 			}
-			else
-			{
-				cli_execute("make Jarlsberg's Key");
+			else {
+				cliExecute("make Jarlsberg's Key");
 			}
 		}
-		if(item_amount($item[Jarlsberg\'s Key]) == 0)
+		if (itemAmount(Item.get("Jarlsberg's key")) === 0)
 		{
 			abort("Need Jarlsberg's Key for the Sorceress door :(");
 		}
-		visit_url("place.php?whichplace=nstower_door&action=ns_lock2");
+		visitUrl("place.php?whichplace=nstower_door&action=ns_lock2");
 	}
-	if(contains_text(page, "ns_lock3"))
+	if (containsText(page, "ns_lock3"))
 	{
-		if(item_amount($item[Sneaky Pete\'s Key]) == 0)
+		if (itemAmount(Item.get("Sneaky Pete's key")) === 0)
 		{
-			if(in_koe() && item_amount($item[fat loot token]) > 0)
+			if (in_koe() && itemAmount(Item.get("fat loot token")) > 0)
 			{
-				buy($coinmaster[Cosmic Ray\'s Bazaar], 1, $item[Sneaky Pete\'s Key]);
+				buy(Coinmaster.get("Cosmic Ray's Bazaar"), 1, Item.get("Sneaky Pete's key"));
 			}
-			else
-			{
-				cli_execute("make Sneaky Pete's Key");
+			else {
+				cliExecute("make Sneaky Pete's Key");
 			}
 		}
-		if(item_amount($item[Sneaky Pete\'s Key]) == 0)
+		if (itemAmount(Item.get("Sneaky Pete's key")) === 0)
 		{
 			abort("Need Sneaky Pete's Key for the Sorceress door :(");
 		}
-		visit_url("place.php?whichplace=nstower_door&action=ns_lock3");
+		visitUrl("place.php?whichplace=nstower_door&action=ns_lock3");
 	}
 
-	if(contains_text(page, "ns_lock4"))
+	if (containsText(page, "ns_lock4"))
 	{
-		if(item_amount($item[Richard\'s Star Key]) == 0)
+		if (itemAmount(Item.get("Richard's star key")) === 0)
 		{
-			boolean temp = cli_execute("make richard's star key");
+			let temp: boolean = cliExecute("make richard's star key");
 		}
-		if(item_amount($item[Richard\'s Star Key]) == 0)
+		if (itemAmount(Item.get("Richard's star key")) === 0)
 		{
-			if(!get_property("auto_getStarKey").to_boolean())
+			if (!toBoolean(getProperty("auto_getStarKey")))
 			{
 				abort("Need Richard's Star Key for the Sorceress door. Perhaps set auto_getStarKey=true ?");
 			}
-			else
-			{
+			else {
 				abort("Need Richard's Star Key for the Sorceress door, but auto_getStarKey=true so I'm not sure why we haven't gotten it already. :(");
 			}
 		}
-		visit_url("place.php?whichplace=nstower_door&action=ns_lock4");
+		visitUrl("place.php?whichplace=nstower_door&action=ns_lock4");
 	}
 
-	if(contains_text(page, "ns_lock5"))
+	if (containsText(page, "ns_lock5"))
 	{
-		if(item_amount($item[Digital Key]) == 0)
+		if (itemAmount(Item.get("digital key")) === 0)
 		{
 			abort("Need Digital Key for the Sorceress door :(");
 		}
-		visit_url("place.php?whichplace=nstower_door&action=ns_lock5");
+		visitUrl("place.php?whichplace=nstower_door&action=ns_lock5");
 	}
 
-	visit_url("place.php?whichplace=nstower_door&action=ns_doorknob");
+	visitUrl("place.php?whichplace=nstower_door&action=ns_doorknob");
 	return true;
 }
 
-boolean L13_towerNSTower()
+export function L13_towerNSTower(): boolean
 {
-	if(internalQuestStatus("questL13Final") < 6 || internalQuestStatus("questL13Final") > 11)
+	if (internalQuestStatus("questL13Final") < 6 || internalQuestStatus("questL13Final") > 11)
 	{
 		return false;
 	}
@@ -1098,527 +1101,507 @@ boolean L13_towerNSTower()
 	{
 		return true;
 	}
-	if(L13_towerNSTowerMeat())
+	if (L13_towerNSTowerMeat())
 	{
 		return true;
 	}
-	if(L13_towerNSTowerBones())
+	if (L13_towerNSTowerBones())
 	{
 		return true;
 	}
-	if(L13_towerNSTowerMirror())
+	if (L13_towerNSTowerMirror())
 	{
 		return true;
 	}
-	if(L13_towerNSTowerShadow())
+	if (L13_towerNSTowerShadow())
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
-boolean L13_towerNSTowerSkin()
+export function L13_towerNSTowerSkin(): boolean
 {
-	if(!contains_text(visit_url("place.php?whichplace=nstower"), "ns_05_monster1"))
+	if (!containsText(visitUrl("place.php?whichplace=nstower"), "ns_05_monster1"))
 	{
 		return false;
 	}
 	auto_log_info("Time to fight the Wall of Skins!", "blue");
-	if (get_property("auto_towerBreak").to_lower_case() == "wall of skin" || get_property("auto_towerBreak").to_lower_case() == "wallofskin" || get_property("auto_towerBreak").to_lower_case() == "skin" || get_property("auto_towerBreak").to_lower_case() == "level 1")
+	if (toLowerCase(getProperty("auto_towerBreak")) === "wall of skin" || toLowerCase(getProperty("auto_towerBreak")) === "wallofskin" || toLowerCase(getProperty("auto_towerBreak")) === "skin" || toLowerCase(getProperty("auto_towerBreak")) === "level 1")
 	{
 		abort("auto_towerBreak set to abort here.");
 	}
-	if (item_amount($item[Beehive]) > 0 || in_pokefam())
+	if (itemAmount(Item.get("beehive")) > 0 || in_pokefam())
 	{
-		return autoAdvBypass("place.php?whichplace=nstower&action=ns_05_monster1", $location[Tower Level 1]);
+		return autoAdvBypass$1("place.php?whichplace=nstower&action=ns_05_monster1", Location.get("Tower Level 1"));
 	}
 	// Can we kill the tower without a beehive?
 	beehiveConsider(true);
-	if(get_property("auto_getBeehive").to_boolean())
+	if (toBoolean(getProperty("auto_getBeehive")))
 	{
 		return false;
 	}
-	
-	int damage = 2; // base attack damage plus TT attack skill (kneebutt, headbutt)
-	
-	boolean fam_set = false;
-	int[familiar] fam_damage = {
-		$familiar[glover]             : 11,
-		$familiar[shorter-order cook] :  6,
-		$familiar[mu]                 :  5,
-		$familiar[imitation crab]     :  4
-	};
-	
-	foreach fam in $familiars[glover, shorter-order cook, mu, imitation crab] // crab is evergreen, buy one
-	{
+
+	let damage: number = 2; // base attack damage plus TT attack skill (kneebutt, headbutt)
+
+	let fam_set: boolean = false;
+	let fam_damage: Map<Familiar, number> = new Map([
+		[Familiar.get("Glover"), 11],
+		[Familiar.get("Shorter-Order Cook"), 6],
+		[Familiar.get("Mu"), 5],
+		[Familiar.get("Imitation Crab"), 4]
+	]);
+
+	for (let fam of Familiar.get(["Glover", "Shorter-Order Cook", "Mu", "Imitation Crab"]))
+	{ // crab is evergreen, buy one
 		if (auto_have_familiar(fam))
 		{
-			handleFamiliar(fam);
-			use_familiar(fam);
-			damage += fam_damage[fam];
+			handleFamiliar$1(fam);
+			useFamiliar(fam);
+			damage += (fam_damage.get(fam) ?? fam_damage.set(fam, 0).get(fam));
 			fam_set = true;
 			break;
 		}
 	}
-	if (!fam_set) // just use some trash that does damage that we will have
-	{
-		foreach fam in $familiars[angry goat, MagiMechTech MicroMechaMech, star starfish, mosquito]
+	if (!fam_set)
+	{ // just use some trash that does damage that we will have
+		for (let fam of Familiar.get(["Angry Goat", "MagiMechTech MicroMechaMech", "Star Starfish", "Mosquito"]))
 		{
 			if (auto_have_familiar(fam))
 			{
-				handleFamiliar(fam);
-				use_familiar(fam);
+				handleFamiliar$1(fam);
+				useFamiliar(fam);
 				break;
 			}
 		}
 	}
-		
 	// We've probably got a tiny bowler, that'll help.
-	if (available_amount($item[tiny bowler]) > 0 && can_equip($item[tiny bowler]))
+	if (availableAmount(Item.get("tiny bowler")) > 0 && canEquip(Item.get("tiny bowler")))
 	{
-		autoEquip($item[tiny bowler]);
+		autoEquip$1(Item.get("tiny bowler"));
 		damage += 1; //familiar attack
 	}
-	
 	// apply skills
 	// start by shrugging unnecessary AT skills
 	// These ones should be safe to just remove simply
-	uneffect($effect[Aloysius' Antiphon of Aptitude]);
-	uneffect($effect[Ode to Booze]);
-	uneffect($effect[The Sonata of Sneakiness]);
-	uneffect($effect[Carlweather\'s Cantata of Confrontation]);
-	uneffect($effect[Cletus\'s Canticle of Celerity]);
-	
+	uneffect(Effect.get("Aloysius' Antiphon of Aptitude"));
+	uneffect(Effect.get("Ode to Booze"));
+	uneffect(Effect.get("The Sonata of Sneakiness"));
+	uneffect(Effect.get("Carlweather's Cantata of Confrontation"));
+	uneffect(Effect.get("Cletus's Canticle of Celerity"));
 	// TODO: These need to be handled so they're not recast
-	uneffect($effect[Ur-Kel\'s Aria of Annoyance]);
-	uneffect($effect[Polka of Plenty]);
-	
+	uneffect(Effect.get("Ur-Kel's Aria of Annoyance"));
+	uneffect(Effect.get("Polka of Plenty"));
 	// We want retaliation for light hits, so remove blood bubble if possible
-	uneffect($effect[blood bubble]);
-	
+	uneffect(Effect.get("Blood Bubble"));
 	// damage skills
-	foreach sk in $skills[dirge of dreadfulness, icy glare]
+	for (let sk of Skill.get(["Dirge of Dreadfulness", "Icy Glare"]))
 	{
-		if (have_skill(sk))
+		if (haveSkill(sk))
 		{
-			use_skill(sk);
+			useSkill(sk);
 			damage += 1;
 		}
 	}
-	
 	// Stinging skills
-	foreach sk in $skills[the psalm of pointiness, spiky shell, scarysauce, Jalape&ntilde;o Saucesphere]
+	for (let sk of Skill.get(["The Psalm of Pointiness", "Spiky Shell", "Scarysauce", "Jalape&ntilde;o Saucesphere"]))
 	{
-		if (have_skill(sk))
+		if (haveSkill(sk))
 		{
-			use_skill(sk);
+			useSkill(sk);
 			damage += 1;
 		}
 	}
-	
 	// Skills took care of cold and spooky damage, hot plate can take care of hot (and sting), guaranteed from level 6
-	if (available_amount($item[hot plate]) > 0 && can_equip($item[hot plate]))
+	if (availableAmount(Item.get("hot plate")) > 0 && canEquip(Item.get("hot plate")))
 	{
-		autoForceEquip($item[hot plate]);
+		autoForceEquip$3(Item.get("hot plate"));
 		damage += 2; // hot damage, sting point
 	}
-	
 	// sleaze/stench damage from war outfit and acccessory drops
-	boolean acc1_occupied = false;
-	boolean acc2_occupied = false;
+	let acc1_occupied: boolean = false;
+	let acc2_occupied: boolean = false;
 	// War outfit will occupy acc3
 	equipWarOutfit();
-	
 	// Frats need stench
-	boolean[item] damage_accs = $items[longhaired hippy wig, lockenstock&trade; sandals, gaia beads];
-	if(auto_warSide() == "hippy") // hippies need sleaze
-	{
-		damage_accs = $items[kick-ass kicks,  Jefferson wings, ghost of a necklace];
+	let damage_accs: Item[] = Item.get(["longhaired hippy wig", "Lockenstock&trade; sandals", "Gaia beads"]);
+	if (auto_warSide() === "hippy")
+	{ // hippies need sleaze
+		damage_accs = Item.get(["kick-ass kicks", "Jefferson wings", "ghost of a necklace"]);
 	}
-	foreach it in damage_accs
+	for (let it of damage_accs)
 	{
-		if (available_amount(it) > 0 && can_equip(it))
+		if (availableAmount(it) > 0 && canEquip(it))
 		{
-			if(!acc1_occupied)
+			if (!acc1_occupied)
 			{
-				autoEquip($slot[acc1], it);
+				autoEquip(Slot.get("acc1"), it);
 				acc1_occupied = true;
 				damage += 1;
 				break;
 			}
-			else if(!acc2_occupied)
+			else if (!acc2_occupied)
 			{
-				autoEquip($slot[acc2], it);
+				autoEquip(Slot.get("acc2"), it);
 				acc2_occupied = true;
 				damage += 1;
 				break;
 			}
 		} // available/can_equip
 	} // elemental damage accessory loop
-	
 	// Extra stinging accessories
-	foreach it in $items[Hippy protest button,  Bottle opener belt buckle]
+	for (let it of Item.get(["hippy protest button", "bottle opener belt buckle"]))
 	{
-		if (available_amount(it) > 0 && can_equip(it))
+		if (availableAmount(it) > 0 && canEquip(it))
 		{
-			if(!acc1_occupied)
+			if (!acc1_occupied)
 			{
-				autoEquip($slot[acc1], it);
+				autoEquip(Slot.get("acc1"), it);
 				acc1_occupied = true;
 				break;
 			}
-			else if(!acc2_occupied)
+			else if (!acc2_occupied)
 			{
-				autoEquip($slot[acc2], it);
+				autoEquip(Slot.get("acc2"), it);
 				acc2_occupied = true;
 				damage += 1;
 			}
 		} // available/can_equip
 	} // stinging accessories loop
-	
+
 	if (damage < 13)
 	{
-		auto_log_info("I'm trying to towerkill the Wall of Skin, but I don't think I've got enough damage sources. I have "+to_int(damage), "red");
-		set_property("auto_getBeehive", true);
+		auto_log_info(`I'm trying to towerkill the Wall of Skin, but I don't think I've got enough damage sources. I have ${toInt(damage)}`, "red");
+		setProperty("auto_getBeehive", true.toString());
 		auto_log_info("Exiting. Either investigate, or just re-run and we'll get the Beehive.", "red");
 		abort("Failed at Wall of Skin");
 	}
-	auto_log_info("I think I have " + damage + " points of damage per turn, time to towerkill the Wall of Skin", "blue");
-	
+	auto_log_info(`I think I have ${damage} points of damage per turn, time to towerkill the Wall of Skin`, "blue");
 	// Should we be casting shell up here? I do not understand it. If we got this far we should win regardless.
-	
+
 	acquireFullHP();
-	autoAdvBypass("place.php?whichplace=nstower&action=ns_05_monster1", $location[Tower Level 1]);
-	if(internalQuestStatus("questL13Final") < 7)
+	autoAdvBypass$1("place.php?whichplace=nstower&action=ns_05_monster1", Location.get("Tower Level 1"));
+	if (internalQuestStatus("questL13Final") < 7)
 	{
-		set_property("auto_getBeehive", true);
+		setProperty("auto_getBeehive", true.toString());
 		auto_log_warning("I probably failed the Wall of Skin, I assume that I tried without a beehive. Well, I'm going back to get it.", "red");
 	}
 	return true;
 }
 
-boolean L13_towerNSTowerMeat()
+export function L13_towerNSTowerMeat(): boolean
 {
-	if(!contains_text(visit_url("place.php?whichplace=nstower"), "ns_06_monster2"))
+	if (!containsText(visitUrl("place.php?whichplace=nstower"), "ns_06_monster2"))
 	{
 		return false;
 	}
-	if (get_property("auto_towerBreak").to_lower_case() == "wall of meat" || get_property("auto_towerBreak").to_lower_case() == "wallofmeat" || get_property("auto_towerBreak").to_lower_case() == "meat" || get_property("auto_towerBreak").to_lower_case() == "level 2")
+	if (toLowerCase(getProperty("auto_towerBreak")) === "wall of meat" || toLowerCase(getProperty("auto_towerBreak")) === "wallofmeat" || toLowerCase(getProperty("auto_towerBreak")) === "meat" || toLowerCase(getProperty("auto_towerBreak")) === "level 2")
 	{
 		abort("auto_towerBreak set to abort here.");
 	}
 	equipBaseline();
-	shrugAT($effect[Polka of Plenty]);
-	provideMeat(526, true, false);
-	if(meat_drop_modifier() < 475)
+	shrugAT$1(Effect.get("Polka of Plenty"));
+	provideMeat$1(526, true, false);
+	if (meatDropModifier() < 475)
 	{
-		auto_getCitizenZone("meat");
+		auto_getCitizenZone$1("meat");
 	}
 
-	if(in_zombieSlayer())
+	if (in_zombieSlayer())
 	{
-		acquireMP(30,0);
+		acquireMP$2(30, 0);
 	}
 
 	acquireFullHP();
-	autoAdvBypass("place.php?whichplace=nstower&action=ns_06_monster2", $location[Noob Cave]);
+	autoAdvBypass$1("place.php?whichplace=nstower&action=ns_06_monster2", Location.get("Noob Cave"));
 	return true;
 }
 
-boolean L13_towerNSTowerBones()
+export function L13_towerNSTowerBones(): boolean
 {
-	if(!contains_text(visit_url("place.php?whichplace=nstower"), "ns_07_monster3"))
+	if (!containsText(visitUrl("place.php?whichplace=nstower"), "ns_07_monster3"))
 	{
 		return false;
 	}
-	if (get_property("auto_towerBreak").to_lower_case() == "wall of bones" || get_property("auto_towerBreak").to_lower_case() == "wallofbones" || get_property("auto_towerBreak").to_lower_case() == "bones" || get_property("auto_towerBreak").to_lower_case() == "level 3")
+	if (toLowerCase(getProperty("auto_towerBreak")) === "wall of bones" || toLowerCase(getProperty("auto_towerBreak")) === "wallofbones" || toLowerCase(getProperty("auto_towerBreak")) === "bones" || toLowerCase(getProperty("auto_towerBreak")) === "level 3")
 	{
 		abort("auto_towerBreak set to abort here.");
 	}
-	familiar hundred_fam = to_familiar(get_property("auto_100familiar"));
-	boolean has_boning_knife = item_amount($item[Electric Boning Knife]) > 0;
-	
-	if(has_boning_knife || in_pokefam() || (in_wereprof() && canUse($skill[Slaughter]) && have_effect($effect[Everything Looks Red]) == 0))		//I have everything I need. just go fight
-	{
-		return autoAdvBypass("place.php?whichplace=nstower&action=ns_07_monster3", $location[Noob Cave]);
+	let hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
+	let has_boning_knife: boolean = itemAmount(Item.get("electric boning knife")) > 0;
+
+	if (has_boning_knife || in_pokefam() || in_wereprof() && canUse$2(Skill.get("Slaughter")) && haveEffect(Effect.get("Everything Looks Red")) === 0)
+	{ //I have everything I need. just go fight
+		return autoAdvBypass$1("place.php?whichplace=nstower&action=ns_07_monster3", Location.get("Noob Cave"));
 	}
-	
 	//should I grab an electric boning knife?
-	if(hundred_fam != $familiar[none] && isAttackFamiliar(hundred_fam))
+	if (hundred_fam !== Familiar.none && isAttackFamiliar(hundred_fam))
 	{
-		set_property("auto_getBoningKnife", true);		//in 100% familiar run with attack familiar we must acquire boning knife
+		setProperty("auto_getBoningKnife", true.toString()); //in 100% familiar run with attack familiar we must acquire boning knife
 	}
-	if(!(have_skill($skill[Saucegeyser]) || have_skill($skill[Garbage Nova])))
+	if (!(haveSkill(Skill.get("Saucegeyser")) || haveSkill(Skill.get("Garbage Nova"))))
 	{
-		set_property("auto_getBoningKnife", true);		//can not towerkill. get boning knife instead
+		setProperty("auto_getBoningKnife", true.toString()); //can not towerkill. get boning knife instead
 	}
-	if(!uneffect($effect[Scariersauce]))
+	if (!uneffect(Effect.get("Scariersauce")))
 	{
 		//passive dmg prevents tower kill. we can not uneffect it so get boning knife instead
-		set_property("auto_getBoningKnife", true);
+		setProperty("auto_getBoningKnife", true.toString());
 	}
-	
-	if(get_property("auto_getBoningKnife").to_boolean())	//grab boning knife if we deemed it necessary
-	{
-		if(lar_repeat($location[The Castle in the Clouds in the Sky (Ground Floor)]))
+
+	if (toBoolean(getProperty("auto_getBoningKnife")))
+	{ //grab boning knife if we deemed it necessary
+		if (lar_repeat(Location.get("The Castle in the Clouds in the Sky (Ground Floor)")))
 		{
 			auto_log_info("Backfarming an Electric Boning Knife", "green");
-			return autoAdv($location[The Castle in the Clouds in the Sky (Ground Floor)]);
+			return autoAdv$2(Location.get("The Castle in the Clouds in the Sky (Ground Floor)"));
 		}
-		else abort("I determined I must get [Electric Boning Knife] to proceed but I can not get one");
+		else { abort("I determined I must get [Electric Boning Knife] to proceed but I can not get one"); }
 	}
-	
 	//if we reached this spot we decided that we do not need a boning knife and intend to try to towerkill the wall of bones.
-	uneffect($effect[Scarysauce]);
-	uneffect($effect[Jalape&ntilde;o Saucesphere]);
-	uneffect($effect[Spiky Shell]);
-	if(in_aosol()){
-		uneffect($effect[Queso Fustulento]);
-		uneffect($effect[Tricky Timpani]);
+	uneffect(Effect.get("Scarysauce"));
+	uneffect(Effect.get("Jalape&ntilde;o Saucesphere"));
+	uneffect(Effect.get("Spiky Shell"));
+	if (in_aosol()) {
+		uneffect(Effect.get("Queso Fustulento"));
+		uneffect(Effect.get("Tricky Timpani"));
 	}
-	uneffect($effect[Psalm of Pointiness]);
-	uneffect($effect[Mayeaugh]);
-	uneffect($effect[Feeling Nervous]);
-	
-	if (my_primestat()!=$stat[mysticality])
+	uneffect(Effect.get("Psalm of Pointiness"));
+	uneffect(Effect.get("Mayeaugh"));
+	uneffect(Effect.get("Feeling Nervous"));
+
+	if (myPrimestat() !== Stat.get("Mysticality"))
 	{
 		auto_equalizeStats(); // uses reagent oil to stabilize stats
 	}
-	
 	// Clear some AT buffs so we have room. Ur-kel is actively harmful since it increases DR
-	uneffect($effect[Ur-Kel's Aria of Annoyance]);
-	uneffect($effect[Polka of Plenty]);
-	uneffect($effect[The Sonata of Sneakiness]);
-	uneffect($effect[Carlweather's Cantata of Confrontation]);
-	uneffect($effect[Ode to Booze]);
-	
-	acquireMP(150, 0);
-	buffMaintain($effect[Jackasses' Symphony of Destruction]);
-	buffMaintain($effect[Stevedave's Shanty of Superiority]);
-	buffMaintain($effect[Seeing Colors]);
-	buffMaintain($effect[Glittering Eyelashes]);
-	buffMaintain($effect[OMG WTF]);
-	buffMaintain($effect[There is a Spoon]);
-	buffMaintain($effect[Song of Sauce]);
-	buffMaintain($effect[Carol of the Hells]);
-	buffMaintain($effect[Sauce Monocle]);
-	buffMaintain($effect[Arched Eyebrow of the Archmage]);
-	buffMaintain($effect[Rosewater Mark]);
-	buffMaintain($effect[Black Eyes]);
-	buffMaintain($effect[Imported Strength]);
-	buffMaintain($effect[Mystically Oiled]);
-	buffMaintain($effect[Tomato Power]);
+	uneffect(Effect.get("Ur-Kel's Aria of Annoyance"));
+	uneffect(Effect.get("Polka of Plenty"));
+	uneffect(Effect.get("The Sonata of Sneakiness"));
+	uneffect(Effect.get("Carlweather's Cantata of Confrontation"));
+	uneffect(Effect.get("Ode to Booze"));
+
+	acquireMP$2(150, 0);
+	buffMaintain$4(Effect.get("Jackasses' Symphony of Destruction"));
+	buffMaintain$4(Effect.get("Stevedave's Shanty of Superiority"));
+	buffMaintain$4(Effect.get("Seeing Colors"));
+	buffMaintain$4(Effect.get("Glittering Eyelashes"));
+	buffMaintain$4(Effect.get("OMG WTF"));
+	buffMaintain$4(Effect.get("There Is A Spoon"));
+	buffMaintain$4(Effect.get("Song of Sauce"));
+	buffMaintain$4(Effect.get("Carol of the Hells"));
+	buffMaintain$4(Effect.get("Sauce Monocle"));
+	buffMaintain$4(Effect.get("Arched Eyebrow of the Archmage"));
+	buffMaintain$4(Effect.get("Rosewater Mark"));
+	buffMaintain$4(Effect.get("Black Eyes"));
+	buffMaintain$4(Effect.get("Imported Strength"));
+	buffMaintain$4(Effect.get("Mystically Oiled"));
+	buffMaintain$4(Effect.get("Tomato Power"));
 	//~ buffMaintain($effect[Visions of the Deep Dark Deeps]);
-	
 	// Maximizer tries to force familiar equipment. and prefers passive dmg a that. Avoid dealing damage from familiar and losing
-	if(canChangeFamiliar())
+	if (canChangeFamiliar())
 	{
-		if (have_familiar($familiar[magic dragonfish]))
+		if (haveFamiliar(Familiar.get("Magic Dragonfish")))
 		{
-			use_familiar($familiar[magic dragonfish]); // boosts spell damage
+			useFamiliar(Familiar.get("Magic Dragonfish")); // boosts spell damage
 		}
-		else
-		{
-			use_familiar(lookupFamiliarDatafile("gremlins"));		//delevel with no damage. fallback to none if unavailable
+		else {
+			useFamiliar(lookupFamiliarDatafile("gremlins")); //delevel with no damage. fallback to none if unavailable
 		}
-		set_property("auto_disableFamiliarChanging", true);
+		setProperty("auto_disableFamiliarChanging", true.toString());
 	}
-	if(my_familiar() != $familiar[none])
+	if (myFamiliar() !== Familiar.none)
 	{
 		addToMaximize("-familiar");
-		equip($slot[familiar], $item[none]);
+		equip(Slot.get("familiar"), Item.none);
 		// Try just boosting weight
-		foreach i,it in auto_getListOfNonDamagingFamiliarEquipment()
+		for (let [i, it] of auto_getListOfNonDamagingFamiliarEquipment())
 		{
-			if (can_equip(my_familiar(),it))
+			if (canEquip(myFamiliar(), it))
 			{
-				equip($slot[familiar],it);
+				equip(Slot.get("familiar"), it);
 				break;
 			}
 		}
 	}
-	
-	if (auto_remainingCandyCaneSlashes()>0)
+
+	if (auto_remainingCandyCaneSlashes() > 0)
 	{
-		addToMaximize("+equip "+$item[Candy Cane Sword Cane]);
+		addToMaximize(`+equip ${Item.get("candy cane sword cane")}`);
 	}
-	
-	if (possessEquipment($item[big hot pepper]))
+
+	if (possessEquipment(Item.get("big hot pepper")))
 	{
-		addToMaximize("+equip "+$item[big hot pepper]);
+		addToMaximize(`+equip ${Item.get("big hot pepper")}`);
 	}
-	
-	foreach lantern in $items[congressional medal of insanity, petrified wood water purifier, petrified wood wizard's pouch]
+
+	for (let lantern of Item.get(["Congressional Medal of Insanity", "petrified wood water purifier", "petrified wood wizard's pouch"]))
 	{
 		acquireOrPull(lantern);
 		if (possessEquipment(lantern))
 		{
-			addToMaximize("+equip "+lantern);
+			addToMaximize(`+equip ${lantern}`);
 			break; // we only need to pull one megalantern
 		}
 	}
 
 	addToMaximize("100myst,60spell damage percent,20spell damage,-20ml");
 	equipMaximizedGear();
-	foreach s in $slots[acc1, acc2, acc3]
+	for (let s of Slot.get(["acc1", "acc2", "acc3"]))
 	{
-		if(equipped_item(s) == $item[hand in glove])
+		if (equippedItem(s) === Item.get("Hand in Glove"))
 		{
-			equip(s, $item[none]);
+			equip(s, Item.none);
 		}
 	}
-	
-	float saucegeyserDamage()
+
+	function saucegeyserDamage(): number
 	{
-		float base = ceil((numeric_modifier("Spell Damage Percent")/100.0)*(60 + numeric_modifier("Spell Damage") + max(numeric_modifier("Hot Spell Damage"),numeric_modifier("Cold Spell Damage")) + 0.4*my_buffedstat($stat[mysticality])));
-		float lanterns = have_equipped($item[big hot pepper]) ? 2.0 : 1.0;
-		lanterns *= have_equipped($item[congressional medal of insanity]) ? 3.0 : 1.0; // can be x3 or 4x, we need the minimum
+		let base: number = ceil(numericModifier("Spell Damage Percent") / 100.0 * (60 + numericModifier("Spell Damage") + max(numericModifier("Hot Spell Damage"), numericModifier("Cold Spell Damage")) + 0.4 * myBuffedstat(Stat.get("Mysticality"))));
+		let lanterns: number = (haveEquipped(Item.get("big hot pepper")) ? 2.0 : 1.0);
+		lanterns *= (haveEquipped(Item.get("Congressional Medal of Insanity")) ? 3.0 : 1.0); // can be x3 or 4x, we need the minimum
 		return MLDamageToMonsterMultiplier() * lanterns * base;
 	}
-	
-	float wob_hp = $monster[wall of bones].base_hp;
-	int rounds = 4;
-	
+
+	let wob_hp: number = (Monster.get("wall of bones")).baseHp;
+	let rounds: number = 4;
 	// Candy cane slash quarters HP for one attack
-	if (have_equipped($item[candy cane sword cane]) && auto_remainingCandyCaneSlashes()>0)
+	if (haveEquipped(Item.get("candy cane sword cane")) && auto_remainingCandyCaneSlashes() > 0)
 	{
 		wob_hp /= 4;
 		rounds--;
 	}
-	
 	//Wall Of Bones combat uses Unleash The Greash, Garbage Nova, or Saucegeyser
-	if(!auto_have_skill($skill[Garbage Nova]) && have_effect($effect[Takin\' It Greasy]) == 0)
+	if (!auto_have_skill(Skill.get("Garbage Nova")) && haveEffect(Effect.get("Takin' It Greasy")) === 0)
 	{
-		float total_damage = saucegeyserDamage()*rounds*3;
-		auto_log_info("Wall of bones will have "+wob_hp+" hp with "+rounds+" rounds to kill.\n" +
-		 "Saucegeyser should do "+saucegeyserDamage()+" per hit for "+total_damage);
-		if(total_damage < wob_hp) // 3 is saucegeyser group size
-		{
+		let total_damage: number = saucegeyserDamage() * rounds * 3;
+		auto_log_info$1(`Wall of bones will have ${wob_hp} hp with ${rounds} rounds to kill.\nSaucegeyser should do ${saucegeyserDamage()} per hit for ${total_damage}`);
+		if (total_damage < wob_hp)
+		{ // 3 is saucegeyser group size
 			//counting on Saucegeyser and its damage will be too low
 			auto_log_warning("Estimate would fail to towerkill Wall of Bones. Reverting to Boning Knife", "red");
-			set_property("auto_getBoningKnife", true);
+			setProperty("auto_getBoningKnife", true.toString());
 			return true;
 		}
 	}
-	
-	acquireMP(216, 0);
+
+	acquireMP$2(216, 0);
 	acquireFullHP();
-	autoAdvBypass("place.php?whichplace=nstower&action=ns_07_monster3", $location[Noob Cave]);
-	if(internalQuestStatus("questL13Final") < 9)
+	autoAdvBypass$1("place.php?whichplace=nstower&action=ns_07_monster3", Location.get("Noob Cave"));
+	if (internalQuestStatus("questL13Final") < 9)
 	{
 		auto_log_warning("Failed to towerkill Wall of Bones. Reverting to Boning Knife", "red");
-		set_property("auto_getBoningKnife", true);
+		setProperty("auto_getBoningKnife", true.toString());
 	}
 	return true;
 }
 
-boolean L13_towerNSTowerMirror()
+export function L13_towerNSTowerMirror(): boolean
 {
-	if(!contains_text(visit_url("place.php?whichplace=nstower"), "ns_08_monster4"))
+	if (!containsText(visitUrl("place.php?whichplace=nstower"), "ns_08_monster4"))
 	{
 		return false;
 	}
-	if (get_property("auto_towerBreak").to_lower_case() == "mirror" || get_property("auto_towerBreak").to_lower_case() == "level 4")
+	if (toLowerCase(getProperty("auto_towerBreak")) === "mirror" || toLowerCase(getProperty("auto_towerBreak")) === "level 4")
 	{
 		abort("auto_towerBreak set to abort here.");
 	}
-	boolean confidence = get_property("auto_confidence").to_boolean();
+	let confidence: boolean = toBoolean(getProperty("auto_confidence"));
 	// confidence really just means take the first choice, so necessary in vampyre
-	if(in_darkGyffte())
-		confidence = true;
-	string choicenum = (confidence ? "1" : "2");
-	set_property("choiceAdventure1015", choicenum);
-	visit_url("place.php?whichplace=nstower&action=ns_08_monster4");
-	visit_url("choice.php?pwd=&whichchoice=1015&option=" + choicenum, true);
+	if (in_darkGyffte())
+		{ confidence = true; }
+	let choicenum: string = (confidence ? "1" : "2");
+	setProperty("choiceAdventure1015", choicenum);
+	visitUrl("place.php?whichplace=nstower&action=ns_08_monster4");
+	visitUrl(`choice.php?pwd=&whichchoice=1015&option=${choicenum}`, true);
 	return true;
 }
 
-boolean L13_towerNSTowerShadow()
+export function L13_towerNSTowerShadow(): boolean
 {
-	if(!contains_text(visit_url("place.php?whichplace=nstower"), "ns_09_monster5"))
+	if (!containsText(visitUrl("place.php?whichplace=nstower"), "ns_09_monster5"))
 	{
 		return false;
 	}
-	
-	if(in_robot())
+
+	if (in_robot())
 	{
 		abort("Robot shadow not currently automated. Pleasae kill your shadow manually then run me again");
 	}
 
-	if (get_property("auto_towerBreak").to_lower_case() == "shadow" || get_property("auto_towerBreak").to_lower_case() == "the shadow" || get_property("auto_towerBreak").to_lower_case() == "level 5")
+	if (toLowerCase(getProperty("auto_towerBreak")) === "shadow" || toLowerCase(getProperty("auto_towerBreak")) === "the shadow" || toLowerCase(getProperty("auto_towerBreak")) === "level 5")
 	{
 		abort("auto_towerBreak set to abort here.");
 	}
 
 	if (in_pokefam()) {
 		// challenge shadow to pokefam battle
-		autoAdvBypass("place.php?whichplace=nstower&action=ns_09_monster5", $location[Noob Cave]);
+		autoAdvBypass$1("place.php?whichplace=nstower&action=ns_09_monster5", Location.get("Noob Cave"));
 		return true;
 	}
 
-	int n_healing_items = item_amount($item[gauze garter]) + item_amount($item[filthy poultice]) + item_amount($item[red pixel potion]) + item_amount($item[scented massage oil]);
-	if(in_plumber())
+	let n_healing_items: number = itemAmount(Item.get("gauze garter")) + itemAmount(Item.get("filthy poultice")) + itemAmount(Item.get("red pixel potion")) + itemAmount(Item.get("scented massage oil"));
+	if (in_plumber())
 	{
-		n_healing_items = item_amount($item[super deluxe mushroom]);
-		if(n_healing_items < 5)
+		n_healing_items = itemAmount(Item.get("super deluxe mushroom"));
+		if (n_healing_items < 5)
 		{
-			retrieve_item(5, $item[super deluxe mushroom]);
-			n_healing_items = item_amount($item[super deluxe mushroom]);
+			retrieveItem(5, Item.get("super deluxe mushroom"));
+			n_healing_items = itemAmount(Item.get("super deluxe mushroom"));
 		}
 	}
-	if(n_healing_items < 5)
+	if (n_healing_items < 5)
 	{
-		int pull_target = 5 - n_healing_items; //pull healing items if we have any pulls left because its not like we need pulls for anything else at this point
-		int pulled_items = 0;
-		foreach it in $items[gauze garter, filthy poultice, red pixel potion]
+		let pull_target: number = 5 - n_healing_items; //pull healing items if we have any pulls left because its not like we need pulls for anything else at this point
+		let pulled_items: number = 0;
+		for (let it of Item.get(["gauze garter", "filthy poultice", "red pixel potion"]))
 		{
-			pullXWhenHaveY(it,1,item_amount(it));
+			pullXWhenHaveY(it, 1, itemAmount(it));
 		}
-		
 		// If we're in Kingdom of Exploathing, there's no realm . Let's try clovering for massage oil instead
 		if (in_koe())
 		{
-			cloverUsageInit();
-			autoAdv($location[Cobb\'s Knob Harem]);
-			if(cloverUsageRestart()) autoAdv($location[Cobb\'s Knob Harem]);
+			cloverUsageInit$1();
+			autoAdv$2(Location.get("Cobb's Knob Harem"));
+			if (cloverUsageRestart()) { autoAdv$2(Location.get("Cobb's Knob Harem")); }
 			cloverUsageFinish();
 		}
 		else {
-			int create_target = min(creatable_amount($item[red pixel potion]), pull_target - pulled_items);
-			if(create_target > 0)
+			let create_target: number = min(creatableAmount(Item.get("red pixel potion")), pull_target - pulled_items);
+			if (create_target > 0)
 			{
-				if(create(create_target, $item[red pixel potion]))
+				if (create(create_target, Item.get("red pixel potion")))
 				{
 					return true;
 				}
 				abort("I tried to create [red pixel potions] for the shadow and mysteriously failed");
 			}
-			return autoAdv($location[The Fungus Plains]);
+			return autoAdv$2(Location.get("The Fungus Plains"));
 		}
 	}
 
-	if(my_maxhp() < 800)
+	if (myMaxhp() < 800)
 	{
-		buffMaintain($effect[Industrial Strength Starch]);
-		buffMaintain($effect[Truly Gritty]);
-		buffMaintain($effect[Superheroic]);
-		buffMaintain($effect[Strong Grip]);
-		buffMaintain($effect[Spiky Hair]);
+		buffMaintain$4(Effect.get("Industrial Strength Starch"));
+		buffMaintain$4(Effect.get("Truly Gritty"));
+		buffMaintain$4(Effect.get("Superheroic"));
+		buffMaintain$4(Effect.get("Strong Grip"));
+		buffMaintain$4(Effect.get("Spiky Hair"));
 	}
-	cli_execute("scripts/autoscend/auto_post_adv.ash");
+	cliExecute("scripts/autoscend/auto_post_adv.js");
 	if (!acquireFullHP())
 	{
 		abort("Failed to restore max hp for shadow");
 	}
 
-	autoAdvBypass("place.php?whichplace=nstower&action=ns_09_monster5", $location[Noob Cave]);
+	autoAdvBypass$1("place.php?whichplace=nstower&action=ns_09_monster5", Location.get("Noob Cave"));
 	return true;
 }
 
-boolean L13_towerNSFinal()
+export function L13_towerNSFinal(): boolean
 {
-	if (get_property("auto_towerBreak").to_lower_case() == "naughty sorceress" || get_property("auto_towerBreak").to_lower_case() == "the naughty sorceress" || get_property("auto_towerBreak").to_lower_case() == "ns" || get_property("auto_towerBreak").to_lower_case() == "sorceress" || get_property("auto_towerBreak").to_lower_case() == "level 6" || get_property("auto_towerBreak").to_lower_case() == "chamber")
+	if (toLowerCase(getProperty("auto_towerBreak")) === "naughty sorceress" || toLowerCase(getProperty("auto_towerBreak")) === "the naughty sorceress" || toLowerCase(getProperty("auto_towerBreak")) === "ns" || toLowerCase(getProperty("auto_towerBreak")) === "sorceress" || toLowerCase(getProperty("auto_towerBreak")) === "level 6" || toLowerCase(getProperty("auto_towerBreak")) === "chamber")
 	{
 		abort("auto_towerBreak set to abort here.");
 	}
@@ -1627,259 +1610,253 @@ boolean L13_towerNSFinal()
 	{
 		return false;
 	}
-	if(in_robot())
+	if (in_robot())
 	{
 		abort("Automatic killing of nautomatic sauceress not implemented. Please kill her manually");
 	}
-	
 	//wand acquisition function is called before this function, it turns this propery to false once a wand is acquired.
 	//it is also false on all paths that don't want a wand. Thus if it is true it means we do want a wand but didn't get one yet.
-	if(get_property("auto_wandOfNagamar").to_boolean() && internalQuestStatus("questL13Final") == 11)
+	if (toBoolean(getProperty("auto_wandOfNagamar")) && internalQuestStatus("questL13Final") === 11)
 	{
 		auto_log_warning("We do not have a Wand of Nagamar but appear to need one. We must lose to the Sausage first...", "red");
 	}
 
-	if(in_heavyrains())
+	if (in_heavyrains())
 	{
 		return L13_heavyrains_towerFinal();
 	}
-	
-	if(in_bhy())
+
+	if (in_bhy())
 	{
 		return L13_bhy_towerFinal();
 	}
-	
-	if(in_theSource())
+
+	if (in_theSource())
 	{
-		acquireMP(200, 0);
+		acquireMP$2(200, 0);
 	}
-	
-	if(!(isActuallyEd() || is_boris() || is_jarlsberg() || is_pete() || in_bhy() || in_bugbear() || in_theSource() || in_wotsf() || in_zombieSlayer() || in_aosol()))
+
+	if (!(isActuallyEd() || is_boris() || is_jarlsberg() || is_pete() || in_bhy() || in_bugbear() || in_theSource() || in_wotsf() || in_zombieSlayer() || in_aosol()))
 	{
 		//Only if the final boss does not unbuff us...
-		cli_execute("scripts/autoscend/auto_post_adv.ash");
-	}
-	
-	if(my_class() == $class[Turtle Tamer])
-	{
-		autoEquip($item[Ouija Board\, Ouija Board]);
+		cliExecute("scripts/autoscend/auto_post_adv.js");
 	}
 
-	if(auto_can_equip($item[Oscus\'s Garbage Can Lid]))
+	if (myClass() === Class.get("Turtle Tamer"))
 	{
-		pullXWhenHaveY($item[Oscus\'s Garbage Can Lid], 1, 0);
+		autoEquip$1(Item.get("Ouija Board, Ouija Board"));
 	}
 
-	autoEquip($slot[Off-Hand], $item[Oscus\'s Garbage Can Lid]);
+	if (auto_can_equip(Item.get("Oscus's garbage can lid")))
+	{
+		pullXWhenHaveY(Item.get("Oscus's garbage can lid"), 1, 0);
+	}
+
+	autoEquip(Slot.get("off-hand"), Item.get("Oscus's garbage can lid"));
 
 	handleFamiliar("boss");
 
 	addToMaximize("10dr,3moxie,0.5da 1000max,-5ml,1.5hp,0item,0meat");
-	autoEquip($slot[acc2], $item[Attorney\'s Badge]);
+	autoEquip(Slot.get("acc2"), Item.get("attorney's badge"));
 	//AoSOL buffs
-	if(in_aosol())
+	if (in_aosol())
 	{
-		buffMaintain($effect[Queso Fustulento], 10, 1, 10);
-		buffMaintain($effect[Tricky Timpani], 30, 1, 10);
+		buffMaintain$3(Effect.get("Queso Fustulento"), 10, 1, 10);
+		buffMaintain$3(Effect.get("Tricky Timpani"), 30, 1, 10);
 	}
 	// AMW buff
-	if(in_amw())
+	if (in_amw())
 	{
-		buffMaintain($effect[Stewing], 0, 1, 10);
+		buffMaintain$3(Effect.get("Stewing"), 0, 1, 10);
 	}
 
-	if(internalQuestStatus("questL13Final") < 13)
+	if (internalQuestStatus("questL13Final") < 13)
 	{
-		cli_execute("scripts/autoscend/auto_pre_adv.ash");
-		set_property("auto_disableAdventureHandling", true);
-		autoAdvBypass("place.php?whichplace=nstower&action=ns_10_sorcfight", $location[Noob Cave]);
-		if(have_effect($effect[Beaten Up]) > 0)
+		cliExecute("scripts/autoscend/auto_pre_adv.js");
+		setProperty("auto_disableAdventureHandling", true.toString());
+		autoAdvBypass$1("place.php?whichplace=nstower&action=ns_10_sorcfight", Location.get("Noob Cave"));
+		if (haveEffect(Effect.get("Beaten Up")) > 0)
 		{
 			auto_log_warning("Sorceress beat us up. Wahhh.", "red");
-			set_property("auto_disableAdventureHandling", false);
+			setProperty("auto_disableAdventureHandling", false.toString());
 			return true;
 		}
-		if(last_monster() == $monster[Naughty Sorceress])
+		if (lastMonster() === Monster.get("Naughty Sorceress"))
 		{
-			autoAdv(1, $location[Noob Cave]);
-			if(have_effect($effect[Beaten Up]) > 0)
+			autoAdv$1(1, Location.get("Noob Cave"));
+			if (haveEffect(Effect.get("Beaten Up")) > 0)
 			{
 				auto_log_warning("Blobbage Sorceress beat us up. Wahhh.", "red");
-				set_property("auto_disableAdventureHandling", true);
+				setProperty("auto_disableAdventureHandling", true.toString());
 				return true;
 			}
-			autoAdv(1, $location[Noob Cave]);
-			if(have_effect($effect[Beaten Up]) > 0)
+			autoAdv$1(1, Location.get("Noob Cave"));
+			if (haveEffect(Effect.get("Beaten Up")) > 0)
 			{
-				if(get_property("lastEncounter") == "The Naughty Sorceress (3)")
+				if (getProperty("lastEncounter") === "The Naughty Sorceress (3)")
 				{
-					string page = visit_url("choice.php");
-					if(last_choice() == 1016)
+					let page: string = visitUrl("choice.php");
+					if (lastChoice() === 1016)
 					{
-						run_choice(1);
-						set_property("auto_wandOfNagamar", true);
+						runChoice(1);
+						setProperty("auto_wandOfNagamar", true.toString());
 					}
-					else
-					{
+					else {
 						abort("Expected to start Nagamar side-quest but unable to");
 					}
 					return true;
 				}
 				auto_log_warning("We got beat up by a sausage....", "red");
-				set_property("auto_disableAdventureHandling", false);
+				setProperty("auto_disableAdventureHandling", false.toString());
 				return true;
 			}
-			set_property("auto_disableAdventureHandling", false);
+			setProperty("auto_disableAdventureHandling", false.toString());
 		}
 	}
-
 	// restore ML Safety Limit if this run changed it
-	if(property_exists("auto_MLSafetyLimitBackup"))
+	if (propertyExists("auto_MLSafetyLimitBackup"))
 	{
-		string MLSafetyLimitBackup = get_property("auto_MLSafetyLimitBackup");
-		if(MLSafetyLimitBackup == "empty") set_property("auto_MLSafetyLimit","");
-		else set_property("auto_MLSafetyLimit", MLSafetyLimitBackup);
-		remove_property("auto_MLSafetyLimitBackup");
+		let MLSafetyLimitBackup: string = getProperty("auto_MLSafetyLimitBackup");
+		if (MLSafetyLimitBackup === "empty") { setProperty("auto_MLSafetyLimit", ""); }
+		else { setProperty("auto_MLSafetyLimit", MLSafetyLimitBackup); }
+		removeProperty("auto_MLSafetyLimitBackup");
 	}
 	// restore disregard karma if this run changed it
-	if(property_exists("auto_disregardInstantKarmaBackup"))
+	if (propertyExists("auto_disregardInstantKarmaBackup"))
 	{
-		set_property("auto_disregardInstantKarma",get_property("auto_disregardInstantKarmaBackup"));
-		remove_property("auto_disregardInstantKarmaBackup");
+		setProperty("auto_disregardInstantKarma", getProperty("auto_disregardInstantKarmaBackup"));
+		removeProperty("auto_disregardInstantKarmaBackup");
 	}
 
-	if(auto_turbo())
+	if (auto_turbo())
 	{
-		set_property("auto_turbo", "false");
+		setProperty("auto_turbo", "false");
 	}
 
 
-	if(get_property("auto_stayInRun").to_boolean())
+	if (toBoolean(getProperty("auto_stayInRun")))
 	{
 		abort("User wanted to stay in run (auto_stayInRun), we are done.");
 	}
 
-	if(my_class() == $class[Vampyre] && (0 < item_amount($item[Thwaitgold mosquito statuette])))
+	if (myClass() === Class.get("Vampyre") && 0 < itemAmount(Item.get("Thwaitgold mosquito statuette")))
 	{
 		abort("Freeing the king will result in a path change. Enjoy your immortality.");
 	}
 
-	if(my_class() == $class[Plumber] && (0 < item_amount($item[Thwaitgold buzzy beetle statuette])))
+	if (myClass() === Class.get("Plumber") && 0 < itemAmount(Item.get("Thwaitgold buzzy beetle statuette")))
 	{
 		abort("Freeing the king will lose your extra stomach space. Enjoy the rest of your video game.");
 	}
 
-	if($classes[Pig Skinner, Cheese Wizard, Jazz Agent] contains my_class() && (0 < item_amount($item[Thwaitgold anti-moth statuette])))
+	if (Class.get(["Pig Skinner", "Cheese Wizard", "Jazz Agent"]).includes(myClass()) && 0 < itemAmount(Item.get("Thwaitgold anti-moth statuette")))
 	{
-		visit_url("place.php?whichplace=nstower&action=ns_11_prism");
+		visitUrl("place.php?whichplace=nstower&action=ns_11_prism");
 		return true;
 	}
 
-	if(in_lol())
+	if (in_lol())
 	{
 		abort("Freeing the king will result in losing all your replica IOTM. Enjoy them while you have them!");
 	}
 
-	if(in_wereprof() && (0 < item_amount($item[Thwaitgold wolf spider statuette])))
+	if (in_wereprof() && 0 < itemAmount(Item.get("Thwaitgold wolf spider statuette")))
 	{
 		abort("Freeing the king will result in a path change. Go howl at the moon some more if you want.");
 	}
-
 	// It is possible to keep your Yearbook Club Camera in KOLHS by having it equipped before breaking the prism
-	if (in_kolhs() && !have_equipped($item[Yearbook Club Camera]) && (item_amount($item[Yearbook Club Camera]) > 0))
+	if (in_kolhs() && !haveEquipped(Item.get("Yearbook Club Camera")) && itemAmount(Item.get("Yearbook Club Camera")) > 0)
 	{
-		equip($slot[acc3], $item[Yearbook Club Camera]);
+		equip(Slot.get("acc3"), Item.get("Yearbook Club Camera"));
 	}
 
-	if(!($classes[Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief] contains my_class()))
+	if (!(Class.get(["Seal Clubber", "Turtle Tamer", "Pastamancer", "Sauceror", "Disco Bandit", "Accordion Thief"]).includes(myClass())))
 	{
 		abort("Freeing the king will result in a path change and we can barely handle The Sleazy Back Alley. Aborting, run the script again after selecting your aftercore path in order for it to clean up.");
 	}
 
-	visit_url("place.php?whichplace=nstower&action=ns_11_prism");
-	if(!inAftercore())
+	visitUrl("place.php?whichplace=nstower&action=ns_11_prism");
+	if (!inAftercore())
 	{
-		abort("Yeah, so, I'm done. You might be stuck at the shadow, or at the final boss, or just with a king in a prism. I don't know and quite frankly, after the last " + my_daycount() + " days, I don't give a damn. That's right, I said it. Bitches.");
+		abort(`Yeah, so, I'm done. You might be stuck at the shadow, or at the final boss, or just with a king in a prism. I don't know and quite frankly, after the last ${myDaycount()} days, I don't give a damn. That's right, I said it. Bitches.`);
 	}
 	return true;
 }
 
-boolean L13_towerNSNagamar()
+export function L13_towerNSNagamar(): boolean
 {
 	// the first if check will skip getting a wand if autoscend configuration says we don't want one AND you are not on step12 of the quest
 	// if you are on step12 it will override the configuration and proceed to get a wand anyways
 	// quest step12 means you fought the sorceress and lost due to not having a wand.
 	// autoscend only reaches step12 of the quest if autoscend was incapable of acquiring a wand before the sorceress
 	// it then has to fallback to bear verb orgy, which itself cannot be done until step12
-	if(in_koe())
+	if (in_koe())
 	{
 		return L13_koe_towerNSNagamar();
 	}
-	if (!get_property("auto_wandOfNagamar").to_boolean() || internalQuestStatus("questL13Final") < 11 || internalQuestStatus("questL13Final") > 12)
+	if (!toBoolean(getProperty("auto_wandOfNagamar")) || internalQuestStatus("questL13Final") < 11 || internalQuestStatus("questL13Final") > 12)
 	{
 		return false;
 	}
-	if(item_amount($item[Wand of Nagamar]) > 0)
+	if (itemAmount(Item.get("Wand of Nagamar")) > 0)
 	{
-		set_property("auto_wandOfNagamar", false);
+		setProperty("auto_wandOfNagamar", false.toString());
 		return false;
 	}
-	
-	if(in_disguises() && internalQuestStatus("questL13Final") == 12)
+
+	if (in_disguises() && internalQuestStatus("questL13Final") === 12)
 	{
-		cli_execute("refresh quests");
-		if(internalQuestStatus("questL13Final") != 12)
+		cliExecute("refresh quests");
+		if (internalQuestStatus("questL13Final") !== 12)
 		{
-			abort("In this specific ascension [naughty sorceress \(3\)] is wearing a mask that makes kol base game fail to advance the quest to step 12. Which means that bear verb orgy is impossible for this specific run. Manually get the [Lucky!] effect then use it to get a [Wand of Nagamar] manually and run me again");
+			abort("In this specific ascension [naughty sorceress (3)] is wearing a mask that makes kol base game fail to advance the quest to step 12. Which means that bear verb orgy is impossible for this specific run. Manually get the [Lucky!] effect then use it to get a [Wand of Nagamar] manually and run me again");
 		}
 	}
-	
-	if(creatable_amount($item[Wand Of Nagamar]) == 0 && pulls_remaining() > 0)
+
+	if (creatableAmount(Item.get("Wand of Nagamar")) === 0 && pullsRemaining() > 0)
 	{
-		boolean haveW = item_amount($item[ruby W]) != 0;
-		boolean haveA = item_amount($item[metallic A]) != 0;
-		boolean haveN = item_amount($item[lowercase N]) != 0;
-		boolean haveD = item_amount($item[heavy D]) != 0;
-		if(!haveW || !haveA)
+		let haveW: boolean = itemAmount(Item.get("ruby W")) !== 0;
+		let haveA: boolean = itemAmount(Item.get("metallic A")) !== 0;
+		let haveN: boolean = itemAmount(Item.get("lowercase N")) !== 0;
+		let haveD: boolean = itemAmount(Item.get("heavy D")) !== 0;
+		if (!haveW || !haveA)
 		{
-			if((haveN && haveD) || item_amount($item[ND]) > 0 || pulls_remaining() > 1)	//if no ND, need 2 pulls
-			{
-				pullXWhenHaveY($item[WA], 1, 0);
+			if (haveN && haveD || itemAmount(Item.get("ND")) > 0 || pullsRemaining() > 1)
+			{ //if no ND, need 2 pulls
+				pullXWhenHaveY(Item.get("WA"), 1, 0);
 			}
 		}
-		if((!haveN || !haveD) && ((haveA && haveW) || item_amount($item[WA]) > 0))	//if no WA, should not pull
-		{
-			pullXWhenHaveY($item[ND], 1, 0);
+		if ((!haveN || !haveD) && (haveA && haveW || itemAmount(Item.get("WA")) > 0))
+		{ //if no WA, should not pull
+			pullXWhenHaveY(Item.get("ND"), 1, 0);
 		}
 	}
-	
-	if(creatable_amount($item[Wand Of Nagamar]) > 0)
+
+	if (creatableAmount(Item.get("Wand of Nagamar")) > 0)
 	{
-		return create(1, $item[Wand Of Nagamar]);
+		return create(1, Item.get("Wand of Nagamar"));
 	}
-	
 	//hunt for bear verb orgy
-	if (item_amount($item[Wand of Nagamar]) == 0 && internalQuestStatus("questL13Final") == 12 && !in_koe())
+	if (itemAmount(Item.get("Wand of Nagamar")) === 0 && internalQuestStatus("questL13Final") === 12 && !in_koe())
 	{
-		return autoAdv($location[The VERY Unquiet Garves]);
+		return autoAdv$2(Location.get("The VERY Unquiet Garves"));
 	}
-	
-	if (autoLuckyAdv($location[The Castle in the Clouds in the Sky (Basement)], true)) {
-		if (creatable_amount($item[Wand Of Nagamar]) > 0)
+
+	if (autoLuckyAdv(Location.get("The Castle in the Clouds in the Sky (Basement)"), true)) {
+		if (creatableAmount(Item.get("Wand of Nagamar")) > 0)
 		{
-			return create(1, $item[Wand Of Nagamar]);
+			return create(1, Item.get("Wand of Nagamar"));
 		}
-		else
-		{
+		else {
 			auto_log_warning("Clovering [The Castle in the Clouds in the Sky (Basement)] for wand parts failed for some reason", "red");
 		}
 	}
 	return false;
 }
 
-boolean L13_towerAscent()
+export function L13_towerAscent(): boolean
 {
-	if (L13_towerNSContests() || L13_towerNSHedge()|| L13_sorceressDoor() || L13_towerNSTower() || L13_towerNSNagamar() || L13_towerNSFinal())
+	if (L13_towerNSContests() || L13_towerNSHedge() || L13_sorceressDoor() || L13_towerNSTower() || L13_towerNSNagamar() || L13_towerNSFinal())
 	{
 		return true;
 	}

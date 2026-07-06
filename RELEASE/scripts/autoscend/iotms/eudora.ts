@@ -1,67 +1,70 @@
-boolean eudora_available()
+import { Item, containsText, isUnrestricted, visitUrl } from "kolmafia";
+
+//Defined in autoscend/iotms/auto_eudora.ash
+export function eudora_available(): boolean
 {
-	if(contains_text(visit_url("account.php"),"tab=correspondence"))
+	if (containsText(visitUrl("account.php"), "tab=correspondence"))
 	{
 		return true;
 	}
 	return false;
 }
 
-boolean[item] eudora_initializeSettings()
+export function eudora_initializeSettings(): Map<Item, boolean>
 {
-	boolean[item] retval;
-	if(eudora_available())
+	let retval: Map<Item, boolean> = new Map();
+	if (eudora_available())
 	{
-		string eudora = visit_url("account.php?tab=correspondence");
-		if((contains_text(eudora, "Pen Pal")) && is_unrestricted($item[My Own Pen Pal Kit]))
+		let eudora_1: string = visitUrl("account.php?tab=correspondence");
+		if (containsText(eudora_1, "Pen Pal") && isUnrestricted(Item.get("My Own Pen Pal kit")))
 		{
-			retval[$item[My Own Pen Pal Kit]] = true;
+			retval.set(Item.get("My Own Pen Pal kit"), true);
 		}
-		if((contains_text(eudora, "GameInformPowerDailyPro Magazine")) && is_unrestricted($item[GameInformPowerDailyPro Subscription Card]))
+		if (containsText(eudora_1, "GameInformPowerDailyPro Magazine") && isUnrestricted(Item.get("GameInformPowerDailyPro subscription card")))
 		{
-			retval[$item[GameInformPowerDailyPro Subscription Card]] = true;
+			retval.set(Item.get("GameInformPowerDailyPro subscription card"), true);
 		}
-		if((contains_text(eudora, "Xi Receiver Unit")) && is_unrestricted($item[Xi Receiver Unit]))
+		if (containsText(eudora_1, "Xi Receiver Unit") && isUnrestricted(Item.get("Xi Receiver Unit")))
 		{
-			retval[$item[Xi Receiver Unit]] = true;
+			retval.set(Item.get("Xi Receiver Unit"), true);
 		}
-		if((contains_text(eudora, "New-You Club")) && is_unrestricted($item[New-You Club Membership Form]))
+		if (containsText(eudora_1, "New-You Club") && isUnrestricted(Item.get("New-You Club Membership Form")))
 		{
-			retval[$item[New-You Club Membership Form]] = true;
+			retval.set(Item.get("New-You Club Membership Form"), true);
 		}
-		if((contains_text(eudora, "Our Daily Candles")) && is_unrestricted($item[Our Daily Candles&trade; order form]))
+		if (containsText(eudora_1, "Our Daily Candles") && isUnrestricted(Item.get("Our Daily Candles&trade; order form")))
 		{
-			retval[$item[Our Daily Candles&trade; order form]] = true;
+			retval.set(Item.get("Our Daily Candles&trade; order form"), true);
 		}
 	}
 	return retval;
 }
 
-item eudora_current()
+export function eudora_current(): Item
 {
-	if(eudora_available())
+	if (eudora_available())
 	{
-		string eudora = visit_url("account.php?tab=correspondence");
-		if((contains_text(eudora, "selected\' value=\"1")) && is_unrestricted($item[My Own Pen Pal kit]))
+		let eudora_1: string = visitUrl("account.php?tab=correspondence");
+		if (containsText(eudora_1, "selected' value=\"1") && isUnrestricted(Item.get("My Own Pen Pal kit")))
 		{
-			return $item[My Own Pen Pal kit];
+			return Item.get("My Own Pen Pal kit");
 		}
-		if((contains_text(eudora, "selected\' value=\"2")) && is_unrestricted($item[GameInformPowerDailyPro subscription card]))
+		if (containsText(eudora_1, "selected' value=\"2") && isUnrestricted(Item.get("GameInformPowerDailyPro subscription card")))
 		{
-			return $item[GameInformPowerDailyPro subscription card];
+			return Item.get("GameInformPowerDailyPro subscription card");
 		}
-		if((contains_text(eudora, "selected\' value=\"3")) && is_unrestricted($item[Xi Receiver Unit]))
+		if (containsText(eudora_1, "selected' value=\"3") && isUnrestricted(Item.get("Xi Receiver Unit")))
 		{
-			return $item[Xi Receiver Unit];
+			return Item.get("Xi Receiver Unit");
 		}
-		if((contains_text(eudora, "selected\' value=\"4")) && is_unrestricted($item[New-You Club Membership Form]))
+		if (containsText(eudora_1, "selected' value=\"4") && isUnrestricted(Item.get("New-You Club Membership Form")))
 		{
-			return $item[New-You Club Membership Form];
+			return Item.get("New-You Club Membership Form");
 		}
-		if((contains_text(eudora, "selected\' value=\"5")) && is_unrestricted($item[Our Daily Candles&trade; order form]))
+		if (containsText(eudora_1, "selected' value=\"5") && isUnrestricted(Item.get("Our Daily Candles&trade; order form")))
 		{
-			return $item[Our Daily Candles&trade; order form];
+			return Item.get("Our Daily Candles&trade; order form");
 		}
 	}
-	return $item[none];
+	return Item.none;
 }

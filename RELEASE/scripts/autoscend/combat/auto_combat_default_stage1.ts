@@ -1,111 +1,125 @@
-string auto_combatDefaultStage1(int round, monster enemy, string text)
+import { Class, Effect, Item, Location, Monster, Skill, abort, containsText, getProperty, haveEffect, haveEquipped, itemAmount, itemDropsArray, monsterPhylum, myAdventures, myClass, myHp, myLocation, myMaxhp, steal, toFloat, toInt, toMonster } from "kolmafia";
+import { auto_have_skill, effectiveDropChance, handleTracker$1, isFreeMonster } from "../auto_util";
+import { amw_wanttoPP } from "./auto_combat_adventurer_meats_world";
+import { auto_combatBHYStage1 } from "./auto_combat_bees_hate_you";
+import { auto_combatDisguisesStage1 } from "./auto_combat_disguises_delimit";
+import { auto_combatFallOfTheDinosaursStage1 } from "./auto_combat_fall_of_the_dinosaurs";
+import { auto_combatHeavyRainsStage1 } from "./auto_combat_heavy_rains";
+import { auto_combatExploathingStage1 } from "./auto_combat_kingdom_of_exploathing";
+import { auto_combat_nanorhinoBuff } from "./auto_combat_mr2012";
+import { auto_combatPeteStage1 } from "./auto_combat_pete";
+import { auto_combatTheSourceStage1 } from "./auto_combat_the_source";
+import { canSurvive$1, canUse$1, canUse$2, canUse$4, combat_status_add, combat_status_check, markAsUsed$1, useItems$1, useSkill$1, useSkill$2 } from "./auto_combat_util";
+import { auto_combatWereProfessorStage1 } from "./auto_combat_wereprofessor";
+import { auto_combatWildfireStage1 } from "./auto_combat_wildfire";
+import { auto_backupTarget } from "../iotms/mr2021";
+import { auto_RWBBlastTarget, auto_canCircadianRhythm, auto_canHabitat, auto_canRWBBlast, auto_circadianRhythmTarget, auto_circadianRhythmTarget$1, auto_getCitizenZone, auto_habitatTarget, auto_remainingCandyCaneSlashes } from "../iotms/mr2023";
+import { auto_talkToSomeFish } from "../iotms/mr2025";
+import { in_amw } from "../paths/adventurer_meats_world";
+import { ag_is_bodyguard, in_avantGuard } from "../paths/avant_guard";
+import { inAftercore } from "../paths/casual";
+import { in_nuclear } from "../paths/nuclear_autumn";
+import { in_plumber } from "../paths/path_of_the_plumber";
+
+//defined in /autoscend/combat/auto_combat_default_stage1.ash
+export function auto_combatDefaultStage1(round_1: number, enemy: Monster, text: string): string
 {
 	// stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
-	string retval;
-	
+	let retval: string = "";
 	// Path = Heavy Rains
-	retval = auto_combatHeavyRainsStage1(round, enemy, text);
-	if(retval != "") return retval;
-	
+	retval = auto_combatHeavyRainsStage1(round_1, enemy, text);
+	if (retval !== "") { return retval; }
 	// Path = The Source
-	retval = auto_combatTheSourceStage1(round, enemy, text);
-	if(retval != "") return retval;
-	
+	retval = auto_combatTheSourceStage1(round_1, enemy, text);
+	if (retval !== "") { return retval; }
 	// Path = Kingdom of Exploathing
-	retval = auto_combatExploathingStage1(round, enemy, text);
-	if(retval != "") return retval;
-	
+	retval = auto_combatExploathingStage1(round_1, enemy, text);
+	if (retval !== "") { return retval; }
 	// Path = Avatar of Sneaky Pete
-	retval = auto_combatPeteStage1(round, enemy, text);
-	if(retval != "") return retval;
-	
+	retval = auto_combatPeteStage1(round_1, enemy, text);
+	if (retval !== "") { return retval; }
 	// Path = Bees Hate You
-	retval = auto_combatBHYStage1(round, enemy, text);
-	if(retval != "") return retval;
-	
+	retval = auto_combatBHYStage1(round_1, enemy, text);
+	if (retval !== "") { return retval; }
 	// Path = Disguises Delimit
-	retval = auto_combatDisguisesStage1(round, enemy, text);
-	if(retval != "") return retval;
-	
+	retval = auto_combatDisguisesStage1(round_1, enemy, text);
+	if (retval !== "") { return retval; }
 	// Path = wildfire
-	retval = auto_combatWildfireStage1(round, enemy, text);
-	if(retval != "") return retval;
-
+	retval = auto_combatWildfireStage1(round_1, enemy, text);
+	if (retval !== "") { return retval; }
 	// Path = Fall of the Dinosaurs
-	retval = auto_combatFallOfTheDinosaursStage1(round, enemy, text);
-	if(retval != "") return retval;
-
+	retval = auto_combatFallOfTheDinosaursStage1(round_1, enemy, text);
+	if (retval !== "") { return retval; }
 	// Path = WereProfessor
-	retval = auto_combatWereProfessorStage1(round, enemy, text);
-	if(retval != "") return retval;
-
+	retval = auto_combatWereProfessorStage1(round_1, enemy, text);
+	if (retval !== "") { return retval; }
 	//In Avant Guard, waffle the bodyguard in Themthar Hills ASAP to replace with the Dirty Thieving Brigand
-	if(in_avantGuard() && ag_is_bodyguard() && item_amount($item[waffle]) > 0 && my_location() == $location[The Themthar Hills] && enemy != $monster[Dirty Thieving Brigand])
+	if (in_avantGuard() && ag_is_bodyguard() && itemAmount(Item.get("waffle")) > 0 && myLocation() === Location.get("The Themthar Hills") && enemy !== Monster.get("dirty thieving brigand"))
 	{
-		handleTracker(enemy, $item[waffle], "auto_replaces");
-		return useItems($item[waffle], $item[none]);
+		handleTracker$1(enemy.toString(), Item.get("waffle").toString(), "auto_replaces");
+		return useItems$1(Item.get("waffle"), Item.none);
 	}
 
-	if(enemy == $monster[Your Shadow])
+	if (enemy === Monster.get("Your Shadow"))
 	{
-		if(in_amw() && canUse($skill[Chew the Fat], false))
+		if (in_amw() && canUse$1(Skill.get("Chew the Fat"), false))
 		{
-			return useSkill($skill[Chew the Fat], false);
+			return useSkill$1(Skill.get("Chew the Fat"), false);
 		}
-		if(in_plumber())
+		if (in_plumber())
 		{
-			if(item_amount($item[super deluxe mushroom]) > 0)
+			if (itemAmount(Item.get("super deluxe mushroom")) > 0)
 			{
-				return "item " + $item[super deluxe mushroom];
+				return `item ${Item.get("super deluxe mushroom")}`;
 			}
 			abort("Oh no, I don't have any super deluxe mushrooms to deal with this shadow plumber :(");
 		}
-		boolean ambi = auto_have_skill($skill[Ambidextrous Funkslinging]);
-		item hand_1 = $item[none];
-		item hand_2 = $item[none];
-		item icup = $item[Rain-Doh Indigo Cup];		//restore 20% of max HP. only once per combat
-		if(canUse(icup))
+		let ambi: boolean = auto_have_skill(Skill.get("Ambidextrous Funkslinging"));
+		let hand_1: Item = Item.none;
+		let hand_2: Item = Item.none;
+		let icup: Item = Item.get("Rain-Doh indigo cup"); //restore 20% of max HP. only once per combat
+		if (canUse$4(icup))
 		{
-			if(my_maxhp() > 500 && hand_1 == $item[none])
+			if (myMaxhp() > 500 && hand_1 === Item.none)
 			{
-				markAsUsed(icup);
+				markAsUsed$1(icup);
 				hand_1 = icup;
 			}
-			else if(ambi && my_maxhp() > 250 && hand_1 == $item[none])
+			else if (ambi && myMaxhp() > 250 && hand_1 === Item.none)
 			{
-				markAsUsed(icup);
+				markAsUsed$1(icup);
 				hand_1 = icup;
 			}
 		}
 		//items which can be used multiple times per combat
-		foreach it in $items[Gauze Garter, filthy Poultice, red pixel potion]
+		for (let it of Item.get(["gauze garter", "filthy poultice", "red pixel potion"]))
 		{
-			if(hand_1 == $item[none] && item_amount(it) > 0)
+			if (hand_1 === Item.none && itemAmount(it) > 0)
 			{
 				hand_1 = it;
 			}
-			if(hand_2 == $item[none])
+			if (hand_2 === Item.none)
 			{
-				if(item_amount(it) > 1)
+				if (itemAmount(it) > 1)
 				{
 					hand_2 = it;
 				}
-				else if(item_amount(it) > 0 && hand_1 != it)
+				else if (itemAmount(it) > 0 && hand_1 !== it)
 				{
 					hand_2 = it;
 				}
 			}
 		}
-		
-		if(ambi && hand_1 != $item[none] && hand_2 != $item[none])
+
+		if (ambi && hand_1 !== Item.none && hand_2 !== Item.none)
 		{
-			return "item " +hand_1+ ", " +hand_2;
+			return `item ${hand_1}, ${hand_2}`;
 		}
-		if(hand_1 != $item[none])
+		if (hand_1 !== Item.none)
 		{
-			return "item " +hand_1;
+			return `item ${hand_1}`;
 		}
-		if (item_amount($item[scented massage oil])==0) {
+		if (itemAmount(Item.get("scented massage oil")) === 0) {
 			abort("Uh oh, I ran out of healing items to use against your shadow");
 		}
 		else {
@@ -113,147 +127,143 @@ string auto_combatDefaultStage1(int round, monster enemy, string text)
 		}
 	}
 
-	if(enemy == $monster[Wall Of Meat])
+	if (enemy === Monster.get("wall of meat"))
 	{
-		if(canUse($skill[Make It Rain]))
+		if (canUse$2(Skill.get("Make it Rain")))
 		{
-			return useSkill($skill[Make It Rain]);
+			return useSkill$2(Skill.get("Make it Rain"));
 		}
 	}
 
-	if(enemy == $monster[Wall Of Skin])
+	if (enemy === Monster.get("wall of skin"))
 	{
-		if(item_amount($item[Beehive]) > 0)
+		if (itemAmount(Item.get("beehive")) > 0)
 		{
-			return "item " + $item[Beehive];
+			return `item ${Item.get("beehive")}`;
 		}
 
-		if(canUse($skill[Shell Up]) && (round >= 3))
+		if (canUse$2(Skill.get("Shell Up")) && round_1 >= 3)
 		{
-			return useSkill($skill[Shell Up]);
+			return useSkill$2(Skill.get("Shell Up"));
 		}
 
-		if(canUse($skill[Sauceshell]) && (round >= 4))
+		if (canUse$2(Skill.get("Sauceshell")) && round_1 >= 4)
 		{
-			return useSkill($skill[Sauceshell]);
+			return useSkill$2(Skill.get("Sauceshell"));
 		}
 
-		if(canUse($skill[Belch the Rainbow], false))
+		if (canUse$1(Skill.get("Belch The Rainbow"), false))
 		{
-			return useSkill($skill[Belch the Rainbow], false);
+			return useSkill$1(Skill.get("Belch The Rainbow"), false);
 		}
 
-		if(canUse($skill[Kneebutt], false))
+		if (canUse$1(Skill.get("Kneebutt"), false))
 		{
-			return useSkill($skill[Kneebutt], false);
+			return useSkill$1(Skill.get("Kneebutt"), false);
 		}
-		if(canUse($skill[Headbutt], false))
+		if (canUse$1(Skill.get("Headbutt"), false))
 		{
-			return useSkill($skill[Headbutt], false);
+			return useSkill$1(Skill.get("Headbutt"), false);
 		}
 		return "attack with weapon";
 	}
 
-	if(enemy == $monster[Wall Of Bones])
+	if (enemy === Monster.get("wall of bones"))
 	{
-		if(item_amount($item[Electric Boning Knife]) > 0)
+		if (itemAmount(Item.get("electric boning knife")) > 0)
 		{
-			return "item " + $item[Electric Boning Knife];
+			return `item ${Item.get("electric boning knife")}`;
 		}
-		if(((my_hp() * 4) < my_maxhp()) && (have_effect($effect[Takin\' It Greasy]) > 0))
+		if (myHp() * 4 < myMaxhp() && haveEffect(Effect.get("Takin' It Greasy")) > 0)
 		{
-			return useSkill($skill[Unleash The Greash], false);
-		}
-
-		if(canUse($skill[Surprisingly Sweet Slash], true) && auto_remainingCandyCaneSlashes() > 0)
-		{
-			return useSkill($skill[Surprisingly Sweet Slash], true);
-		}
-		
-		if(canUse($skill[Garbage Nova], false))
-		{
-			return useSkill($skill[Garbage Nova], false);
+			return useSkill$1(Skill.get("Unleash the Greash"), false);
 		}
 
-		if(canUse($skill[Saucegeyser], false))
+		if (canUse$1(Skill.get("Surprisingly Sweet Slash"), true) && auto_remainingCandyCaneSlashes() > 0)
 		{
-			return useSkill($skill[Saucegeyser]);
+			return useSkill$1(Skill.get("Surprisingly Sweet Slash"), true);
+		}
+
+		if (canUse$1(Skill.get("Garbage Nova"), false))
+		{
+			return useSkill$1(Skill.get("Garbage Nova"), false);
+		}
+
+		if (canUse$1(Skill.get("Saucegeyser"), false))
+		{
+			return useSkill$2(Skill.get("Saucegeyser"));
 		}
 	}
-	
 	//nanorhino familiar buff acquisition. Must be the first action taken in combat.
 	//done after puzzle bosses. if puzzle bosses get a random buff that is ok, we would rather beat the puzzle boss.
-	retval = auto_combat_nanorhinoBuff(round, enemy, text);
-	if(retval != "") return retval;
-	
+	retval = auto_combat_nanorhinoBuff(round_1, enemy, text);
+	if (retval !== "") { return retval; }
 	//pickpocket. do this after puzzle bosses but before escapes/instakills
-	boolean ableToPickpocket = ($classes[Accordion Thief, Avatar of Sneaky Pete, Disco Bandit, Gelatinous Noob] contains my_class() || have_effect($effect[Riboflavin\']) > 0 || amw_wanttoPP(enemy));
-	if(!combat_status_check("pickpocket") && ableToPickpocket && contains_text(text, "value=\"Pick") && canSurvive(4.0))
+	let ableToPickpocket: boolean = Class.get(["Accordion Thief", "Avatar of Sneaky Pete", "Disco Bandit", "Gelatinous Noob"]).includes(myClass()) || haveEffect(Effect.get("Riboflavin'")) > 0 || amw_wanttoPP(enemy);
+	if (!combat_status_check("pickpocket") && ableToPickpocket && containsText(text, "value=\"Pick") && canSurvive$1(4.0))
 	{
-		boolean tryIt = false;
-		foreach i, drop in item_drops_array(enemy)
+		let tryIt: boolean = false;
+		for (let [i, drop] of itemDropsArray(enemy).entries())
 		{
-			if(drop.type == "0")
+			if (drop.type === "0")
 			{
 				tryIt = true;
 			}
-			if((drop.rate > 0) && (drop.type != "n") && (drop.type != "c") && (drop.type != "b"))
+			if (drop.rate > 0 && drop.type !== "n" && drop.type !== "c" && drop.type !== "b")
 			{
 				tryIt = true;
 			}
-			if(tryIt)
+			if (tryIt)
 			{
-				if(auto_have_skill($skill[Sticky Fingers]) && canSurvive(8.0))
+				if (auto_have_skill(Skill.get("Sticky Fingers")) && canSurvive$1(8.0))
 				{
 					//free meat, tryIt
 				}
-				else if((drop.type != "p") && effectiveDropChance(drop.drop,drop.rate.to_float()) >= 100)
+				else if (drop.type !== "p" && effectiveDropChance(drop.drop, toFloat(drop.rate)) >= 100)
 				{
-					tryIt = false;	//don't need to pickpocket if capped drop chance
+					tryIt = false; //don't need to pickpocket if capped drop chance
 				}
-				if(tryIt)
+				if (tryIt)
 				{
 					break;
 				}
 			}
 		}
-		if(tryIt)
+		if (tryIt)
 		{
 			combat_status_add("pickpocket");
-			string attemptSteal = steal();
+			let attemptSteal: string = steal();
 			return "pickpocket";
 		}
 	}
 
-	if (auto_canCircadianRhythm() && (auto_circadianRhythmTarget(enemy) || auto_circadianRhythmTarget(monster_phylum(enemy))) && canUse($skill[Recall Facts: %phylum Circadian Rhythms]) && !ag_is_bodyguard())
+	if (auto_canCircadianRhythm() && (auto_circadianRhythmTarget(enemy) || auto_circadianRhythmTarget$1(monsterPhylum(enemy))) && canUse$2(Skill.get("Recall Facts: %phylum Circadian Rhythms")) && !ag_is_bodyguard())
 	{
-		handleTracker($skill[Recall Facts: %phylum Circadian Rhythms], monster_phylum(enemy), "auto_otherstuff");
-		return useSkill($skill[Recall Facts: %phylum Circadian Rhythms]);
+		handleTracker$1(Skill.get("Recall Facts: %phylum Circadian Rhythms").toString(), monsterPhylum(enemy).toString(), "auto_otherstuff");
+		return useSkill$2(Skill.get("Recall Facts: %phylum Circadian Rhythms"));
 	}
 
-	if (auto_canHabitat() && auto_habitatTarget(enemy) && canUse($skill[Recall Facts: Monster Habitats]) && !ag_is_bodyguard())
+	if (auto_canHabitat() && auto_habitatTarget(enemy) && canUse$2(Skill.get("Recall Facts: Monster Habitats")) && !ag_is_bodyguard())
 	{
-		handleTracker($skill[Recall Facts: Monster Habitats], enemy, "auto_copies");
-		return useSkill($skill[Recall Facts: Monster Habitats]);
+		handleTracker$1(Skill.get("Recall Facts: Monster Habitats").toString(), enemy.toString(), "auto_copies");
+		return useSkill$2(Skill.get("Recall Facts: Monster Habitats"));
 	}
 
-	if(auto_canRWBBlast() && auto_RWBBlastTarget(enemy) && canUse($skill[%fn\, fire a Red\, White and Blue Blast]))
+	if (auto_canRWBBlast() && auto_RWBBlastTarget(enemy) && canUse$2(Skill.get("%fn, fire a Red, White and Blue Blast")))
 	{
-		handleTracker($skill[%fn\, fire a Red\, White and Blue Blast], enemy, "auto_copies");
-		return useSkill($skill[%fn\, fire a Red\, White and Blue Blast]);
+		handleTracker$1(Skill.get("%fn, fire a Red, White and Blue Blast").toString(), enemy.toString(), "auto_copies");
+		return useSkill$2(Skill.get("%fn, fire a Red, White and Blue Blast"));
 	}
 
-	monster backedUpMonster = get_property("lastCopyableMonster").to_monster();
+	let backedUpMonster: Monster = toMonster(getProperty("lastCopyableMonster"));
 	// reserve last 2 advs for end of day free fights
-	boolean reserveAdvsForFreeFights = my_adventures() < 3 && !isFreeMonster(backedUpMonster);
-	if(auto_backupTarget() && enemy != backedUpMonster && canUse($skill[Back-Up to your Last Enemy])
-		&& !reserveAdvsForFreeFights)
+	let reserveAdvsForFreeFights: boolean = myAdventures() < 3 && !isFreeMonster(backedUpMonster);
+	if (auto_backupTarget() && enemy !== backedUpMonster && canUse$2(Skill.get("Back-Up to your Last Enemy")) && !reserveAdvsForFreeFights)
 	{
-		handleTracker(enemy, $skill[Back-Up to your Last Enemy], "auto_replaces");
-		handleTracker(backedUpMonster, $skill[Back-Up to your Last Enemy], "auto_copies");
-		return useSkill($skill[Back-Up to your Last Enemy]);	
+		handleTracker$1(enemy.toString(), Skill.get("Back-Up to your Last Enemy").toString(), "auto_replaces");
+		handleTracker$1(backedUpMonster.toString(), Skill.get("Back-Up to your Last Enemy").toString(), "auto_copies");
+		return useSkill$2(Skill.get("Back-Up to your Last Enemy"));
 	}
-
 	//saber copy (iotm) is different from other copies in that it comes with a free escape
 	//technically it is an ender. but one that should be run before duplications.
 	//2023 update: no longer saber copy blooper due to 8-bit realm changes. Leaving commented so there is an example of how to saber copy
@@ -265,46 +275,41 @@ string auto_combatDefaultStage1(int round, monster enemy, string text)
 	//		return auto_combatSaberCopy();
 	//	}
 	//}
-	
 	//[Melodramedary] familiar skill which turns monster into a group of 2. Should be done before deleveling.
-	if ($monsters[pygmy bowler, bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, red butler] contains enemy && canUse($skill[%fn\, spit on them!]))
+	if (Monster.get(["pygmy bowler", "bearpig topiary animal", "elephant (meatcar?) topiary animal", "spider (duck?) topiary animal", "red butler"]).includes(enemy) && canUse$2(Skill.get("%fn, spit on them!")))
 	{
-		handleTracker($skill[%fn\, spit on them!], enemy, "auto_otherstuff");
-		return useSkill($skill[%fn\, spit on them!], true);
+		handleTracker$1(Skill.get("%fn, spit on them!").toString(), enemy.toString(), "auto_otherstuff");
+		return useSkill$1(Skill.get("%fn, spit on them!"), true);
 	}
-
 	//[Patriotic Eagle] familiar skill that gives a useful buff
-	if (canUse($skill[%fn\, let\'s pledge allegiance to a Zone]))
+	if (canUse$2(Skill.get("%fn, let's pledge allegiance to a Zone")))
 	{
-		auto_getCitizenZone(my_location(), true);
-		return useSkill($skill[%fn\, let\'s pledge allegiance to a Zone], true);
+		auto_getCitizenZone(myLocation(), true);
+		return useSkill$1(Skill.get("%fn, let's pledge allegiance to a Zone"), true);
 	}
-		
 	//duplicate turns the enemy from a single enemy into a mob containing 2 copies of this enemy. Doubling their stats and doubling their drops
-	if(canUse($skill[Duplicate]) && (get_property("_sourceTerminalDuplicateUses").to_int() == 0) && !inAftercore() && !in_nuclear())
+	if (canUse$2(Skill.get("Duplicate")) && toInt(getProperty("_sourceTerminalDuplicateUses")) === 0 && !inAftercore() && !in_nuclear())
 	{
-		if($monsters[Dairy Goat] contains enemy)
+		if (Monster.get(["dairy goat"]).includes(enemy))
 		{
-			return useSkill($skill[Duplicate]);
+			return useSkill$2(Skill.get("Duplicate"));
 		}
 	}
-
 	//convert enemy into a scaling fish monster
-	if(auto_talkToSomeFish(my_location(), enemy) && auto_have_skill($skill[Sea *dent: Talk to Some Fish]))
+	if (auto_talkToSomeFish(myLocation(), enemy) && auto_have_skill(Skill.get("Sea *dent: Talk to Some Fish")))
 	{
-		handleTracker(enemy, $skill[Sea *dent: Talk to Some Fish], "auto_otherstuff");
-		return useSkill($skill[Sea *dent: Talk to Some Fish]);
+		handleTracker$1(enemy.toString(), Skill.get("Sea *dent: Talk to Some Fish").toString(), "auto_otherstuff");
+		return useSkill$2(Skill.get("Sea *dent: Talk to Some Fish"));
 	}
-	
 	//these special conditions make it impossible to do anything but attack with weapon.
-	if(have_effect($effect[Temporary Amnesia]) > 0)
+	if (haveEffect(Effect.get("Temporary Amnesia")) > 0)
 	{
 		return "attack with weapon";
 	}
-	if(have_equipped($item[Drunkula\'s Wineglass]))
+	if (haveEquipped(Item.get("Drunkula's wineglass")))
 	{
 		return "attack with weapon";
 	}
-	
+
 	return "";
 }

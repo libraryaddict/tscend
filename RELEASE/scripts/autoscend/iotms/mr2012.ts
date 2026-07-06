@@ -1,93 +1,95 @@
-#	This is meant for items that have a date of 2012
+import { Effect, Item, Monster, Skill, abort, availableAmount, getProperty, haveEffect, haveSkill, itemAmount, lastMonster, myLevel, runChoice, setProperty, toBoolean, toInt, toMonster } from "kolmafia";
+import { auto_log_info, handleCopiedMonster } from "../auto_util";
 
-void auto_reagnimatedGetPart(int choice)
+//	This is meant for items that have a date of 2012
+
+//Defined in autoscend/iotms/mr2012.ash
+export function auto_reagnimatedGetPart(choice: number): void
 {
-	if (available_amount($item[gnomish housemaid\'s kgnee]) == 0) // The housemaid's kgnee is the equipment that justified using the gnome.
-	{
-		run_choice(4);
+	if (availableAmount(Item.get("gnomish housemaid's kgnee")) === 0)
+	{ // The housemaid's kgnee is the equipment that justified using the gnome.
+		runChoice(4);
 	}
-	else if (available_amount($item[gnomish coal miner\'s lung]) == 0) // May as well get the rest of these on subsequent days.
-	{
-		run_choice(2);
+	else if (availableAmount(Item.get("gnomish coal miner's lung")) === 0)
+	{ // May as well get the rest of these on subsequent days.
+		runChoice(2);
 	}
-	else if (available_amount($item[gnomish athlete\'s foot]) == 0)
+	else if (availableAmount(Item.get("gnomish athlete's foot")) === 0)
 	{
-		run_choice(5);
+		runChoice(5);
 	}
-	else if (available_amount($item[gnomish tennis elbow]) == 0)
+	else if (availableAmount(Item.get("gnomish tennis elbow")) === 0)
 	{
-		run_choice(3);
+		runChoice(3);
 	}
-	else if (available_amount($item[gnomish swimmer\'s ears]) == 0)
+	else if (availableAmount(Item.get("gnomish swimmer's ears")) === 0)
 	{
-		run_choice(1);
+		runChoice(1);
 	}
-	else
-	{
+	else {
 		abort("unhandled choice in auto_reagnimatedGetPart");
 	}
 }
 
-boolean handleRainDoh()
+export function handleRainDoh(): boolean
 {
-	if(item_amount($item[rain-doh box full of monster]) == 0)
+	if (itemAmount(Item.get("Rain-Doh box full of monster")) === 0)
 	{
 		return false;
 	}
-	if(my_level() <= 3)
+	if (myLevel() <= 3)
 	{
 		return false;
 	}
-	if(have_effect($effect[ultrahydrated]) > 0)
+	if (haveEffect(Effect.get("Ultrahydrated")) > 0)
 	{
 		return false;
 	}
 
-	monster enemy = to_monster(get_property("rainDohMonster"));
-	auto_log_info("Black boxing: " + enemy, "blue");
-	
-	void validate_rainDohBox()
+	let enemy: Monster = toMonster(getProperty("rainDohMonster"));
+	auto_log_info(`Black boxing: ${enemy}`, "blue");
+
+	function validate_rainDohBox(): void
 	{
-		if(enemy != $monster[Source Agent] &&	//special exclusion for path The Source where [source agent] might randomly replace our target
-		enemy != last_monster())	//general failure detection
-		{
-			abort("Not sure what exploded. tried to summon copy of " + enemy + " but got " + last_monster() + " instead.");
+		if (enemy !== Monster.get("Source Agent") && enemy !== lastMonster())
+		{ //general failure detection
+		//special exclusion for path The Source where [source agent] might randomly replace our target
+			abort(`Not sure what exploded. tried to summon copy of ${enemy} but got ${lastMonster()} instead.`);
 		}
 	}
 
-	if(enemy == $monster[Lobsterfrogman])
+	if (enemy === Monster.get("lobsterfrogman"))
 	{
-		if(have_skill($skill[Rain Man]) && (item_amount($item[barrel of gunpowder]) < 4))
+		if (haveSkill(Skill.get("Rain Man")) && itemAmount(Item.get("barrel of gunpowder")) < 4)
 		{
-			set_property("auto_doCombatCopy", "yes");
+			setProperty("auto_doCombatCopy", "yes");
 		}
-		handleCopiedMonster($item[Rain-Doh Box Full of Monster]);
+		handleCopiedMonster(Item.get("Rain-Doh box full of monster"));
 		validate_rainDohBox();
-		set_property("auto_doCombatCopy", "no");
+		setProperty("auto_doCombatCopy", "no");
 		return true;
 	}
-	if(enemy == $monster[Skinflute])
+	if (enemy === Monster.get("Skinflute"))
 	{
-		int stars = item_amount($item[star]);
-		int lines = item_amount($item[line]);
+		let stars: number = itemAmount(Item.get("star"));
+		let lines: number = itemAmount(Item.get("line"));
 
-		if((stars < 7) && (lines < 6)  & (get_property("_raindohCopiesMade").to_int() < 5))
+		if (stars < 7 && toBoolean(toInt(lines < 6) & toInt(toInt(getProperty("_raindohCopiesMade")) < 5)))
 		{
-			set_property("auto_doCombatCopy", "yes");
+			setProperty("auto_doCombatCopy", "yes");
 		}
-		handleCopiedMonster($item[Rain-Doh Box Full of Monster]);
+		handleCopiedMonster(Item.get("Rain-Doh box full of monster"));
 		validate_rainDohBox();
-		set_property("auto_doCombatCopy", "no");
+		setProperty("auto_doCombatCopy", "no");
 		return true;
 	}
-
 	/*	Should we check for an acceptable monster or just empty the box in that case?
 	huge swarm of ghuol whelps, modern zmobie, mountain man
 	*/
 	//If doesn\'t match a special condition
-	if(enemy != $monster[none])
+	if (enemy !== Monster.none)
 	{
-		handleCopiedMonster($item[Rain-Doh Box Full of Monster]);
+		handleCopiedMonster(Item.get("Rain-Doh box full of monster"));
 		validate_rainDohBox();
 		return true;
 	}

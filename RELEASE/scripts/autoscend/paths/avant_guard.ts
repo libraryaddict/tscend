@@ -1,196 +1,211 @@
-boolean in_avantGuard()
+import { Familiar, Item, Monster, Path, containsText, getProperty, haveOutfit, itemAmount, myAscensions, myDaycount, myPath, setProperty, toBoolean, toInt, visitUrl } from "kolmafia";
+import { pullXWhenHaveY } from "../auto_acquire";
+import { possessEquipment } from "../auto_equipment";
+import { auto_have_familiar } from "../auto_familiar";
+import { LX_summonMonster, auto_can_equip, auto_is_valid, auto_log_info, auto_turbo, handleTracker$1, internalQuestStatus } from "../auto_util";
+import { auto_haveAugustScepter } from "../iotms/mr2023";
+import { auto_haveBatWings } from "../iotms/mr2024";
+import { L3_tavern } from "../quests/level_03";
+import { L5_goblinKing } from "../quests/level_05";
+import { L7_crypt } from "../quests/level_07";
+import { L8_trapperGroar, needOre } from "../quests/level_08";
+import { hedgeTrimmersNeeded } from "../quests/level_09";
+import { L11_defeatEd } from "../quests/level_11";
+import { needStarKey } from "../quests/level_13";
+import { AshMatcher } from "../utils/kolmafiaUtils";
+
+//Defined in autoscend/paths/avant_guard.ash
+export function in_avantGuard(): boolean
 {
-	return my_path() == $path[Avant Guard];
+	return myPath() === Path.get("Avant Guard");
 }
 
-void ag_initializeSettings()
+export function ag_initializeSettings(): void
 {
 	if (in_avantGuard())
 	{
-		if (!auto_have_familiar($familiar[Burly Bodyguard]) && item_amount($item[baby bodyguard]) > 0) {
+		if (!auto_have_familiar(Familiar.get("Burly Bodyguard")) && itemAmount(Item.get("baby bodyguard")) > 0) {
 			// Add the familiar to the terrarium since we need it to do anything in this path.
 			// No I don't care about that guy who never binds familiars for <reasons>. He can write & maintain his own ascension script.
-			visit_url("inv_familiar.php?pwd=&which=3&whichitem=11631");
+			visitUrl("inv_familiar.php?pwd=&which=3&whichitem=11631");
 		}
-		set_property("auto_skipUnlockGuild", true);
-		set_property("auto_nonAdvLoc", false);
-		if(auto_turbo())
+		setProperty("auto_skipUnlockGuild", true.toString());
+		setProperty("auto_nonAdvLoc", false.toString());
+		if (auto_turbo())
 		{
-			set_property("auto_skipNuns", "true");
+			setProperty("auto_skipNuns", "true");
 		}
 	}
 }
 
-void ag_pulls()
+export function ag_pulls(): void
 {
 	if (in_avantGuard())
 	{
-		if(auto_is_valid($item[waffle]) && auto_haveAugustScepter() && !(auto_turbo())) //Only want waffles if we can summon them and not going for a 1 day
-		{
-			pullXWhenHaveY($item[waffle],1,(my_daycount() - 1) * (3 + (my_daycount() > 1 ? 1 : 0))); //pull waffles everyday
+		if (auto_is_valid(Item.get("waffle")) && auto_haveAugustScepter() && !auto_turbo())
+		{ //Only want waffles if we can summon them and not going for a 1 day
+			pullXWhenHaveY(Item.get("waffle"), 1, (myDaycount() - 1) * (3 + ((myDaycount() > 1 ? 1 : 0)))); //pull waffles everyday
 		}
 	}
 }
 
-void ag_bgChat()
+export function ag_bgChat(): void
 {
 	if (!in_avantGuard())
 	{
 		return;
 	}
 
-	if (ag_bgToChat() == $monster[none])
+	if (ag_bgToChat() === Monster.none)
 	{
 		return;
 	}
-
 	// go to page to determine if bodyguard is ready to chat
-	string bgChat = visit_url("main.php?talktobg=1", false);
-	matcher title = create_matcher("Chatting with your Burly Bodyguard", bgChat);
-	if(title.find())
+	let bgChat: string = visitUrl("main.php?talktobg=1", false);
+	let title: AshMatcher = new AshMatcher("Chatting with your Burly Bodyguard", bgChat);
+	if (title.find())
 	{
 		auto_log_info("Trying to chat with your Bodyguard", "blue");
-		monster mon = ag_bgToChat();
-		string url = visit_url("choice.php?pwd=&whichchoice=1532&option=1&bgid=" + mon.id, true);
-		auto_log_info("Making the next bodyguard a " + mon.to_string(), "blue");
-		handleTracker($familiar[Burly Bodyguard], mon.to_string(), "auto_copies");
+		let mon: Monster = ag_bgToChat();
+		let url: string = visitUrl(`choice.php?pwd=&whichchoice=1532&option=1&bgid=${mon.id}`, true);
+		auto_log_info(`Making the next bodyguard a ${mon.toString()}`, "blue");
+		handleTracker$1(Familiar.get("Burly Bodyguard").toString(), mon.toString(), "auto_copies");
 	}
 	return;
 }
 
-monster ag_bgToChat()
+export function ag_bgToChat(): Monster
 {
-	int surgeonGearWanted;
-	monster mon = $monster[none];
+	let surgeonGearWanted: number = 0;
+	let mon: Monster = Monster.none;
 
-	foreach it in $items[bloodied surgical dungarees,half-size scalpel,surgical apron,head mirror,surgical mask]
+	for (let it of Item.get(["bloodied surgical dungarees", "half-size scalpel", "surgical apron", "head mirror", "surgical mask"]))
 	{
-		if(!possessEquipment(it) && auto_can_equip(it))
+		if (!possessEquipment(it) && auto_can_equip(it))
 		{
 			surgeonGearWanted += 1;
 		}
 	}
-	if(item_amount($item[Wet Stunt Nut Stew]) == 0 && !(internalQuestStatus("questL11Palindome") > 4))
+	if (itemAmount(Item.get("wet stunt nut stew")) === 0 && !(internalQuestStatus("questL11Palindome") > 4))
 	{
-		if(item_amount($item[Bird Rib]) == 0)
+		if (itemAmount(Item.get("bird rib")) === 0)
 		{
-			mon = $monster[whitesnake];
+			mon = Monster.get("whitesnake");
 		}
-		else if(item_amount($item[Lion Oil]) == 0)
+		else if (itemAmount(Item.get("lion oil")) === 0)
 		{
-			mon = $monster[White Lion];
-		}
-	}
-	else if(needStarKey() && item_amount($item[star]) < 8 && item_amount($item[line]) < 7)
-	{
-		if(my_ascensions() % 2 == 1)
-		{
-			mon = $monster[Skinflute];
-		}
-		else
-		{
-			mon = $monster[Camel\'s Toe];
+			mon = Monster.get("white lion");
 		}
 	}
-	else if(needStarKey() && item_amount($item[Star chart]) < 1)
+	else if (needStarKey() && itemAmount(Item.get("star")) < 8 && itemAmount(Item.get("line")) < 7)
 	{
-		mon = $monster[Astronomer];
-	}
-	else if(item_amount($item[Enchanted Bean]) == 0 && internalQuestStatus("questL10Garbage") < 2 && !auto_haveBatWings())
-	{
-		mon = $monster[beanbat];
-	}
-	else if(item_amount($item[molybdenum magnet]) > 0 && get_property("sidequestJunkyardCompleted") == "none")
-	{
-		if(item_amount($item[molybdenum hammer]) == 0)
+		if (myAscensions() % 2 === 1)
 		{
-			mon = $monster[batwinged gremlin (tool)];
+			mon = Monster.get("Skinflute");
 		}
-		if(item_amount($item[molybdenum crescent wrench]) == 0)
-		{
-			mon = $monster[erudite gremlin (tool)];
-		}
-		if(item_amount($item[molybdenum pliers]) == 0)
-		{
-			mon = $monster[spider gremlin (tool)];
-		}
-		if(item_amount($item[molybdenum screwdriver]) == 0)
-		{
-			mon = $monster[vegetable gremlin (tool)];
+		else {
+			mon = Monster.get("Camel's Toe");
 		}
 	}
-	else if((item_amount($item[McClusky file (complete)]) == 0 && item_amount($item[McClusky file (page 5)]) == 0) && get_property("hiddenOfficeProgress").to_int() < 6)
+	else if (needStarKey() && itemAmount(Item.get("star chart")) < 1)
 	{
-		mon = $monster[pygmy witch accountant];
+		mon = Monster.get("Astronomer");
 	}
-	else if(surgeonGearWanted > 0 && internalQuestStatus("questL11Doctor") < 2)
+	else if (itemAmount(Item.get("enchanted bean")) === 0 && internalQuestStatus("questL10Garbage") < 2 && !auto_haveBatWings())
 	{
-		mon = $monster[pygmy witch surgeon];
+		mon = Monster.get("beanbat");
 	}
-	else if(needOre())
+	else if (itemAmount(Item.get("molybdenum magnet")) > 0 && getProperty("sidequestJunkyardCompleted") === "none")
 	{
-		mon = $monster[Mountain man];
-	}
-	else if(item_amount($item[drum machine]) == 0 && get_property("questL11Desert") != "finished")
-	{
-		mon = $monster[blur];
-	}
-	else if(hedgeTrimmersNeeded() > 0)
-	{
-		mon = $monster[bearpig topiary animal];
-	}
-	else if(!possessEquipment($item[Unstable Fulminate]) && internalQuestStatus("questL11Manor") < 3)
-	{
-		if(item_amount($item[bottle of Chateau de Vinegar]) == 0)
+		if (itemAmount(Item.get("molybdenum hammer")) === 0)
 		{
-			mon = $monster[possessed wine rack];
+			mon = Monster.get("batwinged gremlin (tool)");
 		}
-		else if(item_amount($item[blasting soda]) == 0)
+		if (itemAmount(Item.get("molybdenum crescent wrench")) === 0)
 		{
-			mon = $monster[cabinet of Dr. Limpieza];
+			mon = Monster.get("erudite gremlin (tool)");
+		}
+		if (itemAmount(Item.get("molybdenum pliers")) === 0)
+		{
+			mon = Monster.get("spider gremlin (tool)");
+		}
+		if (itemAmount(Item.get("molybdenum screwdriver")) === 0)
+		{
+			mon = Monster.get("vegetable gremlin (tool)");
 		}
 	}
-	else if((item_amount($item[Crumbling Wooden Wheel]) + item_amount($item[Tomb Ratchet])) < 10 && !get_property("pyramidBombUsed").to_boolean())
+	else if (itemAmount(Item.get("McClusky file (complete)")) === 0 && itemAmount(Item.get("McClusky file (page 5)")) === 0 && toInt(getProperty("hiddenOfficeProgress")) < 6)
 	{
-		mon = $monster[tomb rat];
+		mon = Monster.get("pygmy witch accountant");
 	}
-	else if((!possessEquipment($item[Lord Spookyraven\'s Spectacles]) && internalQuestStatus("questL11Manor") < 2) || (item_amount($item[disposable instant camera]) == 0 && internalQuestStatus("questL11Palindome") < 1))
+	else if (surgeonGearWanted > 0 && internalQuestStatus("questL11Doctor") < 2)
 	{
-		mon = $monster[animated ornate nightstand];
+		mon = Monster.get("pygmy witch surgeon");
 	}
-	else if(!have_outfit("Knob Goblin Harem Girl Disguise") && get_property("questL05Goblin") != "finished")
+	else if (needOre())
 	{
-		mon = $monster[Knob Goblin Harem Girl];
+		mon = Monster.get("mountain man");
 	}
-	else if(item_amount($item[Goat Cheese]) < 3 && internalQuestStatus("questL08Trapper") < 2)
+	else if (itemAmount(Item.get("drum machine")) === 0 && getProperty("questL11Desert") !== "finished")
 	{
-		mon = $monster[Dairy Goat];
+		mon = Monster.get("blur");
 	}
-	else if(item_amount($item[bowling ball]) < 5 && internalQuestStatus("hiddenBowlingAlleyProgress") < 5)
+	else if (hedgeTrimmersNeeded() > 0)
 	{
-		mon = $monster[pygmy bowler];
+		mon = Monster.get("bearpig topiary animal");
 	}
-	else if(internalQuestStatus("questL12War") == 1 && !get_property("auto_hippyInstead").to_boolean())
+	else if (!possessEquipment(Item.get("unstable fulminate")) && internalQuestStatus("questL11Manor") < 3)
 	{
-		mon = $monster[Green Ops Soldier];
-	}
-	else if(!get_property("auto_hippyInstead").to_boolean() && !have_outfit("frat warrior fatigures") && internalQuestStatus("questL12War") < 1)
-	{
+		if (itemAmount(Item.get("bottle of Chateau de Vinegar")) === 0)
 		{
-			mon = $monster[War Frat 151st Infantryman];
+			mon = Monster.get("possessed wine rack");
+		}
+		else if (itemAmount(Item.get("blasting soda")) === 0)
+		{
+			mon = Monster.get("cabinet of Dr. Limpieza");
 		}
 	}
-	else if(get_property("auto_hippyInstead").to_boolean() && !have_outfit("war hippy fatigues") && internalQuestStatus("questL12War") < 1)
+	else if (itemAmount(Item.get("crumbling wooden wheel")) + itemAmount(Item.get("tomb ratchet")) < 10 && !toBoolean(getProperty("pyramidBombUsed")))
 	{
-		{
-			mon = $monster[War Hippy Airborne Commander];
+		mon = Monster.get("tomb rat");
+	}
+	else if (!possessEquipment(Item.get("Lord Spookyraven's spectacles")) && internalQuestStatus("questL11Manor") < 2 || itemAmount(Item.get("disposable instant camera")) === 0 && internalQuestStatus("questL11Palindome") < 1)
+	{
+		mon = Monster.get("animated ornate nightstand");
+	}
+	else if (!haveOutfit("Knob Goblin Harem Girl Disguise") && getProperty("questL05Goblin") !== "finished")
+	{
+		mon = Monster.get("Knob Goblin Harem Girl");
+	}
+	else if (itemAmount(Item.get("goat cheese")) < 3 && internalQuestStatus("questL08Trapper") < 2)
+	{
+		mon = Monster.get("dairy goat");
+	}
+	else if (itemAmount(Item.get("bowling ball")) < 5 && internalQuestStatus("hiddenBowlingAlleyProgress") < 5)
+	{
+		mon = Monster.get("pygmy bowler");
+	}
+	else if (internalQuestStatus("questL12War") === 1 && !toBoolean(getProperty("auto_hippyInstead")))
+	{
+		mon = Monster.get("Green Ops Soldier");
+	}
+	else if (!toBoolean(getProperty("auto_hippyInstead")) && !haveOutfit("frat warrior fatigures") && internalQuestStatus("questL12War") < 1)
+	{
+		 {
+			mon = Monster.get("War Frat 151st Infantryman");
 		}
 	}
-	
+	else if (toBoolean(getProperty("auto_hippyInstead")) && !haveOutfit("war hippy fatigues") && internalQuestStatus("questL12War") < 1)
+	{
+		 {
+			mon = Monster.get("War Hippy Airborne Commander");
+		}
+	}
+
 	return mon;
 }
 
-boolean LM_avantGuard()
+export function LM_avantGuard(): boolean
 {
 	if (!in_avantGuard())
 	{
@@ -209,9 +224,9 @@ boolean LM_avantGuard()
 	return false;
 }
 
-boolean ag_is_bodyguard()
+export function ag_is_bodyguard(): boolean
 {
-	if(contains_text(get_property("lastEncounter"), "bodyguard to"))
+	if (containsText(getProperty("lastEncounter"), "bodyguard to"))
 	{
 		return true;
 	}

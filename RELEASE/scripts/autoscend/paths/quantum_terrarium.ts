@@ -1,56 +1,66 @@
-boolean in_quantumTerrarium()
+import { Familiar, Item, Location, Path, blackMarketAvailable, getProperty, myBasestat, myFamiliar, myPath, myPrimestat, print, setProperty, toFamiliar, toInt, totalTurnsPlayed, visitUrl } from "kolmafia";
+import { autoAdv$1 } from "../auto_adventure";
+import { possessEquipment } from "../auto_equipment";
+import { internalQuestStatus } from "../auto_util";
+import { auto_godLobsterFightsRemaining, godLobsterCombat, godLobsterCombat$2 } from "../iotms/mr2018";
+import { L11_aridDesert, L11_blackMarket } from "../quests/level_11";
+import { AshMatcher } from "../utils/kolmafiaUtils";
+
+//Defined in autoscend/paths/quantum_terrarium.ash
+export function in_quantumTerrarium(): boolean
 {
-	return my_path() == $path[Quantum Terrarium];
+	return myPath() === Path.get("Quantum Terrarium");
 }
 
-boolean qt_currentFamiliar(familiar fam)
+export function qt_currentFamiliar(fam: Familiar): boolean
 {
-	return in_quantumTerrarium() && my_familiar() == fam;
+	return in_quantumTerrarium() && myFamiliar() === fam;
 }
 
-familiar qt_nextQuantumFamiliar()
+export function qt_nextQuantumFamiliar(): Familiar
 {
-	return get_property("nextQuantumFamiliar").to_familiar();
+	return toFamiliar(getProperty("nextQuantumFamiliar"));
 }
 
-int qt_turnsToNextQuantumAlignment()
+export function qt_turnsToNextQuantumAlignment(): number
 {
-	return total_turns_played() - get_property("_nextQuantumAlignment").to_int();
+	return totalTurnsPlayed() - toInt(getProperty("_nextQuantumAlignment"));
 }
 
-boolean LX_quantumTerrarium()
+export function LX_quantumTerrarium(): boolean
 {
 	if (!in_quantumTerrarium())
 	{
 		return false;
 	}
 
-	switch(my_familiar())
+	switch (myFamiliar())
 	{
+		case Familiar.get("Machine Elf"):
+			
 		// lets order this by familiar ID in ascending order
-		case $familiar[Machine Elf]:
 			// use free fights for experience and abstractions
-			if (get_property("_machineTunnelsAdv").to_int() < 5)
+if (toInt(getProperty("_machineTunnelsAdv")) < 5)
 			{
-				return autoAdv(1, $location[The Deep Machine Tunnels]);
+				return autoAdv$1(1, Location.get("The Deep Machine Tunnels"));
 			}
 			break;
-		case $familiar[God Lobster]:
+		case Familiar.get("God Lobster"):
+			
 			// use free fights for experience
-			if (auto_godLobsterFightsRemaining() > 0)
+if (auto_godLobsterFightsRemaining() > 0)
 			{
-				if (my_basestat(my_primestat()) < 70)
+				if (myBasestat(myPrimestat()) < 70)
 				{
 					// 33 advs worth of +10 stats/combat is better than 1.5*70 to all 3 stats
-					if (!possessEquipment($item[God Lobster's Scepter]))
+					if (!possessEquipment(Item.get("God Lobster's Scepter")))
 					{
 						// fight it with no equipment to get the Scepter
-						return godLobsterCombat($item[none], 1);
+						return godLobsterCombat$2(Item.none, 1);
 					}
-					else
-					{
+					else {
 						// fight it with the Scepter for the stats buff
-						return godLobsterCombat($item[God Lobster's Scepter], 2);
+						return godLobsterCombat$2(Item.get("God Lobster's Scepter"), 2);
 					}
 				} else {
 					// get experience
@@ -58,20 +68,20 @@ boolean LX_quantumTerrarium()
 				}
 			}
 			break;
-		case $familiar[Reassembled blackbird]:
-			if(!(internalQuestStatus("questL11Black") < 0 || internalQuestStatus("questL11Black") > 1 || black_market_available()))
+		case Familiar.get("Reassembled Blackbird"):
+			if (!(internalQuestStatus("questL11Black") < 0 || internalQuestStatus("questL11Black") > 1 || blackMarketAvailable()))
 			{
 				return L11_blackMarket();
 			}
 			break;
-		case $familiar[Reconstituted crow]:
-			if(!(internalQuestStatus("questL11Black") < 0 || internalQuestStatus("questL11Black") > 1 || black_market_available()))
+		case Familiar.get("Reconstituted Crow"):
+			if (!(internalQuestStatus("questL11Black") < 0 || internalQuestStatus("questL11Black") > 1 || blackMarketAvailable()))
 			{
 				return L11_blackMarket();
 			}
 			break;
-		case $familiar[Melodramedary]:
-			if(!(internalQuestStatus("questL11Desert") != 0 || get_property("desertExploration").to_int() >= 100))
+		case Familiar.get("Melodramedary"):
+			if (!(internalQuestStatus("questL11Desert") !== 0 || toInt(getProperty("desertExploration")) >= 100))
 			{
 				return L11_aridDesert();
 			}
@@ -81,59 +91,57 @@ boolean LX_quantumTerrarium()
 	return false;
 }
 
-void qt_initializeSettings()
+export function qt_initializeSettings(): void
 {
-	if(in_quantumTerrarium())
+	if (in_quantumTerrarium())
 	{
-		set_property("auto_skipNuns", true);	//Remove when leprechaun swapping is supported at nuns.
+		setProperty("auto_skipNuns", true.toString()); //Remove when leprechaun swapping is supported at nuns.
 	}
 }
 
-boolean qt_FamiliarAvailable (familiar fam)
+export function qt_FamiliarAvailable(fam: Familiar): boolean
 {
 	//Check to see if target familiar can be forced.
-	string qt_FamiliarKey = "<option value=\"" + fam.to_int().to_string() + "\">";
-	string qt_TerrariumPage = visit_url("qterrarium.php");
-	matcher qt_FamiliarSearch = create_matcher(qt_FamiliarKey, qt_TerrariumPage);
+	let qt_FamiliarKey: string = `<option value="${toInt(fam).toString()}">`;
+	let qt_TerrariumPage: string = visitUrl("qterrarium.php");
+	let qt_FamiliarSearch: AshMatcher = new AshMatcher(qt_FamiliarKey, qt_TerrariumPage);
 
 	if (qt_turnsToNextQuantumAlignment() > 1)
 	{
 		return false;
 	}
-	else if (find(qt_FamiliarSearch))
+	else if (qt_FamiliarSearch.find())
 	{
 		return true;
 	}
-	else 
-	{
+	else {
 		return false;
 	}
 }
 
-boolean qt_FamiliarSwap (familiar fam)
+export function qt_FamiliarSwap(fam: Familiar): boolean
 {
 	//Swap/designate next familiar swap if possible.
-	if (fam == $familiar[none])
+	if (fam === Familiar.none)
 	{
-		print(fam.to_string() + " is not a valid familiar, weird behaviour.");
+		print(`${fam.toString()} is not a valid familiar, weird behaviour.`);
 		return false;
 	}
 	else if (qt_FamiliarAvailable(fam))
 	{
-		visit_url("qterrarium.php?pwd=&action=fam&fid="+ fam.to_int());
+		visitUrl(`qterrarium.php?pwd=&action=fam&fid=${toInt(fam)}`);
 		return true;
 	}
-	else
-	{
+	else {
 		return false;
 	}
 }
 
-void auto_refreshQTFam()
+export function auto_refreshQTFam(): void
 {
-	if(in_quantumTerrarium())
+	if (in_quantumTerrarium())
 	{
 		// go to familiar page to ensure QT mafia prefs are up to date
-		visit_url("familiar.php");
+		visitUrl("familiar.php");
 	}
 }

@@ -1,30 +1,32 @@
-boolean in_ocrs()
+import { Effect, Path, containsText, getProperty, haveEffect, lastMonster, myPath, setProperty } from "kolmafia";
+import { acquireHP } from "../auto_restore";
+import { auto_log_warning, handleTracker$1 } from "../auto_util";
+
+//Defined in autoscend/paths/one_crazy_random_summer.ash
+export function in_ocrs(): boolean
 {
-	return my_path() == $path[One Crazy Random Summer];
+	return myPath() === Path.get("One Crazy Random Summer");
 }
 
-boolean ocrs_postHelper()
+export function ocrs_postHelper(): boolean
 {
-	if(in_ocrs())
+	if (in_ocrs())
 	{
 		return false;
 	}
 
-	set_property("auto_useCleesh", false);
+	setProperty("auto_useCleesh", false.toString());
 	return true;
 }
 
-boolean ocrs_postCombatResolve()
+export function ocrs_postCombatResolve(): boolean
 {
-	if((have_effect($effect[Beaten Up]) > 0) && in_ocrs())
+	if (haveEffect(Effect.get("Beaten Up")) > 0 && in_ocrs())
 	{
-		if(contains_text(get_property("auto_funPrefix"), "annoying") ||
-			contains_text(get_property("auto_funPrefix"), "phase-shifting") ||
-			contains_text(get_property("auto_funPrefix"), "restless") ||
-			contains_text(get_property("auto_funPrefix"), "ticking"))
+		if (containsText(getProperty("auto_funPrefix"), "annoying") || containsText(getProperty("auto_funPrefix"), "phase-shifting") || containsText(getProperty("auto_funPrefix"), "restless") || containsText(getProperty("auto_funPrefix"), "ticking"))
 		{
 			auto_log_warning("Probably beaten up by FUN! Trying to recover instead of aborting", "red");
-			handleTracker(last_monster(), get_property("auto_funPrefix"), "auto_funTracker");
+			handleTracker$1(lastMonster().toString(), getProperty("auto_funPrefix"), "auto_funTracker");
 			acquireHP();
 		}
 	}

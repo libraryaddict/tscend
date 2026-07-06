@@ -1,73 +1,93 @@
-import<autoscend.ash>
+import { Class, Effect, Familiar, Item, Location, Monster, Servant, Skill, Slot, Stat, Thrall, abort, bjornifyFamiliar, cliExecute, equippedItem, familiarWeight, getProperty, guildStoreAvailable, haveEffect, haveFamiliar, inHardcore, isUnrestricted, itemAmount, lastChoice, lastMonster, limitMode, min, monsterLevelAdjustment, mpCost, myAdventures, myAudience, myBasestat, myBjornedFamiliar, myBuffedstat, myClass, myDaycount, myFamiliar, myHp, myLevel, myLightning, myLocation, myMaxhp, myMaxmp, myMeat, myMp, myPrimestat, myRain, myServant, mySessionAdv, mySoulsauce, myThrall, myThunder, myTurncount, numericModifier, putCloset, removeProperty, setProperty, toBoolean, toFloat, toInt, toMonster, toSkill, use, useSkill, visitUrl } from "kolmafia";
+import { auto_buyUpTo, buyableMaintain$1, buyableMaintain$2 } from "./auto_acquire";
+import { autoAdv$2 } from "./auto_adventure";
+import { auto_faceCheck, buffMaintain$3, buffMaintain$4 } from "./auto_buff";
+import { addToMaximize, autoOutfit, auto_loadEquipped, auto_saveEquipped, equipMaximizedGear, possessEquipment, removeFromMaximize } from "./auto_equipment";
+import { pathHasFamiliar } from "./auto_familiar";
+import { acquireHP, acquireMP$2, uneffect } from "./auto_restore";
+import { auto_haveQueuedForcedNonCombat, auto_have_skill, auto_ignoreExperience, auto_is_valid, auto_log_debug$1, auto_log_error, auto_log_info, auto_log_info$1, auto_log_warning, auto_log_warning$1, auto_remainingShantyTurns, handleTracker$1, handleTracker$2, isGalaktikAvailable, meatReserve, preferredLibram, whatStatSmile } from "./auto_util";
+import { auto_equipAprilShieldBuff } from "./iotms/mr2025";
+import { auto_haveArchaeologistSpade, auto_spadeDigItem, auto_spadeDigsRemaining } from "./iotms/mr2026";
+import { isActuallyEd } from "./paths/actually_ed_the_undying";
+import { amw_canAfford, in_amw } from "./paths/adventurer_meats_world";
+import { in_aosol } from "./paths/avatar_of_shadows_over_loathing";
+import { awol_walkBuff, in_awol } from "./paths/avatar_of_west_of_loathing";
+import { in_bugbear } from "./paths/bugbear_invasion";
+import { inAftercore } from "./paths/casual";
+import { in_heavyrains } from "./paths/heavy_rains";
+import { in_lta } from "./paths/license_to_adventure";
+import { in_nuclear } from "./paths/nuclear_autumn";
+import { ocrs_postHelper } from "./paths/one_crazy_random_summer";
+import { in_theSource } from "./paths/the_source";
+import { in_zombieSlayer } from "./paths/zombie_slayer";
+import { numPirateInsults } from "./quests/optional";
 
-void auto_beaten_handler()
+function auto_beaten_handler(): void
 {
-	if(have_effect($effect[Beaten Up]) == 0)
+	if (haveEffect(Effect.get("Beaten Up")) === 0)
 	{
-		set_property("auto_beatenUpLastAdv", false);
-		return;		//we are not beaten up. nothing to handle
+		setProperty("auto_beatenUpLastAdv", false.toString());
+		return; //we are not beaten up. nothing to handle
 	}
-	if(last_choice() == 1467) {
-		auto_log_info("Getting beaten up here gave us 5 adventures, that's a win.");
+	if (lastChoice() === 1467) {
+		auto_log_info$1("Getting beaten up here gave us 5 adventures, that's a win.");
 		return;
 	}
-	set_property("auto_beatenUpCount", get_property("auto_beatenUpCount").to_int() + 1);
-	string loc = get_property("auto_beatenUpLocations");
-	if(loc != "") loc += ",";
-	loc += "day:" +my_daycount()+ ":level:" +my_level()+ ":place:" +my_location();
-	set_property("auto_beatenUpLocations", loc);
-	set_property("auto_beatenUpLastAdv", true);
+	setProperty("auto_beatenUpCount", (toInt(getProperty("auto_beatenUpCount")) + 1).toString());
+	let loc: string = getProperty("auto_beatenUpLocations");
+	if (loc !== "") { loc += ","; }
+	loc += `day:${myDaycount()}:level:${myLevel()}:place:${myLocation()}`;
+	setProperty("auto_beatenUpLocations", loc);
+	setProperty("auto_beatenUpLastAdv", true.toString());
 
-	buffMaintain($effect[They\'ve Got Fleas]);
-	if(my_level() < 11 || get_property("sidequestJunkyardCompleted") != "none")	//don't risk blocking effect persisting in gremlins quest
-	{
+	buffMaintain$4(Effect.get("They've Got Fleas"));
+	if (myLevel() < 11 || getProperty("sidequestJunkyardCompleted") !== "none")
+	{ //don't risk blocking effect persisting in gremlins quest
 		//try to avoid getting beaten up again
-		buffMaintain($effect[Everything Is Bananas]);
+		buffMaintain$4(Effect.get("Everything Is Bananas"));
 	}
-	
-	if(my_location() == $location[The X-32-F Combat Training Snowman])
+
+	if (myLocation() === Location.get("The X-32-F Combat Training Snowman"))
 	{
 		auto_log_info("I got beaten up at the snojo, let's not keep going there and dying....", "red");
-		set_property("_snojoFreeFights", 10);
+		setProperty("_snojoFreeFights", (10).toString());
 	}
-	else if(last_monster() == $monster[ninja snowman assassin])
+	else if (lastMonster() === Monster.get("ninja snowman assassin"))
 	{
 		auto_log_info("I got beaten up by a [ninja snowman assassin]. disabling ninja route", "red");
-		set_property("auto_L8_ninjaAssassinFail", true);
+		setProperty("auto_L8_ninjaAssassinFail", true.toString());
 	}
-	else auto_log_warning("I got beaten up", "red");
-	
-	if(get_property("auto_beatenUpCount").to_int() <= 10 && my_mp() >= mp_cost($skill[Tongue of the Walrus]) && auto_have_skill($skill[Tongue of the Walrus]))
+	else { auto_log_warning("I got beaten up", "red"); }
+
+	if (toInt(getProperty("auto_beatenUpCount")) <= 10 && myMp() >= mpCost(Skill.get("Tongue of the Walrus")) && auto_have_skill(Skill.get("Tongue of the Walrus")))
 	{
 		auto_log_info("trying to recover with [Tongue of the Walrus]", "red");
-		use_skill(1, $skill[Tongue of the Walrus]);
-		if(have_effect($effect[Beaten Up]) == 0)
+		useSkill(1, Skill.get("Tongue of the Walrus"));
+		if (haveEffect(Effect.get("Beaten Up")) === 0)
 		{
 			return;
 		}
-		else
-		{
-			auto_log_warning("Mysteriously failed to recover beaten up with [Tongue of the Walrus]");
+		else {
+			auto_log_warning$1("Mysteriously failed to recover beaten up with [Tongue of the Walrus]");
 		}
 	}
 }
 
-boolean auto_post_adventure()
+function auto_post_adventure(): boolean
 {
-	auto_log_debug("Running auto_post_adv.ash");
+	auto_log_debug$1("Running auto_post_adv.js");
 
-	if(limit_mode() == "spelunky")
+	if (limitMode() === "spelunky")
 	{
 		return true;
 	}
 
-	if($strings[Coyote Ugly, Gutterbound, The Too-Much Booze Blues, What's that smell?, Hey\, baby.  Wanna wrestle?] contains get_property("lastEncounter"))
+	if (["Coyote Ugly", "Gutterbound", "The Too-Much Booze Blues", "What's that smell?", "Hey, baby.  Wanna wrestle?"].includes(getProperty("lastEncounter")))
 	{
-		abort("Adventured while drunk and got drunken stupor NC: " + get_property("lastEncounter"));
+		abort(`Adventured while drunk and got drunken stupor NC: ${getProperty("lastEncounter")}`);
 	}
 
-	set_property("auto_nextEncounter","");
-
+	setProperty("auto_nextEncounter", "");
 	/* This tracks noncombat-forcers like Clara's Bell and stench jelly, which
 	 * set our noncombat rate to maximum until we encounter a noncombat.
 	 * Superlikelies do not reset this effect. There's some complexity here -
@@ -75,144 +95,141 @@ boolean auto_post_adventure()
 	 * Cosmetics Wraith in the Haunted Bathroom), and we SHOULD reset the
 	 * noncombat-forcer in those cases.*/
 
-	if(get_property("auto_forceNonCombatSource") != "" && !auto_haveQueuedForcedNonCombat())
+	if (getProperty("auto_forceNonCombatSource") !== "" && !auto_haveQueuedForcedNonCombat())
 	{
 		// possible to get desired NC when preparing spikes/avalanche. Only log usage if NC was actually forced
-		if((get_property("auto_forceNonCombatSource") != "jurassic parka" || get_property("auto_parkaSpikesDeployed").to_boolean()) &&
-		(get_property("auto_forceNonCombatSource") != "McHugeLarge left ski") || get_property("auto_avalancheDeployed").to_boolean())
+		if ((getProperty("auto_forceNonCombatSource") !== "jurassic parka" || toBoolean(getProperty("auto_parkaSpikesDeployed"))) && getProperty("auto_forceNonCombatSource") !== "McHugeLarge left ski" || toBoolean(getProperty("auto_avalancheDeployed")))
 		{
-			auto_log_info("Encountered forced noncombat: " + get_property("lastEncounter"), "blue");
-			handleTracker(get_property("auto_forceNonCombatSource"), my_location().to_string(), get_property("lastEncounter"), "auto_forcedNC");
+			auto_log_info(`Encountered forced noncombat: ${getProperty("lastEncounter")}`, "blue");
+			handleTracker$2(getProperty("auto_forceNonCombatSource"), myLocation().toString(), getProperty("lastEncounter"), "auto_forcedNC");
 		}
-		set_property("auto_forceNonCombatSource", "");
-		set_property("auto_forceNonCombatLocation", "");
-		set_property("auto_parkaSpikesDeployed", false);
-		set_property("auto_avalancheDeployed", false);
+		setProperty("auto_forceNonCombatSource", "");
+		setProperty("auto_forceNonCombatLocation", "");
+		setProperty("auto_parkaSpikesDeployed", false.toString());
+		setProperty("auto_avalancheDeployed", false.toString());
 	}
 
-	if(get_property("auto_instakillSource") != "" && get_property("auto_instakillSuccess").to_boolean())
+	if (getProperty("auto_instakillSource") !== "" && toBoolean(getProperty("auto_instakillSuccess")))
 	{
-		auto_log_info("Successful instakill with: " + get_property("auto_instakillSource"), "blue");
-		if(get_property("lastEncounter").to_monster() == last_monster()) //only track the combat part of a combat+NC encounter (like everfull dart perks)
-		{
-			handleTracker(get_property("lastEncounter"), get_property("auto_instakillSource"), "auto_instakill");
+		auto_log_info(`Successful instakill with: ${getProperty("auto_instakillSource")}`, "blue");
+		if (toMonster(getProperty("lastEncounter")) === lastMonster())
+		{ //only track the combat part of a combat+NC encounter (like everfull dart perks)
+			handleTracker$1(getProperty("lastEncounter"), getProperty("auto_instakillSource"), "auto_instakill");
 		}
-		set_property("auto_instakillSource", "");
-		set_property("auto_instakillSuccess", false);
+		setProperty("auto_instakillSource", "");
+		setProperty("auto_instakillSuccess", false.toString());
 	}
 
-	if(have_effect($effect[Eldritch Attunement]) > 0)
+	if (haveEffect(Effect.get("Eldritch Attunement")) > 0)
 	{
-		if(last_monster() != $monster[Eldritch Tentacle])
+		if (lastMonster() !== Monster.get("Eldritch Tentacle"))
 		{
 			auto_log_warning("Expected Tentacle, uh oh!", "red");
 			return false;
 		}
 		auto_log_info("No Tentacle expected this time!", "green");
 	}
-
 	//We need to do this early, and even if postAdventure handling is done.
-	if(in_theSource())
+	if (in_theSource())
 	{
-		if(get_property("auto_diag_round").to_int() == 0)
+		if (toInt(getProperty("auto_diag_round")) === 0)
 		{
-			monster last = last_monster();
-			string temp = visit_url("main.php");
-			if(last != last_monster())
+			let last: Monster = lastMonster();
+			let temp: string = visitUrl("main.php");
+			if (last !== lastMonster())
 			{
 				auto_log_warning("Interrupted battle detected at post combat time", "red");
-				if(have_effect($effect[Beaten Up]) > 0)
+				if (haveEffect(Effect.get("Beaten Up")) > 0)
 				{
 					auto_log_warning("Post combat time caused up to be Beaten Up!", "red");
 					return false;
 				}
-				autoAdv(my_location());
+				autoAdv$2(myLocation());
 				return true;
 			}
 		}
 	}
 
-	if((get_property("lastEncounter") == "Daily Briefing") && in_lta())
+	if (getProperty("lastEncounter") === "Daily Briefing" && in_lta())
 	{
-		set_property("_auto_bondBriefing", "started");
+		setProperty("_auto_bondBriefing", "started");
 	}
 
-	if((get_property("_villainLairProgress").to_int() < 999) && ((get_property("_villainLairColor") != "") || get_property("_villainLairColorChoiceUsed").to_boolean()) && in_lta() && (my_location() == $location[Super Villain\'s Lair]))
+	if (toInt(getProperty("_villainLairProgress")) < 999 && (getProperty("_villainLairColor") !== "" || toBoolean(getProperty("_villainLairColorChoiceUsed"))) && in_lta() && myLocation() === Location.get("Super Villain's Lair"))
 	{
-		if(item_amount($item[Can Of Minions-Be-Gone]) > 0)
+		if (itemAmount(Item.get("can of Minions-Be-Gone")) > 0)
 		{
-			use(1, $item[Can Of Minions-Be-Gone]);
+			use(1, Item.get("can of Minions-Be-Gone"));
 		}
 	}
-
 	//assuming we're on the orchard sidequest if we're adventuring there
-	if(auto_haveArchaeologistSpade() && auto_spadeDigsRemaining() > 0) 
+	if (auto_haveArchaeologistSpade() && auto_spadeDigsRemaining() > 0)
 	{
 		//the scent glands are the only droppable items in their respective areas, so it's guaranteed from spade
-		if(my_location() == $location[The Hatching Chamber] && item_amount($item[Filthworm Hatchling Scent Gland]) == 0) 
+		if (myLocation() === Location.get("The Hatching Chamber") && itemAmount(Item.get("filthworm hatchling scent gland")) === 0)
 		{
 			auto_spadeDigItem();
 		}
-		else if(my_location() == $location[The Feeding Chamber] && item_amount($item[Filthworm Drone Scent Gland]) == 0)
+		else if (myLocation() === Location.get("The Feeding Chamber") && itemAmount(Item.get("filthworm drone scent gland")) === 0)
 		{
 			auto_spadeDigItem();
 		}
-		else if(my_location() == $location[The Royal Guard Chamber] && item_amount($item[Filthworm Royal Guard Scent Gland]) == 0)
+		else if (myLocation() === Location.get("The Royal Guard Chamber") && itemAmount(Item.get("filthworm royal guard scent gland")) === 0)
 		{
 			auto_spadeDigItem();
 		}
-		else if(my_location() == $location[Sonofa Beach] && item_amount($item[barrel of gunpowder]) < 5) 
+		else if (myLocation() === Location.get("Sonofa Beach") && itemAmount(Item.get("barrel of gunpowder")) < 5)
 		{
 			//dig until we should have 5 barrels or we're out of digs
-			int barrelCount = item_amount($item[barrel of gunpowder]);
-			int digsRemaining = auto_spadeDigsRemaining();
-			for x from (barrelCount + 1) to min(5, digsRemaining) by 1 {
+			let barrelCount: number = itemAmount(Item.get("barrel of gunpowder"));
+			let digsRemaining: number = auto_spadeDigsRemaining();
+			for (let x = barrelCount + 1, _last_6 = min(5, digsRemaining), _step_6 = 1, _up_6 = x <= _last_6, _inc_6 = _up_6 ? Math.abs(_step_6) : -Math.abs(_step_6); _up_6 ? x <= _last_6 : x >= _last_6; x += _inc_6) {
 				auto_spadeDigItem();
 			}
 		}
 	}
 
-	if (my_location() == $location[The Old Landfill] && item_amount($item[funky junk key]) > 0) {
+	if (myLocation() === Location.get("The Old Landfill") && itemAmount(Item.get("funky junk key")) > 0) {
 		// got a key drop, reset the tracking property.
-		set_property("auto_junkspritesencountered", 0);
+		setProperty("auto_junkspritesencountered", (0).toString());
 	}
 
-	if(get_property("auto_disableAdventureHandling").to_boolean())
+	if (toBoolean(getProperty("auto_disableAdventureHandling")))
 	{
 		auto_log_info("Postadventure skipped by standard adventure handler.", "green");
 		return true;
 	}
 
-	if(!get_property("_ballInACupUsed").to_boolean() && (item_amount($item[Ball-In-A-Cup]) > 0))
+	if (!toBoolean(getProperty("_ballInACupUsed")) && itemAmount(Item.get("ball-in-a-cup")) > 0)
 	{
-		use(1, $item[Ball-In-A-Cup]);
+		use(1, Item.get("ball-in-a-cup"));
 	}
-	if(!get_property("_setOfJacksUsed").to_boolean() && (item_amount($item[Set of Jacks]) > 0))
+	if (!toBoolean(getProperty("_setOfJacksUsed")) && itemAmount(Item.get("set of jacks")) > 0)
 	{
-		use(1, $item[Set of Jacks]);
+		use(1, Item.get("set of jacks"));
 	}
-	if(!get_property("_hobbyHorseUsed").to_boolean() && (item_amount($item[Handmade Hobby Horse]) > 0))
+	if (!toBoolean(getProperty("_hobbyHorseUsed")) && itemAmount(Item.get("handmade hobby horse")) > 0)
 	{
-		use(1, $item[Handmade Hobby Horse]);
+		use(1, Item.get("handmade hobby horse"));
 	}
-	if(!get_property("_creepyVoodooDollUsed").to_boolean() && (item_amount($item[Creepy Voodoo Doll]) > 0))
+	if (!toBoolean(getProperty("_creepyVoodooDollUsed")) && itemAmount(Item.get("creepy voodoo doll")) > 0)
 	{
-		use(1, $item[Creepy Voodoo Doll]);
+		use(1, Item.get("creepy voodoo doll"));
 	}
 	// mayday supply package drops from first combat of the day if you have this IOTM
-	if(item_amount($item[MayDay&trade; supply package]) > 0 && auto_is_valid($item[MayDay&trade; supply package]))
+	if (itemAmount(Item.get("MayDay&trade; supply package")) > 0 && auto_is_valid(Item.get("MayDay&trade; supply package")))
 	{
-		use(1, $item[MayDay&trade; supply package]);
+		use(1, Item.get("MayDay&trade; supply package"));
 	}
 
 
-	if((my_location() == $location[The Lower Chambers]) && (item_amount($item[[2334]Holy MacGuffin]) == 0))
+	if (myLocation() === Location.get("The Lower Chambers") && itemAmount(Item.get("[2334]Holy MacGuffin")) === 0)
 	{
 		auto_log_info("Postadventure skipped by Ed the Undying!", "green");
 		return true;
 	}
 
-	if((my_location() == $location[The Invader]))
+	if (myLocation() === Location.get("The Invader"))
 	{
 		// Just so the "are we beaten up?" check in auto_koe works properly
 		auto_log_info("Postadventure skipped for The Invader!", "green");
@@ -220,553 +237,545 @@ boolean auto_post_adventure()
 	}
 
 	ocrs_postHelper();
-	if(last_monster().random_modifiers["clingy"])
+	if (lastMonster().randomModifiers.includes("clingy"))
 	{
 		auto_log_info("Postadventure skipped by clingy modifier.", "green");
 		return true;
 	}
-
 	//save some MP while buffing
-	item[int] beforeBuffs = auto_saveEquipped();
+	let beforeBuffs: Map<number, Item> = auto_saveEquipped();
 	addToMaximize("-1000mana cost, -tie");
 	equipMaximizedGear();
 
-	if(have_effect($effect[Cunctatitis]) > 0)
+	if (haveEffect(Effect.get("Cunctatitis")) > 0)
 	{
-		if((my_mp() >= 12) && auto_have_skill($skill[Disco Nap]))
+		if (myMp() >= 12 && auto_have_skill(Skill.get("Disco Nap")))
 		{
-			use_skill(1, $skill[Disco Nap]);
+			useSkill(1, Skill.get("Disco Nap"));
 		}
-		else
-		{
-			uneffect($effect[Cunctatitis]);
+		else {
+			uneffect(Effect.get("Cunctatitis"));
 		}
 	}
 
-	if(my_class() == $class[Avatar of Jarlsberg] && auto_have_skill($skill[Early Riser]))
+	if (myClass() === Class.get("Avatar of Jarlsberg") && auto_have_skill(Skill.get("Early Riser")))
 	{
-		foreach sk in $skills[Conjure Cream, Conjure Dough, Conjure Cheese, Conjure Eggs, Conjure Meat Product, Conjure Vegetables, Conjure Potato, Conjure Fruit]
+		for (let sk of Skill.get(["Conjure Cream", "Conjure Dough", "Conjure Cheese", "Conjure Eggs", "Conjure Meat Product", "Conjure Vegetables", "Conjure Potato", "Conjure Fruit"]))
 		{
-			if (auto_have_skill(sk) && sk.timescast < sk.dailylimit && (my_mp() - 40) >= mp_cost(sk))
+			if (auto_have_skill(sk) && sk.timescast < sk.dailylimit && myMp() - 40 >= mpCost(sk))
 			{
-				use_skill(1, sk);
+				useSkill(1, sk);
 			}
 		}
 	}
 
-	if(my_class() == $class[Avatar of Sneaky Pete])
+	if (myClass() === Class.get("Avatar of Sneaky Pete"))
 	{
-		buffMaintain($effect[All Revved Up], 25, 1, 10);
-		buffMaintain($effect[Of Course It Looks Great], 55, 1, 10);
-		if(auto_have_skill($skill[Throw Party]) && !get_property("_petePartyThrown").to_boolean())
+		buffMaintain$3(Effect.get("All Revved Up"), 25, 1, 10);
+		buffMaintain$3(Effect.get("Of Course It Looks Great"), 55, 1, 10);
+		if (auto_have_skill(Skill.get("Throw Party")) && !toBoolean(getProperty("_petePartyThrown")))
 		{
-			int threshold = 50;
-			if(!possessEquipment($item[Sneaky Pete\'s Leather Jacket]) && !possessEquipment($item[Sneaky Pete\'s Leather Jacket (Collar Popped)]))
+			let threshold: number = 50;
+			if (!possessEquipment(Item.get("Sneaky Pete's leather jacket")) && !possessEquipment(Item.get("Sneaky Pete's leather jacket (collar popped)")))
 			{
 				threshold = 30;
 			}
-			if(my_audience() >= threshold)
+			if (myAudience() >= threshold)
 			{
-				use_skill(1, $skill[Throw Party]);
+				useSkill(1, Skill.get("Throw Party"));
 			}
 		}
-		if(auto_have_skill($skill[Incite Riot]) && !get_property("_peteRiotIncited").to_boolean())
+		if (auto_have_skill(Skill.get("Incite Riot")) && !toBoolean(getProperty("_peteRiotIncited")))
 		{
-			int threshold = -50;
-			if(!possessEquipment($item[Sneaky Pete\'s Leather Jacket]) && !possessEquipment($item[Sneaky Pete\'s Leather Jacket (Collar Popped)]))
+			let threshold: number = -50;
+			if (!possessEquipment(Item.get("Sneaky Pete's leather jacket")) && !possessEquipment(Item.get("Sneaky Pete's leather jacket (collar popped)")))
 			{
 				threshold = -30;
 			}
-			if(my_audience() <= threshold)
+			if (myAudience() <= threshold)
 			{
-				use_skill(1, $skill[Incite Riot]);
+				useSkill(1, Skill.get("Incite Riot"));
 			}
 		}
 	}
 
-	if(in_nuclear())
+	if (in_nuclear())
 	{
-		buffMaintain($effect[Juiced and Loose], 35, 1, 1);
-		buffMaintain($effect[Hardened Sweatshirt], 35, 1, 1);
-		buffMaintain($effect[Ear Winds], 35, 1, 1);
-		buffMaintain($effect[Magnetized Ears], 40, 1, 1);
-		buffMaintain($effect[Impeccable Coiffure], 75, 1, 1);
-		buffMaintain($effect[Mind Vision], 200, 1, 1);
+		buffMaintain$3(Effect.get("Juiced and Loose"), 35, 1, 1);
+		buffMaintain$3(Effect.get("Hardened Sweatshirt"), 35, 1, 1);
+		buffMaintain$3(Effect.get("Ear Winds"), 35, 1, 1);
+		buffMaintain$3(Effect.get("Magnetized Ears"), 40, 1, 1);
+		buffMaintain$3(Effect.get("Impeccable Coiffure"), 75, 1, 1);
+		buffMaintain$3(Effect.get("Mind Vision"), 200, 1, 1);
 
-		buffMaintain($effect[Juiced and Loose], 75, 1, 50);
-		buffMaintain($effect[Hardened Sweatshirt], 75, 1, 50);
-		buffMaintain($effect[Bone Springs], 75, 1, 1);
+		buffMaintain$3(Effect.get("Juiced and Loose"), 75, 1, 50);
+		buffMaintain$3(Effect.get("Hardened Sweatshirt"), 75, 1, 50);
+		buffMaintain$3(Effect.get("Bone Springs"), 75, 1, 1);
 
-		if((my_meat() > 5000) && ((my_turncount() >= 50) || get_property("falloutShelterChronoUsed").to_boolean()))
+		if (myMeat() > 5000 && (myTurncount() >= 50 || toBoolean(getProperty("falloutShelterChronoUsed"))))
 		{
-			buffMaintain($effect[Rad-Pro Tected]);
+			buffMaintain$4(Effect.get("Rad-Pro Tected"));
 		}
 	}
 
-	if(in_zombieSlayer())
+	if (in_zombieSlayer())
 	{
-		buffMaintain($effect[Chow Downed], 15, 1, 1);
-		buffMaintain($effect[Scavengers Scavenging], 20, 1, 1);
+		buffMaintain$3(Effect.get("Chow Downed"), 15, 1, 1);
+		buffMaintain$3(Effect.get("Scavengers Scavenging"), 20, 1, 1);
 	}
 
 	if (isActuallyEd())
 	{
-		if ($location[The Shore\, Inc. Travel Agency] != my_location())
+		if (Location.get("The Shore, Inc. Travel Agency") !== myLocation())
 		{
-			if (my_servant() != $servant[none])
+			if (myServant() !== Servant.none)
 			{
-				buffMaintain($effect[Purr of the Feline], 10, 1, 10);
+				buffMaintain$3(Effect.get("Purr of the Feline"), 10, 1, 10);
 			}
 
-			buffMaintain($effect[Wisdom of Thoth], 10, 1, 10);
+			buffMaintain$3(Effect.get("Wisdom of Thoth"), 10, 1, 10);
 
-			if (my_level() < 13)
+			if (myLevel() < 13)
 			{
-				buffMaintain($effect[Prayer of Seshat], 10, 1, 10);
+				buffMaintain$3(Effect.get("Prayer of Seshat"), 10, 1, 10);
 			}
 
-			buffMaintain($effect[Power of Heka], 10, 1, 10);
-			buffMaintain($effect[Hide of Sobek], 10, 1, 10);
+			buffMaintain$3(Effect.get("Power of Heka"), 10, 1, 10);
+			buffMaintain$3(Effect.get("Hide of Sobek"), 10, 1, 10);
 
-			if(!($locations[The Hippy Camp, The Outskirts Of Cobb\'s Knob, Pirates of the Garbage Barges, The Secret Government Laboratory] contains my_location()))
+			if (!(Location.get(["The Hippy Camp", "The Outskirts of Cobb's Knob", "Pirates of the Garbage Barges", "The Secret Government Laboratory"]).includes(myLocation())))
 			{
-				buffMaintain($effect[Bounty of Renenutet], 10, 1, 10);
+				buffMaintain$3(Effect.get("Bounty of Renenutet"), 10, 1, 10);
 			}
 
-			foreach ef in $effects[Prayer Of Seshat, Wisdom Of Thoth, Power of Heka, Hide Of Sobek, Bounty Of Renenutet]
+			for (let ef of Effect.get(["Prayer of Seshat", "Wisdom of Thoth", "Power of Heka", "Hide of Sobek", "Bounty of Renenutet"]))
 			{
-				if(my_mp() > 100)
+				if (myMp() > 100)
 				{
-					buffMaintain(ef, 20, 1, 20);
+					buffMaintain$3(ef, 20, 1, 20);
 				}
 			}
 		}
-		else
-		{
-			buffMaintain($effect[Wisdom of Thoth], 10, 1, 10);
+		else {
+			buffMaintain$3(Effect.get("Wisdom of Thoth"), 10, 1, 10);
 		}
 
-		if((my_mp() + 100) < my_maxmp())
+		if (myMp() + 100 < myMaxmp())
 		{
-			acquireMP(100, my_meat());
+			acquireMP$2(100, myMeat());
 		}
 		return true;
 	}
-	if(in_aosol())
+	if (in_aosol())
 	{
-		if(my_class() == $class[Pig Skinner])
+		if (myClass() === Class.get("Pig Skinner"))
 		{
-			buffMaintain($effect[Cheerled], 30, 1, 10);
-			buffMaintain($effect[Taped Up], 20, 1, 10);
+			buffMaintain$3(Effect.get("Cheerled"), 30, 1, 10);
+			buffMaintain$3(Effect.get("Taped Up"), 20, 1, 10);
 			//buffMaintain($effect[Stretched], 10, 1, 10); In Providers
 		}
-		if(my_class() == $class[Cheese Wizard])
+		if (myClass() === Class.get("Cheese Wizard"))
 		{
 			//buffMaintain($effect[Shifted Reality], 25, 1, 10);  In Providers
-			buffMaintain($effect[Cheddarmored], 5, 1, 10);
+			buffMaintain$3(Effect.get("Cheddarmored"), 5, 1, 10);
 			//buffMaintain($effect[Queso Fustulento], 10, 1, 10); //Only on boss fights
 		}
-		if(my_class() == $class[Jazz Agent])
+		if (myClass() === Class.get("Jazz Agent"))
 		{
-			buffMaintain($effect[Reliable Backup], 10, 1, 10);
-			buffMaintain($effect[Soothing Flute], 15, 1, 10);
+			buffMaintain$3(Effect.get("Reliable Backup"), 10, 1, 10);
+			buffMaintain$3(Effect.get("Soothing Flute"), 15, 1, 10);
 			//buffMaintain($effect[Tricky Timpani], 30, 1, 10); //Only on boss fights
 		}
 	}
-	if (in_amw()) // adventurer meats world
-	{
-		if(item_amount($item[briefcase]) > 0)
+	if (in_amw())
+	{ // adventurer meats world
+		if (itemAmount(Item.get("briefcase")) > 0)
 		{
-			use(1, $item[briefcase]);// no need to run more than once because 1/combat
+			use(1, Item.get("briefcase")); // no need to run more than once because 1/combat
 		}
-		if (amw_canAfford($skill[Self-Tenderize])) // not necessary, but cheap
-		{
-			buffMaintain($effect[Tenderized], 0, 1, 5);
+		if (amw_canAfford(Skill.get("Self-Tenderize")))
+		{ // not necessary, but cheap
+			buffMaintain$3(Effect.get("Tenderized"), 0, 1, 5);
 		}
 		// Beef Goggles is in providers
-		if (amw_canAfford($skill[Meat Puppet])) // +famwt for our chaun
-		{
-			buffMaintain($effect[Meat Puppet], 0, 1, 5);
+		if (amw_canAfford(Skill.get("Meat Puppet")))
+		{ // +famwt for our chaun
+			buffMaintain$3(Effect.get("Meat Puppet"), 0, 1, 5);
 		}
-		if (amw_canAfford($skill[Steak Skirt])) // not necessary, but cheap
-		{
-			buffMaintain($effect[Steak Skirt], 0, 1, 5);
+		if (amw_canAfford(Skill.get("Steak Skirt")))
+		{ // not necessary, but cheap
+			buffMaintain$3(Effect.get("Steak Skirt"), 0, 1, 5);
 		}
 	}
 
-	skill libram = preferredLibram();
+	let libram: Skill = preferredLibram();
 
-	if(my_adventures() > 20)
+	if (myAdventures() > 20)
 	{
-		buffMaintain($effect[Merry Smithsness], 0, 1, 10);
+		buffMaintain$3(Effect.get("Merry Smithsness"), 0, 1, 10);
 	}
-
-	#Deal with Poison, (should do all of them actually)
-	boolean poisoned = false;
-	foreach poison in $effects[A Little Bit Poisoned, Hardly Poisoned At All, Majorly Poisoned, Really Quite Poisoned, Somewhat Poisoned]
+	//Deal with Poison, (should do all of them actually)
+	let poisoned: boolean = false;
+	for (let poison of Effect.get(["A Little Bit Poisoned", "Hardly Poisoned at All", "Majorly Poisoned", "Really Quite Poisoned", "Somewhat Poisoned"]))
 	{
-		if(have_effect(poison) > 0)
+		if (haveEffect(poison) > 0)
 		{
 			poisoned = true;
 			break;
 		}
 	}
-	if(poisoned)
+	if (poisoned)
 	{
-		if((my_mp() > 12) && auto_have_skill($skill[Disco Nap]) && auto_have_skill($skill[Adventurer of Leisure]))
+		if (myMp() > 12 && auto_have_skill(Skill.get("Disco Nap")) && auto_have_skill(Skill.get("Adventurer of Leisure")))
 		{
-			use_skill(1, $skill[Disco Nap]);
+			useSkill(1, Skill.get("Disco Nap"));
 		}
-		else if(isGalaktikAvailable() && auto_is_valid($item[Anti-Anti-Antidote]))
+		else if (isGalaktikAvailable() && auto_is_valid(Item.get("anti-anti-antidote")))
 		{
-			auto_buyUpTo(1, $item[Anti-Anti-Antidote]);
-			use(1, $item[Anti-Anti-Antidote]);
+			auto_buyUpTo(1, Item.get("anti-anti-antidote"));
+			use(1, Item.get("anti-anti-antidote"));
 		}
 	}
 
-	if(have_effect($effect[Temporary Amnesia]) > 0)
+	if (haveEffect(Effect.get("Temporary Amnesia")) > 0)
 	{
-		if(!uneffect($effect[Temporary Amnesia]))
+		if (!uneffect(Effect.get("Temporary Amnesia")))
 		{
 			abort("Could not remove temporary amnesia and now I suckzor.");
 		}
 	}
 
-	if((my_class() == $class[Turtle Tamer]) && guild_store_available())
+	if (myClass() === Class.get("Turtle Tamer") && guildStoreAvailable())
 	{
-		buffMaintain($effect[Eau de Tortue]);
+		buffMaintain$4(Effect.get("Eau de Tortue"));
 	}
 
-	if((monster_level_adjustment() > 140) && !inAftercore())
+	if (monsterLevelAdjustment() > 140 && !inAftercore())
 	{
-		buffMaintain($effect[Butt-Rock Hair]);
-		buffMaintain($effect[Go Get \'Em\, Tiger!]);
+		buffMaintain$4(Effect.get("Butt-Rock Hair"));
+		buffMaintain$4(Effect.get("Go Get 'Em, Tiger!"));
 	}
 
-	if(in_theSource())
+	if (in_theSource())
 	{
-		if((get_property("sourceInterval").to_int() > 0) && (get_property("sourceInterval").to_int() <= 600) && (get_property("sourceAgentsDefeated").to_int() >= 9))
+		if (toInt(getProperty("sourceInterval")) > 0 && toInt(getProperty("sourceInterval")) <= 600 && toInt(getProperty("sourceAgentsDefeated")) >= 9)
 		{
-			if((have_effect($effect[Song of Bravado]) == 0) && (have_effect($effect[Song of Sauce]) == 0) && (have_effect($effect[Song of Slowness]) == 0) && (have_effect($effect[Song of the North]) == 0))
+			if (haveEffect(Effect.get("Song of Bravado")) === 0 && haveEffect(Effect.get("Song of Sauce")) === 0 && haveEffect(Effect.get("Song of Slowness")) === 0 && haveEffect(Effect.get("Song of the North")) === 0)
 			{
-				buffMaintain($effect[Song of Starch], 250, 1, 1);
+				buffMaintain$3(Effect.get("Song of Starch"), 250, 1, 1);
 			}
 		}
 	}
 
-	if(my_class() == $class[Sauceror])
+	if (myClass() === Class.get("Sauceror"))
 	{
-		if((my_level() >= 6) && (have_effect($effect[[1458]Blood Sugar Sauce Magic]) == 0) && auto_have_skill($skill[Blood Sugar Sauce Magic]) && !in_hardcore())
+		if (myLevel() >= 6 && haveEffect(Effect.get("[1458]Blood Sugar Sauce Magic")) === 0 && auto_have_skill(Skill.get("Blood Sugar Sauce Magic")) && !inHardcore())
 		{
-			use_skill(1, $skill[Blood Sugar Sauce Magic]);
+			useSkill(1, Skill.get("Blood Sugar Sauce Magic"));
 		}
 
-		if(((my_level() <= 8) && (my_soulsauce() >= 92)) || (my_soulsauce() >= 100))
+		if (myLevel() <= 8 && mySoulsauce() >= 92 || mySoulsauce() >= 100)
 		{
-			use_skill(1, $skill[Soul Rotation]);
+			useSkill(1, Skill.get("Soul Rotation"));
 		}
-		int missing = (my_maxmp() - my_mp()) / 15;		//soul food restores 15 MP per cast.
-		int availableSauce = my_soulsauce();
-		int minMPexpected = my_mp() + (availableSauce - 5) * 15; //mp expected after soul food if last 5 soulsauce is saved
-		if(availableSauce >= 5 && minMPexpected > 100 && minMPexpected > 0.8*my_maxmp())
+		let missing: number = (myMaxmp() - myMp()) / 15; //soul food restores 15 MP per cast.
+		let availableSauce: number = mySoulsauce();
+		let minMPexpected: number = myMp() + (availableSauce - 5) * 15; //mp expected after soul food if last 5 soulsauce is saved
+		if (availableSauce >= 5 && minMPexpected > 100 && minMPexpected > 0.8 * myMaxmp())
 		{
-			availableSauce -= 5;	//keep 5 soulsauce for soul bubble if not missing much MP
+			availableSauce -= 5; //keep 5 soulsauce for soul bubble if not missing much MP
 		}
-		int casts = min(missing, availableSauce / 5);	//soul food costs 5 soulsauce per cast.
-		if(casts > 0)
+		let casts: number = min(missing, availableSauce / 5); //soul food costs 5 soulsauce per cast.
+		if (casts > 0)
 		{
-			use_skill(casts, $skill[Soul Food]);
+			useSkill(casts, Skill.get("Soul Food"));
 		}
 	}
 
-	if((monster_level_adjustment() > 120) && ((my_hp() * 10) < (my_maxhp() * 8)) && (my_mp() >= 20))
+	if (monsterLevelAdjustment() > 120 && myHp() * 10 < myMaxhp() * 8 && myMp() >= 20)
 	{
 		acquireHP();
 	}
 
-	if((my_maxhp() > 200) && (my_hp() < 80) && (my_mp() > 25))
+	if (myMaxhp() > 200 && myHp() < 80 && myMp() > 25)
 	{
 		acquireHP();
 	}
 
-	if((my_maxhp() > 200) && (my_hp() < 140) && (my_mp() > 100))
+	if (myMaxhp() > 200 && myHp() < 140 && myMp() > 100)
 	{
 		acquireHP();
 	}
 
 
-	if(auto_have_skill($skill[Thunderheart]) && (my_thunder() >= 90) && ((my_turncount() - get_property("auto_lastthunderturn").to_int()) >= 9))
+	if (auto_have_skill(Skill.get("Thunderheart")) && myThunder() >= 90 && myTurncount() - toInt(getProperty("auto_lastthunderturn")) >= 9)
 	{
-		use_skill(1, $skill[Thunderheart]);
+		useSkill(1, Skill.get("Thunderheart"));
 	}
 
-	if(in_awol())
+	if (in_awol())
 	{
-		effect awolDesired = awol_walkBuff();
-		if(awolDesired != $effect[none])
+		let awolDesired: Effect = awol_walkBuff();
+		if (awolDesired !== Effect.none)
 		{
-			if(!inAftercore())
+			if (!inAftercore())
 			{
-				int awolMP = 85;
-				if(my_class() == $class[Beanslinger])
+				let awolMP: number = 85;
+				if (myClass() === Class.get("Beanslinger"))
 				{
 					awolMP = 95;
 				}
-				buffMaintain(awolDesired, awolMP, 1, 20);
+				buffMaintain$3(awolDesired, awolMP, 1, 20);
 			}
-			else
-			{
-				buffMaintain(awolDesired, 120, 1, 1);
+			else {
+				buffMaintain$3(awolDesired, 120, 1, 1);
 			}
 		}
 	}
 
-	if(auto_have_skill($skill[Demand Sandwich]) && (my_mp() > 85) && (my_level() >= 9) && (get_property("_demandSandwich").to_int() < 3))
+	if (auto_have_skill(Skill.get("Demand Sandwich")) && myMp() > 85 && myLevel() >= 9 && toInt(getProperty("_demandSandwich")) < 3)
 	{
-		use_skill(1, $skill[Demand Sandwich]);
+		useSkill(1, Skill.get("Demand Sandwich"));
 	}
 
-	if(auto_have_skill($skill[Summon Smithsness]) && (my_mp() > 20))
+	if (auto_have_skill(Skill.get("Summon Smithsness")) && myMp() > 20)
 	{
-		use_skill(1, $skill[Summon Smithsness]);
+		useSkill(1, Skill.get("Summon Smithsness"));
 	}
-
 	//everyone wants more initiative
-	buffMaintain($effect[Springy Fusilli], 30, 1, 5);			//+40 init. 10 MP. 1 MP/adv
-	buffMaintain($effect[Walberg\'s Dim Bulb], 30, 1, 5);		//+10 init. 5 MP. 0.5 MP/adv
-	if(my_maxhp() < 100 ||			//get some durability to avoid dying
-	!auto_have_skill($skill[Cannelloni Cocoon]))	//!cocoon == expensive heal. +durability to save meat even when maxhp > 100
-	{
-		buffMaintain($effect[Ghostly Shell], 30, 1, 5);			//+80 DA. 6 MP. totem based duration
-		buffMaintain($effect[Astral Shell], 30, 1, 5);			//+80 DA, +1 all res. 10 MP. totem based duration
-		buffMaintain($effect[Reptilian Fortitude], 30, 1, 5);	//+30HP. 10 MP. totem based duration
+	buffMaintain$3(Effect.get("Springy Fusilli"), 30, 1, 5); //+40 init. 10 MP. 1 MP/adv
+	buffMaintain$3(Effect.get("Walberg's Dim Bulb"), 30, 1, 5); //+10 init. 5 MP. 0.5 MP/adv
+	if (myMaxhp() < 100 || !auto_have_skill(
+	//get some durability to avoid dying
+	Skill.get("Cannelloni Cocoon")))
+	{ //!cocoon == expensive heal. +durability to save meat even when maxhp > 100
+		buffMaintain$3(Effect.get("Ghostly Shell"), 30, 1, 5); //+80 DA. 6 MP. totem based duration
+		buffMaintain$3(Effect.get("Astral Shell"), 30, 1, 5); //+80 DA, +1 all res. 10 MP. totem based duration
+		buffMaintain$3(Effect.get("Reptilian Fortitude"), 30, 1, 5); //+30HP. 10 MP. totem based duration
 	}
+	// This is the list of castables that all MP sequences will use.
+	let toCast: Skill[] = Skill.get(["Prevent Scurvy and Sobriety", "Acquire Rhinestones", "Advanced Cocktailcrafting", "Advanced Saucecrafting", "Communism!", "Grab a Cold One", "Lunch Break", "Pastamastery", "Perfect Freeze", "Request Sandwich", "Spaghetti Breakfast", "Summon Alice's Army Cards", "Summon Carrot", "Summon Confiscated Things", "Summon Crimbo Candy", "Summon Geeky Gifts", "Summon Hilarious Objects", "Summon Holiday Fun!", "Summon Kokomo Resort Pass", "Summon Tasteful Items"]);
 
-	# This is the list of castables that all MP sequences will use.
-	boolean [skill] toCast = $skills[Prevent Scurvy and Sobriety, Acquire Rhinestones, Advanced Cocktailcrafting, Advanced Saucecrafting, Communism!, Grab a Cold One, Lunch Break, Pastamastery, Perfect Freeze, Request Sandwich, Spaghetti Breakfast, Summon Alice\'s Army Cards, Summon Carrot, Summon Confiscated Things, Summon Crimbo Candy, Summon Geeky Gifts, Summon Hilarious Objects, Summon Holiday Fun!, Summon Kokomo Resort Pass, Summon Tasteful Items];
-	
-	boolean buff_familiar = pathHasFamiliar() && !get_property("_auto_bad100Familiar").to_boolean();
-	float regen = (numeric_modifier("MP Regen Min").to_float() + numeric_modifier("MP Regen Max").to_float())/2.0;
-	
-	if(my_maxmp() < 50)
+	let buff_familiar: boolean = pathHasFamiliar() && !toBoolean(getProperty("_auto_bad100Familiar"));
+	let regen: number = (toFloat(numericModifier("MP Regen Min")) + toFloat(numericModifier("MP Regen Max"))) / 2.0;
+
+	if (myMaxmp() < 50)
 	{
-		buffMaintain($effect[The Magical Mojomuscular Melody], 3, 1, 5);
-		buffMaintain($effect[Power Ballad of the Arrowsmith], 7, 1, 5);
-		buffMaintain(whatStatSmile(), 15, 1, 10);
+		buffMaintain$3(Effect.get("The Magical Mojomuscular Melody"), 3, 1, 5);
+		buffMaintain$3(Effect.get("Power Ballad of the Arrowsmith"), 7, 1, 5);
+		buffMaintain$3(whatStatSmile(), 15, 1, 10);
 		// Only maintain skills in path with familiars
-		if(buff_familiar)
+		if (buff_familiar)
 		{
-			buffMaintain($effect[Leash of Linguini], 20, 1, 10);
-			if(regen > 10.0)
+			buffMaintain$3(Effect.get("Leash of Linguini"), 20, 1, 10);
+			if (regen > 10.0)
 			{
-				buffMaintain($effect[Thoughtful Empathy], 25, 1, 10);
-				buffMaintain($effect[Empathy], 25, 1, 10);
+				buffMaintain$3(Effect.get("Thoughtful Empathy"), 25, 1, 10);
+				buffMaintain$3(Effect.get("Empathy"), 25, 1, 10);
 			}
 		}
 		// TODO: 'Get Big' is a pretty good skill
-		if((libram != $skill[none]) && ((my_mp() - mp_cost(libram)) > 25))
+		if (libram !== Skill.none && myMp() - mpCost(libram) > 25)
 		{
-			use_skill(1, libram);
+			useSkill(1, libram);
 		}
 
-		foreach sk in toCast
+		for (let sk of toCast)
 		{
-			if(is_unrestricted(sk) && auto_have_skill(sk) && ((my_mp() - 40) >= mp_cost(sk)))
+			if (isUnrestricted(sk) && auto_have_skill(sk) && myMp() - 40 >= mpCost(sk))
 			{
-				use_skill(1, sk);
+				useSkill(1, sk);
 			}
 		}
 
-		if(regen > 10.0)
+		if (regen > 10.0)
 		{
-			buffMaintain($effect[Rage of the Reindeer], 30, 1, 10);
+			buffMaintain$3(Effect.get("Rage of the Reindeer"), 30, 1, 10);
 		}
-		buffMaintain($effect[Astral Shell], 35, 1, 10);
-		buffMaintain($effect[Elemental Saucesphere], 30, 1, 10);
+		buffMaintain$3(Effect.get("Astral Shell"), 35, 1, 10);
+		buffMaintain$3(Effect.get("Elemental Saucesphere"), 30, 1, 10);
 
-		if(my_location() != $location[The Broodling Grounds])
+		if (myLocation() !== Location.get("The Broodling Grounds"))
 		{
-			buffMaintain($effect[Spiky Shell], 20, 1, 10);
-			buffMaintain($effect[Scarysauce], 25, 1, 10);
+			buffMaintain$3(Effect.get("Spiky Shell"), 20, 1, 10);
+			buffMaintain$3(Effect.get("Scarysauce"), 25, 1, 10);
 		}
-		buffMaintain($effect[Ghostly Shell], 25, 1, 10);
-		buffMaintain($effect[Walberg\'s Dim Bulb], 35, 1, 10);
-#		buffMaintain($effect[Springy Fusilli], 40, 1, 10);
-		buffMaintain($effect[Blubbered Up], 30, 1, 10);
-#		buffMaintain($effect[Tenacity of the Snapper], 30, 1, 10);
-		buffMaintain($effect[Reptilian Fortitude], 30, 1, 10);
-		if(regen > 10.0)
+		buffMaintain$3(Effect.get("Ghostly Shell"), 25, 1, 10);
+		buffMaintain$3(Effect.get("Walberg's Dim Bulb"), 35, 1, 10);
+//		buffMaintain($effect[Springy Fusilli], 40, 1, 10);
+		buffMaintain$3(Effect.get("Blubbered Up"), 30, 1, 10);
+//		buffMaintain($effect[Tenacity of the Snapper], 30, 1, 10);
+		buffMaintain$3(Effect.get("Reptilian Fortitude"), 30, 1, 10);
+		if (regen > 10.0)
 		{
-			buffMaintain($effect[Disco Fever], 40, 1, 10);
+			buffMaintain$3(Effect.get("Disco Fever"), 40, 1, 10);
 		}
-		item[int] preShield = auto_saveEquipped();
+		let preShield: Map<number, Item> = auto_saveEquipped();
 		auto_equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
-		buffMaintain($effect[Saucemastery], 25, 1, 4);
-		buffMaintain($effect[Pasta Oneness], 25, 1, 4);
+		buffMaintain$3(Effect.get("Saucemastery"), 25, 1, 4);
+		buffMaintain$3(Effect.get("Pasta Oneness"), 25, 1, 4);
 
-		if(regen > 7.5)
+		if (regen > 7.5)
 		{
-			buffMaintain($effect[Seal Clubbing Frenzy], 10, 3, 4);
-			buffMaintain($effect[Patience of the Tortoise], 10, 3, 4);
-			buffMaintain($effect[Mariachi Mood], 25, 1, 4);
-			buffMaintain($effect[Disco State of Mind], 25, 1, 4);
+			buffMaintain$3(Effect.get("Seal Clubbing Frenzy"), 10, 3, 4);
+			buffMaintain$3(Effect.get("Patience of the Tortoise"), 10, 3, 4);
+			buffMaintain$3(Effect.get("Mariachi Mood"), 25, 1, 4);
+			buffMaintain$3(Effect.get("Disco State of Mind"), 25, 1, 4);
 		}
 		auto_loadEquipped(preShield);
 	}
-	else if(my_maxmp() < 80)
+	else if (myMaxmp() < 80)
 	{
-		buffMaintain($effect[The Magical Mojomuscular Melody], 3, 1, 5);
-		buffMaintain($effect[Power Ballad of the Arrowsmith], 7, 1, 5);
-		buffMaintain(whatStatSmile(), 20, 1, 10);
+		buffMaintain$3(Effect.get("The Magical Mojomuscular Melody"), 3, 1, 5);
+		buffMaintain$3(Effect.get("Power Ballad of the Arrowsmith"), 7, 1, 5);
+		buffMaintain$3(whatStatSmile(), 20, 1, 10);
 		// Only Maintain skills in path with familiars
-		if(buff_familiar)
+		if (buff_familiar)
 		{
-			buffMaintain($effect[Leash of Linguini], 30, 1, 10);
-			if(regen > 10.0)
+			buffMaintain$3(Effect.get("Leash of Linguini"), 30, 1, 10);
+			if (regen > 10.0)
 			{
-				buffMaintain($effect[Thoughtful Empathy], 35, 1, 10);
-				buffMaintain($effect[Empathy], 35, 1, 10);
+				buffMaintain$3(Effect.get("Thoughtful Empathy"), 35, 1, 10);
+				buffMaintain$3(Effect.get("Empathy"), 35, 1, 10);
 			}
 		}
 
-		if((libram != $skill[none]) && ((my_mp() - mp_cost(libram)) > 32))
+		if (libram !== Skill.none && myMp() - mpCost(libram) > 32)
 		{
-			use_skill(1, libram);
+			useSkill(1, libram);
 		}
 
-		foreach sk in toCast
+		for (let sk of toCast)
 		{
-			if(is_unrestricted(sk) && auto_have_skill(sk) && ((my_mp() - 50) >= mp_cost(sk)))
+			if (isUnrestricted(sk) && auto_have_skill(sk) && myMp() - 50 >= mpCost(sk))
 			{
-				use_skill(1, sk);
+				useSkill(1, sk);
 			}
 		}
-#		buffMaintain($effect[Prayer of Seshat], 5, 1, 10);
+//		buffMaintain($effect[Prayer of Seshat], 5, 1, 10);
 
-		if(regen > 10.0)
+		if (regen > 10.0)
 		{
-			buffMaintain($effect[Rage of the Reindeer], 40, 1, 10);
+			buffMaintain$3(Effect.get("Rage of the Reindeer"), 40, 1, 10);
 		}
-		buffMaintain($effect[Astral Shell], 50, 1, 10);
-		buffMaintain($effect[Elemental Saucesphere], 40, 1, 10);
-		if(my_location() != $location[The Broodling Grounds])
+		buffMaintain$3(Effect.get("Astral Shell"), 50, 1, 10);
+		buffMaintain$3(Effect.get("Elemental Saucesphere"), 40, 1, 10);
+		if (myLocation() !== Location.get("The Broodling Grounds"))
 		{
-			buffMaintain($effect[Spiky Shell], 40, 1, 10);
-			buffMaintain($effect[Scarysauce], 40, 1, 10);
-#			buffMaintain($effect[Jalape&ntilde;o Saucesphere], 50, 1, 10);
+			buffMaintain$3(Effect.get("Spiky Shell"), 40, 1, 10);
+			buffMaintain$3(Effect.get("Scarysauce"), 40, 1, 10);
+//			buffMaintain($effect[Jalape&ntilde;o Saucesphere], 50, 1, 10);
 		}
-		buffMaintain($effect[Ghostly Shell], 45, 1, 10);
-		if(my_class() == $class[Turtle Tamer])
+		buffMaintain$3(Effect.get("Ghostly Shell"), 45, 1, 10);
+		if (myClass() === Class.get("Turtle Tamer"))
 		{
-			buffMaintain($effect[Disdain of the Storm Tortoise], 60, 1, 10);
+			buffMaintain$3(Effect.get("Disdain of the Storm Tortoise"), 60, 1, 10);
 		}
-		buffMaintain($effect[Walberg\'s Dim Bulb], 50, 1, 10);
-#		buffMaintain($effect[Springy Fusilli], 60, 1, 10);
-#		buffMaintain($effect[Flimsy Shield of the Pastalord], 70, 1, 10);
-		buffMaintain($effect[Blubbered Up], 60, 1, 10);
-#		buffMaintain($effect[Tenacity of the Snapper], 50, 1, 10);
-		buffMaintain($effect[Reptilian Fortitude], 50, 1, 10);
-		if(regen > 10.0)
+		buffMaintain$3(Effect.get("Walberg's Dim Bulb"), 50, 1, 10);
+//		buffMaintain($effect[Springy Fusilli], 60, 1, 10);
+//		buffMaintain($effect[Flimsy Shield of the Pastalord], 70, 1, 10);
+		buffMaintain$3(Effect.get("Blubbered Up"), 60, 1, 10);
+//		buffMaintain($effect[Tenacity of the Snapper], 50, 1, 10);
+		buffMaintain$3(Effect.get("Reptilian Fortitude"), 50, 1, 10);
+		if (regen > 10.0)
 		{
-			buffMaintain($effect[Disco Fever], 60, 1, 10);
+			buffMaintain$3(Effect.get("Disco Fever"), 60, 1, 10);
 		}
-		item[int] preShield = auto_saveEquipped();
+		let preShield: Map<number, Item> = auto_saveEquipped();
 		auto_equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
-		buffMaintain($effect[Saucemastery], 50, 3, 4);
-		buffMaintain($effect[Pasta Oneness], 50, 3, 4);
-		if(regen > 8.2)
+		buffMaintain$3(Effect.get("Saucemastery"), 50, 3, 4);
+		buffMaintain$3(Effect.get("Pasta Oneness"), 50, 3, 4);
+		if (regen > 8.2)
 		{
-			buffMaintain($effect[Seal Clubbing Frenzy], 25, 3, 4);
-			buffMaintain($effect[Patience of the Tortoise], 25, 3, 4);
-			buffMaintain($effect[Mariachi Mood], 50, 3, 4);
-			buffMaintain($effect[Disco State of Mind], 50, 3, 4);
+			buffMaintain$3(Effect.get("Seal Clubbing Frenzy"), 25, 3, 4);
+			buffMaintain$3(Effect.get("Patience of the Tortoise"), 25, 3, 4);
+			buffMaintain$3(Effect.get("Mariachi Mood"), 50, 3, 4);
+			buffMaintain$3(Effect.get("Disco State of Mind"), 50, 3, 4);
 		}
 		auto_loadEquipped(preShield);
 	}
-	else if(my_maxmp() < 170)
+	else if (myMaxmp() < 170)
 	{
-		if(my_level() < 13)
+		if (myLevel() < 13)
 		{
-			buffMaintain(whatStatSmile(), 40, 1, 10);
+			buffMaintain$3(whatStatSmile(), 40, 1, 10);
 		}
 		// Only maintain in path with familiars
-		if(buff_familiar)
+		if (buff_familiar)
 		{
-			buffMaintain($effect[Leash of Linguini], 35, 1, 10);
-			if(regen > 4.0)
+			buffMaintain$3(Effect.get("Leash of Linguini"), 35, 1, 10);
+			if (regen > 4.0)
 			{
-				buffMaintain($effect[Thoughtful Empathy], 50, 1, 10);
-				buffMaintain($effect[Empathy], 50, 1, 10);
+				buffMaintain$3(Effect.get("Thoughtful Empathy"), 50, 1, 10);
+				buffMaintain$3(Effect.get("Empathy"), 50, 1, 10);
 			}
 		}
 
-		foreach sk in toCast
+		for (let sk of toCast)
 		{
-			if(is_unrestricted(sk) && auto_have_skill(sk) && ((my_mp() - 90) >= mp_cost(sk)))
+			if (isUnrestricted(sk) && auto_have_skill(sk) && myMp() - 90 >= mpCost(sk))
 			{
-				use_skill(1, sk);
+				useSkill(1, sk);
 			}
 		}
 
-		if((libram != $skill[none]) && ((my_mp() - mp_cost(libram)) > 40))
+		if (libram !== Skill.none && myMp() - mpCost(libram) > 40)
 		{
-			use_skill(1, libram);
+			useSkill(1, libram);
+		}
+//		buffMaintain($effect[Prayer of Seshat], 5, 1, 10);
+		buffMaintain$3(Effect.get("Big"), 100, 1, 10);
+		buffMaintain$3(Effect.get("Rage of the Reindeer"), 80, 1, 10);
+		buffMaintain$3(Effect.get("Astral Shell"), 80, 1, 10);
+		buffMaintain$3(Effect.get("Elemental Saucesphere"), 120, 1, 10);
+		if (myLocation() !== Location.get("The Broodling Grounds"))
+		{
+			buffMaintain$3(Effect.get("Spiky Shell"), 80, 1, 10);
+			buffMaintain$3(Effect.get("Scarysauce"), 120, 1, 10);
+//			buffMaintain($effect[Jalape&ntilde;o Saucesphere], 60, 1, 10);
+		}
+		buffMaintain$3(Effect.get("Ghostly Shell"), 80, 1, 10);
+		if (myClass() === Class.get("Turtle Tamer"))
+		{
+			buffMaintain$3(Effect.get("Disdain of the Storm Tortoise"), 80, 1, 10);
+		}
+		buffMaintain$3(Effect.get("Walberg's Dim Bulb"), 80, 1, 10);
+		buffMaintain$3(Effect.get("Springy Fusilli"), 80, 1, 10);
+//		buffMaintain($effect[Flimsy Shield of the Pastalord], 80, 1, 10);
+		buffMaintain$3(Effect.get("Blubbered Up"), 120, 1, 10);
+//		buffMaintain($effect[Tenacity of the Snapper], 80, 1, 10);
+		if (regen > 10.0)
+		{
+			buffMaintain$3(Effect.get("Reptilian Fortitude"), 150, 1, 10);
+			buffMaintain$3(Effect.get("Disco Fever"), 80, 1, 10);
+			buffMaintain$3(Effect.get("Seal Clubbing Frenzy"), 50, 5, 4);
+			buffMaintain$3(Effect.get("Patience of the Tortoise"), 50, 5, 4);
+		}
+//		buffMaintain($effect[Rotten Memories], 100, 1, 10);
+
+		if (libram !== Skill.none && myMp() - mpCost(libram) > 80)
+		{
+			useSkill(1, libram);
 		}
 
-#		buffMaintain($effect[Prayer of Seshat], 5, 1, 10);
-		buffMaintain($effect[Big], 100, 1, 10);
-		buffMaintain($effect[Rage of the Reindeer], 80, 1, 10);
-		buffMaintain($effect[Astral Shell], 80, 1, 10);
-		buffMaintain($effect[Elemental Saucesphere], 120, 1, 10);
-		if(my_location() != $location[The Broodling Grounds])
+		if (myMp() > 80)
 		{
-			buffMaintain($effect[Spiky Shell], 80, 1, 10);
-			buffMaintain($effect[Scarysauce], 120, 1, 10);
-#			buffMaintain($effect[Jalape&ntilde;o Saucesphere], 60, 1, 10);
-		}
-		buffMaintain($effect[Ghostly Shell], 80, 1, 10);
-		if(my_class() == $class[Turtle Tamer])
-		{
-			buffMaintain($effect[Disdain of the Storm Tortoise], 80, 1, 10);
-		}
-		buffMaintain($effect[Walberg\'s Dim Bulb], 80, 1, 10);
-		buffMaintain($effect[Springy Fusilli], 80, 1, 10);
-#		buffMaintain($effect[Flimsy Shield of the Pastalord], 80, 1, 10);
-		buffMaintain($effect[Blubbered Up], 120, 1, 10);
-#		buffMaintain($effect[Tenacity of the Snapper], 80, 1, 10);
-		if(regen > 10.0)
-		{
-			buffMaintain($effect[Reptilian Fortitude], 150, 1, 10);
-			buffMaintain($effect[Disco Fever], 80, 1, 10);
-			buffMaintain($effect[Seal Clubbing Frenzy], 50, 5, 4);
-			buffMaintain($effect[Patience of the Tortoise], 50, 5, 4);
-		}
-#		buffMaintain($effect[Rotten Memories], 100, 1, 10);
-
-		if((libram != $skill[none]) && ((my_mp() - mp_cost(libram)) > 80))
-		{
-			use_skill(1, libram);
+			buffMaintain$3(Effect.get("Takin' It Greasy"), 50, 1, 5);
+			buffMaintain$3(Effect.get("Intimidating Mien"), 50, 1, 5);
 		}
 
-		if(my_mp() > 80)
-		{
-			buffMaintain($effect[Takin\' It Greasy], 50, 1, 5);
-			buffMaintain($effect[Intimidating Mien], 50, 1, 5);
-		}
-
-		buffMaintain($effect[Polka of Plenty], 110, 1, 5);
+		buffMaintain$3(Effect.get("Polka of Plenty"), 110, 1, 5);
 	}
-	else
-	{
-		boolean didOutfit = false;
-		if((my_basestat($stat[mysticality]) >= 200) && (my_buffedstat($stat[mysticality]) >= 200) && inAftercore() && (item_amount($item[Wand of Oscus]) > 0) && (item_amount($item[Oscus\'s Dumpster Waders]) > 0) && (item_amount($item[Oscus\'s Pelt]) > 0))
+	else {
+		let didOutfit: boolean = false;
+		if (myBasestat(Stat.get("Mysticality")) >= 200 && myBuffedstat(Stat.get("Mysticality")) >= 200 && inAftercore() && itemAmount(Item.get("Wand of Oscus")) > 0 && itemAmount(Item.get("Oscus's dumpster waders")) > 0 && itemAmount(Item.get("Oscus's pelt")) > 0)
 		{
-			cli_execute("outfit save Backup");
-			#Using the cli command may not upgrade our stats if our max mp drops
-			#Not sure if the ASH command actually handles it properly, we'll see.
-			#cli_execute("outfit Vile Vagrant Vestments");
-			#outfit does not... damn it.
-			if(!autoOutfit("Vile Vagrant Vestments"))
+			cliExecute("outfit save Backup");
+			//Using the cli command may not upgrade our stats if our max mp drops
+			//Not sure if the ASH command actually handles it properly, we'll see.
+			//cli_execute("outfit Vile Vagrant Vestments");
+			//outfit does not... damn it.
+			if (!autoOutfit("Vile Vagrant Vestments"))
 			{
 				auto_log_warning("Could not wear Vile Vagrant Outfit for some raisin", "red");
 			}
@@ -774,247 +783,238 @@ boolean auto_post_adventure()
 		}
 
 
-		if((my_mp() > 150) && (my_maxhp() > 300) && (my_hp() < 140))
+		if (myMp() > 150 && myMaxhp() > 300 && myHp() < 140)
 		{
 			acquireHP();
 		}
-		if((my_mp() > 100) && (my_maxhp() > 500) && (my_hp() < 250))
+		if (myMp() > 100 && myMaxhp() > 500 && myHp() < 250)
 		{
 			acquireHP();
 		}
-		if((my_mp() > 75) && (my_maxhp() > 500) && (my_hp() < 200))
+		if (myMp() > 75 && myMaxhp() > 500 && myHp() < 200)
 		{
 			acquireHP();
 		}
-		if((my_mp() > 75) && (my_maxhp() > 700) && (my_hp() < 300))
+		if (myMp() > 75 && myMaxhp() > 700 && myHp() < 300)
 		{
 			acquireHP();
 		}
-		if((my_mp() > 75) && ((my_hp() == 0) || ((my_maxhp()/my_hp()) > 3)))
+		if (myMp() > 75 && (myHp() === 0 || myMaxhp() / myHp() > 3))
 		{
 			acquireHP();
 		}
 
-		buffMaintain($effect[Fat Leon\'s Phat Loot Lyric], 250, 1, 10);
-		buffMaintain($effect[Polka of Plenty], 150, 1, 5);
+		buffMaintain$3(Effect.get("Fat Leon's Phat Loot Lyric"), 250, 1, 10);
+		buffMaintain$3(Effect.get("Polka of Plenty"), 150, 1, 5);
 
-		if(my_level() < 13)
+		if (myLevel() < 13)
 		{
-			buffMaintain(whatStatSmile(), 40, 1, 10);
+			buffMaintain$3(whatStatSmile(), 40, 1, 10);
 		}
-
 		// Only maintain in path with familiars
-		if(buff_familiar)
+		if (buff_familiar)
 		{
-			buffMaintain($effect[Empathy], 50, 1, 10);
-			buffMaintain($effect[Thoughtful Empathy], 50, 1, 10);
-			buffMaintain($effect[Leash of Linguini], 35, 1, 10);
+			buffMaintain$3(Effect.get("Empathy"), 50, 1, 10);
+			buffMaintain$3(Effect.get("Thoughtful Empathy"), 50, 1, 10);
+			buffMaintain$3(Effect.get("Leash of Linguini"), 35, 1, 10);
 			// only do this one if we don't have another shanty up
 			if (auto_remainingShantyTurns() < 1) {
-				buffMaintain($effect[Only Dogs Love a Drunken Sailor], 50, 1, 1);
+				buffMaintain$3(Effect.get("Only Dogs Love a Drunken Sailor"), 50, 1, 1);
 			}
 		}
 
-		foreach sk in toCast
+		for (let sk of toCast)
 		{
-			if(is_unrestricted(sk) && auto_have_skill(sk) && ((my_mp() - 85) >= mp_cost(sk)))
+			if (isUnrestricted(sk) && auto_have_skill(sk) && myMp() - 85 >= mpCost(sk))
 			{
-				use_skill(1, sk);
+				useSkill(1, sk);
 			}
 		}
 
-		if((libram != $skill[none]) && ((my_mp() - mp_cost(libram)) > 32))
+		if (libram !== Skill.none && myMp() - mpCost(libram) > 32)
 		{
-			auto_log_info("Mymp: " + my_mp() + " of " + my_maxmp() + " and cost: " + mp_cost(libram), "blue");
-			boolean temp = false;
-			try
+			auto_log_info(`Mymp: ${myMp()} of ${myMaxmp()} and cost: ${mpCost(libram)}`, "blue");
+			let temp: boolean = false;
+			try {
+				//if(use_skill(1, libram)) {}
+				temp = useSkill(1, libram);
+			} finally
 			{
-				#if(use_skill(1, libram)) {}
-				temp = use_skill(1, libram);
-			}
-			finally
-			{
-				if(!temp)
+				if (!temp)
 				{
 					auto_log_warning("No longer have enough MP and failed.", "red");
-					auto_log_info("Mymp: " + my_mp() + " of " + my_maxmp() + " and cost: " + mp_cost(libram), "blue");
+					auto_log_info(`Mymp: ${myMp()} of ${myMaxmp()} and cost: ${mpCost(libram)}`, "blue");
 				}
 			}
 		}
+//		buffMaintain($effect[Prayer of Seshat], 5, 1, 10);
 
-#		buffMaintain($effect[Prayer of Seshat], 5, 1, 10);
+		buffMaintain$3(Effect.get("Singer's Faithful Ocelot"), 280, 1, 10);
 
-		buffMaintain($effect[Singer\'s Faithful Ocelot], 280, 1, 10);
-
-		buffMaintain($effect[Big], 100, 1, 10);
-		buffMaintain($effect[Rage of the Reindeer], 80, 1, 10);
-		buffMaintain($effect[Astral Shell], 80, 1, 10);
-		buffMaintain($effect[Elemental Saucesphere], 120, 1, 10);
-		if(my_location() != $location[The Broodling Grounds])
+		buffMaintain$3(Effect.get("Big"), 100, 1, 10);
+		buffMaintain$3(Effect.get("Rage of the Reindeer"), 80, 1, 10);
+		buffMaintain$3(Effect.get("Astral Shell"), 80, 1, 10);
+		buffMaintain$3(Effect.get("Elemental Saucesphere"), 120, 1, 10);
+		if (myLocation() !== Location.get("The Broodling Grounds"))
 		{
-			buffMaintain($effect[Spiky Shell], 120, 1, 10);
-			buffMaintain($effect[Scarysauce], 160, 1, 10);
-			buffMaintain($effect[Jalape&ntilde;o Saucesphere], 225, 1, 10);
+			buffMaintain$3(Effect.get("Spiky Shell"), 120, 1, 10);
+			buffMaintain$3(Effect.get("Scarysauce"), 160, 1, 10);
+			buffMaintain$3(Effect.get("Jalape&ntilde;o Saucesphere"), 225, 1, 10);
 		}
-		buffMaintain($effect[Ghostly Shell], 80, 1, 10);
-		if(regen > 15.0)
+		buffMaintain$3(Effect.get("Ghostly Shell"), 80, 1, 10);
+		if (regen > 15.0)
 		{
-			buffMaintain($effect[Disdain of the War Snapper], 200, 1, 10);
+			buffMaintain$3(Effect.get("Disdain of the War Snapper"), 200, 1, 10);
 		}
-		buffMaintain($effect[Walberg\'s Dim Bulb], 80, 1, 10);
-		buffMaintain($effect[Springy Fusilli], 80, 1, 10);
-		if(regen > 15.0)
+		buffMaintain$3(Effect.get("Walberg's Dim Bulb"), 80, 1, 10);
+		buffMaintain$3(Effect.get("Springy Fusilli"), 80, 1, 10);
+		if (regen > 15.0)
 		{
-			buffMaintain($effect[Flimsy Shield of the Pastalord], 180, 1, 10);
+			buffMaintain$3(Effect.get("Flimsy Shield of the Pastalord"), 180, 1, 10);
 		}
-		buffMaintain($effect[Blubbered Up], 200, 1, 10);
-		buffMaintain($effect[Tenacity of the Snapper], 200, 1, 10);
-		buffMaintain($effect[Reptilian Fortitude], 200, 1, 10);
-		if(regen > 20.0)
+		buffMaintain$3(Effect.get("Blubbered Up"), 200, 1, 10);
+		buffMaintain$3(Effect.get("Tenacity of the Snapper"), 200, 1, 10);
+		buffMaintain$3(Effect.get("Reptilian Fortitude"), 200, 1, 10);
+		if (regen > 20.0)
 		{
-			buffMaintain($effect[Antibiotic Saucesphere], 350, 1, 10);
+			buffMaintain$3(Effect.get("Antibiotic Saucesphere"), 350, 1, 10);
 		}
-		if(regen > 5.0)
+		if (regen > 5.0)
 		{
-			buffMaintain($effect[Disco Fever], 120, 1, 10);
+			buffMaintain$3(Effect.get("Disco Fever"), 120, 1, 10);
 		}
-		item[int] preShield = auto_saveEquipped();
+		let preShield: Map<number, Item> = auto_saveEquipped();
 		auto_equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
-		if(my_primestat() == $stat[Muscle])
+		if (myPrimestat() === Stat.get("Muscle"))
 		{
-			buffMaintain($effect[Seal Clubbing Frenzy], 200, 5, 4);
-			buffMaintain($effect[Patience of the Tortoise], 200, 5, 4);
+			buffMaintain$3(Effect.get("Seal Clubbing Frenzy"), 200, 5, 4);
+			buffMaintain$3(Effect.get("Patience of the Tortoise"), 200, 5, 4);
 		}
-		if(my_primestat() == $stat[Moxie])
+		if (myPrimestat() === Stat.get("Moxie"))
 		{
-			buffMaintain($effect[Mariachi Mood], 200, 5, 4);
-			buffMaintain($effect[Disco State of Mind], 200, 5, 4);
+			buffMaintain$3(Effect.get("Mariachi Mood"), 200, 5, 4);
+			buffMaintain$3(Effect.get("Disco State of Mind"), 200, 5, 4);
 		}
-		if(my_primestat() == $stat[Mysticality])
+		if (myPrimestat() === Stat.get("Mysticality"))
 		{
-			buffMaintain($effect[Saucemastery], 200, 5, 4);
-			buffMaintain($effect[Pasta Oneness], 200, 5, 4);
+			buffMaintain$3(Effect.get("Saucemastery"), 200, 5, 4);
+			buffMaintain$3(Effect.get("Pasta Oneness"), 200, 5, 4);
 		}
 		auto_loadEquipped(preShield);
-		if(familiar_weight(my_familiar()) < 20)
+		if (familiarWeight(myFamiliar()) < 20)
 		{
-			buffMaintain($effect[Curiosity of Br\'er Tarrypin], 50, 1, 2);
+			buffMaintain$3(Effect.get("Curiosity of Br'er Tarrypin"), 50, 1, 2);
 		}
-
 		// Only maintain in path with familiars
-		if(pathHasFamiliar() && !get_property("_auto_bad100Familiar").to_boolean())
+		if (pathHasFamiliar() && !toBoolean(getProperty("_auto_bad100Familiar")))
 		{
-			buffMaintain($effect[Jingle Jangle Jingle], 120, 1, 2);		//familiar acts more often
+			buffMaintain$3(Effect.get("Jingle Jangle Jingle"), 120, 1, 2); //familiar acts more often
 		}
-		buffMaintain($effect[A Few Extra Pounds], 200, 1, 2);
-		if(my_class() == $class[Turtle Tamer])
+		buffMaintain$3(Effect.get("A Few Extra Pounds"), 200, 1, 2);
+		if (myClass() === Class.get("Turtle Tamer"))
 		{
-			buffMaintain($effect[Boon of the War Snapper], 200, 1, 5);
-			buffMaintain($effect[Boon of She-Who-Was], 200, 1, 5);
-			buffMaintain($effect[Boon of the Storm Tortoise], 200, 1, 5);
-		}
-
-		buffMaintain($effect[Ruthlessly Efficient], 50, 1, 5);
-		buffMaintain($effect[Mathematically Precise], 150, 1, 5);
-#		buffMaintain($effect[Rotten Memories], 150, 1, 10);
-
-		if(inAftercore())
-		{
-			if((auto_have_skill($skill[Summon Rad Libs])) && (my_mp() > 6))
-			{
-				use_skill(3, $skill[Summon Rad Libs]);
-			}
-			if((auto_have_skill($skill[Summon Geeky Gifts])) && (my_mp() > 5))
-			{
-				use_skill(1, $skill[Summon Geeky Gifts]);
-			}
-			if((auto_have_skill($skill[Summon Stickers])) && (my_mp() > 6))
-			{
-				use_skill(3, $skill[Summon Stickers]);
-			}
-			if((auto_have_skill($skill[Summon Sugar Sheets])) && (my_mp() > 6))
-			{
-				use_skill(3, $skill[Summon Sugar Sheets]);
-			}
-			if(auto_have_skill($skill[Rainbow Gravitation]))
-			{
-				use_skill(3, $skill[Rainbow Gravitation]);
-			}
+			buffMaintain$3(Effect.get("Boon of the War Snapper"), 200, 1, 5);
+			buffMaintain$3(Effect.get("Boon of She-Who-Was"), 200, 1, 5);
+			buffMaintain$3(Effect.get("Boon of the Storm Tortoise"), 200, 1, 5);
 		}
 
-		if((libram != $skill[none]) && ((my_mp() - mp_cost(libram)) > 80))
+		buffMaintain$3(Effect.get("Ruthlessly Efficient"), 50, 1, 5);
+		buffMaintain$3(Effect.get("Mathematically Precise"), 150, 1, 5);
+//		buffMaintain($effect[Rotten Memories], 150, 1, 10);
+
+		if (inAftercore())
 		{
-			use_skill(1, libram);
+			if (auto_have_skill(Skill.get("Summon Rad Libs")) && myMp() > 6)
+			{
+				useSkill(3, Skill.get("Summon Rad Libs"));
+			}
+			if (auto_have_skill(Skill.get("Summon Geeky Gifts")) && myMp() > 5)
+			{
+				useSkill(1, Skill.get("Summon Geeky Gifts"));
+			}
+			if (auto_have_skill(Skill.get("Summon Stickers")) && myMp() > 6)
+			{
+				useSkill(3, Skill.get("Summon Stickers"));
+			}
+			if (auto_have_skill(Skill.get("Summon Sugar Sheets")) && myMp() > 6)
+			{
+				useSkill(3, Skill.get("Summon Sugar Sheets"));
+			}
+			if (auto_have_skill(Skill.get("Rainbow Gravitation")))
+			{
+				useSkill(3, Skill.get("Rainbow Gravitation"));
+			}
 		}
 
-		if(my_mp() > 80)
+		if (libram !== Skill.none && myMp() - mpCost(libram) > 80)
 		{
-			buffMaintain($effect[Takin\' It Greasy], 50, 1, 5);
-			buffMaintain($effect[Intimidating Mien], 50, 1, 5);
+			useSkill(1, libram);
 		}
 
-		if(didOutfit)
+		if (myMp() > 80)
 		{
-			cli_execute("outfit Backup");
+			buffMaintain$3(Effect.get("Takin' It Greasy"), 50, 1, 5);
+			buffMaintain$3(Effect.get("Intimidating Mien"), 50, 1, 5);
+		}
+
+		if (didOutfit)
+		{
+			cliExecute("outfit Backup");
 		}
 	}
-
 	// Experience and Powerlevelling Section
-	if(my_level() < 13 || get_property("auto_disregardInstantKarma").to_boolean())
+	if (myLevel() < 13 || toBoolean(getProperty("auto_disregardInstantKarma")))
 	{
 		// +Stat expressions based on mainstat
-		if(my_primestat() == $stat[Muscle])
+		if (myPrimestat() === Stat.get("Muscle"))
 		{
-			auto_faceCheck($effect[Patient Smile]);
+			auto_faceCheck(Effect.get("Patient Smile"));
 		}
-		if(my_primestat() == $stat[Moxie])
+		if (myPrimestat() === Stat.get("Moxie"))
 		{
-			auto_faceCheck($effect[Knowing Smile]);
+			auto_faceCheck(Effect.get("Knowing Smile"));
 		}
-		if(my_primestat() == $stat[Mysticality])
+		if (myPrimestat() === Stat.get("Mysticality"))
 		{
 			// If Gaze succeeds Smile will fail the check and vice versa
-			auto_faceCheck($effect[Inscrutable Gaze]);
-			auto_faceCheck($effect[Wry Smile]);
+			auto_faceCheck(Effect.get("Inscrutable Gaze"));
+			auto_faceCheck(Effect.get("Wry Smile"));
 		}
-
 		// Catch-all Expressions in decending order of importance (in case we could not get a stat specific one)
-		auto_faceCheck($effect[Inscrutable Gaze]);
-		auto_faceCheck($effect[Wry Smile]);
-		auto_faceCheck($effect[Patient Smile]);
-		auto_faceCheck($effect[Knowing Smile]);
+		auto_faceCheck(Effect.get("Inscrutable Gaze"));
+		auto_faceCheck(Effect.get("Wry Smile"));
+		auto_faceCheck(Effect.get("Patient Smile"));
+		auto_faceCheck(Effect.get("Knowing Smile"));
 
-		if(my_meat() > meatReserve()+5000)		//these are only worth it if you have lots of excess meat
-		{
-			buffMaintain($effect[Carol of the Thrills], 30, 1, 1);		//3MP/adv for non ATs. +3 XP/fight
-			buffMaintain($effect[Aloysius\' Antiphon of Aptitude], 40, 1, 1);	//4MP/adv for non ATs. +3 XP/fight split equally 1 per stat.
+		if (myMeat() > meatReserve() + 5000)
+		{ //these are only worth it if you have lots of excess meat
+			buffMaintain$3(Effect.get("Carol of the Thrills"), 30, 1, 1); //3MP/adv for non ATs. +3 XP/fight
+			buffMaintain$3(Effect.get("Aloysius' Antiphon of Aptitude"), 40, 1, 1); //4MP/adv for non ATs. +3 XP/fight split equally 1 per stat.
 		}
-
 		// items which give stats
-		buffMaintain($effect[Scorched Earth]);
-		buffMaintain($effect[Wisdom of Others]);
+		buffMaintain$4(Effect.get("Scorched Earth"));
+		buffMaintain$4(Effect.get("Wisdom of Others"));
 		// Only use these if we've got plenty of meat and aren't max level
 		// Otherwise we'll autosell them
-		if(!auto_ignoreExperience() && my_level()<13)
+		if (!auto_ignoreExperience() && myLevel() < 13)
 		{
-			foreach it in $items[azurite, eye agate, lapis lazuli]
+			for (let it of Item.get(["Azurite", "Eye Agate", "Lapis Lazuli"]))
 			{
-				if(item_amount(it) > 0 && auto_is_valid(it))
+				if (itemAmount(it) > 0 && auto_is_valid(it))
 				{
-					use(it, item_amount(it));
+					use(it, itemAmount(it));
 				}
 			}
 		}
-		
+
 	}
 
 
 
-	if(my_class() == $class[Pastamancer])
+	if (myClass() === Class.get("Pastamancer"))
 	{
-		thrall cur = my_thrall();
-		thrall consider = $thrall[none];
-
+		let cur: Thrall = myThrall();
+		let consider: Thrall = Thrall.none;
 /*							Cost		L1				L5				L10
 		Vampieroghi			12			1-2 (Dmg, Heal)	Dispel Neg		+60 Max HP
 		Vermincelli			30			2 MP Regen		Dmg, Poison		+30 Max MP
@@ -1026,199 +1026,190 @@ boolean auto_post_adventure()
 		Spice Ghost			250			10+1 Item		Spices			Stun Increase
 */
 
-		if((my_mp() >= (1.2 * mp_cost($skill[Bind Vermincelli]))) && (cur == $thrall[none]) && auto_have_skill($skill[Bind Vermincelli]))
+		if (myMp() >= 1.2 * mpCost(Skill.get("Bind Vermincelli")) && cur === Thrall.none && auto_have_skill(Skill.get("Bind Vermincelli")))
 		{
-			consider = $thrall[Vermincelli];
+			consider = Thrall.get("Vermincelli");
 		}
-		if((my_mp() >= (1.2 * mp_cost($skill[Bind Spice Ghost]))) && auto_have_skill($skill[Bind Spice Ghost]) && (my_daycount() > 1) && (numeric_modifier("MP Regen Min").to_int() > 9))
+		if (myMp() >= 1.2 * mpCost(Skill.get("Bind Spice Ghost")) && auto_have_skill(Skill.get("Bind Spice Ghost")) && myDaycount() > 1 && toInt(numericModifier("MP Regen Min")) > 9)
 		{
-			consider = $thrall[Spice Ghost];
+			consider = Thrall.get("Spice Ghost");
 		}
 
-		if((consider != cur) && (consider != $thrall[none]))
+		if (consider !== cur && consider !== Thrall.none)
 		{
-			skill toEquip = to_skill("Bind " + consider);
-			if(toEquip != $skill[none])
+			let toEquip: Skill = toSkill(`Bind ${consider}`);
+			if (toEquip !== Skill.none)
 			{
-				if(my_mp() >= mp_cost(toEquip))
+				if (myMp() >= mpCost(toEquip))
 				{
-					use_skill(1, toEquip);
+					useSkill(1, toEquip);
 				}
 			}
-			else
-			{
+			else {
 				auto_log_warning("Thrall handler error. Could not generate appropriate skill.", "red");
 			}
 		}
 	}
 
-	if(!inAftercore())
+	if (!inAftercore())
 	{
-		if((my_daycount() == 1) && (my_bjorned_familiar() != $familiar[grim brother]) && (get_property("_grimFairyTaleDropsCrown").to_int() == 0) && (have_familiar($familiar[grim brother])) && (equipped_item($slot[back]) == $item[Buddy Bjorn]) && (my_familiar() != $familiar[Grim Brother]))
+		if (myDaycount() === 1 && myBjornedFamiliar() !== Familiar.get("Grim Brother") && toInt(getProperty("_grimFairyTaleDropsCrown")) === 0 && haveFamiliar(Familiar.get("Grim Brother")) && equippedItem(Slot.get("back")) === Item.get("Buddy Bjorn") && myFamiliar() !== Familiar.get("Grim Brother"))
 		{
-			bjornify_familiar($familiar[grim brother]);
+			bjornifyFamiliar(Familiar.get("Grim Brother"));
 		}
-		if((my_bjorned_familiar() == $familiar[grimstone golem]) && (get_property("_grimstoneMaskDropsCrown").to_int() == 1) && have_familiar($familiar[El Vibrato Megadrone]))
+		if (myBjornedFamiliar() === Familiar.get("Grimstone Golem") && toInt(getProperty("_grimstoneMaskDropsCrown")) === 1 && haveFamiliar(Familiar.get("El Vibrato Megadrone")))
 		{
-			bjornify_familiar($familiar[el vibrato megadrone]);
+			bjornifyFamiliar(Familiar.get("El Vibrato Megadrone"));
 		}
-		if((my_bjorned_familiar() == $familiar[grim brother]) && (get_property("_grimFairyTaleDropsCrown").to_int() >= 1) && have_familiar($familiar[El Vibrato Megadrone]))
+		if (myBjornedFamiliar() === Familiar.get("Grim Brother") && toInt(getProperty("_grimFairyTaleDropsCrown")) >= 1 && haveFamiliar(Familiar.get("El Vibrato Megadrone")))
 		{
-			bjornify_familiar($familiar[el vibrato megadrone]);
-		}
-	}
-
-	if (in_bugbear() && item_amount($item[Key-o-tron]) > 0 && my_location().zone != "Mothership")
-	{
-		if ($monsters[scavenger bugbear, hypodermic bugbear, batbugbear, bugbear scientist, bugaboo, Black Ops Bugbear, Battlesuit Bugbear Type, ancient unspeakable bugbear, trendy bugbear chef] contains last_monster())
-		{
-			use(1, $item[Key-o-tron]);
+			bjornifyFamiliar(Familiar.get("El Vibrato Megadrone"));
 		}
 	}
 
-	if(in_heavyrains())
+	if (in_bugbear() && itemAmount(Item.get("key-o-tron")) > 0 && myLocation().zone !== "Mothership")
 	{
-		auto_log_info("Post adventure done: Thunder: " + my_thunder() + " Rain: " + my_rain() + " Lightning: " + my_lightning(), "green");
-	}
-
-	if((item_amount($item[The Big Book of Pirate Insults]) > 0) && ((my_location() == $location[Barrrney\'s Barrr]) || (my_location() == $location[The Obligatory Pirate\'s Cove])))
-	{
-		auto_log_info("Have " + numPirateInsults() + " insults.", "green");
-	}
-
-	if(my_location() == $location[The Broodling Grounds])
-	{
-		auto_log_info("Have " + item_amount($item[Hellseal Brain]) + " brain(s).", "green");
-		auto_log_info("Have " + item_amount($item[Hellseal Hide]) + " hide(s).", "green");
-		auto_log_info("Have " + item_amount($item[Hellseal Sinew]) + " sinew(s).", "green");
-	}
-
-	if((my_location() == $location[The Hidden Bowling Alley]) && inAftercore())
-	{
-		if(item_amount($item[Bowling Ball]) > 0)
+		if (Monster.get(["scavenger bugbear", "hypodermic bugbear", "batbugbear", "bugbear scientist", "bugaboo", "Black Ops Bugbear", "Battlesuit Bugbear Type", "ancient unspeakable bugbear", "trendy bugbear chef"]).includes(lastMonster()))
 		{
-			put_closet(item_amount($item[Bowling Ball]), $item[Bowling Ball]);
+			use(1, Item.get("key-o-tron"));
 		}
 	}
 
-	if((my_level() < 13) && !inAftercore() && (my_meat() > 7500))
+	if (in_heavyrains())
 	{
-		if(item_amount($item[pulled red taffy]) >= 6)
-		{
-			buffMaintain($effect[Cinnamon Challenger], 0, 6, 10);
-		}
-		if(item_amount($item[pulled orange taffy]) >= 6)
-		{
-			buffMaintain($effect[Orange Crusher], 0, 6, 10);
-		}
-		if(item_amount($item[pulled violet taffy]) >= 6)
-		{
-			buffMaintain($effect[Purple Reign], 0, 6, 10);
-		}
-
-		buffMaintain($effect[Gummi-Grin]);
-		buffMaintain($effect[Strong Resolve]);
-		buffMaintain($effect[Irresistible Resolve]);
-		buffMaintain($effect[Brilliant Resolve]);
-		buffMaintain($effect[From Nantucket]);
-		buffMaintain($effect[Squatting and Thrusting]);
-		buffMaintain($effect[You Read the Manual]);
-		buyableMaintain($item[Hair Spray], 1, 200, my_class() != $class[Turtle Tamer]);
-		buyableMaintain($item[Blood of the Wereseal], 1, 3500, (monster_level_adjustment() > 135));
-		buyableMaintain($item[Ben-gal&trade; Balm], 1, 200);
+		auto_log_info(`Post adventure done: Thunder: ${myThunder()} Rain: ${myRain()} Lightning: ${myLightning()}`, "green");
 	}
 
-	buyableMaintain($item[Turtle Pheromones], 1, 800, my_class() == $class[Turtle Tamer]);
-
-	#Should we create a separate function to track these? How many are we going to track?
-	if((last_monster() == $monster[Writing Desk]) && (get_property("lastEncounter") == $monster[Writing Desk]) && (have_effect($effect[Beaten Up]) == 0))
+	if (itemAmount(Item.get("The Big Book of Pirate Insults")) > 0 && (myLocation() === Location.get("Barrrney's Barrr") || myLocation() === Location.get("The Obligatory Pirate's Cove")))
 	{
-		auto_log_info("Fought " + get_property("writingDesksDefeated") + " writing desks.", "blue");
+		auto_log_info(`Have ${numPirateInsults()} insults.`, "green");
 	}
-	if((last_monster() == $monster[Modern Zmobie]) && (get_property("lastEncounter") == $monster[Modern Zmobie]) && (have_effect($effect[Beaten Up]) == 0))
+
+	if (myLocation() === Location.get("The Broodling Grounds"))
 	{
-		set_property("auto_modernzmobiecount", "" + (get_property("auto_modernzmobiecount").to_int() + 1));
-		auto_log_info("Fought " + get_property("auto_modernzmobiecount") + " modern zmobies.", "blue");
+		auto_log_info(`Have ${itemAmount(Item.get("hellseal brain"))} brain(s).`, "green");
+		auto_log_info(`Have ${itemAmount(Item.get("hellseal hide"))} hide(s).`, "green");
+		auto_log_info(`Have ${itemAmount(Item.get("hellseal sinew"))} sinew(s).`, "green");
+	}
+
+	if (myLocation() === Location.get("The Hidden Bowling Alley") && inAftercore())
+	{
+		if (itemAmount(Item.get("bowling ball")) > 0)
+		{
+			putCloset(itemAmount(Item.get("bowling ball")), Item.get("bowling ball"));
+		}
+	}
+
+	if (myLevel() < 13 && !inAftercore() && myMeat() > 7500)
+	{
+		if (itemAmount(Item.get("pulled red taffy")) >= 6)
+		{
+			buffMaintain$3(Effect.get("Cinnamon Challenger"), 0, 6, 10);
+		}
+		if (itemAmount(Item.get("pulled orange taffy")) >= 6)
+		{
+			buffMaintain$3(Effect.get("Orange Crusher"), 0, 6, 10);
+		}
+		if (itemAmount(Item.get("pulled violet taffy")) >= 6)
+		{
+			buffMaintain$3(Effect.get("Purple Reign"), 0, 6, 10);
+		}
+
+		buffMaintain$4(Effect.get("Gummi-Grin"));
+		buffMaintain$4(Effect.get("Strong Resolve"));
+		buffMaintain$4(Effect.get("Irresistible Resolve"));
+		buffMaintain$4(Effect.get("Brilliant Resolve"));
+		buffMaintain$4(Effect.get("From Nantucket"));
+		buffMaintain$4(Effect.get("Squatting and Thrusting"));
+		buffMaintain$4(Effect.get("You Read The Manual"));
+		buyableMaintain$2(Item.get("hair spray"), 1, 200, myClass() !== Class.get("Turtle Tamer"));
+		buyableMaintain$2(Item.get("blood of the Wereseal"), 1, 3500, monsterLevelAdjustment() > 135);
+		buyableMaintain$1(Item.get("Ben-Gal&trade; Balm"), 1, 200);
+	}
+
+	buyableMaintain$2(Item.get("turtle pheromones"), 1, 800, myClass() === Class.get("Turtle Tamer"));
+	//Should we create a separate function to track these? How many are we going to track?
+	if (lastMonster() === Monster.get("writing desk") && getProperty("lastEncounter") === Monster.get("writing desk").toString() && haveEffect(Effect.get("Beaten Up")) === 0)
+	{
+		auto_log_info(`Fought ${getProperty("writingDesksDefeated")} writing desks.`, "blue");
+	}
+	if (lastMonster() === Monster.get("modern zmobie") && getProperty("lastEncounter") === Monster.get("modern zmobie").toString() && haveEffect(Effect.get("Beaten Up")) === 0)
+	{
+		setProperty("auto_modernzmobiecount", `${toInt(getProperty("auto_modernzmobiecount")) + 1}`);
+		auto_log_info(`Fought ${getProperty("auto_modernzmobiecount")} modern zmobies.`, "blue");
 	}
 
 	auto_beaten_handler();
 
-	if (get_property("lastEncounter") == "Welcome to the Great Overlook Lodge")
+	if (getProperty("lastEncounter") === "Welcome to the Great Overlook Lodge")
 	{
-		set_property("auto_shinningStarted", true);
+		setProperty("auto_shinningStarted", true.toString());
 	}
 
-	if(have_effect($effect[Disavowed]) > 0)
+	if (haveEffect(Effect.get("Disavowed")) > 0)
 	{
-		if(get_property("_auto_bondBriefing") != "finished")
+		if (getProperty("_auto_bondBriefing") !== "finished")
 		{
-			set_property("_auto_bondBriefing", "started");
+			setProperty("_auto_bondBriefing", "started");
 		}
-		if(auto_have_skill($skill[Disco Nap]) && (my_mp() > mp_cost($skill[Disco Nap])))
+		if (auto_have_skill(Skill.get("Disco Nap")) && myMp() > mpCost(Skill.get("Disco Nap")))
 		{
 			auto_log_warning("We have been disavowed...", "red");
-			use_skill(1, $skill[Disco Nap]);
+			useSkill(1, Skill.get("Disco Nap"));
 		}
-		else
-		{
+		else {
 			abort("We have been disavowed...");
 		}
 	}
-	
 	//Remove the mana cost reduction from maximize statement
 	removeFromMaximize("-1000mana cost");
-	remove_property("auto_combatDirective");
-	remove_property("auto_digitizeDirective");
-	
+	removeProperty("auto_combatDirective");
+	removeProperty("auto_digitizeDirective");
 	//try to catch infinite loop where we repeatedly try to do the same thing.
 	//works with code found in auto_pre_adv.ash
-	if(my_session_adv() == get_property("_auto_inf_session_adv").to_int())
+	if (mySessionAdv() === toInt(getProperty("_auto_inf_session_adv")))
 	{
-		auto_log_debug("auto_post_adv.ash detected that no adventure was spent since last auto_pre_adv.ash");
-		
+		auto_log_debug$1("auto_post_adv.js detected that no adventure was spent since last auto_pre_adv.js");
 		//count how many times in a row we went with no adv spent
-		set_property("_auto_inf_counter", get_property("_auto_inf_counter").to_int()+1);
-		
+		setProperty("_auto_inf_counter", (toInt(getProperty("_auto_inf_counter")) + 1).toString());
 		//if last monster changed it means we are doing free combats
-		if(get_property("_auto_inf_last_monster").to_monster() != last_monster())
+		if (toMonster(getProperty("_auto_inf_last_monster")) !== lastMonster())
 		{
-			remove_property("_auto_inf_counter");		//reset counter
+			removeProperty("_auto_inf_counter"); //reset counter
 		}
-		set_property("_auto_inf_last_monster", last_monster());
-		
-		if(get_property("_auto_inf_counter").to_int() >= 30)
+		setProperty("_auto_inf_last_monster", lastMonster().toString());
+
+		if (toInt(getProperty("_auto_inf_counter")) >= 30)
 		{
-			auto_log_error("no adventure was spent " +get_property("_auto_inf_counter")+ " times in a row which suggests we are stuck in an infinite loop. Stopping autoscend");
-			remove_property("_auto_inf_counter");
-			set_property("auto_interrupt", true);
+			auto_log_error(`no adventure was spent ${getProperty("_auto_inf_counter")} times in a row which suggests we are stuck in an infinite loop. Stopping autoscend`);
+			removeProperty("_auto_inf_counter");
+			setProperty("auto_interrupt", true.toString());
 		}
-		else if(get_property("_auto_inf_counter").to_int() > 10)
+		else if (toInt(getProperty("_auto_inf_counter")) > 10)
 		{
-			auto_log_warning("no adventure was spent " +get_property("_auto_inf_counter")+ " times in a row");
+			auto_log_warning$1(`no adventure was spent ${getProperty("_auto_inf_counter")} times in a row`);
 		}
 	}
-	else		//clear values
-	{
-		remove_property("_auto_inf_counter");
+	else {
+	//clear values
+		removeProperty("_auto_inf_counter");
 	}
-	
+
 	auto_log_info("Post Adventure done, beep.", "purple");
 	return true;
 }
 
-void main()
+export function main(): void
 {
-	boolean ret = false;
-	try
-	{
+	let ret: boolean = false;
+	try {
 		ret = auto_post_adventure();
-	}
-	finally
+	} finally
 	{
 		if (!ret)
 		{
-			auto_log_error("Error running auto_post_adv.ash, setting auto_interrupt=true");
-			set_property("auto_interrupt", true);
+			auto_log_error("Error running auto_post_adv.js, setting auto_interrupt=true");
+			setProperty("auto_interrupt", true.toString());
 		}
 	}
 }

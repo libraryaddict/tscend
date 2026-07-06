@@ -1,40 +1,38 @@
-boolean in_tcrs()
+import { Item, Path, abort, cliExecute, haveEffect, mallPrice, maximize, myPath } from "kolmafia";
+
+//Defined in autoscend/paths/two_crazy_random_summer.ash
+export function in_tcrs(): boolean
 {
-	return my_path() == $path[Two Crazy Random Summer];
+	return myPath() === Path.get("Two Crazy Random Summer");
 }
 
-float tcrs_expectedAdvPerFill(string quality)
+export function tcrs_expectedAdvPerFill(quality: string): number
 {
-	switch(quality)
+	switch (quality)
 	{
 	case "EPIC":	return 5;
 	case "awesome":	return 4;
 	case "good":	return 3;
 	case "decent":	return 2;
 	case "crappy":	return 1;
-	default:	abort("could not calculate expected adventures for quality " + quality + " in 2CRS");
+	default:	abort(`could not calculate expected adventures for quality ${quality} in 2CRS`);
 	}
 	return -1; // makes the compiler shut up
 }
 
-boolean tcrs_maximize_with_items(string maximizerString)
+export function tcrs_maximize_with_items(maximizerString: string): boolean
 {
-	if(!in_tcrs())
+	if (!in_tcrs())
 	{
 		return false;
 	}
 	// in TCRS, items give random effects. Instead of hard-coding a list of effects for each path/class combination, we look at what we got.
-	boolean used_anything = false;
-	foreach i, rec in maximize(maximizerString, 300, 0, true, false)
+	let used_anything: boolean = false;
+	for (let [i, rec] of maximize(maximizerString, 300, 0, true, false).entries())
 	{
-		if((rec.item != $item[none])
-		&& (rec.item.fullness == 0)
-		&& (rec.item.inebriety == 0)
-		&& (0 == have_effect(rec.effect))
-		&& (mall_price(rec.item) <= 300)
-		&& (rec.score > 0.1)) // sometimes maximizer gives spurious results
-		{
-			cli_execute(rec.command);
+		if (rec.item !== Item.none && rec.item.fullness === 0 && rec.item.inebriety === 0 && 0 === haveEffect(rec.effect) && mallPrice(rec.item) <= 300 && rec.score > 0.1)
+		{ // sometimes maximizer gives spurious results
+			cliExecute(rec.command);
 			used_anything = true;
 		}
 	}

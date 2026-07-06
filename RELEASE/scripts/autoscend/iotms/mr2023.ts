@@ -1,134 +1,161 @@
-# This is meant for items that have a date of 2023
+import { Coinmaster, Effect, Familiar, Item, Location, Monster, Phylum, Skill, Slot, Stat, abort, availableAmount, buy, canAdventure, canInteract, cliExecute, containsText, creatableAmount, create, equippedItem, expectedDamage, floor, fullnessLimit, getCampground, getDwelling, getLocationMonsters, getProperty, haveCampground, haveEffect, haveEquipped, haveFamiliar, haveSkill, inHardcore, itemAmount, itemFact, max, monkeyPaw, myAdventures, myDaycount, myFamiliar, myFullness, myLevel, myLocation, myMaxhp, myMeat, myPokeFam, myPrimestat, numericModifier, setProperty, toBoolean, toFamiliar, toInt, toLowerCase, toMonster, turnsPlayed, use, useFamiliar, useSkill, visitUrl, weaponHands } from "kolmafia";
+import { autoAdv$2, autoAdvBypass } from "../auto_adventure";
+import { fullness_left, inebriety_left } from "../auto_consume";
+import { addBonusToMaximize, equipRollover, is_watch, possessEquipment, possessOutfit$1, simMaximizeWith$1, simValue } from "../auto_equipment";
+import { auto_have_familiar, auto_needsGoodFamiliarEquipment, canChangeToFamiliar, findNonRockFamiliarInTerrarium, findRockFamiliarInTerrarium, is100FamRun, isAttackFamiliar, pathHasFamiliar } from "../auto_familiar";
+import { disregardInstantKarma } from "../auto_powerlevel";
+import { auto_potentialMaxFreeRests, doFreeRest, haveAnyIotmAlternativeRestSiteAvailable, haveFreeRestAvailable, uneffect } from "../auto_restore";
+import { solveDelayZone$1 } from "../auto_routing";
+import { auto_canForceNextNoncombat, auto_can_equip, auto_forceNextNoncombat$1, auto_get_campground, auto_haveQueuedForcedNonCombat, auto_have_skill, auto_ignoreExperience, auto_is_valid, auto_is_valid$2, auto_is_valid$4, auto_log_debug$1, auto_log_info$1, auto_queueIgnore, auto_turbo, auto_wantToFreeKillWithNoDrops, backupSetting, can_read_skillbook, handleTracker$1, handleTracker$2, haveCampgroundMaid, isFreeMonster$1, isGuildClass, meatReserve, wrap_item } from "../auto_util";
+import { canUse$2 } from "../combat/auto_combat_util";
+import { fantasyBanditsFought } from "./mr2018";
+import { auto_haveTrainSet } from "./mr2022";
+import { auto_goingToMouthwashLevel, auto_haveSeptEmberCenser, auto_haveTearawayPants, expected_level_after_mouthwash } from "./mr2024";
+import { auto_haveMcHugeLargeSkis } from "./mr2025";
+import { in_avantGuard } from "../paths/avant_guard";
+import { in_lol } from "../paths/legacy_of_loathing";
+import { in_pokefam } from "../paths/pocket_familiars";
+import { in_small } from "../paths/small";
+import { in_wereprof, is_werewolf } from "../paths/wereprofessor";
+import { cyrptEvilBonus$1 } from "../quests/level_07";
+import { L10_needUmbrella } from "../quests/level_10";
 
-boolean auto_haveRockGarden()
+// This is meant for items that have a date of 2023
+
+let $_auto_haveRockGarden_rockGarden: Item | undefined;
+
+//Defined in autoscend/iotms/mr2023.ash
+export function auto_haveRockGarden(): boolean
 {
-	static item rockGarden = $item[Packet Of Rock Seeds];
-	return auto_is_valid(rockGarden) && auto_get_campground() contains rockGarden;
+	$_auto_haveRockGarden_rockGarden ??= Item.get("packet of rock seeds");
+	return auto_is_valid($_auto_haveRockGarden_rockGarden) && auto_get_campground().has($_auto_haveRockGarden_rockGarden);
 }
 
-void rockGardenEnd() //broke these out so they aren't handled at the start of everyday but ASAP after numberology
-{
+export function rockGardenEnd(): void
+{ //broke these out so they aren't handled at the start of everyday but ASAP after numberology
 	//while we will probably never get these automatically, should handle them anyway
-	if (item_amount($item[Molehill Mountain]) > 0 && !get_property("_molehillMountainUsed").to_boolean()){
-		use(1,$item[Molehill Mountain]);
+	if (itemAmount(Item.get("molehill mountain")) > 0 && !toBoolean(getProperty("_molehillMountainUsed"))) {
+		use(1, Item.get("molehill mountain"));
 	}
 
-	if((item_amount($item[strange stalagmite]) > 0) && !get_property("_strangeStalagmiteUsed").to_boolean())
+	if (itemAmount(Item.get("strange stalagmite")) > 0 && !toBoolean(getProperty("_strangeStalagmiteUsed")))
 	{
-		use(1,$item[strange stalagmite]);
+		use(1, Item.get("strange stalagmite"));
 	}
 	return;
 }
 
-void pickRocks()
+export function pickRocks(): void
 {
 	//Pick rocks everyday
 	//If we manage to get a lodestone, will not use it, because it is a one-a-day and user may want to use it in specific places
-    if (!auto_haveRockGarden()) return;
-	visit_url("campground.php?action=rgarden1");
-	if(get_property("desertExploration").to_int() < 100)
+    if (!auto_haveRockGarden()) { return; }
+	visitUrl("campground.php?action=rgarden1");
+	if (toInt(getProperty("desertExploration")) < 100)
 	{
-		visit_url("campground.php?action=rgarden2");
+		visitUrl("campground.php?action=rgarden2");
 	}
-	visit_url("campground.php?action=rgarden3");
+	visitUrl("campground.php?action=rgarden3");
 	return;
 }
 
-boolean wantToThrowGravel(location loc, monster enemy)
+export function wantToThrowGravel(loc: Location, enemy: Monster): boolean
 {
 	// returns true if we want to use Groveling Gravel. Not intended to exhaustivly list all valid targets.
 	// simply enough to use the few gravels we get in run.
 
-	if(item_amount($item[groveling gravel]) == 0) return false;
-	if(!auto_is_valid($item[groveling gravel])) return false;
-	if (isFreeMonster(enemy, loc)) { return false; } // don't use gravel against inherently free fights
+	if (itemAmount(Item.get("groveling gravel")) === 0) { return false; }
+	if (!auto_is_valid(Item.get("groveling gravel"))) { return false; }
+	if (isFreeMonster$1(enemy, loc)) { // don't use gravel against inherently free fights
+	return false; }
 	// prevent overuse after breaking ronin or in casual
-	if(can_interact()) return false;
-	
+	if (canInteract()) { return false; }
+
 	return auto_wantToFreeKillWithNoDrops(loc, enemy);
 }
 
-boolean auto_haveSITCourse()
+let $_auto_haveSITCourse_sitCourse: Item | undefined;
+
+export function auto_haveSITCourse(): boolean
 {
-	static item sitCourse = $item[S.I.T. Course Completion Certificate];
-	return auto_is_valid(sitCourse) && item_amount(sitCourse) > 0;
+	$_auto_haveSITCourse_sitCourse ??= Item.get("S.I.T. Course Completion Certificate");
+	return auto_is_valid($_auto_haveSITCourse_sitCourse) && itemAmount($_auto_haveSITCourse_sitCourse) > 0;
 }
 
-void auto_SITCourse()
+export function auto_SITCourse(): void
 {
-	if (!auto_haveSITCourse()) return;
+	if (!auto_haveSITCourse()) { return; }
 	//Get cryptobotanist if under level 8 or switch to insectologist if possible
-	if (my_level() < 8 && !have_skill($skill[cryptobotanist]) || (!get_property("_sitCourseCompleted").to_boolean() && my_level() >= 8 && !have_skill($skill[insectologist]))){
-		use(1,$item[S.I.T. Course Completion Certificate]);
+	if (myLevel() < 8 && !haveSkill(Skill.get("Cryptobotanist")) || !toBoolean(getProperty("_sitCourseCompleted")) && myLevel() >= 8 && !haveSkill(Skill.get("Insectologist"))) {
+		use(1, Item.get("S.I.T. Course Completion Certificate"));
 		//auto_run_choice(1494);
 		return;
 	}
 }
 
-boolean auto_havePayPhone()
+export function auto_havePayPhone(): boolean
 {
-	return auto_is_valid($item[closed-circuit pay phone]) && item_amount($item[closed-circuit pay phone]) > 0;
+	return auto_is_valid(Item.get("closed-circuit pay phone")) && itemAmount(Item.get("closed-circuit pay phone")) > 0;
 }
 
-boolean[location] auto_allRifts()
+export function auto_allRifts(): Map<Location, boolean>
 {
-	return $locations[
-	    Shadow Rift (Desert Beach),
-	    Shadow Rift (Forest Village),
-	    Shadow Rift (Mt. McLargeHuge),
-	    Shadow Rift (Somewhere Over the Beanstalk),
-	    Shadow Rift (Spookyraven Manor Third Floor),
-	    Shadow Rift (The 8-Bit Realm),
-	    Shadow Rift (The Ancient Buried Pyramid),
-	    Shadow Rift (The Castle in the Clouds in the Sky),
-	    Shadow Rift (The Distant Woods),
-	    Shadow Rift (The Hidden City),
-	    Shadow Rift (The Misspelled Cemetary),
-	    Shadow Rift (The Nearby Plains),
-	    Shadow Rift (The Right Side of the Tracks)
-	];
+	return new Map([
+	    [Location.get("Shadow Rift (Desert Beach)"), true],
+	    [Location.get("Shadow Rift (Forest Village)"), true],
+	    [Location.get("Shadow Rift (Mt. McLargeHuge)"), true],
+	    [Location.get("Shadow Rift (Somewhere Over the Beanstalk)"), true],
+	    [Location.get("Shadow Rift (Spookyraven Manor Third Floor)"), true],
+	    [Location.get("Shadow Rift (The 8-Bit Realm)"), true],
+	    [Location.get("Shadow Rift (The Ancient Buried Pyramid)"), true],
+	    [Location.get("Shadow Rift (The Castle in the Clouds in the Sky)"), true],
+	    [Location.get("Shadow Rift (The Distant Woods)"), true],
+	    [Location.get("Shadow Rift (The Hidden City)"), true],
+	    [Location.get("Shadow Rift (The Misspelled Cemetary)"), true],
+	    [Location.get("Shadow Rift (The Nearby Plains)"), true],
+	    [Location.get("Shadow Rift (The Right Side of the Tracks)"), true]]);
 }
 
-location auto_availableBrickRift()
+export function auto_availableBrickRift(): Location
 {
-	if(!auto_havePayPhone())
+	if (!auto_havePayPhone())
 	{
-		return $location[none];
+		return Location.none;
 	}
 
-	if (in_avantGuard() && !auto_haveQueuedForcedNonCombat()) //if no NC forced, don't adventure in zone
-	{
-		return $location[none];
+	if (in_avantGuard() && !auto_haveQueuedForcedNonCombat())
+	{ //if no NC forced, don't adventure in zone
+		return Location.none;
 	}
 
-	boolean[location] riftsWithBricks = $locations[Shadow Rift (The Ancient Buried Pyramid), Shadow Rift (The Hidden City), Shadow Rift (The Misspelled Cemetary)];
-	boolean[location] riftsWithWishes = auto_riftsWithWishes();
+	let riftsWithBricks: Location[] = Location.get(["Shadow Rift (The Ancient Buried Pyramid)", "Shadow Rift (The Hidden City)", "Shadow Rift (The Misspelled Cemetary)"]);
+	let riftsWithWishes: Map<Location, boolean> = auto_riftsWithWishes();
 	// First loop checks for bricks and wishes if we have BoFA
 	if (auto_haveBofa() && auto_wishFactsLeft() > 0)
 	{
-		foreach loc in riftsWithBricks
+		for (let loc of riftsWithBricks)
 		{
-			if(riftsWithWishes contains loc && can_adventure(loc)) return loc;
+			if (riftsWithWishes.has(loc) && canAdventure(loc)) { return loc; }
 		}
 	}
 	// Then ignore wishes
-	foreach loc in riftsWithBricks
+	for (let loc of riftsWithBricks)
 	{
-		if(can_adventure(loc)) return loc;
+		if (canAdventure(loc)) { return loc; }
 	}
-	return $location[none];
+	return Location.none;
 }
 
-boolean[location] auto_riftsWithWishes()
+export function auto_riftsWithWishes(): Map<Location, boolean>
 {
-	boolean[location] out;
-	foreach loc in auto_allRifts()
+	let out: Map<Location, boolean> = new Map();
+	for (let loc of auto_allRifts().keys())
 	{
-		foreach m in get_location_monsters(loc)
+		for (let m of Monster.get(Object.keys(getLocationMonsters(loc))))
 		{
-			if(item_fact(m)==$item[pocket wish])
+			if (itemFact(m) === Item.get("pocket wish"))
 			{
-				out[loc] = true;
+				out.set(loc, true);
 				break;
 			}
 		}
@@ -136,74 +163,73 @@ boolean[location] auto_riftsWithWishes()
 	return out;
 }
 
-int auto_neededShadowBricks()
+export function auto_neededShadowBricks(): number
 {
 	if (!auto_havePayPhone() || in_avantGuard())
 	{
 		return 0;
 	}
 
-	int currentBricks = item_amount($item[shadow brick]);
-	int bricksUsedToday = get_property("_shadowBricksUsed").to_int();
+	let currentBricks: number = itemAmount(Item.get("shadow brick"));
+	let bricksUsedToday: number = toInt(getProperty("_shadowBricksUsed"));
 	return max(0, 13 - currentBricks - bricksUsedToday);
 }
 
-boolean auto_getPhoneQuest()
+export function auto_getPhoneQuest(): boolean
 {
-	if(!auto_havePayPhone())
+	if (!auto_havePayPhone())
 	{
 		return false;
 	}
 
-	if(get_property("questRufus") != "unstarted")
+	if (getProperty("questRufus") !== "unstarted")
 	{
 		// already started quest
 		return true;
 	}
-
 	// get artifact quest
 	// auto_choice_adv handles actually picking it
-	use($item[closed-circuit pay phone]);
+	use(Item.get("closed-circuit pay phone"));
 
-	return get_property("questRufus") != "unstarted";
+	return getProperty("questRufus") !== "unstarted";
 }
 
-boolean auto_doPhoneQuest()
+export function auto_doPhoneQuest(): boolean
 {
-	if(!auto_havePayPhone())
+	if (!auto_havePayPhone())
 	{
 		return false;
 	}
 	// only accept and do quest if we can get bricks or force a noncombat
-	if(auto_availableBrickRift() == $location[none] || !auto_canForceNextNoncombat())
+	if (auto_availableBrickRift() === Location.none || !auto_canForceNextNoncombat())
 	{
 		return false;
 	}
 	// already finished phone quest today
-	if(get_property("_shadowAffinityToday").to_boolean() && have_effect($effect[Shadow Affinity]) == 0 && get_property("questRufus") == "unstarted")
+	if (toBoolean(getProperty("_shadowAffinityToday")) && haveEffect(Effect.get("Shadow Affinity")) === 0 && getProperty("questRufus") === "unstarted")
 	{
 		return false;
 	}
 	// not high enough level yet. Survive at least 2 hits
-	if(my_maxhp() <= expected_damage($monster[shadow slab]) * 2)
+	if (myMaxhp() <= expectedDamage(Monster.get("shadow slab")) * 2)
 	{
 		return false;
 	}
 	// in pokefam, we want at least 2 level 5s
 	if (in_pokefam()) {
 		// mafia can lose track of the team, so visit famteam so we're up to date
-		visit_url("famteam.php");
-		int pokelevel1 = my_poke_fam(0).poke_level;
-		int pokelevel2 = my_poke_fam(1).poke_level;
-		int pokelevel3 = my_poke_fam(2).poke_level;
-		int numFives = 0;
-		if (pokelevel1 == 5) {
+		visitUrl("famteam.php");
+		let pokelevel1: number = myPokeFam(0).pokeLevel;
+		let pokelevel2: number = myPokeFam(1).pokeLevel;
+		let pokelevel3: number = myPokeFam(2).pokeLevel;
+		let numFives: number = 0;
+		if (pokelevel1 === 5) {
 			numFives++;
 		}
-		if (pokelevel2 == 5) {
+		if (pokelevel2 === 5) {
 			numFives++;
 		}
-		if (pokelevel3 == 5) {
+		if (pokelevel3 === 5) {
 			numFives++;
 		}
 		if (numFives < 2) {
@@ -211,124 +237,125 @@ boolean auto_doPhoneQuest()
 		}
 	}
 	// don't start quest if fights will already be free... unless we already have shadow affinity
-	if(isFreeMonster($monster[shadow slab], auto_availableBrickRift()) && have_effect($effect[Shadow Affinity]) == 0)
+	if (isFreeMonster$1(Monster.get("shadow slab"), auto_availableBrickRift()) && haveEffect(Effect.get("Shadow Affinity")) === 0)
 	{
 		return false;
 	}
-
 	// get quest
-	if(!auto_getPhoneQuest())
+	if (!auto_getPhoneQuest())
 	{
 		abort("Failed to get Rufus quest from cursed phone.");
 	}
-
 	// finish quest
-	if(get_property("questRufus") == "step1")
+	if (getProperty("questRufus") === "step1")
 	{
-		use($item[closed-circuit pay phone]);
-		if(get_property("questRufus") != "unstarted")
+		use(Item.get("closed-circuit pay phone"));
+		if (getProperty("questRufus") !== "unstarted")
 		{
 			abort("Failed to finish Rufus quest from cursed phone.");
 		}
 		return true;
 	}
-
 	//Force a non combat instead of adventuring there to save turns, especially in AG
-	if(auto_haveQueuedForcedNonCombat())
+	if (auto_haveQueuedForcedNonCombat())
 	{
-		return autoAdv(auto_availableBrickRift());
+		return autoAdv$2(auto_availableBrickRift());
 	}
 
-	if (auto_canForceNextNoncombat() && in_avantGuard()) //in avant guard, want to avoid adventuring here unless you can force an NC
-	{
-		return auto_forceNextNoncombat(auto_availableBrickRift());
+	if (auto_canForceNextNoncombat() && in_avantGuard())
+	{ //in avant guard, want to avoid adventuring here unless you can force an NC
+		return auto_forceNextNoncombat$1(auto_availableBrickRift());
 	}
 
 	backupSetting("shadowLabyrinthGoal", "browser"); // use mafia's automation handling for the Shadow Rift NC.
-	return autoAdv(auto_availableBrickRift());
+	return autoAdv$2(auto_availableBrickRift());
 }
 
-boolean auto_isShadowRiftMonster(monster m)
+export function auto_isShadowRiftMonster(m: Monster): boolean
 {
-	boolean[monster] reg = $monsters[
-	  shadow bat, shadow cow, shadow devil, shadow guy, shadow hexagon, shadow orb,
-	  shadow prism, shadow slab, shadow snake, shadow spider, shadow stalk, shadow tree ];
-	boolean[monster] boss = $monsters[
-	  shadow cauldron, shadow matrix, shadow orrery, shadow scythe,
-	  shadow spire, shadow tongue ];
-	return reg contains m || boss contains m;
+	let reg: Monster[] = Monster.get([
+	  "shadow bat", "shadow cow", "shadow devil", "shadow guy", "shadow hexagon", "shadow orb",
+	  "shadow prism", "shadow slab", "shadow snake", "shadow spider", "shadow stalk", "shadow tree"]);
+	let boss: Monster[] = Monster.get([
+	  "shadow cauldron", "shadow matrix", "shadow orrery", "shadow scythe",
+	  "shadow spire", "shadow tongue"]);
+	return reg.includes(m) || boss.includes(m);
 }
 
-boolean auto_haveMonkeyPaw()
+let $_auto_haveMonkeyPaw_paw: Item | undefined;
+
+export function auto_haveMonkeyPaw(): boolean
 {
-	static item paw = $item[cursed monkey\'s paw];
-	return auto_is_valid(paw) && (item_amount(paw) > 0 || have_equipped(paw));
+	$_auto_haveMonkeyPaw_paw ??= Item.get("cursed monkey's paw");
+	return auto_is_valid($_auto_haveMonkeyPaw_paw) && (itemAmount($_auto_haveMonkeyPaw_paw) > 0 || haveEquipped($_auto_haveMonkeyPaw_paw));
 }
 
-int auto_monkeyPawWishesLeft()
+export function auto_monkeyPawWishesLeft(): number
 {
 	if (auto_haveMonkeyPaw())
 	{
-		return 5 - get_property("_monkeyPawWishesUsed").to_int();
+		return 5 - toInt(getProperty("_monkeyPawWishesUsed"));
 	}
 	return 0;
 }
 
-boolean auto_makeMonkeyPawWish(effect wish)
+export function auto_makeMonkeyPawWish(wish: Effect): boolean
 {
 	if (!auto_haveMonkeyPaw()) {
-		auto_log_info("Requested monkey paw wish without paw available, skipping "+to_string(wish));
+		auto_log_info$1(`Requested monkey paw wish without paw available, skipping ${wish.toString()}`);
 		return false;
 	}
 	if (auto_monkeyPawWishesLeft() < 1) {
-		auto_log_info("Out of monkey paw wishes, skipping "+to_string(wish));
+		auto_log_info$1(`Out of monkey paw wishes, skipping ${wish.toString()}`);
 		return false;
 	}
-	boolean success = monkey_paw(wish);
+	let success: boolean = monkeyPaw(wish);
 	if (success) {
-		handleTracker(to_string($item[cursed monkey\'s paw]), my_location().to_string(), to_string(wish), "auto_wishes");
+		handleTracker$2(Item.get("cursed monkey's paw").toString(), myLocation().toString(), wish.toString(), "auto_wishes");
 	}
 	return success;
 }
 
-boolean auto_makeMonkeyPawWish(item wish)
+export function auto_makeMonkeyPawWish$1(wish: Item): boolean
 {
 	if (!auto_haveMonkeyPaw()) {
-		auto_log_info("Requested monkey paw wish without paw available, skipping "+to_string(wish));
+		auto_log_info$1(`Requested monkey paw wish without paw available, skipping ${wish.toString()}`);
 		return false;
 	}
 	if (auto_monkeyPawWishesLeft() < 1) {
-		auto_log_info("Out of monkey paw wishes, skipping "+to_string(wish));
+		auto_log_info$1(`Out of monkey paw wishes, skipping ${wish.toString()}`);
 		return false;
 	}
-	boolean success = monkey_paw(wish);
+	let success: boolean = monkeyPaw(wish);
 	if (success) {
-		handleTracker(to_string($item[cursed monkey\'s paw]), to_string(wish), "auto_wishes");
+		handleTracker$1(Item.get("cursed monkey's paw").toString(), wish.toString(), "auto_wishes");
 	}
 	return success;
 }
 
-boolean auto_makeMonkeyPawWish(string wish)
+export function auto_makeMonkeyPawWish$2(wish: string): boolean
 {
 	if (!auto_haveMonkeyPaw()) {
-		auto_log_info("Requested monkey paw wish without paw available, skipping "+to_string(wish));
+		auto_log_info$1(`Requested monkey paw wish without paw available, skipping ${wish}`);
 		return false;
 	}
 	if (auto_monkeyPawWishesLeft() < 1) {
-		auto_log_info("Out of monkey paw wishes, skipping "+wish);
+		auto_log_info$1(`Out of monkey paw wishes, skipping ${wish}`);
 		return false;
 	}
-	boolean success = monkey_paw(wish);
+	let success: boolean = monkeyPaw(wish);
 	if (success) {
-		handleTracker(to_string($item[cursed monkey\'s paw]), my_location().to_string(), wish, "auto_wishes");
+		handleTracker$2(Item.get("cursed monkey's paw").toString(), myLocation().toString(), wish, "auto_wishes");
 	}
 	return success;
 }
 
-boolean auto_haveCincho()
+let $_auto_haveCincho_cincho: Item | undefined;
+
+export function auto_haveCincho(): boolean
 {
-	static item cincho = wrap_item($item[Cincho de Mayo]);
-	if(auto_is_valid(cincho) && (item_amount(cincho) > 0 || have_equipped(cincho)))
+	$_auto_haveCincho_cincho ??= wrap_item(Item.get("Cincho de Mayo"));
+	if (auto_is_valid($_auto_haveCincho_cincho) && (itemAmount($_auto_haveCincho_cincho) > 0 || haveEquipped($_auto_haveCincho_cincho)))
 	{
 		return true;
 	}
@@ -336,60 +363,60 @@ boolean auto_haveCincho()
 	return false;
 }
 
-int auto_currentCinch()
+export function auto_currentCinch(): number
 {
-	if(!auto_haveCincho())
+	if (!auto_haveCincho())
 	{
 		return 0;
 	}
-	return 100 - get_property("_cinchUsed").to_int();
+	return 100 - toInt(getProperty("_cinchUsed"));
 }
 
-int auto_cinchFromNextRest()
+export function auto_cinchFromNextRest(): number
 {
-	int cinchoRestsAlready = get_property("_cinchoRests").to_int();
+	let cinchoRestsAlready: number = toInt(getProperty("_cinchoRests"));
 	// calculating for how much cinch NEXT rest will give
 	cinchoRestsAlready++;
 	return auto_cinchFromRestN(cinchoRestsAlready);
 }
 
-int auto_cinchFromRestN(int n)
+export function auto_cinchFromRestN(n: number): number
 {
-	int cinchGainedFromRest = 5;
-	if     (n <= 5) cinchGainedFromRest = 30;
-	else if(n == 6) cinchGainedFromRest = 25;
-	else if(n == 7) cinchGainedFromRest = 20;
-	else if(n == 8) cinchGainedFromRest = 15;
-	else if(n == 9) cinchGainedFromRest = 10;
-	
+	let cinchGainedFromRest: number = 5;
+	if (n <= 5) { cinchGainedFromRest = 30; }
+	else if (n === 6) { cinchGainedFromRest = 25; }
+	else if (n === 7) { cinchGainedFromRest = 20; }
+	else if (n === 8) { cinchGainedFromRest = 15; }
+	else if (n === 9) { cinchGainedFromRest = 10; }
+
 	return cinchGainedFromRest;
 }
-int auto_cinchAfterNextRest()
+export function auto_cinchAfterNextRest(): number
 {
 	return auto_currentCinch() + auto_cinchFromNextRest();
 }
 
-boolean auto_nextRestOverCinch()
+export function auto_nextRestOverCinch(): boolean
 {
 	return auto_cinchAfterNextRest() > 100;
 }
 
-boolean auto_getCinch(int goal)
+export function auto_getCinch(goal: number): boolean
 {
-	if(is_werewolf())
+	if (is_werewolf())
 	{
 		return false; //can't rest as werewolf
 	}
-	if(auto_currentCinch() >= goal)
+	if (auto_currentCinch() >= goal)
 	{
 		return true;
 	}
-	if(!haveFreeRestAvailable())
+	if (!haveFreeRestAvailable())
 	{
 		// don't have enough cinch and don't have any free rests left
 		return false;
 	}
-	if(!haveAnyIotmAlternativeRestSiteAvailable() && (get_dwelling() == $item[big rock] && !in_small()))
+	if (!haveAnyIotmAlternativeRestSiteAvailable() && (getDwelling() === Item.get("big rock") && !in_small()))
 	{
 		// don't have anywhere to rest
 		// get dwelling returns big rock when no place to rest in campsite
@@ -397,52 +424,49 @@ boolean auto_getCinch(int goal)
 		return false;
 	}
 	// use free rests until have enough cinch or out of rests
-	while(auto_currentCinch() < goal && haveFreeRestAvailable() && !in_wereprof())
+	while (auto_currentCinch() < goal && haveFreeRestAvailable() && !in_wereprof())
 	{
-		if(!doFreeRest())
+		if (!doFreeRest())
 		{
-			auto_log_debug("Failed to rest to charge cincho. Will try again later.");
+			auto_log_debug$1("Failed to rest to charge cincho. Will try again later.");
 			return false;
 		}
 	}
-
 	// go for cinch as a professor. commented out for now because mafia tracking of free rests as a prof MAY not be working as expected
 	/*while(auto_currentCinch() < goal && haveFreeRestAvailable() && is_professor())
 	{
 		visit_url("place.php?whichplace=wereprof_cottage&action=wereprof_sleep"); //just visit the cottage to sleep as professor
 	}*/
-
 	// see if we got enough cinch after using free rests
-	if(auto_currentCinch() >= goal)
+	if (auto_currentCinch() >= goal)
 	{
 		return true;
 	}
 	return false;
 }
 
-boolean shouldCinchoConfetti()
+export function shouldCinchoConfetti(): boolean
 {
 	// Cincho: Confetti Extravaganza doubles stat gains of current combat
 	// costs 5 cinch and flips out the monster
 	// cast this skill when we can't cast any more fiesta exists
-
 	// can't cast it if we don't have it
-	if(!canUse($skill[Cincho: Confetti Extravaganza]))
+	if (!canUse$2(Skill.get("Cincho: Confetti Extravaganza")))
 	{
 		return false;
 	}
 	// don't over level
-	if(!disregardInstantKarma())
+	if (!disregardInstantKarma())
 	{
 		return false;
 	}
 	// save cinch for fiest exit
-	if(auto_currentCinch() > 60)
+	if (auto_currentCinch() > 60)
 	{
 		return false;
 	}
 	// use all free rests before using confetti. May get enough cinch to fiesta exit
-	if (haveFreeRestAvailable() || numeric_modifier("Free Rests") < auto_potentialMaxFreeRests())
+	if (haveFreeRestAvailable() || numericModifier("Free Rests") < auto_potentialMaxFreeRests())
 	{
 		return false;
 	}
@@ -450,316 +474,308 @@ boolean shouldCinchoConfetti()
 	return true;
 }
 
-int auto_potentialMaxCinchLeft()
+export function auto_potentialMaxCinchLeft(): number
 {
-	int max_rests = auto_potentialMaxFreeRests();
-	int curr_free_rests_used = get_property("_cinchoRests").to_int();
-	int cinch = auto_currentCinch();
-	for (int irest = curr_free_rests_used+1 ; irest < max_rests ; irest++)
+	let max_rests: number = auto_potentialMaxFreeRests();
+	let curr_free_rests_used: number = toInt(getProperty("_cinchoRests"));
+	let cinch: number = auto_currentCinch();
+	for (let irest: number = curr_free_rests_used + 1; irest < max_rests; irest++)
 	{
 		cinch = cinch + auto_cinchFromRestN(irest);
 	}
 	return cinch;
 }
 
-int auto_cinchForcesLeft()
+export function auto_cinchForcesLeft(): number
 {
-	return floor(auto_potentialMaxCinchLeft()/60);
+	return floor(auto_potentialMaxCinchLeft() / 60);
 }
 
-boolean auto_have2002Catalog()
+let $_auto_have2002Catalog_catalog: Item | undefined;
+
+export function auto_have2002Catalog(): boolean
 {
-	static item catalog = wrap_item($item[2002 Mr. Store Catalog]);
-	if(auto_is_valid(catalog) && (item_amount(catalog) > 0 || have_equipped(catalog)))
+	$_auto_have2002Catalog_catalog ??= wrap_item(Item.get("2002 Mr. Store Catalog"));
+	if (auto_is_valid($_auto_have2002Catalog_catalog) && (itemAmount($_auto_have2002Catalog_catalog) > 0 || haveEquipped($_auto_have2002Catalog_catalog)))
 	{
 		return true;
 	}
 	return false;
 }
 
-int remainingCatalogCredits()
+export function remainingCatalogCredits(): number
 {
-	if(!auto_have2002Catalog())
+	if (!auto_have2002Catalog())
 	{
 		return 0;
 	}
-	if(!get_property("_2002MrStoreCreditsCollected").to_boolean())
+	if (!toBoolean(getProperty("_2002MrStoreCreditsCollected")))
 	{
 		// using item collects credits
-		if(in_lol())
-		{	//autoscend doesn't always trigger in LoL, switching to specify Replica
-			use($item[Replica 2002 Mr. Store Catalog]);
+		if (in_lol())
+		{ //autoscend doesn't always trigger in LoL, switching to specify Replica
+			use(Item.get("Replica 2002 Mr. Store Catalog"));
 		}
-		else
-		{
-			use($item[2002 Mr. Store Catalog]);
+		else {
+			use(Item.get("2002 Mr. Store Catalog"));
 		}
 	}
-	return get_property("availableMrStore2002Credits").to_int();
+	return toInt(getProperty("availableMrStore2002Credits"));
 }
 
-boolean auto_haveIdolMicrophone()
+export function auto_haveIdolMicrophone(): boolean
 {
-	if(item_amount($item[Loathing Idol Microphone]) > 0)
+	if (itemAmount(Item.get("Loathing Idol Microphone")) > 0)
 	{
 		return true;
 	}
-	if(item_amount($item[Loathing Idol Microphone (75% charged)]) > 0)
+	if (itemAmount(Item.get("Loathing Idol Microphone (75% charged)")) > 0)
 	{
 		return true;
 	}
-	if(item_amount($item[Loathing Idol Microphone (50% charged)]) > 0)
+	if (itemAmount(Item.get("Loathing Idol Microphone (50% charged)")) > 0)
 	{
 		return true;
 	}
-	if(item_amount($item[Loathing Idol Microphone (25% charged)]) > 0)
+	if (itemAmount(Item.get("Loathing Idol Microphone (25% charged)")) > 0)
 	{
 		return true;
 	}
 	return false;
 }
 
-void auto_buyFrom2002MrStore()
+export function auto_buyFrom2002MrStore(): void
 {
-	if(remainingCatalogCredits() == 0)
+	if (remainingCatalogCredits() === 0)
 	{
 		return;
 	}
-	auto_log_debug("Have " + remainingCatalogCredits() + " credit(s) to buy from Mr. Store 2002. Let's spend them!");
-
+	auto_log_debug$1(`Have ${remainingCatalogCredits()} credit(s) to buy from Mr. Store 2002. Let's spend them!`);
 	// manual of secret door detection. skill: Secret door awareness
-	item itemConsidering = $item[manual of secret door detection];
-	if(can_read_skillbook(itemConsidering) && remainingCatalogCredits() > 0 && !auto_have_skill($skill[Secret door awareness]) && auto_is_valid(itemConsidering))
+	let itemConsidering: Item = Item.get("Manual of Secret Door Detection");
+	if (can_read_skillbook(itemConsidering) && remainingCatalogCredits() > 0 && !auto_have_skill(Skill.get("Secret Door Awareness")) && auto_is_valid(itemConsidering))
 	{
-		buy($coinmaster[Mr. Store 2002], 1, itemConsidering);
+		buy(Coinmaster.get("Mr. Store 2002"), 1, itemConsidering);
 		use(itemConsidering);
-		handleTracker("Mr. Store 2002","Claimed "+itemConsidering, "auto_iotm_claim");
+		handleTracker$1("Mr. Store 2002", `Claimed ${itemConsidering}`, "auto_iotm_claim");
 	}
 	//Pro skateboard to dupe tomb rat king drops
-	itemConsidering = $item[pro skateboard];
-	if(remainingCatalogCredits() > 0 && auto_is_valid(itemConsidering) && !possessEquipment(itemConsidering))
+	itemConsidering = Item.get("pro skateboard");
+	if (remainingCatalogCredits() > 0 && auto_is_valid(itemConsidering) && !possessEquipment(itemConsidering))
 	{
-		buy($coinmaster[Mr. Store 2002], 1, itemConsidering);
-		handleTracker("Mr. Store 2002","Claimed "+itemConsidering, "auto_iotm_claim");
+		buy(Coinmaster.get("Mr. Store 2002"), 1, itemConsidering);
+		handleTracker$1("Mr. Store 2002", `Claimed ${itemConsidering}`, "auto_iotm_claim");
 	}
 	//FLUDA is +25% item, and a pickpocket
-	itemConsidering = $item[Flash Liquidizer Ultra Dousing Accessory];
-	if(remainingCatalogCredits() > 0 && auto_is_valid(itemConsidering) && !possessEquipment(itemConsidering))
+	itemConsidering = Item.get("Flash Liquidizer Ultra Dousing Accessory");
+	if (remainingCatalogCredits() > 0 && auto_is_valid(itemConsidering) && !possessEquipment(itemConsidering))
 	{
-		buy($coinmaster[Mr. Store 2002], 1, itemConsidering);
-		handleTracker("Mr. Store 2002","Claimed "+itemConsidering, "auto_iotm_claim");
+		buy(Coinmaster.get("Mr. Store 2002"), 1, itemConsidering);
+		handleTracker$1("Mr. Store 2002", `Claimed ${itemConsidering}`, "auto_iotm_claim");
 	}
 	// meat butler on day 1 of run
-	itemConsidering = $item[meat butler];
-	if(have_campground() && remainingCatalogCredits() > 0 && my_daycount() == 1 && !haveCampgroundMaid() && auto_is_valid(itemConsidering))
+	itemConsidering = Item.get("Meat Butler");
+	if (haveCampground() && remainingCatalogCredits() > 0 && myDaycount() === 1 && !haveCampgroundMaid() && auto_is_valid(itemConsidering))
 	{
-		buy($coinmaster[Mr. Store 2002], 1, itemConsidering);
+		buy(Coinmaster.get("Mr. Store 2002"), 1, itemConsidering);
 		use(itemConsidering);
-		visit_url("campground.php"); // get butler meat
-		handleTracker("Mr. Store 2002","Claimed "+itemConsidering, "auto_iotm_claim");
+		visitUrl("campground.php"); // get butler meat
+		handleTracker$1("Mr. Store 2002", `Claimed ${itemConsidering}`, "auto_iotm_claim");
 	}
 	// giant black monolith. Mostly useful at low level for stats
-	if (have_campground() && (my_level() < 13 || get_property("auto_disregardInstantKarma").to_boolean()) &&
-	!(auto_haveSeptEmberCenser() || auto_haveTrainSet()) && !auto_ignoreExperience()) {
-		itemConsidering = $item[giant black monolith];
-		if(remainingCatalogCredits() > 0 && !(auto_get_campground() contains itemConsidering) && auto_is_valid(itemConsidering))
+	if (haveCampground() && (myLevel() < 13 || toBoolean(getProperty("auto_disregardInstantKarma"))) && !(auto_haveSeptEmberCenser() || auto_haveTrainSet()) && !auto_ignoreExperience()) {
+		itemConsidering = Item.get("Giant black monolith");
+		if (remainingCatalogCredits() > 0 && !(auto_get_campground().has(itemConsidering)) && auto_is_valid(itemConsidering))
 		{
-			buy($coinmaster[Mr. Store 2002], 1, itemConsidering);
+			buy(Coinmaster.get("Mr. Store 2002"), 1, itemConsidering);
 			use(itemConsidering);
-			handleTracker("Mr. Store 2002","Claimed "+itemConsidering, "auto_iotm_claim");
-			visit_url("campground.php?action=monolith");
+			handleTracker$1("Mr. Store 2002", `Claimed ${itemConsidering}`, "auto_iotm_claim");
+			visitUrl("campground.php?action=monolith");
 		}
 	}
 	// crimbo cookie. Should we expand to buy more or use in more paths beyond HC LoL?
-	itemConsidering = $item[Crimbo cookie sheet];
-	if(remainingCatalogCredits() > 0 && in_hardcore() && my_daycount() == 1 && in_lol())
+	itemConsidering = Item.get("Crimbo cookie sheet");
+	if (remainingCatalogCredits() > 0 && inHardcore() && myDaycount() === 1 && in_lol())
 	{
-		buy($coinmaster[Mr. Store 2002], remainingCatalogCredits(), itemConsidering);
-		handleTracker("Mr. Store 2002","Claimed "+itemConsidering, "auto_iotm_claim");
+		buy(Coinmaster.get("Mr. Store 2002"), remainingCatalogCredits(), itemConsidering);
+		handleTracker$1("Mr. Store 2002", `Claimed ${itemConsidering}`, "auto_iotm_claim");
 	}
 	// loathing idol microphone. Use remaining credits
-	itemConsidering = $item[loathing idol microphone];
-	if(remainingCatalogCredits() > 0 && auto_is_valid(itemConsidering))
+	itemConsidering = Item.get("Loathing Idol Microphone");
+	if (remainingCatalogCredits() > 0 && auto_is_valid(itemConsidering))
 	{
-		buy($coinmaster[Mr. Store 2002], remainingCatalogCredits(), itemConsidering);
-		handleTracker("Mr. Store 2002","Claimed "+itemConsidering, "auto_iotm_claim");
+		buy(Coinmaster.get("Mr. Store 2002"), remainingCatalogCredits(), itemConsidering);
+		handleTracker$1("Mr. Store 2002", `Claimed ${itemConsidering}`, "auto_iotm_claim");
 	}
 }
 
-void auto_useBlackMonolith()
+export function auto_useBlackMonolith(): void
 {
 	// done if already used it today
-	if(get_property("_blackMonolithUsed").to_boolean())
+	if (toBoolean(getProperty("_blackMonolithUsed")))
 	{
 		return;
 	}
 	// done if we don't want stats
-	if(!disregardInstantKarma())
+	if (!disregardInstantKarma())
 	{
 		return;
 	}
 	// done if we don't have monolith
-	if(!(auto_get_campground() contains $item[giant black monolith]))
+	if (!(auto_get_campground().has(Item.get("Giant black monolith"))))
 	{
 		return;
 	}
 	// use monolith
-	visit_url("campground.php?action=monolith");
+	visitUrl("campground.php?action=monolith");
 }
 
-int auto_dousesRemaining()
+export function auto_dousesRemaining(): number
 {
-	item fluda = $item[Flash Liquidizer Ultra Dousing Accessory];
-	if (available_amount(fluda)<1 || !auto_is_valid(fluda))
+	let fluda: Item = Item.get("Flash Liquidizer Ultra Dousing Accessory");
+	if (availableAmount(fluda) < 1 || !auto_is_valid(fluda))
 	{
 		return 0;
 	}
-	return 3-get_property("_douseFoeUses").to_int();
+	return 3 - toInt(getProperty("_douseFoeUses"));
 }
 
-boolean auto_haveAugustScepter()
+let $_auto_haveAugustScepter_scepter: Item | undefined;
+
+export function auto_haveAugustScepter(): boolean
 {
-	static item scepter = wrap_item($item[august scepter]);
-	if(auto_is_valid(scepter) && (item_amount(scepter) > 0 || have_equipped(scepter)))
+	$_auto_haveAugustScepter_scepter ??= wrap_item(Item.get("august scepter"));
+	if (auto_is_valid($_auto_haveAugustScepter_scepter) && (itemAmount($_auto_haveAugustScepter_scepter) > 0 || haveEquipped($_auto_haveAugustScepter_scepter)))
 	{
 		return true;
 	}
 	return false;
 }
 
-void auto_scepterSkills()
+export function auto_scepterSkills(): void
 {
-	if(!auto_haveAugustScepter())
+	if (!auto_haveAugustScepter())
 	{
 		return;
 	}
-	
-	if(canUse($skill[Aug. 24th: Waffle Day!]) && !get_property("_aug24Cast").to_boolean())
+
+	if (canUse$2(Skill.get("Aug. 24th: Waffle Day!")) && !toBoolean(getProperty("_aug24Cast")))
 	{
-		use_skill($skill[Aug. 24th: Waffle Day!]); //get some waffles to hopefully change some bad monsters to better ones
+		useSkill(Skill.get("Aug. 24th: Waffle Day!")); //get some waffles to hopefully change some bad monsters to better ones
 	}
-	if(canUse($skill[Aug. 28th: Race Your Mouse Day!]) && !get_property("_aug28Cast").to_boolean() && pathHasFamiliar())
+	if (canUse$2(Skill.get("Aug. 28th: Race Your Mouse Day!")) && !toBoolean(getProperty("_aug28Cast")) && pathHasFamiliar())
 	{
-		familiar hundred_fam = to_familiar(get_property("auto_100familiar"));
-		if (((in_avantGuard() && in_hardcore()) || (hundred_fam != $familiar[none] && (isAttackFamiliar(hundred_fam) || hundred_fam.block))) && have_familiar(findRockFamiliarInTerrarium()))
+		let hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
+		if ((in_avantGuard() && inHardcore() || hundred_fam !== Familiar.none && (isAttackFamiliar(hundred_fam) || hundred_fam.block)) && haveFamiliar(findRockFamiliarInTerrarium()))
 		{
-			use_familiar(findRockFamiliarInTerrarium());
-			use_skill($skill[Aug. 28th: Race Your Mouse Day!]); //Fam equipment to lower weight of attack familiar or Burly bodyguard (Avant Guard) for Gremlins
+			useFamiliar(findRockFamiliarInTerrarium());
+			useSkill(Skill.get("Aug. 28th: Race Your Mouse Day!")); //Fam equipment to lower weight of attack familiar or Burly bodyguard (Avant Guard) for Gremlins
 		}
-		else if(auto_needsGoodFamiliarEquipment() || in_small())
+		else if (auto_needsGoodFamiliarEquipment() || in_small())
 		{
-			if(!is100FamRun())
+			if (!is100FamRun())
 			{
-				use_familiar(findNonRockFamiliarInTerrarium()); //equip non-rock fam to ensure we get tiny gold medal
+				useFamiliar(findNonRockFamiliarInTerrarium()); //equip non-rock fam to ensure we get tiny gold medal
 			}
-			else
-			{
-				use_familiar(hundred_fam); // assuming non-rock familiar
+			else {
+				useFamiliar(hundred_fam); // assuming non-rock familiar
 			}
-			use_skill($skill[Aug. 28th: Race Your Mouse Day!]); //Fam equipment
+			useSkill(Skill.get("Aug. 28th: Race Your Mouse Day!")); //Fam equipment
 		}
 	}
 	//see how much mana cost reduction we can get (up to 3mp)
-	simMaximizeWith("-1000mana cost");
+	simMaximizeWith$1("-1000mana cost");
 
-	int manaCostMaximize = simValue("Mana Cost");
+	let manaCostMaximize: number = toInt(simValue("Mana Cost"));
 	if (!auto_turbo())
 	{
-		if(manaCostMaximize < 3 && canUse($skill[Aug. 30th: Beach Day!]) && !get_property("_aug30Cast").to_boolean() && get_property("_augSkillsCast").to_int()< 5)
+		if (manaCostMaximize < 3 && canUse$2(Skill.get("Aug. 30th: Beach Day!")) && !toBoolean(getProperty("_aug30Cast")) && toInt(getProperty("_augSkillsCast")) < 5)
 		{
-			use_skill($skill[Aug. 30th: Beach Day!]); //For -MP (and Rollover Adventures)
+			useSkill(Skill.get("Aug. 30th: Beach Day!")); //For -MP (and Rollover Adventures)
 		}
 	}
 }
 
-void auto_scepterRollover()
+export function auto_scepterRollover(): void
 {
 	//We don't want the baywatch if our accessory slots are already filled with > 7 adventure items or we if one of the slots is the counterclockwise watch
-	boolean noWatch = ((numeric_modifier(equipped_item($slot[acc1]),"Adventures") >= 7 &&
-	numeric_modifier(equipped_item($slot[acc2]),"Adventures") >= 7 &&
-	numeric_modifier(equipped_item($slot[acc3]),"Adventures") >= 7) ||
-		((is_watch(equipped_item($slot[acc1])) && numeric_modifier(equipped_item($slot[acc1]),"Adventures") >= 7) ||
-		(is_watch(equipped_item($slot[acc2])) && numeric_modifier(equipped_item($slot[acc2]),"Adventures") >= 7) ||
-		(is_watch(equipped_item($slot[acc3])) && numeric_modifier(equipped_item($slot[acc3]),"Adventures") >= 7)));
-	if(!noWatch && canUse($skill[Aug. 30th: Beach Day!]) && !get_property("_aug30Cast").to_boolean() && get_property("_augSkillsCast").to_int()< 5)
+	let noWatch: boolean = numericModifier(equippedItem(Slot.get("acc1")), "Adventures") >= 7 && numericModifier(equippedItem(Slot.get("acc2")), "Adventures") >= 7 && numericModifier(equippedItem(Slot.get("acc3")), "Adventures") >= 7 || (is_watch(equippedItem(Slot.get("acc1"))) && numericModifier(equippedItem(Slot.get("acc1")), "Adventures") >= 7 || is_watch(equippedItem(Slot.get("acc2"))) && numericModifier(equippedItem(Slot.get("acc2")), "Adventures") >= 7 || is_watch(equippedItem(Slot.get("acc3"))) && numericModifier(equippedItem(Slot.get("acc3")), "Adventures") >= 7);
+	if (!noWatch && canUse$2(Skill.get("Aug. 30th: Beach Day!")) && !toBoolean(getProperty("_aug30Cast")) && toInt(getProperty("_augSkillsCast")) < 5)
 	{
-		use_skill($skill[Aug. 30th: Beach Day!]); //For Rollover adventures (and -MP)
+		useSkill(Skill.get("Aug. 30th: Beach Day!")); //For Rollover adventures (and -MP)
 		equipRollover(true);
 	}
 	//Get mainstats
-	if(get_property("_augSkillsCast").to_int()< 5 && my_level() < 13)
+	if (toInt(getProperty("_augSkillsCast")) < 5 && myLevel() < 13)
 	{
-		if(canUse($skill[Aug. 12th: Elephant Day!]) && !get_property("_aug12Cast").to_boolean() && my_primestat() == $stat[muscle])
+		if (canUse$2(Skill.get("Aug. 12th: Elephant Day!")) && !toBoolean(getProperty("_aug12Cast")) && myPrimestat() === Stat.get("Muscle"))
 		{
-			use_skill($skill[Aug. 12th: Elephant Day!]); //get muscle stubstats
+			useSkill(Skill.get("Aug. 12th: Elephant Day!")); //get muscle stubstats
 		}
-		if(canUse($skill[Aug. 11th: Presidential Joke Day!]) && !get_property("_aug11Cast").to_boolean() && my_primestat() == $stat[mysticality])
+		if (canUse$2(Skill.get("Aug. 11th: Presidential Joke Day!")) && !toBoolean(getProperty("_aug11Cast")) && myPrimestat() === Stat.get("Mysticality"))
 		{
-			use_skill($skill[Aug. 11th: Presidential Joke Day!]); //get mysticality stubstats
+			useSkill(Skill.get("Aug. 11th: Presidential Joke Day!")); //get mysticality stubstats
 		}
-		if(canUse($skill[Aug. 23rd: Ride the Wind Day!]) && !get_property("_aug23Cast").to_boolean() && my_primestat() == $stat[moxie])
+		if (canUse$2(Skill.get("Aug. 23rd: Ride the Wind Day!")) && !toBoolean(getProperty("_aug23Cast")) && myPrimestat() === Stat.get("Moxie"))
 		{
-			use_skill($skill[Aug. 23rd: Ride the Wind Day!]); //get moxies stubstats
+			useSkill(Skill.get("Aug. 23rd: Ride the Wind Day!")); //get moxies stubstats
 		}
 	}
-	if(canUse($skill[Aug. 13th: Left\/Off Hander\'s Day!]) && !get_property("_aug13Cast").to_boolean() &&
-	get_property("_augSkillsCast").to_int()< 5 && numeric_modifier(equipped_item($slot[off-hand]),"Adventures") >  0 && weapon_hands(equipped_item($slot[off-hand])) == 0)
+	if (canUse$2(Skill.get("Aug. 13th: Left/Off Hander's Day!")) && !toBoolean(getProperty("_aug13Cast")) && toInt(getProperty("_augSkillsCast")) < 5 && numericModifier(equippedItem(Slot.get("off-hand")), "Adventures") > 0 && weaponHands(equippedItem(Slot.get("off-hand"))) === 0)
 	{
-		use_skill($skill[Aug. 13th: Left\/Off Hander\'s Day!]); //bump up the off-hand
+		useSkill(Skill.get("Aug. 13th: Left/Off Hander's Day!")); //bump up the off-hand
 	}
-	if(canUse($skill[Aug. 27th: Just Because Day!]) && !get_property("_aug27Cast").to_boolean() && get_property("_augSkillsCast").to_int()< 5)
+	if (canUse$2(Skill.get("Aug. 27th: Just Because Day!")) && !toBoolean(getProperty("_aug27Cast")) && toInt(getProperty("_augSkillsCast")) < 5)
 	{
-		use_skill($skill[Aug. 27th: Just Because Day!]); //3 random buffs
+		useSkill(Skill.get("Aug. 27th: Just Because Day!")); //3 random buffs
 	}
 }
 
-void auto_lostStomach(boolean force)
+export function auto_lostStomach$1(force: boolean): void
 {
-	if(!auto_haveAugustScepter() || in_small() || fullness_limit()==0)
+	if (!auto_haveAugustScepter() || in_small() || fullnessLimit() === 0)
 	{
 		return;
 	}
-
 	//Cast Roller Coaster Day if forced to and fullness is greater than 0 and it's available to cast
-	if (force && my_fullness() > 0 && get_property("_augSkillsCast").to_int() < 5 && !get_property("_aug16Cast").to_boolean())
+	if (force && myFullness() > 0 && toInt(getProperty("_augSkillsCast")) < 5 && !toBoolean(getProperty("_aug16Cast")))
 	{
-		use_skill($skill[Aug. 16th: Roller Coaster Day!]);
+		useSkill(Skill.get("Aug. 16th: Roller Coaster Day!"));
 	}
-
 	//Otherwise leave Roller Coaster Day until near the end of the day and it's available to cast
-	if(fullness_left() == 0 && inebriety_left() == 0 && my_adventures() < 10  && get_property("_augSkillsCast").to_int() < 5 && !get_property("_aug16Cast").to_boolean() && !force)
+	if (fullness_left() === 0 && inebriety_left() === 0 && myAdventures() < 10 && toInt(getProperty("_augSkillsCast")) < 5 && !toBoolean(getProperty("_aug16Cast")) && !force)
 	{
-		use_skill($skill[Aug. 16th: Roller Coaster Day!]);
+		useSkill(Skill.get("Aug. 16th: Roller Coaster Day!"));
 	}
 }
 
-boolean auto_haveBofa()
+export function auto_haveBofa(): boolean
 {
-	return auto_is_valid($skill[just the facts]) && have_skill($skill[just the facts]);
+	return auto_is_valid$2(Skill.get("Just the Facts")) && haveSkill(Skill.get("Just the Facts"));
 }
 
-boolean auto_canHabitat()
+export function auto_canHabitat(): boolean
 {
 	if (!auto_haveBofa())
 	{
 		return false;
 	}
-	if (get_property("_monsterHabitatsRecalled").to_int() >= 3)
+	if (toInt(getProperty("_monsterHabitatsRecalled")) >= 3)
 	{
 		// no charges left
 		return false;
 	}
-	if (get_property("_monsterHabitatsFightsLeft").to_int() > 0)
+	if (toInt(getProperty("_monsterHabitatsFightsLeft")) > 0)
 	{
 		// already habitating something but we may not need all 5 of them in certain situations
-		switch (get_property("_monsterHabitatsMonster").to_monster())
+		switch (toMonster(getProperty("_monsterHabitatsMonster")))
 		{
-			case $monster[fantasy bandit]:
-				return (fantasyBanditsFought() < 5);
-			case $monster[modern zmobie]:
-				return get_property("cyrptAlcoveEvilness").to_int() > 13;
-			case $monster[dirty old lihc]:
-				return get_property("cyrptNicheEvilness").to_int() > 13;
+			case Monster.get("fantasy bandit"):
+				return fantasyBanditsFought() < 5;
+			case Monster.get("modern zmobie"):
+				return toInt(getProperty("cyrptAlcoveEvilness")) > 13;
+			case Monster.get("dirty old lihc"):
+				return toInt(getProperty("cyrptNicheEvilness")) > 13;
 			default:
 				return false;
 		}
@@ -767,119 +783,123 @@ boolean auto_canHabitat()
 	return true;
 }
 
-boolean auto_habitatTarget(monster target)
+export function auto_habitatTarget(target: Monster): boolean
 {
 	if (!auto_canHabitat()) {
 		return false;
 	}
-	if (get_property("_monsterHabitatsMonster").to_monster() == target && get_property("_monsterHabitatsFightsLeft").to_int() > 0)
+	if (toMonster(getProperty("_monsterHabitatsMonster")) === target && toInt(getProperty("_monsterHabitatsFightsLeft")) > 0)
 	{
 		// already habitating this monster
 		return false;
 	}
-	switch (target)
-	{
-		case $monster[fantasy bandit]:
+	{ 
 			// only worth it if we need all 5.
-			return (fantasyBanditsFought() == 0);
-		case $monster[modern zmobie]:
 		 	// only worth it if we need 30 or more evilness reduced.
-			return ((get_property("cyrptAlcoveEvilness").to_int() - (5 * (5 + cyrptEvilBonus()))) > 13);
-		case $monster[dirty old lihc]:
 		 	// only worth it if we need 18 or more evilness reduced.
 			// avant guard makes free fights cost a turn. Use DOL in place of tentacle
-			return (in_avantGuard() && (get_property("cyrptNicheEvilness").to_int() - (5 * (3 + cyrptEvilBonus()))) > 13);
-		case $monster[lobsterfrogman]:
 		 	// only worth it if we need 3+ barrels
-		 	boolean sonofa_complete = get_property("sidequestLighthouseCompleted") == "hippy" || get_property("sidequestLighthouseCompleted") == "fratboy";
-			return (!sonofa_complete && item_amount($item[barrel of gunpowder])<4);
-		case $monster[eldritch tentacle]:
+
+		 	let sonofa_complete: boolean = false;
+		 	switch (target)
+	{
+		case Monster.get("fantasy bandit"):
+			return fantasyBanditsFought() === 0;
+		case Monster.get("modern zmobie"):
+			return toInt(getProperty("cyrptAlcoveEvilness")) - 5 * (5 + cyrptEvilBonus$1()) > 13;
+		case Monster.get("dirty old lihc"):
+			return in_avantGuard() && toInt(getProperty("cyrptNicheEvilness")) - 5 * (3 + cyrptEvilBonus$1()) > 13;
+		case Monster.get("lobsterfrogman"):		 	sonofa_complete = getProperty("sidequestLighthouseCompleted") === "hippy" || getProperty("sidequestLighthouseCompleted") === "fratboy";
+			return !sonofa_complete && itemAmount(Item.get("barrel of gunpowder")) < 4;
+		case Monster.get("Eldritch Tentacle"):
+			
 			// Max tentacles fought being free is 11, so don't habitat if we've fought more than 6
 			// This variable increments at the end of combat, so we need 5 here.
-			if (get_property("_eldritchTentaclesFoughtToday").to_int() > 5)
+if (toInt(getProperty("_eldritchTentaclesFoughtToday")) > 5)
 			{
 				return false;
 			}
+			
 			// don't habitat free fights in avant guard
-			return (!in_avantGuard() && (get_property("auto_habitatMonster").to_monster() == target || (get_property("_monsterHabitatsMonster").to_monster() == target && get_property("_monsterHabitatsFightsLeft").to_int() == 0)));
+return !in_avantGuard() && (toMonster(getProperty("auto_habitatMonster")) === target || toMonster(getProperty("_monsterHabitatsMonster")) === target && toInt(getProperty("_monsterHabitatsFightsLeft")) === 0);
 		default:
-			return (get_property("auto_habitatMonster").to_monster() == target);
-	}
+			return toMonster(getProperty("auto_habitatMonster")) === target;
+	} }
 	return false;
 }
 
-int auto_habitatFightsLeft()
+export function auto_habitatFightsLeft(): number
 {
-	return get_property("_monsterHabitatsFightsLeft").to_int();
+	return toInt(getProperty("_monsterHabitatsFightsLeft"));
 }
 
-monster auto_habitatMonster()
+export function auto_habitatMonster(): Monster
 {
-	if (get_property("_monsterHabitatsFightsLeft").to_int() > 0)
+	if (toInt(getProperty("_monsterHabitatsFightsLeft")) > 0)
 	{
-		return get_property("_monsterHabitatsMonster").to_monster();
+		return toMonster(getProperty("_monsterHabitatsMonster"));
 	}
-	return $monster[none];
+	return Monster.none;
 }
 
-boolean auto_canCircadianRhythm()
+export function auto_canCircadianRhythm(): boolean
 {
 	if (!auto_haveBofa())
 	{
 		return false;
 	}
-	if (get_property("_circadianRhythmsRecalled").to_boolean())
+	if (toBoolean(getProperty("_circadianRhythmsRecalled")))
 	{
 		return false;
 	}
 	return true;
 }
 
-boolean auto_circadianRhythmTarget(monster target)
+export function auto_circadianRhythmTarget(target: Monster): boolean
 {
 	if (!auto_canCircadianRhythm())
 	{
 		return false;
 	}
-	if (!($monsters[shadow bat, shadow cow, shadow devil, shadow guy, shadow hexagon, shadow orb, shadow prism, shadow slab, shadow snake, shadow spider, shadow stalk, shadow tree] contains target))
+	if (!(Monster.get(["shadow bat", "shadow cow", "shadow devil", "shadow guy", "shadow hexagon", "shadow orb", "shadow prism", "shadow slab", "shadow snake", "shadow spider", "shadow stalk", "shadow tree"]).includes(target)))
 	{
 		return false;
 	}
 	return true;
 }
 
-boolean auto_circadianRhythmTarget(phylum target)
+export function auto_circadianRhythmTarget$1(target: Phylum): boolean
 {
 	if (!auto_canCircadianRhythm())
 	{
 		return false;
 	}
-	if (!($phylums[Orc, Hippy] contains target && $locations[The Battlefield (Hippy Uniform), The Battlefield (Frat Uniform)] contains my_location()))
+	if (!(Phylum.get(["orc", "hippy"]).includes(target) && Location.get(["The Battlefield (Hippy Uniform)", "The Battlefield (Frat Uniform)"]).includes(myLocation())))
 	{
 		return false;
 	}
 	return true;
 }
 
-int auto_wishFactsLeft()
+export function auto_wishFactsLeft(): number
 {
 	if (!auto_haveBofa()) { return 0; }
-	return 3-get_property("_bookOfFactsWishes").to_int();
+	return 3 - toInt(getProperty("_bookOfFactsWishes"));
 }
 
-boolean auto_haveJillOfAllTrades()
+export function auto_haveJillOfAllTrades(): boolean
 {
-	if(auto_have_familiar($familiar[Jill-of-All-Trades]))
+	if (auto_have_familiar(Familiar.get("Jill-of-All-Trades")))
 	{
 		return true;
 	}
 	return false;
 }
 
-string getParsedCandleMode()
+export function getParsedCandleMode(): string
 {
 	// returns candle mode which matches our familiar categories
-	switch(get_property("ledCandleMode"))
+	switch (getProperty("ledCandleMode"))
 	{
 		case "disco":
 			return "item";
@@ -894,30 +914,29 @@ string getParsedCandleMode()
 	}
 }
 
-void auto_handleJillOfAllTrades()
+export function auto_handleJillOfAllTrades(): void
 {
-	if (!auto_haveJillOfAllTrades() || item_amount($item[LED candle]) == 0)
+	if (!auto_haveJillOfAllTrades() || itemAmount(Item.get("LED candle")) === 0)
 	{
 		return;
 	}
-
 	// only bother to configure candle if Jill is equiped
-	if(my_familiar() != $familiar[Jill-of-All-Trades])
+	if (myFamiliar() !== Familiar.get("Jill-of-All-Trades"))
 	{
 		return;
 	}
 
-	string currentMode = getParsedCandleMode();
+	let currentMode: string = getParsedCandleMode();
 	// want to configure jill to have bonus of whatever fam type we last looked up
-	string desiredCandleMode = get_property("auto_lastFamiliarLookupType");
+	let desiredCandleMode: string = getProperty("auto_lastFamiliarLookupType");
 
-	auto_log_debug(`Jill current mode: {currentMode} and desired is {desiredCandleMode}`);
-	if(currentMode == desiredCandleMode)
+	auto_log_debug$1(`Jill current mode: ${currentMode} and desired is ${desiredCandleMode}`);
+	if (currentMode === desiredCandleMode)
 	{
 		return;
 	}
 
-	switch(desiredCandleMode)
+	switch (desiredCandleMode)
 	{
 		case "item":
 		case "regen":
@@ -925,17 +944,17 @@ void auto_handleJillOfAllTrades()
 		case "gremlin":
 		case "gremlins":
 		case "yellowray":
-			cli_execute("jillcandle item");
+			cliExecute("jillcandle item");
 			break;
 		case "meat":
-			cli_execute("jillcandle meat");
+			cliExecute("jillcandle meat");
 			break;
 		case "stat":
 		case "drop":
-			cli_execute("jillcandle stat");
+			cliExecute("jillcandle stat");
 			break;
 		case "boss":
-			cli_execute("jillcandle attack");
+			cliExecute("jillcandle attack");
 			break;
 		default:
 			abort("tried to configure Jill's LED Candle with a non-supported type");
@@ -944,42 +963,42 @@ void auto_handleJillOfAllTrades()
 	return;
 }
 
-boolean auto_haveEagle()
+export function auto_haveEagle(): boolean
 {
-	if(canChangeToFamiliar($familiar[Patriotic Eagle]))
+	if (canChangeToFamiliar(Familiar.get("Patriotic Eagle")))
 	{
 		return true;
 	}
 	return false;
 }
 
-familiar auto_forceEagle(familiar famChoice)
+export function auto_forceEagle(famChoice: Familiar): Familiar
 {
 	//Force the Patriotic Eagle if we used a banish recently and can't use one until we burn 11 combats with the Eagle
-	if(auto_haveEagle() && get_property("screechCombats").to_int() > 0 && !auto_queueIgnore())
+	if (auto_haveEagle() && toInt(getProperty("screechCombats")) > 0 && !auto_queueIgnore())
 	{
-		auto_log_info("Forcing Patriotic Eagle");
-		return $familiar[Patriotic Eagle];
+		auto_log_info$1("Forcing Patriotic Eagle");
+		return Familiar.get("Patriotic Eagle");
 	}
 	return famChoice;
 }
 
-boolean auto_canRWBBlast()
+export function auto_canRWBBlast(): boolean
 {
-	if(!auto_haveEagle())
+	if (!auto_haveEagle())
 	{
 		return false;
 	}
-	if(!(auto_is_valid($skill[%fn\, fire a Red\, White and Blue Blast])))
+	if (!auto_is_valid$2(Skill.get("%fn, fire a Red, White and Blue Blast")))
 	{
 		return false;
 	}
-	if(have_effect($effect[Everything Looks Red, White and Blue]) > 0)
+	if (haveEffect(Effect.get("Everything Looks Red, White and Blue")) > 0)
 	{
 		//Already have ELRWB
 		return false;
 	}
-	if(auto_habitatMonster() != $monster[none])
+	if (auto_habitatMonster() !== Monster.none)
 	{
 		//don't want to RWB Blast a Habitated monster
 		return false;
@@ -987,220 +1006,219 @@ boolean auto_canRWBBlast()
 	return true;
 }
 
-boolean auto_RWBBlastTarget(monster target)
+export function auto_RWBBlastTarget(target: Monster): boolean
 {
-	if(!auto_canRWBBlast())
+	if (!auto_canRWBBlast())
 	{
 		return false;
 	}
-	switch(target)
+	switch (target)
 	{
-		case $monster[modern zmobie]:
+		case Monster.get("modern zmobie"):
+			
 			// only worth it if we need 15 or more evilness reduced
-			return ((get_property("cyrptAlcoveEvilness").to_int() - (3 * (5 + cyrptEvilBonus()))) > 13);
-		case $monster[dirty old lihc]:
+return toInt(getProperty("cyrptAlcoveEvilness")) - 3 * (5 + cyrptEvilBonus$1()) > 13;
+		case Monster.get("dirty old lihc"):
+			
 			// only worth it if we need 9 or more evilness reduced.
-			return ((get_property("cyrptNicheEvilness").to_int() - (3 * (3 + cyrptEvilBonus()))) > 13);
+return toInt(getProperty("cyrptNicheEvilness")) - 3 * (3 + cyrptEvilBonus$1()) > 13;
 		default:
-			return (get_property("rwbMonster").to_monster() == target);
+			return toMonster(getProperty("rwbMonster")) === target;
 	}
 	return false;
 }
 
-int auto_rwbFightsLeft()
+export function auto_rwbFightsLeft(): number
 {
-	if(auto_RWBMonster() != $monster[none])
+	if (auto_RWBMonster() !== Monster.none)
 	{
-		return (3 - get_property("rwbMonsterCount").to_int());
+		return 3 - toInt(getProperty("rwbMonsterCount"));
 	}
 	return 0;
 }
 
-monster auto_RWBMonster()
+export function auto_RWBMonster(): Monster
 {
-	if(get_property("rwbMonsterCount").to_int() < 3)
+	if (toInt(getProperty("rwbMonsterCount")) < 3)
 	{
-		return get_property("rwbMonster").to_monster();
+		return toMonster(getProperty("rwbMonster"));
 	}
-	return $monster[none];
+	return Monster.none;
 }
 
-string activeCitZoneMod() // get the active Citizen of a Zone mods, if any
-{
-	if(!auto_haveEagle() || have_effect($effect[Citizen of a Zone]) == 0)
+export function activeCitZoneMod(): string
+{ // get the active Citizen of a Zone mods, if any
+	if (!auto_haveEagle() || haveEffect(Effect.get("Citizen of a Zone")) === 0)
 	{
 		return "";
 	}
-	visit_url("desc_effect.php?whicheffect=9391a5f7577e30ac3af6309804da6944"); // visit url to refresh Mafia's _citizenZoneMods preference
-	string activeCitZoneMod = get_property("_citizenZoneMods").to_lower_case();
-	return activeCitZoneMod;
+	visitUrl("desc_effect.php?whicheffect=9391a5f7577e30ac3af6309804da6944"); // visit url to refresh Mafia's _citizenZoneMods preference
+	let activeCitZoneMod_1: string = toLowerCase(getProperty("_citizenZoneMods"));
+	return activeCitZoneMod_1;
 }
 
-boolean auto_citZoneModIsGoal(string goal)
+export function auto_citZoneModIsGoal(goal: string): boolean
 {
-	string activeCitZoneMod = activeCitZoneMod();
+	let activeCitZoneMod_1: string = activeCitZoneMod();
 
-	if(contains_text(activeCitZoneMod, goal) || (goal == "spec" && contains_text(activeCitZoneMod, "cold resistance")))
+	if (containsText(activeCitZoneMod_1, goal) || goal === "spec" && containsText(activeCitZoneMod_1, "cold resistance"))
 	{
 		return true;
 	}
 	return false;
 }
 
-boolean auto_citizenZonePrep(string goal)
+export function auto_citizenZonePrep(goal: string): boolean
 {
-	string activeCitZoneMod = activeCitZoneMod();
-	if(my_meat() < meatReserve() && goal != "mp")
+	let activeCitZoneMod_1: string = activeCitZoneMod();
+	if (myMeat() < meatReserve() && goal !== "mp")
 	{
 		return false; //don't attempt to change if we don't have a lot of meat and we are going for something other than mp
 	}
-	if(have_effect($effect[Citizen of a Zone]) > 0 && contains_text(activeCitZoneMod, goal))
+	if (haveEffect(Effect.get("Citizen of a Zone")) > 0 && containsText(activeCitZoneMod_1, goal))
 	{
-		auto_log_info("No need to remove Citizen of a Zone");
+		auto_log_info$1("No need to remove Citizen of a Zone");
 		return false;
 	}
-	if(have_effect($effect[Citizen of a Zone]) > 0 && !contains_text(activeCitZoneMod, goal) && item_amount($item[Soft Green Echo Eyedrop Antidote]) == 0)
+	if (haveEffect(Effect.get("Citizen of a Zone")) > 0 && !containsText(activeCitZoneMod_1, goal) && itemAmount(Item.get("soft green echo eyedrop antidote")) === 0)
 	{
-		auto_log_info("Can't remove Citizen of a Zone");
+		auto_log_info$1("Can't remove Citizen of a Zone");
 		return false;
 	}
-	if(!(auto_citZoneModIsGoal(goal)) && item_amount($item[Soft Green Echo Eyedrop Antidote]) > 0) //try to remove Citizen of a Zone
-	{
-		uneffect($effect[Citizen of a Zone]);
-		if(have_effect($effect[Citizen of a Zone]) > 0)
+	if (!auto_citZoneModIsGoal(goal) && itemAmount(Item.get("soft green echo eyedrop antidote")) > 0)
+	{ //try to remove Citizen of a Zone
+		uneffect(Effect.get("Citizen of a Zone"));
+		if (haveEffect(Effect.get("Citizen of a Zone")) > 0)
 		{
-			auto_log_debug("Tried to remove Citizen of a Zone but couldn't");
+			auto_log_debug$1("Tried to remove Citizen of a Zone but couldn't");
 			return false;
 		}
 	}
 	return true;
 }
 
-boolean[location] citizenZones(string goal)
+export function citizenZones(goal: string): Map<Location, boolean>
 {
-	if(goal == "meat")
+	if (goal === "meat")
 	{
-		return $locations[The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform), The Hidden Hospital, The Haunted Bathroom, The Castle in the Clouds in the Sky (Basement),
-	Lair of the Ninja Snowmen, The Defiled Cranny, The Laugh Floor, The Batrat and Ratbat Burrow, The Sleazy Back Alley];
+		return new Map([[Location.get("The Battlefield (Frat Uniform)"), true], [Location.get("The Battlefield (Hippy Uniform)"), true], [Location.get("The Hidden Hospital"), true], [Location.get("The Haunted Bathroom"), true], [Location.get("The Castle in the Clouds in the Sky (Basement)"), true],
+	[Location.get("Lair of the Ninja Snowmen"), true], [Location.get("The Defiled Cranny"), true], [Location.get("The Laugh Floor"), true], [Location.get("The Batrat and Ratbat Burrow"), true], [Location.get("The Sleazy Back Alley"), true]]);
 	}
-	if(goal == "item")
+	if (goal === "item")
 	{
-		return $locations[The Haunted Laundry Room, Whitey's Grove, The Icy Peak, Itznotyerzitz Mine,
-	The Dark Heart of the Woods, The Hidden Temple, The Haunted Library, The Bat Hole Entrance, Noob Cave];
+		return new Map([[Location.get("The Haunted Laundry Room"), true], [Location.get("Whitey's Grove"), true], [Location.get("The Icy Peak"), true], [Location.get("Itznotyerzitz Mine"), true],
+	[Location.get("The Dark Heart of the Woods"), true], [Location.get("The Hidden Temple"), true], [Location.get("The Haunted Library"), true], [Location.get("The Bat Hole Entrance"), true], [Location.get("Noob Cave"), true]]);
 	}
-	if(goal == "init")
+	if (goal === "init")
 	{
-		return $locations[The Feeding Chamber, An Unusually Quiet Barroom Brawl, Oil Peak, Cobb's Knob Kitchens,
-		The VERY Unquiet Garves, The Haunted Kitchen];
+		return new Map([[Location.get("The Feeding Chamber"), true], [Location.get("An Unusually Quiet Barroom Brawl"), true], [Location.get("Oil Peak"), true], [Location.get("Cobb's Knob Kitchens"), true],
+		[Location.get("The VERY Unquiet Garves"), true], [Location.get("The Haunted Kitchen"), true]]);
 	}
-	if(goal == "mp")
+	if (goal === "mp")
 	{
-		return $locations[The Upper Chamber, Inside the Palindome, A-boo Peak, The Hippy Camp, Megalo-City, Shadow Rift, Vanya's Castle,
-		The Hatching Chamber, Wartime Hippy Camp (Frat Disguise), The Orcish Frat House, The Middle Chamber, The Black Forest,	The Haunted Ballroom,
-		The Red Zeppelin, The Hidden Park, Twin Peak, The Smut Orc Logging Camp, The Daily Dungeon, The Spooky Forest];
+		return new Map([[Location.get("The Upper Chamber"), true], [Location.get("Inside the Palindome"), true], [Location.get("A-Boo Peak"), true], [Location.get("The Hippy Camp"), true], [Location.get("Megalo-City"), true], [Location.get("Shadow Rift"), true], [Location.get("Vanya's Castle"), true],
+		[Location.get("The Hatching Chamber"), true], [Location.get("Wartime Hippy Camp (Frat Disguise)"), true], [Location.get("The Orcish Frat House"), true], [Location.get("The Middle Chamber"), true], [Location.get("The Black Forest"), true], [Location.get("The Haunted Ballroom"), true],
+		[Location.get("The Red Zeppelin"), true], [Location.get("The Hidden Park"), true], [Location.get("Twin Peak"), true], [Location.get("The Smut Orc Logging Camp"), true], [Location.get("The Daily Dungeon"), true], [Location.get("The Spooky Forest"), true]]);
 	}
-	if(goal == "spec")
+	if (goal === "spec")
 	{
 		//prismatic resistance
-		return $locations[The Outskirts of Cobb\'s Knob];
+		return new Map([[Location.get("The Outskirts of Cobb's Knob"), true]]);
 	}
-	return $locations[none];
+	return new Map([[Location.none, true]]);
 }
-boolean auto_getCitizenZone(location loc, boolean inCombat)
+export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean
 {
-	familiar eagle = $familiar[Patriotic Eagle];
+	let eagle: Familiar = Familiar.get("Patriotic Eagle");
 	//zones are approximately organized by autoscend level quest structure
-	boolean[location] meatZones = citizenZones("meat");
-	boolean[location] itemZones = citizenZones("item");
-	boolean[location] initZones = citizenZones("init");
+	let meatZones: Map<Location, boolean> = citizenZones("meat");
+	let itemZones: Map<Location, boolean> = citizenZones("item");
+	let initZones: Map<Location, boolean> = citizenZones("init");
 	//mp zones are organized by 20-30 mp regen then 10-15 mp regen and then approximately autoscend level quest structure
-	boolean[location] mpZones = citizenZones("mp");
-	boolean[location] specZones = citizenZones("spec");
-	string activeCitZoneMod = activeCitZoneMod();
-	string goal;
-	
-	if(!can_adventure(loc))
+	let mpZones: Map<Location, boolean> = citizenZones("mp");
+	let specZones: Map<Location, boolean> = citizenZones("spec");
+	let activeCitZoneMod_1: string = activeCitZoneMod();
+	let goal: string = "";
+
+	if (!canAdventure(loc))
 	{
 		return false;
 	}
 	//set goal for tracking
-	if(specZones contains loc)
+	if (specZones.has(loc))
 	{
-		
 		//only want spec to get cold res for septEmberCenser usage and only if we don't get to L13. Don't want to do this outside of D1
 		//ideally also have spring away or some other free run
-		if((auto_goingToMouthwashLevel() && expected_level_after_mouthwash() < 13) && turns_played() == 0)
+		if (auto_goingToMouthwashLevel() && expected_level_after_mouthwash() < 13 && turnsPlayed() === 0)
 		{
 			goal = "spec";
 		}
 	}
-	if(meatZones contains loc)
+	if (meatZones.has(loc))
 	{
 		goal = "meat";
 	}
-	else if(itemZones contains loc)
+	else if (itemZones.has(loc))
 	{
 		goal = "item";
 	}
-	else if(initZones contains loc)
+	else if (initZones.has(loc))
 	{
 		goal = "init";
 	}
-	else if(mpZones contains loc)
+	else if (mpZones.has(loc))
 	{
 		goal = "mp";
 	}
-	else
-	{
+	else {
 		//if for some reason we make it into the location getCitizenZone and it's not in any of the defined zones, get the item buff
-		auto_log_debug("Somehow we got here and don't actually want to use the Eagle");
+		auto_log_debug$1("Somehow we got here and don't actually want to use the Eagle");
 		return false;
 	}
-	if(!auto_citizenZonePrep(goal))
+	if (!auto_citizenZonePrep(goal))
 	{
 		return false;
 	}
 
-	boolean wantToFreeRun()
+	function wantToFreeRun(): boolean
 	{
-		if(loc == solveDelayZone())
+		if (loc === solveDelayZone$1())
 		{
 			return true;
 		}
 		return false;
 	}
-	if(!inCombat)
+	if (!inCombat)
 	{
-		if(use_familiar(eagle))
+		if (useFamiliar(eagle))
 		{
-			if(wantToFreeRun())	set_property("auto_forceFreeRun", true);
-			if(!autoAdv(loc))
+			if (wantToFreeRun()) { setProperty("auto_forceFreeRun", true.toString()); }
+			if (!autoAdv$2(loc))
 			{
-				auto_log_debug("Attempted to get citizen of a zone buff for " + goal + " goal however we failed.");
+				auto_log_debug$1(`Attempted to get citizen of a zone buff for ${goal} goal however we failed.`);
 				return false;
 			}
 		}
 	}
-	else
-	{
-		handleTracker("Citizen of a Zone", my_location().to_string(), goal, "auto_otherstuff");
+	else {
+		handleTracker$2("Citizen of a Zone", myLocation().toString(), goal, "auto_otherstuff");
 		return true;
 	}
 	return false;
 }
 
-boolean auto_getCitizenZone(string goal)
+export function auto_getCitizenZone$1(goal: string): boolean
 {
-	boolean[location] zones = citizenZones(goal);
+	let zones: Map<Location, boolean> = citizenZones(goal);
 
-	if(!auto_citizenZonePrep(goal))
+	if (!auto_citizenZonePrep(goal))
 	{
 		return false;
 	}
 
-	foreach loc in zones
+	for (let loc of zones.keys())
 	{
-		if(!can_adventure(loc))
+		if (!canAdventure(loc))
 		{
 			continue;
 		}
@@ -1209,26 +1227,26 @@ boolean auto_getCitizenZone(string goal)
 	return false;
 }
 
-boolean auto_haveBurningLeaves()
+export function auto_haveBurningLeaves(): boolean
 {
-	return auto_is_valid("Burning Leaves") && get_campground() contains $item[A Guide to Burning Leaves];
+	return auto_is_valid$4("Burning Leaves") && (Item.get("A Guide to Burning Leaves").toString()) in getCampground();
 }
 
-boolean auto_initBurningLeaves()
+export function auto_initBurningLeaves(): boolean
 {
 	if (!auto_haveBurningLeaves())
 	{
 		return false;
 	}
-	if (available_amount($item[rake]) < 1)
+	if (availableAmount(Item.get("rake")) < 1)
 	{
 		// visit the pile of burning leaves to grab the rakes
-		visit_url("campground.php?preaction=leaves");
+		visitUrl("campground.php?preaction=leaves");
 	}
-	return available_amount($item[rake]) > 0;
+	return availableAmount(Item.get("rake")) > 0;
 }
 
-boolean auto_defaultBurnLeaves()
+export function auto_defaultBurnLeaves(): boolean
 {
 	// Returns true if we made everything we want, false if anything fails.
 	if (!auto_haveBurningLeaves())
@@ -1238,119 +1256,115 @@ boolean auto_defaultBurnLeaves()
 
 	auto_initBurningLeaves();
 
-	boolean success = true;
+	let success: boolean = true;
 
-	if (!(get_campground() contains $item[forest canopy bed]) && get_dwelling() != $item[big rock] && auto_haveCincho() && creatable_amount($item[forest canopy bed])>0)
+	if (!((Item.get("forest canopy bed").toString()) in getCampground()) && getDwelling() !== Item.get("big rock") && auto_haveCincho() && creatableAmount(Item.get("forest canopy bed")) > 0)
 	{
 		// get and use the forest canopy bed if we don't have one already and have a Cincho as it is +5 free rests
-		if (create(1, $item[forest canopy bed]))
+		if (create(1, Item.get("forest canopy bed")))
 		{
-			handleTracker("Burning Leaves", "Claimed " + $item[forest canopy bed], "auto_iotm_claim");
-			success = success && use(1, $item[forest canopy bed]);
+			handleTracker$1("Burning Leaves", `Claimed ${Item.get("forest canopy bed")}`, "auto_iotm_claim");
+			success = success && use(1, Item.get("forest canopy bed"));
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}
 
-	if (get_campground() contains $item[forest canopy bed] && have_effect($effect[Resined]) == 0 && creatable_amount($item[distilled resin])>0)
+	if ((Item.get("forest canopy bed").toString()) in getCampground() && haveEffect(Effect.get("Resined")) === 0 && creatableAmount(Item.get("distilled resin")) > 0)
 	{
 		// Get the Resined effect if we don't have it as it is net positive for leaves.
-		if (create(1, $item[distilled resin]))
+		if (create(1, Item.get("distilled resin")))
 		{
-			handleTracker("Burning Leaves", "Claimed " + $item[distilled resin], "auto_iotm_claim");
-			success = success && use(1, $item[distilled resin]);
+			handleTracker$1("Burning Leaves", `Claimed ${Item.get("distilled resin")}`, "auto_iotm_claim");
+			success = success && use(1, Item.get("distilled resin"));
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}
 
-	if (in_avantGuard() && item_amount($item[Autumnic bomb]) == 0  && creatable_amount($item[Autumnic bomb])>0)
+	if (in_avantGuard() && itemAmount(Item.get("autumnic bomb")) === 0 && creatableAmount(Item.get("autumnic bomb")) > 0)
 	{
-		if (create(1, $item[Autumnic bomb])) //Reduces enemy hp in half, useful for bodyguards with 40K hp
-		{
-			handleTracker("Burning Leaves", "Claimed " + $item[Autumnic bomb], "auto_iotm_claim");
+		if (create(1, Item.get("autumnic bomb")))
+		{ //Reduces enemy hp in half, useful for bodyguards with 40K hp
+			handleTracker$1("Burning Leaves", `Claimed ${Item.get("autumnic bomb")}`, "auto_iotm_claim");
 		}
-		else
-		{
+		else {
 			success = false;
 		}
 	}
 
-	if (!isGuildClass() && get_campground() contains $item[forest canopy bed])
+	if (!isGuildClass() && (Item.get("forest canopy bed").toString()) in getCampground())
 	{
 		success = success && auto_makeAutumnalAegis(); // +2 resistance to all elements, 250 DA (for megalo-city with no tao)
 	}
 	return success;
 }
 
-boolean auto_makeAutumnalAegis()
+export function auto_makeAutumnalAegis(): boolean
 {
 	if (!auto_haveBurningLeaves())
 	{
 		return false;
 	}
-	if (creatable_amount($item[Autumnal Aegis]) > 0 && item_amount($item[Autumnal Aegis]) == 0)
+	if (creatableAmount(Item.get("autumnal aegis")) > 0 && itemAmount(Item.get("autumnal aegis")) === 0)
 	{
-		if (create(1, $item[Autumnal Aegis])) // So-so resistance to all elements, 250 DA (for megalo-city)
-		{
-			handleTracker("Burning Leaves", "Claimed " + $item[Autumnal Aegis], "auto_iotm_claim");
+		if (create(1, Item.get("autumnal aegis")))
+		{ // So-so resistance to all elements, 250 DA (for megalo-city)
+			handleTracker$1("Burning Leaves", `Claimed ${Item.get("autumnal aegis")}`, "auto_iotm_claim");
 		}
 	}
-	return available_amount($item[Autumnal Aegis]) > 0;
+	return availableAmount(Item.get("autumnal aegis")) > 0;
 }
 
-int auto_remainingBurningLeavesFights()
+export function auto_remainingBurningLeavesFights(): number
 {
 	if (!auto_haveBurningLeaves())
 	{
 		return 0;
 	}
-	return 5-get_property("_leafMonstersFought").to_int();
+	return 5 - toInt(getProperty("_leafMonstersFought"));
 }
 
-boolean auto_fightFlamingLeaflet()
+export function auto_fightFlamingLeaflet(): boolean
 {
 	if (auto_remainingBurningLeavesFights() < 1)
 	{
 		return false;
 	}
-	if(available_amount($item[inflammable leaf]) < 11)
+	if (availableAmount(Item.get("inflammable leaf")) < 11)
 	{
 		return false;
 	}
 
-	if(auto_haveTearawayPants())
+	if (auto_haveTearawayPants())
 	{
-		addBonusToMaximize($item[tearaway pants], 500); // plants give turns when you tearaway
+		addBonusToMaximize(Item.get("tearaway pants"), 500); // plants give turns when you tearaway
 	}
 
-	string[int] pages;
-	pages[0] = "campground.php?preaction=leaves";
-	pages[1] = "choice.php?pwd&whichchoice=1510&option=1&leaves=11";
-	return autoAdvBypass(0, pages, $location[Noob Cave], "");
+	let pages: Map<number, string> = new Map();
+	pages.set(0, "campground.php?preaction=leaves");
+	pages.set(1, "choice.php?pwd&whichchoice=1510&option=1&leaves=11");
+	return autoAdvBypass(0, pages, Location.get("Noob Cave"), null);
 }
 
-boolean auto_haveCCSC()
+export function auto_haveCCSC(): boolean
 {
-	if(auto_can_equip($item[Candy Cane Sword Cane]) && available_amount($item[Candy Cane Sword Cane]) > 0 )
+	if (auto_can_equip(Item.get("candy cane sword cane")) && availableAmount(Item.get("candy cane sword cane")) > 0)
 	{
 		return true;
 	}
 	return false;
 }
 
-boolean auto_handleCCSC()
+export function auto_handleCCSC(): boolean
 {
-	if(!auto_haveCCSC())
+	if (!auto_haveCCSC())
 	{
 		return false;
 	}
-	location place = my_location();
-	
+	let place: Location = myLocation();
 	/* Where/Why We Want Only Certain Locations
 	 The Sleazy Back Alley - 11-leaf clover (only visit if we are a moxie class unlocking guild, but still potentially useful)
 	 The Daily Dungeon - Eleven-foot pole replacement. +1 Fat Loot Token
@@ -1367,39 +1381,27 @@ boolean auto_handleCCSC()
 	 Wartime Frat House/Camp - Skip non-useful NC to go to war start NC
 	 */
 
-	if((place == $location[The Hidden Bowling Alley] && item_amount($item[Bowling Ball]) > 0 && get_property("hiddenBowlingAlleyProgress").to_int() < 5 && !get_property("candyCaneSwordBowlingAlley").to_boolean())
-	   || (place == $location[The Shore\, Inc. Travel Agency] && item_amount($item[Forged Identification Documents]) == 0 && !get_property("candyCaneSwordShore").to_boolean())
-	   || (place == $location[The eXtreme Slope] && (!possessEquipment($item[eXtreme scarf]) && !possessEquipment($item[snowboarder pants]) && !auto_haveMcHugeLargeSkis()))
-	   || (place == $location[The Copperhead Club] && (item_amount($item[priceless diamond]) == 0 && item_amount($item[Red Zeppelin Ticket]) == 0) && !get_property("candyCaneSwordCopperheadClub").to_boolean())
-	   || (place == $location[The Defiled Cranny] && !get_property("candyCaneSwordDefiledCranny").to_boolean())
-	   || (place == $location[The Black Forest] && !get_property("candyCaneSwordBlackForest").to_boolean())
-	   || (place == $location[The Hidden Apartment Building] && !get_property("candyCaneSwordApartmentBuilding").to_boolean())
-	   || (place == $location[An Overgrown Shrine (Northeast)] && !get_property("_candyCaneSwordOvergrownShrine").to_boolean() && get_property("hiddenOfficeProgress").to_int() > 0)
-	   || (place == $location[The Overgrown Lot] && !get_property("_candyCaneSwordOvergrownLot").to_boolean())
-	   || (place == $location[The Penultimate Fantasy Airship] && L10_needUmbrella())
-	   || ((place == $location[Wartime Frat House] && possessOutfit("War Hippy Fatigues")) || (place == $location[Wartime Hippy Camp] && possessOutfit("Frat Warrior Fatigues")))
-	   || ($locations[The Sleazy Back Alley, A Mob of Zeppelin Protesters, The Daily Dungeon]) contains place)
+	if (place === Location.get("The Hidden Bowling Alley") && itemAmount(Item.get("bowling ball")) > 0 && toInt(getProperty("hiddenBowlingAlleyProgress")) < 5 && !toBoolean(getProperty("candyCaneSwordBowlingAlley")) || place === Location.get("The Shore, Inc. Travel Agency") && itemAmount(Item.get("forged identification documents")) === 0 && !toBoolean(getProperty("candyCaneSwordShore")) || place === Location.get("The eXtreme Slope") && (!possessEquipment(Item.get("eXtreme scarf")) && !possessEquipment(Item.get("snowboarder pants")) && !auto_haveMcHugeLargeSkis()) || place === Location.get("The Copperhead Club") && (itemAmount(Item.get("priceless diamond")) === 0 && itemAmount(Item.get("Red Zeppelin ticket")) === 0) && !toBoolean(getProperty("candyCaneSwordCopperheadClub")) || place === Location.get("The Defiled Cranny") && !toBoolean(getProperty("candyCaneSwordDefiledCranny")) || place === Location.get("The Black Forest") && !toBoolean(getProperty("candyCaneSwordBlackForest")) || place === Location.get("The Hidden Apartment Building") && !toBoolean(getProperty("candyCaneSwordApartmentBuilding")) || place === Location.get("An Overgrown Shrine (Northeast)") && !toBoolean(getProperty("_candyCaneSwordOvergrownShrine")) && toInt(getProperty("hiddenOfficeProgress")) > 0 || place === Location.get("The Overgrown Lot") && !toBoolean(getProperty("_candyCaneSwordOvergrownLot")) || place === Location.get("The Penultimate Fantasy Airship") && L10_needUmbrella() || (place === Location.get("Wartime Frat House") && possessOutfit$1("War Hippy Fatigues") || place === Location.get("Wartime Hippy Camp") && possessOutfit$1("Frat Warrior Fatigues")) || Location.get(["The Sleazy Back Alley", "A Mob of Zeppelin Protesters", "The Daily Dungeon"]).includes(place))
 	{
 		return true;
 	}
 	return false;
 }
 
-int auto_remainingCandyCaneSlashes()
+export function auto_remainingCandyCaneSlashes(): number
 {
 	if (!auto_haveCCSC())
 	{
 		return 0;
 	}
-	return 11-get_property("_surprisinglySweetSlashUsed").to_int();
+	return 11 - toInt(getProperty("_surprisinglySweetSlashUsed"));
 }
 
-int auto_remainingCandyCaneStabs()
+export function auto_remainingCandyCaneStabs(): number
 {
 	if (!auto_haveCCSC())
 	{
 		return 0;
 	}
-	return 11-get_property("_surprisinglySweetStabUsed").to_int();
+	return 11 - toInt(getProperty("_surprisinglySweetStabUsed"));
 }
-

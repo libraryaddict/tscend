@@ -1,392 +1,379 @@
-boolean in_plumber()
+import { Item, Path, Skill, Slot, Stat, abort, creatableAmount, equippedAmount, equippedItem, getProperty, haveEquipped, haveSkill, itemAmount, myBuffedstat, myLevel, myMaxpp, myPath, myPrimestat, retrieveItem, runChoice, setProperty, toInt, toStat, visitUrl } from "kolmafia";
+import { acquireOrPull, canPull$1 } from "../auto_acquire";
+import { autoEat, fullness_left, prepare_food_xp_multi } from "../auto_consume";
+import { autoEquip$1, autoForceEquip$3, possessEquipment } from "../auto_equipment";
+
+//Defined in autoscend/paths/path_of_the_plumber.ash
+export function in_plumber(): boolean
 {
-	return my_path() == $path[Path of the Plumber];
+	return myPath() === Path.get("Path of the Plumber");
 }
 
-boolean plumber_initializeSettings()
+export function plumber_initializeSettings(): boolean
 {
-	if(in_plumber())
+	if (in_plumber())
 	{
-		set_property("auto_getBeehive", true);
-		set_property("auto_wandOfNagamar", false);
+		setProperty("auto_getBeehive", true.toString());
+		setProperty("auto_wandOfNagamar", false.toString());
 		// TODO: Remove when quest handling is correct.
-		set_property("auto_paranoia", 1);
+		setProperty("auto_paranoia", (1).toString());
 	}
 	return false;
 }
 
-boolean plumber_haveHammer()
+export function plumber_haveHammer(): boolean
 {
-	return possessEquipment($item[hammer]) || possessEquipment($item[heavy hammer]);
+	return possessEquipment(Item.get("hammer")) || possessEquipment(Item.get("heavy hammer"));
 }
 
-boolean plumber_equippedHammer()
+export function plumber_equippedHammer(): boolean
 {
-	return equipped_item($slot[weapon]) == $item[hammer]
-		|| equipped_item($slot[weapon]) == $item[heavy hammer];
+	return equippedItem(Slot.get("weapon")) === Item.get("hammer") || equippedItem(Slot.get("weapon")) === Item.get("heavy hammer");
 }
 
-boolean plumber_haveFlower()
+export function plumber_haveFlower(): boolean
 {
-	return possessEquipment($item[[10462]fire flower]) || possessEquipment($item[bonfire flower]);
+	return possessEquipment(Item.get("[10462]fire flower")) || possessEquipment(Item.get("bonfire flower"));
 }
 
-boolean plumber_equippedFlower()
+export function plumber_equippedFlower(): boolean
 {
-	return equipped_item($slot[weapon]) == $item[[10462]fire flower]
-		|| equipped_item($slot[weapon]) == $item[bonfire flower];
+	return equippedItem(Slot.get("weapon")) === Item.get("[10462]fire flower") || equippedItem(Slot.get("weapon")) === Item.get("bonfire flower");
 }
 
-boolean plumber_equippedBoots()
+export function plumber_equippedBoots(): boolean
 {
-	return have_equipped($item[work boots])
-		|| have_equipped($item[fancy boots]);
+	return haveEquipped(Item.get("work boots")) || haveEquipped(Item.get("fancy boots"));
 }
 
-int plumber_numBadgesBought()
+export function plumber_numBadgesBought(): number
 {
-	return (have_skill($skill[[25001]Hammer Throw]).to_int() +
-		have_skill($skill[[25002]Ultra Smash]).to_int() +
-		have_skill($skill[[25003]Juggle Fireballs]).to_int() +
-		have_skill($skill[[25004]Fireball Barrage]).to_int() +
-		have_skill($skill[[25005]Spin Jump]).to_int() +
-		have_skill($skill[[25006]Multi-Bounce]).to_int() +
-		have_skill($skill[Power Plus]).to_int() +
-		have_skill($skill[Secret Eye]).to_int() +
-		have_skill($skill[Lucky Buckle]).to_int() +
-		have_skill($skill[Rainbow Shield]).to_int() +
-		have_skill($skill[Lucky Pin]).to_int() +
-		have_skill($skill[Lucky Brooch]).to_int() +
-		have_skill($skill[Lucky Insignia]).to_int() +
-		have_skill($skill[Health Symbol]).to_int());
+	return toInt(haveSkill(Skill.get("[25001]Hammer Throw"))) + toInt(haveSkill(Skill.get("[25002]Ultra Smash"))) + toInt(haveSkill(Skill.get("[25003]Juggle Fireballs"))) + toInt(haveSkill(Skill.get("[25004]Fireball Barrage"))) + toInt(haveSkill(Skill.get("[25005]Spin Jump"))) + toInt(haveSkill(Skill.get("[25006]Multi-Bounce"))) + toInt(haveSkill(Skill.get("Power Plus"))) + toInt(haveSkill(Skill.get("Secret Eye"))) + toInt(haveSkill(Skill.get("Lucky Buckle"))) + toInt(haveSkill(Skill.get("Rainbow Shield"))) + toInt(haveSkill(Skill.get("Lucky Pin"))) + toInt(haveSkill(Skill.get("Lucky Brooch"))) + toInt(haveSkill(Skill.get("Lucky Insignia"))) + toInt(haveSkill(Skill.get("Health Symbol")));
 }
 
 
-boolean plumber_buySkill(skill sk)
+export function plumber_buySkill(sk: Skill): boolean
 {
-	if (have_skill(sk)) return false;
+	if (haveSkill(sk)) { return false; }
 
-	int cost = 50 + 25 * plumber_numBadgesBought();
-	if (item_amount($item[coin]) < cost) return false;
+	let cost: number = 50 + 25 * plumber_numBadgesBought();
+	if (itemAmount(Item.get("coin")) < cost) { return false; }
 
-	visit_url("place.php?whichplace=mario&action=mush_badgeshop");
+	visitUrl("place.php?whichplace=mario&action=mush_badgeshop");
 
-	int idx = 0;
-	switch(sk)
+	let idx: number = 0;
+	switch (sk)
 	{
-		case $skill[[25001]Hammer Throw]: idx=1; break;
-		case $skill[[25002]Ultra Smash]: idx=2; break;
-		case $skill[[25003]Juggle Fireballs]: idx=3; break;
-		case $skill[[25004]Fireball Barrage]: idx=4; break;
-		case $skill[[25005]Spin Jump]: idx=5; break;
-		case $skill[[25006]Multi-Bounce]: idx=6; break;
-		case $skill[Power Plus]: idx=7; break;
-		case $skill[Secret Eye]: idx=8; break;
-		case $skill[Lucky Buckle]: idx=9; break;
-		case $skill[Rainbow Shield]: idx=10; break;
-		case $skill[Lucky Pin]: idx=11; break;
-		case $skill[Lucky Brooch]: idx=12; break;
-		case $skill[Lucky Insignia]: idx=13; break;
-		case $skill[Health Symbol]: idx=14; break;
-		default: abort("Unrecognized skill");
+		case Skill.get("[25001]Hammer Throw"):		idx = 1;		break;
+		case Skill.get("[25002]Ultra Smash"):		idx = 2;		break;
+		case Skill.get("[25003]Juggle Fireballs"):		idx = 3;		break;
+		case Skill.get("[25004]Fireball Barrage"):		idx = 4;		break;
+		case Skill.get("[25005]Spin Jump"):		idx = 5;		break;
+		case Skill.get("[25006]Multi-Bounce"):		idx = 6;		break;
+		case Skill.get("Power Plus"):		idx = 7;		break;
+		case Skill.get("Secret Eye"):		idx = 8;		break;
+		case Skill.get("Lucky Buckle"):		idx = 9;		break;
+		case Skill.get("Rainbow Shield"):		idx = 10;		break;
+		case Skill.get("Lucky Pin"):		idx = 11;		break;
+		case Skill.get("Lucky Brooch"):		idx = 12;		break;
+		case Skill.get("Lucky Insignia"):		idx = 13;		break;
+		case Skill.get("Health Symbol"):		idx = 14;		break;
+		default:		abort("Unrecognized skill");
 	}
 
-	run_choice(idx);
+	runChoice(idx);
 
-	return have_skill(sk);
+	return haveSkill(sk);
 }
 
-boolean plumber_buyEquipment(item it)
+export function plumber_buyEquipment(it: Item): boolean
 {
-	if (possessEquipment(it)) return false;
+	if (possessEquipment(it)) { return false; }
 
-	int coins = item_amount($item[coin]);
+	let coins: number = itemAmount(Item.get("coin"));
 
-	switch(it){
-		case $item[hammer]:
-		case $item[[10462]fire flower]:
-			if (coins < 20) return false;
+	switch (it) {
+		case Item.get("hammer"):
+		case Item.get("[10462]fire flower"):
+			if (coins < 20) { return false; }
 			break;
-		case $item[frosty button]:
-		case $item[back shell]:
-		case $item[spiky back shell]:
-		case $item[bony back shell]:
-			if (coins < 100) return false;
+		case Item.get("frosty button"):
+		case Item.get("back shell"):
+		case Item.get("spiky back shell"):
+		case Item.get("bony back shell"):
+			if (coins < 100) { return false; }
 			break;
-		case $item[cape]:
-			if (coins < 200) return false;
+		case Item.get("cape"):
+			if (coins < 200) { return false; }
 			break;
-		case $item[heavy hammer]:
-		case $item[bonfire flower]:
-		case $item[fancy boots]:
-		case $item[power pants]:
-			if (coins < 300) return false;
+		case Item.get("heavy hammer"):
+		case Item.get("bonfire flower"):
+		case Item.get("fancy boots"):
+		case Item.get("power pants"):
+			if (coins < 300) { return false; }
 			break;
 		default:
 			return false;
 	}
-	retrieve_item(1, it);
+	retrieveItem(1, it);
 	return true;
 }
 
-stat plumber_costume()
+export function plumber_costume(): Stat
 {
-	return get_property("plumberCostumeWorn").to_stat();
+	return toStat(getProperty("plumberCostumeWorn"));
 }
 
-boolean plumber_buyCostume(stat st)
+export function plumber_buyCostume(st: Stat): boolean
 {
-	if (plumber_costume() == st) return false;
+	if (plumber_costume() === st) { return false; }
 
-	visit_url("place.php?whichplace=mario&action=mush_costumeshop");
+	visitUrl("place.php?whichplace=mario&action=mush_costumeshop");
 
-	if (item_amount($item[coin]) < get_property("plumberCostumeCost").to_int())
+	if (itemAmount(Item.get("coin")) < toInt(getProperty("plumberCostumeCost")))
 	{
 		return false;
 	}
 
-	switch(st)
+	switch (st)
 	{
-	case $stat[muscle]:
-		run_choice(1);
+	case Stat.get("Muscle"):
+		runChoice(1);
 		return true;
-	case $stat[mysticality]:
-		run_choice(2);
+	case Stat.get("Mysticality"):
+		runChoice(2);
 		return true;
-	case $stat[moxie]:
-		run_choice(3);
+	case Stat.get("Moxie"):
+		runChoice(3);
 		return true;
 	}
 	return false;
 }
 
-record plumber_buyable {
-	item it;
-	skill sk;
-	stat costume;
-};
+export class plumber_buyable {
+	constructor(
+		public it: Item = Item.none,
+		public sk: Skill = Skill.none,
+		public costume: Stat = Stat.none
+	) {}
+}
 
-plumber_buyable plumber_buyableItem(item it)
+export function plumber_buyableItem(it: Item): plumber_buyable
 {
-	plumber_buyable res;
+	let res: plumber_buyable = new plumber_buyable();
 	res.it = it;
 	return res;
 }
 
-plumber_buyable plumber_buyableSkill(skill sk)
+export function plumber_buyableSkill(sk: Skill): plumber_buyable
 {
-	plumber_buyable res;
+	let res: plumber_buyable = new plumber_buyable();
 	res.sk = sk;
 	return res;
 }
 
-plumber_buyable plumber_buyableCostume(stat costume)
+export function plumber_buyableCostume(costume: Stat): plumber_buyable
 {
-	plumber_buyable res;
+	let res: plumber_buyable = new plumber_buyable();
 	res.costume = costume;
 	return res;
 }
 
-boolean plumber_buyableIsNothing(plumber_buyable zb)
+export function plumber_buyableIsNothing(zb: plumber_buyable): boolean
 {
-	return zb.it == $item[none] && zb.sk == $skill[none] && zb.costume == $stat[none];
+	return zb.it === Item.none && zb.sk === Skill.none && zb.costume === Stat.none;
 }
 
-plumber_buyable plumber_nextBuyable()
+export function plumber_nextBuyable(): plumber_buyable
 {
-	if (!have_skill($skill[Lucky Buckle]))
+	if (!haveSkill(Skill.get("Lucky Buckle")))
 	{
-		return plumber_buyableSkill($skill[Lucky Buckle]);
+		return plumber_buyableSkill(Skill.get("Lucky Buckle"));
 	}
-	else if (!possessEquipment($item[[10462]fire flower]))
+	else if (!possessEquipment(Item.get("[10462]fire flower")))
 	{
-		return plumber_buyableItem($item[[10462]fire flower]);
+		return plumber_buyableItem(Item.get("[10462]fire flower"));
 	}
-	else if (!have_skill($skill[Secret Eye]))
+	else if (!haveSkill(Skill.get("Secret Eye")))
 	{
-		return plumber_buyableSkill($skill[Secret Eye]);
+		return plumber_buyableSkill(Skill.get("Secret Eye"));
 	}
-	else if (!have_skill($skill[[25006]Multi-Bounce]))
+	else if (!haveSkill(Skill.get("[25006]Multi-Bounce")))
 	{
-		return plumber_buyableSkill($skill[[25006]Multi-Bounce]);
+		return plumber_buyableSkill(Skill.get("[25006]Multi-Bounce"));
 	}
-	else if (!have_skill($skill[Power Plus]))
+	else if (!haveSkill(Skill.get("Power Plus")))
 	{
-		return plumber_buyableSkill($skill[Power Plus]);
+		return plumber_buyableSkill(Skill.get("Power Plus"));
 	}
-	else if (!possessEquipment($item[fancy boots]))
+	else if (!possessEquipment(Item.get("fancy boots")))
 	{
-		return plumber_buyableItem($item[fancy boots]);
+		return plumber_buyableItem(Item.get("fancy boots"));
 	}
-	else if (plumber_costume() != $stat[moxie])
+	else if (plumber_costume() !== Stat.get("Moxie"))
 	{
-		return plumber_buyableCostume($stat[moxie]);
+		return plumber_buyableCostume(Stat.get("Moxie"));
 	}
-	else if (!have_skill($skill[Lucky Pin]))
+	else if (!haveSkill(Skill.get("Lucky Pin")))
 	{
-		return plumber_buyableSkill($skill[Lucky Pin]);
+		return plumber_buyableSkill(Skill.get("Lucky Pin"));
 	}
-	else if (!have_skill($skill[Lucky Brooch]))
+	else if (!haveSkill(Skill.get("Lucky Brooch")))
 	{
-		return plumber_buyableSkill($skill[Lucky Brooch]);
+		return plumber_buyableSkill(Skill.get("Lucky Brooch"));
 	}
-	else if (!have_skill($skill[Lucky Insignia]))
+	else if (!haveSkill(Skill.get("Lucky Insignia")))
 	{
-		return plumber_buyableSkill($skill[Lucky Insignia]);
+		return plumber_buyableSkill(Skill.get("Lucky Insignia"));
 	}
-	else if (!have_skill($skill[Rainbow Shield]))
+	else if (!haveSkill(Skill.get("Rainbow Shield")))
 	{
-		return plumber_buyableSkill($skill[Rainbow Shield]);
+		return plumber_buyableSkill(Skill.get("Rainbow Shield"));
 	}
-	else if (!have_skill($skill[[25004]Fireball Barrage]))
+	else if (!haveSkill(Skill.get("[25004]Fireball Barrage")))
 	{
-		return plumber_buyableSkill($skill[[25004]Fireball Barrage]);
+		return plumber_buyableSkill(Skill.get("[25004]Fireball Barrage"));
 	}
-	else if (!possessEquipment($item[frosty button]))
+	else if (!possessEquipment(Item.get("frosty button")))
 	{
-		return plumber_buyableItem($item[frosty button]);
+		return plumber_buyableItem(Item.get("frosty button"));
 	}
-	else if (!have_skill($skill[Health Symbol]))
+	else if (!haveSkill(Skill.get("Health Symbol")))
 	{
-		return plumber_buyableSkill($skill[Health Symbol]);
+		return plumber_buyableSkill(Skill.get("Health Symbol"));
 	}
-	else if (!have_skill($skill[[25003]Juggle Fireballs]))
+	else if (!haveSkill(Skill.get("[25003]Juggle Fireballs")))
 	{
-		return plumber_buyableSkill($skill[[25003]Juggle Fireballs]);
+		return plumber_buyableSkill(Skill.get("[25003]Juggle Fireballs"));
 	}
-	else if (!possessEquipment($item[cape]))
+	else if (!possessEquipment(Item.get("cape")))
 	{
-		return plumber_buyableItem($item[cape]);
+		return plumber_buyableItem(Item.get("cape"));
 	}
-	else if (!possessEquipment($item[bony back shell]))
+	else if (!possessEquipment(Item.get("bony back shell")))
 	{
-		return plumber_buyableItem($item[bony back shell]);
+		return plumber_buyableItem(Item.get("bony back shell"));
 	}
-	else if (!possessEquipment($item[bonfire flower]))
+	else if (!possessEquipment(Item.get("bonfire flower")))
 	{
-		return plumber_buyableItem($item[bonfire flower]);
+		return plumber_buyableItem(Item.get("bonfire flower"));
 	}
 
-	plumber_buyable nothing;
+	let nothing: plumber_buyable = new plumber_buyable();
 	return nothing;
 }
 
-boolean plumber_nothingToBuy()
+export function plumber_nothingToBuy(): boolean
 {
-	plumber_buyable next = plumber_nextBuyable();
+	let next: plumber_buyable = plumber_nextBuyable();
 	return plumber_buyableIsNothing(next);
 }
 
-boolean plumber_buyStuff()
+export function plumber_buyStuff(): boolean
 {
-	plumber_buyable next = plumber_nextBuyable();
-	if(next.sk != $skill[none])
+	let next: plumber_buyable = plumber_nextBuyable();
+	if (next.sk !== Skill.none)
 	{
 		return plumber_buySkill(next.sk);
 	}
-	else if(next.it != $item[none])
+	else if (next.it !== Item.none)
 	{
 		return plumber_buyEquipment(next.it);
 	}
-	else if (next.costume != $stat[none])
+	else if (next.costume !== Stat.none)
 	{
 		return plumber_buyCostume(next.costume);
 	}
-	else
-	{
+	else {
 		return false;
 	}
 }
 
-int plumber_ppCost(skill sk)
+export function plumber_ppCost(sk: Skill): number
 {
-	switch(sk)
+	switch (sk)
 	{
-		case $skill[[25001]Hammer Throw]:
-		case $skill[[25003]Juggle Fireballs]:
-		case $skill[[25005]Spin Jump]:
+		case Skill.get("[25001]Hammer Throw"):
+		case Skill.get("[25003]Juggle Fireballs"):
+		case Skill.get("[25005]Spin Jump"):
 			return 1;
-		case $skill[[25002]Ultra Smash]:
-		case $skill[[25004]Fireball Barrage]:
-		case $skill[[25006]Multi-Bounce]:
+		case Skill.get("[25002]Ultra Smash"):
+		case Skill.get("[25004]Fireball Barrage"):
+		case Skill.get("[25006]Multi-Bounce"):
 			return 2;
 		default:
 			return 0;
 	}
 }
 
-boolean plumber_canDealScalingDamage()
+export function plumber_canDealScalingDamage(): boolean
 {
-	item[stat] items_lv1 = {
-		$stat[moxie]: $item[work boots],
-		$stat[mysticality]: $item[[10462]fire flower],
-		$stat[muscle]: $item[hammer],
-	};
+	let items_lv1: Map<Stat, Item> = new Map([
+		[Stat.get("Moxie"), Item.get("work boots")],
+		[Stat.get("Mysticality"), Item.get("[10462]fire flower")],
+		[Stat.get("Muscle"), Item.get("hammer")]
+	]);
 
-	item[stat] items_lv2 = {
-		$stat[moxie]: $item[fancy boots],
-		$stat[mysticality]: $item[bonfire flower],
-		$stat[muscle]: $item[heavy hammer],
-	};
-
+	let items_lv2: Map<Stat, Item> = new Map([
+		[Stat.get("Moxie"), Item.get("fancy boots")],
+		[Stat.get("Mysticality"), Item.get("bonfire flower")],
+		[Stat.get("Muscle"), Item.get("heavy hammer")]
+	]);
 	// These attacks deal scaling damage at level 1.
-	skill[stat] attacks_2pp = {
-		$stat[moxie]: $skill[[25006]Multi-Bounce],
-		$stat[mysticality]: $skill[[25004]Fireball Barrage],
-		$stat[muscle]: $skill[[25002]Ultra Smash],
-	};
-
+	let attacks_2pp: Map<Stat, Skill> = new Map([
+		[Stat.get("Moxie"), Skill.get("[25006]Multi-Bounce")],
+		[Stat.get("Mysticality"), Skill.get("[25004]Fireball Barrage")],
+		[Stat.get("Muscle"), Skill.get("[25002]Ultra Smash")]
+	]);
 	// These attacks deal scaling damage at level 3.
-	skill[stat] attacks_free = {
-		$stat[moxie]: $skill[Jump Attack],
-		$stat[mysticality]: $skill[Fireball Toss],
-		$stat[muscle]: $skill[Hammer Smash],
-	};
-
+	let attacks_free: Map<Stat, Skill> = new Map([
+		[Stat.get("Moxie"), Skill.get("Jump Attack")],
+		[Stat.get("Mysticality"), Skill.get("Fireball Toss")],
+		[Stat.get("Muscle"), Skill.get("Hammer Smash")]
+	]);
 	// This is a pretty rough guesstimate.
-	int expected_scaler_hp = my_buffedstat(my_primestat());
+	let expected_scaler_hp: number = myBuffedstat(myPrimestat());
 
-	foreach st in $stats[]
+	for (let st of Stat.get(["Muscle", "Mysticality", "Moxie"]))
 	{
-		int level = 0;
-		if (possessEquipment(items_lv2[st]))
+		let level: number = 0;
+		if (possessEquipment((items_lv2.get(st) ?? items_lv2.set(st, Item.none).get(st))))
 		{
 			level = 2;
 		}
-		else if (possessEquipment(items_lv1[st]))
+		else if (possessEquipment((items_lv1.get(st) ?? items_lv1.set(st, Item.none).get(st))))
 		{
 			level = 1;
 		}
-		else continue;
-
+		else { continue; }
 		// Discard stats that are wildly lower than our max stat.
-		if (expected_scaler_hp >= 2 * my_buffedstat(st)) continue;
+		if (expected_scaler_hp >= 2 * myBuffedstat(st)) { continue; }
 
-		level += to_int(plumber_costume() == st);
+		level += toInt(plumber_costume() === st);
 
-		if ((my_maxpp() >= 2) && have_skill(attacks_2pp[st])) return true;
-		if (level >= 3 && have_skill(attacks_free[st])) return true;
+		if (myMaxpp() >= 2 && haveSkill((attacks_2pp.get(st) ?? attacks_2pp.set(st, Skill.none).get(st)))) { return true; }
+		if (level >= 3 && haveSkill((attacks_free.get(st) ?? attacks_free.set(st, Skill.none).get(st)))) { return true; }
 	}
 
 	return false;
 }
 
-boolean plumber_skillValid(skill sk)
+export function plumber_skillValid(sk: Skill): boolean
 {
-	if(!in_plumber())
+	if (!in_plumber())
 	{
 		return true;
 	}
 
-	if($skills[Jump Attack, [25005]Spin Jump, [25006]Multi-Bounce] contains sk)
+	if (Skill.get(["Jump Attack", "[25005]Spin Jump", "[25006]Multi-Bounce"]).includes(sk))
 	{
 		return plumber_equippedBoots();
 	}
-	else if($skills[Fireball Toss, [25003]Juggle Fireballs, [25004]Fireball Barrage] contains sk)
+	else if (Skill.get(["Fireball Toss", "[25003]Juggle Fireballs", "[25004]Fireball Barrage"]).includes(sk))
 	{
 		return plumber_equippedFlower();
 	}
-	else if($skills[Hammer Smash, [25001]Hammer Throw, [25002]Ultra Smash] contains sk)
+	else if (Skill.get(["Hammer Smash", "[25001]Hammer Throw", "[25002]Ultra Smash"]).includes(sk))
 	{
 		return plumber_equippedHammer();
 	}
@@ -394,45 +381,42 @@ boolean plumber_skillValid(skill sk)
 	return true;
 }
 
-boolean plumber_equipTool(stat st, boolean forceEquipRightNow)
+export function plumber_equipTool(st: Stat, forceEquipRightNow: boolean): boolean
 {
-	if (!in_plumber()) return false;
+	if (!in_plumber()) { return false; }
 
-	boolean equipWithFallback(item to_equip, item fallback_to_equip)
+	function equipWithFallback(to_equip: Item, fallback_to_equip: Item): boolean
 	{
 		if (possessEquipment(to_equip))
 		{
-			if(forceEquipRightNow)
+			if (forceEquipRightNow)
 			{
-				return autoForceEquip(to_equip);
+				return autoForceEquip$3(to_equip);
 			}
-			else
-			{
-				return autoEquip(to_equip);
+			else {
+				return autoEquip$1(to_equip);
 			}
 		}
 		else if (possessEquipment(fallback_to_equip))
 		{
-			if(forceEquipRightNow)
+			if (forceEquipRightNow)
 			{
-				return autoForceEquip(fallback_to_equip);
+				return autoForceEquip$3(fallback_to_equip);
 			}
-			else
-			{
-				return autoEquip(fallback_to_equip);
+			else {
+				return autoEquip$1(fallback_to_equip);
 			}
 		}
-		else if (item_amount($item[coin]) >= 20)
+		else if (itemAmount(Item.get("coin")) >= 20)
 		{
 			// 20 coins to avoid doing clever re-routing? Yes please!
-			retrieve_item(1, fallback_to_equip);
-			if(forceEquipRightNow)
+			retrieveItem(1, fallback_to_equip);
+			if (forceEquipRightNow)
 			{
-				return autoForceEquip(fallback_to_equip);
+				return autoForceEquip$3(fallback_to_equip);
 			}
-			else
-			{
-				return autoEquip(fallback_to_equip);
+			else {
+				return autoEquip$1(fallback_to_equip);
 			}
 		}
 		return false;
@@ -440,69 +424,67 @@ boolean plumber_equipTool(stat st, boolean forceEquipRightNow)
 
 	switch (st)
 	{
-		case $stat[muscle]: return equipWithFallback($item[heavy hammer], $item[hammer]);
-		case $stat[mysticality]: return equipWithFallback($item[bonfire flower], $item[[10462]fire flower]);
-		case $stat[moxie]: return equipWithFallback($item[fancy boots], $item[work boots]);
+		case Stat.get("Muscle"):		return equipWithFallback(Item.get("heavy hammer"), Item.get("hammer"));
+		case Stat.get("Mysticality"):		return equipWithFallback(Item.get("bonfire flower"), Item.get("[10462]fire flower"));
+		case Stat.get("Moxie"):		return equipWithFallback(Item.get("fancy boots"), Item.get("work boots"));
 	}
 	return false;
 }
 
-boolean plumber_equipTool(stat st)
+export function plumber_equipTool$1(st: Stat): boolean
 {
-	return plumber_equipTool(st,false);
+	return plumber_equipTool(st, false);
 }
 
-boolean plumber_forceEquipTool()
+export function plumber_forceEquipTool(): boolean
 {
 	//just make sure a tool, any tool, is equipped
-	foreach it in $items[fancy boots,work boots,bonfire flower,[10462]fire flower,heavy hammer,hammer]
+	for (let it of Item.get(["fancy boots", "work boots", "bonfire flower", "[10462]fire flower", "heavy hammer", "hammer"]))
 	{
-		if(equipped_amount(it) > 0)
+		if (equippedAmount(it) > 0)
 		{
 			return true;
 		}
 	}
-	
 	//if not equip the moxie accessory as pre_adv does by default, but without waiting for maximizer to equip it
-	return plumber_equipTool($stat[moxie],true);
+	return plumber_equipTool(Stat.get("Moxie"), true);
 }
 
-void plumber_eat_xp()
+export function plumber_eat_xp(): void
 {
 	//eat stuff for XP.
-	if(!in_plumber() || fullness_left() < 1)
+	if (!in_plumber() || fullness_left() < 1)
 	{
 		return;
 	}
-	if(!prepare_food_xp_multi())
+	if (!prepare_food_xp_multi())
 	{
-		return;		//we are not prepared.
+		return; //we are not prepared.
 	}
-	
 	//TODO diabolic pizza oven with pie man was not meant to eat
-	
-	item milk = $item[gallon of milk];
-	boolean got_milk = creatable_amount(milk) > 0 || item_amount(milk) > 0 || canPull(milk);
-	if(got_milk && fullness_left() >= 15)
+
+	let milk: Item = Item.get("gallon of milk");
+	let got_milk: boolean = creatableAmount(milk) > 0 || itemAmount(milk) > 0 || canPull$1(milk);
+	if (got_milk && fullness_left() >= 15)
 	{
 		acquireOrPull(milk);
 		autoEat(1, milk);
 	}
 }
 
-boolean LM_plumber()
+export function LM_plumber(): boolean
 {
 	//this function is called early once every loop of doTasks() in autoscend.ash
 	//if something in this function returns true then it will restart the loop and get called again.
-	if(!in_plumber())
+	if (!in_plumber())
 	{
 		return false;
 	}
 	plumber_buyStuff();
-	if(my_level() < 13)
+	if (myLevel() < 13)
 	{
 		plumber_eat_xp();
 	}
-	
+
 	return false;
 }

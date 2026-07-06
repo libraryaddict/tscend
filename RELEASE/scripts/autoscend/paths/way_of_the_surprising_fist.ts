@@ -1,4 +1,7 @@
-boolean in_wotsf()
+import { Path, myPath } from "kolmafia";
+
+//Defined in autoscend/paths/way_of_the_surprising_fist.ash
+export function in_wotsf(): boolean
 {
-	return my_path() == $path[Way of the Surprising Fist];
+	return myPath() === Path.get("Way of the Surprising Fist");
 }

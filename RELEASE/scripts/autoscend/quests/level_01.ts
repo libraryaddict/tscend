@@ -1,39 +1,43 @@
-void tootOriole()
+import { Item, abort, canInteract, cliExecute, council, getProperty, itemAmount, min, use, visitUrl } from "kolmafia";
+import { auto_autosell } from "../auto_util";
+import { isActuallyEd } from "../paths/actually_ed_the_undying";
+import { in_wotsf } from "../paths/way_of_the_surprising_fist";
+
+//Defined in autoscend/quests/level_01.ash
+export function tootOriole(): void
 {
 	// Toot Oriole must be visited each ascension to unlock other quests from the council
-	if(get_property("questM05Toot") == "finished")
+	if (getProperty("questM05Toot") === "finished")
 	{
 		return;
 	}
-	
 	// do quest
-	visit_url("tutorial.php?action=toot");
-	if(isActuallyEd())
+	visitUrl("tutorial.php?action=toot");
+	if (isActuallyEd())
 	{
-		use(item_amount($item[Letter to Ed the Undying]), $item[Letter to Ed the Undying]);
+		use(itemAmount(Item.get("letter to Ed the Undying")), Item.get("letter to Ed the Undying"));
 	}
-	else
-	{
-		use(item_amount($item[Letter From King Ralph XI]), $item[Letter From King Ralph XI]);
+	else {
+		use(itemAmount(Item.get("letter from King Ralph XI")), Item.get("letter from King Ralph XI"));
 	}
 	// finishing toot quest is not correctly noticed by mafia. r20655 has workaround of correcting this by refreshing quests
-	cli_execute("refresh quests");
-	
-	if(get_property("questM05Toot") == "finished")
+	cliExecute("refresh quests");
+
+	if (getProperty("questM05Toot") === "finished")
 	{
-		use(item_amount($item[Pork Elf Goodies Sack]), $item[Pork Elf Goodies Sack]);
+		use(itemAmount(Item.get("pork elf goodies sack")), Item.get("pork elf goodies sack"));
 		council();
 	}
-	else abort("Failed to finish the Toot Oriole quest. This prevents us from getting other quests from council");
+	else { abort("Failed to finish the Toot Oriole quest. This prevents us from getting other quests from council"); }
 }
 
-void tootGetMeat()
+export function tootGetMeat(): void
 {
-	if(can_interact() || in_wotsf()) // avoid selling gems in casual and way of the surprising fist
-	{
+	if (canInteract() || in_wotsf())
+	{ // avoid selling gems in casual and way of the surprising fist
 		return;
 	}
-	auto_autosell(min(5, item_amount($item[hamethyst])), $item[hamethyst]);
-	auto_autosell(min(5, item_amount($item[baconstone])), $item[baconstone]);
-	auto_autosell(min(5, item_amount($item[porquoise])), $item[porquoise]);
+	auto_autosell(min(5, itemAmount(Item.get("hamethyst"))), Item.get("hamethyst"));
+	auto_autosell(min(5, itemAmount(Item.get("baconstone"))), Item.get("baconstone"));
+	auto_autosell(min(5, itemAmount(Item.get("porquoise"))), Item.get("porquoise"));
 }

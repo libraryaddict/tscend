@@ -1,30 +1,41 @@
-// This file is for quest specific combat handling.
+import { Class, Item, Monster, Skill, abort, ceil, containsText, getProperty, monsterHp, monsterLevelAdjustment, myClass, myFamiliar, removeProperty, setProperty, toBoolean, toInt } from "kolmafia";
+import { isAttackFamiliar } from "../auto_familiar";
+import { MLDamageToMonsterMultiplier, auto_have_skill, auto_log_info, combatItemDamageMultiplier } from "../auto_util";
+import { auto_combatHandler } from "./auto_combat";
+import { auto_edCombatHandler } from "./auto_combat_ed";
+import { canSurvive$1, canUse$1, canUse$2, canUse$3, canUse$4, combat_status_add, combat_status_check, findBanisher, getStunner, haveUsed, useItem, useItem$1, useItems$1, useSkill$1, useSkill$2 } from "./auto_combat_util";
+import { isActuallyEd } from "../paths/actually_ed_the_undying";
+import { in_fotd } from "../paths/fall_of_the_dinosaurs";
+import { glover_usable } from "../paths/g_lover";
+import { auto_warSide } from "../quests/level_12";
 
+// This file is for quest specific combat handling.
 // the junkyard gremlin quest
-string auto_JunkyardCombatHandler(int round, monster enemy, string text)
+//defined in /autoscend/combat/auto_combat_quest.ash
+export function auto_JunkyardCombatHandler(round_1: number, enemy: Monster, text: string): string
 {
-	if(!($monsters[A.M.C. gremlin, batwinged gremlin, batwinged gremlin (tool), erudite gremlin, erudite gremlin (tool),
-	spider gremlin, spider gremlin (tool), vegetable gremlin, vegetable gremlin (tool)] contains enemy))
+	if (!(Monster.get(["A.M.C. gremlin", "batwinged gremlin", "batwinged gremlin (tool)", "erudite gremlin", "erudite gremlin (tool)",
+	"spider gremlin", "spider gremlin (tool)", "vegetable gremlin", "vegetable gremlin (tool)"]).includes(enemy)))
 	{
 		if (isActuallyEd())
 		{
-			return auto_edCombatHandler(round, enemy, text);
+			return auto_edCombatHandler(round_1, enemy, text);
 		}
-		return auto_combatHandler(round, enemy, text);
+		return auto_combatHandler(round_1, enemy, text);
 	}
 
-	auto_log_info("auto_JunkyardCombatHandler: " + round, "brown");
-	if(round == 0)
+	auto_log_info(`auto_JunkyardCombatHandler: ${round_1}`, "brown");
+	if (round_1 === 0)
 	{
-		set_property("auto_gremlinMoly", false);
-		remove_property("_auto_combatState");
+		setProperty("auto_gremlinMoly", false.toString());
+		removeProperty("_auto_combatState");
 	}
 
-	if ($monsters[batwinged gremlin (tool), erudite gremlin (tool), spider gremlin (tool), vegetable gremlin (tool)] contains enemy) {
-		set_property("auto_gremlinMoly", true);
+	if (Monster.get(["batwinged gremlin (tool)", "erudite gremlin (tool)", "spider gremlin (tool)", "vegetable gremlin (tool)"]).includes(enemy)) {
+		setProperty("auto_gremlinMoly", true.toString());
 	}
 
-	if (!combat_status_check("gremlinNeedBanish") && !get_property("auto_gremlinMoly").to_boolean() && isActuallyEd())
+	if (!combat_status_check("gremlinNeedBanish") && !toBoolean(getProperty("auto_gremlinMoly")) && isActuallyEd())
 	{
 		combat_status_add("gremlinNeedBanish");
 	}
@@ -32,167 +43,164 @@ string auto_JunkyardCombatHandler(int round, monster enemy, string text)
 	if (in_fotd())
 	{
 		// In Fall of the Dinosaurs just use the magnet without waiting for a message
-		if (canUse($item[Molybdenum Magnet]) && $monsters[batwinged gremlin (tool), erudite gremlin (tool), spider gremlin (tool), vegetable gremlin (tool)] contains enemy)
+		if (canUse$4(Item.get("molybdenum magnet")) && Monster.get(["batwinged gremlin (tool)", "erudite gremlin (tool)", "spider gremlin (tool)", "vegetable gremlin (tool)"]).includes(enemy))
 		{
-			return useItem($item[Molybdenum Magnet]);
+			return useItem$1(Item.get("molybdenum magnet"));
 		}
-		return auto_combatHandler(round, enemy, text);
+		return auto_combatHandler(round_1, enemy, text);
 	}
 
-	if(round >= 28)
+	if (round_1 >= 28)
 	{
-		if (canUse($skill[Storm of the Scarab], false))
+		if (canUse$1(Skill.get("Storm of the Scarab"), false))
 		{
-			return useSkill($skill[Storm of the Scarab], false);
+			return useSkill$1(Skill.get("Storm of the Scarab"), false);
 		}
-		else if (canUse($skill[Lunging Thrust-Smack], false))
+		else if (canUse$1(Skill.get("Lunging Thrust-Smack"), false))
 		{
-			return useSkill($skill[Lunging Thrust-Smack], false);
+			return useSkill$1(Skill.get("Lunging Thrust-Smack"), false);
 		}
 		return "attack with weapon";
 	}
 
-	if(contains_text(text, "<!--moly1-->") || contains_text(text, "<!--moly2-->") || contains_text(text, "<!--moly3-->") || contains_text(text, "<!--moly4-->"))
+	if (containsText(text, "<!--moly1-->") || containsText(text, "<!--moly2-->") || containsText(text, "<!--moly3-->") || containsText(text, "<!--moly4-->"))
 	{
-		return useItem($item[Molybdenum Magnet]);
+		return useItem$1(Item.get("molybdenum magnet"));
 	}
 
-	if (canUse($skill[Summon Love Scarabs]))
+	if (canUse$2(Skill.get("Summon Love Scarabs")))
 	{
-		return useSkill($skill[Summon Love Scarabs]);
+		return useSkill$2(Skill.get("Summon Love Scarabs"));
 	}
 
-	if(canUse($skill[Good Medicine]) && canSurvive(2.1))
+	if (canUse$2(Skill.get("Good Medicine")) && canSurvive$1(2.1))
 	{
-		return useSkill($skill[Good Medicine]);
+		return useSkill$2(Skill.get("Good Medicine"));
 	}
 
-	item flyer = $item[Rock Band Flyers];
-	if(auto_warSide() == "hippy")
+	let flyer: Item = Item.get("rock band flyers");
+	if (auto_warSide() === "hippy")
 	{
-		flyer = $item[Jam Band Flyers];
+		flyer = Item.get("jam band flyers");
 	}
-	skill stunner = getStunner(enemy);
-	boolean stunned = combat_status_check("stunned");
-	boolean gremlinTakesDamage = (isAttackFamiliar(my_familiar()) || (monster_hp() < (0.8*monster_hp(enemy))));
-	boolean shouldFlyer = false;
-	boolean staggeringFlyer = false;
-	item flyerWith;
-	
-	if(my_class() == $class[Disco Bandit] && auto_have_skill($skill[Deft Hands]) && !combat_status_check("(it"))
+	let stunner: Skill = getStunner(enemy);
+	let stunned: boolean = combat_status_check("stunned");
+	let gremlinTakesDamage: boolean = isAttackFamiliar(myFamiliar()) || monsterHp() < 0.8 * monsterHp(enemy);
+	let shouldFlyer: boolean = false;
+	let staggeringFlyer: boolean = false;
+	let flyerWith: Item = Item.none;
+
+	if (myClass() === Class.get("Disco Bandit") && auto_have_skill(Skill.get("Deft Hands")) && !combat_status_check("(it"))
 	{
 		//first item throw in the fight staggers
 		staggeringFlyer = true;
 	}
-	if(auto_have_skill($skill[Ambidextrous Funkslinging]))
-	{	
-		if (canUse($item[Time-Spinner]))
+	if (auto_have_skill(Skill.get("Ambidextrous Funkslinging")))
+	{
+		if (canUse$4(Item.get("Time-Spinner")))
 		{
-			flyerWith = $item[Time-Spinner];
+			flyerWith = Item.get("Time-Spinner");
 			staggeringFlyer = true;
 		}
-		else if (canUse($item[beehive]))
+		else if (canUse$4(Item.get("beehive")))
 		{
-			boolean canBeehiveGremlin;
-			int beehiveDamage = ceil(30*combatItemDamageMultiplier()*MLDamageToMonsterMultiplier());
-			if (get_property("auto_gremlinMoly").to_boolean())
+			let canBeehiveGremlin: boolean = false;
+			let beehiveDamage: number = ceil(30 * combatItemDamageMultiplier() * MLDamageToMonsterMultiplier());
+			if (toBoolean(getProperty("auto_gremlinMoly")))
 			{
 				//don't kill tool gremlin with beehive
-				canBeehiveGremlin = !gremlinTakesDamage && monster_hp() > (beehiveDamage + 30 - round) && canUse($item[Seal Tooth], false);
+				canBeehiveGremlin = !gremlinTakesDamage && monsterHp() > beehiveDamage + 30 - round_1 && canUse$3(Item.get("seal tooth"), false);
 			}
-			else
-			{
+			else {
 				//don't miss MP by killing weak monsters with beehive
-				canBeehiveGremlin = !(monster_hp() <= beehiveDamage && my_class() == $class[Sauceror] && haveUsed($skill[Curse Of Weaksauce]));
+				canBeehiveGremlin = !(monsterHp() <= beehiveDamage && myClass() === Class.get("Sauceror") && haveUsed(Skill.get("Curse of Weaksauce")));
 			}
 			if (canBeehiveGremlin)
 			{
-				flyerWith = $item[beehive];
+				flyerWith = Item.get("beehive");
 				staggeringFlyer = true;
 			}
 		}
-		if(staggeringFlyer && monster_level_adjustment() > 150)	//gremlins only, no need to check stunnable
-		{
+		if (staggeringFlyer && monsterLevelAdjustment() > 150)
+		{ //gremlins only, no need to check stunnable
 			staggeringFlyer = false;
 		}
 	}
-	
-	if (get_property("auto_gremlinMoly").to_boolean())	//don't ever stun tool gremlins
-	{
-		stunner = $skill[none];
+
+	if (toBoolean(getProperty("auto_gremlinMoly")))
+	{ //don't ever stun tool gremlins
+		stunner = Skill.none;
 	}
-	if (canUse(flyer) && get_property("flyeredML").to_int() < 10000 && !get_property("auto_ignoreFlyer").to_boolean())
+	if (canUse$4(flyer) && toInt(getProperty("flyeredML")) < 10000 && !toBoolean(getProperty("auto_ignoreFlyer")))
 	{
-		if(!staggeringFlyer && stunner != $skill[none] && !stunned)
+		if (!staggeringFlyer && stunner !== Skill.none && !stunned)
 		{
 			combat_status_add("stunned");
-			return useSkill(stunner);
+			return useSkill$2(stunner);
 		}
 		if (isActuallyEd())
 		{
-			set_property("auto_edStatus", "UNDYING!");
+			setProperty("auto_edStatus", "UNDYING!");
 		}
-		if(canSurvive(3.0) || stunned || staggeringFlyer)
+		if (canSurvive$1(3.0) || stunned || staggeringFlyer)
 		{
 			shouldFlyer = true;
 		}
-		if(shouldFlyer)
+		if (shouldFlyer)
 		{
-			if(flyerWith != $item[none])
+			if (flyerWith !== Item.none)
 			{
-				return useItems(flyer, flyerWith);
+				return useItems$1(flyer, flyerWith);
 			}
-			else
-			{
-				return useItem(flyer);
+			else {
+				return useItem$1(flyer);
 			}
 		}
 	}
 
-	if(!get_property("auto_gremlinMoly").to_boolean())
+	if (!toBoolean(getProperty("auto_gremlinMoly")))
 	{
 		if (isActuallyEd())
 		{
-			if (get_property("_edDefeats").to_int() >= 2)
+			if (toInt(getProperty("_edDefeats")) >= 2)
 			{
-				return findBanisher(round, enemy, text);
+				return findBanisher(round_1, enemy, text);
 			}
-			else if (canUse($item[Seal Tooth], false) && get_property("auto_edStatus") == "UNDYING!")
+			else if (canUse$3(Item.get("seal tooth"), false) && getProperty("auto_edStatus") === "UNDYING!")
 			{
-				return useItem($item[Seal Tooth], false);
+				return useItem(Item.get("seal tooth"), false);
 			}
 		}
-		else
-		{
-			return findBanisher(round, enemy, text);
+		else {
+			return findBanisher(round_1, enemy, text);
 		}
 	}
-	
-	if(!canSurvive(1.5))
+
+	if (!canSurvive$1(1.5))
 	{
-		if(!isActuallyEd() || get_property("_edDefeats").to_int() >= 2)
+		if (!isActuallyEd() || toInt(getProperty("_edDefeats")) >= 2)
 		{
 			abort("I am too weak to safely stasis this gremlin");
 		}
 	}
 
-	foreach it in $items[Seal Tooth, Spectre Scepter, Doc Galaktik\'s Pungent Unguent]
+	for (let it of Item.get(["seal tooth", "spectre scepter", "Doc Galaktik's Pungent Unguent"]))
 	{
-		if(canUse(it, false) && glover_usable(it))
+		if (canUse$3(it, false) && glover_usable(it.toString()))
 		{
 			return useItem(it, false);
 		}
 	}
 
-	if (canUse($skill[Toss], false))
+	if (canUse$1(Skill.get("Toss"), false))
 	{
-		return useSkill($skill[Toss], false);
+		return useSkill$1(Skill.get("Toss"), false);
 	}
-	
-	if (canUse($skill[Plague Claws], false))
+
+	if (canUse$1(Skill.get("Plague Claws"), false))
 	{
-		return useSkill($skill[Plague Claws], false);
+		return useSkill$1(Skill.get("Plague Claws"), false);
 	}
-	
+
 	return "attack with weapon";
 }

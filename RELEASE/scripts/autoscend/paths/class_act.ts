@@ -1,4 +1,7 @@
-boolean in_class_act()
+import { Path, myPath } from "kolmafia";
+
+//Defined in autoscend/paths/class_act.ash
+export function in_class_act(): boolean
 {
-	return my_path() == $path[Class Act];
+	return myPath() === Path.get("Class Act");
 }

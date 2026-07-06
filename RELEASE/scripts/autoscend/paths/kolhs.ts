@@ -1,81 +1,87 @@
-boolean in_kolhs()
+import { Effect, Familiar, Item, Location, Monster, Path, Slot, abort, availableChoiceOptions, canInteract, equip, equippedAmount, getProperty, haveEffect, itemAmount, myAdventures, myAscensions, myInebriety, myLevel, myPath, putCloset, removeProperty, runChoice, setProperty, toBoolean, toFamiliar, toInt, toLocation, toMonster } from "kolmafia";
+import { autoAdv$2 } from "../auto_adventure";
+import { autoDrink, auto_autoConsumeOne$1, auto_chewAdventures, stomach_left } from "../auto_consume";
+import { addToMaximize, autoEquip$1, autoForceEquip$1, possessEquipment } from "../auto_equipment";
+import { LX_freeCombats$1 } from "../auto_powerlevel";
+import { auto_log_debug$1, auto_log_info, auto_log_warning } from "../auto_util";
+import { monster_to_location, zone_isAvailable } from "../auto_zone";
+
+//Defined in autoscend/paths/kolhs.ash
+export function in_kolhs(): boolean
 {
-	return my_path() == $path[KOLHS];
+	return myPath() === Path.get("KOLHS");
 }
 
-boolean kolhs_mandatorySchool()
+export function kolhs_mandatorySchool(): boolean
 {
 	//true means it is mandatory for you to attend school right now. All non school zones are unavailable. Summoning fights works though
-	if(!in_kolhs())
+	if (!in_kolhs())
 	{
-		return false;	//not in the path so we are not required to attend school
+		return false; //not in the path so we are not required to attend school
 	}
-	return get_property("_kolhsAdventures").to_int() < 40;
+	return toInt(getProperty("_kolhsAdventures")) < 40;
 }
 
-void kolhs_initializeSettings()
+export function kolhs_initializeSettings(): void
 {
-	if(!in_kolhs())
+	if (!in_kolhs())
 	{
 		return;
 	}
-	
-	set_property("kolhs_closetDrink", false);
+
+	setProperty("kolhs_closetDrink", false.toString());
 }
 
-void kolhs_closetDrink()
+export function kolhs_closetDrink(): void
 {
 	//prevent kolhs issues in postronin (or drop to casual) caused by special drinks by closetting excess amount.
 	//this function and related variables are needed because mafia does not track which is the last dropped kolhs combat drink.
 	//we can pull leftovers/purchases. and we might have leveled since last combat when it dropped.
-	if(!in_kolhs())
+	if (!in_kolhs())
 	{
 		return;
 	}
-	if(!can_interact())
+	if (!canInteract())
 	{
-		return;		//we are not in postronin/casual
+		return; //we are not in postronin/casual
 	}
-	if(get_property("kolhs_closetDrink").to_boolean())
+	if (toBoolean(getProperty("kolhs_closetDrink")))
 	{
-		return;		//already done this ascension
+		return; //already done this ascension
 	}
-	set_property("kolhs_closetDrink", true);
-	
+	setProperty("kolhs_closetDrink", true.toString());
 	//drink one first if needed so they continue to drop.
-	item target = $item[can of the cheapest beer];
-	if(my_level() > 8)
+	let target: Item = Item.get("can of the cheapest beer");
+	if (myLevel() > 8)
 	{
-		target = $item[single swig of vodka];
+		target = Item.get("single swig of vodka");
 	}
-	else if(my_level() > 4)
+	else if (myLevel() > 4)
 	{
-		target = $item[bottle of fruity &quot;wine&quot;];
+		target = Item.get("bottle of fruity &quot;wine&quot;");
 	}
-	if(my_inebriety() < 10 && item_amount(target) > 0)
+	if (myInebriety() < 10 && itemAmount(target) > 0)
 	{
 		autoDrink(1, target);
 	}
-	
 	//closet all the others
-	foreach it in $items[single swig of vodka, bottle of fruity &quot;wine&quot;, can of the cheapest beer]
+	for (let it of Item.get(["single swig of vodka", "bottle of fruity &quot;wine&quot;", "can of the cheapest beer"]))
 	{
-		int amt = item_amount(it);
-		if(amt > 0)
+		let amt: number = itemAmount(it);
+		if (amt > 0)
 		{
-			put_closet(amt, it);
+			putCloset(amt, it);
 		}
 	}
 }
 
-void kolhs_consume()
+export function kolhs_consume(): void
 {
 	//handles consumption for KOLHS which has special drinking mechanics
-	if(!in_kolhs())
+	if (!in_kolhs())
 	{
 		return;
 	}
-	
 	//KOLHS drinking mechanics is not tracked by mafia and is believed to work as per:
 	//3 combat drinks drop at the end of combat, automatically costing 100 meat. not encountered in the school itself.
 	//only encountered if you drank the last one that dropped today. and only if inebrity under 10.
@@ -83,37 +89,35 @@ void kolhs_consume()
 	//[single swig of vodka] = level 9+. size 2. 2.75 adv/size
 	//[bottle of fruity &quot;wine&quot;] = level 5-8. size 2. 2.5 adv/size
 	//[can of the cheapest beer] = level 1-4. size 1. 2 adv/size
-	
-	if(my_inebriety() < 10)		//phase 1. drink these as soon as they drop. no return here because we want to eat too.
-	{
-		foreach it in $items[single swig of vodka, bottle of fruity &quot;wine&quot;, can of the cheapest beer]
+
+	if (myInebriety() < 10)
+	{ //phase 1. drink these as soon as they drop. no return here because we want to eat too.
+		for (let it of Item.get(["single swig of vodka", "bottle of fruity &quot;wine&quot;", "can of the cheapest beer"]))
 		{
-			if(item_amount(it) > 0)
+			if (itemAmount(it) > 0)
 			{
 				autoDrink(1, it);
 			}
 		}
 	}
-	
-	if(stomach_left() > 0)		//phase 2. fill up on food before we finish off liver
-	{
-		if(my_adventures() < 10)
+
+	if (stomach_left() > 0)
+	{ //phase 2. fill up on food before we finish off liver
+		if (myAdventures() < 10)
 		{
-			auto_autoConsumeOne("eat");
+			auto_autoConsumeOne$1("eat");
 			return;
 		}
-		else
-		{
-			return;		//if we fail to fill up stomach then do not auto consume booze in kolhs
+		else {
+			return; //if we fail to fill up stomach then do not auto consume booze in kolhs
 		}
 	}
-	if(my_adventures() < 10)	//phase 3. final drinking now that our stomach is full
-	{
+	if (myAdventures() < 10)
+	{ //phase 3. final drinking now that our stomach is full
 		//TODO replace it with specific manual handling. autoConsumeOne says it cannot find anything to consume.
-		auto_autoConsumeOne("drink");
+		auto_autoConsumeOne$1("drink");
 		return;
 	}
-	
 	//if stomach and liver are full and out of adv then chew size 4 iotm derivate spleen items that give 1.875 adv/size.
 	if (auto_chewAdventures())
 	{
@@ -121,205 +125,212 @@ void kolhs_consume()
 	}
 }
 
-void kolhs_preadv(location place)
+export function kolhs_preadv(place: Location): void
 {
-	if(!in_kolhs())
+	if (!in_kolhs())
 	{
 		return;
 	}
-	
 	//KOLHS path specific zones where hats are forbidden. wearing one fails to adv and causes infinite loop
-	if($locations[The Hallowed Halls, Art Class, Chemistry Class, Shop Class] contains place)
+	if (Location.get(["The Hallowed Halls", "Art Class", "Chemistry Class", "Shop Class"]).includes(place))
 	{
 		addToMaximize("-hat");
-		equip($slot[hat], $item[none]);
+		equip(Slot.get("hat"), Item.none);
 	}
-	
 	//prepare yearbook camera
-	if(place == get_property("_yearbookCameraTargetLocation").to_location() && !get_property("yearbookCameraPending").to_boolean())
+	if (place === toLocation(getProperty("_yearbookCameraTargetLocation")) && !toBoolean(getProperty("yearbookCameraPending")))
 	{
-		if(equipped_amount($item[Yearbook Club Camera]) == 0)
+		if (equippedAmount(Item.get("Yearbook Club Camera")) === 0)
 		{
-			auto_log_warning("Tried to adventure in [" +place+ "] to do the yearbook camera quest without a [Yearbook Club Camera] equipped... correcting", "red");
-			autoForceEquip($slot[acc2], $item[Yearbook Club Camera]);
-			if(equipped_amount($item[Yearbook Club Camera]) == 0)
+			auto_log_warning(`Tried to adventure in [${place}] to do the yearbook camera quest without a [Yearbook Club Camera] equipped... correcting`, "red");
+			autoForceEquip$1(Slot.get("acc2"), Item.get("Yearbook Club Camera"));
+			if (equippedAmount(Item.get("Yearbook Club Camera")) === 0)
 			{
-				abort("Correction failed, please report this. Manually photograph a [" +get_property("yearbookCameraTarget")+ "] then run me again");
+				abort(`Correction failed, please report this. Manually photograph a [${getProperty("yearbookCameraTarget")}] then run me again`);
 			}
 		}
 	}
 }
 
-boolean LX_kolhs_visitYearbookClub()
+export function LX_kolhs_visitYearbookClub(): boolean
 {
 	//visit to yearbook club. You start the quest on one day and complete it the next day so no point in multiple visits in one day.
 	//if you did not finish the quest then it changes. so you need to revisit every day regardless of completion status.
 	//on first visit per ascension you acquire the camera. if you already maxed out camera no point in visiting again
-	if(get_property("_yearbookClubVisitedToday").to_boolean())
+	if (toBoolean(getProperty("_yearbookClubVisitedToday")))
 	{
-		return false;		//already visited today
+		return false; //already visited today
 	}
-	if(get_property("_kolhsSavedByTheBell").to_int() > 2)
+	if (toInt(getProperty("_kolhsSavedByTheBell")) > 2)
 	{
-		return false;		//we ran out of saved by the bell NC visits. so we cannot reach it today.
+		return false; //we ran out of saved by the bell NC visits. so we cannot reach it today.
 	}
 	auto_log_info("Visiting the yearbook club", "blue");
-	set_property("_NC772_directive", 3);				//NC772 [saved by the bell] should visit yearbook club
-	return autoAdv($location[The Hallowed Halls]);		//goto NC772
+	setProperty("_NC772_directive", (3).toString()); //NC772 [saved by the bell] should visit yearbook club
+	return autoAdv$2(Location.get("The Hallowed Halls")); //goto NC772
 }
 
-boolean LX_kolhs_yearbookCameraGet()
+export function LX_kolhs_yearbookCameraGet(): boolean
 {
 	//grab the yearbook camera if you have not already done so.
-	if(possessEquipment($item[Yearbook Club Camera]))
+	if (possessEquipment(Item.get("Yearbook Club Camera")))
 	{
-		return false;	//already have the camera
+		return false; //already have the camera
 	}
-	if(kolhs_mandatorySchool())
+	if (kolhs_mandatorySchool())
 	{
-		return false;	//we have not yet unlocked [saved by the bell] today
+		return false; //we have not yet unlocked [saved by the bell] today
 	}
-	return LX_kolhs_visitYearbookClub();	//grab the camera if you did not get it yet this ascension
+	return LX_kolhs_visitYearbookClub(); //grab the camera if you did not get it yet this ascension
 }
 
-boolean LX_kolhs_yearbookCameraQuest()
+export function LX_kolhs_yearbookCameraQuest(): boolean
 {
 	//grab a yearbook camera. do sidequest to acquire permanent between ascensions upgrades for it
-	if(kolhs_mandatorySchool())
+	if (kolhs_mandatorySchool())
 	{
-		return false;	//we have not yet unlocked [saved by the bell] today
+		return false; //we have not yet unlocked [saved by the bell] today
 	}
-	
-	if(LX_kolhs_yearbookCameraGet()) return true;	//grab the yearbook camera if you have not already done so.
-	
+
+	if (LX_kolhs_yearbookCameraGet()) { //grab the yearbook camera if you have not already done so.
+	return true; }
 	//do we actually need to do the quest?
-	if(get_property("yearbookCameraAscensions").to_int() > 20)
+	if (toInt(getProperty("yearbookCameraAscensions")) > 20)
 	{
-		return false;	//already maxed out permanent upgrades
+		return false; //already maxed out permanent upgrades
 	}
-	if(my_ascensions() == get_property("lastYearbookCameraAscension").to_int())
+	if (myAscensions() === toInt(getProperty("lastYearbookCameraAscension")))
 	{
-		return false;	//already upgraded once this ascension. only one upgrade per ascension can become permanent.
+		return false; //already upgraded once this ascension. only one upgrade per ascension can become permanent.
 	}
-	if(LX_kolhs_visitYearbookClub()) return true;		//start, restart, or finish quest.
-	
-	if(get_property("yearbookCameraPending").to_boolean())
+	if (LX_kolhs_visitYearbookClub()) { //start, restart, or finish quest.
+	return true; }
+
+	if (toBoolean(getProperty("yearbookCameraPending")))
 	{
-		return false;	 //we finished the quest today but must wait until tomorrow to turn it in
+		return false; //we finished the quest today but must wait until tomorrow to turn it in
 	}
-	
 	//try to get a photograph
-	monster target = get_property("yearbookCameraTarget").to_monster();
-	location adv_target;
-	foreach loc in monster_to_location(target)
+	let target: Monster = toMonster(getProperty("yearbookCameraTarget"));
+	let adv_target: Location = Location.none;
+	for (let loc of monster_to_location(target).keys())
 	{
-		if(zone_isAvailable(loc, true))
+		if (zone_isAvailable(loc, true))
 		{
 			adv_target = loc;
 			break;
 		}
 	}
-	set_property("_yearbookCameraTargetLocation", adv_target);		//used by pre_adv to verify camera is actually equipped
-	if(adv_target == $location[none])
+	setProperty("_yearbookCameraTargetLocation", adv_target.toString()); //used by pre_adv to verify camera is actually equipped
+	if (adv_target === Location.none)
 	{
-		return false;		//just in case. should not be possible since it picks from reachable locations
+		return false; //just in case. should not be possible since it picks from reachable locations
 	}
 
-	autoEquip($item[Yearbook Club Camera]);
-	return autoAdv(adv_target);
-	
+	autoEquip$1(Item.get("Yearbook Club Camera"));
+	return autoAdv$2(adv_target);
+
 	return false;
 }
 
-boolean LX_kolhs_school()
+export function LX_kolhs_school(): boolean
 {
 	//adventure in school. mandatory for first 40 adv to be spent there.
-	if(!kolhs_mandatorySchool())
+	if (!kolhs_mandatorySchool())
 	{
-		return false;	//done for today
+		return false; //done for today
 	}
-	
-	return autoAdv($location[The Hallowed Halls]);
+
+	return autoAdv$2(Location.get("The Hallowed Halls"));
 	//TODO specific classes https://kol.coldfront.net/thekolwiki/index.php/KoL_High_School
 	//TODO sniff wastoid in hallowed halls
 }
 
-void kolhsChoiceHandler(int choice)
+export function kolhsChoiceHandler(choice: number): void
 {
-	auto_log_debug("Running kolhsChoiceHandler");
-	switch (choice)
+	auto_log_debug$1("Running kolhsChoiceHandler");
+	{ 
+		// Delirium in the Cafeterium (KOLHS 22nd adventure every day)
+				// get XP
+				// get XP
+				// get XP
+				// lose HP
+		// Saved by the Bell (KOLHS after school)
+			//we use directive property. it both tells us what to do, and helps pre-adv do stuff. for example ensure we are not wearing a familiar that is blocking us
+
+			let target: number = 0;
+			switch (choice)
 	{
-		case 700: // Delirium in the Cafeterium (KOLHS 22nd adventure every day)
-			if(have_effect($effect[Jamming with the Jocks]) > 0)
+		case 700:
+			if (haveEffect(Effect.get("Jamming with the Jocks")) > 0)
 			{
-				run_choice(1); // get XP
+				runChoice(1);
 			}
-			else if(have_effect($effect[Nerd is the Word]) > 0)
+			else if (haveEffect(Effect.get("Nerd is the Word")) > 0)
 			{
-				run_choice(2); // get XP
+				runChoice(2);
 			}
-			else if(have_effect($effect[Greaser Lightnin\']) > 0)
+			else if (haveEffect(Effect.get("Greaser Lightnin'")) > 0)
 			{
-				run_choice(3); // get XP
+				runChoice(3);
 			}
-			else
-			{
+			else {
 				auto_log_warning("I do not have the necessary intrinsic to gain xp in [Delirium in the Cafeterium]", "red");
-				run_choice(3); // lose HP
+				runChoice(3);
 			}
 			break;
-		case 772: // Saved by the Bell (KOLHS after school)
-			//we use directive property. it both tells us what to do, and helps pre-adv do stuff. for example ensure we are not wearing a familiar that is blocking us
-			int target = get_property("_NC772_directive").to_int();
-			remove_property("_NC772_directive");		//remove it now in case we abort
-			if(target == 0)
+		case 772:			target = toInt(getProperty("_NC772_directive"));
+			removeProperty("_NC772_directive"); //remove it now in case we abort
+
+			if (target === 0)
 			{
 				abort("We are in [saved by the bell] and do not know what to do because _NC772_directive is not valid or set. Leaving will waste this NC so do something manually");
 			}
-			if(available_choice_options() contains target)
+			if ((target) in availableChoiceOptions())
 			{
-				if(target == 3)		//yearbook club should only be visited once daily
-				{
-					set_property("_yearbookClubVisitedToday", true);
+				if (target === 3)
+				{ //yearbook club should only be visited once daily
+					setProperty("_yearbookClubVisitedToday", true.toString());
 				}
-				run_choice(target);
+				runChoice(target);
 			}
-			else
-			{
-				abort("We are in [saved by the bell] and do not know what to do. Wanted to press button number " +target+ " but it mysteriously does not exist. Leaving will waste this NC so do something manually");
+			else {
+				abort(`We are in [saved by the bell] and do not know what to do. Wanted to press button number ${target} but it mysteriously does not exist. Leaving will waste this NC so do something manually`);
 			}
 			break;
 		default:
 			break;
-	}
+	} }
 }
 
-boolean LM_kolhs()
+export function LM_kolhs(): boolean
 {
 	//this function is called early once every loop of doTasks() in autoscend.ash to do things when we are in kolhs
-	if(!in_kolhs())
+	if (!in_kolhs())
 	{
 		return false;
 	}
-	
-	familiar familiar_target_100 = get_property("auto_100familiar").to_familiar();
-	if(familiar_target_100 != $familiar[none] && familiar_target_100 != $familiar[Steam-Powered Cheerleader])
+
+	let familiar_target_100: Familiar = toFamiliar(getProperty("auto_100familiar"));
+	if (familiar_target_100 !== Familiar.none && familiar_target_100 !== Familiar.get("Steam-Powered Cheerleader"))
 	{
-		set_property("auto_100familiar", $familiar[none]);
-		abort("Detected an attempted 100% familiar run with [" +familiar_target_100+ "] in KOLHS. [Steam Powered Cheerleader] is the only valid 100% familiar run in KOLHS. 100% familiar run disabled. You can run autoscend again to continue");
+		setProperty("auto_100familiar", Familiar.none.toString());
+		abort(`Detected an attempted 100% familiar run with [${familiar_target_100}] in KOLHS. [Steam Powered Cheerleader] is the only valid 100% familiar run in KOLHS. 100% familiar run disabled. You can run autoscend again to continue`);
 	}
-	
-	kolhs_closetDrink();								//in postronin closet extra combat drop drinks to prevent issues
-	
-	if(LX_kolhs_school()) return true;					//mandatory for first 40 adv to be spent in school
-	if(LX_kolhs_yearbookCameraGet()) return true;		//grab the yearbook camera if you have not already done so.
-	if(my_level() < 9)									//important to rush level 9 for the superior drink drops
-	{
-		if(LX_freeCombats(true)) return true;
+
+	kolhs_closetDrink(); //in postronin closet extra combat drop drinks to prevent issues
+
+	if (LX_kolhs_school()) { //mandatory for first 40 adv to be spent in school
+	return true; }
+	if (LX_kolhs_yearbookCameraGet()) { //grab the yearbook camera if you have not already done so.
+	return true; }
+	if (myLevel() < 9)
+	{ //important to rush level 9 for the superior drink drops
+		if (LX_freeCombats$1(true)) { return true; }
 	}
-	if(LX_kolhs_yearbookCameraQuest()) return true;		//gain permanent upgrades to yearbook camera
-	
+	if (LX_kolhs_yearbookCameraQuest()) { //gain permanent upgrades to yearbook camera
+	return true; }
 	//TODO other saved by the bell adventures as needed?
-	
+
 	return false;
 }

@@ -1,101 +1,104 @@
-boolean in_nuclear()
+import { Item, Path, Skill, getProperty, haveSkill, itemAmount, myDaycount, myPath, setProperty, toBoolean, toInt, use, visitUrl } from "kolmafia";
+import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
+import { equipBaseline } from "../auto_equipment";
+import { ovenHandle } from "../auto_util";
+import { auto_sourceTerminalRequest } from "../iotms/mr2016";
+
+//Defined in autoscend/paths/nuclear_autumn.ash
+export function in_nuclear(): boolean
 {
-	return my_path() == $path[Nuclear Autumn];
+	return myPath() === Path.get("Nuclear Autumn");
 }
 
-void nuclear_initializeSettings()
+export function nuclear_initializeSettings(): void
 {
-	if(in_nuclear())
+	if (in_nuclear())
 	{
-		set_property("auto_getBeehive", true);
+		setProperty("auto_getBeehive", true.toString());
 	}
 }
 
 
-void nuclear_initializeDay(int day)
+export function nuclear_initializeDay(day: number): void
 {
-	if(!in_nuclear())
+	if (!in_nuclear())
 	{
 		return;
 	}
 
-	if(!get_property("falloutShelterChronoUsed").to_boolean() && (get_property("falloutShelterLevel").to_int() >= 6))
+	if (!toBoolean(getProperty("falloutShelterChronoUsed")) && toInt(getProperty("falloutShelterLevel")) >= 6)
 	{
-		string temp = visit_url("place.php?whichplace=falloutshelter&action=vault5");
+		let temp: string = visitUrl("place.php?whichplace=falloutshelter&action=vault5");
 	}
 
-	if(!get_property("falloutShelterCoolingTankUsed").to_boolean() && (get_property("falloutShelterLevel").to_int() >= 8))
-	{
+	if (!toBoolean(getProperty("falloutShelterCoolingTankUsed")) && toInt(getProperty("falloutShelterLevel")) >= 8)
+	{}
 
-	}
-
-	if((my_daycount() % 2) == 1)
+	if (myDaycount() % 2 === 1)
 	{
 		auto_sourceTerminalRequest("enquiry stats.enq");
 	}
-	else
-	{
+	else {
 		auto_sourceTerminalRequest("enquiry familiar.enq");
 	}
 
-	if(day == 2)
+	if (day === 2)
 	{
 		equipBaseline();
 		ovenHandle();
 
-		if(get_property("auto_day_init").to_int() < 2)
+		if (toInt(getProperty("auto_day_init")) < 2)
 		{
-			if(item_amount($item[gym membership card]) > 0)
+			if (itemAmount(Item.get("gym membership card")) > 0)
 			{
-				use(1, $item[gym membership card]);
+				use(1, Item.get("gym membership card"));
 			}
 
-			if(item_amount($item[Seal Tooth]) == 0)
+			if (itemAmount(Item.get("seal tooth")) === 0)
 			{
-				acquireHermitItem($item[Seal Tooth]);
+				acquireHermitItem(Item.get("seal tooth"));
 			}
-			while(acquireHermitItem($item[11-Leaf Clover]));
-			pullXWhenHaveY($item[hand in glove], 1, 0);
-			pullXWhenHaveY($item[blackberry galoshes], 1, 0);
+			while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+			pullXWhenHaveY(Item.get("Hand in Glove"), 1, 0);
+			pullXWhenHaveY(Item.get("blackberry galoshes"), 1, 0);
 		}
 	}
-	else if(day == 3)
+	else if (day === 3)
 	{
-		if(get_property("auto_day_init").to_int() < 3)
+		if (toInt(getProperty("auto_day_init")) < 3)
 		{
-			while(acquireHermitItem($item[11-Leaf Clover]));
-			set_property("auto_day_init", 3);
+			while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+			setProperty("auto_day_init", (3).toString());
 		}
 	}
-	else if(day == 4)
+	else if (day === 4)
 	{
-		if(get_property("auto_day_init").to_int() < 4)
+		if (toInt(getProperty("auto_day_init")) < 4)
 		{
-			while(acquireHermitItem($item[11-Leaf Clover]));
-			set_property("auto_day_init", 4);
+			while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+			setProperty("auto_day_init", (4).toString());
 		}
 	}
 }
 
-boolean nuclear_buySkills()
+export function nuclear_buySkills(): boolean
 {
-	if(!in_nuclear())
+	if (!in_nuclear())
 	{
 		return false;
 	}
 
-	if(item_amount($item[Rad]) < 30)
+	if (itemAmount(Item.get("rad")) < 30)
 	{
 		return false;
 	}
 
-	if(have_skill($skill[Internal Soda Machine]))
+	if (haveSkill(Skill.get("Internal Soda Machine")))
 	{
 		return false;
 	}
 
-	int toBuy = 0;
-
+	let toBuy: number = 0;
 /*
 22012 Boiling Tear Ducts  doublewater.gif 5   10  0				30		Hot Damage
 22013 Throat Refrigerant  snowflake.gif   5   10  0				30		Cold Damage
@@ -116,7 +119,6 @@ boolean nuclear_buySkills()
 22037 Extra Gall Bladder  bladder.gif 0   0   0					60		Food +100% adventures
 22038 Extra Kidney    kidney.gif  0   0   0						60		Booze +100% adventuree
 22039 Internal Soda Machine   cloaca.gif  2   0   0				30		20 Meat -> 10 MP
-
 22024 Backwards Knees knee.gif 0 0 0 							120		Passive +20 init
 22025 Sucker Fingers plunger.gif 0 0 0							120		Passive +15 item
 22032 Bone Springs spring.gif 3 30 10 							90		Noncombat (30): 10 adv of Bone Springs: +20 Init
@@ -124,204 +126,203 @@ boolean nuclear_buySkills()
 22034 Firefly Abdomen bulb.gif 3 30 10 							90		Noncombat (30): 10 adv of Blinking Belly: +10/15 C
 22035 Squid Glands inkwell.gif 3 30 10 							90		Noncombat (30): 10 adv of Inked Well: +10/15 NC
 22036 Extremely Punchable Face wink.gif 3 30 10 				90		Noncombat (30): 10 adv pf Punchable Face: +30 ML
-
 Missing: 858, 866
 */
-	if(!have_skill($skill[Extra Gall Bladder]) && (toBuy == 0))
+	if (!haveSkill(Skill.get("Extra Gall Bladder")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 60)
+		if (itemAmount(Item.get("rad")) >= 60)
 		{
 			toBuy = 877;
 		}
 	}
-	else if(!have_skill($skill[Extra Kidney]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Extra Kidney")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 60)
+		if (itemAmount(Item.get("rad")) >= 60)
 		{
 			toBuy = 878;
 		}
 	}
-	else if(!have_skill($skill[Extra Muscles]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Extra Muscles")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 90)
+		if (itemAmount(Item.get("rad")) >= 90)
 		{
 			toBuy = 861;
 		}
 	}
-	else if(!have_skill($skill[Magnetic Ears]) && (toBuy == 0) && (get_property("falloutShelterLevel").to_int() >= 6))
+	else if (!haveSkill(Skill.get("Magnetic Ears")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
 	{
-		if(item_amount($item[Rad]) >= 90)
+		if (itemAmount(Item.get("rad")) >= 90)
 		{
 			toBuy = 873;
 		}
 	}
-	else if(!have_skill($skill[Hypno-Eyes]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Hypno-Eyes")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 90)
+		if (itemAmount(Item.get("rad")) >= 90)
 		{
 			toBuy = 863;
 		}
 	}
-	else if(!have_skill($skill[Metallic Skin]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Metallic Skin")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 90)
+		if (itemAmount(Item.get("rad")) >= 90)
 		{
 			toBuy = 859;
 		}
 	}
-	else if(!have_skill($skill[Adipose Polymers]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Adipose Polymers")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 90)
+		if (itemAmount(Item.get("rad")) >= 90)
 		{
 			toBuy = 860;
 		}
 	}
-	else if(!have_skill($skill[Sucker Fingers]) && (toBuy == 0) && (get_property("falloutShelterLevel").to_int() >= 6))
+	else if (!haveSkill(Skill.get("Sucker Fingers")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
 	{
-		if(item_amount($item[Rad]) >= 120)
+		if (itemAmount(Item.get("rad")) >= 120)
 		{
 			toBuy = 865;
 		}
 	}
-	else if(!have_skill($skill[Squid Glands]) && (toBuy == 0) && (get_property("falloutShelterLevel").to_int() >= 6))
+	else if (!haveSkill(Skill.get("Squid Glands")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
 	{
-		if(item_amount($item[Rad]) >= 120)
+		if (itemAmount(Item.get("rad")) >= 120)
 		{
 			toBuy = 875;
 		}
 	}
-	else if(!have_skill($skill[Steroid Bladder]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Steroid Bladder")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 60)
+		if (itemAmount(Item.get("rad")) >= 60)
 		{
 			toBuy = 869;
 		}
 	}
-	else if(!have_skill($skill[Self-Combing Hair]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Self-Combing Hair")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 60)
+		if (itemAmount(Item.get("rad")) >= 60)
 		{
 			toBuy = 871;
 		}
 	}
-	else if(!have_skill($skill[Flappy Ears]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Flappy Ears")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 60)
+		if (itemAmount(Item.get("rad")) >= 60)
 		{
 			toBuy = 867;
 		}
 	}
-	else if(!have_skill($skill[Magic Sweat]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Magic Sweat")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 60)
+		if (itemAmount(Item.get("rad")) >= 60)
 		{
 			toBuy = 868;
 		}
 	}
-	else if(!have_skill($skill[Mind Bullets]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Mind Bullets")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 60)
+		if (itemAmount(Item.get("rad")) >= 60)
 		{
 			toBuy = 857;
 		}
 	}
-	else if(!have_skill($skill[Extra Brain]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Extra Brain")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 90)
+		if (itemAmount(Item.get("rad")) >= 90)
 		{
 			toBuy = 862;
 		}
 	}
-	else if(!have_skill($skill[Intracranial Eye]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Intracranial Eye")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 60)
+		if (itemAmount(Item.get("rad")) >= 60)
 		{
 			toBuy = 870;
 		}
 	}
-	else if(!have_skill($skill[Boiling Tear Ducts]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Boiling Tear Ducts")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 30)
+		if (itemAmount(Item.get("rad")) >= 30)
 		{
 			toBuy = 852;
 		}
 	}
-	else if(!have_skill($skill[Throat Refrigerant]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Throat Refrigerant")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 30)
+		if (itemAmount(Item.get("rad")) >= 30)
 		{
 			toBuy = 853;
 		}
 	}
-	else if(!have_skill($skill[Extremely Punchable Face]) && (toBuy == 0) && (get_property("falloutShelterLevel").to_int() >= 6))
+	else if (!haveSkill(Skill.get("Extremely Punchable Face")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
 	{
-		if(item_amount($item[Rad]) >= 90)
+		if (itemAmount(Item.get("rad")) >= 90)
 		{
 			toBuy = 876;
 		}
 	}
-	else if(!have_skill($skill[Firefly Abdomen]) && (toBuy == 0) && (get_property("falloutShelterLevel").to_int() >= 6))
+	else if (!haveSkill(Skill.get("Firefly Abdomen")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
 	{
-		if(item_amount($item[Rad]) >= 90)
+		if (itemAmount(Item.get("rad")) >= 90)
 		{
 			toBuy = 874;
 		}
 	}
-	else if(!have_skill($skill[Backwards Knees]) && (toBuy == 0) && (get_property("falloutShelterLevel").to_int() >= 6))
+	else if (!haveSkill(Skill.get("Backwards Knees")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
 	{
-		if(item_amount($item[Rad]) >= 120)
+		if (itemAmount(Item.get("rad")) >= 120)
 		{
 			toBuy = 864;
 		}
 	}
-	else if(!have_skill($skill[Bone Springs]) && (toBuy == 0) && (get_property("falloutShelterLevel").to_int() >= 6))
+	else if (!haveSkill(Skill.get("Bone Springs")) && toBuy === 0 && toInt(getProperty("falloutShelterLevel")) >= 6)
 	{
-		if(item_amount($item[Rad]) >= 90)
+		if (itemAmount(Item.get("rad")) >= 90)
 		{
 			toBuy = 872;
 		}
 	}
-	else if(!have_skill($skill[Skunk Glands]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Skunk Glands")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 30)
+		if (itemAmount(Item.get("rad")) >= 30)
 		{
 			toBuy = 854;
 		}
 	}
-	else if(!have_skill($skill[Translucent Skin]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Translucent Skin")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 30)
+		if (itemAmount(Item.get("rad")) >= 30)
 		{
 			toBuy = 855;
 		}
 	}
-	else if(!have_skill($skill[Projectile Salivary Glands]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Projectile Salivary Glands")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 30)
+		if (itemAmount(Item.get("rad")) >= 30)
 		{
 			toBuy = 856;
 		}
 	}
-	else if(!have_skill($skill[Internal Soda Machine]) && (toBuy == 0))
+	else if (!haveSkill(Skill.get("Internal Soda Machine")) && toBuy === 0)
 	{
-		if(item_amount($item[Rad]) >= 30)
+		if (itemAmount(Item.get("rad")) >= 30)
 		{
 			toBuy = 879;
 		}
 	}
 
-	if(toBuy != 0)
+	if (toBuy !== 0)
 	{
-		string page = visit_url("shop.php?whichshop=mutate");
-		page = visit_url("shop.php?whichshop=mutate&action=buyitem&quantity=1&pwd=&whichrow=" + toBuy);
+		let page: string = visitUrl("shop.php?whichshop=mutate");
+		page = visitUrl(`shop.php?whichshop=mutate&action=buyitem&quantity=1&pwd=&whichrow=${toBuy}`);
 	}
 	return true;
 }
 
 
-boolean LM_nuclear()
+export function LM_nuclear(): boolean
 {
-	if(!in_nuclear())
+	if (!in_nuclear())
 	{
 		return false;
 	}

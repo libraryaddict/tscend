@@ -1,41 +1,45 @@
-boolean in_lar()
+import { Location, Path, abort, getProperty, itemDropModifier, myPath, myTurncount, setProperty, toInt } from "kolmafia";
+import { zone_needItem } from "../auto_zone";
+import { generic_t } from "../autoscend_record";
+
+//Defined in autoscend/paths/live_ascend_repeat.ash
+export function in_lar(): boolean
 {
-	return my_path() == $path[Live. Ascend. Repeat.];
+	return myPath() === Path.get("Live. Ascend. Repeat.");
 }
 
-boolean lar_safeguard()
+export function lar_safeguard(): boolean
 {
-	if(in_lar())
+	if (in_lar())
 	{
-		string repeats = get_property("lastEncounter");
-		if((repeats == "Skull, Skull, Skull") || (repeats == "Urning Your Keep") || (repeats == "Turn Your Head and Coffin") || (repeats == "Curtains") || (repeats == "There's No Ability Like Possibility") || (repeats == "Putting Off Is Off-Putting") || (repeats == "Huzzah!"))
+		let repeats: string = getProperty("lastEncounter");
+		if (repeats === "Skull, Skull, Skull" || repeats === "Urning Your Keep" || repeats === "Turn Your Head and Coffin" || repeats === "Curtains" || repeats === "There's No Ability Like Possibility" || repeats === "Putting Off Is Off-Putting" || repeats === "Huzzah!")
 		{
-			if(get_property("_auto_groundhogSkip").to_int() == my_turncount())
+			if (toInt(getProperty("_auto_groundhogSkip")) === myTurncount())
 			{
-				set_property("_auto_groundhogSkipCounter", get_property("_auto_groundhogSkipCounter").to_int()+1);
+				setProperty("_auto_groundhogSkipCounter", (toInt(getProperty("_auto_groundhogSkipCounter")) + 1).toString());
 			}
-			if(get_property("_auto_groundhogSkipCounter").to_int() > 6)
+			if (toInt(getProperty("_auto_groundhogSkipCounter")) > 6)
 			{
 				abort("You are in a non-combat adventure that will infinitely loop. Please spend a turn somewhere else and re-run autoscend.");
 			}
-			set_property("_auto_groundhogSkip", my_turncount());
+			setProperty("_auto_groundhogSkip", myTurncount().toString());
 		}
-		else
-		{
-			set_property("_auto_groundhogSkipCounter", 0);
-			set_property("_auto_groundhogSkip", -1);
+		else {
+			setProperty("_auto_groundhogSkipCounter", (0).toString());
+			setProperty("_auto_groundhogSkip", (-1).toString());
 		}
 	}
 	return false;
 }
 
-boolean lar_repeat(location loc)
+export function lar_repeat(loc: Location): boolean
 {
-	if(in_lar())
+	if (in_lar())
 	{
-		if($locations[The Castle In The Clouds In The Sky (Ground Floor), The Defiled Alcove, The Defiled Niche, The Defiled Nook, The Haunted Ballroom] contains loc)
+		if (Location.get(["The Castle in the Clouds in the Sky (Ground Floor)", "The Defiled Alcove", "The Defiled Niche", "The Defiled Nook", "The Haunted Ballroom"]).includes(loc))
 		{
-			if(get_property("_auto_groundhogSkip").to_int() == my_turncount())
+			if (toInt(getProperty("_auto_groundhogSkip")) === myTurncount())
 			{
 				return false;
 			}
@@ -44,36 +48,35 @@ boolean lar_repeat(location loc)
 	return true;
 }
 
-boolean lar_abort(location loc)
+export function lar_abort(loc: Location): boolean
 {
-	if(in_lar())
+	if (in_lar())
 	{
-		generic_t itemNeed = zone_needItem(loc);
-		if(!itemNeed._boolean)
+		let itemNeed: generic_t = zone_needItem(loc);
+		if (!itemNeed._boolean)
 		{
 			return true;
 		}
-
 		//These should be places that we would not consider overriding with a YR.
-		foreach place in $locations[The F\'C\'Le, The Hole In The Sky]
+		for (let place of Location.get(["The F'c'le", "The Hole in the Sky"]))
 		{
-			if((place == loc) && (item_drop_modifier() < itemNeed._float))
+			if (place === loc && itemDropModifier() < itemNeed._float)
 			{
-				abort("Not enough +item drop (" + itemNeed._float + ") for " + loc + " only have: " + item_drop_modifier());
+				abort(`Not enough +item drop (${itemNeed._float}) for ${loc} only have: ${itemDropModifier()}`);
 			}
 		}
 	}
 	return true;
 }
 
-boolean LM_lar()
+export function LM_lar(): boolean
 {
 	//Not best way but just do it...
-	if(in_lar())
+	if (in_lar())
 	{
-		if(get_property("_sourceTerminalDigitizeUses").to_int() < 3)
+		if (toInt(getProperty("_sourceTerminalDigitizeUses")) < 3)
 		{
-			set_property("_sourceTerminalDigitizeUses", 3);
+			setProperty("_sourceTerminalDigitizeUses", (3).toString());
 		}
 	}
 	return false;

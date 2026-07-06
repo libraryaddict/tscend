@@ -1,645 +1,674 @@
-static int ZOOPART_NONE       = 0;
-static int ZOOPART_HEAD       = 1;
-static int ZOOPART_L_SHOULDER = 2;
-static int ZOOPART_R_SHOULDER = 3;
-static int ZOOPART_L_HAND     = 4;
-static int ZOOPART_R_HAND     = 5;
-static int ZOOPART_R_NIPPLE   = 6;
-static int ZOOPART_L_NIPPLE   = 7;
-static int ZOOPART_L_BUTTOCK  = 8;
-static int ZOOPART_R_BUTTOCK  = 9;
-static int ZOOPART_L_FOOT     = 10;
-static int ZOOPART_R_FOOT     = 11;
+import { Effect, Familiar, Item, Location, Modifier, Monster, Path, Skill, Slot, availableAmount, canEquip, ceil, equip, familiarWeight, getProperty, haveEffect, haveSkill, itemAmount, min, myAscensions, myFamiliar, myLevel, myPath, numericModifier, pullsRemaining, refreshStatus, splitString, toBoolean, toFamiliar, toInt, toSlot, use, useFamiliar, visitUrl } from "kolmafia";
+import { auto_doTempleSummit } from "../../autoscend";
+import { pullXWhenHaveY } from "../auto_acquire";
+import { auto_getAllEquipabble$1, possessOutfit$1, simMaximizeWith$1 } from "../auto_equipment";
+import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
+import { auto_sortedByModifier } from "../auto_list";
+import { provideFamExp, provideFamExp$3 } from "../auto_providers";
+import { adjustForYellowRayIfPossible$1, auto_is_valid, auto_is_valid$2, auto_log_info, auto_log_info$1, handleTracker$1, internalQuestStatus, summonMonster } from "../auto_util";
+import { yellowRayCombatString$1 } from "../combat/auto_combat_util";
+import { speakeasyCombat } from "../iotms/mr2022";
+import { auto_doPhoneQuest, auto_fightFlamingLeaflet } from "../iotms/mr2023";
+import { auto_AprilPiccoloBoostsLeft, auto_MayamAllUsed, auto_MayamClaim, auto_MayamIsUsed, auto_haveMayamCalendar, auto_playAprilPiccolo } from "../iotms/mr2024";
+import { L5_getEncryptionKey } from "../quests/level_05";
+import { L7_defiledNook } from "../quests/level_07";
+import { LX_killBaaBaaBuran, LX_unlockHauntedBilliardsRoom, LX_unlockHiddenTemple } from "../quests/level_11";
+import { LX_lastChance, candyBlock, candyBlockOutfit } from "../quests/level_any";
 
-boolean in_zootomist()
+export let $_f_ZOOPART_NONE: number | undefined;
+$_f_ZOOPART_NONE ??= 0;
+export let $_f_ZOOPART_HEAD: number | undefined;
+$_f_ZOOPART_HEAD ??= 1;
+export let $_f_ZOOPART_L_SHOULDER: number | undefined;
+$_f_ZOOPART_L_SHOULDER ??= 2;
+export let $_f_ZOOPART_R_SHOULDER: number | undefined;
+$_f_ZOOPART_R_SHOULDER ??= 3;
+export let $_f_ZOOPART_L_HAND: number | undefined;
+$_f_ZOOPART_L_HAND ??= 4;
+export let $_f_ZOOPART_R_HAND: number | undefined;
+$_f_ZOOPART_R_HAND ??= 5;
+export let $_f_ZOOPART_R_NIPPLE: number | undefined;
+$_f_ZOOPART_R_NIPPLE ??= 6;
+export let $_f_ZOOPART_L_NIPPLE: number | undefined;
+$_f_ZOOPART_L_NIPPLE ??= 7;
+export let $_f_ZOOPART_L_BUTTOCK: number | undefined;
+$_f_ZOOPART_L_BUTTOCK ??= 8;
+export let $_f_ZOOPART_R_BUTTOCK: number | undefined;
+$_f_ZOOPART_R_BUTTOCK ??= 9;
+export let $_f_ZOOPART_L_FOOT: number | undefined;
+$_f_ZOOPART_L_FOOT ??= 10;
+export let $_f_ZOOPART_R_FOOT: number | undefined;
+$_f_ZOOPART_R_FOOT ??= 11;
+
+//Defined in autoscend/paths/zootomist.ash
+export function in_zootomist(): boolean
 {
-	return my_path()==$path[z is for zootomist];
+	return myPath() === Path.get("Z is for Zootomist");
 }
 
-int zoo_specimenPreparationsLeft()
+export function zoo_specimenPreparationsLeft(): number
 {
 	if (!in_zootomist()) { return 0; }
-	int zoo_grafts_allowed = min(11,get_property("zootomistPoints").to_int()+1);
-	return zoo_grafts_allowed-get_property("zootSpecimensPrepared").to_int();
+	let zoo_grafts_allowed: number = min(11, toInt(getProperty("zootomistPoints")) + 1);
+	return zoo_grafts_allowed - toInt(getProperty("zootSpecimensPrepared"));
 }
 
-boolean zoo_prepareSpecimen()
+export function zoo_prepareSpecimen(): boolean
 {
-	familiar f = my_familiar();
+	let f: Familiar = myFamiliar();
 	if (!in_zootomist()) { return false; }
 	if (zoo_specimenPreparationsLeft() > 0)
 	{
-		visit_url("place.php?whichplace=graftinglab&action=graftinglab_prep");
-		visit_url("choice.php?pwd=&whichchoice=1555&option=1", true);
-		refresh_status();
-		int new_exp = f.experience;
-		int new_weight = familiar_weight(f);
-		handleTracker(f,"Specimen prepared to "+f.experience+" XP {"+new_weight+" lb}","auto_tracker_path");
+		visitUrl("place.php?whichplace=graftinglab&action=graftinglab_prep");
+		visitUrl("choice.php?pwd=&whichchoice=1555&option=1", true);
+		refreshStatus();
+		let new_exp: number = f.experience;
+		let new_weight: number = familiarWeight(f);
+		handleTracker$1(f.toString(), `Specimen prepared to ${f.experience} XP {${new_weight} lb}`, "auto_tracker_path");
 		return true;
 	}
 	return false;
 }
 
-void zoo_startPulls()
+export function zoo_startPulls(): void
 {
-	if (!in_zootomist() || pulls_remaining()==0) { return; }
-	if (!have_skill($skill[just the facts]) && auto_is_valid($skill[just the facts])) {
-		pullXWhenHaveY($item[book of facts (dog-eared)], 1, 0);
-		if (available_amount($item[book of facts (dog-eared)])>0) {use($item[book of facts (dog-eared)]);}
+	if (!in_zootomist() || pullsRemaining() === 0) { return; }
+	if (!haveSkill(Skill.get("Just the Facts")) && auto_is_valid$2(Skill.get("Just the Facts"))) {
+		pullXWhenHaveY(Item.get("book of facts (dog-eared)"), 1, 0);
+		if (availableAmount(Item.get("book of facts (dog-eared)")) > 0) { use(Item.get("book of facts (dog-eared)")); }
 	}
-	if (!have_skill($skill[perpetrate mild evil]) && auto_is_valid($skill[perpetrate mild evil])) {
-		pullXWhenHaveY($item[Pocket Guide to Mild Evil (used)], 1, 0);
-		if (available_amount($item[Pocket Guide to Mild Evil (used)])>0) {use($item[Pocket Guide to Mild Evil (used)]);}
+	if (!haveSkill(Skill.get("Perpetrate Mild Evil")) && auto_is_valid$2(Skill.get("Perpetrate Mild Evil"))) {
+		pullXWhenHaveY(Item.get("Pocket Guide to Mild Evil (used)"), 1, 0);
+		if (availableAmount(Item.get("Pocket Guide to Mild Evil (used)")) > 0) { use(Item.get("Pocket Guide to Mild Evil (used)")); }
 	}
-	if (available_amount($item[iflail])==0 && auto_is_valid($item[iflail])) {
-		pullXWhenHaveY($item[iflail], 1, 0);
+	if (availableAmount(Item.get("iFlail")) === 0 && auto_is_valid(Item.get("iFlail"))) {
+		pullXWhenHaveY(Item.get("iFlail"), 1, 0);
 	}
 }
 
-void zoo_d2Pulls()
+export function zoo_d2Pulls(): void
 {
-	if (!in_zootomist() || pulls_remaining()==0) { return; }
-	
+	if (!in_zootomist() || pullsRemaining() === 0) { return; }
 	// Pull enough ML for oil peak, we need a provider function here.
-	int ml_target = 100.0;
-	simMaximizeWith("monster level");
-	int curr_ml = numeric_modifier($modifier[monster level]);
-	
+	let ml_target: number = toInt(100.0);
+	simMaximizeWith$1("monster level");
+	let curr_ml: number = toInt(numericModifier(Modifier.get("Monster Level")));
 	// Function to try pulling an ML item, if it improves our ML by at least 10 over best alternative.
-	float try_ml_pull(item it) {
-		if (!can_equip(it) || (available_amount(it)>0) || !auto_is_valid(it)) { return 0; }
-		modifier m = $modifier[monster level];
-		slot s = to_slot(it);
-		int[item] alternatives = auto_getAllEquipabble(s);
-		item[int] ranked_alternatives = auto_sortedByModifier(alternatives,m);
-		int islot = (s==$slot[acc1] ? 2 : 0); // we want to compare to our third best item for accessories
-		item curr_best_in_slot = count(ranked_alternatives)>islot ? ranked_alternatives[islot] : $item[none];
-		float curr_best_mod = numeric_modifier(curr_best_in_slot, m);
-		float improvement = numeric_modifier(it,m) - curr_best_mod;
+	function try_ml_pull(it: Item): number {
+		if (!canEquip(it) || availableAmount(it) > 0 || !auto_is_valid(it)) { return 0; }
+		let m: Modifier = Modifier.get("Monster Level");
+		let s: Slot = toSlot(it);
+		let alternatives: Map<Item, number> = auto_getAllEquipabble$1(s);
+		let ranked_alternatives: Map<number, Item> = auto_sortedByModifier(alternatives, m);
+		let islot: number = (s === Slot.get("acc1") ? 2 : 0); // we want to compare to our third best item for accessories
+		let curr_best_in_slot: Item = (ranked_alternatives.size > islot ? (ranked_alternatives.get(islot) ?? ranked_alternatives.set(islot, Item.none).get(islot)) : Item.none);
+		let curr_best_mod: number = numericModifier(curr_best_in_slot, m);
+		let improvement: number = numericModifier(it, m) - curr_best_mod;
 		if (improvement > 10) {
 			pullXWhenHaveY(it, 1, 0);
-			if (available_amount(it) > 0) { return improvement; }
+			if (availableAmount(it) > 0) { return improvement; }
 		}
 		return 0;
 	}
 	// Good ML boosting items. Vinyl Shield is lower than you might think because it can't be wielded with unstable fulminate.
-	foreach it in $items[hairshirt, hockey stick of furious angry rage, stainless steel scarf, Porcelain pelerine,
-	  Bakelite backpack, brown pirate pants, mer-kin headguard, vinyl shield, red shirt, iFlail]
+	for (let it of Item.get(["hairshirt", "hockey stick of furious angry rage", "stainless steel scarf", "porcelain pelerine",
+	  "bakelite backpack", "brown pirate pants", "Mer-kin headguard", "vinyl shield", "red shirt", "iFlail"]))
 	{
-		if (curr_ml >= ml_target) {break;}
-		curr_ml += try_ml_pull(it);
+		if (curr_ml >= ml_target) { break; }
+		curr_ml += toInt(try_ml_pull(it));
 	}
 	return;
 }
 
-familiar zoo_graftedToPart(int bodyPart)
+export function zoo_graftedToPart(bodyPart: number): Familiar
 {
-	switch(bodyPart)
+	switch (bodyPart)
 	{
-		case ZOOPART_HEAD:
-			return get_property("zootGraftedHeadFamiliar").to_int().to_familiar();
-		case ZOOPART_L_SHOULDER:
-			return get_property("zootGraftedShoulderLeftFamiliar").to_int().to_familiar();
-		case ZOOPART_R_SHOULDER:
-			return get_property("zootGraftedShoulderRightFamiliar").to_int().to_familiar();
-		case ZOOPART_L_HAND:
-			return get_property("zootGraftedHandLeftFamiliar").to_int().to_familiar();
-		case ZOOPART_R_HAND:
-			return get_property("zootGraftedHandRightFamiliar").to_int().to_familiar();
-		case ZOOPART_R_NIPPLE:
-			return get_property("zootGraftedNippleRightFamiliar").to_int().to_familiar();
-		case ZOOPART_L_NIPPLE:
-			return get_property("zootGraftedNippleLeftFamiliar").to_int().to_familiar();
-		case ZOOPART_L_BUTTOCK:
-			return get_property("zootGraftedButtCheekLeftFamiliar").to_int().to_familiar();
-		case ZOOPART_R_BUTTOCK:
-			return get_property("zootGraftedButtCheekRightFamiliar").to_int().to_familiar();
-		case ZOOPART_L_FOOT:
-			return get_property("zootGraftedFootLeftFamiliar").to_int().to_familiar();
-		case ZOOPART_R_FOOT:
-			return get_property("zootGraftedFootRightFamiliar").to_int().to_familiar();
+		case $_f_ZOOPART_HEAD:
+			return toFamiliar(toInt(getProperty("zootGraftedHeadFamiliar")));
+		case $_f_ZOOPART_L_SHOULDER:
+			return toFamiliar(toInt(getProperty("zootGraftedShoulderLeftFamiliar")));
+		case $_f_ZOOPART_R_SHOULDER:
+			return toFamiliar(toInt(getProperty("zootGraftedShoulderRightFamiliar")));
+		case $_f_ZOOPART_L_HAND:
+			return toFamiliar(toInt(getProperty("zootGraftedHandLeftFamiliar")));
+		case $_f_ZOOPART_R_HAND:
+			return toFamiliar(toInt(getProperty("zootGraftedHandRightFamiliar")));
+		case $_f_ZOOPART_R_NIPPLE:
+			return toFamiliar(toInt(getProperty("zootGraftedNippleRightFamiliar")));
+		case $_f_ZOOPART_L_NIPPLE:
+			return toFamiliar(toInt(getProperty("zootGraftedNippleLeftFamiliar")));
+		case $_f_ZOOPART_L_BUTTOCK:
+			return toFamiliar(toInt(getProperty("zootGraftedButtCheekLeftFamiliar")));
+		case $_f_ZOOPART_R_BUTTOCK:
+			return toFamiliar(toInt(getProperty("zootGraftedButtCheekRightFamiliar")));
+		case $_f_ZOOPART_L_FOOT:
+			return toFamiliar(toInt(getProperty("zootGraftedFootLeftFamiliar")));
+		case $_f_ZOOPART_R_FOOT:
+			return toFamiliar(toInt(getProperty("zootGraftedFootRightFamiliar")));
 		default:
-			return $familiar[none];
+			return Familiar.none;
 	}
 }
 
-familiar[int] zoo_graftedFams()
+export function zoo_graftedFams(): Map<number, Familiar>
 {
-	familiar[int] fams;
-	for (int i = 1 ; i < 12 ; i++) {fams[i] = zoo_graftedToPart(i);}
+	let fams: Map<number, Familiar> = new Map();
+	for (let i: number = 1; i < 12; i++) { fams.set(i, zoo_graftedToPart(i)); }
 	return fams;
 }
 
-boolean[familiar] zoo_graftedIntrinsicFams()
+export function zoo_graftedIntrinsicFams(): Map<Familiar, boolean>
 {
-	boolean[familiar] fams;
-	void check(int part)
+	let fams: Map<Familiar, boolean> = new Map();
+	function check(part: number): void
 	{
-		familiar f = zoo_graftedToPart(part);
-		if (f!=$familiar[none]) {fams[f] = true;}
+		let f: Familiar = zoo_graftedToPart(part);
+		if (f !== Familiar.none) { fams.set(f, true); }
 	}
-	check(ZOOPART_HEAD);
-	check(ZOOPART_L_SHOULDER);
-	check(ZOOPART_R_SHOULDER);
-	check(ZOOPART_L_BUTTOCK );
-	check(ZOOPART_R_BUTTOCK );
+	check($_f_ZOOPART_HEAD);
+	check($_f_ZOOPART_L_SHOULDER);
+	check($_f_ZOOPART_R_SHOULDER);
+	check($_f_ZOOPART_L_BUTTOCK);
+	check($_f_ZOOPART_R_BUTTOCK);
 	return fams;
 }
 
-boolean zoo_isGrafted(familiar f)
+export function zoo_isGrafted(f: Familiar): boolean
 {
-	if (f==$familiar[none]) { return false; }
-	foreach i,fam in zoo_graftedFams()
+	if (f === Familiar.none) { return false; }
+	for (let [i, fam] of zoo_graftedFams())
 	{
-		if (fam==f) { return true ;}
+		if (fam === f) { return true; }
 	}
 	return false;
 }
 
-int [int] zoo_getBodyPartPriority()
+export function zoo_getBodyPartPriority(): Map<number, number>
 {
-	int [int] priority;
-	if(auto_have_familiar($familiar[burly bodyguard]) || zoo_isGrafted($familiar[burly bodyguard]))
+	let priority: Map<number, number> = new Map();
+	if (auto_have_familiar(Familiar.get("Burly Bodyguard")) || zoo_isGrafted(Familiar.get("Burly Bodyguard")))
 	{
-		priority = {ZOOPART_L_NIPPLE,
-		ZOOPART_R_NIPPLE,
-		ZOOPART_L_FOOT,
-		ZOOPART_HEAD,
-		ZOOPART_L_HAND,
-		ZOOPART_L_SHOULDER,
-		ZOOPART_R_SHOULDER,
-		ZOOPART_L_BUTTOCK,
-		ZOOPART_R_HAND,
-		ZOOPART_R_BUTTOCK,
-		ZOOPART_R_FOOT};
+		priority = new Map([[0, $_f_ZOOPART_L_NIPPLE],
+		[1, $_f_ZOOPART_R_NIPPLE],
+		[2, $_f_ZOOPART_L_FOOT],
+		[3, $_f_ZOOPART_HEAD],
+		[4, $_f_ZOOPART_L_HAND],
+		[5, $_f_ZOOPART_L_SHOULDER],
+		[6, $_f_ZOOPART_R_SHOULDER],
+		[7, $_f_ZOOPART_L_BUTTOCK],
+		[8, $_f_ZOOPART_R_HAND],
+		[9, $_f_ZOOPART_R_BUTTOCK],
+		[10, $_f_ZOOPART_R_FOOT]]);
 	}
-	else
-	{
-		priority = {ZOOPART_L_NIPPLE,
-		ZOOPART_R_NIPPLE,
-		ZOOPART_L_FOOT,
-		ZOOPART_HEAD,
-		ZOOPART_L_HAND,
-		ZOOPART_L_SHOULDER,
-		ZOOPART_R_SHOULDER,
-		ZOOPART_L_BUTTOCK,
-		ZOOPART_R_BUTTOCK,
-		ZOOPART_R_FOOT,
-		ZOOPART_R_HAND};
+	else {
+		priority = new Map([[0, $_f_ZOOPART_L_NIPPLE],
+		[1, $_f_ZOOPART_R_NIPPLE],
+		[2, $_f_ZOOPART_L_FOOT],
+		[3, $_f_ZOOPART_HEAD],
+		[4, $_f_ZOOPART_L_HAND],
+		[5, $_f_ZOOPART_L_SHOULDER],
+		[6, $_f_ZOOPART_R_SHOULDER],
+		[7, $_f_ZOOPART_L_BUTTOCK],
+		[8, $_f_ZOOPART_R_BUTTOCK],
+		[9, $_f_ZOOPART_R_FOOT],
+		[10, $_f_ZOOPART_R_HAND]]);
 	}
 	return priority;
 }
 
-familiar zoo_getBestFam(int bodyPart)
+export function zoo_getBestFam(bodyPart: number): Familiar
 {
-	return zoo_getBestFam(bodyPart, false);
+	return zoo_getBestFam$1(bodyPart, false);
 }
 
-familiar zoo_getBestFam(int bodyPart, boolean verbose)
+export function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 {
 	//Identifies the 11 familiars we want based on what we have and stores them in prefs so we only go through the list of fams once
 	//Goes through fam attributes of all familiars and filters from there
-	string[familiar] famAttributes;
+	let famAttributes: Map<Familiar, string> = new Map();
 	//priority, familiar
-	float[familiar] intrinsicFams;
-	float[familiar] punchFams;
-	float[familiar] lbuffFams;
-	float[familiar] rbuffFams;
-	float[familiar] kickFams;
+	let intrinsicFams: Map<Familiar, number> = new Map();
+	let punchFams: Map<Familiar, number> = new Map();
+	let lbuffFams: Map<Familiar, number> = new Map();
+	let rbuffFams: Map<Familiar, number> = new Map();
+	let kickFams: Map<Familiar, number> = new Map();
 	//Weights for familiar priority. These are based off of our default maximizer statement
-	float[string] intrinsicWeights = { 
-		"technological": 100, //20% item drop
-		"haseyes": 75, //15% item drop
-		"object": 25, //5% item drop
-		"hashands": 20, //20% meat drop
-		"hasclaws": 20, //20% meat drop
-		"bite": 15, //15% meat drop
-		"animal": 10, //10% meat drop
-		"haswings": 12.5, //50% initiative
-		"haslegs": 12.5, //50% initiative
-		"fast": 12.5, //50% initiative
-		"animatedart": 12.5, //50% initiative
-		"robot": 10, //10 DR
-		"polygonal": 10, //10 DR
-		"hasshell": 10, //10 DR
-		"hasbones": 5, //5 DR
-		"food": 0.5, //1 stench res
-		"hasstinger": 0.5, //1 stench res
-		"good": 0.5, //1 spooky res
-		"evil": 0.5, //1 spooky res
-		"reallyevil": 0.5, //1 spooky res
-		"hard": 0.5, //1 sleaze res
-		"phallic": 0.5, //1 sleaze res
-		"edible": 0.5, //1 sleaze res
-		"cute": 0.5, //1 sleaze res
-		"mineral": 0.5, //1 hot res
-		"swims": 0.5, //1 hot res
-		"aquatic": 0.5, //1 hot res
-		"vegetable": 0.5, //1 cold res
-		"wearsclothes": 0.5, //1 cold res
-		"isclothes": 0.5, //1 cold res
-		"flies": 1, //never fumble
-		"insect": 10, //25 max hp
-		"software": 10, //25 max hp
-		"person": 8, //20 max hp
-		"undead": 8, //20 max hp
-		"humanoid": 6, //15 max hp
-		"organic": 4, //10 max hp
-		"sentient": 2, //5 max hp
-		"orb": 5, //25 max mp
-		"cold": 15, //10 cold dmg
-		"hasbeak": 0, //10 weapon dmg. Won't use in zootomist
-		"hot": 15, //10 hot dmg
-		"sleaze": 15, //10 sleaze dmg
-		"spooky": 15, //10 spooky dmg
-		"stench": 15, //10 stench dmg
-		"cantalk": 1, //-1mp for skills
-	};
-	float[string] lNipWeights = { 
-		"animal": 2.5, //25 hp regen
-		"animatedart": 0.5, //50% moxie
-		"aquatic": 1, //2 hot res
-		"bite": 30, //sleaze dmg
-		"cantalk": 37.5, //25% myst
-		"cold": 30, //20 cold dmg
-		"edible": 20, //20 muscle
-		"evil": 0, //10 weapon dmg. Won't use in zootomist
-		"fast": 150, //30% item drop
-		"flies": 12.5, //50% initiative
-		"food": 30, //20 stench dmg
-		"good": 5, //50% dmg to skeletons
-		"hard": 5, //25% weapon drop
-		"hasbeak": 150, //30% food drop
-		"hasbones": 2.5, //25% dmg to skeletons
-		"hasclaws": 4, //20% crit rate
-		"haseyes": 2, //4 spooky res
-		"hashands": 15, //15 meat drop
-		"haslegs": 10, //50% pant drop
-		"hasshell": 20, //20 DR
-		"hasstinger": 15, //10 spooky dmg
-		"haswings": 20, //20 myst
-		"hot": 15, //10 hot dmg
-		"hovers": 250, //-5% combat
-		"insect": 6.25, //25% init
-		"isclothes": 2, //4 cold res
-		"object": 40, //100 maxhp
-		"organic": 500, //+1 fam exp
-		"person": 1, //2 stench res
-		"phallic": 10, //10 moxie
-		"polygonal": 2, //4 sleaze res
-		"reallyevil": 250, //-5 combat
-		"robot": 37.5, //25% muscle
-		"sentient": 10, //5 fam weight
-		"sleaze": 50, //50% booze drop
-		"software": 10, //50% max mp
-		"stench": 5, //50% dmg to zombies
-		"technological": 45, //10-20mp per turn
-		"undead": 3, //30 dmg to undead
-		"vegetable": 2, //20 familiar dmg
-		"wearsclothes": 10, //50% gear drop
-	};
-	float[string] rNipWeights = { 
-		"animal": 15, //10 stench dmg
-		"animatedart": 1, //2 spooky res
-		"aquatic": 10, //10 muscle
-		"bite": 0, //weapon dmg. Won't use in zootomist
-		"cantalk": 20, //100% max mp
-		"cold": 2, //4 hot res
-		"cute": 37.5, //25% moxie
-		"edible": 150, //30% booze drops
-		"evil": 30, //20 spooky dmg
-		"fast": 25, //100% initiative
-		"flies": 20, //20 moxie
-		"food": 250, //50% food drops
-		"good": 20, //10 fam weight
-		"hard": 75, //50% muscle
-		"hasbones": 5, //50% dmg to skeletons
-		"hasclaws": 10, //50% weapon drop
-		"haseyes": 25, //+5% combat
-		"hashands": 75, //15% item drop
-		"haslegs": 5, //25% gear drop
-		"hasshell": 20, //20 DR
-		"hasstinger": 2, //2x crit hit chance
-		"haswings": 12.5, //50% init
-		"hot": 1, //2 cold res
-		"insect": 500, //1 fam exp
-		"isclothes": 5, //25% pant drop
-		"mineral": 20, //20 DR
-		"object": 2, //4 stench res
-		"orb": 10, //10 myst
-		"organic": 1, //10 fam dmg
-		"person": 30, //30% meat drop
-		"phallic": 5, //5 pool skill
-		"polygonal": 15, //10 sleaze dmg
-		"reallyevil": 0, //20 weapon dmg. Won't use in zootomist
-		"robot": 30, //20 hot dmg
-		"sentient": 75, //50% myst
-		"software": 75, //20-30 mp regen
-		"spooky": 5, //50 ghost dmg
-		"stench": 25, //+5% combat
-		"swims": 15, //10 cold dmg
-		"technological": 15, //10-20 hp regen
-		"undead": 3, //30 dmg to undead
-		"vegetable": 1, //2 sleaze res
-		"wearsclothes": 50, //50% max hp
-	};
-	string[string] footParam = {
-		"bite": "instakill",
-		"cute": "instakill",
-		"evil": "instakill",
-		"food": "instakill",
-		"hasstinger": "instakill",
-		"object": "instakill",
-		"reallyevil": "instakill",
-		"stench": "instakill",
-		"animatedart": "banish",
-		"hard": "banish",
-		"hasbones": "banish",
-		"haslegs": "banish",
-		"haswings": "banish",
-		"spooky": "banish",
-		"swims": "banish",
-		"vegetable": "banish",
-		"hasbeak": "pp",
-		"hasclaws": "pp",
-		"hashands": "pp",
-		"isclothes": "pp",
-		"polygonal": "pp",
-		"sleaze": "pp",
-		"technological": "pp",
-		"wearsclothes": "pp",
-		"aquatic": "heal",
-		"cold": "heal",
-		"edible": "heal",
-		"good": "heal",
-		"organic": "heal",
-		"person": "heal",
-		"phallic": "heal",
-		"undead": "heal",
-		"animal": "sniff",
-		"haseyes": "sniff",
-		"hot": "sniff",
-		"humanoid": "sniff",
-		"mineral": "sniff",
-		"orb": "sniff",
-		"sentient": "sniff",
-		"software": "sniff"
-	};
-	int[string] footWeights = {
-		"instakill": 10,
-		"banish": 10,
-		"pp": 5,
-		"heal": 5,
-		"sniff": 5
-	};
-	boolean[familiar] blacklistFams = $familiars[reassembled blackbird, reconstituted crow, homemade robot];
-	foreach fam in $familiars[]
+	let intrinsicWeights: Map<string, number> = new Map([
+		["technological", 100], //20% item drop
+		["haseyes", 75], //15% item drop
+		["object", 25], //5% item drop
+		["hashands", 20], //20% meat drop
+		["hasclaws", 20], //20% meat drop
+		["bite", 15], //15% meat drop
+		["animal", 10], //10% meat drop
+		["haswings", 12.5], //50% initiative
+		["haslegs", 12.5], //50% initiative
+		["fast", 12.5], //50% initiative
+		["animatedart", 12.5], //50% initiative
+		["robot", 10], //10 DR
+		["polygonal", 10], //10 DR
+		["hasshell", 10], //10 DR
+		["hasbones", 5], //5 DR
+		["food", 0.5], //1 stench res
+		["hasstinger", 0.5], //1 stench res
+		["good", 0.5], //1 spooky res
+		["evil", 0.5], //1 spooky res
+		["reallyevil", 0.5], //1 spooky res
+		["hard", 0.5], //1 sleaze res
+		["phallic", 0.5], //1 sleaze res
+		["edible", 0.5], //1 sleaze res
+		["cute", 0.5], //1 sleaze res
+		["mineral", 0.5], //1 hot res
+		["swims", 0.5], //1 hot res
+		["aquatic", 0.5], //1 hot res
+		["vegetable", 0.5], //1 cold res
+		["wearsclothes", 0.5], //1 cold res
+		["isclothes", 0.5], //1 cold res
+		["flies", 1], //never fumble
+		["insect", 10], //25 max hp
+		["software", 10], //25 max hp
+		["person", 8], //20 max hp
+		["undead", 8], //20 max hp
+		["humanoid", 6], //15 max hp
+		["organic", 4], //10 max hp
+		["sentient", 2], //5 max hp
+		["orb", 5], //25 max mp
+		["cold", 15], //10 cold dmg
+		["hasbeak", 0], //10 weapon dmg. Won't use in zootomist
+		["hot", 15], //10 hot dmg
+		["sleaze", 15], //10 sleaze dmg
+		["spooky", 15], //10 spooky dmg
+		["stench", 15], //10 stench dmg
+		["cantalk", 1] //-1mp for skills
+	]);
+	let lNipWeights: Map<string, number> = new Map([
+		["animal", 2.5], //25 hp regen
+		["animatedart", 0.5], //50% moxie
+		["aquatic", 1], //2 hot res
+		["bite", 30], //sleaze dmg
+		["cantalk", 37.5], //25% myst
+		["cold", 30], //20 cold dmg
+		["edible", 20], //20 muscle
+		["evil", 0], //10 weapon dmg. Won't use in zootomist
+		["fast", 150], //30% item drop
+		["flies", 12.5], //50% initiative
+		["food", 30], //20 stench dmg
+		["good", 5], //50% dmg to skeletons
+		["hard", 5], //25% weapon drop
+		["hasbeak", 150], //30% food drop
+		["hasbones", 2.5], //25% dmg to skeletons
+		["hasclaws", 4], //20% crit rate
+		["haseyes", 2], //4 spooky res
+		["hashands", 15], //15 meat drop
+		["haslegs", 10], //50% pant drop
+		["hasshell", 20], //20 DR
+		["hasstinger", 15], //10 spooky dmg
+		["haswings", 20], //20 myst
+		["hot", 15], //10 hot dmg
+		["hovers", 250], //-5% combat
+		["insect", 6.25], //25% init
+		["isclothes", 2], //4 cold res
+		["object", 40], //100 maxhp
+		["organic", 500], //+1 fam exp
+		["person", 1], //2 stench res
+		["phallic", 10], //10 moxie
+		["polygonal", 2], //4 sleaze res
+		["reallyevil", 250], //-5 combat
+		["robot", 37.5], //25% muscle
+		["sentient", 10], //5 fam weight
+		["sleaze", 50], //50% booze drop
+		["software", 10], //50% max mp
+		["stench", 5], //50% dmg to zombies
+		["technological", 45], //10-20mp per turn
+		["undead", 3], //30 dmg to undead
+		["vegetable", 2], //20 familiar dmg
+		["wearsclothes", 10] //50% gear drop
+	]);
+	let rNipWeights: Map<string, number> = new Map([
+		["animal", 15], //10 stench dmg
+		["animatedart", 1], //2 spooky res
+		["aquatic", 10], //10 muscle
+		["bite", 0], //weapon dmg. Won't use in zootomist
+		["cantalk", 20], //100% max mp
+		["cold", 2], //4 hot res
+		["cute", 37.5], //25% moxie
+		["edible", 150], //30% booze drops
+		["evil", 30], //20 spooky dmg
+		["fast", 25], //100% initiative
+		["flies", 20], //20 moxie
+		["food", 250], //50% food drops
+		["good", 20], //10 fam weight
+		["hard", 75], //50% muscle
+		["hasbones", 5], //50% dmg to skeletons
+		["hasclaws", 10], //50% weapon drop
+		["haseyes", 25], //+5% combat
+		["hashands", 75], //15% item drop
+		["haslegs", 5], //25% gear drop
+		["hasshell", 20], //20 DR
+		["hasstinger", 2], //2x crit hit chance
+		["haswings", 12.5], //50% init
+		["hot", 1], //2 cold res
+		["insect", 500], //1 fam exp
+		["isclothes", 5], //25% pant drop
+		["mineral", 20], //20 DR
+		["object", 2], //4 stench res
+		["orb", 10], //10 myst
+		["organic", 1], //10 fam dmg
+		["person", 30], //30% meat drop
+		["phallic", 5], //5 pool skill
+		["polygonal", 15], //10 sleaze dmg
+		["reallyevil", 0], //20 weapon dmg. Won't use in zootomist
+		["robot", 30], //20 hot dmg
+		["sentient", 75], //50% myst
+		["software", 75], //20-30 mp regen
+		["spooky", 5], //50 ghost dmg
+		["stench", 25], //+5% combat
+		["swims", 15], //10 cold dmg
+		["technological", 15], //10-20 hp regen
+		["undead", 3], //30 dmg to undead
+		["vegetable", 1], //2 sleaze res
+		["wearsclothes", 50] //50% max hp
+	]);
+	let footParam: Map<string, string> = new Map([
+		["bite", "instakill"],
+		["cute", "instakill"],
+		["evil", "instakill"],
+		["food", "instakill"],
+		["hasstinger", "instakill"],
+		["object", "instakill"],
+		["reallyevil", "instakill"],
+		["stench", "instakill"],
+		["animatedart", "banish"],
+		["hard", "banish"],
+		["hasbones", "banish"],
+		["haslegs", "banish"],
+		["haswings", "banish"],
+		["spooky", "banish"],
+		["swims", "banish"],
+		["vegetable", "banish"],
+		["hasbeak", "pp"],
+		["hasclaws", "pp"],
+		["hashands", "pp"],
+		["isclothes", "pp"],
+		["polygonal", "pp"],
+		["sleaze", "pp"],
+		["technological", "pp"],
+		["wearsclothes", "pp"],
+		["aquatic", "heal"],
+		["cold", "heal"],
+		["edible", "heal"],
+		["good", "heal"],
+		["organic", "heal"],
+		["person", "heal"],
+		["phallic", "heal"],
+		["undead", "heal"],
+		["animal", "sniff"],
+		["haseyes", "sniff"],
+		["hot", "sniff"],
+		["humanoid", "sniff"],
+		["mineral", "sniff"],
+		["orb", "sniff"],
+		["sentient", "sniff"],
+		["software", "sniff"]
+	]);
+	let footWeights: Map<string, number> = new Map([
+		["instakill", 10],
+		["banish", 10],
+		["pp", 5],
+		["heal", 5],
+		["sniff", 5]
+	]);
+	let blacklistFams: Familiar[] = Familiar.get(["Reassembled Blackbird", "Reconstituted Crow", "Homemade Robot"]);
+	for (let fam of Familiar.get(["Mosquito", "Leprechaun", "Levitating Potato", "Angry Goat", "Sabre-Toothed Lime", "Fuzzy Dice", "Spooky Pirate Skeleton", "Barrrnacle", "Howling Balloon Monkey", "Stab Bat", "Grue", "Blood-Faced Volleyball", "Ghuol Whelp", "Baby Gravy Fairy", "Cocoabo", "Star Starfish", "Hovering Sombrero", "Ghost Pickle on a Stick", "Killer Bee", "Whirling Maple Leaf", "Coffee Pixie", "Cheshire Bat", "Jill-O-Lantern", "Hand Turkey", "Crimbo Elf", "Hanukkimbo Dreidl", "Baby Yeti", "Feather Boa Constrictor", "Emo Squid", "Personal Raincloud", "Clockwork Grapefruit", "MagiMechTech MicroMechaMech", "Flaming Gravy Fairy", "Frozen Gravy Fairy", "Stinky Gravy Fairy", "Spooky Gravy Fairy", "Inflatable Dodecapede", "Pygmy Bugbear Shaman", "Doppelshifter", "Attention-Deficit Demon", "Cymbal-Playing Monkey", "Temporal Riftlet", "Sweet Nutcracker", "Pet Rock", "Snowy Owl", "Teddy Bear", "Ninja Pirate Zombie Robot", "Sleazy Gravy Fairy", "Wild Hare", "Wind-up Chattering Teeth", "Spirit Hobo", "Astral Badger", "Comma Chameleon", "Misshapen Animal Skeleton", "Scary Death Orb", "Jitterbug", "Nervous Tick", "Reassembled Blackbird", "Origami Towel Crane", "Ninja Snowflake", "Evil Teddy Bear", "Toothsome Rock", "Ancient Yuletide Troll", "Dandy Lion", "O.A.F.", "Penguin Goodfella", "Jumpsuited Hound Dog", "Green Pixie", "Ragamuffin Imp", "Exotic Parrot", "Wizard Action Figure", "Gluttonous Green Ghost", "Casagnova Gnome", "Hunchbacked Minion", "Crimbo P. R. E. S. S. I. E.", "Bulky Buddy Box", "Teddy Borg", "RoboGoose", "El Vibrato Megadrone", "Mad Hatrack", "Adorable Seal Larva", "Untamed Turtle", "Animated Macaroni Duck", "Pet Cheezling", "Autonomous Disco Ball", "Mariachi Chihuahua", "Hobo Monkey", "Llama Lama", "Cotton Candy Carnie", "Disembodied Hand", "Black Cat", "Uniclops", "Psychedelic Bear", "Baby Mutant Rattlesnake", "Mutant Fire Ant", "Mutant Cactus Bud", "Mutant Gila Monster", "Cuddlefish", "Sugar Fruit Fairy", "Imitation Crab", "Pair of Ragged Claws", "Magic Dragonfish", "Frumious Bandersnatch", "Midget Clownfish", "Syncopated Turtle", "Grinning Turtle", "Purse Rat", "Wereturtle", "Baby Sandworm", "Slimeling", "He-Boulder", "Rock Lobster", "Urchin Urchin", "Grouper Groupie", "Squamous Gibberer", "Dancing Frog", "Chauvinist Pig", "Stocking Mimic", "Snow Angel", "Jack-in-the-Box", "BRICKO chick", "Baby Bugged Bugbear", "Money-Making Goblin", "Floating Eye", "Vampire Bat", "Oyster Bunny", "Egg Benedict", "Bank Piggy", "Worm Doctor", "Snowhitman", "Plastic Grocery Bag", "Underworld Bonsai", "Rogue Program", "Mini-Hipster", "Pottery Barn Owl", "Hippo Ballerina", "Knob Goblin Organ Grinder", "Piano Cat", "Dramatic Hedgehog", "Smiling Rat", "Robot Reindeer", "Holiday Log", "Obtuse Angel", "Reconstituted Crow", "Li'l Xenomorph", "Dataspider", "Pair of Stomping Boots", "Feral Kobold", "Fancypants Scarecrow", "Bloovian Groose", "Blavious Kloop", "Peppermint Rhino", "Tickle-Me Emilio", "Steam-Powered Cheerleader", "Happy Medium", "Artistic Goth Kid", "Flaming Face", "Reagnimated Gnome", "Hovering Skull", "Mini-Skulldozer", "Angry Jung Man", "Unconscious Collective", "Nanorhino", "Oily Woim", "Homemade Robot", "MiniMechaElf", "Gelatinous Cubeling", "Adorable Space Buddy", "Nosy Nose", "Mini-Adventurer", "Mechanical Songbird", "Reanimated Reanimator", "Warbear Drone", "Grimstone Golem", "Grim Brother", "Miniature Sword & Martini Guy", "Putty Buddy", "Twitching Space Critter", "Galloping Grill", "Helix Fossil", "Xiblaxian Holo-Companion", "Baby Z-Rex", "Fist Turkey", "Crimbo Shrub", "Mini-Crimbot", "Topiary Skunk", "Golden Monkey", "Adventurous Spelunker", "Sludgepuppy", "Baby Mayonnaise Wasp", "Puck Man", "Ms. Puck Man", "Lil' Barrel Mimic", "Machine Elf", "Choctopus", "Rockin' Robin", "Restless Cow Skull", "Intergnat", "Software Bug", "Bark Scorpion", "Trick-or-Treating Tot", "Chocolate Lab", "Bad Vibe", "Space Jellyfish", "Optimistic Candle", "Robortender", "Cute Meteor", "XO Skeleton", "Garbage Fire", "Globmule", "Bluzzard", "Faux", "Sledgehamster", "Pimpsqueak", "Pillowbug", "Dressage", "Sequestrian", "Carpricorn", "Turpin", "Morphan", "Cycloney", "Peaclock", "Turtive", "Lepardner", "Aiolion", "Waifuton", "Gorillape", "Wendtigo", "Snoutlet", "Ruffalo", "Vaporpoise", "Ghosprey", "Straypler", "Flan", "Mustardigrade", "Ched", "Gazelleton", "Mechamelion", "Bicycle", "Vamprey", "Wullabye", "Nursine", "Cantelope", "Ungulant", "Caramel", "Oppossum", "Amanitee", "Smashmoth", "Vulgure", "Squib", "Trafikoan", "Slotter", "Shudder", "Glamare", "Unspeakachu", "Stooper", "Disgeist", "Bowlet", "Cornbeefadon", "Mu", "God Lobster", "Cat Burglar", "Party Mouse", "Yule Hound", "Sausage Golem", "Elf Operative", "Plastic Pirate Skull", "Pet Coral", "Pocket Professor", "Red-Nosed Snapper", "Antique Nutcracker", "Piranha Plant", "Left-Hand Man", "Melodramedary", "Ghost of Crimbo Carols", "Ghost of Crimbo Cheer", "Ghost of Crimbo Commerce", "Shorter-Order Cook", "Vampire Vintner", "Arachnelf", "Synthetic Rock", "Grey Goose", "Cookbookbat", "Mini-Trainbot", "Hobo in Sheep's Clothing", "Pixel Rock", "Patriotic Eagle", "Jill-of-All-Trades", "Flaming Leafcutter Ant", "Rigging Snake", "Pet Anchor", "Chest Mimic", "Mini Kiwi", "Proto-Protozoa", "Evolving Organism", "Burly Bodyguard", "Doll Moll", "Emberiza Aureola", "Peace Turkey", "Quantum Entangler", "Golden Pet Rock", "Profane Parrot", "Significant Bit", "Heat Wave", "Cold Cut", "Shame Spiral", "Phantom Limb", "Foul Ball", "Dire Cassava", "Observer", "Cool Cucumber", "Defective Childrens' Stapler", "Glover", "Zapper Bug", "Wet Paper Tiger", "Cooler Yeti", "Baby Skeleton", "Skeleton of Crimbo Past", "Tiny Plastic Santa Claus Skeleton", "Cute Skeletal Dinosaur", "Sword of S Words"]))
 	{
 		//comment out below line and uncomment second below line to see all unrestricted fams
-		if(auto_have_familiar(fam) && !(blacklistFams contains fam))
+		if (auto_have_familiar(fam) && !(blacklistFams.includes(fam)))
+		{
 		//if(is_unrestricted(fam))
-		{
-			famAttributes[fam] = fam.attributes;
+			famAttributes.set(fam, fam.attributes);
 		}
 	}
-	foreach fam, attr in famAttributes
+	for (let [fam, attr] of famAttributes)
 	{
-		string[int] attrs = split_string(attr,"; ");
+		let attrs: Map<number, string> = new Map(splitString(attr, "; ").map((_v, _i) => [_i, _v]));
 		//buffs
-		foreach k, a in attrs
+		for (let [k, a] of attrs)
 		{
-			intrinsicFams[fam] += intrinsicWeights[a];
-			lbuffFams[fam] += lNipWeights[a];
-			rbuffFams[fam] += rNipWeights[a];
-			kickFams [fam] += footWeights[footParam[a]];
+			intrinsicFams.set(fam, (intrinsicFams.get(fam) ?? 0.0) + (intrinsicWeights.get(a) ?? intrinsicWeights.set(a, 0.0).get(a)));
+			lbuffFams.set(fam, (lbuffFams.get(fam) ?? 0.0) + (lNipWeights.get(a) ?? lNipWeights.set(a, 0.0).get(a)));
+			rbuffFams.set(fam, (rbuffFams.get(fam) ?? 0.0) + (rNipWeights.get(a) ?? rNipWeights.set(a, 0.0).get(a)));
+			kickFams.set(fam, (kickFams.get(fam) ?? 0.0) + (footWeights.get((footParam.get(a) ?? footParam.set(a, "").get(a))) ?? footWeights.set((footParam.get(a) ?? footParam.set(a, "").get(a)), 0).get((footParam.get(a) ?? footParam.set(a, "").get(a)))));
 		}
 	}
-	
 	// Function for sorting familiars by their weights
-	familiar[int] sortFams(float[familiar] map)
+	function sortFams(map: Map<Familiar, number>): Map<number, Familiar>
 	{
 		// Make an indexed list of the familiars
-		familiar[int] ranked_list;
-		foreach entry in map
+		let ranked_list: Map<number, Familiar> = new Map();
+		for (let entry of map.keys())
 		{
-			ranked_list[count(ranked_list)] = entry;
+			ranked_list.set(ranked_list.size, entry);
 		}
 		// Sort by their weight, high to low
-		sort ranked_list by -map[value];
+		ranked_list = new Map(
+			[...ranked_list.entries()]
+				.map(([index, value]) => {
+					return { _k: index, _v: value, _expr: -(map.get(value) ?? map.set(value, 0.0).get(value)) };
+				})
+				.sort((_a, _b) => _a._expr < _b._expr ? -1 : (_a._expr > _b._expr ? 1 : 0))
+				.map(e => [e._k, e._v])
+		);
 		return ranked_list;
 	}
-	
-	boolean[familiar] used;
-	familiar[int] intrinsicFam;
-	familiar lbuffFam  = zoo_graftedToPart(ZOOPART_L_NIPPLE);
-	familiar rbuffFam  = zoo_graftedToPart(ZOOPART_R_NIPPLE);
-	familiar lkickFam  = zoo_graftedToPart(ZOOPART_L_FOOT);
-	familiar rkickFam  = zoo_graftedToPart(ZOOPART_R_FOOT);
-	familiar lpunchFam = zoo_graftedToPart(ZOOPART_L_HAND);
-	familiar rpunchFam = zoo_graftedToPart(ZOOPART_R_HAND);
-	
-	if (rbuffFam == $familiar[none])
+
+	let used: Map<Familiar, boolean> = new Map();
+	let intrinsicFam: Map<number, Familiar> = new Map();
+	let lbuffFam: Familiar = zoo_graftedToPart($_f_ZOOPART_L_NIPPLE);
+	let rbuffFam: Familiar = zoo_graftedToPart($_f_ZOOPART_R_NIPPLE);
+	let lkickFam: Familiar = zoo_graftedToPart($_f_ZOOPART_L_FOOT);
+	let rkickFam: Familiar = zoo_graftedToPart($_f_ZOOPART_R_FOOT);
+	let lpunchFam: Familiar = zoo_graftedToPart($_f_ZOOPART_L_HAND);
+	let rpunchFam: Familiar = zoo_graftedToPart($_f_ZOOPART_R_HAND);
+
+	if (rbuffFam === Familiar.none)
 	{
-		foreach i,fam in sortFams(rbuffFams)
+		for (let [i, fam] of sortFams(rbuffFams))
 		{
-			if (!(used contains fam))
+			if (!(used.has(fam)))
 			{
 				rbuffFam = fam;
-				used[fam] = true;
+				used.set(fam, true);
 				break;
 			}
 		}
 	}
-	
-	if (lbuffFam == $familiar[none])
+
+	if (lbuffFam === Familiar.none)
 	{
-		foreach i,fam in sortFams(lbuffFams)
+		for (let [i, fam] of sortFams(lbuffFams))
 		{
-			if (!(used contains fam))
+			if (!(used.has(fam)))
 			{
 				lbuffFam = fam;
-				used[fam] = true;
+				used.set(fam, true);
 				break;
 			}
 		}
 	}
-	
-	if (lkickFam == $familiar[none])
+
+	if (lkickFam === Familiar.none)
 	{
-		foreach fam in $familiars[quantum entangler, foul ball, Defective Childrens' Stapler]
+		for (let fam of Familiar.get(["Quantum Entangler", "Foul Ball", "Defective Childrens' Stapler"]))
 		{
-			if(auto_have_familiar(fam))
+			if (auto_have_familiar(fam))
 			{
 				lkickFam = fam;
-				used[fam] = true;
+				used.set(fam, true);
 				break;
 			}
 		}
 	}
-	
-	if (lkickFam == $familiar[none])
+
+	if (lkickFam === Familiar.none)
 	{
-		foreach i,fam in sortFams(kickFams)
+		for (let [i, fam] of sortFams(kickFams))
 		{
-			if (!(used contains fam))
+			if (!(used.has(fam)))
 			{
 				lkickFam = fam;
-				used[fam] = true;
+				used.set(fam, true);
 				break;
 			}
 		}
 	}
-	
-	int intrinsic_index = 0;
-	foreach i,fam in sortFams(intrinsicFams)
+
+	let intrinsic_index: number = 0;
+	for (let [i, fam] of sortFams(intrinsicFams))
 	{
 		// We only need enough to fill our empty graft slots
-		if (count(intrinsicFam)>=5-count(zoo_graftedIntrinsicFams()))
+		if (intrinsicFam.size >= 5 - zoo_graftedIntrinsicFams().size)
 		{
 			break;
 		}
-		if (!(used contains fam))
+		if (!(used.has(fam)))
 		{
-			intrinsicFam[intrinsic_index++] = fam;
-			used[fam] = true; // should probably not add to used if we already have grafts that will prevent this ever being used
+			intrinsicFam.set(intrinsic_index++, fam);
+			used.set(fam, true); // should probably not add to used if we already have grafts that will prevent this ever being used
 		}
 	}
-	
 	// Right kick banishes (cassava and limb are super-banishes, magimech is OK)
-	if (rkickFam == $familiar[none])
+	if (rkickFam === Familiar.none)
 	{
-		foreach fam in $familiars[dire cassava, phantom limb, MagiMechTech MicroMechaMech]
+		for (let fam of Familiar.get(["Dire Cassava", "Phantom Limb", "MagiMechTech MicroMechaMech"]))
 		{
-			if(auto_have_familiar(fam))
+			if (auto_have_familiar(fam))
 			{
 				rkickFam = fam;
-				used[fam] = true;
+				used.set(fam, true);
 				break;
 			}
 		}
 	}
-	
 	// Backup right kick options
-	if (rkickFam == $familiar[none])
+	if (rkickFam === Familiar.none)
 	{
-		foreach i,fam in sortFams(kickFams)
+		for (let [i, fam] of sortFams(kickFams))
 		{
-			if (!(used contains fam))
+			if (!(used.has(fam)))
 			{
 				rkickFam = fam;
-				used[fam] = true;
+				used.set(fam, true);
 				break;
 			}
 		}
 	}
-	
 	// Punch familiars, hardcoded for now.
 	// Barrrnacle can kill everything in-run, so a good default choice
 	// Burly bodyguard levels up with AG path progression so can be grafted faster.
 	// Cold cut is a pure cold punch, can be useful for certain monsters (smorcs, war boss)
 	// volleyball and mosquito and fairyas backups. Everybody needs somebody to punch.
-	familiar[int] punchPotential;
-	int ipunch = 0;
-	foreach fam in $familiars[barrrnacle, cold cut, blood-faced volleyball, mosquito, baby gravy fairy]
+	let punchPotential: Map<number, Familiar> = new Map();
+	let ipunch: number = 0;
+	for (let fam of Familiar.get(["Barrrnacle", "Cold Cut", "Blood-Faced Volleyball", "Mosquito", "Baby Gravy Fairy"]))
 	{
-		if (ipunch == 1 && auto_have_familiar($familiar[burly bodyguard])) {
-			punchPotential[ipunch++] = $familiar[burly bodyguard];
+		if (ipunch === 1 && auto_have_familiar(Familiar.get("Burly Bodyguard"))) {
+			punchPotential.set(ipunch++, Familiar.get("Burly Bodyguard"));
 		}
-		punchPotential[ipunch++] = fam;
+		punchPotential.set(ipunch++, fam);
 	}
-		
-	for (int ifam = 0 ; ifam < count(punchPotential) ; ifam++)
+
+	for (let ifam: number = 0; ifam < punchPotential.size; ifam++)
 	{
-		familiar fam = punchPotential[ifam];
-		if(auto_have_familiar(fam) && (!(used contains fam)))
+		let fam: Familiar = (punchPotential.get(ifam) ?? punchPotential.set(ifam, Familiar.none).get(ifam));
+		if (auto_have_familiar(fam) && !(used.has(fam)))
 		{
-			if(lpunchFam==$familiar[none])
+			if (lpunchFam === Familiar.none)
 			{
 				lpunchFam = fam;
-				used[fam] = true;
+				used.set(fam, true);
 			}
-			else if(rpunchFam==$familiar[none])
+			else if (rpunchFam === Familiar.none)
 			{
 				rpunchFam = fam;
-				used[fam] = true;
+				used.set(fam, true);
 			}
 		}
 	}
 
-	if(verbose)
+	if (verbose)
 	{
 		auto_log_info("Best Right nipple fams", "purple");
-		auto_log_info(rbuffFam + ":" + rbuffFams[rbuffFam], "purple");
+		auto_log_info(`${rbuffFam}:${(rbuffFams.get(rbuffFam) ?? rbuffFams.set(rbuffFam, 0.0).get(rbuffFam))}`, "purple");
 		auto_log_info("Best Left nipple fams", "blue");
-		auto_log_info(lbuffFam + ":" + lbuffFams[lbuffFam], "blue");
+		auto_log_info(`${lbuffFam}:${(lbuffFams.get(lbuffFam) ?? lbuffFams.set(lbuffFam, 0.0).get(lbuffFam))}`, "blue");
 		auto_log_info("Best Left Foot Fam", "green");
-		auto_log_info(lkickFam + ":" + kickFams[lkickFam], "green");
+		auto_log_info(`${lkickFam}:${(kickFams.get(lkickFam) ?? kickFams.set(lkickFam, 0.0).get(lkickFam))}`, "green");
 		auto_log_info("Best Head, Shoulder, and Butt Fam", "orange");
-		if (count(intrinsicFam)>0)
+		if (intrinsicFam.size > 0)
 		{
-			foreach i, fam in intrinsicFam
+			for (let [i, fam] of intrinsicFam)
 			{
-				auto_log_info(fam + ":" + intrinsicFams[fam], "orange");
+				auto_log_info(`${fam}:${(intrinsicFams.get(fam) ?? intrinsicFams.set(fam, 0.0).get(fam))}`, "orange");
 			}
 		}
-		else
-		{
+		else {
 			auto_log_info("All slots occupied", "orange");
 		}
 		auto_log_info("Best Right Foot Fam", "green");
-		auto_log_info(rkickFam + ":" + kickFams[rkickFam], "red");
+		auto_log_info(`${rkickFam}:${(kickFams.get(rkickFam) ?? kickFams.set(rkickFam, 0.0).get(rkickFam))}`, "red");
 		auto_log_info("Best Left Hand Fam", "red");
-		auto_log_info(lpunchFam, "red");
+		auto_log_info(lpunchFam.toString(), "red");
 		auto_log_info("Best Right Hand Fam", "red");
-		auto_log_info(rpunchFam, "red");
+		auto_log_info(rpunchFam.toString(), "red");
 	}
-	
-	familiar bestIntrinsicFam = intrinsicFam[0];
-	switch(bodyPart)
+
+	let bestIntrinsicFam: Familiar = (intrinsicFam.get(0) ?? intrinsicFam.set(0, Familiar.none).get(0));
+	switch (bodyPart)
 	{
-		case ZOOPART_HEAD:
-		case ZOOPART_L_SHOULDER:
-		case ZOOPART_R_SHOULDER:
-		case ZOOPART_L_BUTTOCK:
-		case ZOOPART_R_BUTTOCK:
+		case $_f_ZOOPART_HEAD:
+		case $_f_ZOOPART_L_SHOULDER:
+		case $_f_ZOOPART_R_SHOULDER:
+		case $_f_ZOOPART_L_BUTTOCK:
+		case $_f_ZOOPART_R_BUTTOCK:
 			return bestIntrinsicFam;
-		case ZOOPART_L_HAND:
+		case $_f_ZOOPART_L_HAND:
 			return lpunchFam;
-		case ZOOPART_R_HAND:
+		case $_f_ZOOPART_R_HAND:
 			return rpunchFam;
-		case ZOOPART_L_NIPPLE:
+		case $_f_ZOOPART_L_NIPPLE:
 			return lbuffFam;
-		case ZOOPART_R_NIPPLE:
+		case $_f_ZOOPART_R_NIPPLE:
 			return rbuffFam;
-		case ZOOPART_L_FOOT:
+		case $_f_ZOOPART_L_FOOT:
 			return lkickFam;
-		case ZOOPART_R_FOOT:
+		case $_f_ZOOPART_R_FOOT:
 			return rkickFam;
 	}
-	return $familiar[none];
+	return Familiar.none;
 }
 
-int zoo_getNextPart()
+export function zoo_getNextPart(): number
 {
-	if (!in_zootomist() || my_level() > 11) {return ZOOPART_NONE;}
-	int[int] bpp = zoo_getBodyPartPriority();
-	for (int ipart = 0 ; ipart < count(bpp) ; ipart++)
+	if (!in_zootomist() || myLevel() > 11) { return $_f_ZOOPART_NONE; }
+	let bpp: Map<number, number> = zoo_getBodyPartPriority();
+	for (let ipart: number = 0; ipart < bpp.size; ipart++)
 	{
-		int part = bpp[ipart];
-		if (zoo_graftedToPart(part) == $familiar[none]) { return part; }
+		let part: number = (bpp.get(ipart) ?? bpp.set(ipart, 0).get(ipart));
+		if (zoo_graftedToPart(part) === Familiar.none) { return part; }
 	}
-	return ZOOPART_NONE;
+	return $_f_ZOOPART_NONE;
 }
 
-familiar zoo_getNextFam()
+export function zoo_getNextFam(): Familiar
 {
-	if (!in_zootomist() || my_level() > 11) {return $familiar[none];}
-	return zoo_getBestFam(zoo_getNextPart(), false);
+	if (!in_zootomist() || myLevel() > 11) { return Familiar.none; }
+	return zoo_getBestFam$1(zoo_getNextPart(), false);
 }
 
-boolean zoo_graftFam()
+export function zoo_graftFam(): boolean
 {
-	if (!in_zootomist() || my_level()>=13)
+	if (!in_zootomist() || myLevel() >= 13)
 	{
 		return false;
 	}
@@ -662,262 +691,260 @@ boolean zoo_graftFam()
 	rbuff is right nipple buff
 	combat is a useful combat skill (yr, olfact, banish)
 	*/
-	string[int] bodyPartType = {
-		ZOOPART_HEAD       : "intrinsic",
-		ZOOPART_L_SHOULDER : "intrinsic",
-		ZOOPART_R_SHOULDER : "intrinsic",
-		ZOOPART_L_HAND     : "punch",
-		ZOOPART_R_HAND     : "punch",
-		ZOOPART_L_NIPPLE   : "lbuff",
-		ZOOPART_R_NIPPLE   : "rbuff",
-		ZOOPART_L_BUTTOCK  : "intrinsic",
-		ZOOPART_R_BUTTOCK  : "intrinsic",
-		ZOOPART_L_FOOT     : "kick",
-		ZOOPART_R_FOOT     : "kick"
-	};
-	string[int] bodyPartName = {
-		ZOOPART_HEAD       : "head",
-		ZOOPART_L_SHOULDER : "left shoulder",
-		ZOOPART_R_SHOULDER : "right shoulder",
-		ZOOPART_L_HAND     : "left hand",
-		ZOOPART_R_HAND     : "right hand",
-		ZOOPART_L_NIPPLE   : "left nipple",
-		ZOOPART_R_NIPPLE   : "right nipple",
-		ZOOPART_L_BUTTOCK  : "left butt cheek",
-		ZOOPART_R_BUTTOCK  : "right butt cheek",
-		ZOOPART_L_FOOT     : "left foot",
-		ZOOPART_R_FOOT     : "right foot"
-	};
-	
-	while (zoo_getNextPart() != ZOOPART_NONE)
+	let bodyPartType: Map<number, string> = new Map([
+		[$_f_ZOOPART_HEAD, "intrinsic"],
+		[$_f_ZOOPART_L_SHOULDER, "intrinsic"],
+		[$_f_ZOOPART_R_SHOULDER, "intrinsic"],
+		[$_f_ZOOPART_L_HAND, "punch"],
+		[$_f_ZOOPART_R_HAND, "punch"],
+		[$_f_ZOOPART_L_NIPPLE, "lbuff"],
+		[$_f_ZOOPART_R_NIPPLE, "rbuff"],
+		[$_f_ZOOPART_L_BUTTOCK, "intrinsic"],
+		[$_f_ZOOPART_R_BUTTOCK, "intrinsic"],
+		[$_f_ZOOPART_L_FOOT, "kick"],
+		[$_f_ZOOPART_R_FOOT, "kick"]
+	]);
+	let bodyPartName: Map<number, string> = new Map([
+		[$_f_ZOOPART_HEAD, "head"],
+		[$_f_ZOOPART_L_SHOULDER, "left shoulder"],
+		[$_f_ZOOPART_R_SHOULDER, "right shoulder"],
+		[$_f_ZOOPART_L_HAND, "left hand"],
+		[$_f_ZOOPART_R_HAND, "right hand"],
+		[$_f_ZOOPART_L_NIPPLE, "left nipple"],
+		[$_f_ZOOPART_R_NIPPLE, "right nipple"],
+		[$_f_ZOOPART_L_BUTTOCK, "left butt cheek"],
+		[$_f_ZOOPART_R_BUTTOCK, "right butt cheek"],
+		[$_f_ZOOPART_L_FOOT, "left foot"],
+		[$_f_ZOOPART_R_FOOT, "right foot"]
+	]);
+
+	while (zoo_getNextPart() !== $_f_ZOOPART_NONE)
 	{
-		int p = zoo_getNextPart();
-		familiar existing_graft = zoo_graftedToPart(p);
-		if (existing_graft != $familiar[none]) { continue;}
-		familiar fam = zoo_getBestFam(p, false);
-		handleFamiliar(fam);
-		int next_graft_weight = zoo_nextGraftWeight();
-		if(familiar_weight(fam) < next_graft_weight)
+		let p: number = zoo_getNextPart();
+		let existing_graft: Familiar = zoo_graftedToPart(p);
+		if (existing_graft !== Familiar.none) { continue; }
+		let fam: Familiar = zoo_getBestFam$1(p, false);
+		handleFamiliar$1(fam);
+		let next_graft_weight: number = zoo_nextGraftWeight();
+		if (familiarWeight(fam) < next_graft_weight)
 		{
 			//can only graft if the fam is higher than the level at the last graft
-			zoo_BoostWeight(fam,next_graft_weight);
+			zoo_boostWeight$1(fam, next_graft_weight);
 			return false;
 		}
-		equip(fam,$item[none]); //unequip fam equipment to not lose it, just in case
-		visit_url("place.php?whichplace=graftinglab&action=graftinglab_chamber");
-		visit_url("choice.php?pwd=&whichchoice=1553&option=1&slot=" + p + "&fam=" + to_int(fam));
-		auto_log_info("Grafting a " + fam + " to you", "blue");
-		handleTracker(fam,"Grafted to " + bodyPartName[p],"auto_tracker_path");
-		refresh_status();
+		equip(fam, Item.none); //unequip fam equipment to not lose it, just in case
+		visitUrl("place.php?whichplace=graftinglab&action=graftinglab_chamber");
+		visitUrl(`choice.php?pwd=&whichchoice=1553&option=1&slot=${p}&fam=${toInt(fam)}`);
+		auto_log_info(`Grafting a ${fam} to you`, "blue");
+		handleTracker$1(fam.toString(), `Grafted to ${(bodyPartName.get(p) ?? bodyPartName.set(p, "").get(p))}`, "auto_tracker_path");
+		refreshStatus();
 		return true;
 	}
-	
-	auto_log_info("No more to graft");
+
+	auto_log_info$1("No more to graft");
 	return false;
 }
 
-int zoo_nextGraftWeight()
+export function zoo_nextGraftWeight(): number
 {
-	return min(my_level()+2,13);
+	return min(myLevel() + 2, 13);
 }
 
-boolean zoo_boostWeight(familiar f)
+export function zoo_boostWeight(f: Familiar): boolean
 {
-	return zoo_boostWeight(f,zoo_nextGraftWeight());
+	return zoo_boostWeight$1(f, zoo_nextGraftWeight());
 }
 
-boolean zoo_boostWeight(familiar f, int target_weight)
+export function zoo_boostWeight$1(f: Familiar, target_weight: number): boolean
 {
-	if(my_familiar() != f)
+	if (myFamiliar() !== f)
 	{
-		use_familiar(f);
+		useFamiliar(f);
 	}
 	// We want a fight with the bodyguard before we consider boosting because it superlevels first combat
-	if(f==$familiar[burly bodyguard])
+	if (f === Familiar.get("Burly Bodyguard"))
 	{
-		if (f.experience == 0)
+		if (f.experience === 0)
 		{
 			return false;
 		}
 	}
-	
-	float experience_needed = target_weight*target_weight - f.experience;
-	
-	float mayam_exp    = 100;
-	float piccolo_exp  =  40;
-	float specimen_exp =  20;
-	
-	boolean mayamavailable = auto_haveMayamCalendar() && !(auto_MayamIsUsed("fur")) && !(auto_MayamAllUsed());
-	
-	provideFamExp(min(25,experience_needed),$location[The Outskirts of Cobb\'s Knob], true, true, false);
-	float fight = numeric_modifier("familiar experience") + 1;
-	auto_log_info(f + " needs " + experience_needed + " experience");
-	auto_log_info("To level up your familiar, you should:");
-	float amt = 0;
-	float diff = experience_needed - amt;
-	while(diff >= 1)
+
+	let experience_needed: number = target_weight * target_weight - f.experience;
+
+	let mayam_exp: number = 100;
+	let piccolo_exp: number = 40;
+	let specimen_exp: number = 20;
+
+	let mayamavailable: boolean = auto_haveMayamCalendar() && !auto_MayamIsUsed("fur") && !auto_MayamAllUsed();
+
+	provideFamExp(toInt(min(25, experience_needed)), Location.get("The Outskirts of Cobb's Knob"), true, true, false);
+	let fight: number = numericModifier("familiar experience") + 1;
+	auto_log_info$1(`${f} needs ${experience_needed} experience`);
+	auto_log_info$1("To level up your familiar, you should:");
+	let amt: number = 0;
+	let diff: number = experience_needed - amt;
+	while (diff >= 1)
 	{
-		if(diff >= 100 && mayamavailable)
+		if (diff >= 100 && mayamavailable)
 		{
-			auto_log_info("Use the Mayam calendar and get fur on the outer ring");
+			auto_log_info$1("Use the Mayam calendar and get fur on the outer ring");
 			amt += mayam_exp;
 			auto_MayamClaim("fur wood yam clock");
-			handleTracker(f,"Mayam fur used to "+f.experience+" XP {"+familiar_weight(f)+" lb}","auto_tracker_path");
+			handleTracker$1(f.toString(), `Mayam fur used to ${f.experience} XP {${familiarWeight(f)} lb}`, "auto_tracker_path");
 			mayamavailable = false;
 		}
-		else if(diff >= 40 && auto_AprilPiccoloBoostsLeft()> 0 )
+		else if (diff >= 40 && auto_AprilPiccoloBoostsLeft() > 0)
 		{
-			auto_log_info("Play the Apriling Band Piccolo");
+			auto_log_info$1("Play the Apriling Band Piccolo");
 			amt += piccolo_exp;
 			auto_playAprilPiccolo();
 		}
-		else if(diff >= 20 && zoo_specimenPreparationsLeft() > 0)
+		else if (diff >= 20 && zoo_specimenPreparationsLeft() > 0)
 		{
-			auto_log_info("Try to use the Specimen Preparation Bench");
+			auto_log_info$1("Try to use the Specimen Preparation Bench");
 			amt += specimen_exp;
 			zoo_prepareSpecimen();
 		}
-		else if(diff <= 0)
+		else if (diff <= 0)
 		{
 			return true;
 		}
-		else
-		{
-			int fights_needed = ceil(diff / fight);
-			auto_log_info("Do " + fights_needed + " (preferably free) fights");
+		else {
+			let fights_needed: number = ceil(diff / fight);
+			auto_log_info$1(`Do ${fights_needed} (preferably free) fights`);
 			amt += fight * fights_needed;
 		}
 		diff = experience_needed - amt;
-		auto_log_info("Diff = " + diff);
+		auto_log_info$1(`Diff = ${diff}`);
 	}
 	return false;
 }
 
-skill getZooKickYR()
+export function getZooKickYR(): Skill
 {
-	boolean isYR(int fam_id) {
-		familiar fam = to_familiar(fam_id);
-		return $familiars[quantum entangler, foul ball, Defective Childrens' Stapler] contains fam;
+	function isYR$1(fam_id: number): boolean {
+		let fam: Familiar = toFamiliar(fam_id);
+		return Familiar.get(["Quantum Entangler", "Foul Ball", "Defective Childrens' Stapler"]).includes(fam);
 	}
-	if (isYR(to_int(get_property("zootGraftedFootLeftFamiliar")))) {
-		return $skill[left %n kick];
+	if (isYR$1(toInt(getProperty("zootGraftedFootLeftFamiliar")))) {
+		return Skill.get("Left %n Kick");
 	}
-	if (isYR(to_int(get_property("zootGraftedFootRightFamiliar")))) {
-		return $skill[right %n kick];
+	if (isYR$1(toInt(getProperty("zootGraftedFootRightFamiliar")))) {
+		return Skill.get("Right %n Kick");
 	}
-	return $skill[none];
+	return Skill.none;
 }
 
-skill getZooKickFreeKill() //different than YR. Better than instakill
-{
-	boolean isYR(int fam_id) {
-		familiar fam = to_familiar(fam_id);
-		return $familiars[quantum entangler, foul ball, Defective Childrens' Stapler] contains fam;
+export function getZooKickFreeKill(): Skill
+{ //different than YR. Better than instakill
+	function isYR(fam_id: number): boolean {
+		let fam: Familiar = toFamiliar(fam_id);
+		return Familiar.get(["Quantum Entangler", "Foul Ball", "Defective Childrens' Stapler"]).includes(fam);
 	}
-	if (isYR(to_int(get_property("zootGraftedFootLeftFamiliar")))) {
-		return $skill[left %n kick];
+	if (isYR(toInt(getProperty("zootGraftedFootLeftFamiliar")))) {
+		return Skill.get("Left %n Kick");
 	}
-	if (isYR(to_int(get_property("zootGraftedFootRightFamiliar")))) {
-		return $skill[right %n kick];
+	if (isYR(toInt(getProperty("zootGraftedFootRightFamiliar")))) {
+		return Skill.get("Right %n Kick");
 	}
-	return $skill[none];
+	return Skill.none;
 }
 
-skill getZooKickSniff()
+export function getZooKickSniff(): Skill
 {
-	boolean haveYR = yellowRayCombatString($monster[none], false) != ""; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
+	let haveYR: boolean = yellowRayCombatString$1(Monster.none, false) !== ""; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
 	if (leftKickHasSniff() && (leftKickHasInstaKill() && !haveYR)) {
-		return $skill[left %n kick];
+		return Skill.get("Left %n Kick");
 	}
 	if (rightKickHasSniff() && (rightKickHasInstaKill() && !haveYR)) {
-		return $skill[right %n kick];
+		return Skill.get("Right %n Kick");
 	}
-	return $skill[none];
+	return Skill.none;
 }
 
-skill getZooKickBanish()
+export function getZooKickBanish(): Skill
 {
-	if (have_effect($effect[Everything Looks Blue])>0) { return $skill[none]; }
-	boolean isBanish(int fam_id) {
-		familiar fam = to_familiar(fam_id);
-		return $familiars[Dire Cassava, Phantom Limb,MagiMechTech MicroMechaMech] contains fam;
+	if (haveEffect(Effect.get("Everything Looks Blue")) > 0) { return Skill.none; }
+	function isBanish(fam_id: number): boolean {
+		let fam: Familiar = toFamiliar(fam_id);
+		return Familiar.get(["Dire Cassava", "Phantom Limb", "MagiMechTech MicroMechaMech"]).includes(fam);
 	}
-	if (isBanish(to_int(get_property("zootGraftedFootLeftFamiliar")))) {
-		return $skill[left %n kick];
+	if (isBanish(toInt(getProperty("zootGraftedFootLeftFamiliar")))) {
+		return Skill.get("Left %n Kick");
 	}
-	if (isBanish(to_int(get_property("zootGraftedFootRightFamiliar")))) {
-		return $skill[right %n kick];
+	if (isBanish(toInt(getProperty("zootGraftedFootRightFamiliar")))) {
+		return Skill.get("Right %n Kick");
 	}
-	return $skill[none];
+	return Skill.none;
 }
 
-skill getZooKickPickpocket()
+export function getZooKickPickpocket(): Skill
 {
-	boolean haveYR = yellowRayCombatString($monster[none], false) != ""; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
-	if (leftKickHasPickpocket() && (leftKickHasInstaKill() && !haveYR) && getZooKickBanish() != $skill[left %n kick]) {
-		return $skill[left %n kick];
+	let haveYR: boolean = yellowRayCombatString$1(Monster.none, false) !== ""; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
+	if (leftKickHasPickpocket() && (leftKickHasInstaKill() && !haveYR) && getZooKickBanish() !== Skill.get("Left %n Kick")) {
+		return Skill.get("Left %n Kick");
 	}
-	if (rightKickHasPickpocket() && (rightKickHasInstaKill() && !haveYR) && getZooKickBanish() != $skill[right %n kick]) {
-		return $skill[right %n kick];
+	if (rightKickHasPickpocket() && (rightKickHasInstaKill() && !haveYR) && getZooKickBanish() !== Skill.get("Right %n Kick")) {
+		return Skill.get("Right %n Kick");
 	}
-	return $skill[none];
+	return Skill.none;
 }
 
-skill getZooKickInstaKill()
+export function getZooKickInstaKill(): Skill
 {
 	//Only instakill if we can't yellow ray
-	if(yellowRayCombatString($monster[none], false) != "") //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
-	{
-		return $skill[none];
+	if (yellowRayCombatString$1(Monster.none, false) !== "")
+	{ //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
+		return Skill.none;
 	}
 	//uncomment return $skill[kick] and comment return $skill[none] if you want us to auto use your instakill. Not recommended
 	if (leftKickHasInstaKill()) {
 		//return $skill[left %n kick];
-		return $skill[none];
+		return Skill.none;
 	}
 	if (rightKickHasInstaKill()) {
 		//return $skill[right %n kick];
-		return $skill[none];
+		return Skill.none;
 	}
-	return $skill[none];
+	return Skill.none;
 }
 
-skill getZooBestPunch()
+export function getZooBestPunch(): Skill
 {
-	return getZooBestPunch($monster[fluffy bunny]);
+	return getZooBestPunch$1(Monster.get("fluffy bunny"));
 }
 
-skill getZooBestPunch(monster m)
+export function getZooBestPunch$1(m: Monster): Skill
 {
-	if(have_skill($skill[left %n punch]))
+	if (haveSkill(Skill.get("Left %n Punch")))
 	{
-		return $skill[left %n punch];
+		return Skill.get("Left %n Punch");
 	}
-	else
-	{
-		return $skill[none];
+	else {
+		return Skill.none;
 	}
 }
 
-boolean leftKickHasSniff()
+export function leftKickHasSniff(): boolean
 {
-	string fAttrs = zoo_graftedToPart(ZOOPART_L_FOOT).attributes;
-	string[int] attrs = split_string(fAttrs,"; ");
-	string[int] sniffs = {
-		"animal",
-		"haseyes",
-		"hot",
-		"humanoid",
-		"mineral",
-		"orb",
-		"sentient",
-		"software"
-	};
-	foreach i,attr in attrs
+	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
+	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
+	let sniffs: Map<number, string> = new Map([
+		[0, "animal"],
+		[1, "haseyes"],
+		[2, "hot"],
+		[3, "humanoid"],
+		[4, "mineral"],
+		[5, "orb"],
+		[6, "sentient"],
+		[7, "software"]
+	]);
+	for (let [i, attr] of attrs)
 	{
-		foreach j, sniff in sniffs
+		for (let [j, sniff] of sniffs)
 		{
-			if(sniff == attr)
+			if (sniff === attr)
 			{
 				return true;
 			}
@@ -926,25 +953,25 @@ boolean leftKickHasSniff()
 	return false;
 }
 
-boolean leftKickHasPickpocket()
+export function leftKickHasPickpocket(): boolean
 {
-	string fAttrs = zoo_graftedToPart(ZOOPART_L_FOOT).attributes;
-	string[int] attrs = split_string(fAttrs,"; ");
-	string[int] pps = {
-		"hasbeak",
-		"hasclaws",
-		"hashands",
-		"isclothes",
-		"polygonal",
-		"sleaze",
-		"technological",
-		"wearsclothes"
-	};
-	foreach i,attr in attrs
+	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
+	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
+	let pps: Map<number, string> = new Map([
+		[0, "hasbeak"],
+		[1, "hasclaws"],
+		[2, "hashands"],
+		[3, "isclothes"],
+		[4, "polygonal"],
+		[5, "sleaze"],
+		[6, "technological"],
+		[7, "wearsclothes"]
+	]);
+	for (let [i, attr] of attrs)
 	{
-		foreach j, pp in pps
+		for (let [j, pp] of pps)
 		{
-			if(pp == attr)
+			if (pp === attr)
 			{
 				return true;
 			}
@@ -953,25 +980,25 @@ boolean leftKickHasPickpocket()
 	return false;
 }
 
-boolean leftKickHasInstaKill()
+export function leftKickHasInstaKill(): boolean
 {
-	string fAttrs = zoo_graftedToPart(ZOOPART_L_FOOT).attributes;
-	string[int] attrs = split_string(fAttrs,"; ");
-	string[int] instakills = {
-		"bite",
-		"cute",
-		"evil",
-		"food",
-		"hasstinger",
-		"object",
-		"reallyevil",
-		"stench"
-	};
-	foreach i,attr in attrs
+	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
+	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
+	let instakills: Map<number, string> = new Map([
+		[0, "bite"],
+		[1, "cute"],
+		[2, "evil"],
+		[3, "food"],
+		[4, "hasstinger"],
+		[5, "object"],
+		[6, "reallyevil"],
+		[7, "stench"]
+	]);
+	for (let [i, attr] of attrs)
 	{
-		foreach j, instakill in instakills
+		for (let [j, instakill] of instakills)
 		{
-			if(instakill == attr)
+			if (instakill === attr)
 			{
 				return true;
 			}
@@ -980,25 +1007,25 @@ boolean leftKickHasInstaKill()
 	return false;
 }
 
-boolean rightKickHasSniff()
+export function rightKickHasSniff(): boolean
 {
-	string fAttrs = zoo_graftedToPart(ZOOPART_R_FOOT).attributes;
-	string[int] attrs = split_string(fAttrs,"; ");
-	string[int] sniffs = {
-		"animal",
-		"haseyes",
-		"hot",
-		"humanoid",
-		"mineral",
-		"orb",
-		"sentient",
-		"software"
-	};
-	foreach i,attr in attrs
+	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
+	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
+	let sniffs: Map<number, string> = new Map([
+		[0, "animal"],
+		[1, "haseyes"],
+		[2, "hot"],
+		[3, "humanoid"],
+		[4, "mineral"],
+		[5, "orb"],
+		[6, "sentient"],
+		[7, "software"]
+	]);
+	for (let [i, attr] of attrs)
 	{
-		foreach j, sniff in sniffs
+		for (let [j, sniff] of sniffs)
 		{
-			if(sniff == attr)
+			if (sniff === attr)
 			{
 				return true;
 			}
@@ -1007,25 +1034,25 @@ boolean rightKickHasSniff()
 	return false;
 }
 
-boolean rightKickHasPickpocket()
+export function rightKickHasPickpocket(): boolean
 {
-	string fAttrs = zoo_graftedToPart(ZOOPART_R_FOOT).attributes;
-	string[int] attrs = split_string(fAttrs,"; ");
-	string[int] pps = {
-		"hasbeak",
-		"hasclaws",
-		"hashands",
-		"isclothes",
-		"polygonal",
-		"sleaze",
-		"technological",
-		"wearsclothes"
-	};
-	foreach i,attr in attrs
+	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
+	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
+	let pps: Map<number, string> = new Map([
+		[0, "hasbeak"],
+		[1, "hasclaws"],
+		[2, "hashands"],
+		[3, "isclothes"],
+		[4, "polygonal"],
+		[5, "sleaze"],
+		[6, "technological"],
+		[7, "wearsclothes"]
+	]);
+	for (let [i, attr] of attrs)
 	{
-		foreach j, pp in pps
+		for (let [j, pp] of pps)
 		{
-			if(pp == attr)
+			if (pp === attr)
 			{
 				return true;
 			}
@@ -1034,25 +1061,25 @@ boolean rightKickHasPickpocket()
 	return false;
 }
 
-boolean rightKickHasInstaKill()
+export function rightKickHasInstaKill(): boolean
 {
-	string fAttrs = zoo_graftedToPart(ZOOPART_R_FOOT).attributes;
-	string[int] attrs = split_string(fAttrs,"; ");
-	string[int] instakills = {
-		"bite",
-		"cute",
-		"evil",
-		"food",
-		"hasstinger",
-		"object",
-		"reallyevil",
-		"stench"
-	};
-	foreach i,attr in attrs
+	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
+	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
+	let instakills: Map<number, string> = new Map([
+		[0, "bite"],
+		[1, "cute"],
+		[2, "evil"],
+		[3, "food"],
+		[4, "hasstinger"],
+		[5, "object"],
+		[6, "reallyevil"],
+		[7, "stench"]
+	]);
+	for (let [i, attr] of attrs)
 	{
-		foreach j, instakill in instakills
+		for (let [j, instakill] of instakills)
 		{
-			if(instakill == attr)
+			if (instakill === attr)
 			{
 				return true;
 			}
@@ -1061,123 +1088,119 @@ boolean rightKickHasInstaKill()
 	return false;
 }
 
-boolean LX_zootoFight()
+export function LX_zootoFight(): boolean
 {
-	if(!in_zootomist() || my_level()>=13)
+	if (!in_zootomist() || myLevel() >= 13)
 	{
 		return false;
 	}
 
-	boolean additionalFights()
+	function additionalFights(): boolean
 	{
-		if(L5_getEncryptionKey())
-		{
-			return true;
-		}
-		
-		if(LX_unlockHauntedBilliardsRoom(false))
+		if (L5_getEncryptionKey())
 		{
 			return true;
 		}
 
-		if(LX_unlockHiddenTemple())
+		if (LX_unlockHauntedBilliardsRoom(false))
 		{
 			return true;
 		}
-		if(LX_lastChance()) //Should be high enough level by this point to handle these zones
+
+		if (LX_unlockHiddenTemple())
 		{
+			return true;
+		}
+		if (LX_lastChance())
+		{ //Should be high enough level by this point to handle these zones
 			return true;
 		}
 		return false;
 	}
-	
 	// Set our familiar
-	handleFamiliar(zoo_getNextFam());
-	
-	int target_weight = zoo_nextGraftWeight();
-	int expToLevel = target_weight*target_weight - my_familiar().experience;
+	handleFamiliar$1(zoo_getNextFam());
 
+	let target_weight: number = zoo_nextGraftWeight();
+	let expToLevel: number = target_weight * target_weight - myFamiliar().experience;
 	// We want lots of XP
-	provideFamExp(min(25,expToLevel), true, true);
-	
-	if(my_level() >= 9)
-	{	// If we have Mayam, let's get that stone wool and unlock our Mayam.
-		if (auto_haveMayamCalendar() && get_property("lastTempleAdventures").to_int()<my_ascensions())
+	provideFamExp$3(min(25, expToLevel), true, true);
+
+	if (myLevel() >= 9)
+	{ // If we have Mayam, let's get that stone wool and unlock our Mayam.
+		if (auto_haveMayamCalendar() && toInt(getProperty("lastTempleAdventures")) < myAscensions())
 		{
-			if (available_amount($item[stone wool]) < 2 && internalQuestStatus("questL11Worship") < 0)
+			if (availableAmount(Item.get("stone wool")) < 2 && internalQuestStatus("questL11Worship") < 0)
 			{
 				if (LX_killBaaBaaBuran()) { return true; }
 			}
 			if (auto_doTempleSummit()) { return true; }
 		}
 	}
-	
-	if(my_level() >= 7)
+
+	if (myLevel() >= 7)
 	{
-		if(auto_doPhoneQuest())
+		if (auto_doPhoneQuest())
 		{
 			return true;
 		}
 		// should get wishes in Shadow Rift. If not can't do this
 
-		if (yellowRayCombatString($monster[none], false) != "")
+		if (yellowRayCombatString$1(Monster.none, false) !== "")
 		{
-			if(get_property("auto_hippyInstead").to_boolean() && !(possessOutfit("War Hippy Fatigues")))
+			if (toBoolean(getProperty("auto_hippyInstead")) && !possessOutfit$1("War Hippy Fatigues"))
 			{
-				adjustForYellowRayIfPossible();
-				return summonMonster($monster[War Hippy Airborne Commander]);
+				adjustForYellowRayIfPossible$1();
+				return summonMonster(Monster.get("War Hippy Airborne Commander"));
 			}
-			else if(!(possessOutfit("Frat Warrior Fatigues")))
+			else if (!possessOutfit$1("Frat Warrior Fatigues"))
 			{
-				adjustForYellowRayIfPossible();
-				return summonMonster($monster[War Frat Mobile Grill Unit]);
+				adjustForYellowRayIfPossible$1();
+				return summonMonster(Monster.get("War Frat Mobile Grill Unit"));
 			}
 		}
-		if(auto_have_familiar($familiar[Jill-of-All-Trades]) && candyBlockOutfit("treat") != "")
+		if (auto_have_familiar(Familiar.get("Jill-of-All-Trades")) && candyBlockOutfit("treat") !== "")
 		{
-			if(candyBlock())
+			if (candyBlock())
 			{
 				return true;
 			}
-			if(!(get_property("_mapToACandyRichBlockUsed").to_boolean()))
+			if (!toBoolean(getProperty("_mapToACandyRichBlockUsed")))
 			{
-				while(item_amount($item[Map to a candy-rich block]) == 0)
+				while (itemAmount(Item.get("map to a candy-rich block")) === 0)
 				{
-					handleFamiliar($familiar[Jill-of-All-Trades]);
-					if(L7_defiledNook()) //Need eyes anyway so might as well try to get a couple while getting the map
-					{
+					handleFamiliar$1(Familiar.get("Jill-of-All-Trades"));
+					if (L7_defiledNook())
+					{ //Need eyes anyway so might as well try to get a couple while getting the map
 						return true;
 					}
-					else
-					{
+					else {
 						additionalFights(); //didn't get a map trying to complete the Nook so doing additional combats
 					}
 				}
 			}
 		}
 	}
-	if(my_level() >= 5)
+	if (myLevel() >= 5)
 	{
-		if(speakeasyCombat())
+		if (speakeasyCombat())
 		{
 			return true;
 		}
-		if(auto_fightFlamingLeaflet())
+		if (auto_fightFlamingLeaflet())
+		{
+			return true;
+		}
+	}
+	// Do the temple unlock first, so we can get stone wool to reset our mayam
+	if (auto_haveMayamCalendar() && myLevel() >= 2)
+	{
+		if (LX_unlockHiddenTemple())
 		{
 			return true;
 		}
 	}
 
-	// Do the temple unlock first, so we can get stone wool to reset our mayam
-	if (auto_haveMayamCalendar() && my_level() >= 2)
-	{
-		if(LX_unlockHiddenTemple())
-		{
-			return true;
-		}
-	}
-	
-	if(additionalFights())
+	if (additionalFights())
 	{
 		return true;
 	}

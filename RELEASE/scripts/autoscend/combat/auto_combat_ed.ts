@@ -1,52 +1,60 @@
+import { Effect, Element, Item, Location, Monster, Phylum, Skill, Slot, Stat, abort, containsText, equippedItem, expectedDamage, getProperty, haveEffect, haveEquipped, indexOf, itemAmount, monsterAttack, monsterDefense, monsterHp, monsterLevelAdjustment, mpCost, myAscensions, myBuffedstat, myDaycount, myHp, myLevel, myLocation, myMaxhp, myMaxmp, myMp, removeProperty, setProperty, substring, toBoolean, toFamiliar, toFloat, toInt, toItem, toLowerCase, toMonster, toSkill, weaponType } from "kolmafia";
+import { possessEquipment } from "../auto_equipment";
+import { auto_have_skill, auto_log_error, auto_log_info, auto_log_warning, auto_wantToBanish, auto_wantToFreeRun, auto_wantToReplace, auto_wantToSniff, auto_wantToYellowRay, freeRunCombatString, handleTracker, handleTracker$1, instakillable, internalQuestStatus, isFreeMonster$1, isGhost, loopHandlerDelayAll } from "../auto_util";
+import { banisherCombatString$1, canSurvive$1, canUse$1, canUse$2, canUse$3, canUse$4, combat_status_add, combat_status_check, getStunner, markAsUsed, replaceMonsterCombatString, useItem, useItem$1, useItems$1, useSkill$1, useSkill$2, usedCount, wantToForceDrop, yellowRayCombatString } from "./auto_combat_util";
+import { elementalPlanes_access } from "../iotms/elementalPlanes";
+import { auto_spoonCombatSkill } from "../iotms/mr2019";
+import { auto_FireExtinguisherCombatString, auto_backupTarget, auto_fireExtinguisherCharges } from "../iotms/mr2021";
+import { auto_bowlingBallCombatString } from "../iotms/mr2022";
+import { dartELRcd, dartSkill } from "../iotms/mr2024";
+import { ed_needShop, isActuallyEd } from "../paths/actually_ed_the_undying";
+import { cyrptEvilBonus } from "../quests/level_07";
+import { fastenerCount, lumberCount } from "../quests/level_09";
+
 //Path specific combat handling for Actually Ed the Undying
 
-string auto_edCombatHandler(int round, monster enemy, string text)
+//defined in /autoscend/combat/auto_combat_ed.ash
+export function auto_edCombatHandler(round_1: number, enemy: Monster, text: string): string
 {
-	boolean blocked = contains_text(text, "(STUN RESISTED)");
-	int damageReceived = 0;
+	let blocked: boolean = containsText(text, "(STUN RESISTED)");
+	let damageReceived: number = 0;
 	if (!isActuallyEd())
 	{
 		abort("Not in Actually Ed the Undying, this combat filter will result in massive suckage.");
 	}
 
-	if (round == 0)
+	if (round_1 === 0)
 	{
-		remove_property("_auto_combatState");
-		if (get_property("_edDefeats").to_int() == 0)
+		removeProperty("_auto_combatState");
+		if (toInt(getProperty("_edDefeats")) === 0)
 		{
-			set_property("auto_edCombatCount", 1 + get_property("auto_edCombatCount").to_int());
+			setProperty("auto_edCombatCount", (1 + toInt(getProperty("auto_edCombatCount"))).toString());
 		}
 		if (!ed_needShop())
 		{
-			set_property("auto_edStatus", "dying"); // dying means kill the monster
+			setProperty("auto_edStatus", "dying"); // dying means kill the monster
 		}
-		else
-		{
-			set_property("auto_edStatus", "UNDYING!"); //  Undying means ressurect until it's not free any more
+		else {
+			setProperty("auto_edStatus", "UNDYING!"); //  Undying means ressurect until it's not free any more
 		}
 		//log some important info.
 		//some stuff is redundant to the pre_adventure function print_footer() so it will not be logged here
-		auto_log_info("auto_combat initialized fighting [" +enemy+
-		"]: atk = " +monster_attack()+
-		". def = " +monster_defense()+
-		". HP = " +monster_hp()+
-		". LA = " +monster_level_adjustment(), "blue");
+		auto_log_info(`auto_combat initialized fighting [${enemy}]: atk = ${monsterAttack()}. def = ${monsterDefense()}. HP = ${monsterHp()}. LA = ${monsterLevelAdjustment()}`, "blue");
 	}
-	else
-	{
-		damageReceived = get_property("auto_combatHP").to_int() - my_hp();
-		set_property("auto_combatHP", my_hp());
+	else {
+		damageReceived = toInt(getProperty("auto_combatHP")) - myHp();
+		setProperty("auto_combatHP", myHp().toString());
 	}
 
-	set_property("auto_edCombatRoundCount", 1 + get_property("auto_edCombatRoundCount").to_int());
+	setProperty("auto_edCombatRoundCount", (1 + toInt(getProperty("auto_edCombatRoundCount"))).toString());
 
-	if ($locations[The Hippy Camp, The Outskirts Of Cobb\'s Knob, The Spooky Forest] contains my_location())
+	if (Location.get(["The Hippy Camp", "The Outskirts of Cobb's Knob", "The Spooky Forest"]).includes(myLocation()))
 	{
-		if (my_mp() < mp_cost($skill[Fist Of The Mummy]) && get_property("_edDefeats").to_int() < 2)
+		if (myMp() < mpCost(Skill.get("Fist of the Mummy")) && toInt(getProperty("_edDefeats")) < 2)
 		{
-			foreach it in $items[Holy Spring Water, Spirit Beer, Sacramental Wine]
+			for (let it of Item.get(["holy spring water", "spirit beer", "sacramental wine"]))
 			{
-				if (canUse(it))
+				if (canUse$4(it))
 				{
 					return useItem(it, false);
 				}
@@ -54,879 +62,855 @@ string auto_edCombatHandler(int round, monster enemy, string text)
 		}
 	}
 
-	if (get_property("_edDefeats").to_int() >= 2)
+	if (toInt(getProperty("_edDefeats")) >= 2)
 	{
-		set_property("auto_edStatus", "dying");
+		setProperty("auto_edStatus", "dying");
 	}
 
-	if(round > 60)
+	if (round_1 > 60)
 	{
 		abort("Somehow got to 60 rounds.... aborting");
 	}
 
-	if($monsters[LOV Enforcer, LOV Engineer, LOV Equivocator] contains enemy)
+	if (Monster.get(["LOV Enforcer", "LOV Engineer", "LOV Equivocator"]).includes(enemy))
 	{
-		set_property("auto_edStatus", "dying");
+		setProperty("auto_edStatus", "dying");
 	}
 
-	if(auto_backupTarget() && enemy != get_property("lastCopyableMonster").to_monster() && canUse($skill[Back-Up to your Last Enemy]))
+	if (auto_backupTarget() && enemy !== toMonster(getProperty("lastCopyableMonster")) && canUse$2(Skill.get("Back-Up to your Last Enemy")))
 	{
-		handleTracker(enemy, $skill[Back-Up to your Last Enemy], "auto_replaces");
-		handleTracker(get_property("lastCopyableMonster").to_monster(), $skill[Back-Up to your Last Enemy], "auto_copies");
-		return useSkill($skill[Back-Up to your Last Enemy]);	
+		handleTracker$1(enemy.toString(), Skill.get("Back-Up to your Last Enemy").toString(), "auto_replaces");
+		handleTracker$1(toMonster(getProperty("lastCopyableMonster")).toString(), Skill.get("Back-Up to your Last Enemy").toString(), "auto_copies");
+		return useSkill$2(Skill.get("Back-Up to your Last Enemy"));
 	}
-	
-	if(have_effect($effect[Temporary Amnesia]) > 0)
+
+	if (haveEffect(Effect.get("Temporary Amnesia")) > 0)
 	{
 		return "attack with weapon";
 	}
 
-	if (canUse($skill[Pocket Crumbs]))
+	if (canUse$2(Skill.get("Pocket Crumbs")))
 	{
-		return useSkill($skill[Pocket Crumbs]);
+		return useSkill$2(Skill.get("Pocket Crumbs"));
 	}
 
-	if (canUse($skill[Micrometeorite]))
+	if (canUse$2(Skill.get("Micrometeorite")))
 	{
-		return useSkill($skill[Micrometeorite]);
+		return useSkill$2(Skill.get("Micrometeorite"));
 	}
 
-	if (canUse($skill[Air Dirty Laundry]))
+	if (canUse$2(Skill.get("Air Dirty Laundry")))
 	{
-		return useSkill($skill[Air Dirty Laundry]);
+		return useSkill$2(Skill.get("Air Dirty Laundry"));
 	}
 
-	if (canUse($skill[Summon Love Scarabs]))
+	if (canUse$2(Skill.get("Summon Love Scarabs")))
 	{
-		return useSkill($skill[Summon Love Scarabs]);
+		return useSkill$2(Skill.get("Summon Love Scarabs"));
 	}
 
-	if (canUse($item[Time-Spinner]))
+	if (canUse$4(Item.get("Time-Spinner")))
 	{
-		return useItem($item[Time-Spinner]);
+		return useItem$1(Item.get("Time-Spinner"));
 	}
 
-	if (canUse($skill[Sing Along]))
+	if (canUse$2(Skill.get("Sing Along")))
 	{
 		//ed can easily survive singing along thanks to undying. and healing him is essentially free.
-		if((get_property("boomBoxSong") == "Remainin\' Alive") || ((get_property("boomBoxSong") == "Total Eclipse of Your Meat") && canSurvive(2.0)))
+		if (getProperty("boomBoxSong") === "Remainin' Alive" || getProperty("boomBoxSong") === "Total Eclipse of Your Meat" && canSurvive$1(2.0))
 		{
-			return useSkill($skill[Sing Along]);
+			return useSkill$2(Skill.get("Sing Along"));
 		}
 	}
-
 	//iotm back item and the enemies it spawns (free fights) can be killed using special skills to get extra XP and item drops
-	if(have_equipped($item[Protonic Accelerator Pack]) && isGhost(enemy) && !combat_status_check("skipGhostbusting"))
+	if (haveEquipped(Item.get("protonic accelerator pack")) && isGhost(enemy) && !combat_status_check("skipGhostbusting"))
 	{
 		//shoot ghost 3 times provoking retaliation, then trap ghost skill unlocks which instawins combat.
-		skill stunner = getStunner(enemy);
-		if(stunner != $skill[none])
+		let stunner: Skill = getStunner(enemy);
+		if (stunner !== Skill.none)
 		{
 			combat_status_add("stunned");
-			return useSkill(stunner);
+			return useSkill$2(stunner);
 		}
-
 		//shots_takens tracks how many times we used [shoot ghost] skill this combat. it is reset in combat initialize
-		int shots_takens = usedCount($skill[Shoot Ghost]);
-		if(canUse($skill[Shoot Ghost], false) && shots_takens < 3)
+		let shots_takens: number = usedCount(Skill.get("Shoot Ghost"));
+		if (canUse$1(Skill.get("Shoot Ghost"), false) && shots_takens < 3)
 		{
-			float survive_needed = 3.05 - shots_takens.to_float();
-			if(canSurvive(survive_needed))
+			let survive_needed: number = 3.05 - toFloat(shots_takens);
+			if (canSurvive$1(survive_needed))
 			{
-				markAsUsed($skill[Shoot Ghost]);		//needs to be manually done for skills with a use limit that is not 1
-				return useSkill($skill[Shoot Ghost], false);
+				markAsUsed(Skill.get("Shoot Ghost")); //needs to be manually done for skills with a use limit that is not 1
+				return useSkill$1(Skill.get("Shoot Ghost"), false);
 			}
-			else
-			{
+			else {
 				combat_status_add("skipGhostbusting");
 			}
 		}
-		
-		if(canUse($skill[Trap Ghost]) && shots_takens == 3)
+
+		if (canUse$2(Skill.get("Trap Ghost")) && shots_takens === 3)
 		{
 			auto_log_info("Busting makes me feel good!!", "green");
-			return useSkill($skill[Trap Ghost]);
+			return useSkill$2(Skill.get("Trap Ghost"));
 		}
 	}
-
 	//use industrial fire extinguisher zone specific skills
-	string extinguisherSkill = auto_FireExtinguisherCombatString(my_location());
-	if(extinguisherSkill != "" && have_equipped($item[industrial fire extinguisher]))
+	let extinguisherSkill: string = auto_FireExtinguisherCombatString(myLocation());
+	if (extinguisherSkill !== "" && haveEquipped(Item.get("industrial fire extinguisher")))
 	{
-		handleTracker(enemy, to_skill(substring(extinguisherSkill, 6)), "auto_otherstuff");
+		handleTracker$1(enemy.toString(), toSkill(substring(extinguisherSkill, 6)).toString(), "auto_otherstuff");
 		return extinguisherSkill;
 	}
-
-	# Instakill handler
-	boolean doInstaKill = true;
-	if($monsters[Lobsterfrogman] contains enemy)
+	// Instakill handler
+	let doInstaKill: boolean = true;
+	if (Monster.get(["lobsterfrogman"]).includes(enemy))
 	{
-		if(auto_have_skill($skill[Digitize]) && (get_property("_sourceTerminalDigitizeMonster") != enemy))
+		if (auto_have_skill(Skill.get("Digitize")) && getProperty("_sourceTerminalDigitizeMonster") !== enemy.toString())
 		{
 			doInstaKill = false;
 		}
 	}
 
-	if(get_property("auto_edStatus") == "UNDYING!")
+	if (getProperty("auto_edStatus") === "UNDYING!")
 	{
-		if (canUse($skill[Summon Love Gnats]))
+		if (canUse$2(Skill.get("Summon Love Gnats")))
 		{
-			return useSkill($skill[Summon Love Gnats]);
+			return useSkill$2(Skill.get("Summon Love Gnats"));
 		}
 	}
-	else if(get_property("auto_edStatus") == "dying")
+	else if (getProperty("auto_edStatus") === "dying")
 	{
-		boolean doStunner = true;
+		let doStunner: boolean = true;
 
-		if(monster_level_adjustment() > 50 && canSurvive(1.15))
+		if (monsterLevelAdjustment() > 50 && canSurvive$1(1.15))
 		{
 			doStunner = false;
 		}
 
-		if(doStunner)
+		if (doStunner)
 		{
-			if (canUse($skill[Summon Love Gnats]))
+			if (canUse$2(Skill.get("Summon Love Gnats")))
 			{
-				return useSkill($skill[Summon Love Gnats]);
+				return useSkill$2(Skill.get("Summon Love Gnats"));
 			}
 		}
 	}
-	else
-	{
+	else {
 		auto_log_warning("Ed combat state does not exist, winging it....", "red");
 	}
 
-	if (canUse($skill[Fire Sewage Pistol]))
+	if (canUse$2(Skill.get("Fire Sewage Pistol")))
 	{
-		return useSkill($skill[Fire Sewage Pistol]);
+		return useSkill$2(Skill.get("Fire Sewage Pistol"));
 	}
 
-	if(enemy == $monster[Protagonist])
+	if (enemy === Monster.get("Protagonist"))
 	{
-		set_property("auto_edStatus", "dying");
+		setProperty("auto_edStatus", "dying");
 	}
 
-	if (my_location() != $location[The Battlefield (Frat Uniform)] && my_location() != $location[The Battlefield (Hippy Uniform)] && !get_property("auto_ignoreFlyer").to_boolean())
+	if (myLocation() !== Location.get("The Battlefield (Frat Uniform)") && myLocation() !== Location.get("The Battlefield (Hippy Uniform)") && !toBoolean(getProperty("auto_ignoreFlyer")))
 	{
-		if (canUse($item[Rock Band Flyers]) && get_property("flyeredML").to_int() < 10000)
+		if (canUse$4(Item.get("rock band flyers")) && toInt(getProperty("flyeredML")) < 10000)
 		{
-			if (get_property("_edDefeats").to_int() < 2 && get_property("auto_edStatus") == "dying")
+			if (toInt(getProperty("_edDefeats")) < 2 && getProperty("auto_edStatus") === "dying")
 			{
-				set_property("auto_edStatus", "UNDYING!");
+				setProperty("auto_edStatus", "UNDYING!");
 				// abuse the ability to flyer the same monster multiple times (optimal!)
 			}
-			return useItem($item[Rock Band Flyers]);
+			return useItem$1(Item.get("rock band flyers"));
 		}
-		if (canUse($item[Jam Band Flyers]) && get_property("flyeredML").to_int() < 10000)
+		if (canUse$4(Item.get("jam band flyers")) && toInt(getProperty("flyeredML")) < 10000)
 		{
-			if (get_property("_edDefeats").to_int() < 2 && get_property("auto_edStatus") == "dying")
+			if (toInt(getProperty("_edDefeats")) < 2 && getProperty("auto_edStatus") === "dying")
 			{
-				set_property("auto_edStatus", "UNDYING!");
+				setProperty("auto_edStatus", "UNDYING!");
 				// abuse the ability to flyer the same monster multiple times (optimal!)
 			}
-			return useItem($item[Jam Band Flyers]);
+			return useItem$1(Item.get("jam band flyers"));
 		}
 	}
-	
-	if(canUse($item[chaos butterfly]) && !get_property("chaosButterflyThrown").to_boolean() && !get_property("auto_skipL12Farm").to_boolean())
+
+	if (canUse$4(Item.get("chaos butterfly")) && !toBoolean(getProperty("chaosButterflyThrown")) && !toBoolean(getProperty("auto_skipL12Farm")))
 	{
-		return useItem($item[chaos butterfly]);
+		return useItem$1(Item.get("chaos butterfly"));
 	}
 
-	if(enemy == $monster[dirty thieving brigand] && canUse($skill[Curse Of Fortune]))
+	if (enemy === Monster.get("dirty thieving brigand") && canUse$2(Skill.get("Curse of Fortune")))
 	{
-		if (item_amount($item[Ka Coin]) > 0 && my_hp() > expected_damage() + 15)
+		if (itemAmount(Item.get("Ka coin")) > 0 && myHp() > expectedDamage() + 15)
 		{
 			// need to kill the monster without resurrecting to get the bonus meat drop so only use it if we have enough HP to survive a hit
-			set_property("auto_edStatus", "dying");
-			return useSkill($skill[Curse Of Fortune]);
+			setProperty("auto_edStatus", "dying");
+			return useSkill$2(Skill.get("Curse of Fortune"));
 		}
-		else if(get_property("_edDefeats").to_int() == 0 && my_maxhp() > expected_damage() + 15)
+		else if (toInt(getProperty("_edDefeats")) === 0 && myMaxhp() > expectedDamage() + 15)
 		{
 			// suicide to get a full heal, maybe we can Curse and kill after resurrection
-			set_property("auto_edStatus", "UNDYING!");
+			setProperty("auto_edStatus", "UNDYING!");
 		}
 	}
 
-	if (canUse($skill[Curse Of Stench]) && get_property("stenchCursedMonster").to_monster() != enemy && get_property("_edDefeats").to_int() < 3)
+	if (canUse$2(Skill.get("Curse of Stench")) && toMonster(getProperty("stenchCursedMonster")) !== enemy && toInt(getProperty("_edDefeats")) < 3)
 	{
-		if(auto_wantToSniff(enemy, my_location()))
+		if (auto_wantToSniff(enemy, myLocation()))
 		{
-			handleTracker(enemy, $skill[Curse Of Stench], "auto_sniffs");
-			return useSkill($skill[Curse Of Stench]);
+			handleTracker$1(enemy.toString(), Skill.get("Curse of Stench").toString(), "auto_sniffs");
+			return useSkill$2(Skill.get("Curse of Stench"));
 		}
 	}
 
-	if(my_location() == $location[The Secret Council Warehouse])
+	if (myLocation() === Location.get("The Secret Council Warehouse"))
 	{
-		if (canUse($skill[Curse Of Stench]) && get_property("stenchCursedMonster").to_monster() != enemy && get_property("_edDefeats").to_int() < 3)
+		if (canUse$2(Skill.get("Curse of Stench")) && toMonster(getProperty("stenchCursedMonster")) !== enemy && toInt(getProperty("_edDefeats")) < 3)
 		{
-			boolean doStench = false;
-			#	Rememeber, we are looking to see if we have enough of the opposite item here.
-			if(enemy == $monster[Warehouse Guard])
+			let doStench: boolean = false;
+			//	Rememeber, we are looking to see if we have enough of the opposite item here.
+			if (enemy === Monster.get("warehouse guard"))
 			{
-				int progress = get_property("warehouseProgress").to_int();
-				progress = progress + (8 * item_amount($item[Warehouse Inventory Page]));
-				if(progress >= 50)
+				let progress: number = toInt(getProperty("warehouseProgress"));
+				progress = progress + 8 * itemAmount(Item.get("warehouse inventory page"));
+				if (progress >= 50)
 				{
 					doStench = true;
 				}
 			}
 
-			if(enemy == $monster[Warehouse Clerk])
+			if (enemy === Monster.get("warehouse clerk"))
 			{
-				int progress = get_property("warehouseProgress").to_int();
-				progress = progress + (8 * item_amount($item[Warehouse Map Page]));
-				if(progress >= 50)
+				let progress: number = toInt(getProperty("warehouseProgress"));
+				progress = progress + 8 * itemAmount(Item.get("warehouse map page"));
+				if (progress >= 50)
 				{
 					doStench = true;
 				}
 			}
-			if(doStench)
+			if (doStench)
 			{
-				handleTracker(enemy, $skill[Curse of Stench], "auto_sniffs");
-				return useSkill($skill[Curse Of Stench]);
+				handleTracker$1(enemy.toString(), Skill.get("Curse of Stench").toString(), "auto_sniffs");
+				return useSkill$2(Skill.get("Curse of Stench"));
 			}
 		}
 	}
 
-	if(my_location() == $location[The Smut Orc Logging Camp])
+	if (myLocation() === Location.get("The Smut Orc Logging Camp"))
 	{
-		if (canUse($skill[Curse Of Stench]) && get_property("stenchCursedMonster").to_monster() != enemy && get_property("_edDefeats").to_int() < 3)
+		if (canUse$2(Skill.get("Curse of Stench")) && toMonster(getProperty("stenchCursedMonster")) !== enemy && toInt(getProperty("_edDefeats")) < 3)
 		{
-			boolean doStench = false;
-			string stenched = to_lower_case(get_property("stenchCursedMonster"));
+			let doStench: boolean = false;
+			let stenched: string = toLowerCase(getProperty("stenchCursedMonster"));
 
-			if((fastenerCount() >= 30) && (stenched != "smut orc pipelayer") && (stenched != "smut orc jacker"))
+			if (fastenerCount() >= 30 && stenched !== "smut orc pipelayer" && stenched !== "smut orc jacker")
 			{
-				#	Sniff 100% lumber
-				if((enemy == $monster[Smut Orc Pipelayer]) || (enemy == $monster[Smut Orc Jacker]))
+				//	Sniff 100% lumber
+				if (enemy === Monster.get("smut orc pipelayer") || enemy === Monster.get("smut orc jacker"))
 				{
 					doStench = true;
 				}
 			}
-			if((lumberCount() >= 30) && (stenched != "smut orc screwer") && (stenched != "smut orc nailer"))
+			if (lumberCount() >= 30 && stenched !== "smut orc screwer" && stenched !== "smut orc nailer")
 			{
-				#	Sniff 100% fastener
-				if((enemy == $monster[Smut Orc Screwer]) || (enemy == $monster[Smut Orc Nailer]))
+				//	Sniff 100% fastener
+				if (enemy === Monster.get("smut orc screwer") || enemy === Monster.get("smut orc nailer"))
 				{
 					doStench = true;
 				}
 			}
 
-			if(doStench)
+			if (doStench)
 			{
-				handleTracker(enemy, $skill[Curse of Stench], "auto_sniffs");
-				return useSkill($skill[Curse Of Stench]);
+				handleTracker$1(enemy.toString(), Skill.get("Curse of Stench").toString(), "auto_sniffs");
+				return useSkill$2(Skill.get("Curse of Stench"));
 			}
 		}
 	}
-
 	//yellowray instantly kills the enemy and makes them drop all items they can drop.
-	if(!combat_status_check("yellowray") && auto_wantToYellowRay(enemy, my_location()))
+	if (!combat_status_check("yellowray") && auto_wantToYellowRay(enemy, myLocation()))
 	{
-		string combatAction = yellowRayCombatString(enemy, true, $monsters[bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, Knight (Snake)] contains enemy);
-		if(combatAction != "")
+		let combatAction: string = yellowRayCombatString(enemy, true, Monster.get(["bearpig topiary animal", "elephant (meatcar?) topiary animal", "spider (duck?) topiary animal", "knight (Snake)"]).includes(enemy));
+		if (combatAction !== "")
 		{
 			combat_status_add("yellowray");
-			if(index_of(combatAction, "skill") == 0)
+			if (indexOf(combatAction, "skill") === 0)
 			{
-				handleTracker(enemy, to_skill(substring(combatAction, 6)), "auto_yellowRays");
+				handleTracker$1(enemy.toString(), toSkill(substring(combatAction, 6)).toString(), "auto_yellowRays");
 			}
-			else if(index_of(combatAction, "item") == 0)
+			else if (indexOf(combatAction, "item") === 0)
 			{
-				handleTracker(enemy, to_item(substring(combatAction, 5)), "auto_yellowRays");
+				handleTracker$1(enemy.toString(), toItem(substring(combatAction, 5)).toString(), "auto_yellowRays");
 			}
-			else
-			{
-				auto_log_warning("Unable to track yellow ray behavior: " + combatAction, "red");
+			else {
+				auto_log_warning(`Unable to track yellow ray behavior: ${combatAction}`, "red");
 			}
-			if(combatAction == useSkill($skill[Asdon Martin: Missile Launcher], false))
+			if (combatAction === useSkill$1(Skill.get("Asdon Martin: Missile Launcher"), false))
 			{
-				set_property("_missileLauncherUsed", true);
+				setProperty("_missileLauncherUsed", true.toString());
 			}
 			return combatAction;
 		}
-		else
-		{
+		else {
 			auto_log_warning("Wanted a yellow ray but we can not find one.", "red");
 		}
 	}
 
-	if(!combat_status_check("banishercheck") && auto_wantToBanish(enemy, my_location()))
+	if (!combat_status_check("banishercheck") && auto_wantToBanish(enemy, myLocation()))
 	{
-		string banishAction = banisherCombatString(enemy, my_location(), true);
-		if(banishAction != "")
+		let banishAction: string = banisherCombatString$1(enemy, myLocation(), true);
+		if (banishAction !== "")
 		{
-			auto_log_info("Looking at banishAction: " + banishAction, "green");
+			auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
 			combat_status_add("banisher");
-			if(index_of(banishAction, "skill") == 0)
+			if (indexOf(banishAction, "skill") === 0)
 			{
-				handleTracker(enemy, to_skill(substring(banishAction, 6)), "auto_banishes");
+				handleTracker$1(enemy.toString(), toSkill(substring(banishAction, 6)).toString(), "auto_banishes");
 			}
-			else if(index_of(banishAction, "item") == 0)
+			else if (indexOf(banishAction, "item") === 0)
 			{
-				if(contains_text(banishAction, ", none"))
+				if (containsText(banishAction, ", none"))
 				{
-					int commapos = index_of(banishAction, ", none");
-					handleTracker(enemy, to_item(substring(banishAction, 5, commapos)), "auto_banishes");
+					let commapos: number = indexOf(banishAction, ", none");
+					handleTracker$1(enemy.toString(), toItem(substring(banishAction, 5, commapos)).toString(), "auto_banishes");
 				}
-				else
-				{
-					handleTracker(enemy, to_item(substring(banishAction, 5)), "auto_banishes");
+				else {
+					handleTracker$1(enemy.toString(), toItem(substring(banishAction, 5)).toString(), "auto_banishes");
 				}
 			}
-			else
-			{
-				auto_log_warning("Unable to track banisher behavior: " + banishAction, "red");
+			else {
+				auto_log_warning(`Unable to track banisher behavior: ${banishAction}`, "red");
 			}
 			return banishAction;
 		}
 		//we wanted to banish an enemy and failed. set a property so we do not bother trying in subsequent rounds
 		combat_status_add("banishercheck");
 	}
-
 	// Free run from monsters we want to banish but are unable to, or monsters on the free run list
-	if(!combat_status_check("freeruncheck") && (auto_wantToFreeRun(enemy, my_location()) || auto_wantToBanish(enemy, my_location())))
+	if (!combat_status_check("freeruncheck") && (auto_wantToFreeRun(enemy, myLocation()) || auto_wantToBanish(enemy, myLocation())))
 	{
-		string freeRunAction = freeRunCombatString(enemy, my_location(), true);
-		if(freeRunAction != "")
+		let freeRunAction: string = freeRunCombatString(enemy, myLocation(), true);
+		if (freeRunAction !== "")
 		{
-			if (index_of(freeRunAction, "runaway familiar") == 0)
+			if (indexOf(freeRunAction, "runaway familiar") === 0)
 			{
-				handleTracker(enemy, to_familiar(substring(freeRunAction, 17)), "auto_freeruns");
+				handleTracker$1(enemy.toString(), toFamiliar(substring(freeRunAction, 17)).toString(), "auto_freeruns");
 				freeRunAction = "runaway";
 			}
-			else if (index_of(freeRunAction, "runaway item") == 0)
+			else if (indexOf(freeRunAction, "runaway item") === 0)
 			{
-				handleTracker(enemy, to_item(substring(freeRunAction, 13)), "auto_freeruns");
+				handleTracker$1(enemy.toString(), toItem(substring(freeRunAction, 13)).toString(), "auto_freeruns");
 				freeRunAction = "runaway";
 			}
-			else if(index_of(freeRunAction, "skill") == 0)
+			else if (indexOf(freeRunAction, "skill") === 0)
 			{
-				handleTracker(enemy, to_skill(substring(freeRunAction, 6)), "auto_freeruns");
+				handleTracker$1(enemy.toString(), toSkill(substring(freeRunAction, 6)).toString(), "auto_freeruns");
 			}
-			else if(index_of(freeRunAction, "item") == 0)
+			else if (indexOf(freeRunAction, "item") === 0)
 			{
-				if(contains_text(freeRunAction, ", none"))
+				if (containsText(freeRunAction, ", none"))
 				{
-					int commapos = index_of(freeRunAction, ", none");
-					handleTracker(enemy, to_item(substring(freeRunAction, 5, commapos)), "auto_freeruns");
+					let commapos: number = indexOf(freeRunAction, ", none");
+					handleTracker$1(enemy.toString(), toItem(substring(freeRunAction, 5, commapos)).toString(), "auto_freeruns");
 				}
-				else
-				{
-					handleTracker(enemy, to_item(substring(freeRunAction, 5)), "auto_freeruns");
+				else {
+					handleTracker$1(enemy.toString(), toItem(substring(freeRunAction, 5)).toString(), "auto_freeruns");
 				}
 			}
-			else
-			{
-				auto_log_warning("Unable to track runaway behavior: " + freeRunAction, "red");
+			else {
+				auto_log_warning(`Unable to track runaway behavior: ${freeRunAction}`, "red");
 			}
 			return freeRunAction;
 		}
-
 		//we wanted to free run an enemy and failed. set a property so we do not bother trying in subsequent rounds
 		combat_status_add("freeruncheck");
 	}
 
-	if (!combat_status_check("replacercheck") && auto_wantToReplace(enemy, my_location()))
+	if (!combat_status_check("replacercheck") && auto_wantToReplace(enemy, myLocation()))
 	{
-		string combatAction = replaceMonsterCombatString(enemy, true);
-		if(combatAction != "")
+		let combatAction: string = replaceMonsterCombatString(enemy, true);
+		if (combatAction !== "")
 		{
 			combat_status_add("replacer");
-			if(index_of(combatAction, "skill") == 0)
+			if (indexOf(combatAction, "skill") === 0)
 			{
-				if (to_skill(substring(combatAction, 6)) == $skill[CHEAT CODE: Replace Enemy])
+				if (toSkill(substring(combatAction, 6)) === Skill.get("CHEAT CODE: Replace Enemy"))
 				{
-					handleTracker($skill[CHEAT CODE: Replace Enemy], "auto_powerfulglove");
+					handleTracker(Skill.get("CHEAT CODE: Replace Enemy").toString(), "auto_powerfulglove");
 				}
-				handleTracker(enemy, to_skill(substring(combatAction, 6)), "auto_replaces");
+				handleTracker$1(enemy.toString(), toSkill(substring(combatAction, 6)).toString(), "auto_replaces");
 			}
-			else if(index_of(combatAction, "item") == 0)
+			else if (indexOf(combatAction, "item") === 0)
 			{
-				handleTracker(enemy, to_item(substring(combatAction, 5)), "auto_replaces");
+				handleTracker$1(enemy.toString(), toItem(substring(combatAction, 5)).toString(), "auto_replaces");
 			}
-			else
-			{
-				auto_log_warning("Unable to track replacer behavior: " + combatAction, "red");
+			else {
+				auto_log_warning(`Unable to track replacer behavior: ${combatAction}`, "red");
 			}
 			return combatAction;
 		}
-		else
-		{
+		else {
 			auto_log_warning("Wanted a replacer but we can not find one.", "red");
 		}
 		combat_status_add("replacercheck");
 	}
 
-	if (canUse($item[Disposable Instant Camera]) && $monsters[Bob Racecar, Racecar Bob] contains enemy)
+	if (canUse$4(Item.get("disposable instant camera")) && Monster.get(["Bob Racecar", "Racecar Bob"]).includes(enemy))
 	{
-		return useItem($item[Disposable Instant Camera]);
+		return useItem$1(Item.get("disposable instant camera"));
 	}
 
-	if (my_location() == $location[Oil Peak] && canUse($item[Duskwalker Syringe]))
+	if (myLocation() === Location.get("Oil Peak") && canUse$4(Item.get("Duskwalker syringe")))
 	{
-		int oilProgress = get_property("twinPeakProgress").to_int();
-		boolean wantCrude = ((oilProgress & 4) == 0);
-		if(item_amount($item[Bubblin\' Crude]) > 11 || item_amount($item[Jar Of Oil]) > 0)
+		let oilProgress: number = toInt(getProperty("twinPeakProgress"));
+		let wantCrude: boolean = (oilProgress & 4) === 0;
+		if (itemAmount(Item.get("bubblin' crude")) > 11 || itemAmount(Item.get("jar of oil")) > 0)
 		{
 			wantCrude = false;
 		}
 
-		if(wantCrude)
+		if (wantCrude)
 		{
-			return useItem($item[Duskwalker Syringe]);
+			return useItem$1(Item.get("Duskwalker syringe"));
 		}
 	}
 
-	if (canUse($item[Glark Cable]) && my_location() == $location[The Red Zeppelin] && internalQuestStatus("questL11Ron") == 3 && get_property("_glarkCableUses").to_int() < 5 && get_property("auto_edStatus") == "dying")
+	if (canUse$4(Item.get("glark cable")) && myLocation() === Location.get("The Red Zeppelin") && internalQuestStatus("questL11Ron") === 3 && toInt(getProperty("_glarkCableUses")) < 5 && getProperty("auto_edStatus") === "dying")
 	{
-		if($monsters[Man With The Red Buttons, Red Butler, Red Fox, Red Skeleton] contains enemy)
+		if (Monster.get(["man with the red buttons", "red butler", "Red Fox", "red skeleton"]).includes(enemy))
 		{
-			return useItem($item[Glark Cable]);
+			return useItem$1(Item.get("glark cable"));
 			// free insta-kill (optimal!)
 		}
 	}
 
-	if (!get_property("edUsedLash").to_boolean() && canUse($skill[Lash of the Cobra]) && get_property("_edLashCount").to_int() < 30)
+	if (!toBoolean(getProperty("edUsedLash")) && canUse$2(Skill.get("Lash of the Cobra")) && toInt(getProperty("_edLashCount")) < 30)
 	{
-		boolean doLash = false;
-		if(enemy == $monster[Shadow Slab])
+		let doLash: boolean = false;
+		if (enemy === Monster.get("shadow slab"))
 		{
 			doLash = true;
 		}
-		if((enemy == $monster[Big Wheelin\' Twins]) && !possessEquipment($item[Badge Of Authority]))
+		if (enemy === Monster.get("Big Wheelin' Twins") && !possessEquipment(Item.get("badge of authority")))
 		{
 			doLash = true;
 		}
-		if((enemy == $monster[Fishy Pirate]) && !possessEquipment($item[Perfume-Soaked Bandana]))
+		if (enemy === Monster.get("fishy pirate") && !possessEquipment(Item.get("perfume-soaked bandana")))
 		{
 			doLash = true;
 		}
-		if((enemy == $monster[Funky Pirate]) && !possessEquipment($item[Sewage-Clogged Pistol]) && elementalPlanes_access($element[spooky]))
+		if (enemy === Monster.get("funky pirate") && !possessEquipment(Item.get("sewage-clogged pistol")) && elementalPlanes_access(Element.get("spooky")))
 		{
 			doLash = true;
 		}
-		if((enemy == $monster[Garbage Tourist]) && (item_amount($item[Bag of Park Garbage]) == 0))
+		if (enemy === Monster.get("garbage tourist") && itemAmount(Item.get("bag of park garbage")) === 0)
 		{
 			doLash = true;
 		}
-		if (enemy == $monster[Dairy Goat] && item_amount($item[Goat Cheese]) < 3)
+		if (enemy === Monster.get("dairy goat") && itemAmount(Item.get("goat cheese")) < 3)
 		{
 			doLash = true;
 		}
-		if (enemy == $monster[Monstrous Boiler] && item_amount($item[Red-Hot Boilermaker]) < 1 && get_property("booPeakProgress").to_int() > 0)
+		if (enemy === Monster.get("monstrous boiler") && itemAmount(Item.get("red-hot boilermaker")) < 1 && toInt(getProperty("booPeakProgress")) > 0)
 		{
 			doLash = true;
 		}
-		if (enemy == $monster[Fitness Giant] && item_amount($item[Pec Oil]) < 1 && get_property("booPeakProgress").to_int() > 0)
+		if (enemy === Monster.get("Fitness Giant") && itemAmount(Item.get("pec oil")) < 1 && toInt(getProperty("booPeakProgress")) > 0)
 		{
 			doLash = true;
 		}
-		if (enemy == $monster[Renaissance Giant] && item_amount($item[Ye Olde Meade]) < 1)
+		if (enemy === Monster.get("Renaissance Giant") && itemAmount(Item.get("Ye Olde Meade")) < 1)
 		{
 			doLash = true;
 		}
-		if($monsters[Bearpig Topiary Animal, Elephant (Meatcar?) Topiary Animal, Spider (Duck?) Topiary Animal] contains enemy)
+		if (Monster.get(["bearpig topiary animal", "elephant (meatcar?) topiary animal", "spider (duck?) topiary animal"]).includes(enemy))
 		{
 			doLash = true;
 		}
-		if($monsters[Beanbat, Bookbat] contains enemy)
+		if (Monster.get(["beanbat", "bookbat"]).includes(enemy))
 		{
 			doLash = true;
 		}
-		if(((enemy == $monster[Toothy Sklelton]) || (enemy == $monster[Spiny Skelelton])) && (get_property("cyrptNookEvilness").to_int() > 14 + cyrptEvilBonus(true)))
+		if ((enemy === Monster.get("toothy sklelton") || enemy === Monster.get("spiny skelelton")) && toInt(getProperty("cyrptNookEvilness")) > 14 + cyrptEvilBonus(true))
 		{
 			doLash = true;
 		}
-		if((enemy == $monster[Oil Baron]) && (item_amount($item[Bubblin\' Crude]) < 12) && (item_amount($item[Jar of Oil]) == 0))
+		if (enemy === Monster.get("oil baron") && itemAmount(Item.get("bubblin' crude")) < 12 && itemAmount(Item.get("jar of oil")) === 0)
 		{
 			doLash = true;
 		}
-		if((enemy == $monster[Blackberry Bush]) && (item_amount($item[Blackberry]) < 3) && !possessEquipment($item[Blackberry Galoshes]))
+		if (enemy === Monster.get("blackberry bush") && itemAmount(Item.get("blackberry")) < 3 && !possessEquipment(Item.get("blackberry galoshes")))
 		{
 			doLash = true;
 		}
-		if((enemy == $monster[Pygmy Bowler]) && (get_property("_edLashCount").to_int() < 26))
+		if (enemy === Monster.get("pygmy bowler") && toInt(getProperty("_edLashCount")) < 26)
 		{
 			doLash = true;
 		}
-		if($monsters[Filthworm Drone, Filthworm Royal Guard, Larval Filthworm] contains enemy)
+		if (Monster.get(["filthworm drone", "filthworm royal guard", "larval filthworm"]).includes(enemy))
 		{
 			doLash = true;
 		}
-		if(enemy == $monster[Knob Goblin Madam])
+		if (enemy === Monster.get("Knob Goblin Madam"))
 		{
-			if(item_amount($item[Knob Goblin Perfume]) == 0)
+			if (itemAmount(Item.get("Knob Goblin perfume")) === 0)
 			{
 				doLash = true;
 			}
 		}
-		if(enemy == $monster[Knob Goblin Harem Girl])
+		if (enemy === Monster.get("Knob Goblin Harem Girl"))
 		{
-			if(!possessEquipment($item[Knob Goblin Harem Veil]) || !possessEquipment($item[Knob Goblin Harem Pants]))
+			if (!possessEquipment(Item.get("Knob Goblin harem veil")) || !possessEquipment(Item.get("Knob Goblin harem pants")))
 			{
 				doLash = true;
 			}
 		}
-		if ((my_location() == $location[The Hippy Camp] || my_location() == $location[Wartime Hippy Camp]) && contains_text(enemy, "hippy") && my_level() >= 12)
+		if ((myLocation() === Location.get("The Hippy Camp") || myLocation() === Location.get("Wartime Hippy Camp")) && containsText(enemy.toString(), "hippy") && myLevel() >= 12)
 		{
-			if(!possessEquipment($item[Filthy Knitted Dread Sack]) || !possessEquipment($item[Filthy Corduroys]))
+			if (!possessEquipment(Item.get("filthy knitted dread sack")) || !possessEquipment(Item.get("filthy corduroys")))
 			{
-				if(get_property("auto_edStatus") != "dying")
+				if (getProperty("auto_edStatus") !== "dying")
 				{
 					doLash = true;
 				}
 			}
 		}
-		if(my_location() == $location[Wartime Frat House])
+		if (myLocation() === Location.get("Wartime Frat House"))
 		{
-			if(!possessEquipment($item[Beer Helmet]) || !possessEquipment($item[Bejeweled Pledge Pin]) || !possessEquipment($item[Distressed Denim Pants]))
+			if (!possessEquipment(Item.get("beer helmet")) || !possessEquipment(Item.get("bejeweled pledge pin")) || !possessEquipment(Item.get("distressed denim pants")))
 			{
 				doLash = true;
 			}
 		}
-		if((enemy == $monster[Dopey 7-Foot Dwarf]) && !possessEquipment($item[Miner\'s Helmet]))
+		if (enemy === Monster.get("dopey 7-Foot Dwarf") && !possessEquipment(Item.get("miner's helmet")))
 		{
 			doLash = true;
 		}
-		if((enemy == $monster[Grumpy 7-Foot Dwarf]) && !possessEquipment($item[7-Foot Dwarven Mattock]))
+		if (enemy === Monster.get("grumpy 7-Foot Dwarf") && !possessEquipment(Item.get("7-Foot Dwarven mattock")))
 		{
 			doLash = true;
 		}
-		if((enemy == $monster[Sleepy 7-Foot Dwarf]) && !possessEquipment($item[Miner\'s Pants]))
+		if (enemy === Monster.get("sleepy 7-Foot Dwarf") && !possessEquipment(Item.get("miner's pants")))
 		{
 			doLash = true;
 		}
-		if((enemy == $monster[Burly Sidekick]) && !possessEquipment($item[Mohawk Wig]))
+		if (enemy === Monster.get("Burly Sidekick") && !possessEquipment(Item.get("Mohawk wig")))
 		{
 			doLash = true;
 		}
-		if((enemy == $monster[Spunky Princess]) && !possessEquipment($item[Titanium Assault Umbrella]) && !possessEquipment($item[unbreakable umbrella]))
+		if (enemy === Monster.get("Spunky Princess") && !possessEquipment(Item.get("titanium assault umbrella")) && !possessEquipment(Item.get("unbreakable umbrella")))
 		{
 			doLash = true;
 		}
-		if((enemy == $monster[Quiet Healer]) && !possessEquipment($item[Amulet of Extreme Plot Significance]))
+		if (enemy === Monster.get("Quiet Healer") && !possessEquipment(Item.get("amulet of extreme plot significance")))
 		{
 			doLash = true;
 		}
-		if(enemy == $monster[Warehouse Clerk])
+		if (enemy === Monster.get("warehouse clerk"))
 		{
-			int progress = get_property("warehouseProgress").to_int();
-			progress = progress + (8 * item_amount($item[Warehouse Inventory Page]));
-			if(progress < 50)
+			let progress: number = toInt(getProperty("warehouseProgress"));
+			progress = progress + 8 * itemAmount(Item.get("warehouse inventory page"));
+			if (progress < 50)
 			{
 				doLash = true;
 			}
 		}
-		if(enemy == $monster[Warehouse Guard])
+		if (enemy === Monster.get("warehouse guard"))
 		{
-			int progress = get_property("warehouseProgress").to_int();
-			progress = progress + (8 * item_amount($item[Warehouse Map Page]));
-			if(progress < 50)
+			let progress: number = toInt(getProperty("warehouseProgress"));
+			progress = progress + 8 * itemAmount(Item.get("warehouse map page"));
+			if (progress < 50)
 			{
 				doLash = true;
 			}
 		}
-		if (enemy == $monster[Copperhead Club bartender] && internalQuestStatus("questL11Ron") < 2)
+		if (enemy === Monster.get("Copperhead Club bartender") && internalQuestStatus("questL11Ron") < 2)
 		{
 			doLash = true;
 		}
 
 		if (doLash)
 		{
-			handleTracker(enemy, "auto_lashes");
-			return useSkill($skill[Lash Of The Cobra]);
+			handleTracker(enemy.toString(), "auto_lashes");
+			return useSkill$2(Skill.get("Lash of the Cobra"));
 		}
 	}
 
-	if (!combat_status_check("talismanofrenenutet") && canUse($item[Talisman of Renenutet]))
+	if (!combat_status_check("talismanofrenenutet") && canUse$4(Item.get("talisman of Renenutet")))
 	{
-		boolean doRenenutet = false;
-		if((enemy == $monster[Cabinet of Dr. Limpieza]) && ($location[The Haunted Laundry Room].turns_spent > 2))
+		let doRenenutet: boolean = false;
+		if (enemy === Monster.get("cabinet of Dr. Limpieza") && (Location.get("The Haunted Laundry Room")).turnsSpent > 2)
 		{
 			doRenenutet = true;
 		}
-		if((enemy == $monster[Possessed Wine Rack]) && ($location[The Haunted Wine Cellar].turns_spent > 2))
+		if (enemy === Monster.get("possessed wine rack") && (Location.get("The Haunted Wine Cellar")).turnsSpent > 2)
 		{
 			doRenenutet = true;
 		}
-		if((enemy == $monster[Baa\'baa\'bu\'ran]) && (item_amount($item[Stone Wool]) < 2))
+		if (enemy === Monster.get("Baa'baa'bu'ran") && itemAmount(Item.get("stone wool")) < 2)
 		{
 			doRenenutet = true;
 		}
-		if ($monsters[Mountain Man, Warehouse Clerk, Warehouse Guard, waiter dressed as a ninja, ninja dressed as a waiter] contains enemy)
+		if (Monster.get(["mountain man", "warehouse clerk", "warehouse guard", "waiter dressed as a ninja", "ninja dressed as a waiter"]).includes(enemy))
 		{
 			doRenenutet = true;
 		}
-		if((enemy == $monster[Quiet Healer]) && !possessEquipment($item[Amulet of Extreme Plot Significance]))
+		if (enemy === Monster.get("Quiet Healer") && !possessEquipment(Item.get("amulet of extreme plot significance")))
 		{
 			doRenenutet = true;
 		}
-		if((enemy == $monster[Pygmy Janitor]) && (item_amount($item[Book of Matches]) == 0) && (get_property("hiddenTavernUnlock").to_int() != my_ascensions()))
+		if (enemy === Monster.get("pygmy janitor") && itemAmount(Item.get("book of matches")) === 0 && toInt(getProperty("hiddenTavernUnlock")) !== myAscensions())
 		{
 			doRenenutet = true;
 		}
-		if(enemy == $monster[Blackberry Bush])
+		if (enemy === Monster.get("blackberry bush"))
 		{
-			if(!possessEquipment($item[Blackberry Galoshes]) && (item_amount($item[Blackberry]) < 3))
+			if (!possessEquipment(Item.get("blackberry galoshes")) && itemAmount(Item.get("blackberry")) < 3)
 			{
 				doRenenutet = true;
 			}
 		}
-		if(my_location() == $location[Wartime Frat House])
+		if (myLocation() === Location.get("Wartime Frat House"))
 		{
-			if(!possessEquipment($item[Beer Helmet]) || !possessEquipment($item[Bejeweled Pledge Pin]) || !possessEquipment($item[Distressed Denim Pants]))
+			if (!possessEquipment(Item.get("beer helmet")) || !possessEquipment(Item.get("bejeweled pledge pin")) || !possessEquipment(Item.get("distressed denim pants")))
 			{
 				doRenenutet = true;
 			}
 		}
-		if($monsters[Battlie Knight Ghost, Claybender Sorcerer Ghost, Dusken Raider Ghost, Space Tourist Explorer Ghost, Whatsian Commando Ghost] contains enemy)
+		if (Monster.get(["Battlie Knight Ghost", "Claybender Sorcerer Ghost", "Dusken Raider Ghost", "Space Tourist Explorer Ghost", "Whatsian Commando Ghost"]).includes(enemy))
 		{
-			if(item_amount($item[A-boo Clue]) < get_property("booPeakProgress").to_int()/30)
+			if (itemAmount(Item.get("A-Boo clue")) < toInt(getProperty("booPeakProgress")) / 30)
 			{
 				doRenenutet = true;
 			}
 		}
-		if($monsters[toothy sklelton,spiny skelelton] contains enemy)
+		if (Monster.get(["toothy sklelton", "spiny skelelton"]).includes(enemy))
 		{
-			if(my_location() == $location[The Defiled Nook] && item_amount($item[evil eye]) == 0) // lash didn't get it)
-			{
+			if (myLocation() === Location.get("The Defiled Nook") && itemAmount(Item.get("evil eye")) === 0)
+			{ // lash didn't get it)
 				doRenenutet = true;
 			}
 		}
-		if($monsters[bearpig topiary animal,elephant (meatcar?) topiary animal,spider (duck?) topiary animal] contains enemy)
+		if (Monster.get(["bearpig topiary animal", "elephant (meatcar?) topiary animal", "spider (duck?) topiary animal"]).includes(enemy))
 		{
-			if(item_amount($item[rusty hedge trimmers]) == 0) // lash didn't get it
-			{
+			if (itemAmount(Item.get("rusty hedge trimmers")) === 0)
+			{ // lash didn't get it
 				doRenenutet = true;
 			}
 		}
-		if($monsters[blue oyster cultist] contains enemy)
+		if (Monster.get(["Blue Oyster cultist"]).includes(enemy))
 		{
 			doRenenutet = true;
 		}
-		if(doRenenutet)
+		if (doRenenutet)
 		{
-			if (!combat_status_check("curseofindecision") && canUse($skill[Curse Of Indecision]))
+			if (!combat_status_check("curseofindecision") && canUse$2(Skill.get("Curse of Indecision")))
 			{
 				combat_status_add("curseofindecision");
-				return useSkill($skill[Curse Of Indecision]);
+				return useSkill$2(Skill.get("Curse of Indecision"));
 			}
 			combat_status_add("talismanofrenenutet");
-			handleTracker(enemy, "auto_renenutet");
-			set_property("auto_edStatus", "dying");
-			return useItem($item[Talisman Of Renenutet]);
+			handleTracker(enemy.toString(), "auto_renenutet");
+			setProperty("auto_edStatus", "dying");
+			return useItem$1(Item.get("talisman of Renenutet"));
 		}
 	}
-	
-	if (canUse($item[Cigarette Lighter]) && my_location() == $location[A Mob Of Zeppelin Protesters] && internalQuestStatus("questL11Ron") == 1 && get_property("auto_edStatus") == "dying")
+
+	if (canUse$4(Item.get("cigarette lighter")) && myLocation() === Location.get("A Mob of Zeppelin Protesters") && internalQuestStatus("questL11Ron") === 1 && getProperty("auto_edStatus") === "dying")
 	{
-		return useItem($item[Cigarette Lighter]);
+		return useItem$1(Item.get("cigarette lighter"));
 		// insta-kills protestors and removes an additional 5-7 (optimal!)
 	}
 
-	if(enemy == $monster[Pygmy Orderlies] && canUse($item[Short Writ of Habeas Corpus], false) && have_effect($effect[Everything Looks Green]) == 0)
+	if (enemy === Monster.get("pygmy orderlies") && canUse$3(Item.get("short writ of habeas corpus"), false) && haveEffect(Effect.get("Everything Looks Green")) === 0)
 	{
-		return useItem($item[Short Writ of Habeas Corpus]);
-	}
-	
-	if(canUse($skill[Darts: Aim for the Bullseye]) && have_effect($effect[Everything Looks Red]) == 0 && dartELRcd() <= 40)
-	{
-		set_property("auto_instakillSource", "darts bullseye");
-		set_property("auto_instakillSuccess", true);
-		loopHandlerDelayAll();
-		return useSkill($skill[Darts: Aim for the Bullseye]);
+		return useItem$1(Item.get("short writ of habeas corpus"));
 	}
 
-	// use cosmic bowling ball iotm
-	if(auto_bowlingBallCombatString(my_location(), true) != "" && !enemy.boss)
+	if (canUse$2(Skill.get("Darts: Aim for the Bullseye")) && haveEffect(Effect.get("Everything Looks Red")) === 0 && dartELRcd() <= 40)
 	{
-		return 	auto_bowlingBallCombatString(my_location(), false);
+		setProperty("auto_instakillSource", "darts bullseye");
+		setProperty("auto_instakillSuccess", true.toString());
+		loopHandlerDelayAll();
+		return useSkill$2(Skill.get("Darts: Aim for the Bullseye"));
 	}
-	
-	// prep avalanche if requested
-	if(canUse($skill[McHugeLarge Avalanche]) && get_property("auto_forceNonCombatSource") == "McHugeLarge left ski"
-		&& !get_property("auto_avalancheDeployed").to_boolean())
+	// use cosmic bowling ball iotm
+	if (auto_bowlingBallCombatString(myLocation(), true) !== "" && !enemy.boss)
 	{
-		set_property("auto_avalancheDeployed", true);
-		return useSkill($skill[McHugeLarge Avalanche]);
+		return auto_bowlingBallCombatString(myLocation(), false);
+	}
+	// prep avalanche if requested
+	if (canUse$2(Skill.get("McHugeLarge Avalanche")) && getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" && !toBoolean(getProperty("auto_avalancheDeployed")))
+	{
+		setProperty("auto_avalancheDeployed", true.toString());
+		return useSkill$2(Skill.get("McHugeLarge Avalanche"));
 	}
 	// prep parka NC forcing if requested
-	if(canUse($skill[Launch spikolodon spikes]) && get_property("auto_forceNonCombatSource") == "jurassic parka"
-		&& !get_property("auto_parkaSpikesDeployed").to_boolean())
+	if (canUse$2(Skill.get("Launch spikolodon spikes")) && getProperty("auto_forceNonCombatSource") === "jurassic parka" && !toBoolean(getProperty("auto_parkaSpikesDeployed")))
 	{
-		set_property("auto_parkaSpikesDeployed", true);
-		return useSkill($skill[Launch spikolodon spikes]);
+		setProperty("auto_parkaSpikesDeployed", true.toString());
+		return useSkill$2(Skill.get("Launch spikolodon spikes"));
 	}
-	
-	if(instakillable(enemy) && !isFreeMonster(enemy,my_location()) && doInstaKill)
+
+	if (instakillable(enemy) && !isFreeMonster$1(enemy, myLocation()) && doInstaKill)
 	{
-		if(!combat_status_check("batoomerang") && (item_amount($item[Replica Bat-oomerang]) > 0))
+		if (!combat_status_check("batoomerang") && itemAmount(Item.get("replica bat-oomerang")) > 0)
 		{
-			if(get_property("auto_batoomerangDay").to_int() != my_daycount())
+			if (toInt(getProperty("auto_batoomerangDay")) !== myDaycount())
 			{
-				set_property("auto_batoomerangDay", my_daycount());
-				set_property("auto_batoomerangUse", 0);
+				setProperty("auto_batoomerangDay", myDaycount().toString());
+				setProperty("auto_batoomerangUse", (0).toString());
 			}
-			if(get_property("auto_batoomerangUse").to_int() < 3)
+			if (toInt(getProperty("auto_batoomerangUse")) < 3)
 			{
-				set_property("auto_batoomerangUse", get_property("auto_batoomerangUse").to_int() + 1);
+				setProperty("auto_batoomerangUse", (toInt(getProperty("auto_batoomerangUse")) + 1).toString());
 				combat_status_add("batoomerang");
-				handleTracker(enemy, $item[Replica Bat-oomerang], "auto_instakill");
+				handleTracker$1(enemy.toString(), Item.get("replica bat-oomerang").toString(), "auto_instakill");
 				loopHandlerDelayAll();
-				return "item " + $item[Replica Bat-oomerang];
+				return `item ${Item.get("replica bat-oomerang")}`;
 			}
 		}
 
-		if(canUse($item[shadow brick]) && (get_property("_shadowBricksUsed").to_int() < 13))
+		if (canUse$4(Item.get("shadow brick")) && toInt(getProperty("_shadowBricksUsed")) < 13)
 		{
-			handleTracker(enemy, $item[shadow brick], "auto_instakill");
+			handleTracker$1(enemy.toString(), Item.get("shadow brick").toString(), "auto_instakill");
 			loopHandlerDelayAll();
-			return useItems($item[shadow brick], $item[none]);
+			return useItems$1(Item.get("shadow brick"), Item.none);
 		}
 
-		if(!combat_status_check("jokesterGun") && (equipped_item($slot[Weapon]) == $item[The Jokester\'s Gun]) && !get_property("_firedJokestersGun").to_boolean() && auto_have_skill($skill[Fire the Jokester\'s Gun]))
+		if (!combat_status_check("jokesterGun") && equippedItem(Slot.get("weapon")) === Item.get("The Jokester's gun") && !toBoolean(getProperty("_firedJokestersGun")) && auto_have_skill(Skill.get("Fire the Jokester's Gun")))
 		{
 			combat_status_add("jokesterGun");
-			handleTracker(enemy, $skill[Fire the Jokester\'s Gun], "auto_instakill");
+			handleTracker$1(enemy.toString(), Skill.get("Fire the Jokester's Gun").toString(), "auto_instakill");
 			loopHandlerDelayAll();
-			return "skill" + $skill[Fire the Jokester\'s Gun];
+			return `skill${Skill.get("Fire the Jokester's Gun")}`;
 		}
 
-		if (canUse($skill[Slay the Dead]) && enemy.phylum == $phylum[undead])
+		if (canUse$2(Skill.get("Slay the Dead")) && enemy.phylum === Phylum.get("undead"))
 		{
 			// instakills Undead and reduces evilness in Cyrpt zones.
-			return useSkill($skill[Slay the Dead]);
+			return useSkill$2(Skill.get("Slay the Dead"));
 		}
 	}
 
-	if(get_property("auto_edStatus") == "UNDYING!")
+	if (getProperty("auto_edStatus") === "UNDYING!")
 	{
 		// We're taking a trip to the underworld. Either we want to abuse resurrection or we want to go shopping
-		if(my_location() == $location[The Secret Government Laboratory])
+		if (myLocation() === Location.get("The Secret Government Laboratory"))
 		{
-			if((item_amount($item[Rock Band Flyers]) == 0) && (item_amount($item[Jam Band Flyers]) == 0))
+			if (itemAmount(Item.get("rock band flyers")) === 0 && itemAmount(Item.get("jam band flyers")) === 0)
 			{
-				if((!combat_status_check("love stinkbug")) && get_property("lovebugsUnlocked").to_boolean())
+				if (!combat_status_check("love stinkbug") && toBoolean(getProperty("lovebugsUnlocked")))
 				{
 					combat_status_add("love stinkbug2");
-					return "skill " + $skill[Summon Love Stinkbug];
+					return `skill ${Skill.get("Summon Love Stinkbug")}`;
 				}
 			}
 		}
 
-		if (canUse($item[Seal Tooth], false))
+		if (canUse$3(Item.get("seal tooth"), false))
 		{
 			return "use Seal Tooth; repeat; ";
 		}
 
 		return "skill Mild Curse; repeat; ";
 	}
-	
 	//Everfull Dart Holder
-	if(have_equipped($item[Everfull Dart Holster]) && get_property("_dartsLeft").to_int() > 0)
+	if (haveEquipped(Item.get("Everfull Dart Holster")) && toInt(getProperty("_dartsLeft")) > 0)
 	{
-		return useSkill(dartSkill(), false);
+		return useSkill$1(dartSkill(), false);
 	}
-	
 	// Don't risk drop forcing if we've already been beaten up twice
-	if (get_property("_edDefeats").to_int()<2)
+	if (toInt(getProperty("_edDefeats")) < 2)
 	{
-		if(wantToForceDrop(enemy))
+		if (wantToForceDrop(enemy))
 		{
-			boolean polarVortexAvailable = canUse($skill[Fire Extinguisher: Polar Vortex], false) && auto_fireExtinguisherCharges() > 10;
-			boolean mildEvilAvailable = canUse($skill[Perpetrate Mild Evil],false) && get_property("_mildEvilPerpetrated").to_int() < 3;
+			let polarVortexAvailable: boolean = canUse$1(Skill.get("Fire Extinguisher: Polar Vortex"), false) && auto_fireExtinguisherCharges() > 10;
+			let mildEvilAvailable: boolean = canUse$1(Skill.get("Perpetrate Mild Evil"), false) && toInt(getProperty("_mildEvilPerpetrated")) < 3;
 			// mild evil only can pick pocket. Use it before fire extinguisher
-			if(mildEvilAvailable)
+			if (mildEvilAvailable)
 			{
-				handleTracker(enemy, $skill[Perpetrate Mild Evil], "auto_otherstuff");
-				return useSkill($skill[Perpetrate Mild Evil]);	
+				handleTracker$1(enemy.toString(), Skill.get("Perpetrate Mild Evil").toString(), "auto_otherstuff");
+				return useSkill$2(Skill.get("Perpetrate Mild Evil"));
 			}
-			if(polarVortexAvailable)
+			if (polarVortexAvailable)
 			{
-				handleTracker(enemy, $skill[Fire Extinguisher: Polar Vortex], "auto_otherstuff");
-				return useSkill($skill[Fire Extinguisher: Polar Vortex]);	
+				handleTracker$1(enemy.toString(), Skill.get("Fire Extinguisher: Polar Vortex").toString(), "auto_otherstuff");
+				return useSkill$2(Skill.get("Fire Extinguisher: Polar Vortex"));
 			}
 		}
 	}
-
 	// Actually killing stuff starts here
-	if(canUse(auto_spoonCombatSkill()))
+	if (canUse$2(auto_spoonCombatSkill()))
 	{
-		return useSkill(auto_spoonCombatSkill());
+		return useSkill$2(auto_spoonCombatSkill());
 	}
-    
-	if (my_location() == $location[The Secret Government Laboratory] && canUse($skill[Roar of the Lion], false))
+
+	if (myLocation() === Location.get("The Secret Government Laboratory") && canUse$1(Skill.get("Roar of the Lion"), false))
 	{
-		if (canUse($skill[Storm Of The Scarab], false) && my_buffedstat($stat[Mysticality]) >= 60)
+		if (canUse$1(Skill.get("Storm of the Scarab"), false) && myBuffedstat(Stat.get("Mysticality")) >= 60)
 		{
-			return useSkill($skill[Storm Of The Scarab], false);
+			return useSkill$1(Skill.get("Storm of the Scarab"), false);
 		}
-		return useSkill($skill[Roar Of The Lion], false);
+		return useSkill$1(Skill.get("Roar of the Lion"), false);
 	}
 
-	if ($locations[Pirates of the Garbage Barges, The SMOOCH Army HQ, VYKEA] contains my_location() && canUse($skill[Storm of the Scarab], false))
+	if (Location.get(["Pirates of the Garbage Barges", "The SMOOCH Army HQ", "VYKEA"]).includes(myLocation()) && canUse$1(Skill.get("Storm of the Scarab"), false))
 	{
-		return useSkill($skill[Storm Of The Scarab], false);
+		return useSkill$1(Skill.get("Storm of the Scarab"), false);
 	}
 
-	if ($locations[The Hippy Camp, The Outskirts Of Cobb\'s Knob, The Spooky Forest, The Batrat and Ratbat Burrow, The Boss Bat\'s Lair, Cobb\'s Knob Harem] contains my_location() && canUse($skill[Fist Of The Mummy], false))
+	if (Location.get(["The Hippy Camp", "The Outskirts of Cobb's Knob", "The Spooky Forest", "The Batrat and Ratbat Burrow", "The Boss Bat's Lair", "Cobb's Knob Harem"]).includes(myLocation()) && canUse$1(Skill.get("Fist of the Mummy"), false))
 	{
-		return useSkill($skill[Fist Of The Mummy], false);
+		return useSkill$1(Skill.get("Fist of the Mummy"), false);
 	}
 
-	int fightStat = my_buffedstat(weapon_type(equipped_item($slot[weapon]))) - 20;
-	if((fightStat > monster_defense()) && (round < 20) && canSurvive(1.1) && (get_property("auto_edStatus") == "UNDYING!"))
+	let fightStat: number = myBuffedstat(weaponType(equippedItem(Slot.get("weapon")))) - 20;
+	if (fightStat > monsterDefense() && round_1 < 20 && canSurvive$1(1.1) && getProperty("auto_edStatus") === "UNDYING!")
 	{
 		return "attack with weapon";
 	}
 
-	if (canUse($skill[Cowboy Kick]))
+	if (canUse$2(Skill.get("Cowboy Kick")))
 	{
-		return useSkill($skill[Cowboy Kick]);
+		return useSkill$2(Skill.get("Cowboy Kick"));
 	}
 
-	if (canUse($item[Ice-Cold Cloaca Zero]) && my_mp() < 15 && my_maxmp() > 200)
+	if (canUse$4(Item.get("ice-cold Cloaca Zero")) && myMp() < 15 && myMaxmp() > 200)
 	{
-		return useItem($item[Ice-Cold Cloaca Zero]);
+		return useItem$1(Item.get("ice-cold Cloaca Zero"));
 	}
 
-	if (canUse($skill[Storm Of The Scarab], false) && my_buffedstat($stat[Mysticality]) > 35)
+	if (canUse$1(Skill.get("Storm of the Scarab"), false) && myBuffedstat(Stat.get("Mysticality")) > 35)
 	{
-		return useSkill($skill[Storm Of The Scarab], false);
+		return useSkill$1(Skill.get("Storm of the Scarab"), false);
 	}
 
-	if((enemy.physical_resistance >= 100) || (round >= 25) || canSurvive(1.25))
+	if (enemy.physicalResistance >= 100 || round_1 >= 25 || canSurvive$1(1.25))
 	{
-		if (canUse($skill[Fist Of The Mummy], false))
+		if (canUse$1(Skill.get("Fist of the Mummy"), false))
 		{
-			return useSkill($skill[Fist Of The Mummy], false);
+			return useSkill$1(Skill.get("Fist of the Mummy"), false);
 		}
 	}
 
-	if (my_mp() < mp_cost($skill[Storm Of The Scarab]))
+	if (myMp() < mpCost(Skill.get("Storm of the Scarab")))
 	{
-		foreach it in $items[Holy Spring Water, Spirit Beer, Sacramental Wine]
+		for (let it of Item.get(["holy spring water", "spirit beer", "sacramental wine"]))
 		{
-			if(canUse(it))
+			if (canUse$4(it))
 			{
 				return useItem(it, false);
 			}
 		}
 	}
 
-	if(round >= 29)
+	if (round_1 >= 29)
 	{
 		auto_log_error("About to UNDYING too much but have no other combat resolution. Please report this.");
 	}
 
-	if((fightStat > monster_defense()) && (round < 20) && canSurvive(1.1) && (get_property("auto_edStatus") == "dying"))
+	if (fightStat > monsterDefense() && round_1 < 20 && canSurvive$1(1.1) && getProperty("auto_edStatus") === "dying")
 	{
-		auto_log_warning("Attacking with weapon because we don't have enough MP. Expected damage: " + expected_damage() + ", current hp: " + my_hp(), "red");
+		auto_log_warning(`Attacking with weapon because we don't have enough MP. Expected damage: ${expectedDamage()}, current hp: ${myHp()}`, "red");
 		return "attack with weapon";
 	}
 
-	return useSkill($skill[Mild Curse], false);
+	return useSkill$1(Skill.get("Mild Curse"), false);
 }

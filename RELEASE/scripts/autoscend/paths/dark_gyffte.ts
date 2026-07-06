@@ -1,194 +1,201 @@
-boolean in_darkGyffte()
+import { Coinmaster, Effect, Item, Location, Monster, Path, Phylum, Skill, Stat, availableAmount, cliExecute, craft, creatableAmount, create, getMonsters, getProperty, haveEffect, haveSkill, hpCost, isAccessible, itemAmount, min, monsterPhylum, mpCost, myAdventures, myBasestat, myClass, myHash, myHp, myLevel, myLocation, myPath, sell, setProperty, toInt, toMonster, toSkill, useSkill, visitUrl } from "kolmafia";
+import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
+import { autoChew, autoDrink, autoEat, fullness_left, inebriety_left, spleen_left } from "../auto_consume";
+import { possessOutfit$1 } from "../auto_equipment";
+import { auto_banishesUsedAt, auto_have_skill, auto_log_error, auto_log_info, auto_log_warning, auto_wantToBanish, banishedMonsters, isFreeMonster$1, total_items } from "../auto_util";
+import { auto_warSide } from "../quests/level_12";
+
+//Defined in autoscend/paths/dark_gyffte.ash
+export function in_darkGyffte(): boolean
 {
-	return my_path() == $path[Dark Gyffte];
+	return myPath() === Path.get("Dark Gyffte");
 }
 
-void bat_initializeSettings()
+export function bat_initializeSettings(): void
 {
-	if(in_darkGyffte())
+	if (in_darkGyffte())
 	{
-		set_property("auto_getSteelOrgan", false);
-		set_property("auto_grimstoneFancyOilPainting", false);
-		set_property("auto_paranoia", 10);
-		set_property("auto_wandOfNagamar", false);
-		set_property("auto_bat_desiredForm", "");
+		setProperty("auto_getSteelOrgan", false.toString());
+		setProperty("auto_grimstoneFancyOilPainting", false.toString());
+		setProperty("auto_paranoia", (10).toString());
+		setProperty("auto_wandOfNagamar", false.toString());
+		setProperty("auto_bat_desiredForm", "");
 	}
 }
-
 // The following functions set the desired form.
 // The pre-adventure handler adjusts our actual form to match.
 // This is done to avoid getting stuck in an incorrect form,
 // or wasting HP switching back and forth.
 
-boolean bat_wantHowl(location loc)
+export function bat_wantHowl(loc: Location): boolean
 {
-	if(!auto_have_skill($skill[Baleful Howl]))
+	if (!auto_have_skill(Skill.get("Baleful Howl")))
 	{
 		return false;
 	}
-	if(auto_banishesUsedAt(loc) contains "baleful howl")
+	if (auto_banishesUsedAt(loc).has("baleful howl"))
 	{
 		return false;
 	}
-	if(get_property("_balefulHowlUses").to_int() >= 10)
+	if (toInt(getProperty("_balefulHowlUses")) >= 10)
 	{
 		return false;
 	}
-	if(my_hp() <= hp_cost($skill[Baleful Howl]))
+	if (myHp() <= hpCost(Skill.get("Baleful Howl")))
 	{
 		// DG doesn't heal in pre-adv, so current HP is how much we will have when we adv
 		return false;
 	}
-	int[monster] banished = banishedMonsters();
-	monster[int] monsters = get_monsters(loc);
-	foreach i in monsters
+	let banished: Map<Monster, number> = banishedMonsters();
+	let monsters: Map<number, Monster> = new Map(getMonsters(loc).map((_v, _i) => [_i, _v]));
+	for (let i of monsters.keys())
 	{
-		if (!(banished contains monsters[i]) && (auto_wantToBanish(monsters[i], loc))) {
+		if (!(banished.has((monsters.get(i) ?? monsters.set(i, Monster.none).get(i)))) && auto_wantToBanish((monsters.get(i) ?? monsters.set(i, Monster.none).get(i)), loc)) {
 			return true;
 		}
 	}
 	return false;
 }
 
-boolean bat_formNone()
+export function bat_formNone(): boolean
 {
-	if(!in_darkGyffte()) return false;
-	if(get_property("auto_bat_desiredForm") != "")
+	if (!in_darkGyffte()) { return false; }
+	if (getProperty("auto_bat_desiredForm") !== "")
 	{
-		set_property("auto_bat_desiredForm", "");
+		setProperty("auto_bat_desiredForm", "");
 	}
 	return true;
 }
 
-boolean bat_formWolf(boolean speculative)
+export function bat_formWolf(speculative: boolean): boolean
 {
-	if(!in_darkGyffte()) return false;
-	set_property("auto_bat_desiredForm", "wolf");
-	return bat_switchForm($effect[Wolf Form], speculative);
+	if (!in_darkGyffte()) { return false; }
+	setProperty("auto_bat_desiredForm", "wolf");
+	return bat_switchForm(Effect.get("Wolf Form"), speculative);
 }
 
-boolean bat_formWolf()
+export function bat_formWolf$1(): boolean
 {
 	return bat_formWolf(false);
 }
 
-boolean bat_formMist(boolean speculative)
+export function bat_formMist(speculative: boolean): boolean
 {
-	if(!in_darkGyffte()) return false;
-	set_property("auto_bat_desiredForm", "mist");
-	return bat_switchForm($effect[Mist Form], speculative);
+	if (!in_darkGyffte()) { return false; }
+	setProperty("auto_bat_desiredForm", "mist");
+	return bat_switchForm(Effect.get("Mist Form"), speculative);
 }
 
-boolean bat_formMist()
+export function bat_formMist$1(): boolean
 {
 	return bat_formMist(false);
 }
 
-boolean bat_formBats(boolean speculative)
+export function bat_formBats(speculative: boolean): boolean
 {
-	if(!in_darkGyffte()) return false;
-	set_property("auto_bat_desiredForm", "bats");
-	return bat_switchForm($effect[Bats Form], speculative);
+	if (!in_darkGyffte()) { return false; }
+	setProperty("auto_bat_desiredForm", "bats");
+	return bat_switchForm(Effect.get("Bats Form"), speculative);
 }
 
-boolean bat_formBats()
+export function bat_formBats$1(): boolean
 {
 	return bat_formBats(false);
 }
 
-void bat_clearForms()
+export function bat_clearForms(): void
 {
-	foreach ef in $effects[Wolf Form, Mist Form, Bats Form]
+	for (let ef of Effect.get(["Wolf Form", "Mist Form", "Bats Form"]))
 	{
-		if (0 != have_effect(ef)) {
-			use_skill(to_skill(ef));
+		if (0 !== haveEffect(ef)) {
+			useSkill(toSkill(ef));
 		}
 	}
 }
 
-boolean bat_switchForm(effect form, boolean speculative)
+export function bat_switchForm(form: Effect, speculative: boolean): boolean
 {
-	if (0 != have_effect(form)) return true;
-	if(!have_skill(form.to_skill()))
+	if (0 !== haveEffect(form)) { return true; }
+	if (!haveSkill(toSkill(form)))
 	{
-		if(!speculative)
-			bat_clearForms();
+		if (!speculative)
+			{ bat_clearForms(); }
 		return false;
 	}
-	if (my_hp() <= 10)
+	if (myHp() <= 10)
 	{
-		if(!speculative)
-			auto_log_warning("We don't have enough HP to switch form to " + form + "!", "red");
+		if (!speculative)
+			{ auto_log_warning(`We don't have enough HP to switch form to ${form}!`, "red"); }
 		return false;
 	}
-	if(speculative)
-		return true;
-	return use_skill(1, form.to_skill());
+	if (speculative)
+		{ return true; }
+	return useSkill(1, toSkill(form));
 }
 
-boolean bat_switchForm(effect form)
+export function bat_switchForm$1(form: Effect): boolean
 {
 	return bat_switchForm(form, false);
 }
 
-boolean bat_formPreAdventure()
+export function bat_formPreAdventure(): boolean
 {
-	if(!in_darkGyffte()) return false;
+	if (!in_darkGyffte()) { return false; }
 
-	string desiredForm = get_property("auto_bat_desiredForm");
-	effect form;
-	switch(desiredForm)
+	let desiredForm: string = getProperty("auto_bat_desiredForm");
+	let form: Effect = Effect.none;
+	switch (desiredForm)
 	{
 	case "wolf":
-		return bat_switchForm($effect[Wolf Form]);
+		return bat_switchForm$1(Effect.get("Wolf Form"));
 	case "mist":
-		return bat_switchForm($effect[Mist Form]);
+		return bat_switchForm$1(Effect.get("Mist Form"));
 	case "bats":
-		return bat_switchForm($effect[Bats Form]);
+		return bat_switchForm$1(Effect.get("Bats Form"));
 	case "":
 		bat_clearForms();
 		return true;
 	default:
-		auto_log_error("auto_bat_desiredForm was set to bad value: '" + desiredForm + "'. Should be '', 'wolf', 'mist', or 'bats'.");
-		set_property("auto_bat_desiredForm", "");
+		auto_log_error(`auto_bat_desiredForm was set to bad value: '${desiredForm}'. Should be '', 'wolf', 'mist', or 'bats'.`);
+		setProperty("auto_bat_desiredForm", "");
 		return false;
 	}
 }
 
-void bat_initializeSession()
+export function bat_initializeSession(): void
 {
-	if(in_darkGyffte())
+	if (in_darkGyffte())
 	{
-		set_property("auto_mpAutoRecovery", get_property("mpAutoRecovery"));
-		set_property("auto_mpAutoRecoveryTarget", get_property("mpAutoRecoveryTarget"));
-		set_property("mpAutoRecovery", -0.05);
-		set_property("mpAutoRecoveryTarget", 0.0);
+		setProperty("auto_mpAutoRecovery", getProperty("mpAutoRecovery"));
+		setProperty("auto_mpAutoRecoveryTarget", getProperty("mpAutoRecoveryTarget"));
+		setProperty("mpAutoRecovery", (-0.05).toString());
+		setProperty("mpAutoRecoveryTarget", (0.0).toString());
 	}
 }
 
-void bat_terminateSession()
+export function bat_terminateSession(): void
 {
-	if(in_darkGyffte())
+	if (in_darkGyffte())
 	{
-		set_property("mpAutoRecovery", get_property("auto_mpAutoRecovery"));
-		set_property("auto_mpAutoRecovery", 0.0);
-		set_property("mpAutoRecoveryTarget", get_property("auto_mpAutoRecoveryTarget"));
-		set_property("auto_mpAutoRecoveryTarget", 0.0);
+		setProperty("mpAutoRecovery", getProperty("auto_mpAutoRecovery"));
+		setProperty("auto_mpAutoRecovery", (0.0).toString());
+		setProperty("mpAutoRecoveryTarget", getProperty("auto_mpAutoRecoveryTarget"));
+		setProperty("auto_mpAutoRecoveryTarget", (0.0).toString());
 	}
 }
 
-void bat_initializeDay(int day)
+export function bat_initializeDay(day: number): void
 {
-	if(!in_darkGyffte())
+	if (!in_darkGyffte())
 	{
 		return;
 	}
 
-	if(get_property("auto_day_init").to_int() < day)
+	if (toInt(getProperty("auto_day_init")) < day)
 	{
-		set_property("_auto_bat_bloodBank", 0); // 0: no blood yet, 1: base blood, 2: intimidating blood
-		set_property("auto_bat_ensorcels", 0);
-		set_property("auto_bat_soulmonster", "");
+		setProperty("_auto_bat_bloodBank", (0).toString()); // 0: no blood yet, 1: base blood, 2: intimidating blood
+		setProperty("auto_bat_ensorcels", (0).toString());
+		setProperty("auto_bat_soulmonster", "");
 		bat_tryBloodBank();
 		if (bat_shouldPickSkills(20))
 		{
@@ -197,172 +204,171 @@ void bat_initializeDay(int day)
 	}
 }
 
-int bat_maxHPCost(skill sk)
+export function bat_maxHPCost(sk: Skill): number
 {
-	switch(sk)
+	switch (sk)
 	{
-		case $skill[Baleful Howl]:
-		case $skill[Intimidating Aura]:
-		case $skill[Mist Form]:
-		case $skill[Sharp Eyes]:
+		case Skill.get("Baleful Howl"):
+		case Skill.get("Intimidating Aura"):
+		case Skill.get("Mist Form"):
+		case Skill.get("Sharp Eyes"):
 			return 30;
-		case $skill[Madness of Untold Aeons]:
+		case Skill.get("Madness of Untold Aeons"):
 			return 25;
-		case $skill[Crush]:
-		case $skill[Wolf Form]:
-		case $skill[Blood Spike]:
-		case $skill[Blood Cloak]:
-		case $skill[Macabre Cunning]:
-		case $skill[Piercing Gaze]:
-		case $skill[Ensorcel]:
-		case $skill[Flock of Bats Form]:
+		case Skill.get("Crush"):
+		case Skill.get("Wolf Form"):
+		case Skill.get("Blood Spike"):
+		case Skill.get("Blood Cloak"):
+		case Skill.get("Macabre Cunning"):
+		case Skill.get("Piercing Gaze"):
+		case Skill.get("Ensorcel"):
+		case Skill.get("Flock of Bats Form"):
 			return 20;
-		case $skill[Ceaseless Snarl]:
-		case $skill[Preternatural Strength]:
-		case $skill[Blood Chains]:
-		case $skill[Sanguine Magnetism]:
-		case $skill[Perceive Soul]:
-		case $skill[Sinister Charm]:
-		case $skill[Batlike Reflexes]:
-		case $skill[Spot Weakness]:
+		case Skill.get("Ceaseless Snarl"):
+		case Skill.get("Preternatural Strength"):
+		case Skill.get("Blood Chains"):
+		case Skill.get("Sanguine Magnetism"):
+		case Skill.get("Perceive Soul"):
+		case Skill.get("Sinister Charm"):
+		case Skill.get("Batlike Reflexes"):
+		case Skill.get("Spot Weakness"):
 			return 15;
-		case $skill[Savage Bite]:
-		case $skill[[24017]Ferocity]:
-		case $skill[Chill of the Tomb]:
-		case $skill[Spectral Awareness]:
+		case Skill.get("Savage Bite"):
+		case Skill.get("[24017]Ferocity"):
+		case Skill.get("Chill of the Tomb"):
+		case Skill.get("Spectral Awareness"):
 			return 10;
-		case $skill[Flesh Scent]:
-		case $skill[Hypnotic Eyes]:
+		case Skill.get("Flesh Scent"):
+		case Skill.get("Hypnotic Eyes"):
 			return 5;
 		default:
 			return 0;
 	}
 }
 
-int bat_baseHP()
+export function bat_baseHP(): number
 {
-	return 20 * min(23, get_property("darkGyfftePoints").to_int()) + my_basestat($stat[Muscle]) + 20;
+	return 20 * min(23, toInt(getProperty("darkGyfftePoints"))) + myBasestat(Stat.get("Muscle")) + 20;
 }
 
-int bat_remainingBaseHP()
+export function bat_remainingBaseHP(): number
 {
-	int baseHP = bat_baseHP();
-	foreach sk in $skills[]
+	let baseHP: number = bat_baseHP();
+	for (let sk of Skill.get(["Liver of Steel", "Chronic Indigestion", "The Old Old Smile of Mr. A.", "Arse Shoot", "Stomach of Steel", "Spleen of Steel", "Powers of Observatiogn", "Gnefarious Pickpocketing", "Torso Awareness", "Gnomish Hardigness", "Cosmic Ugnderstanding", "CLEESH", "Transcendent Olfaction", "Really Expensive Jewelrycrafting", "Lust", "Gluttony", "Greed", "Sloth", "Wrath", "Envy", "Pride", "Awesome Balls of Fire", "Conjure Relaxing Campfire", "Snowclone", "Maximum Chill", "Eggsplosion", "Mudbath", "Grease Lightning", "Inappropriate Backrub", "Natural Born Scrabbler", "Thrift and Grift", "Abs of Tin", "Marginally Insane", "Raise Backup Dancer", "Creepy Lullaby", "Rainbow Gravitation", "Vent Rage Gland", "Slimy Sinews", "Slimy Synapses", "Slimy Shoulders", "Gothy Handwave", "Break It On Down", "Pop and Lock It", "Run Like the Wind", "Summon Crimbo Candy", "Unaccompanied Miner", "Volcanometeor Showeruption", "Wassail", "Toynado", "Fashionably Late", "Executive Narcolepsy", "Lunch Break", "Offensive Joke", "Managerial Manipulation", "Natural Born Skeleton Killer", "Miyagi Massage", "Salamander Kata", "Flying Fire Fist", "Stinkpalm", "Seven-Finger Strike", "Knuckle Sandwich", "Chilled Monkey Brain Technique", "Drunken Baby Style", "Worldpunch", "Zendo Kobushi Kancho", "Master of the Surprising Fist", "Summon &quot;Boner Battalion&quot;", "Torment Plant", "Pinch Ghost", "Tattle", "Thick-Skinned", "Chip on your Shoulder", "Request Sandwich", "Frigidalmatian", "Silent Slam", "Silent Squirt", "Silent Slice", "Walberg's Dim Bulb", "Singer's Faithful Ocelot", "Drescher's Annoying Noise", "Deep Dark Visions", "Dog Tired", "Club Earth", "Carbohydrate Cudgel", "Splattersmash", "Grab a Cold One", "Song of the North", "Turtleini", "Sauceshell", "Conspiratorial Whispers", "Song of Slowness", "Spaghetti Breakfast", "Shadow Noodles", "Song of Starch", "Splashdance", "Song of Sauce", "Song of Bravado", "Summon Annoyance", "Shrap", "Psychokinetic Hug", "Unoffendable", "Grease Up", "Sloppy Secrets", "Alien Source Code", "Hollow Leg", "Belch The Rainbow", "Pirate Bellow", "Hypersane", "Intimidating Mien", "Summon Holiday Fun!", "Rapid Prototyping", "Mathematical Precision", "Ruthless Efficiency", "Summon Carrot", "Speluck", "Olfactory Burnout", "Garbage Nova", "Dinsey Operations Expert", "Rotten Memories", "Bear Essence", "Summon Kokomo Resort Pass", "Healing Salve", "Dark Ritual", "[138]Lightning Bolt", "Giant Growth", "Ancestral Recall", "Asbestos Heart", "Pyromania", "Firegate", "Calculate the Universe", "Perfect Freeze", "Refusal to Freeze", "Beardfreeze", "Frost Bite", "Shattering Punch", "Snokebomb", "Shivering Monkey Technique", "Communism!", "Bow-Legged Swagger", "Bend Hell", "Steely-Eyed Squint", "Shoot", "Brain Games", "20/20 Vision", "Astute Angler", "Eldritch Intellect", "Licorice Rope", "Gingerbread Mob Hit", "Fifteen Minutes of Flame", "Ceci N'Est Pas Un Chapeau", "Sweet Synthesis", "Stack Lumps", "Evoke Eldritch Horror", "Quantum Movement", "5-D Earning Potential", "Object Quasi-Permanence", "Disintegrate", "Incredible Self-Esteem", "Eternal Flame", "Meteor Lore", "Expert Corner-Cutter", "Budget Conscious", "Drinking to Drink", "Experience Safari", "Army of Toddlers", "Carol of the Bulls", "Carol of the Hells", "Carol of the Thrills", "Tiki Mixology", "Prevent Scurvy and Sobriety", "Implode Universe", "The Spirit of Taking", "Visit your Favorite Bird", "Drippy Eye-Sprout", "Drippy Eye-Stone", "Drippy Eye-Beetle", "Always Never Not Guzzling", "Lock Picking", "Comprehensive Cartography", "Long Winter's Nap", "Bowl Full of Jelly", "Ashes and Soot", "Eye and a Twist", "Dimples, How Merry!", "Chubby and Plump", "Emotionally Chipped", "Dead Nostrils", "Ancient Crymbo Lore", "Crimbo Training: First Aid Technician", "Crimbo Training: Passenger Greeter", "Crimbo Training: Concierge", "Crimbo Training: Track Switcher", "Crimbo Training: Bartender", "Crimbo Training:  Waiter", "Crimbo Training: Coal Taster", "Crimbo Training: Dessert Steward", "Crimbo Training: Night Watchman", "Crimbo Training: Sanitation Consultant", "Crimbo Training: Graffiti Censor", "Cryptobotanist", "Insectologist", "Psychogeologist", "Replica Emotionally Chipped", "Secret Door Awareness", "Perpetrate Mild Evil", "Chitinous Soul", "Just the Facts", "Elf Guard Cooking", "Old-School Cocktailcrafting", "Elf Guard Extortion Techniques", "Fruit Recognition", "Elf Guard Relaxation Techniques", "Too Cool", "Attract Snakes", "Hide From Seekers", "Reindeer Games", "Master Egg Hunter", "Holiday Multitasking", "SLEEP(5)", "OVERCLOCK(10)", "STATS+++", "Generate Irony", "Holiday Burial Knowledge", "Let's Beat Up This Drunken Sailor", "I'm Smarter Than a Drunken Sailor", "Look At That Drunken Sailor Dance", "Who's Going to Pay This Drunken Sailor?", "Only Dogs Love a Drunken Sailor", "Seal Clubbing Frenzy", "Thrust-Smack", "Lunge Smack", "Lunging Thrust-Smack", "Super-Advanced Meatsmithing", "Blubber Up", "Fortitude of the Muskox", "Audacity of the Otter", "Tongue of the Walrus", "Hide of the Walrus", "Claws of the Walrus", "Batter Up!", "Rage of the Reindeer", "Pulverize", "Double-Fisted Skull Smashing", "Northern Exposure", "Musk of the Moose", "Snarl of the Timberwolf", "Clobber", "Harpoon!", "Holiday Weight Gain", "Iron Palm Technique", "Hibernate", "Cold Shoulder", "Wrath of the Wolverine", "Buoyancy of the Beluga", "Scowl of the Auk", "Furious Wallop", "Club Foot", "Seething of the Snow Leopard", "Ire of the Orca", "Thirst of the Weasel", "Cavalcade of Fury", "Northern Explosion", "Precision of the Penguin", "Pride of the Puffin", "Silent Hunter", "Get Big", "Blood Frenzy", "Patience of the Tortoise", "Headbutt", "Skin of the Leatherback", "Shieldbutt", "Armorcraftiness", "Ghostly Shell", "Reptilian Fortitude", "Empathy of the Newt", "Tenacity of the Snapper", "Wisdom of the Elder Tortoises", "Astral Shell", "Amphibian Sympathy", "Kneebutt", "Cold-Blooded Fearlessness", "Hero of the Half-Shell", "Tao of the Terrapin", "Spectral Snapper", "Toss", "Summon Leviatuga", "Jingle Bells", "Curiosity of Br'er Tarrypin", "Spirit Vacation", "Shell Up", "Stiff Upper Lip", "Blessing of the War Snapper", "Spiky Shell", "Spirit Snap", "Blessing of She-Who-Was", "Butts of Steel", "Testudinal Teachings", "Pizza Lover", "Blessing of the Storm Tortoise", "The Long View", "Spirit Boon", "Patient Smile", "Turtle Power", "Quiet Determination", "Gallapagosian Mating Call", "Blood Bond", "Manicotti Meditation", "Ravioli Shurikens", "Entangling Noodles", "Cannelloni Cannon", "Pastamastery", "Stuffed Mortar Shell", "Weapon of the Pastalord", "Lasagna Bandages", "Leash of Linguini", "Spirit of Rigatoni", "Cannelloni Cocoon", "Spirit of Ravioli", "Springy Fusilli", "Tolerance of the Kitchen", "Flavour of Magic", "Transcendental Noodlecraft", "Fearful Fettucini", "Spaghetti Spear", "Tempuramancy", "Candyblast", "Stringozzi Serpent", "Canticle of Carboloading", "Utensil Twist", "Transcendent Al Dente", "Bind Vampieroghi", "Arched Eyebrow of the Archmage", "Bind Vermincelli", "Bringing Up the Rear", "Bind Angel Hair Wisp", "Shield of the Pastalord", "Bind Undead Elbow Macaroni", "Thrall Unit Tactics", "Bind Penne Dreadful", "Subtle and Quick to Anger", "Bind Lasagmbie", "Wizard Squint", "Bind Spice Ghost", "Bind Spaghetti Elemental", "Quiet Judgement", "Inscrutable Gaze", "Blood Bucatini", "Sauce Contemplation", "Stream of Sauce", "Expert Panhandling", "Saucestorm", "Advanced Saucecrafting", "Elemental Saucesphere", "Jalape&ntilde;o Saucesphere", "Wave of Sauce", "Intrinsic Spiciness", "Master Saucier", "Saucegeyser", "Saucy Salve", "Impetuous Sauciness", "Diminished Gag Reflex", "Irrepressible Spunk", "The Way of Sauce", "Scarysauce", "Salsaball", "Deep Saucery", "Surge of Icing", "K&auml;seso&szlig;esturm", "Curse of Vichyssoise", "Simmer", "Icy Glare", "Soul Saucery", "Inner Sauce", "Curse of Marinara", "Itchy Curse Finger", "Curse of the Thousand Islands", "Saucecicle", "Antibiotic Saucesphere", "Curse of Weaksauce", "Wry Smile", "Sauce Monocle", "Blood Sugar Sauce Magic", "Saucemaven", "Silent Treatment", "Love Mixology", "Blood Bubble", "Disco Aerobics", "Disco Eye-Poke", "Nimble Fingers", "Disco Dance of Doom", "Mad Looting Skillz", "Disco Nap", "Disco Dance II: Electric Boogaloo", "Disco Fever", "Overdeveloped Sense of Self Preservation", "Adventurer of Leisure", "Disco Face Stab", "Advanced Cocktailcrafting", "Ambidextrous Funkslinging", "Heart of Polyester", "Smooth Movement", "Superhuman Cocktailcrafting", "Tango of Terror", "Suckerpunch", "Salacious Cocktailcrafting", "Stealth Mistletoe", "Kung Fu Hustler", "Deft Hands", "Disco State of Mind", "Frantic Gyrations", "That's Not a Knife", "Tricky Knifework", "Flashy Dancer", "Disco Smirk", "Disco Greed", "Knife in the Dark", "Disco Bravado", "Disco Shank", "Disco Dance 3: Back in the Habit", "Disco Inferno", "Sensitive Fingers", "Disco Leer", "Silent Knife", "Acquire Rhinestones", "Blood Blade", "Moxie of the Mariachi", "Aloysius' Antiphon of Aptitude", "The Moxious Madrigal", "Cletus's Canticle of Celerity", "The Polka of Plenty", "The Magical Mojomuscular Melody", "The Power Ballad of the Arrowsmith", "Brawnee's Anthem of Absorption", "Fat Leon's Phat Loot Lyric", "The Psalm of Pointiness", "Jackasses' Symphony of Destruction", "Stevedave's Shanty of Superiority", "The Ode to Booze", "The Sonata of Sneakiness", "Carlweather's Cantata of Confrontation", "Ur-Kel's Aria of Annoyance", "Dirge of Dreadfulness", "Gemelli's March of Testery", "The Ballad of Richie Thingfinder", "Benetton's Medley of Diversity", "Elron's Explosive Etude", "Chorale of Companionship", "Prelude of Precision", "Sing", "Donho's Bubbly Ballad", "Cringle's Curative Carol", "Inigo's Incantation of Inspiration", "Dissonant Riff", "Cadenza", "Crab Claw Technique", "Accordion Bash", "Accordion Appreciation", "Concerto de los Muertos", "Five Finger Discount", "Suspicious Gaze", "Bawdy Refrain", "Thief Among the Honorable", "Sticky Fingers", "Cone of Zydeco", "Master Accordion Master Thief", "Knowing Smile", "Mariachi Memory", "Quiet Desperation", "Paul's Passionate Pop Song", "Bram's Bloody Bagatelle", "Give In To Your Vampiric Urges", "Shake Hands", "Hot Breath", "Cold Breath", "Spooky Breath", "Stinky Breath", "Sleazy Breath", "Magic Missile", "Fire red bottle-rocket", "Fire blue bottle-rocket", "Fire orange bottle-rocket", "Fire purple bottle-rocket", "Fire black bottle-rocket", "Creepy Grin", "Start Trash Fire", "Overload Discarded Refrigerator", "Trashquake", "Zombo's Visage", "Hypnotize Hobo", "Ask Richard for a Bandage", "Ask Richard for a Grenade", "Ask Richard to Rough the Hobo Up a Bit", "Summon Mayfly Swarm", "Get a You-Eye View", "Vicious Talon Slash", "All-You-Can-Beat Wing Buffet", "Tunnel Upwards", "Tunnel Downwards", "Rise From Your Ashes", "Antarctic Flap", "The Statue Treatment", "Feast on Carrion", "Give Your Opponent &quot;The Bird&quot;", "Ask the hobo for a drink", "Ask the hobo for something to eat", "Ask the hobo for some violence", "Ask the hobo to tell you a joke", "Ask the hobo to dance for you", "Summon hobo underling", "Rouse Sapling", "Spray Sap", "Put Down Roots", "Fire off a Roman Candle", "Spring Raindrop Attack", "Summer Siesta", "Falling Leaf Whirlwind", "Winter's Bite Technique", "The 17 Cuts", "Recite 'The Spirit of Crimbo'", "Disarm", "Entangle", "Strangle", "Consume Burrowgrub", "Play an Accordion Solo", "Play a Guitar Solo", "Play a Drum Solo", "Play a Flute Solo", "Furious Cleave", "Mighty Shout", "Open the Bag o' Tricks", "Point at your opponent", "Apprivoisez la tortue", "Ball Bust", "Ball Sweat", "Ball Sack", "Net Gain", "Net Loss", "Net Neutrality", "Blade Sling", "Blade Roller", "Blade Runner", "[7094]Static Shock", "Give Your Opponent the Stinkeye", "Bashing Slam Smash", "Turtle of Seven Tails", "Noodles of Fire", "Saucemageddon", "Funk Bluegrass Fusion", "Extreme High Note", "Goldensh&ouml;wer", "Shoot Web", "Wrath of the Volcano God", "Wrath of the Lightning God", "Wrath of the Trickster God", "Spew Poison", "Fire a badly romantic arrow", "Fire a boxing-glove arrow", "Fire a poison arrow", "Fire a fingertrap arrow", "Nuclear Breath", "Squeeze Stress Ball", "Throw Shield", "Release the Boots", "Feed", "Siphon Spirits", "Swirl Cloak", "Quick Attack", "Rive Armor", "Brutal Strike", "First Aid", "Firebolt", "Chillblain", "Forceblast", "Vampiric Tendrils", "Draw New Tiles", "Run Away", "Kodiak Moment", "Grizzly Scene", "Bear-Backrub", "Bear-ly Legal", "Bear Hug", "I Can Bearly Hear You Over the Applause", "Unleash Nanites", "Air Blast", "Haggis Kick", "Play Hog Fiddle", "Uni-Gore", "Rage Flame", "Doubt Shackles", "Fear Vapor", "Tear Wave", "Fire Death Ray", "Stomp Ass", "Brand", "Violent Gaze", "Mosh", "Chilling Grip", "[7156]Static Shock", "Hateful Gaze", "Tighten Girdle", "Hide Behind a Tree", "Dive Into a Puddle", "Hide Under a Rock", "Throw a Mr. Card", "Hammer Ghost", "Fire Rocket", "Great Slash", "Get a Good Whiff of This Guy", "Blinding Flash", "Wink at", "Talk About Politics", "Pocket Crumbs", "Air Dirty Laundry", "Steal Accordion", "Rage of the War Snapper", "Voice of She-Who-Was", "Will of the Storm Tortoise", "Spirit of Cayenne", "Spirit of Peppermint", "Spirit of Garlic", "Spirit of Wormwood", "Spirit of Bacon Grease", "Spirit of Nothing", "Soul Bubble", "Soul Finger", "Soul Blaze", "Soul Food", "Soul Rotation", "Soul Funk", "Dismiss Pasta Thrall", "Spray Hot Grease", "Huff", "Puff", "Blow House Down", "Hot Blow", "Cold Blow", "Stinky Blow", "Spooky Blow", "&quot;Blow&quot;", "Throw Frostball", "Blow Wolf Whistle", "Unload Tommy Gun", "Mug for the Audience", "Pull Voice Box String", "Shovel Hot Coal", "Unleash the Greash", "Heat Space", "Consult the Helix Fossil", "Bang! Bang! Bang! Bang!", "The Smile of Mr. A.", "Ply Reality", "Overload Teddy Bear", "Thousand-Yard Stare", "Activate Butt", "Summon Snowcones", "Summon Stickers", "Summon Sugar Sheets", "Summon Clip Art", "Summon Rad Libs", "Summon Smithsness", "Summon Candy Heart", "Summon Party Favor", "Summon Love Song", "Summon BRICKOs", "Summon Dice", "Summon Resolutions", "Summon Taffy", "Summon Hilarious Objects", "Summon Tasteful Items", "Summon Alice's Army Cards", "Summon Geeky Gifts", "Summon Confiscated Things", "Open a Big Yellow Present", "Open a Big Red Present", "LIGHT", "ZAP", "POW", "BURN", "LUBE", "Throw Skull", "Throw Rock", "Use Rope", "Throw Bomb", "Throw Pot", "Throw Ten Bombs", "Throw Torch", "Summon Love Mosquito", "Summon Love Stinkbug", "Summon Love Gnats", "Summon Love Scarabs", "Tell a Skeleton What To Do", "Tell This Skeleton What To Do", "Fire Sewage Pistol", "Propose To Your Opponent", "Spit Fireballs", "Toggle Optimality", "Bat-Punch", "Bat-Kick", "Bat-oomerang", "Bat-Jute", "Bat-o-mite", "Ultracoagulator", "Kickball", "Bat-Glue", "Bat-Bearing", "Use Bat-Aid", "Fire the Jokester's Gun", "Adjust the Jokester's Wig", "Adjust the Jokester's Pants", "Cowboy Kick", "Absorb Cowrruption", "Science! Fight with Medicine", "Science! Fight with Rational Thought", "Science!  Fight with Internet Debate", "Extract", "Digitize", "Compress", "Duplicate", "Portscan", "Turbo", "Shoot Ghost", "Trap Ghost", "Censorious Lecture", "Extract Jelly", "Breathe Out", "EXTERMINATE SPANT", "KGB tranquilizer dart", "Asdon Martin: Missile Launcher", "Asdon Martin: Bean Bag Cannon", "Asdon Martin: Spring-Loaded Front Bumper", "Micrometeorite", "Macrometeorite", "Meteor Shower", "A New Habit", "Hugs and Kisses!", "Show them your ring", "Unleash Disco Pudge", "Sing Along", "Swap Mask", "Party Crash", "Paint Job", "Throw Latte on Opponent", "Offer Latte to Opponent", "Gulp Latte", "Otoscope", "Reflex Hammer", "Chest X-Ray", "Become a Wolf", "Become a Cloud of Mist", "Become a Bat", "Use the Force", "Dragoon Platoon", "Spittoon Monsoon", "Festoon Buffoon", "Beach Combo", "deliver your thesis!", "lecture on velocity", "lecture on mass", "lecture on relativity", "Detect Weakness", "Unleash Terra Cotta Army", "Paraffin Prism", "Seek out a Bird", "CHEAT CODE: Invisible Avatar", "CHEAT CODE: Triple Size", "CHEAT CODE: Replace Enemy", "CHEAT CODE: Shrink Enemy", "Hammer Smash", "[7329]Hammer Throw", "[7330]Ultra Smash", "Fireball Toss", "[7332]Juggle Fireballs", "[7333]Fireball Barrage", "Jump Attack", "[7335]Spin Jump", "[7336]Multi-Bounce", "Plumber Jump", "Drip Blast", "%fn, spit on them!", "%fn, spit on me!", "Disarming Thrust", "Barrage of Tears", "Poison Dart", "Map the Monsters", "Smooch of the Daywalker", "Slay the Dead", "Unleash the Devil's Kiss", "Deploy Robo-Handcuffs", "Blow a Robo-Kiss", "Precision Shot", "Feel Pride", "Feel Excitement", "Feel Hatred", "Feel Lonely", "Feel Nervous", "Feel Envy", "Feel Disappointed", "Feel Lost", "Feel Nostalgic", "Feel Peaceful", "Feel Superior", "Swing Pound-O-Tron", "Shoot Pea", "Crotch Burn", "Junk Blast", "Tesla Blast", "Snipe", "Junk Mace Smash", "Prod", "Solenoid Slam", "Blow Snow", "Throw Flame", "Shoot Grease", "Shocking Lick", "Back-Up to your Last Enemy", "Show your boring familiar pictures", "B. L. A. R. T. Spray (medium)", "B. L. A. R. T. Spray (wide)", "B. L. A. R. T. Spray (narrow)", "Fire Extinguisher: Foam 'em Up", "Fire Extinguisher: Polar Vortex", "Fire Extinguisher: Foam Yourself", "Fire Extinguisher: Blast the Area", "Fire Extinguisher: Zone Specific", "Be Gregarious", "Loofah Head-Scratch", "Loofah Lei Lasso", "Loofah Hosenzittern", "Loofah Stew", "Loofah Leglifts", "Loofah Lava", "Flagellate", "Flagflog", "Flagstone Flap Flip", "Flagstone Fez Ritual", "Flagstone Fleece Flex", "Flagstone Foxtrot", "Bowl Backwards", "Bowl a Curveball", "Bowl Sideways", "Bowl Straight Up", "Re-Process Matter", "Meatify Matter", "Emit Matter Duplicating Drones", "Convert Matter to Protein", "Convert Matter to Energy", "Convert Matter to Pomade", "Sweat Out Some Booze", "Sweat Flick", "Sweat Flood", "Sweat Spray", "Make Sweat-Ade", "Drench Yourself in Sweat", "Sip Some Sweat", "Sweat Sip", "Snipe Pterodactyl", "Spit jurassic acid", "Launch spikolodon spikes", "Engage ultra-attractive parka mode", "Ceramic Punch", "Ceramic Bash", "Ceramic Grate", "Ceramic Boil", "Ceramic Skullgaze", "Ceramic Cenobitize", "Shadow Flame", "Monkey Slap", "Monkey Tickle", "Evil Monkey Eye", "Monkey Peace Sign", "Monkey Point", "Monkey Punch", "Cincho: Dispense Salt and Lime", "Cincho: Party Soundtrack", "Cincho: Fiesta Exit", "Cincho: Projectile Piñata", "Cincho: Party Foul", "Cincho: Confetti Extravaganza", "Do a Kickflip", "Do a Method!", "Do an epic McTwist!", "Douse Foe", "%fn, let's pledge allegiance to a Zone", "%fn, fire a Red, White and Blue Blast", "%fn, Release the Patriotic Screech!", "Aug. 1st: Mountain Climbing Day!", "Aug. 2nd: Find an Eleven-Leaf Clover Day", "Aug. 3rd: Watermelon Day!", "Aug. 4th: Water Balloon Day!", "Aug. 5th: Oyster Day!", "Aug. 6th: Fresh Breath Day!", "Aug. 7th: Lighthouse Day!", "Aug. 8th: Cat Day!", "Aug. 9th: Hand Holding Day!", "Aug. 10th: World Lion Day!", "Aug. 11th: Presidential Joke Day!", "Aug. 12th: Elephant Day!", "Aug. 13th: Left/Off Hander's Day!", "Aug. 14th: Financial Awareness  Day!", "Aug. 15th: Relaxation Day!", "Aug. 16th: Roller Coaster Day!", "Aug. 17th: Thriftshop Day!", "Aug. 18th: Serendipity Day!", "Aug. 19th: Honey Bee Awareness Day!", "Aug. 20th: Mosquito Day!", "Aug. 21st: Spumoni Day!", "Aug. 22nd: Tooth Fairy Day!", "Aug. 23rd: Ride the Wind Day!", "Aug. 24th: Waffle Day!", "Aug. 25th: Banana Split Day!", "Aug. 26th: Toilet Paper Day!", "Aug. 27th: Just Because Day!", "Aug. 28th: Race Your Mouse Day!", "Aug. 29th: More Herbs, Less Salt  Day!", "Aug. 30th: Beach Day!", "Aug. 31st: Cabernet Sauvignon  Day!", "Roar like a Lion", "Hold Hands", "Recall Facts: Monster Habitats", "Recall Facts: %phylum Circadian Rhythms", "Toast your enemy", "Surprisingly Sweet Slash", "Surprisingly Sweet Stab", "The Old One-Two (Kick)", "Peppermint Squirt", "Whale Oil Splat", "Shoot, Gunwale Whalegun, Shoot!", "%fn, lay an egg", "Moss Mugging", "Megaphone Whisper", "Soul Genuflection", "Drop Mantle", "Brandish Moss Medal", "Spring Away", "Spring Kick", "Spring Growth Spurt", "Rend", "Slaughter", "Bite", "Kick", "Hunt", "[7510]Punt", "Howl", "Advanced Research", "Darts: Throw at %part1", "Darts: Throw at %part2", "Darts: Throw at %part3", "Darts: Throw at %part4", "Darts: Throw at %part5", "Darts: Throw at %part6", "Darts: Throw at %part7", "Darts: Throw at %part8", "Darts: Aim for the Bullseye", "Blow the Red Candle!", "Blow the Yellow Candle!", "Blow the Blue Candle!", "Blow the Green Candle!", "Blow the Purple Candle!", "Tear Away your Pants!", "Rest upside down", "Ask %fn to go down in flames", "Swoop like a Bat", "Summon Cauldron of Bats", "Assert your Authority", "Check for photo booth supplies", "Iron Tricorn Headbutt", "Throw Military Orb", "Place your hat on their head", "Egg the face", "McHugeLarge Slash", "McHugeLarge Stab", "McHugeLarge Avalanche", "McHugeLarge Ski Plow", "Throw Cyber Rock", "Brute Force Hammer", "Inject Malware", "Encrypted Shuriken", "Refresh HP", "Launch Logic Grenade", "Deploy Glitched Malware", "Pull down your crepe paper phrygian cap", "Look through your crepe paper pie clip", "Play with your crepe paper puzzle", "Leave nothing to the imagination", "Embrace polka", "Thrust your geofencing rapier", "Drink The Milk of %n Kindness", "Drink The Milk of %n Cruelty", "Left %n Punch", "Right %n Punch", "Left %n Kick", "Right %n Kick", "Punch Out your Foe", "Create an Afterimage", "Beret Blast", "Beret Boast", "Beret Busking", "Call in an Airstrike", "Try to Remember", "Sea *dent: Throw a Lightning Bolt", "Sea *dent: Summon a Wave", "Sea *dent: Talk to Some Fish", "BCZ: Blood Geyser", "BCZ: Refracted Gaze", "BCZ: Sweat Bullets", "BCZ: Blood Bath", "BCZ: Dial it up to 11", "BCZ: Sweat Equity", "BCZ: Create Blood Thinner", "BCZ: Prepare Spinal Tapas", "BCZ: Craft a Pheromone Cocktail", "Mark Your Territory", "Prepare to reanimate your Foe", "Club 'Em Across the Battlefield", "Club 'Em Into Next Week", "Club 'Em Back in Time", "Steal Monster's Heart", "Heartstone: %kill", "Heartstone: %banish", "Heartstone: %stun", "Heartstone: %luck", "Heartstone: %pals", "Heartstone: %buff", "Wave your Pasta Wand", "%fn, kill a lot of these guys", "%fn, stop killing those guys", "Mighty Axing", "Cleave", "[11002]Ferocity", "Broadside", "Sick Pythons", "Pep Talk", "Throw Trusty", "Legendary Luck", "Song of Cockiness", "Legendary Impatience", "Bifurcating Blow", "Intimidating Bellow", "Legendary Bravado", "Song of Accompaniment", "Big Lungs", "Song of Solitude", "Good Singing Voice", "Song of Fortune", "Louder Bellows", "Song of Battle", "Banishing Shout", "Demand Sandwich", "Legendary Girth", "Song of the Glorious Lunch", "Big Boned", "Legendary Appetite", "Heroic Belch", "Hungry Eyes", "More to Love", "Barrel Chested", "Gourmand", "Laugh It Off", "Infectious Bite", "Bite Minion", "Lure Minions", "Undying Greed", "Hunter's Sprint", "Insatiable Hunger", "Devour Minions", "Indefatigable", "Skullcracker", "Neurogourmet", "Ravenous Pounce", "Distracting Minion", "Plague Claws", "Flesh Mob", "Elemental Obliviousness", "Vigor Mortis", "Virulence", "Bilious Burst", "Unyielding Flesh", "Corpse Pile", "Howl of the Alpha", "Summon Minion", "Zombie Chow", "Smash & Graaagh", "Scavenge", "Meat Shields", "Summon Horde", "His Master's Voice", "Ag-grave-ation", "Disquiet Riot", "Zombie Maestro", "Recruit Zombie", "Curdle", "Conjure Eggs", "Conjure Dough", "Boil", "Fry", "Egg Man", "Early Riser", "The Most Important Meal", "Coffeesphere", "Conjure Vegetables", "Conjure Cheese", "Slice", "Chop", "Radish Horse", "Working Lunch", "Lunch Like a King", "Oilsphere", "Conjure Meat Product", "Conjure Potato", "Bake", "Grill", "Hippotatomous", "Food Coma", "Never Late for Dinner", "Gristlesphere", "Conjure Cream", "Conjure Fruit", "Freeze", "Blend", "Cream Puff", "Nightcap", "Best Served Cold", "Chocolatesphere", "Catchphrase", "Mixologist", "Throw Party", "Fix Jukebox", "Snap Fingers", "Shake It Off", "Check Hair", "Cocktail Magic", "Make Friends", "Natural Dancer", "Rev Engine", "Born Showman", "Pop Wheelie", "Rowdy Drinker", "Peel Out", "Easy Riding", "Check Mirror", "Riding Tall", "Biker Swagger", "Flash Headlight", "Insult", "Best Dressed", "Live Fast", "Jump Shark", "[15025]Hard Drinker", "Smoke Break", "Animal Magnetism", "Brood", "Walk Away From Explosion", "Incite Riot", "Unrepentant Thief", "[zero placeholder]", "Thunder Clap", "Thundercloud", "Thunder Bird", "Thunderheart", "Thunderstrike", "Thunder Down Underwear", "Thunder Thighs", "Rain Man", "Rainy Day", "Make it Rain", "Rain Dance", "Rainbow", "Rain Coat", "Rain Delay", "Lightning Strike", "Clean-Hair Lightning", "Ball Lightning", "Sheet Lightning", "[16025]Lightning Bolt", "Lightning Rod", "Riding the Lightning", "Prayer of Seshat", "Wisdom of Thoth", "Power of Heka", "Hide of Sobek", "Blessing of Serqet", "Shelter of Shed", "Bounty of Renenutet", "Fist of the Mummy", "Howl of the Jackal", "Roar of the Lion", "Storm of the Scarab", "Purr of the Feline", "Lash of the Cobra", "Wrath of Ra", "Curse of the Marshmallow", "Curse of Indecision", "Curse of Yuck", "Curse of Heredity", "Curse of Fortune", "Curse of Vacation", "Curse of Stench", "Gift of the Cat", "Gift of the Dancer", "Gift of the Maid", "Gift of the Bodyguard", "Gift of the Scribe", "Gift of the Priest", "Gift of the Assassin", "Replacement Stomach", "Replacement Liver", "Extra Spleen", "Another Extra Spleen", "Yet Another Extra Spleen", "Still Another Extra Spleen", "Just One More Extra Spleen", "Okay Seriously, This is the Last Spleen", "Upgraded Legs", "Upgraded Arms", "Upgraded Spine", "Tougher Skin", "Armor Plating", "Bone Spikes", "Arm Blade", "Healing Scarabs", "Elemental Wards", "More Elemental Wards", "Even More Elemental Wards", "Mild Curse", "More Legs", "One-Two Punch", "Cowcall", "Pistolwhip", "Hogtie", "True Outdoorsperson", "Rugged Survivalist", "Larger Than Life", "Unleash Cowrruption", "[18008]Hard Drinker", "Walk: Cautious Prowl", "Lavafava", "Pungent Mung", "Canhandle", "Beanscreen", "Bean Runner", "Beanweaver", "Beanstorm", "Beancannon", "Prodigious Appetite", "Walk: Prideful Strut", "Snakewhip", "Fan Hammer", "Extract Oil", "Bad Medicine", "Patent Medicine", "Well-Oiled Guns", "Good Medicine", "Long Con", "Tolerant Constitution", "Walk: Leisurely Amble", "Source Punch", "Overclocked", "Bullet Time", "True Disbeliever", "Code Block", "Disarmament", "Big Guns", "Humiliating Hack", "Source Kick", "Reboot", "Restore", "Data Siphon", "Extra-Thick Skin", "Comically Oversized Fist", "Overactive Pheromones", "Dislocatable Jaw", "Aluminum Nerves", "Noodly Arms", "Self-Lubricating Feet", "Hollow Canines", "Two Right Feet", "Finger Knives", "Double-Eidetic Memory", "Ultrasonic Ululations", "Boiling Tear Ducts", "Throat Refrigerant", "Skunk Glands", "Translucent Skin", "Projectile Salivary Glands", "Mind Bullets", "Metallic Skin", "Adipose Polymers", "Extra Muscles", "Extra Brain", "Hypno-Eyes", "Backwards Knees", "Sucker Fingers", "Flappy Ears", "Magic Sweat", "Steroid Bladder", "Intracranial Eye", "Self-Combing Hair", "Bone Springs", "Magnetic Ears", "Firefly Abdomen", "Squid Glands", "Extremely Punchable Face", "Extra Gall Bladder", "Extra Kidney", "Internal Soda Machine", "Gelatinous Reconstruction", "Dilatable Capillaries", "Upper Hypothalamus", "Thick Dermis", "High Water Content", "Sweat Glands", "Constrictable Capillaries", "Lower Hypothalamus", "Shiver Reflex", "Chatterable Teeth", "Subcutaneous Fat", "Nose Hair", "Pinchable Nose", "Nasal Lamina Propria", "Nasal Septum", "Olfactory Cortex", "Left Eyelid", "Right Eyelid", "Hyperactive Amygdala", "Adrenal Gland", "Bravery Gland", "Sense of Decorum", "Blush Reflex", "Sense of Propriety", "Politeness", "Profound Shame", "Rigid Armbones", "Rigid Legbones", "Rigid Pelvis", "Rigid Headbone", "Rigid Rib Cage", "Calluses", "Cartilage", "Spinal Discs", "Shock-Absorbing Joints", "Overalls", "Hamstrings", "Ankle Joints", "Kneecaps", "Achilles Tendons", "Anterior Cruciate Ligaments", "Work Ethic", "Basic Self-Worth", "Sense of Purpose", "Sense of Pride", "Arrogance", "Central Hypothalamus", "Rudimentary Alimentary Canal", "Stomach-Like Thing", "Small Intestine", "Large Intestine", "Lysosomes", "Mitochondria", "Ribosomes", "Vacuoles", "Golgi Apparatus", "Veins", "Arteries", "Small Left Kidney", "Oversized Right Kidney", "Beating Human Heart", "Left Brain Hemisphere", "Right Brain Hemisphere", "Parasympathetic Nervous System", "Sympathetic Nervous System", "Spinal Cord", "Left Eyeball", "Right Eyeball", "Optic Nerves", "Saccade Reflex", "Visual Cortex", "Pinky Fingers", "Ring Fingers", "Middle Fingers", "Index Fingers", "Thumbs", "The Concept of Property", "Financial Ambition", "Business Acumen", "Sense of Entitlement", "Pathological Greed", "Triceps", "Biceps", "Abdominal Muscles", "Pectoral Muscles", "Gluteus Maximus", "Object Permanence", "Abstract Reasoning", "Deductive Reasoning", "Introspection", "Algebra", "Sense of Style", "Vestibular System", "Sense of Humor", "Sense of Sarcasm", "Sunglasses", "Fingernails", "Palms", "Elbows", "Knees", "Knuckles", "Warm Smile", "Warm Heart", "Warm Blood", "Choleric Humours", "Hot Headedness", "Cool Head", "Cool Heels", "Cold Feet", "Cold Heart", "Ice Water In Your Veins", "Bad Breath", "Armpit Sweat Glands", "Armpit Hair", "Weak Esophageal Sphincter", "Thriving Gut Flora", "Sunken Cheeks", "Pallid Skin", "Dark Circles Under Your Eyes", "Vacant Stare", "Visible Skull", "Sweaty Palms", "Waxy Ears", "Oily Scalp", "Flop Sweat", "Thrustable Pelvis", "Gelatinous Punch", "Gelatinous Headbutt", "Gelatinous Kick", "Bendable Knees", "Retractable Toes", "Ink Gland", "Frown Muscles", "Anger Glands", "Powerful Vocal Chords", "Dark Feast", "Wisdom of Countless Centuries", "Savage Bite", "Crush", "Baleful Howl", "Ceaseless Snarl", "Wolf Form", "Preternatural Strength", "Flesh Scent", "[24017]Ferocity", "Intimidating Aura", "Blood Spike", "Blood Chains", "Chill of the Tomb", "Blood Cloak", "Mist Form", "Madness of Untold Aeons", "Hypnotic Eyes", "Macabre Cunning", "Sanguine Magnetism", "Piercing Gaze", "Perceive Soul", "Ensorcel", "Spectral Awareness", "Flock of Bats Form", "Sinister Charm", "Batlike Reflexes", "Sharp Eyes", "Spot Weakness", "[25001]Hammer Throw", "[25002]Ultra Smash", "[25003]Juggle Fireballs", "[25004]Fireball Barrage", "[25005]Spin Jump", "[25006]Multi-Bounce", "Power Plus", "Secret Eye", "Lucky Buckle", "Rainbow Shield", "Lucky Pin", "Lucky Brooch", "Lucky Insignia", "Health Symbol", "Pseudopod Slap", "Hardslab", "Telekinetic Murder", "Snakesmack", "Ire Proof", "Nanofur", "Autovampirism Routines", "Conifer Polymers", "Anti-Sleaze Recursion", "Microburner", "Cryocurrency", "Curses Library", "Exhaust Tubules", "Camp Subroutines", "Grey Noise", "Advanced Exo-Alloy", "Localized Vacuum", "Microweave", "Ectogenesis", "Clammy Microcilia", "Lubricant Layer", "Infernal Automata", "Cooling Tubules", "Ominous Substrate", "Secondary Fermentation", "Procgen Ribaldry", "Solid Fuel", "Autochrony", "Temporal Hyperextension", "Propagation Drive", "Financial Spreadsheets", "Phase Shift", "Piezoelectric Honk", "Overclocking", "Subatomic Hardening", "Gravitational Compression", "Hivemindedness", "Ponzi Apparatus", "Fluid Dynamics Simulation", "Nantlers", "Nanoshock", "Audioclasm", "System Sweep", "Double Nanovision", "Infinite Loop", "Photonic Shroud", "Unused Combat Selfbuff", "Steam Mycelia", "Snow-Cooling System", "Legacy Code", "AUTOEXEC.BAT", "Innuendo Circuitry", "Subatomic Tango", "Extra Innings", "Reloading", "Harried", "Temporal Bent", "Provably Efficient", "Basic Improvements", "Shifted About", "Spooky Veins", "Seven Foot Feelings", "Self-Actualized", "Tackle", "Ribald Memories", "Blasted Glutes", "Strong Back", "Overconfidence", "Anatomy Expertise", "Fancy Footwork", "Taut Hamstrings", "Ripped Triceps", "Head in the Game", "Competitive Instincts", "Matter Over Mind", "Stretch", "Ball Throw", "Noogie", "Hot Foot", "Second Wind", "Stop Hitting Yourself", "Cheerlead", "Free-For-All", "Tape Up", "[28021]Punt", "Caseus Vampirus", "Mind Over Muenster", "Subcutaneous Gouda", "Quick Wit", "Limberger Limberness", "Swiss Cunning", "Peccorino Bravado", "Wisdom of Jarlsberg", "Bleu Brilliance", "Gorgonzola's Guile", "Medical Manchego", "Fingers of Fontina", "Cheddarmor", "Parmesan Missile", "Gather Cheese-Chi", "Crack Knuckles", "Mind Melt", "Emmental Elemental", "Reality Shift", "Stilton Splatter", "Queso Fustulento", "Fondeluge", "Demoralizing Toot", "Thick Calluses", "Impeccable Timing", "Fashion Sense", "Jazz Hands", "C Sharp Eyes", "Air of Mystery", "Rhythmic Precision", "Perfect Embouchure", "Improv Muscles", "Virtuosity", "Rhythm In Your Blood", "Call For Backup", "Orchestra Strike", "Knife In The Darkness", "Venomous Riff", "Drum Roll", "Sax of Violence", "Tricky Timpani", "Grit Teeth", "Soothing Flute", "Motif", "Beef Shank", "Meat Cleaver", "Steak Through the Heart", "Act Jerky", "Stew", "Self-Tenderize", "Steak Flanks", "Nicely Marbled", "Dry-Aged", "Pork Belly", "Roastmaster", "Spicy Meatball", "Meat Cute", "Chew the Fat", "Beef Goggles", "Meat Loaf", "Meat Puppet", "Perfectly Seared", "Maillard Reaction", "Umami", "Rib Eyes", "Tender Loins", "Bacon Ray", "Meat Locker", "Wet Rub", "Dark Meat", "Ham It Up", "Steak Skirt", "It's All Gravy", "Well-Rested", "Caramelized Fat", "Chicken Fingers", "Grass-Fed"]))
 	{
 		// important that this uses have_skill and not auto_have_skill, as auto_have_skill would
 		// report incorrectly if any form intrinsics are active
-		if(have_skill(sk))
-			baseHP -= bat_maxHPCost(sk);
+		if (haveSkill(sk))
+			{ baseHP -= bat_maxHPCost(sk); }
 	}
 	return baseHP;
 }
 
-boolean[skill] bat_desiredSkills(int hpLeft)
+export function bat_desiredSkills(hpLeft: number): Map<Skill, boolean>
 {
-	boolean[skill] requirements;
-	return bat_desiredSkills(hpLeft, requirements);
+	let requirements: Map<Skill, boolean> = new Map();
+	return bat_desiredSkills$1(hpLeft, requirements);
 }
 
-boolean[skill] bat_desiredSkills(int hpLeft, boolean[skill] forcedPicks)
+export function bat_desiredSkills$1(hpLeft: number, forcedPicks: Map<Skill, boolean>): Map<Skill, boolean>
 {
-	int costSoFar = 0;
-	int baseHP = bat_baseHP();
-	boolean[skill] picks;
+	let costSoFar: number = 0;
+	let baseHP: number = bat_baseHP();
+	let picks: Map<Skill, boolean> = new Map();
 
-	if(get_property("_auto_bat_bloodBank") != "2")
+	if (getProperty("_auto_bat_bloodBank") !== "2")
 	{
-		forcedPicks[$skill[Intimidating Aura]] = true;
+		forcedPicks.set(Skill.get("Intimidating Aura"), true);
 	}
 
-	boolean addPick(skill sk)
+	function addPick(sk: Skill): boolean
 	{
-		if(picks contains sk) return true;
-		if(baseHP - costSoFar - bat_maxHPCost(sk) < hpLeft)
-			return false;
+		if (picks.has(sk)) { return true; }
+		if (baseHP - costSoFar - bat_maxHPCost(sk) < hpLeft)
+			{ return false; }
 		costSoFar += bat_maxHPCost(sk);
-		picks[sk] = true;
+		picks.set(sk, true);
 		return true;
 	}
-	foreach sk in forcedPicks
+	for (let sk of forcedPicks.keys())
 	{
 		addPick(sk);
 	}
-	foreach sk in $skills[
-		Chill of the Tomb,
-		Blood Chains,
-		Madness of Untold Aeons,
-		Sinister Charm,
-		Blood Cloak,
-		Baleful Howl,
-		Perceive Soul,
-		Hypnotic Eyes,
-		Ensorcel,
-		Sharp Eyes,
-		Batlike Reflexes,
-		Ceaseless Snarl,
-		Flock of Bats Form,
-		Mist Form,
-		Sanguine Magnetism,
-		Macabre Cunning,
-		[24017]Ferocity,
-		Flesh Scent,
-		Wolf Form,
-		Spot Weakness,
-		Preternatural Strength,
-		Savage Bite,
-		Intimidating Aura,
-		Spectral Awareness,
-		Piercing Gaze,
-		Blood Spike,
-	]
+	for (let sk of Skill.get([
+		"Chill of the Tomb",
+		"Blood Chains",
+		"Madness of Untold Aeons",
+		"Sinister Charm",
+		"Blood Cloak",
+		"Baleful Howl",
+		"Perceive Soul",
+		"Hypnotic Eyes",
+		"Ensorcel",
+		"Sharp Eyes",
+		"Batlike Reflexes",
+		"Ceaseless Snarl",
+		"Flock of Bats Form",
+		"Mist Form",
+		"Sanguine Magnetism",
+		"Macabre Cunning",
+		"[24017]Ferocity",
+		"Flesh Scent",
+		"Wolf Form",
+		"Spot Weakness",
+		"Preternatural Strength",
+		"Savage Bite",
+		"Intimidating Aura",
+		"Spectral Awareness",
+		"Piercing Gaze",
+		"Blood Spike"
+		]))
 	{
 		addPick(sk);
 	}
 	return picks;
 }
 
-void bat_reallyPickSkills(int hpLeft)
+export function bat_reallyPickSkills(hpLeft: number): void
 {
-	boolean[skill] requiredSkills;
-	bat_reallyPickSkills(hpLeft, requiredSkills);
+	let requiredSkills: Map<Skill, boolean> = new Map();
+	bat_reallyPickSkills$1(hpLeft, requiredSkills);
 }
 
-void bat_reallyPickSkills(int hpLeft, boolean[skill] requiredSkills)
+export function bat_reallyPickSkills$1(hpLeft: number, requiredSkills: Map<Skill, boolean>): void
 {
 	// Why Astral Spirit? When entering a DG run, before exiting the initial
 	// noncombat and Torpor, that's what KoLmafia thinks you are.
-	if(!in_darkGyffte() && to_string(my_class()) != "Astral Spirit")
+	if (!in_darkGyffte() && myClass().toString() !== "Astral Spirit")
 	{
 		return;
 	}
-
 	// Confirm that we're in Torpor
-	visit_url("campground.php?action=coffin");
+	visitUrl("campground.php?action=coffin");
 
-	boolean[skill] picks = bat_desiredSkills(hpLeft, requiredSkills);
-	string url = "choice.php?whichchoice=1342&option=2&pwd=" + my_hash();
-	foreach sk,_ in picks
+	let picks: Map<Skill, boolean> = bat_desiredSkills$1(hpLeft, requiredSkills);
+	let url: string = `choice.php?whichchoice=1342&option=2&pwd=${myHash()}`;
+	for (let [sk, _] of picks)
 	{
 		url += "&sk[]=";
-		url += sk.to_int() - 24000;
+		url += (toInt(sk) - 24000).toString();
 	}
-	visit_url(url);
-	visit_url("choice.php?whichchoice=1342&option=1&pwd=" + my_hash());
+	visitUrl(url);
+	visitUrl(`choice.php?whichchoice=1342&option=1&pwd=${myHash()}`);
 	// FIXME: Check that our skill-setting succeeded.
 }
 
-boolean bat_shouldPickSkills(int hpLeft)
+export function bat_shouldPickSkills(hpLeft: number): boolean
 {
-	boolean[skill] picks = bat_desiredSkills(hpLeft);
+	let picks: Map<Skill, boolean> = bat_desiredSkills(hpLeft);
 
-	foreach sk in $skills[]
+	for (let sk of Skill.get(["Liver of Steel", "Chronic Indigestion", "The Old Old Smile of Mr. A.", "Arse Shoot", "Stomach of Steel", "Spleen of Steel", "Powers of Observatiogn", "Gnefarious Pickpocketing", "Torso Awareness", "Gnomish Hardigness", "Cosmic Ugnderstanding", "CLEESH", "Transcendent Olfaction", "Really Expensive Jewelrycrafting", "Lust", "Gluttony", "Greed", "Sloth", "Wrath", "Envy", "Pride", "Awesome Balls of Fire", "Conjure Relaxing Campfire", "Snowclone", "Maximum Chill", "Eggsplosion", "Mudbath", "Grease Lightning", "Inappropriate Backrub", "Natural Born Scrabbler", "Thrift and Grift", "Abs of Tin", "Marginally Insane", "Raise Backup Dancer", "Creepy Lullaby", "Rainbow Gravitation", "Vent Rage Gland", "Slimy Sinews", "Slimy Synapses", "Slimy Shoulders", "Gothy Handwave", "Break It On Down", "Pop and Lock It", "Run Like the Wind", "Summon Crimbo Candy", "Unaccompanied Miner", "Volcanometeor Showeruption", "Wassail", "Toynado", "Fashionably Late", "Executive Narcolepsy", "Lunch Break", "Offensive Joke", "Managerial Manipulation", "Natural Born Skeleton Killer", "Miyagi Massage", "Salamander Kata", "Flying Fire Fist", "Stinkpalm", "Seven-Finger Strike", "Knuckle Sandwich", "Chilled Monkey Brain Technique", "Drunken Baby Style", "Worldpunch", "Zendo Kobushi Kancho", "Master of the Surprising Fist", "Summon &quot;Boner Battalion&quot;", "Torment Plant", "Pinch Ghost", "Tattle", "Thick-Skinned", "Chip on your Shoulder", "Request Sandwich", "Frigidalmatian", "Silent Slam", "Silent Squirt", "Silent Slice", "Walberg's Dim Bulb", "Singer's Faithful Ocelot", "Drescher's Annoying Noise", "Deep Dark Visions", "Dog Tired", "Club Earth", "Carbohydrate Cudgel", "Splattersmash", "Grab a Cold One", "Song of the North", "Turtleini", "Sauceshell", "Conspiratorial Whispers", "Song of Slowness", "Spaghetti Breakfast", "Shadow Noodles", "Song of Starch", "Splashdance", "Song of Sauce", "Song of Bravado", "Summon Annoyance", "Shrap", "Psychokinetic Hug", "Unoffendable", "Grease Up", "Sloppy Secrets", "Alien Source Code", "Hollow Leg", "Belch The Rainbow", "Pirate Bellow", "Hypersane", "Intimidating Mien", "Summon Holiday Fun!", "Rapid Prototyping", "Mathematical Precision", "Ruthless Efficiency", "Summon Carrot", "Speluck", "Olfactory Burnout", "Garbage Nova", "Dinsey Operations Expert", "Rotten Memories", "Bear Essence", "Summon Kokomo Resort Pass", "Healing Salve", "Dark Ritual", "[138]Lightning Bolt", "Giant Growth", "Ancestral Recall", "Asbestos Heart", "Pyromania", "Firegate", "Calculate the Universe", "Perfect Freeze", "Refusal to Freeze", "Beardfreeze", "Frost Bite", "Shattering Punch", "Snokebomb", "Shivering Monkey Technique", "Communism!", "Bow-Legged Swagger", "Bend Hell", "Steely-Eyed Squint", "Shoot", "Brain Games", "20/20 Vision", "Astute Angler", "Eldritch Intellect", "Licorice Rope", "Gingerbread Mob Hit", "Fifteen Minutes of Flame", "Ceci N'Est Pas Un Chapeau", "Sweet Synthesis", "Stack Lumps", "Evoke Eldritch Horror", "Quantum Movement", "5-D Earning Potential", "Object Quasi-Permanence", "Disintegrate", "Incredible Self-Esteem", "Eternal Flame", "Meteor Lore", "Expert Corner-Cutter", "Budget Conscious", "Drinking to Drink", "Experience Safari", "Army of Toddlers", "Carol of the Bulls", "Carol of the Hells", "Carol of the Thrills", "Tiki Mixology", "Prevent Scurvy and Sobriety", "Implode Universe", "The Spirit of Taking", "Visit your Favorite Bird", "Drippy Eye-Sprout", "Drippy Eye-Stone", "Drippy Eye-Beetle", "Always Never Not Guzzling", "Lock Picking", "Comprehensive Cartography", "Long Winter's Nap", "Bowl Full of Jelly", "Ashes and Soot", "Eye and a Twist", "Dimples, How Merry!", "Chubby and Plump", "Emotionally Chipped", "Dead Nostrils", "Ancient Crymbo Lore", "Crimbo Training: First Aid Technician", "Crimbo Training: Passenger Greeter", "Crimbo Training: Concierge", "Crimbo Training: Track Switcher", "Crimbo Training: Bartender", "Crimbo Training:  Waiter", "Crimbo Training: Coal Taster", "Crimbo Training: Dessert Steward", "Crimbo Training: Night Watchman", "Crimbo Training: Sanitation Consultant", "Crimbo Training: Graffiti Censor", "Cryptobotanist", "Insectologist", "Psychogeologist", "Replica Emotionally Chipped", "Secret Door Awareness", "Perpetrate Mild Evil", "Chitinous Soul", "Just the Facts", "Elf Guard Cooking", "Old-School Cocktailcrafting", "Elf Guard Extortion Techniques", "Fruit Recognition", "Elf Guard Relaxation Techniques", "Too Cool", "Attract Snakes", "Hide From Seekers", "Reindeer Games", "Master Egg Hunter", "Holiday Multitasking", "SLEEP(5)", "OVERCLOCK(10)", "STATS+++", "Generate Irony", "Holiday Burial Knowledge", "Let's Beat Up This Drunken Sailor", "I'm Smarter Than a Drunken Sailor", "Look At That Drunken Sailor Dance", "Who's Going to Pay This Drunken Sailor?", "Only Dogs Love a Drunken Sailor", "Seal Clubbing Frenzy", "Thrust-Smack", "Lunge Smack", "Lunging Thrust-Smack", "Super-Advanced Meatsmithing", "Blubber Up", "Fortitude of the Muskox", "Audacity of the Otter", "Tongue of the Walrus", "Hide of the Walrus", "Claws of the Walrus", "Batter Up!", "Rage of the Reindeer", "Pulverize", "Double-Fisted Skull Smashing", "Northern Exposure", "Musk of the Moose", "Snarl of the Timberwolf", "Clobber", "Harpoon!", "Holiday Weight Gain", "Iron Palm Technique", "Hibernate", "Cold Shoulder", "Wrath of the Wolverine", "Buoyancy of the Beluga", "Scowl of the Auk", "Furious Wallop", "Club Foot", "Seething of the Snow Leopard", "Ire of the Orca", "Thirst of the Weasel", "Cavalcade of Fury", "Northern Explosion", "Precision of the Penguin", "Pride of the Puffin", "Silent Hunter", "Get Big", "Blood Frenzy", "Patience of the Tortoise", "Headbutt", "Skin of the Leatherback", "Shieldbutt", "Armorcraftiness", "Ghostly Shell", "Reptilian Fortitude", "Empathy of the Newt", "Tenacity of the Snapper", "Wisdom of the Elder Tortoises", "Astral Shell", "Amphibian Sympathy", "Kneebutt", "Cold-Blooded Fearlessness", "Hero of the Half-Shell", "Tao of the Terrapin", "Spectral Snapper", "Toss", "Summon Leviatuga", "Jingle Bells", "Curiosity of Br'er Tarrypin", "Spirit Vacation", "Shell Up", "Stiff Upper Lip", "Blessing of the War Snapper", "Spiky Shell", "Spirit Snap", "Blessing of She-Who-Was", "Butts of Steel", "Testudinal Teachings", "Pizza Lover", "Blessing of the Storm Tortoise", "The Long View", "Spirit Boon", "Patient Smile", "Turtle Power", "Quiet Determination", "Gallapagosian Mating Call", "Blood Bond", "Manicotti Meditation", "Ravioli Shurikens", "Entangling Noodles", "Cannelloni Cannon", "Pastamastery", "Stuffed Mortar Shell", "Weapon of the Pastalord", "Lasagna Bandages", "Leash of Linguini", "Spirit of Rigatoni", "Cannelloni Cocoon", "Spirit of Ravioli", "Springy Fusilli", "Tolerance of the Kitchen", "Flavour of Magic", "Transcendental Noodlecraft", "Fearful Fettucini", "Spaghetti Spear", "Tempuramancy", "Candyblast", "Stringozzi Serpent", "Canticle of Carboloading", "Utensil Twist", "Transcendent Al Dente", "Bind Vampieroghi", "Arched Eyebrow of the Archmage", "Bind Vermincelli", "Bringing Up the Rear", "Bind Angel Hair Wisp", "Shield of the Pastalord", "Bind Undead Elbow Macaroni", "Thrall Unit Tactics", "Bind Penne Dreadful", "Subtle and Quick to Anger", "Bind Lasagmbie", "Wizard Squint", "Bind Spice Ghost", "Bind Spaghetti Elemental", "Quiet Judgement", "Inscrutable Gaze", "Blood Bucatini", "Sauce Contemplation", "Stream of Sauce", "Expert Panhandling", "Saucestorm", "Advanced Saucecrafting", "Elemental Saucesphere", "Jalape&ntilde;o Saucesphere", "Wave of Sauce", "Intrinsic Spiciness", "Master Saucier", "Saucegeyser", "Saucy Salve", "Impetuous Sauciness", "Diminished Gag Reflex", "Irrepressible Spunk", "The Way of Sauce", "Scarysauce", "Salsaball", "Deep Saucery", "Surge of Icing", "K&auml;seso&szlig;esturm", "Curse of Vichyssoise", "Simmer", "Icy Glare", "Soul Saucery", "Inner Sauce", "Curse of Marinara", "Itchy Curse Finger", "Curse of the Thousand Islands", "Saucecicle", "Antibiotic Saucesphere", "Curse of Weaksauce", "Wry Smile", "Sauce Monocle", "Blood Sugar Sauce Magic", "Saucemaven", "Silent Treatment", "Love Mixology", "Blood Bubble", "Disco Aerobics", "Disco Eye-Poke", "Nimble Fingers", "Disco Dance of Doom", "Mad Looting Skillz", "Disco Nap", "Disco Dance II: Electric Boogaloo", "Disco Fever", "Overdeveloped Sense of Self Preservation", "Adventurer of Leisure", "Disco Face Stab", "Advanced Cocktailcrafting", "Ambidextrous Funkslinging", "Heart of Polyester", "Smooth Movement", "Superhuman Cocktailcrafting", "Tango of Terror", "Suckerpunch", "Salacious Cocktailcrafting", "Stealth Mistletoe", "Kung Fu Hustler", "Deft Hands", "Disco State of Mind", "Frantic Gyrations", "That's Not a Knife", "Tricky Knifework", "Flashy Dancer", "Disco Smirk", "Disco Greed", "Knife in the Dark", "Disco Bravado", "Disco Shank", "Disco Dance 3: Back in the Habit", "Disco Inferno", "Sensitive Fingers", "Disco Leer", "Silent Knife", "Acquire Rhinestones", "Blood Blade", "Moxie of the Mariachi", "Aloysius' Antiphon of Aptitude", "The Moxious Madrigal", "Cletus's Canticle of Celerity", "The Polka of Plenty", "The Magical Mojomuscular Melody", "The Power Ballad of the Arrowsmith", "Brawnee's Anthem of Absorption", "Fat Leon's Phat Loot Lyric", "The Psalm of Pointiness", "Jackasses' Symphony of Destruction", "Stevedave's Shanty of Superiority", "The Ode to Booze", "The Sonata of Sneakiness", "Carlweather's Cantata of Confrontation", "Ur-Kel's Aria of Annoyance", "Dirge of Dreadfulness", "Gemelli's March of Testery", "The Ballad of Richie Thingfinder", "Benetton's Medley of Diversity", "Elron's Explosive Etude", "Chorale of Companionship", "Prelude of Precision", "Sing", "Donho's Bubbly Ballad", "Cringle's Curative Carol", "Inigo's Incantation of Inspiration", "Dissonant Riff", "Cadenza", "Crab Claw Technique", "Accordion Bash", "Accordion Appreciation", "Concerto de los Muertos", "Five Finger Discount", "Suspicious Gaze", "Bawdy Refrain", "Thief Among the Honorable", "Sticky Fingers", "Cone of Zydeco", "Master Accordion Master Thief", "Knowing Smile", "Mariachi Memory", "Quiet Desperation", "Paul's Passionate Pop Song", "Bram's Bloody Bagatelle", "Give In To Your Vampiric Urges", "Shake Hands", "Hot Breath", "Cold Breath", "Spooky Breath", "Stinky Breath", "Sleazy Breath", "Magic Missile", "Fire red bottle-rocket", "Fire blue bottle-rocket", "Fire orange bottle-rocket", "Fire purple bottle-rocket", "Fire black bottle-rocket", "Creepy Grin", "Start Trash Fire", "Overload Discarded Refrigerator", "Trashquake", "Zombo's Visage", "Hypnotize Hobo", "Ask Richard for a Bandage", "Ask Richard for a Grenade", "Ask Richard to Rough the Hobo Up a Bit", "Summon Mayfly Swarm", "Get a You-Eye View", "Vicious Talon Slash", "All-You-Can-Beat Wing Buffet", "Tunnel Upwards", "Tunnel Downwards", "Rise From Your Ashes", "Antarctic Flap", "The Statue Treatment", "Feast on Carrion", "Give Your Opponent &quot;The Bird&quot;", "Ask the hobo for a drink", "Ask the hobo for something to eat", "Ask the hobo for some violence", "Ask the hobo to tell you a joke", "Ask the hobo to dance for you", "Summon hobo underling", "Rouse Sapling", "Spray Sap", "Put Down Roots", "Fire off a Roman Candle", "Spring Raindrop Attack", "Summer Siesta", "Falling Leaf Whirlwind", "Winter's Bite Technique", "The 17 Cuts", "Recite 'The Spirit of Crimbo'", "Disarm", "Entangle", "Strangle", "Consume Burrowgrub", "Play an Accordion Solo", "Play a Guitar Solo", "Play a Drum Solo", "Play a Flute Solo", "Furious Cleave", "Mighty Shout", "Open the Bag o' Tricks", "Point at your opponent", "Apprivoisez la tortue", "Ball Bust", "Ball Sweat", "Ball Sack", "Net Gain", "Net Loss", "Net Neutrality", "Blade Sling", "Blade Roller", "Blade Runner", "[7094]Static Shock", "Give Your Opponent the Stinkeye", "Bashing Slam Smash", "Turtle of Seven Tails", "Noodles of Fire", "Saucemageddon", "Funk Bluegrass Fusion", "Extreme High Note", "Goldensh&ouml;wer", "Shoot Web", "Wrath of the Volcano God", "Wrath of the Lightning God", "Wrath of the Trickster God", "Spew Poison", "Fire a badly romantic arrow", "Fire a boxing-glove arrow", "Fire a poison arrow", "Fire a fingertrap arrow", "Nuclear Breath", "Squeeze Stress Ball", "Throw Shield", "Release the Boots", "Feed", "Siphon Spirits", "Swirl Cloak", "Quick Attack", "Rive Armor", "Brutal Strike", "First Aid", "Firebolt", "Chillblain", "Forceblast", "Vampiric Tendrils", "Draw New Tiles", "Run Away", "Kodiak Moment", "Grizzly Scene", "Bear-Backrub", "Bear-ly Legal", "Bear Hug", "I Can Bearly Hear You Over the Applause", "Unleash Nanites", "Air Blast", "Haggis Kick", "Play Hog Fiddle", "Uni-Gore", "Rage Flame", "Doubt Shackles", "Fear Vapor", "Tear Wave", "Fire Death Ray", "Stomp Ass", "Brand", "Violent Gaze", "Mosh", "Chilling Grip", "[7156]Static Shock", "Hateful Gaze", "Tighten Girdle", "Hide Behind a Tree", "Dive Into a Puddle", "Hide Under a Rock", "Throw a Mr. Card", "Hammer Ghost", "Fire Rocket", "Great Slash", "Get a Good Whiff of This Guy", "Blinding Flash", "Wink at", "Talk About Politics", "Pocket Crumbs", "Air Dirty Laundry", "Steal Accordion", "Rage of the War Snapper", "Voice of She-Who-Was", "Will of the Storm Tortoise", "Spirit of Cayenne", "Spirit of Peppermint", "Spirit of Garlic", "Spirit of Wormwood", "Spirit of Bacon Grease", "Spirit of Nothing", "Soul Bubble", "Soul Finger", "Soul Blaze", "Soul Food", "Soul Rotation", "Soul Funk", "Dismiss Pasta Thrall", "Spray Hot Grease", "Huff", "Puff", "Blow House Down", "Hot Blow", "Cold Blow", "Stinky Blow", "Spooky Blow", "&quot;Blow&quot;", "Throw Frostball", "Blow Wolf Whistle", "Unload Tommy Gun", "Mug for the Audience", "Pull Voice Box String", "Shovel Hot Coal", "Unleash the Greash", "Heat Space", "Consult the Helix Fossil", "Bang! Bang! Bang! Bang!", "The Smile of Mr. A.", "Ply Reality", "Overload Teddy Bear", "Thousand-Yard Stare", "Activate Butt", "Summon Snowcones", "Summon Stickers", "Summon Sugar Sheets", "Summon Clip Art", "Summon Rad Libs", "Summon Smithsness", "Summon Candy Heart", "Summon Party Favor", "Summon Love Song", "Summon BRICKOs", "Summon Dice", "Summon Resolutions", "Summon Taffy", "Summon Hilarious Objects", "Summon Tasteful Items", "Summon Alice's Army Cards", "Summon Geeky Gifts", "Summon Confiscated Things", "Open a Big Yellow Present", "Open a Big Red Present", "LIGHT", "ZAP", "POW", "BURN", "LUBE", "Throw Skull", "Throw Rock", "Use Rope", "Throw Bomb", "Throw Pot", "Throw Ten Bombs", "Throw Torch", "Summon Love Mosquito", "Summon Love Stinkbug", "Summon Love Gnats", "Summon Love Scarabs", "Tell a Skeleton What To Do", "Tell This Skeleton What To Do", "Fire Sewage Pistol", "Propose To Your Opponent", "Spit Fireballs", "Toggle Optimality", "Bat-Punch", "Bat-Kick", "Bat-oomerang", "Bat-Jute", "Bat-o-mite", "Ultracoagulator", "Kickball", "Bat-Glue", "Bat-Bearing", "Use Bat-Aid", "Fire the Jokester's Gun", "Adjust the Jokester's Wig", "Adjust the Jokester's Pants", "Cowboy Kick", "Absorb Cowrruption", "Science! Fight with Medicine", "Science! Fight with Rational Thought", "Science!  Fight with Internet Debate", "Extract", "Digitize", "Compress", "Duplicate", "Portscan", "Turbo", "Shoot Ghost", "Trap Ghost", "Censorious Lecture", "Extract Jelly", "Breathe Out", "EXTERMINATE SPANT", "KGB tranquilizer dart", "Asdon Martin: Missile Launcher", "Asdon Martin: Bean Bag Cannon", "Asdon Martin: Spring-Loaded Front Bumper", "Micrometeorite", "Macrometeorite", "Meteor Shower", "A New Habit", "Hugs and Kisses!", "Show them your ring", "Unleash Disco Pudge", "Sing Along", "Swap Mask", "Party Crash", "Paint Job", "Throw Latte on Opponent", "Offer Latte to Opponent", "Gulp Latte", "Otoscope", "Reflex Hammer", "Chest X-Ray", "Become a Wolf", "Become a Cloud of Mist", "Become a Bat", "Use the Force", "Dragoon Platoon", "Spittoon Monsoon", "Festoon Buffoon", "Beach Combo", "deliver your thesis!", "lecture on velocity", "lecture on mass", "lecture on relativity", "Detect Weakness", "Unleash Terra Cotta Army", "Paraffin Prism", "Seek out a Bird", "CHEAT CODE: Invisible Avatar", "CHEAT CODE: Triple Size", "CHEAT CODE: Replace Enemy", "CHEAT CODE: Shrink Enemy", "Hammer Smash", "[7329]Hammer Throw", "[7330]Ultra Smash", "Fireball Toss", "[7332]Juggle Fireballs", "[7333]Fireball Barrage", "Jump Attack", "[7335]Spin Jump", "[7336]Multi-Bounce", "Plumber Jump", "Drip Blast", "%fn, spit on them!", "%fn, spit on me!", "Disarming Thrust", "Barrage of Tears", "Poison Dart", "Map the Monsters", "Smooch of the Daywalker", "Slay the Dead", "Unleash the Devil's Kiss", "Deploy Robo-Handcuffs", "Blow a Robo-Kiss", "Precision Shot", "Feel Pride", "Feel Excitement", "Feel Hatred", "Feel Lonely", "Feel Nervous", "Feel Envy", "Feel Disappointed", "Feel Lost", "Feel Nostalgic", "Feel Peaceful", "Feel Superior", "Swing Pound-O-Tron", "Shoot Pea", "Crotch Burn", "Junk Blast", "Tesla Blast", "Snipe", "Junk Mace Smash", "Prod", "Solenoid Slam", "Blow Snow", "Throw Flame", "Shoot Grease", "Shocking Lick", "Back-Up to your Last Enemy", "Show your boring familiar pictures", "B. L. A. R. T. Spray (medium)", "B. L. A. R. T. Spray (wide)", "B. L. A. R. T. Spray (narrow)", "Fire Extinguisher: Foam 'em Up", "Fire Extinguisher: Polar Vortex", "Fire Extinguisher: Foam Yourself", "Fire Extinguisher: Blast the Area", "Fire Extinguisher: Zone Specific", "Be Gregarious", "Loofah Head-Scratch", "Loofah Lei Lasso", "Loofah Hosenzittern", "Loofah Stew", "Loofah Leglifts", "Loofah Lava", "Flagellate", "Flagflog", "Flagstone Flap Flip", "Flagstone Fez Ritual", "Flagstone Fleece Flex", "Flagstone Foxtrot", "Bowl Backwards", "Bowl a Curveball", "Bowl Sideways", "Bowl Straight Up", "Re-Process Matter", "Meatify Matter", "Emit Matter Duplicating Drones", "Convert Matter to Protein", "Convert Matter to Energy", "Convert Matter to Pomade", "Sweat Out Some Booze", "Sweat Flick", "Sweat Flood", "Sweat Spray", "Make Sweat-Ade", "Drench Yourself in Sweat", "Sip Some Sweat", "Sweat Sip", "Snipe Pterodactyl", "Spit jurassic acid", "Launch spikolodon spikes", "Engage ultra-attractive parka mode", "Ceramic Punch", "Ceramic Bash", "Ceramic Grate", "Ceramic Boil", "Ceramic Skullgaze", "Ceramic Cenobitize", "Shadow Flame", "Monkey Slap", "Monkey Tickle", "Evil Monkey Eye", "Monkey Peace Sign", "Monkey Point", "Monkey Punch", "Cincho: Dispense Salt and Lime", "Cincho: Party Soundtrack", "Cincho: Fiesta Exit", "Cincho: Projectile Piñata", "Cincho: Party Foul", "Cincho: Confetti Extravaganza", "Do a Kickflip", "Do a Method!", "Do an epic McTwist!", "Douse Foe", "%fn, let's pledge allegiance to a Zone", "%fn, fire a Red, White and Blue Blast", "%fn, Release the Patriotic Screech!", "Aug. 1st: Mountain Climbing Day!", "Aug. 2nd: Find an Eleven-Leaf Clover Day", "Aug. 3rd: Watermelon Day!", "Aug. 4th: Water Balloon Day!", "Aug. 5th: Oyster Day!", "Aug. 6th: Fresh Breath Day!", "Aug. 7th: Lighthouse Day!", "Aug. 8th: Cat Day!", "Aug. 9th: Hand Holding Day!", "Aug. 10th: World Lion Day!", "Aug. 11th: Presidential Joke Day!", "Aug. 12th: Elephant Day!", "Aug. 13th: Left/Off Hander's Day!", "Aug. 14th: Financial Awareness  Day!", "Aug. 15th: Relaxation Day!", "Aug. 16th: Roller Coaster Day!", "Aug. 17th: Thriftshop Day!", "Aug. 18th: Serendipity Day!", "Aug. 19th: Honey Bee Awareness Day!", "Aug. 20th: Mosquito Day!", "Aug. 21st: Spumoni Day!", "Aug. 22nd: Tooth Fairy Day!", "Aug. 23rd: Ride the Wind Day!", "Aug. 24th: Waffle Day!", "Aug. 25th: Banana Split Day!", "Aug. 26th: Toilet Paper Day!", "Aug. 27th: Just Because Day!", "Aug. 28th: Race Your Mouse Day!", "Aug. 29th: More Herbs, Less Salt  Day!", "Aug. 30th: Beach Day!", "Aug. 31st: Cabernet Sauvignon  Day!", "Roar like a Lion", "Hold Hands", "Recall Facts: Monster Habitats", "Recall Facts: %phylum Circadian Rhythms", "Toast your enemy", "Surprisingly Sweet Slash", "Surprisingly Sweet Stab", "The Old One-Two (Kick)", "Peppermint Squirt", "Whale Oil Splat", "Shoot, Gunwale Whalegun, Shoot!", "%fn, lay an egg", "Moss Mugging", "Megaphone Whisper", "Soul Genuflection", "Drop Mantle", "Brandish Moss Medal", "Spring Away", "Spring Kick", "Spring Growth Spurt", "Rend", "Slaughter", "Bite", "Kick", "Hunt", "[7510]Punt", "Howl", "Advanced Research", "Darts: Throw at %part1", "Darts: Throw at %part2", "Darts: Throw at %part3", "Darts: Throw at %part4", "Darts: Throw at %part5", "Darts: Throw at %part6", "Darts: Throw at %part7", "Darts: Throw at %part8", "Darts: Aim for the Bullseye", "Blow the Red Candle!", "Blow the Yellow Candle!", "Blow the Blue Candle!", "Blow the Green Candle!", "Blow the Purple Candle!", "Tear Away your Pants!", "Rest upside down", "Ask %fn to go down in flames", "Swoop like a Bat", "Summon Cauldron of Bats", "Assert your Authority", "Check for photo booth supplies", "Iron Tricorn Headbutt", "Throw Military Orb", "Place your hat on their head", "Egg the face", "McHugeLarge Slash", "McHugeLarge Stab", "McHugeLarge Avalanche", "McHugeLarge Ski Plow", "Throw Cyber Rock", "Brute Force Hammer", "Inject Malware", "Encrypted Shuriken", "Refresh HP", "Launch Logic Grenade", "Deploy Glitched Malware", "Pull down your crepe paper phrygian cap", "Look through your crepe paper pie clip", "Play with your crepe paper puzzle", "Leave nothing to the imagination", "Embrace polka", "Thrust your geofencing rapier", "Drink The Milk of %n Kindness", "Drink The Milk of %n Cruelty", "Left %n Punch", "Right %n Punch", "Left %n Kick", "Right %n Kick", "Punch Out your Foe", "Create an Afterimage", "Beret Blast", "Beret Boast", "Beret Busking", "Call in an Airstrike", "Try to Remember", "Sea *dent: Throw a Lightning Bolt", "Sea *dent: Summon a Wave", "Sea *dent: Talk to Some Fish", "BCZ: Blood Geyser", "BCZ: Refracted Gaze", "BCZ: Sweat Bullets", "BCZ: Blood Bath", "BCZ: Dial it up to 11", "BCZ: Sweat Equity", "BCZ: Create Blood Thinner", "BCZ: Prepare Spinal Tapas", "BCZ: Craft a Pheromone Cocktail", "Mark Your Territory", "Prepare to reanimate your Foe", "Club 'Em Across the Battlefield", "Club 'Em Into Next Week", "Club 'Em Back in Time", "Steal Monster's Heart", "Heartstone: %kill", "Heartstone: %banish", "Heartstone: %stun", "Heartstone: %luck", "Heartstone: %pals", "Heartstone: %buff", "Wave your Pasta Wand", "%fn, kill a lot of these guys", "%fn, stop killing those guys", "Mighty Axing", "Cleave", "[11002]Ferocity", "Broadside", "Sick Pythons", "Pep Talk", "Throw Trusty", "Legendary Luck", "Song of Cockiness", "Legendary Impatience", "Bifurcating Blow", "Intimidating Bellow", "Legendary Bravado", "Song of Accompaniment", "Big Lungs", "Song of Solitude", "Good Singing Voice", "Song of Fortune", "Louder Bellows", "Song of Battle", "Banishing Shout", "Demand Sandwich", "Legendary Girth", "Song of the Glorious Lunch", "Big Boned", "Legendary Appetite", "Heroic Belch", "Hungry Eyes", "More to Love", "Barrel Chested", "Gourmand", "Laugh It Off", "Infectious Bite", "Bite Minion", "Lure Minions", "Undying Greed", "Hunter's Sprint", "Insatiable Hunger", "Devour Minions", "Indefatigable", "Skullcracker", "Neurogourmet", "Ravenous Pounce", "Distracting Minion", "Plague Claws", "Flesh Mob", "Elemental Obliviousness", "Vigor Mortis", "Virulence", "Bilious Burst", "Unyielding Flesh", "Corpse Pile", "Howl of the Alpha", "Summon Minion", "Zombie Chow", "Smash & Graaagh", "Scavenge", "Meat Shields", "Summon Horde", "His Master's Voice", "Ag-grave-ation", "Disquiet Riot", "Zombie Maestro", "Recruit Zombie", "Curdle", "Conjure Eggs", "Conjure Dough", "Boil", "Fry", "Egg Man", "Early Riser", "The Most Important Meal", "Coffeesphere", "Conjure Vegetables", "Conjure Cheese", "Slice", "Chop", "Radish Horse", "Working Lunch", "Lunch Like a King", "Oilsphere", "Conjure Meat Product", "Conjure Potato", "Bake", "Grill", "Hippotatomous", "Food Coma", "Never Late for Dinner", "Gristlesphere", "Conjure Cream", "Conjure Fruit", "Freeze", "Blend", "Cream Puff", "Nightcap", "Best Served Cold", "Chocolatesphere", "Catchphrase", "Mixologist", "Throw Party", "Fix Jukebox", "Snap Fingers", "Shake It Off", "Check Hair", "Cocktail Magic", "Make Friends", "Natural Dancer", "Rev Engine", "Born Showman", "Pop Wheelie", "Rowdy Drinker", "Peel Out", "Easy Riding", "Check Mirror", "Riding Tall", "Biker Swagger", "Flash Headlight", "Insult", "Best Dressed", "Live Fast", "Jump Shark", "[15025]Hard Drinker", "Smoke Break", "Animal Magnetism", "Brood", "Walk Away From Explosion", "Incite Riot", "Unrepentant Thief", "[zero placeholder]", "Thunder Clap", "Thundercloud", "Thunder Bird", "Thunderheart", "Thunderstrike", "Thunder Down Underwear", "Thunder Thighs", "Rain Man", "Rainy Day", "Make it Rain", "Rain Dance", "Rainbow", "Rain Coat", "Rain Delay", "Lightning Strike", "Clean-Hair Lightning", "Ball Lightning", "Sheet Lightning", "[16025]Lightning Bolt", "Lightning Rod", "Riding the Lightning", "Prayer of Seshat", "Wisdom of Thoth", "Power of Heka", "Hide of Sobek", "Blessing of Serqet", "Shelter of Shed", "Bounty of Renenutet", "Fist of the Mummy", "Howl of the Jackal", "Roar of the Lion", "Storm of the Scarab", "Purr of the Feline", "Lash of the Cobra", "Wrath of Ra", "Curse of the Marshmallow", "Curse of Indecision", "Curse of Yuck", "Curse of Heredity", "Curse of Fortune", "Curse of Vacation", "Curse of Stench", "Gift of the Cat", "Gift of the Dancer", "Gift of the Maid", "Gift of the Bodyguard", "Gift of the Scribe", "Gift of the Priest", "Gift of the Assassin", "Replacement Stomach", "Replacement Liver", "Extra Spleen", "Another Extra Spleen", "Yet Another Extra Spleen", "Still Another Extra Spleen", "Just One More Extra Spleen", "Okay Seriously, This is the Last Spleen", "Upgraded Legs", "Upgraded Arms", "Upgraded Spine", "Tougher Skin", "Armor Plating", "Bone Spikes", "Arm Blade", "Healing Scarabs", "Elemental Wards", "More Elemental Wards", "Even More Elemental Wards", "Mild Curse", "More Legs", "One-Two Punch", "Cowcall", "Pistolwhip", "Hogtie", "True Outdoorsperson", "Rugged Survivalist", "Larger Than Life", "Unleash Cowrruption", "[18008]Hard Drinker", "Walk: Cautious Prowl", "Lavafava", "Pungent Mung", "Canhandle", "Beanscreen", "Bean Runner", "Beanweaver", "Beanstorm", "Beancannon", "Prodigious Appetite", "Walk: Prideful Strut", "Snakewhip", "Fan Hammer", "Extract Oil", "Bad Medicine", "Patent Medicine", "Well-Oiled Guns", "Good Medicine", "Long Con", "Tolerant Constitution", "Walk: Leisurely Amble", "Source Punch", "Overclocked", "Bullet Time", "True Disbeliever", "Code Block", "Disarmament", "Big Guns", "Humiliating Hack", "Source Kick", "Reboot", "Restore", "Data Siphon", "Extra-Thick Skin", "Comically Oversized Fist", "Overactive Pheromones", "Dislocatable Jaw", "Aluminum Nerves", "Noodly Arms", "Self-Lubricating Feet", "Hollow Canines", "Two Right Feet", "Finger Knives", "Double-Eidetic Memory", "Ultrasonic Ululations", "Boiling Tear Ducts", "Throat Refrigerant", "Skunk Glands", "Translucent Skin", "Projectile Salivary Glands", "Mind Bullets", "Metallic Skin", "Adipose Polymers", "Extra Muscles", "Extra Brain", "Hypno-Eyes", "Backwards Knees", "Sucker Fingers", "Flappy Ears", "Magic Sweat", "Steroid Bladder", "Intracranial Eye", "Self-Combing Hair", "Bone Springs", "Magnetic Ears", "Firefly Abdomen", "Squid Glands", "Extremely Punchable Face", "Extra Gall Bladder", "Extra Kidney", "Internal Soda Machine", "Gelatinous Reconstruction", "Dilatable Capillaries", "Upper Hypothalamus", "Thick Dermis", "High Water Content", "Sweat Glands", "Constrictable Capillaries", "Lower Hypothalamus", "Shiver Reflex", "Chatterable Teeth", "Subcutaneous Fat", "Nose Hair", "Pinchable Nose", "Nasal Lamina Propria", "Nasal Septum", "Olfactory Cortex", "Left Eyelid", "Right Eyelid", "Hyperactive Amygdala", "Adrenal Gland", "Bravery Gland", "Sense of Decorum", "Blush Reflex", "Sense of Propriety", "Politeness", "Profound Shame", "Rigid Armbones", "Rigid Legbones", "Rigid Pelvis", "Rigid Headbone", "Rigid Rib Cage", "Calluses", "Cartilage", "Spinal Discs", "Shock-Absorbing Joints", "Overalls", "Hamstrings", "Ankle Joints", "Kneecaps", "Achilles Tendons", "Anterior Cruciate Ligaments", "Work Ethic", "Basic Self-Worth", "Sense of Purpose", "Sense of Pride", "Arrogance", "Central Hypothalamus", "Rudimentary Alimentary Canal", "Stomach-Like Thing", "Small Intestine", "Large Intestine", "Lysosomes", "Mitochondria", "Ribosomes", "Vacuoles", "Golgi Apparatus", "Veins", "Arteries", "Small Left Kidney", "Oversized Right Kidney", "Beating Human Heart", "Left Brain Hemisphere", "Right Brain Hemisphere", "Parasympathetic Nervous System", "Sympathetic Nervous System", "Spinal Cord", "Left Eyeball", "Right Eyeball", "Optic Nerves", "Saccade Reflex", "Visual Cortex", "Pinky Fingers", "Ring Fingers", "Middle Fingers", "Index Fingers", "Thumbs", "The Concept of Property", "Financial Ambition", "Business Acumen", "Sense of Entitlement", "Pathological Greed", "Triceps", "Biceps", "Abdominal Muscles", "Pectoral Muscles", "Gluteus Maximus", "Object Permanence", "Abstract Reasoning", "Deductive Reasoning", "Introspection", "Algebra", "Sense of Style", "Vestibular System", "Sense of Humor", "Sense of Sarcasm", "Sunglasses", "Fingernails", "Palms", "Elbows", "Knees", "Knuckles", "Warm Smile", "Warm Heart", "Warm Blood", "Choleric Humours", "Hot Headedness", "Cool Head", "Cool Heels", "Cold Feet", "Cold Heart", "Ice Water In Your Veins", "Bad Breath", "Armpit Sweat Glands", "Armpit Hair", "Weak Esophageal Sphincter", "Thriving Gut Flora", "Sunken Cheeks", "Pallid Skin", "Dark Circles Under Your Eyes", "Vacant Stare", "Visible Skull", "Sweaty Palms", "Waxy Ears", "Oily Scalp", "Flop Sweat", "Thrustable Pelvis", "Gelatinous Punch", "Gelatinous Headbutt", "Gelatinous Kick", "Bendable Knees", "Retractable Toes", "Ink Gland", "Frown Muscles", "Anger Glands", "Powerful Vocal Chords", "Dark Feast", "Wisdom of Countless Centuries", "Savage Bite", "Crush", "Baleful Howl", "Ceaseless Snarl", "Wolf Form", "Preternatural Strength", "Flesh Scent", "[24017]Ferocity", "Intimidating Aura", "Blood Spike", "Blood Chains", "Chill of the Tomb", "Blood Cloak", "Mist Form", "Madness of Untold Aeons", "Hypnotic Eyes", "Macabre Cunning", "Sanguine Magnetism", "Piercing Gaze", "Perceive Soul", "Ensorcel", "Spectral Awareness", "Flock of Bats Form", "Sinister Charm", "Batlike Reflexes", "Sharp Eyes", "Spot Weakness", "[25001]Hammer Throw", "[25002]Ultra Smash", "[25003]Juggle Fireballs", "[25004]Fireball Barrage", "[25005]Spin Jump", "[25006]Multi-Bounce", "Power Plus", "Secret Eye", "Lucky Buckle", "Rainbow Shield", "Lucky Pin", "Lucky Brooch", "Lucky Insignia", "Health Symbol", "Pseudopod Slap", "Hardslab", "Telekinetic Murder", "Snakesmack", "Ire Proof", "Nanofur", "Autovampirism Routines", "Conifer Polymers", "Anti-Sleaze Recursion", "Microburner", "Cryocurrency", "Curses Library", "Exhaust Tubules", "Camp Subroutines", "Grey Noise", "Advanced Exo-Alloy", "Localized Vacuum", "Microweave", "Ectogenesis", "Clammy Microcilia", "Lubricant Layer", "Infernal Automata", "Cooling Tubules", "Ominous Substrate", "Secondary Fermentation", "Procgen Ribaldry", "Solid Fuel", "Autochrony", "Temporal Hyperextension", "Propagation Drive", "Financial Spreadsheets", "Phase Shift", "Piezoelectric Honk", "Overclocking", "Subatomic Hardening", "Gravitational Compression", "Hivemindedness", "Ponzi Apparatus", "Fluid Dynamics Simulation", "Nantlers", "Nanoshock", "Audioclasm", "System Sweep", "Double Nanovision", "Infinite Loop", "Photonic Shroud", "Unused Combat Selfbuff", "Steam Mycelia", "Snow-Cooling System", "Legacy Code", "AUTOEXEC.BAT", "Innuendo Circuitry", "Subatomic Tango", "Extra Innings", "Reloading", "Harried", "Temporal Bent", "Provably Efficient", "Basic Improvements", "Shifted About", "Spooky Veins", "Seven Foot Feelings", "Self-Actualized", "Tackle", "Ribald Memories", "Blasted Glutes", "Strong Back", "Overconfidence", "Anatomy Expertise", "Fancy Footwork", "Taut Hamstrings", "Ripped Triceps", "Head in the Game", "Competitive Instincts", "Matter Over Mind", "Stretch", "Ball Throw", "Noogie", "Hot Foot", "Second Wind", "Stop Hitting Yourself", "Cheerlead", "Free-For-All", "Tape Up", "[28021]Punt", "Caseus Vampirus", "Mind Over Muenster", "Subcutaneous Gouda", "Quick Wit", "Limberger Limberness", "Swiss Cunning", "Peccorino Bravado", "Wisdom of Jarlsberg", "Bleu Brilliance", "Gorgonzola's Guile", "Medical Manchego", "Fingers of Fontina", "Cheddarmor", "Parmesan Missile", "Gather Cheese-Chi", "Crack Knuckles", "Mind Melt", "Emmental Elemental", "Reality Shift", "Stilton Splatter", "Queso Fustulento", "Fondeluge", "Demoralizing Toot", "Thick Calluses", "Impeccable Timing", "Fashion Sense", "Jazz Hands", "C Sharp Eyes", "Air of Mystery", "Rhythmic Precision", "Perfect Embouchure", "Improv Muscles", "Virtuosity", "Rhythm In Your Blood", "Call For Backup", "Orchestra Strike", "Knife In The Darkness", "Venomous Riff", "Drum Roll", "Sax of Violence", "Tricky Timpani", "Grit Teeth", "Soothing Flute", "Motif", "Beef Shank", "Meat Cleaver", "Steak Through the Heart", "Act Jerky", "Stew", "Self-Tenderize", "Steak Flanks", "Nicely Marbled", "Dry-Aged", "Pork Belly", "Roastmaster", "Spicy Meatball", "Meat Cute", "Chew the Fat", "Beef Goggles", "Meat Loaf", "Meat Puppet", "Perfectly Seared", "Maillard Reaction", "Umami", "Rib Eyes", "Tender Loins", "Bacon Ray", "Meat Locker", "Wet Rub", "Dark Meat", "Ham It Up", "Steak Skirt", "It's All Gravy", "Well-Rested", "Caramelized Fat", "Chicken Fingers", "Grass-Fed"]))
 	{
-		if(sk.bat_maxHPCost() == 0)
-			continue;
+		if (bat_maxHPCost(sk) === 0)
+			{ continue; }
 
-		if ((picks contains sk) != have_skill(sk))
+		if (picks.has(sk) !== haveSkill(sk))
 		{
-			auto_log_info("We'd like to make a skill change for " + sk.to_string() + ", which we " + (picks contains sk ? "want" : "don't want") + " but " + (have_skill(sk) ? "have" : "don't have"), "blue");
+			auto_log_info(`We'd like to make a skill change for ${sk.toString()}, which we ${(picks.has(sk) ? "want" : "don't want")} but ${(haveSkill(sk) ? "have" : "don't have")}`, "blue");
 			return true;
 		}
 	}
@@ -370,222 +376,221 @@ boolean bat_shouldPickSkills(int hpLeft)
 	return false;
 }
 
-boolean bat_haveEnsorcelee() // checks if you have a current Ensorceled Monster
-{
-	if(!auto_have_skill($skill[Ensorcel]))
-		return false; //in case mafia doesn't clear ensorcelee property when you change skills and drop Ensorcel.
+export function bat_haveEnsorcelee(): boolean
+{ // checks if you have a current Ensorceled Monster
+	if (!auto_have_skill(Skill.get("Ensorcel")))
+		{ //in case mafia doesn't clear ensorcelee property when you change skills and drop Ensorcel.
+		return false; }
 
-	return get_property("ensorcelee") != "";
+	return getProperty("ensorcelee") !== "";
 }
 
-phylum bat_ensorceledMonster() //returns phylum of current Ensorceled Monster (if you have one)
-{
-	return monster_phylum(to_monster(get_property("ensorcelee")));
-}	
+export function bat_ensorceledMonster(): Phylum
+{ //returns phylum of current Ensorceled Monster (if you have one)
+	return monsterPhylum(toMonster(getProperty("ensorcelee")));
+}
 
-boolean bat_shouldEnsorcel(monster m)
+export function bat_shouldEnsorcel(m: Monster): boolean
 {
-	if(!in_darkGyffte() || !auto_have_skill($skill[Ensorcel]))
-		return false;
-
+	if (!in_darkGyffte() || !auto_have_skill(Skill.get("Ensorcel")))
+		{ return false; }
 	// until we have a way to tell what we already have as an ensorcelee, just ensorcel goblins
 	// to help avoid getting beaten up...
-	if(m.monster_phylum() == $phylum[goblin] && !isFreeMonster(m, my_location()) && !bat_haveEnsorcelee()) //stop wasting additional Ensorcel casts once we already have an Ensorcelee
-		return true;
-
+	if (monsterPhylum(m) === Phylum.get("goblin") && !isFreeMonster$1(m, myLocation()) && !bat_haveEnsorcelee())
+		{ //stop wasting additional Ensorcel casts once we already have an Ensorcelee
+		return true; }
 	//TODO code for getting other types of monster (beasts / bugs presumably) where appropriate.
 
 	return false;
 }
 
-int bat_creatable_amount(item desired)
+export function bat_creatable_amount(desired: Item): number
 {
-	if(!in_darkGyffte())
-		return 0;
-	if(item_amount($item[blood bag]) == 0)
-		return 0;
+	if (!in_darkGyffte())
+		{ return 0; }
+	if (itemAmount(Item.get("blood bag")) === 0)
+		{ return 0; }
 
-	switch(desired)
+	switch (desired)
 	{
-		case $item[bloodstick]:
-			if(item_amount($item[wad of dough]) == 0)
+		case Item.get("bloodstick"):
+			if (itemAmount(Item.get("wad of dough")) === 0)
 			{
-				pullXWhenHaveY($item[wad of dough],1,0);
-			}	
-			if(item_amount($item[wad of dough]) == 0)
-			{
-				auto_buyUpTo(1, $item[wad of dough]);
-			}	
-			return creatable_amount(desired);
-		case $item[blood snowcone]:
-			if(item_amount($item[plain snowcone]) == 0)
-			{
-				pullXWhenHaveY($item[plain snowcone],1,0);
-			}	
-			if(item_amount($item[plain snowcone]) == 0)
-			{
-				auto_buyUpTo(1, $item[plain snowcone]);
+				pullXWhenHaveY(Item.get("wad of dough"), 1, 0);
 			}
-			return creatable_amount(desired);
-		case $item[blood roll-up]:
-			if(item_amount($item[blackberry]) == 0)
+			if (itemAmount(Item.get("wad of dough")) === 0)
 			{
-				pullXWhenHaveY($item[blackberry],1,0);
-			}	
-			return creatable_amount(desired);
-		case $item[bottle of Sanguiovese]:
-			if(item_amount($item[fermenting powder]) == 0)
+				auto_buyUpTo(1, Item.get("wad of dough"));
+			}
+			return creatableAmount(desired);
+		case Item.get("blood snowcone"):
+			if (itemAmount(Item.get("plain snowcone")) === 0)
 			{
-				pullXWhenHaveY($item[fermenting powder],1,0);
-			}	
-			return creatable_amount(desired);
-		case $item[mulled blood]:
-			if(item_amount($item[spices]) == 0)
+				pullXWhenHaveY(Item.get("plain snowcone"), 1, 0);
+			}
+			if (itemAmount(Item.get("plain snowcone")) === 0)
 			{
-				pullXWhenHaveY($item[spices],1,0);
-			}	
-			return creatable_amount(desired);
-		case $item[Red Russian]:
-			if(item_amount($item[glass of goat\'s milk]) == 0)
+				auto_buyUpTo(1, Item.get("plain snowcone"));
+			}
+			return creatableAmount(desired);
+		case Item.get("blood roll-up"):
+			if (itemAmount(Item.get("blackberry")) === 0)
 			{
-				pullXWhenHaveY($item[glass of goat\'s milk],1,0);
-			}	
-			return creatable_amount(desired);
-		case $item[actual blood sausage]:
-			foreach it in $items[batgut, ratgut]
+				pullXWhenHaveY(Item.get("blackberry"), 1, 0);
+			}
+			return creatableAmount(desired);
+		case Item.get("bottle of Sanguiovese"):
+			if (itemAmount(Item.get("fermenting powder")) === 0)
 			{
-				if(item_amount(it) == 0)
+				pullXWhenHaveY(Item.get("fermenting powder"), 1, 0);
+			}
+			return creatableAmount(desired);
+		case Item.get("mulled blood"):
+			if (itemAmount(Item.get("spices")) === 0)
+			{
+				pullXWhenHaveY(Item.get("spices"), 1, 0);
+			}
+			return creatableAmount(desired);
+		case Item.get("Red Russian"):
+			if (itemAmount(Item.get("glass of goat's milk")) === 0)
+			{
+				pullXWhenHaveY(Item.get("glass of goat's milk"), 1, 0);
+			}
+			return creatableAmount(desired);
+		case Item.get("actual blood sausage"):
+			for (let it of Item.get(["batgut", "ratgut"]))
+			{
+				if (itemAmount(it) === 0)
 				{
-					if(pullXWhenHaveY(it,1,0))
-						break;
+					if (pullXWhenHaveY(it, 1, 0))
+						{ break; }
 				}
 			}
-			return min(item_amount($item[blood bag]), total_items($items[batgut, ratgut]));
-		case $item[blood-soaked sponge cake]:
-			foreach it in $items[gauze garter, filthy poultice]
+			return min(itemAmount(Item.get("blood bag")), total_items(new Map([[Item.get("batgut"), true], [Item.get("ratgut"), true]])));
+		case Item.get("blood-soaked sponge cake"):
+			for (let it of Item.get(["gauze garter", "filthy poultice"]))
 			{
-				if(item_amount(it) == 0)
+				if (itemAmount(it) === 0)
 				{
-					if(pullXWhenHaveY(it,1,0))
-						break;
+					if (pullXWhenHaveY(it, 1, 0))
+						{ break; }
 				}
 			}
-			return min(item_amount($item[blood bag]), total_items($items[gauze garter, filthy poultice]));
-		case $item[dusty bottle of blood]:
-			foreach it in $items[dusty bottle of Merlot, dusty bottle of Port, dusty bottle of Pinot Noir, dusty bottle of Zinfandel, dusty bottle of Marsala, dusty bottle of Muscat]
+			return min(itemAmount(Item.get("blood bag")), total_items(new Map([[Item.get("gauze garter"), true], [Item.get("filthy poultice"), true]])));
+		case Item.get("dusty bottle of blood"):
+			for (let it of Item.get(["dusty bottle of Merlot", "dusty bottle of Port", "dusty bottle of Pinot Noir", "dusty bottle of Zinfandel", "dusty bottle of Marsala", "dusty bottle of Muscat"]))
 			{
-				if(item_amount(it) == 0)
+				if (itemAmount(it) === 0)
 				{
-					if(pullXWhenHaveY(it,1,0))
-						break;
+					if (pullXWhenHaveY(it, 1, 0))
+						{ break; }
 				}
 			}
-			return min(item_amount($item[blood bag]), total_items($items[dusty bottle of Merlot, dusty bottle of Port, dusty bottle of Pinot Noir, dusty bottle of Zinfandel, dusty bottle of Marsala, dusty bottle of Muscat]));
-		case $item[vampagne]:
-			foreach it in $items[carbonated soy milk, monstar energy beverage]
+			return min(itemAmount(Item.get("blood bag")), total_items(new Map([[Item.get("dusty bottle of Merlot"), true], [Item.get("dusty bottle of Port"), true], [Item.get("dusty bottle of Pinot Noir"), true], [Item.get("dusty bottle of Zinfandel"), true], [Item.get("dusty bottle of Marsala"), true], [Item.get("dusty bottle of Muscat"), true]])));
+		case Item.get("vampagne"):
+			for (let it of Item.get(["carbonated soy milk", "Monstar energy beverage"]))
 			{
-				if(item_amount(it) == 0)
+				if (itemAmount(it) === 0)
 				{
-					if(pullXWhenHaveY(it,1,0))
-						break;
+					if (pullXWhenHaveY(it, 1, 0))
+						{ break; }
 				}
 			}
-			return min(item_amount($item[blood bag]), total_items($items[carbonated soy milk, monstar energy beverage]));
+			return min(itemAmount(Item.get("blood bag")), total_items(new Map([[Item.get("carbonated soy milk"), true], [Item.get("Monstar energy beverage"), true]])));
 	}
-	auto_log_warning("Hmm, " + desired + " isn't a Vampyre consumable", "red");
+	auto_log_warning(`Hmm, ${desired} isn't a Vampyre consumable`, "red");
 	return 0;
 }
 
-boolean bat_multicraft(string mode, boolean [item] options)
+export function bat_multicraft(mode: string, options: Map<Item, boolean>): boolean
 {
-	if(!in_darkGyffte())
-		return false;
-	if(item_amount($item[blood bag]) == 0)
-		return false;
+	if (!in_darkGyffte())
+		{ return false; }
+	if (itemAmount(Item.get("blood bag")) === 0)
+		{ return false; }
 
-	foreach ingredient in options
+	for (let ingredient of options.keys())
 	{
-		if(item_amount(ingredient) > 0)
+		if (itemAmount(ingredient) > 0)
 		{
-			if(craft(mode, 1, $item[blood bag], ingredient) > 0)
-				return true;
+			if (craft(mode, 1, Item.get("blood bag"), ingredient) > 0)
+				{ return true; }
 		}
 	}
 
 	return false;
 }
 
-boolean bat_cook(item desired)
+export function bat_cook(desired: Item): boolean
 {
-	if(!in_darkGyffte())
-		return false;
-	if(item_amount($item[blood bag]) == 0)
-		return false;
+	if (!in_darkGyffte())
+		{ return false; }
+	if (itemAmount(Item.get("blood bag")) === 0)
+		{ return false; }
 
-	switch(desired)
+	switch (desired)
 	{
-		case $item[bloodstick]:
-		case $item[blood snowcone]:
-		case $item[blood roll-up]:
-		case $item[bottle of Sanguiovese]:
-		case $item[mulled blood]:
-		case $item[Red Russian]:
+		case Item.get("bloodstick"):
+		case Item.get("blood snowcone"):
+		case Item.get("blood roll-up"):
+		case Item.get("bottle of Sanguiovese"):
+		case Item.get("mulled blood"):
+		case Item.get("Red Russian"):
 			return create(1, desired);
-		case $item[actual blood sausage]:
-			return bat_multicraft("cook", $items[batgut, ratgut]);
-		case $item[blood-soaked sponge cake]:
-			return bat_multicraft("cook", $items[filthy poultice, gauze garter]);
-		case $item[dusty bottle of blood]:
-			return bat_multicraft("cocktail", $items[dusty bottle of Merlot, dusty bottle of Port, dusty bottle of Pinot Noir, dusty bottle of Zinfandel, dusty bottle of Marsala, dusty bottle of Muscat]);
-		case $item[vampagne]:
-			return bat_multicraft("cocktail", $items[carbonated soy milk, monstar energy beverage]);
+		case Item.get("actual blood sausage"):
+			return bat_multicraft("cook", new Map([[Item.get("batgut"), true], [Item.get("ratgut"), true]]));
+		case Item.get("blood-soaked sponge cake"):
+			return bat_multicraft("cook", new Map([[Item.get("filthy poultice"), true], [Item.get("gauze garter"), true]]));
+		case Item.get("dusty bottle of blood"):
+			return bat_multicraft("cocktail", new Map([[Item.get("dusty bottle of Merlot"), true], [Item.get("dusty bottle of Port"), true], [Item.get("dusty bottle of Pinot Noir"), true], [Item.get("dusty bottle of Zinfandel"), true], [Item.get("dusty bottle of Marsala"), true], [Item.get("dusty bottle of Muscat"), true]]));
+		case Item.get("vampagne"):
+			return bat_multicraft("cocktail", new Map([[Item.get("carbonated soy milk"), true], [Item.get("Monstar energy beverage"), true]]));
 	}
-	auto_log_warning("Hmm, " + desired + " isn't a Vampyre consumable", "red");
+	auto_log_warning(`Hmm, ${desired} isn't a Vampyre consumable`, "red");
 	return false;
 }
 
-boolean bat_consumption()
+export function bat_consumption(): boolean
 {
-	if(!in_darkGyffte())
-		return false;
+	if (!in_darkGyffte())
+		{ return false; }
 
-	if(possessOutfit("War Hippy Fatigues") && is_accessible($coinmaster[Dimemaster]))
+	if (possessOutfit$1("War Hippy Fatigues") && isAccessible(Coinmaster.get("Dimemaster")))
 	{
-		sell($item[padl phone].buyer, item_amount($item[padl phone]), $item[padl phone]);
-		sell($item[red class ring].buyer, item_amount($item[red class ring]), $item[red class ring]);
-		sell($item[blue class ring].buyer, item_amount($item[blue class ring]), $item[blue class ring]);
-		sell($item[white class ring].buyer, item_amount($item[white class ring]), $item[white class ring]);
+		sell((Item.get("PADL Phone")).buyer, itemAmount(Item.get("PADL Phone")), Item.get("PADL Phone"));
+		sell((Item.get("red class ring")).buyer, itemAmount(Item.get("red class ring")), Item.get("red class ring"));
+		sell((Item.get("blue class ring")).buyer, itemAmount(Item.get("blue class ring")), Item.get("blue class ring"));
+		sell((Item.get("white class ring")).buyer, itemAmount(Item.get("white class ring")), Item.get("white class ring"));
 	}
-	if(possessOutfit("Frat Warrior Fatigues") && is_accessible($coinmaster[Quartersmaster]))
+	if (possessOutfit$1("Frat Warrior Fatigues") && isAccessible(Coinmaster.get("Quartersmaster")))
 	{
-		sell($item[pink clay bead].buyer, item_amount($item[pink clay bead]), $item[pink clay bead]);
-		sell($item[purple clay bead].buyer, item_amount($item[purple clay bead]), $item[purple clay bead]);
-		sell($item[green clay bead].buyer, item_amount($item[green clay bead]), $item[green clay bead]);
-		sell($item[communications windchimes].buyer, item_amount($item[communications windchimes]), $item[communications windchimes]);
+		sell((Item.get("pink clay bead")).buyer, itemAmount(Item.get("pink clay bead")), Item.get("pink clay bead"));
+		sell((Item.get("purple clay bead")).buyer, itemAmount(Item.get("purple clay bead")), Item.get("purple clay bead"));
+		sell((Item.get("green clay bead")).buyer, itemAmount(Item.get("green clay bead")), Item.get("green clay bead"));
+		sell((Item.get("communications windchimes")).buyer, itemAmount(Item.get("communications windchimes")), Item.get("communications windchimes"));
 	}
 
-	boolean consume_first(boolean [item] its)
+	function consume_first(its: Map<Item, boolean>): boolean
 	{
-		foreach it in its
+		for (let it of its.keys())
 		{
-			if(available_amount(it) == 0)
+			if (availableAmount(it) === 0)
 			{
 				//try to pull it if we don't have any on hand. Preferable to crafting when possible
-				pullXWhenHaveY(it,1,0);
+				pullXWhenHaveY(it, 1, 0);
 			}
-			if(available_amount(it) > 0 || bat_creatable_amount(it) > 0)
+			if (availableAmount(it) > 0 || bat_creatable_amount(it) > 0)
 			{
-				if(available_amount(it) == 0)
-					bat_cook(it);
-				if(it.fullness > 0)
-					autoEat(1, it);
-				else if(it.inebriety > 0)
-					autoDrink(1, it);
-				else if(it.spleen > 0)
-					autoChew(1, it);
-				else
-				{
-					auto_log_warning("Woah, I made a " + it + " to consume, but you can't consume that?", "red");
+				if (availableAmount(it) === 0)
+					{ bat_cook(it); }
+				if (it.fullness > 0)
+					{ autoEat(1, it); }
+				else if (it.inebriety > 0)
+					{ autoDrink(1, it); }
+				else if (it.spleen > 0)
+					{ autoChew(1, it); }
+				else {
+					auto_log_warning(`Woah, I made a ${it} to consume, but you can't consume that?`, "red");
 					return false;
 				}
 				return true;
@@ -593,142 +598,134 @@ boolean bat_consumption()
 		}
 		return false;
 	}
-
 	//buy best consumable mats from NPC if we can
-	if(auto_warSide() == "fratboy")
+	if (auto_warSide() === "fratboy")
 	{
-		if ((fullness_left() > 0) && (item_amount($item[gauze garter]) == 0) && $coinmaster[Quartersmaster].available_tokens >= 2)
+		if (fullness_left() > 0 && itemAmount(Item.get("gauze garter")) === 0 && (Coinmaster.get("Quartersmaster")).availableTokens >= 2)
 		{
-			cli_execute("make 1 gauze garter");
+			cliExecute("make 1 gauze garter");
 		}
-		if ((inebriety_left() > 0) && (item_amount($item[monstar energy beverage]) == 0) && $coinmaster[Quartersmaster].available_tokens >= 3)
+		if (inebriety_left() > 0 && itemAmount(Item.get("Monstar energy beverage")) === 0 && (Coinmaster.get("Quartersmaster")).availableTokens >= 3)
 		{
-			cli_execute("make 1 monstar energy beverage");
+			cliExecute("make 1 monstar energy beverage");
 		}
 	}
-	else
-	{
-		if ((fullness_left() > 0) && (item_amount($item[filthy poultice]) == 0) && $coinmaster[Dimemaster].available_tokens >= 2)
+	else {
+		if (fullness_left() > 0 && itemAmount(Item.get("filthy poultice")) === 0 && (Coinmaster.get("Dimemaster")).availableTokens >= 2)
 		{
-			cli_execute("make 1 filthy poultice");
+			cliExecute("make 1 filthy poultice");
 		}
-		if ((inebriety_left() > 0) && (item_amount($item[carbonated soy milk]) == 0) && $coinmaster[Dimemaster].available_tokens >= 3)
+		if (inebriety_left() > 0 && itemAmount(Item.get("carbonated soy milk")) === 0 && (Coinmaster.get("Dimemaster")).availableTokens >= 3)
 		{
-			cli_execute("make 1 carbonated soy milk");
+			cliExecute("make 1 carbonated soy milk");
 		}
 	}
 
 	if (fullness_left() > 0)
 	{
-		pullXWhenHaveY($item[dieting pill], 1, 0);
+		pullXWhenHaveY(Item.get("dieting pill"), 1, 0);
 	}
 
-	if ((my_level() >= 7) &&
-		(spleen_left() >= 3) &&
-		(fullness_left() >= 2) &&
-		(item_amount($item[dieting pill]) > 0) &&
-		((item_amount($item[blood-soaked sponge cake]) > 0) ||
-		 (bat_creatable_amount($item[blood-soaked sponge cake]) > 0)))
+	if (myLevel() >= 7 && spleen_left() >= 3 && fullness_left() >= 2 && itemAmount(Item.get("dieting pill")) > 0 && (itemAmount(Item.get("blood-soaked sponge cake")) > 0 || bat_creatable_amount(Item.get("blood-soaked sponge cake")) > 0))
 	{
-		if (item_amount($item[blood-soaked sponge cake]) == 0)
-			bat_cook($item[blood-soaked sponge cake]);
-		if (item_amount($item[blood-soaked sponge cake]) > 0)
+		if (itemAmount(Item.get("blood-soaked sponge cake")) === 0)
+			{ bat_cook(Item.get("blood-soaked sponge cake")); }
+		if (itemAmount(Item.get("blood-soaked sponge cake")) > 0)
 		{
-			autoChew(1, $item[dieting pill]);
-			autoEat(1, $item[blood-soaked sponge cake]);
+			autoChew(1, Item.get("dieting pill"));
+			autoEat(1, Item.get("blood-soaked sponge cake"));
 			return true;
 		}
 	}
-
 	// attempt to fill organs with best consumables all the time, don't wait to be at low adventure count
 	if (inebriety_left() > 0)
 	{
-		if(consume_first($items[vampagne]))
-			return true;
+		if (consume_first(new Map([[Item.get("vampagne"), true]])))
+			{ return true; }
 	}
 	if (fullness_left() > 0)
 	{
-		if(consume_first($items[blood-soaked sponge cake]))
-			return true;
+		if (consume_first(new Map([[Item.get("blood-soaked sponge cake"), true]])))
+			{ return true; }
 	}
 
-	if (my_adventures() <= 8)
+	if (myAdventures() <= 8)
 	{
 		// if both organs have space, prioritize high value items instead of the usual booze before food algorithm
 		// don't auto consume bottle of Sanguiovese or bloodstick unless we're down to one adventure
 		if (inebriety_left() > 0 && fullness_left() > 0)
 		{
-			if(consume_first($items[vampagne, blood-soaked sponge cake,
-									 dusty bottle of blood, blood roll-up,
-									 Red Russian, blood snowcone, 
-									 mulled blood, actual blood sausage]))
-				return true;
+			if (consume_first(new Map([[Item.get("vampagne"), true], [Item.get("blood-soaked sponge cake"), true],
+									 [Item.get("dusty bottle of blood"), true], [Item.get("blood roll-up"), true],
+									 [Item.get("Red Russian"), true], [Item.get("blood snowcone"), true],
+									 [Item.get("mulled blood"), true], [Item.get("actual blood sausage"), true]])))
+				{ return true; }
 		}
 		else if (inebriety_left() > 0)
 		{
-			if(consume_first($items[vampagne, dusty bottle of blood, Red Russian, mulled blood]))
-				return true;
+			if (consume_first(new Map([[Item.get("vampagne"), true], [Item.get("dusty bottle of blood"), true], [Item.get("Red Russian"), true], [Item.get("mulled blood"), true]])))
+				{ return true; }
 		}
 		else if (fullness_left() > 0)
 		{
-			if(consume_first($items[blood-soaked sponge cake, blood roll-up, blood snowcone, actual blood sausage]))
-				return true;
+			if (consume_first(new Map([[Item.get("blood-soaked sponge cake"), true], [Item.get("blood roll-up"), true], [Item.get("blood snowcone"), true], [Item.get("actual blood sausage"), true]])))
+				{ return true; }
 		}
 	}
 
-	if(my_adventures() <= 1)
+	if (myAdventures() <= 1)
 	{
 		if (fullness_left() > 0)
 		{
-			if (consume_first($items[bloodstick]))
-				return true;
+			if (consume_first(new Map([[Item.get("bloodstick"), true]])))
+				{ return true; }
 		}
-		if(inebriety_left() > 0)
+		if (inebriety_left() > 0)
 		{
-			if (consume_first($items[bottle of Sanguiovese]))
-				return true;
+			if (consume_first(new Map([[Item.get("bottle of Sanguiovese"), true]])))
+				{ return true; }
 		}
 	}
 
 	return true;
 }
 
-boolean bat_skillValid(skill sk)
+export function bat_skillValid(sk: Skill): boolean
 {
-	if($skills[Savage Bite, Crush, Baleful Howl, Ceaseless Snarl] contains sk && have_effect($effect[Bats Form]) + have_effect($effect[Mist Form]) > 0)
-		return false;
+	if (Skill.get(["Savage Bite", "Crush", "Baleful Howl", "Ceaseless Snarl"]).includes(sk) && haveEffect(Effect.get("Bats Form")) + haveEffect(Effect.get("Mist Form")) > 0)
+		{ return false; }
 
-	if($skills[Blood Spike, Blood Chains, Chill of the Tomb, Blood Cloak] contains sk && have_effect($effect[Wolf Form]) + have_effect($effect[Bats Form]) > 0)
-		return false;
+	if (Skill.get(["Blood Spike", "Blood Chains", "Chill of the Tomb", "Blood Cloak"]).includes(sk) && haveEffect(Effect.get("Wolf Form")) + haveEffect(Effect.get("Bats Form")) > 0)
+		{ return false; }
 
-	if($skills[Piercing Gaze, Perceive Soul, Ensorcel, Spectral Awareness] contains sk && have_effect($effect[Wolf Form]) + have_effect($effect[Mist Form]) > 0)
-		return false;
+	if (Skill.get(["Piercing Gaze", "Perceive Soul", "Ensorcel", "Spectral Awareness"]).includes(sk) && haveEffect(Effect.get("Wolf Form")) + haveEffect(Effect.get("Mist Form")) > 0)
+		{ return false; }
 
-	if((mp_cost(sk) > 0) && in_darkGyffte())
-		return false;
+	if (mpCost(sk) > 0 && in_darkGyffte())
+		{ return false; }
 
 	return true;
 }
 
-boolean bat_tryBloodBank()
+export function bat_tryBloodBank(): boolean
 {
-	int bloodBank = get_property("_auto_bat_bloodBank").to_int();
-	if(bloodBank == 0 || (bloodBank == 1 && have_skill($skill[Intimidating Aura])))
+	let bloodBank: number = toInt(getProperty("_auto_bat_bloodBank"));
+	if (bloodBank === 0 || bloodBank === 1 && haveSkill(Skill.get("Intimidating Aura")))
 	{
-		visit_url("place.php?whichplace=town_right&action=town_bloodbank");
-		set_property("_auto_bat_bloodBank", (have_skill($skill[Intimidating Aura]) ? 2 : 1));
+		visitUrl("place.php?whichplace=town_right&action=town_bloodbank");
+		setProperty("_auto_bat_bloodBank", (haveSkill(Skill.get("Intimidating Aura")) ? (2).toString() : (1).toString()));
 		return true;
 	}
 
 	return false;
 }
 
-boolean LM_batpath()
+export function LM_batpath(): boolean
 {
-	if(!in_darkGyffte())
-		return false;
+	if (!in_darkGyffte())
+		{ return false; }
 
-	if(bat_remainingBaseHP() >= 70 && bat_shouldPickSkills(20))
+	if (bat_remainingBaseHP() >= 70 && bat_shouldPickSkills(20))
 	{
 		auto_log_info("Let's swap out some skills", "blue");
 		bat_reallyPickSkills(20);

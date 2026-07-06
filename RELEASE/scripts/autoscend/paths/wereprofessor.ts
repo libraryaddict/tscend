@@ -1,79 +1,88 @@
-boolean in_wereprof()
+import { Effect, Item, Location, Path, cliExecute, containsText, getProperty, haveEffect, haveEquipped, itemAmount, myAdventures, myMeat, myPath, npcPrice, setProperty, splitString, toBoolean, toInt, turnsPlayed } from "kolmafia";
+import { auto_advToReserve } from "../../autoscend";
+import { auto_buyUpTo } from "../auto_acquire";
+import { autoAdv$1 } from "../auto_adventure";
+import { possessEquipment } from "../auto_equipment";
+import { auto_log_info, meatReserve, organsFull, ovenHandle } from "../auto_util";
+import { zone_available } from "../auto_zone";
+
+//Defined in autoscend/paths/wereprofessor.ash
+export function in_wereprof(): boolean
 {
-	return my_path() == $path[WereProfessor];
+	return myPath() === Path.get("WereProfessor");
 }
 
-void wereprof_initializeSettings()
+export function wereprof_initializeSettings(): void
 {
-	if(!in_wereprof())
+	if (!in_wereprof())
 	{
 		return;
 	}
-	set_property("auto_wandOfNagamar", false);		//wand not used in this path
+	setProperty("auto_wandOfNagamar", false.toString()); //wand not used in this path
 	// if we banish a phylum while werewolf, we can't undo it while wereprofessor
-	set_property("auto_dontPhylumBanish", true);
-	cli_execute('wereprofessor research');			//parse the research bench
+	setProperty("auto_dontPhylumBanish", true.toString());
+	cliExecute("wereprofessor research"); //parse the research bench
 }
 
-boolean is_werewolf()
+export function is_werewolf(): boolean
 {
-	if(!in_wereprof())
+	if (!in_wereprof())
 	{
 		return false;
 	}
-	if(have_effect($effect[Savage Beast]) > 0)
+	if (haveEffect(Effect.get("Savage Beast")) > 0)
 	{
 		return true;
 	}
 	return false;
 }
 
-boolean is_professor()
+export function is_professor(): boolean
 {
-	if(!in_wereprof())
+	if (!in_wereprof())
 	{
 		return false;
 	}
-	if(have_effect($effect[Mild-Mannered Professor]) > 0)
+	if (haveEffect(Effect.get("Mild-Mannered Professor")) > 0)
 	{
 		return true;
 	}
 	return false;
 }
 
-void wereprof_buySkills()
+export function wereprof_buySkills(): void
 {
-	if(!in_wereprof())
+	if (!in_wereprof())
 	{
 		return;
 	}
-	int rp = get_property("wereProfessorResearchPoints").to_int();
-	if(is_werewolf() || rp < 10)
+	let rp: number = toInt(getProperty("wereProfessorResearchPoints"));
+	if (is_werewolf() || rp < 10)
 	{
 		return; // can't access the research bench as a werewolf and don't care about it when we have less than 10 RP
 	}
-	if(get_property("beastSkillsAvailable") == "")
+	if (getProperty("beastSkillsAvailable") === "")
 	{
-		cli_execute('wereprofessor research');			//parse the research bench
+		cliExecute("wereprofessor research"); //parse the research bench
 	}
-	boolean do_skills = true;
-	if(get_property("wereProfessorTransformTurns").to_int() > 3)
+	let do_skills: boolean = true;
+	if (toInt(getProperty("wereProfessorTransformTurns")) > 3)
 	{
 		do_skills = false; //Want as many RP as possible before looping through the skills
 	}
-	if((is_professor() && turns_played() == 0))
+	if (is_professor() && turnsPlayed() === 0)
 	{
 		auto_log_info("Buy skills first", "blue");
 		do_skills = true; //Do skills before we do anything else
 	}
-	if(organsFull() && my_adventures() <= auto_advToReserve() && !(contains_text(get_property("beastSkillsKnown").to_string(), "stomach3") && contains_text(get_property("beastSkillsKnown").to_string(), "liver3")))
+	if (organsFull() && myAdventures() <= auto_advToReserve() && !(containsText(getProperty("beastSkillsKnown"), "stomach3") && containsText(getProperty("beastSkillsKnown"), "liver3")))
 	{
 		auto_log_info("Need more organs", "blue");
 		do_skills = true; //If organs are full, should do skills if we need more organ space and don't have all organ expanding skills and limited adventures left
 	}
-	int cantbuy;
+	let cantbuy: number = 0;
 	/* Taken from wereprofessor.txt in Mafia src
-	# Muscle Skill Tree
+	// Muscle Skill Tree
 	mus1	10	none	Osteocalcin injection	Mus +20%
 	mus2	20	mus1	Somatostatin catalyst	Mus +30%
 	mus3	30	mus2	Endothelin suspension	Mus +50%
@@ -92,8 +101,7 @@ void wereprof_buySkills()
 	stomach2	50	stomach1	Thyroxine supplements	Stomach +3
 	stomach3	60	stomach2	Amyloid polypeptide mixture	Stomach +3
 	feed	100	stomach3	Cholecystokinin antagonist	(Unimplemented)
-
-	# Mysticality Skill Tree
+	// Mysticality Skill Tree
 	myst1	10	none	Galanin precipitate	Myst +20%
 	myst2	20	myst1	Cortistatin blocker	Myst +30%
 	myst3	30	myst2	Prolactin inhibitor	Myst +50%
@@ -112,9 +120,8 @@ void wereprof_buySkills()
 	ml2	50	ml1	Hyperadrenal Pheremones	ML +15
 	ml3	60	ml2	Synthetic Rhabdovirus	ML +25
 	feasting	100	ml3	Peptide catalyst	Regain more HP
-
-	# Moxie Skill Tree
-	mox1	10	none	Dopamine slurry	Mox +20% 
+	// Moxie Skill Tree
+	mox1	10	none	Dopamine slurry	Mox +20%
 	mox2	20	mox1	Relaxin balm	Mox +30%
 	mox3	30	mox2	Melatonin suppositories	Mox +50%
 	kick1	20	mox3	Hamstring-tightening solution	Kick (Delevel)
@@ -133,38 +140,37 @@ void wereprof_buySkills()
 	liver3	60	liver2	Synthetic aldosterone	Liver +3
 	pureblood	100	liver3	Synthroid-parathormone cocktail	Shorten ELR
 	*/
-	int[string] rpcost = {"stomach3": 60, "liver3": 60, "stomach2": 50, "liver2":50, "stomach1": 40, "liver1": 40, "hp3": 40, "init3": 40, "hp2": 30, "init2": 30,
-	"hp1": 20, "init1": 20, "mus3": 30, "mox3": 30, "mus2": 20, "mox2": 20, "mus1": 10, "mox1": 10, "punt": 100, "slaughter": 100, "hunt": 100, "kick3": 40, "kick2": 30,
-	"kick1": 20, "rend3": 40, "rend2": 30, "rend1": 20, "items3": 60, "items2": 50, "items1": 40, "res3": 40, "res2": 30, "res1": 20, "myst3": 30, "myst2": 20, "myst1": 10,
-	"bite3": 40, "bite2": 30, "bite1": 20, "perfecthair": 100, "meat3": 60, "meat2": 50, "meat1": 40, "ml3": 60, "ml2": 50, "ml1": 40, "skin3": 60, "skin2": 50, "skin1": 40,
-	"pureblood": 100, "feasting": 100, "skinheal": 100, "howl": 100, "feed": 100};
-	if(do_skills)
+	let rpcost: Map<string, number> = new Map([["stomach3", 60], ["liver3", 60], ["stomach2", 50], ["liver2", 50], ["stomach1", 40], ["liver1", 40], ["hp3", 40], ["init3", 40], ["hp2", 30], ["init2", 30],
+	["hp1", 20], ["init1", 20], ["mus3", 30], ["mox3", 30], ["mus2", 20], ["mox2", 20], ["mus1", 10], ["mox1", 10], ["punt", 100], ["slaughter", 100], ["hunt", 100], ["kick3", 40], ["kick2", 30],
+	["kick1", 20], ["rend3", 40], ["rend2", 30], ["rend1", 20], ["items3", 60], ["items2", 50], ["items1", 40], ["res3", 40], ["res2", 30], ["res1", 20], ["myst3", 30], ["myst2", 20], ["myst1", 10],
+	["bite3", 40], ["bite2", 30], ["bite1", 20], ["perfecthair", 100], ["meat3", 60], ["meat2", 50], ["meat1", 40], ["ml3", 60], ["ml2", 50], ["ml1", 40], ["skin3", 60], ["skin2", 50], ["skin1", 40],
+	["pureblood", 100], ["feasting", 100], ["skinheal", 100], ["howl", 100], ["feed", 100]]);
+	if (do_skills)
 	{
 		auto_log_info("Buying skills", "blue");
-		while(rp >= 10)
+		while (rp >= 10)
 		{
 			cantbuy = 0;
 			//Priority is: Expanding organs, useful skills (banish, instakill, ELR CD), stat gains, +meat, DR, relatively useless skills and waiting on Mafia support skills
-			foreach sk in $strings[stomach3, liver3, stomach2, liver2, stomach1, liver1, hp3, init3, hp2, init2, hp1, init1, mus3,
-			mox3, mus2, mox2, mus1, mox1, punt, slaughter, pureblood, hunt, kick3, kick2, kick1, rend3, rend2, rend1, items3, items2, items1,
-			res3, res2, res1, myst3, myst2, myst1, bite3, bite2, bite1, perfecthair, meat3, meat2, meat1, ml3, ml2, ml1, skin3,
-			skin2, skin1, feasting, skinheal, howl, feed]
+			for (let sk of ["stomach3", "liver3", "stomach2", "liver2", "stomach1", "liver1", "hp3", "init3", "hp2", "init2", "hp1", "init1", "mus3",
+			"mox3", "mus2", "mox2", "mus1", "mox1", "punt", "slaughter", "pureblood", "hunt", "kick3", "kick2", "kick1", "rend3", "rend2", "rend1", "items3", "items2", "items1",
+			"res3", "res2", "res1", "myst3", "myst2", "myst1", "bite3", "bite2", "bite1", "perfecthair", "meat3", "meat2", "meat1", "ml3", "ml2", "ml1", "skin3",
+			"skin2", "skin1", "feasting", "skinheal", "howl", "feed"])
 			{
-				if(contains_text(get_property("beastSkillsAvailable").to_string(), sk))
+				if (containsText(getProperty("beastSkillsAvailable"), sk))
 				{
-					if(rpcost[sk] > rp)
+					if ((rpcost.get(sk) ?? rpcost.set(sk, 0).get(sk)) > rp)
 					{
 						cantbuy += 1;
-						if(cantbuy==count(split_string(get_property("beastSkillsAvailable").to_string(),",")))
+						if (cantbuy === splitString(getProperty("beastSkillsAvailable"), ",").length)
 						{
 							return; //return if we can't buy any beast skills
 						}
 					}
-					else
-					{
-						auto_log_info("Buying " + sk, "blue");
-						cli_execute('wereprofessor research ' + sk);
-						rp = get_property("wereProfessorResearchPoints").to_int();
+					else {
+						auto_log_info(`Buying ${sk}`, "blue");
+						cliExecute(`wereprofessor research ${sk}`);
+						rp = toInt(getProperty("wereProfessorResearchPoints"));
 						break; //break on buy to reset the foreach loop to look from the top
 					}
 				}
@@ -174,83 +180,82 @@ void wereprof_buySkills()
 	return;
 }
 
-boolean wereprof_haveAllEquipment()
+export function wereprof_haveAllEquipment(): boolean
 {
 	//Only care about the final equipment
-	if(!possessEquipment($item[triphasic molecular oculus]) || !possessEquipment($item[irresponsible-tension exoskeleton]))
+	if (!possessEquipment(Item.get("triphasic molecular oculus")) || !possessEquipment(Item.get("irresponsible-tension exoskeleton")))
 	{
 		return false;
 	}
 	return true;
 }
 
-void wereprof_buyEquip()
+export function wereprof_buyEquip(): void
 {
-	if(is_werewolf() || wereprof_haveAllEquipment())
+	if (is_werewolf() || wereprof_haveAllEquipment())
 	{
 		return; // can't tinker if we are a werewolf and don't care about anything but the best oculus and exoskeleton
 	}
-	
 	//There's probably a better way to do this
-	while(item_amount($item[smashed scientific equipment]) >= 1)
+	while (itemAmount(Item.get("smashed scientific equipment")) >= 1)
 	{
-		while(!possessEquipment($item[triphasic molecular oculus]) || !possessEquipment($item[irresponsible-tension exoskeleton]))
+		while (!possessEquipment(Item.get("triphasic molecular oculus")) || !possessEquipment(Item.get("irresponsible-tension exoskeleton")))
 		{
-			if(!possessEquipment($item[biphasic molecular oculus]) && !possessEquipment($item[triphasic molecular oculus]))
+			if (!possessEquipment(Item.get("biphasic molecular oculus")) && !possessEquipment(Item.get("triphasic molecular oculus")))
 			{
-				cli_execute('tinker biphasic molecular oculus');
+				cliExecute("tinker biphasic molecular oculus");
 				break;
 			}
-			if(possessEquipment($item[biphasic molecular oculus]) && !possessEquipment($item[triphasic molecular oculus]))
+			if (possessEquipment(Item.get("biphasic molecular oculus")) && !possessEquipment(Item.get("triphasic molecular oculus")))
 			{
-				cli_execute('tinker triphasic molecular oculus');
+				cliExecute("tinker triphasic molecular oculus");
 				break;
 			}
-			if(!possessEquipment($item[high-tension exoskeleton]) && !possessEquipment($item[ultra-high-tension exoskeleton]) && !possessEquipment($item[irresponsible-tension exoskeleton]))
+			if (!possessEquipment(Item.get("high-tension exoskeleton")) && !possessEquipment(Item.get("ultra-high-tension exoskeleton")) && !possessEquipment(Item.get("irresponsible-tension exoskeleton")))
 			{
-				cli_execute('tinker high-tension exoskeleton');
+				cliExecute("tinker high-tension exoskeleton");
 				break;
 			}
-			if(possessEquipment($item[high-tension exoskeleton]) && !possessEquipment($item[ultra-high-tension exoskeleton]) && !possessEquipment($item[irresponsible-tension exoskeleton]))
+			if (possessEquipment(Item.get("high-tension exoskeleton")) && !possessEquipment(Item.get("ultra-high-tension exoskeleton")) && !possessEquipment(Item.get("irresponsible-tension exoskeleton")))
 			{
-				cli_execute('tinker ultra-high-tension exoskeleton');
+				cliExecute("tinker ultra-high-tension exoskeleton");
 				break;
 			}
-			if(!possessEquipment($item[high-tension exoskeleton]) && possessEquipment($item[ultra-high-tension exoskeleton]) && !possessEquipment($item[irresponsible-tension exoskeleton]))
+			if (!possessEquipment(Item.get("high-tension exoskeleton")) && possessEquipment(Item.get("ultra-high-tension exoskeleton")) && !possessEquipment(Item.get("irresponsible-tension exoskeleton")))
 			{
-				cli_execute('tinker irresponsible-tension exoskeleton');
+				cliExecute("tinker irresponsible-tension exoskeleton");
 				break;
 			}
 		}
 	}
 }
 
-boolean wereprof_oculus()
+export function wereprof_oculus(): boolean
 {
-	if(!in_wereprof())
+	if (!in_wereprof())
 	{
 		return false;
 	}
-	if(have_equipped($item[biphasic molecular oculus]) || have_equipped($item[triphasic molecular oculus]))
+	if (haveEquipped(Item.get("biphasic molecular oculus")) || haveEquipped(Item.get("triphasic molecular oculus")))
 	{
 		return true;
 	}
 	return false;
 }
 
-boolean LM_wereprof()
+export function LM_wereprof(): boolean
 {
-	if(!in_wereprof())
+	if (!in_wereprof())
 	{
 		return false;
 	}
-	if(is_werewolf())
+	if (is_werewolf())
 	{
 		return false;
 	}
-	item elixer = $item[Doc Galaktik\'s Homeopathic Elixir];
-	int elixerAmount = item_amount(elixer);
-	if(elixerAmount < 10 && (my_meat() - npc_price(elixer) > meatReserve()))
+	let elixer: Item = Item.get("Doc Galaktik's Homeopathic Elixir");
+	let elixerAmount: number = itemAmount(elixer);
+	if (elixerAmount < 10 && myMeat() - npcPrice(elixer) > meatReserve())
 	{
 		// make a stock pile of 10 healing items to use as needed when werewolf
 		// buy a single one each time through to slowly build it
@@ -261,9 +266,9 @@ boolean LM_wereprof()
 	wereprof_buySkills();
 	auto_log_info("Getting equipment", "blue");
 	wereprof_buyEquip();
-	
-	if(!get_property("auto_haveoven").to_boolean()) //buy an oven ASAP
-	{
+
+	if (!toBoolean(getProperty("auto_haveoven")))
+	{ //buy an oven ASAP
 		auto_log_info("Buying an oven", "blue");
 		ovenHandle();
 		return true;
@@ -271,39 +276,39 @@ boolean LM_wereprof()
 	return false;
 }
 
-boolean LX_wereprof_getSmashedEquip()
+export function LX_wereprof_getSmashedEquip(): boolean
 {
-	if(!in_wereprof())
+	if (!in_wereprof())
 	{
 		return false;
 	}
-	if(is_professor() || wereprof_haveAllEquipment())
+	if (is_professor() || wereprof_haveAllEquipment())
 	{
 		return false;
 	}
 
-	location[int] smashedLocs;
-	string alreadySmashedLocs = get_property("antiScientificMethod").to_string();
+	let smashedLocs: Map<number, Location> = new Map();
+	let alreadySmashedLocs: string = getProperty("antiScientificMethod");
 	//There's a couple other locations, but we shouldn't EVER visit them
-	foreach sl in $locations[The Hidden Hospital, The Castle in the Clouds in the Sky (Top Floor), Noob Cave, The Haunted Pantry, The Thinknerd Warehouse, Vanya's Castle]
+	for (let sl of Location.get(["The Hidden Hospital", "The Castle in the Clouds in the Sky (Top Floor)", "Noob Cave", "The Haunted Pantry", "The Thinknerd Warehouse", "Vanya's Castle"]))
 	{
-		if(!contains_text(alreadySmashedLocs,sl.to_string()) && zone_available(sl))
+		if (!containsText(alreadySmashedLocs, sl.toString()) && zone_available(sl))
 		{
-			auto_log_info("Going for Smashed Scientific Equipment in " + sl.to_string(), "blue");
-			return autoAdv(1, sl);
+			auto_log_info(`Going for Smashed Scientific Equipment in ${sl.toString()}`, "blue");
+			return autoAdv$1(1, sl);
 		}
 	}
 	return false;
 }
 
-boolean wereprof_usable(string str)
+export function wereprof_usable(str: string): boolean
 {
-	if(!in_wereprof())
+	if (!in_wereprof())
 	{
 		return true;
 	}
-	if(str == "Stooper") //currently only thing we don't want at all
-	{
+	if (str === "Stooper")
+	{ //currently only thing we don't want at all
 		return false;
 	}
 	return true;

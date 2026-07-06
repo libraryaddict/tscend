@@ -1,86 +1,90 @@
+import { Effect, Location, Monster, Skill, getProperty, haveEffect, mpCost, myHp, myLocation, myMaxhp, myMp, setProperty, toBoolean, toInt } from "kolmafia";
+import { auto_have_skill } from "../auto_util";
+import { canUse$1, canUse$2, useSkill$1, useSkill$2 } from "./auto_combat_util";
+
 //Path specific combat handling for The Source
 
-string auto_combatTheSourceStage1(int round, monster enemy, string text)
+//defined in /autoscend/combat/auto_combat_the_source.ash
+export function auto_combatTheSourceStage1(round_1: number, enemy: Monster, text: string): string
 {
-	##stage1 = 1st round actions: puzzle boss, banish, escape, pickpocket, etc. things that need to be done before debuff
-	
-	if($monsters[One Thousand Source Agents, Source Agent] contains enemy)
+	//#stage1 = 1st round actions: puzzle boss, banish, escape, pickpocket, etc. things that need to be done before debuff
+
+	if (Monster.get(["One Thousand Source Agents", "Source Agent"]).includes(enemy))
 	{
-		if(auto_have_skill($skill[Data Siphon]))
+		if (auto_have_skill(Skill.get("Data Siphon")))
 		{
-			if(my_mp() < 50)
+			if (myMp() < 50)
 			{
-				if(auto_have_skill($skill[Source Punch]) && (my_mp() >= mp_cost($skill[Source Punch])))
+				if (auto_have_skill(Skill.get("Source Punch")) && myMp() >= mpCost(Skill.get("Source Punch")))
 				{
-					return useSkill($skill[Source Punch], false);
+					return useSkill$1(Skill.get("Source Punch"), false);
 				}
 			}
-			else if(my_mp() > 125)
+			else if (myMp() > 125)
 			{
-				if(canUse($skill[Reboot]) && ((have_effect($effect[Latency]) > 0) || ((my_hp() * 2) < my_maxhp())))
+				if (canUse$2(Skill.get("Reboot")) && (haveEffect(Effect.get("Latency")) > 0 || myHp() * 2 < myMaxhp()))
 				{
-					return useSkill($skill[Reboot]);
+					return useSkill$2(Skill.get("Reboot"));
 				}
-				if(canUse($skill[Humiliating Hack]))
+				if (canUse$2(Skill.get("Humiliating Hack")))
 				{
-					return useSkill($skill[Humiliating Hack]);
+					return useSkill$2(Skill.get("Humiliating Hack"));
 				}
-				if(canUse($skill[Disarmament]))
+				if (canUse$2(Skill.get("Disarmament")))
 				{
-					return useSkill($skill[Disarmament]);
+					return useSkill$2(Skill.get("Disarmament"));
 				}
-				if(canUse($skill[Big Guns]) && (my_hp() < 100))
+				if (canUse$2(Skill.get("Big Guns")) && myHp() < 100)
 				{
-					return useSkill($skill[Big Guns]);
+					return useSkill$2(Skill.get("Big Guns"));
 				}
 
 			}
-			else if(my_mp() > 100)
+			else if (myMp() > 100)
 			{
-				if(canUse($skill[Humiliating Hack]))
+				if (canUse$2(Skill.get("Humiliating Hack")))
 				{
-					return useSkill($skill[Humiliating Hack]);
+					return useSkill$2(Skill.get("Humiliating Hack"));
 				}
-				if(canUse($skill[Disarmament]))
+				if (canUse$2(Skill.get("Disarmament")))
 				{
-					return useSkill($skill[Disarmament]);
+					return useSkill$2(Skill.get("Disarmament"));
 				}
 			}
 
-			if(canUse($skill[Source Kick], false))
+			if (canUse$1(Skill.get("Source Kick"), false))
 			{
-				return useSkill($skill[Source Kick], false);
+				return useSkill$1(Skill.get("Source Kick"), false);
 			}
 		}
 
-		if(canUse($skill[Big Guns]))
+		if (canUse$2(Skill.get("Big Guns")))
 		{
-			return useSkill($skill[Big Guns]);
+			return useSkill$2(Skill.get("Big Guns"));
 		}
-		if(canUse($skill[Source Punch], false))
+		if (canUse$1(Skill.get("Source Punch"), false))
 		{
-			return useSkill($skill[Source Punch], false);
+			return useSkill$1(Skill.get("Source Punch"), false);
 		}
 		return "runaway";
 	}
-	
+
 	return "";
 }
 
-string auto_combatTheSourceStage4(int round, monster enemy, string text)
+export function auto_combatTheSourceStage4(round_1: number, enemy: Monster, text: string): string
 {
 	// stage 4 = prekill. copy, sing along, flyer and other things that need to be done after delevel but before killing
-	
 	//source terminal iotm source path specific action. provokes an agent into attacking you next turn 3/day
 	//is turn referring to combat round or next adv? this is placed in stage 4 on the assumption it means next adv. if it means next combat round then it should be moved to stage 2
-	if(canUse($skill[Portscan]) && (my_location().turns_spent < 8) && (get_property("_sourceTerminalPortscanUses").to_int() < 3) && !get_property("_portscanPending").to_boolean())
+	if (canUse$2(Skill.get("Portscan")) && myLocation().turnsSpent < 8 && toInt(getProperty("_sourceTerminalPortscanUses")) < 3 && !toBoolean(getProperty("_portscanPending")))
 	{
-		if($locations[The Castle in the Clouds in the Sky (Ground Floor), The Haunted Bathroom, The Haunted Gallery] contains my_location())
+		if (Location.get(["The Castle in the Clouds in the Sky (Ground Floor)", "The Haunted Bathroom", "The Haunted Gallery"]).includes(myLocation()))
 		{
-			set_property("_portscanPending", true);
-			return useSkill($skill[Portscan]);
+			setProperty("_portscanPending", true.toString());
+			return useSkill$2(Skill.get("Portscan"));
 		}
 	}
-	
+
 	return "";
 }

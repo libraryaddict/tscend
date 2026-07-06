@@ -1,117 +1,118 @@
-void spookyForestChoiceHandler(int choice)
+import { Item, Location, abort, cliExecute, council, hiddenTempleUnlocked, itemAmount, myMeat, runChoice } from "kolmafia";
+import { autoAdv$2 } from "../auto_adventure";
+import { canBurnDelay } from "../auto_routing";
+import { auto_log_info, auto_log_warning$1, internalQuestStatus } from "../auto_util";
+import { in_koe } from "../paths/kingdom_of_exploathing";
+
+//Defined in autoscend/quests/level_02.ash
+export function spookyForestChoiceHandler(choice: number): void
 {
-	if(choice == 502) // Arboreal Respite (The Spooky Forest)
-	{
-		if(internalQuestStatus("questL02Larva") == 0 && item_amount($item[mosquito larva]) == 0)
+	if (choice === 502)
+	{ // Arboreal Respite (The Spooky Forest)
+		if (internalQuestStatus("questL02Larva") === 0 && itemAmount(Item.get("mosquito larva")) === 0)
 		{
 			// need the mosquito larva
-			run_choice(2); // go to Consciousness of a Stream (#505)
+			runChoice(2); // go to Consciousness of a Stream (#505)
 		}
-		else if(!hidden_temple_unlocked())
+		else if (!hiddenTempleUnlocked())
 		{
-			if(item_amount($item[Tree-Holed Coin]) == 0 && item_amount($item[Spooky Temple map]) == 0)
+			if (itemAmount(Item.get("tree-holed coin")) === 0 && itemAmount(Item.get("Spooky Temple map")) === 0)
 			{
 				// need the tree-holed coin
-				run_choice(2); // go to Consciousness of a Stream (#505)
+				runChoice(2); // go to Consciousness of a Stream (#505)
 			}
-			else if(item_amount($item[Spooky Temple map]) == 0 || item_amount($item[Spooky-Gro Fertilizer]) == 0)
+			else if (itemAmount(Item.get("Spooky Temple map")) === 0 || itemAmount(Item.get("Spooky-Gro fertilizer")) === 0)
 			{
 				// have the coin, need the spooky temple map and spooky-gro fertilizer
-				run_choice(3); // go to Through Thicket and Thinnet (#506)
+				runChoice(3); // go to Through Thicket and Thinnet (#506)
 			}
-			else
-			{
+			else {
 				// need the spooky sapling
-				run_choice(1); // go to The Road Less Traveled (#503)
+				runChoice(1); // go to The Road Less Traveled (#503)
 			}
 		}
-		else
-		{
-			auto_log_warning("In Arboreal Respite for some reason but we don't need a mosquito larva or to unlock the hidden temple!");
-			run_choice(2); // go to Consciousness of a Stream (#505)
+		else {
+			auto_log_warning$1("In Arboreal Respite for some reason but we don't need a mosquito larva or to unlock the hidden temple!");
+			runChoice(2); // go to Consciousness of a Stream (#505)
 		}
 	}
-	else if(choice == 503) // The Road Less Traveled (The Spooky Forest)
-	{
-		run_choice(3); // go to Tree's Last Stand (#504)
+	else if (choice === 503)
+	{ // The Road Less Traveled (The Spooky Forest)
+		runChoice(3); // go to Tree's Last Stand (#504)
 	}
-	else if(choice == 504) // Tree's Last Stand (The Spooky Forest)
-	{
+	else if (choice === 504)
+	{ // Tree's Last Stand (The Spooky Forest)
 		// when selling [bar skin] or buying [spooky sapling] we must immediately queue up the next action(s).
 		// otherwise mafia will think our NC handling failed and fallback to the mafia handling.
-		if(item_amount($item[bar skin]) > 1)
+		if (itemAmount(Item.get("bar skin")) > 1)
 		{
-			run_choice(2); // sell all bar skins (doesn't leave choice)
+			runChoice(2); // sell all bar skins (doesn't leave choice)
 		}
-		else if(item_amount($item[bar skin]) == 1)
+		else if (itemAmount(Item.get("bar skin")) === 1)
 		{
-			run_choice(1); // sell bar skin (doesn't leave choice)
+			runChoice(1); // sell bar skin (doesn't leave choice)
 		}
-		if(!hidden_temple_unlocked() && item_amount($item[Spooky Sapling]) == 0 && my_meat() > 100)
+		if (!hiddenTempleUnlocked() && itemAmount(Item.get("spooky sapling")) === 0 && myMeat() > 100)
 		{
-			run_choice(3); // get the spooky sapling (doesn't leave choice)
+			runChoice(3); // get the spooky sapling (doesn't leave choice)
 		}
-		run_choice(4); // leave the choice
+		runChoice(4); // leave the choice
 	}
-	else if(choice == 505) // Consciousness of a Stream (The Spooky Forest)
-	{
-		if(internalQuestStatus("questL02Larva") == 0 && item_amount($item[mosquito larva]) == 0)
+	else if (choice === 505)
+	{ // Consciousness of a Stream (The Spooky Forest)
+		if (internalQuestStatus("questL02Larva") === 0 && itemAmount(Item.get("mosquito larva")) === 0)
 		{
-			run_choice(1); // Get the mosquito larva
+			runChoice(1); // Get the mosquito larva
 		}
-		else
-		{
-			run_choice(2); // Get the tree-holed coin or skip
-		}
-	}
-	else if(choice == 506) // Through Thicket and Thinnet (The Spooky Forest)
-	{
-		if(!hidden_temple_unlocked() && item_amount($item[Spooky-Gro Fertilizer]) == 0)
-		{
-			run_choice(2); // get the spooky-gro fertilizer
-		}
-		else
-		{
-			run_choice(3); // go to O Lith, Mon (#507)
+		else {
+			runChoice(2); // Get the tree-holed coin or skip
 		}
 	}
-	else if(choice == 507) // O Lith, Mon (The Spooky Forest)
-	{
-		if(!hidden_temple_unlocked() && item_amount($item[Tree-Holed Coin]) > 0 && item_amount($item[Spooky Temple map]) == 0)
+	else if (choice === 506)
+	{ // Through Thicket and Thinnet (The Spooky Forest)
+		if (!hiddenTempleUnlocked() && itemAmount(Item.get("Spooky-Gro fertilizer")) === 0)
 		{
-			run_choice(1); // get the spooky temple map
+			runChoice(2); // get the spooky-gro fertilizer
 		}
-		else
-		{
-			run_choice(3); // skip
+		else {
+			runChoice(3); // go to O Lith, Mon (#507)
 		}
 	}
-	else
-	{
+	else if (choice === 507)
+	{ // O Lith, Mon (The Spooky Forest)
+		if (!hiddenTempleUnlocked() && itemAmount(Item.get("tree-holed coin")) > 0 && itemAmount(Item.get("Spooky Temple map")) === 0)
+		{
+			runChoice(1); // get the spooky temple map
+		}
+		else {
+			runChoice(3); // skip
+		}
+	}
+	else {
 		abort("unhandled choice in spookyForestChoiceHandler");
 	}
 }
 
-boolean L2_mosquito()
+export function L2_mosquito(): boolean
 {
-	if(internalQuestStatus("questL02Larva") < 0 || internalQuestStatus("questL02Larva") > 1)
+	if (internalQuestStatus("questL02Larva") < 0 || internalQuestStatus("questL02Larva") > 1)
 	{
 		return false;
 	}
-	if(canBurnDelay($location[The Spooky Forest]))
+	if (canBurnDelay(Location.get("The Spooky Forest")))
 	{
 		// Arboreal Respite choice adventure has a delay of 5 adventures.
 		return false;
 	}
 	auto_log_info("Trying to find a mosquito.", "blue");
-	if(autoAdv($location[The Spooky Forest]))
+	if (autoAdv$2(Location.get("The Spooky Forest")))
 	{
-		if(internalQuestStatus("questL02Larva") > 0 || item_amount($item[mosquito larva]) > 0)
+		if (internalQuestStatus("questL02Larva") > 0 || itemAmount(Item.get("mosquito larva")) > 0)
 		{
 			council();
-			if(in_koe())
+			if (in_koe())
 			{
-				cli_execute("refresh quests");
+				cliExecute("refresh quests");
 			}
 		}
 		return true;
