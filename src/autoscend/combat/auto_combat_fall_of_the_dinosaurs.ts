@@ -22,11 +22,11 @@ export function fotd_combat_helper(): void
 	// kachungasaur					300% meat drop, stun resistance based on ML
 	// dilophosaur					will always hit
 
-	let dino_list: Map<number, string> = new Map(splitString("chicken archelon ghostasaurus flatusaurus spikolodon pterodactyl velociraptor kachungasaur dilophosaur", " ").map((_v, _i) => [_i, _v]));
+	const dino_list: Map<number, string> = new Map(splitString("chicken archelon ghostasaurus flatusaurus spikolodon pterodactyl velociraptor kachungasaur dilophosaur", " ").map((_v, _i) => [_i, _v]));
 
-	for (let d of dino_list.keys())
+	for (const d of dino_list.keys())
 	{
-		let dino: string = (dino_list.get(d) ?? dino_list.set(d, "").get(d));
+		const dino: string = (dino_list.get(d) ?? dino_list.set(d, "").get(d));
 		if (lastMonster().randomModifiers.includes(dino))
 		{
 			setProperty("_auto_combatFotdDinosaur", dino);
@@ -45,7 +45,7 @@ export function auto_combatFallOfTheDinosaursStage1(round_1: number, enemy: Mons
 	}
 	// Only get 1 combat round with Velociraptor
 
-	let dino: string = getProperty("_auto_combatFotdDinosaur");
+	const dino: string = getProperty("_auto_combatFotdDinosaur");
 	if (dino === "velociraptor")
 	{
 		return "attack with weapon"; // TODO - needs some logic to determine best auto-kill method -whether that be saucestorm, saucegeyser or attack with weapon
@@ -62,7 +62,7 @@ export function auto_combatFallOfTheDinosaursStage5(round_1: number, enemy: Mons
 		return "";
 	}
 
-	let dino: string = getProperty("_auto_combatFotdDinosaur");
+	const dino: string = getProperty("_auto_combatFotdDinosaur");
 	if (dino === "archelon")
 	{
 		// reflects damage from spells back to player.
@@ -116,7 +116,7 @@ export function auto_combatFallOfTheDinosaursStage5(round_1: number, enemy: Mons
 	}
 	if (dino === "ghostasaurus")
 	{ // physically immune, ml-scaling elemental resistance
-		let dino_difficulty: number = (containsText(enemy.attributes, "Scale:") ? 0 : toInt(enemy.baseAttack / 1.8));
+		const dino_difficulty: number = (containsText(enemy.attributes, "Scale:") ? 0 : toInt(enemy.baseAttack / 1.8));
 		if (dino_difficulty >= 75 && canUse$2(Skill.get("Silent Treatment")))
 		{
 			return useSkill$1(Skill.get("Silent Treatment"), true);

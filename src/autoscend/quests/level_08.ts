@@ -39,7 +39,7 @@ export function needOre(): boolean
 	{
 		return false;
 	}
-	let oreGoal: Item = toItem(getProperty("trapperOre"));
+	const oreGoal: Item = toItem(getProperty("trapperOre"));
 	if (itemAmount(oreGoal) >= 3)
 	{
 		return false;
@@ -68,11 +68,11 @@ function getCellToMine(oreGoal: Item): number
 
 	function parseMineLayout(): Map<number, Item>
 	{
-		let minedCells: Map<number, Item> = new Map();
-		let mineLayout: string = getProperty("mineLayout1");
+		const minedCells: Map<number, Item> = new Map();
+		const mineLayout: string = getProperty("mineLayout1");
 		if (mineLayout !== "")
 		{
-			for (let [iter, str] of splitString(substring(mineLayout, 1), "#").entries())
+			for (const [iter, str] of splitString(substring(mineLayout, 1), "#").entries())
 			{
 				if (containsText(str, "asbestos ore"))
 				{
@@ -109,11 +109,11 @@ function getCellToMine(oreGoal: Item): number
 
 	function findSparklingCells(minePage: string): Map<number, number>
 	{
-		let sparkles: Map<number, number> = new Map();
-		let mrSparkle: AshMatcher = new AshMatcher("title='Promising Chunk of Wall \\((\\d),(\\d)\\)", minePage);
+		const sparkles: Map<number, number> = new Map();
+		const mrSparkle: AshMatcher = new AshMatcher("title='Promising Chunk of Wall \\((\\d),(\\d)\\)", minePage);
 		while (mrSparkle.find())
 		{
-			let sparkleCell: number = toInt(mrSparkle.group(1)) + toInt(mrSparkle.group(2)) * 8;
+			const sparkleCell: number = toInt(mrSparkle.group(1)) + toInt(mrSparkle.group(2)) * 8;
 			sparkles.set(sparkleCell, 1); // don't actually care about the value. Just want the cells as keys so we can use contains
 		}
 		return sparkles;
@@ -122,7 +122,7 @@ function getCellToMine(oreGoal: Item): number
 	function getOrthogonals(cell: number): number[]
 	{
 		// starting at the cell above, going clockwise
-		let orthogonals: number[] = [];
+		const orthogonals: number[] = [];
 		orthogonals[0] = cell - 8;
 		orthogonals[1] = cell + 1;
 		orthogonals[2] = cell + 8;
@@ -134,12 +134,12 @@ function getCellToMine(oreGoal: Item): number
 	{
 		// this is basically bounds checking for cells
 		// set rowLimit = 6 to not care about rows (there is no row 7)
-		let column: number = cellToCheck % 8;
+		const column: number = cellToCheck % 8;
 		if (column < 1 || column > 6)
 		{
 			return false;
 		}
-		let row: number = cellToCheck / 8;
+		const row: number = cellToCheck / 8;
 		if (row < 1 || row > 6 || row > rowLimit)
 		{
 			return false;
@@ -149,7 +149,7 @@ function getCellToMine(oreGoal: Item): number
 
 	function isInSideColumn(cellToCheck: number): boolean
 	{
-		let column: number = cellToCheck % 8;
+		const column: number = cellToCheck % 8;
 		if (column === 1 || column === 6)
 		{
 			return true;
@@ -157,33 +157,33 @@ function getCellToMine(oreGoal: Item): number
 		return false;
 	}
 	// - Simplest case, a fresh mine cavern
-	let mineLayout: string = visitUrl("mining.php?mine=1");
+	const mineLayout: string = visitUrl("mining.php?mine=1");
 	if (getProperty("auto_minedCells") === "")
 	{
 		// pick a random column to start between 2-5
 		return 50 + random(4); // using 50 as we're in row 6 to start and random returns from 0 to range-1. Hence 6 * 8 + 2
 	}
 	// - If we have started mining a cavern, lets continue mining the same column upwards until row 3
-	let previously_mined: Map<number, string> = new Map(splitString(getProperty("auto_minedCells"), ",").map((_v, _i) => [_i, _v]));
-	let num_prev_mined: number = previously_mined.size;
-	let lastCell: number = toInt((previously_mined.get(num_prev_mined - 1) ?? previously_mined.set(num_prev_mined - 1, "").get(num_prev_mined - 1)));
+	const previously_mined: Map<number, string> = new Map(splitString(getProperty("auto_minedCells"), ",").map((_v, _i) => [_i, _v]));
+	const num_prev_mined: number = previously_mined.size;
+	const lastCell: number = toInt((previously_mined.get(num_prev_mined - 1) ?? previously_mined.set(num_prev_mined - 1, "").get(num_prev_mined - 1)));
 	if (num_prev_mined < 4 && (lastCell > 32 && lastCell < 55))
 	{
 		// mine the square directly above it
 		return lastCell - 8;
 	}
 	// - If we've got to row 3 or above, start searching for ores.
-	let minedCells: Map<number, Item> = parseMineLayout();
-	let oreSeen: Map<number, number> = new Map();
-	for (let [oreCell, oreType] of minedCells)
+	const minedCells: Map<number, Item> = parseMineLayout();
+	const oreSeen: Map<number, number> = new Map();
+	for (const [oreCell, oreType] of minedCells)
 	{
 		if (oreType === oreGoal)
 		{
 			oreSeen.set(oreCell, 1); // value doesn't matter, just want to count and iterate the keys
 		}
 	}
-	let sparklingCells: Map<number, number> = findSparklingCells(mineLayout);
-	let potentialCells: Map<number, number> = new Map();
+	const sparklingCells: Map<number, number> = findSparklingCells(mineLayout);
+	const potentialCells: Map<number, number> = new Map();
 	let potentialCount: number = 0;
 	if (oreSeen.size === 0)
 	{
@@ -202,7 +202,7 @@ function getCellToMine(oreGoal: Item): number
 		let avoidSides: boolean = true;
 		while (potentialCells.size === 0 && rowLimit < 5)
 		{
-			for (let sparkleCell of sparklingCells.keys())
+			for (const sparkleCell of sparklingCells.keys())
 			{
 				if (canMine(sparkleCell, rowLimit))
 				{
@@ -229,10 +229,10 @@ function getCellToMine(oreGoal: Item): number
 		let rowLimit: number = 3;
 		while (potentialCells.size === 0 && rowLimit < 5)
 		{
-			for (let oreCell of oreSeen.keys())
+			for (const oreCell of oreSeen.keys())
 			{
-				let orthogonals: number[] = getOrthogonals(oreCell);
-				for (let [_, orthoCell] of orthogonals.entries())
+				const orthogonals: number[] = getOrthogonals(oreCell);
+				for (const [_, orthoCell] of orthogonals.entries())
 				{
 					if (canMine(orthoCell, rowLimit) && sparklingCells.has(orthoCell))
 					{
@@ -249,7 +249,7 @@ function getCellToMine(oreGoal: Item): number
 			// but have exhausted all the twinkling cells adjacent to the ores we've found
 			// first lets find the loadstone cell
 			let loadstoneCell: number = 0;
-			for (let [oreCell, oreType] of minedCells)
+			for (const [oreCell, oreType] of minedCells)
 			{
 				if (oreType === Item.get("loadstone"))
 				{
@@ -257,8 +257,8 @@ function getCellToMine(oreGoal: Item): number
 				}
 			}
 			// now add all twinkling cells adjacent to the loadstone in the top 4 rows to the potential cells
-			let orthogonals: number[] = getOrthogonals(loadstoneCell);
-			for (let [_, orthoCell] of orthogonals.entries())
+			const orthogonals: number[] = getOrthogonals(loadstoneCell);
+			for (const [_, orthoCell] of orthogonals.entries())
 			{
 				if (canMine(orthoCell, 4) && sparklingCells.has(orthoCell))
 				{
@@ -268,7 +268,7 @@ function getCellToMine(oreGoal: Item): number
 			}
 		}
 	}
-	let numPotentials: number = potentialCells.size;
+	const numPotentials: number = potentialCells.size;
 	// only found one potential, just return it
 	if (numPotentials === 1)
 	{
@@ -334,7 +334,7 @@ function L8_getGoatCheese(): boolean
 	}
 	auto_lostStomach$1(true);
 
-	let retval: boolean = autoAdv$2(Location.get("The Goatlet"));
+	const retval: boolean = autoAdv$2(Location.get("The Goatlet"));
 	auto_sourceTerminalEducate(Skill.get("Extract"), Skill.get("Portscan"));
 	return retval;
 }
@@ -349,8 +349,8 @@ export function L8_mountainManSummon(): boolean
 	{ // step1 = we spoke to trapper to learn what ores he wants
 		return false;
 	}
-	let oreGoal: Item = toItem(getProperty("trapperOre"));
-	let current_ore: number = itemAmount(oreGoal);
+	const oreGoal: Item = toItem(getProperty("trapperOre"));
+	const current_ore: number = itemAmount(oreGoal);
 	if (current_ore >= 3)
 	{
 		return false;
@@ -365,9 +365,9 @@ export function L8_mountainManSummon(): boolean
 	// use a summon if we can guarantee it will be enough via pro skateboard and YR
 	if (canSummonMonster(Monster.get("mountain man")) && canYellowRay$1())
 	{
-		let need_dupe: boolean = current_ore < 1;
-		let can_mctwist: boolean = auto_can_equip(Item.get("pro skateboard")) && !toBoolean(getProperty("_epicMcTwistUsed"));
-		let will_mctwist: boolean = can_mctwist && need_dupe;
+		const need_dupe: boolean = current_ore < 1;
+		const can_mctwist: boolean = auto_can_equip(Item.get("pro skateboard")) && !toBoolean(getProperty("_epicMcTwistUsed"));
+		const will_mctwist: boolean = can_mctwist && need_dupe;
 		auto_log_info$1(`Trying to summon a mountain man, which we will YR${(will_mctwist ? " and McTwist." : ".")}`);
 		adjustForYellowRayIfPossible$1();
 		if (will_mctwist)
@@ -393,7 +393,7 @@ function L8_getMineOres(): boolean
 		return false;
 	}
 
-	let oreGoal: Item = toItem(getProperty("trapperOre"));
+	const oreGoal: Item = toItem(getProperty("trapperOre"));
 
 	if (itemAmount(oreGoal) >= 3)
 	{
@@ -440,7 +440,7 @@ function L8_getMineOres(): boolean
 			outfit("Mining Gear");
 			acquireHP$1(1);
 			auto_log_info("Mining in Itznotyerzitz Mine for Trapper ore", "blue");
-			let cell: number = getCellToMine(oreGoal);
+			const cell: number = getCellToMine(oreGoal);
 			if (cell !== 0)
 			{
 				setProperty("auto_minedCells", `${getProperty("auto_minedCells")}${cell.toString()},`);
@@ -551,10 +551,10 @@ function L8_trapperExtreme(): boolean
 		return false;
 	}
 	// We don't need to force the first NC, it''s superlikely. The other two we can.
-	let currentExtremity: number = toInt(getProperty("currentExtremity"));
+	const currentExtremity: number = toInt(getProperty("currentExtremity"));
 	if (currentExtremity === 1 || currentExtremity === 2)
 	{
-		let NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The eXtreme Slope"));
+		const NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The eXtreme Slope"));
 		auto_log_info(`Trying to force NC at extreme slope: ${NCForced.toString()}`, "blue");
 	}
 	// try to get extreme points
@@ -744,12 +744,12 @@ export function L8_trapperGroar(): boolean
 		return false; //don't try for Groar as Professor
 	}
 	// we need 5 cold res to be allowed to adventure in [Mist-shrouded Peak]
-	let resGoal: Map<Element, number> = new Map();
+	const resGoal: Map<Element, number> = new Map();
 	resGoal.set(Element.get("cold"), 5);
 	// try getting resistance without equipment before bothering to change gear
 
 	let retval: boolean = false;
-	let initial_adv: number = mySessionAdv();
+	const initial_adv: number = mySessionAdv();
 	if (provideResistances$4(resGoal, Location.get("Mist-Shrouded Peak"), false) || provideResistances$4(resGoal, Location.get("Mist-Shrouded Peak"), true))
 	{
 		auto_log_info("Time to take out Gargle, sure, Gargle (Groar)", "blue");
@@ -782,12 +782,12 @@ export function L8_trapperGroar(): boolean
 		//several inf loops can occur here
 		auto_log_debug("Adventured without spending an adv in [Mist-shrouded Peak]. Checking for problems", "blue");
 
-		let initial_step: number = internalQuestStatus("questL08Trapper");
-		let initial_s: string = getProperty("questL08Trapper");
+		const initial_step: number = internalQuestStatus("questL08Trapper");
+		const initial_s: string = getProperty("questL08Trapper");
 		cliExecute("refresh quests");
-		let current_step: number = internalQuestStatus("questL08Trapper");
-		let current_s: string = getProperty("questL08Trapper");
-		let track_error: boolean = initial_step !== current_step;
+		const current_step: number = internalQuestStatus("questL08Trapper");
+		const current_s: string = getProperty("questL08Trapper");
+		const track_error: boolean = initial_step !== current_step;
 
 		if (track_error)
 		{ //quest tracking was wrong and fixed.
@@ -828,7 +828,7 @@ export function L8_trapperPeak(): boolean
 	// unlock peak using ninja climbing gear
 	if (itemAmount(Item.get("ninja rope")) > 0 && itemAmount(Item.get("ninja carabiner")) > 0 && itemAmount(Item.get("ninja crampons")) > 0)
 	{
-		let resGoal: Map<Element, number> = new Map();
+		const resGoal: Map<Element, number> = new Map();
 		resGoal.set(Element.get("cold"), 5);
 		if (provideResistances$4(resGoal, Location.get("Mist-Shrouded Peak"), true))
 		{
@@ -925,7 +925,7 @@ export function L8_trapperSlope(): boolean
 export function L8_trapperTalk(): boolean
 {
 	// talk to the trapper to advance the L8 quest.
-	let initial_step: number = internalQuestStatus("questL08Trapper");
+	const initial_step: number = internalQuestStatus("questL08Trapper");
 	if (initial_step !== 0 && initial_step !== 1 && initial_step !== 5)
 	{
 		return false; // only need to talk to trapper at steps 0, 1, and 5

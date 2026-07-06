@@ -84,8 +84,8 @@ export function auto_JunkyardCombatHandler(round_1: number, enemy: Monster, text
 		flyer = Item.get("jam band flyers");
 	}
 	let stunner: Skill = getStunner(enemy);
-	let stunned: boolean = combat_status_check("stunned");
-	let gremlinTakesDamage: boolean = isAttackFamiliar(myFamiliar()) || monsterHp() < 0.8 * monsterHp(enemy);
+	const stunned: boolean = combat_status_check("stunned");
+	const gremlinTakesDamage: boolean = isAttackFamiliar(myFamiliar()) || monsterHp() < 0.8 * monsterHp(enemy);
 	let shouldFlyer: boolean = false;
 	let staggeringFlyer: boolean = false;
 	let flyerWith: Item = Item.none;
@@ -105,7 +105,7 @@ export function auto_JunkyardCombatHandler(round_1: number, enemy: Monster, text
 		else if (canUse$4(Item.get("beehive")))
 		{
 			let canBeehiveGremlin: boolean = false;
-			let beehiveDamage: number = ceil(30 * combatItemDamageMultiplier() * MLDamageToMonsterMultiplier());
+			const beehiveDamage: number = ceil(30 * combatItemDamageMultiplier() * MLDamageToMonsterMultiplier());
 			if (toBoolean(getProperty("auto_gremlinMoly")))
 			{
 				//don't kill tool gremlin with beehive
@@ -184,7 +184,7 @@ export function auto_JunkyardCombatHandler(round_1: number, enemy: Monster, text
 		}
 	}
 
-	for (let it of Item.get(["seal tooth", "spectre scepter", "Doc Galaktik's Pungent Unguent"]))
+	for (const it of Item.get(["seal tooth", "spectre scepter", "Doc Galaktik's Pungent Unguent"]))
 	{
 		if (canUse$3(it, false) && glover_usable(it.toString()))
 		{

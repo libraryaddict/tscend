@@ -41,7 +41,7 @@ export function koe_rmi_count(): number
 export function koe_acquire_rmi$1(target: number): boolean
 {
 	//acquires target amount of rare meat isotopes by converting meat into rmi
-	let it: Item = Item.get("rare Meat isotope");
+	const it: Item = Item.get("rare Meat isotope");
 	if (itemAmount(it) >= target)
 	{
 		return true; //we already have the desired amount
@@ -51,7 +51,7 @@ export function koe_acquire_rmi$1(target: number): boolean
 		auto_log_warning(`We wanted to acquire ${target} [rare Meat Isotope] but were unable to convert enough meat to get them`, "red");
 		return false;
 	}
-	let need: number = target - itemAmount(it);
+	const need: number = target - itemAmount(it);
 	auto_log_info(`Attempting to purchase ${need} [rare Meat Isotope] from [Cosmic Ray's Bazaar]`, "blue");
 	buy(Coinmaster.get("Cosmic Ray's Bazaar"), need, it);
 	return itemAmount(it) >= target;
@@ -100,25 +100,25 @@ export function LX_koeInvaderHandler(): boolean
 	simMaximizeWith(Location.none, "200 all res");
 
 	let damagePerRound: number = 0.0;
-	let baseDamage: number = 1.0 - 0.1 * myDaycount();
-	for (let el of Element.get(["cold", "hot", "sleaze", "spooky", "stench"]))
+	const baseDamage: number = 1.0 - 0.1 * myDaycount();
+	for (const el of Element.get(["cold", "hot", "sleaze", "spooky", "stench"]))
 	{
-		let offset: number = (auto_canBeachCombHead(el.toString()) ? 3.0 : 0.0);
+		const offset: number = (auto_canBeachCombHead(el.toString()) ? 3.0 : 0.0);
 		damagePerRound += baseDamage * (100.0 - elemental_resist_value(toInt(offset + simValue(`${el} Resistance`)))) / 100.0;
 	}
 	auto_log_info(`The Invader: Expecting to take ${damagePerRound} damage per round`, "blue");
-	let turns: number = ceil(0.95 / damagePerRound);
+	const turns: number = ceil(0.95 / damagePerRound);
 
-	let damageCap: number = 100 * myDaycount();
+	const damageCap: number = 100 * myDaycount();
 	// It's easiest to kill the invader in two hits with the June cleaver and Lunging Thrust Smack
 	if (haveSkill(Skill.get("Lunging Thrust-Smack")) && auto_is_valid$2(Skill.get("Lunging Thrust-Smack")) && auto_canUseJuneCleaver())
 	{
 		// To kill in 3 rounds, need 19 of each element, or 10 plus bend hell. Check we have it.
 		let have_19_each: boolean = true;
 		let have_10_each: boolean = true;
-		for (let el of splitString(("Cold;Hot;Sleaze;Spooky;Stench"), ";"))
+		for (const el of splitString(("Cold;Hot;Sleaze;Spooky;Stench"), ";"))
 		{
-			let damage_bonus: number = toInt(getProperty(`_juneCleaver${el}`));
+			const damage_bonus: number = toInt(getProperty(`_juneCleaver${el}`));
 			if (damage_bonus < 19) { have_19_each = false; }
 			if (damage_bonus < 10) { have_10_each = false; }
 		}
@@ -140,7 +140,7 @@ export function LX_koeInvaderHandler(): boolean
 			acquireMP$2(24, 0);
 			auto_log_info("Attacking the Invader, using June Cleaver and LTS.", "blue");
 			addToMaximize("200 all res, +equip june cleaver");
-			let ret: boolean = autoAdv$1(1, Location.get("The Invader"));
+			const ret: boolean = autoAdv$1(1, Location.get("The Invader"));
 			if (haveEffect(Effect.get("Beaten Up")) > 0)
 			{
 				abort("We died to the invader. Do it manually please?");
@@ -167,7 +167,7 @@ export function LX_koeInvaderHandler(): boolean
 
 		if (sources * turns * damageCap >= 1000)
 		{
-			for (let el of Element.get(["cold", "hot", "sleaze", "spooky", "stench"]))
+			for (const el of Element.get(["cold", "hot", "sleaze", "spooky", "stench"]))
 			{
 				auto_beachCombHead(el.toString());
 			}
@@ -186,7 +186,7 @@ export function LX_koeInvaderHandler(): boolean
 				addToMaximize(`+equip ${hot_source.toString()}`);
 			}
 
-			let ret: boolean = autoAdv$1(1, Location.get("The Invader"));
+			const ret: boolean = autoAdv$1(1, Location.get("The Invader"));
 			if (haveEffect(Effect.get("Beaten Up")) > 0)
 			{
 				abort("We died to the invader. Do it manually please?");
@@ -202,7 +202,7 @@ function koe_L12FoodSelect(): Item
 {
 	//selects a desireable food item to toss at enemies during L12 war quest battlefield in koe
 	let food_item: Item = Item.none;
-	for (let it of Item.get(["pie man was not meant to eat", "spaghetti with Skullheads", "gnocchetti di Nietzsche", "spaghetti con calaveras", "space chowder", "spaghetti with ghost balls", "crudles", "agnolotti arboli", "shells a la shellfish", "linguini immondizia bianco", "fettucini Inconnu", "ghuol guolash", "suggestive strozzapreti", "fusilli marrownarrow"]))
+	for (const it of Item.get(["pie man was not meant to eat", "spaghetti with Skullheads", "gnocchetti di Nietzsche", "spaghetti con calaveras", "space chowder", "spaghetti with ghost balls", "crudles", "agnolotti arboli", "shells a la shellfish", "linguini immondizia bianco", "fettucini Inconnu", "ghuol guolash", "suggestive strozzapreti", "fusilli marrownarrow"]))
 	{
 		if (itemAmount(it) > 0)
 		{
@@ -217,7 +217,7 @@ export function koe_RationingOutDestruction(): void
 {
 	//this function handles choiceAdventure1391 Rationing out Destruction.
 	//a koe specific event where you sacrifice food items to score battlefield kills during the L12 quest.
-	let food_item: Item = koe_L12FoodSelect();
+	const food_item: Item = koe_L12FoodSelect();
 	if (food_item === Item.none)
 	{
 		abort("I am at the choice adventure and do not know what food I should kill my enemies with during L12 war quest");
@@ -271,7 +271,7 @@ export function L12_koe_clearBattlefield(): boolean
 	}
 	//equip yourself for the war
 	equipWarOutfit();
-	let warKillDoubler: Item = (myPrimestat() === Stat.get("Mysticality") ? Item.get("Jacob's rung") : Item.get("haunted paddle-ball"));
+	const warKillDoubler: Item = (myPrimestat() === Stat.get("Mysticality") ? Item.get("Jacob's rung") : Item.get("haunted paddle-ball"));
 	pullXWhenHaveY(warKillDoubler, 1, 0);
 	if (possessEquipment(warKillDoubler))
 	{
@@ -302,7 +302,7 @@ export function L12_koe_finalizeWar(): boolean
 	acquireHP();
 	acquireMP$1(60);
 	auto_log_info("Let's fight the final boss of the frat-hippy war!", "blue");
-	let retval: boolean = autoAdv$2(Location.get("The Exploaded Battlefield"));
+	const retval: boolean = autoAdv$2(Location.get("The Exploaded Battlefield"));
 	council(); //need to visit to grab 10 rare meat isotopes and get next quests
 	cliExecute("refresh quests"); //needed to recognize that war is over
 	if (!retval)
@@ -377,6 +377,6 @@ export function L13_koe_towerNSNagamar(): boolean
 export function koe_NeedWhitePixels(): boolean
 {
 	if (!needDigitalKey()) { return false; }
-	let pixels_needed: number = (toBoolean(getProperty("spaceInvaderDefeated")) ? 30 : 20);
+	const pixels_needed: number = (toBoolean(getProperty("spaceInvaderDefeated")) ? 30 : 20);
 	return itemAmount(Item.get("white pixel")) < pixels_needed;
 }

@@ -5,7 +5,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 //Defined in autoscend/iotms/auto_elementalPlanes.ash
 function getCharterIndexable(): Map<Element, Item>
 {
-	let charters: Map<Element, Item> = new Map();
+	const charters: Map<Element, Item> = new Map();
 	charters.set(Element.get("cold"), Item.get("airplane charter: The Glaciest"));
 	charters.set(Element.get("hot"), Item.get("airplane charter: That 70s Volcano"));
 	charters.set(Element.get("sleaze"), Item.get("airplane charter: Spring Break Beach"));
@@ -16,7 +16,7 @@ function getCharterIndexable(): Map<Element, Item>
 
 export function elementalPlanes_access(ele: Element): boolean
 {
-	let charters: Map<Element, Item> = getCharterIndexable();
+	const charters: Map<Element, Item> = getCharterIndexable();
 	return toBoolean(getProperty(`${ele}AirportAlways`)) && isUnrestricted((charters.get(ele) ?? charters.set(ele, Item.none).get(ele)));
 }
 
@@ -35,23 +35,23 @@ export function elementalPlanes_takeJob(ele: Element): boolean
 	}
 	else if (ele === Element.get("stench") && elementalPlanes_access(ele))
 	{
-		let page: string = visitUrl("place.php?whichplace=airport_stench&action=airport3_kiosk");
+		const page: string = visitUrl("place.php?whichplace=airport_stench&action=airport3_kiosk");
 		let choice: number = 1;
-		let at: number = indexOf(page, "Available Assignments");
+		const at: number = indexOf(page, "Available Assignments");
 		if (at === -1)
 		{
 			return false;
 		}
 
-		let sustenance: number = indexOf(page, "Guest Sustenance Assurance", at);
-		let jobs: string[] = ["Racism Reduction", "Compulsory Fun", "Waterway Debris Removal", "Bear Removal", "Electrical Maintenance", "Track Maintenance", "Sexism Reduction"];
+		const sustenance: number = indexOf(page, "Guest Sustenance Assurance", at);
+		const jobs: string[] = ["Racism Reduction", "Compulsory Fun", "Waterway Debris Removal", "Bear Removal", "Electrical Maintenance", "Track Maintenance", "Sexism Reduction"];
 
 		if (sustenance !== -1)
 		{
 			auto_log_info("Trying to avoid Guest Sustenance Assurance Dinseylandfill job.", "blue");
-			for (let job of jobs)
+			for (const job of jobs)
 			{
-				let newAt: number = indexOf(page, job, at);
+				const newAt: number = indexOf(page, job, at);
 				if (newAt !== -1)
 				{
 					auto_log_info(`Found new job option: ${job}`, "blue");
@@ -76,21 +76,21 @@ export function elementalPlanes_takeJob(ele: Element): boolean
 			return false;
 		}
 
-		let page: string = visitUrl("place.php?whichplace=airport_cold&action=glac_walrus");
+		const page: string = visitUrl("place.php?whichplace=airport_cold&action=glac_walrus");
 
-		let bucket: AshMatcher = new AshMatcher("I'll get you some (\\w+)", page);
+		const bucket: AshMatcher = new AshMatcher("I'll get you some (\\w+)", page);
 
 		let choice: number = 0;
 		let best: number = 0;
 
-		let jobs: string[] = ["balls", "blood", "bolts", "chum", "ice", "milk", "moonbeams", "chicken", "rain"];
+		const jobs: string[] = ["balls", "blood", "bolts", "chum", "ice", "milk", "moonbeams", "chicken", "rain"];
 		let at: number = 1;
 		while (bucket.find())
 		{
 			at = at + 1;
 			auto_log_info(`Found bucket ${bucket.group(1)}.`, "blue");
 			let i: number = 0;
-			for (let job of jobs)
+			for (const job of jobs)
 			{
 				i = i + 1;
 				if (bucket.group(1) === job && i > best)

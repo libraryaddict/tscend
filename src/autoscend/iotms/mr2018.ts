@@ -25,7 +25,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 //Defined in autoscend/iotms/mr2018.ash
 export function isjanuaryToteAvailable(): boolean
 {
-	let tote: Item = wrap_item(Item.get("January's Garbage Tote"));
+	const tote: Item = wrap_item(Item.get("January's Garbage Tote"));
 	return itemAmount(tote) > 0 && auto_is_valid(tote) && !in_bhy();
 }
 
@@ -149,14 +149,14 @@ export function januaryToteAcquire(it: Item): boolean
 		}
 		if (availableAmount(Item.get("makeshift garbage shirt")) === 0)
 		{ //only rummage a new shirt if we don't already have one on hand.
-			let tote: Item = wrap_item(Item.get("January's Garbage Tote"));
+			const tote: Item = wrap_item(Item.get("January's Garbage Tote"));
 			visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=${tote.id}`, false); //rummage in your garbage tote
 			runChoice(5); //get garbage shirt
 		}
 		visitUrl("inv_equip.php?pwd=&which=2&action=equip&whichitem=9699"); //url fail to equip shirt to get a letter
 	}
 	else {
-		let tote: Item = wrap_item(Item.get("January's Garbage Tote"));
+		const tote: Item = wrap_item(Item.get("January's Garbage Tote"));
 		visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=${tote.id}`, false); //rummage in your garbage tote
 		runChoice(choice); //get desired item
 	}
@@ -245,11 +245,11 @@ export function fantasyBanditsFought(): number
 {
 	if (containsText(getProperty("_frMonstersKilled"), "fantasy bandit"))
 	{
-		for (let [idx, it] of splitString(getProperty("_frMonstersKilled"), ",").entries())
+		for (const [idx, it] of splitString(getProperty("_frMonstersKilled"), ",").entries())
 		{
 			if (containsText(it, "fantasy bandit"))
 			{
-				let count_1: number = toInt((splitString(it, ":")[1] ??= ""));
+				const count_1: number = toInt((splitString(it, ":")[1] ??= ""));
 				return count_1;
 			}
 		}
@@ -388,7 +388,7 @@ function songboomSetting$1(option: number): boolean
 		return false;
 	}
 
-	let currentSong: string = getProperty("boomBoxSong");
+	const currentSong: string = getProperty("boomBoxSong");
 	if (option === 1 && currentSong === "Eye of the Giger")
 	{
 		return false;
@@ -420,7 +420,7 @@ function songboomSetting$1(option: number): boolean
 	// \\b(\\d+)\\b matches a whole number (\\d+) that's surrounded by word boundaries (\\b), e.g. a space
 	// [^.]* matches any characters except a period (.), any number of times (*), capturing everything up to the end of the sentence
 	// \\. matches the literal ending period to only check the top boombox sentence
-	let boomMatcher: AshMatcher = new AshMatcher("\\b(\\d+)\\b[^.]*\\.", page);
+	const boomMatcher: AshMatcher = new AshMatcher("\\b(\\d+)\\b[^.]*\\.", page);
 	if (boomMatcher.find())
 	{
 		boomsLeft = toInt(boomMatcher.group(1));
@@ -492,9 +492,9 @@ export function catBurglarHeistsLeft(): number
 	{
 		return 0;
 	}
-	let banked_heists: number = toInt(getProperty("catBurglarBankHeists"));
+	const banked_heists: number = toInt(getProperty("catBurglarBankHeists"));
 	let charge: number = toInt(getProperty("_catBurglarCharge"));
-	let heists_complete: number = toInt(getProperty("_catBurglarHeistsComplete"));
+	const heists_complete: number = toInt(getProperty("_catBurglarHeistsComplete"));
 	let heists_left: number = banked_heists - heists_complete;
 	charge /= 10;
 	while (charge >= 1) {
@@ -513,16 +513,16 @@ function catBurglarHeist$1(it: Item): boolean
 	if (0 === catBurglarHeistsLeft()) { return false; }
 
 	auto_log_info(`Trying to heist a ${it}`, "blue");
-	let backup_familiar: Familiar = myFamiliar();
+	const backup_familiar: Familiar = myFamiliar();
 	try {
 		useFamiliar(Familiar.get("Cat Burglar"));
 
 		let page: string = visitUrl("main.php?heist=1");
-		let button: AshMatcher = new AshMatcher(`name="(st:\\d+:${toInt(it)})"`, page);
+		const button: AshMatcher = new AshMatcher(`name="(st:\\d+:${toInt(it)})"`, page);
 		if (button.find())
 		{
-			let choice_name: string = button.group(1);
-			let url: string = `choice.php?whichchoice=1320&option=1&${choice_name}=${it.toString()}&pwd=${myHash()}`;
+			const choice_name: string = button.group(1);
+			const url: string = `choice.php?whichchoice=1320&option=1&${choice_name}=${it.toString()}&pwd=${myHash()}`;
 			page = visitUrl(url);
 			handleTracker$1(Familiar.get("Cat Burglar").toString(), it.toString(), "auto_otherstuff");
 			return true;
@@ -540,7 +540,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item>
 	/* Note that this is called from auto_pre_adv.ash - WE WILL OVERRIDE FAMILIAR IN
 	 * PREADVENTURE IF WE NEED THE BURGLE.
 	 */
-	let wannaHeists: Map<Monster, Item> = new Map();
+	const wannaHeists: Map<Monster, Item> = new Map();
 
 	if (!canChangeToFamiliar(Familiar.get("XO Skeleton")) && getProperty("sidequestOrchardCompleted") === "none") {
 		// Can't hugpocket? 1 turn filthworms is still a thing you can do!
@@ -555,7 +555,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item>
 		}
 	}
 
-	let oreGoal: Item = toItem(getProperty("trapperOre"));
+	const oreGoal: Item = toItem(getProperty("trapperOre"));
 	if (oreGoal !== Item.none && itemAmount(oreGoal) < 3 && internalQuestStatus("questL08Trapper") < 2 && inHardcore())
 	{
 		wannaHeists.set(Monster.get("mountain man"), oreGoal);
@@ -605,7 +605,7 @@ export function catBurglarHeist(): boolean
 	// We can't know what's burgleable without checking the burgle noncombat,
 	// and that's expensive to do repeatedly. So we burgle only if we want
 	// to burgle the last monster. This is bad if you're about to leave a zone.
-	let wannaHeists: Map<Monster, Item> = catBurglarHeistDesires();
+	const wannaHeists: Map<Monster, Item> = catBurglarHeistDesires();
 
 	if (wannaHeists.has(lastMonster()))
 	{
@@ -681,15 +681,15 @@ export function cheeseWarMachine(stats: number, it: number, eff: number, potion:
 		return false;
 	}
 	equipStatgainIncreasers$1(myPrimestat(), true);
-	let page: string = visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9928`, false);
+	const page: string = visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9928`, false);
 
-	let first: AshMatcher = new AshMatcher("/bbatt/barb(\\d).png", page);
+	const first: AshMatcher = new AshMatcher("/bbatt/barb(\\d).png", page);
 	if (first.find())
 	{
 		let setting: number = toInt(first.group(1));
 		while (setting !== stats)
 		{
-			let temp_1: string = visitUrl(`choice.php?whichchoice=1313&option=1&pwd=${myHash()}`, false);
+			const temp_1: string = visitUrl(`choice.php?whichchoice=1313&option=1&pwd=${myHash()}`, false);
 			setting++;
 			if (setting > 3)
 			{
@@ -698,13 +698,13 @@ export function cheeseWarMachine(stats: number, it: number, eff: number, potion:
 		}
 	}
 
-	let second: AshMatcher = new AshMatcher("/bbatt/bridge(\\d).png", page);
+	const second: AshMatcher = new AshMatcher("/bbatt/bridge(\\d).png", page);
 	if (second.find())
 	{
 		let setting: number = toInt(second.group(1));
 		while (setting !== it)
 		{
-			let temp_1: string = visitUrl(`choice.php?whichchoice=1313&option=2&pwd=${myHash()}`, false);
+			const temp_1: string = visitUrl(`choice.php?whichchoice=1313&option=2&pwd=${myHash()}`, false);
 			setting++;
 			if (setting > 3)
 			{
@@ -713,13 +713,13 @@ export function cheeseWarMachine(stats: number, it: number, eff: number, potion:
 		}
 	}
 
-	let third: AshMatcher = new AshMatcher("/bbatt/holes(\\d).png", page);
+	const third: AshMatcher = new AshMatcher("/bbatt/holes(\\d).png", page);
 	if (third.find())
 	{
 		let setting: number = toInt(third.group(1));
 		while (setting !== eff)
 		{
-			let temp_1: string = visitUrl(`choice.php?whichchoice=1313&option=3&pwd=${myHash()}`, false);
+			const temp_1: string = visitUrl(`choice.php?whichchoice=1313&option=3&pwd=${myHash()}`, false);
 			setting++;
 			if (setting > 3)
 			{
@@ -728,13 +728,13 @@ export function cheeseWarMachine(stats: number, it: number, eff: number, potion:
 		}
 	}
 
-	let fourth: AshMatcher = new AshMatcher("/bbatt/moat(\\d).png", page);
+	const fourth: AshMatcher = new AshMatcher("/bbatt/moat(\\d).png", page);
 	if (fourth.find())
 	{
 		let setting: number = toInt(fourth.group(1));
 		while (setting !== potion)
 		{
-			let temp_1: string = visitUrl(`choice.php?whichchoice=1313&option=4&pwd=${myHash()}`, false);
+			const temp_1: string = visitUrl(`choice.php?whichchoice=1313&option=4&pwd=${myHash()}`, false);
 			setting++;
 			if (setting > 3)
 			{
@@ -743,7 +743,7 @@ export function cheeseWarMachine(stats: number, it: number, eff: number, potion:
 		}
 	}
 
-	let temp: string = visitUrl(`choice.php?whichchoice=1313&option=5&pwd=${myHash()}`, false);
+	const temp: string = visitUrl(`choice.php?whichchoice=1313&option=5&pwd=${myHash()}`, false);
 
 	for (let i: number = 0; i < 5; i++)
 	{
@@ -999,7 +999,7 @@ export function auto_latteDropAvailable(l: Location): boolean
 	// obviously no latte drops are available if you don't HAVE a latte
 	if (availableAmount(Item.get("latte lovers member's mug")) === 0)
 		{ return false; }
-	let latteDrop: string = auto_latteDropName(l);
+	const latteDrop: string = auto_latteDropName(l);
 	if (latteDrop === "")
 		{ return false; }
 	return !containsText(getProperty("latteUnlocks"), latteDrop);
@@ -1049,9 +1049,9 @@ function auto_latteRefill(want1: string, want2: string, want3: string, force: bo
 	if (!toBoolean(getProperty("_latteBanishUsed")) && !force)
 		{ return false; }
 
-	let unlocked: Map<string, boolean> = new Map();
-	let unlocked_array: Map<number, string> = new Map(splitString(getProperty("latteUnlocks"), ",").map((_v, _i) => [_i, _v]));
-	for (let [i, s] of unlocked_array)
+	const unlocked: Map<string, boolean> = new Map();
+	const unlocked_array: Map<number, string> = new Map(splitString(getProperty("latteUnlocks"), ",").map((_v, _i) => [_i, _v]));
+	for (const [i, s] of unlocked_array)
 	{
 		unlocked.set(s, true);
 	}
@@ -1060,7 +1060,7 @@ function auto_latteRefill(want1: string, want2: string, want3: string, force: bo
 	want2 = auto_latteTranslate(want2);
 	want3 = auto_latteTranslate(want3);
 
-	let wants: Map<number, string> = new Map();
+	const wants: Map<number, string> = new Map();
 	if (want1 !== "")
 	{
 		if (!(unlocked.get(want1) ?? unlocked.set(want1, false).get(want1)))
@@ -1083,7 +1083,7 @@ function auto_latteRefill(want1: string, want2: string, want3: string, force: bo
 	function haveWant(want: string): boolean
 	{
 		want = auto_latteTranslate(want);
-		for (let [i, s] of wants)
+		for (const [i, s] of wants)
 		{
 			if (s === want)
 				{ return true; }
@@ -1121,7 +1121,7 @@ function auto_latteRefill(want1: string, want2: string, want3: string, force: bo
 	if (myFamiliar() !== Familiar.none)
 		{ tryAddWant("famxp"); }
 	// just to make sure we have at least 3 ingredients
-	for (let want of ["pumpkin", "cinnamon", "vanilla"])
+	for (const want of ["pumpkin", "cinnamon", "vanilla"])
 		{ tryAddWant(want); }
 
 	if (wants.size < 3)
@@ -1449,7 +1449,7 @@ let $_haveAnyPokeFamiliarEquipment_poke_fam_equipment: Map<Item, boolean> | unde
 
 function haveAnyPokeFamiliarEquipment(): boolean {
 	$_haveAnyPokeFamiliarEquipment_poke_fam_equipment ??= new Map([[Item.get("amulet coin"), true], [Item.get("luck incense"), true], [Item.get("muscle band"), true], [Item.get("razor fang"), true], [Item.get("shell bell"), true], [Item.get("smoke ball"), true]]);
-	for (let [i, _] of $_haveAnyPokeFamiliarEquipment_poke_fam_equipment) {
+	for (const [i, _] of $_haveAnyPokeFamiliarEquipment_poke_fam_equipment) {
 		if (equipmentAmount(i) > 0) {
 			auto_log_debug$1(`Found Tall Grass familiar equipment: ${i}`);
 			return true;

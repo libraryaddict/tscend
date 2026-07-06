@@ -13,16 +13,16 @@ function trackingSplitterFixer(oldSetting: string, day: number, newSetting: stri
 		return false;
 	}
 
-	let cleanSpaces: AshMatcher = new AshMatcher(", ", setting);
+	const cleanSpaces: AshMatcher = new AshMatcher(", ", setting);
 	setting = cleanSpaces.replaceAll(",");
-	let retval: Map<number, string> = new Map(splitString(setting, ",").map((_v, _i) => [_i, _v]));
-	for (let x of retval.keys())
+	const retval: Map<number, string> = new Map(splitString(setting, ",").map((_v, _i) => [_i, _v]));
+	for (const x of retval.keys())
 	{
 		if ((retval.get(x) ?? retval.set(x, "").get(x)) === "")
 		{
 			continue;
 		}
-		let dayAdder: AshMatcher = new AshMatcher("[(]", (retval.get(x) ?? retval.set(x, "").get(x)));
+		const dayAdder: AshMatcher = new AshMatcher("[(]", (retval.get(x) ?? retval.set(x, "").get(x)));
 		retval.set(x, dayAdder.replaceAll(`(${day}:`));
 		if (getProperty(newSetting) !== "")
 		{
@@ -59,7 +59,7 @@ function auto_rename_property(oldprop: string, newprop: string): void
 
 function boolFix(p: string): void
 {
-	let p_val: string = getProperty(p);
+	const p_val: string = getProperty(p);
 	if (p_val === "need" || p_val === "yes")
 	{
 		setProperty(p, true.toString());

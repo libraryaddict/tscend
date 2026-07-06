@@ -80,8 +80,8 @@ export function jarlsberg_buySkills(): void
 		return;
 	}
 
-	let page: string = visitUrl("da.php?place=gate2");
-	let my_skillPoints: AshMatcher = new AshMatcher("(\\d+) skill point", page);
+	const page: string = visitUrl("da.php?place=gate2");
+	const my_skillPoints: AshMatcher = new AshMatcher("(\\d+) skill point", page);
 	if (my_skillPoints.find())
 	{
 		let skillPoints: number = toInt(my_skillPoints.group(1));
@@ -93,7 +93,7 @@ export function jarlsberg_buySkills(): void
 			let skillid: number = 0;
 			//skills are listed in reverse order. from last to first to buy..
 
-			for (let sk of Skill.get(["Radish Horse", "Working Lunch", "Gristlesphere", "Oilsphere", "Coffeesphere", "Chocolatesphere", "Cream Puff", "Blend",
+			for (const sk of Skill.get(["Radish Horse", "Working Lunch", "Gristlesphere", "Oilsphere", "Coffeesphere", "Chocolatesphere", "Cream Puff", "Blend",
 			"Nightcap", "Conjure Cream", "Early Riser", "Fry", "Conjure Dough", "Lunch Like a King", "Slice", "Conjure Cheese",
 			"Egg Man", "Conjure Eggs", "Food Coma", "Chop", "Grill", "Best Served Cold", "Never Late for Dinner", "Conjure Meat Product",
 			"Conjure Vegetables", "Hippotatomous", "Conjure Potato", "Bake", "Freeze", "Conjure Fruit", "The Most Important Meal", "Boil"]))

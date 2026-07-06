@@ -25,7 +25,7 @@ export function auto_combatExploathingStage1(round_1: number, enemy: Monster, te
 			return useItem$1(Item.get("exploding cigar"));
 		}
 		let dmg: number = 0;
-		for (let el of Element.get(["hot", "cold", "sleaze", "spooky", "stench"]))
+		for (const el of Element.get(["hot", "cold", "sleaze", "spooky", "stench"]))
 		{
 			dmg += toInt(min(10, numericModifier(`${el.toString()} Damage`)));
 		}

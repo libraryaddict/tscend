@@ -34,7 +34,7 @@ export function borisAdjustML(): boolean
 		return auto_change_mcd(0);
 	}
 
-	let strong: boolean = auto_have_skill(Skill.get("Barrel Chested"));
+	const strong: boolean = auto_have_skill(Skill.get("Barrel Chested"));
 
 	if (!strong)
 	{
@@ -129,8 +129,8 @@ export function boris_buySkills(): void
 
 	let possBorisPoints: number = 0;
 
-	let page: string = visitUrl("da.php?place=gate1");
-	let my_skillPoints: AshMatcher = new AshMatcher("You can learn (\\d+) more skill", page);
+	const page: string = visitUrl("da.php?place=gate1");
+	const my_skillPoints: AshMatcher = new AshMatcher("You can learn (\\d+) more skill", page);
 	if (my_skillPoints.find())
 	{
 		let skillPoints: number = toInt(my_skillPoints.group(1));
@@ -296,7 +296,7 @@ export function borisDemandSandwich(immediately: boolean): boolean
 	//if can get best sandwich and is forced to get them all now. use ongoing MP regen to get best sandwich
 	if (!immediately && myLevel() > 8)
 	{
-		let cast_count: number = min(remainingDaily(), floor(myMp() / 5));
+		const cast_count: number = min(remainingDaily(), floor(myMp() / 5));
 		if (cast_count > 0)
 		{
 			return useSkill(cast_count, Skill.get("Demand Sandwich"));
@@ -305,7 +305,7 @@ export function borisDemandSandwich(immediately: boolean): boolean
 	//if we are forced to get them all right now then we don't care about level nor MP regen. We will restore MP as needed.
 	if (immediately)
 	{
-		let total_cost: number = remainingDaily() * 5;
+		const total_cost: number = remainingDaily() * 5;
 		if (myMaxmp() >= total_cost)
 		{
 			if (myMp() < total_cost && !acquireMP$1(total_cost))
@@ -338,8 +338,8 @@ export function borisWastedMP(): void
 		return;
 	}
 
-	let max_potential_mp_regen: number = numericModifier("MP Regen Max");
-	let missing_mp: number = myMaxmp() - myMp();
+	const max_potential_mp_regen: number = numericModifier("MP Regen Max");
+	const missing_mp: number = myMaxmp() - myMp();
 	let potential_mp_wasted: number = 0;
 	if (max_potential_mp_regen > missing_mp)
 	{
@@ -349,7 +349,7 @@ export function borisWastedMP(): void
 	while (myHp() < myMaxhp() && potential_mp_wasted > 0)
 	{
 		//multi use without risking wastage. Need to loop a few times because we can't predict what we actually roll for healing.
-		let missingHP: number = myMaxhp() - myHp();
+		const missingHP: number = myMaxhp() - myHp();
 		let castAmount: number = toInt(min(potential_mp_wasted, missingHP / 2));
 		//at exactly 1 HP missing there is a 50% chance of wasting 1 point of HP healed. Better than 100% chance of wasting MP though, so do it.
 		//also this prevents an infinite loop at 1HP missing. Keep that in mind if you remove this
@@ -376,14 +376,14 @@ export function borisAcquireHP(goal: number): boolean
 	while (myHp() < goal)
 	{
 		//we need to loop a few times because our MP tank might be too small to allow us to fully heal in one go. also to prevent wasteage we calculate as if we would get max rolls instead of avg rolls on healed amount when multi casting.
-		let missingHP: number = goal - myHp();
+		const missingHP: number = goal - myHp();
 		let failed_acquireMP: boolean = myMaxmp() < 11;
 		let castAmount: number = missingHP / 2;
 		if (missingHP === 1)
 		{ //at 1 HP less than maxHP there is a 50% chance of wasting 1 point of HP healed. a risk worth taking to achieve target HP.
 			castAmount = 1; //prevents an infinite loop at 1HP missing. since int 1 divided by 2 = 0
 		}
-		let mp_desired: number = toInt(min(castAmount, 0.9 * myMaxmp()));
+		const mp_desired: number = toInt(min(castAmount, 0.9 * myMaxmp()));
 		if (myMp() < mp_desired && myMaxmp() > 10)
 		{ //if maxMP is too low. do not wastefully try restoring it.
 		//I do not have enough MP to cast as many laugh it off as I would like

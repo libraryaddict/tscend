@@ -47,7 +47,7 @@ export function pokefam_getHats(): void
 	if (itemAmount(Item.get("1,960 pok&eacute;dollar bill")) < 50) {
 		return;
 	}
-	for (let it of Item.get(["Team Avarice cap", "Team Sloth cap", "Team Wrath cap", "Mu cap"]))
+	for (const it of Item.get(["Team Avarice cap", "Team Sloth cap", "Team Wrath cap", "Mu cap"]))
 	{
 		if (!possessEquipment(it) && itemAmount(Item.get("1,960 pok&eacute;dollar bill")) >= 50)
 		{
@@ -64,7 +64,7 @@ export function pokefam_makeTeam(): boolean
 		if (gitExists("Ezandora-Helix-Fossil"))
 		{
 		auto_log_info("Setting our team via Ezandora:", "green");
-		let ignore: boolean = cliExecute("PocketFamiliarsAutoSelect Strongest 2;");
+		const ignore: boolean = cliExecute("PocketFamiliarsAutoSelect Strongest 2;");
 		return true;
 		}
 	}

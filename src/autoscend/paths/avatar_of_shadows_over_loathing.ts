@@ -66,7 +66,7 @@ export function aosol_buySkills(): boolean
 		{
 			let page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11163");
 			//Check if there are already skill points
-			let my_skillPoints: AshMatcher = new AshMatcher("You have <b>(\\d+)<\\/b> skill", page);
+			const my_skillPoints: AshMatcher = new AshMatcher("You have <b>(\\d+)<\\/b> skill", page);
 			if (my_skillPoints.find())
 			{
 				let skillPoints: number = toInt(my_skillPoints.group(1));
@@ -231,7 +231,7 @@ export function aosol_buySkills(): boolean
 		{
 			let page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11164");
 			//Check if there are already skill points
-			let my_skillPoints: AshMatcher = new AshMatcher("You have <b>(\\d+)<\\/b> skill", page);
+			const my_skillPoints: AshMatcher = new AshMatcher("You have <b>(\\d+)<\\/b> skill", page);
 			if (my_skillPoints.find())
 			{
 				let skillPoints: number = toInt(my_skillPoints.group(1));
@@ -396,7 +396,7 @@ export function aosol_buySkills(): boolean
 		{
 			let page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11165");
 			//Check if there are already skill points
-			let my_skillPoints: AshMatcher = new AshMatcher("You have <b>(\\d+)<\\/b> skill", page);
+			const my_skillPoints: AshMatcher = new AshMatcher("You have <b>(\\d+)<\\/b> skill", page);
 			if (my_skillPoints.find())
 			{
 				let skillPoints: number = toInt(my_skillPoints.group(1));

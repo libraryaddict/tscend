@@ -102,7 +102,7 @@ export function initializeSettings(): void {
 	// all paths that have extra settings should call their path specific
 	// initialise function at the end of this function (may override properties set in here).
 	//if we detected a path drop we need to reinitialize. either due to dropping a path or breaking ronin in some paths.
-	let reinitialize: boolean = toBoolean(getProperty("_auto_reinitialize"));
+	const reinitialize: boolean = toBoolean(getProperty("_auto_reinitialize"));
 	if (!reinitialize && myAscensions() === toInt(getProperty("auto_doneInitialize")))
 	{
 		return; //already initialized settings this ascension
@@ -115,7 +115,7 @@ export function initializeSettings(): void {
 		setProperty("auto_100familiar", Familiar.none.toString());
 		if (myFamiliar() !== Familiar.none && pathAllowsChangingFamiliar())
 		{ //If we can't control familiar changes, no point setting 100% familiar data
-			let userAnswer: boolean = userConfirm("Familiar already set, is this a 100% familiar run? Will default to 'No' in 15 seconds.", 15000, false);
+			const userAnswer: boolean = userConfirm("Familiar already set, is this a 100% familiar run? Will default to 'No' in 15 seconds.", 15000, false);
 			if (userAnswer)
 			{
 				setProperty("auto_100familiar", myFamiliar().toString());
@@ -124,7 +124,7 @@ export function initializeSettings(): void {
 		//check for a workshed
 		if (getWorkshed() !== Item.none)
 		{
-			let userAnswer: boolean = userConfirm("Workshed already set, do you want Autoscend to handle your workshed? Will default to 'Yes' in 15 seconds.", 15000, true);
+			const userAnswer: boolean = userConfirm("Workshed already set, do you want Autoscend to handle your workshed? Will default to 'Yes' in 15 seconds.", 15000, true);
 			if (userAnswer)
 			{
 				setProperty("auto_workshed", "auto");
@@ -347,17 +347,17 @@ export function auto_unreservedAdvRemaining(): boolean
 export function LX_burnDelay(): boolean
 {
 	let voteMonsterAvailable: boolean = auto_voteMonster$1(true);
-	let digitizeMonsterNext: boolean = isOverdueDigitize();
+	const digitizeMonsterNext: boolean = isOverdueDigitize();
 	let sausageGoblinAvailable: boolean = auto_sausageGoblin();
-	let backupTargetAvailable: boolean = auto_backupTarget();
-	let voidMonsterAvailable: boolean = auto_voidMonster();
-	let habitatingMonsters: boolean = auto_habitatMonster() !== Monster.none;
+	const backupTargetAvailable: boolean = auto_backupTarget();
+	const voidMonsterAvailable: boolean = auto_voidMonster();
+	const habitatingMonsters: boolean = auto_habitatMonster() !== Monster.none;
 	// if we're a plumber and we're still stuck doing a flat 15 damage per attack
 	// then a scaling monster is probably going to be a bad time
 	if (in_plumber() && !plumber_canDealScalingDamage())
 	{
 		// unless we can still kill it in one hit, then it should probably be fine?
-		let predictedScalerHP: number = toInt(0.75 * (myBuffedstat(Stat.get("Muscle")) + monsterLevelAdjustment()));
+		const predictedScalerHP: number = toInt(0.75 * (myBuffedstat(Stat.get("Muscle")) + monsterLevelAdjustment()));
 		if (predictedScalerHP > 15)
 		{
 			auto_log_info$1("Want to burn delay with scaling wanderers, but we can't deal scaling damage yet and it would be too strong :(");
@@ -374,7 +374,7 @@ export function LX_burnDelay(): boolean
 	{
 		// Voting monsters are inherently free (the ones we fight anyway).
 		// don't fight them if we're going to backup because they will overwrite the monster we want to backup
-		let voterZone: Location = solveDelayZone(toInt(getProperty("breathitinCharges")) > 0);
+		const voterZone: Location = solveDelayZone(toInt(getProperty("breathitinCharges")) > 0);
 		if (voterZone !== Location.none)
 		{
 			auto_log_info(`Fighting a free ${getProperty("_voteMonster")} in ${voterZone.toString()} to burn delay!`, "green");
@@ -409,7 +409,7 @@ export function LX_burnDelay(): boolean
 
 	if (backupTargetAvailable)
 	{
-		let skipOutdoorZones: boolean = isFreeMonster(toMonster(getProperty("lastCopyableMonster"))) && toInt(getProperty("breathitinCharges")) > 0;
+		const skipOutdoorZones: boolean = isFreeMonster(toMonster(getProperty("lastCopyableMonster"))) && toInt(getProperty("breathitinCharges")) > 0;
 		let backupZone: Location = solveDelayZone(skipOutdoorZones);
 		if (backupZone === Location.none && skipOutdoorZones && !in_koe())
 		{
@@ -428,7 +428,7 @@ export function LX_burnDelay(): boolean
 	if (sausageGoblinAvailable)
 	{
 		// Sausage Goblins are inherently free
-		let goblinZone: Location = solveDelayZone(toInt(getProperty("breathitinCharges")) > 0);
+		const goblinZone: Location = solveDelayZone(toInt(getProperty("breathitinCharges")) > 0);
 		if (goblinZone !== Location.none)
 		{
 			auto_log_info(`Fighting a Sausage Goblin in ${goblinZone.toString()} to burn delay!`, "green");
@@ -442,7 +442,7 @@ export function LX_burnDelay(): boolean
 	if (voidMonsterAvailable)
 	{
 		// Void monsters are inherently free (the ones we fight anyway).
-		let voidZone: Location = solveDelayZone(toInt(getProperty("breathitinCharges")) > 0);
+		const voidZone: Location = solveDelayZone(toInt(getProperty("breathitinCharges")) > 0);
 		if (voidZone !== Location.none)
 		{
 			auto_log_info(`Fighting a Void monster in ${voidZone.toString()} to burn delay!`, "green");
@@ -455,7 +455,7 @@ export function LX_burnDelay(): boolean
 
 	if (habitatingMonsters)
 	{
-		let habitatZone: Location = solveDelayZone(isFreeMonster(auto_habitatMonster()) && toInt(getProperty("breathitinCharges")) > 0);
+		const habitatZone: Location = solveDelayZone(isFreeMonster(auto_habitatMonster()) && toInt(getProperty("breathitinCharges")) > 0);
 		if (habitatZone !== Location.none)
 		{
 			auto_log_info(`Might be fighting a ${auto_habitatMonster()} in ${habitatZone.toString()} to burn delay!`, "green");
@@ -597,7 +597,7 @@ export function LX_doVacation(): boolean
 
 	let meat_needed: number = 500;
 	let adv_needed: number = 3;
-	let adv_budget: number = myAdventures() - auto_advToReserve();
+	const adv_budget: number = myAdventures() - auto_advToReserve();
 	if (in_wotsf())
 	{
 		meat_needed = 5;
@@ -679,7 +679,7 @@ function initializeDay(day: number): void
 		//if(equipped_item($slot[bootspur]) == $item[Nicksilver spurs])
 		//if(contains_text(temp, "Item Drops from Monsters"))
 		//{
-			let temp: string = visitUrl("place.php?whichplace=town_right&action=townright_ltt");
+			const temp: string = visitUrl("place.php?whichplace=town_right&action=townright_ltt");
 		//}
 	}
 
@@ -713,7 +713,7 @@ function initializeDay(day: number): void
 		if (itemAmount(Item.get("telegram from Lady Spookyraven")) > 0)
 		{
 			auto_log_warning("Lady Spookyraven quest not started and we have a Telegram so let us use it.", "red");
-			let temp: boolean = use(1, Item.get("telegram from Lady Spookyraven"));
+			const temp: boolean = use(1, Item.get("telegram from Lady Spookyraven"));
 		}
 		else {
 			auto_log_warning("Lady Spookyraven quest not detected as started but we don't have the telegram, assuming it is... If you are not in an Ed run, report this. Otherwise, it is expected.", "red");
@@ -727,39 +727,39 @@ function initializeDay(day: number): void
 	{
 		if (getProperty("auto_teaChoice") !== "")
 		{
-			let teaChoice: Map<number, string> = new Map(splitString(getProperty("auto_teaChoice"), ";").map((_v, _i) => [_i, _v]));
-			let myTea: string = trim((teaChoice.get(min(teaChoice.size, myDaycount()) - 1) ?? teaChoice.set(min(teaChoice.size, myDaycount()) - 1, "").get(min(teaChoice.size, myDaycount()) - 1)));
+			const teaChoice: Map<number, string> = new Map(splitString(getProperty("auto_teaChoice"), ";").map((_v, _i) => [_i, _v]));
+			const myTea: string = trim((teaChoice.get(min(teaChoice.size, myDaycount()) - 1) ?? teaChoice.set(min(teaChoice.size, myDaycount()) - 1, "").get(min(teaChoice.size, myDaycount()) - 1)));
 			if (toItem(myTea) !== Item.none || myTea === "shake")
 			{
-				let buff: boolean = cliExecute(`teatree ${myTea}`);
+				const buff: boolean = cliExecute(`teatree ${myTea}`);
 			}
 		}
 		else if (day === 1 && auto_is_valid(Item.get("potted tea tree")))
 		{
 			if (fullnessLimit() > 0)
 			{
-				let buff: boolean = cliExecute(`teatree ${Item.get("cuppa Voraci tea")}`);
+				const buff: boolean = cliExecute(`teatree ${Item.get("cuppa Voraci tea")}`);
 			}
 			else if (inebrietyLimit() > 0)
 			{
-				let buff: boolean = cliExecute(`teatree ${Item.get("cuppa Sobrie tea")}`);
+				const buff: boolean = cliExecute(`teatree ${Item.get("cuppa Sobrie tea")}`);
 			}
 			else {
-				let buff: boolean = cliExecute(`teatree ${Item.get("cuppa Royal tea")}`);
+				const buff: boolean = cliExecute(`teatree ${Item.get("cuppa Royal tea")}`);
 			}
 		}
 		else if (day === 2 && auto_is_valid(Item.get("potted tea tree")))
 		{
 			if (inebrietyLimit() > 0)
 			{
-				let buff: boolean = cliExecute(`teatree ${Item.get("cuppa Sobrie tea")}`);
+				const buff: boolean = cliExecute(`teatree ${Item.get("cuppa Sobrie tea")}`);
 			}
 			else if (fullnessLimit() > 0)
 			{
-				let buff: boolean = cliExecute(`teatree ${Item.get("cuppa Voraci tea")}`);
+				const buff: boolean = cliExecute(`teatree ${Item.get("cuppa Voraci tea")}`);
 			}
 			else {
-				let buff: boolean = cliExecute(`teatree ${Item.get("cuppa Royal tea")}`);
+				const buff: boolean = cliExecute(`teatree ${Item.get("cuppa Royal tea")}`);
 			}
 		}
 		else {
@@ -792,7 +792,7 @@ function initializeDay(day: number): void
 	auto_doPrecinct();
 	if (!(in_koe() || in_lar()) && itemAmount(Item.get("cop dollar")) >= 10 && itemAmount(Item.get("shoe gum")) === 0)
 	{
-		let temp: boolean = cliExecute("make shoe gum");
+		const temp: boolean = cliExecute("make shoe gum");
 	}
 	//a free to cast intrinsic that makes swords count as clubs. there is no reason to ever have it on if not a seal clubber?
 	//regardless of class there is a reason not to if auto_configureRetrocape("vampire", "kill") can be used. it needs the sword to count as a sword and not as a club
@@ -918,7 +918,7 @@ function initializeDay(day: number): void
 			handleBjornify(Familiar.none);
 			handleBjornify(Familiar.get("El Vibrato Megadrone"));
 
-			let temp: string = visitUrl("guild.php?place=challenge");
+			const temp: string = visitUrl("guild.php?place=challenge");
 
 			auto_beachCombHead("exp");
 		}
@@ -931,17 +931,17 @@ function initializeDay(day: number): void
 		// If we have the shortest order cook, loop familiars that will benefit from that.
 		if (pathHasFamiliar() && pathAllowsChangingFamiliar())
 		{
-			let init_fam: Familiar = myFamiliar();
+			const init_fam: Familiar = myFamiliar();
 			if (haveFamiliar(Familiar.get("Shorter-Order Cook")))
 			{
-				for (let fam of Familiar.get(["Ghost of Crimbo Carols", "Ghost of Crimbo Commerce", "Ghost of Crimbo Cheer"]))
+				for (const fam of Familiar.get(["Ghost of Crimbo Carols", "Ghost of Crimbo Commerce", "Ghost of Crimbo Cheer"]))
 				{
 					if (haveFamiliar(fam) && !in_bhy())
 					{
 						useFamiliar(fam);
 					}
 				}
-				for (let fam of Familiar.get(["Chest Mimic", "Cooler Yeti"]))
+				for (const fam of Familiar.get(["Chest Mimic", "Cooler Yeti"]))
 				{
 					if (haveFamiliar(fam))
 					{
@@ -1028,7 +1028,7 @@ function initializeDay(day: number): void
 		ovenHandle();
 	}
 
-	let campground: string = visitUrl("campground.php");
+	const campground: string = visitUrl("campground.php");
 	if (containsText(campground, "beergarden7.gif") && isUnrestricted(Item.get("packet of beer seeds")))
 	{
 		cliExecute("garden pick");
@@ -1124,14 +1124,14 @@ export function dailyEvents(): boolean
 
 	if (itemAmount(Item.get("Clan VIP Lounge key")) > 0)
 	{
-		let furn: Map<Item, number> = auto_get_clan_lounge();
+		const furn: Map<Item, number> = auto_get_clan_lounge();
 		if (furn.has(Item.get("Olympic-sized Clan crate")) && !toBoolean(getProperty("_olympicSwimmingPoolItemFound")) && isUnrestricted(Item.get("Olympic-sized Clan crate")))
 		{
 			cliExecute("swim item");
 		}
 		if (furn.has(Item.get("Clan looking glass")) && !toBoolean(getProperty("_lookingGlass")) && isUnrestricted(Item.get("Clan looking glass")))
 		{
-			let temp: string = visitUrl("clan_viplounge.php?action=lookingglass");
+			const temp: string = visitUrl("clan_viplounge.php?action=lookingglass");
 		}
 		if (toInt(getProperty("_deluxeKlawSummons")) === 0)
 		{
@@ -1162,7 +1162,7 @@ export function dailyEvents(): boolean
 
 	if (haveSkill(Skill.get("That's Not a Knife")) && !toBoolean(getProperty("_discoKnife")))
 	{
-		for (let it of Item.get(["boot knife", "broken beer bottle", "candy knife", "sharpened spoon", "soap knife"]))
+		for (const it of Item.get(["boot knife", "broken beer bottle", "candy knife", "sharpened spoon", "soap knife"]))
 		{
 			if (itemAmount(it) === 1)
 			{
@@ -1236,7 +1236,7 @@ export function Lsc_flyerSeals(): boolean
 
 	if (toInt(getProperty("_sealsSummoned")) < maxSealSummons() && myMeat() > 500)
 	{
-		let towerTest: Element = ns_crowd3();
+		const towerTest: Element = ns_crowd3();
 		let doElement: boolean = false;
 		if (itemAmount(Item.get("powdered sealbone")) > 0)
 		{
@@ -1323,8 +1323,8 @@ function councilMaintenance(): boolean
 
 function adventureFailureHandler(): boolean
 {
-	let place: Location = myLocation();
-	let limit: number = (in_avantGuard() ? 100 : 50);
+	const place: Location = myLocation();
+	const limit: number = (in_avantGuard() ? 100 : 50);
 	if (place.turnsSpent > limit)
 	{
 		let tooManyAdventures: boolean = true;
@@ -1397,8 +1397,8 @@ function adventureFailureHandler(): boolean
 			tooManyAdventures = false;
 		}
 
-		let can_powerlevel_stench: boolean = elementalPlanes_access(Element.get("stench")) && auto_have_skill(Skill.get("Summon Smithsness")) && toInt(getProperty("auto_beatenUpCount")) === 0;
-		let has_powerlevel_iotm: boolean = can_powerlevel_stench || elementalPlanes_access(Element.get("spooky")) || elementalPlanes_access(Element.get("cold")) || elementalPlanes_access(Element.get("sleaze")) || elementalPlanes_access(Element.get("hot")) || neverendingPartyAvailable();
+		const can_powerlevel_stench: boolean = elementalPlanes_access(Element.get("stench")) && auto_have_skill(Skill.get("Summon Smithsness")) && toInt(getProperty("auto_beatenUpCount")) === 0;
+		const has_powerlevel_iotm: boolean = can_powerlevel_stench || elementalPlanes_access(Element.get("spooky")) || elementalPlanes_access(Element.get("cold")) || elementalPlanes_access(Element.get("sleaze")) || elementalPlanes_access(Element.get("hot")) || neverendingPartyAvailable();
 		if (!has_powerlevel_iotm && Location.get(["The Haunted Gallery", "The Haunted Bedroom"]).includes(place))
 		{
 			tooManyAdventures = false; //if we do not have iotm powerlevel zones then we are forced to use haunted gallery or bedroom
@@ -1519,7 +1519,7 @@ function autosellCrap(): boolean
 		return false; //selling things in the way of the surprising fist only donates the money to charity, so we should not autosell anything automatically
 	}
 
-	for (let it of Item.get(["ancient vinyl coin purse", "black pension check", "CSA discount card", "fat wallet", "Gathered Meat-Clip", "loose Meats", "old leather wallet", "Penultimate Fantasy chest", "pixellated moneybag", "old coin purse", "shiny stones", "Warm Subject gift certificate"]))
+	for (const it of Item.get(["ancient vinyl coin purse", "black pension check", "CSA discount card", "fat wallet", "Gathered Meat-Clip", "loose Meats", "old leather wallet", "Penultimate Fantasy chest", "pixellated moneybag", "old coin purse", "shiny stones", "Warm Subject gift certificate"]))
 	{
 		if (itemAmount(it) > 0 && auto_is_valid(it))
 		{
@@ -1528,7 +1528,7 @@ function autosellCrap(): boolean
 	}
 	//keeping 1 garbage in stock to avoid possible harmful loop with dinseylandfill_garbageMoney()
 	//keeping 1 briefcase in stock for the Infiltrationist choice 2
-	for (let it of Item.get(["bag of park garbage", "briefcase"]))
+	for (const it of Item.get(["bag of park garbage", "briefcase"]))
 	{
 		if (itemAmount(it) > 1 && auto_is_valid(it))
 		{ //for these items we want to keep 1 in stock. use the rest
@@ -1542,9 +1542,9 @@ function autosellCrap(): boolean
 		use(1, Item.get("handful of tips"));
 	}
 	if (itemAmount(Item.get("Stock Certificate")) > 0) {
-		let turns: string = getProperty("stockCertificateTurns");
+		const turns: string = getProperty("stockCertificateTurns");
 		if (turns !== "") {
-			let earliestTurns: number = toInt((splitString(turns, ",")[0] ??= ""));
+			const earliestTurns: number = toInt((splitString(turns, ",")[0] ??= ""));
 			if (totalTurnsPlayed() - earliestTurns >= 500) {
 				use(1, Item.get("Stock Certificate"));
 			}
@@ -1558,7 +1558,7 @@ function autosellCrap(): boolean
 	// Function to sell all of our items, optionally keeping some.
 	function sell_except(n_to_keep: number, items_to_sell: Map<Item, boolean>): void
 	{
-		for (let it of items_to_sell.keys())
+		for (const it of items_to_sell.keys())
 		{
 			if (itemAmount(it) > n_to_keep)
 			{
@@ -1720,7 +1720,7 @@ export function resetState(): void {
 		equip(Slot.get("familiar"), Item.none);
 	}
 
-	for (let it of Item.get(["staph of homophones", "sword behind inappropriate prepositions"]))
+	for (const it of Item.get(["staph of homophones", "sword behind inappropriate prepositions"]))
 	{
 		// these screw with text in the game which breaks mafia's parsing in a lot of places.
 		if (haveEquipped(it))
@@ -1728,7 +1728,7 @@ export function resetState(): void {
 			equip(Item.none, toSlot(it));
 		}
 	}
-	for (let eff of Effect.get(["Dis Abled", "Haiku State of Mind", "Just the Best Anapests", "O Hai!", "Robocamo", "Yes, Can Haz"]))
+	for (const eff of Effect.get(["Dis Abled", "Haiku State of Mind", "Just the Best Anapests", "O Hai!", "Robocamo", "Yes, Can Haz"]))
 	{
 		// as do these which can all be freely shrugged.
 		if (haveEffect(eff) > 0)
@@ -1740,7 +1740,7 @@ export function resetState(): void {
 
 function process_tasks(): boolean
 {
-	let task_order: Map<string, Map<number, Map<string, string>>> = fileAsMap("autoscend_task_order.txt", [String, Number, String, String]);
+	const task_order: Map<string, Map<number, Map<string, string>>> = fileAsMap("autoscend_task_order.txt", [String, Number, String, String]);
 	if (!task_order.size)
 	{
 		abort("Could not load /data/autoscend_task_order.txt");
@@ -1752,13 +1752,13 @@ function process_tasks(): boolean
 		task_path = "default";
 	}
 
-	for (let [i, _v0] of (task_order.get(task_path) ?? task_order.set(task_path, new Map()).get(task_path))) {
-		for (let [task_function, _v1] of _v0) {
-			let condition_function = _v1;
+	for (const [i, _v0] of (task_order.get(task_path) ?? task_order.set(task_path, new Map()).get(task_path))) {
+		for (const [task_function, _v1] of _v0) {
+			const condition_function = _v1;
 		auto_log_debug$1(`Attempting to execute task ${i} ${task_function}`);
 		if (condition_function === "" || callRegisteredTaskFunction(condition_function))
 		{
-			let result_1: boolean = callRegisteredTaskFunction(task_function);
+			const result_1: boolean = callRegisteredTaskFunction(task_function);
 			if (result_1)
 			{
 				return true;
@@ -1788,7 +1788,7 @@ function doTasks(): boolean
 	if (myFamiliar() === Familiar.get("Stooper") && pathAllowsChangingFamiliar())
 	{
 		auto_log_info("Avoiding stooper stupor...", "blue");
-		let fam: Familiar = (is100FamRun() ? toFamiliar(getProperty("auto_100familiar")) : findNonRockFamiliarInTerrarium());
+		const fam: Familiar = (is100FamRun() ? toFamiliar(getProperty("auto_100familiar")) : findNonRockFamiliarInTerrarium());
 		useFamiliar(fam);
 	}
 	if (myInebriety() > inebrietyLimit())
@@ -1806,15 +1806,15 @@ function doTasks(): boolean
 	{
 		print("Rollover's coming!  Gotta consume what we can and go to bed!", "red");
 		// How much organ space left?  If none, go to bed
-		let organ_space: number = consumptionProgress();
+		const organ_space: number = consumptionProgress();
 		auto_log_debug(`${organ_space} organ space`, "blue");
 		if (organ_space >= 0.999)
 		{
 		  return false;
 		}
 		// How much organ space was available the last time we were here?
-		let previous_space: number = toFloat(getProperty("_auto_organSpace"));
-		let organ_space_change: number = organ_space - previous_space;
+		const previous_space: number = toFloat(getProperty("_auto_organSpace"));
+		const organ_space_change: number = organ_space - previous_space;
 		auto_log_debug(`${previous_space} previous space`, "blue");
 		auto_log_debug(`${organ_space_change} organ space change`, "blue");
 		setProperty("_auto_organSpace", organ_space.toString());
@@ -1833,15 +1833,15 @@ function doTasks(): boolean
 
 	auto_interruptCheck(false);
 
-	let delay: number = toInt(getProperty("auto_delayTimer"));
+	const delay: number = toInt(getProperty("auto_delayTimer"));
 	if (delay > 0)
 	{
 		auto_log_info("Delay between adventures... beep boop... ", "blue");
 		wait(delay);
 	}
 
-	let paranoia: number = toInt(getProperty("auto_paranoia"));
-	let is_april_fools: boolean = substring(todayToString(), 4) === "0401";
+	const paranoia: number = toInt(getProperty("auto_paranoia"));
+	const is_april_fools: boolean = substring(todayToString(), 4) === "0401";
 	if (is_april_fools)
 	{
 		auto_log_info$1("Salad april fools, so we paranoid salad.");
@@ -1849,7 +1849,7 @@ function doTasks(): boolean
 	}
 	else if (paranoia !== -1)
 	{
-		let paranoia_counter: number = toInt(getProperty("auto_paranoia_counter"));
+		const paranoia_counter: number = toInt(getProperty("auto_paranoia_counter"));
 		if (paranoia_counter >= paranoia)
 		{
 			auto_log_info("I think I'm paranoid and complicated", "blue");
@@ -2014,7 +2014,7 @@ function auto_begin(): void
 {
 	if (getAutoAttack() !== 0)
 	{
-		let shouldUnset: boolean = userConfirm("You have an auto attack enabled. This can cause issues. Would you like us to disable it? Will default to 'No' in 30 seconds.", 30000, false);
+		const shouldUnset: boolean = userConfirm("You have an auto attack enabled. This can cause issues. Would you like us to disable it? Will default to 'No' in 30 seconds.", 30000, false);
 		if (shouldUnset)
 		{
 			setAutoAttack(0);
@@ -2031,8 +2031,8 @@ function auto_begin(): void
 
 	if (inBadMoon())
 	{
-		let nope: boolean = userConfirm("Bad moon is not a thing we will ever support even if you can somehow meet the scripts minimum requirements. Do you understand?");
-		let failure: string = (nope ? "Just no." : "Even if you don't understand, it's still no.");
+		const nope: boolean = userConfirm("Bad moon is not a thing we will ever support even if you can somehow meet the scripts minimum requirements. Do you understand?");
+		const failure: string = (nope ? "Just no." : "Even if you don't understand, it's still no.");
 		abort(failure);
 	}
 
@@ -2104,7 +2104,7 @@ function auto_begin(): void
 	backupSetting("lastChanceThreshold", (1).toString()); // burn command will always use last chance skill, if we have no active buffs
 	backupSetting("lastChanceBurn", ""); // clear default mana burn skill so mafia doesn't attempt to cast a skill we don't currently have
 
-	let charpane: string = visitUrl("charpane.php");
+	const charpane: string = visitUrl("charpane.php");
 	if (containsText(charpane, "<hr width=50%><table"))
 	{
 		auto_log_info$1("Switching off Compact Character Mode, will resume during bedtime");
@@ -2120,7 +2120,7 @@ function auto_begin(): void
 	if (myFamiliar() === Familiar.get("Stooper") && pathAllowsChangingFamiliar())
 	{
 		auto_log_info("Avoiding stooper stupor...", "blue");
-		let fam: Familiar = (is100FamRun() ? toFamiliar(getProperty("auto_100familiar")) : findNonRockFamiliarInTerrarium());
+		const fam: Familiar = (is100FamRun() ? toFamiliar(getProperty("auto_100familiar")) : findNonRockFamiliarInTerrarium());
 		useFamiliar(fam);
 	}
 	// =================================================

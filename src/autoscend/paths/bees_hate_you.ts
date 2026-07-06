@@ -86,7 +86,7 @@ export function LM_bhy(): boolean
 		return false;
 	}
 	// pension check keeps trying to be used
-	for (let it of Item.get(["black pension check"]))
+	for (const it of Item.get(["black pension check"]))
 	{
 		if (itemAmount(it) > 0)
 		{

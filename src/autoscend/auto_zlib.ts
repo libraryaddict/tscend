@@ -34,10 +34,10 @@ export function auto_process_kmail(functionname: (msg: kmailObject) => boolean):
 {
 	// calls a function designed to parse a kmail.  It must accept a single kmailObject parameter,
 	// and return a boolean -- true if it wants the kmail to be deleted afterwards
-	let mail: Map<number, kmailObject> = new Map();
+	const mail: Map<number, kmailObject> = new Map();
 	//heeheehee\'s JSON matcher: loads all of your inbox (up to 100) into the "mail"
-	let page: string = visitUrl(`api.php?pwd&what=kmail&count=100&for=${urlEncode("ZLib(modified)-powered-script")}`);
-	let k: AshMatcher = new AshMatcher("\"id\":\"(\\d+)\",\"type\":\"(.+?)\",\"fromid\":\"(-?\\d+)\",\"azunixtime\":\"(\\d+)\",\"message\":\"(.+?)\",\"fromname\":\"(.+?)\",\"localtime\":\"(.+?)\"", page);
+	const page: string = visitUrl(`api.php?pwd&what=kmail&count=100&for=${urlEncode("ZLib(modified)-powered-script")}`);
+	const k: AshMatcher = new AshMatcher("\"id\":\"(\\d+)\",\"type\":\"(.+?)\",\"fromid\":\"(-?\\d+)\",\"azunixtime\":\"(\\d+)\",\"message\":\"(.+?)\",\"fromname\":\"(.+?)\",\"localtime\":\"(.+?)\"", page);
 	let n: number = 0;
 	while (k.find())
 	{
@@ -46,7 +46,7 @@ export function auto_process_kmail(functionname: (msg: kmailObject) => boolean):
 		(mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).type = k.group(2);
 		(mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).fromid = toInt(k.group(3));
 		(mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).azunixtime = toInt(k.group(4));
-		let mbits: AshMatcher = new AshMatcher("(.*?)\\<center\\>(.+?)$", replaceString(k.group(5), "\\'", "'"));
+		const mbits: AshMatcher = new AshMatcher("(.*?)\\<center\\>(.+?)$", replaceString(k.group(5), "\\'", "'"));
 		if (mbits.find())
 		{
 			(mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).meat = extractMeat(mbits.group(2));
@@ -60,8 +60,8 @@ export function auto_process_kmail(functionname: (msg: kmailObject) => boolean):
 		(mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).localtime = replaceString(k.group(7), "\\", "");
 	}
 
-	let processed: Map<number, boolean> = new Map();
-	for (let [i, m] of mail)
+	const processed: Map<number, boolean> = new Map();
+	for (const [i, m] of mail)
 	{
 		if (functionname(m))
 		{
@@ -74,7 +74,7 @@ export function auto_process_kmail(functionname: (msg: kmailObject) => boolean):
 	{
 		auto_log_info("Deleting processed mail...", "blue");
 		let del: string = "messages.php?the_action=delete&box=Inbox&pwd";
-		for (let k_1 of processed.keys())
+		for (const k_1 of processed.keys())
 		{
 			del += `&sel${k_1}=on`;
 		}

@@ -33,7 +33,7 @@ import { needStarKey } from "../quests/level_13";
 //Defined in autoscend/iotms/mr2021.ash
 export function auto_haveCrystalBall(): boolean
 {
-	let crystal_ball: Item = wrap_item(Item.get("miniature crystal ball"));
+	const crystal_ball: Item = wrap_item(Item.get("miniature crystal ball"));
 	return possessEquipment(crystal_ball) && auto_is_valid(crystal_ball) && pathHasFamiliar();
 }
 
@@ -41,14 +41,14 @@ function crystalBallMonster(loc: Location): Monster
 {
 	// returns a monster if the crystal ball predicts one in the location
 
-	let crystalBallPredictions: Map<number, string> = new Map(splitString(getProperty("crystalBallPredictions"), "[|]").map((_v, _i) => [_i, _v]));
+	const crystalBallPredictions: Map<number, string> = new Map(splitString(getProperty("crystalBallPredictions"), "[|]").map((_v, _i) => [_i, _v]));
 	if ((crystalBallPredictions.get(0) ?? crystalBallPredictions.set(0, "").get(0)) === "")
 	{
 		return Monster.none; // no prediction
 	}
-	for (let i of crystalBallPredictions.keys())
+	for (const i of crystalBallPredictions.keys())
 	{
-        let thisPrediction: Map<number, string> = new Map(splitString((crystalBallPredictions.get(i) ?? crystalBallPredictions.set(i, "").get(i)), ":").map((_v, _i) => [_i, _v])); // turn:location:monster
+        const thisPrediction: Map<number, string> = new Map(splitString((crystalBallPredictions.get(i) ?? crystalBallPredictions.set(i, "").get(i)), ":").map((_v, _i) => [_i, _v])); // turn:location:monster
 		// turn: thisPrediction[0].to_int() is useless unless mafia fails to update the property
 		if (toLocation((thisPrediction.get(1) ?? thisPrediction.set(1, "").get(1))) !== loc)
 		{
@@ -103,7 +103,7 @@ export function auto_forceHandleCrystalBall(loc: Location): boolean
 	//full support would need changing how autoscend chooses tasks to move between zones and reset predictions
 	//instead just allow it to make unwanted monsters less likely and confirm wanted monsters
 
-	let predicted_monster: Monster = crystalBallMonster(loc);
+	const predicted_monster: Monster = crystalBallMonster(loc);
 
 	let shouldForceEquip: boolean = false;
 	if (predicted_monster !== Monster.none)
@@ -122,7 +122,7 @@ export function auto_forceHandleCrystalBall(loc: Location): boolean
 		}
 	}
 
-	let crystal_ball: Item = wrap_item(Item.get("miniature crystal ball"));
+	const crystal_ball: Item = wrap_item(Item.get("miniature crystal ball"));
 	if (shouldForceEquip)
 	{
 		addToMaximize(`+equip ${crystal_ball.toString()}`);
@@ -153,14 +153,14 @@ export function simulatePreAdvForCrystalBall(place: Location): void
 		considerCrystalBallBonus = true;
 	}
 
-	let possible_monsters: Map<number, Monster> = new Map();
+	const possible_monsters: Map<number, Monster> = new Map();
 	if (toMonster(getProperty("auto_nextEncounter")) !== Monster.none)
 	{
 		//next monster is forced by zone mechanics or by now locked-in miniature crystal ball
 		possible_monsters.set(possible_monsters.size, toMonster(getProperty("auto_nextEncounter")));
 	}
 	else {
-		for (let [i, mon] of getMonsters(place).entries())
+		for (const [i, mon] of getMonsters(place).entries())
 		{
 			if ((appearanceRates(place)[mon.toString()] ??= 0.0) > 0)
 			{
@@ -173,7 +173,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void
 	let zoneHasWantedMonsters: boolean = false;
 	if (!auto_queueIgnore())
 	{ //next encounter is a monster from the zone
-		for (let [i, mon] of possible_monsters)
+		for (const [i, mon] of possible_monsters)
 		{
 			if (auto_wantToYellowRay(mon, place))
 			{
@@ -196,10 +196,10 @@ export function simulatePreAdvForCrystalBall(place: Location): void
 	if (considerCrystalBallBonus)
 	{
 		//give miniature crystal ball a maximizer bonus only if the location has monsters to avoid or target
-		let crystalBallMaximizerBonus: number = 0 + ((zoneHasUnwantedMonsters ? 300 : 0)) + ((zoneHasWantedMonsters ? 300 : 0));
+		const crystalBallMaximizerBonus: number = 0 + ((zoneHasUnwantedMonsters ? 300 : 0)) + ((zoneHasWantedMonsters ? 300 : 0));
 		if (crystalBallMaximizerBonus !== 0)
 		{
-			let crystal_ball: Item = wrap_item(Item.get("miniature crystal ball"));
+			const crystal_ball: Item = wrap_item(Item.get("miniature crystal ball"));
 			addToMaximize(`+${crystalBallMaximizerBonus}bonus ${crystal_ball.toString()}`);
 		}
 	}
@@ -350,9 +350,9 @@ export function auto_backupTarget(): boolean
 		return false;
 	}
 	// determine if we want to backup
-	let wantBackupLFM: boolean = itemAmount(Item.get("barrel of gunpowder")) < 5 && getProperty("sidequestLighthouseCompleted") === "none" && internalQuestStatus("questL12War") === 1 && !auto_hasAutumnaton() && !in_koe();
-	let habitatZombieEvil: number = (auto_habitatMonster() === Monster.get("modern zmobie") ? auto_habitatFightsLeft() * (5 + cyrptEvilBonus$1()) : 0);
-	let wantBackupZmobie: boolean = toInt(getProperty("cyrptAlcoveEvilness")) > 14 + cyrptEvilBonus$1() + habitatZombieEvil && internalQuestStatus("questL07Cyrptic") === 0;
+	const wantBackupLFM: boolean = itemAmount(Item.get("barrel of gunpowder")) < 5 && getProperty("sidequestLighthouseCompleted") === "none" && internalQuestStatus("questL12War") === 1 && !auto_hasAutumnaton() && !in_koe();
+	const habitatZombieEvil: number = (auto_habitatMonster() === Monster.get("modern zmobie") ? auto_habitatFightsLeft() * (5 + cyrptEvilBonus$1()) : 0);
+	const wantBackupZmobie: boolean = toInt(getProperty("cyrptAlcoveEvilness")) > 14 + cyrptEvilBonus$1() + habitatZombieEvil && internalQuestStatus("questL07Cyrptic") === 0;
 
 	switch (toMonster(getProperty("lastCopyableMonster"))) {
 		case Monster.get("lobsterfrogman"):
@@ -425,7 +425,7 @@ export function auto_harvestBatteries(): boolean
 	// Stolen straight from mafia's breakfast handling.
 	cliExecute(`inv_use.php?pwd&whichitem=${toInt((Item.get("potted power plant")))}`);
 
-	let status: Map<number, string> = new Map(splitString(getProperty("_pottedPowerPlant"), ",").map((_v, _i) => [_i, _v]));
+	const status: Map<number, string> = new Map(splitString(getProperty("_pottedPowerPlant"), ",").map((_v, _i) => [_i, _v]));
 
 	for (let pp: number = 0; pp < status.size; pp++)
 	{
@@ -456,7 +456,7 @@ function totalBatteryPoints(): number
 {
 	let totalPoints: number = 0;
 
-	for (let it of Item.get(["battery (AAA)", "battery (AA)", "battery (D)", "battery (9-Volt)", "battery (lantern)", "battery (car)"]))
+	for (const it of Item.get(["battery (AAA)", "battery (AA)", "battery (D)", "battery (9-Volt)", "battery (lantern)", "battery (car)"]))
 	{
 		totalPoints += availableAmount(it) * batteryPoints(it);
 	}
@@ -655,7 +655,7 @@ export function auto_getBattery(target: Item): boolean
 	//try to use untinkering to get target or enough AAA to make target
 	if (totalBatteryPoints() >= batteryPoints(target) && canUntinker())
 	{
-		for (let it of Item.get(["battery (car)", "battery (lantern)", "battery (9-Volt)", "battery (D)", "battery (AA)"]))
+		for (const it of Item.get(["battery (car)", "battery (lantern)", "battery (9-Volt)", "battery (D)", "battery (AA)"]))
 		{
 			if (myMeat() < 10)
 			{
@@ -734,7 +734,7 @@ export function auto_buyFireworksHat(): boolean
 	// noncombat is most valuable hat but has no effect in LAR and can't be removed in Hat Trick
 	if (auto_can_equip(Item.get("porkpie-mounted popper")) && !(in_lar() || in_hattrick()))
 	{
-		let simNonCombat: number = providePlusNonCombat(auto_combatModCap(), Location.get("Noob Cave"), true, true);
+		const simNonCombat: number = providePlusNonCombat(auto_combatModCap(), Location.get("Noob Cave"), true, true);
 		if (simNonCombat < auto_combatModCap())
 		{
 			retrieveItem(1, Item.get("porkpie-mounted popper"));
@@ -744,7 +744,7 @@ export function auto_buyFireworksHat(): boolean
 	// +combat hat is second most useful but has no effect in LAR and can't be removed in Hat Trick
 	if (auto_can_equip(Item.get("sombrero-mounted sparkler")) && !(in_lar() || in_hattrick()))
 	{
-		let simCombat: number = providePlusCombat(auto_combatModCap(), Location.get("Noob Cave"), true, true);
+		const simCombat: number = providePlusCombat(auto_combatModCap(), Location.get("Noob Cave"), true, true);
 		if (simCombat < auto_combatModCap())
 		{
 			retrieveItem(1, Item.get("sombrero-mounted sparkler"));
@@ -767,7 +767,7 @@ export function auto_buyFireworksHat(): boolean
 
 export function auto_haveFireExtinguisher(): boolean
 {
-	let exting: Item = wrap_item(Item.get("industrial fire extinguisher"));
+	const exting: Item = wrap_item(Item.get("industrial fire extinguisher"));
 	return possessEquipment(exting) && auto_is_valid(exting);
 }
 
@@ -856,7 +856,7 @@ function auto_CMCconsultAvailable(): boolean
 		return false;
 	}
 
-	let nextConsult: number = toInt(getProperty("_nextColdMedicineConsult"));
+	const nextConsult: number = toInt(getProperty("_nextColdMedicineConsult"));
 	//prior to first use each day, prop value is 0
 	if (nextConsult === 0)
 	{
@@ -880,10 +880,10 @@ export function auto_CMCconsult(): void
 			}
 			if (myLocation() === Location.get("The Battlefield (Frat Uniform)") && getProperty("sidequestNunsCompleted") === "none")
 			{
-				let hippiesDefeated: number = toInt(getProperty("hippiesDefeated"));
+				const hippiesDefeated: number = toInt(getProperty("hippiesDefeated"));
 				if (hippiesDefeated <= 208 && auto_bestWarPlan().doNuns)
 				{
-					let turnsUntilNuns: number = min(16, ceil(max(0, 191.0 - hippiesDefeated) / auto_warKillsPerBattle()));
+					const turnsUntilNuns: number = min(16, ceil(max(0, 191.0 - hippiesDefeated) / auto_warKillsPerBattle()));
 					if (toInt(getProperty("breathitinCharges")) + 5 >= turnsUntilNuns)
 					{
 						return false; //may do nuns before breathitin charges get used up
@@ -950,7 +950,7 @@ export function auto_CMCconsult(): void
 
 	let bestOption: number = -1;
 	let consumableBought: Item = Item.none;
-	let page: string = visitUrl("campground.php?action=workshed");
+	const page: string = visitUrl("campground.php?action=workshed");
 	if (containsText(page, "Breathitin"))
 	{
 		auto_log_info("Buying Breathitin pill from CMC", "blue");

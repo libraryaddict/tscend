@@ -36,7 +36,7 @@ function auto_run_choice(choice: number, page: string): boolean
 	return true; }
 
 	auto_log_debug$1("Running auto_choice_adv.js");
-	let options: Map<number, string> = new Map(Object.entries(availableChoiceOptions()).map(([_k, _v]) => [toInt(_k), _v]));
+	const options: Map<number, string> = new Map(Object.entries(availableChoiceOptions()).map(([_k, _v]) => [toInt(_k), _v]));
 
 	{ 
 		// Yeti Nother Hippy (The eXtreme Slope)
@@ -970,7 +970,7 @@ function auto_run_choice(choice: number, page: string): boolean
 			{
 				search = "I'd like some experience.";
 			}			glchoice = 0;
-			for (let [idx, str] of options)
+			for (const [idx, str] of options)
 			{
 				if (containsText(str, search))
 				{

@@ -47,7 +47,7 @@ function printSimSuggested(): void
 	fam = Familiar.get("Gelatinous Cubeling");
 	formattedSimPrint(haveFamiliar(fam), fam.toString(), "Familiar which speeds up the daily dungeon");
 
-	let maxedPoolSkill: boolean = toInt(getProperty("poolSharkCount")) >= 25;
+	const maxedPoolSkill: boolean = toInt(getProperty("poolSharkCount")) >= 25;
 	formattedSimPrint(maxedPoolSkill, "Pool Shark", "Lucky! adv which permanently increases your pool skill. It is possible for Mafia to not realize you have maxed this. If you are confident you have, enter the following in the CLI: `set poolSharkCount=25`");
 	// if we have combat locket, check if we have used monsters in there
 	if (auto_haveCombatLoversLocket())
@@ -76,12 +76,12 @@ function printSimSuggested(): void
 	// if we have cookbookbat, make sure we have all its recipes
 	if (haveFamiliar(Familiar.get("Cookbookbat")))
 	{
-		let recipes: string[] = ["Boris's beer", "honey bun of Boris", "ratatouille de Jarlsberg", "Jarlsberg's vegetable soup", "Pete's wiley whey bar",
+		const recipes: string[] = ["Boris's beer", "honey bun of Boris", "ratatouille de Jarlsberg", "Jarlsberg's vegetable soup", "Pete's wiley whey bar",
 				"St. Pete's sneaky smoothie", "Boris's bread", "roasted vegetable of Jarlsberg", "Pete's rich ricotta", "roasted vegetable focaccia",
 				"plain calzone", "baked veggie ricotta casserole"];
-		for (let recipe of recipes)
+		for (const recipe of recipes)
 		{
-			let haveRecipe: boolean = !toBoolean(getProperty(`unknownRecipe$${toInt(toItem(recipe))}`));
+			const haveRecipe: boolean = !toBoolean(getProperty(`unknownRecipe$${toInt(toItem(recipe))}`));
 			formattedSimPrint(haveRecipe, `Recipe: ${recipe}`, "Cookbookbat recipes need to be learned, even if you have the familiar");
 		}
 	}
@@ -118,6 +118,6 @@ function printSimMarginal(): void
 
 function formattedSimPrint(have: boolean, name: string, description: string): void
 {
-	let symbol_1: string = (have ? "✓" : "X");
+	const symbol_1: string = (have ? "✓" : "X");
 	print(`${symbol_1} ${name} - ${description}`, (have ? "blue" : "red"));
 }

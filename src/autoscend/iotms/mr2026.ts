@@ -17,8 +17,8 @@ export function auto_haveEternityCodpiece(): boolean
 
 export function auto_isInEternityCodpiece(it: Item): boolean
 {
-	for (let s of Slot.get(["codpiece1", "codpiece2", "codpiece3", "codpiece4", "codpiece5"])) {
-		let b = true;
+	for (const s of Slot.get(["codpiece1", "codpiece2", "codpiece3", "codpiece4", "codpiece5"])) {
+		const b = true;
 		if (equippedItem(s) === it)
 		{
 			return true;
@@ -159,21 +159,21 @@ export function auto_spadeDigsRemaining(): number
 
 export function auto_spadeDigItem(): boolean
 {
-	let SPADE: Item = Item.get("Archaeologist's Spade");
-	let choice_adv_num: number = 1596;
-	let choice_num: number = 1;
-	let choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
-	let use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
+	const SPADE: Item = Item.get("Archaeologist's Spade");
+	const choice_adv_num: number = 1596;
+	const choice_num: number = 1;
+	const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
+	const use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
 
-	let n_digs: number = auto_spadeDigsRemaining();
+	const n_digs: number = auto_spadeDigsRemaining();
 	if (n_digs > 0)
 	{
 		visitUrl(use_url);
-		let result_1: string = visitUrl(choice_url);
-		let drops: Map<Item, number> = new Map(Object.entries(extractItems(result_1)).map(([_k, _v]) => [Item.get(_k), _v]));
+		const result_1: string = visitUrl(choice_url);
+		const drops: Map<Item, number> = new Map(Object.entries(extractItems(result_1)).map(([_k, _v]) => [Item.get(_k), _v]));
 		let my_drop: Item = Item.none;
 		let total_items_dropped: number = 0;
-		for (let [it, n] of drops)
+		for (const [it, n] of drops)
 		{
 			my_drop = it;
 			total_items_dropped += n;
@@ -196,12 +196,12 @@ export function auto_spadeDigItem(): boolean
 
 function auto_spadeDigAncient(): boolean
 {
-	let SPADE: Item = Item.get("Archaeologist's Spade");
-	let choice_adv_num: number = 1596;
-	let choice_num: number = 2;
-	let choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
-	let use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
-	let n_digs: number = auto_spadeDigsRemaining();
+	const SPADE: Item = Item.get("Archaeologist's Spade");
+	const choice_adv_num: number = 1596;
+	const choice_num: number = 2;
+	const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
+	const use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
+	const n_digs: number = auto_spadeDigsRemaining();
 	if (n_digs > 0)
 	{
 		visitUrl(use_url);
@@ -217,19 +217,19 @@ function auto_spadeDigAncient(): boolean
 
 export function auto_spadeDigSkeleton(): boolean
 {
-	let SPADE: Item = Item.get("Archaeologist's Spade");
-	let choice_adv_num: number = 1596;
-	let choice_num: number = 3;
-	let choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
-	let use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
+	const SPADE: Item = Item.get("Archaeologist's Spade");
+	const choice_adv_num: number = 1596;
+	const choice_num: number = 3;
+	const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
+	const use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
 
-	let n_digs: number = auto_spadeDigsRemaining();
+	const n_digs: number = auto_spadeDigsRemaining();
 	if (n_digs > 0)
 	{
-		let pages: Map<number, string> = new Map();
+		const pages: Map<number, string> = new Map();
 		pages.set(0, use_url);
 		pages.set(1, choice_url);
-		let loc: Location = myLocation();
+		const loc: Location = myLocation();
 		if (autoAdvBypass(0, pages, Location.get("Noob Cave"), null)) {
 			handleTracker$1(SPADE.toString(), `Dig up a skeleton - ${loc}`, "auto_otherstuff");
 			return true;
@@ -242,10 +242,10 @@ export function auto_spadeDigSkeleton(): boolean
 export function auto_wantToSpadeDigSkeleton(loc: Location): boolean {
 	// haunted kitchen is the only zone that calls auto_spadeDigSkeleton() and does not call this function
 	// (because it's the only non-delay zone currently supported)
-	let valid_loc: boolean = spadeDelayZones().has(loc);
-	let have_digs: boolean = auto_spadeDigsRemaining() > 0;
-	let delay_left: boolean = zone_delay(loc)._boolean;
-	let zone_set: boolean = toLocation(getProperty("lastAdventure")) === loc;
+	const valid_loc: boolean = spadeDelayZones().has(loc);
+	const have_digs: boolean = auto_spadeDigsRemaining() > 0;
+	const delay_left: boolean = zone_delay(loc)._boolean;
+	const zone_set: boolean = toLocation(getProperty("lastAdventure")) === loc;
 	if (valid_loc && have_digs && delay_left && zone_set) {
 		return true;
 	}
@@ -253,7 +253,7 @@ export function auto_wantToSpadeDigSkeleton(loc: Location): boolean {
 }
 
 export function spadeDelayZones(): Map<Location, boolean> {
-	let desired_zones: Map<Location, boolean> = new Map();
+	const desired_zones: Map<Location, boolean> = new Map();
 	desired_zones.set(Location.get("The Unquiet Garves"), true);
 	desired_zones.set(Location.get("The Haunted Ballroom"), true);
 	return desired_zones;
@@ -261,7 +261,7 @@ export function spadeDelayZones(): Map<Location, boolean> {
 
 export function auto_burnRemainingSpadeDigs(): boolean
 {
-	let n_digs: number = auto_spadeDigsRemaining();
+	const n_digs: number = auto_spadeDigsRemaining();
 	for (let ii: number = 0; ii < n_digs; ii++)
 	{
 		auto_spadeDigAncient();

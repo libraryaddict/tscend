@@ -116,7 +116,7 @@ export function auto_bowlingBallCombatString(place: Location, speculation: boole
 	if (canUse$2(Skill.get("Bowl Straight Up")))
 	{
 		// increase item bonus if not item capped in current zone
-		let itemNeed: generic_t = zone_needItem(place);
+		const itemNeed: generic_t = zone_needItem(place);
 		if (itemNeed._boolean)
 		{
 			if (itemDropModifier() < itemNeed._float)
@@ -147,7 +147,7 @@ function auto_CombatLoversLocketCharges(): number
 		return 0;
 	}
 
-	let locketMonstersFought: string = getProperty("_locketMonstersFought");
+	const locketMonstersFought: string = getProperty("_locketMonstersFought");
 	// check if we haven't found any yet
 	if (locketMonstersFought === "")
 	{
@@ -159,8 +159,8 @@ function auto_CombatLoversLocketCharges(): number
 
 function auto_haveReminiscedMonster(mon: Monster): boolean
 {
-	let idList: Map<number, string> = new Map(splitString(getProperty("_locketMonstersFought"), ",").map((_v, _i) => [_i, _v]));
-	for (let [index, id] of idList)
+	const idList: Map<number, string> = new Map(splitString(getProperty("_locketMonstersFought"), ",").map((_v, _i) => [_i, _v]));
+	for (const [index, id] of idList)
 	{
 		if (toMonster(id) === mon)
 		{
@@ -172,7 +172,7 @@ function auto_haveReminiscedMonster(mon: Monster): boolean
 
 export function auto_monsterInLocket(mon: Monster): boolean
 {
-	let captured: Map<Monster, boolean> = new Map(Object.entries(getLocketMonsters()).map(([_k, _v]) => [Monster.get(_k), _v]));
+	const captured: Map<Monster, boolean> = new Map(Object.entries(getLocketMonsters()).map(([_k, _v]) => [Monster.get(_k), _v]));
 	return captured.has(mon);
 }
 
@@ -199,7 +199,7 @@ export function auto_fightLocketMonster(mon: Monster, speculative: boolean): boo
 	}
 
 	auto_log_info(`Using locket to summon ${mon.name}`, "blue");
-	let pages: Map<number, string> = new Map();
+	const pages: Map<number, string> = new Map();
 	pages.set(0, "inventory.php?reminisce=1");
 	pages.set(1, `choice.php?whichchoice=1463&pwd&option=1&mid=${mon.id}`);
 	if (autoAdvBypass(1, pages, Location.get("Noob Cave"), null))
@@ -229,7 +229,7 @@ export function auto_haveGreyGoose(): boolean
 export function gooseExpectedDrones(): number
 {
 	if (!auto_haveGreyGoose()) { return 0; }
-	let gooseWeight: number = familiarWeight(Familiar.get("Grey Goose"));
+	const gooseWeight: number = familiarWeight(Familiar.get("Grey Goose"));
 	if (gooseWeight < 5) { return 0; }
 	return gooseWeight - 5;
 }
@@ -406,8 +406,8 @@ export function sweatpantsPreAdventure(): void {
 		return; //want to keep all the sleaze damage bonus in this location
 	}
 
-	let sweat: number = getSweat();
-	let liverCleaned: number = toInt(getProperty("_sweatOutSomeBoozeUsed"));
+	const sweat: number = getSweat();
+	const liverCleaned: number = toInt(getProperty("_sweatOutSomeBoozeUsed"));
 
 	if (sweat >= 25 && liverCleaned < 3 && myInebriety() > 0) {
 		if (myLocation() === Location.get("The Haunted Billiards Room") && myInebriety() <= 10) {
@@ -438,7 +438,7 @@ export function auto_hasStillSuit(): boolean
 export function auto_expectedStillsuitAdvs(): number
 {
 	if (!auto_hasStillSuit()) { return 0; }
-	let sweat: number = toInt(getProperty("familiarSweat"));
+	const sweat: number = toInt(getProperty("familiarSweat"));
 	// can't consume until at least 10 sweat has been accumulated
 	if (sweat < 10) { return 0; }
 
@@ -464,23 +464,23 @@ export function utilizeStillsuit(): void {
 
 	function sweetestSweatFamiliar(): Familiar
 	{
-		let currentFamiliar: Familiar = myFamiliar();
+		const currentFamiliar: Familiar = myFamiliar();
 		//todo better choice of best familiar effects
-		for (let sweetSweatFamiliar of Familiar.get(["Grinning Turtle", "Grouper Groupie", "Star Starfish", "Cat Burglar", "Slimeling", "Sleazy Gravy Fairy"]))
+		for (const sweetSweatFamiliar of Familiar.get(["Grinning Turtle", "Grouper Groupie", "Star Starfish", "Cat Burglar", "Slimeling", "Sleazy Gravy Fairy"]))
 		{ //these give item and sleaze
 			if (haveFamiliar(sweetSweatFamiliar) && auto_is_valid$1(sweetSweatFamiliar) && sweetSweatFamiliar !== currentFamiliar)
 			{
 				return sweetSweatFamiliar;
 			}
 		}
-		for (let commonFamiliar of Familiar.get(["Baby Gravy Fairy", "Smiling Rat", "Mosquito", "Reassembled Blackbird"]))
+		for (const commonFamiliar of Familiar.get(["Baby Gravy Fairy", "Smiling Rat", "Mosquito", "Reassembled Blackbird"]))
 		{ //default fall back, you probably have one of these
 			if (haveFamiliar(commonFamiliar) && auto_is_valid$1(commonFamiliar) && commonFamiliar !== currentFamiliar)
 			{
 				return commonFamiliar;
 			}
 		}
-		for (let anyFamiliar of Familiar.get(["Mosquito", "Leprechaun", "Levitating Potato", "Angry Goat", "Sabre-Toothed Lime", "Fuzzy Dice", "Spooky Pirate Skeleton", "Barrrnacle", "Howling Balloon Monkey", "Stab Bat", "Grue", "Blood-Faced Volleyball", "Ghuol Whelp", "Baby Gravy Fairy", "Cocoabo", "Star Starfish", "Hovering Sombrero", "Ghost Pickle on a Stick", "Killer Bee", "Whirling Maple Leaf", "Coffee Pixie", "Cheshire Bat", "Jill-O-Lantern", "Hand Turkey", "Crimbo Elf", "Hanukkimbo Dreidl", "Baby Yeti", "Feather Boa Constrictor", "Emo Squid", "Personal Raincloud", "Clockwork Grapefruit", "MagiMechTech MicroMechaMech", "Flaming Gravy Fairy", "Frozen Gravy Fairy", "Stinky Gravy Fairy", "Spooky Gravy Fairy", "Inflatable Dodecapede", "Pygmy Bugbear Shaman", "Doppelshifter", "Attention-Deficit Demon", "Cymbal-Playing Monkey", "Temporal Riftlet", "Sweet Nutcracker", "Pet Rock", "Snowy Owl", "Teddy Bear", "Ninja Pirate Zombie Robot", "Sleazy Gravy Fairy", "Wild Hare", "Wind-up Chattering Teeth", "Spirit Hobo", "Astral Badger", "Comma Chameleon", "Misshapen Animal Skeleton", "Scary Death Orb", "Jitterbug", "Nervous Tick", "Reassembled Blackbird", "Origami Towel Crane", "Ninja Snowflake", "Evil Teddy Bear", "Toothsome Rock", "Ancient Yuletide Troll", "Dandy Lion", "O.A.F.", "Penguin Goodfella", "Jumpsuited Hound Dog", "Green Pixie", "Ragamuffin Imp", "Exotic Parrot", "Wizard Action Figure", "Gluttonous Green Ghost", "Casagnova Gnome", "Hunchbacked Minion", "Crimbo P. R. E. S. S. I. E.", "Bulky Buddy Box", "Teddy Borg", "RoboGoose", "El Vibrato Megadrone", "Mad Hatrack", "Adorable Seal Larva", "Untamed Turtle", "Animated Macaroni Duck", "Pet Cheezling", "Autonomous Disco Ball", "Mariachi Chihuahua", "Hobo Monkey", "Llama Lama", "Cotton Candy Carnie", "Disembodied Hand", "Black Cat", "Uniclops", "Psychedelic Bear", "Baby Mutant Rattlesnake", "Mutant Fire Ant", "Mutant Cactus Bud", "Mutant Gila Monster", "Cuddlefish", "Sugar Fruit Fairy", "Imitation Crab", "Pair of Ragged Claws", "Magic Dragonfish", "Frumious Bandersnatch", "Midget Clownfish", "Syncopated Turtle", "Grinning Turtle", "Purse Rat", "Wereturtle", "Baby Sandworm", "Slimeling", "He-Boulder", "Rock Lobster", "Urchin Urchin", "Grouper Groupie", "Squamous Gibberer", "Dancing Frog", "Chauvinist Pig", "Stocking Mimic", "Snow Angel", "Jack-in-the-Box", "BRICKO chick", "Baby Bugged Bugbear", "Money-Making Goblin", "Floating Eye", "Vampire Bat", "Oyster Bunny", "Egg Benedict", "Bank Piggy", "Worm Doctor", "Snowhitman", "Plastic Grocery Bag", "Underworld Bonsai", "Rogue Program", "Mini-Hipster", "Pottery Barn Owl", "Hippo Ballerina", "Knob Goblin Organ Grinder", "Piano Cat", "Dramatic Hedgehog", "Smiling Rat", "Robot Reindeer", "Holiday Log", "Obtuse Angel", "Reconstituted Crow", "Li'l Xenomorph", "Dataspider", "Pair of Stomping Boots", "Feral Kobold", "Fancypants Scarecrow", "Bloovian Groose", "Blavious Kloop", "Peppermint Rhino", "Tickle-Me Emilio", "Steam-Powered Cheerleader", "Happy Medium", "Artistic Goth Kid", "Flaming Face", "Reagnimated Gnome", "Hovering Skull", "Mini-Skulldozer", "Angry Jung Man", "Unconscious Collective", "Nanorhino", "Oily Woim", "Homemade Robot", "MiniMechaElf", "Gelatinous Cubeling", "Adorable Space Buddy", "Nosy Nose", "Mini-Adventurer", "Mechanical Songbird", "Reanimated Reanimator", "Warbear Drone", "Grimstone Golem", "Grim Brother", "Miniature Sword & Martini Guy", "Putty Buddy", "Twitching Space Critter", "Galloping Grill", "Helix Fossil", "Xiblaxian Holo-Companion", "Baby Z-Rex", "Fist Turkey", "Crimbo Shrub", "Mini-Crimbot", "Topiary Skunk", "Golden Monkey", "Adventurous Spelunker", "Sludgepuppy", "Baby Mayonnaise Wasp", "Puck Man", "Ms. Puck Man", "Lil' Barrel Mimic", "Machine Elf", "Choctopus", "Rockin' Robin", "Restless Cow Skull", "Intergnat", "Software Bug", "Bark Scorpion", "Trick-or-Treating Tot", "Chocolate Lab", "Bad Vibe", "Space Jellyfish", "Optimistic Candle", "Robortender", "Cute Meteor", "XO Skeleton", "Garbage Fire", "Globmule", "Bluzzard", "Faux", "Sledgehamster", "Pimpsqueak", "Pillowbug", "Dressage", "Sequestrian", "Carpricorn", "Turpin", "Morphan", "Cycloney", "Peaclock", "Turtive", "Lepardner", "Aiolion", "Waifuton", "Gorillape", "Wendtigo", "Snoutlet", "Ruffalo", "Vaporpoise", "Ghosprey", "Straypler", "Flan", "Mustardigrade", "Ched", "Gazelleton", "Mechamelion", "Bicycle", "Vamprey", "Wullabye", "Nursine", "Cantelope", "Ungulant", "Caramel", "Oppossum", "Amanitee", "Smashmoth", "Vulgure", "Squib", "Trafikoan", "Slotter", "Shudder", "Glamare", "Unspeakachu", "Stooper", "Disgeist", "Bowlet", "Cornbeefadon", "Mu", "God Lobster", "Cat Burglar", "Party Mouse", "Yule Hound", "Sausage Golem", "Elf Operative", "Plastic Pirate Skull", "Pet Coral", "Pocket Professor", "Red-Nosed Snapper", "Antique Nutcracker", "Piranha Plant", "Left-Hand Man", "Melodramedary", "Ghost of Crimbo Carols", "Ghost of Crimbo Cheer", "Ghost of Crimbo Commerce", "Shorter-Order Cook", "Vampire Vintner", "Arachnelf", "Synthetic Rock", "Grey Goose", "Cookbookbat", "Mini-Trainbot", "Hobo in Sheep's Clothing", "Pixel Rock", "Patriotic Eagle", "Jill-of-All-Trades", "Flaming Leafcutter Ant", "Rigging Snake", "Pet Anchor", "Chest Mimic", "Mini Kiwi", "Proto-Protozoa", "Evolving Organism", "Burly Bodyguard", "Doll Moll", "Emberiza Aureola", "Peace Turkey", "Quantum Entangler", "Golden Pet Rock", "Profane Parrot", "Significant Bit", "Heat Wave", "Cold Cut", "Shame Spiral", "Phantom Limb", "Foul Ball", "Dire Cassava", "Observer", "Cool Cucumber", "Defective Childrens' Stapler", "Glover", "Zapper Bug", "Wet Paper Tiger", "Cooler Yeti", "Baby Skeleton", "Skeleton of Crimbo Past", "Tiny Plastic Santa Claus Skeleton", "Cute Skeletal Dinosaur", "Sword of S Words"]))
+		for (const anyFamiliar of Familiar.get(["Mosquito", "Leprechaun", "Levitating Potato", "Angry Goat", "Sabre-Toothed Lime", "Fuzzy Dice", "Spooky Pirate Skeleton", "Barrrnacle", "Howling Balloon Monkey", "Stab Bat", "Grue", "Blood-Faced Volleyball", "Ghuol Whelp", "Baby Gravy Fairy", "Cocoabo", "Star Starfish", "Hovering Sombrero", "Ghost Pickle on a Stick", "Killer Bee", "Whirling Maple Leaf", "Coffee Pixie", "Cheshire Bat", "Jill-O-Lantern", "Hand Turkey", "Crimbo Elf", "Hanukkimbo Dreidl", "Baby Yeti", "Feather Boa Constrictor", "Emo Squid", "Personal Raincloud", "Clockwork Grapefruit", "MagiMechTech MicroMechaMech", "Flaming Gravy Fairy", "Frozen Gravy Fairy", "Stinky Gravy Fairy", "Spooky Gravy Fairy", "Inflatable Dodecapede", "Pygmy Bugbear Shaman", "Doppelshifter", "Attention-Deficit Demon", "Cymbal-Playing Monkey", "Temporal Riftlet", "Sweet Nutcracker", "Pet Rock", "Snowy Owl", "Teddy Bear", "Ninja Pirate Zombie Robot", "Sleazy Gravy Fairy", "Wild Hare", "Wind-up Chattering Teeth", "Spirit Hobo", "Astral Badger", "Comma Chameleon", "Misshapen Animal Skeleton", "Scary Death Orb", "Jitterbug", "Nervous Tick", "Reassembled Blackbird", "Origami Towel Crane", "Ninja Snowflake", "Evil Teddy Bear", "Toothsome Rock", "Ancient Yuletide Troll", "Dandy Lion", "O.A.F.", "Penguin Goodfella", "Jumpsuited Hound Dog", "Green Pixie", "Ragamuffin Imp", "Exotic Parrot", "Wizard Action Figure", "Gluttonous Green Ghost", "Casagnova Gnome", "Hunchbacked Minion", "Crimbo P. R. E. S. S. I. E.", "Bulky Buddy Box", "Teddy Borg", "RoboGoose", "El Vibrato Megadrone", "Mad Hatrack", "Adorable Seal Larva", "Untamed Turtle", "Animated Macaroni Duck", "Pet Cheezling", "Autonomous Disco Ball", "Mariachi Chihuahua", "Hobo Monkey", "Llama Lama", "Cotton Candy Carnie", "Disembodied Hand", "Black Cat", "Uniclops", "Psychedelic Bear", "Baby Mutant Rattlesnake", "Mutant Fire Ant", "Mutant Cactus Bud", "Mutant Gila Monster", "Cuddlefish", "Sugar Fruit Fairy", "Imitation Crab", "Pair of Ragged Claws", "Magic Dragonfish", "Frumious Bandersnatch", "Midget Clownfish", "Syncopated Turtle", "Grinning Turtle", "Purse Rat", "Wereturtle", "Baby Sandworm", "Slimeling", "He-Boulder", "Rock Lobster", "Urchin Urchin", "Grouper Groupie", "Squamous Gibberer", "Dancing Frog", "Chauvinist Pig", "Stocking Mimic", "Snow Angel", "Jack-in-the-Box", "BRICKO chick", "Baby Bugged Bugbear", "Money-Making Goblin", "Floating Eye", "Vampire Bat", "Oyster Bunny", "Egg Benedict", "Bank Piggy", "Worm Doctor", "Snowhitman", "Plastic Grocery Bag", "Underworld Bonsai", "Rogue Program", "Mini-Hipster", "Pottery Barn Owl", "Hippo Ballerina", "Knob Goblin Organ Grinder", "Piano Cat", "Dramatic Hedgehog", "Smiling Rat", "Robot Reindeer", "Holiday Log", "Obtuse Angel", "Reconstituted Crow", "Li'l Xenomorph", "Dataspider", "Pair of Stomping Boots", "Feral Kobold", "Fancypants Scarecrow", "Bloovian Groose", "Blavious Kloop", "Peppermint Rhino", "Tickle-Me Emilio", "Steam-Powered Cheerleader", "Happy Medium", "Artistic Goth Kid", "Flaming Face", "Reagnimated Gnome", "Hovering Skull", "Mini-Skulldozer", "Angry Jung Man", "Unconscious Collective", "Nanorhino", "Oily Woim", "Homemade Robot", "MiniMechaElf", "Gelatinous Cubeling", "Adorable Space Buddy", "Nosy Nose", "Mini-Adventurer", "Mechanical Songbird", "Reanimated Reanimator", "Warbear Drone", "Grimstone Golem", "Grim Brother", "Miniature Sword & Martini Guy", "Putty Buddy", "Twitching Space Critter", "Galloping Grill", "Helix Fossil", "Xiblaxian Holo-Companion", "Baby Z-Rex", "Fist Turkey", "Crimbo Shrub", "Mini-Crimbot", "Topiary Skunk", "Golden Monkey", "Adventurous Spelunker", "Sludgepuppy", "Baby Mayonnaise Wasp", "Puck Man", "Ms. Puck Man", "Lil' Barrel Mimic", "Machine Elf", "Choctopus", "Rockin' Robin", "Restless Cow Skull", "Intergnat", "Software Bug", "Bark Scorpion", "Trick-or-Treating Tot", "Chocolate Lab", "Bad Vibe", "Space Jellyfish", "Optimistic Candle", "Robortender", "Cute Meteor", "XO Skeleton", "Garbage Fire", "Globmule", "Bluzzard", "Faux", "Sledgehamster", "Pimpsqueak", "Pillowbug", "Dressage", "Sequestrian", "Carpricorn", "Turpin", "Morphan", "Cycloney", "Peaclock", "Turtive", "Lepardner", "Aiolion", "Waifuton", "Gorillape", "Wendtigo", "Snoutlet", "Ruffalo", "Vaporpoise", "Ghosprey", "Straypler", "Flan", "Mustardigrade", "Ched", "Gazelleton", "Mechamelion", "Bicycle", "Vamprey", "Wullabye", "Nursine", "Cantelope", "Ungulant", "Caramel", "Oppossum", "Amanitee", "Smashmoth", "Vulgure", "Squib", "Trafikoan", "Slotter", "Shudder", "Glamare", "Unspeakachu", "Stooper", "Disgeist", "Bowlet", "Cornbeefadon", "Mu", "God Lobster", "Cat Burglar", "Party Mouse", "Yule Hound", "Sausage Golem", "Elf Operative", "Plastic Pirate Skull", "Pet Coral", "Pocket Professor", "Red-Nosed Snapper", "Antique Nutcracker", "Piranha Plant", "Left-Hand Man", "Melodramedary", "Ghost of Crimbo Carols", "Ghost of Crimbo Cheer", "Ghost of Crimbo Commerce", "Shorter-Order Cook", "Vampire Vintner", "Arachnelf", "Synthetic Rock", "Grey Goose", "Cookbookbat", "Mini-Trainbot", "Hobo in Sheep's Clothing", "Pixel Rock", "Patriotic Eagle", "Jill-of-All-Trades", "Flaming Leafcutter Ant", "Rigging Snake", "Pet Anchor", "Chest Mimic", "Mini Kiwi", "Proto-Protozoa", "Evolving Organism", "Burly Bodyguard", "Doll Moll", "Emberiza Aureola", "Peace Turkey", "Quantum Entangler", "Golden Pet Rock", "Profane Parrot", "Significant Bit", "Heat Wave", "Cold Cut", "Shame Spiral", "Phantom Limb", "Foul Ball", "Dire Cassava", "Observer", "Cool Cucumber", "Defective Childrens' Stapler", "Glover", "Zapper Bug", "Wet Paper Tiger", "Cooler Yeti", "Baby Skeleton", "Skeleton of Crimbo Past", "Tiny Plastic Santa Claus Skeleton", "Cute Skeletal Dinosaur", "Sword of S Words"]))
 		{ //if all else failed just pick any available familiar that can wear equipment
 			if (haveFamiliar(anyFamiliar) && auto_is_valid$1(anyFamiliar) && anyFamiliar !== currentFamiliar && !(Familiar.get(["Comma Chameleon", "Mad Hatrack", "Fancypants Scarecrow", "Disembodied Hand", "Ghost of Crimbo Carols", "Ghost of Crimbo Cheer", "Ghost of Crimbo Commerce"]).includes(anyFamiliar)))
 			{
@@ -489,7 +489,7 @@ export function utilizeStillsuit(): void {
 		}
 		return Familiar.none;
 	}
-	let chosenStillsuitFamiliar: Familiar = sweetestSweatFamiliar();
+	const chosenStillsuitFamiliar: Familiar = sweetestSweatFamiliar();
 	if (familiarEquippedEquipment(chosenStillsuitFamiliar) !== Item.get("tiny stillsuit"))
 	{
 		if (itemAmount(Item.get("tiny stillsuit")) === 0)
@@ -512,7 +512,7 @@ export function utilizeStillsuit(): void {
 
 export function auto_hasParka(): boolean
 {
-	let parka: Item = wrap_item(Item.get("Jurassic Parka"));
+	const parka: Item = wrap_item(Item.get("Jurassic Parka"));
 	return possessEquipment(parka) && auto_is_valid(parka);
 }
 
@@ -535,7 +535,7 @@ export function auto_handleParka(): boolean
 	{
 		return false;
 	}
-	let dino: string = getProperty("auto_parkaSetting");
+	const dino: string = getProperty("auto_parkaSetting");
 	let tempDino: string = dino;
 	if (dino === "")
 	{
@@ -577,7 +577,7 @@ export function auto_handleParka(): boolean
 	{
 		cliExecute(`parka ${tempDino}`);
 	}
-	let parka: Item = wrap_item(Item.get("Jurassic Parka"));
+	const parka: Item = wrap_item(Item.get("Jurassic Parka"));
 	equip(parka); // already configured, just equip
 
 	return getProperty("parkaMode") === tempDino && haveEquipped(parka);
@@ -589,7 +589,7 @@ export function auto_ParkaSpikeForcesLeft(): number
 	{
 		return 0;
 	}
-	let spike_uses: number = toInt(getProperty("_spikolodonSpikeUses"));
+	const spike_uses: number = toInt(getProperty("_spikolodonSpikeUses"));
 	return 5 - spike_uses;
 }
 
@@ -610,7 +610,7 @@ export function auto_autumnatonCanAdv(canAdventureInloc: Location): boolean
 		equip(Item.get("continuum transfunctioner"));
 	}
 
-	for (let [index, loc] of getAutumnatonLocations().entries())
+	for (const [index, loc] of getAutumnatonLocations().entries())
 	{
 		if (loc === canAdventureInloc)
 		{
@@ -637,7 +637,7 @@ export function auto_autumnatonQuestingIn(): Location
 
 function auto_autumnatonCheckForUpgrade(upgrade: string): boolean
 {
-	let currentUpgrades: string = getProperty("autumnatonUpgrades");
+	const currentUpgrades: string = getProperty("autumnatonUpgrades");
 	if (containsText(currentUpgrades, upgrade))
 	{
 		return true;
@@ -661,8 +661,8 @@ export function auto_autumnatonQuest(): boolean
 	if (!auto_autumnatonReadyToQuest()) { return false; }
 	// complete any pending upgrades if haven't checked since last return
 	// both of these props reset to 0 at start of day or new life due to "_" at start of them
-	let completedQuestsToday: number = toInt(getProperty("_autumnatonQuests"));
-	let lastQuestUpgradesChecked: number = toInt(getProperty("_auto_lastAutumnatonUpgrade"));
+	const completedQuestsToday: number = toInt(getProperty("_autumnatonQuests"));
+	const lastQuestUpgradesChecked: number = toInt(getProperty("_auto_lastAutumnatonUpgrade"));
 	if (completedQuestsToday > lastQuestUpgradesChecked)
 	{
 		try {
@@ -705,7 +705,7 @@ export function auto_autumnatonQuest(): boolean
 	// should we go regardless of if we have arm upgrades?
 	if (auto_autumnatonCheckForUpgrade("leftarm1") && auto_autumnatonCheckForUpgrade("rightarm1") && itemAmount(Item.get("barrel of gunpowder")) < 5 && getProperty("sidequestLighthouseCompleted") === "none" && !in_koe())
 	{
-		let targetLocation: Location = Location.get("Sonofa Beach");
+		const targetLocation: Location = Location.get("Sonofa Beach");
 		if (!auto_autumnatonCanAdv(targetLocation) && zone_available(targetLocation))
 		{
 			// force one turn in zone to unlock it for bot
@@ -716,7 +716,7 @@ export function auto_autumnatonQuest(): boolean
 	// acquire items to help quests
 	if (fastenerCount() < 30 && lumberCount() < 30)
 	{
-		let targetLocation: Location = Location.get("The Smut Orc Logging Camp");
+		const targetLocation: Location = Location.get("The Smut Orc Logging Camp");
 		if (!auto_autumnatonCanAdv(targetLocation) && zone_available(targetLocation))
 		{
 			// force one turn in zone to unlock it for bot
@@ -727,7 +727,7 @@ export function auto_autumnatonQuest(): boolean
 
 	if (hedgeTrimmersNeeded() > 0)
 	{
-		let targetLocation: Location = Location.get("Twin Peak");
+		const targetLocation: Location = Location.get("Twin Peak");
 		if (!auto_autumnatonCanAdv(targetLocation) && zone_available(targetLocation))
 		{
 			// force one turn in zone to unlock it for bot
@@ -739,7 +739,7 @@ export function auto_autumnatonQuest(): boolean
 	// acquire more shadow bricks
 	if (auto_neededShadowBricks() > 0)
 	{
-		let ingress: string = getProperty("shadowRiftIngress");
+		const ingress: string = getProperty("shadowRiftIngress");
 		if (["cemetery", "hiddencity", "pyramid"].includes(ingress))
 		{
 			if (auto_sendAutumnaton(Location.get("Shadow Rift"))) { return false; }
@@ -793,7 +793,7 @@ export function auto_haveTrainSet(): boolean
 
 function auto_modifyTrainSet(one: number, two: number, three: number, four: number, five: number, six: number, seven: number, eight: number): void
 {
-	let page: string = `choice.php?pwd&whichchoice=1485&option=1&slot[0]=${one}&slot[1]=${two}&slot[2]=${three}&slot[3]=${four}&slot[4]=${five}&slot[5]=${six}&slot[6]=${seven}&slot[7]=${eight}`;
+	const page: string = `choice.php?pwd&whichchoice=1485&option=1&slot[0]=${one}&slot[1]=${two}&slot[2]=${three}&slot[3]=${four}&slot[4]=${five}&slot[5]=${six}&slot[6]=${seven}&slot[7]=${eight}`;
 	visitUrl(page, true, true);
 	visitUrl("main.php");
 	return;
@@ -801,9 +801,9 @@ function auto_modifyTrainSet(one: number, two: number, three: number, four: numb
 
 export function auto_checkTrainSet(): void
 {
-	let lastTrainsetConfiguration: number = toInt(getProperty("lastTrainsetConfiguration"));
-	let trainsetPosition: number = toInt(getProperty("trainsetPosition"));
-	let trainsetConfiguration: string = getProperty("trainsetConfiguration");
+	const lastTrainsetConfiguration: number = toInt(getProperty("lastTrainsetConfiguration"));
+	const trainsetPosition: number = toInt(getProperty("trainsetPosition"));
+	const trainsetConfiguration: string = getProperty("trainsetConfiguration");
 	if (!auto_haveTrainSet()) { return; }
 	/* A list of what the station numbers are (thanks Zdrvst for compiling this list for your CS script)
 	1: meat
@@ -826,7 +826,7 @@ export function auto_checkTrainSet(): void
 	19: copy last food drop
 	20: ore
 	*/
-	let stationInts: Map<number, string> = new Map();
+	const stationInts: Map<number, string> = new Map();
 	stationInts.set(1, "meat_mine");
 	stationInts.set(2, "tower_fizzy");
 	stationInts.set(3, "viewing_platform");
@@ -846,7 +846,7 @@ export function auto_checkTrainSet(): void
 	stationInts.set(18, "prawn_silo");
 	stationInts.set(19, "trackside_diner");
 	stationInts.set(20, "ore_hopper");
-	let one: number = 8; //doubler
+	const one: number = 8; //doubler
 	let two: number = 0;
 	let three: number = 0;
 	let four: number = 0;
@@ -899,11 +899,11 @@ export function auto_checkTrainSet(): void
 			four = 17; //Muscle for Moxie peeps
 		}
 	}
-	let five: number = 1; //meat
-	let six: number = 2; //mp regen
+	const five: number = 1; //meat
+	const six: number = 2; //mp regen
 	let seven: number = 0;
 	//Initialize trapper to know whether we have enough ore or not
-	let L8Step: number = internalQuestStatus("questL08Trapper");
+	const L8Step: number = internalQuestStatus("questL08Trapper");
 	if (myLevel() >= 8 && L8Step === 0) {
 		L8_trapperTalk();
 	}
@@ -927,8 +927,8 @@ export function auto_checkTrainSet(): void
 	if (monsterLevelAdjustment() > toInt(getProperty("auto_MLSafetyLimit")) && getProperty("auto_MLSafetyLimit") !== "" || toInt(getProperty("auto_MLSafetyLimit")) === -1 || in_plumber()) {
 		eight = 9; //cold res, stench dmg
 	}
-	let turnsSinceTSConfigured: number = min(trainsetPosition - lastTrainsetConfiguration, 40);
-	let expectedConfig: string = `${(stationInts.get(one) ?? stationInts.set(one, "").get(one))},${(stationInts.get(two) ?? stationInts.set(two, "").get(two))},${(stationInts.get(three) ?? stationInts.set(three, "").get(three))},${(stationInts.get(four) ?? stationInts.set(four, "").get(four))},${(stationInts.get(five) ?? stationInts.set(five, "").get(five))},${(stationInts.get(six) ?? stationInts.set(six, "").get(six))},${(stationInts.get(seven) ?? stationInts.set(seven, "").get(seven))},${(stationInts.get(eight) ?? stationInts.set(eight, "").get(eight))}`;
+	const turnsSinceTSConfigured: number = min(trainsetPosition - lastTrainsetConfiguration, 40);
+	const expectedConfig: string = `${(stationInts.get(one) ?? stationInts.set(one, "").get(one))},${(stationInts.get(two) ?? stationInts.set(two, "").get(two))},${(stationInts.get(three) ?? stationInts.set(three, "").get(three))},${(stationInts.get(four) ?? stationInts.set(four, "").get(four))},${(stationInts.get(five) ?? stationInts.set(five, "").get(five))},${(stationInts.get(six) ?? stationInts.set(six, "").get(six))},${(stationInts.get(seven) ?? stationInts.set(seven, "").get(seven))},${(stationInts.get(eight) ?? stationInts.set(eight, "").get(eight))}`;
 
 	let changedTSConfig: boolean = false;
 	if (expectedConfig !== trainsetConfiguration)
@@ -941,7 +941,7 @@ export function auto_checkTrainSet(): void
 	//only check for the page if it has been 0 turns or 40 turns since last configured and the configuration has changed
 	if (turnsSinceTSConfigured === 0 || turnsSinceTSConfigured === 40 && changedTSConfig)
 	{
-		let page: string = visitUrl("campground.php?action=workshed"); //once it is available, still double check that we can actually change the config
+		const page: string = visitUrl("campground.php?action=workshed"); //once it is available, still double check that we can actually change the config
 		if (containsText(page, "value=\"Save Train Set Configuration\"")) {
 			auto_modifyTrainSet(one, two, three, four, five, six, seven, eight);
 		}

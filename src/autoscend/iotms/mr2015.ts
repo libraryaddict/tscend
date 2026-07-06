@@ -60,7 +60,7 @@ export function auto_barrelPrayers(): boolean
 	}
 	if (!toBoolean(getProperty("barrelShrineUnlocked")))
 	{
-		let temp: string = visitUrl("da.php");
+		const temp: string = visitUrl("da.php");
 		if (!toBoolean(getProperty("barrelShrineUnlocked")))
 		{
 			return false;
@@ -195,7 +195,7 @@ export function auto_barrelPrayers(): boolean
 		}
 	}
 
-	for (let prayer of prayers.keys())
+	for (const prayer of prayers.keys())
 	{
 		if (prayer === "none")
 		{
@@ -203,7 +203,7 @@ export function auto_barrelPrayers(): boolean
 		}
 		if (!toBoolean(getProperty(`prayedFor${prayer}`)))
 		{
-			let buff: boolean = cliExecute(`barrelprayer ${prayer}`);
+			const buff: boolean = cliExecute(`barrelprayer ${prayer}`);
 			return true;
 		}
 	}
@@ -286,7 +286,7 @@ export function auto_mayoItems(): boolean
 		}
 	}
 
-	for (let mayo of mayos.keys())
+	for (const mayo of mayos.keys())
 	{
 		if (mayo === Item.get("mayo lance"))
 		{
@@ -318,7 +318,7 @@ export function auto_mayoItems(): boolean
 
 export function chateaumantegna_available(): boolean
 {
-	let chateau_key: Item = wrap_item(Item.get("Chateau Mantegna room key"));
+	const chateau_key: Item = wrap_item(Item.get("Chateau Mantegna room key"));
 	if (!in_lol() && toBoolean(getProperty("chateauAvailable")) && isUnrestricted(chateau_key))
 	{
 		return true;
@@ -334,7 +334,7 @@ export function chateaumantegna_useDesk(): void
 {
 	if (chateaumantegna_available())
 	{
-		let chateau: string = visitUrl("place.php?whichplace=chateau");
+		const chateau: string = visitUrl("place.php?whichplace=chateau");
 		if (containsText(chateau, "chateau_desk1"))
 		{
 			visitUrl("place.php?whichplace=chateau&action=chateau_desk1");
@@ -406,12 +406,12 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean
 
 export function chateaumantegna_decorations(): Map<Item, boolean>
 {
-	let retval: Map<Item, boolean> = new Map();
+	const retval: Map<Item, boolean> = new Map();
 	if (!chateaumantegna_available())
 	{
 		return retval;
 	}
-	let chateau: string = toLowerCase(visitUrl("place.php?whichplace=chateau"));
+	const chateau: string = toLowerCase(visitUrl("place.php?whichplace=chateau"));
 	if (containsText(chateau, "electric muscle stimulator"))
 	{
 		retval.set(Item.get("electric muscle stimulator"), true);
@@ -532,7 +532,7 @@ export function chateaumantegna_nightstandSet(): boolean
 	}
 
 
-	let furniture: Map<Item, boolean> = chateaumantegna_decorations();
+	const furniture: Map<Item, boolean> = chateaumantegna_decorations();
 	let need: Item = Item.none;
 	if (myStat === Stat.get("Muscle"))
 	{
@@ -606,7 +606,7 @@ export function chateauPainting(): boolean
 
 function deck_available(): boolean
 {
-	let deck: Item = wrap_item(Item.get("Deck of Every Card"));
+	const deck: Item = wrap_item(Item.get("Deck of Every Card"));
 	return itemAmount(deck) > 0 && isUnrestricted(deck) && auto_is_valid(deck);
 }
 
@@ -638,7 +638,7 @@ function deck_draw(): boolean
 	{
 		return false;
 	}
-	let deck: Item = wrap_item(Item.get("Deck of Every Card"));
+	const deck: Item = wrap_item(Item.get("Deck of Every Card"));
 	let page: string = visitUrl(`inv_use.php?pwd=&which=3&whichitem=${toInt(deck)}`);
 	page = visitUrl("choice.php?pwd=&whichchoice=1085&option=1", true);
 	return true;
@@ -764,10 +764,10 @@ function deck_cheat(cheat: string): boolean
 	$_deck_cheat_cards.set("myst stat", 70);
 	$_deck_cheat_cards.set("mysticality stat", 70);
 
-	let card: number = ($_deck_cheat_cards.get(cheat) ?? $_deck_cheat_cards.set(cheat, 0).get(cheat));
+	const card: number = ($_deck_cheat_cards.get(cheat) ?? $_deck_cheat_cards.set(cheat, 0).get(cheat));
 
-	let cheated: Map<number, string> = new Map(splitString(getProperty("_deckCardsCheated"), ",").map((_v, _i) => [_i, _v]));
-	for (let [idx, cheat_1] of cheated)
+	const cheated: Map<number, string> = new Map(splitString(getProperty("_deckCardsCheated"), ",").map((_v, _i) => [_i, _v]));
+	for (const [idx, cheat_1] of cheated)
 	{
 		if (toInt(cheat_1) === card)
 		{
@@ -776,8 +776,8 @@ function deck_cheat(cheat: string): boolean
 		}
 	}
 
-	let deck: Item = wrap_item(Item.get("Deck of Every Card"));
-	let page: string = visitUrl(`inv_use.php?cheat=1&pwd=&whichitem=${toInt(deck)}`);
+	const deck: Item = wrap_item(Item.get("Deck of Every Card"));
+	const page: string = visitUrl(`inv_use.php?cheat=1&pwd=&whichitem=${toInt(deck)}`);
 	// Check that a valid card was selected, otherwise this wastes 5 draws.
 	if (card !== 0)
 	{
@@ -792,8 +792,8 @@ function deck_cheat(cheat: string): boolean
 		handleTracker$1(deck.toString(), cheat, "auto_otherstuff");
 		// If mafia is not tracking cheats, we can track them here.
 		let found: boolean = false;
-		let cheated_1: Map<number, string> = new Map(splitString(getProperty("_deckCardsCheated"), ",").map((_v, _i) => [_i, _v]));
-		for (let [idx, cheat_1] of cheated_1)
+		const cheated_1: Map<number, string> = new Map(splitString(getProperty("_deckCardsCheated"), ",").map((_v, _i) => [_i, _v]));
+		for (const [idx, cheat_1] of cheated_1)
 		{
 			if (toInt(cheat_1) === card)
 			{
@@ -847,7 +847,7 @@ export function deck_useScheme(action: string): boolean
 	}
 	else {
 		// First priority is grab a key if we need one.
-		let missingHeroKeys: number = 3 - towerKeyCount();
+		const missingHeroKeys: number = 3 - towerKeyCount();
 		if (missingHeroKeys > 0)
 		{
 			cards.set("key", true);
@@ -860,7 +860,7 @@ export function deck_useScheme(action: string): boolean
 		// Stats are higher priority early on in LoL where we're never gonna need stone wool day1
 		if (in_lol() && myLevel() < 4)
 		{
-			let mainstat: string = toLowerCase(myPrimestat().toString());
+			const mainstat: string = toLowerCase(myPrimestat().toString());
 			cards.set(`${mainstat} stat`, true);
 		}
 		// Stone wool
@@ -874,7 +874,7 @@ export function deck_useScheme(action: string): boolean
 		}
 		if (cards.size < 3 && myLevel() < 11)
 		{
-			let mainstat: string = toLowerCase(myPrimestat().toString());
+			const mainstat: string = toLowerCase(myPrimestat().toString());
 			cards.set(`${mainstat} stat`, true);
 		}
 	}
@@ -894,7 +894,7 @@ export function deck_useScheme(action: string): boolean
 	}
 
 	let count_1: number = 0;
-	for (let card of cards.keys())
+	for (const card of cards.keys())
 	{
 		if (possessEquipment(Item.get("bass clarinet")) || possessEquipment(Item.get("fish hatchet")) || possessEquipment(Item.get("dented scepter")))
 		{
@@ -999,7 +999,7 @@ export function adjustEdHat(goal: string): boolean
 		option = 7;
 	}
 
-	let oldHat: Item = equippedItem(Slot.get("hat"));
+	const oldHat: Item = equippedItem(Slot.get("hat"));
 
 	if (option !== -1)
 	{

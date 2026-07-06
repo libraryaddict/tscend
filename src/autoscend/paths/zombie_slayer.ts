@@ -54,7 +54,7 @@ export function zombieSlayer_buySkills(): boolean
 	last_zombie_fullness = myFullness();
 
 	let page: string = visitUrl("campground.php?action=grave");
-	let bought: number = 0;
+	const bought: number = 0;
 
 	while (containsText(page, "Focus on Hunger"))
 	{
@@ -87,7 +87,7 @@ function lureMinions(target: number): boolean
 	let brains_needed: number = fullnessLimit() - myFullness() + ceil(fullnessLimit() / 2);
 	function check_brains(brains: number): number {
 		if (brains_needed === 0) { return brains; }
-		let temp: number = max(brains - brains_needed, 0);
+		const temp: number = max(brains - brains_needed, 0);
 		brains_needed = max(brains_needed - brains, 0);
 		return temp;
 	}
@@ -109,9 +109,9 @@ function lureMinions(target: number): boolean
 	check_brains(itemAmount(Item.get("hunter brain")));
 	check_brains(itemAmount(Item.get("boss brain")));
 	// Count hunter and boss brains, but do not trade them, so number need not be remembered
-	let spare_good: number = check_brains(itemAmount(Item.get("good brain")));
-	let spare_decent: number = check_brains(itemAmount(Item.get("decent brain")));
-	let spare_crappy: number = check_brains(itemAmount(Item.get("crappy brain")));
+	const spare_good: number = check_brains(itemAmount(Item.get("good brain")));
+	const spare_decent: number = check_brains(itemAmount(Item.get("decent brain")));
+	const spare_crappy: number = check_brains(itemAmount(Item.get("crappy brain")));
 	// Reserve them in order from best to worst. Then trade them worst first. Stop once one returns true.
 	if (lure(spare_crappy, 1) || lure(spare_decent, 2) || lure(spare_good, 3)) {}
 	// Finish choice adventure if started
@@ -212,7 +212,7 @@ export function zombieSlayer_acquireHP(goal: number): boolean
 }
 
 function zombieSlayer_canInfect(enemy: Monster): boolean {
-	for (let phy of Phylum.get(["plant", "bug", "constellation", "construct", "elemental", "slime"]))
+	for (const phy of Phylum.get(["plant", "bug", "constellation", "construct", "elemental", "slime"]))
 	{
 		if (monsterPhylum(enemy) === phy)
 		{

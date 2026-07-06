@@ -160,10 +160,10 @@ export function awol_buySkills(): boolean
 	{
 		let page: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=8955");
 		//The rest of the book is too filled<br>with jargon for you to be able<br>to understand it.
-		let slang: AshMatcher = new AshMatcher("The rest of the book is too filled", page);
-		let cowSlang: boolean = !slang.find();
+		const slang: AshMatcher = new AshMatcher("The rest of the book is too filled", page);
+		const cowSlang: boolean = !slang.find();
 
-		let my_skillPoints: AshMatcher = new AshMatcher("You can learn (\\d+) more skill", page);
+		const my_skillPoints: AshMatcher = new AshMatcher("You can learn (\\d+) more skill", page);
 		if (my_skillPoints.find())
 		{
 			let skillPoints: number = toInt(my_skillPoints.group(1));
@@ -263,10 +263,10 @@ export function awol_buySkills(): boolean
 	{
 		let page: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=8956");
 
-		let slang: AshMatcher = new AshMatcher("The rest of the book is too filled", page);
-		let beanSlang: boolean = !slang.find();
+		const slang: AshMatcher = new AshMatcher("The rest of the book is too filled", page);
+		const beanSlang: boolean = !slang.find();
 
-		let my_skillPoints: AshMatcher = new AshMatcher("You can learn (\\d+) more skill", page);
+		const my_skillPoints: AshMatcher = new AshMatcher("You can learn (\\d+) more skill", page);
 		if (my_skillPoints.find())
 		{
 			let skillPoints: number = toInt(my_skillPoints.group(1));
@@ -366,10 +366,10 @@ export function awol_buySkills(): boolean
 	{
 		let page: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=8957");
 
-		let slang: AshMatcher = new AshMatcher("The rest of the book is too filled", page);
-		let snakeSlang: boolean = !slang.find();
+		const slang: AshMatcher = new AshMatcher("The rest of the book is too filled", page);
+		const snakeSlang: boolean = !slang.find();
 
-		let my_skillPoints: AshMatcher = new AshMatcher("You can learn (\\d+) more skill", page);
+		const my_skillPoints: AshMatcher = new AshMatcher("You can learn (\\d+) more skill", page);
 		if (my_skillPoints.find())
 		{
 			let skillPoints: number = toInt(my_skillPoints.group(1));

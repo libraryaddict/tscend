@@ -125,7 +125,7 @@ export function heavyrains_buySkills(): boolean
 		if (itemAmount(Item.get("thunder thigh")) > 0)
 		{
 			auto_log_info("Trying to use a thunder thigh", "blue");
-			let page: string = visitUrl("inv_use.php?which=3&whichitem=7648&pwd");
+			const page: string = visitUrl("inv_use.php?which=3&whichitem=7648&pwd");
 			let skillChoice: number = 8;
 			if (!haveSkill(Skill.get("Thunder Down Underwear"))) {
 				skillChoice = 6;
@@ -158,7 +158,7 @@ export function heavyrains_buySkills(): boolean
 		if (itemAmount(Item.get("aquaconda brain")) > 0)
 		{
 			auto_log_info("Trying to use a aquaconda brain", "blue");
-			let page: string = visitUrl("inv_use.php?which=3&whichitem=7647&pwd");
+			const page: string = visitUrl("inv_use.php?which=3&whichitem=7647&pwd");
 			let skillChoice: number = 8;
 			if (!haveSkill(Skill.get("Rain Delay"))) {
 				skillChoice = 7;
@@ -191,7 +191,7 @@ export function heavyrains_buySkills(): boolean
 		if (itemAmount(Item.get("lightning milk")) > 0)
 		{
 			auto_log_info("Trying to use a lightning milk", "blue");
-			let page: string = visitUrl("inv_use.php?which=3&whichitem=7646&pwd");
+			const page: string = visitUrl("inv_use.php?which=3&whichitem=7646&pwd");
 			let skillChoice: number = 8;
 			if (toBoolean(getProperty("_fireworksShop")) && !haveSkill(Skill.get("Ball Lightning"))) {
 				skillChoice = 3;
@@ -245,7 +245,7 @@ function canRainManSummon(target: Monster): boolean
 	}
 	// Check the page text
 	auto_log_info(`${target} factoids unavailable, checking Rain Man if summon is possible`, "blue");
-	let page: string = visitUrl("runskillz.php?pwd&action=Skillz&whichskill=16011&quantity=1");
+	const page: string = visitUrl("runskillz.php?pwd&action=Skillz&whichskill=16011&quantity=1");
 	// Escape
 	runChoice(2);
 
@@ -254,14 +254,14 @@ function canRainManSummon(target: Monster): boolean
 
 export function rainManSummon(target: Monster, speculative: boolean): boolean
 {
-	let canSummon: boolean = canRainManSummon(target);
+	const canSummon: boolean = canRainManSummon(target);
 	if (!canSummon || speculative)
 	{
 		return canSummon;
 	}
 	//use the rainman to summon a monster
 	auto_log_info(`Rain Man will summon: ${target}`, "blue");
-	let pages: Map<number, string> = new Map();
+	const pages: Map<number, string> = new Map();
 	pages.set(0, "runskillz.php?pwd&action=Skillz&whichskill=16011&quantity=1");
 	pages.set(1, `choice.php?pwd&whichchoice=970&whichmonster=${target.id}&option=1&choice2=and+Fight%21`);
 	// autoAdvBypass will escape from the choice and return false if the monster cannot be fought
@@ -330,11 +330,11 @@ export function L13_heavyrains_towerFinal(): boolean
 	{
 		addToMaximize("prismatic damage, +weapon, +offhand, +club");
 		equipMaximizedGear();
-		let club_hot_dmg: number = toInt(min(40, 3 * numericModifier("hot damage")));
+		const club_hot_dmg: number = toInt(min(40, 3 * numericModifier("hot damage")));
 		let club_cold_dmg: number = toInt(min(40, 3 * numericModifier("cold damage")));
-		let club_stench_dmg: number = toInt(min(40, 3 * numericModifier("stench damage")));
-		let club_sleaze_dmg: number = toInt(min(40, 3 * numericModifier("sleaze damage")));
-		let club_spooky_dmg: number = toInt(min(40, 3 * numericModifier("spooky damage")));
+		const club_stench_dmg: number = toInt(min(40, 3 * numericModifier("stench damage")));
+		const club_sleaze_dmg: number = toInt(min(40, 3 * numericModifier("sleaze damage")));
+		const club_spooky_dmg: number = toInt(min(40, 3 * numericModifier("spooky damage")));
 
 		if (auto_have_skill(Skill.get("Cold Shoulder")))
 		{
@@ -352,14 +352,14 @@ export function L13_heavyrains_towerFinal(): boolean
 		}
 	}
 
-	let attack_dmg: number = 40 + min(40, hot_dmg) + min(40, cold_dmg) + min(40, stench_dmg) + min(40, sleaze_dmg) + min(40, spooky_dmg);
+	const attack_dmg: number = 40 + min(40, hot_dmg) + min(40, cold_dmg) + min(40, stench_dmg) + min(40, sleaze_dmg) + min(40, spooky_dmg);
 	//check magic damage
 	let spell_extra_element: boolean = false;
 	if (itemAmount(Item.get("Rain-Doh green lantern")) > 0 || itemAmount(Item.get("meteorb")) > 0 || itemAmount(Item.get("snow mobile")) > 0)
 	{
 		spell_extra_element = true;
 	}
-	else { for (let it of Item.get(["Rain-Doh green lantern", "meteorb", "snow mobile"]))
+	else { for (const it of Item.get(["Rain-Doh green lantern", "meteorb", "snow mobile"]))
 	{
 		if (acquireOrPull(it))
 		{

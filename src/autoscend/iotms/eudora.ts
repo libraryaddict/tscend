@@ -12,10 +12,10 @@ function eudora_available(): boolean
 
 export function eudora_initializeSettings(): Map<Item, boolean>
 {
-	let retval: Map<Item, boolean> = new Map();
+	const retval: Map<Item, boolean> = new Map();
 	if (eudora_available())
 	{
-		let eudora_1: string = visitUrl("account.php?tab=correspondence");
+		const eudora_1: string = visitUrl("account.php?tab=correspondence");
 		if (containsText(eudora_1, "Pen Pal") && isUnrestricted(Item.get("My Own Pen Pal kit")))
 		{
 			retval.set(Item.get("My Own Pen Pal kit"), true);
@@ -44,7 +44,7 @@ function eudora_current(): Item
 {
 	if (eudora_available())
 	{
-		let eudora_1: string = visitUrl("account.php?tab=correspondence");
+		const eudora_1: string = visitUrl("account.php?tab=correspondence");
 		if (containsText(eudora_1, "selected' value=\"1") && isUnrestricted(Item.get("My Own Pen Pal kit")))
 		{
 			return Item.get("My Own Pen Pal kit");

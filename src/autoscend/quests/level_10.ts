@@ -32,7 +32,7 @@ export function L10_plantThatBean(): boolean
 	}
 
 	auto_log_info("Planting enchanted bean to open the beanstalk and start L10 quest.", "blue");
-	let page: string = visitUrl("place.php?whichplace=plains");
+	const page: string = visitUrl("place.php?whichplace=plains");
 	if (containsText(page, "place.php?whichplace=beanstalk"))
 	{
 		auto_log_warning("I see the beanstalk has already been planted. Fixing questL10Garbage to step1.", "blue");
@@ -187,7 +187,7 @@ export function L10_basement(): boolean
 
 	if (!inHardcore())
 	{
-		let amulet: Item = Item.get("amulet of extreme plot significance");
+		const amulet: Item = Item.get("amulet of extreme plot significance");
 		if (!possessEquipment(amulet) && auto_can_equip(amulet) && canPull$1(amulet))
 		{
 			pullXWhenHaveY(amulet, 1, 0);
@@ -195,7 +195,7 @@ export function L10_basement(): boolean
 
 		if (!possessEquipment(amulet))
 		{ //only consider umbrella if getting amulet fails somehow
-			let umbrella: Item = Item.get("titanium assault umbrella");
+			const umbrella: Item = Item.get("titanium assault umbrella");
 			if (!possessEquipment(umbrella) && auto_can_equip(umbrella) && canPull$1(umbrella) && !possessEquipment(Item.get("unbreakable umbrella")))
 			{
 				pullXWhenHaveY(umbrella, 1, 0);
@@ -219,7 +219,7 @@ export function L10_basement(): boolean
 		}
 	}
 
-	let NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Castle in the Clouds in the Sky (Basement)"));
+	const NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Castle in the Clouds in the Sky (Basement)"));
 	// delay if we are out of NC forcers and haven't run out of things to do
 	if (!NCForced && myDaycount() < toInt(getProperty("auto_runDayCount")) && !isAboutToPowerlevel()) { return false; }
 	if (!autoEquip$1(Item.get("amulet of extreme plot significance")))
@@ -291,7 +291,7 @@ export function L10_topFloor(): boolean
 		pullXWhenHaveY(Item.get("Mohawk wig"), 1, 0);
 	}
 
-	let NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Castle in the Clouds in the Sky (Top Floor)"));
+	const NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Castle in the Clouds in the Sky (Top Floor)"));
 	// delay if we are out of NC forcers and haven't run out of things to do
 	if (!NCForced && myDaycount() < toInt(getProperty("auto_runDayCount")) && !isAboutToPowerlevel()) { return false; }
 	autoEquip$1(Item.get("Mohawk wig"));
@@ -399,8 +399,8 @@ export function L10_holeInTheSkyUnlock(): boolean
 		return false;
 	}
 	LX_buyStarKeyParts();
-	let day: number = toInt(getProperty("shenInitiationDay"));
-	let shenLocs: Map<Location, boolean> = shenSnakeLocations(day, 0);
+	const day: number = toInt(getProperty("shenInitiationDay"));
+	const shenLocs: Map<Location, boolean> = shenSnakeLocations(day, 0);
 	if (!needStarKey() && !(shenLocs.has(Location.get("The Hole in the Sky"))))
 	{
 		// we force auto_holeinthesky to true in L11_shenCopperhead() as Ed if Shen sends us to the Hole in the Sky
@@ -419,7 +419,7 @@ export function L10_holeInTheSkyUnlock(): boolean
 
 	auto_log_info("Castle (Top Floor) - Opening the Hole in the Sky.", "blue");
 	// set location "wrong" so that LX_ForceNC can properly direct back to this function (L10_holeInTheSkyUnlock)
-	let NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Hole in the Sky"));
+	const NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Hole in the Sky"));
 	// delay if we are out of NC forcers and haven't run out of things to do
 	if (!NCForced && myDaycount() < toInt(getProperty("auto_runDayCount")) && !isAboutToPowerlevel()) { return false; }
 
@@ -439,7 +439,7 @@ export function L10_rainOnThePlains(): boolean
 
 export function L10_needUmbrella(): boolean
 {
-	for (let it of Item.get(["titanium assault umbrella", "unbreakable umbrella"]))
+	for (const it of Item.get(["titanium assault umbrella", "unbreakable umbrella"]))
 	{
 		if (auto_is_valid(it) && availableAmount(it) > 0) {
 			return false;

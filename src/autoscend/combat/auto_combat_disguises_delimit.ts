@@ -17,7 +17,7 @@ export function disguises_combat_helper(round_1: number, enemy: Monster, text: s
 	//note that mafia has a function my_mask().
 	//TODO compare if it is more reliable than our own mask matcher to see if we should switch
 	let disguises: number = -1;
-	let maskMatch: AshMatcher = new AshMatcher("mask(\\d+).png", text);
+	const maskMatch: AshMatcher = new AshMatcher("mask(\\d+).png", text);
 	if (maskMatch.find())
 	{
 		disguises = toInt(maskMatch.group(1));
@@ -45,7 +45,7 @@ export function auto_combatDisguisesStage1(round_1: number, enemy: Monster, text
 		return "";
 	}
 	//some masks are treated like puzzle bosses. requiring either an immediate swap or special action handling
-	let disguises: number = toInt(getProperty("_auto_combatDisguisesDelimitMask"));
+	const disguises: number = toInt(getProperty("_auto_combatDisguisesDelimitMask"));
 	//mask 7 = bandit mask = +300% enemy defense
 	if (disguises === 7 && canUse$2(Skill.get("Swap Mask")))
 	{
@@ -77,7 +77,7 @@ export function auto_combatDisguisesStage5(round_1: number, enemy: Monster, text
 		return "";
 	}
 
-	let disguises: number = toInt(getProperty("_auto_combatDisguisesDelimitMask"));
+	const disguises: number = toInt(getProperty("_auto_combatDisguisesDelimitMask"));
 	if (disguises === 13)
 	{ //welding mask
 		//reflect damage from spells back to player. kept if mask is changed
@@ -110,12 +110,12 @@ export function auto_combatDisguisesStage5(round_1: number, enemy: Monster, text
 	{ //tiki mask
 		//triples HP and hard caps damage at 10 per source. kept if mask is changed
 		//seal clubbers have ways to increase this damage but its overly complicated to calculate. simplified calculation is used.
-		let hot_dmg: number = toInt(min(10, numericModifier("hot damage")));
-		let cold_dmg: number = toInt(min(10, numericModifier("cold damage")));
-		let stench_dmg: number = toInt(min(10, numericModifier("stench damage")));
-		let sleaze_dmg: number = toInt(min(10, numericModifier("sleaze damage")));
-		let spooky_dmg: number = toInt(min(10, numericModifier("spooky damage")));
-		let attack_dmg: number = 10 + hot_dmg + cold_dmg + stench_dmg + sleaze_dmg + spooky_dmg;
+		const hot_dmg: number = toInt(min(10, numericModifier("hot damage")));
+		const cold_dmg: number = toInt(min(10, numericModifier("cold damage")));
+		const stench_dmg: number = toInt(min(10, numericModifier("stench damage")));
+		const sleaze_dmg: number = toInt(min(10, numericModifier("sleaze damage")));
+		const spooky_dmg: number = toInt(min(10, numericModifier("spooky damage")));
+		const attack_dmg: number = 10 + hot_dmg + cold_dmg + stench_dmg + sleaze_dmg + spooky_dmg;
 
 		if (attack_dmg > 20)
 		{

@@ -38,7 +38,7 @@ export function LX_handleIntroAdventures(): void
 	// Handling these in this manner allows us to sidestep potential mafia issues related to parsing of status
 	if (handlingChoice())
 	{
-		let choice: number = lastChoice();
+		const choice: number = lastChoice();
 
 		if (995 === choice)
 		{
@@ -133,7 +133,7 @@ export function LX_bitchinMeatcar(): boolean
 		{
 			meatRequired += 100;
 		}
-		for (let it of Item.get(["spring", "sprocket", "cog", "empty meat tank", "tires", "sweet rims"]))
+		for (const it of Item.get(["spring", "sprocket", "cog", "empty meat tank", "tires", "sweet rims"]))
 		{
 			if (itemAmount(it) === 0)
 			{
@@ -166,7 +166,7 @@ export function LX_bitchinMeatcar(): boolean
 	}
 
 	let enginePartsMissing: number = 0;
-	for (let it of Item.get(["spring", "sprocket", "cog", "empty meat tank"]))
+	for (const it of Item.get(["spring", "sprocket", "cog", "empty meat tank"]))
 	{
 		if (itemAmount(it) === 0)
 		{
@@ -293,7 +293,7 @@ export function LX_islandAccess(): boolean
 		return true;
 	}
 
-	let canDesert: boolean = toInt(getProperty("lastDesertUnlock")) === myAscensions();
+	const canDesert: boolean = toInt(getProperty("lastDesertUnlock")) === myAscensions();
 
 	if (itemAmount(Item.get("Shore Inc. Ship Trip Scrip")) >= 3 && toInt(getProperty("lastIslandUnlock")) !== myAscensions() && myMeat() >= npcPrice(Item.get("dingy planks")) && isGeneralStoreAvailable())
 	{
@@ -308,7 +308,7 @@ export function LX_islandAccess(): boolean
 		if (toInt(getProperty("lastIslandUnlock")) === myAscensions())
 		{
 			let reallyUnlocked: boolean = false;
-			for (let it of Item.get(["dingy dinghy", "skeletal skiff", "yellow submarine", "pirate dinghy"]))
+			for (const it of Item.get(["dingy dinghy", "skeletal skiff", "yellow submarine", "pirate dinghy"]))
 			{
 				if (itemAmount(it) > 0)
 				{
@@ -512,7 +512,7 @@ export function estimateDailyDungeonAdvNeeded(): number
 	//estimates the amount of adventures we expect to need to do the daily dungeon. the result is only an estimate and not exact.
 	//uses your current tools rather than potential tools. so it does not account for the possibility of pulling something or getting a cubeling drop.
 
-	let progress: number = toFloat(getProperty("_lastDailyDungeonRoom"));
+	const progress: number = toFloat(getProperty("_lastDailyDungeonRoom"));
 	let adv_needed: number = 15 - progress;
 	if (progress < 5)
 	{
@@ -699,7 +699,7 @@ function LX_dailyDungeonToken(): boolean
 
 	useTonicDjinn();
 	// make sure we have enough adventures. since partial completion means wasted adventures.
-	let adv_budget: number = myAdventures() - auto_advToReserve();
+	const adv_budget: number = myAdventures() - auto_advToReserve();
 	if (adv_budget < 1 + ceil(estimateDailyDungeonAdvNeeded()))
 	{
 		return false; //not enough adv
@@ -799,7 +799,7 @@ export function LX_dolphinKingMap(): boolean
 		if (possessEquipment(Item.get("snorkel")) || myMeat() >= npcPrice(Item.get("snorkel")) && isArmoryAvailable())
 		{
 			auto_buyUpTo(1, Item.get("snorkel"));
-			let oldHat: Item = equippedItem(Slot.get("hat"));
+			const oldHat: Item = equippedItem(Slot.get("hat"));
 			equip(Item.get("snorkel"));
 			use(1, Item.get("Dolphin King's map"));
 			equip(oldHat);
@@ -832,7 +832,7 @@ export function LX_meatMaid(): boolean
 }
 
 export function LX_getDesiredWorkshed(): Item {
-	let currentWorkshed: string = toLowerCase(getProperty("auto_workshed"));
+	const currentWorkshed: string = toLowerCase(getProperty("auto_workshed"));
 	//return the actual item name in case a shorthand is used
 	switch (currentWorkshed)
 	{
@@ -888,9 +888,9 @@ return Item.none;
 }
 
 export function LX_setWorkshed(): boolean {
-	let desiredShed: Item = LX_getDesiredWorkshed();
-	let existingShed: Item = getWorkshed();
-	let workshedChanged: boolean = toBoolean(getProperty("_workshedItemUsed"));
+	const desiredShed: Item = LX_getDesiredWorkshed();
+	const existingShed: Item = getWorkshed();
+	const workshedChanged: boolean = toBoolean(getProperty("_workshedItemUsed"));
 
 	if (workshedChanged) { //Don't even try if the workshed has already been changed once
 	return false; }
@@ -1000,7 +1000,7 @@ export function LX_ForceNC(): boolean
 	{
 		return false;
 	}
-	let desiredNCLocation: Location = toLocation(getProperty("auto_forceNonCombatLocation"));
+	const desiredNCLocation: Location = toLocation(getProperty("auto_forceNonCombatLocation"));
 	if (desiredNCLocation === Location.none) { return false; }
 	//return the actual item name in case a shorthand is used
 	switch (desiredNCLocation)
@@ -1137,9 +1137,9 @@ export function freeCandyFightsLeft(): number
 	{
 		return 5;
 	}
-	let blockHtml: string = visitUrl("place.php?whichplace=town&action=town_trickortreat");
-	let block: string = getProperty("_trickOrTreatBlock");
-	let m: AshMatcher = new AshMatcher("D", block);
+	const blockHtml: string = visitUrl("place.php?whichplace=town&action=town_trickortreat");
+	const block: string = getProperty("_trickOrTreatBlock");
+	const m: AshMatcher = new AshMatcher("D", block);
 	let n_unused_dark: number = 0;
 	while (m.find()) { n_unused_dark++; }
 	return n_unused_dark;
@@ -1160,8 +1160,8 @@ export function candyBlock(): boolean
 		//don't have an outfit to trick or treat in
 		return false;
 	}
-	let houseNumbers: Map<number, number> = new Map([[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7], [8, 8], [9, 9], [10, 10], [11, 11]]);
-	let treatedHouse: Map<number, number> = new Map();
+	const houseNumbers: Map<number, number> = new Map([[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7], [8, 8], [9, 9], [10, 10], [11, 11]]);
+	const treatedHouse: Map<number, number> = new Map();
 	let count_1: number = 0;
 	let tricked: boolean = false;
 	let treated: boolean = false;
@@ -1180,11 +1180,11 @@ export function candyBlock(): boolean
 		}
 		//treat
 		auto_log_info$1("Get some treats");
-		for (let house of houseNumbers.keys())
+		for (const house of houseNumbers.keys())
 		{
 			outfit(candyBlockOutfit("treat"));
-			let treat: AshMatcher = new AshMatcher(`whichhouse=${house}>[^>]*?house_l`, blockHtml);
-			let starhouse: AshMatcher = new AshMatcher(`whichhouse=${house}>[^>]*?starhouse`, blockHtml);
+			const treat: AshMatcher = new AshMatcher(`whichhouse=${house}>[^>]*?house_l`, blockHtml);
+			const starhouse: AshMatcher = new AshMatcher(`whichhouse=${house}>[^>]*?starhouse`, blockHtml);
 			//treat
 			if (treat.find())
 			{
@@ -1206,10 +1206,10 @@ export function candyBlock(): boolean
 		refreshBlock();
 		//trick
 		auto_log_info$1("Perform some tricks");
-		for (let house of houseNumbers.keys())
+		for (const house of houseNumbers.keys())
 		{
 			if (treatedHouse.has(house)) { continue; }
-			let trick: AshMatcher = new AshMatcher(`whichhouse=${house}>[^>]*?house_d`, blockHtml);
+			const trick: AshMatcher = new AshMatcher(`whichhouse=${house}>[^>]*?house_d`, blockHtml);
 			//trick
 			if (trick.find())
 			{
@@ -1233,7 +1233,7 @@ export function candyBlockOutfit(type_1: string): string
 {
 	if (type_1 === "treat")
 	{
-		for (let [x, fit] of getOutfits().entries())
+		for (const [x, fit] of getOutfits().entries())
 		{
 			if (fit === " - No Change - " || fit === "Birthday Suit" || fit === "Your Previous Outfit") { continue; }
 			if (["Legendary Regalia of the Chelonian Overlord", "Legendary Regalia of the Groovelord", "Legendary Regalia of the Master Squeezeboxer",
@@ -1250,7 +1250,7 @@ export function candyBlockOutfit(type_1: string): string
 		}
 		if (["mongoose", "wallaby", "vole"].includes(toLowerCase(mySign())))
 		{
-			for (let [i, it] of outfitPieces("Bugbear Costume").entries())
+			for (const [i, it] of outfitPieces("Bugbear Costume").entries())
 			{
 				if (possessEquipment(it)) { continue; }
 				buy(1, it);

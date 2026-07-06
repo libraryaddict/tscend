@@ -103,8 +103,8 @@ export class AshMatcher {
     }
 
     groupNames() {
-        let res = new Map();
-        for (let match of this.pattern.source.matchAll(/\(\?<([a-zA-Z][a-zA-Z0-9]*)>/g)) {
+        const res = new Map();
+        for (const match of this.pattern.source.matchAll(/\(\?<([a-zA-Z][a-zA-Z0-9]*)>/g)) {
             res.set(match[1], true);
         }
         return res;
@@ -138,14 +138,14 @@ export class AshMatcher {
     }
 
     appendReplacement(replacement: string) {
-        let rep = replacement.replace(/\\(.)|\$([0-9]+)|\$\{([a-zA-Z][a-zA-Z0-9]*)\}/g, (m, esc, g, n) => {
+        const rep = replacement.replace(/\\(.)|\$([0-9]+)|\$\{([a-zA-Z][a-zA-Z0-9]*)\}/g, (m, esc, g, n) => {
             if (esc !== undefined) return esc;
             if (g === '0') return this.match![0];
             if (g !== undefined) return (this.match as any)[g] || '';
             if (n !== undefined) return this.match!.groups?.[n] || '';
             return m;
         });
-        let res = this.string.substring(this.appendPosition, this.match!.index) + rep;
+        const res = this.string.substring(this.appendPosition, this.match!.index) + rep;
         this.appendPosition = this.pattern.lastIndex;
         return res;
     }

@@ -31,8 +31,8 @@ function fotd_gameWarden(): boolean
 		return false;
 	}
 	let warden: string = visitUrl("place.php?whichplace=dinorf&action=dinorf_hunter");
-	let target: AshMatcher = new AshMatcher("what I need is ([0-9])+ ([A-Za-z ])+\"", warden); // TODO add some logic meaning we only check at start of day and then once we know we have enough of the target item?
-	let can_collect: AshMatcher = new AshMatcher("Looks like you have [0-9]+. Want", warden);
+	const target: AshMatcher = new AshMatcher("what I need is ([0-9])+ ([A-Za-z ])+\"", warden); // TODO add some logic meaning we only check at start of day and then once we know we have enough of the target item?
+	const can_collect: AshMatcher = new AshMatcher("Looks like you have [0-9]+. Want", warden);
 
 	while (can_collect.find())
 	{

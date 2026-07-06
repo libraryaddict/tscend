@@ -13,8 +13,8 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 //Defined in autoscend/iotms/clan.ash
 export function auto_get_clan_lounge(): Map<Item, number>
 {
-	let retval: Map<Item, number> = new Map();
-	for (let [it, val] of Object.entries(getClanLounge()).map(([_k, _v]) => [Item.get(_k), _v] as [Item, number]))
+	const retval: Map<Item, number> = new Map();
+	for (const [it, val] of Object.entries(getClanLounge()).map(([_k, _v]) => [Item.get(_k), _v] as [Item, number]))
 	{
 		if (isUnrestricted(it))
 		{
@@ -155,10 +155,10 @@ export function get_floundry_locations(): Map<Location, boolean>
 		return $_get_floundry_locations_floundryLocations;
 	}
 
-	let page: string = visitUrl("clan_viplounge.php?action=floundry");
+	const page: string = visitUrl("clan_viplounge.php?action=floundry");
 	auto_log_info("Generating Floundry Locations for the session...", "blue");
 
-	let place_matcher: AshMatcher = new AshMatcher("(?:carp|cod|trout|bass|hatchetfish|tuna):</b>\\s(.*?)<(?:br|/td)>", page);
+	const place_matcher: AshMatcher = new AshMatcher("(?:carp|cod|trout|bass|hatchetfish|tuna):</b>\\s(.*?)<(?:br|/td)>", page);
 	while (place_matcher.find())
 	{
 		$_get_floundry_locations_floundryLocations.set(toLocation(place_matcher.group(1)), true);
@@ -177,8 +177,8 @@ export function getBAFHID(): number
 
 function isWhitelistedToClan(clanID: number): boolean
 {
-	let page: string = visitUrl("clan_signup.php");
-	let clan_matcher: AshMatcher = new AshMatcher("<option value=(\\d\\d\\d+)>(.*?)</option>", page);
+	const page: string = visitUrl("clan_signup.php");
+	const clan_matcher: AshMatcher = new AshMatcher("<option value=(\\d\\d\\d+)>(.*?)</option>", page);
 	while (clan_matcher.find())
 	{
 		if (toInt(clan_matcher.group(1)) === clanID)
@@ -197,8 +197,8 @@ export function isWhitelistedToBAFH(): boolean
 
 function whitelistedClanToID(clanName: string): number
 {
-	let page: string = visitUrl("clan_signup.php");
-	let clan_matcher: AshMatcher = new AshMatcher("<option value=(\\d\\d\\d+)>(.*?)</option>", page);
+	const page: string = visitUrl("clan_signup.php");
+	const clan_matcher: AshMatcher = new AshMatcher("<option value=(\\d\\d\\d+)>(.*?)</option>", page);
 	let clanID: number = 0;
 	while (clan_matcher.find())
 	{
@@ -220,7 +220,7 @@ export function canReturnToCurrentClan(): boolean
 function changeClan(clanName: string): number
 {
 	let toClan: number = 0;
-	let canReturn: boolean = canReturnToCurrentClan();
+	const canReturn: boolean = canReturnToCurrentClan();
 
 	toClan = whitelistedClanToID(clanName);
 
@@ -235,7 +235,7 @@ function changeClan(clanName: string): number
 		return 0;
 	}
 
-	let oldClan: number = getClanId();
+	const oldClan: number = getClanId();
 	if (toClan === oldClan)
 	{
 		auto_log_debug(`Already in this clan, no need to try to change (${toClan})`, "red");
@@ -255,7 +255,7 @@ export function changeClan$1(toClan: number): number
 {
 	//Returns new clan ID (or old one if it failed)
 
-	let oldClan: number = getClanId();
+	const oldClan: number = getClanId();
 	if (toClan === oldClan)
 	{
 		auto_log_debug(`Already in this clan, no need to try to change (${toClan})`, "red");
@@ -297,7 +297,7 @@ export function hotTubSoaksRemaining(): number {
 	if (toInt(getProperty("hiddenApartmentProgress")) < 7) {
 		// apartment not done, check if we have a curse
 		let haveCurse: boolean = false;
-		for (let eff of Effect.get(["Once-Cursed", "Thrice-Cursed", "Twice-Cursed"]))
+		for (const eff of Effect.get(["Once-Cursed", "Thrice-Cursed", "Twice-Cursed"]))
 		{
 			if (haveEffect(eff) > 0)
 			{
@@ -389,7 +389,7 @@ function drinkSpeakeasyDrink$1(drink_1: string): boolean
 		return false;
 	}
 
-	let realDrink: Item = toItem(drink_1);
+	const realDrink: Item = toItem(drink_1);
 	if (realDrink === Item.none)
 	{
 		return false;
@@ -496,7 +496,7 @@ export function zataraClanmate(): boolean
 
 	let attempts: number = 0;
 	let player: number = 3690803;
-	let consultOverrideName: string = getProperty("auto_consultChoice");
+	const consultOverrideName: string = getProperty("auto_consultChoice");
 	let name: string = getPlayerName(player);
 	if (consultOverrideName !== "")
 	{
@@ -510,7 +510,7 @@ export function zataraClanmate(): boolean
 		return false;
 	}
 
-	let oldClan: number = getClanId();
+	const oldClan: number = getClanId();
 	let clanName: string = getProperty("auto_consultClan");
 	if (clanName !== "")
 	{
@@ -656,7 +656,7 @@ function eatFancyDog(dog: string): boolean
 		abort(`Invalid hot dog: ${dog}`);
 	}
 
-	let page: string = visitUrl("clan_viplounge.php?action=hotdogstand");
+	const page: string = visitUrl("clan_viplounge.php?action=hotdogstand");
 	if (!containsText(page, dog))
 	{
 		return false;
@@ -667,7 +667,7 @@ function eatFancyDog(dog: string): boolean
 		return false;
 	}
 
-	let need: number = ($_eatFancyDog_dogAmt.get(dog) ?? $_eatFancyDog_dogAmt.set(dog, 0).get(dog)) - storageAmount(($_eatFancyDog_dogReq.get(dog) ?? $_eatFancyDog_dogReq.set(dog, Item.none).get(dog)));
+	const need: number = ($_eatFancyDog_dogAmt.get(dog) ?? $_eatFancyDog_dogAmt.set(dog, 0).get(dog)) - storageAmount(($_eatFancyDog_dogReq.get(dog) ?? $_eatFancyDog_dogReq.set(dog, Item.none).get(dog)));
 	if (need > 0)
 	{
 		if (buyUsingStorage(need, ($_eatFancyDog_dogReq.get(dog) ?? $_eatFancyDog_dogReq.set(dog, Item.none).get(dog)), toInt(min(1.5 * historicalPrice(($_eatFancyDog_dogReq.get(dog) ?? $_eatFancyDog_dogReq.set(dog, Item.none).get(dog))), 30000))) === 0)
@@ -701,7 +701,7 @@ export function auto_floundryUse(): boolean
 {
 	if (!toBoolean(getProperty("_floundryItemUsed")))
 	{
-		for (let it of Item.get(["bass clarinet", "codpiece", "fish hatchet"]))
+		for (const it of Item.get(["bass clarinet", "codpiece", "fish hatchet"]))
 		{
 			if (possessEquipment(it))
 			{
@@ -723,8 +723,8 @@ export function auto_floundryAction(): boolean
 	{
 		if (getProperty("auto_floundryChoice") !== "")
 		{
-			let floundryChoice: Map<number, string> = new Map(splitString(getProperty("auto_floundryChoice"), ";").map((_v, _i) => [_i, _v]));
-			let myFloundry: Item = toItem(trim((floundryChoice.get(min(floundryChoice.size, myDaycount()) - 1) ?? floundryChoice.set(min(floundryChoice.size, myDaycount()) - 1, "").get(min(floundryChoice.size, myDaycount()) - 1))));
+			const floundryChoice: Map<number, string> = new Map(splitString(getProperty("auto_floundryChoice"), ";").map((_v, _i) => [_i, _v]));
+			const myFloundry: Item = toItem(trim((floundryChoice.get(min(floundryChoice.size, myDaycount()) - 1) ?? floundryChoice.set(min(floundryChoice.size, myDaycount()) - 1, "").get(min(floundryChoice.size, myDaycount()) - 1))));
 			if (auto_floundryAction$1(myFloundry))
 			{
 				if (Item.get(["bass clarinet", "codpiece", "fish hatchet"]).includes(myFloundry) && !toBoolean(getProperty("_floundryItemUsed")) && itemAmount(myFloundry) > 0)
@@ -749,10 +749,10 @@ function auto_floundryAction$1(it: Item): boolean
 	{
 		return false;
 	}
-	let fish: Map<Item, number> = auto_get_clan_lounge();
+	const fish: Map<Item, number> = auto_get_clan_lounge();
 	if ((fish.get(it) ?? fish.set(it, 0).get(it)) > 0)
 	{
-		let temp: string = visitUrl(`clan_viplounge.php?preaction=buyfloundryitem&whichitem=${toInt(it)}`);
+		const temp: string = visitUrl(`clan_viplounge.php?preaction=buyfloundryitem&whichitem=${toInt(it)}`);
 		return true;
 	}
 	return false;

@@ -11,15 +11,15 @@ export function auto_combat_robot_stage5(round_1: number, enemy: Monster, text: 
 		return "";
 	}
 
-	let enemy_physical_immune: boolean = enemy.physicalResistance > 99;
-	let enemy_hot_immune: boolean = monsterElement(enemy) === Element.get("hot") || enemy === Monster.get("Protector S. P. E. C. T. R. E.");
-	let enemy_physical_res: number = 1 - enemy.physicalResistance * 0.01; //convert % into float
+	const enemy_physical_immune: boolean = enemy.physicalResistance > 99;
+	const enemy_hot_immune: boolean = monsterElement(enemy) === Element.get("hot") || enemy === Monster.get("Protector S. P. E. C. T. R. E.");
+	const enemy_physical_res: number = 1 - enemy.physicalResistance * 0.01; //convert % into float
 	let dmg: number = 0;
 	//scrap using attacks. reserved for beefier monsters with at least 40 HP
 	if (canUse$1(Skill.get("Snipe"), false) && !enemy_physical_immune)
 	{
 		//Spend 1 Scrap to deal 100% of your Mysticality in damage
-		let better_than_crotch_burn: boolean = monsterHp() > 40 || enemy_hot_immune;
+		const better_than_crotch_burn: boolean = monsterHp() > 40 || enemy_hot_immune;
 		dmg = myBuffedstat(Stat.get("Mysticality")) * enemy_physical_res;
 		if (canSurvive$1(turns_to_kill(dmg)) && better_than_crotch_burn)
 		{

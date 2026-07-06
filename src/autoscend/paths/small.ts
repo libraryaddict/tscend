@@ -26,8 +26,8 @@ export function small_initializeSettings(): void
 		//should be replaced with a more elegant solution where detailed estimation / calculation is done.
 		//set_property("auto_ignoreFlyer", true);
 		//cap ML to 50 to help avoid getting beaten up
-		let MLCap: number = 50;
-		let MLSafetyLimit: string = getProperty("auto_MLSafetyLimit");
+		const MLCap: number = 50;
+		const MLSafetyLimit: string = getProperty("auto_MLSafetyLimit");
 		if (MLSafetyLimit === "")
 		{
 			setProperty("auto_MLSafetyLimitBackup", "empty");
@@ -40,7 +40,7 @@ export function small_initializeSettings(): void
 			setProperty("auto_MLSafetyLimit", MLCap.toString());
 		}
 		// don't disregard instant karma either. Helps keep ML low
-		let disregardKarma: string = getProperty("auto_disregardInstantKarma");
+		const disregardKarma: string = getProperty("auto_disregardInstantKarma");
 		if (disregardKarma === "true")
 		{
 			setProperty("auto_disregardInstantKarmaBackup", "true");
@@ -87,18 +87,18 @@ export function auto_smallCampgroundGear(): boolean
 		return false;
 	}
 	// don't get campground gear in in Normal and haven't gotten beaten up
-	let beatenUpCount: number = toInt(getProperty("auto_beatenUpCount"));
+	const beatenUpCount: number = toInt(getProperty("auto_beatenUpCount"));
 	if (!inHardcore() && beatenUpCount === 0)
 	{
 		return false;
 	}
 
-	let dirtGear: Map<Item, boolean> = new Map([[Item.get("mesquito proboscis"), true], [Item.get("ncle leg"), true], [Item.get("rutabuga bag"), true], [Item.get("senate fly thorax"), true]]);
-	let tallGrassGear: Map<Item, boolean> = new Map([[Item.get("birdybug antenna"), true], [Item.get("daddy shortlegs leg"), true], [Item.get("kilopede skull"), true]]);
-	let veryTallGrassGear: Item[] = Item.get(["beetle antenna", "mantis skull", "spider leg"]);
+	const dirtGear: Map<Item, boolean> = new Map([[Item.get("mesquito proboscis"), true], [Item.get("ncle leg"), true], [Item.get("rutabuga bag"), true], [Item.get("senate fly thorax"), true]]);
+	const tallGrassGear: Map<Item, boolean> = new Map([[Item.get("birdybug antenna"), true], [Item.get("daddy shortlegs leg"), true], [Item.get("kilopede skull"), true]]);
+	const veryTallGrassGear: Item[] = Item.get(["beetle antenna", "mantis skull", "spider leg"]);
 	function haveGear(gear: Map<Item, boolean>): boolean
 	{
-		for (let it of gear.keys())
+		for (const it of gear.keys())
 		{
 			if (itemAmount(it) === 0 && !haveEquipped(it))
 			{

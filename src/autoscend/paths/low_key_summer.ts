@@ -28,7 +28,7 @@ import { LX_fatLootToken, LX_hippyBoatman, LX_lockPicking, LX_setWorkshed, LX_un
 import { LX_acquireEpicWeapon, LX_galaktikSubQuest, LX_guildUnlock, LX_joinPirateCrew, LX_pirateOutfit, LX_pirateQuest, LX_steelOrgan, LX_unlockKnobMenagerie, finishMeatsmithSubQuest, numPirateInsults, startArmorySubQuest, startMeatsmithSubQuest } from "../quests/optional";
 
 // These are listed in the order they will be iterated (item id ascending) to make debugging easier.
-let lowKeys: Map<Item, Location> = new Map();
+const lowKeys: Map<Item, Location> = new Map();
 lowKeys.set(Item.get("clown car key"), Location.get("The \"Fun\" House"));
 lowKeys.set(Item.get("batting cage key"), Location.get("The Bat Hole Entrance"));
 lowKeys.set(Item.get("aqu&iacute;"), Location.get("South of the Border"));
@@ -96,9 +96,9 @@ function lowkey_keysRemaining(): number
 	}
 
 	let found: number = 0;
-	for (let key of lowKeys.keys())
+	for (const key of lowKeys.keys())
 	{
-		let loc: Location = (lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key));
+		const loc: Location = (lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key));
 		if (!lowkey_needKey(key))
 		{
 			found++;
@@ -147,9 +147,9 @@ function lowkey_nextKeyLocation(checkAvailable: boolean): Location
 		return Location.none;
 	}
 
-	for (let key of lowKeys.keys())
+	for (const key of lowKeys.keys())
 	{
-		let loc: Location = (lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key));
+		const loc: Location = (lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key));
 		if (lowkey_needKey(key))
 		{
 			if (!checkAvailable || zone_isAvailable$1(loc))
@@ -179,9 +179,9 @@ export function lowkey_nextAvailableKeyDelayLocation(): Location
 		return Location.none;
 	}
 
-	for (let key of lowKeys.keys())
+	for (const key of lowKeys.keys())
 	{
-		let loc: Location = (lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key));
+		const loc: Location = (lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key));
 		if (lowkey_needKey(key) && zone_isAvailable$1(loc) && lowkey_keyDelayRemaining(loc) > 0 && loc.wanderers)
 		{
 			return loc;
@@ -198,7 +198,7 @@ function lowkey_keyAdv(key: Item): boolean
 		return false;
 	}
 
-	let loc: Location = (lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key));
+	const loc: Location = (lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key));
 	if (!zone_isAvailable$1(loc))
 	{
 		return false;
@@ -350,16 +350,16 @@ export function L13_sorceressDoorLowKey(): boolean
 		return false;
 	}
 
-	let loc: Location = lowkey_nextAvailableKeyLocation();
+	const loc: Location = lowkey_nextAvailableKeyLocation();
 
 	if (loc === Location.none)
 	{
-		let remaining: number = lowkey_keysRemaining();
+		const remaining: number = lowkey_keysRemaining();
 		if (remaining > 0)
 		{
 			auto_log_warning$1("Unable to adventure for remaining low keys");
 			let needHigherLevelForKey: boolean = true;
-			for (let key of lowKeys.keys())
+			for (const key of lowKeys.keys())
 			{
 				if (lowkey_needKey(key))
 				{
@@ -484,7 +484,7 @@ export function LX_lowkeySummer(): boolean {
 		}
 		// Check our meat accessories, grab +meat keys before attempting Themthar Hills if they'll help.
 		let n_meat_drop_acc_50plus: number = 0;
-		for (let [it, n] of auto_getAllEquipabble$1(Slot.get("acc1"))) {
+		for (const [it, n] of auto_getAllEquipabble$1(Slot.get("acc1"))) {
 			if (numericModifier(it, Modifier.get("Meat Drop")) >= 45 || it === Item.get("backup camera")) { // backup camera isn't always meat
 				n_meat_drop_acc_50plus += n;
 			}
@@ -606,7 +606,7 @@ export function LX_lowkeySummer(): boolean {
 	if (LX_pirateQuest()) { return true; }
 	if (LX_acquireEpicWeapon()) { return true; }
 	// If literally nothing better to do, go find some of the keys we don't actually care about but have to find anyway.
-	let loc: Location = lowkey_nextAvailableKeyLocation();
+	const loc: Location = lowkey_nextAvailableKeyLocation();
 	if (loc !== Location.none && autoAdv$2(loc)) { return true; }
 	// Make sure to unlock Menagerie if it wasn't done while getting Knob labinet key
 	if (LX_unlockKnobMenagerie()) { return true; }

@@ -143,7 +143,7 @@ export function LX_attemptPowerLevel(): boolean
 	}
 	//scaling damage zones
 	//all scaling zones have monster level = my_buffedstat($stat[moxie]) + monster_level_adjustment() + enemy_value. up to a cap
-	let scalezone: Location = highestScalingZone();
+	const scalezone: Location = highestScalingZone();
 	if (scalezone === Location.get("The Neverending Party"))
 	{
 		return neverendingPartyCombat();
@@ -256,25 +256,25 @@ function auto_freeCombatsRemaining$1(print_remaining_fights: boolean): number
 	logRemainingFights("Remaining Free Fights:");
 	if (!in_koe() && canChangeToFamiliar(Familiar.get("Machine Elf")))
 	{
-		let temp: number = 5 - toInt(getProperty("_machineTunnelsAdv"));
+		const temp: number = 5 - toInt(getProperty("_machineTunnelsAdv"));
 		count_1 += temp;
 		logRemainingFights(`Machine Elf = ${temp}`);
 	}
 	if (snojoFightAvailable())
 	{
-		let temp: number = 10 - toInt(getProperty("_snojoFreeFights"));
+		const temp: number = 10 - toInt(getProperty("_snojoFreeFights"));
 		count_1 += temp;
 		logRemainingFights(`Snojo = ${temp}`);
 	}
 	if (canChangeToFamiliar(Familiar.get("God Lobster")) && disregardInstantKarma())
 	{
-		let temp: number = 3 - toInt(getProperty("_godLobsterFights"));
+		const temp: number = 3 - toInt(getProperty("_godLobsterFights"));
 		count_1 += temp;
 		logRemainingFights(`God Lobster = ${temp}`);
 	}
 	if (neverendingPartyRemainingFreeFights() > 0)
 	{
-		let temp: number = neverendingPartyRemainingFreeFights();
+		const temp: number = neverendingPartyRemainingFreeFights();
 		count_1 += temp;
 		logRemainingFights(`Neverending Party = ${temp}`);
 	}
@@ -290,7 +290,7 @@ function auto_freeCombatsRemaining$1(print_remaining_fights: boolean): number
 	}
 
 	if (auto_canFightPiranhaPlant()) {
-		let temp: number = auto_piranhaPlantFightsRemaining();
+		const temp: number = auto_piranhaPlantFightsRemaining();
 		count_1 += temp;
 		logRemainingFights(`Piranha Plant Fights = ${temp}`);
 	}
@@ -302,19 +302,19 @@ function auto_freeCombatsRemaining$1(print_remaining_fights: boolean): number
 
 	if (auto_hasSpeakEasy() && auto_remainingSpeakeasyFreeFights() > 0)
 	{
-		let temp: number = auto_remainingSpeakeasyFreeFights();
+		const temp: number = auto_remainingSpeakeasyFreeFights();
 		count_1 += temp;
 		logRemainingFights(`Oliver's Place = ${temp}`);
 	}
 
 	if (auto_haveBurningLeaves())
 	{
-		let temp: number = min(auto_remainingBurningLeavesFights(), floor(itemAmount(Item.get("inflammable leaf")) / 11));
+		const temp: number = min(auto_remainingBurningLeavesFights(), floor(itemAmount(Item.get("inflammable leaf")) / 11));
 		count_1 += temp;
 		logRemainingFights(`Burning Leaves = ${temp}`);
 	}
 
-	let free_candy: number = freeCandyFightsLeft();
+	const free_candy: number = freeCandyFightsLeft();
 	count_1 += free_candy;
 	logRemainingFights(`Trick or Treating = ${free_candy}`);
 
@@ -391,7 +391,7 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean
 	{
 		auto_log_debug$1("LX_freeCombats is adventuring in [The Deep Machine Tunnels]");
 
-		let bjorn: Familiar = myBjornedFamiliar();
+		const bjorn: Familiar = myBjornedFamiliar();
 		if (bjorn === Familiar.get("Machine Elf"))
 		{
 			handleBjornify(Familiar.get("Grinning Turtle"));

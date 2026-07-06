@@ -108,7 +108,7 @@ export function auto_combatHandler(round_1: number, enemy: Monster, text: string
 
 	auto_combatInitialize(round_1, enemy, text); //reset properties on round 0 of a new combat
 	let retval: string = "";
-	let blocked: boolean = containsText(text, "(STUN RESISTED)");
+	const blocked: boolean = containsText(text, "(STUN RESISTED)");
 	setProperty("auto_combatHP", myHp().toString());
 	setProperty("auto_diag_round", round_1.toString());
 
@@ -128,7 +128,7 @@ export function auto_combatHandler(round_1: number, enemy: Monster, text: string
 		if (gitExists("Ezandora-Helix-Fossil"))
 		{
 		auto_log_info("Combat via Ezandora:", "green");
-		let ignore: boolean = cliExecute("Pocket Familiars");
+		const ignore: boolean = cliExecute("Pocket Familiars");
 		return ""; //does not matter what it returns here. the cli_execute above does the entire combat
 		}
 	}
@@ -144,7 +144,7 @@ export function auto_combatHandler(round_1: number, enemy: Monster, text: string
 
 	if (getProperty("auto_combatDirective") !== "")
 	{
-		let actions: Map<number, string> = new Map(splitString(getProperty("auto_combatDirective"), ";").map((_v, _i) => [_i, _v]));
+		const actions: Map<number, string> = new Map(splitString(getProperty("auto_combatDirective"), ";").map((_v, _i) => [_i, _v]));
 		let idx: number = 0;
 		if (round_1 === 0)
 		{

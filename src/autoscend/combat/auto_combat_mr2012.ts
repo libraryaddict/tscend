@@ -39,7 +39,7 @@ export function auto_combat_nanorhinoBuff(round_1: number, enemy: Monster, text:
 			}
 			if (target === Skill.none && canSurvive$1(4.0))
 			{ //choose the cheapest skill available
-				for (let sk of Skill.get(["Toss", "Clobber", "Lunge Smack", "Thrust-Smack", "Headbutt", "Kneebutt", "Lunging Thrust-Smack", "Club Foot", "Shieldbutt", "Spirit Snap", "Cavalcade of Fury", "Northern Explosion", "Spectral Snapper"]))
+				for (const sk of Skill.get(["Toss", "Clobber", "Lunge Smack", "Thrust-Smack", "Headbutt", "Kneebutt", "Lunging Thrust-Smack", "Club Foot", "Shieldbutt", "Spirit Snap", "Cavalcade of Fury", "Northern Explosion", "Spectral Snapper"]))
 				{
 					if (canUse$2(sk))
 					{
@@ -56,7 +56,7 @@ break;
 			if (target === Skill.none && myClass() === Class.get("Disco Bandit") && auto_have_skill(Skill.get("Disco State of Mind")) && auto_have_skill(Skill.get("Flashy Dancer")) && stunnable(enemy))
 			{
 				//disco bandits can stun with a dance. and generally benefit from dancing
-				for (let sk of Skill.get(["Disco Dance of Doom", "Disco Dance II: Electric Boogaloo", "Disco Dance 3: Back in the Habit"]))
+				for (const sk of Skill.get(["Disco Dance of Doom", "Disco Dance II: Electric Boogaloo", "Disco Dance 3: Back in the Habit"]))
 				{
 					if (canUse$2(sk))
 					{
@@ -81,7 +81,7 @@ break;
 			}
 			if (target === Skill.none)
 			{ //choose the cheapest skill available
-				for (let sk of Skill.get(["Sing", "Suckerpunch", "Disco Eye-Poke", "Dissonant Riff"]))
+				for (const sk of Skill.get(["Sing", "Suckerpunch", "Disco Eye-Poke", "Dissonant Riff"]))
 				{
 					if (canUse$2(sk))
 					{

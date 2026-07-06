@@ -62,8 +62,8 @@ export function autoscend_migrate(): boolean {
 
   function sanity_check_sl_ascend_autoscend_properties(): boolean {
     let prop_conflicts: number = 0;
-    for (let [_, p] of $_autoscend_migrate_props) {
-      let old_prop: string = replaceString(p, "auto_", "sl_");
+    for (const [_, p] of $_autoscend_migrate_props) {
+      const old_prop: string = replaceString(p, "auto_", "sl_");
       if (propertyExists(old_prop)) {
         if (propertyExists(p) && propertyExists(old_prop) && getProperty(p) !== getProperty(old_prop)) {
           auto_log_warning$1(`Conflict: ${old_prop} (${getProperty(old_prop)}) != ${p} (${getProperty(p)})`);
@@ -90,11 +90,11 @@ export function autoscend_migrate(): boolean {
       return false;
     }
 
-    let cleanup: boolean = userConfirm($_f___migrate_sl_ascend_properties_remove_confirmation, $_f___autoscend_confirm_timeoutMS, false);
+    const cleanup: boolean = userConfirm($_f___migrate_sl_ascend_properties_remove_confirmation, $_f___autoscend_confirm_timeoutMS, false);
 
     let prop_conflicts: number = 0;
-    for (let [_, p] of $_autoscend_migrate_props) {
-      let old_prop: string = replaceString(p, "auto_", "sl_");
+    for (const [_, p] of $_autoscend_migrate_props) {
+      const old_prop: string = replaceString(p, "auto_", "sl_");
       if (propertyExists(old_prop)) {
         if (!propertyExists(p)) {
           auto_log_info$1(`Migrating ${old_prop} => ${p} (${getProperty(old_prop)})`);

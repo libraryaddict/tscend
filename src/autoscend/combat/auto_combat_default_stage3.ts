@@ -65,7 +65,7 @@ export function auto_combatDefaultStage3(round_1: number, enemy: Monster, text: 
 		{
 			canExtingo = false;
 		}
-		let drones: boolean = gooseExpectedDrones() >= 1; //only want to try if we expect any number of drones.
+		const drones: boolean = gooseExpectedDrones() >= 1; //only want to try if we expect any number of drones.
 		//dupe a sonar-in-a-biscuit if we're lucky, only want to try it if we need more than 1 biscuit
 		if ((Item.get("sonar-in-a-biscuit").toString()) in itemDrops(enemy) && itemDrops(enemy).size <= 2 && internalQuestStatus("questL04Bat") <= 1 && drones)
 		{
@@ -171,8 +171,8 @@ export function auto_combatDefaultStage3(round_1: number, enemy: Monster, text: 
 
 	if (wantToDouse(enemy) && round_1 <= maxRoundsToDouse(enemy) && !toBoolean(getProperty("_douseFoeSuccess")))
 	{ // dousing can have a low chance of success, so only do it for a while
-		let douse: Skill = Skill.get("Douse Foe");
-		let douseAvailable: boolean = canUse$1(douse, false) && auto_dousesRemaining() > 0;
+		const douse: Skill = Skill.get("Douse Foe");
+		const douseAvailable: boolean = canUse$1(douse, false) && auto_dousesRemaining() > 0;
 		if (douseAvailable)
 		{
 			handleTracker$1(enemy.toString(), douse.toString(), "auto_otherstuff");
@@ -182,9 +182,9 @@ export function auto_combatDefaultStage3(round_1: number, enemy: Monster, text: 
 
 	if (wantToForceDrop(enemy))
 	{
-		let polarVortexAvailable: boolean = canUse$1(Skill.get("Fire Extinguisher: Polar Vortex"), false) && auto_fireExtinguisherCharges() > 10;
-		let mildEvilAvailable: boolean = canUse$1(Skill.get("Perpetrate Mild Evil"), false) && toInt(getProperty("_mildEvilPerpetrated")) < 3;
-		let swoopAvailable: boolean = canUse$1(Skill.get("Swoop like a Bat"), true) && toInt(getProperty("_batWingsSwoopUsed")) < 11;
+		const polarVortexAvailable: boolean = canUse$1(Skill.get("Fire Extinguisher: Polar Vortex"), false) && auto_fireExtinguisherCharges() > 10;
+		const mildEvilAvailable: boolean = canUse$1(Skill.get("Perpetrate Mild Evil"), false) && toInt(getProperty("_mildEvilPerpetrated")) < 3;
+		const swoopAvailable: boolean = canUse$1(Skill.get("Swoop like a Bat"), true) && toInt(getProperty("_batWingsSwoopUsed")) < 11;
 		// mild evil and swoop can only pick pocket. Use them before fire extinguisher
 		if (swoopAvailable)
 		{
@@ -293,9 +293,9 @@ export function auto_combatDefaultStage3(round_1: number, enemy: Monster, text: 
 		{
 			//Saucerors use Weaksauce to get MP, but no more MP will be coming if there isn't enough MP left to cast a spell, mortar can not have been launched yet at this point
 			//if mp >= 60 Weaksauce has probably been cast above already
-			let MPafterWeaksauce: number = myMp() - mpCost(Skill.get("Curse of Weaksauce"));
+			const MPafterWeaksauce: number = myMp() - mpCost(Skill.get("Curse of Weaksauce"));
 			let canCastAfterWeaksauce: boolean = false;
-			for (let sp of Skill.get(["Saucestorm", "Stuffed Mortar Shell", "Saucegeyser"]))
+			for (const sp of Skill.get(["Saucestorm", "Stuffed Mortar Shell", "Saucegeyser"]))
 			{
 				if (canUse$1(sp, false) && MPafterWeaksauce >= mpCost(sp))
 				{
@@ -357,7 +357,7 @@ export function auto_combatDefaultStage3(round_1: number, enemy: Monster, text: 
 
 		if (myLocation() === Location.get("The Smut Orc Logging Camp") && canSurvive$1(1.0) && toInt(getProperty("chasmBridgeProgress")) < bridgeGoal())
 		{
-			let coldMortarShell: boolean = canUse$2(Skill.get("Stuffed Mortar Shell")) && haveEffect(Effect.get("Spirit of Peppermint")) !== 0;
+			const coldMortarShell: boolean = canUse$2(Skill.get("Stuffed Mortar Shell")) && haveEffect(Effect.get("Spirit of Peppermint")) !== 0;
 			let coldSkillToUse: Skill = Skill.none;
 			let coldAttackDamageMultiplier: number = 1;
 			if (myClass() === Class.get("Seal Clubber"))
@@ -371,7 +371,7 @@ export function auto_combatDefaultStage3(round_1: number, enemy: Monster, text: 
 					coldAttackDamageMultiplier = 2; //double elemental bonus
 				}
 			}
-			let coldAttackDamage: number = toInt(numericModifier("cold damage") * coldAttackDamageMultiplier); //todo add ML damage multiplier
+			const coldAttackDamage: number = toInt(numericModifier("cold damage") * coldAttackDamageMultiplier); //todo add ML damage multiplier
 			// Listed from Most to Least Damaging to hopefully cause Death on the turn when the Shell hits.
 			if (canUse$1(Skill.get("Saucegeyser"), false) && numericModifier("Cold Spell Damage") > numericModifier("Hot Spell Damage"))
 			{
@@ -432,10 +432,10 @@ export function auto_combatDefaultStage3(round_1: number, enemy: Monster, text: 
 			if (canUse$1(Skill.get("Gallapagosian Mating Call"), false) && myMp() >= MPreservedForColdSpells + mpCost(Skill.get("Gallapagosian Mating Call")))
 			{
 				let useMiniSniff: boolean = false;
-				let sniffedLumber: boolean = isSniffed$1(Monster.get("smut orc pipelayer")) || isSniffed$1(Monster.get("smut orc jacker"));
-				let sniffedFastener: boolean = isSniffed$1(Monster.get("smut orc screwer")) || isSniffed$1(Monster.get("smut orc nailer"));
-				let haveLumberBias: boolean = equippedAmount(Item.get("logging hatchet")) > 0 && equippedAmount(Item.get("loadstone")) === 0;
-				let haveFastenerBias: boolean = equippedAmount(Item.get("loadstone")) > 0 && equippedAmount(Item.get("logging hatchet")) === 0;
+				const sniffedLumber: boolean = isSniffed$1(Monster.get("smut orc pipelayer")) || isSniffed$1(Monster.get("smut orc jacker"));
+				const sniffedFastener: boolean = isSniffed$1(Monster.get("smut orc screwer")) || isSniffed$1(Monster.get("smut orc nailer"));
+				const haveLumberBias: boolean = equippedAmount(Item.get("logging hatchet")) > 0 && equippedAmount(Item.get("loadstone")) === 0;
+				const haveFastenerBias: boolean = equippedAmount(Item.get("loadstone")) > 0 && equippedAmount(Item.get("logging hatchet")) === 0;
 
 				if (enemy === Monster.get("smut orc pipelayer") || enemy === Monster.get("smut orc jacker"))
 				{
@@ -534,8 +534,8 @@ export function auto_combatDefaultStage3(round_1: number, enemy: Monster, text: 
 
 		if (myLocation() === Location.get("The Haunted Kitchen") && canUse$2(Skill.get("Become a Cloud of Mist")) && toInt(getProperty("_vampyreCloakeFormUses")) < 10)
 		{
-			let hot: number = toInt(numericModifier("Hot Resistance"));
-			let stench: number = toInt(numericModifier("Stench Resistance"));
+			const hot: number = toInt(numericModifier("Hot Resistance"));
+			const stench: number = toInt(numericModifier("Stench Resistance"));
 
 			if ((hot < 9 && hot % 3 !== 0 || stench < 9 && stench % 3 !== 0) && canUse$2(Skill.get("Become a Cloud of Mist")))
 			{
@@ -700,7 +700,7 @@ export function auto_combatDefaultStage3(round_1: number, enemy: Monster, text: 
 
 	if (enemy_la <= 100 && stunnable(enemy) && (!canSurvive$1(5.0) || Monster.get(["Groar"]).includes(enemy)))
 	{
-		let stunner: Skill = getStunner(enemy);
+		const stunner: Skill = getStunner(enemy);
 		if (stunner !== Skill.none)
 		{
 			combat_status_add("stunned");

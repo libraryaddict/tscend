@@ -92,8 +92,8 @@ export function makeStartingSmiths(): void
 
 function didWePlantHere(loc: Location): boolean
 {
-	let places: Map<Location, string[]> = new Map(Object.entries(getFloristPlants()).map(([_k, _v]) => [Location.get(_k), _v]));
-	for (let place of places.keys())
+	const places: Map<Location, string[]> = new Map(Object.entries(getFloristPlants()).map(([_k, _v]) => [Location.get(_k), _v]));
+	for (const place of places.keys())
 	{
 		if (loc === place)
 		{

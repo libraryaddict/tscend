@@ -43,7 +43,7 @@ export function auto_combatDefaultStage4(round_1: number, enemy: Monster, text: 
 	//sniffers are skills that increase the odds of encountering this same monster again in the current zone.
 	if (auto_wantToSniff(enemy, myLocation()) && !ag_is_bodyguard())
 	{
-		let sniffer: Skill = getSniffer$1(enemy);
+		const sniffer: Skill = getSniffer$1(enemy);
 		if (sniffer !== Skill.none)
 		{
 			if (sniffer === Skill.get("Perceive Soul"))
@@ -124,7 +124,7 @@ export function auto_combatDefaultStage4(round_1: number, enemy: Monster, text: 
 	//iotm monster duplicator that creates a chained fight of the current monster
 	if (auto_wantToCopy(enemy, myLocation()) && !ag_is_bodyguard())
 	{
-		let copier: Skill = getCopier$1(enemy);
+		const copier: Skill = getCopier$1(enemy);
 		if (copier !== Skill.none && canUse$2(copier))
 		{
 			if (copier === Skill.get("Blow the Purple Candle!"))
@@ -243,7 +243,7 @@ export function auto_combatDefaultStage4(round_1: number, enemy: Monster, text: 
 				if (myClass() === Class.get("Sauceror") && haveUsed(Skill.get("Curse of Weaksauce")))
 				{
 					//don't miss MP by killing weak monsters with beehive
-					let beehiveDamage: number = ceil(30 * combatItemDamageMultiplier() * MLDamageToMonsterMultiplier());
+					const beehiveDamage: number = ceil(30 * combatItemDamageMultiplier() * MLDamageToMonsterMultiplier());
 					if (monsterHp() > beehiveDamage)
 					{
 						flyerWith = Item.get("beehive");
@@ -263,7 +263,7 @@ export function auto_combatDefaultStage4(round_1: number, enemy: Monster, text: 
 		let stunned: boolean = false;
 		if (!staggeringFlyer && stunnable(enemy))
 		{
-			let stunner: Skill = getStunner(enemy);
+			const stunner: Skill = getStunner(enemy);
 			stunned = combat_status_check("stunned");
 			if (stunner !== Skill.none && !stunned)
 			{

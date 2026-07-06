@@ -16,7 +16,7 @@ import { fastenerCount, lumberCount } from "../quests/level_09";
 //defined in /autoscend/combat/auto_combat_ed.ash
 export function auto_edCombatHandler(round_1: number, enemy: Monster, text: string): string
 {
-	let blocked: boolean = containsText(text, "(STUN RESISTED)");
+	const blocked: boolean = containsText(text, "(STUN RESISTED)");
 	let damageReceived: number = 0;
 	if (!isActuallyEd())
 	{
@@ -52,7 +52,7 @@ export function auto_edCombatHandler(round_1: number, enemy: Monster, text: stri
 	{
 		if (myMp() < mpCost(Skill.get("Fist of the Mummy")) && toInt(getProperty("_edDefeats")) < 2)
 		{
-			for (let it of Item.get(["holy spring water", "spirit beer", "sacramental wine"]))
+			for (const it of Item.get(["holy spring water", "spirit beer", "sacramental wine"]))
 			{
 				if (canUse$4(it))
 				{
@@ -126,17 +126,17 @@ export function auto_edCombatHandler(round_1: number, enemy: Monster, text: stri
 	if (haveEquipped(Item.get("protonic accelerator pack")) && isGhost(enemy) && !combat_status_check("skipGhostbusting"))
 	{
 		//shoot ghost 3 times provoking retaliation, then trap ghost skill unlocks which instawins combat.
-		let stunner: Skill = getStunner(enemy);
+		const stunner: Skill = getStunner(enemy);
 		if (stunner !== Skill.none)
 		{
 			combat_status_add("stunned");
 			return useSkill$2(stunner);
 		}
 		//shots_takens tracks how many times we used [shoot ghost] skill this combat. it is reset in combat initialize
-		let shots_takens: number = usedCount(Skill.get("Shoot Ghost"));
+		const shots_takens: number = usedCount(Skill.get("Shoot Ghost"));
 		if (canUse$1(Skill.get("Shoot Ghost"), false) && shots_takens < 3)
 		{
-			let survive_needed: number = 3.05 - toFloat(shots_takens);
+			const survive_needed: number = 3.05 - toFloat(shots_takens);
 			if (canSurvive$1(survive_needed))
 			{
 				markAsUsed(Skill.get("Shoot Ghost")); //needs to be manually done for skills with a use limit that is not 1
@@ -154,7 +154,7 @@ export function auto_edCombatHandler(round_1: number, enemy: Monster, text: stri
 		}
 	}
 	//use industrial fire extinguisher zone specific skills
-	let extinguisherSkill: string = auto_FireExtinguisherCombatString(myLocation());
+	const extinguisherSkill: string = auto_FireExtinguisherCombatString(myLocation());
 	if (extinguisherSkill !== "" && haveEquipped(Item.get("industrial fire extinguisher")))
 	{
 		handleTracker$1(enemy.toString(), toSkill(substring(extinguisherSkill, 6)).toString(), "auto_otherstuff");
@@ -297,7 +297,7 @@ export function auto_edCombatHandler(round_1: number, enemy: Monster, text: stri
 		if (canUse$2(Skill.get("Curse of Stench")) && toMonster(getProperty("stenchCursedMonster")) !== enemy && toInt(getProperty("_edDefeats")) < 3)
 		{
 			let doStench: boolean = false;
-			let stenched: string = toLowerCase(getProperty("stenchCursedMonster"));
+			const stenched: string = toLowerCase(getProperty("stenchCursedMonster"));
 
 			if (fastenerCount() >= 30 && stenched !== "smut orc pipelayer" && stenched !== "smut orc jacker")
 			{
@@ -326,7 +326,7 @@ export function auto_edCombatHandler(round_1: number, enemy: Monster, text: stri
 	//yellowray instantly kills the enemy and makes them drop all items they can drop.
 	if (!combat_status_check("yellowray") && auto_wantToYellowRay(enemy, myLocation()))
 	{
-		let combatAction: string = yellowRayCombatString(enemy, true, Monster.get(["bearpig topiary animal", "elephant (meatcar?) topiary animal", "spider (duck?) topiary animal", "knight (Snake)"]).includes(enemy));
+		const combatAction: string = yellowRayCombatString(enemy, true, Monster.get(["bearpig topiary animal", "elephant (meatcar?) topiary animal", "spider (duck?) topiary animal", "knight (Snake)"]).includes(enemy));
 		if (combatAction !== "")
 		{
 			combat_status_add("yellowray");
@@ -354,7 +354,7 @@ export function auto_edCombatHandler(round_1: number, enemy: Monster, text: stri
 
 	if (!combat_status_check("banishercheck") && auto_wantToBanish(enemy, myLocation()))
 	{
-		let banishAction: string = banisherCombatString$1(enemy, myLocation(), true);
+		const banishAction: string = banisherCombatString$1(enemy, myLocation(), true);
 		if (banishAction !== "")
 		{
 			auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
@@ -367,7 +367,7 @@ export function auto_edCombatHandler(round_1: number, enemy: Monster, text: stri
 			{
 				if (containsText(banishAction, ", none"))
 				{
-					let commapos: number = indexOf(banishAction, ", none");
+					const commapos: number = indexOf(banishAction, ", none");
 					handleTracker$1(enemy.toString(), toItem(substring(banishAction, 5, commapos)).toString(), "auto_banishes");
 				}
 				else {
@@ -406,7 +406,7 @@ export function auto_edCombatHandler(round_1: number, enemy: Monster, text: stri
 			{
 				if (containsText(freeRunAction, ", none"))
 				{
-					let commapos: number = indexOf(freeRunAction, ", none");
+					const commapos: number = indexOf(freeRunAction, ", none");
 					handleTracker$1(enemy.toString(), toItem(substring(freeRunAction, 5, commapos)).toString(), "auto_freeruns");
 				}
 				else {
@@ -424,7 +424,7 @@ export function auto_edCombatHandler(round_1: number, enemy: Monster, text: stri
 
 	if (!combat_status_check("replacercheck") && auto_wantToReplace(enemy, myLocation()))
 	{
-		let combatAction: string = replaceMonsterCombatString(enemy, true);
+		const combatAction: string = replaceMonsterCombatString(enemy, true);
 		if (combatAction !== "")
 		{
 			combat_status_add("replacer");
@@ -458,7 +458,7 @@ export function auto_edCombatHandler(round_1: number, enemy: Monster, text: stri
 
 	if (myLocation() === Location.get("Oil Peak") && canUse$4(Item.get("Duskwalker syringe")))
 	{
-		let oilProgress: number = toInt(getProperty("twinPeakProgress"));
+		const oilProgress: number = toInt(getProperty("twinPeakProgress"));
 		let wantCrude: boolean = (oilProgress & 4) === 0;
 		if (itemAmount(Item.get("bubblin' crude")) > 11 || itemAmount(Item.get("jar of oil")) > 0)
 		{
@@ -821,8 +821,8 @@ export function auto_edCombatHandler(round_1: number, enemy: Monster, text: stri
 	{
 		if (wantToForceDrop(enemy))
 		{
-			let polarVortexAvailable: boolean = canUse$1(Skill.get("Fire Extinguisher: Polar Vortex"), false) && auto_fireExtinguisherCharges() > 10;
-			let mildEvilAvailable: boolean = canUse$1(Skill.get("Perpetrate Mild Evil"), false) && toInt(getProperty("_mildEvilPerpetrated")) < 3;
+			const polarVortexAvailable: boolean = canUse$1(Skill.get("Fire Extinguisher: Polar Vortex"), false) && auto_fireExtinguisherCharges() > 10;
+			const mildEvilAvailable: boolean = canUse$1(Skill.get("Perpetrate Mild Evil"), false) && toInt(getProperty("_mildEvilPerpetrated")) < 3;
 			// mild evil only can pick pocket. Use it before fire extinguisher
 			if (mildEvilAvailable)
 			{
@@ -861,7 +861,7 @@ export function auto_edCombatHandler(round_1: number, enemy: Monster, text: stri
 		return useSkill$1(Skill.get("Fist of the Mummy"), false);
 	}
 
-	let fightStat: number = myBuffedstat(weaponType(equippedItem(Slot.get("weapon")))) - 20;
+	const fightStat: number = myBuffedstat(weaponType(equippedItem(Slot.get("weapon")))) - 20;
 	if (fightStat > monsterDefense() && round_1 < 20 && canSurvive$1(1.1) && getProperty("auto_edStatus") === "UNDYING!")
 	{
 		return "attack with weapon";
@@ -892,7 +892,7 @@ export function auto_edCombatHandler(round_1: number, enemy: Monster, text: stri
 
 	if (myMp() < mpCost(Skill.get("Storm of the Scarab")))
 	{
-		for (let it of Item.get(["holy spring water", "spirit beer", "sacramental wine"]))
+		for (const it of Item.get(["holy spring water", "spirit beer", "sacramental wine"]))
 		{
 			if (canUse$4(it))
 			{

@@ -183,7 +183,7 @@ export function L5_goblinKing(): boolean
 	}
 	setProperty("auto_nextEncounter", "Knob Goblin King");
 	setProperty("auto_nonAdvLoc", true.toString());
-	let advSpent: boolean = autoAdv$2(Location.get("Throne Room"));
+	const advSpent: boolean = autoAdv$2(Location.get("Throne Room"));
 
 	if (itemAmount(Item.get("Crown of the Goblin King")) > 0 || itemAmount(Item.get("Glass Balls of the Goblin King")) > 0 || itemAmount(Item.get("Codpiece of the Goblin King")) > 0 || getProperty("questL05Goblin") === "finished" || in_plumber() || itemAmount(Item.get("cursed goblin cape")) > 0)
 	{

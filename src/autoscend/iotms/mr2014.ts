@@ -139,7 +139,7 @@ export function dna_startAcquire(): boolean
 	else {
 		if (!canChangeToFamiliar(Familiar.get("Machine Elf")))
 		{
-			let bjorn: Familiar = myBjornedFamiliar();
+			const bjorn: Familiar = myBjornedFamiliar();
 			if (bjorn === Familiar.get("Machine Elf"))
 			{
 				handleBjornify(Familiar.get("Grinning Turtle"));
@@ -204,7 +204,7 @@ export function dna_generic(): boolean
 	}
 
 	let i: number = 0;
-	for (let phy of potion.keys())
+	for (const phy of potion.keys())
 	{
 		if (getProperty("dnaSyringe") === phy.toString() && toInt(getProperty("_dnaPotionsMade")) === i)
 		{
@@ -249,23 +249,23 @@ export function dna_sorceressTest(): boolean
 
 	if (getProperty("dnaSyringe") === Phylum.get("plant").toString() && getProperty("nsChallenge2") === Element.get("cold").toString() && itemAmount(Item.get("Gene Tonic: Plant")) === 0)
 	{
-		let temp: boolean = cliExecute("camp dnainject");
+		const temp: boolean = cliExecute("camp dnainject");
 	}
 	else if (getProperty("dnaSyringe") === Phylum.get("demon").toString() && getProperty("nsChallenge2") === Element.get("hot").toString() && itemAmount(Item.get("Gene Tonic: Demon")) === 0)
 	{
-		let temp: boolean = cliExecute("camp dnainject");
+		const temp: boolean = cliExecute("camp dnainject");
 	}
 	else if (getProperty("dnaSyringe") === Phylum.get("slime").toString() && getProperty("nsChallenge2") === Element.get("sleaze").toString() && itemAmount(Item.get("Gene Tonic: Slime")) === 0)
 	{
-		let temp: boolean = cliExecute("camp dnainject");
+		const temp: boolean = cliExecute("camp dnainject");
 	}
 	else if (getProperty("dnaSyringe") === Phylum.get("undead").toString() && getProperty("nsChallenge2") === Element.get("spooky").toString() && itemAmount(Item.get("Gene Tonic: Undead")) === 0)
 	{
-		let temp: boolean = cliExecute("camp dnainject");
+		const temp: boolean = cliExecute("camp dnainject");
 	}
 	else if (getProperty("dnaSyringe") === Phylum.get("hobo").toString() && getProperty("nsChallenge2") === Element.get("stench").toString() && itemAmount(Item.get("Gene Tonic: Hobo")) === 0)
 	{
-		let temp: boolean = cliExecute("camp dnainject");
+		const temp: boolean = cliExecute("camp dnainject");
 	}
 
 	return false;
@@ -286,7 +286,7 @@ export function dna_bedtime(): boolean
 		let potionsMade: number = toInt(getProperty("_dnaPotionsMade"));
 		while (potionsMade < 3)
 		{
-			let temp: boolean = cliExecute("camp dnapotion");
+			const temp: boolean = cliExecute("camp dnapotion");
 			potionsMade += 1;
 		}
 	}
@@ -536,7 +536,7 @@ function icehouseMonster(): Monster
 		return Monster.none;
 	}
 	else {
-		let banishMap: Map<number, string> = new Map(splitString(getProperty("banishedMonsters"), ":").map((_v, _i) => [_i, _v]));
+		const banishMap: Map<number, string> = new Map(splitString(getProperty("banishedMonsters"), ":").map((_v, _i) => [_i, _v]));
 		for (let i: number = 0; i < banishMap.size; i++)
 		{
 			if ((banishMap.get(i) ?? banishMap.set(i, "").get(i)) === "ice house")

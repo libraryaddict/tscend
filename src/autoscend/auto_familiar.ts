@@ -47,7 +47,7 @@ export function doNotBuffFamiliar100Run(): boolean
 	{
 		return false;
 	}
-	let hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
+	const hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
 	//these familiars always harm you and never aid you
 	if (Familiar.get(["Black Cat", "O.A.F."]).includes(hundred_fam))
 	{
@@ -86,7 +86,7 @@ export function isAttackFamiliar(fam: Familiar): boolean
 	}
 	if (fam === Familiar.get("Mini-Adventurer"))
 	{
-		let miniAdvClass: number = toInt(getProperty("miniAdvClass"));
+		const miniAdvClass: number = toInt(getProperty("miniAdvClass"));
 		if (miniAdvClass === 1 || miniAdvClass === 2 && myLevel() >= 5 || miniAdvClass === 3 && myLevel() >= 15 || miniAdvClass === 4 && myLevel() >= 5 || miniAdvClass === 5 && myLevel() >= 10)
 		{ //disco bandit
 		//seal clubber
@@ -126,9 +126,9 @@ export function auto_famKill(fam: Familiar, place: Location): boolean
 		return false;
 	}
 
-	let passiveDamage: number = toInt(numericModifier("Damage Aura") + numericModifier("Sporadic Damage Aura ") + numericModifier("Thorns") + numericModifier("Sporadic Thorns"));
+	const passiveDamage: number = toInt(numericModifier("Damage Aura") + numericModifier("Sporadic Damage Aura ") + numericModifier("Thorns") + numericModifier("Sporadic Thorns"));
 
-	for (let [mon, freq] of auto_combat_appearance_rates$1(place))
+	for (const [mon, freq] of auto_combat_appearance_rates$1(place))
 	{
 		if (freq <= 0) { continue; }
 		//Mafia doesn't output the expected damage of the familiar so going with the highest possible for most users (NPZR)
@@ -181,11 +181,11 @@ export function auto_have_familiar(fam: Familiar): boolean
 		return false;
 	}
 	//handle blacklisting of familiars by users
-	let blacklist: Map<Familiar, number> = new Map();
+	const blacklist: Map<Familiar, number> = new Map();
 	if (getProperty("auto_blacklistFamiliar") !== "")
 	{
-		let noFams: Map<number, string> = new Map(splitString(getProperty("auto_blacklistFamiliar"), ";").map((_v, _i) => [_i, _v]));
-		for (let [index, fam_1] of noFams)
+		const noFams: Map<number, string> = new Map(splitString(getProperty("auto_blacklistFamiliar"), ";").map((_v, _i) => [_i, _v]));
+		for (const [index, fam_1] of noFams)
 		{
 			blacklist.set(toFamiliar(trim(fam_1)), 1);
 		}
@@ -318,7 +318,7 @@ export function findNonRockFamiliarInTerrarium(): Familiar
 		"Synthetic Rock",
 		"Pixel Rock"]);
 
-	for (let fam of Familiar.get(["Mosquito", "Leprechaun", "Levitating Potato", "Angry Goat", "Sabre-Toothed Lime", "Fuzzy Dice", "Spooky Pirate Skeleton", "Barrrnacle", "Howling Balloon Monkey", "Stab Bat", "Grue", "Blood-Faced Volleyball", "Ghuol Whelp", "Baby Gravy Fairy", "Cocoabo", "Star Starfish", "Hovering Sombrero", "Ghost Pickle on a Stick", "Killer Bee", "Whirling Maple Leaf", "Coffee Pixie", "Cheshire Bat", "Jill-O-Lantern", "Hand Turkey", "Crimbo Elf", "Hanukkimbo Dreidl", "Baby Yeti", "Feather Boa Constrictor", "Emo Squid", "Personal Raincloud", "Clockwork Grapefruit", "MagiMechTech MicroMechaMech", "Flaming Gravy Fairy", "Frozen Gravy Fairy", "Stinky Gravy Fairy", "Spooky Gravy Fairy", "Inflatable Dodecapede", "Pygmy Bugbear Shaman", "Doppelshifter", "Attention-Deficit Demon", "Cymbal-Playing Monkey", "Temporal Riftlet", "Sweet Nutcracker", "Pet Rock", "Snowy Owl", "Teddy Bear", "Ninja Pirate Zombie Robot", "Sleazy Gravy Fairy", "Wild Hare", "Wind-up Chattering Teeth", "Spirit Hobo", "Astral Badger", "Comma Chameleon", "Misshapen Animal Skeleton", "Scary Death Orb", "Jitterbug", "Nervous Tick", "Reassembled Blackbird", "Origami Towel Crane", "Ninja Snowflake", "Evil Teddy Bear", "Toothsome Rock", "Ancient Yuletide Troll", "Dandy Lion", "O.A.F.", "Penguin Goodfella", "Jumpsuited Hound Dog", "Green Pixie", "Ragamuffin Imp", "Exotic Parrot", "Wizard Action Figure", "Gluttonous Green Ghost", "Casagnova Gnome", "Hunchbacked Minion", "Crimbo P. R. E. S. S. I. E.", "Bulky Buddy Box", "Teddy Borg", "RoboGoose", "El Vibrato Megadrone", "Mad Hatrack", "Adorable Seal Larva", "Untamed Turtle", "Animated Macaroni Duck", "Pet Cheezling", "Autonomous Disco Ball", "Mariachi Chihuahua", "Hobo Monkey", "Llama Lama", "Cotton Candy Carnie", "Disembodied Hand", "Black Cat", "Uniclops", "Psychedelic Bear", "Baby Mutant Rattlesnake", "Mutant Fire Ant", "Mutant Cactus Bud", "Mutant Gila Monster", "Cuddlefish", "Sugar Fruit Fairy", "Imitation Crab", "Pair of Ragged Claws", "Magic Dragonfish", "Frumious Bandersnatch", "Midget Clownfish", "Syncopated Turtle", "Grinning Turtle", "Purse Rat", "Wereturtle", "Baby Sandworm", "Slimeling", "He-Boulder", "Rock Lobster", "Urchin Urchin", "Grouper Groupie", "Squamous Gibberer", "Dancing Frog", "Chauvinist Pig", "Stocking Mimic", "Snow Angel", "Jack-in-the-Box", "BRICKO chick", "Baby Bugged Bugbear", "Money-Making Goblin", "Floating Eye", "Vampire Bat", "Oyster Bunny", "Egg Benedict", "Bank Piggy", "Worm Doctor", "Snowhitman", "Plastic Grocery Bag", "Underworld Bonsai", "Rogue Program", "Mini-Hipster", "Pottery Barn Owl", "Hippo Ballerina", "Knob Goblin Organ Grinder", "Piano Cat", "Dramatic Hedgehog", "Smiling Rat", "Robot Reindeer", "Holiday Log", "Obtuse Angel", "Reconstituted Crow", "Li'l Xenomorph", "Dataspider", "Pair of Stomping Boots", "Feral Kobold", "Fancypants Scarecrow", "Bloovian Groose", "Blavious Kloop", "Peppermint Rhino", "Tickle-Me Emilio", "Steam-Powered Cheerleader", "Happy Medium", "Artistic Goth Kid", "Flaming Face", "Reagnimated Gnome", "Hovering Skull", "Mini-Skulldozer", "Angry Jung Man", "Unconscious Collective", "Nanorhino", "Oily Woim", "Homemade Robot", "MiniMechaElf", "Gelatinous Cubeling", "Adorable Space Buddy", "Nosy Nose", "Mini-Adventurer", "Mechanical Songbird", "Reanimated Reanimator", "Warbear Drone", "Grimstone Golem", "Grim Brother", "Miniature Sword & Martini Guy", "Putty Buddy", "Twitching Space Critter", "Galloping Grill", "Helix Fossil", "Xiblaxian Holo-Companion", "Baby Z-Rex", "Fist Turkey", "Crimbo Shrub", "Mini-Crimbot", "Topiary Skunk", "Golden Monkey", "Adventurous Spelunker", "Sludgepuppy", "Baby Mayonnaise Wasp", "Puck Man", "Ms. Puck Man", "Lil' Barrel Mimic", "Machine Elf", "Choctopus", "Rockin' Robin", "Restless Cow Skull", "Intergnat", "Software Bug", "Bark Scorpion", "Trick-or-Treating Tot", "Chocolate Lab", "Bad Vibe", "Space Jellyfish", "Optimistic Candle", "Robortender", "Cute Meteor", "XO Skeleton", "Garbage Fire", "Globmule", "Bluzzard", "Faux", "Sledgehamster", "Pimpsqueak", "Pillowbug", "Dressage", "Sequestrian", "Carpricorn", "Turpin", "Morphan", "Cycloney", "Peaclock", "Turtive", "Lepardner", "Aiolion", "Waifuton", "Gorillape", "Wendtigo", "Snoutlet", "Ruffalo", "Vaporpoise", "Ghosprey", "Straypler", "Flan", "Mustardigrade", "Ched", "Gazelleton", "Mechamelion", "Bicycle", "Vamprey", "Wullabye", "Nursine", "Cantelope", "Ungulant", "Caramel", "Oppossum", "Amanitee", "Smashmoth", "Vulgure", "Squib", "Trafikoan", "Slotter", "Shudder", "Glamare", "Unspeakachu", "Stooper", "Disgeist", "Bowlet", "Cornbeefadon", "Mu", "God Lobster", "Cat Burglar", "Party Mouse", "Yule Hound", "Sausage Golem", "Elf Operative", "Plastic Pirate Skull", "Pet Coral", "Pocket Professor", "Red-Nosed Snapper", "Antique Nutcracker", "Piranha Plant", "Left-Hand Man", "Melodramedary", "Ghost of Crimbo Carols", "Ghost of Crimbo Cheer", "Ghost of Crimbo Commerce", "Shorter-Order Cook", "Vampire Vintner", "Arachnelf", "Synthetic Rock", "Grey Goose", "Cookbookbat", "Mini-Trainbot", "Hobo in Sheep's Clothing", "Pixel Rock", "Patriotic Eagle", "Jill-of-All-Trades", "Flaming Leafcutter Ant", "Rigging Snake", "Pet Anchor", "Chest Mimic", "Mini Kiwi", "Proto-Protozoa", "Evolving Organism", "Burly Bodyguard", "Doll Moll", "Emberiza Aureola", "Peace Turkey", "Quantum Entangler", "Golden Pet Rock", "Profane Parrot", "Significant Bit", "Heat Wave", "Cold Cut", "Shame Spiral", "Phantom Limb", "Foul Ball", "Dire Cassava", "Observer", "Cool Cucumber", "Defective Childrens' Stapler", "Glover", "Zapper Bug", "Wet Paper Tiger", "Cooler Yeti", "Baby Skeleton", "Skeleton of Crimbo Past", "Tiny Plastic Santa Claus Skeleton", "Cute Skeletal Dinosaur", "Sword of S Words"]))
+	for (const fam of Familiar.get(["Mosquito", "Leprechaun", "Levitating Potato", "Angry Goat", "Sabre-Toothed Lime", "Fuzzy Dice", "Spooky Pirate Skeleton", "Barrrnacle", "Howling Balloon Monkey", "Stab Bat", "Grue", "Blood-Faced Volleyball", "Ghuol Whelp", "Baby Gravy Fairy", "Cocoabo", "Star Starfish", "Hovering Sombrero", "Ghost Pickle on a Stick", "Killer Bee", "Whirling Maple Leaf", "Coffee Pixie", "Cheshire Bat", "Jill-O-Lantern", "Hand Turkey", "Crimbo Elf", "Hanukkimbo Dreidl", "Baby Yeti", "Feather Boa Constrictor", "Emo Squid", "Personal Raincloud", "Clockwork Grapefruit", "MagiMechTech MicroMechaMech", "Flaming Gravy Fairy", "Frozen Gravy Fairy", "Stinky Gravy Fairy", "Spooky Gravy Fairy", "Inflatable Dodecapede", "Pygmy Bugbear Shaman", "Doppelshifter", "Attention-Deficit Demon", "Cymbal-Playing Monkey", "Temporal Riftlet", "Sweet Nutcracker", "Pet Rock", "Snowy Owl", "Teddy Bear", "Ninja Pirate Zombie Robot", "Sleazy Gravy Fairy", "Wild Hare", "Wind-up Chattering Teeth", "Spirit Hobo", "Astral Badger", "Comma Chameleon", "Misshapen Animal Skeleton", "Scary Death Orb", "Jitterbug", "Nervous Tick", "Reassembled Blackbird", "Origami Towel Crane", "Ninja Snowflake", "Evil Teddy Bear", "Toothsome Rock", "Ancient Yuletide Troll", "Dandy Lion", "O.A.F.", "Penguin Goodfella", "Jumpsuited Hound Dog", "Green Pixie", "Ragamuffin Imp", "Exotic Parrot", "Wizard Action Figure", "Gluttonous Green Ghost", "Casagnova Gnome", "Hunchbacked Minion", "Crimbo P. R. E. S. S. I. E.", "Bulky Buddy Box", "Teddy Borg", "RoboGoose", "El Vibrato Megadrone", "Mad Hatrack", "Adorable Seal Larva", "Untamed Turtle", "Animated Macaroni Duck", "Pet Cheezling", "Autonomous Disco Ball", "Mariachi Chihuahua", "Hobo Monkey", "Llama Lama", "Cotton Candy Carnie", "Disembodied Hand", "Black Cat", "Uniclops", "Psychedelic Bear", "Baby Mutant Rattlesnake", "Mutant Fire Ant", "Mutant Cactus Bud", "Mutant Gila Monster", "Cuddlefish", "Sugar Fruit Fairy", "Imitation Crab", "Pair of Ragged Claws", "Magic Dragonfish", "Frumious Bandersnatch", "Midget Clownfish", "Syncopated Turtle", "Grinning Turtle", "Purse Rat", "Wereturtle", "Baby Sandworm", "Slimeling", "He-Boulder", "Rock Lobster", "Urchin Urchin", "Grouper Groupie", "Squamous Gibberer", "Dancing Frog", "Chauvinist Pig", "Stocking Mimic", "Snow Angel", "Jack-in-the-Box", "BRICKO chick", "Baby Bugged Bugbear", "Money-Making Goblin", "Floating Eye", "Vampire Bat", "Oyster Bunny", "Egg Benedict", "Bank Piggy", "Worm Doctor", "Snowhitman", "Plastic Grocery Bag", "Underworld Bonsai", "Rogue Program", "Mini-Hipster", "Pottery Barn Owl", "Hippo Ballerina", "Knob Goblin Organ Grinder", "Piano Cat", "Dramatic Hedgehog", "Smiling Rat", "Robot Reindeer", "Holiday Log", "Obtuse Angel", "Reconstituted Crow", "Li'l Xenomorph", "Dataspider", "Pair of Stomping Boots", "Feral Kobold", "Fancypants Scarecrow", "Bloovian Groose", "Blavious Kloop", "Peppermint Rhino", "Tickle-Me Emilio", "Steam-Powered Cheerleader", "Happy Medium", "Artistic Goth Kid", "Flaming Face", "Reagnimated Gnome", "Hovering Skull", "Mini-Skulldozer", "Angry Jung Man", "Unconscious Collective", "Nanorhino", "Oily Woim", "Homemade Robot", "MiniMechaElf", "Gelatinous Cubeling", "Adorable Space Buddy", "Nosy Nose", "Mini-Adventurer", "Mechanical Songbird", "Reanimated Reanimator", "Warbear Drone", "Grimstone Golem", "Grim Brother", "Miniature Sword & Martini Guy", "Putty Buddy", "Twitching Space Critter", "Galloping Grill", "Helix Fossil", "Xiblaxian Holo-Companion", "Baby Z-Rex", "Fist Turkey", "Crimbo Shrub", "Mini-Crimbot", "Topiary Skunk", "Golden Monkey", "Adventurous Spelunker", "Sludgepuppy", "Baby Mayonnaise Wasp", "Puck Man", "Ms. Puck Man", "Lil' Barrel Mimic", "Machine Elf", "Choctopus", "Rockin' Robin", "Restless Cow Skull", "Intergnat", "Software Bug", "Bark Scorpion", "Trick-or-Treating Tot", "Chocolate Lab", "Bad Vibe", "Space Jellyfish", "Optimistic Candle", "Robortender", "Cute Meteor", "XO Skeleton", "Garbage Fire", "Globmule", "Bluzzard", "Faux", "Sledgehamster", "Pimpsqueak", "Pillowbug", "Dressage", "Sequestrian", "Carpricorn", "Turpin", "Morphan", "Cycloney", "Peaclock", "Turtive", "Lepardner", "Aiolion", "Waifuton", "Gorillape", "Wendtigo", "Snoutlet", "Ruffalo", "Vaporpoise", "Ghosprey", "Straypler", "Flan", "Mustardigrade", "Ched", "Gazelleton", "Mechamelion", "Bicycle", "Vamprey", "Wullabye", "Nursine", "Cantelope", "Ungulant", "Caramel", "Oppossum", "Amanitee", "Smashmoth", "Vulgure", "Squib", "Trafikoan", "Slotter", "Shudder", "Glamare", "Unspeakachu", "Stooper", "Disgeist", "Bowlet", "Cornbeefadon", "Mu", "God Lobster", "Cat Burglar", "Party Mouse", "Yule Hound", "Sausage Golem", "Elf Operative", "Plastic Pirate Skull", "Pet Coral", "Pocket Professor", "Red-Nosed Snapper", "Antique Nutcracker", "Piranha Plant", "Left-Hand Man", "Melodramedary", "Ghost of Crimbo Carols", "Ghost of Crimbo Cheer", "Ghost of Crimbo Commerce", "Shorter-Order Cook", "Vampire Vintner", "Arachnelf", "Synthetic Rock", "Grey Goose", "Cookbookbat", "Mini-Trainbot", "Hobo in Sheep's Clothing", "Pixel Rock", "Patriotic Eagle", "Jill-of-All-Trades", "Flaming Leafcutter Ant", "Rigging Snake", "Pet Anchor", "Chest Mimic", "Mini Kiwi", "Proto-Protozoa", "Evolving Organism", "Burly Bodyguard", "Doll Moll", "Emberiza Aureola", "Peace Turkey", "Quantum Entangler", "Golden Pet Rock", "Profane Parrot", "Significant Bit", "Heat Wave", "Cold Cut", "Shame Spiral", "Phantom Limb", "Foul Ball", "Dire Cassava", "Observer", "Cool Cucumber", "Defective Childrens' Stapler", "Glover", "Zapper Bug", "Wet Paper Tiger", "Cooler Yeti", "Baby Skeleton", "Skeleton of Crimbo Past", "Tiny Plastic Santa Claus Skeleton", "Cute Skeletal Dinosaur", "Sword of S Words"]))
 	{
 		if ($_findNonRockFamiliarInTerrarium_blacklistFamiliars.includes(fam))
 		{
@@ -346,7 +346,7 @@ export function findRockFamiliarInTerrarium(): Familiar
 		"Synthetic Rock",
 		"Pixel Rock"]);
 
-	for (let fam of Familiar.get(["Mosquito", "Leprechaun", "Levitating Potato", "Angry Goat", "Sabre-Toothed Lime", "Fuzzy Dice", "Spooky Pirate Skeleton", "Barrrnacle", "Howling Balloon Monkey", "Stab Bat", "Grue", "Blood-Faced Volleyball", "Ghuol Whelp", "Baby Gravy Fairy", "Cocoabo", "Star Starfish", "Hovering Sombrero", "Ghost Pickle on a Stick", "Killer Bee", "Whirling Maple Leaf", "Coffee Pixie", "Cheshire Bat", "Jill-O-Lantern", "Hand Turkey", "Crimbo Elf", "Hanukkimbo Dreidl", "Baby Yeti", "Feather Boa Constrictor", "Emo Squid", "Personal Raincloud", "Clockwork Grapefruit", "MagiMechTech MicroMechaMech", "Flaming Gravy Fairy", "Frozen Gravy Fairy", "Stinky Gravy Fairy", "Spooky Gravy Fairy", "Inflatable Dodecapede", "Pygmy Bugbear Shaman", "Doppelshifter", "Attention-Deficit Demon", "Cymbal-Playing Monkey", "Temporal Riftlet", "Sweet Nutcracker", "Pet Rock", "Snowy Owl", "Teddy Bear", "Ninja Pirate Zombie Robot", "Sleazy Gravy Fairy", "Wild Hare", "Wind-up Chattering Teeth", "Spirit Hobo", "Astral Badger", "Comma Chameleon", "Misshapen Animal Skeleton", "Scary Death Orb", "Jitterbug", "Nervous Tick", "Reassembled Blackbird", "Origami Towel Crane", "Ninja Snowflake", "Evil Teddy Bear", "Toothsome Rock", "Ancient Yuletide Troll", "Dandy Lion", "O.A.F.", "Penguin Goodfella", "Jumpsuited Hound Dog", "Green Pixie", "Ragamuffin Imp", "Exotic Parrot", "Wizard Action Figure", "Gluttonous Green Ghost", "Casagnova Gnome", "Hunchbacked Minion", "Crimbo P. R. E. S. S. I. E.", "Bulky Buddy Box", "Teddy Borg", "RoboGoose", "El Vibrato Megadrone", "Mad Hatrack", "Adorable Seal Larva", "Untamed Turtle", "Animated Macaroni Duck", "Pet Cheezling", "Autonomous Disco Ball", "Mariachi Chihuahua", "Hobo Monkey", "Llama Lama", "Cotton Candy Carnie", "Disembodied Hand", "Black Cat", "Uniclops", "Psychedelic Bear", "Baby Mutant Rattlesnake", "Mutant Fire Ant", "Mutant Cactus Bud", "Mutant Gila Monster", "Cuddlefish", "Sugar Fruit Fairy", "Imitation Crab", "Pair of Ragged Claws", "Magic Dragonfish", "Frumious Bandersnatch", "Midget Clownfish", "Syncopated Turtle", "Grinning Turtle", "Purse Rat", "Wereturtle", "Baby Sandworm", "Slimeling", "He-Boulder", "Rock Lobster", "Urchin Urchin", "Grouper Groupie", "Squamous Gibberer", "Dancing Frog", "Chauvinist Pig", "Stocking Mimic", "Snow Angel", "Jack-in-the-Box", "BRICKO chick", "Baby Bugged Bugbear", "Money-Making Goblin", "Floating Eye", "Vampire Bat", "Oyster Bunny", "Egg Benedict", "Bank Piggy", "Worm Doctor", "Snowhitman", "Plastic Grocery Bag", "Underworld Bonsai", "Rogue Program", "Mini-Hipster", "Pottery Barn Owl", "Hippo Ballerina", "Knob Goblin Organ Grinder", "Piano Cat", "Dramatic Hedgehog", "Smiling Rat", "Robot Reindeer", "Holiday Log", "Obtuse Angel", "Reconstituted Crow", "Li'l Xenomorph", "Dataspider", "Pair of Stomping Boots", "Feral Kobold", "Fancypants Scarecrow", "Bloovian Groose", "Blavious Kloop", "Peppermint Rhino", "Tickle-Me Emilio", "Steam-Powered Cheerleader", "Happy Medium", "Artistic Goth Kid", "Flaming Face", "Reagnimated Gnome", "Hovering Skull", "Mini-Skulldozer", "Angry Jung Man", "Unconscious Collective", "Nanorhino", "Oily Woim", "Homemade Robot", "MiniMechaElf", "Gelatinous Cubeling", "Adorable Space Buddy", "Nosy Nose", "Mini-Adventurer", "Mechanical Songbird", "Reanimated Reanimator", "Warbear Drone", "Grimstone Golem", "Grim Brother", "Miniature Sword & Martini Guy", "Putty Buddy", "Twitching Space Critter", "Galloping Grill", "Helix Fossil", "Xiblaxian Holo-Companion", "Baby Z-Rex", "Fist Turkey", "Crimbo Shrub", "Mini-Crimbot", "Topiary Skunk", "Golden Monkey", "Adventurous Spelunker", "Sludgepuppy", "Baby Mayonnaise Wasp", "Puck Man", "Ms. Puck Man", "Lil' Barrel Mimic", "Machine Elf", "Choctopus", "Rockin' Robin", "Restless Cow Skull", "Intergnat", "Software Bug", "Bark Scorpion", "Trick-or-Treating Tot", "Chocolate Lab", "Bad Vibe", "Space Jellyfish", "Optimistic Candle", "Robortender", "Cute Meteor", "XO Skeleton", "Garbage Fire", "Globmule", "Bluzzard", "Faux", "Sledgehamster", "Pimpsqueak", "Pillowbug", "Dressage", "Sequestrian", "Carpricorn", "Turpin", "Morphan", "Cycloney", "Peaclock", "Turtive", "Lepardner", "Aiolion", "Waifuton", "Gorillape", "Wendtigo", "Snoutlet", "Ruffalo", "Vaporpoise", "Ghosprey", "Straypler", "Flan", "Mustardigrade", "Ched", "Gazelleton", "Mechamelion", "Bicycle", "Vamprey", "Wullabye", "Nursine", "Cantelope", "Ungulant", "Caramel", "Oppossum", "Amanitee", "Smashmoth", "Vulgure", "Squib", "Trafikoan", "Slotter", "Shudder", "Glamare", "Unspeakachu", "Stooper", "Disgeist", "Bowlet", "Cornbeefadon", "Mu", "God Lobster", "Cat Burglar", "Party Mouse", "Yule Hound", "Sausage Golem", "Elf Operative", "Plastic Pirate Skull", "Pet Coral", "Pocket Professor", "Red-Nosed Snapper", "Antique Nutcracker", "Piranha Plant", "Left-Hand Man", "Melodramedary", "Ghost of Crimbo Carols", "Ghost of Crimbo Cheer", "Ghost of Crimbo Commerce", "Shorter-Order Cook", "Vampire Vintner", "Arachnelf", "Synthetic Rock", "Grey Goose", "Cookbookbat", "Mini-Trainbot", "Hobo in Sheep's Clothing", "Pixel Rock", "Patriotic Eagle", "Jill-of-All-Trades", "Flaming Leafcutter Ant", "Rigging Snake", "Pet Anchor", "Chest Mimic", "Mini Kiwi", "Proto-Protozoa", "Evolving Organism", "Burly Bodyguard", "Doll Moll", "Emberiza Aureola", "Peace Turkey", "Quantum Entangler", "Golden Pet Rock", "Profane Parrot", "Significant Bit", "Heat Wave", "Cold Cut", "Shame Spiral", "Phantom Limb", "Foul Ball", "Dire Cassava", "Observer", "Cool Cucumber", "Defective Childrens' Stapler", "Glover", "Zapper Bug", "Wet Paper Tiger", "Cooler Yeti", "Baby Skeleton", "Skeleton of Crimbo Past", "Tiny Plastic Santa Claus Skeleton", "Cute Skeletal Dinosaur", "Sword of S Words"]))
+	for (const fam of Familiar.get(["Mosquito", "Leprechaun", "Levitating Potato", "Angry Goat", "Sabre-Toothed Lime", "Fuzzy Dice", "Spooky Pirate Skeleton", "Barrrnacle", "Howling Balloon Monkey", "Stab Bat", "Grue", "Blood-Faced Volleyball", "Ghuol Whelp", "Baby Gravy Fairy", "Cocoabo", "Star Starfish", "Hovering Sombrero", "Ghost Pickle on a Stick", "Killer Bee", "Whirling Maple Leaf", "Coffee Pixie", "Cheshire Bat", "Jill-O-Lantern", "Hand Turkey", "Crimbo Elf", "Hanukkimbo Dreidl", "Baby Yeti", "Feather Boa Constrictor", "Emo Squid", "Personal Raincloud", "Clockwork Grapefruit", "MagiMechTech MicroMechaMech", "Flaming Gravy Fairy", "Frozen Gravy Fairy", "Stinky Gravy Fairy", "Spooky Gravy Fairy", "Inflatable Dodecapede", "Pygmy Bugbear Shaman", "Doppelshifter", "Attention-Deficit Demon", "Cymbal-Playing Monkey", "Temporal Riftlet", "Sweet Nutcracker", "Pet Rock", "Snowy Owl", "Teddy Bear", "Ninja Pirate Zombie Robot", "Sleazy Gravy Fairy", "Wild Hare", "Wind-up Chattering Teeth", "Spirit Hobo", "Astral Badger", "Comma Chameleon", "Misshapen Animal Skeleton", "Scary Death Orb", "Jitterbug", "Nervous Tick", "Reassembled Blackbird", "Origami Towel Crane", "Ninja Snowflake", "Evil Teddy Bear", "Toothsome Rock", "Ancient Yuletide Troll", "Dandy Lion", "O.A.F.", "Penguin Goodfella", "Jumpsuited Hound Dog", "Green Pixie", "Ragamuffin Imp", "Exotic Parrot", "Wizard Action Figure", "Gluttonous Green Ghost", "Casagnova Gnome", "Hunchbacked Minion", "Crimbo P. R. E. S. S. I. E.", "Bulky Buddy Box", "Teddy Borg", "RoboGoose", "El Vibrato Megadrone", "Mad Hatrack", "Adorable Seal Larva", "Untamed Turtle", "Animated Macaroni Duck", "Pet Cheezling", "Autonomous Disco Ball", "Mariachi Chihuahua", "Hobo Monkey", "Llama Lama", "Cotton Candy Carnie", "Disembodied Hand", "Black Cat", "Uniclops", "Psychedelic Bear", "Baby Mutant Rattlesnake", "Mutant Fire Ant", "Mutant Cactus Bud", "Mutant Gila Monster", "Cuddlefish", "Sugar Fruit Fairy", "Imitation Crab", "Pair of Ragged Claws", "Magic Dragonfish", "Frumious Bandersnatch", "Midget Clownfish", "Syncopated Turtle", "Grinning Turtle", "Purse Rat", "Wereturtle", "Baby Sandworm", "Slimeling", "He-Boulder", "Rock Lobster", "Urchin Urchin", "Grouper Groupie", "Squamous Gibberer", "Dancing Frog", "Chauvinist Pig", "Stocking Mimic", "Snow Angel", "Jack-in-the-Box", "BRICKO chick", "Baby Bugged Bugbear", "Money-Making Goblin", "Floating Eye", "Vampire Bat", "Oyster Bunny", "Egg Benedict", "Bank Piggy", "Worm Doctor", "Snowhitman", "Plastic Grocery Bag", "Underworld Bonsai", "Rogue Program", "Mini-Hipster", "Pottery Barn Owl", "Hippo Ballerina", "Knob Goblin Organ Grinder", "Piano Cat", "Dramatic Hedgehog", "Smiling Rat", "Robot Reindeer", "Holiday Log", "Obtuse Angel", "Reconstituted Crow", "Li'l Xenomorph", "Dataspider", "Pair of Stomping Boots", "Feral Kobold", "Fancypants Scarecrow", "Bloovian Groose", "Blavious Kloop", "Peppermint Rhino", "Tickle-Me Emilio", "Steam-Powered Cheerleader", "Happy Medium", "Artistic Goth Kid", "Flaming Face", "Reagnimated Gnome", "Hovering Skull", "Mini-Skulldozer", "Angry Jung Man", "Unconscious Collective", "Nanorhino", "Oily Woim", "Homemade Robot", "MiniMechaElf", "Gelatinous Cubeling", "Adorable Space Buddy", "Nosy Nose", "Mini-Adventurer", "Mechanical Songbird", "Reanimated Reanimator", "Warbear Drone", "Grimstone Golem", "Grim Brother", "Miniature Sword & Martini Guy", "Putty Buddy", "Twitching Space Critter", "Galloping Grill", "Helix Fossil", "Xiblaxian Holo-Companion", "Baby Z-Rex", "Fist Turkey", "Crimbo Shrub", "Mini-Crimbot", "Topiary Skunk", "Golden Monkey", "Adventurous Spelunker", "Sludgepuppy", "Baby Mayonnaise Wasp", "Puck Man", "Ms. Puck Man", "Lil' Barrel Mimic", "Machine Elf", "Choctopus", "Rockin' Robin", "Restless Cow Skull", "Intergnat", "Software Bug", "Bark Scorpion", "Trick-or-Treating Tot", "Chocolate Lab", "Bad Vibe", "Space Jellyfish", "Optimistic Candle", "Robortender", "Cute Meteor", "XO Skeleton", "Garbage Fire", "Globmule", "Bluzzard", "Faux", "Sledgehamster", "Pimpsqueak", "Pillowbug", "Dressage", "Sequestrian", "Carpricorn", "Turpin", "Morphan", "Cycloney", "Peaclock", "Turtive", "Lepardner", "Aiolion", "Waifuton", "Gorillape", "Wendtigo", "Snoutlet", "Ruffalo", "Vaporpoise", "Ghosprey", "Straypler", "Flan", "Mustardigrade", "Ched", "Gazelleton", "Mechamelion", "Bicycle", "Vamprey", "Wullabye", "Nursine", "Cantelope", "Ungulant", "Caramel", "Oppossum", "Amanitee", "Smashmoth", "Vulgure", "Squib", "Trafikoan", "Slotter", "Shudder", "Glamare", "Unspeakachu", "Stooper", "Disgeist", "Bowlet", "Cornbeefadon", "Mu", "God Lobster", "Cat Burglar", "Party Mouse", "Yule Hound", "Sausage Golem", "Elf Operative", "Plastic Pirate Skull", "Pet Coral", "Pocket Professor", "Red-Nosed Snapper", "Antique Nutcracker", "Piranha Plant", "Left-Hand Man", "Melodramedary", "Ghost of Crimbo Carols", "Ghost of Crimbo Cheer", "Ghost of Crimbo Commerce", "Shorter-Order Cook", "Vampire Vintner", "Arachnelf", "Synthetic Rock", "Grey Goose", "Cookbookbat", "Mini-Trainbot", "Hobo in Sheep's Clothing", "Pixel Rock", "Patriotic Eagle", "Jill-of-All-Trades", "Flaming Leafcutter Ant", "Rigging Snake", "Pet Anchor", "Chest Mimic", "Mini Kiwi", "Proto-Protozoa", "Evolving Organism", "Burly Bodyguard", "Doll Moll", "Emberiza Aureola", "Peace Turkey", "Quantum Entangler", "Golden Pet Rock", "Profane Parrot", "Significant Bit", "Heat Wave", "Cold Cut", "Shame Spiral", "Phantom Limb", "Foul Ball", "Dire Cassava", "Observer", "Cool Cucumber", "Defective Childrens' Stapler", "Glover", "Zapper Bug", "Wet Paper Tiger", "Cooler Yeti", "Baby Skeleton", "Skeleton of Crimbo Past", "Tiny Plastic Santa Claus Skeleton", "Cute Skeletal Dinosaur", "Sword of S Words"]))
 	{
 		if (inTerrarium(fam) && haveFamiliar(fam) && $_findRockFamiliarInTerrarium_petRockFamiliars.includes(fam))
 		{
@@ -364,15 +364,15 @@ export function lookupFamiliarDatafile(type_1: string): Familiar
 	auto_log_debug$1(`lookupFamiliarDatafile is checking for type [${type_1}]`);
 	// store what type of fam we are looking for
 	setProperty("auto_lastFamiliarLookupType", type_1);
-	let familiars_text: Map<string, Map<number, Map<string, string>>> = fileAsMap("autoscend_familiars.txt", [String, Number, String, String]);
+	const familiars_text: Map<string, Map<number, Map<string, string>>> = fileAsMap("autoscend_familiars.txt", [String, Number, String, String]);
 	if (!familiars_text.size)
 	{
 		abort("Could not load /data/autoscend_familiars.txt");
 	}
-	for (let [i, _v0] of (familiars_text.get(type_1) ?? familiars_text.set(type_1, new Map()).get(type_1))) {
-		for (let [name, _v1] of _v0) {
-			let conds = _v1;
-		let thisFamiliar: Familiar = toFamiliar(name);
+	for (const [i, _v0] of (familiars_text.get(type_1) ?? familiars_text.set(type_1, new Map()).get(type_1))) {
+		for (const [name, _v1] of _v0) {
+			const conds = _v1;
+		const thisFamiliar: Familiar = toFamiliar(name);
 		if (thisFamiliar === Familiar.none)
 		{
 			if (name !== "none")
@@ -410,7 +410,7 @@ export function handleFamiliar(type_1: string): boolean
 		return false;
 	}
 
-	let target: Familiar = lookupFamiliarDatafile(type_1);
+	const target: Familiar = lookupFamiliarDatafile(type_1);
 
 	if (target !== Familiar.none)
 	{
@@ -472,7 +472,7 @@ function autoChooseFamiliar(place: Location): boolean
 	{
 		return false; //will just error in those paths
 	}
-	let familiar_target_100: Familiar = toFamiliar(getProperty("auto_100familiar"));
+	const familiar_target_100: Familiar = toFamiliar(getProperty("auto_100familiar"));
 	if (familiar_target_100 !== Familiar.none)
 	{
 		return handleFamiliar$1(familiar_target_100); //do not break 100 familiar runs
@@ -487,7 +487,7 @@ function autoChooseFamiliar(place: Location): boolean
 				return handleFamiliar$1(Familiar.get("Gelatinous Cubeling"));
 			}
 			else {
-				for (let fam of Familiar.get(["Cookbookbat", "Mini Kiwi", "Hobo in Sheep's Clothing"]))
+				for (const fam of Familiar.get(["Cookbookbat", "Mini Kiwi", "Hobo in Sheep's Clothing"]))
 				{
 					if (canChangeToFamiliar(fam))
 					{
@@ -564,7 +564,7 @@ function autoChooseFamiliar(place: Location): boolean
 	// the D is only individually useful in paths that also visit The Valley of Rof L\'m Fao for N
 	// this is only in Low Key Summer for now, but can be in other paths if they get support: Journeyman, Grey You
 	if (Location.get("The Castle in the Clouds in the Sky (Basement)") === place && itemAmount(Item.get("heavy D")) === 0 && itemAmount(Item.get("ND")) === 0 && itemAmount(Item.get("Wand of Nagamar")) === 0 && toBoolean(getProperty("auto_wandOfNagamar"))) {
-		let wantTheD: boolean = in_lowkeysummer() && (itemAmount(Item.get("lowercase N")) > 0 || (Location.get("The Valley of Rof L'm Fao")).turnsSpent < 11); //!possessEquipment($item[Kekekey])
+		const wantTheD: boolean = in_lowkeysummer() && (itemAmount(Item.get("lowercase N")) > 0 || (Location.get("The Valley of Rof L'm Fao")).turnsSpent < 11); //!possessEquipment($item[Kekekey])
 		if (wantTheD)
 		{
 			famChoice = lookupFamiliarDatafile("item");
@@ -645,12 +645,12 @@ function autoChooseFamiliar(place: Location): boolean
 	//Should take around 10 combats to grab enough on day 1 and on subsequent days you should already have them from previous days.
 	if (famChoice === Familiar.none)
 	{
-		let available_spleen_items_size: number = 4 * auto_spleenFamiliarAdvItemsPossessed();
+		const available_spleen_items_size: number = 4 * auto_spleenFamiliarAdvItemsPossessed();
 
 		if (spleen_left() >= 4 + available_spleen_items_size && haveSpleenFamiliar())
 		{
 			let spleenFamiliarsAvailable: number = 0;
-			for (let fam of Familiar.get(["Baby Sandworm", "Rogue Program", "Pair of Stomping Boots", "Bloovian Groose", "Unconscious Collective", "Grim Brother", "Golden Monkey"]))
+			for (const fam of Familiar.get(["Baby Sandworm", "Rogue Program", "Pair of Stomping Boots", "Bloovian Groose", "Unconscious Collective", "Grim Brother", "Golden Monkey"]))
 			{
 				if (canChangeToFamiliar(fam))
 				{
@@ -660,9 +660,9 @@ function autoChooseFamiliar(place: Location): boolean
 
 			if (spleenFamiliarsAvailable > 0)
 			{
-				let spleen_drops_need: number = (spleen_left() + 3) / 4;
-				let bound: number = (spleen_drops_need + spleenFamiliarsAvailable - 1) / spleenFamiliarsAvailable;
-				for (let fam of Familiar.get(["Baby Sandworm", "Rogue Program", "Pair of Stomping Boots", "Bloovian Groose", "Unconscious Collective", "Grim Brother", "Golden Monkey"]))
+				const spleen_drops_need: number = (spleen_left() + 3) / 4;
+				const bound: number = (spleen_drops_need + spleenFamiliarsAvailable - 1) / spleenFamiliarsAvailable;
+				for (const fam of Familiar.get(["Baby Sandworm", "Rogue Program", "Pair of Stomping Boots", "Bloovian Groose", "Unconscious Collective", "Grim Brother", "Golden Monkey"]))
 				{
 					if (fam.dropsToday < bound && canChangeToFamiliar(fam))
 					{
@@ -706,9 +706,9 @@ function autoChooseFamiliar(place: Location): boolean
 		famChoice = lookupFamiliarDatafile("drop");
 	}
 	//If a fam was selected that is contrary to the Combat Rate we want, deselect it. Probably won't select it in stat or regen but user should get better free-ish fams if it does
-	let famComRate: number = auto_famModifiers$1(famChoice, "Combat Rate");
-	let plusCombatInMaximize: boolean = new AshMatcher("(?<!-)200 ?combat", getProperty("auto_maximize_current")).find();
-	let minusCombatInMaximize: boolean = new AshMatcher("-200 ?combat", getProperty("auto_maximize_current")).find();
+	const famComRate: number = auto_famModifiers$1(famChoice, "Combat Rate");
+	const plusCombatInMaximize: boolean = new AshMatcher("(?<!-)200 ?combat", getProperty("auto_maximize_current")).find();
+	const minusCombatInMaximize: boolean = new AshMatcher("-200 ?combat", getProperty("auto_maximize_current")).find();
 	if (minusCombatInMaximize && famComRate > 0)
 	{
 		famChoice = Familiar.none;
@@ -727,7 +727,7 @@ function autoChooseFamiliar(place: Location): boolean
 	}
 	// in legacy of loathing, may only have 1 of the 2004 fams
 	if (famChoice === Familiar.none) {
-		for (let fam of Familiar.get(["Jill-O-Lantern", "Hand Turkey", "Crimbo Elf"]))
+		for (const fam of Familiar.get(["Jill-O-Lantern", "Hand Turkey", "Crimbo Elf"]))
 		{
 			if (canChangeToFamiliar(fam))
 			{
@@ -742,7 +742,7 @@ function autoChooseFamiliar(place: Location): boolean
 
 export function haveSpleenFamiliar(): boolean
 {
-	for (let fam of Familiar.get(["Baby Sandworm", "Rogue Program", "Pair of Stomping Boots", "Bloovian Groose", "Unconscious Collective", "Grim Brother", "Golden Monkey"]))
+	for (const fam of Familiar.get(["Baby Sandworm", "Rogue Program", "Pair of Stomping Boots", "Bloovian Groose", "Unconscious Collective", "Grim Brother", "Golden Monkey"]))
 	{
 		if (auto_have_familiar(fam))
 		{
@@ -764,9 +764,9 @@ export function wantCubeling(): boolean
 		return false; //cubeling already dropped tools in this ascension. It cannot drop more until you ascend again.
 	}
 
-	let need_lockpicks: boolean = itemAmount(Item.get("Pick-O-Matic lockpicks")) === 0 && itemAmount(Item.get("Platinum Yendorian Express Card")) === 0;
-	let need_ring: boolean = !possessEquipment(Item.get("ring of Detect Boring Doors")); //do not try for a second one if you already have one
-	let need_pole: boolean = !auto_haveCCSC() && itemAmount(Item.get("eleven-foot pole")) === 0;
+	const need_lockpicks: boolean = itemAmount(Item.get("Pick-O-Matic lockpicks")) === 0 && itemAmount(Item.get("Platinum Yendorian Express Card")) === 0;
+	const need_ring: boolean = !possessEquipment(Item.get("ring of Detect Boring Doors")); //do not try for a second one if you already have one
+	const need_pole: boolean = !auto_haveCCSC() && itemAmount(Item.get("eleven-foot pole")) === 0;
 	return need_pole || need_ring || need_lockpicks;
 }
 
@@ -802,12 +802,12 @@ export function preAdvUpdateFamiliar(place: Location): void
 	{
 		//Stealing with familiar. TODO add XO Skelton here too
 
-		let heistDesires: Map<Monster, Item> = catBurglarHeistDesires();
+		const heistDesires: Map<Monster, Item> = catBurglarHeistDesires();
 		let wannaHeist: boolean = false;
-		let apprates: Map<Monster, number> = auto_combat_appearance_rates(place, true);
-		for (let [mon, it] of heistDesires)
+		const apprates: Map<Monster, number> = auto_combat_appearance_rates(place, true);
+		for (const [mon, it] of heistDesires)
 		{
-			for (let [i, mmon] of getMonsters(place).entries())
+			for (const [i, mmon] of getMonsters(place).entries())
 			{
 				if ((apprates.get(mon) ?? apprates.set(mon, 0.0).get(mon)) <= 0) { //won't show up because banished or req's not fulfilled
 				continue; }
@@ -829,7 +829,7 @@ export function preAdvUpdateFamiliar(place: Location): void
 		autoChooseFamiliar(place);
 	}
 
-	let famChoice: Familiar = toFamiliar(getProperty("auto_familiarChoice"));
+	const famChoice: Familiar = toFamiliar(getProperty("auto_familiarChoice"));
 	if (famChoice === Familiar.none)
 	{
 		if (getProperty("auto_familiarChoice") === "")
@@ -856,7 +856,7 @@ export function preAdvUpdateFamiliar(place: Location): void
 	{
 		// This arena visit to obtain gnome familiar equips is turn free and can be done once a day.
 		let visitArena: boolean = false;
-		for (let it of Item.get(["gnomish swimmer's ears", "gnomish coal miner's lung", "gnomish tennis elbow", "gnomish housemaid's kgnee", "gnomish athlete's foot"]))
+		for (const it of Item.get(["gnomish swimmer's ears", "gnomish coal miner's lung", "gnomish tennis elbow", "gnomish housemaid's kgnee", "gnomish athlete's foot"]))
 		{
 			if (availableAmount(it) === 0)
 			{
@@ -965,6 +965,6 @@ function auto_famModifiers$1(fam: Familiar, mod: string): number
 
 export function auto_famModifiers$2(mod: string): number
 {
-	let fam: Familiar = myFamiliar();
+	const fam: Familiar = myFamiliar();
 	return numericModifier(fam, mod, auto_famWeight(fam, false), familiarEquippedEquipment(fam));
 }

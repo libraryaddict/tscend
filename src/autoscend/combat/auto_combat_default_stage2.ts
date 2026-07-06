@@ -56,7 +56,7 @@ export function auto_combatDefaultStage2(round_1: number, enemy: Monster, text: 
 		return useSkill$2(Skill.get("BCZ: Refracted Gaze"));
 	}
 	//use industrial fire extinguisher zone specific skills
-	let extinguisherSkill: string = auto_FireExtinguisherCombatString(myLocation());
+	const extinguisherSkill: string = auto_FireExtinguisherCombatString(myLocation());
 	if (extinguisherSkill !== "" && haveEquipped(wrap_item(Item.get("industrial fire extinguisher"))) && enemy !== Monster.get("screambat"))
 	{
 	//below is temp workaround for https://github.com/loathers/autoscend/issues/1011
@@ -116,17 +116,17 @@ export function auto_combatDefaultStage2(round_1: number, enemy: Monster, text: 
 	}
 	// yellowray instantly kills the enemy and makes them drop all items they can drop.
 	// don't yellow ray if we'll be dousing
-	let douse: Skill = Skill.get("Douse Foe");
-	let isDouseTarget: boolean = wantToDouse(enemy) && round_1 < maxRoundsToDouse(enemy) - 1; // dousing can have a low chance of success, so only do it for a while then yellow
-	let douseAvailable: boolean = canUse$1(douse, false) && auto_dousesRemaining() > 0;
-	let willDouse: boolean = isDouseTarget && douseAvailable;
+	const douse: Skill = Skill.get("Douse Foe");
+	const isDouseTarget: boolean = wantToDouse(enemy) && round_1 < maxRoundsToDouse(enemy) - 1; // dousing can have a low chance of success, so only do it for a while then yellow
+	const douseAvailable: boolean = canUse$1(douse, false) && auto_dousesRemaining() > 0;
+	const willDouse: boolean = isDouseTarget && douseAvailable;
 	// And don't yellow ray if we'll be swooping
-	let swoopAvailable: boolean = canUse$1(Skill.get("Swoop like a Bat"), true) && toInt(getProperty("_batWingsSwoopUsed")) < 11;
-	let willSwoop: boolean = auto_swoopLocations().has(myLocation()) && swoopAvailable;
+	const swoopAvailable: boolean = canUse$1(Skill.get("Swoop like a Bat"), true) && toInt(getProperty("_batWingsSwoopUsed")) < 11;
+	const willSwoop: boolean = auto_swoopLocations().has(myLocation()) && swoopAvailable;
 
 	if ((!combat_status_check("yellowray") && auto_wantToYellowRay(enemy, myLocation()) || combat_status_check("droptablereplaced")) && !willDouse && !willSwoop)
 	{
-		let combatAction: string = yellowRayCombatString(enemy, true, Monster.get(["bearpig topiary animal", "elephant (meatcar?) topiary animal", "spider (duck?) topiary animal", "knight (Snake)"]).includes(enemy));
+		const combatAction: string = yellowRayCombatString(enemy, true, Monster.get(["bearpig topiary animal", "elephant (meatcar?) topiary animal", "spider (duck?) topiary animal", "knight (Snake)"]).includes(enemy));
 		if (combatAction !== "")
 		{
 			combat_status_add("yellowray");
@@ -178,7 +178,7 @@ export function auto_combatDefaultStage2(round_1: number, enemy: Monster, text: 
 	// Free run before banishing for a few monsters
 	if (!combat_status_check("banishercheck") && !combat_status_check("droptablereplaced") && auto_wantToBanish(enemy, myLocation()))
 	{
-		let freeRunAction: string = freeRunCombatStringPreBanish(enemy, myLocation(), true);
+		const freeRunAction: string = freeRunCombatStringPreBanish(enemy, myLocation(), true);
 		if (freeRunAction !== "")
 		{
 			if (indexOf(freeRunAction, "skill") === 0)
@@ -198,7 +198,7 @@ export function auto_combatDefaultStage2(round_1: number, enemy: Monster, text: 
 
 	if (!combat_status_check("banishercheck") && !combat_status_check("phylumbanishercheck") && !combat_status_check("droptablereplaced") && auto_wantToBanish$1(monsterPhylum(enemy), myLocation()) && auto_habitatMonster() !== enemy)
 	{
-		let banishAction: string = banisherCombatString(monsterPhylum(enemy), myLocation(), true);
+		const banishAction: string = banisherCombatString(monsterPhylum(enemy), myLocation(), true);
 		if (banishAction !== "")
 		{
 			auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
@@ -222,7 +222,7 @@ export function auto_combatDefaultStage2(round_1: number, enemy: Monster, text: 
 	// Free run in Avant Guard from Bodyguard before banishing for a few monsters
 	if (!combat_status_check("banishercheck") && !combat_status_check("droptablereplaced") && auto_wantToBanish(guardee, myLocation()))
 	{
-		let freeRunAction: string = freeRunCombatStringPreBanish(enemy, myLocation(), true);
+		const freeRunAction: string = freeRunCombatStringPreBanish(enemy, myLocation(), true);
 		if (freeRunAction !== "")
 		{
 			if (indexOf(freeRunAction, "skill") === 0)
@@ -242,7 +242,7 @@ export function auto_combatDefaultStage2(round_1: number, enemy: Monster, text: 
 
 	if (!combat_status_check("banishercheck") && !combat_status_check("phylumbanishercheck") && !combat_status_check("droptablereplaced") && auto_wantToBanish(enemy, myLocation()) && !ag_is_bodyguard())
 	{
-		let banishAction: string = banisherCombatString$1(enemy, myLocation(), true);
+		const banishAction: string = banisherCombatString$1(enemy, myLocation(), true);
 		if (banishAction !== "")
 		{
 			auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
@@ -255,7 +255,7 @@ export function auto_combatDefaultStage2(round_1: number, enemy: Monster, text: 
 			{
 				if (containsText(banishAction, ", none"))
 				{
-					let commapos: number = indexOf(banishAction, ", none");
+					const commapos: number = indexOf(banishAction, ", none");
 					handleTracker$1(enemy.toString(), toItem(substring(banishAction, 5, commapos)).toString(), "auto_banishes");
 				}
 				else {
@@ -295,7 +295,7 @@ export function auto_combatDefaultStage2(round_1: number, enemy: Monster, text: 
 			{
 				if (containsText(freeRunAction, ", none"))
 				{
-					let commapos: number = indexOf(freeRunAction, ", none");
+					const commapos: number = indexOf(freeRunAction, ", none");
 					handleTracker$1(enemy.toString(), toItem(substring(freeRunAction, 5, commapos)).toString(), "auto_freeruns");
 				}
 				else {
@@ -313,7 +313,7 @@ export function auto_combatDefaultStage2(round_1: number, enemy: Monster, text: 
 
 	if (!combat_status_check("replacercheck") && !combat_status_check("droptablereplaced") && auto_wantToReplace(enemy, myLocation()))
 	{
-		let combatAction: string = replaceMonsterCombatString(enemy, true);
+		const combatAction: string = replaceMonsterCombatString(enemy, true);
 		if (combatAction !== "")
 		{
 			combat_status_add("replacer");
@@ -329,7 +329,7 @@ export function auto_combatDefaultStage2(round_1: number, enemy: Monster, text: 
 			{
 				if (containsText(combatAction, ", none"))
 				{
-					let commapos: number = indexOf(combatAction, ", none");
+					const commapos: number = indexOf(combatAction, ", none");
 					handleTracker$1(enemy.toString(), toItem(substring(combatAction, 5, commapos)).toString(), "auto_replaces");
 				}
 				else {
@@ -409,8 +409,8 @@ export function auto_combatDefaultStage2(round_1: number, enemy: Monster, text: 
 		let waitForDesert: boolean = false; //free kills can save turns of Ultrahydrated
 		if (toInt(getProperty("desertExploration")) < 100 && !isActuallyEd())
 		{ //need to explore desert
-			let currentDesertProgressPerTurn: number = 1 + ((toBoolean(getProperty("bondDesert")) ? 2 : 0)) + ((getProperty("peteMotorbikeHeadlight") === "Blacklight Bulb" ? 2 : 0)) + ((myFamiliar() === Familiar.get("Melodramedary") ? 1 : 0)) + 2 * min(1, equippedAmount(Item.get("survival knife"))) + equippedAmount(Item.get("UV-resistant compass")) + 2 * equippedAmount(Item.get("ornate dowsing rod"));
-			let fightsLeftToExplore: number = ceil((100 - toInt(getProperty("desertExploration"))) / currentDesertProgressPerTurn);
+			const currentDesertProgressPerTurn: number = 1 + ((toBoolean(getProperty("bondDesert")) ? 2 : 0)) + ((getProperty("peteMotorbikeHeadlight") === "Blacklight Bulb" ? 2 : 0)) + ((myFamiliar() === Familiar.get("Melodramedary") ? 1 : 0)) + 2 * min(1, equippedAmount(Item.get("survival knife"))) + equippedAmount(Item.get("UV-resistant compass")) + 2 * equippedAmount(Item.get("ornate dowsing rod"));
+			const fightsLeftToExplore: number = ceil((100 - toInt(getProperty("desertExploration"))) / currentDesertProgressPerTurn);
 			if (haveEffect(Effect.get("Ultrahydrated")) > 0 && haveEffect(Effect.get("Ultrahydrated")) < fightsLeftToExplore)
 			{
 				wantFreeKillNowEspecially = true;
@@ -439,7 +439,7 @@ export function auto_combatDefaultStage2(round_1: number, enemy: Monster, text: 
 			wantFreeKillNowEspecially = true;
 		}
 
-		let reserveFreekills: boolean = myAdventures() >= 9 && !wantFreeKillNowEspecially && (waitForDesert || waitForCyrpt);
+		const reserveFreekills: boolean = myAdventures() >= 9 && !wantFreeKillNowEspecially && (waitForDesert || waitForCyrpt);
 
 		if (canUse$2(Skill.get("Darts: Aim for the Bullseye")) && haveEffect(Effect.get("Everything Looks Red")) === 0 && dartELRcd() <= 40)
 		{
@@ -463,7 +463,7 @@ export function auto_combatDefaultStage2(round_1: number, enemy: Monster, text: 
 			return useSkill$2(Skill.get("Lightning Strike"));
 		}
 		//Depending on the fam used for instakill, it could be a turn free YR, or it could be turn taking and not a YR, but still give ELY.
-		let z_kick: Skill = getZooKickInstaKill();
+		const z_kick: Skill = getZooKickInstaKill();
 		if (canUse$2(z_kick))
 		{
 			setProperty("auto_instakillSource", "zootomist kick");

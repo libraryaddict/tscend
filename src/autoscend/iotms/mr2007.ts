@@ -28,7 +28,7 @@ export function auto_navelFreeRunChance(): number
 		return 0;
 	}
 	// https://kol.coldfront.net/thekolwiki/index.php/Navel_ring_of_navel_gazing
-	let navelRunAways: number = toInt(getProperty("_navelRunaways"));
+	const navelRunAways: number = toInt(getProperty("_navelRunaways"));
 	if (navelRunAways < 3) { return 100; }
 	if (navelRunAways < 6) { return 80; }
 	if (navelRunAways < 9) { return 50; }

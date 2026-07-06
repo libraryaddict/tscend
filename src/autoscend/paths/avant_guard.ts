@@ -61,13 +61,13 @@ export function ag_bgChat(): void
 		return;
 	}
 	// go to page to determine if bodyguard is ready to chat
-	let bgChat: string = visitUrl("main.php?talktobg=1", false);
-	let title: AshMatcher = new AshMatcher("Chatting with your Burly Bodyguard", bgChat);
+	const bgChat: string = visitUrl("main.php?talktobg=1", false);
+	const title: AshMatcher = new AshMatcher("Chatting with your Burly Bodyguard", bgChat);
 	if (title.find())
 	{
 		auto_log_info("Trying to chat with your Bodyguard", "blue");
-		let mon: Monster = ag_bgToChat();
-		let url: string = visitUrl(`choice.php?pwd=&whichchoice=1532&option=1&bgid=${mon.id}`, true);
+		const mon: Monster = ag_bgToChat();
+		const url: string = visitUrl(`choice.php?pwd=&whichchoice=1532&option=1&bgid=${mon.id}`, true);
 		auto_log_info(`Making the next bodyguard a ${mon.toString()}`, "blue");
 		handleTracker$1(Familiar.get("Burly Bodyguard").toString(), mon.toString(), "auto_copies");
 	}
@@ -79,7 +79,7 @@ function ag_bgToChat(): Monster
 	let surgeonGearWanted: number = 0;
 	let mon: Monster = Monster.none;
 
-	for (let it of Item.get(["bloodied surgical dungarees", "half-size scalpel", "surgical apron", "head mirror", "surgical mask"]))
+	for (const it of Item.get(["bloodied surgical dungarees", "half-size scalpel", "surgical apron", "head mirror", "surgical mask"]))
 	{
 		if (!possessEquipment(it) && auto_can_equip(it))
 		{

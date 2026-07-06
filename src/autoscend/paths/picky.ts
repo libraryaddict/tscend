@@ -30,7 +30,7 @@ export function picky_startAscension(): void
 	if (myClass() === Class.get("Turtle Tamer") || myClass() === Class.get("Seal Clubber"))
 	{
 		auto_log_info("Selecting skills", "blue");
-		let page: string = visitUrl("choice.php?pwd&whichchoice=995&pwd=&option=1&familiar=188", true);
+		const page: string = visitUrl("choice.php?pwd&whichchoice=995&pwd=&option=1&familiar=188", true);
 		if (containsText(page, "<option value=\"165\""))
 		{
 			visitUrl("choice.php?pwd&whichchoice=995&pwd=&option=1&familiar=165", true);

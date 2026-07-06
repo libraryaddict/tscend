@@ -12,7 +12,7 @@ export function lar_safeguard(): boolean
 {
 	if (in_lar())
 	{
-		let repeats: string = getProperty("lastEncounter");
+		const repeats: string = getProperty("lastEncounter");
 		if (repeats === "Skull, Skull, Skull" || repeats === "Urning Your Keep" || repeats === "Turn Your Head and Coffin" || repeats === "Curtains" || repeats === "There's No Ability Like Possibility" || repeats === "Putting Off Is Off-Putting" || repeats === "Huzzah!")
 		{
 			if (toInt(getProperty("_auto_groundhogSkip")) === myTurncount())
@@ -52,13 +52,13 @@ export function lar_abort(loc: Location): boolean
 {
 	if (in_lar())
 	{
-		let itemNeed: generic_t = zone_needItem(loc);
+		const itemNeed: generic_t = zone_needItem(loc);
 		if (!itemNeed._boolean)
 		{
 			return true;
 		}
 		//These should be places that we would not consider overriding with a YR.
-		for (let place of Location.get(["The F'c'le", "The Hole in the Sky"]))
+		for (const place of Location.get(["The F'c'le", "The Hole in the Sky"]))
 		{
 			if (place === loc && itemDropModifier() < itemNeed._float)
 			{

@@ -59,12 +59,12 @@ export function L6_friarsGetParts(): boolean
 	// Don't burn all our NC forces early on d1 unless we are running low on turns.
 	if (myDaycount() === 1 && !isAboutToPowerlevel() && !toBoolean(getProperty("auto_getSteelOrgan")))
 	{
-		let forced_loc: Location = toLocation(getProperty("auto_forceNonCombatLocation"));
-		let forced_here: boolean = Location.get(["The Dark Neck of the Woods", "The Dark Elbow of the Woods", "The Dark Heart of the Woods"]).includes(forced_loc);
-		let running_low_on_turns: boolean = auto_roughExpectedTurnsLeftToday() < 10 + turnsUsedByRemainingNCForcesToday();
+		const forced_loc: Location = toLocation(getProperty("auto_forceNonCombatLocation"));
+		const forced_here: boolean = Location.get(["The Dark Neck of the Woods", "The Dark Elbow of the Woods", "The Dark Heart of the Woods"]).includes(forced_loc);
+		const running_low_on_turns: boolean = auto_roughExpectedTurnsLeftToday() < 10 + turnsUsedByRemainingNCForcesToday();
 		// Probably need to make sure we still have other stuff to do? Softblock?
 		// Could probably then make this run every day.
-		let total_daily_forces: number = baseNCForcesToday();
+		const total_daily_forces: number = baseNCForcesToday();
 		if (!forced_here && total_daily_forces > 0 && !running_low_on_turns)
 		{
 			auto_log_debug("Friars: delaying to save NC forces for later today.", "blue");
@@ -75,7 +75,7 @@ export function L6_friarsGetParts(): boolean
 	if (itemAmount(Item.get("dodecagram")) === 0)
 	{
 		auto_log_info("Getting Dodecagram", "blue");
-		let NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Dark Neck of the Woods"));
+		const NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Dark Neck of the Woods"));
 		// delay if we are out of NC forcers and haven't run out of things to do
 		if (!NCForced && myDaycount() < toInt(getProperty("auto_runDayCount")) && !isAboutToPowerlevel() && !toBoolean(getProperty("auto_getSteelOrgan"))) { return false; }
 		return autoAdv$2(Location.get("The Dark Neck of the Woods"));
@@ -83,7 +83,7 @@ export function L6_friarsGetParts(): boolean
 	if (itemAmount(Item.get("eldritch butterknife")) === 0)
 	{
 		auto_log_info("Getting Eldritch Butterknife", "blue");
-		let NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Dark Elbow of the Woods"));
+		const NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Dark Elbow of the Woods"));
 		// delay if we are out of NC forcers and haven't run out of things to do
 		if (!NCForced && myDaycount() < toInt(getProperty("auto_runDayCount")) && !isAboutToPowerlevel() && !toBoolean(getProperty("auto_getSteelOrgan"))) { return false; }
 		return autoAdv$2(Location.get("The Dark Elbow of the Woods"));
@@ -97,7 +97,7 @@ export function L6_friarsGetParts(): boolean
 			return false;
 		}
 		auto_log_info("Getting Box of Birthday Candles", "blue");
-		let NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Dark Heart of the Woods"));
+		const NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Dark Heart of the Woods"));
 		// delay if we are out of NC forcers and haven't run out of things to do
 		if (!NCForced && myDaycount() < toInt(getProperty("auto_runDayCount")) && !isAboutToPowerlevel() && !toBoolean(getProperty("auto_getSteelOrgan"))) { return false; }
 		return autoAdv$2(Location.get("The Dark Heart of the Woods"));

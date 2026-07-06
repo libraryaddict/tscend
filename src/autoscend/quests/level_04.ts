@@ -22,7 +22,7 @@ import { shenShouldDelayZone } from "./level_11";
 
 function provideGuanoStenchResistance(): boolean
 {
-	let resGoal: Map<Element, number> = new Map();
+	const resGoal: Map<Element, number> = new Map();
 	resGoal.set(Element.get("stench"), 1);
 	// try to get the stench res without equipment, but use equipment if we must
 	if (!provideResistances$4(resGoal, Location.get("Guano Junction"), false) && !provideResistances$4(resGoal, Location.get("Guano Junction"), true))
@@ -81,7 +81,7 @@ export function L4_batCave(): boolean
 	}
 	buffMaintain$4(Effect.get("Fishy Whiskers"));
 
-	let batStatus: number = internalQuestStatus("questL04Bat");
+	const batStatus: number = internalQuestStatus("questL04Bat");
 	if (batStatus < 3)
 	{
 		if (auto_is_valid(Item.get("sonar-in-a-biscuit")))
@@ -142,7 +142,7 @@ export function L4_batCave(): boolean
 				handleFamiliar$1(Familiar.get("Grey Goose"));
 			}
 		}
-		let batskinBelt: number = itemAmount(Item.get("batskin belt"));
+		const batskinBelt: number = itemAmount(Item.get("batskin belt"));
 		auto_change_mcd(4); // get the pants from the Boss Bat.
 		// Let's whack some free XP on our Chest Mimic (it's a chaun)
 		if (auto_haveChestMimic())

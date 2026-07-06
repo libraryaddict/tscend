@@ -65,15 +65,15 @@ class desert_buff_record {
 
 function desertBuffs(): desert_buff_record
 {
-    let dbr: desert_buff_record = new desert_buff_record();
+    const dbr: desert_buff_record = new desert_buff_record();
 
     dbr.progress = 1;
 
-	let compassValid: boolean = possessUnrestricted(Item.get("UV-resistant compass"));
-	let lhmValid: boolean = canChangeToFamiliar(Familiar.get("Left-Hand Man"));
-	let meloValid: boolean = canChangeToFamiliar(Familiar.get("Melodramedary"));
-	let odrValid: boolean = possessUnrestricted(Item.get("ornate dowsing rod"));
-	let knifeValid: boolean = possessUnrestricted(Item.get("survival knife"));
+	const compassValid: boolean = possessUnrestricted(Item.get("UV-resistant compass"));
+	const lhmValid: boolean = canChangeToFamiliar(Familiar.get("Left-Hand Man"));
+	const meloValid: boolean = canChangeToFamiliar(Familiar.get("Melodramedary"));
+	const odrValid: boolean = possessUnrestricted(Item.get("ornate dowsing rod"));
+	const knifeValid: boolean = possessUnrestricted(Item.get("survival knife"));
 
 	dbr.fam = Familiar.none;
 	dbr.famEquip = Item.none;
@@ -160,7 +160,7 @@ function desertBuffs(): desert_buff_record
 //Defined in autoscend/quests/level_11.ash
 function shenItemsReturnedOrInProgress(): number
 {
-	let progress: number = internalQuestStatus("questL11Shen");
+	const progress: number = internalQuestStatus("questL11Shen");
 	if (progress < 1) { return 0; }
 	if (progress < 3) { return 1; }
 	else if (progress < 5) { return 2; }
@@ -174,25 +174,25 @@ export function shenSnakeLocations(day: number, n_items_returned: number): Map<L
 
 	function union(one: Map<Location, boolean>, two: Map<Location, boolean>, three: Map<Location, boolean>): Map<Location, boolean>
 	{
-		let ret: Map<Location, boolean> = new Map();
+		const ret: Map<Location, boolean> = new Map();
 		switch (n_items_returned)
 		{
 		case 0:
-		for (let [z, _] of one) { ret.set(z, true); }
+		for (const [z, _] of one) { ret.set(z, true); }
 		case 1:
-		for (let [z, _] of two) { ret.set(z, true); }
+		for (const [z, _] of two) { ret.set(z, true); }
 		case 2:
-		for (let [z, _] of three) { ret.set(z, true); }
+		for (const [z, _] of three) { ret.set(z, true); }
 		case 3:
 		}
 		return ret;
 	}
-	let batsnake: Map<Location, boolean> = new Map([[Location.get("The Batrat and Ratbat Burrow"), true]]);
-	let frozen: Map<Location, boolean> = new Map([[Location.get("Lair of the Ninja Snowmen"), true]]);
-	let burning: Map<Location, boolean> = new Map([[Location.get("The Castle in the Clouds in the Sky (Top Floor)"), true]]);
-	let ten_heads: Map<Location, boolean> = new Map([[Location.get("The Hole in the Sky"), true]]);
-	let frattle: Map<Location, boolean> = new Map([[Location.get("The Smut Orc Logging Camp"), true]]);
-	let snakleton: Map<Location, boolean> = new Map([[Location.get("The Unquiet Garves"), true], [Location.get("The VERY Unquiet Garves"), true]]);
+	const batsnake: Map<Location, boolean> = new Map([[Location.get("The Batrat and Ratbat Burrow"), true]]);
+	const frozen: Map<Location, boolean> = new Map([[Location.get("Lair of the Ninja Snowmen"), true]]);
+	const burning: Map<Location, boolean> = new Map([[Location.get("The Castle in the Clouds in the Sky (Top Floor)"), true]]);
+	const ten_heads: Map<Location, boolean> = new Map([[Location.get("The Hole in the Sky"), true]]);
+	const frattle: Map<Location, boolean> = new Map([[Location.get("The Smut Orc Logging Camp"), true]]);
+	const snakleton: Map<Location, boolean> = new Map([[Location.get("The Unquiet Garves"), true], [Location.get("The VERY Unquiet Garves"), true]]);
 
 	if (in_koe())
 	{
@@ -212,7 +212,7 @@ export function shenSnakeLocations(day: number, n_items_returned: number): Map<L
 	case 10:	return union(ten_heads, batsnake, burning);
 	case 11:	return union(frozen, batsnake, burning);
 	}
-	let empty: Map<Location, boolean> = new Map();
+	const empty: Map<Location, boolean> = new Map();
 	return empty;
 }
 
@@ -220,20 +220,20 @@ function shenZonesToAvoidBecauseMaybeSnake(): Map<Location, boolean>
 {
 	if (toInt(getProperty("shenInitiationDay")) > 0)
 	{
-		let day: number = toInt(getProperty("shenInitiationDay"));
-		let items_returned: number = shenItemsReturnedOrInProgress();
+		const day: number = toInt(getProperty("shenInitiationDay"));
+		const items_returned: number = shenItemsReturnedOrInProgress();
 		return shenSnakeLocations(day, items_returned);
 	}
 	else {
 		// Assume we're going to start Shen today, tomorrow, or two days from now.
-		let zones_to_avoid: Map<Location, boolean> = new Map();
+		const zones_to_avoid: Map<Location, boolean> = new Map();
 		if (myLevel() < 11)
 		{
 			//if level 10, assume shen today or tomorrow, otherwise up to two days from now
-			let beforeThatDay: number = (myLevel() >= 10 ? 2 : 3);
+			const beforeThatDay: number = (myLevel() >= 10 ? 2 : 3);
 			for (let day: number = 0; day < beforeThatDay; day++)
 			{
-				for (let [z, _] of shenSnakeLocations(day + myDaycount(), 0))
+				for (const [z, _] of shenSnakeLocations(day + myDaycount(), 0))
 				{
 					zones_to_avoid.set(z, true);
 				}
@@ -242,7 +242,7 @@ function shenZonesToAvoidBecauseMaybeSnake(): Map<Location, boolean>
 		}
 		else {
 			// if we're already level 11, well either be starting ASAP
-			for (let [z, _] of shenSnakeLocations(myDaycount(), 0))
+			for (const [z, _] of shenSnakeLocations(myDaycount(), 0))
 			{
 				zones_to_avoid.set(z, true);
 			}
@@ -268,14 +268,14 @@ export function shenShouldDelayZone(loc: Location): boolean
 
 export function getShenZonesTurnsSpent(): Map<Location, number>
 {
-	let delayValues: Map<Location, number> = new Map();
+	const delayValues: Map<Location, number> = new Map();
 	if (getProperty("auto_shenZonesTurnsSpent") !== "")
 	{
-		let zones: Map<number, string> = new Map(splitString(getProperty("auto_shenZonesTurnsSpent"), ";").map((_v, _i) => [_i, _v]));
-		for (let [_, zone] of zones)
+		const zones: Map<number, string> = new Map(splitString(getProperty("auto_shenZonesTurnsSpent"), ";").map((_v, _i) => [_i, _v]));
+		for (const [_, zone] of zones)
 		{
-			let loc: Location = toLocation(substring(zone, 0, indexOf(zone, ":")));
-			let turns_spent: number = toInt(substring(zone, indexOf(zone, ":") + 1));
+			const loc: Location = toLocation(substring(zone, 0, indexOf(zone, ":")));
+			const turns_spent: number = toInt(substring(zone, indexOf(zone, ":") + 1));
 			delayValues.set(loc, turns_spent);
 		}
 	}
@@ -354,11 +354,11 @@ export function LX_unlockHauntedBilliardsRoom(delayKitchen: boolean): boolean {
 		delayKitchen = false;
 	}
 	if (delayKitchen) {
-		let resGoals: Map<Element, number> = new Map();
+		const resGoals: Map<Element, number> = new Map();
 		resGoals.set(Element.get("hot"), 9);
 		resGoals.set(Element.get("stench"), 9);
 		// check to see if we can acquire sufficient hot and stench res for the kitchen
-		let resPossible: Map<Element, number> = provideResistances(resGoals, Location.get("The Haunted Kitchen"), true, false, true);
+		const resPossible: Map<Element, number> = provideResistances(resGoals, Location.get("The Haunted Kitchen"), true, false, true);
 		delayKitchen = (resPossible.get(Element.get("hot")) ?? resPossible.set(Element.get("hot"), 0).get(Element.get("hot"))) < 9 || (resPossible.get(Element.get("stench")) ?? resPossible.set(Element.get("stench"), 0).get(Element.get("stench"))) < 9;
 	}
 
@@ -368,10 +368,10 @@ export function LX_unlockHauntedBilliardsRoom(delayKitchen: boolean): boolean {
 	}
 
 	if (!delayKitchen) {
-		let resGoal: Map<Element, number> = new Map();
+		const resGoal: Map<Element, number> = new Map();
 		resGoal.set(Element.get("hot"), 9);
 		resGoal.set(Element.get("stench"), 9);
-		let resPossible: Map<Element, number> = provideResistances(resGoal, Location.get("The Haunted Kitchen"), true, true, false);
+		const resPossible: Map<Element, number> = provideResistances(resGoal, Location.get("The Haunted Kitchen"), true, true, false);
 		auto_log_info(`Looking for the Billards Room key (Hot/Stench:${(resPossible.get(Element.get("hot")) ?? resPossible.set(Element.get("hot"), 0).get(Element.get("hot")))}/${(resPossible.get(Element.get("stench")) ?? resPossible.set(Element.get("stench"), 0).get(Element.get("stench")))}): Progress ${getProperty("manorDrawerCount")}/24`, "blue");
 
 		if (auto_spadeDigsRemaining() > 0 && getProperty("lastAdventure") === "The Haunted Kitchen") {
@@ -401,9 +401,9 @@ export function LX_unlockHauntedLibrary(): boolean
 	}
 	//equipment handling
 	let expectPool: number = speculative_pool_skill();
-	let staffOfFats: Item = Item.get("[2268]Staff of Fats"); //regular staff of fats. +5 pool +2 training
-	let EdStaffOfFats: Item = Item.get("[7964]Staff of Fats"); //ed path version of staff of fats. +5 pool
-	let EdStaffOfEd: Item = Item.get("[7961]Staff of Ed"); //ed path version of staff of ed. +5 pool
+	const staffOfFats: Item = Item.get("[2268]Staff of Fats"); //regular staff of fats. +5 pool +2 training
+	const EdStaffOfFats: Item = Item.get("[7964]Staff of Fats"); //ed path version of staff of fats. +5 pool
+	const EdStaffOfEd: Item = Item.get("[7961]Staff of Ed"); //ed path version of staff of ed. +5 pool
 
 	if (is_boris())
 	{
@@ -444,7 +444,7 @@ export function LX_unlockHauntedLibrary(): boolean
 	{
 		// in small we should have astral pilsners assuming the user knows what they are doing
 		// so just drink one if we can get the max adventures out of it
-		let bestDrinkAction: ConsumeAction = auto_findBestConsumeAction("drink");
+		const bestDrinkAction: ConsumeAction = auto_findBestConsumeAction("drink");
 		if (bestDrinkAction.it === Item.get("astral pilsner"))
 		{
 			auto_autoConsumeOne(bestDrinkAction);
@@ -454,7 +454,7 @@ export function LX_unlockHauntedLibrary(): boolean
 		}
 	}
 	//inebrity handling. do not care if: auto succeed or can't drink or ran out of things to do.
-	let wildfire_check: boolean = !(in_wildfire() && inHardcore()); //hardcore wildfire ignore inebriety limits
+	const wildfire_check: boolean = !(in_wildfire() && inHardcore()); //hardcore wildfire ignore inebriety limits
 	if (expectPool < 18 && canDrink() && !isAboutToPowerlevel() && wildfire_check)
 	{
 		//paths with inebrity limit under 11 should wait until they are at max to do this
@@ -472,7 +472,7 @@ export function LX_unlockHauntedLibrary(): boolean
 		}
 		if (myInebriety() > 11)
 		{
-			let penalty: number = 2 * (10 - myInebriety());
+			const penalty: number = 2 * (10 - myInebriety());
 			auto_log_info(`I overshot my inebrity goal for the [Haunted Billiards Room] which gives me a penalty of ${penalty}pool skill. I will come back tomorrow or if I run out of things to do.`, "green");
 			resetMaximize(); //cancel equipping pool cue
 			return false;
@@ -484,7 +484,7 @@ export function LX_unlockHauntedLibrary(): boolean
 	if (internalQuestStatus("questM20Necklace") === 2)
 	{
 		// only force after we get the pool cue NC.
-		let NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Haunted Billiards Room"));
+		const NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Haunted Billiards Room"));
 		// delay if we are out of NC forcers and haven't run out of things to do
 		if (!NCForced && myDaycount() < toInt(getProperty("auto_runDayCount")) && !isAboutToPowerlevel())
 		{
@@ -679,7 +679,7 @@ export function LX_getLadySpookyravensFinestGown(): boolean {
 		if (auto_have_familiar(Familiar.get("Nosy Nose")) && auto_is_valid$2(Skill.get("Get a Good Whiff of This Guy")) && !is100FamRun())
 		{
 			let ornateRate: number = (auto_combat_appearance_rates$1(Location.get("The Haunted Bedroom")).get(Monster.get("animated ornate nightstand")) ?? auto_combat_appearance_rates$1(Location.get("The Haunted Bedroom")).set(Monster.get("animated ornate nightstand"), 0.0).get(Monster.get("animated ornate nightstand")));
-			let elegantRate: number = (auto_combat_appearance_rates$1(Location.get("The Haunted Bedroom")).get(Monster.get("elegant animated nightstand")) ?? auto_combat_appearance_rates$1(Location.get("The Haunted Bedroom")).set(Monster.get("elegant animated nightstand"), 0.0).get(Monster.get("elegant animated nightstand")));
+			const elegantRate: number = (auto_combat_appearance_rates$1(Location.get("The Haunted Bedroom")).get(Monster.get("elegant animated nightstand")) ?? auto_combat_appearance_rates$1(Location.get("The Haunted Bedroom")).set(Monster.get("elegant animated nightstand"), 0.0).get(Monster.get("elegant animated nightstand")));
 			if ((Location.get("The Haunted Bedroom")).turnsSpent < 6 && elegantRate !== 0)
 			{ //non 0 value for elegant before 7 is spurious
 				ornateRate += elegantRate; //not a real rate but only correct for the purpose of checking if it is 100
@@ -752,7 +752,7 @@ export function LX_getLadySpookyravensPowderPuff(): boolean {
 	auto_sourceTerminalEducate(Skill.get("Extract"), Skill.get("Portscan"));
 
 	if (!zone_delay(Location.get("The Haunted Bathroom"))._boolean) {
-		let NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Haunted Bathroom"));
+		const NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Haunted Bathroom"));
 		// delay if we are out of NC forcers and haven't run out of things to do
 		if (!NCForced && myDaycount() < toInt(getProperty("auto_runDayCount")) && !isAboutToPowerlevel()) { return false; }
 	}
@@ -889,7 +889,7 @@ export function L11_blackMarket(): boolean
 	if (internalQuestStatus("questL11Black") === 0 && itemAmount(Item.get("black map")) === 0)
 	{
 		council();
-		let galoshes: Item = Item.get("blackberry galoshes");
+		const galoshes: Item = Item.get("blackberry galoshes");
 		if (!possessEquipment(galoshes) && auto_can_equip(galoshes) && canPull$1(galoshes))
 		{
 			pullXWhenHaveY(galoshes, 1, 0);
@@ -911,7 +911,7 @@ export function L11_blackMarket(): boolean
 		handleFamiliar$1(Familiar.get("Grey Goose"));
 	}
 
-	let advSpent: boolean = autoAdv$2(Location.get("The Black Forest"));
+	const advSpent: boolean = autoAdv$2(Location.get("The Black Forest"));
 	//For people with autoCraft set to false for some reason
 	if (itemAmount(Item.get("reassembled blackbird")) === 0 && creatableAmount(Item.get("reassembled blackbird")) > 0)
 	{
@@ -938,10 +938,10 @@ export function L11_getBeehive(): boolean
 
 	auto_log_info("Must find a beehive!", "blue");
 
-	let NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Black Forest"));
+	const NCForced: boolean = auto_forceNextNoncombat$1(Location.get("The Black Forest"));
 	// delay if we are out of NC forcers and haven't run out of things to do
 	if (!NCForced && myDaycount() < toInt(getProperty("auto_runDayCount")) && !isAboutToPowerlevel()) { return false; }
-	let advSpent: boolean = autoAdv$2(Location.get("The Black Forest"));
+	const advSpent: boolean = autoAdv$2(Location.get("The Black Forest"));
 	if (itemAmount(Item.get("beehive")) > 0)
 	{
 		setProperty("auto_getBeehive", false.toString());
@@ -972,7 +972,7 @@ export function L11_forgedDocuments(): boolean
 	if (in_wotsf())
 	{
 		// TODO: move this to WotSF path file if one is ever created.
-		let pages: Map<number, string> = new Map();
+		const pages: Map<number, string> = new Map();
 		pages.set(0, "shop.php?whichshop=blackmarket");
 		pages.set(1, "shop.php?whichshop=blackmarket&action=fightbmguy");
 		return autoAdvBypass(0, pages, Location.get("Noob Cave"), null);
@@ -1027,7 +1027,7 @@ export function L11_mcmuffinDiary(): boolean
 	setProperty("auto_considerCCSCShore", false.toString());
 	LX_doVacation();
 	setProperty("auto_considerCCSCShore", true.toString());
-	for (let diary of Item.get(["your father's MacGuffin diary", "copy of a jerk adventurer's father's diary"]))
+	for (const diary of Item.get(["your father's MacGuffin diary", "copy of a jerk adventurer's father's diary"]))
 	{
 		if (itemAmount(diary) > 0)
 		{
@@ -1149,7 +1149,7 @@ export function L11_aridDesert(): boolean
 		use(1, Item.get("milestone"));
 	}
 
-	let dbr: desert_buff_record = desertBuffs();
+	const dbr: desert_buff_record = desertBuffs();
 	let progress: number = dbr.progress;
 	if (toBoolean(getProperty("bondDesert")))
 	{
@@ -1318,7 +1318,7 @@ export function L11_aridDesert(): boolean
 
 		if (possessEquipment(Item.get("reinforced beaded headband")) && possessEquipment(Item.get("bullet-proof corduroys")) && possessEquipment(Item.get("round purple sunglasses")))
 		{
-			for (let it of Item.get(["beer helmet", "distressed denim pants", "bejeweled pledge pin"]))
+			for (const it of Item.get(["beer helmet", "distressed denim pants", "bejeweled pledge pin"]))
 			{
 				takeCloset(closetAmount(it), it);
 			}
@@ -1355,9 +1355,9 @@ export function L11_aridDesert(): boolean
 
 		if ((toInt(getProperty("gnasirProgress")) & 1) !== 1)
 		{
-			let expectedOasisTurns: number = 8 - (Location.get("The Oasis")).turnsSpent;
-			let equivProgress: number = expectedOasisTurns * progress;
-			let need_1: number = 100 - toInt(getProperty("desertExploration"));
+			const expectedOasisTurns: number = 8 - (Location.get("The Oasis")).turnsSpent;
+			const equivProgress: number = expectedOasisTurns * progress;
+			const need_1: number = 100 - toInt(getProperty("desertExploration"));
 			auto_log_info(`expectedOasis: ${expectedOasisTurns}`, "brown");
 			auto_log_info(`equivProgress: ${equivProgress}`, "brown");
 			auto_log_info(`need: ${need_1}`, "brown");
@@ -1392,7 +1392,7 @@ export function L11_aridDesert(): boolean
 			autoEquip(Slot.get("familiar"), dbr.famEquip);
 		}
 		setProperty("choiceAdventure805", (1).toString());
-		let need: number = 100 - toInt(getProperty("desertExploration"));
+		const need: number = 100 - toInt(getProperty("desertExploration"));
 		auto_log_info(`Need for desert: ${need}`, "blue");
 		auto_log_info(`Worm riding: ${itemAmount(Item.get("worm-riding manual page"))}`, "blue");
 
@@ -1444,7 +1444,7 @@ export function L11_aridDesert(): boolean
 		}
 	}
 	else {
-		let need: number = 100 - toInt(getProperty("desertExploration"));
+		const need: number = 100 - toInt(getProperty("desertExploration"));
 		auto_log_info(`Getting some ultrahydrated, I suppose. Desert left: ${need}`, "blue");
 		if (!toBoolean(getProperty("oasisAvailable")) && haveEffect(Effect.get("Ultrahydrated")) === 0)
 		{
@@ -1460,12 +1460,12 @@ export function L11_aridDesert(): boolean
 		if (!autoAdv$1(1, Location.get("The Oasis")))
 		{
 			auto_log_warning("Could not visit the Oasis for some reason, desertExploration may be incorrect.", "red");
-			let initial: number = toInt(getProperty("desertExploration"));
-			let page: string = visitUrl("place.php?whichplace=desertbeach");
-			let desert_matcher: AshMatcher = new AshMatcher("title=\"[(](\\d+)% explored[)]\"", page);
+			const initial: number = toInt(getProperty("desertExploration"));
+			const page: string = visitUrl("place.php?whichplace=desertbeach");
+			const desert_matcher: AshMatcher = new AshMatcher("title=\"[(](\\d+)% explored[)]\"", page);
 			if (desert_matcher.find())
 			{
-				let found: number = toInt(desert_matcher.group(1));
+				const found: number = toInt(desert_matcher.group(1));
 				if (found !== initial)
 				{
 					auto_log_info(`Incorrectly had exploration value of ${initial} when it should be at ${found}. This was corrected. Trying to resume.`, "blue");
@@ -1603,8 +1603,8 @@ export function liana_cleared(loc: Location): boolean
     //need to check the combat names due to wanderers
 	//we are assuming victory. you could have potentially fought liana without machete and then ran away. but you we are assuming you didn't
     let dense_liana_defeated: number = 0;
-    let area_combats_seen: Map<number, string> = new Map(splitString(loc.combatQueue, "; ").map((_v, _i) => [_i, _v]));
-    for (let [key, s] of area_combats_seen)
+    const area_combats_seen: Map<number, string> = new Map(splitString(loc.combatQueue, "; ").map((_v, _i) => [_i, _v]));
+    for (const [key, s] of area_combats_seen)
     {
         if (s === "dense liana")
 		{
@@ -1839,7 +1839,7 @@ export function L11_hiddenCity(): boolean
 		return false;
 	}
 
-	let weapon_ghost_dmg: number = toInt(numericModifier("hot damage") + numericModifier("cold damage") + numericModifier("stench damage") + numericModifier("sleaze damage") + numericModifier("spooky damage"));
+	const weapon_ghost_dmg: number = toInt(numericModifier("hot damage") + numericModifier("cold damage") + numericModifier("stench damage") + numericModifier("sleaze damage") + numericModifier("spooky damage"));
 	if (!in_robot() && !in_darkGyffte() && weapon_ghost_dmg < 20 && !acquireMP$2(
 	//we can not rely on melee/ranged weapon to kill the ghost
 	30, 0))
@@ -1900,7 +1900,7 @@ export function L11_hiddenCity(): boolean
 				{
 					//try to respect user setting for cursed punch while there is apartment delay
 					//give it at least +1 adv that it saves fighting a pygmy shaman
-					let advPerFillFromCursedPunch: number = toInt((expectedAdventuresFrom(Item.get("Cursed Punch")) + 1) / (Item.get("Cursed Punch")).inebriety);
+					const advPerFillFromCursedPunch: number = toInt((expectedAdventuresFrom(Item.get("Cursed Punch")) + 1) / (Item.get("Cursed Punch")).inebriety);
 					if (advPerFillFromCursedPunch < toFloat(getProperty("auto_consumeMinAdvPerFill")))
 					{
 						canDrinkCursedPunch = false;
@@ -1909,7 +1909,7 @@ export function L11_hiddenCity(): boolean
 				//can drink and inebriety allows it
 				if (canDrinkCursedPunch)
 				{
-					let canBuyCursedPunch: boolean = myMeat() >= cursesNeeded * 500 * npcStoreDiscountMulti() && !is_werewolf(); //can't buy cursed punch as a werewolf
+					const canBuyCursedPunch: boolean = myMeat() >= cursesNeeded * 500 * npcStoreDiscountMulti() && !is_werewolf(); //can't buy cursed punch as a werewolf
 
 					if (canBuyCursedPunch)
 					{
@@ -1935,7 +1935,7 @@ export function L11_hiddenCity(): boolean
 		{
 			auto_log_info(`Hidden Apartment Progress: ${getProperty("hiddenApartmentProgress")}`, "blue");
 
-			let turnsUntilElevatorAction: number = zone_delay(Location.get("The Hidden Apartment Building"))._int;
+			const turnsUntilElevatorAction: number = zone_delay(Location.get("The Hidden Apartment Building"))._int;
 
 			if (auto_have_familiar(Familiar.get("Nosy Nose")) && auto_is_valid$2(Skill.get("Get a Good Whiff of This Guy")))
 			{
@@ -1993,7 +1993,7 @@ export function L11_hiddenCity(): boolean
 			}
 		}
 
-		let turnsUntilWorkingHoliday: number = zone_delay(Location.get("The Hidden Office Building"))._int;
+		const turnsUntilWorkingHoliday: number = zone_delay(Location.get("The Hidden Office Building"))._int;
 		let workingHoliday: boolean = turnsUntilWorkingHoliday === 0 || auto_haveQueuedForcedNonCombat();
 
 		if (turnsUntilWorkingHoliday > 1 && itemAmount(Item.get("McClusky file (complete)")) > 0 && auto_canForceNextNoncombat()) {
@@ -2103,7 +2103,7 @@ export function L11_hiddenCity(): boolean
 		autoEquip(Slot.get("acc2"), Item.get("surgical mask"));
 
 		let surgeonGearWanted: number = 0;
-		for (let it of Item.get(["bloodied surgical dungarees", "half-size scalpel", "surgical apron", "head mirror", "surgical mask"]))
+		for (const it of Item.get(["bloodied surgical dungarees", "half-size scalpel", "surgical apron", "head mirror", "surgical mask"]))
 		{
 			if (!possessEquipment(it) && auto_can_equip(it))
 			{
@@ -2155,7 +2155,7 @@ export function L11_hiddenCity(): boolean
 		}
 		setProperty("auto_nextEncounter", "Protector Spectre");
 		handleFamiliar("boss");
-		let advSpent: boolean = autoAdv$2(Location.get("A Massive Ziggurat"));
+		const advSpent: boolean = autoAdv$2(Location.get("A Massive Ziggurat"));
 		if (internalQuestStatus("questL11MacGuffin") > 2) {
 			// Actually Ed finishes this quest when all 3 parts of the staff are returned
 			council();
@@ -2204,9 +2204,9 @@ export function L11_hiddenCityZones(): boolean
 
 	L11_hiddenTavernUnlock();
 
-	let canUseMachete: boolean = !is_boris() && !in_wotsf() && !in_pokefam() && !in_avantGuard();
-	let needMachete: boolean = canUseMachete && !possessEquipment(Item.get("antique machete")) && (inHardcore() || in_lol());
-	let needRelocate: boolean = toInt(getProperty("relocatePygmyJanitor")) !== myAscensions();
+	const canUseMachete: boolean = !is_boris() && !in_wotsf() && !in_pokefam() && !in_avantGuard();
+	const needMachete: boolean = canUseMachete && !possessEquipment(Item.get("antique machete")) && (inHardcore() || in_lol());
+	const needRelocate: boolean = toInt(getProperty("relocatePygmyJanitor")) !== myAscensions();
 
 	if (needMachete || needRelocate) {
 		if (handleFamiliar$1(Familiar.get("Red-Nosed Snapper"))) {
@@ -2279,7 +2279,7 @@ export function L11_hiddenCityZones(): boolean
 		{
 			autoForceEquip$3(Item.get("tearaway pants"));
 		}
-		let advSpent: boolean = autoAdv$2(Location.get("A Massive Ziggurat"));
+		const advSpent: boolean = autoAdv$2(Location.get("A Massive Ziggurat"));
 		if (getProperty("lastEncounter") === "Legend of the Temple in the Hidden City" || isActuallyEd() && getProperty("lastEncounter") === "Temple of the Legend in the Hidden City") {
 			setProperty("auto_openedziggurat", true.toString());
 		}
@@ -2346,8 +2346,8 @@ export function L11_mauriceSpookyraven(): boolean
 			buffMaintain$3(Effect.get("Tricky Timpani"), 30, 1, 10);
 		}
 		acquireHP();
-		let resGoal: Map<Element, number> = new Map();
-		for (let ele of Element.get(["hot", "cold", "stench", "sleaze", "spooky"]))
+		const resGoal: Map<Element, number> = new Map();
+		for (const ele of Element.get(["hot", "cold", "stench", "sleaze", "spooky"]))
 		{
 			resGoal.set(ele, 3);
 		}
@@ -2596,7 +2596,7 @@ function L11_redZeppelin(): boolean
 	{
 		auto_beachCombHead("sleaze");
 	}
-	for (let sl of Slot.get(["acc1", "acc2", "acc3"]))
+	for (const sl of Slot.get(["acc1", "acc2", "acc3"]))
 	{
 		if (numericModifier(equippedItem(sl), "sleaze damage") + numericModifier(equippedItem(sl), "sleaze spell damage") < 60)
 		{
@@ -2622,10 +2622,10 @@ function L11_redZeppelin(): boolean
 			{ // in koe, if d1 save bend hell for invader
 				buffMaintain$3(Effect.get("Bendin' Hell"), 0, 0, 1);
 			}
-			for (let ef of Effect.get(["Dirty Pear", "Fifty Ways to Bereave Your Lover"]))
+			for (const ef of Effect.get(["Dirty Pear", "Fifty Ways to Bereave Your Lover"]))
 			{ // double sleaze dmg, +100 sleaze dmg,
 				let target_sleaze: number = 400;
-				let current_sleaze: number = numericModifier(Modifier.get("Sleaze Damage")) + numericModifier(Modifier.get("Sleaze Spell Damage"));
+				const current_sleaze: number = numericModifier(Modifier.get("Sleaze Damage")) + numericModifier(Modifier.get("Sleaze Spell Damage"));
 				if (possessEquipment(Item.get("candy cane sword cane")) && auto_is_valid(Item.get("candy cane sword cane")))
 				{
 					target_sleaze = 190; // We need so much less sleaze damage with the candy cane sword doubling
@@ -2650,15 +2650,15 @@ function L11_redZeppelin(): boolean
 				}
 			}
 		}
-		let fire_protestors: number = (itemAmount(Item.get("Flamin' Whatshisname")) > 0 ? 10 : 3);
+		const fire_protestors: number = (itemAmount(Item.get("Flamin' Whatshisname")) > 0 ? 10 : 3);
 		let sleaze_amount: number = numericModifier("sleaze damage") + numericModifier("sleaze spell damage");
 		if (auto_haveCCSC())
 		{
 			sleaze_amount = sleaze_amount * 2;
 		}
-		let sleaze_protestors: number = squareRoot(sleaze_amount);
+		const sleaze_protestors: number = squareRoot(sleaze_amount);
 		let lynyrd_protestors: number = (haveEffect(Effect.get("Musky")) > 0 ? 6 : 3);
-		for (let it of Item.get(["lynyrdskin cap", "lynyrdskin tunic", "lynyrdskin breeches"]))
+		for (const it of Item.get(["lynyrdskin cap", "lynyrdskin tunic", "lynyrdskin breeches"]))
 		{
 			if (possessEquipment(it) && canEquip(it)) {
 				lynyrd_protestors += 5;
@@ -2667,12 +2667,12 @@ function L11_redZeppelin(): boolean
 		auto_log_info(`Hiding in the bushes: ${lynyrd_protestors}`, "blue");
 		auto_log_info(`Going to a bench: ${sleaze_protestors}`, "blue");
 		auto_log_info(`Heading towards the flames${fire_protestors}`, "blue");
-		let best_protestors: number = max(fire_protestors, max(sleaze_protestors, lynyrd_protestors));
+		const best_protestors: number = max(fire_protestors, max(sleaze_protestors, lynyrd_protestors));
 		if (best_protestors >= 10)
 		{
 			if (best_protestors === lynyrd_protestors)
 			{
-				for (let it of Item.get(["lynyrdskin cap", "lynyrdskin tunic", "lynyrdskin breeches"]))
+				for (const it of Item.get(["lynyrdskin cap", "lynyrdskin tunic", "lynyrdskin breeches"]))
 				{
 					autoEquip$1(it);
 				}
@@ -2700,12 +2700,12 @@ function L11_redZeppelin(): boolean
 		auto_changeSnapperPhylum(Phylum.get("dude"));
 	}
 
-	let lastProtest: number = toInt(getProperty("zeppelinProtestors"));
+	const lastProtest: number = toInt(getProperty("zeppelinProtestors"));
 	if (canSniff(Monster.get("Blue Oyster cultist"), Location.get("A Mob of Zeppelin Protesters")) && auto_mapTheMonsters())
 	{
 		auto_log_info$1("Attemping to use Map the Monsters to olfact a Blue Oyster Cultist.");
 	}
-	let retval: boolean = autoAdv$2(Location.get("A Mob of Zeppelin Protesters"));
+	const retval: boolean = autoAdv$2(Location.get("A Mob of Zeppelin Protesters"));
 	if (!lastAdventureSpecialNC())
 	{
 		if (lastProtest === toInt(getProperty("zeppelinProtestors")))
@@ -2765,7 +2765,7 @@ function L11_ronCopperhead(): boolean
 		{
 			setProperty("auto_nextEncounter", "Ron \"The Weasel\" Copperhead");
 		}
-		let retval: boolean = autoAdv$2(Location.get("The Red Zeppelin"));
+		const retval: boolean = autoAdv$2(Location.get("The Red Zeppelin"));
 		// open red boxes when we get them (not sure if this is the place for this but it'll do for now)
 		if (itemAmount(Item.get("red box")) > 0)
 		{
@@ -2800,7 +2800,7 @@ export function L11_shenStartQuest(): boolean
 			auto_log_info("It seems Shen has given us a quest.", "blue");
 			auto_log_info$1("I am going to avoid the following zones until Shen tells me to go there or until I run out of other things to do:");
 			let linec: number = 1;
-			for (let [z, _] of shenZonesToAvoidBecauseMaybeSnake()) {
+			for (const [z, _] of shenZonesToAvoidBecauseMaybeSnake()) {
 				auto_log_info$1(`${linec++}. ${z}`);
 				setProperty("auto_shenZonesTurnsSpent", `${getProperty("auto_shenZonesTurnsSpent")}${z}:${z.turnsSpent};`);
 			}
@@ -3000,7 +3000,7 @@ export function L11_palindome(): boolean
 	let lovemeDone: boolean = hasILoveMeVolI() || internalQuestStatus("questL11Palindome") >= 1;
 	if (!lovemeDone && toInt(getProperty("palindomeDudesDefeated")) >= 5)
 	{
-		let palindomeCheck: string = visitUrl("place.php?whichplace=palindome");
+		const palindomeCheck: string = visitUrl("place.php?whichplace=palindome");
 		lovemeDone = lovemeDone || containsText(palindomeCheck, "pal_drlabel");
 	}
 
@@ -3037,7 +3037,7 @@ export function L11_palindome(): boolean
 		//since they are 30 turns from monkey paw wishes and 20 turns from pocket/genie wishes.
 		if (auto_monkeyPawWishesLeft() > 0)
 		{
-			for (let it of Item.get(["lion oil", "bird rib"]))
+			for (const it of Item.get(["lion oil", "bird rib"]))
 			{
 				if (itemAmount(it) > 0) { continue; }
 				auto_makeMonkeyPawWish$1(it);
@@ -3065,7 +3065,7 @@ export function L11_palindome(): boolean
 				auto_log_warning("Going to pretend we have unlocked the Guild because Mafia will assume we need to do that before going to Whitey's Grove and screw up us. We'll fix it afterwards.", "red");
 			}
 			backupSetting("lastGuildStoreOpen", myAscensions().toString());
-			let pages: Map<number, string> = new Map();
+			const pages: Map<number, string> = new Map();
 			pages.set(0, "inv_use.php?pwd&which=3&whichitem=7555");
 			pages.set(1, `choice.php?pwd&whichchoice=940&option=${getProperty("choiceAdventure940")}`);
 			if (autoAdvBypass(0, pages, Location.get("Whitey's Grove"), null)) {}
@@ -3189,12 +3189,12 @@ export function L11_palindome(): boolean
 		}
 		autoEquip(Slot.get("acc2"), Item.get("Mega Gem"));
 		autoEquip(Slot.get("acc3"), Item.get("Talisman o' Namsilat"));
-		let palinChoice: number = random(3) + 1;
+		const palinChoice: number = random(3) + 1;
 		setProperty("choiceAdventure131", palinChoice.toString());
 
 		auto_log_info("War sir is raw!!", "blue");
 
-		let pages: Map<number, string> = new Map();
+		const pages: Map<number, string> = new Map();
 		pages.set(0, "place.php?whichplace=palindome&action=pal_drlabel");
 		pages.set(1, `choice.php?pwd&whichchoice=131&option=${palinChoice}`);
 		setProperty("auto_nextEncounter", "Dr. Awkward");
@@ -3264,7 +3264,7 @@ export function L11_palindome(): boolean
 			{
 				//may want to use an item familiar first for stunt nuts
 				//unfortunately the sniff condition system means if taking the nose later after using different sniffs on a dude it will only be able to whiff on the same dude
-				let stuntNutDropModifierWithoutFamiliar: number = toInt(itemDropModifier() + numericModifier("Food Drop") - auto_famModifiers$2("Item Drop"));
+				const stuntNutDropModifierWithoutFamiliar: number = toInt(itemDropModifier() + numericModifier("Food Drop") - auto_famModifiers$2("Item Drop"));
 				if (stuntNutDropModifierWithoutFamiliar < 234)
 				{ //30% base drop chance
 					noseDudesOn = false;
@@ -3272,7 +3272,7 @@ export function L11_palindome(): boolean
 			}
 			if (noseDudesOn)
 			{
-				let whiffedBob: boolean = toMonster(getProperty("nosyNoseMonster")) === Monster.get("Racecar Bob") || toMonster(getProperty("nosyNoseMonster")) === Monster.get("Bob Racecar");
+				const whiffedBob: boolean = toMonster(getProperty("nosyNoseMonster")) === Monster.get("Racecar Bob") || toMonster(getProperty("nosyNoseMonster")) === Monster.get("Bob Racecar");
 				if (isBanished(Monster.get("Flock of Stab-bats")) && isBanished(Monster.get("Taco Cat")) && isBanished(Monster.get("Tan Gnat")) && isBanished(Monster.get("Evil Olive")))
 				{
 					//only dudes left already
@@ -3313,7 +3313,7 @@ export function L11_palindome(): boolean
 		{
 			auto_log_info$1("Attemping to use Map the Monsters to olfact a Bob Racecar.");
 		}
-		let advSpent: boolean = autoAdv$2(Location.get("Inside the Palindome"));
+		const advSpent: boolean = autoAdv$2(Location.get("Inside the Palindome"));
 		if ((Location.get("Inside the Palindome")).turnsSpent > 30 && !in_pokefam() && !in_koe() && !in_avantGuard() && auto_is_valid(Item.get("disposable instant camera")))
 		{
 			abort("It appears that we've spent too many turns in the Palindome. If you run me again, I'll try one more time but many I failed finishing the Palindome");
@@ -3369,12 +3369,12 @@ export function L11_unlockPyramid(): boolean
 			return true; //actually unlock did not fail.
 		}
 
-		let initial: number = toInt(getProperty("desertExploration"));
-		let page: string = visitUrl("place.php?whichplace=desertbeach");
-		let desert_matcher: AshMatcher = new AshMatcher("title=\"[(](\\d+)% explored[)]\"", page);
+		const initial: number = toInt(getProperty("desertExploration"));
+		const page: string = visitUrl("place.php?whichplace=desertbeach");
+		const desert_matcher: AshMatcher = new AshMatcher("title=\"[(](\\d+)% explored[)]\"", page);
 		if (desert_matcher.find())
 		{
-			let found: number = toInt(desert_matcher.group(1));
+			const found: number = toInt(desert_matcher.group(1));
 			if (found !== initial)
 			{
 				auto_log_info(`Incorrectly had exploration value of ${initial} when it should be at ${found}. This was corrected. Trying to resume.`, "blue");
@@ -3516,7 +3516,7 @@ export function L11_defeatEd(): boolean
 	}
 	if (baseML > 150)
 	{
-		for (let s of Slot.get(["acc1", "acc2", "acc3"]))
+		for (const s of Slot.get(["acc1", "acc2", "acc3"]))
 		{
 			if (equippedItem(s) === Item.get("Hand in Glove"))
 			{

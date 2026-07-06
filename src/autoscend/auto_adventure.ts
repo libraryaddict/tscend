@@ -35,8 +35,8 @@ export function autoAdv(num: number, loc: Location, option: CombatMacro): boolea
 	// adv1 can erroneously return false for "choiceless" non-combats
 	// see https://kolmafia.us/showthread.php?25370-adv1-returns-false-for-quot-choiceless-quot-choice-adventures
 	// undo all this when (if?) that ever gets fixed
-	let previousEncounter: string = getProperty("lastEncounter");
-	let turncount: number = myTurncount();
+	const previousEncounter: string = getProperty("lastEncounter");
+	const turncount: number = myTurncount();
 	print("Doing option " + option);
 	let advReturn: boolean = adv1(loc, -1, option);
 	if (!advReturn)
@@ -127,7 +127,7 @@ export function autoAdvBypass(urlGetFlags: number, url: Map<number, string>, loc
 
 	auto_log_info(`About to start a combat indirectly at ${loc}... (${url.size}) accesses required.`, "blue");
 	let page: string = "";
-	for (let [idx, it] of url)
+	for (const [idx, it] of url)
 	{
 		if ((urlGetFlags & 1) === 1)
 		{
@@ -147,7 +147,7 @@ export function autoAdvBypass(urlGetFlags: number, url: Map<number, string>, loc
 		auto_log_info(`autoAdvBypass has encountered a combat!`, "green");
 		runCombat(option);
 	} else {
-		let choice_id: number = lastChoice();
+		const choice_id: number = lastChoice();
 		auto_log_info(`autoAdvBypass has encountered a choice: ${choice_id}`, "green");
 		runChoice(-1);
 	}
@@ -159,7 +159,7 @@ export function autoAdvBypass(urlGetFlags: number, url: Map<number, string>, loc
 			runCombat(option);
 		}
 		if (choiceFollowsFight() || handlingChoice()) {
-			let choice_id: number = lastChoice();
+			const choice_id: number = lastChoice();
 			auto_log_info(`autoAdvBypass has encountered a choice: ${choice_id}`, "green");
 			runChoice(-1);
 		}
@@ -189,20 +189,20 @@ export function autoAdvBypass$1(url: string, loc: Location): boolean
 
 export function autoAdvBypass$2(url: string, loc: Location, option: CombatMacro): boolean
 {
-	let urlConvert: Map<number, string> = new Map();
+	const urlConvert: Map<number, string> = new Map();
 	urlConvert.set(0, url);
 	return autoAdvBypass(0, urlConvert, loc, option);
 }
 
 function autoAdvBypass$3(snarfblat: number, loc: Location): boolean
 {
-	let page: string = `adventure.php?snarfblat=${snarfblat}`;
+	const page: string = `adventure.php?snarfblat=${snarfblat}`;
 	return autoAdvBypass$1(page, loc);
 }
 
 function autoAdvBypass$4(snarfblat: number, loc: Location, option: CombatMacro): boolean
 {
-	let page: string = `adventure.php?snarfblat=${snarfblat}`;
+	const page: string = `adventure.php?snarfblat=${snarfblat}`;
 	return autoAdvBypass$2(page, loc, option);
 }
 

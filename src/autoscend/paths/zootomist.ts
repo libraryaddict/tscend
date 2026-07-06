@@ -49,21 +49,21 @@ export function in_zootomist(): boolean
 function zoo_specimenPreparationsLeft(): number
 {
 	if (!in_zootomist()) { return 0; }
-	let zoo_grafts_allowed: number = min(11, toInt(getProperty("zootomistPoints")) + 1);
+	const zoo_grafts_allowed: number = min(11, toInt(getProperty("zootomistPoints")) + 1);
 	return zoo_grafts_allowed - toInt(getProperty("zootSpecimensPrepared"));
 }
 
 function zoo_prepareSpecimen(): boolean
 {
-	let f: Familiar = myFamiliar();
+	const f: Familiar = myFamiliar();
 	if (!in_zootomist()) { return false; }
 	if (zoo_specimenPreparationsLeft() > 0)
 	{
 		visitUrl("place.php?whichplace=graftinglab&action=graftinglab_prep");
 		visitUrl("choice.php?pwd=&whichchoice=1555&option=1", true);
 		refreshStatus();
-		let new_exp: number = f.experience;
-		let new_weight: number = familiarWeight(f);
+		const new_exp: number = f.experience;
+		const new_weight: number = familiarWeight(f);
 		handleTracker$1(f.toString(), `Specimen prepared to ${f.experience} XP {${new_weight} lb}`, "auto_tracker_path");
 		return true;
 	}
@@ -90,20 +90,20 @@ export function zoo_d2Pulls(): void
 {
 	if (!in_zootomist() || pullsRemaining() === 0) { return; }
 	// Pull enough ML for oil peak, we need a provider function here.
-	let ml_target: number = toInt(100.0);
+	const ml_target: number = toInt(100.0);
 	simMaximizeWith$1("monster level");
 	let curr_ml: number = toInt(numericModifier(Modifier.get("Monster Level")));
 	// Function to try pulling an ML item, if it improves our ML by at least 10 over best alternative.
 	function try_ml_pull(it: Item): number {
 		if (!canEquip(it) || availableAmount(it) > 0 || !auto_is_valid(it)) { return 0; }
-		let m: Modifier = Modifier.get("Monster Level");
-		let s: Slot = toSlot(it);
-		let alternatives: Map<Item, number> = auto_getAllEquipabble$1(s);
-		let ranked_alternatives: Map<number, Item> = auto_sortedByModifier(alternatives, m);
-		let islot: number = (s === Slot.get("acc1") ? 2 : 0); // we want to compare to our third best item for accessories
-		let curr_best_in_slot: Item = (ranked_alternatives.size > islot ? (ranked_alternatives.get(islot) ?? ranked_alternatives.set(islot, Item.none).get(islot)) : Item.none);
-		let curr_best_mod: number = numericModifier(curr_best_in_slot, m);
-		let improvement: number = numericModifier(it, m) - curr_best_mod;
+		const m: Modifier = Modifier.get("Monster Level");
+		const s: Slot = toSlot(it);
+		const alternatives: Map<Item, number> = auto_getAllEquipabble$1(s);
+		const ranked_alternatives: Map<number, Item> = auto_sortedByModifier(alternatives, m);
+		const islot: number = (s === Slot.get("acc1") ? 2 : 0); // we want to compare to our third best item for accessories
+		const curr_best_in_slot: Item = (ranked_alternatives.size > islot ? (ranked_alternatives.get(islot) ?? ranked_alternatives.set(islot, Item.none).get(islot)) : Item.none);
+		const curr_best_mod: number = numericModifier(curr_best_in_slot, m);
+		const improvement: number = numericModifier(it, m) - curr_best_mod;
 		if (improvement > 10) {
 			pullXWhenHaveY(it, 1, 0);
 			if (availableAmount(it) > 0) { return improvement; }
@@ -111,7 +111,7 @@ export function zoo_d2Pulls(): void
 		return 0;
 	}
 	// Good ML boosting items. Vinyl Shield is lower than you might think because it can't be wielded with unstable fulminate.
-	for (let it of Item.get(["hairshirt", "hockey stick of furious angry rage", "stainless steel scarf", "porcelain pelerine",
+	for (const it of Item.get(["hairshirt", "hockey stick of furious angry rage", "stainless steel scarf", "porcelain pelerine",
 	  "bakelite backpack", "brown pirate pants", "Mer-kin headguard", "vinyl shield", "red shirt", "iFlail"]))
 	{
 		if (curr_ml >= ml_target) { break; }
@@ -153,17 +153,17 @@ function zoo_graftedToPart(bodyPart: number): Familiar
 
 function zoo_graftedFams(): Map<number, Familiar>
 {
-	let fams: Map<number, Familiar> = new Map();
+	const fams: Map<number, Familiar> = new Map();
 	for (let i: number = 1; i < 12; i++) { fams.set(i, zoo_graftedToPart(i)); }
 	return fams;
 }
 
 function zoo_graftedIntrinsicFams(): Map<Familiar, boolean>
 {
-	let fams: Map<Familiar, boolean> = new Map();
+	const fams: Map<Familiar, boolean> = new Map();
 	function check(part: number): void
 	{
-		let f: Familiar = zoo_graftedToPart(part);
+		const f: Familiar = zoo_graftedToPart(part);
 		if (f !== Familiar.none) { fams.set(f, true); }
 	}
 	check($_f_ZOOPART_HEAD);
@@ -177,7 +177,7 @@ function zoo_graftedIntrinsicFams(): Map<Familiar, boolean>
 function zoo_isGrafted(f: Familiar): boolean
 {
 	if (f === Familiar.none) { return false; }
-	for (let [i, fam] of zoo_graftedFams())
+	for (const [i, fam] of zoo_graftedFams())
 	{
 		if (fam === f) { return true; }
 	}
@@ -226,15 +226,15 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 {
 	//Identifies the 11 familiars we want based on what we have and stores them in prefs so we only go through the list of fams once
 	//Goes through fam attributes of all familiars and filters from there
-	let famAttributes: Map<Familiar, string> = new Map();
+	const famAttributes: Map<Familiar, string> = new Map();
 	//priority, familiar
-	let intrinsicFams: Map<Familiar, number> = new Map();
-	let punchFams: Map<Familiar, number> = new Map();
-	let lbuffFams: Map<Familiar, number> = new Map();
-	let rbuffFams: Map<Familiar, number> = new Map();
-	let kickFams: Map<Familiar, number> = new Map();
+	const intrinsicFams: Map<Familiar, number> = new Map();
+	const punchFams: Map<Familiar, number> = new Map();
+	const lbuffFams: Map<Familiar, number> = new Map();
+	const rbuffFams: Map<Familiar, number> = new Map();
+	const kickFams: Map<Familiar, number> = new Map();
 	//Weights for familiar priority. These are based off of our default maximizer statement
-	let intrinsicWeights: Map<string, number> = new Map([
+	const intrinsicWeights: Map<string, number> = new Map([
 		["technological", 100], //20% item drop
 		["haseyes", 75], //15% item drop
 		["object", 25], //5% item drop
@@ -282,7 +282,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 		["stench", 15], //10 stench dmg
 		["cantalk", 1] //-1mp for skills
 	]);
-	let lNipWeights: Map<string, number> = new Map([
+	const lNipWeights: Map<string, number> = new Map([
 		["animal", 2.5], //25 hp regen
 		["animatedart", 0.5], //50% moxie
 		["aquatic", 1], //2 hot res
@@ -325,7 +325,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 		["vegetable", 2], //20 familiar dmg
 		["wearsclothes", 10] //50% gear drop
 	]);
-	let rNipWeights: Map<string, number> = new Map([
+	const rNipWeights: Map<string, number> = new Map([
 		["animal", 15], //10 stench dmg
 		["animatedart", 1], //2 spooky res
 		["aquatic", 10], //10 muscle
@@ -370,7 +370,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 		["vegetable", 1], //2 sleaze res
 		["wearsclothes", 50] //50% max hp
 	]);
-	let footParam: Map<string, string> = new Map([
+	const footParam: Map<string, string> = new Map([
 		["bite", "instakill"],
 		["cute", "instakill"],
 		["evil", "instakill"],
@@ -412,15 +412,15 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 		["sentient", "sniff"],
 		["software", "sniff"]
 	]);
-	let footWeights: Map<string, number> = new Map([
+	const footWeights: Map<string, number> = new Map([
 		["instakill", 10],
 		["banish", 10],
 		["pp", 5],
 		["heal", 5],
 		["sniff", 5]
 	]);
-	let blacklistFams: Familiar[] = Familiar.get(["Reassembled Blackbird", "Reconstituted Crow", "Homemade Robot"]);
-	for (let fam of Familiar.get(["Mosquito", "Leprechaun", "Levitating Potato", "Angry Goat", "Sabre-Toothed Lime", "Fuzzy Dice", "Spooky Pirate Skeleton", "Barrrnacle", "Howling Balloon Monkey", "Stab Bat", "Grue", "Blood-Faced Volleyball", "Ghuol Whelp", "Baby Gravy Fairy", "Cocoabo", "Star Starfish", "Hovering Sombrero", "Ghost Pickle on a Stick", "Killer Bee", "Whirling Maple Leaf", "Coffee Pixie", "Cheshire Bat", "Jill-O-Lantern", "Hand Turkey", "Crimbo Elf", "Hanukkimbo Dreidl", "Baby Yeti", "Feather Boa Constrictor", "Emo Squid", "Personal Raincloud", "Clockwork Grapefruit", "MagiMechTech MicroMechaMech", "Flaming Gravy Fairy", "Frozen Gravy Fairy", "Stinky Gravy Fairy", "Spooky Gravy Fairy", "Inflatable Dodecapede", "Pygmy Bugbear Shaman", "Doppelshifter", "Attention-Deficit Demon", "Cymbal-Playing Monkey", "Temporal Riftlet", "Sweet Nutcracker", "Pet Rock", "Snowy Owl", "Teddy Bear", "Ninja Pirate Zombie Robot", "Sleazy Gravy Fairy", "Wild Hare", "Wind-up Chattering Teeth", "Spirit Hobo", "Astral Badger", "Comma Chameleon", "Misshapen Animal Skeleton", "Scary Death Orb", "Jitterbug", "Nervous Tick", "Reassembled Blackbird", "Origami Towel Crane", "Ninja Snowflake", "Evil Teddy Bear", "Toothsome Rock", "Ancient Yuletide Troll", "Dandy Lion", "O.A.F.", "Penguin Goodfella", "Jumpsuited Hound Dog", "Green Pixie", "Ragamuffin Imp", "Exotic Parrot", "Wizard Action Figure", "Gluttonous Green Ghost", "Casagnova Gnome", "Hunchbacked Minion", "Crimbo P. R. E. S. S. I. E.", "Bulky Buddy Box", "Teddy Borg", "RoboGoose", "El Vibrato Megadrone", "Mad Hatrack", "Adorable Seal Larva", "Untamed Turtle", "Animated Macaroni Duck", "Pet Cheezling", "Autonomous Disco Ball", "Mariachi Chihuahua", "Hobo Monkey", "Llama Lama", "Cotton Candy Carnie", "Disembodied Hand", "Black Cat", "Uniclops", "Psychedelic Bear", "Baby Mutant Rattlesnake", "Mutant Fire Ant", "Mutant Cactus Bud", "Mutant Gila Monster", "Cuddlefish", "Sugar Fruit Fairy", "Imitation Crab", "Pair of Ragged Claws", "Magic Dragonfish", "Frumious Bandersnatch", "Midget Clownfish", "Syncopated Turtle", "Grinning Turtle", "Purse Rat", "Wereturtle", "Baby Sandworm", "Slimeling", "He-Boulder", "Rock Lobster", "Urchin Urchin", "Grouper Groupie", "Squamous Gibberer", "Dancing Frog", "Chauvinist Pig", "Stocking Mimic", "Snow Angel", "Jack-in-the-Box", "BRICKO chick", "Baby Bugged Bugbear", "Money-Making Goblin", "Floating Eye", "Vampire Bat", "Oyster Bunny", "Egg Benedict", "Bank Piggy", "Worm Doctor", "Snowhitman", "Plastic Grocery Bag", "Underworld Bonsai", "Rogue Program", "Mini-Hipster", "Pottery Barn Owl", "Hippo Ballerina", "Knob Goblin Organ Grinder", "Piano Cat", "Dramatic Hedgehog", "Smiling Rat", "Robot Reindeer", "Holiday Log", "Obtuse Angel", "Reconstituted Crow", "Li'l Xenomorph", "Dataspider", "Pair of Stomping Boots", "Feral Kobold", "Fancypants Scarecrow", "Bloovian Groose", "Blavious Kloop", "Peppermint Rhino", "Tickle-Me Emilio", "Steam-Powered Cheerleader", "Happy Medium", "Artistic Goth Kid", "Flaming Face", "Reagnimated Gnome", "Hovering Skull", "Mini-Skulldozer", "Angry Jung Man", "Unconscious Collective", "Nanorhino", "Oily Woim", "Homemade Robot", "MiniMechaElf", "Gelatinous Cubeling", "Adorable Space Buddy", "Nosy Nose", "Mini-Adventurer", "Mechanical Songbird", "Reanimated Reanimator", "Warbear Drone", "Grimstone Golem", "Grim Brother", "Miniature Sword & Martini Guy", "Putty Buddy", "Twitching Space Critter", "Galloping Grill", "Helix Fossil", "Xiblaxian Holo-Companion", "Baby Z-Rex", "Fist Turkey", "Crimbo Shrub", "Mini-Crimbot", "Topiary Skunk", "Golden Monkey", "Adventurous Spelunker", "Sludgepuppy", "Baby Mayonnaise Wasp", "Puck Man", "Ms. Puck Man", "Lil' Barrel Mimic", "Machine Elf", "Choctopus", "Rockin' Robin", "Restless Cow Skull", "Intergnat", "Software Bug", "Bark Scorpion", "Trick-or-Treating Tot", "Chocolate Lab", "Bad Vibe", "Space Jellyfish", "Optimistic Candle", "Robortender", "Cute Meteor", "XO Skeleton", "Garbage Fire", "Globmule", "Bluzzard", "Faux", "Sledgehamster", "Pimpsqueak", "Pillowbug", "Dressage", "Sequestrian", "Carpricorn", "Turpin", "Morphan", "Cycloney", "Peaclock", "Turtive", "Lepardner", "Aiolion", "Waifuton", "Gorillape", "Wendtigo", "Snoutlet", "Ruffalo", "Vaporpoise", "Ghosprey", "Straypler", "Flan", "Mustardigrade", "Ched", "Gazelleton", "Mechamelion", "Bicycle", "Vamprey", "Wullabye", "Nursine", "Cantelope", "Ungulant", "Caramel", "Oppossum", "Amanitee", "Smashmoth", "Vulgure", "Squib", "Trafikoan", "Slotter", "Shudder", "Glamare", "Unspeakachu", "Stooper", "Disgeist", "Bowlet", "Cornbeefadon", "Mu", "God Lobster", "Cat Burglar", "Party Mouse", "Yule Hound", "Sausage Golem", "Elf Operative", "Plastic Pirate Skull", "Pet Coral", "Pocket Professor", "Red-Nosed Snapper", "Antique Nutcracker", "Piranha Plant", "Left-Hand Man", "Melodramedary", "Ghost of Crimbo Carols", "Ghost of Crimbo Cheer", "Ghost of Crimbo Commerce", "Shorter-Order Cook", "Vampire Vintner", "Arachnelf", "Synthetic Rock", "Grey Goose", "Cookbookbat", "Mini-Trainbot", "Hobo in Sheep's Clothing", "Pixel Rock", "Patriotic Eagle", "Jill-of-All-Trades", "Flaming Leafcutter Ant", "Rigging Snake", "Pet Anchor", "Chest Mimic", "Mini Kiwi", "Proto-Protozoa", "Evolving Organism", "Burly Bodyguard", "Doll Moll", "Emberiza Aureola", "Peace Turkey", "Quantum Entangler", "Golden Pet Rock", "Profane Parrot", "Significant Bit", "Heat Wave", "Cold Cut", "Shame Spiral", "Phantom Limb", "Foul Ball", "Dire Cassava", "Observer", "Cool Cucumber", "Defective Childrens' Stapler", "Glover", "Zapper Bug", "Wet Paper Tiger", "Cooler Yeti", "Baby Skeleton", "Skeleton of Crimbo Past", "Tiny Plastic Santa Claus Skeleton", "Cute Skeletal Dinosaur", "Sword of S Words"]))
+	const blacklistFams: Familiar[] = Familiar.get(["Reassembled Blackbird", "Reconstituted Crow", "Homemade Robot"]);
+	for (const fam of Familiar.get(["Mosquito", "Leprechaun", "Levitating Potato", "Angry Goat", "Sabre-Toothed Lime", "Fuzzy Dice", "Spooky Pirate Skeleton", "Barrrnacle", "Howling Balloon Monkey", "Stab Bat", "Grue", "Blood-Faced Volleyball", "Ghuol Whelp", "Baby Gravy Fairy", "Cocoabo", "Star Starfish", "Hovering Sombrero", "Ghost Pickle on a Stick", "Killer Bee", "Whirling Maple Leaf", "Coffee Pixie", "Cheshire Bat", "Jill-O-Lantern", "Hand Turkey", "Crimbo Elf", "Hanukkimbo Dreidl", "Baby Yeti", "Feather Boa Constrictor", "Emo Squid", "Personal Raincloud", "Clockwork Grapefruit", "MagiMechTech MicroMechaMech", "Flaming Gravy Fairy", "Frozen Gravy Fairy", "Stinky Gravy Fairy", "Spooky Gravy Fairy", "Inflatable Dodecapede", "Pygmy Bugbear Shaman", "Doppelshifter", "Attention-Deficit Demon", "Cymbal-Playing Monkey", "Temporal Riftlet", "Sweet Nutcracker", "Pet Rock", "Snowy Owl", "Teddy Bear", "Ninja Pirate Zombie Robot", "Sleazy Gravy Fairy", "Wild Hare", "Wind-up Chattering Teeth", "Spirit Hobo", "Astral Badger", "Comma Chameleon", "Misshapen Animal Skeleton", "Scary Death Orb", "Jitterbug", "Nervous Tick", "Reassembled Blackbird", "Origami Towel Crane", "Ninja Snowflake", "Evil Teddy Bear", "Toothsome Rock", "Ancient Yuletide Troll", "Dandy Lion", "O.A.F.", "Penguin Goodfella", "Jumpsuited Hound Dog", "Green Pixie", "Ragamuffin Imp", "Exotic Parrot", "Wizard Action Figure", "Gluttonous Green Ghost", "Casagnova Gnome", "Hunchbacked Minion", "Crimbo P. R. E. S. S. I. E.", "Bulky Buddy Box", "Teddy Borg", "RoboGoose", "El Vibrato Megadrone", "Mad Hatrack", "Adorable Seal Larva", "Untamed Turtle", "Animated Macaroni Duck", "Pet Cheezling", "Autonomous Disco Ball", "Mariachi Chihuahua", "Hobo Monkey", "Llama Lama", "Cotton Candy Carnie", "Disembodied Hand", "Black Cat", "Uniclops", "Psychedelic Bear", "Baby Mutant Rattlesnake", "Mutant Fire Ant", "Mutant Cactus Bud", "Mutant Gila Monster", "Cuddlefish", "Sugar Fruit Fairy", "Imitation Crab", "Pair of Ragged Claws", "Magic Dragonfish", "Frumious Bandersnatch", "Midget Clownfish", "Syncopated Turtle", "Grinning Turtle", "Purse Rat", "Wereturtle", "Baby Sandworm", "Slimeling", "He-Boulder", "Rock Lobster", "Urchin Urchin", "Grouper Groupie", "Squamous Gibberer", "Dancing Frog", "Chauvinist Pig", "Stocking Mimic", "Snow Angel", "Jack-in-the-Box", "BRICKO chick", "Baby Bugged Bugbear", "Money-Making Goblin", "Floating Eye", "Vampire Bat", "Oyster Bunny", "Egg Benedict", "Bank Piggy", "Worm Doctor", "Snowhitman", "Plastic Grocery Bag", "Underworld Bonsai", "Rogue Program", "Mini-Hipster", "Pottery Barn Owl", "Hippo Ballerina", "Knob Goblin Organ Grinder", "Piano Cat", "Dramatic Hedgehog", "Smiling Rat", "Robot Reindeer", "Holiday Log", "Obtuse Angel", "Reconstituted Crow", "Li'l Xenomorph", "Dataspider", "Pair of Stomping Boots", "Feral Kobold", "Fancypants Scarecrow", "Bloovian Groose", "Blavious Kloop", "Peppermint Rhino", "Tickle-Me Emilio", "Steam-Powered Cheerleader", "Happy Medium", "Artistic Goth Kid", "Flaming Face", "Reagnimated Gnome", "Hovering Skull", "Mini-Skulldozer", "Angry Jung Man", "Unconscious Collective", "Nanorhino", "Oily Woim", "Homemade Robot", "MiniMechaElf", "Gelatinous Cubeling", "Adorable Space Buddy", "Nosy Nose", "Mini-Adventurer", "Mechanical Songbird", "Reanimated Reanimator", "Warbear Drone", "Grimstone Golem", "Grim Brother", "Miniature Sword & Martini Guy", "Putty Buddy", "Twitching Space Critter", "Galloping Grill", "Helix Fossil", "Xiblaxian Holo-Companion", "Baby Z-Rex", "Fist Turkey", "Crimbo Shrub", "Mini-Crimbot", "Topiary Skunk", "Golden Monkey", "Adventurous Spelunker", "Sludgepuppy", "Baby Mayonnaise Wasp", "Puck Man", "Ms. Puck Man", "Lil' Barrel Mimic", "Machine Elf", "Choctopus", "Rockin' Robin", "Restless Cow Skull", "Intergnat", "Software Bug", "Bark Scorpion", "Trick-or-Treating Tot", "Chocolate Lab", "Bad Vibe", "Space Jellyfish", "Optimistic Candle", "Robortender", "Cute Meteor", "XO Skeleton", "Garbage Fire", "Globmule", "Bluzzard", "Faux", "Sledgehamster", "Pimpsqueak", "Pillowbug", "Dressage", "Sequestrian", "Carpricorn", "Turpin", "Morphan", "Cycloney", "Peaclock", "Turtive", "Lepardner", "Aiolion", "Waifuton", "Gorillape", "Wendtigo", "Snoutlet", "Ruffalo", "Vaporpoise", "Ghosprey", "Straypler", "Flan", "Mustardigrade", "Ched", "Gazelleton", "Mechamelion", "Bicycle", "Vamprey", "Wullabye", "Nursine", "Cantelope", "Ungulant", "Caramel", "Oppossum", "Amanitee", "Smashmoth", "Vulgure", "Squib", "Trafikoan", "Slotter", "Shudder", "Glamare", "Unspeakachu", "Stooper", "Disgeist", "Bowlet", "Cornbeefadon", "Mu", "God Lobster", "Cat Burglar", "Party Mouse", "Yule Hound", "Sausage Golem", "Elf Operative", "Plastic Pirate Skull", "Pet Coral", "Pocket Professor", "Red-Nosed Snapper", "Antique Nutcracker", "Piranha Plant", "Left-Hand Man", "Melodramedary", "Ghost of Crimbo Carols", "Ghost of Crimbo Cheer", "Ghost of Crimbo Commerce", "Shorter-Order Cook", "Vampire Vintner", "Arachnelf", "Synthetic Rock", "Grey Goose", "Cookbookbat", "Mini-Trainbot", "Hobo in Sheep's Clothing", "Pixel Rock", "Patriotic Eagle", "Jill-of-All-Trades", "Flaming Leafcutter Ant", "Rigging Snake", "Pet Anchor", "Chest Mimic", "Mini Kiwi", "Proto-Protozoa", "Evolving Organism", "Burly Bodyguard", "Doll Moll", "Emberiza Aureola", "Peace Turkey", "Quantum Entangler", "Golden Pet Rock", "Profane Parrot", "Significant Bit", "Heat Wave", "Cold Cut", "Shame Spiral", "Phantom Limb", "Foul Ball", "Dire Cassava", "Observer", "Cool Cucumber", "Defective Childrens' Stapler", "Glover", "Zapper Bug", "Wet Paper Tiger", "Cooler Yeti", "Baby Skeleton", "Skeleton of Crimbo Past", "Tiny Plastic Santa Claus Skeleton", "Cute Skeletal Dinosaur", "Sword of S Words"]))
 	{
 		//comment out below line and uncomment second below line to see all unrestricted fams
 		if (auto_have_familiar(fam) && !(blacklistFams.includes(fam)))
@@ -429,11 +429,11 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 			famAttributes.set(fam, fam.attributes);
 		}
 	}
-	for (let [fam, attr] of famAttributes)
+	for (const [fam, attr] of famAttributes)
 	{
-		let attrs: Map<number, string> = new Map(splitString(attr, "; ").map((_v, _i) => [_i, _v]));
+		const attrs: Map<number, string> = new Map(splitString(attr, "; ").map((_v, _i) => [_i, _v]));
 		//buffs
-		for (let [k, a] of attrs)
+		for (const [k, a] of attrs)
 		{
 			intrinsicFams.set(fam, (intrinsicFams.get(fam) ?? 0.0) + (intrinsicWeights.get(a) ?? intrinsicWeights.set(a, 0.0).get(a)));
 			lbuffFams.set(fam, (lbuffFams.get(fam) ?? 0.0) + (lNipWeights.get(a) ?? lNipWeights.set(a, 0.0).get(a)));
@@ -446,7 +446,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 	{
 		// Make an indexed list of the familiars
 		let ranked_list: Map<number, Familiar> = new Map();
-		for (let entry of map.keys())
+		for (const entry of map.keys())
 		{
 			ranked_list.set(ranked_list.size, entry);
 		}
@@ -462,8 +462,8 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 		return ranked_list;
 	}
 
-	let used: Map<Familiar, boolean> = new Map();
-	let intrinsicFam: Map<number, Familiar> = new Map();
+	const used: Map<Familiar, boolean> = new Map();
+	const intrinsicFam: Map<number, Familiar> = new Map();
 	let lbuffFam: Familiar = zoo_graftedToPart($_f_ZOOPART_L_NIPPLE);
 	let rbuffFam: Familiar = zoo_graftedToPart($_f_ZOOPART_R_NIPPLE);
 	let lkickFam: Familiar = zoo_graftedToPart($_f_ZOOPART_L_FOOT);
@@ -473,7 +473,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 
 	if (rbuffFam === Familiar.none)
 	{
-		for (let [i, fam] of sortFams(rbuffFams))
+		for (const [i, fam] of sortFams(rbuffFams))
 		{
 			if (!(used.has(fam)))
 			{
@@ -486,7 +486,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 
 	if (lbuffFam === Familiar.none)
 	{
-		for (let [i, fam] of sortFams(lbuffFams))
+		for (const [i, fam] of sortFams(lbuffFams))
 		{
 			if (!(used.has(fam)))
 			{
@@ -499,7 +499,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 
 	if (lkickFam === Familiar.none)
 	{
-		for (let fam of Familiar.get(["Quantum Entangler", "Foul Ball", "Defective Childrens' Stapler"]))
+		for (const fam of Familiar.get(["Quantum Entangler", "Foul Ball", "Defective Childrens' Stapler"]))
 		{
 			if (auto_have_familiar(fam))
 			{
@@ -512,7 +512,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 
 	if (lkickFam === Familiar.none)
 	{
-		for (let [i, fam] of sortFams(kickFams))
+		for (const [i, fam] of sortFams(kickFams))
 		{
 			if (!(used.has(fam)))
 			{
@@ -524,7 +524,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 	}
 
 	let intrinsic_index: number = 0;
-	for (let [i, fam] of sortFams(intrinsicFams))
+	for (const [i, fam] of sortFams(intrinsicFams))
 	{
 		// We only need enough to fill our empty graft slots
 		if (intrinsicFam.size >= 5 - zoo_graftedIntrinsicFams().size)
@@ -540,7 +540,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 	// Right kick banishes (cassava and limb are super-banishes, magimech is OK)
 	if (rkickFam === Familiar.none)
 	{
-		for (let fam of Familiar.get(["Dire Cassava", "Phantom Limb", "MagiMechTech MicroMechaMech"]))
+		for (const fam of Familiar.get(["Dire Cassava", "Phantom Limb", "MagiMechTech MicroMechaMech"]))
 		{
 			if (auto_have_familiar(fam))
 			{
@@ -553,7 +553,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 	// Backup right kick options
 	if (rkickFam === Familiar.none)
 	{
-		for (let [i, fam] of sortFams(kickFams))
+		for (const [i, fam] of sortFams(kickFams))
 		{
 			if (!(used.has(fam)))
 			{
@@ -568,9 +568,9 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 	// Burly bodyguard levels up with AG path progression so can be grafted faster.
 	// Cold cut is a pure cold punch, can be useful for certain monsters (smorcs, war boss)
 	// volleyball and mosquito and fairyas backups. Everybody needs somebody to punch.
-	let punchPotential: Map<number, Familiar> = new Map();
+	const punchPotential: Map<number, Familiar> = new Map();
 	let ipunch: number = 0;
-	for (let fam of Familiar.get(["Barrrnacle", "Cold Cut", "Blood-Faced Volleyball", "Mosquito", "Baby Gravy Fairy"]))
+	for (const fam of Familiar.get(["Barrrnacle", "Cold Cut", "Blood-Faced Volleyball", "Mosquito", "Baby Gravy Fairy"]))
 	{
 		if (ipunch === 1 && auto_have_familiar(Familiar.get("Burly Bodyguard"))) {
 			punchPotential.set(ipunch++, Familiar.get("Burly Bodyguard"));
@@ -580,7 +580,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 
 	for (let ifam: number = 0; ifam < punchPotential.size; ifam++)
 	{
-		let fam: Familiar = (punchPotential.get(ifam) ?? punchPotential.set(ifam, Familiar.none).get(ifam));
+		const fam: Familiar = (punchPotential.get(ifam) ?? punchPotential.set(ifam, Familiar.none).get(ifam));
 		if (auto_have_familiar(fam) && !(used.has(fam)))
 		{
 			if (lpunchFam === Familiar.none)
@@ -607,7 +607,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 		auto_log_info("Best Head, Shoulder, and Butt Fam", "orange");
 		if (intrinsicFam.size > 0)
 		{
-			for (let [i, fam] of intrinsicFam)
+			for (const [i, fam] of intrinsicFam)
 			{
 				auto_log_info(`${fam}:${(intrinsicFams.get(fam) ?? intrinsicFams.set(fam, 0.0).get(fam))}`, "orange");
 			}
@@ -623,7 +623,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 		auto_log_info(rpunchFam.toString(), "red");
 	}
 
-	let bestIntrinsicFam: Familiar = (intrinsicFam.get(0) ?? intrinsicFam.set(0, Familiar.none).get(0));
+	const bestIntrinsicFam: Familiar = (intrinsicFam.get(0) ?? intrinsicFam.set(0, Familiar.none).get(0));
 	switch (bodyPart)
 	{
 		case $_f_ZOOPART_HEAD:
@@ -651,10 +651,10 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 function zoo_getNextPart(): number
 {
 	if (!in_zootomist() || myLevel() > 11) { return $_f_ZOOPART_NONE; }
-	let bpp: Map<number, number> = zoo_getBodyPartPriority();
+	const bpp: Map<number, number> = zoo_getBodyPartPriority();
 	for (let ipart: number = 0; ipart < bpp.size; ipart++)
 	{
-		let part: number = (bpp.get(ipart) ?? bpp.set(ipart, 0).get(ipart));
+		const part: number = (bpp.get(ipart) ?? bpp.set(ipart, 0).get(ipart));
 		if (zoo_graftedToPart(part) === Familiar.none) { return part; }
 	}
 	return $_f_ZOOPART_NONE;
@@ -691,7 +691,7 @@ export function zoo_graftFam(): boolean
 	rbuff is right nipple buff
 	combat is a useful combat skill (yr, olfact, banish)
 	*/
-	let bodyPartType: Map<number, string> = new Map([
+	const bodyPartType: Map<number, string> = new Map([
 		[$_f_ZOOPART_HEAD, "intrinsic"],
 		[$_f_ZOOPART_L_SHOULDER, "intrinsic"],
 		[$_f_ZOOPART_R_SHOULDER, "intrinsic"],
@@ -704,7 +704,7 @@ export function zoo_graftFam(): boolean
 		[$_f_ZOOPART_L_FOOT, "kick"],
 		[$_f_ZOOPART_R_FOOT, "kick"]
 	]);
-	let bodyPartName: Map<number, string> = new Map([
+	const bodyPartName: Map<number, string> = new Map([
 		[$_f_ZOOPART_HEAD, "head"],
 		[$_f_ZOOPART_L_SHOULDER, "left shoulder"],
 		[$_f_ZOOPART_R_SHOULDER, "right shoulder"],
@@ -720,12 +720,12 @@ export function zoo_graftFam(): boolean
 
 	while (zoo_getNextPart() !== $_f_ZOOPART_NONE)
 	{
-		let p: number = zoo_getNextPart();
-		let existing_graft: Familiar = zoo_graftedToPart(p);
+		const p: number = zoo_getNextPart();
+		const existing_graft: Familiar = zoo_graftedToPart(p);
 		if (existing_graft !== Familiar.none) { continue; }
-		let fam: Familiar = zoo_getBestFam$1(p, false);
+		const fam: Familiar = zoo_getBestFam$1(p, false);
 		handleFamiliar$1(fam);
-		let next_graft_weight: number = zoo_nextGraftWeight();
+		const next_graft_weight: number = zoo_nextGraftWeight();
 		if (familiarWeight(fam) < next_graft_weight)
 		{
 			//can only graft if the fam is higher than the level at the last graft
@@ -770,16 +770,16 @@ function zoo_boostWeight$1(f: Familiar, target_weight: number): boolean
 		}
 	}
 
-	let experience_needed: number = target_weight * target_weight - f.experience;
+	const experience_needed: number = target_weight * target_weight - f.experience;
 
-	let mayam_exp: number = 100;
-	let piccolo_exp: number = 40;
-	let specimen_exp: number = 20;
+	const mayam_exp: number = 100;
+	const piccolo_exp: number = 40;
+	const specimen_exp: number = 20;
 
 	let mayamavailable: boolean = auto_haveMayamCalendar() && !auto_MayamIsUsed("fur") && !auto_MayamAllUsed();
 
 	provideFamExp(toInt(min(25, experience_needed)), Location.get("The Outskirts of Cobb's Knob"), true, true, false);
-	let fight: number = numericModifier("familiar experience") + 1;
+	const fight: number = numericModifier("familiar experience") + 1;
 	auto_log_info$1(`${f} needs ${experience_needed} experience`);
 	auto_log_info$1("To level up your familiar, you should:");
 	let amt: number = 0;
@@ -811,7 +811,7 @@ function zoo_boostWeight$1(f: Familiar, target_weight: number): boolean
 			return true;
 		}
 		else {
-			let fights_needed: number = ceil(diff / fight);
+			const fights_needed: number = ceil(diff / fight);
 			auto_log_info$1(`Do ${fights_needed} (preferably free) fights`);
 			amt += fight * fights_needed;
 		}
@@ -824,7 +824,7 @@ function zoo_boostWeight$1(f: Familiar, target_weight: number): boolean
 export function getZooKickYR(): Skill
 {
 	function isYR$1(fam_id: number): boolean {
-		let fam: Familiar = toFamiliar(fam_id);
+		const fam: Familiar = toFamiliar(fam_id);
 		return Familiar.get(["Quantum Entangler", "Foul Ball", "Defective Childrens' Stapler"]).includes(fam);
 	}
 	if (isYR$1(toInt(getProperty("zootGraftedFootLeftFamiliar")))) {
@@ -839,7 +839,7 @@ export function getZooKickYR(): Skill
 function getZooKickFreeKill(): Skill
 { //different than YR. Better than instakill
 	function isYR(fam_id: number): boolean {
-		let fam: Familiar = toFamiliar(fam_id);
+		const fam: Familiar = toFamiliar(fam_id);
 		return Familiar.get(["Quantum Entangler", "Foul Ball", "Defective Childrens' Stapler"]).includes(fam);
 	}
 	if (isYR(toInt(getProperty("zootGraftedFootLeftFamiliar")))) {
@@ -853,7 +853,7 @@ function getZooKickFreeKill(): Skill
 
 export function getZooKickSniff(): Skill
 {
-	let haveYR: boolean = yellowRayCombatString$1(Monster.none, false) !== ""; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
+	const haveYR: boolean = yellowRayCombatString$1(Monster.none, false) !== ""; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
 	if (leftKickHasSniff() && (leftKickHasInstaKill() && !haveYR)) {
 		return Skill.get("Left %n Kick");
 	}
@@ -867,7 +867,7 @@ export function getZooKickBanish(): Skill
 {
 	if (haveEffect(Effect.get("Everything Looks Blue")) > 0) { return Skill.none; }
 	function isBanish(fam_id: number): boolean {
-		let fam: Familiar = toFamiliar(fam_id);
+		const fam: Familiar = toFamiliar(fam_id);
 		return Familiar.get(["Dire Cassava", "Phantom Limb", "MagiMechTech MicroMechaMech"]).includes(fam);
 	}
 	if (isBanish(toInt(getProperty("zootGraftedFootLeftFamiliar")))) {
@@ -881,7 +881,7 @@ export function getZooKickBanish(): Skill
 
 function getZooKickPickpocket(): Skill
 {
-	let haveYR: boolean = yellowRayCombatString$1(Monster.none, false) !== ""; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
+	const haveYR: boolean = yellowRayCombatString$1(Monster.none, false) !== ""; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
 	if (leftKickHasPickpocket() && (leftKickHasInstaKill() && !haveYR) && getZooKickBanish() !== Skill.get("Left %n Kick")) {
 		return Skill.get("Left %n Kick");
 	}
@@ -928,9 +928,9 @@ export function getZooBestPunch$1(m: Monster): Skill
 
 function leftKickHasSniff(): boolean
 {
-	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
-	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
-	let sniffs: Map<number, string> = new Map([
+	const fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
+	const attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
+	const sniffs: Map<number, string> = new Map([
 		[0, "animal"],
 		[1, "haseyes"],
 		[2, "hot"],
@@ -940,9 +940,9 @@ function leftKickHasSniff(): boolean
 		[6, "sentient"],
 		[7, "software"]
 	]);
-	for (let [i, attr] of attrs)
+	for (const [i, attr] of attrs)
 	{
-		for (let [j, sniff] of sniffs)
+		for (const [j, sniff] of sniffs)
 		{
 			if (sniff === attr)
 			{
@@ -955,9 +955,9 @@ function leftKickHasSniff(): boolean
 
 function leftKickHasPickpocket(): boolean
 {
-	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
-	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
-	let pps: Map<number, string> = new Map([
+	const fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
+	const attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
+	const pps: Map<number, string> = new Map([
 		[0, "hasbeak"],
 		[1, "hasclaws"],
 		[2, "hashands"],
@@ -967,9 +967,9 @@ function leftKickHasPickpocket(): boolean
 		[6, "technological"],
 		[7, "wearsclothes"]
 	]);
-	for (let [i, attr] of attrs)
+	for (const [i, attr] of attrs)
 	{
-		for (let [j, pp] of pps)
+		for (const [j, pp] of pps)
 		{
 			if (pp === attr)
 			{
@@ -982,9 +982,9 @@ function leftKickHasPickpocket(): boolean
 
 function leftKickHasInstaKill(): boolean
 {
-	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
-	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
-	let instakills: Map<number, string> = new Map([
+	const fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
+	const attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
+	const instakills: Map<number, string> = new Map([
 		[0, "bite"],
 		[1, "cute"],
 		[2, "evil"],
@@ -994,9 +994,9 @@ function leftKickHasInstaKill(): boolean
 		[6, "reallyevil"],
 		[7, "stench"]
 	]);
-	for (let [i, attr] of attrs)
+	for (const [i, attr] of attrs)
 	{
-		for (let [j, instakill] of instakills)
+		for (const [j, instakill] of instakills)
 		{
 			if (instakill === attr)
 			{
@@ -1009,9 +1009,9 @@ function leftKickHasInstaKill(): boolean
 
 function rightKickHasSniff(): boolean
 {
-	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
-	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
-	let sniffs: Map<number, string> = new Map([
+	const fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
+	const attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
+	const sniffs: Map<number, string> = new Map([
 		[0, "animal"],
 		[1, "haseyes"],
 		[2, "hot"],
@@ -1021,9 +1021,9 @@ function rightKickHasSniff(): boolean
 		[6, "sentient"],
 		[7, "software"]
 	]);
-	for (let [i, attr] of attrs)
+	for (const [i, attr] of attrs)
 	{
-		for (let [j, sniff] of sniffs)
+		for (const [j, sniff] of sniffs)
 		{
 			if (sniff === attr)
 			{
@@ -1036,9 +1036,9 @@ function rightKickHasSniff(): boolean
 
 function rightKickHasPickpocket(): boolean
 {
-	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
-	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
-	let pps: Map<number, string> = new Map([
+	const fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
+	const attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
+	const pps: Map<number, string> = new Map([
 		[0, "hasbeak"],
 		[1, "hasclaws"],
 		[2, "hashands"],
@@ -1048,9 +1048,9 @@ function rightKickHasPickpocket(): boolean
 		[6, "technological"],
 		[7, "wearsclothes"]
 	]);
-	for (let [i, attr] of attrs)
+	for (const [i, attr] of attrs)
 	{
-		for (let [j, pp] of pps)
+		for (const [j, pp] of pps)
 		{
 			if (pp === attr)
 			{
@@ -1063,9 +1063,9 @@ function rightKickHasPickpocket(): boolean
 
 function rightKickHasInstaKill(): boolean
 {
-	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
-	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
-	let instakills: Map<number, string> = new Map([
+	const fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
+	const attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
+	const instakills: Map<number, string> = new Map([
 		[0, "bite"],
 		[1, "cute"],
 		[2, "evil"],
@@ -1075,9 +1075,9 @@ function rightKickHasInstaKill(): boolean
 		[6, "reallyevil"],
 		[7, "stench"]
 	]);
-	for (let [i, attr] of attrs)
+	for (const [i, attr] of attrs)
 	{
-		for (let [j, instakill] of instakills)
+		for (const [j, instakill] of instakills)
 		{
 			if (instakill === attr)
 			{
@@ -1120,8 +1120,8 @@ export function LX_zootoFight(): boolean
 	// Set our familiar
 	handleFamiliar$1(zoo_getNextFam());
 
-	let target_weight: number = zoo_nextGraftWeight();
-	let expToLevel: number = target_weight * target_weight - myFamiliar().experience;
+	const target_weight: number = zoo_nextGraftWeight();
+	const expToLevel: number = target_weight * target_weight - myFamiliar().experience;
 	// We want lots of XP
 	provideFamExp$3(min(25, expToLevel), true, true);
 

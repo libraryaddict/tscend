@@ -154,9 +154,9 @@ function wildfire_water_cost(target: string): number
 		abort("an invalid target was passed to int wildfire_water_cost(string target)");
 	}
 	let count_1: number = 0;
-	let dusted: boolean = toBoolean(getProperty("wildfireDusted"));
-	let fracked: boolean = toBoolean(getProperty("wildfireFracked"));
-	let sprinkled: boolean = toBoolean(getProperty("wildfireSprinkled"));
+	const dusted: boolean = toBoolean(getProperty("wildfireDusted"));
+	const fracked: boolean = toBoolean(getProperty("wildfireFracked"));
+	const sprinkled: boolean = toBoolean(getProperty("wildfireSprinkled"));
 	switch (target)
 	{
 		case "hose":
@@ -242,13 +242,13 @@ function LX_wildfire_pump(target: number): boolean
 	}
 
 	auto_log_info$1(`Attempting to pump water until we have ${target}`);
-	let start_water: number = myWildfireWater();
-	let start_adv: number = myAdventures();
-	let adv_check: boolean = true;
+	const start_water: number = myWildfireWater();
+	const start_adv: number = myAdventures();
+	const adv_check: boolean = true;
 	while (target > myWildfireWater() && getCounters("", 0, 0) === "")
 	{
 		//r25706. clicking in browser works properly. but visit url causes a desync on water quantity. and there is no mafia command to pump water while keeping water level synced. As such we must visit charpane.php after pumping water to update our water value.
-		let start_adv_1: number = myAdventures();
+		const start_adv_1: number = myAdventures();
 		visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_oldpump");
 		visitUrl("charpane.php");
 		if (start_adv_1 === myAdventures())
@@ -259,7 +259,7 @@ function LX_wildfire_pump(target: number): boolean
 		{
 			abort("Mafia failed to update your water level after pumping water");
 		}
-		let completely_full: boolean = stomach_left() < 1 && inebriety_left() < 1;
+		const completely_full: boolean = stomach_left() < 1 && inebriety_left() < 1;
 		let adv_target: number = auto_advToReserve();
 		if (!completely_full)
 		{
@@ -285,7 +285,7 @@ function LX_wildfire_dust(): boolean
 		return false; //already done
 	}
 	//pump water. restart loop if adv were spent
-	let retval: boolean = LX_wildfire_pump(wildfire_water_cost("dust"));
+	const retval: boolean = LX_wildfire_pump(wildfire_water_cost("dust"));
 
 	if (wildfire_water_cost("dust") <= myWildfireWater())
 	{
@@ -312,7 +312,7 @@ function LX_wildfire_frack(): boolean
 		return false; //already done
 	}
 	//pump water. restart loop if adv were spent
-	let retval: boolean = LX_wildfire_pump(wildfire_water_cost("frack"));
+	const retval: boolean = LX_wildfire_pump(wildfire_water_cost("frack"));
 
 	if (wildfire_water_cost("frack") <= myWildfireWater())
 	{
@@ -339,7 +339,7 @@ function LX_wildfire_sprinkle(): boolean
 		return false; //already done
 	}
 	//pump water. restart loop if adv were spent
-	let retval: boolean = LX_wildfire_pump(wildfire_water_cost("sprinkle"));
+	const retval: boolean = LX_wildfire_pump(wildfire_water_cost("sprinkle"));
 
 	if (wildfire_water_cost("sprinkle") <= myWildfireWater())
 	{
@@ -367,7 +367,7 @@ function LX_wildfire_hose_once(place: Location): boolean
 	}
 	let retval: boolean = false;
 
-	let start_level: number = place.fireLevel;
+	const start_level: number = place.fireLevel;
 	if (wildfire_water_cost("hose") <= myWildfireWater())
 	{
 		auto_log_info$1(`Hosing down [${place}]`);
@@ -406,12 +406,12 @@ function LX_wildfire_hose(place: Location, target_fire: number): boolean
 	}
 	auto_log_info$1(`Trying to hose down [${place}] from fire level ${place.fireLevel} to fire level ${target_fire}`);
 
-	let water_offset: number[] = [0, 0, 10, 30, 60, 100]; //an array of the extra costs of hosing due to price increase.
-	let hoses_needed: number = place.fireLevel - target_fire;
+	const water_offset: number[] = [0, 0, 10, 30, 60, 100]; //an array of the extra costs of hosing due to price increase.
+	const hoses_needed: number = place.fireLevel - target_fire;
 	let water_needed: number = wildfire_water_cost("hose");
 	water_needed = (water_offset[hoses_needed] ??= 0) + water_needed * hoses_needed;
 	//pump water. restart loop if adv were spent
-	let retval: boolean = LX_wildfire_pump(water_needed);
+	const retval: boolean = LX_wildfire_pump(water_needed);
 
 	for (let i: number = 0; i < 5; i++)
 	{ //loop a max of 5 times. the max number of times fire can be reduced
@@ -506,7 +506,7 @@ function LX_wildfire_spookyravenManorFirstFloor(): boolean
 		if (LX_unlockHauntedBilliardsRoom(false)) { return true; }
 	}
 	//hand chalk does not burn up so fire level is not an issue there.
-	let doing_haunted_library: boolean = internalQuestStatus("questM20Necklace") === 3;
+	const doing_haunted_library: boolean = internalQuestStatus("questM20Necklace") === 3;
 	if (!auto_haveFireExtinguisher() && doing_haunted_library && containsText(getProperty("auto_beatenUpLocations"), "The Haunted Library"))
 	{
 		LX_wildfire_hose(Location.get("The Haunted Library"), 3); //to make combat easier

@@ -34,7 +34,7 @@ export function isActuallyEd(): boolean
 function ed_spleen_limit(): number
 {
 	let limit: number = 5;
-	for (let sk of Skill.get(["Extra Spleen", "Another Extra Spleen", "Yet Another Extra Spleen", "Still Another Extra Spleen", "Just One More Extra Spleen", "Okay Seriously, This is the Last Spleen"]))
+	for (const sk of Skill.get(["Extra Spleen", "Another Extra Spleen", "Yet Another Extra Spleen", "Still Another Extra Spleen", "Just One More Extra Spleen", "Okay Seriously, This is the Last Spleen"]))
 	{
 		if (haveSkill(sk))
 		{
@@ -170,7 +170,7 @@ function L13_ed_towerHandler(): boolean
 	{
 		auto_log_info("We found the jerkwad!! Revenge!!!!!", "blue");
 
-		let page: string = "place.php?whichplace=nstower&action=ns_10_sorcfight";
+		const page: string = "place.php?whichplace=nstower&action=ns_10_sorcfight";
 		autoAdvBypass$1(page, Location.get("Noob Cave"));
 
 		if (itemAmount(Item.get("Thwaitgold scarab beetle statuette")) > 0)
@@ -308,7 +308,7 @@ export function ed_doResting(): boolean
 {
 	if (isActuallyEd())
 	{
-		let maxBuff: number = 675 - myTurncount();
+		const maxBuff: number = 675 - myTurncount();
 		while (haveAnyIotmAlternativeRestSiteAvailable() && doFreeRest())
 		{
 			buffMaintain$3(Effect.get("Purr of the Feline"), 30, 3, maxBuff);
@@ -336,7 +336,7 @@ function ed_buySkills(): boolean
 	let possEdPoints: number = 0;
 
 	let page: string = visitUrl("place.php?whichplace=edbase&action=edbase_book");
-	let my_skillPoints: AshMatcher = new AshMatcher("You may memorize (\\d+) more page", page);
+	const my_skillPoints: AshMatcher = new AshMatcher("You may memorize (\\d+) more page", page);
 	if (my_skillPoints.find())
 	{
 		let skillPoints: number = toInt(my_skillPoints.group(1));
@@ -436,7 +436,7 @@ function ed_buySkills(): boolean
 	}
 
 	page = visitUrl("place.php?whichplace=edbase&action=edbase_door");
-	let my_imbuePoints: AshMatcher = new AshMatcher("Impart Wisdom unto Current Servant ..100xp, (\\d+) remain.", page);
+	const my_imbuePoints: AshMatcher = new AshMatcher("Impart Wisdom unto Current Servant ..100xp, (\\d+) remain.", page);
 	let imbuePoints: number = 0;
 	if (my_imbuePoints.find())
 	{
@@ -451,7 +451,7 @@ function ed_buySkills(): boolean
 	}
 
 	page = visitUrl("place.php?whichplace=edbase&action=edbase_door");
-	let my_servantPoints: AshMatcher = new AshMatcher("You may release (\\d+) more servant", page);
+	const my_servantPoints: AshMatcher = new AshMatcher("You may release (\\d+) more servant", page);
 	if (my_servantPoints.find())
 	{
 		let servantPoints: number = toInt(my_servantPoints.group(1));
@@ -504,7 +504,7 @@ function ed_buySkills(): boolean
 	{
 		visitUrl("charsheet.php");
 
-		let current: Servant = myServant();
+		const current: Servant = myServant();
 		while (imbuePoints > 0)
 		{
 			let tryImbue: Servant = Servant.none;
@@ -575,7 +575,7 @@ export function ed_eatStuff(): boolean
 		return false;
 	}
 	// fill up on Mummified Beef Haunches as they are Ed's main source of turn-gen
-	let canEat_1: number = min(spleen_left() / 5, itemAmount(Item.get("mummified beef haunch")));
+	const canEat_1: number = min(spleen_left() / 5, itemAmount(Item.get("mummified beef haunch")));
 	if (canEat_1 > 0 && autoChew(canEat_1, Item.get("mummified beef haunch")))
 	{
 		return true;
@@ -585,8 +585,8 @@ export function ed_eatStuff(): boolean
 
 function ed_nextUpgrade(): Skill
 {
-	let coins: number = itemAmount(Item.get("Ka coin"));
-	let canEat_1: number = (spleenLimit() - mySpleenUse()) / 5;
+	const coins: number = itemAmount(Item.get("Ka coin"));
+	const canEat_1: number = (spleenLimit() - mySpleenUse()) / 5;
 
 	if (!haveSkill(Skill.get("Upgraded Legs")) && toBoolean(getProperty("auto_needLegs")))
 	{
@@ -725,7 +725,7 @@ export function ed_needShop(): boolean
 		setProperty("auto_needLegs", false.toString());
 	}
 
-	let coins: number = itemAmount(Item.get("Ka coin"));
+	const coins: number = itemAmount(Item.get("Ka coin"));
 
 	if (toBoolean(getProperty("auto_needLegs")) && coins >= ed_KaCost(Skill.get("Upgraded Legs")))
 	{
@@ -750,8 +750,8 @@ export function ed_needShop(): boolean
 		}
 	}
 	// check if we have skills or consumables to buy
-	let nextUpgrade: Skill = ed_nextUpgrade();
-	let requiredKa: number = ed_KaCost(nextUpgrade);
+	const nextUpgrade: Skill = ed_nextUpgrade();
+	const requiredKa: number = ed_KaCost(nextUpgrade);
 	if (canEat_1 < 1 && requiredKa !== -1 && coins >= requiredKa)
 	{
 		auto_log_info$1(`Ed needs ${nextUpgrade.toString()} (and can afford it)! UNDYING for a free trip to the Underworld!`);
@@ -884,12 +884,12 @@ let $_ed_skillID_skillIDs: Map<Skill, number> | undefined;
 	// buy skills
 	if (canEat_1 < 1)
 	{
-		let nextUpgrade: Skill = ed_nextUpgrade();
-		let requiredKa: number = ed_KaCost(nextUpgrade);
+		const nextUpgrade: Skill = ed_nextUpgrade();
+		const requiredKa: number = ed_KaCost(nextUpgrade);
 		if (requiredKa !== -1 && coins >= requiredKa)
 		{
 			auto_log_info(`Buying ${nextUpgrade.toString()} (${requiredKa.toString()} Ka).`, "green");
-			let skillBuy: number = ed_skillID(nextUpgrade);
+			const skillBuy: number = ed_skillID(nextUpgrade);
 			if (skillBuy !== 0)
 			{
 				visitUrl("place.php?whichplace=edunder&action=edunder_bodyshop");
@@ -1049,7 +1049,7 @@ function L1_ed_island(): boolean
 		return false;
 	}
 
-	let blocker: Skill = Skill.get("Still Another Extra Spleen");
+	const blocker: Skill = Skill.get("Still Another Extra Spleen");
 
 	if (myLevel() >= 10 || myLevel() >= 8 && haveSkill(blocker))
 	{
@@ -1088,7 +1088,7 @@ function L1_ed_island(): boolean
 
 	if (myTurncount() <= 1 && myMeat() > 10000)
 	{
-		let need: number = min(4, (myMaxmp() - myMp()) / 10);
+		const need: number = min(4, (myMaxmp() - myMp()) / 10);
 		auto_buyUpTo(need, Item.get("Doc Galaktik's Invigorating Tonic"));
 		use(need, Item.get("Doc Galaktik's Invigorating Tonic"));
 		cliExecute("auto_post_adv.js");
@@ -1186,7 +1186,7 @@ function L1_ed_islandFallback(): boolean
 	if (haveSkill(Skill.get("Upgraded Legs")) || itemAmount(Item.get("Ka coin")) >= 10)
 	{
 		auto_change_mcd(11);
-		let retVal: boolean = autoAdv$2(Location.get("The Hippy Camp"));
+		const retVal: boolean = autoAdv$2(Location.get("The Hippy Camp"));
 		if (itemAmount(Item.get("filthy corduroys")) > 0)
 		{
 			if (closetAmount(Item.get("filthy corduroys")) > 0)
@@ -1215,7 +1215,7 @@ function L1_ed_islandFallback(): boolean
 		}
 		// autosell some other useless stuff as we can use the meat to buy MP from doc galaktik.
 		// Ed doesn't need any of this stuff as he starts with the Staff of Ed and can use it until the level 11 quest
-		for (let it of Item.get(["hippy bongo", "filthy pestle", "double-barreled sling"])) {
+		for (const it of Item.get(["hippy bongo", "filthy pestle", "double-barreled sling"])) {
 			auto_autosell(itemAmount(it), it);
 		}
 
@@ -1238,7 +1238,7 @@ export function L9_ed_chasmStart(): boolean
 	{
 		auto_log_info("It's a troll on a bridge!!!!", "blue");
 
-		let page: string = visitUrl("place.php?whichplace=orc_chasm&action=bridge_done");
+		const page: string = visitUrl("place.php?whichplace=orc_chasm&action=bridge_done");
 		autoAdvBypass$1("place.php?whichplace=orc_chasm&action=bridge_done", Location.get("The Smut Orc Logging Camp"));
 
 		setProperty("auto_chasmBusted", true.toString());
@@ -1256,8 +1256,8 @@ export function ed_DelayNC_DailyDungeon(): boolean
 		return false;
 	}
 
-	let has_pole: boolean = itemAmount(Item.get("eleven-foot pole")) > 0;
-	let has_picks: boolean = itemAmount(Item.get("Platinum Yendorian Express Card")) > 0 || itemAmount(Item.get("Pick-O-Matic lockpicks")) > 0;
+	const has_pole: boolean = itemAmount(Item.get("eleven-foot pole")) > 0;
+	const has_picks: boolean = itemAmount(Item.get("Platinum Yendorian Express Card")) > 0 || itemAmount(Item.get("Pick-O-Matic lockpicks")) > 0;
 	if (has_pole && has_picks)
 	{
 		return false; //will not take any damage from NCs.
@@ -1287,8 +1287,8 @@ function ed_DelayNC(potential_dmg: number): boolean
 
 export function ed_DelayNC$1(potential_dmg_percent: number): boolean
 {
-	let multi: number = 0.01 * potential_dmg_percent;
-	let potential_dmg: number = ceil(multi * myMaxhp());
+	const multi: number = 0.01 * potential_dmg_percent;
+	const potential_dmg: number = ceil(multi * myMaxhp());
 	return ed_DelayNC(potential_dmg);
 }
 
@@ -1305,7 +1305,7 @@ function edUnderworldAdv(): boolean
 		abort("Tried to spend 1 adv as ed visiting the underworld when we have no adv left");
 	}
 	auto_log_info("Visiting the underworld via the pyramid gate", "blue");
-	let initial_turncount: number = myTurncount();
+	const initial_turncount: number = myTurncount();
 
 	visitUrl("place.php?whichplace=edbase&action=edbase_portal"); //click on portal in base
 	runChoice(1); //Enter the Underworld
@@ -1328,7 +1328,7 @@ export function edAcquireHP(): boolean
 	{
 		return true; // Ed doesn't need to heal outside of combat unless on 0 hp
 	}
-	for (let it of Item.get(["linen bandages", "cotton bandages", "silk bandages"]))
+	for (const it of Item.get(["linen bandages", "cotton bandages", "silk bandages"]))
 	{
 		if (itemAmount(it) > 0)
 		{
@@ -1350,7 +1350,7 @@ export function edAcquireHP(): boolean
 export function edAcquireHP$1(goal: number): boolean
 {
 	//function forces Ed to heal to a goal HP. Based on acquireHP function
-	let isMax: boolean = goal === myMaxhp();
+	const isMax: boolean = goal === myMaxhp();
 
 	__cure_bad_stuff();
 

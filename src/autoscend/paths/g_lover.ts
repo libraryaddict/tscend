@@ -50,7 +50,7 @@ export function glover_usable(it: string): boolean
 	{
 		return true;
 	}
-	let checkItem: Item = toItem(it);
+	const checkItem: Item = toItem(it);
 	if (checkItem !== Item.none && Item.get(["SpinMaster&trade; lathe", // it works since there's no "use" link
 	"&quot;I Voted!&quot; sticker", // free fights still work for I voted! sticker
 	"ninja carabiner", "ninja crampons", "ninja rope",
@@ -85,7 +85,7 @@ export function LM_glover(): boolean
 	{
 		return false;
 	}
-	for (let it of Item.get(["chaos butterfly", "cornucopia", "disassembled clover", "filthy poultice", "metal meteoroid", "Oil of Parrrlay", "pec oil", "Polysniff Perfume", "smut orc keepsake box", "sonar-in-a-biscuit", "T.U.R.D.S. Key", "11-leaf clover", "tonic djinn", "turtle wax"]))
+	for (const it of Item.get(["chaos butterfly", "cornucopia", "disassembled clover", "filthy poultice", "metal meteoroid", "Oil of Parrrlay", "pec oil", "Polysniff Perfume", "smut orc keepsake box", "sonar-in-a-biscuit", "T.U.R.D.S. Key", "11-leaf clover", "tonic djinn", "turtle wax"]))
 	{
 		if (itemAmount(it) > 0)
 		{

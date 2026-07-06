@@ -44,8 +44,8 @@ import { prepareForSmutOrcs, prepareForTwinPeak } from "./quests/level_09";
 function low_mp_handler(): void
 {
 	auto_log_debug("Low max MP detected.", "red");
-	let MIN_USEFUL_MP: number = 6; //Saucestorm
-	let TARGET_MP: number = myMaxmp() - myMaxmp() % MIN_USEFUL_MP;
+	const MIN_USEFUL_MP: number = 6; //Saucestorm
+	const TARGET_MP: number = myMaxmp() - myMaxmp() % MIN_USEFUL_MP;
 	acquireMP$2(TARGET_MP, 0);
 }
 
@@ -60,7 +60,7 @@ function print_footer(): void
 			next_line += `, Fury: ${myFury()}/${myMaxfury()}`;
 			break;
 		case Class.get("Turtle Tamer"):
-			for (let ttbless of Effect.get(["Blessing of the War Snapper", "Grand Blessing of the War Snapper", "Glorious Blessing of the War Snapper", "Blessing of She-Who-Was", "Grand Blessing of She-Who-Was", "Glorious Blessing of She-Who-Was", "Blessing of the Storm Tortoise", "Grand Blessing of the Storm Tortoise", "Glorious Blessing of the Storm Tortoise"]))
+			for (const ttbless of Effect.get(["Blessing of the War Snapper", "Grand Blessing of the War Snapper", "Glorious Blessing of the War Snapper", "Blessing of She-Who-Was", "Grand Blessing of She-Who-Was", "Glorious Blessing of She-Who-Was", "Blessing of the Storm Tortoise", "Grand Blessing of the Storm Tortoise", "Glorious Blessing of the Storm Tortoise"]))
 			{
 				if (haveEffect(ttbless) > 0)
 				{
@@ -80,9 +80,9 @@ function print_footer(): void
 		else { return s.toString(); }
 	}
 
-	let bonus_mus: number = myBuffedstat(Stat.get("Muscle")) - myBasestat(Stat.get("Muscle"));
-	let bonus_mys: number = myBuffedstat(Stat.get("Mysticality")) - myBasestat(Stat.get("Mysticality"));
-	let bonus_mox: number = myBuffedstat(Stat.get("Moxie")) - myBasestat(Stat.get("Moxie"));
+	const bonus_mus: number = myBuffedstat(Stat.get("Muscle")) - myBasestat(Stat.get("Muscle"));
+	const bonus_mys: number = myBuffedstat(Stat.get("Mysticality")) - myBasestat(Stat.get("Mysticality"));
+	const bonus_mox: number = myBuffedstat(Stat.get("Moxie")) - myBasestat(Stat.get("Moxie"));
 	auto_log_info(`mus: ${myBasestat(Stat.get("Muscle"))}${stat_sign(bonus_mus)}. mys: ${myBasestat(Stat.get("Mysticality"))}${stat_sign(bonus_mys)}. mox: ${myBasestat(Stat.get("Moxie"))}${stat_sign(bonus_mox)}`, "blue");
 
 	next_line = "";
@@ -109,7 +109,7 @@ function print_footer(): void
 	auto_log_info(`Resists: ${numericModifier("Hot Resistance")}/${numericModifier("Cold Resistance")}/${numericModifier("Stench Resistance")}/${numericModifier("Spooky Resistance")}/${numericModifier("Sleaze Resistance")}`, "blue");
 	//current equipment
 	next_line = "equipment: ";
-	for (let sl of Slot.get(["hat", "weapon", "holster", "off-hand", "back", "shirt", "pants", "acc1", "acc2", "acc3", "familiar", "crown-of-thrones", "sticker1", "sticker2", "sticker3", "card-sleeve", "folder1", "folder2", "folder3", "folder4", "folder5", "buddy-bjorn", "bootskin", "bootspur", "codpiece1", "codpiece2", "codpiece3", "codpiece4", "codpiece5", "fakehand", "hats"]))
+	for (const sl of Slot.get(["hat", "weapon", "holster", "off-hand", "back", "shirt", "pants", "acc1", "acc2", "acc3", "familiar", "crown-of-thrones", "sticker1", "sticker2", "sticker3", "card-sleeve", "folder1", "folder2", "folder3", "folder4", "folder5", "buddy-bjorn", "bootskin", "bootspur", "codpiece1", "codpiece2", "codpiece3", "codpiece4", "codpiece5", "fakehand", "hats"]))
 	{
 		if (Slot.get(["hat", "weapon", "off-hand", "back", "shirt", "pants", "acc1", "acc2", "acc3", "familiar"]).includes(sl))
 		{ //we always want to print the core slots
@@ -140,7 +140,7 @@ function auto_ghost_prep(place: Location): void
 		return; //you robot with a rocket crotch. deals fire damage to kill ghosts.
 	}
 	//a few iconic spells per avatar is ok. no need to be too exhaustive
-	for (let sk of Skill.get([
+	for (const sk of Skill.get([
 		"Saucestorm", "Saucegeyser", //base classes
 		"Fist of the Mummy", //actually ed the undying
 		"Boil", //avatar of jarlsberg
@@ -175,8 +175,8 @@ function auto_ghost_prep(place: Location): void
 	let m_spooky: number = 1;
 	let m_sleaze: number = 1;
 	let m_stench: number = 1;
-	let apprates: Map<Monster, number> = auto_combat_appearance_rates(place, true);
-	for (let [idx, mob] of getMonsters(place).entries())
+	const apprates: Map<Monster, number> = auto_combat_appearance_rates(place, true);
+	for (const [idx, mob] of getMonsters(place).entries())
 	{
 		if ((apprates.get(mob) ?? apprates.set(mob, 0.0).get(mob)) <= 0) { //won't show up because banished or req's not fulfilled
 		continue; }
@@ -239,7 +239,7 @@ function auto_ghost_prep(place: Location): void
 
 function auto_pre_adventure(): boolean
 {
-	let place: Location = myLocation();
+	const place: Location = myLocation();
 	if (toBoolean(getProperty("auto_disableAdventureHandling")))
 	{
 		auto_log_info("Preadventure skipped by standard adventure handler.", "green");
@@ -291,7 +291,7 @@ function auto_pre_adventure(): boolean
 		useSkill(Skill.get("Dismiss Pasta Thrall"));
 	}
 	//save some MP while buffing
-	let beforeBuffs: Map<number, Item> = auto_saveEquipped();
+	const beforeBuffs: Map<number, Item> = auto_saveEquipped();
 	addToMaximize("-1000mana cost, -tie");
 	equipMaximizedGear();
 
@@ -402,7 +402,7 @@ function auto_pre_adventure(): boolean
 	}
 	// If we're zootomist, need to level, and we have +xp on our milk, cast it.
 	if (in_zootomist() && myLevel() < 13) {
-		for (let ef of Effect.get(["Milk of Familiar Kindness", "Milk of Familiar Cruelty"])) {
+		for (const ef of Effect.get(["Milk of Familiar Kindness", "Milk of Familiar Cruelty"])) {
 			if (numericModifier(ef, Modifier.get("Familiar Experience")) > 0) {
 				buffMaintain$4(ef);
 			}
@@ -420,10 +420,10 @@ function auto_pre_adventure(): boolean
 		addToMaximize("10meat");
 	}
 	// this calls the appropriate provider for +combat or -combat depending on the zone we are about to adventure in..
-	let burningDelay: boolean = auto_burningDelay();
-	let gettingLucky: boolean = auto_gettingLucky();
-	let forcedNonCombat: boolean = auto_haveQueuedForcedNonCombat();
-	let combatModifier: generic_t = zone_combatMod(place);
+	const burningDelay: boolean = auto_burningDelay();
+	const gettingLucky: boolean = auto_gettingLucky();
+	const forcedNonCombat: boolean = auto_haveQueuedForcedNonCombat();
+	const combatModifier: generic_t = zone_combatMod(place);
 	if (combatModifier._boolean && !auto_queueIgnore()) {
 		acquireCombatMods$1(combatModifier._int, true);
 	}
@@ -448,14 +448,14 @@ function auto_pre_adventure(): boolean
 		}
 	}
 
-	let possible_monsters: Map<number, Monster> = new Map();
+	const possible_monsters: Map<number, Monster> = new Map();
 	if (toMonster(getProperty("auto_nextEncounter")) !== Monster.none)
 	{
 		//next monster is forced by zone mechanics or by now locked-in miniature crystal ball
 		possible_monsters.set(possible_monsters.size, toMonster(getProperty("auto_nextEncounter")));
 	}
 	else {
-		for (let [i, mon] of getMonsters(place).entries())
+		for (const [i, mon] of getMonsters(place).entries())
 		{
 			//consider all possible monsters, with queue effects argument false
 			//	queue argument true would return only crystal ball prediction if there is one and equipped,
@@ -471,7 +471,7 @@ function auto_pre_adventure(): boolean
 	let zoneHasWantedMonsters: boolean = false;
 	if (!auto_queueIgnore())
 	{ //next encounter is a monster from the zone
-		for (let [i, mon] of possible_monsters)
+		for (const [i, mon] of possible_monsters)
 		{
 			if (auto_wantToYellowRay(mon, place))
 			{
@@ -484,8 +484,8 @@ function auto_pre_adventure(): boolean
 				adjustForBanishIfPossible$1(monsterPhylum(mon), place);
 				zoneHasUnwantedMonsters = true;
 			}
-			let wantToBanish: boolean = auto_wantToBanish(mon, place);
-			let wantToFreeRun_1: boolean = auto_wantToFreeRun(mon, place) || auto_forceFreeRun(false);
+			const wantToBanish: boolean = auto_wantToBanish(mon, place);
+			const wantToFreeRun_1: boolean = auto_wantToFreeRun(mon, place) || auto_forceFreeRun(false);
 			if (wantToBanish || wantToFreeRun_1)
 			{
 				// attempt to prepare for banishing, but if we can not try free running
@@ -525,7 +525,7 @@ function auto_pre_adventure(): boolean
 	{
 		//give miniature crystal ball a maximizer bonus only if the location has monsters to avoid or target
 		//TODO give 0 if tally of available banishes and no sniff makes trying to avoid unwanted monsters with ball not worthwhile?
-		let crystalBallMaximizerBonus: number = 0 + ((zoneHasUnwantedMonsters ? 300 : 0)) + ((zoneHasWantedMonsters ? 300 : 0));
+		const crystalBallMaximizerBonus: number = 0 + ((zoneHasUnwantedMonsters ? 300 : 0)) + ((zoneHasWantedMonsters ? 300 : 0));
 		if (crystalBallMaximizerBonus !== 0)
 		{
 			addToMaximize(`+${crystalBallMaximizerBonus}bonus ${wrap_item(Item.get("miniature crystal ball")).toString()}`);
@@ -534,7 +534,7 @@ function auto_pre_adventure(): boolean
 	// Equip the combat lover's locket if we're missing a monster in the zone
 	if (auto_haveCombatLoversLocket())
 	{
-		for (let [mon, rate] of Object.entries(appearanceRates(place)).map(([_k, _v]) => [Monster.get(_k), _v] as [Monster, number]))
+		for (const [mon, rate] of Object.entries(appearanceRates(place)).map(([_k, _v]) => [Monster.get(_k), _v] as [Monster, number]))
 		{
 			if (rate > 0 && mon.id > 0 && mon.copyable && !mon.boss && !auto_monsterInLocket(mon) && place !== Location.get("Noob Cave"))
 			{
@@ -551,7 +551,7 @@ function auto_pre_adventure(): boolean
 		autoEquip$1(Item.get("low-pressure oxygen tank"));
 	}
 	// Latte may conflict with certain quests. Ignore latte drops for the greater good.
-	let IgnoreLatteDrop: Location[] = Location.get(["The Haunted Boiler Room"]);
+	const IgnoreLatteDrop: Location[] = Location.get(["The Haunted Boiler Room"]);
 	if (auto_latteDropWanted(place) && !(IgnoreLatteDrop.includes(place)) && !is_boris())
 	{
 	// boris has no way to equip latte mug or Kramco (no offhand or familiar)
@@ -591,21 +591,21 @@ function auto_pre_adventure(): boolean
 		}
 	}
 
-	let fluda: Item = Item.get("Flash Liquidizer Ultra Dousing Accessory");
-	let douse_locs: Location[] = Location.get(["The Hatching Chamber", "The Feeding Chamber", "The Royal Guard Chamber"]);
+	const fluda: Item = Item.get("Flash Liquidizer Ultra Dousing Accessory");
+	const douse_locs: Location[] = Location.get(["The Hatching Chamber", "The Feeding Chamber", "The Royal Guard Chamber"]);
 	if ((douse_locs.includes(place) || auto_allRifts().has(place)) && auto_dousesRemaining() > 0)
 	{
 		autoEquip$1(fluda);
 	}
 
-	let bat_wings: Item = Item.get("bat wings");
-	let swoop_locs: Map<Location, boolean> = auto_swoopLocations();
+	const bat_wings: Item = Item.get("bat wings");
+	const swoop_locs: Map<Location, boolean> = auto_swoopLocations();
 	if ((swoop_locs.has(place) || auto_allRifts().has(place)) && auto_swoopsRemaining() > 0)
 	{
 		autoEquip$1(bat_wings);
 	}
 
-	let exting: Item = wrap_item(Item.get("industrial fire extinguisher"));
+	const exting: Item = wrap_item(Item.get("industrial fire extinguisher"));
 	if (auto_FireExtinguisherCombatString(place) !== "" || Location.get(["The Goatlet", "Twin Peak", "The Hidden Bowling Alley", "The Hatching Chamber", "The Feeding Chamber", "The Royal Guard Chamber"]).includes(place))
 	{
 		autoEquip$1(exting);
@@ -652,7 +652,7 @@ function auto_pre_adventure(): boolean
 		if (place === Location.get("A Massive Ziggurat"))
 		{
 			let lianaFought: number = 0;
-			for (let [i, s] of splitString(place.combatQueue, "; ").entries())
+			for (const [i, s] of splitString(place.combatQueue, "; ").entries())
 			{
 				if (s === "dense liana")
 				{
@@ -675,8 +675,8 @@ function auto_pre_adventure(): boolean
 			plumber_equipTool$1(Stat.get("Moxie"));
 		}
 		// It is dangerous out there! Take this!
-		let flyeredML: number = toInt(getProperty("flyeredML"));
-		let have_pill_keeper: boolean = possessEquipment(Item.get("Eight Days a Week Pill Keeper")) && isUnrestricted(Item.get("Unopened Eight Days a Week Pill Keeper"));
+		const flyeredML: number = toInt(getProperty("flyeredML"));
+		const have_pill_keeper: boolean = possessEquipment(Item.get("Eight Days a Week Pill Keeper")) && isUnrestricted(Item.get("Unopened Eight Days a Week Pill Keeper"));
 
 		if (0 < flyeredML && flyeredML < 10000 && in_plumber() && have_pill_keeper)
 		{
@@ -764,10 +764,10 @@ function auto_pre_adventure(): boolean
 		//Baa'baa'bu'ran is probably the only Lucky adventure that will need item drop
 		mayNeedItem = false;
 	}
-	let itemNeed: generic_t = zone_needItem(place);
+	const itemNeed: generic_t = zone_needItem(place);
 	if (mayNeedItem && itemNeed._boolean)
 	{
-		let capped: boolean = provideItem$2(ceil(itemNeed._float), place, false);
+		const capped: boolean = provideItem$2(ceil(itemNeed._float), place, false);
 		if (!capped && auto_haveCupidBow()) {
 			addBonusToMaximize(Item.get("toy Cupid bow"), 400);
 		}
@@ -785,8 +785,8 @@ function auto_pre_adventure(): boolean
 		// removeML MUST be true for purgeML to be used. This is only used for -ML locations like Smut Orc, and you must have 5+ SGEAs to use.
 		let purgeML: boolean = false;
 
-	let highMLZones: Location[] = Location.get(["Oil Peak", "The Typical Tavern Cellar", "The Haunted Boiler Room", "The Defiled Cranny"]);
-	let lowMLZones: Location[] = Location.get(["The Smut Orc Logging Camp", "Fight in the Dirt", "Fight in the Tall Grass", "Fight in the Very Tall Grass",
+	const highMLZones: Location[] = Location.get(["Oil Peak", "The Typical Tavern Cellar", "The Haunted Boiler Room", "The Defiled Cranny"]);
+	const lowMLZones: Location[] = Location.get(["The Smut Orc Logging Camp", "Fight in the Dirt", "Fight in the Tall Grass", "Fight in the Very Tall Grass",
 		"Tower Level 1", "Tower Level 2", "Tower Level 3"]);
 	// Generic Conditions
 	if (inAftercore())
@@ -993,7 +993,7 @@ function auto_pre_adventure(): boolean
 	//my_mp is broken in Dark Gyffte
 	if (!in_darkGyffte())
 	{
-		let wasted_mp: number = toInt(myMp() + mp_regen() - myMaxmp());
+		const wasted_mp: number = toInt(myMp() + mp_regen() - myMaxmp());
 		if (wasted_mp > 0 && myMp() > 400)
 		{
 			auto_log_info$1(`Burning ${wasted_mp} MP...`);
@@ -1013,7 +1013,7 @@ function auto_pre_adventure(): boolean
 if (Location.get(["Shadow Rift (The Ancient Buried Pyramid)", "Shadow Rift (The Hidden City)", "Shadow Rift (The Misspelled Cemetary)"]).includes(place))
 			{
 				// DB aborts in the Shadow Rifts because it runs out of MP trying to use Saucestorm against physically immune monsters when it has Extingo equipped.
-				for (let sk of Skill.get(["Disco Dance of Doom", "Disco Dance II: Electric Boogaloo", "Disco Dance 3: Back in the Habit"]))
+				for (const sk of Skill.get(["Disco Dance of Doom", "Disco Dance II: Electric Boogaloo", "Disco Dance 3: Back in the Habit"]))
 				{
 					// yes it casts all 3 of those first then tries to repeat Saucestorm. On 32 or so MP.
 					if (auto_have_skill(sk))
@@ -1062,7 +1062,7 @@ if (Location.get(["Shadow Rift (The Ancient Buried Pyramid)", "Shadow Rift (The 
 	//works with code found in auto_post_adv.ash
 	setProperty("_auto_inf_session_adv", mySessionAdv().toString());
 	//to avoid constant flipping on the MCD. change it right before adventuring
-	let mcd_target: number = toInt(getProperty("auto_mcd_target"));
+	const mcd_target: number = toInt(getProperty("auto_mcd_target"));
 	if (currentMcd() !== mcd_target)
 	{
 		changeMcd(mcd_target);

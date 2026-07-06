@@ -68,9 +68,9 @@ function amw_advBundleCost(adv_bundles: number, cumulative: boolean): number {
 	{
 		abort(`I can't calculate the cost of the ${adv_bundles.toString()}-th bundle!`);
 	}
-	let adventure_count: number = adv_bundles * amw_advPerTrade();
-	let amino_sac: string = visitUrl("place.php?whichplace=meatground&action=meatground_turns");
-   	let adv_meat_matcher: AshMatcher = new AshMatcher(`"Get ${adventure_count.toString()} Adventures">[^>]*>[^>]*>s*([0-9]+) meat`, amino_sac);
+	const adventure_count: number = adv_bundles * amw_advPerTrade();
+	const amino_sac: string = visitUrl("place.php?whichplace=meatground&action=meatground_turns");
+   	const adv_meat_matcher: AshMatcher = new AshMatcher(`"Get ${adventure_count.toString()} Adventures">[^>]*>[^>]*>s*([0-9]+) meat`, amino_sac);
 	let meat_cost: number = 0;
 	if (adv_meat_matcher.find()) {
 		meat_cost = toInt(adv_meat_matcher.group(1));
@@ -87,7 +87,7 @@ function amw_advBundleCost$1(adv_bundles: number): number {
 // attempt to buy the cheapest bundle of advs
 export function amw_buyAdv(): boolean
 {
-	let starting_meat: number = myMeat();
+	const starting_meat: number = myMeat();
 	if (starting_meat + 50 < amw_advBundleCost$1(1) || isAboutToPowerlevel() && amw_advBundleCost$1(
 		// if true, can't afford adventures
 		1) > 2000 && myLevel() < 13)
@@ -98,7 +98,7 @@ export function amw_buyAdv(): boolean
 
 	auto_log_debug$1(`Buying ${amw_advPerTrade().toString()} adventures`);
 	visitUrl("place.php?whichplace=meatground&action=meatground_turns");
-	let url: string = "choice.php?whichchoice=1593&pwd&option=1";
+	const url: string = "choice.php?whichchoice=1593&pwd&option=1";
 	visitUrl(url, true);
 	// successful if meat was spent
 	if (myMeat() < starting_meat) { return true; }
@@ -126,7 +126,7 @@ function amw_buySubstat(st: Stat, numberToBuy: number): boolean
 
 	if (option !== 0) {
 		visitUrl("place.php?whichplace=meatground&action=meatground_stats");
-		let url: string = `choice.php?whichchoice=1592&pwd&option=${option.toString()}&num=${numberToBuy.toString()}`;
+		const url: string = `choice.php?whichchoice=1592&pwd&option=${option.toString()}&num=${numberToBuy.toString()}`;
 		visitUrl(url, true);
 		return true;
 	}
@@ -134,7 +134,7 @@ function amw_buySubstat(st: Stat, numberToBuy: number): boolean
 }
 // reserves meat from being spent on stats
 function amw_calculateReserve(): number {
-	let current_level: number = myLevel();
+	const current_level: number = myLevel();
 	let reserve: number = 0;
 	if (current_level <= 6)
 	{
@@ -178,7 +178,7 @@ class amw_statAmount {
 // also, some thresholds are skill-based to allow for deleveling (esp. BCZ)
 // (i.e. we don't need 110 mys anymore after we get the skill, so ok to not re-level)
 function amw_nextSkillSubstats(): amw_statAmount {
-	let goal: amw_statAmount = new amw_statAmount();
+	const goal: amw_statAmount = new amw_statAmount();
 	// getting elemental res for kitchen
 	if (myBasestat(Stat.get("Muscle")) < 10)
 	{
@@ -297,7 +297,7 @@ function amw_nextSkillSubstats(): amw_statAmount {
 // returns substats needed to get to next level
 function amw_nextLevelSubstats(): amw_statAmount {
 	let next_level: number = 0;
-	let goal: amw_statAmount = new amw_statAmount();
+	const goal: amw_statAmount = new amw_statAmount();
 	next_level = myLevel() + 1;
 	let mainstat: Stat = Stat.get("SubMysticality");
 	// which stat is our mainstat should be mostly consistent with the priority of amw_nextSkillSubstats()
@@ -320,7 +320,7 @@ function amw_substatsBuyable(goal: amw_statAmount, meatleveling: boolean): numbe
 
 	if (meat_reserve >= myMeat()) { // no meat unreserved to spend on stats
 	return 0; }
-	let substats_to_goal: number = goal.amount - myBasestat(goal.st);
+	const substats_to_goal: number = goal.amount - myBasestat(goal.st);
 	auto_log_debug$1(`Substats to next goal: ${substats_to_goal.toString()}`);
 
 	if (!meatleveling)
@@ -353,7 +353,7 @@ function amw_buyStats(meatleveling: boolean): boolean {
 
 	if (next.amount !== 0)
 	{
-		let amountToBuy: number = amw_substatsBuyable(next, meatleveling);
+		const amountToBuy: number = amw_substatsBuyable(next, meatleveling);
 		if (amountToBuy > 0)
 		{
 			return amw_buySubstat(next.st, amountToBuy);
@@ -385,7 +385,7 @@ function LX_attemptPowerLevelMeat$1(skills: boolean): boolean {
 	autoMaximize("meat drop", false);
 	handleFamiliar$1(lookupFamiliarDatafile("meat"));
 
-	let meatDrop_1: number = toInt(simValue("Meat Drop"));
+	const meatDrop_1: number = toInt(simValue("Meat Drop"));
 	// "best" meatleveling zone at top
 	if (meatDrop_1 >= 300 && zone_isAvailable(Location.get("The Hidden Hospital"), true))
 	{

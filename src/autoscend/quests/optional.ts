@@ -63,7 +63,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean
 	let target_shirt: Item = Item.none;
 	let hasShirt: boolean = false;
 	//one time initial scan of inventory
-	for (let it of Item.get(Object.keys(getInventory())))
+	for (const it of Item.get(Object.keys(getInventory())))
 	{
 		if (toSlot(it) === Slot.get("shirt"))
 		{
@@ -79,7 +79,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean
 		{
 			return false;
 		}
-		let temp: string = visitUrl(`inv_equip.php?pwd&which=2&action=equip&whichitem=${toInt(target_shirt)}`);
+		const temp: string = visitUrl(`inv_equip.php?pwd&which=2&action=equip&whichitem=${toInt(target_shirt)}`);
 		if (useLetter()) { return true; }
 		auto_log_error(`For some reason LX_unlockThinknerdWarehouse failed when trying to use the shirt [${target_shirt}] to get [Letter for Melvign the Gnome] to start the quest`);
 		return false;
@@ -170,7 +170,7 @@ function LX_melvignShirt(): boolean
 	{
 		return autoAdv$2(Location.get("The Thinknerd Warehouse"));
 	}
-	let temp: string = visitUrl("place.php?whichplace=mountains&action=mts_melvin", false);
+	const temp: string = visitUrl("place.php?whichplace=mountains&action=mts_melvin", false);
 	return true;
 }
 
@@ -309,7 +309,7 @@ export function LX_steelOrgan(): boolean
 		}
 		else if (itemAmount(Item.get("Azazel's lollipop")) === 0 && itemAmount(Item.get("Azazel's tutu")) === 0)
 		{
-			for (let it of Item.get(["hilarious comedy prop", "Victor, the Insult Comic Hellhound Puppet", "observational glasses"]))
+			for (const it of Item.get(["hilarious comedy prop", "Victor, the Insult Comic Hellhound Puppet", "observational glasses"]))
 			{
 				if (possessEquipment(it) && auto_can_equip(it))
 				{
@@ -324,11 +324,11 @@ export function LX_steelOrgan(): boolean
 		}
 		else if (itemAmount(Item.get("Azazel's tutu")) === 0 && itemAmount(Item.get("bus pass")) >= 5 && itemAmount(Item.get("imp air")) >= 5)
 		{
-			let temp: string = visitUrl("pandamonium.php?action=moan");
+			const temp: string = visitUrl("pandamonium.php?action=moan");
 		}
 		else if (itemAmount(Item.get("Azazel's tutu")) > 0 && itemAmount(Item.get("Azazel's lollipop")) > 0 && itemAmount(Item.get("Azazel's unicorn")) > 0)
 		{
-			let temp: string = visitUrl("pandamonium.php?action=temp");
+			const temp: string = visitUrl("pandamonium.php?action=temp");
 		}
 		else {
 			auto_log_warning("Stuck in the Steel Organ quest and can't continue, moving on.", "red");
@@ -343,10 +343,10 @@ export function LX_steelOrgan(): boolean
 		{
 			eatsilent(1, Item.get("steel lasagna"));
 		}
-		let wontBeOverdrunk: boolean = inebriety_left() >= (Item.get("steel margarita")).inebriety - 5;
-		let notOverdrunk: boolean = myInebriety() <= inebrietyLimit();
-		let notSavingForBilliards: boolean = hasSpookyravenLibraryKey() || toInt(getProperty("lastSecondFloorUnlock")) === myAscensions() || myInebriety() + (Item.get("steel margarita")).inebriety <= 10 || myInebriety() >= 12;
-		let notWaitingKOLHS: boolean = !in_kolhs() || myInebriety() > 9;
+		const wontBeOverdrunk: boolean = inebriety_left() >= (Item.get("steel margarita")).inebriety - 5;
+		const notOverdrunk: boolean = myInebriety() <= inebrietyLimit();
+		const notSavingForBilliards: boolean = hasSpookyravenLibraryKey() || toInt(getProperty("lastSecondFloorUnlock")) === myAscensions() || myInebriety() + (Item.get("steel margarita")).inebriety <= 10 || myInebriety() >= 12;
+		const notWaitingKOLHS: boolean = !in_kolhs() || myInebriety() > 9;
 		if (itemAmount(Item.get("steel margarita")) > 0 && wontBeOverdrunk && notOverdrunk && notSavingForBilliards && notWaitingKOLHS)
 		{
 			autoDrink(1, Item.get("steel margarita"));
@@ -418,7 +418,7 @@ export function LX_guildUnlock(): boolean
 	{
 		if (getProperty(pref) !== "started")
 		{
-			let temp: string = visitUrl("guild.php?place=challenge");
+			const temp: string = visitUrl("guild.php?place=challenge");
 		}
 		if (internalQuestStatus(pref) < 0)
 		{
@@ -598,7 +598,7 @@ export function startGalaktikSubQuest(): boolean
 function finishGalaktikSubQuest(): boolean
 {
 	if (itemAmount(Item.get("fraudwort")) >= 3 && itemAmount(Item.get("shysterweed")) >= 3 && itemAmount(Item.get("swindleblossom")) >= 3) {
-		let temp: string = visitUrl("shop.php?whichshop=doc");
+		const temp: string = visitUrl("shop.php?whichshop=doc");
 		if (containsText(temp, "What did you need, again?")) {
 			visitUrl("shop.php?whichshop=doc&action=talk");
 		}
@@ -646,11 +646,11 @@ export function LX_pirateOutfit(): boolean {
 		// plus lets you keep trying to gather the outfit while learning insults, can save the pulls for missing pieces that come next
 		pullXWhenHaveY(Item.get("The Big Book of Pirate Insults"), 1, 0);
 		//want 6 insults to try but learning another finding Cap'm Caronch can still improve chances more
-		let preGatheringInsults: boolean = itemAmount(Item.get("The Big Book of Pirate Insults")) > 0 && numPirateInsults() < 6;
+		const preGatheringInsults: boolean = itemAmount(Item.get("The Big Book of Pirate Insults")) > 0 && numPirateInsults() < 6;
 
 		if (possessEquipment(Item.get("peg key")) && !preGatheringInsults) {
 			// if we have the key and insults, just pull any outfit parts we are still missing
-			for (let [_, it] of outfitPieces("Swashbuckling Getup").entries()) {
+			for (const [_, it] of outfitPieces("Swashbuckling Getup").entries()) {
 				pullXWhenHaveY(it, 1, 0);
 			}
 		}
@@ -710,7 +710,7 @@ function beerPong(page: string): string
 		) {}
 	}
 
-	let insults: Map<number, r> = new Map();
+	const insults: Map<number, r> = new Map();
 	(insults.get(1) ?? insults.set(1, new r()).get(1)).insult = "Arrr, the power of me serve'll flay the skin from yer bones!";
 	(insults.get(1) ?? insults.set(1, new r()).get(1)).retort = "Obviously neither your tongue nor your wit is sharp enough for the job.";
 	(insults.get(2) ?? insults.set(2, new r()).get(2)).insult = "Do ye hear that, ye craven blackguard?  It be the sound of yer doom!";
@@ -730,7 +730,7 @@ function beerPong(page: string): string
 
 	while (!containsText(page, "victory laps"))
 	{
-		let old_page: string = page;
+		const old_page: string = page;
 
 		if (!containsText(page, "Insult Beer Pong"))
 		{
@@ -743,7 +743,7 @@ function beerPong(page: string): string
 			return page;
 		}
 
-		for (let i of insults.keys())
+		for (const i of insults.keys())
 		{
 			if (containsText(page, (insults.get(i) ?? insults.set(i, new r()).get(i)).insult))
 			{
@@ -846,7 +846,7 @@ export function LX_joinPirateCrew(): boolean {
 			function mightGetHotwings(): boolean {
 				return internalQuestStatus("questL06Friar") < 2 || in_lowkeysummer() && !possessEquipment(Item.get("demonic key"));
 			}
-			let mightCatburgle: boolean = (itemAmount(Item.get("hot wing")) > 2 || mightGetHotwings()) && (knollAvailable() || possessEquipment(Item.get("frilly skirt")));
+			const mightCatburgle: boolean = (itemAmount(Item.get("hot wing")) > 2 || mightGetHotwings()) && (knollAvailable() || possessEquipment(Item.get("frilly skirt")));
 
 			if (!infiltrationReady && !mightCatburgle) {
 				if (itemAmount(Item.get("briefcase")) > 0) {
@@ -1068,7 +1068,7 @@ $_f_starterWeapons ??= new Map([
 function tomb_already_found(): boolean
 {
 	//the tomb only appears once when adv in the unquiet garves. afterwards it appears on the map instead
-	let page: string = visitUrl("place.php?whichplace=cemetery");
+	const page: string = visitUrl("place.php?whichplace=cemetery");
 	return containsText(page, "place.php?whichplace=cemetery&action=cem_advtomb");
 }
 

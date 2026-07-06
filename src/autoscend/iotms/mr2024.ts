@@ -29,7 +29,7 @@ import { c2t_megg_eggs, c2t_megg_extract, c2t_megg_maxed, c2t_megg_preAdv } from
 //Defined in autoscend/iotms/mr2024.ash
 export function consumeBlackAndWhiteApronKit(): boolean
 {
-	let apronKit: Item = Item.get("Black and White Apron Meal Kit");
+	const apronKit: Item = Item.get("Black and White Apron Meal Kit");
 	if (fullness_left() < 3)
 	{
 		return false;
@@ -53,7 +53,7 @@ export function consumeBlackAndWhiteApronKit(): boolean
 	{
 		allowList += ",2063";
 	}
-	let oilProgress: number = toInt(getProperty("twinPeakProgress"));
+	const oilProgress: number = toInt(getProperty("twinPeakProgress"));
 	if ((oilProgress & 4) === 1 || itemAmount(Item.get("jar of oil")) > 0 || itemAmount(Item.get("bubblin' crude")) > 12)
 	{
 		allowList += ",5789";
@@ -90,9 +90,9 @@ export function auto_haveAprilingBandHelmet(): boolean
 export function auto_getAprilingBandItems(): boolean
 {
 	if (!auto_haveAprilingBandHelmet()) { return false; }
-	let have_sax: boolean = availableAmount(Item.get("Apriling band saxophone")) > 0;
-	let have_tuba: boolean = availableAmount(Item.get("Apriling band tuba")) > 0;
-	let have_picc: boolean = availableAmount(Item.get("Apriling band piccolo")) > 0;
+	const have_sax: boolean = availableAmount(Item.get("Apriling band saxophone")) > 0;
+	const have_tuba: boolean = availableAmount(Item.get("Apriling band tuba")) > 0;
+	const have_picc: boolean = availableAmount(Item.get("Apriling band piccolo")) > 0;
 	function instruments_so_far(): number
 	{
 		return toInt(getProperty("_aprilBandInstruments"));
@@ -122,15 +122,15 @@ export function auto_getAprilingBandItems(): boolean
 
 export function auto_playAprilPiccolo(): boolean
 {
-	let f: Familiar = myFamiliar();
+	const f: Familiar = myFamiliar();
 	let success: boolean = false;
 	if (f !== Familiar.none)
 	{
-		let startexp: number = f.experience;
+		const startexp: number = f.experience;
 		cliExecute("aprilband play piccolo");
 		success = f.experience > startexp;
 	}
-	let tracker: string = (in_zootomist() ? "auto_tracker_path" : "auto_otherstuff");
+	const tracker: string = (in_zootomist() ? "auto_tracker_path" : "auto_otherstuff");
 	handleTracker$1(Item.get("Apriling band piccolo").toString(), `${(success ? "Played" : "Failed to play")} to ${f}`, tracker);
 	return success;
 }
@@ -206,13 +206,13 @@ export function dartChoiceHandler(choice: number, options: Map<number, string>):
 	auto_log_info(`dartChoiceHandler Running choice ${choice}`, "blue");
 
 	let dcchoice: number = 0;
-	for (let [idx, str] of options)
+	for (const [idx, str] of options)
 	{
 		auto_log_info(`choice ${idx} is ${str}`, "blue");
 	}
-	for (let perk of ["impress", "better", "targeting", "butt"])
+	for (const perk of ["impress", "better", "targeting", "butt"])
 	{ //Ranked as 1. Shorter ELR CD, 2. bullseye chance, 3. Butt Awareness, 4. Everything else
-		for (let [idx, str] of options)
+		for (const [idx, str] of options)
 		{
 			if (containsText(toLowerCase(str), perk))
 			{
@@ -232,7 +232,7 @@ function dartBullseyeChance(): number
 	let perks: Map<number, string> = new Map();
 	let chance: number = 25; // base bullseye chance is 25%
 	perks = new Map(splitString(toLowerCase(getProperty("everfullDartPerks")), ",").map((_v, _i) => [_i, _v]));
-	for (let perk of perks.keys())
+	for (const perk of perks.keys())
 	{
 		if (containsText((perks.get(perk) ?? perks.set(perk, "").get(perk)), "better") || containsText((perks.get(perk) ?? perks.set(perk, "").get(perk)), "targeting"))
 		{
@@ -247,7 +247,7 @@ export function dartELRcd(): number
 	let perks: Map<number, string> = new Map();
 	let cd: number = 50; // base cd is 50 turns
 	perks = new Map(splitString(toLowerCase(getProperty("everfullDartPerks")), ",").map((_v, _i) => [_i, _v]));
-	for (let perk of perks.keys())
+	for (const perk of perks.keys())
 	{
 		if (containsText((perks.get(perk) ?? perks.set(perk, "").get(perk)), "impress"))
 		{
@@ -261,7 +261,7 @@ export function dartSkill(): Skill
 {
 	let curDartboard: Map<number, string> = new Map();
 	curDartboard = new Map(splitString(toLowerCase(getProperty("_currentDartboard")), ",").map((_v, _i) => [_i, _v]));
-	for (let sk of curDartboard.keys())
+	for (const sk of curDartboard.keys())
 	{
 		if (containsText((curDartboard.get(sk) ?? curDartboard.set(sk, "").get(sk)), "butt"))
 		{ // get more items
@@ -279,7 +279,7 @@ export function dartSkill(): Skill
 
 export function dartEleDmg(): boolean
 {
-	let perks: string = toLowerCase(getProperty("everfullDartPerks"));
+	const perks: string = toLowerCase(getProperty("everfullDartPerks"));
 	if (containsText(perks, "add "))
 	{ // Only ele dmg perks have "add " in their perk description so as long as we have 1, we are good
 		return true;
@@ -298,8 +298,8 @@ export function auto_haveMayamCalendar(): boolean
 
 export function auto_MayamIsUsed(glyph: string): boolean
 {
-	let used: Map<number, string> = new Map(splitString(getProperty("_mayamSymbolsUsed"), ",").map((_v, _i) => [_i, _v]));
-	for (let [idx, str] of used)
+	const used: Map<number, string> = new Map(splitString(getProperty("_mayamSymbolsUsed"), ",").map((_v, _i) => [_i, _v]));
+	for (const [idx, str] of used)
 	{
 		if (glyph === str)
 		{
@@ -321,8 +321,8 @@ export function auto_MayamClaim(str: string): boolean
 	{
 		return false;
 	}
-	let rings: Map<number, string> = new Map(splitString(str, " ").map((_v, _i) => [_i, _v]));
-	for (let [i, s] of rings)
+	const rings: Map<number, string> = new Map(splitString(str, " ").map((_v, _i) => [_i, _v]));
+	for (const [i, s] of rings)
 	{
 		if (auto_MayamIsUsed(s)) { return false; }
 	}
@@ -341,8 +341,8 @@ function auto_MayamClaimStinkBomb(): boolean
 	{
 		return false;
 	}
-	let it: Item = Item.get("stuffed yam stinkbomb");
-	let n_start: number = availableAmount(it);
+	const it: Item = Item.get("stuffed yam stinkbomb");
+	const n_start: number = availableAmount(it);
 	cliExecute("mayam rings vessel yam cheese explosion");
 	if (availableAmount(it) > n_start)
 	{
@@ -362,8 +362,8 @@ function auto_MayamClaimBelt(): boolean
 	{
 		return false;
 	}
-	let it: Item = Item.get("yamtility belt");
-	let n_start: number = availableAmount(it);
+	const it: Item = Item.get("yamtility belt");
+	const n_start: number = availableAmount(it);
 	cliExecute("mayam rings yam meat eyepatch yam");
 	if (availableAmount(it) > n_start)
 	{
@@ -396,7 +396,7 @@ function auto_MayamClaimWhatever(): boolean
 	else if (!auto_MayamIsUsed("meat")) { ring2 = "meat"; }
 	else { failure = true; }
 
-	let going_to_use_mouthwash: boolean = myLevel() < 13 && remainingEmbers() >= 2;
+	const going_to_use_mouthwash: boolean = myLevel() < 13 && remainingEmbers() >= 2;
 	// in LTA one more yam martini is more valuable than +2 res for levelling
 	if (going_to_use_mouthwash && !in_lta() && !auto_MayamIsUsed("wall")) { ring3 = "wall"; }
 	else if (!auto_MayamIsUsed("yam3")) { ring3 = "yam"; }
@@ -521,9 +521,9 @@ export function auto_goingToMouthwashLevel(): boolean
 	{
 		return false;
 	}
-	let disregard_karma: boolean = toBoolean(getProperty("auto_disregardInstantKarma"));
+	const disregard_karma: boolean = toBoolean(getProperty("auto_disregardInstantKarma"));
 	// If we have at least 4 embers remaining, don't overlevel, they can be used for something else
-	let happy_to_overlevel: boolean = disregard_karma && remainingEmbers() < 4;
+	const happy_to_overlevel: boolean = disregard_karma && remainingEmbers() < 4;
 	let want_to_mouthwash_level: boolean = myLevel() < 13 || happy_to_overlevel;
 	// Even disregarding karma, never level above 15 using mouthwash as a sanity limit
 	want_to_mouthwash_level = want_to_mouthwash_level && myLevel() < 15;
@@ -541,19 +541,19 @@ export function auto_buyFromSeptEmberStore(): void
 		return;
 	}
 	// mouthwash for leveling
-	let mouthwash: Item = Item.get("Mmm-brr! brand mouthwash");
+	const mouthwash: Item = Item.get("Mmm-brr! brand mouthwash");
 	auto_openMcLargeHugeSkis(); // make sure our skis are open for cold res
 	for (let imw: number = 0; imw < 3; imw++)
 	{ // We can use up to 3 mouthwash
-		let last_res: number = 0;
+		const last_res: number = 0;
 		if (auto_goingToMouthwashLevel())
 		{
 			// get as much cold res as possible
-			let resGoal: Map<Element, number> = new Map();
+			const resGoal: Map<Element, number> = new Map();
 			resGoal.set(Element.get("cold"), 100);
 			// get cold res. Use noob cave as generic place holder
 			// get 1 bembershoot to support mouthwash leveling or general quest help
-			let bember: Item = Item.get("bembershoot");
+			const bember: Item = Item.get("bembershoot");
 			if (remainingEmbers() % 2 === 1 && !possessEquipment(bember) && auto_is_valid(bember))
 			{
 				buy(Coinmaster.get("Sept-Ember Censer"), 1, bember);
@@ -562,12 +562,12 @@ export function auto_buyFromSeptEmberStore(): void
 			provideResistances(resGoal, Location.get("Noob Cave"), true, true, false);
 			equipMaximizedGear();
 			// We could have left-hand if our off-hand is strong enough
-			let cold_res_from_oh: number = numericModifier(equippedItem(Slot.get("off-hand")), Modifier.get("Cold Resistance"));
+			const cold_res_from_oh: number = numericModifier(equippedItem(Slot.get("off-hand")), Modifier.get("Cold Resistance"));
 			// McHugeLarge outfit off-hand is +3 cold res when whole outfit equipped, but not reported by Mafia with above check
-			let using_mchugelarge_oh: boolean = equippedItem(Slot.get("off-hand")) === Item.get("McHugeLarge left pole");
+			const using_mchugelarge_oh: boolean = equippedItem(Slot.get("off-hand")) === Item.get("McHugeLarge left pole");
 			if (using_mchugelarge_oh || cold_res_from_oh > 2.9)
 			{
-				let lefty: Skill = Skill.get("Aug. 13th: Left/Off Hander's Day!");
+				const lefty: Skill = Skill.get("Aug. 13th: Left/Off Hander's Day!");
 				if (canUse$2(lefty) && !toBoolean(getProperty("_aug13Cast")))
 				{
 					useSkill(lefty);
@@ -623,7 +623,7 @@ function expected_mouthwash_main_substat(): number
 
 function expected_mouthwash_main_substat$1(cold_res: number): number
 {
-	let boost_factor: number = 1 + stat_exp_percent(myPrimestat()) / 100;
+	const boost_factor: number = 1 + stat_exp_percent(myPrimestat()) / 100;
 	return boost_factor * 14 * cold_res ** 1.7 / 2;
 }
 
@@ -639,10 +639,10 @@ function expected_level_after_mouthwash$1(n_mouthwash: number): number
 
 function expected_level_after_mouthwash$2(n_mouthwash: number, cold_res: number): number
 {
-	let gained_main_substats: number = n_mouthwash * expected_mouthwash_main_substat$1(cold_res);
-	let old_main_substats: number = myBasestat(stat_to_substat(myPrimestat()));
-	let new_main_substats: number = old_main_substats + gained_main_substats;
-	let level: number = substat_to_level$1(toInt(new_main_substats));
+	const gained_main_substats: number = n_mouthwash * expected_mouthwash_main_substat$1(cold_res);
+	const old_main_substats: number = myBasestat(stat_to_substat(myPrimestat()));
+	const new_main_substats: number = old_main_substats + gained_main_substats;
+	const level: number = substat_to_level$1(toInt(new_main_substats));
 	return level;
 }
 
@@ -730,7 +730,7 @@ function auto_haveClanPhotoBooth(): boolean
 	{
 		return false;
 	}
-	let bafh_available: boolean = isWhitelistedToBAFH() && canReturnToCurrentClan(); // bafh has it fully stocked
+	const bafh_available: boolean = isWhitelistedToBAFH() && canReturnToCurrentClan(); // bafh has it fully stocked
 	return bafh_available || auto_haveClanPhotoBoothHere();
 }
 
@@ -777,7 +777,7 @@ function auto_thisClanPhotoBoothHasItem(it: Item): boolean
 function auto_thisClanPhotoBoothHasItems(its: Map<Item, boolean>): boolean
 {
 	let success: boolean = true;
-	for (let [it, b] of its)
+	for (const [it, b] of its)
 	{
 		success = success && auto_thisClanPhotoBoothHasItem(it);
 	}
@@ -799,15 +799,15 @@ export function auto_getClanPhotoBoothDefaultItems(): boolean
 		items_to_claim = new Map([[Item.get("feather boa"), true], [Item.get("astronaut helmet"), true], [Item.get("oversized monocle on a stick"), true]]);
 	}
 
-	let orig_clan_id: number = getClanId();
-	let in_bafh: boolean = orig_clan_id === getBAFHID();
-	let bafh_available: boolean = isWhitelistedToBAFH() && canReturnToCurrentClan(); // bafh has it fully stocked
+	const orig_clan_id: number = getClanId();
+	const in_bafh: boolean = orig_clan_id === getBAFHID();
+	const bafh_available: boolean = isWhitelistedToBAFH() && canReturnToCurrentClan(); // bafh has it fully stocked
 	if (bafh_available && !in_bafh && !auto_thisClanPhotoBoothHasItems(items_to_claim))
 	{
 		changeClan$2();
 	}
 	let success: boolean = true;
-	for (let [it, b] of items_to_claim)
+	for (const [it, b] of items_to_claim)
 	{
 		success = success && auto_getClanPhotoBoothItem(it);
 	}
@@ -833,9 +833,9 @@ function auto_getClanPhotoBoothItem(it: Item): boolean
 		return true;
 	}
 	// Handle whether we want to jump to BAFH for the item
-	let orig_clan_id: number = getClanId();
-	let in_bafh: boolean = orig_clan_id === getBAFHID();
-	let bafh_available: boolean = isWhitelistedToBAFH() && canReturnToCurrentClan(); // bafh has it fully stocked
+	const orig_clan_id: number = getClanId();
+	const in_bafh: boolean = orig_clan_id === getBAFHID();
+	const bafh_available: boolean = isWhitelistedToBAFH() && canReturnToCurrentClan(); // bafh has it fully stocked
 	if (bafh_available && !in_bafh && !auto_thisClanPhotoBoothHasItem(it))
 	{
 		changeClan$2();
@@ -886,7 +886,7 @@ function auto_getClanPhotoBoothEffect(ef: Effect): boolean
 
 function auto_getClanPhotoBoothEffect$1(ef: Effect, n_times: number): boolean
 {
-	let effect_string: string = auto_getClanPhotoBoothEffectString(ef);
+	const effect_string: string = auto_getClanPhotoBoothEffectString(ef);
 	if (effect_string === "none")
 	{
 		auto_log_error(`Invalid effect for photo booth ${ef.toString()}`);
@@ -917,9 +917,9 @@ export function auto_getClanPhotoBoothEffect$3(ef_string: string, n_times: numbe
 		return false;
 	}
 	// Handle whether we want to jump to BAFH
-	let orig_clan_id: number = getClanId();
-	let in_bafh: boolean = orig_clan_id === getBAFHID();
-	let bafh_available: boolean = isWhitelistedToBAFH() && canReturnToCurrentClan(); // bafh has it fully stocked
+	const orig_clan_id: number = getClanId();
+	const in_bafh: boolean = orig_clan_id === getBAFHID();
+	const bafh_available: boolean = isWhitelistedToBAFH() && canReturnToCurrentClan(); // bafh has it fully stocked
 
 	if (!auto_haveClanPhotoBoothHere() && bafh_available)
 	{
@@ -927,12 +927,12 @@ export function auto_getClanPhotoBoothEffect$3(ef_string: string, n_times: numbe
 	}
 
 	let success: boolean = false;
-	let west_ef: Effect = Effect.get("Wild and Westy!");
-	let tower_ef: Effect = Effect.get("Towering Muscles");
-	let space_ef: Effect = Effect.get("Spaced Out");
-	let west_string: string = toLowerCase(west_ef.toString());
-	let tower_string: string = toLowerCase(tower_ef.toString());
-	let space_string: string = toLowerCase(space_ef.toString());
+	const west_ef: Effect = Effect.get("Wild and Westy!");
+	const tower_ef: Effect = Effect.get("Towering Muscles");
+	const space_ef: Effect = Effect.get("Spaced Out");
+	const west_string: string = toLowerCase(west_ef.toString());
+	const tower_string: string = toLowerCase(tower_ef.toString());
+	const space_string: string = toLowerCase(space_ef.toString());
 	switch (toLowerCase(ef_string))
 	{
 		case "wild":
@@ -988,7 +988,7 @@ export function auto_haveChestMimic(): boolean
 
 function auto_haveMeggEgg(mon: Monster): boolean
 {
-	for (let [megg_mon, i] of c2t_megg_eggs())
+	for (const [megg_mon, i] of c2t_megg_eggs())
 		{
 			if (megg_mon === mon)
 			{
@@ -1038,7 +1038,7 @@ export function auto_meggFight(mon: Monster, speculative: boolean): boolean
 		return true;
 	}
 	// From here adapted from c2t_megg_fight
-	let egg: Item = Item.get("mimic egg");
+	const egg: Item = Item.get("mimic egg");
 	let page: string = null;
 	let monstring: string = "";
 	//go

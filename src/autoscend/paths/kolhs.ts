@@ -65,9 +65,9 @@ function kolhs_closetDrink(): void
 		autoDrink(1, target);
 	}
 	//closet all the others
-	for (let it of Item.get(["single swig of vodka", "bottle of fruity &quot;wine&quot;", "can of the cheapest beer"]))
+	for (const it of Item.get(["single swig of vodka", "bottle of fruity &quot;wine&quot;", "can of the cheapest beer"]))
 	{
-		let amt: number = itemAmount(it);
+		const amt: number = itemAmount(it);
 		if (amt > 0)
 		{
 			putCloset(amt, it);
@@ -92,7 +92,7 @@ export function kolhs_consume(): void
 
 	if (myInebriety() < 10)
 	{ //phase 1. drink these as soon as they drop. no return here because we want to eat too.
-		for (let it of Item.get(["single swig of vodka", "bottle of fruity &quot;wine&quot;", "can of the cheapest beer"]))
+		for (const it of Item.get(["single swig of vodka", "bottle of fruity &quot;wine&quot;", "can of the cheapest beer"]))
 		{
 			if (itemAmount(it) > 0)
 			{
@@ -211,9 +211,9 @@ function LX_kolhs_yearbookCameraQuest(): boolean
 		return false; //we finished the quest today but must wait until tomorrow to turn it in
 	}
 	//try to get a photograph
-	let target: Monster = toMonster(getProperty("yearbookCameraTarget"));
+	const target: Monster = toMonster(getProperty("yearbookCameraTarget"));
 	let adv_target: Location = Location.none;
-	for (let loc of monster_to_location(target).keys())
+	for (const loc of monster_to_location(target).keys())
 	{
 		if (zone_isAvailable(loc, true))
 		{
@@ -311,7 +311,7 @@ export function LM_kolhs(): boolean
 		return false;
 	}
 
-	let familiar_target_100: Familiar = toFamiliar(getProperty("auto_100familiar"));
+	const familiar_target_100: Familiar = toFamiliar(getProperty("auto_100familiar"));
 	if (familiar_target_100 !== Familiar.none && familiar_target_100 !== Familiar.get("Steam-Powered Cheerleader"))
 	{
 		setProperty("auto_100familiar", Familiar.none.toString());

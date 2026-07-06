@@ -38,7 +38,7 @@ function bugbear_Status(loc: Location): string
 
 export function bugbear_BioDataRemaining(loc: Location): number
 {
-	let value: string = bugbear_Status(loc);
+	const value: string = bugbear_Status(loc);
 	if (value === "unlocked" || value === "open" || value === "cleared") { return 0; }
 	switch (loc)
 	{
@@ -63,19 +63,19 @@ export function bugbear_BioDataRemaining(loc: Location): number
 
 function bugbear_ZoneOpen(loc: Location): boolean
 {
-	let value: string = bugbear_Status(loc);
+	const value: string = bugbear_Status(loc);
 	return value === "open";
 }
 
 function bugbear_ZoneCleared(loc: Location): boolean
 {
-	let value: string = bugbear_Status(loc);
+	const value: string = bugbear_Status(loc);
 	return value === "cleared";
 }
 
 function bugbear_UnlockMothership(loc: Location): boolean
 {
-	let remaining: number = bugbear_BioDataRemaining(loc);
+	const remaining: number = bugbear_BioDataRemaining(loc);
 	if (remaining === 0) { return false; }
 
 	let unlockLocation: Location = Location.none;
@@ -168,7 +168,7 @@ function LX_bugbearKeyOTron(): boolean
 
 function LX_bugbearWasteProcessing(): boolean
 {
-	let loc: Location = Location.get("Waste Processing");
+	const loc: Location = Location.get("Waste Processing");
 	if (bugbear_UnlockMothership(loc)) { return true; }
 	if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) { return false; }
 
@@ -193,7 +193,7 @@ function LX_bugbearWasteProcessing(): boolean
 
 function LX_bugbearMedbay(): boolean
 {
-	let loc: Location = Location.get("Medbay");
+	const loc: Location = Location.get("Medbay");
 	if (bugbear_UnlockMothership(loc)) { return true; }
 	if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) { return false; }
 
@@ -204,7 +204,7 @@ function LX_bugbearMedbay(): boolean
 
 function LX_bugbearSonar(): boolean
 {
-	let loc: Location = Location.get("Sonar");
+	const loc: Location = Location.get("Sonar");
 	if (bugbear_UnlockMothership(loc)) { return true; }
 	if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) { return false; }
 
@@ -215,7 +215,7 @@ function LX_bugbearSonar(): boolean
 
 function LX_bugbearScienceLab(): boolean
 {
-	let loc: Location = Location.get("Science Lab");
+	const loc: Location = Location.get("Science Lab");
 	if (bugbear_UnlockMothership(loc)) { return true; }
 	if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) { return false; }
 
@@ -228,7 +228,7 @@ function LX_bugbearScienceLab(): boolean
 
 function LX_bugbearMorgue(): boolean
 {
-	let loc: Location = Location.get("Morgue");
+	const loc: Location = Location.get("Morgue");
 	if (bugbear_UnlockMothership(loc)) { return true; }
 	if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) { return false; }
 
@@ -239,7 +239,7 @@ function LX_bugbearMorgue(): boolean
 
 function LX_bugbearSpecialOps(): boolean
 {
-	let loc: Location = Location.get("Special Ops");
+	const loc: Location = Location.get("Special Ops");
 	if (bugbear_UnlockMothership(loc)) { return true; }
 	if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) { return false; }
 
@@ -296,7 +296,7 @@ function LX_bugbearSpecialOps(): boolean
 
 function LX_bugbearEngineering(): boolean
 {
-	let loc: Location = Location.get("Engineering");
+	const loc: Location = Location.get("Engineering");
 	if (bugbear_UnlockMothership(loc)) { return true; }
 	if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) { return false; }
 
@@ -309,7 +309,7 @@ function LX_bugbearEngineering(): boolean
 
 function LX_bugbearNavigation(): boolean
 {
-	let loc: Location = Location.get("Navigation");
+	const loc: Location = Location.get("Navigation");
 	if (bugbear_UnlockMothership(loc)) { return true; }
 	if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) { return false; }
 
@@ -322,7 +322,7 @@ function LX_bugbearNavigation(): boolean
 
 function LX_bugbearNavigationForce(): boolean
 {
-	let loc: Location = Location.get("Navigation");
+	const loc: Location = Location.get("Navigation");
 	if (bugbear_UnlockMothership(loc)) { return true; }
 	if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) { return false; }
 
@@ -340,7 +340,7 @@ function LX_bugbearNavigationForce(): boolean
 
 function LX_bugbearGallery(): boolean
 {
-	let loc: Location = Location.get("Galley");
+	const loc: Location = Location.get("Galley");
 	if (bugbear_UnlockMothership(loc)) { return true; }
 	if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) { return false; }
 

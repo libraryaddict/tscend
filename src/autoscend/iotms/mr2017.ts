@@ -41,7 +41,7 @@ function mummifyFamiliar(fam: Familiar, bonus: string): boolean
 
 	bonus = toLowerCase(bonus);
 	// I don't want to alter CS behaviour so I'm leaving a couple things in that are otherwise irrelevant.
-	let last: Familiar = myFamiliar();
+	const last: Familiar = myFamiliar();
 	let goal: number = 0;
 
 	switch (bonus)
@@ -213,7 +213,7 @@ export function pantogramPants$1(st: Stat, el: Element, hpmp: number, meatItemSt
 		auto_log_warning(`Do not have enough: ${toItem(itemId)} for pANts.`, "red");
 		return false;
 	}
-	let s1: string = `${itemId},${itemQty}`;
+	const s1: string = `${itemId},${itemQty}`;
 
 
 	switch (meatItemStats)
@@ -237,7 +237,7 @@ export function pantogramPants$1(st: Stat, el: Element, hpmp: number, meatItemSt
 		auto_log_warning(`Do not have enough: ${toItem(itemId)} for pANts.`, "red");
 		return false;
 	}
-	let s2: string = `${itemId},${itemQty}`;
+	const s2: string = `${itemId},${itemQty}`;
 
 
 
@@ -261,7 +261,7 @@ export function pantogramPants$1(st: Stat, el: Element, hpmp: number, meatItemSt
 		auto_log_warning(`Do not have enough: ${toItem(itemId)} for pANts.`, "red");
 		return false;
 	}
-	let s3: string = `${itemId},${itemQty}`;
+	const s3: string = `${itemId},${itemQty}`;
 
 
 	if (m < 1 || m > 3)
@@ -319,7 +319,7 @@ function loveTunnelAcquire$1(enforcer: boolean, statItem: Stat, engineer: boolea
 		return false; //don't try LOV Tunnel if haven't retransformed back to werewolf or is a professor in WereProf
 	}
 
-	let temp: string = visitUrl("place.php?whichplace=town_wrong");
+	const temp: string = visitUrl("place.php?whichplace=town_wrong");
 	if (!containsText(temp, "townwrong_tunnel"))
 	{
 		return false;
@@ -416,7 +416,7 @@ function loveTunnelAcquire$1(enforcer: boolean, statItem: Stat, engineer: boolea
 	//6		Toast? Only with Space Jellyfish?
 	//7		Nothing
 
-	let retval: boolean = autoAdv$2(Location.get("The Tunnel of L.O.V.E."));
+	const retval: boolean = autoAdv$2(Location.get("The Tunnel of L.O.V.E."));
 
 	if (itemAmount(Item.get("LOV Extraterrestrial Chocolate")) > 0)
 	{
@@ -449,8 +449,8 @@ export function kgbWasteClicks(): boolean
 	// Yes, this will not be pleasant if we matched our number and each page click changes the buttons.
 	while (toInt(getProperty("_kgbClicksUsed")) < 22 && clicked < 9)
 	{
-		let start_1: number = clicked;
-		for (let ef of Effect.get(["Items Are Forever", "A View to Some Meat", "Light!", "The Spy Who Loved XP", "Initiative and Let Die", "The Living Hitpoints", "License to Punch", "Goldentongue", "Thunderspell"]))
+		const start_1: number = clicked;
+		for (const ef of Effect.get(["Items Are Forever", "A View to Some Meat", "Light!", "The Spy Who Loved XP", "Initiative and Let Die", "The Living Hitpoints", "License to Punch", "Goldentongue", "Thunderspell"]))
 		{
 			if (containsText(getProperty("auto_kgbTracker"), `:${toInt(ef)}`))
 			{
@@ -496,9 +496,9 @@ function kgbKnownEffects(): string
 
 	for (let i: number = 1; i < 13; i++)
 	{
-		let tabNum: number = (i + 1) / 2;
-		let lowHigh: number = (i + 1) % 2;
-		let ef: Effect = toEffect((tracker.get(i) ?? tracker.set(i, "").get(i)));
+		const tabNum: number = (i + 1) / 2;
+		const lowHigh: number = (i + 1) % 2;
+		const ef: Effect = toEffect((tracker.get(i) ?? tracker.set(i, "").get(i)));
 		let efname: string = ef.toString();
 		if (ef === Effect.get("Light!"))
 		{
@@ -541,8 +541,8 @@ function kgbTryEffect(ef: Effect): boolean
 	{
 		if (toEffect((tracker.get(i) ?? tracker.set(i, "").get(i))) === ef)
 		{
-			let button: number = (i + 1) / 2;
-			let page: string = visitUrl(`place.php?whichplace=kgb&action=kgb_tab${button}`, false);
+			const button: number = (i + 1) / 2;
+			const page: string = visitUrl(`place.php?whichplace=kgb&action=kgb_tab${button}`, false);
 			return true;
 		}
 	}
@@ -575,22 +575,22 @@ function kgbDiscovery(): boolean
 	}
 	tracker = new Map(splitString(getProperty("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]));
 
-	let page: string = visitUrl("place.php?whichplace=kgb", false);
-	let tabCount: AshMatcher = new AshMatcher("kgb_tab(\\d)(?:.*?)otherimages/kgb/tab(\\d+).gif", page);
+	const page: string = visitUrl("place.php?whichplace=kgb", false);
+	const tabCount: AshMatcher = new AshMatcher("kgb_tab(\\d)(?:.*?)otherimages/kgb/tab(\\d+).gif", page);
 	while (tabCount.find())
 	{
-		let id: number = toInt(tabCount.group(1));
-		let height: number = toInt(tabCount.group(2));
-		let index: number = (id - 1) * 2 + height;
+		const id: number = toInt(tabCount.group(1));
+		const height: number = toInt(tabCount.group(2));
+		const index: number = (id - 1) * 2 + height;
 		if (toInt((tracker.get(index) ?? tracker.set(index, "").get(index))) === 0)
 		{
 			auto_log_info(`We do not know ${id} of height: ${height}`, "green");
-			let curEff: number[] = [];
+			const curEff: number[] = [];
 			for (let i: number = 2296; i <= 2306; i++)
 			{
 				curEff[i - 2296] = haveEffect(toEffect(i));
 			}
-			let page_1: string = visitUrl(`place.php?whichplace=kgb&action=kgb_tab${id}`, false);
+			const page_1: string = visitUrl(`place.php?whichplace=kgb&action=kgb_tab${id}`, false);
 			for (let i: number = 2296; i <= 2306; i++)
 			{
 				if (haveEffect(toEffect(i)) !== (curEff[i - 2296] ??= 0))
@@ -621,7 +621,7 @@ function kgbDiscovery(): boolean
 function kgb_tabCount(page: string): number
 {
 	let count_1: number = 0;
-	let tabCount: AshMatcher = new AshMatcher("kgb_tab(\\d)(?:.*?)otherimages/kgb/tab(\\d+).gif", page);
+	const tabCount: AshMatcher = new AshMatcher("kgb_tab(\\d)(?:.*?)otherimages/kgb/tab(\\d+).gif", page);
 	while (tabCount.find())
 	{
 		count_1++;
@@ -634,22 +634,22 @@ function kgb_tabHeight(page: string): number
 	let height: number = 0;
 
 	let printTabs: boolean = false;
-	let ring_matcher: AshMatcher = new AshMatcher("lightrings(\\d+)", page);
+	const ring_matcher: AshMatcher = new AshMatcher("lightrings(\\d+)", page);
 	if (ring_matcher.find())
 	{
-		let image: number = toInt(ring_matcher.group(1));
+		const image: number = toInt(ring_matcher.group(1));
 		auto_log_info(`Found rings of value ${image}`, "blue");
 		printTabs = true;
 	}
 
-	let tabCount: AshMatcher = new AshMatcher("kgb_tab(\\d)(?:.*?)otherimages/kgb/tab(\\d+).gif", page);
+	const tabCount: AshMatcher = new AshMatcher("kgb_tab(\\d)(?:.*?)otherimages/kgb/tab(\\d+).gif", page);
 	while (tabCount.find())
 	{
 		height += toInt(tabCount.group(2));
 		if (printTabs)
 		{
-			let id: number = toInt(tabCount.group(1));
-			let height_1: number = toInt(tabCount.group(2));
+			const id: number = toInt(tabCount.group(1));
+			const height_1: number = toInt(tabCount.group(2));
 			auto_log_info(`Tab ${id} with height of ${height_1}`, "green");
 		}
 	}
@@ -766,8 +766,8 @@ export function kgbSetup(): boolean
 		auto_log_info(`Hitting tab modification button: ${i}`, "blue");
 		page = visitUrl(`place.php?whichplace=kgb&action=kgb_button${i}`, false);
 
-		let count_1: number = kgb_tabCount(page);
-		let height: number = kgb_tabHeight(page);
+		const count_1: number = kgb_tabCount(page);
+		const height: number = kgb_tabHeight(page);
 
 		if (count_1 >= 3)
 		{
@@ -886,12 +886,12 @@ function kgb_getMartini$2(page: string, dontCare: boolean): boolean
 		return false;
 	}
 
-	let button: number = toInt(getProperty("auto_kgbButton100"));
+	const button: number = toInt(getProperty("auto_kgbButton100"));
 
 	while (toInt(getProperty("_kgbDispenserUses")) < 3 && toInt(getProperty("_kgbClicksUsed")) < 22)
 	{
-		let served: number = toInt(getProperty("_kgbDispenserUses"));
-		let have: number = itemAmount(Item.get("splendid martini"));
+		const served: number = toInt(getProperty("_kgbDispenserUses"));
+		const have: number = itemAmount(Item.get("splendid martini"));
 		page = visitUrl("place.php?whichplace=kgb&action=kgb_dispenser", false);
 		if (containsText(page, "Nothing happens."))
 		{
@@ -903,9 +903,9 @@ function kgb_getMartini$2(page: string, dontCare: boolean): boolean
 		{
 			auto_log_info("Did we accidentally solve a puzzle? Gonna assume so...", "green");
 			auto_log_info(`Hitting tab modification button: ${button}`, "blue");
-			let oldClicks: number = toInt(getProperty("_kgbClicksUsed"));
+			const oldClicks: number = toInt(getProperty("_kgbClicksUsed"));
 			page = visitUrl(`place.php?whichplace=kgb&action=kgb_button${button}`, false);
-			let newClicks: number = toInt(getProperty("_kgbClicksUsed"));
+			const newClicks: number = toInt(getProperty("_kgbClicksUsed"));
 			if (newClicks === oldClicks)
 			{
 				auto_log_info("_kgbClicksUsed appears to not be tracking, please let the spies in.", "red");
@@ -948,13 +948,13 @@ function kgbDial(dial: number, curVal: number, target: number): boolean
 
 	while (curVal !== target)
 	{
-		let page: string = visitUrl(`place.php?whichplace=kgb&action=kgb_dial${dial}`, false);
-		let dials: Map<number, number> = new Map();
-		let dial_matcher: AshMatcher = new AshMatcher("title=\"Weird Character (.)", page);
+		const page: string = visitUrl(`place.php?whichplace=kgb&action=kgb_dial${dial}`, false);
+		const dials: Map<number, number> = new Map();
+		const dial_matcher: AshMatcher = new AshMatcher("title=\"Weird Character (.)", page);
 		let count_1: number = 1;
 		while (dial_matcher.find())
 		{
-			let temp: string = dial_matcher.group(1);
+			const temp: string = dial_matcher.group(1);
 			if (temp === "a")
 			{
 				dials.set(count_1, 10);
@@ -982,7 +982,7 @@ function solveKGBMastermind(): boolean
 		return false;
 	}
 
-	let page: string = visitUrl("place.php?whichplace=kgb");
+	const page: string = visitUrl("place.php?whichplace=kgb");
 	if (containsText(page, "A pair of antennae"))
 	{
 		return false;
@@ -1001,7 +1001,7 @@ function solveKGBMastermind(): boolean
 
 	if (containsText(page, "kgb_handledown"))
 	{
-		let temp: string = visitUrl("place.php?whichplace=kgb&action=kgb_handledown");
+		const temp: string = visitUrl("place.php?whichplace=kgb&action=kgb_handledown");
 	}
 	if (!containsText(page, "kgb_handleup"))
 	{
@@ -1012,12 +1012,12 @@ function solveKGBMastermind(): boolean
 	let clicks: number = 0;
 	while (!containsText(page, "A pair of antennae"))
 	{
-		let dials: Map<number, number> = new Map();
+		const dials: Map<number, number> = new Map();
 		let count_1: number = 0;
-		let dial_matcher: AshMatcher = new AshMatcher("title=\"Weird Character (.)", page);
+		const dial_matcher: AshMatcher = new AshMatcher("title=\"Weird Character (.)", page);
 		while (dial_matcher.find())
 		{
-			let temp: string = dial_matcher.group(1);
+			const temp: string = dial_matcher.group(1);
 			if (temp === "a")
 			{
 				dials.set(count_1, 10);
@@ -1031,7 +1031,7 @@ function solveKGBMastermind(): boolean
 		auto_log_info(`Left side: ${(dials.get(0) ?? dials.set(0, 0).get(0))} ${(dials.get(1) ?? dials.set(1, 0).get(1))} ${(dials.get(2) ?? dials.set(2, 0).get(2))}`, "green");
 		auto_log_info(`Right side: ${(dials.get(3) ?? dials.set(3, 0).get(3))} ${(dials.get(4) ?? dials.set(4, 0).get(4))} ${(dials.get(5) ?? dials.set(5, 0).get(5))}`, "green");
 
-		let guess: Map<number, number> = new Map();
+		const guess: Map<number, number> = new Map();
 		if (guessString === "")
 		{
 			guess.set(1, 0);
@@ -1039,7 +1039,7 @@ function solveKGBMastermind(): boolean
 			guess.set(3, 2);
 		}
 		else {
-			let digits: Map<number, string> = new Map(splitString(guessString, " ").map((_v, _i) => [_i, _v]));
+			const digits: Map<number, string> = new Map(splitString(guessString, " ").map((_v, _i) => [_i, _v]));
 			guess.set(1, toInt((digits.get(digits.size - 3) ?? digits.set(digits.size - 3, "").get(digits.size - 3))));
 			guess.set(2, toInt((digits.get(digits.size - 2) ?? digits.set(digits.size - 2, "").get(digits.size - 2))));
 			guess.set(3, toInt((digits.get(digits.size - 1) ?? digits.set(digits.size - 1, "").get(digits.size - 1))));
@@ -1047,13 +1047,13 @@ function solveKGBMastermind(): boolean
 
 		let prop: string = "_auto_kgbScoresLeft";
 		let dialOffset: number = 0;
-		let action: string = "1";
+		const action: string = "1";
 
 		if (containsText(getProperty("_auto_kgbScoresLeft"), "3 0"))
 		{
 			prop = "_auto_kgbScoresRight";
 			dialOffset = 3;
-			let action_1: string = "2";
+			const action_1: string = "2";
 		}
 		//Which one are we doing, if ScoresLeft has 3 0, we are done with it.
 		auto_log_info(`About to guess: ${(guess.get(1) ?? guess.set(1, 0).get(1))}, ${(guess.get(2) ?? guess.set(2, 0).get(2))}, ${(guess.get(3) ?? guess.set(3, 0).get(3))}`, "green");
@@ -1062,12 +1062,12 @@ function solveKGBMastermind(): boolean
 			kgbDial(dialOffset + i, (dials.get(dialOffset + i) ?? dials.set(dialOffset + i, 0).get(dialOffset + i)), (guess.get(i) ?? guess.set(i, 0).get(i)));
 		}
 		//Verify the dials are correct before pushing anything!
-		let vDials: Map<number, number> = new Map();
+		const vDials: Map<number, number> = new Map();
 		let vCount: number = 0;
-		let vDial_matcher: AshMatcher = new AshMatcher("title=\"Weird Character (.)", page);
+		const vDial_matcher: AshMatcher = new AshMatcher("title=\"Weird Character (.)", page);
 		while (vDial_matcher.find())
 		{
-			let temp: string = vDial_matcher.group(1);
+			const temp: string = vDial_matcher.group(1);
 			if (temp === "a")
 			{
 				vDials.set(vCount, 10);
@@ -1083,7 +1083,7 @@ function solveKGBMastermind(): boolean
 			abort("Dials not set correctly");
 		}
 
-		let page_1: string = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${action}`, false);
+		const page_1: string = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${action}`, false);
 		if (containsText(page_1, "Nothing happens"))
 		{
 			auto_log_warning("Out of clicks. Derp.", "red");
@@ -1091,11 +1091,11 @@ function solveKGBMastermind(): boolean
 		}
 		let correct: number = 0;
 		let blink: number = 0;
-		let light_match: AshMatcher = new AshMatcher("kgb_mastermind(\\d)(?:.*?)A light (.*?)\"", page_1);
+		const light_match: AshMatcher = new AshMatcher("kgb_mastermind(\\d)(?:.*?)A light (.*?)\"", page_1);
 		while (light_match.find())
 		{
-			let bulb: number = toInt(light_match.group(1));
-			let status: string = light_match.group(2);
+			const bulb: number = toInt(light_match.group(1));
+			const status: string = light_match.group(2);
 			auto_log_info(`Light ${bulb}: ${status}`, "blue");
 			if (status === "(on)")
 			{
@@ -1165,7 +1165,7 @@ export function getSpaceJelly(): boolean
 		let temp_1: string = visitUrl("oldman.php");
 		temp_1 = visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
 	}
-	let old: Familiar = myFamiliar();
+	const old: Familiar = myFamiliar();
 	useFamiliar(Familiar.get("Space Jellyfish"));
 	let temp: string = visitUrl("place.php?whichplace=thesea");
 	temp = visitUrl("place.php?whichplace=thesea&action=thesea_left2");
@@ -1181,7 +1181,7 @@ export function auto_breatheOutsLeft(): number
 
 function haveAsdonBuff(): boolean
 {
-	for (let eff of Effect.get(["Driving Intimidatingly", "Driving Obnoxiously", "Driving Observantly", "Driving Quickly", "Driving Recklessly", "Driving Safely", "Driving Stealthily", "Driving Wastefully", "Driving Waterproofly"]))
+	for (const eff of Effect.get(["Driving Intimidatingly", "Driving Obnoxiously", "Driving Observantly", "Driving Quickly", "Driving Recklessly", "Driving Safely", "Driving Stealthily", "Driving Wastefully", "Driving Waterproofly"]))
 	{
 		if (haveEffect(eff) !== 0)
 		{
@@ -1269,7 +1269,7 @@ export function asdonBuff$1(goal: Effect): boolean
 	}
 
 	let needShrug: boolean = false;
-	for (let eff of Effect.get(["Driving Intimidatingly", "Driving Obnoxiously", "Driving Observantly", "Driving Quickly", "Driving Recklessly", "Driving Safely", "Driving Stealthily", "Driving Wastefully", "Driving Waterproofly"]))
+	for (const eff of Effect.get(["Driving Intimidatingly", "Driving Obnoxiously", "Driving Observantly", "Driving Quickly", "Driving Recklessly", "Driving Safely", "Driving Stealthily", "Driving Wastefully", "Driving Waterproofly"]))
 	{
 		if (haveEffect(eff) > 0 && eff !== goal)
 		{
@@ -1279,7 +1279,7 @@ export function asdonBuff$1(goal: Effect): boolean
 
 	if (needShrug)
 	{
-		let temp_1: string = visitUrl("campground.php?pwd=&preaction=undrive");
+		const temp_1: string = visitUrl("campground.php?pwd=&preaction=undrive");
 	}
 
 	let effectNum: number = -1;
@@ -1295,7 +1295,7 @@ export function asdonBuff$1(goal: Effect): boolean
 	case Effect.get("Driving Wastefully"):	effectNum = 2;	break;
 	case Effect.get("Driving Waterproofly"):	effectNum = 8;	break;
 	}
-	let temp: string = visitUrl(`campground.php?pwd=&preaction=drive&whichdrive=${effectNum}`);
+	const temp: string = visitUrl(`campground.php?pwd=&preaction=drive&whichdrive=${effectNum}`);
 
 	return true;
 }
@@ -1338,7 +1338,7 @@ function asdonAutoFeed$1(goal: number): boolean
 	}
 
 	let didOnce: boolean = false;
-	for (let it of Item.get([
+	for (const it of Item.get([
 		"a little sump'm sump'm",
 		"ancient frozen dinner",
 		"antique packet of ketchup",
@@ -1391,7 +1391,7 @@ function asdonAutoFeed$1(goal: number): boolean
 			let toFeed: number = min(10, itemAmount(it));
 			if (getProperty("auto_ashtonLimit") !== "")
 			{
-				let limit: number = toInt(getProperty("auto_ashtonLimit"));
+				const limit: number = toInt(getProperty("auto_ashtonLimit"));
 				toFeed = max(0, toFeed - limit);
 			}
 			asdonFeed(it, toFeed);
@@ -1403,9 +1403,9 @@ function asdonAutoFeed$1(goal: number): boolean
 		}
 	}
 
-	let meat_cutoff: number = max(3500, 2000 + meatReserve());
-	let can_buy_dough: boolean = npcPrice(Item.get("wad of dough")) > 0;
-	let can_buy_flower: boolean = npcPrice(Item.get("all-purpose flower")) > 0 && auto_is_valid(Item.get("all-purpose flower"));
+	const meat_cutoff: number = max(3500, 2000 + meatReserve());
+	const can_buy_dough: boolean = npcPrice(Item.get("wad of dough")) > 0;
+	const can_buy_flower: boolean = npcPrice(Item.get("all-purpose flower")) > 0 && auto_is_valid(Item.get("all-purpose flower"));
 	//Dough prices: Madeline's Baking Supply is 40. other stores 50. flower ~50 meat per dough in batches of ~40.
 	//only use flower if direct buying of dough is not available.
 	if (getFuel() < goal && myMeat() > meat_cutoff && isGeneralStoreAvailable() && !in_koe() && can_buy_flower && !can_buy_dough)
@@ -1415,7 +1415,7 @@ function asdonAutoFeed$1(goal: number): boolean
 		if (want > 0)
 		{
 			//flower drops 35 to 45 wads of dough per use. safeguard against inf loop. assume worst drop to let it run enough times.
-			let loop_count: number = ceil(want / 35);
+			const loop_count: number = ceil(want / 35);
 			for (let i = 1, _last_2 = loop_count, _step_2 = 1, _up_2 = i <= _last_2, _inc_2 = _up_2 ? Math.abs(_step_2) : -Math.abs(_step_2); _up_2 ? i <= _last_2 : i >= _last_2; i += _inc_2) {
 				if (myMeat() > meat_cutoff && itemAmount(Item.get("wad of dough")) < want)
 				{
@@ -1431,7 +1431,7 @@ function asdonAutoFeed$1(goal: number): boolean
 
 	if (getFuel() < goal && myMeat() > meat_cutoff && can_buy_dough && isGeneralStoreAvailable() && !in_koe())
 	{
-		let can_buy: number = (myMeat() - meat_cutoff) / npcPrice(Item.get("wad of dough"));
+		const can_buy: number = (myMeat() - meat_cutoff) / npcPrice(Item.get("wad of dough"));
 		let want: number = (goal + 5 - getFuel()) / 6;
 		want = min(want, can_buy);
 		if (want > 0)
@@ -1465,9 +1465,9 @@ function asdonFeed(it: Item, qty: number): boolean
 		return false;
 	}
 
-	let oldFuel: number = getFuel();
-	let temp: string = visitUrl(`campground.php?pwd=&action=fuelconvertor&qty=${qty}&iid=${toInt(it)}`);
-	let newFuel: number = getFuel();
+	const oldFuel: number = getFuel();
+	const temp: string = visitUrl(`campground.php?pwd=&action=fuelconvertor&qty=${qty}&iid=${toInt(it)}`);
+	const newFuel: number = getFuel();
 
 	auto_log_info(`Compressed ${qty} ${it} into sheep, I mean fuel: ${oldFuel} --> ${newFuel}`, "green");
 	return true;
@@ -1674,7 +1674,7 @@ export function horsePreAdventure(): boolean
 {
 	if (!isHorseryAvailable()) { return false; }
 
-	let desiredHorse: string = getProperty("auto_desiredHorse");
+	const desiredHorse: string = getProperty("auto_desiredHorse");
 	if (desiredHorse === "")
 	{
 		return false;
@@ -1691,14 +1691,14 @@ export function horsePreAdventure(): boolean
 
 export function auto_haveGenieBottleOrPocketWishes(): boolean
 {
-	let bottle: Item = wrap_item(Item.get("genie bottle"));
+	const bottle: Item = wrap_item(Item.get("genie bottle"));
 	return itemAmount(bottle) > 0 && auto_is_valid(bottle) || itemAmount(Item.get("pocket wish")) > 0 && auto_is_valid(Item.get("pocket wish"));
 }
 
 export function auto_wishesAvailable(): number
 {
 	let wishes: number = 0;
-	let bottle: Item = wrap_item(Item.get("genie bottle"));
+	const bottle: Item = wrap_item(Item.get("genie bottle"));
 	if (itemAmount(bottle) > 0 && auto_is_valid(bottle))
 	{
 		wishes += 3 - toInt(getProperty("_genieWishesUsed"));
@@ -1712,14 +1712,14 @@ export function auto_wishesAvailable(): number
 
 export function makeGenieWish(wish: string): boolean
 {
-	let starting_wishes: number = auto_wishesAvailable();
+	const starting_wishes: number = auto_wishesAvailable();
 	if (starting_wishes < 1)
 	{
 		return false;
 	}
 
 	let wish_provider: number = 0;
-	let bottle: Item = wrap_item(Item.get("genie bottle"));
+	const bottle: Item = wrap_item(Item.get("genie bottle"));
 	if (auto_is_valid(bottle) && itemAmount(bottle) > 0 && toInt(getProperty("_genieWishesUsed")) < 3)
 	{
 		wish_provider = toInt(bottle);
@@ -1765,7 +1765,7 @@ export function makeGenieWish$1(eff: Effect): boolean
 	return makeGenieWish(`to be ${eff}`) || haveEffect(eff) > 0;
 }
 // Track any failed wishes this run
-let failedWishMonsters: Map<Monster, boolean> = new Map();
+const failedWishMonsters: Map<Monster, boolean> = new Map();
 
 export function canGenieCombat(mon: Monster): boolean
 {
@@ -1774,12 +1774,12 @@ export function canGenieCombat(mon: Monster): boolean
 		return false;
 	}
 
-	let bottle: Item = wrap_item(Item.get("genie bottle"));
-	let haveBottle: boolean = itemAmount(bottle) > 0;
-	let bottleWishesLeft: boolean = toInt(getProperty("_genieWishesUsed")) < 3;
-	let canUseBottle: boolean = haveBottle && bottleWishesLeft && auto_is_valid(bottle);
-	let havePocket: boolean = itemAmount(Item.get("pocket wish")) > 0;
-	let canUsePocket: boolean = havePocket && auto_is_valid(Item.get("pocket wish"));
+	const bottle: Item = wrap_item(Item.get("genie bottle"));
+	const haveBottle: boolean = itemAmount(bottle) > 0;
+	const bottleWishesLeft: boolean = toInt(getProperty("_genieWishesUsed")) < 3;
+	const canUseBottle: boolean = haveBottle && bottleWishesLeft && auto_is_valid(bottle);
+	const havePocket: boolean = itemAmount(Item.get("pocket wish")) > 0;
+	const canUsePocket: boolean = havePocket && auto_is_valid(Item.get("pocket wish"));
 	if (!canUseBottle && !canUsePocket)
 	{
 		return false;
@@ -1792,7 +1792,7 @@ export function canGenieCombat(mon: Monster): boolean
 	{
 		return false; // cannot fight if no adv remaining
 	}
-	let attr: string = toLowerCase(mon.attributes);
+	const attr: string = toLowerCase(mon.attributes);
 	if (containsText(attr, "nocopy") || containsText(attr, "boss"))
 	{
 		return false;
@@ -1818,10 +1818,10 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean
 	}
 
 	auto_log_info(`Using genie to summon ${mon.name}`, "blue");
-	let wish: string = `to fight a ${mon}`;
-	let prev_genieFightsUsed: number = toInt(getProperty("_genieFightsUsed"));
-	let pages: Map<number, string> = new Map();
-	let bottle: Item = wrap_item(Item.get("genie bottle"));
+	const wish: string = `to fight a ${mon}`;
+	const prev_genieFightsUsed: number = toInt(getProperty("_genieFightsUsed"));
+	const pages: Map<number, string> = new Map();
+	const bottle: Item = wrap_item(Item.get("genie bottle"));
 	let wish_provider: number = toInt(bottle);
 	if (itemAmount(Item.get("pocket wish")) > 0 && auto_is_valid(Item.get("pocket wish")))
 	{
@@ -1846,7 +1846,7 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean
 
 export function makeGeniePocket(): boolean
 {
-	let bottle: Item = wrap_item(Item.get("genie bottle"));
+	const bottle: Item = wrap_item(Item.get("genie bottle"));
 	if (itemAmount(bottle) === 0)
 	{
 		return false;
@@ -1856,9 +1856,9 @@ export function makeGeniePocket(): boolean
 		return false;
 	}
 
-	let count_1: number = itemAmount(Item.get("pocket wish"));
+	const count_1: number = itemAmount(Item.get("pocket wish"));
 
-	let wish: string = "for more wishes";
+	const wish: string = "for more wishes";
 	let page: string = visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=${toInt(bottle)}`, false);
 	page = visitUrl(`choice.php?pwd=${myHash()}&whichchoice=1267&option=1&wish=${wish}`);
 

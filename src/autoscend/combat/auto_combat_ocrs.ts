@@ -32,11 +32,11 @@ export function ocrs_combat_helper(page: string): Monster
 	{
 		if (!combat_status_check("unstoppable"))
 		{
-			for (let it of Item.get(["DNA extraction syringe", "Rain-Doh indigo cup", "Rain-Doh blue balls"]))
+			for (const it of Item.get(["DNA extraction syringe", "Rain-Doh indigo cup", "Rain-Doh blue balls"]))
 			{
 				markAsUsed$1(it);
 			}
-			for (let sk of Skill.get(["Air Dirty Laundry", "Ply Reality", "Summon Love Mosquito", "Summon Love Gnats", "Micrometeorite"]))
+			for (const sk of Skill.get(["Air Dirty Laundry", "Ply Reality", "Summon Love Mosquito", "Summon Love Gnats", "Micrometeorite"]))
 			{
 				markAsUsed(sk);
 			}

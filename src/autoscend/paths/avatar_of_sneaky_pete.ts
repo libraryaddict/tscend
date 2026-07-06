@@ -83,7 +83,7 @@ export function pete_buySkills(): void
 	}
 
 	let page: string = visitUrl("da.php?place=gate3");
-	let my_skillPoints: AshMatcher = new AshMatcher("<b>(\\d+)</b> skill point", page);
+	const my_skillPoints: AshMatcher = new AshMatcher("<b>(\\d+)</b> skill point", page);
 	if (my_skillPoints.find())
 	{
 		let skillPoints: number = toInt(my_skillPoints.group(1));

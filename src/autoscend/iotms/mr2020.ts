@@ -115,7 +115,7 @@ function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean
 		equip(Slot.get("acc3"), Item.get("Powerful Glove"));
 	}
 
-	let ret: boolean = useSkill(1, sk);
+	const ret: boolean = useSkill(1, sk);
 
 	if (old !== Item.none)
 	{
@@ -130,7 +130,7 @@ function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean
 		// if we fail to cast a skill, odds are something has gone wrong with
 		// mafia's tracking. Let's check to make sure, then make sure we stop
 		// attempting to use more cheats in vain if so.
-		let page: string = visitUrl("desc_item.php?whichitem=991142661");
+		const page: string = visitUrl("desc_item.php?whichitem=991142661");
 		if (containsText(page, "The Glove's battery is fully depleted."))
 		{
 			auto_log_error("Mafia's Powerful Glove battery tracking was wrong, correcting.");
@@ -178,10 +178,10 @@ function auto_wantToEquipPowerfulGlove(): boolean
 
 function auto_willEquipPowerfulGlove(): boolean
 {
-	for (let s of Slot.get(["acc1", "acc2", "acc3"]))
+	for (const s of Slot.get(["acc1", "acc2", "acc3"]))
 	{
-		let pref: string = getMaximizeSlotPref(s);
-		let toEquip: string = getProperty(pref);
+		const pref: string = getMaximizeSlotPref(s);
+		const toEquip: string = getProperty(pref);
 		if (toEquip === Item.get("Powerful Glove").toString())
 		{
 			return true;
@@ -217,7 +217,7 @@ export function auto_burnPowerfulGloveCharges(): void
 
 export function auto_canFightPiranhaPlant(): boolean
 {
-	let numMushroomFights: number = (in_plumber() ? 5 : 1);
+	const numMushroomFights: number = (in_plumber() ? 5 : 1);
 	if (auto_is_valid(Item.get("packet of mushroom spores")) && (Item.get("packet of mushroom spores").toString()) in getCampground() && toInt(getProperty("_mushroomGardenFights")) < numMushroomFights)
 	{
 		return true;
@@ -238,7 +238,7 @@ export function auto_piranhaPlantFightsRemaining(): number
 {
 	if (auto_canFightPiranhaPlant())
 	{
-		let numMushroomFights: number = (in_plumber() ? 5 : 1);
+		const numMushroomFights: number = (in_plumber() ? 5 : 1);
 		return numMushroomFights - toInt(getProperty("_mushroomGardenFights"));
 	}
 	return 0;
@@ -269,7 +269,7 @@ export function mushroomGardenChoiceHandler(choice: number): void
 {
 	if (choice === 1410)
 	{
-		let growth: string = getProperty("auto_mushroomGardenGrowth");
+		const growth: string = getProperty("auto_mushroomGardenGrowth");
 		let pick: number = 1;
 		if (growth !== "")
 		{
@@ -396,7 +396,7 @@ function auto_cargoShortsCanOpenPocket$1(pocket: number): boolean
 	if (pocket <= 0 || pocket > 666)
 		{ return false; }
 
-	let picked: Map<number, boolean> = new Map(Object.entries(pickedPockets()).map(([_k, _v]) => [toInt(_k), _v]));
+	const picked: Map<number, boolean> = new Map(Object.entries(pickedPockets()).map(([_k, _v]) => [toInt(_k), _v]));
 	if ((picked.get(pocket) ?? picked.set(pocket, false).get(pocket)))
 		{ return false; }
 
@@ -440,7 +440,7 @@ function auto_cargoShortsCanOpenPocket$6(s: string): boolean
 	if (!auto_cargoShortsCanOpenPocket())
 		{ return false; }
 	// to_int errors if not an int, check with regex first
-	let m: AshMatcher = new AshMatcher("^d+$", s);
+	const m: AshMatcher = new AshMatcher("^d+$", s);
 	if (m.find())
 		{ return auto_cargoShortsCanOpenPocket$1(toInt(s)); }
 	else if (toItem(s) !== Item.none)
@@ -484,7 +484,7 @@ export function auto_cargoShortsOpenPocket$2(m: Monster, speculative: boolean): 
 		{ return true; }
 
 	auto_log_info(`Using cargo shorts to summon ${m.name}`, "blue");
-	let pages: Map<number, string> = new Map();
+	const pages: Map<number, string> = new Map();
 	pages.set(0, "inventory.php?action=pocket");
 	pages.set(1, `choice.php?pwd=${myHash()}&whichchoice=1420&option=1&pocket=${availablePocket(m)}`);
 	if (autoAdvBypass(0, pages, Location.get("Noob Cave"), null))
@@ -516,7 +516,7 @@ function auto_cargoShortsOpenPocket$5(s: string): boolean
 	if (!auto_cargoShortsCanOpenPocket$6(s))
 		{ return false; }
 	// to_int errors if not an int, check with regex first
-	let m: AshMatcher = new AshMatcher("^d+$", s);
+	const m: AshMatcher = new AshMatcher("^d+$", s);
 	if (m.find())
 		{ return auto_cargoShortsOpenPocket(toInt(s)); }
 	else if (toItem(s) !== Item.none)
@@ -556,8 +556,8 @@ export function auto_mapTheMonsters(): boolean
 
 function auto_monsterToMap(loc: Location, page: string): Monster
 {
-	let mons: AshMatcher = new AshMatcher("heyscriptswhatsupwinkwink\" value=\"(\\d+)", page);
-	let monOpts: Map<number, Monster> = new Map();
+	const mons: AshMatcher = new AshMatcher("heyscriptswhatsupwinkwink\" value=\"(\\d+)", page);
+	const monOpts: Map<number, Monster> = new Map();
 	let i: number = 0;
 	let bestmon: number = 0;
 	while (mons.find())
@@ -636,18 +636,18 @@ export function cartographyChoiceHandler(choice: number, page: string): void
 	}
 	else if (choice === 1432)
 	{ // Mob Maptality (A Mob of Zeppelin Protesters)
-		let fire_protestors: number = (itemAmount(Item.get("Flamin' Whatshisname")) > 0 ? 10 : 3);
-		let sleaze_amount: number = numericModifier("sleaze damage") + numericModifier("sleaze spell damage");
-		let sleaze_protestors: number = squareRoot(sleaze_amount);
+		const fire_protestors: number = (itemAmount(Item.get("Flamin' Whatshisname")) > 0 ? 10 : 3);
+		const sleaze_amount: number = numericModifier("sleaze damage") + numericModifier("sleaze spell damage");
+		const sleaze_protestors: number = squareRoot(sleaze_amount);
 		let lynyrd_protestors: number = (haveEffect(Effect.get("Musky")) > 0 ? 6 : 3);
-		for (let it of Item.get(["lynyrdskin cap", "lynyrdskin tunic", "lynyrdskin breeches"]))
+		for (const it of Item.get(["lynyrdskin cap", "lynyrdskin tunic", "lynyrdskin breeches"]))
 		{
 			if (equippedAmount(it) > 0)
 			{
 				lynyrd_protestors += 5;
 			}
 		}
-		let best_protestors: number = max(fire_protestors, max(sleaze_protestors, lynyrd_protestors));
+		const best_protestors: number = max(fire_protestors, max(sleaze_protestors, lynyrd_protestors));
 		if (best_protestors === lynyrd_protestors)
 		{
 			runChoice(2);
@@ -671,7 +671,7 @@ export function cartographyChoiceHandler(choice: number, page: string): void
 	}
 	else if (choice === 1435)
 	{ // Leading Yourself Right to Them (Map the Monsters)
-		let enemy: Monster = auto_monsterToMap(myLocation(), page);
+		const enemy: Monster = auto_monsterToMap(myLocation(), page);
 		if (enemy !== Monster.none)
 		{
 			handleTracker$1(Skill.get("Map the Monsters").toString(), enemy.toString(), "auto_mapperidot");
@@ -708,7 +708,7 @@ export function auto_configureRetrocape(hero: string, tag: string): boolean
 		return false;
 	}
 	// store the requested settings in a property so we can handle them later
-	let settings: string = `${hero},${tag}`;
+	const settings: string = `${hero},${tag}`;
 	setProperty("auto_retrocapeSettings", settings);
 	// cut down potential server hits by telling the maximizer to not consider it.
 	addToMaximize("-equip unwrapped knock-off retro superhero cape");
@@ -725,8 +725,8 @@ export function auto_handleRetrocape(): boolean
 	let settingsProperty: string = getProperty("auto_retrocapeSettings");
 	if (settingsProperty === "")
 	{
-		let capeConfiguration: string = getProperty("retroCapeWashingInstructions");
-		let beatenUpCount: number = toInt(getProperty("auto_beatenUpCount"));
+		const capeConfiguration: string = getProperty("retroCapeWashingInstructions");
+		const beatenUpCount: number = toInt(getProperty("auto_beatenUpCount"));
 		if (capeConfiguration === "thrill" && beatenUpCount >= 5)
 		{
 			// if currently configured for stats and have been getting beaten up, change to stun
@@ -737,14 +737,14 @@ export function auto_handleRetrocape(): boolean
 		}
 	}
 
-	let settings: Map<number, string> = new Map(splitString(settingsProperty, ",").map((_v, _i) => [_i, _v]));
+	const settings: Map<number, string> = new Map(splitString(settingsProperty, ",").map((_v, _i) => [_i, _v]));
 	if (settings.size !== 2)
 	{
 		return false;
 	}
 
-	let hero: string = (settings.get(0) ?? settings.set(0, "").get(0));
-	let tag: string = (settings.get(1) ?? settings.set(1, "").get(1));
+	const hero: string = (settings.get(0) ?? settings.set(0, "").get(0));
+	const tag: string = (settings.get(1) ?? settings.set(1, "").get(1));
 
 	if (hero !== "muscle" && hero !== "mysticality" && hero !== "moxie" && hero !== "vampire" && hero !== "heck" && hero !== "robot")
 	{
@@ -786,7 +786,7 @@ export function auto_buyCrimboCommerceMallItem(): boolean
 		return false;
 	}
 
-	let ghostItemString: string = getProperty("commerceGhostItem");
+	const ghostItemString: string = getProperty("commerceGhostItem");
 	if (ghostItemString === "")
 	{
 		// haven't triggered the greedy ghost message at least once yet.
@@ -801,7 +801,7 @@ export function auto_buyCrimboCommerceMallItem(): boolean
 
 	auto_log_info$1(`Commerce Ghost wants us to buy a ${ghostItemString} which will give us roughly ${myLevel() * 25} substats in the next combat with it.`);
 
-	let output: string = cliExecuteOutput(`buy from mall [${toInt(toItem(ghostItemString))}]`);
+	const output: string = cliExecuteOutput(`buy from mall [${toInt(toItem(ghostItemString))}]`);
 	if (!containsText(output, "Purchases complete."))
 	{
 		abort(`Something went wrong buying ${ghostItemString} from the mall.`);

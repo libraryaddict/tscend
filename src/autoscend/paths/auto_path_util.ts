@@ -199,8 +199,8 @@ export function auto_buySkills(): boolean
 		if (myLevel() >= 12 && myMeat() >= 500 && !haveSkill(Skill.get("Deft Hands")) && getProperty("sidequestArenaCompleted") === "none")
 		{
 			//safe flyering
-			let noStaggerItem: boolean = itemAmount(Item.get("beehive")) === 0 && itemAmount(Item.get("Time-Spinner")) === 0;
-			let cantStagger: boolean = noStaggerItem || !haveSkill(Skill.get("Ambidextrous Funkslinging"));
+			const noStaggerItem: boolean = itemAmount(Item.get("beehive")) === 0 && itemAmount(Item.get("Time-Spinner")) === 0;
+			const cantStagger: boolean = noStaggerItem || !haveSkill(Skill.get("Ambidextrous Funkslinging"));
 			if (cantStagger && !toBoolean(getProperty("auto_ignoreFlyer")) && auto_bestWarPlan().doArena)
 			{
 				//buy Deft hands = first item throw in the fight staggers

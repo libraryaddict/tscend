@@ -58,7 +58,7 @@ export function cyrptChoiceHandler(choice: number): void
 				dietingPillsUsed = 0;
 			}
 			else {
-				for (let str of splitString(getProperty("auto_chewed"), ","))
+				for (const str of splitString(getProperty("auto_chewed"), ","))
 				{
 					if (containsText(toLowerCase(str), "dieting pill"))
 					{
@@ -149,7 +149,7 @@ function knockOffCapePrep(): void
 
 function L7_defiledAlcove(): boolean
 {
-	let evilBonus: number = cyrptEvilBonus$1();
+	const evilBonus: number = cyrptEvilBonus$1();
 
 	if (internalQuestStatus("questL07Cyrptic") !== 0 || toInt(getProperty("cyrptAlcoveEvilness")) === 0)
 	{
@@ -200,7 +200,7 @@ function L7_defiledAlcove(): boolean
 
 export function L7_defiledNook(): boolean
 {
-	let evilBonus: number = cyrptEvilBonus$1();
+	const evilBonus: number = cyrptEvilBonus$1();
 	// current mafia bug causes us to lose track of the amount of Evil Eyes in inventory so adding a refresh here
 	cliExecute("refresh inv");
 	// in KoE, skeleton astronauts are random encounters that drop Evil Eyes.
@@ -211,7 +211,7 @@ export function L7_defiledNook(): boolean
 		use(1, Item.get("evil eye"));
 	}
 
-	let skip_in_koe: boolean = in_koe() && toInt(getProperty("cyrptNookEvilness")) > 13 && getProperty("questL12HippyFrat") !== "finished";
+	const skip_in_koe: boolean = in_koe() && toInt(getProperty("cyrptNookEvilness")) > 13 && getProperty("questL12HippyFrat") !== "finished";
 
 	if (toInt(getProperty("cyrptNookEvilness")) > 0 && lar_repeat(Location.get("The Defiled Nook")) && !skip_in_koe)
 	{
@@ -240,7 +240,7 @@ export function L7_defiledNook(): boolean
 
 function L7_defiledNiche(): boolean
 {
-	let evilBonus: number = cyrptEvilBonus$1();
+	const evilBonus: number = cyrptEvilBonus$1();
 
 	if (toInt(getProperty("cyrptNicheEvilness")) > 13 && auto_habitatMonster() === Monster.get("dirty old lihc"))
 	{
@@ -306,7 +306,7 @@ function L7_defiledNiche(): boolean
 
 function L7_defiledCranny(): boolean
 {
-	let evilBonus: number = cyrptEvilBonus$1();
+	const evilBonus: number = cyrptEvilBonus$1();
 
 	if (toInt(getProperty("cyrptCrannyEvilness")) > 0)
 	{
@@ -348,7 +348,7 @@ function L7_defiledCranny(): boolean
 				dietingPillsUsed = 0;
 			}
 			else {
-				for (let str of splitString(getProperty("auto_chewed"), ","))
+				for (const str of splitString(getProperty("auto_chewed"), ","))
 				{
 					if (containsText(toLowerCase(str), "dieting pill"))
 					{
@@ -400,7 +400,7 @@ export function L7_crypt(): boolean
 	visitUrl("crypt.php");
 	use(1, Item.get("Evilometer"));
 
-	let evilBonus: number = cyrptEvilBonus$1();
+	const evilBonus: number = cyrptEvilBonus$1();
 
 	if (L7_defiledAlcove())
 	{
@@ -463,7 +463,7 @@ export function L7_crypt(): boolean
 		auto_change_mcd(10); // get vertebra to make the necklace.
 		setProperty("auto_nextEncounter", "Bonerdagon");
 		setProperty("auto_nonAdvLoc", true.toString());
-		let tryBoner: boolean = autoAdv$1(1, Location.get("Haert of the Cyrpt"));
+		const tryBoner: boolean = autoAdv$1(1, Location.get("Haert of the Cyrpt"));
 		council();
 		cliExecute("refresh quests");
 		if (itemAmount(Item.get("chest of the Bonerdagon")) === 1)
@@ -501,7 +501,7 @@ export function L7_override(): boolean
 		return false;
 	}
 
-	let evilBonus: number = cyrptEvilBonus$1();
+	const evilBonus: number = cyrptEvilBonus$1();
 	if (toInt(getProperty("cyrptNookEvilness")) > 14 + evilBonus && isBanished(Monster.get("party skelteon")))
 	{
 		auto_log_info$1("Trying to check on the ongoing Nook before moving on to a different task");
@@ -509,7 +509,7 @@ export function L7_override(): boolean
 	}
 	if (toInt(getProperty("cyrptNicheEvilness")) > 14 + evilBonus)
 	{
-		let lihcbanihced: boolean = isBanished(Monster.get("basic lihc")) || isBanished(Monster.get("senile lihc")) || isBanished(Monster.get("slick lihc"));
+		const lihcbanihced: boolean = isBanished(Monster.get("basic lihc")) || isBanished(Monster.get("senile lihc")) || isBanished(Monster.get("slick lihc"));
 		if (lihcbanihced || isSniffed$1(Monster.get("dirty old lihc")))
 		{
 			auto_log_info$1("Trying to check on the ongoing Niche before moving on to a different task");

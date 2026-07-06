@@ -55,7 +55,7 @@ export function haveUsed$1(it: Item): boolean
 
 export function usedCount(sk: Skill): number
 {
-	let m: AshMatcher = new AshMatcher(`(sk${toInt(sk).toString()})`, getProperty("_auto_combatState"));
+	const m: AshMatcher = new AshMatcher(`(sk${toInt(sk).toString()})`, getProperty("_auto_combatState"));
 	let count_1: number = 0;
 	while (m.find())
 	{
@@ -66,7 +66,7 @@ export function usedCount(sk: Skill): number
 
 function usedCount$1(it: Item): number
 {
-	let m: AshMatcher = new AshMatcher(`(it${toInt(it).toString()})`, getProperty("_auto_combatState"));
+	const m: AshMatcher = new AshMatcher(`(it${toInt(it).toString()})`, getProperty("_auto_combatState"));
 	let count_1: number = 0;
 	while (m.find())
 	{
@@ -133,12 +133,12 @@ export function canUse(sk: Skill, onlyOnce: boolean, inCombat: boolean): boolean
 		$_static_1 = true;
 	}
 
-	for (let [i, set] of $_canUse_exclusives)
+	for (const [i, set] of $_canUse_exclusives)
 	{
 		if (set.skills.has(sk))
 		{
 			let total: number = 0;
-			for (let check_1 of set.skills.keys())
+			for (const check_1 of set.skills.keys())
 			{
 				total += usedCount(check_1);
 			}
@@ -232,8 +232,8 @@ export function isSniffed(enemy: Monster, sk: Skill): boolean
 	} else {
 		search = sk.toString();
 	}
-	let tracked: string[] = trackedBy(enemy);
-	for (let n of tracked.keys()) {
+	const tracked: string[] = trackedBy(enemy);
+	for (const n of tracked.keys()) {
 		if ((tracked[n] ??= "") === search) {
 			return true;
 		}
@@ -244,7 +244,7 @@ export function isSniffed(enemy: Monster, sk: Skill): boolean
 export function isSniffed$1(enemy: Monster): boolean
 {
 	//checks if the monster enemy is currently sniffed using any of the sniff skills
-	for (let sk of Skill.get(["Transcendent Olfaction", "Make Friends", "Long Con", "Perceive Soul", "Gallapagosian Mating Call", "Monkey Point", "Offer Latte to Opponent", "Motif", "Hunt", "McHugeLarge Slash", "Left %n Kick", "Right %n Kick", "Meat Cute"]))
+	for (const sk of Skill.get(["Transcendent Olfaction", "Make Friends", "Long Con", "Perceive Soul", "Gallapagosian Mating Call", "Monkey Point", "Offer Latte to Opponent", "Motif", "Hunt", "McHugeLarge Slash", "Left %n Kick", "Right %n Kick", "Meat Cute"]))
 	{
 		if (isSniffed(enemy, sk)) { return true; }
 	}
@@ -318,7 +318,7 @@ export function getSniffer(enemy: Monster, inCombat: boolean): Skill
 		return Skill.get("Offer Latte to Opponent");
 	}
 	// Zootomist kicks. We might have to move this depending on what happens with cooldowns
-	let z_kick: Skill = getZooKickSniff();
+	const z_kick: Skill = getZooKickSniff();
 	if (canUse$2(z_kick))
 	{
 		return z_kick;
@@ -352,7 +352,7 @@ function isCopied(enemy: Monster, sk: Skill): boolean
 function isCopied$1(enemy: Monster): boolean
 {
 	//checks if the monster enemy is currently copied using any of the copy skills
-	for (let sk of Skill.get(["Blow the Purple Candle!", "%fn, fire a Red, White and Blue Blast"]))
+	for (const sk of Skill.get(["Blow the Purple Candle!", "%fn, fire a Red, White and Blue Blast"]))
 	{
 		if (isCopied(enemy, sk)) { return true; }
 	}
@@ -505,7 +505,7 @@ export function enemyCanBlocksSkills(): boolean
 	//we want to know if enemy can sometimes block a skill. For such enemies skills should be used only if absolutely necessary
 	//for enemies that always block a skill a seperate function should be made... if we ever fight any in run.
 
-	let enemy: Monster = lastMonster();
+	const enemy: Monster = lastMonster();
 
 	if (Monster.get([
 	"Bonerdagon",
@@ -554,7 +554,7 @@ function auto_saberTrickMeteorShowerCombatHandler(round_1: number, enemy: Monste
 
 function findPhylumBanisher$1(round_1: number, enemy: Monster, text: string): string
 {
-	let banishAction: string = banisherCombatString(monsterPhylum(enemy), myLocation(), true);
+	const banishAction: string = banisherCombatString(monsterPhylum(enemy), myLocation(), true);
 	if (banishAction !== "")
 	{
 		auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
@@ -576,7 +576,7 @@ function findPhylumBanisher$1(round_1: number, enemy: Monster, text: string): st
 
 export function findBanisher(round_1: number, enemy: Monster, text: string): string
 {
-	let banishAction: string = banisherCombatString$1(enemy, myLocation(), true);
+	const banishAction: string = banisherCombatString$1(enemy, myLocation(), true);
 	if (banishAction !== "")
 	{
 		auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
@@ -655,7 +655,7 @@ export function banisherCombatString$1(enemy: Monster, loc: Location, inCombat: 
 		useFree = false; // werewolves don't run
 	}
 	//src/net/sourceforge/kolmafia/session/BanishManager.java
-	let used: Map<string, boolean> = auto_banishesUsedAt(loc);
+	const used: Map<string, boolean> = auto_banishesUsedAt(loc);
 	/*	If we have banished anything else in this zone, make sure we do not undo the banishing.
 		mad wino:batter up!:378:skeletal sommelier:KGB tranquilizer dart:381
 		We are not going to worry about turn costs, it probably only matters for older paths anyway.
@@ -743,7 +743,7 @@ export function banisherCombatString$1(enemy: Monster, loc: Location, inCombat: 
 		return `skill ${Skill.get("Mark Your Territory")}`;
 	}
 
-	let z_kick: Skill = getZooKickBanish();
+	const z_kick: Skill = getZooKickBanish();
 	if (auto_have_skill(z_kick) && myMp() > mpCost(z_kick))
 	{
 		return `skill ${z_kick}`;
@@ -806,7 +806,7 @@ export function banisherCombatString$1(enemy: Monster, loc: Location, inCombat: 
 		return `skill ${Skill.get("[28021]Punt")}`;
 	}
 
-	let saber: Item = wrap_item(Item.get("Fourth of May Cosplay Saber"));
+	const saber: Item = wrap_item(Item.get("Fourth of May Cosplay Saber"));
 	if (((inCombat ? haveEquipped(saber) : possessEquipment(saber))) && auto_is_valid$2(Skill.get("Use the Force")) && auto_saberChargesAvailable() > 0 && !(used.has("Saber Force")))
 	{
 		// can't use the force on uncopyable monsters
@@ -848,7 +848,7 @@ export function banisherCombatString$1(enemy: Monster, loc: Location, inCombat: 
 	if (auto_have_skill(Skill.get("Beancannon")) && toInt(getProperty("_beancannonUses")) < 5 && myMp() - 20 >= mpCost(Skill.get("Beancannon")) && !(used.has("beancannon")))
 	{
 		let haveBeans: boolean = false;
-		for (let beancan of Item.get(["Frigid Northern Beans", "Heimz Fortified Kidney Beans", "Hellfire Spicy Beans", "Mixed Garbanzos and Chickpeas", "Pork 'n' Pork 'n' Pork 'n' Beans", "Shrub's Premium Baked Beans", "Tesla's Electroplated Beans", "Trader Olaf's Exotic Stinkbeans", "World's Blackest-Eyed Peas"]))
+		for (const beancan of Item.get(["Frigid Northern Beans", "Heimz Fortified Kidney Beans", "Hellfire Spicy Beans", "Mixed Garbanzos and Chickpeas", "Pork 'n' Pork 'n' Pork 'n' Beans", "Shrub's Premium Baked Beans", "Tesla's Electroplated Beans", "Trader Olaf's Exotic Stinkbeans", "World's Blackest-Eyed Peas"]))
 		{
 			if ((inCombat ? equippedItem(Slot.get("off-hand")) === beancan : possessEquipment(beancan)))
 			{
@@ -941,11 +941,11 @@ export function yellowRayCombatString(target: Monster, inCombat: boolean, noForc
 
 	if (in_zootomist() && haveEffect(Effect.get("Everything Looks Yellow")) <= 0)
 	{
-		let kick: Skill = getZooKickYR();
+		const kick: Skill = getZooKickYR();
 		if (kick !== Skill.none) { return `skill ${kick}`; }
 	}
 
-	let free_monster: boolean = isFreeMonster$1(target, myLocation()) || toInt(getProperty("breathitinCharges")) > 0 && myLocation().environment === "outdoor";
+	const free_monster: boolean = isFreeMonster$1(target, myLocation()) || toInt(getProperty("breathitinCharges")) > 0 && myLocation().environment === "outdoor";
 
 	if (haveEffect(Effect.get("Everything Looks Yellow")) <= 0)
 	{
@@ -1002,7 +1002,7 @@ export function yellowRayCombatString(target: Monster, inCombat: boolean, noForc
 		{
 			return `skill ${Skill.get("Flash Headlight")}`; // 100 turns
 		}
-		for (let it of Item.get(["Golden Light", "pumpkin bomb", "unbearable light", "viral video", "micronova"]))
+		for (const it of Item.get(["Golden Light", "pumpkin bomb", "unbearable light", "viral video", "micronova"]))
 		{
 			if (itemAmount(it) > 0 && auto_is_valid(it))
 			{
@@ -1035,7 +1035,7 @@ export function yellowRayCombatString(target: Monster, inCombat: boolean, noForc
 		return `skill ${Skill.get("Feel Envy")}`;
 	}
 
-	let saber: Item = wrap_item(Item.get("Fourth of May Cosplay Saber"));
+	const saber: Item = wrap_item(Item.get("Fourth of May Cosplay Saber"));
 	if (((inCombat ? haveEquipped(saber) : possessEquipment(saber))) && auto_saberChargesAvailable() > 0)
 	{
 		// can't use the force on uncopyable monsters
@@ -1124,8 +1124,8 @@ export function wantToForceDrop(enemy: Monster): boolean
 {
 	//skills that can be used on any combat round, repeatedly until an item is stolen
 	//take into account if a yellow ray has been used. Must have been one that doesn't insta-kill
-	let mildEvilAvailable: boolean = canUse$1(Skill.get("Perpetrate Mild Evil"), false) && toInt(getProperty("_mildEvilPerpetrated")) < 3;
-	let swoopAvailable: boolean = canUse$1(Skill.get("Swoop like a Bat"), true) && toInt(getProperty("_batWingsSwoopUsed")) < 11;
+	const mildEvilAvailable: boolean = canUse$1(Skill.get("Perpetrate Mild Evil"), false) && toInt(getProperty("_mildEvilPerpetrated")) < 3;
+	const swoopAvailable: boolean = canUse$1(Skill.get("Swoop like a Bat"), true) && toInt(getProperty("_batWingsSwoopUsed")) < 11;
 
 	let forceDrop: boolean = false;
 	//only force 1 scent gland from each filthworm
@@ -1185,11 +1185,11 @@ export function wantToForceDrop(enemy: Monster): boolean
 
 	if (isActuallyEd() && myLocation() === Location.get("The Secret Council Warehouse"))
 	{
-		let progress: number = toInt(getProperty("warehouseProgress"));
+		const progress: number = toInt(getProperty("warehouseProgress"));
 		if (enemy === Monster.get("warehouse guard"))
 		{
-			let n_pages: number = itemAmount(Item.get("warehouse map page"));
-			let progress_with_pages: number = progress + n_pages * 8;
+			const n_pages: number = itemAmount(Item.get("warehouse map page"));
+			const progress_with_pages: number = progress + n_pages * 8;
 			if (progress_with_pages < 39)
 			{ // need 40 to "win", will get +1 for this combat
 				forceDrop = true;
@@ -1197,8 +1197,8 @@ export function wantToForceDrop(enemy: Monster): boolean
 		}
 		else if (enemy === Monster.get("warehouse clerk"))
 		{
-			let n_pages: number = itemAmount(Item.get("warehouse inventory page"));
-			let progress_with_pages: number = progress + n_pages * 8;
+			const n_pages: number = itemAmount(Item.get("warehouse inventory page"));
+			const progress_with_pages: number = progress + n_pages * 8;
 			if (progress_with_pages < 39)
 			{ // need 40 to "win", will get +1 for this combat
 				forceDrop = true;
@@ -1233,7 +1233,7 @@ export function maxRoundsToDouse(enemy: Monster): number
 	if (myClass() === Class.get("Disco Bandit")) { // DBs take a while to kill b/c disco momentum and potentially low damage
 	rounds -= 3; }
 	// save a round for flyering if we're doing that.
-	let flyer: Item = (auto_warSide() === "hippy" ? Item.get("jam band flyers") : Item.get("rock band flyers"));
+	const flyer: Item = (auto_warSide() === "hippy" ? Item.get("jam band flyers") : Item.get("rock band flyers"));
 	if (canUse$4(flyer) && toInt(getProperty("flyeredML")) < 10000) { rounds -= 1; }
 	// Or pants removal
 	if (canUse$2(Skill.get("Tear Away your Pants!"))) { rounds -= 1; }

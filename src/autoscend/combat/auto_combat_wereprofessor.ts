@@ -36,7 +36,7 @@ export function auto_combatWereProfessorStage4(round_1: number, enemy: Monster, 
 		return "";
 	}
 
-	for (let str of splitString(getProperty("wereProfessorAdvancedResearch"), ","))
+	for (const str of splitString(getProperty("wereProfessorAdvancedResearch"), ","))
 	{
 		if (toInt(str) == enemy.id)
 		{
@@ -59,9 +59,9 @@ export function auto_combatWereProfessorStage5(round_1: number, enemy: Monster, 
 		return "";
 	}
 
-	let enemy_physical_immune: boolean = enemy.physicalResistance > 99;
-	let enemy_physical_res: number = 1 - enemy.physicalResistance * 0.01; //convert % into float
-	let dmg: number = 0;
+	const enemy_physical_immune: boolean = enemy.physicalResistance > 99;
+	const enemy_physical_res: number = 1 - enemy.physicalResistance * 0.01; //convert % into float
+	const dmg: number = 0;
 
 	if (is_werewolf())
 	{

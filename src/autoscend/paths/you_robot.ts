@@ -159,7 +159,7 @@ name = "[Snow Blower]";
 		return false;
 	}
 
-	let starting_scrap: number = myRobotScraps();
+	const starting_scrap: number = myRobotScraps();
 	auto_log_info$1(`Setting Robot Top Attachment to ${name}, Have ${myRobotScraps()} scrap on hand`);
 	visitUrl("place.php?whichplace=scrapheap&action=sh_configure");
 	visitUrl("choice.php?whichchoice=1445&show=top");
@@ -244,7 +244,7 @@ name = "[Grease Gun]";
 		return false;
 	}
 
-	let starting_scrap: number = myRobotScraps();
+	const starting_scrap: number = myRobotScraps();
 	auto_log_info$1(`Setting Robot Left Arm to ${name}, Have ${myRobotScraps()} scrap on hand`);
 	visitUrl("place.php?whichplace=scrapheap&action=sh_configure");
 	visitUrl("choice.php?whichchoice=1445&show=left");
@@ -329,7 +329,7 @@ name = "[Surplus Flamethrower]";
 		return false;
 	}
 
-	let starting_scrap: number = myRobotScraps();
+	const starting_scrap: number = myRobotScraps();
 	auto_log_info$1(`Setting Robot Right Arm to ${name}, Have ${myRobotScraps()} scrap on hand`);
 	visitUrl("place.php?whichplace=scrapheap&action=sh_configure");
 	visitUrl("choice.php?whichchoice=1445&show=right");
@@ -407,7 +407,7 @@ name = "[Snowplow]";
 		return false;
 	}
 
-	let starting_scrap: number = myRobotScraps();
+	const starting_scrap: number = myRobotScraps();
 	auto_log_info$1(`Setting Robot Propulsion System to ${name}, Have ${myRobotScraps()} scrap on hand`);
 	visitUrl("place.php?whichplace=scrapheap&action=sh_configure");
 	visitUrl("choice.php?whichchoice=1445&show=bottom");
@@ -533,7 +533,7 @@ name = "[Holographic Deflector Projection]";
 		return false; //I can not afford it
 	}
 
-	let starting_energy: number = myRobotEnergy();
+	const starting_energy: number = myRobotEnergy();
 	auto_log_info$1(`Upgrading CPU with ${name}`);
 	visitUrl("place.php?whichplace=scrapheap&action=sh_configure");
 	visitUrl("choice.php?whichchoice=1445&show=cpus");
@@ -626,10 +626,10 @@ function robot_energy_per_collect(): number
 	//subsequent collections give 15% less each time. compounded exponenetially (this is a good thing for you). final step is rounded to nearest int.
 	//there is some slight wobble to it that can cause some inconsistent rounding on kol's side. Thus this is an estimate not an absolute
 
-	let ascension_points: number = toInt(getProperty("youRobotPoints"));
-	let collected_today: number = toInt(getProperty("_energyCollected"));
+	const ascension_points: number = toInt(getProperty("youRobotPoints"));
+	const collected_today: number = toInt(getProperty("_energyCollected"));
 
-	let raw: number = (25.0 + ascension_points) * 0.85 ** collected_today;
+	const raw: number = (25.0 + ascension_points) * 0.85 ** collected_today;
 	//only the final step is rounded. it is rounded to the nearest int. not floor, not ceil
 	return round(raw);
 }
@@ -646,7 +646,7 @@ function LX_robot_get_energy(): boolean
 	{
 		return false;
 	}
-	let start_1: number = toInt(getProperty("_energyCollected"));
+	const start_1: number = toInt(getProperty("_energyCollected"));
 	visitUrl("place.php?whichplace=scrapheap&action=sh_getpower");
 	if (start_1 + 1 !== toInt(getProperty("_energyCollected")))
 	{
@@ -668,7 +668,7 @@ function LX_robot_get_scrap_once(): boolean
 	{
 		return false;
 	}
-	let start_1: number = myRobotScraps();
+	const start_1: number = myRobotScraps();
 	visitUrl("place.php?whichplace=scrapheap&action=sh_scrounge");
 	if (start_1 === myRobotScraps())
 	{
@@ -729,7 +729,7 @@ export function robot_get_adv(): void
 		return;
 	}
 
-	let start_adv: number = myAdventures();
+	const start_adv: number = myAdventures();
 	visitUrl("place.php?whichplace=scrapheap&action=sh_chronobo");
 	if (myAdventures() !== 10 + start_adv)
 	{
@@ -767,7 +767,7 @@ function robot_statbot(target: Stat): boolean
 		nn = 3;
 	}
 
-	let start_uses: number = toInt(getProperty("statbotUses"));
+	const start_uses: number = toInt(getProperty("statbotUses"));
 	visitUrl("place.php?whichplace=scrapheap&action=sh_upgrade");
 	runChoice(nn);
 
@@ -781,9 +781,9 @@ function robot_statbot(target: Stat): boolean
 function robot_stat_wanted(): Stat
 {
 	//which stat do we most want to raise next as a robot. If we want multiple stats that would be handled elsewhere.
-	let is_mus: boolean = myPrimestat() === Stat.get("Muscle");
-	let is_mys: boolean = myPrimestat() === Stat.get("Mysticality");
-	let is_mox: boolean = myPrimestat() === Stat.get("Moxie");
+	const is_mus: boolean = myPrimestat() === Stat.get("Muscle");
+	const is_mys: boolean = myPrimestat() === Stat.get("Mysticality");
+	const is_mox: boolean = myPrimestat() === Stat.get("Moxie");
 	if (!is_mox && myBasestat(Stat.get("Moxie")) < myBasestat(myPrimestat()))
 	{
 		//mys classes should keep moxie higher than their mainstat since they are effectively a discount moxie class in this path
@@ -863,7 +863,7 @@ function LX_robot_level(): boolean
 		return false; //we want to preserve our energy to buy adventures
 	}
 	//if we reached this point we are actually willing to use statbot 5000 to buy 5 stat points.
-	let target: Stat = robot_stat_wanted();
+	const target: Stat = robot_stat_wanted();
 	if (target !== Stat.none)
 	{
 		if (robot_statbot(target)) { return true; }
@@ -902,9 +902,9 @@ export function LX_robot_powerlevel(): boolean
 	//mus needs to be leveled up to 62 to equip [antique machete] to clear dense lianas
 	//Haunted Bedroom is ideal for it as it raises all 3 stats. provides meat. and does it all through noncombats.
 	//however we should not over rely on it. it is best to allow statbot to operate as well
-	let need_mus: boolean = myBasestat(Stat.get("Muscle")) < 62;
-	let need_mys: boolean = myBasestat(Stat.get("Mysticality")) < 70;
-	let need_mox: boolean = myBasestat(Stat.get("Moxie")) < 70;
+	const need_mus: boolean = myBasestat(Stat.get("Muscle")) < 62;
+	const need_mys: boolean = myBasestat(Stat.get("Mysticality")) < 70;
+	const need_mox: boolean = myBasestat(Stat.get("Moxie")) < 70;
 	if (need_mus || need_mys || need_mox)
 	{
 		if (autoAdv$2(Location.get("The Haunted Bedroom"))) { return true; }
@@ -925,7 +925,7 @@ export function LX_robot_powerlevel(): boolean
 		if (autoAdv$2(Location.get("The Haunted Bedroom"))) { return true; }
 	}
 	//raise individual stats
-	let target: Stat = robot_stat_wanted();
+	const target: Stat = robot_stat_wanted();
 	if (target !== Stat.none)
 	{
 		// use spare clovers to powerlevel mainstat if you have spare clovers
@@ -1118,8 +1118,8 @@ function robot_assemble_want_rocket_crotch(): boolean
 	{
 		return true; //needed to kill ghosts
 	}
-	let left_vice: boolean = toInt(getProperty("youRobotLeft")) === 4; //vice grips. unlock weapon slot
-	let left_sniper: boolean = toInt(getProperty("youRobotLeft")) === 5; //sniper rifle. deal 100% mys damage
+	const left_vice: boolean = toInt(getProperty("youRobotLeft")) === 4; //vice grips. unlock weapon slot
+	const left_sniper: boolean = toInt(getProperty("youRobotLeft")) === 5; //sniper rifle. deal 100% mys damage
 	if (myPrimestat() === Stat.get("Mysticality") && !left_vice && !left_sniper)
 	{
 		//generally it is only wanted by mys classes who have no other means of attack
@@ -1244,9 +1244,9 @@ function robot_directive(): void
 		removeProperty("auto_robot_directive");
 		return;
 	}
-	let directive: string = getProperty("auto_robot_directive");
+	const directive: string = getProperty("auto_robot_directive");
 	//set and remove spookyraven directives: "raven1"
-	let raven1_done: boolean = toInt(getProperty("lastSecondFloorUnlock")) === myAscensions(); //first floor finished
+	const raven1_done: boolean = toInt(getProperty("lastSecondFloorUnlock")) === myAscensions(); //first floor finished
 	if (directive === "" && !raven1_done)
 	{
 		setProperty("auto_robot_directive", "raven1");
@@ -1261,33 +1261,33 @@ function robot_directive(): void
 		return; //all directives below this line should wait until level 13
 	}
 	//set and remove "outfit1", "outfit2", and "outfit3" directives
-	let slope_ready: boolean = inHardcore() && internalQuestStatus("questL08Trapper") === 2;
-	let slope_done: boolean = (inHardcore() ? getProperty("questL08Trapper") === "finished" : true); //softcore always considered done
+	const slope_ready: boolean = inHardcore() && internalQuestStatus("questL08Trapper") === 2;
+	const slope_done: boolean = (inHardcore() ? getProperty("questL08Trapper") === "finished" : true); //softcore always considered done
 
-	let gob_ready: boolean = internalQuestStatus("questL05Goblin") === 1 && possessOutfit$1("Knob Goblin Harem Girl Disguise");
-	let gob_done: boolean = getProperty("questL05Goblin") === "finished";
+	const gob_ready: boolean = internalQuestStatus("questL05Goblin") === 1 && possessOutfit$1("Knob Goblin Harem Girl Disguise");
+	const gob_done: boolean = getProperty("questL05Goblin") === "finished";
 
-	let castle_ready: boolean = internalQuestStatus("questL10Garbage") === 9 || internalQuestStatus("questL10Garbage") === 10;
-	let castle_wig_route: boolean = possessEquipment(Item.get("Mohawk wig")) || !inHardcore();
-	let castle_done: boolean = !castle_wig_route || getProperty("questL10Garbage") === "finished";
+	const castle_ready: boolean = internalQuestStatus("questL10Garbage") === 9 || internalQuestStatus("questL10Garbage") === 10;
+	const castle_wig_route: boolean = possessEquipment(Item.get("Mohawk wig")) || !inHardcore();
+	const castle_done: boolean = !castle_wig_route || getProperty("questL10Garbage") === "finished";
 
-	let outfit_riders_check: boolean = (slope_ready || slope_done) && (gob_ready || gob_done) && (castle_ready || castle_done);
-	let outfit_riders_done: boolean = slope_done && gob_done && castle_done;
+	const outfit_riders_check: boolean = (slope_ready || slope_done) && (gob_ready || gob_done) && (castle_ready || castle_done);
+	const outfit_riders_done: boolean = slope_done && gob_done && castle_done;
 
-	let island_access: boolean = toInt(getProperty("lastIslandUnlock")) >= myAscensions();
-	let arena_done: boolean = getProperty("sidequestArenaCompleted") !== "none" || toInt(getProperty("flyeredML")) > 9999 || auto_warSide() === "hippy"; //hippy arena not implemented yet
-	let war_can_kill_boss: boolean = myPrimestat() !== Stat.get("Mysticality") || possessEquipment(Item.get("Fourth of May Cosplay Saber"));
-	let war_battlefield_cleared: boolean = auto_warEnemiesRemaining() === 0;
-	let war_have_preoutfit: boolean = possessOutfit$1("Filthy Hippy Disguise") || possessOutfit$1("Frat Boy Ensemble");
-	let war_have_stats: boolean = myBasestat(Stat.get("Moxie")) >= 70 && myBasestat(Stat.get("Mysticality")) >= 70;
+	const island_access: boolean = toInt(getProperty("lastIslandUnlock")) >= myAscensions();
+	const arena_done: boolean = getProperty("sidequestArenaCompleted") !== "none" || toInt(getProperty("flyeredML")) > 9999 || auto_warSide() === "hippy"; //hippy arena not implemented yet
+	const war_can_kill_boss: boolean = myPrimestat() !== Stat.get("Mysticality") || possessEquipment(Item.get("Fourth of May Cosplay Saber"));
+	const war_battlefield_cleared: boolean = auto_warEnemiesRemaining() === 0;
+	const war_have_preoutfit: boolean = possessOutfit$1("Filthy Hippy Disguise") || possessOutfit$1("Frat Boy Ensemble");
+	const war_have_stats: boolean = myBasestat(Stat.get("Moxie")) >= 70 && myBasestat(Stat.get("Mysticality")) >= 70;
 	//ready to start the war
-	let war_ready1: boolean = internalQuestStatus("questL12War") === 0 && war_have_stats && (haveWarOutfit$1() || war_have_preoutfit);
+	const war_ready1: boolean = internalQuestStatus("questL12War") === 0 && war_have_stats && (haveWarOutfit$1() || war_have_preoutfit);
 	//ready to clear the battlefield
-	let war_ready2: boolean = internalQuestStatus("questL12War") === 1 && arena_done && !war_battlefield_cleared;
+	const war_ready2: boolean = internalQuestStatus("questL12War") === 1 && arena_done && !war_battlefield_cleared;
 	//ready to kill the warboss
-	let war_ready3: boolean = internalQuestStatus("questL12War") === 1 && war_can_kill_boss && war_battlefield_cleared;
-	let war_started: boolean = internalQuestStatus("questL12War") === 1; //L12 war started. 0 is for war QUEST started but NOT the war itself
-	let war_finished: boolean = getProperty("questL12War") === "finished";
+	const war_ready3: boolean = internalQuestStatus("questL12War") === 1 && war_can_kill_boss && war_battlefield_cleared;
+	const war_started: boolean = internalQuestStatus("questL12War") === 1; //L12 war started. 0 is for war QUEST started but NOT the war itself
+	const war_finished: boolean = getProperty("questL12War") === "finished";
 	if (directive === "outfit1" && outfit_riders_done && (war_started || war_battlefield_cleared || war_finished))
 	{
 		//we remove outfit1 and go do other quests while flyering for arena
@@ -1316,11 +1316,11 @@ function robot_directive(): void
 		setProperty("auto_robot_directive", "outfit3");
 	}
 	//set and remove "desert" and "chasm" directives. we want to chain from desert into chasm if chasm needs offhand
-	let desert_ready: boolean = internalQuestStatus("questL11Desert") === 0;
-	let desert_done: boolean = internalQuestStatus("questL11Desert") > 0;
-	let chasm_offhand_slot_needed: boolean = possessEquipment(Item.get("loadstone")) || canPull$1(Item.get("loadstone"));
-	let chasm_ready: boolean = internalQuestStatus("questL09Topping") === 0 && toInt(getProperty("chasmBridgeProgress")) < bridgeGoal() && !shenShouldDelayZone(Location.get("The Smut Orc Logging Camp"));
-	let chasm_done: boolean = internalQuestStatus("questL09Topping") > 0;
+	const desert_ready: boolean = internalQuestStatus("questL11Desert") === 0;
+	const desert_done: boolean = internalQuestStatus("questL11Desert") > 0;
+	const chasm_offhand_slot_needed: boolean = possessEquipment(Item.get("loadstone")) || canPull$1(Item.get("loadstone"));
+	const chasm_ready: boolean = internalQuestStatus("questL09Topping") === 0 && toInt(getProperty("chasmBridgeProgress")) < bridgeGoal() && !shenShouldDelayZone(Location.get("The Smut Orc Logging Camp"));
+	const chasm_done: boolean = internalQuestStatus("questL09Topping") > 0;
 
 	if (directive === "chasm" && chasm_done)
 	{
@@ -1347,10 +1347,10 @@ function robot_directive(): void
 	}
 	//set and remove "machete" directive. used exclusively by mys classes
 	//the need for this might have been obsoleted by updates to leveling functions
-	let city_ready: boolean = internalQuestStatus("questL11Worship") === 3; //we unlocked the hidden city
-	let city_ziggurat_ready: boolean = internalQuestStatus("questL11Worship") === 4; //we are about to do ziggurat next
-	let city_finished: boolean = getProperty("questL11Worship") === "finished";
-	let liana_cleared_1: boolean = toInt(getProperty("hiddenApartmentProgress")) > 0 && toInt(getProperty("hiddenOfficeProgress")) > 0 && toInt(getProperty("hiddenHospitalProgress")) > 0 && toInt(getProperty("hiddenBowlingAlleyProgress")) > 0 && toBoolean(getProperty("auto_openedziggurat"));
+	const city_ready: boolean = internalQuestStatus("questL11Worship") === 3; //we unlocked the hidden city
+	const city_ziggurat_ready: boolean = internalQuestStatus("questL11Worship") === 4; //we are about to do ziggurat next
+	const city_finished: boolean = getProperty("questL11Worship") === "finished";
+	const liana_cleared_1: boolean = toInt(getProperty("hiddenApartmentProgress")) > 0 && toInt(getProperty("hiddenOfficeProgress")) > 0 && toInt(getProperty("hiddenHospitalProgress")) > 0 && toInt(getProperty("hiddenBowlingAlleyProgress")) > 0 && toBoolean(getProperty("auto_openedziggurat"));
 	if (directive === "machete" && liana_cleared_1)
 	{
 		removeProperty("auto_robot_directive");
@@ -1433,7 +1433,7 @@ export function LA_robot(): boolean
 	robot_directive();
 	if (robot_assemble()) { return true; }
 	//directives must be done first. we do not want to waste time with those attachments
-	let directive: string = getProperty("auto_robot_directive");
+	const directive: string = getProperty("auto_robot_directive");
 	if (directive === "raven1")
 	{
 		//unlock first floor of spookyraven manor

@@ -39,8 +39,8 @@ export function providePlusCombat(amt: number, loc: Location, doEquips: boolean,
 		useFamiliar(Familiar.none);
 	}
 
-	let alreadyHave: number = numericModifier("Combat Rate");
-	let need: number = amt - alreadyHave;
+	const alreadyHave: number = numericModifier("Combat Rate");
+	const need: number = amt - alreadyHave;
 
 	if (need > 0) {
 		auto_log_debug$1(`We currently have ${alreadyHave}, so we need an extra ${need}`);
@@ -55,7 +55,7 @@ export function providePlusCombat(amt: number, loc: Location, doEquips: boolean,
 	}
 
 	if (doEquips) {
-		let max_1: string = `200combat ${amt}max`;
+		const max_1: string = `200combat ${amt}max`;
 		if (speculative) {
 			simMaximizeWith(loc, max_1);
 		} else {
@@ -82,7 +82,7 @@ export function providePlusCombat(amt: number, loc: Location, doEquips: boolean,
 		}
 	}
 
-	for (let eff of Effect.get(["Driving Stealthily", "The Sonata of Sneakiness", "In The Darkness"])) {
+	for (const eff of Effect.get(["Driving Stealthily", "The Sonata of Sneakiness", "In The Darkness"])) {
 		uneffect(eff);
 		if (pass$4()) {
 			return result$4();
@@ -116,7 +116,7 @@ export function providePlusCombat(amt: number, loc: Location, doEquips: boolean,
 	}
 
 	function tryEffects$5(effects: Map<Effect, boolean>): boolean {
-		for (let eff of effects.keys()) {
+		for (const eff of effects.keys()) {
 			if (buffMaintain$2(eff, 0, 1, 1, speculative)) {
 				handleEffect$4(eff);
 			}
@@ -191,7 +191,7 @@ export function providePlusCombat(amt: number, loc: Location, doEquips: boolean,
 	if (!speculative)
 	{
 		//Prep for if other +combat familiars are added
-		for (let fam of Familiar.get(["Jumpsuited Hound Dog"]))
+		for (const fam of Familiar.get(["Jumpsuited Hound Dog"]))
 		{
 			if (canChangeToFamiliar(fam))
 			{
@@ -240,8 +240,8 @@ export function providePlusNonCombat(amt: number, loc: Location, doEquips: boole
 	}
 	// numeric_modifier will return -combat as a negative value and +combat as a positive value
 	// so we will need to invert the return values otherwise this will be wrong (since amt is supposed to be positive).
- 	let alreadyHave: number = -1.0 * numericModifier("Combat Rate");
-	let need: number = amt - alreadyHave;
+ 	const alreadyHave: number = -1.0 * numericModifier("Combat Rate");
+	const need: number = amt - alreadyHave;
 
 	if (need > 0) {
 		auto_log_debug$1(`We currently have ${alreadyHave}, so we need an extra ${need}`);
@@ -256,7 +256,7 @@ export function providePlusNonCombat(amt: number, loc: Location, doEquips: boole
 	}
 
 	if (doEquips) {
-		let max_1: string = `-200combat ${amt}max`;
+		const max_1: string = `-200combat ${amt}max`;
 		if (speculative) {
 			simMaximizeWith$1(max_1);
 		} else {
@@ -277,7 +277,7 @@ export function providePlusNonCombat(amt: number, loc: Location, doEquips: boole
 	// First let's do the peace turkey, only if we haven't already picked a familiar
 	if (!speculative && toFamiliar(getProperty("auto_familiarChoice")) === Familiar.none)
 	{
-		for (let fam of Familiar.get(["Peace Turkey"]))
+		for (const fam of Familiar.get(["Peace Turkey"]))
 		{
 			if (canChangeToFamiliar(fam))
 			{
@@ -299,7 +299,7 @@ export function providePlusNonCombat(amt: number, loc: Location, doEquips: boole
 		}
 	}
 
-	for (let eff of Effect.get(["Carlweather's Cantata of Confrontation", "Driving Obnoxiously"])) {
+	for (const eff of Effect.get(["Carlweather's Cantata of Confrontation", "Driving Obnoxiously"])) {
 		uneffect(eff);
 		if (pass$5()) {
 			return result$5();
@@ -331,7 +331,7 @@ export function providePlusNonCombat(amt: number, loc: Location, doEquips: boole
 	}
 
 	function tryEffects$6(effects: Map<Effect, boolean>): boolean {
-		for (let eff of effects.keys()) {
+		for (const eff of effects.keys()) {
 			if (buffMaintain$2(eff, 0, 1, 1, speculative)) {
 				handleEffect$5(eff);
 			}
@@ -432,7 +432,7 @@ export function providePlusNonCombat(amt: number, loc: Location, doEquips: boole
 	// If we haven't picked a familiar by now consider the disgeist
 	if (!speculative && toFamiliar(getProperty("auto_familiarChoice")) === Familiar.none)
 	{
-		for (let fam of Familiar.get(["Disgeist"]))
+		for (const fam of Familiar.get(["Disgeist"]))
 		{
 			if (canChangeToFamiliar(fam))
 			{
@@ -478,8 +478,8 @@ export function provideInitiative(amt: number, loc: Location, doEquips: boolean,
 {
 	auto_log_info(`${(speculative ? "Checking if we can" : "Trying to")} provide ${amt} initiative, ${(doEquips ? "with" : "without")} equipment`, "blue");
 
-	let alreadyHave: number = numericModifier("Initiative");
-	let need: number = amt - alreadyHave;
+	const alreadyHave: number = numericModifier("Initiative");
+	const need: number = amt - alreadyHave;
 
 	if (need > 0)
 	{
@@ -498,7 +498,7 @@ export function provideInitiative(amt: number, loc: Location, doEquips: boolean,
 
 	if (doEquips)
 	{
-		let max_1: string = `500initiative ${amt}max`;
+		const max_1: string = `500initiative ${amt}max`;
 		if (speculative)
 		{
 			simMaximizeWith(loc, max_1);
@@ -537,7 +537,7 @@ export function provideInitiative(amt: number, loc: Location, doEquips: boolean,
 
 	function tryEffects$2(effects: Map<Effect, boolean>): boolean
 	{
-		for (let eff of effects.keys())
+		for (const eff of effects.keys())
 		{
 			if (buffMaintain$2(eff, 0, 1, 1, speculative))
 				{ handleEffect$1(eff); }
@@ -655,7 +655,7 @@ export function provideInitiative(amt: number, loc: Location, doEquips: boolean,
 	if (doEquips && auto_haveCCSC() && haveEffect(Effect.get("Peppermint Rush")) === 0 && !toBoolean(getProperty("_candyCaneSwordLyle"))) {
 		if (!speculative) {
 			equip(Item.get("candy cane sword cane"));
-			let temp: string = visitUrl("place.php?whichplace=monorail&action=monorail_lyle");
+			const temp: string = visitUrl("place.php?whichplace=monorail&action=monorail_lyle");
 		}
 		handleEffect$1(Effect.get("Peppermint Rush"));
 		if (pass$1())
@@ -695,7 +695,7 @@ function provideInitiative$3(amt: number, doEquips: boolean): boolean
 export function provideResistances(amt: Map<Element, number>, loc: Location, doEquips: boolean, doAll: boolean, speculative: boolean): Map<Element, number>
 {
 	let debugprint_1: string = "Trying to provide ";
-	for (let [ele, goal] of amt)
+	for (const [ele, goal] of amt)
 	{
 		debugprint_1 += goal.toString();
 		debugprint_1 += " ";
@@ -711,14 +711,14 @@ export function provideResistances(amt: Map<Element, number>, loc: Location, doE
 		uneffect(Effect.get("Flared Nostrils"));
 	}
 
-	let gearLoss: Map<Element, number> = new Map();
+	const gearLoss: Map<Element, number> = new Map();
 	if (!doEquips)
 	{ //trying to provide without equipment also means trying to reach goal without value provided by current equipment
 		//currently equipment is not being locked and may be changed in pre adv after the provider returns success
 		//so may need to take into account removal of what is provided by current equipment to compensate
 		//must reduce the result (not raise goal value) since other functions look at the result
 		let unequipsString: string = "";
-		for (let sl of Slot.get(["hat", "weapon", "off-hand", "back", "shirt", "pants", "acc1", "acc2", "acc3", "familiar"]))
+		for (const sl of Slot.get(["hat", "weapon", "off-hand", "back", "shirt", "pants", "acc1", "acc2", "acc3", "familiar"]))
 		{
 			//simulate removing all gear regardless of individual res modifiers, must account for familiar weight or outfit bonus
 			if (equippedItem(sl) !== Item.none) { unequipsString += `unequip ${sl}; `; }
@@ -726,7 +726,7 @@ export function provideResistances(amt: Map<Element, number>, loc: Location, doE
 		if (unequipsString !== "")
 		{
 			cliExecute(`speculate quiet; ${unequipsString}`);
-			for (let ele of amt.keys())
+			for (const ele of amt.keys())
 			{
 				//record the amount that would be lost to modify the result with
 				gearLoss.set(ele, toInt(min(0, simValue(`${ele} resistance`) - numericModifier(`${ele} resistance`))));
@@ -734,7 +734,7 @@ export function provideResistances(amt: Map<Element, number>, loc: Location, doE
 		}
 	}
 
-	let delta: Map<Element, number> = new Map();
+	const delta: Map<Element, number> = new Map();
 
 	function result$6(ele: Element): number
 	{
@@ -743,8 +743,8 @@ export function provideResistances(amt: Map<Element, number>, loc: Location, doE
 
 	function result$7(): Map<Element, number>
 	{
-		let res: Map<Element, number> = new Map();
-		for (let ele of amt.keys())
+		const res: Map<Element, number> = new Map();
+		for (const ele of amt.keys())
 		{
 			res.set(ele, result$6(ele));
 		}
@@ -754,7 +754,7 @@ export function provideResistances(amt: Map<Element, number>, loc: Location, doE
 	function resultstring(): string
 	{
 		let s: string = "";
-		for (let ele of amt.keys())
+		for (const ele of amt.keys())
 		{
 			if (s !== "")
 			{
@@ -769,7 +769,7 @@ export function provideResistances(amt: Map<Element, number>, loc: Location, doE
 	{
 		if (speculative)
 		{
-			for (let ele of amt.keys())
+			for (const ele of amt.keys())
 			{
 				delta.set(ele, (delta.get(ele) ?? 0) + toInt(numericModifier(eff, `${ele} Resistance`)));
 			}
@@ -784,7 +784,7 @@ export function provideResistances(amt: Map<Element, number>, loc: Location, doE
 
 	function pass$7(): boolean
 	{
-		for (let ele of amt.keys())
+		for (const ele of amt.keys())
 		{
 			if (!pass$6(ele))
 				{ return false; }
@@ -803,7 +803,7 @@ export function provideResistances(amt: Map<Element, number>, loc: Location, doE
 		if (speculative)
 		{
 			let max_1: string = "";
-			for (let [ele, goal] of amt)
+			for (const [ele, goal] of amt)
 			{
 				if (length(max_1) > 0)
 				{
@@ -814,13 +814,13 @@ export function provideResistances(amt: Map<Element, number>, loc: Location, doE
 			simMaximizeWith(loc, max_1);
 		}
 		else {
-			for (let [ele, goal] of amt)
+			for (const [ele, goal] of amt)
 			{
 				addToMaximize(`2000${ele} resistance ${goal}max`);
 			}
 			simMaximize$1(loc);
 		}
-		for (let ele of amt.keys())
+		for (const ele of amt.keys())
 		{
 			delta.set(ele, toInt(simValue(`${ele} Resistance`) - numericModifier(`${ele} Resistance`)));
 		}
@@ -832,10 +832,10 @@ export function provideResistances(amt: Map<Element, number>, loc: Location, doE
 
 	function tryEffects$7(effects: Map<Effect, boolean>): boolean
 	{
-		for (let eff of effects.keys())
+		for (const eff of effects.keys())
 		{
 			let effectMatters: boolean = false;
-			for (let ele of amt.keys())
+			for (const ele of amt.keys())
 			{
 				if (!pass$6(ele) && numericModifier(eff, `${ele} Resistance`) > 0)
 				{
@@ -878,7 +878,7 @@ export function provideResistances(amt: Map<Element, number>, loc: Location, doE
 	if (doEquips && canChangeFamiliar())
 	{
 		let resfam: Familiar = Familiar.none;
-		for (let fam of Familiar.get(["Trick-or-Treating Tot", "Mu", "Exotic Parrot"]))
+		for (const fam of Familiar.get(["Trick-or-Treating Tot", "Mu", "Exotic Parrot"]))
 		{
 			if (auto_have_familiar(fam))
 			{
@@ -911,7 +911,7 @@ export function provideResistances(amt: Map<Element, number>, loc: Location, doE
 			}
 			// update maximizer scores with familiar
 			simMaximize$1(loc);
-			for (let ele of amt.keys())
+			for (const ele of amt.keys())
 			{
 				delta.set(ele, toInt(simValue(`${ele} Resistance`) - numericModifier(`${ele} Resistance`)));
 			}
@@ -986,8 +986,8 @@ function provideResistances$3(amt: Map<Element, number>, doEquips: boolean, spec
 
 export function provideResistances$4(amt: Map<Element, number>, loc: Location, doEquips: boolean): boolean
 {
-	let res: Map<Element, number> = provideResistances$2(amt, doEquips, false, false);
-	for (let [ele, i] of amt)
+	const res: Map<Element, number> = provideResistances$2(amt, doEquips, false, false);
+	for (const [ele, i] of amt)
 	{
 		if ((res.get(ele) ?? res.set(ele, 0).get(ele)) < i)
 			{ return false; }
@@ -1003,7 +1003,7 @@ function provideResistances$5(amt: Map<Element, number>, doEquips: boolean): boo
 function provideStats(amt: Map<Stat, number>, loc: Location, doEquips: boolean, speculative: boolean): Map<Stat, number>
 {
 	let debugprint_1: string = "Trying to provide ";
-	for (let [st, goal] of amt)
+	for (const [st, goal] of amt)
 	{
 		debugprint_1 += goal.toString();
 		debugprint_1 += " ";
@@ -1013,7 +1013,7 @@ function provideStats(amt: Map<Stat, number>, loc: Location, doEquips: boolean, 
 	debugprint_1 += (doEquips ? "with equipment" : "without equipment");
 	auto_log_info(debugprint_1, "blue");
 
-	let delta: Map<Stat, number> = new Map();
+	const delta: Map<Stat, number> = new Map();
 
 	function result$8(st: Stat): number
 	{
@@ -1022,8 +1022,8 @@ function provideStats(amt: Map<Stat, number>, loc: Location, doEquips: boolean, 
 
 	function result$9(): Map<Stat, number>
 	{
-		let res: Map<Stat, number> = new Map();
-		for (let st of amt.keys())
+		const res: Map<Stat, number> = new Map();
+		for (const st of amt.keys())
 		{
 			res.set(st, result$8(st));
 		}
@@ -1033,7 +1033,7 @@ function provideStats(amt: Map<Stat, number>, loc: Location, doEquips: boolean, 
 	function resultstring$1(): string
 	{
 		let s: string = "";
-		for (let st of amt.keys())
+		for (const st of amt.keys())
 		{
 			if (s !== "")
 			{
@@ -1048,7 +1048,7 @@ function provideStats(amt: Map<Stat, number>, loc: Location, doEquips: boolean, 
 	{
 		if (speculative)
 		{
-			for (let st of amt.keys())
+			for (const st of amt.keys())
 			{
 				delta.set(st, (delta.get(st) ?? 0.0) + numericModifier(eff.toString(), st.toString()));
 				delta.set(st, (delta.get(st) ?? 0.0) + numericModifier(eff, `${st} Percent`) * myBasestat(st) / 100.0);
@@ -1064,7 +1064,7 @@ function provideStats(amt: Map<Stat, number>, loc: Location, doEquips: boolean, 
 
 	function pass$9(): boolean
 	{
-		for (let st of amt.keys())
+		for (const st of amt.keys())
 		{
 			if (!pass$8(st))
 				{ return false; }
@@ -1077,7 +1077,7 @@ function provideStats(amt: Map<Stat, number>, loc: Location, doEquips: boolean, 
 		if (speculative)
 		{
 			let max_1: string = "";
-			for (let [st, goal] of amt)
+			for (const [st, goal] of amt)
 			{
 				if (length(max_1) > 0)
 				{
@@ -1088,13 +1088,13 @@ function provideStats(amt: Map<Stat, number>, loc: Location, doEquips: boolean, 
 			simMaximizeWith(loc, max_1);
 		}
 		else {
-			for (let [st, goal] of amt)
+			for (const [st, goal] of amt)
 			{
 				addToMaximize(`200${st} ${goal}max`);
 			}
 			simMaximize$1(loc);
 		}
-		for (let st of amt.keys())
+		for (const st of amt.keys())
 		{
 			delta.set(st, simValue(`Buffed ${st}`) - myBuffedstat(st));
 		}
@@ -1106,10 +1106,10 @@ function provideStats(amt: Map<Stat, number>, loc: Location, doEquips: boolean, 
 
 	function tryEffects$8(effects: Map<Effect, boolean>): boolean
 	{
-		for (let eff of effects.keys())
+		for (const eff of effects.keys())
 		{
 			let effectMatters: boolean = false;
-			for (let st of amt.keys())
+			for (const st of amt.keys())
 			{
 				if (!pass$8(st) && (numericModifier(eff.toString(), st.toString()) > 0 || numericModifier(eff, `${st} Percent`) > 0))
 				{
@@ -1255,7 +1255,7 @@ function provideStats(amt: Map<Stat, number>, loc: Location, doEquips: boolean, 
 			])))
 			{ return result$9(); }
 
-		for (let st of amt.keys())
+		for (const st of amt.keys())
 		{
 			if (!pass$8(st) && auto_canBeachCombHead(st.toString()))
 			{
@@ -1278,8 +1278,8 @@ function provideStats$1(amt: Map<Stat, number>, doEquips: boolean, speculative: 
 
 export function provideStats$2(amt: Map<Stat, number>, loc: Location, doEquips: boolean): boolean
 {
-	let res: Map<Stat, number> = provideStats$1(amt, doEquips, false);
-	for (let [st, i] of amt)
+	const res: Map<Stat, number> = provideStats$1(amt, doEquips, false);
+	for (const [st, i] of amt)
 	{
 		if ((res.get(st) ?? res.set(st, 0.0).get(st)) < i)
 		{
@@ -1296,9 +1296,9 @@ function provideStats$3(amt: Map<Stat, number>, doEquips: boolean): boolean
 
 function provideMuscle(amt: number, loc: Location, doEquips: boolean, speculative: boolean): number
 {
-	let statsNeeded: Map<Stat, number> = new Map();
+	const statsNeeded: Map<Stat, number> = new Map();
 	statsNeeded.set(Stat.get("Muscle"), amt);
-	let res: Map<Stat, number> = provideStats(statsNeeded, loc, doEquips, speculative);
+	const res: Map<Stat, number> = provideStats(statsNeeded, loc, doEquips, speculative);
 	return (res.get(Stat.get("Muscle")) ?? res.set(Stat.get("Muscle"), 0.0).get(Stat.get("Muscle")));
 }
 
@@ -1319,9 +1319,9 @@ function provideMuscle$3(amt: number, doEquips: boolean): boolean
 
 function provideMysticality(amt: number, loc: Location, doEquips: boolean, speculative: boolean): number
 {
-	let statsNeeded: Map<Stat, number> = new Map();
+	const statsNeeded: Map<Stat, number> = new Map();
 	statsNeeded.set(Stat.get("Mysticality"), amt);
-	let res: Map<Stat, number> = provideStats(statsNeeded, loc, doEquips, speculative);
+	const res: Map<Stat, number> = provideStats(statsNeeded, loc, doEquips, speculative);
 	return (res.get(Stat.get("Mysticality")) ?? res.set(Stat.get("Mysticality"), 0.0).get(Stat.get("Mysticality")));
 }
 
@@ -1342,9 +1342,9 @@ function provideMysticality$3(amt: number, doEquips: boolean): boolean
 
 function provideMoxie(amt: number, loc: Location, doEquips: boolean, speculative: boolean): number
 {
-	let statsNeeded: Map<Stat, number> = new Map();
+	const statsNeeded: Map<Stat, number> = new Map();
 	statsNeeded.set(Stat.get("Moxie"), amt);
-	let res: Map<Stat, number> = provideStats(statsNeeded, loc, doEquips, speculative);
+	const res: Map<Stat, number> = provideStats(statsNeeded, loc, doEquips, speculative);
 	return (res.get(Stat.get("Moxie")) ?? res.set(Stat.get("Moxie"), 0.0).get(Stat.get("Moxie")));
 }
 
@@ -1366,8 +1366,8 @@ function provideMoxie$3(amt: number, doEquips: boolean): boolean
 function provideMeat(amt: number, loc: Location, doEverything: boolean, speculative: boolean): number
 {
 	auto_log_info(`${(speculative ? "Checking if we can" : "Trying to")} provide ${amt} meat, ${(doEverything ? "with" : "without")} equipment, familiar, and limited buffs`, "blue");
-	let alreadyHave: number = numericModifier("Meat Drop");
-	let need: number = amt - alreadyHave;
+	const alreadyHave: number = numericModifier("Meat Drop");
+	const need: number = amt - alreadyHave;
 	if (need > 0)
 	{
 		auto_log_debug$1(`We currently have ${alreadyHave}, so we need an extra ${need}`);
@@ -1390,7 +1390,7 @@ function provideMeat(amt: number, loc: Location, doEverything: boolean, speculat
 	// don't craft equipment here. See how much +meat we can get with gear on hand
 	if (doEverything)
 	{
-		let max_1: string = `500meat ${amt + 100}max`;
+		const max_1: string = `500meat ${amt + 100}max`;
 		if (speculative)
 		{
 			simMaximizeWith(loc, max_1);
@@ -1413,7 +1413,7 @@ function provideMeat(amt: number, loc: Location, doEverything: boolean, speculat
 		}
 		// fam isn't equipped immediatly even if we aren't speculating
 		// so add bonus from fam regardless of speculation
-		let target: Familiar = lookupFamiliarDatafile("meat");
+		const target: Familiar = lookupFamiliarDatafile("meat");
 		if (target !== Familiar.none && target !== myFamiliar())
 		{
 			delta += auto_famModifiers(target, "Meat Drop", Item.none);
@@ -1435,7 +1435,7 @@ function provideMeat(amt: number, loc: Location, doEverything: boolean, speculat
 	}
 	function tryEffects$4(effects: Map<Effect, boolean>): boolean
 	{
-		for (let eff of effects.keys())
+		for (const eff of effects.keys())
 		{
 			if (buffMaintain$2(eff, 0, 1, 1, speculative))
 				{ handleEffect$3(eff); }
@@ -1588,7 +1588,7 @@ function provideMeat(amt: number, loc: Location, doEverything: boolean, speculat
 			auto_buyUpTo(1, Item.get("loose purse strings"));
 			autoCraft("smith", 1, Item.get("lump of Brituminous coal"), Item.get("loose purse strings"));
 		}
-		let max_1: string = `500meat ${amt + 100}max`;
+		const max_1: string = `500meat ${amt + 100}max`;
 		if (speculative)
 		{
 			simMaximizeWith(loc, max_1);
@@ -1669,7 +1669,7 @@ function provideMeat(amt: number, loc: Location, doEverything: boolean, speculat
 		{
 			let success: boolean = true;
 			let specwishes: number = 0;
-			let wish_to_try: Effect[] = (in_avantGuard() ? Effect.get([
+			const wish_to_try: Effect[] = (in_avantGuard() ? Effect.get([
 			// Avant guard only has 6 turns for nuns, so needs tonnes of buffs
 			  "Frosty", //200% meat, 100% item, 25 ML, 100% init
 			    "Braaaaaains", //200% meat, -50% item
@@ -1694,7 +1694,7 @@ function provideMeat(amt: number, loc: Location, doEverything: boolean, speculat
 			    "Sinuses For Miles" //200% meat
 			    //~ Let's Go Shopping!  //150% meat, 75% item, -300% myst
 			    ]));
-			for (let eff of wish_to_try)
+			for (const eff of wish_to_try)
 			{
 				if (eff === Effect.get("Frosty") && in_wereprof()) { //skip frosty in wereprof
 				continue; }
@@ -1744,8 +1744,8 @@ function provideItem(amt: number, loc: Location, doEverything: boolean, speculat
 	//doEverything means use equipment, familiar slot, and limited buffs (ie steely eye squint)
 	auto_log_info(`${(speculative ? "Checking if we can" : "Trying to")} provide ${amt} item, ${(doEverything ? "with" : "without")} equipment, familiar, and limited buffs`, "blue");
 
-	let alreadyHave: number = numericModifier("Item Drop");
-	let need: number = amt - alreadyHave;
+	const alreadyHave: number = numericModifier("Item Drop");
+	const need: number = amt - alreadyHave;
 
 	if (need > 0)
 	{
@@ -1773,7 +1773,7 @@ function provideItem(amt: number, loc: Location, doEverything: boolean, speculat
 	// don't craft equipment here. See how much +item we can get with gear on hand
 	if (doEverything)
 	{
-		let max_1: string = `500item ${amt + 100}max`;
+		const max_1: string = `500item ${amt + 100}max`;
 		if (speculative)
 		{
 			simMaximizeWith(loc, max_1);
@@ -1797,7 +1797,7 @@ function provideItem(amt: number, loc: Location, doEverything: boolean, speculat
 		}
 		// fam isn't equipped immediatly even if we aren't speculating
 		// so add bonus from fam regardless of speculation
-		let target: Familiar = lookupFamiliarDatafile("item");
+		const target: Familiar = lookupFamiliarDatafile("item");
 		if (target !== Familiar.none && target !== myFamiliar())
 		{
 			delta += auto_famModifiers(target, "Item Drop", Item.none);
@@ -1822,7 +1822,7 @@ function provideItem(amt: number, loc: Location, doEverything: boolean, speculat
 
 	function tryEffects$3(effects: Map<Effect, boolean>): boolean
 	{
-		for (let eff of effects.keys())
+		for (const eff of effects.keys())
 		{
 			if (buffMaintain$2(eff, 0, 1, 1, speculative))
 				{ handleEffect$2(eff); }
@@ -1927,8 +1927,8 @@ function provideItem(amt: number, loc: Location, doEverything: boolean, speculat
 			{ return result$2(); }
 	}
 	//check specific item drop bonus
-	let itemFoodNeed: generic_t = zone_needItemFood(loc);
-	let itemBoozeNeed: generic_t = zone_needItemBooze(loc);
+	const itemFoodNeed: generic_t = zone_needItemFood(loc);
+	const itemBoozeNeed: generic_t = zone_needItemBooze(loc);
 	let itemDropFood: number = result$2() + simValue("Food Drop");
 	let itemDropBooze: number = result$2() + simValue("Booze Drop");
 	if (itemFoodNeed._boolean && itemDropFood < itemFoodNeed._float)
@@ -1964,7 +1964,7 @@ function provideItem(amt: number, loc: Location, doEverything: boolean, speculat
 			januaryToteAcquire(Item.get("broken champagne bottle"));
 		}
 
-		let max_1: string = `500item ${amt + 100}max`;
+		const max_1: string = `500item ${amt + 100}max`;
 		if (speculative)
 		{
 			simMaximizeWith(loc, max_1);
@@ -2072,7 +2072,7 @@ function provideItem(amt: number, loc: Location, doEverything: boolean, speculat
 		{
 			let success: boolean = true;
 			let specwishes: number = 0;
-			for (let eff of Effect.get(["Frosty", //200% meat, 100% item, 25 ML, 100% init
+			for (const eff of Effect.get(["Frosty", //200% meat, 100% item, 25 ML, 100% init
 			"One Very Clear Eye", //100% item
 			"Let's Go Shopping!", //150% meat, 75% item, -300% myst
 			"Always be Collecting", //100% meat, 50% item
@@ -2125,8 +2125,8 @@ export function provideFamExp(amt: number, loc: Location, doEquips: boolean, doE
 	//doEverything means use equipment, familiar slot, and limited buffs (like Feeling Fancy (2 Fullness))
 	auto_log_info(`${(speculative ? "Checking if we can" : "Trying to")} provide ${amt} familiar experience, ${(doEverything ? "with" : "without")} equipment, familiar, and limited buffs`, "blue");
 
-	let alreadyHave: number = numericModifier("Familiar Experience") + 1; //default of 1 fam exp per combat
-	let need: number = amt - alreadyHave;
+	const alreadyHave: number = numericModifier("Familiar Experience") + 1; //default of 1 fam exp per combat
+	const need: number = amt - alreadyHave;
 
 	if (need > 0)
 	{
@@ -2154,7 +2154,7 @@ export function provideFamExp(amt: number, loc: Location, doEquips: boolean, doE
 	// don't craft equipment here. See how much +fam xp we can get with gear on hand
 	if (doEquips || doEverything)
 	{
-		let max_1: string = `1000familiar experience ${amt + 10}max`;
+		const max_1: string = `1000familiar experience ${amt + 10}max`;
 		if (speculative)
 		{
 			simMaximizeWith(loc, max_1);
@@ -2181,7 +2181,7 @@ export function provideFamExp(amt: number, loc: Location, doEquips: boolean, doE
 
 	function tryEffects$1(effects: Map<Effect, boolean>): boolean
 	{
-		for (let eff of effects.keys())
+		for (const eff of effects.keys())
 		{
 			if (numericModifier(eff, Modifier.get("Familiar Experience")) > 0) {
 				if (buffMaintain$2(eff, 0, 1, 1, speculative))
@@ -2209,7 +2209,7 @@ export function provideFamExp(amt: number, loc: Location, doEquips: boolean, doE
 		//craft IOTM derivative that gives high fam xp bonus
 		auto_latteRefill$5("famxp"); //+3
 
-		let max_1: string = `1000familiar experience ${amt + 100}max`;
+		const max_1: string = `1000familiar experience ${amt + 100}max`;
 		if (speculative)
 		{
 			simMaximizeWith(loc, max_1);
@@ -2270,7 +2270,7 @@ export function provideFamExp(amt: number, loc: Location, doEquips: boolean, doE
 			let success: boolean = true;
 			let specwishes: number = 0;
 			//not really any reason to hit blue swayed since we are only able to wish once, but might as well keep it here in case warm shoulders isn't wishable by whatever wish we are using, but blue swayed is
-			for (let eff of Effect.get([
+			for (const eff of Effect.get([
 				"Warm Shoulders", //+5
 				"Blue Swayed" //+X/5, decreasing by 5 every 5 turns
 				])) {
@@ -2295,7 +2295,7 @@ export function provideFamExp(amt: number, loc: Location, doEquips: boolean, doE
 		else if (auto_totalEffectWishesAvailable() > 1) {
 			let success: boolean = true;
 			let specwishes: number = 0;
-			for (let eff of Effect.get([
+			for (const eff of Effect.get([
 				"Blue Swayed", //+X/5, decreasing by 5 every 5 turns
 				"Warm Shoulders" //+5
 				])) {

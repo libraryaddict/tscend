@@ -32,7 +32,7 @@ export function lol_buyReplicas(): boolean
 
 	while (itemAmount(Item.get("replica Mr. Accessory")) > 0)
 	{
-		let page: string = toLowerCase(visitUrl("shop.php?whichshop=mrreplica"));
+		const page: string = toLowerCase(visitUrl("shop.php?whichshop=mrreplica"));
 		// attempt to buy 2023 IOTMs first as if you one them, they are immediately available
 		// then attempt to buy sequentially year by year starting with 2004
 		// note with enough progress, can a second option up to year 2012

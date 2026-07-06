@@ -14,12 +14,12 @@ export function ht_equip_hats(): boolean
     {
         return false;
     }
-    let availableHats: Map<Item, number> = auto_getAllEquipabble$1(Slot.get("hat"));
-    for (let [it, i] of availableHats)
+    const availableHats: Map<Item, number> = auto_getAllEquipabble$1(Slot.get("hat"));
+    for (const [it, i] of availableHats)
     {
         let skip: boolean = false;
         //don't equip the following because they can mess us up later in the run or are useful for consumption (+/- combat and Thorns)
-        for (let bl of Item.get(["Mer-kin sneakmask", "coconut shell"]))
+        for (const bl of Item.get(["Mer-kin sneakmask", "coconut shell"]))
         {
             if (it === bl)
             {

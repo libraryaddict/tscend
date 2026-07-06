@@ -122,7 +122,7 @@ export function towerKeyCount$1(effective: boolean): number
 
 function EightBitScore(): number
 {
-	let score: number = toInt(getProperty("8BitScore"));
+	const score: number = toInt(getProperty("8BitScore"));
 	return score;
 }
 
@@ -138,7 +138,7 @@ export function prepForMegaloCity(): boolean
 		visitUrl("gnomes.php?action=trainskill&whichskill=12");
 	}
 	// After this consider the aegis
-	let aegis: Item = Item.get("autumnal aegis");
+	const aegis: Item = Item.get("autumnal aegis");
 	if (availableAmount(aegis) > 0 || !auto_is_valid(aegis))
 	{
 		return true; // no point doing anything further here
@@ -160,7 +160,7 @@ function EightBitRealmHandler(): boolean
 	//Preparing for each zone is handled in auto_pre_adv.ash
 	let adv_spent: boolean = false;
 
-	let color: string = getProperty("8BitColor");
+	const color: string = getProperty("8BitColor");
 	if (internalQuestStatus("questL02Larva") < 0 && internalQuestStatus("questG02Whitecastle") < 0 && availableAmount(Item.get("continuum transfunctioner")) === 0)
 	{
 		// need distant woods and continuum transfunctioner
@@ -301,8 +301,8 @@ export function LX_getStarKey(): boolean
 		return false;
 	}
 
-	let hole_in_sky_unreachable: boolean = internalQuestStatus("questL10Garbage") < 9;
-	let shen_might_request_hole: boolean = shenShouldDelayZone(Location.get("The Hole in the Sky"));
+	const hole_in_sky_unreachable: boolean = internalQuestStatus("questL10Garbage") < 9;
+	const shen_might_request_hole: boolean = shenShouldDelayZone(Location.get("The Hole in the Sky"));
 	if (hole_in_sky_unreachable || shen_might_request_hole)
 	{
 		return false;
@@ -315,7 +315,7 @@ export function LX_getStarKey(): boolean
 
 	LX_buyStarKeyParts();
 	// summon Skinflute or Camel's Toe to get both stars and lines. We can copy them into delay zones like the 8-bit realm.
-	let copiesNeeded: number = max((8 - itemAmount(Item.get("star"))) / 2, (7 - itemAmount(Item.get("line"))) / 2);
+	const copiesNeeded: number = max((8 - itemAmount(Item.get("star"))) / 2, (7 - itemAmount(Item.get("line"))) / 2);
 	if (needStarKey() && itemAmount(Item.get("star")) < 8 && itemAmount(Item.get("line")) < 7 && auto_haveBackupCamera() && auto_backupUsesLeft() >= copiesNeeded)
 	{
 		// in case it matters later, summon only the monster we can naturally encounter in this ascension.
@@ -323,7 +323,7 @@ export function LX_getStarKey(): boolean
 		if (myAscensions() % 2 === 0 && !summonedMonsterToday(Monster.get("Camel's Toe")) && canSummonMonster(Monster.get("Camel's Toe")) && summonMonster(Monster.get("Camel's Toe"))) { return true; }
 	}
 
-	let at_tower_door: boolean = internalQuestStatus("questL13Final") === 5;
+	const at_tower_door: boolean = internalQuestStatus("questL13Final") === 5;
 	if (!inHardcore() && at_tower_door && needStarKey() && itemAmount(Item.get("star chart")) === 0 && itemAmount(Item.get("star")) >= 8 && itemAmount(Item.get("line")) >= 7)
 	{
 		pullXWhenHaveY(Item.get("star chart"), 1, 0);
@@ -389,7 +389,7 @@ export function beehiveConsider(at_tower: boolean): boolean
 		damage_sources += 1;
 	}
 	// Retatiatory skills
-	for (let sk of Skill.get(["The Psalm of Pointiness", "Spiky Shell", "Scarysauce", "Jalape&ntilde;o Saucesphere"]))
+	for (const sk of Skill.get(["The Psalm of Pointiness", "Spiky Shell", "Scarysauce", "Jalape&ntilde;o Saucesphere"]))
 	{
 		if (haveSkill(sk))
 		{
@@ -397,7 +397,7 @@ export function beehiveConsider(at_tower: boolean): boolean
 		}
 	}
 	// Damage skills
-	for (let sk of Skill.get(["Dirge of Dreadfulness", "Icy Glare"]))
+	for (const sk of Skill.get(["Dirge of Dreadfulness", "Icy Glare"]))
 	{
 		if (haveSkill(sk))
 		{
@@ -521,7 +521,7 @@ export function L13_towerNSContests(): boolean
 		return myBuffedstat(crowd_stat) < 600;
 	}
 
-	let challenge: Element = ns_crowd3();
+	const challenge: Element = ns_crowd3();
 	function crowd3Insufficient(): boolean
 	{
 		return numericModifier(`${challenge} Damage`) + numericModifier(`${challenge} Spell Damage`) < 100;
@@ -581,14 +581,14 @@ export function L13_towerNSContests(): boolean
 			resetMaximize();
 			if (!toBoolean(getProperty("_lyleFavored")) && auto_is_valid$3(Effect.get("Favored by Lyle")))
 			{
-				let temp: string = visitUrl("place.php?whichplace=monorail&action=monorail_lyle");
+				const temp: string = visitUrl("place.php?whichplace=monorail&action=monorail_lyle");
 			}
 			acquireMP$1(150); // only uses free rests or items on hand by default
 			if (in_darkGyffte())
 			{
 				if (crowd_stat === Stat.get("Muscle") && !haveSkill(Skill.get("Preternatural Strength")))
 				{
-					let requirements: Map<Skill, boolean> = new Map();
+					const requirements: Map<Skill, boolean> = new Map();
 					requirements.set(Skill.get("Preternatural Strength"), true);
 					auto_log_info("Torporing, since we want to get Preternatural Strength.", "blue");
 					bat_reallyPickSkills$1(20, requirements);
@@ -599,7 +599,7 @@ export function L13_towerNSContests(): boolean
 				if (crowd_stat === Stat.get("Moxie") && haveSkill(Skill.get("Sinister Charm")))
 					{ crowd_stat = Stat.get("Mysticality"); }
 			}
-			let statGoal: Map<Stat, number> = new Map();
+			const statGoal: Map<Stat, number> = new Map();
 			statGoal.set(crowd_stat, 600);
 			provideStats$2(statGoal, Location.get("Noob Cave"), true);
 			switch (crowd_stat)
@@ -872,15 +872,15 @@ if (crowd3Insufficient()) {
 
 function maximize_hedge(): void
 {
-	let data: string = visitUrl("campground.php?action=telescopelow");
+	const data: string = visitUrl("campground.php?action=telescopelow");
 
-	let first: Element = ns_hedge1();
-	let second: Element = ns_hedge2();
-	let third: Element = ns_hedge3();
-	let resGoal: Map<Element, number> = new Map();
+	const first: Element = ns_hedge1();
+	const second: Element = ns_hedge2();
+	const third: Element = ns_hedge3();
+	const resGoal: Map<Element, number> = new Map();
 	if (first === Element.none || second === Element.none || third === Element.none)
 	{
-		for (let ele of Element.get(["hot", "cold", "stench", "sleaze", "spooky"]))
+		for (const ele of Element.get(["hot", "cold", "stench", "sleaze", "spooky"]))
 		{
 			resGoal.set(ele, 9);
 		}
@@ -982,7 +982,7 @@ export function L13_sorceressDoor(): boolean
 		return L13_sorceressDoorLowKey();
 	}
 
-	let page: string = visitUrl("place.php?whichplace=nstower_door");
+	const page: string = visitUrl("place.php?whichplace=nstower_door");
 	if (containsText(page, "ns_lock6"))
 	{
 		if (itemAmount(Item.get("skeleton key")) === 0)
@@ -1060,7 +1060,7 @@ export function L13_sorceressDoor(): boolean
 	{
 		if (itemAmount(Item.get("Richard's star key")) === 0)
 		{
-			let temp: boolean = cliExecute("make richard's star key");
+			const temp: boolean = cliExecute("make richard's star key");
 		}
 		if (itemAmount(Item.get("Richard's star key")) === 0)
 		{
@@ -1146,14 +1146,14 @@ function L13_towerNSTowerSkin(): boolean
 	let damage: number = 2; // base attack damage plus TT attack skill (kneebutt, headbutt)
 
 	let fam_set: boolean = false;
-	let fam_damage: Map<Familiar, number> = new Map([
+	const fam_damage: Map<Familiar, number> = new Map([
 		[Familiar.get("Glover"), 11],
 		[Familiar.get("Shorter-Order Cook"), 6],
 		[Familiar.get("Mu"), 5],
 		[Familiar.get("Imitation Crab"), 4]
 	]);
 
-	for (let fam of Familiar.get(["Glover", "Shorter-Order Cook", "Mu", "Imitation Crab"]))
+	for (const fam of Familiar.get(["Glover", "Shorter-Order Cook", "Mu", "Imitation Crab"]))
 	{ // crab is evergreen, buy one
 		if (auto_have_familiar(fam))
 		{
@@ -1166,7 +1166,7 @@ function L13_towerNSTowerSkin(): boolean
 	}
 	if (!fam_set)
 	{ // just use some trash that does damage that we will have
-		for (let fam of Familiar.get(["Angry Goat", "MagiMechTech MicroMechaMech", "Star Starfish", "Mosquito"]))
+		for (const fam of Familiar.get(["Angry Goat", "MagiMechTech MicroMechaMech", "Star Starfish", "Mosquito"]))
 		{
 			if (auto_have_familiar(fam))
 			{
@@ -1196,7 +1196,7 @@ function L13_towerNSTowerSkin(): boolean
 	// We want retaliation for light hits, so remove blood bubble if possible
 	uneffect(Effect.get("Blood Bubble"));
 	// damage skills
-	for (let sk of Skill.get(["Dirge of Dreadfulness", "Icy Glare"]))
+	for (const sk of Skill.get(["Dirge of Dreadfulness", "Icy Glare"]))
 	{
 		if (haveSkill(sk))
 		{
@@ -1205,7 +1205,7 @@ function L13_towerNSTowerSkin(): boolean
 		}
 	}
 	// Stinging skills
-	for (let sk of Skill.get(["The Psalm of Pointiness", "Spiky Shell", "Scarysauce", "Jalape&ntilde;o Saucesphere"]))
+	for (const sk of Skill.get(["The Psalm of Pointiness", "Spiky Shell", "Scarysauce", "Jalape&ntilde;o Saucesphere"]))
 	{
 		if (haveSkill(sk))
 		{
@@ -1230,7 +1230,7 @@ function L13_towerNSTowerSkin(): boolean
 	{ // hippies need sleaze
 		damage_accs = Item.get(["kick-ass kicks", "Jefferson wings", "ghost of a necklace"]);
 	}
-	for (let it of damage_accs)
+	for (const it of damage_accs)
 	{
 		if (availableAmount(it) > 0 && canEquip(it))
 		{
@@ -1251,7 +1251,7 @@ function L13_towerNSTowerSkin(): boolean
 		} // available/can_equip
 	} // elemental damage accessory loop
 	// Extra stinging accessories
-	for (let it of Item.get(["hippy protest button", "bottle opener belt buckle"]))
+	for (const it of Item.get(["hippy protest button", "bottle opener belt buckle"]))
 	{
 		if (availableAmount(it) > 0 && canEquip(it))
 		{
@@ -1328,8 +1328,8 @@ function L13_towerNSTowerBones(): boolean
 	{
 		abort("auto_towerBreak set to abort here.");
 	}
-	let hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
-	let has_boning_knife: boolean = itemAmount(Item.get("electric boning knife")) > 0;
+	const hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
+	const has_boning_knife: boolean = itemAmount(Item.get("electric boning knife")) > 0;
 
 	if (has_boning_knife || in_pokefam() || in_wereprof() && canUse$2(Skill.get("Slaughter")) && haveEffect(Effect.get("Everything Looks Red")) === 0)
 	{ //I have everything I need. just go fight
@@ -1416,7 +1416,7 @@ function L13_towerNSTowerBones(): boolean
 		addToMaximize("-familiar");
 		equip(Slot.get("familiar"), Item.none);
 		// Try just boosting weight
-		for (let [i, it] of auto_getListOfNonDamagingFamiliarEquipment())
+		for (const [i, it] of auto_getListOfNonDamagingFamiliarEquipment())
 		{
 			if (canEquip(myFamiliar(), it))
 			{
@@ -1436,7 +1436,7 @@ function L13_towerNSTowerBones(): boolean
 		addToMaximize(`+equip ${Item.get("big hot pepper")}`);
 	}
 
-	for (let lantern of Item.get(["Congressional Medal of Insanity", "petrified wood water purifier", "petrified wood wizard's pouch"]))
+	for (const lantern of Item.get(["Congressional Medal of Insanity", "petrified wood water purifier", "petrified wood wizard's pouch"]))
 	{
 		acquireOrPull(lantern);
 		if (possessEquipment(lantern))
@@ -1448,7 +1448,7 @@ function L13_towerNSTowerBones(): boolean
 
 	addToMaximize("100myst,60spell damage percent,20spell damage,-20ml");
 	equipMaximizedGear();
-	for (let s of Slot.get(["acc1", "acc2", "acc3"]))
+	for (const s of Slot.get(["acc1", "acc2", "acc3"]))
 	{
 		if (equippedItem(s) === Item.get("Hand in Glove"))
 		{
@@ -1458,7 +1458,7 @@ function L13_towerNSTowerBones(): boolean
 
 	function saucegeyserDamage(): number
 	{
-		let base: number = ceil(numericModifier("Spell Damage Percent") / 100.0 * (60 + numericModifier("Spell Damage") + max(numericModifier("Hot Spell Damage"), numericModifier("Cold Spell Damage")) + 0.4 * myBuffedstat(Stat.get("Mysticality"))));
+		const base: number = ceil(numericModifier("Spell Damage Percent") / 100.0 * (60 + numericModifier("Spell Damage") + max(numericModifier("Hot Spell Damage"), numericModifier("Cold Spell Damage")) + 0.4 * myBuffedstat(Stat.get("Mysticality"))));
 		let lanterns: number = (haveEquipped(Item.get("big hot pepper")) ? 2.0 : 1.0);
 		lanterns *= (haveEquipped(Item.get("Congressional Medal of Insanity")) ? 3.0 : 1.0); // can be x3 or 4x, we need the minimum
 		return MLDamageToMonsterMultiplier() * lanterns * base;
@@ -1475,7 +1475,7 @@ function L13_towerNSTowerBones(): boolean
 	//Wall Of Bones combat uses Unleash The Greash, Garbage Nova, or Saucegeyser
 	if (!auto_have_skill(Skill.get("Garbage Nova")) && haveEffect(Effect.get("Takin' It Greasy")) === 0)
 	{
-		let total_damage: number = saucegeyserDamage() * rounds * 3;
+		const total_damage: number = saucegeyserDamage() * rounds * 3;
 		auto_log_info$1(`Wall of bones will have ${wob_hp} hp with ${rounds} rounds to kill.\nSaucegeyser should do ${saucegeyserDamage()} per hit for ${total_damage}`);
 		if (total_damage < wob_hp)
 		{ // 3 is saucegeyser group size
@@ -1511,7 +1511,7 @@ function L13_towerNSTowerMirror(): boolean
 	// confidence really just means take the first choice, so necessary in vampyre
 	if (in_darkGyffte())
 		{ confidence = true; }
-	let choicenum: string = (confidence ? "1" : "2");
+	const choicenum: string = (confidence ? "1" : "2");
 	setProperty("choiceAdventure1015", choicenum);
 	visitUrl("place.php?whichplace=nstower&action=ns_08_monster4");
 	visitUrl(`choice.php?pwd=&whichchoice=1015&option=${choicenum}`, true);
@@ -1553,9 +1553,9 @@ function L13_towerNSTowerShadow(): boolean
 	}
 	if (n_healing_items < 5)
 	{
-		let pull_target: number = 5 - n_healing_items; //pull healing items if we have any pulls left because its not like we need pulls for anything else at this point
-		let pulled_items: number = 0;
-		for (let it of Item.get(["gauze garter", "filthy poultice", "red pixel potion"]))
+		const pull_target: number = 5 - n_healing_items; //pull healing items if we have any pulls left because its not like we need pulls for anything else at this point
+		const pulled_items: number = 0;
+		for (const it of Item.get(["gauze garter", "filthy poultice", "red pixel potion"]))
 		{
 			pullXWhenHaveY(it, 1, itemAmount(it));
 		}
@@ -1568,7 +1568,7 @@ function L13_towerNSTowerShadow(): boolean
 			cloverUsageFinish();
 		}
 		else {
-			let create_target: number = min(creatableAmount(Item.get("red pixel potion")), pull_target - pulled_items);
+			const create_target: number = min(creatableAmount(Item.get("red pixel potion")), pull_target - pulled_items);
 			if (create_target > 0)
 			{
 				if (create(create_target, Item.get("red pixel potion")))
@@ -1695,7 +1695,7 @@ export function L13_towerNSFinal(): boolean
 			{
 				if (getProperty("lastEncounter") === "The Naughty Sorceress (3)")
 				{
-					let page: string = visitUrl("choice.php");
+					const page: string = visitUrl("choice.php");
 					if (lastChoice() === 1016)
 					{
 						runChoice(1);
@@ -1716,7 +1716,7 @@ export function L13_towerNSFinal(): boolean
 	// restore ML Safety Limit if this run changed it
 	if (propertyExists("auto_MLSafetyLimitBackup"))
 	{
-		let MLSafetyLimitBackup: string = getProperty("auto_MLSafetyLimitBackup");
+		const MLSafetyLimitBackup: string = getProperty("auto_MLSafetyLimitBackup");
 		if (MLSafetyLimitBackup === "empty") { setProperty("auto_MLSafetyLimit", ""); }
 		else { setProperty("auto_MLSafetyLimit", MLSafetyLimitBackup); }
 		removeProperty("auto_MLSafetyLimitBackup");
@@ -1815,10 +1815,10 @@ export function L13_towerNSNagamar(): boolean
 
 	if (creatableAmount(Item.get("Wand of Nagamar")) === 0 && pullsRemaining() > 0)
 	{
-		let haveW: boolean = itemAmount(Item.get("ruby W")) !== 0;
-		let haveA: boolean = itemAmount(Item.get("metallic A")) !== 0;
-		let haveN: boolean = itemAmount(Item.get("lowercase N")) !== 0;
-		let haveD: boolean = itemAmount(Item.get("heavy D")) !== 0;
+		const haveW: boolean = itemAmount(Item.get("ruby W")) !== 0;
+		const haveA: boolean = itemAmount(Item.get("metallic A")) !== 0;
+		const haveN: boolean = itemAmount(Item.get("lowercase N")) !== 0;
+		const haveD: boolean = itemAmount(Item.get("heavy D")) !== 0;
 		if (!haveW || !haveA)
 		{
 			if (haveN && haveD || itemAmount(Item.get("ND")) > 0 || pullsRemaining() > 1)

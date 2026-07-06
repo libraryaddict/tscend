@@ -28,7 +28,7 @@ export function tcrs_maximize_with_items(maximizerString: string): boolean
 	}
 	// in TCRS, items give random effects. Instead of hard-coding a list of effects for each path/class combination, we look at what we got.
 	let used_anything: boolean = false;
-	for (let [i, rec] of maximize(maximizerString, 300, 0, true, false).entries())
+	for (const [i, rec] of maximize(maximizerString, 300, 0, true, false).entries())
 	{
 		if (rec.item !== Item.none && rec.item.fullness === 0 && rec.item.inebriety === 0 && 0 === haveEffect(rec.effect) && mallPrice(rec.item) <= 300 && rec.score > 0.1)
 		{ // sometimes maximizer gives spurious results

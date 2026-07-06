@@ -34,7 +34,7 @@ import { LX_dolphinKingMap, LX_meatMaid } from "./quests/level_any";
 //Defined in autoscend/auto_acquire.ash
 function haveAny(array: Map<Item, boolean>): boolean
 {
-	for (let thing of array.keys())
+	for (const thing of array.keys())
 	{
 		if (itemAmount(thing) > 0)
 		{
@@ -151,8 +151,8 @@ function pulledToday(it: Item): boolean
 {
 	//autoscend property "auto_pulls" tracks pulls made by the script as "(" + my_daycount() + ":" + it
 	//kolmafia property "_roninStoragePulls" tracks all pulls made with kolmafia today since 2022 changed to daily limit of one pull for each item
-	let allPulls: Map<number, string> = new Map(splitString(getProperty("_roninStoragePulls"), ",").map((_v, _i) => [_i, _v]));
-	for (let i of allPulls.keys())
+	const allPulls: Map<number, string> = new Map(splitString(getProperty("_roninStoragePulls"), ",").map((_v, _i) => [_i, _v]));
+	for (const i of allPulls.keys())
 	{
 		if (toInt((allPulls.get(i) ?? allPulls.set(i, "").get(i))) === toInt(it))
 		{
@@ -176,7 +176,7 @@ export function auto_mall_price(it: Item): number
 	if (isTradeable(it))
 	{
 		let retval: number = 0;
-		let it_type: string = itemType(it);
+		const it_type: string = itemType(it);
 		if (it_type === "food" || it_type === "booze")
 		{
 			//autoscend does Bulk cache mall prices for food,booze,hprestore,mprestore so that when asking for mall_price it gets a cached mafia session price
@@ -228,7 +228,7 @@ function pullXWhenHaveYCasual(it: Item, howMany: number, whenHave: number): bool
 	{
 		takeStorage(storageAmount(it), it);
 	}
-	let maxprice: number = toInt(getProperty("autoBuyPriceLimit"));
+	const maxprice: number = toInt(getProperty("autoBuyPriceLimit"));
 	while (itemAmount(it) < howMany && auto_mall_price(it) < maxprice)
 	{
 		if (auto_mall_price(it) > myMeat())
@@ -267,10 +267,10 @@ export function pullXWhenHaveY(it: Item, howMany: number, whenHave: number): boo
 		let lastStorage: number = storageAmount(it);
 		while (storageAmount(it) < howMany)
 		{
-			let oldPrice: number = toInt(historicalPrice(it) * 1.2);
-			let curPrice: number = auto_mall_price(it);
+			const oldPrice: number = toInt(historicalPrice(it) * 1.2);
+			const curPrice: number = auto_mall_price(it);
 			let meat: number = myStorageMeat();
-			let priceLimit: number = toInt(getProperty("autoBuyPriceLimit"));
+			const priceLimit: number = toInt(getProperty("autoBuyPriceLimit"));
 			let getFromStorage: boolean = true;
 			if (canInteract() && meat < curPrice)
 			{
@@ -316,7 +316,7 @@ export function pullXWhenHaveY(it: Item, howMany: number, whenHave: number): boo
 		}
 
 		auto_log_info(`Trying to pull ${howMany} of ${it}`, "blue");
-		let retval: boolean = takeStorage(howMany, it);
+		const retval: boolean = takeStorage(howMany, it);
 		if (itemAmount(it) !== howMany + whenHave)
 		{
 			auto_log_warning(`Failed pulling ${howMany} of ${it}`, "red");
@@ -402,7 +402,7 @@ export function auto_buyUpTo(num: number, it: Item): boolean
 	}
 
 	let missing: number = num - itemAmount(it);
-	let maxprice: number = toInt(getProperty("autoBuyPriceLimit"));
+	const maxprice: number = toInt(getProperty("autoBuyPriceLimit"));
 	if (canInteract() && shopAmount(it) > 0 && mallPrice(it) < maxprice)
 	{ //prefer to buy from yourself
 		takeShop(min(missing, shopAmount(it)), it);
@@ -450,7 +450,7 @@ export function acquireGumItem(it: Item): boolean
 		return false;
 	}
 
-	let have: number = itemAmount(it);
+	const have: number = itemAmount(it);
 	auto_log_info(`Gum acquisition of: ${it}`, "green");
 	while (have === itemAmount(it) && myMeat() >= npcPrice(Item.get("chewing gum on a string")))
 	{
@@ -467,7 +467,7 @@ export function acquireTotem(): boolean
 	//check if there is a valid totem in inventory or equipped, return true if there is.
 	//check the closet from best to worst. If found in closet, uncloset 1 and return true
 
-	for (let totem of Item.get(["primitive alien totem", "Flail of the Seven Aspects", "Chelonian Morningstar", "Mace of the Tortoise", "Ouija Board, Ouija Board", "turtle totem"]))
+	for (const totem of Item.get(["primitive alien totem", "Flail of the Seven Aspects", "Chelonian Morningstar", "Mace of the Tortoise", "Ouija Board, Ouija Board", "turtle totem"]))
 	{
 		if (possessEquipment(totem))
 		{
@@ -481,7 +481,7 @@ export function acquireTotem(): boolean
 	}
 
 	let want_totem: boolean = false;
-	for (let sk of Skill.get(["Empathy of the Newt", "Astral Shell", "Ghostly Shell", "Tenacity of the Snapper", "Spiky Shell", "Reptilian Fortitude", "Jingle Bells", "Curiosity of Br'er Tarrypin"]))
+	for (const sk of Skill.get(["Empathy of the Newt", "Astral Shell", "Ghostly Shell", "Tenacity of the Snapper", "Spiky Shell", "Reptilian Fortitude", "Jingle Bells", "Curiosity of Br'er Tarrypin"]))
 	{
 		if (auto_have_skill(sk))
 		{
@@ -507,7 +507,7 @@ function auto_hermit(amt: number, it: Item): boolean
 	{
 		return hermit(amt, it);
 	}
-	let initial: number = itemAmount(it);
+	const initial: number = itemAmount(it);
 	try {
 	hermit(amt, it); 	} catch (e: any) {}
 	return itemAmount(it) === initial + amt;
@@ -543,7 +543,7 @@ export function acquireHermitItem(it: Item): boolean
 	{
 		return false;
 	}
-	let have: number = itemAmount(it);
+	const have: number = itemAmount(it);
 	auto_log_info(`Hermit acquisition of: ${it}`, "green");
 	while (have === itemAmount(it) && (myMeat() >= npcPrice(Item.get("chewing gum on a string")) || itemAmount(Item.get("worthless trinket")) + itemAmount(Item.get("worthless gewgaw")) + itemAmount(Item.get("worthless knick-knack")) > 0))
 	{
@@ -586,7 +586,7 @@ export function pull_meat(target: number): boolean
 	while (myMeat() < target && pullsRemaining() > 0 && !in_amw())
 	{
 		let fail: boolean = true; //if true an item was not pulled and sold this loop
-		for (let it of Item.get(["1,970 carat gold"]))
+		for (const it of Item.get(["1,970 carat gold"]))
 		{
 			if (fail && storageAmount(it) > 0 && isUnrestricted(it))
 			{
@@ -604,7 +604,7 @@ export function pull_meat(target: number): boolean
 		let meat_pulls: number = target - myMeat(); //how much meat we need to pull. converted to float
 		meat_pulls = ceil(meat_pulls / 1000.0); //how many pulls it will require to get.
 		meat_pulls = min(pullsRemaining(), meat_pulls); //limit by remaining pulls
-		let meat_pull_int: number = toInt(meat_pulls * 1000); //we want to round it up to nearest 1000
+		const meat_pull_int: number = toInt(meat_pulls * 1000); //we want to round it up to nearest 1000
 		if (meat_pulls > 0)
 		{
 			cliExecute(`pull ${meat_pull_int} meat`);
@@ -646,7 +646,7 @@ export function handlePulls(day: number): number
 		if (auto_turbo())
 		{
 			//Pull expensive organ cleansers first if you are running turbo and you own them
-			for (let it of Item.get(["spice melange", "Ultra Mega Sour Ball", "alien plant pod", "alien animal milk"]))
+			for (const it of Item.get(["spice melange", "Ultra Mega Sour Ball", "alien plant pod", "alien animal milk"]))
 			{
 				if (storageAmount(it) > 0 && auto_is_valid(it) && !pulledToday(it))
 				{
@@ -659,7 +659,7 @@ export function handlePulls(day: number): number
 			//Make sure we have the legendary pizzas if we want to/can consume them so we take full advantage of the dieting pills
 			if (!toBoolean(getProperty("auto_dontConsumeLegendPizzas")))
 			{
-				for (let it of Item.get(["Pizza of Legend", "Calzone of Legend", "Deep Dish of Legend"]))
+				for (const it of Item.get(["Pizza of Legend", "Calzone of Legend", "Deep Dish of Legend"]))
 				{
 					if (canEat$1(it) && !pulledToday(it))
 					{
@@ -673,7 +673,7 @@ export function handlePulls(day: number): number
 				}
 			}
 			// get a wet stew
-			for (let it of Item.get(["wet stew"]))
+			for (const it of Item.get(["wet stew"]))
 			{
 				if (!pulledToday(it))
 				{
@@ -770,7 +770,7 @@ export function handlePulls(day: number): number
 			{
 				pullXWhenHaveY(Item.get("Snow Suit"), 1, 0);
 			}
-			let famStatEq: boolean = possessEquipment(Item.get("fuzzy polar bear ears")) || possessEquipment(Item.get("miniature goose mask")) || possessEquipment(Item.get("tiny glowing red nose"));
+			const famStatEq: boolean = possessEquipment(Item.get("fuzzy polar bear ears")) || possessEquipment(Item.get("miniature goose mask")) || possessEquipment(Item.get("tiny glowing red nose"));
 
 			if (!possessEquipment(Item.get("Snow Suit")) && !possessEquipment(Item.get("filthy child leash")) && !possessEquipment(Item.get("astral pet sweater")) && !famStatEq && auto_is_valid(Item.get("filthy child leash")))
 			{
@@ -946,7 +946,7 @@ export function LX_craftAcquireItems(): boolean
 	{
 		let buyAntiqueAccordion: boolean = false;
 
-		for (let SongCheck of ATSongList().keys())
+		for (const SongCheck of ATSongList().keys())
 		{
 			if (haveSkill(toSkill(SongCheck)))
 			{
@@ -1051,7 +1051,7 @@ export function LX_craftAcquireItems(): boolean
 		let it: Item = Item.get("meteorthopedic shoes");
 		if (!possessEquipment(it))
 		{
-			let choice: number = 1 + toInt(it) - toInt(Item.get("meteortarboard"));
+			const choice: number = 1 + toInt(it) - toInt(Item.get("meteortarboard"));
 			let temp: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
 			temp = visitUrl(`choice.php?pwd=&whichchoice=1264&option=${choice}`);
 		}
@@ -1059,7 +1059,7 @@ export function LX_craftAcquireItems(): boolean
 		it = Item.get("meteortarboard");
 		if (!possessEquipment(it) && getPower(equippedItem(Slot.get("hat"))) < 140 && toInt(getProperty("auto_beatenUpCount")) >= 5)
 		{
-			let choice: number = 1 + toInt(it) - toInt(Item.get("meteortarboard"));
+			const choice: number = 1 + toInt(it) - toInt(Item.get("meteortarboard"));
 			let temp: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
 			temp = visitUrl(`choice.php?pwd=&whichchoice=1264&option=${choice}`);
 		}
@@ -1067,7 +1067,7 @@ export function LX_craftAcquireItems(): boolean
 		it = Item.get("meteorite guard");
 		if (!possessEquipment(it) && !possessEquipment(Item.get("KoL Con 13 snowglobe")) && toInt(getProperty("auto_beatenUpCount")) >= 5)
 		{
-			let choice: number = 1 + toInt(it) - toInt(Item.get("meteortarboard"));
+			const choice: number = 1 + toInt(it) - toInt(Item.get("meteortarboard"));
 			let temp: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
 			temp = visitUrl(`choice.php?pwd=&whichchoice=1264&option=${choice}`);
 		}

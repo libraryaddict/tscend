@@ -110,30 +110,30 @@ function L9_chasmMaximizeForNoncombat(): void
 {
 	auto_log_info("Let's assess our scores for blech house", "blue");
 	let best: string = "mus";
-	let loc: Location = Location.get("The Smut Orc Logging Camp");
-	let mustry: string = "1000muscle,1000weapon damage,10000weapon damage percent";
-	let mystry: string = "1000mysticality,1000spell damage,10000 spell damage percent";
-	let moxtry: string = "1000moxie,10000sleaze resistance";
+	const loc: Location = Location.get("The Smut Orc Logging Camp");
+	const mustry: string = "1000muscle,1000weapon damage,10000weapon damage percent";
+	const mystry: string = "1000mysticality,1000spell damage,10000 spell damage percent";
+	const moxtry: string = "1000moxie,10000sleaze resistance";
 	simMaximizeWith(loc, mustry);
-	let musmus: number = simValue("Buffed Muscle");
-	let musflat: number = simValue("Weapon Damage"); //incorrectly includes 15% weapon power
-	let musperc: number = simValue("Weapon Damage Percent");
-	let musscore: number = floor(squareRoot((musmus + musflat) / 15 * (1 + musperc / 100)));
+	const musmus: number = simValue("Buffed Muscle");
+	const musflat: number = simValue("Weapon Damage"); //incorrectly includes 15% weapon power
+	const musperc: number = simValue("Weapon Damage Percent");
+	const musscore: number = floor(squareRoot((musmus + musflat) / 15 * (1 + musperc / 100)));
 	auto_log_info(`Muscle score: ${musscore}`, "blue");
 	simMaximizeWith(loc, mystry);
-	let mysmys: number = simValue("Buffed Mysticality");
-	let mysflat: number = simValue("Spell Damage");
-	let mysperc: number = simValue("Spell Damage Percent");
-	let mysscore: number = floor(squareRoot((mysmys + mysflat) / 15 * (1 + mysperc / 100)));
+	const mysmys: number = simValue("Buffed Mysticality");
+	const mysflat: number = simValue("Spell Damage");
+	const mysperc: number = simValue("Spell Damage Percent");
+	const mysscore: number = floor(squareRoot((mysmys + mysflat) / 15 * (1 + mysperc / 100)));
 	auto_log_info(`Mysticality score: ${mysscore}`, "blue");
 	if (mysscore >= musscore)
 	{ //overwrite equal muscle score if possible because it may be 1 lower than predicted due to the above weapon damage issue
 		best = "mys";
 	}
 	simMaximizeWith(loc, moxtry);
-	let moxmox: number = simValue("Buffed Moxie");
-	let moxres: number = simValue("Sleaze Resistance");
-	let moxscore: number = floor(squareRoot(moxmox / 30 * (1 + moxres * 0.69)));
+	const moxmox: number = simValue("Buffed Moxie");
+	const moxres: number = simValue("Sleaze Resistance");
+	const moxscore: number = floor(squareRoot(moxmox / 30 * (1 + moxres * 0.69)));
 	auto_log_info(`Moxie score: ${moxscore}`, "blue");
 	if (moxscore >= mysscore && moxscore >= musscore)
 	{
@@ -190,7 +190,7 @@ export function finishBuildingSmutOrcBridge(): boolean
 		return false;
 	}
 	// use any keepsake boxes we have
-	let keepsakeBox: Item = Item.get("smut orc keepsake box");
+	const keepsakeBox: Item = Item.get("smut orc keepsake box");
 	if (itemAmount(keepsakeBox) > 0 && auto_is_valid(keepsakeBox))
 	{
 		use(itemAmount(keepsakeBox), keepsakeBox);
@@ -416,7 +416,7 @@ export function L9_aBooPeak(): boolean
 		}
 		clue = Item.get("glued A-Boo clue");
 	}
-	let clueAmt: number = itemAmount(clue);
+	const clueAmt: number = itemAmount(clue);
 
 	if (is_professor() && clueAmt >= 3)
 	{
@@ -463,7 +463,7 @@ export function L9_aBooPeak(): boolean
 	}
 
 	auto_log_info(`A-Boo Peak: ${getProperty("booPeakProgress")}`, "blue");
-	let clueCheck: boolean = clueAmt > 0 || toInt(getProperty("auto_aboopending")) !== 0;
+	const clueCheck: boolean = clueAmt > 0 || toInt(getProperty("auto_aboopending")) !== 0;
 	if (toBoolean(getProperty("auto_abooclover")) && toInt(getProperty("booPeakProgress")) >= 30 && booCloversOk)
 	{
 		if (autoLuckyAdv$1(Location.get("A-Boo Peak")))
@@ -476,7 +476,7 @@ export function L9_aBooPeak(): boolean
 	{
 		let doThisBoo: boolean = false;
 
-		let priorBjorn: Familiar = myBjornedFamiliar();
+		const priorBjorn: Familiar = myBjornedFamiliar();
 
 		let lihcface: string = "";
 		if (isActuallyEd() && possessEquipment(Item.get("The Crown of Ed the Undying")))
@@ -492,7 +492,7 @@ export function L9_aBooPeak(): boolean
 		autoMaximize$1(`spooky res, cold res, 0.01hp ${lihcface} -equip snow suit${parrot}`, 0, 0, true);
 		let coldResist: number = toInt(simValue("Cold Resistance"));
 		let spookyResist: number = toInt(simValue("Spooky Resistance"));
-		let hpDifference: number = toInt(simValue("Maximum HP") - numericModifier("Maximum HP"));
+		const hpDifference: number = toInt(simValue("Maximum HP") - numericModifier("Maximum HP"));
 		let effectiveCurrentHP: number = myHp();
 		//	Do we need to manually adjust for the parrot?
 
@@ -580,7 +580,7 @@ export function L9_aBooPeak(): boolean
 			auto_log_info(`Expected Cold Resist: ${coldResist} Expected Spooky Resist: ${spookyResist} Expected HP Difference: ${hpDifference}`, "blue");
 		}
 
-		let considerHP: number = myMaxhp() + hpDifference;
+		const considerHP: number = myMaxhp() + hpDifference;
 
 		let mp_need: number = toInt(20 + simValue("Mana Cost"));
 		if (myHp() - totalDamage > 50)
@@ -720,11 +720,11 @@ export function L9_aBooPeak(): boolean
 
 export function hedgeTrimmersNeeded(): number
 {
-	let twinPeakProgress: number = toInt(getProperty("twinPeakProgress"));
-	let needStench: boolean = (twinPeakProgress & 1) === 0;
-	let needFood: boolean = (twinPeakProgress & 2) === 0;
-	let needJar: boolean = (twinPeakProgress & 4) === 0;
-	let needInit: boolean = needStench || needFood || needJar || twinPeakProgress === 7;
+	const twinPeakProgress: number = toInt(getProperty("twinPeakProgress"));
+	const needStench: boolean = (twinPeakProgress & 1) === 0;
+	const needFood: boolean = (twinPeakProgress & 2) === 0;
+	const needJar: boolean = (twinPeakProgress & 4) === 0;
+	const needInit: boolean = needStench || needFood || needJar || twinPeakProgress === 7;
 	let neededTrimmers: number = -itemAmount(Item.get("rusty hedge trimmers"));
 	if (needStench) { neededTrimmers++; }
 	if (needFood) { neededTrimmers++; }
@@ -736,11 +736,11 @@ export function hedgeTrimmersNeeded(): number
 // returns true if can successfully do one of the tasks at the great overlook lodge NC (606)
 export function prepareForTwinPeak(speculative: boolean): boolean
 {
-	let progress: number = toInt(getProperty("twinPeakProgress"));
-	let needStench: boolean = (progress & 1) === 0;
-	let needFood: boolean = (progress & 2) === 0;
-	let needJar: boolean = (progress & 4) === 0;
-	let needInit: boolean = progress === 7;
+	const progress: number = toInt(getProperty("twinPeakProgress"));
+	const needStench: boolean = (progress & 1) === 0;
+	const needFood: boolean = (progress & 2) === 0;
+	const needJar: boolean = (progress & 4) === 0;
+	const needInit: boolean = progress === 7;
 
 	if (needInit)
 	{
@@ -797,10 +797,10 @@ export function prepareForTwinPeak(speculative: boolean): boolean
 
 	if (needStench)
 	{
-		let resGoal: Map<Element, number> = new Map();
+		const resGoal: Map<Element, number> = new Map();
 		resGoal.set(Element.get("stench"), 4);
 		// check if we can get enough stench res before we start applying anything
-		let resPossible: Map<Element, number> = provideResistances(resGoal, Location.get("Twin Peak"), true, true, true);
+		const resPossible: Map<Element, number> = provideResistances(resGoal, Location.get("Twin Peak"), true, true, true);
 		if ((resPossible.get(Element.get("stench")) ?? resPossible.set(Element.get("stench"), 0).get(Element.get("stench"))) >= 4)
 		{
 			if (!speculative) { provideResistances(resGoal, Location.get("Twin Peak"), true, true, false); }
@@ -861,7 +861,7 @@ export function L9_twinPeak(): boolean
 		auto_makeMonkeyPawWish$1(Item.get("rusty hedge trimmers"));
 	}
 
-	let starting_trimmers: number = itemAmount(Item.get("rusty hedge trimmers"));
+	const starting_trimmers: number = itemAmount(Item.get("rusty hedge trimmers"));
 	if (starting_trimmers > 0)
 	{
 		equipMaximizedGear();
@@ -872,7 +872,7 @@ export function L9_twinPeak(): boolean
 			abort("Tried using a rusty hedge trimmer but that didn't seem to work");
 		}
 		auto_log_info(`Hedge trimming situation: ${toInt(getProperty("choiceAdventure606"))}`, "green");
-		let page: string = visitUrl("main.php");
+		const page: string = visitUrl("main.php");
 		if (containsText(page, "choice.php") && !containsText(page, "Really Sticking Her Neck Out") && !containsText(page, "It Came from Beneath the Sewer?"))
 		{
 			auto_log_info("Inside of a Rusty Hedge Trimmer sequence.", "blue");
@@ -926,8 +926,8 @@ export function L9_oilPeak(): boolean
 
 	if (containsText(visitUrl("place.php?whichplace=highlands"), "fire3.gif"))
 	{
-		let oilProgress: number = toInt(getProperty("twinPeakProgress"));
-		let needJar: boolean = (oilProgress & 4) === 0 && itemAmount(Item.get("jar of oil")) === 0;
+		const oilProgress: number = toInt(getProperty("twinPeakProgress"));
+		const needJar: boolean = (oilProgress & 4) === 0 && itemAmount(Item.get("jar of oil")) === 0;
 		if (!needJar || in_bhy())
 		{
 			return false;
@@ -984,7 +984,7 @@ export function L9_oilPeak(): boolean
 	// Maximize Asdon usage
 	if (haveEffect(Effect.get("Driving Recklessly")) === 0 && haveEffect(Effect.get("Driving Wastefully")) === 0)
 	{
-		let loc: Location = Location.get("Oil Peak");
+		const loc: Location = Location.get("Oil Peak");
 		if ((simMaximizeWith(loc, "1000ml 75min") && !simMaximizeWith(loc, "1000ml 100min") || simMaximizeWith(loc, "1000ml 25min") && !simMaximizeWith(loc, "1000ml 50min") || !simMaximizeWith(loc, "1000ml 11min")) && haveEffect(Effect.get("Driving Wastefully")) === 0)
 		{
 			asdonBuff$1(Effect.get("Driving Recklessly"));

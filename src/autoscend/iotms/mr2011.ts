@@ -81,7 +81,7 @@ export function hasLegionKnife(): boolean
 		return false; //LLK specifically does not work in hardcore.
 	}
 	//we need to check all possible forms it might be in
-	for (let it of Item.get(Object.keys(getRelated(Item.get("Loathing Legion knife"), "fold"))))
+	for (const it of Item.get(Object.keys(getRelated(Item.get("Loathing Legion knife"), "fold"))))
 	{
 		if (itemAmount(it) > 0)
 		{
@@ -107,7 +107,7 @@ export function pullLegionKnife(): boolean
 		return true; //already have it
 	}
 	let target: Item = Item.none;
-	for (let it of Item.get(Object.keys(getRelated(Item.get("Loathing Legion knife"), "fold"))))
+	for (const it of Item.get(Object.keys(getRelated(Item.get("Loathing Legion knife"), "fold"))))
 	{
 		if (canPull$1(it))
 		{
@@ -119,7 +119,7 @@ export function pullLegionKnife(): boolean
 	{
 		return false; //we do not have the item to pull
 	}
-	let start_amt: number = itemAmount(target);
+	const start_amt: number = itemAmount(target);
 	pullXWhenHaveY(target, 1, 0);
 	if (itemAmount(target) === 1 + start_amt)
 	{

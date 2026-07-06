@@ -74,10 +74,10 @@ export function auto_combatDefaultStage1(round_1: number, enemy: Monster, text: 
 			}
 			abort("Oh no, I don't have any super deluxe mushrooms to deal with this shadow plumber :(");
 		}
-		let ambi: boolean = auto_have_skill(Skill.get("Ambidextrous Funkslinging"));
+		const ambi: boolean = auto_have_skill(Skill.get("Ambidextrous Funkslinging"));
 		let hand_1: Item = Item.none;
 		let hand_2: Item = Item.none;
-		let icup: Item = Item.get("Rain-Doh indigo cup"); //restore 20% of max HP. only once per combat
+		const icup: Item = Item.get("Rain-Doh indigo cup"); //restore 20% of max HP. only once per combat
 		if (canUse$4(icup))
 		{
 			if (myMaxhp() > 500 && hand_1 === Item.none)
@@ -92,7 +92,7 @@ export function auto_combatDefaultStage1(round_1: number, enemy: Monster, text: 
 			}
 		}
 		//items which can be used multiple times per combat
-		for (let it of Item.get(["gauze garter", "filthy poultice", "red pixel potion"]))
+		for (const it of Item.get(["gauze garter", "filthy poultice", "red pixel potion"]))
 		{
 			if (hand_1 === Item.none && itemAmount(it) > 0)
 			{
@@ -199,11 +199,11 @@ export function auto_combatDefaultStage1(round_1: number, enemy: Monster, text: 
 	retval = auto_combat_nanorhinoBuff(round_1, enemy, text);
 	if (retval !== "") { return retval; }
 	//pickpocket. do this after puzzle bosses but before escapes/instakills
-	let ableToPickpocket: boolean = Class.get(["Accordion Thief", "Avatar of Sneaky Pete", "Disco Bandit", "Gelatinous Noob"]).includes(myClass()) || haveEffect(Effect.get("Riboflavin'")) > 0 || amw_wanttoPP(enemy);
+	const ableToPickpocket: boolean = Class.get(["Accordion Thief", "Avatar of Sneaky Pete", "Disco Bandit", "Gelatinous Noob"]).includes(myClass()) || haveEffect(Effect.get("Riboflavin'")) > 0 || amw_wanttoPP(enemy);
 	if (!combat_status_check("pickpocket") && ableToPickpocket && containsText(text, "value=\"Pick") && canSurvive$1(4.0))
 	{
 		let tryIt: boolean = false;
-		for (let [i, drop] of itemDropsArray(enemy).entries())
+		for (const [i, drop] of itemDropsArray(enemy).entries())
 		{
 			if (drop.type === "0")
 			{
@@ -232,7 +232,7 @@ export function auto_combatDefaultStage1(round_1: number, enemy: Monster, text: 
 		if (tryIt)
 		{
 			combat_status_add("pickpocket");
-			let attemptSteal: string = steal();
+			const attemptSteal: string = steal();
 			return "pickpocket";
 		}
 	}
@@ -255,9 +255,9 @@ export function auto_combatDefaultStage1(round_1: number, enemy: Monster, text: 
 		return useSkill$2(Skill.get("%fn, fire a Red, White and Blue Blast"));
 	}
 
-	let backedUpMonster: Monster = toMonster(getProperty("lastCopyableMonster"));
+	const backedUpMonster: Monster = toMonster(getProperty("lastCopyableMonster"));
 	// reserve last 2 advs for end of day free fights
-	let reserveAdvsForFreeFights: boolean = myAdventures() < 3 && !isFreeMonster(backedUpMonster);
+	const reserveAdvsForFreeFights: boolean = myAdventures() < 3 && !isFreeMonster(backedUpMonster);
 	if (auto_backupTarget() && enemy !== backedUpMonster && canUse$2(Skill.get("Back-Up to your Last Enemy")) && !reserveAdvsForFreeFights)
 	{
 		handleTracker$1(enemy.toString(), Skill.get("Back-Up to your Last Enemy").toString(), "auto_replaces");

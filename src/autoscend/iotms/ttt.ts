@@ -7,14 +7,14 @@ import { in_zootomist } from "../paths/zootomist";
 //Defined in autoscend/iotms/ttt.ash
 function eudora_xiblaxian(): Map<Item, number>
 {
-	let retval: Map<Item, number> = new Map();
+	const retval: Map<Item, number> = new Map();
 	if (itemAmount(Item.get("Xiblaxian 5D printer")) > 0 && isUnrestricted(Item.get("Xiblaxian 5D printer")))
 	{
-		let canMake: string = visitUrl("shop.php?whichshop=5dprinter");
-		let polymer: number = itemAmount(Item.get("Xiblaxian polymer"));
-		let crystal: number = itemAmount(Item.get("Xiblaxian crystal"));
-		let circuitry: number = itemAmount(Item.get("Xiblaxian circuitry"));
-		let alloy: number = itemAmount(Item.get("Xiblaxian alloy"));
+		const canMake: string = visitUrl("shop.php?whichshop=5dprinter");
+		const polymer: number = itemAmount(Item.get("Xiblaxian polymer"));
+		const crystal: number = itemAmount(Item.get("Xiblaxian crystal"));
+		const circuitry: number = itemAmount(Item.get("Xiblaxian circuitry"));
+		const alloy: number = itemAmount(Item.get("Xiblaxian alloy"));
 		if (containsText(canMake, "Xiblaxian xeno-detection goggles"))
 		{
 			retval.set(Item.get("Xiblaxian xeno-detection goggles"), min(polymer / 4, crystal / 2));
@@ -98,7 +98,7 @@ export function auto_ARBSupplyDropsLeft(): number
     {
         return 0;
     }
-    let n_backpack_left: number = (auto_haveARB() ? 3 - toInt(getProperty("_alliedRadioDropsUsed")) : 0);
+    const n_backpack_left: number = (auto_haveARB() ? 3 - toInt(getProperty("_alliedRadioDropsUsed")) : 0);
     return n_backpack_left + itemAmount(Item.get("handheld Allied radio"));
 }
 

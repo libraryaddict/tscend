@@ -106,16 +106,16 @@ function main$c2t_megg(...args: string[]): void {
 
 //returns false only on critical errors
 function c2t_megg_donate(target: Monster): boolean {
-	let egg: Item = Item.get("mimic egg");
-	let mimic: Familiar = Familiar.get("Chest Mimic");
-	let pref: string = "_mimicEggsDonated";
+	const egg: Item = Item.get("mimic egg");
+	const mimic: Familiar = Familiar.get("Chest Mimic");
+	const pref: string = "_mimicEggsDonated";
 	let page: string = null;
 	let maxlist: Map<string, boolean> = new Map();
 	let options: Map<number, string> = new Map();
 	let monstring: string = "";
 	let start_1: number = 0; let needle: number = 0; let size: number = 0;
 	let tries: number = 0;
-	let MAX_TRIES: number = 4;
+	const MAX_TRIES: number = 4;
 	let numForms: number = 0;
 	let roundtrip: boolean = false;
 
@@ -200,9 +200,9 @@ function c2t_megg_donate(target: Monster): boolean {
 
 //returns true if egg taken; false on failure
 export function c2t_megg_extract(target: Monster): boolean {
-	let egg: Item = Item.get("mimic egg");
-	let mimic: Familiar = Familiar.get("Chest Mimic");
-	let pref: string = "_mimicEggsObtained";
+	const egg: Item = Item.get("mimic egg");
+	const mimic: Familiar = Familiar.get("Chest Mimic");
+	const pref: string = "_mimicEggsObtained";
 	let page: string = null;
 	let maxlist: Map<string, boolean> = new Map();
 	let monstring: string = "";
@@ -251,7 +251,7 @@ export function c2t_megg_extract(target: Monster): boolean {
 
 //does not actually do the combat
 function c2t_megg_fight(target: Monster): boolean {
-	let egg: Item = Item.get("mimic egg");
+	const egg: Item = Item.get("mimic egg");
 	let page: string = null;
 	let monstring: string = "";
 
@@ -292,15 +292,15 @@ function c2t_megg_fight$1(target: Monster, macro: CombatMacro): boolean {
 
 //returns true only if the data file successfully updated
 export function c2t_megg_preAdv(): boolean {
-	let mimic: Familiar = Familiar.get("Chest Mimic");
-	let prefLast: string = "_c2t_megg_lastCheck";
-	let prefLimit: string = "c2t_megg_timeLimit";
+	const mimic: Familiar = Familiar.get("Chest Mimic");
+	const prefLast: string = "_c2t_megg_lastCheck";
+	const prefLimit: string = "c2t_megg_timeLimit";
 	let maxlist: Map<string, boolean> = new Map();
 	let page: string = null;
-	let last: number = toInt(getProperty(prefLast));
+	const last: number = toInt(getProperty(prefLast));
 	let limit: number = toInt(getProperty(prefLimit)) * 60000;
-	let now: number = nowToInt();
-	let dailyMaxed: boolean = toInt(getProperty("_mimicEggsObtained")) >= 11;
+	const now: number = nowToInt();
+	const dailyMaxed: boolean = toInt(getProperty("_mimicEggsObtained")) >= 11;
 	//maybe don't need to go
 	if (!haveFamiliar(mimic))
 		{ return false; }
@@ -340,10 +340,10 @@ export function c2t_megg_preAdv(): boolean {
 
 //returns true only if the data file successfully updated
 function c2t_megg_update(): boolean {
-	let mimic: Familiar = Familiar.get("Chest Mimic");
+	const mimic: Familiar = Familiar.get("Chest Mimic");
 	let maxlist: Map<string, boolean> = new Map();
 	let page: string = null;
-	let dailyMaxed: boolean = toInt(getProperty("_mimicEggsObtained")) >= 11;
+	const dailyMaxed: boolean = toInt(getProperty("_mimicEggsObtained")) >= 11;
 
 	c2t_megg_init();
 	//maybe don't need to go
@@ -374,7 +374,7 @@ function c2t_megg_update(): boolean {
 
 //for relay overrides
 function c2t_megg_relay(page: string): string {
-	let buf: string = toBuffer(page);
+	const buf: string = toBuffer(page);
 	let maxlist: Map<string, boolean> = new Map();
 
 	if (c2t_megg_isExtractPage(buf)) {
@@ -409,7 +409,7 @@ function c2t_megg_relayFight(page: string): string {
 	if (toBoolean(getProperty("c2t_megg_disableRelayCleaner")))
 		{ return page; }
 
-	let buf: string = toBuffer(page);
+	const buf: string = toBuffer(page);
 	let m: AshMatcher = null;
 	//use mafia's monster names for disambiguation
 	m = new AshMatcher("(<option value=\"(\\d+)\">).+?(?=</option>)", buf);
@@ -424,7 +424,7 @@ function c2t_megg_relayFight(page: string): string {
 
 //for error messages and clean exit
 function c2t_megg_error(s: string): boolean {
-	let msg: string = `c2t_megg error: ${s}`;
+	const msg: string = `c2t_megg error: ${s}`;
 	useFamiliar(c2t_megg_oldFam);
 	equip(Slot.get("familiar"), c2t_megg_oldEq);
 
@@ -451,16 +451,16 @@ function c2t_megg_print(s: string): void {
 
 //prints list of mimic eggs on hand and their quanity as read from item description
 function c2t_megg_printEggs(): void {
-	let eggs: Map<Monster, number> = c2t_megg_eggs();
-	let order: Map<string, Map<string, number>> = new Map();
+	const eggs: Map<Monster, number> = c2t_megg_eggs();
+	const order: Map<string, Map<string, number>> = new Map();
 
-	for (let [i, x] of eggs)
+	for (const [i, x] of eggs)
 		{ (order.get(toLowerCase(i.name)) ?? order.set(toLowerCase(i.name), new Map()).get(toLowerCase(i.name))).set(i.name, x); }
 
 	c2t_megg_print("list of eggs on hand:");
-	for (let [i, _v0] of order) {
-		for (let [j, _v1] of _v0) {
-			let x = _v1;
+	for (const [i, _v0] of order) {
+		for (const [j, _v1] of _v0) {
+			const x = _v1;
 		print(`${j} => ${x}`); }
 	}
 	c2t_megg_print(`total eggs on hand: ${itemAmount(Item.get("mimic egg"))}`);
@@ -468,14 +468,14 @@ function c2t_megg_printEggs(): void {
 
 //print list of maxed eggs as read from data file
 function c2t_megg_printMaxed(): void {
-	let maxlist: Map<Monster, boolean> = c2t_megg_maxed();
-	let order: Map<string, string> = new Map();
+	const maxlist: Map<Monster, boolean> = c2t_megg_maxed();
+	const order: Map<string, string> = new Map();
 
-	for (let x of maxlist.keys())
+	for (const x of maxlist.keys())
 		{ order.set(toLowerCase(x.name), x.name); }
 
 	c2t_megg_print("list of maxed eggs:");
-	for (let [i, x] of order)
+	for (const [i, x] of order)
 		{ print(`${x}`); }
 	c2t_megg_print(`total maxed eggs: ${maxlist.size}`);
 }
@@ -495,7 +495,7 @@ function c2t_megg_numForms(page: string): number {
 
 //gets list of max eggs from page
 function c2t_megg_readPage(page: string): Map<string, boolean> {
-	let out: Map<string, boolean> = new Map();
+	const out: Map<string, boolean> = new Map();
 	let m: AshMatcher = null;
 	let part: string = "";
 
@@ -510,21 +510,21 @@ function c2t_megg_readPage(page: string): Map<string, boolean> {
 
 //read/write data file for keeping track of maxed eggs
 function c2t_megg_readFile(): Map<string, boolean> {
-	let out: Map<string, boolean> = new Map();
+	const out: Map<string, boolean> = new Map();
 	let raw: Map<number, string> = new Map();
 
 	raw = new Map(Object.entries(fileToArray("c2t_megg_maxlist.txt")).map(([_k, _v]) => [toInt(_k), _v]));
-	for (let [i, x] of raw)
+	for (const [i, x] of raw)
 		{ out.set(x, true); }
 	return out;
 }
 
 function c2t_megg_writeFile(list: Map<string, boolean>): boolean {
-	let buf: string = null;
-	let neat: Map<number, boolean> = new Map();
-	let prefCount: string = "_c2t_megg_maxlistCount";
-	let prefLast: string = "_c2t_megg_lastCheck";
-	let size: number = list.size;
+	const buf: string = null;
+	const neat: Map<number, boolean> = new Map();
+	const prefCount: string = "_c2t_megg_maxlistCount";
+	const prefLast: string = "_c2t_megg_lastCheck";
+	const size: number = list.size;
 
 	if (size === 0)
 		{ return false; }
@@ -534,9 +534,9 @@ function c2t_megg_writeFile(list: Map<string, boolean>): boolean {
 		return false;
 	}
 	//populate int map to sort by number instead of alpha-numerically, simply for neatness sake
-	for (let x of list.keys())
+	for (const x of list.keys())
 		{ neat.set(toInt(x), true); }
-	for (let x of neat.keys())
+	for (const x of neat.keys())
 		{ append(buf, `${x}\n`); }
 	if (bufferToFile(buf, "c2t_megg_maxlist.txt")) {
 		c2t_megg_print(`maxed egg list updated with ${size} entries`);
@@ -552,10 +552,10 @@ function c2t_megg_writeFile(list: Map<string, boolean>): boolean {
 
 //returns a map of monsters that are maximally donated, as read from the data file
 export function c2t_megg_maxed(): Map<Monster, boolean> {
-	let out: Map<Monster, boolean> = new Map();
-	let maxlist: Map<string, boolean> = c2t_megg_readFile();
+	const out: Map<Monster, boolean> = new Map();
+	const maxlist: Map<string, boolean> = c2t_megg_readFile();
 
-	for (let x of maxlist.keys())
+	for (const x of maxlist.keys())
 		{ out.set(toMonster(x), true); }
 
 	return out;
@@ -563,9 +563,9 @@ export function c2t_megg_maxed(): Map<Monster, boolean> {
 
 //returns a map of the monsters inside the mimic eggs the user has, and how many of each, by parsing the preference containing mimic egg contents
 export function c2t_megg_eggs(): Map<Monster, number> {
-	let out: Map<Monster, number> = new Map();
-	let egg: Item = Item.get("mimic egg");
-	let prop: string = "mimicEggMonsters";
+	const out: Map<Monster, number> = new Map();
+	const egg: Item = Item.get("mimic egg");
+	const prop: string = "mimicEggMonsters";
 	let split: Map<number, string> = new Map();
 
 	if (itemAmount(egg) === 0)
@@ -578,7 +578,7 @@ export function c2t_megg_eggs(): Map<Monster, number> {
 		visitUrl(`desc_item.php?whichitem=${egg.descid}`, false, true);
 	}
 
-	for (let [i, x] of splitString(getProperty(prop), ",").entries()) {
+	for (const [i, x] of splitString(getProperty(prop), ",").entries()) {
 		split = new Map(splitString(x, ":").map((_v, _i) => [_i, _v]));
 		out.set(toMonster((split.get(0) ?? split.set(0, "").get(0))), toInt((split.get(1) ?? split.set(1, "").get(1))));
 	}

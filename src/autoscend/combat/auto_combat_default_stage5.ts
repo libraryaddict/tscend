@@ -63,7 +63,7 @@ export function auto_combatDefaultStage5(round_1: number, enemy: Monster, text: 
 		return useSkill$1(Skill.get("Loofah Lava"), false);
 	}
 
-	let type_1: Phylum = monsterPhylum(enemy);
+	const type_1: Phylum = monsterPhylum(enemy);
 	let attackMinor: string = "attack with weapon";
 	let attackMajor: string = "attack with weapon";
 	let costMinor: number = 0;
@@ -103,17 +103,17 @@ export function auto_combatDefaultStage5(round_1: number, enemy: Monster, text: 
 	if (haveEquipped(Item.get("protonic accelerator pack")) && isGhost(enemy) && !combat_status_check("skipGhostbusting"))
 	{
 		//shoot ghost 3 times provoking retaliation, then trap ghost skill unlocks which instawins combat.
-		let stunner: Skill = getStunner(enemy);
+		const stunner: Skill = getStunner(enemy);
 		if (stunner !== Skill.none)
 		{
 			combat_status_add("stunned");
 			return useSkill$2(stunner);
 		}
 		//shots_takens tracks how many times we used [shoot ghost] skill this combat. it is reset in combat initialize
-		let shots_takens: number = usedCount(Skill.get("Shoot Ghost"));
+		const shots_takens: number = usedCount(Skill.get("Shoot Ghost"));
 		if (canUse$1(Skill.get("Shoot Ghost"), false) && shots_takens < 3)
 		{
-			let shotsLeft: number = 3 - shots_takens;
+			const shotsLeft: number = 3 - shots_takens;
 			if (canSurviveShootGhost(enemy, shotsLeft))
 			{
 				markAsUsed(Skill.get("Shoot Ghost")); //needs to be manually done for skills with a use limit that is not 1
@@ -231,7 +231,7 @@ export function auto_combatDefaultStage5(round_1: number, enemy: Monster, text: 
 		}
 		if (enemy.physicalResistance > 80)
 		{
-			for (let sk of Skill.get(["Saucestorm", "Saucegeyser"]))
+			for (const sk of Skill.get(["Saucestorm", "Saucegeyser"]))
 			{
 				if (canUse$1(sk, false))
 				{
@@ -280,7 +280,7 @@ export function auto_combatDefaultStage5(round_1: number, enemy: Monster, text: 
 		}
 		if (enemy.physicalResistance > 80)
 		{
-			for (let sk of Skill.get(["Saucestorm", "Saucegeyser"]))
+			for (const sk of Skill.get(["Saucestorm", "Saucegeyser"]))
 			{
 				if (canUse$1(sk, false))
 				{
@@ -550,7 +550,7 @@ export function auto_combatDefaultStage5(round_1: number, enemy: Monster, text: 
 		}
 		if (enemy.physicalResistance > 80)
 		{
-			for (let sk of Skill.get(["Saucestorm", "Saucegeyser"]))
+			for (const sk of Skill.get(["Saucestorm", "Saucegeyser"]))
 			{
 				if (canUse$1(sk, false))
 				{
@@ -566,10 +566,10 @@ export function auto_combatDefaultStage5(round_1: number, enemy: Monster, text: 
 	case Class.get("Disco Bandit"):
 		if (auto_have_skill(Skill.get("Disco State of Mind")) && auto_have_skill(Skill.get("Flashy Dancer")) && auto_have_skill(Skill.get("Disco Greed")) && auto_have_skill(Skill.get("Disco Bravado")) && stunnable(enemy) && monsterLevelAdjustment() < 150)
 		{
-			let mpRegen: number = (numericModifier("MP Regen Min") + numericModifier("MP Regen Max")) / 2;
+			const mpRegen: number = (numericModifier("MP Regen Min") + numericModifier("MP Regen Max")) / 2;
 			let netCost: number = 0;
 
-			for (let dance of Skill.get(["Disco Dance of Doom", "Disco Dance II: Electric Boogaloo", "Disco Dance 3: Back in the Habit"]))
+			for (const dance of Skill.get(["Disco Dance of Doom", "Disco Dance II: Electric Boogaloo", "Disco Dance 3: Back in the Habit"]))
 			{
 				netCost += mpCost(dance);
 				if (canUse$2(dance) && mpRegen > netCost * 2)
@@ -585,7 +585,7 @@ export function auto_combatDefaultStage5(round_1: number, enemy: Monster, text: 
 		}
 		if (enemy.physicalResistance > 80)
 		{
-			for (let sk of Skill.get(["Saucestorm", "Saucegeyser"]))
+			for (const sk of Skill.get(["Saucestorm", "Saucegeyser"]))
 			{
 				if (canUse$1(sk, false))
 				{
@@ -668,7 +668,7 @@ export function auto_combatDefaultStage5(round_1: number, enemy: Monster, text: 
 		}
 		break;
 	case Class.get("Vampyre"):
-		for (let sk of Skill.get(["Chill of the Tomb", "Blood Spike", "Piercing Gaze", "Savage Bite"]))
+		for (const sk of Skill.get(["Chill of the Tomb", "Blood Spike", "Piercing Gaze", "Savage Bite"]))
 		{
 			if (sk === Skill.get("Chill of the Tomb") && monsterElement(enemy) === Element.get("cold"))
 				{ continue; }
@@ -903,7 +903,7 @@ export function auto_combatDefaultStage5(round_1: number, enemy: Monster, text: 
 	// this check could be redundant. If preadv worked as intended and we haven't picked a spell yet, attack should deal damage
 	if (enemy.physicalResistance >= 80 && attackMinor === "attack with weapon")
 	{
-		let success: boolean = false;
+		const success: boolean = false;
 		let m_hot: number = 1;
 		let m_cold: number = 1;
 		let m_spooky: number = 1;
@@ -938,7 +938,7 @@ export function auto_combatDefaultStage5(round_1: number, enemy: Monster, text: 
 				break;
 		}
 
-		let elementalDamage: number = toInt(m_hot * numericModifier("hot damage") + m_cold * numericModifier("cold damage") + m_spooky * numericModifier("spooky damage") + m_sleaze * numericModifier("sleaze damage") + m_stench * numericModifier("stench damage"));
+		const elementalDamage: number = toInt(m_hot * numericModifier("hot damage") + m_cold * numericModifier("cold damage") + m_spooky * numericModifier("spooky damage") + m_sleaze * numericModifier("sleaze damage") + m_stench * numericModifier("stench damage"));
 		// try to kill within 5 turns
 		if (elementalDamage * 5 < monsterHp())
 		{
@@ -947,7 +947,7 @@ export function auto_combatDefaultStage5(round_1: number, enemy: Monster, text: 
 	}
 	// Wu Tang the Betrayer is immune to spells and normal attacks, but not Fist skills or Spectral Snapper
 	if (enemy === Monster.get("Wu Tang the Betrayer")) {
-		for (let sk of Skill.get(["Spectral Snapper", "Stinkpalm", "Drunken Baby Style", "Zendo Kobushi Kancho", "Chilled Monkey Brain Technique", "Knuckle Sandwich", "Seven-Finger Strike", "Flying Fire Fist"])) {
+		for (const sk of Skill.get(["Spectral Snapper", "Stinkpalm", "Drunken Baby Style", "Zendo Kobushi Kancho", "Chilled Monkey Brain Technique", "Knuckle Sandwich", "Seven-Finger Strike", "Flying Fire Fist"])) {
 			if (canUse$1(sk, false))
 			{
 				return useSkill$1(sk, false);

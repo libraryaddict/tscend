@@ -132,7 +132,7 @@ export function LX_theSource(): boolean
 		auto_sourceTerminalEnhance("substats");
 	}
 
-	let goal: Location = toLocation(getProperty("sourceOracleTarget"));
+	const goal: Location = toLocation(getProperty("sourceOracleTarget"));
 	if (goal !== Location.none && itemAmount(Item.get("no spoon")) === 0)
 	{
 		if (goal === Location.get("The Batrat and Ratbat Burrow") && internalQuestStatus("questL04Bat") < 1)

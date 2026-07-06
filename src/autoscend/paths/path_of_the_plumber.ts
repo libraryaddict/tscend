@@ -56,7 +56,7 @@ function plumber_buySkill(sk: Skill): boolean
 {
 	if (haveSkill(sk)) { return false; }
 
-	let cost: number = 50 + 25 * plumber_numBadgesBought();
+	const cost: number = 50 + 25 * plumber_numBadgesBought();
 	if (itemAmount(Item.get("coin")) < cost) { return false; }
 
 	visitUrl("place.php?whichplace=mario&action=mush_badgeshop");
@@ -90,7 +90,7 @@ function plumber_buyEquipment(it: Item): boolean
 {
 	if (possessEquipment(it)) { return false; }
 
-	let coins: number = itemAmount(Item.get("coin"));
+	const coins: number = itemAmount(Item.get("coin"));
 
 	switch (it) {
 		case Item.get("hammer"):
@@ -160,21 +160,21 @@ class plumber_buyable {
 
 function plumber_buyableItem(it: Item): plumber_buyable
 {
-	let res: plumber_buyable = new plumber_buyable();
+	const res: plumber_buyable = new plumber_buyable();
 	res.it = it;
 	return res;
 }
 
 function plumber_buyableSkill(sk: Skill): plumber_buyable
 {
-	let res: plumber_buyable = new plumber_buyable();
+	const res: plumber_buyable = new plumber_buyable();
 	res.sk = sk;
 	return res;
 }
 
 function plumber_buyableCostume(costume: Stat): plumber_buyable
 {
-	let res: plumber_buyable = new plumber_buyable();
+	const res: plumber_buyable = new plumber_buyable();
 	res.costume = costume;
 	return res;
 }
@@ -259,19 +259,19 @@ function plumber_nextBuyable(): plumber_buyable
 		return plumber_buyableItem(Item.get("bonfire flower"));
 	}
 
-	let nothing: plumber_buyable = new plumber_buyable();
+	const nothing: plumber_buyable = new plumber_buyable();
 	return nothing;
 }
 
 export function plumber_nothingToBuy(): boolean
 {
-	let next: plumber_buyable = plumber_nextBuyable();
+	const next: plumber_buyable = plumber_nextBuyable();
 	return plumber_buyableIsNothing(next);
 }
 
 function plumber_buyStuff(): boolean
 {
-	let next: plumber_buyable = plumber_nextBuyable();
+	const next: plumber_buyable = plumber_nextBuyable();
 	if (next.sk !== Skill.none)
 	{
 		return plumber_buySkill(next.sk);
@@ -308,33 +308,33 @@ export function plumber_ppCost(sk: Skill): number
 
 export function plumber_canDealScalingDamage(): boolean
 {
-	let items_lv1: Map<Stat, Item> = new Map([
+	const items_lv1: Map<Stat, Item> = new Map([
 		[Stat.get("Moxie"), Item.get("work boots")],
 		[Stat.get("Mysticality"), Item.get("[10462]fire flower")],
 		[Stat.get("Muscle"), Item.get("hammer")]
 	]);
 
-	let items_lv2: Map<Stat, Item> = new Map([
+	const items_lv2: Map<Stat, Item> = new Map([
 		[Stat.get("Moxie"), Item.get("fancy boots")],
 		[Stat.get("Mysticality"), Item.get("bonfire flower")],
 		[Stat.get("Muscle"), Item.get("heavy hammer")]
 	]);
 	// These attacks deal scaling damage at level 1.
-	let attacks_2pp: Map<Stat, Skill> = new Map([
+	const attacks_2pp: Map<Stat, Skill> = new Map([
 		[Stat.get("Moxie"), Skill.get("[25006]Multi-Bounce")],
 		[Stat.get("Mysticality"), Skill.get("[25004]Fireball Barrage")],
 		[Stat.get("Muscle"), Skill.get("[25002]Ultra Smash")]
 	]);
 	// These attacks deal scaling damage at level 3.
-	let attacks_free: Map<Stat, Skill> = new Map([
+	const attacks_free: Map<Stat, Skill> = new Map([
 		[Stat.get("Moxie"), Skill.get("Jump Attack")],
 		[Stat.get("Mysticality"), Skill.get("Fireball Toss")],
 		[Stat.get("Muscle"), Skill.get("Hammer Smash")]
 	]);
 	// This is a pretty rough guesstimate.
-	let expected_scaler_hp: number = myBuffedstat(myPrimestat());
+	const expected_scaler_hp: number = myBuffedstat(myPrimestat());
 
-	for (let st of Stat.get(["Muscle", "Mysticality", "Moxie"]))
+	for (const st of Stat.get(["Muscle", "Mysticality", "Moxie"]))
 	{
 		let level: number = 0;
 		if (possessEquipment((items_lv2.get(st) ?? items_lv2.set(st, Item.none).get(st))))
@@ -439,7 +439,7 @@ export function plumber_equipTool$1(st: Stat): boolean
 export function plumber_forceEquipTool(): boolean
 {
 	//just make sure a tool, any tool, is equipped
-	for (let it of Item.get(["fancy boots", "work boots", "bonfire flower", "[10462]fire flower", "heavy hammer", "hammer"]))
+	for (const it of Item.get(["fancy boots", "work boots", "bonfire flower", "[10462]fire flower", "heavy hammer", "hammer"]))
 	{
 		if (equippedAmount(it) > 0)
 		{
@@ -463,8 +463,8 @@ function plumber_eat_xp(): void
 	}
 	//TODO diabolic pizza oven with pie man was not meant to eat
 
-	let milk: Item = Item.get("gallon of milk");
-	let got_milk: boolean = creatableAmount(milk) > 0 || itemAmount(milk) > 0 || canPull$1(milk);
+	const milk: Item = Item.get("gallon of milk");
+	const got_milk: boolean = creatableAmount(milk) > 0 || itemAmount(milk) > 0 || canPull$1(milk);
 	if (got_milk && fullness_left() >= 15)
 	{
 		acquireOrPull(milk);

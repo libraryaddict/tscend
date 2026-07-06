@@ -20,14 +20,14 @@ function auto_tavern(): boolean
 		return false;
 	}
 
-	let temp: string = visitUrl("cellar.php");
+	const temp: string = visitUrl("cellar.php");
 	if (containsText(temp, "You should probably talk to the bartender before you go poking around in the cellar."))
 	{
 		abort("Quest not yet started, talk to Bart Ender and re-run.");
 	}
 
 	auto_log_info(`In the tavern! Layout: ${getProperty("tavernLayout")}`, "blue");
-	let locations: number[] = [3, 2, 1, 0, 5, 10, 15, 20, 16, 21];
+	const locations: number[] = [3, 2, 1, 0, 5, 10, 15, 20, 16, 21];
 	// infrequent compounding issue, reset maximizer
 	resetMaximize();
 
@@ -35,7 +35,7 @@ function auto_tavern(): boolean
 	// sleaze is the only one we don't care about
 	if (possessEquipment(Item.get("Kremlin's Greatest Briefcase")))
 	{
-		let mod: string = stringModifier(Item.get("Kremlin's Greatest Briefcase"), "Modifiers");
+		const mod: string = stringModifier(Item.get("Kremlin's Greatest Briefcase"), "Modifiers");
 		if (containsText(mod, "Weapon Damage Percent"))
 		{
 			let page: string = visitUrl("place.php?whichplace=kgb");
@@ -73,7 +73,7 @@ function auto_tavern(): boolean
 	try_buff_damage(Element.get("spooky"), Effect.get("Snarl of Three Timberwolves"));
 	try_buff_damage(Element.get("spooky"), Effect.get("Snarl of the Timberwolf"));
 
-	let max_ml_target: number = 150;
+	const max_ml_target: number = 150;
 
 	if (!isActuallyEd() && monsterLevelAdjustment() <= 299)
 	{
@@ -83,7 +83,7 @@ function auto_tavern(): boolean
 		auto_MaxMLToCap(auto_convertDesiredML(max_ml_target), false);
 	}
 
-	for (let element_type of ["Hot", "Cold", "Stench", "Sleaze", "Spooky"])
+	for (const element_type of ["Hot", "Cold", "Stench", "Sleaze", "Spooky"])
 	{
 		if (numericModifier(`${element_type} Damage`) < 20.0)
 		{
@@ -105,7 +105,7 @@ function auto_tavern(): boolean
 	function n_passed(): number
 	{ // We pass an elemental damage check if we have 20 damage for that element
 		let n: number = 0;
-		for (let el of Element.get(["hot", "cold", "spooky", "stench"]))
+		for (const el of Element.get(["hot", "cold", "spooky", "stench"]))
 		{
 			if (simValue$1(damageModifier(el)) >= 20.0)
 			{
@@ -119,7 +119,7 @@ function auto_tavern(): boolean
 		return n_passed() >= 4;
 	}
 	// Consider a pull
-	for (let it of Item.get(["17-ball", "rare oboe"]))
+	for (const it of Item.get(["17-ball", "rare oboe"]))
 	{
 		if (!all_passed())
 		{
@@ -130,16 +130,16 @@ function auto_tavern(): boolean
 		}
 	}
 
-	let eleChoiceCombos: Map<string, number> = new Map([
+	const eleChoiceCombos: Map<string, number> = new Map([
 		["Cold", 513],
 		["Hot", 496],
 		["Spooky", 515],
 		["Stench", 514]
 	]);
 	let capped: number = 0;
-	for (let [ele, choicenum] of eleChoiceCombos)
+	for (const [ele, choicenum] of eleChoiceCombos)
 	{
-		let passed: boolean = simValue(`${ele} Damage`) >= 20.0;
+		const passed: boolean = simValue(`${ele} Damage`) >= 20.0;
 		setProperty(`choiceAdventure${choicenum}`, (passed ? "2" : "1"));
 		if (passed)
 		{
@@ -162,7 +162,7 @@ function auto_tavern(): boolean
 	if (tavern_1 === "0000000000000000000000000")
 	{
 		// visit cellar then refresh layout property
-		let temp_1: string = visitUrl("cellar.php");
+		const temp_1: string = visitUrl("cellar.php");
 		tavern_1 = getProperty("tavernLayout");
 		if (tavern_1 === "0000000000000000000000000")
 		{
@@ -170,11 +170,11 @@ function auto_tavern(): boolean
 		}
 	}
 
-	for (let loc of locations)
+	for (const loc of locations)
 	{
 		if (charAt(tavern_1, loc) === "0")
 		{
-			let actual: number = loc + 1;
+			const actual: number = loc + 1;
 			let needReset: boolean = false;
 			setProperty("auto_nonAdvLoc", true.toString());
 
@@ -183,7 +183,7 @@ function auto_tavern(): boolean
 				return true;
 			}
 
-			let page: string = visitUrl("main.php");
+			const page: string = visitUrl("main.php");
 			if (containsText(page, "You've already explored that spot."))
 			{
 				needReset = true;
@@ -254,7 +254,7 @@ export function L3_tavern(): boolean
 		mpNeed = mpNeed + 10;
 	}
 
-	let enoughElement: boolean = numericModifier("cold damage") >= 20 && numericModifier("hot damage") >= 20 && numericModifier("spooky damage") >= 20 && numericModifier("stench damage") >= 20;
+	const enoughElement: boolean = numericModifier("cold damage") >= 20 && numericModifier("hot damage") >= 20 && numericModifier("spooky damage") >= 20 && numericModifier("stench damage") >= 20;
 
 	let delayTavern: boolean = false;
 

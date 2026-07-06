@@ -18,7 +18,7 @@ function foldable_amount(target: Item): number
 		return 0;
 	}
 	let retval: number = 0;
-	for (let it of Item.get(Object.keys(getRelated(target, "fold"))))
+	for (const it of Item.get(Object.keys(getRelated(target, "fold"))))
 	{
 		retval += itemAmount(it);
 	}
@@ -43,7 +43,7 @@ export function auto_fold(target: Item): boolean
 		return false;
 	}
 	auto_log_debug$1(`folding [${target}]`);
-	let start_amt: number = itemAmount(target);
+	const start_amt: number = itemAmount(target);
 	cliExecute(`fold ${target}`);
 	if (itemAmount(target) === start_amt + 1)
 	{
@@ -118,10 +118,10 @@ function untinker$1(amount: number, target: Item): boolean
 		amount = itemAmount(target); //we can not untinker more than we have
 	}
 
-	let untinker_all: boolean = amount === itemAmount(target);
+	const untinker_all: boolean = amount === itemAmount(target);
 	auto_log_debug$1(`Attempted to untinker ${amount} [${target}]`);
-	let start_amt: number = itemAmount(target);
-	let LLUS: Item = Item.get("Loathing Legion universal screwdriver");
+	const start_amt: number = itemAmount(target);
+	const LLUS: Item = Item.get("Loathing Legion universal screwdriver");
 
 	if (getProperty("questM01Untinker") === "finished")
 	{
@@ -144,7 +144,7 @@ function untinker$1(amount: number, target: Item): boolean
 		} }
 	}
 
-	let success_amt: number = start_amt - itemAmount(target);
+	const success_amt: number = start_amt - itemAmount(target);
 	if (success_amt === amount)
 	{
 		return true;
@@ -157,7 +157,7 @@ function auto_craftIfFree(it: Item): boolean
 {
 	if (creatableAmount(it) > 0 && creatableTurns(it, 1, true) === 0)
 	{
-		let success: boolean = create(it);
+		const success: boolean = create(it);
 		handleTracker$1(`${(success ? "F" : "Failed to f")}ree craft item`, it.toString(), "auto_otherstuff");
 		return success;
 	}

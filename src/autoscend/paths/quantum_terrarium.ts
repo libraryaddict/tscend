@@ -102,9 +102,9 @@ export function qt_initializeSettings(): void
 function qt_FamiliarAvailable(fam: Familiar): boolean
 {
 	//Check to see if target familiar can be forced.
-	let qt_FamiliarKey: string = `<option value="${toInt(fam).toString()}">`;
-	let qt_TerrariumPage: string = visitUrl("qterrarium.php");
-	let qt_FamiliarSearch: AshMatcher = new AshMatcher(qt_FamiliarKey, qt_TerrariumPage);
+	const qt_FamiliarKey: string = `<option value="${toInt(fam).toString()}">`;
+	const qt_TerrariumPage: string = visitUrl("qterrarium.php");
+	const qt_FamiliarSearch: AshMatcher = new AshMatcher(qt_FamiliarKey, qt_TerrariumPage);
 
 	if (qt_turnsToNextQuantumAlignment() > 1)
 	{

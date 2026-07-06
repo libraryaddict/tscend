@@ -46,7 +46,7 @@ export function handleRainDoh(): boolean
 		return false;
 	}
 
-	let enemy: Monster = toMonster(getProperty("rainDohMonster"));
+	const enemy: Monster = toMonster(getProperty("rainDohMonster"));
 	auto_log_info(`Black boxing: ${enemy}`, "blue");
 
 	function validate_rainDohBox(): void
@@ -71,8 +71,8 @@ export function handleRainDoh(): boolean
 	}
 	if (enemy === Monster.get("Skinflute"))
 	{
-		let stars: number = itemAmount(Item.get("star"));
-		let lines: number = itemAmount(Item.get("line"));
+		const stars: number = itemAmount(Item.get("star"));
+		const lines: number = itemAmount(Item.get("line"));
 
 		if (stars < 7 && toBoolean(toInt(lines < 6) & toInt(toInt(getProperty("_raindohCopiesMade")) < 5)))
 		{

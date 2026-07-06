@@ -128,18 +128,18 @@ export function auto_availableBrickRift(): Location
 		return Location.none;
 	}
 
-	let riftsWithBricks: Location[] = Location.get(["Shadow Rift (The Ancient Buried Pyramid)", "Shadow Rift (The Hidden City)", "Shadow Rift (The Misspelled Cemetary)"]);
-	let riftsWithWishes: Map<Location, boolean> = auto_riftsWithWishes();
+	const riftsWithBricks: Location[] = Location.get(["Shadow Rift (The Ancient Buried Pyramid)", "Shadow Rift (The Hidden City)", "Shadow Rift (The Misspelled Cemetary)"]);
+	const riftsWithWishes: Map<Location, boolean> = auto_riftsWithWishes();
 	// First loop checks for bricks and wishes if we have BoFA
 	if (auto_haveBofa() && auto_wishFactsLeft() > 0)
 	{
-		for (let loc of riftsWithBricks)
+		for (const loc of riftsWithBricks)
 		{
 			if (riftsWithWishes.has(loc) && canAdventure(loc)) { return loc; }
 		}
 	}
 	// Then ignore wishes
-	for (let loc of riftsWithBricks)
+	for (const loc of riftsWithBricks)
 	{
 		if (canAdventure(loc)) { return loc; }
 	}
@@ -148,10 +148,10 @@ export function auto_availableBrickRift(): Location
 
 function auto_riftsWithWishes(): Map<Location, boolean>
 {
-	let out: Map<Location, boolean> = new Map();
-	for (let loc of auto_allRifts().keys())
+	const out: Map<Location, boolean> = new Map();
+	for (const loc of auto_allRifts().keys())
 	{
-		for (let m of Monster.get(Object.keys(getLocationMonsters(loc))))
+		for (const m of Monster.get(Object.keys(getLocationMonsters(loc))))
 		{
 			if (itemFact(m) === Item.get("pocket wish"))
 			{
@@ -170,8 +170,8 @@ export function auto_neededShadowBricks(): number
 		return 0;
 	}
 
-	let currentBricks: number = itemAmount(Item.get("shadow brick"));
-	let bricksUsedToday: number = toInt(getProperty("_shadowBricksUsed"));
+	const currentBricks: number = itemAmount(Item.get("shadow brick"));
+	const bricksUsedToday: number = toInt(getProperty("_shadowBricksUsed"));
 	return max(0, 13 - currentBricks - bricksUsedToday);
 }
 
@@ -219,9 +219,9 @@ export function auto_doPhoneQuest(): boolean
 	if (in_pokefam()) {
 		// mafia can lose track of the team, so visit famteam so we're up to date
 		visitUrl("famteam.php");
-		let pokelevel1: number = myPokeFam(0).pokeLevel;
-		let pokelevel2: number = myPokeFam(1).pokeLevel;
-		let pokelevel3: number = myPokeFam(2).pokeLevel;
+		const pokelevel1: number = myPokeFam(0).pokeLevel;
+		const pokelevel2: number = myPokeFam(1).pokeLevel;
+		const pokelevel3: number = myPokeFam(2).pokeLevel;
 		let numFives: number = 0;
 		if (pokelevel1 === 5) {
 			numFives++;
@@ -273,10 +273,10 @@ export function auto_doPhoneQuest(): boolean
 
 export function auto_isShadowRiftMonster(m: Monster): boolean
 {
-	let reg: Monster[] = Monster.get([
+	const reg: Monster[] = Monster.get([
 	  "shadow bat", "shadow cow", "shadow devil", "shadow guy", "shadow hexagon", "shadow orb",
 	  "shadow prism", "shadow slab", "shadow snake", "shadow spider", "shadow stalk", "shadow tree"]);
-	let boss: Monster[] = Monster.get([
+	const boss: Monster[] = Monster.get([
 	  "shadow cauldron", "shadow matrix", "shadow orrery", "shadow scythe",
 	  "shadow spire", "shadow tongue"]);
 	return reg.includes(m) || boss.includes(m);
@@ -309,7 +309,7 @@ export function auto_makeMonkeyPawWish(wish: Effect): boolean
 		auto_log_info$1(`Out of monkey paw wishes, skipping ${wish.toString()}`);
 		return false;
 	}
-	let success: boolean = monkeyPaw(wish);
+	const success: boolean = monkeyPaw(wish);
 	if (success) {
 		handleTracker$2(Item.get("cursed monkey's paw").toString(), myLocation().toString(), wish.toString(), "auto_wishes");
 	}
@@ -326,7 +326,7 @@ export function auto_makeMonkeyPawWish$1(wish: Item): boolean
 		auto_log_info$1(`Out of monkey paw wishes, skipping ${wish.toString()}`);
 		return false;
 	}
-	let success: boolean = monkeyPaw(wish);
+	const success: boolean = monkeyPaw(wish);
 	if (success) {
 		handleTracker$1(Item.get("cursed monkey's paw").toString(), wish.toString(), "auto_wishes");
 	}
@@ -343,7 +343,7 @@ function auto_makeMonkeyPawWish$2(wish: string): boolean
 		auto_log_info$1(`Out of monkey paw wishes, skipping ${wish}`);
 		return false;
 	}
-	let success: boolean = monkeyPaw(wish);
+	const success: boolean = monkeyPaw(wish);
 	if (success) {
 		handleTracker$2(Item.get("cursed monkey's paw").toString(), myLocation().toString(), wish, "auto_wishes");
 	}
@@ -476,8 +476,8 @@ export function shouldCinchoConfetti(): boolean
 
 function auto_potentialMaxCinchLeft(): number
 {
-	let max_rests: number = auto_potentialMaxFreeRests();
-	let curr_free_rests_used: number = toInt(getProperty("_cinchoRests"));
+	const max_rests: number = auto_potentialMaxFreeRests();
+	const curr_free_rests_used: number = toInt(getProperty("_cinchoRests"));
 	let cinch: number = auto_currentCinch();
 	for (let irest: number = curr_free_rests_used + 1; irest < max_rests; irest++)
 	{
@@ -632,7 +632,7 @@ export function auto_useBlackMonolith(): void
 
 export function auto_dousesRemaining(): number
 {
-	let fluda: Item = Item.get("Flash Liquidizer Ultra Dousing Accessory");
+	const fluda: Item = Item.get("Flash Liquidizer Ultra Dousing Accessory");
 	if (availableAmount(fluda) < 1 || !auto_is_valid(fluda))
 	{
 		return 0;
@@ -665,7 +665,7 @@ export function auto_scepterSkills(): void
 	}
 	if (canUse$2(Skill.get("Aug. 28th: Race Your Mouse Day!")) && !toBoolean(getProperty("_aug28Cast")) && pathHasFamiliar())
 	{
-		let hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
+		const hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
 		if ((in_avantGuard() && inHardcore() || hundred_fam !== Familiar.none && (isAttackFamiliar(hundred_fam) || hundred_fam.block)) && haveFamiliar(findRockFamiliarInTerrarium()))
 		{
 			useFamiliar(findRockFamiliarInTerrarium());
@@ -686,7 +686,7 @@ export function auto_scepterSkills(): void
 	//see how much mana cost reduction we can get (up to 3mp)
 	simMaximizeWith$1("-1000mana cost");
 
-	let manaCostMaximize: number = toInt(simValue("Mana Cost"));
+	const manaCostMaximize: number = toInt(simValue("Mana Cost"));
 	if (!auto_turbo())
 	{
 		if (manaCostMaximize < 3 && canUse$2(Skill.get("Aug. 30th: Beach Day!")) && !toBoolean(getProperty("_aug30Cast")) && toInt(getProperty("_augSkillsCast")) < 5)
@@ -699,7 +699,7 @@ export function auto_scepterSkills(): void
 export function auto_scepterRollover(): void
 {
 	//We don't want the baywatch if our accessory slots are already filled with > 7 adventure items or we if one of the slots is the counterclockwise watch
-	let noWatch: boolean = numericModifier(equippedItem(Slot.get("acc1")), "Adventures") >= 7 && numericModifier(equippedItem(Slot.get("acc2")), "Adventures") >= 7 && numericModifier(equippedItem(Slot.get("acc3")), "Adventures") >= 7 || (is_watch(equippedItem(Slot.get("acc1"))) && numericModifier(equippedItem(Slot.get("acc1")), "Adventures") >= 7 || is_watch(equippedItem(Slot.get("acc2"))) && numericModifier(equippedItem(Slot.get("acc2")), "Adventures") >= 7 || is_watch(equippedItem(Slot.get("acc3"))) && numericModifier(equippedItem(Slot.get("acc3")), "Adventures") >= 7);
+	const noWatch: boolean = numericModifier(equippedItem(Slot.get("acc1")), "Adventures") >= 7 && numericModifier(equippedItem(Slot.get("acc2")), "Adventures") >= 7 && numericModifier(equippedItem(Slot.get("acc3")), "Adventures") >= 7 || (is_watch(equippedItem(Slot.get("acc1"))) && numericModifier(equippedItem(Slot.get("acc1")), "Adventures") >= 7 || is_watch(equippedItem(Slot.get("acc2"))) && numericModifier(equippedItem(Slot.get("acc2")), "Adventures") >= 7 || is_watch(equippedItem(Slot.get("acc3"))) && numericModifier(equippedItem(Slot.get("acc3")), "Adventures") >= 7);
 	if (!noWatch && canUse$2(Skill.get("Aug. 30th: Beach Day!")) && !toBoolean(getProperty("_aug30Cast")) && toInt(getProperty("_augSkillsCast")) < 5)
 	{
 		useSkill(Skill.get("Aug. 30th: Beach Day!")); //For Rollover adventures (and -MP)
@@ -926,9 +926,9 @@ export function auto_handleJillOfAllTrades(): void
 		return;
 	}
 
-	let currentMode: string = getParsedCandleMode();
+	const currentMode: string = getParsedCandleMode();
 	// want to configure jill to have bonus of whatever fam type we last looked up
-	let desiredCandleMode: string = getProperty("auto_lastFamiliarLookupType");
+	const desiredCandleMode: string = getProperty("auto_lastFamiliarLookupType");
 
 	auto_log_debug$1(`Jill current mode: ${currentMode} and desired is ${desiredCandleMode}`);
 	if (currentMode === desiredCandleMode)
@@ -1053,13 +1053,13 @@ function activeCitZoneMod(): string
 		return "";
 	}
 	visitUrl("desc_effect.php?whicheffect=9391a5f7577e30ac3af6309804da6944"); // visit url to refresh Mafia's _citizenZoneMods preference
-	let activeCitZoneMod_1: string = toLowerCase(getProperty("_citizenZoneMods"));
+	const activeCitZoneMod_1: string = toLowerCase(getProperty("_citizenZoneMods"));
 	return activeCitZoneMod_1;
 }
 
 function auto_citZoneModIsGoal(goal: string): boolean
 {
-	let activeCitZoneMod_1: string = activeCitZoneMod();
+	const activeCitZoneMod_1: string = activeCitZoneMod();
 
 	if (containsText(activeCitZoneMod_1, goal) || goal === "spec" && containsText(activeCitZoneMod_1, "cold resistance"))
 	{
@@ -1070,7 +1070,7 @@ function auto_citZoneModIsGoal(goal: string): boolean
 
 function auto_citizenZonePrep(goal: string): boolean
 {
-	let activeCitZoneMod_1: string = activeCitZoneMod();
+	const activeCitZoneMod_1: string = activeCitZoneMod();
 	if (myMeat() < meatReserve() && goal !== "mp")
 	{
 		return false; //don't attempt to change if we don't have a lot of meat and we are going for something other than mp
@@ -1129,15 +1129,15 @@ function citizenZones(goal: string): Map<Location, boolean>
 }
 export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean
 {
-	let eagle: Familiar = Familiar.get("Patriotic Eagle");
+	const eagle: Familiar = Familiar.get("Patriotic Eagle");
 	//zones are approximately organized by autoscend level quest structure
-	let meatZones: Map<Location, boolean> = citizenZones("meat");
-	let itemZones: Map<Location, boolean> = citizenZones("item");
-	let initZones: Map<Location, boolean> = citizenZones("init");
+	const meatZones: Map<Location, boolean> = citizenZones("meat");
+	const itemZones: Map<Location, boolean> = citizenZones("item");
+	const initZones: Map<Location, boolean> = citizenZones("init");
 	//mp zones are organized by 20-30 mp regen then 10-15 mp regen and then approximately autoscend level quest structure
-	let mpZones: Map<Location, boolean> = citizenZones("mp");
-	let specZones: Map<Location, boolean> = citizenZones("spec");
-	let activeCitZoneMod_1: string = activeCitZoneMod();
+	const mpZones: Map<Location, boolean> = citizenZones("mp");
+	const specZones: Map<Location, boolean> = citizenZones("spec");
+	const activeCitZoneMod_1: string = activeCitZoneMod();
 	let goal: string = "";
 
 	if (!canAdventure(loc))
@@ -1209,14 +1209,14 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean
 
 export function auto_getCitizenZone$1(goal: string): boolean
 {
-	let zones: Map<Location, boolean> = citizenZones(goal);
+	const zones: Map<Location, boolean> = citizenZones(goal);
 
 	if (!auto_citizenZonePrep(goal))
 	{
 		return false;
 	}
 
-	for (let loc of zones.keys())
+	for (const loc of zones.keys())
 	{
 		if (!canAdventure(loc))
 		{
@@ -1343,7 +1343,7 @@ export function auto_fightFlamingLeaflet(): boolean
 		addBonusToMaximize(Item.get("tearaway pants"), 500); // plants give turns when you tearaway
 	}
 
-	let pages: Map<number, string> = new Map();
+	const pages: Map<number, string> = new Map();
 	pages.set(0, "campground.php?preaction=leaves");
 	pages.set(1, "choice.php?pwd&whichchoice=1510&option=1&leaves=11");
 	return autoAdvBypass(0, pages, Location.get("Noob Cave"), null);
@@ -1364,7 +1364,7 @@ export function auto_handleCCSC(): boolean
 	{
 		return false;
 	}
-	let place: Location = myLocation();
+	const place: Location = myLocation();
 	/* Where/Why We Want Only Certain Locations
 	 The Sleazy Back Alley - 11-leaf clover (only visit if we are a moxie class unlocking guild, but still potentially useful)
 	 The Daily Dungeon - Eleven-foot pole replacement. +1 Fat Loot Token

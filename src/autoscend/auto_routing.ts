@@ -24,12 +24,12 @@ import { LX_fatLootToken, LX_getDesiredWorkshed } from "./quests/level_any";
 //Defined in autoscend/auto_routing.ash
 export function solveDelayZone(skipOutdoorZones: boolean): Location
 {
-	let delayableZones: Map<Location, number> = zone_delayable();
+	const delayableZones: Map<Location, number> = zone_delayable();
 	let burnZone: Location = Location.none;
 	if (delayableZones.size > 0)
 	{
 		// find the delayable zone with the lowest delay left.
-		for (let [loc, delay] of delayableZones)
+		for (const [loc, delay] of delayableZones)
 		{
 			if (skipOutdoorZones && loc.environment === "outdoor")
 			{
@@ -137,12 +137,12 @@ function allowSoftblockDay2Wait(): boolean
 function getLastCombatEnvironmentCounts(offset: number): Map<string, number>
 {
 	// mafia has no char type. string will have to do.
-	let counts: Map<string, number> = new Map([["i", 0], ["o", 0], ["u", 0], ["x", 0], ["?", 0]]);
-	let environments: Map<number, string> = new Map(splitString(substring(getProperty("lastCombatEnvironments"), max(offset, 0), 20), "").map((_v, _i) => [_i, _v]));
+	const counts: Map<string, number> = new Map([["i", 0], ["o", 0], ["u", 0], ["x", 0], ["?", 0]]);
+	const environments: Map<number, string> = new Map(splitString(substring(getProperty("lastCombatEnvironments"), max(offset, 0), 20), "").map((_v, _i) => [_i, _v]));
 	// property is always 20 characters long. Uses a queue (FIFO).
 	// lastCombatEnvironments = xxxxxxxxxxxxxxxxxxxx
 	// i = indoor, o = outdoor, u = underground, x = underwater, ? = unknown/none
-	for (let [_, env] of environments)
+	for (const [_, env] of environments)
 	{
 		counts.set(env, (counts.get(env) ?? 0) + 1);
 	}
@@ -166,8 +166,8 @@ export function auto_reserveUndergroundAdventures(): boolean
 	}
 	if (auto_haveColdMedCabinet() && auto_CMCconsultsLeft() > 0 && myDaycount() < 3)
 	{
-		let turns_until_next_consult: number = toInt(getProperty("_nextColdMedicineConsult")) - totalTurnsPlayed();
-		let envs: Map<string, number> = getLastCombatEnvironmentCounts(turns_until_next_consult);
+		const turns_until_next_consult: number = toInt(getProperty("_nextColdMedicineConsult")) - totalTurnsPlayed();
+		const envs: Map<string, number> = getLastCombatEnvironmentCounts(turns_until_next_consult);
 		if (turns_until_next_consult < 12 && (envs.get("u") ?? envs.set("u", 0).get("u")) > 10)
 		{
 			auto_log_debug$1("Reserving underground adventures as we can still get more Breathitins today.");
@@ -333,7 +333,7 @@ export function auto_softBlockHandler(): boolean
 function auto_workshedStrategy(): Map<number, Item>
 {
 	// return the worksheds, in order, that we want to use today.
-	let strat: Map<number, Item> = new Map();
+	const strat: Map<number, Item> = new Map();
 	if (toBoolean(getProperty("_workshedItemUsed"))) {
 		// we already changed workshed today. Just return whatever is in our workshed currently.
 		strat.set(0, getWorkshed());

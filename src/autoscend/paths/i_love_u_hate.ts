@@ -16,7 +16,7 @@ export function iluh_foodConsumable(str: string): boolean
 		return true;
 	}
 
-	let foodConsume: string = toLowerCase(str);
+	const foodConsume: string = toLowerCase(str);
 	//Not actually going to ever be consumed but need this exception to actually make it for the Palindome quest
 	if (containsText(foodConsume, "stunt nut") || containsText(foodConsume, "wet stew") || containsText(foodConsume, "wet stunt nut stew"))
 	{

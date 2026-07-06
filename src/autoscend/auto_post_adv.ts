@@ -134,8 +134,8 @@ function auto_post_adventure(): boolean
 	{
 		if (toInt(getProperty("auto_diag_round")) === 0)
 		{
-			let last: Monster = lastMonster();
-			let temp: string = visitUrl("main.php");
+			const last: Monster = lastMonster();
+			const temp: string = visitUrl("main.php");
 			if (last !== lastMonster())
 			{
 				auto_log_warning("Interrupted battle detected at post combat time", "red");
@@ -181,8 +181,8 @@ function auto_post_adventure(): boolean
 		else if (myLocation() === Location.get("Sonofa Beach") && itemAmount(Item.get("barrel of gunpowder")) < 5)
 		{
 			//dig until we should have 5 barrels or we're out of digs
-			let barrelCount: number = itemAmount(Item.get("barrel of gunpowder"));
-			let digsRemaining: number = auto_spadeDigsRemaining();
+			const barrelCount: number = itemAmount(Item.get("barrel of gunpowder"));
+			const digsRemaining: number = auto_spadeDigsRemaining();
 			for (let x = barrelCount + 1, _last_6 = min(5, digsRemaining), _step_6 = 1, _up_6 = x <= _last_6, _inc_6 = _up_6 ? Math.abs(_step_6) : -Math.abs(_step_6); _up_6 ? x <= _last_6 : x >= _last_6; x += _inc_6) {
 				auto_spadeDigItem();
 			}
@@ -243,7 +243,7 @@ function auto_post_adventure(): boolean
 		return true;
 	}
 	//save some MP while buffing
-	let beforeBuffs: Map<number, Item> = auto_saveEquipped();
+	const beforeBuffs: Map<number, Item> = auto_saveEquipped();
 	addToMaximize("-1000mana cost, -tie");
 	equipMaximizedGear();
 
@@ -260,7 +260,7 @@ function auto_post_adventure(): boolean
 
 	if (myClass() === Class.get("Avatar of Jarlsberg") && auto_have_skill(Skill.get("Early Riser")))
 	{
-		for (let sk of Skill.get(["Conjure Cream", "Conjure Dough", "Conjure Cheese", "Conjure Eggs", "Conjure Meat Product", "Conjure Vegetables", "Conjure Potato", "Conjure Fruit"]))
+		for (const sk of Skill.get(["Conjure Cream", "Conjure Dough", "Conjure Cheese", "Conjure Eggs", "Conjure Meat Product", "Conjure Vegetables", "Conjure Potato", "Conjure Fruit"]))
 		{
 			if (auto_have_skill(sk) && sk.timescast < sk.dailylimit && myMp() - 40 >= mpCost(sk))
 			{
@@ -348,7 +348,7 @@ function auto_post_adventure(): boolean
 				buffMaintain$3(Effect.get("Bounty of Renenutet"), 10, 1, 10);
 			}
 
-			for (let ef of Effect.get(["Prayer of Seshat", "Wisdom of Thoth", "Power of Heka", "Hide of Sobek", "Bounty of Renenutet"]))
+			for (const ef of Effect.get(["Prayer of Seshat", "Wisdom of Thoth", "Power of Heka", "Hide of Sobek", "Bounty of Renenutet"]))
 			{
 				if (myMp() > 100)
 				{
@@ -408,7 +408,7 @@ function auto_post_adventure(): boolean
 		}
 	}
 
-	let libram: Skill = preferredLibram();
+	const libram: Skill = preferredLibram();
 
 	if (myAdventures() > 20)
 	{
@@ -416,7 +416,7 @@ function auto_post_adventure(): boolean
 	}
 	//Deal with Poison, (should do all of them actually)
 	let poisoned: boolean = false;
-	for (let poison of Effect.get(["A Little Bit Poisoned", "Hardly Poisoned at All", "Majorly Poisoned", "Really Quite Poisoned", "Somewhat Poisoned"]))
+	for (const poison of Effect.get(["A Little Bit Poisoned", "Hardly Poisoned at All", "Majorly Poisoned", "Really Quite Poisoned", "Somewhat Poisoned"]))
 	{
 		if (haveEffect(poison) > 0)
 		{
@@ -478,14 +478,14 @@ function auto_post_adventure(): boolean
 		{
 			useSkill(1, Skill.get("Soul Rotation"));
 		}
-		let missing: number = (myMaxmp() - myMp()) / 15; //soul food restores 15 MP per cast.
+		const missing: number = (myMaxmp() - myMp()) / 15; //soul food restores 15 MP per cast.
 		let availableSauce: number = mySoulsauce();
-		let minMPexpected: number = myMp() + (availableSauce - 5) * 15; //mp expected after soul food if last 5 soulsauce is saved
+		const minMPexpected: number = myMp() + (availableSauce - 5) * 15; //mp expected after soul food if last 5 soulsauce is saved
 		if (availableSauce >= 5 && minMPexpected > 100 && minMPexpected > 0.8 * myMaxmp())
 		{
 			availableSauce -= 5; //keep 5 soulsauce for soul bubble if not missing much MP
 		}
-		let casts: number = min(missing, availableSauce / 5); //soul food costs 5 soulsauce per cast.
+		const casts: number = min(missing, availableSauce / 5); //soul food costs 5 soulsauce per cast.
 		if (casts > 0)
 		{
 			useSkill(casts, Skill.get("Soul Food"));
@@ -515,7 +515,7 @@ function auto_post_adventure(): boolean
 
 	if (in_awol())
 	{
-		let awolDesired: Effect = awol_walkBuff();
+		const awolDesired: Effect = awol_walkBuff();
 		if (awolDesired !== Effect.none)
 		{
 			if (!inAftercore())
@@ -554,10 +554,10 @@ function auto_post_adventure(): boolean
 		buffMaintain$3(Effect.get("Reptilian Fortitude"), 30, 1, 5); //+30HP. 10 MP. totem based duration
 	}
 	// This is the list of castables that all MP sequences will use.
-	let toCast: Skill[] = Skill.get(["Prevent Scurvy and Sobriety", "Acquire Rhinestones", "Advanced Cocktailcrafting", "Advanced Saucecrafting", "Communism!", "Grab a Cold One", "Lunch Break", "Pastamastery", "Perfect Freeze", "Request Sandwich", "Spaghetti Breakfast", "Summon Alice's Army Cards", "Summon Carrot", "Summon Confiscated Things", "Summon Crimbo Candy", "Summon Geeky Gifts", "Summon Hilarious Objects", "Summon Holiday Fun!", "Summon Kokomo Resort Pass", "Summon Tasteful Items"]);
+	const toCast: Skill[] = Skill.get(["Prevent Scurvy and Sobriety", "Acquire Rhinestones", "Advanced Cocktailcrafting", "Advanced Saucecrafting", "Communism!", "Grab a Cold One", "Lunch Break", "Pastamastery", "Perfect Freeze", "Request Sandwich", "Spaghetti Breakfast", "Summon Alice's Army Cards", "Summon Carrot", "Summon Confiscated Things", "Summon Crimbo Candy", "Summon Geeky Gifts", "Summon Hilarious Objects", "Summon Holiday Fun!", "Summon Kokomo Resort Pass", "Summon Tasteful Items"]);
 
-	let buff_familiar: boolean = pathHasFamiliar() && !toBoolean(getProperty("_auto_bad100Familiar"));
-	let regen: number = (toFloat(numericModifier("MP Regen Min")) + toFloat(numericModifier("MP Regen Max"))) / 2.0;
+	const buff_familiar: boolean = pathHasFamiliar() && !toBoolean(getProperty("_auto_bad100Familiar"));
+	const regen: number = (toFloat(numericModifier("MP Regen Min")) + toFloat(numericModifier("MP Regen Max"))) / 2.0;
 
 	if (myMaxmp() < 50)
 	{
@@ -580,7 +580,7 @@ function auto_post_adventure(): boolean
 			useSkill(1, libram);
 		}
 
-		for (let sk of toCast)
+		for (const sk of toCast)
 		{
 			if (isUnrestricted(sk) && auto_have_skill(sk) && myMp() - 40 >= mpCost(sk))
 			{
@@ -610,7 +610,7 @@ function auto_post_adventure(): boolean
 		{
 			buffMaintain$3(Effect.get("Disco Fever"), 40, 1, 10);
 		}
-		let preShield: Map<number, Item> = auto_saveEquipped();
+		const preShield: Map<number, Item> = auto_saveEquipped();
 		auto_equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
 		buffMaintain$3(Effect.get("Saucemastery"), 25, 1, 4);
 		buffMaintain$3(Effect.get("Pasta Oneness"), 25, 1, 4);
@@ -645,7 +645,7 @@ function auto_post_adventure(): boolean
 			useSkill(1, libram);
 		}
 
-		for (let sk of toCast)
+		for (const sk of toCast)
 		{
 			if (isUnrestricted(sk) && auto_have_skill(sk) && myMp() - 50 >= mpCost(sk))
 			{
@@ -681,7 +681,7 @@ function auto_post_adventure(): boolean
 		{
 			buffMaintain$3(Effect.get("Disco Fever"), 60, 1, 10);
 		}
-		let preShield: Map<number, Item> = auto_saveEquipped();
+		const preShield: Map<number, Item> = auto_saveEquipped();
 		auto_equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
 		buffMaintain$3(Effect.get("Saucemastery"), 50, 3, 4);
 		buffMaintain$3(Effect.get("Pasta Oneness"), 50, 3, 4);
@@ -711,7 +711,7 @@ function auto_post_adventure(): boolean
 			}
 		}
 
-		for (let sk of toCast)
+		for (const sk of toCast)
 		{
 			if (isUnrestricted(sk) && auto_have_skill(sk) && myMp() - 90 >= mpCost(sk))
 			{
@@ -823,7 +823,7 @@ function auto_post_adventure(): boolean
 			}
 		}
 
-		for (let sk of toCast)
+		for (const sk of toCast)
 		{
 			if (isUnrestricted(sk) && auto_have_skill(sk) && myMp() - 85 >= mpCost(sk))
 			{
@@ -883,7 +883,7 @@ function auto_post_adventure(): boolean
 		{
 			buffMaintain$3(Effect.get("Disco Fever"), 120, 1, 10);
 		}
-		let preShield: Map<number, Item> = auto_saveEquipped();
+		const preShield: Map<number, Item> = auto_saveEquipped();
 		auto_equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
 		if (myPrimestat() === Stat.get("Muscle"))
 		{
@@ -998,7 +998,7 @@ function auto_post_adventure(): boolean
 		// Otherwise we'll autosell them
 		if (!auto_ignoreExperience() && myLevel() < 13)
 		{
-			for (let it of Item.get(["Azurite", "Eye Agate", "Lapis Lazuli"]))
+			for (const it of Item.get(["Azurite", "Eye Agate", "Lapis Lazuli"]))
 			{
 				if (itemAmount(it) > 0 && auto_is_valid(it))
 				{
@@ -1013,7 +1013,7 @@ function auto_post_adventure(): boolean
 
 	if (myClass() === Class.get("Pastamancer"))
 	{
-		let cur: Thrall = myThrall();
+		const cur: Thrall = myThrall();
 		let consider: Thrall = Thrall.none;
 /*							Cost		L1				L5				L10
 		Vampieroghi			12			1-2 (Dmg, Heal)	Dispel Neg		+60 Max HP
@@ -1037,7 +1037,7 @@ function auto_post_adventure(): boolean
 
 		if (consider !== cur && consider !== Thrall.none)
 		{
-			let toEquip: Skill = toSkill(`Bind ${consider}`);
+			const toEquip: Skill = toSkill(`Bind ${consider}`);
 			if (toEquip !== Skill.none)
 			{
 				if (myMp() >= mpCost(toEquip))

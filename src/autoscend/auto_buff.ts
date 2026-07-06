@@ -65,8 +65,8 @@ function buffMaintain(source: Skill, buff: Effect, mustEquip: Item, mp_min: numb
 	}
 	//handling for buffs that must equip something first
 	let equip_changed: boolean = false;
-	let equipped: Map<number, Item> = auto_saveEquipped();
-	let equip_slot: Slot = toSlot(mustEquip);
+	const equipped: Map<number, Item> = auto_saveEquipped();
+	const equip_slot: Slot = toSlot(mustEquip);
 	if (mustEquip !== Item.none)
 	{
 		if (!possessEquipment(mustEquip) || !auto_is_valid(
@@ -124,8 +124,8 @@ function buffMaintain$1(source: Item, buff: Effect, uses: number, turns: number,
 	}
 	if (itemAmount(source) < uses && !in_wotsf())
 	{
-		let numToBuy: number = uses - itemAmount(source);
-		let meatAvailableToBuy: number = myMeat() - meatReserve();
+		const numToBuy: number = uses - itemAmount(source);
+		const meatAvailableToBuy: number = myMeat() - meatReserve();
 		// attempt to buy from NPC for meat
 		if (npcPrice(source) !== 0 && meatAvailableToBuy > npcPrice(source))
 		{
@@ -155,9 +155,9 @@ function buffMaintain$1(source: Item, buff: Effect, uses: number, turns: number,
 	// Craft if we have free crafts and it's craftable
 	if (itemAmount(source) < uses)
 	{
-		let needed: number = uses - itemAmount(source);
-		let n_can_craft: number = creatableAmount(source);
-		let turns_to_craft: number = creatableTurns(source, needed, true);
+		const needed: number = uses - itemAmount(source);
+		const n_can_craft: number = creatableAmount(source);
+		const turns_to_craft: number = creatableTurns(source, needed, true);
 		if (turns_to_craft === 0 && n_can_craft >= needed)
 		{
 			handleTracker$1("buffMaintain", `${(speculative ? "Speculatively c" : "C")}rafting ${needed.toString()} ${source.toString()}`, "auto_otherstuff");
@@ -848,7 +848,7 @@ useSkill_1 = Skill.get("Holiday Weight Gain");	break;
 			// lodestone will be consumed for a free NC to get this buff
 			// save and restore our location as shadow rifts have a 80% item drop penalty
 			// don't want it unless actually going to a shadow rift
-			let savedLoc: Location = myLocation();
+			const savedLoc: Location = myLocation();
 			setProperty("auto_disableAdventureHandling", true.toString());
 			autoAdv$2(auto_availableBrickRift());
 			setProperty("auto_disableAdventureHandling", false.toString());
@@ -973,7 +973,7 @@ useSkill_1 = Skill.get("Holiday Weight Gain");	break;
 	case Effect.get("Strong Grip"):	useItem_1 = Item.get("finger exerciser");	break;
 	case Effect.get("Strong Resolve"):	useItem_1 = Item.get("resolution: be stronger");	break;
 	case Effect.get("Sugar Rush"):
-		for (let it of Item.get(["Crimbo fudge", "Crimbo peppermint bark", "Crimbo candied pecan", "breath mint", "Tasty Fun Good rice candy", "that gum you like", "Angry Farmer candy"]))
+		for (const it of Item.get(["Crimbo fudge", "Crimbo peppermint bark", "Crimbo candied pecan", "breath mint", "Tasty Fun Good rice candy", "that gum you like", "Angry Farmer candy"]))
 		{
 			if (itemAmount(it) > 0)
 			{
@@ -1224,7 +1224,7 @@ useSkill_1 = Skill.get("Holiday Weight Gain");	break;
 
 	if (Effect.get(["Feeling Lonely", "Feeling Excited", "Feeling Nervous", "Feeling Peaceful"]).includes(buff) && auto_haveEmotionChipSkills())
 	{
-		let feeling: Skill = toSkill(buff);
+		const feeling: Skill = toSkill(buff);
 		//speculate to see if buff will be cast. Return false if it will not be
 		if (buffMaintain(feeling, buff, mustEquip, mp_min, casts, turns, true))
 		{
@@ -1246,7 +1246,7 @@ useSkill_1 = Skill.get("Holiday Weight Gain");	break;
 		}
 	}
 
-	let falloutEffects: Effect[] = Effect.get(["Drunk and Avuncular", "Lucky Struck", "Ministrations in the Dark", "Power, Man", "Record Hunger", "Shrieking Weasel", "Superdrifting"]);
+	const falloutEffects: Effect[] = Effect.get(["Drunk and Avuncular", "Lucky Struck", "Ministrations in the Dark", "Power, Man", "Record Hunger", "Shrieking Weasel", "Superdrifting"]);
 	if (falloutEffects.includes(buff))
 	{
 		if (!possessEquipment(Item.get("Wrist-Boy")))
@@ -1264,7 +1264,7 @@ useSkill_1 = Skill.get("Holiday Weight Gain");	break;
 				return false;
 			}
 		}
-		for (let ef of falloutEffects)
+		for (const ef of falloutEffects)
 		{
 			if (haveEffect(ef) > 0 && ef !== buff)
 			{
@@ -1297,10 +1297,10 @@ export function buffMaintain$4(buff: Effect): boolean
 //	if an expression is REQUIRED force it using buffMaintain
 export function auto_faceCheck(face: Effect): boolean
 {
-	let FacialExpressions: Effect[] = Effect.get(["Snarl of the Timberwolf", "Scowl of the Auk", "Stiff Upper Lip", "Patient Smile", "Quiet Determination", "Arched Eyebrow of the Archmage", "Wizard Squint", "Quiet Judgement", "Icy Glare", "Wry Smile", "Disco Leer", "Disco Smirk", "Suspicious Gaze", "Knowing Smile", "Quiet Desperation", "Inscrutable Gaze"]);
+	const FacialExpressions: Effect[] = Effect.get(["Snarl of the Timberwolf", "Scowl of the Auk", "Stiff Upper Lip", "Patient Smile", "Quiet Determination", "Arched Eyebrow of the Archmage", "Wizard Squint", "Quiet Judgement", "Icy Glare", "Wry Smile", "Disco Leer", "Disco Smirk", "Suspicious Gaze", "Knowing Smile", "Quiet Desperation", "Inscrutable Gaze"]);
 	let CanEmote: boolean = true;
 
-	for (let FExp of FacialExpressions)
+	for (const FExp of FacialExpressions)
 	{
 		if (haveEffect(FExp) > 0)
 		{

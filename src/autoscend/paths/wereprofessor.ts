@@ -140,7 +140,7 @@ function wereprof_buySkills(): void
 	liver3	60	liver2	Synthetic aldosterone	Liver +3
 	pureblood	100	liver3	Synthroid-parathormone cocktail	Shorten ELR
 	*/
-	let rpcost: Map<string, number> = new Map([["stomach3", 60], ["liver3", 60], ["stomach2", 50], ["liver2", 50], ["stomach1", 40], ["liver1", 40], ["hp3", 40], ["init3", 40], ["hp2", 30], ["init2", 30],
+	const rpcost: Map<string, number> = new Map([["stomach3", 60], ["liver3", 60], ["stomach2", 50], ["liver2", 50], ["stomach1", 40], ["liver1", 40], ["hp3", 40], ["init3", 40], ["hp2", 30], ["init2", 30],
 	["hp1", 20], ["init1", 20], ["mus3", 30], ["mox3", 30], ["mus2", 20], ["mox2", 20], ["mus1", 10], ["mox1", 10], ["punt", 100], ["slaughter", 100], ["hunt", 100], ["kick3", 40], ["kick2", 30],
 	["kick1", 20], ["rend3", 40], ["rend2", 30], ["rend1", 20], ["items3", 60], ["items2", 50], ["items1", 40], ["res3", 40], ["res2", 30], ["res1", 20], ["myst3", 30], ["myst2", 20], ["myst1", 10],
 	["bite3", 40], ["bite2", 30], ["bite1", 20], ["perfecthair", 100], ["meat3", 60], ["meat2", 50], ["meat1", 40], ["ml3", 60], ["ml2", 50], ["ml1", 40], ["skin3", 60], ["skin2", 50], ["skin1", 40],
@@ -152,7 +152,7 @@ function wereprof_buySkills(): void
 		{
 			cantbuy = 0;
 			//Priority is: Expanding organs, useful skills (banish, instakill, ELR CD), stat gains, +meat, DR, relatively useless skills and waiting on Mafia support skills
-			for (let sk of ["stomach3", "liver3", "stomach2", "liver2", "stomach1", "liver1", "hp3", "init3", "hp2", "init2", "hp1", "init1", "mus3",
+			for (const sk of ["stomach3", "liver3", "stomach2", "liver2", "stomach1", "liver1", "hp3", "init3", "hp2", "init2", "hp1", "init1", "mus3",
 			"mox3", "mus2", "mox2", "mus1", "mox1", "punt", "slaughter", "pureblood", "hunt", "kick3", "kick2", "kick1", "rend3", "rend2", "rend1", "items3", "items2", "items1",
 			"res3", "res2", "res1", "myst3", "myst2", "myst1", "bite3", "bite2", "bite1", "perfecthair", "meat3", "meat2", "meat1", "ml3", "ml2", "ml1", "skin3",
 			"skin2", "skin1", "feasting", "skinheal", "howl", "feed"])
@@ -253,8 +253,8 @@ export function LM_wereprof(): boolean
 	{
 		return false;
 	}
-	let elixer: Item = Item.get("Doc Galaktik's Homeopathic Elixir");
-	let elixerAmount: number = itemAmount(elixer);
+	const elixer: Item = Item.get("Doc Galaktik's Homeopathic Elixir");
+	const elixerAmount: number = itemAmount(elixer);
 	if (elixerAmount < 10 && myMeat() - npcPrice(elixer) > meatReserve())
 	{
 		// make a stock pile of 10 healing items to use as needed when werewolf
@@ -287,10 +287,10 @@ export function LX_wereprof_getSmashedEquip(): boolean
 		return false;
 	}
 
-	let smashedLocs: Map<number, Location> = new Map();
-	let alreadySmashedLocs: string = getProperty("antiScientificMethod");
+	const smashedLocs: Map<number, Location> = new Map();
+	const alreadySmashedLocs: string = getProperty("antiScientificMethod");
 	//There's a couple other locations, but we shouldn't EVER visit them
-	for (let sl of Location.get(["The Hidden Hospital", "The Castle in the Clouds in the Sky (Top Floor)", "Noob Cave", "The Haunted Pantry", "The Thinknerd Warehouse", "Vanya's Castle"]))
+	for (const sl of Location.get(["The Hidden Hospital", "The Castle in the Clouds in the Sky (Top Floor)", "Noob Cave", "The Haunted Pantry", "The Thinknerd Warehouse", "Vanya's Castle"]))
 	{
 		if (!containsText(alreadySmashedLocs, sl.toString()) && zone_available(sl))
 		{

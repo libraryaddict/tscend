@@ -136,7 +136,7 @@ function auto_warSideQuestsState(): WarPlan
 {
 	// Returns a record indicating current completion state of the war sidequests.
 
-	let ret: WarPlan = new WarPlan();
+	const ret: WarPlan = new WarPlan();
 	ret.doArena = getProperty("sidequestArenaCompleted") === auto_warSide();
 	ret.doJunkyard = getProperty("sidequestJunkyardCompleted") === auto_warSide();
 	ret.doLighthouse = getProperty("sidequestLighthouseCompleted") === auto_warSide();
@@ -199,7 +199,7 @@ function auto_estimatedAdventuresForChaosButterfly(): number
 	}
 	// 4 enemies in [The Castle in the Clouds in the Sky (Ground Floor)] ~25% chance to encounter the one we want.
 	// roughly estimate 4 turns per possibility giant encounter. at base drop this means ~20 adv needed.
-	let expected_turns_until_fight: number = 4;
+	const expected_turns_until_fight: number = 4;
 	if (canYellowRay$1())
 	{
 		return expected_turns_until_fight;
@@ -219,10 +219,10 @@ function auto_estimatedAdventuresForChaosButterfly(): number
 		$_static_0 = true;
 	}
 
-	let butterfly_drop_rate: number = 0.2;
-	let expected_fights_until_drop: number = max(1.0, 1.0 / ($_auto_estimatedAdventuresForChaosButterfly_expectedItemDropMulti * butterfly_drop_rate));
+	const butterfly_drop_rate: number = 0.2;
+	const expected_fights_until_drop: number = max(1.0, 1.0 / ($_auto_estimatedAdventuresForChaosButterfly_expectedItemDropMulti * butterfly_drop_rate));
 
-	let ret: number = ceil(expected_turns_until_fight * expected_fights_until_drop);
+	const ret: number = ceil(expected_turns_until_fight * expected_fights_until_drop);
 	auto_log_info(`I estimate it will take ${ret} fights for a chaos butterfly to drop.`, "green");
 	return ret;
 }
@@ -241,7 +241,7 @@ function auto_estimatedAdventuresForDooks(): number
 		return advCost_1;
 	}
 	//chaos butterfly calculations
-	let advToGetCB: number = auto_estimatedAdventuresForChaosButterfly();
+	const advToGetCB: number = auto_estimatedAdventuresForChaosButterfly();
 	if (toBoolean(getProperty("chaosButterflyThrown")) || itemAmount(Item.get("chaos butterfly")) > 0)
 	{
 		advCost_1 -= 15;
@@ -256,7 +256,7 @@ function auto_estimatedAdventuresForDooks(): number
 
 function warplan_from_bitmask(mask: number): WarPlan
 {
-	let ret: WarPlan = new WarPlan();
+	const ret: WarPlan = new WarPlan();
 	if (auto_warSide() === "fratboy")
 	{
 		ret.doArena = toBoolean(mask >> 0 & 1);
@@ -304,18 +304,18 @@ export function auto_bestWarPlan(): WarPlan
 {
 	if (in_koe())
 	{
-		let do_nothing: WarPlan = new WarPlan();
+		const do_nothing: WarPlan = new WarPlan();
 		return do_nothing;
 	}
 	//if a sidequest is done already then consider it as planned.
-	let retval: WarPlan = auto_warSideQuestsState();
+	const retval: WarPlan = auto_warSideQuestsState();
 	//Path specific blocks where a sidequest is not possible or really bad.
 	let considerArena: boolean = true;
 	let considerJunkyard: boolean = true;
-	let considerLighthouse: boolean = true;
+	const considerLighthouse: boolean = true;
 	let considerOrchard: boolean = true;
 	let considerNuns: boolean = true;
-	let considerFarm: boolean = true;
+	const considerFarm: boolean = true;
 
 	if (in_bhy() || in_pokefam())
 	{
@@ -348,17 +348,17 @@ export function auto_bestWarPlan(): WarPlan
 		considerArena = false;
 	}
 	// Calculate the adventure cost of doing each sidequest.
-	let advCostArena: number = 0; //Arena actual cost is 0 adventures... unless you mess it up. TODO: check if messed up.
-	let advCostJunkyard: number = 10; //placeholder estimate. TODO actual math
-	let advCostLighthouse: number = 10; //placeholder estimate. TODO actual math
-	let advCostOrchard: number = 10; //placeholder estimate. TODO actual math
-	let advCostNuns: number = 20; //placeholder estimate. TODO actual math
-	let advCostFarm: number = auto_estimatedAdventuresForDooks();
+	const advCostArena: number = 0; //Arena actual cost is 0 adventures... unless you mess it up. TODO: check if messed up.
+	const advCostJunkyard: number = 10; //placeholder estimate. TODO actual math
+	const advCostLighthouse: number = 10; //placeholder estimate. TODO actual math
+	const advCostOrchard: number = 10; //placeholder estimate. TODO actual math
+	const advCostNuns: number = 20; //placeholder estimate. TODO actual math
+	const advCostFarm: number = auto_estimatedAdventuresForDooks();
 	// Start with the sidequests already completed.
 	// Greedily add the sidequest that saves the most adventures, breaking
 	// early if no sidequest saves any adventures.
-	let prospective_plan: WarPlan = new WarPlan();
-	let test: WarPlan = new WarPlan();
+	const prospective_plan: WarPlan = new WarPlan();
+	const test: WarPlan = new WarPlan();
 	for (let i: number = 0; i < 6; i++)
 	{
 		//every single loop we want a prospective plan that starts out the same as retval. and adds the best sidequest for that loop. unless all of the sidequests cause us to lose adv in which case it should remain as retval
@@ -463,9 +463,9 @@ function __auto_warTotalBattles(plan: number, remaining: number): number
 
     function fightUntilRemaining(target_remaining: number): void
     {
-        let to_kill: number = max(0, remaining - target_remaining);
-        let kills_per_battle: number = auto_warKillsPerBattle$1(completed_quests);
-        let battles: number = ceil(toFloat(to_kill) / kills_per_battle);
+        const to_kill: number = max(0, remaining - target_remaining);
+        const kills_per_battle: number = auto_warKillsPerBattle$1(completed_quests);
+        const battles: number = ceil(toFloat(to_kill) / kills_per_battle);
 
         total_battles += battles;
         remaining -= battles * kills_per_battle;
@@ -519,7 +519,7 @@ function equipWarOutfit$1(lock: boolean): void
 	else {
 		parts = new Map([[Item.get("beer helmet"), true], [Item.get("distressed denim pants"), true], [Item.get("bejeweled pledge pin"), true]]);
 	}
-	for (let it of parts.keys())
+	for (const it of parts.keys())
 	{
 		if (itemAmount(it) === 0 && equippedAmount(it) === 0)
 		{
@@ -573,14 +573,14 @@ export function warAdventure(): boolean
 		if (!autoAdv$1(1, Location.get("The Battlefield (Frat Uniform)")))
 		{
 			setProperty("hippiesDefeated", (toInt(getProperty("hippiesDefeated")) + 1).toString());
-			let temp: string = visitUrl("island.php");
+			const temp: string = visitUrl("island.php");
 		}
 	}
 	else {
 		if (!autoAdv$1(1, Location.get("The Battlefield (Hippy Uniform)")))
 		{
 			setProperty("fratboysDefeated", (toInt(getProperty("fratboysDefeated")) + 1).toString());
-			let temp: string = visitUrl("island.php");
+			const temp: string = visitUrl("island.php");
 		}
 	}
 	return true;
@@ -804,7 +804,7 @@ export function L12_startWar(): boolean
 		auto_log_info("Must save the ferret!!", "blue");
 		if (L12_singleNCForWarStart())
 		{
-			let NCForced: boolean = auto_forceNextNoncombat$1(Location.get("Wartime Hippy Camp"));
+			const NCForced: boolean = auto_forceNextNoncombat$1(Location.get("Wartime Hippy Camp"));
 		}
 		autoAdv$1(1, Location.get("Wartime Hippy Camp"));
 		//if war started, accept flyer quest for fratboys.
@@ -820,7 +820,7 @@ export function L12_startWar(): boolean
 		auto_log_info("Must save the goldfish!!", "blue");
 		if (L12_singleNCForWarStart())
 		{
-			let NCForced: boolean = auto_forceNextNoncombat$1(Location.get("Wartime Frat House"));
+			const NCForced: boolean = auto_forceNextNoncombat$1(Location.get("Wartime Frat House"));
 		}
 		autoAdv$1(1, Location.get("Wartime Frat House"));
 	}
@@ -947,7 +947,7 @@ export function L12_filthworms(): boolean
 			}
 			else if (auto_warSide() === "hippy")
 			{
-				let quest_planned: WarPlan = auto_bestWarPlan();
+				const quest_planned: WarPlan = auto_bestWarPlan();
 				if (quest_planned.doNuns && getProperty("sidequestNunsCompleted") === "none")
 				{
 					//can wait until nuns finished
@@ -1086,7 +1086,7 @@ function gremlinsFamiliar(): void
 		return;
 	}
 
-	let hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
+	const hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
 	let strip_familiar: boolean = true;
 	if (hundred_fam !== Familiar.none && (isAttackFamiliar(hundred_fam) || hundred_fam.block))
 	{ //in 100% familiar run with an attack or block familiar
@@ -1131,9 +1131,9 @@ function gremlinsFamiliar(): void
 		//desired familiars will be available. their own equipment or generic weight boosting familiar equipment is beneficial
 		strip_familiar = false;
 		//there is a limited list of harmful familiar equipment to forbid
-		for (let fameq of Item.get(["tiny bowler", "ant hoe", "ant pick", "ant pitchfork", "ant rake", "ant sickle", "oversized fish scaler", "filthy child leash", "plastic pumpkin bucket", "little box of fireworks", "moveable feast"]))
+		for (const fameq of Item.get(["tiny bowler", "ant hoe", "ant pick", "ant pitchfork", "ant rake", "ant sickle", "oversized fish scaler", "filthy child leash", "plastic pumpkin bucket", "little box of fireworks", "moveable feast"]))
 		{
-			let wrapped_fameq: Item = wrap_item(fameq);
+			const wrapped_fameq: Item = wrap_item(fameq);
 			if (possessEquipment(wrapped_fameq))
 			{
 				addToMaximize(`-equip ${wrapped_fameq.toString()}`);
@@ -1177,10 +1177,10 @@ export function L12_gremlins(): boolean
 	}
 	else if (in_glover())
 	{
-		let need: number = 30 - itemAmount(Item.get("Doc Galaktik's Pungent Unguent"));
+		const need: number = 30 - itemAmount(Item.get("Doc Galaktik's Pungent Unguent"));
 		if (need > 0 && itemAmount(Item.get("molybdenum pliers")) === 0)
 		{
-			let meatNeed: number = need * npcPrice(Item.get("Doc Galaktik's Pungent Unguent"));
+			const meatNeed: number = need * npcPrice(Item.get("Doc Galaktik's Pungent Unguent"));
 			if (myMeat() < meatNeed)
 			{
 				return false;
@@ -1358,7 +1358,7 @@ export function L12_sonofaBeach(): boolean
 
 	if (!in_lar())
 	{
-		let combat_bonus: number = providePlusCombat(auto_combatModCap(), Location.get("Sonofa Beach"), true, true);
+		const combat_bonus: number = providePlusCombat(auto_combatModCap(), Location.get("Sonofa Beach"), true, true);
 		if (combat_bonus <= 0.0)
 		{
 			auto_log_warning(`Something is keeping us from getting a suitable combat rate for [Lobsterfrogmen] in [Sonofa Beach]. we have: ${combat_bonus}`, "red");
@@ -1372,7 +1372,7 @@ export function L12_sonofaBeach(): boolean
 		setProperty("auto_doCombatCopy", "yes");
 	}
 
-	let retval: boolean = autoAdv$2(Location.get("Sonofa Beach"));
+	const retval: boolean = autoAdv$2(Location.get("Sonofa Beach"));
 
 	setProperty("auto_doCombatCopy", "no");
 	edAcquireHP();
@@ -1476,7 +1476,7 @@ export function L12_sonofaPrefix(): boolean
 
 	if (!in_lar())
 	{
-		let combat_bonus: number = providePlusCombat(auto_combatModCap(), Location.get("Sonofa Beach"), true, true);
+		const combat_bonus: number = providePlusCombat(auto_combatModCap(), Location.get("Sonofa Beach"), true, true);
 		if (combat_bonus <= 0.0)
 		{
 			auto_log_warning(`Something is keeping us from getting a suitable combat rate for [Lobsterfrogmen] in [Sonofa Beach]. we have: ${combat_bonus}`, "red");
@@ -1513,7 +1513,7 @@ export function L12_sonofaPrefix(): boolean
 
 	auto_sourceTerminalEducate(Skill.get("Extract"), Skill.get("Digitize"));
 
-	let retval: boolean = autoAdv$2(Location.get("Sonofa Beach"));
+	const retval: boolean = autoAdv$2(Location.get("Sonofa Beach"));
 	if (!retval)
 	{
 		auto_log_error("Failed to adventure in [Sonofa Beach]");
@@ -1605,7 +1605,7 @@ export function L12_lastDitchFlyer(): boolean
 	if (LX_freeCombats$1(true)) { //try to use free combats to make up the difference.
 	return true; }
 
-	let scalezone: Location = highestScalingZone();
+	const scalezone: Location = highestScalingZone();
 	let flyer_gains: number = myBuffedstat(Stat.get("Moxie")) + monsterLevelAdjustment();
 	switch (scalezone)
 	{
@@ -1618,13 +1618,13 @@ export function L12_lastDitchFlyer(): boolean
 		case Location.get("Sloppy Seconds Diner"):
 			flyer_gains += 5;			break;
 	}
-	let adv_needed: number = (10000.0 - toFloat(getProperty("flyeredML"))) / flyer_gains;
+	const adv_needed: number = (10000.0 - toFloat(getProperty("flyeredML"))) / flyer_gains;
 
-	let plan_do_arena: WarPlan = auto_bestWarPlan();
+	const plan_do_arena: WarPlan = auto_bestWarPlan();
 	plan_do_arena.doArena = true;
-	let plan_no_arena: WarPlan = auto_bestWarPlan();
+	const plan_no_arena: WarPlan = auto_bestWarPlan();
 	plan_no_arena.doArena = false;
-	let adv_saved: number = auto_warTotalBattles$1(plan_no_arena) - auto_warTotalBattles$1(plan_do_arena);
+	const adv_saved: number = auto_warTotalBattles$1(plan_no_arena) - auto_warTotalBattles$1(plan_do_arena);
 
 	if (adv_needed > adv_saved)
 	{
@@ -1736,7 +1736,7 @@ export function L12_themtharHills(): boolean
 		{
 			return false;
 		}
-		let meatProvide: number = (inHardcore() ? toInt(provideMeat$1(1800, true, true)) : toInt(provideMeat$1(1600, true, true)));
+		const meatProvide: number = (inHardcore() ? toInt(provideMeat$1(1800, true, true)) : toInt(provideMeat$1(1600, true, true)));
 		if (inHardcore() && !(meatProvide >= 1800) || !(meatProvide >= 1600))
 		{
 			let bonusMeat: number = 0;
@@ -1752,7 +1752,7 @@ export function L12_themtharHills(): boolean
 				bonusMeat += 200;
 				doRufus = true;
 			}
-			let bonusMeatNeeded: number = (inHardcore() ? 1800 - meatProvide : 1600 - meatProvide);
+			const bonusMeatNeeded: number = (inHardcore() ? 1800 - meatProvide : 1600 - meatProvide);
 			if (bonusMeatNeeded - bonusMeat <= 0)
 			{
 				if (getInhaler)
@@ -1791,7 +1791,7 @@ export function L12_themtharHills(): boolean
 		meat_need = meat_need - 100;
 	}
 
-	let famChoice: Familiar = toFamiliar(getProperty("auto_familiarChoice"));
+	const famChoice: Familiar = toFamiliar(getProperty("auto_familiarChoice"));
 	if (canChangeFamiliar() && famChoice !== Familiar.none)
 	{
 		// if we're in a 100% run, this property returns "none" which will unequip our familiar and ruin a 100% run.
@@ -1808,21 +1808,21 @@ export function L12_themtharHills(): boolean
 	{
 		auto_log_warning(`Meat drop (${meatDropHave}) is pretty low, (we want: ${meat_need}) probably not worth it to try this.`, "red");
 
-		let minget: number = 800.0 * (meatDropHave / 100.0);
-		let meatneed: number = 100000 - toInt(getProperty("currentNunneryMeat"));
+		const minget: number = 800.0 * (meatDropHave / 100.0);
+		const meatneed: number = 100000 - toInt(getProperty("currentNunneryMeat"));
 		auto_log_info(`The min we expect is: ${minget} and we need: ${meatneed}`, "blue");
 
 		if (minget < meatneed)
 		{
-			let curMeat: number = toInt(getProperty("currentNunneryMeat"));
-			let advs: number = (Location.get("The Themthar Hills")).turnsSpent;
-			let needMeat: number = 100000 - curMeat;
+			const curMeat: number = toInt(getProperty("currentNunneryMeat"));
+			const advs: number = (Location.get("The Themthar Hills")).turnsSpent;
+			const needMeat: number = 100000 - curMeat;
 
 			let failNuns: boolean = true;
 			if (advs < 25)
 			{
-				let advLeft: number = 25 - (Location.get("The Themthar Hills")).turnsSpent;
-				let needPerAdv: number = needMeat / advLeft;
+				const advLeft: number = 25 - (Location.get("The Themthar Hills")).turnsSpent;
+				const needPerAdv: number = needMeat / advLeft;
 				if (minget > needPerAdv)
 				{
 					auto_log_info("We don't have the desired +meat but should be able to complete the nuns to our advantage", "green");
@@ -1856,13 +1856,13 @@ export function L12_themtharHills(): boolean
 	 {
 		equipWarOutfit();
 
-		let lastMeat: number = toInt(getProperty("currentNunneryMeat"));
-		let myLastMeat: number = myMeat();
+		const lastMeat: number = toInt(getProperty("currentNunneryMeat"));
+		const myLastMeat: number = myMeat();
 		auto_log_info(`Meat drop to start: ${meatDropModifier()}`, "blue");
 		if (!autoAdv$1(1, Location.get("The Themthar Hills")))
 		{
 			//Maybe we passed it!
-			let temp: string = visitUrl("bigisland.php?place=nunnery");
+			const temp: string = visitUrl("bigisland.php?place=nunnery");
 		}
 		if (lastMonster() !== Monster.get("dirty thieving brigand"))
 		{
@@ -1873,17 +1873,17 @@ export function L12_themtharHills(): boolean
 			return true;
 		}
 
-		let curMeat: number = toInt(getProperty("currentNunneryMeat"));
+		const curMeat: number = toInt(getProperty("currentNunneryMeat"));
 		if (lastMeat === curMeat)
 		{
-			let diffMeat_1: number = myMeat() - myLastMeat;
+			const diffMeat_1: number = myMeat() - myLastMeat;
 			setProperty("currentNunneryMeat", diffMeat_1.toString());
 		}
 
-		let advs: number = (Location.get("The Themthar Hills")).turnsSpent + 1;
+		const advs: number = (Location.get("The Themthar Hills")).turnsSpent + 1;
 
 		let diffMeat: number = curMeat - lastMeat;
-		let needMeat: number = 100000 - curMeat;
+		const needMeat: number = 100000 - curMeat;
 		let average: number = curMeat / advs;
 		auto_log_info(`Cur Meat: ${curMeat} Average: ${average}`, "blue");
 
@@ -1978,7 +1978,7 @@ export function L12_farm(): boolean
 		return false;
 	}
 
-	let plan: WarPlan = auto_bestWarPlan();
+	const plan: WarPlan = auto_bestWarPlan();
 	if (!plan.doFarm)
 	{
 		return false;
@@ -2041,7 +2041,7 @@ export function L12_clearBattlefield(): boolean
 {
 	if (!inAftercore() && myInebriety() < inebrietyLimit() && !toBoolean(getProperty("_gardenHarvested")))
 	{
-		let camp: Map<Item, number> = auto_get_campground();
+		const camp: Map<Item, number> = auto_get_campground();
 		if (camp.has(Item.get("packet of thanksgarden seeds")) && camp.has(Item.get("cornucopia")) && (camp.get(Item.get("cornucopia")) ?? camp.set(Item.get("cornucopia"), 0).get(Item.get("cornucopia"))) > 0 && internalQuestStatus("questL12War") >= 1 && isUnrestricted(Item.get("packet of thanksgarden seeds")))
 		{
 			cliExecute("garden pick");
@@ -2069,10 +2069,10 @@ export function L12_clearBattlefield(): boolean
 		return false; //already done
 	}
 
-	let quest_done: WarPlan = auto_warSideQuestsState();
-	let quest_planned: WarPlan = auto_bestWarPlan();
+	const quest_done: WarPlan = auto_warSideQuestsState();
+	const quest_planned: WarPlan = auto_bestWarPlan();
 	//which sidequests have we reached already?
-	let quest_reached: WarPlan = new WarPlan();
+	const quest_reached: WarPlan = new WarPlan();
 	if (auto_warSide() === "fratboy")
 	{
 		quest_reached.doArena = true;
@@ -2109,12 +2109,12 @@ export function L12_clearBattlefield(): boolean
 		}
 	}
 	//should we wait for a sidequest to be done first before clearing out the battlefield?
-	let wait_for_arena: boolean = !quest_done.doArena && quest_planned.doArena && quest_reached.doArena;
-	let wait_for_junkyard: boolean = !quest_done.doJunkyard && quest_planned.doJunkyard && quest_reached.doJunkyard;
-	let wait_for_lighthouse: boolean = !quest_done.doLighthouse && quest_planned.doLighthouse && quest_reached.doLighthouse;
-	let wait_for_orchard: boolean = !quest_done.doOrchard && quest_planned.doOrchard && quest_reached.doOrchard;
-	let wait_for_nuns: boolean = !quest_done.doNuns && quest_planned.doNuns && quest_reached.doNuns;
-	let wait_for_farm: boolean = !quest_done.doFarm && quest_planned.doFarm && quest_reached.doFarm;
+	const wait_for_arena: boolean = !quest_done.doArena && quest_planned.doArena && quest_reached.doArena;
+	const wait_for_junkyard: boolean = !quest_done.doJunkyard && quest_planned.doJunkyard && quest_reached.doJunkyard;
+	const wait_for_lighthouse: boolean = !quest_done.doLighthouse && quest_planned.doLighthouse && quest_reached.doLighthouse;
+	const wait_for_orchard: boolean = !quest_done.doOrchard && quest_planned.doOrchard && quest_reached.doOrchard;
+	const wait_for_nuns: boolean = !quest_done.doNuns && quest_planned.doNuns && quest_reached.doNuns;
+	const wait_for_farm: boolean = !quest_done.doFarm && quest_planned.doFarm && quest_reached.doFarm;
 	if (wait_for_arena || wait_for_junkyard || wait_for_lighthouse || wait_for_orchard || wait_for_nuns || wait_for_farm)
 	{
 		return false; //we are waiting for a sidequest to finish first
@@ -2184,17 +2184,17 @@ export function L12_finalizeWar(): boolean
 		else {
 			outfit("War Hippy Fatigues");
 		}
-		for (let it of Item.get(["PADL Phone", "red class ring", "blue class ring", "white class ring"]))
+		for (const it of Item.get(["PADL Phone", "red class ring", "blue class ring", "white class ring"]))
 		{
 			sell(it.buyer, itemAmount(it), it);
 		}
-		for (let it of Item.get(["beer helmet", "distressed denim pants", "bejeweled pledge pin"]))
+		for (const it of Item.get(["beer helmet", "distressed denim pants", "bejeweled pledge pin"]))
 		{
 			sell(it.buyer, itemAmount(it) - 1, it);
 		}
 		if (isActuallyEd())
 		{
-			for (let it of Item.get(["kick-ass kicks", "perforated battle paddle", "bottle opener belt buckle", "keg shield", "giant foam finger", "war tongs", "energy drink IV", "Elmley shades", "beer bong"]))
+			for (const it of Item.get(["kick-ass kicks", "perforated battle paddle", "bottle opener belt buckle", "keg shield", "giant foam finger", "war tongs", "energy drink IV", "Elmley shades", "beer bong"]))
 			{
 				sell(it.buyer, itemAmount(it), it);
 			}
@@ -2213,17 +2213,17 @@ export function L12_finalizeWar(): boolean
 		else {
 			outfit("Frat Warrior Fatigues");
 		}
-		for (let it of Item.get(["pink clay bead", "purple clay bead", "green clay bead", "communications windchimes"]))
+		for (const it of Item.get(["pink clay bead", "purple clay bead", "green clay bead", "communications windchimes"]))
 		{
 			sell(it.buyer, itemAmount(it), it);
 		}
-		for (let it of Item.get(["bullet-proof corduroys", "round purple sunglasses", "reinforced beaded headband"]))
+		for (const it of Item.get(["bullet-proof corduroys", "round purple sunglasses", "reinforced beaded headband"]))
 		{
 			sell(it.buyer, itemAmount(it) - 1, it);
 		}
 		if (isActuallyEd())
 		{
-			for (let it of Item.get(["hippy protest button", "Lockenstock&trade; sandals", "didgeridooka", "wicker shield", "oversized pipe", "fire poi", "Gaia beads", "hippy medical kit", "flowing hippy skirt", "round green sunglasses"]))
+			for (const it of Item.get(["hippy protest button", "Lockenstock&trade; sandals", "didgeridooka", "wicker shield", "oversized pipe", "fire poi", "Gaia beads", "hippy medical kit", "flowing hippy skirt", "round green sunglasses"]))
 			{
 				sell(it.buyer, itemAmount(it), it);
 			}
@@ -2232,7 +2232,7 @@ export function L12_finalizeWar(): boolean
 	// Just in case we need the extra turngen to complete this day
 	if (in_darkGyffte())
 	{
-		let have_1: number = itemAmount(Item.get("Monstar energy beverage")) + itemAmount(Item.get("carbonated soy milk"));
+		const have_1: number = itemAmount(Item.get("Monstar energy beverage")) + itemAmount(Item.get("carbonated soy milk"));
 		if (have_1 < 5)
 		{
 			let need: number = 5 - have_1;
@@ -2248,7 +2248,7 @@ export function L12_finalizeWar(): boolean
 		}
 	}
 
-	let have: number = itemAmount(Item.get("filthy poultice")) + itemAmount(Item.get("gauze garter"));
+	const have: number = itemAmount(Item.get("filthy poultice")) + itemAmount(Item.get("gauze garter"));
 	if (have < 10 && !isActuallyEd())
 	{
 		let need: number = 10 - have;
@@ -2334,13 +2334,13 @@ export function L12_finalizeWar(): boolean
 	acquireHP();
 	auto_log_info("Let's fight the boss!", "blue");
 
-	let bossFight: Location = Location.get("Noob Cave");
+	const bossFight: Location = Location.get("Noob Cave");
 
 	if (auto_have_familiar(Familiar.get("Machine Elf")))
 	{
 		handleFamiliar$1(Familiar.get("Machine Elf"));
 	}
-	let pages: Map<number, string> = new Map();
+	const pages: Map<number, string> = new Map();
 	pages.set(0, "bigisland.php?place=camp&whichcamp=1");
 	pages.set(1, "bigisland.php?place=camp&whichcamp=2");
 	pages.set(2, "bigisland.php?action=bossfight&pwd");
@@ -2351,7 +2351,7 @@ export function L12_finalizeWar(): boolean
 
 	if (in_pokefam())
 	{
-		let temp: string = visitUrl("island.php");
+		const temp: string = visitUrl("island.php");
 		council();
 	}
 
