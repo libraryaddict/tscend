@@ -124,9 +124,11 @@ import { acquireHP, doRest, uneffect } from "../auto_restore";
 import {
   adjustForReplaceIfPossible$1,
   auto_combatModCap,
+  auto_forceNextCombat$1,
   auto_forceNextNoncombat$1,
   auto_get_campground,
   auto_have_skill,
+  auto_haveQueuedForcedCombat,
   auto_is_valid,
   auto_is_valid$3,
   auto_log_error,
@@ -221,6 +223,7 @@ import { wildfire_warboss_check } from "../paths/wildfire";
 import { robot_delay } from "../paths/you_robot";
 import { in_zombieSlayer } from "../paths/zombie_slayer";
 import { LX_islandAccess } from "./level_any";
+import { auto_havePeridot, haveUsedPeridot$1 } from "../iotms/mr2025";
 
 let $_static_0 = false;
 
@@ -1628,10 +1631,27 @@ export function L12_sonofaPrefix(): boolean {
     pulverizeThing($item`goatskin umbrella`);
   }
 
-  if (!in_lar()) {
-    const combat_bonus: number = providePlusCombat(
+  let CForced: boolean = false;
+  // skills/items that let us select monsters can have the effect of forcing
+  // combat here too. Think PoP is the only one implemented for this quest (map the monsters being the other, not implemented).
+  if (!auto_havePeridot() || haveUsedPeridot$1(Location.get("Sonofa Beach"))) {
+    if (auto_haveQueuedForcedCombat()) {
+      CForced = true;
+      auto_log_info$1(
+        "Not trying to force combat again at Sonofa Beach because we already have a forced combat queued",
+      );
+    } else {
+      CForced = auto_forceNextCombat$1(Location.get("Sonofa Beach"));
+      auto_log_info(
+        `Trying to force combat at Sonofa Beach: ${CForced.toString()}`,
+        "blue",
+      );
+    }
+  }
+  if (!in_lar() && !CForced) {
+    let combat_bonus: number = providePlusCombat(
       auto_combatModCap(),
-      $location`Sonofa Beach`,
+      Location.get("Sonofa Beach"),
       true,
       true,
     );

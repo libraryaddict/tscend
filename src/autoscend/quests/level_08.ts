@@ -17,6 +17,7 @@ import {
   Item,
   itemAmount,
   jumpChance,
+  Location,
   myAdventures,
   myDaycount,
   myLevel,
@@ -72,8 +73,12 @@ import { auto_waitForDay2 } from "../auto_routing";
 import {
   adjustForYellowRayIfPossible$1,
   auto_can_equip,
+  auto_canForceNextCombat,
   auto_combatModCap,
+  auto_forceNextCombat$1,
   auto_forceNextNoncombat$1,
+  auto_haveCombatForceSource,
+  auto_haveQueuedForcedCombat,
   auto_inRonin,
   auto_log_debug,
   auto_log_debug$1,
@@ -648,9 +653,14 @@ export function theeXtremeSlopeChoiceHandler(choice: number): void {
   }
 }
 
-function L8_trapperNinjaLair(): boolean {
+export function L8_trapperNinjaLair(): boolean {
   // adventure in the lair of the ninja snowmen to find and fight ninja snowman assassins.
-  // usually this would only occur in hardcore
+  // ~~usually this would only occur in hardcore~~
+  // UPDATE: as of the May '26 IOTM we like ninja lair, so this should be typical with that IOTM.
+  if (L8_trapperTalk()) {
+    // try to unlock lair (sometimes necessary if called from L11 Shen)
+    return true;
+  }
   if (internalQuestStatus("questL08Trapper") !== 2) {
     return false;
   }
@@ -698,11 +708,25 @@ function L8_trapperNinjaLair(): boolean {
     auto_log_debug$1("Delaying Lair of the Ninja Snowmen in case of Shen.");
     return false;
   }
-  // can we provide enough combat bonus to encounter snowman assassins?
+  // can we provide enough combat bonus to encounter snowman assassins, or force them?
+  let CForced: boolean = false;
+  if (auto_haveQueuedForcedCombat()) {
+    CForced = true;
+    auto_log_info$1(
+      "Not trying to force combat again at Lair of the Ninja Showmen because we already have a forced combat queued",
+    );
+  } else {
+    CForced = auto_forceNextCombat$1(Location.get("Lair of the Ninja Snowmen"));
+    auto_log_info(
+      `Trying to force combat at Lair of the Ninja Snowmen: ${CForced.toString()}`,
+      "blue",
+    );
+  }
   if (
+    !CForced &&
     providePlusCombat(
       auto_combatModCap(),
-      $location`Lair of the Ninja Snowmen`,
+      Location.get("Lair of the Ninja Snowmen"),
       true,
       true,
     ) <= 0.0
@@ -724,13 +748,13 @@ function L8_trapperNinjaLair(): boolean {
     return false;
   }
   // buff
-  if (isActuallyEd() && !elementalPlanes_access($element`spooky`)) {
+  if (isActuallyEd() && !elementalPlanes_access(Element.get("spooky"))) {
     adjustEdHat("myst");
   }
 
-  auto_getCitizenZone($location`Lair of the Ninja Snowmen`, false); //since we want to adventure in the Lair anyway
+  auto_getCitizenZone(Location.get("Lair of the Ninja Snowmen"), false); //since we want to adventure in the Lair anyway
 
-  if (autoAdv$2($location`Lair of the Ninja Snowmen`)) {
+  if (autoAdv$2(Location.get("Lair of the Ninja Snowmen"))) {
     return true;
   }
   auto_log_warning(
@@ -867,17 +891,27 @@ export function L8_trapperGroar(): boolean {
   return retval;
 }
 
+export function ninjaItemsRemaining(): number {
+  let items_remaining: number = 3;
+  if (itemAmount(Item.get("ninja carabiner")) > 0) {
+    items_remaining -= 1;
+  }
+  if (itemAmount(Item.get("ninja crampons")) > 0) {
+    items_remaining -= 1;
+  }
+  if (itemAmount(Item.get("ninja rope")) > 0) {
+    items_remaining -= 1;
+  }
+  return items_remaining;
+}
+
 export function L8_trapperPeak(): boolean {
   // unlock the peak in the trapper quest
   if (internalQuestStatus("questL08Trapper") !== 2) {
     return false;
   }
   // unlock peak using ninja climbing gear
-  if (
-    itemAmount($item`ninja rope`) > 0 &&
-    itemAmount($item`ninja carabiner`) > 0 &&
-    itemAmount($item`ninja crampons`) > 0
-  ) {
+  if (ninjaItemsRemaining() < 1) {
     const resGoal: Map<Element, number> = new Map();
     resGoal.set($element`cold`, 5);
     if (provideResistances$4(resGoal, $location`Mist-Shrouded Peak`, true)) {
@@ -920,11 +954,16 @@ export function L8_trapperPeak(): boolean {
 
 export function L8_forceExtremeInstead(): boolean {
   // If for some reason we've already got 2 ninja items, no need to get forcey
-  if (availableAmount($item`ninja crampons`) > 0) {
+  if (availableAmount(Item.get("ninja crampons")) > 0) {
     return false;
   }
-  // Set the variable if we're doing McHugeLarge items
-  if (auto_canEquipAllMcHugeLarge()) {
+  // Set the variable if we're doing McHugeLarge items and aren't already forcing combats for lair
+  if (
+    auto_canEquipAllMcHugeLarge() &&
+    !auto_haveQueuedForcedCombat() &&
+    !auto_canForceNextCombat() &&
+    (!auto_haveCombatForceSource() || isAboutToPowerlevel())
+  ) {
     setProperty("auto_L8_extremeInstead", true.toString());
   }
   return toBoolean(getProperty("auto_L8_extremeInstead"));
@@ -947,6 +986,20 @@ export function L8_trapperSlope(): boolean {
   // hardcore handling
   if (robot_delay("outfit")) {
     return false; // delay for You, Robot path
+  }
+  // similar if statements exist in the L11 quest file (shen)
+  // We want to go ninja lair if we can force the NSAs
+  if (auto_canForceNextCombat() || auto_haveQueuedForcedCombat()) {
+    if (L8_trapperNinjaLair()) {
+      return true;
+    }
+  }
+  if (
+    auto_haveCombatForceSource() &&
+    !isAboutToPowerlevel() &&
+    !toBoolean(getProperty("auto_L8_extremeInstead"))
+  ) {
+    return false; // we want to wait until we can force combats if we have a force source, unless we've decided to go extreme or have totally run out of tasks
   }
   // Checks for McHugeLarge skis
   if (L8_forceExtremeInstead()) {

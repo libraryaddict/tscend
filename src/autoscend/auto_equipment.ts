@@ -3,6 +3,7 @@ import {
   appearanceRates,
   booleanModifier,
   canEquip,
+  Class,
   cliExecute,
   containsText,
   endsWith,
@@ -45,6 +46,7 @@ import {
   myMp,
   myPath,
   myPrimestat,
+  myThrall,
   npcPrice,
   numericModifier,
   outfitPieces,
@@ -58,6 +60,7 @@ import {
   startsWith,
   Stat,
   substring,
+  Thrall,
   toBoolean,
   toFloat,
   toInt,
@@ -148,7 +151,10 @@ import {
   auto_timeIsAStripPossible,
   auto_wantToBCZ,
 } from "./iotms/mr2025";
-import { auto_clubEmBackInTimesRemaining } from "./iotms/mr2026";
+import {
+  auto_clubEmBackInTimesRemaining,
+  auto_havePastaWand,
+} from "./iotms/mr2026";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";
@@ -1197,6 +1203,15 @@ function finalizeMaximize(speculative: boolean): void {
 
   if (auto_haveBatWings() && toInt(getProperty("_batWingsFreeFights")) < 5) {
     addBonusToMaximize($item`bat wings`, 200); // get the 5 free fights
+  }
+  if (
+    myClass() === Class.get("Pastamancer") &&
+    auto_havePastaWand() &&
+    myThrall().level < 11 &&
+    (myThrall() === Thrall.get("Vermincelli") ||
+      myThrall() === Thrall.get("Spice Ghost"))
+  ) {
+    addBonusToMaximize(Item.get("legendary pasta wand"), 40); // bonus for the thrallxp, if we have a thrall we wanna lvl up
   }
   // We still need pixels in KoE, badly.
   if (in_koe() && auto_hasPowerfulGlove()) {

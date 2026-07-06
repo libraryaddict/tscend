@@ -1158,51 +1158,6 @@ function auto_post_adventure(): boolean {
     }
   }
 
-  if (myClass() === $class`Pastamancer`) {
-    const cur: Thrall = myThrall();
-    let consider: Thrall = Thrall.none;
-    /*							Cost		L1				L5				L10
-		Vampieroghi			12			1-2 (Dmg, Heal)	Dispel Neg		+60 Max HP
-		Vermincelli			30			2 MP Regen		Dmg, Poison		+30 Max MP
-		Angel Hair Wisp		60			5% init			Block Crits		Block
-(Undead)Elbow Maraconi		100			Equalize Mus	+2 Weapon Dmg	+10% crit
-		Penne Dreadful		150			Equalize Mox	Jump Delevel	DR + 10
-		Spaghetti Elemental	150			+Stats Ceil(/3)	Block First Att	+5 spell dmg
-		Lasagmbie			200			20+2 Meat		Spooky Dmg		+10 spooky spell dmg
-		Spice Ghost			250			10+1 Item		Spices			Stun Increase
-*/
-
-    if (
-      myMp() >= 1.2 * mpCost($skill`Bind Vermincelli`) &&
-      cur === Thrall.none &&
-      auto_have_skill($skill`Bind Vermincelli`)
-    ) {
-      consider = $thrall`Vermincelli`;
-    }
-    if (
-      myMp() >= 1.2 * mpCost($skill`Bind Spice Ghost`) &&
-      auto_have_skill($skill`Bind Spice Ghost`) &&
-      myDaycount() > 1 &&
-      toInt(numericModifier("MP Regen Min")) > 9
-    ) {
-      consider = $thrall`Spice Ghost`;
-    }
-
-    if (consider !== cur && consider !== Thrall.none) {
-      const toEquip: Skill = toSkill(`Bind ${consider}`);
-      if (toEquip !== Skill.none) {
-        if (myMp() >= mpCost(toEquip)) {
-          useSkill(1, toEquip);
-        }
-      } else {
-        auto_log_warning(
-          "Thrall handler error. Could not generate appropriate skill.",
-          "red",
-        );
-      }
-    }
-  }
-
   if (!inAftercore()) {
     if (
       myDaycount() === 1 &&

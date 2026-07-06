@@ -76,7 +76,7 @@ import { in_lta } from "./paths/license_to_adventure";
 import { in_lar } from "./paths/live_ascend_repeat";
 import { in_plumber } from "./paths/path_of_the_plumber";
 import { in_robot } from "./paths/you_robot";
-import { L8_forceExtremeInstead } from "./quests/level_08";
+import { L8_forceExtremeInstead, L8_trapperTalk } from "./quests/level_08";
 import { bridgeGoal } from "./quests/level_09";
 import { getShenZonesTurnsSpent, liana_cleared } from "./quests/level_11";
 import { need8BitPoints, needStarKey } from "./quests/level_13";
@@ -94,6 +94,11 @@ function zone_unlock(loc: Location): boolean {
   let unlocked: boolean = false;
   if (loc === $location`The Thinknerd Warehouse`) {
     unlocked = LX_unlockThinknerdWarehouse(false);
+  } else if (
+    loc === Location.get("Lair of the Ninja Snowmen") &&
+    L8_trapperTalk()
+  ) {
+    unlocked = true;
   } else {
     auto_log_debug$1(`Don't know how to unlock ${loc}`);
     return false;

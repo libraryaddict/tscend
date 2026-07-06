@@ -1,5 +1,7 @@
 import {
   abort,
+  appearanceRates,
+  Class,
   cliExecute,
   Familiar,
   floor,
@@ -8,18 +10,23 @@ import {
   itemAmount,
   Location,
   min,
+  Monster,
   myAdventures,
   myBasestat,
   myBjornedFamiliar,
+  myClass,
   myInebriety,
   myLevel,
   myMeat,
   myPrimestat,
+  myThrall,
   myTurncount,
   print,
   setProperty,
+  Thrall,
   toBoolean,
   toInt,
+  toThrall,
   useSkill,
   wait,
 } from "kolmafia";
@@ -58,6 +65,7 @@ import {
   internalQuestStatus,
   loopHandlerDelayAll,
   meatReserve,
+  pm_updateThrall,
 } from "./auto_util";
 import { canUse$2 } from "./combat/auto_combat_util";
 import { elementalPlanes_access } from "./iotms/elementalPlanes";
@@ -97,6 +105,7 @@ import {
 import { is_professor } from "./paths/wereprofessor";
 import { in_robot, LX_robot_powerlevel } from "./paths/you_robot";
 import { candyBlock, freeCandyFightsLeft } from "./quests/level_any";
+import { zone_isAvailable } from "./auto_zone";
 
 //Defined in autoscend/auto_powerlevel.ash
 export function isAboutToPowerlevel(): boolean {
@@ -473,7 +482,27 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
   }
 
   let adv_done: boolean = false;
-
+  let burrow: Location = Location.get("The Batrat and Ratbat Burrow");
+  if (
+    myClass() === Class.get("Pastamancer") &&
+    toThrall("ver").level > 10 &&
+    toInt(getProperty("_legendaryVermincelliFreeRats")) < 3 &&
+    zone_isAvailable(burrow, true) &&
+    (appearanceRates(burrow)[Monster.get("screambat").toString()] ??= 0.0) <
+      0.01
+  ) {
+    // first three fights each day with Vermincelli vs rats are guaranteed free. Choosing to go to the burrow, but need it to be available and no screambats.
+    pm_updateThrall(burrow, false);
+    if (myThrall() === Thrall.get("Vermincelli")) {
+      auto_log_debug$1(
+        "LX_freeCombats is adventuring in [The Batrat and Ratbat Burrow] with Vermincelli",
+      );
+      adv_done = autoAdv$1(1, burrow);
+      if (adv_done) {
+        return true;
+      }
+    }
+  }
   if (
     !in_koe() &&
     toInt(getProperty("_machineTunnelsAdv")) < 5 &&

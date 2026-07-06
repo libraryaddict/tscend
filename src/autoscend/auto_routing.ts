@@ -21,7 +21,9 @@ import {
 import { $item, $location } from "libram";
 
 import {
+  auto_canForceNextCombat,
   auto_canForceNextNoncombat,
+  auto_haveQueuedForcedCombat,
   auto_is_valid,
   auto_log_debug$1,
   auto_log_warning,
@@ -56,7 +58,7 @@ import { L4_batCave } from "./quests/level_04";
 import { L5_getEncryptionKey, L5_haremOutfit } from "./quests/level_05";
 import { L6_friarsGetParts } from "./quests/level_06";
 import { L7_crypt } from "./quests/level_07";
-import { L8_trapperGroar } from "./quests/level_08";
+import { L8_trapperGroar, L8_trapperSlope } from "./quests/level_08";
 import { L9_chasmBuild, L9_highLandlord } from "./quests/level_09";
 import {
   L10_airship,
@@ -363,6 +365,17 @@ export function auto_earlyRoutingHandling(): boolean {
       L10_holeInTheSkyUnlock()
     ) {
       // quests where we want to force non-combats
+      return true;
+    }
+  }
+  // force forcing combats.
+  if (auto_canForceNextCombat() || auto_haveQueuedForcedCombat()) {
+    auto_log_debug$1(
+      "Possibly forcing a combat somewhere. Strap yourselves in, kids.",
+    );
+    if (L8_trapperSlope()) {
+      // could add LFM in the future
+      // quests where we want to force combats
       return true;
     }
   }

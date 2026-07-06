@@ -6,6 +6,7 @@ import {
   extractItems,
   getProperty,
   Item,
+  itemAmount,
   Location,
   Monster,
   myLocation,
@@ -19,7 +20,12 @@ import {
 import { $item, $location, $slots } from "libram";
 
 import { autoAdvBypass } from "../auto_adventure";
-import { spleen_left } from "../auto_consume";
+import {
+  auto_autoConsumeOne,
+  canEat$1,
+  spleen_left,
+  stomach_left,
+} from "../auto_consume";
 import {
   auto_is_valid,
   auto_log_error,
@@ -29,6 +35,9 @@ import {
   isFreeMonster$1,
 } from "../auto_util";
 import { zone_delay } from "../auto_zone";
+import { ConsumeAction } from "../autoscend_record";
+import { in_plumber } from "../paths/path_of_the_plumber";
+import { in_small } from "../paths/small";
 
 // This is meant for items that have a date of 2026
 
@@ -317,6 +326,144 @@ export function auto_burnRemainingSpadeDigs(): boolean {
     auto_spadeDigAncient();
   }
   return auto_spadeDigsRemaining() === 0;
+}
+
+export function auto_havePastaWand(): boolean {
+  if (
+    auto_is_valid(Item.get("legendary pasta wand")) &&
+    availableAmount(Item.get("legendary pasta wand")) > 0
+  ) {
+    return true;
+  }
+  return false;
+}
+// keys are the legendary dishes, values are their respective base dishes
+export function legendaryNoodleDishes(): Map<Item, Item> {
+  let dishes: Map<Item, Item> = new Map();
+  dishes.set(Item.get("Tubetto Gelatto"), Item.get("tomb aspic"));
+  dishes.set(Item.get("Formica e Pepe"), Item.get("hot honey ant"));
+  dishes.set(Item.get("Gnocci Domani"), Item.get("later tots"));
+  dishes.set(Item.get("Linguini Ubriacapa"), Item.get("sauced mutton"));
+  dishes.set(Item.get("Pasta Grimavera"), Item.get("haunted crudit&eacute;s"));
+  dishes.set(Item.get("Orzo di Riso"), Item.get("spicy onigiri"));
+  dishes.set(Item.get("Arrattabbattabiata"), Item.get("ratbatatouille"));
+  dishes.set(Item.get("Pesto alla Marziano"), Item.get("alien salad"));
+  dishes.set(Item.get("Frutti di Scatoletta"), Item.get("can of tuna"));
+  return dishes;
+}
+
+export function numPreparedLegendaryNoodleDishes(): number {
+  let num: number = 0;
+  for (let dish of legendaryNoodleDishes().keys()) {
+    num += itemAmount(dish);
+  }
+  return num;
+}
+// pick a legendary noodle to consume (or to check that we have one avail. to consume)
+export function auto_findPreparedLegendaryNoods(): Item {
+  for (let it of legendaryNoodleDishes().keys()) {
+    if (itemAmount(it) > 0) {
+      return it;
+    }
+  }
+  return Item.none;
+}
+
+export function numBaseLegendaryNoodleDishes(): number {
+  let num: number = 0;
+  for (let preparedDish of legendaryNoodleDishes().keys()) {
+    num += itemAmount(
+      legendaryNoodleDishes().get(preparedDish) ??
+        legendaryNoodleDishes().set(preparedDish, Item.none).get(preparedDish),
+    );
+  }
+  return num;
+}
+// pick a base noodle to consume, to be crafted into legendary (or to check that we have one avail. to consume)
+// returns the legendary dish the noods are crafted into
+export function auto_findBaseLegendaryNoods(): Item {
+  if (itemAmount(Item.get("legendary noodles")) < 1) {
+    return Item.none;
+  }
+  for (let it of legendaryNoodleDishes().keys()) {
+    if (
+      itemAmount(
+        legendaryNoodleDishes().get(it) ??
+          legendaryNoodleDishes().set(it, Item.none).get(it),
+      ) > 0
+    ) {
+      return it;
+    }
+  }
+  return Item.none;
+}
+
+export function auto_willEatLegendaryNoodles(): boolean {
+  // the specific dish we check for canEat doesn't matter, just that it's *A* legendary pasta dish
+  // We exclude small because we want to be careful about maximizing the quality of our food when we only have two space, and we exclude plumber because plumber consumption is weird
+  return (
+    canEat$1(Item.get("Orzo di Riso")) &&
+    !toBoolean(getProperty("auto_limitConsume")) &&
+    !in_small() &&
+    !in_plumber()
+  );
+}
+
+export function auto_legendaryNoodlesAvailable(): boolean {
+  if (stomach_left() < 1 || !auto_willEatLegendaryNoodles()) {
+    return false;
+  }
+  if (auto_findPreparedLegendaryNoods() !== Item.none) {
+    return true;
+  }
+  if (auto_findBaseLegendaryNoods() !== Item.none) {
+    return true;
+  }
+  return false;
+}
+
+export function auto_forceCombatLegendaryNoodles(): boolean {
+  // we are overriding the normal consumption loop due to the nature of the food's effect (eating when we are ready to force)
+  // so we make a ConsumeAction record to record what we want to eat and then feed it into auto_autoConsumeOne()
+  // values taken from auto_consume.ash
+  let AUTO_ORGAN_STOMACH_1: number = 1;
+  let AUTO_OBTAIN_NULL_1: number = 100;
+  let AUTO_OBTAIN_CRAFT_1: number = 101;
+  let action: ConsumeAction = new ConsumeAction();
+  // select a dish and then create a record, prioritizing dishes that are already crafted first
+  let prospective_dish: Item = auto_findPreparedLegendaryNoods();
+  if (prospective_dish !== Item.none) {
+    action = new ConsumeAction(
+      prospective_dish,
+      0,
+      1,
+      5,
+      10,
+      AUTO_ORGAN_STOMACH_1,
+      AUTO_OBTAIN_NULL_1,
+    );
+  } else {
+    let prospective_dish_1: Item = auto_findBaseLegendaryNoods();
+    if (prospective_dish_1 !== Item.none) {
+      action = new ConsumeAction(
+        prospective_dish_1,
+        0,
+        1,
+        5,
+        10,
+        AUTO_ORGAN_STOMACH_1,
+        AUTO_OBTAIN_CRAFT_1,
+      );
+    } else {
+      return false;
+    }
+  }
+  // we communicate via the pref to the ChoiceHandler below to take the amygdala force-combat option
+  setProperty("auto_forceCombatWithLegendaryNoodles", true.toString());
+  if (auto_autoConsumeOne(action)) {
+    return true;
+  }
+  return false;
 }
 
 export function legendaryNoodlesChoiceHandler(): void {

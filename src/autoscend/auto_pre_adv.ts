@@ -4,6 +4,7 @@ import {
   canEat,
   ceil,
   changeMcd,
+  Class,
   cliExecute,
   combatRateModifier,
   containsText,
@@ -149,6 +150,7 @@ import {
   auto_forceFreeRun,
   auto_gettingLucky,
   auto_have_skill,
+  auto_haveQueuedForcedCombat,
   auto_haveQueuedForcedNonCombat,
   auto_interruptCheck$1,
   auto_is_valid,
@@ -173,6 +175,7 @@ import {
   highest_available_mcd,
   internalQuestStatus,
   meatReserve,
+  pm_updateThrall,
   wrap_item,
 } from "./auto_util";
 import {
@@ -559,14 +562,8 @@ function auto_pre_adventure(): boolean {
     }
   }
 
-  if (
-    myClass() === $class`Pastamancer` &&
-    myThrall() === $thrall`Vampieroghi` &&
-    place === $location`The Hidden Apartment Building` &&
-    auto_have_skill($skill`Dismiss Pasta Thrall`)
-  ) {
-    // vampieroghi can dispell the shaman curse, preventing us from making quest progress
-    useSkill($skill`Dismiss Pasta Thrall`);
+  if (myClass() === Class.get("Pastamancer")) {
+    pm_updateThrall(place, false); //maybe dismiss Vampieroghi, maybe bind Spice Ghost or Vermincelli
   }
   //save some MP while buffing
   const beforeBuffs: Map<number, Item> = auto_saveEquipped();
@@ -694,7 +691,12 @@ function auto_pre_adventure(): boolean {
   const gettingLucky: boolean = auto_gettingLucky();
   const forcedNonCombat: boolean = auto_haveQueuedForcedNonCombat();
   const combatModifier: generic_t = zone_combatMod(place);
-  if (combatModifier._boolean && !auto_queueIgnore()) {
+  if (
+    combatModifier._boolean &&
+    !auto_queueIgnore() &&
+    !auto_haveQueuedForcedCombat()
+  ) {
+    //forced nc is included in queue ignore
     acquireCombatMods$1(combatModifier._int, true);
   }
   //evaluate a boolean prop for the familiar files
