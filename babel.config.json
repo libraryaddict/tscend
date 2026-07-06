@@ -1,0 +1,30 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": { "rhino": "1.9.1" }
+      }
+    ],
+    [
+      "@babel/preset-typescript",
+      {
+        "targets": { "rhino": "1.9.1" }
+      }
+    ]
+  ],
+  "retainLines": true,
+  "compact": false,
+  "plugins": [
+    "@babel/plugin-proposal-class-properties",
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "corejs": false,
+        "helpers": true,
+        "regenerator": false,
+        "version": "^7.29.7"
+      }
+    ]
+  ]
+}

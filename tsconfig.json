@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "rootDir": "RELEASE/scripts",
+    "module": "commonjs",
+    "target": "es2020",
+    "lib": ["ESNext"],
+    "declaration": false,
+    "strict": false,
+    "types": [],
+    "isolatedModules": true,
+    "useDefineForClassFields": false
+  },
+  "include": ["RELEASE/scripts/**/*.ts"]
+}
