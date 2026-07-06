@@ -21,38 +21,38 @@ export function plumber_initializeSettings(): boolean
 	return false;
 }
 
-export function plumber_haveHammer(): boolean
+function plumber_haveHammer(): boolean
 {
 	return possessEquipment(Item.get("hammer")) || possessEquipment(Item.get("heavy hammer"));
 }
 
-export function plumber_equippedHammer(): boolean
+function plumber_equippedHammer(): boolean
 {
 	return equippedItem(Slot.get("weapon")) === Item.get("hammer") || equippedItem(Slot.get("weapon")) === Item.get("heavy hammer");
 }
 
-export function plumber_haveFlower(): boolean
+function plumber_haveFlower(): boolean
 {
 	return possessEquipment(Item.get("[10462]fire flower")) || possessEquipment(Item.get("bonfire flower"));
 }
 
-export function plumber_equippedFlower(): boolean
+function plumber_equippedFlower(): boolean
 {
 	return equippedItem(Slot.get("weapon")) === Item.get("[10462]fire flower") || equippedItem(Slot.get("weapon")) === Item.get("bonfire flower");
 }
 
-export function plumber_equippedBoots(): boolean
+function plumber_equippedBoots(): boolean
 {
 	return haveEquipped(Item.get("work boots")) || haveEquipped(Item.get("fancy boots"));
 }
 
-export function plumber_numBadgesBought(): number
+function plumber_numBadgesBought(): number
 {
 	return toInt(haveSkill(Skill.get("[25001]Hammer Throw"))) + toInt(haveSkill(Skill.get("[25002]Ultra Smash"))) + toInt(haveSkill(Skill.get("[25003]Juggle Fireballs"))) + toInt(haveSkill(Skill.get("[25004]Fireball Barrage"))) + toInt(haveSkill(Skill.get("[25005]Spin Jump"))) + toInt(haveSkill(Skill.get("[25006]Multi-Bounce"))) + toInt(haveSkill(Skill.get("Power Plus"))) + toInt(haveSkill(Skill.get("Secret Eye"))) + toInt(haveSkill(Skill.get("Lucky Buckle"))) + toInt(haveSkill(Skill.get("Rainbow Shield"))) + toInt(haveSkill(Skill.get("Lucky Pin"))) + toInt(haveSkill(Skill.get("Lucky Brooch"))) + toInt(haveSkill(Skill.get("Lucky Insignia"))) + toInt(haveSkill(Skill.get("Health Symbol")));
 }
 
 
-export function plumber_buySkill(sk: Skill): boolean
+function plumber_buySkill(sk: Skill): boolean
 {
 	if (haveSkill(sk)) { return false; }
 
@@ -86,7 +86,7 @@ export function plumber_buySkill(sk: Skill): boolean
 	return haveSkill(sk);
 }
 
-export function plumber_buyEquipment(it: Item): boolean
+function plumber_buyEquipment(it: Item): boolean
 {
 	if (possessEquipment(it)) { return false; }
 
@@ -119,12 +119,12 @@ export function plumber_buyEquipment(it: Item): boolean
 	return true;
 }
 
-export function plumber_costume(): Stat
+function plumber_costume(): Stat
 {
 	return toStat(getProperty("plumberCostumeWorn"));
 }
 
-export function plumber_buyCostume(st: Stat): boolean
+function plumber_buyCostume(st: Stat): boolean
 {
 	if (plumber_costume() === st) { return false; }
 
@@ -150,7 +150,7 @@ export function plumber_buyCostume(st: Stat): boolean
 	return false;
 }
 
-export class plumber_buyable {
+class plumber_buyable {
 	constructor(
 		public it: Item = Item.none,
 		public sk: Skill = Skill.none,
@@ -158,33 +158,33 @@ export class plumber_buyable {
 	) {}
 }
 
-export function plumber_buyableItem(it: Item): plumber_buyable
+function plumber_buyableItem(it: Item): plumber_buyable
 {
 	let res: plumber_buyable = new plumber_buyable();
 	res.it = it;
 	return res;
 }
 
-export function plumber_buyableSkill(sk: Skill): plumber_buyable
+function plumber_buyableSkill(sk: Skill): plumber_buyable
 {
 	let res: plumber_buyable = new plumber_buyable();
 	res.sk = sk;
 	return res;
 }
 
-export function plumber_buyableCostume(costume: Stat): plumber_buyable
+function plumber_buyableCostume(costume: Stat): plumber_buyable
 {
 	let res: plumber_buyable = new plumber_buyable();
 	res.costume = costume;
 	return res;
 }
 
-export function plumber_buyableIsNothing(zb: plumber_buyable): boolean
+function plumber_buyableIsNothing(zb: plumber_buyable): boolean
 {
 	return zb.it === Item.none && zb.sk === Skill.none && zb.costume === Stat.none;
 }
 
-export function plumber_nextBuyable(): plumber_buyable
+function plumber_nextBuyable(): plumber_buyable
 {
 	if (!haveSkill(Skill.get("Lucky Buckle")))
 	{
@@ -269,7 +269,7 @@ export function plumber_nothingToBuy(): boolean
 	return plumber_buyableIsNothing(next);
 }
 
-export function plumber_buyStuff(): boolean
+function plumber_buyStuff(): boolean
 {
 	let next: plumber_buyable = plumber_nextBuyable();
 	if (next.sk !== Skill.none)
@@ -381,7 +381,7 @@ export function plumber_skillValid(sk: Skill): boolean
 	return true;
 }
 
-export function plumber_equipTool(st: Stat, forceEquipRightNow: boolean): boolean
+function plumber_equipTool(st: Stat, forceEquipRightNow: boolean): boolean
 {
 	if (!in_plumber()) { return false; }
 
@@ -450,7 +450,7 @@ export function plumber_forceEquipTool(): boolean
 	return plumber_equipTool(Stat.get("Moxie"), true);
 }
 
-export function plumber_eat_xp(): void
+function plumber_eat_xp(): void
 {
 	//eat stuff for XP.
 	if (!in_plumber() || fullness_left() < 1)

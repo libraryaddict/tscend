@@ -13,7 +13,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //	This is meant for items that have a date of 2017.
 
-export function auto_hasMummingTrunk(): boolean
+function auto_hasMummingTrunk(): boolean
 {
 	if (!pathHasFamiliar() || itemAmount(Item.get("mumming trunk")) === 0 || !auto_is_valid(Item.get("mumming trunk")))
 	{
@@ -32,7 +32,7 @@ export function auto_checkFamiliarMummery(fam: Familiar): boolean
 	return true;
 }
 
-export function mummifyFamiliar(fam: Familiar, bonus: string): boolean
+function mummifyFamiliar(fam: Familiar, bonus: string): boolean
 {
 	if (!canChangeToFamiliar(fam) || !auto_hasMummingTrunk() || !auto_checkFamiliarMummery(fam))
 	{
@@ -105,7 +105,7 @@ export function mummifyFamiliar(fam: Familiar, bonus: string): boolean
 	return true;
 }
 // Will provide the appropriate bonus to an arbitrary familiar.
-export function mummifyFamiliar$1(fam: Familiar): boolean
+function mummifyFamiliar$1(fam: Familiar): boolean
 {
 	if (!auto_hasMummingTrunk() || !auto_checkFamiliarMummery(fam))
 	{
@@ -140,7 +140,7 @@ export function mummifyFamiliar$2(): boolean
 	return mummifyFamiliar$1(myFamiliar());
 }
 
-export function pantogramPants(): boolean
+function pantogramPants(): boolean
 {
 	return pantogramPants$1(myPrimestat(), Element.get("cold"), 1, 2, 1);
 }
@@ -288,7 +288,7 @@ export function loveTunnelAcquire(enforcer: boolean, statItem: Stat, engineer: b
 	return loveTunnelAcquire$1(enforcer, statItem, engineer, loveEffect, equivocator, giftItem, "");
 }
 
-export function loveTunnelAcquire$1(enforcer: boolean, statItem: Stat, engineer: boolean, loveEffect: number, equivocator: boolean, giftItem: number, option: string): boolean
+function loveTunnelAcquire$1(enforcer: boolean, statItem: Stat, engineer: boolean, loveEffect: number, equivocator: boolean, giftItem: number, option: string): boolean
 {
 	if (toBoolean(getProperty("_loveTunnelUsed")))
 	{
@@ -479,7 +479,7 @@ export function kgbWasteClicks(): boolean
 	return clicked > 0;
 }
 
-export function kgbKnownEffects(): string
+function kgbKnownEffects(): string
 {
 	if (getProperty("auto_kgbTracker") === "")
 	{
@@ -511,7 +511,7 @@ export function kgbKnownEffects(): string
 	return retval;
 }
 
-export function kgbTryEffect(ef: Effect): boolean
+function kgbTryEffect(ef: Effect): boolean
 {
 	if (!possessEquipment(Item.get("Kremlin's Greatest Briefcase")))
 	{
@@ -549,7 +549,7 @@ export function kgbTryEffect(ef: Effect): boolean
 	return true;
 }
 
-export function kgbDiscovery(): boolean
+function kgbDiscovery(): boolean
 {
 	if (!possessEquipment(Item.get("Kremlin's Greatest Briefcase")))
 	{
@@ -618,7 +618,7 @@ export function kgbDiscovery(): boolean
 	return false;
 }
 
-export function kgb_tabCount(page: string): number
+function kgb_tabCount(page: string): number
 {
 	let count_1: number = 0;
 	let tabCount: AshMatcher = new AshMatcher("kgb_tab(\\d)(?:.*?)otherimages/kgb/tab(\\d+).gif", page);
@@ -629,7 +629,7 @@ export function kgb_tabCount(page: string): number
 	return count_1;
 }
 
-export function kgb_tabHeight(page: string): number
+function kgb_tabHeight(page: string): number
 {
 	let height: number = 0;
 
@@ -797,12 +797,12 @@ export function kgb_getMartini(): boolean
 	return kgb_getMartini$2("", false);
 }
 
-export function kgb_getMartini$1(page: string): boolean
+function kgb_getMartini$1(page: string): boolean
 {
 	return kgb_getMartini$2(page, false);
 }
 
-export function kgb_getMartini$2(page: string, dontCare: boolean): boolean
+function kgb_getMartini$2(page: string, dontCare: boolean): boolean
 {
 	if (!possessEquipment(Item.get("Kremlin's Greatest Briefcase")))
 	{
@@ -930,7 +930,7 @@ export function kgb_getMartini$2(page: string, dontCare: boolean): boolean
 	return true;
 }
 
-export function kgbDial(dial: number, curVal: number, target: number): boolean
+function kgbDial(dial: number, curVal: number, target: number): boolean
 {
 	if (!possessEquipment(Item.get("Kremlin's Greatest Briefcase")))
 	{
@@ -971,7 +971,7 @@ export function kgbDial(dial: number, curVal: number, target: number): boolean
 }
 
 
-export function solveKGBMastermind(): boolean
+function solveKGBMastermind(): boolean
 {
 	if (!possessEquipment(Item.get("Kremlin's Greatest Briefcase")))
 	{
@@ -1179,7 +1179,7 @@ export function auto_breatheOutsLeft(): number
 	return toInt(getProperty("_hotJellyUses"));
 }
 
-export function haveAsdonBuff(): boolean
+function haveAsdonBuff(): boolean
 {
 	for (let eff of Effect.get(["Driving Intimidatingly", "Driving Obnoxiously", "Driving Observantly", "Driving Quickly", "Driving Recklessly", "Driving Safely", "Driving Stealthily", "Driving Wastefully", "Driving Waterproofly"]))
 	{
@@ -1191,7 +1191,7 @@ export function haveAsdonBuff(): boolean
 	return false;
 }
 
-export function asdonBuff(goal: string): boolean
+function asdonBuff(goal: string): boolean
 {
 	if (goal === Effect.get("Driving Obnoxiously").toString() || goal === "combat" || goal === "+combat")
 	{
@@ -1305,7 +1305,7 @@ export function asdonAutoFeed(): boolean
 	return asdonAutoFeed$1(-1);
 }
 
-export function asdonAutoFeed$1(goal: number): boolean
+function asdonAutoFeed$1(goal: number): boolean
 {
 	if (myClass() === Class.get("Ed the Undying"))
 	{
@@ -1450,7 +1450,7 @@ export function asdonAutoFeed$1(goal: number): boolean
 	return getFuel() >= goal;
 }
 
-export function asdonFeed(it: Item, qty: number): boolean
+function asdonFeed(it: Item, qty: number): boolean
 {
 	if (!(auto_get_campground().has(Item.get("Asdon Martin keyfob (on ring)"))))
 	{
@@ -1473,7 +1473,7 @@ export function asdonFeed(it: Item, qty: number): boolean
 	return true;
 }
 
-export function asdonFeed$1(it: Item): boolean
+function asdonFeed$1(it: Item): boolean
 {
 	return asdonFeed(it, 1);
 }
@@ -1496,7 +1496,7 @@ export function horseCost(): number
 	return 0;
 }
 
-export function horseNormalize(horseText: string): string
+function horseNormalize(horseText: string): string
 {
 	switch (horseText)
 	{
@@ -1547,7 +1547,7 @@ export function horseNormalize(horseText: string): string
 	return "";
 }
 
-export function getHorse(type_1: string): boolean
+function getHorse(type_1: string): boolean
 {
 	if (!toBoolean(getProperty("horseryAvailable")))
 	{
@@ -1642,7 +1642,7 @@ export function horseNone(): void
 	}
 }
 
-export function horseNormal(): void
+function horseNormal(): void
 {
 	if (isHorseryAvailable()) {
 		setProperty("auto_desiredHorse", "normal");
@@ -1656,14 +1656,14 @@ export function horseDark(): void
 	}
 }
 
-export function horseCrazy(): void
+function horseCrazy(): void
 {
 	if (isHorseryAvailable()) {
 		setProperty("auto_desiredHorse", "crazy");
 	}
 }
 
-export function horsePale(): void
+function horsePale(): void
 {
 	if (isHorseryAvailable()) {
 		setProperty("auto_desiredHorse", "pale");
@@ -1765,7 +1765,7 @@ export function makeGenieWish$1(eff: Effect): boolean
 	return makeGenieWish(`to be ${eff}`) || haveEffect(eff) > 0;
 }
 // Track any failed wishes this run
-export let failedWishMonsters: Map<Monster, boolean> = new Map();
+let failedWishMonsters: Map<Monster, boolean> = new Map();
 
 export function canGenieCombat(mon: Monster): boolean
 {
@@ -1871,7 +1871,7 @@ export function makeGeniePocket(): boolean
 	return true;
 }
 
-export function spacegateVaccineAvailable(): boolean
+function spacegateVaccineAvailable(): boolean
 {
 	if (in_koe()) { return false; }
 
@@ -1890,7 +1890,7 @@ export function spacegateVaccineAvailable(): boolean
 	return true;
 }
 
-export function spacegateVaccineAvailable$1(ef: Effect): boolean
+function spacegateVaccineAvailable$1(ef: Effect): boolean
 {
 	if (!spacegateVaccineAvailable()) { return false; }
 	switch (ef)
@@ -1925,16 +1925,16 @@ export function spacegateVaccine(ef: Effect): boolean
 	return true;
 }
 
-export function auto_hasMeteorLore(): boolean
+function auto_hasMeteorLore(): boolean
 {
 	return haveSkill(Skill.get("Meteor Lore")) && auto_is_valid(Item.get("Pocket Meteor Guide")) && auto_is_valid$2(Skill.get("Meteor Lore"));
 }
 
-export function auto_meteorShowersUsed(): number {
+function auto_meteorShowersUsed(): number {
 	return toInt(getProperty("_meteorShowerUses"));
 }
 
-export function auto_meteorShowersAvailable(): number {
+function auto_meteorShowersAvailable(): number {
 	if (!auto_hasMeteorLore()) {
 		return 0;
 	}
@@ -1942,7 +1942,7 @@ export function auto_meteorShowersAvailable(): number {
 	return 5 - auto_meteorShowersUsed();
 }
 
-export function auto_macroMeteoritesUsed(): number {
+function auto_macroMeteoritesUsed(): number {
 	return toInt(getProperty("_macrometeoriteUses"));
 }
 
@@ -1954,6 +1954,6 @@ export function auto_macrometeoritesAvailable(): number {
 	return 10 - auto_macroMeteoritesUsed();
 }
 
-export function auto_meteoriteAdesUsed(): number {
+function auto_meteoriteAdesUsed(): number {
 	return toInt(getProperty("_meteoriteAdesUsed"));
 }

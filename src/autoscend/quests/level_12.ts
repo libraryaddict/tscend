@@ -71,7 +71,7 @@ War finished & side defeated:
 //###########################################
 
 //Defined in autoscend/quests/level_12.ash
-export function copy_warplan(target: WarPlan, source: WarPlan): void
+function copy_warplan(target: WarPlan, source: WarPlan): void
 {
 	//record A = B; does not copy the contents of B into record A, it instead copies memory references. Thus A merely becomes an alias for B and changing one changes the other as well.
 	//this function serves to copy the data from B to into A
@@ -98,7 +98,7 @@ export function auto_warSide(): string
 	}
 }
 
-export function auto_warSideQuestsDone(): number
+function auto_warSideQuestsDone(): number
 {
 	//counts how many sidequests you have completed for the side for which you are fighting in the war.
 
@@ -132,7 +132,7 @@ export function auto_warSideQuestsDone(): number
 	return sidequests_done;
 }
 
-export function auto_warSideQuestsState(): WarPlan
+function auto_warSideQuestsState(): WarPlan
 {
 	// Returns a record indicating current completion state of the war sidequests.
 
@@ -167,7 +167,7 @@ export function auto_warKillsPerBattle(): number
 	return auto_warKillsPerBattle$1(auto_warSideQuestsDone());
 }
 
-export function auto_warKillsPerBattle$1(sidequests: number): number
+function auto_warKillsPerBattle$1(sidequests: number): number
 {
 	// returns how many enemies you will kill per battle at hippy-fratboy war at a specified number of sidequests done.
 
@@ -185,7 +185,7 @@ export function auto_warKillsPerBattle$1(sidequests: number): number
 
 let $_auto_estimatedAdventuresForChaosButterfly_expectedItemDropMulti: number | undefined;
 
-export function auto_estimatedAdventuresForChaosButterfly(): number
+function auto_estimatedAdventuresForChaosButterfly(): number
 {
 	// Returns an ESTIMATE of how many adventures it will take to acquire a chaos butterfly.
 
@@ -227,7 +227,7 @@ export function auto_estimatedAdventuresForChaosButterfly(): number
 	return ret;
 }
 
-export function auto_estimatedAdventuresForDooks(): number
+function auto_estimatedAdventuresForDooks(): number
 {
 	let advCost_1: number = 40;
 	//TODO account for having done free fights in those zones
@@ -254,7 +254,7 @@ export function auto_estimatedAdventuresForDooks(): number
 	return advCost_1;
 }
 
-export function warplan_from_bitmask(mask: number): WarPlan
+function warplan_from_bitmask(mask: number): WarPlan
 {
 	let ret: WarPlan = new WarPlan();
 	if (auto_warSide() === "fratboy")
@@ -277,7 +277,7 @@ export function warplan_from_bitmask(mask: number): WarPlan
 	return ret;
 }
 
-export function bitmask_from_warplan(plan: WarPlan): number
+function bitmask_from_warplan(plan: WarPlan): number
 {
 	let bitmask: number = 0;
 	if (auto_warSide() === "fratboy")
@@ -449,7 +449,7 @@ export function auto_bestWarPlan(): WarPlan
 	return retval;
 }
 
-export function __auto_warTotalBattles(plan: number, remaining: number): number
+function __auto_warTotalBattles(plan: number, remaining: number): number
 {
 	// Prefer to use the version of this function that uses a WarPlan.
 	// This is not meant to be used externally.
@@ -489,12 +489,12 @@ export function __auto_warTotalBattles(plan: number, remaining: number): number
     return total_battles;
 }
 
-export function auto_warTotalBattles(plan: WarPlan, remaining: number): number
+function auto_warTotalBattles(plan: WarPlan, remaining: number): number
 {
 	return __auto_warTotalBattles(bitmask_from_warplan(plan), remaining);
 }
 
-export function auto_warTotalBattles$1(plan: WarPlan): number
+function auto_warTotalBattles$1(plan: WarPlan): number
 {
     return auto_warTotalBattles(plan, auto_warEnemiesRemaining());
 }
@@ -504,7 +504,7 @@ export function equipWarOutfit(): void
 	equipWarOutfit$1(true);
 }
 
-export function equipWarOutfit$1(lock: boolean): void
+function equipWarOutfit$1(lock: boolean): void
 {
 	//equip the war outfit suitable for your side of the war. due to problem with maximizer we use autoForceEquip
 	//lock means we want to lock the maximizer slots in question for the rest of the current loop (aka the next autoAdv).
@@ -1078,7 +1078,7 @@ export function L12_orchardFinalize(): boolean
 	return true;
 }
 
-export function gremlinsFamiliar(): void
+function gremlinsFamiliar(): void
 {
 	//when fighting gremlins we want to minimize the familiar ability to cause damage.
 
@@ -1893,7 +1893,7 @@ export function L12_themtharHills(): boolean
 	return true;
 }
 
-export function LX_obtainChaosButterfly(): boolean
+function LX_obtainChaosButterfly(): boolean
 {
 	if (in_bhy() || in_pokefam() || in_glover())
 	{
@@ -2413,7 +2413,7 @@ export function L12_opportunisticWarStart(): boolean
 	return L12_startWar();
 }
 
-export function L12_singleNCForWarStart(): boolean
+function L12_singleNCForWarStart(): boolean
 {
 	return auto_haveCCSC() || haveSkill(Skill.get("Comprehensive Cartography"));
 }

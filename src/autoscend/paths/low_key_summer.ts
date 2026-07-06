@@ -28,7 +28,7 @@ import { LX_fatLootToken, LX_hippyBoatman, LX_lockPicking, LX_setWorkshed, LX_un
 import { LX_acquireEpicWeapon, LX_galaktikSubQuest, LX_guildUnlock, LX_joinPirateCrew, LX_pirateOutfit, LX_pirateQuest, LX_steelOrgan, LX_unlockKnobMenagerie, finishMeatsmithSubQuest, numPirateInsults, startArmorySubQuest, startMeatsmithSubQuest } from "../quests/optional";
 
 // These are listed in the order they will be iterated (item id ascending) to make debugging easier.
-export let lowKeys: Map<Item, Location> = new Map();
+let lowKeys: Map<Item, Location> = new Map();
 lowKeys.set(Item.get("clown car key"), Location.get("The \"Fun\" House"));
 lowKeys.set(Item.get("batting cage key"), Location.get("The Bat Hole Entrance"));
 lowKeys.set(Item.get("aqu&iacute;"), Location.get("South of the Border"));
@@ -68,7 +68,7 @@ export function lowkey_initializeSettings(): void
 	// TODO?
 }
 
-export function lowkey_needKey(key: Item): boolean
+function lowkey_needKey(key: Item): boolean
 {
 	if (internalQuestStatus("questL13Final") !== 5)
 	{
@@ -78,7 +78,7 @@ export function lowkey_needKey(key: Item): boolean
 	return availableAmount(key) === 0 && !containsText(getProperty("nsTowerDoorKeysUsed"), key.toString());
 }
 
-export function lowkey_keyDelayRemaining(loc: Location): number
+function lowkey_keyDelayRemaining(loc: Location): number
 {
 	if (!in_lowkeysummer())
 	{
@@ -88,7 +88,7 @@ export function lowkey_keyDelayRemaining(loc: Location): number
 	return max(11 - loc.turnsSpent, 0);
 }
 
-export function lowkey_keysRemaining(): number
+function lowkey_keysRemaining(): number
 {
 	if (!in_lowkeysummer())
 	{
@@ -108,7 +108,7 @@ export function lowkey_keysRemaining(): number
 	return 23 - found;
 }
 
-export function lowkey_levelNeededToUnlockZone(loc: Location): number
+function lowkey_levelNeededToUnlockZone(loc: Location): number
 {
 	// returns level under which it is normal for the key zones not to be accessible in the path
 	switch (loc)
@@ -140,7 +140,7 @@ export function lowkey_levelNeededToUnlockZone(loc: Location): number
 	}
 }
 // order is subjective
-export function lowkey_nextKeyLocation(checkAvailable: boolean): Location
+function lowkey_nextKeyLocation(checkAvailable: boolean): Location
 {
 	if (!in_lowkeysummer())
 	{
@@ -162,12 +162,12 @@ export function lowkey_nextKeyLocation(checkAvailable: boolean): Location
 	return Location.none;
 }
 
-export function lowkey_nextKeyLocation$1(): Location
+function lowkey_nextKeyLocation$1(): Location
 {
 	return lowkey_nextKeyLocation(false);
 }
 
-export function lowkey_nextAvailableKeyLocation(): Location
+function lowkey_nextAvailableKeyLocation(): Location
 {
 	return lowkey_nextKeyLocation(true);
 }
@@ -191,7 +191,7 @@ export function lowkey_nextAvailableKeyDelayLocation(): Location
 	return Location.none;
 }
 
-export function lowkey_keyAdv(key: Item): boolean
+function lowkey_keyAdv(key: Item): boolean
 {
 	if (!lowkey_needKey(key))
 	{
@@ -225,7 +225,7 @@ export function lowkey_keyAdv(key: Item): boolean
 	return autoAdv$1(1, loc);
 }
 
-export function lowkey_zoneUnlocks(): boolean
+function lowkey_zoneUnlocks(): boolean
 {
 	if (startHippyBoatmanSubQuest())
 	{
@@ -247,7 +247,7 @@ export function lowkey_zoneUnlocks(): boolean
 	return false;
 }
 
-export function LX_findHelpfulLowKey(): boolean
+function LX_findHelpfulLowKey(): boolean
 {
 	if (!in_lowkeysummer())
 	{

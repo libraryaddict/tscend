@@ -112,12 +112,12 @@ export function auto_haveCupidBow(): boolean
 	return auto_is_valid(bow) && possessEquipment(bow);
 }
 
-export function auto_haveLeprecondo(): boolean
+function auto_haveLeprecondo(): boolean
 {
 	return auto_is_valid(Item.get("Leprecondo")) && availableAmount(Item.get("Leprecondo")) > 0;
 }
 
-export function auto_haveDiscoveredLeprecondoFurniture(furn: number): boolean
+function auto_haveDiscoveredLeprecondoFurniture(furn: number): boolean
 {
 	let discovered_furn: Map<number, string> = new Map(splitString(getProperty("leprecondoDiscovered"), ",").map((_v, _i) => [_i, _v]));
 	for (let [i, s] of discovered_furn)
@@ -222,7 +222,7 @@ export function auto_punchOutsLeft(): number
 	return toInt(getProperty("preworkoutPowderUses"));
 }
 
-export function auto_afterimagesLeft(): number
+function auto_afterimagesLeft(): number
 {
 	return toInt(getProperty("phosphorTracesUses"));
 }
@@ -388,7 +388,7 @@ export function peridotChoiceHandler(choice: number, page: string): void
 	return;
 }
 
-export function haveUsedPeridot(loc: number): boolean
+function haveUsedPeridot(loc: number): boolean
 {
 	let perilLocs: Map<number, string> = new Map(splitString(getProperty("_perilLocations"), ",").map((_v, _i) => [_i, _v]));
 	for (let [i, str] of perilLocs)
@@ -406,7 +406,7 @@ export function haveUsedPeridot$1(loc: Location): boolean
 	return haveUsedPeridot(toInt(loc));
 }
 
-export function auto_havePrismaticBeret(): boolean
+function auto_havePrismaticBeret(): boolean
 {
 	let pb: Item = Item.get("prismatic beret");
 	return auto_is_valid(pb) && possessEquipment(pb);
@@ -421,7 +421,7 @@ export function canBusk(): boolean
 	return false;
 }
 
-export function beretPower(allHats: Map<number, Item>, allShirts: Map<number, Item>, allPants: Map<number, Item>): Map<string, number>
+function beretPower(allHats: Map<number, Item>, allShirts: Map<number, Item>, allPants: Map<number, Item>): Map<string, number>
 {
 	let multipliers: Map<Slot, number> = powerMultipliers();
 	let hatPowers: Map<number, number> = new Map();
@@ -477,7 +477,7 @@ export function beretPower(allHats: Map<number, Item>, allShirts: Map<number, It
 	return powers;
 }
 
-export function bestBusk(powers: Map<string, number>, effectMultiplier: string): string
+function bestBusk(powers: Map<string, number>, effectMultiplier: string): string
 {
 	//effectMultiplier string should be in format of "modifier1:float;modifier2:float;..." if multiple modifiers
 	//if single modifier, does not need a multiplier
@@ -690,7 +690,7 @@ export function beretBusk(effectMultiplier: string): boolean
 	return false;
 }
 
-export function beretBusk$1(): boolean
+function beretBusk$1(): boolean
 {
 	return beretBusk("");
 }
@@ -710,7 +710,7 @@ export function auto_haveMobiusRing(): boolean
 	return auto_is_valid(ring) && possessEquipment(ring);
 }
 
-export function auto_paradoxicity(): number
+function auto_paradoxicity(): number
 {
 	// we either need to visit the charpane or status.php to update this
 	visitUrl("charpane.php", false);
@@ -915,7 +915,7 @@ export function auto_timeCopFights(): number
 	return toInt(getProperty("_timeCopsFoughtToday"));
 }
 
-export function auto_haveMonodent(): boolean
+function auto_haveMonodent(): boolean
 {
 	let dent: Item = Item.get("Monodent of the Sea");
 	return auto_is_valid(dent) && possessEquipment(dent);
@@ -1026,7 +1026,7 @@ export function auto_getItemToEquipBCZ(): Item
 	return Item.none;
 }
 
-export function auto_BCZEquipped(): boolean
+function auto_BCZEquipped(): boolean
 {
 	if (auto_isInEternityCodpiece(Item.get("blood cubic zirconia")) && haveEquipped(Item.get("The Eternity Codpiece")))
 	{
@@ -1194,7 +1194,7 @@ export function auto_getBCZItems(): void
 	return;
 }
 
-export function auto_haveShrunkenHead(): boolean
+function auto_haveShrunkenHead(): boolean
 {
 	if (toBoolean(getProperty("hasShrunkenHead")) && auto_is_valid(Item.get("shrunken head")))
 	{

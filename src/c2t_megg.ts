@@ -7,14 +7,14 @@ import { CombatMacro } from "./autoscend/auto_adventure";
 //mimic egg interfaces
 //preference containing mimic egg contents
 //cli flag
-export let c2t_megg_CLI: boolean = false;
+let c2t_megg_CLI: boolean = false;
 //globals to be set when a primary functions ran
-export let c2t_megg_oldFam: Familiar = Familiar.none;
-export let c2t_megg_oldEq: Item = Item.none;
+let c2t_megg_oldFam: Familiar = Familiar.none;
+let c2t_megg_oldEq: Item = Item.none;
 //donate max eggs on hand of mon
 //for random donating max eggs on hand
 //returns false only on critical errors
-export function c2t_megg_donate$1(): boolean { return c2t_megg_donate(Monster.none); }
+function c2t_megg_donate$1(): boolean { return c2t_megg_donate(Monster.none); }
 //extract egg
 //fight egg
 //returns true only if entered combat with it
@@ -23,9 +23,9 @@ export function c2t_megg_donate$1(): boolean { return c2t_megg_donate(Monster.no
 //has a speed bump built in to help try to keep the list updated passively and to not hit the server too frequently
 //to change the frequency of the time limiter, the preference c2t_megg_timeLimit can be changed from the default of 30 minutes
 //attempts to update the list of max donated eggs
-export function c2t_megg_success$1(): boolean { return c2t_megg_success(""); }
+function c2t_megg_success$1(): boolean { return c2t_megg_success(""); }
 //CLI
-export function main$c2t_megg(...args: string[]): void {
+function main$c2t_megg(...args: string[]): void {
 	c2t_megg_CLI = true;
 	let split: Map<number, string> = new Map();
 	let action: string = ""; let target: string = "";
@@ -105,7 +105,7 @@ export function main$c2t_megg(...args: string[]): void {
 }
 
 //returns false only on critical errors
-export function c2t_megg_donate(target: Monster): boolean {
+function c2t_megg_donate(target: Monster): boolean {
 	let egg: Item = Item.get("mimic egg");
 	let mimic: Familiar = Familiar.get("Chest Mimic");
 	let pref: string = "_mimicEggsDonated";
@@ -250,7 +250,7 @@ export function c2t_megg_extract(target: Monster): boolean {
 }
 
 //does not actually do the combat
-export function c2t_megg_fight(target: Monster): boolean {
+function c2t_megg_fight(target: Monster): boolean {
 	let egg: Item = Item.get("mimic egg");
 	let page: string = null;
 	let monstring: string = "";
@@ -281,7 +281,7 @@ export function c2t_megg_fight(target: Monster): boolean {
 	return containsText(page, `<!-- MONSTERID: ${monstring} -->`);
 }
 //if macro is an empty string, the combat will be run with mafia's settings
-export function c2t_megg_fight$1(target: Monster, macro: CombatMacro): boolean {
+function c2t_megg_fight$1(target: Monster, macro: CombatMacro): boolean {
 	if (!c2t_megg_fight(target))
 		{ return false; }
 	if (currentRound() > 0)
@@ -339,7 +339,7 @@ export function c2t_megg_preAdv(): boolean {
 }
 
 //returns true only if the data file successfully updated
-export function c2t_megg_update(): boolean {
+function c2t_megg_update(): boolean {
 	let mimic: Familiar = Familiar.get("Chest Mimic");
 	let maxlist: Map<string, boolean> = new Map();
 	let page: string = null;
@@ -373,7 +373,7 @@ export function c2t_megg_update(): boolean {
 }
 
 //for relay overrides
-export function c2t_megg_relay(page: string): string {
+function c2t_megg_relay(page: string): string {
 	let buf: string = toBuffer(page);
 	let maxlist: Map<string, boolean> = new Map();
 
@@ -405,7 +405,7 @@ export function c2t_megg_relay(page: string): string {
 	return buf;
 }
 
-export function c2t_megg_relayFight(page: string): string {
+function c2t_megg_relayFight(page: string): string {
 	if (toBoolean(getProperty("c2t_megg_disableRelayCleaner")))
 		{ return page; }
 
@@ -423,7 +423,7 @@ export function c2t_megg_relayFight(page: string): string {
 }
 
 //for error messages and clean exit
-export function c2t_megg_error(s: string): boolean {
+function c2t_megg_error(s: string): boolean {
 	let msg: string = `c2t_megg error: ${s}`;
 	useFamiliar(c2t_megg_oldFam);
 	equip(Slot.get("familiar"), c2t_megg_oldEq);
@@ -436,7 +436,7 @@ export function c2t_megg_error(s: string): boolean {
 }
 
 //for success messages and clean exit
-export function c2t_megg_success(s: string): boolean {
+function c2t_megg_success(s: string): boolean {
 	useFamiliar(c2t_megg_oldFam);
 	equip(Slot.get("familiar"), c2t_megg_oldEq);
 	if (s !== "")
@@ -445,12 +445,12 @@ export function c2t_megg_success(s: string): boolean {
 }
 
 //print
-export function c2t_megg_print(s: string): void {
+function c2t_megg_print(s: string): void {
 	print(`c2t_megg: ${s}`);
 }
 
 //prints list of mimic eggs on hand and their quanity as read from item description
-export function c2t_megg_printEggs(): void {
+function c2t_megg_printEggs(): void {
 	let eggs: Map<Monster, number> = c2t_megg_eggs();
 	let order: Map<string, Map<string, number>> = new Map();
 
@@ -467,7 +467,7 @@ export function c2t_megg_printEggs(): void {
 }
 
 //print list of maxed eggs as read from data file
-export function c2t_megg_printMaxed(): void {
+function c2t_megg_printMaxed(): void {
 	let maxlist: Map<Monster, boolean> = c2t_megg_maxed();
 	let order: Map<string, string> = new Map();
 
@@ -481,20 +481,20 @@ export function c2t_megg_printMaxed(): void {
 }
 
 //mafia's xpath won't let me just grab from one form directly without this workaround
-export function c2t_megg_isExtractPage(page: string): boolean {
+function c2t_megg_isExtractPage(page: string): boolean {
 	return containsText(page, "Extract an egg containing the dna of <select name=\"mid\">");
 }
 
-export function c2t_megg_isDonatePage(page: string): boolean {
+function c2t_megg_isDonatePage(page: string): boolean {
 	return containsText(page, "Donate the egg of <select name=\"mid\">");
 }
 
-export function c2t_megg_numForms(page: string): number {
+function c2t_megg_numForms(page: string): number {
 	return toInt(c2t_megg_isDonatePage(page)) + toInt(c2t_megg_isExtractPage(page));
 }
 
 //gets list of max eggs from page
-export function c2t_megg_readPage(page: string): Map<string, boolean> {
+function c2t_megg_readPage(page: string): Map<string, boolean> {
 	let out: Map<string, boolean> = new Map();
 	let m: AshMatcher = null;
 	let part: string = "";
@@ -509,7 +509,7 @@ export function c2t_megg_readPage(page: string): Map<string, boolean> {
 }
 
 //read/write data file for keeping track of maxed eggs
-export function c2t_megg_readFile(): Map<string, boolean> {
+function c2t_megg_readFile(): Map<string, boolean> {
 	let out: Map<string, boolean> = new Map();
 	let raw: Map<number, string> = new Map();
 
@@ -519,7 +519,7 @@ export function c2t_megg_readFile(): Map<string, boolean> {
 	return out;
 }
 
-export function c2t_megg_writeFile(list: Map<string, boolean>): boolean {
+function c2t_megg_writeFile(list: Map<string, boolean>): boolean {
 	let buf: string = null;
 	let neat: Map<number, boolean> = new Map();
 	let prefCount: string = "_c2t_megg_maxlistCount";
@@ -586,7 +586,7 @@ export function c2t_megg_eggs(): Map<Monster, number> {
 }
 
 //init
-export function c2t_megg_init(): void {
+function c2t_megg_init(): void {
 	c2t_megg_oldFam = myFamiliar();
 	c2t_megg_oldEq = equippedItem(Slot.get("familiar"));
 }

@@ -1,7 +1,7 @@
 import { Item, containsText, isUnrestricted, visitUrl } from "kolmafia";
 
 //Defined in autoscend/iotms/auto_eudora.ash
-export function eudora_available(): boolean
+function eudora_available(): boolean
 {
 	if (containsText(visitUrl("account.php"), "tab=correspondence"))
 	{
@@ -40,7 +40,7 @@ export function eudora_initializeSettings(): Map<Item, boolean>
 	return retval;
 }
 
-export function eudora_current(): Item
+function eudora_current(): Item
 {
 	if (eudora_available())
 	{

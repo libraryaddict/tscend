@@ -24,7 +24,7 @@ export function fotd_initializeSettings(): void
 	}
 }
 
-export function fotd_gameWarden(): boolean
+function fotd_gameWarden(): boolean
 {
 	if (!in_fotd())
 	{

@@ -2,33 +2,33 @@ import { cliExecute, getProperty, propertyExists, removeProperty, replaceString,
 import { auto_log_error, auto_log_info, auto_log_info$1, auto_log_warning, auto_log_warning$1 } from "./auto_util";
 import { fileAsMap } from "./utils/kolmafiaUtils";
 
-export let $_f___autoscend_version: string | undefined;
+let $_f___autoscend_version: string | undefined;
 $_f___autoscend_version ??= "1.8.0";
-export let $_f___autoscend_confirm_timeoutMS: number | undefined;
+let $_f___autoscend_confirm_timeoutMS: number | undefined;
 $_f___autoscend_confirm_timeoutMS ??= 10000;
-export let $_f___remove_sl_ascend_confirmation: string | undefined;
+let $_f___remove_sl_ascend_confirmation: string | undefined;
 $_f___remove_sl_ascend_confirmation ??= "Looks like you have the old sl_ascend project installed as well. Would you like to remove it? (it is no longer maintained). Will default to false in 10 seconds.";
-export let $_f___migrate_sl_ascend_properties_confirmation: string | undefined;
+let $_f___migrate_sl_ascend_properties_confirmation: string | undefined;
 $_f___migrate_sl_ascend_properties_confirmation ??= "Looks like you may be migrating from sl_ascend. Starting with a fresh run using autoscend is adviable but we can try to migrate all the sl_ascend properties (results may vary). Will default to true in 10 seconds.";
-export let $_f___migrate_sl_ascend_properties_remove_confirmation: string | undefined;
+let $_f___migrate_sl_ascend_properties_remove_confirmation: string | undefined;
 $_f___migrate_sl_ascend_properties_remove_confirmation ??= "Would you like to clean up old sl_ascend properties after migrating them? Will default to false in 10 seconds.";
 
 //Defined in autoscend/autoscend_migration.ash
-export function autoscend_current_version(): string {
+function autoscend_current_version(): string {
   if (!propertyExists("auto_current_version")) {
     setProperty("auto_current_version", $_f___autoscend_version);
   }
   return getProperty("auto_current_version");
 }
 
-export function autoscend_previous_version(): string {
+function autoscend_previous_version(): string {
   if (!propertyExists("auto_prev_version")) {
     setProperty("auto_prev_version", "0.0.0");
   }
   return getProperty("auto_prev_version");
 }
 
-export function autoscend_needs_update(): boolean {
+function autoscend_needs_update(): boolean {
   if (autoscend_previous_version() === "0.0.0" || autoscend_current_version() !== $_f___autoscend_version) {
     if (toBoolean(getProperty("auto_need_update"))) {
       auto_log_info$1("Forcing migration (partially complete migration or user set flag): auto_need_update => true");

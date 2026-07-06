@@ -12,7 +12,7 @@ export function printSim(): void
 	print("Note: Recommended to run in aftercore to properly detect everything");
 }
 
-export function PrintSimRequired(): void
+function PrintSimRequired(): void
 {
 	print("Required Things:");
 
@@ -28,7 +28,7 @@ export function PrintSimRequired(): void
 	formattedSimPrint(haveSkill(sk), sk.toString(), "Heals up to 1000 HP for 20 MP. Very cost effective");
 }
 
-export function printSimSuggested(): void
+function printSimSuggested(): void
 {
 	print();
 	print("Suggested Things:");
@@ -88,7 +88,7 @@ export function printSimSuggested(): void
 
 }
 
-export function printSimMarginal(): void
+function printSimMarginal(): void
 {
 	print();
 	print("Marginal Things:");
@@ -116,7 +116,7 @@ export function printSimMarginal(): void
 	formattedSimPrint(itemAmount(it) > 0, `Potential Pull: ${it.toString()}`, "Only pulled for Dark Gyffte as every organ space is really good");
 }
 
-export function formattedSimPrint(have: boolean, name: string, description: string): void
+function formattedSimPrint(have: boolean, name: string, description: string): void
 {
 	let symbol_1: string = (have ? "✓" : "X");
 	print(`${symbol_1} ${name} - ${description}`, (have ? "blue" : "red"));

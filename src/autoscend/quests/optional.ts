@@ -145,7 +145,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean
 	return false;
 }
 
-export function LX_melvignShirt(): boolean
+function LX_melvignShirt(): boolean
 {
 	//Do the quest [The Shirt Off His Lack of Back] to get the skill [Torso Awaregness] from melvign the gnome.
 
@@ -468,7 +468,7 @@ export function startArmorySubQuest(): boolean
 	return false;
 }
 
-export function finishArmorySideQuest(): boolean
+function finishArmorySideQuest(): boolean
 {
 	if (internalQuestStatus("questM25Armorer") !== 4)
 	{ //step4 == have [no-handed pie]. need to turn it in.
@@ -521,7 +521,7 @@ export function finishMeatsmithSubQuest(): boolean
 	return false;
 }
 
-export function considerGalaktikSubQuest(): void
+function considerGalaktikSubQuest(): void
 {
 	//by default we do not do doc galaktik quest. user can manually enable it via gui for this current ascension.
 	//this function considers wheather we should automatically enable it for this ascension.
@@ -595,7 +595,7 @@ export function startGalaktikSubQuest(): boolean
 	return internalQuestStatus("questM24Doc") > -1;
 }
 
-export function finishGalaktikSubQuest(): boolean
+function finishGalaktikSubQuest(): boolean
 {
 	if (itemAmount(Item.get("fraudwort")) >= 3 && itemAmount(Item.get("shysterweed")) >= 3 && itemAmount(Item.get("swindleblossom")) >= 3) {
 		let temp: string = visitUrl("shop.php?whichshop=doc");
@@ -701,7 +701,7 @@ export function piratesCoveChoiceHandler(choice: number): void {
 	}
 }
 
-export function beerPong(page: string): string
+function beerPong(page: string): string
 {
 	class r {
 		constructor(
@@ -776,7 +776,7 @@ export function beerPong(page: string): string
 	return page;
 }
 
-export function tryBeerPong(): string
+function tryBeerPong(): string
 {
 	let page: string = visitUrl("adventure.php?snarfblat=157"); //http://127.0.0.1:60081/adventure.php?snarfblat=157
 	if (containsText(page, "Arrr You Man Enough?"))
@@ -943,7 +943,7 @@ export function barrrneysBarrrChoiceHandler(choice: number): void {
 	}
 }
 
-export function LX_fledglingPirateIsYou(): boolean {
+function LX_fledglingPirateIsYou(): boolean {
 	if (internalQuestStatus("questM12Pirate") !== 5) {
 		return false;
 	}
@@ -979,7 +979,7 @@ export function fcleChoiceHandler(choice: number): void {
 	}
 }
 
-export function LX_unlockBelowdecks(): boolean {
+function LX_unlockBelowdecks(): boolean {
 	if (internalQuestStatus("questM12Pirate") !== 6 || internalQuestStatus("questL11MacGuffin") < 2) {
 		return false;
 	}
@@ -1045,7 +1045,7 @@ export function LX_unlockKnobMenagerie(): boolean
 	return autoAdv$1(1, Location.get("Cobb's Knob Laboratory"));
 }
 
-export let $_f_epicWeapons: Map<Class, Item> | undefined;
+let $_f_epicWeapons: Map<Class, Item> | undefined;
 $_f_epicWeapons ??= new Map([
 	[Class.get("Seal Clubber"), Item.get("Hammer of Smiting")],
 	[Class.get("Turtle Tamer"), Item.get("Chelonian Morningstar")],
@@ -1055,7 +1055,7 @@ $_f_epicWeapons ??= new Map([
 	[Class.get("Accordion Thief"), Item.get("Squeezebox of the Ages")]
 ]); // usage: item epicWeapon = epicWeapons[my_class()];
 
-export let $_f_starterWeapons: Map<Class, Item> | undefined;
+let $_f_starterWeapons: Map<Class, Item> | undefined;
 $_f_starterWeapons ??= new Map([
 	[Class.get("Seal Clubber"), Item.get("seal-clubbing club")],
 	[Class.get("Turtle Tamer"), Item.get("turtle totem")],
@@ -1065,7 +1065,7 @@ $_f_starterWeapons ??= new Map([
 	[Class.get("Accordion Thief"), Item.get("stolen accordion")]
 ]); // usage: item starterWeapon = starterWeapons[my_class()];
 
-export function tomb_already_found(): boolean
+function tomb_already_found(): boolean
 {
 	//the tomb only appears once when adv in the unquiet garves. afterwards it appears on the map instead
 	let page: string = visitUrl("place.php?whichplace=cemetery");
@@ -1125,7 +1125,7 @@ export function LX_acquireEpicWeapon(): boolean
 	return autoAdv$2(Location.get("The Unquiet Garves"));
 }
 // TODO: Add the rest of the Nemesis quest with a flag to enable doing it in-run?
-export function LX_NemesisQuest(): boolean
+function LX_NemesisQuest(): boolean
 {
 	if (LX_guildUnlock() || LX_acquireEpicWeapon())
 	{

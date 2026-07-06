@@ -206,7 +206,7 @@ export function providePlusCombat(amt: number, loc: Location, doEquips: boolean,
 	return result$4();
 }
 
-export function providePlusCombat$1(amt: number, doEquips: boolean, speculative: boolean): number
+function providePlusCombat$1(amt: number, doEquips: boolean, speculative: boolean): number
 {
 	return providePlusCombat(amt, myLocation(), doEquips, speculative);
 }
@@ -226,7 +226,7 @@ export function providePlusCombat$4(amt: number, loc: Location): boolean
 	return providePlusCombat$2(amt, loc, true);
 }
 
-export function providePlusCombat$5(amt: number): boolean
+function providePlusCombat$5(amt: number): boolean
 {
 	return providePlusCombat$4(amt, myLocation());
 }
@@ -454,7 +454,7 @@ export function providePlusNonCombat$1(amt: number, doEquips: boolean, speculati
 	return providePlusNonCombat(amt, myLocation(), doEquips, speculative);
 }
 
-export function providePlusNonCombat$2(amt: number, loc: Location, doEquips: boolean): boolean
+function providePlusNonCombat$2(amt: number, loc: Location, doEquips: boolean): boolean
 {
 	return providePlusNonCombat(amt, loc, doEquips, false) >= amt;
 }
@@ -469,7 +469,7 @@ export function providePlusNonCombat$4(amt: number, loc: Location): boolean
 	return providePlusNonCombat$2(amt, loc, true);
 }
 
-export function providePlusNonCombat$5(amt: number): boolean
+function providePlusNonCombat$5(amt: number): boolean
 {
 	return providePlusNonCombat$4(amt, myLocation());
 }
@@ -677,7 +677,7 @@ export function provideInitiative(amt: number, loc: Location, doEquips: boolean,
 	return result$1();
 }
 
-export function provideInitiative$1(amt: number, doEquips: boolean, speculative: boolean): number
+function provideInitiative$1(amt: number, doEquips: boolean, speculative: boolean): number
 {
 	return provideInitiative(amt, myLocation(), doEquips, speculative);
 }
@@ -687,7 +687,7 @@ export function provideInitiative$2(amt: number, loc: Location, doEquips: boolea
 	return provideInitiative(amt, loc, doEquips, false) >= amt;
 }
 
-export function provideInitiative$3(amt: number, doEquips: boolean): boolean
+function provideInitiative$3(amt: number, doEquips: boolean): boolean
 {
 	return provideInitiative$2(amt, myLocation(), doEquips);
 }
@@ -969,17 +969,17 @@ export function provideResistances(amt: Map<Element, number>, loc: Location, doE
 	return result$7();
 }
 
-export function provideResistances$1(amt: Map<Element, number>, loc: Location, doEquips: boolean, speculative: boolean): Map<Element, number>
+function provideResistances$1(amt: Map<Element, number>, loc: Location, doEquips: boolean, speculative: boolean): Map<Element, number>
 {
 	return provideResistances(amt, loc, doEquips, false, speculative);
 }
 
-export function provideResistances$2(amt: Map<Element, number>, doEquips: boolean, doAll: boolean, speculative: boolean): Map<Element, number>
+function provideResistances$2(amt: Map<Element, number>, doEquips: boolean, doAll: boolean, speculative: boolean): Map<Element, number>
 {
 	return provideResistances(amt, myLocation(), doEquips, doAll, speculative);
 }
 
-export function provideResistances$3(amt: Map<Element, number>, doEquips: boolean, speculative: boolean): Map<Element, number>
+function provideResistances$3(amt: Map<Element, number>, doEquips: boolean, speculative: boolean): Map<Element, number>
 {
 	return provideResistances(amt, myLocation(), doEquips, false, speculative);
 }
@@ -995,12 +995,12 @@ export function provideResistances$4(amt: Map<Element, number>, loc: Location, d
 	return true;
 }
 
-export function provideResistances$5(amt: Map<Element, number>, doEquips: boolean): boolean
+function provideResistances$5(amt: Map<Element, number>, doEquips: boolean): boolean
 {
 	return provideResistances$4(amt, myLocation(), doEquips);
 }
 
-export function provideStats(amt: Map<Stat, number>, loc: Location, doEquips: boolean, speculative: boolean): Map<Stat, number>
+function provideStats(amt: Map<Stat, number>, loc: Location, doEquips: boolean, speculative: boolean): Map<Stat, number>
 {
 	let debugprint_1: string = "Trying to provide ";
 	for (let [st, goal] of amt)
@@ -1271,7 +1271,7 @@ export function provideStats(amt: Map<Stat, number>, loc: Location, doEquips: bo
 	return result$9();
 }
 
-export function provideStats$1(amt: Map<Stat, number>, doEquips: boolean, speculative: boolean): Map<Stat, number>
+function provideStats$1(amt: Map<Stat, number>, doEquips: boolean, speculative: boolean): Map<Stat, number>
 {
 	return provideStats(amt, myLocation(), doEquips, speculative);
 }
@@ -1289,12 +1289,12 @@ export function provideStats$2(amt: Map<Stat, number>, loc: Location, doEquips: 
 	return true;
 }
 
-export function provideStats$3(amt: Map<Stat, number>, doEquips: boolean): boolean
+function provideStats$3(amt: Map<Stat, number>, doEquips: boolean): boolean
 {
 	return provideStats$2(amt, myLocation(), doEquips);
 }
 
-export function provideMuscle(amt: number, loc: Location, doEquips: boolean, speculative: boolean): number
+function provideMuscle(amt: number, loc: Location, doEquips: boolean, speculative: boolean): number
 {
 	let statsNeeded: Map<Stat, number> = new Map();
 	statsNeeded.set(Stat.get("Muscle"), amt);
@@ -1302,22 +1302,22 @@ export function provideMuscle(amt: number, loc: Location, doEquips: boolean, spe
 	return (res.get(Stat.get("Muscle")) ?? res.set(Stat.get("Muscle"), 0.0).get(Stat.get("Muscle")));
 }
 
-export function provideMuscle$1(amt: number, doEquips: boolean, speculative: boolean): number
+function provideMuscle$1(amt: number, doEquips: boolean, speculative: boolean): number
 {
 	return provideMuscle(amt, myLocation(), doEquips, speculative);
 }
 
-export function provideMuscle$2(amt: number, loc: Location, doEquips: boolean): boolean
+function provideMuscle$2(amt: number, loc: Location, doEquips: boolean): boolean
 {
 	return provideMuscle(amt, loc, doEquips, false) >= amt;
 }
 
-export function provideMuscle$3(amt: number, doEquips: boolean): boolean
+function provideMuscle$3(amt: number, doEquips: boolean): boolean
 {
 	return provideMuscle$2(amt, myLocation(), doEquips);
 }
 
-export function provideMysticality(amt: number, loc: Location, doEquips: boolean, speculative: boolean): number
+function provideMysticality(amt: number, loc: Location, doEquips: boolean, speculative: boolean): number
 {
 	let statsNeeded: Map<Stat, number> = new Map();
 	statsNeeded.set(Stat.get("Mysticality"), amt);
@@ -1325,22 +1325,22 @@ export function provideMysticality(amt: number, loc: Location, doEquips: boolean
 	return (res.get(Stat.get("Mysticality")) ?? res.set(Stat.get("Mysticality"), 0.0).get(Stat.get("Mysticality")));
 }
 
-export function provideMysticality$1(amt: number, doEquips: boolean, speculative: boolean): number
+function provideMysticality$1(amt: number, doEquips: boolean, speculative: boolean): number
 {
 	return provideMysticality(amt, myLocation(), doEquips, speculative);
 }
 
-export function provideMysticality$2(amt: number, loc: Location, doEquips: boolean): boolean
+function provideMysticality$2(amt: number, loc: Location, doEquips: boolean): boolean
 {
 	return provideMysticality(amt, loc, doEquips, false) >= amt;
 }
 
-export function provideMysticality$3(amt: number, doEquips: boolean): boolean
+function provideMysticality$3(amt: number, doEquips: boolean): boolean
 {
 	return provideMysticality$2(amt, myLocation(), doEquips);
 }
 
-export function provideMoxie(amt: number, loc: Location, doEquips: boolean, speculative: boolean): number
+function provideMoxie(amt: number, loc: Location, doEquips: boolean, speculative: boolean): number
 {
 	let statsNeeded: Map<Stat, number> = new Map();
 	statsNeeded.set(Stat.get("Moxie"), amt);
@@ -1348,22 +1348,22 @@ export function provideMoxie(amt: number, loc: Location, doEquips: boolean, spec
 	return (res.get(Stat.get("Moxie")) ?? res.set(Stat.get("Moxie"), 0.0).get(Stat.get("Moxie")));
 }
 
-export function provideMoxie$1(amt: number, doEquips: boolean, speculative: boolean): number
+function provideMoxie$1(amt: number, doEquips: boolean, speculative: boolean): number
 {
 	return provideMoxie(amt, myLocation(), doEquips, speculative);
 }
 
-export function provideMoxie$2(amt: number, loc: Location, doEquips: boolean): boolean
+function provideMoxie$2(amt: number, loc: Location, doEquips: boolean): boolean
 {
 	return provideMoxie(amt, loc, doEquips, false) >= amt;
 }
 
-export function provideMoxie$3(amt: number, doEquips: boolean): boolean
+function provideMoxie$3(amt: number, doEquips: boolean): boolean
 {
 	return provideMoxie$2(amt, myLocation(), doEquips);
 }
 
-export function provideMeat(amt: number, loc: Location, doEverything: boolean, speculative: boolean): number
+function provideMeat(amt: number, loc: Location, doEverything: boolean, speculative: boolean): number
 {
 	auto_log_info(`${(speculative ? "Checking if we can" : "Trying to")} provide ${amt} meat, ${(doEverything ? "with" : "without")} equipment, familiar, and limited buffs`, "blue");
 	let alreadyHave: number = numericModifier("Meat Drop");
@@ -1734,12 +1734,12 @@ export function provideMeat$2(amt: number, loc: Location, doEverything: boolean)
 	return provideMeat(amt, loc, doEverything, false) >= amt;
 }
 
-export function provideMeat$3(amt: number, doEverything: boolean): boolean
+function provideMeat$3(amt: number, doEverything: boolean): boolean
 {
 	return provideMeat$2(amt, myLocation(), doEverything);
 }
 
-export function provideItem(amt: number, loc: Location, doEverything: boolean, speculative: boolean): number
+function provideItem(amt: number, loc: Location, doEverything: boolean, speculative: boolean): number
 {
 	//doEverything means use equipment, familiar slot, and limited buffs (ie steely eye squint)
 	auto_log_info(`${(speculative ? "Checking if we can" : "Trying to")} provide ${amt} item, ${(doEverything ? "with" : "without")} equipment, familiar, and limited buffs`, "blue");
@@ -2105,7 +2105,7 @@ export function provideItem(amt: number, loc: Location, doEverything: boolean, s
 	return result$2();
 }
 
-export function provideItem$1(amt: number, doEverything: boolean, speculative: boolean): number
+function provideItem$1(amt: number, doEverything: boolean, speculative: boolean): number
 {
 	return provideItem(amt, myLocation(), doEverything, speculative);
 }
@@ -2115,7 +2115,7 @@ export function provideItem$2(amt: number, loc: Location, doEverything: boolean)
 	return provideItem(amt, loc, doEverything, false) >= amt;
 }
 
-export function provideItem$3(amt: number, doEverything: boolean): boolean
+function provideItem$3(amt: number, doEverything: boolean): boolean
 {
 	return provideItem$2(amt, myLocation(), doEverything);
 }
@@ -2324,7 +2324,7 @@ export function provideFamExp(amt: number, loc: Location, doEquips: boolean, doE
 	return result();
 }
 
-export function provideFamExp$1(amt: number, doEquips: boolean, doEverything: boolean, speculative: boolean): number
+function provideFamExp$1(amt: number, doEquips: boolean, doEverything: boolean, speculative: boolean): number
 {
 	return provideFamExp(amt, myLocation(), doEquips, doEverything, speculative);
 }
@@ -2339,7 +2339,7 @@ export function provideFamExp$3(amt: number, doEquips: boolean, doEverything: bo
 	return provideFamExp$2(amt, myLocation(), doEquips, doEverything);
 }
 
-export function provideFamExp$4(amt: number, doEquips: boolean): boolean
+function provideFamExp$4(amt: number, doEquips: boolean): boolean
 {
 	return provideFamExp$3(amt, doEquips, false);
 }

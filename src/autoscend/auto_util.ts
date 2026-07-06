@@ -121,7 +121,7 @@ export function autoMaximize$1(req: string, maxPrice: number, priceLevel: number
 	return maximize(req, maxPrice, priceLevel, simulate);
 }
 
-export function autoMaximize$2(req: string, maxPrice: number, priceLevel: number, simulate: boolean, includeEquip: boolean): any
+function autoMaximize$2(req: string, maxPrice: number, priceLevel: number, simulate: boolean, includeEquip: boolean): any
 {
 	if (!simulate)
 	{
@@ -131,7 +131,7 @@ export function autoMaximize$2(req: string, maxPrice: number, priceLevel: number
 	return maximize(req, maxPrice, priceLevel, simulate, includeEquip);
 }
 
-export function debugMaximize(req: string, meat: number): void
+function debugMaximize(req: string, meat: number): void
 { //This function will be removed.
 	if (indexOf(req, "-tie") === -1)
 	{
@@ -344,32 +344,12 @@ export function debugMaximize(req: string, meat: number): void
 
 export function trim(input: string): string
 {
-	let whitespace: AshMatcher = new AshMatcher("(\\A\\s+)|(\\s+\\z)", input);
-	return whitespace.replaceAll("");
+	return input.trim();
 }
 
-
-export function safeString(input: string): string
+function safeString(input: string): string
 {
-	let comma: AshMatcher = new AshMatcher("[,]", input);
-	input = comma.replaceAll(".");
-	let colon: AshMatcher = new AshMatcher("[:]", input);
-	input = colon.replaceAll(".");
-	return input;
-}
-
-export function safeString$1(input: Skill): string
-{
-	return safeString(`${input}`);
-}
-
-export function safeString$2(input: Item): string
-{
-	return safeString(`${input}`);
-}
-export function safeString$3(input: Monster): string
-{
-	return safeString(`${input}`);
+	return input.replaceAll(/[,:]/g, ".");
 }
 
 export function handleTracker(used: string, tracker: string): void
@@ -519,18 +499,18 @@ export function loopHandler(turnSetting: string, counterSetting: string, abortMe
 	return false;
 }
 
-export function loopHandler$1(turnSetting: string, counterSetting: string, threshold: number): boolean
+function loopHandler$1(turnSetting: string, counterSetting: string, threshold: number): boolean
 {
 	let abortMessage: string = `Infinite loop possibly detected for setting: ${counterSetting}. Use up a turn to get us to consider this loop broken. This may be a more severe issue.`;
 	return loopHandler(turnSetting, counterSetting, abortMessage, threshold);
 }
 
-export function loopHandlerDelay(counterSetting: string): boolean
+function loopHandlerDelay(counterSetting: string): boolean
 {
 	return loopHandlerDelay$1(counterSetting, 3);
 }
 
-export function loopHandlerDelay$1(counterSetting: string, threshold: number): boolean
+function loopHandlerDelay$1(counterSetting: string, threshold: number): boolean
 {
 	if (toInt(getProperty(counterSetting)) >= threshold)
 	{
@@ -547,7 +527,7 @@ export function loopHandlerDelayAll(): boolean
 	return boo || digitize;
 }
 
-export function reverse(s: string): string
+function reverse(s: string): string
 {
 	let ret: string = "";
 	for (let i: number = length(s) - 1; i >= 0; i--)
@@ -577,12 +557,12 @@ export function banishedMonsters(): Map<Monster, number>
 	return retval;
 }
 
-export function isBanished$1(enemy: Monster): boolean
+function isBanished$1(enemy: Monster): boolean
 {
 	return banishedMonsters().has(enemy);
 }
 
-export function banishedPhyla(): Map<Phylum, number>
+function banishedPhyla(): Map<Phylum, number>
 {
 	let retval: Map<Phylum, number> = new Map();
 	let data: Map<number, string> = new Map(splitString(getProperty("banishedPhyla"), ":").map((_v, _i) => [_i, _v]));
@@ -602,7 +582,7 @@ export function banishedPhyla(): Map<Phylum, number>
 	return retval;
 }
 
-export function phylumBanishTurnsRemaining(): number
+function phylumBanishTurnsRemaining(): number
 {
 	let banishedPhy: Map<Phylum, number> = banishedPhyla();
 
@@ -868,17 +848,17 @@ export function auto_wantToBanish$1(enemyphylum: Phylum, loc: Location): boolean
 	return (phylumToBanish.get(enemyphylum) ?? phylumToBanish.set(enemyphylum, false).get(enemyphylum));
 }
 
-export function canBanish(enemy: Monster, loc: Location): boolean
+function canBanish(enemy: Monster, loc: Location): boolean
 {
 	return banisherCombatString$3(enemy, loc) !== "";
 }
 
-export function canBanish$1(enemyphylum: Phylum, loc: Location): boolean
+function canBanish$1(enemyphylum: Phylum, loc: Location): boolean
 {
 	return banisherCombatString$2(enemyphylum, loc) !== "";
 }
 
-export function adjustForBanish(combat_string: string): boolean
+function adjustForBanish(combat_string: string): boolean
 {
 	if (combat_string === `skill${Skill.get("%fn, Release the Patriotic Screech!")}`)
 	{
@@ -1017,7 +997,7 @@ export function auto_wantToFreeRun(enemy: Monster, loc: Location): boolean
 	return (monstersToFreeRun.get(enemy) ?? monstersToFreeRun.set(enemy, false).get(enemy));
 }
 
-export function canFreeRun(enemy: Monster, loc: Location): boolean
+function canFreeRun(enemy: Monster, loc: Location): boolean
 {
 	// pokefam cannot use skills or items
 	if (in_pokefam()) {
@@ -1211,7 +1191,7 @@ export function adjustForFreeRunIfPossible(enemy: Monster, loc: Location): boole
 	return false;
 }
 
-export function adjustForYellowRay(combat_string: string): boolean
+function adjustForYellowRay(combat_string: string): boolean
 {
 	//Adjust equipment/familiars to have access to the desired Yellow Ray
 	if (combat_string === `skill ${Skill.get("Open a Big Yellow Present")}`)
@@ -1269,18 +1249,18 @@ export function adjustForYellowRayIfPossible$1(): boolean
 	return adjustForYellowRayIfPossible(Monster.none);
 }
 
-export function canReplace(target: Monster): boolean
+function canReplace(target: Monster): boolean
 {
 	//Use this to determine if it is safe to enter a replace monster combat.
 	return replaceMonsterCombatString$1(target) !== "";
 }
 
-export function canReplace$1(): boolean
+function canReplace$1(): boolean
 {
 	return canReplace(Monster.none);
 }
 
-export function adjustForReplace(combat_string: string): boolean
+function adjustForReplace(combat_string: string): boolean
 {
 	//Adjust equipment/familiars to have access to the desired replace monster
 	if (combat_string === `skill ${Skill.get("Macrometeorite")}`)
@@ -1337,12 +1317,12 @@ export function adjustForSniffingIfPossible(target: Monster): boolean
 	return false;
 }
 
-export function adjustForSniffingIfPossible$1(): boolean
+function adjustForSniffingIfPossible$1(): boolean
 {
 	return adjustForSniffingIfPossible(Monster.none);
 }
 
-export function canCopy(enemy: Monster, loc: Location): boolean
+function canCopy(enemy: Monster, loc: Location): boolean
 {
 	if (!auto_wantToCopy(enemy, loc))
 	{
@@ -1365,7 +1345,7 @@ export function adjustForCopyIfPossible(target: Monster): boolean
 	return false;
 }
 
-export function adjustForCopyIfPossible$1(): boolean
+function adjustForCopyIfPossible$1(): boolean
 {
 	return adjustForCopyIfPossible(Monster.none);
 }
@@ -1988,7 +1968,7 @@ export function isGhost(mon: Monster): boolean
 	return isProtonGhost(mon);
 }
 
-export function isProtonGhost(mon: Monster): boolean
+function isProtonGhost(mon: Monster): boolean
 {
 	let ghosts: Monster[] = Monster.get(["boneless blobghost", "Emily Koops, a spooky lime", "The ghost of Ebenoozer Screege", "The ghost of Jim Unfortunato", "The ghost of Lord Montague Spookyraven", "the ghost of Monsieur Baguelle", "the ghost of Oily McBindle", "The ghost of Richard Cockingham", "The ghost of Sam McGee", "The ghost of Vanillica \"Trashblossom\" Gorton", "The ghost of Waldo the Carpathian", "The Headless Horseman", "The Icewoman"]);
 	if (ghosts.includes(mon))
@@ -2708,7 +2688,7 @@ export function summonMonster(mon: Monster): boolean
 	return summonMonster$1(mon, false);
 }
 
-export function summonMonster$1(mon: Monster, speculative: boolean): boolean
+function summonMonster$1(mon: Monster, speculative: boolean): boolean
 {
 	if (!speculative)
 	{
@@ -2801,7 +2781,7 @@ export function handleCopiedMonster(itm: Item): boolean
 	return handleCopiedMonster$1(itm, null);
 }
 
-export function handleCopiedMonster$1(itm: Item, option: CombatMacro): boolean
+function handleCopiedMonster$1(itm: Item, option: CombatMacro): boolean
 {
 	let id: number = 0;
 	switch (itm)
@@ -2881,7 +2861,7 @@ export function maxSealSummons(): number
 }
 
 
-export function acquireCombatMods(amt: number): boolean
+function acquireCombatMods(amt: number): boolean
 {
 	return acquireCombatMods$1(amt, true);
 }
@@ -2962,7 +2942,7 @@ export function auto_change_mcd(mcd: number): boolean
 	return auto_change_mcd$1(mcd, false);
 }
 
-export function auto_change_mcd$1(mcd: number, immediately: boolean): boolean
+function auto_change_mcd$1(mcd: number, immediately: boolean): boolean
 {
 	let best: number = highest_available_mcd();
 	if (inBadMoon())
@@ -3247,7 +3227,7 @@ export function doNumberology(goal: string): number
 	return doNumberology$3(goal, true, null);
 }
 
-export function doNumberology$1(goal: string, option: CombatMacro): number
+function doNumberology$1(goal: string, option: CombatMacro): number
 {
 	return doNumberology$3(goal, true, option);
 }
@@ -3257,7 +3237,7 @@ export function doNumberology$2(goal: string, doIt: boolean): number
 	return doNumberology$3(goal, doIt, null);
 }
 
-export function doNumberology$3(goal: string, doIt: boolean, option: CombatMacro): number
+function doNumberology$3(goal: string, doIt: boolean, option: CombatMacro): number
 {
 	if (!auto_have_skill(Skill.get("Calculate the Universe")))
 	{
@@ -3378,7 +3358,7 @@ export function candyEggDeviler(): boolean
 	return cliExecute(`devilcandyegg ${(candyL.get(0) ?? candyL.set(0, Item.none).get(0))}`);
 }
 
-export function getCandy(): void
+function getCandy(): void
 {
 	for (let sk of Skill.get(["Summon Crimbo Candy", "Summon Candy Heart", "Chubby and Plump", "Summon Hilarious Objects"]))
 	{
@@ -3404,7 +3384,7 @@ export function auto_have_skill(sk: Skill): boolean
 	return auto_is_valid$2(sk) && haveSkill(sk);
 }
 
-export function have_skills(array: Map<Skill, boolean>): boolean
+function have_skills(array: Map<Skill, boolean>): boolean
 {
 	for (let sk of array.keys())
 	{
@@ -3693,7 +3673,7 @@ export function ATSongList(): Map<Effect, boolean>
 	return songs;
 }
 
-export function shrugAT(): void
+function shrugAT(): void
 {
 	shrugAT$1(Effect.none);
 }
@@ -3938,7 +3918,7 @@ export function auto_is_valid$4(str: string): boolean
 	return isUnrestricted(str);
 }
 
-export function auto_log(s: string, color: string, log_level: number): void
+function auto_log(s: string, color: string, log_level: number): void
 {
 	if (log_level > toInt(getProperty("auto_log_level")))
 	{
@@ -4300,7 +4280,7 @@ switch (condition_data)
 	return true;
 }
 
-export function auto_getMonsters(category: string): Map<Monster, boolean>
+function auto_getMonsters(category: string): Map<Monster, boolean>
 {
 	let res: Map<Monster, boolean> = new Map();
 	let monsters_text: Map<string, Map<number, Map<string, string>>> = fileAsMap("autoscend_monsters.txt", [String, Number, String, String]);
@@ -4323,7 +4303,7 @@ export function auto_getMonsters(category: string): Map<Monster, boolean>
 	return res;
 }
 
-export function auto_getPhylum(category: string): Map<Phylum, boolean>
+function auto_getPhylum(category: string): Map<Phylum, boolean>
 {
 	let res: Map<Phylum, boolean> = new Map();
 	let phylum_text: Map<string, Map<number, Map<string, string>>> = fileAsMap("autoscend_phylums.txt", [String, Number, String, String]);
@@ -4387,7 +4367,7 @@ export function auto_wantToCopy(enemy: Monster, loc: Location): boolean
 	return (toCopy.get(enemy) ?? toCopy.set(enemy, false).get(enemy));
 }
 
-export function auto_wantToCopy$1(enemy: Monster): boolean
+function auto_wantToCopy$1(enemy: Monster): boolean
 {
 	let toCopy: Map<Monster, boolean> = auto_getMonsters("copy");
 	return (toCopy.get(enemy) ?? toCopy.set(enemy, false).get(enemy));
@@ -4464,7 +4444,7 @@ export function meatReserveMessage(): void
 	return;
 }
 
-export function auto_interruptZoneCheck(): boolean
+function auto_interruptZoneCheck(): boolean
 {
 	let currentZone: string = myLocation().toString();
 	let interruptZones: string = getProperty("auto_interruptZones");
@@ -4583,7 +4563,7 @@ export function executeFlavour(): boolean
 	return true;
 }
 
-export function autoFlavour(place: Location): boolean
+function autoFlavour(place: Location): boolean
 {
 	if (!auto_have_skill(Skill.get("Flavour of Magic")))
 	{
@@ -4936,7 +4916,7 @@ export function auto_setMCDToCap(): boolean
 	return auto_change_mcd(targetMcd);
 }
 // We use this function to determine the suitability of using Ur-Kel's
-export function UrKelCheck(UrKelToML: number, UrKelUpperLimit: number, UrKelLowerLimit: number): boolean
+function UrKelCheck(UrKelToML: number, UrKelUpperLimit: number, UrKelLowerLimit: number): boolean
 {
 	if (!auto_have_skill(Skill.get("Ur-Kel's Aria of Annoyance")))
 	{
@@ -4955,7 +4935,7 @@ export function UrKelCheck(UrKelToML: number, UrKelUpperLimit: number, UrKelLowe
 	return true;
 }
 // We use this function to determine the suitability of using angry agates
-export function angryAgateCheck(angryAgateToML: number, angryAgateUpperLimit: number, angryAgateLowerLimit: number): boolean
+function angryAgateCheck(angryAgateToML: number, angryAgateUpperLimit: number, angryAgateLowerLimit: number): boolean
 {
 	if (itemAmount(Item.get("angry agate")) === 0 || !auto_is_valid(Item.get("angry agate")))
 	{
@@ -5051,7 +5031,7 @@ export function auto_MaxMLToCap(ToML: number, doAltML: boolean): boolean
 	return true;
 }
 // ADVENTURE FORCING FUNCTIONS
-export function _auto_forceNextNoncombat(loc: Location, speculative: boolean): boolean
+function _auto_forceNextNoncombat(loc: Location, speculative: boolean): boolean
 {
 	// return true if already have a forcer acitve
 	if (auto_haveQueuedForcedNonCombat())
@@ -5165,7 +5145,7 @@ export function auto_canForceNextNoncombat(): boolean
 	return _auto_forceNextNoncombat(Location.none, true);
 }
 
-export function _auto_forceNextNoncombat$1(loc: Location): boolean
+function _auto_forceNextNoncombat$1(loc: Location): boolean
 {
 	return _auto_forceNextNoncombat(loc, false);
 }
@@ -5226,7 +5206,7 @@ export function auto_predictAccordionTurns(): number
 	return CurrentBestTurns;
 }
 
-export function hasTTBlessing(): boolean
+function hasTTBlessing(): boolean
 {
 	//do you currently have a turtle blessing active? or if not turtle tamer then the buff?
 
@@ -5587,7 +5567,7 @@ export function turnsUsedByRemainingNCForcesToday(): number
 	return forces;
 }
 
-export function substat_to_level(): number
+function substat_to_level(): number
 {
 	return substat_to_level$1(myBasestat(stat_to_substat(myPrimestat())));
 }
@@ -5606,7 +5586,7 @@ export function level_to_min_substat(n: number): number
 	return ((n - 1) ** 2 + 4) ** 2;
 }
 
-export function level_to_min_substat$1(): number
+function level_to_min_substat$1(): number
 {
 	return level_to_min_substat(myLevel());
 }
@@ -5685,7 +5665,7 @@ export function auto_getListOfNonDamagingFamiliarEquipment(): Map<number, Item>
 	return auto_sortedByModifier$3(valid_and_available, Modifier.get("Familiar Weight"), true);
 }
 
-export function auto_getOffStatChallengeFromTelescope(): Stat
+function auto_getOffStatChallengeFromTelescope(): Stat
 {
 	let musc: string = "standing around flexing";
 	let myst: string = "sitting around playing chess";
@@ -5707,7 +5687,7 @@ export function auto_getOffStatChallengeFromTelescope(): Stat
 	return Stat.none;
 }
 
-export function auto_getElementChallengeFromTelescope(): Element
+function auto_getElementChallengeFromTelescope(): Element
 {
 	let hot: string = "fire";
 	let cold: string = "igloos";
@@ -5880,7 +5860,7 @@ export function auto_inRonin(): boolean
 	return !(canInteract() || inHardcore());
 }
 
-export function resistanceModifier(el: Element): Modifier
+function resistanceModifier(el: Element): Modifier
 {
 	switch (el)
 	{
@@ -5906,7 +5886,7 @@ export function damageModifier(el: Element): Modifier
 	return Modifier.none;
 }
 
-export function spellDamageModifier(el: Element): Modifier
+function spellDamageModifier(el: Element): Modifier
 {
 	switch (el)
 	{
@@ -5919,7 +5899,7 @@ export function spellDamageModifier(el: Element): Modifier
 	return Modifier.none;
 }
 
-export function auto_getElementalDamageMultiplier(source: Element, target: Element): number
+function auto_getElementalDamageMultiplier(source: Element, target: Element): number
 {
 	if (source === target) { return 0.0; }
 	if (source === Element.get("cold") && Element.get(["sleaze", "stench"]).includes(target)) { return 2.0; }

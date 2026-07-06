@@ -90,7 +90,7 @@ export function theSource_buySkills(): boolean
 	return false;
 }
 
-export function L8_theSourceNinjaOracle(): boolean
+function L8_theSourceNinjaOracle(): boolean
 {
 	//handles the scenario where we want do the oracle quest and the target is the ninja snowmen lair
 	//in this case we do not mind if we can not beat the assassins. but if we can we would rather not waste adventures.

@@ -30,7 +30,7 @@ export function bugbear_initializeSettings(): void
 	}
 }
 
-export function bugbear_Status(loc: Location): string
+function bugbear_Status(loc: Location): string
 {
 	if (loc.zone !== "Mothership") { abort("Invalid Mothership zone"); }
 	return getProperty(`status${replaceString(loc.toString(), " ", "")}`);
@@ -61,19 +61,19 @@ export function bugbear_BioDataRemaining(loc: Location): number
 	return 0;
 }
 
-export function bugbear_ZoneOpen(loc: Location): boolean
+function bugbear_ZoneOpen(loc: Location): boolean
 {
 	let value: string = bugbear_Status(loc);
 	return value === "open";
 }
 
-export function bugbear_ZoneCleared(loc: Location): boolean
+function bugbear_ZoneCleared(loc: Location): boolean
 {
 	let value: string = bugbear_Status(loc);
 	return value === "cleared";
 }
 
-export function bugbear_UnlockMothership(loc: Location): boolean
+function bugbear_UnlockMothership(loc: Location): boolean
 {
 	let remaining: number = bugbear_BioDataRemaining(loc);
 	if (remaining === 0) { return false; }
@@ -159,14 +159,14 @@ export function bugbear_UnlockMothership(loc: Location): boolean
 	return autoAdv$2(unlockLocation);
 }
 
-export function LX_bugbearKeyOTron(): boolean
+function LX_bugbearKeyOTron(): boolean
 {
 	if (itemAmount(Item.get("key-o-tron")) !== 0) { return false; }
 
 	return bugbear_UnlockMothership(Location.get("Waste Processing"));
 }
 
-export function LX_bugbearWasteProcessing(): boolean
+function LX_bugbearWasteProcessing(): boolean
 {
 	let loc: Location = Location.get("Waste Processing");
 	if (bugbear_UnlockMothership(loc)) { return true; }
@@ -191,7 +191,7 @@ export function LX_bugbearWasteProcessing(): boolean
 	return autoAdv$2(loc);
 }
 
-export function LX_bugbearMedbay(): boolean
+function LX_bugbearMedbay(): boolean
 {
 	let loc: Location = Location.get("Medbay");
 	if (bugbear_UnlockMothership(loc)) { return true; }
@@ -202,7 +202,7 @@ export function LX_bugbearMedbay(): boolean
 	return autoAdv$2(loc);
 }
 
-export function LX_bugbearSonar(): boolean
+function LX_bugbearSonar(): boolean
 {
 	let loc: Location = Location.get("Sonar");
 	if (bugbear_UnlockMothership(loc)) { return true; }
@@ -213,7 +213,7 @@ export function LX_bugbearSonar(): boolean
 	return autoAdv$2(loc);
 }
 
-export function LX_bugbearScienceLab(): boolean
+function LX_bugbearScienceLab(): boolean
 {
 	let loc: Location = Location.get("Science Lab");
 	if (bugbear_UnlockMothership(loc)) { return true; }
@@ -226,7 +226,7 @@ export function LX_bugbearScienceLab(): boolean
 	return autoAdv$2(loc);
 }
 
-export function LX_bugbearMorgue(): boolean
+function LX_bugbearMorgue(): boolean
 {
 	let loc: Location = Location.get("Morgue");
 	if (bugbear_UnlockMothership(loc)) { return true; }
@@ -237,7 +237,7 @@ export function LX_bugbearMorgue(): boolean
 	return autoAdv$2(loc);
 }
 
-export function LX_bugbearSpecialOps(): boolean
+function LX_bugbearSpecialOps(): boolean
 {
 	let loc: Location = Location.get("Special Ops");
 	if (bugbear_UnlockMothership(loc)) { return true; }
@@ -294,7 +294,7 @@ export function LX_bugbearSpecialOps(): boolean
 
 }
 
-export function LX_bugbearEngineering(): boolean
+function LX_bugbearEngineering(): boolean
 {
 	let loc: Location = Location.get("Engineering");
 	if (bugbear_UnlockMothership(loc)) { return true; }
@@ -307,7 +307,7 @@ export function LX_bugbearEngineering(): boolean
 	return autoAdv$2(loc);
 }
 
-export function LX_bugbearNavigation(): boolean
+function LX_bugbearNavigation(): boolean
 {
 	let loc: Location = Location.get("Navigation");
 	if (bugbear_UnlockMothership(loc)) { return true; }
@@ -320,7 +320,7 @@ export function LX_bugbearNavigation(): boolean
 	return autoAdv$2(loc);
 }
 
-export function LX_bugbearNavigationForce(): boolean
+function LX_bugbearNavigationForce(): boolean
 {
 	let loc: Location = Location.get("Navigation");
 	if (bugbear_UnlockMothership(loc)) { return true; }
@@ -338,7 +338,7 @@ export function LX_bugbearNavigationForce(): boolean
 	return autoAdv$2(loc);
 }
 
-export function LX_bugbearGallery(): boolean
+function LX_bugbearGallery(): boolean
 {
 	let loc: Location = Location.get("Galley");
 	if (bugbear_UnlockMothership(loc)) { return true; }
@@ -351,7 +351,7 @@ export function LX_bugbearGallery(): boolean
 	return autoAdv$2(loc);
 }
 
-export function LX_bugbearBridge(): boolean
+function LX_bugbearBridge(): boolean
 {
 	if (toInt(getProperty("mothershipProgress")) !== 3) { return false; }
 

@@ -31,7 +31,7 @@ export function isActuallyEd(): boolean
 	return myPath() === Path.get("Actually Ed the Undying");
 }
 
-export function ed_spleen_limit(): number
+function ed_spleen_limit(): number
 {
 	let limit: number = 5;
 	for (let sk of Skill.get(["Extra Spleen", "Another Extra Spleen", "Yet Another Extra Spleen", "Still Another Extra Spleen", "Just One More Extra Spleen", "Okay Seriously, This is the Last Spleen"]))
@@ -146,7 +146,7 @@ export function ed_initializeDay(day: number): void
 	setProperty("auto_day_init", day.toString());
 }
 
-export function L13_ed_towerHandler(): boolean
+function L13_ed_towerHandler(): boolean
 {
 	if (!isActuallyEd())
 	{
@@ -182,7 +182,7 @@ export function L13_ed_towerHandler(): boolean
 	return false;
 }
 
-export function L13_ed_councilWarehouse(): boolean
+function L13_ed_councilWarehouse(): boolean
 {
 	if (!isActuallyEd())
 	{
@@ -262,7 +262,7 @@ export function handleServant(who: Servant): boolean
 	return true;
 }
 
-export function handleServant$1(name: string): boolean
+function handleServant$1(name: string): boolean
 {
 	if (!isActuallyEd())
 	{
@@ -323,7 +323,7 @@ export function ed_doResting(): boolean
 	return false;
 }
 
-export function ed_buySkills(): boolean
+function ed_buySkills(): boolean
 {
 	if (!isActuallyEd())
 	{
@@ -583,7 +583,7 @@ export function ed_eatStuff(): boolean
 	return false;
 }
 
-export function ed_nextUpgrade(): Skill
+function ed_nextUpgrade(): Skill
 {
 	let coins: number = itemAmount(Item.get("Ka coin"));
 	let canEat_1: number = (spleenLimit() - mySpleenUse()) / 5;
@@ -681,7 +681,7 @@ export function ed_nextUpgrade(): Skill
 
 let $_ed_KaCost_kaNeeded: Map<Skill, number> | undefined;
 
-export function ed_KaCost(upgrade: Skill): number
+function ed_KaCost(upgrade: Skill): number
 {
 	$_ed_KaCost_kaNeeded ??= new Map([
 		[Skill.get("Extra Spleen"), 5],
@@ -799,7 +799,7 @@ export function ed_needShop(): boolean
 	return false;
 }
 
-export function ed_shopping(): boolean
+function ed_shopping(): boolean
 {
 
 	
@@ -1033,7 +1033,7 @@ export function ed_handleAdventureServant(loc: Location): void
 	handleServant(myServant_1);
 }
 
-export function L1_ed_island(): boolean
+function L1_ed_island(): boolean
 {
 	//reset tracking of Ka farming
 	removeProperty("_auto_farmingKaAsEd");
@@ -1106,7 +1106,7 @@ export function L1_ed_island(): boolean
 	return true;
 }
 
-export function L1_ed_islandFallback(): boolean
+function L1_ed_islandFallback(): boolean
 {
 	//reset tracking of Ka farming
 	removeProperty("_auto_farmingKaAsEd");
@@ -1266,7 +1266,7 @@ export function ed_DelayNC_DailyDungeon(): boolean
 	return itemAmount(Item.get("linen bandages")) === 0;
 }
 
-export function ed_DelayNC(potential_dmg: number): boolean
+function ed_DelayNC(potential_dmg: number): boolean
 {
 	//return true if we should delay NC as ed because it might kill us and cause us to waste an adv on restoring
 	if (!isActuallyEd())
@@ -1292,7 +1292,7 @@ export function ed_DelayNC$1(potential_dmg_percent: number): boolean
 	return ed_DelayNC(potential_dmg);
 }
 
-export function edUnderworldAdv(): boolean
+function edUnderworldAdv(): boolean
 {
 	//This function is used to spend 1 adv "resting" as ed by entering the underworld via the gate at his pyramid, shopping, then leaving.
 	//Does not check our current HP to see if it should run. only call it if necessary.

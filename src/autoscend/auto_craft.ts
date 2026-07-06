@@ -3,14 +3,14 @@ import { auto_is_valid, auto_log_debug$1, auto_log_warning$1, handleTracker$1 } 
 import { hasLegionKnife } from "./iotms/mr2011";
 
 //Defined in autoscend/auto_craft.ash
-export function is_foldable(target: Item): boolean
+function is_foldable(target: Item): boolean
 {
 	//mafia does not provide an easy means of checking if an item possesses the foldable property.
 	//This function checks if the item possesses that property. It does not care if you actually have it
 	return getRelated(target, "fold").size > 1;
 }
 
-export function foldable_amount(target: Item): number
+function foldable_amount(target: Item): number
 {
 	//counts how many copies we can fold of a certain item.
 	if (!is_foldable(target))
@@ -53,7 +53,7 @@ export function auto_fold(target: Item): boolean
 	return false;
 }
 
-export function untinkerable(target: Item): boolean
+function untinkerable(target: Item): boolean
 {
 	//does the item target possess the untinkerable property. this does not care if we actually have it or can untinker. only the property.
 	//exceptions that can be untinkered even though they are no longer pasteable
@@ -81,7 +81,7 @@ export function canUntinker(): boolean
 	return getProperty("questM01Untinker") === "finished";
 }
 
-export function canUntinker$1(target: Item): boolean
+function canUntinker$1(target: Item): boolean
 {
 	if (!canUntinker())
 	{
@@ -101,7 +101,7 @@ export function untinker(target: Item): boolean
 	return untinker$1(1, target);
 }
 
-export function untinker$1(amount: number, target: Item): boolean
+function untinker$1(amount: number, target: Item): boolean
 {
 	if (!canUntinker$1(target))
 	{
@@ -153,7 +153,7 @@ export function untinker$1(amount: number, target: Item): boolean
 	return false;
 }
 
-export function auto_craftIfFree(it: Item): boolean
+function auto_craftIfFree(it: Item): boolean
 {
 	if (creatableAmount(it) > 0 && creatableTurns(it, 1, true) === 0)
 	{

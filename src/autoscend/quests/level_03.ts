@@ -13,7 +13,7 @@ import { in_glover } from "../paths/g_lover";
 import { in_wereprof } from "../paths/wereprofessor";
 
 //Defined in autoscend/quests/level_03.ash
-export function auto_tavern(): boolean
+function auto_tavern(): boolean
 {
 	if (internalQuestStatus("questL03Rat") !== 1)
 	{

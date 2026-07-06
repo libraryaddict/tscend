@@ -89,7 +89,7 @@ export function robot_defaultMaximizeStatement(): string
 	return res;
 }
 
-export function robot_top(choice: number): boolean
+function robot_top(choice: number): boolean
 {
 	//Top Attachment
 
@@ -173,7 +173,7 @@ name = "[Snow Blower]";
 	return true;
 }
 
-export function robot_left(choice: number): boolean
+function robot_left(choice: number): boolean
 {
 	//Left Arm. this is the weapon hand.
 	//kol devs drew it backwards. it says left arm but they drew it as right arm
@@ -258,7 +258,7 @@ name = "[Grease Gun]";
 	return true;
 }
 
-export function robot_right(choice: number): boolean
+function robot_right(choice: number): boolean
 {
 	//Right Arm. this is the offhand.
 	//kol devs drew it backwards. it says right arm but they drew it as left arm
@@ -343,7 +343,7 @@ name = "[Surplus Flamethrower]";
 	return true;
 }
 
-export function robot_bottom(choice: number): boolean
+function robot_bottom(choice: number): boolean
 {
 	//Propulsion System
 
@@ -546,12 +546,12 @@ name = "[Holographic Deflector Projection]";
 	return true;
 }
 
-export function robot_cpu$1(choice: number): boolean
+function robot_cpu$1(choice: number): boolean
 {
 	return robot_cpu(choice, true);
 }
 
-export function robot_skillbuy(): void
+function robot_skillbuy(): void
 {
 	//select robot skills to install into your CPU. this costs energy.
 	if (!in_robot())
@@ -619,7 +619,7 @@ export function robot_skillbuy(): void
 	}
 }
 
-export function robot_energy_per_collect(): number
+function robot_energy_per_collect(): number
 {
 	//how much energy do you get per adv spent on Collect Energy
 	//first one gives 25 + ascension points. ascension points are 1 per softcore 2 per hardcore robot ascensions done. capped at 37
@@ -634,7 +634,7 @@ export function robot_energy_per_collect(): number
 	return round(raw);
 }
 
-export function LX_robot_get_energy(): boolean
+function LX_robot_get_energy(): boolean
 {
 	//collect energy in the scrap heap. costs 1 adv. gives 25 energy. decreased by 15% per use today.
 	//first use each day grants bonus based on number of robot ascensions. to a max of 37
@@ -655,7 +655,7 @@ export function LX_robot_get_energy(): boolean
 	return true;
 }
 
-export function LX_robot_get_scrap_once(): boolean
+function LX_robot_get_scrap_once(): boolean
 {
 	//getting scrap gives 4 to 6 scrap and 50 HP recovery.
 	//on first use per day you also get scrap, equal to 3 tiems ascension points. capped at 37
@@ -677,7 +677,7 @@ export function LX_robot_get_scrap_once(): boolean
 	return true;
 }
 
-export function LX_robot_get_scrap(target: number): boolean
+function LX_robot_get_scrap(target: number): boolean
 {
 	//get scrap to match the required target amount.
 	//return true to restart the main loop.
@@ -737,14 +737,14 @@ export function robot_get_adv(): void
 	}
 }
 
-export function robot_statbot_cost(): number
+function robot_statbot_cost(): number
 {
 	//statbot 5000 provides you with +5 base stats to a chosen stat for 10 + X. where X is the number of times it was used this ascension.
 	//this function returns the current energy cost
 	return 10 + toInt(getProperty("statbotUses"));
 }
 
-export function robot_statbot(target: Stat): boolean
+function robot_statbot(target: Stat): boolean
 {
 	//robot does not get XP from combat. robot CAN get XP from noncombats such as haunted bedroom.
 	//robot can trade energy for 5 base stats at statbot 5000. cost scales up with uses and does not reset on rollover.
@@ -778,7 +778,7 @@ export function robot_statbot(target: Stat): boolean
 	return true;
 }
 
-export function robot_stat_wanted(): Stat
+function robot_stat_wanted(): Stat
 {
 	//which stat do we most want to raise next as a robot. If we want multiple stats that would be handled elsewhere.
 	let is_mus: boolean = myPrimestat() === Stat.get("Muscle");
@@ -824,7 +824,7 @@ export function robot_stat_wanted(): Stat
 	return Stat.none;
 }
 
-export function LX_robot_level(): boolean
+function LX_robot_level(): boolean
 {
 	if (!in_robot())
 	{
@@ -959,7 +959,7 @@ export function LX_robot_powerlevel(): boolean
 	return false;
 }
 
-export function robot_assemble(): boolean
+function robot_assemble(): boolean
 {
 	//selects replacement parts to assemble unto your chasis. this costs scrap.
 	//return true if you want to restart the main loop. otherwise return false
@@ -1078,7 +1078,7 @@ export function robot_assemble(): boolean
 	return false;
 }
 
-export function robot_assemble_want_sniper(): boolean
+function robot_assemble_want_sniper(): boolean
 {
 	//do we want to switch our left hand to sniper rifle attachment?
 	//this does not check if it is urgent to do so immediately.
@@ -1106,7 +1106,7 @@ export function robot_assemble_want_sniper(): boolean
 	return true;
 }
 
-export function robot_assemble_want_rocket_crotch(): boolean
+function robot_assemble_want_rocket_crotch(): boolean
 {
 	//do we want to switch our propulsion system to rocket crotch
 	//unless user played manually will only be used to keep it as starting gear temporarily
@@ -1128,7 +1128,7 @@ export function robot_assemble_want_rocket_crotch(): boolean
 	return false;
 }
 
-export function robot_assemble_want_bird_cage(): boolean
+function robot_assemble_want_bird_cage(): boolean
 {
 	//do we want to switch our top attachment to [bird cage] to unlock familiar?
 	//to prevent issues. our autoscend functions related to familiars say we do not have familiars at all if we do not have a [bird cage] already
@@ -1235,7 +1235,7 @@ return false;
 	return true;
 }
 
-export function robot_directive(): void
+function robot_directive(): void
 {
 	//configures a directive which will allow us to group quests together for robot assembly changes.
 	//directives are needed because changing attachments actually carries a cost. unlike outfit changes which are free.
@@ -1374,7 +1374,7 @@ export function robot_directive(): void
 	//mafia is not tracking fires lit during the highland quest. TODO make our own tracking in another PR and then write code here
 }
 
-export function robot_directive_check(check_1: string): boolean
+function robot_directive_check(check_1: string): boolean
 {
 	if (!in_robot())
 	{

@@ -9,7 +9,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 // This is meant for items that have a date of 2020
 
 //Defined in autoscend/iotms/mr2020.ash
-export function auto_haveBirdADayCalendar(): boolean {
+function auto_haveBirdADayCalendar(): boolean {
 	return itemAmount(Item.get("Bird-a-Day calendar")) > 0 && auto_is_valid(Item.get("Bird-a-Day calendar"));
 }
 
@@ -21,7 +21,7 @@ export function auto_birdOfTheDay(): boolean {
 	return false;
 }
 
-export function auto_birdIsValid(): boolean
+function auto_birdIsValid(): boolean
 {
 	// can't seek a bird if you can't use or don't own the calendar
 	if (!auto_haveBirdADayCalendar()) {
@@ -60,12 +60,12 @@ export function auto_favoriteBirdModifier(mod: string): number
 	return numericModifier(Effect.get("Blessing of your favorite Bird"), mod);
 }
 
-export function auto_birdsSought(): number
+function auto_birdsSought(): number
 {
 	return toInt(getProperty("_birdsSoughtToday"));
 }
 
-export function auto_birdsLeftToday(): number
+function auto_birdsLeftToday(): number
 {
 	return 6 - auto_birdsSought();
 }
@@ -102,7 +102,7 @@ export function auto_powerfulGloveCharges(): number
 	return 100 - toInt(getProperty("_powerfulGloveBatteryPowerUsed"));
 }
 
-export function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean
+function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean
 {
 	if (!auto_hasPowerfulGlove() || !auto_is_valid$2(sk)) { return false; }
 
@@ -150,7 +150,7 @@ export function auto_powerfulGloveReplacesAvailable(inCombat: boolean): number
 	return toInt((auto_powerfulGloveCharges() / 10));
 }
 // Returns if replaces are available if the Powerful Glove was equipped
-export function auto_powerfulGloveReplacesAvailable$1(): number
+function auto_powerfulGloveReplacesAvailable$1(): number
 {
 	return auto_powerfulGloveReplacesAvailable(false);
 }
@@ -167,7 +167,7 @@ export function auto_powerfulGloveStats(): boolean
 	return auto_powerfulGloveNoncombatSkill(Skill.get("CHEAT CODE: Triple Size"));
 }
 
-export function auto_wantToEquipPowerfulGlove(): boolean
+function auto_wantToEquipPowerfulGlove(): boolean
 {
 	if (!auto_hasPowerfulGlove()) { return false; }
 
@@ -176,7 +176,7 @@ export function auto_wantToEquipPowerfulGlove(): boolean
 	return false;
 }
 
-export function auto_willEquipPowerfulGlove(): boolean
+function auto_willEquipPowerfulGlove(): boolean
 {
 	for (let s of Slot.get(["acc1", "acc2", "acc3"]))
 	{
@@ -313,7 +313,7 @@ export function auto_canCamelSpit(): boolean
 	return canChangeToFamiliar(Familiar.get("Melodramedary")) && toInt(getProperty("camelSpit")) === 100;
 }
 
-export function auto_latheHardwood(toLathe: Item): boolean
+function auto_latheHardwood(toLathe: Item): boolean
 {
 	// can't lathe if lathe is out of standard (or otherwise unusable)
 	if (!auto_is_valid(Item.get("SpinMaster&trade; lathe")))
@@ -375,12 +375,12 @@ toLathe = Item.get("beechwood blowgun");
 	return auto_latheHardwood(toLathe);
 }
 
-export function auto_hasCargoShorts(): boolean
+function auto_hasCargoShorts(): boolean
 {
 	return possessEquipment(wrap_item(Item.get("Cargo Cultist Shorts"))) && auto_is_valid(wrap_item(Item.get("Cargo Cultist Shorts")));
 }
 
-export function auto_cargoShortsCanOpenPocket(): boolean
+function auto_cargoShortsCanOpenPocket(): boolean
 {
 	if (!auto_hasCargoShorts())
 		{ return false; }
@@ -388,7 +388,7 @@ export function auto_cargoShortsCanOpenPocket(): boolean
 	return !toBoolean(getProperty("_cargoPocketEmptied"));
 }
 
-export function auto_cargoShortsCanOpenPocket$1(pocket: number): boolean
+function auto_cargoShortsCanOpenPocket$1(pocket: number): boolean
 {
 	if (!auto_cargoShortsCanOpenPocket())
 		{ return false; }
@@ -403,7 +403,7 @@ export function auto_cargoShortsCanOpenPocket$1(pocket: number): boolean
 	return true;
 }
 
-export function auto_cargoShortsCanOpenPocket$2(i: Item): boolean
+function auto_cargoShortsCanOpenPocket$2(i: Item): boolean
 {
 	if (!auto_cargoShortsCanOpenPocket())
 		{ return false; }
@@ -411,7 +411,7 @@ export function auto_cargoShortsCanOpenPocket$2(i: Item): boolean
 	return availablePocket(i) !== 0;
 }
 
-export function auto_cargoShortsCanOpenPocket$3(m: Monster): boolean
+function auto_cargoShortsCanOpenPocket$3(m: Monster): boolean
 {
 	if (!auto_cargoShortsCanOpenPocket())
 		{ return false; }
@@ -419,7 +419,7 @@ export function auto_cargoShortsCanOpenPocket$3(m: Monster): boolean
 	return availablePocket(m) !== 0;
 }
 
-export function auto_cargoShortsCanOpenPocket$4(e: Effect): boolean
+function auto_cargoShortsCanOpenPocket$4(e: Effect): boolean
 {
 	if (!auto_cargoShortsCanOpenPocket())
 		{ return false; }
@@ -427,7 +427,7 @@ export function auto_cargoShortsCanOpenPocket$4(e: Effect): boolean
 	return availablePocket(e) !== 0;
 }
 
-export function auto_cargoShortsCanOpenPocket$5(s: Stat): boolean
+function auto_cargoShortsCanOpenPocket$5(s: Stat): boolean
 {
 	if (!auto_cargoShortsCanOpenPocket())
 		{ return false; }
@@ -435,7 +435,7 @@ export function auto_cargoShortsCanOpenPocket$5(s: Stat): boolean
 	return availablePocket(s) !== 0;
 }
 
-export function auto_cargoShortsCanOpenPocket$6(s: string): boolean
+function auto_cargoShortsCanOpenPocket$6(s: string): boolean
 {
 	if (!auto_cargoShortsCanOpenPocket())
 		{ return false; }
@@ -467,7 +467,7 @@ export function auto_cargoShortsOpenPocket(pocket: number): boolean
 	return pickPocket(pocket);
 }
 
-export function auto_cargoShortsOpenPocket$1(i: Item): boolean
+function auto_cargoShortsOpenPocket$1(i: Item): boolean
 {
 	if (!auto_cargoShortsCanOpenPocket$2(i))
 		{ return false; }
@@ -495,7 +495,7 @@ export function auto_cargoShortsOpenPocket$2(m: Monster, speculative: boolean): 
 	return false;
 }
 
-export function auto_cargoShortsOpenPocket$3(e: Effect): boolean
+function auto_cargoShortsOpenPocket$3(e: Effect): boolean
 {
 	if (!auto_cargoShortsCanOpenPocket$4(e))
 		{ return false; }
@@ -503,7 +503,7 @@ export function auto_cargoShortsOpenPocket$3(e: Effect): boolean
 	return pickPocket(availablePocket(e));
 }
 
-export function auto_cargoShortsOpenPocket$4(s: Stat): boolean
+function auto_cargoShortsOpenPocket$4(s: Stat): boolean
 {
 	if (!auto_cargoShortsCanOpenPocket$5(s))
 		{ return false; }
@@ -511,7 +511,7 @@ export function auto_cargoShortsOpenPocket$4(s: Stat): boolean
 	return pickPocket(availablePocket(s));
 }
 
-export function auto_cargoShortsOpenPocket$5(s: string): boolean
+function auto_cargoShortsOpenPocket$5(s: string): boolean
 {
 	if (!auto_cargoShortsCanOpenPocket$6(s))
 		{ return false; }
@@ -554,7 +554,7 @@ export function auto_mapTheMonsters(): boolean
 	return false;
 }
 
-export function auto_monsterToMap(loc: Location, page: string): Monster
+function auto_monsterToMap(loc: Location, page: string): Monster
 {
 	let mons: AshMatcher = new AshMatcher("heyscriptswhatsupwinkwink\" value=\"(\\d+)", page);
 	let monOpts: Map<number, Monster> = new Map();

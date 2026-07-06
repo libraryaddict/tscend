@@ -37,7 +37,7 @@ import { in_zombieSlayer, zombieSlayer_acquireHP, zombieSlayer_acquireMP } from 
  * Private Interface
  */
 // Loosely maps to autoscend_restoration.txt data, after a little parsing/coercing
-export class __RestorationMetadata {
+class __RestorationMetadata {
 	constructor(
 		public name: string = "",
 		public type: string = "",
@@ -54,7 +54,7 @@ export class __RestorationMetadata {
 	) {}
 }
 // Holds values used to determine a restoration option's efficacy
-export class __RestorationOptimization {
+class __RestorationOptimization {
 	constructor(
 		public metadata: __RestorationMetadata = new __RestorationMetadata(),
 		public vars: Map<string, number> = new Map(), // cache, not used for optimization
@@ -63,7 +63,7 @@ export class __RestorationOptimization {
 	) {}
 }
 // Real ugly to_string, probably only enable for debugging
-export function to_string(r: __RestorationMetadata): string
+function to_string(r: __RestorationMetadata): string
 {
 	function list_to_string$1(e_list: Map<Effect, boolean>): string
 	{
@@ -89,7 +89,7 @@ export function to_string(r: __RestorationMetadata): string
 	return `__RestorationMetadata(name: ${r.name}, type: ${r.type}, hp_restored: ${r.hpRestored}, restores_variable_hp: ${r.restoresVariableHp}, mp_restored: ${r.mpRestored}, restores_variable_mp: ${r.restoresVariableMp}, removes_beaten_up: ${r.removesBeatenUp}, removes_effects: ${removes_effects_str}, gives_effects: ${gives_effects_str})`;
 }
 
-export function to_string$1(o: __RestorationOptimization, simple: boolean): string
+function to_string$1(o: __RestorationOptimization, simple: boolean): string
 {
 	function list_to_string$2(values: Map<string, number>): string
 	{
@@ -140,7 +140,7 @@ export function to_string$1(o: __RestorationOptimization, simple: boolean): stri
 	return `__RestorationOptimization(name: ${o.metadata.name}, vars: ${vars_str}, constraints: ${constraints_str}, objective_values: ${objective_values_str})`;
 }
 
-export function to_string$2(optima: Map<number, __RestorationOptimization>, simple: boolean): string
+function to_string$2(optima: Map<number, __RestorationOptimization>, simple: boolean): string
 {
 	let val: string = "";
 	let first: boolean = true;
@@ -158,7 +158,7 @@ export function to_string$2(optima: Map<number, __RestorationOptimization>, simp
 	return val;
 }
 
-export function auto_log_restore_debug(s: string, level: number): void
+function auto_log_restore_debug(s: string, level: number): void
 {
 	//restore debug log is extremely girthy and usually not needed. as such it has its own custom setting for displaying it.
 	//0 = no extra debugging. 1 = log the stages and their results 2 = log restorer data dump.
@@ -172,23 +172,23 @@ export function auto_log_restore_debug(s: string, level: number): void
 	}
 }
 
-export let $_f___all_negative_effects: Map<Effect, boolean> | undefined;
+let $_f___all_negative_effects: Map<Effect, boolean> | undefined;
 $_f___all_negative_effects ??= new Map();
-export let $_f___known_restoration_sources: Map<string, __RestorationMetadata> | undefined;
+let $_f___known_restoration_sources: Map<string, __RestorationMetadata> | undefined;
 $_f___known_restoration_sources ??= new Map();
-export let $_f___restore_maximizer_cache: Map<number, __RestorationOptimization> | undefined;
+let $_f___restore_maximizer_cache: Map<number, __RestorationOptimization> | undefined;
 $_f___restore_maximizer_cache ??= new Map();
 // TODO: would be nice to replace this concept with just putting a simple formula in place of the hp/mp fields, e.g. ${my_level}*1.5
 // currently custom formulas need to be coded into an if statement
-export let $_f___RESTORE_ALL: string | undefined;
+let $_f___RESTORE_ALL: string | undefined;
 $_f___RESTORE_ALL ??= "all";
-export let $_f___RESTORE_HALF: string | undefined;
+let $_f___RESTORE_HALF: string | undefined;
 $_f___RESTORE_HALF ??= "half";
-export let $_f___RESTORE_SCALING: string | undefined;
+let $_f___RESTORE_SCALING: string | undefined;
 $_f___RESTORE_SCALING ??= "scaling";
-export let $_f___HOT_TUB: string | undefined;
+let $_f___HOT_TUB: string | undefined;
 $_f___HOT_TUB ??= "a relaxing hot tub";
-export let $_f___NUNS: string | undefined;
+let $_f___NUNS: string | undefined;
 $_f___NUNS ??= "the nunnery";
 /**
  * Parse autoscend_restoration.txt into __known_restoration_sources.
@@ -198,7 +198,7 @@ $_f___NUNS ??= "the nunnery";
 let $___init_restoration_metadata_resotration_filename: string | undefined;
 let $___init_restoration_metadata_negative_effects_filename: string | undefined;
 
-export function __init_restoration_metadata(): void
+function __init_restoration_metadata(): void
 {
 	$___init_restoration_metadata_resotration_filename ??= "autoscend_restoration.txt";
 	$___init_restoration_metadata_negative_effects_filename ??= "autoscend_negative_effects.txt";
@@ -320,7 +320,7 @@ export function __init_restoration_metadata(): void
 	$_f___restore_maximizer_cache.clear();
 }
 
-export function __restoration_methods(): Map<string, __RestorationMetadata>
+function __restoration_methods(): Map<string, __RestorationMetadata>
 {
 	//Safe way to access __known_restoration_sources, ensuring it is initialized if not already.
 	if ($_f___known_restoration_sources.size === 0)
@@ -330,12 +330,12 @@ export function __restoration_methods(): Map<string, __RestorationMetadata>
 	return $_f___known_restoration_sources;
 }
 // primary attributes we want to sort by (maximize), you probably shouldnt add anything to this
-export let __PRIMARY_SORT_KEYS: Map<string, boolean> = new Map([
+let __PRIMARY_SORT_KEYS: Map<string, boolean> = new Map([
 	["hp_total_restored", true],
 	["mp_total_restored", true]
 ]);
 // values we want to maximize when optimizing
-export let __MAXIMIZE_KEYS: Map<string, boolean> = new Map([
+let __MAXIMIZE_KEYS: Map<string, boolean> = new Map([
 	["total_uses_available", true],
 	["hp_per_meat_spent", true],
 	["hp_per_coinmaster_token_spent", true],
@@ -344,7 +344,7 @@ export let __MAXIMIZE_KEYS: Map<string, boolean> = new Map([
 	["mp_per_coinmaster_token_spent", true]
 ]);
 // values we want to minimize when optimizing
-export let __MINIMIZE_KEYS: Map<string, boolean> = new Map([
+let __MINIMIZE_KEYS: Map<string, boolean> = new Map([
 	["total_uses_needed", true],
 	["hp_total_wasted_goal", true], // candidate for removal
 	["hp_total_short_goal", true],
@@ -361,7 +361,7 @@ export let __MINIMIZE_KEYS: Map<string, boolean> = new Map([
 	["soft_reserve_limit_uses", true]
 ]);
 // Not used for much, mostly a cache so we dont have to keep recalculating values and print out for debugging
-export let __VARS_KEYS: Map<string, boolean> = new Map([
+let __VARS_KEYS: Map<string, boolean> = new Map([
 	["hp_goal", true],
 	["hp_starting", true],
 	["hp_max", true],
@@ -389,7 +389,7 @@ export let __VARS_KEYS: Map<string, boolean> = new Map([
 	["meat_available_to_spend", true]
 ]);
 // values used to constrain or quickly eliminate methods as not options (e.g. skill not available in a path)
-export let __CONSTRAINT_KEYS: Map<string, boolean> = new Map([
+let __CONSTRAINT_KEYS: Map<string, boolean> = new Map([
 	["is_ever_useable", true],
 	["is_currently_useable", true],
 	["have_required_resources", true],
@@ -403,7 +403,7 @@ export let __CONSTRAINT_KEYS: Map<string, boolean> = new Map([
  *
  * __RANKED_GOAL_DESCRIPTIONS below should be updated to reflect the intended goal each rank is attempting to achieve.
  */
-export let __OBJECTIVE_RANKS: Map<string, number> = new Map([
+let __OBJECTIVE_RANKS: Map<string, number> = new Map([
 	["hp_total_restored", 1],
 	["mp_total_restored", 1],
 	["negative_status_effects_remaining", 1],
@@ -422,7 +422,7 @@ export let __OBJECTIVE_RANKS: Map<string, number> = new Map([
 	["total_uses_needed", 7]
 ]);
 // describes what each ranking in __OBJECTIVE_RANKS is attempting to optimize for
-export let __RANKED_GOAL_DESCRIPTIONS: Map<number, string> = new Map([
+let __RANKED_GOAL_DESCRIPTIONS: Map<number, string> = new Map([
 	[1, "remove negative status effects"],
 	[2, "maintain soft reserve limit (keep at least N on hand if possible)"],
 	[3, "try not to spend coinmaster tokens, maximizing hp/mp restored per token spent if we must spend"],
@@ -442,7 +442,7 @@ export let __RANKED_GOAL_DESCRIPTIONS: Map<number, string> = new Map([
  *  - add april shower
  *  - integrate with https://sourceforge.net/p/kolmafia/code/HEAD/tree/src/data/restores.txt
  */
-export function __calculate_objective_values(hp_goal: number, mp_goal: number, meat_reserve: number, useFreeRests: boolean, metadata: __RestorationMetadata): __RestorationOptimization
+function __calculate_objective_values(hp_goal: number, mp_goal: number, meat_reserve: number, useFreeRests: boolean, metadata: __RestorationMetadata): __RestorationOptimization
 {
 	let optimization_parameters: __RestorationOptimization = new __RestorationOptimization();
 
@@ -1091,7 +1091,7 @@ export function __calculate_objective_values(hp_goal: number, mp_goal: number, m
  *  https://www.youtube.com/watch?v=xLjfa8NXQD8
  *  https://www.youtube.com/watch?v=Hm2LK4vJzRw
  */
-export function __maximize_restore_options(hp_goal: number, mp_goal: number, meat_reserve: number, useFreeRests: boolean): Map<number, __RestorationOptimization>
+function __maximize_restore_options(hp_goal: number, mp_goal: number, meat_reserve: number, useFreeRests: boolean): Map<number, __RestorationOptimization>
 {
 	// returns a sublist of p from [start, stop)
 	function slice(p: Map<number, __RestorationOptimization>, start_1: number, stop: number): Map<number, __RestorationOptimization>
@@ -1428,7 +1428,7 @@ export function __maximize_restore_options(hp_goal: number, mp_goal: number, mea
 	return ranked_optimization$1(optimized, __OBJECTIVE_RANKS, __MAXIMIZE_KEYS, __MINIMIZE_KEYS);
 }
 
-export function __restore(resource_type: string, goal: number, meat_reserve: number, useFreeRests: boolean): boolean
+function __restore(resource_type: string, goal: number, meat_reserve: number, useFreeRests: boolean): boolean
 {
 	function current_resource(): number
 	{
@@ -1766,7 +1766,7 @@ export function invalidateRestoreOptionCache(): void
  *
  * returns true if my_mp() >= my_maxmp() after attempting to restore.
  */
-export function acquireMP(): boolean
+function acquireMP(): boolean
 {
 	return acquireMP$4(min(0.95 * myMaxmp(), 300));
 }
@@ -1793,7 +1793,7 @@ export function acquireMP$2(goal: number, meat_reserve: number): boolean
  *
  * returns true if my_mp() >= goal after attempting to restore.
  */
-export function acquireMP$3(goal: number, meat_reserve: number, useFreeRests: boolean): boolean
+function acquireMP$3(goal: number, meat_reserve: number, useFreeRests: boolean): boolean
 {
 	//vampyres don't use MP
 	if (in_darkGyffte())
@@ -1910,7 +1910,7 @@ export function acquireMP$3(goal: number, meat_reserve: number, useFreeRests: bo
  *
  * returns true if my_mp() >= goalPercent after attempting to restore.
  */
-export function acquireMP$4(goalPercent: number): boolean
+function acquireMP$4(goalPercent: number): boolean
 {
 	return acquireMP$5(goalPercent, meatReserve());
 }
@@ -1919,7 +1919,7 @@ export function acquireMP$4(goalPercent: number): boolean
  *
  * returns true if my_mp() >= goalPercent after attempting to restore.
  */
-export function acquireMP$5(goalPercent: number, meat_reserve: number): boolean
+function acquireMP$5(goalPercent: number, meat_reserve: number): boolean
 {
 	return acquireMP$6(goalPercent, meat_reserve, true);
 }
@@ -1928,7 +1928,7 @@ export function acquireMP$5(goalPercent: number, meat_reserve: number): boolean
  *
  * returns true if my_mp() >= goalPercent after attempting to restore.
  */
-export function acquireMP$6(goalPercent: number, meat_reserve: number, useFreeRests: boolean): boolean
+function acquireMP$6(goalPercent: number, meat_reserve: number, useFreeRests: boolean): boolean
 {
 	let goal: number = myMaxmp();
 	if (goalPercent > 1.0) {
@@ -1980,12 +1980,12 @@ export function acquireHP$1(goal: number): boolean
  *
  * returns true if my_hp() >= goal after attempting to restore.
  */
-export function acquireHP$2(goal: number, meat_reserve: number): boolean
+function acquireHP$2(goal: number, meat_reserve: number): boolean
 {
 	return acquireHP$3(goal, meat_reserve, true);
 }
 
-export function acquireHP$3(goal: number, meat_reserve: number, useFreeRests: boolean): boolean
+function acquireHP$3(goal: number, meat_reserve: number, useFreeRests: boolean): boolean
 {
 	//Try to acquire up to the hp goal, optionally buying items and using free rests. Will also cure poisoned and beaten up before restoring any hp.
 	//returns true if my_hp() >= goal after attempting to restore.
@@ -2100,7 +2100,7 @@ export function acquireHP$3(goal: number, meat_reserve: number, useFreeRests: bo
  *
  * returns true if my_hp() >= goalPercent after attempting to restore.
  */
-export function acquireHP$4(goalPercent: number): boolean
+function acquireHP$4(goalPercent: number): boolean
 {
 	return acquireHP$5(goalPercent, meatReserve());
 }
@@ -2109,7 +2109,7 @@ export function acquireHP$4(goalPercent: number): boolean
  *
  * returns true if my_hp() >= goalPercent after attempting to restore.
  */
-export function acquireHP$5(goalPercent: number, meat_reserve: number): boolean
+function acquireHP$5(goalPercent: number, meat_reserve: number): boolean
 {
 	return acquireHP$6(goalPercent, meat_reserve, true);
 }
@@ -2118,7 +2118,7 @@ export function acquireHP$5(goalPercent: number, meat_reserve: number): boolean
  *
  * returns true if my_hp() >= goalPercent after attempting to restore.
  */
-export function acquireHP$6(goalPercent: number, meat_reserve: number, useFreeRests: boolean): boolean
+function acquireHP$6(goalPercent: number, meat_reserve: number, useFreeRests: boolean): boolean
 {
 	let goal: number = myMaxhp();
 	if (goalPercent > 1.0) {
@@ -2231,7 +2231,7 @@ export function haveFreeRestAvailable(): boolean {
 	return toInt(getProperty("timesRested")) < totalFreeRests();
 }
 
-export function freeRestsRemaining(): number {
+function freeRestsRemaining(): number {
 	// save free rests to charge cincho
 	if (auto_haveCincho() && auto_nextRestOverCinch())
 	{
@@ -2305,7 +2305,7 @@ export function mp_regen(): number
 	return 0.5 * (numericModifier("MP Regen Min") + numericModifier("MP Regen Max"));
 }
 
-export function hp_regen(): number
+function hp_regen(): number
 {
 	return 0.5 * (numericModifier("HP Regen Min") + numericModifier("HP Regen Max"));
 }
@@ -2347,7 +2347,7 @@ export function uneffect(toRemove: Effect): boolean
  *
  * Additionally this script would require some number of imports of other methods (mostly auto_util.ash) which may or may not be easy to do. I did try once by just importing autoscend, but I ended up with an infinite loop. At least thats what it seemed like, I didnt try very hard to make it work. My understanding of ash leads me to believe it should work and I was just doing something stupid. So for now this is just here for posterity.
  */
-export function main$auto_restore(type_1: string, amount: number): boolean
+function main$auto_restore(type_1: string, amount: number): boolean
 {
 	if (type_1 === "MP")
 	{

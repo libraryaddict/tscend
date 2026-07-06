@@ -32,7 +32,7 @@ import { LX_dolphinKingMap, LX_meatMaid } from "./quests/level_any";
 // functions that deal with acquiring items. via buying or pulling
 
 //Defined in autoscend/auto_acquire.ash
-export function haveAny(array: Map<Item, boolean>): boolean
+function haveAny(array: Map<Item, boolean>): boolean
 {
 	for (let thing of array.keys())
 	{
@@ -147,7 +147,7 @@ export function canPull$1(it: Item): boolean
 	return canPull(it, false);
 }
 
-export function pulledToday(it: Item): boolean
+function pulledToday(it: Item): boolean
 {
 	//autoscend property "auto_pulls" tracks pulls made by the script as "(" + my_daycount() + ":" + it
 	//kolmafia property "_roninStoragePulls" tracks all pulls made with kolmafia today since 2022 changed to daily limit of one pull for each item
@@ -205,7 +205,7 @@ export function auto_mall_price(it: Item): number
 	return -1;
 }
 
-export function pullXWhenHaveYCasual(it: Item, howMany: number, whenHave: number): boolean
+function pullXWhenHaveYCasual(it: Item, howMany: number, whenHave: number): boolean
 {
 	//we are either in a casual run. or in postronin. either way pull becomes mallbuy
 	if (!canInteract())
@@ -362,7 +362,7 @@ export function pulverizeThing(it: Item): boolean
 	return true;
 }
 
-export function buyableMaintain(toMaintain: Item, howMany: number): boolean
+function buyableMaintain(toMaintain: Item, howMany: number): boolean
 {
 	return buyableMaintain$2(toMaintain, howMany, 0, true);
 }
@@ -500,7 +500,7 @@ export function acquireTotem(): boolean
 	return false;
 }
 
-export function auto_hermit(amt: number, it: Item): boolean
+function auto_hermit(amt: number, it: Item): boolean
 {
 	//workaround for this bug https://kolmafia.us/threads/27105/
 	if (it !== Item.get("11-leaf clover"))

@@ -3,7 +3,7 @@ import { auto_log_info } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/iotms/auto_elementalPlanes.ash
-export function getCharterIndexable(): Map<Element, Item>
+function getCharterIndexable(): Map<Element, Item>
 {
 	let charters: Map<Element, Item> = new Map();
 	charters.set(Element.get("cold"), Item.get("airplane charter: The Glaciest"));

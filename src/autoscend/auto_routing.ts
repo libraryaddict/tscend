@@ -124,17 +124,17 @@ export function canBurnDelay(loc: Location): boolean
 	return false;
 }
 
-export function allowSoftblockUndergroundAdvs(): boolean
+function allowSoftblockUndergroundAdvs(): boolean
 {
 	return toInt(getProperty("auto_cmcConsultLastLevel")) < myLevel();
 }
 
-export function allowSoftblockDay2Wait(): boolean
+function allowSoftblockDay2Wait(): boolean
 {
 	return toInt(getProperty("auto_day2WaitLastLevel")) < myLevel();
 }
 
-export function getLastCombatEnvironmentCounts(offset: number): Map<string, number>
+function getLastCombatEnvironmentCounts(offset: number): Map<string, number>
 {
 	// mafia has no char type. string will have to do.
 	let counts: Map<string, number> = new Map([["i", 0], ["o", 0], ["u", 0], ["x", 0], ["?", 0]]);
@@ -190,12 +190,12 @@ export function auto_waitForDay2(): boolean
 	return true;
 }
 
-export function allowSoftblockOutdoorAdvs(): boolean
+function allowSoftblockOutdoorAdvs(): boolean
 {
 	return toInt(getProperty("auto_breathitinLastLevel")) < myLevel();
 }
 
-export function auto_reserveOutdoorAdventures(): boolean
+function auto_reserveOutdoorAdventures(): boolean
 {
 	// this function should return true when we *don't* want to spend adventures in outdoor zones.
 	if (!allowSoftblockOutdoorAdvs() || auto_haveColdMedCabinet() && auto_CMCconsultsLeft() === 0 && myDaycount() > 1 || !auto_is_valid(Item.get("cold medicine cabinet")) || toInt(getProperty("breathitinCharges")) > 0)
@@ -330,7 +330,7 @@ export function auto_softBlockHandler(): boolean
 	return false;
 }
 
-export function auto_workshedStrategy(): Map<number, Item>
+function auto_workshedStrategy(): Map<number, Item>
 {
 	// return the worksheds, in order, that we want to use today.
 	let strat: Map<number, Item> = new Map();

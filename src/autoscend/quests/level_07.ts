@@ -125,7 +125,7 @@ export function cyrptEvilBonus$1(): number
 	return cyrptEvilBonus(false);
 }
 
-export function useNightmareFuelIfPossible(): void
+function useNightmareFuelIfPossible(): void
 {
 	// chews this when there are no guaranteed uses for spleen
 	if (spleen_left() > 0 && itemAmount(Item.get("Nightmare Fuel")) > 0 && !isActuallyEd() && !(auto_havePillKeeper() && spleen_left() >= 3) && spleen_left() > 4 * min(auto_spleenFamiliarAdvItemsPossessed(), floor(spleen_left() / 4)))
@@ -134,7 +134,7 @@ export function useNightmareFuelIfPossible(): void
 	}
 }
 
-export function knockOffCapePrep(): void
+function knockOffCapePrep(): void
 {
 	if (auto_configureRetrocape("vampire", "kill"))
 	{
@@ -147,7 +147,7 @@ export function knockOffCapePrep(): void
 	}
 }
 
-export function L7_defiledAlcove(): boolean
+function L7_defiledAlcove(): boolean
 {
 	let evilBonus: number = cyrptEvilBonus$1();
 
@@ -238,7 +238,7 @@ export function L7_defiledNook(): boolean
 	return false;
 }
 
-export function L7_defiledNiche(): boolean
+function L7_defiledNiche(): boolean
 {
 	let evilBonus: number = cyrptEvilBonus$1();
 
@@ -304,7 +304,7 @@ export function L7_defiledNiche(): boolean
 	return false;
 }
 
-export function L7_defiledCranny(): boolean
+function L7_defiledCranny(): boolean
 {
 	let evilBonus: number = cyrptEvilBonus$1();
 

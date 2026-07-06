@@ -90,7 +90,7 @@ export function makeStartingSmiths(): void
 	buffMaintain$3(Effect.get("Merry Smithsness"), 0, 1, 10);
 }
 
-export function didWePlantHere(loc: Location): boolean
+function didWePlantHere(loc: Location): boolean
 {
 	let places: Map<Location, string[]> = new Map(Object.entries(getFloristPlants()).map(([_k, _v]) => [Location.get(_k), _v]));
 	for (let place of places.keys())
@@ -103,7 +103,7 @@ export function didWePlantHere(loc: Location): boolean
 	return false;
 }
 
-export function trickMafiaAboutFlorist(): void
+function trickMafiaAboutFlorist(): void
 {
 	// This only works if you actually have the Florist Friar but it isn\'t detected by Mafia
 	// This may not be the most optimal way to do it.

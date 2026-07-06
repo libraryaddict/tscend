@@ -7,17 +7,17 @@ import { cyrptEvilBonus } from "../quests/level_07";
 
 //Path specific combat handling for Zombie Slayer
 
-export function wantBearHug(enemy: Monster): boolean
+function wantBearHug(enemy: Monster): boolean
 {
 	return canUse$2(Skill.get("Bear Hug")) && toInt(getProperty("_bearHugs")) < 10 && !enemy.boss && !containsText(enemy.attributes, "FREE") && enemy.group > 1;
 }
 
-export function wantKodiakMoment(enemy: Monster): boolean
+function wantKodiakMoment(enemy: Monster): boolean
 {
 	return canUse$2(Skill.get("Kodiak Moment")) && enemy.physicalResistance >= 80;
 }
 
-export function auto_combatZombieSlayerStage1(round_1: number, enemy: Monster, text: string): string
+function auto_combatZombieSlayerStage1(round_1: number, enemy: Monster, text: string): string
 {
 	// stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
 	if (!in_zombieSlayer())
@@ -28,7 +28,7 @@ export function auto_combatZombieSlayerStage1(round_1: number, enemy: Monster, t
 	return "";
 }
 
-export function auto_combatZombieSlayerStage2(round_1: number, enemy: Monster, text: string): string
+function auto_combatZombieSlayerStage2(round_1: number, enemy: Monster, text: string): string
 {
 	// stage 2 = enders: escape, replace, instakill, yellowray and other actions that instantly end combat
 	if (!in_zombieSlayer())

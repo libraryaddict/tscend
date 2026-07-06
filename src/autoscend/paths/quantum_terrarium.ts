@@ -12,17 +12,17 @@ export function in_quantumTerrarium(): boolean
 	return myPath() === Path.get("Quantum Terrarium");
 }
 
-export function qt_currentFamiliar(fam: Familiar): boolean
+function qt_currentFamiliar(fam: Familiar): boolean
 {
 	return in_quantumTerrarium() && myFamiliar() === fam;
 }
 
-export function qt_nextQuantumFamiliar(): Familiar
+function qt_nextQuantumFamiliar(): Familiar
 {
 	return toFamiliar(getProperty("nextQuantumFamiliar"));
 }
 
-export function qt_turnsToNextQuantumAlignment(): number
+function qt_turnsToNextQuantumAlignment(): number
 {
 	return totalTurnsPlayed() - toInt(getProperty("_nextQuantumAlignment"));
 }
@@ -99,7 +99,7 @@ export function qt_initializeSettings(): void
 	}
 }
 
-export function qt_FamiliarAvailable(fam: Familiar): boolean
+function qt_FamiliarAvailable(fam: Familiar): boolean
 {
 	//Check to see if target familiar can be forced.
 	let qt_FamiliarKey: string = `<option value="${toInt(fam).toString()}">`;

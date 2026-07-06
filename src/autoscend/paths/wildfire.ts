@@ -95,7 +95,7 @@ export function LX_wildfire_calculateTheUniverse(): boolean
 	return false; //we do not want to restart the loop as all we're doing is generating 3 adventures
 }
 
-export function wildfire_rainbarrel(): void
+function wildfire_rainbarrel(): void
 {
 	//collect rainwater from barrel daily
 	if (!in_wildfire())
@@ -109,7 +109,7 @@ export function wildfire_rainbarrel(): void
 	visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_rainbarrel");
 }
 
-export function wildfire_refillExtinguiser(): void
+function wildfire_refillExtinguiser(): void
 {
 	//refill fire extinguisher if needed. Can only refill once per day
 	if (!in_wildfire())
@@ -142,7 +142,7 @@ export function wildfire_refillExtinguiser(): void
 	}
 }
 
-export function wildfire_water_cost(target: string): number
+function wildfire_water_cost(target: string): number
 {
 	//return the cost in water to perform watering operations.
 	if (!in_wildfire())
@@ -182,7 +182,7 @@ return 10 + 10 * toInt(getProperty("_captainHagnkUsed"));
 	return 1000 + count_1 * 1000;
 }
 
-export function LX_wildfire_grease_pump(): boolean
+function LX_wildfire_grease_pump(): boolean
 {
 	if (!in_wildfire())
 	{
@@ -227,7 +227,7 @@ export function LX_wildfire_grease_pump(): boolean
 	return false;
 }
 
-export function LX_wildfire_pump(target: number): boolean
+function LX_wildfire_pump(target: number): boolean
 {
 	//use the pump until we reach target water or run low on adv
 	//returns true if adv were spent. regardless of whether target was reached or not
@@ -273,7 +273,7 @@ export function LX_wildfire_pump(target: number): boolean
 	return start_adv !== myAdventures();
 }
 
-export function LX_wildfire_dust(): boolean
+function LX_wildfire_dust(): boolean
 {
 	//cropdusting is a priority.
 	if (!in_wildfire())
@@ -300,7 +300,7 @@ export function LX_wildfire_dust(): boolean
 	return retval;
 }
 
-export function LX_wildfire_frack(): boolean
+function LX_wildfire_frack(): boolean
 {
 	//cropdusting is a priority.
 	if (!in_wildfire())
@@ -327,7 +327,7 @@ export function LX_wildfire_frack(): boolean
 	return retval;
 }
 
-export function LX_wildfire_sprinkle(): boolean
+function LX_wildfire_sprinkle(): boolean
 {
 	//cropdusting is a priority.
 	if (!in_wildfire())
@@ -354,7 +354,7 @@ export function LX_wildfire_sprinkle(): boolean
 	return retval;
 }
 
-export function LX_wildfire_hose_once(place: Location): boolean
+function LX_wildfire_hose_once(place: Location): boolean
 {
 	if (!in_wildfire())
 	{
@@ -388,7 +388,7 @@ export function LX_wildfire_hose_once(place: Location): boolean
 	return retval;
 }
 
-export function LX_wildfire_hose(place: Location, target_fire: number): boolean
+function LX_wildfire_hose(place: Location, target_fire: number): boolean
 {
 	//have cpt hangk send water hosers to hose loc down until fire level reaches target_fire
 	//only return true if the loop needs to be restarted. which only occurs if we adv were spent on pumping water
@@ -428,12 +428,12 @@ export function LX_wildfire_hose(place: Location, target_fire: number): boolean
 	return retval; //we only return true during water pumping if adv was used
 }
 
-export function LX_wildfire_hose$1(place: Location): boolean
+function LX_wildfire_hose$1(place: Location): boolean
 {
 	return LX_wildfire_hose(place, 2);
 }
 
-export function LX_wildfire_water(): boolean
+function LX_wildfire_water(): boolean
 {
 	//use water in a variety of ways to reduce fire levels. putting it in pre-adv is problematic since we need to spend adventures here
 	//individual location watering first
@@ -492,7 +492,7 @@ export function LX_wildfire_water(): boolean
 	return false;
 }
 
-export function LX_wildfire_spookyravenManorFirstFloor(): boolean
+function LX_wildfire_spookyravenManorFirstFloor(): boolean
 {
 	//in hardcore we need to reach the 2nd floor ASAP.
 	if (!in_wildfire() || !inHardcore())

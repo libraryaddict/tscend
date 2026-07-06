@@ -37,7 +37,7 @@ export function auto_haveCrystalBall(): boolean
 	return possessEquipment(crystal_ball) && auto_is_valid(crystal_ball) && pathHasFamiliar();
 }
 
-export function crystalBallMonster(loc: Location): Monster
+function crystalBallMonster(loc: Location): Monster
 {
 	// returns a monster if the crystal ball predicts one in the location
 
@@ -59,7 +59,7 @@ export function crystalBallMonster(loc: Location): Monster
 	return Monster.none; // no prediction in the location
 }
 
-export function auto_allowCrystalBall(predicted_monster: Monster, loc: Location): boolean
+function auto_allowCrystalBall(predicted_monster: Monster, loc: Location): boolean
 {
 	// blacklisted locations
 	if (Location.get(["Next to that Barrel with Something Burning in it", "Out by that Rusted-Out Car", "Over Where the Old Tires Are", "Near an Abandoned Refrigerator"]).includes(loc))
@@ -230,7 +230,7 @@ export function auto_canFeelHatred(): boolean
 	return auto_haveEmotionChipSkills() && toInt(getProperty("_feelHatredUsed")) < 3;
 }
 
-export function auto_canFeelNostalgic(): boolean
+function auto_canFeelNostalgic(): boolean
 {
 	// Combat Skill - adds drop table from last copyable monster to the current (see lastCopyableMonster property)
 	if (!auto_is_valid$2(Skill.get("Feel Nostalgic")))
@@ -240,7 +240,7 @@ export function auto_canFeelNostalgic(): boolean
 	return auto_haveEmotionChipSkills() && toInt(getProperty("_feelNostalgicUsed")) < 3;
 }
 
-export function auto_canFeelPride(): boolean
+function auto_canFeelPride(): boolean
 {
 	// Combat Skill - Triples stat gain from the current fight.
 	if (!auto_is_valid$2(Skill.get("Feel Pride")))
@@ -250,7 +250,7 @@ export function auto_canFeelPride(): boolean
 	return auto_haveEmotionChipSkills() && toInt(getProperty("_feelPrideUsed")) < 3;
 }
 
-export function auto_canFeelSuperior(): boolean
+function auto_canFeelSuperior(): boolean
 {
 	// Combat Skill - Does 20% of monsters max HP as damage and gives +1 PvP fight if it kills the monster.
 	if (!auto_is_valid$2(Skill.get("Feel Superior")))
@@ -260,7 +260,7 @@ export function auto_canFeelSuperior(): boolean
 	return auto_haveEmotionChipSkills() && toInt(getProperty("_feelSuperiorUsed")) < 3;
 }
 
-export function auto_canFeelLonely(): boolean
+function auto_canFeelLonely(): boolean
 {
 	// Non-Combat Skill - -5% combat rate (20 adventures)
 	if (!auto_is_valid$2(Skill.get("Feel Lonely")))
@@ -270,7 +270,7 @@ export function auto_canFeelLonely(): boolean
 	return auto_haveEmotionChipSkills() && toInt(getProperty("_feelLonelyUsed")) < 3;
 }
 
-export function auto_canFeelExcitement(): boolean
+function auto_canFeelExcitement(): boolean
 {
 	// Non-Combat Skill - +25 to all stats (20 adventures)
 	if (!auto_is_valid$2(Skill.get("Feel Excitement")))
@@ -280,7 +280,7 @@ export function auto_canFeelExcitement(): boolean
 	return auto_haveEmotionChipSkills() && toInt(getProperty("_feelExcitementUsed")) < 3;
 }
 
-export function auto_canFeelNervous(): boolean
+function auto_canFeelNervous(): boolean
 {
 	// Non-Combat Skill - deals passive damage on hit starting at 20 decrementing by 1 every proc (20 adventures)
 	if (!auto_is_valid$2(Skill.get("Feel Nervous")))
@@ -290,7 +290,7 @@ export function auto_canFeelNervous(): boolean
 	return auto_haveEmotionChipSkills() && toInt(getProperty("_feelNervousUsed")) < 3;
 }
 
-export function auto_canFeelPeaceful(): boolean
+function auto_canFeelPeaceful(): boolean
 {
 	// Non-Combat Skill - +2 all res, +10 DR, +100 DA (20 adventures)
 	if (!auto_is_valid$2(Skill.get("Feel Peaceful")))
@@ -411,7 +411,7 @@ export function auto_backupToYourLastEnemy(loc: Location): boolean
 	return false;
 }
 
-export function auto_havePowerPlant(): boolean
+function auto_havePowerPlant(): boolean
 {
 	return itemAmount(Item.get("potted power plant")) > 0 && auto_is_valid(Item.get("potted power plant"));
 }
@@ -439,7 +439,7 @@ export function auto_harvestBatteries(): boolean
 // These points the value of a battery represented in AAAs.
 let $_batteryPoints_points: Map<Item, number> | undefined;
 
-export function batteryPoints(battery: Item): number
+function batteryPoints(battery: Item): number
 {
 	$_batteryPoints_points ??= new Map([
 		[Item.get("battery (AAA)"), 1],
@@ -452,7 +452,7 @@ export function batteryPoints(battery: Item): number
 	return ($_batteryPoints_points.get(battery) ?? $_batteryPoints_points.set(battery, 0).get(battery));
 }
 // These points represent a quantity of AAAs if all batteries were untinkered.
-export function totalBatteryPoints(): number
+function totalBatteryPoints(): number
 {
 	let totalPoints: number = 0;
 
@@ -464,12 +464,12 @@ export function totalBatteryPoints(): number
 	return totalPoints;
 }
 
-export function batteryCombine(battery: Item): boolean
+function batteryCombine(battery: Item): boolean
 {
 	return batteryCombine$1(battery, false);
 }
 
-export function batteryCombine$1(battery: Item, simulate: boolean): boolean
+function batteryCombine$1(battery: Item, simulate: boolean): boolean
 {
 	// Mafia's create() function only allows one single recipe for crafting batteries. This can result in situations where you can in fact craft a battery but it fails due to it not being the singular recipe supported by it.
 	// Mafia's can_create() has the same issue. use simulate in this function to determine if we can actually create a battery (or already have it).
@@ -849,7 +849,7 @@ export function auto_CMCconsultsLeft(): number
 	return 5 - consultsUsed;
 }
 
-export function auto_CMCconsultAvailable(): boolean
+function auto_CMCconsultAvailable(): boolean
 {
 	if (auto_CMCconsultsLeft() === 0)
 	{

@@ -50,7 +50,7 @@ export function is_professor(): boolean
 	return false;
 }
 
-export function wereprof_buySkills(): void
+function wereprof_buySkills(): void
 {
 	if (!in_wereprof())
 	{
@@ -180,7 +180,7 @@ export function wereprof_buySkills(): void
 	return;
 }
 
-export function wereprof_haveAllEquipment(): boolean
+function wereprof_haveAllEquipment(): boolean
 {
 	//Only care about the final equipment
 	if (!possessEquipment(Item.get("triphasic molecular oculus")) || !possessEquipment(Item.get("irresponsible-tension exoskeleton")))
@@ -190,7 +190,7 @@ export function wereprof_haveAllEquipment(): boolean
 	return true;
 }
 
-export function wereprof_buyEquip(): void
+function wereprof_buyEquip(): void
 {
 	if (is_werewolf() || wereprof_haveAllEquipment())
 	{

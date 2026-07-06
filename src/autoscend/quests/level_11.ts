@@ -53,7 +53,7 @@ import { L9_chasmBuild } from "./level_09";
 import { L10_holeInTheSkyUnlock, L10_topFloor } from "./level_10";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
-export class desert_buff_record {
+class desert_buff_record {
 	constructor(
 		public weapon: Item = Item.none,
 		public offhand: Item = Item.none,
@@ -63,7 +63,7 @@ export class desert_buff_record {
 	) {}
 }
 
-export function desertBuffs(): desert_buff_record
+function desertBuffs(): desert_buff_record
 {
     let dbr: desert_buff_record = new desert_buff_record();
 
@@ -158,7 +158,7 @@ export function desertBuffs(): desert_buff_record
 }
 
 //Defined in autoscend/quests/level_11.ash
-export function shenItemsReturnedOrInProgress(): number
+function shenItemsReturnedOrInProgress(): number
 {
 	let progress: number = internalQuestStatus("questL11Shen");
 	if (progress < 1) { return 0; }
@@ -216,7 +216,7 @@ export function shenSnakeLocations(day: number, n_items_returned: number): Map<L
 	return empty;
 }
 
-export function shenZonesToAvoidBecauseMaybeSnake(): Map<Location, boolean>
+function shenZonesToAvoidBecauseMaybeSnake(): Map<Location, boolean>
 {
 	if (toInt(getProperty("shenInitiationDay")) > 0)
 	{
@@ -317,12 +317,12 @@ export function hasSpookyravenLibraryKey(): boolean
 	return itemAmount(Item.get("[1764]Spookyraven library key")) > 0 || itemAmount(Item.get("[7302]Spookyraven library key")) > 0;
 }
 
-export function hasILoveMeVolI(): boolean
+function hasILoveMeVolI(): boolean
 {
 	return itemAmount(Item.get("[2258]&quot;I Love Me, Vol. I&quot;")) > 0 || itemAmount(Item.get("[7262]&quot;I Love Me, Vol. I&quot;")) > 0;
 }
 
-export function useILoveMeVolI(): boolean
+function useILoveMeVolI(): boolean
 {
 	if (itemAmount(Item.get("[2258]&quot;I Love Me, Vol. I&quot;")) > 0)
 	{
@@ -1038,7 +1038,7 @@ export function L11_mcmuffinDiary(): boolean
 	return false;
 }
 
-export function auto_visit_gnasir(): void
+function auto_visit_gnasir(): void
 {
 	//Visits gnasir, can change based on path
 	if (in_koe())
@@ -1614,12 +1614,12 @@ export function liana_cleared(loc: Location): boolean
     return dense_liana_defeated > 2;
 }
 
-export function L11_hiddenTavernUnlock(): boolean
+function L11_hiddenTavernUnlock(): boolean
 {
 	return L11_hiddenTavernUnlock$1(false);
 }
 
-export function L11_hiddenTavernUnlock$1(force: boolean): boolean
+function L11_hiddenTavernUnlock$1(force: boolean): boolean
 {
 	if (!auto_is_valid(Item.get("book of matches")))
 	{
@@ -2548,7 +2548,7 @@ export function L11_mauriceSpookyraven(): boolean
 	return false;
 }
 
-export function L11_redZeppelin(): boolean
+function L11_redZeppelin(): boolean
 {
 	if (internalQuestStatus("questL11Shen") < 8 && !isAboutToPowerlevel())
 	{
@@ -2724,7 +2724,7 @@ export function L11_redZeppelin(): boolean
 }
 
 
-export function L11_ronCopperhead(): boolean
+function L11_ronCopperhead(): boolean
 {
 	if (internalQuestStatus("questL11Ron") < 2 || internalQuestStatus("questL11Ron") > 4)
 	{

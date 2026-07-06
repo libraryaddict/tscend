@@ -4,7 +4,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "bundle": "node esbuild.mjs",
-    "build": "yarn typecheck && yarn bundle"
+    "build": "yarn typecheck && yarn bundle",
+    "knip": "knip"
   },
   "devDependencies": {
     "@babel/cli": "^7.29.7",
@@ -16,9 +17,11 @@
     "@babel/runtime": "^7.29.7",
     "@types/babel__core": "^7",
     "@types/babel__preset-env": "^7",
+    "@types/node": "^26.1.0",
     "esbuild": "^0.28.1",
     "esbuild-plugin-babel": "^0.2.3",
-    "typescript": "^5.9.3"
+    "knip": "^6.24.0",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "kolmafia": "^5.29089.0"

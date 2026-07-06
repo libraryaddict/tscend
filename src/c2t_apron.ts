@@ -6,11 +6,11 @@ import { AshMatcher } from "./autoscend/utils/kolmafiaUtils";
 //deals with the black and white apron meal kit
 //simply selects meal based on stat and selects all the extra ingredients that are available
 //cli flag
-export let c2t_apron_cli: boolean = false;
+let c2t_apron_cli: boolean = false;
 //eats a meal kit with a provided stat
 export function c2t_apron$1(): boolean { return c2t_apron(myPrimestat()); }
 //CLI handling
-export function main$c2t_apron(...stat_select: string[]): void {
+function main$c2t_apron(...stat_select: string[]): void {
 	c2t_apron_cli = true;
 
 	if (stat_select.length === 0)
@@ -37,7 +37,7 @@ export function main$c2t_apron(...stat_select: string[]): void {
 }
 
 //returns true on success
-export function c2t_apron(select: Stat): boolean {
+function c2t_apron(select: Stat): boolean {
 	let meal: number = 0;
 	let kit: Item = Item.get("Black and White Apron Meal Kit");
 	let page: string;
@@ -86,7 +86,7 @@ export function c2t_apron(select: Stat): boolean {
 }
 
 //map of ingredients on the allowlist
-export function c2t_apron_allowlist(): Map<string, boolean> {
+function c2t_apron_allowlist(): Map<string, boolean> {
 	let out: Map<string, boolean> = new Map();
 	let split: Map<number, string> = new Map();
 
@@ -100,7 +100,7 @@ export function c2t_apron_allowlist(): Map<string, boolean> {
 }
 
 //errors
-export function c2t_apron_error(msg: string): boolean {
+function c2t_apron_error(msg: string): boolean {
 	let out: string = `c2t_apron error: ${msg}`;
 
 	if (c2t_apron_cli)

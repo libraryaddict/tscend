@@ -139,15 +139,6 @@ export function initializeSettings(): void {
 
 	icehouseUserErrorProtection();
 
-	let pool: string = visitUrl("questlog.php?which=3");
-	let my_pool: AshMatcher = new AshMatcher("a skill level of (\\d+) at shooting pool", pool);
-	if (my_pool.find() && myTurncount() === 0)
-	{
-		let curSkill: number = toInt(my_pool.group(1));
-		let sharkCountMin: number = ceil(curSkill * curSkill / 4);
-		let sharkCountMax: number = ceil((curSkill + 1) * (curSkill + 1) / 4);
-	}
-
 	setProperty("auto_abooclover", true.toString());
 	setProperty("auto_aboopending", (0).toString());
 	setProperty("auto_avalancheDeployed", false.toString());
@@ -288,7 +279,7 @@ export function initializeSettings(): void {
 	removeProperty("_auto_reinitialize");
 }
 
-export function initializeSession(): void {
+function initializeSession(): void {
 	// called once every time the script is started.
 	// anything that needs to be set only for the duration the script is running
 	// should be set in here.
@@ -532,7 +523,7 @@ export function LX_calculateTheUniverse(speculative: boolean): boolean
 	return false; //we do not want to restart the loop as all we're doing is generating 3 adventures
 }
 
-export function tophatMaker(): boolean
+function tophatMaker(): boolean
 {
 	if (!knollAvailable() || itemAmount(Item.get("brass gear")) === 0 || possessEquipment(Item.get("Mark V Steam-Hat")))
 	{
@@ -658,7 +649,7 @@ export function auto_doTempleSummit(): boolean
 	return autoAdv$2(Location.get("The Hidden Temple"));
 }
 
-export function initializeDay(day: number): void
+function initializeDay(day: number): void
 {
 	if (inAftercore())
 	{
@@ -1312,7 +1303,7 @@ export function Lsc_flyerSeals(): boolean
 	return false;
 }
 
-export function councilMaintenance(): boolean
+function councilMaintenance(): boolean
 {
 	if (in_koe())
 	{
@@ -1330,7 +1321,7 @@ export function councilMaintenance(): boolean
 	return false;
 }
 
-export function adventureFailureHandler(): boolean
+function adventureFailureHandler(): boolean
 {
 	let place: Location = myLocation();
 	let limit: number = (in_avantGuard() ? 100 : 50);
@@ -1450,7 +1441,7 @@ export function adventureFailureHandler(): boolean
 	return false;
 }
 
-export function beatenUpResolution(): void
+function beatenUpResolution(): void
 {
 	if (haveEffect(Effect.get("Beaten Up")) > 0)
 	{
@@ -1517,7 +1508,7 @@ export function speculative_pool_skill(): number
 	return expectPool;
 }
 
-export function autosellCrap(): boolean
+function autosellCrap(): boolean
 {
 	if (canInteract() && myMeat() > 20000)
 	{
@@ -1627,7 +1618,7 @@ export function autosellCrap(): boolean
 	return true;
 }
 
-export function print_header(): void
+function print_header(): void
 {
 	if (myThunder() > toInt(getProperty("auto_lastthunder")))
 	{
@@ -1747,7 +1738,7 @@ export function resetState(): void {
 	}
 }
 
-export function process_tasks(): boolean
+function process_tasks(): boolean
 {
 	let task_order: Map<string, Map<number, Map<string, string>>> = fileAsMap("autoscend_task_order.txt", [String, Number, String, String]);
 	if (!task_order.size)
@@ -1779,7 +1770,7 @@ export function process_tasks(): boolean
 	return false;
 }
 
-export function doTasks(): boolean
+function doTasks(): boolean
 {
 	//this is the main loop for autoscend. returning true will restart from the begining. returning false will quit the loop and go on to do bedtime
 
@@ -2019,7 +2010,7 @@ export function doTasks(): boolean
 	return false;
 }
 
-export function auto_begin(): void
+function auto_begin(): void
 {
 	if (getAutoAttack() !== 0)
 	{
@@ -2158,7 +2149,7 @@ export function auto_begin(): void
 	}
 }
 
-export function print_help_text(): void
+function print_help_text(): void
 {
 	printHtml("Thank you for using autoscend!");
 	printHtml("If you need to configure or interrupt the script, choose <b>autoscend</b> from the drop-down \"run script\" menu in your browser.");
@@ -2168,12 +2159,12 @@ export function print_help_text(): void
 	printHtml("");
 }
 
-export function sad_times(): void
+function sad_times(): void
 {
 	printHtml("autoscend (formerly sl_ascend) is under new management. Soolar (the maintainer of sl_ascend) and Jeparo (the most active contributor) have decided to cease development of sl_ascend in response to Jick's behavior that has recently <a href=\"https://www.reddit.com/r/kol/comments/d0cq9s/allegations_of_misconduct_by_asymmetric_members/\">come to light</a>. New developers have taken over maintenance and rebranded sl_ascend to autoscend as per Soolar's request. Please be patient with us during this transition period. Please see the readme on the <a href=\"https://github.com/loathers/autoscend\">github</a> page for more information.");
 }
 
-export function safe_preference_reset_wrapper(level: number): void
+function safe_preference_reset_wrapper(level: number): void
 {
 	if (level <= 0)
 	{

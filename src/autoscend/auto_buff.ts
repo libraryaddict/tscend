@@ -19,7 +19,7 @@ import { in_tcrs } from "./paths/two_crazy_random_summer";
 import { in_wotsf } from "./paths/way_of_the_surprising_fist";
 
 //Defined in autoscend/auto_buff.ash
-export function buffMaintain(source: Skill, buff: Effect, mustEquip: Item, mp_min: number, casts: number, turns: number, speculative: boolean): boolean
+function buffMaintain(source: Skill, buff: Effect, mustEquip: Item, mp_min: number, casts: number, turns: number, speculative: boolean): boolean
 {
 	if (!glover_usable$1(buff))
 	{
@@ -101,7 +101,7 @@ export function buffMaintain(source: Skill, buff: Effect, mustEquip: Item, mp_mi
 	return true;
 }
 
-export function buffMaintain$1(source: Item, buff: Effect, uses: number, turns: number, speculative: boolean): boolean
+function buffMaintain$1(source: Item, buff: Effect, uses: number, turns: number, speculative: boolean): boolean
 {
 	if (in_tcrs())
 	{

@@ -21,14 +21,14 @@ import { auto_log_info } from "./auto_util";
 // Default Constructors
 
 //Defined in autoscend/auto_list.ash
-export function List(): Map<number, Familiar>
+function List(): Map<number, Familiar>
 {
 	let retval: Map<number, Familiar> = new Map();
 	return retval;
 }
 
 // Explicit Constructors (from map boolean[type])
-export function List$2(data: Map<Familiar, boolean>): Map<number, Familiar>
+function List$2(data: Map<Familiar, boolean>): Map<number, Familiar>
 {
 	let retval: Map<number, Familiar> = new Map();
 	let index: number = 0;
@@ -42,7 +42,7 @@ export function List$2(data: Map<Familiar, boolean>): Map<number, Familiar>
 }
 
 // Explicit Constructors (from map type[int])
-export function List$6(data: Map<number, Familiar>): Map<number, Familiar>
+function List$6(data: Map<number, Familiar>): Map<number, Familiar>
 {
 	let retval: Map<number, Familiar> = new Map();
 	//To handle constants if they are passed by const
@@ -67,12 +67,12 @@ export function List$6(data: Map<number, Familiar>): Map<number, Familiar>
 }
 
 // Searching
-export function ListFind$2(list: Map<number, Familiar>, what: Familiar): number
+function ListFind$2(list: Map<number, Familiar>, what: Familiar): number
 {
 	return ListFind$3(list, what, 0);
 }
 
-export function ListFind$3(list: Map<number, Familiar>, what: Familiar, idx: number): number
+function ListFind$3(list: Map<number, Familiar>, what: Familiar, idx: number): number
 {
 	if (idx < 0)
 	{
@@ -93,12 +93,12 @@ export function ListFind$3(list: Map<number, Familiar>, what: Familiar, idx: num
 
 
 // Removal element/index
-export function ListRemove$2(list: Map<number, Familiar>, what: Familiar): Map<number, Familiar>
+function ListRemove$2(list: Map<number, Familiar>, what: Familiar): Map<number, Familiar>
 {
 	return ListRemove$3(list, what, 0);
 }
 
-export function ListRemove$3(list: Map<number, Familiar>, what: Familiar, idx: number): Map<number, Familiar>
+function ListRemove$3(list: Map<number, Familiar>, what: Familiar, idx: number): Map<number, Familiar>
 {
 	let retval: Map<number, Familiar> = List$6(list);
 	for (let [at, el] of retval)
@@ -111,7 +111,7 @@ export function ListRemove$3(list: Map<number, Familiar>, what: Familiar, idx: n
 	return List$6(retval);
 }
 
-export function ListErase$1(list: Map<number, Familiar>, index: number): Map<number, Familiar>
+function ListErase$1(list: Map<number, Familiar>, index: number): Map<number, Familiar>
 {
 	let retval: Map<number, Familiar> = List$6(list);
 	retval.delete(index);
@@ -119,21 +119,21 @@ export function ListErase$1(list: Map<number, Familiar>, index: number): Map<num
 }
 
 // Insertion head/tail/at/inorder
-export function ListInsertFront$1(list: Map<number, Familiar>, what: Familiar): Map<number, Familiar>
+function ListInsertFront$1(list: Map<number, Familiar>, what: Familiar): Map<number, Familiar>
 {
 	let retval: Map<number, Familiar> = List$6(list);
 	retval.set(-1, what);
 	return List$6(retval);
 }
 
-export function ListInsert$1(list: Map<number, Familiar>, what: Familiar): Map<number, Familiar>
+function ListInsert$1(list: Map<number, Familiar>, what: Familiar): Map<number, Familiar>
 {
 	let retval: Map<number, Familiar> = List$6(list);
 	retval.set(retval.size, what);
 	return List$6(retval);
 }
 
-export function ListInsertAt$1(list: Map<number, Familiar>, what: Familiar, idx: number): Map<number, Familiar>
+function ListInsertAt$1(list: Map<number, Familiar>, what: Familiar, idx: number): Map<number, Familiar>
 {
 	if (idx < 0 || idx >= list.size)
 	{
@@ -150,7 +150,7 @@ export function ListInsertAt$1(list: Map<number, Familiar>, what: Familiar, idx:
 	return retval;
 }
 
-export function ListInsertInorder$1(list: Map<number, Familiar>, what: Familiar): Map<number, Familiar>
+function ListInsertInorder$1(list: Map<number, Familiar>, what: Familiar): Map<number, Familiar>
 {
 	let retval: Map<number, Familiar> = List$6(list);
 	if (what.toString() < (retval.get(0) ?? retval.set(0, Familiar.none).get(0)).toString())
@@ -176,7 +176,7 @@ export function ListInsertInorder$1(list: Map<number, Familiar>, what: Familiar)
 }
 
 // Printer
-export function ListOutput$1(list: Map<number, Familiar>): string
+function ListOutput$1(list: Map<number, Familiar>): string
 {
 	let retval: string = "";
 	if (list.size > 0)
@@ -194,7 +194,7 @@ export function ListOutput$1(list: Map<number, Familiar>): string
 }
 
 
-export function main$auto_list(): void
+function main$auto_list(): void
 {
 	let test: Map<Familiar, boolean> = new Map([[Familiar.get("Slimeling"), true], [Familiar.get("Puck Man"), true], [Familiar.get("Baby Gravy Fairy"), true], [Familiar.get("Intergnat"), true], [Familiar.get("Mosquito"), true]]);
 	let list: Map<number, Familiar> = List$2(test);
@@ -247,13 +247,13 @@ export function main$auto_list(): void
 }
 // start of int[int]
 
-export function intList(): Map<number, number>
+function intList(): Map<number, number>
 {
 	let retval: Map<number, number> = new Map();
 	return retval;
 }
 
-export function List$3(data: Map<number, boolean>): Map<number, number>
+function List$3(data: Map<number, boolean>): Map<number, number>
 {
 	let retval: Map<number, number> = new Map();
 	let index: number = 0;
@@ -266,7 +266,7 @@ export function List$3(data: Map<number, boolean>): Map<number, number>
 	return retval;
 }
 
-export function List$7(data: Map<number, number>): Map<number, number>
+function List$7(data: Map<number, number>): Map<number, number>
 {
 	let retval: Map<number, number> = new Map();
 
@@ -290,12 +290,12 @@ export function List$7(data: Map<number, number>): Map<number, number>
 	return retval;
 }
 
-export function ListFind$4(list: Map<number, number>, what: number): number
+function ListFind$4(list: Map<number, number>, what: number): number
 {
 	return ListFind$5(list, what, 0);
 }
 
-export function ListFind$5(list: Map<number, number>, what: number, idx: number): number
+function ListFind$5(list: Map<number, number>, what: number, idx: number): number
 {
 	if (idx < 0)
 	{
@@ -315,12 +315,12 @@ export function ListFind$5(list: Map<number, number>, what: number, idx: number)
 }
 
 
-export function ListRemove$4(list: Map<number, number>, what: number): Map<number, number>
+function ListRemove$4(list: Map<number, number>, what: number): Map<number, number>
 {
 	return ListRemove$5(list, what, 0);
 }
 
-export function ListRemove$5(list: Map<number, number>, what: number, idx: number): Map<number, number>
+function ListRemove$5(list: Map<number, number>, what: number, idx: number): Map<number, number>
 {
 	let retval: Map<number, number> = List$7(list);
 	for (let [at, el] of retval)
@@ -333,28 +333,28 @@ export function ListRemove$5(list: Map<number, number>, what: number, idx: numbe
 	return List$7(retval);
 }
 
-export function ListErase$2(list: Map<number, number>, index: number): Map<number, number>
+function ListErase$2(list: Map<number, number>, index: number): Map<number, number>
 {
 	let retval: Map<number, number> = List$7(list);
 	retval.delete(index);
 	return List$7(retval);
 }
 
-export function ListInsertFront$2(list: Map<number, number>, what: number): Map<number, number>
+function ListInsertFront$2(list: Map<number, number>, what: number): Map<number, number>
 {
 	let retval: Map<number, number> = List$7(list);
 	retval.set(-1, what);
 	return List$7(retval);
 }
 
-export function ListInsert$2(list: Map<number, number>, what: number): Map<number, number>
+function ListInsert$2(list: Map<number, number>, what: number): Map<number, number>
 {
 	let retval: Map<number, number> = List$7(list);
 	retval.set(retval.size, what);
 	return List$7(retval);
 }
 
-export function ListInsertAt$2(list: Map<number, number>, what: number, idx: number): Map<number, number>
+function ListInsertAt$2(list: Map<number, number>, what: number, idx: number): Map<number, number>
 {
 	if (idx < 0 || idx >= list.size)
 	{
@@ -371,7 +371,7 @@ export function ListInsertAt$2(list: Map<number, number>, what: number, idx: num
 	return retval;
 }
 
-export function ListInsertInorder$2(list: Map<number, number>, what: number): Map<number, number>
+function ListInsertInorder$2(list: Map<number, number>, what: number): Map<number, number>
 {
 	let retval: Map<number, number> = List$7(list);
 	if (what.toString() < (retval.get(0) ?? retval.set(0, 0).get(0)).toString())
@@ -396,7 +396,7 @@ export function ListInsertInorder$2(list: Map<number, number>, what: number): Ma
 	return retval;
 }
 
-export function ListOutput$2(list: Map<number, number>): string
+function ListOutput$2(list: Map<number, number>): string
 {
 	let retval: string = "";
 	if (list.size > 0)
@@ -421,7 +421,7 @@ export function itemList(): Map<number, Item>
 	return retval;
 }
 
-export function List$4(data: Map<Item, boolean>): Map<number, Item>
+function List$4(data: Map<Item, boolean>): Map<number, Item>
 {
 	let retval: Map<number, Item> = new Map();
 	let index: number = 0;
@@ -458,12 +458,12 @@ export function List$8(data: Map<number, Item>): Map<number, Item>
 	return retval;
 }
 
-export function ListFind$6(list: Map<number, Item>, what: Item): number
+function ListFind$6(list: Map<number, Item>, what: Item): number
 {
 	return ListFind$7(list, what, 0);
 }
 
-export function ListFind$7(list: Map<number, Item>, what: Item, idx: number): number
+function ListFind$7(list: Map<number, Item>, what: Item, idx: number): number
 {
 	if (idx < 0)
 	{
@@ -483,12 +483,12 @@ export function ListFind$7(list: Map<number, Item>, what: Item, idx: number): nu
 }
 
 
-export function ListRemove$6(list: Map<number, Item>, what: Item): Map<number, Item>
+function ListRemove$6(list: Map<number, Item>, what: Item): Map<number, Item>
 {
 	return ListRemove$7(list, what, 0);
 }
 
-export function ListRemove$7(list: Map<number, Item>, what: Item, idx: number): Map<number, Item>
+function ListRemove$7(list: Map<number, Item>, what: Item, idx: number): Map<number, Item>
 {
 	let retval: Map<number, Item> = List$8(list);
 	for (let [at, el] of retval)
@@ -501,14 +501,14 @@ export function ListRemove$7(list: Map<number, Item>, what: Item, idx: number): 
 	return List$8(retval);
 }
 
-export function ListErase$3(list: Map<number, Item>, index: number): Map<number, Item>
+function ListErase$3(list: Map<number, Item>, index: number): Map<number, Item>
 {
 	let retval: Map<number, Item> = List$8(list);
 	retval.delete(index);
 	return List$8(retval);
 }
 
-export function ListInsertFront$3(list: Map<number, Item>, what: Item): Map<number, Item>
+function ListInsertFront$3(list: Map<number, Item>, what: Item): Map<number, Item>
 {
 	let retval: Map<number, Item> = List$8(list);
 	retval.set(-1, what);
@@ -522,7 +522,7 @@ export function ListInsert$3(list: Map<number, Item>, what: Item): Map<number, I
 	return List$8(retval);
 }
 
-export function ListInsertAt$3(list: Map<number, Item>, what: Item, idx: number): Map<number, Item>
+function ListInsertAt$3(list: Map<number, Item>, what: Item, idx: number): Map<number, Item>
 {
 	if (idx < 0 || idx >= list.size)
 	{
@@ -539,7 +539,7 @@ export function ListInsertAt$3(list: Map<number, Item>, what: Item, idx: number)
 	return retval;
 }
 
-export function ListInsertInorder$3(list: Map<number, Item>, what: Item): Map<number, Item>
+function ListInsertInorder$3(list: Map<number, Item>, what: Item): Map<number, Item>
 {
 	let retval: Map<number, Item> = List$8(list);
 	if (what.toString() < (retval.get(0) ?? retval.set(0, Item.none).get(0)).toString())
@@ -564,7 +564,7 @@ export function ListInsertInorder$3(list: Map<number, Item>, what: Item): Map<nu
 	return retval;
 }
 
-export function ListOutput$3(list: Map<number, Item>): string
+function ListOutput$3(list: Map<number, Item>): string
 {
 	let retval: string = "";
 	if (list.size > 0)
@@ -583,7 +583,7 @@ export function ListOutput$3(list: Map<number, Item>): string
 //end of item[int]
 //start of effect[int]
 
-export function effectList(): Map<number, Effect>
+function effectList(): Map<number, Effect>
 {
 	let retval: Map<number, Effect> = new Map();
 	return retval;
@@ -602,7 +602,7 @@ export function List$1(data: Map<Effect, boolean>): Map<number, Effect>
 	return retval;
 }
 
-export function List$5(data: Map<number, Effect>): Map<number, Effect>
+function List$5(data: Map<number, Effect>): Map<number, Effect>
 {
 	let retval: Map<number, Effect> = new Map();
 
@@ -631,7 +631,7 @@ export function ListFind(list: Map<number, Effect>, what: Effect): number
 	return ListFind$1(list, what, 0);
 }
 
-export function ListFind$1(list: Map<number, Effect>, what: Effect, idx: number): number
+function ListFind$1(list: Map<number, Effect>, what: Effect, idx: number): number
 {
 	if (idx < 0)
 	{
@@ -651,12 +651,12 @@ export function ListFind$1(list: Map<number, Effect>, what: Effect, idx: number)
 }
 
 
-export function ListRemove(list: Map<number, Effect>, what: Effect): Map<number, Effect>
+function ListRemove(list: Map<number, Effect>, what: Effect): Map<number, Effect>
 {
 	return ListRemove$1(list, what, 0);
 }
 
-export function ListRemove$1(list: Map<number, Effect>, what: Effect, idx: number): Map<number, Effect>
+function ListRemove$1(list: Map<number, Effect>, what: Effect, idx: number): Map<number, Effect>
 {
 	let retval: Map<number, Effect> = List$5(list);
 	for (let [at, el] of retval)
@@ -669,28 +669,28 @@ export function ListRemove$1(list: Map<number, Effect>, what: Effect, idx: numbe
 	return List$5(retval);
 }
 
-export function ListErase(list: Map<number, Effect>, index: number): Map<number, Effect>
+function ListErase(list: Map<number, Effect>, index: number): Map<number, Effect>
 {
 	let retval: Map<number, Effect> = List$5(list);
 	retval.delete(index);
 	return List$5(retval);
 }
 
-export function ListInsertFront(list: Map<number, Effect>, what: Effect): Map<number, Effect>
+function ListInsertFront(list: Map<number, Effect>, what: Effect): Map<number, Effect>
 {
 	let retval: Map<number, Effect> = List$5(list);
 	retval.set(-1, what);
 	return List$5(retval);
 }
 
-export function ListInsert(list: Map<number, Effect>, what: Effect): Map<number, Effect>
+function ListInsert(list: Map<number, Effect>, what: Effect): Map<number, Effect>
 {
 	let retval: Map<number, Effect> = List$5(list);
 	retval.set(retval.size, what);
 	return List$5(retval);
 }
 
-export function ListInsertAt(list: Map<number, Effect>, what: Effect, idx: number): Map<number, Effect>
+function ListInsertAt(list: Map<number, Effect>, what: Effect, idx: number): Map<number, Effect>
 {
 	if (idx < 0 || idx >= list.size)
 	{
@@ -707,7 +707,7 @@ export function ListInsertAt(list: Map<number, Effect>, what: Effect, idx: numbe
 	return retval;
 }
 
-export function ListInsertInorder(list: Map<number, Effect>, what: Effect): Map<number, Effect>
+function ListInsertInorder(list: Map<number, Effect>, what: Effect): Map<number, Effect>
 {
 	let retval: Map<number, Effect> = List$5(list);
 	if (what.toString() < (retval.get(0) ?? retval.set(0, Effect.none).get(0)).toString())
@@ -732,7 +732,7 @@ export function ListInsertInorder(list: Map<number, Effect>, what: Effect): Map<
 	return retval;
 }
 
-export function ListOutput(list: Map<number, Effect>): string
+function ListOutput(list: Map<number, Effect>): string
 {
 	let retval: string = "";
 	if (list.size > 0)
@@ -751,13 +751,13 @@ export function ListOutput(list: Map<number, Effect>): string
 //end of effect[int]
 //start of location[int]
 
-export function locationList(): Map<number, Location>
+function locationList(): Map<number, Location>
 {
 	let retval: Map<number, Location> = new Map();
 	return retval;
 }
 
-export function List$9(data: Map<Location, boolean>): Map<number, Location>
+function List$9(data: Map<Location, boolean>): Map<number, Location>
 {
 	let retval: Map<number, Location> = new Map();
 	let index: number = 0;
@@ -770,7 +770,7 @@ export function List$9(data: Map<Location, boolean>): Map<number, Location>
 	return retval;
 }
 
-export function List$10(data: Map<number, Location>): Map<number, Location>
+function List$10(data: Map<number, Location>): Map<number, Location>
 {
 	let retval: Map<number, Location> = new Map();
 
@@ -794,12 +794,12 @@ export function List$10(data: Map<number, Location>): Map<number, Location>
 	return retval;
 }
 
-export function ListFind$8(list: Map<number, Location>, what: Location): number
+function ListFind$8(list: Map<number, Location>, what: Location): number
 {
 	return ListFind$9(list, what, 0);
 }
 
-export function ListFind$9(list: Map<number, Location>, what: Location, idx: number): number
+function ListFind$9(list: Map<number, Location>, what: Location, idx: number): number
 {
 	if (idx < 0)
 	{
@@ -819,12 +819,12 @@ export function ListFind$9(list: Map<number, Location>, what: Location, idx: num
 }
 
 
-export function ListRemove$8(list: Map<number, Location>, what: Location): Map<number, Location>
+function ListRemove$8(list: Map<number, Location>, what: Location): Map<number, Location>
 {
 	return ListRemove$9(list, what, 0);
 }
 
-export function ListRemove$9(list: Map<number, Location>, what: Location, idx: number): Map<number, Location>
+function ListRemove$9(list: Map<number, Location>, what: Location, idx: number): Map<number, Location>
 {
 	let retval: Map<number, Location> = List$10(list);
 	for (let [at, el] of retval)
@@ -837,28 +837,28 @@ export function ListRemove$9(list: Map<number, Location>, what: Location, idx: n
 	return List$10(retval);
 }
 
-export function ListErase$4(list: Map<number, Location>, index: number): Map<number, Location>
+function ListErase$4(list: Map<number, Location>, index: number): Map<number, Location>
 {
 	let retval: Map<number, Location> = List$10(list);
 	retval.delete(index);
 	return List$10(retval);
 }
 
-export function ListInsertFront$4(list: Map<number, Location>, what: Location): Map<number, Location>
+function ListInsertFront$4(list: Map<number, Location>, what: Location): Map<number, Location>
 {
 	let retval: Map<number, Location> = List$10(list);
 	retval.set(-1, what);
 	return List$10(retval);
 }
 
-export function ListInsert$4(list: Map<number, Location>, what: Location): Map<number, Location>
+function ListInsert$4(list: Map<number, Location>, what: Location): Map<number, Location>
 {
 	let retval: Map<number, Location> = List$10(list);
 	retval.set(retval.size, what);
 	return List$10(retval);
 }
 
-export function ListInsertAt$4(list: Map<number, Location>, what: Location, idx: number): Map<number, Location>
+function ListInsertAt$4(list: Map<number, Location>, what: Location, idx: number): Map<number, Location>
 {
 	if (idx < 0 || idx >= list.size)
 	{
@@ -875,7 +875,7 @@ export function ListInsertAt$4(list: Map<number, Location>, what: Location, idx:
 	return retval;
 }
 
-export function ListInsertInorder$4(list: Map<number, Location>, what: Location): Map<number, Location>
+function ListInsertInorder$4(list: Map<number, Location>, what: Location): Map<number, Location>
 {
 	let retval: Map<number, Location> = List$10(list);
 	if (what.toString() < (retval.get(0) ?? retval.set(0, Location.none).get(0)).toString())
@@ -900,7 +900,7 @@ export function ListInsertInorder$4(list: Map<number, Location>, what: Location)
 	return retval;
 }
 
-export function ListOutput$4(list: Map<number, Location>): string
+function ListOutput$4(list: Map<number, Location>): string
 {
 	let retval: string = "";
 	if (list.size > 0)
@@ -925,7 +925,7 @@ export function auto_sortedByModifier(map: Map<Item, number>, m: Modifier): Map<
 	return auto_sortedByModifier$1(map, m, true);
 }
 
-export function auto_sortedByModifier$1(map: Map<Item, number>, m: Modifier, high_to_low: boolean): Map<number, Item>
+function auto_sortedByModifier$1(map: Map<Item, number>, m: Modifier, high_to_low: boolean): Map<number, Item>
 {
 	let ranked_list: Map<number, Item> = new Map();
 	for (let entry of map.keys())
@@ -945,7 +945,7 @@ export function auto_sortedByModifier$1(map: Map<Item, number>, m: Modifier, hig
 	return ranked_list;
 }
 
-export function auto_sortedByModifier$2(map: Map<Item, boolean>, m: Modifier): Map<number, Item>
+function auto_sortedByModifier$2(map: Map<Item, boolean>, m: Modifier): Map<number, Item>
 {
 	return auto_sortedByModifier$3(map, m, true);
 }
@@ -960,12 +960,12 @@ export function auto_sortedByModifier$3(map: Map<Item, boolean>, m: Modifier, hi
 	return auto_sortedByModifier$1(int_map, m, high_to_low);
 }
 
-export function auto_sortedByModifier$4(map: Map<Effect, number>, m: Modifier): Map<number, Effect>
+function auto_sortedByModifier$4(map: Map<Effect, number>, m: Modifier): Map<number, Effect>
 {
 	return auto_sortedByModifier$5(map, m, true);
 }
 
-export function auto_sortedByModifier$5(map: Map<Effect, number>, m: Modifier, high_to_low: boolean): Map<number, Effect>
+function auto_sortedByModifier$5(map: Map<Effect, number>, m: Modifier, high_to_low: boolean): Map<number, Effect>
 {
 	let ranked_list: Map<number, Effect> = new Map();
 	for (let entry of map.keys())
@@ -985,12 +985,12 @@ export function auto_sortedByModifier$5(map: Map<Effect, number>, m: Modifier, h
 	return ranked_list;
 }
 
-export function auto_sortedByModifier$6(map: Map<Effect, boolean>, m: Modifier): Map<number, Effect>
+function auto_sortedByModifier$6(map: Map<Effect, boolean>, m: Modifier): Map<number, Effect>
 {
 	return auto_sortedByModifier$7(map, m, true);
 }
 
-export function auto_sortedByModifier$7(map: Map<Effect, boolean>, m: Modifier, high_to_low: boolean): Map<number, Effect>
+function auto_sortedByModifier$7(map: Map<Effect, boolean>, m: Modifier, high_to_low: boolean): Map<number, Effect>
 {
 	let int_map: Map<Effect, number> = new Map();
 	for (let entry of map.keys())

@@ -237,7 +237,7 @@ export function auto_freeCombatsRemaining(): number
 	return auto_freeCombatsRemaining$1(false);
 }
 
-export function auto_freeCombatsRemaining$1(print_remaining_fights: boolean): number
+function auto_freeCombatsRemaining$1(print_remaining_fights: boolean): number
 {
 	if (in_avantGuard())
 	{

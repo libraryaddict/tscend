@@ -27,7 +27,7 @@ import { hedgeTrimmersNeeded } from "../quests/level_09";
 import { auto_warSide } from "../quests/level_12";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
-export class $_canUse_SkillSet {
+class $_canUse_SkillSet {
 	constructor(
 //this file is utility functions that are only used for combat file.
 		// + combat_mana_cost_modifier() (negative value that we would add) is already included by mp_cost()
@@ -64,7 +64,7 @@ export function usedCount(sk: Skill): number
 	return count_1;
 }
 
-export function usedCount$1(it: Item): number
+function usedCount$1(it: Item): number
 {
 	let m: AshMatcher = new AshMatcher(`(it${toInt(it).toString()})`, getProperty("_auto_combatState"));
 	let count_1: number = 0;
@@ -209,7 +209,7 @@ export function useItem$1(it: Item): string
 	return useItem(it, true);
 }
 
-export function useItems(it1: Item, it2: Item, mark: boolean): string
+function useItems(it1: Item, it2: Item, mark: boolean): string
 {
 	if (mark)
 	{
@@ -332,7 +332,7 @@ export function getSniffer$1(enemy: Monster): Skill
 	return getSniffer(enemy, true);
 }
 
-export function isCopied(enemy: Monster, sk: Skill): boolean
+function isCopied(enemy: Monster, sk: Skill): boolean
 {
 	//checks if the monster enemy is currently copied using the specific skill sk
 	let retval: boolean = false;
@@ -349,7 +349,7 @@ export function isCopied(enemy: Monster, sk: Skill): boolean
 	return retval;
 }
 
-export function isCopied$1(enemy: Monster): boolean
+function isCopied$1(enemy: Monster): boolean
 {
 	//checks if the monster enemy is currently copied using any of the copy skills
 	for (let sk of Skill.get(["Blow the Purple Candle!", "%fn, fire a Red, White and Blue Blast"]))
@@ -518,7 +518,7 @@ export function enemyCanBlocksSkills(): boolean
 	return false;
 }
 
-export function canSurvive(mult: number, add_1: number): boolean
+function canSurvive(mult: number, add_1: number): boolean
 {
 	let damage: number = expectedDamage();
 	damage *= toInt(mult);
@@ -536,7 +536,7 @@ export function hasClubEquipped(): boolean
 	return itemType(equippedItem(Slot.get("weapon"))) === "club" || itemType(equippedItem(Slot.get("weapon"))) === "sword" && haveEffect(Effect.get("Iron Palms")) > 0;
 }
 
-export function auto_saberTrickMeteorShowerCombatHandler(round_1: number, enemy: Monster, text: string): string
+function auto_saberTrickMeteorShowerCombatHandler(round_1: number, enemy: Monster, text: string): string
 {
 	if (canUse$2(Skill.get("Use the Force")) && auto_saberChargesAvailable() > 0 && auto_have_skill(Skill.get("Meteor Lore")))
 	{
@@ -552,7 +552,7 @@ export function auto_saberTrickMeteorShowerCombatHandler(round_1: number, enemy:
 	return "abort"; //must have a return
 }
 
-export function findPhylumBanisher$1(round_1: number, enemy: Monster, text: string): string
+function findPhylumBanisher$1(round_1: number, enemy: Monster, text: string): string
 {
 	let banishAction: string = banisherCombatString(monsterPhylum(enemy), myLocation(), true);
 	if (banishAction !== "")
@@ -1058,12 +1058,12 @@ export function yellowRayCombatString$1(target: Monster, inCombat: boolean): str
 	return yellowRayCombatString(target, inCombat, false);
 }
 
-export function yellowRayCombatString$2(target: Monster): string
+function yellowRayCombatString$2(target: Monster): string
 {
 	return yellowRayCombatString$1(target, false);
 }
 
-export function yellowRayCombatString$3(): string
+function yellowRayCombatString$3(): string
 {
 	return yellowRayCombatString$2(Monster.none);
 }
@@ -1094,7 +1094,7 @@ export function replaceMonsterCombatString$1(target: Monster): string
 	return replaceMonsterCombatString(target, false);
 }
 
-export function replaceMonsterCombatString$2(): string
+function replaceMonsterCombatString$2(): string
 {
 	return replaceMonsterCombatString$1(Monster.none);
 }
@@ -1296,7 +1296,7 @@ export function canSurviveShootGhost(enemy: Monster, shots: number): boolean {
 	return myHp() > damage * shots;
 }
 
-export function auto_remainingMildEvilUses(): number
+function auto_remainingMildEvilUses(): number
 {
 	if (!haveSkill(Skill.get("Perpetrate Mild Evil"))) { return 0; }
 	return 3 - toInt(getProperty("_mildEvilPerpetrated"));

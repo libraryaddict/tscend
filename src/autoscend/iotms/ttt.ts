@@ -5,7 +5,7 @@ import { in_hattrick } from "../paths/hattrick";
 import { in_zootomist } from "../paths/zootomist";
 
 //Defined in autoscend/iotms/ttt.ash
-export function eudora_xiblaxian(): Map<Item, number>
+function eudora_xiblaxian(): Map<Item, number>
 {
 	let retval: Map<Item, number> = new Map();
 	if (itemAmount(Item.get("Xiblaxian 5D printer")) > 0 && isUnrestricted(Item.get("Xiblaxian 5D printer")))

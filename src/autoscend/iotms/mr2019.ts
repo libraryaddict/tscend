@@ -15,22 +15,22 @@ import { cyrptEvilBonus$1 } from "../quests/level_07";
 // This is meant for items that have a date of 2019
 
 //Defined in autoscend/iotms/mr2019.ash
-export function auto_sausageEaten(): number
+function auto_sausageEaten(): number
 {
 	return toInt(getProperty("_sausagesEaten"));
 }
 
-export function auto_sausageLeftToday(): number
+function auto_sausageLeftToday(): number
 {
 	return 23 - auto_sausageEaten();
 }
 
-export function auto_sausageUnitsNeededForSausage(numSaus: number): number
+function auto_sausageUnitsNeededForSausage(numSaus: number): number
 {
 	return 111 * numSaus;
 }
 
-export function auto_sausageMeatPasteNeededForSausage(numSaus: number): number
+function auto_sausageMeatPasteNeededForSausage(numSaus: number): number
 {
 	return ceil(toFloat(auto_sausageUnitsNeededForSausage(numSaus)) / 10.0);
 }
@@ -143,7 +143,7 @@ export function auto_sausageGrind(numSaus: number): boolean
 	return auto_sausageGrind$1(numSaus, false);
 }
 
-export function auto_sausageGrind$1(numSaus: number, failIfCantMakeAll: boolean): boolean
+function auto_sausageGrind$1(numSaus: number, failIfCantMakeAll: boolean): boolean
 {
 	// Some paths are pretty meat-intensive early. Just in case...
 	if (myTurncount() < 90 || !isDesertAvailable())
@@ -261,7 +261,7 @@ export function auto_sausageEatEmUp(maxToEat: number): boolean
 	return true;
 }
 
-export function auto_sausageEatEmUp$1(): boolean {
+function auto_sausageEatEmUp$1(): boolean {
 	return auto_sausageEatEmUp(0);
 }
 
@@ -278,7 +278,7 @@ export function auto_sausageGoblin(): boolean
 	return auto_sausageGoblin$2(Location.none, null);
 }
 
-export function auto_sausageGoblin$1(loc: Location): boolean
+function auto_sausageGoblin$1(loc: Location): boolean
 {
 	return auto_sausageGoblin$2(loc, null);
 }
@@ -320,7 +320,7 @@ export function auto_sausageGoblin$2(loc: Location, option: CombatMacro): boolea
 	return false;
 }
 
-export function auto_haveLilDoctorBag(): boolean
+function auto_haveLilDoctorBag(): boolean
 {
 	if (auto_is_valid(Item.get("Lil' Doctor&trade; bag")) && availableAmount(Item.get("Lil' Doctor&trade; bag")) > 0)
 	{
@@ -343,7 +343,7 @@ export function auto_reflexHammersRemaining(): number
 	return 3 - toInt(getProperty("_reflexHammerUsed"));
 }
 
-export function pirateRealmAvailable(): boolean
+function pirateRealmAvailable(): boolean
 {
 	if (!isUnrestricted(Item.get("PirateRealm membership packet")))
 	{
@@ -366,7 +366,7 @@ export function LX_unlockPirateRealm(): boolean
 	return true;
 }
 
-export function auto_saberChoice(choice: string): boolean
+function auto_saberChoice(choice: string): boolean
 {
 	let saber: Item = wrap_item(Item.get("Fourth of May Cosplay Saber"));
 	if (!isUnrestricted(saber))
@@ -425,7 +425,7 @@ export function auto_saberDailyUpgrade(day: number): boolean
 	return auto_saberChoice("fam");
 }
 
-export function auto_saberCurrentMonster(): Monster
+function auto_saberCurrentMonster(): Monster
 {
 	if (getProperty("_saberForceMonsterCount") === "0")
 	{
@@ -459,7 +459,7 @@ export function auto_combatSaberBanish(): string
 	return `skill ${Skill.get("Use the Force")}`;
 }
 
-export function auto_combatSaberCopy(): string
+function auto_combatSaberCopy(): string
 {
 	setProperty("choiceAdventure1387", (2).toString());
 	return `skill ${Skill.get("Use the Force")}`;
@@ -487,7 +487,7 @@ export function auto_spoonCombatSkill(): Skill
 	}
 }
 
-export function auto_spoonGetDesiredSign(): string
+function auto_spoonGetDesiredSign(): string
 {
 	let spoonsign: string = toLowerCase(getProperty("auto_spoonsign"));
 
@@ -575,7 +575,7 @@ export function auto_spoonTuneConfirm(): void
 	}
 }
 
-export function auto_spoonReadyToTuneMoon(): boolean
+function auto_spoonReadyToTuneMoon(): boolean
 {
 	if (!possessEquipment(Item.get("hewn moon-rune spoon")) || !auto_is_valid(Item.get("hewn moon-rune spoon")))
 	{
@@ -721,7 +721,7 @@ export function auto_spoonTuneMoon(): boolean
 	return cantune;
 }
 
-export function auto_beachCombAvailable(): boolean
+function auto_beachCombAvailable(): boolean
 {
 	if (!isUnrestricted(Item.get("Beach Comb Box")) || !possessEquipment(Item.get("Beach Comb")))
 	{
@@ -731,7 +731,7 @@ export function auto_beachCombAvailable(): boolean
 	return true;
 }
 
-export function auto_beachCombHeadNumFrom(name: string): number
+function auto_beachCombHeadNumFrom(name: string): number
 {
 	switch (toLowerCase(name))
 	{
@@ -768,7 +768,7 @@ export function auto_beachCombHeadNumFrom(name: string): number
 	return -1;
 }
 
-export function auto_beachCombHeadEffectFromNum(num: number): Effect
+function auto_beachCombHeadEffectFromNum(num: number): Effect
 {
 	switch (num)
 	{
@@ -820,7 +820,7 @@ export function auto_beachCombHead(name: string): boolean
 	return ret;
 }
 
-export function auto_beachCombFreeUsesLeft(): number {
+function auto_beachCombFreeUsesLeft(): number {
 	if (!auto_beachCombAvailable() || toInt(getProperty("_freeBeachWalksUsed")) >= 11) {
 		return 0;
 	}
@@ -890,7 +890,7 @@ export function auto_pillKeeperAvailable(): boolean
 	return auto_pillKeeperUses() > 0;
 }
 
-export function auto_pillKeeper(pill: number): boolean
+function auto_pillKeeper(pill: number): boolean
 {
 	if (auto_pillKeeperUses() === 0) { return false; }
 	auto_log_info(`Using pill keeper: consuming pill #${pill}`, "blue");
@@ -960,7 +960,7 @@ export function auto_pillKeeper$1(pill: string): boolean
 	return auto_pillKeeper(pillId);
 }
 
-export class PizzaPlan {
+class PizzaPlan {
 	constructor(
 		public ing1: Item = Item.none,
 		public ing2: Item = Item.none,
@@ -969,7 +969,7 @@ export class PizzaPlan {
 	) {}
 }
 
-export function auto_pizza_ingredients(plan: PizzaPlan): Map<number, Item>
+function auto_pizza_ingredients(plan: PizzaPlan): Map<number, Item>
 {
 	let ret: Map<number, Item> = new Map();
 	ret.set(0, plan.ing1);
@@ -979,7 +979,7 @@ export function auto_pizza_ingredients(plan: PizzaPlan): Map<number, Item>
 	return ret;
 }
 // Note this doesn't clamp to 15 - that's enforced elsewhere.
-export function auto_pizza_unclamped_advs(plan: PizzaPlan): number
+function auto_pizza_unclamped_advs(plan: PizzaPlan): number
 {
 	let char_sum: number = 0;
 	for (let [i, ing] of auto_pizza_ingredients(plan))
@@ -991,7 +991,7 @@ export function auto_pizza_unclamped_advs(plan: PizzaPlan): number
 	return advs;
 }
 
-export function auto_pizza_stats(plan: PizzaPlan): Map<Stat, number>
+function auto_pizza_stats(plan: PizzaPlan): Map<Stat, number>
 {
 	let ret: Map<Stat, number> = new Map();
 	ret.set(Stat.get("Muscle"), 0.0);
@@ -1004,7 +1004,7 @@ export function auto_pizza_stats(plan: PizzaPlan): Map<Stat, number>
 	return ret;
 }
 
-export function auto_score_pizza(plan: PizzaPlan): number
+function auto_score_pizza(plan: PizzaPlan): number
 {
 	let unclamped_advs: number = auto_pizza_unclamped_advs(plan);
 	let advs: number = min(15, unclamped_advs);
@@ -1014,7 +1014,7 @@ export function auto_score_pizza(plan: PizzaPlan): number
 	return 15 * advs + 0.1 * total_stat - 3 * waste;
 }
 
-export function auto_deliberate_pizza(): void
+function auto_deliberate_pizza(): void
 {
 	let ingredients: Map<Item, number> = new Map();
 

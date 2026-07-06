@@ -74,7 +74,7 @@ export function ag_bgChat(): void
 	return;
 }
 
-export function ag_bgToChat(): Monster
+function ag_bgToChat(): Monster
 {
 	let surgeonGearWanted: number = 0;
 	let mon: Monster = Monster.none;

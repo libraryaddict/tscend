@@ -178,7 +178,7 @@ export function godLobsterCombat(): boolean
 	return godLobsterCombat$1(Item.none);
 }
 
-export function godLobsterCombat$1(it: Item): boolean
+function godLobsterCombat$1(it: Item): boolean
 {
 	return godLobsterCombat$2(it, 3);
 }
@@ -188,7 +188,7 @@ export function godLobsterCombat$2(it: Item, goal: number): boolean
 	return godLobsterCombat$3(it, goal, null);
 }
 
-export function godLobsterCombat$3(it: Item, goal: number, option: CombatMacro): boolean
+function godLobsterCombat$3(it: Item, goal: number, option: CombatMacro): boolean
 {
 	// it = equipment we want the God Lobster to wear
 	// goal = option we want to select in the post-combat choice
@@ -318,7 +318,7 @@ export function fantasyRealmToken(): boolean
 	return autoAdv$1(1, Location.get("The Bandit Crossroads"));
 }
 
-export function allFantasyRealmLocations(): Map<Location, boolean>
+function allFantasyRealmLocations(): Map<Location, boolean>
 {
 	return new Map([[Location.get("The Bandit Crossroads"), true], [Location.get("The Cursed Village"), true], [Location.get("The Evil Cathedral"), true], [Location.get("The Archwizard's Tower"), true],
 	  [Location.get("The Cursed Village Thieves' Guild"), true], [Location.get("The Towering Mountains"), true], [Location.get("The Foreboding Cave"), true], [Location.get("The Lair of the Phoenix"), true],
@@ -365,7 +365,7 @@ export function songboomSetting(goal: string): boolean
 	return songboomSetting$1(option);
 }
 
-export function songboomSetting$1(option: number): boolean
+function songboomSetting$1(option: number): boolean
 {
 	if (!auto_is_valid(Item.get("SongBoom&trade; BoomBox")))
 	{
@@ -504,7 +504,7 @@ export function catBurglarHeistsLeft(): number
 	return heists_left;
 }
 
-export function catBurglarHeist$1(it: Item): boolean
+function catBurglarHeist$1(it: Item): boolean
 {
 	/* Costly to call (requires two familiar swaps and a page load, even on failure)
 	 * so I recommend calling this only after we fight a monster.
@@ -1010,7 +1010,7 @@ export function auto_latteDropWanted(l: Location): boolean
 	return auto_latteDropAvailable(l) && !(Location.get(["Noob Cave", "The Haunted Boiler Room", "The Arid, Extra-Dry Desert"]).includes(l));
 }
 
-export function auto_latteTranslate(ingredient: string): string
+function auto_latteTranslate(ingredient: string): string
 {
 	switch (toLowerCase(ingredient))
 	{
@@ -1038,7 +1038,7 @@ export function auto_latteTranslate(ingredient: string): string
 	return toLowerCase(ingredient);
 }
 
-export function auto_latteRefill(want1: string, want2: string, want3: string, force: boolean): boolean
+function auto_latteRefill(want1: string, want2: string, want3: string, force: boolean): boolean
 {
 	if (availableAmount(Item.get("latte lovers member's mug")) === 0)
 		{ return false; }
@@ -1131,22 +1131,22 @@ export function auto_latteRefill(want1: string, want2: string, want3: string, fo
 	return true;
 }
 
-export function auto_latteRefill$1(want1: string, want2: string, want3: string): boolean
+function auto_latteRefill$1(want1: string, want2: string, want3: string): boolean
 {
 	return auto_latteRefill(want1, want2, want3, false);
 }
 
-export function auto_latteRefill$2(want1: string, want2: string, force: boolean): boolean
+function auto_latteRefill$2(want1: string, want2: string, force: boolean): boolean
 {
 	return auto_latteRefill(want1, want2, "", force);
 }
 
-export function auto_latteRefill$3(want1: string, want2: string): boolean
+function auto_latteRefill$3(want1: string, want2: string): boolean
 {
 	return auto_latteRefill$2(want1, want2, false);
 }
 
-export function auto_latteRefill$4(want1: string, force: boolean): boolean
+function auto_latteRefill$4(want1: string, force: boolean): boolean
 {
 	return auto_latteRefill$2(want1, "", force);
 }
@@ -1166,12 +1166,12 @@ export function auto_haveVotingBooth(): boolean {
 	return (toBoolean(getProperty("_voteToday")) || toBoolean(getProperty("voteAlways"))) && isUnrestricted(Item.get("voter registration form"));
 }
 
-export function auto_voteSetup(): boolean
+function auto_voteSetup(): boolean
 {
 	return auto_voteSetup$2(0, 0, 0);
 }
 
-export function auto_voteSetup$1(candidate: number): boolean
+function auto_voteSetup$1(candidate: number): boolean
 {
 	return auto_voteSetup$2(candidate, 0, 0);
 }
@@ -1316,7 +1316,7 @@ export function fightClubNap(): boolean
 	return true;
 }
 
-export function fightClubSpa(): boolean
+function fightClubSpa(): boolean
 {
 	let option: number = 4;
 	let st: Stat = myPrimestat();
@@ -1353,7 +1353,7 @@ export function fightClubSpa$1(eff: Effect): boolean
 	return fightClubSpa$2(option);
 }
 
-export function fightClubSpa$2(option: number): boolean
+function fightClubSpa$2(option: number): boolean
 {
 	if (!isUnrestricted(Item.get("Boxing Day care package")))
 	{
@@ -1426,14 +1426,14 @@ export function fightClubStats(): boolean
 
 let $_isTallGrassAvailable_tallGrass: Item | undefined;
 
-export function isTallGrassAvailable(): boolean {
+function isTallGrassAvailable(): boolean {
 	$_isTallGrassAvailable_tallGrass ??= Item.get("packet of tall grass seeds");
 	return auto_is_valid($_isTallGrassAvailable_tallGrass) && auto_get_campground().has($_isTallGrassAvailable_tallGrass);
 }
 
 let $_pokeFertilizerAmountAvailable_fertilizer: Item | undefined;
 
-export function pokeFertilizerAmountAvailable(): number {
+function pokeFertilizerAmountAvailable(): number {
 	$_pokeFertilizerAmountAvailable_fertilizer ??= Item.get("Pok&eacute;-Gro fertilizer");
 	if (!auto_is_valid($_pokeFertilizerAmountAvailable_fertilizer)) {
 		return 0;
@@ -1441,13 +1441,13 @@ export function pokeFertilizerAmountAvailable(): number {
 	return itemAmount($_pokeFertilizerAmountAvailable_fertilizer);
 }
 
-export function isPokeFertilizerAvailable(): boolean {
+function isPokeFertilizerAvailable(): boolean {
 	return isTallGrassAvailable() && pokeFertilizerAmountAvailable() > 0;
 }
 
 let $_haveAnyPokeFamiliarEquipment_poke_fam_equipment: Map<Item, boolean> | undefined;
 
-export function haveAnyPokeFamiliarEquipment(): boolean {
+function haveAnyPokeFamiliarEquipment(): boolean {
 	$_haveAnyPokeFamiliarEquipment_poke_fam_equipment ??= new Map([[Item.get("amulet coin"), true], [Item.get("luck incense"), true], [Item.get("muscle band"), true], [Item.get("razor fang"), true], [Item.get("shell bell"), true], [Item.get("smoke ball"), true]]);
 	for (let [i, _] of $_haveAnyPokeFamiliarEquipment_poke_fam_equipment) {
 		if (equipmentAmount(i) > 0) {
@@ -1458,7 +1458,7 @@ export function haveAnyPokeFamiliarEquipment(): boolean {
 	return false;
 }
 
-export function pokeFertilizeAndHarvest(): boolean {
+function pokeFertilizeAndHarvest(): boolean {
 	if (!isPokeFertilizerAvailable()) {
 		return false;
 	}

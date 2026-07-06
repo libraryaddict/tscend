@@ -33,7 +33,7 @@ export function zombieSlayer_initializeSettings(): void
 	}
 }
 
-export let last_zombie_fullness: number = -1;
+let last_zombie_fullness: number = -1;
 export function zombieSlayer_buySkills(): boolean
 {
 	if (!in_zombieSlayer())
@@ -74,7 +74,7 @@ export function zombieSlayer_buySkills(): boolean
 	return bought !== 0;
 }
 
-export function lureMinions(target: number): boolean
+function lureMinions(target: number): boolean
 {
 	if (!in_zombieSlayer() || !auto_have_skill(Skill.get("Lure Minions")))
 	{
@@ -120,7 +120,7 @@ export function lureMinions(target: number): boolean
 	return myHp() >= target;
 }
 
-export function summonMinions(target: number, meat_reserve: number): boolean
+function summonMinions(target: number, meat_reserve: number): boolean
 {
 	if (!in_zombieSlayer() || !auto_have_skill(Skill.get("Summon Minion")))
 	{
@@ -167,7 +167,7 @@ export function zombieSlayer_acquireMP(goal: number, meat_reserve: number): bool
 	return lureMinions(goal) || summonMinions(goal, meat_reserve);
 }
 
-export function zombieSlayer_acquireMP$1(goal: number): boolean
+function zombieSlayer_acquireMP$1(goal: number): boolean
 {
 	return zombieSlayer_acquireMP(goal, meatReserve());
 }
@@ -211,7 +211,7 @@ export function zombieSlayer_acquireHP(goal: number): boolean
 	return myHp() >= goal;
 }
 
-export function zombieSlayer_canInfect(enemy: Monster): boolean {
+function zombieSlayer_canInfect(enemy: Monster): boolean {
 	for (let phy of Phylum.get(["plant", "bug", "constellation", "construct", "elemental", "slime"]))
 	{
 		if (monsterPhylum(enemy) === phy)

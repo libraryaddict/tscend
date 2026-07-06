@@ -227,7 +227,7 @@ export function heavyrains_buySkills(): boolean
 	return false;
 }
 
-export function canRainManSummon(target: Monster): boolean
+function canRainManSummon(target: Monster): boolean
 {
 	if (!haveSkill(Skill.get("Rain Man")) || myRain() < 50)
 	{

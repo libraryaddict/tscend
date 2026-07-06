@@ -15,29 +15,29 @@ import { L7_defiledNook } from "../quests/level_07";
 import { LX_killBaaBaaBuran, LX_unlockHauntedBilliardsRoom, LX_unlockHiddenTemple } from "../quests/level_11";
 import { LX_lastChance, candyBlock, candyBlockOutfit } from "../quests/level_any";
 
-export let $_f_ZOOPART_NONE: number | undefined;
+let $_f_ZOOPART_NONE: number | undefined;
 $_f_ZOOPART_NONE ??= 0;
-export let $_f_ZOOPART_HEAD: number | undefined;
+let $_f_ZOOPART_HEAD: number | undefined;
 $_f_ZOOPART_HEAD ??= 1;
-export let $_f_ZOOPART_L_SHOULDER: number | undefined;
+let $_f_ZOOPART_L_SHOULDER: number | undefined;
 $_f_ZOOPART_L_SHOULDER ??= 2;
-export let $_f_ZOOPART_R_SHOULDER: number | undefined;
+let $_f_ZOOPART_R_SHOULDER: number | undefined;
 $_f_ZOOPART_R_SHOULDER ??= 3;
-export let $_f_ZOOPART_L_HAND: number | undefined;
+let $_f_ZOOPART_L_HAND: number | undefined;
 $_f_ZOOPART_L_HAND ??= 4;
-export let $_f_ZOOPART_R_HAND: number | undefined;
+let $_f_ZOOPART_R_HAND: number | undefined;
 $_f_ZOOPART_R_HAND ??= 5;
-export let $_f_ZOOPART_R_NIPPLE: number | undefined;
+let $_f_ZOOPART_R_NIPPLE: number | undefined;
 $_f_ZOOPART_R_NIPPLE ??= 6;
-export let $_f_ZOOPART_L_NIPPLE: number | undefined;
+let $_f_ZOOPART_L_NIPPLE: number | undefined;
 $_f_ZOOPART_L_NIPPLE ??= 7;
-export let $_f_ZOOPART_L_BUTTOCK: number | undefined;
+let $_f_ZOOPART_L_BUTTOCK: number | undefined;
 $_f_ZOOPART_L_BUTTOCK ??= 8;
-export let $_f_ZOOPART_R_BUTTOCK: number | undefined;
+let $_f_ZOOPART_R_BUTTOCK: number | undefined;
 $_f_ZOOPART_R_BUTTOCK ??= 9;
-export let $_f_ZOOPART_L_FOOT: number | undefined;
+let $_f_ZOOPART_L_FOOT: number | undefined;
 $_f_ZOOPART_L_FOOT ??= 10;
-export let $_f_ZOOPART_R_FOOT: number | undefined;
+let $_f_ZOOPART_R_FOOT: number | undefined;
 $_f_ZOOPART_R_FOOT ??= 11;
 
 //Defined in autoscend/paths/zootomist.ash
@@ -46,14 +46,14 @@ export function in_zootomist(): boolean
 	return myPath() === Path.get("Z is for Zootomist");
 }
 
-export function zoo_specimenPreparationsLeft(): number
+function zoo_specimenPreparationsLeft(): number
 {
 	if (!in_zootomist()) { return 0; }
 	let zoo_grafts_allowed: number = min(11, toInt(getProperty("zootomistPoints")) + 1);
 	return zoo_grafts_allowed - toInt(getProperty("zootSpecimensPrepared"));
 }
 
-export function zoo_prepareSpecimen(): boolean
+function zoo_prepareSpecimen(): boolean
 {
 	let f: Familiar = myFamiliar();
 	if (!in_zootomist()) { return false; }
@@ -120,7 +120,7 @@ export function zoo_d2Pulls(): void
 	return;
 }
 
-export function zoo_graftedToPart(bodyPart: number): Familiar
+function zoo_graftedToPart(bodyPart: number): Familiar
 {
 	switch (bodyPart)
 	{
@@ -151,14 +151,14 @@ export function zoo_graftedToPart(bodyPart: number): Familiar
 	}
 }
 
-export function zoo_graftedFams(): Map<number, Familiar>
+function zoo_graftedFams(): Map<number, Familiar>
 {
 	let fams: Map<number, Familiar> = new Map();
 	for (let i: number = 1; i < 12; i++) { fams.set(i, zoo_graftedToPart(i)); }
 	return fams;
 }
 
-export function zoo_graftedIntrinsicFams(): Map<Familiar, boolean>
+function zoo_graftedIntrinsicFams(): Map<Familiar, boolean>
 {
 	let fams: Map<Familiar, boolean> = new Map();
 	function check(part: number): void
@@ -174,7 +174,7 @@ export function zoo_graftedIntrinsicFams(): Map<Familiar, boolean>
 	return fams;
 }
 
-export function zoo_isGrafted(f: Familiar): boolean
+function zoo_isGrafted(f: Familiar): boolean
 {
 	if (f === Familiar.none) { return false; }
 	for (let [i, fam] of zoo_graftedFams())
@@ -184,7 +184,7 @@ export function zoo_isGrafted(f: Familiar): boolean
 	return false;
 }
 
-export function zoo_getBodyPartPriority(): Map<number, number>
+function zoo_getBodyPartPriority(): Map<number, number>
 {
 	let priority: Map<number, number> = new Map();
 	if (auto_have_familiar(Familiar.get("Burly Bodyguard")) || zoo_isGrafted(Familiar.get("Burly Bodyguard")))
@@ -217,12 +217,12 @@ export function zoo_getBodyPartPriority(): Map<number, number>
 	return priority;
 }
 
-export function zoo_getBestFam(bodyPart: number): Familiar
+function zoo_getBestFam(bodyPart: number): Familiar
 {
 	return zoo_getBestFam$1(bodyPart, false);
 }
 
-export function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
+function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 {
 	//Identifies the 11 familiars we want based on what we have and stores them in prefs so we only go through the list of fams once
 	//Goes through fam attributes of all familiars and filters from there
@@ -648,7 +648,7 @@ export function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar
 	return Familiar.none;
 }
 
-export function zoo_getNextPart(): number
+function zoo_getNextPart(): number
 {
 	if (!in_zootomist() || myLevel() > 11) { return $_f_ZOOPART_NONE; }
 	let bpp: Map<number, number> = zoo_getBodyPartPriority();
@@ -660,7 +660,7 @@ export function zoo_getNextPart(): number
 	return $_f_ZOOPART_NONE;
 }
 
-export function zoo_getNextFam(): Familiar
+function zoo_getNextFam(): Familiar
 {
 	if (!in_zootomist() || myLevel() > 11) { return Familiar.none; }
 	return zoo_getBestFam$1(zoo_getNextPart(), false);
@@ -745,17 +745,17 @@ export function zoo_graftFam(): boolean
 	return false;
 }
 
-export function zoo_nextGraftWeight(): number
+function zoo_nextGraftWeight(): number
 {
 	return min(myLevel() + 2, 13);
 }
 
-export function zoo_boostWeight(f: Familiar): boolean
+function zoo_boostWeight(f: Familiar): boolean
 {
 	return zoo_boostWeight$1(f, zoo_nextGraftWeight());
 }
 
-export function zoo_boostWeight$1(f: Familiar, target_weight: number): boolean
+function zoo_boostWeight$1(f: Familiar, target_weight: number): boolean
 {
 	if (myFamiliar() !== f)
 	{
@@ -836,7 +836,7 @@ export function getZooKickYR(): Skill
 	return Skill.none;
 }
 
-export function getZooKickFreeKill(): Skill
+function getZooKickFreeKill(): Skill
 { //different than YR. Better than instakill
 	function isYR(fam_id: number): boolean {
 		let fam: Familiar = toFamiliar(fam_id);
@@ -879,7 +879,7 @@ export function getZooKickBanish(): Skill
 	return Skill.none;
 }
 
-export function getZooKickPickpocket(): Skill
+function getZooKickPickpocket(): Skill
 {
 	let haveYR: boolean = yellowRayCombatString$1(Monster.none, false) !== ""; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
 	if (leftKickHasPickpocket() && (leftKickHasInstaKill() && !haveYR) && getZooKickBanish() !== Skill.get("Left %n Kick")) {
@@ -926,7 +926,7 @@ export function getZooBestPunch$1(m: Monster): Skill
 	}
 }
 
-export function leftKickHasSniff(): boolean
+function leftKickHasSniff(): boolean
 {
 	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
 	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
@@ -953,7 +953,7 @@ export function leftKickHasSniff(): boolean
 	return false;
 }
 
-export function leftKickHasPickpocket(): boolean
+function leftKickHasPickpocket(): boolean
 {
 	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
 	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
@@ -980,7 +980,7 @@ export function leftKickHasPickpocket(): boolean
 	return false;
 }
 
-export function leftKickHasInstaKill(): boolean
+function leftKickHasInstaKill(): boolean
 {
 	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
 	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
@@ -1007,7 +1007,7 @@ export function leftKickHasInstaKill(): boolean
 	return false;
 }
 
-export function rightKickHasSniff(): boolean
+function rightKickHasSniff(): boolean
 {
 	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
 	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
@@ -1034,7 +1034,7 @@ export function rightKickHasSniff(): boolean
 	return false;
 }
 
-export function rightKickHasPickpocket(): boolean
+function rightKickHasPickpocket(): boolean
 {
 	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
 	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));
@@ -1061,7 +1061,7 @@ export function rightKickHasPickpocket(): boolean
 	return false;
 }
 
-export function rightKickHasInstaKill(): boolean
+function rightKickHasInstaKill(): boolean
 {
 	let fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
 	let attrs: Map<number, string> = new Map(splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]));

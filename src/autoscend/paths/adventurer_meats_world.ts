@@ -43,7 +43,7 @@ export function amw_wantMeat(): boolean
 //#######################################################################################################
 // Adventure-Buying Functions
 // Calculates how many adventures we get in the smallest bundle/package/whatever
-export function amw_advPerTrade(): number
+function amw_advPerTrade(): number
 {
 	let advs_per_trade: number = 10;
 	if (auto_have_skill(Skill.get("Pork Belly")))
@@ -63,7 +63,7 @@ export function amw_advPerTrade(): number
 // Parses the cost of the (adv_bundles)-th bundle
 // if non-cumulative, subtracts the cost of the previous bundles to calculate the cost of the "last" trade of 10-13 advs in the bundle
 // function is currently unused (calculateReserve is sometimes called from pre_adventure and visiting url can cause issues with that)
-export function amw_advBundleCost(adv_bundles: number, cumulative: boolean): number {
+function amw_advBundleCost(adv_bundles: number, cumulative: boolean): number {
 	if (adv_bundles > 5 || adv_bundles < 1)
 	{
 		abort(`I can't calculate the cost of the ${adv_bundles.toString()}-th bundle!`);
@@ -81,7 +81,7 @@ export function amw_advBundleCost(adv_bundles: number, cumulative: boolean): num
 	}
 	return meat_cost;
 }
-export function amw_advBundleCost$1(adv_bundles: number): number {
+function amw_advBundleCost$1(adv_bundles: number): number {
 	return amw_advBundleCost(adv_bundles, true);
 }
 // attempt to buy the cheapest bundle of advs
@@ -107,7 +107,7 @@ export function amw_buyAdv(): boolean
 //#######################################################################################################
 // Skill & Stat Buying functions
 
-export function amw_buySubstat(st: Stat, numberToBuy: number): boolean
+function amw_buySubstat(st: Stat, numberToBuy: number): boolean
 {
 // buys in terms of substats, whether st is a stat or a substat
 	auto_log_info$1(`Buying ${numberToBuy.toString()} ${st.toString()}`);
@@ -133,7 +133,7 @@ export function amw_buySubstat(st: Stat, numberToBuy: number): boolean
 	return false;
 }
 // reserves meat from being spent on stats
-export function amw_calculateReserve(): number {
+function amw_calculateReserve(): number {
 	let current_level: number = myLevel();
 	let reserve: number = 0;
 	if (current_level <= 6)
@@ -167,7 +167,7 @@ export function amw_calculateReserve(): number {
 	return reserve;
 }
 
-export class amw_statAmount {
+class amw_statAmount {
 	constructor(
 		public st: Stat = Stat.none,
 		public amount: number = 0
@@ -177,7 +177,7 @@ export class amw_statAmount {
 // prioritizing getting most of the skills currently. Maintains 50mus/70mys/Lvl13mox after reaching 100/110/lvl13.
 // also, some thresholds are skill-based to allow for deleveling (esp. BCZ)
 // (i.e. we don't need 110 mys anymore after we get the skill, so ok to not re-level)
-export function amw_nextSkillSubstats(): amw_statAmount {
+function amw_nextSkillSubstats(): amw_statAmount {
 	let goal: amw_statAmount = new amw_statAmount();
 	// getting elemental res for kitchen
 	if (myBasestat(Stat.get("Muscle")) < 10)
@@ -295,7 +295,7 @@ export function amw_nextSkillSubstats(): amw_statAmount {
 	return goal;
 }
 // returns substats needed to get to next level
-export function amw_nextLevelSubstats(): amw_statAmount {
+function amw_nextLevelSubstats(): amw_statAmount {
 	let next_level: number = 0;
 	let goal: amw_statAmount = new amw_statAmount();
 	next_level = myLevel() + 1;
@@ -311,7 +311,7 @@ export function amw_nextLevelSubstats(): amw_statAmount {
 	return goal;
 }
 // returns how many substats we can afford of the goal after considering whether we're meatleveling, our goal amount, and our current meat
-export function amw_substatsBuyable(goal: amw_statAmount, meatleveling: boolean): number {
+function amw_substatsBuyable(goal: amw_statAmount, meatleveling: boolean): number {
 	let meat_reserve: number = 0;
 	// make sure to save some meat. but at lvl 10 no point in going to lvl 11 if we can't shore anyway, so no point in lowering our reserve to meatlevel then
 	if (!meatleveling || myLevel() === 10) { meat_reserve = amw_calculateReserve(); }
@@ -336,11 +336,11 @@ export function amw_substatsBuyable(goal: amw_statAmount, meatleveling: boolean)
 	else { return 0; }
 }
 // by default we aren't meatleveling
-export function amw_substatsBuyable$1(goal: amw_statAmount): number {
+function amw_substatsBuyable$1(goal: amw_statAmount): number {
 	return amw_substatsBuyable(goal, false);
 }
 // decides whether or not to buy stats, and how much. Acts differently if we're meatleveling. amw_buySubstats does the actual purchasing
-export function amw_buyStats(meatleveling: boolean): boolean {
+function amw_buyStats(meatleveling: boolean): boolean {
 	let next: amw_statAmount = new amw_statAmount();
 	if (meatleveling)
 	{
@@ -361,14 +361,14 @@ export function amw_buyStats(meatleveling: boolean): boolean {
 	}
 	return false;
 }
-export function amw_buyStats$1(): boolean {
+function amw_buyStats$1(): boolean {
 	return amw_buyStats(false); // do not meatlevel by default
 }
 //#######################################################################################################
 // Powerleveling Functions
 // will go to next skill goal if skills = true
 // will go to next level goal if skills = false
-export function LX_attemptPowerLevelMeat$1(skills: boolean): boolean {
+function LX_attemptPowerLevelMeat$1(skills: boolean): boolean {
 	if (!isAboutToPowerlevel())
 	{ //determined that the softblock on quests waiting for optimal conditions is still on
 		auto_log_warning("Hmmm, we need to stop being so feisty about quests...", "red");

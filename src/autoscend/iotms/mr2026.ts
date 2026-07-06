@@ -28,7 +28,7 @@ export function auto_isInEternityCodpiece(it: Item): boolean
 }
 
 //Defined in autoscend/iotms/mr2026.ash
-export function auto_haveLegendarySealClubbingClub(): boolean
+function auto_haveLegendarySealClubbingClub(): boolean
 {
 	if (auto_is_valid(Item.get("legendary seal-clubbing club")) && availableAmount(Item.get("legendary seal-clubbing club")) > 0)
 	{
@@ -44,14 +44,14 @@ export function auto_clubEmBackInTimesRemaining(): number
 	return 5 - toInt(getProperty("_clubEmTimeUsed"));
 }
 
-export function auto_clubEmAcrossTheBattlefieldsRemaining(): number
+function auto_clubEmAcrossTheBattlefieldsRemaining(): number
 {
 	if (!auto_haveLegendarySealClubbingClub()) { return 0; }
 
 	return 5 - toInt(getProperty("_clubEmBattlefieldUsed"));
 }
 
-export function auto_clubEmIntoNextWeeksRemaining(): number
+function auto_clubEmIntoNextWeeksRemaining(): number
 {
 	if (!auto_haveLegendarySealClubbingClub()) { return 0; }
 
@@ -72,7 +72,7 @@ export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean
 	return auto_wantToFreeKillWithNoDrops(loc, enemy);
 }
 
-export function auto_haveHeartstone(): boolean
+function auto_haveHeartstone(): boolean
 {
 	if (!auto_is_valid(Item.get("Heartstone")))
 	{
@@ -89,7 +89,7 @@ export function auto_haveHeartstone(): boolean
 	return false;
 }
 
-export function auto_heartstoneBanishRemaining(): number
+function auto_heartstoneBanishRemaining(): number
 {
 	if (!auto_haveHeartstone()) { return 0; }
 	if (getProperty("heartstoneBanishUnlocked") !== "true") { return 0; }
@@ -97,7 +97,7 @@ export function auto_heartstoneBanishRemaining(): number
 	return 5 - toInt(getProperty("_heartstoneBanishUsed"));
 }
 
-export function auto_heartstoneBuffsRemaining(): number
+function auto_heartstoneBuffsRemaining(): number
 {
 	if (!auto_haveHeartstone()) { return 0; }
 	if (getProperty("heartstoneBuffUnlocked") !== "true") { return 0; }
@@ -105,7 +105,7 @@ export function auto_heartstoneBuffsRemaining(): number
 	return 5 - toInt(getProperty("_heartstoneBuffUsed"));
 }
 
-export function auto_heartstoneKillRemaining(): number
+function auto_heartstoneKillRemaining(): number
 {
 	if (!auto_haveHeartstone()) { return 0; }
 	if (getProperty("heartstoneKillUnlocked") !== "true") { return 0; }
@@ -125,7 +125,7 @@ export function auto_heartstoneLuckRemaining(): number
 	return 1;
 }
 
-export function auto_heartstonePalsRemaining(): number
+function auto_heartstonePalsRemaining(): number
 {
 	if (!auto_haveHeartstone()) { return 0; }
 	if (getProperty("heartstonePalsUnlocked") !== "true") { return 0; }
@@ -133,7 +133,7 @@ export function auto_heartstonePalsRemaining(): number
 	return 5 - toInt(getProperty("_heartstonePalsUsed"));
 }
 
-export function auto_heartstoneStunRemaining(): number
+function auto_heartstoneStunRemaining(): number
 {
 	if (!auto_haveHeartstone()) { return 0; }
 	if (getProperty("heartstoneStunUnlocked") !== "true") { return 0; }
@@ -194,7 +194,7 @@ export function auto_spadeDigItem(): boolean
 	return false;
 }
 
-export function auto_spadeDigAncient(): boolean
+function auto_spadeDigAncient(): boolean
 {
 	let SPADE: Item = Item.get("Archaeologist's Spade");
 	let choice_adv_num: number = 1596;

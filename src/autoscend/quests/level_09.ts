@@ -106,7 +106,7 @@ export function L9_leafletQuest(): boolean
 	return toBoolean(getProperty("leafletCompleted"));
 }
 
-export function L9_chasmMaximizeForNoncombat(): void
+function L9_chasmMaximizeForNoncombat(): void
 {
 	auto_log_info("Let's assess our scores for blech house", "blue");
 	let best: string = "mus";

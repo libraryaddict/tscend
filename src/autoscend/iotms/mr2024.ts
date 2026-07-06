@@ -163,7 +163,7 @@ export function auto_setAprilBandCombat(): boolean
 	return toBoolean(haveEffect(Effect.get("Apriling Band Battle Cadence")));
 }
 
-export function auto_setAprilBandDrops(): boolean
+function auto_setAprilBandDrops(): boolean
 {
 	if (toBoolean(haveEffect(Effect.get("Apriling Band Celebration Bop")))) { return true; }
 	if (!auto_haveAprilingBandHelmet()) { return false; }
@@ -227,7 +227,7 @@ export function dartChoiceHandler(choice: number, options: Map<number, string>):
 	runChoice(dcchoice);
 }
 
-export function dartBullseyeChance(): number
+function dartBullseyeChance(): number
 {
 	let perks: Map<number, string> = new Map();
 	let chance: number = 25; // base bullseye chance is 25%
@@ -331,7 +331,7 @@ export function auto_MayamClaim(str: string): boolean
 	return true;
 }
 
-export function auto_MayamClaimStinkBomb(): boolean
+function auto_MayamClaimStinkBomb(): boolean
 {
 	if (!auto_haveMayamCalendar())
 	{
@@ -352,7 +352,7 @@ export function auto_MayamClaimStinkBomb(): boolean
 	return false;
 }
 
-export function auto_MayamClaimBelt(): boolean
+function auto_MayamClaimBelt(): boolean
 {
 	if (!auto_haveMayamCalendar())
 	{
@@ -373,7 +373,7 @@ export function auto_MayamClaimBelt(): boolean
 	return false;
 }
 
-export function auto_MayamClaimWhatever(): boolean
+function auto_MayamClaimWhatever(): boolean
 {
 	if (!auto_haveMayamCalendar())
 	{
@@ -493,7 +493,7 @@ export function auto_haveSeptEmberCenser(): boolean
 	return false;
 }
 
-export function remainingEmbers(): number
+function remainingEmbers(): number
 {
 	if (!auto_haveSeptEmberCenser())
 	{
@@ -616,12 +616,12 @@ export function auto_buyFromSeptEmberStore(): void
 	return;
 }
 
-export function expected_mouthwash_main_substat(): number
+function expected_mouthwash_main_substat(): number
 {
 	return expected_mouthwash_main_substat$1(numericModifier(Modifier.get("Cold Resistance")));
 }
 
-export function expected_mouthwash_main_substat$1(cold_res: number): number
+function expected_mouthwash_main_substat$1(cold_res: number): number
 {
 	let boost_factor: number = 1 + stat_exp_percent(myPrimestat()) / 100;
 	return boost_factor * 14 * cold_res ** 1.7 / 2;
@@ -632,12 +632,12 @@ export function expected_level_after_mouthwash(): number
 	return expected_level_after_mouthwash$2(1, numericModifier(Modifier.get("Cold Resistance")));
 }
 
-export function expected_level_after_mouthwash$1(n_mouthwash: number): number
+function expected_level_after_mouthwash$1(n_mouthwash: number): number
 {
 	return expected_level_after_mouthwash$2(n_mouthwash, numericModifier(Modifier.get("Cold Resistance")));
 }
 
-export function expected_level_after_mouthwash$2(n_mouthwash: number, cold_res: number): number
+function expected_level_after_mouthwash$2(n_mouthwash: number, cold_res: number): number
 {
 	let gained_main_substats: number = n_mouthwash * expected_mouthwash_main_substat$1(cold_res);
 	let old_main_substats: number = myBasestat(stat_to_substat(myPrimestat()));
@@ -656,7 +656,7 @@ export function auto_haveTearawayPants(): boolean
 	return false;
 }
 
-export function auto_haveTakerSpace(): boolean
+function auto_haveTakerSpace(): boolean
 {
 	return auto_get_campground().has(Item.get("TakerSpace letter of Marque")) && auto_is_valid(Item.get("TakerSpace letter of Marque"));
 }
@@ -707,7 +707,7 @@ export function auto_checkTakerSpace(): void
 	}
 }
 
-export function auto_haveClanPhotoBoothHere(): boolean
+function auto_haveClanPhotoBoothHere(): boolean
 {
 	if (availableAmount(Item.get("Clan VIP Lounge key")) === 0)
 	{
@@ -720,7 +720,7 @@ export function auto_haveClanPhotoBoothHere(): boolean
 	return auto_get_clan_lounge().has(Item.get("photo booth sized crate"));
 }
 
-export function auto_haveClanPhotoBooth(): boolean
+function auto_haveClanPhotoBooth(): boolean
 {
 	if (availableAmount(Item.get("Clan VIP Lounge key")) === 0)
 	{
@@ -734,7 +734,7 @@ export function auto_haveClanPhotoBooth(): boolean
 	return bafh_available || auto_haveClanPhotoBoothHere();
 }
 
-export function auto_isClanPhotoBoothItem(it: Item): boolean
+function auto_isClanPhotoBoothItem(it: Item): boolean
 {
 	switch (it)
 	{
@@ -754,7 +754,7 @@ export function auto_isClanPhotoBoothItem(it: Item): boolean
 	return false;
 }
 
-export function auto_thisClanPhotoBoothHasItem(it: Item): boolean
+function auto_thisClanPhotoBoothHasItem(it: Item): boolean
 {
 	// This should work but it's not implemented by Mafia, sounds like it won't be
 	//~ return (auto_get_clan_lounge() contains it)
@@ -774,7 +774,7 @@ export function auto_thisClanPhotoBoothHasItem(it: Item): boolean
 	return false;
 }
 
-export function auto_thisClanPhotoBoothHasItems(its: Map<Item, boolean>): boolean
+function auto_thisClanPhotoBoothHasItems(its: Map<Item, boolean>): boolean
 {
 	let success: boolean = true;
 	for (let [it, b] of its)
@@ -818,7 +818,7 @@ export function auto_getClanPhotoBoothDefaultItems(): boolean
 	return success;
 }
 
-export function auto_getClanPhotoBoothItem(it: Item): boolean
+function auto_getClanPhotoBoothItem(it: Item): boolean
 {
 	if (!auto_haveClanPhotoBooth())
 	{
@@ -856,7 +856,7 @@ export function auto_getClanPhotoBoothItem(it: Item): boolean
 	return false;
 }
 
-export function auto_remainingClanPhotoBoothEffects(): number
+function auto_remainingClanPhotoBoothEffects(): number
 {
 	if (!auto_haveClanPhotoBooth())
 	{
@@ -865,7 +865,7 @@ export function auto_remainingClanPhotoBoothEffects(): number
 	return 3 - toInt(getProperty("_photoBoothEffects"));
 }
 
-export function auto_getClanPhotoBoothEffectString(ef: Effect): string
+function auto_getClanPhotoBoothEffectString(ef: Effect): string
 {
 	switch (ef)
 	{
@@ -879,12 +879,12 @@ export function auto_getClanPhotoBoothEffectString(ef: Effect): string
 	return "none";
 }
 
-export function auto_getClanPhotoBoothEffect(ef: Effect): boolean
+function auto_getClanPhotoBoothEffect(ef: Effect): boolean
 {
 	return auto_getClanPhotoBoothEffect$1(ef, 1);
 }
 
-export function auto_getClanPhotoBoothEffect$1(ef: Effect, n_times: number): boolean
+function auto_getClanPhotoBoothEffect$1(ef: Effect, n_times: number): boolean
 {
 	let effect_string: string = auto_getClanPhotoBoothEffectString(ef);
 	if (effect_string === "none")
@@ -895,7 +895,7 @@ export function auto_getClanPhotoBoothEffect$1(ef: Effect, n_times: number): boo
 	return auto_getClanPhotoBoothEffect$2(effect_string);
 }
 
-export function auto_getClanPhotoBoothEffect$2(ef_string: string): boolean
+function auto_getClanPhotoBoothEffect$2(ef_string: string): boolean
 {
 	return auto_getClanPhotoBoothEffect$3(ef_string, 1);
 }
@@ -986,7 +986,7 @@ export function auto_haveChestMimic(): boolean
 	return false;
 }
 
-export function auto_haveMeggEgg(mon: Monster): boolean
+function auto_haveMeggEgg(mon: Monster): boolean
 {
 	for (let [megg_mon, i] of c2t_megg_eggs())
 		{

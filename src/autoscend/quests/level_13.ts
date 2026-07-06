@@ -120,7 +120,7 @@ export function towerKeyCount$1(effective: boolean): number
 	return tokens;
 }
 
-export function EightBitScore(): number
+function EightBitScore(): number
 {
 	let score: number = toInt(getProperty("8BitScore"));
 	return score;
@@ -154,7 +154,7 @@ export function prepForMegaloCity(): boolean
 	return availableAmount(aegis) > 0;
 }
 
-export function EightBitRealmHandler(): boolean
+function EightBitRealmHandler(): boolean
 {
 	//Spend adventures to get the digital key
 	//Preparing for each zone is handled in auto_pre_adv.ash
@@ -870,7 +870,7 @@ if (crowd3Insufficient()) {
 	return false;
 }
 
-export function maximize_hedge(): void
+function maximize_hedge(): void
 {
 	let data: string = visitUrl("campground.php?action=telescopelow");
 
@@ -1121,7 +1121,7 @@ export function L13_towerNSTower(): boolean
 	return false;
 }
 
-export function L13_towerNSTowerSkin(): boolean
+function L13_towerNSTowerSkin(): boolean
 {
 	if (!containsText(visitUrl("place.php?whichplace=nstower"), "ns_05_monster1"))
 	{
@@ -1290,7 +1290,7 @@ export function L13_towerNSTowerSkin(): boolean
 	return true;
 }
 
-export function L13_towerNSTowerMeat(): boolean
+function L13_towerNSTowerMeat(): boolean
 {
 	if (!containsText(visitUrl("place.php?whichplace=nstower"), "ns_06_monster2"))
 	{
@@ -1318,7 +1318,7 @@ export function L13_towerNSTowerMeat(): boolean
 	return true;
 }
 
-export function L13_towerNSTowerBones(): boolean
+function L13_towerNSTowerBones(): boolean
 {
 	if (!containsText(visitUrl("place.php?whichplace=nstower"), "ns_07_monster3"))
 	{
@@ -1497,7 +1497,7 @@ export function L13_towerNSTowerBones(): boolean
 	return true;
 }
 
-export function L13_towerNSTowerMirror(): boolean
+function L13_towerNSTowerMirror(): boolean
 {
 	if (!containsText(visitUrl("place.php?whichplace=nstower"), "ns_08_monster4"))
 	{
@@ -1518,7 +1518,7 @@ export function L13_towerNSTowerMirror(): boolean
 	return true;
 }
 
-export function L13_towerNSTowerShadow(): boolean
+function L13_towerNSTowerShadow(): boolean
 {
 	if (!containsText(visitUrl("place.php?whichplace=nstower"), "ns_09_monster5"))
 	{

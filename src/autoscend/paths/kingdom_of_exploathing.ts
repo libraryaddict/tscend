@@ -198,7 +198,7 @@ export function LX_koeInvaderHandler(): boolean
 	return false;
 }
 
-export function koe_L12FoodSelect(): Item
+function koe_L12FoodSelect(): Item
 {
 	//selects a desireable food item to toss at enemies during L12 war quest battlefield in koe
 	let food_item: Item = Item.none;

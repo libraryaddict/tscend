@@ -9,7 +9,7 @@ export function inAftercore(): boolean
 	return toBoolean(getProperty("kingLiberated"));
 }
 
-export function inPostRonin(): boolean
+function inPostRonin(): boolean
 {
 	//can interact means you are not in ronin and not in hardcore. It returns true in casual, aftercore, and postronin
 	if (canInteract() && !inCasual() && !inAftercore())

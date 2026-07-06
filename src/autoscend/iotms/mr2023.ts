@@ -25,7 +25,7 @@ import { L10_needUmbrella } from "../quests/level_10";
 let $_auto_haveRockGarden_rockGarden: Item | undefined;
 
 //Defined in autoscend/iotms/mr2023.ash
-export function auto_haveRockGarden(): boolean
+function auto_haveRockGarden(): boolean
 {
 	$_auto_haveRockGarden_rockGarden ??= Item.get("packet of rock seeds");
 	return auto_is_valid($_auto_haveRockGarden_rockGarden) && auto_get_campground().has($_auto_haveRockGarden_rockGarden);
@@ -76,7 +76,7 @@ export function wantToThrowGravel(loc: Location, enemy: Monster): boolean
 
 let $_auto_haveSITCourse_sitCourse: Item | undefined;
 
-export function auto_haveSITCourse(): boolean
+function auto_haveSITCourse(): boolean
 {
 	$_auto_haveSITCourse_sitCourse ??= Item.get("S.I.T. Course Completion Certificate");
 	return auto_is_valid($_auto_haveSITCourse_sitCourse) && itemAmount($_auto_haveSITCourse_sitCourse) > 0;
@@ -146,7 +146,7 @@ export function auto_availableBrickRift(): Location
 	return Location.none;
 }
 
-export function auto_riftsWithWishes(): Map<Location, boolean>
+function auto_riftsWithWishes(): Map<Location, boolean>
 {
 	let out: Map<Location, boolean> = new Map();
 	for (let loc of auto_allRifts().keys())
@@ -175,7 +175,7 @@ export function auto_neededShadowBricks(): number
 	return max(0, 13 - currentBricks - bricksUsedToday);
 }
 
-export function auto_getPhoneQuest(): boolean
+function auto_getPhoneQuest(): boolean
 {
 	if (!auto_havePayPhone())
 	{
@@ -333,7 +333,7 @@ export function auto_makeMonkeyPawWish$1(wish: Item): boolean
 	return success;
 }
 
-export function auto_makeMonkeyPawWish$2(wish: string): boolean
+function auto_makeMonkeyPawWish$2(wish: string): boolean
 {
 	if (!auto_haveMonkeyPaw()) {
 		auto_log_info$1(`Requested monkey paw wish without paw available, skipping ${wish}`);
@@ -363,7 +363,7 @@ export function auto_haveCincho(): boolean
 	return false;
 }
 
-export function auto_currentCinch(): number
+function auto_currentCinch(): number
 {
 	if (!auto_haveCincho())
 	{
@@ -372,7 +372,7 @@ export function auto_currentCinch(): number
 	return 100 - toInt(getProperty("_cinchUsed"));
 }
 
-export function auto_cinchFromNextRest(): number
+function auto_cinchFromNextRest(): number
 {
 	let cinchoRestsAlready: number = toInt(getProperty("_cinchoRests"));
 	// calculating for how much cinch NEXT rest will give
@@ -380,7 +380,7 @@ export function auto_cinchFromNextRest(): number
 	return auto_cinchFromRestN(cinchoRestsAlready);
 }
 
-export function auto_cinchFromRestN(n: number): number
+function auto_cinchFromRestN(n: number): number
 {
 	let cinchGainedFromRest: number = 5;
 	if (n <= 5) { cinchGainedFromRest = 30; }
@@ -391,7 +391,7 @@ export function auto_cinchFromRestN(n: number): number
 
 	return cinchGainedFromRest;
 }
-export function auto_cinchAfterNextRest(): number
+function auto_cinchAfterNextRest(): number
 {
 	return auto_currentCinch() + auto_cinchFromNextRest();
 }
@@ -474,7 +474,7 @@ export function shouldCinchoConfetti(): boolean
 	return true;
 }
 
-export function auto_potentialMaxCinchLeft(): number
+function auto_potentialMaxCinchLeft(): number
 {
 	let max_rests: number = auto_potentialMaxFreeRests();
 	let curr_free_rests_used: number = toInt(getProperty("_cinchoRests"));
@@ -493,7 +493,7 @@ export function auto_cinchForcesLeft(): number
 
 let $_auto_have2002Catalog_catalog: Item | undefined;
 
-export function auto_have2002Catalog(): boolean
+function auto_have2002Catalog(): boolean
 {
 	$_auto_have2002Catalog_catalog ??= wrap_item(Item.get("2002 Mr. Store Catalog"));
 	if (auto_is_valid($_auto_have2002Catalog_catalog) && (itemAmount($_auto_have2002Catalog_catalog) > 0 || haveEquipped($_auto_have2002Catalog_catalog)))
@@ -503,7 +503,7 @@ export function auto_have2002Catalog(): boolean
 	return false;
 }
 
-export function remainingCatalogCredits(): number
+function remainingCatalogCredits(): number
 {
 	if (!auto_have2002Catalog())
 	{
@@ -881,13 +881,13 @@ export function auto_circadianRhythmTarget$1(target: Phylum): boolean
 	return true;
 }
 
-export function auto_wishFactsLeft(): number
+function auto_wishFactsLeft(): number
 {
 	if (!auto_haveBofa()) { return 0; }
 	return 3 - toInt(getProperty("_bookOfFactsWishes"));
 }
 
-export function auto_haveJillOfAllTrades(): boolean
+function auto_haveJillOfAllTrades(): boolean
 {
 	if (auto_have_familiar(Familiar.get("Jill-of-All-Trades")))
 	{
@@ -896,7 +896,7 @@ export function auto_haveJillOfAllTrades(): boolean
 	return false;
 }
 
-export function getParsedCandleMode(): string
+function getParsedCandleMode(): string
 {
 	// returns candle mode which matches our familiar categories
 	switch (getProperty("ledCandleMode"))
@@ -1028,7 +1028,7 @@ return toInt(getProperty("cyrptNicheEvilness")) - 3 * (3 + cyrptEvilBonus$1()) >
 	return false;
 }
 
-export function auto_rwbFightsLeft(): number
+function auto_rwbFightsLeft(): number
 {
 	if (auto_RWBMonster() !== Monster.none)
 	{
@@ -1046,7 +1046,7 @@ export function auto_RWBMonster(): Monster
 	return Monster.none;
 }
 
-export function activeCitZoneMod(): string
+function activeCitZoneMod(): string
 { // get the active Citizen of a Zone mods, if any
 	if (!auto_haveEagle() || haveEffect(Effect.get("Citizen of a Zone")) === 0)
 	{
@@ -1057,7 +1057,7 @@ export function activeCitZoneMod(): string
 	return activeCitZoneMod_1;
 }
 
-export function auto_citZoneModIsGoal(goal: string): boolean
+function auto_citZoneModIsGoal(goal: string): boolean
 {
 	let activeCitZoneMod_1: string = activeCitZoneMod();
 
@@ -1068,7 +1068,7 @@ export function auto_citZoneModIsGoal(goal: string): boolean
 	return false;
 }
 
-export function auto_citizenZonePrep(goal: string): boolean
+function auto_citizenZonePrep(goal: string): boolean
 {
 	let activeCitZoneMod_1: string = activeCitZoneMod();
 	if (myMeat() < meatReserve() && goal !== "mp")
@@ -1097,7 +1097,7 @@ export function auto_citizenZonePrep(goal: string): boolean
 	return true;
 }
 
-export function citizenZones(goal: string): Map<Location, boolean>
+function citizenZones(goal: string): Map<Location, boolean>
 {
 	if (goal === "meat")
 	{
@@ -1397,7 +1397,7 @@ export function auto_remainingCandyCaneSlashes(): number
 	return 11 - toInt(getProperty("_surprisinglySweetSlashUsed"));
 }
 
-export function auto_remainingCandyCaneStabs(): number
+function auto_remainingCandyCaneStabs(): number
 {
 	if (!auto_haveCCSC())
 	{

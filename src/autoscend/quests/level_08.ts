@@ -51,7 +51,7 @@ export function needOre(): boolean
 	return true;
 }
 
-export function getCellToMine(oreGoal: Item): number
+function getCellToMine(oreGoal: Item): number
 {
 	// the mine is an 8*7 grid starting at 0,0 in the top left and each cell has an incrementing identifier starting at 0.
 	// however all of row 0, column 0 and column 7 cannot be mined (so it's really a 6*6 grid with really confusing cell ids).
@@ -282,7 +282,7 @@ export function getCellToMine(oreGoal: Item): number
 	return (potentialCells.get(random(numPotentials)) ?? potentialCells.set(random(numPotentials), 0).get(random(numPotentials)));
 }
 
-export function L8_getGoatCheese(): boolean
+function L8_getGoatCheese(): boolean
 {
 	if (internalQuestStatus("questL08Trapper") !== 1)
 	{ // step1 = we spoke to trapper to unlock goatlet
@@ -386,7 +386,7 @@ export function L8_mountainManSummon(): boolean
 	return false;
 }
 
-export function L8_getMineOres(): boolean
+function L8_getMineOres(): boolean
 {
 	if (internalQuestStatus("questL08Trapper") !== 1)
 	{ // step1 = we spoke to trapper to learn what ores he wants
@@ -519,7 +519,7 @@ export function itznotyerzitzMineChoiceHandler(choice: number): void
 	}
 }
 
-export function L8_trapperExtreme(): boolean
+function L8_trapperExtreme(): boolean
 {
 	if (internalQuestStatus("questL08Trapper") !== 2)
 	{
@@ -638,7 +638,7 @@ export function theeXtremeSlopeChoiceHandler(choice: number): void
 	}
 }
 
-export function L8_trapperNinjaLair(): boolean
+function L8_trapperNinjaLair(): boolean
 {
 	// adventure in the lair of the ninja snowmen to find and fight ninja snowman assassins.
 	// usually this would only occur in hardcore

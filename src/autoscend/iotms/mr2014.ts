@@ -464,12 +464,12 @@ export function fancyOilPainting(): boolean
 	return true;
 }
 
-export function turkeyBooze(): number
+function turkeyBooze(): number
 {
 	return toInt(getProperty("_turkeyBooze"));
 }
 
-export function amountTurkeyBooze(): number
+function amountTurkeyBooze(): number
 {
 	if (isUnrestricted(Item.get("fist turkey outline")))
 	{
@@ -478,7 +478,7 @@ export function amountTurkeyBooze(): number
 	return 0;
 }
 
-export let $_f_importantMonsters: Monster[] | undefined;
+let $_f_importantMonsters: Monster[] | undefined;
 $_f_importantMonsters ??= Monster.get([
 	// L4:
 	"beanbat",
@@ -528,7 +528,7 @@ $_f_importantMonsters ??= Monster.get([
 	"spider gremlin (tool)",
 	"vegetable gremlin (tool)"]);
 
-export function icehouseMonster(): Monster
+function icehouseMonster(): Monster
 {
 	visitUrl("museum.php?action=icehouse");
 	if (!containsText(getProperty("banishedMonsters"), "ice house"))

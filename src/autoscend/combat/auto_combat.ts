@@ -48,7 +48,7 @@ import { in_wildfire } from "../paths/wildfire";
 //	/goto fight.php?action=useitem&whichitem=1
 
 //defined in /autoscend/combat/auto_combat.ash
-export function auto_combatInitialize(round_1: number, enemy: Monster, text: string): void
+function auto_combatInitialize(round_1: number, enemy: Monster, text: string): void
 {
 	//reset settings for combat at the start of every combat
 	if (round_1 !== 0)

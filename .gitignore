@@ -18,4 +18,4 @@ node_modules
 
 #!.yarn/cache
 .pnp.*
-RELEASE/scripts/dist
+RELEASE/scripts

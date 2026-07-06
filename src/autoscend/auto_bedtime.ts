@@ -43,7 +43,7 @@ import { in_robot, robot_chronolith_cost } from "./paths/you_robot";
 import { ns_crowd1, ns_crowd2, ns_crowd3, ns_hedge1, ns_hedge2, ns_hedge3 } from "./quests/level_13";
 
 //Defined in autoscend/auto_bedtime.ash
-export function bedtime_still(): void
+function bedtime_still(): void
 {
 	//quickly use up all remaining uses of Nash Crosby's Still during bedtime
 	if (!stillReachable())
@@ -112,7 +112,7 @@ export function bedtime_still(): void
 	}
 }
 
-export function bedtime_spleen(): boolean
+function bedtime_spleen(): boolean
 {
 	let to_try: Item[] = Item.get(["Breathitin&trade;", "Extrovermectin&trade;", "hot jelly",
 	  "scoop of pre-workout powder", "Homebodyl&trade;", "phosphor traces", "energized spores"]);
@@ -135,7 +135,7 @@ export function bedtime_spleen(): boolean
 	return spleen_left() === 0;
 }
 
-export function pullsNeeded(data: string): number
+function pullsNeeded(data: string): number
 {
 	if (inAftercore())
 	{
@@ -281,7 +281,7 @@ export function pullsNeeded(data: string): number
 	return count_1;
 }
 
-export function rollover_value(it: Item): number
+function rollover_value(it: Item): number
 {
 	if (it === Item.none)
 	{
@@ -300,7 +300,7 @@ export function rollover_value(it: Item): number
 	return retval;
 }
 
-export function rollover_improvement(it: Item, sl: Slot): number
+function rollover_improvement(it: Item, sl: Slot): number
 {
 	//some items can go in multiple slots so we need to specify which slot we want to compare it to.
 	//we can then compare such items to multiple slots and find the best slot for it
@@ -322,7 +322,7 @@ export function rollover_improvement(it: Item, sl: Slot): number
 	return rollover_value(it) - rollover_value(equippedItem(sl));
 }
 
-export function bedtime_pulls_rollover_equip$1(desirability_1: number): void
+function bedtime_pulls_rollover_equip$1(desirability_1: number): void
 {
 	//scan through all pullable items for items that have a better rollover adv gain than currently best equipped item.
 	// can't pull gear in Legacy of Loathing
@@ -555,12 +555,12 @@ export function bedtime_pulls_rollover_equip$1(desirability_1: number): void
 	}
 }
 
-export function bedtime_pulls_rollover_equip(): void
+function bedtime_pulls_rollover_equip(): void
 {
 	bedtime_pulls_rollover_equip$1(toFloat(getProperty("auto_bedtime_pulls_min_desirability")));
 }
 
-export function bedtime_pulls(): void
+function bedtime_pulls(): void
 {
 	if (pullsRemaining() < 1)
 	{ //out of pulls or in hardcore or in casual.

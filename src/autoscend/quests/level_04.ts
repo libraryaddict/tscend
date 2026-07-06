@@ -20,7 +20,7 @@ import { in_koe } from "../paths/kingdom_of_exploathing";
 import { in_lol } from "../paths/legacy_of_loathing";
 import { shenShouldDelayZone } from "./level_11";
 
-export function provideGuanoStenchResistance(): boolean
+function provideGuanoStenchResistance(): boolean
 {
 	let resGoal: Map<Element, number> = new Map();
 	resGoal.set(Element.get("stench"), 1);

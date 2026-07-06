@@ -251,7 +251,7 @@ export function LX_unlockDesert(): boolean
 	return LX_bitchinMeatcar();
 }
 
-export function LX_desertAlternate(): boolean
+function LX_desertAlternate(): boolean
 {
 	if (in_nuclear())
 	{
@@ -621,7 +621,7 @@ export function useTonicDjinn(): void
 	}
 }
 
-export function LX_dailyDungeonToken(): boolean
+function LX_dailyDungeonToken(): boolean
 {
 	if (toBoolean(getProperty("dailyDungeonDone")))
 	{
@@ -986,7 +986,7 @@ export function LX_setWorkshed(): boolean {
 	return false;
 }
 
-export function canSetWorkshed(it: Item): boolean {
+function canSetWorkshed(it: Item): boolean {
 	return auto_is_valid(it) && itemAmount(it) > 0;
 }
 

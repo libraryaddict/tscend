@@ -5,7 +5,7 @@ import { AshMatcher } from "./utils/kolmafiaUtils";
 //# These functions are used to either upgrade format on properties. delete obsolete properties. or set default values for new properties
 
 //Defined in autoscend/auto_settings.ash
-export function trackingSplitterFixer(oldSetting: string, day: number, newSetting: string): boolean
+function trackingSplitterFixer(oldSetting: string, day: number, newSetting: string): boolean
 {
 	let setting: string = getProperty(oldSetting);
 	if (setting === "")
@@ -36,7 +36,7 @@ export function trackingSplitterFixer(oldSetting: string, day: number, newSettin
 	return true;
 }
 
-export function cleanup_property(target: string): void
+function cleanup_property(target: string): void
 {
 	//we need to clear out empty property that exist with an empty value.
 	//aside from being messy they also cause problems such as rename_property refusing to work.
@@ -46,7 +46,7 @@ export function cleanup_property(target: string): void
 	}
 }
 
-export function auto_rename_property(oldprop: string, newprop: string): void
+function auto_rename_property(oldprop: string, newprop: string): void
 {
 	cleanup_property(oldprop);
 	cleanup_property(newprop);
@@ -57,7 +57,7 @@ export function auto_rename_property(oldprop: string, newprop: string): void
 	renameProperty(oldprop, newprop);
 }
 
-export function boolFix(p: string): void
+function boolFix(p: string): void
 {
 	let p_val: string = getProperty(p);
 	if (p_val === "need" || p_val === "yes")
@@ -70,7 +70,7 @@ export function boolFix(p: string): void
 	}
 }
 
-export function auto_settingsUpgrade(): void
+function auto_settingsUpgrade(): void
 {
 	//upgrade settings from old format to new format.
 	//do not forget to add each old setting to auto_settingsDelete() so it can be deleted after the upgrade is done.
@@ -199,7 +199,7 @@ export function auto_settingsFix(): void
 	}
 }
 
-export function auto_settingsDelete(): void
+function auto_settingsDelete(): void
 {
 	//delete obsolete settings
 	removeProperty("auto_debug");
@@ -325,7 +325,7 @@ export function auto_settingsDelete(): void
 	removeProperty("auto_delayHauntedKitchen"); // We shouldn't need to rely on the user to tell us how to play because users are often terrible at the game.
 }
 
-export function defaultConfig(prop: string, val: string): void
+function defaultConfig(prop: string, val: string): void
 {
 	//this function is used to configure default values. it only makes a change if the current value is nothing
 	if (!propertyExists(prop))
@@ -335,7 +335,7 @@ export function defaultConfig(prop: string, val: string): void
 	}
 }
 
-export function auto_settingsDefaults(): void
+function auto_settingsDefaults(): void
 {
 	//set default values for settings which have not yet been configured
 	defaultConfig("auto_delayTimer", "1");

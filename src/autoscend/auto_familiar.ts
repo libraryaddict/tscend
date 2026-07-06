@@ -460,7 +460,7 @@ export function handleFamiliar$1(fam: Familiar): boolean
 	return true;
 }
 
-export function autoChooseFamiliar(place: Location): boolean
+function autoChooseFamiliar(place: Location): boolean
 {
 	//if no familiar target was set this loop. then automatically determine which familiar to use
 
@@ -925,7 +925,7 @@ export function auto_needsGoodFamiliarEquipment(): boolean {
 	return true;
 }
 
-export function auto_famWeight(fam: Familiar, include_equip: boolean): number
+function auto_famWeight(fam: Familiar, include_equip: boolean): number
 {
 	let famEquipWeight: number = 0;
 	if (fam === Familiar.none)
@@ -958,7 +958,7 @@ export function auto_famModifiers(fam: Familiar, mod: string, famEquip: Item): n
 	return numericModifier(fam, mod, auto_famWeight(fam, false), famEquip);
 }
 
-export function auto_famModifiers$1(fam: Familiar, mod: string): number
+function auto_famModifiers$1(fam: Familiar, mod: string): number
 {
 	return numericModifier(fam, mod, auto_famWeight(fam, false), familiarEquippedEquipment(fam));
 }

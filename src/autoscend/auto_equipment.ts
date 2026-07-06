@@ -41,7 +41,7 @@ export function getMaximizeSlotPref(s: Slot): string
 	return `_auto_maximize_equip_${s.toString()}`;
 }
 
-export function getTentativeMaximizeEquip(s: Slot): Item
+function getTentativeMaximizeEquip(s: Slot): Item
 {
 	return toItem(getProperty(getMaximizeSlotPref(s)));
 }
@@ -202,7 +202,7 @@ export function autoStripOutfit(toRemove: string): boolean {
 	return isWearingOutfit(toRemove);
 }
 
-export function tryAddItemToMaximize(s: Slot, it: Item): boolean
+function tryAddItemToMaximize(s: Slot, it: Item): boolean
 {
 	if (!(Slot.get(["hat", "back", "shirt", "weapon", "off-hand", "pants", "acc1", "acc2", "acc3", "familiar"]).includes(s)))
 	{
@@ -235,7 +235,7 @@ break;
 	return true;
 }
 
-export function speculatedMaximizerEquipment(statement: string): Map<Slot, Item>
+function speculatedMaximizerEquipment(statement: string): Map<Slot, Item>
 {
 	//make maximizer simulate with the given statement then return the list of equipment it has chosen
 	let res: Map<Slot, Item> = new Map();
@@ -533,7 +533,7 @@ export function equipStatgainIncreasersFor(it: Item): void
 	}
 }
 
-export function defaultMaximizeStatement(): string
+function defaultMaximizeStatement(): string
 {
 	if (in_pokefam())
 	{
@@ -714,7 +714,7 @@ export function addBonusToMaximize(it: Item, amt: number): void
 		{ addToMaximize(`+${amt}bonus ${it}`); }
 }
 
-export function finalizeMaximize(speculative: boolean): void
+function finalizeMaximize(speculative: boolean): void
 {
 	if (auto_hasStillSuit() && pathHasFamiliar() && inebrietyLimit() > 0 && !in_kolhs() && !in_small())
 	{
@@ -1014,7 +1014,7 @@ export function finalizeMaximize(speculative: boolean): void
 	}
 }
 
-export function finalizeMaximize$1(): void
+function finalizeMaximize$1(): void
 {
 	finalizeMaximize(false);
 }
@@ -1062,7 +1062,7 @@ export function removeFromMaximize(rem: string): void
 	setProperty("auto_maximize_current", res);
 }
 
-export function maximizeContains(check_1: string): boolean
+function maximizeContains(check_1: string): boolean
 {
 	return containsText(getProperty("auto_maximize_current"), check_1);
 }
@@ -1386,7 +1386,7 @@ export function is_watch(it: Item): boolean
 	return booleanModifier(it, Modifier.get("Nonstackable Watch"));
 }
 
-export function auto_getAllEquipabble(): Map<Item, number>
+function auto_getAllEquipabble(): Map<Item, number>
 {
 	return auto_getAllEquipabble$1(Slot.none);
 }

@@ -66,7 +66,7 @@ export function autoAdv$2(loc: Location): boolean
 	return autoAdv(1, loc, null);
 }
 
-export function autoAdv$3(loc: Location, option: CombatMacro): boolean
+function autoAdv$3(loc: Location, option: CombatMacro): boolean
 {
 	return autoAdv(1, loc, option);
 }
@@ -194,19 +194,19 @@ export function autoAdvBypass$2(url: string, loc: Location, option: CombatMacro)
 	return autoAdvBypass(0, urlConvert, loc, option);
 }
 
-export function autoAdvBypass$3(snarfblat: number, loc: Location): boolean
+function autoAdvBypass$3(snarfblat: number, loc: Location): boolean
 {
 	let page: string = `adventure.php?snarfblat=${snarfblat}`;
 	return autoAdvBypass$1(page, loc);
 }
 
-export function autoAdvBypass$4(snarfblat: number, loc: Location, option: CombatMacro): boolean
+function autoAdvBypass$4(snarfblat: number, loc: Location, option: CombatMacro): boolean
 {
 	let page: string = `adventure.php?snarfblat=${snarfblat}`;
 	return autoAdvBypass$2(page, loc, option);
 }
 
-export function autoAdvBypass$5(snarfblat: number): boolean
+function autoAdvBypass$5(snarfblat: number): boolean
 {
 	return autoAdvBypass$3(snarfblat, Location.get("Noob Cave"));
 }
@@ -216,7 +216,7 @@ export function autoAdvBypass$6(url: string): boolean
 	return autoAdvBypass$1(url, Location.get("Noob Cave"));
 }
 
-export function autoAdvBypass$7(snarfblat: number, option: CombatMacro): boolean
+function autoAdvBypass$7(snarfblat: number, option: CombatMacro): boolean
 {
 	return autoAdvBypass$4(snarfblat, Location.get("Noob Cave"), option);
 }

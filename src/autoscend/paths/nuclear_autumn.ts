@@ -81,7 +81,7 @@ export function nuclear_initializeDay(day: number): void
 	}
 }
 
-export function nuclear_buySkills(): boolean
+function nuclear_buySkills(): boolean
 {
 	if (!in_nuclear())
 	{

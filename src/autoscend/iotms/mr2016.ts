@@ -26,7 +26,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 //			Time-Spinner
 
 //Defined in autoscend/iotms/mr2016.ash
-export function auto_haveJokestersGun(): boolean
+function auto_haveJokestersGun(): boolean
 {
 	if (possessEquipment(Item.get("The Jokester's gun")) && auto_can_equip(Item.get("The Jokester's gun")))
 	{
@@ -230,7 +230,7 @@ export function auto_sourceTerminalExtrude(request: string): boolean
 	return auto_sourceTerminalRequest(`extrude -f ${actual}.ext`);
 }
 
-export function auto_sourceTerminalExtrudeLeft(): number
+function auto_sourceTerminalExtrudeLeft(): number
 {
 	if (auto_haveSourceTerminal())
 	{
@@ -299,7 +299,7 @@ export function auto_sourceTerminalEnhanceLeft(): number
 	return 0;
 }
 
-export function auto_sourceTerminalMissing(): Map<string, number>
+function auto_sourceTerminalMissing(): Map<string, number>
 {
 	let status: Map<string, number> = new Map();
 
@@ -355,7 +355,7 @@ export function auto_sourceTerminalMissing(): Map<string, number>
 	return status;
 }
 
-export function auto_sourceTerminalStatus(): Map<string, number>
+function auto_sourceTerminalStatus(): Map<string, number>
 {
 	let status: Map<string, number> = new Map();
 	if (auto_haveSourceTerminal())
@@ -440,7 +440,7 @@ export function auto_sourceTerminalEducate(first: Skill, second: Skill): boolean
 	return true;
 }
 
-export function auto_sourceTerminalEducate$1(first: Skill): boolean
+function auto_sourceTerminalEducate$1(first: Skill): boolean
 {
 	return auto_sourceTerminalEducate(first, Skill.none);
 }
@@ -454,7 +454,7 @@ export function auto_haveWitchess(): boolean
 	return auto_get_campground().has(Item.get("Witchess Set"));
 }
 
-export function auto_advWitchess(target: string, option?: CombatMacro): boolean
+function auto_advWitchess(target: string, option?: CombatMacro): boolean
 {
 	if (!auto_haveWitchess())
 	{
@@ -511,7 +511,7 @@ export function auto_advWitchess(target: string, option?: CombatMacro): boolean
 }
 
 
-export function auto_advWitchessTargets(target: string): number
+function auto_advWitchessTargets(target: string): number
 {
 	target = toLowerCase(target);
 	if (target === "knight" || target === "meat" || target === "food")
@@ -605,7 +605,7 @@ export function witchessFights(): boolean
 	return false;
 }
 
-export function auto_bestBadge(): Item
+function auto_bestBadge(): Item
 {
 	let retval: Item = Item.none;
 	for (let it of Item.get(["plastic detective badge", "bronze detective badge", "silver detective badge", "gold detective badge"]))
@@ -1062,12 +1062,12 @@ export function LX_ghostBusting(): boolean
 	return autoAdv$2(goal);
 }
 
-export function timeSpinnerRemaining(): number
+function timeSpinnerRemaining(): number
 {
 	return timeSpinnerRemaining$1(false);
 }
 
-export function timeSpinnerRemaining$1(verify: boolean): number
+function timeSpinnerRemaining$1(verify: boolean): number
 {
 	//how many time spinner minutes remain to be used.
 	if (!auto_is_valid(Item.get("Time-Spinner")) || itemAmount(Item.get("Time-Spinner")) === 0)
@@ -1088,7 +1088,7 @@ export function timeSpinnerRemaining$1(verify: boolean): number
 	return 10 - spins_used;
 }
 
-export function timeSpinnerGet(goal: string): boolean
+function timeSpinnerGet(goal: string): boolean
 {
 	//spend 2 minutes to visit the far future using ezandora's script to get something
 	if (timeSpinnerRemaining$1(true) < 2)
@@ -1138,7 +1138,7 @@ export function timeSpinnerGet(goal: string): boolean
 	}
 	return false;
 }
-export function timeSpinnerConsume(goal: Item): boolean
+function timeSpinnerConsume(goal: Item): boolean
 {
 	//spend 3 minutes to re-consume a food item
 	if (timeSpinnerRemaining$1(true) < 3)
@@ -1178,7 +1178,7 @@ export function timeSpinnerAdventure(option?: CombatMacro): boolean
 	return autoAdvBypass(0, pages, Location.get("Noob Cave"), option);
 }
 
-export function canTimeSpinnerMonster(mon: Monster): boolean
+function canTimeSpinnerMonster(mon: Monster): boolean
 {
 	// Can only time spinner summon copyable monsters
 	if (!mon.copyable || mon.id < 0)
@@ -1204,7 +1204,7 @@ export function timeSpinnerCombat$1(goal: Monster, speculative: boolean): boolea
 	return timeSpinnerCombat$2(goal, null, speculative);
 }
 
-export function timeSpinnerCombat$2(goal: Monster, option: CombatMacro, speculative: boolean): boolean
+function timeSpinnerCombat$2(goal: Monster, option: CombatMacro, speculative: boolean): boolean
 {
 	//spend 3 minutes to Travel to a Recent Fight
 	if (timeSpinnerRemaining$1(!speculative) < 3)
@@ -1283,7 +1283,7 @@ export function auto_chapeau(): void
 	}
 }
 
-export function rethinkingCandyList(): boolean
+function rethinkingCandyList(): boolean
 {
 	let synthesis: Effect[] = Effect.get(["Synthesis: Hot", "Synthesis: Cold", "Synthesis: Pungent", "Synthesis: Scary", "Synthesis: Greasy", "Synthesis: Strong", "Synthesis: Smart", "Synthesis: Cool", "Synthesis: Hardy", "Synthesis: Energy", "Synthesis: Greed", "Synthesis: Collection", "Synthesis: Movement", "Synthesis: Learning", "Synthesis: Style"]);
 	for (let eff of synthesis)
@@ -1299,7 +1299,7 @@ export function rethinkingCandy(acquire: Effect): boolean
 	return rethinkingCandy$1(acquire, false);
 }
 
-export function rethinkingCandy$1(acquire: Effect, simulate: boolean): boolean
+function rethinkingCandy$1(acquire: Effect, simulate: boolean): boolean
 {
 	if ((!haveSkill(Skill.get("Sweet Synthesis")) || !auto_is_valid$2(Skill.get("Sweet Synthesis"))) && !simulate)
 	{

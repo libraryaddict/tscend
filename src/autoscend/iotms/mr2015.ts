@@ -30,12 +30,12 @@ import { towerKeyCount } from "../quests/level_13";
 //
 
 //Defined in autoscend/iotms/mr2015.ash
-export function auto_haveLovebugs(): boolean
+function auto_haveLovebugs(): boolean
 {
 	return toBoolean(getProperty("lovebugsUnlocked")) && auto_is_valid$2(Skill.get("Summon Love Stinkbug"));
 }
 
-export function mayo_acquireMayo(it: Item): boolean
+function mayo_acquireMayo(it: Item): boolean
 {
 	if (!isUnrestricted(Item.get("portable Mayo Clinic")))
 	{
@@ -451,7 +451,7 @@ export function chateaumantegna_decorations(): Map<Item, boolean>
 	return retval;
 }
 
-export function chateaumantegna_buyStuff(toBuy: Item): void
+function chateaumantegna_buyStuff(toBuy: Item): void
 {
 	if (!chateaumantegna_available())
 	{
@@ -604,13 +604,13 @@ export function chateauPainting(): boolean
 }
 
 
-export function deck_available(): boolean
+function deck_available(): boolean
 {
 	let deck: Item = wrap_item(Item.get("Deck of Every Card"));
 	return itemAmount(deck) > 0 && isUnrestricted(deck) && auto_is_valid(deck);
 }
 
-export function deck_draws_left(): number
+function deck_draws_left(): number
 {
 	if (!deck_available())
 	{
@@ -624,7 +624,7 @@ export function deck_draws_left(): number
 }
 
 
-export function deck_draw(): boolean
+function deck_draw(): boolean
 {
 	if (!deck_available())
 	{
@@ -646,7 +646,7 @@ export function deck_draw(): boolean
 
 let $_deck_cheat_cards: Map<string, number> | undefined;
 
-export function deck_cheat(cheat: string): boolean
+function deck_cheat(cheat: string): boolean
 {
 	if (!deck_available())
 	{

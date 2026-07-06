@@ -66,7 +66,7 @@ export function inebriety_left(): number
 
 let $_saucemavenApplies_saucy_foods: Item[] | undefined;
 
-export function saucemavenApplies(it: Item): boolean
+function saucemavenApplies(it: Item): boolean
 {
 	$_saucemavenApplies_saucy_foods ??= Item.get(["cold hi mein",
 		"devil hair pasta",
@@ -112,7 +112,7 @@ export function expectedAdventuresFrom(it: Item): number
 	return expected;
 }
 
-export function canOde(toDrink: Item): boolean
+function canOde(toDrink: Item): boolean
 {
 	if (in_tcrs())
 	{
@@ -183,7 +183,7 @@ export function autoDrink(howMany: number, toDrink: Item): boolean
 	return autoDrink$1(howMany, toDrink, false);
 }
 
-export function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean
+function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean
 {
 	if (toBoolean(getProperty("auto_limitConsume")))
 	{
@@ -293,7 +293,7 @@ export function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): bo
 	return retval;
 }
 
-export function autoOverdrink(howMany: number, toOverdrink: Item): boolean
+function autoOverdrink(howMany: number, toOverdrink: Item): boolean
 {
 	if (!canDrink$1(toOverdrink))
 	{
@@ -302,7 +302,7 @@ export function autoOverdrink(howMany: number, toOverdrink: Item): boolean
 	return overdrink(howMany, toOverdrink);
 }
 
-export function minAdvPerDrunk(toDrink: Item): number
+function minAdvPerDrunk(toDrink: Item): number
 {
 	let minAdv: number = 0;
 	if (indexOf(toDrink.adventures, "-") < 0)
@@ -316,7 +316,7 @@ export function minAdvPerDrunk(toDrink: Item): number
 	return minAdv / size;
 }
 
-export function cafeFoodName(id: number): string
+function cafeFoodName(id: number): string
 {
 	if (id === toInt(dailySpecial()))
 	{
@@ -332,7 +332,7 @@ export function cafeFoodName(id: number): string
 	return "";
 }
 
-export function cafeDrinkName(id: number): string
+function cafeDrinkName(id: number): string
 {
 	if (id === toInt(dailySpecial()))
 	{
@@ -348,7 +348,7 @@ export function cafeDrinkName(id: number): string
 	return "";
 }
 
-export function autoDrinkCafe(howmany: number, id: number): boolean
+function autoDrinkCafe(howmany: number, id: number): boolean
 {
 	if (toBoolean(getProperty("auto_limitConsume")))
 	{
@@ -372,7 +372,7 @@ export function autoDrinkCafe(howmany: number, id: number): boolean
 	return true;
 }
 
-export function autoEatCafe(howmany: number, id: number): boolean
+function autoEatCafe(howmany: number, id: number): boolean
 {
 	if (toBoolean(getProperty("auto_limitConsume")))
 	{
@@ -429,7 +429,7 @@ export function autoEat(howMany: number, toEat: Item): boolean
 	return autoEat$1(howMany, toEat, true);
 }
 
-export function autoEat$1(howMany: number, toEat: Item, silent: boolean): boolean
+function autoEat$1(howMany: number, toEat: Item, silent: boolean): boolean
 {
 	if (toBoolean(getProperty("auto_limitConsume")))
 	{
@@ -597,7 +597,7 @@ export function consumeMilkOfMagnesiumIfUnused(): boolean
 	return use(1, Item.get("milk of magnesium"));
 }
 
-export function minAdvPerFull(toEat: Item): number
+function minAdvPerFull(toEat: Item): number
 {
 	let minAdv: number = 0;
 	if (indexOf(toEat.adventures, "-") < 0)
@@ -613,7 +613,7 @@ export function minAdvPerFull(toEat: Item): number
 	return minAdv / size;
 }
 
-export function minAdvPerFullForDietPill(): number
+function minAdvPerFullForDietPill(): number
 {
 	if (is_jarlsberg())
 	{
@@ -626,7 +626,7 @@ export function minAdvPerFullForDietPill(): number
 	return 8.5;
 }
 
-export function wantDietPill(toEat: Item): boolean
+function wantDietPill(toEat: Item): boolean
 {
 	let pill: Item = Item.get("dieting pill");
 	if (!auto_is_valid(pill) || !auto_is_valid(toEat))
@@ -652,7 +652,7 @@ export function wantDietPill(toEat: Item): boolean
 	return false;
 }
 
-export function canDrink$2(toDrink: Item, checkValidity: boolean): boolean
+function canDrink$2(toDrink: Item, checkValidity: boolean): boolean
 {
 	if (!canDrink())
 	{
@@ -729,7 +729,7 @@ export function canDrink$1(toDrink: Item): boolean
 	return canDrink$2(toDrink, true);
 }
 
-export function canEat$2(toEat: Item, checkValidity: boolean): boolean
+function canEat$2(toEat: Item, checkValidity: boolean): boolean
 {
 	if (!canEat())
 	{
@@ -843,15 +843,15 @@ export function consumptionProgress(): number
 	}
 }
 
-export let AUTO_ORGAN_STOMACH: number = 1;
-export let AUTO_ORGAN_LIVER: number = 2;
+let AUTO_ORGAN_STOMACH: number = 1;
+let AUTO_ORGAN_LIVER: number = 2;
 
-export let AUTO_OBTAIN_NULL: number = 100;
-export let AUTO_OBTAIN_CRAFT: number = 101;
-export let AUTO_OBTAIN_PULL: number = 102;
-export let AUTO_OBTAIN_BUY: number = 103;
+let AUTO_OBTAIN_NULL: number = 100;
+let AUTO_OBTAIN_CRAFT: number = 101;
+let AUTO_OBTAIN_PULL: number = 102;
+let AUTO_OBTAIN_BUY: number = 103;
 
-export function consumable_name(action: ConsumeAction): string
+function consumable_name(action: ConsumeAction): string
 {
 	let name: string = "<name not found>";
 	if (action.it !== Item.none) { name = action.it.toString(); }
@@ -860,7 +860,7 @@ export function consumable_name(action: ConsumeAction): string
 	return name;
 }
 
-export function to_pretty_string(action: ConsumeAction): string
+function to_pretty_string(action: ConsumeAction): string
 {
 	let organ_name: string = (action.organ === AUTO_ORGAN_STOMACH ? "fullness" : "inebriety");
 	let logline: string = `${consumable_name(action)} for ${action.adventures} base adv (${action.size} ${organ_name})`;
@@ -879,7 +879,7 @@ export function to_pretty_string(action: ConsumeAction): string
 	return logline;
 }
 
-export function to_debug_string(action: ConsumeAction): string
+function to_debug_string(action: ConsumeAction): string
 {
 	let ret: string = "";
 	ret += `ConsumeAction(it=${action.it}`;
@@ -893,7 +893,7 @@ export function to_debug_string(action: ConsumeAction): string
 	return ret;
 }
 
-export function MakeConsumeAction(it: Item): ConsumeAction
+function MakeConsumeAction(it: Item): ConsumeAction
 {
 	let organ: number = (it.inebriety > 0 ? AUTO_ORGAN_LIVER : AUTO_ORGAN_STOMACH);
 	let size: number = max(it.inebriety, it.fullness);
@@ -901,7 +901,7 @@ export function MakeConsumeAction(it: Item): ConsumeAction
 	return new ConsumeAction(it, 0, size, adv, adv, organ, AUTO_OBTAIN_NULL);
 }
 
-export function autoPrepConsume(action: ConsumeAction): boolean
+function autoPrepConsume(action: ConsumeAction): boolean
 {
 	auto_log_info$1(to_debug_string(action));
 	if (action.howtoget === AUTO_OBTAIN_PULL)
@@ -929,7 +929,7 @@ export function autoPrepConsume(action: ConsumeAction): boolean
 	return true;
 }
 
-export function autoConsume(action: ConsumeAction): boolean
+function autoConsume(action: ConsumeAction): boolean
 {
 	if (toBoolean(getProperty("auto_limitConsume")))
 	{
@@ -974,7 +974,7 @@ export function autoConsume(action: ConsumeAction): boolean
 	return false;
 }
 
-export function loadConsumables(_type: string, actions: Map<number, ConsumeAction>): boolean
+function loadConsumables(_type: string, actions: Map<number, ConsumeAction>): boolean
 {
 	// Just in case!
 	if (in_darkGyffte())
@@ -1532,7 +1532,7 @@ export function loadConsumables(_type: string, actions: Map<number, ConsumeActio
 	return true;
 }
 
-export function auto_bestNightcap(): ConsumeAction
+function auto_bestNightcap(): ConsumeAction
 {
 	let actions: Map<number, ConsumeAction> = new Map();
 	loadConsumables("drink", actions);
@@ -1600,7 +1600,7 @@ export function auto_printNightcap(): void
 	auto_log_info(`Nightcap is: ${to_pretty_string(auto_bestNightcap())}`, "blue");
 }
 
-export function auto_overdrinkGreenBeers(): void
+function auto_overdrinkGreenBeers(): void
 {
 	//called after nightcap, auto_drinkNightcap() needs to have already made the necessary checks
 	if (!containsText(holiday(), "St. Sneaky Pete's Day") || !canDrink$2(Item.get("green beer"), false))
@@ -1796,7 +1796,7 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction
 	}
 }
 
-export function auto_findBestConsumeAction$1(): ConsumeAction
+function auto_findBestConsumeAction$1(): ConsumeAction
 {
 	if (stomach_left() === 0 && inebriety_left() === 0)
 	{
@@ -1897,7 +1897,7 @@ export function auto_autoConsumeOne$1(type_1: string): boolean
 }
 // Need separate function to simulate since return type is different
 // For simulation, want to know what would be consumes instead of actually consuming it
-export function auto_autoConsumeOneSimulation(type_1: string): Item
+function auto_autoConsumeOneSimulation(type_1: string): Item
 {
 	let bestAction: ConsumeAction = auto_findBestConsumeAction(type_1);
 	if (bestAction.it === Item.none) { //this can only find an existing item for daily specials
@@ -1905,7 +1905,7 @@ export function auto_autoConsumeOneSimulation(type_1: string): Item
 	return bestAction.it;
 }
 
-export function auto_knapsackAutoConsume(type_1: string, simulate: boolean): boolean
+function auto_knapsackAutoConsume(type_1: string, simulate: boolean): boolean
 {
 	// TODO: does not consider mime army shotglass
 
@@ -2323,7 +2323,7 @@ export function isSpleenConsumable(it: Item): boolean
 	return it.spleen !== 0;
 }
 
-export function auto_getConsumablePriceLimit(): number
+function auto_getConsumablePriceLimit(): number
 {
 	let mafia_max: number = toInt(getProperty("autoBuyPriceLimit"));
 	let autoscend_max: number = toInt(getProperty("auto_consumablePriceLimit"));

@@ -21,7 +21,7 @@ export function bond_initializeSettings(): void
 	}
 }
 
-export function bond_buySkills(): boolean
+function bond_buySkills(): boolean
 {
 	if (!in_lta())
 	{
@@ -215,7 +215,7 @@ export function LM_bond(): boolean
 	return false;
 }
 
-export let bondDrinksCached: Map<number, Item> = new Map();
+let bondDrinksCached: Map<number, Item> = new Map();
 export function bondDrinks(): Map<number, Item>
 {
 	if (bondDrinksCached.size === 0)

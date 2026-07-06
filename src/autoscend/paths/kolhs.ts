@@ -32,7 +32,7 @@ export function kolhs_initializeSettings(): void
 	setProperty("kolhs_closetDrink", false.toString());
 }
 
-export function kolhs_closetDrink(): void
+function kolhs_closetDrink(): void
 {
 	//prevent kolhs issues in postronin (or drop to casual) caused by special drinks by closetting excess amount.
 	//this function and related variables are needed because mafia does not track which is the last dropped kolhs combat drink.
@@ -152,7 +152,7 @@ export function kolhs_preadv(place: Location): void
 	}
 }
 
-export function LX_kolhs_visitYearbookClub(): boolean
+function LX_kolhs_visitYearbookClub(): boolean
 {
 	//visit to yearbook club. You start the quest on one day and complete it the next day so no point in multiple visits in one day.
 	//if you did not finish the quest then it changes. so you need to revisit every day regardless of completion status.
@@ -170,7 +170,7 @@ export function LX_kolhs_visitYearbookClub(): boolean
 	return autoAdv$2(Location.get("The Hallowed Halls")); //goto NC772
 }
 
-export function LX_kolhs_yearbookCameraGet(): boolean
+function LX_kolhs_yearbookCameraGet(): boolean
 {
 	//grab the yearbook camera if you have not already done so.
 	if (possessEquipment(Item.get("Yearbook Club Camera")))
@@ -184,7 +184,7 @@ export function LX_kolhs_yearbookCameraGet(): boolean
 	return LX_kolhs_visitYearbookClub(); //grab the camera if you did not get it yet this ascension
 }
 
-export function LX_kolhs_yearbookCameraQuest(): boolean
+function LX_kolhs_yearbookCameraQuest(): boolean
 {
 	//grab a yearbook camera. do sidequest to acquire permanent between ascensions upgrades for it
 	if (kolhs_mandatorySchool())
@@ -233,7 +233,7 @@ export function LX_kolhs_yearbookCameraQuest(): boolean
 	return false;
 }
 
-export function LX_kolhs_school(): boolean
+function LX_kolhs_school(): boolean
 {
 	//adventure in school. mandatory for first 40 adv to be spent there.
 	if (!kolhs_mandatorySchool())

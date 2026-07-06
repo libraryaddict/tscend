@@ -139,7 +139,7 @@ export function auto_haveCombatLoversLocket(): boolean
 	return possessEquipment(Item.get("combat lover's locket")) && auto_is_valid(Item.get("combat lover's locket"));
 }
 
-export function auto_CombatLoversLocketCharges(): number
+function auto_CombatLoversLocketCharges(): number
 {
 	// can fight up to 3 unique monsters by reminiscing with the locket
 	if (!auto_haveCombatLoversLocket())
@@ -157,7 +157,7 @@ export function auto_CombatLoversLocketCharges(): number
 	return 3 - splitString(locketMonstersFought, ",").length;
 }
 
-export function auto_haveReminiscedMonster(mon: Monster): boolean
+function auto_haveReminiscedMonster(mon: Monster): boolean
 {
 	let idList: Map<number, string> = new Map(splitString(getProperty("_locketMonstersFought"), ",").map((_v, _i) => [_i, _v]));
 	for (let [index, id] of idList)
@@ -620,7 +620,7 @@ export function auto_autumnatonCanAdv(canAdventureInloc: Location): boolean
 	return false;
 }
 
-export function auto_autumnatonReadyToQuest(): boolean
+function auto_autumnatonReadyToQuest(): boolean
 {
 	if (!auto_hasAutumnaton())
 	{
@@ -635,7 +635,7 @@ export function auto_autumnatonQuestingIn(): Location
 	return toLocation(getProperty("autumnatonQuestLocation"));
 }
 
-export function auto_autumnatonCheckForUpgrade(upgrade: string): boolean
+function auto_autumnatonCheckForUpgrade(upgrade: string): boolean
 {
 	let currentUpgrades: string = getProperty("autumnatonUpgrades");
 	if (containsText(currentUpgrades, upgrade))
@@ -645,7 +645,7 @@ export function auto_autumnatonCheckForUpgrade(upgrade: string): boolean
 	return false;
 }
 
-export function auto_sendAutumnaton(loc: Location): boolean
+function auto_sendAutumnaton(loc: Location): boolean
 {
 	if (auto_autumnatonCanAdv(loc))
 	{
@@ -791,7 +791,7 @@ export function auto_haveTrainSet(): boolean
 	return auto_get_campground().has(Item.get("model train set")) && auto_is_valid(Item.get("model train set")); //check if the model train set is in the campground
 }
 
-export function auto_modifyTrainSet(one: number, two: number, three: number, four: number, five: number, six: number, seven: number, eight: number): void
+function auto_modifyTrainSet(one: number, two: number, three: number, four: number, five: number, six: number, seven: number, eight: number): void
 {
 	let page: string = `choice.php?pwd&whichchoice=1485&option=1&slot[0]=${one}&slot[1]=${two}&slot[2]=${three}&slot[3]=${four}&slot[4]=${five}&slot[5]=${six}&slot[6]=${seven}&slot[7]=${eight}`;
 	visitUrl(page, true, true);

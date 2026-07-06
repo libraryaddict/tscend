@@ -24,12 +24,12 @@ export function auto_get_clan_lounge(): Map<Item, number>
 	return retval;
 }
 
-export function handleFaxMonster(enemy: Monster): boolean
+function handleFaxMonster(enemy: Monster): boolean
 {
 	return handleFaxMonster$3(enemy, true, null);
 }
 
-export function handleFaxMonster$1(enemy: Monster, option: CombatMacro): boolean
+function handleFaxMonster$1(enemy: Monster, option: CombatMacro): boolean
 {
 	return handleFaxMonster$3(enemy, true, option);
 }
@@ -39,7 +39,7 @@ export function handleFaxMonster$2(enemy: Monster, fightIt: boolean): boolean
 	return handleFaxMonster$3(enemy, fightIt, null);
 }
 
-export function handleFaxMonster$3(enemy: Monster, fightIt: boolean, option: CombatMacro): boolean
+function handleFaxMonster$3(enemy: Monster, fightIt: boolean, option: CombatMacro): boolean
 {
 	if (toBoolean(getProperty("_photocopyUsed")))
 	{
@@ -111,7 +111,7 @@ export function handleFaxMonster$3(enemy: Monster, fightIt: boolean, option: Com
 	return false;
 }
 
-export function checkFax(enemy: Monster): boolean
+function checkFax(enemy: Monster): boolean
 {
 	if (itemAmount(Item.get("photocopied monster")) === 0)
 	{
@@ -175,7 +175,7 @@ export function getBAFHID(): number
 	return 90485;
 }
 
-export function isWhitelistedToClan(clanID: number): boolean
+function isWhitelistedToClan(clanID: number): boolean
 {
 	let page: string = visitUrl("clan_signup.php");
 	let clan_matcher: AshMatcher = new AshMatcher("<option value=(\\d\\d\\d+)>(.*?)</option>", page);
@@ -195,7 +195,7 @@ export function isWhitelistedToBAFH(): boolean
 	return isWhitelistedToClan(getBAFHID());
 }
 
-export function whitelistedClanToID(clanName: string): number
+function whitelistedClanToID(clanName: string): number
 {
 	let page: string = visitUrl("clan_signup.php");
 	let clan_matcher: AshMatcher = new AshMatcher("<option value=(\\d\\d\\d+)>(.*?)</option>", page);
@@ -217,7 +217,7 @@ export function canReturnToCurrentClan(): boolean
 	return isWhitelistedToClan(getClanId());
 }
 
-export function changeClan(clanName: string): number
+function changeClan(clanName: string): number
 {
 	let toClan: number = 0;
 	let canReturn: boolean = canReturnToCurrentClan();
@@ -382,7 +382,7 @@ export function drinkSpeakeasyDrink(drink_1: Item): boolean
 	return cliExecute(`drink 1 ${drink_1}`);
 }
 
-export function drinkSpeakeasyDrink$1(drink_1: string): boolean
+function drinkSpeakeasyDrink$1(drink_1: string): boolean
 {
 	if (!(auto_get_clan_lounge().has(Item.get("Clan speakeasy"))))
 	{
@@ -577,7 +577,7 @@ let $_eatFancyDog_dogReq: Map<string, Item> | undefined;
 let $_eatFancyDog_dogAmt: Map<string, number> | undefined;
 let $_eatFancyDog_dogID: Map<string, number> | undefined;
 
-export function eatFancyDog(dog: string): boolean
+function eatFancyDog(dog: string): boolean
 {
 	if (itemAmount(Item.get("Clan VIP Lounge key")) === 0)
 	{
@@ -743,7 +743,7 @@ export function auto_floundryAction(): boolean
 	return false;
 }
 
-export function auto_floundryAction$1(it: Item): boolean
+function auto_floundryAction$1(it: Item): boolean
 {
 	if (toBoolean(getProperty("_floundryItemCreated")))
 	{
