@@ -1,4 +1,4 @@
-import { Familiar, Item, Location, Path, blackMarketAvailable, getProperty, myBasestat, myFamiliar, myPath, myPrimestat, print, setProperty, toFamiliar, toInt, totalTurnsPlayed, visitUrl } from "kolmafia";
+import { blackMarketAvailable, Familiar, getProperty, Item, Location, myBasestat, myFamiliar, myPath, myPrimestat, Path, print, setProperty, toFamiliar, toInt, totalTurnsPlayed, visitUrl } from "kolmafia";
 import { autoAdv$1 } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
 import { internalQuestStatus } from "../auto_util";

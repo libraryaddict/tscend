@@ -1,4 +1,4 @@
-import { Effect, Element, Familiar, Item, Location, Monster, Phylum, Slot, abort, bjornifyFamiliar, cliExecute, containsText, create, equippedItem, getCampground, getCounters, getProperty, haveEffect, haveFamiliar, inHardcore, isUnrestricted, itemAmount, myAdventures, myBjornedFamiliar, myDaycount, myFamiliar, myLevel, print, runChoice, setProperty, splitString, storageAmount, toBoolean, toInt, toMonster, use, userConfirm, visitUrl } from "kolmafia";
+import { abort, bjornifyFamiliar, cliExecute, containsText, create, Effect, Element, equippedItem, Familiar, getCampground, getCounters, getProperty, haveEffect, haveFamiliar, inHardcore, isUnrestricted, Item, itemAmount, Location, Monster, myAdventures, myBjornedFamiliar, myDaycount, myFamiliar, myLevel, Phylum, print, runChoice, setProperty, Slot, splitString, storageAmount, toBoolean, toInt, toMonster, use, userConfirm, visitUrl } from "kolmafia";
 import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
 import { fullness_left, inebriety_left } from "../auto_consume";

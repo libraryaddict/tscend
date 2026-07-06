@@ -1,4 +1,4 @@
-import { Item, Monster, Skill, abort, getProperty, itemAmount, monsterLevelAdjustment, myMp, myThunder, setProperty, toInt } from "kolmafia";
+import { abort, getProperty, Item, itemAmount, Monster, monsterLevelAdjustment, myMp, myThunder, setProperty, Skill, toInt } from "kolmafia";
 import { auto_have_skill } from "../auto_util";
 import { canUse$1, canUse$2, useSkill$1, useSkill$2 } from "./auto_combat_util";
 

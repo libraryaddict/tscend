@@ -1,4 +1,4 @@
-import { Path, myPath } from "kolmafia";
+import { myPath, Path } from "kolmafia";
 
 // community service is no longer supported
 

@@ -1,4 +1,4 @@
-import { Effect, Element, Familiar, Item, Location, Monster, Skill, Slot, Stat, abort, cliExecute, containsText, equip, equippedItem, getProperty, haveEffect, haveEquipped, haveFamiliar, inHardcore, isUnrestricted, itemAmount, min, myAdventures, myDaycount, myHp, myLevel, myMeat, myPrimestat, npcPrice, runChoice, setProperty, splitString, toBoolean, toInt, toLowerCase, toStat, useSkill, visitUrl } from "kolmafia";
+import { abort, cliExecute, containsText, Effect, Element, equip, equippedItem, Familiar, getProperty, haveEffect, haveEquipped, haveFamiliar, inHardcore, isUnrestricted, Item, itemAmount, Location, min, Monster, myAdventures, myDaycount, myHp, myLevel, myMeat, myPrimestat, npcPrice, runChoice, setProperty, Skill, Slot, splitString, Stat, toBoolean, toInt, toLowerCase, toStat, useSkill, visitUrl } from "kolmafia";
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv$2, autoAdvBypass$2, CombatMacro } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";

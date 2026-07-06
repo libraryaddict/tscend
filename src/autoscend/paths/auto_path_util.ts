@@ -1,4 +1,4 @@
-import { Class, Item, Skill, getProperty, gnomadsAvailable, guildStoreAvailable, haveSkill, itemAmount, myClass, myLevel, myMeat, myPath, print, setProperty, toBoolean, visitUrl } from "kolmafia";
+import { Class, getProperty, gnomadsAvailable, guildStoreAvailable, haveSkill, Item, itemAmount, myClass, myLevel, myMeat, myPath, print, setProperty, Skill, toBoolean, visitUrl } from "kolmafia";
 import { initializeSettings } from "../../autoscend";
 import { stomach_left } from "../auto_consume";
 import { hasTorso$1, hasUsefulShirt, meatReserve } from "../auto_util";

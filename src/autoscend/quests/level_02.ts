@@ -1,4 +1,4 @@
-import { Item, Location, abort, cliExecute, council, hiddenTempleUnlocked, itemAmount, myMeat, runChoice } from "kolmafia";
+import { abort, cliExecute, council, hiddenTempleUnlocked, Item, itemAmount, Location, myMeat, runChoice } from "kolmafia";
 import { autoAdv$2 } from "../auto_adventure";
 import { canBurnDelay } from "../auto_routing";
 import { auto_log_info, auto_log_warning$1, internalQuestStatus } from "../auto_util";

@@ -1,4 +1,4 @@
-import { Effect, Path, containsText, getProperty, haveEffect, lastMonster, myPath, setProperty } from "kolmafia";
+import { containsText, Effect, getProperty, haveEffect, lastMonster, myPath, Path, setProperty } from "kolmafia";
 import { acquireHP } from "../auto_restore";
 import { auto_log_warning, handleTracker$1 } from "../auto_util";
 

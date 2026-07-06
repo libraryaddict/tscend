@@ -1,4 +1,4 @@
-import { Coinmaster, Familiar, Item, Path, Skill, abort, availableAmount, buy, containsText, getProperty, haveFamiliar, itemAmount, myPath, setProperty, toLowerCase, use, visitUrl } from "kolmafia";
+import { abort, availableAmount, buy, Coinmaster, containsText, Familiar, getProperty, haveFamiliar, Item, itemAmount, myPath, Path, setProperty, Skill, toLowerCase, use, visitUrl } from "kolmafia";
 import { is100FamRun, pathHasFamiliar } from "../auto_familiar";
 import { auto_sourceTerminalEducate, auto_sourceTerminalRequest } from "../iotms/mr2016";
 import { auto_buyFrom2002MrStore, auto_scepterSkills } from "../iotms/mr2023";

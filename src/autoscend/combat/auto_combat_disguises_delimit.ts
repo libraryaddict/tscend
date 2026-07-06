@@ -1,4 +1,4 @@
-import { Monster, Skill, abort, getProperty, min, monsterHp, myHp, myMask, numericModifier, setProperty, toInt } from "kolmafia";
+import { abort, getProperty, min, Monster, monsterHp, myHp, myMask, numericModifier, setProperty, Skill, toInt } from "kolmafia";
 import { auto_log_info } from "../auto_util";
 import { canSurvive$1, canUse$1, canUse$2, useSkill$1, useSkill$2 } from "./auto_combat_util";
 import { in_disguises } from "../paths/disguises_delimit";

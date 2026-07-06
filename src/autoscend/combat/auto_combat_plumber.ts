@@ -1,4 +1,4 @@
-import { Class, Item, Location, Monster, Skill, equippedAmount, myClass, myLocation, myPp } from "kolmafia";
+import { Class, equippedAmount, Item, Location, Monster, myClass, myLocation, myPp, Skill } from "kolmafia";
 import { canUse$1, useSkill$1, useSkill$2 } from "./auto_combat_util";
 
 //Path specific combat handling for path of the plumber

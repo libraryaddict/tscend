@@ -1,4 +1,4 @@
-import { Path, myPath } from "kolmafia";
+import { myPath, Path } from "kolmafia";
 
 //Defined in autoscend/paths/class_act_two.ash
 export function in_class_act_two(): boolean

@@ -1,11 +1,11 @@
-import { Effect, Element, Familiar, Item, Location, Monster, Skill, abort, charAt, containsText, council, getProperty, haveEffect, haveSkill, lastMonster, monsterLevelAdjustment, myDaycount, myLevel, myMp, numericModifier, setProperty, stringModifier, toBoolean, visitUrl, wait } from "kolmafia";
+import { abort, charAt, containsText, council, Effect, Element, Familiar, getProperty, haveEffect, haveSkill, Item, lastMonster, Location, Monster, monsterLevelAdjustment, myDaycount, myLevel, myMp, numericModifier, setProperty, Skill, stringModifier, toBoolean, visitUrl, wait } from "kolmafia";
 import { pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$1, autoAdvBypass$1 } from "../auto_adventure";
 import { buffMaintain$3 } from "../auto_buff";
 import { addToMaximize, possessEquipment, resetMaximize, simMaximizeWith$1, simValue, simValue$1 } from "../auto_equipment";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import { providePlusCombat$4, providePlusNonCombat$4 } from "../auto_providers";
-import { auto_MaxMLToCap, auto_combatModCap, auto_convertDesiredML, auto_log_info, auto_log_warning, auto_setMCDToCap, damageModifier, internalQuestStatus } from "../auto_util";
+import { auto_combatModCap, auto_convertDesiredML, auto_log_info, auto_log_warning, auto_MaxMLToCap, auto_setMCDToCap, damageModifier, internalQuestStatus } from "../auto_util";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { auto_beachCombHead } from "../iotms/mr2019";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";

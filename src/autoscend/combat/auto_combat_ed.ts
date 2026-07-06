@@ -1,10 +1,10 @@
-import { Effect, Element, Item, Location, Monster, Phylum, Skill, Slot, Stat, abort, containsText, equippedItem, expectedDamage, getProperty, haveEffect, haveEquipped, indexOf, itemAmount, monsterAttack, monsterDefense, monsterHp, monsterLevelAdjustment, mpCost, myAscensions, myBuffedstat, myDaycount, myHp, myLevel, myLocation, myMaxhp, myMaxmp, myMp, removeProperty, setProperty, substring, toBoolean, toFamiliar, toFloat, toInt, toItem, toLowerCase, toMonster, toSkill, weaponType } from "kolmafia";
+import { abort, containsText, Effect, Element, equippedItem, expectedDamage, getProperty, haveEffect, haveEquipped, indexOf, Item, itemAmount, Location, Monster, monsterAttack, monsterDefense, monsterHp, monsterLevelAdjustment, mpCost, myAscensions, myBuffedstat, myDaycount, myHp, myLevel, myLocation, myMaxhp, myMaxmp, myMp, Phylum, removeProperty, setProperty, Skill, Slot, Stat, substring, toBoolean, toFamiliar, toFloat, toInt, toItem, toLowerCase, toMonster, toSkill, weaponType } from "kolmafia";
 import { possessEquipment } from "../auto_equipment";
 import { auto_have_skill, auto_log_error, auto_log_info, auto_log_warning, auto_wantToBanish, auto_wantToFreeRun, auto_wantToReplace, auto_wantToSniff, auto_wantToYellowRay, freeRunCombatString, handleTracker, handleTracker$1, instakillable, internalQuestStatus, isFreeMonster$1, isGhost, loopHandlerDelayAll } from "../auto_util";
-import { banisherCombatString$1, canSurvive$1, canUse$1, canUse$2, canUse$3, canUse$4, combat_status_add, combat_status_check, getStunner, markAsUsed, replaceMonsterCombatString, useItem, useItem$1, useItems$1, useSkill$1, useSkill$2, usedCount, wantToForceDrop, yellowRayCombatString } from "./auto_combat_util";
+import { banisherCombatString$1, canSurvive$1, canUse$1, canUse$2, canUse$3, canUse$4, combat_status_add, combat_status_check, getStunner, markAsUsed, replaceMonsterCombatString, usedCount, useItem, useItem$1, useItems$1, useSkill$1, useSkill$2, wantToForceDrop, yellowRayCombatString } from "./auto_combat_util";
 import { elementalPlanes_access } from "../iotms/elementalPlanes";
 import { auto_spoonCombatSkill } from "../iotms/mr2019";
-import { auto_FireExtinguisherCombatString, auto_backupTarget, auto_fireExtinguisherCharges } from "../iotms/mr2021";
+import { auto_backupTarget, auto_fireExtinguisherCharges, auto_FireExtinguisherCombatString } from "../iotms/mr2021";
 import { auto_bowlingBallCombatString } from "../iotms/mr2022";
 import { dartELRcd, dartSkill } from "../iotms/mr2024";
 import { ed_needShop, isActuallyEd } from "../paths/actually_ed_the_undying";

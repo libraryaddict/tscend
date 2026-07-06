@@ -1,4 +1,4 @@
-import { Effect, Element, Familiar, Item, Location, Monster, Skill, Slot, abort, availableAmount, canInteract, cliExecute, containsText, council, equip, expectedDamage, fullnessLimit, getProperty, haveEffect, haveEquipped, haveSkill, isWearingOutfit, itemAmount, jumpChance, myAdventures, myDaycount, myLevel, myMaxhp, myPath, mySessionAdv, numericModifier, outfit, print, random, runChoice, setProperty, splitString, substring, toBoolean, toInt, toItem, toMonster, visitUrl } from "kolmafia";
+import { abort, availableAmount, canInteract, cliExecute, containsText, council, Effect, Element, equip, expectedDamage, Familiar, fullnessLimit, getProperty, haveEffect, haveEquipped, haveSkill, isWearingOutfit, Item, itemAmount, jumpChance, Location, Monster, myAdventures, myDaycount, myLevel, myMaxhp, myPath, mySessionAdv, numericModifier, outfit, print, random, runChoice, setProperty, Skill, Slot, splitString, substring, toBoolean, toInt, toItem, toMonster, visitUrl } from "kolmafia";
 import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$2, autoLuckyAdv$1 } from "../auto_adventure";
 import { buffMaintain$3 } from "../auto_buff";

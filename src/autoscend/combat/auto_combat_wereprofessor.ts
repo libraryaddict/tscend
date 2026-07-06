@@ -1,4 +1,4 @@
-import { Effect, Item, Monster, Skill, getProperty, haveEffect, haveEquipped, monsterHp, setProperty, splitString, toInt, toSkill } from "kolmafia";
+import { Effect, getProperty, haveEffect, haveEquipped, Item, Monster, monsterHp, setProperty, Skill, splitString, toInt, toSkill } from "kolmafia";
 import { canUse$1, canUse$2, canUse$4, haveUsed, markAsUsed, useItem$1, useSkill$1, useSkill$2 } from "./auto_combat_util";
 import { auto_haveCosmicBowlingBall } from "../iotms/mr2022";
 import { dartSkill } from "../iotms/mr2024";

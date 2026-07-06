@@ -1,4 +1,4 @@
-import { Item, getRelated, inHardcore, isUnrestricted, itemAmount } from "kolmafia";
+import { getRelated, inHardcore, isUnrestricted, Item, itemAmount } from "kolmafia";
 import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
 import { auto_log_warning } from "../auto_util";
 

@@ -1,4 +1,4 @@
-import { Item, alliedRadio, containsText, getProperty, isUnrestricted, itemAmount, min, myLevel, toBoolean, toInt, use, visitUrl } from "kolmafia";
+import { alliedRadio, containsText, getProperty, isUnrestricted, Item, itemAmount, min, myLevel, toBoolean, toInt, use, visitUrl } from "kolmafia";
 import { possessEquipment } from "../auto_equipment";
 import { auto_is_valid, handleTracker$1, internalQuestStatus } from "../auto_util";
 import { in_hattrick } from "../paths/hattrick";

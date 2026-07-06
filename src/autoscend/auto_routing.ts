@@ -1,9 +1,9 @@
-import { Item, Location, availableAmount, getProperty, getWorkshed, haveCampground, itemAmount, max, myDaycount, myLevel, outfit, setProperty, splitString, substring, toBoolean, toInt, totalTurnsPlayed, visitUrl } from "kolmafia";
+import { availableAmount, getProperty, getWorkshed, haveCampground, Item, itemAmount, Location, max, myDaycount, myLevel, outfit, setProperty, splitString, substring, toBoolean, toInt, totalTurnsPlayed, visitUrl } from "kolmafia";
 import { auto_canForceNextNoncombat, auto_is_valid, auto_log_debug$1, auto_log_warning, auto_turbo, internalQuestStatus } from "./auto_util";
 import { zone_delay, zone_delayable, zone_isAvailable$1 } from "./auto_zone";
 import { auto_haveVotingBooth } from "./iotms/mr2018";
 import { auto_haveKramcoSausageOMatic, auto_sausageFightsToday } from "./iotms/mr2019";
-import { auto_CMCconsultsLeft, auto_backupUsesLeft, auto_haveBackupCamera, auto_haveColdMedCabinet } from "./iotms/mr2021";
+import { auto_backupUsesLeft, auto_CMCconsultsLeft, auto_haveBackupCamera, auto_haveColdMedCabinet } from "./iotms/mr2021";
 import { auto_haveCursedMagnifyingGlass } from "./iotms/mr2022";
 import { auto_haveArchaeologistSpade, auto_spadeDigsRemaining, spadeDelayZones } from "./iotms/mr2026";
 import { in_koe } from "./paths/kingdom_of_exploathing";

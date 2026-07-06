@@ -1,4 +1,4 @@
-import { Class, Item, Monster, Skill, Slot, equippedItem, myAudience, myClass } from "kolmafia";
+import { Class, equippedItem, Item, Monster, myAudience, myClass, Skill, Slot } from "kolmafia";
 import { disregardInstantKarma } from "../auto_powerlevel";
 import { canSurvive$1, canUse$2, useSkill$2 } from "./auto_combat_util";
 

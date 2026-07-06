@@ -1,12 +1,12 @@
-import { Effect, Item, Location, Modifier, Monster, Path, Slot, Stat, abort, availableAmount, containsText, council, getProperty, haveOutfit, itemAmount, max, monsterAttack, myBuffedstat, myLevel, myPath, myPrimestat, numericModifier, setProperty, toBoolean, toInt, towerDoor } from "kolmafia";
+import { abort, availableAmount, containsText, council, Effect, getProperty, haveOutfit, Item, itemAmount, Location, max, Modifier, Monster, monsterAttack, myBuffedstat, myLevel, myPath, myPrimestat, numericModifier, Path, setProperty, Slot, Stat, toBoolean, toInt, towerDoor } from "kolmafia";
 import { LX_burnDelay } from "../../autoscend";
 import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
 import { buffMaintain$4 } from "../auto_buff";
 import { auto_breakfastCounterVisit } from "../auto_consume";
-import { autoEquip$1, auto_getAllEquipabble$1, possessEquipment } from "../auto_equipment";
+import { auto_getAllEquipabble$1, autoEquip$1, possessEquipment } from "../auto_equipment";
 import { LX_attemptPowerLevel, LX_freeCombatsTask } from "../auto_powerlevel";
 import { auto_earlyRoutingHandling } from "../auto_routing";
-import { LX_summonMonster, auto_log_warning, auto_log_warning$1, internalQuestStatus, woods_questStart } from "../auto_util";
+import { auto_log_warning, auto_log_warning$1, internalQuestStatus, LX_summonMonster, woods_questStart } from "../auto_util";
 import { zone_isAvailable$1 } from "../auto_zone";
 import { canDrinkSpeakeasyDrink } from "../iotms/clan";
 import { chateauPainting } from "../iotms/mr2015";
@@ -19,13 +19,13 @@ import { L5_findKnob, L5_getEncryptionKey, L5_slayTheGoblinKing } from "../quest
 import { L6_friarsGetParts } from "../quests/level_06";
 import { L7_crypt } from "../quests/level_07";
 import { L8_trapperQuest } from "../quests/level_08";
-import { L9_chasmBuild, L9_highLandlord, L9_leafletQuest, LX_loggingHatchet, bridgeGoal, finishBuildingSmutOrcBridge } from "../quests/level_09";
+import { bridgeGoal, finishBuildingSmutOrcBridge, L9_chasmBuild, L9_highLandlord, L9_leafletQuest, LX_loggingHatchet } from "../quests/level_09";
 import { L10_airship, L10_basement, L10_ground, L10_holeInTheSkyUnlock, L10_plantThatBean, L10_topFloor } from "../quests/level_10";
 import { L11_aridDesert, L11_blackMarket, L11_defeatEd, L11_forgedDocuments, L11_getBeehive, L11_hiddenCity, L11_hiddenCityZones, L11_mauriceSpookyraven, L11_mcmuffinDiary, L11_palindome, L11_shenCopperhead, L11_shenStartQuest, L11_talismanOfNam, L11_unlockEd, L11_unlockHiddenCity, L11_unlockPyramid, LX_danceWithLadySpookyraven, LX_getLadySpookyravensDancingShoes, LX_getLadySpookyravensFinestGown, LX_getLadySpookyravensPowderPuff, LX_spookyravenManorFirstFloor, LX_spookyravenManorSecondFloor, LX_unlockHauntedBilliardsRoom, LX_unlockHauntedBilliardsRoom$1, LX_unlockHauntedLibrary, LX_unlockHiddenTemple, LX_unlockManorSecondFloor, shenShouldDelayZone } from "../quests/level_11";
 import { L12_clearBattlefield, L12_farm, L12_filthworms, L12_finalizeWar, L12_flyerFinish, L12_getOutfit, L12_gremlins, L12_lastDitchFlyer, L12_opportunisticWarStart, L12_orchardFinalize, L12_preOutfit, L12_sonofaBeach, L12_sonofaFinish, L12_sonofaPrefix, L12_startWar, L12_themtharHills } from "../quests/level_12";
 import { L13_sorceressDoor, L13_towerNSFinal, L13_towerNSNagamar, L13_towerNSTower } from "../quests/level_13";
 import { LX_fatLootToken, LX_hippyBoatman, LX_lockPicking, LX_setWorkshed, LX_unlockDesert, startHippyBoatmanSubQuest } from "../quests/level_any";
-import { LX_acquireEpicWeapon, LX_galaktikSubQuest, LX_guildUnlock, LX_joinPirateCrew, LX_pirateOutfit, LX_pirateQuest, LX_steelOrgan, LX_unlockKnobMenagerie, finishMeatsmithSubQuest, numPirateInsults, startArmorySubQuest, startMeatsmithSubQuest } from "../quests/optional";
+import { finishMeatsmithSubQuest, LX_acquireEpicWeapon, LX_galaktikSubQuest, LX_guildUnlock, LX_joinPirateCrew, LX_pirateOutfit, LX_pirateQuest, LX_steelOrgan, LX_unlockKnobMenagerie, numPirateInsults, startArmorySubQuest, startMeatsmithSubQuest } from "../quests/optional";
 
 // These are listed in the order they will be iterated (item id ascending) to make debugging easier.
 const lowKeys: Map<Item, Location> = new Map();

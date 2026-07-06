@@ -1,4 +1,4 @@
-import { Class, Effect, Element, Item, Location, Monster, Phylum, Skill, Slot, Stat, abort, buffedHitStat, containsText, equippedItem, getProperty, haveEffect, haveEquipped, haveSkill, hpCost, itemAmount, itemType, monsterDefense, monsterElement, monsterHp, monsterLevelAdjustment, monsterPhylum, mpCost, myClass, myFullness, myHp, myLocation, myMaxhp, myMp, numericModifier, setProperty, toBoolean, toInt, weaponType } from "kolmafia";
+import { abort, buffedHitStat, Class, containsText, Effect, Element, equippedItem, getProperty, haveEffect, haveEquipped, haveSkill, hpCost, Item, itemAmount, itemType, Location, Monster, monsterDefense, monsterElement, monsterHp, monsterLevelAdjustment, monsterPhylum, mpCost, myClass, myFullness, myHp, myLocation, myMaxhp, myMp, numericModifier, Phylum, setProperty, Skill, Slot, Stat, toBoolean, toInt, weaponType } from "kolmafia";
 import { auto_have_skill, auto_log_info, auto_log_warning, currentFlavour, isGhost, stunnable } from "../auto_util";
 import { zone_combatMod } from "../auto_zone";
 import { auto_combatMeatGolemStage5 } from "./auto_combat_adventurer_meats_world";
@@ -7,7 +7,7 @@ import { auto_combatFallOfTheDinosaursStage5 } from "./auto_combat_fall_of_the_d
 import { auto_combatGelatinousNoobStage5 } from "./auto_combat_gelatinous_noob";
 import { auto_combatHeavyRainsStage5 } from "./auto_combat_heavy_rains";
 import { auto_combatPlumberStage5 } from "./auto_combat_plumber";
-import { canSurvive$1, canSurviveShootGhost, canUse, canUse$1, canUse$2, canUse$3, canUse$4, combat_status_add, combat_status_check, enemyCanBlocksSkills, getStunner, hasClubEquipped, markAsUsed, useItem, useItem$1, useSkill$1, useSkill$2, usedCount } from "./auto_combat_util";
+import { canSurvive$1, canSurviveShootGhost, canUse, canUse$1, canUse$2, canUse$3, canUse$4, combat_status_add, combat_status_check, enemyCanBlocksSkills, getStunner, hasClubEquipped, markAsUsed, usedCount, useItem, useItem$1, useSkill$1, useSkill$2 } from "./auto_combat_util";
 import { auto_combatWereProfessorStage5 } from "./auto_combat_wereprofessor";
 import { auto_combat_robot_stage5 } from "./auto_combat_you_robot";
 import { auto_combatZombieSlayerStage5 } from "./auto_combat_zombie_slayer";

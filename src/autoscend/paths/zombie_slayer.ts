@@ -1,4 +1,4 @@
-import { Effect, Familiar, Item, Monster, Path, Phylum, Skill, ceil, containsText, floor, fullnessLimit, haveEffect, itemAmount, max, min, monsterPhylum, mpCost, myFullness, myHp, myId, myMaxhp, myMeat, myMp, myPath, setProperty, toFloat, useSkill, visitUrl } from "kolmafia";
+import { ceil, containsText, Effect, Familiar, floor, fullnessLimit, haveEffect, Item, itemAmount, max, min, Monster, monsterPhylum, mpCost, myFullness, myHp, myId, myMaxhp, myMeat, myMp, myPath, Path, Phylum, setProperty, Skill, toFloat, useSkill, visitUrl } from "kolmafia";
 import { autoEat } from "../auto_consume";
 import { auto_have_skill, internalQuestStatus, meatReserve } from "../auto_util";
 

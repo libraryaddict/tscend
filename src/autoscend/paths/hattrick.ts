@@ -1,4 +1,4 @@
-import { Item, Path, Slot, equip, equippedAmount, getProperty, myPath, numericModifier, toInt } from "kolmafia";
+import { equip, equippedAmount, getProperty, Item, myPath, numericModifier, Path, Slot, toInt } from "kolmafia";
 import { auto_getAllEquipabble$1 } from "../auto_equipment";
 import { auto_can_equip } from "../auto_util";
 

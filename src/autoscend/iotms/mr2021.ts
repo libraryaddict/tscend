@@ -1,4 +1,4 @@
-import { Effect, Familiar, Item, Location, Monster, Skill, Slot, appearanceRates, availableAmount, canInteract, ceil, cliExecute, containsText, craft, getMonsters, getProperty, haveEffect, haveFamiliar, haveSkill, inHardcore, isBanished, itemAmount, knollAvailable, max, min, monsterLevelAdjustment, monsterPhylum, myAdventures, myLevel, myLocation, myMeat, npcPrice, retrieveItem, runChoice, setProperty, splitString, toBoolean, toInt, toLocation, toMonster, totalTurnsPlayed, visitUrl } from "kolmafia";
+import { appearanceRates, availableAmount, canInteract, ceil, cliExecute, containsText, craft, Effect, Familiar, getMonsters, getProperty, haveEffect, haveFamiliar, haveSkill, inHardcore, isBanished, Item, itemAmount, knollAvailable, Location, max, min, Monster, monsterLevelAdjustment, monsterPhylum, myAdventures, myLevel, myLocation, myMeat, npcPrice, retrieveItem, runChoice, setProperty, Skill, Slot, splitString, toBoolean, toInt, toLocation, toMonster, totalTurnsPlayed, visitUrl } from "kolmafia";
 import { auto_advToReserve } from "../../autoscend";
 import { pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$2 } from "../auto_adventure";
@@ -7,7 +7,7 @@ import { canUntinker, untinker } from "../auto_craft";
 import { addToMaximize, autoEquip, possessEquipment, possessOutfit$1 } from "../auto_equipment";
 import { haveSpleenFamiliar, pathHasFamiliar } from "../auto_familiar";
 import { providePlusCombat, providePlusNonCombat } from "../auto_providers";
-import { auto_can_equip, auto_combatModCap, auto_combat_appearance_rates, auto_get_campground, auto_is_valid, auto_is_valid$1, auto_is_valid$2, auto_log_info, auto_log_info$1, auto_log_warning, auto_queueIgnore, auto_wantToBanish, auto_wantToBanish$1, auto_wantToReplace, auto_wantToSniff, auto_wantToYellowRay, freeCrafts$1, internalQuestStatus, meatReserve, wrap_item } from "../auto_util";
+import { auto_can_equip, auto_combat_appearance_rates, auto_combatModCap, auto_get_campground, auto_is_valid, auto_is_valid$1, auto_is_valid$2, auto_log_info, auto_log_info$1, auto_log_warning, auto_queueIgnore, auto_wantToBanish, auto_wantToBanish$1, auto_wantToReplace, auto_wantToSniff, auto_wantToYellowRay, freeCrafts$1, internalQuestStatus, meatReserve, wrap_item } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
 import { acquiredFantasyRealmToken, fantasyBanditsFought } from "./mr2018";
 import { auto_hasAutumnaton } from "./mr2022";

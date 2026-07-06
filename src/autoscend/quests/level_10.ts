@@ -1,4 +1,4 @@
-import { Effect, Familiar, Item, Location, Monster, Phylum, Skill, Slot, Stat, abort, availableAmount, cliExecute, containsText, council, equip, equippedAmount, getProperty, haveSkill, inHardcore, isBanished, isUnrestricted, itemAmount, myDaycount, myMp, myPrimestat, myTurncount, runChoice, setProperty, toBoolean, toInt, visitUrl } from "kolmafia";
+import { abort, availableAmount, cliExecute, containsText, council, Effect, equip, equippedAmount, Familiar, getProperty, haveSkill, inHardcore, isBanished, isUnrestricted, Item, itemAmount, Location, Monster, myDaycount, myMp, myPrimestat, myTurncount, Phylum, runChoice, setProperty, Skill, Slot, Stat, toBoolean, toInt, visitUrl } from "kolmafia";
 import { auto_buyUpTo, canPull$1, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
 import { buffMaintain$4 } from "../auto_buff";

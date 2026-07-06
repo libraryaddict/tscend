@@ -1,4 +1,4 @@
-import { Effect, Location, Monster, Skill, getProperty, haveEffect, mpCost, myHp, myLocation, myMaxhp, myMp, setProperty, toBoolean, toInt } from "kolmafia";
+import { Effect, getProperty, haveEffect, Location, Monster, mpCost, myHp, myLocation, myMaxhp, myMp, setProperty, Skill, toBoolean, toInt } from "kolmafia";
 import { auto_have_skill } from "../auto_util";
 import { canUse$1, canUse$2, useSkill$1, useSkill$2 } from "./auto_combat_util";
 

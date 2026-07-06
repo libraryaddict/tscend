@@ -1,6 +1,6 @@
-import { Class, Item, Monster, Skill, abort, ceil, containsText, getProperty, monsterHp, monsterLevelAdjustment, myClass, myFamiliar, removeProperty, setProperty, toBoolean, toInt } from "kolmafia";
+import { abort, ceil, Class, containsText, getProperty, Item, Monster, monsterHp, monsterLevelAdjustment, myClass, myFamiliar, removeProperty, setProperty, Skill, toBoolean, toInt } from "kolmafia";
 import { isAttackFamiliar } from "../auto_familiar";
-import { MLDamageToMonsterMultiplier, auto_have_skill, auto_log_info, combatItemDamageMultiplier } from "../auto_util";
+import { auto_have_skill, auto_log_info, combatItemDamageMultiplier, MLDamageToMonsterMultiplier } from "../auto_util";
 import { auto_combatHandler } from "./auto_combat";
 import { auto_edCombatHandler } from "./auto_combat_ed";
 import { canSurvive$1, canUse$1, canUse$2, canUse$3, canUse$4, combat_status_add, combat_status_check, findBanisher, getStunner, haveUsed, useItem, useItem$1, useItems$1, useSkill$1, useSkill$2 } from "./auto_combat_util";

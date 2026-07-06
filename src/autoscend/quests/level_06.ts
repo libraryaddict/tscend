@@ -1,4 +1,4 @@
-import { Familiar, Item, Location, Skill, Slot, abort, cliExecute, council, equippedItem, getProperty, haveSkill, hiddenTempleUnlocked, inHardcore, itemAmount, myBasestat, myDaycount, myMp, myPrimestat, toBoolean, toInt, toLocation, visitUrl } from "kolmafia";
+import { abort, cliExecute, council, equippedItem, Familiar, getProperty, haveSkill, hiddenTempleUnlocked, inHardcore, Item, itemAmount, Location, myBasestat, myDaycount, myMp, myPrimestat, Skill, Slot, toBoolean, toInt, toLocation, visitUrl } from "kolmafia";
 import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
 import { autoEquip } from "../auto_equipment";
 import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";

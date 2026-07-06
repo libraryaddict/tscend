@@ -1,4 +1,4 @@
-import { Effect, Item, Location, Monster, Path, abort, buyUsingStorage, canFaxbot, cliExecute, containsText, faxbot, getClanId, getClanLounge, getClanName, getPlayerId, getPlayerName, getProperty, haveEffect, historicalPrice, isOnline, isUnrestricted, itemAmount, min, myDaycount, myMeat, myPath, npcPrice, setProperty, splitString, storageAmount, toBoolean, toInt, toItem, toLocation, toLowerCase, use, visitUrl, wait } from "kolmafia";
+import { abort, buyUsingStorage, canFaxbot, cliExecute, containsText, Effect, faxbot, getClanId, getClanLounge, getClanName, getPlayerId, getPlayerName, getProperty, haveEffect, historicalPrice, isOnline, isUnrestricted, Item, itemAmount, Location, min, Monster, myDaycount, myMeat, myPath, npcPrice, Path, setProperty, splitString, storageAmount, toBoolean, toInt, toItem, toLocation, toLowerCase, use, visitUrl, wait } from "kolmafia";
 import { autoAdvBypass$2, CombatMacro } from "../auto_adventure";
 import { fullness_left, inebriety_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";

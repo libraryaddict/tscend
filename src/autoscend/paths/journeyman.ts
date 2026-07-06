@@ -1,4 +1,4 @@
-import { Path, myPath } from "kolmafia";
+import { myPath, Path } from "kolmafia";
 
 //Defined in autoscend/paths/journeyman.ash
 export function in_journeyman(): boolean

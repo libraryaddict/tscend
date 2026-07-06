@@ -1,4 +1,4 @@
-import { Effect, Item, Location, Path, Skill, getProperty, haveEffect, haveSkill, itemAmount, myAscensions, myDaycount, myLevel, myPath, setProperty, toInt, toLocation, visitUrl } from "kolmafia";
+import { Effect, getProperty, haveEffect, haveSkill, Item, itemAmount, Location, myAscensions, myDaycount, myLevel, myPath, Path, setProperty, Skill, toInt, toLocation, visitUrl } from "kolmafia";
 import { autoAdv$2 } from "../auto_adventure";
 import { auto_log_debug$1, auto_log_info, internalQuestStatus } from "../auto_util";
 import { auto_sourceTerminalEnhance } from "../iotms/mr2016";

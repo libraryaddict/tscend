@@ -1,4 +1,4 @@
-import { Item, Monster, Skill, containsText, getProperty, lastMonster, myMp, setProperty } from "kolmafia";
+import { containsText, getProperty, Item, lastMonster, Monster, myMp, setProperty, Skill } from "kolmafia";
 import { auto_have_skill, auto_log_error, auto_log_warning, isFreeMonster } from "../auto_util";
 import { combat_status_add, combat_status_check, markAsUsed, markAsUsed$1 } from "./auto_combat_util";
 import { in_ocrs } from "../paths/one_crazy_random_summer";

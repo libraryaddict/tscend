@@ -1,4 +1,4 @@
-import { Class, Familiar, Monster, Skill, Stat, getProperty, myClass, myFamiliar, myMp, myPrimestat, toInt } from "kolmafia";
+import { Class, Familiar, getProperty, Monster, myClass, myFamiliar, myMp, myPrimestat, Skill, Stat, toInt } from "kolmafia";
 import { auto_have_skill, stunnable } from "../auto_util";
 import { canSurvive$1, canUse$2, combat_status_add, combat_status_check, useSkill$1 } from "./auto_combat_util";
 import { in_glover } from "../paths/g_lover";

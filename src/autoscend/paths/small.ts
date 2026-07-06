@@ -1,4 +1,4 @@
-import { Class, Familiar, Item, Location, Monster, Path, expectedDamage, getProperty, haveEquipped, inHardcore, itemAmount, myClass, myMaxhp, myPath, setProperty, toInt } from "kolmafia";
+import { Class, expectedDamage, Familiar, getProperty, haveEquipped, inHardcore, Item, itemAmount, Location, Monster, myClass, myMaxhp, myPath, Path, setProperty, toInt } from "kolmafia";
 import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$2 } from "../auto_adventure";
 import { auto_have_familiar } from "../auto_familiar";

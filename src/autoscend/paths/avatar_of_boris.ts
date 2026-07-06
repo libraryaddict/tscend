@@ -1,4 +1,4 @@
-import { Effect, Item, Path, Skill, Stat, abort, floor, getProperty, haveEffect, haveSkill, itemAmount, min, myBuffedstat, myHp, myLevel, myMaxhp, myMaxmp, myMp, myPath, numericModifier, setProperty, toInt, use, useSkill, visitUrl } from "kolmafia";
+import { abort, Effect, floor, getProperty, haveEffect, haveSkill, Item, itemAmount, min, myBuffedstat, myHp, myLevel, myMaxhp, myMaxmp, myMp, myPath, numericModifier, Path, setProperty, Skill, Stat, toInt, use, useSkill, visitUrl } from "kolmafia";
 import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
 import { autoForceEquip$3, equipBaseline } from "../auto_equipment";
 import { acquireMP$1 } from "../auto_restore";

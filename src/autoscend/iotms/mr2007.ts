@@ -1,4 +1,4 @@
-import { Item, getProperty, haveEquipped, itemAmount, toInt } from "kolmafia";
+import { getProperty, haveEquipped, Item, itemAmount, toInt } from "kolmafia";
 import { auto_is_valid } from "../auto_util";
 
 //	This is meant for items that have a date of 2007

@@ -1,4 +1,4 @@
-import { Class, Item, Path, Skill, cliExecute, getProperty, haveSkill, itemAmount, myClass, myHp, myLevel, myMeat, myPath, setProperty, toBoolean, toInt, visitUrl } from "kolmafia";
+import { Class, cliExecute, getProperty, haveSkill, Item, itemAmount, myClass, myHp, myLevel, myMeat, myPath, Path, setProperty, Skill, toBoolean, toInt, visitUrl } from "kolmafia";
 import { auto_log_info$1, meatReserve } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 

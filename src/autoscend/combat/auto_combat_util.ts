@@ -1,4 +1,4 @@
-import { Class, Effect, Element, Familiar, Item, Location, Monster, Phylum, Skill, Slot, abort, availableAmount, canEquip, containsText, elementalResistance, equippedAmount, equippedItem, expectedDamage, fuelCost, getFuel, getProperty, haveEffect, haveEquipped, haveSkill, hpCost, indexOf, isBanished, itemAmount, itemDrops, itemType, lastMonster, lightningCost, meatCost, monsterHp, monsterPhylum, mpCost, myAudience, myClass, myDaycount, myFamiliar, myFury, myHp, myLevel, myLightning, myLocation, myMaxhp, myMaxmp, myMeat, myMp, myPp, myRain, mySoulsauce, myThunder, rainCost, setProperty, soulsauceCost, substring, thunderCost, toBoolean, toFloat, toInt, toItem, toSkill, trackedBy } from "kolmafia";
+import { abort, availableAmount, canEquip, Class, containsText, Effect, Element, elementalResistance, equippedAmount, equippedItem, expectedDamage, Familiar, fuelCost, getFuel, getProperty, haveEffect, haveEquipped, haveSkill, hpCost, indexOf, isBanished, Item, itemAmount, itemDrops, itemType, lastMonster, lightningCost, Location, meatCost, Monster, monsterHp, monsterPhylum, mpCost, myAudience, myClass, myDaycount, myFamiliar, myFury, myHp, myLevel, myLightning, myLocation, myMaxhp, myMaxmp, myMeat, myMp, myPp, myRain, mySoulsauce, myThunder, Phylum, rainCost, setProperty, Skill, Slot, soulsauceCost, substring, thunderCost, toBoolean, toFloat, toInt, toItem, toSkill, trackedBy } from "kolmafia";
 import { canDrink$1, inebriety_left, spleen_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
 import { auto_famKill, auto_have_familiar, pathAllowsChangingFamiliar } from "../auto_familiar";
@@ -10,9 +10,9 @@ import { auto_combatSaberBanish, auto_combatSaberYR, auto_reflexHammersRemaining
 import { auto_hasRetrocape, auto_powerfulGloveReplacesAvailable } from "../iotms/mr2020";
 import { auto_canFeelEnvy, auto_canFeelHatred, auto_fireExtinguisherCharges, can_get_battery } from "../iotms/mr2021";
 import { auto_hasParka, getSweat } from "../iotms/mr2022";
-import { auto_RWBMonster, auto_haveEagle, auto_isShadowRiftMonster, auto_monkeyPawWishesLeft, auto_neededShadowBricks } from "../iotms/mr2023";
+import { auto_haveEagle, auto_isShadowRiftMonster, auto_monkeyPawWishesLeft, auto_neededShadowBricks, auto_RWBMonster } from "../iotms/mr2023";
 import { auto_haveRoman } from "../iotms/mr2024";
-import { auto_McLargeHugeSniffsLeft, auto_canNorthernExplosionFE, auto_throwLightningRemaining } from "../iotms/mr2025";
+import { auto_canNorthernExplosionFE, auto_McLargeHugeSniffsLeft, auto_throwLightningRemaining } from "../iotms/mr2025";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { pete_peelOutRemaining } from "../paths/avatar_of_sneaky_pete";

@@ -1,4 +1,4 @@
-import { Item, Location, Monster, Skill, containsText, getProperty, itemAmount, myLevel, myLocation, toInt, toItem } from "kolmafia";
+import { containsText, getProperty, Item, itemAmount, Location, Monster, myLevel, myLocation, Skill, toInt, toItem } from "kolmafia";
 import { possessEquipment } from "../auto_equipment";
 import { auto_have_skill, handleTracker$1, internalQuestStatus } from "../auto_util";
 import { canSurvive$1, canUse$2, useSkill$2 } from "./auto_combat_util";

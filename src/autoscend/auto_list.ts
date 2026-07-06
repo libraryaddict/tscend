@@ -1,4 +1,4 @@
-import { Effect, Familiar, Item, Location, Modifier, abort, numericModifier } from "kolmafia";
+import { abort, Effect, Familiar, Item, Location, Modifier, numericModifier } from "kolmafia";
 import { auto_log_info } from "./auto_util";
 
 // familiar, int, item, effect, location defined. Define the rest at some point.

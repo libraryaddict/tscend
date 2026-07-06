@@ -1,4 +1,4 @@
-import { Item, Path, cliExecute, getProperty, gitExists, itemAmount, myLevel, myPath, myPrimestat, retrieveItem, setProperty, toBoolean, toInt, visitUrl } from "kolmafia";
+import { cliExecute, getProperty, gitExists, Item, itemAmount, myLevel, myPath, myPrimestat, Path, retrieveItem, setProperty, toBoolean, toInt, visitUrl } from "kolmafia";
 import { possessEquipment } from "../auto_equipment";
 import { auto_log_info, internalQuestStatus } from "../auto_util";
 import { equipWarOutfit, warAdventure } from "../quests/level_12";

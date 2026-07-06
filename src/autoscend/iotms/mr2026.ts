@@ -1,4 +1,4 @@
-import { Item, Location, Monster, Slot, availableAmount, availableChoiceOptions, canInteract, equippedItem, extractItems, getProperty, myLocation, runChoice, setProperty, toBoolean, toInt, toLocation, visitUrl } from "kolmafia";
+import { availableAmount, availableChoiceOptions, canInteract, equippedItem, extractItems, getProperty, Item, Location, Monster, myLocation, runChoice, setProperty, Slot, toBoolean, toInt, toLocation, visitUrl } from "kolmafia";
 import { autoAdvBypass } from "../auto_adventure";
 import { spleen_left } from "../auto_consume";
 import { auto_is_valid, auto_log_error, auto_wantToFreeKillWithNoDrops, handleTracker$1, handleTracker$2, isFreeMonster$1 } from "../auto_util";

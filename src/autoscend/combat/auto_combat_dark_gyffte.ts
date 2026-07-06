@@ -1,4 +1,4 @@
-import { Monster, Skill, getProperty, setProperty, toInt } from "kolmafia";
+import { getProperty, Monster, setProperty, Skill, toInt } from "kolmafia";
 import { handleTracker$1 } from "../auto_util";
 import { canUse$2, useSkill$2 } from "./auto_combat_util";
 import { bat_shouldEnsorcel } from "../paths/dark_gyffte";

@@ -1,18 +1,18 @@
-import { Familiar, Item, Location, Path, Stat, abort, availableChoiceOptions, canInteract, cliExecute, containsText, familiarWeight, getProperty, haveFamiliar, inHardcore, itemAmount, myAdventures, myAscensions, myBasestat, myFamiliar, myLevel, myMeat, myPath, myPrimestat, myRobotEnergy, myRobotScraps, myTurncount, removeProperty, round, runChoice, setProperty, toBoolean, toInt, use, visitUrl, wait } from "kolmafia";
+import { abort, availableChoiceOptions, canInteract, cliExecute, containsText, Familiar, familiarWeight, getProperty, haveFamiliar, inHardcore, Item, itemAmount, Location, myAdventures, myAscensions, myBasestat, myFamiliar, myLevel, myMeat, myPath, myPrimestat, myRobotEnergy, myRobotScraps, myTurncount, Path, removeProperty, round, runChoice, setProperty, Stat, toBoolean, toInt, use, visitUrl, wait } from "kolmafia";
 import { auto_unreservedAdvRemaining } from "../../autoscend";
 import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$2, autoLuckyAdv$1 } from "../auto_adventure";
 import { autoEquip$1, possessEquipment, possessOutfit$1, possessUnrestricted } from "../auto_equipment";
-import { LX_freeCombats$1, disregardInstantKarma, isAboutToPowerlevel } from "../auto_powerlevel";
+import { disregardInstantKarma, isAboutToPowerlevel, LX_freeCombats$1 } from "../auto_powerlevel";
 import { doFreeRest, haveFreeRestAvailable } from "../auto_restore";
 import { auto_is_valid, auto_log_debug$1, auto_log_info$1, auto_log_warning, cloversAvailable$1, internalQuestStatus, loopHandlerDelayAll, meatReserve } from "../auto_util";
 import { chateaumantegna_available } from "../iotms/mr2015";
 import { L5_slayTheGoblinKing } from "../quests/level_05";
 import { L8_trapperSlope } from "../quests/level_08";
-import { L9_chasmBuild, L9_leafletQuest, LX_loggingHatchet, bridgeGoal } from "../quests/level_09";
+import { bridgeGoal, L9_chasmBuild, L9_leafletQuest, LX_loggingHatchet } from "../quests/level_09";
 import { L10_topFloor } from "../quests/level_10";
 import { L11_aridDesert, L11_hiddenCity, L11_hiddenCityZones, LX_spookyravenManorFirstFloor, LX_spookyravenManorSecondFloor, LX_unlockHauntedBilliardsRoom, shenShouldDelayZone } from "../quests/level_11";
-import { L12_finalizeWar, L12_islandWar, L12_preOutfit, auto_warEnemiesRemaining, auto_warSide, haveWarOutfit$1 } from "../quests/level_12";
+import { auto_warEnemiesRemaining, auto_warSide, haveWarOutfit$1, L12_finalizeWar, L12_islandWar, L12_preOutfit } from "../quests/level_12";
 import { LX_islandAccess } from "../quests/level_any";
 import { LX_galaktikSubQuest } from "../quests/optional";
 

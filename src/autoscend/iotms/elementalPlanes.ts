@@ -1,4 +1,4 @@
-import { Element, Item, getProperty, indexOf, isUnrestricted, toBoolean, visitUrl } from "kolmafia";
+import { Element, getProperty, indexOf, isUnrestricted, Item, toBoolean, visitUrl } from "kolmafia";
 import { auto_log_info } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 

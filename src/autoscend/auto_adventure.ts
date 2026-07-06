@@ -1,5 +1,5 @@
-import { Location, Monster, adv1, choiceFollowsFight, cliExecute, containsText, fightFollowsChoice, getProperty, handlingChoice, inMultiFight, lastChoice, myTurncount, print, removeProperty, runChoice, runCombat, setProperty, visitUrl } from "kolmafia";
-import { auto_log_debug, auto_log_info, auto_log_warning, cloverUsageFinish, cloverUsageInit, cloverUsageRestart, cloversAvailable } from "./auto_util";
+import { adv1, choiceFollowsFight, cliExecute, containsText, fightFollowsChoice, getProperty, handlingChoice, inMultiFight, lastChoice, Location, Monster, myTurncount, print, removeProperty, runChoice, runCombat, setProperty, visitUrl } from "kolmafia";
+import { auto_log_debug, auto_log_info, auto_log_warning, cloversAvailable, cloverUsageFinish, cloverUsageInit, cloverUsageRestart } from "./auto_util";
 import { zone_isAvailable } from "./auto_zone";
 import { ed_handleAdventureServant, isActuallyEd } from "./paths/actually_ed_the_undying";
 import { in_pokefam } from "./paths/pocket_familiars";

@@ -1,4 +1,4 @@
-import { Item, Location, Stat, abort, availableChoiceOptions, canDrink, canEat, containsText, equippedAmount, getProperty, isWearingOutfit, itemAmount, myLevel, myLocation, myMeat, myPrimestat, myTurncount, runChoice, setProperty, toBoolean, toInt } from "kolmafia";
+import { abort, availableChoiceOptions, canDrink, canEat, containsText, equippedAmount, getProperty, isWearingOutfit, Item, itemAmount, Location, myLevel, myLocation, myMeat, myPrimestat, myTurncount, runChoice, setProperty, Stat, toBoolean, toInt } from "kolmafia";
 import { possessEquipment } from "./auto_equipment";
 import { auto_log_debug$1, auto_log_error, auto_log_info$1, auto_log_warning$1, currentPoolSkill, internalQuestStatus, poolSkillPracticeGains } from "./auto_util";
 import { auto_reagnimatedGetPart } from "./iotms/mr2012";
@@ -24,7 +24,7 @@ import { robot_choice_adv } from "./paths/you_robot";
 import { spookyForestChoiceHandler } from "./quests/level_02";
 import { cyrptChoiceHandler } from "./quests/level_07";
 import { itznotyerzitzMineChoiceHandler, theeXtremeSlopeChoiceHandler } from "./quests/level_08";
-import { L10_needUmbrella, castleBasementChoiceHandler, castleTopFloorChoiceHandler } from "./quests/level_10";
+import { castleBasementChoiceHandler, castleTopFloorChoiceHandler, L10_needUmbrella } from "./quests/level_10";
 import { blackForestChoiceHandler, hauntedBedroomChoiceHandler, hiddenCityChoiceHandler, hiddenTempleChoiceHandler } from "./quests/level_11";
 import { haveWarOutfit$1 } from "./quests/level_12";
 import { dailyDungeonChoiceHandler, oldLandfillChoiceHandler } from "./quests/level_any";

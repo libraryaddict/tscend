@@ -1,4 +1,4 @@
-import { Class, Element, Item, Monster, Skill, abort, haveEquipped, haveSkill, mpCost, myClass } from "kolmafia";
+import { abort, Class, Element, haveEquipped, haveSkill, Item, Monster, mpCost, myClass, Skill } from "kolmafia";
 import { currentFlavour } from "../auto_util";
 import { canUse$1, canUse$2, useSkill$1, useSkill$2 } from "./auto_combat_util";
 import { in_wildfire } from "../paths/wildfire";

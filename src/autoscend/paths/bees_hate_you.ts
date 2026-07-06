@@ -1,4 +1,4 @@
-import { Effect, Item, Location, Monster, Path, Slot, abort, cliExecute, containsText, getProperty, haveEffect, isUnrestricted, itemAmount, lastMonster, myPath, putCloset, setProperty, toBoolean, toSlot, visitUrl } from "kolmafia";
+import { abort, cliExecute, containsText, Effect, getProperty, haveEffect, isUnrestricted, Item, itemAmount, lastMonster, Location, Monster, myPath, Path, putCloset, setProperty, Slot, toBoolean, toSlot, visitUrl } from "kolmafia";
 import { autoAdvBypass$1 } from "../auto_adventure";
 import { internalQuestStatus } from "../auto_util";
 import { inAftercore } from "./casual";

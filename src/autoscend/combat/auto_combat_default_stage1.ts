@@ -1,4 +1,4 @@
-import { Class, Effect, Item, Location, Monster, Skill, abort, containsText, getProperty, haveEffect, haveEquipped, itemAmount, itemDropsArray, monsterPhylum, myAdventures, myClass, myHp, myLocation, myMaxhp, steal, toFloat, toInt, toMonster } from "kolmafia";
+import { abort, Class, containsText, Effect, getProperty, haveEffect, haveEquipped, Item, itemAmount, itemDropsArray, Location, Monster, monsterPhylum, myAdventures, myClass, myHp, myLocation, myMaxhp, Skill, steal, toFloat, toInt, toMonster } from "kolmafia";
 import { auto_have_skill, effectiveDropChance, handleTracker$1, isFreeMonster } from "../auto_util";
 import { amw_wanttoPP } from "./auto_combat_adventurer_meats_world";
 import { auto_combatBHYStage1 } from "./auto_combat_bees_hate_you";
@@ -13,7 +13,7 @@ import { canSurvive$1, canUse$1, canUse$2, canUse$4, combat_status_add, combat_s
 import { auto_combatWereProfessorStage1 } from "./auto_combat_wereprofessor";
 import { auto_combatWildfireStage1 } from "./auto_combat_wildfire";
 import { auto_backupTarget } from "../iotms/mr2021";
-import { auto_RWBBlastTarget, auto_canCircadianRhythm, auto_canHabitat, auto_canRWBBlast, auto_circadianRhythmTarget, auto_circadianRhythmTarget$1, auto_getCitizenZone, auto_habitatTarget, auto_remainingCandyCaneSlashes } from "../iotms/mr2023";
+import { auto_canCircadianRhythm, auto_canHabitat, auto_canRWBBlast, auto_circadianRhythmTarget, auto_circadianRhythmTarget$1, auto_getCitizenZone, auto_habitatTarget, auto_remainingCandyCaneSlashes, auto_RWBBlastTarget } from "../iotms/mr2023";
 import { auto_talkToSomeFish } from "../iotms/mr2025";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/avant_guard";

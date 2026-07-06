@@ -1,4 +1,4 @@
-import { Familiar, Item, Monster, Skill, getProperty, haveFamiliar, haveSkill, itemAmount, print, toBoolean, toInt, toItem } from "kolmafia";
+import { Familiar, getProperty, haveFamiliar, haveSkill, Item, itemAmount, Monster, print, Skill, toBoolean, toInt, toItem } from "kolmafia";
 import { possessEquipment } from "./auto_equipment";
 import { auto_haveCombatLoversLocket, auto_monsterInLocket } from "./iotms/mr2022";
 

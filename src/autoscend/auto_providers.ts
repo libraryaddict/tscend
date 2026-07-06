@@ -1,11 +1,11 @@
-import { Coinmaster, Effect, Element, Familiar, Item, Location, Modifier, Servant, Skill, Slot, Stat, availableAmount, buy, canInteract, ceil, cliExecute, creatableAmount, equip, equippedItem, floor, getProperty, haveEffect, haveEquipped, haveSkill, itemAmount, length, min, myBasestat, myBuffedstat, myFamiliar, myLevel, myLocation, myMeat, numericModifier, outfit, retrieveItem, toBoolean, toFamiliar, toInt, useFamiliar, visitUrl } from "kolmafia";
+import { availableAmount, buy, canInteract, ceil, cliExecute, Coinmaster, creatableAmount, Effect, Element, equip, equippedItem, Familiar, floor, getProperty, haveEffect, haveEquipped, haveSkill, Item, itemAmount, length, Location, min, Modifier, myBasestat, myBuffedstat, myFamiliar, myLevel, myLocation, myMeat, numericModifier, outfit, retrieveItem, Servant, Skill, Slot, Stat, toBoolean, toFamiliar, toInt, useFamiliar, visitUrl } from "kolmafia";
 import { auto_buyUpTo } from "./auto_acquire";
 import { buffMaintain$2, buffMaintain$4 } from "./auto_buff";
 import { autoChew, autoDrink, autoEat, canDrink$1, canEat$1, fullness_left, inebriety_left, shouldUseSpleenForLowPriority, spleen_left, stomach_left } from "./auto_consume";
 import { addToMaximize, autoEquip$1, possessEquipment, simMaximize, simMaximize$1, simMaximizeWith, simMaximizeWith$1, simValue } from "./auto_equipment";
 import { auto_famModifiers, auto_famModifiers$2, auto_famWeight$1, auto_have_familiar, canChangeFamiliar, canChangeToFamiliar, handleFamiliar, handleFamiliar$1, lookupFamiliarDatafile } from "./auto_familiar";
 import { uneffect } from "./auto_restore";
-import { autoCraft, auto_have_skill, auto_is_valid, auto_is_valid$3, auto_log_debug$1, auto_log_info, auto_log_info$1, auto_log_warning, auto_totalEffectWishesAvailable, auto_wishForEffect, candyEggDeviler, meatReserve, shrugAT$1 } from "./auto_util";
+import { auto_have_skill, auto_is_valid, auto_is_valid$3, auto_log_debug$1, auto_log_info, auto_log_info$1, auto_log_warning, auto_totalEffectWishesAvailable, auto_wishForEffect, autoCraft, candyEggDeviler, meatReserve, shrugAT$1 } from "./auto_util";
 import { zone_needItemBooze, zone_needItemFood } from "./auto_zone";
 import { generic_t } from "./autoscend_record";
 import { zataraAvailable, zataraSeaside } from "./iotms/clan";

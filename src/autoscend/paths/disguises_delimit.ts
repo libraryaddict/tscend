@@ -1,4 +1,4 @@
-import { Path, myPath, setProperty } from "kolmafia";
+import { myPath, Path, setProperty } from "kolmafia";
 
 //Defined in autoscend/paths/fall_of_the_dinosaurs.ash
 export function in_disguises(): boolean

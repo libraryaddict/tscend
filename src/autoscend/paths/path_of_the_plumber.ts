@@ -1,4 +1,4 @@
-import { Item, Path, Skill, Slot, Stat, abort, creatableAmount, equippedAmount, equippedItem, getProperty, haveEquipped, haveSkill, itemAmount, myBuffedstat, myLevel, myMaxpp, myPath, myPrimestat, retrieveItem, runChoice, setProperty, toInt, toStat, visitUrl } from "kolmafia";
+import { abort, creatableAmount, equippedAmount, equippedItem, getProperty, haveEquipped, haveSkill, Item, itemAmount, myBuffedstat, myLevel, myMaxpp, myPath, myPrimestat, Path, retrieveItem, runChoice, setProperty, Skill, Slot, Stat, toInt, toStat, visitUrl } from "kolmafia";
 import { acquireOrPull, canPull$1 } from "../auto_acquire";
 import { autoEat, fullness_left, prepare_food_xp_multi } from "../auto_consume";
 import { autoEquip$1, autoForceEquip$3, possessEquipment } from "../auto_equipment";

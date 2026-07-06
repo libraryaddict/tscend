@@ -1,4 +1,4 @@
-import { Class, Effect, Familiar, Item, Location, Path, Phylum, Skill, Slot, abort, canEquip, cliExecute, create, getProperty, haveEffect, isBanished, isUnrestricted, itemAmount, myClass, myDaycount, myPath, pullsRemaining, replaceString, setProperty, toBoolean, toInt, toLowerCase, use, visitUrl } from "kolmafia";
+import { abort, canEquip, Class, cliExecute, create, Effect, Familiar, getProperty, haveEffect, isBanished, isUnrestricted, Item, itemAmount, Location, myClass, myDaycount, myPath, Path, Phylum, pullsRemaining, replaceString, setProperty, Skill, Slot, toBoolean, toInt, toLowerCase, use, visitUrl } from "kolmafia";
 import { pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$2, autoAdvBypass$6 } from "../auto_adventure";
 import { addToMaximize, autoEquip, autoEquip$1, possessEquipment } from "../auto_equipment";

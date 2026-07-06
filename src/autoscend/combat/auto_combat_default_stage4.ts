@@ -1,7 +1,7 @@
-import { Class, Effect, Element, Familiar, Item, Location, Monster, Skill, ceil, getProperty, haveEffect, haveEquipped, itemAmount, monsterElement, monsterHp, monsterLevelAdjustment, monsterPhylum, myAdventures, myClass, myFamiliar, myLocation, myMaxmp, myMp, setProperty, toBoolean, toInt, toPhylum } from "kolmafia";
+import { ceil, Class, Effect, Element, Familiar, getProperty, haveEffect, haveEquipped, Item, itemAmount, Location, Monster, monsterElement, monsterHp, monsterLevelAdjustment, monsterPhylum, myAdventures, myClass, myFamiliar, myLocation, myMaxmp, myMp, setProperty, Skill, toBoolean, toInt, toPhylum } from "kolmafia";
 import { fullness_left } from "../auto_consume";
 import { is100FamRun } from "../auto_familiar";
-import { MLDamageToMonsterMultiplier, auto_have_skill, auto_log_warning, auto_wantToCopy, auto_wantToSniff, combatItemDamageMultiplier, handleTracker$1, internalQuestStatus, isGhost, stunnable } from "../auto_util";
+import { auto_have_skill, auto_log_warning, auto_wantToCopy, auto_wantToSniff, combatItemDamageMultiplier, handleTracker$1, internalQuestStatus, isGhost, MLDamageToMonsterMultiplier, stunnable } from "../auto_util";
 import { auto_combatLicenseToAdventureStage4 } from "./auto_combat_license_to_adventure";
 import { auto_combatTheSourceStage4 } from "./auto_combat_the_source";
 import { canSurvive$1, canUse$2, canUse$4, combat_status_add, combat_status_check, getCopier$1, getSniffer$1, getStunner, haveUsed, haveUsed$1, isSniffed, markAsUsed$1, useItem$1, useItems$1, useSkill$2 } from "./auto_combat_util";

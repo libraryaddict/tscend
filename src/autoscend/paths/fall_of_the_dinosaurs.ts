@@ -1,4 +1,4 @@
-import { Path, myPath, runChoice, setProperty, visitUrl } from "kolmafia";
+import { myPath, Path, runChoice, setProperty, visitUrl } from "kolmafia";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
 /* TODO - banishing chickens prior to Nuns

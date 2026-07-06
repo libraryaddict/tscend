@@ -1,4 +1,4 @@
-import { Item, Location, Monster, getProperty, itemAmount, myLocation, toBoolean } from "kolmafia";
+import { getProperty, Item, itemAmount, Location, Monster, myLocation, toBoolean } from "kolmafia";
 import { canSurvive$1 } from "./auto_combat_util";
 import { in_lta } from "../paths/license_to_adventure";
 

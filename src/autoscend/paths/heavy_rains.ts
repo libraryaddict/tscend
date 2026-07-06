@@ -1,4 +1,4 @@
-import { Class, Effect, Element, Familiar, Item, Location, Monster, Path, Skill, Slot, abort, cliExecute, containsText, equip, getProperty, haveEffect, haveSkill, inebrietyLimit, itemAmount, lastMonster, max, min, monsterFactoidsAvailable, myClass, myInebriety, myLightning, myPath, myRain, myThunder, numericModifier, runChoice, setProperty, toBoolean, toInt, useFamiliar, useSkill, visitUrl } from "kolmafia";
+import { abort, Class, cliExecute, containsText, Effect, Element, equip, Familiar, getProperty, haveEffect, haveSkill, inebrietyLimit, Item, itemAmount, lastMonster, Location, max, min, Monster, monsterFactoidsAvailable, myClass, myInebriety, myLightning, myPath, myRain, myThunder, numericModifier, Path, runChoice, setProperty, Skill, Slot, toBoolean, toInt, useFamiliar, useSkill, visitUrl } from "kolmafia";
 import { acquireOrPull, auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdvBypass, autoAdvBypass$1 } from "../auto_adventure";
 import { buffMaintain$4 } from "../auto_buff";

@@ -1,4 +1,4 @@
-import { Coinmaster, Effect, Element, Familiar, Item, Location, Monster, Servant, Skill, Slot, abort, availableAmount, blackMarketAvailable, buy, canadiaAvailable, cliExecute, closetAmount, containsText, council, creatableAmount, create, floor, friarsAvailable, getProperty, haveEffect, haveSkill, inHardcore, itemAmount, itemDropModifier, min, monsterLevelAdjustment, myBjornedFamiliar, myHp, myLevel, myMaxhp, myMeat, myMp, myServant, myTurncount, npcPrice, numericModifier, setProperty, squareRoot, takeCloset, toBoolean, toInt, use, visitUrl } from "kolmafia";
+import { abort, availableAmount, blackMarketAvailable, buy, canadiaAvailable, cliExecute, closetAmount, Coinmaster, containsText, council, creatableAmount, create, Effect, Element, Familiar, floor, friarsAvailable, getProperty, haveEffect, haveSkill, inHardcore, Item, itemAmount, itemDropModifier, Location, min, Monster, monsterLevelAdjustment, myBjornedFamiliar, myHp, myLevel, myMaxhp, myMeat, myMp, myServant, myTurncount, npcPrice, numericModifier, Servant, setProperty, Skill, Slot, squareRoot, takeCloset, toBoolean, toInt, use, visitUrl } from "kolmafia";
 import { resetState } from "../../autoscend";
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv$1, autoAdv$2, autoLuckyAdv$1 } from "../auto_adventure";
@@ -9,7 +9,7 @@ import { disregardInstantKarma, isAboutToPowerlevel } from "../auto_powerlevel";
 import { provideInitiative, provideItem$2, provideResistances } from "../auto_providers";
 import { acquireFullHP, acquireMP$2, uneffect } from "../auto_restore";
 import { auto_waitForDay2 } from "../auto_routing";
-import { adjustForYellowRayIfPossible, autoMaximize$1, auto_MaxMLToCap, auto_convertDesiredML, auto_ignoreExperience, auto_inRonin, auto_is_valid, auto_is_valid$3, auto_log_debug$1, auto_log_info, auto_log_info$1, auto_log_warning, cloversAvailable$1, elemental_resist_value, internalQuestStatus, isGuildClass, loopHandler, setFlavour } from "../auto_util";
+import { adjustForYellowRayIfPossible, auto_convertDesiredML, auto_ignoreExperience, auto_inRonin, auto_is_valid, auto_is_valid$3, auto_log_debug$1, auto_log_info, auto_log_info$1, auto_log_warning, auto_MaxMLToCap, autoMaximize$1, cloversAvailable$1, elemental_resist_value, internalQuestStatus, isGuildClass, loopHandler, setFlavour } from "../auto_util";
 import { canUse$1, canUse$2 } from "../combat/auto_combat_util";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { adjustEdHat } from "../iotms/mr2015";

@@ -1,4 +1,4 @@
-import { Item, Path, abort, cliExecute, haveEffect, mallPrice, maximize, myPath } from "kolmafia";
+import { abort, cliExecute, haveEffect, Item, mallPrice, maximize, myPath, Path } from "kolmafia";
 
 //Defined in autoscend/paths/two_crazy_random_summer.ash
 export function in_tcrs(): boolean

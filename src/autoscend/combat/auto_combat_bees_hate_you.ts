@@ -1,4 +1,4 @@
-import { Item, Monster, abort } from "kolmafia";
+import { abort, Item, Monster } from "kolmafia";
 import { canUse$4, useItem$1 } from "./auto_combat_util";
 
 //Path specific combat handling for Bees Hate You

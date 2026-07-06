@@ -1,4 +1,4 @@
-import { Class, Item, Path, containsText, myClass, myDaycount, myPath, visitUrl } from "kolmafia";
+import { Class, containsText, Item, myClass, myDaycount, myPath, Path, visitUrl } from "kolmafia";
 import { pullXWhenHaveY } from "../auto_acquire";
 import { auto_log_info } from "../auto_util";
 

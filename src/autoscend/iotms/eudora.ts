@@ -1,4 +1,4 @@
-import { Item, containsText, isUnrestricted, visitUrl } from "kolmafia";
+import { containsText, isUnrestricted, Item, visitUrl } from "kolmafia";
 
 //Defined in autoscend/iotms/auto_eudora.ash
 function eudora_available(): boolean

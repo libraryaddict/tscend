@@ -1,8 +1,8 @@
-import { Class, Effect, Familiar, Item, Location, Skill, Slot, abort, advCost, canEquip, canInteract, chew, cliExecute, creatableAmount, creatableTurns, create, equippedAmount, getProperty, haveEffect, historicalPrice, hpCost, isUnrestricted, itemAmount, lightningCost, meatCost, mpCost, myAdventures, myClass, myHp, myLightning, myLocation, myMeat, myMp, myRain, mySoulsauce, myThunder, npcPrice, rainCost, setLocation, setProperty, soulsauceCost, thunderCost, toBoolean, toSkill, toSlot, use, useSkill, visitUrl } from "kolmafia";
+import { abort, advCost, canEquip, canInteract, chew, Class, cliExecute, creatableAmount, creatableTurns, create, Effect, equippedAmount, Familiar, getProperty, haveEffect, historicalPrice, hpCost, isUnrestricted, Item, itemAmount, lightningCost, Location, meatCost, mpCost, myAdventures, myClass, myHp, myLightning, myLocation, myMeat, myMp, myRain, mySoulsauce, myThunder, npcPrice, rainCost, setLocation, setProperty, Skill, Slot, soulsauceCost, thunderCost, toBoolean, toSkill, toSlot, use, useSkill, visitUrl } from "kolmafia";
 import { acquireTotem, auto_buyUpTo } from "./auto_acquire";
 import { autoAdv$2 } from "./auto_adventure";
 import { isSpleenConsumable } from "./auto_consume";
-import { autoForceEquip, auto_loadEquipped, auto_saveEquipped, possessEquipment } from "./auto_equipment";
+import { auto_loadEquipped, auto_saveEquipped, autoForceEquip, possessEquipment } from "./auto_equipment";
 import { auto_have_familiar, pathHasFamiliar } from "./auto_familiar";
 import { uneffect } from "./auto_restore";
 import { auto_have_skill, auto_is_valid, auto_log_debug, auto_log_debug$1, auto_log_warning$1, handleTracker, handleTracker$1, meatReserve, shrugAT$1 } from "./auto_util";

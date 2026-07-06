@@ -1,8 +1,8 @@
-import { Class, Effect, Item, Location, Skill, cliExecute, floristAvailable, getFloristPlants, getProperty, itemAmount, knollAvailable, monsterLevelAdjustment, mpCost, myClass, myDaycount, myLocation, myMp, toInt, useSkill, visitUrl } from "kolmafia";
+import { Class, cliExecute, Effect, floristAvailable, getFloristPlants, getProperty, Item, itemAmount, knollAvailable, Location, monsterLevelAdjustment, mpCost, myClass, myDaycount, myLocation, myMp, Skill, toInt, useSkill, visitUrl } from "kolmafia";
 import { auto_buyUpTo } from "../auto_acquire";
 import { buffMaintain$3 } from "../auto_buff";
 import { possessEquipment } from "../auto_equipment";
-import { autoCraft, auto_have_skill, auto_log_warning } from "../auto_util";
+import { auto_have_skill, auto_log_warning, autoCraft } from "../auto_util";
 import { is_professor } from "../paths/wereprofessor";
 
 //	This is meant for items that have a date of 2013

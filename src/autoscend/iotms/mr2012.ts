@@ -1,4 +1,4 @@
-import { Effect, Item, Monster, Skill, abort, availableAmount, getProperty, haveEffect, haveSkill, itemAmount, lastMonster, myLevel, runChoice, setProperty, toBoolean, toInt, toMonster } from "kolmafia";
+import { abort, availableAmount, Effect, getProperty, haveEffect, haveSkill, Item, itemAmount, lastMonster, Monster, myLevel, runChoice, setProperty, Skill, toBoolean, toInt, toMonster } from "kolmafia";
 import { auto_log_info, handleCopiedMonster } from "../auto_util";
 
 //	This is meant for items that have a date of 2012

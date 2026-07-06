@@ -1,10 +1,10 @@
-import { Item, Location, Path, Skill, Stat, abort, getProperty, itemAmount, max, meatCost, min, myAdventures, myBasestat, myBuffedstat, myDaycount, myLevel, myMeat, myPath, pullsRemaining, runChoice, setProperty, toBoolean, toInt, turnsPlayed, visitUrl } from "kolmafia";
+import { abort, getProperty, Item, itemAmount, Location, max, meatCost, min, myAdventures, myBasestat, myBuffedstat, myDaycount, myLevel, myMeat, myPath, Path, pullsRemaining, runChoice, setProperty, Skill, Stat, toBoolean, toInt, turnsPlayed, visitUrl } from "kolmafia";
 import { pull_meat } from "../auto_acquire";
 import { autoAdv$2, autoLuckyAdv$1 } from "../auto_adventure";
 import { addToMaximize, simValue } from "../auto_equipment";
 import { handleFamiliar$1, lookupFamiliarDatafile } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
-import { autoMaximize, auto_have_skill, auto_log_debug$1, auto_log_info$1, auto_log_warning, cloversAvailable$1, meatReserve } from "../auto_util";
+import { auto_have_skill, auto_log_debug$1, auto_log_info$1, auto_log_warning, autoMaximize, cloversAvailable$1, meatReserve } from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
 import { auto_haveMobiusRing } from "../iotms/mr2025";
 import { AshMatcher } from "../utils/kolmafiaUtils";

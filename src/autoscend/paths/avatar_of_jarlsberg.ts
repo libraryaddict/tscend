@@ -1,4 +1,4 @@
-import { Item, Path, Skill, create, getProperty, haveSkill, itemAmount, mpCost, myCompanion, myLevel, myMp, myPath, setProperty, toBoolean, toInt, use, useSkill, visitUrl } from "kolmafia";
+import { create, getProperty, haveSkill, Item, itemAmount, mpCost, myCompanion, myLevel, myMp, myPath, Path, setProperty, Skill, toBoolean, toInt, use, useSkill, visitUrl } from "kolmafia";
 import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
 import { equipBaseline } from "../auto_equipment";
 import { auto_have_skill, auto_log_info, auto_log_info$1, ovenHandle } from "../auto_util";

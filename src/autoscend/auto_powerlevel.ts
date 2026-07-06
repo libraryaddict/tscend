@@ -1,4 +1,4 @@
-import { Element, Familiar, Item, Location, Phylum, Skill, Stat, abort, cliExecute, floor, getProperty, inebrietyLimit, itemAmount, min, myAdventures, myBasestat, myBjornedFamiliar, myInebriety, myLevel, myMeat, myPrimestat, myTurncount, print, setProperty, toBoolean, toInt, useSkill, wait } from "kolmafia";
+import { abort, cliExecute, Element, Familiar, floor, getProperty, inebrietyLimit, Item, itemAmount, Location, min, myAdventures, myBasestat, myBjornedFamiliar, myInebriety, myLevel, myMeat, myPrimestat, myTurncount, Phylum, print, setProperty, Skill, Stat, toBoolean, toInt, useSkill, wait } from "kolmafia";
 import { auto_advToReserve } from "../autoscend";
 import { autoAdv$1, autoAdv$2 } from "./auto_adventure";
 import { inebriety_left, stomach_left } from "./auto_consume";
@@ -20,9 +20,9 @@ import { auto_fightFlamingLeaflet, auto_haveAugustScepter, auto_haveBurningLeave
 import { in_avantGuard } from "./paths/avant_guard";
 import { inAftercore } from "./paths/casual";
 import { in_koe } from "./paths/kingdom_of_exploathing";
-import { LX_attemptPowerLevelTheSource, in_theSource } from "./paths/the_source";
+import { in_theSource, LX_attemptPowerLevelTheSource } from "./paths/the_source";
 import { is_professor } from "./paths/wereprofessor";
-import { LX_robot_powerlevel, in_robot } from "./paths/you_robot";
+import { in_robot, LX_robot_powerlevel } from "./paths/you_robot";
 import { candyBlock, freeCandyFightsLeft } from "./quests/level_any";
 
 //Defined in autoscend/auto_powerlevel.ash

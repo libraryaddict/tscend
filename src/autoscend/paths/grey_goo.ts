@@ -1,4 +1,4 @@
-import { Path, abort, myDaycount, myPath, print } from "kolmafia";
+import { abort, myDaycount, myPath, Path, print } from "kolmafia";
 
 //Defined in autoscend/paths/grey_goo.ash
 export function in_ggoo(): boolean

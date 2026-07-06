@@ -1,4 +1,4 @@
-import { Element, Item, Monster, Skill, buffedHitStat, haveEquipped, min, monsterLevelAdjustment, myDaycount, numericModifier, toInt } from "kolmafia";
+import { buffedHitStat, Element, haveEquipped, Item, min, Monster, monsterLevelAdjustment, myDaycount, numericModifier, Skill, toInt } from "kolmafia";
 import { canUse$1, canUse$3, useItem$1, useSkill$1 } from "./auto_combat_util";
 
 //Path specific combat handling for Kingdom of Exploathing

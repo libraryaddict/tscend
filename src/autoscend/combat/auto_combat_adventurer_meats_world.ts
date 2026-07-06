@@ -1,4 +1,4 @@
-import { Element, Item, Monster, Skill, Stat, combatSkillAvailable, getProperty, haveEquipped, monsterHp, myBuffedstat, myHp, myMaxhp, toInt } from "kolmafia";
+import { combatSkillAvailable, Element, getProperty, haveEquipped, Item, Monster, monsterHp, myBuffedstat, myHp, myMaxhp, Skill, Stat, toInt } from "kolmafia";
 import { auto_have_skill } from "../auto_util";
 import { canSurvive$1, canUse, canUse$1, useSkill$1, useSkill$2 } from "./auto_combat_util";
 import { dartSkill } from "../iotms/mr2024";

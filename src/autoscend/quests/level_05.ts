@@ -1,4 +1,4 @@
-import { Class, Effect, Familiar, Item, Location, Monster, Skill, Stat, abort, council, getProperty, haveEffect, haveSkill, itemAmount, myAdventures, myClass, myDaycount, myPrimestat, setProperty, use, visitUrl } from "kolmafia";
+import { abort, Class, council, Effect, Familiar, getProperty, haveEffect, haveSkill, Item, itemAmount, Location, Monster, myAdventures, myClass, myDaycount, myPrimestat, setProperty, Skill, Stat, use, visitUrl } from "kolmafia";
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$2 } from "../auto_adventure";
 import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";

@@ -1,4 +1,4 @@
-import { Effect, Item, Path, Skill, cliExecute, containsText, getProperty, haveSkill, itemAmount, myHp, myMaxhp, myMp, myPath, putCloset, setProperty, toInt, toItem, useSkill } from "kolmafia";
+import { cliExecute, containsText, Effect, getProperty, haveSkill, Item, itemAmount, myHp, myMaxhp, myMp, myPath, Path, putCloset, setProperty, Skill, toInt, toItem, useSkill } from "kolmafia";
 
 //Defined in autoscend/paths/g_lover.ash
 export function in_glover(): boolean

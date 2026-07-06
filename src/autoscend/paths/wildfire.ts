@@ -1,4 +1,4 @@
-import { Element, Item, Location, Path, Skill, Slot, abort, containsText, equip, equippedItem, getCounters, getProperty, haveEquipped, inHardcore, itemAmount, mpCost, myAdventures, myAscensions, myLevel, myMeat, myMp, myPath, myWildfireWater, npcPrice, runChoice, setProperty, toBoolean, toInt, use, visitUrl } from "kolmafia";
+import { abort, containsText, Element, equip, equippedItem, getCounters, getProperty, haveEquipped, inHardcore, Item, itemAmount, Location, mpCost, myAdventures, myAscensions, myLevel, myMeat, myMp, myPath, myWildfireWater, npcPrice, Path, runChoice, setProperty, Skill, Slot, toBoolean, toInt, use, visitUrl } from "kolmafia";
 import { auto_advToReserve } from "../../autoscend";
 import { auto_buyUpTo, pull_meat } from "../auto_acquire";
 import { autoAdv$2 } from "../auto_adventure";

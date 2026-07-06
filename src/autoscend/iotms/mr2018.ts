@@ -1,7 +1,7 @@
-import { Effect, Familiar, Item, Location, Monster, Slot, Stat, abort, availableAmount, cliExecute, containsText, equip, equippedItem, floor, getProperty, getRevision, gitExists, haveEffect, haveFamiliar, inHardcore, isUnrestricted, itemAmount, lastChoice, lastMonster, min, myFamiliar, myFullness, myHash, myLevel, myMeat, myPrimestat, random, runChoice, setProperty, splitString, toBoolean, toInt, toItem, toLowerCase, totalTurnsPlayed, use, useFamiliar, visitUrl } from "kolmafia";
+import { abort, availableAmount, cliExecute, containsText, Effect, equip, equippedItem, Familiar, floor, getProperty, getRevision, gitExists, haveEffect, haveFamiliar, inHardcore, isUnrestricted, Item, itemAmount, lastChoice, lastMonster, Location, min, Monster, myFamiliar, myFullness, myHash, myLevel, myMeat, myPrimestat, random, runChoice, setProperty, Slot, splitString, Stat, toBoolean, toInt, toItem, toLowerCase, totalTurnsPlayed, use, useFamiliar, visitUrl } from "kolmafia";
 import { autoAdv$1, autoAdv$2, autoAdvBypass$8, CombatMacro } from "../auto_adventure";
 import { auto_spleenFamiliarAdvItemsPossessed, spleen_left } from "../auto_consume";
-import { autoEquip, equipStatgainIncreasers$1, equipmentAmount, possessEquipment, removeFromMaximize } from "../auto_equipment";
+import { autoEquip, equipmentAmount, equipStatgainIncreasers$1, possessEquipment, removeFromMaximize } from "../auto_equipment";
 import { canChangeToFamiliar, handleFamiliar$1, is100FamRun } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import { auto_get_campground, auto_is_valid, auto_is_valid$1, auto_log_debug$1, auto_log_info, auto_log_warning, handleTracker$1, hasTorso$1, internalQuestStatus, wrap_item } from "../auto_util";

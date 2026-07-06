@@ -1,4 +1,4 @@
-import { Effect, Item, Location, Path, cliExecute, containsText, getProperty, haveEffect, haveEquipped, itemAmount, myAdventures, myMeat, myPath, npcPrice, setProperty, splitString, toBoolean, toInt, turnsPlayed } from "kolmafia";
+import { cliExecute, containsText, Effect, getProperty, haveEffect, haveEquipped, Item, itemAmount, Location, myAdventures, myMeat, myPath, npcPrice, Path, setProperty, splitString, toBoolean, toInt, turnsPlayed } from "kolmafia";
 import { auto_advToReserve } from "../../autoscend";
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv$1 } from "../auto_adventure";

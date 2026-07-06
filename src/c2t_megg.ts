@@ -1,4 +1,4 @@
-import { Familiar, Item, Monster, Slot, abort, append, bufferToFile, cliExecute, containsText, currentRound, equip, equippedItem, fileToArray, getProperty, handlingChoice, haveFamiliar, itemAmount, lastChoice, myFamiliar, myHash, myHp, nowToInt, print, random, replaceString, runCombat, setProperty, splitString, toBoolean, toBuffer, toInt, toLowerCase, toMonster, useFamiliar, visitUrl, xpath } from "kolmafia";
+import { abort, append, bufferToFile, cliExecute, containsText, currentRound, equip, equippedItem, Familiar, fileToArray, getProperty, handlingChoice, haveFamiliar, Item, itemAmount, lastChoice, Monster, myFamiliar, myHash, myHp, nowToInt, print, random, replaceString, runCombat, setProperty, Slot, splitString, toBoolean, toBuffer, toInt, toLowerCase, toMonster, useFamiliar, visitUrl, xpath } from "kolmafia";
 import { AshMatcher } from "./autoscend/utils/kolmafiaUtils";
 import { CombatMacro } from "./autoscend/auto_adventure";
 

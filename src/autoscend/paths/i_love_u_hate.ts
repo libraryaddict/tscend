@@ -1,4 +1,4 @@
-import { Item, Path, containsText, create, itemAmount, myPath, storageAmount, toLowerCase } from "kolmafia";
+import { containsText, create, Item, itemAmount, myPath, Path, storageAmount, toLowerCase } from "kolmafia";
 import { pullXWhenHaveY } from "../auto_acquire";
 import { possessEquipment } from "../auto_equipment";
 import { auto_is_valid } from "../auto_util";

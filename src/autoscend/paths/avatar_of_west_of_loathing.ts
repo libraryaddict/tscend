@@ -1,5 +1,5 @@
-import { Class, Effect, Item, Location, Path, Skill, cliExecute, getProperty, haveEffect, haveSkill, itemAmount, myClass, myLevel, myLocation, myPath, setProperty, toInt, use, visitUrl } from "kolmafia";
-import { autoCraft, auto_log_info$1 } from "../auto_util";
+import { Class, cliExecute, Effect, getProperty, haveEffect, haveSkill, Item, itemAmount, Location, myClass, myLevel, myLocation, myPath, Path, setProperty, Skill, toInt, use, visitUrl } from "kolmafia";
+import { auto_log_info$1, autoCraft } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/avatar_of_west_of_loathing.ash

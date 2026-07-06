@@ -1,4 +1,4 @@
-import { Element, Item, Monster, Skill, Slot, Stat, abort, equippedItem, monsterElement, monsterHp, myBuffedstat } from "kolmafia";
+import { abort, Element, equippedItem, Item, Monster, monsterElement, monsterHp, myBuffedstat, Skill, Slot, Stat } from "kolmafia";
 import { canSurvive$1, canUse$1, turns_to_kill, useSkill$1 } from "./auto_combat_util";
 import { in_robot } from "../paths/you_robot";
 

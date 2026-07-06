@@ -1,4 +1,4 @@
-import { Item, abort, canInteract, cliExecute, getProperty, inCasual, mallPrice, myAscensions, myMeat, setProperty, toBoolean, toInt } from "kolmafia";
+import { abort, canInteract, cliExecute, getProperty, inCasual, Item, mallPrice, myAscensions, myMeat, setProperty, toBoolean, toInt } from "kolmafia";
 import { auto_buyUpTo } from "../auto_acquire";
 import { auto_log_info, auto_log_warning } from "../auto_util";
 import { L8_trapperPeak } from "../quests/level_08";

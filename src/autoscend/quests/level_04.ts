@@ -1,4 +1,4 @@
-import { Effect, Element, Familiar, Item, Location, canInteract, cliExecute, council, getProperty, itemAmount, toBoolean, use, visitUrl } from "kolmafia";
+import { canInteract, cliExecute, council, Effect, Element, Familiar, getProperty, Item, itemAmount, Location, toBoolean, use, visitUrl } from "kolmafia";
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv$2 } from "../auto_adventure";
 import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";

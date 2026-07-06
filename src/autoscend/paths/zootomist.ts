@@ -1,4 +1,4 @@
-import { Effect, Familiar, Item, Location, Modifier, Monster, Path, Skill, Slot, availableAmount, canEquip, ceil, equip, familiarWeight, getProperty, haveEffect, haveSkill, itemAmount, min, myAscensions, myFamiliar, myLevel, myPath, numericModifier, pullsRemaining, refreshStatus, splitString, toBoolean, toFamiliar, toInt, toSlot, use, useFamiliar, visitUrl } from "kolmafia";
+import { availableAmount, canEquip, ceil, Effect, equip, Familiar, familiarWeight, getProperty, haveEffect, haveSkill, Item, itemAmount, Location, min, Modifier, Monster, myAscensions, myFamiliar, myLevel, myPath, numericModifier, Path, pullsRemaining, refreshStatus, Skill, Slot, splitString, toBoolean, toFamiliar, toInt, toSlot, use, useFamiliar, visitUrl } from "kolmafia";
 import { auto_doTempleSummit } from "../../autoscend";
 import { pullXWhenHaveY } from "../auto_acquire";
 import { auto_getAllEquipabble$1, possessOutfit$1, simMaximizeWith$1 } from "../auto_equipment";
@@ -9,11 +9,11 @@ import { adjustForYellowRayIfPossible$1, auto_is_valid, auto_is_valid$2, auto_lo
 import { yellowRayCombatString$1 } from "../combat/auto_combat_util";
 import { speakeasyCombat } from "../iotms/mr2022";
 import { auto_doPhoneQuest, auto_fightFlamingLeaflet } from "../iotms/mr2023";
-import { auto_AprilPiccoloBoostsLeft, auto_MayamAllUsed, auto_MayamClaim, auto_MayamIsUsed, auto_haveMayamCalendar, auto_playAprilPiccolo } from "../iotms/mr2024";
+import { auto_AprilPiccoloBoostsLeft, auto_haveMayamCalendar, auto_MayamAllUsed, auto_MayamClaim, auto_MayamIsUsed, auto_playAprilPiccolo } from "../iotms/mr2024";
 import { L5_getEncryptionKey } from "../quests/level_05";
 import { L7_defiledNook } from "../quests/level_07";
 import { LX_killBaaBaaBuran, LX_unlockHauntedBilliardsRoom, LX_unlockHiddenTemple } from "../quests/level_11";
-import { LX_lastChance, candyBlock, candyBlockOutfit } from "../quests/level_any";
+import { candyBlock, candyBlockOutfit, LX_lastChance } from "../quests/level_any";
 
 let $_f_ZOOPART_NONE: number | undefined;
 $_f_ZOOPART_NONE ??= 0;

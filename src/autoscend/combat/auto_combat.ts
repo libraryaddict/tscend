@@ -1,4 +1,4 @@
-import { Monster, Skill, abort, cliExecute, containsText, getProperty, gitExists, indexOf, lastMonster, monsterAttack, monsterDefense, monsterHp, monsterLevelAdjustment, myHp, myLocation, removeProperty, setProperty, splitString, stopCounter, substring, toInt, toMonster } from "kolmafia";
+import { abort, cliExecute, containsText, getProperty, gitExists, indexOf, lastMonster, Monster, monsterAttack, monsterDefense, monsterHp, monsterLevelAdjustment, myHp, myLocation, removeProperty, setProperty, Skill, splitString, stopCounter, substring, toInt, toMonster } from "kolmafia";
 import { auto_log_info } from "../auto_util";
 import { awol_combat_helper } from "./auto_combat_awol";
 import { auto_combatDefaultStage1 } from "./auto_combat_default_stage1";

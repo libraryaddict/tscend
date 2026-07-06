@@ -1,6 +1,6 @@
-import { Effect, Familiar, Item, Location, Monster, Path, Slot, abort, availableChoiceOptions, canInteract, equip, equippedAmount, getProperty, haveEffect, itemAmount, myAdventures, myAscensions, myInebriety, myLevel, myPath, putCloset, removeProperty, runChoice, setProperty, toBoolean, toFamiliar, toInt, toLocation, toMonster } from "kolmafia";
+import { abort, availableChoiceOptions, canInteract, Effect, equip, equippedAmount, Familiar, getProperty, haveEffect, Item, itemAmount, Location, Monster, myAdventures, myAscensions, myInebriety, myLevel, myPath, Path, putCloset, removeProperty, runChoice, setProperty, Slot, toBoolean, toFamiliar, toInt, toLocation, toMonster } from "kolmafia";
 import { autoAdv$2 } from "../auto_adventure";
-import { autoDrink, auto_autoConsumeOne$1, auto_chewAdventures, stomach_left } from "../auto_consume";
+import { auto_autoConsumeOne$1, auto_chewAdventures, autoDrink, stomach_left } from "../auto_consume";
 import { addToMaximize, autoEquip$1, autoForceEquip$1, possessEquipment } from "../auto_equipment";
 import { LX_freeCombats$1 } from "../auto_powerlevel";
 import { auto_log_debug$1, auto_log_info, auto_log_warning } from "../auto_util";

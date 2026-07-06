@@ -1,4 +1,4 @@
-import { Item, abort, canInteract, cliExecute, council, getProperty, itemAmount, min, use, visitUrl } from "kolmafia";
+import { abort, canInteract, cliExecute, council, getProperty, Item, itemAmount, min, use, visitUrl } from "kolmafia";
 import { auto_autosell } from "../auto_util";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_wotsf } from "../paths/way_of_the_surprising_fist";

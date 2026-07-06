@@ -1,4 +1,4 @@
-import { Coinmaster, Effect, Item, Location, Monster, Path, Phylum, Skill, Stat, availableAmount, cliExecute, craft, creatableAmount, create, getMonsters, getProperty, haveEffect, haveSkill, hpCost, isAccessible, itemAmount, min, monsterPhylum, mpCost, myAdventures, myBasestat, myClass, myHash, myHp, myLevel, myLocation, myPath, sell, setProperty, toInt, toMonster, toSkill, useSkill, visitUrl } from "kolmafia";
+import { availableAmount, cliExecute, Coinmaster, craft, creatableAmount, create, Effect, getMonsters, getProperty, haveEffect, haveSkill, hpCost, isAccessible, Item, itemAmount, Location, min, Monster, monsterPhylum, mpCost, myAdventures, myBasestat, myClass, myHash, myHp, myLevel, myLocation, myPath, Path, Phylum, sell, setProperty, Skill, Stat, toInt, toMonster, toSkill, useSkill, visitUrl } from "kolmafia";
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoChew, autoDrink, autoEat, fullness_left, inebriety_left, spleen_left } from "../auto_consume";
 import { possessOutfit$1 } from "../auto_equipment";

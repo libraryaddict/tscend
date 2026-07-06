@@ -1,4 +1,4 @@
-import { Item, abort, cliExecute, craftType, creatableAmount, creatableTurns, create, getProperty, getRelated, itemAmount, myHash, toInt, visitUrl } from "kolmafia";
+import { abort, cliExecute, craftType, creatableAmount, creatableTurns, create, getProperty, getRelated, Item, itemAmount, myHash, toInt, visitUrl } from "kolmafia";
 import { auto_is_valid, auto_log_debug$1, auto_log_warning$1, handleTracker$1 } from "./auto_util";
 import { hasLegionKnife } from "./iotms/mr2011";
 

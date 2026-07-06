@@ -1,4 +1,4 @@
-import { Monster, Skill, abort, containsText, getProperty, lastMonster, setProperty, splitString, toInt } from "kolmafia";
+import { abort, containsText, getProperty, lastMonster, Monster, setProperty, Skill, splitString, toInt } from "kolmafia";
 import { canSurvive$1, canUse$1, canUse$2, haveUsed, useSkill$1 } from "./auto_combat_util";
 import { in_fotd } from "../paths/fall_of_the_dinosaurs";
 

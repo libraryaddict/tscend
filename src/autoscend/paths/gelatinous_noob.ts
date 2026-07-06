@@ -1,4 +1,4 @@
-import { Item, Path, Skill, abort, canInteract, cliExecute, containsText, creatableAmount, getProperty, haveSkill, isNpcItem, isTradeable, itemAmount, max, min, myAbsorbs, myAdventures, myDaycount, myLevel, myMeat, myPath, npcPrice, retrieveItem, stringModifier, toInt, visitUrl } from "kolmafia";
+import { abort, canInteract, cliExecute, containsText, creatableAmount, getProperty, haveSkill, isNpcItem, isTradeable, Item, itemAmount, max, min, myAbsorbs, myAdventures, myDaycount, myLevel, myMeat, myPath, npcPrice, Path, retrieveItem, Skill, stringModifier, toInt, visitUrl } from "kolmafia";
 import { auto_advToReserve } from "../../autoscend";
 import { auto_buyUpTo, auto_mall_price } from "../auto_acquire";
 import { auto_have_skill, auto_log_debug$1, auto_log_info, auto_log_info$1, internalQuestStatus } from "../auto_util";
