@@ -55,7 +55,6 @@ import {
   mySign,
   mySpleenUse,
   npcPrice,
-  overdrink,
   pullsRemaining,
   replaceString,
   retrieveItem,
@@ -129,7 +128,6 @@ import {
   auto_reserveCraftAmount,
   auto_turbo,
   banishSources,
-  canSimultaneouslyAcquire,
   freeCrafts$1,
   handleTracker,
   handleTracker$1,
@@ -455,15 +453,8 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
   return retval;
 }
 
-function autoOverdrink(howMany: number, toOverdrink: Item): boolean {
-  if (!canDrink$1(toOverdrink)) {
-    return false;
-  }
-  return overdrink(howMany, toOverdrink);
-}
-
 function minAdvPerDrunk(toDrink: Item): number {
-  let minAdv: number = 0;
+  let minAdv: number;
   if (indexOf(toDrink.adventures, "-") < 0) {
     minAdv = toInt(toDrink.adventures);
   } else {
@@ -771,7 +762,7 @@ export function consumeMilkOfMagnesiumIfUnused(): boolean {
 }
 
 function minAdvPerFull(toEat: Item): number {
-  let minAdv: number = 0;
+  let minAdv: number;
   if (indexOf(toEat.adventures, "-") < 0) {
     minAdv = toInt(toEat.adventures);
   } else {
@@ -854,7 +845,7 @@ function canDrink$2(toDrink: Item, checkValidity: boolean): boolean {
   if (in_lta()) {
     const martinis: Map<number, Item> = bondDrinks();
     let found: boolean = false;
-    for (const [idx, it] of martinis) {
+    for (const [, it] of martinis) {
       if (it === toDrink) {
         found = true;
       }
@@ -1434,8 +1425,7 @@ function loadConsumables(
   let wantJarlsbergPie: boolean = false;
   let wantPetePie: boolean = false;
   const missingHeroKeys: number = 3 - towerKeyCount();
-  let keysObtainableWithoutPie: number = 0;
-  let keysObtainableFromDailyDungeon: number = 0;
+
   let dailyDungeonTurnEstimate: number = 0;
   let keyObtainableFromFR: number = 0;
   let fantasyRealmTurnEstimate: number = 0;
@@ -1485,7 +1475,9 @@ function loadConsumables(
       considerNextPie();
     }
     //estimate cost of obtaining keys
-    keysObtainableFromDailyDungeon = toBoolean(getProperty("dailyDungeonDone"))
+    let keysObtainableFromDailyDungeon: number = toBoolean(
+      getProperty("dailyDungeonDone"),
+    )
       ? 0
       : 1;
     if (keysObtainableFromDailyDungeon > 0) {
@@ -1503,7 +1495,7 @@ function loadConsumables(
       keyObtainableFromFR = 1;
       fantasyRealmTurnEstimate = 5;
       if (containsText(getProperty("_frMonstersKilled"), "fantasy bandit")) {
-        for (const [idx, it] of splitString(
+        for (const [, it] of splitString(
           getProperty("_frMonstersKilled"),
           ",",
         ).entries()) {
@@ -1518,7 +1510,7 @@ function loadConsumables(
         }
       }
     }
-    keysObtainableWithoutPie =
+    const keysObtainableWithoutPie: number =
       keysObtainableFromDailyDungeon + keyObtainableFromFR;
     //bonus desirability to give to key lime pie
     if (myDaycount() > 1 && missingHeroKeys > keysObtainableWithoutPie) {
@@ -2221,7 +2213,6 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
   );
 
   let best_desirability_per_fill: number = 0.0;
-  let best_adv_per_fill: number = 0.0;
   let best: number = -1;
   for (const i of result_1.keys()) {
     const tentative_desirability_per_fill: number =
@@ -2230,9 +2221,8 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
       (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)).size;
     if (tentative_desirability_per_fill > best_desirability_per_fill) {
       best_desirability_per_fill = tentative_desirability_per_fill;
-      best_adv_per_fill =
-        (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i))
-          .adventures /
+      (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i))
+        .adventures /
         (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)).size;
       best = i;
     }
@@ -2348,174 +2338,6 @@ export function auto_autoConsumeOne$1(type_1: string): boolean {
 }
 // Need separate function to simulate since return type is different
 // For simulation, want to know what would be consumes instead of actually consuming it
-function auto_autoConsumeOneSimulation(type_1: string): Item {
-  const bestAction: ConsumeAction = auto_findBestConsumeAction(type_1);
-  if (bestAction.it === Item.none) {
-    //this can only find an existing item for daily specials
-    return toItem(bestAction.cafeid);
-  }
-  return bestAction.it;
-}
-
-function auto_knapsackAutoConsume(type_1: string, simulate: boolean): boolean {
-  // TODO: does not consider mime army shotglass
-
-  if (in_plumber() && myLevel() < 13) {
-    return false;
-  }
-
-  function organLeft$1(): number {
-    if (type_1 === "eat") {
-      return fullness_left();
-    }
-    if (type_1 === "drink") {
-      return inebriety_left();
-    }
-    abort(`Unrecognized organ type: should be 'eat' or 'drink', was ${type_1}`);
-    return 0;
-  }
-  if (organLeft$1() === 0) {
-    return false;
-  }
-
-  const actions: Map<number, ConsumeAction> = new Map();
-  loadConsumables(type_1, actions);
-  // Non-pulled, non-cafe consumables
-  const normal_consumables: Map<Item, number> = new Map();
-
-  const remaining_space: number = organLeft$1();
-
-  const desirability_1: Map<number, number> = new Map();
-  const space: Map<number, number> = new Map();
-  for (let i: number = 0; i < actions.size; i++) {
-    desirability_1.set(
-      i,
-      (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i))
-        .desirability,
-    );
-    space.set(
-      i,
-      (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)).size,
-    );
-  }
-
-  const result_1: Map<number, boolean> = knapsack(
-    remaining_space,
-    space.size,
-    space,
-    desirability_1,
-  );
-
-  const organ_name: string = type_1 === "eat" ? "fullness" : "inebriety";
-  auto_log_info(
-    `Knapsack ${type_1} plan for ${remaining_space} ${organ_name}:`,
-    "blue",
-  );
-  let total_adv: number = 0.0;
-  let consumable_count: number = 0;
-  let sum_space: number = 0;
-  for (const i of result_1.keys()) {
-    const name: string = consumable_name(
-      actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i),
-    );
-    if (
-      (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)).it !==
-        Item.none &&
-      (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i))
-        .howtoget !== AUTO_OBTAIN_PULL
-    ) {
-      normal_consumables.set(
-        (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)).it,
-        (normal_consumables.get(
-          (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)).it,
-        ) ?? 0) + 1,
-      );
-    }
-    consumable_count++;
-    sum_space += (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i))
-      .size;
-    auto_log_info(
-      to_pretty_string(
-        actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i),
-      ),
-      "blue",
-    );
-    total_adv += (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i))
-      .adventures;
-  }
-  if (type_1 === "eat") {
-    const applicable_seasoning: number = min(
-      itemAmount($item`Special Seasoning`),
-      consumable_count,
-    );
-    auto_log_info(
-      `(+${applicable_seasoning} from special seasoning (${itemAmount($item`Special Seasoning`)} available)`,
-      "blue",
-    );
-    total_adv += applicable_seasoning;
-  }
-  if (type_1 === "eat") {
-    // TODO: and can obtain milk of magnesium? It's just logging...
-    auto_log_info(`(+${5} from Milk of Magnesium)`, "blue");
-    total_adv += 5;
-  }
-  if (type_1 === "drink" && auto_have_skill($skill`The Ode to Booze`)) {
-    auto_log_info(`(+${sum_space} from Ode to Booze)`, "blue");
-    total_adv += sum_space;
-  }
-  auto_log_info(`For a total of: ${total_adv} adventures.`, "blue");
-
-  if (result_1.size === 0) {
-    auto_log_warning(
-      `Couldn't find a way of finishing off our ${type_1} space exactly.`,
-      "red",
-    );
-    return false;
-  }
-
-  if (!canSimultaneouslyAcquire(normal_consumables)) {
-    auto_log_warning(
-      `It looks like I can't simultaneously get everything that I want to ${type_1}. I'll wait and see if I get unconfused - otherwise, please ${type_1} manually.`,
-      "red",
-    );
-    return false;
-  }
-
-  if (simulate) {
-    return true;
-  }
-  // Craft everything before getting Milk of Magnesium, since
-  // we might be using non-free crafting turns.
-  for (const i of result_1.keys()) {
-    if (
-      !autoPrepConsume(
-        actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i),
-      )
-    ) {
-      abort(
-        `Unexpectedly couldn't prep ${to_debug_string(actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i))}`,
-      );
-    }
-  }
-
-  if (type_1 === "eat") {
-    acquireMilkOfMagnesiumIfUnused(true);
-    consumeMilkOfMagnesiumIfUnused();
-  }
-
-  const pre_adventures: number = myAdventures();
-
-  auto_log_info(`Consuming ${result_1.size} things...`, "blue");
-  for (const i of result_1.keys()) {
-    autoConsume(actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i));
-  }
-
-  auto_log_info(
-    `Expected ${total_adv} adventures, got ${myAdventures() - pre_adventures}`,
-    "blue",
-  );
-  return true;
-}
 
 export function auto_spleenFamiliarAdvItemsPossessed(): number {
   //returns how many size 4 items from spleen familiars in possession

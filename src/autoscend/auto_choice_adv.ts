@@ -388,9 +388,6 @@ function auto_run_choice(choice: number, page: string): boolean {
     // if can't afford door 1, choose none
     // Granted a Boon (God Lobster)
 
-    let goal: number = 0;
-    let search: string = "";
-    let glchoice: number = 0;
     switch (choice) {
       case 15:
       case 16:
@@ -959,15 +956,15 @@ function auto_run_choice(choice: number, page: string): boolean {
           runChoice(4);
         }
         break;
-      case 1310:
-        goal = toInt(getProperty("_auto_lobsterChoice"));
-        search = "I'd like part of your regalia.";
+      case 1310: {
+        const goal: number = toInt(getProperty("_auto_lobsterChoice"));
+        let search: string = "I'd like part of your regalia.";
         if (goal === 2) {
           search = "I'd like a blessing.";
         } else if (goal === 3) {
           search = "I'd like some experience.";
         }
-        glchoice = 0;
+        let glchoice: number = 0;
         for (const [idx, str] of options) {
           if (containsText(str, search)) {
             glchoice = idx;
@@ -975,6 +972,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         }
         runChoice(glchoice);
         break;
+      }
       case 1322: // The Beginning of the Neverend (The Neverending Party)
       case 1323: // All Done! (The Neverending Party)
       case 1324: // It Hasn't Ended, It's Just Paused (The Neverending Party)

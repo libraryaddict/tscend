@@ -32,7 +32,6 @@ import {
   setProperty,
   Skill,
   splitString,
-  stringModifier,
   toBoolean,
   toInt,
   toLocation,
@@ -58,7 +57,7 @@ import {
 
 import { auto_mall_price } from "../auto_acquire";
 import { autoAdv$2, autoAdvBypass, CombatMacro } from "../auto_adventure";
-import { fullness_left, spleen_left } from "../auto_consume";
+import { spleen_left } from "../auto_consume";
 import {
   autoForceEquip$1,
   autoForceEquip$3,
@@ -186,10 +185,8 @@ export function snojoFightAvailable(): boolean {
       getProperty("snojoSetting") !==
         toUpperCase(standard.get(0) ?? standard.set(0, "").get(0))
     ) {
-      let temp: string = visitUrl(
-        "place.php?whichplace=snojo&action=snojo_controller",
-      );
-      temp = runChoice(
+      visitUrl("place.php?whichplace=snojo&action=snojo_controller");
+      runChoice(
         controls.get(standard.get(0) ?? standard.set(0, "").get(0)) ??
           controls
             .set(standard.get(0) ?? standard.set(0, "").get(0), 0)
@@ -212,10 +209,8 @@ export function snojoFightAvailable(): boolean {
         ),
       ) < 14
     ) {
-      let temp: string = visitUrl(
-        "place.php?whichplace=snojo&action=snojo_controller",
-      );
-      temp = runChoice(
+      visitUrl("place.php?whichplace=snojo&action=snojo_controller");
+      runChoice(
         controls.get(standard.get(1) ?? standard.set(1, "").get(1)) ??
           controls
             .set(standard.get(1) ?? standard.set(1, "").get(1), 0)
@@ -238,10 +233,8 @@ export function snojoFightAvailable(): boolean {
         ),
       ) < 14
     ) {
-      let temp: string = visitUrl(
-        "place.php?whichplace=snojo&action=snojo_controller",
-      );
-      temp = runChoice(
+      visitUrl("place.php?whichplace=snojo&action=snojo_controller");
+      runChoice(
         controls.get(standard.get(2) ?? standard.set(2, "").get(2)) ??
           controls
             .set(standard.get(2) ?? standard.set(2, "").get(2), 0)
@@ -326,11 +319,9 @@ export function auto_sourceTerminalRequest(request: string): boolean {
   //"campground.php?action=terminal&hack=enhance items.enh"
   if (auto_haveSourceTerminal()) {
     if (in_nuclear()) {
-      const temp_1: string = visitUrl(
-        "place.php?whichplace=falloutshelter&action=vault_term",
-      );
+      visitUrl("place.php?whichplace=falloutshelter&action=vault_term");
     } else {
-      const temp_1: string = visitUrl("campground.php?action=terminal");
+      visitUrl("campground.php?action=terminal");
     }
     //		temp = visit_url("choice.php?pwd=&whichchoice=1191&option=1&input=reset");
     visitUrl(`choice.php?pwd=&whichchoice=1191&option=1&input=${request}`);
@@ -347,7 +338,7 @@ export function auto_sourceTerminalExtrude(request: string): boolean {
   if (auto_sourceTerminalExtrudeLeft() === 0) {
     return false;
   }
-  let actual: string = "";
+  let actual: string;
   request = toLowerCase(request);
   switch (request) {
     case "food":
@@ -386,7 +377,7 @@ export function auto_sourceTerminalEnhance(request: string): boolean {
   if (auto_sourceTerminalEnhanceLeft() === 0) {
     return false;
   }
-  let actual: string = "";
+  let actual: string;
   switch (request) {
     case "meat":
     case "meat.enh":
@@ -451,141 +442,6 @@ export function auto_sourceTerminalEnhanceLeft(): number {
   return 0;
 }
 
-function auto_sourceTerminalMissing(): Map<string, number> {
-  const status: Map<string, number> = new Map();
-
-  status.set("ASHRAM", 1);
-  status.set("CRAM", 1);
-  status.set("DIAGRAM", 1);
-  status.set("DRAM", 1);
-  status.set("GRAM", 10);
-  status.set("INGRAM", 1);
-  status.set("PRAM", 10);
-  status.set("SCRAM", 1);
-  status.set("SPAM", 10);
-  status.set("TRAM", 1);
-  status.set("TRIGRAM", 1);
-  status.set("booze.ext", 1);
-  status.set("compress.edu", 1);
-  status.set("cram.ext", 1);
-  status.set("critical.enh", 1);
-  status.set("damage.enh", 1);
-  status.set("digitize", 3);
-  status.set("digitize.edu", 1);
-  status.set("dram.ext", 1);
-  status.set("duplicate.edu", 1);
-  status.set("educate", 2);
-  status.set("enhance", 103);
-  status.set("enhanceBuff", 100);
-  status.set("enhanceUses", 3);
-  status.set("enquiry", 250);
-  status.set("extract.edu", 1);
-  status.set("familiar.enq", 1);
-  status.set("familiar.ext", 1);
-  status.set("food.ext", 1);
-  status.set("goggles.ext", 1);
-  status.set("gram.ext", 1);
-  status.set("init.enh", 1);
-  status.set("items.enh", 1);
-  status.set("meat.enh", 1);
-  status.set("monsters.enq", 1);
-  status.set("mpReduce", 15);
-  status.set("portscan.edu", 1);
-  status.set("pram.ext", 1);
-  status.set("protect.enq", 1);
-  status.set("spam.ext", 1);
-  status.set("stats.enq", 1);
-  status.set("substats.enh", 1);
-  status.set("tram.ext", 1);
-  status.set("turbo.edu", 1);
-  const have: Map<string, number> = auto_sourceTerminalStatus();
-  for (const thing of have.keys()) {
-    status.set(
-      thing,
-      (status.get(thing) ?? 0) -
-        (have.get(thing) ?? have.set(thing, 0).get(thing)),
-    );
-  }
-  return status;
-}
-
-function auto_sourceTerminalStatus(): Map<string, number> {
-  const status: Map<string, number> = new Map();
-  if (auto_haveSourceTerminal()) {
-    visitUrl("campground.php?action=terminal");
-    visitUrl("choice.php?pwd=&whichchoice=1191&option=1&input=reset");
-    visitUrl("choice.php?pwd=&whichchoice=1191&option=1&input=status");
-    const temp: string = visitUrl(
-      "choice.php?pwd=&whichchoice=1191&option=1&input=ls",
-    );
-
-    const ramMatcher: AshMatcher = new AshMatcher(
-      "<div>((?:[A-Z]*?)?[RP]AM) (chip(?:s?)) installed([:,]) ((?:\\d+)|(?:\\w))",
-      temp,
-    );
-    while (ramMatcher.find()) {
-      if (ramMatcher.group(3) === ",") {
-        status.set(ramMatcher.group(1), 1);
-      } else {
-        status.set(ramMatcher.group(1), toInt(ramMatcher.group(4)));
-      }
-    }
-
-    const extrude: AshMatcher = new AshMatcher(
-      "\\b((?:\\w+?)[.](?:ext|enh|edu|enq))",
-      temp,
-    );
-    while (extrude.find()) {
-      status.set(extrude.group(1), 1);
-    }
-    //		temp = visit_url("choice.php?pwd=&whichchoice=1191&option=1&input=reset");
-    status.set(
-      "enhanceBuff",
-      25 +
-        25 * (status.get("INGRAM") ?? status.set("INGRAM", 0).get("INGRAM")) +
-        5 * (status.get("PRAM") ?? status.set("PRAM", 0).get("PRAM")),
-    );
-    status.set(
-      "enhanceUses",
-      1 +
-        (status.get("CRAM") ?? status.set("CRAM", 0).get("CRAM")) +
-        (status.get("SCRAM") ?? status.set("SCRAM", 0).get("SCRAM")),
-    );
-    status.set(
-      "enhance",
-      (status.get("enhanceBuff") ??
-        status.set("enhanceBuff", 0).get("enhanceBuff")) +
-        (status.get("enhanceUses") ??
-          status.set("enhanceUses", 0).get("enhanceUses")),
-    );
-    status.set(
-      "enquiry",
-      50 +
-        ((status.get("DIAGRAM") ?? status.set("DIAGRAM", 0).get("DIAGRAM")) +
-          1) *
-          (status.get("GRAM") ?? status.set("GRAM", 0).get("GRAM")) *
-          10,
-    );
-    status.set(
-      "educate",
-      1 + (status.get("DRAM") ?? status.set("DRAM", 0).get("DRAM")),
-    );
-    status.set(
-      "digitize",
-      1 +
-        (status.get("TRIGRAM") ?? status.set("TRIGRAM", 0).get("TRIGRAM")) +
-        (status.get("TRAM") ?? status.set("TRAM", 0).get("TRAM")),
-    );
-    status.set(
-      "mpReduce",
-      5 * (status.get("ASHRAM") ?? status.set("ASHRAM", 0).get("ASHRAM")) +
-        (status.get("SPAM") ?? status.set("SPAM", 0).get("SPAM")),
-    );
-  }
-
-  return status;
-}
-
 export function auto_sourceTerminalEducate(
   first: Skill,
   second: Skill,
@@ -630,10 +486,6 @@ export function auto_sourceTerminalEducate(
     auto_sourceTerminalRequest(`educate ${secondSkill}`);
   }
   return true;
-}
-
-function auto_sourceTerminalEducate$1(first: Skill): boolean {
-  return auto_sourceTerminalEducate(first, Skill.none);
 }
 
 export function auto_haveWitchess(): boolean {
@@ -685,7 +537,7 @@ function auto_advWitchess(target: string, option?: CombatMacro): boolean {
     setProperty("_auto_witchessBattles", (5).toString());
     return false;
   }
-  temp = visitUrl("choice.php?pwd=&option=2&whichchoice=1182");
+  visitUrl("choice.php?pwd=&option=2&whichchoice=1182");
 
   setProperty("auto_nextEncounter", toMonster(goal).toString());
   const pages: Map<number, string> = new Map();
@@ -781,12 +633,13 @@ export function witchessFights(): boolean {
   }
 
   switch (myDaycount()) {
-    case 1:
+    case 1: {
       if (itemAmount($item`Greek fire`) === 0) {
         return auto_advWitchess("ml");
       }
       return auto_advWitchess("booze");
-    case 2:
+    }
+    case 2: {
       if (
         getProperty("sidequestNunsCompleted") === "none" &&
         getProperty("auto_skipNuns") === "false" &&
@@ -794,7 +647,8 @@ export function witchessFights(): boolean {
       ) {
         return auto_advWitchess("meat");
       }
-    case 3:
+    }
+    case 3: {
       if (
         getProperty("sidequestNunsCompleted") === "none" &&
         getProperty("auto_skipNuns") === "false" &&
@@ -802,7 +656,8 @@ export function witchessFights(): boolean {
       ) {
         return auto_advWitchess("meat");
       }
-    case 4:
+    }
+    case 4: {
       if (
         getProperty("sidequestNunsCompleted") === "none" &&
         getProperty("auto_skipNuns") === "false" &&
@@ -811,21 +666,11 @@ export function witchessFights(): boolean {
         return auto_advWitchess("meat");
       }
       return auto_advWitchess("booze");
+    }
     default:
       return auto_advWitchess("booze");
   }
   return false;
-}
-
-function auto_bestBadge(): Item {
-  let retval: Item = Item.none;
-  for (const it of $items`plastic detective badge, bronze detective badge, silver detective badge, gold detective badge`) {
-    if (possessEquipment(it)) {
-      retval = it;
-    }
-  }
-
-  return retval;
 }
 
 export function auto_doPrecinct(): boolean {
@@ -1072,7 +917,7 @@ export function auto_doPrecinct(): boolean {
         const currentLocation: number = toInt(
           subEgg.get(0) ?? subEgg.set(0, "").get(0),
         );
-        page = visitUrl(`wham.php?visit=${currentLocation}`, false);
+        visitUrl(`wham.php?visit=${currentLocation}`, false);
 
         let otherPerson: number = 1;
         let corrupted: boolean = false;
@@ -1193,7 +1038,6 @@ export function auto_doPrecinct(): boolean {
         );
         //Find person they are accusing and do it.
 
-        const currentEgg: Map<number, string> = new Map();
         for (const index_1 of eggData.keys()) {
           const subsubEgg: Map<number, string> = new Map(
             splitString(
@@ -1382,85 +1226,6 @@ function timeSpinnerRemaining$1(verify: boolean): number {
   return 10 - spins_used;
 }
 
-function timeSpinnerGet(goal: string): boolean {
-  //spend 2 minutes to visit the far future using ezandora's script to get something
-  if (timeSpinnerRemaining$1(true) < 2) {
-    return false;
-  }
-  goal = toLowerCase(goal);
-  if (
-    ![
-      "booze",
-      "drink",
-      "food",
-      "memory",
-      "history",
-      "ears",
-      "mall",
-      "none",
-    ].includes(goal)
-  ) {
-    return false;
-  }
-
-  if (
-    ["booze", "drink", "food", "memory", "history", "ears", "mall"].includes(
-      goal,
-    )
-  ) {
-    if (toBoolean(getProperty("_timeSpinnerReplicatorUsed"))) {
-      return false;
-    }
-  }
-
-  if (goal === "booze" && toInt(getProperty("timeSpinnerMedals")) < 5) {
-    return false;
-  }
-  if (goal === "drink" && toInt(getProperty("timeSpinnerMedals")) < 5) {
-    return false;
-  }
-  if (goal === "food" && toInt(getProperty("timeSpinnerMedals")) < 15) {
-    return false;
-  }
-  if (goal === "history" && toInt(getProperty("timeSpinnerMedals")) < 10) {
-    return false;
-  }
-  if (goal === "memory" && toInt(getProperty("timeSpinnerMedals")) < 20) {
-    return false;
-  }
-
-  if (gitExists("Ezandora-Far-Future")) {
-    //Required by dependencies
-    cliExecute(`FarFuture ${goal}`);
-    return true;
-  }
-  return false;
-}
-function timeSpinnerConsume(goal: Item): boolean {
-  //spend 3 minutes to re-consume a food item
-  if (timeSpinnerRemaining$1(true) < 3) {
-    return false;
-  }
-  let available: boolean = false;
-  for (const [i, s] of splitString(
-    getProperty("_timeSpinnerFoodAvailable"),
-    ",",
-  ).entries()) {
-    if (toInt(goal) === toInt(s)) {
-      available = true;
-    }
-  }
-  if (!available) {
-    return false; //the item we want to re-consume via time travel is not available currently
-  }
-
-  const initial_fullness: number = fullness_left();
-  visitUrl("inv_use.php?pwd=&which=3&whichitem=9104");
-  visitUrl("choice.php?pwd=&whichchoice=1195&option=2");
-  visitUrl(`choice.php?pwd=&whichchoice=1197&option=1&foodid=${toInt(goal)}`);
-  return fullness_left() !== initial_fullness;
-}
-
 export function timeSpinnerAdventure(option?: CombatMacro): boolean {
   //spend 1 minutes to Adventure Way Back in Time
   if (timeSpinnerRemaining$1(true) < 1) {
@@ -1571,18 +1336,6 @@ export function auto_chapeau(): void {
   if (doGetNoHat) {
     useSkill(1, $skill`Ceci N'Est Pas Un Chapeau`);
   }
-}
-
-function rethinkingCandyList(): boolean {
-  const synthesis: Effect[] = $effects`Synthesis: Hot, Synthesis: Cold, Synthesis: Pungent, Synthesis: Scary, Synthesis: Greasy, Synthesis: Strong, Synthesis: Smart, Synthesis: Cool, Synthesis: Hardy, Synthesis: Energy, Synthesis: Greed, Synthesis: Collection, Synthesis: Movement, Synthesis: Learning, Synthesis: Style`;
-  for (const eff of synthesis) {
-    auto_log_info(
-      `Trying effect: ${eff}: ${stringModifier(eff, "Modifiers")}`,
-      "orange",
-    );
-    rethinkingCandy$1(eff, true);
-  }
-  return true;
 }
 
 export function rethinkingCandy(acquire: Effect): boolean {
@@ -1816,12 +1569,12 @@ function rethinkingCandy$1(acquire: Effect, simulate: boolean): boolean {
     );
     if (!simulate) {
       const prior: number = haveEffect(acquire);
-      let temp: string = visitUrl(
+      visitUrl(
         `runskillz.php?pwd=&targetplayer=${myId()}&quantity=1&whichskill=166`,
       );
 
       const url: string = `choice.php?whichchoice=1217&option=1&pwd=&a=${toInt(bestFirst)}&b=${toInt(bestSecond)}`;
-      temp = visitUrl(url);
+      visitUrl(url);
       if (haveEffect(acquire) === prior) {
         abort(`Failed to Sweetly Synthesize: ${url}`);
       }

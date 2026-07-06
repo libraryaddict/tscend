@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   canEquip,
   containsText,
@@ -123,7 +122,6 @@ import {
   auto_isShadowRiftMonster,
   auto_monkeyPawWishesLeft,
   auto_neededShadowBricks,
-  auto_RWBMonster,
 } from "../iotms/mr2023";
 import { auto_haveRoman } from "../iotms/mr2024";
 import {
@@ -183,18 +181,6 @@ export function haveUsed$1(it: Item): boolean {
 export function usedCount(sk: Skill): number {
   const m: AshMatcher = new AshMatcher(
     `(sk${toInt(sk).toString()})`,
-    getProperty("_auto_combatState"),
-  );
-  let count_1: number = 0;
-  while (m.find()) {
-    ++count_1;
-  }
-  return count_1;
-}
-
-function usedCount$1(it: Item): number {
-  const m: AshMatcher = new AshMatcher(
-    `(it${toInt(it).toString()})`,
     getProperty("_auto_combatState"),
   );
   let count_1: number = 0;
@@ -356,7 +342,7 @@ export function canUse(
     $_static_1 = true;
   }
 
-  for (const [i, set] of $_canUse_exclusives) {
+  for (const [, set] of $_canUse_exclusives) {
     if (set.skills.has(sk)) {
       let total: number = 0;
       for (const check_1 of set.skills.keys()) {
@@ -442,7 +428,7 @@ export function useItems$1(it1: Item, it2: Item): string {
 }
 
 export function isSniffed(enemy: Monster, sk: Skill): boolean {
-  let search: string = "";
+  let search: string;
   if (sk === $skill`Get a Good Whiff of This Guy`) {
     search = "Nosy Nose";
   } else {
@@ -579,34 +565,6 @@ export function getSniffer(enemy: Monster, inCombat: boolean): Skill {
 
 export function getSniffer$1(enemy: Monster): Skill {
   return getSniffer(enemy, true);
-}
-
-function isCopied(enemy: Monster, sk: Skill): boolean {
-  //checks if the monster enemy is currently copied using the specific skill sk
-  let retval: boolean = false;
-  switch (sk) {
-    case $skill`Blow the Purple Candle!`:
-      retval = containsText(
-        getProperty("auto_purple_candled"),
-        enemy.toString(),
-      );
-      break;
-    case $skill`%fn, fire a Red, White and Blue Blast`:
-      retval = auto_RWBMonster() === enemy;
-    default:
-      abort(`isCopied was asked to check an unidentified skill: ${sk}`);
-  }
-  return retval;
-}
-
-function isCopied$1(enemy: Monster): boolean {
-  //checks if the monster enemy is currently copied using any of the copy skills
-  for (const sk of $skills`Blow the Purple Candle!, %fn\, fire a Red\, White and Blue Blast`) {
-    if (isCopied(enemy, sk)) {
-      return true;
-    }
-  }
-  return false;
 }
 
 export function getCopier(enemy: Monster, inCombat: boolean): Skill {
@@ -1567,14 +1525,6 @@ export function yellowRayCombatString$1(
   return yellowRayCombatString(target, inCombat, false);
 }
 
-function yellowRayCombatString$2(target: Monster): string {
-  return yellowRayCombatString$1(target, false);
-}
-
-function yellowRayCombatString$3(): string {
-  return yellowRayCombatString$2(Monster.none);
-}
-
 export function replaceMonsterCombatString(
   target: Monster,
   inCombat: boolean,
@@ -1602,10 +1552,6 @@ export function replaceMonsterCombatString(
 
 export function replaceMonsterCombatString$1(target: Monster): string {
   return replaceMonsterCombatString(target, false);
-}
-
-function replaceMonsterCombatString$2(): string {
-  return replaceMonsterCombatString$1(Monster.none);
 }
 
 export function turns_to_kill(dmg: number): number {
@@ -1789,7 +1735,7 @@ export function maxRoundsToDouse(enemy: Monster): number {
 }
 
 export function canSurviveShootGhost(enemy: Monster, shots: number): boolean {
-  let damage: number = 0;
+  let damage: number;
   switch (enemy) {
     case $monster`the ghost of Oily McBindle`:
       damage = toInt(

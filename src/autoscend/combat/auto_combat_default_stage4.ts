@@ -89,13 +89,12 @@ export function auto_combatDefaultStage4(
   text: string,
 ): string {
   // stage 4 = prekill. copy, sing along, flyer and other things that need to be done after delevel but before killing
-  let retval: string = "";
   //Unskip stage 3
   if (toBoolean(getProperty("auto_skipStage3"))) {
     setProperty("auto_skipStage3", false.toString());
   }
   // Path = The Source
-  retval = auto_combatTheSourceStage4(round_1, enemy, text);
+  let retval: string = auto_combatTheSourceStage4(round_1, enemy, text);
   if (retval !== "") {
     return retval;
   }

@@ -122,7 +122,6 @@ export function auto_combatDefaultStage2(
   text: string,
 ): string {
   // stage 2 = enders: escape, replace, instakill, yellowray and other actions that instantly end combat
-  let retval: string = "";
   // Skip if have auto_skipStage2 is set
   if (toBoolean(getProperty("auto_skipStage2"))) {
     return "";
@@ -165,7 +164,7 @@ export function auto_combatDefaultStage2(
     return "";
   }
   // Path = dark gyffte
-  retval = auto_combatDarkGyffteStage2(round_1, enemy, text);
+  const retval: string = auto_combatDarkGyffteStage2(round_1, enemy, text);
   if (retval !== "") {
     return retval;
   }

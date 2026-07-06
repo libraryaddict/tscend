@@ -423,7 +423,6 @@ function auto_post_adventure(): boolean {
     return true;
   }
   //save some MP while buffing
-  const beforeBuffs: Map<number, Item> = auto_saveEquipped();
   addToMaximize("-1000mana cost, -tie");
   equipMaximizedGear();
 

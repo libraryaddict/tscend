@@ -54,7 +54,7 @@ export function auto_process_kmail(
     '"id":"(\\d+)","type":"(.+?)","fromid":"(-?\\d+)","azunixtime":"(\\d+)","message":"(.+?)","fromname":"(.+?)","localtime":"(.+?)"',
     page,
   );
-  let n: number = 0;
+  let n: number;
   while (k.find()) {
     n = mail.size;
     (mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).id = toInt(

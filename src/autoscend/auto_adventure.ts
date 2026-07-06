@@ -109,10 +109,6 @@ export function autoAdv$2(loc: Location): boolean {
   return autoAdv(1, loc, null);
 }
 
-function autoAdv$3(loc: Location, option: CombatMacro): boolean {
-  return autoAdv(1, loc, option);
-}
-
 export function autoLuckyAdv(loc: Location, override: boolean): boolean {
   let gotLucky: boolean = false;
   if (cloversAvailable(override) > 0) {
@@ -168,7 +164,7 @@ export function autoAdvBypass(
     "blue",
   );
   let page: string = "";
-  for (const [idx, it] of url) {
+  for (const [, it] of url) {
     if ((urlGetFlags & 1) === 1) {
       page = visitUrl(it, false);
     } else {
@@ -246,30 +242,8 @@ export function autoAdvBypass$2(
   return autoAdvBypass(0, urlConvert, loc, option);
 }
 
-function autoAdvBypass$3(snarfblat: number, loc: Location): boolean {
-  const page: string = `adventure.php?snarfblat=${snarfblat}`;
-  return autoAdvBypass$1(page, loc);
-}
-
-function autoAdvBypass$4(
-  snarfblat: number,
-  loc: Location,
-  option: CombatMacro,
-): boolean {
-  const page: string = `adventure.php?snarfblat=${snarfblat}`;
-  return autoAdvBypass$2(page, loc, option);
-}
-
-function autoAdvBypass$5(snarfblat: number): boolean {
-  return autoAdvBypass$3(snarfblat, $location`Noob Cave`);
-}
-
 export function autoAdvBypass$6(url: string): boolean {
   return autoAdvBypass$1(url, $location`Noob Cave`);
-}
-
-function autoAdvBypass$7(snarfblat: number, option: CombatMacro): boolean {
-  return autoAdvBypass$4(snarfblat, $location`Noob Cave`, option);
 }
 
 export function autoAdvBypass$8(url: string, option: CombatMacro): boolean {

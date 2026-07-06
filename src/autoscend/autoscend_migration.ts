@@ -20,18 +20,13 @@ import {
 } from "./auto_util";
 import { fileAsMap } from "./utils/kolmafiaUtils";
 
-let $_f___autoscend_version: string | undefined;
-$_f___autoscend_version ??= "1.8.0";
-let $_f___autoscend_confirm_timeoutMS: number | undefined;
-$_f___autoscend_confirm_timeoutMS ??= 10000;
-let $_f___remove_sl_ascend_confirmation: string | undefined;
-$_f___remove_sl_ascend_confirmation ??=
+const $_f___autoscend_version: string = "1.8.0";
+const $_f___autoscend_confirm_timeoutMS: number = 10000;
+const $_f___remove_sl_ascend_confirmation: string =
   "Looks like you have the old sl_ascend project installed as well. Would you like to remove it? (it is no longer maintained). Will default to false in 10 seconds.";
-let $_f___migrate_sl_ascend_properties_confirmation: string | undefined;
-$_f___migrate_sl_ascend_properties_confirmation ??=
+const $_f___migrate_sl_ascend_properties_confirmation: string =
   "Looks like you may be migrating from sl_ascend. Starting with a fresh run using autoscend is adviable but we can try to migrate all the sl_ascend properties (results may vary). Will default to true in 10 seconds.";
-let $_f___migrate_sl_ascend_properties_remove_confirmation: string | undefined;
-$_f___migrate_sl_ascend_properties_remove_confirmation ??=
+const $_f___migrate_sl_ascend_properties_remove_confirmation: string =
   "Would you like to clean up old sl_ascend properties after migrating them? Will default to false in 10 seconds.";
 
 //Defined in autoscend/autoscend_migration.ash
@@ -94,7 +89,7 @@ export function autoscend_migrate(): boolean {
 
   function sanity_check_sl_ascend_autoscend_properties(): boolean {
     let prop_conflicts: number = 0;
-    for (const [_, p] of $_autoscend_migrate_props) {
+    for (const [, p] of $_autoscend_migrate_props) {
       const old_prop: string = replaceString(p, "auto_", "sl_");
       if (propertyExists(old_prop)) {
         if (
@@ -143,7 +138,7 @@ export function autoscend_migrate(): boolean {
     );
 
     let prop_conflicts: number = 0;
-    for (const [_, p] of $_autoscend_migrate_props) {
+    for (const [, p] of $_autoscend_migrate_props) {
       const old_prop: string = replaceString(p, "auto_", "sl_");
       if (propertyExists(old_prop)) {
         if (!propertyExists(p)) {

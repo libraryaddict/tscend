@@ -27,6 +27,7 @@ export default defineConfig(
     },
     files: ["src/**/*.ts", "src/**/*.tsx", "**/*.ts", "**/*.tsx"],
     rules: {
+      "no-empty": "off",
       "block-scoped-var": "error",
       "eol-last": "error",
       eqeqeq: "error",
@@ -54,7 +55,7 @@ export default defineConfig(
         "warn",
         {
           vars: "all",
-          args: "after-used",
+          args: "none",
         },
       ],
     },

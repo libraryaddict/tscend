@@ -92,8 +92,6 @@ export function auto_combatWereProfessorStage5(
   }
 
   const enemy_physical_immune: boolean = enemy.physicalResistance > 99;
-  const enemy_physical_res: number = 1 - enemy.physicalResistance * 0.01; //convert % into float
-  const dmg: number = 0;
 
   if (is_werewolf()) {
     if (enemy_physical_immune && canUse$1($skill`Bite`, true)) {

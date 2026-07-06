@@ -7,7 +7,6 @@ import {
   creatableAmount,
   create,
   eatsilent,
-  equippedItem,
   getDwelling,
   getInventory,
   getProperty,
@@ -86,11 +85,9 @@ import {
   auto_log_debug$1,
   auto_log_error,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
   auto_log_warning$1,
   backupSetting,
-  hasTorso$1,
   internalQuestStatus,
   isGuildClass,
   meatReserve,
@@ -242,31 +239,6 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
   //sadness, we couldn't unlock this zone.
   auto_log_debug$1("Failed to unlock [The Thinknerd Warehouse]");
   return false;
-}
-
-function LX_melvignShirt(): boolean {
-  //Do the quest [The Shirt Off His Lack of Back] to get the skill [Torso Awaregness] from melvign the gnome.
-
-  if (hasTorso$1()) {
-    return false;
-  }
-  if (getProperty("questM22Shirt") === "finished") {
-    //is it actually possible to finish the quest and not have torso awareness? if not then this can be delted.
-    return false;
-  }
-  if (internalQuestStatus("questM22Shirt") < 0) {
-    //if quest has not started
-    if (!LX_unlockThinknerdWarehouse(false)) {
-      //if failed to start the quest without spending adv or wish
-      return false;
-    }
-  }
-
-  if (itemAmount($item`Professor What garment`) === 0) {
-    return autoAdv$2($location`The Thinknerd Warehouse`);
-  }
-  visitUrl("place.php?whichplace=mountains&action=mts_melvin", false);
-  return true;
 }
 
 export function LX_steelOrgan_condition_slow(): boolean {
@@ -494,7 +466,6 @@ export function LX_guildUnlock(): boolean {
 
   let pref: string = "";
   let loc: Location = Location.none;
-  let goal: Item = Item.none;
   if (myPrimestat() === $stat`Moxie` && auto_haveTearawayPants()) {
     //Can bypass moxie test if we have the Tearaway Pants
     if (autoForceEquip$3($item`tearaway pants`)) {
@@ -508,15 +479,12 @@ export function LX_guildUnlock(): boolean {
     case $stat`Muscle`:
       pref = "questG09Muscle";
       loc = $location`The Outskirts of Cobb's Knob`;
-      goal = $item`11-inch knob sausage`;
       break;
     case $stat`Mysticality`:
       pref = "questG07Myst";
       loc = $location`The Haunted Pantry`;
-      goal = $item`exorcised sandwich`;
       break;
     case $stat`Moxie`:
-      goal = equippedItem($slot`pants`);
       pref = "questG08Moxie";
       if (internalQuestStatus(pref) < 1) {
         loc = $location`The Sleazy Back Alley`;
@@ -566,17 +534,6 @@ export function startArmorySubQuest(): boolean {
     }
   }
   return false;
-}
-
-function finishArmorySideQuest(): boolean {
-  if (internalQuestStatus("questM25Armorer") !== 4) {
-    //step4===have [no-handed pie]. need to turn it in.
-    return false;
-  }
-  auto_log_info$1("finishing quest [Lending a Hand (and a Foot)]");
-  visitUrl("shop.php?whichshop=armory");
-  runChoice(2); //give no-handed pie to finish the quest
-  return internalQuestStatus("questM25Armorer") > 4;
 }
 
 export function startMeatsmithSubQuest(): boolean {
@@ -739,7 +696,7 @@ export function LX_pirateOutfit(): boolean {
 
     if (possessEquipment($item`peg key`) && !preGatheringInsults) {
       // if we have the key and insults, just pull any outfit parts we are still missing
-      for (const [_, it] of outfitPieces("Swashbuckling Getup").entries()) {
+      for (const [, it] of outfitPieces("Swashbuckling Getup").entries()) {
         pullXWhenHaveY(it, 1, 0);
       }
     }
@@ -1327,12 +1284,6 @@ export function LX_acquireEpicWeapon(): boolean {
   return autoAdv$2($location`The Unquiet Garves`);
 }
 // TODO: Add the rest of the Nemesis quest with a flag to enable doing it in-run?
-function LX_NemesisQuest(): boolean {
-  if (LX_guildUnlock() || LX_acquireEpicWeapon()) {
-    return true;
-  }
-  return false;
-}
 
 export function houseUpgrade(): void {
   //function for upgrading your dwelling.

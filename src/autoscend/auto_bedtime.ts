@@ -554,7 +554,6 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
     let best1hweapon: Item = Item.none;
     let very_best: Item = Item.none;
     let very_best_val: number = 0;
-    let very_best_improvement: number = 0;
     let very_best_slot: Slot = Slot.none;
     const a1: Slot = $slot`acc1`;
     const a2: Slot = $slot`acc2`;
@@ -856,7 +855,10 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
       }
     }
 
-    very_best_improvement = rollover_improvement(very_best, very_best_slot);
+    const very_best_improvement: number = rollover_improvement(
+      very_best,
+      very_best_slot,
+    );
     if (very_best_improvement < desirability_1) {
       break;
     }
@@ -1006,7 +1008,7 @@ export function doBedtime(): boolean {
       !inAftercore() &&
       myMeat() > 4500
     ) {
-      let summoned: boolean = false;
+      let summoned: boolean;
       if (myDaycount() === 1 && myLevel() >= 6 && isHermitAvailable()) {
         cliExecute("make figurine of an ancient seal");
         auto_buyUpTo(3, $item`seal-blubber candle`);

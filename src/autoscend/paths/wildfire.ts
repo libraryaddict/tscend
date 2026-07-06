@@ -280,7 +280,6 @@ function LX_wildfire_pump(target: number): boolean {
   auto_log_info$1(`Attempting to pump water until we have ${target}`);
   const start_water: number = myWildfireWater();
   const start_adv: number = myAdventures();
-  const adv_check: boolean = true;
   while (target > myWildfireWater() && getCounters("", 0, 0) === "") {
     //r25706. clicking in browser works properly. but visit url causes a desync on water quantity. and there is no mafia command to pump water while keeping water level synced. As such we must visit charpane.php after pumping water to update our water value.
     const start_adv_1: number = myAdventures();
@@ -348,30 +347,6 @@ function LX_wildfire_frack(): boolean {
     if (!toBoolean(getProperty("wildfireFracked"))) {
       abort(
         "Mysteriously failed to Frack with Fracker Dan. fix it and run me again",
-      );
-    }
-  }
-  return retval;
-}
-
-function LX_wildfire_sprinkle(): boolean {
-  //cropdusting is a priority.
-  if (!in_wildfire()) {
-    return false;
-  }
-  if (toBoolean(getProperty("wildfireSprinkled"))) {
-    return false; //already done
-  }
-  //pump water. restart loop if adv were spent
-  const retval: boolean = LX_wildfire_pump(wildfire_water_cost("sprinkle"));
-
-  if (wildfire_water_cost("sprinkle") <= myWildfireWater()) {
-    auto_log_info$1("Sprinkling with Sprinkler Joe");
-    visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_sprinklerjoe");
-    runChoice(1);
-    if (!toBoolean(getProperty("wildfireSprinkled"))) {
-      abort(
-        "Mysteriously failed to Sprinkle with Sprinkler Joe. fix it and run me again",
       );
     }
   }

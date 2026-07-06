@@ -281,7 +281,6 @@ export function kolhsChoiceHandler(choice: number): void {
     // Saved by the Bell (KOLHS after school)
     //we use directive property. it both tells us what to do, and helps pre-adv do stuff. for example ensure we are not wearing a familiar that is blocking us
 
-    let target: number = 0;
     switch (choice) {
       case 700:
         if (haveEffect($effect`Jamming with the Jocks`) > 0) {
@@ -298,8 +297,8 @@ export function kolhsChoiceHandler(choice: number): void {
           runChoice(3);
         }
         break;
-      case 772:
-        target = toInt(getProperty("_NC772_directive"));
+      case 772: {
+        const target: number = toInt(getProperty("_NC772_directive"));
         removeProperty("_NC772_directive"); //remove it now in case we abort
 
         if (target === 0) {
@@ -319,6 +318,7 @@ export function kolhsChoiceHandler(choice: number): void {
           );
         }
         break;
+      }
       default:
         break;
     }

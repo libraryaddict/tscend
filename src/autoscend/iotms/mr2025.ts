@@ -206,7 +206,7 @@ function auto_haveDiscoveredLeprecondoFurniture(furn: number): boolean {
       _v,
     ]),
   );
-  for (const [i, s] of discovered_furn) {
+  for (const [, s] of discovered_furn) {
     if (furn === toInt(s)) {
       return true;
     }
@@ -267,7 +267,7 @@ export function auto_setLeprecondo(): boolean {
 
     const picks: Map<number, number> = new Map();
     let n_picks: number = 0;
-    for (const [i, f] of priority) {
+    for (const [, f] of priority) {
       if (n_picks === 4) {
         break;
       }
@@ -296,10 +296,6 @@ export function auto_useLeprecondoDrops(): boolean {
 
 export function auto_punchOutsLeft(): number {
   return toInt(getProperty("preworkoutPowderUses"));
-}
-
-function auto_afterimagesLeft(): number {
-  return toInt(getProperty("phosphorTracesUses"));
 }
 
 export function auto_haveAprilShowerShield(): boolean {
@@ -414,7 +410,6 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     runChoice(2); //should never get here but might as well mitigate
   }
 
-  let popChoice: Monster = Monster.none;
   const loc: Location = myLocation();
   const mons: AshMatcher = new AshMatcher('bandersnatch" value="(\\d+)', page);
   const monOpts: Map<number, Monster> = new Map();
@@ -443,7 +438,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     }
     i += 1;
   }
-  popChoice =
+  const popChoice: Monster =
     monOpts.get(bestmon) ?? monOpts.set(bestmon, Monster.none).get(bestmon);
   if (toInt(popChoice) === 0 || auto_peridotSetZone(loc)) {
     //still nothing found so just peace out. Or we want to set the zone without using an adventure.
@@ -470,7 +465,7 @@ function haveUsedPeridot(loc: number): boolean {
   const perilLocs: Map<number, string> = new Map(
     splitString(getProperty("_perilLocations"), ",").map((_v, _i) => [_i, _v]),
   );
-  for (const [i, str] of perilLocs) {
+  for (const [, str] of perilLocs) {
     if (loc === toInt(str)) {
       return true;
     }
@@ -511,7 +506,7 @@ function beretPower(
   if (!in_hattrick()) {
     if (auto_have_familiar($familiar`Mad Hatrack`)) {
       //prismatic beret on the hatrack and another hat on you
-      for (const [i, h] of allHats) {
+      for (const [, h] of allHats) {
         hatPowers.set(
           hatPowers.size,
           getPower(h) *
@@ -528,7 +523,7 @@ function beretPower(
       );
     }
   } else {
-    for (const [i, h] of allHats) {
+    for (const [, h] of allHats) {
       if (equippedAmount(h) >= 1) {
         hatPowers.set(
           0,
@@ -540,7 +535,7 @@ function beretPower(
       }
     }
   }
-  for (const [i, p] of allPants) {
+  for (const [, p] of allPants) {
     pantPowers.set(
       pantPowers.size,
       getPower(p) *
@@ -548,12 +543,12 @@ function beretPower(
           multipliers.set($slot`pants`, 0).get($slot`pants`)),
     );
   }
-  for (const [i, s] of allShirts) {
+  for (const [, s] of allShirts) {
     shirtPowers.set(shirtPowers.size, getPower(s));
   }
-  for (const [i, hp] of hatPowers) {
-    for (const [i_1, pp] of pantPowers) {
-      for (const [i_2, sp] of shirtPowers) {
+  for (const [, hp] of hatPowers) {
+    for (const [, pp] of pantPowers) {
+      for (const [, sp] of shirtPowers) {
         const concat: string = `${auto_have_familiar($familiar`Mad Hatrack`) ? `${(hp / (multipliers.get($slot`hat`) ?? multipliers.set($slot`hat`, 0).get($slot`hat`))).toString()},` : ""}${(pp / (multipliers.get($slot`pants`) ?? multipliers.set($slot`pants`, 0).get($slot`pants`))).toString()},${sp.toString()}`;
         powers.set(concat, hp + pp + sp);
       }
@@ -573,11 +568,10 @@ function bestBusk(
     return (0).toString();
   }
   const busksUsed: number = toInt(getProperty("_beretBuskingUses"));
-  let score: number = 0;
   let highScore: number = 0.0;
   let highScoreString: string = "";
   let effMulti: Map<string, number> = new Map();
-  let numMod: Map<number, string> = new Map();
+  let numMod: Map<number, string>;
   if (effectMultiplier === "") {
     //based on default maximizer string
     effMulti = new Map([
@@ -602,7 +596,7 @@ function bestBusk(
   } else {
     if (containsText(effectMultiplier, ";")) {
       //split effectMultiplier into multiple effects if needed
-      for (const [i, str] of splitString(effectMultiplier, ";").entries()) {
+      for (const [, str] of splitString(effectMultiplier, ";").entries()) {
         numMod = new Map(splitString(str, ":").map((_v, _i) => [_i, _v]));
         effMulti.set(
           numMod.get(1) ?? numMod.set(1, "").get(1),
@@ -621,16 +615,15 @@ function bestBusk(
       effMulti.set(effectMultiplier, 5.0);
     }
   }
-  let buskingEffects: Map<Effect, number> = new Map();
   for (const [powerstring, power] of powers) {
     //Evaluate all power combinations calculated in beretPower to find the highest scoring one after multiplier is applied
-    score = 0.0;
-    buskingEffects = new Map(
+    let score: number = 0.0;
+    const buskingEffects: Map<Effect, number> = new Map(
       Object.entries(beretBuskingEffects(toInt(power), busksUsed)).map(
         ([_k, _v]) => [Effect.get(_k), _v],
       ),
     );
-    for (const [eff, i] of buskingEffects) {
+    for (const [eff] of buskingEffects) {
       if (eff !== Effect.none) {
         for (const [mod, multi] of effMulti) {
           score += numericModifier(eff, mod) * multi;
@@ -688,7 +681,7 @@ export function beretBusk(effectMultiplier: string): boolean {
   );
   if (!in_hattrick()) {
     if (auto_have_familiar($familiar`Mad Hatrack`)) {
-      for (const [i, hat] of allHats) {
+      for (const [, hat] of allHats) {
         if (
           getPower(hat) ===
             toInt(
@@ -724,7 +717,7 @@ export function beretBusk(effectMultiplier: string): boolean {
     }
   } else {
     //get the power of all hats equipped in Hat Trick
-    for (const [i, h] of allHats) {
+    for (const [, h] of allHats) {
       if (equippedAmount(h) > 0) {
         buskPower +=
           getPower(h) *
@@ -745,7 +738,7 @@ export function beretBusk(effectMultiplier: string): boolean {
     ) {
       autoForceEquip($slot`pants`, Item.none, true);
     } else {
-      for (const [i, pant] of allPants) {
+      for (const [, pant] of allPants) {
         if (
           getPower(pant) ===
           toInt(
@@ -777,7 +770,7 @@ export function beretBusk(effectMultiplier: string): boolean {
     ) {
       autoForceEquip($slot`shirt`, Item.none, true);
     } else {
-      for (const [i, shirt] of allShirts) {
+      for (const [, shirt] of allShirts) {
         if (
           getPower(shirt) ===
           toInt(
@@ -806,10 +799,6 @@ export function beretBusk(effectMultiplier: string): boolean {
   }
 
   return false;
-}
-
-function beretBusk$1(): boolean {
-  return beretBusk("");
 }
 
 export function auto_haveCoolerYeti(): boolean {
@@ -857,7 +846,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
     runChoice(num);
   }
 
-  let pos: string = "";
+  let pos: string;
   // must... get... meat... (probably temporary)
   if (in_amw()) {
     pos = "Give your past self investment tips";
@@ -1399,7 +1388,7 @@ export function auto_wantToShrunkenHead(enemy: Monster): boolean {
   }
   // as the created zombie doesn't die, get one that gives +item and no passive damage
   let hasItem: boolean = false;
-  for (const [i, bonus] of shrunkenHeadZombie(enemy).entries()) {
+  for (const [, bonus] of shrunkenHeadZombie(enemy).entries()) {
     if (containsText(bonus, "Attack")) {
       return false;
     }
@@ -1421,7 +1410,7 @@ export function auto_wantToShrunkenHead$1(place: Location): boolean {
     //next monster is forced by zone mechanics or some other mechanism
     return auto_wantToShrunkenHead(next);
   } else {
-    for (const [i, mon] of getMonsters(place).entries()) {
+    for (const [, mon] of getMonsters(place).entries()) {
       if ((appearanceRates(place)[mon.toString()] ??= 0.0) > 0) {
         if (auto_wantToShrunkenHead(mon)) {
           return true;

@@ -1193,23 +1193,23 @@ function initializeDay(day: number): void {
             .get(min(teaChoice.size, myDaycount()) - 1),
       );
       if (toItem(myTea) !== Item.none || myTea === "shake") {
-        const buff: boolean = cliExecute(`teatree ${myTea}`);
+        cliExecute(`teatree ${myTea}`);
       }
     } else if (day === 1 && auto_is_valid($item`potted tea tree`)) {
       if (fullnessLimit() > 0) {
-        const buff: boolean = cliExecute(`teatree ${$item`cuppa Voraci tea`}`);
+        cliExecute(`teatree ${$item`cuppa Voraci tea`}`);
       } else if (inebrietyLimit() > 0) {
-        const buff: boolean = cliExecute(`teatree ${$item`cuppa Sobrie tea`}`);
+        cliExecute(`teatree ${$item`cuppa Sobrie tea`}`);
       } else {
-        const buff: boolean = cliExecute(`teatree ${$item`cuppa Royal tea`}`);
+        cliExecute(`teatree ${$item`cuppa Royal tea`}`);
       }
     } else if (day === 2 && auto_is_valid($item`potted tea tree`)) {
       if (inebrietyLimit() > 0) {
-        const buff: boolean = cliExecute(`teatree ${$item`cuppa Sobrie tea`}`);
+        cliExecute(`teatree ${$item`cuppa Sobrie tea`}`);
       } else if (fullnessLimit() > 0) {
-        const buff: boolean = cliExecute(`teatree ${$item`cuppa Voraci tea`}`);
+        cliExecute(`teatree ${$item`cuppa Voraci tea`}`);
       } else {
-        const buff: boolean = cliExecute(`teatree ${$item`cuppa Royal tea`}`);
+        cliExecute(`teatree ${$item`cuppa Royal tea`}`);
       }
     } else {
       visitUrl("campground.php?action=teatree");
@@ -2965,10 +2965,8 @@ function safe_preference_reset_wrapper(level: number): void {
   if (level <= 0) {
     auto_begin();
   } else {
-    let succeeded: boolean = false;
     try {
       safe_preference_reset_wrapper(level - 1);
-      succeeded = true;
     } finally {
       restoreAllSettings();
       if (level === 1) {

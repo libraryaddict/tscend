@@ -115,8 +115,6 @@ export function auto_edCombatHandler(
   enemy: Monster,
   text: string,
 ): string {
-  const blocked: boolean = containsText(text, "(STUN RESISTED)");
-  let damageReceived: number = 0;
   if (!isActuallyEd()) {
     abort(
       "Not in Actually Ed the Undying, this combat filter will result in massive suckage.",
@@ -143,7 +141,6 @@ export function auto_edCombatHandler(
       "blue",
     );
   } else {
-    damageReceived = toInt(getProperty("auto_combatHP")) - myHp();
     setProperty("auto_combatHP", myHp().toString());
   }
 

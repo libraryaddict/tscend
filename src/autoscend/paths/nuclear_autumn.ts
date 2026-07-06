@@ -259,8 +259,8 @@ Missing: 858, 866
   }
 
   if (toBuy !== 0) {
-    let page: string = visitUrl("shop.php?whichshop=mutate");
-    page = visitUrl(
+    visitUrl("shop.php?whichshop=mutate");
+    visitUrl(
       `shop.php?whichshop=mutate&action=buyitem&quantity=1&pwd=&whichrow=${toBuy}`,
     );
   }

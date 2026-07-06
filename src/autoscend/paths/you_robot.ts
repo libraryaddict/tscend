@@ -782,7 +782,6 @@ function robot_statbot(target: Stat): boolean {
 
 function robot_stat_wanted(): Stat {
   //which stat do we most want to raise next as a robot. If we want multiple stats that would be handled elsewhere.
-  const is_mus: boolean = myPrimestat() === $stat`Muscle`;
   const is_mys: boolean = myPrimestat() === $stat`Mysticality`;
   const is_mox: boolean = myPrimestat() === $stat`Moxie`;
   if (!is_mox && myBasestat($stat`Moxie`) < myBasestat(myPrimestat())) {
@@ -1156,14 +1155,11 @@ export function robot_choice_adv(choice: number, page: string): boolean {
   {
     // One Simple Nightstand (The Haunted Bedroom)
 
-    let robot_need_mus: boolean = false;
     //get old leather wallet worth ~500 meat
     // spend 1 ghost key for primestat, get ~200 muscle XP
     // get min(200,muscle) of muscle XP
     // One Ornate Nightstand (The Haunted Bedroom)
 
-    let robot_need_mys: boolean = false;
-    let needSpectacles: boolean = false;
     // get Lord Spookyraven's spectacles
     // get disposable instant camera
     // get ~500 meat
@@ -1171,10 +1167,9 @@ export function robot_choice_adv(choice: number, page: string): boolean {
     // get min(200,mys) of mys XP
     // One Rustic Nightstand (The Haunted Bedroom)
 
-    let options: Map<number, string> = new Map();
     switch (choice) {
-      case 876:
-        robot_need_mus =
+      case 876: {
+        const robot_need_mus: boolean =
           myPrimestat() === $stat`Muscle` || myBasestat($stat`Muscle`) < 62;
         if (
           myMeat() < 1000 + meatReserve() &&
@@ -1191,11 +1186,12 @@ export function robot_choice_adv(choice: number, page: string): boolean {
           runChoice(2);
         }
         break;
-      case 878:
-        robot_need_mys =
+      }
+      case 878: {
+        const robot_need_mys: boolean =
           myPrimestat() === $stat`Mysticality` ||
           myBasestat($stat`Mysticality`) < 70;
-        needSpectacles =
+        const needSpectacles: boolean =
           itemAmount($item`Lord Spookyraven's spectacles`) === 0 &&
           internalQuestStatus("questL11Manor") < 2;
         if (needSpectacles) {
@@ -1216,8 +1212,9 @@ export function robot_choice_adv(choice: number, page: string): boolean {
           runChoice(2);
         }
         break;
-      case 879:
-        options = new Map(
+      }
+      case 879: {
+        const options: Map<number, string> = new Map(
           Object.entries(availableChoiceOptions()).map(([_k, _v]) => [
             toInt(_k),
             _v,
@@ -1234,6 +1231,7 @@ export function robot_choice_adv(choice: number, page: string): boolean {
           runChoice(1); // get moxie substats
         }
         break;
+      }
       default:
         //none of the overrides was used. so we return false
         return false;

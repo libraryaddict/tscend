@@ -1041,11 +1041,12 @@ export function auto_habitatTarget(target: Monster): boolean {
             5 * (3 + cyrptEvilBonus$1()) >
             13
         );
-      case $monster`lobsterfrogman`:
+      case $monster`lobsterfrogman`: {
         const sonofa_complete: boolean =
           getProperty("sidequestLighthouseCompleted") === "hippy" ||
           getProperty("sidequestLighthouseCompleted") === "fratboy";
         return !sonofa_complete && itemAmount($item`barrel of gunpowder`) < 4;
+      }
       case $monster`Eldritch Tentacle`:
         // Max tentacles fought being free is 11, so don't habitat if we've fought more than 6
         // This variable increments at the end of combat, so we need 5 here.
@@ -1256,13 +1257,6 @@ export function auto_RWBBlastTarget(target: Monster): boolean {
   return false;
 }
 
-function auto_rwbFightsLeft(): number {
-  if (auto_RWBMonster() !== Monster.none) {
-    return 3 - toInt(getProperty("rwbMonsterCount"));
-  }
-  return 0;
-}
-
 export function auto_RWBMonster(): Monster {
   if (toInt(getProperty("rwbMonsterCount")) < 3) {
     return toMonster(getProperty("rwbMonster"));
@@ -1404,8 +1398,8 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
   //mp zones are organized by 20-30 mp regen then 10-15 mp regen and then approximately autoscend level quest structure
   const mpZones: Map<Location, boolean> = citizenZones("mp");
   const specZones: Map<Location, boolean> = citizenZones("spec");
-  const activeCitZoneMod_1: string = activeCitZoneMod();
-  let goal: string = "";
+  activeCitZoneMod();
+  let goal: string;
 
   if (!canAdventure(loc)) {
     return false;
@@ -1414,6 +1408,7 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
   if (specZones.has(loc)) {
     //only want spec to get cold res for septEmberCenser usage and only if we don't get to L13. Don't want to do this outside of D1
     //ideally also have spring away or some other free run
+    // TODO Maybe inline this so it doesn't get overwritten?
     if (
       auto_goingToMouthwashLevel() &&
       expected_level_after_mouthwash() < 13 &&
@@ -1701,11 +1696,4 @@ export function auto_remainingCandyCaneSlashes(): number {
     return 0;
   }
   return 11 - toInt(getProperty("_surprisinglySweetSlashUsed"));
-}
-
-function auto_remainingCandyCaneStabs(): number {
-  if (!auto_haveCCSC()) {
-    return 0;
-  }
-  return 11 - toInt(getProperty("_surprisinglySweetStabUsed"));
 }

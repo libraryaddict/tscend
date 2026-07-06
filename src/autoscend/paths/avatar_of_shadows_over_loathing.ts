@@ -74,7 +74,7 @@ export function aosol_buySkills(): boolean {
 
   if (toInt(getProperty("auto_aosolLastSkill")) < myLevel()) {
     if (myClass() === $class`Pig Skinner`) {
-      let page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11163");
+      const page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11163");
       //Check if there are already skill points
       const my_skillPoints: AshMatcher = new AshMatcher(
         "You have <b>(\\d+)<\\/b> skill",
@@ -86,77 +86,77 @@ export function aosol_buySkills(): boolean {
         while (skillPoints > 0) {
           if (!haveSkill($skill`[28021]Punt`)) {
             //Banish for the day
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=21",
               true,
             );
           }
           if (!haveSkill($skill`Second Wind`)) {
             //Restore 50% max HP during combat
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=16",
               true,
             );
           }
           if (!haveSkill($skill`Free-For-All`)) {
             //Free kill
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=19",
               true,
             );
           }
           if (!haveSkill($skill`Hot Foot`)) {
             //Deal Mys in Fire Dmg and set enemy on fire
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=15",
               true,
             );
           }
           if (!haveSkill($skill`Competitive Instincts`)) {
             //+100% Meat
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=10",
               true,
             );
           }
           if (!haveSkill($skill`Noogie`)) {
             //Weaken and stun enemy
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=14",
               true,
             );
           }
           if (!haveSkill($skill`Fancy Footwork`)) {
             //25% Item Drops
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=6",
               true,
             );
           }
           if (!haveSkill($skill`Cheerlead`)) {
             //Cheerled (10 advs, +50% all stats)
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=18",
               true,
             );
           }
           if (!haveSkill($skill`Strong Back`)) {
             //Passive Mus +20
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=3",
               true,
             );
           }
           if (!haveSkill($skill`Stop Hitting Yourself`)) {
             //Deal Moxie in phys dmg and stun
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=17",
               true,
             );
           }
           if (!haveSkill($skill`Ripped Triceps`)) {
             //Damaging skills deal 25% more dmg
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=8",
               true,
             );
@@ -171,10 +171,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 100 + meatReserve()
       ) {
         //passive sleaze res and sleaze dmg
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=1",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=1", true);
         setProperty("auto_aosolLastSkill", (1).toString());
       }
       if (
@@ -183,10 +180,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 200 + meatReserve()
       ) {
         //max hp +50%
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=2",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=2", true);
         setProperty("auto_aosolLastSkill", (1).toString());
       }
       if (
@@ -195,10 +189,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 200 + meatReserve()
       ) {
         //Stretched (10 advs, +75% Initiative)
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=12",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=12", true);
         setProperty("auto_aosolLastSkill", (2).toString());
       }
       if (
@@ -207,10 +198,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 300 + meatReserve()
       ) {
         //Deal your Mus in Phys Dmg
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=13",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=13", true);
         setProperty("auto_aosolLastSkill", (2).toString());
       }
       if (
@@ -219,10 +207,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 300 + meatReserve()
       ) {
         //Passive Mus +20
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=3",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=3", true);
         setProperty("auto_aosolLastSkill", (3).toString());
       }
       if (
@@ -231,10 +216,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 400 + meatReserve()
       ) {
         //Weaken and stun enemy
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=14",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=14", true);
         setProperty("auto_aosolLastSkill", (3).toString());
       }
       if (
@@ -243,10 +225,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 400 + meatReserve()
       ) {
         //+3 Mus Stats per Fight
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=4",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=4", true);
         setProperty("auto_aosolLastSkill", (4).toString());
       }
       if (
@@ -255,10 +234,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 500 + meatReserve()
       ) {
         //Damaging skills have chance to double dmg
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=5",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=5", true);
         setProperty("auto_aosolLastSkill", (4).toString());
       }
       if (
@@ -267,10 +243,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 500 + meatReserve()
       ) {
         //Deal Mys in Hot Dmg and set enemy on fire
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=15",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=15", true);
         setProperty("auto_aosolLastSkill", (5).toString());
       }
       if (
@@ -279,10 +252,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 600 + meatReserve()
       ) {
         //25% Item Drops
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=6",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=6", true);
         setProperty("auto_aosolLastSkill", (5).toString());
       }
       if (
@@ -291,10 +261,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 600 + meatReserve()
       ) {
         //Restore 50% max HP during combat
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=16",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=16", true);
         setProperty("auto_aosolLastSkill", (6).toString());
       }
       if (
@@ -303,10 +270,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 700 + meatReserve()
       ) {
         //Deal Moxie in phys dmg and stun
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=17",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=17", true);
         setProperty("auto_aosolLastSkill", (6).toString());
       }
       if (
@@ -315,10 +279,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 700 + meatReserve()
       ) {
         //Passive +50% Initiative
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=7",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=7", true);
         setProperty("auto_aosolLastSkill", (7).toString());
       }
       if (
@@ -327,10 +288,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 800 + meatReserve()
       ) {
         //Cheerled (10 advs, +50% all stats)
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=18",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=18", true);
         setProperty("auto_aosolLastSkill", (7).toString());
       }
       if (
@@ -339,10 +297,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 800 + meatReserve()
       ) {
         //Damaging skills deal 25% more dmg
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=8",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=8", true);
         setProperty("auto_aosolLastSkill", (8).toString());
       }
       if (
@@ -351,10 +306,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 900 + meatReserve()
       ) {
         //Free kill
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=19",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=19", true);
         setProperty("auto_aosolLastSkill", (8).toString());
       }
       if (
@@ -363,10 +315,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 900 + meatReserve()
       ) {
         //+50% chance of Crit
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=9",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=9", true);
         setProperty("auto_aosolLastSkill", (9).toString());
       }
       if (
@@ -375,10 +324,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 1000 + meatReserve()
       ) {
         //+100% Meat
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=10",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=10", true);
         setProperty("auto_aosolLastSkill", (9).toString());
       }
       if (
@@ -387,10 +333,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 1000 + meatReserve()
       ) {
         //Taped Up (10 advs, +100% Max HP, +100 DA, Regen 8-10 HP)
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=20",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=20", true);
         setProperty("auto_aosolLastSkill", (10).toString());
       }
       if (
@@ -399,10 +342,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 1100 + meatReserve()
       ) {
         //+25% Max MP
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=11",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=11", true);
         setProperty("auto_aosolLastSkill", (10).toString());
       }
       if (
@@ -411,15 +351,12 @@ export function aosol_buySkills(): boolean {
         myMeat() > 1100 + meatReserve()
       ) {
         //Banish for the day
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=21",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=21", true);
         setProperty("auto_aosolLastSkill", (100).toString());
       }
     }
     if (myClass() === $class`Cheese Wizard`) {
-      let page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11164");
+      const page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11164");
       //Check if there are already skill points
       const my_skillPoints: AshMatcher = new AshMatcher(
         "You have <b>(\\d+)<\\/b> skill",
@@ -431,77 +368,77 @@ export function aosol_buySkills(): boolean {
         while (skillPoints > 0) {
           if (!haveSkill($skill`Fondeluge`)) {
             //50 turn yellow ray
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=21",
               true,
             );
           }
           if (!haveSkill($skill`Emmental Elemental`)) {
             //Deal Moxie in cold dmg and heal for same amt
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=17",
               true,
             );
           }
           if (!haveSkill($skill`Peccorino Bravado`)) {
             //+20% all stats
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=6",
               true,
             );
           }
           if (!haveSkill($skill`Fingers of Fontina`)) {
             //+50% item drops
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=11",
               true,
             );
           }
           if (!haveSkill($skill`Quick Wit`)) {
             //Passive Mys +20
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=3",
               true,
             );
           }
           if (!haveSkill($skill`Gather Cheese-Chi`)) {
             //Heal +30HP and stun enemy
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=14",
               true,
             );
           }
           if (!haveSkill($skill`Mind Melt`)) {
             //Deal your Mys in hot damage and stun enemy
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=16",
               true,
             );
           }
           if (!haveSkill($skill`Crack Knuckles`)) {
             //Deal Mus in phys Dmg and weaken enemy
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=15",
               true,
             );
           }
           if (!haveSkill($skill`Stilton Splatter`)) {
             //Deal mys in phys dmg and +fam exp
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=19",
               true,
             );
           }
           if (!haveSkill($skill`Bleu Brilliance`)) {
             //Cheese spells deal 50% more damage
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=8",
               true,
             );
           }
           if (!haveSkill($skill`Gorgonzola's Guile`)) {
             //+25% Item Drops
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=9",
               true,
             );
@@ -516,10 +453,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 100 + meatReserve()
       ) {
         //max mp +30%, regen 3-4 mp per adv
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=1",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=1", true);
         setProperty("auto_aosolLastSkill", (1).toString());
       }
       if (
@@ -528,10 +462,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 200 + meatReserve()
       ) {
         //Cheddarmored (10 advs, +10 max HP, +50 DA, +3 DR)
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=12",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=12", true);
         setProperty("auto_aosolLastSkill", (1).toString());
       }
       if (
@@ -540,10 +471,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 200 + meatReserve()
       ) {
         //passive DA +75, DR +5
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=2",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=2", true);
         setProperty("auto_aosolLastSkill", (2).toString());
       }
       if (
@@ -552,10 +480,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 300 + meatReserve()
       ) {
         //Deal your Mys in Stench, Hot, or Phys Dmg
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=13",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=13", true);
         setProperty("auto_aosolLastSkill", (2).toString());
       }
       if (
@@ -564,10 +489,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 300 + meatReserve()
       ) {
         //Passive Mys +20
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=3",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=3", true);
         setProperty("auto_aosolLastSkill", (3).toString());
       }
       if (
@@ -576,10 +498,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 400 + meatReserve()
       ) {
         //Heal +30HP and stun enemy
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=14",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=14", true);
         setProperty("auto_aosolLastSkill", (3).toString());
       }
       if (
@@ -588,10 +507,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 400 + meatReserve()
       ) {
         //Passive +75% Initiative
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=4",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=4", true);
         setProperty("auto_aosolLastSkill", (4).toString());
       }
       if (
@@ -600,10 +516,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 500 + meatReserve()
       ) {
         //-3mp to use skills
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=5",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=5", true);
         setProperty("auto_aosolLastSkill", (4).toString());
       }
       if (
@@ -612,10 +525,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 500 + meatReserve()
       ) {
         //Deal Mus in phys Dmg and weaken enemy
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=15",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=15", true);
         setProperty("auto_aosolLastSkill", (5).toString());
       }
       if (
@@ -624,10 +534,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 600 + meatReserve()
       ) {
         //+20% all stats
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=6",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=6", true);
         setProperty("auto_aosolLastSkill", (5).toString());
       }
       if (
@@ -636,10 +543,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 600 + meatReserve()
       ) {
         //Deal your Mys in hot damage and stun enemy
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=16",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=16", true);
         setProperty("auto_aosolLastSkill", (6).toString());
       }
       if (
@@ -648,10 +552,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 700 + meatReserve()
       ) {
         //Deal Moxie in cold dmg and heal for same amt
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=17",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=17", true);
         setProperty("auto_aosolLastSkill", (6).toString());
       }
       if (
@@ -660,10 +561,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 700 + meatReserve()
       ) {
         //+3 Mys stats per fight
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=7",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=7", true);
         setProperty("auto_aosolLastSkill", (7).toString());
       }
       if (
@@ -672,10 +570,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 800 + meatReserve()
       ) {
         //Shifted Reality (10 advs, +3 prismatic res)
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=18",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=18", true);
         setProperty("auto_aosolLastSkill", (7).toString());
       }
       if (
@@ -684,10 +579,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 800 + meatReserve()
       ) {
         //Cheese spells deal 50% more damage
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=8",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=8", true);
         setProperty("auto_aosolLastSkill", (8).toString());
       }
       if (
@@ -696,10 +588,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 900 + meatReserve()
       ) {
         //Deal mys in phys dmg and +fam exp
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=19",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=19", true);
         setProperty("auto_aosolLastSkill", (8).toString());
       }
       if (
@@ -708,10 +597,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 900 + meatReserve()
       ) {
         //+25% Item Drops
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=9",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=9", true);
         setProperty("auto_aosolLastSkill", (9).toString());
       }
       if (
@@ -720,10 +606,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 1000 + meatReserve()
       ) {
         //passive +20% max HP, regen 3-5 HP per adv
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=10",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=10", true);
         setProperty("auto_aosolLastSkill", (9).toString());
       }
       if (
@@ -732,10 +615,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 1000 + meatReserve()
       ) {
         //Queso Fustulento (10 advs, Stench dmg each round)
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=20",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=20", true);
         setProperty("auto_aosolLastSkill", (10).toString());
       }
       if (
@@ -744,10 +624,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 1100 + meatReserve()
       ) {
         //+50% item drops
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=11",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=11", true);
         setProperty("auto_aosolLastSkill", (10).toString());
       }
       if (
@@ -756,15 +633,12 @@ export function aosol_buySkills(): boolean {
         myMeat() > 1100 + meatReserve()
       ) {
         //50 turn yellow ray
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=21",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=21", true);
         setProperty("auto_aosolLastSkill", (100).toString());
       }
     }
     if (myClass() === $class`Jazz Agent`) {
-      let page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11165");
+      const page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11165");
       //Check if there are already skill points
       const my_skillPoints: AshMatcher = new AshMatcher(
         "You have <b>(\\d+)<\\/b> skill",
@@ -776,77 +650,77 @@ export function aosol_buySkills(): boolean {
         while (skillPoints > 0) {
           if (!haveSkill($skill`Motif`)) {
             //25 turn blue ray (olfaction-esque)
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=21",
               true,
             );
           }
           if (!haveSkill($skill`Air of Mystery`)) {
             //First attack against you always misses
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=6",
               true,
             );
           }
           if (!haveSkill($skill`Sax of Violence`)) {
             //Deal Mus in Sleaze dmg
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=17",
               true,
             );
           }
           if (!haveSkill($skill`Drum Roll`)) {
             //Stun enemy for a few rounds
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=16",
               true,
             );
           }
           if (!haveSkill($skill`C Sharp Eyes`)) {
             //+50% item drop, +50% meat drop
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=5",
               true,
             );
           }
           if (!haveSkill($skill`Fashion Sense`)) {
             //Mox +20
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=3",
               true,
             );
           }
           if (!haveSkill($skill`Knife In The Darkness`)) {
             //Deal 50% of your foe's HP and gives 10 adv In The Darkness (-10% combat)
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=14",
               true,
             );
           }
           if (!haveSkill($skill`Orchestra Strike`)) {
             //Deal your Mox in Phys Dmg, Weaken Enemy
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=13",
               true,
             );
           }
           if (!haveSkill($skill`Venomous Riff`)) {
             //Deal Mys in dmg and poison foe
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=15",
               true,
             );
           }
           if (!haveSkill($skill`Grit Teeth`)) {
             //In combat 20 HP heal
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=19",
               true,
             );
           }
           if (!haveSkill($skill`Perfect Embouchure`)) {
             //Musical skills deal 33% more damage
-            page = visitUrl(
+            visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=8",
               true,
             );
@@ -861,10 +735,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 100 + meatReserve()
       ) {
         //DA +50, DR +3
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=1",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=1", true);
         setProperty("auto_aosolLastSkill", (1).toString());
       }
       if (
@@ -873,10 +744,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 200 + meatReserve()
       ) {
         //Reliable Backup (10 advs, +10 Fam Weight, Familiar acts more often)
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=12",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=12", true);
         setProperty("auto_aosolLastSkill", (1).toString());
       }
       if (
@@ -885,10 +753,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 200 + meatReserve()
       ) {
         //+3 Moxie Stats per fight
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=10",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=10", true);
         setProperty("auto_aosolLastSkill", (2).toString());
       }
       if (
@@ -897,10 +762,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 300 + meatReserve()
       ) {
         //Deal your Mox in Phys Dmg, Weaken Enemy
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=13",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=13", true);
         setProperty("auto_aosolLastSkill", (2).toString());
       }
       if (
@@ -909,10 +771,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 300 + meatReserve()
       ) {
         //Mox +20
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=3",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=3", true);
         setProperty("auto_aosolLastSkill", (3).toString());
       }
       if (
@@ -921,10 +780,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 400 + meatReserve()
       ) {
         //Deal 50% of your foe's HP and gives 10 adv In The Darkness (-10% combat)
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=14",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=14", true);
         setProperty("auto_aosolLastSkill", (3).toString());
       }
       if (
@@ -933,10 +789,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 400 + meatReserve()
       ) {
         //Regen 4-5 mp per adv
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=4",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=4", true);
         setProperty("auto_aosolLastSkill", (4).toString());
       }
       if (
@@ -945,10 +798,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 500 + meatReserve()
       ) {
         //+50% item drop, +50% meat drop
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=5",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=5", true);
         setProperty("auto_aosolLastSkill", (4).toString());
       }
       if (
@@ -957,10 +807,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 500 + meatReserve()
       ) {
         //Deal Mys in dmg and poison foe
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=15",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=15", true);
         setProperty("auto_aosolLastSkill", (5).toString());
       }
       if (
@@ -969,10 +816,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 600 + meatReserve()
       ) {
         //First attack against you always misses
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=6",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=6", true);
         setProperty("auto_aosolLastSkill", (5).toString());
       }
       if (
@@ -981,10 +825,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 600 + meatReserve()
       ) {
         //Stun enemy for a few rounds
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=16",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=16", true);
         setProperty("auto_aosolLastSkill", (6).toString());
       }
       if (
@@ -993,10 +834,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 700 + meatReserve()
       ) {
         //Deal Mus in Sleaze dmg
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=17",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=17", true);
         setProperty("auto_aosolLastSkill", (6).toString());
       }
       if (
@@ -1005,10 +843,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 700 + meatReserve()
       ) {
         //-3 MP to use skills
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=7",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=7", true);
         setProperty("auto_aosolLastSkill", (7).toString());
       }
       if (
@@ -1017,10 +852,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 800 + meatReserve()
       ) {
         //Tricky Timpani (10 advs, +5 prismatic dmg)
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=18",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=18", true);
         setProperty("auto_aosolLastSkill", (7).toString());
       }
       if (
@@ -1029,10 +861,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 800 + meatReserve()
       ) {
         //Musical skills deal 33% more damage
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=8",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=8", true);
         setProperty("auto_aosolLastSkill", (8).toString());
       }
       if (
@@ -1041,10 +870,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 900 + meatReserve()
       ) {
         //In combat 20 HP heal
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=19",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=19", true);
         setProperty("auto_aosolLastSkill", (8).toString());
       }
       if (
@@ -1053,10 +879,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 900 + meatReserve()
       ) {
         //+25% Max HP, +25% Initiatve
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=9",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=9", true);
         setProperty("auto_aosolLastSkill", (9).toString());
       }
       if (
@@ -1065,10 +888,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 1000 + meatReserve()
       ) {
         //passive +100% combat initiative
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=2",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=2", true);
         setProperty("auto_aosolLastSkill", (9).toString());
       }
       if (
@@ -1077,10 +897,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 1000 + meatReserve()
       ) {
         //Soothing Flute (10 advs, +5 fam weight, regen 8-10 hp per adv)
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=20",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=20", true);
         setProperty("auto_aosolLastSkill", (10).toString());
       }
       if (
@@ -1089,10 +906,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 1100 + meatReserve()
       ) {
         //+20% Max HP
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=11",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=11", true);
         setProperty("auto_aosolLastSkill", (10).toString());
       }
       if (
@@ -1101,10 +915,7 @@ export function aosol_buySkills(): boolean {
         myMeat() > 1100 + meatReserve()
       ) {
         //25 turn blue ray (olfaction-esque)
-        page = visitUrl(
-          "choice.php?pwd&whichchoice=1495&option=1&whichsk=21",
-          true,
-        );
+        visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=21", true);
         setProperty("auto_aosolLastSkill", (100).toString());
       }
     }

@@ -1526,7 +1526,6 @@ function L13_towerNSTowerSkin(): boolean {
     if (availableAmount(it) > 0 && canEquip(it)) {
       if (!acc1_occupied) {
         autoEquip($slot`acc1`, it);
-        acc1_occupied = true;
         break;
       } else if (!acc2_occupied) {
         autoEquip($slot`acc2`, it);
@@ -2034,7 +2033,7 @@ export function L13_towerNSFinal(): boolean {
       autoAdv$1(1, $location`Noob Cave`);
       if (haveEffect($effect`Beaten Up`) > 0) {
         if (getProperty("lastEncounter") === "The Naughty Sorceress (3)") {
-          const page: string = visitUrl("choice.php");
+          visitUrl("choice.php");
           if (lastChoice() === 1016) {
             runChoice(1);
             setProperty("auto_wandOfNagamar", true.toString());

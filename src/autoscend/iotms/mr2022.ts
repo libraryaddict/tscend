@@ -250,7 +250,7 @@ function auto_haveReminiscedMonster(mon: Monster): boolean {
       _v,
     ]),
   );
-  for (const [index, id] of idList) {
+  for (const [, id] of idList) {
     if (toMonster(id) === mon) {
       return true;
     }
@@ -800,7 +800,7 @@ export function auto_autumnatonCanAdv(canAdventureInloc: Location): boolean {
     equip($item`continuum transfunctioner`);
   }
 
-  for (const [index, loc] of getAutumnatonLocations().entries()) {
+  for (const [, loc] of getAutumnatonLocations().entries()) {
     if (loc === canAdventureInloc) {
       return true;
     }
@@ -1077,9 +1077,9 @@ export function auto_checkTrainSet(): void {
   stationInts.set(19, "trackside_diner");
   stationInts.set(20, "ore_hopper");
   const one: number = 8; //doubler
-  let two: number = 0;
-  let three: number = 0;
-  let four: number = 0;
+  let two: number;
+  let three: number;
+  let four: number;
   if (myLevel() < 11) {
     //check if we need more stats. There is no check for disregard instant karma because
     //if we do check, we will never double lumber mill, which is more beneficial than continuing to double mainstat.
@@ -1117,7 +1117,7 @@ export function auto_checkTrainSet(): void {
   }
   const five: number = 1; //meat
   const six: number = 2; //mp regen
-  let seven: number = 0;
+  let seven: number;
   //Initialize trapper to know whether we have enough ore or not
   const L8Step: number = internalQuestStatus("questL08Trapper");
   if (myLevel() >= 8 && L8Step === 0) {
@@ -1149,7 +1149,7 @@ export function auto_checkTrainSet(): void {
   );
   const expectedConfig: string = `${stationInts.get(one) ?? stationInts.set(one, "").get(one)},${stationInts.get(two) ?? stationInts.set(two, "").get(two)},${stationInts.get(three) ?? stationInts.set(three, "").get(three)},${stationInts.get(four) ?? stationInts.set(four, "").get(four)},${stationInts.get(five) ?? stationInts.set(five, "").get(five)},${stationInts.get(six) ?? stationInts.set(six, "").get(six)},${stationInts.get(seven) ?? stationInts.set(seven, "").get(seven)},${stationInts.get(eight) ?? stationInts.set(eight, "").get(eight)}`;
 
-  let changedTSConfig: boolean = false;
+  let changedTSConfig: boolean;
   if (expectedConfig !== trainsetConfiguration) {
     changedTSConfig = true;
   } else {

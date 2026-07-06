@@ -50,9 +50,7 @@ export function theSource_buySkills(): boolean {
     return false;
   }
 
-  let temp: string = visitUrl(
-    "place.php?whichplace=manor1&action=manor1_sourcephone_ring",
-  );
+  visitUrl("place.php?whichplace=manor1&action=manor1_sourcephone_ring");
   let enlightenment: number = toInt(getProperty("sourceEnlightenment"));
   while (enlightenment > 0) {
     let option: number = 0;
@@ -91,9 +89,7 @@ export function theSource_buySkills(): boolean {
     }
 
     if (option !== 0) {
-      temp = visitUrl(
-        `choice.php?pwd=&whichchoice=1188&option=1&skid=${option}`,
-      );
+      visitUrl(`choice.php?pwd=&whichchoice=1188&option=1&skid=${option}`);
     }
     enlightenment -= 1;
   }
@@ -212,10 +208,8 @@ export function theSource_oracle(): boolean {
   }
 
   if (toLocation(getProperty("sourceOracleTarget")) === Location.none) {
-    let temp: string = visitUrl(
-      "place.php?whichplace=town_wrong&action=townwrong_oracle",
-    );
-    temp = visitUrl("choice.php?pwd=&whichchoice=1190&option=1");
+    visitUrl("place.php?whichplace=town_wrong&action=townwrong_oracle");
+    visitUrl("choice.php?pwd=&whichchoice=1190&option=1");
 
     switch (toLocation(getProperty("sourceOracleTarget"))) {
       case $location`The Skeleton Store`:

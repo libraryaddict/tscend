@@ -103,13 +103,12 @@ export function auto_combatDefaultStage5(
   text: string,
 ): string {
   // stage 5 = kill
-  let retval: string = "";
   //Unskip stage 4
   if (toBoolean(getProperty("auto_skipStage4"))) {
     setProperty("auto_skipStage4", false.toString());
   }
   // Path = Heavy Rains
-  retval = auto_combatHeavyRainsStage5(round_1, enemy, text);
+  let retval: string = auto_combatHeavyRainsStage5(round_1, enemy, text);
   if (retval !== "") {
     return retval;
   }
@@ -172,10 +171,6 @@ export function auto_combatDefaultStage5(
   let attackMajor: string = "attack with weapon";
   let costMinor: number = 0;
   let costMajor: number = 0;
-  let damageReceived: number = 0;
-  if (round_1 !== 0) {
-    damageReceived = toInt(getProperty("auto_combatHP")) - myHp();
-  }
 
   if (enemy === $monster`LOV Enforcer` && canUse$1($skill`Saucestorm`, false)) {
     return useSkill$1($skill`Saucestorm`, false);
@@ -301,7 +296,6 @@ export function auto_combatDefaultStage5(
   {
     //let mortar deal the killing blow so we get more MP from the exploding curse of weaksauce
 
-    let mortar_round: number = 0;
     //mortar was used this combat
     //mortar will hit this round
     //TODO make sure mortar will actually kill it
@@ -323,7 +317,6 @@ export function auto_combatDefaultStage5(
     // intentionally not setting costMinor or costMajor since they don't cost mp...
     // If we're in a form or something, a beehive is probably better than just attacking
 
-    let punch: Skill = Skill.none;
     switch (myClass()) {
       case $class`Seal Clubber`:
         attackMinor = "attack with weapon";
@@ -455,7 +448,7 @@ export function auto_combatDefaultStage5(
           costMinor = mpCost($skill`Saucegeyser`);
         }
         break;
-      case $class`Sauceror`:
+      case $class`Sauceror`: {
         if (canUse$1($skill`Saucegeyser`, false)) {
           attackMinor = useSkill$1($skill`Saucegeyser`, false);
           attackMajor = useSkill$1($skill`Saucegeyser`, false);
@@ -491,7 +484,9 @@ export function auto_combatDefaultStage5(
           costMinor = mpCost($skill`Stream of Sauce`);
           costMajor = mpCost($skill`Stream of Sauce`);
         }
-        mortar_round = toInt(getProperty("_auto_combatTracker_MortarRound"));
+        const mortar_round: number = toInt(
+          getProperty("_auto_combatTracker_MortarRound"),
+        );
         if (
           mortar_round > -1 &&
           mortar_round === round_1 - 1 &&
@@ -505,7 +500,8 @@ export function auto_combatDefaultStage5(
           }
         }
         break;
-      case $class`Avatar of Boris`:
+      }
+      case $class`Avatar of Boris`: {
         if (
           canUse$1($skill`Heroic Belch`, false) &&
           enemy.physicalResistance >= 80 &&
@@ -548,7 +544,8 @@ export function auto_combatDefaultStage5(
           costMajor = mpCost($skill`Heroic Belch`);
         }
         break;
-      case $class`Avatar of Jarlsberg`:
+      }
+      case $class`Avatar of Jarlsberg`: {
         attackMinor = useSkill$1($skill`Curdle`, false);
         attackMajor = useSkill$1($skill`Curdle`, false);
         costMinor = mpCost($skill`Curdle`);
@@ -642,7 +639,8 @@ export function auto_combatDefaultStage5(
           }
         }
         break;
-      case $class`Avatar of Sneaky Pete`:
+      }
+      case $class`Avatar of Sneaky Pete`: {
         if (canUse$1($skill`Pop Wheelie`, false)) {
           attackMajor = useSkill$1($skill`Pop Wheelie`, false);
           costMajor = mpCost($skill`Pop Wheelie`);
@@ -674,7 +672,8 @@ export function auto_combatDefaultStage5(
           costMajor = 0;
         }
         break;
-      case $class`Accordion Thief`:
+      }
+      case $class`Accordion Thief`: {
         if (
           canUse$2($skill`Cadenza`) &&
           itemType(equippedItem($slot`weapon`)) === "accordion" &&
@@ -707,7 +706,8 @@ export function auto_combatDefaultStage5(
           }
         }
         break;
-      case $class`Disco Bandit`:
+      }
+      case $class`Disco Bandit`: {
         if (
           auto_have_skill($skill`Disco State of Mind`) &&
           auto_have_skill($skill`Flashy Dancer`) &&
@@ -748,6 +748,7 @@ export function auto_combatDefaultStage5(
           }
         }
         break;
+      }
       case $class`Cow Puncher`:
       case $class`Beanslinger`:
       case $class`Snake Oiler`:
@@ -1006,8 +1007,8 @@ export function auto_combatDefaultStage5(
           costMinor = mpCost($skill`Grit Teeth`);
         }
         break;
-      case $class`Zootomist`:
-        punch = getZooBestPunch$1(enemy);
+      case $class`Zootomist`: {
+        const punch: Skill = getZooBestPunch$1(enemy);
         if (punch === Skill.none) {
           return "attack with weapon";
         }
@@ -1016,6 +1017,7 @@ export function auto_combatDefaultStage5(
         costMajor = mpCost(punch);
         costMinor = mpCost(punch);
         break;
+      }
     }
   } // class attack selection
 
