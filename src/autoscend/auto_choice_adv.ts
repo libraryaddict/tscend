@@ -7,9 +7,7 @@ import {
   equippedAmount,
   getProperty,
   isWearingOutfit,
-  Item,
   itemAmount,
-  Location,
   myLevel,
   myLocation,
   myMeat,
@@ -17,10 +15,11 @@ import {
   myTurncount,
   runChoice,
   setProperty,
-  Stat,
   toBoolean,
   toInt,
 } from "kolmafia";
+import { $item, $location, $stat } from "libram";
+
 import { possessEquipment } from "./auto_equipment";
 import {
   auto_log_debug$1,
@@ -414,8 +413,8 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 89:
         if (
           isActuallyEd() &&
-          (!possessEquipment(Item.get("serpentine sword")) ||
-            !possessEquipment(Item.get("snake shield")))
+          (!possessEquipment($item`serpentine sword`) ||
+            !possessEquipment($item`snake shield`))
         ) {
           runChoice(2);
         } else {
@@ -426,7 +425,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         runChoice(3);
         break;
       case 105:
-        if (myPrimestat() === Stat.get("Mysticality")) {
+        if (myPrimestat() === $stat`Mysticality`) {
           runChoice(1);
         } else {
           runChoice(2);
@@ -549,7 +548,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         runChoice(2);
         break;
       case 182:
-        if (itemAmount(Item.get("model airship")) === 0) {
+        if (itemAmount($item`model airship`) === 0) {
           runChoice(4);
         } else if (options.has(6)) {
           runChoice(6);
@@ -568,13 +567,13 @@ function auto_run_choice(choice: number, page: string): boolean {
         if (isWearingOutfit("Frat Boy Ensemble")) {
           runChoice(1);
         } else if (
-          equippedAmount(Item.get("mullet wig")) === 1 &&
-          itemAmount(Item.get("briefcase")) > 0
+          equippedAmount($item`mullet wig`) === 1 &&
+          itemAmount($item`briefcase`) > 0
         ) {
           runChoice(2);
         } else if (
-          equippedAmount(Item.get("frilly skirt")) === 1 &&
-          itemAmount(Item.get("hot wing")) > 2
+          equippedAmount($item`frilly skirt`) === 1 &&
+          itemAmount($item`hot wing`) > 2
         ) {
           runChoice(3);
         } else {
@@ -637,7 +636,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         }
         break;
       case 589:
-        if (itemAmount(Item.get("bugbear autopsy tweezers")) > 0) {
+        if (itemAmount($item`bugbear autopsy tweezers`) > 0) {
           for (let i = 1; i <= 5; i++) {
             if (options.has(i)) {
               runChoice(i);
@@ -670,9 +669,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 606:
         if (
           in_bhy() ||
-          (in_glover() &&
-            options.has(3) &&
-            itemAmount(Item.get("jar of oil")) === 0)
+          (in_glover() && options.has(3) && itemAmount($item`jar of oil`) === 0)
         ) {
           runChoice(6);
           break;
@@ -681,7 +678,7 @@ function auto_run_choice(choice: number, page: string): boolean {
           runChoice(4);
           break;
         }
-        if (options.has(3) && itemAmount(Item.get("jar of oil")) > 0) {
+        if (options.has(3) && itemAmount($item`jar of oil`) > 0) {
           runChoice(3);
           break;
         }
@@ -740,7 +737,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 768:
         if (in_quantumTerrarium()) {
-          if (myLocation() === Location.get("The Themthar Hills")) {
+          if (myLocation() === $location`The Themthar Hills`) {
             runChoice(4);
           } else if (myLevel() < 13) {
             runChoice(2);
@@ -772,9 +769,9 @@ function auto_run_choice(choice: number, page: string): boolean {
           toBoolean(getProperty("auto_considerCCSCShore"))
         ) {
           runChoice(5);
-        } else if (myPrimestat() === Stat.get("Muscle")) {
+        } else if (myPrimestat() === $stat`Muscle`) {
           runChoice(1);
-        } else if (myPrimestat() === Stat.get("Mysticality")) {
+        } else if (myPrimestat() === $stat`Mysticality`) {
           runChoice(2);
         } else {
           runChoice(3);
@@ -832,7 +829,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 889:
         if (
-          itemAmount(Item.get("dictionary")) === 0 &&
+          itemAmount($item`dictionary`) === 0 &&
           toBoolean(getProperty("auto_getDictionary"))
         ) {
           runChoice(4);
@@ -876,7 +873,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 1026:
         if (
-          itemAmount(Item.get("electric boning knife")) > 0 ||
+          itemAmount($item`electric boning knife`) > 0 ||
           isActuallyEd() ||
           in_bugbear() ||
           in_pokefam()
@@ -890,7 +887,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         runChoice(1);
         break;
       case 1060:
-        if (itemAmount(Item.get("Skeleton Store office key")) === 0) {
+        if (itemAmount($item`Skeleton Store office key`) === 0) {
           runChoice(1);
         } else if (internalQuestStatus("questM23Meatsmith") < 1) {
           runChoice(4);
@@ -1029,9 +1026,9 @@ function auto_run_choice(choice: number, page: string): boolean {
         juneCleaverChoiceHandler(choice);
         break;
       case 1491: // Strange Stalagmite(s) (Rock Garden)
-        if (myPrimestat() === Stat.get("Muscle")) {
+        if (myPrimestat() === $stat`Muscle`) {
           runChoice(1); // muscle stats
-        } else if (myPrimestat() === Stat.get("Mysticality")) {
+        } else if (myPrimestat() === $stat`Mysticality`) {
           runChoice(2); // myst stats
         } else {
           // if no prime stat we still want moxie

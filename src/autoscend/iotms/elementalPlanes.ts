@@ -7,29 +7,19 @@ import {
   toBoolean,
   visitUrl,
 } from "kolmafia";
+import { $element, $item } from "libram";
+
 import { auto_log_info } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/iotms/auto_elementalPlanes.ash
 function getCharterIndexable(): Map<Element, Item> {
   const charters: Map<Element, Item> = new Map();
-  charters.set(Element.get("cold"), Item.get("airplane charter: The Glaciest"));
-  charters.set(
-    Element.get("hot"),
-    Item.get("airplane charter: That 70s Volcano"),
-  );
-  charters.set(
-    Element.get("sleaze"),
-    Item.get("airplane charter: Spring Break Beach"),
-  );
-  charters.set(
-    Element.get("spooky"),
-    Item.get("airplane charter: Conspiracy Island"),
-  );
-  charters.set(
-    Element.get("stench"),
-    Item.get("airplane charter: Dinseylandfill"),
-  );
+  charters.set($element`cold`, $item`airplane charter: The Glaciest`);
+  charters.set($element`hot`, $item`airplane charter: That 70s Volcano`);
+  charters.set($element`sleaze`, $item`airplane charter: Spring Break Beach`);
+  charters.set($element`spooky`, $item`airplane charter: Conspiracy Island`);
+  charters.set($element`stench`, $item`airplane charter: Dinseylandfill`);
   return charters;
 }
 
@@ -46,11 +36,11 @@ export function elementalPlanes_takeJob(ele: Element): boolean {
     return false;
   }
 
-  if (ele === Element.get("spooky") && elementalPlanes_access(ele)) {
+  if (ele === $element`spooky` && elementalPlanes_access(ele)) {
     visitUrl("place.php?whichplace=airport_spooky&action=airport2_radio");
     visitUrl("choice.php?pwd&whichchoice=984&option=1", true);
     return true;
-  } else if (ele === Element.get("stench") && elementalPlanes_access(ele)) {
+  } else if (ele === $element`stench` && elementalPlanes_access(ele)) {
     const page: string = visitUrl(
       "place.php?whichplace=airport_stench&action=airport3_kiosk",
     );
@@ -91,7 +81,7 @@ export function elementalPlanes_takeJob(ele: Element): boolean {
 
     visitUrl(`choice.php?pwd=&whichchoice=1066&option=${choice}`, true);
     return true;
-  } else if (ele === Element.get("cold") && elementalPlanes_access(ele)) {
+  } else if (ele === $element`cold` && elementalPlanes_access(ele)) {
     if (toBoolean(getProperty("_walfordQuestStartedToday"))) {
       return false;
     }

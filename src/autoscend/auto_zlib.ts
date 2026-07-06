@@ -8,6 +8,7 @@ import {
   urlEncode,
   visitUrl,
 } from "kolmafia";
+
 import { auto_log_info, auto_log_warning } from "./auto_util";
 import { kmailObject } from "./autoscend_record";
 import { AshMatcher } from "./utils/kolmafiaUtils";

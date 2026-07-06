@@ -3,12 +3,10 @@ import {
   Familiar,
   getProperty,
   Item,
-  Location,
   myBasestat,
   myFamiliar,
   myPath,
   myPrimestat,
-  Path,
   print,
   setProperty,
   toFamiliar,
@@ -16,6 +14,8 @@ import {
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
+import { $familiar, $item, $location, $path } from "libram";
+
 import { autoAdv$1 } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
 import { internalQuestStatus } from "../auto_util";
@@ -29,7 +29,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/quantum_terrarium.ash
 export function in_quantumTerrarium(): boolean {
-  return myPath() === Path.get("Quantum Terrarium");
+  return myPath() === $path`Quantum Terrarium`;
 }
 
 function qt_currentFamiliar(fam: Familiar): boolean {
@@ -50,24 +50,24 @@ export function LX_quantumTerrarium(): boolean {
   }
 
   switch (myFamiliar()) {
-    case Familiar.get("Machine Elf"):
+    case $familiar`Machine Elf`:
       // lets order this by familiar ID in ascending order
       // use free fights for experience and abstractions
       if (toInt(getProperty("_machineTunnelsAdv")) < 5) {
-        return autoAdv$1(1, Location.get("The Deep Machine Tunnels"));
+        return autoAdv$1(1, $location`The Deep Machine Tunnels`);
       }
       break;
-    case Familiar.get("God Lobster"):
+    case $familiar`God Lobster`:
       // use free fights for experience
       if (auto_godLobsterFightsRemaining() > 0) {
         if (myBasestat(myPrimestat()) < 70) {
           // 33 advs worth of +10 stats/combat is better than 1.5*70 to all 3 stats
-          if (!possessEquipment(Item.get("God Lobster's Scepter"))) {
+          if (!possessEquipment($item`God Lobster's Scepter`)) {
             // fight it with no equipment to get the Scepter
             return godLobsterCombat$2(Item.none, 1);
           } else {
             // fight it with the Scepter for the stats buff
-            return godLobsterCombat$2(Item.get("God Lobster's Scepter"), 2);
+            return godLobsterCombat$2($item`God Lobster's Scepter`, 2);
           }
         } else {
           // get experience
@@ -75,7 +75,7 @@ export function LX_quantumTerrarium(): boolean {
         }
       }
       break;
-    case Familiar.get("Reassembled Blackbird"):
+    case $familiar`Reassembled Blackbird`:
       if (!(
         internalQuestStatus("questL11Black") < 0 ||
         internalQuestStatus("questL11Black") > 1 ||
@@ -84,7 +84,7 @@ export function LX_quantumTerrarium(): boolean {
         return L11_blackMarket();
       }
       break;
-    case Familiar.get("Reconstituted Crow"):
+    case $familiar`Reconstituted Crow`:
       if (!(
         internalQuestStatus("questL11Black") < 0 ||
         internalQuestStatus("questL11Black") > 1 ||
@@ -93,7 +93,7 @@ export function LX_quantumTerrarium(): boolean {
         return L11_blackMarket();
       }
       break;
-    case Familiar.get("Melodramedary"):
+    case $familiar`Melodramedary`:
       if (!(
         internalQuestStatus("questL11Desert") !== 0 ||
         toInt(getProperty("desertExploration")) >= 100

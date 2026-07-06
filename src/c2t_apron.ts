@@ -1,5 +1,4 @@
 import {
-  abort,
   cliExecute,
   containsText,
   fullnessLimit,
@@ -12,9 +11,10 @@ import {
   print,
   splitString,
   Stat,
-  toLowerCase,
   visitUrl,
 } from "kolmafia";
+import { $item, $stat } from "libram";
+
 import { AshMatcher } from "./autoscend/utils/kolmafiaUtils";
 
 //c2t apron
@@ -32,7 +32,7 @@ export function c2t_apron$1(): boolean {
 //returns true on success
 function c2t_apron(select: Stat): boolean {
   let meal: number = 0;
-  const kit: Item = Item.get("Black and White Apron Meal Kit");
+  const kit: Item = $item`Black and White Apron Meal Kit`;
   let page: string;
   let mat: AshMatcher;
   let sendit: string = "";
@@ -43,13 +43,13 @@ function c2t_apron(select: Stat): boolean {
   switch (select) {
     default:
       return c2t_apron_error(`"${select}" is not a valid stat`);
-    case Stat.get("Muscle"):
+    case $stat`Muscle`:
       meal = 0;
       break;
-    case Stat.get("Mysticality"):
+    case $stat`Mysticality`:
       meal = 1;
       break;
-    case Stat.get("Moxie"):
+    case $stat`Moxie`:
       meal = 2;
       break;
   }

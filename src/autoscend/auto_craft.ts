@@ -13,6 +13,8 @@ import {
   toInt,
   visitUrl,
 } from "kolmafia";
+import { $item, $items } from "libram";
+
 import {
   auto_is_valid,
   auto_log_debug$1,
@@ -70,21 +72,16 @@ export function auto_fold(target: Item): boolean {
 function untinkerable(target: Item): boolean {
   //does the item target possess the untinkerable property. this does not care if we actually have it or can untinker. only the property.
   //exceptions that can be untinkered even though they are no longer pasteable
-  if (Item.get(["31337 scroll"]).includes(target)) {
+  if ($items`31337 scroll`.includes(target)) {
     return true;
   }
   //exceptions that can not be untinkered even though they are pasteable exist.
   //most return craft_type of "Meatpasting (not untinkerable)" and as such need no special handling.
   //this is special handling for those whom mafia incorrectly returns "Meatpasting" for
   if (
-    Item.get([
-      "chaos popcorn",
-      "cold clusterbomb",
-      "hot clusterbomb",
-      "sleaze clusterbomb",
-      "spooky clusterbomb",
-      "stench clusterbomb",
-    ]).includes(target)
+    $items`chaos popcorn, cold clusterbomb, hot clusterbomb, sleaze clusterbomb, spooky clusterbomb, stench clusterbomb`.includes(
+      target,
+    )
   ) {
     return false;
   }
@@ -95,7 +92,7 @@ export function canUntinker(): boolean {
   //do we possess the means to untinker.
   if (
     hasLegionKnife() &&
-    auto_is_valid(Item.get("Loathing Legion universal screwdriver"))
+    auto_is_valid($item`Loathing Legion universal screwdriver`)
   ) {
     return true; //universal screwdriver can be used to untinker items
   }
@@ -142,7 +139,7 @@ function untinker$1(amount: number, target: Item): boolean {
   const untinker_all: boolean = amount === itemAmount(target);
   auto_log_debug$1(`Attempted to untinker ${amount} [${target}]`);
   const start_amt: number = itemAmount(target);
-  const LLUS: Item = Item.get("Loathing Legion universal screwdriver");
+  const LLUS: Item = $item`Loathing Legion universal screwdriver`;
 
   if (getProperty("questM01Untinker") === "finished") {
     if (untinker_all) {

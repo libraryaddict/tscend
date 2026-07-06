@@ -1,14 +1,11 @@
 import {
   abort,
   availableChoiceOptions,
-  Class,
   cliExecute,
   containsText,
   council,
-  Effect,
   equippedItem,
   expectedDamage,
-  Familiar,
   floor,
   getProperty,
   haveEffect,
@@ -18,12 +15,9 @@ import {
   initiativeModifier,
   isBanished,
   isUnrestricted,
-  Item,
   itemAmount,
   itemType,
-  Location,
   min,
-  Monster,
   myClass,
   myDaycount,
   myFullness,
@@ -32,10 +26,7 @@ import {
   myPrimestat,
   runChoice,
   setProperty,
-  Skill,
-  Slot,
   splitString,
-  Stat,
   toInt,
   toLowerCase,
   toMonster,
@@ -43,6 +34,18 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
+import {
+  $class,
+  $effect,
+  $familiar,
+  $item,
+  $location,
+  $monster,
+  $skill,
+  $slot,
+  $stat,
+} from "libram";
+
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
 import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
@@ -114,8 +117,8 @@ export function cyrptChoiceHandler(choice: number): void {
     // Skull, Skull, Skull (The Defiled Nook)
     if (
       in_zombieSlayer() &&
-      (itemAmount(Item.get("talkative skull")) === 0 ||
-        !haveFamiliar(Familiar.get("Hovering Skull")))
+      (itemAmount($item`talkative skull`) === 0 ||
+        !haveFamiliar($familiar`Hovering Skull`))
     ) {
       runChoice(1); // get talkative skull
     } else {
@@ -128,8 +131,8 @@ export function cyrptChoiceHandler(choice: number): void {
     // Death Rattlin' (The Defiled Cranny)
     if (
       (in_darkGyffte() &&
-        haveSkill(Skill.get("Flock of Bats Form")) &&
-        haveSkill(Skill.get("Sharp Eyes"))) ||
+        haveSkill($skill`Flock of Bats Form`) &&
+        haveSkill($skill`Sharp Eyes`)) ||
       auto_turbo()
     ) {
       let desiredPills: number = inHardcore() ? 6 : auto_turbo() ? 3 : 4;
@@ -149,10 +152,10 @@ export function cyrptChoiceHandler(choice: number): void {
         desiredPills -= dietingPillsUsed;
       }
       auto_log_info(
-        `We want ${desiredPills} dieting pills and have ${itemAmount(Item.get("dieting pill"))}`,
+        `We want ${desiredPills} dieting pills and have ${itemAmount($item`dieting pill`)}`,
         "blue",
       );
-      if (itemAmount(Item.get("dieting pill")) < desiredPills) {
+      if (itemAmount($item`dieting pill`) < desiredPills) {
         runChoice(6); // if meets thresholds, skip to farm more dieting pills in DG
       } else if (5 in availableChoiceOptions()) {
         runChoice(5); // -11 evil, +50 each substat with Candy Cane Sword Cane
@@ -179,29 +182,28 @@ export function cyrptEvilBonus(inCombat: boolean): number {
   cyrptBonus += toInt(getProperty("_nightmareFuelCharges")) > 0 ? 2 : 0;
   if (inCombat) {
     cyrptBonus +=
-      equippedItem(Slot.get("back")) ===
-        Item.get("unwrapped knock-off retro superhero cape") &&
-      auto_is_valid$2(Skill.get("Slay the Dead")) &&
+      equippedItem($slot`back`) ===
+        $item`unwrapped knock-off retro superhero cape` &&
+      auto_is_valid$2($skill`Slay the Dead`) &&
       getProperty("retroCapeSuperhero") === "vampire" &&
       getProperty("retroCapeWashingInstructions") === "kill" &&
-      itemType(equippedItem(Slot.get("weapon"))) === "sword"
+      itemType(equippedItem($slot`weapon`)) === "sword"
         ? 1
         : 0;
     cyrptBonus +=
-      equippedItem(Slot.get("hat")) === Item.get("gravy boat") &&
-      auto_is_valid(Item.get("gravy boat"))
+      equippedItem($slot`hat`) === $item`gravy boat` &&
+      auto_is_valid($item`gravy boat`)
         ? 1
         : 0;
   } else {
     cyrptBonus +=
       auto_hasRetrocape() &&
-      auto_is_valid$2(Skill.get("Slay the Dead")) &&
+      auto_is_valid$2($skill`Slay the Dead`) &&
       auto_forceEquipSword(true)
         ? 1
         : 0;
     cyrptBonus +=
-      possessEquipment(Item.get("gravy boat")) &&
-      auto_is_valid(Item.get("gravy boat"))
+      possessEquipment($item`gravy boat`) && auto_is_valid($item`gravy boat`)
         ? 1
         : 0;
   }
@@ -216,25 +218,25 @@ function useNightmareFuelIfPossible(): void {
   // chews this when there are no guaranteed uses for spleen
   if (
     spleen_left() > 0 &&
-    itemAmount(Item.get("Nightmare Fuel")) > 0 &&
+    itemAmount($item`Nightmare Fuel`) > 0 &&
     !isActuallyEd() &&
     !(auto_havePillKeeper() && spleen_left() >= 3) &&
     spleen_left() >
       4 * min(auto_spleenFamiliarAdvItemsPossessed(), floor(spleen_left() / 4))
   ) {
     // only uses space than can't be filled with adv item
-    autoChew(1, Item.get("Nightmare Fuel"));
+    autoChew(1, $item`Nightmare Fuel`);
   }
 }
 
 function knockOffCapePrep(): void {
   if (auto_configureRetrocape("vampire", "kill")) {
     if (
-      haveEffect(Effect.get("Iron Palms")) > 0 &&
-      auto_have_skill(Skill.get("Iron Palm Technique"))
+      haveEffect($effect`Iron Palms`) > 0 &&
+      auto_have_skill($skill`Iron Palm Technique`)
     ) {
       //slay the dead needs the sword to count as a sword and not as a club
-      useSkill(1, Skill.get("Iron Palm Technique"));
+      useSkill(1, $skill`Iron Palm Technique`);
     }
     auto_forceEquipSword$1();
   }
@@ -252,7 +254,7 @@ function L7_defiledAlcove(): boolean {
 
   if (
     toInt(getProperty("cyrptAlcoveEvilness")) > 13 &&
-    auto_habitatMonster() === Monster.get("modern zmobie")
+    auto_habitatMonster() === $monster`modern zmobie`
   ) {
     if (auto_backupUsesLeft() > 0) {
       // do something else if we have modern zmobie Habitants & can backup. Don't need to adventure in this zone.
@@ -269,19 +271,19 @@ function L7_defiledAlcove(): boolean {
 
   if (
     isActuallyEd() &&
-    (!haveSkill(Skill.get("More Legs")) ||
-      expectedDamage(Monster.get("modern zmobie")) + 15 > myMaxhp())
+    (!haveSkill($skill`More Legs`) ||
+      expectedDamage($monster`modern zmobie`) + 15 > myMaxhp())
   ) {
     // Ed needs to be able to survive long enough to do stuff in combat vs a modern zmobie.
     return false;
   }
 
   if (toInt(getProperty("cyrptAlcoveEvilness")) > 14 + evilBonus) {
-    provideInitiative$2(850, Location.get("The Defiled Alcove"), true);
+    provideInitiative$2(850, $location`The Defiled Alcove`, true);
     addToMaximize("100initiative 850max");
   }
 
-  autoEquip$1(Item.get("gravy boat"));
+  autoEquip$1($item`gravy boat`);
   knockOffCapePrep();
 
   if (toInt(getProperty("cyrptAlcoveEvilness")) >= 16 + evilBonus) {
@@ -292,7 +294,7 @@ function L7_defiledAlcove(): boolean {
   if (toInt(getProperty("cyrptAlcoveEvilness")) <= 13) {
     setProperty("auto_nextEncounter", "conjoined zmombie");
   }
-  return autoAdv$2(Location.get("The Defiled Alcove"));
+  return autoAdv$2($location`The Defiled Alcove`);
 }
 
 export function L7_defiledNook(): boolean {
@@ -303,11 +305,11 @@ export function L7_defiledNook(): boolean {
   // we might be able to reach the Nook boss without adventuring.
 
   while (
-    itemAmount(Item.get("evil eye")) > 0 &&
-    auto_is_valid(Item.get("evil eye")) &&
+    itemAmount($item`evil eye`) > 0 &&
+    auto_is_valid($item`evil eye`) &&
     toInt(getProperty("cyrptNookEvilness")) > 13
   ) {
-    use(1, Item.get("evil eye"));
+    use(1, $item`evil eye`);
   }
 
   const skip_in_koe: boolean =
@@ -317,25 +319,25 @@ export function L7_defiledNook(): boolean {
 
   if (
     toInt(getProperty("cyrptNookEvilness")) > 0 &&
-    lar_repeat(Location.get("The Defiled Nook")) &&
+    lar_repeat($location`The Defiled Nook`) &&
     !skip_in_koe
   ) {
     auto_log_info("The Nook!", "blue");
-    autoEquip$1(Item.get("gravy boat"));
+    autoEquip$1($item`gravy boat`);
     knockOffCapePrep();
 
     if (
       toInt(getProperty("cyrptNookEvilness")) > 14 + evilBonus &&
-      auto_is_valid(Item.get("evil eye"))
+      auto_is_valid($item`evil eye`)
     ) {
       //evil eyes have 20% drop rate
-      provideItem$2(400, Location.get("The Defiled Nook"), false);
+      provideItem$2(400, $location`The Defiled Nook`, false);
     }
 
     if (toInt(getProperty("cyrptNookEvilness")) <= 13) {
       setProperty("auto_nextEncounter", "giant skeelton");
     }
-    return autoAdv$2(Location.get("The Defiled Nook"));
+    return autoAdv$2($location`The Defiled Nook`);
   } else if (skip_in_koe) {
     auto_log_debug$1(
       "In Exploathing, skipping Defiled Nook until we get more evil eyes.",
@@ -349,7 +351,7 @@ function L7_defiledNiche(): boolean {
 
   if (
     toInt(getProperty("cyrptNicheEvilness")) > 13 &&
-    auto_habitatMonster() === Monster.get("dirty old lihc")
+    auto_habitatMonster() === $monster`dirty old lihc`
   ) {
     if (
       toInt(getProperty("cyrptNicheEvilness")) <=
@@ -362,52 +364,51 @@ function L7_defiledNiche(): boolean {
 
   if (
     toInt(getProperty("cyrptNicheEvilness")) > 0 &&
-    lar_repeat(Location.get("The Defiled Niche"))
+    lar_repeat($location`The Defiled Niche`)
   ) {
     if (
       myDaycount() === 1 &&
       toInt(getProperty("_hipsterAdv")) < 7 &&
-      isUnrestricted(Familiar.get("Artistic Goth Kid")) &&
-      auto_have_familiar(Familiar.get("Artistic Goth Kid"))
+      isUnrestricted($familiar`Artistic Goth Kid`) &&
+      auto_have_familiar($familiar`Artistic Goth Kid`)
     ) {
-      handleFamiliar$1(Familiar.get("Artistic Goth Kid"));
+      handleFamiliar$1($familiar`Artistic Goth Kid`);
     }
-    autoEquip$1(Item.get("gravy boat"));
+    autoEquip$1($item`gravy boat`);
     // prioritize extinguisher over slay the dead in Defiled Niche if its available and unused in the cyrpt
     if (
-      auto_FireExtinguisherCombatString(Location.get("The Defiled Niche")) ===
-      ""
+      auto_FireExtinguisherCombatString($location`The Defiled Niche`) === ""
     ) {
       knockOffCapePrep();
     }
 
     if (
-      auto_have_familiar(Familiar.get("Space Jellyfish")) &&
+      auto_have_familiar($familiar`Space Jellyfish`) &&
       toInt(getProperty("_spaceJellyfishDrops")) < 3
     ) {
-      handleFamiliar$1(Familiar.get("Space Jellyfish"));
+      handleFamiliar$1($familiar`Space Jellyfish`);
     } else if (
-      auto_have_familiar(Familiar.get("Nosy Nose")) &&
-      auto_is_valid$2(Skill.get("Get a Good Whiff of This Guy")) &&
-      (auto_combat_appearance_rates$1(Location.get("The Defiled Niche")).get(
-        Monster.get("dirty old lihc"),
+      auto_have_familiar($familiar`Nosy Nose`) &&
+      auto_is_valid$2($skill`Get a Good Whiff of This Guy`) &&
+      (auto_combat_appearance_rates$1($location`The Defiled Niche`).get(
+        $monster`dirty old lihc`,
       ) ??
-        auto_combat_appearance_rates$1(Location.get("The Defiled Niche"))
-          .set(Monster.get("dirty old lihc"), 0.0)
-          .get(Monster.get("dirty old lihc"))) < 100
+        auto_combat_appearance_rates$1($location`The Defiled Niche`)
+          .set($monster`dirty old lihc`, 0.0)
+          .get($monster`dirty old lihc`)) < 100
     ) {
       let nosyOldLihcs: boolean = false;
       if (toInt(getProperty("cyrptNicheEvilness")) > 17 + 2 * evilBonus) {
         nosyOldLihcs = true; //several dirty old lihc worth of evilness left so want to whiff dirty old lihc if we meet one
       } else if (
         toMonster(getProperty("nosyNoseMonster")) ===
-          Monster.get("dirty old lihc") &&
+          $monster`dirty old lihc` &&
         toInt(getProperty("cyrptNicheEvilness")) > 14 + evilBonus
       ) {
         nosyOldLihcs = true; //familiar whiff skill is increasing chances of dirty old lihc
       }
       if (nosyOldLihcs) {
-        handleFamiliar$1(Familiar.get("Nosy Nose"));
+        handleFamiliar$1($familiar`Nosy Nose`);
       }
     }
 
@@ -417,10 +418,7 @@ function L7_defiledNiche(): boolean {
 
     auto_log_info("The Niche!", "blue");
     if (
-      canSniff(
-        Monster.get("dirty old lihc"),
-        Location.get("The Defiled Niche"),
-      ) &&
+      canSniff($monster`dirty old lihc`, $location`The Defiled Niche`) &&
       toInt(getProperty("cyrptNicheEvilness")) >= 14 + evilBonus &&
       auto_mapTheMonsters()
     ) {
@@ -431,7 +429,7 @@ function L7_defiledNiche(): boolean {
     if (toInt(getProperty("cyrptNicheEvilness")) <= 13) {
       setProperty("auto_nextEncounter", "gargantulihc");
     }
-    return autoAdv$2(Location.get("The Defiled Niche"));
+    return autoAdv$2($location`The Defiled Niche`);
   }
   return false;
 }
@@ -447,21 +445,21 @@ function L7_defiledCranny(): boolean {
     auto_log_info("The Cranny!", "blue");
 
     if (myMp() > 60) {
-      handleBjornify(Familiar.get("Grimstone Golem"));
+      handleBjornify($familiar`Grimstone Golem`);
     }
 
-    autoEquip$1(Item.get("gravy boat"));
+    autoEquip$1($item`gravy boat`);
     knockOffCapePrep();
 
-    if (auto_is_valid$3(Effect.get("Emotional Vaccine"))) {
-      spacegateVaccine(Effect.get("Emotional Vaccine"));
+    if (auto_is_valid$3($effect`Emotional Vaccine`)) {
+      spacegateVaccine($effect`Emotional Vaccine`);
     }
 
     if (
-      auto_have_familiar(Familiar.get("Space Jellyfish")) &&
+      auto_have_familiar($familiar`Space Jellyfish`) &&
       toInt(getProperty("_spaceJellyfishDrops")) < 3
     ) {
-      handleFamiliar$1(Familiar.get("Space Jellyfish"));
+      handleFamiliar$1($familiar`Space Jellyfish`);
     }
 
     if (toInt(getProperty("cyrptCrannyEvilness")) >= 17 + evilBonus) {
@@ -470,8 +468,8 @@ function L7_defiledCranny(): boolean {
 
     if (
       (in_darkGyffte() &&
-        haveSkill(Skill.get("Flock of Bats Form")) &&
-        haveSkill(Skill.get("Sharp Eyes"))) ||
+        haveSkill($skill`Flock of Bats Form`) &&
+        haveSkill($skill`Sharp Eyes`)) ||
       auto_turbo()
     ) {
       let desiredPills: number = inHardcore() ? 6 : auto_turbo() ? 3 : 4;
@@ -491,12 +489,12 @@ function L7_defiledCranny(): boolean {
         desiredPills -= dietingPillsUsed;
       }
       auto_log_info(
-        `We want ${desiredPills} dieting pills and have ${itemAmount(Item.get("dieting pill"))}`,
+        `We want ${desiredPills} dieting pills and have ${itemAmount($item`dieting pill`)}`,
         "blue",
       );
-      if (itemAmount(Item.get("dieting pill")) < desiredPills) {
+      if (itemAmount($item`dieting pill`) < desiredPills) {
         //dieting pills have 10% drop rate
-        provideItem$2(900, Location.get("The Defiled Cranny"), false);
+        provideItem$2(900, $location`The Defiled Cranny`, false);
       }
     }
 
@@ -507,7 +505,7 @@ function L7_defiledCranny(): boolean {
     if (toInt(getProperty("cyrptCrannyEvilness")) <= 13) {
       setProperty("auto_nextEncounter", "huge ghuol");
     }
-    return autoAdv$2(Location.get("The Defiled Cranny"));
+    return autoAdv$2($location`The Defiled Cranny`);
   }
   return false;
 }
@@ -516,14 +514,14 @@ export function L7_crypt(): boolean {
   if (internalQuestStatus("questL07Cyrptic") !== 0) {
     return false;
   }
-  if (itemAmount(Item.get("chest of the Bonerdagon")) === 1) {
+  if (itemAmount($item`chest of the Bonerdagon`) === 1) {
     equipStatgainIncreasers$2();
-    use(1, Item.get("chest of the Bonerdagon"));
+    use(1, $item`chest of the Bonerdagon`);
     return false;
   }
   // make sure quest status is correct before we attempt to adventure.
   visitUrl("crypt.php");
-  use(1, Item.get("Evilometer"));
+  use(1, $item`Evilometer`);
 
   const evilBonus: number = cyrptEvilBonus$1();
 
@@ -555,42 +553,42 @@ export function L7_crypt(): boolean {
     toInt(getProperty("cyrptTotalEvilness")) === 999
   ) {
     if (
-      myClass() === Class.get("Seal Clubber") &&
-      auto_have_skill(Skill.get("Iron Palm Technique")) &&
-      haveEffect(Effect.get("Iron Palms")) === 0
+      myClass() === $class`Seal Clubber` &&
+      auto_have_skill($skill`Iron Palm Technique`) &&
+      haveEffect($effect`Iron Palms`) === 0
     ) {
       //if this was toggled off for retrocape slay the dead it can be toggled back on now
-      useSkill(1, Skill.get("Iron Palm Technique"));
+      useSkill(1, $skill`Iron Palm Technique`);
     }
 
-    if (myPrimestat() === Stat.get("Muscle")) {
-      auto_buyUpTo(1, Item.get("Ben-Gal&trade; Balm"));
-      buffMaintain$4(Effect.get("Go Get 'Em, Tiger!"));
-      auto_buyUpTo(1, Item.get("blood of the Wereseal"));
-      buffMaintain$4(Effect.get("Temporary Lycanthropy"));
+    if (myPrimestat() === $stat`Muscle`) {
+      auto_buyUpTo(1, $item`Ben-Gal™ Balm`);
+      buffMaintain$4($effect`Go Get 'Em\, Tiger!`);
+      auto_buyUpTo(1, $item`blood of the Wereseal`);
+      buffMaintain$4($effect`Temporary Lycanthropy`);
     }
     //AoSOL buffs
     if (in_aosol()) {
-      buffMaintain$3(Effect.get("Queso Fustulento"), 10, 1, 10);
-      buffMaintain$3(Effect.get("Tricky Timpani"), 30, 1, 10);
+      buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
+      buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
       if (auto_haveGreyGoose()) {
-        handleFamiliar$1(Familiar.get("Grey Goose"));
+        handleFamiliar$1($familiar`Grey Goose`);
       }
     }
 
     acquireHP();
-    if (auto_have_familiar(Familiar.get("Machine Elf"))) {
-      handleFamiliar$1(Familiar.get("Machine Elf"));
+    if (auto_have_familiar($familiar`Machine Elf`)) {
+      handleFamiliar$1($familiar`Machine Elf`);
     }
     auto_change_mcd(10); // get vertebra to make the necklace.
     setProperty("auto_nextEncounter", "Bonerdagon");
     setProperty("auto_nonAdvLoc", true.toString());
-    const tryBoner: boolean = autoAdv$1(1, Location.get("Haert of the Cyrpt"));
+    const tryBoner: boolean = autoAdv$1(1, $location`Haert of the Cyrpt`);
     council();
     cliExecute("refresh quests");
-    if (itemAmount(Item.get("chest of the Bonerdagon")) === 1) {
+    if (itemAmount($item`chest of the Bonerdagon`) === 1) {
       equipStatgainIncreasers$2();
-      use(1, Item.get("chest of the Bonerdagon"));
+      use(1, $item`chest of the Bonerdagon`);
       auto_badassBelt(); // mafia doesn't make this any more even if autoCraft = true for some random reason so lets do it manually.
     } else if (getProperty("questL07Cyrptic") === "finished") {
       auto_log_warning(
@@ -626,7 +624,7 @@ export function L7_override(): boolean {
   const evilBonus: number = cyrptEvilBonus$1();
   if (
     toInt(getProperty("cyrptNookEvilness")) > 14 + evilBonus &&
-    isBanished(Monster.get("party skelteon"))
+    isBanished($monster`party skelteon`)
   ) {
     auto_log_info$1(
       "Trying to check on the ongoing Nook before moving on to a different task",
@@ -637,10 +635,10 @@ export function L7_override(): boolean {
   }
   if (toInt(getProperty("cyrptNicheEvilness")) > 14 + evilBonus) {
     const lihcbanihced: boolean =
-      isBanished(Monster.get("basic lihc")) ||
-      isBanished(Monster.get("senile lihc")) ||
-      isBanished(Monster.get("slick lihc"));
-    if (lihcbanihced || isSniffed$1(Monster.get("dirty old lihc"))) {
+      isBanished($monster`basic lihc`) ||
+      isBanished($monster`senile lihc`) ||
+      isBanished($monster`slick lihc`);
+    if (lihcbanihced || isSniffed$1($monster`dirty old lihc`)) {
       auto_log_info$1(
         "Trying to check on the ongoing Niche before moving on to a different task",
       );

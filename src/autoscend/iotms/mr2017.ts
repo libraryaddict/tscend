@@ -1,7 +1,6 @@
 import {
   abort,
   ceil,
-  Class,
   cliExecute,
   containsText,
   create,
@@ -17,7 +16,6 @@ import {
   isUnrestricted,
   Item,
   itemAmount,
-  Location,
   max,
   min,
   Monster,
@@ -35,9 +33,7 @@ import {
   myPrimestat,
   myTurncount,
   npcPrice,
-  Path,
   setProperty,
-  Skill,
   splitString,
   Stat,
   toBoolean,
@@ -52,6 +48,21 @@ import {
   useFamiliar,
   visitUrl,
 } from "kolmafia";
+import {
+  $class,
+  $effect,
+  $effects,
+  $element,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $monsters,
+  $path,
+  $skill,
+  $stat,
+} from "libram";
+
 import { autoAdv$2, autoAdvBypass, CombatMacro } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
 import {
@@ -89,8 +100,8 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 function auto_hasMummingTrunk(): boolean {
   if (
     !pathHasFamiliar() ||
-    itemAmount(Item.get("mumming trunk")) === 0 ||
-    !auto_is_valid(Item.get("mumming trunk"))
+    itemAmount($item`mumming trunk`) === 0 ||
+    !auto_is_valid($item`mumming trunk`)
   ) {
     return false;
   }
@@ -212,7 +223,7 @@ export function mummifyFamiliar$2(): boolean {
 }
 
 function pantogramPants(): boolean {
-  return pantogramPants$1(myPrimestat(), Element.get("cold"), 1, 2, 1);
+  return pantogramPants$1(myPrimestat(), $element`cold`, 1, 2, 1);
 }
 
 export function pantogramPants$1(
@@ -222,43 +233,43 @@ export function pantogramPants$1(
   meatItemStats: number,
   misc: number,
 ): boolean {
-  if (!auto_is_valid(Item.get("portable pantogram"))) {
+  if (!auto_is_valid($item`portable pantogram`)) {
     return false;
   }
-  if (itemAmount(Item.get("portable pantogram")) === 0) {
+  if (itemAmount($item`portable pantogram`) === 0) {
     return false;
   }
-  if (possessEquipment(Item.get("pantogram pants"))) {
+  if (possessEquipment($item`pantogram pants`)) {
     return false;
   }
   let m: number = 0;
   switch (st) {
-    case Stat.get("Muscle"):
+    case $stat`Muscle`:
       m = 1;
       break;
-    case Stat.get("Mysticality"):
+    case $stat`Mysticality`:
       m = 2;
       break;
-    case Stat.get("Moxie"):
+    case $stat`Moxie`:
       m = 3;
       break;
   }
 
   let e: number = 0;
   switch (el) {
-    case Element.get("hot"):
+    case $element`hot`:
       e = 1;
       break;
-    case Element.get("cold"):
+    case $element`cold`:
       e = 2;
       break;
-    case Element.get("spooky"):
+    case $element`spooky`:
       e = 3;
       break;
-    case Element.get("sleaze"):
+    case $element`sleaze`:
       e = 4;
       break;
-    case Element.get("stench"):
+    case $element`stench`:
       e = 5;
       break;
   }
@@ -455,7 +466,7 @@ export function pantogramPants$1(
   }
 
   let page: string = visitUrl(
-    `inv_use.php?pwd=${myHash()}&which=3&whichitem=${toInt(Item.get("portable pantogram"))}`,
+    `inv_use.php?pwd=${myHash()}&which=3&whichitem=${toInt($item`portable pantogram`)}`,
   );
   //<tr><td style="color: white;" align=center bgcolor=blue><b>Results:</b></td></tr><tr><td style="padding: 5px; border: 1px solid blue;"><center><table><tr><td><span class='guts'>Something went awry.</span></td></tr>
 
@@ -502,7 +513,7 @@ function loveTunnelAcquire$1(
   if (giftItem < 0 || giftItem > 7) {
     return false;
   }
-  if (giftItem === 6 && !haveFamiliar(Familiar.get("Space Jellyfish"))) {
+  if (giftItem === 6 && !haveFamiliar($familiar`Space Jellyfish`)) {
     return false;
   }
   if (loveEffect === 2 && !pathHasFamiliar()) {
@@ -530,35 +541,35 @@ function loveTunnelAcquire$1(
 
   let statValue: number = 4;
   if (statItem === Stat.none) {
-    if (in_darkGyffte() && possessEquipment(Item.get("vampyric cloake"))) {
-      statItem = Stat.get("Muscle");
+    if (in_darkGyffte() && possessEquipment($item`vampyric cloake`)) {
+      statItem = $stat`Muscle`;
     } else {
       statItem = myPrimestat();
     }
   }
   switch (statItem) {
-    case Stat.get("Muscle"):
+    case $stat`Muscle`:
       statValue = 1;
       break;
-    case Stat.get("Mysticality"):
+    case $stat`Mysticality`:
       statValue = 2;
       break;
-    case Stat.get("Moxie"):
+    case $stat`Moxie`:
       statValue = 3;
       break;
   }
 
   if (
-    !haveSkill(Skill.get("Torso Awareness")) &&
-    !haveSkill(Skill.get("Best Dressed")) &&
+    !haveSkill($skill`Torso Awareness`) &&
+    !haveSkill($skill`Best Dressed`) &&
     statValue === 1
   ) {
     if (
       !(
-        possessEquipment(Item.get("protonic accelerator pack")) ||
-        possessEquipment(Item.get("vampyric cloake"))
+        possessEquipment($item`protonic accelerator pack`) ||
+        possessEquipment($item`vampyric cloake`)
       ) &&
-      auto_is_valid(Item.get("LOV Epaulettes"))
+      auto_is_valid($item`LOV Epaulettes`)
     ) {
       statValue = 2;
     } else {
@@ -566,7 +577,7 @@ function loveTunnelAcquire$1(
     }
   }
 
-  if (!auto_is_valid(Item.get("LOV Epaulettes")) && statValue === 2) {
+  if (!auto_is_valid($item`LOV Epaulettes`) && statValue === 2) {
     // if myst and in G-Lover
     statValue = 3; // Resistance and Meat seems better than ML
   }
@@ -612,19 +623,19 @@ function loveTunnelAcquire$1(
   //6		Toast? Only with Space Jellyfish?
   //7		Nothing
 
-  const retval: boolean = autoAdv$2(Location.get("The Tunnel of L.O.V.E."));
+  const retval: boolean = autoAdv$2($location`The Tunnel of L.O.V.E.`);
 
-  if (itemAmount(Item.get("LOV Extraterrestrial Chocolate")) > 0) {
-    use(1, Item.get("LOV Extraterrestrial Chocolate"));
+  if (itemAmount($item`LOV Extraterrestrial Chocolate`) > 0) {
+    use(1, $item`LOV Extraterrestrial Chocolate`);
   }
   return retval;
 }
 
 export function kgbWasteClicks(): boolean {
-  if (!possessEquipment(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
-  if (!auto_is_valid(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!auto_is_valid($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
   if (toInt(getProperty("_kgbClicksUsed")) >= 22) {
@@ -639,28 +650,16 @@ export function kgbWasteClicks(): boolean {
   // Yes, this will not be pleasant if we matched our number and each page click changes the buttons.
   while (toInt(getProperty("_kgbClicksUsed")) < 22 && clicked < 9) {
     const start_1: number = clicked;
-    for (const ef of Effect.get([
-      "Items Are Forever",
-      "A View to Some Meat",
-      "Light!",
-      "The Spy Who Loved XP",
-      "Initiative and Let Die",
-      "The Living Hitpoints",
-      "License to Punch",
-      "Goldentongue",
-      "Thunderspell",
-    ])) {
+    for (const ef of $effects`Items Are Forever, A View to Some Meat, Light!, The Spy Who Loved XP, Initiative and Let Die, The Living Hitpoints, License to Punch, Goldentongue, Thunderspell`) {
       if (containsText(getProperty("auto_kgbTracker"), `:${toInt(ef)}`)) {
         kgbTryEffect(ef);
         clicked++;
-        if (
-          Effect.get(["Items Are Forever", "A View to Some Meat"]).includes(ef)
-        ) {
+        if ($effects`Items Are Forever, A View to Some Meat`.includes(ef)) {
           if (haveEffect(ef) < 150) {
             break;
           }
         }
-        if (ef === Effect.get("Light!")) {
+        if (ef === $effect`Light!`) {
           break;
         }
       }
@@ -700,7 +699,7 @@ function kgbKnownEffects(): string {
     const lowHigh: number = (i + 1) % 2;
     const ef: Effect = toEffect(tracker.get(i) ?? tracker.set(i, "").get(i));
     let efname: string = ef.toString();
-    if (ef === Effect.get("Light!")) {
+    if (ef === $effect`Light!`) {
       efname = "Random";
     }
 
@@ -710,10 +709,10 @@ function kgbKnownEffects(): string {
 }
 
 function kgbTryEffect(ef: Effect): boolean {
-  if (!possessEquipment(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
-  if (!isUnrestricted(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!isUnrestricted($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
   if (toInt(getProperty("_kgbClicksUsed")) >= 22) {
@@ -750,10 +749,10 @@ function kgbTryEffect(ef: Effect): boolean {
 }
 
 function kgbDiscovery(): boolean {
-  if (!possessEquipment(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
-  if (!isUnrestricted(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!isUnrestricted($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
   if (toInt(getProperty("_kgbClicksUsed")) >= 22) {
@@ -857,10 +856,10 @@ function kgb_tabHeight(page: string): number {
 }
 
 export function kgbSetup(): boolean {
-  if (!possessEquipment(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
-  if (!auto_is_valid(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!auto_is_valid($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
 
@@ -984,10 +983,10 @@ function kgb_getMartini$1(page: string): boolean {
 }
 
 function kgb_getMartini$2(page: string, dontCare: boolean): boolean {
-  if (!possessEquipment(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
-  if (!auto_is_valid(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!auto_is_valid($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
   if (toInt(getProperty("_kgbDispenserUses")) >= 3) {
@@ -1058,7 +1057,7 @@ function kgb_getMartini$2(page: string, dontCare: boolean): boolean {
     toInt(getProperty("_kgbClicksUsed")) < 22
   ) {
     const served: number = toInt(getProperty("_kgbDispenserUses"));
-    const have: number = itemAmount(Item.get("splendid martini"));
+    const have: number = itemAmount($item`splendid martini`);
     page = visitUrl("place.php?whichplace=kgb&action=kgb_dispenser", false);
     if (containsText(page, "Nothing happens.")) {
       setProperty("_kgbDispenserUses", (3).toString());
@@ -1092,7 +1091,7 @@ function kgb_getMartini$2(page: string, dontCare: boolean): boolean {
         continue;
       }
     }
-    if (have === itemAmount(Item.get("splendid martini")) && !dontCare) {
+    if (have === itemAmount($item`splendid martini`) && !dontCare) {
       abort("Failed to get a splendid martini and we cared about it");
     }
     setProperty("_kgbDispenserUses", (served + 1).toString());
@@ -1101,10 +1100,10 @@ function kgb_getMartini$2(page: string, dontCare: boolean): boolean {
 }
 
 function kgbDial(dial: number, curVal: number, target: number): boolean {
-  if (!possessEquipment(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
-  if (!auto_is_valid(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!auto_is_valid($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
 
@@ -1139,10 +1138,10 @@ function kgbDial(dial: number, curVal: number, target: number): boolean {
 }
 
 function solveKGBMastermind(): boolean {
-  if (!possessEquipment(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
-  if (!auto_is_valid(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (!auto_is_valid($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
 
@@ -1332,19 +1331,19 @@ function solveKGBMastermind(): boolean {
 }
 
 export function getSpaceJelly(): boolean {
-  if (!canChangeToFamiliar(Familiar.get("Space Jellyfish"))) {
+  if (!canChangeToFamiliar($familiar`Space Jellyfish`)) {
     return false;
   }
   if (toBoolean(getProperty("_seaJellyHarvested"))) {
     return false;
   }
-  if (!haveFamiliar(Familiar.get("Space Jellyfish"))) {
+  if (!haveFamiliar($familiar`Space Jellyfish`)) {
     return false;
   }
   if (myLevel() < 11) {
     return false;
   }
-  if (myPath() !== Path.get("Standard")) {
+  if (myPath() !== $path`Standard`) {
     if (!inAftercore()) {
       return false;
     }
@@ -1355,7 +1354,7 @@ export function getSpaceJelly(): boolean {
     temp_1 = visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
   }
   const old: Familiar = myFamiliar();
-  useFamiliar(Familiar.get("Space Jellyfish"));
+  useFamiliar($familiar`Space Jellyfish`);
   let temp: string = visitUrl("place.php?whichplace=thesea");
   temp = visitUrl("place.php?whichplace=thesea&action=thesea_left2");
   temp = visitUrl("choice.php?pwd=&whichchoice=1219&option=1");
@@ -1368,17 +1367,7 @@ export function auto_breatheOutsLeft(): number {
 }
 
 function haveAsdonBuff(): boolean {
-  for (const eff of Effect.get([
-    "Driving Intimidatingly",
-    "Driving Obnoxiously",
-    "Driving Observantly",
-    "Driving Quickly",
-    "Driving Recklessly",
-    "Driving Safely",
-    "Driving Stealthily",
-    "Driving Wastefully",
-    "Driving Waterproofly",
-  ])) {
+  for (const eff of $effects`Driving Intimidatingly, Driving Obnoxiously, Driving Observantly, Driving Quickly, Driving Recklessly, Driving Safely, Driving Stealthily, Driving Wastefully, Driving Waterproofly`) {
     if (haveEffect(eff) !== 0) {
       return true;
     }
@@ -1388,85 +1377,74 @@ function haveAsdonBuff(): boolean {
 
 function asdonBuff(goal: string): boolean {
   if (
-    goal === Effect.get("Driving Obnoxiously").toString() ||
+    goal === $effect`Driving Obnoxiously`.toString() ||
     goal === "combat" ||
     goal === "+combat"
   ) {
-    return asdonBuff$1(Effect.get("Driving Obnoxiously"));
+    return asdonBuff$1($effect`Driving Obnoxiously`);
   }
   if (
-    goal === Effect.get("Driving Stealthily").toString() ||
+    goal === $effect`Driving Stealthily`.toString() ||
     goal === "noncombat" ||
     goal === "-combat" ||
     goal === "non-combat"
   ) {
-    return asdonBuff$1(Effect.get("Driving Stealthily"));
+    return asdonBuff$1($effect`Driving Stealthily`);
   }
-  if (goal === Effect.get("Driving Wastefully").toString() || goal === "oil") {
-    return asdonBuff$1(Effect.get("Driving Wastefully"));
+  if (goal === $effect`Driving Wastefully`.toString() || goal === "oil") {
+    return asdonBuff$1($effect`Driving Wastefully`);
   }
   if (
-    goal === Effect.get("Driving Safely").toString() ||
+    goal === $effect`Driving Safely`.toString() ||
     goal === "resistance" ||
     goal === "absorb" ||
     goal === "res"
   ) {
-    return asdonBuff$1(Effect.get("Driving Safely"));
+    return asdonBuff$1($effect`Driving Safely`);
   }
-  if (goal === Effect.get("Driving Recklessly").toString() || goal === "ml") {
-    return asdonBuff$1(Effect.get("Driving Recklessly"));
+  if (goal === $effect`Driving Recklessly`.toString() || goal === "ml") {
+    return asdonBuff$1($effect`Driving Recklessly`);
   }
-  if (
-    goal === Effect.get("Driving Intimidatingly").toString() ||
-    goal === "-ml"
-  ) {
-    return asdonBuff$1(Effect.get("Driving Intimidatingly"));
+  if (goal === $effect`Driving Intimidatingly`.toString() || goal === "-ml") {
+    return asdonBuff$1($effect`Driving Intimidatingly`);
   }
-  if (goal === Effect.get("Driving Quickly").toString() || goal === "init") {
-    return asdonBuff$1(Effect.get("Driving Quickly"));
+  if (goal === $effect`Driving Quickly`.toString() || goal === "init") {
+    return asdonBuff$1($effect`Driving Quickly`);
   }
   if (
-    goal === Effect.get("Driving Observantly").toString() ||
+    goal === $effect`Driving Observantly`.toString() ||
     goal === "drops" ||
     goal === "meat" ||
     goal === "item" ||
     goal === "items" ||
     goal === "booze"
   ) {
-    return asdonBuff$1(Effect.get("Driving Observantly"));
+    return asdonBuff$1($effect`Driving Observantly`);
   }
   if (
-    goal === Effect.get("Driving Waterproofly").toString() ||
+    goal === $effect`Driving Waterproofly`.toString() ||
     goal === "sea" ||
     goal === "breathe" ||
     goal === "dive" ||
     goal === "diver" ||
     goal === "underwater"
   ) {
-    return asdonBuff$1(Effect.get("Driving Waterproofly"));
+    return asdonBuff$1($effect`Driving Waterproofly`);
   }
   return false;
 }
 
 export function canAsdonBuff(goal: Effect): boolean {
-  if (!auto_get_campground().has(Item.get("Asdon Martin keyfob (on ring)"))) {
+  if (!auto_get_campground().has($item`Asdon Martin keyfob (on ring)`)) {
     return false;
   }
-  if (!isUnrestricted(Item.get("Asdon Martin keyfob (on ring)"))) {
+  if (!isUnrestricted($item`Asdon Martin keyfob (on ring)`)) {
     return false;
   }
   if (
-    !Effect.get([
-      "Driving Intimidatingly",
-      "Driving Obnoxiously",
-      "Driving Observantly",
-      "Driving Quickly",
-      "Driving Recklessly",
-      "Driving Safely",
-      "Driving Stealthily",
-      "Driving Wastefully",
-      "Driving Waterproofly",
-    ]).includes(goal)
+    !$effects`Driving Intimidatingly, Driving Obnoxiously, Driving Observantly, Driving Quickly, Driving Recklessly, Driving Safely, Driving Stealthily, Driving Wastefully, Driving Waterproofly`.includes(
+      goal,
+    )
   ) {
     return false;
   }
@@ -1474,7 +1452,7 @@ export function canAsdonBuff(goal: Effect): boolean {
     return false;
   }
   if (
-    Effect.get("Driving Wastefully") === goal &&
+    $effect`Driving Wastefully` === goal &&
     toFloat(getProperty("oilPeakProgress")) === 0.0
   ) {
     return false;
@@ -1491,17 +1469,7 @@ export function asdonBuff$1(goal: Effect): boolean {
   }
 
   let needShrug: boolean = false;
-  for (const eff of Effect.get([
-    "Driving Intimidatingly",
-    "Driving Obnoxiously",
-    "Driving Observantly",
-    "Driving Quickly",
-    "Driving Recklessly",
-    "Driving Safely",
-    "Driving Stealthily",
-    "Driving Wastefully",
-    "Driving Waterproofly",
-  ])) {
+  for (const eff of $effects`Driving Intimidatingly, Driving Obnoxiously, Driving Observantly, Driving Quickly, Driving Recklessly, Driving Safely, Driving Stealthily, Driving Wastefully, Driving Waterproofly`) {
     if (haveEffect(eff) > 0 && eff !== goal) {
       needShrug = true;
     }
@@ -1513,31 +1481,31 @@ export function asdonBuff$1(goal: Effect): boolean {
 
   let effectNum: number = -1;
   switch (goal) {
-    case Effect.get("Driving Intimidatingly"):
+    case $effect`Driving Intimidatingly`:
       effectNum = 6;
       break;
-    case Effect.get("Driving Obnoxiously"):
+    case $effect`Driving Obnoxiously`:
       effectNum = 0;
       break;
-    case Effect.get("Driving Observantly"):
+    case $effect`Driving Observantly`:
       effectNum = 7;
       break;
-    case Effect.get("Driving Quickly"):
+    case $effect`Driving Quickly`:
       effectNum = 5;
       break;
-    case Effect.get("Driving Recklessly"):
+    case $effect`Driving Recklessly`:
       effectNum = 4;
       break;
-    case Effect.get("Driving Safely"):
+    case $effect`Driving Safely`:
       effectNum = 3;
       break;
-    case Effect.get("Driving Stealthily"):
+    case $effect`Driving Stealthily`:
       effectNum = 1;
       break;
-    case Effect.get("Driving Wastefully"):
+    case $effect`Driving Wastefully`:
       effectNum = 2;
       break;
-    case Effect.get("Driving Waterproofly"):
+    case $effect`Driving Waterproofly`:
       effectNum = 8;
       break;
   }
@@ -1553,13 +1521,13 @@ export function asdonAutoFeed(): boolean {
 }
 
 function asdonAutoFeed$1(goal: number): boolean {
-  if (myClass() === Class.get("Ed the Undying")) {
+  if (myClass() === $class`Ed the Undying`) {
     return false;
   }
-  if (!auto_get_campground().has(Item.get("Asdon Martin keyfob (on ring)"))) {
+  if (!auto_get_campground().has($item`Asdon Martin keyfob (on ring)`)) {
     return false;
   }
-  if (!isUnrestricted(Item.get("Asdon Martin keyfob (on ring)"))) {
+  if (!isUnrestricted($item`Asdon Martin keyfob (on ring)`)) {
     return false;
   }
   if (getFuel() > 137) {
@@ -1577,54 +1545,7 @@ function asdonAutoFeed$1(goal: number): boolean {
   }
 
   let didOnce: boolean = false;
-  for (const it of Item.get([
-    "a little sump'm sump'm",
-    "ancient frozen dinner",
-    "antique packet of ketchup",
-    "backwoods screwdriver",
-    "bag of GORP",
-    "ballroom blintz",
-    "bean burrito",
-    "bilge wine",
-    "bottle of laundry sherry",
-    "bowl of cottage cheese",
-    "black forest ham",
-    "cactus fruit",
-    "CSA scoutmaster's &quot;water&quot;",
-    "enchanted bean burrito",
-    "giant heirloom grape tomato",
-    "gin and tonic",
-    "haggis-wrapped haggis-stuffed haggis",
-    "ice-cold Willer",
-    "insanely spicy bean burrito",
-    "insanely spicy enchanted bean burrito",
-    "insanely spicy jumping bean burrito",
-    "jumping bean burrito",
-    "jungle floor wax",
-    "loaf of soda bread",
-    "margarita",
-    "McLeod's Hard Haggis-Ade",
-    "mimosette",
-    "Mornington crescent roll",
-    "open sauce",
-    "pink pony",
-    "roll in the hay",
-    "screwdriver",
-    "slap and tickle",
-    "slip 'n' slide",
-    "snifter of thoroughly aged brandy",
-    "spicy bean burrito",
-    "spicy enchanted bean burrito",
-    "spicy jumping bean burrito",
-    "stolen sushi",
-    "strawberry daiquiri",
-    "tequila sunrise",
-    "tequila sunset",
-    "Typical Tavern swill",
-    "vodka and tonic",
-    "water purification pills",
-    "zmobie",
-  ])) {
+  for (const it of $items`a little sump'm sump'm, ancient frozen dinner, antique packet of ketchup, backwoods screwdriver, bag of GORP, ballroom blintz, bean burrito, bilge wine, bottle of laundry sherry, bowl of cottage cheese, black forest ham, cactus fruit, CSA scoutmaster's "water", enchanted bean burrito, giant heirloom grape tomato, gin and tonic, haggis-wrapped haggis-stuffed haggis, ice-cold Willer, insanely spicy bean burrito, insanely spicy enchanted bean burrito, insanely spicy jumping bean burrito, jumping bean burrito, jungle floor wax, loaf of soda bread, margarita, McLeod's Hard Haggis-Ade, mimosette, Mornington crescent roll, open sauce, pink pony, roll in the hay, screwdriver, slap and tickle, slip 'n' slide, snifter of thoroughly aged brandy, spicy bean burrito, spicy enchanted bean burrito, spicy jumping bean burrito, stolen sushi, strawberry daiquiri, tequila sunrise, tequila sunset, Typical Tavern swill, vodka and tonic, water purification pills, zmobie`) {
     if (itemAmount(it) > 0) {
       let toFeed: number = min(10, itemAmount(it));
       if (getProperty("auto_ashtonLimit") !== "") {
@@ -1640,10 +1561,10 @@ function asdonAutoFeed$1(goal: number): boolean {
   }
 
   const meat_cutoff: number = max(3500, 2000 + meatReserve());
-  const can_buy_dough: boolean = npcPrice(Item.get("wad of dough")) > 0;
+  const can_buy_dough: boolean = npcPrice($item`wad of dough`) > 0;
   const can_buy_flower: boolean =
-    npcPrice(Item.get("all-purpose flower")) > 0 &&
-    auto_is_valid(Item.get("all-purpose flower"));
+    npcPrice($item`all-purpose flower`) > 0 &&
+    auto_is_valid($item`all-purpose flower`);
   //Dough prices: Madeline's Baking Supply is 40. other stores 50. flower ~50 meat per dough in batches of ~40.
   //only use flower if direct buying of dough is not available.
   if (
@@ -1668,16 +1589,13 @@ function asdonAutoFeed$1(goal: number): boolean {
         _up_2 ? i <= _last_2 : i >= _last_2;
         i += _inc_2
       ) {
-        if (
-          myMeat() > meat_cutoff &&
-          itemAmount(Item.get("wad of dough")) < want
-        ) {
-          use(1, Item.get("all-purpose flower")); //mafia will automatically buy it first
+        if (myMeat() > meat_cutoff && itemAmount($item`wad of dough`) < want) {
+          use(1, $item`all-purpose flower`); //mafia will automatically buy it first
         }
       }
-      want = min(want, itemAmount(Item.get("wad of dough")));
-      create(want, Item.get("loaf of soda bread"));
-      asdonFeed(Item.get("loaf of soda bread"), want);
+      want = min(want, itemAmount($item`wad of dough`));
+      create(want, $item`loaf of soda bread`);
+      asdonFeed($item`loaf of soda bread`, want);
       didOnce = true;
     }
   }
@@ -1690,12 +1608,12 @@ function asdonAutoFeed$1(goal: number): boolean {
     !in_koe()
   ) {
     const can_buy: number =
-      (myMeat() - meat_cutoff) / npcPrice(Item.get("wad of dough"));
+      (myMeat() - meat_cutoff) / npcPrice($item`wad of dough`);
     let want: number = (goal + 5 - getFuel()) / 6;
     want = min(want, can_buy);
     if (want > 0) {
-      create(want, Item.get("loaf of soda bread"));
-      asdonFeed(Item.get("loaf of soda bread"), want);
+      create(want, $item`loaf of soda bread`);
+      asdonFeed($item`loaf of soda bread`, want);
       didOnce = true;
     }
   }
@@ -1708,10 +1626,10 @@ function asdonAutoFeed$1(goal: number): boolean {
 }
 
 function asdonFeed(it: Item, qty: number): boolean {
-  if (!auto_get_campground().has(Item.get("Asdon Martin keyfob (on ring)"))) {
+  if (!auto_get_campground().has($item`Asdon Martin keyfob (on ring)`)) {
     return false;
   }
-  if (!isUnrestricted(Item.get("Asdon Martin keyfob (on ring)"))) {
+  if (!isUnrestricted($item`Asdon Martin keyfob (on ring)`)) {
     return false;
   }
   if (qty < 1 || itemAmount(it) < qty) {
@@ -1737,8 +1655,8 @@ function asdonFeed$1(it: Item): boolean {
 
 export function asdonCanMissile(): boolean {
   return (
-    auto_get_campground().has(Item.get("Asdon Martin keyfob (on ring)")) &&
-    getFuel() >= fuelCost(Skill.get("Asdon Martin: Missile Launcher")) &&
+    auto_get_campground().has($item`Asdon Martin keyfob (on ring)`) &&
+    getFuel() >= fuelCost($skill`Asdon Martin: Missile Launcher`) &&
     !toBoolean(getProperty("_missileLauncherUsed"))
   );
 }
@@ -1746,7 +1664,7 @@ export function asdonCanMissile(): boolean {
 export function isHorseryAvailable(): boolean {
   return (
     toBoolean(getProperty("horseryAvailable")) &&
-    auto_is_valid(Item.get("Horsery contract"))
+    auto_is_valid($item`Horsery contract`)
   );
 }
 
@@ -1937,22 +1855,21 @@ export function horsePreAdventure(): boolean {
 }
 
 export function auto_haveGenieBottleOrPocketWishes(): boolean {
-  const bottle: Item = wrap_item(Item.get("genie bottle"));
+  const bottle: Item = wrap_item($item`genie bottle`);
   return (
     (itemAmount(bottle) > 0 && auto_is_valid(bottle)) ||
-    (itemAmount(Item.get("pocket wish")) > 0 &&
-      auto_is_valid(Item.get("pocket wish")))
+    (itemAmount($item`pocket wish`) > 0 && auto_is_valid($item`pocket wish`))
   );
 }
 
 export function auto_wishesAvailable(): number {
   let wishes: number = 0;
-  const bottle: Item = wrap_item(Item.get("genie bottle"));
+  const bottle: Item = wrap_item($item`genie bottle`);
   if (itemAmount(bottle) > 0 && auto_is_valid(bottle)) {
     wishes += 3 - toInt(getProperty("_genieWishesUsed"));
   }
-  if (auto_is_valid(Item.get("pocket wish"))) {
-    wishes += itemAmount(Item.get("pocket wish"));
+  if (auto_is_valid($item`pocket wish`)) {
+    wishes += itemAmount($item`pocket wish`);
   }
   return wishes;
 }
@@ -1964,7 +1881,7 @@ export function makeGenieWish(wish: string): boolean {
   }
 
   let wish_provider: number = 0;
-  const bottle: Item = wrap_item(Item.get("genie bottle"));
+  const bottle: Item = wrap_item($item`genie bottle`);
   if (
     auto_is_valid(bottle) &&
     itemAmount(bottle) > 0 &&
@@ -1972,10 +1889,10 @@ export function makeGenieWish(wish: string): boolean {
   ) {
     wish_provider = toInt(bottle);
   } else if (
-    itemAmount(Item.get("pocket wish")) > 0 &&
-    auto_is_valid(Item.get("pocket wish"))
+    itemAmount($item`pocket wish`) > 0 &&
+    auto_is_valid($item`pocket wish`)
   ) {
-    wish_provider = toInt(Item.get("pocket wish"));
+    wish_provider = toInt($item`pocket wish`);
   }
   if (wish_provider === 0) {
     auto_log_warning(
@@ -2027,14 +1944,13 @@ export function canGenieCombat(mon: Monster): boolean {
     return false;
   }
 
-  const bottle: Item = wrap_item(Item.get("genie bottle"));
+  const bottle: Item = wrap_item($item`genie bottle`);
   const haveBottle: boolean = itemAmount(bottle) > 0;
   const bottleWishesLeft: boolean = toInt(getProperty("_genieWishesUsed")) < 3;
   const canUseBottle: boolean =
     haveBottle && bottleWishesLeft && auto_is_valid(bottle);
-  const havePocket: boolean = itemAmount(Item.get("pocket wish")) > 0;
-  const canUsePocket: boolean =
-    havePocket && auto_is_valid(Item.get("pocket wish"));
+  const havePocket: boolean = itemAmount($item`pocket wish`) > 0;
+  const canUsePocket: boolean = havePocket && auto_is_valid($item`pocket wish`);
   if (!canUseBottle && !canUsePocket) {
     return false;
   }
@@ -2050,7 +1966,7 @@ export function canGenieCombat(mon: Monster): boolean {
   }
   // Per wiki page these can't be wished. Didn't bother to add other crypt monsters as we don't summon them
   // https://kol.coldfront.net/thekolwiki/index.php/Rubbed_it_the_Right_Way
-  if (Monster.get(["fantasy bandit", "modern zmobie"]).includes(mon)) {
+  if ($monsters`fantasy bandit, modern zmobie`.includes(mon)) {
     return false;
   }
   if (failedWishMonsters.has(mon)) {
@@ -2068,13 +1984,10 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
   const wish: string = `to fight a ${mon}`;
   const prev_genieFightsUsed: number = toInt(getProperty("_genieFightsUsed"));
   const pages: Map<number, string> = new Map();
-  const bottle: Item = wrap_item(Item.get("genie bottle"));
+  const bottle: Item = wrap_item($item`genie bottle`);
   let wish_provider: number = toInt(bottle);
-  if (
-    itemAmount(Item.get("pocket wish")) > 0 &&
-    auto_is_valid(Item.get("pocket wish"))
-  ) {
-    wish_provider = toInt(Item.get("pocket wish"));
+  if (itemAmount($item`pocket wish`) > 0 && auto_is_valid($item`pocket wish`)) {
+    wish_provider = toInt($item`pocket wish`);
   }
   pages.set(
     0,
@@ -2086,7 +1999,7 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
   );
   pages.set(2, "main.php");
 
-  autoAdvBypass(5, pages, Location.get("Noob Cave"), option);
+  autoAdvBypass(5, pages, $location`Noob Cave`, option);
 
   if (prev_genieFightsUsed === toInt(getProperty("_genieFightsUsed"))) {
     failedWishMonsters.set(mon, true);
@@ -2108,7 +2021,7 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
 }
 
 export function makeGeniePocket(): boolean {
-  const bottle: Item = wrap_item(Item.get("genie bottle"));
+  const bottle: Item = wrap_item($item`genie bottle`);
   if (itemAmount(bottle) === 0) {
     return false;
   }
@@ -2116,7 +2029,7 @@ export function makeGeniePocket(): boolean {
     return false;
   }
 
-  const count_1: number = itemAmount(Item.get("pocket wish"));
+  const count_1: number = itemAmount($item`pocket wish`);
 
   const wish: string = "for more wishes";
   let page: string = visitUrl(
@@ -2127,7 +2040,7 @@ export function makeGeniePocket(): boolean {
     `choice.php?pwd=${myHash()}&whichchoice=1267&option=1&wish=${wish}`,
   );
 
-  if (count_1 === itemAmount(Item.get("pocket wish"))) {
+  if (count_1 === itemAmount($item`pocket wish`)) {
     return false;
   }
 
@@ -2146,7 +2059,7 @@ function spacegateVaccineAvailable(): boolean {
   ) {
     return false;
   }
-  if (!isUnrestricted(Item.get("Spacegate access badge"))) {
+  if (!isUnrestricted($item`Spacegate access badge`)) {
     return false;
   }
   if (toBoolean(getProperty("_spacegateVaccine"))) {
@@ -2160,11 +2073,11 @@ function spacegateVaccineAvailable$1(ef: Effect): boolean {
     return false;
   }
   switch (ef) {
-    case Effect.get("Rainbow Vaccine"):
+    case $effect`Rainbow Vaccine`:
       return toBoolean(getProperty("spacegateVaccine1"));
-    case Effect.get("Broad-Spectrum Vaccine"):
+    case $effect`Broad-Spectrum Vaccine`:
       return toBoolean(getProperty("spacegateVaccine2"));
-    case Effect.get("Emotional Vaccine"):
+    case $effect`Emotional Vaccine`:
       return toBoolean(getProperty("spacegateVaccine3"));
   }
   abort(`autoscend: bad effect passed to spacegateVaccineAvailable:${ef}`);
@@ -2181,13 +2094,13 @@ export function spacegateVaccine(ef: Effect): boolean {
 
   let i: number = 0;
   switch (ef) {
-    case Effect.get("Rainbow Vaccine"):
+    case $effect`Rainbow Vaccine`:
       i = 1;
       break;
-    case Effect.get("Broad-Spectrum Vaccine"):
+    case $effect`Broad-Spectrum Vaccine`:
       i = 2;
       break;
-    case Effect.get("Emotional Vaccine"):
+    case $effect`Emotional Vaccine`:
       i = 3;
       break;
   }
@@ -2197,9 +2110,9 @@ export function spacegateVaccine(ef: Effect): boolean {
 
 function auto_hasMeteorLore(): boolean {
   return (
-    haveSkill(Skill.get("Meteor Lore")) &&
-    auto_is_valid(Item.get("Pocket Meteor Guide")) &&
-    auto_is_valid$2(Skill.get("Meteor Lore"))
+    haveSkill($skill`Meteor Lore`) &&
+    auto_is_valid($item`Pocket Meteor Guide`) &&
+    auto_is_valid$2($skill`Meteor Lore`)
   );
 }
 

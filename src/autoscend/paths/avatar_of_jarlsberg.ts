@@ -2,22 +2,21 @@ import {
   create,
   getProperty,
   haveSkill,
-  Item,
   itemAmount,
   mpCost,
   myCompanion,
   myLevel,
   myMp,
   myPath,
-  Path,
   setProperty,
-  Skill,
   toBoolean,
   toInt,
   use,
   useSkill,
   visitUrl,
 } from "kolmafia";
+import { $item, $path, $skill, $skills } from "libram";
+
 import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
 import { equipBaseline } from "../auto_equipment";
 import {
@@ -30,7 +29,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/avatar_of_jarlsberg.ash
 export function is_jarlsberg(): boolean {
-  return myPath() === Path.get("Avatar of Jarlsberg");
+  return myPath() === $path`Avatar of Jarlsberg`;
 }
 
 export function jarlsberg_initializeSettings(): void {
@@ -49,25 +48,25 @@ export function jarlsberg_initializeDay(day: number): void {
     ovenHandle();
 
     if (toInt(getProperty("auto_day_init")) < 2) {
-      if (itemAmount(Item.get("gym membership card")) > 0) {
-        use(1, Item.get("gym membership card"));
+      if (itemAmount($item`gym membership card`) > 0) {
+        use(1, $item`gym membership card`);
       }
 
-      if (itemAmount(Item.get("seal tooth")) === 0) {
-        acquireHermitItem(Item.get("seal tooth"));
+      if (itemAmount($item`seal tooth`) === 0) {
+        acquireHermitItem($item`seal tooth`);
       }
-      while (acquireHermitItem(Item.get("11-leaf clover"))) {}
-      pullXWhenHaveY(Item.get("Hand in Glove"), 1, 0);
-      pullXWhenHaveY(Item.get("blackberry galoshes"), 1, 0);
+      while (acquireHermitItem($item`11-leaf clover`)) {}
+      pullXWhenHaveY($item`Hand in Glove`, 1, 0);
+      pullXWhenHaveY($item`blackberry galoshes`, 1, 0);
     }
   } else if (day === 3) {
     if (toInt(getProperty("auto_day_init")) < 3) {
-      while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+      while (acquireHermitItem($item`11-leaf clover`)) {}
       setProperty("auto_day_init", (3).toString());
     }
   } else if (day === 4) {
     if (toInt(getProperty("auto_day_init")) < 4) {
-      while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+      while (acquireHermitItem($item`11-leaf clover`)) {}
       setProperty("auto_day_init", (4).toString());
     }
   }
@@ -97,40 +96,7 @@ export function jarlsberg_buySkills(): void {
       let skillid: number = 0;
       //skills are listed in reverse order. from last to first to buy..
 
-      for (const sk of Skill.get([
-        "Radish Horse",
-        "Working Lunch",
-        "Gristlesphere",
-        "Oilsphere",
-        "Coffeesphere",
-        "Chocolatesphere",
-        "Cream Puff",
-        "Blend",
-        "Nightcap",
-        "Conjure Cream",
-        "Early Riser",
-        "Fry",
-        "Conjure Dough",
-        "Lunch Like a King",
-        "Slice",
-        "Conjure Cheese",
-        "Egg Man",
-        "Conjure Eggs",
-        "Food Coma",
-        "Chop",
-        "Grill",
-        "Best Served Cold",
-        "Never Late for Dinner",
-        "Conjure Meat Product",
-        "Conjure Vegetables",
-        "Hippotatomous",
-        "Conjure Potato",
-        "Bake",
-        "Freeze",
-        "Conjure Fruit",
-        "The Most Important Meal",
-        "Boil",
-      ])) {
+      for (const sk of $skills`Radish Horse, Working Lunch, Gristlesphere, Oilsphere, Coffeesphere, Chocolatesphere, Cream Puff, Blend, Nightcap, Conjure Cream, Early Riser, Fry, Conjure Dough, Lunch Like a King, Slice, Conjure Cheese, Egg Man, Conjure Eggs, Food Coma, Chop, Grill, Best Served Cold, Never Late for Dinner, Conjure Meat Product, Conjure Vegetables, Hippotatomous, Conjure Potato, Bake, Freeze, Conjure Fruit, The Most Important Meal, Boil`) {
         if (!haveSkill(sk)) {
           skillid = toInt(sk);
         }
@@ -159,16 +125,16 @@ export function LM_jarlsberg(): boolean {
   jarlsberg_buySkills();
   // Use egg man for drops
   if (
-    auto_have_skill(Skill.get("Egg Man")) &&
-    mpCost(Skill.get("Egg Man")) <= myMp() &&
-    itemAmount(Item.get("cosmic egg")) > 0 &&
+    auto_have_skill($skill`Egg Man`) &&
+    mpCost($skill`Egg Man`) <= myMp() &&
+    itemAmount($item`cosmic egg`) > 0 &&
     myCompanion() === ""
   ) {
-    useSkill(1, Skill.get("Egg Man"));
+    useSkill(1, $skill`Egg Man`);
   }
 
   if (!toBoolean(getProperty("_cosmicSixPackConjured"))) {
-    create(1, Item.get("cosmic six-pack"));
+    create(1, $item`cosmic six-pack`);
   }
 
   return false;

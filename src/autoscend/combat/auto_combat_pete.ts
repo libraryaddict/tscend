@@ -1,13 +1,6 @@
-import {
-  Class,
-  equippedItem,
-  Item,
-  Monster,
-  myAudience,
-  myClass,
-  Skill,
-  Slot,
-} from "kolmafia";
+import { equippedItem, Monster, myAudience, myClass } from "kolmafia";
+import { $class, $items, $skill, $slot } from "libram";
+
 import { disregardInstantKarma } from "../auto_powerlevel";
 import { canSurvive$1, canUse$2, useSkill$2 } from "./auto_combat_util";
 
@@ -22,21 +15,20 @@ export function auto_combatPeteStage1(
   // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
   //adjust audience love/hate. must be first action done in combat
   //TODO rush to max love, then max hate, then max love again for the consumables
-  if (myClass() === Class.get("Avatar of Sneaky Pete") && canSurvive$1(3.0)) {
+  if (myClass() === $class`Avatar of Sneaky Pete` && canSurvive$1(3.0)) {
     let maxAudience: number = 30;
     if (
-      Item.get([
-        "Sneaky Pete's leather jacket",
-        "Sneaky Pete's leather jacket (collar popped)",
-      ]).includes(equippedItem(Slot.get("shirt")))
+      $items`Sneaky Pete's leather jacket, Sneaky Pete's leather jacket (collar popped)`.includes(
+        equippedItem($slot`shirt`),
+      )
     ) {
       maxAudience = 50;
     }
     if (
-      canUse$2(Skill.get("Mug for the Audience")) &&
+      canUse$2($skill`Mug for the Audience`) &&
       (myAudience() < maxAudience || disregardInstantKarma())
     ) {
-      return useSkill$2(Skill.get("Mug for the Audience"));
+      return useSkill$2($skill`Mug for the Audience`);
     }
   }
 

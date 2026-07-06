@@ -1,22 +1,20 @@
 import {
-  Effect,
   getProperty,
   haveEffect,
   haveSkill,
-  Item,
   itemAmount,
   Location,
   myAscensions,
   myDaycount,
   myLevel,
   myPath,
-  Path,
   setProperty,
-  Skill,
   toInt,
   toLocation,
   visitUrl,
 } from "kolmafia";
+import { $effect, $item, $location, $path, $skill } from "libram";
+
 import { autoAdv$2 } from "../auto_adventure";
 import {
   auto_log_debug$1,
@@ -35,7 +33,7 @@ import {
 
 //Defined in autoscend/paths/the_source.ash
 export function in_theSource(): boolean {
-  return myPath() === Path.get("The Source");
+  return myPath() === $path`The Source`;
 }
 
 export function theSource_initializeSettings(): boolean {
@@ -58,37 +56,37 @@ export function theSource_buySkills(): boolean {
   let enlightenment: number = toInt(getProperty("sourceEnlightenment"));
   while (enlightenment > 0) {
     let option: number = 0;
-    if (!haveSkill(Skill.get("Restore"))) {
+    if (!haveSkill($skill`Restore`)) {
       option = 10;
     }
-    if (!haveSkill(Skill.get("Overclocked"))) {
+    if (!haveSkill($skill`Overclocked`)) {
       option = 1;
     }
-    if (!haveSkill(Skill.get("Reboot"))) {
+    if (!haveSkill($skill`Reboot`)) {
       option = 9;
     }
-    if (!haveSkill(Skill.get("Bullet Time"))) {
+    if (!haveSkill($skill`Bullet Time`)) {
       option = 2;
     }
-    if (!haveSkill(Skill.get("True Disbeliever"))) {
+    if (!haveSkill($skill`True Disbeliever`)) {
       option = 3;
     }
-    if (!haveSkill(Skill.get("Code Block"))) {
+    if (!haveSkill($skill`Code Block`)) {
       option = 4;
     }
-    if (!haveSkill(Skill.get("Disarmament"))) {
+    if (!haveSkill($skill`Disarmament`)) {
       option = 5;
     }
-    if (!haveSkill(Skill.get("Humiliating Hack"))) {
+    if (!haveSkill($skill`Humiliating Hack`)) {
       option = 7;
     }
-    if (!haveSkill(Skill.get("Big Guns"))) {
+    if (!haveSkill($skill`Big Guns`)) {
       option = 6;
     }
-    if (!haveSkill(Skill.get("Data Siphon"))) {
+    if (!haveSkill($skill`Data Siphon`)) {
       option = 11;
     }
-    if (!haveSkill(Skill.get("Source Kick"))) {
+    if (!haveSkill($skill`Source Kick`)) {
       option = 8;
     }
 
@@ -111,7 +109,7 @@ function L8_theSourceNinjaOracle(): boolean {
   }
   if (internalQuestStatus("questL08Trapper") > 2) {
     //done with the slope this ascension so just adventure in the lair
-    return autoAdv$2(Location.get("Lair of the Ninja Snowmen"));
+    return autoAdv$2($location`Lair of the Ninja Snowmen`);
   }
   if (internalQuestStatus("questL08Trapper") < 2) {
     //try to advance quest to step2 to unlock the ninja snowman lair
@@ -119,18 +117,18 @@ function L8_theSourceNinjaOracle(): boolean {
   }
 
   if (
-    haveEffect(Effect.get("Thrice-Cursed")) > 0 ||
-    haveEffect(Effect.get("Twice-Cursed")) > 0 ||
-    haveEffect(Effect.get("Once-Cursed")) > 0
+    haveEffect($effect`Thrice-Cursed`) > 0 ||
+    haveEffect($effect`Twice-Cursed`) > 0 ||
+    haveEffect($effect`Once-Cursed`) > 0
   ) {
     return false; //delaying to not disrupt hidden city
   }
-  if (shenShouldDelayZone(Location.get("Lair of the Ninja Snowmen"))) {
+  if (shenShouldDelayZone($location`Lair of the Ninja Snowmen`)) {
     auto_log_debug$1("Delaying Lair of the Ninja Snowmen in case of Shen.");
     return false;
   }
 
-  return autoAdv$2(Location.get("Lair of the Ninja Snowmen"));
+  return autoAdv$2($location`Lair of the Ninja Snowmen`);
 }
 
 export function LX_theSource(): boolean {
@@ -140,42 +138,40 @@ export function LX_theSource(): boolean {
 
   if (
     myDaycount() <= 2 &&
-    haveEffect(Effect.get("substats.enh")) === 0 &&
+    haveEffect($effect`substats.enh`) === 0 &&
     myLevel() < 13
   ) {
     auto_sourceTerminalEnhance("substats");
   }
 
   const goal: Location = toLocation(getProperty("sourceOracleTarget"));
-  if (goal !== Location.none && itemAmount(Item.get("no spoon")) === 0) {
+  if (goal !== Location.none && itemAmount($item`no spoon`) === 0) {
     if (
-      goal === Location.get("The Batrat and Ratbat Burrow") &&
+      goal === $location`The Batrat and Ratbat Burrow` &&
       internalQuestStatus("questL04Bat") < 1
     ) {
       return false;
     }
     if (
-      goal === Location.get("Cobb's Knob Laboratory") &&
-      itemAmount(Item.get("Cobb's Knob lab key")) === 0
+      goal === $location`Cobb's Knob Laboratory` &&
+      itemAmount($item`Cobb's Knob lab key`) === 0
     ) {
       return false;
     }
 
     if (
-      goal === Location.get("Lair of the Ninja Snowmen") &&
+      goal === $location`Lair of the Ninja Snowmen` &&
       internalQuestStatus("questL08Trapper") < 2
     ) {
       return false;
     }
     if (
-      goal === Location.get("The VERY Unquiet Garves") &&
+      goal === $location`The VERY Unquiet Garves` &&
       getProperty("questL07Cyrptic") !== "finished"
     ) {
       return false;
     }
-    if (
-      goal === Location.get("The Castle in the Clouds in the Sky (Top Floor)")
-    ) {
+    if (goal === $location`The Castle in the Clouds in the Sky (Top Floor)`) {
       if (internalQuestStatus("questL10Garbage") < 9) {
         return false;
       }
@@ -183,18 +179,18 @@ export function LX_theSource(): boolean {
         return true;
       }
     }
-    if (goal === Location.get("Lair of the Ninja Snowmen")) {
+    if (goal === $location`Lair of the Ninja Snowmen`) {
       return L8_theSourceNinjaOracle();
     }
 
     if (
-      goal === Location.get("The Red Zeppelin") &&
+      goal === $location`The Red Zeppelin` &&
       internalQuestStatus("questL11Ron") < 3
     ) {
       return false;
     }
     if (
-      goal === Location.get("The Hidden Park") &&
+      goal === $location`The Hidden Park` &&
       internalQuestStatus("questL11Worship") > 2
     ) {
       return false;
@@ -211,7 +207,7 @@ export function theSource_oracle(): boolean {
     return false;
   }
 
-  if (haveSkill(Skill.get("Restore"))) {
+  if (haveSkill($skill`Restore`)) {
     return false;
   }
 
@@ -222,17 +218,17 @@ export function theSource_oracle(): boolean {
     temp = visitUrl("choice.php?pwd=&whichchoice=1190&option=1");
 
     switch (toLocation(getProperty("sourceOracleTarget"))) {
-      case Location.get("The Skeleton Store"):
+      case $location`The Skeleton Store`:
         startMeatsmithSubQuest();
         break;
-      case Location.get("Madness Bakery"):
+      case $location`Madness Bakery`:
         startArmorySubQuest();
         break;
-      case Location.get("The Overgrown Lot"):
+      case $location`The Overgrown Lot`:
         startGalaktikSubQuest();
         break;
     }
-  } else if (itemAmount(Item.get("no spoon")) > 0) {
+  } else if (itemAmount($item`no spoon`) > 0) {
     let temp: string = visitUrl(
       "place.php?whichplace=town_wrong&action=townwrong_oracle",
     );
@@ -251,5 +247,5 @@ export function LX_attemptPowerLevelTheSource(): boolean {
     return false;
   }
   //Banish mahogant, elegant after gown only. (Harold\'s Bell?)
-  return autoAdv$2(Location.get("The Haunted Bedroom"));
+  return autoAdv$2($location`The Haunted Bedroom`);
 }

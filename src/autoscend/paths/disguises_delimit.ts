@@ -1,8 +1,8 @@
-import { myPath, Path, setProperty } from "kolmafia";
-
+import { myPath, setProperty } from "kolmafia";
+import { $path } from "libram";
 //Defined in autoscend/paths/fall_of_the_dinosaurs.ash
 export function in_disguises(): boolean {
-  return myPath() === Path.get("Disguises Delimit");
+  return myPath() === $path`Disguises Delimit`;
 }
 
 export function disguises_initializeSettings(): void {

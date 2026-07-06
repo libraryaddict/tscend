@@ -1,4 +1,6 @@
 import { getProperty, haveEquipped, Item, itemAmount, toInt } from "kolmafia";
+import { $item } from "libram";
+
 import { auto_is_valid } from "../auto_util";
 
 //	This is meant for items that have a date of 2007
@@ -9,7 +11,7 @@ let $_auto_hasNavelRing_replicaNavelRing: Item | undefined;
 //Defined in autoscend/iotms/mr2007.ash
 export function auto_hasNavelRing(): boolean {
   // check for normal version
-  $_auto_hasNavelRing_navelRing ??= Item.get("navel ring of navel gazing");
+  $_auto_hasNavelRing_navelRing ??= $item`navel ring of navel gazing`;
   if (
     auto_is_valid($_auto_hasNavelRing_navelRing) &&
     (itemAmount($_auto_hasNavelRing_navelRing) > 0 ||

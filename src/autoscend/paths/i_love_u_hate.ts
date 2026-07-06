@@ -1,20 +1,20 @@
 import {
   containsText,
   create,
-  Item,
   itemAmount,
   myPath,
-  Path,
   storageAmount,
   toLowerCase,
 } from "kolmafia";
+import { $item, $path } from "libram";
+
 import { pullXWhenHaveY } from "../auto_acquire";
 import { possessEquipment } from "../auto_equipment";
 import { auto_is_valid } from "../auto_util";
 
 //Defined in autoscend/paths/heavy_rains.ash
 export function in_iluh(): boolean {
-  return myPath() === Path.get("11 Things I Hate About U");
+  return myPath() === $path`11 Things I Hate About U`;
 }
 
 export function iluh_foodConsumable(str: string): boolean {
@@ -59,16 +59,16 @@ export function iluh_buyEquiq(): void {
   }
 
   if (
-    itemAmount(Item.get("mini kiwi")) >= 4 &&
-    !possessEquipment(Item.get("mini kiwi whipping stick"))
+    itemAmount($item`mini kiwi`) >= 4 &&
+    !possessEquipment($item`mini kiwi whipping stick`)
   ) {
-    create(1, Item.get("mini kiwi whipping stick"));
+    create(1, $item`mini kiwi whipping stick`);
   }
   if (
-    itemAmount(Item.get("mini kiwi")) >= 3 &&
-    !possessEquipment(Item.get("mini kiwi invisible dirigible"))
+    itemAmount($item`mini kiwi`) >= 3 &&
+    !possessEquipment($item`mini kiwi invisible dirigible`)
   ) {
-    create(1, Item.get("mini kiwi invisible dirigible"));
+    create(1, $item`mini kiwi invisible dirigible`);
   }
   return;
 }
@@ -79,21 +79,21 @@ export function iluh_pulls(): void {
   }
 
   if (
-    storageAmount(Item.get("mini kiwi whipping stick")) > 0 &&
-    auto_is_valid(Item.get("mini kiwi whipping stick"))
+    storageAmount($item`mini kiwi whipping stick`) > 0 &&
+    auto_is_valid($item`mini kiwi whipping stick`)
   ) {
-    pullXWhenHaveY(Item.get("mini kiwi whipping stick"), 1, 0);
+    pullXWhenHaveY($item`mini kiwi whipping stick`, 1, 0);
   }
   if (
-    storageAmount(Item.get("mini kiwi bikini")) > 0 &&
-    auto_is_valid(Item.get("mini kiwi bikini"))
+    storageAmount($item`mini kiwi bikini`) > 0 &&
+    auto_is_valid($item`mini kiwi bikini`)
   ) {
-    pullXWhenHaveY(Item.get("mini kiwi bikini"), 1, 0);
+    pullXWhenHaveY($item`mini kiwi bikini`, 1, 0);
   }
   if (
-    storageAmount(Item.get("mini kiwi invisible dirigible")) > 0 &&
-    auto_is_valid(Item.get("mini kiwi invisible dirigible"))
+    storageAmount($item`mini kiwi invisible dirigible`) > 0 &&
+    auto_is_valid($item`mini kiwi invisible dirigible`)
   ) {
-    pullXWhenHaveY(Item.get("mini kiwi invisible dirigible"), 1, 0);
+    pullXWhenHaveY($item`mini kiwi invisible dirigible`, 1, 0);
   }
 }

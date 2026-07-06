@@ -1,26 +1,26 @@
 import {
   containsText,
   getProperty,
-  Item,
   lastMonster,
   Monster,
   myMp,
   setProperty,
-  Skill,
 } from "kolmafia";
+import { $items, $skill, $skills } from "libram";
+
 import {
   auto_have_skill,
   auto_log_error,
   auto_log_warning,
   isFreeMonster,
 } from "../auto_util";
+import { in_ocrs } from "../paths/one_crazy_random_summer";
 import {
   combat_status_add,
   combat_status_check,
   markAsUsed,
   markAsUsed$1,
 } from "./auto_combat_util";
-import { in_ocrs } from "../paths/one_crazy_random_summer";
 
 //Path specific combat handling for One Crazy Random Summer
 
@@ -39,7 +39,7 @@ export function ocrs_combat_helper(page: string): Monster {
   if (isFreeMonster(lastMonster())) {
     if (
       !combat_status_check("cleesh") &&
-      auto_have_skill(Skill.get("CLEESH")) &&
+      auto_have_skill($skill`CLEESH`) &&
       myMp() > 10
     ) {
       setProperty("auto_useCleesh", false.toString());
@@ -49,20 +49,10 @@ export function ocrs_combat_helper(page: string): Monster {
 
   if (lastMonster().randomModifiers.includes("unstoppable")) {
     if (!combat_status_check("unstoppable")) {
-      for (const it of Item.get([
-        "DNA extraction syringe",
-        "Rain-Doh indigo cup",
-        "Rain-Doh blue balls",
-      ])) {
+      for (const it of $items`DNA extraction syringe, Rain-Doh indigo cup, Rain-Doh blue balls`) {
         markAsUsed$1(it);
       }
-      for (const sk of Skill.get([
-        "Air Dirty Laundry",
-        "Ply Reality",
-        "Summon Love Mosquito",
-        "Summon Love Gnats",
-        "Micrometeorite",
-      ])) {
+      for (const sk of $skills`Air Dirty Laundry, Ply Reality, Summon Love Mosquito, Summon Love Gnats, Micrometeorite`) {
         markAsUsed(sk);
       }
       //Block weaksauce and pocket crumbs?
@@ -119,7 +109,7 @@ export function ocrs_combat_helper(page: string): Monster {
   if (lastMonster().randomModifiers.includes("ticking")) {
     if (
       !combat_status_check("cleesh") &&
-      auto_have_skill(Skill.get("CLEESH")) &&
+      auto_have_skill($skill`CLEESH`) &&
       myMp() > 10
     ) {
       setProperty("auto_useCleesh", true.toString());
@@ -128,7 +118,7 @@ export function ocrs_combat_helper(page: string): Monster {
   if (lastMonster().randomModifiers.includes("untouchable")) {
     if (
       !combat_status_check("cleesh") &&
-      auto_have_skill(Skill.get("CLEESH")) &&
+      auto_have_skill($skill`CLEESH`) &&
       myMp() > 10
     ) {
       setProperty("auto_useCleesh", true.toString());

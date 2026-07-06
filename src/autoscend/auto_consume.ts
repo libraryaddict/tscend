@@ -9,9 +9,7 @@ import {
   canInteract,
   ceil,
   chew,
-  Class,
   cliExecute,
-  Coinmaster,
   containsText,
   creatableAmount,
   creatableTurns,
@@ -21,7 +19,6 @@ import {
   drinksilent,
   eat,
   eatsilent,
-  Effect,
   equip,
   equippedItem,
   Familiar,
@@ -59,18 +56,14 @@ import {
   mySpleenUse,
   npcPrice,
   overdrink,
-  Path,
   pullsRemaining,
   replaceString,
   retrieveItem,
   runChoice,
   sellCost,
   setProperty,
-  Skill,
-  Slot,
   spleenLimit,
   splitString,
-  Stat,
   stillsAvailable,
   substring,
   toBoolean,
@@ -83,6 +76,20 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
+import {
+  $class,
+  $classes,
+  $coinmaster,
+  $effect,
+  $familiar,
+  $item,
+  $items,
+  $path,
+  $skill,
+  $slot,
+  $stat,
+} from "libram";
+
 import { auto_advToReserve } from "../autoscend";
 import { auto_buyUpTo, canPull$1, pullXWhenHaveY } from "./auto_acquire";
 import { buffMaintain$3 } from "./auto_buff";
@@ -130,7 +137,6 @@ import {
   ovenHandle,
   shrugAT$1,
 } from "./auto_util";
-import { ctor, fileAsMap } from "./utils/kolmafiaUtils";
 import { ConsumeAction } from "./autoscend_record";
 import {
   canDrinkSpeakeasyDrink,
@@ -174,6 +180,7 @@ import { hasSpookyravenLibraryKey } from "./quests/level_11";
 import { towerKeyCount } from "./quests/level_13";
 import { estimateDailyDungeonAdvNeeded } from "./quests/level_any";
 import { LX_doingPirates } from "./quests/optional";
+import { ctor, fileAsMap } from "./utils/kolmafiaUtils";
 
 //
 //	Handler for in-run consumption
@@ -199,30 +206,7 @@ export function inebriety_left(): number {
 let $_saucemavenApplies_saucy_foods: Item[] | undefined;
 
 function saucemavenApplies(it: Item): boolean {
-  $_saucemavenApplies_saucy_foods ??= Item.get([
-    "cold hi mein",
-    "devil hair pasta",
-    "Fettris",
-    "fettucini Inconnu",
-    "fleetwood mac 'n' cheese",
-    "fusillocybin",
-    "gnocchetti di Nietzsche",
-    "haunted Hell ramen",
-    "Hell ramen",
-    "hot hi mein",
-    "libertagliatelle",
-    "linguini immondizia bianco",
-    "linguini of the sea",
-    "prescription noodles",
-    "shells a la shellfish",
-    "sleazy hi mein",
-    "spagecialetti",
-    "spaghetti con calaveras",
-    "spaghetti with Skullheads",
-    "spooky hi mein",
-    "stinky hi mein",
-    "turkish mostaccioli",
-  ]);
+  $_saucemavenApplies_saucy_foods ??= $items`cold hi mein, devil hair pasta, Fettris, fettucini Inconnu, fleetwood mac 'n' cheese, fusillocybin, gnocchetti di Nietzsche, haunted Hell ramen, Hell ramen, hot hi mein, libertagliatelle, linguini immondizia bianco, linguini of the sea, prescription noodles, shells a la shellfish, sleazy hi mein, spagecialetti, spaghetti con calaveras, spaghetti with Skullheads, spooky hi mein, stinky hi mein, turkish mostaccioli`;
   return $_saucemavenApplies_saucy_foods.includes(it);
 }
 
@@ -241,8 +225,8 @@ export function expectedAdventuresFrom(it: Item): number {
     );
   }
   let expected: number = parse();
-  if (auto_have_skill(Skill.get("Saucemaven")) && saucemavenApplies(it)) {
-    if (Class.get(["Sauceror", "Pastamancer"]).includes(myClass())) {
+  if (auto_have_skill($skill`Saucemaven`) && saucemavenApplies(it)) {
+    if ($classes`Sauceror, Pastamancer`.includes(myClass())) {
       expected += 5;
     } else {
       expected += 3;
@@ -258,18 +242,13 @@ function canOde(toDrink: Item): boolean {
     return true;
   }
   if (
-    Item.get([
-      "steel margarita",
-      "5-hour acrimony",
-      "beery blood",
-      "slap and slap again",
-      "used beer",
-      "shot of flower schnapps",
-    ]).includes(toDrink)
+    $items`steel margarita, 5-hour acrimony, beery blood, slap and slap again, used beer, shot of flower schnapps`.includes(
+      toDrink,
+    )
   ) {
     return false;
   }
-  if (toDrink === Item.get("tiny stillsuit")) {
+  if (toDrink === $item`tiny stillsuit`) {
     return false;
   }
 
@@ -295,50 +274,44 @@ export function autoCleanse(): boolean {
 
   if (
     wantToCleanse &&
-    itemAmount(Item.get("spice melange")) > 0 &&
+    itemAmount($item`spice melange`) > 0 &&
     !toBoolean(getProperty("spiceMelangeUsed"))
   ) {
-    handleTracker(
-      `Cleansed with ${Item.get("spice melange")}`,
-      "auto_otherstuff",
-    );
-    return use(1, Item.get("spice melange"));
+    handleTracker(`Cleansed with ${$item`spice melange`}`, "auto_otherstuff");
+    return use(1, $item`spice melange`);
   }
 
   if (
     wantToCleanse &&
-    itemAmount(Item.get("Ultra Mega Sour Ball")) > 0 &&
+    itemAmount($item`Ultra Mega Sour Ball`) > 0 &&
     !toBoolean(getProperty("_ultraMegaSourBallUsed"))
   ) {
     handleTracker(
-      `Cleansed with ${Item.get("Ultra Mega Sour Ball")}`,
+      `Cleansed with ${$item`Ultra Mega Sour Ball`}`,
       "auto_otherstuff",
     );
-    return use(1, Item.get("Ultra Mega Sour Ball"));
+    return use(1, $item`Ultra Mega Sour Ball`);
   }
 
   if (
     wantToCleanseLiver &&
-    itemAmount(Item.get("alien plant pod")) > 0 &&
+    itemAmount($item`alien plant pod`) > 0 &&
     !toBoolean(getProperty("_alienPlantPodUsed"))
   ) {
-    handleTracker(
-      `Cleansed with ${Item.get("alien plant pod")}`,
-      "auto_otherstuff",
-    );
-    return use(1, Item.get("alien plant pod"));
+    handleTracker(`Cleansed with ${$item`alien plant pod`}`, "auto_otherstuff");
+    return use(1, $item`alien plant pod`);
   }
 
   if (
     wantToCleanseStomach &&
-    itemAmount(Item.get("alien animal milk")) > 0 &&
+    itemAmount($item`alien animal milk`) > 0 &&
     !toBoolean(getProperty("_alienAnimalMilkUsed"))
   ) {
     handleTracker(
-      `Cleansed with ${Item.get("alien animal milk")}`,
+      `Cleansed with ${$item`alien animal milk`}`,
       "auto_otherstuff",
     );
-    return use(1, Item.get("alien animal milk"));
+    return use(1, $item`alien animal milk`);
   }
 
   return false;
@@ -360,7 +333,7 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
   if (isSpeakeasy && !canDrinkSpeakeasyDrink(toDrink)) {
     return false;
   }
-  if (toDrink === Item.get("tiny stillsuit")) {
+  if (toDrink === $item`tiny stillsuit`) {
     // record adv gain for more detailed reporting to user
     const stillsuitAdvs: number = auto_expectedStillsuitAdvs();
     visitUrl("inventory.php?action=distill&pwd");
@@ -375,24 +348,24 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
     return false;
   }
 
-  if (canOde(toDrink) && itemAmount(Item.get("hard rock")) > 0) {
+  if (canOde(toDrink) && itemAmount($item`hard rock`) > 0) {
     //only want to hard rock if the booze is also Ode-able
-    use(1, Item.get("hard rock"));
+    use(1, $item`hard rock`);
   }
 
   if (
     canOde(toDrink) &&
     minAdvPerDrunk(toDrink) >= 5.0 &&
-    Familiar.get("Cooler Yeti").experience >= 400 &&
+    $familiar`Cooler Yeti`.experience >= 400 &&
     ((auto_haveSeptEmberCenser() && myLevel() >= 15) ||
-      Familiar.get("Cooler Yeti").experience > 800 ||
+      $familiar`Cooler Yeti`.experience > 800 ||
       !auto_haveSeptEmberCenser())
   ) {
     //only want to yeti chat if the booze is also Ode-able and we don't need to level via sept-ember censer or using it won't affect our fam weight
-    useFamiliar(Familiar.get("Cooler Yeti"));
+    useFamiliar($familiar`Cooler Yeti`);
     if (containsText(visitUrl("main.php?talktoyeti=1"), "choiceform2")) {
       handleTracker$1(
-        Familiar.get("Cooler Yeti").toString(),
+        $familiar`Cooler Yeti`.toString(),
         `Double adv of ${toDrink.toString()}`,
         "auto_otherstuff",
       );
@@ -404,26 +377,26 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
 
   if (
     canOde(toDrink) &&
-    possessEquipment(Item.get("Wrist-Boy")) &&
+    possessEquipment($item`Wrist-Boy`) &&
     myMeat() > 6500
   ) {
     if (
-      haveEffect(Effect.get("Drunk and Avuncular")) < expectedInebriety &&
-      itemAmount(Item.get("Drunk Uncles holo-record")) === 0
+      haveEffect($effect`Drunk and Avuncular`) < expectedInebriety &&
+      itemAmount($item`Drunk Uncles holo-record`) === 0
     ) {
-      auto_buyUpTo(1, Item.get("Drunk Uncles holo-record"));
+      auto_buyUpTo(1, $item`Drunk Uncles holo-record`);
     }
-    buffMaintain$3(Effect.get("Drunk and Avuncular"), 0, 1, expectedInebriety);
+    buffMaintain$3($effect`Drunk and Avuncular`, 0, 1, expectedInebriety);
   }
 
-  if (canOde(toDrink) && auto_have_skill(Skill.get("The Ode to Booze"))) {
-    shrugAT$1(Effect.get("Ode to Booze"));
+  if (canOde(toDrink) && auto_have_skill($skill`The Ode to Booze`)) {
+    shrugAT$1($effect`Ode to Booze`);
     // get enough turns of ode
     while (
-      acquireMP$2(mpCost(Skill.get("The Ode to Booze")), 0) &&
+      acquireMP$2(mpCost($skill`The Ode to Booze`), 0) &&
       buffMaintain$3(
-        Effect.get("Ode to Booze"),
-        mpCost(Skill.get("The Ode to Booze")),
+        $effect`Ode to Booze`,
+        mpCost($skill`The Ode to Booze`),
         1,
         expectedInebriety,
       )
@@ -434,19 +407,16 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
 
   equipStatgainIncreasersFor(toDrink);
 
-  const it: Item = equippedItem(Slot.get("acc3"));
+  const it: Item = equippedItem($slot`acc3`);
   if (
-    it !== Item.get("mafia pinky ring") &&
-    itemAmount(Item.get("mafia pinky ring")) > 0 &&
-    Item.get([
-      "bucket of wine",
-      "Psychotic Train wine",
-      "Sacramento wine",
-      "stale cheer wine",
-    ]).includes(toDrink) &&
-    canEquip(Item.get("mafia pinky ring"))
+    it !== $item`mafia pinky ring` &&
+    itemAmount($item`mafia pinky ring`) > 0 &&
+    $items`bucket of wine, Psychotic Train wine, Sacramento wine, stale cheer wine`.includes(
+      toDrink,
+    ) &&
+    canEquip($item`mafia pinky ring`)
   ) {
-    equip(Slot.get("acc3"), Item.get("mafia pinky ring"));
+    equip($slot`acc3`, $item`mafia pinky ring`);
   }
 
   let retval: boolean = false;
@@ -467,8 +437,8 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
     howMany = howMany - 1;
   }
 
-  if (equippedItem(Slot.get("acc3")) !== it) {
-    equip(Slot.get("acc3"), it);
+  if (equippedItem($slot`acc3`) !== it) {
+    equip($slot`acc3`, it);
   }
 
   return retval;
@@ -612,7 +582,7 @@ function autoEat$1(howMany: number, toEat: Item, silent: boolean): boolean {
   if (toEat === Item.none || howMany <= 0) {
     return false;
   }
-  if (toEat === Item.get("Black and White Apron Meal Kit")) {
+  if (toEat === $item`Black and White Apron Meal Kit`) {
     if (consumeBlackAndWhiteApronKit()) {
       handleTracker("Black and White Apron Kit", "auto_eaten");
       return true;
@@ -636,58 +606,53 @@ function autoEat$1(howMany: number, toEat: Item, silent: boolean): boolean {
   consumeMilkOfMagnesiumIfUnused();
   wantDietPill(toEat);
 
-  if (possessEquipment(Item.get("Wrist-Boy")) && myMeat() > 6500) {
+  if (possessEquipment($item`Wrist-Boy`) && myMeat() > 6500) {
     if (
-      haveEffect(Effect.get("Record Hunger")) < expectedFullness &&
-      itemAmount(Item.get("The Pigs holo-record")) === 0
+      haveEffect($effect`Record Hunger`) < expectedFullness &&
+      itemAmount($item`The Pigs holo-record`) === 0
     ) {
-      auto_buyUpTo(1, Item.get("The Pigs holo-record"));
+      auto_buyUpTo(1, $item`The Pigs holo-record`);
     }
-    buffMaintain$3(Effect.get("Record Hunger"), 0, 1, expectedFullness);
+    buffMaintain$3($effect`Record Hunger`, 0, 1, expectedFullness);
   }
 
   let retval: boolean = false;
   let wasReadyToEat: boolean = false;
   while (howMany > 0) {
-    buffMaintain$3(
-      Effect.get("Song of the Glorious Lunch"),
-      10,
-      1,
-      toEat.fullness,
-    );
+    buffMaintain$3($effect`Song of the Glorious Lunch`, 10, 1, toEat.fullness);
     if (
-      auto_get_campground().has(Item.get("portable Mayo Clinic")) &&
-      myMeat() - meatReserve() > npcPrice(Item.get("Mayoflex")) &&
+      auto_get_campground().has($item`portable Mayo Clinic`) &&
+      myMeat() - meatReserve() > npcPrice($item`Mayoflex`) &&
       getProperty("mayoInMouth") === "" &&
-      auto_is_valid(Item.get("portable Mayo Clinic"))
+      auto_is_valid($item`portable Mayo Clinic`)
     ) {
-      auto_buyUpTo(1, Item.get("Mayoflex"));
-      use(1, Item.get("Mayoflex"));
+      auto_buyUpTo(1, $item`Mayoflex`);
+      use(1, $item`Mayoflex`);
     }
-    if (itemAmount(Item.get("whet stone")) > 0) {
+    if (itemAmount($item`whet stone`) > 0) {
       //use whet stone if we got one from the rock garden
-      use(1, Item.get("whet stone"));
-      handleTracker(`Used ${Item.get("whet stone")}`, "auto_otherstuff");
+      use(1, $item`whet stone`);
+      handleTracker(`Used ${$item`whet stone`}`, "auto_otherstuff");
     }
     if (
-      itemAmount(Item.get("mini kiwi aioli")) > 0 ||
-      (itemAmount(Item.get("mini kiwi")) >= 5 &&
-        itemAmount(Item.get("mini kiwi aioli")) === 0)
+      itemAmount($item`mini kiwi aioli`) > 0 ||
+      (itemAmount($item`mini kiwi`) >= 5 &&
+        itemAmount($item`mini kiwi aioli`) === 0)
     ) {
       //use mini kiwi aioli if we got one from the mini kiwi
       // Kiwi aioli is per-fullness, only eat it on foods size 4+
       if (toEat.fullness > 3) {
-        if (itemAmount(Item.get("mini kiwi aioli")) === 0) {
-          create(1, Item.get("mini kiwi aioli")); //create the aioli to actually use it
+        if (itemAmount($item`mini kiwi aioli`) === 0) {
+          create(1, $item`mini kiwi aioli`); //create the aioli to actually use it
         }
-        use(1, Item.get("mini kiwi aioli"));
+        use(1, $item`mini kiwi aioli`);
         handleTracker(
-          `Used ${Item.get("mini kiwi aioli")} for ${toEat}`,
+          `Used ${$item`mini kiwi aioli`} for ${toEat}`,
           "auto_otherstuff",
         );
       }
     }
-    if (haveEffect(Effect.get("Ready to Eat")) > 0) {
+    if (haveEffect($effect`Ready to Eat`) > 0) {
       wasReadyToEat = true;
     }
     if (silent) {
@@ -697,7 +662,7 @@ function autoEat$1(howMany: number, toEat: Item, silent: boolean): boolean {
     }
     if (retval) {
       let detail: string = "";
-      if (wasReadyToEat && haveEffect(Effect.get("Ready to Eat")) <= 0) {
+      if (wasReadyToEat && haveEffect($effect`Ready to Eat`) <= 0) {
         detail = detail !== "" ? `${detail}, Red Rocketed!` : "Red Rocketed!";
         wasReadyToEat = false;
       }
@@ -725,7 +690,7 @@ export function acquireMilkOfMagnesiumIfUnused(useAdv: boolean): boolean {
     return true;
   }
 
-  if (itemAmount(Item.get("milk of magnesium")) > 0) {
+  if (itemAmount($item`milk of magnesium`) > 0) {
     return true;
   }
   if (
@@ -740,27 +705,27 @@ export function acquireMilkOfMagnesiumIfUnused(useAdv: boolean): boolean {
 
   ovenHandle();
   if (
-    itemAmount(Item.get("glass of goat's milk")) > 0 &&
-    haveSkill(Skill.get("Advanced Saucecrafting"))
+    itemAmount($item`glass of goat's milk`) > 0 &&
+    haveSkill($skill`Advanced Saucecrafting`)
   ) {
     if (
-      itemAmount(Item.get("scrumptious reagent")) === 0 &&
-      myMp() >= mpCost(Skill.get("Advanced Saucecrafting"))
+      itemAmount($item`scrumptious reagent`) === 0 &&
+      myMp() >= mpCost($skill`Advanced Saucecrafting`)
     ) {
       if (toInt(getProperty("reagentSummons")) === 0) {
-        useSkill(1, Skill.get("Advanced Saucecrafting"));
+        useSkill(1, $skill`Advanced Saucecrafting`);
       }
     }
 
-    if (itemAmount(Item.get("scrumptious reagent")) > 0) {
+    if (itemAmount($item`scrumptious reagent`) > 0) {
       if (useAdv) {
-        cliExecute(`make ${Item.get("milk of magnesium")}`);
+        cliExecute(`make ${$item`milk of magnesium`}`);
       } else if (freeCrafts$1() > 0) {
-        cliExecute(`make ${Item.get("milk of magnesium")}`);
+        cliExecute(`make ${$item`milk of magnesium`}`);
       }
     }
   }
-  pullXWhenHaveY(Item.get("milk of magnesium"), 1, 0);
+  pullXWhenHaveY($item`milk of magnesium`, 1, 0);
   return true;
 }
 
@@ -768,11 +733,11 @@ export function consumeMilkOfMagnesiumIfUnused(): boolean {
   if (
     toBoolean(getProperty("_milkOfMagnesiumUsed")) ||
     toBoolean(getProperty("milkOfMagnesiumActive")) ||
-    itemAmount(Item.get("milk of magnesium")) < 1
+    itemAmount($item`milk of magnesium`) < 1
   ) {
     return false;
   }
-  return use(1, Item.get("milk of magnesium"));
+  return use(1, $item`milk of magnesium`);
 }
 
 function minAdvPerFull(toEat: Item): number {
@@ -794,16 +759,16 @@ function minAdvPerFull(toEat: Item): number {
 
 function minAdvPerFullForDietPill(): number {
   if (is_jarlsberg()) {
-    return minAdvPerFull(Item.get("Ultimate Breakfast Sandwich")) - 0.01;
+    return minAdvPerFull($item`Ultimate Breakfast Sandwich`) - 0.01;
   }
   if (in_zombieSlayer()) {
-    return minAdvPerFull(Item.get("boss brain")) - 0.01;
+    return minAdvPerFull($item`boss brain`) - 0.01;
   }
   return 8.5;
 }
 
 function wantDietPill(toEat: Item): boolean {
-  const pill: Item = Item.get("dieting pill");
+  const pill: Item = $item`dieting pill`;
   if (!auto_is_valid(pill) || !auto_is_valid(toEat)) {
     return false;
   }
@@ -833,36 +798,25 @@ function canDrink$2(toDrink: Item, checkValidity: boolean): boolean {
   if (!auto_is_valid(toDrink) && checkValidity) {
     return false;
   }
-  if (is_jarlsberg() && toDrink !== Item.get("steel margarita")) {
-    return (
-      sellCost(Coinmaster.get("Jarlsberg's Cosmic Kitchen"), toDrink).size > 0
-    );
+  if (is_jarlsberg() && toDrink !== $item`steel margarita`) {
+    return sellCost($coinmaster`Jarlsberg's Cosmic Kitchen`, toDrink).size > 0;
   }
   if (in_nuclear() && toDrink.inebriety > 1) {
     return false;
   }
   if (
     in_darkGyffte() !==
-    Item.get([
-      "vampagne",
-      "dusty bottle of blood",
-      "Red Russian",
-      "mulled blood",
-      "bottle of Sanguiovese",
-    ]).includes(toDrink)
+    $items`vampagne, dusty bottle of blood, Red Russian, mulled blood, bottle of Sanguiovese`.includes(
+      toDrink,
+    )
   ) {
     return false;
   }
   if (in_kolhs()) {
     if (
-      !Item.get([
-        "can of the cheapest beer",
-        "bottle of fruity &quot;wine&quot;",
-        "single swig of vodka",
-        "fountain 'soda'",
-        "stepmom's booze",
-        "steel margarita",
-      ]).includes(toDrink)
+      !$items`can of the cheapest beer, bottle of fruity "wine", single swig of vodka, fountain 'soda', stepmom's booze, steel margarita`.includes(
+        toDrink,
+      )
     ) {
       return false;
     }
@@ -886,14 +840,9 @@ function canDrink$2(toDrink: Item, checkValidity: boolean): boolean {
   if (is_werewolf()) {
     //Can't access Fancy Dan as Werewolf
     if (
-      Item.get([
-        "Champagne Shimmy",
-        "Charleston Choo-Choo",
-        "Marltini",
-        "Mysterious Stranger",
-        "Strong, Silent Type",
-        "Velvet Veil",
-      ]).includes(toDrink)
+      $items`Champagne Shimmy, Charleston Choo-Choo, Marltini, Mysterious Stranger, Strong\, Silent Type, Velvet Veil`.includes(
+        toDrink,
+      )
     ) {
       return false;
     }
@@ -922,40 +871,27 @@ function canEat$2(toEat: Item, checkValidity: boolean): boolean {
     return false;
   }
   if (is_jarlsberg()) {
-    return (
-      sellCost(Coinmaster.get("Jarlsberg's Cosmic Kitchen"), toEat).size > 0
-    );
+    return sellCost($coinmaster`Jarlsberg's Cosmic Kitchen`, toEat).size > 0;
   }
   if (in_nuclear() && toEat.fullness > 1) {
     return false;
   }
-  if (in_darkGyffte() && toEat === Item.get("magical sausage")) {
+  if (in_darkGyffte() && toEat === $item`magical sausage`) {
     // the one thing you can eat as Vampyre AND other classes
     return true;
   }
   if (
     in_darkGyffte() !==
-    Item.get([
-      "blood-soaked sponge cake",
-      "blood roll-up",
-      "blood snowcone",
-      "actual blood sausage",
-      "bloodstick",
-    ]).includes(toEat)
+    $items`blood-soaked sponge cake, blood roll-up, blood snowcone, actual blood sausage, bloodstick`.includes(
+      toEat,
+    )
   ) {
     return false;
   }
   if (in_zombieSlayer()) {
-    return Item.get([
-      "crappy brain",
-      "decent brain",
-      "good brain",
-      "boss brain",
-      "hunter brain",
-      "brains casserole",
-      "fricasseed brains",
-      "steel lasagna",
-    ]).includes(toEat);
+    return $items`crappy brain, decent brain, good brain, boss brain, hunter brain, brains casserole, fricasseed brains, steel lasagna`.includes(
+      toEat,
+    );
   }
   if (in_small() && toEat.fullness > 2) {
     // stomach size of 2 in small path
@@ -1010,7 +946,7 @@ export function consumptionProgress(): number {
     organs_max += inebrietyLimit();
   }
   // don't consider spleen as a significant adventure organ in most paths
-  if (isActuallyEd() || myPath() === Path.get("Oxygenarian")) {
+  if (isActuallyEd() || myPath() === $path`Oxygenarian`) {
     organs_used += mySpleenUse();
     organs_max += spleenLimit();
   }
@@ -1118,9 +1054,9 @@ function autoConsume(action: ConsumeAction): boolean {
 
   if (
     action.organ === AUTO_ORGAN_LIVER &&
-    action.it !== Item.get("tiny stillsuit")
+    action.it !== $item`tiny stillsuit`
   ) {
-    buffMaintain$3(Effect.get("Ode to Booze"), 20, 1, action.size);
+    buffMaintain$3($effect`Ode to Booze`, 20, 1, action.size);
   }
   if (action.cafeid !== 0) {
     if (action.organ === AUTO_ORGAN_LIVER) {
@@ -1154,13 +1090,7 @@ function loadConsumables(
 
   cliExecute("refresh inv");
 
-  for (const it of Item.get([
-    "unremarkable duffel bag",
-    "van key",
-    "Knob Goblin lunchbox",
-    "gold Boozehounds Anonymous token",
-    "booze bindle",
-  ])) {
+  for (const it of $items`unremarkable duffel bag, van key, Knob Goblin lunchbox, gold Boozehounds Anonymous token, booze bindle`) {
     if (itemAmount(it) > 0 && pullsRemaining() !== -1) {
       use(itemAmount(it), it);
     }
@@ -1179,7 +1109,7 @@ function loadConsumables(
     if (
       checkValidity &&
       isClipartItem(it) &&
-      !auto_is_valid$2(Skill.get("Summon Clip Art")) &&
+      !auto_is_valid$2($skill`Summon Clip Art`) &&
       !canInteract()
     ) {
       //workaround for this mafia bug https://kolmafia.us/threads/g-lovers-clip-art-create-function-failure.26007/
@@ -1211,36 +1141,20 @@ function loadConsumables(
   const blacklist: Map<Item, boolean> = new Map();
   const craftable_blacklist: Map<Item, boolean> = new Map();
 
-  for (const it of Item.get([
-    "Cursed Punch",
-    "unidentified drink",
-    "bag of QWOP",
-    "FantasyRealm turkey leg",
-    "FantasyRealm mead",
-    "waffle",
-  ])) {
+  for (const it of $items`Cursed Punch, unidentified drink, bag of QWOP, FantasyRealm turkey leg, FantasyRealm mead, waffle`) {
     blacklist.set(it, true);
   }
   if (
     (toBoolean(getProperty("auto_dontConsumeLegendPizzas")) && !in_small()) ||
     (auto_turbo() && toInt(getProperty("cyrptCrannyEvilness")) > 0)
   ) {
-    for (const it of Item.get([
-      "Pizza of Legend",
-      "Calzone of Legend",
-      "Deep Dish of Legend",
-    ])) {
+    for (const it of $items`Pizza of Legend, Calzone of Legend, Deep Dish of Legend`) {
       blacklist.set(it, true);
     }
   }
   if (in_small()) {
     // these items don't get 10x advs and stats in small like most consumables
-    for (const it of Item.get([
-      "blueberry muffin",
-      "bran muffin",
-      "chocolate chip muffin",
-      "spaghetti breakfast",
-    ])) {
+    for (const it of $items`blueberry muffin, bran muffin, chocolate chip muffin, spaghetti breakfast`) {
       blacklist.set(it, true);
     }
   }
@@ -1248,44 +1162,39 @@ function loadConsumables(
     is_professor() ||
     (is_werewolf() && toInt(getProperty("wereProfessorTransformTurns")) < 50)
   ) {
-    blacklist.set(Item.get("plain calzone"), true); //because 50 turn buff and can only handle +ML as a werewolf, either blacklist altogether or get lucky and eat ASAP as a werewolf
+    blacklist.set($item`plain calzone`, true); //because 50 turn buff and can only handle +ML as a werewolf, either blacklist altogether or get lucky and eat ASAP as a werewolf
   }
   if (
-    itemAmount(Item.get("wet stunt nut stew")) === 0 &&
-    !possessEquipment(Item.get("Mega Gem")) &&
+    itemAmount($item`wet stunt nut stew`) === 0 &&
+    !possessEquipment($item`Mega Gem`) &&
     !isActuallyEd()
   ) {
-    blacklist.set(Item.get("wet stew"), true);
+    blacklist.set($item`wet stew`, true);
   }
   if (internalQuestStatus("questL07Cyrptic") < 1) {
     //don't consume gravy boat
-    craftable_blacklist.set(Item.get("warm gravy"), true);
+    craftable_blacklist.set($item`warm gravy`, true);
   }
   if (
     LX_doingPirates() &&
     internalQuestStatus("questM12Pirate") <= 2 &&
-    itemAmount(Item.get("hot wing")) < 4
+    itemAmount($item`hot wing`) < 4
   ) {
-    blacklist.set(Item.get("hot wing"), true);
-    if (itemAmount(Item.get("Devil's Elbow Hot Sauce")) === 0) {
+    blacklist.set($item`hot wing`, true);
+    if (itemAmount($item`Devil's Elbow Hot Sauce`) === 0) {
       //don't use hot wings if pirates quest still needs them
-      craftable_blacklist.set(Item.get("devil hair pasta"), true);
+      craftable_blacklist.set($item`devil hair pasta`, true);
     }
   }
 
-  if (myClass() !== Class.get("Cow Puncher")) {
+  if (myClass() !== $class`Cow Puncher`) {
     //these consumables give $effect[Cowrruption] which limits base moxie and muscle to 30
     //low moxie can get beaten up, low muscle makes muscle class unable to hit
     if (
-      myBasestat(Stat.get("Moxie")) > 30 ||
-      (myPrimestat() === Stat.get("Muscle") &&
-        myBasestat(Stat.get("Muscle")) > 30)
+      myBasestat($stat`Moxie`) > 30 ||
+      (myPrimestat() === $stat`Muscle` && myBasestat($stat`Muscle`) > 30)
     ) {
-      for (const it of Item.get([
-        "tainted milk",
-        "rotting beefsteak",
-        "firemilk",
-      ])) {
+      for (const it of $items`tainted milk, rotting beefsteak, firemilk`) {
         blacklist.set(it, true);
       }
     }
@@ -1293,13 +1202,7 @@ function loadConsumables(
   // If we have 2 sticks of firewood, the current knapsack-solver
   // tries to get one of everything. So we blacklist everything other
   // than the 'campfire hot dog'
-  for (const it of Item.get([
-    "campfire hot dog",
-    "campfire beans",
-    "campfire coffee",
-    "campfire stew",
-    "campfire s'more",
-  ])) {
+  for (const it of $items`campfire hot dog, campfire beans, campfire coffee, campfire stew, campfire s'more`) {
     craftable_blacklist.set(it, true);
   }
   // Blacklist all but the item we can make the most of.
@@ -1326,12 +1229,12 @@ function loadConsumables(
 
   add_mutex_craftables(
     new Map([
-      [Item.get("perfect cosmopolitan"), true],
-      [Item.get("perfect old-fashioned"), true],
-      [Item.get("perfect mimosa"), true],
-      [Item.get("perfect dark and stormy"), true],
-      [Item.get("perfect paloma"), true],
-      [Item.get("perfect negroni"), true],
+      [$item`perfect cosmopolitan`, true],
+      [$item`perfect old-fashioned`, true],
+      [$item`perfect mimosa`, true],
+      [$item`perfect dark and stormy`, true],
+      [$item`perfect paloma`, true],
+      [$item`perfect negroni`, true],
     ]),
   );
 
@@ -13357,28 +13260,26 @@ function loadConsumables(
     ) {
       const value_allowed: boolean =
         historicalPrice(it) < auto_getConsumablePriceLimit() ||
-        (Item.get([
-          "blueberry muffin",
-          "bran muffin",
-          "chocolate chip muffin",
-        ]).includes(it) &&
+        ($items`blueberry muffin, bran muffin, chocolate chip muffin`.includes(
+          it,
+        ) &&
           itemAmount(it) > 0 &&
-          myPath() !== Path.get("Grey You")); //Grey You should not even get to here if ever supported but it consumes the tin so blocked just in case
+          myPath() !== $path`Grey You`); //Grey You should not even get to here if ever supported but it consumes the tin so blocked just in case
       //muffins are expensive but renewable
 
       if (!value_allowed) {
         continue;
       }
       if (
-        (it === Item.get("astral pilsner") ||
-          it === Item.get("Cold One") ||
-          it === Item.get("astral hot dog")) &&
+        (it === $item`astral pilsner` ||
+          it === $item`Cold One` ||
+          it === $item`astral hot dog`) &&
         myLevel() < 11
       ) {
         continue;
       }
       if (
-        it === Item.get("spaghetti breakfast") &&
+        it === $item`spaghetti breakfast` &&
         (myLevel() < 11 ||
           myFullness() > 0 ||
           toBoolean(getProperty("_spaghettiBreakfastEaten")))
@@ -13386,19 +13287,19 @@ function loadConsumables(
         continue;
       }
       if (
-        it === Item.get("Pizza of Legend") &&
+        it === $item`Pizza of Legend` &&
         toBoolean(getProperty("pizzaOfLegendEaten"))
       ) {
         continue;
       }
       if (
-        it === Item.get("Calzone of Legend") &&
+        it === $item`Calzone of Legend` &&
         toBoolean(getProperty("calzoneOfLegendEaten"))
       ) {
         continue;
       }
       if (
-        it === Item.get("Deep Dish of Legend") &&
+        it === $item`Deep Dish of Legend` &&
         toBoolean(getProperty("deepDishOfLegendEaten"))
       ) {
         continue;
@@ -13410,7 +13311,7 @@ function loadConsumables(
         continue;
       }
       // Only one Spaghetti Breakfast can be eaten
-      if (it === Item.get("spaghetti breakfast")) {
+      if (it === $item`spaghetti breakfast`) {
         howmany = 1;
       }
       if (itemAmount(it) > 0 && organCost(it) <= 5) {
@@ -13422,7 +13323,7 @@ function loadConsumables(
       // don't add speakeasy drinks, because they can't actually be bought as items
       if (npcPrice(it) > 0 && !isSpeakeasyDrink(it)) {
         buyables.set(it, min(howmany, myMeat() / npcPrice(it)));
-      } else if (buyPrice(Coinmaster.get("Hermit"), it) > 0) {
+      } else if (buyPrice($coinmaster`Hermit`, it) > 0) {
         buyables.set(
           it,
           (buyables.get(it) ?? 0) + min(howmany, myMeat() / 500),
@@ -13444,7 +13345,7 @@ function loadConsumables(
         );
       }
       if (
-        it === Item.get("pheromone cocktail") &&
+        it === $item`pheromone cocktail` &&
         itemAmount(it) > 0 &&
         banishSources() - itemAmount(it) < 3
       ) {
@@ -13484,34 +13385,34 @@ function loadConsumables(
       //missing at least 1 key/token, in case it will be only one first consider mainstat pie if possible
       if (
         !wantBorisPie &&
-        myPrimestat() === Stat.get("Muscle") &&
-        itemAmount(Item.get("Boris's key")) === 0 &&
-        auto_is_valid(Item.get("Boris's key lime pie"))
+        myPrimestat() === $stat`Muscle` &&
+        itemAmount($item`Boris's key`) === 0 &&
+        auto_is_valid($item`Boris's key lime pie`)
       ) {
         wantBorisPie = true;
       } else if (
         !wantJarlsbergPie &&
-        myPrimestat() === Stat.get("Mysticality") &&
-        itemAmount(Item.get("Jarlsberg's key")) === 0 &&
-        auto_is_valid(Item.get("Jarlsberg's key lime pie"))
+        myPrimestat() === $stat`Mysticality` &&
+        itemAmount($item`Jarlsberg's key`) === 0 &&
+        auto_is_valid($item`Jarlsberg's key lime pie`)
       ) {
         wantJarlsbergPie = true;
       } else if (
         !wantPetePie &&
-        itemAmount(Item.get("Sneaky Pete's key")) === 0 &&
-        auto_is_valid(Item.get("Sneaky Pete's key lime pie"))
+        itemAmount($item`Sneaky Pete's key`) === 0 &&
+        auto_is_valid($item`Sneaky Pete's key lime pie`)
       ) {
         wantPetePie = true;
       } else if (
         !wantJarlsbergPie &&
-        itemAmount(Item.get("Jarlsberg's key")) === 0 &&
-        auto_is_valid(Item.get("Jarlsberg's key lime pie"))
+        itemAmount($item`Jarlsberg's key`) === 0 &&
+        auto_is_valid($item`Jarlsberg's key lime pie`)
       ) {
         wantJarlsbergPie = true;
       } else if (
         !wantBorisPie &&
-        itemAmount(Item.get("Boris's key")) === 0 &&
-        auto_is_valid(Item.get("Boris's key lime pie"))
+        itemAmount($item`Boris's key`) === 0 &&
+        auto_is_valid($item`Boris's key lime pie`)
       ) {
         wantBorisPie = true;
       }
@@ -13525,7 +13426,7 @@ function loadConsumables(
       : 1;
     if (keysObtainableFromDailyDungeon > 0) {
       if (
-        itemAmount(Item.get("daily dungeon malware")) > 0 &&
+        itemAmount($item`daily dungeon malware`) > 0 &&
         !toBoolean(getProperty("_dailyDungeonMalwareUsed")) &&
         toInt(getProperty("_lastDailyDungeonRoom")) < 14 &&
         !in_pokefam()
@@ -13634,18 +13535,18 @@ function loadConsumables(
       }
       if (
         type_1 === AUTO_ORGAN_STOMACH &&
-        auto_is_valid(Item.get("Special Seasoning"))
+        auto_is_valid($item`Special Seasoning`)
       ) {
         (
           actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
         ).desirability += min(
           1.0,
-          (toFloat(itemAmount(Item.get("Special Seasoning"))) * it.fullness) /
+          (toFloat(itemAmount($item`Special Seasoning`)) * it.fullness) /
             fullness_left(),
         );
       }
       if (obtain_mode === AUTO_OBTAIN_NULL) {
-        if (it === Item.get("spaghetti breakfast")) {
+        if (it === $item`spaghetti breakfast`) {
           if (
             toBoolean(getProperty("_spaghettiBreakfastEaten")) ||
             myFullness() > 0
@@ -13662,11 +13563,9 @@ function loadConsumables(
             ).desirability += 50;
           }
         } else if (
-          Item.get([
-            "blueberry muffin",
-            "bran muffin",
-            "chocolate chip muffin",
-          ]).includes(it)
+          $items`blueberry muffin, bran muffin, chocolate chip muffin`.includes(
+            it,
+          )
         ) {
           if (
             myFullness() === 0 &&
@@ -13680,7 +13579,7 @@ function loadConsumables(
             if (
               !inHardcore() &&
               myLevel() >= 12 &&
-              auto_have_skill(Skill.get("Saucemaven"))
+              auto_have_skill($skill`Saucemaven`)
             ) {
               //eating it at 12 would probably mean having to pull something smaller than a hi mein and missing out on Saucemaven?
             } else {
@@ -13703,9 +13602,9 @@ function loadConsumables(
       } else {
         if (
           i === 0 &&
-          ((it === Item.get("Boris's key lime pie") && wantBorisPie) ||
-            (it === Item.get("Jarlsberg's key lime pie") && wantJarlsbergPie) ||
-            (it === Item.get("Sneaky Pete's key lime pie") && wantPetePie))
+          ((it === $item`Boris's key lime pie` && wantBorisPie) ||
+            (it === $item`Jarlsberg's key lime pie` && wantJarlsbergPie) ||
+            (it === $item`Sneaky Pete's key lime pie` && wantPetePie))
         ) {
           auto_log_info$1(
             `If we ate a ${it} we could skip getting a fat loot token...`,
@@ -13716,7 +13615,7 @@ function loadConsumables(
         }
         if (
           i === 0 &&
-          it === Item.get("pheromone cocktail") &&
+          it === $item`pheromone cocktail` &&
           (potentialTurnGain.get(it) ?? potentialTurnGain.set(it, 0).get(it)) >
             0
         ) {
@@ -13758,7 +13657,7 @@ function loadConsumables(
     actions.set(
       actions.size,
       new ConsumeAction(
-        Item.get("tiny stillsuit"),
+        $item`tiny stillsuit`,
         0,
         size,
         adv,
@@ -13769,7 +13668,7 @@ function loadConsumables(
     );
   }
   // Add black and white apron if we are looking to eat
-  const apronKit: Item = Item.get("Black and White Apron Meal Kit");
+  const apronKit: Item = $item`Black and White Apron Meal Kit`;
   if (
     type_1 === AUTO_ORGAN_STOMACH &&
     (itemAmount(apronKit) > 0 || canPull$1(apronKit)) &&
@@ -13960,17 +13859,17 @@ function auto_bestNightcap(): ConsumeAction {
   const actions: Map<number, ConsumeAction> = new Map();
   loadConsumables("drink", actions);
 
-  const have_ode: boolean = auto_have_skill(Skill.get("The Ode to Booze"));
+  const have_ode: boolean = auto_have_skill($skill`The Ode to Booze`);
   let greenBeersDrinkable: number = 0;
   let greenBeerAdv: number = 0;
   if (
     containsText(holiday(), "St. Sneaky Pete's Day") &&
     gnomadsAvailable() &&
-    dailySpecial() === Item.get("green beer")
+    dailySpecial() === $item`green beer`
   ) {
     const disposableBeerMeat: number = max(0, myMeat() - meatReserve());
     greenBeersDrinkable = min(
-      ceil(10.0 / Item.get("green beer").inebriety),
+      ceil(10.0 / $item`green beer`.inebriety),
       disposableBeerMeat / toInt(getProperty("_dailySpecialPrice")),
     );
     if (greenBeersDrinkable > 0) {
@@ -13979,8 +13878,8 @@ function auto_bestNightcap(): ConsumeAction {
         "blue",
       );
       greenBeerAdv = toInt(
-        expectedAdventuresFrom(Item.get("green beer")) +
-          (have_ode ? Item.get("green beer").inebriety : 0),
+        expectedAdventuresFrom($item`green beer`) +
+          (have_ode ? $item`green beer`.inebriety : 0),
       );
     }
   }
@@ -14009,7 +13908,7 @@ function auto_bestNightcap(): ConsumeAction {
       ret += greenBeerabilityBonus;
       if (
         (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)).it ===
-        Item.get("astral pilsner")
+        $item`astral pilsner`
       ) {
         //astral pilsner's extra advs could make it barely beat larger pulls today due to beers but would still have as much value tomorrow
         ret -= min(5, greenBeerabilityBonus);
@@ -14063,19 +13962,19 @@ function auto_overdrinkGreenBeers(): void {
   //called after nightcap, auto_drinkNightcap() needs to have already made the necessary checks
   if (
     !containsText(holiday(), "St. Sneaky Pete's Day") ||
-    !canDrink$2(Item.get("green beer"), false)
+    !canDrink$2($item`green beer`, false)
   ) {
     return;
   }
   const start_fam: Familiar = myFamiliar();
   if (
-    auto_have_familiar(Familiar.get("Stooper")) &&
-    start_fam !== Familiar.get("Stooper") &&
+    auto_have_familiar($familiar`Stooper`) &&
+    start_fam !== $familiar`Stooper` &&
     pathAllowsChangingFamiliar()
   ) {
     //check if path allows changing familiar
     //drinking does not break 100fam runs so do not use canChangeToFamiliar
-    useFamiliar(Familiar.get("Stooper"));
+    useFamiliar($familiar`Stooper`);
   }
 
   const negativeLiver: number = inebriety_left();
@@ -14086,7 +13985,7 @@ function auto_overdrinkGreenBeers(): void {
     );
 
     if (gnomadsAvailable()) {
-      if (dailySpecial() === Item.get("green beer")) {
+      if (dailySpecial() === $item`green beer`) {
         const greenBeerAction: ConsumeAction =
           MakeConsumeAction(dailySpecial());
         greenBeerAction.cafeid = toInt(dailySpecial());
@@ -14104,11 +14003,11 @@ function auto_overdrinkGreenBeers(): void {
     //TODO craft green beer?
 
     const greenbeer_limit: number = min(
-      itemAmount(Item.get("green beer")),
-      (inebriety_left() + 11) / Item.get("green beer").inebriety,
+      itemAmount($item`green beer`),
+      (inebriety_left() + 11) / $item`green beer`.inebriety,
     );
     if (greenbeer_limit > 0) {
-      autoDrink(greenbeer_limit, Item.get("green beer"));
+      autoDrink(greenbeer_limit, $item`green beer`);
     }
 
     if (inebriety_left() === negativeLiver) {
@@ -14147,8 +14046,8 @@ export function auto_drinkNightcap(): void {
     return; //do not overdrink if we still have free fights we want to do. undesireable free fights are not counted by that function
   }
   function overdrunk(): boolean {
-    if (auto_have_familiar(Familiar.get("Stooper"))) {
-      if (Familiar.get("Stooper") === myFamiliar() && inebriety_left() < 0) {
+    if (auto_have_familiar($familiar`Stooper`)) {
+      if ($familiar`Stooper` === myFamiliar() && inebriety_left() < 0) {
         //stooper is current familiar and overdrunk
         return true;
       } else if (inebriety_left() < -1) {
@@ -14169,22 +14068,22 @@ export function auto_drinkNightcap(): void {
 
   const start_fam: Familiar = myFamiliar();
   if (
-    auto_have_familiar(Familiar.get("Stooper")) &&
-    start_fam !== Familiar.get("Stooper") &&
+    auto_have_familiar($familiar`Stooper`) &&
+    start_fam !== $familiar`Stooper` &&
     pathAllowsChangingFamiliar()
   ) {
     //check if path allows changing familiar
     //drinking does not break 100fam runs so do not use canChangeToFamiliar
-    useFamiliar(Familiar.get("Stooper"));
+    useFamiliar($familiar`Stooper`);
   }
 
-  if (itemAmount(Item.get("steel margarita")) > 0) {
+  if (itemAmount($item`steel margarita`) > 0) {
     //LX_steelOrgan may wait to drink the Steel Margarita for Billiards, if drunkenness never went over 12 it could have been skipped
     //this should only be possible in Avatar of West of Loathing?
     const wontBeOverdrunk: boolean =
-      inebriety_left() >= Item.get("steel margarita").inebriety - 5;
+      inebriety_left() >= $item`steel margarita`.inebriety - 5;
     if (wontBeOverdrunk) {
-      autoDrink(1, Item.get("steel margarita"));
+      autoDrink(1, $item`steel margarita`);
     }
   }
   //fill up remaining liver first. such as stooper space.
@@ -14213,7 +14112,7 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
       return fullness_left();
     }
     if (type_1 === "drink") {
-      if (in_quantumTerrarium() && myFamiliar() === Familiar.get("Stooper")) {
+      if (in_quantumTerrarium() && myFamiliar() === $familiar`Stooper`) {
         // we can't change familiars so don't drink to full liver as we'll be overdrunk when it changes familiar.
         return myInebriety() < inebrietyLimit() ? inebriety_left() - 1 : 0;
       } else {
@@ -14344,11 +14243,9 @@ export function auto_autoConsumeOne(action: ConsumeAction): boolean {
 
   let best_adv_per_fill: number = toInt(action.adventures / action.size);
   if (
-    Item.get([
-      "Boris's key lime pie",
-      "Jarlsberg's key lime pie",
-      "Sneaky Pete's key lime pie",
-    ]).includes(action.it)
+    $items`Boris's key lime pie, Jarlsberg's key lime pie, Sneaky Pete's key lime pie`.includes(
+      action.it,
+    )
   ) {
     //the turn value of key lime pie is an exception so use its desirability instead of base adventures, after cancelling any effects of obtention method
     if (action.howtoget === AUTO_OBTAIN_PULL) {
@@ -14480,11 +14377,11 @@ function auto_knapsackAutoConsume(type_1: string, simulate: boolean): boolean {
   }
   if (type_1 === "eat") {
     const applicable_seasoning: number = min(
-      itemAmount(Item.get("Special Seasoning")),
+      itemAmount($item`Special Seasoning`),
       consumable_count,
     );
     auto_log_info(
-      `(+${applicable_seasoning} from special seasoning (${itemAmount(Item.get("Special Seasoning"))} available)`,
+      `(+${applicable_seasoning} from special seasoning (${itemAmount($item`Special Seasoning`)} available)`,
       "blue",
     );
     total_adv += applicable_seasoning;
@@ -14494,7 +14391,7 @@ function auto_knapsackAutoConsume(type_1: string, simulate: boolean): boolean {
     auto_log_info(`(+${5} from Milk of Magnesium)`, "blue");
     total_adv += 5;
   }
-  if (type_1 === "drink" && auto_have_skill(Skill.get("The Ode to Booze"))) {
+  if (type_1 === "drink" && auto_have_skill($skill`The Ode to Booze`)) {
     auto_log_info(`(+${sum_space} from Ode to Booze)`, "blue");
     total_adv += sum_space;
   }
@@ -14557,35 +14454,7 @@ export function auto_spleenFamiliarAdvItemsPossessed(): number {
 
   let spleenFamiliarAdvItemsCount: number = 0;
 
-  for (const it of Item.get([
-    "Unconscious Collective Dream Jar",
-    "grim fairy tale",
-    "powdered gold",
-    "groose grease",
-    "beastly paste",
-    "bug paste",
-    "cosmic paste",
-    "oily paste",
-    "demonic paste",
-    "gooey paste",
-    "elemental paste",
-    "Crimbo paste",
-    "fishy paste",
-    "goblin paste",
-    "hippy paste",
-    "hobo paste",
-    "indescribably horrible paste",
-    "greasy paste",
-    "Mer-kin paste",
-    "orc paste",
-    "penguin paste",
-    "pirate paste",
-    "chlorophyll paste",
-    "slimy paste",
-    "ectoplasmic paste",
-    "strange paste",
-    "agua de vida",
-  ])) {
+  for (const it of $items`Unconscious Collective Dream Jar, grim fairy tale, powdered gold, groose grease, beastly paste, bug paste, cosmic paste, oily paste, demonic paste, gooey paste, elemental paste, Crimbo paste, fishy paste, goblin paste, hippy paste, hobo paste, indescribably horrible paste, greasy paste, Mer-kin paste, orc paste, penguin paste, pirate paste, chlorophyll paste, slimy paste, ectoplasmic paste, strange paste, agua de vida`) {
     if (
       itemAmount(it) > 0 &&
       auto_is_valid(it) &&
@@ -14633,40 +14502,11 @@ export function auto_chewAdventures(): boolean {
     }
   }
   //first the ones without the level 4 requirement because they give more stats
-  for (const it of Item.get([
-    "Unconscious Collective Dream Jar",
-    "grim fairy tale",
-    "powdered gold",
-    "groose grease",
-  ])) {
+  for (const it of $items`Unconscious Collective Dream Jar, grim fairy tale, powdered gold, groose grease`) {
     chooseCheapestTarget(it);
   }
   if (myLevel() >= 4 && target === Item.none) {
-    for (const it of Item.get([
-      "beastly paste",
-      "bug paste",
-      "cosmic paste",
-      "oily paste",
-      "demonic paste",
-      "gooey paste",
-      "elemental paste",
-      "Crimbo paste",
-      "fishy paste",
-      "goblin paste",
-      "hippy paste",
-      "hobo paste",
-      "indescribably horrible paste",
-      "greasy paste",
-      "Mer-kin paste",
-      "orc paste",
-      "penguin paste",
-      "pirate paste",
-      "chlorophyll paste",
-      "slimy paste",
-      "ectoplasmic paste",
-      "strange paste",
-      "agua de vida",
-    ])) {
+    for (const it of $items`beastly paste, bug paste, cosmic paste, oily paste, demonic paste, gooey paste, elemental paste, Crimbo paste, fishy paste, goblin paste, hippy paste, hobo paste, indescribably horrible paste, greasy paste, Mer-kin paste, orc paste, penguin paste, pirate paste, chlorophyll paste, slimy paste, ectoplasmic paste, strange paste, agua de vida`) {
       chooseCheapestTarget(it);
     }
   }
@@ -14683,14 +14523,11 @@ export function auto_chewAdventures(): boolean {
 
 export function auto_breakfastCounterVisit(): boolean {
   if (
-    itemAmount(Item.get("earthenware muffin tin")) > 0 ||
+    itemAmount($item`earthenware muffin tin`) > 0 ||
     (!toBoolean(getProperty("_muffinOrderedToday")) &&
-      Item.get([
-        "blueberry muffin",
-        "bran muffin",
-        "chocolate chip muffin",
-        "earthenware muffin tin",
-      ]).includes(toItem(getProperty("muffinOnOrder"))))
+      $items`blueberry muffin, bran muffin, chocolate chip muffin, earthenware muffin tin`.includes(
+        toItem(getProperty("muffinOnOrder")),
+      ))
   ) {
     auto_log_info$1(
       "Going to the breakfast counter to grab/order a breakfast muffin.",
@@ -14707,7 +14544,7 @@ export function auto_breakfastCounterVisit(): boolean {
     }
     if (
       !toBoolean(getProperty("_muffinOrderedToday")) &&
-      itemAmount(Item.get("earthenware muffin tin")) > 0
+      itemAmount($item`earthenware muffin tin`) > 0
     ) {
       auto_log_info$1(
         "Ordering a bran muffin for tomorrow to keep you regular.",
@@ -14725,20 +14562,20 @@ let $_still_targetToOrigin_originNeeded: Map<Item, Item> | undefined;
 export function still_targetToOrigin(target: Item): Item {
   //Nash Crosby's Still can convert Origin item into Target item. This function takes a target and tells us which origin it needs.
   $_still_targetToOrigin_originNeeded ??= new Map([
-    [Item.get("bottle of Calcutta Emerald"), Item.get("bottle of gin")],
-    [Item.get("bottle of Lieutenant Freeman"), Item.get("bottle of rum")],
-    [Item.get("bottle of Jorge Sinsonte"), Item.get("bottle of tequila")],
-    [Item.get("bottle of Definit"), Item.get("bottle of vodka")],
-    [Item.get("bottle of Domesticated Turkey"), Item.get("bottle of whiskey")],
-    [Item.get("boxed champagne"), Item.get("boxed wine")],
-    [Item.get("bottle of Pete's Sake"), Item.get("bottle of sake")],
-    [Item.get("bottle of Ooze-O"), Item.get("bottle of sewage schnapps")],
-    [Item.get("tangerine"), Item.get("grapefruit")],
-    [Item.get("kiwi"), Item.get("lemon")],
-    [Item.get("cocktail onion"), Item.get("olive")],
-    [Item.get("kumquat"), Item.get("orange")],
-    [Item.get("raspberry"), Item.get("strawberry")],
-    [Item.get("tonic water"), Item.get("soda water")],
+    [$item`bottle of Calcutta Emerald`, $item`bottle of gin`],
+    [$item`bottle of Lieutenant Freeman`, $item`bottle of rum`],
+    [$item`bottle of Jorge Sinsonte`, $item`bottle of tequila`],
+    [$item`bottle of Definit`, $item`bottle of vodka`],
+    [$item`bottle of Domesticated Turkey`, $item`bottle of whiskey`],
+    [$item`boxed champagne`, $item`boxed wine`],
+    [$item`bottle of Pete's Sake`, $item`bottle of sake`],
+    [$item`bottle of Ooze-O`, $item`bottle of sewage schnapps`],
+    [$item`tangerine`, $item`grapefruit`],
+    [$item`kiwi`, $item`lemon`],
+    [$item`cocktail onion`, $item`olive`],
+    [$item`kumquat`, $item`orange`],
+    [$item`raspberry`, $item`strawberry`],
+    [$item`tonic water`, $item`soda water`],
   ]);
   if ($_still_targetToOrigin_originNeeded.has(target)) {
     return (
@@ -14756,12 +14593,12 @@ export function still_targetToOrigin(target: Item): Item {
 export function stillReachable(): boolean {
   //can we reach Nash Crosby's Still.
   //stills_available() insufficient. it returns 0 if your class can not unlock still and 10 if your class can unlock it but did not.
-  if (myClass() === Class.get("Avatar of Sneaky Pete")) {
+  if (myClass() === $class`Avatar of Sneaky Pete`) {
     return true;
   }
   return (
     guildStoreAvailable() &&
-    Class.get(["Accordion Thief", "Disco Bandit"]).includes(myClass())
+    $classes`Accordion Thief, Disco Bandit`.includes(myClass())
   );
 }
 
@@ -14802,18 +14639,18 @@ export function prepare_food_xp_multi(): boolean {
     !in_wereprof() &&
     haveEffect(
       // don't want to use in WereProfessor
-      Effect.get("Ready to Eat"),
+      $effect`Ready to Eat`,
     ) <= 0 &&
-    auto_is_valid(Item.get("red rocket"))
+    auto_is_valid($item`red rocket`)
   ) {
     if (
-      itemAmount(Item.get("red rocket")) === 0 &&
-      myMeat() > npcPrice(Item.get("red rocket"))
+      itemAmount($item`red rocket`) === 0 &&
+      myMeat() > npcPrice($item`red rocket`)
     ) {
       //this is a more aggressive buying function than the one in pre_adv
-      retrieveItem(1, Item.get("red rocket"));
+      retrieveItem(1, $item`red rocket`);
     }
-    if (itemAmount(Item.get("red rocket")) > 0) {
+    if (itemAmount($item`red rocket`) > 0) {
       return false; //go use [red rocket] in combat before eating for XP
     }
   }
@@ -14821,15 +14658,15 @@ export function prepare_food_xp_multi(): boolean {
 
   equipStatgainIncreasers(
     new Map([
-      [Stat.get("Muscle"), true],
-      [Stat.get("Mysticality"), true],
-      [Stat.get("Moxie"), true],
+      [$stat`Muscle`, true],
+      [$stat`Mysticality`, true],
+      [$stat`Moxie`, true],
     ]),
     true,
   );
 
-  if (haveEffect(Effect.get("Ready to Eat")) > 0 || in_plumber()) {
-    pullXWhenHaveY(Item.get("Special Seasoning"), 1, 0); //automatically consumed with food and gives extra XP
+  if (haveEffect($effect`Ready to Eat`) > 0 || in_plumber()) {
+    pullXWhenHaveY($item`Special Seasoning`, 1, 0); //automatically consumed with food and gives extra XP
   }
 
   return true;
@@ -14885,8 +14722,8 @@ export function consumeStuff(): void {
   // guilty sprouts provide big stats. Eat if powerleveling
   if (
     isAboutToPowerlevel() &&
-    auto_is_valid(Item.get("guilty sprout")) &&
-    canEat$1(Item.get("guilty sprout")) &&
+    auto_is_valid($item`guilty sprout`) &&
+    canEat$1($item`guilty sprout`) &&
     myLevel() < 13 &&
     !in_tcrs()
   ) {
@@ -14896,13 +14733,13 @@ export function consumeStuff(): void {
       myFullness() === 0 &&
       !toBoolean(getProperty("_spaghettiBreakfastEaten"))
     ) {
-      autoEat(1, Item.get("spaghetti breakfast"));
+      autoEat(1, $item`spaghetti breakfast`);
     }
     // use food to level if ready for it
     if (prepare_food_xp_multi()) {
       // important for leveling. Attempt to pull if we don't have one
-      pullXWhenHaveY(Item.get("guilty sprout"), 1, 0);
-      autoEat(1, Item.get("guilty sprout"));
+      pullXWhenHaveY($item`guilty sprout`, 1, 0);
+      autoEat(1, $item`guilty sprout`);
     }
   }
   // If adventures at our reserve amount, or it's almost Rollover, we need to consume
@@ -14912,8 +14749,8 @@ export function consumeStuff(): void {
   ) {
     // always unequip stooper as only useful for roll over
     if (
-      myFamiliar() === Familiar.get("Stooper") &&
-      toFamiliar(getProperty("auto_100familiar")) !== Familiar.get("Stooper") &&
+      myFamiliar() === $familiar`Stooper` &&
+      toFamiliar(getProperty("auto_100familiar")) !== $familiar`Stooper` &&
       pathAllowsChangingFamiliar()
     ) {
       //check path allows changing of familiars
@@ -14950,7 +14787,7 @@ export function shouldUseSpleenForLowPriority(): boolean {
   let spleen_likely_to_use: number = 0;
   spleen_likely_to_use += 2 * auto_CMCconsultsLeft();
   spleen_likely_to_use +=
-    Item.get("dieting pill").spleen * availableAmount(Item.get("dieting pill"));
+    $item`dieting pill`.spleen * availableAmount($item`dieting pill`);
 
   return spleen_left() > spleen_likely_to_use;
 }

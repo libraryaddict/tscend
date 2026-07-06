@@ -4,10 +4,8 @@ import {
   cliExecute,
   containsText,
   council,
-  Effect,
   equip,
   equippedAmount,
-  Familiar,
   getProperty,
   haveSkill,
   inHardcore,
@@ -16,21 +14,29 @@ import {
   Item,
   itemAmount,
   Location,
-  Monster,
   myDaycount,
   myMp,
   myPrimestat,
   myTurncount,
-  Phylum,
   runChoice,
   setProperty,
-  Skill,
-  Slot,
-  Stat,
   toBoolean,
   toInt,
   visitUrl,
 } from "kolmafia";
+import {
+  $effect,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $monster,
+  $phylum,
+  $skill,
+  $slot,
+  $stat,
+} from "libram";
+
 import { auto_buyUpTo, canPull$1, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
 import { buffMaintain$4 } from "../auto_buff";
@@ -87,10 +93,10 @@ export function L10_plantThatBean(): boolean {
     setProperty("questL10Garbage", "step1");
     return true;
   }
-  if (itemAmount(Item.get("enchanted bean")) > 0) {
+  if (itemAmount($item`enchanted bean`) > 0) {
     if (auto_haveSpringShoes()) {
       // shoes gives stats when planting bean, but must be equipped
-      equip(Slot.get("acc3"), Item.get("spring shoes")); //free stats
+      equip($slot`acc3`, $item`spring shoes`); //free stats
     }
     visitUrl("place.php?whichplace=plains&action=garbage_grounds");
     return true;
@@ -103,7 +109,7 @@ export function L10_plantThatBean(): boolean {
         "No enchanted bean. Getting one from The Beanbat Chamber.",
         "blue",
       );
-      return autoAdv$2(Location.get("The Beanbat Chamber"));
+      return autoAdv$2($location`The Beanbat Chamber`);
     }
   }
   return false;
@@ -125,8 +131,8 @@ export function L10_airship(): boolean {
   }
 
   if (
-    isBanished(Phylum.get("dude")) &&
-    !possessEquipment(Item.get("amulet of extreme plot significance"))
+    isBanished($phylum`dude`) &&
+    !possessEquipment($item`amulet of extreme plot significance`)
   ) {
     setProperty("screechDelay", "dude");
     return false; //Probably should delay the Airship to try for a Quiet Healer
@@ -134,26 +140,26 @@ export function L10_airship(): boolean {
 
   auto_log_info("The Penultimate Fantasy Airship - unlocking Castle.", "blue");
   if (myMp() > 60 || considerGrimstoneGolem(true)) {
-    handleBjornify(Familiar.get("Grimstone Golem"));
+    handleBjornify($familiar`Grimstone Golem`);
   }
 
   if (
     myDaycount() === 1 &&
     toInt(getProperty("_hipsterAdv")) < 7 &&
-    isUnrestricted(Familiar.get("Artistic Goth Kid")) &&
-    auto_have_familiar(Familiar.get("Artistic Goth Kid"))
+    isUnrestricted($familiar`Artistic Goth Kid`) &&
+    auto_have_familiar($familiar`Artistic Goth Kid`)
   ) {
     auto_log_info(`Hipster Adv: ${getProperty("_hipsterAdv")}`, "blue");
-    handleFamiliar$1(Familiar.get("Artistic Goth Kid"));
+    handleFamiliar$1($familiar`Artistic Goth Kid`);
   }
 
-  if (Location.get("The Penultimate Fantasy Airship").turnsSpent < 10) {
+  if ($location`The Penultimate Fantasy Airship`.turnsSpent < 10) {
     bat_formBats$1();
   }
 
   if (
     isActuallyEd() &&
-    Location.get("The Penultimate Fantasy Airship").turnsSpent < 1
+    $location`The Penultimate Fantasy Airship`.turnsSpent < 1
   ) {
     // temp workaround for mafia bug.
     // see https://kolmafia.us/showthread.php?24767-Quest-tracking-preferences-change-request(s)&p=156733&viewfull=1#post156733
@@ -163,10 +169,7 @@ export function L10_airship(): boolean {
 
   if (auto_canHabitat() && toInt(getProperty("breathitinCharges")) < 1) {
     // save turns in the airship with inherently free combats.
-    setProperty(
-      "auto_habitatMonster",
-      Monster.get("Eldritch Tentacle").toString(),
-    );
+    setProperty("auto_habitatMonster", $monster`Eldritch Tentacle`.toString());
     if (fightScienceTentacle()) {
       return true;
     } else {
@@ -174,10 +177,10 @@ export function L10_airship(): boolean {
     }
   }
 
-  if (handleFamiliar$1(Familiar.get("Red-Nosed Snapper"))) {
-    auto_changeSnapperPhylum(Phylum.get("dude"));
+  if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
+    auto_changeSnapperPhylum($phylum`dude`);
   }
-  autoAdv$2(Location.get("The Penultimate Fantasy Airship"));
+  autoAdv$2($location`The Penultimate Fantasy Airship`);
   return true;
 }
 
@@ -189,7 +192,7 @@ export function castleBasementChoiceHandler(choice: number): void {
     // You Don't Mess Around with Gym (The Castle in the Clouds in the Sky (Basement))
     if (
       internalQuestStatus("questL10Garbage") < 8 &&
-      equippedAmount(Item.get("amulet of extreme plot significance")) > 0
+      equippedAmount($item`amulet of extreme plot significance`) > 0
     ) {
       runChoice(4); // with amulet equipped, open the ground floor
     } else {
@@ -197,7 +200,7 @@ export function castleBasementChoiceHandler(choice: number): void {
     }
   } else if (choice === 671) {
     // Out in the Open Source (The Castle in the Clouds in the Sky (Basement))
-    if (itemAmount(Item.get("massive dumbbell")) > 0) {
+    if (itemAmount($item`massive dumbbell`) > 0) {
       runChoice(1); // with dumbbell, open the ground floor
     } else {
       runChoice(4); // without dumbbell, go to You Don't Mess Around with Gym (#670)
@@ -212,15 +215,15 @@ export function L10_basement(): boolean {
     return false;
   }
 
-  if (possessEquipment(Item.get("amulet of extreme plot significance"))) {
-    if (!auto_can_equip(Item.get("amulet of extreme plot significance"))) {
+  if (possessEquipment($item`amulet of extreme plot significance`)) {
+    if (!auto_can_equip($item`amulet of extreme plot significance`)) {
       return false;
     }
   } else if (
-    possessEquipment(Item.get("titanium assault umbrella")) &&
+    possessEquipment($item`titanium assault umbrella`) &&
     !in_wotsf() &&
     !is_boris() &&
-    !auto_can_equip(Item.get("titanium assault umbrella"))
+    !auto_can_equip($item`titanium assault umbrella`)
   ) {
     return false;
   }
@@ -232,7 +235,7 @@ export function L10_basement(): boolean {
   auto_log_info("Castle (Basement) - Unlocking Ground Floor.", "blue");
 
   if (!inHardcore()) {
-    const amulet: Item = Item.get("amulet of extreme plot significance");
+    const amulet: Item = $item`amulet of extreme plot significance`;
     if (
       !possessEquipment(amulet) &&
       auto_can_equip(amulet) &&
@@ -243,36 +246,36 @@ export function L10_basement(): boolean {
 
     if (!possessEquipment(amulet)) {
       //only consider umbrella if getting amulet fails somehow
-      const umbrella: Item = Item.get("titanium assault umbrella");
+      const umbrella: Item = $item`titanium assault umbrella`;
       if (
         !possessEquipment(umbrella) &&
         auto_can_equip(umbrella) &&
         canPull$1(umbrella) &&
-        !possessEquipment(Item.get("unbreakable umbrella"))
+        !possessEquipment($item`unbreakable umbrella`)
       ) {
         pullXWhenHaveY(umbrella, 1, 0);
       }
     }
   }
 
-  if (myPrimestat() === Stat.get("Muscle")) {
-    auto_buyUpTo(1, Item.get("Ben-Gal&trade; Balm"));
-    buffMaintain$4(Effect.get("Go Get 'Em, Tiger!"));
+  if (myPrimestat() === $stat`Muscle`) {
+    auto_buyUpTo(1, $item`Ben-Gal™ Balm`);
+    buffMaintain$4($effect`Go Get 'Em\, Tiger!`);
   }
-  auto_buyUpTo(1, Item.get("hair spray"));
-  buffMaintain$4(Effect.get("Butt-Rock Hair"));
+  auto_buyUpTo(1, $item`hair spray`);
+  buffMaintain$4($effect`Butt-Rock Hair`);
 
-  if (in_gnoob() && auto_have_familiar(Familiar.get("Robortender"))) {
+  if (in_gnoob() && auto_have_familiar($familiar`Robortender`)) {
     if (
-      !haveSkill(Skill.get("Bendable Knees")) &&
-      itemAmount(Item.get("bottle of gregnadigne")) === 0
+      !haveSkill($skill`Bendable Knees`) &&
+      itemAmount($item`bottle of gregnadigne`) === 0
     ) {
-      handleFamiliar$1(Familiar.get("Robortender"));
+      handleFamiliar$1($familiar`Robortender`);
     }
   }
 
   const NCForced: boolean = auto_forceNextNoncombat$1(
-    Location.get("The Castle in the Clouds in the Sky (Basement)"),
+    $location`The Castle in the Clouds in the Sky (Basement)`,
   );
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
@@ -282,12 +285,12 @@ export function L10_basement(): boolean {
   ) {
     return false;
   }
-  if (!autoEquip$1(Item.get("amulet of extreme plot significance"))) {
-    if (!autoEquip$1(Item.get("unbreakable umbrella"))) {
-      autoEquip$1(Item.get("titanium assault umbrella"));
+  if (!autoEquip$1($item`amulet of extreme plot significance`)) {
+    if (!autoEquip$1($item`unbreakable umbrella`)) {
+      autoEquip$1($item`titanium assault umbrella`);
     }
   }
-  autoAdv$1(1, Location.get("The Castle in the Clouds in the Sky (Basement)"));
+  autoAdv$1(1, $location`The Castle in the Clouds in the Sky (Basement)`);
 
   return true;
 }
@@ -298,36 +301,32 @@ export function L10_ground(): boolean {
   }
 
   if (
-    !lar_repeat(
-      Location.get("The Castle in the Clouds in the Sky (Ground Floor)"),
-    )
+    !lar_repeat($location`The Castle in the Clouds in the Sky (Ground Floor)`)
   ) {
     return false;
   }
 
   if (
-    canBurnDelay(
-      Location.get("The Castle in the Clouds in the Sky (Ground Floor)"),
-    )
+    canBurnDelay($location`The Castle in the Clouds in the Sky (Ground Floor)`)
   ) {
     return false;
   }
 
   auto_log_info("Castle (Ground Floor) - Unlocking Top Floor.", "blue");
 
-  auto_sourceTerminalEducate(Skill.get("Extract"), Skill.get("Portscan"));
+  auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
 
-  if (in_gnoob() && auto_have_familiar(Familiar.get("Robortender"))) {
+  if (in_gnoob() && auto_have_familiar($familiar`Robortender`)) {
     if (
-      !haveSkill(Skill.get("Bendable Knees")) &&
-      itemAmount(Item.get("bottle of gregnadigne")) === 0
+      !haveSkill($skill`Bendable Knees`) &&
+      itemAmount($item`bottle of gregnadigne`) === 0
     ) {
-      handleFamiliar$1(Familiar.get("Robortender"));
+      handleFamiliar$1($familiar`Robortender`);
     }
   }
 
   return autoAdv$2(
-    Location.get("The Castle in the Clouds in the Sky (Ground Floor)"),
+    $location`The Castle in the Clouds in the Sky (Ground Floor)`,
   );
 }
 
@@ -340,15 +339,15 @@ export function L10_topFloor(): boolean {
   }
 
   if (
-    possessEquipment(Item.get("Mohawk wig")) &&
-    !auto_can_equip(Item.get("Mohawk wig"))
+    possessEquipment($item`Mohawk wig`) &&
+    !auto_can_equip($item`Mohawk wig`)
   ) {
     return false;
   }
 
   if (
     shenShouldDelayZone(
-      Location.get("The Castle in the Clouds in the Sky (Top Floor)"),
+      $location`The Castle in the Clouds in the Sky (Top Floor)`,
     )
   ) {
     auto_log_debug$1("Delaying Castle (Top Floor) in case of Shen.");
@@ -358,15 +357,15 @@ export function L10_topFloor(): boolean {
   auto_log_info("Castle (Top Floor) - Finishing L10 Quest.", "blue");
 
   if (
-    !possessEquipment(Item.get("Mohawk wig")) &&
-    auto_can_equip(Item.get("Mohawk wig")) &&
-    canPull$1(Item.get("Mohawk wig"))
+    !possessEquipment($item`Mohawk wig`) &&
+    auto_can_equip($item`Mohawk wig`) &&
+    canPull$1($item`Mohawk wig`)
   ) {
-    pullXWhenHaveY(Item.get("Mohawk wig"), 1, 0);
+    pullXWhenHaveY($item`Mohawk wig`, 1, 0);
   }
 
   const NCForced: boolean = auto_forceNextNoncombat$1(
-    Location.get("The Castle in the Clouds in the Sky (Top Floor)"),
+    $location`The Castle in the Clouds in the Sky (Top Floor)`,
   );
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
@@ -376,8 +375,8 @@ export function L10_topFloor(): boolean {
   ) {
     return false;
   }
-  autoEquip$1(Item.get("Mohawk wig"));
-  autoAdv$1(1, Location.get("The Castle in the Clouds in the Sky (Top Floor)"));
+  autoEquip$1($item`Mohawk wig`);
+  autoAdv$1(1, $location`The Castle in the Clouds in the Sky (Top Floor)`);
 
   if (internalQuestStatus("questL10Garbage") > 9) {
     council();
@@ -394,10 +393,10 @@ export function castleTopFloorChoiceHandler(choice: number): void {
     // Melon Collie and the Infinite Lameness (The Castle in the Clouds in the Sky (Top Floor))
     if (
       internalQuestStatus("questL10Garbage") < 10 &&
-      itemAmount(Item.get("drum 'n' bass 'n' drum 'n' bass record")) > 0
+      itemAmount($item`drum 'n' bass 'n' drum 'n' bass record`) > 0
     ) {
       runChoice(2); // if quest not done and have the record, complete the quest
-    } else if (in_koe() && itemAmount(Item.get("model airship")) === 0) {
+    } else if (in_koe() && itemAmount($item`model airship`) === 0) {
       runChoice(1); // if we're in koe we only want to go to Copper Feel if we can complete the quest, so fight a goth giant otherwise
     } else {
       runChoice(4); // moves to Copper Feel (#677) in all other scenarios
@@ -405,7 +404,7 @@ export function castleTopFloorChoiceHandler(choice: number): void {
   } else if (choice === 676) {
     // Flavor of a Raver (The Castle in the Clouds in the Sky (Top Floor))
     if (
-      equippedAmount(Item.get("Mohawk wig")) > 0 ||
+      equippedAmount($item`Mohawk wig`) > 0 ||
       internalQuestStatus("questL10Garbage") >= 10
     ) {
       runChoice(4); // if quest not done and have mohawk wig on, or quest is done, move to Yeah, You're for Me (#678)
@@ -416,12 +415,12 @@ export function castleTopFloorChoiceHandler(choice: number): void {
     // Copper Feel (The Castle in the Clouds in the Sky (Top Floor))
     if (
       internalQuestStatus("questL10Garbage") < 10 &&
-      itemAmount(Item.get("model airship")) > 0
+      itemAmount($item`model airship`) > 0
     ) {
       runChoice(1); // if quest not done and have model airship, complete quest
     } else if (
       (internalQuestStatus("questL10Garbage") < 10 &&
-        itemAmount(Item.get("drum 'n' bass 'n' drum 'n' bass record")) > 0) ||
+        itemAmount($item`drum 'n' bass 'n' drum 'n' bass record`) > 0) ||
       in_koe()
     ) {
       runChoice(4); // if quest not done and have the record, move to Melon Collie (#675). HITS is open in KoE so no need to grab rocket
@@ -432,7 +431,7 @@ export function castleTopFloorChoiceHandler(choice: number): void {
     // Yeah, You're for Me, Punk Rock Giant (The Castle in the Clouds in the Sky (Top Floor))
     if (
       internalQuestStatus("questL10Garbage") < 10 &&
-      equippedAmount(Item.get("Mohawk wig")) > 0
+      equippedAmount($item`Mohawk wig`) > 0
     ) {
       runChoice(1); // if quest not done and mohawk wig equipped, finish quest
     } else if (internalQuestStatus("questL10Garbage") < 10) {
@@ -463,14 +462,14 @@ export function L10_holeInTheSkyUnlock(): boolean {
   if (!toBoolean(getProperty("auto_holeinthesky"))) {
     return false;
   }
-  if (itemAmount(Item.get("steam-powered model rocketship")) > 0) {
+  if (itemAmount($item`steam-powered model rocketship`) > 0) {
     setProperty("auto_holeinthesky", false.toString());
     return false;
   }
   LX_buyStarKeyParts();
   const day: number = toInt(getProperty("shenInitiationDay"));
   const shenLocs: Map<Location, boolean> = shenSnakeLocations(day, 0);
-  if (!needStarKey() && !shenLocs.has(Location.get("The Hole in the Sky"))) {
+  if (!needStarKey() && !shenLocs.has($location`The Hole in the Sky`)) {
     // we force auto_holeinthesky to true in L11_shenCopperhead() as Ed if Shen sends us to the Hole in the Sky
     // as otherwise the zone isn't required at all for Ed.
     // Should also handle situations where the player manually got the star key before unlocking Shen.
@@ -481,7 +480,7 @@ export function L10_holeInTheSkyUnlock(): boolean {
 
   if (
     shenShouldDelayZone(
-      Location.get("The Castle in the Clouds in the Sky (Top Floor)"),
+      $location`The Castle in the Clouds in the Sky (Top Floor)`,
     )
   ) {
     auto_log_debug$1("Delaying unlocking Hole in the Sky in case of Shen.");
@@ -491,7 +490,7 @@ export function L10_holeInTheSkyUnlock(): boolean {
   auto_log_info("Castle (Top Floor) - Opening the Hole in the Sky.", "blue");
   // set location "wrong" so that LX_ForceNC can properly direct back to this function (L10_holeInTheSkyUnlock)
   const NCForced: boolean = auto_forceNextNoncombat$1(
-    Location.get("The Hole in the Sky"),
+    $location`The Hole in the Sky`,
   );
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
@@ -502,7 +501,7 @@ export function L10_holeInTheSkyUnlock(): boolean {
     return false;
   }
 
-  autoAdv$1(1, Location.get("The Castle in the Clouds in the Sky (Top Floor)"));
+  autoAdv$1(1, $location`The Castle in the Clouds in the Sky (Top Floor)`);
 
   return true;
 }
@@ -522,10 +521,7 @@ export function L10_rainOnThePlains(): boolean {
 }
 
 export function L10_needUmbrella(): boolean {
-  for (const it of Item.get([
-    "titanium assault umbrella",
-    "unbreakable umbrella",
-  ])) {
+  for (const it of $items`titanium assault umbrella, unbreakable umbrella`) {
     if (auto_is_valid(it) && availableAmount(it) > 0) {
       return false;
     }

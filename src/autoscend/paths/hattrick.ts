@@ -5,29 +5,27 @@ import {
   Item,
   myPath,
   numericModifier,
-  Path,
-  Slot,
   toInt,
 } from "kolmafia";
+import { $items, $path, $slot } from "libram";
+
 import { auto_getAllEquipabble$1 } from "../auto_equipment";
 import { auto_can_equip } from "../auto_util";
 
 //Defined in autoscend/paths/hattrick.ash
 export function in_hattrick(): boolean {
-  return myPath() === Path.get("Hat Trick");
+  return myPath() === $path`Hat Trick`;
 }
 
 export function ht_equip_hats(): boolean {
   if (!in_hattrick()) {
     return false;
   }
-  const availableHats: Map<Item, number> = auto_getAllEquipabble$1(
-    Slot.get("hat"),
-  );
+  const availableHats: Map<Item, number> = auto_getAllEquipabble$1($slot`hat`);
   for (const [it, i] of availableHats) {
     let skip: boolean = false;
     //don't equip the following because they can mess us up later in the run or are useful for consumption (+/- combat and Thorns)
-    for (const bl of Item.get(["Mer-kin sneakmask", "coconut shell"])) {
+    for (const bl of $items`Mer-kin sneakmask, coconut shell`) {
       if (it === bl) {
         skip = true;
       }

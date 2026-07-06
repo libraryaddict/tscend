@@ -2,7 +2,6 @@ import {
   availableAmount,
   canEquip,
   ceil,
-  Effect,
   equip,
   Familiar,
   familiarWeight,
@@ -11,7 +10,6 @@ import {
   haveSkill,
   Item,
   itemAmount,
-  Location,
   min,
   Modifier,
   Monster,
@@ -20,7 +18,6 @@ import {
   myLevel,
   myPath,
   numericModifier,
-  Path,
   pullsRemaining,
   refreshStatus,
   Skill,
@@ -34,6 +31,19 @@ import {
   useFamiliar,
   visitUrl,
 } from "kolmafia";
+import {
+  $effect,
+  $familiar,
+  $familiars,
+  $item,
+  $items,
+  $location,
+  $monster,
+  $path,
+  $skill,
+  $slot,
+} from "libram";
+
 import { auto_doTempleSummit } from "../../autoscend";
 import { pullXWhenHaveY } from "../auto_acquire";
 import {
@@ -105,7 +115,7 @@ $_f_ZOOPART_R_FOOT ??= 11;
 
 //Defined in autoscend/paths/zootomist.ash
 export function in_zootomist(): boolean {
-  return myPath() === Path.get("Z is for Zootomist");
+  return myPath() === $path`Z is for Zootomist`;
 }
 
 function zoo_specimenPreparationsLeft(): number {
@@ -145,28 +155,25 @@ export function zoo_startPulls(): void {
     return;
   }
   if (
-    !haveSkill(Skill.get("Just the Facts")) &&
-    auto_is_valid$2(Skill.get("Just the Facts"))
+    !haveSkill($skill`Just the Facts`) &&
+    auto_is_valid$2($skill`Just the Facts`)
   ) {
-    pullXWhenHaveY(Item.get("book of facts (dog-eared)"), 1, 0);
-    if (availableAmount(Item.get("book of facts (dog-eared)")) > 0) {
-      use(Item.get("book of facts (dog-eared)"));
+    pullXWhenHaveY($item`book of facts (dog-eared)`, 1, 0);
+    if (availableAmount($item`book of facts (dog-eared)`) > 0) {
+      use($item`book of facts (dog-eared)`);
     }
   }
   if (
-    !haveSkill(Skill.get("Perpetrate Mild Evil")) &&
-    auto_is_valid$2(Skill.get("Perpetrate Mild Evil"))
+    !haveSkill($skill`Perpetrate Mild Evil`) &&
+    auto_is_valid$2($skill`Perpetrate Mild Evil`)
   ) {
-    pullXWhenHaveY(Item.get("Pocket Guide to Mild Evil (used)"), 1, 0);
-    if (availableAmount(Item.get("Pocket Guide to Mild Evil (used)")) > 0) {
-      use(Item.get("Pocket Guide to Mild Evil (used)"));
+    pullXWhenHaveY($item`Pocket Guide to Mild Evil (used)`, 1, 0);
+    if (availableAmount($item`Pocket Guide to Mild Evil (used)`) > 0) {
+      use($item`Pocket Guide to Mild Evil (used)`);
     }
   }
-  if (
-    availableAmount(Item.get("iFlail")) === 0 &&
-    auto_is_valid(Item.get("iFlail"))
-  ) {
-    pullXWhenHaveY(Item.get("iFlail"), 1, 0);
+  if (availableAmount($item`iFlail`) === 0 && auto_is_valid($item`iFlail`)) {
+    pullXWhenHaveY($item`iFlail`, 1, 0);
   }
 }
 
@@ -190,7 +197,7 @@ export function zoo_d2Pulls(): void {
       alternatives,
       m,
     );
-    const islot: number = s === Slot.get("acc1") ? 2 : 0; // we want to compare to our third best item for accessories
+    const islot: number = s === $slot`acc1` ? 2 : 0; // we want to compare to our third best item for accessories
     const curr_best_in_slot: Item =
       ranked_alternatives.size > islot
         ? (ranked_alternatives.get(islot) ??
@@ -207,18 +214,7 @@ export function zoo_d2Pulls(): void {
     return 0;
   }
   // Good ML boosting items. Vinyl Shield is lower than you might think because it can't be wielded with unstable fulminate.
-  for (const it of Item.get([
-    "hairshirt",
-    "hockey stick of furious angry rage",
-    "stainless steel scarf",
-    "porcelain pelerine",
-    "bakelite backpack",
-    "brown pirate pants",
-    "Mer-kin headguard",
-    "vinyl shield",
-    "red shirt",
-    "iFlail",
-  ])) {
+  for (const it of $items`hairshirt, hockey stick of furious angry rage, stainless steel scarf, porcelain pelerine, bakelite backpack, brown pirate pants, Mer-kin headguard, vinyl shield, red shirt, iFlail`) {
     if (curr_ml >= ml_target) {
       break;
     }
@@ -297,8 +293,8 @@ function zoo_isGrafted(f: Familiar): boolean {
 function zoo_getBodyPartPriority(): Map<number, number> {
   let priority: Map<number, number> = new Map();
   if (
-    auto_have_familiar(Familiar.get("Burly Bodyguard")) ||
-    zoo_isGrafted(Familiar.get("Burly Bodyguard"))
+    auto_have_familiar($familiar`Burly Bodyguard`) ||
+    zoo_isGrafted($familiar`Burly Bodyguard`)
   ) {
     priority = new Map([
       [0, $_f_ZOOPART_L_NIPPLE],
@@ -531,334 +527,8 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {
     ["heal", 5],
     ["sniff", 5],
   ]);
-  const blacklistFams: Familiar[] = Familiar.get([
-    "Reassembled Blackbird",
-    "Reconstituted Crow",
-    "Homemade Robot",
-  ]);
-  for (const fam of Familiar.get([
-    "Mosquito",
-    "Leprechaun",
-    "Levitating Potato",
-    "Angry Goat",
-    "Sabre-Toothed Lime",
-    "Fuzzy Dice",
-    "Spooky Pirate Skeleton",
-    "Barrrnacle",
-    "Howling Balloon Monkey",
-    "Stab Bat",
-    "Grue",
-    "Blood-Faced Volleyball",
-    "Ghuol Whelp",
-    "Baby Gravy Fairy",
-    "Cocoabo",
-    "Star Starfish",
-    "Hovering Sombrero",
-    "Ghost Pickle on a Stick",
-    "Killer Bee",
-    "Whirling Maple Leaf",
-    "Coffee Pixie",
-    "Cheshire Bat",
-    "Jill-O-Lantern",
-    "Hand Turkey",
-    "Crimbo Elf",
-    "Hanukkimbo Dreidl",
-    "Baby Yeti",
-    "Feather Boa Constrictor",
-    "Emo Squid",
-    "Personal Raincloud",
-    "Clockwork Grapefruit",
-    "MagiMechTech MicroMechaMech",
-    "Flaming Gravy Fairy",
-    "Frozen Gravy Fairy",
-    "Stinky Gravy Fairy",
-    "Spooky Gravy Fairy",
-    "Inflatable Dodecapede",
-    "Pygmy Bugbear Shaman",
-    "Doppelshifter",
-    "Attention-Deficit Demon",
-    "Cymbal-Playing Monkey",
-    "Temporal Riftlet",
-    "Sweet Nutcracker",
-    "Pet Rock",
-    "Snowy Owl",
-    "Teddy Bear",
-    "Ninja Pirate Zombie Robot",
-    "Sleazy Gravy Fairy",
-    "Wild Hare",
-    "Wind-up Chattering Teeth",
-    "Spirit Hobo",
-    "Astral Badger",
-    "Comma Chameleon",
-    "Misshapen Animal Skeleton",
-    "Scary Death Orb",
-    "Jitterbug",
-    "Nervous Tick",
-    "Reassembled Blackbird",
-    "Origami Towel Crane",
-    "Ninja Snowflake",
-    "Evil Teddy Bear",
-    "Toothsome Rock",
-    "Ancient Yuletide Troll",
-    "Dandy Lion",
-    "O.A.F.",
-    "Penguin Goodfella",
-    "Jumpsuited Hound Dog",
-    "Green Pixie",
-    "Ragamuffin Imp",
-    "Exotic Parrot",
-    "Wizard Action Figure",
-    "Gluttonous Green Ghost",
-    "Casagnova Gnome",
-    "Hunchbacked Minion",
-    "Crimbo P. R. E. S. S. I. E.",
-    "Bulky Buddy Box",
-    "Teddy Borg",
-    "RoboGoose",
-    "El Vibrato Megadrone",
-    "Mad Hatrack",
-    "Adorable Seal Larva",
-    "Untamed Turtle",
-    "Animated Macaroni Duck",
-    "Pet Cheezling",
-    "Autonomous Disco Ball",
-    "Mariachi Chihuahua",
-    "Hobo Monkey",
-    "Llama Lama",
-    "Cotton Candy Carnie",
-    "Disembodied Hand",
-    "Black Cat",
-    "Uniclops",
-    "Psychedelic Bear",
-    "Baby Mutant Rattlesnake",
-    "Mutant Fire Ant",
-    "Mutant Cactus Bud",
-    "Mutant Gila Monster",
-    "Cuddlefish",
-    "Sugar Fruit Fairy",
-    "Imitation Crab",
-    "Pair of Ragged Claws",
-    "Magic Dragonfish",
-    "Frumious Bandersnatch",
-    "Midget Clownfish",
-    "Syncopated Turtle",
-    "Grinning Turtle",
-    "Purse Rat",
-    "Wereturtle",
-    "Baby Sandworm",
-    "Slimeling",
-    "He-Boulder",
-    "Rock Lobster",
-    "Urchin Urchin",
-    "Grouper Groupie",
-    "Squamous Gibberer",
-    "Dancing Frog",
-    "Chauvinist Pig",
-    "Stocking Mimic",
-    "Snow Angel",
-    "Jack-in-the-Box",
-    "BRICKO chick",
-    "Baby Bugged Bugbear",
-    "Money-Making Goblin",
-    "Floating Eye",
-    "Vampire Bat",
-    "Oyster Bunny",
-    "Egg Benedict",
-    "Bank Piggy",
-    "Worm Doctor",
-    "Snowhitman",
-    "Plastic Grocery Bag",
-    "Underworld Bonsai",
-    "Rogue Program",
-    "Mini-Hipster",
-    "Pottery Barn Owl",
-    "Hippo Ballerina",
-    "Knob Goblin Organ Grinder",
-    "Piano Cat",
-    "Dramatic Hedgehog",
-    "Smiling Rat",
-    "Robot Reindeer",
-    "Holiday Log",
-    "Obtuse Angel",
-    "Reconstituted Crow",
-    "Li'l Xenomorph",
-    "Dataspider",
-    "Pair of Stomping Boots",
-    "Feral Kobold",
-    "Fancypants Scarecrow",
-    "Bloovian Groose",
-    "Blavious Kloop",
-    "Peppermint Rhino",
-    "Tickle-Me Emilio",
-    "Steam-Powered Cheerleader",
-    "Happy Medium",
-    "Artistic Goth Kid",
-    "Flaming Face",
-    "Reagnimated Gnome",
-    "Hovering Skull",
-    "Mini-Skulldozer",
-    "Angry Jung Man",
-    "Unconscious Collective",
-    "Nanorhino",
-    "Oily Woim",
-    "Homemade Robot",
-    "MiniMechaElf",
-    "Gelatinous Cubeling",
-    "Adorable Space Buddy",
-    "Nosy Nose",
-    "Mini-Adventurer",
-    "Mechanical Songbird",
-    "Reanimated Reanimator",
-    "Warbear Drone",
-    "Grimstone Golem",
-    "Grim Brother",
-    "Miniature Sword & Martini Guy",
-    "Putty Buddy",
-    "Twitching Space Critter",
-    "Galloping Grill",
-    "Helix Fossil",
-    "Xiblaxian Holo-Companion",
-    "Baby Z-Rex",
-    "Fist Turkey",
-    "Crimbo Shrub",
-    "Mini-Crimbot",
-    "Topiary Skunk",
-    "Golden Monkey",
-    "Adventurous Spelunker",
-    "Sludgepuppy",
-    "Baby Mayonnaise Wasp",
-    "Puck Man",
-    "Ms. Puck Man",
-    "Lil' Barrel Mimic",
-    "Machine Elf",
-    "Choctopus",
-    "Rockin' Robin",
-    "Restless Cow Skull",
-    "Intergnat",
-    "Software Bug",
-    "Bark Scorpion",
-    "Trick-or-Treating Tot",
-    "Chocolate Lab",
-    "Bad Vibe",
-    "Space Jellyfish",
-    "Optimistic Candle",
-    "Robortender",
-    "Cute Meteor",
-    "XO Skeleton",
-    "Garbage Fire",
-    "Globmule",
-    "Bluzzard",
-    "Faux",
-    "Sledgehamster",
-    "Pimpsqueak",
-    "Pillowbug",
-    "Dressage",
-    "Sequestrian",
-    "Carpricorn",
-    "Turpin",
-    "Morphan",
-    "Cycloney",
-    "Peaclock",
-    "Turtive",
-    "Lepardner",
-    "Aiolion",
-    "Waifuton",
-    "Gorillape",
-    "Wendtigo",
-    "Snoutlet",
-    "Ruffalo",
-    "Vaporpoise",
-    "Ghosprey",
-    "Straypler",
-    "Flan",
-    "Mustardigrade",
-    "Ched",
-    "Gazelleton",
-    "Mechamelion",
-    "Bicycle",
-    "Vamprey",
-    "Wullabye",
-    "Nursine",
-    "Cantelope",
-    "Ungulant",
-    "Caramel",
-    "Oppossum",
-    "Amanitee",
-    "Smashmoth",
-    "Vulgure",
-    "Squib",
-    "Trafikoan",
-    "Slotter",
-    "Shudder",
-    "Glamare",
-    "Unspeakachu",
-    "Stooper",
-    "Disgeist",
-    "Bowlet",
-    "Cornbeefadon",
-    "Mu",
-    "God Lobster",
-    "Cat Burglar",
-    "Party Mouse",
-    "Yule Hound",
-    "Sausage Golem",
-    "Elf Operative",
-    "Plastic Pirate Skull",
-    "Pet Coral",
-    "Pocket Professor",
-    "Red-Nosed Snapper",
-    "Antique Nutcracker",
-    "Piranha Plant",
-    "Left-Hand Man",
-    "Melodramedary",
-    "Ghost of Crimbo Carols",
-    "Ghost of Crimbo Cheer",
-    "Ghost of Crimbo Commerce",
-    "Shorter-Order Cook",
-    "Vampire Vintner",
-    "Arachnelf",
-    "Synthetic Rock",
-    "Grey Goose",
-    "Cookbookbat",
-    "Mini-Trainbot",
-    "Hobo in Sheep's Clothing",
-    "Pixel Rock",
-    "Patriotic Eagle",
-    "Jill-of-All-Trades",
-    "Flaming Leafcutter Ant",
-    "Rigging Snake",
-    "Pet Anchor",
-    "Chest Mimic",
-    "Mini Kiwi",
-    "Proto-Protozoa",
-    "Evolving Organism",
-    "Burly Bodyguard",
-    "Doll Moll",
-    "Emberiza Aureola",
-    "Peace Turkey",
-    "Quantum Entangler",
-    "Golden Pet Rock",
-    "Profane Parrot",
-    "Significant Bit",
-    "Heat Wave",
-    "Cold Cut",
-    "Shame Spiral",
-    "Phantom Limb",
-    "Foul Ball",
-    "Dire Cassava",
-    "Observer",
-    "Cool Cucumber",
-    "Defective Childrens' Stapler",
-    "Glover",
-    "Zapper Bug",
-    "Wet Paper Tiger",
-    "Cooler Yeti",
-    "Baby Skeleton",
-    "Skeleton of Crimbo Past",
-    "Tiny Plastic Santa Claus Skeleton",
-    "Cute Skeletal Dinosaur",
-    "Sword of S Words",
-  ])) {
+  const blacklistFams: Familiar[] = $familiars`Reassembled Blackbird, Reconstituted Crow, Homemade Robot`;
+  for (const fam of $familiars`Mosquito, Leprechaun, Levitating Potato, Angry Goat, Sabre-Toothed Lime, Fuzzy Dice, Spooky Pirate Skeleton, Barrrnacle, Howling Balloon Monkey, Stab Bat, Grue, Blood-Faced Volleyball, Ghuol Whelp, Baby Gravy Fairy, Cocoabo, Star Starfish, Hovering Sombrero, Ghost Pickle on a Stick, Killer Bee, Whirling Maple Leaf, Coffee Pixie, Cheshire Bat, Jill-O-Lantern, Hand Turkey, Crimbo Elf, Hanukkimbo Dreidl, Baby Yeti, Feather Boa Constrictor, Emo Squid, Personal Raincloud, Clockwork Grapefruit, MagiMechTech MicroMechaMech, Flaming Gravy Fairy, Frozen Gravy Fairy, Stinky Gravy Fairy, Spooky Gravy Fairy, Inflatable Dodecapede, Pygmy Bugbear Shaman, Doppelshifter, Attention-Deficit Demon, Cymbal-Playing Monkey, Temporal Riftlet, Sweet Nutcracker, Pet Rock, Snowy Owl, Teddy Bear, Ninja Pirate Zombie Robot, Sleazy Gravy Fairy, Wild Hare, Wind-up Chattering Teeth, Spirit Hobo, Astral Badger, Comma Chameleon, Misshapen Animal Skeleton, Scary Death Orb, Jitterbug, Nervous Tick, Reassembled Blackbird, Origami Towel Crane, Ninja Snowflake, Evil Teddy Bear, Toothsome Rock, Ancient Yuletide Troll, Dandy Lion, O.A.F., Penguin Goodfella, Jumpsuited Hound Dog, Green Pixie, Ragamuffin Imp, Exotic Parrot, Wizard Action Figure, Gluttonous Green Ghost, Casagnova Gnome, Hunchbacked Minion, Crimbo P. R. E. S. S. I. E., Bulky Buddy Box, Teddy Borg, RoboGoose, El Vibrato Megadrone, Mad Hatrack, Adorable Seal Larva, Untamed Turtle, Animated Macaroni Duck, Pet Cheezling, Autonomous Disco Ball, Mariachi Chihuahua, Hobo Monkey, Llama Lama, Cotton Candy Carnie, Disembodied Hand, Black Cat, Uniclops, Psychedelic Bear, Baby Mutant Rattlesnake, Mutant Fire Ant, Mutant Cactus Bud, Mutant Gila Monster, Cuddlefish, Sugar Fruit Fairy, Imitation Crab, Pair of Ragged Claws, Magic Dragonfish, Frumious Bandersnatch, Midget Clownfish, Syncopated Turtle, Grinning Turtle, Purse Rat, Wereturtle, Baby Sandworm, Slimeling, He-Boulder, Rock Lobster, Urchin Urchin, Grouper Groupie, Squamous Gibberer, Dancing Frog, Chauvinist Pig, Stocking Mimic, Snow Angel, Jack-in-the-Box, BRICKO chick, Baby Bugged Bugbear, Money-Making Goblin, Floating Eye, Vampire Bat, Oyster Bunny, Egg Benedict, Bank Piggy, Worm Doctor, Snowhitman, Plastic Grocery Bag, Underworld Bonsai, Rogue Program, Mini-Hipster, Pottery Barn Owl, Hippo Ballerina, Knob Goblin Organ Grinder, Piano Cat, Dramatic Hedgehog, Smiling Rat, Robot Reindeer, Holiday Log, Obtuse Angel, Reconstituted Crow, Li'l Xenomorph, Dataspider, Pair of Stomping Boots, Feral Kobold, Fancypants Scarecrow, Bloovian Groose, Blavious Kloop, Peppermint Rhino, Tickle-Me Emilio, Steam-Powered Cheerleader, Happy Medium, Artistic Goth Kid, Flaming Face, Reagnimated Gnome, Hovering Skull, Mini-Skulldozer, Angry Jung Man, Unconscious Collective, Nanorhino, Oily Woim, Homemade Robot, MiniMechaElf, Gelatinous Cubeling, Adorable Space Buddy, Nosy Nose, Mini-Adventurer, Mechanical Songbird, Reanimated Reanimator, Warbear Drone, Grimstone Golem, Grim Brother, Miniature Sword & Martini Guy, Putty Buddy, Twitching Space Critter, Galloping Grill, Helix Fossil, Xiblaxian Holo-Companion, Baby Z-Rex, Fist Turkey, Crimbo Shrub, Mini-Crimbot, Topiary Skunk, Golden Monkey, Adventurous Spelunker, Sludgepuppy, Baby Mayonnaise Wasp, Puck Man, Ms. Puck Man, Lil' Barrel Mimic, Machine Elf, Choctopus, Rockin' Robin, Restless Cow Skull, Intergnat, Software Bug, Bark Scorpion, Trick-or-Treating Tot, Chocolate Lab, Bad Vibe, Space Jellyfish, Optimistic Candle, Robortender, Cute Meteor, XO Skeleton, Garbage Fire, Globmule, Bluzzard, Faux, Sledgehamster, Pimpsqueak, Pillowbug, Dressage, Sequestrian, Carpricorn, Turpin, Morphan, Cycloney, Peaclock, Turtive, Lepardner, Aiolion, Waifuton, Gorillape, Wendtigo, Snoutlet, Ruffalo, Vaporpoise, Ghosprey, Straypler, Flan, Mustardigrade, Ched, Gazelleton, Mechamelion, Bicycle, Vamprey, Wullabye, Nursine, Cantelope, Ungulant, Caramel, Oppossum, Amanitee, Smashmoth, Vulgure, Squib, Trafikoan, Slotter, Shudder, Glamare, Unspeakachu, Stooper, Disgeist, Bowlet, Cornbeefadon, Mu, God Lobster, Cat Burglar, Party Mouse, Yule Hound, Sausage Golem, Elf Operative, Plastic Pirate Skull, Pet Coral, Pocket Professor, Red-Nosed Snapper, Antique Nutcracker, Piranha Plant, Left-Hand Man, Melodramedary, Ghost of Crimbo Carols, Ghost of Crimbo Cheer, Ghost of Crimbo Commerce, Shorter-Order Cook, Vampire Vintner, Arachnelf, Synthetic Rock, Grey Goose, Cookbookbat, Mini-Trainbot, Hobo in Sheep's Clothing, Pixel Rock, Patriotic Eagle, Jill-of-All-Trades, Flaming Leafcutter Ant, Rigging Snake, Pet Anchor, Chest Mimic, Mini Kiwi, Proto-Protozoa, Evolving Organism, Burly Bodyguard, Doll Moll, Emberiza Aureola, Peace Turkey, Quantum Entangler, Golden Pet Rock, Profane Parrot, Significant Bit, Heat Wave, Cold Cut, Shame Spiral, Phantom Limb, Foul Ball, Dire Cassava, Observer, Cool Cucumber, Defective Childrens' Stapler, Glover, Zapper Bug, Wet Paper Tiger, Cooler Yeti, Baby Skeleton, Skeleton of Crimbo Past, Tiny Plastic Santa Claus Skeleton, Cute Skeletal Dinosaur, Sword of S Words`) {
     //comment out below line and uncomment second below line to see all unrestricted fams
     if (auto_have_familiar(fam) && !blacklistFams.includes(fam)) {
       //if(is_unrestricted(fam))
@@ -951,11 +621,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {
   }
 
   if (lkickFam === Familiar.none) {
-    for (const fam of Familiar.get([
-      "Quantum Entangler",
-      "Foul Ball",
-      "Defective Childrens' Stapler",
-    ])) {
+    for (const fam of $familiars`Quantum Entangler, Foul Ball, Defective Childrens' Stapler`) {
       if (auto_have_familiar(fam)) {
         lkickFam = fam;
         used.set(fam, true);
@@ -987,11 +653,7 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {
   }
   // Right kick banishes (cassava and limb are super-banishes, magimech is OK)
   if (rkickFam === Familiar.none) {
-    for (const fam of Familiar.get([
-      "Dire Cassava",
-      "Phantom Limb",
-      "MagiMechTech MicroMechaMech",
-    ])) {
+    for (const fam of $familiars`Dire Cassava, Phantom Limb, MagiMechTech MicroMechaMech`) {
       if (auto_have_familiar(fam)) {
         rkickFam = fam;
         used.set(fam, true);
@@ -1016,15 +678,9 @@ function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {
   // volleyball and mosquito and fairyas backups. Everybody needs somebody to punch.
   const punchPotential: Map<number, Familiar> = new Map();
   let ipunch: number = 0;
-  for (const fam of Familiar.get([
-    "Barrrnacle",
-    "Cold Cut",
-    "Blood-Faced Volleyball",
-    "Mosquito",
-    "Baby Gravy Fairy",
-  ])) {
-    if (ipunch === 1 && auto_have_familiar(Familiar.get("Burly Bodyguard"))) {
-      punchPotential.set(ipunch++, Familiar.get("Burly Bodyguard"));
+  for (const fam of $familiars`Barrrnacle, Cold Cut, Blood-Faced Volleyball, Mosquito, Baby Gravy Fairy`) {
+    if (ipunch === 1 && auto_have_familiar($familiar`Burly Bodyguard`)) {
+      punchPotential.set(ipunch++, $familiar`Burly Bodyguard`);
     }
     punchPotential.set(ipunch++, fam);
   }
@@ -1224,7 +880,7 @@ function zoo_boostWeight$1(f: Familiar, target_weight: number): boolean {
     useFamiliar(f);
   }
   // We want a fight with the bodyguard before we consider boosting because it superlevels first combat
-  if (f === Familiar.get("Burly Bodyguard")) {
+  if (f === $familiar`Burly Bodyguard`) {
     if (f.experience === 0) {
       return false;
     }
@@ -1244,7 +900,7 @@ function zoo_boostWeight$1(f: Familiar, target_weight: number): boolean {
 
   provideFamExp(
     toInt(min(25, experience_needed)),
-    Location.get("The Outskirts of Cobb's Knob"),
+    $location`The Outskirts of Cobb's Knob`,
     true,
     true,
     false,
@@ -1289,17 +945,15 @@ function zoo_boostWeight$1(f: Familiar, target_weight: number): boolean {
 export function getZooKickYR(): Skill {
   function isYR$1(fam_id: number): boolean {
     const fam: Familiar = toFamiliar(fam_id);
-    return Familiar.get([
-      "Quantum Entangler",
-      "Foul Ball",
-      "Defective Childrens' Stapler",
-    ]).includes(fam);
+    return $familiars`Quantum Entangler, Foul Ball, Defective Childrens' Stapler`.includes(
+      fam,
+    );
   }
   if (isYR$1(toInt(getProperty("zootGraftedFootLeftFamiliar")))) {
-    return Skill.get("Left %n Kick");
+    return $skill`Left %n Kick`;
   }
   if (isYR$1(toInt(getProperty("zootGraftedFootRightFamiliar")))) {
-    return Skill.get("Right %n Kick");
+    return $skill`Right %n Kick`;
   }
   return Skill.none;
 }
@@ -1308,17 +962,15 @@ function getZooKickFreeKill(): Skill {
   //different than YR. Better than instakill
   function isYR(fam_id: number): boolean {
     const fam: Familiar = toFamiliar(fam_id);
-    return Familiar.get([
-      "Quantum Entangler",
-      "Foul Ball",
-      "Defective Childrens' Stapler",
-    ]).includes(fam);
+    return $familiars`Quantum Entangler, Foul Ball, Defective Childrens' Stapler`.includes(
+      fam,
+    );
   }
   if (isYR(toInt(getProperty("zootGraftedFootLeftFamiliar")))) {
-    return Skill.get("Left %n Kick");
+    return $skill`Left %n Kick`;
   }
   if (isYR(toInt(getProperty("zootGraftedFootRightFamiliar")))) {
-    return Skill.get("Right %n Kick");
+    return $skill`Right %n Kick`;
   }
   return Skill.none;
 }
@@ -1326,31 +978,29 @@ function getZooKickFreeKill(): Skill {
 export function getZooKickSniff(): Skill {
   const haveYR: boolean = yellowRayCombatString$1(Monster.none, false) !== ""; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
   if (leftKickHasSniff() && leftKickHasInstaKill() && !haveYR) {
-    return Skill.get("Left %n Kick");
+    return $skill`Left %n Kick`;
   }
   if (rightKickHasSniff() && rightKickHasInstaKill() && !haveYR) {
-    return Skill.get("Right %n Kick");
+    return $skill`Right %n Kick`;
   }
   return Skill.none;
 }
 
 export function getZooKickBanish(): Skill {
-  if (haveEffect(Effect.get("Everything Looks Blue")) > 0) {
+  if (haveEffect($effect`Everything Looks Blue`) > 0) {
     return Skill.none;
   }
   function isBanish(fam_id: number): boolean {
     const fam: Familiar = toFamiliar(fam_id);
-    return Familiar.get([
-      "Dire Cassava",
-      "Phantom Limb",
-      "MagiMechTech MicroMechaMech",
-    ]).includes(fam);
+    return $familiars`Dire Cassava, Phantom Limb, MagiMechTech MicroMechaMech`.includes(
+      fam,
+    );
   }
   if (isBanish(toInt(getProperty("zootGraftedFootLeftFamiliar")))) {
-    return Skill.get("Left %n Kick");
+    return $skill`Left %n Kick`;
   }
   if (isBanish(toInt(getProperty("zootGraftedFootRightFamiliar")))) {
-    return Skill.get("Right %n Kick");
+    return $skill`Right %n Kick`;
   }
   return Skill.none;
 }
@@ -1361,17 +1011,17 @@ function getZooKickPickpocket(): Skill {
     leftKickHasPickpocket() &&
     leftKickHasInstaKill() &&
     !haveYR &&
-    getZooKickBanish() !== Skill.get("Left %n Kick")
+    getZooKickBanish() !== $skill`Left %n Kick`
   ) {
-    return Skill.get("Left %n Kick");
+    return $skill`Left %n Kick`;
   }
   if (
     rightKickHasPickpocket() &&
     rightKickHasInstaKill() &&
     !haveYR &&
-    getZooKickBanish() !== Skill.get("Right %n Kick")
+    getZooKickBanish() !== $skill`Right %n Kick`
   ) {
-    return Skill.get("Right %n Kick");
+    return $skill`Right %n Kick`;
   }
   return Skill.none;
 }
@@ -1395,12 +1045,12 @@ export function getZooKickInstaKill(): Skill {
 }
 
 export function getZooBestPunch(): Skill {
-  return getZooBestPunch$1(Monster.get("fluffy bunny"));
+  return getZooBestPunch$1($monster`fluffy bunny`);
 }
 
 export function getZooBestPunch$1(m: Monster): Skill {
-  if (haveSkill(Skill.get("Left %n Punch"))) {
-    return Skill.get("Left %n Punch");
+  if (haveSkill($skill`Left %n Punch`)) {
+    return $skill`Left %n Punch`;
   } else {
     return Skill.none;
   }
@@ -1595,7 +1245,7 @@ export function LX_zootoFight(): boolean {
       toInt(getProperty("lastTempleAdventures")) < myAscensions()
     ) {
       if (
-        availableAmount(Item.get("stone wool")) < 2 &&
+        availableAmount($item`stone wool`) < 2 &&
         internalQuestStatus("questL11Worship") < 0
       ) {
         if (LX_killBaaBaaBuran()) {
@@ -1620,22 +1270,22 @@ export function LX_zootoFight(): boolean {
         !possessOutfit$1("War Hippy Fatigues")
       ) {
         adjustForYellowRayIfPossible$1();
-        return summonMonster(Monster.get("War Hippy Airborne Commander"));
+        return summonMonster($monster`War Hippy Airborne Commander`);
       } else if (!possessOutfit$1("Frat Warrior Fatigues")) {
         adjustForYellowRayIfPossible$1();
-        return summonMonster(Monster.get("War Frat Mobile Grill Unit"));
+        return summonMonster($monster`War Frat Mobile Grill Unit`);
       }
     }
     if (
-      auto_have_familiar(Familiar.get("Jill-of-All-Trades")) &&
+      auto_have_familiar($familiar`Jill-of-All-Trades`) &&
       candyBlockOutfit("treat") !== ""
     ) {
       if (candyBlock()) {
         return true;
       }
       if (!toBoolean(getProperty("_mapToACandyRichBlockUsed"))) {
-        while (itemAmount(Item.get("map to a candy-rich block")) === 0) {
-          handleFamiliar$1(Familiar.get("Jill-of-All-Trades"));
+        while (itemAmount($item`map to a candy-rich block`) === 0) {
+          handleFamiliar$1($familiar`Jill-of-All-Trades`);
           if (L7_defiledNook()) {
             //Need eyes anyway so might as well try to get a couple while getting the map
             return true;

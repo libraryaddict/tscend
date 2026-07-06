@@ -5,11 +5,9 @@ import {
   cliExecute,
   containsText,
   council,
-  Effect,
   Element,
   equip,
   expectedDamage,
-  Familiar,
   fullnessLimit,
   getProperty,
   haveEffect,
@@ -19,8 +17,6 @@ import {
   Item,
   itemAmount,
   jumpChance,
-  Location,
-  Monster,
   myAdventures,
   myDaycount,
   myLevel,
@@ -33,8 +29,6 @@ import {
   random,
   runChoice,
   setProperty,
-  Skill,
-  Slot,
   splitString,
   substring,
   toBoolean,
@@ -43,6 +37,17 @@ import {
   toMonster,
   visitUrl,
 } from "kolmafia";
+import {
+  $effect,
+  $element,
+  $familiar,
+  $item,
+  $location,
+  $monster,
+  $skill,
+  $slot,
+} from "libram";
+
 import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$2, autoLuckyAdv$1 } from "../auto_adventure";
 import { buffMaintain$3 } from "../auto_buff";
@@ -103,9 +108,9 @@ import { in_plumber } from "../paths/path_of_the_plumber";
 import { is_professor } from "../paths/wereprofessor";
 import { wildfire_groar_check } from "../paths/wildfire";
 import { robot_delay } from "../paths/you_robot";
+import { AshMatcher } from "../utils/kolmafiaUtils";
 import { L7_override } from "./level_07";
 import { shenShouldDelayZone } from "./level_11";
-import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/quests/level_08.ash
 export function needOre(): boolean {
@@ -119,9 +124,9 @@ export function needOre(): boolean {
     return false;
   }
   if (
-    itemAmount(Item.get("asbestos ore")) >= 3 &&
-    itemAmount(Item.get("linoleum ore")) >= 3 &&
-    itemAmount(Item.get("chrome ore")) >= 3
+    itemAmount($item`asbestos ore`) >= 3 &&
+    itemAmount($item`linoleum ore`) >= 3 &&
+    itemAmount($item`chrome ore`) >= 3
   ) {
     return false;
   }
@@ -150,24 +155,21 @@ function getCellToMine(oreGoal: Item): number {
         "#",
       ).entries()) {
         if (containsText(str, "asbestos ore")) {
-          minedCells.set(toInt(substring(str, 0, 2)), Item.get("asbestos ore"));
+          minedCells.set(toInt(substring(str, 0, 2)), $item`asbestos ore`);
         } else if (containsText(str, "chrome ore")) {
-          minedCells.set(toInt(substring(str, 0, 2)), Item.get("chrome ore"));
+          minedCells.set(toInt(substring(str, 0, 2)), $item`chrome ore`);
         } else if (containsText(str, "linoleum ore")) {
-          minedCells.set(toInt(substring(str, 0, 2)), Item.get("linoleum ore"));
+          minedCells.set(toInt(substring(str, 0, 2)), $item`linoleum ore`);
         } else if (containsText(str, "loadstone")) {
-          minedCells.set(toInt(substring(str, 0, 2)), Item.get("loadstone"));
+          minedCells.set(toInt(substring(str, 0, 2)), $item`loadstone`);
         } else if (containsText(str, "lump of diamond")) {
-          minedCells.set(
-            toInt(substring(str, 0, 2)),
-            Item.get("lump of diamond"),
-          );
+          minedCells.set(toInt(substring(str, 0, 2)), $item`lump of diamond`);
         } else if (containsText(str, "meat stack")) {
-          minedCells.set(toInt(substring(str, 0, 2)), Item.get("meat stack"));
+          minedCells.set(toInt(substring(str, 0, 2)), $item`meat stack`);
         } else if (containsText(str, "stone of eXtreme power")) {
           minedCells.set(
             toInt(substring(str, 0, 2)),
-            Item.get("stone of eXtreme power"),
+            $item`stone of eXtreme power`,
           );
         }
       }
@@ -302,7 +304,7 @@ function getCellToMine(oreGoal: Item): number {
       // first lets find the loadstone cell
       let loadstoneCell: number = 0;
       for (const [oreCell, oreType] of minedCells) {
-        if (oreType === Item.get("loadstone")) {
+        if (oreType === $item`loadstone`) {
           loadstoneCell = oreCell;
         }
       }
@@ -338,34 +340,26 @@ function L8_getGoatCheese(): boolean {
     return false;
   }
 
-  if (itemAmount(Item.get("goat cheese")) >= 3) {
+  if (itemAmount($item`goat cheese`) >= 3) {
     return false;
   }
   // If we only need one and goats aren't already sniffed, just pull it.
   if (
     auto_inRonin() &&
-    itemAmount(Item.get("goat cheese")) === 2 &&
-    !isSniffed$1(Monster.get("dairy goat"))
+    itemAmount($item`goat cheese`) === 2 &&
+    !isSniffed$1($monster`dairy goat`)
   ) {
-    pullXWhenHaveY(
-      Item.get("goat cheese"),
-      1,
-      itemAmount(Item.get("goat cheese")),
-    );
+    pullXWhenHaveY($item`goat cheese`, 1, itemAmount($item`goat cheese`));
   } else if (auto_inRonin() && myDaycount() > 1) {
     // or on day 2+ just pull anyway, we have loads of pulls
-    pullXWhenHaveY(
-      Item.get("goat cheese"),
-      1,
-      itemAmount(Item.get("goat cheese")),
-    );
+    pullXWhenHaveY($item`goat cheese`, 1, itemAmount($item`goat cheese`));
   }
   // If we have enough now, just stop here.
-  if (itemAmount(Item.get("goat cheese")) >= 3) {
+  if (itemAmount($item`goat cheese`) >= 3) {
     return false;
   }
   // Condider softblocking until day 2 for Mayam
-  if (auto_haveMayamCalendar() && itemAmount(Item.get("goat cheese")) === 2) {
+  if (auto_haveMayamCalendar() && itemAmount($item`goat cheese`) === 2) {
     if (auto_waitForDay2()) {
       auto_log_debug$1("Delaying Goatlet waiting for day 2.");
       return false;
@@ -374,16 +368,16 @@ function L8_getGoatCheese(): boolean {
   // Actually adventure for cheese
   auto_log_info("Yay for goat cheese!", "blue");
   if (toInt(getProperty("_sourceTerminalDuplicateUses")) === 0) {
-    auto_sourceTerminalEducate(Skill.get("Extract"), Skill.get("Duplicate"));
+    auto_sourceTerminalEducate($skill`Extract`, $skill`Duplicate`);
   }
-  if (auto_haveGreyGoose() && itemAmount(Item.get("goat cheese")) <= 1) {
+  if (auto_haveGreyGoose() && itemAmount($item`goat cheese`) <= 1) {
     auto_log_info$1(
       "Bringing the Grey Goose to emit some drones at a Dairy Goat for cheese, Gromit.",
     );
-    handleFamiliar$1(Familiar.get("Grey Goose"));
+    handleFamiliar$1($familiar`Grey Goose`);
   }
   if (
-    canSniff(Monster.get("dairy goat"), Location.get("The Goatlet")) &&
+    canSniff($monster`dairy goat`, $location`The Goatlet`) &&
     auto_mapTheMonsters()
   ) {
     auto_log_info$1(
@@ -392,8 +386,8 @@ function L8_getGoatCheese(): boolean {
   }
   auto_lostStomach$1(true);
 
-  const retval: boolean = autoAdv$2(Location.get("The Goatlet"));
-  auto_sourceTerminalEducate(Skill.get("Extract"), Skill.get("Portscan"));
+  const retval: boolean = autoAdv$2($location`The Goatlet`);
+  auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
   return retval;
 }
 
@@ -411,21 +405,18 @@ export function L8_mountainManSummon(): boolean {
     return false;
   }
   // use a summon if we can guarantee it will be enough via cat burglar
-  if (
-    canSummonMonster(Monster.get("mountain man")) &&
-    catBurglarHeistsLeft() > 1
-  ) {
+  if (canSummonMonster($monster`mountain man`) && catBurglarHeistsLeft() > 1) {
     auto_log_info$1(
       "Trying to summon a mountain man, which the cat will then burgle, hopefully.",
     );
-    handleFamiliar$1(Familiar.get("Cat Burglar"));
-    return summonMonster(Monster.get("mountain man"));
+    handleFamiliar$1($familiar`Cat Burglar`);
+    return summonMonster($monster`mountain man`);
   }
   // use a summon if we can guarantee it will be enough via pro skateboard and YR
-  if (canSummonMonster(Monster.get("mountain man")) && canYellowRay$1()) {
+  if (canSummonMonster($monster`mountain man`) && canYellowRay$1()) {
     const need_dupe: boolean = current_ore < 1;
     const can_mctwist: boolean =
-      auto_can_equip(Item.get("pro skateboard")) &&
+      auto_can_equip($item`pro skateboard`) &&
       !toBoolean(getProperty("_epicMcTwistUsed"));
     const will_mctwist: boolean = can_mctwist && need_dupe;
     auto_log_info$1(
@@ -433,10 +424,10 @@ export function L8_mountainManSummon(): boolean {
     );
     adjustForYellowRayIfPossible$1();
     if (will_mctwist) {
-      autoEquip$1(Item.get("pro skateboard"));
-      return summonMonster(Monster.get("mountain man"));
+      autoEquip$1($item`pro skateboard`);
+      return summonMonster($monster`mountain man`);
     } else if (!need_dupe) {
-      return summonMonster(Monster.get("mountain man"));
+      return summonMonster($monster`mountain man`);
     } else {
       return false; // if we need to dupe drops but can't, don't summon.
     }
@@ -456,9 +447,7 @@ function L8_getMineOres(): boolean {
     return false;
   }
 
-  if (
-    toMonster(getProperty("chateauMonster")) === Monster.get("mountain man")
-  ) {
+  if (toMonster(getProperty("chateauMonster")) === $monster`mountain man`) {
     // apparently this is a thing some people do. Lets add the most basic of support.
     return false;
   }
@@ -476,14 +465,14 @@ function L8_getMineOres(): boolean {
     return false; //will get ore organically through the train set so no need to adventure for it
   }
   // try to clover for the ore
-  if (autoLuckyAdv$1(Location.get("Itznotyerzitz Mine"))) {
+  if (autoLuckyAdv$1($location`Itznotyerzitz Mine`)) {
     return true;
   }
 
   if (isAboutToPowerlevel()) {
     if (!possessOutfit$1("Mining Gear")) {
       auto_log_info("Getting Mining Gear.", "blue");
-      return autoAdv$2(Location.get("Itznotyerzitz Mine"));
+      return autoAdv$2($location`Itznotyerzitz Mine`);
     } else if (possessOutfit("Mining Gear", true)) {
       equipMaximizedGear();
       outfit("Mining Gear");
@@ -511,8 +500,8 @@ export function itznotyerzitzMineChoiceHandler(choice: number): void {
   );
   if (choice === 18) {
     // A Flat Miner
-    if (possessEquipment(Item.get("miner's pants"))) {
-      if (possessEquipment(Item.get("7-Foot Dwarven mattock"))) {
+    if (possessEquipment($item`miner's pants`)) {
+      if (possessEquipment($item`7-Foot Dwarven mattock`)) {
         runChoice(3); // get 100 Meat.
       } else {
         runChoice(2); // get 7-Foot Dwarven mattock
@@ -522,8 +511,8 @@ export function itznotyerzitzMineChoiceHandler(choice: number): void {
     }
   } else if (choice === 19) {
     // 100% Legal
-    if (possessEquipment(Item.get("miner's helmet"))) {
-      if (possessEquipment(Item.get("miner's pants"))) {
+    if (possessEquipment($item`miner's helmet`)) {
+      if (possessEquipment($item`miner's pants`)) {
         runChoice(3); // get 100 Meat.
       } else {
         runChoice(2); // get miner's pants
@@ -533,8 +522,8 @@ export function itznotyerzitzMineChoiceHandler(choice: number): void {
     }
   } else if (choice === 20) {
     // See You Next Fall
-    if (possessEquipment(Item.get("miner's helmet"))) {
-      if (possessEquipment(Item.get("7-Foot Dwarven mattock"))) {
+    if (possessEquipment($item`miner's helmet`)) {
+      if (possessEquipment($item`7-Foot Dwarven mattock`)) {
         runChoice(3); // get 100 Meat.
       } else {
         runChoice(2); // get 7-Foot Dwarven mattock
@@ -567,7 +556,7 @@ function L8_trapperExtreme(): boolean {
     auto_equipAllMcHugeLarge();
     // plumber literally wont let you adventure if you have no way to fight in plumber.
     if (in_plumber()) {
-      autoForceEquip$1(Slot.get("acc3"), Item.get("work boots"));
+      autoForceEquip$1($slot`acc3`, $item`work boots`);
     }
   } else if (
     possessOutfit(
@@ -590,7 +579,7 @@ function L8_trapperExtreme(): boolean {
   const currentExtremity: number = toInt(getProperty("currentExtremity"));
   if (currentExtremity === 1 || currentExtremity === 2) {
     const NCForced: boolean = auto_forceNextNoncombat$1(
-      Location.get("The eXtreme Slope"),
+      $location`The eXtreme Slope`,
     );
     auto_log_info(
       `Trying to force NC at extreme slope: ${NCForced.toString()}`,
@@ -599,7 +588,7 @@ function L8_trapperExtreme(): boolean {
   }
   // try to get extreme points
   auto_log_info("Penguin Tony Hawk time. Extreme!! SSX Tricky!!", "blue");
-  return autoAdv$2(Location.get("The eXtreme Slope"));
+  return autoAdv$2($location`The eXtreme Slope`);
 }
 
 export function theeXtremeSlopeChoiceHandler(choice: number): void {
@@ -609,8 +598,8 @@ export function theeXtremeSlopeChoiceHandler(choice: number): void {
   );
   if (choice === 15) {
     // Yeti Nother Hippy
-    if (possessEquipment(Item.get("eXtreme mittens"))) {
-      if (possessEquipment(Item.get("eXtreme scarf"))) {
+    if (possessEquipment($item`eXtreme mittens`)) {
+      if (possessEquipment($item`eXtreme scarf`)) {
         runChoice(3); // get 200 Meat.
       } else {
         runChoice(2); // get eXtreme scarf
@@ -620,8 +609,8 @@ export function theeXtremeSlopeChoiceHandler(choice: number): void {
     }
   } else if (choice === 16) {
     // Saint Beernard
-    if (possessEquipment(Item.get("snowboarder pants"))) {
-      if (possessEquipment(Item.get("eXtreme scarf"))) {
+    if (possessEquipment($item`snowboarder pants`)) {
+      if (possessEquipment($item`eXtreme scarf`)) {
         runChoice(3); // get 200 Meat.
       } else {
         runChoice(2); // get eXtreme scarf
@@ -631,8 +620,8 @@ export function theeXtremeSlopeChoiceHandler(choice: number): void {
     }
   } else if (choice === 17) {
     // Generic Teen Comedy Snowboarding Adventure
-    if (possessEquipment(Item.get("eXtreme mittens"))) {
-      if (possessEquipment(Item.get("snowboarder pants"))) {
+    if (possessEquipment($item`eXtreme mittens`)) {
+      if (possessEquipment($item`snowboarder pants`)) {
         runChoice(3); // get 200 Meat.
       } else {
         runChoice(2); // get snowboarder pants
@@ -642,7 +631,7 @@ export function theeXtremeSlopeChoiceHandler(choice: number): void {
     }
   } else if (choice === 575) {
     // Duffel on the Double
-    if (haveEquipped(Item.get("candy cane sword cane"))) {
+    if (haveEquipped($item`candy cane sword cane`)) {
       runChoice(5); // get mittens and pants and lucky pill
     } else if (!possessOutfit$1("eXtreme Cold-Weather Gear")) {
       runChoice(1); // get an outfit piece
@@ -681,8 +670,8 @@ function L8_trapperNinjaLair(): boolean {
   // we must use two variables because there are too many special cases. maybe we can survive assassins but not encounter them due to +combat being too low. Copiers and pulls complicate matters. We could copy an assassin even if we cannot encounter it in the lair
   //check if we can survive a hit or get the jump on NSA
   if (
-    myMaxhp() <= expectedDamage(Monster.get("ninja snowman assassin")) * 1.2 &&
-    jumpChance(Monster.get("ninja snowman assassin")) < 100
+    myMaxhp() <= expectedDamage($monster`ninja snowman assassin`) * 1.2 &&
+    jumpChance($monster`ninja snowman assassin`) < 100
   ) {
     if (isAboutToPowerlevel()) {
       //if we can't survive and we are powerleveling, do extreme path
@@ -698,14 +687,14 @@ function L8_trapperNinjaLair(): boolean {
   }
 
   if (
-    haveEffect(Effect.get("Thrice-Cursed")) > 0 ||
-    haveEffect(Effect.get("Twice-Cursed")) > 0 ||
-    haveEffect(Effect.get("Once-Cursed")) > 0
+    haveEffect($effect`Thrice-Cursed`) > 0 ||
+    haveEffect($effect`Twice-Cursed`) > 0 ||
+    haveEffect($effect`Once-Cursed`) > 0
   ) {
     return false;
   }
 
-  if (shenShouldDelayZone(Location.get("Lair of the Ninja Snowmen"))) {
+  if (shenShouldDelayZone($location`Lair of the Ninja Snowmen`)) {
     auto_log_debug$1("Delaying Lair of the Ninja Snowmen in case of Shen.");
     return false;
   }
@@ -713,7 +702,7 @@ function L8_trapperNinjaLair(): boolean {
   if (
     providePlusCombat(
       auto_combatModCap(),
-      Location.get("Lair of the Ninja Snowmen"),
+      $location`Lair of the Ninja Snowmen`,
       true,
       true,
     ) <= 0.0
@@ -735,13 +724,13 @@ function L8_trapperNinjaLair(): boolean {
     return false;
   }
   // buff
-  if (isActuallyEd() && !elementalPlanes_access(Element.get("spooky"))) {
+  if (isActuallyEd() && !elementalPlanes_access($element`spooky`)) {
     adjustEdHat("myst");
   }
 
-  auto_getCitizenZone(Location.get("Lair of the Ninja Snowmen"), false); //since we want to adventure in the Lair anyway
+  auto_getCitizenZone($location`Lair of the Ninja Snowmen`, false); //since we want to adventure in the Lair anyway
 
-  if (autoAdv$2(Location.get("Lair of the Ninja Snowmen"))) {
+  if (autoAdv$2($location`Lair of the Ninja Snowmen`)) {
     return true;
   }
   auto_log_warning(
@@ -767,9 +756,9 @@ export function L8_trapperGroar(): boolean {
   }
   // error catching for if we are actually on step5 and mafia did not notice.
   if (
-    itemAmount(Item.get("Groar's fur")) > 0 ||
-    itemAmount(Item.get("winged yeti fur")) > 0 ||
-    itemAmount(Item.get("cursed blanket")) > 0
+    itemAmount($item`Groar's fur`) > 0 ||
+    itemAmount($item`winged yeti fur`) > 0 ||
+    itemAmount($item`cursed blanket`) > 0
   ) {
     auto_log_info(
       `Quest tracking error detected. Mafia thinks we are in step4 of questL08Trapper but we are in fact in step5. Correcting. Current Path = ${myPath().name}`,
@@ -787,23 +776,23 @@ export function L8_trapperGroar(): boolean {
   }
   // we need 5 cold res to be allowed to adventure in [Mist-shrouded Peak]
   const resGoal: Map<Element, number> = new Map();
-  resGoal.set(Element.get("cold"), 5);
+  resGoal.set($element`cold`, 5);
   // try getting resistance without equipment before bothering to change gear
 
   let retval: boolean = false;
   const initial_adv: number = mySessionAdv();
   if (
-    provideResistances$4(resGoal, Location.get("Mist-Shrouded Peak"), false) ||
-    provideResistances$4(resGoal, Location.get("Mist-Shrouded Peak"), true)
+    provideResistances$4(resGoal, $location`Mist-Shrouded Peak`, false) ||
+    provideResistances$4(resGoal, $location`Mist-Shrouded Peak`, true)
   ) {
     auto_log_info("Time to take out Gargle, sure, Gargle (Groar)", "blue");
     equipMaximizedGear();
     //AoSOL buffs
     if (in_aosol()) {
-      buffMaintain$3(Effect.get("Queso Fustulento"), 10, 1, 10);
-      buffMaintain$3(Effect.get("Tricky Timpani"), 30, 1, 10);
+      buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
+      buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
     }
-    if (Location.get("Mist-Shrouded Peak").turnsSpent >= 3) {
+    if ($location`Mist-Shrouded Peak`.turnsSpent >= 3) {
       //does not account for possible defeats
       setProperty("auto_nextEncounter", "Groar");
     } else {
@@ -812,11 +801,11 @@ export function L8_trapperGroar(): boolean {
     setProperty("auto_nonAdvLoc", true.toString());
     // Let's whack some free XP on our Chest Mimic (it's a chaun)
     if (auto_haveChestMimic()) {
-      handleFamiliar$1(Familiar.get("Chest Mimic"));
-      provideFamExp$2(50, Location.get("Mist-Shrouded Peak"), true, false);
+      handleFamiliar$1($familiar`Chest Mimic`);
+      provideFamExp$2(50, $location`Mist-Shrouded Peak`, true, false);
     }
 
-    retval = autoAdv$2(Location.get("Mist-Shrouded Peak"));
+    retval = autoAdv$2($location`Mist-Shrouded Peak`);
   }
   if (retval && initial_adv === mySessionAdv()) {
     //several inf loops can occur here
@@ -885,15 +874,13 @@ export function L8_trapperPeak(): boolean {
   }
   // unlock peak using ninja climbing gear
   if (
-    itemAmount(Item.get("ninja rope")) > 0 &&
-    itemAmount(Item.get("ninja carabiner")) > 0 &&
-    itemAmount(Item.get("ninja crampons")) > 0
+    itemAmount($item`ninja rope`) > 0 &&
+    itemAmount($item`ninja carabiner`) > 0 &&
+    itemAmount($item`ninja crampons`) > 0
   ) {
     const resGoal: Map<Element, number> = new Map();
-    resGoal.set(Element.get("cold"), 5);
-    if (
-      provideResistances$4(resGoal, Location.get("Mist-Shrouded Peak"), true)
-    ) {
+    resGoal.set($element`cold`, 5);
+    if (provideResistances$4(resGoal, $location`Mist-Shrouded Peak`, true)) {
       equipMaximizedGear();
       visitUrl("place.php?whichplace=mclargehuge&action=cloudypeak"); // unlock peak. advancing to step 4.
       setProperty("auto_ninjasnowmanassassin", true.toString()); // heavy rains. are we done copying them
@@ -912,11 +899,11 @@ export function L8_trapperPeak(): boolean {
   // unlock peak using extremeness
   if (toInt(getProperty("currentExtremity")) >= 3) {
     if (auto_haveMcHugeLargeSkis()) {
-      equip(Slot.get("back"), Item.get("McHugeLarge duffel bag"));
-      equip(Slot.get("weapon"), Item.get("McHugeLarge right pole"));
-      equip(Slot.get("off-hand"), Item.get("McHugeLarge left pole"));
-      equip(Slot.get("acc1"), Item.get("McHugeLarge left ski"));
-      equip(Slot.get("acc2"), Item.get("McHugeLarge right ski"));
+      equip($slot`back`, $item`McHugeLarge duffel bag`);
+      equip($slot`weapon`, $item`McHugeLarge right pole`);
+      equip($slot`off-hand`, $item`McHugeLarge left pole`);
+      equip($slot`acc1`, $item`McHugeLarge left ski`);
+      equip($slot`acc2`, $item`McHugeLarge right ski`);
       visitUrl("place.php?whichplace=mclargehuge&action=cloudypeak");
       return true;
     }
@@ -933,7 +920,7 @@ export function L8_trapperPeak(): boolean {
 
 export function L8_forceExtremeInstead(): boolean {
   // If for some reason we've already got 2 ninja items, no need to get forcey
-  if (availableAmount(Item.get("ninja crampons")) > 0) {
+  if (availableAmount($item`ninja crampons`) > 0) {
     return false;
   }
   // Set the variable if we're doing McHugeLarge items
@@ -1002,7 +989,7 @@ export function L8_trapperTalk(): boolean {
     // step1 == we know what ore to get. so go get ore and cheese
     if (
       itemAmount(toItem(getProperty("trapperOre"))) >= 3 &&
-      itemAmount(Item.get("goat cheese")) >= 3
+      itemAmount($item`goat cheese`) >= 3
     ) {
       // turn in ore and cheese to advance from step1 to step2
       auto_log_info(
@@ -1054,7 +1041,7 @@ export function L8_trapperQuest(): boolean {
     myAdventures() < 7 &&
     !toBoolean(getProperty("_milkOfMagnesiumUsed")) &&
     fullnessLimit() !== 0 &&
-    haveSkill(Skill.get("Advanced Saucecrafting")) &&
+    haveSkill($skill`Advanced Saucecrafting`) &&
     L8_getGoatCheese()
   ) {
     return true;

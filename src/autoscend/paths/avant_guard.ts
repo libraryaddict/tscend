@@ -1,20 +1,19 @@
 import {
   containsText,
-  Familiar,
   getProperty,
   haveOutfit,
-  Item,
   itemAmount,
   Monster,
   myAscensions,
   myDaycount,
   myPath,
-  Path,
   setProperty,
   toBoolean,
   toInt,
   visitUrl,
 } from "kolmafia";
+import { $familiar, $item, $items, $monster, $path } from "libram";
+
 import { pullXWhenHaveY } from "../auto_acquire";
 import { possessEquipment } from "../auto_equipment";
 import { auto_have_familiar } from "../auto_familiar";
@@ -40,14 +39,14 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/avant_guard.ash
 export function in_avantGuard(): boolean {
-  return myPath() === Path.get("Avant Guard");
+  return myPath() === $path`Avant Guard`;
 }
 
 export function ag_initializeSettings(): void {
   if (in_avantGuard()) {
     if (
-      !auto_have_familiar(Familiar.get("Burly Bodyguard")) &&
-      itemAmount(Item.get("baby bodyguard")) > 0
+      !auto_have_familiar($familiar`Burly Bodyguard`) &&
+      itemAmount($item`baby bodyguard`) > 0
     ) {
       // Add the familiar to the terrarium since we need it to do anything in this path.
       // No I don't care about that guy who never binds familiars for <reasons>. He can write & maintain his own ascension script.
@@ -64,13 +63,13 @@ export function ag_initializeSettings(): void {
 export function ag_pulls(): void {
   if (in_avantGuard()) {
     if (
-      auto_is_valid(Item.get("waffle")) &&
+      auto_is_valid($item`waffle`) &&
       auto_haveAugustScepter() &&
       !auto_turbo()
     ) {
       //Only want waffles if we can summon them and not going for a 1 day
       pullXWhenHaveY(
-        Item.get("waffle"),
+        $item`waffle`,
         1,
         (myDaycount() - 1) * (3 + (myDaycount() > 1 ? 1 : 0)),
       ); //pull waffles everyday
@@ -101,7 +100,7 @@ export function ag_bgChat(): void {
     );
     auto_log_info(`Making the next bodyguard a ${mon.toString()}`, "blue");
     handleTracker$1(
-      Familiar.get("Burly Bodyguard").toString(),
+      $familiar`Burly Bodyguard`.toString(),
       mon.toString(),
       "auto_copies",
     );
@@ -113,130 +112,124 @@ function ag_bgToChat(): Monster {
   let surgeonGearWanted: number = 0;
   let mon: Monster = Monster.none;
 
-  for (const it of Item.get([
-    "bloodied surgical dungarees",
-    "half-size scalpel",
-    "surgical apron",
-    "head mirror",
-    "surgical mask",
-  ])) {
+  for (const it of $items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`) {
     if (!possessEquipment(it) && auto_can_equip(it)) {
       surgeonGearWanted += 1;
     }
   }
   if (
-    itemAmount(Item.get("wet stunt nut stew")) === 0 &&
+    itemAmount($item`wet stunt nut stew`) === 0 &&
     !(internalQuestStatus("questL11Palindome") > 4)
   ) {
-    if (itemAmount(Item.get("bird rib")) === 0) {
-      mon = Monster.get("whitesnake");
-    } else if (itemAmount(Item.get("lion oil")) === 0) {
-      mon = Monster.get("white lion");
+    if (itemAmount($item`bird rib`) === 0) {
+      mon = $monster`whitesnake`;
+    } else if (itemAmount($item`lion oil`) === 0) {
+      mon = $monster`white lion`;
     }
   } else if (
     needStarKey() &&
-    itemAmount(Item.get("star")) < 8 &&
-    itemAmount(Item.get("line")) < 7
+    itemAmount($item`star`) < 8 &&
+    itemAmount($item`line`) < 7
   ) {
     if (myAscensions() % 2 === 1) {
-      mon = Monster.get("Skinflute");
+      mon = $monster`Skinflute`;
     } else {
-      mon = Monster.get("Camel's Toe");
+      mon = $monster`Camel's Toe`;
     }
-  } else if (needStarKey() && itemAmount(Item.get("star chart")) < 1) {
-    mon = Monster.get("Astronomer");
+  } else if (needStarKey() && itemAmount($item`star chart`) < 1) {
+    mon = $monster`Astronomer`;
   } else if (
-    itemAmount(Item.get("enchanted bean")) === 0 &&
+    itemAmount($item`enchanted bean`) === 0 &&
     internalQuestStatus("questL10Garbage") < 2 &&
     !auto_haveBatWings()
   ) {
-    mon = Monster.get("beanbat");
+    mon = $monster`beanbat`;
   } else if (
-    itemAmount(Item.get("molybdenum magnet")) > 0 &&
+    itemAmount($item`molybdenum magnet`) > 0 &&
     getProperty("sidequestJunkyardCompleted") === "none"
   ) {
-    if (itemAmount(Item.get("molybdenum hammer")) === 0) {
-      mon = Monster.get("batwinged gremlin (tool)");
+    if (itemAmount($item`molybdenum hammer`) === 0) {
+      mon = $monster`batwinged gremlin (tool)`;
     }
-    if (itemAmount(Item.get("molybdenum crescent wrench")) === 0) {
-      mon = Monster.get("erudite gremlin (tool)");
+    if (itemAmount($item`molybdenum crescent wrench`) === 0) {
+      mon = $monster`erudite gremlin (tool)`;
     }
-    if (itemAmount(Item.get("molybdenum pliers")) === 0) {
-      mon = Monster.get("spider gremlin (tool)");
+    if (itemAmount($item`molybdenum pliers`) === 0) {
+      mon = $monster`spider gremlin (tool)`;
     }
-    if (itemAmount(Item.get("molybdenum screwdriver")) === 0) {
-      mon = Monster.get("vegetable gremlin (tool)");
+    if (itemAmount($item`molybdenum screwdriver`) === 0) {
+      mon = $monster`vegetable gremlin (tool)`;
     }
   } else if (
-    itemAmount(Item.get("McClusky file (complete)")) === 0 &&
-    itemAmount(Item.get("McClusky file (page 5)")) === 0 &&
+    itemAmount($item`McClusky file (complete)`) === 0 &&
+    itemAmount($item`McClusky file (page 5)`) === 0 &&
     toInt(getProperty("hiddenOfficeProgress")) < 6
   ) {
-    mon = Monster.get("pygmy witch accountant");
+    mon = $monster`pygmy witch accountant`;
   } else if (
     surgeonGearWanted > 0 &&
     internalQuestStatus("questL11Doctor") < 2
   ) {
-    mon = Monster.get("pygmy witch surgeon");
+    mon = $monster`pygmy witch surgeon`;
   } else if (needOre()) {
-    mon = Monster.get("mountain man");
+    mon = $monster`mountain man`;
   } else if (
-    itemAmount(Item.get("drum machine")) === 0 &&
+    itemAmount($item`drum machine`) === 0 &&
     getProperty("questL11Desert") !== "finished"
   ) {
-    mon = Monster.get("blur");
+    mon = $monster`blur`;
   } else if (hedgeTrimmersNeeded() > 0) {
-    mon = Monster.get("bearpig topiary animal");
+    mon = $monster`bearpig topiary animal`;
   } else if (
-    !possessEquipment(Item.get("unstable fulminate")) &&
+    !possessEquipment($item`unstable fulminate`) &&
     internalQuestStatus("questL11Manor") < 3
   ) {
-    if (itemAmount(Item.get("bottle of Chateau de Vinegar")) === 0) {
-      mon = Monster.get("possessed wine rack");
-    } else if (itemAmount(Item.get("blasting soda")) === 0) {
-      mon = Monster.get("cabinet of Dr. Limpieza");
+    if (itemAmount($item`bottle of Chateau de Vinegar`) === 0) {
+      mon = $monster`possessed wine rack`;
+    } else if (itemAmount($item`blasting soda`) === 0) {
+      mon = $monster`cabinet of Dr. Limpieza`;
     }
   } else if (
-    itemAmount(Item.get("crumbling wooden wheel")) +
-      itemAmount(Item.get("tomb ratchet")) <
+    itemAmount($item`crumbling wooden wheel`) +
+      itemAmount($item`tomb ratchet`) <
       10 &&
     !toBoolean(getProperty("pyramidBombUsed"))
   ) {
-    mon = Monster.get("tomb rat");
+    mon = $monster`tomb rat`;
   } else if (
-    (!possessEquipment(Item.get("Lord Spookyraven's spectacles")) &&
+    (!possessEquipment($item`Lord Spookyraven's spectacles`) &&
       internalQuestStatus("questL11Manor") < 2) ||
-    (itemAmount(Item.get("disposable instant camera")) === 0 &&
+    (itemAmount($item`disposable instant camera`) === 0 &&
       internalQuestStatus("questL11Palindome") < 1)
   ) {
-    mon = Monster.get("animated ornate nightstand");
+    mon = $monster`animated ornate nightstand`;
   } else if (
     !haveOutfit("Knob Goblin Harem Girl Disguise") &&
     getProperty("questL05Goblin") !== "finished"
   ) {
-    mon = Monster.get("Knob Goblin Harem Girl");
+    mon = $monster`Knob Goblin Harem Girl`;
   } else if (
-    itemAmount(Item.get("goat cheese")) < 3 &&
+    itemAmount($item`goat cheese`) < 3 &&
     internalQuestStatus("questL08Trapper") < 2
   ) {
-    mon = Monster.get("dairy goat");
+    mon = $monster`dairy goat`;
   } else if (
-    itemAmount(Item.get("bowling ball")) < 5 &&
+    itemAmount($item`bowling ball`) < 5 &&
     internalQuestStatus("hiddenBowlingAlleyProgress") < 5
   ) {
-    mon = Monster.get("pygmy bowler");
+    mon = $monster`pygmy bowler`;
   } else if (
     internalQuestStatus("questL12War") === 1 &&
     !toBoolean(getProperty("auto_hippyInstead"))
   ) {
-    mon = Monster.get("Green Ops Soldier");
+    mon = $monster`Green Ops Soldier`;
   } else if (
     !toBoolean(getProperty("auto_hippyInstead")) &&
     !haveOutfit("frat warrior fatigures") &&
     internalQuestStatus("questL12War") < 1
   ) {
     {
-      mon = Monster.get("War Frat 151st Infantryman");
+      mon = $monster`War Frat 151st Infantryman`;
     }
   } else if (
     toBoolean(getProperty("auto_hippyInstead")) &&
@@ -244,7 +237,7 @@ function ag_bgToChat(): Monster {
     internalQuestStatus("questL12War") < 1
   ) {
     {
-      mon = Monster.get("War Hippy Airborne Commander");
+      mon = $monster`War Hippy Airborne Commander`;
     }
   }
 

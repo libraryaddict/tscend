@@ -3,12 +3,12 @@ import {
   cliExecute,
   council,
   hiddenTempleUnlocked,
-  Item,
   itemAmount,
-  Location,
   myMeat,
   runChoice,
 } from "kolmafia";
+import { $item, $location } from "libram";
+
 import { autoAdv$2 } from "../auto_adventure";
 import { canBurnDelay } from "../auto_routing";
 import {
@@ -24,20 +24,20 @@ export function spookyForestChoiceHandler(choice: number): void {
     // Arboreal Respite (The Spooky Forest)
     if (
       internalQuestStatus("questL02Larva") === 0 &&
-      itemAmount(Item.get("mosquito larva")) === 0
+      itemAmount($item`mosquito larva`) === 0
     ) {
       // need the mosquito larva
       runChoice(2); // go to Consciousness of a Stream (#505)
     } else if (!hiddenTempleUnlocked()) {
       if (
-        itemAmount(Item.get("tree-holed coin")) === 0 &&
-        itemAmount(Item.get("Spooky Temple map")) === 0
+        itemAmount($item`tree-holed coin`) === 0 &&
+        itemAmount($item`Spooky Temple map`) === 0
       ) {
         // need the tree-holed coin
         runChoice(2); // go to Consciousness of a Stream (#505)
       } else if (
-        itemAmount(Item.get("Spooky Temple map")) === 0 ||
-        itemAmount(Item.get("Spooky-Gro fertilizer")) === 0
+        itemAmount($item`Spooky Temple map`) === 0 ||
+        itemAmount($item`Spooky-Gro fertilizer`) === 0
       ) {
         // have the coin, need the spooky temple map and spooky-gro fertilizer
         runChoice(3); // go to Through Thicket and Thinnet (#506)
@@ -58,14 +58,14 @@ export function spookyForestChoiceHandler(choice: number): void {
     // Tree's Last Stand (The Spooky Forest)
     // when selling [bar skin] or buying [spooky sapling] we must immediately queue up the next action(s).
     // otherwise mafia will think our NC handling failed and fallback to the mafia handling.
-    if (itemAmount(Item.get("bar skin")) > 1) {
+    if (itemAmount($item`bar skin`) > 1) {
       runChoice(2); // sell all bar skins (doesn't leave choice)
-    } else if (itemAmount(Item.get("bar skin")) === 1) {
+    } else if (itemAmount($item`bar skin`) === 1) {
       runChoice(1); // sell bar skin (doesn't leave choice)
     }
     if (
       !hiddenTempleUnlocked() &&
-      itemAmount(Item.get("spooky sapling")) === 0 &&
+      itemAmount($item`spooky sapling`) === 0 &&
       myMeat() > 100
     ) {
       runChoice(3); // get the spooky sapling (doesn't leave choice)
@@ -75,7 +75,7 @@ export function spookyForestChoiceHandler(choice: number): void {
     // Consciousness of a Stream (The Spooky Forest)
     if (
       internalQuestStatus("questL02Larva") === 0 &&
-      itemAmount(Item.get("mosquito larva")) === 0
+      itemAmount($item`mosquito larva`) === 0
     ) {
       runChoice(1); // Get the mosquito larva
     } else {
@@ -85,7 +85,7 @@ export function spookyForestChoiceHandler(choice: number): void {
     // Through Thicket and Thinnet (The Spooky Forest)
     if (
       !hiddenTempleUnlocked() &&
-      itemAmount(Item.get("Spooky-Gro fertilizer")) === 0
+      itemAmount($item`Spooky-Gro fertilizer`) === 0
     ) {
       runChoice(2); // get the spooky-gro fertilizer
     } else {
@@ -95,8 +95,8 @@ export function spookyForestChoiceHandler(choice: number): void {
     // O Lith, Mon (The Spooky Forest)
     if (
       !hiddenTempleUnlocked() &&
-      itemAmount(Item.get("tree-holed coin")) > 0 &&
-      itemAmount(Item.get("Spooky Temple map")) === 0
+      itemAmount($item`tree-holed coin`) > 0 &&
+      itemAmount($item`Spooky Temple map`) === 0
     ) {
       runChoice(1); // get the spooky temple map
     } else {
@@ -114,15 +114,15 @@ export function L2_mosquito(): boolean {
   ) {
     return false;
   }
-  if (canBurnDelay(Location.get("The Spooky Forest"))) {
+  if (canBurnDelay($location`The Spooky Forest`)) {
     // Arboreal Respite choice adventure has a delay of 5 adventures.
     return false;
   }
   auto_log_info("Trying to find a mosquito.", "blue");
-  if (autoAdv$2(Location.get("The Spooky Forest"))) {
+  if (autoAdv$2($location`The Spooky Forest`)) {
     if (
       internalQuestStatus("questL02Larva") > 0 ||
-      itemAmount(Item.get("mosquito larva")) > 0
+      itemAmount($item`mosquito larva`) > 0
     ) {
       council();
       if (in_koe()) {

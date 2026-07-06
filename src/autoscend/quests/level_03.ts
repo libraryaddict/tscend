@@ -5,26 +5,33 @@ import {
   council,
   Effect,
   Element,
-  Familiar,
   getProperty,
   haveEffect,
   haveSkill,
-  Item,
   lastMonster,
-  Location,
-  Monster,
   monsterLevelAdjustment,
   myDaycount,
   myLevel,
   myMp,
   numericModifier,
   setProperty,
-  Skill,
   stringModifier,
   toBoolean,
   visitUrl,
   wait,
 } from "kolmafia";
+import {
+  $effect,
+  $element,
+  $elements,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $monster,
+  $skill,
+} from "libram";
+
 import { pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$1, autoAdvBypass$1 } from "../auto_adventure";
 import { buffMaintain$3 } from "../auto_buff";
@@ -80,9 +87,9 @@ function auto_tavern(): boolean {
 
   let maximized: boolean = false;
   // sleaze is the only one we don't care about
-  if (possessEquipment(Item.get("Kremlin's Greatest Briefcase"))) {
+  if (possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     const mod: string = stringModifier(
-      Item.get("Kremlin's Greatest Briefcase"),
+      $item`Kremlin's Greatest Briefcase`,
       "Modifiers",
     );
     if (containsText(mod, "Weapon Damage Percent")) {
@@ -110,21 +117,18 @@ function auto_tavern(): boolean {
     }
   }
 
-  try_buff_damage(Element.get("hot"), Effect.get("Pyromania"));
-  try_buff_damage(Element.get("cold"), Effect.get("Frostbeard"));
-  try_buff_damage(Element.get("cold"), Effect.get("Song of the North"));
-  try_buff_damage(Element.get("stench"), Effect.get("Rotten Memories"));
-  try_buff_damage(Element.get("spooky"), Effect.get("Intimidating Mien"));
+  try_buff_damage($element`hot`, $effect`Pyromania`);
+  try_buff_damage($element`cold`, $effect`Frostbeard`);
+  try_buff_damage($element`cold`, $effect`Song of the North`);
+  try_buff_damage($element`stench`, $effect`Rotten Memories`);
+  try_buff_damage($element`spooky`, $effect`Intimidating Mien`);
   try_buff_damage(
-    Element.get("spooky"),
-    Effect.get("Dirge of Dreadfulness (Remastered)"),
+    $element`spooky`,
+    $effect`Dirge of Dreadfulness (Remastered)`,
   );
-  try_buff_damage(Element.get("spooky"), Effect.get("Dirge of Dreadfulness"));
-  try_buff_damage(
-    Element.get("spooky"),
-    Effect.get("Snarl of Three Timberwolves"),
-  );
-  try_buff_damage(Element.get("spooky"), Effect.get("Snarl of the Timberwolf"));
+  try_buff_damage($element`spooky`, $effect`Dirge of Dreadfulness`);
+  try_buff_damage($element`spooky`, $effect`Snarl of Three Timberwolves`);
+  try_buff_damage($element`spooky`, $effect`Snarl of the Timberwolf`);
 
   const max_ml_target: number = 150;
 
@@ -155,7 +159,7 @@ function auto_tavern(): boolean {
   function n_passed(): number {
     // We pass an elemental damage check if we have 20 damage for that element
     let n: number = 0;
-    for (const el of Element.get(["hot", "cold", "spooky", "stench"])) {
+    for (const el of $elements`hot, cold, spooky, stench`) {
       if (simValue$1(damageModifier(el)) >= 20.0) {
         n++;
       }
@@ -167,7 +171,7 @@ function auto_tavern(): boolean {
     return n_passed() >= 4;
   }
   // Consider a pull
-  for (const it of Item.get(["17-ball", "rare oboe"])) {
+  for (const it of $items`17-ball, rare oboe`) {
     if (!all_passed()) {
       if (pullXWhenHaveY(it, 1, 0)) {
         simMaximizeWith$1(
@@ -196,9 +200,9 @@ function auto_tavern(): boolean {
   addToMaximize(`500ml ${auto_convertDesiredML(max_ml_target)}max`);
 
   if (capped >= 3) {
-    providePlusNonCombat$4(auto_combatModCap(), Location.get("Noob Cave"));
+    providePlusNonCombat$4(auto_combatModCap(), $location`Noob Cave`);
   } else {
-    providePlusCombat$4(20, Location.get("Noob Cave"));
+    providePlusCombat$4(20, $location`Noob Cave`);
   }
 
   let tavern_1: string = getProperty("tavernLayout");
@@ -222,7 +226,7 @@ function auto_tavern(): boolean {
       if (
         autoAdvBypass$1(
           `cellar.php?action=explore&whichspot=${actual}`,
-          Location.get("The Typical Tavern Cellar"),
+          $location`The Typical Tavern Cellar`,
         )
       ) {
         return true;
@@ -252,11 +256,11 @@ function auto_tavern(): boolean {
           "Tavern handler: You are RL drunk, you should not be here.",
           "red",
         );
-        autoAdv$1(1, Location.get("Noob Cave"));
+        autoAdv$1(1, $location`Noob Cave`);
       }
       if (
-        lastMonster() === Monster.get("crate") ||
-        (in_wereprof() && !(Location.get("Noob Cave").turnsSpent < 8))
+        lastMonster() === $monster`crate` ||
+        (in_wereprof() && !($location`Noob Cave`.turnsSpent < 8))
       ) {
         //want 7 turns of Noob Cave in WereProfessor for Smashed Scientific Equipment
         if (toBoolean(getProperty("auto_newbieOverride"))) {
@@ -307,14 +311,14 @@ export function L3_tavern(): boolean {
 
   let mpNeed: number = 0;
   if (
-    haveSkill(Skill.get("The Sonata of Sneakiness")) &&
-    haveEffect(Effect.get("The Sonata of Sneakiness")) === 0
+    haveSkill($skill`The Sonata of Sneakiness`) &&
+    haveEffect($effect`The Sonata of Sneakiness`) === 0
   ) {
     mpNeed = mpNeed + 20;
   }
   if (
-    haveSkill(Skill.get("Smooth Movement")) &&
-    haveEffect(Effect.get("Smooth Movements")) === 0
+    haveSkill($skill`Smooth Movement`) &&
+    haveEffect($effect`Smooth Movements`) === 0
   ) {
     mpNeed = mpNeed + 10;
   }
@@ -348,7 +352,7 @@ export function L3_tavern(): boolean {
   auto_log_info("Doing Tavern", "blue");
 
   if (myMp() > 60 || considerGrimstoneGolem(true)) {
-    handleBjornify(Familiar.get("Grimstone Golem"));
+    handleBjornify($familiar`Grimstone Golem`);
   }
 
   auto_setMCDToCap();

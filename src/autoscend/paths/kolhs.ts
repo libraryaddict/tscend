@@ -2,7 +2,6 @@ import {
   abort,
   availableChoiceOptions,
   canInteract,
-  Effect,
   equip,
   equippedAmount,
   Familiar,
@@ -17,18 +16,27 @@ import {
   myInebriety,
   myLevel,
   myPath,
-  Path,
   putCloset,
   removeProperty,
   runChoice,
   setProperty,
-  Slot,
   toBoolean,
   toFamiliar,
   toInt,
   toLocation,
   toMonster,
 } from "kolmafia";
+import {
+  $effect,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $locations,
+  $path,
+  $slot,
+} from "libram";
+
 import { autoAdv$2 } from "../auto_adventure";
 import {
   auto_autoConsumeOne$1,
@@ -52,7 +60,7 @@ import { monster_to_location, zone_isAvailable } from "../auto_zone";
 
 //Defined in autoscend/paths/kolhs.ash
 export function in_kolhs(): boolean {
-  return myPath() === Path.get("KOLHS");
+  return myPath() === $path`KOLHS`;
 }
 
 export function kolhs_mandatorySchool(): boolean {
@@ -86,21 +94,17 @@ function kolhs_closetDrink(): void {
   }
   setProperty("kolhs_closetDrink", true.toString());
   //drink one first if needed so they continue to drop.
-  let target: Item = Item.get("can of the cheapest beer");
+  let target: Item = $item`can of the cheapest beer`;
   if (myLevel() > 8) {
-    target = Item.get("single swig of vodka");
+    target = $item`single swig of vodka`;
   } else if (myLevel() > 4) {
-    target = Item.get("bottle of fruity &quot;wine&quot;");
+    target = $item`bottle of fruity "wine"`;
   }
   if (myInebriety() < 10 && itemAmount(target) > 0) {
     autoDrink(1, target);
   }
   //closet all the others
-  for (const it of Item.get([
-    "single swig of vodka",
-    "bottle of fruity &quot;wine&quot;",
-    "can of the cheapest beer",
-  ])) {
+  for (const it of $items`single swig of vodka, bottle of fruity "wine", can of the cheapest beer`) {
     const amt: number = itemAmount(it);
     if (amt > 0) {
       putCloset(amt, it);
@@ -123,11 +127,7 @@ export function kolhs_consume(): void {
 
   if (myInebriety() < 10) {
     //phase 1. drink these as soon as they drop. no return here because we want to eat too.
-    for (const it of Item.get([
-      "single swig of vodka",
-      "bottle of fruity &quot;wine&quot;",
-      "can of the cheapest beer",
-    ])) {
+    for (const it of $items`single swig of vodka, bottle of fruity "wine", can of the cheapest beer`) {
       if (itemAmount(it) > 0) {
         autoDrink(1, it);
       }
@@ -161,28 +161,25 @@ export function kolhs_preadv(place: Location): void {
   }
   //KOLHS path specific zones where hats are forbidden. wearing one fails to adv and causes infinite loop
   if (
-    Location.get([
-      "The Hallowed Halls",
-      "Art Class",
-      "Chemistry Class",
-      "Shop Class",
-    ]).includes(place)
+    $locations`The Hallowed Halls, Art Class, Chemistry Class, Shop Class`.includes(
+      place,
+    )
   ) {
     addToMaximize("-hat");
-    equip(Slot.get("hat"), Item.none);
+    equip($slot`hat`, Item.none);
   }
   //prepare yearbook camera
   if (
     place === toLocation(getProperty("_yearbookCameraTargetLocation")) &&
     !toBoolean(getProperty("yearbookCameraPending"))
   ) {
-    if (equippedAmount(Item.get("Yearbook Club Camera")) === 0) {
+    if (equippedAmount($item`Yearbook Club Camera`) === 0) {
       auto_log_warning(
         `Tried to adventure in [${place}] to do the yearbook camera quest without a [Yearbook Club Camera] equipped... correcting`,
         "red",
       );
-      autoForceEquip$1(Slot.get("acc2"), Item.get("Yearbook Club Camera"));
-      if (equippedAmount(Item.get("Yearbook Club Camera")) === 0) {
+      autoForceEquip$1($slot`acc2`, $item`Yearbook Club Camera`);
+      if (equippedAmount($item`Yearbook Club Camera`) === 0) {
         abort(
           `Correction failed, please report this. Manually photograph a [${getProperty("yearbookCameraTarget")}] then run me again`,
         );
@@ -203,12 +200,12 @@ function LX_kolhs_visitYearbookClub(): boolean {
   }
   auto_log_info("Visiting the yearbook club", "blue");
   setProperty("_NC772_directive", (3).toString()); //NC772 [saved by the bell] should visit yearbook club
-  return autoAdv$2(Location.get("The Hallowed Halls")); //goto NC772
+  return autoAdv$2($location`The Hallowed Halls`); //goto NC772
 }
 
 function LX_kolhs_yearbookCameraGet(): boolean {
   //grab the yearbook camera if you have not already done so.
-  if (possessEquipment(Item.get("Yearbook Club Camera"))) {
+  if (possessEquipment($item`Yearbook Club Camera`)) {
     return false; //already have the camera
   }
   if (kolhs_mandatorySchool()) {
@@ -256,7 +253,7 @@ function LX_kolhs_yearbookCameraQuest(): boolean {
     return false; //just in case. should not be possible since it picks from reachable locations
   }
 
-  autoEquip$1(Item.get("Yearbook Club Camera"));
+  autoEquip$1($item`Yearbook Club Camera`);
   return autoAdv$2(adv_target);
 
   return false;
@@ -268,7 +265,7 @@ function LX_kolhs_school(): boolean {
     return false; //done for today
   }
 
-  return autoAdv$2(Location.get("The Hallowed Halls"));
+  return autoAdv$2($location`The Hallowed Halls`);
   //TODO specific classes https://kol.coldfront.net/thekolwiki/index.php/KoL_High_School
   //TODO sniff wastoid in hallowed halls
 }
@@ -287,11 +284,11 @@ export function kolhsChoiceHandler(choice: number): void {
     let target: number = 0;
     switch (choice) {
       case 700:
-        if (haveEffect(Effect.get("Jamming with the Jocks")) > 0) {
+        if (haveEffect($effect`Jamming with the Jocks`) > 0) {
           runChoice(1);
-        } else if (haveEffect(Effect.get("Nerd is the Word")) > 0) {
+        } else if (haveEffect($effect`Nerd is the Word`) > 0) {
           runChoice(2);
-        } else if (haveEffect(Effect.get("Greaser Lightnin'")) > 0) {
+        } else if (haveEffect($effect`Greaser Lightnin'`) > 0) {
           runChoice(3);
         } else {
           auto_log_warning(
@@ -339,7 +336,7 @@ export function LM_kolhs(): boolean {
   );
   if (
     familiar_target_100 !== Familiar.none &&
-    familiar_target_100 !== Familiar.get("Steam-Powered Cheerleader")
+    familiar_target_100 !== $familiar`Steam-Powered Cheerleader`
   ) {
     setProperty("auto_100familiar", Familiar.none.toString());
     abort(

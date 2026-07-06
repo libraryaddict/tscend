@@ -6,6 +6,7 @@ import {
   setProperty,
   toInt,
 } from "kolmafia";
+
 import { combat_status_add, combat_status_check } from "./auto_combat_util";
 
 //Path specific combat handling functions for Avatar of West of Loathing

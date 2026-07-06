@@ -5,7 +5,6 @@ import {
   canEquip,
   canInteract,
   ceil,
-  Class,
   cliExecute,
   closetAmount,
   Coinmaster,
@@ -14,7 +13,6 @@ import {
   Effect,
   equip,
   equippedItem,
-  Familiar,
   floor,
   getCampground,
   getDwelling,
@@ -42,14 +40,12 @@ import {
   mySoulsauce,
   npcPrice,
   numericModifier,
-  Path,
   print,
   putCloset,
   retrieveItem,
   sellPrice,
   setProperty,
   Skill,
-  Slot,
   splitString,
   Stat,
   takeCloset,
@@ -66,6 +62,19 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
+import {
+  $class,
+  $effect,
+  $effects,
+  $familiar,
+  $item,
+  $items,
+  $path,
+  $skill,
+  $slot,
+  $stat,
+} from "libram";
+
 import { auto_mall_price } from "./auto_acquire";
 import { buffMaintain$4 } from "./auto_buff";
 import { equipStatgainIncreasers$1, possessEquipment } from "./auto_equipment";
@@ -85,7 +94,6 @@ import {
   isMystGuildStoreAvailable,
   meatReserve,
 } from "./auto_util";
-import { fileAsMap } from "./utils/kolmafiaUtils";
 import {
   doHottub,
   hotTubSoaksRemaining,
@@ -133,6 +141,7 @@ import {
   zombieSlayer_acquireHP,
   zombieSlayer_acquireMP,
 } from "./paths/zombie_slayer";
+import { fileAsMap } from "./utils/kolmafiaUtils";
 
 /**
  * Functions designed to deal with restoring hp/mp, removing status effects, etc.
@@ -408,7 +417,7 @@ function __init_restoration_metadata(): void {
                       removes_effects,
                     );
                     parsed.removesBeatenUp = parsed.removesEffects.has(
-                      Effect.get("Beaten Up"),
+                      $effect`Beaten Up`,
                     );
                     parsed.givesEffects = parse_effects(
                       parsed.name,
@@ -434,7 +443,7 @@ function __init_restoration_metadata(): void {
       ).mpRestored = 1000;
     }
 
-    if (myPath() === Path.get("Disguises Delimit")) {
+    if (myPath() === $path`Disguises Delimit`) {
       //shadow has double HP in this path so larger reserve needed
       for (const specialname of ["gauze garter", "filthy poultice"]) {
         const parsedSpecial: __RestorationMetadata =
@@ -663,7 +672,7 @@ function __calculate_objective_values(
 
     if (
       metadata.name === "disco nap" &&
-      auto_have_skill(Skill.get("Adventurer of Leisure"))
+      auto_have_skill($skill`Adventurer of Leisure`)
     ) {
       restored_amount = 40;
     }
@@ -693,7 +702,7 @@ function __calculate_objective_values(
       metadata.name === "disco nap" &&
       auto_haveAprilShowerShield() &&
       toInt(getProperty("_aprilShowerDiscoNap")) < 5 &&
-      myMp() > mpCost(Skill.get("Disco Nap"))
+      myMp() > mpCost($skill`Disco Nap`)
     ) {
       restored_amount = 100 - 20 * toInt(getProperty("_aprilShowerDiscoNap"));
     }
@@ -749,13 +758,11 @@ function __calculate_objective_values(
       if (getProperty("questM24Doc") === "finished") {
         meat_per_mp = 6.0; // Doc Galaktik's Invigorating Tonic reduced to 60 meat/10 MP
       }
-      if (auto_have_skill(Skill.get("Five Finger Discount"))) {
+      if (auto_have_skill($skill`Five Finger Discount`)) {
         meat_per_mp = meat_per_mp * 0.95; // this isn't quite right for discounted Doc Galaktik but I don't care.
       }
       if (isMystGuildStoreAvailable()) {
-        const mmj_cost: number = auto_have_skill(
-          Skill.get("Five Finger Discount"),
-        )
+        const mmj_cost: number = auto_have_skill($skill`Five Finger Discount`)
           ? 95
           : 100;
         const mmj_mp_restored: number = toInt(myLevel() * 1.5 + 5);
@@ -764,7 +771,7 @@ function __calculate_objective_values(
         // at level 6 and above, MMJ is better than all but discounted doc galaktik
         // and at level 8 and above it's better than everything
       }
-      if (myClass() === Class.get("Sauceror") || canInteract()) {
+      if (myClass() === $class`Sauceror` || canInteract()) {
         // your MP cup runneth over
         meat_per_mp = 0;
       }
@@ -890,12 +897,12 @@ function __calculate_objective_values(
   // TODO: doesnt account properly for multiuse situations where we could have more blood skill casts and less waste than this formula suggests
   function blood_skill_opportunity_casts(goal: number): number {
     const bloodBondAvailable: boolean =
-      auto_have_skill(Skill.get("Blood Bond")) &&
+      auto_have_skill($skill`Blood Bond`) &&
       pathHasFamiliar() &&
       myMaxhp() >
         hpCost(
           //checks if player can use familiars in this run
-          Skill.get("Blood Bond"),
+          $skill`Blood Bond`,
         ) &&
       goal > (9 - hp_regen()) * 10 &&
       toBoolean(
@@ -904,11 +911,11 @@ function __calculate_objective_values(
       );
 
     const bloodBubbleAvailable: boolean =
-      auto_have_skill(Skill.get("Blood Bubble")) &&
-      myMaxhp() > hpCost(Skill.get("Blood Bubble"));
+      auto_have_skill($skill`Blood Bubble`) &&
+      myMaxhp() > hpCost($skill`Blood Bubble`);
 
     const waste: number = total_wasted("hp", goal);
-    const blood_cost: number = hpCost(Skill.get("Blood Bond"));
+    const blood_cost: number = hpCost($skill`Blood Bond`);
     if (waste <= blood_cost || !(bloodBubbleAvailable || bloodBondAvailable)) {
       return 0.0;
     }
@@ -921,13 +928,13 @@ function __calculate_objective_values(
   }
 
   function blood_adjusted_waste(goal: number): number {
-    const blood_cost: number = hpCost(Skill.get("Blood Bond"));
+    const blood_cost: number = hpCost($skill`Blood Bond`);
     const casts: number = blood_skill_opportunity_casts(goal);
     const waste: number = total_wasted("hp", goal);
     if (casts < 1) {
       return waste;
     } else {
-      return waste - casts * hpCost(Skill.get("Blood Bond"));
+      return waste - casts * hpCost($skill`Blood Bond`);
     }
   }
 
@@ -992,7 +999,7 @@ function __calculate_objective_values(
       ([_k, _v]) => [Effect.get(_k), _v] as [Effect, number],
     )) {
       if (
-        e !== Effect.get("Beaten Up") &&
+        e !== $effect`Beaten Up` &&
         $_f___all_negative_effects.has(e) &&
         !metadata.removesEffects.has(e)
       ) {
@@ -1042,7 +1049,7 @@ function __calculate_objective_values(
     );
 
     if (resource_type === "hp" && goal > starting) {
-      const blood_cost: number = hpCost(Skill.get("Blood Bond"));
+      const blood_cost: number = hpCost($skill`Blood Bond`);
       const casts: number = blood_skill_opportunity_casts(goal);
       if (casts > 0.0) {
         starting = max(starting - casts * blood_cost, 0.0);
@@ -1063,9 +1070,9 @@ function __calculate_objective_values(
     if (metadata.type === "dwelling") {
       const d: Item = toItem(metadata.name);
       return (
-        (d === Item.get("Chateau Mantegna room key") &&
+        (d === $item`Chateau Mantegna room key` &&
           chateaumantegna_available()) ||
-        (d === Item.get("Distant Woods Getaway Brochure") &&
+        (d === $item`Distant Woods Getaway Brochure` &&
           auto_campawayAvailable()) ||
         (d === getDwelling() && !haveAnyIotmAlternativeRestSiteAvailable())
       );
@@ -1799,9 +1806,9 @@ function __restore(
 
   function pick_blood_skill(final_hp: number): Skill {
     const bloodBondAvailable: boolean =
-      auto_have_skill(Skill.get("Blood Bond")) &&
+      auto_have_skill($skill`Blood Bond`) &&
       pathHasFamiliar() &&
-      myMaxhp() > hpCost(Skill.get("Blood Bond")) &&
+      myMaxhp() > hpCost($skill`Blood Bond`) &&
       final_hp > (9 - hp_regen()) * 10 &&
       toBoolean(
         // blood bond drains hp after combat, make sure we dont accidentally kill the player
@@ -1809,23 +1816,20 @@ function __restore(
       );
 
     const bloodBubbleAvailable: boolean =
-      auto_have_skill(Skill.get("Blood Bubble")) &&
-      myMaxhp() > hpCost(Skill.get("Blood Bubble"));
+      auto_have_skill($skill`Blood Bubble`) &&
+      myMaxhp() > hpCost($skill`Blood Bubble`);
 
     let blood_skill: Skill = Skill.none;
     if (bloodBondAvailable && bloodBubbleAvailable) {
-      if (
-        haveEffect(Effect.get("Blood Bond")) >
-        haveEffect(Effect.get("Blood Bubble"))
-      ) {
-        blood_skill = Skill.get("Blood Bubble");
+      if (haveEffect($effect`Blood Bond`) > haveEffect($effect`Blood Bubble`)) {
+        blood_skill = $skill`Blood Bubble`;
       } else {
-        blood_skill = Skill.get("Blood Bond");
+        blood_skill = $skill`Blood Bond`;
       }
     } else if (bloodBondAvailable) {
-      blood_skill = Skill.get("Blood Bond");
+      blood_skill = $skill`Blood Bond`;
     } else if (bloodBubbleAvailable) {
-      blood_skill = Skill.get("Blood Bubble");
+      blood_skill = $skill`Blood Bubble`;
     }
     return blood_skill;
   }
@@ -1835,8 +1839,8 @@ function __restore(
     final_hp: number,
   ): boolean {
     if (
-      !auto_have_skill(Skill.get("Blood Bond")) &&
-      !auto_have_skill(Skill.get("Blood Bubble"))
+      !auto_have_skill($skill`Blood Bond`) &&
+      !auto_have_skill($skill`Blood Bubble`)
     ) {
       return false;
     }
@@ -1853,14 +1857,14 @@ function __restore(
     // ratio should be 1 / the number of turns of that effect per cast
     const skill_ratios: Map<Skill, number> = new Map();
     let total_ratio: number = 0.0;
-    if (auto_have_skill(Skill.get("Blood Bubble"))) {
+    if (auto_have_skill($skill`Blood Bubble`)) {
       const bubble_ratio: number = 1.0 / 3.0;
-      skill_ratios.set(Skill.get("Blood Bubble"), bubble_ratio);
+      skill_ratios.set($skill`Blood Bubble`, bubble_ratio);
       total_ratio += bubble_ratio;
     }
-    if (auto_have_skill(Skill.get("Blood Bond"))) {
+    if (auto_have_skill($skill`Blood Bond`)) {
       const bond_ratio: number = 1.0 / 10.0;
-      skill_ratios.set(Skill.get("Blood Bond"), bond_ratio);
+      skill_ratios.set($skill`Blood Bond`, bond_ratio);
       total_ratio += bond_ratio;
     }
     let casts_so_far: number = 0;
@@ -1958,10 +1962,7 @@ function __restore(
   }
 
   function recover_discount_pants(): void {
-    for (const discountpants of Item.get([
-      "designer sweatpants",
-      "Travoltan trousers",
-    ])) {
+    for (const discountpants of $items`designer sweatpants, Travoltan trousers`) {
       if (closetAmount(discountpants) > 0) {
         takeCloset(1, discountpants);
       }
@@ -2019,10 +2020,7 @@ function __restore(
         itemAmount(toItem(o.metadata.name)) === 0
       ) {
         //prevent infinite loop by discount pants when buying from NPC store
-        for (const discountpants of Item.get([
-          "designer sweatpants",
-          "Travoltan trousers",
-        ])) {
+        for (const discountpants of $items`designer sweatpants, Travoltan trousers`) {
           if (itemAmount(discountpants) > 0) {
             let mustnotpants: boolean = false;
             cliExecute(`whatif equip ${discountpants}; quiet`);
@@ -2075,7 +2073,7 @@ function __restore(
           options.set(0, new __RestorationOptimization()).get(0)
         ).metadata.name === "rest upside down"
       ) {
-        const current_back: Item = equippedItem(Slot.get("back"));
+        const current_back: Item = equippedItem($slot`back`);
         // do we have less than max minus what the back item provides
         if (
           current_resource() <
@@ -2083,9 +2081,9 @@ function __restore(
             numericModifier(current_back, `Maximum ${resource_type}`)
         ) {
           auto_log_info$1("Manually equipping the bat wings");
-          equip(Item.get("bat wings"));
+          equip($item`bat wings`);
           recover_discount_pants();
-          success = useSkill(1, Skill.get("Rest upside down"));
+          success = useSkill(1, $skill`Rest upside down`);
           equip(current_back);
           return success;
         }
@@ -2103,26 +2101,19 @@ function __restore(
 }
 
 export function __cure_bad_stuff(): void {
-  for (const e of Effect.get([
-    "Hardly Poisoned at All",
-    "A Little Bit Poisoned",
-    "Somewhat Poisoned",
-    "Really Quite Poisoned",
-    "Majorly Poisoned",
-    "Toad In The Hole",
-  ])) {
+  for (const e of $effects`Hardly Poisoned at All, A Little Bit Poisoned, Somewhat Poisoned, Really Quite Poisoned, Majorly Poisoned, Toad In The Hole`) {
     if (haveEffect(e) > 0) {
       uneffect(e);
     }
   }
   // let mafia figure out how to best remove beaten up
-  if (haveEffect(Effect.get("Beaten Up")) > 0) {
+  if (haveEffect($effect`Beaten Up`) > 0) {
     auto_log_info$1(
       "Ouch, you got beaten up. Lets get you patched up, if we can.",
     );
-    uneffect(Effect.get("Beaten Up"));
+    uneffect($effect`Beaten Up`);
 
-    if (haveEffect(Effect.get("Beaten Up")) > 0) {
+    if (haveEffect($effect`Beaten Up`) > 0) {
       auto_log_warning(
         "Well, you're still beaten up, thats probably not great...",
         "red",
@@ -2193,25 +2184,25 @@ function acquireMP$3(
     return true;
   }
   //since we need to restore, lets reduce MP cost of future skills
-  buffMaintain$4(Effect.get("The Odour of Magick"));
-  buffMaintain$4(Effect.get("Using Protection"));
+  buffMaintain$4($effect`The Odour of Magick`);
+  buffMaintain$4($effect`Using Protection`);
   //also use items/skills which give free mp regen
-  buffMaintain$4(Effect.get("Tingly Tongue"));
-  buffMaintain$4(Effect.get("Tingling Insides"));
-  buffMaintain$4(Effect.get("Wisdom of the Autumn Years"));
+  buffMaintain$4($effect`Tingly Tongue`);
+  buffMaintain$4($effect`Tingling Insides`);
+  buffMaintain$4($effect`Wisdom of the Autumn Years`);
   if (
     auto_equipAprilShieldBuff() &&
     !toBoolean(getProperty("_aprilShowerSimmer"))
   ) {
     //Free mp regen on the first cast of the day with the April Shower Thoughts Shield equipped
-    buffMaintain$4(Effect.get("Simmering"));
+    buffMaintain$4($effect`Simmering`);
   }
   // Sausages restore 999MP, this is a pretty arbitrary cutoff but it should reduce pain
   // TODO: move this to general effectiveness method
   if (myMaxmp() - myMp() > 300) {
     if (!auto_sausageBlocked()) {
       if (
-        itemAmount(Item.get("magical sausage")) < 1 &&
+        itemAmount($item`magical sausage`) < 1 &&
         toInt(getProperty("_sausagesMade")) < 23
       ) {
         auto_sausageGrind(1);
@@ -2222,7 +2213,7 @@ function acquireMP$3(
   }
   // 5 Soulsauce restores 15 MP and only has opportunity cost against its other uses as buff or combat stun
   // unless objective value of combat stun exists there is no way to compare to other restore methods so it's always the best if available?
-  if (myClass() === Class.get("Sauceror")) {
+  if (myClass() === $class`Sauceror`) {
     const MPtoRestore: number = goal - myMp();
     let casts: number = ceil(toFloat(MPtoRestore) / 15.0); //soul food restores 15 MP per cast.
     casts = min(casts, mySoulsauce() / 5); //soul food costs 5 soulsauce per cast.
@@ -2233,13 +2224,13 @@ function acquireMP$3(
         if (myMp() < excessMP && casts > 1) {
           //can't burn MP we don't have yet
           casts -= 1;
-          useSkill(1, Skill.get("Soul Food"));
+          useSkill(1, $skill`Soul Food`);
         }
         if (myMp() > 0) {
           auto_burnMP(min(excessMP, myMp()));
         }
       }
-      useSkill(casts, Skill.get("Soul Food"));
+      useSkill(casts, $skill`Soul Food`);
       if (myMp() >= goal) {
         return true;
       }
@@ -2259,13 +2250,13 @@ function acquireMP$3(
         if (myMp() < excessMP && casts > 1) {
           //can't burn MP we don't have yet
           casts -= 1;
-          useSkill(1, Skill.get("Sip Some Sweat"));
+          useSkill(1, $skill`Sip Some Sweat`);
         }
         if (myMp() > 0) {
           auto_burnMP(min(excessMP, myMp()));
         }
       }
-      useSkill(casts, Skill.get("Sip Some Sweat"));
+      useSkill(casts, $skill`Sip Some Sweat`);
       if (myMp() >= goal) {
         return true;
       }
@@ -2316,7 +2307,7 @@ function acquireMP$6(
  */
 export function acquireHP(): boolean {
   let goal: number = min(myMaxhp(), 800);
-  if (myPath() === Path.get("Disguises Delimit")) {
+  if (myPath() === $path`Disguises Delimit`) {
     // hockey mask deals 75% hp damage at the start of combat so we need to maintain a high percentage of hp
     goal = toInt(myMaxhp() * 0.8);
   }
@@ -2380,7 +2371,7 @@ function acquireHP$3(
   setProperty("_auto_forcePokefamRestore", false.toString());
   //owning a hand in glove breaks maxHP tracking. need to check possession rather than equipped because unequipping it also breaks it. in fact it causes us to get stuck in an infinite loop of trying to restore hp when already at max HP.
   //mafia devs think it is actually a kol bug so they won't fix it. https://kolmafia.us/showthread.php?25214
-  if (possessEquipment(Item.get("Hand in Glove"))) {
+  if (possessEquipment($item`Hand in Glove`)) {
     const initial_maxHP: number = myMaxhp();
     cliExecute("refresh status");
     if (initial_maxHP === myMaxhp()) {
@@ -2408,26 +2399,20 @@ function acquireHP$3(
     return true;
   }
 
-  buffMaintain$4(Effect.get("Extra-Green"));
+  buffMaintain$4($effect`Extra-Green`);
 
-  if (
-    myClass() === Class.get("Pig Skinner") &&
-    haveSkill(Skill.get("Second Wind"))
-  ) {
+  if (myClass() === $class`Pig Skinner` && haveSkill($skill`Second Wind`)) {
     return auto_pigSkinnerAcquireHP(toInt(0.7 * goal));
   }
   if (
-    myClass() === Class.get("Cheese Wizard") &&
-    haveSkill(Skill.get("Emmental Elemental"))
+    myClass() === $class`Cheese Wizard` &&
+    haveSkill($skill`Emmental Elemental`)
   ) {
     return auto_cheeseWizardAcquireHP(
-      toInt(goal - 0.3 * myBuffedstat(Stat.get("Moxie"))),
+      toInt(goal - 0.3 * myBuffedstat($stat`Moxie`)),
     );
   }
-  if (
-    myClass() === Class.get("Jazz Agent") &&
-    haveSkill(Skill.get("Grit Teeth"))
-  ) {
+  if (myClass() === $class`Jazz Agent` && haveSkill($skill`Grit Teeth`)) {
     return auto_jazzAgentAcquireHP(goal - 60);
   }
   if (is_boris()) {
@@ -2436,14 +2421,14 @@ function acquireHP$3(
   if (in_zombieSlayer()) {
     return zombieSlayer_acquireHP(goal);
   }
-  if (myClass() === Class.get("Plumber")) {
+  if (myClass() === $class`Plumber`) {
     while (
       myHp() < goal &&
       myHp() < myMaxhp() &&
-      itemAmount(Item.get("coin")) > 400
+      itemAmount($item`coin`) > 400
     ) {
-      retrieveItem(1, Item.get("super deluxe mushroom"));
-      use(1, Item.get("super deluxe mushroom"));
+      retrieveItem(1, $item`super deluxe mushroom`);
+      use(1, $item`super deluxe mushroom`);
     }
     if (myHp() <= 10) {
       auto_log_info$1("Spending a turn to heal.");
@@ -2451,10 +2436,10 @@ function acquireHP$3(
     }
   } else {
     // Simplifies restoration massively, make that our first choice
-    if (haveSkill(Skill.get("Cannelloni Cocoon"))) {
+    if (haveSkill($skill`Cannelloni Cocoon`)) {
       let coc_tries: number = 0;
       while (goal - myHp() > 20 && coc_tries++ < 3) {
-        useSkill(Skill.get("Cannelloni Cocoon"));
+        useSkill($skill`Cannelloni Cocoon`);
       }
     }
     __restore("hp", goal, meat_reserve, useFreeRests);
@@ -2509,7 +2494,7 @@ export function doRest(): number {
     auto_haveCrimboSkeleton() &&
     toInt(getProperty("_knuckleboneRests")) < 5
   ) {
-    useFamiliar(Familiar.get("Skeleton of Crimbo Past"));
+    useFamiliar($familiar`Skeleton of Crimbo Past`);
   }
   if (chateaumantegna_available()) {
     cliExecute("outfit save Backup");
@@ -2517,29 +2502,29 @@ export function doRest(): number {
 
     const restBonus: Map<Item, boolean> = chateaumantegna_decorations();
     let bonus: Stat = Stat.none;
-    if (restBonus.has(Item.get("electric muscle stimulator"))) {
-      bonus = Stat.get("Muscle");
-    } else if (restBonus.has(Item.get("foreign language tapes"))) {
-      bonus = Stat.get("Mysticality");
-    } else if (restBonus.has(Item.get("bowl of potpourri"))) {
-      bonus = Stat.get("Moxie");
+    if (restBonus.has($item`electric muscle stimulator`)) {
+      bonus = $stat`Muscle`;
+    } else if (restBonus.has($item`foreign language tapes`)) {
+      bonus = $stat`Mysticality`;
+    } else if (restBonus.has($item`bowl of potpourri`)) {
+      bonus = $stat`Moxie`;
     }
 
     let closet: boolean = false;
     let grab: Item = Item.none;
     let replace_1: Item = Item.none;
     switch (bonus) {
-      case Stat.get("Muscle"):
-        replace_1 = equippedItem(Slot.get("off-hand"));
-        grab = Item.get("fake washboard");
+      case $stat`Muscle`:
+        replace_1 = equippedItem($slot`off-hand`);
+        grab = $item`fake washboard`;
         break;
-      case Stat.get("Mysticality"):
-        replace_1 = equippedItem(Slot.get("off-hand"));
-        grab = Item.get("basaltamander buckler");
+      case $stat`Mysticality`:
+        replace_1 = equippedItem($slot`off-hand`);
+        grab = $item`basaltamander buckler`;
         break;
-      case Stat.get("Moxie"):
-        replace_1 = equippedItem(Slot.get("weapon"));
-        grab = Item.get("backwoods banjo");
+      case $stat`Moxie`:
+        replace_1 = equippedItem($slot`weapon`);
+        grab = $item`backwoods banjo`;
         break;
     }
 
@@ -2606,15 +2591,12 @@ export function auto_potentialMaxFreeRests(): number {
   // we can get the count of "intrinsic" free rests e.g perm'd skills & rests you get just from having something available in run
   let potential: number = toInt(numericModifier("Free Rests"));
 
-  if (
-    auto_canUseJuneCleaver() &&
-    !possessEquipment(Item.get("mother's necklace"))
-  ) {
+  if (auto_canUseJuneCleaver() && !possessEquipment($item`mother's necklace`)) {
     potential += 5;
   }
   if (
     auto_haveBurningLeaves() &&
-    !(Item.get("forest canopy bed").toString() in getCampground())
+    !($item`forest canopy bed`.toString() in getCampground())
   ) {
     potential += 5;
   }
@@ -2639,11 +2621,10 @@ export function doFreeRest(): boolean {
       // will restore at least 100 MP
       mpToBurn = 100 - restorableMp;
     } else if (
-      getDwelling() ===
-      Item.get("Frobozz Real-Estate Company Instant House (TM)")
+      getDwelling() === $item`Frobozz Real-Estate Company Instant House (TM)`
     ) {
       mpToBurn = 40 - restorableMp;
-    } else if (getDwelling() === Item.get("Newbiesport&trade; tent")) {
+    } else if (getDwelling() === $item`Newbiesport™ tent`) {
       mpToBurn = 10 - restorableMp;
     } else {
       // assume resting on the ground
@@ -2681,18 +2662,10 @@ export function uneffect(toRemove: Effect): boolean {
     return true;
   }
   if (
-    Effect.get([
-      "Driving Intimidatingly",
-      "Driving Obnoxiously",
-      "Driving Observantly",
-      "Driving Quickly",
-      "Driving Recklessly",
-      "Driving Safely",
-      "Driving Stealthily",
-      "Driving Wastefully",
-      "Driving Waterproofly",
-    ]).includes(toRemove) &&
-    auto_get_campground().has(Item.get("Asdon Martin keyfob (on ring)"))
+    $effects`Driving Intimidatingly, Driving Obnoxiously, Driving Observantly, Driving Quickly, Driving Recklessly, Driving Safely, Driving Stealthily, Driving Wastefully, Driving Waterproofly`.includes(
+      toRemove,
+    ) &&
+    auto_get_campground().has($item`Asdon Martin keyfob (on ring)`)
   ) {
     visitUrl("campground.php?pwd=&preaction=undrive");
     return true;
@@ -2703,14 +2676,14 @@ export function uneffect(toRemove: Effect): boolean {
     return true;
   }
 
-  if (itemAmount(Item.get("soft green echo eyedrop antidote")) > 0) {
+  if (itemAmount($item`soft green echo eyedrop antidote`) > 0) {
     visitUrl(`uneffect.php?pwd=&using=Yep.&whicheffect=${toInt(toRemove)}`);
     auto_log_info(
       "Effect removed by Soft Green Echo Eyedrop Antidote.",
       "blue",
     );
     return true;
-  } else if (itemAmount(Item.get("ancient cure-all")) > 0) {
+  } else if (itemAmount($item`ancient cure-all`) > 0) {
     visitUrl(`uneffect.php?pwd=&using=Yep.&whicheffect=${toInt(toRemove)}`);
     auto_log_info("Effect removed by Ancient Cure-All.", "blue");
     return true;

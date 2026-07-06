@@ -15,14 +15,20 @@ import {
   myLocation,
   removeProperty,
   setProperty,
-  Skill,
   splitString,
   stopCounter,
   substring,
   toInt,
   toMonster,
 } from "kolmafia";
+import { $monster, $monsters, $skill } from "libram";
+
 import { auto_log_info } from "../auto_util";
+import { ag_is_bodyguard, in_avantGuard } from "../paths/avant_guard";
+import { in_awol } from "../paths/avatar_of_west_of_loathing";
+import { in_ocrs } from "../paths/one_crazy_random_summer";
+import { in_pokefam } from "../paths/pocket_familiars";
+import { in_wildfire } from "../paths/wildfire";
 import { awol_combat_helper } from "./auto_combat_awol";
 import { auto_combatDefaultStage1 } from "./auto_combat_default_stage1";
 import { auto_combatDefaultStage2 } from "./auto_combat_default_stage2";
@@ -38,11 +44,6 @@ import {
   defaultRoundLimit,
   useSkill$1,
 } from "./auto_combat_util";
-import { ag_is_bodyguard, in_avantGuard } from "../paths/avant_guard";
-import { in_awol } from "../paths/avatar_of_west_of_loathing";
-import { in_ocrs } from "../paths/one_crazy_random_summer";
-import { in_pokefam } from "../paths/pocket_familiars";
-import { in_wildfire } from "../paths/wildfire";
 
 //header file for combat
 //combat utilities
@@ -88,25 +89,25 @@ function auto_combatInitialize(
   }
 
   switch (enemy) {
-    case Monster.get("Government agent"):
+    case $monster`Government agent`:
       setProperty("_portscanPending", false.toString());
       stopCounter("portscan.edu");
       break;
-    case Monster.get("possessed wine rack"):
+    case $monster`possessed wine rack`:
       setProperty(
         "auto_wineracksencountered",
         (toInt(getProperty("auto_wineracksencountered")) + 1).toString(),
       );
       break;
-    case Monster.get("cabinet of Dr. Limpieza"):
+    case $monster`cabinet of Dr. Limpieza`:
       setProperty(
         "auto_cabinetsencountered",
         (toInt(getProperty("auto_cabinetsencountered")) + 1).toString(),
       );
       break;
-    case Monster.get("junksprite bender"):
-    case Monster.get("junksprite melter"):
-    case Monster.get("junksprite sharpener"):
+    case $monster`junksprite bender`:
+    case $monster`junksprite melter`:
+    case $monster`junksprite sharpener`:
       setProperty(
         "auto_junkspritesencountered",
         (toInt(getProperty("auto_junkspritesencountered")) + 1).toString(),
@@ -135,11 +136,11 @@ export function auto_combatHandler(
 ): string {
   if (
     round_1 > defaultRoundLimit() &&
-    !Monster.get(["The Man", "The Big Wisniewski"]).includes(enemy)
+    !$monsters`The Man, The Big Wisniewski`.includes(enemy)
   ) {
     //war bosses can go to round 50
-    if (canUse$2(Skill.get("Implode Universe"))) {
-      return useSkill$1(Skill.get("Implode Universe"), true);
+    if (canUse$2($skill`Implode Universe`)) {
+      return useSkill$1($skill`Implode Universe`, true);
     }
     abort(
       `Some sort of problem occurred, it is past round ${defaultRoundLimit()} but we are still in non-gremlin combat...`,

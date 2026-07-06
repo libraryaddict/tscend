@@ -5,7 +5,6 @@ import {
   canEquip,
   cliExecute,
   containsText,
-  Effect,
   equip,
   equippedItem,
   Familiar,
@@ -40,10 +39,7 @@ import {
   round,
   runChoice,
   setProperty,
-  Skill,
-  Slot,
   splitString,
-  Stat,
   toBoolean,
   toFamiliar,
   toInt,
@@ -52,6 +48,17 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
+import {
+  $effect,
+  $familiar,
+  $familiars,
+  $item,
+  $location,
+  $skill,
+  $slot,
+  $stat,
+} from "libram";
+
 import { autoAdv$1, autoAdv$2, autoAdvBypass } from "../auto_adventure";
 import { canDrink$1, spleen_left } from "../auto_consume";
 import {
@@ -86,8 +93,6 @@ import {
 import { zone_available, zone_needItem } from "../auto_zone";
 import { generic_t } from "../autoscend_record";
 import { canUse$2, useItem, useSkill$1 } from "../combat/auto_combat_util";
-import { have_fireworks_shop } from "./mr2021";
-import { auto_neededShadowBricks } from "./mr2023";
 import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
 import { in_darkGyffte } from "../paths/dark_gyffte";
 import { in_koe } from "../paths/kingdom_of_exploathing";
@@ -104,14 +109,16 @@ import {
   lumberCount,
 } from "../quests/level_09";
 import { needStarKey } from "../quests/level_13";
+import { have_fireworks_shop } from "./mr2021";
+import { auto_neededShadowBricks } from "./mr2023";
 
 // This is meant for items that have a date of 2022
 
 //Defined in autoscend/iotms/mr2022.ash
 export function auto_haveCursedMagnifyingGlass(): boolean {
   if (
-    possessEquipment(Item.get("cursed magnifying glass")) &&
-    auto_can_equip(Item.get("cursed magnifying glass"))
+    possessEquipment($item`cursed magnifying glass`) &&
+    auto_can_equip($item`cursed magnifying glass`)
   ) {
     return true;
   }
@@ -144,7 +151,7 @@ export function auto_voidMonster$1(loc: Location): boolean {
     return true;
   }
 
-  if (autoEquip$1(Item.get("cursed magnifying glass"))) {
+  if (autoEquip$1($item`cursed magnifying glass`)) {
     setProperty("auto_nextEncounter", "void guy"); //which of the 3 is random, but they're all same phylum and free under same conditions
     return autoAdv$2(loc);
   }
@@ -156,8 +163,8 @@ export function auto_haveCosmicBowlingBall(): boolean {
   // ensure we not only own one but it's in allowed in path and also in inventory for us to do stuff with.
   return (
     toBoolean(getProperty("hasCosmicBowlingBall")) &&
-    auto_is_valid(Item.get("cosmic bowling ball")) &&
-    availableAmount(Item.get("cosmic bowling ball")) > 0
+    auto_is_valid($item`cosmic bowling ball`) &&
+    availableAmount($item`cosmic bowling ball`) > 0
   );
 }
 
@@ -174,7 +181,7 @@ export function auto_bowlingBallCombatString(
   }
 
   if (
-    place === Location.get("The Hidden Bowling Alley") &&
+    place === $location`The Hidden Bowling Alley` &&
     toInt(getProperty("auto_bowledAtAlley")) !== myAscensions()
   ) {
     if (!speculation) {
@@ -183,31 +190,31 @@ export function auto_bowlingBallCombatString(
         "Cosmic Bowling Ball used at Hidden Bowling Alley to advance quest.",
       );
     }
-    return useItem(Item.get("cosmic bowling ball"), !speculation);
+    return useItem($item`cosmic bowling ball`, !speculation);
   }
   // determine if we want more stats
-  if (canUse$2(Skill.get("Bowl Sideways"))) {
+  if (canUse$2($skill`Bowl Sideways`)) {
     // increase stats if we are power leveling
     if (isAboutToPowerlevel()) {
-      return useSkill$1(Skill.get("Bowl Sideways"), !speculation);
+      return useSkill$1($skill`Bowl Sideways`, !speculation);
     }
     // increase stats if we are farming Ka as Ed
     if (toBoolean(getProperty("_auto_farmingKaAsEd"))) {
-      return useSkill$1(Skill.get("Bowl Sideways"), !speculation);
+      return useSkill$1($skill`Bowl Sideways`, !speculation);
     }
   }
   // determine if we want more item or meat bonus
-  if (canUse$2(Skill.get("Bowl Straight Up"))) {
+  if (canUse$2($skill`Bowl Straight Up`)) {
     // increase item bonus if not item capped in current zone
     const itemNeed: generic_t = zone_needItem(place);
     if (itemNeed._boolean) {
       if (itemDropModifier() < itemNeed._float) {
-        return useSkill$1(Skill.get("Bowl Straight Up"), !speculation);
+        return useSkill$1($skill`Bowl Straight Up`, !speculation);
       }
     }
     // increase meat bonus if doing nuns
-    if (place === Location.get("The Themthar Hills")) {
-      return useSkill$1(Skill.get("Bowl Straight Up"), !speculation);
+    if (place === $location`The Themthar Hills`) {
+      return useSkill$1($skill`Bowl Straight Up`, !speculation);
     }
   }
 
@@ -216,8 +223,8 @@ export function auto_bowlingBallCombatString(
 
 export function auto_haveCombatLoversLocket(): boolean {
   return (
-    possessEquipment(Item.get("combat lover's locket")) &&
-    auto_is_valid(Item.get("combat lover's locket"))
+    possessEquipment($item`combat lover's locket`) &&
+    auto_is_valid($item`combat lover's locket`)
   );
 }
 
@@ -285,10 +292,10 @@ export function auto_fightLocketMonster(
   const pages: Map<number, string> = new Map();
   pages.set(0, "inventory.php?reminisce=1");
   pages.set(1, `choice.php?whichchoice=1463&pwd&option=1&mid=${mon.id}`);
-  if (autoAdvBypass(1, pages, Location.get("Noob Cave"), null)) {
+  if (autoAdvBypass(1, pages, $location`Noob Cave`, null)) {
     handleTracker$1(
       mon.toString(),
-      Item.get("combat lover's locket").toString(),
+      $item`combat lover's locket`.toString(),
       "auto_copies",
     );
   }
@@ -304,7 +311,7 @@ export function auto_fightLocketMonster(
 }
 
 export function auto_haveGreyGoose(): boolean {
-  if (auto_have_familiar(Familiar.get("Grey Goose"))) {
+  if (auto_have_familiar($familiar`Grey Goose`)) {
     return true;
   }
   return false;
@@ -314,7 +321,7 @@ export function gooseExpectedDrones(): number {
   if (!auto_haveGreyGoose()) {
     return 0;
   }
-  const gooseWeight: number = familiarWeight(Familiar.get("Grey Goose"));
+  const gooseWeight: number = familiarWeight($familiar`Grey Goose`);
   if (gooseWeight < 5) {
     return 0;
   }
@@ -339,8 +346,8 @@ export function prioritizeGoose(): void {
   }
   if (
     (internalQuestStatus("questL04Bat") <= 1 && gooseExpectedDrones() < 1) ||
-    (itemAmount(Item.get("stone wool")) === 0 &&
-      haveEffect(Effect.get("Stone-Faced")) === 0 &&
+    (itemAmount($item`stone wool`) === 0 &&
+      haveEffect($effect`Stone-Faced`) === 0 &&
       internalQuestStatus("questL11Worship") <= 2 &&
       gooseExpectedDrones() < 1) ||
     (internalQuestStatus("questL08Trapper") <= 1 &&
@@ -350,18 +357,18 @@ export function prioritizeGoose(): void {
       toInt(getProperty("twinPeakProgress")) < 15 &&
       gooseExpectedDrones() < 2) ||
     (needStarKey() &&
-      itemAmount(Item.get("star")) < 7 &&
-      itemAmount(Item.get("line")) < 6 &&
+      itemAmount($item`star`) < 7 &&
+      itemAmount($item`line`) < 6 &&
       gooseExpectedDrones() < 4) ||
     (internalQuestStatus("questL11Ron") < 5 && gooseExpectedDrones() < 2) ||
     (toInt(getProperty("hiddenBowlingAlleyProgress")) +
-      itemAmount(Item.get("bowling ball")) <
+      itemAmount($item`bowling ball`) <
       5 &&
       gooseExpectedDrones() < 2) ||
-    (itemAmount(Item.get("crumbling wooden wheel")) +
-      itemAmount(Item.get("tomb ratchet")) <
+    (itemAmount($item`crumbling wooden wheel`) +
+      itemAmount($item`tomb ratchet`) <
       9 &&
-      itemAmount(Item.get("tangle of rat tails")) > 0 &&
+      itemAmount($item`tangle of rat tails`) > 0 &&
       gooseExpectedDrones() < 3)
   ) {
     setProperty("auto_prioritizeGoose", true.toString());
@@ -373,7 +380,7 @@ export function prioritizeGoose(): void {
 export function auto_haveMaydayContract(): boolean {
   if (
     toBoolean(getProperty("hasMaydayContract")) &&
-    auto_is_valid(Item.get("gaffer's tape"))
+    auto_is_valid($item`gaffer's tape`)
   ) {
     // use a potion to check mayday is allowed as auto_is_valid can return false for equipment & consumables in certain paths
     return true;
@@ -383,9 +390,9 @@ export function auto_haveMaydayContract(): boolean {
 
 export function auto_canUseJuneCleaver(): boolean {
   if (
-    possessEquipment(Item.get("June cleaver")) &&
-    canEquip(Item.get("June cleaver")) &&
-    auto_is_valid(Item.get("June cleaver"))
+    possessEquipment($item`June cleaver`) &&
+    canEquip($item`June cleaver`) &&
+    auto_is_valid($item`June cleaver`)
   ) {
     return true;
   }
@@ -400,10 +407,10 @@ export function auto_juneCleaverAdventure(): boolean {
     return false;
   }
 
-  if (autoEquip(Slot.get("weapon"), Item.get("June cleaver"))) {
-    let cleaverLoc: Location = Location.get("The Dire Warren");
+  if (autoEquip($slot`weapon`, $item`June cleaver`)) {
+    let cleaverLoc: Location = $location`The Dire Warren`;
     if (in_koe()) {
-      cleaverLoc = Location.get("Cobb's Knob Treasury"); // arbitrarily picked always accessible location
+      cleaverLoc = $location`Cobb's Knob Treasury`; // arbitrarily picked always accessible location
     }
     return autoAdv$2(cleaverLoc);
   }
@@ -414,14 +421,14 @@ export function juneCleaverChoiceHandler(choice: number): void {
   switch (choice) {
     case 1467: // Poetic Justice
       if (
-        haveSkill(Skill.get("Tongue of the Walrus")) ||
-        itemAmount(Item.get("personal massager")) > 0
+        haveSkill($skill`Tongue of the Walrus`) ||
+        itemAmount($item`personal massager`) > 0
       ) {
         runChoice(3); // +5 adventures, get beaten up
       } else if (
-        (myPrimestat() === Stat.get("Mysticality") &&
+        (myPrimestat() === $stat`Mysticality` &&
           (myLevel() < 13 || disregardInstantKarma())) ||
-        (myPrimestat() === Stat.get("Moxie") &&
+        (myPrimestat() === $stat`Moxie` &&
           myLevel() > 12 &&
           disregardInstantKarma() === false)
       ) {
@@ -432,9 +439,9 @@ export function juneCleaverChoiceHandler(choice: number): void {
       break;
     case 1468: // Aunts not Ants
       if (
-        (myPrimestat() === Stat.get("Moxie") &&
+        (myPrimestat() === $stat`Moxie` &&
           (myLevel() < 13 || disregardInstantKarma())) ||
-        (myPrimestat() === Stat.get("Muscle") &&
+        (myPrimestat() === $stat`Muscle` &&
           myLevel() > 12 &&
           disregardInstantKarma() === false)
       ) {
@@ -449,7 +456,7 @@ export function juneCleaverChoiceHandler(choice: number): void {
       if (myMeat() < meatReserve()) {
         runChoice(3); // 1500 meat
       } else if (
-        canDrink$1(Item.get("Dad's brandy")) &&
+        canDrink$1($item`Dad's brandy`) &&
         myInebriety() < inebrietyLimit()
       ) {
         runChoice(2); // size 1 awesome booze
@@ -459,12 +466,12 @@ export function juneCleaverChoiceHandler(choice: number): void {
       break;
     case 1470: // Teacher's Pet
       if (
-        canEquip(Item.get("teacher's pen")) &&
-        availableAmount(Item.get("teacher's pen")) < 1
+        canEquip($item`teacher's pen`) &&
+        availableAmount($item`teacher's pen`) < 1
       ) {
         runChoice(2); // accessory, +2 fam exp, +3 stats per fight
       } else if (
-        myPrimestat() === Stat.get("Muscle") &&
+        myPrimestat() === $stat`Muscle` &&
         (myLevel() < 13 || disregardInstantKarma())
       ) {
         runChoice(3);
@@ -478,11 +485,11 @@ export function juneCleaverChoiceHandler(choice: number): void {
       if (
         getProperty("sidequestNunsCompleted") === "none" &&
         getProperty("auto_skipNuns") === "false" &&
-        itemAmount(Item.get("savings bond")) === 0
+        itemAmount($item`savings bond`) === 0
       ) {
         runChoice(1); // potion, 30 turns of 50% meat
       } else if (
-        myPrimestat() === Stat.get("Mysticality") &&
+        myPrimestat() === $stat`Mysticality` &&
         (myLevel() < 13 || disregardInstantKarma())
       ) {
         runChoice(3); // 250 myst substat
@@ -496,7 +503,7 @@ export function juneCleaverChoiceHandler(choice: number): void {
       break;
     case 1473: // Bath Time
       if (
-        myPrimestat() === Stat.get("Muscle") &&
+        myPrimestat() === $stat`Muscle` &&
         (myLevel() < 13 || disregardInstantKarma())
       ) {
         runChoice(1); // 250 muscle substat
@@ -511,26 +518,26 @@ export function juneCleaverChoiceHandler(choice: number): void {
         canEat() &&
         myLevel() < 13 &&
         have_fireworks_shop() &&
-        auto_is_valid(Item.get("red rocket")) &&
+        auto_is_valid($item`red rocket`) &&
         !in_darkGyffte() &&
         !is_jarlsberg() &&
         !in_tcrs() &&
         auto_is_valid(
           //paths that can eat but can't eat guilty sprouts/won't get the stats from it anyway
-          Item.get("guilty sprout"),
+          $item`guilty sprout`,
         ) &&
-        itemAmount(Item.get("guilty sprout")) === 0
+        itemAmount($item`guilty sprout`) === 0
       ) {
         // guilty sprout is level 8+ good size 1 food but it gives big stats, would want to use a red rocket
         runChoice(2);
       }
       if (
-        myPrimestat() === Stat.get("Mysticality") &&
+        myPrimestat() === $stat`Mysticality` &&
         (myLevel() < 13 || disregardInstantKarma())
       ) {
         runChoice(1); // 250 myst substat
       } else if (
-        myPrimestat() === Stat.get("Muscle") &&
+        myPrimestat() === $stat`Muscle` &&
         (myLevel() < 13 || disregardInstantKarma())
       ) {
         runChoice(3); // 138 muscle substat
@@ -539,10 +546,10 @@ export function juneCleaverChoiceHandler(choice: number): void {
       }
       break;
     case 1475: // Hypnotic Master
-      if (availableAmount(Item.get("mother's necklace")) < 1) {
+      if (availableAmount($item`mother's necklace`) < 1) {
         runChoice(1); // 3 RO adventures, 5 free rests (doesn't even need to be equipped), never fumble
       } else if (
-        myPrimestat() === Stat.get("Muscle") &&
+        myPrimestat() === $stat`Muscle` &&
         (myLevel() < 13 || disregardInstantKarma())
       ) {
         runChoice(2); // 250 muscle substat
@@ -557,9 +564,9 @@ export function juneCleaverChoiceHandler(choice: number): void {
 
 export function canUseSweatpants(): boolean {
   if (
-    possessEquipment(Item.get("designer sweatpants")) &&
-    canEquip(Item.get("designer sweatpants")) &&
-    auto_is_valid(Item.get("designer sweatpants"))
+    possessEquipment($item`designer sweatpants`) &&
+    canEquip($item`designer sweatpants`) &&
+    auto_is_valid($item`designer sweatpants`)
   ) {
     return true;
   }
@@ -579,8 +586,8 @@ export function sweatpantsPreAdventure(): void {
   }
 
   if (
-    myLocation() === Location.get("A Mob of Zeppelin Protesters") &&
-    equippedItem(Slot.get("pants")) !== Item.get("lynyrdskin breeches")
+    myLocation() === $location`A Mob of Zeppelin Protesters` &&
+    equippedItem($slot`pants`) !== $item`lynyrdskin breeches`
   ) {
     return; //want to keep all the sleaze damage bonus in this location
   }
@@ -590,33 +597,33 @@ export function sweatpantsPreAdventure(): void {
 
   if (sweat >= 25 && liverCleaned < 3 && myInebriety() > 0) {
     if (
-      myLocation() === Location.get("The Haunted Billiards Room") &&
+      myLocation() === $location`The Haunted Billiards Room` &&
       myInebriety() <= 10
     ) {
       //want to keep inebriety for pool skill
     } else {
-      useSkill(Skill.get("Sweat Out Some Booze"));
+      useSkill($skill`Sweat Out Some Booze`);
     }
   }
 
   if (sweat >= 95) {
     if (
       toBoolean(getProperty("auto_pvpEnable")) &&
-      spleen_left() >= 4 * (1 + itemAmount(Item.get("sweat-ade")))
+      spleen_left() >= 4 * (1 + itemAmount($item`sweat-ade`))
     ) {
       // Our player participates in PVP, let's give them a low-effort spleen item to end the day with, if there's still room.
-      useSkill(Skill.get("Make Sweat-Ade"));
+      useSkill($skill`Make Sweat-Ade`);
     } else if (myMp() < myMaxmp()) {
       // This is just opportunistic use of sweat. This skill should be used in auto_restore.ash.
-      useSkill(Skill.get("Sip Some Sweat"));
+      useSkill($skill`Sip Some Sweat`);
     }
   }
 }
 
 export function auto_hasStillSuit(): boolean {
   return (
-    possessEquipment(Item.get("tiny stillsuit")) &&
-    auto_is_valid(Item.get("tiny stillsuit"))
+    possessEquipment($item`tiny stillsuit`) &&
+    auto_is_valid($item`tiny stillsuit`)
   );
 }
 
@@ -643,21 +650,14 @@ export function utilizeStillsuit(): void {
     return;
   }
   //make sure all this nice familiar sweat doesn't go uncollected when current familiar is wearing something else
-  if (familiarEquippedEquipment(myFamiliar()) === Item.get("tiny stillsuit")) {
+  if (familiarEquippedEquipment(myFamiliar()) === $item`tiny stillsuit`) {
     return;
   }
 
   function sweetestSweatFamiliar(): Familiar {
     const currentFamiliar: Familiar = myFamiliar();
     //todo better choice of best familiar effects
-    for (const sweetSweatFamiliar of Familiar.get([
-      "Grinning Turtle",
-      "Grouper Groupie",
-      "Star Starfish",
-      "Cat Burglar",
-      "Slimeling",
-      "Sleazy Gravy Fairy",
-    ])) {
+    for (const sweetSweatFamiliar of $familiars`Grinning Turtle, Grouper Groupie, Star Starfish, Cat Burglar, Slimeling, Sleazy Gravy Fairy`) {
       //these give item and sleaze
       if (
         haveFamiliar(sweetSweatFamiliar) &&
@@ -667,12 +667,7 @@ export function utilizeStillsuit(): void {
         return sweetSweatFamiliar;
       }
     }
-    for (const commonFamiliar of Familiar.get([
-      "Baby Gravy Fairy",
-      "Smiling Rat",
-      "Mosquito",
-      "Reassembled Blackbird",
-    ])) {
+    for (const commonFamiliar of $familiars`Baby Gravy Fairy, Smiling Rat, Mosquito, Reassembled Blackbird`) {
       //default fall back, you probably have one of these
       if (
         haveFamiliar(commonFamiliar) &&
@@ -682,343 +677,15 @@ export function utilizeStillsuit(): void {
         return commonFamiliar;
       }
     }
-    for (const anyFamiliar of Familiar.get([
-      "Mosquito",
-      "Leprechaun",
-      "Levitating Potato",
-      "Angry Goat",
-      "Sabre-Toothed Lime",
-      "Fuzzy Dice",
-      "Spooky Pirate Skeleton",
-      "Barrrnacle",
-      "Howling Balloon Monkey",
-      "Stab Bat",
-      "Grue",
-      "Blood-Faced Volleyball",
-      "Ghuol Whelp",
-      "Baby Gravy Fairy",
-      "Cocoabo",
-      "Star Starfish",
-      "Hovering Sombrero",
-      "Ghost Pickle on a Stick",
-      "Killer Bee",
-      "Whirling Maple Leaf",
-      "Coffee Pixie",
-      "Cheshire Bat",
-      "Jill-O-Lantern",
-      "Hand Turkey",
-      "Crimbo Elf",
-      "Hanukkimbo Dreidl",
-      "Baby Yeti",
-      "Feather Boa Constrictor",
-      "Emo Squid",
-      "Personal Raincloud",
-      "Clockwork Grapefruit",
-      "MagiMechTech MicroMechaMech",
-      "Flaming Gravy Fairy",
-      "Frozen Gravy Fairy",
-      "Stinky Gravy Fairy",
-      "Spooky Gravy Fairy",
-      "Inflatable Dodecapede",
-      "Pygmy Bugbear Shaman",
-      "Doppelshifter",
-      "Attention-Deficit Demon",
-      "Cymbal-Playing Monkey",
-      "Temporal Riftlet",
-      "Sweet Nutcracker",
-      "Pet Rock",
-      "Snowy Owl",
-      "Teddy Bear",
-      "Ninja Pirate Zombie Robot",
-      "Sleazy Gravy Fairy",
-      "Wild Hare",
-      "Wind-up Chattering Teeth",
-      "Spirit Hobo",
-      "Astral Badger",
-      "Comma Chameleon",
-      "Misshapen Animal Skeleton",
-      "Scary Death Orb",
-      "Jitterbug",
-      "Nervous Tick",
-      "Reassembled Blackbird",
-      "Origami Towel Crane",
-      "Ninja Snowflake",
-      "Evil Teddy Bear",
-      "Toothsome Rock",
-      "Ancient Yuletide Troll",
-      "Dandy Lion",
-      "O.A.F.",
-      "Penguin Goodfella",
-      "Jumpsuited Hound Dog",
-      "Green Pixie",
-      "Ragamuffin Imp",
-      "Exotic Parrot",
-      "Wizard Action Figure",
-      "Gluttonous Green Ghost",
-      "Casagnova Gnome",
-      "Hunchbacked Minion",
-      "Crimbo P. R. E. S. S. I. E.",
-      "Bulky Buddy Box",
-      "Teddy Borg",
-      "RoboGoose",
-      "El Vibrato Megadrone",
-      "Mad Hatrack",
-      "Adorable Seal Larva",
-      "Untamed Turtle",
-      "Animated Macaroni Duck",
-      "Pet Cheezling",
-      "Autonomous Disco Ball",
-      "Mariachi Chihuahua",
-      "Hobo Monkey",
-      "Llama Lama",
-      "Cotton Candy Carnie",
-      "Disembodied Hand",
-      "Black Cat",
-      "Uniclops",
-      "Psychedelic Bear",
-      "Baby Mutant Rattlesnake",
-      "Mutant Fire Ant",
-      "Mutant Cactus Bud",
-      "Mutant Gila Monster",
-      "Cuddlefish",
-      "Sugar Fruit Fairy",
-      "Imitation Crab",
-      "Pair of Ragged Claws",
-      "Magic Dragonfish",
-      "Frumious Bandersnatch",
-      "Midget Clownfish",
-      "Syncopated Turtle",
-      "Grinning Turtle",
-      "Purse Rat",
-      "Wereturtle",
-      "Baby Sandworm",
-      "Slimeling",
-      "He-Boulder",
-      "Rock Lobster",
-      "Urchin Urchin",
-      "Grouper Groupie",
-      "Squamous Gibberer",
-      "Dancing Frog",
-      "Chauvinist Pig",
-      "Stocking Mimic",
-      "Snow Angel",
-      "Jack-in-the-Box",
-      "BRICKO chick",
-      "Baby Bugged Bugbear",
-      "Money-Making Goblin",
-      "Floating Eye",
-      "Vampire Bat",
-      "Oyster Bunny",
-      "Egg Benedict",
-      "Bank Piggy",
-      "Worm Doctor",
-      "Snowhitman",
-      "Plastic Grocery Bag",
-      "Underworld Bonsai",
-      "Rogue Program",
-      "Mini-Hipster",
-      "Pottery Barn Owl",
-      "Hippo Ballerina",
-      "Knob Goblin Organ Grinder",
-      "Piano Cat",
-      "Dramatic Hedgehog",
-      "Smiling Rat",
-      "Robot Reindeer",
-      "Holiday Log",
-      "Obtuse Angel",
-      "Reconstituted Crow",
-      "Li'l Xenomorph",
-      "Dataspider",
-      "Pair of Stomping Boots",
-      "Feral Kobold",
-      "Fancypants Scarecrow",
-      "Bloovian Groose",
-      "Blavious Kloop",
-      "Peppermint Rhino",
-      "Tickle-Me Emilio",
-      "Steam-Powered Cheerleader",
-      "Happy Medium",
-      "Artistic Goth Kid",
-      "Flaming Face",
-      "Reagnimated Gnome",
-      "Hovering Skull",
-      "Mini-Skulldozer",
-      "Angry Jung Man",
-      "Unconscious Collective",
-      "Nanorhino",
-      "Oily Woim",
-      "Homemade Robot",
-      "MiniMechaElf",
-      "Gelatinous Cubeling",
-      "Adorable Space Buddy",
-      "Nosy Nose",
-      "Mini-Adventurer",
-      "Mechanical Songbird",
-      "Reanimated Reanimator",
-      "Warbear Drone",
-      "Grimstone Golem",
-      "Grim Brother",
-      "Miniature Sword & Martini Guy",
-      "Putty Buddy",
-      "Twitching Space Critter",
-      "Galloping Grill",
-      "Helix Fossil",
-      "Xiblaxian Holo-Companion",
-      "Baby Z-Rex",
-      "Fist Turkey",
-      "Crimbo Shrub",
-      "Mini-Crimbot",
-      "Topiary Skunk",
-      "Golden Monkey",
-      "Adventurous Spelunker",
-      "Sludgepuppy",
-      "Baby Mayonnaise Wasp",
-      "Puck Man",
-      "Ms. Puck Man",
-      "Lil' Barrel Mimic",
-      "Machine Elf",
-      "Choctopus",
-      "Rockin' Robin",
-      "Restless Cow Skull",
-      "Intergnat",
-      "Software Bug",
-      "Bark Scorpion",
-      "Trick-or-Treating Tot",
-      "Chocolate Lab",
-      "Bad Vibe",
-      "Space Jellyfish",
-      "Optimistic Candle",
-      "Robortender",
-      "Cute Meteor",
-      "XO Skeleton",
-      "Garbage Fire",
-      "Globmule",
-      "Bluzzard",
-      "Faux",
-      "Sledgehamster",
-      "Pimpsqueak",
-      "Pillowbug",
-      "Dressage",
-      "Sequestrian",
-      "Carpricorn",
-      "Turpin",
-      "Morphan",
-      "Cycloney",
-      "Peaclock",
-      "Turtive",
-      "Lepardner",
-      "Aiolion",
-      "Waifuton",
-      "Gorillape",
-      "Wendtigo",
-      "Snoutlet",
-      "Ruffalo",
-      "Vaporpoise",
-      "Ghosprey",
-      "Straypler",
-      "Flan",
-      "Mustardigrade",
-      "Ched",
-      "Gazelleton",
-      "Mechamelion",
-      "Bicycle",
-      "Vamprey",
-      "Wullabye",
-      "Nursine",
-      "Cantelope",
-      "Ungulant",
-      "Caramel",
-      "Oppossum",
-      "Amanitee",
-      "Smashmoth",
-      "Vulgure",
-      "Squib",
-      "Trafikoan",
-      "Slotter",
-      "Shudder",
-      "Glamare",
-      "Unspeakachu",
-      "Stooper",
-      "Disgeist",
-      "Bowlet",
-      "Cornbeefadon",
-      "Mu",
-      "God Lobster",
-      "Cat Burglar",
-      "Party Mouse",
-      "Yule Hound",
-      "Sausage Golem",
-      "Elf Operative",
-      "Plastic Pirate Skull",
-      "Pet Coral",
-      "Pocket Professor",
-      "Red-Nosed Snapper",
-      "Antique Nutcracker",
-      "Piranha Plant",
-      "Left-Hand Man",
-      "Melodramedary",
-      "Ghost of Crimbo Carols",
-      "Ghost of Crimbo Cheer",
-      "Ghost of Crimbo Commerce",
-      "Shorter-Order Cook",
-      "Vampire Vintner",
-      "Arachnelf",
-      "Synthetic Rock",
-      "Grey Goose",
-      "Cookbookbat",
-      "Mini-Trainbot",
-      "Hobo in Sheep's Clothing",
-      "Pixel Rock",
-      "Patriotic Eagle",
-      "Jill-of-All-Trades",
-      "Flaming Leafcutter Ant",
-      "Rigging Snake",
-      "Pet Anchor",
-      "Chest Mimic",
-      "Mini Kiwi",
-      "Proto-Protozoa",
-      "Evolving Organism",
-      "Burly Bodyguard",
-      "Doll Moll",
-      "Emberiza Aureola",
-      "Peace Turkey",
-      "Quantum Entangler",
-      "Golden Pet Rock",
-      "Profane Parrot",
-      "Significant Bit",
-      "Heat Wave",
-      "Cold Cut",
-      "Shame Spiral",
-      "Phantom Limb",
-      "Foul Ball",
-      "Dire Cassava",
-      "Observer",
-      "Cool Cucumber",
-      "Defective Childrens' Stapler",
-      "Glover",
-      "Zapper Bug",
-      "Wet Paper Tiger",
-      "Cooler Yeti",
-      "Baby Skeleton",
-      "Skeleton of Crimbo Past",
-      "Tiny Plastic Santa Claus Skeleton",
-      "Cute Skeletal Dinosaur",
-      "Sword of S Words",
-    ])) {
+    for (const anyFamiliar of $familiars`Mosquito, Leprechaun, Levitating Potato, Angry Goat, Sabre-Toothed Lime, Fuzzy Dice, Spooky Pirate Skeleton, Barrrnacle, Howling Balloon Monkey, Stab Bat, Grue, Blood-Faced Volleyball, Ghuol Whelp, Baby Gravy Fairy, Cocoabo, Star Starfish, Hovering Sombrero, Ghost Pickle on a Stick, Killer Bee, Whirling Maple Leaf, Coffee Pixie, Cheshire Bat, Jill-O-Lantern, Hand Turkey, Crimbo Elf, Hanukkimbo Dreidl, Baby Yeti, Feather Boa Constrictor, Emo Squid, Personal Raincloud, Clockwork Grapefruit, MagiMechTech MicroMechaMech, Flaming Gravy Fairy, Frozen Gravy Fairy, Stinky Gravy Fairy, Spooky Gravy Fairy, Inflatable Dodecapede, Pygmy Bugbear Shaman, Doppelshifter, Attention-Deficit Demon, Cymbal-Playing Monkey, Temporal Riftlet, Sweet Nutcracker, Pet Rock, Snowy Owl, Teddy Bear, Ninja Pirate Zombie Robot, Sleazy Gravy Fairy, Wild Hare, Wind-up Chattering Teeth, Spirit Hobo, Astral Badger, Comma Chameleon, Misshapen Animal Skeleton, Scary Death Orb, Jitterbug, Nervous Tick, Reassembled Blackbird, Origami Towel Crane, Ninja Snowflake, Evil Teddy Bear, Toothsome Rock, Ancient Yuletide Troll, Dandy Lion, O.A.F., Penguin Goodfella, Jumpsuited Hound Dog, Green Pixie, Ragamuffin Imp, Exotic Parrot, Wizard Action Figure, Gluttonous Green Ghost, Casagnova Gnome, Hunchbacked Minion, Crimbo P. R. E. S. S. I. E., Bulky Buddy Box, Teddy Borg, RoboGoose, El Vibrato Megadrone, Mad Hatrack, Adorable Seal Larva, Untamed Turtle, Animated Macaroni Duck, Pet Cheezling, Autonomous Disco Ball, Mariachi Chihuahua, Hobo Monkey, Llama Lama, Cotton Candy Carnie, Disembodied Hand, Black Cat, Uniclops, Psychedelic Bear, Baby Mutant Rattlesnake, Mutant Fire Ant, Mutant Cactus Bud, Mutant Gila Monster, Cuddlefish, Sugar Fruit Fairy, Imitation Crab, Pair of Ragged Claws, Magic Dragonfish, Frumious Bandersnatch, Midget Clownfish, Syncopated Turtle, Grinning Turtle, Purse Rat, Wereturtle, Baby Sandworm, Slimeling, He-Boulder, Rock Lobster, Urchin Urchin, Grouper Groupie, Squamous Gibberer, Dancing Frog, Chauvinist Pig, Stocking Mimic, Snow Angel, Jack-in-the-Box, BRICKO chick, Baby Bugged Bugbear, Money-Making Goblin, Floating Eye, Vampire Bat, Oyster Bunny, Egg Benedict, Bank Piggy, Worm Doctor, Snowhitman, Plastic Grocery Bag, Underworld Bonsai, Rogue Program, Mini-Hipster, Pottery Barn Owl, Hippo Ballerina, Knob Goblin Organ Grinder, Piano Cat, Dramatic Hedgehog, Smiling Rat, Robot Reindeer, Holiday Log, Obtuse Angel, Reconstituted Crow, Li'l Xenomorph, Dataspider, Pair of Stomping Boots, Feral Kobold, Fancypants Scarecrow, Bloovian Groose, Blavious Kloop, Peppermint Rhino, Tickle-Me Emilio, Steam-Powered Cheerleader, Happy Medium, Artistic Goth Kid, Flaming Face, Reagnimated Gnome, Hovering Skull, Mini-Skulldozer, Angry Jung Man, Unconscious Collective, Nanorhino, Oily Woim, Homemade Robot, MiniMechaElf, Gelatinous Cubeling, Adorable Space Buddy, Nosy Nose, Mini-Adventurer, Mechanical Songbird, Reanimated Reanimator, Warbear Drone, Grimstone Golem, Grim Brother, Miniature Sword & Martini Guy, Putty Buddy, Twitching Space Critter, Galloping Grill, Helix Fossil, Xiblaxian Holo-Companion, Baby Z-Rex, Fist Turkey, Crimbo Shrub, Mini-Crimbot, Topiary Skunk, Golden Monkey, Adventurous Spelunker, Sludgepuppy, Baby Mayonnaise Wasp, Puck Man, Ms. Puck Man, Lil' Barrel Mimic, Machine Elf, Choctopus, Rockin' Robin, Restless Cow Skull, Intergnat, Software Bug, Bark Scorpion, Trick-or-Treating Tot, Chocolate Lab, Bad Vibe, Space Jellyfish, Optimistic Candle, Robortender, Cute Meteor, XO Skeleton, Garbage Fire, Globmule, Bluzzard, Faux, Sledgehamster, Pimpsqueak, Pillowbug, Dressage, Sequestrian, Carpricorn, Turpin, Morphan, Cycloney, Peaclock, Turtive, Lepardner, Aiolion, Waifuton, Gorillape, Wendtigo, Snoutlet, Ruffalo, Vaporpoise, Ghosprey, Straypler, Flan, Mustardigrade, Ched, Gazelleton, Mechamelion, Bicycle, Vamprey, Wullabye, Nursine, Cantelope, Ungulant, Caramel, Oppossum, Amanitee, Smashmoth, Vulgure, Squib, Trafikoan, Slotter, Shudder, Glamare, Unspeakachu, Stooper, Disgeist, Bowlet, Cornbeefadon, Mu, God Lobster, Cat Burglar, Party Mouse, Yule Hound, Sausage Golem, Elf Operative, Plastic Pirate Skull, Pet Coral, Pocket Professor, Red-Nosed Snapper, Antique Nutcracker, Piranha Plant, Left-Hand Man, Melodramedary, Ghost of Crimbo Carols, Ghost of Crimbo Cheer, Ghost of Crimbo Commerce, Shorter-Order Cook, Vampire Vintner, Arachnelf, Synthetic Rock, Grey Goose, Cookbookbat, Mini-Trainbot, Hobo in Sheep's Clothing, Pixel Rock, Patriotic Eagle, Jill-of-All-Trades, Flaming Leafcutter Ant, Rigging Snake, Pet Anchor, Chest Mimic, Mini Kiwi, Proto-Protozoa, Evolving Organism, Burly Bodyguard, Doll Moll, Emberiza Aureola, Peace Turkey, Quantum Entangler, Golden Pet Rock, Profane Parrot, Significant Bit, Heat Wave, Cold Cut, Shame Spiral, Phantom Limb, Foul Ball, Dire Cassava, Observer, Cool Cucumber, Defective Childrens' Stapler, Glover, Zapper Bug, Wet Paper Tiger, Cooler Yeti, Baby Skeleton, Skeleton of Crimbo Past, Tiny Plastic Santa Claus Skeleton, Cute Skeletal Dinosaur, Sword of S Words`) {
       //if all else failed just pick any available familiar that can wear equipment
       if (
         haveFamiliar(anyFamiliar) &&
         auto_is_valid$1(anyFamiliar) &&
         anyFamiliar !== currentFamiliar &&
-        !Familiar.get([
-          "Comma Chameleon",
-          "Mad Hatrack",
-          "Fancypants Scarecrow",
-          "Disembodied Hand",
-          "Ghost of Crimbo Carols",
-          "Ghost of Crimbo Cheer",
-          "Ghost of Crimbo Commerce",
-        ]).includes(anyFamiliar)
+        !$familiars`Comma Chameleon, Mad Hatrack, Fancypants Scarecrow, Disembodied Hand, Ghost of Crimbo Carols, Ghost of Crimbo Cheer, Ghost of Crimbo Commerce`.includes(
+          anyFamiliar,
+        )
       ) {
         return anyFamiliar;
       }
@@ -1027,14 +694,13 @@ export function utilizeStillsuit(): void {
   }
   const chosenStillsuitFamiliar: Familiar = sweetestSweatFamiliar();
   if (
-    familiarEquippedEquipment(chosenStillsuitFamiliar) !==
-    Item.get("tiny stillsuit")
+    familiarEquippedEquipment(chosenStillsuitFamiliar) !== $item`tiny stillsuit`
   ) {
-    if (itemAmount(Item.get("tiny stillsuit")) === 0) {
-      retrieveItem(Item.get("tiny stillsuit"));
+    if (itemAmount($item`tiny stillsuit`) === 0) {
+      retrieveItem($item`tiny stillsuit`);
     }
-    if (itemAmount(Item.get("tiny stillsuit")) > 0) {
-      equip(chosenStillsuitFamiliar, Item.get("tiny stillsuit"));
+    if (itemAmount($item`tiny stillsuit`) > 0) {
+      equip(chosenStillsuitFamiliar, $item`tiny stillsuit`);
     } else {
       auto_log_warning$1(
         "Failed to recover tiny stillsuit from the familiar mafia thinks is wearing it",
@@ -1047,7 +713,7 @@ export function utilizeStillsuit(): void {
 }
 
 export function auto_hasParka(): boolean {
-  const parka: Item = wrap_item(Item.get("Jurassic Parka"));
+  const parka: Item = wrap_item($item`Jurassic Parka`);
   return possessEquipment(parka) && auto_is_valid(parka);
 }
 
@@ -1058,7 +724,7 @@ export function auto_configureParka(tag: string): boolean {
   // store the requested setting in a property so we can handle them later
   setProperty("auto_parkaSetting", tag);
   // cut down potential server hits by telling the maximizer to not consider it.
-  addToMaximize(`-equip ${wrap_item(Item.get("Jurassic Parka")).toString()}`);
+  addToMaximize(`-equip ${wrap_item($item`Jurassic Parka`).toString()}`);
   return true;
 }
 
@@ -1099,7 +765,7 @@ export function auto_handleParka(): boolean {
   if (getProperty("parkaMode") !== tempDino) {
     cliExecute(`parka ${tempDino}`);
   }
-  const parka: Item = wrap_item(Item.get("Jurassic Parka"));
+  const parka: Item = wrap_item($item`Jurassic Parka`);
   equip(parka); // already configured, just equip
 
   return getProperty("parkaMode") === tempDino && haveEquipped(parka);
@@ -1116,7 +782,7 @@ export function auto_ParkaSpikeForcesLeft(): number {
 export function auto_hasAutumnaton(): boolean {
   return (
     toBoolean(getProperty("hasAutumnaton")) &&
-    auto_is_valid(Item.get("autumn-aton")) &&
+    auto_is_valid($item`autumn-aton`) &&
     !in_pokefam()
   );
 }
@@ -1127,11 +793,11 @@ export function auto_autumnatonCanAdv(canAdventureInloc: Location): boolean {
   }
 
   if (
-    canAdventureInloc === Location.get("8-Bit Realm") &&
-    possessEquipment(Item.get("continuum transfunctioner")) &&
-    auto_is_valid(Item.get("continuum transfunctioner"))
+    canAdventureInloc === $location`8-Bit Realm` &&
+    possessEquipment($item`continuum transfunctioner`) &&
+    auto_is_valid($item`continuum transfunctioner`)
   ) {
-    equip(Item.get("continuum transfunctioner"));
+    equip($item`continuum transfunctioner`);
   }
 
   for (const [index, loc] of getAutumnatonLocations().entries()) {
@@ -1147,7 +813,7 @@ function auto_autumnatonReadyToQuest(): boolean {
     return false;
   }
 
-  return itemAmount(Item.get("autumn-aton")) !== 0;
+  return itemAmount($item`autumn-aton`) !== 0;
 }
 
 export function auto_autumnatonQuestingIn(): Location {
@@ -1189,7 +855,7 @@ export function auto_autumnatonQuest(): boolean {
   }
   // prioritize getting important upgrades
   if (!auto_autumnatonCheckForUpgrade("leftarm1")) {
-    if (auto_sendAutumnaton(Location.get("The Haunted Pantry"))) {
+    if (auto_sendAutumnaton($location`The Haunted Pantry`)) {
       return false;
     } else {
       abort(
@@ -1200,37 +866,37 @@ export function auto_autumnatonQuest(): boolean {
 
   if (!auto_autumnatonCheckForUpgrade("leftleg1")) {
     // some bat zones may not be adventured in, so try them all
-    if (auto_sendAutumnaton(Location.get("Guano Junction"))) {
+    if (auto_sendAutumnaton($location`Guano Junction`)) {
       return false;
     }
-    if (auto_sendAutumnaton(Location.get("The Batrat and Ratbat Burrow"))) {
+    if (auto_sendAutumnaton($location`The Batrat and Ratbat Burrow`)) {
       return false;
     }
-    if (auto_sendAutumnaton(Location.get("The Beanbat Chamber"))) {
+    if (auto_sendAutumnaton($location`The Beanbat Chamber`)) {
       return false;
     }
-    if (auto_sendAutumnaton(Location.get("Cobb's Knob Harem"))) {
+    if (auto_sendAutumnaton($location`Cobb's Knob Harem`)) {
       return false;
     }
-    if (auto_sendAutumnaton(Location.get("Noob Cave"))) {
+    if (auto_sendAutumnaton($location`Noob Cave`)) {
       return false;
     }
   }
 
   if (!auto_autumnatonCheckForUpgrade("rightleg1")) {
-    if (auto_sendAutumnaton(Location.get("The Haunted Library"))) {
+    if (auto_sendAutumnaton($location`The Haunted Library`)) {
       return false;
     }
-    if (auto_sendAutumnaton(Location.get("The Neverending Party"))) {
+    if (auto_sendAutumnaton($location`The Neverending Party`)) {
       return false;
     }
-    if (auto_sendAutumnaton(Location.get("The Haunted Kitchen"))) {
+    if (auto_sendAutumnaton($location`The Haunted Kitchen`)) {
       return false;
     }
   }
 
   if (!auto_autumnatonCheckForUpgrade("rightarm1")) {
-    if (auto_sendAutumnaton(Location.get("The Overgrown Lot"))) {
+    if (auto_sendAutumnaton($location`The Overgrown Lot`)) {
       return false;
     }
   }
@@ -1238,11 +904,11 @@ export function auto_autumnatonQuest(): boolean {
   if (
     auto_autumnatonCheckForUpgrade("leftarm1") &&
     auto_autumnatonCheckForUpgrade("rightarm1") &&
-    itemAmount(Item.get("barrel of gunpowder")) < 5 &&
+    itemAmount($item`barrel of gunpowder`) < 5 &&
     getProperty("sidequestLighthouseCompleted") === "none" &&
     !in_koe()
   ) {
-    const targetLocation: Location = Location.get("Sonofa Beach");
+    const targetLocation: Location = $location`Sonofa Beach`;
     if (
       !auto_autumnatonCanAdv(targetLocation) &&
       zone_available(targetLocation)
@@ -1256,7 +922,7 @@ export function auto_autumnatonQuest(): boolean {
   }
   // acquire items to help quests
   if (fastenerCount() < 30 && lumberCount() < 30) {
-    const targetLocation: Location = Location.get("The Smut Orc Logging Camp");
+    const targetLocation: Location = $location`The Smut Orc Logging Camp`;
     if (
       !auto_autumnatonCanAdv(targetLocation) &&
       zone_available(targetLocation)
@@ -1270,7 +936,7 @@ export function auto_autumnatonQuest(): boolean {
   }
 
   if (hedgeTrimmersNeeded() > 0) {
-    const targetLocation: Location = Location.get("Twin Peak");
+    const targetLocation: Location = $location`Twin Peak`;
     if (
       !auto_autumnatonCanAdv(targetLocation) &&
       zone_available(targetLocation)
@@ -1287,7 +953,7 @@ export function auto_autumnatonQuest(): boolean {
   if (auto_neededShadowBricks() > 0) {
     const ingress: string = getProperty("shadowRiftIngress");
     if (["cemetery", "hiddencity", "pyramid"].includes(ingress)) {
-      if (auto_sendAutumnaton(Location.get("Shadow Rift"))) {
+      if (auto_sendAutumnaton($location`Shadow Rift`)) {
         return false;
       }
     }
@@ -1296,14 +962,14 @@ export function auto_autumnatonQuest(): boolean {
   if (getProperty("shadowRiftIngress") === "") {
     //Cookbookbat materials if you have a Cookbookbat and Autumn Fest Ale+stone wool or Autumn Leaves
     if (
-      itemAmount(Item.get("stone wool")) === 0 &&
+      itemAmount($item`stone wool`) === 0 &&
       toInt(getProperty("lastTempleAdventures")) < myAscensions()
     ) {
-      if (auto_sendAutumnaton(Location.get("The Hidden Temple"))) {
+      if (auto_sendAutumnaton($location`The Hidden Temple`)) {
         return false;
       }
     } else {
-      if (auto_sendAutumnaton(Location.get("The Outskirts of Cobb's Knob"))) {
+      if (auto_sendAutumnaton($location`The Outskirts of Cobb's Knob`)) {
         return false;
       }
     }
@@ -1314,7 +980,7 @@ export function auto_autumnatonQuest(): boolean {
 
 export function auto_hasSpeakEasy(): boolean {
   return (
-    auto_is_valid(Item.get("deed to Oliver's Place")) &&
+    auto_is_valid($item`deed to Oliver's Place`) &&
     toBoolean(getProperty("ownsSpeakeasy"))
   );
 }
@@ -1332,15 +998,15 @@ export function speakeasyCombat(): boolean {
   }
 
   if (auto_remainingSpeakeasyFreeFights() > 0) {
-    return autoAdv$2(Location.get("An Unusually Quiet Barroom Brawl"));
+    return autoAdv$2($location`An Unusually Quiet Barroom Brawl`);
   }
   return false;
 }
 
 export function auto_haveTrainSet(): boolean {
   return (
-    auto_get_campground().has(Item.get("model train set")) &&
-    auto_is_valid(Item.get("model train set"))
+    auto_get_campground().has($item`model train set`) &&
+    auto_is_valid($item`model train set`)
   ); //check if the model train set is in the campground
 }
 
@@ -1417,9 +1083,9 @@ export function auto_checkTrainSet(): void {
   if (myLevel() < 11) {
     //check if we need more stats. There is no check for disregard instant karma because
     //if we do check, we will never double lumber mill, which is more beneficial than continuing to double mainstat.
-    if (myPrimestat() === Stat.get("Muscle")) {
+    if (myPrimestat() === $stat`Muscle`) {
       two = 17;
-    } else if (myPrimestat() === Stat.get("Mysticality")) {
+    } else if (myPrimestat() === $stat`Mysticality`) {
       two = 16;
     } else {
       two = 14;
@@ -1429,9 +1095,9 @@ export function auto_checkTrainSet(): void {
   } else if (fastenerCount() < 30 || lumberCount() < 30) {
     //Double lumber mill to clear orc bridge faster
     two = 6; //lumber mill
-    if (myPrimestat() === Stat.get("Muscle")) {
+    if (myPrimestat() === $stat`Muscle`) {
       three = 17;
-    } else if (myPrimestat() === Stat.get("Mysticality")) {
+    } else if (myPrimestat() === $stat`Mysticality`) {
       three = 16;
     } else {
       three = 14;
@@ -1441,9 +1107,9 @@ export function auto_checkTrainSet(): void {
     //no need for main stats or bridge parts so lets do resistances and offstats
     two = 11; //spooky res, sleaze dmg
     three = 4; //hot res, cold dmg
-    if (myPrimestat() === Stat.get("Muscle")) {
+    if (myPrimestat() === $stat`Muscle`) {
       four = 14; //Moxie for Muscle peeps
-    } else if (myPrimestat() === Stat.get("Mysticality")) {
+    } else if (myPrimestat() === $stat`Mysticality`) {
       four = 14; //Moxie for Mysticality peeps
     } else {
       four = 17; //Muscle for Moxie peeps
@@ -1460,9 +1126,9 @@ export function auto_checkTrainSet(): void {
   if (needOre()) {
     seven = 20; //ore
   } else {
-    if (myPrimestat() === Stat.get("Muscle")) {
+    if (myPrimestat() === $stat`Muscle`) {
       seven = 16; //Mysticality for Muscle peeps
-    } else if (myPrimestat() === Stat.get("Mysticality")) {
+    } else if (myPrimestat() === $stat`Mysticality`) {
       seven = 17; //Muscle for Mysticality peeps
     } else {
       seven = 16; //Mysticality for Moxie peeps

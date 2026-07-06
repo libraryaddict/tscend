@@ -1,8 +1,6 @@
 import {
-  Effect,
   getProperty,
   haveEffect,
-  Location,
   Monster,
   mpCost,
   myHp,
@@ -10,10 +8,11 @@ import {
   myMaxhp,
   myMp,
   setProperty,
-  Skill,
   toBoolean,
   toInt,
 } from "kolmafia";
+import { $effect, $locations, $monsters, $skill } from "libram";
+
 import { auto_have_skill } from "../auto_util";
 import { canUse$1, canUse$2, useSkill$1, useSkill$2 } from "./auto_combat_util";
 
@@ -27,52 +26,50 @@ export function auto_combatTheSourceStage1(
 ): string {
   //#stage1 = 1st round actions: puzzle boss, banish, escape, pickpocket, etc. things that need to be done before debuff
 
-  if (
-    Monster.get(["One Thousand Source Agents", "Source Agent"]).includes(enemy)
-  ) {
-    if (auto_have_skill(Skill.get("Data Siphon"))) {
+  if ($monsters`One Thousand Source Agents, Source Agent`.includes(enemy)) {
+    if (auto_have_skill($skill`Data Siphon`)) {
       if (myMp() < 50) {
         if (
-          auto_have_skill(Skill.get("Source Punch")) &&
-          myMp() >= mpCost(Skill.get("Source Punch"))
+          auto_have_skill($skill`Source Punch`) &&
+          myMp() >= mpCost($skill`Source Punch`)
         ) {
-          return useSkill$1(Skill.get("Source Punch"), false);
+          return useSkill$1($skill`Source Punch`, false);
         }
       } else if (myMp() > 125) {
         if (
-          canUse$2(Skill.get("Reboot")) &&
-          (haveEffect(Effect.get("Latency")) > 0 || myHp() * 2 < myMaxhp())
+          canUse$2($skill`Reboot`) &&
+          (haveEffect($effect`Latency`) > 0 || myHp() * 2 < myMaxhp())
         ) {
-          return useSkill$2(Skill.get("Reboot"));
+          return useSkill$2($skill`Reboot`);
         }
-        if (canUse$2(Skill.get("Humiliating Hack"))) {
-          return useSkill$2(Skill.get("Humiliating Hack"));
+        if (canUse$2($skill`Humiliating Hack`)) {
+          return useSkill$2($skill`Humiliating Hack`);
         }
-        if (canUse$2(Skill.get("Disarmament"))) {
-          return useSkill$2(Skill.get("Disarmament"));
+        if (canUse$2($skill`Disarmament`)) {
+          return useSkill$2($skill`Disarmament`);
         }
-        if (canUse$2(Skill.get("Big Guns")) && myHp() < 100) {
-          return useSkill$2(Skill.get("Big Guns"));
+        if (canUse$2($skill`Big Guns`) && myHp() < 100) {
+          return useSkill$2($skill`Big Guns`);
         }
       } else if (myMp() > 100) {
-        if (canUse$2(Skill.get("Humiliating Hack"))) {
-          return useSkill$2(Skill.get("Humiliating Hack"));
+        if (canUse$2($skill`Humiliating Hack`)) {
+          return useSkill$2($skill`Humiliating Hack`);
         }
-        if (canUse$2(Skill.get("Disarmament"))) {
-          return useSkill$2(Skill.get("Disarmament"));
+        if (canUse$2($skill`Disarmament`)) {
+          return useSkill$2($skill`Disarmament`);
         }
       }
 
-      if (canUse$1(Skill.get("Source Kick"), false)) {
-        return useSkill$1(Skill.get("Source Kick"), false);
+      if (canUse$1($skill`Source Kick`, false)) {
+        return useSkill$1($skill`Source Kick`, false);
       }
     }
 
-    if (canUse$2(Skill.get("Big Guns"))) {
-      return useSkill$2(Skill.get("Big Guns"));
+    if (canUse$2($skill`Big Guns`)) {
+      return useSkill$2($skill`Big Guns`);
     }
-    if (canUse$1(Skill.get("Source Punch"), false)) {
-      return useSkill$1(Skill.get("Source Punch"), false);
+    if (canUse$1($skill`Source Punch`, false)) {
+      return useSkill$1($skill`Source Punch`, false);
     }
     return "runaway";
   }
@@ -89,20 +86,18 @@ export function auto_combatTheSourceStage4(
   //source terminal iotm source path specific action. provokes an agent into attacking you next turn 3/day
   //is turn referring to combat round or next adv? this is placed in stage 4 on the assumption it means next adv. if it means next combat round then it should be moved to stage 2
   if (
-    canUse$2(Skill.get("Portscan")) &&
+    canUse$2($skill`Portscan`) &&
     myLocation().turnsSpent < 8 &&
     toInt(getProperty("_sourceTerminalPortscanUses")) < 3 &&
     !toBoolean(getProperty("_portscanPending"))
   ) {
     if (
-      Location.get([
-        "The Castle in the Clouds in the Sky (Ground Floor)",
-        "The Haunted Bathroom",
-        "The Haunted Gallery",
-      ]).includes(myLocation())
+      $locations`The Castle in the Clouds in the Sky (Ground Floor), The Haunted Bathroom, The Haunted Gallery`.includes(
+        myLocation(),
+      )
     ) {
       setProperty("_portscanPending", true.toString());
-      return useSkill$2(Skill.get("Portscan"));
+      return useSkill$2($skill`Portscan`);
     }
   }
 

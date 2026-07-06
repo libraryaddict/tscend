@@ -1,4 +1,6 @@
-import { myPath, Path, runChoice, setProperty, visitUrl } from "kolmafia";
+import { myPath, runChoice, setProperty, visitUrl } from "kolmafia";
+import { $path } from "libram";
+
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
 /* TODO - banishing chickens prior to Nuns
@@ -9,7 +11,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/disguises_delimit.ash
 export function in_fotd(): boolean {
-  return myPath() === Path.get("Fall of the Dinosaurs");
+  return myPath() === $path`Fall of the Dinosaurs`;
 }
 
 export function fotd_initializeSettings(): void {

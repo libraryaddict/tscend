@@ -4,15 +4,12 @@ import {
   canEat,
   ceil,
   changeMcd,
-  Class,
   cliExecute,
   combatRateModifier,
   containsText,
   creatableAmount,
   create,
   currentMcd,
-  Effect,
-  Element,
   equip,
   equippedAmount,
   equippedItem,
@@ -68,10 +65,7 @@ import {
   retrieveItem,
   setProperty,
   Skill,
-  Slot,
   splitString,
-  Stat,
-  Thrall,
   toBoolean,
   toFamiliar,
   toInt,
@@ -81,6 +75,24 @@ import {
   useFamiliar,
   useSkill,
 } from "kolmafia";
+import {
+  $class,
+  $effect,
+  $effects,
+  $element,
+  $familiar,
+  $item,
+  $location,
+  $locations,
+  $monster,
+  $skill,
+  $skills,
+  $slot,
+  $slots,
+  $stat,
+  $thrall,
+} from "libram";
+
 import { speculative_pool_skill } from "../autoscend";
 import { auto_buyUpTo } from "./auto_acquire";
 import { buffMaintain$3, buffMaintain$4 } from "./auto_buff";
@@ -259,27 +271,17 @@ function print_footer(): void {
 
   let next_line: string = `HP: ${myHp()}/${myMaxhp()}, MP: ${myMp()}/${myMaxmp()}, Meat: ${myMeat()}`;
   switch (myClass()) {
-    case Class.get("Seal Clubber"):
+    case $class`Seal Clubber`:
       next_line += `, Fury: ${myFury()}/${myMaxfury()}`;
       break;
-    case Class.get("Turtle Tamer"):
-      for (const ttbless of Effect.get([
-        "Blessing of the War Snapper",
-        "Grand Blessing of the War Snapper",
-        "Glorious Blessing of the War Snapper",
-        "Blessing of She-Who-Was",
-        "Grand Blessing of She-Who-Was",
-        "Glorious Blessing of She-Who-Was",
-        "Blessing of the Storm Tortoise",
-        "Grand Blessing of the Storm Tortoise",
-        "Glorious Blessing of the Storm Tortoise",
-      ])) {
+    case $class`Turtle Tamer`:
+      for (const ttbless of $effects`Blessing of the War Snapper, Grand Blessing of the War Snapper, Glorious Blessing of the War Snapper, Blessing of She-Who-Was, Grand Blessing of She-Who-Was, Glorious Blessing of She-Who-Was, Blessing of the Storm Tortoise, Grand Blessing of the Storm Tortoise, Glorious Blessing of the Storm Tortoise`) {
         if (haveEffect(ttbless) > 0) {
           next_line += `, Blessing: ${ttbless}`;
         }
       }
       break;
-    case Class.get("Sauceror"):
+    case $class`Sauceror`:
       next_line += `, Soulsauce: ${mySoulsauce()}`;
       break;
   }
@@ -294,13 +296,13 @@ function print_footer(): void {
   }
 
   const bonus_mus: number =
-    myBuffedstat(Stat.get("Muscle")) - myBasestat(Stat.get("Muscle"));
+    myBuffedstat($stat`Muscle`) - myBasestat($stat`Muscle`);
   const bonus_mys: number =
-    myBuffedstat(Stat.get("Mysticality")) - myBasestat(Stat.get("Mysticality"));
+    myBuffedstat($stat`Mysticality`) - myBasestat($stat`Mysticality`);
   const bonus_mox: number =
-    myBuffedstat(Stat.get("Moxie")) - myBasestat(Stat.get("Moxie"));
+    myBuffedstat($stat`Moxie`) - myBasestat($stat`Moxie`);
   auto_log_info(
-    `mus: ${myBasestat(Stat.get("Muscle"))}${stat_sign(bonus_mus)}. mys: ${myBasestat(Stat.get("Mysticality"))}${stat_sign(bonus_mys)}. mox: ${myBasestat(Stat.get("Moxie"))}${stat_sign(bonus_mox)}`,
+    `mus: ${myBasestat($stat`Muscle`)}${stat_sign(bonus_mus)}. mys: ${myBasestat($stat`Mysticality`)}${stat_sign(bonus_mys)}. mox: ${myBasestat($stat`Moxie`)}${stat_sign(bonus_mox)}`,
     "blue",
   );
 
@@ -308,13 +310,13 @@ function print_footer(): void {
   if (pathHasFamiliar()) {
     next_line += `Familiar: ${myFamiliar()} @ ${auto_famWeight$2()}lbs. `;
   }
-  if (myClass() === Class.get("Pastamancer")) {
+  if (myClass() === $class`Pastamancer`) {
     next_line += `Thrall: [${myThrall()}] @ level ${myThrall().level}`;
   }
   if (isActuallyEd()) {
     next_line += `Servant: [${myServant()}] @ level ${myServant().level}`;
   }
-  if (myClass() === Class.get("Avatar of Jarlsberg")) {
+  if (myClass() === $class`Avatar of Jarlsberg`) {
     next_line += `Companion: [${myCompanion()}`;
   }
   auto_log_info(next_line, "blue");
@@ -333,52 +335,11 @@ function print_footer(): void {
   );
   //current equipment
   next_line = "equipment: ";
-  for (const sl of Slot.get([
-    "hat",
-    "weapon",
-    "holster",
-    "off-hand",
-    "back",
-    "shirt",
-    "pants",
-    "acc1",
-    "acc2",
-    "acc3",
-    "familiar",
-    "crown-of-thrones",
-    "sticker1",
-    "sticker2",
-    "sticker3",
-    "card-sleeve",
-    "folder1",
-    "folder2",
-    "folder3",
-    "folder4",
-    "folder5",
-    "buddy-bjorn",
-    "bootskin",
-    "bootspur",
-    "codpiece1",
-    "codpiece2",
-    "codpiece3",
-    "codpiece4",
-    "codpiece5",
-    "fakehand",
-    "hats",
-  ])) {
+  for (const sl of $slots`hat, weapon, holster, off-hand, back, shirt, pants, acc1, acc2, acc3, familiar, crown-of-thrones, sticker1, sticker2, sticker3, card-sleeve, folder1, folder2, folder3, folder4, folder5, buddy-bjorn, bootskin, bootspur, codpiece1, codpiece2, codpiece3, codpiece4, codpiece5, fakehand, hats`) {
     if (
-      Slot.get([
-        "hat",
-        "weapon",
-        "off-hand",
-        "back",
-        "shirt",
-        "pants",
-        "acc1",
-        "acc2",
-        "acc3",
-        "familiar",
-      ]).includes(sl)
+      $slots`hat, weapon, off-hand, back, shirt, pants, acc1, acc2, acc3, familiar`.includes(
+        sl,
+      )
     ) {
       //we always want to print the core slots
       next_line += `${sl}=[${equippedItem(sl)}]. `;
@@ -435,7 +396,7 @@ function auto_ghost_prep(place: Location): void {
     }
   }
   if (auto_haveDarts() && dartEleDmg()) {
-    addToMaximize(`+equip ${Item.get("Everfull Dart Holster")}`); //If we have darts and an elemental damage buff, might as well use that
+    addToMaximize(`+equip ${$item`Everfull Dart Holster`}`); //If we have darts and an elemental damage buff, might as well use that
     return;
   }
 
@@ -455,27 +416,27 @@ function auto_ghost_prep(place: Location): void {
     }
     if (mob.physicalResistance >= 80) {
       switch (monsterElement(mob)) {
-        case Element.get("hot"):
+        case $element`hot`:
           m_hot = 0;
           m_sleaze = 2;
           m_stench = 2;
           break;
-        case Element.get("cold"):
+        case $element`cold`:
           m_cold = 0;
           m_hot = 2;
           m_spooky = 2;
           break;
-        case Element.get("spooky"):
+        case $element`spooky`:
           m_spooky = 0;
           m_hot = 2;
           m_stench = 2;
           break;
-        case Element.get("sleaze"):
+        case $element`sleaze`:
           m_sleaze = 0;
           m_cold = 2;
           m_spooky = 2;
           break;
-        case Element.get("stench"):
+        case $element`stench`:
           m_stench = 0;
           m_sleaze = 2;
           m_cold = 2;
@@ -542,28 +503,28 @@ function auto_pre_adventure(): boolean {
   auto_log_debug(`Adventuring at ${place}`, "green");
 
   if (
-    itemAmount(Item.get("handful of split pea soup")) === 0 &&
-    creatableAmount(Item.get("handful of split pea soup")) > 0
+    itemAmount($item`handful of split pea soup`) === 0 &&
+    creatableAmount($item`handful of split pea soup`) > 0
   ) {
-    return create(1, Item.get("handful of split pea soup"));
+    return create(1, $item`handful of split pea soup`);
   }
 
   if (get_floundry_locations().has(place)) {
-    buffMaintain$4(Effect.get("Baited Hook"));
+    buffMaintain$4($effect`Baited Hook`);
   }
   // be ready to use red rocket if we don't have one
   if (
     have_fireworks_shop() &&
     itemAmount(
       // in a clan that has the Underground Fireworks Shop
-      Item.get("red rocket"),
+      $item`red rocket`,
     ) === 0 &&
     auto_is_valid(
       // Don't buy if we already have one
-      Item.get("red rocket"),
+      $item`red rocket`,
     ) &&
     canEat() &&
-    myClass() !== Class.get("Pig Skinner") &&
+    myClass() !== $class`Pig Skinner` &&
     !in_wereprof() &&
     !auto_haveDarts() &&
     myMeat() >
@@ -573,110 +534,107 @@ function auto_pre_adventure(): boolean {
         // don't want to use a red rocket in Pig Skinner
         // don't use if we are in WereProf
         // don't want to use a red rocket if we have darts
-        Item.get("red rocket"),
+        $item`red rocket`,
       ) +
         meatReserve()
   ) {
-    retrieveItem(1, Item.get("red rocket"));
+    retrieveItem(1, $item`red rocket`);
   }
 
   if (
     getProperty("_bittycar") === "" &&
-    itemAmount(Item.get("BittyCar MeatCar")) > 0
+    itemAmount($item`BittyCar MeatCar`) > 0
   ) {
-    use(1, Item.get("BittyCar MeatCar"));
+    use(1, $item`BittyCar MeatCar`);
   }
 
   if (
-    place === Location.get("The Broodling Grounds") &&
-    myClass() === Class.get("Seal Clubber")
+    place === $location`The Broodling Grounds` &&
+    myClass() === $class`Seal Clubber`
   ) {
-    uneffect(Effect.get("Spiky Shell"));
-    uneffect(Effect.get("Scarysauce"));
-    if (!uneffect(Effect.get("Scariersauce"))) {
+    uneffect($effect`Spiky Shell`);
+    uneffect($effect`Scarysauce`);
+    if (!uneffect($effect`Scariersauce`)) {
       abort("Could not uneffect [Scariersauce]");
     }
   }
 
   if (
-    myClass() === Class.get("Pastamancer") &&
-    myThrall() === Thrall.get("Vampieroghi") &&
-    place === Location.get("The Hidden Apartment Building") &&
-    auto_have_skill(Skill.get("Dismiss Pasta Thrall"))
+    myClass() === $class`Pastamancer` &&
+    myThrall() === $thrall`Vampieroghi` &&
+    place === $location`The Hidden Apartment Building` &&
+    auto_have_skill($skill`Dismiss Pasta Thrall`)
   ) {
     // vampieroghi can dispell the shaman curse, preventing us from making quest progress
-    useSkill(Skill.get("Dismiss Pasta Thrall"));
+    useSkill($skill`Dismiss Pasta Thrall`);
   }
   //save some MP while buffing
   const beforeBuffs: Map<number, Item> = auto_saveEquipped();
   addToMaximize("-1000mana cost, -tie");
   equipMaximizedGear();
 
-  if (place === Location.get("The Smut Orc Logging Camp")) {
+  if (place === $location`The Smut Orc Logging Camp`) {
     prepareForSmutOrcs();
   }
 
-  if (place === Location.get("Twin Peak")) {
+  if (place === $location`Twin Peak`) {
     prepareForTwinPeak(false);
   }
 
-  if (place === Location.get("Vanya's Castle")) {
-    provideInitiative$2(600, Location.get("Vanya's Castle"), true);
+  if (place === $location`Vanya's Castle`) {
+    provideInitiative$2(600, $location`Vanya's Castle`, true);
     addToMaximize("200initiative 800max");
   }
-  if (place === Location.get("The Fungus Plains")) {
-    provideMeat$2(450, Location.get("The Fungus Plains"), true);
+  if (place === $location`The Fungus Plains`) {
+    provideMeat$2(450, $location`The Fungus Plains`, true);
     addToMaximize("200meat drop 550max");
   }
-  if (place === Location.get("Megalo-City")) {
-    buffMaintain$3(Effect.get("Ghostly Shell"), 30, 1, 1); //+80 DA. 6 MP
-    buffMaintain$3(Effect.get("Astral Shell"), 30, 1, 1); //+80 DA, 10 MP
-    buffMaintain$3(Effect.get("Feeling Peaceful"), 0, 1, 1);
+  if (place === $location`Megalo-City`) {
+    buffMaintain$3($effect`Ghostly Shell`, 30, 1, 1); //+80 DA. 6 MP
+    buffMaintain$3($effect`Astral Shell`, 30, 1, 1); //+80 DA, 10 MP
+    buffMaintain$3($effect`Feeling Peaceful`, 0, 1, 1);
     addToMaximize("200DA 600max");
   }
-  if (place === Location.get("Hero's Field")) {
-    provideItem$2(400, Location.get("Hero's Field"), true);
+  if (place === $location`Hero's Field`) {
+    provideItem$2(400, $location`Hero's Field`, true);
     addToMaximize("200item 500max");
   }
 
   let junkyardML: boolean = false;
   if (
-    Location.get([
-      "Next to that Barrel with Something Burning in it",
-      "Near an Abandoned Refrigerator",
-      "Over Where the Old Tires Are",
-      "Out by that Rusted-Out Car",
-    ]).includes(place)
+    $locations`Next to that Barrel with Something Burning in it, Near an Abandoned Refrigerator, Over Where the Old Tires Are, Out by that Rusted-Out Car`.includes(
+      place,
+    )
   ) {
     junkyardML = true;
-    uneffect(Effect.get("Spiky Shell"));
-    uneffect(Effect.get("Scarysauce"));
+    uneffect($effect`Spiky Shell`);
+    uneffect($effect`Scarysauce`);
     if (in_aosol()) {
-      uneffect(Effect.get("Queso Fustulento"));
+      uneffect($effect`Queso Fustulento`);
     }
-    if (!uneffect(Effect.get("Scariersauce"))) {
+    if (!uneffect($effect`Scariersauce`)) {
       abort("Could not uneffect [Scariersauce]");
     }
   }
 
   if (is_boris()) {
     if (
-      haveEffect(Effect.get("Song of Solitude")) === 0 &&
-      haveEffect(Effect.get("Song of Battle")) === 0
+      haveEffect($effect`Song of Solitude`) === 0 &&
+      haveEffect($effect`Song of Battle`) === 0
     ) {
       //When do we consider Song of Cockiness?
-      buffMaintain$3(Effect.get("Song of Fortune"), 10, 1, 1);
-      if (haveEffect(Effect.get("Song of Fortune")) === 0) {
-        buffMaintain$3(Effect.get("Song of Accompaniment"), 10, 1, 1);
+      buffMaintain$3($effect`Song of Fortune`, 10, 1, 1);
+      if (haveEffect($effect`Song of Fortune`) === 0) {
+        buffMaintain$3($effect`Song of Accompaniment`, 10, 1, 1);
       }
     } else if (
       place.turnsSpent > 1 &&
       place !== toLocation(getProperty("auto_priorLocation"))
     ) {
       //When do we consider Song of Cockiness?
-      buffMaintain$3(Effect.get("Song of Fortune"), 10, 1, 1);
-      if (haveEffect(Effect.get("Song of Fortune")) === 0) {
-        buffMaintain$3(Effect.get("Song of Accompaniment"), 10, 1, 1);
+      buffMaintain$3($effect`Song of Fortune`, 10, 1, 1);
+      if (haveEffect($effect`Song of Fortune`) === 0) {
+        buffMaintain$3($effect`Song of Accompaniment`, 10, 1, 1);
       }
     }
   }
@@ -684,7 +642,7 @@ function auto_pre_adventure(): boolean {
   if (isActuallyEd()) {
     // make sure we have enough MP to cast our most expensive spells
     // Wrath of Ra (yellow ray) is 40 MP, Curse of Stench (sniff) is 35 MP & Curse of Vacation (banish) is 30 MP.
-    if (place !== Location.get("The Shore, Inc. Travel Agency")) {
+    if (place !== $location`The Shore\, Inc. Travel Agency`) {
       acquireMP$2(40, 1000);
       // ensure we can cast at least Fist of the Mummy or Storm of the Scarab.
       // so we don't waste adventures when we can't actually kill a monster.
@@ -700,10 +658,10 @@ function auto_pre_adventure(): boolean {
   }
 
   if (in_tcrs()) {
-    if (myClass() === Class.get("Sauceror") && mySign() === "Blender") {
-      if (0 === haveEffect(Effect.get("Uncucumbered"))) {
-        auto_buyUpTo(1, Item.get("hair spray"));
-        use(1, Item.get("hair spray"));
+    if (myClass() === $class`Sauceror` && mySign() === "Blender") {
+      if (0 === haveEffect($effect`Uncucumbered`)) {
+        auto_buyUpTo(1, $item`hair spray`);
+        use(1, $item`hair spray`);
       }
       // below no longer applicable due to current seed, will find new source
       //	if (0 == have_effect($effect[Minerva\'s Zen]))
@@ -715,18 +673,15 @@ function auto_pre_adventure(): boolean {
   }
   // If we're zootomist, need to level, and we have +xp on our milk, cast it.
   if (in_zootomist() && myLevel() < 13) {
-    for (const ef of Effect.get([
-      "Milk of Familiar Kindness",
-      "Milk of Familiar Cruelty",
-    ])) {
+    for (const ef of $effects`Milk of Familiar Kindness, Milk of Familiar Cruelty`) {
       if (numericModifier(ef, Modifier.get("Familiar Experience")) > 0) {
         buffMaintain$4(ef);
       }
     }
   }
 
-  if (place === Location.get("Cobb's Knob Treasury")) {
-    provideMeat$2(1800, Location.get("Cobb's Knob Treasury"), true);
+  if (place === $location`Cobb's Knob Treasury`) {
+    provideMeat$2(1800, $location`Cobb's Knob Treasury`, true);
     addToMaximize("200meat drop");
   }
   // need more meat than usual for skills + level in meatpath
@@ -838,7 +793,7 @@ function auto_pre_adventure(): boolean {
       (zoneHasWantedMonsters ? 300 : 0);
     if (crystalBallMaximizerBonus !== 0) {
       addToMaximize(
-        `+${crystalBallMaximizerBonus}bonus ${wrap_item(Item.get("miniature crystal ball")).toString()}`,
+        `+${crystalBallMaximizerBonus}bonus ${wrap_item($item`miniature crystal ball`).toString()}`,
       );
     }
   }
@@ -853,24 +808,24 @@ function auto_pre_adventure(): boolean {
         mon.copyable &&
         !mon.boss &&
         !auto_monsterInLocket(mon) &&
-        place !== Location.get("Noob Cave")
+        place !== $location`Noob Cave`
       ) {
         // We use Noob Cave as the placeholder location for zoneless encounters so lets not equip it when we're not actually going there.
         auto_log_info(
           `We want to get the "${mon}" monster into the combat lover's locket from ${place}, so we're bringing it along.`,
           "blue",
         );
-        autoEquip$1(Item.get("combat lover's locket"));
+        autoEquip$1($item`combat lover's locket`);
         break;
       }
     }
   }
 
-  if (in_koe() && possessEquipment(Item.get("low-pressure oxygen tank"))) {
-    autoEquip$1(Item.get("low-pressure oxygen tank"));
+  if (in_koe() && possessEquipment($item`low-pressure oxygen tank`)) {
+    autoEquip$1($item`low-pressure oxygen tank`);
   }
   // Latte may conflict with certain quests. Ignore latte drops for the greater good.
-  const IgnoreLatteDrop: Location[] = Location.get(["The Haunted Boiler Room"]);
+  const IgnoreLatteDrop: Location[] = $locations`The Haunted Boiler Room`;
   if (
     auto_latteDropWanted(place) &&
     !IgnoreLatteDrop.includes(place) &&
@@ -879,24 +834,24 @@ function auto_pre_adventure(): boolean {
     // boris has no way to equip latte mug or Kramco (no offhand or familiar)
     if (auto_sausageGoblin() && place === solveDelayZone$1()) {
       // Burning delay using a Sausage Goblin. Can't hold both the Kramco and the Latte, we only have one off-hand!
-      if (canChangeToFamiliar(Familiar.get("Left-Hand Man"))) {
+      if (canChangeToFamiliar($familiar`Left-Hand Man`)) {
         // If we can use the Left-Hand man, we can get a two-fer with both the Kramco and Latte
         // Hurrah! We found an actual use for it, it's not useless after all!
         auto_log_info(
           `We want to get the "${auto_latteDropName(place)}" ingredient for our Latte from ${place}, and we're buring delay using the Kramco so your Left-Hand Man will be bringing your Latte along!`,
           "blue",
         );
-        handleFamiliar$1(Familiar.get("Left-Hand Man"));
-        handleFamiliar$1(Familiar.get("Left-Hand Man"));
-        useFamiliar(Familiar.get("Left-Hand Man")); // update familiar already called so have to force.
-        autoEquip(Slot.get("familiar"), Item.get("latte lovers member's mug"));
+        handleFamiliar$1($familiar`Left-Hand Man`);
+        handleFamiliar$1($familiar`Left-Hand Man`);
+        useFamiliar($familiar`Left-Hand Man`); // update familiar already called so have to force.
+        autoEquip($slot`familiar`, $item`latte lovers member's mug`);
       }
     } else {
       auto_log_info(
         `We want to get the "${auto_latteDropName(place)}" ingredient for our Latte from ${place}, so we're bringing it along.`,
         "blue",
       );
-      autoEquip$1(Item.get("latte lovers member's mug"));
+      autoEquip$1($item`latte lovers member's mug`);
     }
   }
 
@@ -904,10 +859,7 @@ function auto_pre_adventure(): boolean {
     getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
     !toBoolean(getProperty("auto_avalancheDeployed"))
   ) {
-    autoForceEquip$1(
-      Slot.get("acc2"),
-      wrap_item(Item.get("McHugeLarge left ski")),
-    );
+    autoForceEquip$1($slot`acc2`, wrap_item($item`McHugeLarge left ski`));
     // We put it in acc2 so it can't clash with the war accessory in acc3
   }
 
@@ -915,7 +867,7 @@ function auto_pre_adventure(): boolean {
     getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
     !toBoolean(getProperty("auto_parkaSpikesDeployed"))
   ) {
-    autoForceEquip$3(wrap_item(Item.get("Jurassic Parka"))); //equips parka and forbids maximizer tampering with shirt slot
+    autoForceEquip$3(wrap_item($item`Jurassic Parka`)); //equips parka and forbids maximizer tampering with shirt slot
     //not using auto_configureParka("spikes") so maximizer stays aware of ML from shirt, instead of maximizing with another shirt or no shirt before changing to parka
     setProperty("auto_parkaSetting", "spikes");
     if (getProperty("parkaMode") !== "spikolodon") {
@@ -923,12 +875,8 @@ function auto_pre_adventure(): boolean {
     }
   }
 
-  const fluda: Item = Item.get("Flash Liquidizer Ultra Dousing Accessory");
-  const douse_locs: Location[] = Location.get([
-    "The Hatching Chamber",
-    "The Feeding Chamber",
-    "The Royal Guard Chamber",
-  ]);
+  const fluda: Item = $item`Flash Liquidizer Ultra Dousing Accessory`;
+  const douse_locs: Location[] = $locations`The Hatching Chamber, The Feeding Chamber, The Royal Guard Chamber`;
   if (
     (douse_locs.includes(place) || auto_allRifts().has(place)) &&
     auto_dousesRemaining() > 0
@@ -936,7 +884,7 @@ function auto_pre_adventure(): boolean {
     autoEquip$1(fluda);
   }
 
-  const bat_wings: Item = Item.get("bat wings");
+  const bat_wings: Item = $item`bat wings`;
   const swoop_locs: Map<Location, boolean> = auto_swoopLocations();
   if (
     (swoop_locs.has(place) || auto_allRifts().has(place)) &&
@@ -945,17 +893,12 @@ function auto_pre_adventure(): boolean {
     autoEquip$1(bat_wings);
   }
 
-  const exting: Item = wrap_item(Item.get("industrial fire extinguisher"));
+  const exting: Item = wrap_item($item`industrial fire extinguisher`);
   if (
     auto_FireExtinguisherCombatString(place) !== "" ||
-    Location.get([
-      "The Goatlet",
-      "Twin Peak",
-      "The Hidden Bowling Alley",
-      "The Hatching Chamber",
-      "The Feeding Chamber",
-      "The Royal Guard Chamber",
-    ]).includes(place)
+    $locations`The Goatlet, Twin Peak, The Hidden Bowling Alley, The Hatching Chamber, The Feeding Chamber, The Royal Guard Chamber`.includes(
+      place,
+    )
   ) {
     autoEquip$1(exting);
   } else if (
@@ -972,7 +915,7 @@ function auto_pre_adventure(): boolean {
   }
 
   if (auto_wantToShrunkenHead$1(place)) {
-    addBonusToMaximize(Item.get("shrunken head"), 300);
+    addBonusToMaximize($item`shrunken head`, 300);
   }
 
   if (
@@ -981,29 +924,29 @@ function auto_pre_adventure(): boolean {
     (zoneHasWantedMonsters || auto_peridotSetZone(place))
   ) {
     //add a large bonus to Peridot of Peril if the zone has wanted monsters (or we want to set the zone without using an adventure) and we haven't visited there yet
-    addBonusToMaximize(Item.get("Peridot of Peril"), 1000);
+    addBonusToMaximize($item`Peridot of Peril`, 1000);
   }
 
   if (
-    place === Location.get("The Penultimate Fantasy Airship") &&
+    place === $location`The Penultimate Fantasy Airship` &&
     auto_haveBatWings()
   ) {
     // only here to get immateria. Get it faster with bat wings
-    autoEquip$1(Item.get("bat wings"));
+    autoEquip$1($item`bat wings`);
   }
 
   if (in_plumber()) {
     let pool_skill: number = speculative_pool_skill();
-    if (possessEquipment(Item.get("pool cue"))) {
+    if (possessEquipment($item`pool cue`)) {
       pool_skill += 3;
     }
     // Even though there are ghosts in the Billiards Room, we want to equip
     // the pool cue to finish up the quest.
     let skip_equipping_flower: boolean =
-      place === Location.get("The Haunted Billiards Room") && 18 <= pool_skill;
+      place === $location`The Haunted Billiards Room` && 18 <= pool_skill;
     // Ziggurat has a ghost BUT when clearing out lianas, we want to equip
     // machete in mainhand and use boots.
-    if (place === Location.get("A Massive Ziggurat")) {
+    if (place === $location`A Massive Ziggurat`) {
       let lianaFought: number = 0;
       for (const [i, s] of splitString(place.combatQueue, "; ").entries()) {
         if (s === "dense liana") {
@@ -1016,22 +959,22 @@ function auto_pre_adventure(): boolean {
     }
     if (
       (is_ghost_in_zone(place) && !skip_equipping_flower) ||
-      (place === Location.get("The Smut Orc Logging Camp") &&
-        possessEquipment(Item.get("frosty button")))
+      (place === $location`The Smut Orc Logging Camp` &&
+        possessEquipment($item`frosty button`))
     ) {
-      if (!plumber_equipTool$1(Stat.get("Mysticality"))) {
+      if (!plumber_equipTool$1($stat`Mysticality`)) {
         abort(
           "I'm scared to adventure in a zone with ghosts without a fire flower. Please fight a bit and buy me a fire flower.",
         );
       }
     } else {
-      plumber_equipTool$1(Stat.get("Moxie"));
+      plumber_equipTool$1($stat`Moxie`);
     }
     // It is dangerous out there! Take this!
     const flyeredML: number = toInt(getProperty("flyeredML"));
     const have_pill_keeper: boolean =
-      possessEquipment(Item.get("Eight Days a Week Pill Keeper")) &&
-      isUnrestricted(Item.get("Unopened Eight Days a Week Pill Keeper"));
+      possessEquipment($item`Eight Days a Week Pill Keeper`) &&
+      isUnrestricted($item`Unopened Eight Days a Week Pill Keeper`);
 
     if (
       0 < flyeredML &&
@@ -1042,7 +985,7 @@ function auto_pre_adventure(): boolean {
       auto_log_debug$1(
         "I expect to be flyering, equipping Pill Keeper to skip the first hit.",
       );
-      autoEquip(Slot.get("acc3"), Item.get("Eight Days a Week Pill Keeper"));
+      autoEquip($slot`acc3`, $item`Eight Days a Week Pill Keeper`);
     }
   }
 
@@ -1062,42 +1005,39 @@ function auto_pre_adventure(): boolean {
   }
 
   if (
-    Location.get([
-      "Vanya's Castle",
-      "The Fungus Plains",
-      "Megalo-City",
-      "Hero's Field",
-    ]).includes(place) &&
+    $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`.includes(
+      place,
+    ) &&
     myTurncount() !== 0
   ) {
-    if (!possessEquipment(Item.get("continuum transfunctioner"))) {
+    if (!possessEquipment($item`continuum transfunctioner`)) {
       abort("Tried to be retro but lacking the Continuum Transfunctioner.");
     }
-    autoEquip(Slot.get("acc3"), Item.get("continuum transfunctioner"));
+    autoEquip($slot`acc3`, $item`continuum transfunctioner`);
   }
 
-  if (place === Location.get("Inside the Palindome") && myTurncount() !== 0) {
-    if (!possessEquipment(Item.get("Talisman o' Namsilat"))) {
+  if (place === $location`Inside the Palindome` && myTurncount() !== 0) {
+    if (!possessEquipment($item`Talisman o' Namsilat`)) {
       abort("Tried to go to The Palindome but don't have the Namsilat");
     }
-    autoEquip(Slot.get("acc3"), Item.get("Talisman o' Namsilat"));
+    autoEquip($slot`acc3`, $item`Talisman o' Namsilat`);
   }
 
   if (
-    place === Location.get("The Haunted Boiler Room") &&
+    place === $location`The Haunted Boiler Room` &&
     myTurncount() !== 0 &&
     internalQuestStatus("questL11Manor") < 3
   ) {
-    if (!possessEquipment(Item.get("unstable fulminate"))) {
+    if (!possessEquipment($item`unstable fulminate`)) {
       abort("Tried to charge a WineBomb but don't have one.");
     }
-    if (equippedAmount(Item.get("unstable fulminate")) === 0) {
+    if (equippedAmount($item`unstable fulminate`) === 0) {
       auto_log_warning(
         "Tried to adventure in [The Haunted Boiler Room] without an [Unstable Fulminate]... correcting",
         "red",
       );
-      autoForceEquip$1(Slot.get("off-hand"), Item.get("unstable fulminate"));
-      if (equippedAmount(Item.get("unstable fulminate")) === 0) {
+      autoForceEquip$1($slot`off-hand`, $item`unstable fulminate`);
+      if (equippedAmount($item`unstable fulminate`) === 0) {
         abort(
           "Correction failed, please report this. Manually get the [wine bomb] then run me again",
         );
@@ -1105,20 +1045,17 @@ function auto_pre_adventure(): boolean {
     }
   }
 
-  if (place === Location.get("The Black Forest")) {
-    autoEquip(Slot.get("acc3"), Item.get("blackberry galoshes"));
+  if (place === $location`The Black Forest`) {
+    autoEquip($slot`acc3`, $item`blackberry galoshes`);
   }
 
   if (
-    Location.get([
-      "Barrrney's Barrr",
-      "The F'c'le",
-      "The Poop Deck",
-      "Belowdecks",
-    ]).includes(place)
+    $locations`Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks`.includes(
+      place,
+    )
   ) {
-    if (possessEquipment(Item.get("pirate fledges"))) {
-      autoEquip(Slot.get("acc3"), Item.get("pirate fledges"));
+    if (possessEquipment($item`pirate fledges`)) {
+      autoEquip($slot`acc3`, $item`pirate fledges`);
     } else if (possessOutfit$1("Swashbuckling Getup")) {
       autoOutfit("Swashbuckling Getup");
     } else {
@@ -1138,11 +1075,9 @@ function auto_pre_adventure(): boolean {
     mayNeedItem = false;
   } else if (
     gettingLucky &&
-    !Location.get([
-      "The Hidden Temple",
-      "The Red Zeppelin",
-      "A Maze of Sewer Tunnels",
-    ]).includes(place)
+    !$locations`The Hidden Temple, The Red Zeppelin, A Maze of Sewer Tunnels`.includes(
+      place,
+    )
   ) {
     //Baa'baa'bu'ran is probably the only Lucky adventure that will need item drop
     mayNeedItem = false;
@@ -1151,7 +1086,7 @@ function auto_pre_adventure(): boolean {
   if (mayNeedItem && itemNeed._boolean) {
     const capped: boolean = provideItem$2(ceil(itemNeed._float), place, false);
     if (!capped && auto_haveCupidBow()) {
-      addBonusToMaximize(Item.get("toy Cupid bow"), 400);
+      addBonusToMaximize($item`toy Cupid bow`, 400);
     }
   }
   // Only cast Paul's pop song if we expect it to more than pay for its own casting.
@@ -1161,7 +1096,7 @@ function auto_pre_adventure(): boolean {
     auto_predictAccordionTurns() >= 8 &&
     numericModifier(Modifier.get("MP Regen Min")) < 5
   ) {
-    buffMaintain$4(Effect.get("Paul's Passionate Pop Song"));
+    buffMaintain$4($effect`Paul's Passionate Pop Song`);
   }
   // ML adjustment zone section
   let doML: boolean = true;
@@ -1169,21 +1104,8 @@ function auto_pre_adventure(): boolean {
   // removeML MUST be true for purgeML to be used. This is only used for -ML locations like Smut Orc, and you must have 5+ SGEAs to use.
   let purgeML: boolean = false;
 
-  const highMLZones: Location[] = Location.get([
-    "Oil Peak",
-    "The Typical Tavern Cellar",
-    "The Haunted Boiler Room",
-    "The Defiled Cranny",
-  ]);
-  const lowMLZones: Location[] = Location.get([
-    "The Smut Orc Logging Camp",
-    "Fight in the Dirt",
-    "Fight in the Tall Grass",
-    "Fight in the Very Tall Grass",
-    "Tower Level 1",
-    "Tower Level 2",
-    "Tower Level 3",
-  ]);
+  const highMLZones: Location[] = $locations`Oil Peak, The Typical Tavern Cellar, The Haunted Boiler Room, The Defiled Cranny`;
+  const lowMLZones: Location[] = $locations`The Smut Orc Logging Camp, Fight in the Dirt, Fight in the Tall Grass, Fight in the Very Tall Grass, Tower Level 1, Tower Level 2, Tower Level 3`;
   // Generic Conditions
   if (inAftercore()) {
     doML = false;
@@ -1216,15 +1138,14 @@ function auto_pre_adventure(): boolean {
   // Gremlins specific. need to let them hit so avoid ML unless defense is very high
   if (
     junkyardML &&
-    myBuffedstat(Stat.get("Moxie")) <
-      2 * monsterAttack(Monster.get("erudite gremlin"))
+    myBuffedstat($stat`Moxie`) < 2 * monsterAttack($monster`erudite gremlin`)
   ) {
     doML = false;
     removeML = true;
     purgeML = false;
   }
   // monster level increases zone damage. don't re apply ML buff shrugged by level_11.ash
-  if (place === Location.get("The Copperhead Club")) {
+  if (place === $location`The Copperhead Club`) {
     doML = false;
     removeML = true;
     purgeML = false;
@@ -1251,14 +1172,14 @@ function auto_pre_adventure(): boolean {
   if (doML) {
     // Catch when we leave lowMLZone, allow for being "side tracked" by delay burning
     if (
-      haveEffect(Effect.get("Driving Intimidatingly")) > 0 &&
+      haveEffect($effect`Driving Intimidatingly`) > 0 &&
       toInt(getProperty("auto_debuffAsdonDelay")) >= 2
     ) {
       auto_log_debug$1("No Reason to delay Asdon Usage");
-      uneffect(Effect.get("Driving Intimidatingly"));
+      uneffect($effect`Driving Intimidatingly`);
       setProperty("auto_debuffAsdonDelay", (0).toString());
     } else if (
-      toInt(haveEffect(Effect.get("Driving Intimidatingly"))) === 0 &&
+      toInt(haveEffect($effect`Driving Intimidatingly`)) === 0 &&
       toInt(getProperty("auto_debuffAsdonDelay")) >= 0
     ) {
       setProperty("auto_debuffAsdonDelay", (0).toString());
@@ -1278,24 +1199,21 @@ function auto_pre_adventure(): boolean {
   if (removeML) {
     auto_change_mcd(0);
     addToMaximize("-10ml");
-    uneffect(Effect.get("Driving Recklessly"));
-    uneffect(Effect.get("Ur-Kel's Aria of Annoyance"));
+    uneffect($effect`Driving Recklessly`);
+    uneffect($effect`Ur-Kel's Aria of Annoyance`);
 
-    if (
-      purgeML &&
-      itemAmount(Item.get("soft green echo eyedrop antidote")) > 5
-    ) {
-      uneffect(Effect.get("Drescher's Annoying Noise"));
-      uneffect(Effect.get("Pride of the Puffin"));
-      uneffect(Effect.get("Ceaseless Snarling"));
-      uneffect(Effect.get("Blessing of Serqet"));
+    if (purgeML && itemAmount($item`soft green echo eyedrop antidote`) > 5) {
+      uneffect($effect`Drescher's Annoying Noise`);
+      uneffect($effect`Pride of the Puffin`);
+      uneffect($effect`Ceaseless Snarling`);
+      uneffect($effect`Blessing of Serqet`);
     } else if (
       purgeML &&
       isActuallyEd() &&
-      (itemAmount(Item.get("ancient cure-all")) > 0 ||
-        itemAmount(Item.get("soft green echo eyedrop antidote")) > 0)
+      (itemAmount($item`ancient cure-all`) > 0 ||
+        itemAmount($item`soft green echo eyedrop antidote`) > 0)
     ) {
-      uneffect(Effect.get("Blessing of Serqet"));
+      uneffect($effect`Blessing of Serqet`);
     }
   }
   // Here we give a limited value to ML if +/-ML is not specifically called in the current maximizer string. This does not enforce the limit.
@@ -1321,9 +1239,9 @@ function auto_pre_adventure(): boolean {
   // Last minute switching for garbage tote. But only if nothing called on januaryToteAcquire this turn.
   if (
     !toBoolean(getProperty("auto_januaryToteAcquireCalledThisTurn")) &&
-    auto_is_valid(Item.get("wad of used tape"))
+    auto_is_valid($item`wad of used tape`)
   ) {
-    januaryToteAcquire(Item.get("wad of used tape"));
+    januaryToteAcquire($item`wad of used tape`);
   }
 
   removeFromMaximize("-1000mana cost");
@@ -1336,39 +1254,36 @@ function auto_pre_adventure(): boolean {
   cliExecute("checkpoint clear");
   //before guaranteed non combats that give stats, overrule maximized equipment to increase stat gains
   if (
-    place === Location.get("The Hidden Bowling Alley") &&
-    itemAmount(Item.get("bowling ball")) > 0 &&
+    place === $location`The Hidden Bowling Alley` &&
+    itemAmount($item`bowling ball`) > 0 &&
     toInt(getProperty("hiddenBowlingAlleyProgress")) < 5
   ) {
     equipStatgainIncreasers$2();
     plumber_forceEquipTool();
   } else if (
-    place === Location.get("The Haunted Ballroom") &&
+    place === $location`The Haunted Ballroom` &&
     internalQuestStatus("questM21Dance") === 3
   ) {
     equipStatgainIncreasers$2();
     plumber_forceEquipTool();
   } else if (
-    place === Location.get("The Shore, Inc. Travel Agency") &&
-    itemAmount(Item.get("forged identification documents")) === 0
+    place === $location`The Shore\, Inc. Travel Agency` &&
+    itemAmount($item`forged identification documents`) === 0
   ) {
     equipStatgainIncreasers$1(myPrimestat(), true); //The Shore, Inc. Travel Agency choice 793 is configured to pick main stat or all stats
     plumber_forceEquipTool();
   }
-  if (auto_handleCCSC() && !haveEquipped(Item.get("candy cane sword cane"))) {
-    autoForceEquip$3(Item.get("candy cane sword cane")); // Force the candy cane sword cane if June cleaver has been buffed beyond the 1000 bonus boost
+  if (auto_handleCCSC() && !haveEquipped($item`candy cane sword cane`)) {
+    autoForceEquip$3($item`candy cane sword cane`); // Force the candy cane sword cane if June cleaver has been buffed beyond the 1000 bonus boost
   }
 
   if (
     isActuallyEd() &&
     isWearingOutfit("Filthy Hippy Disguise") &&
-    place === Location.get("The Hippy Camp")
+    place === $location`The Hippy Camp`
   ) {
-    equip(Slot.get("pants"), Item.none);
-    putCloset(
-      itemAmount(Item.get("filthy corduroys")),
-      Item.get("filthy corduroys"),
-    );
+    equip($slot`pants`, Item.none);
+    putCloset(itemAmount($item`filthy corduroys`), $item`filthy corduroys`);
     if (isWearingOutfit("Filthy Hippy Disguise")) {
       abort(
         "Tried to adventure in the Hippy Camp as Actually Ed the Undying wearing the Filthy Hippy Disguise (this is bad).",
@@ -1397,7 +1312,7 @@ function auto_pre_adventure(): boolean {
 
   executeFlavour();
   // After maximizing equipment, we might not be at full HP
-  if (Location.get(["Tower Level 1", "The Invader"]).includes(place)) {
+  if ($locations`Tower Level 1, The Invader`.includes(place)) {
     acquireHP();
   }
 
@@ -1406,7 +1321,7 @@ function auto_pre_adventure(): boolean {
   }
   // always heal to full HP for Boo Clues
   if (
-    Location.get(["A-Boo Peak"]).includes(place) &&
+    $locations`A-Boo Peak`.includes(place) &&
     toInt(getProperty("auto_aboopending")) !== 0
   ) {
     acquireHP();
@@ -1428,22 +1343,16 @@ function auto_pre_adventure(): boolean {
 
   let mpNeeded: number = 32; // enough for 5 casts of Saucestorm. Usually this should be fine for most combats
   switch (myClass()) {
-    case Class.get("Disco Bandit"):
+    case $class`Disco Bandit`:
       // expand this for other cases where we need more MP for combat.
       // ideally we could ask the combat function to tell us how much MP it will need for an example encounter in the zone we are going to.
       if (
-        Location.get([
-          "Shadow Rift (The Ancient Buried Pyramid)",
-          "Shadow Rift (The Hidden City)",
-          "Shadow Rift (The Misspelled Cemetary)",
-        ]).includes(place)
+        $locations`Shadow Rift (The Ancient Buried Pyramid), Shadow Rift (The Hidden City), Shadow Rift (The Misspelled Cemetary)`.includes(
+          place,
+        )
       ) {
         // DB aborts in the Shadow Rifts because it runs out of MP trying to use Saucestorm against physically immune monsters when it has Extingo equipped.
-        for (const sk of Skill.get([
-          "Disco Dance of Doom",
-          "Disco Dance II: Electric Boogaloo",
-          "Disco Dance 3: Back in the Habit",
-        ])) {
+        for (const sk of $skills`Disco Dance of Doom, Disco Dance II: Electric Boogaloo, Disco Dance 3: Back in the Habit`) {
           // yes it casts all 3 of those first then tries to repeat Saucestorm. On 32 or so MP.
           if (auto_have_skill(sk)) {
             mpNeeded += mpCost(sk);
@@ -1461,7 +1370,7 @@ function auto_pre_adventure(): boolean {
     low_mp_handler();
   }
 
-  if (inHardcore() && myClass() === Class.get("Sauceror") && myMp() < 32) {
+  if (inHardcore() && myClass() === $class`Sauceror` && myMp() < 32) {
     auto_log_warning(
       "We don't have a lot of MP but we are chugging along anyway",
       "red",
@@ -1469,7 +1378,7 @@ function auto_pre_adventure(): boolean {
   }
   lar_abort(place);
   if (myInebriety() > inebrietyLimit()) {
-    if (Location.get(["The Tunnel of L.O.V.E."]).includes(place)) {
+    if ($locations`The Tunnel of L.O.V.E.`.includes(place)) {
       auto_log_info(
         `Trying to adv in [${place}] while overdrunk... is actually permitted`,
         "blue",

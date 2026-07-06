@@ -4,7 +4,6 @@ import {
   canInteract,
   ceil,
   cliExecute,
-  Coinmaster,
   creatableAmount,
   Effect,
   Element,
@@ -31,9 +30,6 @@ import {
   numericModifier,
   outfit,
   retrieveItem,
-  Servant,
-  Skill,
-  Slot,
   Stat,
   toBoolean,
   toFamiliar,
@@ -41,6 +37,21 @@ import {
   useFamiliar,
   visitUrl,
 } from "kolmafia";
+import {
+  $coinmaster,
+  $effect,
+  $effects,
+  $element,
+  $familiar,
+  $familiars,
+  $item,
+  $servant,
+  $skill,
+  $slot,
+  $slots,
+  $stat,
+} from "libram";
+
 import { auto_buyUpTo } from "./auto_acquire";
 import { buffMaintain$2, buffMaintain$4 } from "./auto_buff";
 import {
@@ -208,18 +219,14 @@ export function providePlusCombat(
   }
   // first lets do stuff that is "free" (as in has no MP cost, item use or can be freely removed/toggled)
 
-  if (haveEffect(Effect.get("Become Superficially interested")) > 0) {
+  if (haveEffect($effect`Become Superficially interested`) > 0) {
     visitUrl("charsheet.php?pwd=&action=newyouinterest");
     if (pass$4()) {
       return result$4();
     }
   }
 
-  for (const eff of Effect.get([
-    "Driving Stealthily",
-    "The Sonata of Sneakiness",
-    "In The Darkness",
-  ])) {
+  for (const eff of $effects`Driving Stealthily, The Sonata of Sneakiness, In The Darkness`) {
     uneffect(eff);
     if (pass$4()) {
       return result$4();
@@ -245,22 +252,19 @@ export function providePlusCombat(
     if (speculative) {
       delta += numericModifier(eff, "Combat Rate");
       if (
-        eff === Effect.get("Musk of the Moose") &&
-        haveEffect(Effect.get("Smooth Movements")) > 0
+        eff === $effect`Musk of the Moose` &&
+        haveEffect($effect`Smooth Movements`) > 0
       ) {
         delta +=
-          -1.0 * numericModifier(Effect.get("Smooth Movements"), "Combat Rate"); // numeric_modifier doesn't take into account uneffecting the opposite skill so we have to add it manually.
+          -1.0 * numericModifier($effect`Smooth Movements`, "Combat Rate"); // numeric_modifier doesn't take into account uneffecting the opposite skill so we have to add it manually.
       }
       if (
-        eff === Effect.get("Carlweather's Cantata of Confrontation") &&
-        haveEffect(Effect.get("The Sonata of Sneakiness")) > 0
+        eff === $effect`Carlweather's Cantata of Confrontation` &&
+        haveEffect($effect`The Sonata of Sneakiness`) > 0
       ) {
         delta +=
           -1.0 *
-          numericModifier(
-            Effect.get("The Sonata of Sneakiness"),
-            "Combat Rate",
-          );
+          numericModifier($effect`The Sonata of Sneakiness`, "Combat Rate");
       }
     }
     auto_log_debug$1(
@@ -282,32 +286,32 @@ export function providePlusCombat(
   // Now handle buffs that cost MP, items or other resources
   // Cheap effects
   if (!speculative) {
-    shrugAT$1(Effect.get("Carlweather's Cantata of Confrontation"));
+    shrugAT$1($effect`Carlweather's Cantata of Confrontation`);
   }
   if (
     tryEffects$5(
       new Map([
-        [Effect.get("Musk of the Moose"), true],
-        [Effect.get("Carlweather's Cantata of Confrontation"), true],
-        [Effect.get("Milk of Familiar Kindness"), true],
-        [Effect.get("Attracting Snakes"), true],
-        [Effect.get("Crunchy Steps"), true],
-        [Effect.get("Blinking Belly"), true],
-        [Effect.get("Song of Battle"), true],
-        [Effect.get("Frown"), true],
-        [Effect.get("Angry"), true],
-        [Effect.get("Screaming!  SCREAMING!  AAAAAAAH!"), true],
-        [Effect.get("Coffeesphere"), true],
-        [Effect.get("Unmuffled"), true],
+        [$effect`Musk of the Moose`, true],
+        [$effect`Carlweather's Cantata of Confrontation`, true],
+        [$effect`Milk of Familiar Kindness`, true],
+        [$effect`Attracting Snakes`, true],
+        [$effect`Crunchy Steps`, true],
+        [$effect`Blinking Belly`, true],
+        [$effect`Song of Battle`, true],
+        [$effect`Frown`, true],
+        [$effect`Angry`, true],
+        [$effect`Screaming!  SCREAMING!  AAAAAAAH!`, true],
+        [$effect`Coffeesphere`, true],
+        [$effect`Unmuffled`, true],
       ]),
     )
   ) {
     return result$4();
   }
 
-  if (in_amw() && amw_canAfford(Skill.get("Act Jerky"))) {
+  if (in_amw() && amw_canAfford($skill`Act Jerky`)) {
     // meatpath only
-    if (tryEffects$5(new Map([[Effect.get("Acting Jerky"), true]]))) {
+    if (tryEffects$5(new Map([[$effect`Acting Jerky`, true]]))) {
       return result$4();
     }
   }
@@ -316,7 +320,7 @@ export function providePlusCombat(
     if (!speculative) {
       auto_setAprilBandCombat();
     }
-    handleEffect$4(Effect.get("Apriling Band Battle Cadence"));
+    handleEffect$4($effect`Apriling Band Battle Cadence`);
     if (pass$4()) {
       return result$4();
     }
@@ -325,31 +329,31 @@ export function providePlusCombat(
   if (
     tryEffects$5(
       new Map([
-        [Effect.get("Taunt of Horus"), true],
-        [Effect.get("Patent Aggression"), true],
-        [Effect.get("Lion in Ambush"), true],
-        [Effect.get("Everything Must Go!"), true],
-        [Effect.get("Hippy Stench"), true],
-        [Effect.get("High Colognic"), true],
-        [Effect.get("Celestial Saltiness"), true],
-        [Effect.get("Simply Irresistible"), true],
-        [Effect.get("Crunching Leaves"), true],
-        [Effect.get("Romantically Roused"), true],
+        [$effect`Taunt of Horus`, true],
+        [$effect`Patent Aggression`, true],
+        [$effect`Lion in Ambush`, true],
+        [$effect`Everything Must Go!`, true],
+        [$effect`Hippy Stench`, true],
+        [$effect`High Colognic`, true],
+        [$effect`Celestial Saltiness`, true],
+        [$effect`Simply Irresistible`, true],
+        [$effect`Crunching Leaves`, true],
+        [$effect`Romantically Roused`, true],
       ]),
     )
   ) {
     return result$4();
   }
 
-  if (canAsdonBuff(Effect.get("Driving Obnoxiously"))) {
+  if (canAsdonBuff($effect`Driving Obnoxiously`)) {
     if (!speculative) {
-      asdonBuff$1(Effect.get("Driving Obnoxiously"));
+      asdonBuff$1($effect`Driving Obnoxiously`);
     }
-    handleEffect$4(Effect.get("Driving Obnoxiously"));
+    handleEffect$4($effect`Driving Obnoxiously`);
   }
 
   if (myMeat() > 100 + meatReserve()) {
-    tryEffects$5(new Map([[Effect.get("Waking the Dead"), true]]));
+    tryEffects$5(new Map([[$effect`Waking the Dead`, true]]));
   }
 
   if (pass$4()) {
@@ -358,7 +362,7 @@ export function providePlusCombat(
 
   if (!speculative) {
     //Prep for if other +combat familiars are added
-    for (const fam of Familiar.get(["Jumpsuited Hound Dog"])) {
+    for (const fam of $familiars`Jumpsuited Hound Dog`) {
       if (canChangeToFamiliar(fam)) {
         handleFamiliar$1(fam);
         if (pass$4()) {
@@ -457,7 +461,7 @@ export function providePlusNonCombat(
     !speculative &&
     toFamiliar(getProperty("auto_familiarChoice")) === Familiar.none
   ) {
-    for (const fam of Familiar.get(["Peace Turkey"])) {
+    for (const fam of $familiars`Peace Turkey`) {
       if (canChangeToFamiliar(fam)) {
         useFamiliar(fam);
         handleFamiliar$1(fam);
@@ -470,17 +474,14 @@ export function providePlusNonCombat(
   }
   // first lets do stuff that is "free" (as in has no MP cost, item use or can be freely removed/toggled)
 
-  if (haveEffect(Effect.get("Become Intensely interested")) > 0) {
+  if (haveEffect($effect`Become Intensely interested`) > 0) {
     visitUrl("charsheet.php?pwd=&action=newyouinterest");
     if (pass$5()) {
       return result$5();
     }
   }
 
-  for (const eff of Effect.get([
-    "Carlweather's Cantata of Confrontation",
-    "Driving Obnoxiously",
-  ])) {
+  for (const eff of $effects`Carlweather's Cantata of Confrontation, Driving Obnoxiously`) {
     uneffect(eff);
     if (pass$5()) {
       return result$5();
@@ -510,13 +511,10 @@ export function providePlusNonCombat(
     if (speculative) {
       delta += -1.0 * numericModifier(eff, "Combat Rate");
       if (
-        eff === Effect.get("Smooth Movements") &&
-        haveEffect(Effect.get("Musk of the Moose")) > 0
+        eff === $effect`Smooth Movements` &&
+        haveEffect($effect`Musk of the Moose`) > 0
       ) {
-        delta += numericModifier(
-          Effect.get("Musk of the Moose"),
-          "Combat Rate",
-        ); // numeric_modifier doesn't take into account uneffecting the opposite skill so we have to add it manually.
+        delta += numericModifier($effect`Musk of the Moose`, "Combat Rate"); // numeric_modifier doesn't take into account uneffecting the opposite skill so we have to add it manually.
       }
     }
     auto_log_debug$1(
@@ -537,34 +535,34 @@ export function providePlusNonCombat(
   }
   // Now handle buffs that cost MP, items or other resources
 
-  if (in_amw() && amw_canAfford(Skill.get("Dark Meat"))) {
-    if (tryEffects$6(new Map([[Effect.get("Darkened Meat"), true]]))) {
+  if (in_amw() && amw_canAfford($skill`Dark Meat`)) {
+    if (tryEffects$6(new Map([[$effect`Darkened Meat`, true]]))) {
       return result$5();
     }
   }
 
   if (!speculative) {
-    shrugAT$1(Effect.get("The Sonata of Sneakiness"));
+    shrugAT$1($effect`The Sonata of Sneakiness`);
   }
   if (
     tryEffects$6(
       new Map([
-        [Effect.get("Shelter of Shed"), true],
-        [Effect.get("Brooding"), true],
-        [Effect.get("Muffled"), true],
-        [Effect.get("Smooth Movements"), true],
-        [Effect.get("The Sonata of Sneakiness"), true],
-        [Effect.get("Milk of Familiar Cruelty"), true],
-        [Effect.get("Hiding From Seekers"), true],
-        [Effect.get("Ultra-Soft Steps"), true],
-        [Effect.get("Song of Solitude"), true],
-        [Effect.get("Inked Well"), true],
-        [Effect.get("Bent Knees"), true],
-        [Effect.get("Extended Toes"), true],
-        [Effect.get("Ink Cloud"), true],
-        [Effect.get("Cloak of Shadows"), true],
-        [Effect.get("Chocolatesphere"), true],
-        [Effect.get("Disquiet Riot"), true],
+        [$effect`Shelter of Shed`, true],
+        [$effect`Brooding`, true],
+        [$effect`Muffled`, true],
+        [$effect`Smooth Movements`, true],
+        [$effect`The Sonata of Sneakiness`, true],
+        [$effect`Milk of Familiar Cruelty`, true],
+        [$effect`Hiding From Seekers`, true],
+        [$effect`Ultra-Soft Steps`, true],
+        [$effect`Song of Solitude`, true],
+        [$effect`Inked Well`, true],
+        [$effect`Bent Knees`, true],
+        [$effect`Extended Toes`, true],
+        [$effect`Ink Cloud`, true],
+        [$effect`Cloak of Shadows`, true],
+        [$effect`Chocolatesphere`, true],
+        [$effect`Disquiet Riot`, true],
       ]),
     )
   ) {
@@ -572,16 +570,14 @@ export function providePlusNonCombat(
   }
 
   if (-1.0 * auto_birdModifier("Combat Rate") > 0) {
-    if (tryEffects$6(new Map([[Effect.get("Blessing of the Bird"), true]]))) {
+    if (tryEffects$6(new Map([[$effect`Blessing of the Bird`, true]]))) {
       return result$5();
     }
   }
 
   if (-1.0 * auto_favoriteBirdModifier("Combat Rate") > 0) {
     if (
-      tryEffects$6(
-        new Map([[Effect.get("Blessing of your favorite Bird"), true]]),
-      )
+      tryEffects$6(new Map([[$effect`Blessing of your favorite Bird`, true]]))
     ) {
       return result$5();
     }
@@ -591,7 +587,7 @@ export function providePlusNonCombat(
     if (!speculative) {
       auto_setAprilBandNonCombat();
     }
-    handleEffect$5(Effect.get("Apriling Band Patrol Beat"));
+    handleEffect$5($effect`Apriling Band Patrol Beat`);
     if (pass$5()) {
       return result$5();
     }
@@ -600,29 +596,29 @@ export function providePlusNonCombat(
   if (
     tryEffects$6(
       new Map([
-        [Effect.get("Ashen"), true],
-        [Effect.get("Predjudicetidigitation"), true],
-        [Effect.get("Patent Invisibility"), true],
-        [Effect.get("Ministrations in the Dark"), true],
-        [Effect.get("Fresh Scent"), true],
-        [Effect.get("Become Superficially interested"), true],
-        [Effect.get("Gummed Shoes"), true],
-        [Effect.get("Simply Invisible"), true],
-        [Effect.get("Inky Camouflage"), true],
-        [Effect.get("Celestial Camouflage"), true],
-        [Effect.get("Feeling Lonely"), true],
-        [Effect.get("Feeling Sneaky"), true],
+        [$effect`Ashen`, true],
+        [$effect`Predjudicetidigitation`, true],
+        [$effect`Patent Invisibility`, true],
+        [$effect`Ministrations in the Dark`, true],
+        [$effect`Fresh Scent`, true],
+        [$effect`Become Superficially interested`, true],
+        [$effect`Gummed Shoes`, true],
+        [$effect`Simply Invisible`, true],
+        [$effect`Inky Camouflage`, true],
+        [$effect`Celestial Camouflage`, true],
+        [$effect`Feeling Lonely`, true],
+        [$effect`Feeling Sneaky`, true],
       ]),
     )
   ) {
     return result$5();
   }
 
-  if (canAsdonBuff(Effect.get("Driving Stealthily"))) {
+  if (canAsdonBuff($effect`Driving Stealthily`)) {
     if (!speculative) {
-      asdonBuff$1(Effect.get("Driving Stealthily"));
+      asdonBuff$1($effect`Driving Stealthily`);
     }
-    handleEffect$5(Effect.get("Driving Stealthily"));
+    handleEffect$5($effect`Driving Stealthily`);
   }
   if (pass$5()) {
     return result$5();
@@ -631,20 +627,20 @@ export function providePlusNonCombat(
   //However we don't want to waste our early coins on it as they are precious. So require at least 400 coins before buying it.
   if (
     in_plumber() &&
-    0 === haveEffect(Effect.get("Blooper Inked")) &&
-    itemAmount(Item.get("coin")) > 400
+    0 === haveEffect($effect`Blooper Inked`) &&
+    itemAmount($item`coin`) > 400
   ) {
     if (!speculative) {
-      retrieveItem(1, Item.get("blooper ink"));
+      retrieveItem(1, $item`blooper ink`);
     }
-    if (tryEffects$6(new Map([[Effect.get("Blooper Inked"), true]]))) {
+    if (tryEffects$6(new Map([[$effect`Blooper Inked`, true]]))) {
       return result$5();
     }
   }
   // Glove charges are a limited per-day resource, lets do this last so we don't waste possible uses of Replace Enemy
   if (
     auto_hasPowerfulGlove() &&
-    tryEffects$6(new Map([[Effect.get("Invisible Avatar"), true]]))
+    tryEffects$6(new Map([[$effect`Invisible Avatar`, true]]))
   ) {
     return result$5();
   }
@@ -653,7 +649,7 @@ export function providePlusNonCombat(
     !speculative &&
     toFamiliar(getProperty("auto_familiarChoice")) === Familiar.none
   ) {
-    for (const fam of Familiar.get(["Disgeist"])) {
+    for (const fam of $familiars`Disgeist`) {
       if (canChangeToFamiliar(fam)) {
         useFamiliar(fam);
         handleFamiliar$1(fam);
@@ -779,52 +775,50 @@ export function provideInitiative(
     tryEffects$2(
       new Map([
         //organized by %/mp and %. Skills
-        [Effect.get("Living Fast"), true], //100%, 5mp
-        [Effect.get("Stretched"), true], //75%, 10mp
-        [Effect.get("Slippery as a Seal"), true], //+50%, 5mp
-        [Effect.get("Cletus's Canticle of Celerity"), true], //20%, 4mp
-        [Effect.get("Springy Fusilli"), true], //40%, 10mp
-        [Effect.get("Soulerskates"), true], //30%, 25 soulsauce
-        [Effect.get("Bone Springs"), true], //20%, 10mp
-        [Effect.get("Walberg's Dim Bulb"), true], //10%, 5mp
-        [Effect.get("Suspicious Gaze"), true], //10%, 10mp
-        [Effect.get("Song of Slowness"), true], //50%, 100mp
-        [Effect.get("Nearly Silent Hunting"), true], //25%, 50mp
-        [Effect.get("Your Fifteen Minutes"), true], //15%, 50mp
+        [$effect`Living Fast`, true], //100%, 5mp
+        [$effect`Stretched`, true], //75%, 10mp
+        [$effect`Slippery as a Seal`, true], //+50%, 5mp
+        [$effect`Cletus's Canticle of Celerity`, true], //20%, 4mp
+        [$effect`Springy Fusilli`, true], //40%, 10mp
+        [$effect`Soulerskates`, true], //30%, 25 soulsauce
+        [$effect`Bone Springs`, true], //20%, 10mp
+        [$effect`Walberg's Dim Bulb`, true], //10%, 5mp
+        [$effect`Suspicious Gaze`, true], //10%, 10mp
+        [$effect`Song of Slowness`, true], //50%, 100mp
+        [$effect`Nearly Silent Hunting`, true], //25%, 50mp
+        [$effect`Your Fifteen Minutes`, true], //15%, 50mp
       ]),
     )
   ) {
     return result$1();
   }
 
-  if (canAsdonBuff(Effect.get("Driving Quickly"))) {
+  if (canAsdonBuff($effect`Driving Quickly`)) {
     if (!speculative) {
-      asdonBuff$1(Effect.get("Driving Quickly"));
+      asdonBuff$1($effect`Driving Quickly`);
     }
-    handleEffect$1(Effect.get("Driving Quickly"));
+    handleEffect$1($effect`Driving Quickly`);
   }
   if (pass$1()) {
     return result$1();
   }
 
   if (bat_formBats(speculative)) {
-    handleEffect$1(Effect.get("Bats Form"));
+    handleEffect$1($effect`Bats Form`);
   }
   if (pass$1()) {
     return result$1();
   }
 
   if (auto_birdModifier("Initiative") > 0) {
-    if (tryEffects$2(new Map([[Effect.get("Blessing of the Bird"), true]]))) {
+    if (tryEffects$2(new Map([[$effect`Blessing of the Bird`, true]]))) {
       return result$1();
     }
   }
 
   if (auto_favoriteBirdModifier("Initiative") > 0) {
     if (
-      tryEffects$2(
-        new Map([[Effect.get("Blessing of your favorite Bird"), true]]),
-      )
+      tryEffects$2(new Map([[$effect`Blessing of your favorite Bird`, true]]))
     ) {
       return result$1();
     }
@@ -832,8 +826,8 @@ export function provideInitiative(
 
   if (
     doEquips &&
-    auto_have_familiar(Familiar.get("Grim Brother")) &&
-    haveEffect(Effect.get("Soles of Glass")) === 0 &&
+    auto_have_familiar($familiar`Grim Brother`) &&
+    haveEffect($effect`Soles of Glass`) === 0 &&
     toBoolean(getProperty("_grimBuff")) === false
   ) {
     if (!speculative) {
@@ -844,7 +838,7 @@ export function provideInitiative(
       visitUrl("choice.php?pwd&whichchoice=835&option=1", true);
     }
 
-    handleEffect$1(Effect.get("Soles of Glass"));
+    handleEffect$1($effect`Soles of Glass`);
     if (pass$1()) {
       return result$1();
     }
@@ -852,19 +846,19 @@ export function provideInitiative(
 
   let ef_to_try: Map<Effect, boolean> = new Map([
     //organized by %/turn and %. Items
-    [Effect.get("Clear Ears, Can't Lose"), true], //100%, 80 turns
-    [Effect.get("Poppy Performance"), true], //100%, 30 turns
-    [Effect.get("Patent Alacrity"), true], //100%, 20 turns
-    [Effect.get("Fishy, Oily"), true], //60%, 40 turns
-    [Effect.get("Alacri Tea"), true], //50%, 30 turns
-    [Effect.get("Adorable Lookout"), true], //30%, 10 turns
-    [Effect.get("All Fired Up"), true], //30%, 10 turns
-    [Effect.get("Ticking Clock"), true], //30%, 10 turns
-    [Effect.get("Well-Swabbed Ear"), true], //30%, 10 turns
-    [Effect.get("Human-Insect Hybrid"), true], //25%, 30 turns
-    [Effect.get("Sepia Tan"), true], //20%, 25 turns
-    [Effect.get("The Glistening"), true], //20%, 15 turns
-    [Effect.get("Sugar Rush"), true], //20%, 1-15 turns
+    [$effect`Clear Ears\, Can't Lose`, true], //100%, 80 turns
+    [$effect`Poppy Performance`, true], //100%, 30 turns
+    [$effect`Patent Alacrity`, true], //100%, 20 turns
+    [$effect`Fishy\, Oily`, true], //60%, 40 turns
+    [$effect`Alacri Tea`, true], //50%, 30 turns
+    [$effect`Adorable Lookout`, true], //30%, 10 turns
+    [$effect`All Fired Up`, true], //30%, 10 turns
+    [$effect`Ticking Clock`, true], //30%, 10 turns
+    [$effect`Well-Swabbed Ear`, true], //30%, 10 turns
+    [$effect`Human-Insect Hybrid`, true], //25%, 30 turns
+    [$effect`Sepia Tan`, true], //20%, 25 turns
+    [$effect`The Glistening`, true], //20%, 15 turns
+    [$effect`Sugar Rush`, true], //20%, 1-15 turns
   ]); // eff_to_try
   if (tryEffects$2(ef_to_try)) {
     return result$1();
@@ -872,7 +866,7 @@ export function provideInitiative(
 
   if (canInteract()) {
     // Not worth making in HC
-    ef_to_try = new Map([[Effect.get("Provocative Perkiness"), true]]);
+    ef_to_try = new Map([[$effect`Provocative Perkiness`, true]]);
     if (tryEffects$2(ef_to_try)) {
       return result$1();
     }
@@ -880,13 +874,13 @@ export function provideInitiative(
 
   if (
     auto_sourceTerminalEnhanceLeft() > 0 &&
-    haveEffect(Effect.get("init.enh")) === 0 &&
-    auto_is_valid$3(Effect.get("init.enh"))
+    haveEffect($effect`init.enh`) === 0 &&
+    auto_is_valid$3($effect`init.enh`)
   ) {
     if (!speculative) {
       auto_sourceTerminalEnhance("init");
     }
-    handleEffect$1(Effect.get("init.enh"));
+    handleEffect$1($effect`init.enh`);
     if (pass$1()) {
       return result$1();
     }
@@ -905,16 +899,16 @@ export function provideInitiative(
   if (
     doEquips &&
     auto_haveCCSC() &&
-    haveEffect(Effect.get("Peppermint Rush")) === 0 &&
+    haveEffect($effect`Peppermint Rush`) === 0 &&
     !toBoolean(getProperty("_candyCaneSwordLyle"))
   ) {
     if (!speculative) {
-      equip(Item.get("candy cane sword cane"));
+      equip($item`candy cane sword cane`);
       const temp: string = visitUrl(
         "place.php?whichplace=monorail&action=monorail_lyle",
       );
     }
-    handleEffect$1(Effect.get("Peppermint Rush"));
+    handleEffect$1($effect`Peppermint Rush`);
     if (pass$1()) {
       return result$1();
     }
@@ -923,7 +917,7 @@ export function provideInitiative(
   if (doEquips && amt >= 400) {
     if (
       !toBoolean(getProperty("_bowleggedSwaggerUsed")) &&
-      buffMaintain$2(Effect.get("Bow-Legged Swagger"), 0, 1, 1, speculative)
+      buffMaintain$2($effect`Bow-Legged Swagger`, 0, 1, 1, speculative)
     ) {
       if (speculative) {
         delta += delta + numericModifier("Initiative");
@@ -979,10 +973,10 @@ export function provideResistances(
   auto_log_info(debugprint_1, "blue");
 
   if (
-    (amt.get(Element.get("stench")) ??
-      amt.set(Element.get("stench"), 0).get(Element.get("stench"))) > 0
+    (amt.get($element`stench`) ??
+      amt.set($element`stench`, 0).get($element`stench`)) > 0
   ) {
-    uneffect(Effect.get("Flared Nostrils"));
+    uneffect($effect`Flared Nostrils`);
   }
 
   const gearLoss: Map<Element, number> = new Map();
@@ -992,18 +986,7 @@ export function provideResistances(
     //so may need to take into account removal of what is provided by current equipment to compensate
     //must reduce the result (not raise goal value) since other functions look at the result
     let unequipsString: string = "";
-    for (const sl of Slot.get([
-      "hat",
-      "weapon",
-      "off-hand",
-      "back",
-      "shirt",
-      "pants",
-      "acc1",
-      "acc2",
-      "acc3",
-      "familiar",
-    ])) {
+    for (const sl of $slots`hat, weapon, off-hand, back, shirt, pants, acc1, acc2, acc3, familiar`) {
       //simulate removing all gear regardless of individual res modifiers, must account for familiar weight or outfit bonus
       if (equippedItem(sl) !== Item.none) {
         unequipsString += `unequip ${sl}; `;
@@ -1083,12 +1066,9 @@ export function provideResistances(
     }
     if (
       canChangeFamiliar() &&
-      Familiar.get([
-        "Trick-or-Treating Tot",
-        "Mu",
-        "Exotic Parrot",
-        "Cooler Yeti",
-      ]).includes(myFamiliar())
+      $familiars`Trick-or-Treating Tot, Mu, Exotic Parrot, Cooler Yeti`.includes(
+        myFamiliar(),
+      )
     ) {
       // if we pass while having a resist familiar equipped, make sure we keep it equipped
       // otherwise we may end up flip-flopping from the resist familiar and something else
@@ -1153,16 +1133,16 @@ export function provideResistances(
   if (
     tryEffects$7(
       new Map([
-        [Effect.get("Elemental Saucesphere"), true],
-        [Effect.get("Astral Shell"), true],
-        [Effect.get("Hide of Sobek"), true],
-        [Effect.get("Spectral Awareness"), true],
-        [Effect.get("Scariersauce"), true],
-        [Effect.get("Scarysauce"), true],
-        [Effect.get("Blessing of the Bird"), true],
-        [Effect.get("Blessing of your favorite Bird"), true],
-        [Effect.get("Feeling Peaceful"), true],
-        [Effect.get("Shifted Reality"), true],
+        [$effect`Elemental Saucesphere`, true],
+        [$effect`Astral Shell`, true],
+        [$effect`Hide of Sobek`, true],
+        [$effect`Spectral Awareness`, true],
+        [$effect`Scariersauce`, true],
+        [$effect`Scarysauce`, true],
+        [$effect`Blessing of the Bird`, true],
+        [$effect`Blessing of your favorite Bird`, true],
+        [$effect`Feeling Peaceful`, true],
+        [$effect`Shifted Reality`, true],
       ]),
     )
   ) {
@@ -1170,7 +1150,7 @@ export function provideResistances(
   }
 
   if (bat_formMist(speculative)) {
-    handleEffect$6(Effect.get("Mist Form"));
+    handleEffect$6($effect`Mist Form`);
   }
   if (pass$7()) {
     return result$7();
@@ -1178,11 +1158,7 @@ export function provideResistances(
 
   if (doEquips && canChangeFamiliar()) {
     let resfam: Familiar = Familiar.none;
-    for (const fam of Familiar.get([
-      "Trick-or-Treating Tot",
-      "Mu",
-      "Exotic Parrot",
-    ])) {
+    for (const fam of $familiars`Trick-or-Treating Tot, Mu, Exotic Parrot`) {
       if (auto_have_familiar(fam)) {
         resfam = fam;
         break;
@@ -1190,32 +1166,31 @@ export function provideResistances(
     }
     if (resfam !== Familiar.none) {
       //Buff fam weight early
-      buffMaintain$4(Effect.get("Leash of Linguini"));
-      buffMaintain$4(Effect.get("Thoughtful Empathy"));
-      buffMaintain$4(Effect.get("Empathy"));
-      buffMaintain$4(Effect.get("Blood Bond"));
-      buffMaintain$4(Effect.get("Only Dogs Love a Drunken Sailor"));
-      buffMaintain$4(Effect.get("Best Pals"));
+      buffMaintain$4($effect`Leash of Linguini`);
+      buffMaintain$4($effect`Thoughtful Empathy`);
+      buffMaintain$4($effect`Empathy`);
+      buffMaintain$4($effect`Blood Bond`);
+      buffMaintain$4($effect`Only Dogs Love a Drunken Sailor`);
+      buffMaintain$4($effect`Best Pals`);
       //Manual override for the resfam to be the Cooler Yeti when we ONLY want Cold Resistance and it is better than what we already chose from one of the multi-res fams
       if (
         auto_haveCoolerYeti() &&
         amt.size === 1 &&
-        (amt.get(Element.get("cold")) ??
-          amt.set(Element.get("cold"), 0).get(Element.get("cold"))) > 0
+        (amt.get($element`cold`) ??
+          amt.set($element`cold`, 0).get($element`cold`)) > 0
       ) {
         if (
-          ((resfam === Familiar.get("Mu") ||
-            resfam === Familiar.get("Exotic Parrot")) &&
+          ((resfam === $familiar`Mu` || resfam === $familiar`Exotic Parrot`) &&
             floor((auto_famWeight$1(resfam) - 5) / 20 + 1) <
-              floor(auto_famWeight$1(Familiar.get("Cooler Yeti")) / 11)) ||
-          5 < floor(auto_famWeight$1(Familiar.get("Cooler Yeti")) / 11)
+              floor(auto_famWeight$1($familiar`Cooler Yeti`) / 11)) ||
+          5 < floor(auto_famWeight$1($familiar`Cooler Yeti`) / 11)
         ) {
-          resfam = Familiar.get("Cooler Yeti");
+          resfam = $familiar`Cooler Yeti`;
         }
       }
       // need to use now so maximizer will see it
       useFamiliar(resfam);
-      if (resfam === Familiar.get("Trick-or-Treating Tot")) {
+      if (resfam === $familiar`Trick-or-Treating Tot`) {
         cliExecute("acquire 1 li'l candy corn costume");
       }
       // update maximizer scores with familiar
@@ -1240,29 +1215,29 @@ export function provideResistances(
     if (
       tryEffects$7(
         new Map([
-          [Effect.get("Minor Invulnerability"), true], //+3 all res, 5 meat/adv, 33 meat/res, 6.7 meat/all res
-          [Effect.get("Incredibly Healthy"), true], //+3 all res, 78.6 meat/adv, 131 meat/res, 26.2 meat/all res
-          [Effect.get("Oiled-Up"), true], //+2 all res, 14.6 meat/adv, 196 meat/res, 29.2 meat/all res
-          [Effect.get("Well-Oiled"), true], //+1 all res, 78.6 meat/adv, 393 meat/res, 78.6 meat/all res
-          [Effect.get("Red Door Syndrome"), true], //+2 all res, 100 meat/adv, 500 meat/res, 100 meat/all res
-          [Effect.get("Covered in the Rainbow"), true], //+2 all res, 15 meat/adv, 600 meat/res, 120 meat/all res
-          [Effect.get("Egged On"), true], //+3 all res, 625 meat/adv, 2083 meat/res, 417 meat/all res
-          [Effect.get("Flame-Retardant Trousers"), true], //+1 hot res, 20 meat/adv, 100 meat/res
-          [Effect.get("Fireproof Lips"), true], //+9 hot res, 1100 meat/adv, 1222 meat/res
-          [Effect.get("Insulated Trousers"), true], //+1 cold res, 20 meat/adv, 100 meat/res
-          [Effect.get("Fever From the Flavor"), true], //+9 cold res, 1774 meat/adv, 1971 meat/res
-          [Effect.get("Neutered Nostrils"), true], //+2 stench res, 10 meat/adv, 50 meat/res
-          [Effect.get("Smelly Pants"), true], //+1 stench res, 20 meat/adv, 100 meat/res
-          [Effect.get("Temporarily Filtered"), true], //+5 stench res, 91.25 meat/adv, 365 meat/res
-          [Effect.get("Twangy"), true], //+4 stench/sleaze res, 70 meat/adv, 525 meat/res, 263 meat/both res
-          [Effect.get("Can't Smell Nothin'"), true], //+9 stench res, 1000 meat/adv, 1111 meat/res
-          [Effect.get("Balls of Ectoplasm"), true], //+1 spooky res, 10 meat/adv, 100 meat/res
-          [Effect.get("Spookypants"), true], //+1 spooky res, 20 meat/adv, 100 meat/res
-          [Effect.get("Hyphemariffic"), true], //+9 spooky res, 1717 meat/adv, 1907 meat/res
-          [Effect.get("Gritty"), true], //+3 spooky res, 490 meat/adv, 3266 meat/res
-          [Effect.get("Sleaze-Resistant Trousers"), true], //+1 sleaze res, 20 meat/adv, 100 meat/res
-          [Effect.get("Hyperoffended"), true], //+9 sleaze res, 1391 meat/adv, 1545 meat/res
-          [Effect.get("Too Shamed"), true], //+3 sleaze res, 425 meat/adv, 2833 meat/res
+          [$effect`Minor Invulnerability`, true], //+3 all res, 5 meat/adv, 33 meat/res, 6.7 meat/all res
+          [$effect`Incredibly Healthy`, true], //+3 all res, 78.6 meat/adv, 131 meat/res, 26.2 meat/all res
+          [$effect`Oiled-Up`, true], //+2 all res, 14.6 meat/adv, 196 meat/res, 29.2 meat/all res
+          [$effect`Well-Oiled`, true], //+1 all res, 78.6 meat/adv, 393 meat/res, 78.6 meat/all res
+          [$effect`Red Door Syndrome`, true], //+2 all res, 100 meat/adv, 500 meat/res, 100 meat/all res
+          [$effect`Covered in the Rainbow`, true], //+2 all res, 15 meat/adv, 600 meat/res, 120 meat/all res
+          [$effect`Egged On`, true], //+3 all res, 625 meat/adv, 2083 meat/res, 417 meat/all res
+          [$effect`Flame-Retardant Trousers`, true], //+1 hot res, 20 meat/adv, 100 meat/res
+          [$effect`Fireproof Lips`, true], //+9 hot res, 1100 meat/adv, 1222 meat/res
+          [$effect`Insulated Trousers`, true], //+1 cold res, 20 meat/adv, 100 meat/res
+          [$effect`Fever From the Flavor`, true], //+9 cold res, 1774 meat/adv, 1971 meat/res
+          [$effect`Neutered Nostrils`, true], //+2 stench res, 10 meat/adv, 50 meat/res
+          [$effect`Smelly Pants`, true], //+1 stench res, 20 meat/adv, 100 meat/res
+          [$effect`Temporarily Filtered`, true], //+5 stench res, 91.25 meat/adv, 365 meat/res
+          [$effect`Twangy`, true], //+4 stench/sleaze res, 70 meat/adv, 525 meat/res, 263 meat/both res
+          [$effect`Can't Smell Nothin'`, true], //+9 stench res, 1000 meat/adv, 1111 meat/res
+          [$effect`Balls of Ectoplasm`, true], //+1 spooky res, 10 meat/adv, 100 meat/res
+          [$effect`Spookypants`, true], //+1 spooky res, 20 meat/adv, 100 meat/res
+          [$effect`Hyphemariffic`, true], //+9 spooky res, 1717 meat/adv, 1907 meat/res
+          [$effect`Gritty`, true], //+3 spooky res, 490 meat/adv, 3266 meat/res
+          [$effect`Sleaze-Resistant Trousers`, true], //+1 sleaze res, 20 meat/adv, 100 meat/res
+          [$effect`Hyperoffended`, true], //+9 sleaze res, 1391 meat/adv, 1545 meat/res
+          [$effect`Too Shamed`, true], //+3 sleaze res, 425 meat/adv, 2833 meat/res
         ]),
       )
     ) {
@@ -1272,14 +1247,14 @@ export function provideResistances(
 
   if (doAll) {
     if (shouldUseSpleenForLowPriority() && auto_haveCyberRealm()) {
-      if (tryEffects$7(new Map([[Effect.get("Cyber Resist x2000"), true]]))) {
+      if (tryEffects$7(new Map([[$effect`Cyber Resist x2000`, true]]))) {
         return result$7();
       }
     }
     if (
       tryEffects$7(
         new Map([
-          [Effect.get("Wildsun Boon"), true], //+3 all res, 100 advs, 1/day
+          [$effect`Wildsun Boon`, true], //+3 all res, 100 advs, 1/day
         ]),
       )
     ) {
@@ -1471,52 +1446,52 @@ function provideStats(
     tryEffects$8(
       new Map([
         // muscle effects
-        [Effect.get("Juiced and Loose"), true], //+50% mus. nuclear autumn only. 3 MP/adv
-        [Effect.get("Quiet Determination"), true], //+25% mus. facial expression. 1 MP/adv
-        [Effect.get("Rage of the Reindeer"), true], //+10% mus. +10 weapon dmg. 1 MP/adv
-        [Effect.get("Strength of the Tortoise"), true], //+10 mus. 0.2 MP/adv.
-        [Effect.get("Disco over Matter"), true], //+10 mus. 0.2 MP/adv.
-        [Effect.get("Power Ballad of the Arrowsmith"), true], //+10 mus. +20 maxHP. song. 5 MP (duration varies).
-        [Effect.get("Seal Clubbing Frenzy"), true], //+2 mus. 0.2 MP/adv
-        [Effect.get("Patience of the Tortoise"), true], //+1 mus. +3 maxHP. 0.2 MP/adv
+        [$effect`Juiced and Loose`, true], //+50% mus. nuclear autumn only. 3 MP/adv
+        [$effect`Quiet Determination`, true], //+25% mus. facial expression. 1 MP/adv
+        [$effect`Rage of the Reindeer`, true], //+10% mus. +10 weapon dmg. 1 MP/adv
+        [$effect`Strength of the Tortoise`, true], //+10 mus. 0.2 MP/adv.
+        [$effect`Disco over Matter`, true], //+10 mus. 0.2 MP/adv.
+        [$effect`Power Ballad of the Arrowsmith`, true], //+10 mus. +20 maxHP. song. 5 MP (duration varies).
+        [$effect`Seal Clubbing Frenzy`, true], //+2 mus. 0.2 MP/adv
+        [$effect`Patience of the Tortoise`, true], //+1 mus. +3 maxHP. 0.2 MP/adv
         // myst effects
-        [Effect.get("Mind Vision"), true], //+50% mys. nuclear autumn only. 3 MP/adv
-        [Effect.get("Quiet Judgement"), true], //+25% mys. facial expression. 1 MP/adv
-        [Effect.get("Tubes of Universal Meat"), true], //+10 mys. 0.2 MP/adv.
-        [Effect.get("Mariachi Moisture"), true], //+10 mus. 0.2 MP/adv.
-        [Effect.get("The Magical Mojomuscular Melody"), true], //+10 mys. +20 maxMP. song. 3 MP (duration varies).
-        [Effect.get("Pasta Oneness"), true], //+2 mys. 0.2 MP/adv
-        [Effect.get("Saucemastery"), true], //+1 mys. +3 maxMP. 0.2 MP/adv
+        [$effect`Mind Vision`, true], //+50% mys. nuclear autumn only. 3 MP/adv
+        [$effect`Quiet Judgement`, true], //+25% mys. facial expression. 1 MP/adv
+        [$effect`Tubes of Universal Meat`, true], //+10 mys. 0.2 MP/adv.
+        [$effect`Mariachi Moisture`, true], //+10 mus. 0.2 MP/adv.
+        [$effect`The Magical Mojomuscular Melody`, true], //+10 mys. +20 maxMP. song. 3 MP (duration varies).
+        [$effect`Pasta Oneness`, true], //+2 mys. 0.2 MP/adv
+        [$effect`Saucemastery`, true], //+1 mys. +3 maxMP. 0.2 MP/adv
         // moxie effects
-        [Effect.get("Impeccable Coiffure"), true], //+50% mox. nuclear autumn only. 3 MP/adv
-        [Effect.get("Song of Bravado"), true], //+15% all. NOT a song. 10 MP/adv
-        [Effect.get("Slippery as a Seal"), true], //+10 mox. 0.2 MP/adv.
-        [Effect.get("Lubricating Sauce"), true], //+10 mox. 0.2 MP/adv.
-        [Effect.get("The Moxious Madrigal"), true], //+10 mox. song. 2 MP (duration varies).
-        [Effect.get("Disco State of Mind"), true], //+2 mox. 0.2 MP/adv
-        [Effect.get("Mariachi Mood"), true], //+1 mox. +3 maxHP. 0.2 MP/adv
+        [$effect`Impeccable Coiffure`, true], //+50% mox. nuclear autumn only. 3 MP/adv
+        [$effect`Song of Bravado`, true], //+15% all. NOT a song. 10 MP/adv
+        [$effect`Slippery as a Seal`, true], //+10 mox. 0.2 MP/adv.
+        [$effect`Lubricating Sauce`, true], //+10 mox. 0.2 MP/adv.
+        [$effect`The Moxious Madrigal`, true], //+10 mox. song. 2 MP (duration varies).
+        [$effect`Disco State of Mind`, true], //+2 mox. 0.2 MP/adv
+        [$effect`Mariachi Mood`, true], //+1 mox. +3 maxHP. 0.2 MP/adv
         // all-stat effects
-        [Effect.get("Cheerled"), true], //+50% all. Class=Pig Skinner
-        [Effect.get("Big"), true], //+20% all. 1.5 MP/adv
-        [Effect.get("Song of Bravado"), true], //+15% all. NOT a song. 10 MP/adv
-        [Effect.get("Stevedave's Shanty of Superiority"), true], //+10% all. song. 30 MP (duration varies).
-        [Effect.get("Ultraheart"), true], //+50% all, heartstone, 5/day.
+        [$effect`Cheerled`, true], //+50% all. Class=Pig Skinner
+        [$effect`Big`, true], //+20% all. 1.5 MP/adv
+        [$effect`Song of Bravado`, true], //+15% all. NOT a song. 10 MP/adv
+        [$effect`Stevedave's Shanty of Superiority`, true], //+10% all. song. 30 MP (duration varies).
+        [$effect`Ultraheart`, true], //+50% all, heartstone, 5/day.
         // varying effects
-        [Effect.get("Blessing of the Bird"), true],
-        [Effect.get("Blessing of your favorite Bird"), true],
-        [Effect.get("Feeling Excited"), true],
+        [$effect`Blessing of the Bird`, true],
+        [$effect`Blessing of your favorite Bird`, true],
+        [$effect`Feeling Excited`, true],
       ]),
     )
   ) {
     return result$9();
   }
 
-  if (auto_have_skill(Skill.get("Quiet Desperation"))) {
+  if (auto_have_skill($skill`Quiet Desperation`)) {
     //+25% mox. facial expression. 1 MP/adv
-    tryEffects$8(new Map([[Effect.get("Quiet Desperation"), true]]));
+    tryEffects$8(new Map([[$effect`Quiet Desperation`, true]]));
   } else {
     //+10 mox. facial expression. 1 MP/adv
-    tryEffects$8(new Map([[Effect.get("Disco Smirk"), true]]));
+    tryEffects$8(new Map([[$effect`Disco Smirk`, true]]));
   }
 
   if (pass$9()) {
@@ -1528,76 +1503,76 @@ function provideStats(
       tryEffects$8(
         new Map([
           // muscle effects
-          [Effect.get("Browbeaten"), true],
-          [Effect.get("Extra Backbone"), true],
-          [Effect.get("Extreme Muscle Relaxation"), true],
-          [Effect.get("Faboooo"), true],
-          [Effect.get("Feroci Tea"), true],
-          [Effect.get("Fishy Fortification"), true],
-          [Effect.get("Football Eyes"), true],
-          [Effect.get("Go Get 'Em, Tiger!"), true],
-          [Effect.get("Lycanthropy, Eh?"), true],
-          [Effect.get("Marinated"), true],
-          [Effect.get("Phorcefullness"), true],
-          [Effect.get("Rainy Soul Miasma"), true],
-          [Effect.get("Savage Beast Inside"), true],
-          [Effect.get("Steroid Boost"), true],
-          [Effect.get("Spiky Hair"), true],
-          [Effect.get("Sugar Rush"), true],
-          [Effect.get("Superheroic"), true],
-          [Effect.get("Temporary Lycanthropy"), true],
-          [Effect.get("Truly Gritty"), true],
-          [Effect.get("Vital"), true],
-          [Effect.get("Woad Warrior"), true],
+          [$effect`Browbeaten`, true],
+          [$effect`Extra Backbone`, true],
+          [$effect`Extreme Muscle Relaxation`, true],
+          [$effect`Faboooo`, true],
+          [$effect`Feroci Tea`, true],
+          [$effect`Fishy Fortification`, true],
+          [$effect`Football Eyes`, true],
+          [$effect`Go Get 'Em\, Tiger!`, true],
+          [$effect`Lycanthropy\, Eh?`, true],
+          [$effect`Marinated`, true],
+          [$effect`Phorcefullness`, true],
+          [$effect`Rainy Soul Miasma`, true],
+          [$effect`Savage Beast Inside`, true],
+          [$effect`Steroid Boost`, true],
+          [$effect`Spiky Hair`, true],
+          [$effect`Sugar Rush`, true],
+          [$effect`Superheroic`, true],
+          [$effect`Temporary Lycanthropy`, true],
+          [$effect`Truly Gritty`, true],
+          [$effect`Vital`, true],
+          [$effect`Woad Warrior`, true],
           // myst effects
-          [Effect.get("Up To 11"), true],
-          [Effect.get("Baconstoned"), true],
-          [Effect.get("Erudite"), true],
-          [Effect.get("Far Out"), true],
-          [Effect.get("Glittering Eyelashes"), true],
-          [Effect.get("Liquidy Smoky"), true],
-          [Effect.get("Marinated"), true],
-          [Effect.get("Mystically Oiled"), true],
-          [Effect.get("OMG WTF"), true],
-          [Effect.get("Paging Betty"), true],
-          [Effect.get("Rainy Soul Miasma"), true],
-          [Effect.get("Ready to Snap"), true],
-          [Effect.get("Rosewater Mark"), true],
-          [Effect.get("Seeing Colors"), true],
-          [Effect.get("Sweet, Nuts"), true],
+          [$effect`Up To 11`, true],
+          [$effect`Baconstoned`, true],
+          [$effect`Erudite`, true],
+          [$effect`Far Out`, true],
+          [$effect`Glittering Eyelashes`, true],
+          [$effect`Liquidy Smoky`, true],
+          [$effect`Marinated`, true],
+          [$effect`Mystically Oiled`, true],
+          [$effect`OMG WTF`, true],
+          [$effect`Paging Betty`, true],
+          [$effect`Rainy Soul Miasma`, true],
+          [$effect`Ready to Snap`, true],
+          [$effect`Rosewater Mark`, true],
+          [$effect`Seeing Colors`, true],
+          [$effect`Sweet\, Nuts`, true],
           // moxie effects
-          [Effect.get("Almost Cool"), true],
-          [Effect.get("Bandersnatched"), true],
-          [Effect.get("Busy Bein' Delicious"), true],
-          [Effect.get("Butt-Rock Hair"), true],
-          [Effect.get("Funky Coal Patina"), true],
-          [Effect.get("Liquidy Smoky"), true],
-          [Effect.get("Locks Like the Raven"), true],
-          [Effect.get("Lycanthropy, Eh?"), true],
-          [Effect.get("Memories of Puppy Love"), true],
-          [Effect.get("Newt Gets In Your Eyes"), true],
-          [Effect.get("Notably Lovely"), true],
-          [Effect.get("Oiled Skin"), true],
-          [Effect.get("Radiating Black Body&trade;"), true],
-          [Effect.get("Spiky Hair"), true],
-          [Effect.get("Sugar Rush"), true],
-          [Effect.get("Superhuman Sarcasm"), true],
-          [Effect.get("Unrunnable Face"), true],
-          [Effect.get("Gaffe Free"), true],
-          [Effect.get("Poppy Performance"), true],
+          [$effect`Almost Cool`, true],
+          [$effect`Bandersnatched`, true],
+          [$effect`Busy Bein' Delicious`, true],
+          [$effect`Butt-Rock Hair`, true],
+          [$effect`Funky Coal Patina`, true],
+          [$effect`Liquidy Smoky`, true],
+          [$effect`Locks Like the Raven`, true],
+          [$effect`Lycanthropy\, Eh?`, true],
+          [$effect`Memories of Puppy Love`, true],
+          [$effect`Newt Gets In Your Eyes`, true],
+          [$effect`Notably Lovely`, true],
+          [$effect`Oiled Skin`, true],
+          [$effect`Radiating Black Body™`, true],
+          [$effect`Spiky Hair`, true],
+          [$effect`Sugar Rush`, true],
+          [$effect`Superhuman Sarcasm`, true],
+          [$effect`Unrunnable Face`, true],
+          [$effect`Gaffe Free`, true],
+          [$effect`Poppy Performance`, true],
           // all-stat effects
-          [Effect.get("Confidence of the Votive"), true],
-          [Effect.get("Pyrite Pride"), true],
-          [Effect.get("Human-Human Hybrid"), true],
-          [Effect.get("Industrial Strength Starch"), true],
-          [Effect.get("Mutated"), true],
-          [Effect.get("Seriously Mutated"), true],
-          [Effect.get("Pill Power"), true],
-          [Effect.get("Slightly Larger Than Usual"), true],
-          [Effect.get("Standard Issue Bravery"), true],
-          [Effect.get("Tomato Power"), true],
-          [Effect.get("Vital"), true],
-          [Effect.get("Triple-Sized"), true],
+          [$effect`Confidence of the Votive`, true],
+          [$effect`Pyrite Pride`, true],
+          [$effect`Human-Human Hybrid`, true],
+          [$effect`Industrial Strength Starch`, true],
+          [$effect`Mutated`, true],
+          [$effect`Seriously Mutated`, true],
+          [$effect`Pill Power`, true],
+          [$effect`Slightly Larger Than Usual`, true],
+          [$effect`Standard Issue Bravery`, true],
+          [$effect`Tomato Power`, true],
+          [$effect`Vital`, true],
+          [$effect`Triple-Sized`, true],
         ]),
       )
     ) {
@@ -1653,7 +1628,7 @@ function provideMuscle(
   speculative: boolean,
 ): number {
   const statsNeeded: Map<Stat, number> = new Map();
-  statsNeeded.set(Stat.get("Muscle"), amt);
+  statsNeeded.set($stat`Muscle`, amt);
   const res: Map<Stat, number> = provideStats(
     statsNeeded,
     loc,
@@ -1661,8 +1636,7 @@ function provideMuscle(
     speculative,
   );
   return (
-    res.get(Stat.get("Muscle")) ??
-    res.set(Stat.get("Muscle"), 0.0).get(Stat.get("Muscle"))
+    res.get($stat`Muscle`) ?? res.set($stat`Muscle`, 0.0).get($stat`Muscle`)
   );
 }
 
@@ -1693,7 +1667,7 @@ function provideMysticality(
   speculative: boolean,
 ): number {
   const statsNeeded: Map<Stat, number> = new Map();
-  statsNeeded.set(Stat.get("Mysticality"), amt);
+  statsNeeded.set($stat`Mysticality`, amt);
   const res: Map<Stat, number> = provideStats(
     statsNeeded,
     loc,
@@ -1701,8 +1675,8 @@ function provideMysticality(
     speculative,
   );
   return (
-    res.get(Stat.get("Mysticality")) ??
-    res.set(Stat.get("Mysticality"), 0.0).get(Stat.get("Mysticality"))
+    res.get($stat`Mysticality`) ??
+    res.set($stat`Mysticality`, 0.0).get($stat`Mysticality`)
   );
 }
 
@@ -1733,17 +1707,14 @@ function provideMoxie(
   speculative: boolean,
 ): number {
   const statsNeeded: Map<Stat, number> = new Map();
-  statsNeeded.set(Stat.get("Moxie"), amt);
+  statsNeeded.set($stat`Moxie`, amt);
   const res: Map<Stat, number> = provideStats(
     statsNeeded,
     loc,
     doEquips,
     speculative,
   );
-  return (
-    res.get(Stat.get("Moxie")) ??
-    res.set(Stat.get("Moxie"), 0.0).get(Stat.get("Moxie"))
-  );
+  return res.get($stat`Moxie`) ?? res.set($stat`Moxie`, 0.0).get($stat`Moxie`);
 }
 
 function provideMoxie$1(
@@ -1854,8 +1825,8 @@ function provideMeat(
   if (
     tryEffects$4(
       new Map([
-        [Effect.get("Polka of Plenty"), true], //50% meat
-        [Effect.get("Disco Leer"), true], //10% meat
+        [$effect`Polka of Plenty`, true], //50% meat
+        [$effect`Disco Leer`, true], //10% meat
       ]),
     )
   ) {
@@ -1863,12 +1834,12 @@ function provideMeat(
       return result$3();
     }
   }
-  if (canAsdonBuff(Effect.get("Driving Observantly"))) {
+  if (canAsdonBuff($effect`Driving Observantly`)) {
     //50% meat, 50% item, 50% booze drops
     if (!speculative) {
-      asdonBuff$1(Effect.get("Driving Observantly"));
+      asdonBuff$1($effect`Driving Observantly`);
     }
-    handleEffect$3(Effect.get("Driving Observantly"));
+    handleEffect$3($effect`Driving Observantly`);
   }
   if (pass$3()) {
     return result$3();
@@ -1881,14 +1852,14 @@ function provideMeat(
   }
   if (bat_formWolf(speculative)) {
     //150% meat, 150% muscle
-    handleEffect$3(Effect.get("Wolf Form"));
+    handleEffect$3($effect`Wolf Form`);
   }
   if (pass$3()) {
     return result$3();
   }
   if (auto_birdModifier("Meat Drop") > 0) {
     //Can be 20/40/60/80/100% meat drop
-    if (tryEffects$4(new Map([[Effect.get("Blessing of the Bird"), true]]))) {
+    if (tryEffects$4(new Map([[$effect`Blessing of the Bird`, true]]))) {
       if (pass$3()) {
         return result$3();
       }
@@ -1897,9 +1868,7 @@ function provideMeat(
   if (auto_favoriteBirdModifier("Meat Drop") > 0) {
     //Can be 20/40/60/80/100% meat drop
     if (
-      tryEffects$4(
-        new Map([[Effect.get("Blessing of your favorite Bird"), true]]),
-      )
+      tryEffects$4(new Map([[$effect`Blessing of your favorite Bird`, true]]))
     ) {
       if (pass$3()) {
         return result$3();
@@ -1909,11 +1878,11 @@ function provideMeat(
   if (isActuallyEd()) {
     //50% meat drop
     if (
-      !haveSkill(Skill.get("Gift of the Maid")) &&
-      Servant.get("Maid").experience >= 441
+      !haveSkill($skill`Gift of the Maid`) &&
+      $servant`Maid`.experience >= 441
     ) {
       visitUrl("charsheet.php");
-      if (haveSkill(Skill.get("Gift of the Maid"))) {
+      if (haveSkill($skill`Gift of the Maid`)) {
         auto_log_warning(
           "Gift of the Maid not properly detected until charsheet refresh.",
           "red",
@@ -1923,7 +1892,7 @@ function provideMeat(
     if (
       tryEffects$4(
         new Map([
-          [Effect.get("Purr of the Feline"), true], //makes the maid 5 levels higher
+          [$effect`Purr of the Feline`, true], //makes the maid 5 levels higher
         ]),
       )
     ) {
@@ -1935,26 +1904,26 @@ function provideMeat(
   songboomSetting("meat"); //30% meat
   // items
   let ef_to_try: Map<Effect, boolean> = new Map([
-    [Effect.get("Flapper Dancin'"), true], //100% meat
-    [Effect.get("Heightened Senses"), true], //50% meat, 25% item drop
-    [Effect.get("Big Meat Big Prizes"), true], //50% meat
-    [Effect.get("Human-Constellation Hybrid"), true], //50% meat
-    [Effect.get("Patent Avarice"), true], //50% meat
-    [Effect.get("Earning Interest"), true], //50% meat
-    [Effect.get("Bet Your Autumn Dollar"), true], //50% meat
-    [Effect.get("The Grass...  Is Blue..."), true], //40% meat, 20% item
-    [Effect.get("Sweat Equity"), true], //40% meat
-    [Effect.get("Greedy Resolve"), true], //30% meat
-    [Effect.get("Tubes of Universal Meat"), true], //30% meat
-    [Effect.get("Worth Your Salt"), true], //25% meat, max hp +25
-    [Effect.get("Human-Fish Hybrid"), true], //10 fam
-    [Effect.get("Human-Humanoid Hybrid"), true], //20% meat, 10% all stats
-    [Effect.get("Heart of Pink"), true], //20% meat, +3 all stats
-    [Effect.get("Kindly Resolve"), true], //5 fam weight
-    [Effect.get("Human-Machine Hybrid"), true], //5 fam weight, DA +50, DR 5
-    [Effect.get("Only Dogs Love a Drunken Sailor"), true], //5 fam weight, rivalrous with item drop
-    [Effect.get("Sweet Heart"), true], // Muscle +X, +2X% meat
-    [Effect.get("So You Can Work More..."), true], //10% meat
+    [$effect`Flapper Dancin'`, true], //100% meat
+    [$effect`Heightened Senses`, true], //50% meat, 25% item drop
+    [$effect`Big Meat Big Prizes`, true], //50% meat
+    [$effect`Human-Constellation Hybrid`, true], //50% meat
+    [$effect`Patent Avarice`, true], //50% meat
+    [$effect`Earning Interest`, true], //50% meat
+    [$effect`Bet Your Autumn Dollar`, true], //50% meat
+    [$effect`The Grass...  Is Blue...`, true], //40% meat, 20% item
+    [$effect`Sweat Equity`, true], //40% meat
+    [$effect`Greedy Resolve`, true], //30% meat
+    [$effect`Tubes of Universal Meat`, true], //30% meat
+    [$effect`Worth Your Salt`, true], //25% meat, max hp +25
+    [$effect`Human-Fish Hybrid`, true], //10 fam
+    [$effect`Human-Humanoid Hybrid`, true], //20% meat, 10% all stats
+    [$effect`Heart of Pink`, true], //20% meat, +3 all stats
+    [$effect`Kindly Resolve`, true], //5 fam weight
+    [$effect`Human-Machine Hybrid`, true], //5 fam weight, DA +50, DR 5
+    [$effect`Only Dogs Love a Drunken Sailor`, true], //5 fam weight, rivalrous with item drop
+    [$effect`Sweet Heart`, true], // Muscle +X, +2X% meat
+    [$effect`So You Can Work More...`, true], //10% meat
   ]); // ef_to_try
 
   if (tryEffects$4(ef_to_try)) {
@@ -1965,7 +1934,7 @@ function provideMeat(
 
   if (canInteract()) {
     // Not worth making in HC
-    ef_to_try = new Map([[Effect.get("Cranberry Cordiality"), true]]);
+    ef_to_try = new Map([[$effect`Cranberry Cordiality`, true]]);
     if (tryEffects$4(ef_to_try)) {
       if (pass$3()) {
         return result$3();
@@ -1973,27 +1942,27 @@ function provideMeat(
     }
   }
 
-  if (haveEffect(Effect.get("Synthesis: Greed")) === 0) {
-    rethinkingCandy(Effect.get("Synthesis: Greed")); //300% meat
+  if (haveEffect($effect`Synthesis: Greed`) === 0) {
+    rethinkingCandy($effect`Synthesis: Greed`); //300% meat
     if (pass$3()) {
       return result$3();
     }
   }
   if (
-    availableAmount(Item.get("li'l pirate costume")) > 0 &&
-    canChangeToFamiliar(Familiar.get("Trick-or-Treating Tot")) &&
+    availableAmount($item`li'l pirate costume`) > 0 &&
+    canChangeToFamiliar($familiar`Trick-or-Treating Tot`) &&
     !in_heavyrains()
   ) {
-    useFamiliar(Familiar.get("Trick-or-Treating Tot"));
-    autoEquip$1(Item.get("li'l pirate costume")); //300% meat
-    handleFamiliar$1(Familiar.get("Trick-or-Treating Tot"));
+    useFamiliar($familiar`Trick-or-Treating Tot`);
+    autoEquip$1($item`li'l pirate costume`); //300% meat
+    handleFamiliar$1($familiar`Trick-or-Treating Tot`);
     if (pass$3()) {
       return result$3();
     }
   }
   if (!in_wereprof()) {
     //wereprof doesn't like +ML effects outside of Werewolf
-    if (tryEffects$4(new Map([[Effect.get("Frosty"), true]]))) {
+    if (tryEffects$4(new Map([[$effect`Frosty`, true]]))) {
       //200% meat, 100% item, 100% init, 25 ML
       if (pass$3()) {
         return result$3();
@@ -2002,43 +1971,43 @@ function provideMeat(
   }
   if (
     auto_sourceTerminalEnhanceLeft() > 0 &&
-    haveEffect(Effect.get("meat.enh")) === 0 &&
-    auto_is_valid$3(Effect.get("meat.enh"))
+    haveEffect($effect`meat.enh`) === 0 &&
+    auto_is_valid$3($effect`meat.enh`)
   ) {
     if (!speculative) {
       auto_sourceTerminalEnhance("meat");
     }
-    handleEffect$3(Effect.get("meat.enh")); //60% meat
+    handleEffect$3($effect`meat.enh`); //60% meat
     if (pass$3()) {
       return result$3();
     }
   }
   if (
-    itemAmount(Item.get("body spradium")) > 0 &&
+    itemAmount($item`body spradium`) > 0 &&
     !in_tcrs() &&
-    haveEffect(Effect.get("Boxing Day Glow")) === 0
+    haveEffect($effect`Boxing Day Glow`) === 0
   ) {
-    autoChew(1, Item.get("body spradium")); //50% meat, 5 fam weight
+    autoChew(1, $item`body spradium`); //50% meat, 5 fam weight
     if (pass$3()) {
       return result$3();
     }
   }
   // craft equipment, even limited use, here
   if (doEverything) {
-    handleBjornify(Familiar.get("Hobo Monkey")); //25% meat, hot damage, delevels
+    handleBjornify($familiar`Hobo Monkey`); //25% meat, hot damage, delevels
     //craft IOTM derivative that gives high item bonus
     if (
-      equippedItem(Slot.get("off-hand")) !== Item.get("Half a Purse") &&
-      !possessEquipment(Item.get("Half a Purse")) &&
-      itemAmount(Item.get("lump of Brituminous coal")) > 0
+      equippedItem($slot`off-hand`) !== $item`Half a Purse` &&
+      !possessEquipment($item`Half a Purse`) &&
+      itemAmount($item`lump of Brituminous coal`) > 0
     ) {
       //+X% meat based on smithness (10% if only half a purse is equipped)
-      auto_buyUpTo(1, Item.get("loose purse strings"));
+      auto_buyUpTo(1, $item`loose purse strings`);
       autoCraft(
         "smith",
         1,
-        Item.get("lump of Brituminous coal"),
-        Item.get("loose purse strings"),
+        $item`lump of Brituminous coal`,
+        $item`loose purse strings`,
       );
     }
     const max_1: string = `500meat ${amt + 100}max`;
@@ -2061,10 +2030,10 @@ function provideMeat(
     if (
       tryEffects$4(
         new Map([
-          [Effect.get("Shadow Waters"), true], //200% meat, 100% item, 100% init, -10% combat
-          [Effect.get("Sinuses For Miles"), true], //200% meat
-          [Effect.get("Car-Charged"), true], //100% meat, 100% item, 5-10MP, 50% init, 50% spell dmg, +3 stats per fight
-          [Effect.get("Incredibly Well Lit"), true], //100% meat, 50% item
+          [$effect`Shadow Waters`, true], //200% meat, 100% item, 100% init, -10% combat
+          [$effect`Sinuses For Miles`, true], //200% meat
+          [$effect`Car-Charged`, true], //100% meat, 100% item, 5-10MP, 50% init, 50% spell dmg, +3 stats per fight
+          [$effect`Incredibly Well Lit`, true], //100% meat, 50% item
         ]),
       )
     ) {
@@ -2075,14 +2044,14 @@ function provideMeat(
     if (
       zataraAvailable() &&
       toBoolean(
-        toInt(0 === haveEffect(Effect.get("Meet the Meat"))) &
-          toInt(auto_is_valid$3(Effect.get("Meet the Meat"))),
+        toInt(0 === haveEffect($effect`Meet the Meat`)) &
+          toInt(auto_is_valid$3($effect`Meet the Meat`)),
       )
     ) {
       if (!speculative) {
         zataraSeaside("meat");
       }
-      handleEffect$3(Effect.get("Meet the Meat")); //100% meat, 50% gear drops
+      handleEffect$3($effect`Meet the Meat`); //100% meat, 50% gear drops
       if (pass$3()) {
         return result$3();
       }
@@ -2090,18 +2059,18 @@ function provideMeat(
     if (
       getProperty("sidequestArenaCompleted") === "fratboy" &&
       !toBoolean(getProperty("concertVisited")) &&
-      haveEffect(Effect.get("Winklered")) === 0
+      haveEffect($effect`Winklered`) === 0
     ) {
       if (is_professor()) {
         //Need to manually equip because professor
-        if (!haveEquipped(Item.get("beer helmet"))) {
-          equip(Item.get("beer helmet"));
+        if (!haveEquipped($item`beer helmet`)) {
+          equip($item`beer helmet`);
         }
-        if (!haveEquipped(Item.get("distressed denim pants"))) {
-          equip(Item.get("distressed denim pants"));
+        if (!haveEquipped($item`distressed denim pants`)) {
+          equip($item`distressed denim pants`);
         }
-        if (!haveEquipped(Item.get("bejeweled pledge pin"))) {
-          equip(Item.get("bejeweled pledge pin"));
+        if (!haveEquipped($item`bejeweled pledge pin`)) {
+          equip($item`bejeweled pledge pin`);
         }
       } else {
         outfit("Frat Warrior Fatigues");
@@ -2109,7 +2078,7 @@ function provideMeat(
       if (!speculative) {
         cliExecute("concert 2"); //40% meat
       }
-      handleEffect$3(Effect.get("Winklered")); //40% meat
+      handleEffect$3($effect`Winklered`); //40% meat
       if (pass$3()) {
         return result$3();
       }
@@ -2121,39 +2090,31 @@ function provideMeat(
       !in_tcrs() &&
       !in_small() &&
       !toBoolean(getProperty("auto_limitConsume")) &&
-      haveEffect(Effect.get("Tryptofan")) === 0 &&
-      creatableAmount(Item.get("prize turkey")) > 0 &&
-      canEat$1(Item.get("prize turkey")) &&
-      stomach_left() > Item.get("prize turkey").fullness
+      haveEffect($effect`Tryptofan`) === 0 &&
+      creatableAmount($item`prize turkey`) > 0 &&
+      canEat$1($item`prize turkey`) &&
+      stomach_left() > $item`prize turkey`.fullness
     ) {
       if (!speculative) {
-        buy(
-          Coinmaster.get("Skeleton of Crimbo Past"),
-          1,
-          Item.get("prize turkey"),
-        );
-        autoEat(1, Item.get("prize turkey"));
+        buy($coinmaster`Skeleton of Crimbo Past`, 1, $item`prize turkey`);
+        autoEat(1, $item`prize turkey`);
       }
-      handleEffect$3(Effect.get("Tryptofan")); //100% meat, 50 init
+      handleEffect$3($effect`Tryptofan`); //100% meat, 50 init
       if (pass$3()) {
         return result$3();
       }
     }
     if (
       !in_tcrs() &&
-      haveEffect(Effect.get("Grueling Gravitas")) === 0 &&
-      creatableAmount(Item.get("medicinal gruel")) > 0 &&
-      spleen_left() > Item.get("medicinal gruel").spleen
+      haveEffect($effect`Grueling Gravitas`) === 0 &&
+      creatableAmount($item`medicinal gruel`) > 0 &&
+      spleen_left() > $item`medicinal gruel`.spleen
     ) {
       if (!speculative) {
-        buy(
-          Coinmaster.get("Skeleton of Crimbo Past"),
-          1,
-          Item.get("medicinal gruel"),
-        );
-        autoChew(1, Item.get("medicinal gruel"));
+        buy($coinmaster`Skeleton of Crimbo Past`, 1, $item`medicinal gruel`);
+        autoChew(1, $item`medicinal gruel`);
       }
-      handleEffect$3(Effect.get("Grueling Gravitas")); //5 fam weight
+      handleEffect$3($effect`Grueling Gravitas`); //5 fam weight
       if (pass$3()) {
         return result$3();
       }
@@ -2189,7 +2150,7 @@ function provideMeat(
             //~ Let's Go Shopping!  //150% meat, 75% item, -300% myst
           ]);
       for (const eff of wish_to_try) {
-        if (eff === Effect.get("Frosty") && in_wereprof()) {
+        if (eff === $effect`Frosty` && in_wereprof()) {
           //skip frosty in wereprof
           continue;
         }
@@ -2338,11 +2299,11 @@ function provideItem(
   }
 
   if (in_heavyrains()) {
-    buffMaintain$4(Effect.get("Fishy Whiskers")); // HR only
+    buffMaintain$4($effect`Fishy Whiskers`); // HR only
   }
 
-  if (in_amw() && amw_canAfford(Skill.get("Beef Goggles"))) {
-    if (tryEffects$3(new Map([[Effect.get("Beef Goggles"), true]]))) {
+  if (in_amw() && amw_canAfford($skill`Beef Goggles`)) {
+    if (tryEffects$3(new Map([[$effect`Beef Goggles`, true]]))) {
       // meatpath only
       return result$2();
     }
@@ -2351,21 +2312,21 @@ function provideItem(
   if (
     tryEffects$3(
       new Map([
-        [Effect.get("Fat Leon's Phat Loot Lyric"), true], //20% item
-        [Effect.get("Singer's Faithful Ocelot"), true], //10% item
-        [Effect.get("Who's Going to Pay This Drunken Sailor?"), true], //25% item, rivalrous with +5 lb fam weight
+        [$effect`Fat Leon's Phat Loot Lyric`, true], //20% item
+        [$effect`Singer's Faithful Ocelot`, true], //10% item
+        [$effect`Who's Going to Pay This Drunken Sailor?`, true], //25% item, rivalrous with +5 lb fam weight
       ]),
     )
   ) {
     return result$2();
   }
 
-  if (canAsdonBuff(Effect.get("Driving Observantly"))) {
+  if (canAsdonBuff($effect`Driving Observantly`)) {
     //50% meat, 50% item, 50% booze drops
     if (!speculative) {
-      asdonBuff$1(Effect.get("Driving Observantly"));
+      asdonBuff$1($effect`Driving Observantly`);
     }
-    handleEffect$2(Effect.get("Driving Observantly"));
+    handleEffect$2($effect`Driving Observantly`);
   }
   if (pass$2()) {
     return result$2();
@@ -2373,7 +2334,7 @@ function provideItem(
 
   if (!bat_wantHowl(loc) && bat_formBats(speculative)) {
     //150% item, 150% init
-    handleEffect$2(Effect.get("Bats Form"));
+    handleEffect$2($effect`Bats Form`);
   }
   if (pass$2()) {
     return result$2();
@@ -2381,7 +2342,7 @@ function provideItem(
 
   if (auto_birdModifier("Item Drop") > 0) {
     //Can be 10/20/30/40/50% item drop
-    if (tryEffects$3(new Map([[Effect.get("Blessing of the Bird"), true]]))) {
+    if (tryEffects$3(new Map([[$effect`Blessing of the Bird`, true]]))) {
       return result$2();
     }
   }
@@ -2389,9 +2350,7 @@ function provideItem(
   if (auto_favoriteBirdModifier("Item Drop") > 0) {
     //Can be 10/20/30/40/50% item drop
     if (
-      tryEffects$3(
-        new Map([[Effect.get("Blessing of your favorite Bird"), true]]),
-      )
+      tryEffects$3(new Map([[$effect`Blessing of your favorite Bird`, true]]))
     ) {
       return result$2();
     }
@@ -2400,20 +2359,20 @@ function provideItem(
   if (
     tryEffects$3(
       new Map([
-        [Effect.get("Unusual Perspective"), true], //50% item
-        [Effect.get("Five Sticky Fingers"), true], //50% item
-        [Effect.get("Spitting Rhymes"), true], //50% item
-        [Effect.get("Wet and Greedy"), true], //25% item
-        [Effect.get("Serendipi Tea"), true], //25% item
-        [Effect.get("Glowing Hands"), true], //25% item
-        [Effect.get("Eagle Eyes"), true], //20% item
-        [Effect.get("Juiced and Jacked"), true], //20% item
-        [Effect.get("The Grass...  Is Blue..."), true], //40% meat, 20% item
-        [Effect.get("Joyful Resolve"), true], //15% item
-        [Effect.get("Lubricating Sauce"), true], //15% item
-        [Effect.get("Fortunate Resolve"), true], //10% item
-        [Effect.get("Human-Human Hybrid"), true], //10% item
-        [Effect.get("Heart of Lavender"), true], //10% item
+        [$effect`Unusual Perspective`, true], //50% item
+        [$effect`Five Sticky Fingers`, true], //50% item
+        [$effect`Spitting Rhymes`, true], //50% item
+        [$effect`Wet and Greedy`, true], //25% item
+        [$effect`Serendipi Tea`, true], //25% item
+        [$effect`Glowing Hands`, true], //25% item
+        [$effect`Eagle Eyes`, true], //20% item
+        [$effect`Juiced and Jacked`, true], //20% item
+        [$effect`The Grass...  Is Blue...`, true], //40% meat, 20% item
+        [$effect`Joyful Resolve`, true], //15% item
+        [$effect`Lubricating Sauce`, true], //15% item
+        [$effect`Fortunate Resolve`, true], //10% item
+        [$effect`Human-Human Hybrid`, true], //10% item
+        [$effect`Heart of Lavender`, true], //10% item
       ]),
     )
   ) {
@@ -2422,21 +2381,21 @@ function provideItem(
 
   if (!in_wereprof()) {
     //wereprof doesn't like +ML effects outside of Werewolf
-    if (tryEffects$3(new Map([[Effect.get("Frosty"), true]]))) {
+    if (tryEffects$3(new Map([[$effect`Frosty`, true]]))) {
       //200% meat, 100% item, 100% init, 25 ML
       return result$2();
     }
   }
 
   if (
-    auto_is_valid(Item.get("possessed sugar cube")) &&
-    itemAmount(Item.get("possessed sugar cube")) > 0 &&
-    haveEffect(Effect.get("Dance of the Sugar Fairy")) === 0
+    auto_is_valid($item`possessed sugar cube`) &&
+    itemAmount($item`possessed sugar cube`) > 0 &&
+    haveEffect($effect`Dance of the Sugar Fairy`) === 0
   ) {
     if (!speculative) {
       cliExecute("make sugar fairy");
     }
-    handleEffect$2(Effect.get("Dance of the Sugar Fairy")); //25% item
+    handleEffect$2($effect`Dance of the Sugar Fairy`); //25% item
     if (pass$2()) {
       return result$2();
     }
@@ -2444,14 +2403,14 @@ function provideItem(
 
   if (
     auto_sourceTerminalEnhanceLeft() > 0 &&
-    haveEffect(Effect.get("items.enh")) === 0 &&
-    auto_is_valid$3(Effect.get("items.enh"))
+    haveEffect($effect`items.enh`) === 0 &&
+    auto_is_valid$3($effect`items.enh`)
   ) {
     if (!speculative) {
       //30% item
       auto_sourceTerminalEnhance("items");
     }
-    handleEffect$2(Effect.get("items.enh"));
+    handleEffect$2($effect`items.enh`);
     if (pass$2()) {
       return result$2();
     }
@@ -2482,25 +2441,25 @@ function provideItem(
   if (doEverything) {
     //craft IOTM derivative that gives high item bonus
     if (
-      !possessEquipment(Item.get("A Light that Never Goes Out")) &&
-      itemAmount(Item.get("lump of Brituminous coal")) > 0 &&
-      auto_is_valid(Item.get("A Light that Never Goes Out"))
+      !possessEquipment($item`A Light that Never Goes Out`) &&
+      itemAmount($item`lump of Brituminous coal`) > 0 &&
+      auto_is_valid($item`A Light that Never Goes Out`)
     ) {
-      auto_buyUpTo(1, Item.get("third-hand lantern"));
+      auto_buyUpTo(1, $item`third-hand lantern`);
       autoCraft(
         "smith",
         1,
-        Item.get("lump of Brituminous coal"),
-        Item.get("third-hand lantern"),
+        $item`lump of Brituminous coal`,
+        $item`third-hand lantern`,
       );
     }
 
     if (
-      auto_is_valid(Item.get("broken champagne bottle")) &&
+      auto_is_valid($item`broken champagne bottle`) &&
       toInt(getProperty("garbageChampagneCharge")) > 0
     ) {
       //fold and remove maximizer block on using IOTM with 9 charges a day that doubles item drop chance
-      januaryToteAcquire(Item.get("broken champagne bottle"));
+      januaryToteAcquire($item`broken champagne bottle`);
     }
 
     const max_1: string = `500item ${amt + 100}max`;
@@ -2523,7 +2482,7 @@ function provideItem(
   if (doEverything && amt >= 400) {
     if (
       !toBoolean(getProperty("_steelyEyedSquintUsed")) &&
-      buffMaintain$2(Effect.get("Steely-Eyed Squint"), 0, 1, 1, speculative)
+      buffMaintain$2($effect`Steely-Eyed Squint`, 0, 1, 1, speculative)
     ) {
       if (speculative) {
         delta += delta + numericModifier("Item Drop");
@@ -2541,11 +2500,11 @@ function provideItem(
     if (
       tryEffects$3(
         new Map([
-          [Effect.get("Shadow Waters"), true], //200% meat, 100% item, 100% init, -10% combat
-          [Effect.get("One Very Clear Eye"), true], //100% item
-          [Effect.get("Car-Charged"), true], //100% meat, 100% item, 5-10MP, 50% init, 50% spell dmg, +3 stats per fight
-          [Effect.get("Incredibly Well Lit"), true], //100% meat, 50% item
-          [Effect.get("Crunching Leaves"), true], //25% item, +5 combat
+          [$effect`Shadow Waters`, true], //200% meat, 100% item, 100% init, -10% combat
+          [$effect`One Very Clear Eye`, true], //100% item
+          [$effect`Car-Charged`, true], //100% meat, 100% item, 5-10MP, 50% init, 50% spell dmg, +3 stats per fight
+          [$effect`Incredibly Well Lit`, true], //100% meat, 50% item
+          [$effect`Crunching Leaves`, true], //25% item, +5 combat
         ]),
       )
     ) {
@@ -2569,14 +2528,14 @@ function provideItem(
     if (
       zataraAvailable() &&
       toBoolean(
-        toInt(0 === haveEffect(Effect.get("There's No N in Love"))) &
-          toInt(auto_is_valid$3(Effect.get("There's No N in Love"))),
+        toInt(0 === haveEffect($effect`There's No N in Love`)) &
+          toInt(auto_is_valid$3($effect`There's No N in Love`)),
       )
     ) {
       if (!speculative) {
         zataraSeaside("item");
       }
-      handleEffect$2(Effect.get("There's No N in Love")); //50% booze/food/item
+      handleEffect$2($effect`There's No N in Love`); //50% booze/food/item
       if (pass$2()) {
         return result$2();
       }
@@ -2584,18 +2543,18 @@ function provideItem(
     if (
       getProperty("sidequestArenaCompleted") === "hippy" &&
       !toBoolean(getProperty("concertVisited")) &&
-      haveEffect(Effect.get("Dilated Pupils")) === 0
+      haveEffect($effect`Dilated Pupils`) === 0
     ) {
       if (is_professor()) {
         //Need to manually equip because professor
-        if (!haveEquipped(Item.get("reinforced beaded headband"))) {
-          equip(Item.get("reinforced beaded headband"));
+        if (!haveEquipped($item`reinforced beaded headband`)) {
+          equip($item`reinforced beaded headband`);
         }
-        if (!haveEquipped(Item.get("bullet-proof corduroys"))) {
-          equip(Item.get("bullet-proof corduroys"));
+        if (!haveEquipped($item`bullet-proof corduroys`)) {
+          equip($item`bullet-proof corduroys`);
         }
-        if (!haveEquipped(Item.get("round purple sunglasses"))) {
-          equip(Item.get("round purple sunglasses"));
+        if (!haveEquipped($item`round purple sunglasses`)) {
+          equip($item`round purple sunglasses`);
         }
       } else {
         outfit("War Hippy Fatigues");
@@ -2603,7 +2562,7 @@ function provideItem(
       if (!speculative) {
         cliExecute("concert 2"); //20% item
       }
-      handleEffect$2(Effect.get("Dilated Pupils")); //20% item
+      handleEffect$2($effect`Dilated Pupils`); //20% item
       if (pass$2()) {
         return result$2();
       }
@@ -2615,39 +2574,31 @@ function provideItem(
       !in_tcrs() &&
       !in_small() &&
       !toBoolean(getProperty("auto_limitConsume")) &&
-      haveEffect(Effect.get("Ordained")) === 0 &&
-      creatableAmount(Item.get("Smoking Pope")) > 0 &&
-      canDrink$1(Item.get("Smoking Pope")) &&
-      inebriety_left() > Item.get("Smoking Pope").inebriety
+      haveEffect($effect`Ordained`) === 0 &&
+      creatableAmount($item`Smoking Pope`) > 0 &&
+      canDrink$1($item`Smoking Pope`) &&
+      inebriety_left() > $item`Smoking Pope`.inebriety
     ) {
       if (!speculative) {
-        buy(
-          Coinmaster.get("Skeleton of Crimbo Past"),
-          1,
-          Item.get("Smoking Pope"),
-        );
-        autoDrink(1, Item.get("Smoking Pope"));
+        buy($coinmaster`Skeleton of Crimbo Past`, 1, $item`Smoking Pope`);
+        autoDrink(1, $item`Smoking Pope`);
       }
-      handleEffect$2(Effect.get("Ordained")); //50% item, 50% skeleton damage
+      handleEffect$2($effect`Ordained`); //50% item, 50% skeleton damage
       if (pass$2()) {
         return result$2();
       }
     }
     if (
       !in_tcrs() &&
-      haveEffect(Effect.get("Grueling Gravitas")) === 0 &&
-      creatableAmount(Item.get("medicinal gruel")) > 0 &&
-      spleen_left() > Item.get("medicinal gruel").spleen
+      haveEffect($effect`Grueling Gravitas`) === 0 &&
+      creatableAmount($item`medicinal gruel`) > 0 &&
+      spleen_left() > $item`medicinal gruel`.spleen
     ) {
       if (!speculative) {
-        buy(
-          Coinmaster.get("Skeleton of Crimbo Past"),
-          1,
-          Item.get("medicinal gruel"),
-        );
-        autoChew(1, Item.get("medicinal gruel"));
+        buy($coinmaster`Skeleton of Crimbo Past`, 1, $item`medicinal gruel`);
+        autoChew(1, $item`medicinal gruel`);
       }
-      handleEffect$2(Effect.get("Grueling Gravitas")); //5 fam weight
+      handleEffect$2($effect`Grueling Gravitas`); //5 fam weight
       if (pass$2()) {
         return result$2();
       }
@@ -2662,7 +2613,7 @@ function provideItem(
         "Always be Collecting", //100% meat, 50% item
         "Incredibly Well Lit", //100% meat, 50% item
       ])) {
-        if (eff === Effect.get("Frosty") && in_wereprof()) {
+        if (eff === $effect`Frosty` && in_wereprof()) {
           //skip frosty in wereprof
           continue;
         }
@@ -2796,8 +2747,8 @@ export function provideFamExp(
     if (
       tryEffects$1(
         new Map([
-          [Effect.get("Milk of Familiar Kindness"), true],
-          [Effect.get("Milk of Familiar Cruelty"), true],
+          [$effect`Milk of Familiar Kindness`, true],
+          [$effect`Milk of Familiar Cruelty`, true],
         ]),
       )
     ) {
@@ -2808,7 +2759,7 @@ export function provideFamExp(
   if (
     tryEffects$1(
       new Map([
-        [Effect.get("Curiosity of Br'er Tarrypin"), true], //+1
+        [$effect`Curiosity of Br'er Tarrypin`, true], //+1
       ]),
     )
   ) {
@@ -2839,11 +2790,11 @@ export function provideFamExp(
   // Use limited resources
   if (doEverything) {
     while (
-      haveEffect(Effect.get("Blue Swayed")) < 31 &&
-      itemAmount(Item.get("pulled blue taffy")) > 0
+      haveEffect($effect`Blue Swayed`) < 31 &&
+      itemAmount($item`pulled blue taffy`) > 0
     ) {
       auto_log_info$1("Getting Blue Swayed");
-      if (tryEffects$1(new Map([[Effect.get("Blue Swayed"), true]]))) {
+      if (tryEffects$1(new Map([[$effect`Blue Swayed`, true]]))) {
         //+X/5, decreasing by 5 every 5 turns so keeping it separate
         if (pass()) {
           return result();
@@ -2852,9 +2803,9 @@ export function provideFamExp(
     }
     if (
       fullness_left() > 2 &&
-      itemAmount(Item.get("roasted vegetable focaccia")) > 0
+      itemAmount($item`roasted vegetable focaccia`) > 0
     ) {
-      if (tryEffects$1(new Map([[Effect.get("Feeling Fancy"), true]]))) {
+      if (tryEffects$1(new Map([[$effect`Feeling Fancy`, true]]))) {
         //+10
         if (pass()) {
           return result();
@@ -2865,13 +2816,13 @@ export function provideFamExp(
     if (
       tryEffects$1(
         new Map([
-          [Effect.get("Best Pals"), true], //+1
-          [Effect.get("Warm Shoulders"), true], //+5
-          [Effect.get("Shortly Hydrated"), true], //+5
-          [Effect.get("Candied Devil"), true], //+5
-          [Effect.get("Black Tongue"), true], //+2
-          [Effect.get("Green Tongue"), true], //+2
-          [Effect.get("Heart of White"), true], //+1
+          [$effect`Best Pals`, true], //+1
+          [$effect`Warm Shoulders`, true], //+5
+          [$effect`Shortly Hydrated`, true], //+5
+          [$effect`Candied Devil`, true], //+5
+          [$effect`Black Tongue`, true], //+2
+          [$effect`Green Tongue`, true], //+2
+          [$effect`Heart of White`, true], //+1
         ]),
       )
     ) {
@@ -2882,14 +2833,14 @@ export function provideFamExp(
     if (
       zataraAvailable() &&
       toBoolean(
-        toInt(0 === haveEffect(Effect.get("A Girl Named Sue"))) &
-          toInt(auto_is_valid$3(Effect.get("A Girl Named Sue"))),
+        toInt(0 === haveEffect($effect`A Girl Named Sue`)) &
+          toInt(auto_is_valid$3($effect`A Girl Named Sue`)),
       )
     ) {
       if (!speculative) {
         zataraSeaside("familiar");
       }
-      handleEffect(Effect.get("A Girl Named Sue")); //+5
+      handleEffect($effect`A Girl Named Sue`); //+5
       if (pass()) {
         return result();
       }
@@ -2905,7 +2856,7 @@ export function provideFamExp(
       ])) {
         while (
           haveEffect(eff) === 0 ||
-          (eff === Effect.get("Blue Swayed") && haveEffect(eff) < 31)
+          (eff === $effect`Blue Swayed` && haveEffect(eff) < 31)
         ) {
           if (!speculative) {
             success = auto_wishForEffect(eff);
@@ -2933,7 +2884,7 @@ export function provideFamExp(
       ])) {
         while (
           haveEffect(eff) === 0 ||
-          (eff === Effect.get("Blue Swayed") && haveEffect(eff) < 31)
+          (eff === $effect`Blue Swayed` && haveEffect(eff) < 31)
         ) {
           if (!speculative) {
             success = auto_wishForEffect(eff);

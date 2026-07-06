@@ -4,14 +4,12 @@ import {
   canEquip,
   canInteract,
   chew,
-  Class,
   cliExecute,
   creatableAmount,
   creatableTurns,
   create,
   Effect,
   equippedAmount,
-  Familiar,
   getProperty,
   haveEffect,
   historicalPrice,
@@ -48,6 +46,16 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
+import {
+  $class,
+  $effect,
+  $effects,
+  $familiar,
+  $item,
+  $items,
+  $skill,
+} from "libram";
+
 import { acquireTotem, auto_buyUpTo } from "./auto_acquire";
 import { autoAdv$2 } from "./auto_adventure";
 import { isSpleenConsumable } from "./auto_consume";
@@ -285,46 +293,46 @@ export function buffMaintain$2(
 
   let ret: boolean = false;
   switch (buff) {
-    case Effect.get("A Few Extra Pounds"):
+    case $effect`A Few Extra Pounds`:
       //Jalapeno Saucesphere
-      useSkill_1 = Skill.get("Holiday Weight Gain");
+      useSkill_1 = $skill`Holiday Weight Gain`;
       break;
-    case Effect.get("A Little Bit Poisoned"):
-      useSkill_1 = Skill.get("Disco Nap");
+    case $effect`A Little Bit Poisoned`:
+      useSkill_1 = $skill`Disco Nap`;
       break;
-    case Effect.get("Acting Jerky"):
-      useSkill_1 = Skill.get("Act Jerky");
+    case $effect`Acting Jerky`:
+      useSkill_1 = $skill`Act Jerky`;
       break;
-    case Effect.get("Adorable Lookout"):
-      useItem_1 = Item.get("giraffe-necked turtle");
+    case $effect`Adorable Lookout`:
+      useItem_1 = $item`giraffe-necked turtle`;
       break;
-    case Effect.get("Alacri Tea"):
-      useItem_1 = Item.get("cuppa Alacri tea");
+    case $effect`Alacri Tea`:
+      useItem_1 = $item`cuppa Alacri tea`;
       break;
-    case Effect.get("All Fired Up"):
-      useItem_1 = Item.get("ant agonist");
+    case $effect`All Fired Up`:
+      useItem_1 = $item`ant agonist`;
       break;
-    case Effect.get("All Glory To the Toad"):
-      useItem_1 = Item.get("colorful toad");
+    case $effect`All Glory To the Toad`:
+      useItem_1 = $item`colorful toad`;
       break;
-    case Effect.get("All Revved Up"):
-      useSkill_1 = Skill.get("Rev Engine");
+    case $effect`All Revved Up`:
+      useSkill_1 = $skill`Rev Engine`;
       break;
-    case Effect.get("Almost Cool"):
-      useItem_1 = Item.get("mostly-broken sunglasses");
+    case $effect`Almost Cool`:
+      useItem_1 = $item`mostly-broken sunglasses`;
       break;
-    case Effect.get("Aloysius' Antiphon of Aptitude"):
-      useSkill_1 = Skill.get("Aloysius' Antiphon of Aptitude");
+    case $effect`Aloysius' Antiphon of Aptitude`:
+      useSkill_1 = $skill`Aloysius' Antiphon of Aptitude`;
       break;
-    case Effect.get("Amazing"):
-      useItem_1 = Item.get("pocket maze");
+    case $effect`Amazing`:
+      useItem_1 = $item`pocket maze`;
       break;
-    case Effect.get("Angry"):
-      useSkill_1 = Skill.get("Anger Glands");
+    case $effect`Angry`:
+      useSkill_1 = $skill`Anger Glands`;
       break;
-    case Effect.get("Angry like the Wolf"):
+    case $effect`Angry like the Wolf`:
       if (
-        auto_have_familiar(Familiar.get("Grim Brother")) &&
+        auto_have_familiar($familiar`Grim Brother`) &&
         !toBoolean(getProperty("_grimBuff"))
       ) {
         if (speculative) {
@@ -334,414 +342,414 @@ export function buffMaintain$2(
         ret = true;
       }
       break;
-    case Effect.get("Antibiotic Saucesphere"):
-      useSkill_1 = Skill.get("Antibiotic Saucesphere");
+    case $effect`Antibiotic Saucesphere`:
+      useSkill_1 = $skill`Antibiotic Saucesphere`;
       break;
-    case Effect.get("Arched Eyebrow of the Archmage"):
-      useSkill_1 = Skill.get("Arched Eyebrow of the Archmage");
+    case $effect`Arched Eyebrow of the Archmage`:
+      useSkill_1 = $skill`Arched Eyebrow of the Archmage`;
       break;
-    case Effect.get("Armor-Plated"):
-      useItem_1 = Item.get("bent scrap metal");
+    case $effect`Armor-Plated`:
+      useItem_1 = $item`bent scrap metal`;
       break;
-    case Effect.get("Ashen"):
-      useItem_1 = Item.get("pile of ashes");
+    case $effect`Ashen`:
+      useItem_1 = $item`pile of ashes`;
       break;
-    case Effect.get("Ashen Burps"):
-      useItem_1 = Item.get("ash soda");
+    case $effect`Ashen Burps`:
+      useItem_1 = $item`ash soda`;
       break;
-    case Effect.get("Astral Shell"):
-      if (auto_have_skill(Skill.get("Astral Shell")) && acquireTotem()) {
-        useSkill_1 = Skill.get("Astral Shell");
+    case $effect`Astral Shell`:
+      if (auto_have_skill($skill`Astral Shell`) && acquireTotem()) {
+        useSkill_1 = $skill`Astral Shell`;
       }
       break;
-    case Effect.get("Attracting Snakes"):
-      useSkill_1 = Skill.get("Attract Snakes");
+    case $effect`Attracting Snakes`:
+      useSkill_1 = $skill`Attract Snakes`;
       break;
-    case Effect.get("Attractive to Fire Ants"):
-      useItem_1 = Item.get("fire ant pheromones");
+    case $effect`Attractive to Fire Ants`:
+      useItem_1 = $item`fire ant pheromones`;
       break;
-    case Effect.get("Aware of Bees"):
+    case $effect`Aware of Bees`:
       if (!toBoolean(getProperty("_aug19Cast"))) {
-        useSkill_1 = Skill.get("Aug. 19th: Honey Bee Awareness Day!");
+        useSkill_1 = $skill`Aug. 19th: Honey Bee Awareness Day!`;
       }
       break;
-    case Effect.get("Baconstoned"):
-      if (itemAmount(Item.get("vial of baconstone juice")) > 0) {
-        useItem_1 = Item.get("vial of baconstone juice");
-      } else if (itemAmount(Item.get("flask of baconstone juice")) > 0) {
-        useItem_1 = Item.get("flask of baconstone juice");
+    case $effect`Baconstoned`:
+      if (itemAmount($item`vial of baconstone juice`) > 0) {
+        useItem_1 = $item`vial of baconstone juice`;
+      } else if (itemAmount($item`flask of baconstone juice`) > 0) {
+        useItem_1 = $item`flask of baconstone juice`;
       } else {
-        useItem_1 = Item.get("jug of baconstone juice");
+        useItem_1 = $item`jug of baconstone juice`;
       }
       break;
-    case Effect.get("Baited Hook"):
-      useItem_1 = Item.get("wriggling worm");
+    case $effect`Baited Hook`:
+      useItem_1 = $item`wriggling worm`;
       break;
-    case Effect.get("Balls of Ectoplasm"):
-      useItem_1 = Item.get("ectoplasmic orbs");
+    case $effect`Balls of Ectoplasm`:
+      useItem_1 = $item`ectoplasmic orbs`;
       break;
-    case Effect.get("Bandersnatched"):
-      useItem_1 = Item.get("tonic o' Banderas");
+    case $effect`Bandersnatched`:
+      useItem_1 = $item`tonic o' Banderas`;
       break;
-    case Effect.get("Barbecue Saucy"):
-      useItem_1 = Item.get("dollop of barbecue sauce");
+    case $effect`Barbecue Saucy`:
+      useItem_1 = $item`dollop of barbecue sauce`;
       break;
-    case Effect.get("Be a Mind Master"):
-      useItem_1 = Item.get("Daily Affirmation: Be a Mind Master");
+    case $effect`Be a Mind Master`:
+      useItem_1 = $item`Daily Affirmation: Be a Mind Master`;
       break;
-    case Effect.get("A Beastly Odor"):
-      useItem_1 = Item.get("The Beast Within&trade; candle");
+    case $effect`A Beastly Odor`:
+      useItem_1 = $item`The Beast Within™ candle`;
       break;
-    case Effect.get("Become Superficially interested"):
-      useItem_1 = Item.get("Daily Affirmation: Be Superficially interested");
+    case $effect`Become Superficially interested`:
+      useItem_1 = $item`Daily Affirmation: Be Superficially interested`;
       break;
-    case Effect.get("Beef Goggles"):
-      useSkill_1 = Skill.get("Beef Goggles");
+    case $effect`Beef Goggles`:
+      useSkill_1 = $skill`Beef Goggles`;
       break;
-    case Effect.get("Bendin' Hell"):
-      useSkill_1 = Skill.get("Bend Hell");
+    case $effect`Bendin' Hell`:
+      useSkill_1 = $skill`Bend Hell`;
       break;
-    case Effect.get("Bent Knees"):
-      useSkill_1 = Skill.get("Bendable Knees");
+    case $effect`Bent Knees`:
+      useSkill_1 = $skill`Bendable Knees`;
       break;
-    case Effect.get("Benetton's Medley of Diversity"):
-      useSkill_1 = Skill.get("Benetton's Medley of Diversity");
+    case $effect`Benetton's Medley of Diversity`:
+      useSkill_1 = $skill`Benetton's Medley of Diversity`;
       break;
-    case Effect.get("Berry Elemental"):
-      useItem_1 = Item.get("Tapioc berry");
+    case $effect`Berry Elemental`:
+      useItem_1 = $item`Tapioc berry`;
       break;
-    case Effect.get("Berry Statistical"):
-      useItem_1 = Item.get("Snarf berry");
+    case $effect`Berry Statistical`:
+      useItem_1 = $item`Snarf berry`;
       break;
-    case Effect.get("Best Pals"):
-      useSkill_1 = Skill.get("Heartstone: %pals");
+    case $effect`Best Pals`:
+      useSkill_1 = $skill`Heartstone: %pals`;
       break;
-    case Effect.get("Bet Your Autumn Dollar"):
-      useItem_1 = Item.get("autumn dollar");
+    case $effect`Bet Your Autumn Dollar`:
+      useItem_1 = $item`autumn dollar`;
       break;
-    case Effect.get("Big"):
-      useSkill_1 = Skill.get("Get Big");
+    case $effect`Big`:
+      useSkill_1 = $skill`Get Big`;
       break;
-    case Effect.get("Big Meat Big Prizes"):
-      useItem_1 = Item.get("Meat-inflating powder");
+    case $effect`Big Meat Big Prizes`:
+      useItem_1 = $item`Meat-inflating powder`;
       break;
-    case Effect.get("Biologically Shocked"):
-      useItem_1 = Item.get("glowing syringe");
+    case $effect`Biologically Shocked`:
+      useItem_1 = $item`glowing syringe`;
       break;
-    case Effect.get("Bitterskin"):
-      useItem_1 = Item.get("bitter pill");
+    case $effect`Bitterskin`:
+      useItem_1 = $item`bitter pill`;
       break;
-    case Effect.get("Black Eyes"):
-      useItem_1 = Item.get("black eye shadow");
+    case $effect`Black Eyes`:
+      useItem_1 = $item`black eye shadow`;
       break;
-    case Effect.get("Black Tongue"):
-      useItem_1 = Item.get("black snowcone");
+    case $effect`Black Tongue`:
+      useItem_1 = $item`black snowcone`;
       break;
-    case Effect.get("Blackberry Politeness"):
-      useItem_1 = Item.get("blackberry polite");
+    case $effect`Blackberry Politeness`:
+      useItem_1 = $item`blackberry polite`;
       break;
-    case Effect.get("Blessing of Serqet"):
-      useSkill_1 = Skill.get("Blessing of Serqet");
+    case $effect`Blessing of Serqet`:
+      useSkill_1 = $skill`Blessing of Serqet`;
       break;
-    case Effect.get("Blessing of the Bird"):
+    case $effect`Blessing of the Bird`:
       if (auto_birdCanSeek()) {
-        useSkill_1 = Skill.get("Seek out a Bird");
+        useSkill_1 = $skill`Seek out a Bird`;
       }
       break;
-    case Effect.get("Blessing of your favorite Bird"):
+    case $effect`Blessing of your favorite Bird`:
       if (auto_favoriteBirdCanSeek()) {
-        useSkill_1 = Skill.get("Visit your Favorite Bird");
+        useSkill_1 = $skill`Visit your Favorite Bird`;
       }
       break;
-    case Effect.get("Blinking Belly"):
-      useSkill_1 = Skill.get("Firefly Abdomen");
+    case $effect`Blinking Belly`:
+      useSkill_1 = $skill`Firefly Abdomen`;
       break;
-    case Effect.get("Blood-Gorged"):
-      useItem_1 = Item.get("vial of blood simple syrup");
+    case $effect`Blood-Gorged`:
+      useItem_1 = $item`vial of blood simple syrup`;
       break;
-    case Effect.get("Blood Bond"):
-      useSkill_1 = Skill.get("Blood Bond");
+    case $effect`Blood Bond`:
+      useSkill_1 = $skill`Blood Bond`;
       break;
-    case Effect.get("Blood Bubble"):
-      useSkill_1 = Skill.get("Blood Bubble");
+    case $effect`Blood Bubble`:
+      useSkill_1 = $skill`Blood Bubble`;
       break;
-    case Effect.get("Bloodbathed"):
+    case $effect`Bloodbathed`:
       if (auto_haveBCZ()) {
         mustEquip = auto_getItemToEquipBCZ();
-        useSkill_1 = Skill.get("BCZ: Blood Bath");
+        useSkill_1 = $skill`BCZ: Blood Bath`;
       }
       break;
-    case Effect.get("Bloody Potato Bits"):
+    case $effect`Bloody Potato Bits`:
       useSkill_1 = Skill.none;
       break;
-    case Effect.get("Bloodstain-Resistant"):
-      useItem_1 = Item.get("bloodstain stick");
+    case $effect`Bloodstain-Resistant`:
+      useItem_1 = $item`bloodstain stick`;
       break;
-    case Effect.get("Blooper Inked"):
-      useItem_1 = Item.get("blooper ink");
+    case $effect`Blooper Inked`:
+      useItem_1 = $item`blooper ink`;
       break;
-    case Effect.get("Blubbered Up"):
-      useSkill_1 = Skill.get("Blubber Up");
+    case $effect`Blubbered Up`:
+      useSkill_1 = $skill`Blubber Up`;
       break;
-    case Effect.get("Blue Swayed"):
-      useItem_1 = Item.get("pulled blue taffy");
+    case $effect`Blue Swayed`:
+      useItem_1 = $item`pulled blue taffy`;
       break;
-    case Effect.get("Blue Tongue"):
-      useItem_1 = Item.get("blue snowcone");
+    case $effect`Blue Tongue`:
+      useItem_1 = $item`blue snowcone`;
       break;
-    case Effect.get("Bone Springs"):
-      useSkill_1 = Skill.get("Bone Springs");
+    case $effect`Bone Springs`:
+      useSkill_1 = $skill`Bone Springs`;
       break;
-    case Effect.get("Boner Battalion"):
-      useSkill_1 = Skill.get("Summon &quot;Boner Battalion&quot;");
+    case $effect`Boner Battalion`:
+      useSkill_1 = $skill`Summon "Boner Battalion"`;
       break;
-    case Effect.get("Boon of She-Who-Was"):
-      useSkill_1 = Skill.get("Spirit Boon");
+    case $effect`Boon of She-Who-Was`:
+      useSkill_1 = $skill`Spirit Boon`;
       break;
-    case Effect.get("Boon of the Storm Tortoise"):
-      useSkill_1 = Skill.get("Spirit Boon");
+    case $effect`Boon of the Storm Tortoise`:
+      useSkill_1 = $skill`Spirit Boon`;
       break;
-    case Effect.get("Boon of the War Snapper"):
-      useSkill_1 = Skill.get("Spirit Boon");
+    case $effect`Boon of the War Snapper`:
+      useSkill_1 = $skill`Spirit Boon`;
       break;
-    case Effect.get("Bounty of Renenutet"):
-      useSkill_1 = Skill.get("Bounty of Renenutet");
+    case $effect`Bounty of Renenutet`:
+      useSkill_1 = $skill`Bounty of Renenutet`;
       break;
-    case Effect.get("Bow-Legged Swagger"):
-      useSkill_1 = Skill.get("Bow-Legged Swagger");
+    case $effect`Bow-Legged Swagger`:
+      useSkill_1 = $skill`Bow-Legged Swagger`;
       break;
-    case Effect.get("Bram's Bloody Bagatelle"):
-      useSkill_1 = Skill.get("Bram's Bloody Bagatelle");
+    case $effect`Bram's Bloody Bagatelle`:
+      useSkill_1 = $skill`Bram's Bloody Bagatelle`;
       break;
-    case Effect.get("Brawnee's Anthem of Absorption"):
-      useSkill_1 = Skill.get("Brawnee's Anthem of Absorption");
+    case $effect`Brawnee's Anthem of Absorption`:
+      useSkill_1 = $skill`Brawnee's Anthem of Absorption`;
       break;
-    case Effect.get("Brilliant Resolve"):
-      useItem_1 = Item.get("resolution: be smarter");
+    case $effect`Brilliant Resolve`:
+      useItem_1 = $item`resolution: be smarter`;
       break;
-    case Effect.get("Brittled"):
-      useItem_1 = Item.get("pea brittle");
+    case $effect`Brittled`:
+      useItem_1 = $item`pea brittle`;
       break;
-    case Effect.get("Brooding"):
-      useSkill_1 = Skill.get("Brood");
+    case $effect`Brooding`:
+      useSkill_1 = $skill`Brood`;
       break;
-    case Effect.get("Browbeaten"):
-      useItem_1 = Item.get("old eyebrow pencil");
+    case $effect`Browbeaten`:
+      useItem_1 = $item`old eyebrow pencil`;
       break;
-    case Effect.get("Burning Hands"):
-      useItem_1 = Item.get("sticky lava globs");
+    case $effect`Burning Hands`:
+      useItem_1 = $item`sticky lava globs`;
       break;
-    case Effect.get("Busy Bein' Delicious"):
-      useItem_1 = Item.get("Crimbo fudge");
+    case $effect`Busy Bein' Delicious`:
+      useItem_1 = $item`Crimbo fudge`;
       break;
-    case Effect.get("Butt-Rock Hair"):
-      useItem_1 = Item.get("hair spray");
+    case $effect`Butt-Rock Hair`:
+      useItem_1 = $item`hair spray`;
       break;
-    case Effect.get("Can't Smell Nothin'"):
-      useItem_1 = Item.get("Dogsgotnonoz pills");
+    case $effect`Can't Smell Nothin'`:
+      useItem_1 = $item`Dogsgotnonoz pills`;
       break;
-    case Effect.get("Candied Devil"):
-      useItem_1 = Item.get("deviled candy egg");
+    case $effect`Candied Devil`:
+      useItem_1 = $item`deviled candy egg`;
       break;
-    case Effect.get("Car-Charged"):
-      useItem_1 = Item.get("battery (car)");
+    case $effect`Car-Charged`:
+      useItem_1 = $item`battery (car)`;
       break;
-    case Effect.get("Carlweather's Cantata of Confrontation"):
-      useSkill_1 = Skill.get("Carlweather's Cantata of Confrontation");
+    case $effect`Carlweather's Cantata of Confrontation`:
+      useSkill_1 = $skill`Carlweather's Cantata of Confrontation`;
       break;
-    case Effect.get("Carol of the Bulls"):
-      useSkill_1 = Skill.get("Carol of the Bulls");
+    case $effect`Carol of the Bulls`:
+      useSkill_1 = $skill`Carol of the Bulls`;
       break;
-    case Effect.get("Carol of the Hells"):
-      useSkill_1 = Skill.get("Carol of the Hells");
+    case $effect`Carol of the Hells`:
+      useSkill_1 = $skill`Carol of the Hells`;
       break;
-    case Effect.get("Carol of the Thrills"):
-      useSkill_1 = Skill.get("Carol of the Thrills");
+    case $effect`Carol of the Thrills`:
+      useSkill_1 = $skill`Carol of the Thrills`;
       break;
-    case Effect.get("Cautious Prowl"):
-      useSkill_1 = Skill.get("Walk: Cautious Prowl");
+    case $effect`Cautious Prowl`:
+      useSkill_1 = $skill`Walk: Cautious Prowl`;
       break;
-    case Effect.get("Ceaseless Snarling"):
-      useSkill_1 = Skill.get("Ceaseless Snarl");
+    case $effect`Ceaseless Snarling`:
+      useSkill_1 = $skill`Ceaseless Snarl`;
       break;
-    case Effect.get("Celestial Camouflage"):
-      useItem_1 = Item.get("celestial squid ink");
+    case $effect`Celestial Camouflage`:
+      useItem_1 = $item`celestial squid ink`;
       break;
-    case Effect.get("Celestial Saltiness"):
-      useItem_1 = Item.get("celestial au jus");
+    case $effect`Celestial Saltiness`:
+      useItem_1 = $item`celestial au jus`;
       break;
-    case Effect.get("Celestial Sheen"):
-      useItem_1 = Item.get("celestial olive oil");
+    case $effect`Celestial Sheen`:
+      useItem_1 = $item`celestial olive oil`;
       break;
-    case Effect.get("Celestial Vision"):
-      useItem_1 = Item.get("celestial carrot juice");
+    case $effect`Celestial Vision`:
+      useItem_1 = $item`celestial carrot juice`;
       break;
-    case Effect.get("Cheddarmored"):
-      useSkill_1 = Skill.get("Cheddarmor");
+    case $effect`Cheddarmored`:
+      useSkill_1 = $skill`Cheddarmor`;
       break;
-    case Effect.get("Cheerled"):
-      useSkill_1 = Skill.get("Cheerlead");
+    case $effect`Cheerled`:
+      useSkill_1 = $skill`Cheerlead`;
       break;
-    case Effect.get("Cinnamon Challenger"):
-      useItem_1 = Item.get("pulled red taffy");
+    case $effect`Cinnamon Challenger`:
+      useItem_1 = $item`pulled red taffy`;
       break;
-    case Effect.get("Clear Ears, Can't Lose"):
-      useItem_1 = Item.get("ear candle");
+    case $effect`Clear Ears\, Can't Lose`:
+      useItem_1 = $item`ear candle`;
       break;
-    case Effect.get("Cletus's Canticle of Celerity"):
-      useSkill_1 = Skill.get("Cletus's Canticle of Celerity");
+    case $effect`Cletus's Canticle of Celerity`:
+      useSkill_1 = $skill`Cletus's Canticle of Celerity`;
       break;
-    case Effect.get("Cloak of Shadows"):
-      useSkill_1 = Skill.get("Blood Cloak");
+    case $effect`Cloak of Shadows`:
+      useSkill_1 = $skill`Blood Cloak`;
       break;
-    case Effect.get("Cloud of Mosquitos"):
+    case $effect`Cloud of Mosquitos`:
       if (!toBoolean(getProperty("_aug20Cast"))) {
-        useSkill_1 = Skill.get("Aug. 20th: Mosquito Day!");
+        useSkill_1 = $skill`Aug. 20th: Mosquito Day!`;
       }
       break;
-    case Effect.get("Clyde's Blessing"):
-      useItem_1 = Item.get("The Legendary Beat");
+    case $effect`Clyde's Blessing`:
+      useItem_1 = $item`The Legendary Beat`;
       break;
-    case Effect.get("Chalky Hand"):
-      useItem_1 = Item.get("handful of hand chalk");
+    case $effect`Chalky Hand`:
+      useItem_1 = $item`handful of hand chalk`;
       break;
-    case Effect.get("Chocolatesphere"):
-      useSkill_1 = Skill.get("Chocolatesphere");
+    case $effect`Chocolatesphere`:
+      useSkill_1 = $skill`Chocolatesphere`;
       break;
-    case Effect.get("Chow Downed"):
-      useSkill_1 = Skill.get("Zombie Chow");
+    case $effect`Chow Downed`:
+      useSkill_1 = $skill`Zombie Chow`;
       break;
-    case Effect.get("Cranberry Cordiality"):
-      useItem_1 = Item.get("cranberry cordial");
+    case $effect`Cranberry Cordiality`:
+      useItem_1 = $item`cranberry cordial`;
       break;
-    case Effect.get("Coffeesphere"):
-      useSkill_1 = Skill.get("Coffeesphere");
+    case $effect`Coffeesphere`:
+      useSkill_1 = $skill`Coffeesphere`;
       break;
-    case Effect.get("Cold Hard Skin"):
-      useItem_1 = Item.get("frost-rimed seal hide");
+    case $effect`Cold Hard Skin`:
+      useItem_1 = $item`frost-rimed seal hide`;
       break;
-    case Effect.get("Confidence of the Votive"):
-      useItem_1 = Item.get("votive of confidence");
+    case $effect`Confidence of the Votive`:
+      useItem_1 = $item`votive of confidence`;
       break;
-    case Effect.get("Contemptible Emanations"):
-      useItem_1 = Item.get("cologne of contempt");
+    case $effect`Contemptible Emanations`:
+      useItem_1 = $item`cologne of contempt`;
       break;
-    case Effect.get("Covered in the Rainbow"):
-      useItem_1 = Item.get("rainbow glitter candle");
+    case $effect`Covered in the Rainbow`:
+      useItem_1 = $item`rainbow glitter candle`;
       break;
-    case Effect.get("The Cupcake of Wrath"):
-      useItem_1 = Item.get("green-frosted astral cupcake");
+    case $effect`The Cupcake of Wrath`:
+      useItem_1 = $item`green-frosted astral cupcake`;
       break;
-    case Effect.get("Curiosity of Br'er Tarrypin"):
+    case $effect`Curiosity of Br'er Tarrypin`:
       if (
         pathHasFamiliar() &&
-        auto_have_skill(Skill.get("Curiosity of Br'er Tarrypin")) &&
+        auto_have_skill($skill`Curiosity of Br'er Tarrypin`) &&
         acquireTotem()
       ) {
-        useSkill_1 = Skill.get("Curiosity of Br'er Tarrypin");
+        useSkill_1 = $skill`Curiosity of Br'er Tarrypin`;
       }
       break;
-    case Effect.get("Crunching Leaves"):
-      useItem_1 = Item.get("autumn leaf");
+    case $effect`Crunching Leaves`:
+      useItem_1 = $item`autumn leaf`;
       break;
-    case Effect.get("Crunchy Steps"):
-      useItem_1 = Item.get("crunchy brush");
+    case $effect`Crunchy Steps`:
+      useItem_1 = $item`crunchy brush`;
       break;
-    case Effect.get("Cyber Resist x2000"):
-      useItem_1 = Item.get("Synapse Blaster");
+    case $effect`Cyber Resist x2000`:
+      useItem_1 = $item`Synapse Blaster`;
       break;
-    case Effect.get("Dance of the Sugar Fairy"):
-      useItem_1 = Item.get("sugar fairy");
+    case $effect`Dance of the Sugar Fairy`:
+      useItem_1 = $item`sugar fairy`;
       break;
-    case Effect.get("Darkened Meat"):
-      useSkill_1 = Skill.get("Dark Meat");
+    case $effect`Darkened Meat`:
+      useSkill_1 = $skill`Dark Meat`;
       break;
-    case Effect.get("Destructive Resolve"):
-      useItem_1 = Item.get("resolution: be feistier");
+    case $effect`Destructive Resolve`:
+      useItem_1 = $item`resolution: be feistier`;
       break;
-    case Effect.get("Dexteri Tea"):
-      useItem_1 = Item.get("cuppa Dexteri tea");
+    case $effect`Dexteri Tea`:
+      useItem_1 = $item`cuppa Dexteri tea`;
       break;
-    case Effect.get("Digitally Converted"):
-      useItem_1 = Item.get("digital underground potion");
+    case $effect`Digitally Converted`:
+      useItem_1 = $item`digital underground potion`;
       break;
-    case Effect.get("The Dinsey Look"):
-      useItem_1 = Item.get("Dinsey face paint");
+    case $effect`The Dinsey Look`:
+      useItem_1 = $item`Dinsey face paint`;
       break;
-    case Effect.get("Dirge of Dreadfulness"):
-      useSkill_1 = Skill.get("Dirge of Dreadfulness");
+    case $effect`Dirge of Dreadfulness`:
+      useSkill_1 = $skill`Dirge of Dreadfulness`;
       break;
-    case Effect.get("Dirge of Dreadfulness (Remastered)"):
-      mustEquip = Item.get("velour vaqueros");
-      useSkill_1 = Skill.get("Dirge of Dreadfulness");
+    case $effect`Dirge of Dreadfulness (Remastered)`:
+      mustEquip = $item`velour vaqueros`;
+      useSkill_1 = $skill`Dirge of Dreadfulness`;
       break;
-    case Effect.get("Disco Fever"):
-      useSkill_1 = Skill.get("Disco Fever");
+    case $effect`Disco Fever`:
+      useSkill_1 = $skill`Disco Fever`;
       break;
-    case Effect.get("Disco Leer"):
-      useSkill_1 = Skill.get("Disco Leer");
+    case $effect`Disco Leer`:
+      useSkill_1 = $skill`Disco Leer`;
       break;
-    case Effect.get("Disco over Matter"):
-      if (auto_have_skill(Skill.get("Disco Aerobics"))) {
-        mustEquip = Item.get("April Shower Thoughts shield");
-        useSkill_1 = Skill.get("Disco Aerobics");
+    case $effect`Disco over Matter`:
+      if (auto_have_skill($skill`Disco Aerobics`)) {
+        mustEquip = $item`April Shower Thoughts shield`;
+        useSkill_1 = $skill`Disco Aerobics`;
       }
       break;
-    case Effect.get("Disco Smirk"):
-      useSkill_1 = Skill.get("Disco Smirk");
+    case $effect`Disco Smirk`:
+      useSkill_1 = $skill`Disco Smirk`;
       break;
-    case Effect.get("Disco State of Mind"):
-      useSkill_1 = Skill.get("Disco Aerobics");
+    case $effect`Disco State of Mind`:
+      useSkill_1 = $skill`Disco Aerobics`;
       break;
-    case Effect.get("Disdain of She-Who-Was"):
-      useSkill_1 = Skill.get("Blessing of She-Who-Was");
+    case $effect`Disdain of She-Who-Was`:
+      useSkill_1 = $skill`Blessing of She-Who-Was`;
       break;
-    case Effect.get("Disdain of the Storm Tortoise"):
-      useSkill_1 = Skill.get("Blessing of the Storm Tortoise");
+    case $effect`Disdain of the Storm Tortoise`:
+      useSkill_1 = $skill`Blessing of the Storm Tortoise`;
       break;
-    case Effect.get("Disdain of the War Snapper"):
-      useSkill_1 = Skill.get("Blessing of the War Snapper");
+    case $effect`Disdain of the War Snapper`:
+      useSkill_1 = $skill`Blessing of the War Snapper`;
       break;
-    case Effect.get("Disquiet Riot"):
-      useSkill_1 = Skill.get("Disquiet Riot");
+    case $effect`Disquiet Riot`:
+      useSkill_1 = $skill`Disquiet Riot`;
       break;
-    case Effect.get("Drenched With Filth"):
-      useItem_1 = Item.get("concentrated garbage juice");
+    case $effect`Drenched With Filth`:
+      useItem_1 = $item`concentrated garbage juice`;
       break;
-    case Effect.get("Drescher's Annoying Noise"):
-      useSkill_1 = Skill.get("Drescher's Annoying Noise");
+    case $effect`Drescher's Annoying Noise`:
+      useSkill_1 = $skill`Drescher's Annoying Noise`;
       break;
-    case Effect.get("Drunk and Avuncular"):
-      useItem_1 = Item.get("Drunk Uncles holo-record");
+    case $effect`Drunk and Avuncular`:
+      useItem_1 = $item`Drunk Uncles holo-record`;
       break;
-    case Effect.get("Eagle Eyes"):
-      useItem_1 = Item.get("eagle feather");
+    case $effect`Eagle Eyes`:
+      useItem_1 = $item`eagle feather`;
       break;
-    case Effect.get("Ear Winds"):
-      useSkill_1 = Skill.get("Flappy Ears");
+    case $effect`Ear Winds`:
+      useSkill_1 = $skill`Flappy Ears`;
       break;
-    case Effect.get("Earning Interest"):
-      useItem_1 = Item.get("savings bond");
+    case $effect`Earning Interest`:
+      useItem_1 = $item`savings bond`;
       break;
-    case Effect.get("Eau D'enmity"):
-      useItem_1 = Item.get("perfume of prejudice");
+    case $effect`Eau D'enmity`:
+      useItem_1 = $item`perfume of prejudice`;
       break;
-    case Effect.get("Eau de Tortue"):
-      useItem_1 = Item.get("turtle pheromones");
+    case $effect`Eau de Tortue`:
+      useItem_1 = $item`turtle pheromones`;
       break;
-    case Effect.get("Egged On"):
-      useItem_1 = Item.get("robin's egg");
+    case $effect`Egged On`:
+      useItem_1 = $item`robin's egg`;
       break;
-    case Effect.get("El Aroma de Salsa"):
-      useItem_1 = Item.get("Salsa Caliente&trade; candle");
+    case $effect`El Aroma de Salsa`:
+      useItem_1 = $item`Salsa Caliente™ candle`;
       break;
-    case Effect.get("Eldritch Alignment"):
-      useItem_1 = Item.get("eldritch alignment spray");
+    case $effect`Eldritch Alignment`:
+      useItem_1 = $item`eldritch alignment spray`;
       break;
-    case Effect.get("Elemental Saucesphere"):
-      useSkill_1 = Skill.get("Elemental Saucesphere");
+    case $effect`Elemental Saucesphere`:
+      useSkill_1 = $skill`Elemental Saucesphere`;
       break;
-    case Effect.get("Ellipsoidtined"):
+    case $effect`Ellipsoidtined`:
       if (auto_canARBSupplyDrop()) {
         if (speculative) {
           return true;
@@ -750,233 +758,233 @@ export function buffMaintain$2(
         ret = true;
       }
       break;
-    case Effect.get("Empathy"):
+    case $effect`Empathy`:
       if (
         pathHasFamiliar() &&
-        auto_have_skill(Skill.get("Empathy of the Newt")) &&
+        auto_have_skill($skill`Empathy of the Newt`) &&
         acquireTotem() &&
         auto_unequipAprilShieldBuff()
       ) {
-        useSkill_1 = Skill.get("Empathy of the Newt");
+        useSkill_1 = $skill`Empathy of the Newt`;
       }
       break;
-    case Effect.get("Erudite"):
-      useItem_1 = Item.get("black sheepskin diploma");
+    case $effect`Erudite`:
+      useItem_1 = $item`black sheepskin diploma`;
       break;
-    case Effect.get("Ew, The Humanity"):
-      useItem_1 = Item.get("Scent of a Human&trade; candle");
+    case $effect`Ew\, The Humanity`:
+      useItem_1 = $item`Scent of a Human™ candle`;
       break;
-    case Effect.get("Expert Oiliness"):
-      useItem_1 = Item.get("oil of expertise");
+    case $effect`Expert Oiliness`:
+      useItem_1 = $item`oil of expertise`;
       break;
-    case Effect.get("Experimental Effect G-9"):
-      useItem_1 = Item.get("experimental serum G-9");
+    case $effect`Experimental Effect G-9`:
+      useItem_1 = $item`experimental serum G-9`;
       break;
-    case Effect.get("Extended Toes"):
-      useSkill_1 = Skill.get("Retractable Toes");
+    case $effect`Extended Toes`:
+      useSkill_1 = $skill`Retractable Toes`;
       break;
-    case Effect.get("Extra Backbone"):
-      useItem_1 = Item.get("really thick spine");
+    case $effect`Extra Backbone`:
+      useItem_1 = $item`really thick spine`;
       break;
-    case Effect.get("Extra-Green"):
-      useItem_1 = Item.get("glob of extra-green chlorophyll");
+    case $effect`Extra-Green`:
+      useItem_1 = $item`glob of extra-green chlorophyll`;
       break;
-    case Effect.get("Extreme Muscle Relaxation"):
-      useItem_1 = Item.get("Mick's IcyVapoHotness Rub");
+    case $effect`Extreme Muscle Relaxation`:
+      useItem_1 = $item`Mick's IcyVapoHotness Rub`;
       break;
-    case Effect.get("Everything Is Bananas"):
-      useItem_1 = Item.get("banana candle");
+    case $effect`Everything Is Bananas`:
+      useItem_1 = $item`banana candle`;
       break;
-    case Effect.get("Everything Must Go!"):
-      useItem_1 = Item.get("violent pastilles");
+    case $effect`Everything Must Go!`:
+      useItem_1 = $item`violent pastilles`;
       break;
-    case Effect.get("Eyes All Black"):
-      useItem_1 = Item.get("delicious candy");
+    case $effect`Eyes All Black`:
+      useItem_1 = $item`delicious candy`;
       break;
-    case Effect.get("Faboooo"):
-      useItem_1 = Item.get("Fabiotion");
+    case $effect`Faboooo`:
+      useItem_1 = $item`Fabiotion`;
       break;
-    case Effect.get("Far Out"):
-      useItem_1 = Item.get("patchouli incense stick");
+    case $effect`Far Out`:
+      useItem_1 = $item`patchouli incense stick`;
       break;
-    case Effect.get("Fat Leon's Phat Loot Lyric"):
-      useSkill_1 = Skill.get("Fat Leon's Phat Loot Lyric");
+    case $effect`Fat Leon's Phat Loot Lyric`:
+      useSkill_1 = $skill`Fat Leon's Phat Loot Lyric`;
       break;
-    case Effect.get("Feeling Fancy"):
-      useItem_1 = Item.get("roasted vegetable focaccia");
+    case $effect`Feeling Fancy`:
+      useItem_1 = $item`roasted vegetable focaccia`;
       break;
-    case Effect.get("Feeling Lonely"):
+    case $effect`Feeling Lonely`:
       useSkill_1 = Skill.none;
       break;
-    case Effect.get("Feeling Excited"):
+    case $effect`Feeling Excited`:
       useSkill_1 = Skill.none;
       break;
-    case Effect.get("Feeling Nervous"):
+    case $effect`Feeling Nervous`:
       useSkill_1 = Skill.none;
       break;
-    case Effect.get("Feeling Peaceful"):
+    case $effect`Feeling Peaceful`:
       useSkill_1 = Skill.none;
       break;
-    case Effect.get("Feeling Punchy"):
-      useItem_1 = Item.get("Punching Potion");
+    case $effect`Feeling Punchy`:
+      useItem_1 = $item`Punching Potion`;
       break;
-    case Effect.get("Feeling Sneaky"):
-      useItem_1 = Item.get("trampled ticket stub");
+    case $effect`Feeling Sneaky`:
+      useItem_1 = $item`trampled ticket stub`;
       break;
-    case Effect.get("Feroci Tea"):
-      useItem_1 = Item.get("cuppa Feroci tea");
+    case $effect`Feroci Tea`:
+      useItem_1 = $item`cuppa Feroci tea`;
       break;
-    case Effect.get("Fever From the Flavor"):
-      useItem_1 = Item.get("bottle of antifreeze");
+    case $effect`Fever From the Flavor`:
+      useItem_1 = $item`bottle of antifreeze`;
       break;
-    case Effect.get("Fireproof Lips"):
-      useItem_1 = Item.get("SPF 451 lip balm");
+    case $effect`Fireproof Lips`:
+      useItem_1 = $item`SPF 451 lip balm`;
       break;
-    case Effect.get("Fire Inside"):
-      useItem_1 = Item.get("hot coal");
+    case $effect`Fire Inside`:
+      useItem_1 = $item`hot coal`;
       break;
-    case Effect.get("Fishy, Oily"):
+    case $effect`Fishy\, Oily`:
       if (in_heavyrains()) {
-        useItem_1 = Item.get("gourmet gourami oil");
+        useItem_1 = $item`gourmet gourami oil`;
       }
       break;
-    case Effect.get("Fishy Fortification"):
-      useItem_1 = Item.get("fish-liver oil");
+    case $effect`Fishy Fortification`:
+      useItem_1 = $item`fish-liver oil`;
       break;
-    case Effect.get("Fishy Whiskers"):
+    case $effect`Fishy Whiskers`:
       if (in_heavyrains()) {
-        useItem_1 = Item.get("catfish whiskers");
+        useItem_1 = $item`catfish whiskers`;
       }
       break;
-    case Effect.get("Five Sticky Fingers"):
-      useItem_1 = Item.get("five-fingered fern resin");
+    case $effect`Five Sticky Fingers`:
+      useItem_1 = $item`five-fingered fern resin`;
       break;
-    case Effect.get("Flame-Retardant Trousers"):
-      useItem_1 = Item.get("hot powder");
+    case $effect`Flame-Retardant Trousers`:
+      useItem_1 = $item`hot powder`;
       break;
-    case Effect.get("Flaming Weapon"):
-      useItem_1 = Item.get("hot nuggets");
+    case $effect`Flaming Weapon`:
+      useItem_1 = $item`hot nuggets`;
       break;
-    case Effect.get("Flamibili Tea"):
-      useItem_1 = Item.get("cuppa Flamibili tea");
+    case $effect`Flamibili Tea`:
+      useItem_1 = $item`cuppa Flamibili tea`;
       break;
-    case Effect.get("Flapper Dancin'"):
-      useItem_1 = Item.get("flapper fly");
+    case $effect`Flapper Dancin'`:
+      useItem_1 = $item`flapper fly`;
       break;
-    case Effect.get("Flexibili Tea"):
-      useItem_1 = Item.get("cuppa Flexibili tea");
+    case $effect`Flexibili Tea`:
+      useItem_1 = $item`cuppa Flexibili tea`;
       break;
-    case Effect.get("Flimsy Shield of the Pastalord"):
-      useSkill_1 = Skill.get("Shield of the Pastalord");
-      if (myClass() === Class.get("Pastamancer")) {
-        buff = Effect.get("Shield of the Pastalord");
+    case $effect`Flimsy Shield of the Pastalord`:
+      useSkill_1 = $skill`Shield of the Pastalord`;
+      if (myClass() === $class`Pastamancer`) {
+        buff = $effect`Shield of the Pastalord`;
       }
       break;
-    case Effect.get("Float Like a Butterfly, Smell Like a Bee"):
+    case $effect`Float Like a Butterfly\, Smell Like a Bee`:
       if (in_bhy()) {
-        useItem_1 = Item.get("honeypot");
+        useItem_1 = $item`honeypot`;
       }
       break;
-    case Effect.get("Florid Cheeks"):
-      useItem_1 = Item.get("henna face paint");
+    case $effect`Florid Cheeks`:
+      useItem_1 = $item`henna face paint`;
       break;
-    case Effect.get("Football Eyes"):
-      useItem_1 = Item.get("black facepaint");
+    case $effect`Football Eyes`:
+      useItem_1 = $item`black facepaint`;
       break;
-    case Effect.get("Fortunate Resolve"):
-      useItem_1 = Item.get("resolution: be luckier");
+    case $effect`Fortunate Resolve`:
+      useItem_1 = $item`resolution: be luckier`;
       break;
-    case Effect.get("Frenzied, Bloody"):
-      useSkill_1 = Skill.get("Blood Frenzy");
+    case $effect`Frenzied\, Bloody`:
+      useSkill_1 = $skill`Blood Frenzy`;
       break;
-    case Effect.get("Fresh Breath"):
+    case $effect`Fresh Breath`:
       if (!toBoolean(getProperty("_aug6Cast"))) {
-        useSkill_1 = Skill.get("Aug. 6th: Fresh Breath Day!");
+        useSkill_1 = $skill`Aug. 6th: Fresh Breath Day!`;
       }
       break;
-    case Effect.get("Fresh Scent"):
-      useItem_1 = Item.get("deodorant");
+    case $effect`Fresh Scent`:
+      useItem_1 = $item`deodorant`;
       break;
-    case Effect.get("Frigidalmatian"):
-      useSkill_1 = Skill.get("Frigidalmatian");
+    case $effect`Frigidalmatian`:
+      useSkill_1 = $skill`Frigidalmatian`;
       break;
-    case Effect.get("Frog In Your Throat"):
-      useItem_1 = Item.get("Frogade");
+    case $effect`Frog In Your Throat`:
+      useItem_1 = $item`Frogade`;
       break;
-    case Effect.get("From Nantucket"):
-      useItem_1 = Item.get("Ye Olde Bawdy Limerick");
+    case $effect`From Nantucket`:
+      useItem_1 = $item`Ye Olde Bawdy Limerick`;
       break;
-    case Effect.get("Frost Tea"):
-      useItem_1 = Item.get("cuppa Frost tea");
+    case $effect`Frost Tea`:
+      useItem_1 = $item`cuppa Frost tea`;
       break;
-    case Effect.get("Frostbeard"):
-      useSkill_1 = Skill.get("Beardfreeze");
+    case $effect`Frostbeard`:
+      useSkill_1 = $skill`Beardfreeze`;
       break;
-    case Effect.get("Frosty"):
-      useItem_1 = Item.get("frost flower");
+    case $effect`Frosty`:
+      useItem_1 = $item`frost flower`;
       break;
-    case Effect.get("Frown"):
-      useSkill_1 = Skill.get("Frown Muscles");
+    case $effect`Frown`:
+      useSkill_1 = $skill`Frown Muscles`;
       break;
-    case Effect.get("Funky Coal Patina"):
-      useItem_1 = Item.get("coal dust");
+    case $effect`Funky Coal Patina`:
+      useItem_1 = $item`coal dust`;
       break;
-    case Effect.get("Gaffe Free"):
-      useItem_1 = Item.get("gaffer's tape");
+    case $effect`Gaffe Free`:
+      useItem_1 = $item`gaffer's tape`;
       break;
-    case Effect.get("Gelded"):
-      useItem_1 = Item.get("chocolate filthy lucre");
+    case $effect`Gelded`:
+      useItem_1 = $item`chocolate filthy lucre`;
       break;
-    case Effect.get("Ghostly Shell"):
-      if (auto_have_skill(Skill.get("Ghostly Shell")) && acquireTotem()) {
-        useSkill_1 = Skill.get("Ghostly Shell");
+    case $effect`Ghostly Shell`:
+      if (auto_have_skill($skill`Ghostly Shell`) && acquireTotem()) {
+        useSkill_1 = $skill`Ghostly Shell`;
       }
       break;
-    case Effect.get("The Glistening"):
-      useItem_1 = Item.get("vial of The Glistening");
+    case $effect`The Glistening`:
+      useItem_1 = $item`vial of The Glistening`;
       break;
-    case Effect.get("Glittering Eyelashes"):
-      useItem_1 = Item.get("glittery mascara");
+    case $effect`Glittering Eyelashes`:
+      useItem_1 = $item`glittery mascara`;
       break;
-    case Effect.get("Glowing Hands"):
-      useItem_1 = Item.get("emergency glowstick");
+    case $effect`Glowing Hands`:
+      useItem_1 = $item`emergency glowstick`;
       break;
-    case Effect.get("Go Get 'Em, Tiger!"):
-      useItem_1 = Item.get("Ben-Gal&trade; Balm");
+    case $effect`Go Get 'Em\, Tiger!`:
+      useItem_1 = $item`Ben-Gal™ Balm`;
       break;
-    case Effect.get("Good Things Are Coming, You Can Smell It"):
-      useItem_1 = Item.get("Smoldering Clover&trade; candle");
+    case $effect`Good Things Are Coming\, You Can Smell It`:
+      useItem_1 = $item`Smoldering Clover™ candle`;
       break;
-    case Effect.get("Got Milk"):
-      useItem_1 = Item.get("milk of magnesium");
+    case $effect`Got Milk`:
+      useItem_1 = $item`milk of magnesium`;
       break;
-    case Effect.get("Gothy"):
-      useItem_1 = Item.get("spooky eyeliner");
+    case $effect`Gothy`:
+      useItem_1 = $item`spooky eyeliner`;
       break;
-    case Effect.get("Gr8ness"):
-      useItem_1 = Item.get("potion of temporary gr8ness");
+    case $effect`Gr8ness`:
+      useItem_1 = $item`potion of temporary gr8ness`;
       break;
-    case Effect.get("Graham Crackling"):
-      useItem_1 = Item.get("heather graham cracker");
+    case $effect`Graham Crackling`:
+      useItem_1 = $item`heather graham cracker`;
       break;
-    case Effect.get("Greasy Peasy"):
-      useItem_1 = Item.get("robot grease");
+    case $effect`Greasy Peasy`:
+      useItem_1 = $item`robot grease`;
       break;
-    case Effect.get("Greedy Resolve"):
-      useItem_1 = Item.get("resolution: be wealthier");
+    case $effect`Greedy Resolve`:
+      useItem_1 = $item`resolution: be wealthier`;
       break;
-    case Effect.get("Green Tongue"):
-      useItem_1 = Item.get("green snowcone");
+    case $effect`Green Tongue`:
+      useItem_1 = $item`green snowcone`;
       break;
-    case Effect.get("Gristlesphere"):
-      useSkill_1 = Skill.get("Gristlesphere");
+    case $effect`Gristlesphere`:
+      useSkill_1 = $skill`Gristlesphere`;
       break;
-    case Effect.get("Gritty"):
-      useItem_1 = Item.get("pile of gritty sand");
+    case $effect`Gritty`:
+      useItem_1 = $item`pile of gritty sand`;
       break;
-    case Effect.get("Grumpy and Ornery"):
+    case $effect`Grumpy and Ornery`:
       if (
-        auto_have_familiar(Familiar.get("Grim Brother")) &&
+        auto_have_familiar($familiar`Grim Brother`) &&
         !toBoolean(getProperty("_grimBuff"))
       ) {
         if (speculative) {
@@ -986,285 +994,285 @@ export function buffMaintain$2(
         ret = true;
       }
       break;
-    case Effect.get("Gummed Shoes"):
-      useItem_1 = Item.get("shoe gum");
+    case $effect`Gummed Shoes`:
+      useItem_1 = $item`shoe gum`;
       break;
-    case Effect.get("Gummi-Grin"):
-      useItem_1 = Item.get("gummi turtle");
+    case $effect`Gummi-Grin`:
+      useItem_1 = $item`gummi turtle`;
       break;
-    case Effect.get("Hairy Palms"):
-      useItem_1 = Item.get("orcish hand lotion");
+    case $effect`Hairy Palms`:
+      useItem_1 = $item`orcish hand lotion`;
       break;
-    case Effect.get("Ham-Fisted"):
-      useItem_1 = Item.get("vial of hamethyst juice");
+    case $effect`Ham-Fisted`:
+      useItem_1 = $item`vial of hamethyst juice`;
       break;
-    case Effect.get("Hamming It Up"):
-      useSkill_1 = Skill.get("Ham It Up");
+    case $effect`Hamming It Up`:
+      useSkill_1 = $skill`Ham It Up`;
       break;
-    case Effect.get("Hardened Fabric"):
-      useItem_1 = Item.get("fabric hardener");
+    case $effect`Hardened Fabric`:
+      useItem_1 = $item`fabric hardener`;
       break;
-    case Effect.get("Hardened Sweatshirt"):
-      useSkill_1 = Skill.get("Magic Sweat");
+    case $effect`Hardened Sweatshirt`:
+      useSkill_1 = $skill`Magic Sweat`;
       break;
-    case Effect.get("Hardly Poisoned at All"):
-      useSkill_1 = Skill.get("Disco Nap");
+    case $effect`Hardly Poisoned at All`:
+      useSkill_1 = $skill`Disco Nap`;
       break;
-    case Effect.get("Healthy Blue Glow"):
-      useItem_1 = Item.get("gold star");
+    case $effect`Healthy Blue Glow`:
+      useItem_1 = $item`gold star`;
       break;
-    case Effect.get("Hear Me Roar"):
+    case $effect`Hear Me Roar`:
       if (!toBoolean(getProperty("_aug10Cast"))) {
-        useSkill_1 = Skill.get("Aug. 10th: World Lion Day!");
+        useSkill_1 = $skill`Aug. 10th: World Lion Day!`;
       }
       break;
-    case Effect.get("Heightened Senses"):
-      useItem_1 = Item.get("airborne mutagen");
+    case $effect`Heightened Senses`:
+      useItem_1 = $item`airborne mutagen`;
       break;
-    case Effect.get("Heart of Green"):
-      useItem_1 = Item.get("green candy heart");
+    case $effect`Heart of Green`:
+      useItem_1 = $item`green candy heart`;
       break;
-    case Effect.get("Heart of Lavender"):
-      useItem_1 = Item.get("lavender candy heart");
+    case $effect`Heart of Lavender`:
+      useItem_1 = $item`lavender candy heart`;
       break;
-    case Effect.get("Heart of Orange"):
-      useItem_1 = Item.get("orange candy heart");
+    case $effect`Heart of Orange`:
+      useItem_1 = $item`orange candy heart`;
       break;
-    case Effect.get("Heart of Pink"):
-      useItem_1 = Item.get("pink candy heart");
+    case $effect`Heart of Pink`:
+      useItem_1 = $item`pink candy heart`;
       break;
-    case Effect.get("Heart of White"):
-      useItem_1 = Item.get("white candy heart");
+    case $effect`Heart of White`:
+      useItem_1 = $item`white candy heart`;
       break;
-    case Effect.get("Heart of Yellow"):
-      useItem_1 = Item.get("yellow candy heart");
+    case $effect`Heart of Yellow`:
+      useItem_1 = $item`yellow candy heart`;
       break;
-    case Effect.get("Hide of Sobek"):
-      useSkill_1 = Skill.get("Hide of Sobek");
+    case $effect`Hide of Sobek`:
+      useSkill_1 = $skill`Hide of Sobek`;
       break;
-    case Effect.get("Hiding From Seekers"):
-      useSkill_1 = Skill.get("Hide From Seekers");
+    case $effect`Hiding From Seekers`:
+      useSkill_1 = $skill`Hide From Seekers`;
       break;
-    case Effect.get("High Colognic"):
-      useItem_1 = Item.get("musk turtle");
+    case $effect`High Colognic`:
+      useItem_1 = $item`musk turtle`;
       break;
-    case Effect.get("Hippy Antimilitarism"):
-      useItem_1 = Item.get("mini kiwi antimilitaristic hippy petition");
+    case $effect`Hippy Antimilitarism`:
+      useItem_1 = $item`mini kiwi antimilitaristic hippy petition`;
       break;
-    case Effect.get("Hippy Stench"):
-      useItem_1 = Item.get("reodorant");
+    case $effect`Hippy Stench`:
+      useItem_1 = $item`reodorant`;
       break;
-    case Effect.get("Hot Hands"):
-      useItem_1 = Item.get("lotion of hotness");
+    case $effect`Hot Hands`:
+      useItem_1 = $item`lotion of hotness`;
       break;
-    case Effect.get("How to Scam Tourists"):
-      useItem_1 = Item.get("How to Avoid Scams");
+    case $effect`How to Scam Tourists`:
+      useItem_1 = $item`How to Avoid Scams`;
       break;
-    case Effect.get("Human-Beast Hybrid"):
-      useItem_1 = Item.get("Gene Tonic: Beast");
+    case $effect`Human-Beast Hybrid`:
+      useItem_1 = $item`Gene Tonic: Beast`;
       break;
-    case Effect.get("Human-Constellation Hybrid"):
-      useItem_1 = Item.get("Gene Tonic: Constellation");
+    case $effect`Human-Constellation Hybrid`:
+      useItem_1 = $item`Gene Tonic: Constellation`;
       break;
-    case Effect.get("Human-Demon Hybrid"):
-      useItem_1 = Item.get("Gene Tonic: Demon");
+    case $effect`Human-Demon Hybrid`:
+      useItem_1 = $item`Gene Tonic: Demon`;
       break;
-    case Effect.get("Human-Elemental Hybrid"):
-      useItem_1 = Item.get("Gene Tonic: Elemental");
+    case $effect`Human-Elemental Hybrid`:
+      useItem_1 = $item`Gene Tonic: Elemental`;
       break;
-    case Effect.get("Human-Fish Hybrid"):
-      useItem_1 = Item.get("Gene Tonic: Fish");
+    case $effect`Human-Fish Hybrid`:
+      useItem_1 = $item`Gene Tonic: Fish`;
       break;
-    case Effect.get("Human-Human Hybrid"):
-      useItem_1 = Item.get("Gene Tonic: Dude");
+    case $effect`Human-Human Hybrid`:
+      useItem_1 = $item`Gene Tonic: Dude`;
       break;
-    case Effect.get("Human-Humanoid Hybrid"):
-      useItem_1 = Item.get("Gene Tonic: Humanoid");
+    case $effect`Human-Humanoid Hybrid`:
+      useItem_1 = $item`Gene Tonic: Humanoid`;
       break;
-    case Effect.get("Human-Insect Hybrid"):
-      useItem_1 = Item.get("Gene Tonic: Insect");
+    case $effect`Human-Insect Hybrid`:
+      useItem_1 = $item`Gene Tonic: Insect`;
       break;
-    case Effect.get("Human-Machine Hybrid"):
-      useItem_1 = Item.get("Gene Tonic: Construct");
+    case $effect`Human-Machine Hybrid`:
+      useItem_1 = $item`Gene Tonic: Construct`;
       break;
-    case Effect.get("Human-Mer-kin Hybrid"):
-      useItem_1 = Item.get("Gene Tonic: Mer-kin");
+    case $effect`Human-Mer-kin Hybrid`:
+      useItem_1 = $item`Gene Tonic: Mer-kin`;
       break;
-    case Effect.get("Human-Pirate Hybrid"):
-      useItem_1 = Item.get("Gene Tonic: Pirate");
+    case $effect`Human-Pirate Hybrid`:
+      useItem_1 = $item`Gene Tonic: Pirate`;
       break;
-    case Effect.get("Hyperoffended"):
-      useItem_1 = Item.get("donkey flipbook");
+    case $effect`Hyperoffended`:
+      useItem_1 = $item`donkey flipbook`;
       break;
-    case Effect.get("Hyphemariffic"):
-      useItem_1 = Item.get("black eyedrops");
+    case $effect`Hyphemariffic`:
+      useItem_1 = $item`black eyedrops`;
       break;
-    case Effect.get("Icy Glare"):
-      useSkill_1 = Skill.get("Icy Glare");
+    case $effect`Icy Glare`:
+      useSkill_1 = $skill`Icy Glare`;
       break;
-    case Effect.get("Impeccable Coiffure"):
-      useSkill_1 = Skill.get("Self-Combing Hair");
+    case $effect`Impeccable Coiffure`:
+      useSkill_1 = $skill`Self-Combing Hair`;
       break;
-    case Effect.get("Imported Strength"):
-      useItem_1 = Item.get("imported taffy");
+    case $effect`Imported Strength`:
+      useItem_1 = $item`imported taffy`;
       break;
-    case Effect.get("Inigo's Incantation of Inspiration"):
-      useSkill_1 = Skill.get("Inigo's Incantation of Inspiration");
+    case $effect`Inigo's Incantation of Inspiration`:
+      useSkill_1 = $skill`Inigo's Incantation of Inspiration`;
       break;
-    case Effect.get("Incredibly Healthy"):
-      useItem_1 = Item.get("mini kiwi illicit antibiotic");
+    case $effect`Incredibly Healthy`:
+      useItem_1 = $item`mini kiwi illicit antibiotic`;
       break;
-    case Effect.get("Incredibly Hulking"):
-      useItem_1 = Item.get("Ferrigno's Elixir of Power");
+    case $effect`Incredibly Hulking`:
+      useItem_1 = $item`Ferrigno's Elixir of Power`;
       break;
-    case Effect.get("Incredibly Well Lit"):
+    case $effect`Incredibly Well Lit`:
       if (!toBoolean(getProperty("_aug7Cast"))) {
-        useSkill_1 = Skill.get("Aug. 7th: Lighthouse Day!");
+        useSkill_1 = $skill`Aug. 7th: Lighthouse Day!`;
       }
       break;
-    case Effect.get("Industrial Strength Starch"):
-      useItem_1 = Item.get("industrial strength starch");
+    case $effect`Industrial Strength Starch`:
+      useItem_1 = $item`industrial strength starch`;
       break;
-    case Effect.get("Ink Cloud"):
-      useSkill_1 = Skill.get("Ink Gland");
+    case $effect`Ink Cloud`:
+      useSkill_1 = $skill`Ink Gland`;
       break;
-    case Effect.get("Inked Well"):
-      useSkill_1 = Skill.get("Squid Glands");
+    case $effect`Inked Well`:
+      useSkill_1 = $skill`Squid Glands`;
       break;
-    case Effect.get("Inky Camouflage"):
-      useItem_1 = Item.get("vial of squid ink");
+    case $effect`Inky Camouflage`:
+      useItem_1 = $item`vial of squid ink`;
       break;
-    case Effect.get("Inscrutable Gaze"):
-      useSkill_1 = Skill.get("Inscrutable Gaze");
+    case $effect`Inscrutable Gaze`:
+      useSkill_1 = $skill`Inscrutable Gaze`;
       break;
-    case Effect.get("Insulated Trousers"):
-      useItem_1 = Item.get("cold powder");
+    case $effect`Insulated Trousers`:
+      useItem_1 = $item`cold powder`;
       break;
-    case Effect.get("Intimidating Mien"):
-      useSkill_1 = Skill.get("Intimidating Mien");
+    case $effect`Intimidating Mien`:
+      useSkill_1 = $skill`Intimidating Mien`;
       break;
-    case Effect.get("Invisible Avatar"):
+    case $effect`Invisible Avatar`:
       useSkill_1 = Skill.none;
       break;
-    case Effect.get("Irresistible Resolve"):
-      useItem_1 = Item.get("resolution: be sexier");
+    case $effect`Irresistible Resolve`:
+      useItem_1 = $item`resolution: be sexier`;
       break;
-    case Effect.get("Jackasses' Symphony of Destruction"):
-      useSkill_1 = Skill.get("Jackasses' Symphony of Destruction");
+    case $effect`Jackasses' Symphony of Destruction`:
+      useSkill_1 = $skill`Jackasses' Symphony of Destruction`;
       break;
-    case Effect.get("Jalape&ntilde;o Saucesphere"):
-      useSkill_1 = Skill.get("Jalape&ntilde;o Saucesphere");
+    case $effect`Jalapeño Saucesphere`:
+      useSkill_1 = $skill`Jalapeño Saucesphere`;
       break;
-    case Effect.get("Jingle Jangle Jingle"):
-      if (auto_have_skill(Skill.get("Jingle Bells")) && acquireTotem()) {
-        useSkill_1 = Skill.get("Jingle Bells");
+    case $effect`Jingle Jangle Jingle`:
+      if (auto_have_skill($skill`Jingle Bells`) && acquireTotem()) {
+        useSkill_1 = $skill`Jingle Bells`;
       }
       break;
-    case Effect.get("Joyful Resolve"):
-      useItem_1 = Item.get("resolution: be happier");
+    case $effect`Joyful Resolve`:
+      useItem_1 = $item`resolution: be happier`;
       break;
-    case Effect.get("Juiced and Jacked"):
-      useItem_1 = Item.get("pumpkin juice");
+    case $effect`Juiced and Jacked`:
+      useItem_1 = $item`pumpkin juice`;
       break;
-    case Effect.get("Juiced and Loose"):
-      useSkill_1 = Skill.get("Steroid Bladder");
+    case $effect`Juiced and Loose`:
+      useSkill_1 = $skill`Steroid Bladder`;
       break;
-    case Effect.get("Leash of Linguini"):
+    case $effect`Leash of Linguini`:
       if (pathHasFamiliar()) {
         auto_equipAprilShieldBuff(); //+5 turns when April Shower Thoughts Shield is equipped
-        useSkill_1 = Skill.get("Leash of Linguini");
+        useSkill_1 = $skill`Leash of Linguini`;
       }
       break;
-    case Effect.get("Leisurely Amblin'"):
-      useSkill_1 = Skill.get("Walk: Leisurely Amble");
+    case $effect`Leisurely Amblin'`:
+      useSkill_1 = $skill`Walk: Leisurely Amble`;
       break;
-    case Effect.get("Lion in Ambush"):
-      useItem_1 = Item.get("lion musk");
+    case $effect`Lion in Ambush`:
+      useItem_1 = $item`lion musk`;
       break;
-    case Effect.get("Liquidy Smoky"):
-      useItem_1 = Item.get("liquid smoke");
+    case $effect`Liquidy Smoky`:
+      useItem_1 = $item`liquid smoke`;
       break;
-    case Effect.get("Lit Up"):
-      useItem_1 = Item.get("bottle of lighter fluid");
+    case $effect`Lit Up`:
+      useItem_1 = $item`bottle of lighter fluid`;
       break;
-    case Effect.get("Litterbug"):
-      useItem_1 = Item.get("old candy wrapper");
+    case $effect`Litterbug`:
+      useItem_1 = $item`old candy wrapper`;
       break;
-    case Effect.get("Living Fast"):
-      useSkill_1 = Skill.get("Live Fast");
+    case $effect`Living Fast`:
+      useSkill_1 = $skill`Live Fast`;
       break;
-    case Effect.get("Locks Like the Raven"):
-      useItem_1 = Item.get("Black No. 2");
+    case $effect`Locks Like the Raven`:
+      useItem_1 = $item`Black No. 2`;
       break;
-    case Effect.get("Loded"):
-      useItem_1 = Item.get("lodestone");
+    case $effect`Loded`:
+      useItem_1 = $item`lodestone`;
       break;
-    case Effect.get("Lost Stomach"):
+    case $effect`Lost Stomach`:
       if (!toBoolean(getProperty("_aug16Cast"))) {
-        useSkill_1 = Skill.get("Aug. 16th: Roller Coaster Day!");
+        useSkill_1 = $skill`Aug. 16th: Roller Coaster Day!`;
       }
       break;
-    case Effect.get("Loyal as a Rock"):
-      useItem_1 = Item.get("lump of loyal latite");
+    case $effect`Loyal as a Rock`:
+      useItem_1 = $item`lump of loyal latite`;
       break;
-    case Effect.get("Loyal Tea"):
-      useItem_1 = Item.get("cuppa Loyal tea");
+    case $effect`Loyal Tea`:
+      useItem_1 = $item`cuppa Loyal tea`;
       break;
-    case Effect.get("Lubricating Sauce"):
-      if (auto_have_skill(Skill.get("Sauce Contemplation"))) {
-        mustEquip = Item.get("April Shower Thoughts shield");
-        useSkill_1 = Skill.get("Sauce Contemplation");
+    case $effect`Lubricating Sauce`:
+      if (auto_have_skill($skill`Sauce Contemplation`)) {
+        mustEquip = $item`April Shower Thoughts shield`;
+        useSkill_1 = $skill`Sauce Contemplation`;
       }
       break;
-    case Effect.get("Lucky Struck"):
-      useItem_1 = Item.get("Lucky Strikes holo-record");
+    case $effect`Lucky Struck`:
+      useItem_1 = $item`Lucky Strikes holo-record`;
       break;
-    case Effect.get("Lycanthropy, Eh?"):
-      useItem_1 = Item.get("weremoose spit");
+    case $effect`Lycanthropy\, Eh?`:
+      useItem_1 = $item`weremoose spit`;
       break;
-    case Effect.get("Keep Free Hate in your Heart"):
-      useItem_1 = Item.get("Daily Affirmation: Keep Free Hate in your Heart");
+    case $effect`Keep Free Hate in your Heart`:
+      useItem_1 = $item`Daily Affirmation: Keep Free Hate in your Heart`;
       break;
-    case Effect.get("Kindly Resolve"):
-      useItem_1 = Item.get("resolution: be kinder");
+    case $effect`Kindly Resolve`:
+      useItem_1 = $item`resolution: be kinder`;
       break;
-    case Effect.get("Knob Goblin Perfume"):
-      useItem_1 = Item.get("Knob Goblin perfume");
+    case $effect`Knob Goblin Perfume`:
+      useItem_1 = $item`Knob Goblin perfume`;
       break;
-    case Effect.get("Knowing Smile"):
-      useSkill_1 = Skill.get("Knowing Smile");
+    case $effect`Knowing Smile`:
+      useSkill_1 = $skill`Knowing Smile`;
       break;
-    case Effect.get("Macaroni Coating"):
+    case $effect`Macaroni Coating`:
       useSkill_1 = Skill.none;
       break;
-    case Effect.get("The Magic of LOV"):
-      useItem_1 = Item.get("LOV Elixir #6");
+    case $effect`The Magic of LOV`:
+      useItem_1 = $item`LOV Elixir #6`;
       break;
-    case Effect.get("The Magical Mojomuscular Melody"):
-      useSkill_1 = Skill.get("The Magical Mojomuscular Melody");
+    case $effect`The Magical Mojomuscular Melody`:
+      useSkill_1 = $skill`The Magical Mojomuscular Melody`;
       break;
-    case Effect.get("Magnetized Ears"):
-      useSkill_1 = Skill.get("Magnetic Ears");
+    case $effect`Magnetized Ears`:
+      useSkill_1 = $skill`Magnetic Ears`;
       break;
-    case Effect.get("Majorly Poisoned"):
-      useSkill_1 = Skill.get("Disco Nap");
+    case $effect`Majorly Poisoned`:
+      useSkill_1 = $skill`Disco Nap`;
       break;
-    case Effect.get("Manbait"):
-      useItem_1 = Item.get("the most dangerous bait");
+    case $effect`Manbait`:
+      useItem_1 = $item`the most dangerous bait`;
       break;
-    case Effect.get("Mariachi Moisture"):
-      if (auto_have_skill(Skill.get("Moxie of the Mariachi"))) {
-        mustEquip = Item.get("April Shower Thoughts shield");
-        useSkill_1 = Skill.get("Moxie of the Mariachi");
+    case $effect`Mariachi Moisture`:
+      if (auto_have_skill($skill`Moxie of the Mariachi`)) {
+        mustEquip = $item`April Shower Thoughts shield`;
+        useSkill_1 = $skill`Moxie of the Mariachi`;
       }
       break;
-    case Effect.get("Mariachi Mood"):
-      useSkill_1 = Skill.get("Moxie of the Mariachi");
+    case $effect`Mariachi Mood`:
+      useSkill_1 = $skill`Moxie of the Mariachi`;
       break;
-    case Effect.get("Marinated"):
-      useItem_1 = Item.get("bowl of marinade");
+    case $effect`Marinated`:
+      useItem_1 = $item`bowl of marinade`;
       break;
-    case Effect.get("Materiel Intel"):
+    case $effect`Materiel Intel`:
       if (auto_canARBSupplyDrop()) {
         if (speculative) {
           return true;
@@ -1273,220 +1281,220 @@ export function buffMaintain$2(
         ret = true;
       }
       break;
-    case Effect.get("Mathematically Precise"):
-      if (isUnrestricted(Item.get("Crimbot ROM: Mathematical Precision"))) {
-        useSkill_1 = Skill.get("Mathematical Precision");
+    case $effect`Mathematically Precise`:
+      if (isUnrestricted($item`Crimbot ROM: Mathematical Precision`)) {
+        useSkill_1 = $skill`Mathematical Precision`;
       }
       break;
-    case Effect.get("Mayeaugh"):
-      useItem_1 = Item.get("glob of spoiled mayo");
+    case $effect`Mayeaugh`:
+      useItem_1 = $item`glob of spoiled mayo`;
       break;
-    case Effect.get("Meat Puppet"):
-      useSkill_1 = Skill.get("Meat Puppet");
+    case $effect`Meat Puppet`:
+      useSkill_1 = $skill`Meat Puppet`;
       break;
-    case Effect.get("Memories of Puppy Love"):
-      useItem_1 = Item.get("old love note");
+    case $effect`Memories of Puppy Love`:
+      useItem_1 = $item`old love note`;
       break;
-    case Effect.get("Merry Smithsness"):
-      useItem_1 = Item.get("Flaskfull of Hollow");
+    case $effect`Merry Smithsness`:
+      useItem_1 = $item`Flaskfull of Hollow`;
       break;
-    case Effect.get("Milk of Familiar Cruelty"):
-      useSkill_1 = Skill.get("Drink The Milk of %n Cruelty");
+    case $effect`Milk of Familiar Cruelty`:
+      useSkill_1 = $skill`Drink The Milk of %n Cruelty`;
       break;
-    case Effect.get("Milk of Familiar Kindness"):
-      useSkill_1 = Skill.get("Drink The Milk of %n Kindness");
+    case $effect`Milk of Familiar Kindness`:
+      useSkill_1 = $skill`Drink The Milk of %n Kindness`;
       break;
-    case Effect.get("Mind Vision"):
-      useSkill_1 = Skill.get("Intracranial Eye");
+    case $effect`Mind Vision`:
+      useSkill_1 = $skill`Intracranial Eye`;
       break;
-    case Effect.get("Ministrations in the Dark"):
-      useItem_1 = Item.get("EMD holo-record");
+    case $effect`Ministrations in the Dark`:
+      useItem_1 = $item`EMD holo-record`;
       break;
-    case Effect.get("Minor Invulnerability"):
-      useItem_1 = Item.get("scroll of minor invulnerability");
+    case $effect`Minor Invulnerability`:
+      useItem_1 = $item`scroll of minor invulnerability`;
       break;
-    case Effect.get("Misplaced Rage"):
-      useItem_1 = Item.get("angry agate");
+    case $effect`Misplaced Rage`:
+      useItem_1 = $item`angry agate`;
       break;
-    case Effect.get("The Moxie of LOV"):
-      useItem_1 = Item.get("LOV Elixir #9");
+    case $effect`The Moxie of LOV`:
+      useItem_1 = $item`LOV Elixir #9`;
       break;
-    case Effect.get("The Moxious Madrigal"):
-      useSkill_1 = Skill.get("The Moxious Madrigal");
+    case $effect`The Moxious Madrigal`:
+      useSkill_1 = $skill`The Moxious Madrigal`;
       break;
-    case Effect.get("Muffled"):
+    case $effect`Muffled`:
       if (getProperty("peteMotorbikeMuffler") === "Extra-Quiet Muffler") {
-        useSkill_1 = Skill.get("Rev Engine");
+        useSkill_1 = $skill`Rev Engine`;
       }
       break;
-    case Effect.get("Musk of the Moose"):
-      useSkill_1 = Skill.get("Musk of the Moose");
+    case $effect`Musk of the Moose`:
+      useSkill_1 = $skill`Musk of the Moose`;
       break;
-    case Effect.get("Musky"):
-      useItem_1 = Item.get("lynyrd musk");
+    case $effect`Musky`:
+      useItem_1 = $item`lynyrd musk`;
       break;
-    case Effect.get("Mutated"):
-      useItem_1 = Item.get("gremlin mutagen");
+    case $effect`Mutated`:
+      useItem_1 = $item`gremlin mutagen`;
       break;
-    case Effect.get("Mysteriously Handsome"):
-      useItem_1 = Item.get("handsomeness potion");
+    case $effect`Mysteriously Handsome`:
+      useItem_1 = $item`handsomeness potion`;
       break;
-    case Effect.get("Mystically Oiled"):
-      useItem_1 = Item.get("ointment of the occult");
+    case $effect`Mystically Oiled`:
+      useItem_1 = $item`ointment of the occult`;
       break;
-    case Effect.get("Nearly All-Natural"):
-      useItem_1 = Item.get("bag of grain");
+    case $effect`Nearly All-Natural`:
+      useItem_1 = $item`bag of grain`;
       break;
-    case Effect.get("Nearly Silent Hunting"):
-      useSkill_1 = Skill.get("Silent Hunter");
+    case $effect`Nearly Silent Hunting`:
+      useSkill_1 = $skill`Silent Hunter`;
       break;
-    case Effect.get("Neuroplastici Tea"):
-      useItem_1 = Item.get("cuppa Neuroplastici tea");
+    case $effect`Neuroplastici Tea`:
+      useItem_1 = $item`cuppa Neuroplastici tea`;
       break;
-    case Effect.get("Neutered Nostrils"):
-      useItem_1 = Item.get("Polysniff Perfume");
+    case $effect`Neutered Nostrils`:
+      useItem_1 = $item`Polysniff Perfume`;
       break;
-    case Effect.get("Newt Gets In Your Eyes"):
-      useItem_1 = Item.get("eyedrops of newt");
+    case $effect`Newt Gets In Your Eyes`:
+      useItem_1 = $item`eyedrops of newt`;
       break;
-    case Effect.get("Nigh-Invincible"):
-      useItem_1 = Item.get("pixel star");
+    case $effect`Nigh-Invincible`:
+      useItem_1 = $item`pixel star`;
       break;
-    case Effect.get("Notably Lovely"):
-      useItem_1 = Item.get("confiscated love note");
+    case $effect`Notably Lovely`:
+      useItem_1 = $item`confiscated love note`;
       break;
-    case Effect.get("Obscuri Tea"):
-      useItem_1 = Item.get("cuppa Obscuri tea");
+    case $effect`Obscuri Tea`:
+      useItem_1 = $item`cuppa Obscuri tea`;
       break;
-    case Effect.get("Ode to Booze"):
-      shrugAT$1(Effect.get("Ode to Booze"));
-      useSkill_1 = Skill.get("The Ode to Booze");
+    case $effect`Ode to Booze`:
+      shrugAT$1($effect`Ode to Booze`);
+      useSkill_1 = $skill`The Ode to Booze`;
       break;
-    case Effect.get("The Odour of Magick"):
-      useItem_1 = Item.get("natural magick candle");
+    case $effect`The Odour of Magick`:
+      useItem_1 = $item`natural magick candle`;
       break;
-    case Effect.get("Of Course It Looks Great"):
-      useSkill_1 = Skill.get("Check Hair");
+    case $effect`Of Course It Looks Great`:
+      useSkill_1 = $skill`Check Hair`;
       break;
-    case Effect.get("Oiled Skin"):
-      useItem_1 = Item.get("skin oil");
+    case $effect`Oiled Skin`:
+      useItem_1 = $item`skin oil`;
       break;
-    case Effect.get("Oiled-Up"):
-      useItem_1 = Item.get("pec oil");
+    case $effect`Oiled-Up`:
+      useItem_1 = $item`pec oil`;
       break;
-    case Effect.get("Oilsphere"):
-      useSkill_1 = Skill.get("Oilsphere");
+    case $effect`Oilsphere`:
+      useSkill_1 = $skill`Oilsphere`;
       break;
-    case Effect.get("Offhand Remarkable"):
+    case $effect`Offhand Remarkable`:
       if (!toBoolean(getProperty("_aug13Cast"))) {
         useSkill_1 = Skill.get("Aug. 13th: Left/Off Hander's Day!");
       }
       break;
-    case Effect.get("OMG WTF"):
-      useItem_1 = Item.get("confiscated cell phone");
+    case $effect`OMG WTF`:
+      useItem_1 = $item`confiscated cell phone`;
       break;
-    case Effect.get("One Very Clear Eye"):
-      useItem_1 = Item.get("cyclops eyedrops");
+    case $effect`One Very Clear Eye`:
+      useItem_1 = $item`cyclops eyedrops`;
       break;
-    case Effect.get("Only Dogs Love a Drunken Sailor"):
-      useSkill_1 = Skill.get("Only Dogs Love a Drunken Sailor");
+    case $effect`Only Dogs Love a Drunken Sailor`:
+      useSkill_1 = $skill`Only Dogs Love a Drunken Sailor`;
       break;
-    case Effect.get("Orange Crusher"):
-      useItem_1 = Item.get("pulled orange taffy");
+    case $effect`Orange Crusher`:
+      useItem_1 = $item`pulled orange taffy`;
       break;
-    case Effect.get("Orange Tongue"):
-      useItem_1 = Item.get("orange snowcone");
+    case $effect`Orange Tongue`:
+      useItem_1 = $item`orange snowcone`;
       break;
-    case Effect.get("Paging Betty"):
-      useItem_1 = Item.get("Bettie page");
+    case $effect`Paging Betty`:
+      useItem_1 = $item`Bettie page`;
       break;
-    case Effect.get("Pasta Eyeball"):
+    case $effect`Pasta Eyeball`:
       useSkill_1 = Skill.none;
       break;
-    case Effect.get("Pasta Oneness"):
-      useSkill_1 = Skill.get("Manicotti Meditation");
+    case $effect`Pasta Oneness`:
+      useSkill_1 = $skill`Manicotti Meditation`;
       break;
-    case Effect.get("Patent Aggression"):
-      useItem_1 = Item.get("patent aggression tonic");
+    case $effect`Patent Aggression`:
+      useItem_1 = $item`patent aggression tonic`;
       break;
-    case Effect.get("Patent Alacrity"):
-      useItem_1 = Item.get("patent alacrity tonic");
+    case $effect`Patent Alacrity`:
+      useItem_1 = $item`patent alacrity tonic`;
       break;
-    case Effect.get("Patent Avarice"):
-      useItem_1 = Item.get("patent avarice tonic");
+    case $effect`Patent Avarice`:
+      useItem_1 = $item`patent avarice tonic`;
       break;
-    case Effect.get("Patent Invisibility"):
-      useItem_1 = Item.get("patent invisibility tonic");
+    case $effect`Patent Invisibility`:
+      useItem_1 = $item`patent invisibility tonic`;
       break;
-    case Effect.get("Patent Prevention"):
-      useItem_1 = Item.get("patent preventative tonic");
+    case $effect`Patent Prevention`:
+      useItem_1 = $item`patent preventative tonic`;
       break;
-    case Effect.get("Patent Sallowness"):
-      useItem_1 = Item.get("patent sallowness tonic");
+    case $effect`Patent Sallowness`:
+      useItem_1 = $item`patent sallowness tonic`;
       break;
-    case Effect.get("Patience of the Tortoise"):
-      useSkill_1 = Skill.get("Patience of the Tortoise");
+    case $effect`Patience of the Tortoise`:
+      useSkill_1 = $skill`Patience of the Tortoise`;
       break;
-    case Effect.get("Patient Smile"):
-      useSkill_1 = Skill.get("Patient Smile");
+    case $effect`Patient Smile`:
+      useSkill_1 = $skill`Patient Smile`;
       break;
-    case Effect.get("Paul's Passionate Pop Song"):
-      useSkill_1 = Skill.get("Paul's Passionate Pop Song");
+    case $effect`Paul's Passionate Pop Song`:
+      useSkill_1 = $skill`Paul's Passionate Pop Song`;
       break;
-    case Effect.get("Penne Fedora"):
+    case $effect`Penne Fedora`:
       useSkill_1 = Skill.none;
       break;
-    case Effect.get("Peppermint Bite"):
-      useItem_1 = Item.get("Crimbo peppermint bark");
+    case $effect`Peppermint Bite`:
+      useItem_1 = $item`Crimbo peppermint bark`;
       break;
-    case Effect.get("Peppermint Twisted"):
-      useItem_1 = Item.get("peppermint twist");
+    case $effect`Peppermint Twisted`:
+      useItem_1 = $item`peppermint twist`;
       break;
-    case Effect.get("Perceptive Pressure"):
-      useItem_1 = Item.get("pressurized potion of perception");
+    case $effect`Perceptive Pressure`:
+      useItem_1 = $item`pressurized potion of perception`;
       break;
-    case Effect.get("Perspicacious Pressure"):
-      useItem_1 = Item.get("pressurized potion of perspicacity");
+    case $effect`Perspicacious Pressure`:
+      useItem_1 = $item`pressurized potion of perspicacity`;
       break;
-    case Effect.get("Phorcefullness"):
-      useItem_1 = Item.get("philter of phorce");
+    case $effect`Phorcefullness`:
+      useItem_1 = $item`philter of phorce`;
       break;
-    case Effect.get("Physicali Tea"):
-      useItem_1 = Item.get("cuppa Physicali tea");
+    case $effect`Physicali Tea`:
+      useItem_1 = $item`cuppa Physicali tea`;
       break;
-    case Effect.get("Pill Power"):
-      if (itemAmount(Item.get("miniature power pill")) > 0) {
-        useItem_1 = Item.get("miniature power pill");
+    case $effect`Pill Power`:
+      if (itemAmount($item`miniature power pill`) > 0) {
+        useItem_1 = $item`miniature power pill`;
       } else {
-        useItem_1 = Item.get("power pill");
+        useItem_1 = $item`power pill`;
       }
       break;
-    case Effect.get("Pill Party!"):
-      useItem_1 = Item.get("pill cup");
+    case $effect`Pill Party!`:
+      useItem_1 = $item`pill cup`;
       break;
-    case Effect.get("Pisces in the Skyces"):
-      useItem_1 = Item.get("tobiko marble soda");
+    case $effect`Pisces in the Skyces`:
+      useItem_1 = $item`tobiko marble soda`;
       break;
-    case Effect.get("Psalm of Pointiness"):
-      shrugAT$1(Effect.get("Psalm of Pointiness"));
-      useSkill_1 = Skill.get("The Psalm of Pointiness");
+    case $effect`Psalm of Pointiness`:
+      shrugAT$1($effect`Psalm of Pointiness`);
+      useSkill_1 = $skill`The Psalm of Pointiness`;
       break;
-    case Effect.get("Prayer of Seshat"):
-      useSkill_1 = Skill.get("Prayer of Seshat");
+    case $effect`Prayer of Seshat`:
+      useSkill_1 = $skill`Prayer of Seshat`;
       break;
-    case Effect.get("Pride of the Puffin"):
-      useSkill_1 = Skill.get("Pride of the Puffin");
+    case $effect`Pride of the Puffin`:
+      useSkill_1 = $skill`Pride of the Puffin`;
       break;
-    case Effect.get("Polar Express"):
-      useItem_1 = Item.get("Cloaca Cola Polar");
+    case $effect`Polar Express`:
+      useItem_1 = $item`Cloaca Cola Polar`;
       break;
-    case Effect.get("Polka of Plenty"):
-      useSkill_1 = Skill.get("The Polka of Plenty");
+    case $effect`Polka of Plenty`:
+      useSkill_1 = $skill`The Polka of Plenty`;
       break;
-    case Effect.get("Polonoia"):
-      useItem_1 = Item.get("polo trophy");
+    case $effect`Polonoia`:
+      useItem_1 = $item`polo trophy`;
       break;
-    case Effect.get("Poppy Performance"):
+    case $effect`Poppy Performance`:
       if (auto_haveIdolMicrophone()) {
         if (speculative) {
           return true;
@@ -1495,118 +1503,118 @@ export function buffMaintain$2(
         ret = true;
       }
       break;
-    case Effect.get("Power, Man"):
-      useItem_1 = Item.get("Power-Guy 2000 holo-record");
+    case $effect`Power\, Man`:
+      useItem_1 = $item`Power-Guy 2000 holo-record`;
       break;
-    case Effect.get("Power Ballad of the Arrowsmith"):
-      useSkill_1 = Skill.get("The Power Ballad of the Arrowsmith");
+    case $effect`Power Ballad of the Arrowsmith`:
+      useSkill_1 = $skill`The Power Ballad of the Arrowsmith`;
       break;
-    case Effect.get("Power of Heka"):
-      useSkill_1 = Skill.get("Power of Heka");
+    case $effect`Power of Heka`:
+      useSkill_1 = $skill`Power of Heka`;
       break;
-    case Effect.get("The Power of LOV"):
-      useItem_1 = Item.get("LOV Elixir #3");
+    case $effect`The Power of LOV`:
+      useItem_1 = $item`LOV Elixir #3`;
       break;
-    case Effect.get("Prideful Strut"):
-      useSkill_1 = Skill.get("Walk: Prideful Strut");
+    case $effect`Prideful Strut`:
+      useSkill_1 = $skill`Walk: Prideful Strut`;
       break;
-    case Effect.get("Predjudicetidigitation"):
-      useItem_1 = Item.get("worst candy");
+    case $effect`Predjudicetidigitation`:
+      useItem_1 = $item`worst candy`;
       break;
-    case Effect.get("Protection from Bad Stuff"):
-      useItem_1 = Item.get("scroll of Protection from Bad Stuff");
+    case $effect`Protection from Bad Stuff`:
+      useItem_1 = $item`scroll of Protection from Bad Stuff`;
       break;
-    case Effect.get("Provocative Perkiness"):
-      useItem_1 = Item.get("libation of liveliness");
+    case $effect`Provocative Perkiness`:
+      useItem_1 = $item`libation of liveliness`;
       break;
-    case Effect.get("Puddingskin"):
-      useItem_1 = Item.get("scroll of Puddingskin");
+    case $effect`Puddingskin`:
+      useItem_1 = $item`scroll of Puddingskin`;
       break;
-    case Effect.get("Pulchritudinous Pressure"):
-      useItem_1 = Item.get("pressurized potion of pulchritude");
+    case $effect`Pulchritudinous Pressure`:
+      useItem_1 = $item`pressurized potion of pulchritude`;
       break;
-    case Effect.get("Punchable Face"):
-      useSkill_1 = Skill.get("Extremely Punchable Face");
+    case $effect`Punchable Face`:
+      useSkill_1 = $skill`Extremely Punchable Face`;
       break;
-    case Effect.get("Purity of Spirit"):
-      useItem_1 = Item.get("cold-filtered water");
+    case $effect`Purity of Spirit`:
+      useItem_1 = $item`cold-filtered water`;
       break;
-    case Effect.get("Purr of the Feline"):
-      useSkill_1 = Skill.get("Purr of the Feline");
+    case $effect`Purr of the Feline`:
+      useSkill_1 = $skill`Purr of the Feline`;
       break;
-    case Effect.get("Purple Reign"):
-      useItem_1 = Item.get("pulled violet taffy");
+    case $effect`Purple Reign`:
+      useItem_1 = $item`pulled violet taffy`;
       break;
-    case Effect.get("Purple Tongue"):
-      useItem_1 = Item.get("purple snowcone");
+    case $effect`Purple Tongue`:
+      useItem_1 = $item`purple snowcone`;
       break;
-    case Effect.get("Puzzle Fury"):
-      useItem_1 = Item.get("37x37x37 puzzle cube");
+    case $effect`Puzzle Fury`:
+      useItem_1 = $item`37x37x37 puzzle cube`;
       break;
-    case Effect.get("Pyrite Pride"):
-      useItem_1 = Item.get("pebble of proud pyrite");
+    case $effect`Pyrite Pride`:
+      useItem_1 = $item`pebble of proud pyrite`;
       break;
-    case Effect.get("Pyromania"):
-      useSkill_1 = Skill.get("Pyromania");
+    case $effect`Pyromania`:
+      useSkill_1 = $skill`Pyromania`;
       break;
-    case Effect.get("Queso Fustulento"):
-      useSkill_1 = Skill.get("Queso Fustulento");
+    case $effect`Queso Fustulento`:
+      useSkill_1 = $skill`Queso Fustulento`;
       break;
-    case Effect.get("Quiet Desperation"):
-      useSkill_1 = Skill.get("Quiet Desperation");
+    case $effect`Quiet Desperation`:
+      useSkill_1 = $skill`Quiet Desperation`;
       break;
-    case Effect.get("Quiet Determination"):
-      useSkill_1 = Skill.get("Quiet Determination");
+    case $effect`Quiet Determination`:
+      useSkill_1 = $skill`Quiet Determination`;
       break;
-    case Effect.get("Quiet Judgement"):
-      useSkill_1 = Skill.get("Quiet Judgement");
+    case $effect`Quiet Judgement`:
+      useSkill_1 = $skill`Quiet Judgement`;
       break;
-    case Effect.get("'Roids of the Rhinoceros"):
-      useItem_1 = Item.get("bottle of rhinoceros hormones");
+    case $effect`'Roids of the Rhinoceros`:
+      useItem_1 = $item`bottle of rhinoceros hormones`;
       break;
-    case Effect.get("Rad-Pro Tected"):
-      useItem_1 = Item.get("Rad-Pro (1 oz.)");
+    case $effect`Rad-Pro Tected`:
+      useItem_1 = $item`Rad-Pro (1 oz.)`;
       break;
-    case Effect.get("Radiating Black Body&trade;"):
-      useItem_1 = Item.get("Black Body&trade; spray");
+    case $effect`Radiating Black Body™`:
+      useItem_1 = $item`Black Body™ spray`;
       break;
-    case Effect.get("Rage of the Reindeer"):
-      useSkill_1 = Skill.get("Rage of the Reindeer");
+    case $effect`Rage of the Reindeer`:
+      useSkill_1 = $skill`Rage of the Reindeer`;
       break;
-    case Effect.get("Rainy Soul Miasma"):
-      if (itemAmount(Item.get("thin black candle")) > 0) {
-        useItem_1 = Item.get("thin black candle");
-      } else if (itemAmount(Item.get("Drizzlers&trade; Black Licorice")) > 0) {
-        useItem_1 = Item.get("Drizzlers&trade; Black Licorice");
+    case $effect`Rainy Soul Miasma`:
+      if (itemAmount($item`thin black candle`) > 0) {
+        useItem_1 = $item`thin black candle`;
+      } else if (itemAmount($item`Drizzlers™ Black Licorice`) > 0) {
+        useItem_1 = $item`Drizzlers™ Black Licorice`;
       }
       break;
-    case Effect.get("Ready to Snap"):
-      useItem_1 = Item.get("ginger snaps");
+    case $effect`Ready to Snap`:
+      useItem_1 = $item`ginger snaps`;
       break;
-    case Effect.get("Really Quite Poisoned"):
-      useSkill_1 = Skill.get("Disco Nap");
+    case $effect`Really Quite Poisoned`:
+      useSkill_1 = $skill`Disco Nap`;
       break;
-    case Effect.get("Record Hunger"):
-      useItem_1 = Item.get("The Pigs holo-record");
+    case $effect`Record Hunger`:
+      useItem_1 = $item`The Pigs holo-record`;
       break;
-    case Effect.get("Red Lettered"):
-      useItem_1 = Item.get("red letter");
+    case $effect`Red Lettered`:
+      useItem_1 = $item`red letter`;
       break;
-    case Effect.get("Red Door Syndrome"):
-      useItem_1 = Item.get("can of black paint");
+    case $effect`Red Door Syndrome`:
+      useItem_1 = $item`can of black paint`;
       break;
-    case Effect.get("Red Tongue"):
-      useItem_1 = Item.get("red snowcone");
+    case $effect`Red Tongue`:
+      useItem_1 = $item`red snowcone`;
       break;
-    case Effect.get("Reliable Backup"):
-      useSkill_1 = Skill.get("Call For Backup");
+    case $effect`Reliable Backup`:
+      useSkill_1 = $skill`Call For Backup`;
       break;
-    case Effect.get("Reptilian Fortitude"):
-      if (auto_have_skill(Skill.get("Reptilian Fortitude")) && acquireTotem()) {
-        useSkill_1 = Skill.get("Reptilian Fortitude");
+    case $effect`Reptilian Fortitude`:
+      if (auto_have_skill($skill`Reptilian Fortitude`) && acquireTotem()) {
+        useSkill_1 = $skill`Reptilian Fortitude`;
       }
       break;
-    case Effect.get("Romantically Roused"):
+    case $effect`Romantically Roused`:
       if (auto_haveIdolMicrophone()) {
         if (speculative) {
           return true;
@@ -1615,76 +1623,76 @@ export function buffMaintain$2(
         ret = true;
       }
       break;
-    case Effect.get("A Rose by Any Other Material"):
-      useItem_1 = Item.get("squeaky toy rose");
+    case $effect`A Rose by Any Other Material`:
+      useItem_1 = $item`squeaky toy rose`;
       break;
-    case Effect.get("Rosewater Mark"):
-      useItem_1 = Item.get("old rosewater cream");
+    case $effect`Rosewater Mark`:
+      useItem_1 = $item`old rosewater cream`;
       break;
-    case Effect.get("Rotten Memories"):
-      useSkill_1 = Skill.get("Rotten Memories");
+    case $effect`Rotten Memories`:
+      useSkill_1 = $skill`Rotten Memories`;
       break;
-    case Effect.get("Ruthlessly Efficient"):
-      if (isUnrestricted(Item.get("Crimbot ROM: Ruthless Efficiency"))) {
-        useSkill_1 = Skill.get("Ruthless Efficiency");
+    case $effect`Ruthlessly Efficient`:
+      if (isUnrestricted($item`Crimbot ROM: Ruthless Efficiency`)) {
+        useSkill_1 = $skill`Ruthless Efficiency`;
       }
       break;
-    case Effect.get("Salamander In Your Stomach"):
-      useItem_1 = Item.get("salamander slurry");
+    case $effect`Salamander In Your Stomach`:
+      useItem_1 = $item`salamander slurry`;
       break;
-    case Effect.get("Saucemastery"):
-      useSkill_1 = Skill.get("Sauce Contemplation");
+    case $effect`Saucemastery`:
+      useSkill_1 = $skill`Sauce Contemplation`;
       break;
-    case Effect.get("Sauce Monocle"):
-      useSkill_1 = Skill.get("Sauce Monocle");
+    case $effect`Sauce Monocle`:
+      useSkill_1 = $skill`Sauce Monocle`;
       break;
-    case Effect.get("Savage Beast Inside"):
-      useItem_1 = Item.get("jar of &quot;Creole Lady&quot; marrrmalade");
+    case $effect`Savage Beast Inside`:
+      useItem_1 = $item`jar of "Creole Lady" marrrmalade`;
       break;
-    case Effect.get("Scariersauce"):
-      mustEquip = Item.get("velour viscometer");
-      useSkill_1 = Skill.get("Scarysauce");
+    case $effect`Scariersauce`:
+      mustEquip = $item`velour viscometer`;
+      useSkill_1 = $skill`Scarysauce`;
       break;
-    case Effect.get("Scarysauce"):
-      useSkill_1 = Skill.get("Scarysauce");
+    case $effect`Scarysauce`:
+      useSkill_1 = $skill`Scarysauce`;
       break;
-    case Effect.get("Scavengers Scavenging"):
-      useSkill_1 = Skill.get("Scavenge");
+    case $effect`Scavengers Scavenging`:
+      useSkill_1 = $skill`Scavenge`;
       break;
-    case Effect.get("Scowl of the Auk"):
-      useSkill_1 = Skill.get("Scowl of the Auk");
+    case $effect`Scowl of the Auk`:
+      useSkill_1 = $skill`Scowl of the Auk`;
       break;
-    case Effect.get("Scorched Earth"):
-      useItem_1 = Item.get("Napalm In The Morning&trade; candle");
+    case $effect`Scorched Earth`:
+      useItem_1 = $item`Napalm In The Morning™ candle`;
       break;
-    case Effect.get("Screaming!  SCREAMING!  AAAAAAAH!"):
-      useSkill_1 = Skill.get("Powerful Vocal Chords");
+    case $effect`Screaming!  SCREAMING!  AAAAAAAH!`:
+      useSkill_1 = $skill`Powerful Vocal Chords`;
       break;
-    case Effect.get("Seal Clubbing Frenzy"):
-      useSkill_1 = Skill.get("Seal Clubbing Frenzy");
+    case $effect`Seal Clubbing Frenzy`:
+      useSkill_1 = $skill`Seal Clubbing Frenzy`;
       break;
-    case Effect.get("Sealed Brain"):
-      useItem_1 = Item.get("seal-brain elixir");
+    case $effect`Sealed Brain`:
+      useItem_1 = $item`seal-brain elixir`;
       break;
-    case Effect.get("Seeing Colors"):
-      useItem_1 = Item.get("funky dried mushroom");
+    case $effect`Seeing Colors`:
+      useItem_1 = $item`funky dried mushroom`;
       break;
-    case Effect.get("Sepia Tan"):
-      useItem_1 = Item.get("old bronzer");
+    case $effect`Sepia Tan`:
+      useItem_1 = $item`old bronzer`;
       break;
-    case Effect.get("Serendipi Tea"):
-      useItem_1 = Item.get("cuppa Serendipi tea");
+    case $effect`Serendipi Tea`:
+      useItem_1 = $item`cuppa Serendipi tea`;
       break;
-    case Effect.get("Serendipity"):
+    case $effect`Serendipity`:
       if (!toBoolean(getProperty("_aug18Cast"))) {
-        useSkill_1 = Skill.get("Aug. 18th: Serendipity Day!");
+        useSkill_1 = $skill`Aug. 18th: Serendipity Day!`;
       }
       break;
-    case Effect.get("Seriously Mutated"):
-      useItem_1 = Item.get("extra-potent gremlin mutagen");
+    case $effect`Seriously Mutated`:
+      useItem_1 = $item`extra-potent gremlin mutagen`;
       break;
-    case Effect.get("Shadow Waters"):
-      if (itemAmount(Item.get("Rufus's shadow lodestone")) > 0) {
+    case $effect`Shadow Waters`:
+      if (itemAmount($item`Rufus's shadow lodestone`) > 0) {
         if (speculative) {
           return true;
         }
@@ -1699,88 +1707,88 @@ export function buffMaintain$2(
         ret = true;
       }
       break;
-    case Effect.get("Shells of the Damned"):
-      useItem_1 = Item.get("cyan seashell");
+    case $effect`Shells of the Damned`:
+      useItem_1 = $item`cyan seashell`;
       break;
-    case Effect.get("Shield of the Pastalord"):
-      useSkill_1 = Skill.get("Shield of the Pastalord");
-      if (myClass() !== Class.get("Pastamancer")) {
-        buff = Effect.get("Flimsy Shield of the Pastalord");
+    case $effect`Shield of the Pastalord`:
+      useSkill_1 = $skill`Shield of the Pastalord`;
+      if (myClass() !== $class`Pastamancer`) {
+        buff = $effect`Flimsy Shield of the Pastalord`;
       }
       break;
-    case Effect.get("Shelter of Shed"):
-      useSkill_1 = Skill.get("Shelter of Shed");
+    case $effect`Shelter of Shed`:
+      useSkill_1 = $skill`Shelter of Shed`;
       break;
-    case Effect.get("Shifted Reality"):
-      useSkill_1 = Skill.get("Reality Shift");
+    case $effect`Shifted Reality`:
+      useSkill_1 = $skill`Reality Shift`;
       break;
-    case Effect.get("Shortly Hydrated"):
-      useItem_1 = Item.get("short glass of water");
+    case $effect`Shortly Hydrated`:
+      useItem_1 = $item`short glass of water`;
       break;
-    case Effect.get("Shrieking Weasel"):
-      useItem_1 = Item.get("Shrieking Weasel holo-record");
+    case $effect`Shrieking Weasel`:
+      useItem_1 = $item`Shrieking Weasel holo-record`;
       break;
-    case Effect.get("Simmering"):
-      useSkill_1 = Skill.get("Simmer");
+    case $effect`Simmering`:
+      useSkill_1 = $skill`Simmer`;
       break;
-    case Effect.get("Simply Invisible"):
-      useItem_1 = Item.get("invisibility potion");
+    case $effect`Simply Invisible`:
+      useItem_1 = $item`invisibility potion`;
       break;
-    case Effect.get("Simply Irresistible"):
-      useItem_1 = Item.get("irresistibility potion");
+    case $effect`Simply Irresistible`:
+      useItem_1 = $item`irresistibility potion`;
       break;
-    case Effect.get("Simply Irritable"):
-      useItem_1 = Item.get("irritability potion");
+    case $effect`Simply Irritable`:
+      useItem_1 = $item`irritability potion`;
       break;
-    case Effect.get("Singer's Faithful Ocelot"):
-      useSkill_1 = Skill.get("Singer's Faithful Ocelot");
+    case $effect`Singer's Faithful Ocelot`:
+      useSkill_1 = $skill`Singer's Faithful Ocelot`;
       break;
-    case Effect.get("Sinuses For Miles"):
-      useItem_1 = Item.get("Mick's IcyVapoHotness Inhaler");
+    case $effect`Sinuses For Miles`:
+      useItem_1 = $item`Mick's IcyVapoHotness Inhaler`;
       break;
-    case Effect.get("Sleaze-Resistant Trousers"):
-      useItem_1 = Item.get("sleaze powder");
+    case $effect`Sleaze-Resistant Trousers`:
+      useItem_1 = $item`sleaze powder`;
       break;
-    case Effect.get("Sleazy Hands"):
-      useItem_1 = Item.get("lotion of sleaziness");
+    case $effect`Sleazy Hands`:
+      useItem_1 = $item`lotion of sleaziness`;
       break;
-    case Effect.get("Slightly Larger Than Usual"):
-      useItem_1 = Item.get("giant giant moth dust");
+    case $effect`Slightly Larger Than Usual`:
+      useItem_1 = $item`giant giant moth dust`;
       break;
-    case Effect.get("Slinking Noodle Glob"):
+    case $effect`Slinking Noodle Glob`:
       useSkill_1 = Skill.none;
       break;
-    case Effect.get("Slippery as a Seal"):
-      if (auto_have_skill(Skill.get("Seal Clubbing Frenzy"))) {
-        mustEquip = Item.get("April Shower Thoughts shield");
-        useSkill_1 = Skill.get("Seal Clubbing Frenzy");
+    case $effect`Slippery as a Seal`:
+      if (auto_have_skill($skill`Seal Clubbing Frenzy`)) {
+        mustEquip = $item`April Shower Thoughts shield`;
+        useSkill_1 = $skill`Seal Clubbing Frenzy`;
       }
       break;
-    case Effect.get("Slippery Oiliness"):
-      useItem_1 = Item.get("oil of slipperiness");
+    case $effect`Slippery Oiliness`:
+      useItem_1 = $item`oil of slipperiness`;
       break;
-    case Effect.get("Smelly Pants"):
-      useItem_1 = Item.get("stench powder");
+    case $effect`Smelly Pants`:
+      useItem_1 = $item`stench powder`;
       break;
-    case Effect.get("Smooth Movements"):
-      useSkill_1 = Skill.get("Smooth Movement");
+    case $effect`Smooth Movements`:
+      useSkill_1 = $skill`Smooth Movement`;
       break;
-    case Effect.get("Snarl of the Timberwolf"):
-      useSkill_1 = Skill.get("Snarl of the Timberwolf");
+    case $effect`Snarl of the Timberwolf`:
+      useSkill_1 = $skill`Snarl of the Timberwolf`;
       break;
-    case Effect.get("Snarl of Three Timberwolves"):
-      mustEquip = Item.get("velour voulge");
-      useSkill_1 = Skill.get("Snarl of the Timberwolf");
+    case $effect`Snarl of Three Timberwolves`:
+      mustEquip = $item`velour voulge`;
+      useSkill_1 = $skill`Snarl of the Timberwolf`;
       break;
-    case Effect.get("Snow Shoes"):
-      useItem_1 = Item.get("snow cleats");
+    case $effect`Snow Shoes`:
+      useItem_1 = $item`snow cleats`;
       break;
-    case Effect.get("So You Can Work More..."):
-      useItem_1 = Item.get("baggie of powdered sugar");
+    case $effect`So You Can Work More...`:
+      useItem_1 = $item`baggie of powdered sugar`;
       break;
-    case Effect.get("Soles of Glass"):
+    case $effect`Soles of Glass`:
       if (
-        auto_have_familiar(Familiar.get("Grim Brother")) &&
+        auto_have_familiar($familiar`Grim Brother`) &&
         !toBoolean(getProperty("_grimBuff"))
       ) {
         if (speculative) {
@@ -1790,86 +1798,86 @@ export function buffMaintain$2(
         ret = true;
       }
       break;
-    case Effect.get("Somewhat Poisoned"):
-      useSkill_1 = Skill.get("Disco Nap");
+    case $effect`Somewhat Poisoned`:
+      useSkill_1 = $skill`Disco Nap`;
       break;
-    case Effect.get("Song of Accompaniment"):
-      useSkill_1 = Skill.get("Song of Accompaniment");
+    case $effect`Song of Accompaniment`:
+      useSkill_1 = $skill`Song of Accompaniment`;
       break;
-    case Effect.get("Song of Battle"):
-      useSkill_1 = Skill.get("Song of Battle");
+    case $effect`Song of Battle`:
+      useSkill_1 = $skill`Song of Battle`;
       break;
-    case Effect.get("Song of Bravado"):
-      useSkill_1 = Skill.get("Song of Bravado");
+    case $effect`Song of Bravado`:
+      useSkill_1 = $skill`Song of Bravado`;
       break;
-    case Effect.get("Song of Cockiness"):
-      useSkill_1 = Skill.get("Song of Cockiness");
+    case $effect`Song of Cockiness`:
+      useSkill_1 = $skill`Song of Cockiness`;
       break;
-    case Effect.get("Song of Fortune"):
-      useSkill_1 = Skill.get("Song of Fortune");
+    case $effect`Song of Fortune`:
+      useSkill_1 = $skill`Song of Fortune`;
       break;
-    case Effect.get("Song of the Glorious Lunch"):
-      useSkill_1 = Skill.get("Song of the Glorious Lunch");
+    case $effect`Song of the Glorious Lunch`:
+      useSkill_1 = $skill`Song of the Glorious Lunch`;
       break;
-    case Effect.get("Song of the North"):
-      useSkill_1 = Skill.get("Song of the North");
+    case $effect`Song of the North`:
+      useSkill_1 = $skill`Song of the North`;
       break;
-    case Effect.get("Song of Sauce"):
-      useSkill_1 = Skill.get("Song of Sauce");
+    case $effect`Song of Sauce`:
+      useSkill_1 = $skill`Song of Sauce`;
       break;
-    case Effect.get("Song of Slowness"):
-      useSkill_1 = Skill.get("Song of Slowness");
+    case $effect`Song of Slowness`:
+      useSkill_1 = $skill`Song of Slowness`;
       break;
-    case Effect.get("Song of Solitude"):
-      useSkill_1 = Skill.get("Song of Solitude");
+    case $effect`Song of Solitude`:
+      useSkill_1 = $skill`Song of Solitude`;
       break;
-    case Effect.get("Song of Starch"):
-      useSkill_1 = Skill.get("Song of Starch");
+    case $effect`Song of Starch`:
+      useSkill_1 = $skill`Song of Starch`;
       break;
-    case Effect.get("The Sonata of Sneakiness"):
-      useSkill_1 = Skill.get("The Sonata of Sneakiness");
+    case $effect`The Sonata of Sneakiness`:
+      useSkill_1 = $skill`The Sonata of Sneakiness`;
       break;
-    case Effect.get("Soothing Flute"):
-      useSkill_1 = Skill.get("Soothing Flute");
+    case $effect`Soothing Flute`:
+      useSkill_1 = $skill`Soothing Flute`;
       break;
-    case Effect.get("Soulerskates"):
-      useSkill_1 = Skill.get("Soul Rotation");
+    case $effect`Soulerskates`:
+      useSkill_1 = $skill`Soul Rotation`;
       break;
-    case Effect.get("Sour Softshoe"):
-      useItem_1 = Item.get("pulled yellow taffy");
+    case $effect`Sour Softshoe`:
+      useItem_1 = $item`pulled yellow taffy`;
       break;
-    case Effect.get("Spectral Awareness"):
-      useSkill_1 = Skill.get("Spectral Awareness");
+    case $effect`Spectral Awareness`:
+      useSkill_1 = $skill`Spectral Awareness`;
       break;
-    case Effect.get("Spice Haze"):
-      useSkill_1 = Skill.get("Bind Spice Ghost");
+    case $effect`Spice Haze`:
+      useSkill_1 = $skill`Bind Spice Ghost`;
       break;
-    case Effect.get("Spiky Hair"):
-      useItem_1 = Item.get("super-spiky hair gel");
+    case $effect`Spiky Hair`:
+      useItem_1 = $item`super-spiky hair gel`;
       break;
-    case Effect.get("Spiky Shell"):
-      if (auto_have_skill(Skill.get("Spiky Shell")) && acquireTotem()) {
-        useSkill_1 = Skill.get("Spiky Shell");
+    case $effect`Spiky Shell`:
+      if (auto_have_skill($skill`Spiky Shell`) && acquireTotem()) {
+        useSkill_1 = $skill`Spiky Shell`;
       }
       break;
-    case Effect.get("Spirit of the Mountains"):
+    case $effect`Spirit of the Mountains`:
       if (!toBoolean(getProperty("_aug1Cast"))) {
-        useSkill_1 = Skill.get("Aug. 1st: Mountain Climbing Day!");
+        useSkill_1 = $skill`Aug. 1st: Mountain Climbing Day!`;
       }
       break;
-    case Effect.get("Spiritually Awake"):
-      useItem_1 = Item.get("holy spring water");
+    case $effect`Spiritually Awake`:
+      useItem_1 = $item`holy spring water`;
       break;
-    case Effect.get("Spiritually Aware"):
-      useItem_1 = Item.get("spirit beer");
+    case $effect`Spiritually Aware`:
+      useItem_1 = $item`spirit beer`;
       break;
-    case Effect.get("Spiritually Awash"):
-      useItem_1 = Item.get("sacramental wine");
+    case $effect`Spiritually Awash`:
+      useItem_1 = $item`sacramental wine`;
       break;
-    case Effect.get("Spiro Gyro"):
-      useItem_1 = Item.get("programmable turtle");
+    case $effect`Spiro Gyro`:
+      useItem_1 = $item`programmable turtle`;
       break;
-    case Effect.get("Spitting Rhymes"):
+    case $effect`Spitting Rhymes`:
       if (auto_haveIdolMicrophone()) {
         if (speculative) {
           return true;
@@ -1878,198 +1886,187 @@ export function buffMaintain$2(
         ret = true;
       }
       break;
-    case Effect.get("Spooky Hands"):
-      useItem_1 = Item.get("lotion of spookiness");
+    case $effect`Spooky Hands`:
+      useItem_1 = $item`lotion of spookiness`;
       break;
-    case Effect.get("Spooky Weapon"):
-      useItem_1 = Item.get("spooky nuggets");
+    case $effect`Spooky Weapon`:
+      useItem_1 = $item`spooky nuggets`;
       break;
-    case Effect.get("Spookypants"):
-      useItem_1 = Item.get("spooky powder");
+    case $effect`Spookypants`:
+      useItem_1 = $item`spooky powder`;
       break;
-    case Effect.get("Springy Fusilli"):
-      useSkill_1 = Skill.get("Springy Fusilli");
+    case $effect`Springy Fusilli`:
+      useSkill_1 = $skill`Springy Fusilli`;
       break;
-    case Effect.get("Squatting and Thrusting"):
-      useItem_1 = Item.get("Squat-Thrust Magazine");
+    case $effect`Squatting and Thrusting`:
+      useItem_1 = $item`Squat-Thrust Magazine`;
       break;
-    case Effect.get("Stabilizing Oiliness"):
-      useItem_1 = Item.get("oil of stability");
+    case $effect`Stabilizing Oiliness`:
+      useItem_1 = $item`oil of stability`;
       break;
-    case Effect.get("Standard Issue Bravery"):
-      useItem_1 = Item.get("CSA bravery badge");
+    case $effect`Standard Issue Bravery`:
+      useItem_1 = $item`CSA bravery badge`;
       break;
-    case Effect.get("Steak Skirt"):
-      useSkill_1 = Skill.get("Steak Skirt");
+    case $effect`Steak Skirt`:
+      useSkill_1 = $skill`Steak Skirt`;
       break;
-    case Effect.get("Steely-Eyed Squint"):
-      useSkill_1 = Skill.get("Steely-Eyed Squint");
+    case $effect`Steely-Eyed Squint`:
+      useSkill_1 = $skill`Steely-Eyed Squint`;
       break;
-    case Effect.get("Steroid Boost"):
-      useItem_1 = Item.get("Knob Goblin steroids");
+    case $effect`Steroid Boost`:
+      useItem_1 = $item`Knob Goblin steroids`;
       break;
-    case Effect.get("Stewing"):
-      useSkill_1 = Skill.get("Stew");
+    case $effect`Stewing`:
+      useSkill_1 = $skill`Stew`;
       break;
-    case Effect.get("Stevedave's Shanty of Superiority"):
-      useSkill_1 = Skill.get("Stevedave's Shanty of Superiority");
+    case $effect`Stevedave's Shanty of Superiority`:
+      useSkill_1 = $skill`Stevedave's Shanty of Superiority`;
       break;
-    case Effect.get("Stickler for Promptness"):
-      useItem_1 = Item.get("potion of punctual companionship");
+    case $effect`Stickler for Promptness`:
+      useItem_1 = $item`potion of punctual companionship`;
       break;
-    case Effect.get("Stinky Hands"):
-      useItem_1 = Item.get("lotion of stench");
+    case $effect`Stinky Hands`:
+      useItem_1 = $item`lotion of stench`;
       break;
-    case Effect.get("Stinky Weapon"):
-      useItem_1 = Item.get("stench nuggets");
+    case $effect`Stinky Weapon`:
+      useItem_1 = $item`stench nuggets`;
       break;
-    case Effect.get("Stone-Faced"):
-      useItem_1 = Item.get("stone wool");
+    case $effect`Stone-Faced`:
+      useItem_1 = $item`stone wool`;
       break;
-    case Effect.get("Strength of the Tortoise"):
-      if (auto_have_skill(Skill.get("Patience of the Tortoise"))) {
-        mustEquip = Item.get("April Shower Thoughts shield");
-        useSkill_1 = Skill.get("Patience of the Tortoise");
+    case $effect`Strength of the Tortoise`:
+      if (auto_have_skill($skill`Patience of the Tortoise`)) {
+        mustEquip = $item`April Shower Thoughts shield`;
+        useSkill_1 = $skill`Patience of the Tortoise`;
       }
       break;
-    case Effect.get("Stretched"):
-      useSkill_1 = Skill.get("Stretch");
+    case $effect`Stretched`:
+      useSkill_1 = $skill`Stretch`;
       break;
-    case Effect.get("Strong Grip"):
-      useItem_1 = Item.get("finger exerciser");
+    case $effect`Strong Grip`:
+      useItem_1 = $item`finger exerciser`;
       break;
-    case Effect.get("Strong Resolve"):
-      useItem_1 = Item.get("resolution: be stronger");
+    case $effect`Strong Resolve`:
+      useItem_1 = $item`resolution: be stronger`;
       break;
-    case Effect.get("Sugar Rush"):
-      for (const it of Item.get([
-        "Crimbo fudge",
-        "Crimbo peppermint bark",
-        "Crimbo candied pecan",
-        "breath mint",
-        "Tasty Fun Good rice candy",
-        "that gum you like",
-        "Angry Farmer candy",
-      ])) {
+    case $effect`Sugar Rush`:
+      for (const it of $items`Crimbo fudge, Crimbo peppermint bark, Crimbo candied pecan, breath mint, Tasty Fun Good rice candy, that gum you like, Angry Farmer candy`) {
         if (itemAmount(it) > 0) {
           useItem_1 = it;
         }
       }
       break;
-    case Effect.get("Superdrifting"):
-      useItem_1 = Item.get("Superdrifter holo-record");
+    case $effect`Superdrifting`:
+      useItem_1 = $item`Superdrifter holo-record`;
       break;
-    case Effect.get("Superheroic"):
-      useItem_1 = Item.get("confiscated comic book");
+    case $effect`Superheroic`:
+      useItem_1 = $item`confiscated comic book`;
       break;
-    case Effect.get("Superhuman Sarcasm"):
-      useItem_1 = Item.get("serum of sarcasm");
+    case $effect`Superhuman Sarcasm`:
+      useItem_1 = $item`serum of sarcasm`;
       break;
-    case Effect.get("Suspicious Gaze"):
-      useSkill_1 = Skill.get("Suspicious Gaze");
+    case $effect`Suspicious Gaze`:
+      useSkill_1 = $skill`Suspicious Gaze`;
       break;
-    case Effect.get("Sweat Equity"):
+    case $effect`Sweat Equity`:
       if (auto_haveBCZ()) {
         mustEquip = auto_getItemToEquipBCZ();
-        useSkill_1 = Skill.get("BCZ: Sweat Equity");
+        useSkill_1 = $skill`BCZ: Sweat Equity`;
       }
       break;
-    case Effect.get("Sweet Heart"):
-      useItem_1 = Item.get("love song of sugary cuteness");
+    case $effect`Sweet Heart`:
+      useItem_1 = $item`love song of sugary cuteness`;
       break;
-    case Effect.get("Sweet, Nuts"):
-      useItem_1 = Item.get("Crimbo candied pecan");
+    case $effect`Sweet\, Nuts`:
+      useItem_1 = $item`Crimbo candied pecan`;
       break;
-    case Effect.get("Sweetbreads Flamb&eacute;"):
-      useItem_1 = Item.get("Greek fire");
+    case $effect`Sweetbreads Flambé`:
+      useItem_1 = $item`Greek fire`;
       break;
-    case Effect.get("Takin' It Greasy"):
-      useSkill_1 = Skill.get("Grease Up");
+    case $effect`Takin' It Greasy`:
+      useSkill_1 = $skill`Grease Up`;
       break;
-    case Effect.get("Tapased Out"):
-      useItem_1 = Item.get("spinal tapas");
+    case $effect`Tapased Out`:
+      useItem_1 = $item`spinal tapas`;
       break;
-    case Effect.get("Taped Up"):
-      useSkill_1 = Skill.get("Tape Up");
+    case $effect`Taped Up`:
+      useSkill_1 = $skill`Tape Up`;
       break;
-    case Effect.get("Taunt of Horus"):
-      useItem_1 = Item.get("talisman of Horus");
+    case $effect`Taunt of Horus`:
+      useItem_1 = $item`talisman of Horus`;
       break;
-    case Effect.get("Temporarily Filtered"):
-      useItem_1 = Item.get("single-use dust mask");
+    case $effect`Temporarily Filtered`:
+      useItem_1 = $item`single-use dust mask`;
       break;
-    case Effect.get("Temporary Lycanthropy"):
-      useItem_1 = Item.get("blood of the Wereseal");
+    case $effect`Temporary Lycanthropy`:
+      useItem_1 = $item`blood of the Wereseal`;
       break;
-    case Effect.get("Tenacity of the Snapper"):
-      if (
-        auto_have_skill(Skill.get("Tenacity of the Snapper")) &&
-        acquireTotem()
-      ) {
-        useSkill_1 = Skill.get("Tenacity of the Snapper");
+    case $effect`Tenacity of the Snapper`:
+      if (auto_have_skill($skill`Tenacity of the Snapper`) && acquireTotem()) {
+        useSkill_1 = $skill`Tenacity of the Snapper`;
       }
       break;
-    case Effect.get("Tenderized"):
-      useSkill_1 = Skill.get("Self-Tenderize");
+    case $effect`Tenderized`:
+      useSkill_1 = $skill`Self-Tenderize`;
       break;
-    case Effect.get("The Grass...  Is Blue..."):
-      useItem_1 = Item.get("blue grass");
+    case $effect`The Grass...  Is Blue...`:
+      useItem_1 = $item`blue grass`;
       break;
-    case Effect.get("There Is A Spoon"):
-      useItem_1 = Item.get("dented spoon");
+    case $effect`There Is A Spoon`:
+      useItem_1 = $item`dented spoon`;
       break;
-    case Effect.get("They've Got Fleas"):
-      useItem_1 = Item.get("out-of-work circus flea");
+    case $effect`They've Got Fleas`:
+      useItem_1 = $item`out-of-work circus flea`;
       break;
-    case Effect.get("This Is Where You're a Viking"):
-      useItem_1 = Item.get("VYKEA woadpaint");
+    case $effect`This Is Where You're a Viking`:
+      useItem_1 = $item`VYKEA woadpaint`;
       break;
-    case Effect.get("Thoughtful Empathy"):
-      if (auto_have_skill(Skill.get("Empathy of the Newt"))) {
-        mustEquip = Item.get("April Shower Thoughts shield");
-        useSkill_1 = Skill.get("Empathy of the Newt");
+    case $effect`Thoughtful Empathy`:
+      if (auto_have_skill($skill`Empathy of the Newt`)) {
+        mustEquip = $item`April Shower Thoughts shield`;
+        useSkill_1 = $skill`Empathy of the Newt`;
       }
       break;
-    case Effect.get("Throwing Some Shade"):
-      useItem_1 = Item.get("shady shades");
+    case $effect`Throwing Some Shade`:
+      useItem_1 = $item`shady shades`;
       break;
-    case Effect.get("Ticking Clock"):
-      useItem_1 = Item.get("cheap wind-up clock");
+    case $effect`Ticking Clock`:
+      useItem_1 = $item`cheap wind-up clock`;
       break;
-    case Effect.get("Tingling Insides"):
-      useItem_1 = Item.get("electric mushroom");
+    case $effect`Tingling Insides`:
+      useItem_1 = $item`electric mushroom`;
       break;
-    case Effect.get("Tingly Tongue"):
-      useItem_1 = Item.get("spare battery");
+    case $effect`Tingly Tongue`:
+      useItem_1 = $item`spare battery`;
       break;
-    case Effect.get("Toad In The Hole"):
-      useItem_1 = Item.get("anti-anti-antidote");
+    case $effect`Toad In The Hole`:
+      useItem_1 = $item`anti-anti-antidote`;
       break;
-    case Effect.get("Tomato Power"):
-      useItem_1 = Item.get("tomato juice of powerful power");
+    case $effect`Tomato Power`:
+      useItem_1 = $item`tomato juice of powerful power`;
       break;
-    case Effect.get("Too Shamed"):
-      useItem_1 = Item.get("shim of shame shale");
+    case $effect`Too Shamed`:
+      useItem_1 = $item`shim of shame shale`;
       break;
-    case Effect.get("Tortious"):
-      useItem_1 = Item.get("mocking turtle");
+    case $effect`Tortious`:
+      useItem_1 = $item`mocking turtle`;
       break;
-    case Effect.get("Tricky Timpani"):
-      useSkill_1 = Skill.get("Tricky Timpani");
+    case $effect`Tricky Timpani`:
+      useSkill_1 = $skill`Tricky Timpani`;
       break;
-    case Effect.get("Triple-Sized"):
+    case $effect`Triple-Sized`:
       useSkill_1 = Skill.none;
       break;
-    case Effect.get("Truly Gritty"):
-      useItem_1 = Item.get("true grit");
+    case $effect`Truly Gritty`:
+      useItem_1 = $item`true grit`;
       break;
-    case Effect.get("Tubes of Universal Meat"):
-      if (auto_have_skill(Skill.get("Manicotti Meditation"))) {
-        mustEquip = Item.get("April Shower Thoughts shield");
-        useSkill_1 = Skill.get("Manicotti Meditation");
+    case $effect`Tubes of Universal Meat`:
+      if (auto_have_skill($skill`Manicotti Meditation`)) {
+        mustEquip = $item`April Shower Thoughts shield`;
+        useSkill_1 = $skill`Manicotti Meditation`;
       }
       break;
-    case Effect.get("Twangy"):
+    case $effect`Twangy`:
       if (auto_haveIdolMicrophone()) {
         if (speculative) {
           return true;
@@ -2078,83 +2075,83 @@ export function buffMaintain$2(
         ret = true;
       }
       break;
-    case Effect.get("Twen Tea"):
-      useItem_1 = Item.get("cuppa Twen tea");
+    case $effect`Twen Tea`:
+      useItem_1 = $item`cuppa Twen tea`;
       break;
-    case Effect.get("Twinkly Weapon"):
-      useItem_1 = Item.get("twinkly nuggets");
+    case $effect`Twinkly Weapon`:
+      useItem_1 = $item`twinkly nuggets`;
       break;
-    case Effect.get("Ultra-Soft Steps"):
-      useItem_1 = Item.get("ultra-soft ferns");
+    case $effect`Ultra-Soft Steps`:
+      useItem_1 = $item`ultra-soft ferns`;
       break;
-    case Effect.get("Ultraheart"):
-      useSkill_1 = Skill.get("Heartstone: %buff");
+    case $effect`Ultraheart`:
+      useSkill_1 = $skill`Heartstone: %buff`;
       break;
-    case Effect.get("Unmuffled"):
+    case $effect`Unmuffled`:
       if (getProperty("peteMotorbikeMuffler") === "Extra-Loud Muffler") {
-        useSkill_1 = Skill.get("Rev Engine");
+        useSkill_1 = $skill`Rev Engine`;
       }
       break;
-    case Effect.get("Unrunnable Face"):
-      useItem_1 = Item.get("runproof mascara");
+    case $effect`Unrunnable Face`:
+      useItem_1 = $item`runproof mascara`;
       break;
-    case Effect.get("Unusual Perspective"):
-      useItem_1 = Item.get("unusual oil");
+    case $effect`Unusual Perspective`:
+      useItem_1 = $item`unusual oil`;
       break;
-    case Effect.get("Up To 11"):
+    case $effect`Up To 11`:
       if (auto_haveBCZ()) {
         mustEquip = auto_getItemToEquipBCZ();
-        useSkill_1 = Skill.get("BCZ: Dial it up to 11");
+        useSkill_1 = $skill`BCZ: Dial it up to 11`;
       }
       break;
-    case Effect.get("Ur-Kel's Aria of Annoyance"):
-      useSkill_1 = Skill.get("Ur-Kel's Aria of Annoyance");
+    case $effect`Ur-Kel's Aria of Annoyance`:
+      useSkill_1 = $skill`Ur-Kel's Aria of Annoyance`;
       break;
-    case Effect.get("Using Protection"):
-      useItem_1 = Item.get("orcish rubber");
+    case $effect`Using Protection`:
+      useItem_1 = $item`orcish rubber`;
       break;
-    case Effect.get("Visions of the Deep Dark Deeps"):
-      useSkill_1 = Skill.get("Deep Dark Visions");
+    case $effect`Visions of the Deep Dark Deeps`:
+      useSkill_1 = $skill`Deep Dark Visions`;
       break;
-    case Effect.get("Vital"):
-      useItem_1 = Item.get("Doc Galaktik's Vitality Serum");
+    case $effect`Vital`:
+      useItem_1 = $item`Doc Galaktik's Vitality Serum`;
       break;
-    case Effect.get("Vitali Tea"):
-      useItem_1 = Item.get("cuppa Vitali tea");
+    case $effect`Vitali Tea`:
+      useItem_1 = $item`cuppa Vitali tea`;
       break;
-    case Effect.get("Walberg's Dim Bulb"):
-      useSkill_1 = Skill.get("Walberg's Dim Bulb");
+    case $effect`Walberg's Dim Bulb`:
+      useSkill_1 = $skill`Walberg's Dim Bulb`;
       break;
-    case Effect.get("Waking the Dead"):
-      if (auto_have_skill(Skill.get("Summon Horde"))) {
-        useSkill_1 = Skill.get("Summon Minion");
+    case $effect`Waking the Dead`:
+      if (auto_have_skill($skill`Summon Horde`)) {
+        useSkill_1 = $skill`Summon Minion`;
       }
       break;
-    case Effect.get("WAKKA WAKKA WAKKA"):
-      useItem_1 = Item.get("yellow pixel potion");
+    case $effect`WAKKA WAKKA WAKKA`:
+      useItem_1 = $item`yellow pixel potion`;
       break;
-    case Effect.get("Warm Shoulders"):
-      useItem_1 = Item.get("shoulder-warming lotion");
+    case $effect`Warm Shoulders`:
+      useItem_1 = $item`shoulder-warming lotion`;
       break;
-    case Effect.get("Wasabi With You"):
-      useItem_1 = Item.get("wasabi marble soda");
+    case $effect`Wasabi With You`:
+      useItem_1 = $item`wasabi marble soda`;
       break;
-    case Effect.get("Well-Oiled"):
-      useItem_1 = Item.get("Oil of Parrrlay");
+    case $effect`Well-Oiled`:
+      useItem_1 = $item`Oil of Parrrlay`;
       break;
-    case Effect.get("Well-Swabbed Ear"):
-      useItem_1 = Item.get("Swabbie&trade; swab");
+    case $effect`Well-Swabbed Ear`:
+      useItem_1 = $item`Swabbie™ swab`;
       break;
-    case Effect.get("Wet and Greedy"):
-      useItem_1 = Item.get("goblin water");
+    case $effect`Wet and Greedy`:
+      useItem_1 = $item`goblin water`;
       break;
-    case Effect.get("Whispering Strands"):
+    case $effect`Whispering Strands`:
       useSkill_1 = Skill.none;
       break;
-    case Effect.get("Who's Going to Pay This Drunken Sailor?"):
-      useSkill_1 = Skill.get("Who's Going to Pay This Drunken Sailor?");
+    case $effect`Who's Going to Pay This Drunken Sailor?`:
+      useSkill_1 = $skill`Who's Going to Pay This Drunken Sailor?`;
       break;
-    case Effect.get("Wildsun Boon"):
+    case $effect`Wildsun Boon`:
       if (auto_canARBSupplyDrop()) {
         if (speculative) {
           return true;
@@ -2163,191 +2160,181 @@ export function buffMaintain$2(
         ret = true;
       }
       break;
-    case Effect.get("Wisdom of Others"):
-      useItem_1 = Item.get("filled mosquito");
+    case $effect`Wisdom of Others`:
+      useItem_1 = $item`filled mosquito`;
       break;
-    case Effect.get("Wisdom of the Autumn Years"):
-      useItem_1 = Item.get("autumn years wisdom");
+    case $effect`Wisdom of the Autumn Years`:
+      useItem_1 = $item`autumn years wisdom`;
       break;
-    case Effect.get("Wisdom of Thoth"):
-      useSkill_1 = Skill.get("Wisdom of Thoth");
+    case $effect`Wisdom of Thoth`:
+      useSkill_1 = $skill`Wisdom of Thoth`;
       break;
-    case Effect.get("Wit Tea"):
-      useItem_1 = Item.get("cuppa Wit tea");
+    case $effect`Wit Tea`:
+      useItem_1 = $item`cuppa Wit tea`;
       break;
-    case Effect.get("Wizard Squint"):
-      useSkill_1 = Skill.get("Wizard Squint");
+    case $effect`Wizard Squint`:
+      useSkill_1 = $skill`Wizard Squint`;
       break;
-    case Effect.get("Woad Warrior"):
-      useItem_1 = Item.get("pygmy pygment");
+    case $effect`Woad Warrior`:
+      useItem_1 = $item`pygmy pygment`;
       break;
-    case Effect.get("Worth Your Salt"):
-      useItem_1 = Item.get("salt wages");
+    case $effect`Worth Your Salt`:
+      useItem_1 = $item`salt wages`;
       break;
-    case Effect.get("Wry Smile"):
-      useSkill_1 = Skill.get("Wry Smile");
+    case $effect`Wry Smile`:
+      useSkill_1 = $skill`Wry Smile`;
       break;
-    case Effect.get("Yoloswagyoloswag"):
-      useItem_1 = Item.get("Yolo&trade; chocolates");
+    case $effect`Yoloswagyoloswag`:
+      useItem_1 = $item`Yolo™ chocolates`;
       break;
-    case Effect.get("You Read The Manual"):
-      useItem_1 = Item.get("O'RLY manual");
+    case $effect`You Read The Manual`:
+      useItem_1 = $item`O'RLY manual`;
       break;
-    case Effect.get("Your Fifteen Minutes"):
-      useSkill_1 = Skill.get("Fifteen Minutes of Flame");
+    case $effect`Your Fifteen Minutes`:
+      useSkill_1 = $skill`Fifteen Minutes of Flame`;
       break;
-    case Effect.get("Zomg WTF"):
-      useSkill_1 = Skill.get("Ag-grave-ation");
+    case $effect`Zomg WTF`:
+      useSkill_1 = $skill`Ag-grave-ation`;
       break;
     default:
       abort(`Effect (${buff}) is not known to us. Beep.`);
       break;
   }
 
-  if (myClass() !== Class.get("Pastamancer")) {
+  if (myClass() !== $class`Pastamancer`) {
     switch (buff) {
-      case Effect.get("Bloody Potato Bits"):
-        useSkill_1 = Skill.get("Bind Vampieroghi");
+      case $effect`Bloody Potato Bits`:
+        useSkill_1 = $skill`Bind Vampieroghi`;
         break;
-      case Effect.get("Macaroni Coating"):
-        useSkill_1 = Skill.get("Bind Undead Elbow Macaroni");
+      case $effect`Macaroni Coating`:
+        useSkill_1 = $skill`Bind Undead Elbow Macaroni`;
         break;
-      case Effect.get("Pasta Eyeball"):
-        useSkill_1 = Skill.get("Bind Lasagmbie");
+      case $effect`Pasta Eyeball`:
+        useSkill_1 = $skill`Bind Lasagmbie`;
         break;
-      case Effect.get("Penne Fedora"):
-        useSkill_1 = Skill.get("Bind Penne Dreadful");
+      case $effect`Penne Fedora`:
+        useSkill_1 = $skill`Bind Penne Dreadful`;
         break;
-      case Effect.get("Slinking Noodle Glob"):
-        useSkill_1 = Skill.get("Bind Vermincelli");
+      case $effect`Slinking Noodle Glob`:
+        useSkill_1 = $skill`Bind Vermincelli`;
         break;
-      case Effect.get("Spice Haze"):
-        useSkill_1 = Skill.get("Bind Spice Ghost");
+      case $effect`Spice Haze`:
+        useSkill_1 = $skill`Bind Spice Ghost`;
         break;
-      case Effect.get("Whispering Strands"):
-        useSkill_1 = Skill.get("Bind Angel Hair Wisp");
+      case $effect`Whispering Strands`:
+        useSkill_1 = $skill`Bind Angel Hair Wisp`;
         break;
     }
   }
 
-  if (myClass() === Class.get("Turtle Tamer")) {
+  if (myClass() === $class`Turtle Tamer`) {
     switch (buff) {
-      case Effect.get("Boon of the War Snapper"):
-        useSkill_1 = Skill.get("Spirit Boon");
+      case $effect`Boon of the War Snapper`:
+        useSkill_1 = $skill`Spirit Boon`;
         if (
-          haveEffect(Effect.get("Glorious Blessing of the War Snapper")) ===
-            0 &&
-          haveEffect(Effect.get("Grand Blessing of the War Snapper")) === 0 &&
-          haveEffect(Effect.get("Blessing of the War Snapper")) === 0
+          haveEffect($effect`Glorious Blessing of the War Snapper`) === 0 &&
+          haveEffect($effect`Grand Blessing of the War Snapper`) === 0 &&
+          haveEffect($effect`Blessing of the War Snapper`) === 0
         ) {
           useSkill_1 = Skill.none;
         }
         break;
-      case Effect.get("Boon of She-Who-Was"):
-        useSkill_1 = Skill.get("Spirit Boon");
+      case $effect`Boon of She-Who-Was`:
+        useSkill_1 = $skill`Spirit Boon`;
         if (
-          haveEffect(Effect.get("Glorious Blessing of She-Who-Was")) === 0 &&
-          haveEffect(Effect.get("Grand Blessing of She-Who-Was")) === 0 &&
-          haveEffect(Effect.get("Blessing of She-Who-Was")) === 0
+          haveEffect($effect`Glorious Blessing of She-Who-Was`) === 0 &&
+          haveEffect($effect`Grand Blessing of She-Who-Was`) === 0 &&
+          haveEffect($effect`Blessing of She-Who-Was`) === 0
         ) {
           useSkill_1 = Skill.none;
         }
         break;
-      case Effect.get("Boon of the Storm Tortoise"):
-        useSkill_1 = Skill.get("Spirit Boon");
+      case $effect`Boon of the Storm Tortoise`:
+        useSkill_1 = $skill`Spirit Boon`;
         if (
-          haveEffect(Effect.get("Glorious Blessing of the Storm Tortoise")) ===
-            0 &&
-          haveEffect(Effect.get("Grand Blessing of the Storm Tortoise")) ===
-            0 &&
-          haveEffect(Effect.get("Blessing of the Storm Tortoise")) === 0
+          haveEffect($effect`Glorious Blessing of the Storm Tortoise`) === 0 &&
+          haveEffect($effect`Grand Blessing of the Storm Tortoise`) === 0 &&
+          haveEffect($effect`Blessing of the Storm Tortoise`) === 0
         ) {
           useSkill_1 = Skill.none;
         }
         break;
-      case Effect.get("Disdain of the War Snapper"):
+      case $effect`Disdain of the War Snapper`:
         useSkill_1 = Skill.none;
         if (
-          haveEffect(Effect.get("Glorious Blessing of the War Snapper")) ===
-            0 &&
-          haveEffect(Effect.get("Grand Blessing of the War Snapper")) === 0 &&
-          haveEffect(Effect.get("Blessing of the War Snapper")) === 0
+          haveEffect($effect`Glorious Blessing of the War Snapper`) === 0 &&
+          haveEffect($effect`Grand Blessing of the War Snapper`) === 0 &&
+          haveEffect($effect`Blessing of the War Snapper`) === 0
         ) {
-          useSkill_1 = Skill.get("Blessing of the War Snapper");
+          useSkill_1 = $skill`Blessing of the War Snapper`;
         }
         if (
-          haveEffect(Effect.get("Glorious Blessing of the Storm Tortoise")) !==
-            0 ||
-          haveEffect(Effect.get("Grand Blessing of the Storm Tortoise")) !==
-            0 ||
-          haveEffect(Effect.get("Blessing of the Storm Tortoise")) !== 0
+          haveEffect($effect`Glorious Blessing of the Storm Tortoise`) !== 0 ||
+          haveEffect($effect`Grand Blessing of the Storm Tortoise`) !== 0 ||
+          haveEffect($effect`Blessing of the Storm Tortoise`) !== 0
         ) {
           useSkill_1 = Skill.none;
         }
         if (
-          haveEffect(Effect.get("Glorious Blessing of She-Who-Was")) !== 0 ||
-          haveEffect(Effect.get("Grand Blessing of She-Who-Was")) !== 0 ||
-          haveEffect(Effect.get("Blessing of She-Who-Was")) !== 0
+          haveEffect($effect`Glorious Blessing of She-Who-Was`) !== 0 ||
+          haveEffect($effect`Grand Blessing of She-Who-Was`) !== 0 ||
+          haveEffect($effect`Blessing of She-Who-Was`) !== 0
         ) {
           useSkill_1 = Skill.none;
         }
         break;
-      case Effect.get("Disdain of She-Who-Was"):
+      case $effect`Disdain of She-Who-Was`:
         useSkill_1 = Skill.none;
         if (
-          haveEffect(Effect.get("Glorious Blessing of She-Who-Was")) === 0 &&
-          haveEffect(Effect.get("Grand Blessing of She-Who-Was")) === 0 &&
-          haveEffect(Effect.get("Blessing of She-Who-Was")) === 0
+          haveEffect($effect`Glorious Blessing of She-Who-Was`) === 0 &&
+          haveEffect($effect`Grand Blessing of She-Who-Was`) === 0 &&
+          haveEffect($effect`Blessing of She-Who-Was`) === 0
         ) {
-          useSkill_1 = Skill.get("Blessing of She-Who-Was");
+          useSkill_1 = $skill`Blessing of She-Who-Was`;
         }
         if (
-          haveEffect(Effect.get("Glorious Blessing of the Storm Tortoise")) !==
-            0 ||
-          haveEffect(Effect.get("Grand Blessing of the Storm Tortoise")) !==
-            0 ||
-          haveEffect(Effect.get("Blessing of the Storm Tortoise")) !== 0
+          haveEffect($effect`Glorious Blessing of the Storm Tortoise`) !== 0 ||
+          haveEffect($effect`Grand Blessing of the Storm Tortoise`) !== 0 ||
+          haveEffect($effect`Blessing of the Storm Tortoise`) !== 0
         ) {
           useSkill_1 = Skill.none;
         }
         break;
-      case Effect.get("Disdain of the Storm Tortoise"):
+      case $effect`Disdain of the Storm Tortoise`:
         useSkill_1 = Skill.none;
         if (
-          haveEffect(Effect.get("Glorious Blessing of the Storm Tortoise")) ===
-            0 &&
-          haveEffect(Effect.get("Grand Blessing of the Storm Tortoise")) ===
-            0 &&
-          haveEffect(Effect.get("Blessing of the Storm Tortoise")) === 0
+          haveEffect($effect`Glorious Blessing of the Storm Tortoise`) === 0 &&
+          haveEffect($effect`Grand Blessing of the Storm Tortoise`) === 0 &&
+          haveEffect($effect`Blessing of the Storm Tortoise`) === 0
         ) {
-          useSkill_1 = Skill.get("Blessing of the Storm Tortoise");
+          useSkill_1 = $skill`Blessing of the Storm Tortoise`;
         }
         break;
     }
   } else {
     switch (buff) {
-      case Effect.get("Disdain of She-Who-Was"):
-        useSkill_1 = Skill.get("Blessing of She-Who-Was");
-        if (haveEffect(Effect.get("Disdain of the War Snapper")) > 0) {
+      case $effect`Disdain of She-Who-Was`:
+        useSkill_1 = $skill`Blessing of She-Who-Was`;
+        if (haveEffect($effect`Disdain of the War Snapper`) > 0) {
           useSkill_1 = Skill.none;
         }
         break;
-      case Effect.get("Disdain of the Storm Tortoise"):
-        useSkill_1 = Skill.get("Blessing of the Storm Tortoise");
+      case $effect`Disdain of the Storm Tortoise`:
+        useSkill_1 = $skill`Blessing of the Storm Tortoise`;
         if (
-          haveEffect(Effect.get("Disdain of She-Who-Was")) > 0 ||
-          haveEffect(Effect.get("Disdain of the War Snapper")) > 0
+          haveEffect($effect`Disdain of She-Who-Was`) > 0 ||
+          haveEffect($effect`Disdain of the War Snapper`) > 0
         ) {
           useSkill_1 = Skill.none;
         }
         break;
-      case Effect.get("Disdain of the War Snapper"):
-        useSkill_1 = Skill.get("Blessing of the War Snapper");
+      case $effect`Disdain of the War Snapper`:
+        useSkill_1 = $skill`Blessing of the War Snapper`;
         break;
     }
   }
 
-  if (buff === Effect.get("Triple-Sized")) {
+  if (buff === $effect`Triple-Sized`) {
     if (speculative) {
       return auto_powerfulGloveCharges() >= 5;
     } else {
@@ -2355,7 +2342,7 @@ export function buffMaintain$2(
     }
   }
 
-  if (buff === Effect.get("Invisible Avatar")) {
+  if (buff === $effect`Invisible Avatar`) {
     if (speculative) {
       return auto_powerfulGloveCharges() >= 5;
     } else {
@@ -2364,12 +2351,9 @@ export function buffMaintain$2(
   }
 
   if (
-    Effect.get([
-      "Feeling Lonely",
-      "Feeling Excited",
-      "Feeling Nervous",
-      "Feeling Peaceful",
-    ]).includes(buff) &&
+    $effects`Feeling Lonely, Feeling Excited, Feeling Nervous, Feeling Peaceful`.includes(
+      buff,
+    ) &&
     auto_haveEmotionChipSkills()
   ) {
     const feeling: Skill = toSkill(buff);
@@ -2388,20 +2372,12 @@ export function buffMaintain$2(
     }
   }
 
-  const falloutEffects: Effect[] = Effect.get([
-    "Drunk and Avuncular",
-    "Lucky Struck",
-    "Ministrations in the Dark",
-    "Power, Man",
-    "Record Hunger",
-    "Shrieking Weasel",
-    "Superdrifting",
-  ]);
+  const falloutEffects: Effect[] = $effects`Drunk and Avuncular, Lucky Struck, Ministrations in the Dark, Power\, Man, Record Hunger, Shrieking Weasel, Superdrifting`;
   if (falloutEffects.includes(buff)) {
-    if (!possessEquipment(Item.get("Wrist-Boy"))) {
+    if (!possessEquipment($item`Wrist-Boy`)) {
       return false;
     }
-    if (Effect.get(["Drunk and Avuncular", "Record Hunger"]).includes(buff)) {
+    if ($effects`Drunk and Avuncular, Record Hunger`.includes(buff)) {
       if (inAftercore()) {
         return false;
       }
@@ -2448,24 +2424,7 @@ export function buffMaintain$4(buff: Effect): boolean {
 // Checks to see if we are already wearing a facial expression before using buffMaintain
 //	if an expression is REQUIRED force it using buffMaintain
 export function auto_faceCheck(face: Effect): boolean {
-  const FacialExpressions: Effect[] = Effect.get([
-    "Snarl of the Timberwolf",
-    "Scowl of the Auk",
-    "Stiff Upper Lip",
-    "Patient Smile",
-    "Quiet Determination",
-    "Arched Eyebrow of the Archmage",
-    "Wizard Squint",
-    "Quiet Judgement",
-    "Icy Glare",
-    "Wry Smile",
-    "Disco Leer",
-    "Disco Smirk",
-    "Suspicious Gaze",
-    "Knowing Smile",
-    "Quiet Desperation",
-    "Inscrutable Gaze",
-  ]);
+  const FacialExpressions: Effect[] = $effects`Snarl of the Timberwolf, Scowl of the Auk, Stiff Upper Lip, Patient Smile, Quiet Determination, Arched Eyebrow of the Archmage, Wizard Squint, Quiet Judgement, Icy Glare, Wry Smile, Disco Leer, Disco Smirk, Suspicious Gaze, Knowing Smile, Quiet Desperation, Inscrutable Gaze`;
   let CanEmote: boolean = true;
 
   for (const FExp of FacialExpressions) {

@@ -1,17 +1,24 @@
 import {
-  Effect,
   getProperty,
   haveEffect,
   haveEquipped,
-  Item,
   Monster,
   monsterHp,
   setProperty,
-  Skill,
   splitString,
   toInt,
   toSkill,
 } from "kolmafia";
+import { $effect, $item, $monster, $skill } from "libram";
+
+import { auto_haveCosmicBowlingBall } from "../iotms/mr2022";
+import { dartSkill } from "../iotms/mr2024";
+import {
+  in_wereprof,
+  is_professor,
+  is_werewolf,
+  wereprof_oculus,
+} from "../paths/wereprofessor";
 import {
   canUse$1,
   canUse$2,
@@ -22,14 +29,6 @@ import {
   useSkill$1,
   useSkill$2,
 } from "./auto_combat_util";
-import { auto_haveCosmicBowlingBall } from "../iotms/mr2022";
-import { dartSkill } from "../iotms/mr2024";
-import {
-  in_wereprof,
-  is_professor,
-  is_werewolf,
-  wereprof_oculus,
-} from "../paths/wereprofessor";
 
 //defined in /autoscend/combat/auto_combat_wereprofessor.ash
 export function auto_combatWereProfessorStage1(
@@ -45,12 +44,12 @@ export function auto_combatWereProfessorStage1(
     setProperty("auto_skipStage3", true.toString()); //Don't even want to try Stage 3 as a Professor
   }
 
-  if (enemy === Monster.get("wall of bones")) {
+  if (enemy === $monster`wall of bones`) {
     if (
-      canUse$2(Skill.get("Slaughter")) &&
-      haveEffect(Effect.get("Everything Looks Red")) === 0
+      canUse$2($skill`Slaughter`) &&
+      haveEffect($effect`Everything Looks Red`) === 0
     ) {
-      return useSkill$2(Skill.get("Slaughter"));
+      return useSkill$2($skill`Slaughter`);
     }
   }
 
@@ -97,34 +96,34 @@ export function auto_combatWereProfessorStage5(
   const dmg: number = 0;
 
   if (is_werewolf()) {
-    if (enemy_physical_immune && canUse$1(Skill.get("Bite"), true)) {
-      return useSkill$1(Skill.get("Bite"), true); // elemental damage skill
+    if (enemy_physical_immune && canUse$1($skill`Bite`, true)) {
+      return useSkill$1($skill`Bite`, true); // elemental damage skill
     } else if (
-      haveEquipped(Item.get("Everfull Dart Holster")) &&
+      haveEquipped($item`Everfull Dart Holster`) &&
       toInt(getProperty("_dartsLeft")) > 0
     ) {
       //want dart skill as high as possible for Professor
       return useSkill$2(dartSkill());
     }
-    if (!enemy_physical_immune && canUse$1(Skill.get("Rend"), false)) {
-      return useSkill$1(Skill.get("Rend"), true);
+    if (!enemy_physical_immune && canUse$1($skill`Rend`, false)) {
+      return useSkill$1($skill`Rend`, true);
     }
     return "attack with weapon"; //worst case scenario just use this
   }
   if (is_professor()) {
     if (
-      haveEquipped(Item.get("Everfull Dart Holster")) &&
+      haveEquipped($item`Everfull Dart Holster`) &&
       toInt(getProperty("_dartsLeft")) > 0
     ) {
       //want dart skill as high as possible for Professor
       return useSkill$2(dartSkill());
     } else if (
       auto_haveCosmicBowlingBall() &&
-      canUse$4(Item.get("cosmic bowling ball")) &&
+      canUse$4($item`cosmic bowling ball`) &&
       !enemy_physical_immune &&
       monsterHp() < 100
     ) {
-      return useItem$1(Item.get("cosmic bowling ball")); // 100 physical damage
+      return useItem$1($item`cosmic bowling ball`); // 100 physical damage
     } else {
       return "runaway"; //Can't do anything further as Professor other than using items/running away
     }

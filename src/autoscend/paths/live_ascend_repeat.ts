@@ -5,16 +5,17 @@ import {
   Location,
   myPath,
   myTurncount,
-  Path,
   setProperty,
   toInt,
 } from "kolmafia";
+import { $locations, $path } from "libram";
+
 import { zone_needItem } from "../auto_zone";
 import { generic_t } from "../autoscend_record";
 
 //Defined in autoscend/paths/live_ascend_repeat.ash
 export function in_lar(): boolean {
-  return myPath() === Path.get("Live. Ascend. Repeat.");
+  return myPath() === $path`Live. Ascend. Repeat.`;
 }
 
 export function lar_safeguard(): boolean {
@@ -52,13 +53,9 @@ export function lar_safeguard(): boolean {
 export function lar_repeat(loc: Location): boolean {
   if (in_lar()) {
     if (
-      Location.get([
-        "The Castle in the Clouds in the Sky (Ground Floor)",
-        "The Defiled Alcove",
-        "The Defiled Niche",
-        "The Defiled Nook",
-        "The Haunted Ballroom",
-      ]).includes(loc)
+      $locations`The Castle in the Clouds in the Sky (Ground Floor), The Defiled Alcove, The Defiled Niche, The Defiled Nook, The Haunted Ballroom`.includes(
+        loc,
+      )
     ) {
       if (toInt(getProperty("_auto_groundhogSkip")) === myTurncount()) {
         return false;
@@ -75,7 +72,7 @@ export function lar_abort(loc: Location): boolean {
       return true;
     }
     //These should be places that we would not consider overriding with a YR.
-    for (const place of Location.get(["The F'c'le", "The Hole in the Sky"])) {
+    for (const place of $locations`The F'c'le, The Hole in the Sky`) {
       if (place === loc && itemDropModifier() < itemNeed._float) {
         abort(
           `Not enough +item drop (${itemNeed._float}) for ${loc} only have: ${itemDropModifier()}`,

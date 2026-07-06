@@ -4,11 +4,9 @@ import {
   ceil,
   cliExecute,
   closetAmount,
-  Coinmaster,
   containsText,
   council,
   create,
-  Effect,
   equip,
   equippedAmount,
   Familiar,
@@ -42,9 +40,6 @@ import {
   outfit,
   sell,
   setProperty,
-  Skill,
-  Slot,
-  Stat,
   takeCloset,
   toBoolean,
   toFamiliar,
@@ -56,6 +51,19 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
+import {
+  $coinmaster,
+  $effect,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $monster,
+  $skill,
+  $slot,
+  $stat,
+} from "libram";
+
 import { resetState } from "../../autoscend";
 import {
   acquireHermitItem,
@@ -138,6 +146,7 @@ import {
 } from "../auto_util";
 import { zone_isAvailable$1 } from "../auto_zone";
 import { WarPlan } from "../autoscend_record";
+import { auto_JunkyardCombatHandler } from "../combat/auto_combat_quest";
 import { zataraAvailable } from "../iotms/clan";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import {
@@ -212,7 +221,6 @@ import { wildfire_warboss_check } from "../paths/wildfire";
 import { robot_delay } from "../paths/you_robot";
 import { in_zombieSlayer } from "../paths/zombie_slayer";
 import { LX_islandAccess } from "./level_any";
-import { auto_JunkyardCombatHandler } from "../combat/auto_combat_quest";
 
 let $_static_0 = false;
 
@@ -339,11 +347,11 @@ function auto_estimatedAdventuresForChaosButterfly(): number {
 
   if (
     toBoolean(getProperty("chaosButterflyThrown")) ||
-    itemAmount(Item.get("chaos butterfly")) > 0
+    itemAmount($item`chaos butterfly`) > 0
   ) {
     return 0;
   }
-  if (canPull$1(Item.get("chaos butterfly"))) {
+  if (canPull$1($item`chaos butterfly`)) {
     return 0;
   }
   // 4 enemies in [The Castle in the Clouds in the Sky (Ground Floor)] ~25% chance to encounter the one we want.
@@ -365,7 +373,7 @@ function auto_estimatedAdventuresForChaosButterfly(): number {
     );
     handleFamiliar("item");
     simMaximizeWith(
-      Location.get("The Castle in the Clouds in the Sky (Ground Floor)"),
+      $location`The Castle in the Clouds in the Sky (Ground Floor)`,
       "20 item",
     );
     $_auto_estimatedAdventuresForChaosButterfly_expectedItemDropMulti =
@@ -394,10 +402,10 @@ function auto_estimatedAdventuresForChaosButterfly(): number {
 function auto_estimatedAdventuresForDooks(): number {
   let advCost_1: number = 40;
   //TODO account for having done free fights in those zones
-  advCost_1 -= Location.get("McMillicancuddy's Barn").turnsSpent;
-  advCost_1 -= Location.get("McMillicancuddy's Pond").turnsSpent;
-  advCost_1 -= Location.get("McMillicancuddy's Back 40").turnsSpent;
-  advCost_1 -= Location.get("McMillicancuddy's Other Back 40").turnsSpent;
+  advCost_1 -= $location`McMillicancuddy's Barn`.turnsSpent;
+  advCost_1 -= $location`McMillicancuddy's Pond`.turnsSpent;
+  advCost_1 -= $location`McMillicancuddy's Back 40`.turnsSpent;
+  advCost_1 -= $location`McMillicancuddy's Other Back 40`.turnsSpent;
   //these paths cannot use butterfly
   if (in_bhy() || in_pokefam() || in_glover()) {
     return advCost_1;
@@ -406,7 +414,7 @@ function auto_estimatedAdventuresForDooks(): number {
   const advToGetCB: number = auto_estimatedAdventuresForChaosButterfly();
   if (
     toBoolean(getProperty("chaosButterflyThrown")) ||
-    itemAmount(Item.get("chaos butterfly")) > 0
+    itemAmount($item`chaos butterfly`) > 0
   ) {
     advCost_1 -= 15;
   } else if (advToGetCB < 15) {
@@ -662,15 +670,15 @@ function equipWarOutfit$1(lock: boolean): void {
   let parts: Map<Item, boolean> = new Map();
   if (auto_warSide() === "hippy") {
     parts = new Map([
-      [Item.get("reinforced beaded headband"), true],
-      [Item.get("bullet-proof corduroys"), true],
-      [Item.get("round purple sunglasses"), true],
+      [$item`reinforced beaded headband`, true],
+      [$item`bullet-proof corduroys`, true],
+      [$item`round purple sunglasses`, true],
     ]);
   } else {
     parts = new Map([
-      [Item.get("beer helmet"), true],
-      [Item.get("distressed denim pants"), true],
-      [Item.get("bejeweled pledge pin"), true],
+      [$item`beer helmet`, true],
+      [$item`distressed denim pants`, true],
+      [$item`bejeweled pledge pin`, true],
     ]);
   }
   for (const it of parts.keys()) {
@@ -706,10 +714,10 @@ export function haveWarOutfit$1(): boolean {
 
 export function warAdventure(): boolean {
   if (
-    auto_have_familiar(Familiar.get("Space Jellyfish")) &&
+    auto_have_familiar($familiar`Space Jellyfish`) &&
     toInt(getProperty("_spaceJellyfishDrops")) < 3
   ) {
-    handleFamiliar$1(Familiar.get("Space Jellyfish"));
+    handleFamiliar$1($familiar`Space Jellyfish`);
   }
 
   if (!toBoolean(getProperty("auto_hippyInstead"))) {
@@ -718,9 +726,9 @@ export function warAdventure(): boolean {
       auto_log_info$1(
         "Bringing the Grey Goose to emit some drones at a GrOPs hopefully.",
       );
-      handleFamiliar$1(Familiar.get("Grey Goose"));
+      handleFamiliar$1($familiar`Grey Goose`);
     }
-    if (!autoAdv$1(1, Location.get("The Battlefield (Frat Uniform)"))) {
+    if (!autoAdv$1(1, $location`The Battlefield (Frat Uniform)`)) {
       setProperty(
         "hippiesDefeated",
         (toInt(getProperty("hippiesDefeated")) + 1).toString(),
@@ -728,7 +736,7 @@ export function warAdventure(): boolean {
       const temp: string = visitUrl("island.php");
     }
   } else {
-    if (!autoAdv$1(1, Location.get("The Battlefield (Hippy Uniform)"))) {
+    if (!autoAdv$1(1, $location`The Battlefield (Hippy Uniform)`)) {
       setProperty(
         "fratboysDefeated",
         (toInt(getProperty("fratboysDefeated")) + 1).toString(),
@@ -754,30 +762,30 @@ export function L12_getOutfit(): boolean {
       getProperty("auto_warhippyspy") === "done" &&
       toBoolean(getProperty("auto_hippyInstead"))
     ) {
-      pullXWhenHaveY(Item.get("reinforced beaded headband"), 1, 0);
-      pullXWhenHaveY(Item.get("round purple sunglasses"), 1, 0);
-      pullXWhenHaveY(Item.get("bullet-proof corduroys"), 1, 0);
+      pullXWhenHaveY($item`reinforced beaded headband`, 1, 0);
+      pullXWhenHaveY($item`round purple sunglasses`, 1, 0);
+      pullXWhenHaveY($item`bullet-proof corduroys`, 1, 0);
     }
     // auto_orcishfratboyspy indicates rainman was already used to copy an orcish frat boy in heavy rains. if it failed to YR pull missing items
     if (
       getProperty("auto_orcishfratboyspy") === "done" &&
       !toBoolean(getProperty("auto_hippyInstead"))
     ) {
-      pullXWhenHaveY(Item.get("beer helmet"), 1, 0);
-      pullXWhenHaveY(Item.get("bejeweled pledge pin"), 1, 0);
-      pullXWhenHaveY(Item.get("distressed denim pants"), 1, 0);
+      pullXWhenHaveY($item`beer helmet`, 1, 0);
+      pullXWhenHaveY($item`bejeweled pledge pin`, 1, 0);
+      pullXWhenHaveY($item`distressed denim pants`, 1, 0);
     }
   }
   //softcore pull handling for all other paths. Can't pull gear in LoL
   if (!inHardcore() && !in_heavyrains() && !in_lol()) {
     if (toBoolean(getProperty("auto_hippyInstead"))) {
-      pullXWhenHaveY(Item.get("reinforced beaded headband"), 1, 0);
-      pullXWhenHaveY(Item.get("round purple sunglasses"), 1, 0);
-      pullXWhenHaveY(Item.get("bullet-proof corduroys"), 1, 0);
+      pullXWhenHaveY($item`reinforced beaded headband`, 1, 0);
+      pullXWhenHaveY($item`round purple sunglasses`, 1, 0);
+      pullXWhenHaveY($item`bullet-proof corduroys`, 1, 0);
     } else {
-      pullXWhenHaveY(Item.get("beer helmet"), 1, 0);
-      pullXWhenHaveY(Item.get("bejeweled pledge pin"), 1, 0);
-      pullXWhenHaveY(Item.get("distressed denim pants"), 1, 0);
+      pullXWhenHaveY($item`beer helmet`, 1, 0);
+      pullXWhenHaveY($item`bejeweled pledge pin`, 1, 0);
+      pullXWhenHaveY($item`distressed denim pants`, 1, 0);
     }
   }
   // if you have war outfit now then you just pulled it. so this time we return true as something changed
@@ -795,12 +803,12 @@ export function L12_getOutfit(): boolean {
     possessOutfit$1("Filthy Hippy Disguise")
   ) {
     autoOutfit("Filthy Hippy Disguise");
-    return autoAdv$2(Location.get("Wartime Frat House (Hippy Disguise)"));
+    return autoAdv$2($location`Wartime Frat House (Hippy Disguise)`);
   }
   // if outfit could not be pulled and have a [Frat Boy Ensemble] outfit then wear it and adventure in Hippy Camp to get war outfit
   if (auto_warSide() === "hippy" && possessOutfit$1("Frat Boy Ensemble")) {
     autoOutfit("Frat Boy Ensemble");
-    return autoAdv$2(Location.get("Wartime Hippy Camp (Frat Disguise)"));
+    return autoAdv$2($location`Wartime Hippy Camp (Frat Disguise)`);
   }
 
   if (L12_preOutfit()) {
@@ -847,7 +855,7 @@ export function L12_preOutfit(): boolean {
   }
 
   if (
-    haveSkill(Skill.get("Calculate the Universe")) &&
+    haveSkill($skill`Calculate the Universe`) &&
     myDaycount() === 1 &&
     toInt(getProperty("_universeCalculated")) <
       min(3, toInt(getProperty("skillLevel144")))
@@ -855,13 +863,10 @@ export function L12_preOutfit(): boolean {
     return false;
   }
   //use a summon if we can guarentee outfit drops via yellow ray
-  if (
-    canSummonMonster(Monster.get("Orcish Frat Boy Spy")) &&
-    canYellowRay$1()
-  ) {
-    let summonTarget: Monster = Monster.get("War Hippy Spy");
+  if (canSummonMonster($monster`Orcish Frat Boy Spy`) && canYellowRay$1()) {
+    let summonTarget: Monster = $monster`War Hippy Spy`;
     if (!toBoolean(getProperty("auto_hippyInstead"))) {
-      summonTarget = Monster.get("Orcish Frat Boy Spy");
+      summonTarget = $monster`Orcish Frat Boy Spy`;
     }
     auto_log_info$1(
       `Trying to summon a ${summonTarget}, which we will yellow ray for war outfit.`,
@@ -869,12 +874,12 @@ export function L12_preOutfit(): boolean {
     return summonMonster(summonTarget);
   }
 
-  if (in_gnoob() && auto_have_familiar(Familiar.get("Robortender"))) {
+  if (in_gnoob() && auto_have_familiar($familiar`Robortender`)) {
     if (
-      !haveSkill(Skill.get("Ink Gland")) &&
-      itemAmount(Item.get("shot of granola liqueur")) === 0
+      !haveSkill($skill`Ink Gland`) &&
+      itemAmount($item`shot of granola liqueur`) === 0
     ) {
-      handleFamiliar$1(Familiar.get("Robortender"));
+      handleFamiliar$1($familiar`Robortender`);
     }
   }
 
@@ -883,17 +888,17 @@ export function L12_preOutfit(): boolean {
   if (!toBoolean(getProperty("auto_hippyInstead"))) {
     auto_log_info("Trying to acquire a filthy hippy outfit", "blue");
     if (internalQuestStatus("questL12War") === -1) {
-      adventure_status = autoAdv$1(1, Location.get("The Hippy Camp"));
+      adventure_status = autoAdv$1(1, $location`The Hippy Camp`);
     } else {
-      adventure_status = autoAdv$1(1, Location.get("Wartime Hippy Camp"));
+      adventure_status = autoAdv$1(1, $location`Wartime Hippy Camp`);
     }
   } else {
     // fighting for hippies, adventure in orcish frat house for [Frat Boy Ensemble] outfit to then adventure in hippy camp for hippy war outfit
     auto_log_info("Trying to acquire a frat boy ensemble", "blue");
     if (internalQuestStatus("questL12War") === -1) {
-      adventure_status = autoAdv$1(1, Location.get("The Orcish Frat House"));
+      adventure_status = autoAdv$1(1, $location`The Orcish Frat House`);
     } else {
-      adventure_status = autoAdv$1(1, Location.get("Wartime Frat House"));
+      adventure_status = autoAdv$1(1, $location`Wartime Frat House`);
     }
   }
   // We check the adventure status to avoid an infinite loop if we can't access any of these zones.
@@ -925,32 +930,32 @@ export function L12_startWar(): boolean {
   }
 
   if (myMp() > 60 || considerGrimstoneGolem(true)) {
-    handleBjornify(Familiar.get("Grimstone Golem"));
+    handleBjornify($familiar`Grimstone Golem`);
   }
 
   if (
     !in_darkGyffte() &&
     myMp() > 50 &&
-    haveSkill(Skill.get("Incredible Self-Esteem")) &&
+    haveSkill($skill`Incredible Self-Esteem`) &&
     !toBoolean(getProperty("_incredibleSelfEsteemCast"))
   ) {
-    useSkill(1, Skill.get("Incredible Self-Esteem"));
+    useSkill(1, $skill`Incredible Self-Esteem`);
   }
   // wear the appropriate war outfit based on auto_hippyInstead
   equipWarOutfit();
 
-  if (auto_haveCCSC() && !haveSkill(Skill.get("Comprehensive Cartography"))) {
-    autoForceEquip$3(Item.get("candy cane sword cane"));
+  if (auto_haveCCSC() && !haveSkill($skill`Comprehensive Cartography`)) {
+    autoForceEquip$3($item`candy cane sword cane`);
   }
   // start the war when siding with frat boys
   if (!toBoolean(getProperty("auto_hippyInstead"))) {
     auto_log_info("Must save the ferret!!", "blue");
     if (L12_singleNCForWarStart()) {
       const NCForced: boolean = auto_forceNextNoncombat$1(
-        Location.get("Wartime Hippy Camp"),
+        $location`Wartime Hippy Camp`,
       );
     }
-    autoAdv$1(1, Location.get("Wartime Hippy Camp"));
+    autoAdv$1(1, $location`Wartime Hippy Camp`);
     //if war started, accept flyer quest for fratboys.
     //this is only started here and only for frat.
     //move this to dedicated function that can start it for both sides as appropriate
@@ -962,10 +967,10 @@ export function L12_startWar(): boolean {
     auto_log_info("Must save the goldfish!!", "blue");
     if (L12_singleNCForWarStart()) {
       const NCForced: boolean = auto_forceNextNoncombat$1(
-        Location.get("Wartime Frat House"),
+        $location`Wartime Frat House`,
       );
     }
-    autoAdv$1(1, Location.get("Wartime Frat House"));
+    autoAdv$1(1, $location`Wartime Frat House`);
   }
 
   return true;
@@ -981,7 +986,7 @@ export function L12_filthworms(): boolean {
   if (in_tcrs() || in_koe()) {
     return false;
   }
-  if (itemAmount(Item.get("heart of the filthworm queen")) > 0) {
+  if (itemAmount($item`heart of the filthworm queen`) > 0) {
     return false;
   }
   if (auto_warEnemiesRemaining() === 0) {
@@ -1007,18 +1012,18 @@ export function L12_filthworms(): boolean {
     }
   }
   //if we can kill the queen we don't care about gland drops anymore. kill her and finish this
-  if (itemAmount(Item.get("filthworm royal guard scent gland")) > 0) {
-    use(1, Item.get("filthworm royal guard scent gland"));
+  if (itemAmount($item`filthworm royal guard scent gland`) > 0) {
+    use(1, $item`filthworm royal guard scent gland`);
   }
-  if (haveEffect(Effect.get("Filthworm Guard Stench")) > 0) {
+  if (haveEffect($effect`Filthworm Guard Stench`) > 0) {
     auto_log_info("Finishing the orchard.", "blue");
     preventFratOutfitsIfNeeded();
-    return autoAdv$1(1, Location.get("The Filthworm Queen's Chamber"));
+    return autoAdv$1(1, $location`The Filthworm Queen's Chamber`);
   }
   //if we can guarentee stealing the stench gland then no point in buffing item drop
   let glandGuaranteed: boolean = true;
   if (
-    auto_have_skill(Skill.get("Lash of the Cobra")) &&
+    auto_have_skill($skill`Lash of the Cobra`) &&
     toInt(getProperty("_edLashCount")) < 30
   ) {
     auto_log_info$1("Ed will steal stench glands using [Lash of the Cobra]");
@@ -1032,10 +1037,10 @@ export function L12_filthworms(): boolean {
       //	}
       getProperty("_xoHugsUsed"),
     ) < 10 &&
-    canChangeToFamiliar(Familiar.get("XO Skeleton"))
+    canChangeToFamiliar($familiar`XO Skeleton`)
   ) {
     auto_log_info$1("Will steal stench glands using [XO Skeleton]");
-    handleFamiliar$1(Familiar.get("XO Skeleton"));
+    handleFamiliar$1($familiar`XO Skeleton`);
   } else if (auto_dousesRemaining() > 0) {
     auto_log_info$1("Will steal stench glands using FLUDA douse");
   } else if (auto_swoopsRemaining() > 0) {
@@ -1048,7 +1053,7 @@ export function L12_filthworms(): boolean {
     canYellowRay(
       //TODO add IOTM cat burglar stealing support here with another else if
       // or if we're about to yellow ray
-      Monster.get("filthworm drone"),
+      $monster`filthworm drone`,
     )
   ) {
     auto_log_info$1("We're going to yellow ray the stench glands.");
@@ -1059,8 +1064,8 @@ export function L12_filthworms(): boolean {
   } else if (itemDropModifier() < 900.0) {
     //could not guarentee stealing. check if it should be delayed otherwise buff item drops instead
     if (
-      haveEffect(Effect.get("Everything Looks Yellow")) > 0 &&
-      haveEffect(Effect.get("Everything Looks Yellow")) <= 100
+      haveEffect($effect`Everything Looks Yellow`) > 0 &&
+      haveEffect($effect`Everything Looks Yellow`) <= 100
     ) {
       //yellow ray is on cooldown for now, we may be able to delay filthworms task until next yellow ray
       let delayFilthworms: boolean = false;
@@ -1112,7 +1117,7 @@ export function L12_filthworms(): boolean {
     }
     // filth worm glands have 10% drop rate
     // getting here means we don't have a yellow ray, not delaying for the yr, and don't have enough +item yet
-    provideItem$2(900, Location.get("The Feeding Chamber"), false);
+    provideItem$2(900, $location`The Feeding Chamber`, false);
 
     if (in_lar()) {
       equipMaximizedGear();
@@ -1124,7 +1129,7 @@ export function L12_filthworms(): boolean {
     }
     if (itemDropModifier() < 800.0) {
       glandGuaranteed = false;
-      if (possessEquipment(Item.get("Retrospecs"))) {
+      if (possessEquipment($item`Retrospecs`)) {
         //preadv would give a 50%item accessory a value of 2500 but when multiple fights are expected in each zone this accessory should be equivalent to 100%item?
         addToMaximize("+2500bonus Retrospecs");
       }
@@ -1133,18 +1138,18 @@ export function L12_filthworms(): boolean {
 
   auto_log_info("Doing the orchard.", "blue");
   //use the stench glands to unlock the next step of the quest.
-  if (itemAmount(Item.get("filthworm hatchling scent gland")) > 0) {
-    use(1, Item.get("filthworm hatchling scent gland"));
+  if (itemAmount($item`filthworm hatchling scent gland`) > 0) {
+    use(1, $item`filthworm hatchling scent gland`);
   }
-  if (itemAmount(Item.get("filthworm drone scent gland")) > 0) {
-    use(1, Item.get("filthworm drone scent gland"));
+  if (itemAmount($item`filthworm drone scent gland`) > 0) {
+    use(1, $item`filthworm drone scent gland`);
   }
 
   if (auto_cargoShortsOpenPocket(343)) {
     // skip straight to the Royal Guard Chamber
     handleTracker$1(
-      wrap_item(Item.get("Cargo Cultist Shorts")).toString(),
-      Effect.get("Filthworm Drone Stench").toString(),
+      wrap_item($item`Cargo Cultist Shorts`).toString(),
+      $effect`Filthworm Drone Stench`.toString(),
       "auto_otherstuff",
     );
   }
@@ -1152,29 +1157,26 @@ export function L12_filthworms(): boolean {
   preventFratOutfitsIfNeeded();
 
   let retval: boolean = false;
-  if (haveEffect(Effect.get("Filthworm Drone Stench")) > 0) {
+  if (haveEffect($effect`Filthworm Drone Stench`) > 0) {
     //last gland
-    if (
-      haveEffect(Effect.get("Filthworm Drone Stench")) === 1 &&
-      !glandGuaranteed
-    ) {
+    if (haveEffect($effect`Filthworm Drone Stench`) === 1 && !glandGuaranteed) {
       //running out of effect, failing on the last turn would mean having to start over from The Hatching Chamber
       if (!toBoolean(getProperty("auto_limitConsume"))) {
         if (
-          canChew(Item.get("spooky jelly")) &&
-          spleen_left() >= Item.get("spooky jelly").spleen &&
-          acquireOrPull(Item.get("spooky jelly")) &&
-          autoChew(1, Item.get("spooky jelly"))
+          canChew($item`spooky jelly`) &&
+          spleen_left() >= $item`spooky jelly`.spleen &&
+          acquireOrPull($item`spooky jelly`) &&
+          autoChew(1, $item`spooky jelly`)
         ) {
           auto_log_info$1(
             "Only one turn left in The Royal Guard Chamber, using spooky jelly emanations to avoid having to start over from the beginning",
           );
           glandGuaranteed = true;
         } else if (
-          canEat$1(Item.get("toast with spooky jelly")) &&
-          stomach_left() >= Item.get("toast with spooky jelly").fullness &&
-          acquireOrPull(Item.get("toast with spooky jelly")) &&
-          autoEat(1, Item.get("toast with spooky jelly"))
+          canEat$1($item`toast with spooky jelly`) &&
+          stomach_left() >= $item`toast with spooky jelly`.fullness &&
+          acquireOrPull($item`toast with spooky jelly`) &&
+          autoEat(1, $item`toast with spooky jelly`)
         ) {
           //with values like 10 to 20 turns saved, not checking get_property("auto_consumeMinAdvPerFill").to_float()
           auto_log_info$1(
@@ -1186,19 +1188,19 @@ export function L12_filthworms(): boolean {
       if (glandGuaranteed) {
         //gland that was not guaranteed is forced now
         if (
-          possessEquipment(Item.get("broken champagne bottle")) &&
-          januaryToteTurnsLeft(Item.get("broken champagne bottle")) > 0
+          possessEquipment($item`broken champagne bottle`) &&
+          januaryToteTurnsLeft($item`broken champagne bottle`) > 0
         ) {
           addToMaximize("-equip Broken Champagne Bottle"); //using this charge is no longer necessary, restore maximizer block that was removed
         }
       }
       //todo if still not glandGuaranteed try to force the use of free kills in combat?
     }
-    retval = autoAdv$1(1, Location.get("The Royal Guard Chamber"));
-  } else if (haveEffect(Effect.get("Filthworm Larva Stench")) > 0) {
-    retval = autoAdv$1(1, Location.get("The Feeding Chamber"));
+    retval = autoAdv$1(1, $location`The Royal Guard Chamber`);
+  } else if (haveEffect($effect`Filthworm Larva Stench`) > 0) {
+    retval = autoAdv$1(1, $location`The Feeding Chamber`);
   } else {
-    retval = autoAdv$1(1, Location.get("The Hatching Chamber"));
+    retval = autoAdv$1(1, $location`The Hatching Chamber`);
   }
 
   return retval;
@@ -1213,12 +1215,12 @@ export function L12_orchardFinalize(): boolean {
   }
   if (
     getProperty("sidequestOrchardCompleted") !== "none" ||
-    itemAmount(Item.get("heart of the filthworm queen")) === 0
+    itemAmount($item`heart of the filthworm queen`) === 0
   ) {
     return false;
   }
-  if (itemAmount(Item.get("A Light that Never Goes Out")) === 1) {
-    pulverizeThing(Item.get("A Light that Never Goes Out"));
+  if (itemAmount($item`A Light that Never Goes Out`) === 1) {
+    pulverizeThing($item`A Light that Never Goes Out`);
   }
   equipWarOutfit();
   if (is_werewolf()) {
@@ -1255,23 +1257,20 @@ function gremlinsFamiliar(): void {
       setProperty("_auto_seaQuestStartedToday", true.toString());
       visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman"); //get bathysphere by starting the sea quest
     }
-    if (
-      possessEquipment(Item.get("mini kiwi invisible dirigible")) &&
-      !in_iluh()
-    ) {
-      equip(Slot.get("familiar"), Item.get("mini kiwi invisible dirigible"));
+    if (possessEquipment($item`mini kiwi invisible dirigible`) && !in_iluh()) {
+      equip($slot`familiar`, $item`mini kiwi invisible dirigible`);
       strip_familiar = false;
       //disable maximizer switching of familiar equipment
       addToMaximize("-familiar");
     }
-    if (possessEquipment(Item.get("tiny consolation ribbon"))) {
-      equip(Slot.get("familiar"), Item.get("tiny consolation ribbon"));
+    if (possessEquipment($item`tiny consolation ribbon`)) {
+      equip($slot`familiar`, $item`tiny consolation ribbon`);
       strip_familiar = false;
       //disable maximizer switching of familiar equipment
       addToMaximize("-familiar");
     }
-    if (possessEquipment(Item.get("little bitty bathysphere"))) {
-      equip(Slot.get("familiar"), Item.get("little bitty bathysphere"));
+    if (possessEquipment($item`little bitty bathysphere`)) {
+      equip($slot`familiar`, $item`little bitty bathysphere`);
       strip_familiar = false;
       //disable maximizer switching of familiar equipment
       addToMaximize("-familiar");
@@ -1286,19 +1285,7 @@ function gremlinsFamiliar(): void {
     //desired familiars will be available. their own equipment or generic weight boosting familiar equipment is beneficial
     strip_familiar = false;
     //there is a limited list of harmful familiar equipment to forbid
-    for (const fameq of Item.get([
-      "tiny bowler",
-      "ant hoe",
-      "ant pick",
-      "ant pitchfork",
-      "ant rake",
-      "ant sickle",
-      "oversized fish scaler",
-      "filthy child leash",
-      "plastic pumpkin bucket",
-      "little box of fireworks",
-      "moveable feast",
-    ])) {
+    for (const fameq of $items`tiny bowler, ant hoe, ant pick, ant pitchfork, ant rake, ant sickle, oversized fish scaler, filthy child leash, plastic pumpkin bucket, little box of fireworks, moveable feast`) {
       const wrapped_fameq: Item = wrap_item(fameq);
       if (possessEquipment(wrapped_fameq)) {
         addToMaximize(`-equip ${wrapped_fameq.toString()}`);
@@ -1306,7 +1293,7 @@ function gremlinsFamiliar(): void {
     }
   }
   if (strip_familiar) {
-    equip(Slot.get("familiar"), Item.none); //strip familiar equipment to avoid passive dmg
+    equip($slot`familiar`, Item.none); //strip familiar equipment to avoid passive dmg
   }
 }
 
@@ -1334,26 +1321,25 @@ export function L12_gremlins(): boolean {
   }
   if (in_zombieSlayer()) {
     if (
-      !auto_have_skill(Skill.get("Plague Claws")) &&
-      itemAmount(Item.get("seal tooth")) === 0
+      !auto_have_skill($skill`Plague Claws`) &&
+      itemAmount($item`seal tooth`) === 0
     ) {
       return false;
     }
   } else if (in_glover()) {
-    const need: number =
-      30 - itemAmount(Item.get("Doc Galaktik's Pungent Unguent"));
-    if (need > 0 && itemAmount(Item.get("molybdenum pliers")) === 0) {
+    const need: number = 30 - itemAmount($item`Doc Galaktik's Pungent Unguent`);
+    if (need > 0 && itemAmount($item`molybdenum pliers`) === 0) {
       const meatNeed: number =
-        need * npcPrice(Item.get("Doc Galaktik's Pungent Unguent"));
+        need * npcPrice($item`Doc Galaktik's Pungent Unguent`);
       if (myMeat() < meatNeed) {
         return false;
       }
-      auto_buyUpTo(30, Item.get("Doc Galaktik's Pungent Unguent"));
+      auto_buyUpTo(30, $item`Doc Galaktik's Pungent Unguent`);
     }
   } else {
-    if (itemAmount(Item.get("seal tooth")) === 0) {
-      acquireHermitItem(Item.get("seal tooth"));
-      if (itemAmount(Item.get("seal tooth")) === 0) {
+    if (itemAmount($item`seal tooth`) === 0) {
+      acquireHermitItem($item`seal tooth`);
+      if (itemAmount($item`seal tooth`) === 0) {
         abort(
           "We don't have a seal tooth. Stasising Gremlins is not going to go well if you lack something to stasis them with.",
         );
@@ -1361,13 +1347,13 @@ export function L12_gremlins(): boolean {
     }
   }
 
-  if (0 < haveEffect(Effect.get("Curse of the Black Pearl Onion"))) {
-    uneffect(Effect.get("Curse of the Black Pearl Onion"));
+  if (0 < haveEffect($effect`Curse of the Black Pearl Onion`)) {
+    uneffect($effect`Curse of the Black Pearl Onion`);
   }
 
   if (
-    0 < haveEffect(Effect.get("Everything Is Bananas")) &&
-    !uneffect(Effect.get("Everything Is Bananas"))
+    0 < haveEffect($effect`Everything Is Bananas`) &&
+    !uneffect($effect`Everything Is Bananas`)
   ) {
     //normally effect would not be used close enough to this quest for this to happen
     if (!isAboutToPowerlevel()) {
@@ -1380,7 +1366,7 @@ export function L12_gremlins(): boolean {
     }
   }
 
-  if (itemAmount(Item.get("molybdenum magnet")) === 0) {
+  if (itemAmount($item`molybdenum magnet`) === 0) {
     if (robot_delay("outfit")) {
       return false; //delay for You, Robot path
     }
@@ -1398,7 +1384,7 @@ export function L12_gremlins(): boolean {
       visitUrl("bigisland.php?action=junkman&pwd");
     }
     //if still don't have magnet something went wrong
-    if (itemAmount(Item.get("molybdenum magnet")) === 0) {
+    if (itemAmount($item`molybdenum magnet`) === 0) {
       abort(
         "We don't have the molybdenum magnet but should... please get it and rerun the script",
       );
@@ -1418,43 +1404,43 @@ export function L12_gremlins(): boolean {
   auto_log_info("Doing them gremlins", "blue");
   // ideally we want to survive a single attack
   addToMaximize("20dr,1da 1000max,-ml,-1000avoid attack");
-  autoForceEquip$3(Item.get("Peridot of Peril"));
+  autoForceEquip$3($item`Peridot of Peril`);
   acquireHP();
-  if (!bat_wantHowl(Location.get("Over Where the Old Tires Are"))) {
+  if (!bat_wantHowl($location`Over Where the Old Tires Are`)) {
     bat_formMist$1();
   }
   songboomSetting("dr");
-  if (itemAmount(Item.get("molybdenum hammer")) === 0) {
+  if (itemAmount($item`molybdenum hammer`) === 0) {
     autoAdv(
       1,
-      Location.get("Next to that Barrel with Something Burning in it"),
+      $location`Next to that Barrel with Something Burning in it`,
       auto_JunkyardCombatHandler,
     );
     return true;
   }
 
-  if (itemAmount(Item.get("molybdenum screwdriver")) === 0) {
+  if (itemAmount($item`molybdenum screwdriver`) === 0) {
     autoAdv(
       1,
-      Location.get("Out by that Rusted-Out Car"),
+      $location`Out by that Rusted-Out Car`,
       auto_JunkyardCombatHandler,
     );
     return true;
   }
 
-  if (itemAmount(Item.get("molybdenum crescent wrench")) === 0) {
+  if (itemAmount($item`molybdenum crescent wrench`) === 0) {
     autoAdv(
       1,
-      Location.get("Over Where the Old Tires Are"),
+      $location`Over Where the Old Tires Are`,
       auto_JunkyardCombatHandler,
     );
     return true;
   }
 
-  if (itemAmount(Item.get("molybdenum pliers")) === 0) {
+  if (itemAmount($item`molybdenum pliers`) === 0) {
     autoAdv(
       1,
-      Location.get("Near an Abandoned Refrigerator"),
+      $location`Near an Abandoned Refrigerator`,
       auto_JunkyardCombatHandler,
     );
     return true;
@@ -1483,14 +1469,14 @@ export function L12_sonofaBeach(): boolean {
   ) {
     return false;
   }
-  if (itemAmount(Item.get("barrel of gunpowder")) >= 5) {
+  if (itemAmount($item`barrel of gunpowder`) >= 5) {
     return false;
   }
 
   if (
     auto_hasAutumnaton() &&
     !isAboutToPowerlevel() &&
-    Location.get("Sonofa Beach").turnsSpent > 0
+    $location`Sonofa Beach`.turnsSpent > 0
   ) {
     // delay zone to allow autumnaton to grab barrels
     // unless we have ran out of other stuff to do
@@ -1500,11 +1486,11 @@ export function L12_sonofaBeach(): boolean {
   if (in_pokefam()) {
     if (
       containsText(
-        Location.get("Sonofa Beach").combatQueue,
-        Monster.get("lobsterfrogman").toString(),
+        $location`Sonofa Beach`.combatQueue,
+        $monster`lobsterfrogman`.toString(),
       )
     ) {
-      if (timeSpinnerCombat(Monster.get("lobsterfrogman"))) {
+      if (timeSpinnerCombat($monster`lobsterfrogman`)) {
         return true;
       }
     }
@@ -1513,9 +1499,9 @@ export function L12_sonofaBeach(): boolean {
   if (
     chateaumantegna_havePainting() &&
     !toBoolean(getProperty("chateauMonsterFought")) &&
-    getProperty("chateauMonster") === Monster.get("lobsterfrogman").toString()
+    getProperty("chateauMonster") === $monster`lobsterfrogman`.toString()
   ) {
-    auto_sourceTerminalEducate(Skill.get("Extract"), Skill.get("Digitize"));
+    auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
     if (chateaumantegna_usePainting()) {
       return true;
     }
@@ -1523,8 +1509,8 @@ export function L12_sonofaBeach(): boolean {
 
   if (
     isActuallyEd() &&
-    itemAmount(Item.get("talisman of Horus")) === 0 &&
-    haveEffect(Effect.get("Taunt of Horus")) === 0
+    itemAmount($item`talisman of Horus`) === 0 &&
+    haveEffect($effect`Taunt of Horus`) === 0
   ) {
     return false;
   }
@@ -1533,17 +1519,17 @@ export function L12_sonofaBeach(): boolean {
     return false; //ed is not prepared. delay
   }
   //Seriously? http://alliancefromhell.com/viewtopic.php?t=1338
-  if (itemAmount(Item.get("wool hat")) === 1) {
-    pulverizeThing(Item.get("wool hat"));
+  if (itemAmount($item`wool hat`) === 1) {
+    pulverizeThing($item`wool hat`);
   }
-  if (itemAmount(Item.get("goatskin umbrella")) === 1) {
-    pulverizeThing(Item.get("goatskin umbrella"));
+  if (itemAmount($item`goatskin umbrella`) === 1) {
+    pulverizeThing($item`goatskin umbrella`);
   }
 
   if (!in_lar()) {
     const combat_bonus: number = providePlusCombat(
       auto_combatModCap(),
-      Location.get("Sonofa Beach"),
+      $location`Sonofa Beach`,
       true,
       true,
     );
@@ -1557,11 +1543,11 @@ export function L12_sonofaBeach(): boolean {
     }
   }
 
-  if (itemAmount(Item.get("barrel of gunpowder")) < 4) {
+  if (itemAmount($item`barrel of gunpowder`) < 4) {
     setProperty("auto_doCombatCopy", "yes");
   }
 
-  const retval: boolean = autoAdv$2(Location.get("Sonofa Beach"));
+  const retval: boolean = autoAdv$2($location`Sonofa Beach`);
 
   setProperty("auto_doCombatCopy", "no");
   edAcquireHP();
@@ -1589,23 +1575,23 @@ export function L12_sonofaPrefix(): boolean {
 
   if (
     getProperty("_sourceTerminalDigitizeMonster") ===
-    Monster.get("lobsterfrogman").toString()
+    $monster`lobsterfrogman`.toString()
   ) {
     return false;
   }
-  if (itemAmount(Item.get("barrel of gunpowder")) >= 4 && !auto_voteMonster()) {
+  if (itemAmount($item`barrel of gunpowder`) >= 4 && !auto_voteMonster()) {
     return false;
   }
-  if (itemAmount(Item.get("barrel of gunpowder")) >= 5) {
+  if (itemAmount($item`barrel of gunpowder`) >= 5) {
     return false;
   }
 
   if (
     chateaumantegna_havePainting() &&
     !toBoolean(getProperty("chateauMonsterFought")) &&
-    getProperty("chateauMonster") === Monster.get("lobsterfrogman").toString()
+    getProperty("chateauMonster") === $monster`lobsterfrogman`.toString()
   ) {
-    auto_sourceTerminalEducate(Skill.get("Extract"), Skill.get("Digitize"));
+    auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
     if (chateaumantegna_usePainting()) {
       return true;
     }
@@ -1613,27 +1599,26 @@ export function L12_sonofaPrefix(): boolean {
 
   if (
     auto_backupTarget() &&
-    toMonster(getProperty("lastCopyableMonster")) ===
-      Monster.get("lobsterfrogman")
+    toMonster(getProperty("lastCopyableMonster")) === $monster`lobsterfrogman`
   ) {
     //let LX_burnDelay() run prior to forcing backing up in noob cave
     return false;
   }
 
-  if (!auto_get_campground().has(Item.get("Source terminal"))) {
+  if (!auto_get_campground().has($item`Source terminal`)) {
     if (
       (auto_voteMonster() || auto_sausageGoblin()) &&
       adjustForReplaceIfPossible$1()
     ) {
       try {
-        if (itemAmount(Item.get("barrel of gunpowder")) < 4) {
+        if (itemAmount($item`barrel of gunpowder`) < 4) {
           setProperty("auto_doCombatCopy", "yes");
         }
         if (auto_voteMonster() && !auto_voteMonster$1(true)) {
-          auto_voteMonster$2(false, Location.get("Sonofa Beach"));
+          auto_voteMonster$2(false, $location`Sonofa Beach`);
           return true;
         } else if (auto_sausageGoblin() && !auto_haveVotingBooth()) {
-          auto_sausageGoblin$2(Location.get("Sonofa Beach"), null);
+          auto_sausageGoblin$2($location`Sonofa Beach`, null);
           return true;
         }
       } finally {
@@ -1646,8 +1631,8 @@ export function L12_sonofaPrefix(): boolean {
 
   if (
     isActuallyEd() &&
-    itemAmount(Item.get("talisman of Horus")) === 0 &&
-    haveEffect(Effect.get("Taunt of Horus")) === 0
+    itemAmount($item`talisman of Horus`) === 0 &&
+    haveEffect($effect`Taunt of Horus`) === 0
   ) {
     return false;
   }
@@ -1656,17 +1641,17 @@ export function L12_sonofaPrefix(): boolean {
     return false;
   }
   //Seriously? http://alliancefromhell.com/viewtopic.php?t=1338
-  if (itemAmount(Item.get("wool hat")) === 1) {
-    pulverizeThing(Item.get("wool hat"));
+  if (itemAmount($item`wool hat`) === 1) {
+    pulverizeThing($item`wool hat`);
   }
-  if (itemAmount(Item.get("goatskin umbrella")) === 1) {
-    pulverizeThing(Item.get("goatskin umbrella"));
+  if (itemAmount($item`goatskin umbrella`) === 1) {
+    pulverizeThing($item`goatskin umbrella`);
   }
 
   if (!in_lar()) {
     const combat_bonus: number = providePlusCombat(
       auto_combatModCap(),
-      Location.get("Sonofa Beach"),
+      $location`Sonofa Beach`,
       true,
       true,
     );
@@ -1680,42 +1665,39 @@ export function L12_sonofaPrefix(): boolean {
     }
   }
 
-  if (itemAmount(Item.get("barrel of gunpowder")) < 4) {
+  if (itemAmount($item`barrel of gunpowder`) < 4) {
     setProperty("auto_doCombatCopy", "yes");
   }
 
   if (
-    myMp() < mpCost(Skill.get("Digitize")) &&
-    auto_get_campground().has(Item.get("Source terminal")) &&
-    isUnrestricted(Item.get("Source terminal")) &&
+    myMp() < mpCost($skill`Digitize`) &&
+    auto_get_campground().has($item`Source terminal`) &&
+    isUnrestricted($item`Source terminal`) &&
     getProperty("_sourceTerminalDigitizeMonster") !==
-      Monster.get("lobsterfrogman").toString() &&
+      $monster`lobsterfrogman`.toString() &&
     toInt(getProperty("_sourceTerminalDigitizeUses")) < 3
   ) {
     resetState();
     return false;
   }
 
-  if (
-    possessEquipment(Item.get("&quot;I Voted!&quot; sticker")) &&
-    myAdventures() > 15
-  ) {
+  if (possessEquipment($item`"I Voted!" sticker`) && myAdventures() > 15) {
     if (
-      haveSkill(Skill.get("Meteor Lore")) &&
+      haveSkill($skill`Meteor Lore`) &&
       toInt(getProperty("_macrometeoriteUses")) < 10
     ) {
       if (auto_voteMonster()) {
         setProperty("auto_combatDirective", "start;skill macrometeorite");
-        autoEquip(Slot.get("acc3"), Item.get("&quot;I Voted!&quot; sticker"));
+        autoEquip($slot`acc3`, $item`"I Voted!" sticker`);
       } else {
         return false;
       }
     }
   }
 
-  auto_sourceTerminalEducate(Skill.get("Extract"), Skill.get("Digitize"));
+  auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
 
-  const retval: boolean = autoAdv$2(Location.get("Sonofa Beach"));
+  const retval: boolean = autoAdv$2($location`Sonofa Beach`);
   if (!retval) {
     auto_log_error("Failed to adventure in [Sonofa Beach]");
     resetState();
@@ -1734,7 +1716,7 @@ export function L12_sonofaFinish(): boolean {
   if (in_koe()) {
     return false;
   }
-  if (itemAmount(Item.get("barrel of gunpowder")) < 5) {
+  if (itemAmount($item`barrel of gunpowder`) < 5) {
     return false;
   }
   if (!haveWarOutfit$1()) {
@@ -1761,8 +1743,8 @@ export function L12_flyerBackup(): boolean {
     return false;
   }
   if (
-    itemAmount(Item.get("rock band flyers")) === 0 &&
-    itemAmount(Item.get("jam band flyers")) === 0
+    itemAmount($item`rock band flyers`) === 0 &&
+    itemAmount($item`jam band flyers`) === 0
   ) {
     return false;
   }
@@ -1791,8 +1773,8 @@ export function L12_lastDitchFlyer(): boolean {
     return false;
   }
   if (
-    itemAmount(Item.get("rock band flyers")) === 0 &&
-    itemAmount(Item.get("jam band flyers")) === 0
+    itemAmount($item`rock band flyers`) === 0 &&
+    itemAmount($item`jam band flyers`) === 0
   ) {
     return false;
   }
@@ -1811,17 +1793,17 @@ export function L12_lastDitchFlyer(): boolean {
 
   const scalezone: Location = highestScalingZone();
   let flyer_gains: number =
-    myBuffedstat(Stat.get("Moxie")) + monsterLevelAdjustment();
+    myBuffedstat($stat`Moxie`) + monsterLevelAdjustment();
   switch (scalezone) {
-    case Location.get("The Neverending Party"):
+    case $location`The Neverending Party`:
       flyer_gains += 20;
       break;
-    case Location.get("VYKEA"):
+    case $location`VYKEA`:
       flyer_gains += 6;
       break;
-    case Location.get("Uncle Gator's Country Fun-Time Liquid Waste Sluice"):
-    case Location.get("The Deep Dark Jungle"):
-    case Location.get("Sloppy Seconds Diner"):
+    case $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`:
+    case $location`The Deep Dark Jungle`:
+    case $location`Sloppy Seconds Diner`:
       flyer_gains += 5;
       break;
   }
@@ -1840,7 +1822,7 @@ export function L12_lastDitchFlyer(): boolean {
     return false; //if we lose advs by doing last ditch flyering then do not do it
   }
 
-  if (scalezone === Location.get("The Neverending Party")) {
+  if (scalezone === $location`The Neverending Party`) {
     return neverendingPartyCombat();
   }
   if (scalezone !== Location.none) {
@@ -1854,8 +1836,8 @@ export function L12_flyerFinish(): boolean {
     return false;
   }
   if (
-    itemAmount(Item.get("rock band flyers")) === 0 &&
-    itemAmount(Item.get("jam band flyers")) === 0
+    itemAmount($item`rock band flyers`) === 0 &&
+    itemAmount($item`jam band flyers`) === 0
   ) {
     return false;
   }
@@ -1883,8 +1865,8 @@ export function L12_flyerFinish(): boolean {
 
   cliExecute("refresh inv");
   if (
-    itemAmount(Item.get("rock band flyers")) === 0 &&
-    itemAmount(Item.get("jam band flyers")) === 0
+    itemAmount($item`rock band flyers`) === 0 &&
+    itemAmount($item`jam band flyers`) === 0
   ) {
     return true;
   }
@@ -1943,13 +1925,11 @@ export function L12_themtharHills(): boolean {
     auto_log_info$1("Checking how much meat drop we can get");
     if (
       (inHardcore() &&
-        itemAmount(Item.get("waffle")) <= 6 &&
-        Location.get("The Themthar Hills").turnsSpent +
-          itemAmount(Item.get("waffle")) >
+        itemAmount($item`waffle`) <= 6 &&
+        $location`The Themthar Hills`.turnsSpent + itemAmount($item`waffle`) >
           6) ||
-      (itemAmount(Item.get("waffle")) <= 8 &&
-        Location.get("The Themthar Hills").turnsSpent +
-          itemAmount(Item.get("waffle")) >
+      (itemAmount($item`waffle`) <= 8 &&
+        $location`The Themthar Hills`.turnsSpent + itemAmount($item`waffle`) >
           8)
     ) {
       return false;
@@ -1962,12 +1942,12 @@ export function L12_themtharHills(): boolean {
       let getInhaler: boolean = false;
       let doRufus: boolean = false;
       if (
-        haveEffect(Effect.get("Sinuses For Miles")) <= 0 &&
-        itemAmount(Item.get("Mick's IcyVapoHotness Inhaler")) < 1 &&
-        auto_is_valid(Item.get("Mick's IcyVapoHotness Inhaler")) &&
+        haveEffect($effect`Sinuses For Miles`) <= 0 &&
+        itemAmount($item`Mick's IcyVapoHotness Inhaler`) < 1 &&
+        auto_is_valid($item`Mick's IcyVapoHotness Inhaler`) &&
         cloversAvailable$1() > 0 &&
         zone_isAvailable$1(
-          Location.get("The Castle in the Clouds in the Sky (Top Floor)"),
+          $location`The Castle in the Clouds in the Sky (Top Floor)`,
         )
       ) {
         bonusMeat += 200;
@@ -1976,7 +1956,7 @@ export function L12_themtharHills(): boolean {
       if (
         auto_havePayPhone() &&
         !toBoolean(getProperty("_shadowAffinityToday")) &&
-        itemAmount(Item.get("Rufus's shadow lodestone")) < 1
+        itemAmount($item`Rufus's shadow lodestone`) < 1
       ) {
         bonusMeat += 200;
         doRufus = true;
@@ -1988,7 +1968,7 @@ export function L12_themtharHills(): boolean {
         if (getInhaler) {
           auto_log_info$1("Getting Inhaler");
           return autoLuckyAdv$1(
-            Location.get("The Castle in the Clouds in the Sky (Top Floor)"),
+            $location`The Castle in the Clouds in the Sky (Top Floor)`,
           );
         }
         if (doRufus) {
@@ -2004,33 +1984,33 @@ export function L12_themtharHills(): boolean {
   // Outside of AG, if we have 3+ effect wishes we'll be wishing for Sinuses for Miles instead
   let considerCloverForInhaler: boolean =
     (in_avantGuard() || auto_totalEffectWishesAvailable() < 3) &&
-    auto_is_valid(Item.get("Mick's IcyVapoHotness Inhaler"));
+    auto_is_valid($item`Mick's IcyVapoHotness Inhaler`);
   considerCloverForInhaler =
     considerCloverForInhaler &&
     zone_isAvailable$1(
-      Location.get("The Castle in the Clouds in the Sky (Top Floor)"),
+      $location`The Castle in the Clouds in the Sky (Top Floor)`,
     );
   // Target 1000 + 400% = 5000 meat per brigand. Of course we want more, but don\'t bother unless we can get this.
   let meat_need: number = 400.0;
   //count inhaler if we have one or if we have a clover to obtain one and can use one
   if (
-    itemAmount(Item.get("Mick's IcyVapoHotness Inhaler")) > 0 ||
+    itemAmount($item`Mick's IcyVapoHotness Inhaler`) > 0 ||
     (cloversAvailable$1() > 0 && considerCloverForInhaler)
   ) {
     meat_need = meat_need - 200;
   }
   if (
     in_darkGyffte() &&
-    haveSkill(Skill.get("Wolf Form")) &&
-    0 === haveEffect(Effect.get("Wolf Form"))
+    haveSkill($skill`Wolf Form`) &&
+    0 === haveEffect($effect`Wolf Form`)
   ) {
     meat_need = meat_need - 150;
   }
   if (
     zataraAvailable() &&
     toBoolean(
-      toInt(0 === haveEffect(Effect.get("Meet the Meat"))) &
-        toInt(auto_is_valid$3(Effect.get("Meet the Meat"))),
+      toInt(0 === haveEffect($effect`Meet the Meat`)) &
+        toInt(auto_is_valid$3($effect`Meet the Meat`)),
     )
   ) {
     meat_need = meat_need - 100;
@@ -2046,8 +2026,8 @@ export function L12_themtharHills(): boolean {
 
   if (
     isActuallyEd() &&
-    haveSkill(Skill.get("Curse of Fortune")) &&
-    itemAmount(Item.get("Ka coin")) > 0
+    haveSkill($skill`Curse of Fortune`) &&
+    itemAmount($item`Ka coin`) > 0
   ) {
     meatDropHave = meatDropHave + 200;
   }
@@ -2066,13 +2046,12 @@ export function L12_themtharHills(): boolean {
 
     if (minget < meatneed) {
       const curMeat: number = toInt(getProperty("currentNunneryMeat"));
-      const advs: number = Location.get("The Themthar Hills").turnsSpent;
+      const advs: number = $location`The Themthar Hills`.turnsSpent;
       const needMeat: number = 100000 - curMeat;
 
       let failNuns: boolean = true;
       if (advs < 25) {
-        const advLeft: number =
-          25 - Location.get("The Themthar Hills").turnsSpent;
+        const advLeft: number = 25 - $location`The Themthar Hills`.turnsSpent;
         const needPerAdv: number = needMeat / advLeft;
         if (minget > needPerAdv) {
           auto_log_info(
@@ -2094,13 +2073,13 @@ export function L12_themtharHills(): boolean {
 
   if (considerCloverForInhaler) {
     if (
-      haveEffect(Effect.get("Sinuses For Miles")) <= 0 &&
-      itemAmount(Item.get("Mick's IcyVapoHotness Inhaler")) < 1 &&
+      haveEffect($effect`Sinuses For Miles`) <= 0 &&
+      itemAmount($item`Mick's IcyVapoHotness Inhaler`) < 1 &&
       cloversAvailable$1() > 0
     ) {
       //use clover to get inhaler
       return autoLuckyAdv$1(
-        Location.get("The Castle in the Clouds in the Sky (Top Floor)"),
+        $location`The Castle in the Clouds in the Sky (Top Floor)`,
       );
     }
   }
@@ -2114,16 +2093,16 @@ export function L12_themtharHills(): boolean {
     const lastMeat: number = toInt(getProperty("currentNunneryMeat"));
     const myLastMeat: number = myMeat();
     auto_log_info(`Meat drop to start: ${meatDropModifier()}`, "blue");
-    if (!autoAdv$1(1, Location.get("The Themthar Hills"))) {
+    if (!autoAdv$1(1, $location`The Themthar Hills`)) {
       //Maybe we passed it!
       const temp: string = visitUrl("bigisland.php?place=nunnery");
     }
-    if (lastMonster() !== Monster.get("dirty thieving brigand")) {
+    if (lastMonster() !== $monster`dirty thieving brigand`) {
       return true;
     }
     if (
       getProperty("lastEncounter") !==
-      Monster.get("dirty thieving brigand").toString()
+      $monster`dirty thieving brigand`.toString()
     ) {
       return true;
     }
@@ -2134,7 +2113,7 @@ export function L12_themtharHills(): boolean {
       setProperty("currentNunneryMeat", diffMeat_1.toString());
     }
 
-    const advs: number = Location.get("The Themthar Hills").turnsSpent + 1;
+    const advs: number = $location`The Themthar Hills`.turnsSpent + 1;
 
     let diffMeat: number = curMeat - lastMeat;
     const needMeat: number = 100000 - curMeat;
@@ -2154,7 +2133,7 @@ function LX_obtainChaosButterfly(): boolean {
   if (toBoolean(getProperty("chaosButterflyThrown"))) {
     return false;
   }
-  if (!isUnrestricted(Item.get("chaos butterfly"))) {
+  if (!isUnrestricted($item`chaos butterfly`)) {
     return false;
   }
   if (internalQuestStatus("questL10Garbage") < 8) {
@@ -2162,11 +2141,11 @@ function LX_obtainChaosButterfly(): boolean {
   }
   // Softcore pull
   if (
-    canPull$1(Item.get("chaos butterfly")) &&
+    canPull$1($item`chaos butterfly`) &&
     !toBoolean(getProperty("chaosButterflyThrown")) &&
-    itemAmount(Item.get("chaos butterfly")) === 0
+    itemAmount($item`chaos butterfly`) === 0
   ) {
-    if (pullXWhenHaveY(Item.get("chaos butterfly"), 1, 0)) {
+    if (pullXWhenHaveY($item`chaos butterfly`, 1, 0)) {
       return true;
     } else {
       auto_log_warning(
@@ -2178,13 +2157,13 @@ function LX_obtainChaosButterfly(): boolean {
   // Fight possibility giant for chaos butterfly if profitable.
   if (
     !toBoolean(getProperty("chaosButterflyThrown")) &&
-    itemAmount(Item.get("chaos butterfly")) === 0 &&
+    itemAmount($item`chaos butterfly`) === 0 &&
     auto_estimatedAdventuresForChaosButterfly() < 15
   ) {
     if (
       autoAdv$1(
         1,
-        Location.get("The Castle in the Clouds in the Sky (Ground Floor)"),
+        $location`The Castle in the Clouds in the Sky (Ground Floor)`,
       )
     ) {
       return true;
@@ -2201,10 +2180,10 @@ function LX_obtainChaosButterfly(): boolean {
   // suddenly realize that we want to complete dooks after all.
   if (
     !toBoolean(getProperty("chaosButterflyThrown")) &&
-    itemAmount(Item.get("chaos butterfly")) > 0 &&
+    itemAmount($item`chaos butterfly`) > 0 &&
     !in_pokefam()
   ) {
-    if (Location.get("McMillicancuddy's Barn").turnsSpent > 0) {
+    if ($location`McMillicancuddy's Barn`.turnsSpent > 0) {
       auto_log_warning(
         "I seem to have spent turns in [McMillicancuddy's Barn] without using the [chaos butterfly] which I have. Something is not right...",
         "red",
@@ -2214,7 +2193,7 @@ function LX_obtainChaosButterfly(): boolean {
         "Looks like I should use the [chaos butterfly] in [McMillicancuddy's Barn]",
         "blue",
       );
-      return autoAdv$1(1, Location.get("McMillicancuddy's Barn"));
+      return autoAdv$1(1, $location`McMillicancuddy's Barn`);
     }
   }
 
@@ -2266,22 +2245,22 @@ export function L12_farm(): boolean {
 
   switch (toInt(getProperty("auto_L12FarmStage"))) {
     case 0:
-      if (autoAdv$1(1, Location.get("McMillicancuddy's Barn"))) {
+      if (autoAdv$1(1, $location`McMillicancuddy's Barn`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "1");
     case 1:
-      if (autoAdv$1(1, Location.get("McMillicancuddy's Pond"))) {
+      if (autoAdv$1(1, $location`McMillicancuddy's Pond`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "2");
     case 2:
-      if (autoAdv$1(1, Location.get("McMillicancuddy's Back 40"))) {
+      if (autoAdv$1(1, $location`McMillicancuddy's Back 40`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "3");
     case 3:
-      if (autoAdv$1(1, Location.get("McMillicancuddy's Other Back 40"))) {
+      if (autoAdv$1(1, $location`McMillicancuddy's Other Back 40`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "4");
@@ -2310,12 +2289,12 @@ export function L12_clearBattlefield(): boolean {
   ) {
     const camp: Map<Item, number> = auto_get_campground();
     if (
-      camp.has(Item.get("packet of thanksgarden seeds")) &&
-      camp.has(Item.get("cornucopia")) &&
-      (camp.get(Item.get("cornucopia")) ??
-        camp.set(Item.get("cornucopia"), 0).get(Item.get("cornucopia"))) > 0 &&
+      camp.has($item`packet of thanksgarden seeds`) &&
+      camp.has($item`cornucopia`) &&
+      (camp.get($item`cornucopia`) ??
+        camp.set($item`cornucopia`, 0).get($item`cornucopia`)) > 0 &&
       internalQuestStatus("questL12War") >= 1 &&
-      isUnrestricted(Item.get("packet of thanksgarden seeds"))
+      isUnrestricted($item`packet of thanksgarden seeds`)
     ) {
       cliExecute("garden pick");
     }
@@ -2396,26 +2375,26 @@ export function L12_clearBattlefield(): boolean {
     return false; //we are waiting for a sidequest to finish first
   }
 
-  if (enemies_defeated < 64 && auto_is_valid(Item.get("stuffing fluffer"))) {
+  if (enemies_defeated < 64 && auto_is_valid($item`stuffing fluffer`)) {
     if (
-      itemAmount(Item.get("stuffing fluffer")) === 0 &&
-      itemAmount(Item.get("cashew")) >= 3
+      itemAmount($item`stuffing fluffer`) === 0 &&
+      itemAmount($item`cashew`) >= 3
     ) {
-      create(1, Item.get("stuffing fluffer"));
+      create(1, $item`stuffing fluffer`);
     }
     if (
-      itemAmount(Item.get("stuffing fluffer")) === 0 &&
-      itemAmount(Item.get("cornucopia")) > 0 &&
-      auto_is_valid(Item.get("cornucopia"))
+      itemAmount($item`stuffing fluffer`) === 0 &&
+      itemAmount($item`cornucopia`) > 0 &&
+      auto_is_valid($item`cornucopia`)
     ) {
-      return use(1, Item.get("cornucopia"));
+      return use(1, $item`cornucopia`);
     }
-    if (itemAmount(Item.get("stuffing fluffer")) > 0) {
+    if (itemAmount($item`stuffing fluffer`) > 0) {
       auto_log_info(
         "Detonating a [Stuffing Fluffer] which should kill 36-46 soldiers on each side.",
         "blue",
       );
-      return use(1, Item.get("stuffing fluffer"));
+      return use(1, $item`stuffing fluffer`);
     }
   }
 
@@ -2453,45 +2432,26 @@ export function L12_finalizeWar(): boolean {
     auto_log_info("Getting dimes.", "blue");
     if (in_wereprof()) {
       //Need to manually equip because professor
-      if (!haveEquipped(Item.get("bullet-proof corduroys"))) {
-        equip(Item.get("bullet-proof corduroys"));
+      if (!haveEquipped($item`bullet-proof corduroys`)) {
+        equip($item`bullet-proof corduroys`);
       }
-      if (!haveEquipped(Item.get("round purple sunglasses"))) {
-        equip(Item.get("round purple sunglasses"));
+      if (!haveEquipped($item`round purple sunglasses`)) {
+        equip($item`round purple sunglasses`);
       }
-      if (!haveEquipped(Item.get("reinforced beaded headband"))) {
-        equip(Item.get("reinforced beaded headband"));
+      if (!haveEquipped($item`reinforced beaded headband`)) {
+        equip($item`reinforced beaded headband`);
       }
     } else {
       outfit("War Hippy Fatigues");
     }
-    for (const it of Item.get([
-      "PADL Phone",
-      "red class ring",
-      "blue class ring",
-      "white class ring",
-    ])) {
+    for (const it of $items`PADL Phone, red class ring, blue class ring, white class ring`) {
       sell(it.buyer, itemAmount(it), it);
     }
-    for (const it of Item.get([
-      "beer helmet",
-      "distressed denim pants",
-      "bejeweled pledge pin",
-    ])) {
+    for (const it of $items`beer helmet, distressed denim pants, bejeweled pledge pin`) {
       sell(it.buyer, itemAmount(it) - 1, it);
     }
     if (isActuallyEd()) {
-      for (const it of Item.get([
-        "kick-ass kicks",
-        "perforated battle paddle",
-        "bottle opener belt buckle",
-        "keg shield",
-        "giant foam finger",
-        "war tongs",
-        "energy drink IV",
-        "Elmley shades",
-        "beer bong",
-      ])) {
+      for (const it of $items`kick-ass kicks, perforated battle paddle, bottle opener belt buckle, keg shield, giant foam finger, war tongs, energy drink IV, Elmley shades, beer bong`) {
         sell(it.buyer, itemAmount(it), it);
       }
     }
@@ -2500,46 +2460,26 @@ export function L12_finalizeWar(): boolean {
     auto_log_info("Getting quarters.", "blue");
     if (in_wereprof()) {
       //Need to manually equip because professor
-      if (!haveEquipped(Item.get("beer helmet"))) {
-        equip(Item.get("beer helmet"));
+      if (!haveEquipped($item`beer helmet`)) {
+        equip($item`beer helmet`);
       }
-      if (!haveEquipped(Item.get("distressed denim pants"))) {
-        equip(Item.get("distressed denim pants"));
+      if (!haveEquipped($item`distressed denim pants`)) {
+        equip($item`distressed denim pants`);
       }
-      if (!haveEquipped(Item.get("bejeweled pledge pin"))) {
-        equip(Item.get("bejeweled pledge pin"));
+      if (!haveEquipped($item`bejeweled pledge pin`)) {
+        equip($item`bejeweled pledge pin`);
       }
     } else {
       outfit("Frat Warrior Fatigues");
     }
-    for (const it of Item.get([
-      "pink clay bead",
-      "purple clay bead",
-      "green clay bead",
-      "communications windchimes",
-    ])) {
+    for (const it of $items`pink clay bead, purple clay bead, green clay bead, communications windchimes`) {
       sell(it.buyer, itemAmount(it), it);
     }
-    for (const it of Item.get([
-      "bullet-proof corduroys",
-      "round purple sunglasses",
-      "reinforced beaded headband",
-    ])) {
+    for (const it of $items`bullet-proof corduroys, round purple sunglasses, reinforced beaded headband`) {
       sell(it.buyer, itemAmount(it) - 1, it);
     }
     if (isActuallyEd()) {
-      for (const it of Item.get([
-        "hippy protest button",
-        "Lockenstock&trade; sandals",
-        "didgeridooka",
-        "wicker shield",
-        "oversized pipe",
-        "fire poi",
-        "Gaia beads",
-        "hippy medical kit",
-        "flowing hippy skirt",
-        "round green sunglasses",
-      ])) {
+      for (const it of $items`hippy protest button, Lockenstock™ sandals, didgeridooka, wicker shield, oversized pipe, fire poi, Gaia beads, hippy medical kit, flowing hippy skirt, round green sunglasses`) {
         sell(it.buyer, itemAmount(it), it);
       }
     }
@@ -2547,30 +2487,29 @@ export function L12_finalizeWar(): boolean {
   // Just in case we need the extra turngen to complete this day
   if (in_darkGyffte()) {
     const have_1: number =
-      itemAmount(Item.get("Monstar energy beverage")) +
-      itemAmount(Item.get("carbonated soy milk"));
+      itemAmount($item`Monstar energy beverage`) +
+      itemAmount($item`carbonated soy milk`);
     if (have_1 < 5) {
       let need: number = 5 - have_1;
       if (!toBoolean(getProperty("auto_hippyInstead"))) {
-        need = min(need, Coinmaster.get("Quartersmaster").availableTokens / 3);
+        need = min(need, $coinmaster`Quartersmaster`.availableTokens / 3);
         cliExecute(`make ${need} Monstar energy beverage`);
       } else {
-        need = min(need, Coinmaster.get("Dimemaster").availableTokens / 3);
+        need = min(need, $coinmaster`Dimemaster`.availableTokens / 3);
         cliExecute(`make ${need} carbonated soy milk`);
       }
     }
   }
 
   const have: number =
-    itemAmount(Item.get("filthy poultice")) +
-    itemAmount(Item.get("gauze garter"));
+    itemAmount($item`filthy poultice`) + itemAmount($item`gauze garter`);
   if (have < 10 && !isActuallyEd()) {
     let need: number = 10 - have;
     if (!toBoolean(getProperty("auto_hippyInstead"))) {
-      need = min(need, Coinmaster.get("Quartersmaster").availableTokens / 2);
+      need = min(need, $coinmaster`Quartersmaster`.availableTokens / 2);
       cliExecute(`make ${need} gauze garter`);
     } else {
-      need = min(need, Coinmaster.get("Dimemaster").availableTokens / 2);
+      need = min(need, $coinmaster`Dimemaster`.availableTokens / 2);
       cliExecute(`make ${need} filthy poultice`);
     }
   }
@@ -2578,29 +2517,29 @@ export function L12_finalizeWar(): boolean {
   if (possessOutfit$1("War Hippy Fatigues")) {
     if (in_wereprof()) {
       //Need to manually equip because professor
-      if (!haveEquipped(Item.get("bullet-proof corduroys"))) {
-        equip(Item.get("bullet-proof corduroys"));
+      if (!haveEquipped($item`bullet-proof corduroys`)) {
+        equip($item`bullet-proof corduroys`);
       }
-      if (!haveEquipped(Item.get("round purple sunglasses"))) {
-        equip(Item.get("round purple sunglasses"));
+      if (!haveEquipped($item`round purple sunglasses`)) {
+        equip($item`round purple sunglasses`);
       }
-      if (!haveEquipped(Item.get("reinforced beaded headband"))) {
-        equip(Item.get("reinforced beaded headband"));
+      if (!haveEquipped($item`reinforced beaded headband`)) {
+        equip($item`reinforced beaded headband`);
       }
     }
-    while (Coinmaster.get("Dimemaster").availableTokens >= 5) {
+    while ($coinmaster`Dimemaster`.availableTokens >= 5) {
       cliExecute(
-        `make ${Coinmaster.get("Dimemaster").availableTokens / 5} fancy seashell necklace`,
+        `make ${$coinmaster`Dimemaster`.availableTokens / 5} fancy seashell necklace`,
       );
     }
-    while (Coinmaster.get("Dimemaster").availableTokens >= 2) {
+    while ($coinmaster`Dimemaster`.availableTokens >= 2) {
       cliExecute(
-        `make ${Coinmaster.get("Dimemaster").availableTokens / 2} filthy poultice`,
+        `make ${$coinmaster`Dimemaster`.availableTokens / 2} filthy poultice`,
       );
     }
-    while (Coinmaster.get("Dimemaster").availableTokens >= 1) {
+    while ($coinmaster`Dimemaster`.availableTokens >= 1) {
       cliExecute(
-        `make ${Coinmaster.get("Dimemaster").availableTokens} water pipe bomb`,
+        `make ${$coinmaster`Dimemaster`.availableTokens} water pipe bomb`,
       );
     }
   }
@@ -2608,29 +2547,29 @@ export function L12_finalizeWar(): boolean {
   if (possessOutfit$1("Frat Warrior Fatigues")) {
     if (in_wereprof()) {
       //Need to manually equip because professor
-      if (!haveEquipped(Item.get("beer helmet"))) {
-        equip(Item.get("beer helmet"));
+      if (!haveEquipped($item`beer helmet`)) {
+        equip($item`beer helmet`);
       }
-      if (!haveEquipped(Item.get("distressed denim pants"))) {
-        equip(Item.get("distressed denim pants"));
+      if (!haveEquipped($item`distressed denim pants`)) {
+        equip($item`distressed denim pants`);
       }
-      if (!haveEquipped(Item.get("bejeweled pledge pin"))) {
-        equip(Item.get("bejeweled pledge pin"));
+      if (!haveEquipped($item`bejeweled pledge pin`)) {
+        equip($item`bejeweled pledge pin`);
       }
     }
-    while (Coinmaster.get("Quartersmaster").availableTokens >= 5) {
+    while ($coinmaster`Quartersmaster`.availableTokens >= 5) {
       cliExecute(
-        `make ${Coinmaster.get("Quartersmaster").availableTokens / 5} commemorative war stein`,
+        `make ${$coinmaster`Quartersmaster`.availableTokens / 5} commemorative war stein`,
       );
     }
-    while (Coinmaster.get("Quartersmaster").availableTokens >= 2) {
+    while ($coinmaster`Quartersmaster`.availableTokens >= 2) {
       cliExecute(
-        `make ${Coinmaster.get("Quartersmaster").availableTokens / 2} gauze garter`,
+        `make ${$coinmaster`Quartersmaster`.availableTokens / 2} gauze garter`,
       );
     }
-    while (Coinmaster.get("Quartersmaster").availableTokens >= 1) {
+    while ($coinmaster`Quartersmaster`.availableTokens >= 1) {
       cliExecute(
-        `make ${Coinmaster.get("Quartersmaster").availableTokens} beer bomb`,
+        `make ${$coinmaster`Quartersmaster`.availableTokens} beer bomb`,
       );
     }
   }
@@ -2638,28 +2577,28 @@ export function L12_finalizeWar(): boolean {
   if (myMp() < 40) {
     // fyi https://kol.coldfront.net/thekolwiki/index.php/Chateau_Mantegna states you wont get pantsgiving benefits resting there (presumably campsite as well)
     // so not sure this is doing much
-    if (possessEquipment(Item.get("Pantsgiving"))) {
-      equip(Item.get("Pantsgiving"));
+    if (possessEquipment($item`Pantsgiving`)) {
+      equip($item`Pantsgiving`);
     }
     doRest();
   }
   equipWarOutfit();
   //AoSOL buffs
   if (in_aosol()) {
-    buffMaintain$3(Effect.get("Queso Fustulento"), 10, 1, 10);
-    buffMaintain$3(Effect.get("Tricky Timpani"), 30, 1, 10);
+    buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
+    buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
   }
   // AMW buff
   if (in_amw()) {
-    buffMaintain$3(Effect.get("Stewing"), 0, 1, 10);
+    buffMaintain$3($effect`Stewing`, 0, 1, 10);
   }
   acquireHP();
   auto_log_info("Let's fight the boss!", "blue");
 
-  const bossFight: Location = Location.get("Noob Cave");
+  const bossFight: Location = $location`Noob Cave`;
 
-  if (auto_have_familiar(Familiar.get("Machine Elf"))) {
-    handleFamiliar$1(Familiar.get("Machine Elf"));
+  if (auto_have_familiar($familiar`Machine Elf`)) {
+    handleFamiliar$1($familiar`Machine Elf`);
   }
   const pages: Map<number, string> = new Map();
   pages.set(0, "bigisland.php?place=camp&whichcamp=1");
@@ -2733,8 +2672,8 @@ export function L12_opportunisticWarStart(): boolean {
   }
   // Dinghy the island if we can.
   if (toInt(getProperty("lastIslandUnlock")) !== myAscensions()) {
-    if (availableAmount(Item.get("pirate dinghy")) > 0) {
-      use(Item.get("pirate dinghy"));
+    if (availableAmount($item`pirate dinghy`) > 0) {
+      use($item`pirate dinghy`);
     }
   }
   if (toInt(getProperty("lastIslandUnlock")) !== myAscensions()) {
@@ -2744,5 +2683,5 @@ export function L12_opportunisticWarStart(): boolean {
 }
 
 function L12_singleNCForWarStart(): boolean {
-  return auto_haveCCSC() || haveSkill(Skill.get("Comprehensive Cartography"));
+  return auto_haveCCSC() || haveSkill($skill`Comprehensive Cartography`);
 }

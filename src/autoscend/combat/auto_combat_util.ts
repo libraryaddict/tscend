@@ -2,15 +2,11 @@ import {
   abort,
   availableAmount,
   canEquip,
-  Class,
   containsText,
-  Effect,
-  Element,
   elementalResistance,
   equippedAmount,
   equippedItem,
   expectedDamage,
-  Familiar,
   fuelCost,
   getFuel,
   getProperty,
@@ -53,7 +49,6 @@ import {
   rainCost,
   setProperty,
   Skill,
-  Slot,
   soulsauceCost,
   substring,
   thunderCost,
@@ -64,6 +59,21 @@ import {
   toSkill,
   trackedBy,
 } from "kolmafia";
+import {
+  $class,
+  $effect,
+  $element,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $monster,
+  $monsters,
+  $skill,
+  $skills,
+  $slot,
+} from "libram";
+
 import { canDrink$1, inebriety_left, spleen_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
 import {
@@ -89,7 +99,6 @@ import {
   loopHandlerDelayAll,
   wrap_item,
 } from "../auto_util";
-import { auto_combatHandler } from "./auto_combat";
 import {
   asdonCanMissile,
   auto_macrometeoritesAvailable,
@@ -142,6 +151,7 @@ import {
 import { hedgeTrimmersNeeded } from "../quests/level_09";
 import { auto_warSide } from "../quests/level_12";
 import { AshMatcher } from "../utils/kolmafiaUtils";
+import { auto_combatHandler } from "./auto_combat";
 
 class $_canUse_SkillSet {
   constructor(
@@ -256,7 +266,7 @@ export function canUse(
     }
   }
 
-  if (sk === Skill.get("Shieldbutt") && !hasShieldEquipped()) {
+  if (sk === $skill`Shieldbutt` && !hasShieldEquipped()) {
     return false;
   }
   $_canUse_exclusives ??= new Map();
@@ -266,31 +276,21 @@ export function canUse(
       new $_canUse_SkillSet(
         1,
         new Map([
-          [Skill.get("Curse of Vichyssoise"), true],
-          [Skill.get("Curse of Marinara"), true],
-          [Skill.get("Curse of the Thousand Islands"), true],
-          [Skill.get("Curse of Weaksauce"), true],
+          [$skill`Curse of Vichyssoise`, true],
+          [$skill`Curse of Marinara`, true],
+          [$skill`Curse of the Thousand Islands`, true],
+          [$skill`Curse of Weaksauce`, true],
         ]),
       ),
     );
     $_canUse_exclusives.set(
       $_canUse_exclusives.size,
       new $_canUse_SkillSet(
-        equippedAmount(Item.get("vampyric cloake")),
+        equippedAmount($item`vampyric cloake`),
         new Map([
-          [Skill.get("Become a Wolf"), true],
-          [Skill.get("Become a Cloud of Mist"), true],
-          [Skill.get("Become a Bat"), true],
-        ]),
-      ),
-    );
-    $_canUse_exclusives.set(
-      $_canUse_exclusives.size,
-      new $_canUse_SkillSet(
-        1,
-        new Map([
-          [Skill.get("Shadow Noodles"), true],
-          [Skill.get("Entangling Noodles"), true],
+          [$skill`Become a Wolf`, true],
+          [$skill`Become a Cloud of Mist`, true],
+          [$skill`Become a Bat`, true],
         ]),
       ),
     );
@@ -299,36 +299,8 @@ export function canUse(
       new $_canUse_SkillSet(
         1,
         new Map([
-          [Skill.get("Silent Slam"), true],
-          [Skill.get("Silent Squirt"), true],
-          [Skill.get("Silent Slice"), true],
-        ]),
-      ),
-    );
-    $_canUse_exclusives.set(
-      $_canUse_exclusives.size,
-      new $_canUse_SkillSet(
-        equippedAmount(wrap_item(Item.get("haiku katana"))),
-        new Map([
-          [Skill.get("The 17 Cuts"), true],
-          [Skill.get("Falling Leaf Whirlwind"), true],
-          [Skill.get("Spring Raindrop Attack"), true],
-          [Skill.get("Summer Siesta"), true],
-          [Skill.get("Winter's Bite Technique"), true],
-        ]),
-      ),
-    );
-    $_canUse_exclusives.set(
-      $_canUse_exclusives.size,
-      new $_canUse_SkillSet(
-        equippedAmount(Item.get("bottle-rocket crossbow")) +
-          equippedAmount(Item.get("replica bottle-rocket crossbow")),
-        new Map([
-          [Skill.get("Fire red bottle-rocket"), true],
-          [Skill.get("Fire blue bottle-rocket"), true],
-          [Skill.get("Fire orange bottle-rocket"), true],
-          [Skill.get("Fire purple bottle-rocket"), true],
-          [Skill.get("Fire black bottle-rocket"), true],
+          [$skill`Shadow Noodles`, true],
+          [$skill`Entangling Noodles`, true],
         ]),
       ),
     );
@@ -337,11 +309,49 @@ export function canUse(
       new $_canUse_SkillSet(
         1,
         new Map([
-          [Skill.get("Kodiak Moment"), true],
-          [Skill.get("Grizzly Scene"), true],
-          [Skill.get("Bear-Backrub"), true],
-          [Skill.get("Bear-ly Legal"), true],
-          [Skill.get("Bear Hug"), true],
+          [$skill`Silent Slam`, true],
+          [$skill`Silent Squirt`, true],
+          [$skill`Silent Slice`, true],
+        ]),
+      ),
+    );
+    $_canUse_exclusives.set(
+      $_canUse_exclusives.size,
+      new $_canUse_SkillSet(
+        equippedAmount(wrap_item($item`haiku katana`)),
+        new Map([
+          [$skill`The 17 Cuts`, true],
+          [$skill`Falling Leaf Whirlwind`, true],
+          [$skill`Spring Raindrop Attack`, true],
+          [$skill`Summer Siesta`, true],
+          [$skill`Winter's Bite Technique`, true],
+        ]),
+      ),
+    );
+    $_canUse_exclusives.set(
+      $_canUse_exclusives.size,
+      new $_canUse_SkillSet(
+        equippedAmount($item`bottle-rocket crossbow`) +
+          equippedAmount($item`replica bottle-rocket crossbow`),
+        new Map([
+          [$skill`Fire red bottle-rocket`, true],
+          [$skill`Fire blue bottle-rocket`, true],
+          [$skill`Fire orange bottle-rocket`, true],
+          [$skill`Fire purple bottle-rocket`, true],
+          [$skill`Fire black bottle-rocket`, true],
+        ]),
+      ),
+    );
+    $_canUse_exclusives.set(
+      $_canUse_exclusives.size,
+      new $_canUse_SkillSet(
+        1,
+        new Map([
+          [$skill`Kodiak Moment`, true],
+          [$skill`Grizzly Scene`, true],
+          [$skill`Bear-Backrub`, true],
+          [$skill`Bear-ly Legal`, true],
+          [$skill`Bear Hug`, true],
         ]),
       ),
     );
@@ -410,7 +420,7 @@ export function useItem(it: Item, mark: boolean): string {
   if (mark) {
     markAsUsed$1(it);
   }
-  if (auto_have_skill(Skill.get("Ambidextrous Funkslinging"))) {
+  if (auto_have_skill($skill`Ambidextrous Funkslinging`)) {
     //don't double use
     return `item ${it}, none`;
   }
@@ -435,7 +445,7 @@ export function useItems$1(it1: Item, it2: Item): string {
 
 export function isSniffed(enemy: Monster, sk: Skill): boolean {
   let search: string = "";
-  if (sk === Skill.get("Get a Good Whiff of This Guy")) {
+  if (sk === $skill`Get a Good Whiff of This Guy`) {
     search = "Nosy Nose";
   } else {
     search = sk.toString();
@@ -451,21 +461,7 @@ export function isSniffed(enemy: Monster, sk: Skill): boolean {
 
 export function isSniffed$1(enemy: Monster): boolean {
   //checks if the monster enemy is currently sniffed using any of the sniff skills
-  for (const sk of Skill.get([
-    "Transcendent Olfaction",
-    "Make Friends",
-    "Long Con",
-    "Perceive Soul",
-    "Gallapagosian Mating Call",
-    "Monkey Point",
-    "Offer Latte to Opponent",
-    "Motif",
-    "Hunt",
-    "McHugeLarge Slash",
-    "Left %n Kick",
-    "Right %n Kick",
-    "Meat Cute",
-  ])) {
+  for (const sk of $skills`Transcendent Olfaction, Make Friends, Long Con, Perceive Soul, Gallapagosian Mating Call, Monkey Point, Offer Latte to Opponent, Motif, Hunt, McHugeLarge Slash, Left %n Kick, Right %n Kick, Meat Cute`) {
     if (isSniffed(enemy, sk)) {
       return true;
     }
@@ -478,101 +474,101 @@ export function getSniffer(enemy: Monster, inCombat: boolean): Skill {
   //returns the skill we want to use to sniff the enemy
   //sniffers are skills that increase the odds of encountering this same monster again in the current zone.
   if (
-    canUse(Skill.get("Transcendent Olfaction"), true, inCombat) &&
+    canUse($skill`Transcendent Olfaction`, true, inCombat) &&
     toInt(getProperty("_olfactionsUsed")) < 3 &&
-    !isSniffed(enemy, Skill.get("Transcendent Olfaction"))
+    !isSniffed(enemy, $skill`Transcendent Olfaction`)
   ) {
-    return Skill.get("Transcendent Olfaction");
+    return $skill`Transcendent Olfaction`;
   }
   if (
-    canUse(Skill.get("Make Friends"), true, inCombat) &&
+    canUse($skill`Make Friends`, true, inCombat) &&
     myAudience() >= 20 &&
-    !isSniffed(enemy, Skill.get("Make Friends"))
+    !isSniffed(enemy, $skill`Make Friends`)
   ) {
-    return Skill.get("Make Friends"); //avatar of sneaky pete specific skill
+    return $skill`Make Friends`; //avatar of sneaky pete specific skill
   }
   if (
-    canUse(Skill.get("Hunt"), true, inCombat) &&
-    haveEffect(Effect.get("Everything Looks Red")) === 0 &&
-    !isSniffed(enemy, Skill.get("Hunt"))
+    canUse($skill`Hunt`, true, inCombat) &&
+    haveEffect($effect`Everything Looks Red`) === 0 &&
+    !isSniffed(enemy, $skill`Hunt`)
   ) {
-    return Skill.get("Hunt"); //WereProfessor Werewolf specific skill
+    return $skill`Hunt`; //WereProfessor Werewolf specific skill
   }
   if (
-    canUse(Skill.get("Meat Cute"), true, inCombat) &&
+    canUse($skill`Meat Cute`, true, inCombat) &&
     toInt(getProperty("_meatCuteUsed")) < 5 &&
-    !isSniffed(enemy, Skill.get("Meat Cute"))
+    !isSniffed(enemy, $skill`Meat Cute`)
   ) {
-    return Skill.get("Meat Cute"); //Meat Golem specific skill
+    return $skill`Meat Cute`; //Meat Golem specific skill
   }
   if (
-    canUse(Skill.get("Long Con"), true, inCombat) &&
+    canUse($skill`Long Con`, true, inCombat) &&
     toInt(getProperty("_longConUsed")) < 5 &&
-    !isSniffed(enemy, Skill.get("Long Con"))
+    !isSniffed(enemy, $skill`Long Con`)
   ) {
-    return Skill.get("Long Con");
+    return $skill`Long Con`;
   }
   if (
-    canUse(Skill.get("Perceive Soul"), true, inCombat) &&
-    !isSniffed(enemy, Skill.get("Perceive Soul"))
+    canUse($skill`Perceive Soul`, true, inCombat) &&
+    !isSniffed(enemy, $skill`Perceive Soul`)
   ) {
-    return Skill.get("Perceive Soul");
+    return $skill`Perceive Soul`;
   }
   if (
-    canUse(Skill.get("Motif"), true, inCombat) &&
-    !isSniffed(enemy, Skill.get("Motif")) &&
-    haveEffect(Effect.get("Everything Looks Blue")) === 0
+    canUse($skill`Motif`, true, inCombat) &&
+    !isSniffed(enemy, $skill`Motif`) &&
+    haveEffect($effect`Everything Looks Blue`) === 0
   ) {
-    return Skill.get("Motif");
+    return $skill`Motif`;
   }
   if (inCombat) {
     if (
-      canUse(Skill.get("Monkey Point"), true, inCombat) &&
-      !isSniffed(enemy, Skill.get("Monkey Point"))
+      canUse($skill`Monkey Point`, true, inCombat) &&
+      !isSniffed(enemy, $skill`Monkey Point`)
     ) {
-      return Skill.get("Monkey Point");
+      return $skill`Monkey Point`;
     }
     if (
-      canUse(Skill.get("McHugeLarge Slash"), true, inCombat) &&
-      !isSniffed(enemy, Skill.get("McHugeLarge Slash")) &&
+      canUse($skill`McHugeLarge Slash`, true, inCombat) &&
+      !isSniffed(enemy, $skill`McHugeLarge Slash`) &&
       auto_McLargeHugeSniffsLeft() > 0
     ) {
-      return Skill.get("McHugeLarge Slash");
+      return $skill`McHugeLarge Slash`;
     }
   } else {
     if (
       auto_monkeyPawWishesLeft() === 1 &&
-      !isSniffed(enemy, Skill.get("Monkey Point"))
+      !isSniffed(enemy, $skill`Monkey Point`)
     ) {
-      return Skill.get("Monkey Point");
+      return $skill`Monkey Point`;
     }
     if (
-      possessEquipment(Item.get("McHugeLarge left pole")) &&
-      !isSniffed(enemy, Skill.get("McHugeLarge Slash")) &&
+      possessEquipment($item`McHugeLarge left pole`) &&
+      !isSniffed(enemy, $skill`McHugeLarge Slash`) &&
       auto_McLargeHugeSniffsLeft() > 0
     ) {
-      return Skill.get("McHugeLarge Slash");
+      return $skill`McHugeLarge Slash`;
     }
   }
   if (
-    canUse(Skill.get("Gallapagosian Mating Call"), true, inCombat) &&
-    !isSniffed(enemy, Skill.get("Gallapagosian Mating Call"))
+    canUse($skill`Gallapagosian Mating Call`, true, inCombat) &&
+    !isSniffed(enemy, $skill`Gallapagosian Mating Call`)
   ) {
-    return Skill.get("Gallapagosian Mating Call");
+    return $skill`Gallapagosian Mating Call`;
   }
   if (
-    myFamiliar() === Familiar.get("Nosy Nose") &&
-    canUse$2(Skill.get("Get a Good Whiff of This Guy")) &&
-    !isSniffed(enemy, Skill.get("Get a Good Whiff of This Guy"))
+    myFamiliar() === $familiar`Nosy Nose` &&
+    canUse$2($skill`Get a Good Whiff of This Guy`) &&
+    !isSniffed(enemy, $skill`Get a Good Whiff of This Guy`)
   ) {
-    return Skill.get("Get a Good Whiff of This Guy");
+    return $skill`Get a Good Whiff of This Guy`;
   }
   if (
-    canUse(Skill.get("Offer Latte to Opponent"), true, inCombat) &&
+    canUse($skill`Offer Latte to Opponent`, true, inCombat) &&
     !toBoolean(getProperty("_latteCopyUsed")) &&
-    !isSniffed(enemy, Skill.get("Offer Latte to Opponent"))
+    !isSniffed(enemy, $skill`Offer Latte to Opponent`)
   ) {
-    return Skill.get("Offer Latte to Opponent");
+    return $skill`Offer Latte to Opponent`;
   }
   // Zootomist kicks. We might have to move this depending on what happens with cooldowns
   const z_kick: Skill = getZooKickSniff();
@@ -591,13 +587,13 @@ function isCopied(enemy: Monster, sk: Skill): boolean {
   //checks if the monster enemy is currently copied using the specific skill sk
   let retval: boolean = false;
   switch (sk) {
-    case Skill.get("Blow the Purple Candle!"):
+    case $skill`Blow the Purple Candle!`:
       retval = containsText(
         getProperty("auto_purple_candled"),
         enemy.toString(),
       );
       break;
-    case Skill.get("%fn, fire a Red, White and Blue Blast"):
+    case $skill`%fn\, fire a Red\, White and Blue Blast`:
       retval = auto_RWBMonster() === enemy;
     default:
       abort(`isCopied was asked to check an unidentified skill: ${sk}`);
@@ -607,10 +603,7 @@ function isCopied(enemy: Monster, sk: Skill): boolean {
 
 function isCopied$1(enemy: Monster): boolean {
   //checks if the monster enemy is currently copied using any of the copy skills
-  for (const sk of Skill.get([
-    "Blow the Purple Candle!",
-    "%fn, fire a Red, White and Blue Blast",
-  ])) {
+  for (const sk of $skills`Blow the Purple Candle!, %fn\, fire a Red\, White and Blue Blast`) {
     if (isCopied(enemy, sk)) {
       return true;
     }
@@ -620,25 +613,20 @@ function isCopied$1(enemy: Monster): boolean {
 
 export function getCopier(enemy: Monster, inCombat: boolean): Skill {
   if (
-    (auto_haveRoman() &&
-      haveEffect(Effect.get("Everything Looks Purple")) === 0) ||
-    (haveEquipped(Item.get("Roman Candelabra")) &&
-      canUse(Skill.get("Blow the Purple Candle!"), true, inCombat) &&
-      haveEffect(Effect.get("Everything Looks Purple")) === 0)
+    (auto_haveRoman() && haveEffect($effect`Everything Looks Purple`) === 0) ||
+    (haveEquipped($item`Roman Candelabra`) &&
+      canUse($skill`Blow the Purple Candle!`, true, inCombat) &&
+      haveEffect($effect`Everything Looks Purple`) === 0)
   ) {
-    return Skill.get("Blow the Purple Candle!");
+    return $skill`Blow the Purple Candle!`;
   }
   if (
     auto_haveEagle() &&
-    canUse(
-      Skill.get("%fn, fire a Red, White and Blue Blast"),
-      true,
-      inCombat,
-    ) &&
-    !(haveEffect(Effect.get("Everything Looks Red, White and Blue")) > 0) &&
+    canUse($skill`%fn\, fire a Red\, White and Blue Blast`, true, inCombat) &&
+    !(haveEffect($effect`Everything Looks Red\, White and Blue`) > 0) &&
     enemy.copyable
   ) {
-    return Skill.get("%fn, fire a Red, White and Blue Blast");
+    return $skill`%fn\, fire a Red\, White and Blue Blast`;
   }
   return Skill.none;
 }
@@ -649,124 +637,121 @@ export function getCopier$1(enemy: Monster): Skill {
 
 export function getStunner(enemy: Monster): Skill {
   if (
-    canUse$2(Skill.get("Blow the Blue Candle!")) &&
-    haveEffect(Effect.get("Everything Looks Blue")) === 0
+    canUse$2($skill`Blow the Blue Candle!`) &&
+    haveEffect($effect`Everything Looks Blue`) === 0
   ) {
-    return Skill.get("Blow the Blue Candle!"); //20 Turns
+    return $skill`Blow the Blue Candle!`; //20 Turns
   }
   // Class specific
   switch (myClass()) {
-    case Class.get("Seal Clubber"):
-      if (
-        canUse$2(Skill.get("Club Foot")) &&
-        (myFury() > 0 || hasClubEquipped())
-      ) {
-        return Skill.get("Club Foot");
+    case $class`Seal Clubber`:
+      if (canUse$2($skill`Club Foot`) && (myFury() > 0 || hasClubEquipped())) {
+        return $skill`Club Foot`;
       }
       break;
-    case Class.get("Turtle Tamer"):
-      if (canUse$2(Skill.get("Shell Up"))) {
+    case $class`Turtle Tamer`:
+      if (canUse$2($skill`Shell Up`)) {
         //storm turtle blessings makes shell up a multi-round stun, otherwise it's just a (special) stagger
         if (
-          haveEffect(Effect.get("Blessing of the Storm Tortoise")) > 0 ||
-          haveEffect(Effect.get("Grand Blessing of the Storm Tortoise")) > 0 ||
-          haveEffect(Effect.get("Glorious Blessing of the Storm Tortoise")) > 0
+          haveEffect($effect`Blessing of the Storm Tortoise`) > 0 ||
+          haveEffect($effect`Grand Blessing of the Storm Tortoise`) > 0 ||
+          haveEffect($effect`Glorious Blessing of the Storm Tortoise`) > 0
         ) {
-          return Skill.get("Shell Up");
+          return $skill`Shell Up`;
         }
       }
       break;
-    case Class.get("Accordion Thief"):
+    case $class`Accordion Thief`:
       if (
-        canUse$2(Skill.get("Accordion Bash")) &&
-        itemType(equippedItem(Slot.get("weapon"))) === "accordion"
+        canUse$2($skill`Accordion Bash`) &&
+        itemType(equippedItem($slot`weapon`)) === "accordion"
       ) {
-        return Skill.get("Accordion Bash");
+        return $skill`Accordion Bash`;
       }
       break;
-    case Class.get("Pastamancer"):
-      if (canUse$2(Skill.get("Entangling Noodles"))) {
-        return Skill.get("Entangling Noodles");
+    case $class`Pastamancer`:
+      if (canUse$2($skill`Entangling Noodles`)) {
+        return $skill`Entangling Noodles`;
       }
       break;
-    case Class.get("Sauceror"):
-      if (canUse$2(Skill.get("Soul Bubble"))) {
-        return Skill.get("Soul Bubble");
+    case $class`Sauceror`:
+      if (canUse$2($skill`Soul Bubble`)) {
+        return $skill`Soul Bubble`;
       }
       break;
-    case Class.get("Avatar of Boris"):
-      if (canUse$2(Skill.get("Broadside"))) {
-        return Skill.get("Broadside");
+    case $class`Avatar of Boris`:
+      if (canUse$2($skill`Broadside`)) {
+        return $skill`Broadside`;
       }
       break;
-    case Class.get("Avatar of Sneaky Pete"):
-      if (canUse$2(Skill.get("Snap Fingers"))) {
-        return Skill.get("Snap Fingers");
+    case $class`Avatar of Sneaky Pete`:
+      if (canUse$2($skill`Snap Fingers`)) {
+        return $skill`Snap Fingers`;
       }
       break;
-    case Class.get("Avatar of Jarlsberg"):
-      if (canUse$2(Skill.get("Blend"))) {
-        return Skill.get("Blend");
+    case $class`Avatar of Jarlsberg`:
+      if (canUse$2($skill`Blend`)) {
+        return $skill`Blend`;
       }
       break;
-    case Class.get("Cow Puncher"):
-    case Class.get("Beanslinger"):
-    case Class.get("Snake Oiler"):
-      if (canUse$2(Skill.get("Beanscreen"))) {
-        return Skill.get("Beanscreen");
+    case $class`Cow Puncher`:
+    case $class`Beanslinger`:
+    case $class`Snake Oiler`:
+      if (canUse$2($skill`Beanscreen`)) {
+        return $skill`Beanscreen`;
       }
       if (
-        canUse$2(Skill.get("Hogtie")) &&
-        !haveUsed(Skill.get("Beanscreen")) &&
+        canUse$2($skill`Hogtie`) &&
+        !haveUsed($skill`Beanscreen`) &&
         hasLeg(enemy)
       ) {
-        return Skill.get("Hogtie");
+        return $skill`Hogtie`;
       }
       break;
-    case Class.get("Vampyre"):
+    case $class`Vampyre`:
       if (
-        canUse$2(Skill.get("Blood Chains")) &&
-        myHp() > 3 * hpCost(Skill.get("Blood Chains"))
+        canUse$2($skill`Blood Chains`) &&
+        myHp() > 3 * hpCost($skill`Blood Chains`)
       ) {
-        return Skill.get("Blood Chains");
+        return $skill`Blood Chains`;
       }
       break;
-    case Class.get("Pig Skinner"):
-      if (canUse$2(Skill.get("Noogie"))) {
-        return Skill.get("Noogie");
+    case $class`Pig Skinner`:
+      if (canUse$2($skill`Noogie`)) {
+        return $skill`Noogie`;
       }
       break;
-    case Class.get("Cheese Wizard"):
-      if (canUse$2(Skill.get("Gather Cheese-Chi"))) {
-        return Skill.get("Gather Cheese-Chi");
+    case $class`Cheese Wizard`:
+      if (canUse$2($skill`Gather Cheese-Chi`)) {
+        return $skill`Gather Cheese-Chi`;
       }
       break;
-    case Class.get("Jazz Agent"):
-      if (canUse$1(Skill.get("Drum Roll"), true)) {
-        return Skill.get("Drum Roll");
+    case $class`Jazz Agent`:
+      if (canUse$1($skill`Drum Roll`, true)) {
+        return $skill`Drum Roll`;
       }
       break;
-    case Class.get("Meat Golem"):
-      if (canUse$1(Skill.get("Meat Locker"), true)) {
-        return Skill.get("Meat Locker");
+    case $class`Meat Golem`:
+      if (canUse$1($skill`Meat Locker`, true)) {
+        return $skill`Meat Locker`;
       }
       break;
   }
   // From Designer Sweatpants. Use when have nearly full sweat or when losing combat
   if (
-    canUse$2(Skill.get("Sweat Flood")) &&
+    canUse$2($skill`Sweat Flood`) &&
     (getSweat() > 98 ||
       containsText(getProperty("_auto_combatState"), "last attempt"))
   ) {
-    return Skill.get("Sweat Flood");
+    return $skill`Sweat Flood`;
   }
   // Decreases in stun duration the more it's used
-  if (canUse$2(Skill.get("Summon Love Gnats"))) {
-    return Skill.get("Summon Love Gnats");
+  if (canUse$2($skill`Summon Love Gnats`)) {
+    return $skill`Summon Love Gnats`;
   }
   // Nuclear Autum
-  if (canUse$2(Skill.get("Mind Bullets"))) {
-    return Skill.get("Mind Bullets");
+  if (canUse$2($skill`Mind Bullets`)) {
+    return $skill`Mind Bullets`;
   }
 
   return Skill.none;
@@ -779,11 +764,9 @@ export function enemyCanBlocksSkills(): boolean {
   const enemy: Monster = lastMonster();
 
   if (
-    Monster.get([
-      "Bonerdagon",
-      "Naughty Sorceress",
-      "Naughty Sorceress (2)",
-    ]).includes(enemy)
+    $monsters`Bonerdagon, Naughty Sorceress, Naughty Sorceress (2)`.includes(
+      enemy,
+    )
   ) {
     return true;
   }
@@ -804,9 +787,9 @@ export function canSurvive$1(mult: number): boolean {
 
 export function hasClubEquipped(): boolean {
   return (
-    itemType(equippedItem(Slot.get("weapon"))) === "club" ||
-    (itemType(equippedItem(Slot.get("weapon"))) === "sword" &&
-      haveEffect(Effect.get("Iron Palms")) > 0)
+    itemType(equippedItem($slot`weapon`)) === "club" ||
+    (itemType(equippedItem($slot`weapon`)) === "sword" &&
+      haveEffect($effect`Iron Palms`) > 0)
   );
 }
 
@@ -816,12 +799,12 @@ function auto_saberTrickMeteorShowerCombatHandler(
   text: string,
 ): string {
   if (
-    canUse$2(Skill.get("Use the Force")) &&
+    canUse$2($skill`Use the Force`) &&
     auto_saberChargesAvailable() > 0 &&
-    auto_have_skill(Skill.get("Meteor Lore"))
+    auto_have_skill($skill`Meteor Lore`)
   ) {
-    if (canUse$2(Skill.get("Meteor Shower"))) {
-      return useSkill$2(Skill.get("Meteor Shower"));
+    if (canUse$2($skill`Meteor Shower`)) {
+      return useSkill$2($skill`Meteor Shower`);
     } else {
       return auto_combatSaberYR();
     }
@@ -897,8 +880,8 @@ export function findBanisher(
     }
     return banishAction;
   }
-  if (canUse$1(Skill.get("Storm of the Scarab"), false)) {
-    return useSkill$1(Skill.get("Storm of the Scarab"), false);
+  if (canUse$1($skill`Storm of the Scarab`, false)) {
+    return useSkill$1($skill`Storm of the Scarab`, false);
   }
   return auto_combatHandler(round_1, enemy, text);
 }
@@ -929,17 +912,17 @@ export function banisherCombatString(
 
   if (
     inCombat
-      ? myFamiliar() === Familiar.get("Patriotic Eagle") &&
+      ? myFamiliar() === $familiar`Patriotic Eagle` &&
         toInt(getProperty("screechCombats")) === 0 &&
         !in_glover()
       : !in_avantGuard() &&
         pathAllowsChangingFamiliar() &&
-        !auto_famKill(Familiar.get("Patriotic Eagle"), loc) &&
-        auto_have_familiar(Familiar.get("Patriotic Eagle")) &&
+        !auto_famKill($familiar`Patriotic Eagle`, loc) &&
+        auto_have_familiar($familiar`Patriotic Eagle`) &&
         toInt(getProperty("screechCombats")) === 0 &&
         !in_glover()
   ) {
-    return `skill${Skill.get("%fn, Release the Patriotic Screech!")}`;
+    return `skill${$skill`%fn\, Release the Patriotic Screech!`}`;
   }
 
   return "";
@@ -999,91 +982,90 @@ export function banisherCombatString$1(
   //Spring Kick is at the top because it is not turn ending. If a replacer is used the replaced monster can then have unspeakable things done to it (like another banish)
   if (
     (inCombat
-      ? auto_have_skill(Skill.get("Spring Kick"))
-      : possessEquipment(Item.get("spring shoes"))) &&
-    auto_is_valid$2(Skill.get("Spring Kick")) &&
+      ? auto_have_skill($skill`Spring Kick`)
+      : possessEquipment($item`spring shoes`)) &&
+    auto_is_valid$2($skill`Spring Kick`) &&
     !used.has("Spring Kick")
   ) {
-    return `skill ${Skill.get("Spring Kick")}`;
+    return `skill ${$skill`Spring Kick`}`;
   }
 
   if (
-    auto_have_skill(Skill.get("Peel Out")) &&
+    auto_have_skill($skill`Peel Out`) &&
     pete_peelOutRemaining() > 0 &&
     getProperty("peteMotorbikeMuffler") === "Extra-Smelly Muffler" &&
     !used.has("Peel Out") &&
     useFree
   ) {
-    return `skill ${Skill.get("Peel Out")}`;
+    return `skill ${$skill`Peel Out`}`;
   }
 
   if (
-    auto_have_skill(Skill.get("Howl of the Alpha")) &&
-    myMp() > mpCost(Skill.get("Howl of the Alpha")) &&
+    auto_have_skill($skill`Howl of the Alpha`) &&
+    myMp() > mpCost($skill`Howl of the Alpha`) &&
     !used.has("Howl of the Alpha")
   ) {
-    return `skill ${Skill.get("Howl of the Alpha")}`;
+    return `skill ${$skill`Howl of the Alpha`}`;
   }
 
   if (
     (inCombat
-      ? auto_have_skill(Skill.get("Throw Latte on Opponent"))
-      : possessEquipment(Item.get("latte lovers member's mug"))) &&
-    auto_is_valid$2(Skill.get("Throw Latte on Opponent")) &&
+      ? auto_have_skill($skill`Throw Latte on Opponent`)
+      : possessEquipment($item`latte lovers member's mug`)) &&
+    auto_is_valid$2($skill`Throw Latte on Opponent`) &&
     !toBoolean(getProperty("_latteBanishUsed")) &&
     !used.has("Throw Latte on Opponent") &&
     useFree
   ) {
-    return `skill ${Skill.get("Throw Latte on Opponent")}`;
+    return `skill ${$skill`Throw Latte on Opponent`}`;
   }
 
   if (
     (inCombat
-      ? auto_have_skill(Skill.get("Give Your Opponent the Stinkeye"))
-      : possessEquipment(Item.get("stinky cheese eye"))) &&
-    auto_is_valid$2(Skill.get("Give Your Opponent the Stinkeye")) &&
+      ? auto_have_skill($skill`Give Your Opponent the Stinkeye`)
+      : possessEquipment($item`stinky cheese eye`)) &&
+    auto_is_valid$2($skill`Give Your Opponent the Stinkeye`) &&
     !toBoolean(getProperty("_stinkyCheeseBanisherUsed")) &&
-    myMp() >= mpCost(Skill.get("Give Your Opponent the Stinkeye")) &&
+    myMp() >= mpCost($skill`Give Your Opponent the Stinkeye`) &&
     useFree
   ) {
-    return `skill ${Skill.get("Give Your Opponent the Stinkeye")}`;
+    return `skill ${$skill`Give Your Opponent the Stinkeye`}`;
   }
 
   if (
     (inCombat
-      ? auto_have_skill(Skill.get("Creepy Grin"))
-      : possessEquipment(Item.get("V for Vivala mask"))) &&
-    auto_is_valid$2(Skill.get("Creepy Grin")) &&
+      ? auto_have_skill($skill`Creepy Grin`)
+      : possessEquipment($item`V for Vivala mask`)) &&
+    auto_is_valid$2($skill`Creepy Grin`) &&
     !toBoolean(getProperty("_vmaskBanisherUsed")) &&
-    myMp() >= mpCost(Skill.get("Creepy Grin")) &&
+    myMp() >= mpCost($skill`Creepy Grin`) &&
     useFree
   ) {
-    return `skill ${Skill.get("Creepy Grin")}`;
+    return `skill ${$skill`Creepy Grin`}`;
   }
 
   if (
-    auto_have_skill(Skill.get("Baleful Howl")) &&
-    myHp() > hpCost(Skill.get("Baleful Howl")) &&
+    auto_have_skill($skill`Baleful Howl`) &&
+    myHp() > hpCost($skill`Baleful Howl`) &&
     toInt(getProperty("_balefulHowlUses")) < 10 &&
     !used.has("baleful howl") &&
     useFree
   ) {
     loopHandlerDelayAll();
-    return `skill ${Skill.get("Baleful Howl")}`;
+    return `skill ${$skill`Baleful Howl`}`;
   }
 
   if (
-    auto_have_skill(Skill.get("Thunder Clap")) &&
-    myThunder() >= thunderCost(Skill.get("Thunder Clap")) &&
+    auto_have_skill($skill`Thunder Clap`) &&
+    myThunder() >= thunderCost($skill`Thunder Clap`) &&
     !used.has("thunder clap")
   ) {
-    return `skill ${Skill.get("Thunder Clap")}`;
+    return `skill ${$skill`Thunder Clap`}`;
   }
   if (
-    auto_have_skill(Skill.get("Asdon Martin: Spring-Loaded Front Bumper")) &&
-    auto_is_valid$2(Skill.get("Asdon Martin: Spring-Loaded Front Bumper")) &&
-    getFuel() >=
-      fuelCost(Skill.get("Asdon Martin: Spring-Loaded Front Bumper")) &&
+    auto_have_skill($skill`Asdon Martin: Spring-Loaded Front Bumper`) &&
+    auto_is_valid$2($skill`Asdon Martin: Spring-Loaded Front Bumper`) &&
+    getFuel() >= fuelCost($skill`Asdon Martin: Spring-Loaded Front Bumper`) &&
     !used.has("Spring-Loaded Front Bumper") &&
     useFree
   ) {
@@ -1093,51 +1075,51 @@ export function banisherCombatString$1(
         "Spring-Loaded Front Bumper",
       )
     ) {
-      return `skill ${Skill.get("Asdon Martin: Spring-Loaded Front Bumper")}`;
+      return `skill ${$skill`Asdon Martin: Spring-Loaded Front Bumper`}`;
     }
   }
   if (
-    auto_have_skill(Skill.get("Curse of Vacation")) &&
-    myMp() > mpCost(Skill.get("Curse of Vacation")) &&
+    auto_have_skill($skill`Curse of Vacation`) &&
+    myMp() > mpCost($skill`Curse of Vacation`) &&
     !used.has("curse of vacation")
   ) {
-    return `skill ${Skill.get("Curse of Vacation")}`;
+    return `skill ${$skill`Curse of Vacation`}`;
   }
 
   if (
     (inCombat
-      ? auto_have_skill(Skill.get("Show them your ring"))
-      : possessEquipment(Item.get("mafia middle finger ring"))) &&
-    auto_is_valid$2(Skill.get("Show them your ring")) &&
-    canEquip(Item.get("mafia middle finger ring")) &&
+      ? auto_have_skill($skill`Show them your ring`)
+      : possessEquipment($item`mafia middle finger ring`)) &&
+    auto_is_valid$2($skill`Show them your ring`) &&
+    canEquip($item`mafia middle finger ring`) &&
     !toBoolean(getProperty("_mafiaMiddleFingerRingUsed")) &&
-    myMp() >= mpCost(Skill.get("Show them your ring")) &&
+    myMp() >= mpCost($skill`Show them your ring`) &&
     useFree
   ) {
-    return `skill ${Skill.get("Show them your ring")}`;
+    return `skill ${$skill`Show them your ring`}`;
   }
   if (
-    auto_have_skill(Skill.get("Batter Up!")) &&
+    auto_have_skill($skill`Batter Up!`) &&
     myFury() >= 5 &&
     (inCombat ? hasClubEquipped() : true) &&
-    auto_is_valid$2(Skill.get("Batter Up!")) &&
+    auto_is_valid$2($skill`Batter Up!`) &&
     !used.has("batter up!")
   ) {
-    return `skill ${Skill.get("Batter Up!")}`;
+    return `skill ${$skill`Batter Up!`}`;
   }
 
   if (
     inCombat
-      ? auto_have_skill(Skill.get("Mark Your Territory")) &&
+      ? auto_have_skill($skill`Mark Your Territory`) &&
         !used.has("Mark Your Territory")
-      : auto_is_valid$2(Skill.get("Mark Your Territory")) &&
-        (auto_have_skill(Skill.get("Mark Your Territory")) ||
-          (availableAmount(Item.get("pheromone cocktail")) > 0 &&
-            canDrink$1(Item.get("pheromone cocktail")) &&
+      : auto_is_valid$2($skill`Mark Your Territory`) &&
+        (auto_have_skill($skill`Mark Your Territory`) ||
+          (availableAmount($item`pheromone cocktail`) > 0 &&
+            canDrink$1($item`pheromone cocktail`) &&
             inebriety_left() > 1 &&
             !isActuallyEd()))
   ) {
-    return `skill ${Skill.get("Mark Your Territory")}`;
+    return `skill ${$skill`Mark Your Territory`}`;
   }
 
   const z_kick: Skill = getZooKickBanish();
@@ -1146,121 +1128,121 @@ export function banisherCombatString$1(
   }
 
   if (
-    auto_have_skill(Skill.get("Banishing Shout")) &&
-    myMp() > mpCost(Skill.get("Banishing Shout")) &&
+    auto_have_skill($skill`Banishing Shout`) &&
+    myMp() > mpCost($skill`Banishing Shout`) &&
     !used.has("banishing shout")
   ) {
-    return `skill ${Skill.get("Banishing Shout")}`;
+    return `skill ${$skill`Banishing Shout`}`;
   }
   if (
-    auto_have_skill(Skill.get("Walk Away From Explosion")) &&
-    myMp() > mpCost(Skill.get("Walk Away From Explosion")) &&
-    haveEffect(Effect.get("Bored With Explosions")) === 0 &&
+    auto_have_skill($skill`Walk Away From Explosion`) &&
+    myMp() > mpCost($skill`Walk Away From Explosion`) &&
+    haveEffect($effect`Bored With Explosions`) === 0 &&
     !used.has("walk away from explosion")
   ) {
-    return `skill ${Skill.get("Walk Away From Explosion")}`;
+    return `skill ${$skill`Walk Away From Explosion`}`;
   }
 
   if (
     (inCombat
-      ? auto_have_skill(Skill.get("Talk About Politics"))
-      : possessEquipment(Item.get("Pantsgiving"))) &&
-    auto_is_valid$2(Skill.get("Talk About Politics")) &&
+      ? auto_have_skill($skill`Talk About Politics`)
+      : possessEquipment($item`Pantsgiving`)) &&
+    auto_is_valid$2($skill`Talk About Politics`) &&
     toInt(getProperty("_pantsgivingBanish")) < 5 &&
-    haveEquipped(Item.get("Pantsgiving")) &&
+    haveEquipped($item`Pantsgiving`) &&
     !used.has("pantsgiving")
   ) {
-    return `skill ${Skill.get("Talk About Politics")}`;
+    return `skill ${$skill`Talk About Politics`}`;
   }
   if (
     inCombat
-      ? auto_have_skill(Skill.get("Reflex Hammer"))
+      ? auto_have_skill($skill`Reflex Hammer`)
       : auto_reflexHammersRemaining() > 0 &&
         !used.has("Reflex Hammer") &&
         useFree
   ) {
-    return `skill ${Skill.get("Reflex Hammer")}`;
+    return `skill ${$skill`Reflex Hammer`}`;
   }
   if (
     (inCombat
-      ? auto_have_skill(Skill.get("Show your boring familiar pictures"))
-      : possessEquipment(Item.get("familiar scrapbook"))) &&
-    auto_is_valid$2(Skill.get("Show your boring familiar pictures")) &&
+      ? auto_have_skill($skill`Show your boring familiar pictures`)
+      : possessEquipment($item`familiar scrapbook`)) &&
+    auto_is_valid$2($skill`Show your boring familiar pictures`) &&
     (toInt(getProperty("scrapbookCharges")) >= 200 ||
       (toInt(getProperty("scrapbookCharges")) >= 100 && myLevel() >= 13)) &&
     !used.has("Show Your Boring Familiar Pictures") &&
     useFree
   ) {
-    return `skill ${Skill.get("Show your boring familiar pictures")}`;
+    return `skill ${$skill`Show your boring familiar pictures`}`;
   }
   // bowling ball is only in inventory if it is available to use in combat. While on cooldown, it is not in inventory
   if (
     (inCombat
-      ? auto_have_skill(Skill.get("Bowl a Curveball"))
-      : itemAmount(Item.get("cosmic bowling ball")) > 0) &&
-    auto_is_valid$2(Skill.get("Bowl a Curveball")) &&
+      ? auto_have_skill($skill`Bowl a Curveball`)
+      : itemAmount($item`cosmic bowling ball`) > 0) &&
+    auto_is_valid$2($skill`Bowl a Curveball`) &&
     !used.has("Bowl a Curveball") &&
     useFree
   ) {
-    return `skill ${Skill.get("Bowl a Curveball")}`;
+    return `skill ${$skill`Bowl a Curveball`}`;
   }
 
   if (
     auto_canFeelHatred() &&
-    auto_is_valid$2(Skill.get("Feel Hatred")) &&
+    auto_is_valid$2($skill`Feel Hatred`) &&
     !used.has("Feel Hatred") &&
     useFree
   ) {
-    return `skill ${Skill.get("Feel Hatred")}`;
+    return `skill ${$skill`Feel Hatred`}`;
   }
 
-  if (auto_have_skill(Skill.get("[7510]Punt")) && !used.has("Punt")) {
-    return `skill ${Skill.get("[7510]Punt")}`;
+  if (auto_have_skill($skill`[7510]Punt`) && !used.has("Punt")) {
+    return `skill ${$skill`[7510]Punt`}`;
   }
 
   if (
-    auto_have_skill(Skill.get("Snokebomb")) &&
-    auto_is_valid$2(Skill.get("Snokebomb")) &&
+    auto_have_skill($skill`Snokebomb`) &&
+    auto_is_valid$2($skill`Snokebomb`) &&
     toInt(getProperty("_snokebombUsed")) < 3 &&
-    myMp() - 20 >= mpCost(Skill.get("Snokebomb")) &&
+    myMp() - 20 >= mpCost($skill`Snokebomb`) &&
     !used.has("snokebomb") &&
     useFree
   ) {
-    return `skill ${Skill.get("Snokebomb")}`;
+    return `skill ${$skill`Snokebomb`}`;
   }
 
   if (
-    itemAmount(Item.get("stuffed yam stinkbomb")) > 0 &&
+    itemAmount($item`stuffed yam stinkbomb`) > 0 &&
     !used.has("stuffed yam stinkbomb") &&
-    auto_is_valid(Item.get("stuffed yam stinkbomb"))
+    auto_is_valid($item`stuffed yam stinkbomb`)
   ) {
-    return `item ${Item.get("stuffed yam stinkbomb")}`;
+    return `item ${$item`stuffed yam stinkbomb`}`;
   }
 
   if (
     inCombat
-      ? itemAmount(Item.get("handful of split pea soup")) > 0 &&
+      ? itemAmount($item`handful of split pea soup`) > 0 &&
         !used.has("Handful of split pea soup") &&
-        auto_is_valid(Item.get("handful of split pea soup")) &&
+        auto_is_valid($item`handful of split pea soup`) &&
         useFree
-      : itemAmount(Item.get("handful of split pea soup")) > 0 ||
-        itemAmount(Item.get("whirled peas")) >= 2
+      : itemAmount($item`handful of split pea soup`) > 0 ||
+        itemAmount($item`whirled peas`) >= 2
   ) {
-    return `item ${Item.get("handful of split pea soup")}`;
+    return `item ${$item`handful of split pea soup`}`;
   }
 
   if (
-    auto_have_skill(Skill.get("[28021]Punt")) &&
-    myMp() > mpCost(Skill.get("[28021]Punt")) &&
+    auto_have_skill($skill`[28021]Punt`) &&
+    myMp() > mpCost($skill`[28021]Punt`) &&
     !used.has("Punt")
   ) {
-    return `skill ${Skill.get("[28021]Punt")}`;
+    return `skill ${$skill`[28021]Punt`}`;
   }
 
-  const saber: Item = wrap_item(Item.get("Fourth of May Cosplay Saber"));
+  const saber: Item = wrap_item($item`Fourth of May Cosplay Saber`);
   if (
     (inCombat ? haveEquipped(saber) : possessEquipment(saber)) &&
-    auto_is_valid$2(Skill.get("Use the Force")) &&
+    auto_is_valid$2($skill`Use the Force`) &&
     auto_saberChargesAvailable() > 0 &&
     !used.has("Saber Force")
   ) {
@@ -1272,11 +1254,11 @@ export function banisherCombatString$1(
 
   if (
     (inCombat
-      ? auto_have_skill(Skill.get("KGB tranquilizer dart"))
-      : possessEquipment(Item.get("Kremlin's Greatest Briefcase"))) &&
-    auto_is_valid$2(Skill.get("KGB tranquilizer dart")) &&
+      ? auto_have_skill($skill`KGB tranquilizer dart`)
+      : possessEquipment($item`Kremlin's Greatest Briefcase`)) &&
+    auto_is_valid$2($skill`KGB tranquilizer dart`) &&
     toInt(getProperty("_kgbTranquilizerDartUses")) < 3 &&
-    myMp() >= mpCost(Skill.get("KGB tranquilizer dart")) &&
+    myMp() >= mpCost($skill`KGB tranquilizer dart`) &&
     !used.has("KGB tranquilizer dart") &&
     useFree
   ) {
@@ -1290,59 +1272,49 @@ export function banisherCombatString$1(
     }
 
     if (useIt) {
-      return `skill ${Skill.get("KGB tranquilizer dart")}`;
+      return `skill ${$skill`KGB tranquilizer dart`}`;
     }
   }
 
   if (
     (inCombat
-      ? auto_have_skill(Skill.get("Monkey Slap"))
-      : possessEquipment(Item.get("cursed monkey's paw"))) &&
-    auto_is_valid$2(Skill.get("Monkey Slap")) &&
+      ? auto_have_skill($skill`Monkey Slap`)
+      : possessEquipment($item`cursed monkey's paw`)) &&
+    auto_is_valid$2($skill`Monkey Slap`) &&
     toInt(getProperty("_monkeyPawWishesUsed")) === 0 &&
     !used.has("Monkey Slap")
   ) {
-    return `skill ${Skill.get("Monkey Slap")}`;
+    return `skill ${$skill`Monkey Slap`}`;
   }
 
   if (
     (inCombat
-      ? auto_have_skill(Skill.get("Sea *dent: Throw a Lightning Bolt"))
-      : possessEquipment(Item.get("Monodent of the Sea"))) &&
+      ? auto_have_skill($skill`Sea *dent: Throw a Lightning Bolt`)
+      : possessEquipment($item`Monodent of the Sea`)) &&
     auto_throwLightningRemaining() > 0 &&
     !used.has("Sea *dent: Throw a Lightning Bolt")
   ) {
-    return `skill ${Skill.get("Sea *dent: Throw a Lightning Bolt")}`;
+    return `skill ${$skill`Sea *dent: Throw a Lightning Bolt`}`;
   }
   //[Nanorhino] familiar specific banish. fairly low priority as it consumes 40 to 50 adv worth of a decent buff.
   if (
-    canUse$2(Skill.get("Unleash Nanites")) &&
-    haveEffect(Effect.get("Nanobrawny")) >= 40
+    canUse$2($skill`Unleash Nanites`) &&
+    haveEffect($effect`Nanobrawny`) >= 40
   ) {
-    return `skill ${Skill.get("Unleash Nanites")}`;
+    return `skill ${$skill`Unleash Nanites`}`;
   }
 
   if (
-    auto_have_skill(Skill.get("Beancannon")) &&
+    auto_have_skill($skill`Beancannon`) &&
     toInt(getProperty("_beancannonUses")) < 5 &&
-    myMp() - 20 >= mpCost(Skill.get("Beancannon")) &&
+    myMp() - 20 >= mpCost($skill`Beancannon`) &&
     !used.has("beancannon")
   ) {
     let haveBeans: boolean = false;
-    for (const beancan of Item.get([
-      "Frigid Northern Beans",
-      "Heimz Fortified Kidney Beans",
-      "Hellfire Spicy Beans",
-      "Mixed Garbanzos and Chickpeas",
-      "Pork 'n' Pork 'n' Pork 'n' Beans",
-      "Shrub's Premium Baked Beans",
-      "Tesla's Electroplated Beans",
-      "Trader Olaf's Exotic Stinkbeans",
-      "World's Blackest-Eyed Peas",
-    ])) {
+    for (const beancan of $items`Frigid Northern Beans, Heimz Fortified Kidney Beans, Hellfire Spicy Beans, Mixed Garbanzos and Chickpeas, Pork 'n' Pork 'n' Pork 'n' Beans, Shrub's Premium Baked Beans, Tesla's Electroplated Beans, Trader Olaf's Exotic Stinkbeans, World's Blackest-Eyed Peas`) {
       if (
         inCombat
-          ? equippedItem(Slot.get("off-hand")) === beancan
+          ? equippedItem($slot`off-hand`) === beancan
           : possessEquipment(beancan)
       ) {
         haveBeans = true;
@@ -1350,60 +1322,57 @@ export function banisherCombatString$1(
       }
     }
     if (haveBeans) {
-      return `skill ${Skill.get("Beancannon")}`;
+      return `skill ${$skill`Beancannon`}`;
     }
   }
 
   if (
-    itemAmount(Item.get("human musk")) > 0 &&
+    itemAmount($item`human musk`) > 0 &&
     !used.has("human musk") &&
-    auto_is_valid(Item.get("human musk")) &&
+    auto_is_valid($item`human musk`) &&
     toInt(getProperty("_humanMuskUses")) < 3 &&
     useFree
   ) {
     //first 3 are free
-    return `item ${Item.get("human musk")}`;
+    return `item ${$item`human musk`}`;
   }
   // items for which we consume spleen for uses
   if (
     inCombat
-      ? auto_have_skill(Skill.get("Breathe Out")) &&
-        auto_is_valid$2(Skill.get("Breathe Out")) &&
-        myMp() >= mpCost(Skill.get("Breathe Out")) &&
+      ? auto_have_skill($skill`Breathe Out`) &&
+        auto_is_valid$2($skill`Breathe Out`) &&
+        myMp() >= mpCost($skill`Breathe Out`) &&
         !used.has("breathe out") &&
         useFree
-      : auto_is_valid$2(Skill.get("Breathe Out")) &&
-        (auto_have_skill(Skill.get("Breathe Out")) ||
-          (availableAmount(Item.get("hot jelly")) > 0 &&
+      : auto_is_valid$2($skill`Breathe Out`) &&
+        (auto_have_skill($skill`Breathe Out`) ||
+          (availableAmount($item`hot jelly`) > 0 &&
             spleen_left() > 1 &&
             !isActuallyEd()))
   ) {
-    return `skill ${Skill.get("Breathe Out")}`;
+    return `skill ${$skill`Breathe Out`}`;
   }
 
   if (
     inCombat
-      ? auto_have_skill(Skill.get("Punch Out your Foe")) &&
-        auto_is_valid$2(Skill.get("Punch Out your Foe")) &&
-        myMp() >= mpCost(Skill.get("Punch Out your Foe")) &&
+      ? auto_have_skill($skill`Punch Out your Foe`) &&
+        auto_is_valid$2($skill`Punch Out your Foe`) &&
+        myMp() >= mpCost($skill`Punch Out your Foe`) &&
         !used.has("punch out your foe") &&
         useFree
-      : auto_is_valid$2(Skill.get("Punch Out your Foe")) &&
-        (auto_have_skill(Skill.get("Punch Out your Foe")) ||
-          (availableAmount(Item.get("scoop of pre-workout powder")) > 0 &&
+      : auto_is_valid$2($skill`Punch Out your Foe`) &&
+        (auto_have_skill($skill`Punch Out your Foe`) ||
+          (availableAmount($item`scoop of pre-workout powder`) > 0 &&
             spleen_left() > 3 &&
             !isActuallyEd()))
   ) {
-    return `skill ${Skill.get("Punch Out your Foe")}`;
+    return `skill ${$skill`Punch Out your Foe`}`;
   }
   //We want to limit usage of these much more than the others.
   if (
-    !Monster.get([
-      "natural spider",
-      "Tan Gnat",
-      "tomb servant",
-      "upgraded ram",
-    ]).includes(enemy)
+    !$monsters`natural spider, Tan Gnat, tomb servant, upgraded ram`.includes(
+      enemy,
+    )
   ) {
     return "";
   }
@@ -1414,44 +1383,44 @@ export function banisherCombatString$1(
   }
 
   if (
-    itemAmount(Item.get("Louder Than Bomb")) > keep &&
+    itemAmount($item`Louder Than Bomb`) > keep &&
     !used.has("louder than bomb") &&
-    auto_is_valid(Item.get("Louder Than Bomb")) &&
+    auto_is_valid($item`Louder Than Bomb`) &&
     useFree
   ) {
-    return `item ${Item.get("Louder Than Bomb")}`;
+    return `item ${$item`Louder Than Bomb`}`;
   }
   if (
-    itemAmount(Item.get("tennis ball")) > keep &&
+    itemAmount($item`tennis ball`) > keep &&
     !used.has("tennis ball") &&
-    auto_is_valid(Item.get("tennis ball")) &&
+    auto_is_valid($item`tennis ball`) &&
     useFree
   ) {
-    return `item ${Item.get("tennis ball")}`;
+    return `item ${$item`tennis ball`}`;
   }
   if (
-    itemAmount(Item.get("deathchucks")) > keep &&
+    itemAmount($item`deathchucks`) > keep &&
     !used.has("deathchucks") &&
-    auto_is_valid(Item.get("deathchucks")) &&
+    auto_is_valid($item`deathchucks`) &&
     useFree
   ) {
-    return `item ${Item.get("deathchucks")}`;
+    return `item ${$item`deathchucks`}`;
   }
   if (
-    itemAmount(Item.get("divine champagne popper")) > keep &&
+    itemAmount($item`divine champagne popper`) > keep &&
     !used.has("divine champagne popper") &&
-    auto_is_valid(Item.get("divine champagne popper")) &&
+    auto_is_valid($item`divine champagne popper`) &&
     useFree
   ) {
-    return `item ${Item.get("divine champagne popper")}`;
+    return `item ${$item`divine champagne popper`}`;
   }
   if (
-    itemAmount(Item.get("anchor bomb")) > keep &&
+    itemAmount($item`anchor bomb`) > keep &&
     !used.has("anchor bomb") &&
-    auto_is_valid(Item.get("anchor bomb")) &&
+    auto_is_valid($item`anchor bomb`) &&
     useFree
   ) {
-    return `item ${Item.get("anchor bomb")}`;
+    return `item ${$item`anchor bomb`}`;
   }
 
   return "";
@@ -1477,7 +1446,7 @@ export function yellowRayCombatString(
     //high fire level burns yellow ray items. except for saber's [use the force] as it leads to a noncombat
     //we only want special handling if fire level is high. otherwise we can proceed to yellowray as per normal
     if (
-      haveEquipped(wrap_item(Item.get("Fourth of May Cosplay Saber"))) &&
+      haveEquipped(wrap_item($item`Fourth of May Cosplay Saber`)) &&
       auto_saberChargesAvailable() > 0
     ) {
       // can't use the force on uncopyable monsters
@@ -1489,10 +1458,7 @@ export function yellowRayCombatString(
     }
   }
 
-  if (
-    in_zootomist() &&
-    haveEffect(Effect.get("Everything Looks Yellow")) <= 0
-  ) {
+  if (in_zootomist() && haveEffect($effect`Everything Looks Yellow`) <= 0) {
     const kick: Skill = getZooKickYR();
     if (kick !== Skill.none) {
       return `skill ${kick}`;
@@ -1504,140 +1470,131 @@ export function yellowRayCombatString(
     (toInt(getProperty("breathitinCharges")) > 0 &&
       myLocation().environment === "outdoor");
 
-  if (haveEffect(Effect.get("Everything Looks Yellow")) <= 0) {
+  if (haveEffect($effect`Everything Looks Yellow`) <= 0) {
     if (
-      auto_have_skill(Skill.get("Fondeluge")) &&
-      myMp() >= mpCost(Skill.get("Fondeluge"))
+      auto_have_skill($skill`Fondeluge`) &&
+      myMp() >= mpCost($skill`Fondeluge`)
     ) {
-      return `skill ${Skill.get("Fondeluge")}`; // 50 turns
+      return `skill ${$skill`Fondeluge`}`; // 50 turns
     }
     if (
-      itemAmount(Item.get("yellowcake bomb")) > 0 &&
-      auto_is_valid(Item.get("yellowcake bomb"))
+      itemAmount($item`yellowcake bomb`) > 0 &&
+      auto_is_valid($item`yellowcake bomb`)
     ) {
-      return `item ${Item.get("yellowcake bomb")}`; // 75 turns + quest item
+      return `item ${$item`yellowcake bomb`}`; // 75 turns + quest item
     }
     if (
       free_monster &&
-      itemAmount(Item.get("yellow rocket")) > 0 &&
-      auto_is_valid(Item.get("yellow rocket"))
+      itemAmount($item`yellow rocket`) > 0 &&
+      auto_is_valid($item`yellow rocket`)
     ) {
-      return `item ${Item.get("yellow rocket")}`; // 75 turns & 250 meat - better than wasting a freekill on an already free monster
+      return `item ${$item`yellow rocket`}`; // 75 turns & 250 meat - better than wasting a freekill on an already free monster
     }
     if (
       inCombat
-        ? haveSkill(Skill.get("Spit jurassic acid"))
+        ? haveSkill($skill`Spit jurassic acid`)
         : auto_hasParka() &&
-          auto_is_valid$2(Skill.get("Spit jurassic acid")) &&
+          auto_is_valid$2($skill`Spit jurassic acid`) &&
           hasTorso$1()
     ) {
-      return `skill ${Skill.get("Spit jurassic acid")}`; //100 Turns and free kill
+      return `skill ${$skill`Spit jurassic acid`}`; //100 Turns and free kill
     }
     if (
-      itemAmount(Item.get("yellow rocket")) > 0 &&
-      auto_is_valid(Item.get("yellow rocket"))
+      itemAmount($item`yellow rocket`) > 0 &&
+      auto_is_valid($item`yellow rocket`)
     ) {
-      return `item ${Item.get("yellow rocket")}`; // 75 turns & 250 meat
+      return `item ${$item`yellow rocket`}`; // 75 turns & 250 meat
     }
-    if (
-      itemAmount(Item.get("spitball")) > 0 &&
-      auto_is_valid(Item.get("spitball"))
-    ) {
-      return `item ${Item.get("spitball")}`; //100 Turns and free kill
+    if (itemAmount($item`spitball`) > 0 && auto_is_valid($item`spitball`)) {
+      return `item ${$item`spitball`}`; //100 Turns and free kill
     }
     if (
       inCombat
-        ? haveSkill(Skill.get("Blow the Yellow Candle!"))
+        ? haveSkill($skill`Blow the Yellow Candle!`)
         : auto_haveRoman() &&
-          auto_can_equip(Item.get("Roman Candelabra")) &&
-          auto_is_valid$2(Skill.get("Blow the Yellow Candle!"))
+          auto_can_equip($item`Roman Candelabra`) &&
+          auto_is_valid$2($skill`Blow the Yellow Candle!`)
     ) {
-      return `skill ${Skill.get("Blow the Yellow Candle!")}`; //75 Turns
+      return `skill ${$skill`Blow the Yellow Candle!`}`; //75 Turns
     }
     if (
       inCombat
-        ? haveSkill(Skill.get("Unleash the Devil's Kiss"))
+        ? haveSkill($skill`Unleash the Devil's Kiss`)
         : auto_hasRetrocape() &&
-          auto_is_valid$2(Skill.get("Unleash the Devil's Kiss"))
+          auto_is_valid$2($skill`Unleash the Devil's Kiss`)
     ) {
-      return `skill ${Skill.get("Unleash the Devil's Kiss")}`; // 99 turns
+      return `skill ${$skill`Unleash the Devil's Kiss`}`; // 99 turns
     }
     if (
-      auto_have_skill(Skill.get("Disintegrate")) &&
-      auto_is_valid$2(Skill.get("Disintegrate")) &&
-      myMp() >= mpCost(Skill.get("Disintegrate"))
+      auto_have_skill($skill`Disintegrate`) &&
+      auto_is_valid$2($skill`Disintegrate`) &&
+      myMp() >= mpCost($skill`Disintegrate`)
     ) {
-      return `skill ${Skill.get("Disintegrate")}`; // 100 trurns
+      return `skill ${$skill`Disintegrate`}`; // 100 trurns
     }
     if (
-      auto_have_skill(Skill.get("Ball Lightning")) &&
-      myLightning() >= lightningCost(Skill.get("Ball Lightning"))
+      auto_have_skill($skill`Ball Lightning`) &&
+      myLightning() >= lightningCost($skill`Ball Lightning`)
     ) {
-      return `skill ${Skill.get("Ball Lightning")}`; // 99 turns + 5 lightning
+      return `skill ${$skill`Ball Lightning`}`; // 99 turns + 5 lightning
     }
     if (
-      auto_have_skill(Skill.get("Wrath of Ra")) &&
-      myMp() >= mpCost(Skill.get("Wrath of Ra"))
+      auto_have_skill($skill`Wrath of Ra`) &&
+      myMp() >= mpCost($skill`Wrath of Ra`)
     ) {
-      return `skill ${Skill.get("Wrath of Ra")}`; // 100 turns
+      return `skill ${$skill`Wrath of Ra`}`; // 100 turns
     }
     if (
-      itemAmount(Item.get("mayo lance")) > 0 &&
-      auto_is_valid(Item.get("mayo lance")) &&
+      itemAmount($item`mayo lance`) > 0 &&
+      auto_is_valid($item`mayo lance`) &&
       toInt(getProperty("mayoLevel")) > 0 &&
-      auto_is_valid(Item.get("mayo lance"))
+      auto_is_valid($item`mayo lance`)
     ) {
-      return `item ${Item.get("mayo lance")}`; // 0 - 145 turns
+      return `item ${$item`mayo lance`}`; // 0 - 145 turns
     }
     if (
       getProperty("peteMotorbikeHeadlight") === "Ultrabright Yellow Bulb" &&
-      auto_have_skill(Skill.get("Flash Headlight")) &&
-      myMp() >= mpCost(Skill.get("Flash Headlight"))
+      auto_have_skill($skill`Flash Headlight`) &&
+      myMp() >= mpCost($skill`Flash Headlight`)
     ) {
-      return `skill ${Skill.get("Flash Headlight")}`; // 100 turns
+      return `skill ${$skill`Flash Headlight`}`; // 100 turns
     }
-    for (const it of Item.get([
-      "Golden Light",
-      "pumpkin bomb",
-      "unbearable light",
-      "viral video",
-      "micronova",
-    ])) {
+    for (const it of $items`Golden Light, pumpkin bomb, unbearable light, viral video, micronova`) {
       if (itemAmount(it) > 0 && auto_is_valid(it)) {
         return `item ${it}`; // ~150 turns
       }
     }
     if (
-      auto_have_skill(Skill.get("Unleash Cowrruption")) &&
-      haveEffect(Effect.get("Cowrruption")) >= 30
+      auto_have_skill($skill`Unleash Cowrruption`) &&
+      haveEffect($effect`Cowrruption`) >= 30
     ) {
-      return `skill ${Skill.get("Unleash Cowrruption")}`; // 149 turns
+      return `skill ${$skill`Unleash Cowrruption`}`; // 149 turns
     }
     if (
       (inCombat
-        ? myFamiliar() === Familiar.get("Crimbo Shrub")
-        : auto_have_familiar(Familiar.get("Crimbo Shrub"))) &&
-      auto_is_valid$2(Skill.get("Open a Big Yellow Present")) &&
+        ? myFamiliar() === $familiar`Crimbo Shrub`
+        : auto_have_familiar($familiar`Crimbo Shrub`)) &&
+      auto_is_valid$2($skill`Open a Big Yellow Present`) &&
       getProperty("shrubGifts") === "yellow"
     ) {
-      return `skill ${Skill.get("Open a Big Yellow Present")}`; // 149 turns
+      return `skill ${$skill`Open a Big Yellow Present`}`; // 149 turns
     }
   }
 
   if (asdonCanMissile()) {
-    return `skill ${Skill.get("Asdon Martin: Missile Launcher")}`;
+    return `skill ${$skill`Asdon Martin: Missile Launcher`}`;
   }
 
   if (auto_canNorthernExplosionFE()) {
     //With April Shower Thoughts Shield
-    return `skill ${Skill.get("Northern Explosion")}`;
+    return `skill ${$skill`Northern Explosion`}`;
   }
 
   if (auto_canFeelEnvy()) {
-    return `skill ${Skill.get("Feel Envy")}`;
+    return `skill ${$skill`Feel Envy`}`;
   }
 
-  const saber: Item = wrap_item(Item.get("Fourth of May Cosplay Saber"));
+  const saber: Item = wrap_item($item`Fourth of May Cosplay Saber`);
   if (
     (inCombat ? haveEquipped(saber) : possessEquipment(saber)) &&
     auto_saberChargesAvailable() > 0
@@ -1650,11 +1607,11 @@ export function yellowRayCombatString(
   // shocking lick doesn't cause everything looks yellow effect and limited only by how many batteries you have. Use all other sources first.
   if (
     inCombat
-      ? haveSkill(Skill.get("Shocking Lick"))
+      ? haveSkill($skill`Shocking Lick`)
       : toInt(getProperty("shockingLickCharges")) > 0 ||
-        can_get_battery(Item.get("battery (9-Volt)"))
+        can_get_battery($item`battery (9-Volt)`)
   ) {
-    return `skill ${Skill.get("Shocking Lick")}`;
+    return `skill ${$skill`Shocking Lick`}`;
   }
 
   return "";
@@ -1684,18 +1641,18 @@ export function replaceMonsterCombatString(
   }
   if (
     auto_macrometeoritesAvailable() > 0 &&
-    auto_is_valid$2(Skill.get("Macrometeorite"))
+    auto_is_valid$2($skill`Macrometeorite`)
   ) {
-    return `skill ${Skill.get("Macrometeorite")}`;
+    return `skill ${$skill`Macrometeorite`}`;
   }
   if (
     auto_powerfulGloveReplacesAvailable(inCombat) > 0 &&
-    auto_is_valid$2(Skill.get("CHEAT CODE: Replace Enemy"))
+    auto_is_valid$2($skill`CHEAT CODE: Replace Enemy`)
   ) {
-    return `skill ${Skill.get("CHEAT CODE: Replace Enemy")}`;
+    return `skill ${$skill`CHEAT CODE: Replace Enemy`}`;
   }
-  if (canUse$4(Item.get("waffle")) && !in_avantGuard()) {
-    return useItems$1(Item.get("waffle"), Item.none);
+  if (canUse$4($item`waffle`) && !in_avantGuard()) {
+    return useItems$1($item`waffle`, Item.none);
   }
   return "";
 }
@@ -1729,30 +1686,30 @@ export function wantToForceDrop(enemy: Monster): boolean {
   //skills that can be used on any combat round, repeatedly until an item is stolen
   //take into account if a yellow ray has been used. Must have been one that doesn't insta-kill
   const mildEvilAvailable: boolean =
-    canUse$1(Skill.get("Perpetrate Mild Evil"), false) &&
+    canUse$1($skill`Perpetrate Mild Evil`, false) &&
     toInt(getProperty("_mildEvilPerpetrated")) < 3;
   const swoopAvailable: boolean =
-    canUse$1(Skill.get("Swoop like a Bat"), true) &&
+    canUse$1($skill`Swoop like a Bat`, true) &&
     toInt(getProperty("_batWingsSwoopUsed")) < 11;
 
   let forceDrop: boolean = false;
   //only force 1 scent gland from each filthworm
   if (!combat_status_check("yellowray")) {
     if (
-      enemy === Monster.get("larval filthworm") &&
-      itemAmount(Item.get("filthworm hatchling scent gland")) < 1
+      enemy === $monster`larval filthworm` &&
+      itemAmount($item`filthworm hatchling scent gland`) < 1
     ) {
       forceDrop = true;
     }
     if (
-      enemy === Monster.get("filthworm drone") &&
-      itemAmount(Item.get("filthworm drone scent gland")) < 1
+      enemy === $monster`filthworm drone` &&
+      itemAmount($item`filthworm drone scent gland`) < 1
     ) {
       forceDrop = true;
     }
     if (
-      enemy === Monster.get("filthworm royal guard") &&
-      itemAmount(Item.get("filthworm royal guard scent gland")) < 1
+      enemy === $monster`filthworm royal guard` &&
+      itemAmount($item`filthworm royal guard scent gland`) < 1
     ) {
       forceDrop = true;
     }
@@ -1770,11 +1727,9 @@ export function wantToForceDrop(enemy: Monster): boolean {
     }
 
     if (
-      Monster.get([
-        "bearpig topiary animal",
-        "elephant (meatcar?) topiary animal",
-        "spider (duck?) topiary animal",
-      ]).includes(enemy)
+      $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`.includes(
+        enemy,
+      )
     ) {
       if (hedgeTrimmersNeeded() + dropsFromYR > 0) {
         forceDrop = true;
@@ -1782,9 +1737,9 @@ export function wantToForceDrop(enemy: Monster): boolean {
     }
     // Number of times bowled is 1 less than hiddenBowlingAlleyProgress. Need 5 bowling balls total, 5+1 = 6 needed in this conditional
     if (
-      enemy === Monster.get("pygmy bowler") &&
+      enemy === $monster`pygmy bowler` &&
       toInt(getProperty("hiddenBowlingAlleyProgress")) +
-        itemAmount(Item.get("bowling ball")) +
+        itemAmount($item`bowling ball`) +
         dropsFromYR <
         6
     ) {
@@ -1792,22 +1747,22 @@ export function wantToForceDrop(enemy: Monster): boolean {
     }
 
     if (
-      enemy === Monster.get("dairy goat") &&
-      itemAmount(Item.get("goat cheese")) + dropsFromYR < 3
+      enemy === $monster`dairy goat` &&
+      itemAmount($item`goat cheese`) + dropsFromYR < 3
     ) {
       forceDrop = true;
     }
 
     if (
-      Item.get("shadow brick").toString() in itemDrops(enemy) &&
+      $item`shadow brick`.toString() in itemDrops(enemy) &&
       auto_neededShadowBricks() + dropsFromYR > 0
     ) {
       forceDrop = true;
     }
 
     if (
-      enemy === Monster.get("Baa'baa'bu'ran") &&
-      (itemAmount(Item.get("stone wool")) === 0 || toBoolean(dropsFromYR))
+      enemy === $monster`Baa'baa'bu'ran` &&
+      (itemAmount($item`stone wool`) === 0 || toBoolean(dropsFromYR))
     ) {
       forceDrop = true;
     }
@@ -1815,18 +1770,18 @@ export function wantToForceDrop(enemy: Monster): boolean {
 
   if (
     isActuallyEd() &&
-    myLocation() === Location.get("The Secret Council Warehouse")
+    myLocation() === $location`The Secret Council Warehouse`
   ) {
     const progress: number = toInt(getProperty("warehouseProgress"));
-    if (enemy === Monster.get("warehouse guard")) {
-      const n_pages: number = itemAmount(Item.get("warehouse map page"));
+    if (enemy === $monster`warehouse guard`) {
+      const n_pages: number = itemAmount($item`warehouse map page`);
       const progress_with_pages: number = progress + n_pages * 8;
       if (progress_with_pages < 39) {
         // need 40 to "win", will get +1 for this combat
         forceDrop = true;
       }
-    } else if (enemy === Monster.get("warehouse clerk")) {
-      const n_pages: number = itemAmount(Item.get("warehouse inventory page"));
+    } else if (enemy === $monster`warehouse clerk`) {
+      const n_pages: number = itemAmount($item`warehouse inventory page`);
       const progress_with_pages: number = progress + n_pages * 8;
       if (progress_with_pages < 39) {
         // need 40 to "win", will get +1 for this combat
@@ -1840,14 +1795,14 @@ export function wantToForceDrop(enemy: Monster): boolean {
 
 export function wantToDouse(enemy: Monster): boolean {
   switch (enemy) {
-    case Monster.get("larval filthworm"):
-      return itemAmount(Item.get("filthworm hatchling scent gland")) === 0;
-    case Monster.get("filthworm drone"):
-      return itemAmount(Item.get("filthworm drone scent gland")) === 0;
-    case Monster.get("filthworm royal guard"):
-      return itemAmount(Item.get("filthworm royal guard scent gland")) === 0;
-    case Monster.get("shadow slab"):
-      return itemAmount(Item.get("shadow brick")) < 13;
+    case $monster`larval filthworm`:
+      return itemAmount($item`filthworm hatchling scent gland`) === 0;
+    case $monster`filthworm drone`:
+      return itemAmount($item`filthworm drone scent gland`) === 0;
+    case $monster`filthworm royal guard`:
+      return itemAmount($item`filthworm royal guard scent gland`) === 0;
+    case $monster`shadow slab`:
+      return itemAmount($item`shadow brick`) < 13;
   }
   return false;
 }
@@ -1858,31 +1813,31 @@ export function maxRoundsToDouse(enemy: Monster): number {
     // resist damage, take longer
     rounds -= 3;
   }
-  if (myClass() === Class.get("Disco Bandit")) {
+  if (myClass() === $class`Disco Bandit`) {
     // DBs take a while to kill b/c disco momentum and potentially low damage
     rounds -= 3;
   }
   // save a round for flyering if we're doing that.
   const flyer: Item =
     auto_warSide() === "hippy"
-      ? Item.get("jam band flyers")
-      : Item.get("rock band flyers");
+      ? $item`jam band flyers`
+      : $item`rock band flyers`;
   if (canUse$4(flyer) && toInt(getProperty("flyeredML")) < 10000) {
     rounds -= 1;
   }
   // Or pants removal
-  if (canUse$2(Skill.get("Tear Away your Pants!"))) {
+  if (canUse$2($skill`Tear Away your Pants!`)) {
     rounds -= 1;
   }
-  if (canUse$2(Skill.get("Perpetrate Mild Evil"))) {
+  if (canUse$2($skill`Perpetrate Mild Evil`)) {
     // We'll be mild eviling any monsters we douse most likely
     rounds -= auto_remainingMildEvilUses();
   }
-  if (canUse$2(Skill.get("Swoop like a Bat"))) {
+  if (canUse$2($skill`Swoop like a Bat`)) {
     // swoopin' em too
     rounds -= 1;
   }
-  if (canUse$2(Skill.get("Fire Extinguisher: Polar Vortex"))) {
+  if (canUse$2($skill`Fire Extinguisher: Polar Vortex`)) {
     // and extingo
     rounds -= auto_fireExtinguisherCharges();
   }
@@ -1893,70 +1848,68 @@ export function maxRoundsToDouse(enemy: Monster): number {
 export function canSurviveShootGhost(enemy: Monster, shots: number): boolean {
   let damage: number = 0;
   switch (enemy) {
-    case Monster.get("the ghost of Oily McBindle"):
+    case $monster`the ghost of Oily McBindle`:
       damage = toInt(
-        (myMaxhp() * 0.4 * elementalResistance(Element.get("sleaze"))) / 100,
+        (myMaxhp() * 0.4 * elementalResistance($element`sleaze`)) / 100,
       );
       break;
-    case Monster.get("boneless blobghost"):
+    case $monster`boneless blobghost`:
       damage = toInt(
-        (myMaxhp() * 0.45 * elementalResistance(Element.get("spooky"))) / 100,
+        (myMaxhp() * 0.45 * elementalResistance($element`spooky`)) / 100,
       );
       break;
-    case Monster.get("the ghost of Monsieur Baguelle"):
+    case $monster`the ghost of Monsieur Baguelle`:
       damage = toInt(
-        (myMaxhp() * 0.5 * elementalResistance(Element.get("hot"))) / 100,
+        (myMaxhp() * 0.5 * elementalResistance($element`hot`)) / 100,
       );
       break;
-    case Monster.get("The Headless Horseman"):
+    case $monster`The Headless Horseman`:
       damage = toInt(
-        (myMaxhp() * 0.55 * elementalResistance(Element.get("spooky"))) / 100,
+        (myMaxhp() * 0.55 * elementalResistance($element`spooky`)) / 100,
       );
       break;
-    case Monster.get("The Icewoman"):
+    case $monster`The Icewoman`:
       damage = toInt(
-        (myMaxhp() * 0.6 * elementalResistance(Element.get("cold"))) / 100,
+        (myMaxhp() * 0.6 * elementalResistance($element`cold`)) / 100,
       );
       break;
-    case Monster.get("The ghost of Ebenoozer Screege"):
+    case $monster`The ghost of Ebenoozer Screege`:
       damage = toInt(
-        (myMaxhp() * 0.65 * elementalResistance(Element.get("spooky"))) / 100,
+        (myMaxhp() * 0.65 * elementalResistance($element`spooky`)) / 100,
       );
       break;
-    case Monster.get("The ghost of Lord Montague Spookyraven"):
+    case $monster`The ghost of Lord Montague Spookyraven`:
       damage = toInt(
-        (myMaxhp() * 0.7 * elementalResistance(Element.get("stench"))) / 100,
+        (myMaxhp() * 0.7 * elementalResistance($element`stench`)) / 100,
       );
       break;
-    case Monster.get('The ghost of Vanillica "Trashblossom" Gorton'):
+    case $monster`The ghost of Vanillica "Trashblossom" Gorton`:
       damage = toInt(
-        (myMaxhp() * 0.75 * elementalResistance(Element.get("stench"))) / 100,
+        (myMaxhp() * 0.75 * elementalResistance($element`stench`)) / 100,
       );
       break;
-    case Monster.get("The ghost of Sam McGee"):
+    case $monster`The ghost of Sam McGee`:
       damage = toInt(
-        (myMaxhp() * 0.8 * elementalResistance(Element.get("hot"))) / 100,
+        (myMaxhp() * 0.8 * elementalResistance($element`hot`)) / 100,
       );
       break;
-    case Monster.get("The ghost of Richard Cockingham"):
+    case $monster`The ghost of Richard Cockingham`:
       damage = toInt(
-        (myMaxhp() * 0.85 * elementalResistance(Element.get("spooky"))) / 100,
+        (myMaxhp() * 0.85 * elementalResistance($element`spooky`)) / 100,
       );
       break;
-    case Monster.get("The ghost of Waldo the Carpathian"):
+    case $monster`The ghost of Waldo the Carpathian`:
       damage = toInt(
-        (myMaxhp() * 0.9 * elementalResistance(Element.get("hot"))) / 100,
+        (myMaxhp() * 0.9 * elementalResistance($element`hot`)) / 100,
       );
       break;
-    case Monster.get("Emily Koops, a spooky lime"):
+    case $monster`Emily Koops\, a spooky lime`:
       damage = toInt(
-        (myMaxhp() * 0.95 * elementalResistance(Element.get("spooky"))) / 100,
+        (myMaxhp() * 0.95 * elementalResistance($element`spooky`)) / 100,
       );
       break;
-    case Monster.get("The ghost of Jim Unfortunato"):
-      damage = toInt(
-        (myMaxhp() * elementalResistance(Element.get("sleaze"))) / 100,
-      );
+    case $monster`The ghost of Jim Unfortunato`:
+      damage = toInt((myMaxhp() * elementalResistance($element`sleaze`)) / 100);
       break;
     default:
       damage = toInt(myMaxhp() * 0.3);
@@ -1965,7 +1918,7 @@ export function canSurviveShootGhost(enemy: Monster, shots: number): boolean {
 }
 
 function auto_remainingMildEvilUses(): number {
-  if (!haveSkill(Skill.get("Perpetrate Mild Evil"))) {
+  if (!haveSkill($skill`Perpetrate Mild Evil`)) {
     return 0;
   }
   return 3 - toInt(getProperty("_mildEvilPerpetrated"));

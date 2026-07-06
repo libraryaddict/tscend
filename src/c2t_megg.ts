@@ -25,7 +25,6 @@ import {
   replaceString,
   runCombat,
   setProperty,
-  Slot,
   splitString,
   toBoolean,
   toBuffer,
@@ -36,8 +35,10 @@ import {
   visitUrl,
   xpath,
 } from "kolmafia";
-import { AshMatcher } from "./autoscend/utils/kolmafiaUtils";
+import { $familiar, $item, $monster, $slot } from "libram";
+
 import { CombatMacro } from "./autoscend/auto_adventure";
+import { AshMatcher } from "./autoscend/utils/kolmafiaUtils";
 
 //c2t_megg
 //c2t
@@ -168,8 +169,8 @@ function main$c2t_megg(...args: string[]): void {
 
 //returns false only on critical errors
 function c2t_megg_donate(target: Monster): boolean {
-  const egg: Item = Item.get("mimic egg");
-  const mimic: Familiar = Familiar.get("Chest Mimic");
+  const egg: Item = $item`mimic egg`;
+  const mimic: Familiar = $familiar`Chest Mimic`;
   const pref: string = "_mimicEggsDonated";
   let page: string = null;
   let maxlist: Map<string, boolean> = new Map();
@@ -226,7 +227,7 @@ function c2t_megg_donate(target: Monster): boolean {
     c2t_megg_print(
       "couldn't read max egg list from page or data file, so protecting embezzlers at minimum",
     );
-    maxlist.set(Monster.get("Knob Goblin Embezzler").id.toString(), true);
+    maxlist.set($monster`Knob Goblin Embezzler`.id.toString(), true);
   }
   //target already max check
   if (maxlist.has(monstring)) {
@@ -309,8 +310,8 @@ function c2t_megg_donate(target: Monster): boolean {
 
 //returns true if egg taken; false on failure
 export function c2t_megg_extract(target: Monster): boolean {
-  const egg: Item = Item.get("mimic egg");
-  const mimic: Familiar = Familiar.get("Chest Mimic");
+  const egg: Item = $item`mimic egg`;
+  const mimic: Familiar = $familiar`Chest Mimic`;
   const pref: string = "_mimicEggsObtained";
   let page: string = null;
   let maxlist: Map<string, boolean> = new Map();
@@ -376,7 +377,7 @@ export function c2t_megg_extract(target: Monster): boolean {
 
 //does not actually do the combat
 function c2t_megg_fight(target: Monster): boolean {
-  const egg: Item = Item.get("mimic egg");
+  const egg: Item = $item`mimic egg`;
   let page: string = null;
   let monstring: string = "";
 
@@ -429,7 +430,7 @@ function c2t_megg_fight$1(target: Monster, macro: CombatMacro): boolean {
 
 //returns true only if the data file successfully updated
 export function c2t_megg_preAdv(): boolean {
-  const mimic: Familiar = Familiar.get("Chest Mimic");
+  const mimic: Familiar = $familiar`Chest Mimic`;
   const prefLast: string = "_c2t_megg_lastCheck";
   const prefLimit: string = "c2t_megg_timeLimit";
   let maxlist: Map<string, boolean> = new Map();
@@ -492,7 +493,7 @@ export function c2t_megg_preAdv(): boolean {
 
 //returns true only if the data file successfully updated
 function c2t_megg_update(): boolean {
-  const mimic: Familiar = Familiar.get("Chest Mimic");
+  const mimic: Familiar = $familiar`Chest Mimic`;
   let maxlist: Map<string, boolean> = new Map();
   let page: string = null;
   const dailyMaxed: boolean = toInt(getProperty("_mimicEggsObtained")) >= 11;
@@ -630,7 +631,7 @@ function c2t_megg_relayFight(page: string): string {
 function c2t_megg_error(s: string): boolean {
   const msg: string = `c2t_megg error: ${s}`;
   useFamiliar(c2t_megg_oldFam);
-  equip(Slot.get("familiar"), c2t_megg_oldEq);
+  equip($slot`familiar`, c2t_megg_oldEq);
 
   if (c2t_megg_CLI) {
     abort(msg);
@@ -643,7 +644,7 @@ function c2t_megg_error(s: string): boolean {
 //for success messages and clean exit
 function c2t_megg_success(s: string): boolean {
   useFamiliar(c2t_megg_oldFam);
-  equip(Slot.get("familiar"), c2t_megg_oldEq);
+  equip($slot`familiar`, c2t_megg_oldEq);
   if (s !== "") {
     c2t_megg_print(s);
   }
@@ -674,7 +675,7 @@ function c2t_megg_printEggs(): void {
       print(`${j} => ${x}`);
     }
   }
-  c2t_megg_print(`total eggs on hand: ${itemAmount(Item.get("mimic egg"))}`);
+  c2t_megg_print(`total eggs on hand: ${itemAmount($item`mimic egg`)}`);
 }
 
 //print list of maxed eggs as read from data file
@@ -795,7 +796,7 @@ export function c2t_megg_maxed(): Map<Monster, boolean> {
 //returns a map of the monsters inside the mimic eggs the user has, and how many of each, by parsing the preference containing mimic egg contents
 export function c2t_megg_eggs(): Map<Monster, number> {
   const out: Map<Monster, number> = new Map();
-  const egg: Item = Item.get("mimic egg");
+  const egg: Item = $item`mimic egg`;
   const prop: string = "mimicEggMonsters";
   let split: Map<number, string> = new Map();
 
@@ -824,5 +825,5 @@ export function c2t_megg_eggs(): Map<Monster, number> {
 //init
 function c2t_megg_init(): void {
   c2t_megg_oldFam = myFamiliar();
-  c2t_megg_oldEq = equippedItem(Slot.get("familiar"));
+  c2t_megg_oldEq = equippedItem($slot`familiar`);
 }

@@ -1,18 +1,16 @@
 import {
   abort,
-  Class,
-  Element,
   haveEquipped,
   haveSkill,
-  Item,
   Monster,
   mpCost,
   myClass,
-  Skill,
 } from "kolmafia";
+import { $class, $elements, $item, $monster, $monsters, $skill } from "libram";
+
 import { currentFlavour } from "../auto_util";
-import { canUse$1, canUse$2, useSkill$1, useSkill$2 } from "./auto_combat_util";
 import { in_wildfire } from "../paths/wildfire";
+import { canUse$1, canUse$2, useSkill$1, useSkill$2 } from "./auto_combat_util";
 
 //Path specific combat handling for wildfire
 
@@ -28,51 +26,48 @@ export function auto_combatWildfireStage1(
   }
   //always 5 fire bosses. can not be reduced.
   if (
-    Monster.get([
-      "Groar, Except Hot",
-      "The Man on Fire",
-      "The Big Ignatowicz",
-    ]).includes(enemy)
+    $monsters`Groar\, Except Hot, The Man on Fire, The Big Ignatowicz`.includes(
+      enemy,
+    )
   ) {
     if (
-      haveEquipped(Item.get("industrial fire extinguisher")) &&
-      canUse$2(Skill.get("Curse of Weaksauce")) &&
-      haveSkill(Skill.get("Itchy Curse Finger")) &&
-      myClass() === Class.get("Sauceror")
+      haveEquipped($item`industrial fire extinguisher`) &&
+      canUse$2($skill`Curse of Weaksauce`) &&
+      haveSkill($skill`Itchy Curse Finger`) &&
+      myClass() === $class`Sauceror`
     ) {
       //weaksauce will recover 50 MP. Only use it if you have industrial fire extinguisher equipped to prevent passive damage
-      return useSkill$2(Skill.get("Curse of Weaksauce"));
+      return useSkill$2($skill`Curse of Weaksauce`);
     }
-    if (canUse$2(Skill.get("Stuffed Mortar Shell"))) {
+    if (canUse$2($skill`Stuffed Mortar Shell`)) {
       //very cheap for massive damage. tuneable too for extra dmg.
-      return useSkill$2(Skill.get("Stuffed Mortar Shell"));
+      return useSkill$2($skill`Stuffed Mortar Shell`);
     }
     if (
-      Element.get(["sleaze", "stench"]).includes(currentFlavour()) &&
-      canUse$2(Skill.get("Weapon of the Pastalord"))
+      $elements`sleaze, stench`.includes(currentFlavour()) &&
+      canUse$2($skill`Weapon of the Pastalord`)
     ) {
       //extra dmg dealt
-      return useSkill$1(Skill.get("Weapon of the Pastalord"), false);
+      return useSkill$1($skill`Weapon of the Pastalord`, false);
     }
-    if (canUse$1(Skill.get("Saucegeyser"), false)) {
-      return useSkill$1(Skill.get("Saucegeyser"), false);
+    if (canUse$1($skill`Saucegeyser`, false)) {
+      return useSkill$1($skill`Saucegeyser`, false);
     }
     abort(`We do not know what to do next against [${enemy}].`);
   }
   //always 5 fire. can not be reduced. Does not become hot aligned so there is no elemental dmg boost.
-  if (Monster.get("wall of meat") === enemy) {
-    if (canUse$2(Skill.get("Stuffed Mortar Shell"))) {
-      return useSkill$2(Skill.get("Stuffed Mortar Shell"));
+  if ($monster`wall of meat` === enemy) {
+    if (canUse$2($skill`Stuffed Mortar Shell`)) {
+      return useSkill$2($skill`Stuffed Mortar Shell`);
     }
     if (
-      canUse$2(Skill.get("Weapon of the Pastalord")) &&
-      mpCost(Skill.get("Weapon of the Pastalord")) <
-        mpCost(Skill.get("Saucegeyser"))
+      canUse$2($skill`Weapon of the Pastalord`) &&
+      mpCost($skill`Weapon of the Pastalord`) < mpCost($skill`Saucegeyser`)
     ) {
-      return useSkill$1(Skill.get("Weapon of the Pastalord"), false); //pastamancers can make it cheaper than saucegeyser
+      return useSkill$1($skill`Weapon of the Pastalord`, false); //pastamancers can make it cheaper than saucegeyser
     }
-    if (canUse$1(Skill.get("Saucegeyser"), false)) {
-      return useSkill$1(Skill.get("Saucegeyser"), false);
+    if (canUse$1($skill`Saucegeyser`, false)) {
+      return useSkill$1($skill`Saucegeyser`, false);
     }
     abort(`We do not know what to do next against [${enemy}].`);
   }

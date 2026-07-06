@@ -7,6 +7,8 @@ import {
   Modifier,
   numericModifier,
 } from "kolmafia";
+import { $familiar } from "libram";
+
 import { auto_log_info } from "./auto_util";
 
 // familiar, int, item, effect, location defined. Define the rest at some point.
@@ -214,11 +216,11 @@ function ListOutput$1(list: Map<number, Familiar>): string {
 
 function main$auto_list(): void {
   const test: Map<Familiar, boolean> = new Map([
-    [Familiar.get("Slimeling"), true],
-    [Familiar.get("Puck Man"), true],
-    [Familiar.get("Baby Gravy Fairy"), true],
-    [Familiar.get("Intergnat"), true],
-    [Familiar.get("Mosquito"), true],
+    [$familiar`Slimeling`, true],
+    [$familiar`Puck Man`, true],
+    [$familiar`Baby Gravy Fairy`, true],
+    [$familiar`Intergnat`, true],
+    [$familiar`Mosquito`, true],
   ]);
   let list: Map<number, Familiar> = List$2(test);
 
@@ -226,7 +228,7 @@ function main$auto_list(): void {
   auto_log_info(ListOutput$1(list), "blue");
 
   auto_log_info("Deleting Baby Gravy Fairy, (2)", "green");
-  list = ListRemove$2(list, Familiar.get("Baby Gravy Fairy"));
+  list = ListRemove$2(list, $familiar`Baby Gravy Fairy`);
   auto_log_info(ListOutput$1(list), "blue");
 
   auto_log_info("Deleting Element 1 (Puck Man)", "green");
@@ -234,30 +236,30 @@ function main$auto_list(): void {
   auto_log_info(ListOutput$1(list), "blue");
 
   auto_log_info("Inserting at Front (Exotic Parrot)", "green");
-  list = ListInsertFront$1(list, Familiar.get("Exotic Parrot"));
+  list = ListInsertFront$1(list, $familiar`Exotic Parrot`);
   auto_log_info(ListOutput$1(list), "blue");
 
   auto_log_info("Inserting at End (Leprechaun)", "green");
-  list = ListInsert$1(list, Familiar.get("Leprechaun"));
+  list = ListInsert$1(list, $familiar`Leprechaun`);
   auto_log_info(ListOutput$1(list), "blue");
 
   auto_log_info("Inserting at 2 (Artistic Goth Kid)", "green");
-  list = ListInsertAt$1(list, Familiar.get("Artistic Goth Kid"), 2);
+  list = ListInsertAt$1(list, $familiar`Artistic Goth Kid`, 2);
   auto_log_info(ListOutput$1(list), "blue");
 
   auto_log_info("Inserting at 0 (Artistic Goth Kid)", "green");
-  list = ListInsertAt$1(list, Familiar.get("Artistic Goth Kid"), 0);
+  list = ListInsertAt$1(list, $familiar`Artistic Goth Kid`, 0);
   auto_log_info(ListOutput$1(list), "blue");
 
   auto_log_info("Inserting inorder weirdness (Bulky Buddy Box)", "green");
-  list = ListInsertInorder$1(list, Familiar.get("Bulky Buddy Box"));
+  list = ListInsertInorder$1(list, $familiar`Bulky Buddy Box`);
   auto_log_info(ListOutput$1(list), "blue");
 
   auto_log_info(
     "Inserting inorder weirdness (Xiblaxian Holo-Companion)",
     "green",
   );
-  list = ListInsertInorder$1(list, Familiar.get("Xiblaxian Holo-Companion"));
+  list = ListInsertInorder$1(list, $familiar`Xiblaxian Holo-Companion`);
   auto_log_info(ListOutput$1(list), "blue");
 
   let index: number = 0;

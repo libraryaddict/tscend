@@ -3,7 +3,6 @@ import {
   cliExecute,
   council,
   equippedItem,
-  Familiar,
   getProperty,
   haveSkill,
   hiddenTempleUnlocked,
@@ -15,13 +14,13 @@ import {
   myDaycount,
   myMp,
   myPrimestat,
-  Skill,
-  Slot,
   toBoolean,
   toInt,
   toLocation,
   visitUrl,
 } from "kolmafia";
+import { $familiar, $item, $location, $locations, $skill, $slot } from "libram";
+
 import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
 import { autoEquip } from "../auto_equipment";
 import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
@@ -54,10 +53,10 @@ export function L6_friarsGetParts(): boolean {
     return false;
   }
   if (myMp() > 50 || considerGrimstoneGolem(true)) {
-    handleBjornify(Familiar.get("Grimstone Golem"));
+    handleBjornify($familiar`Grimstone Golem`);
   }
 
-  if (Location.get("The Dark Heart of the Woods").turnsSpent === 0) {
+  if ($location`The Dark Heart of the Woods`.turnsSpent === 0) {
     visitUrl("friars.php?action=friars&pwd");
     if (isActuallyEd()) {
       // mafia bug doesn't update the quest property when visiting the Friars as Ed
@@ -68,23 +67,23 @@ export function L6_friarsGetParts(): boolean {
     }
   }
 
-  if (equippedItem(Slot.get("shirt")) === Item.get("tunac")) {
-    autoEquip(Slot.get("shirt"), Item.none);
+  if (equippedItem($slot`shirt`) === $item`tunac`) {
+    autoEquip($slot`shirt`, Item.none);
   }
 
   if (
-    auto_have_familiar(Familiar.get("Space Jellyfish")) &&
+    auto_have_familiar($familiar`Space Jellyfish`) &&
     toInt(getProperty("_spaceJellyfishDrops")) < 2
   ) {
-    handleFamiliar$1(Familiar.get("Space Jellyfish"));
+    handleFamiliar$1($familiar`Space Jellyfish`);
   }
 
-  if (in_gnoob() && auto_have_familiar(Familiar.get("Robortender"))) {
+  if (in_gnoob() && auto_have_familiar($familiar`Robortender`)) {
     if (
-      !haveSkill(Skill.get("Frown Muscles")) &&
-      itemAmount(Item.get("bottle of novelty hot sauce")) === 0
+      !haveSkill($skill`Frown Muscles`) &&
+      itemAmount($item`bottle of novelty hot sauce`) === 0
     ) {
-      handleFamiliar$1(Familiar.get("Robortender"));
+      handleFamiliar$1($familiar`Robortender`);
     }
   }
   // Don't burn all our NC forces early on d1 unless we are running low on turns.
@@ -96,11 +95,10 @@ export function L6_friarsGetParts(): boolean {
     const forced_loc: Location = toLocation(
       getProperty("auto_forceNonCombatLocation"),
     );
-    const forced_here: boolean = Location.get([
-      "The Dark Neck of the Woods",
-      "The Dark Elbow of the Woods",
-      "The Dark Heart of the Woods",
-    ]).includes(forced_loc);
+    const forced_here: boolean =
+      $locations`The Dark Neck of the Woods, The Dark Elbow of the Woods, The Dark Heart of the Woods`.includes(
+        forced_loc,
+      );
     const running_low_on_turns: boolean =
       auto_roughExpectedTurnsLeftToday() <
       10 + turnsUsedByRemainingNCForcesToday();
@@ -116,10 +114,10 @@ export function L6_friarsGetParts(): boolean {
     }
   }
 
-  if (itemAmount(Item.get("dodecagram")) === 0) {
+  if (itemAmount($item`dodecagram`) === 0) {
     auto_log_info("Getting Dodecagram", "blue");
     const NCForced: boolean = auto_forceNextNoncombat$1(
-      Location.get("The Dark Neck of the Woods"),
+      $location`The Dark Neck of the Woods`,
     );
     // delay if we are out of NC forcers and haven't run out of things to do
     if (
@@ -130,12 +128,12 @@ export function L6_friarsGetParts(): boolean {
     ) {
       return false;
     }
-    return autoAdv$2(Location.get("The Dark Neck of the Woods"));
+    return autoAdv$2($location`The Dark Neck of the Woods`);
   }
-  if (itemAmount(Item.get("eldritch butterknife")) === 0) {
+  if (itemAmount($item`eldritch butterknife`) === 0) {
     auto_log_info("Getting Eldritch Butterknife", "blue");
     const NCForced: boolean = auto_forceNextNoncombat$1(
-      Location.get("The Dark Elbow of the Woods"),
+      $location`The Dark Elbow of the Woods`,
     );
     // delay if we are out of NC forcers and haven't run out of things to do
     if (
@@ -146,9 +144,9 @@ export function L6_friarsGetParts(): boolean {
     ) {
       return false;
     }
-    return autoAdv$2(Location.get("The Dark Elbow of the Woods"));
+    return autoAdv$2($location`The Dark Elbow of the Woods`);
   }
-  if (itemAmount(Item.get("box of birthday candles")) === 0) {
+  if (itemAmount($item`box of birthday candles`) === 0) {
     if (
       toBoolean(getProperty("auto_dakotaFanning")) &&
       internalQuestStatus("questM16Temple") < 0
@@ -159,7 +157,7 @@ export function L6_friarsGetParts(): boolean {
     }
     auto_log_info("Getting Box of Birthday Candles", "blue");
     const NCForced: boolean = auto_forceNextNoncombat$1(
-      Location.get("The Dark Heart of the Woods"),
+      $location`The Dark Heart of the Woods`,
     );
     // delay if we are out of NC forcers and haven't run out of things to do
     if (
@@ -170,7 +168,7 @@ export function L6_friarsGetParts(): boolean {
     ) {
       return false;
     }
-    return autoAdv$2(Location.get("The Dark Heart of the Woods"));
+    return autoAdv$2($location`The Dark Heart of the Woods`);
   }
 
   auto_log_info("Finishing friars", "blue");
@@ -191,23 +189,23 @@ export function L6_dakotaFanning(): boolean {
     return true;
   }
 
-  if (itemAmount(Item.get("pellet of plant food")) === 0) {
-    autoAdv$1(1, Location.get("The Haunted Conservatory"));
+  if (itemAmount($item`pellet of plant food`) === 0) {
+    autoAdv$1(1, $location`The Haunted Conservatory`);
     return true;
   }
 
-  if (itemAmount(Item.get("heavy-duty bendy straw")) === 0) {
+  if (itemAmount($item`heavy-duty bendy straw`) === 0) {
     if (getProperty("questL06Friar") !== "finished") {
-      autoAdv$1(1, Location.get("The Dark Heart of the Woods"));
+      autoAdv$1(1, $location`The Dark Heart of the Woods`);
     } else {
-      autoAdv$1(1, Location.get("Pandamonium Slums"));
+      autoAdv$1(1, $location`Pandamonium Slums`);
     }
     return true;
   }
 
-  if (itemAmount(Item.get("sewing kit")) === 0) {
-    if (itemAmount(Item.get("fat loot token")) > 0) {
-      cliExecute(`make ${Item.get("sewing kit")}`);
+  if (itemAmount($item`sewing kit`) === 0) {
+    if (itemAmount($item`fat loot token`) > 0) {
+      cliExecute(`make ${$item`sewing kit`}`);
     } else {
       return fantasyRealmToken();
     }

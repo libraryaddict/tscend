@@ -6,8 +6,6 @@ import {
   cliExecute,
   containsText,
   craft,
-  Effect,
-  Familiar,
   getMonsters,
   getProperty,
   haveEffect,
@@ -32,8 +30,6 @@ import {
   retrieveItem,
   runChoice,
   setProperty,
-  Skill,
-  Slot,
   splitString,
   toBoolean,
   toInt,
@@ -42,6 +38,18 @@ import {
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
+import {
+  $effect,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $locations,
+  $monster,
+  $skill,
+  $slot,
+} from "libram";
+
 import { auto_advToReserve } from "../../autoscend";
 import { pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$2 } from "../auto_adventure";
@@ -83,13 +91,6 @@ import {
   wrap_item,
 } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
-import { acquiredFantasyRealmToken, fantasyBanditsFought } from "./mr2018";
-import { auto_hasAutumnaton } from "./mr2022";
-import {
-  auto_habitatFightsLeft,
-  auto_habitatMonster,
-  auto_haveBofa,
-} from "./mr2023";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_gnoob } from "../paths/gelatinous_noob";
 import { in_hattrick } from "../paths/hattrick";
@@ -105,12 +106,19 @@ import { cyrptEvilBonus$1 } from "../quests/level_07";
 import { bridgeGoal } from "../quests/level_09";
 import { auto_bestWarPlan, auto_warKillsPerBattle } from "../quests/level_12";
 import { needStarKey } from "../quests/level_13";
+import { acquiredFantasyRealmToken, fantasyBanditsFought } from "./mr2018";
+import { auto_hasAutumnaton } from "./mr2022";
+import {
+  auto_habitatFightsLeft,
+  auto_habitatMonster,
+  auto_haveBofa,
+} from "./mr2023";
 
 // This is meant for items that have a date of 2021
 
 //Defined in autoscend/iotms/mr2021.ash
 export function auto_haveCrystalBall(): boolean {
-  const crystal_ball: Item = wrap_item(Item.get("miniature crystal ball"));
+  const crystal_ball: Item = wrap_item($item`miniature crystal ball`);
   return (
     possessEquipment(crystal_ball) &&
     auto_is_valid(crystal_ball) &&
@@ -159,12 +167,9 @@ function auto_allowCrystalBall(
 ): boolean {
   // blacklisted locations
   if (
-    Location.get([
-      "Next to that Barrel with Something Burning in it",
-      "Out by that Rusted-Out Car",
-      "Over Where the Old Tires Are",
-      "Near an Abandoned Refrigerator",
-    ]).includes(loc)
+    $locations`Next to that Barrel with Something Burning in it, Out by that Rusted-Out Car, Over Where the Old Tires Are, Near an Abandoned Refrigerator`.includes(
+      loc,
+    )
   ) {
     //predictions can't tell tool gremlins apart from non tool gremlins
     return false;
@@ -178,8 +183,8 @@ function auto_allowCrystalBall(
     return true;
   }
   // next monster forced by clover so no need to forbid equipping crystal ball
-  if (haveEffect(Effect.get("Lucky!")) > 0) {
-    if (loc === Location.get("The Hidden Temple")) {
+  if (haveEffect($effect`Lucky!`) > 0) {
+    if (loc === $location`The Hidden Temple`) {
       // the only lucky adventure with a fight that could use the chance of item drop bonus
       return true;
     }
@@ -237,7 +242,7 @@ export function auto_forceHandleCrystalBall(loc: Location): boolean {
     }
   }
 
-  const crystal_ball: Item = wrap_item(Item.get("miniature crystal ball"));
+  const crystal_ball: Item = wrap_item($item`miniature crystal ball`);
   if (shouldForceEquip) {
     addToMaximize(`+equip ${crystal_ball.toString()}`);
     setProperty("auto_nextEncounter", predicted_monster.toString());
@@ -308,7 +313,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
       (zoneHasUnwantedMonsters ? 300 : 0) +
       (zoneHasWantedMonsters ? 300 : 0);
     if (crystalBallMaximizerBonus !== 0) {
-      const crystal_ball: Item = wrap_item(Item.get("miniature crystal ball"));
+      const crystal_ball: Item = wrap_item($item`miniature crystal ball`);
       addToMaximize(
         `+${crystalBallMaximizerBonus}bonus ${crystal_ball.toString()}`,
       );
@@ -318,16 +323,16 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
 
 export function auto_haveEmotionChipSkills(): boolean {
   return (
-    (auto_is_valid$2(Skill.get("Emotionally Chipped")) &&
-      haveSkill(Skill.get("Emotionally Chipped"))) ||
-    (auto_is_valid$2(Skill.get("Replica Emotionally Chipped")) &&
-      haveSkill(Skill.get("Replica Emotionally Chipped")))
+    (auto_is_valid$2($skill`Emotionally Chipped`) &&
+      haveSkill($skill`Emotionally Chipped`)) ||
+    (auto_is_valid$2($skill`Replica Emotionally Chipped`) &&
+      haveSkill($skill`Replica Emotionally Chipped`))
   );
 }
 
 export function auto_canFeelEnvy(): boolean {
   // Combat Skill - Forces drops like Spooky Jelly (doesn't insta-kill though, still need to win combat)
-  if (!auto_is_valid$2(Skill.get("Feel Envy"))) {
+  if (!auto_is_valid$2($skill`Feel Envy`)) {
     return false;
   }
   return (
@@ -337,7 +342,7 @@ export function auto_canFeelEnvy(): boolean {
 
 export function auto_canFeelHatred(): boolean {
   // Combat Skill - 50 turn banish (doesn't cost a turn)
-  if (!auto_is_valid$2(Skill.get("Feel Hatred"))) {
+  if (!auto_is_valid$2($skill`Feel Hatred`)) {
     return false;
   }
   return (
@@ -347,7 +352,7 @@ export function auto_canFeelHatred(): boolean {
 
 function auto_canFeelNostalgic(): boolean {
   // Combat Skill - adds drop table from last copyable monster to the current (see lastCopyableMonster property)
-  if (!auto_is_valid$2(Skill.get("Feel Nostalgic"))) {
+  if (!auto_is_valid$2($skill`Feel Nostalgic`)) {
     return false;
   }
   return (
@@ -357,7 +362,7 @@ function auto_canFeelNostalgic(): boolean {
 
 function auto_canFeelPride(): boolean {
   // Combat Skill - Triples stat gain from the current fight.
-  if (!auto_is_valid$2(Skill.get("Feel Pride"))) {
+  if (!auto_is_valid$2($skill`Feel Pride`)) {
     return false;
   }
   return (
@@ -367,7 +372,7 @@ function auto_canFeelPride(): boolean {
 
 function auto_canFeelSuperior(): boolean {
   // Combat Skill - Does 20% of monsters max HP as damage and gives +1 PvP fight if it kills the monster.
-  if (!auto_is_valid$2(Skill.get("Feel Superior"))) {
+  if (!auto_is_valid$2($skill`Feel Superior`)) {
     return false;
   }
   return (
@@ -377,7 +382,7 @@ function auto_canFeelSuperior(): boolean {
 
 function auto_canFeelLonely(): boolean {
   // Non-Combat Skill - -5% combat rate (20 adventures)
-  if (!auto_is_valid$2(Skill.get("Feel Lonely"))) {
+  if (!auto_is_valid$2($skill`Feel Lonely`)) {
     return false;
   }
   return (
@@ -387,7 +392,7 @@ function auto_canFeelLonely(): boolean {
 
 function auto_canFeelExcitement(): boolean {
   // Non-Combat Skill - +25 to all stats (20 adventures)
-  if (!auto_is_valid$2(Skill.get("Feel Excitement"))) {
+  if (!auto_is_valid$2($skill`Feel Excitement`)) {
     return false;
   }
   return (
@@ -398,7 +403,7 @@ function auto_canFeelExcitement(): boolean {
 
 function auto_canFeelNervous(): boolean {
   // Non-Combat Skill - deals passive damage on hit starting at 20 decrementing by 1 every proc (20 adventures)
-  if (!auto_is_valid$2(Skill.get("Feel Nervous"))) {
+  if (!auto_is_valid$2($skill`Feel Nervous`)) {
     return false;
   }
   return (
@@ -408,7 +413,7 @@ function auto_canFeelNervous(): boolean {
 
 function auto_canFeelPeaceful(): boolean {
   // Non-Combat Skill - +2 all res, +10 DR, +100 DA (20 adventures)
-  if (!auto_is_valid$2(Skill.get("Feel Peaceful"))) {
+  if (!auto_is_valid$2($skill`Feel Peaceful`)) {
     return false;
   }
   return (
@@ -418,8 +423,8 @@ function auto_canFeelPeaceful(): boolean {
 
 export function auto_haveBackupCamera(): boolean {
   return (
-    possessEquipment(Item.get("backup camera")) &&
-    auto_is_valid(Item.get("backup camera"))
+    possessEquipment($item`backup camera`) &&
+    auto_is_valid($item`backup camera`)
   );
 }
 
@@ -459,19 +464,19 @@ export function auto_backupTarget(): boolean {
   // don't backup into oliver's (it won't be free and will waste a free fight and currently also mess up tracking)
   if (
     toLocation(getProperty("nextAdventure")) ===
-    Location.get("An Unusually Quiet Barroom Brawl")
+    $location`An Unusually Quiet Barroom Brawl`
   ) {
     return false;
   }
   // determine if we want to backup
   const wantBackupLFM: boolean =
-    itemAmount(Item.get("barrel of gunpowder")) < 5 &&
+    itemAmount($item`barrel of gunpowder`) < 5 &&
     getProperty("sidequestLighthouseCompleted") === "none" &&
     internalQuestStatus("questL12War") === 1 &&
     !auto_hasAutumnaton() &&
     !in_koe();
   const habitatZombieEvil: number =
-    auto_habitatMonster() === Monster.get("modern zmobie")
+    auto_habitatMonster() === $monster`modern zmobie`
       ? auto_habitatFightsLeft() * (5 + cyrptEvilBonus$1())
       : 0;
   const wantBackupZmobie: boolean =
@@ -480,22 +485,22 @@ export function auto_backupTarget(): boolean {
     internalQuestStatus("questL07Cyrptic") === 0;
 
   switch (toMonster(getProperty("lastCopyableMonster"))) {
-    case Monster.get("lobsterfrogman"):
+    case $monster`lobsterfrogman`:
       if (wantBackupLFM) {
         return true;
       }
       break;
-    case Monster.get("modern zmobie"):
+    case $monster`modern zmobie`:
       if (wantBackupZmobie) {
         return true;
       }
       break;
-    case Monster.get("sausage goblin"):
+    case $monster`sausage goblin`:
       if (!wantBackupLFM && !wantBackupZmobie && auto_backupUsesLeft() > 5) {
         return true;
       }
       break;
-    case Monster.get("Eldritch Tentacle"):
+    case $monster`Eldritch Tentacle`:
       //backup tentacles if lots of backups remaining or use all remaining charges if at end of day
       if (auto_backupUsesLeft() > 6) {
         return true;
@@ -508,16 +513,16 @@ export function auto_backupTarget(): boolean {
         return true;
       }
       break;
-    case Monster.get("fantasy bandit"):
+    case $monster`fantasy bandit`:
       if (
         !acquiredFantasyRealmToken() &&
         auto_backupUsesLeft() >= 5 - fantasyBanditsFought() &&
-        auto_habitatMonster() !== Monster.get("fantasy bandit")
+        auto_habitatMonster() !== $monster`fantasy bandit`
       ) {
         return true;
       }
       break;
-    case Monster.get("Green Ops Soldier"):
+    case $monster`Green Ops Soldier`:
       if (
         toInt(getProperty("hippiesDefeated")) > 399 &&
         toInt(getProperty("hippiesDefeated")) < 1000 &&
@@ -526,12 +531,12 @@ export function auto_backupTarget(): boolean {
         return true;
       }
       break;
-    case Monster.get("Skinflute"):
-    case Monster.get("Camel's Toe"):
+    case $monster`Skinflute`:
+    case $monster`Camel's Toe`:
       if (
         needStarKey() &&
-        itemAmount(Item.get("star")) < 8 &&
-        itemAmount(Item.get("line")) < 7
+        itemAmount($item`star`) < 8 &&
+        itemAmount($item`line`) < 7
       ) {
         return true;
       }
@@ -554,7 +559,7 @@ export function auto_backupToYourLastEnemy(loc: Location): boolean {
     return false;
   }
 
-  if (autoEquip(Slot.get("acc3"), Item.get("backup camera"))) {
+  if (autoEquip($slot`acc3`, $item`backup camera`)) {
     setProperty("auto_nextEncounter", getProperty("lastCopyableMonster"));
     return autoAdv$2(loc);
   }
@@ -564,8 +569,8 @@ export function auto_backupToYourLastEnemy(loc: Location): boolean {
 
 function auto_havePowerPlant(): boolean {
   return (
-    itemAmount(Item.get("potted power plant")) > 0 &&
-    auto_is_valid(Item.get("potted power plant"))
+    itemAmount($item`potted power plant`) > 0 &&
+    auto_is_valid($item`potted power plant`)
   );
 }
 
@@ -577,9 +582,7 @@ export function auto_harvestBatteries(): boolean {
     return false;
   }
   // Stolen straight from mafia's breakfast handling.
-  cliExecute(
-    `inv_use.php?pwd&whichitem=${toInt(Item.get("potted power plant"))}`,
-  );
+  cliExecute(`inv_use.php?pwd&whichitem=${toInt($item`potted power plant`)}`);
 
   const status: Map<number, string> = new Map(
     splitString(getProperty("_pottedPowerPlant"), ",").map((_v, _i) => [
@@ -600,12 +603,12 @@ let $_batteryPoints_points: Map<Item, number> | undefined;
 
 function batteryPoints(battery: Item): number {
   $_batteryPoints_points ??= new Map([
-    [Item.get("battery (AAA)"), 1],
-    [Item.get("battery (AA)"), 2],
-    [Item.get("battery (D)"), 3],
-    [Item.get("battery (9-Volt)"), 4],
-    [Item.get("battery (lantern)"), 5],
-    [Item.get("battery (car)"), 6],
+    [$item`battery (AAA)`, 1],
+    [$item`battery (AA)`, 2],
+    [$item`battery (D)`, 3],
+    [$item`battery (9-Volt)`, 4],
+    [$item`battery (lantern)`, 5],
+    [$item`battery (car)`, 6],
   ]);
   return (
     $_batteryPoints_points.get(battery) ??
@@ -616,14 +619,7 @@ function batteryPoints(battery: Item): number {
 function totalBatteryPoints(): number {
   let totalPoints: number = 0;
 
-  for (const it of Item.get([
-    "battery (AAA)",
-    "battery (AA)",
-    "battery (D)",
-    "battery (9-Volt)",
-    "battery (lantern)",
-    "battery (car)",
-  ])) {
+  for (const it of $items`battery (AAA), battery (AA), battery (D), battery (9-Volt), battery (lantern), battery (car)`) {
     totalPoints += availableAmount(it) * batteryPoints(it);
   }
 
@@ -648,221 +644,191 @@ function batteryCombine$1(battery: Item, simulate: boolean): boolean {
     return true;
   }
   // We're targetting a AA.
-  if (battery === Item.get("battery (AA)")) {
+  if (battery === $item`battery (AA)`) {
     // There's only one way to craft a AA.
-    if (availableAmount(Item.get("battery (AAA)")) >= 2) {
+    if (availableAmount($item`battery (AAA)`) >= 2) {
       if (simulate) {
         return true;
       }
-      craft("combine", 1, Item.get("battery (AAA)"), Item.get("battery (AAA)"));
-      return availableAmount(Item.get("battery (AA)")) >= 1;
+      craft("combine", 1, $item`battery (AAA)`, $item`battery (AAA)`);
+      return availableAmount($item`battery (AA)`) >= 1;
     }
     return false;
-  } else if (battery === Item.get("battery (D)")) {
+  } else if (battery === $item`battery (D)`) {
     // From here on out, we try to resolve the crafting in a single step if possible, starting with largest battery + smallest battery.
     if (
-      availableAmount(Item.get("battery (AA)")) >= 1 &&
-      availableAmount(Item.get("battery (AAA)")) >= 1
+      availableAmount($item`battery (AA)`) >= 1 &&
+      availableAmount($item`battery (AAA)`) >= 1
     ) {
       if (simulate) {
         return true;
       }
-      craft("combine", 1, Item.get("battery (AA)"), Item.get("battery (AAA)"));
-      return availableAmount(Item.get("battery (D)")) >= 1;
+      craft("combine", 1, $item`battery (AA)`, $item`battery (AAA)`);
+      return availableAmount($item`battery (D)`) >= 1;
     } else if (
       availableAmount(
         // If crafting requires multiple steps, we rely on recursion.
-        Item.get("battery (AAA)"),
+        $item`battery (AAA)`,
       ) >= 3
     ) {
       if (simulate) {
         return true;
       }
-      batteryCombine(Item.get("battery (AA)"));
-      craft("combine", 1, Item.get("battery (AA)"), Item.get("battery (AAA)"));
-      return availableAmount(Item.get("battery (D)")) >= 1;
+      batteryCombine($item`battery (AA)`);
+      craft("combine", 1, $item`battery (AA)`, $item`battery (AAA)`);
+      return availableAmount($item`battery (D)`) >= 1;
     }
     return false;
-  } else if (battery === Item.get("battery (9-Volt)")) {
+  } else if (battery === $item`battery (9-Volt)`) {
     // Single step.
     if (
-      availableAmount(Item.get("battery (D)")) >= 1 &&
-      availableAmount(Item.get("battery (AAA)")) >= 1
+      availableAmount($item`battery (D)`) >= 1 &&
+      availableAmount($item`battery (AAA)`) >= 1
     ) {
       if (simulate) {
         return true;
       }
-      craft("combine", 1, Item.get("battery (D)"), Item.get("battery (AAA)"));
-      return availableAmount(Item.get("battery (9-Volt)")) >= 1;
+      craft("combine", 1, $item`battery (D)`, $item`battery (AAA)`);
+      return availableAmount($item`battery (9-Volt)`) >= 1;
     } else if (
       availableAmount(
         // Single step.
-        Item.get("battery (AA)"),
+        $item`battery (AA)`,
       ) >= 2
     ) {
       if (simulate) {
         return true;
       }
-      craft("combine", 1, Item.get("battery (AA)"), Item.get("battery (AA)"));
-      return availableAmount(Item.get("battery (9-Volt)")) >= 1;
+      craft("combine", 1, $item`battery (AA)`, $item`battery (AA)`);
+      return availableAmount($item`battery (9-Volt)`) >= 1;
     } else if (
       availableAmount(
         // Every multi step case with recursion.
-        Item.get("battery (AAA)"),
+        $item`battery (AAA)`,
       ) >= 4 ||
-      (availableAmount(Item.get("battery (AA)")) >= 1 &&
-        availableAmount(Item.get("battery (AAA)")) >= 2)
+      (availableAmount($item`battery (AA)`) >= 1 &&
+        availableAmount($item`battery (AAA)`) >= 2)
     ) {
       if (simulate) {
         return true;
       }
-      batteryCombine(Item.get("battery (D)"));
-      craft("combine", 1, Item.get("battery (D)"), Item.get("battery (AAA)"));
-      return availableAmount(Item.get("battery (9-Volt)")) >= 1;
+      batteryCombine($item`battery (D)`);
+      craft("combine", 1, $item`battery (D)`, $item`battery (AAA)`);
+      return availableAmount($item`battery (9-Volt)`) >= 1;
     }
     return false;
-  } else if (battery === Item.get("battery (lantern)")) {
+  } else if (battery === $item`battery (lantern)`) {
     // Single step.
     if (
-      availableAmount(Item.get("battery (9-Volt)")) >= 1 &&
-      availableAmount(Item.get("battery (AAA)")) >= 1
+      availableAmount($item`battery (9-Volt)`) >= 1 &&
+      availableAmount($item`battery (AAA)`) >= 1
     ) {
       if (simulate) {
         return true;
       }
-      craft(
-        "combine",
-        1,
-        Item.get("battery (9-Volt)"),
-        Item.get("battery (AAA)"),
-      );
-      return availableAmount(Item.get("battery (lantern)")) >= 1;
+      craft("combine", 1, $item`battery (9-Volt)`, $item`battery (AAA)`);
+      return availableAmount($item`battery (lantern)`) >= 1;
     } else if (
       availableAmount(
         // Single step.
-        Item.get("battery (D)"),
+        $item`battery (D)`,
       ) >= 1 &&
-      availableAmount(Item.get("battery (AA)")) >= 1
+      availableAmount($item`battery (AA)`) >= 1
     ) {
       if (simulate) {
         return true;
       }
-      craft("combine", 1, Item.get("battery (D)"), Item.get("battery (AA)"));
-      return availableAmount(Item.get("battery (lantern)")) >= 1;
+      craft("combine", 1, $item`battery (D)`, $item`battery (AA)`);
+      return availableAmount($item`battery (lantern)`) >= 1;
     } else if (
       availableAmount(
         // Every multi step case with recursion.
-        Item.get("battery (AAA)"),
+        $item`battery (AAA)`,
       ) >= 5 ||
-      (availableAmount(Item.get("battery (AA)")) >= 1 &&
-        availableAmount(Item.get("battery (AAA)")) >= 3) ||
-      (availableAmount(Item.get("battery (D)")) >= 1 &&
-        availableAmount(Item.get("battery (AAA)")) >= 2) ||
-      (availableAmount(Item.get("battery (AA)")) >= 2 &&
-        availableAmount(Item.get("battery (AAA)")) >= 1)
+      (availableAmount($item`battery (AA)`) >= 1 &&
+        availableAmount($item`battery (AAA)`) >= 3) ||
+      (availableAmount($item`battery (D)`) >= 1 &&
+        availableAmount($item`battery (AAA)`) >= 2) ||
+      (availableAmount($item`battery (AA)`) >= 2 &&
+        availableAmount($item`battery (AAA)`) >= 1)
     ) {
       if (simulate) {
         return true;
       }
-      batteryCombine(Item.get("battery (9-Volt)"));
-      craft(
-        "combine",
-        1,
-        Item.get("battery (9-Volt)"),
-        Item.get("battery (AAA)"),
-      );
-      return availableAmount(Item.get("battery (lantern)")) >= 1;
+      batteryCombine($item`battery (9-Volt)`);
+      craft("combine", 1, $item`battery (9-Volt)`, $item`battery (AAA)`);
+      return availableAmount($item`battery (lantern)`) >= 1;
     }
     return false;
-  } else if (battery === Item.get("battery (car)")) {
+  } else if (battery === $item`battery (car)`) {
     // Single step.
     if (
-      availableAmount(Item.get("battery (lantern)")) >= 1 &&
-      availableAmount(Item.get("battery (AAA)")) >= 1
+      availableAmount($item`battery (lantern)`) >= 1 &&
+      availableAmount($item`battery (AAA)`) >= 1
     ) {
       if (simulate) {
         return true;
       }
-      craft(
-        "combine",
-        1,
-        Item.get("battery (lantern)"),
-        Item.get("battery (AAA)"),
-      );
-      return availableAmount(Item.get("battery (car)")) >= 1;
+      craft("combine", 1, $item`battery (lantern)`, $item`battery (AAA)`);
+      return availableAmount($item`battery (car)`) >= 1;
     } else if (
       availableAmount(
         // Single step.
-        Item.get("battery (9-Volt)"),
+        $item`battery (9-Volt)`,
       ) >= 1 &&
-      availableAmount(Item.get("battery (AA)")) >= 1
+      availableAmount($item`battery (AA)`) >= 1
     ) {
       if (simulate) {
         return true;
       }
-      craft(
-        "combine",
-        1,
-        Item.get("battery (9-Volt)"),
-        Item.get("battery (AA)"),
-      );
-      return availableAmount(Item.get("battery (car)")) >= 1;
+      craft("combine", 1, $item`battery (9-Volt)`, $item`battery (AA)`);
+      return availableAmount($item`battery (car)`) >= 1;
     } else if (
       availableAmount(
         // Single step.
-        Item.get("battery (D)"),
+        $item`battery (D)`,
       ) >= 2
     ) {
       if (simulate) {
         return true;
       }
-      craft("combine", 1, Item.get("battery (D)"), Item.get("battery (D)"));
-      return availableAmount(Item.get("battery (car)")) >= 1;
+      craft("combine", 1, $item`battery (D)`, $item`battery (D)`);
+      return availableAmount($item`battery (car)`) >= 1;
     } else if (
       availableAmount(
         // The only multi-step case that can't be resolved by the same function (can't turn AAs into a lantern without a AA or D)
-        Item.get("battery (AA)"),
+        $item`battery (AA)`,
       ) >= 3
     ) {
       if (simulate) {
         return true;
       }
-      batteryCombine(Item.get("battery (9-Volt)"));
-      craft(
-        "combine",
-        1,
-        Item.get("battery (9-Volt)"),
-        Item.get("battery (AA)"),
-      );
-      return availableAmount(Item.get("battery (car)")) >= 1;
+      batteryCombine($item`battery (9-Volt)`);
+      craft("combine", 1, $item`battery (9-Volt)`, $item`battery (AA)`);
+      return availableAmount($item`battery (car)`) >= 1;
     } else if (
       availableAmount(
         // Every other multi step case with recursion.
-        Item.get("battery (AAA)"),
+        $item`battery (AAA)`,
       ) >= 6 ||
-      (availableAmount(Item.get("battery (AA)")) >= 1 &&
-        availableAmount(Item.get("battery (AAA)")) >= 4) ||
-      (availableAmount(Item.get("battery (D)")) >= 1 &&
-        availableAmount(Item.get("battery (AAA)")) >= 3) ||
-      (availableAmount(Item.get("battery (9-Volt)")) >= 1 &&
-        availableAmount(Item.get("battery (AAA)")) >= 2) ||
-      (availableAmount(Item.get("battery (AA)")) >= 2 &&
-        availableAmount(Item.get("battery (AAA)")) >= 2) ||
-      (availableAmount(Item.get("battery (D)")) >= 1 &&
-        availableAmount(Item.get("battery (AA)")) >= 1 &&
-        availableAmount(Item.get("battery (AAA)")) >= 1)
+      (availableAmount($item`battery (AA)`) >= 1 &&
+        availableAmount($item`battery (AAA)`) >= 4) ||
+      (availableAmount($item`battery (D)`) >= 1 &&
+        availableAmount($item`battery (AAA)`) >= 3) ||
+      (availableAmount($item`battery (9-Volt)`) >= 1 &&
+        availableAmount($item`battery (AAA)`) >= 2) ||
+      (availableAmount($item`battery (AA)`) >= 2 &&
+        availableAmount($item`battery (AAA)`) >= 2) ||
+      (availableAmount($item`battery (D)`) >= 1 &&
+        availableAmount($item`battery (AA)`) >= 1 &&
+        availableAmount($item`battery (AAA)`) >= 1)
     ) {
       if (simulate) {
         return true;
       }
-      batteryCombine(Item.get("battery (lantern)"));
-      craft(
-        "combine",
-        1,
-        Item.get("battery (lantern)"),
-        Item.get("battery (AAA)"),
-      );
-      return availableAmount(Item.get("battery (car)")) >= 1;
+      batteryCombine($item`battery (lantern)`);
+      craft("combine", 1, $item`battery (lantern)`, $item`battery (AAA)`);
+      return availableAmount($item`battery (car)`) >= 1;
     }
   }
   return false;
@@ -898,13 +864,7 @@ export function auto_getBattery(target: Item): boolean {
   }
   //try to use untinkering to get target or enough AAA to make target
   if (totalBatteryPoints() >= batteryPoints(target) && canUntinker()) {
-    for (const it of Item.get([
-      "battery (car)",
-      "battery (lantern)",
-      "battery (9-Volt)",
-      "battery (D)",
-      "battery (AA)",
-    ])) {
+    for (const it of $items`battery (car), battery (lantern), battery (9-Volt), battery (D), battery (AA)`) {
       if (myMeat() < 10) {
         break; //we ran out of meat and can no longer meatpaste
       }
@@ -944,10 +904,10 @@ export function have_fireworks_shop(): boolean {
   if (is_werewolf()) {
     return false; //can't access fireworks shop as a werewolf
   }
-  if (itemAmount(Item.get("Clan VIP Lounge key")) === 0) {
+  if (itemAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
   }
-  if (!auto_is_valid(Item.get("clan underground fireworks shop"))) {
+  if (!auto_is_valid($item`clan underground fireworks shop`)) {
     return false;
   }
   return toBoolean(getProperty("_fireworksShop"));
@@ -972,8 +932,8 @@ export function auto_buyFireworksHat(): boolean {
   }
 
   if (
-    myMeat() < npcPrice(Item.get("porkpie-mounted popper")) + meatReserve() &&
-    auto_is_valid(Item.get("porkpie-mounted popper"))
+    myMeat() < npcPrice($item`porkpie-mounted popper`) + meatReserve() &&
+    auto_is_valid($item`porkpie-mounted popper`)
   ) {
     auto_log_info$1(
       "Want to buy a hat from the fireworks shop, but don't have enough meat. Will try again later.",
@@ -982,41 +942,41 @@ export function auto_buyFireworksHat(): boolean {
   }
   // noncombat is most valuable hat but has no effect in LAR and can't be removed in Hat Trick
   if (
-    auto_can_equip(Item.get("porkpie-mounted popper")) &&
+    auto_can_equip($item`porkpie-mounted popper`) &&
     !(in_lar() || in_hattrick())
   ) {
     const simNonCombat: number = providePlusNonCombat(
       auto_combatModCap(),
-      Location.get("Noob Cave"),
+      $location`Noob Cave`,
       true,
       true,
     );
     if (simNonCombat < auto_combatModCap()) {
-      retrieveItem(1, Item.get("porkpie-mounted popper"));
+      retrieveItem(1, $item`porkpie-mounted popper`);
       return true;
     }
   }
   // +combat hat is second most useful but has no effect in LAR and can't be removed in Hat Trick
   if (
-    auto_can_equip(Item.get("sombrero-mounted sparkler")) &&
+    auto_can_equip($item`sombrero-mounted sparkler`) &&
     !(in_lar() || in_hattrick())
   ) {
     const simCombat: number = providePlusCombat(
       auto_combatModCap(),
-      Location.get("Noob Cave"),
+      $location`Noob Cave`,
       true,
       true,
     );
     if (simCombat < auto_combatModCap()) {
-      retrieveItem(1, Item.get("sombrero-mounted sparkler"));
+      retrieveItem(1, $item`sombrero-mounted sparkler`);
       return true;
     }
   }
   // ML hat is least useful
   // todo: add functionality to simulate acquiring ML instead of just looking at current ML
-  if (auto_can_equip(Item.get("fedora-mounted fountain"))) {
+  if (auto_can_equip($item`fedora-mounted fountain`)) {
     if (monsterLevelAdjustment() < toInt(getProperty("auto_MLSafetyLimit"))) {
-      retrieveItem(1, Item.get("fedora-mounted fountain"));
+      retrieveItem(1, $item`fedora-mounted fountain`);
       return true;
     }
   }
@@ -1025,7 +985,7 @@ export function auto_buyFireworksHat(): boolean {
 }
 
 export function auto_haveFireExtinguisher(): boolean {
-  const exting: Item = wrap_item(Item.get("industrial fire extinguisher"));
+  const exting: Item = wrap_item($item`industrial fire extinguisher`);
   return possessEquipment(exting) && auto_is_valid(exting);
 }
 
@@ -1039,7 +999,7 @@ export function auto_fireExtinguisherCharges(): number {
 export function auto_FireExtinguisherCombatString(place: Location): string {
   if (
     auto_fireExtinguisherCharges() < 20 ||
-    !auto_is_valid$2(Skill.get("Fire Extinguisher: Zone Specific"))
+    !auto_is_valid$2($skill`Fire Extinguisher: Zone Specific`)
   ) {
     return "";
   }
@@ -1049,50 +1009,48 @@ export function auto_FireExtinguisherCombatString(place: Location): string {
   }
   // once per ascension uses
   if (
-    Location.get([
-      "Guano Junction",
-      "The Batrat and Ratbat Burrow",
-      "The Beanbat Chamber",
-    ]).includes(place) &&
+    $locations`Guano Junction, The Batrat and Ratbat Burrow, The Beanbat Chamber`.includes(
+      place,
+    ) &&
     !toBoolean(getProperty("fireExtinguisherBatHoleUsed"))
   ) {
     //sonar-in-a-biscuits are used before combat, if available. Knock a wall down if any are still standing
     if (internalQuestStatus("questL04Bat") < 3) {
-      return `skill ${Skill.get("Fire Extinguisher: Zone Specific")}`;
+      return `skill ${$skill`Fire Extinguisher: Zone Specific`}`;
     }
   }
 
   if (
-    place === Location.get("Cobb's Knob Harem") &&
+    place === $location`Cobb's Knob Harem` &&
     !toBoolean(getProperty("fireExtinguisherHaremUsed")) &&
     !possessOutfit$1("Knob Goblin Harem Girl Disguise")
   ) {
-    return `skill ${Skill.get("Fire Extinguisher: Zone Specific")}`;
+    return `skill ${$skill`Fire Extinguisher: Zone Specific`}`;
   }
 
   if (
-    place === Location.get("The Defiled Niche") &&
+    place === $location`The Defiled Niche` &&
     !toBoolean(getProperty("fireExtinguisherCyrptUsed"))
   ) {
-    return `skill ${Skill.get("Fire Extinguisher: Zone Specific")}`;
+    return `skill ${$skill`Fire Extinguisher: Zone Specific`}`;
   }
 
   if (
-    place === Location.get("The Smut Orc Logging Camp") &&
+    place === $location`The Smut Orc Logging Camp` &&
     !toBoolean(getProperty("fireExtinguisherChasmUsed")) &&
     toInt(getProperty("chasmBridgeProgress")) < bridgeGoal() &&
     !auto_hasAutumnaton()
   ) {
-    return `skill ${Skill.get("Fire Extinguisher: Zone Specific")}`;
+    return `skill ${$skill`Fire Extinguisher: Zone Specific`}`;
   }
 
   if (
-    place === Location.get("The Arid, Extra-Dry Desert") &&
-    Location.get("The Arid, Extra-Dry Desert").turnsSpent > 0 &&
+    place === $location`The Arid\, Extra-Dry Desert` &&
+    $location`The Arid\, Extra-Dry Desert`.turnsSpent > 0 &&
     !toBoolean(getProperty("fireExtinguisherDesertUsed")) &&
     !auto_haveBofa()
   ) {
-    return `skill ${Skill.get("Fire Extinguisher: Zone Specific")}`;
+    return `skill ${$skill`Fire Extinguisher: Zone Specific`}`;
   }
 
   return "";
@@ -1108,8 +1066,8 @@ export function auto_canExtinguisherBeRefilled(): boolean {
 
 export function auto_haveColdMedCabinet(): boolean {
   return (
-    auto_get_campground().has(Item.get("cold medicine cabinet")) &&
-    auto_is_valid(Item.get("cold medicine cabinet"))
+    auto_get_campground().has($item`cold medicine cabinet`) &&
+    auto_is_valid($item`cold medicine cabinet`)
   );
 }
 
@@ -1147,11 +1105,11 @@ export function auto_CMCconsult(): void {
   function notAboutToDoNuns(): boolean {
     //should avoid getting more free kill charges when about to do nuns because the fights would be capped to 1000 meat
     if (myLevel() >= 12) {
-      if (myLocation() === Location.get("The Themthar Hills")) {
+      if (myLocation() === $location`The Themthar Hills`) {
         return false;
       }
       if (
-        myLocation() === Location.get("The Battlefield (Frat Uniform)") &&
+        myLocation() === $location`The Battlefield (Frat Uniform)` &&
         getProperty("sidequestNunsCompleted") === "none"
       ) {
         const hippiesDefeated: number = toInt(getProperty("hippiesDefeated"));
@@ -1182,7 +1140,7 @@ export function auto_CMCconsult(): void {
     return true;
   }
   function shouldChewBreathitin(): boolean {
-    if (myLocation() === Location.get("The Hidden Park")) {
+    if (myLocation() === $location`The Hidden Park`) {
       //already free [dense liana] should come right after and would waste charges
       //can't know how many combats will remain in the park which is ideally noncombats
       return false;
@@ -1195,25 +1153,25 @@ export function auto_CMCconsult(): void {
     !haveSpleenFamiliar() &&
     !canInteract()
   ) {
-    pullXWhenHaveY(Item.get("Breathitin&trade;"), 1, 0);
+    pullXWhenHaveY($item`Breathitin™`, 1, 0);
   }
   if (
-    itemAmount(Item.get("Breathitin&trade;")) > 0 &&
+    itemAmount($item`Breathitin™`) > 0 &&
     shouldChewBreathitin() &&
     !canInteract()
   ) {
-    autoChew(1, Item.get("Breathitin&trade;"));
+    autoChew(1, $item`Breathitin™`);
   }
-  if (itemAmount(Item.get("Homebodyl&trade;")) > 0 && freeCrafts$1() < 5) {
-    autoChew(1, Item.get("Homebodyl&trade;"));
+  if (itemAmount($item`Homebodyl™`) > 0 && freeCrafts$1() < 5) {
+    autoChew(1, $item`Homebodyl™`);
   }
   //use fleshazole if we don't have much meat
   if (
-    itemAmount(Item.get("Fleshazole&trade;")) > 0 &&
+    itemAmount($item`Fleshazole™`) > 0 &&
     myMeat() + 2000 < meatReserve() &&
     myLevel() >= 5
   ) {
-    autoChew(1, Item.get("Fleshazole&trade;"));
+    autoChew(1, $item`Fleshazole™`);
   }
 
   if (!auto_CMCconsultAvailable()) {
@@ -1226,7 +1184,7 @@ export function auto_CMCconsult(): void {
   } else if (
     auto_CMCconsultsLeft() <= 2 &&
     freeCrafts$1() >= 5 &&
-    possessEquipment(Item.get("ice crown")) &&
+    possessEquipment($item`ice crown`) &&
     myMeat() >= meatReserve()
   ) {
     //only looking for Breathitin from at least 11 fights spent underground
@@ -1242,11 +1200,11 @@ export function auto_CMCconsult(): void {
   if (containsText(page, "Breathitin")) {
     auto_log_info("Buying Breathitin pill from CMC", "blue");
     bestOption = 5;
-    consumableBought = Item.get("Breathitin&trade;");
+    consumableBought = $item`Breathitin™`;
   } else if (
     !(
-      auto_is_valid$1(Familiar.get("Cookbookbat")) &&
-      haveFamiliar(Familiar.get("Cookbookbat")) &&
+      auto_is_valid$1($familiar`Cookbookbat`) &&
+      haveFamiliar($familiar`Cookbookbat`) &&
       knollAvailable()
     ) &&
     containsText(page, "Homebodyl") &&
@@ -1256,7 +1214,7 @@ export function auto_CMCconsult(): void {
     // Cookbookbat gives us 5 free cooks every day & we only use free crafting on cooking in knoll signs
     auto_log_info("Buying Homebodyl pill from CMC", "blue");
     bestOption = 5;
-    consumableBought = Item.get("Homebodyl&trade;");
+    consumableBought = $item`Homebodyl™`;
   } else if ((!in_small() || inHardcore()) && containsText(page, "ice crown")) {
     // don't need the ice crown in Normal Small as we pull hats.
     auto_log_info("Buying ice crown from CMC", "blue");
@@ -1267,7 +1225,7 @@ export function auto_CMCconsult(): void {
   ) {
     auto_log_info("Buying Fleshazole pill from CMC", "blue");
     bestOption = 5;
-    consumableBought = Item.get("Fleshazole&trade;");
+    consumableBought = $item`Fleshazole™`;
   } else if (
     auto_CMCconsultsLeft() > 2 &&
     !canInteract() &&
@@ -1291,15 +1249,14 @@ export function auto_CMCconsult(): void {
   }
 
   if (
-    consumableBought === Item.get("Homebodyl&trade;") ||
-    (consumableBought === Item.get("Breathitin&trade;") &&
-      shouldChewBreathitin())
+    consumableBought === $item`Homebodyl™` ||
+    (consumableBought === $item`Breathitin™` && shouldChewBreathitin())
   ) {
     autoChew(1, consumableBought);
   }
 
   if (
-    consumableBought === Item.get("Fleshazole&trade;") &&
+    consumableBought === $item`Fleshazole™` &&
     myMeat() < meatReserve() &&
     myLevel() >= 5
   ) {

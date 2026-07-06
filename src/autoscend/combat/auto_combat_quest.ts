@@ -1,7 +1,6 @@
 import {
   abort,
   ceil,
-  Class,
   containsText,
   getProperty,
   Item,
@@ -16,6 +15,8 @@ import {
   toBoolean,
   toInt,
 } from "kolmafia";
+import { $class, $item, $items, $monsters, $skill } from "libram";
+
 import { isAttackFamiliar } from "../auto_familiar";
 import {
   auto_have_skill,
@@ -23,6 +24,10 @@ import {
   combatItemDamageMultiplier,
   MLDamageToMonsterMultiplier,
 } from "../auto_util";
+import { isActuallyEd } from "../paths/actually_ed_the_undying";
+import { in_fotd } from "../paths/fall_of_the_dinosaurs";
+import { glover_usable } from "../paths/g_lover";
+import { auto_warSide } from "../quests/level_12";
 import { auto_combatHandler } from "./auto_combat";
 import { auto_edCombatHandler } from "./auto_combat_ed";
 import {
@@ -42,10 +47,6 @@ import {
   useSkill$1,
   useSkill$2,
 } from "./auto_combat_util";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_fotd } from "../paths/fall_of_the_dinosaurs";
-import { glover_usable } from "../paths/g_lover";
-import { auto_warSide } from "../quests/level_12";
 
 // This file is for quest specific combat handling.
 // the junkyard gremlin quest
@@ -56,17 +57,9 @@ export function auto_JunkyardCombatHandler(
   text: string,
 ): string {
   if (
-    !Monster.get([
-      "A.M.C. gremlin",
-      "batwinged gremlin",
-      "batwinged gremlin (tool)",
-      "erudite gremlin",
-      "erudite gremlin (tool)",
-      "spider gremlin",
-      "spider gremlin (tool)",
-      "vegetable gremlin",
-      "vegetable gremlin (tool)",
-    ]).includes(enemy)
+    !$monsters`A.M.C. gremlin, batwinged gremlin, batwinged gremlin (tool), erudite gremlin, erudite gremlin (tool), spider gremlin, spider gremlin (tool), vegetable gremlin, vegetable gremlin (tool)`.includes(
+      enemy,
+    )
   ) {
     if (isActuallyEd()) {
       return auto_edCombatHandler(round_1, enemy, text);
@@ -81,12 +74,9 @@ export function auto_JunkyardCombatHandler(
   }
 
   if (
-    Monster.get([
-      "batwinged gremlin (tool)",
-      "erudite gremlin (tool)",
-      "spider gremlin (tool)",
-      "vegetable gremlin (tool)",
-    ]).includes(enemy)
+    $monsters`batwinged gremlin (tool), erudite gremlin (tool), spider gremlin (tool), vegetable gremlin (tool)`.includes(
+      enemy,
+    )
   ) {
     setProperty("auto_gremlinMoly", true.toString());
   }
@@ -102,24 +92,21 @@ export function auto_JunkyardCombatHandler(
   if (in_fotd()) {
     // In Fall of the Dinosaurs just use the magnet without waiting for a message
     if (
-      canUse$4(Item.get("molybdenum magnet")) &&
-      Monster.get([
-        "batwinged gremlin (tool)",
-        "erudite gremlin (tool)",
-        "spider gremlin (tool)",
-        "vegetable gremlin (tool)",
-      ]).includes(enemy)
+      canUse$4($item`molybdenum magnet`) &&
+      $monsters`batwinged gremlin (tool), erudite gremlin (tool), spider gremlin (tool), vegetable gremlin (tool)`.includes(
+        enemy,
+      )
     ) {
-      return useItem$1(Item.get("molybdenum magnet"));
+      return useItem$1($item`molybdenum magnet`);
     }
     return auto_combatHandler(round_1, enemy, text);
   }
 
   if (round_1 >= 28) {
-    if (canUse$1(Skill.get("Storm of the Scarab"), false)) {
-      return useSkill$1(Skill.get("Storm of the Scarab"), false);
-    } else if (canUse$1(Skill.get("Lunging Thrust-Smack"), false)) {
-      return useSkill$1(Skill.get("Lunging Thrust-Smack"), false);
+    if (canUse$1($skill`Storm of the Scarab`, false)) {
+      return useSkill$1($skill`Storm of the Scarab`, false);
+    } else if (canUse$1($skill`Lunging Thrust-Smack`, false)) {
+      return useSkill$1($skill`Lunging Thrust-Smack`, false);
     }
     return "attack with weapon";
   }
@@ -130,20 +117,20 @@ export function auto_JunkyardCombatHandler(
     containsText(text, "<!--moly3-->") ||
     containsText(text, "<!--moly4-->")
   ) {
-    return useItem$1(Item.get("molybdenum magnet"));
+    return useItem$1($item`molybdenum magnet`);
   }
 
-  if (canUse$2(Skill.get("Summon Love Scarabs"))) {
-    return useSkill$2(Skill.get("Summon Love Scarabs"));
+  if (canUse$2($skill`Summon Love Scarabs`)) {
+    return useSkill$2($skill`Summon Love Scarabs`);
   }
 
-  if (canUse$2(Skill.get("Good Medicine")) && canSurvive$1(2.1)) {
-    return useSkill$2(Skill.get("Good Medicine"));
+  if (canUse$2($skill`Good Medicine`) && canSurvive$1(2.1)) {
+    return useSkill$2($skill`Good Medicine`);
   }
 
-  let flyer: Item = Item.get("rock band flyers");
+  let flyer: Item = $item`rock band flyers`;
   if (auto_warSide() === "hippy") {
-    flyer = Item.get("jam band flyers");
+    flyer = $item`jam band flyers`;
   }
   let stunner: Skill = getStunner(enemy);
   const stunned: boolean = combat_status_check("stunned");
@@ -154,18 +141,18 @@ export function auto_JunkyardCombatHandler(
   let flyerWith: Item = Item.none;
 
   if (
-    myClass() === Class.get("Disco Bandit") &&
-    auto_have_skill(Skill.get("Deft Hands")) &&
+    myClass() === $class`Disco Bandit` &&
+    auto_have_skill($skill`Deft Hands`) &&
     !combat_status_check("(it")
   ) {
     //first item throw in the fight staggers
     staggeringFlyer = true;
   }
-  if (auto_have_skill(Skill.get("Ambidextrous Funkslinging"))) {
-    if (canUse$4(Item.get("Time-Spinner"))) {
-      flyerWith = Item.get("Time-Spinner");
+  if (auto_have_skill($skill`Ambidextrous Funkslinging`)) {
+    if (canUse$4($item`Time-Spinner`)) {
+      flyerWith = $item`Time-Spinner`;
       staggeringFlyer = true;
-    } else if (canUse$4(Item.get("beehive"))) {
+    } else if (canUse$4($item`beehive`)) {
       let canBeehiveGremlin: boolean = false;
       const beehiveDamage: number = ceil(
         30 * combatItemDamageMultiplier() * MLDamageToMonsterMultiplier(),
@@ -175,17 +162,17 @@ export function auto_JunkyardCombatHandler(
         canBeehiveGremlin =
           !gremlinTakesDamage &&
           monsterHp() > beehiveDamage + 30 - round_1 &&
-          canUse$3(Item.get("seal tooth"), false);
+          canUse$3($item`seal tooth`, false);
       } else {
         //don't miss MP by killing weak monsters with beehive
         canBeehiveGremlin = !(
           monsterHp() <= beehiveDamage &&
-          myClass() === Class.get("Sauceror") &&
-          haveUsed(Skill.get("Curse of Weaksauce"))
+          myClass() === $class`Sauceror` &&
+          haveUsed($skill`Curse of Weaksauce`)
         );
       }
       if (canBeehiveGremlin) {
-        flyerWith = Item.get("beehive");
+        flyerWith = $item`beehive`;
         staggeringFlyer = true;
       }
     }
@@ -228,10 +215,10 @@ export function auto_JunkyardCombatHandler(
       if (toInt(getProperty("_edDefeats")) >= 2) {
         return findBanisher(round_1, enemy, text);
       } else if (
-        canUse$3(Item.get("seal tooth"), false) &&
+        canUse$3($item`seal tooth`, false) &&
         getProperty("auto_edStatus") === "UNDYING!"
       ) {
-        return useItem(Item.get("seal tooth"), false);
+        return useItem($item`seal tooth`, false);
       }
     } else {
       return findBanisher(round_1, enemy, text);
@@ -244,22 +231,18 @@ export function auto_JunkyardCombatHandler(
     }
   }
 
-  for (const it of Item.get([
-    "seal tooth",
-    "spectre scepter",
-    "Doc Galaktik's Pungent Unguent",
-  ])) {
+  for (const it of $items`seal tooth, spectre scepter, Doc Galaktik's Pungent Unguent`) {
     if (canUse$3(it, false) && glover_usable(it.toString())) {
       return useItem(it, false);
     }
   }
 
-  if (canUse$1(Skill.get("Toss"), false)) {
-    return useSkill$1(Skill.get("Toss"), false);
+  if (canUse$1($skill`Toss`, false)) {
+    return useSkill$1($skill`Toss`, false);
   }
 
-  if (canUse$1(Skill.get("Plague Claws"), false)) {
-    return useSkill$1(Skill.get("Plague Claws"), false);
+  if (canUse$1($skill`Plague Claws`, false)) {
+    return useSkill$1($skill`Plague Claws`, false);
   }
 
   return "attack with weapon";

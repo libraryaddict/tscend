@@ -2,19 +2,18 @@ import {
   abort,
   getProperty,
   haveSkill,
-  Item,
   itemAmount,
   lastChoice,
   myLevel,
   myPath,
-  Path,
   runChoice,
   setProperty,
-  Skill,
   toInt,
   use,
   visitUrl,
 } from "kolmafia";
+import { $item, $path, $skill } from "libram";
+
 import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
 import { equipBaseline } from "../auto_equipment";
 import { auto_log_info, auto_log_info$1, ovenHandle } from "../auto_util";
@@ -22,7 +21,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/avatar_of_sneaky_pete.ash
 export function is_pete(): boolean {
-  return myPath() === Path.get("Avatar of Sneaky Pete");
+  return myPath() === $path`Avatar of Sneaky Pete`;
 }
 
 export function pete_initializeSettings(): void {
@@ -41,25 +40,25 @@ export function pete_initializeDay(day: number): void {
     ovenHandle();
 
     if (toInt(getProperty("auto_day_init")) < 2) {
-      if (itemAmount(Item.get("gym membership card")) > 0) {
-        use(1, Item.get("gym membership card"));
+      if (itemAmount($item`gym membership card`) > 0) {
+        use(1, $item`gym membership card`);
       }
 
-      if (itemAmount(Item.get("seal tooth")) === 0) {
-        acquireHermitItem(Item.get("seal tooth"));
+      if (itemAmount($item`seal tooth`) === 0) {
+        acquireHermitItem($item`seal tooth`);
       }
-      while (acquireHermitItem(Item.get("11-leaf clover"))) {}
-      pullXWhenHaveY(Item.get("Hand in Glove"), 1, 0);
-      pullXWhenHaveY(Item.get("blackberry galoshes"), 1, 0);
+      while (acquireHermitItem($item`11-leaf clover`)) {}
+      pullXWhenHaveY($item`Hand in Glove`, 1, 0);
+      pullXWhenHaveY($item`blackberry galoshes`, 1, 0);
     }
   } else if (day === 3) {
     if (toInt(getProperty("auto_day_init")) < 3) {
-      while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+      while (acquireHermitItem($item`11-leaf clover`)) {}
       setProperty("auto_day_init", (3).toString());
     }
   } else if (day === 4) {
     if (toInt(getProperty("auto_day_init")) < 4) {
-      while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+      while (acquireHermitItem($item`11-leaf clover`)) {}
       setProperty("auto_day_init", (4).toString());
     }
   }
@@ -75,9 +74,9 @@ export function pete_buySkills(): void {
   }
   // if you have all the skills and the motorcycle is fully upgraded, we're done.
   if (
-    haveSkill(Skill.get("Natural Dancer")) &&
-    haveSkill(Skill.get("Flash Headlight")) &&
-    haveSkill(Skill.get("Walk Away From Explosion")) &&
+    haveSkill($skill`Natural Dancer`) &&
+    haveSkill($skill`Flash Headlight`) &&
+    haveSkill($skill`Walk Away From Explosion`) &&
     getProperty("peteMotorbikeCowling") !== "" &&
     getProperty("peteMotorbikeTires") !== "" &&
     getProperty("peteMotorbikeMuffler") !== "" &&
@@ -102,96 +101,96 @@ export function pete_buySkills(): void {
       skillPoints = skillPoints - 1;
       let tree: number = 1;
 
-      if (!haveSkill(Skill.get("Flash Headlight"))) {
+      if (!haveSkill($skill`Flash Headlight`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Biker Swagger"))) {
+      if (!haveSkill($skill`Biker Swagger`)) {
         tree = 2;
       }
 
-      if (!haveSkill(Skill.get("Walk Away From Explosion"))) {
+      if (!haveSkill($skill`Walk Away From Explosion`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Brood"))) {
+      if (!haveSkill($skill`Brood`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Unrepentant Thief"))) {
+      if (!haveSkill($skill`Unrepentant Thief`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("[15025]Hard Drinker"))) {
+      if (!haveSkill($skill`[15025]Hard Drinker`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Smoke Break"))) {
+      if (!haveSkill($skill`Smoke Break`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Animal Magnetism"))) {
+      if (!haveSkill($skill`Animal Magnetism`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Jump Shark"))) {
+      if (!haveSkill($skill`Jump Shark`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Incite Riot"))) {
+      if (!haveSkill($skill`Incite Riot`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Live Fast"))) {
+      if (!haveSkill($skill`Live Fast`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Insult"))) {
+      if (!haveSkill($skill`Insult`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Natural Dancer"))) {
+      if (!haveSkill($skill`Natural Dancer`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Make Friends"))) {
+      if (!haveSkill($skill`Make Friends`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Cocktail Magic"))) {
+      if (!haveSkill($skill`Cocktail Magic`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Check Hair"))) {
+      if (!haveSkill($skill`Check Hair`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Shake It Off"))) {
+      if (!haveSkill($skill`Shake It Off`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Snap Fingers"))) {
+      if (!haveSkill($skill`Snap Fingers`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Fix Jukebox"))) {
+      if (!haveSkill($skill`Fix Jukebox`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Throw Party"))) {
+      if (!haveSkill($skill`Throw Party`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Mixologist"))) {
+      if (!haveSkill($skill`Mixologist`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Catchphrase"))) {
+      if (!haveSkill($skill`Catchphrase`)) {
         tree = 1;
       }
 
-      if (!haveSkill(Skill.get("Riding Tall"))) {
+      if (!haveSkill($skill`Riding Tall`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Check Mirror"))) {
+      if (!haveSkill($skill`Check Mirror`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Easy Riding"))) {
+      if (!haveSkill($skill`Easy Riding`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Peel Out"))) {
+      if (!haveSkill($skill`Peel Out`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Rowdy Drinker"))) {
+      if (!haveSkill($skill`Rowdy Drinker`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Pop Wheelie"))) {
+      if (!haveSkill($skill`Pop Wheelie`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Born Showman"))) {
+      if (!haveSkill($skill`Born Showman`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Rev Engine"))) {
+      if (!haveSkill($skill`Rev Engine`)) {
         tree = 2;
       }
       visitUrl(`choice.php?option=${tree}&whichchoice=867&pwd=`);

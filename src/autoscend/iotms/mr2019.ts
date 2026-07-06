@@ -10,7 +10,6 @@ import {
   Effect,
   equip,
   equippedItem,
-  Familiar,
   getInventory,
   getProperty,
   haveFamiliar,
@@ -56,6 +55,17 @@ import {
   userConfirm,
   visitUrl,
 } from "kolmafia";
+import {
+  $effect,
+  $familiar,
+  $item,
+  $location,
+  $phylum,
+  $skill,
+  $slots,
+  $stat,
+} from "libram";
+
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv, CombatMacro } from "../auto_adventure";
 import {
@@ -129,7 +139,7 @@ export function auto_sausageBlocked(): boolean {
     return true;
   }
 
-  if (!canEat$1(Item.get("magical sausage"))) {
+  if (!canEat$1($item`magical sausage`)) {
     return true;
   }
 
@@ -168,7 +178,7 @@ export function auto_sausageWanted(): boolean {
   let totalSausageEstimated: number = 0; // estimate up to how many sausages by the time liver and stomach will be full?
   // are there more casings from previous days or copied goblins?
   const extraCasings: number =
-    itemAmount(Item.get("magical sausage casing")) +
+    itemAmount($item`magical sausage casing`) +
     sausageMade -
     auto_sausageFightsToday();
 
@@ -180,9 +190,7 @@ export function auto_sausageWanted(): boolean {
     sausageForBreakfast = 6;
     // are there more sausages left from previous days?
     const extraSausage: number =
-      itemAmount(Item.get("magical sausage")) +
-      auto_sausageEaten() -
-      sausageMade;
+      itemAmount($item`magical sausage`) + auto_sausageEaten() - sausageMade;
     totalSausageEstimated = min(23, 13 + extraCasings + extraSausage);
     totalSausageEstimated = max(totalSausageEstimated, sausageMade);
   }
@@ -218,7 +226,7 @@ export function auto_sausageWanted(): boolean {
   // eat if there is enough after grinding to respect the reserve
   let sausageToEat: number = totalSausageToEat - auto_sausageEaten();
   const sausageAvailable: number =
-    itemAmount(Item.get("magical sausage")) - sausage_reserve_size;
+    itemAmount($item`magical sausage`) - sausage_reserve_size;
   sausageToEat = min(sausageToEat, sausageAvailable);
 
   if (sausageToEat > 0) {
@@ -245,13 +253,13 @@ function auto_sausageGrind$1(
     return false;
   }
 
-  const casingsOwned: number = itemAmount(Item.get("magical sausage casing"));
+  const casingsOwned: number = itemAmount($item`magical sausage casing`);
 
   if (casingsOwned === 0) {
     return false;
   }
   //it is actually possible to have a casing but not have the kramco grinder
-  if (!possessEquipment(wrap_item(Item.get("Kramco Sausage-o-Matic&trade;")))) {
+  if (!possessEquipment(wrap_item($item`Kramco Sausage-o-Matic™`))) {
     return false;
   }
 
@@ -268,7 +276,7 @@ function auto_sausageGrind$1(
 
   const sausMade: number = toInt(getProperty("_sausagesMade"));
   let pastesNeeded: number = 0;
-  const pastesAvail: number = itemAmount(Item.get("meat paste"));
+  const pastesAvail: number = itemAmount($item`meat paste`);
   const meatToSave: number = 1000 + meatReserve();
   for (
     let i = 1,
@@ -299,7 +307,7 @@ function auto_sausageGrind$1(
   }
 
   auto_log_info("Let's grind some sausage!", "blue");
-  if (!create(numSaus, Item.get("magical sausage"))) {
+  if (!create(numSaus, $item`magical sausage`)) {
     auto_log_warning("Something went wrong while grinding sausage...", "red");
     return false;
   }
@@ -314,7 +322,7 @@ export function auto_sausageEatEmUp(maxToEat: number): boolean {
   }
   // sausage_reserve_size is handled in auto_sausageWanted()
 
-  if (itemAmount(Item.get("magical sausage")) < 1) {
+  if (itemAmount($item`magical sausage`) < 1) {
     return false;
   }
 
@@ -331,7 +339,7 @@ export function auto_sausageEatEmUp(maxToEat: number): boolean {
   }
   // I could optimize this a little more by eating more sausage at once if you have enough max mp...
   // but meh.
-  while (maxToEat > 0 && itemAmount(Item.get("magical sausage")) > 0) {
+  while (maxToEat > 0 && itemAmount($item`magical sausage`) > 0) {
     if (auto_sausageLeftToday() <= 0) {
       break;
     }
@@ -343,11 +351,11 @@ export function auto_sausageEatEmUp(maxToEat: number): boolean {
       }
     }
 
-    if (!eat(1, Item.get("magical sausage"))) {
+    if (!eat(1, $item`magical sausage`)) {
       auto_log_warning("Somehow failed to eat a sausage! What??", "red");
       return false;
     }
-    handleTracker(Item.get("magical sausage").toString(), "auto_eaten");
+    handleTracker($item`magical sausage`.toString(), "auto_eaten");
     maxToEat--;
   }
   // burn any mp that'll go away when equipment switches back
@@ -367,7 +375,7 @@ function auto_sausageEatEmUp$1(): boolean {
 }
 
 export function auto_haveKramcoSausageOMatic(): boolean {
-  const kramco: Item = wrap_item(Item.get("Kramco Sausage-o-Matic&trade;"));
+  const kramco: Item = wrap_item($item`Kramco Sausage-o-Matic™`);
   if (possessEquipment(kramco) && auto_can_equip(kramco)) {
     return true;
   }
@@ -411,7 +419,7 @@ export function auto_sausageGoblin$2(
     return true;
   }
 
-  if (autoEquip$1(wrap_item(Item.get("Kramco Sausage-o-Matic&trade;")))) {
+  if (autoEquip$1(wrap_item($item`Kramco Sausage-o-Matic™`))) {
     setProperty("auto_nextEncounter", "sausage goblin");
     return autoAdv(1, loc, option);
   }
@@ -421,8 +429,8 @@ export function auto_sausageGoblin$2(
 
 function auto_haveLilDoctorBag(): boolean {
   if (
-    auto_is_valid(Item.get("Lil' Doctor&trade; bag")) &&
-    availableAmount(Item.get("Lil' Doctor&trade; bag")) > 0
+    auto_is_valid($item`Lil' Doctor™ bag`) &&
+    availableAmount($item`Lil' Doctor™ bag`) > 0
   ) {
     return true;
   }
@@ -430,7 +438,7 @@ function auto_haveLilDoctorBag(): boolean {
 }
 
 export function auto_chestXraysRemaining(): number {
-  if (!auto_haveLilDoctorBag() || !auto_is_valid$2(Skill.get("Chest X-Ray"))) {
+  if (!auto_haveLilDoctorBag() || !auto_is_valid$2($skill`Chest X-Ray`)) {
     return 0;
   }
 
@@ -438,10 +446,7 @@ export function auto_chestXraysRemaining(): number {
 }
 
 export function auto_reflexHammersRemaining(): number {
-  if (
-    !auto_haveLilDoctorBag() ||
-    !auto_is_valid$2(Skill.get("Reflex Hammer"))
-  ) {
+  if (!auto_haveLilDoctorBag() || !auto_is_valid$2($skill`Reflex Hammer`)) {
     return 0;
   }
 
@@ -449,7 +454,7 @@ export function auto_reflexHammersRemaining(): number {
 }
 
 function pirateRealmAvailable(): boolean {
-  if (!isUnrestricted(Item.get("PirateRealm membership packet"))) {
+  if (!isUnrestricted($item`PirateRealm membership packet`)) {
     return false;
   }
   if (
@@ -465,7 +470,7 @@ export function LX_unlockPirateRealm(): boolean {
   if (!pirateRealmAvailable()) {
     return false;
   }
-  if (possessEquipment(Item.get("PirateRealm eyepatch"))) {
+  if (possessEquipment($item`PirateRealm eyepatch`)) {
     return false;
   }
   if (myAdventures() < 40) {
@@ -477,7 +482,7 @@ export function LX_unlockPirateRealm(): boolean {
 }
 
 function auto_saberChoice(choice: string): boolean {
-  const saber: Item = wrap_item(Item.get("Fourth of May Cosplay Saber"));
+  const saber: Item = wrap_item($item`Fourth of May Cosplay Saber`);
   if (!isUnrestricted(saber)) {
     return false;
   }
@@ -536,14 +541,14 @@ function auto_saberCurrentMonster(): Monster {
 /* Out-of-combat Saber check: doesn't check that it's equipped
  */
 export function auto_saberChargesAvailable(): number {
-  const saber: Item = wrap_item(Item.get("Fourth of May Cosplay Saber"));
+  const saber: Item = wrap_item($item`Fourth of May Cosplay Saber`);
   if (!isUnrestricted(saber)) {
     return 0;
   }
   if (!possessEquipment(saber)) {
     return 0;
   }
-  if (!auto_is_valid$2(Skill.get("Use the Force"))) {
+  if (!auto_is_valid$2($skill`Use the Force`)) {
     return 0; //if the combat skill is not valid it can not be used even if the saber itself is valid
   }
   return 5 - toInt(getProperty("_saberForceUses"));
@@ -551,27 +556,27 @@ export function auto_saberChargesAvailable(): number {
 
 export function auto_combatSaberBanish(): string {
   setProperty("choiceAdventure1387", (1).toString());
-  return `skill ${Skill.get("Use the Force")}`;
+  return `skill ${$skill`Use the Force`}`;
 }
 
 function auto_combatSaberCopy(): string {
   setProperty("choiceAdventure1387", (2).toString());
-  return `skill ${Skill.get("Use the Force")}`;
+  return `skill ${$skill`Use the Force`}`;
 }
 
 export function auto_combatSaberYR(): string {
   setProperty("choiceAdventure1387", (3).toString());
-  return `skill ${Skill.get("Use the Force")}`;
+  return `skill ${$skill`Use the Force`}`;
 }
 
 export function auto_spoonCombatSkill(): Skill {
   switch (myPrimestat()) {
-    case Stat.get("Muscle"):
-      return Skill.get("Dragoon Platoon");
-    case Stat.get("Mysticality"):
-      return Skill.get("Spittoon Monsoon");
-    case Stat.get("Moxie"):
-      return Skill.get("Festoon Buffoon");
+    case $stat`Muscle`:
+      return $skill`Dragoon Platoon`;
+    case $stat`Mysticality`:
+      return $skill`Spittoon Monsoon`;
+    case $stat`Moxie`:
+      return $skill`Festoon Buffoon`;
     default:
       abort("Invalid mainstat, what?");
       return Skill.none; // needed or mafia complains about missing return value
@@ -583,11 +588,11 @@ function auto_spoonGetDesiredSign(): string {
 
   function statSign(musc: string, myst: string, mox: string): string {
     switch (myPrimestat()) {
-      case Stat.get("Muscle"):
+      case $stat`Muscle`:
         return musc;
-      case Stat.get("Mysticality"):
+      case $stat`Mysticality`:
         return myst;
-      case Stat.get("Moxie"):
+      case $stat`Moxie`:
         return mox;
       default:
         abort("Invalid mainstat, what?");
@@ -633,8 +638,8 @@ function auto_spoonGetDesiredSign(): string {
 
 export function auto_spoonTuneConfirm(): void {
   if (
-    !possessEquipment(Item.get("hewn moon-rune spoon")) ||
-    !auto_is_valid(Item.get("hewn moon-rune spoon"))
+    !possessEquipment($item`hewn moon-rune spoon`) ||
+    !auto_is_valid($item`hewn moon-rune spoon`)
   ) {
     // couldn't change signs if we wanted to
     return;
@@ -667,8 +672,8 @@ export function auto_spoonTuneConfirm(): void {
 
 function auto_spoonReadyToTuneMoon(): boolean {
   if (
-    !possessEquipment(Item.get("hewn moon-rune spoon")) ||
-    !auto_is_valid(Item.get("hewn moon-rune spoon"))
+    !possessEquipment($item`hewn moon-rune spoon`) ||
+    !auto_is_valid($item`hewn moon-rune spoon`)
   ) {
     // need a valid spoon to change moon signs
     return false;
@@ -724,22 +729,22 @@ function auto_spoonReadyToTuneMoon(): boolean {
       return false;
     }
     if (
-      (auto_get_campground().has(Item.get("Asdon Martin keyfob (on ring)")) &&
-        isUnrestricted(Item.get("Asdon Martin keyfob (on ring)"))) ||
-      (auto_is_valid$1(Familiar.get("Cookbookbat")) &&
-        haveFamiliar(Familiar.get("Cookbookbat")))
+      (auto_get_campground().has($item`Asdon Martin keyfob (on ring)`) &&
+        isUnrestricted($item`Asdon Martin keyfob (on ring)`)) ||
+      (auto_is_valid$1($familiar`Cookbookbat`) &&
+        haveFamiliar($familiar`Cookbookbat`))
     ) {
       // we want to get the bugbear outfit before switching away for easy bread access
       if (
-        !auto_buyUpTo(1, Item.get("bugbear beanie")) ||
-        !auto_buyUpTo(1, Item.get("bugbear bungguard"))
+        !auto_buyUpTo(1, $item`bugbear beanie`) ||
+        !auto_buyUpTo(1, $item`bugbear bungguard`)
       ) {
         return false;
       }
     }
     // We want the frilly skirt in LKS
     if (in_lowkeysummer()) {
-      if (!auto_buyUpTo(1, Item.get("frilly skirt"))) {
+      if (!auto_buyUpTo(1, $item`frilly skirt`)) {
         return false;
       }
     }
@@ -748,7 +753,7 @@ function auto_spoonReadyToTuneMoon(): boolean {
   if (
     inCanadiaSign() &&
     !toCanadia &&
-    itemAmount(Item.get("logging hatchet")) === 0
+    itemAmount($item`logging hatchet`) === 0
   ) {
     // want to make sure we've grabbed the logging hatchet before switching away from canadia
     return false;
@@ -757,8 +762,8 @@ function auto_spoonReadyToTuneMoon(): boolean {
   if (
     inGnomeSign() &&
     !toGnomad &&
-    auto_is_valid$2(Skill.get("Torso Awareness")) &&
-    !auto_have_skill(Skill.get("Torso Awareness"))
+    auto_is_valid$2($skill`Torso Awareness`) &&
+    !auto_have_skill($skill`Torso Awareness`)
   ) {
     // we want to know about our torso before swapping away from gnomad signs
     return false;
@@ -783,8 +788,8 @@ export function auto_spoonTuneMoon(): boolean {
   }
 
   let wasspoon: Slot = Slot.none;
-  for (const sl of Slot.get(["acc1", "acc2", "acc3"])) {
-    if (equippedItem(sl) === Item.get("hewn moon-rune spoon")) {
+  for (const sl of $slots`acc1, acc2, acc3`) {
+    if (equippedItem(sl) === $item`hewn moon-rune spoon`) {
       equip(sl, Item.none);
       wasspoon = sl;
       break;
@@ -831,7 +836,7 @@ export function auto_spoonTuneMoon(): boolean {
   }
 
   if (wasspoon !== Slot.none) {
-    equip(wasspoon, Item.get("hewn moon-rune spoon"));
+    equip(wasspoon, $item`hewn moon-rune spoon`);
   }
 
   return cantune;
@@ -839,8 +844,8 @@ export function auto_spoonTuneMoon(): boolean {
 
 function auto_beachCombAvailable(): boolean {
   if (
-    !isUnrestricted(Item.get("Beach Comb Box")) ||
-    !possessEquipment(Item.get("Beach Comb"))
+    !isUnrestricted($item`Beach Comb Box`) ||
+    !possessEquipment($item`Beach Comb`)
   ) {
     return false;
   }
@@ -886,27 +891,27 @@ function auto_beachCombHeadNumFrom(name: string): number {
 function auto_beachCombHeadEffectFromNum(num: number): Effect {
   switch (num) {
     case 1:
-      return Effect.get("Hot-Headed");
+      return $effect`Hot-Headed`;
     case 2:
-      return Effect.get("Cold as Nice");
+      return $effect`Cold as Nice`;
     case 3:
-      return Effect.get("A Brush with Grossness");
+      return $effect`A Brush with Grossness`;
     case 4:
-      return Effect.get("Does It Have a Skull In There??");
+      return $effect`Does It Have a Skull In There??`;
     case 5:
-      return Effect.get("Oiled, Slick");
+      return $effect`Oiled\, Slick`;
     case 6:
-      return Effect.get("Lack of Body-Building");
+      return $effect`Lack of Body-Building`;
     case 7:
-      return Effect.get("We're All Made of Starfish");
+      return $effect`We're All Made of Starfish`;
     case 8:
-      return Effect.get("Pomp & Circumsands");
+      return $effect`Pomp & Circumsands`;
     case 9:
-      return Effect.get("Resting Beach Face");
+      return $effect`Resting Beach Face`;
     case 10:
-      return Effect.get("Do I Know You From Somewhere?");
+      return $effect`Do I Know You From Somewhere?`;
     case 11:
-      return Effect.get("You Learned Something Maybe!");
+      return $effect`You Learned Something Maybe!`;
   }
   auto_log_error(
     `Invalid number ${num} provided to auto_beachCombHeadEffectFromNum`,
@@ -947,7 +952,7 @@ export function auto_beachCombHead(name: string): boolean {
   );
 
   if (ret) {
-    handleTracker$1(Item.get("Beach Comb").toString(), name, "auto_otherstuff");
+    handleTracker$1($item`Beach Comb`.toString(), name, "auto_otherstuff");
   }
   return ret;
 }
@@ -976,7 +981,7 @@ export function auto_beachUseFreeCombs(): boolean {
 // place.php?whichplace=campaway
 export function auto_campawayAvailable(): boolean {
   return (
-    isUnrestricted(Item.get("Distant Woods Getaway Brochure")) &&
+    isUnrestricted($item`Distant Woods Getaway Brochure`) &&
     toBoolean(getProperty("getawayCampsiteUnlocked"))
   );
 }
@@ -996,16 +1001,15 @@ export function auto_campawayGrabBuffs(): boolean {
 
   if (
     toInt(getProperty("_campAwayCloudBuffs")) === 0 &&
-    itemAmount(Item.get("campfire smoke")) +
-      creatableAmount(Item.get("campfire smoke")) >
+    itemAmount($item`campfire smoke`) + creatableAmount($item`campfire smoke`) >
       0
   ) {
-    if (itemAmount(Item.get("campfire smoke")) === 0) {
-      create(1, Item.get("campfire smoke"));
+    if (itemAmount($item`campfire smoke`) === 0) {
+      create(1, $item`campfire smoke`);
     }
     const message: string = "why is my computer on fire?";
     let temp: string = visitUrl(
-      `inv_use.php?pwd=&which=3&whichitem=${toInt(Item.get("campfire smoke"))}`,
+      `inv_use.php?pwd=&which=3&whichitem=${toInt($item`campfire smoke`)}`,
     );
     temp = visitUrl(
       `choice.php?pwd=&whichchoice=1394&option=1&message=${message}`,
@@ -1018,8 +1022,8 @@ export function auto_campawayGrabBuffs(): boolean {
 
 export function auto_havePillKeeper(): boolean {
   return (
-    possessEquipment(Item.get("Eight Days a Week Pill Keeper")) &&
-    isUnrestricted(Item.get("Unopened Eight Days a Week Pill Keeper"))
+    possessEquipment($item`Eight Days a Week Pill Keeper`) &&
+    isUnrestricted($item`Unopened Eight Days a Week Pill Keeper`)
   );
 }
 
@@ -1079,7 +1083,7 @@ function auto_pillKeeper(pill: number): boolean {
         break;
     }
     handleTracker$1(
-      Item.get("Eight Days a Week Pill Keeper").toString(),
+      $item`Eight Days a Week Pill Keeper`.toString(),
       detail,
       "auto_chewed",
     );
@@ -1170,17 +1174,11 @@ function auto_pizza_unclamped_advs(plan: PizzaPlan): number {
 
 function auto_pizza_stats(plan: PizzaPlan): Map<Stat, number> {
   const ret: Map<Stat, number> = new Map();
-  ret.set(Stat.get("Muscle"), 0.0);
-  ret.set(Stat.get("Moxie"), 0.0);
+  ret.set($stat`Muscle`, 0.0);
+  ret.set($stat`Moxie`, 0.0);
   for (const [i, ing] of auto_pizza_ingredients(plan)) {
-    ret.set(
-      Stat.get("Muscle"),
-      (ret.get(Stat.get("Muscle")) ?? 0.0) + 10 * ing.fullness,
-    );
-    ret.set(
-      Stat.get("Moxie"),
-      (ret.get(Stat.get("Moxie")) ?? 0.0) + 10 * ing.inebriety,
-    );
+    ret.set($stat`Muscle`, (ret.get($stat`Muscle`) ?? 0.0) + 10 * ing.fullness);
+    ret.set($stat`Moxie`, (ret.get($stat`Moxie`) ?? 0.0) + 10 * ing.inebriety);
   }
   return ret;
 }
@@ -13277,7 +13275,7 @@ export function auto_changeSnapperPhylum(toChange: Phylum): boolean {
   // You have been warned.
 
   if (
-    !canChangeToFamiliar(Familiar.get("Red-Nosed Snapper")) ||
+    !canChangeToFamiliar($familiar`Red-Nosed Snapper`) ||
     toChange === Phylum.none
   ) {
     return false;
@@ -13287,7 +13285,7 @@ export function auto_changeSnapperPhylum(toChange: Phylum): boolean {
 }
 
 export function auto_snapperPreAdventure(loc: Location): void {
-  if (myFamiliar() !== Familiar.get("Red-Nosed Snapper")) {
+  if (myFamiliar() !== $familiar`Red-Nosed Snapper`) {
     return;
   }
 
@@ -13311,46 +13309,46 @@ export function auto_snapperPreAdventure(loc: Location): void {
   // It is preferred that you do not rely on this to change phylum in a quest, call changeSnapperPhylum in the quest handling code instead.
   if (desiredPhylum === "" && toInt(getProperty("redSnapperProgress")) === 0) {
     switch (loc) {
-      case Location.get("The Penultimate Fantasy Airship"):
-      case Location.get("The Hidden Park"):
-      case Location.get("The Hidden Hospital"):
-      case Location.get("The Hidden Office Building"):
-      case Location.get("The Hidden Apartment Building"):
-      case Location.get("The Hidden Bowling Alley"):
-      case Location.get("The Copperhead Club"):
-      case Location.get("A Mob of Zeppelin Protesters"):
-      case Location.get("The Red Zeppelin"):
-      case Location.get("Inside the Palindome"):
-      case Location.get("The Neverending Party"):
-      case Location.get("South of the Border"):
-      case Location.get("The Valley of Rof L'm Fao"):
-        desiredPhylum = Phylum.get("dude").toString(); // human musk (banisher)
+      case $location`The Penultimate Fantasy Airship`:
+      case $location`The Hidden Park`:
+      case $location`The Hidden Hospital`:
+      case $location`The Hidden Office Building`:
+      case $location`The Hidden Apartment Building`:
+      case $location`The Hidden Bowling Alley`:
+      case $location`The Copperhead Club`:
+      case $location`A Mob of Zeppelin Protesters`:
+      case $location`The Red Zeppelin`:
+      case $location`Inside the Palindome`:
+      case $location`The Neverending Party`:
+      case $location`South of the Border`:
+      case $location`The Valley of Rof L'm Fao`:
+        desiredPhylum = $phylum`dude`.toString(); // human musk (banisher)
 
         break;
-      case Location.get("The Hole in the Sky"):
-        desiredPhylum = Phylum.get("constellation").toString(); // micronova (yellow ray)
+      case $location`The Hole in the Sky`:
+        desiredPhylum = $phylum`constellation`.toString(); // micronova (yellow ray)
 
         break;
-      case Location.get("The Smut Orc Logging Camp"):
-        desiredPhylum = Phylum.get("orc").toString(); // boot flask (size 3 awesome booze)
+      case $location`The Smut Orc Logging Camp`:
+        desiredPhylum = $phylum`orc`.toString(); // boot flask (size 3 awesome booze)
 
         break;
-      case Location.get("The Outskirts of Cobb's Knob"):
-      case Location.get("Cobb's Knob Barracks"):
-      case Location.get("Cobb's Knob Kitchens"):
-      case Location.get("Cobb's Knob Harem"):
-      case Location.get("Cobb's Knob Treasury"):
-      case Location.get("Cobb's Knob Laboratory"):
-        desiredPhylum = Phylum.get("goblin").toString(); // guffin (size 3 awesome food)
+      case $location`The Outskirts of Cobb's Knob`:
+      case $location`Cobb's Knob Barracks`:
+      case $location`Cobb's Knob Kitchens`:
+      case $location`Cobb's Knob Harem`:
+      case $location`Cobb's Knob Treasury`:
+      case $location`Cobb's Knob Laboratory`:
+        desiredPhylum = $phylum`goblin`.toString(); // guffin (size 3 awesome food)
 
         break;
-      case Location.get('The "Fun" House'):
-        desiredPhylum = Phylum.get("horror").toString(); // powdered madness (free kill)
+      case $location`The "Fun" House`:
+        desiredPhylum = $phylum`horror`.toString(); // powdered madness (free kill)
 
         break;
-      case Location.get("Twin Peak"):
+      case $location`Twin Peak`:
         // this is actually a dude heavy zone *but* we want to fight the topiary monsters for rusty hedge trimmers.
-        desiredPhylum = Phylum.get("beast").toString();
+        desiredPhylum = $phylum`beast`.toString();
         break;
       default:
         auto_log_info(

@@ -1,7 +1,6 @@
 import {
   cliExecute,
   containsText,
-  Effect,
   getProperty,
   haveEffect,
   haveEquipped,
@@ -12,13 +11,14 @@ import {
   myMeat,
   myPath,
   npcPrice,
-  Path,
   setProperty,
   splitString,
   toBoolean,
   toInt,
   turnsPlayed,
 } from "kolmafia";
+import { $effect, $item, $locations, $path } from "libram";
+
 import { auto_advToReserve } from "../../autoscend";
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv$1 } from "../auto_adventure";
@@ -33,7 +33,7 @@ import { zone_available } from "../auto_zone";
 
 //Defined in autoscend/paths/wereprofessor.ash
 export function in_wereprof(): boolean {
-  return myPath() === Path.get("WereProfessor");
+  return myPath() === $path`WereProfessor`;
 }
 
 export function wereprof_initializeSettings(): void {
@@ -50,7 +50,7 @@ export function is_werewolf(): boolean {
   if (!in_wereprof()) {
     return false;
   }
-  if (haveEffect(Effect.get("Savage Beast")) > 0) {
+  if (haveEffect($effect`Savage Beast`) > 0) {
     return true;
   }
   return false;
@@ -60,7 +60,7 @@ export function is_professor(): boolean {
   if (!in_wereprof()) {
     return false;
   }
-  if (haveEffect(Effect.get("Mild-Mannered Professor")) > 0) {
+  if (haveEffect($effect`Mild-Mannered Professor`) > 0) {
     return true;
   }
   return false;
@@ -298,8 +298,8 @@ function wereprof_buySkills(): void {
 function wereprof_haveAllEquipment(): boolean {
   //Only care about the final equipment
   if (
-    !possessEquipment(Item.get("triphasic molecular oculus")) ||
-    !possessEquipment(Item.get("irresponsible-tension exoskeleton"))
+    !possessEquipment($item`triphasic molecular oculus`) ||
+    !possessEquipment($item`irresponsible-tension exoskeleton`)
   ) {
     return false;
   }
@@ -311,45 +311,45 @@ function wereprof_buyEquip(): void {
     return; // can't tinker if we are a werewolf and don't care about anything but the best oculus and exoskeleton
   }
   //There's probably a better way to do this
-  while (itemAmount(Item.get("smashed scientific equipment")) >= 1) {
+  while (itemAmount($item`smashed scientific equipment`) >= 1) {
     while (
-      !possessEquipment(Item.get("triphasic molecular oculus")) ||
-      !possessEquipment(Item.get("irresponsible-tension exoskeleton"))
+      !possessEquipment($item`triphasic molecular oculus`) ||
+      !possessEquipment($item`irresponsible-tension exoskeleton`)
     ) {
       if (
-        !possessEquipment(Item.get("biphasic molecular oculus")) &&
-        !possessEquipment(Item.get("triphasic molecular oculus"))
+        !possessEquipment($item`biphasic molecular oculus`) &&
+        !possessEquipment($item`triphasic molecular oculus`)
       ) {
         cliExecute("tinker biphasic molecular oculus");
         break;
       }
       if (
-        possessEquipment(Item.get("biphasic molecular oculus")) &&
-        !possessEquipment(Item.get("triphasic molecular oculus"))
+        possessEquipment($item`biphasic molecular oculus`) &&
+        !possessEquipment($item`triphasic molecular oculus`)
       ) {
         cliExecute("tinker triphasic molecular oculus");
         break;
       }
       if (
-        !possessEquipment(Item.get("high-tension exoskeleton")) &&
-        !possessEquipment(Item.get("ultra-high-tension exoskeleton")) &&
-        !possessEquipment(Item.get("irresponsible-tension exoskeleton"))
+        !possessEquipment($item`high-tension exoskeleton`) &&
+        !possessEquipment($item`ultra-high-tension exoskeleton`) &&
+        !possessEquipment($item`irresponsible-tension exoskeleton`)
       ) {
         cliExecute("tinker high-tension exoskeleton");
         break;
       }
       if (
-        possessEquipment(Item.get("high-tension exoskeleton")) &&
-        !possessEquipment(Item.get("ultra-high-tension exoskeleton")) &&
-        !possessEquipment(Item.get("irresponsible-tension exoskeleton"))
+        possessEquipment($item`high-tension exoskeleton`) &&
+        !possessEquipment($item`ultra-high-tension exoskeleton`) &&
+        !possessEquipment($item`irresponsible-tension exoskeleton`)
       ) {
         cliExecute("tinker ultra-high-tension exoskeleton");
         break;
       }
       if (
-        !possessEquipment(Item.get("high-tension exoskeleton")) &&
-        possessEquipment(Item.get("ultra-high-tension exoskeleton")) &&
-        !possessEquipment(Item.get("irresponsible-tension exoskeleton"))
+        !possessEquipment($item`high-tension exoskeleton`) &&
+        possessEquipment($item`ultra-high-tension exoskeleton`) &&
+        !possessEquipment($item`irresponsible-tension exoskeleton`)
       ) {
         cliExecute("tinker irresponsible-tension exoskeleton");
         break;
@@ -363,8 +363,8 @@ export function wereprof_oculus(): boolean {
     return false;
   }
   if (
-    haveEquipped(Item.get("biphasic molecular oculus")) ||
-    haveEquipped(Item.get("triphasic molecular oculus"))
+    haveEquipped($item`biphasic molecular oculus`) ||
+    haveEquipped($item`triphasic molecular oculus`)
   ) {
     return true;
   }
@@ -378,7 +378,7 @@ export function LM_wereprof(): boolean {
   if (is_werewolf()) {
     return false;
   }
-  const elixer: Item = Item.get("Doc Galaktik's Homeopathic Elixir");
+  const elixer: Item = $item`Doc Galaktik's Homeopathic Elixir`;
   const elixerAmount: number = itemAmount(elixer);
   if (elixerAmount < 10 && myMeat() - npcPrice(elixer) > meatReserve()) {
     // make a stock pile of 10 healing items to use as needed when werewolf
@@ -411,14 +411,7 @@ export function LX_wereprof_getSmashedEquip(): boolean {
   const smashedLocs: Map<number, Location> = new Map();
   const alreadySmashedLocs: string = getProperty("antiScientificMethod");
   //There's a couple other locations, but we shouldn't EVER visit them
-  for (const sl of Location.get([
-    "The Hidden Hospital",
-    "The Castle in the Clouds in the Sky (Top Floor)",
-    "Noob Cave",
-    "The Haunted Pantry",
-    "The Thinknerd Warehouse",
-    "Vanya's Castle",
-  ])) {
+  for (const sl of $locations`The Hidden Hospital, The Castle in the Clouds in the Sky (Top Floor), Noob Cave, The Haunted Pantry, The Thinknerd Warehouse, Vanya's Castle`) {
     if (
       !containsText(alreadySmashedLocs, sl.toString()) &&
       zone_available(sl)

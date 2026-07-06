@@ -1,12 +1,10 @@
 import {
   abort,
   cliExecute,
-  Element,
   Familiar,
   floor,
   getProperty,
   inebrietyLimit,
-  Item,
   itemAmount,
   Location,
   min,
@@ -18,16 +16,23 @@ import {
   myMeat,
   myPrimestat,
   myTurncount,
-  Phylum,
   print,
   setProperty,
-  Skill,
-  Stat,
   toBoolean,
   toInt,
   useSkill,
   wait,
 } from "kolmafia";
+import {
+  $element,
+  $familiar,
+  $item,
+  $location,
+  $phylum,
+  $skill,
+  $stat,
+} from "libram";
+
 import { auto_advToReserve } from "../autoscend";
 import { autoAdv$1, autoAdv$2 } from "./auto_adventure";
 import { inebriety_left, stomach_left } from "./auto_consume";
@@ -107,27 +112,27 @@ export function highestScalingZone(): Location {
   //returns the zone with the highest enemy_value which we can adventure in
   if (neverendingPartyAvailable()) {
     //+20 enemy value
-    return Location.get("The Neverending Party");
+    return $location`The Neverending Party`;
   }
-  if (elementalPlanes_access(Element.get("cold"))) {
+  if (elementalPlanes_access($element`cold`)) {
     //+6 (male viking) or +10 (female viking) enemy value
-    return Location.get("VYKEA");
+    return $location`VYKEA`;
   }
-  if (elementalPlanes_access(Element.get("hot"))) {
+  if (elementalPlanes_access($element`hot`)) {
     //+1 zone bonus. +15 can appear after 20 fights today. +30 can appear after 40 fights today.
-    return Location.get("The SMOOCH Army HQ");
+    return $location`The SMOOCH Army HQ`;
   }
-  if (elementalPlanes_access(Element.get("stench"))) {
+  if (elementalPlanes_access($element`stench`)) {
     //+5 enemy value
-    return Location.get("Uncle Gator's Country Fun-Time Liquid Waste Sluice");
+    return $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`;
   }
-  if (elementalPlanes_access(Element.get("spooky"))) {
+  if (elementalPlanes_access($element`spooky`)) {
     //+5 enemy value
-    return Location.get("The Deep Dark Jungle");
+    return $location`The Deep Dark Jungle`;
   }
-  if (elementalPlanes_access(Element.get("sleaze"))) {
+  if (elementalPlanes_access($element`sleaze`)) {
     //+5 enemy value
-    return Location.get("Sloppy Seconds Diner");
+    return $location`Sloppy Seconds Diner`;
   }
   return Location.none;
 }
@@ -190,35 +195,35 @@ export function LX_attemptPowerLevel(): boolean {
   LX_attemptPowerLevelTheSource();
   //August Scepter Power Levelling
   if (auto_haveAugustScepter() && toInt(getProperty("_augSkillsCast")) < 5) {
-    if (myPrimestat() === Stat.get("Muscle")) {
+    if (myPrimestat() === $stat`Muscle`) {
       if (
-        canUse$2(Skill.get("Aug. 12th: Elephant Day!")) &&
+        canUse$2($skill`Aug. 12th: Elephant Day!`) &&
         !toBoolean(getProperty("_aug12Cast"))
       ) {
-        useSkill(Skill.get("Aug. 12th: Elephant Day!"));
+        useSkill($skill`Aug. 12th: Elephant Day!`);
       }
     }
-    if (myPrimestat() === Stat.get("Mysticality")) {
+    if (myPrimestat() === $stat`Mysticality`) {
       if (
-        canUse$2(Skill.get("Aug. 11th: Presidential Joke Day!")) &&
+        canUse$2($skill`Aug. 11th: Presidential Joke Day!`) &&
         !toBoolean(getProperty("_aug11Cast"))
       ) {
-        useSkill(Skill.get("Aug. 11th: Presidential Joke Day!"));
+        useSkill($skill`Aug. 11th: Presidential Joke Day!`);
       }
     }
-    if (myPrimestat() === Stat.get("Moxie")) {
+    if (myPrimestat() === $stat`Moxie`) {
       if (
-        canUse$2(Skill.get("Aug. 23rd: Ride the Wind Day!")) &&
+        canUse$2($skill`Aug. 23rd: Ride the Wind Day!`) &&
         !toBoolean(getProperty("_aug23Cast"))
       ) {
-        useSkill(Skill.get("Aug. 23rd: Ride the Wind Day!"));
+        useSkill($skill`Aug. 23rd: Ride the Wind Day!`);
       }
     }
   }
   //scaling damage zones
   //all scaling zones have monster level = my_buffedstat($stat[moxie]) + monster_level_adjustment() + enemy_value. up to a cap
   const scalezone: Location = highestScalingZone();
-  if (scalezone === Location.get("The Neverending Party")) {
+  if (scalezone === $location`The Neverending Party`) {
     return neverendingPartyCombat();
   }
   if (scalezone !== Location.none) {
@@ -232,19 +237,19 @@ export function LX_attemptPowerLevel(): boolean {
 
   if (internalQuestStatus("questM21Dance") > 3) {
     let goal_count: number = 0;
-    if (myPrimestat() === Stat.get("Muscle")) {
+    if (myPrimestat() === $stat`Muscle`) {
       goal_count++;
     }
     if (
-      myPrimestat() === Stat.get("Mysticality") ||
-      myBasestat(Stat.get("Mysticality")) < 70
+      myPrimestat() === $stat`Mysticality` ||
+      myBasestat($stat`Mysticality`) < 70
     ) {
       //war outfit requires 70 base mys
       goal_count++;
     }
     if (
-      myPrimestat() === Stat.get("Moxie") ||
-      myBasestat(Stat.get("Moxie")) < 70 ||
+      myPrimestat() === $stat`Moxie` ||
+      myBasestat($stat`Moxie`) < 70 ||
       toInt(
         //war outfit requires 70 base mox
         getProperty("auto_beatenUpCount"),
@@ -266,7 +271,7 @@ export function LX_attemptPowerLevel(): boolean {
     }
 
     if (prefer_bedroom) {
-      if (autoAdv$2(Location.get("The Haunted Bedroom"))) {
+      if (autoAdv$2($location`The Haunted Bedroom`)) {
         return true;
       }
     } else {
@@ -274,21 +279,21 @@ export function LX_attemptPowerLevel(): boolean {
       switch (
         myPrimestat() //we only ever do the haunted gallery if the sole stat we want is primestat.
       ) {
-        case Stat.get("Muscle"):
+        case $stat`Muscle`:
           backupSetting("louvreDesiredGoal", "4"); // get Muscle stats
 
           break;
-        case Stat.get("Mysticality"):
+        case $stat`Mysticality`:
           backupSetting("louvreDesiredGoal", "5"); // get Myst stats
 
           break;
-        case Stat.get("Moxie"):
+        case $stat`Moxie`:
           backupSetting("louvreDesiredGoal", "6"); // get Moxie stats
 
           break;
       }
       providePlusNonCombat$3(auto_combatModCap(), true);
-      if (autoAdv$2(Location.get("The Haunted Gallery"))) {
+      if (autoAdv$2($location`The Haunted Gallery`)) {
         return true;
       }
     }
@@ -329,7 +334,7 @@ function auto_freeCombatsRemaining$1(print_remaining_fights: boolean): number {
   let count_1: number = 0;
 
   logRemainingFights("Remaining Free Fights:");
-  if (!in_koe() && canChangeToFamiliar(Familiar.get("Machine Elf"))) {
+  if (!in_koe() && canChangeToFamiliar($familiar`Machine Elf`)) {
     const temp: number = 5 - toInt(getProperty("_machineTunnelsAdv"));
     count_1 += temp;
     logRemainingFights(`Machine Elf = ${temp}`);
@@ -339,10 +344,7 @@ function auto_freeCombatsRemaining$1(print_remaining_fights: boolean): number {
     count_1 += temp;
     logRemainingFights(`Snojo = ${temp}`);
   }
-  if (
-    canChangeToFamiliar(Familiar.get("God Lobster")) &&
-    disregardInstantKarma()
-  ) {
+  if (canChangeToFamiliar($familiar`God Lobster`) && disregardInstantKarma()) {
     const temp: number = 3 - toInt(getProperty("_godLobsterFights"));
     count_1 += temp;
     logRemainingFights(`God Lobster = ${temp}`);
@@ -357,7 +359,7 @@ function auto_freeCombatsRemaining$1(print_remaining_fights: boolean): number {
     logRemainingFights("Tent Tentacle = 1");
   }
   if (
-    auto_have_skill(Skill.get("Evoke Eldritch Horror")) &&
+    auto_have_skill($skill`Evoke Eldritch Horror`) &&
     toBoolean(getProperty("_eldritchHorrorEvoked")) === false
   ) {
     count_1++;
@@ -384,7 +386,7 @@ function auto_freeCombatsRemaining$1(print_remaining_fights: boolean): number {
   if (auto_haveBurningLeaves()) {
     const temp: number = min(
       auto_remainingBurningLeavesFights(),
-      floor(itemAmount(Item.get("inflammable leaf")) / 11),
+      floor(itemAmount($item`inflammable leaf`) / 11),
     );
     count_1 += temp;
     logRemainingFights(`Burning Leaves = ${temp}`);
@@ -461,8 +463,8 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
       }
     } else {
       auto_log_debug$1("LX_freeCombats is calling neverendingPartyCombat()");
-      if (handleFamiliar$1(Familiar.get("Red-Nosed Snapper"))) {
-        auto_changeSnapperPhylum(Phylum.get("dude"));
+      if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
+        auto_changeSnapperPhylum($phylum`dude`);
       }
       if (neverendingPartyCombat()) {
         return true;
@@ -475,18 +477,18 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
   if (
     !in_koe() &&
     toInt(getProperty("_machineTunnelsAdv")) < 5 &&
-    canChangeToFamiliar(Familiar.get("Machine Elf"))
+    canChangeToFamiliar($familiar`Machine Elf`)
   ) {
     auto_log_debug$1(
       "LX_freeCombats is adventuring in [The Deep Machine Tunnels]",
     );
 
     const bjorn: Familiar = myBjornedFamiliar();
-    if (bjorn === Familiar.get("Machine Elf")) {
-      handleBjornify(Familiar.get("Grinning Turtle"));
+    if (bjorn === $familiar`Machine Elf`) {
+      handleBjornify($familiar`Grinning Turtle`);
     }
-    adv_done = autoAdv$1(1, Location.get("The Deep Machine Tunnels"));
-    if (bjorn === Familiar.get("Machine Elf")) {
+    adv_done = autoAdv$1(1, $location`The Deep Machine Tunnels`);
+    if (bjorn === $familiar`Machine Elf`) {
       handleBjornify(bjorn);
     }
 
@@ -498,7 +500,7 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
 
   if (snojoFightAvailable()) {
     auto_log_debug$1("LX_freeCombats is adventuring in [The Snojo]");
-    adv_done = autoAdv$1(1, Location.get("The X-32-F Combat Training Snowman"));
+    adv_done = autoAdv$1(1, $location`The X-32-F Combat Training Snowman`);
     loopHandlerDelayAll();
     if (adv_done) {
       return true;
@@ -513,7 +515,7 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
   }
 
   if (
-    auto_have_skill(Skill.get("Evoke Eldritch Horror")) &&
+    auto_have_skill($skill`Evoke Eldritch Horror`) &&
     toBoolean(getProperty("_eldritchHorrorEvoked")) === false
   ) {
     auto_log_debug$1("LX_freeCombats is calling evokeEldritchHorror()");
@@ -526,7 +528,7 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
     auto_log_debug$1(
       "LX_freeCombats is adventuring in [An Unusually Quiet Barroom Brawl]",
     );
-    adv_done = autoAdv$1(1, Location.get("An Unusually Quiet Barroom Brawl"));
+    adv_done = autoAdv$1(1, $location`An Unusually Quiet Barroom Brawl`);
     if (adv_done) {
       return true;
     }

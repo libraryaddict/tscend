@@ -25,6 +25,8 @@
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-libram": "^0.6.0",
+    "eslint-plugin-simple-import-sort": "^13.0.0",
+    "eslint-plugin-unused-imports": "^4.4.1",
     "jiti": "^2.7.0",
     "prettier": "3.9.4",
     "typescript": "^6.0.3",

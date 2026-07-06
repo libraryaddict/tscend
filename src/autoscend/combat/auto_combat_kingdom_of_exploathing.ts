@@ -1,16 +1,15 @@
 import {
   buffedHitStat,
-  Element,
   haveEquipped,
-  Item,
   min,
   Monster,
   monsterLevelAdjustment,
   myDaycount,
   numericModifier,
-  Skill,
   toInt,
 } from "kolmafia";
+import { $elements, $item, $monster, $skill } from "libram";
+
 import { canUse$1, canUse$3, useItem$1, useSkill$1 } from "./auto_combat_util";
 
 //Path specific combat handling for Kingdom of Exploathing
@@ -24,40 +23,34 @@ export function auto_combatExploathingStage1(
   //#stage1 = 1st round actions: puzzle boss, banish, escape, pickpocket, etc. things that need to be done before debuff
 
   if (
-    enemy === Monster.get("the invader") &&
-    canUse$1(Skill.get("Lunging Thrust-Smack"), false) &&
-    haveEquipped(Item.get("June cleaver"))
+    enemy === $monster`the invader` &&
+    canUse$1($skill`Lunging Thrust-Smack`, false) &&
+    haveEquipped($item`June cleaver`)
   ) {
-    return useSkill$1(Skill.get("Lunging Thrust-Smack"), false);
+    return useSkill$1($skill`Lunging Thrust-Smack`, false);
   }
 
   if (
-    enemy === Monster.get("the invader") &&
-    canUse$1(Skill.get("Weapon of the Pastalord"), false)
+    enemy === $monster`the invader` &&
+    canUse$1($skill`Weapon of the Pastalord`, false)
   ) {
-    return useSkill$1(Skill.get("Weapon of the Pastalord"), false);
+    return useSkill$1($skill`Weapon of the Pastalord`, false);
   }
 
-  if (enemy === Monster.get("skeleton astronaut")) {
-    if (myDaycount() === 1 && canUse$3(Item.get("exploding cigar"), false)) {
-      return useItem$1(Item.get("exploding cigar"));
+  if (enemy === $monster`skeleton astronaut`) {
+    if (myDaycount() === 1 && canUse$3($item`exploding cigar`, false)) {
+      return useItem$1($item`exploding cigar`);
     }
     let dmg: number = 0;
-    for (const el of Element.get([
-      "hot",
-      "cold",
-      "sleaze",
-      "spooky",
-      "stench",
-    ])) {
+    for (const el of $elements`hot, cold, sleaze, spooky, stench`) {
       dmg += toInt(min(10, numericModifier(`${el.toString()} Damage`)));
     }
     // 10 physical + 10 prismatic is enough to be better than Saucestorm.
     // Otherwise, saucestorm deals 20 damage/round.
     if (dmg >= 10 && buffedHitStat() >= 120 + monsterLevelAdjustment()) {
       return "attack with weapon";
-    } else if (canUse$1(Skill.get("Saucestorm"), false)) {
-      return useSkill$1(Skill.get("Saucestorm"), false);
+    } else if (canUse$1($skill`Saucestorm`, false)) {
+      return useSkill$1($skill`Saucestorm`, false);
     }
   }
 

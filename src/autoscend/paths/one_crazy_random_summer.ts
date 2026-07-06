@@ -1,19 +1,19 @@
 import {
   containsText,
-  Effect,
   getProperty,
   haveEffect,
   lastMonster,
   myPath,
-  Path,
   setProperty,
 } from "kolmafia";
+import { $effect, $path } from "libram";
+
 import { acquireHP } from "../auto_restore";
 import { auto_log_warning, handleTracker$1 } from "../auto_util";
 
 //Defined in autoscend/paths/one_crazy_random_summer.ash
 export function in_ocrs(): boolean {
-  return myPath() === Path.get("One Crazy Random Summer");
+  return myPath() === $path`One Crazy Random Summer`;
 }
 
 export function ocrs_postHelper(): boolean {
@@ -26,7 +26,7 @@ export function ocrs_postHelper(): boolean {
 }
 
 export function ocrs_postCombatResolve(): boolean {
-  if (haveEffect(Effect.get("Beaten Up")) > 0 && in_ocrs()) {
+  if (haveEffect($effect`Beaten Up`) > 0 && in_ocrs()) {
     if (
       containsText(getProperty("auto_funPrefix"), "annoying") ||
       containsText(getProperty("auto_funPrefix"), "phase-shifting") ||

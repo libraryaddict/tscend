@@ -5,17 +5,13 @@ import {
   ceil,
   cliExecute,
   closetAmount,
-  Coinmaster,
   containsText,
   council,
-  Effect,
-  Element,
   equippedAmount,
   getProperty,
   haveServant,
   haveSkill,
   hippyStoneBroken,
-  Item,
   itemAmount,
   Location,
   max,
@@ -35,14 +31,12 @@ import {
   mySessionAdv,
   mySpleenUse,
   myTurncount,
-  Path,
   putCloset,
   removeProperty,
   runChoice,
   Servant,
   setProperty,
   Skill,
-  Slot,
   spleenLimit,
   takeCloset,
   toBoolean,
@@ -53,6 +47,21 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
+import {
+  $coinmaster,
+  $effect,
+  $element,
+  $item,
+  $items,
+  $location,
+  $locations,
+  $path,
+  $servant,
+  $skill,
+  $skills,
+  $slot,
+} from "libram";
+
 import {
   acquireHermitItem,
   auto_buyUpTo,
@@ -139,19 +148,12 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/actually_ed_the_undying.ash
 export function isActuallyEd(): boolean {
-  return myPath() === Path.get("Actually Ed the Undying");
+  return myPath() === $path`Actually Ed the Undying`;
 }
 
 function ed_spleen_limit(): number {
   let limit: number = 5;
-  for (const sk of Skill.get([
-    "Extra Spleen",
-    "Another Extra Spleen",
-    "Yet Another Extra Spleen",
-    "Still Another Extra Spleen",
-    "Just One More Extra Spleen",
-    "Okay Seriously, This is the Last Spleen",
-  ])) {
+  for (const sk of $skills`Extra Spleen, Another Extra Spleen, Yet Another Extra Spleen, Still Another Extra Spleen, Just One More Extra Spleen, Okay Seriously\, This is the Last Spleen`) {
     if (haveSkill(sk)) {
       limit += 5;
     }
@@ -217,11 +219,11 @@ export function ed_initializeDay(day: number): void {
 
   if (day === 1) {
     if (toInt(getProperty("auto_day_init")) < 1) {
-      if (itemAmount(Item.get("transmission from planet Xi")) > 0) {
-        use(1, Item.get("transmission from planet Xi"));
+      if (itemAmount($item`transmission from planet Xi`) > 0) {
+        use(1, $item`transmission from planet Xi`);
       }
-      if (itemAmount(Item.get("Xiblaxian holo-wrist-puter simcode")) > 0) {
-        use(1, Item.get("Xiblaxian holo-wrist-puter simcode"));
+      if (itemAmount($item`Xiblaxian holo-wrist-puter simcode`) > 0) {
+        use(1, $item`Xiblaxian holo-wrist-puter simcode`);
       }
       tootGetMeat();
       equipBaseline();
@@ -231,15 +233,15 @@ export function ed_initializeDay(day: number): void {
     ovenHandle();
 
     if (toInt(getProperty("auto_day_init")) < 2) {
-      if (itemAmount(Item.get("gym membership card")) > 0) {
-        use(1, Item.get("gym membership card"));
+      if (itemAmount($item`gym membership card`) > 0) {
+        use(1, $item`gym membership card`);
       }
 
-      if (itemAmount(Item.get("seal tooth")) === 0) {
-        acquireHermitItem(Item.get("seal tooth"));
+      if (itemAmount($item`seal tooth`) === 0) {
+        acquireHermitItem($item`seal tooth`);
       }
-      pullXWhenHaveY(Item.get("Hand in Glove"), 1, 0);
-      pullXWhenHaveY(Item.get("blackberry galoshes"), 1, 0);
+      pullXWhenHaveY($item`Hand in Glove`, 1, 0);
+      pullXWhenHaveY($item`blackberry galoshes`, 1, 0);
     }
   }
   // ed overrides normal day initialization
@@ -259,7 +261,7 @@ function L13_ed_towerHandler(): boolean {
   ) {
     return false;
   }
-  if (itemAmount(Item.get("Thwaitgold scarab beetle statuette")) > 0) {
+  if (itemAmount($item`Thwaitgold scarab beetle statuette`) > 0) {
     council();
     return true;
   }
@@ -270,9 +272,9 @@ function L13_ed_towerHandler(): boolean {
     auto_log_info("We found the jerkwad!! Revenge!!!!!", "blue");
 
     const page: string = "place.php?whichplace=nstower&action=ns_10_sorcfight";
-    autoAdvBypass$1(page, Location.get("Noob Cave"));
+    autoAdvBypass$1(page, $location`Noob Cave`);
 
-    if (itemAmount(Item.get("Thwaitgold scarab beetle statuette")) > 0) {
+    if (itemAmount($item`Thwaitgold scarab beetle statuette`) > 0) {
       council();
     }
     return true;
@@ -288,8 +290,8 @@ function L13_ed_councilWarehouse(): boolean {
     return false;
   }
 
-  if (itemAmount(Item.get("[7965]Holy MacGuffin")) === 0) {
-    autoAdv$2(Location.get("The Secret Council Warehouse"));
+  if (itemAmount($item`[7965]Holy MacGuffin`) === 0) {
+    autoAdv$2($location`The Secret Council Warehouse`);
   } else {
     //Complete: Should not get here though.
     abort(
@@ -298,12 +300,12 @@ function L13_ed_councilWarehouse(): boolean {
     return false;
   }
   while (
-    itemAmount(Item.get("warehouse map page")) > 0 &&
-    itemAmount(Item.get("warehouse inventory page")) > 0
+    itemAmount($item`warehouse map page`) > 0 &&
+    itemAmount($item`warehouse inventory page`) > 0
   ) {
     use(
-      itemAmount(Item.get("warehouse inventory page")),
-      Item.get("warehouse inventory page"),
+      itemAmount($item`warehouse inventory page`),
+      $item`warehouse inventory page`,
     );
   }
   if (getProperty("lastEncounter") === "You Found It!") {
@@ -363,10 +365,10 @@ function handleServant$1(name: string): boolean {
   }
   name = toLowerCase(name);
   if (name === "priest" || name === "ka") {
-    return handleServant(Servant.get("Priest"));
+    return handleServant($servant`Priest`);
   }
   if (name === "maid" || name === "meat") {
-    return handleServant(Servant.get("Maid"));
+    return handleServant($servant`Maid`);
   }
   if (
     name === "belly-dancer" ||
@@ -376,19 +378,19 @@ function handleServant$1(name: string): boolean {
     name === "pickpocket" ||
     name === "steal"
   ) {
-    return handleServant(Servant.get("Belly-Dancer"));
+    return handleServant($servant`Belly-Dancer`);
   }
   if (name === "cat" || name === "item" || name === "itemdrop") {
-    return handleServant(Servant.get("Cat"));
+    return handleServant($servant`Cat`);
   }
   if (name === "bodyguard" || name === "block") {
-    return handleServant(Servant.get("Bodyguard"));
+    return handleServant($servant`Bodyguard`);
   }
   if (name === "scribe" || name === "stats" || name === "stat") {
-    return handleServant(Servant.get("Scribe"));
+    return handleServant($servant`Scribe`);
   }
   if (name === "assassin" || name === "stagger") {
-    return handleServant(Servant.get("Assassin"));
+    return handleServant($servant`Assassin`);
   }
   if (name === "none") {
     return handleServant(Servant.none);
@@ -400,12 +402,12 @@ export function ed_doResting(): boolean {
   if (isActuallyEd()) {
     const maxBuff: number = 675 - myTurncount();
     while (haveAnyIotmAlternativeRestSiteAvailable() && doFreeRest()) {
-      buffMaintain$3(Effect.get("Purr of the Feline"), 30, 3, maxBuff);
-      buffMaintain$3(Effect.get("Hide of Sobek"), 30, 3, maxBuff);
-      buffMaintain$3(Effect.get("Bounty of Renenutet"), 30, 3, maxBuff);
-      buffMaintain$3(Effect.get("Prayer of Seshat"), 15, 3, maxBuff);
-      buffMaintain$3(Effect.get("Wisdom of Thoth"), 15, 3, maxBuff);
-      buffMaintain$3(Effect.get("Power of Heka"), 15, 3, maxBuff);
+      buffMaintain$3($effect`Purr of the Feline`, 30, 3, maxBuff);
+      buffMaintain$3($effect`Hide of Sobek`, 30, 3, maxBuff);
+      buffMaintain$3($effect`Bounty of Renenutet`, 30, 3, maxBuff);
+      buffMaintain$3($effect`Prayer of Seshat`, 15, 3, maxBuff);
+      buffMaintain$3($effect`Wisdom of Thoth`, 15, 3, maxBuff);
+      buffMaintain$3($effect`Power of Heka`, 15, 3, maxBuff);
     }
     return true;
   }
@@ -431,73 +433,73 @@ function ed_buySkills(): boolean {
     auto_log_info$1(`Skill points found: ${skillPoints}`);
     possEdPoints = skillPoints - 1;
     if (
-      haveSkill(Skill.get("Bounty of Renenutet")) &&
-      haveSkill(Skill.get("Wrath of Ra")) &&
-      haveSkill(Skill.get("Curse of Stench"))
+      haveSkill($skill`Bounty of Renenutet`) &&
+      haveSkill($skill`Wrath of Ra`) &&
+      haveSkill($skill`Curse of Stench`)
     ) {
       skillPoints = 0;
     }
     while (skillPoints > 0) {
       skillPoints = skillPoints - 1;
       let skillid: number = 20;
-      if (!haveSkill(Skill.get("Curse of Vacation"))) {
+      if (!haveSkill($skill`Curse of Vacation`)) {
         skillid = 19;
       }
-      if (!haveSkill(Skill.get("Curse of Fortune"))) {
+      if (!haveSkill($skill`Curse of Fortune`)) {
         skillid = 18;
       }
-      if (!haveSkill(Skill.get("Curse of Heredity"))) {
+      if (!haveSkill($skill`Curse of Heredity`)) {
         skillid = 17;
       }
-      if (!haveSkill(Skill.get("Curse of Yuck"))) {
+      if (!haveSkill($skill`Curse of Yuck`)) {
         skillid = 16;
       }
-      if (!haveSkill(Skill.get("Curse of Indecision"))) {
+      if (!haveSkill($skill`Curse of Indecision`)) {
         skillid = 15;
       }
-      if (!haveSkill(Skill.get("Curse of the Marshmallow"))) {
+      if (!haveSkill($skill`Curse of the Marshmallow`)) {
         skillid = 14;
       }
-      if (!haveSkill(Skill.get("Wrath of Ra"))) {
+      if (!haveSkill($skill`Wrath of Ra`)) {
         skillid = 13;
       }
-      if (!haveSkill(Skill.get("Bounty of Renenutet"))) {
+      if (!haveSkill($skill`Bounty of Renenutet`)) {
         skillid = 6;
       }
-      if (!haveSkill(Skill.get("Shelter of Shed"))) {
+      if (!haveSkill($skill`Shelter of Shed`)) {
         skillid = 5;
       }
-      if (!haveSkill(Skill.get("Blessing of Serqet"))) {
+      if (!haveSkill($skill`Blessing of Serqet`)) {
         skillid = 4;
       }
-      if (!haveSkill(Skill.get("Hide of Sobek"))) {
+      if (!haveSkill($skill`Hide of Sobek`)) {
         skillid = 3;
       }
-      if (!haveSkill(Skill.get("Power of Heka"))) {
+      if (!haveSkill($skill`Power of Heka`)) {
         skillid = 2;
       }
-      if (!haveSkill(Skill.get("Lash of the Cobra"))) {
+      if (!haveSkill($skill`Lash of the Cobra`)) {
         skillid = 12;
       }
-      if (!haveSkill(Skill.get("Purr of the Feline"))) {
+      if (!haveSkill($skill`Purr of the Feline`)) {
         skillid = 11;
       }
-      if (!haveSkill(Skill.get("Storm of the Scarab"))) {
+      if (!haveSkill($skill`Storm of the Scarab`)) {
         skillid = 10;
       }
-      if (!haveSkill(Skill.get("Roar of the Lion"))) {
+      if (!haveSkill($skill`Roar of the Lion`)) {
         skillid = 9;
       }
-      if (!haveSkill(Skill.get("Howl of the Jackal"))) {
+      if (!haveSkill($skill`Howl of the Jackal`)) {
         skillid = 8;
       }
-      if (!haveSkill(Skill.get("Wisdom of Thoth"))) {
+      if (!haveSkill($skill`Wisdom of Thoth`)) {
         skillid = 1;
       }
-      if (!haveSkill(Skill.get("Fist of the Mummy"))) {
+      if (!haveSkill($skill`Fist of the Mummy`)) {
         skillid = 7;
       }
-      if (!haveSkill(Skill.get("Prayer of Seshat"))) {
+      if (!haveSkill($skill`Prayer of Seshat`)) {
         skillid = 0;
       }
 
@@ -532,33 +534,33 @@ function ed_buySkills(): boolean {
     while (servantPoints > 0) {
       servantPoints -= 1;
       let sid: number = -1;
-      if (!haveServant(Servant.get("Assassin"))) {
+      if (!haveServant($servant`Assassin`)) {
         sid = 7;
       }
-      if (!haveServant(Servant.get("Bodyguard"))) {
+      if (!haveServant($servant`Bodyguard`)) {
         sid = 4;
       }
-      if (!haveServant(Servant.get("Belly-Dancer"))) {
+      if (!haveServant($servant`Belly-Dancer`)) {
         sid = 2;
       }
-      if (!haveServant(Servant.get("Scribe"))) {
+      if (!haveServant($servant`Scribe`)) {
         sid = 5;
       }
-      if (!haveServant(Servant.get("Maid"))) {
+      if (!haveServant($servant`Maid`)) {
         sid = 3;
         if (
           myLevel() >= 9 &&
           imbuePoints > 4 &&
-          !haveServant(Servant.get("Scribe"))
+          !haveServant($servant`Scribe`)
         ) {
           //If we are at the third servant and have enough imbues, get the Scribe instead.
           sid = 5;
         }
       }
-      if (!haveServant(Servant.get("Cat"))) {
+      if (!haveServant($servant`Cat`)) {
         sid = 1;
       }
-      if (!haveServant(Servant.get("Priest"))) {
+      if (!haveServant($servant`Priest`)) {
         sid = 6;
       }
       if (sid !== -1) {
@@ -573,57 +575,51 @@ function ed_buySkills(): boolean {
     const current: Servant = myServant();
     while (imbuePoints > 0) {
       let tryImbue: Servant = Servant.none;
-      if (
-        haveServant(Servant.get("Priest")) &&
-        Servant.get("Priest").experience < 81
-      ) {
-        tryImbue = Servant.get("Priest");
+      if (haveServant($servant`Priest`) && $servant`Priest`.experience < 81) {
+        tryImbue = $servant`Priest`;
+      } else if (haveServant($servant`Cat`) && $servant`Cat`.experience < 199) {
+        tryImbue = $servant`Cat`;
       } else if (
-        haveServant(Servant.get("Cat")) &&
-        Servant.get("Cat").experience < 199
+        haveServant($servant`Maid`) &&
+        $servant`Maid`.experience < 199
       ) {
-        tryImbue = Servant.get("Cat");
+        tryImbue = $servant`Maid`;
       } else if (
-        haveServant(Servant.get("Maid")) &&
-        Servant.get("Maid").experience < 199
+        haveServant($servant`Belly-Dancer`) &&
+        $servant`Belly-Dancer`.experience < 341
       ) {
-        tryImbue = Servant.get("Maid");
+        tryImbue = $servant`Belly-Dancer`;
       } else if (
-        haveServant(Servant.get("Belly-Dancer")) &&
-        Servant.get("Belly-Dancer").experience < 341
+        haveServant($servant`Scribe`) &&
+        $servant`Scribe`.experience < 99
       ) {
-        tryImbue = Servant.get("Belly-Dancer");
+        tryImbue = $servant`Scribe`;
       } else if (
-        haveServant(Servant.get("Scribe")) &&
-        Servant.get("Scribe").experience < 99
-      ) {
-        tryImbue = Servant.get("Scribe");
-      } else if (
-        haveServant(Servant.get("Maid")) &&
-        Servant.get("Maid").experience < 441 &&
+        haveServant($servant`Maid`) &&
+        $servant`Maid`.experience < 441 &&
         myLevel() >= 12
       ) {
-        tryImbue = Servant.get("Maid");
+        tryImbue = $servant`Maid`;
       } else if (
-        haveServant(Servant.get("Cat")) &&
-        Servant.get("Cat").experience < 441 &&
+        haveServant($servant`Cat`) &&
+        $servant`Cat`.experience < 441 &&
         myLevel() >= 12
       ) {
-        tryImbue = Servant.get("Cat");
+        tryImbue = $servant`Cat`;
       } else if (
-        haveServant(Servant.get("Scribe")) &&
-        Servant.get("Scribe").experience < 441 &&
+        haveServant($servant`Scribe`) &&
+        $servant`Scribe`.experience < 441 &&
         myLevel() >= 12
       ) {
-        tryImbue = Servant.get("Scribe");
+        tryImbue = $servant`Scribe`;
       } else {
         if (myLevel() >= 9 && myLevel() <= 12) {
           // got scribe early. Imbue to level 21 for passive stat gain
           if (
-            haveServant(Servant.get("Scribe")) &&
-            Servant.get("Scribe").experience < 441
+            haveServant($servant`Scribe`) &&
+            $servant`Scribe`.experience < 441
           ) {
-            tryImbue = Servant.get("Scribe");
+            tryImbue = $servant`Scribe`;
           }
         }
       }
@@ -653,95 +649,95 @@ export function ed_eatStuff(): boolean {
   // fill up on Mummified Beef Haunches as they are Ed's main source of turn-gen
   const canEat_1: number = min(
     spleen_left() / 5,
-    itemAmount(Item.get("mummified beef haunch")),
+    itemAmount($item`mummified beef haunch`),
   );
-  if (canEat_1 > 0 && autoChew(canEat_1, Item.get("mummified beef haunch"))) {
+  if (canEat_1 > 0 && autoChew(canEat_1, $item`mummified beef haunch`)) {
     return true;
   }
   return false;
 }
 
 function ed_nextUpgrade(): Skill {
-  const coins: number = itemAmount(Item.get("Ka coin"));
+  const coins: number = itemAmount($item`Ka coin`);
   const canEat_1: number = (spleenLimit() - mySpleenUse()) / 5;
 
   if (
-    !haveSkill(Skill.get("Upgraded Legs")) &&
+    !haveSkill($skill`Upgraded Legs`) &&
     toBoolean(getProperty("auto_needLegs"))
   ) {
-    return Skill.get("Upgraded Legs"); // 10 Ka
-  } else if (!haveSkill(Skill.get("Extra Spleen")) && canEat_1 < 1) {
-    return Skill.get("Extra Spleen"); // 5 Ka
-  } else if (!haveSkill(Skill.get("Another Extra Spleen")) && canEat_1 < 1) {
-    return Skill.get("Another Extra Spleen"); // 10 Ka
-  } else if (!haveSkill(Skill.get("Replacement Liver"))) {
-    return Skill.get("Replacement Liver"); // 30 Ka
-  } else if (!haveSkill(Skill.get("Upgraded Legs"))) {
-    return Skill.get("Upgraded Legs"); // 10 Ka
-  } else if (!haveSkill(Skill.get("More Legs"))) {
-    return Skill.get("More Legs"); // 20 Ka
+    return $skill`Upgraded Legs`; // 10 Ka
+  } else if (!haveSkill($skill`Extra Spleen`) && canEat_1 < 1) {
+    return $skill`Extra Spleen`; // 5 Ka
+  } else if (!haveSkill($skill`Another Extra Spleen`) && canEat_1 < 1) {
+    return $skill`Another Extra Spleen`; // 10 Ka
+  } else if (!haveSkill($skill`Replacement Liver`)) {
+    return $skill`Replacement Liver`; // 30 Ka
+  } else if (!haveSkill($skill`Upgraded Legs`)) {
+    return $skill`Upgraded Legs`; // 10 Ka
+  } else if (!haveSkill($skill`More Legs`)) {
+    return $skill`More Legs`; // 20 Ka
   } else if (
-    !haveSkill(Skill.get("Yet Another Extra Spleen")) &&
-    haveSkill(Skill.get("Another Extra Spleen"))
+    !haveSkill($skill`Yet Another Extra Spleen`) &&
+    haveSkill($skill`Another Extra Spleen`)
   ) {
-    return Skill.get("Yet Another Extra Spleen"); // 15 Ka
-  } else if (!haveSkill(Skill.get("Still Another Extra Spleen"))) {
-    return Skill.get("Still Another Extra Spleen"); // 20 Ka
-  } else if (!haveSkill(Skill.get("Just One More Extra Spleen"))) {
-    return Skill.get("Just One More Extra Spleen"); // 25 Ka
-  } else if (!haveSkill(Skill.get("Replacement Stomach"))) {
-    return Skill.get("Replacement Stomach"); // 30 Ka
-  } else if (!haveSkill(Skill.get("Elemental Wards"))) {
-    return Skill.get("Elemental Wards"); // 10 Ka
-  } else if (!haveSkill(Skill.get("Okay Seriously, This is the Last Spleen"))) {
-    return Skill.get("Okay Seriously, This is the Last Spleen"); // 30 Ka
+    return $skill`Yet Another Extra Spleen`; // 15 Ka
+  } else if (!haveSkill($skill`Still Another Extra Spleen`)) {
+    return $skill`Still Another Extra Spleen`; // 20 Ka
+  } else if (!haveSkill($skill`Just One More Extra Spleen`)) {
+    return $skill`Just One More Extra Spleen`; // 25 Ka
+  } else if (!haveSkill($skill`Replacement Stomach`)) {
+    return $skill`Replacement Stomach`; // 30 Ka
+  } else if (!haveSkill($skill`Elemental Wards`)) {
+    return $skill`Elemental Wards`; // 10 Ka
+  } else if (!haveSkill($skill`Okay Seriously\, This is the Last Spleen`)) {
+    return $skill`Okay Seriously\, This is the Last Spleen`; // 30 Ka
   } else if (
-    !possessEquipment(Item.get("The Crown of Ed the Undying")) &&
-    !haveSkill(Skill.get("Tougher Skin"))
+    !possessEquipment($item`The Crown of Ed the Undying`) &&
+    !haveSkill($skill`Tougher Skin`)
   ) {
-    return Skill.get("Tougher Skin"); // 10 Ka
-  } else if (!haveSkill(Skill.get("More Elemental Wards"))) {
-    return Skill.get("More Elemental Wards"); // 20 Ka
-  } else if (!haveSkill(Skill.get("Even More Elemental Wards"))) {
-    return Skill.get("Even More Elemental Wards"); // 30 Ka
-  } else if (!haveSkill(Skill.get("Healing Scarabs")) && myDaycount() >= 2) {
-    return Skill.get("Healing Scarabs"); // 10 Ka
+    return $skill`Tougher Skin`; // 10 Ka
+  } else if (!haveSkill($skill`More Elemental Wards`)) {
+    return $skill`More Elemental Wards`; // 20 Ka
+  } else if (!haveSkill($skill`Even More Elemental Wards`)) {
+    return $skill`Even More Elemental Wards`; // 30 Ka
+  } else if (!haveSkill($skill`Healing Scarabs`) && myDaycount() >= 2) {
+    return $skill`Healing Scarabs`; // 10 Ka
   } else if (
-    !haveSkill(Skill.get("Tougher Skin")) &&
+    !haveSkill($skill`Tougher Skin`) &&
     myDaycount() >= 2 &&
     coins >= 50
   ) {
-    return Skill.get("Tougher Skin"); // 10 Ka
+    return $skill`Tougher Skin`; // 10 Ka
   } else if (
-    !haveSkill(Skill.get("Armor Plating")) &&
+    !haveSkill($skill`Armor Plating`) &&
     myDaycount() >= 2 &&
     coins >= 50
   ) {
-    return Skill.get("Armor Plating"); // 10 Ka
+    return $skill`Armor Plating`; // 10 Ka
   } else if (
-    !haveSkill(Skill.get("Upgraded Spine")) &&
+    !haveSkill($skill`Upgraded Spine`) &&
     myDaycount() >= 2 &&
     coins >= 50
   ) {
-    return Skill.get("Upgraded Spine"); // 20 Ka
+    return $skill`Upgraded Spine`; // 20 Ka
   } else if (
-    !haveSkill(Skill.get("Upgraded Arms")) &&
+    !haveSkill($skill`Upgraded Arms`) &&
     myDaycount() >= 2 &&
     coins >= 50
   ) {
-    return Skill.get("Upgraded Arms"); // 20 Ka
+    return $skill`Upgraded Arms`; // 20 Ka
   } else if (
-    !haveSkill(Skill.get("Arm Blade")) &&
+    !haveSkill($skill`Arm Blade`) &&
     myDaycount() >= 4 &&
     coins >= 100
   ) {
-    return Skill.get("Arm Blade"); // 20 Ka
+    return $skill`Arm Blade`; // 20 Ka
   } else if (
-    !haveSkill(Skill.get("Bone Spikes")) &&
+    !haveSkill($skill`Bone Spikes`) &&
     myDaycount() >= 4 &&
     coins >= 100
   ) {
-    return Skill.get("Bone Spikes"); // 20 Ka
+    return $skill`Bone Spikes`; // 20 Ka
   }
   return Skill.none;
 }
@@ -750,26 +746,26 @@ let $_ed_KaCost_kaNeeded: Map<Skill, number> | undefined;
 
 function ed_KaCost(upgrade: Skill): number {
   $_ed_KaCost_kaNeeded ??= new Map([
-    [Skill.get("Extra Spleen"), 5],
-    [Skill.get("Another Extra Spleen"), 10],
-    [Skill.get("Upgraded Legs"), 10],
-    [Skill.get("Tougher Skin"), 10],
-    [Skill.get("Armor Plating"), 10],
-    [Skill.get("Healing Scarabs"), 10],
-    [Skill.get("Elemental Wards"), 10],
-    [Skill.get("Yet Another Extra Spleen"), 15],
-    [Skill.get("Still Another Extra Spleen"), 20],
-    [Skill.get("More Legs"), 20],
-    [Skill.get("Upgraded Arms"), 20],
-    [Skill.get("Upgraded Spine"), 20],
-    [Skill.get("Bone Spikes"), 20],
-    [Skill.get("Arm Blade"), 20],
-    [Skill.get("More Elemental Wards"), 20],
-    [Skill.get("Just One More Extra Spleen"), 25],
-    [Skill.get("Replacement Stomach"), 30],
-    [Skill.get("Replacement Liver"), 30],
-    [Skill.get("Okay Seriously, This is the Last Spleen"), 30],
-    [Skill.get("Even More Elemental Wards"), 30],
+    [$skill`Extra Spleen`, 5],
+    [$skill`Another Extra Spleen`, 10],
+    [$skill`Upgraded Legs`, 10],
+    [$skill`Tougher Skin`, 10],
+    [$skill`Armor Plating`, 10],
+    [$skill`Healing Scarabs`, 10],
+    [$skill`Elemental Wards`, 10],
+    [$skill`Yet Another Extra Spleen`, 15],
+    [$skill`Still Another Extra Spleen`, 20],
+    [$skill`More Legs`, 20],
+    [$skill`Upgraded Arms`, 20],
+    [$skill`Upgraded Spine`, 20],
+    [$skill`Bone Spikes`, 20],
+    [$skill`Arm Blade`, 20],
+    [$skill`More Elemental Wards`, 20],
+    [$skill`Just One More Extra Spleen`, 25],
+    [$skill`Replacement Stomach`, 30],
+    [$skill`Replacement Liver`, 30],
+    [$skill`Okay Seriously\, This is the Last Spleen`, 30],
+    [$skill`Even More Elemental Wards`, 30],
   ]);
   if ($_ed_KaCost_kaNeeded.has(upgrade)) {
     return (
@@ -787,17 +783,17 @@ export function ed_needShop(): boolean {
   }
 
   if (
-    haveSkill(Skill.get("Upgraded Legs")) &&
+    haveSkill($skill`Upgraded Legs`) &&
     toBoolean(getProperty("auto_needLegs"))
   ) {
     setProperty("auto_needLegs", false.toString());
   }
 
-  const coins: number = itemAmount(Item.get("Ka coin"));
+  const coins: number = itemAmount($item`Ka coin`);
 
   if (
     toBoolean(getProperty("auto_needLegs")) &&
-    coins >= ed_KaCost(Skill.get("Upgraded Legs"))
+    coins >= ed_KaCost($skill`Upgraded Legs`)
   ) {
     auto_log_info$1(
       "Ed needs legs (and can afford them)! UNDYING for a free trip to the Underworld!",
@@ -806,7 +802,7 @@ export function ed_needShop(): boolean {
   }
   // check if we need mummified beef haunches
   let canEat_1: number = (spleenLimit() - mySpleenUse()) / 5;
-  canEat_1 = max(0, canEat_1 - itemAmount(Item.get("mummified beef haunch")));
+  canEat_1 = max(0, canEat_1 - itemAmount($item`mummified beef haunch`));
   if (canEat_1 > 0 && coins >= 15) {
     auto_log_info$1(
       "Ed needs beef haunches (and can afford them)! UNDYING for a free trip to the Underworld!",
@@ -814,11 +810,11 @@ export function ed_needShop(): boolean {
     return true;
   }
   // check if we need emergency MP
-  if (coins >= 1 && myMp() < mpCost(Skill.get("Storm of the Scarab"))) {
+  if (coins >= 1 && myMp() < mpCost($skill`Storm of the Scarab`)) {
     if (
-      itemAmount(Item.get("holy spring water")) < 1 &&
-      itemAmount(Item.get("spirit beer")) < 1 &&
-      itemAmount(Item.get("sacramental wine")) < 1
+      itemAmount($item`holy spring water`) < 1 &&
+      itemAmount($item`spirit beer`) < 1 &&
+      itemAmount($item`sacramental wine`) < 1
     ) {
       auto_log_info$1(
         "Ed needs MP restores! UNDYING for a free trip to the Underworld!",
@@ -835,11 +831,11 @@ export function ed_needShop(): boolean {
     );
     return true;
   } else if (
-    haveSkill(Skill.get("Okay Seriously, This is the Last Spleen")) &&
+    haveSkill($skill`Okay Seriously\, This is the Last Spleen`) &&
     canEat_1 < 1
   ) {
     if (
-      itemAmount(Item.get("talisman of Renenutet")) < 1 &&
+      itemAmount($item`talisman of Renenutet`) < 1 &&
       toInt(getProperty("auto_renenutetBought")) < 7 &&
       coins >= 7 - toInt(getProperty("auto_renenutetBought"))
     ) {
@@ -847,13 +843,13 @@ export function ed_needShop(): boolean {
         "Ed needs Talismens of Renenutet! UNDYING for a free trip to the Underworld!",
       );
       return true;
-    } else if (itemAmount(Item.get("linen bandages")) < 1 && coins >= 4) {
+    } else if (itemAmount($item`linen bandages`) < 1 && coins >= 4) {
       auto_log_info$1(
         "Ed needs Linen Bandages! UNDYING for a free trip to the Underworld!",
       );
       return true;
     } else if (
-      itemAmount(Item.get("holy spring water")) < 1 &&
+      itemAmount($item`holy spring water`) < 1 &&
       coins >= 1 &&
       myMaxmp() - myMp() > 50
     ) {
@@ -861,19 +857,19 @@ export function ed_needShop(): boolean {
         "Ed needs Holy Spring Water! UNDYING for a free trip to the Underworld!",
       );
       return true;
-    } else if (itemAmount(Item.get("talisman of Horus")) < 1 && coins >= 5) {
+    } else if (itemAmount($item`talisman of Horus`) < 1 && coins >= 5) {
       auto_log_info$1(
         "Ed needs Talismens of Horus! UNDYING for a free trip to the Underworld!",
       );
       return true;
-    } else if (itemAmount(Item.get("spirit beer")) < 1 && coins >= 30) {
+    } else if (itemAmount($item`spirit beer`) < 1 && coins >= 30) {
       auto_log_info$1(
         "Ed needs Spirit Beer! UNDYING for a free trip to the Underworld!",
       );
       return true;
     } else if (
-      itemAmount(Item.get("soft green echo eyedrop antidote")) +
-        itemAmount(Item.get("ancient cure-all")) <
+      itemAmount($item`soft green echo eyedrop antidote`) +
+        itemAmount($item`ancient cure-all`) <
         1 &&
       coins >= 30
     ) {
@@ -881,7 +877,7 @@ export function ed_needShop(): boolean {
         "Ed needs Ancient Cure-All! UNDYING for a free trip to the Underworld!",
       );
       return true;
-    } else if (itemAmount(Item.get("sacramental wine")) < 1 && coins >= 30) {
+    } else if (itemAmount($item`sacramental wine`) < 1 && coins >= 30) {
       auto_log_info$1(
         "Ed needs Sacramental Wine! UNDYING for a free trip to the Underworld!",
       );
@@ -897,26 +893,26 @@ function ed_shopping(): boolean {
 
   function ed_skillID(upgrade: Skill): number {
     $_ed_skillID_skillIDs ??= new Map([
-      [Skill.get("Replacement Stomach"), 28],
-      [Skill.get("Replacement Liver"), 29],
-      [Skill.get("Extra Spleen"), 30],
-      [Skill.get("Another Extra Spleen"), 31],
-      [Skill.get("Yet Another Extra Spleen"), 32],
-      [Skill.get("Still Another Extra Spleen"), 33],
-      [Skill.get("Just One More Extra Spleen"), 34],
-      [Skill.get("Okay Seriously, This is the Last Spleen"), 35],
-      [Skill.get("Upgraded Legs"), 36],
-      [Skill.get("Upgraded Arms"), 37],
-      [Skill.get("Upgraded Spine"), 38],
-      [Skill.get("Tougher Skin"), 39],
-      [Skill.get("Armor Plating"), 40],
-      [Skill.get("Bone Spikes"), 41],
-      [Skill.get("Arm Blade"), 42],
-      [Skill.get("Healing Scarabs"), 43],
-      [Skill.get("Elemental Wards"), 44],
-      [Skill.get("More Elemental Wards"), 45],
-      [Skill.get("Even More Elemental Wards"), 46],
-      [Skill.get("More Legs"), 48],
+      [$skill`Replacement Stomach`, 28],
+      [$skill`Replacement Liver`, 29],
+      [$skill`Extra Spleen`, 30],
+      [$skill`Another Extra Spleen`, 31],
+      [$skill`Yet Another Extra Spleen`, 32],
+      [$skill`Still Another Extra Spleen`, 33],
+      [$skill`Just One More Extra Spleen`, 34],
+      [$skill`Okay Seriously\, This is the Last Spleen`, 35],
+      [$skill`Upgraded Legs`, 36],
+      [$skill`Upgraded Arms`, 37],
+      [$skill`Upgraded Spine`, 38],
+      [$skill`Tougher Skin`, 39],
+      [$skill`Armor Plating`, 40],
+      [$skill`Bone Spikes`, 41],
+      [$skill`Arm Blade`, 42],
+      [$skill`Healing Scarabs`, 43],
+      [$skill`Elemental Wards`, 44],
+      [$skill`More Elemental Wards`, 45],
+      [$skill`Even More Elemental Wards`, 46],
+      [$skill`More Legs`, 48],
     ]);
     if ($_ed_skillID_skillIDs.has(upgrade)) {
       return (
@@ -936,10 +932,10 @@ function ed_shopping(): boolean {
     visitUrl("choice.php?pwd&whichchoice=1057&option=1", true);
   }
 
-  let coins: number = itemAmount(Item.get("Ka coin"));
+  let coins: number = itemAmount($item`Ka coin`);
   //Handler for low-powered accounts
   if (
-    !haveSkill(Skill.get("Upgraded Legs")) &&
+    !haveSkill($skill`Upgraded Legs`) &&
     toBoolean(getProperty("auto_needLegs"))
   ) {
     if (coins >= 10) {
@@ -956,7 +952,7 @@ function ed_shopping(): boolean {
   }
   // fill spleen with mummified beef haunches.
   let canEat_1: number = (ed_spleen_limit() - mySpleenUse()) / 5;
-  canEat_1 -= itemAmount(Item.get("mummified beef haunch"));
+  canEat_1 -= itemAmount($item`mummified beef haunch`);
   while (coins >= 15 && canEat_1 > 0) {
     visitUrl(
       "shop.php?pwd=&whichshop=edunder_shopshop&action=buyitem&quantity=1&whichrow=428",
@@ -970,8 +966,8 @@ function ed_shopping(): boolean {
   if (
     !toBoolean(getProperty("lovebugsUnlocked")) &&
     coins >= 1 &&
-    itemAmount(Item.get("holy spring water")) === 0 &&
-    myMp() < mpCost(Skill.get("Storm of the Scarab"))
+    itemAmount($item`holy spring water`) === 0 &&
+    myMp() < mpCost($skill`Storm of the Scarab`)
   ) {
     auto_log_info("Buying Holy Spring Water", "green");
     visitUrl(
@@ -1000,11 +996,11 @@ function ed_shopping(): boolean {
         coins -= requiredKa;
       }
     } else if (
-      haveSkill(Skill.get("Okay Seriously, This is the Last Spleen")) &&
+      haveSkill($skill`Okay Seriously\, This is the Last Spleen`) &&
       canEat_1 < 1
     ) {
       while (
-        itemAmount(Item.get("talisman of Renenutet")) < 7 &&
+        itemAmount($item`talisman of Renenutet`) < 7 &&
         toInt(getProperty("auto_renenutetBought")) < 7 &&
         coins >= 1
       ) {
@@ -1019,7 +1015,7 @@ function ed_shopping(): boolean {
         );
         coins -= 1;
       }
-      while (itemAmount(Item.get("linen bandages")) < 8 && coins >= 1) {
+      while (itemAmount($item`linen bandages`) < 8 && coins >= 1) {
         auto_log_info("Buying Linen Bandages", "green");
         visitUrl(
           "shop.php?pwd=&whichshop=edunder_shopshop&action=buyitem&quantity=1&whichrow=429",
@@ -1027,7 +1023,7 @@ function ed_shopping(): boolean {
         );
         coins -= 1;
       }
-      if (itemAmount(Item.get("holy spring water")) === 0 && coins >= 1) {
+      if (itemAmount($item`holy spring water`) === 0 && coins >= 1) {
         auto_log_info("Buying Holy Spring Water", "green");
         visitUrl(
           "shop.php?pwd=&whichshop=edunder_shopshop&action=buyitem&quantity=1&whichrow=436",
@@ -1035,7 +1031,7 @@ function ed_shopping(): boolean {
         );
         coins -= 1;
       }
-      while (itemAmount(Item.get("talisman of Horus")) < 2 && coins >= 5) {
+      while (itemAmount($item`talisman of Horus`) < 2 && coins >= 5) {
         auto_log_info("Buying Talisman of Horus", "green");
         visitUrl(
           "shop.php?pwd=&whichshop=edunder_shopshop&action=buyitem&quantity=1&whichrow=693",
@@ -1043,7 +1039,7 @@ function ed_shopping(): boolean {
         );
         coins -= 5;
       }
-      if (itemAmount(Item.get("spirit beer")) === 0 && coins >= 30) {
+      if (itemAmount($item`spirit beer`) === 0 && coins >= 30) {
         auto_log_info("Buying Spirit Beer", "green");
         visitUrl(
           "shop.php?pwd=&whichshop=edunder_shopshop&action=buyitem&quantity=1&whichrow=432",
@@ -1052,8 +1048,8 @@ function ed_shopping(): boolean {
         coins -= 2;
       }
       if (
-        itemAmount(Item.get("soft green echo eyedrop antidote")) +
-          itemAmount(Item.get("ancient cure-all")) <
+        itemAmount($item`soft green echo eyedrop antidote`) +
+          itemAmount($item`ancient cure-all`) <
           2 &&
         coins >= 30
       ) {
@@ -1064,7 +1060,7 @@ function ed_shopping(): boolean {
         );
         coins -= 3;
       }
-      if (itemAmount(Item.get("sacramental wine")) === 0 && coins >= 30) {
+      if (itemAmount($item`sacramental wine`) === 0 && coins >= 30) {
         auto_log_info("Buying Sacramental Wine", "green");
         visitUrl(
           "shop.php?pwd=&whichshop=edunder_shopshop&action=buyitem&quantity=1&whichrow=433",
@@ -1078,7 +1074,7 @@ function ed_shopping(): boolean {
 }
 
 export function ed_handleAdventureServant(loc: Location): void {
-  if (loc === Location.get("Noob Cave") || !isActuallyEd()) {
+  if (loc === $location`Noob Cave` || !isActuallyEd()) {
     return;
   }
   // the order servants are unlocked is
@@ -1087,131 +1083,98 @@ export function ed_handleAdventureServant(loc: Location): void {
   // level 9 - Scribe (stats)
   // level 12 - Maid (meat drops)
   // Default to the Priest as we need Ka to get upgrades and fill spleen (and other miscellanea)
-  let myServant_1: Servant = Servant.get("Priest");
+  let myServant_1: Servant = $servant`Priest`;
 
   if (
     mySpleenUse() === 35 &&
-    haveSkill(Skill.get("Even More Elemental Wards")) &&
+    haveSkill($skill`Even More Elemental Wards`) &&
     myLevel() < 13 &&
-    haveServant(Servant.get("Scribe"))
+    haveServant($servant`Scribe`)
   ) {
     // Ka is less important when we have a full spleen and all the skills we need
     // so default to getting stats if we're not level 13 yet.
-    myServant_1 = Servant.get("Scribe");
+    myServant_1 = $servant`Scribe`;
   } else if (myLevel() > 12) {
     if (
-      !haveSkill(Skill.get("Gift of the Maid")) &&
-      haveServant(Servant.get("Maid")) &&
+      !haveSkill($skill`Gift of the Maid`) &&
+      haveServant($servant`Maid`) &&
       getProperty("sidequestNunsCompleted") === "none"
     ) {
-      myServant_1 = Servant.get("Maid");
+      myServant_1 = $servant`Maid`;
     } else if (
-      !haveSkill(Skill.get("Gift of the Cat")) &&
-      haveServant(Servant.get("Cat"))
+      !haveSkill($skill`Gift of the Cat`) &&
+      haveServant($servant`Cat`)
     ) {
-      myServant_1 = Servant.get("Cat");
+      myServant_1 = $servant`Cat`;
     }
   }
   // Initial Ka farming to get Spleen & Legs upgrades.
   if (
-    Location.get([
-      "The Hippy Camp",
-      "The Neverending Party",
-      "The Secret Government Laboratory",
-      "The SMOOCH Army HQ",
-      "VYKEA",
-    ]).includes(loc) &&
+    $locations`The Hippy Camp, The Neverending Party, The Secret Government Laboratory, The SMOOCH Army HQ, VYKEA`.includes(
+      loc,
+    ) &&
     myDaycount() === 1
   ) {
-    myServant_1 = Servant.get("Priest");
+    myServant_1 = $servant`Priest`;
   }
   // Locations where item drop is required for quest furthering purposes but we don't want to miss out on Ka if needed.
   if (
-    Location.get([
-      "The Goatlet",
-      "The eXtreme Slope",
-      "The Batrat and Ratbat Burrow",
-      "Cobb's Knob Harem",
-      "Twin Peak",
-      "The Black Forest",
-      "The Hidden Bowling Alley",
-      "The Copperhead Club",
-      "A Mob of Zeppelin Protesters",
-      "The Red Zeppelin",
-    ]).includes(loc)
+    $locations`The Goatlet, The eXtreme Slope, The Batrat and Ratbat Burrow, Cobb's Knob Harem, Twin Peak, The Black Forest, The Hidden Bowling Alley, The Copperhead Club, A Mob of Zeppelin Protesters, The Red Zeppelin`.includes(
+      loc,
+    )
   ) {
-    if (
-      mySpleenUse() === 35 &&
-      haveSkill(Skill.get("Even More Elemental Wards"))
-    ) {
-      myServant_1 = Servant.get("Cat");
+    if (mySpleenUse() === 35 && haveSkill($skill`Even More Elemental Wards`)) {
+      myServant_1 = $servant`Cat`;
     }
   }
   // Locations where item drop is required for quest furthering purposes and we won't get Ka regardless
   if (
-    Location.get([
-      "The Defiled Nook",
-      "Oil Peak",
-      "A-Boo Peak",
-      "The Haunted Laundry Room",
-      "The Haunted Wine Cellar",
-    ]).includes(loc)
+    $locations`The Defiled Nook, Oil Peak, A-Boo Peak, The Haunted Laundry Room, The Haunted Wine Cellar`.includes(
+      loc,
+    )
   ) {
-    myServant_1 = Servant.get("Cat");
+    myServant_1 = $servant`Cat`;
   }
   // Locations where we won't get Ka and don't need item drop.
   if (
-    Location.get([
-      "The Dark Neck of the Woods",
-      "The Dark Heart of the Woods",
-      "The Dark Elbow of the Woods",
-      "The Defiled Alcove",
-      "The Defiled Cranny",
-      "The Defiled Niche",
-      "The Haunted Kitchen",
-      "The Haunted Billiards Room",
-      "The Haunted Library",
-      "The Haunted Bedroom",
-      "The Haunted Ballroom",
-      "The Haunted Bathroom",
-      "The Haunted Boiler Room",
-    ]).includes(loc)
+    $locations`The Dark Neck of the Woods, The Dark Heart of the Woods, The Dark Elbow of the Woods, The Defiled Alcove, The Defiled Cranny, The Defiled Niche, The Haunted Kitchen, The Haunted Billiards Room, The Haunted Library, The Haunted Bedroom, The Haunted Ballroom, The Haunted Bathroom, The Haunted Boiler Room`.includes(
+      loc,
+    )
   ) {
-    if (haveServant(Servant.get("Scribe"))) {
-      myServant_1 = Servant.get("Scribe");
+    if (haveServant($servant`Scribe`)) {
+      myServant_1 = $servant`Scribe`;
     } else {
-      if (haveServant(Servant.get("Cat"))) {
-        myServant_1 = Servant.get("Cat");
+      if (haveServant($servant`Cat`)) {
+        myServant_1 = $servant`Cat`;
       }
     }
   }
   // Locations where meat drop is required for quest furthering purposes (or just nice to have)
   if (
-    Location.get([
-      "The Themthar Hills",
-      "The Filthworm Queen's Chamber",
-    ]).includes(loc) &&
-    haveServant(Servant.get("Maid"))
+    $locations`The Themthar Hills, The Filthworm Queen's Chamber`.includes(
+      loc,
+    ) &&
+    haveServant($servant`Maid`)
   ) {
-    myServant_1 = Servant.get("Maid");
+    myServant_1 = $servant`Maid`;
   }
   // Special case for The Penultimate Fantasy Airship as we want to farm some items for quest furthering purposes
   // but it's also an excellent Ka farming zone and we have to spend a bunch of adventures there
-  if (loc === Location.get("The Penultimate Fantasy Airship")) {
+  if (loc === $location`The Penultimate Fantasy Airship`) {
     if (
-      !possessEquipment(Item.get("Mohawk wig")) ||
-      !possessEquipment(Item.get("amulet of extreme plot significance")) ||
-      (!possessEquipment(Item.get("titanium assault umbrella")) &&
-        !possessEquipment(Item.get("unbreakable umbrella")))
+      !possessEquipment($item`Mohawk wig`) ||
+      !possessEquipment($item`amulet of extreme plot significance`) ||
+      (!possessEquipment($item`titanium assault umbrella`) &&
+        !possessEquipment($item`unbreakable umbrella`))
     ) {
-      myServant_1 = Servant.get("Cat");
+      myServant_1 = $servant`Cat`;
     } else if (
       mySpleenUse() === 35 &&
-      haveSkill(Skill.get("Even More Elemental Wards")) &&
+      haveSkill($skill`Even More Elemental Wards`) &&
       myLevel() < 13 &&
-      haveServant(Servant.get("Scribe"))
+      haveServant($servant`Scribe`)
     ) {
-      myServant_1 = Servant.get("Scribe");
+      myServant_1 = $servant`Scribe`;
     }
   }
 
@@ -1222,16 +1185,16 @@ function L1_ed_island(): boolean {
   //reset tracking of Ka farming
   removeProperty("_auto_farmingKaAsEd");
 
-  if (!elementalPlanes_access(Element.get("spooky"))) {
+  if (!elementalPlanes_access($element`spooky`)) {
     return false;
   }
 
-  if (!haveSkill(Skill.get("Roar of the Lion"))) {
+  if (!haveSkill($skill`Roar of the Lion`)) {
     // combat handling only uses this so it's essential
     return false;
   }
 
-  const blocker: Skill = Skill.get("Still Another Extra Spleen");
+  const blocker: Skill = $skill`Still Another Extra Spleen`;
 
   if (myLevel() >= 10 || (myLevel() >= 8 && haveSkill(blocker))) {
     return false;
@@ -1256,23 +1219,23 @@ function L1_ed_island(): boolean {
   //If we get some other CI quest, this might keep triggering, should we flag this?
   if (
     myHp() > 20 &&
-    !possessEquipment(Item.get("gore bucket")) &&
-    !possessEquipment(Item.get("encrypted micro-cassette recorder")) &&
-    !possessEquipment(Item.get("military-grade fingernail clippers"))
+    !possessEquipment($item`gore bucket`) &&
+    !possessEquipment($item`encrypted micro-cassette recorder`) &&
+    !possessEquipment($item`military-grade fingernail clippers`)
   ) {
-    elementalPlanes_takeJob(Element.get("spooky"));
+    elementalPlanes_takeJob($element`spooky`);
     setProperty("choiceAdventure988", (2).toString());
   }
 
-  if (itemAmount(Item.get("gore bucket")) > 0) {
-    autoEquip$1(Item.get("gore bucket"));
+  if (itemAmount($item`gore bucket`) > 0) {
+    autoEquip$1($item`gore bucket`);
   }
 
-  if (itemAmount(Item.get("Personal Ventilation Unit")) > 0) {
-    autoEquip(Slot.get("acc2"), Item.get("Personal Ventilation Unit"));
+  if (itemAmount($item`Personal Ventilation Unit`) > 0) {
+    autoEquip($slot`acc2`, $item`Personal Ventilation Unit`);
   }
   if (
-    possessEquipment(Item.get("gore bucket")) &&
+    possessEquipment($item`gore bucket`) &&
     toInt(getProperty("goreCollected")) >= 100
   ) {
     visitUrl("place.php?whichplace=airport_spooky&action=airport2_radio");
@@ -1281,17 +1244,17 @@ function L1_ed_island(): boolean {
 
   if (myTurncount() <= 1 && myMeat() > 10000) {
     const need: number = min(4, (myMaxmp() - myMp()) / 10);
-    auto_buyUpTo(need, Item.get("Doc Galaktik's Invigorating Tonic"));
-    use(need, Item.get("Doc Galaktik's Invigorating Tonic"));
+    auto_buyUpTo(need, $item`Doc Galaktik's Invigorating Tonic`);
+    use(need, $item`Doc Galaktik's Invigorating Tonic`);
     cliExecute("auto_post_adv.js");
   }
 
-  buffMaintain$4(Effect.get("Experimental Effect G-9"));
+  buffMaintain$4($effect`Experimental Effect G-9`);
   //track that we are farming Ka as Ed
   setProperty("_auto_farmingKaAsEd", true.toString());
-  autoAdv$2(Location.get("The Secret Government Laboratory"));
-  if (itemAmount(Item.get("bottle-opener keycard")) > 0) {
-    use(1, Item.get("bottle-opener keycard"));
+  autoAdv$2($location`The Secret Government Laboratory`);
+  if (itemAmount($item`bottle-opener keycard`) > 0) {
+    use(1, $item`bottle-opener keycard`);
   }
   setProperty("choiceAdventure988", (1).toString());
   return true;
@@ -1301,13 +1264,13 @@ function L1_ed_islandFallback(): boolean {
   //reset tracking of Ka farming
   removeProperty("_auto_farmingKaAsEd");
 
-  if (elementalPlanes_access(Element.get("spooky"))) {
+  if (elementalPlanes_access($element`spooky`)) {
     return false;
   }
 
   if (
     myLevel() >= 10 ||
-    haveSkill(Skill.get("Okay Seriously, This is the Last Spleen"))
+    haveSkill($skill`Okay Seriously\, This is the Last Spleen`)
   ) {
     if (spleen_left() < 5 || myAdventures() > 10) {
       return false;
@@ -1321,28 +1284,28 @@ function L1_ed_islandFallback(): boolean {
   if (neverendingPartyAvailable()) {
     return neverendingPartyCombat();
   }
-  if (elementalPlanes_access(Element.get("stench"))) {
-    return autoAdv$2(Location.get("Pirates of the Garbage Barges"));
+  if (elementalPlanes_access($element`stench`)) {
+    return autoAdv$2($location`Pirates of the Garbage Barges`);
   }
-  if (elementalPlanes_access(Element.get("cold"))) {
-    return autoAdv$2(Location.get("VYKEA"));
+  if (elementalPlanes_access($element`cold`)) {
+    return autoAdv$2($location`VYKEA`);
   }
-  if (elementalPlanes_access(Element.get("hot"))) {
+  if (elementalPlanes_access($element`hot`)) {
     //Maybe this is a good choice?
     setProperty("choiceAdventure1094", (5).toString());
-    autoAdv$2(Location.get("The SMOOCH Army HQ"));
+    autoAdv$2($location`The SMOOCH Army HQ`);
     setProperty("choiceAdventure1094", (2).toString());
     return true;
   }
 
   if (
     mySessionAdv() === 0 &&
-    myMp() >= mpCost(Skill.get("Wisdom of Thoth")) &&
-    haveSkill(Skill.get("Wisdom of Thoth"))
+    myMp() >= mpCost($skill`Wisdom of Thoth`) &&
+    haveSkill($skill`Wisdom of Thoth`)
   ) {
     // use our free starting 5 mp to get Wisdom of Thoth to increase our max MP
     // as we'll regen some when adventuring at the shore.
-    useSkill(1, Skill.get("Wisdom of Thoth"));
+    useSkill(1, $skill`Wisdom of Thoth`);
   }
 
   if (LX_islandAccess()) {
@@ -1367,78 +1330,59 @@ function L1_ed_islandFallback(): boolean {
     );
   }
 
-  if (myServant() === Servant.get("Priest") && myServant().experience < 196) {
+  if (myServant() === $servant`Priest` && myServant().experience < 196) {
     // make sure we have a level 15 Priest if possible
     // so we get the extra Ka from Hippies and Goblins.
-    buffMaintain$3(Effect.get("Purr of the Feline"), 10, 1, 10);
+    buffMaintain$3($effect`Purr of the Feline`, 10, 1, 10);
   }
 
-  if (
-    haveSkill(Skill.get("Upgraded Legs")) ||
-    itemAmount(Item.get("Ka coin")) >= 10
-  ) {
+  if (haveSkill($skill`Upgraded Legs`) || itemAmount($item`Ka coin`) >= 10) {
     auto_change_mcd(11);
-    const retVal: boolean = autoAdv$2(Location.get("The Hippy Camp"));
-    if (itemAmount(Item.get("filthy corduroys")) > 0) {
-      if (closetAmount(Item.get("filthy corduroys")) > 0) {
-        autosell(
-          itemAmount(Item.get("filthy corduroys")),
-          Item.get("filthy corduroys"),
-        );
+    const retVal: boolean = autoAdv$2($location`The Hippy Camp`);
+    if (itemAmount($item`filthy corduroys`) > 0) {
+      if (closetAmount($item`filthy corduroys`) > 0) {
+        autosell(itemAmount($item`filthy corduroys`), $item`filthy corduroys`);
       } else {
-        putCloset(
-          itemAmount(Item.get("filthy corduroys")),
-          Item.get("filthy corduroys"),
-        );
+        putCloset(itemAmount($item`filthy corduroys`), $item`filthy corduroys`);
       }
     }
     // TODO: Malibu Stacey - move all this to a more central location after refactor
     if (
-      itemAmount(Item.get("filthy knitted dread sack")) > 1 &&
-      equippedAmount(Item.get("filthy knitted dread sack")) === 0
+      itemAmount($item`filthy knitted dread sack`) > 1 &&
+      equippedAmount($item`filthy knitted dread sack`) === 0
     ) {
       // keep one for starting the war (and general wearing until we have something better)
       auto_autosell(
-        itemAmount(Item.get("filthy knitted dread sack")) - 1,
-        Item.get("filthy knitted dread sack"),
+        itemAmount($item`filthy knitted dread sack`) - 1,
+        $item`filthy knitted dread sack`,
       );
     } else if (
-      itemAmount(Item.get("filthy knitted dread sack")) > 0 &&
-      equippedAmount(Item.get("filthy knitted dread sack")) === 1
+      itemAmount($item`filthy knitted dread sack`) > 0 &&
+      equippedAmount($item`filthy knitted dread sack`) === 1
     ) {
       // have one equipped, just sell any others.
       auto_autosell(
-        itemAmount(Item.get("filthy knitted dread sack")),
-        Item.get("filthy knitted dread sack"),
+        itemAmount($item`filthy knitted dread sack`),
+        $item`filthy knitted dread sack`,
       );
     }
 
     if (
-      itemAmount(Item.get("hemp string")) > 1 &&
-      equippedAmount(Item.get("hemp string")) === 0
+      itemAmount($item`hemp string`) > 1 &&
+      equippedAmount($item`hemp string`) === 0
     ) {
       // keep one for the Bonerdagon necklace.
-      auto_autosell(
-        itemAmount(Item.get("hemp string")) - 1,
-        Item.get("hemp string"),
-      );
+      auto_autosell(itemAmount($item`hemp string`) - 1, $item`hemp string`);
     } else if (
-      itemAmount(Item.get("hemp string")) > 0 &&
-      equippedAmount(Item.get("hemp string")) === 1
+      itemAmount($item`hemp string`) > 0 &&
+      equippedAmount($item`hemp string`) === 1
     ) {
       // have one equipped, just sell any others.
-      auto_autosell(
-        itemAmount(Item.get("hemp string")),
-        Item.get("hemp string"),
-      );
+      auto_autosell(itemAmount($item`hemp string`), $item`hemp string`);
     }
     // autosell some other useless stuff as we can use the meat to buy MP from doc galaktik.
     // Ed doesn't need any of this stuff as he starts with the Staff of Ed and can use it until the level 11 quest
-    for (const it of Item.get([
-      "hippy bongo",
-      "filthy pestle",
-      "double-barreled sling",
-    ])) {
+    for (const it of $items`hippy bongo, filthy pestle, double-barreled sling`) {
       auto_autosell(itemAmount(it), it);
     }
 
@@ -1447,7 +1391,7 @@ function L1_ed_islandFallback(): boolean {
   setProperty("auto_needLegs", true.toString());
   addToMaximize("-10ml");
   auto_change_mcd(0);
-  return autoAdv$2(Location.get("The Outskirts of Cobb's Knob"));
+  return autoAdv$2($location`The Outskirts of Cobb's Knob`);
 }
 
 export function L9_ed_chasmStart(): boolean {
@@ -1463,7 +1407,7 @@ export function L9_ed_chasmStart(): boolean {
     );
     autoAdvBypass$1(
       "place.php?whichplace=orc_chasm&action=bridge_done",
-      Location.get("The Smut Orc Logging Camp"),
+      $location`The Smut Orc Logging Camp`,
     );
 
     setProperty("auto_chasmBusted", true.toString());
@@ -1479,15 +1423,15 @@ export function ed_DelayNC_DailyDungeon(): boolean {
     return false;
   }
 
-  const has_pole: boolean = itemAmount(Item.get("eleven-foot pole")) > 0;
+  const has_pole: boolean = itemAmount($item`eleven-foot pole`) > 0;
   const has_picks: boolean =
-    itemAmount(Item.get("Platinum Yendorian Express Card")) > 0 ||
-    itemAmount(Item.get("Pick-O-Matic lockpicks")) > 0;
+    itemAmount($item`Platinum Yendorian Express Card`) > 0 ||
+    itemAmount($item`Pick-O-Matic lockpicks`) > 0;
   if (has_pole && has_picks) {
     return false; //will not take any damage from NCs.
   }
 
-  return itemAmount(Item.get("linen bandages")) === 0;
+  return itemAmount($item`linen bandages`) === 0;
 }
 
 function ed_DelayNC(potential_dmg: number): boolean {
@@ -1502,7 +1446,7 @@ function ed_DelayNC(potential_dmg: number): boolean {
     return false; //take the risk if we have nothing left to do.
   }
   //if we have no restorers then return true to delay
-  return itemAmount(Item.get("linen bandages")) === 0;
+  return itemAmount($item`linen bandages`) === 0;
 }
 
 export function ed_DelayNC$1(potential_dmg_percent: number): boolean {
@@ -1543,13 +1487,9 @@ export function edAcquireHP(): boolean {
   if (myHp() > 0) {
     return true; // Ed doesn't need to heal outside of combat unless on 0 hp
   }
-  for (const it of Item.get([
-    "linen bandages",
-    "cotton bandages",
-    "silk bandages",
-  ])) {
+  for (const it of $items`linen bandages, cotton bandages, silk bandages`) {
     if (itemAmount(it) > 0) {
-      use(1, Item.get("linen bandages"));
+      use(1, $item`linen bandages`);
       break;
     }
   }
@@ -1578,9 +1518,9 @@ export function edAcquireHP$1(goal: number): boolean {
   while (
     myHp() < goal &&
     myHp() < myMaxhp() &&
-    itemAmount(Item.get("linen bandages")) > 0
+    itemAmount($item`linen bandages`) > 0
   ) {
-    use(1, Item.get("linen bandages"));
+    use(1, $item`linen bandages`);
   }
 
   return myHp() >= goal;
@@ -1594,7 +1534,7 @@ export function LM_edTheUndying(): boolean {
   ed_buySkills();
 
   if (getProperty("edPiece") !== "hyena") {
-    if (elementalPlanes_access(Element.get("spooky")) || myLevel() >= 5) {
+    if (elementalPlanes_access($element`spooky`) || myLevel() >= 5) {
       adjustEdHat("ml");
     } else {
       adjustEdHat("myst");
@@ -1604,33 +1544,29 @@ export function LM_edTheUndying(): boolean {
   if (auto_campawayAvailable()) {
     // keep enough firewood on hand to fill stomach and liver with campfire food
     if (
-      !possessEquipment(Item.get("whittled tiara")) &&
-      itemAmount(Item.get("stick of firewood")) > 14
+      !possessEquipment($item`whittled tiara`) &&
+      itemAmount($item`stick of firewood`) > 14
     ) {
-      buy(Coinmaster.get("Your Campfire"), 1, Item.get("whittled tiara"));
+      buy($coinmaster`Your Campfire`, 1, $item`whittled tiara`);
     }
     if (
-      !possessEquipment(Item.get("whittled shorts")) &&
-      itemAmount(Item.get("stick of firewood")) > 14
+      !possessEquipment($item`whittled shorts`) &&
+      itemAmount($item`stick of firewood`) > 14
     ) {
-      buy(Coinmaster.get("Your Campfire"), 1, Item.get("whittled shorts"));
+      buy($coinmaster`Your Campfire`, 1, $item`whittled shorts`);
     }
     if (
-      !possessEquipment(Item.get("whittled owl figurine")) &&
-      itemAmount(Item.get("stick of firewood")) > 19
+      !possessEquipment($item`whittled owl figurine`) &&
+      itemAmount($item`stick of firewood`) > 19
     ) {
-      buy(
-        Coinmaster.get("Your Campfire"),
-        1,
-        Item.get("whittled owl figurine"),
-      );
+      buy($coinmaster`Your Campfire`, 1, $item`whittled owl figurine`);
     }
   }
 
-  if (itemAmount(Item.get("seal tooth")) === 0 && myMeat() > 2500) {
+  if (itemAmount($item`seal tooth`) === 0 && myMeat() > 2500) {
     // people with lots of IotMs are too survivable and kill stuff when trying to UNDYING
     // if they have to use Mild Curse.
-    acquireHermitItem(Item.get("seal tooth"));
+    acquireHermitItem($item`seal tooth`);
   }
 
   if (L1_ed_island() || L1_ed_islandFallback()) {
@@ -1645,19 +1581,16 @@ export function LM_edTheUndying(): boolean {
     return true;
   }
 
-  if (closetAmount(Item.get("filthy corduroys")) > 0) {
-    takeCloset(
-      closetAmount(Item.get("filthy corduroys")),
-      Item.get("filthy corduroys"),
-    );
+  if (closetAmount($item`filthy corduroys`) > 0) {
+    takeCloset(closetAmount($item`filthy corduroys`), $item`filthy corduroys`);
   }
 
   if (!toBoolean(getProperty("breakfastCompleted"))) {
     cliExecute("breakfast");
   }
 
-  if (itemAmount(Item.get("seal tooth")) === 0) {
-    acquireHermitItem(Item.get("seal tooth"));
+  if (itemAmount($item`seal tooth`) === 0) {
+    acquireHermitItem($item`seal tooth`);
   }
 
   if (myLevel() >= 9) {

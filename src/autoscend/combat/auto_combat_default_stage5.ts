@@ -1,9 +1,7 @@
 import {
   abort,
   buffedHitStat,
-  Class,
   containsText,
-  Effect,
   Element,
   equippedItem,
   getProperty,
@@ -11,10 +9,8 @@ import {
   haveEquipped,
   haveSkill,
   hpCost,
-  Item,
   itemAmount,
   itemType,
-  Location,
   Monster,
   monsterDefense,
   monsterElement,
@@ -32,12 +28,28 @@ import {
   Phylum,
   setProperty,
   Skill,
-  Slot,
-  Stat,
   toBoolean,
   toInt,
   weaponType,
 } from "kolmafia";
+import {
+  $class,
+  $effect,
+  $element,
+  $elements,
+  $item,
+  $items,
+  $location,
+  $monster,
+  $monsters,
+  $phyla,
+  $phylum,
+  $skill,
+  $skills,
+  $slot,
+  $stat,
+} from "libram";
+
 import {
   auto_have_skill,
   auto_log_info,
@@ -47,6 +59,13 @@ import {
   stunnable,
 } from "../auto_util";
 import { zone_combatMod } from "../auto_zone";
+import { auto_spoonCombatSkill } from "../iotms/mr2019";
+import { auto_haveCosmicBowlingBall } from "../iotms/mr2022";
+import { auto_haveDarts, dartSkill } from "../iotms/mr2024";
+import { auto_canNorthernExplosionFE } from "../iotms/mr2025";
+import { inAftercore } from "../paths/casual";
+import { in_glover } from "../paths/g_lover";
+import { getZooBestPunch$1 } from "../paths/zootomist";
 import { auto_combatMeatGolemStage5 } from "./auto_combat_adventurer_meats_world";
 import { auto_combatDisguisesStage5 } from "./auto_combat_disguises_delimit";
 import { auto_combatFallOfTheDinosaursStage5 } from "./auto_combat_fall_of_the_dinosaurs";
@@ -76,13 +95,6 @@ import {
 import { auto_combatWereProfessorStage5 } from "./auto_combat_wereprofessor";
 import { auto_combat_robot_stage5 } from "./auto_combat_you_robot";
 import { auto_combatZombieSlayerStage5 } from "./auto_combat_zombie_slayer";
-import { auto_spoonCombatSkill } from "../iotms/mr2019";
-import { auto_haveCosmicBowlingBall } from "../iotms/mr2022";
-import { auto_haveDarts, dartSkill } from "../iotms/mr2024";
-import { auto_canNorthernExplosionFE } from "../iotms/mr2025";
-import { inAftercore } from "../paths/casual";
-import { in_glover } from "../paths/g_lover";
-import { getZooBestPunch$1 } from "../paths/zootomist";
 
 //defined in /autoscend/combat/auto_combat_default_stage5.ash
 export function auto_combatDefaultStage5(
@@ -143,16 +155,16 @@ export function auto_combatDefaultStage5(
   }
   //with loofah, you can stagger and deal cold or hot damage
   if (
-    canUse$2(Skill.get("Loofah Stew")) &&
-    monsterElement(enemy) !== Element.get("cold")
+    canUse$2($skill`Loofah Stew`) &&
+    monsterElement(enemy) !== $element`cold`
   ) {
-    return useSkill$1(Skill.get("Loofah Stew"), false);
+    return useSkill$1($skill`Loofah Stew`, false);
   }
   if (
-    canUse$2(Skill.get("Loofah Lava")) &&
-    monsterElement(enemy) !== Element.get("hot")
+    canUse$2($skill`Loofah Lava`) &&
+    monsterElement(enemy) !== $element`hot`
   ) {
-    return useSkill$1(Skill.get("Loofah Lava"), false);
+    return useSkill$1($skill`Loofah Lava`, false);
   }
 
   const type_1: Phylum = monsterPhylum(enemy);
@@ -165,35 +177,32 @@ export function auto_combatDefaultStage5(
     damageReceived = toInt(getProperty("auto_combatHP")) - myHp();
   }
 
-  if (
-    enemy === Monster.get("LOV Enforcer") &&
-    canUse$1(Skill.get("Saucestorm"), false)
-  ) {
-    return useSkill$1(Skill.get("Saucestorm"), false);
+  if (enemy === $monster`LOV Enforcer` && canUse$1($skill`Saucestorm`, false)) {
+    return useSkill$1($skill`Saucestorm`, false);
   }
   //nemesis quest specific kill methods
-  if (myClass() === Class.get("Seal Clubber")) {
-    if (enemy === Monster.get("hellseal pup")) {
-      return useSkill$1(Skill.get("Clobber"), false);
+  if (myClass() === $class`Seal Clubber`) {
+    if (enemy === $monster`hellseal pup`) {
+      return useSkill$1($skill`Clobber`, false);
     }
-    if (enemy === Monster.get("mother hellseal")) {
-      if (canUse$4(Item.get("Rain-Doh indigo cup"))) {
-        return useItem$1(Item.get("Rain-Doh indigo cup"));
+    if (enemy === $monster`mother hellseal`) {
+      if (canUse$4($item`Rain-Doh indigo cup`)) {
+        return useItem$1($item`Rain-Doh indigo cup`);
       }
-      return useSkill$1(Skill.get("Lunging Thrust-Smack"), false);
+      return useSkill$1($skill`Lunging Thrust-Smack`, false);
     }
   }
   //nemesis quest tame guard turtle. takes multiple rounds and buffs enemy by 40%. so it should go after stun and delevel
   if (
-    enemy === Monster.get("french guard turtle") &&
-    haveEquipped(Item.get("fouet de tortue-dressage")) &&
-    myMp() >= mpCost(Skill.get("Apprivoisez la tortue"))
+    enemy === $monster`french guard turtle` &&
+    haveEquipped($item`fouet de tortue-dressage`) &&
+    myMp() >= mpCost($skill`Apprivoisez la tortue`)
   ) {
-    return useSkill$1(Skill.get("Apprivoisez la tortue"), false);
+    return useSkill$1($skill`Apprivoisez la tortue`, false);
   }
   //iotm back item and the enemies it spawns (free fights) can be killed using special skills to get extra XP and item drops
   if (
-    haveEquipped(Item.get("protonic accelerator pack")) &&
+    haveEquipped($item`protonic accelerator pack`) &&
     isGhost(enemy) &&
     !combat_status_check("skipGhostbusting")
   ) {
@@ -204,92 +213,89 @@ export function auto_combatDefaultStage5(
       return useSkill$2(stunner);
     }
     //shots_takens tracks how many times we used [shoot ghost] skill this combat. it is reset in combat initialize
-    const shots_takens: number = usedCount(Skill.get("Shoot Ghost"));
-    if (canUse$1(Skill.get("Shoot Ghost"), false) && shots_takens < 3) {
+    const shots_takens: number = usedCount($skill`Shoot Ghost`);
+    if (canUse$1($skill`Shoot Ghost`, false) && shots_takens < 3) {
       const shotsLeft: number = 3 - shots_takens;
       if (canSurviveShootGhost(enemy, shotsLeft)) {
-        markAsUsed(Skill.get("Shoot Ghost")); //needs to be manually done for skills with a use limit that is not 1
-        return useSkill$1(Skill.get("Shoot Ghost"), false);
+        markAsUsed($skill`Shoot Ghost`); //needs to be manually done for skills with a use limit that is not 1
+        return useSkill$1($skill`Shoot Ghost`, false);
       } else {
         combat_status_add("skipGhostbusting");
       }
     }
 
-    if (canUse$2(Skill.get("Trap Ghost")) && shots_takens === 3) {
+    if (canUse$2($skill`Trap Ghost`) && shots_takens === 3) {
       auto_log_info("Busting makes me feel good!!", "green");
-      return useSkill$2(Skill.get("Trap Ghost"));
+      return useSkill$2($skill`Trap Ghost`);
     }
   }
   //turtle tamer specific skill
   if (
-    myClass() === Class.get("Turtle Tamer") &&
-    canUse$2(Skill.get("Spirit Snap")) &&
+    myClass() === $class`Turtle Tamer` &&
+    canUse$2($skill`Spirit Snap`) &&
     myMp() > 80
   ) {
-    if (haveEffect(Effect.get("Glorious Blessing of the War Snapper")) > 0) {
-      return useSkill$2(Skill.get("Spirit Snap")); //50% buffed muscle physical damage once
+    if (haveEffect($effect`Glorious Blessing of the War Snapper`) > 0) {
+      return useSkill$2($skill`Spirit Snap`); //50% buffed muscle physical damage once
     }
     if (
-      haveEffect(Effect.get("Glorious Blessing of She-Who-Was")) > 0 &&
-      monsterElement(enemy) !== Element.get("spooky")
+      haveEffect($effect`Glorious Blessing of She-Who-Was`) > 0 &&
+      monsterElement(enemy) !== $element`spooky`
     ) {
-      return useSkill$2(Skill.get("Spirit Snap")); //35% buffed muscle spooky damage once
+      return useSkill$2($skill`Spirit Snap`); //35% buffed muscle spooky damage once
     }
   }
   //8-16 + 0.25*mys damage. hardcap 50. costs 8MP. does NOT benefit from bringing up the rear ability to double damage cap
   //each time used has a 33% chance of dropping a candy. one candy per battle max. TODO track this
   //Cannelloni Cannon is better as it has 16-32 + 0.25*mys damage, is tuneable, and its cap can be boosted with bringing up the rear.
   //TODO write up a function to determine if we want to use this for the free candy. consider sauceror regeneration and candy mixing
-  if (canUse$2(Skill.get("Candyblast")) && myMp() > 60 && inAftercore()) {
+  if (canUse$2($skill`Candyblast`) && myMp() > 60 && inAftercore()) {
     // We can get only one candy and we can detect it, if so desired:
     // "Hey, some of it is even intact afterwards!"
-    return useSkill$2(Skill.get("Candyblast"));
+    return useSkill$2($skill`Candyblast`);
   }
 
-  if (
-    myClass() !== Class.get("Sauceror") &&
-    canUse$2(auto_spoonCombatSkill())
-  ) {
+  if (myClass() !== $class`Sauceror` && canUse$2(auto_spoonCombatSkill())) {
     return useSkill$2(auto_spoonCombatSkill());
   }
 
   if (
     auto_haveCosmicBowlingBall() &&
-    canUse$4(Item.get("cosmic bowling ball")) &&
+    canUse$4($item`cosmic bowling ball`) &&
     monsterHp() < 100
   ) {
-    return useItem$1(Item.get("cosmic bowling ball"));
+    return useItem$1($item`cosmic bowling ball`);
   }
 
-  if (canUse$2(Skill.get("Surprisingly Sweet Stab"))) {
-    return useSkill$2(Skill.get("Surprisingly Sweet Stab"));
+  if (canUse$2($skill`Surprisingly Sweet Stab`)) {
+    return useSkill$2($skill`Surprisingly Sweet Stab`);
   }
   //Everfull Dart Holder- use darts if you have them, unless we are against the naughty sorceress (to avoid dart skill bug)
   if (
-    haveEquipped(Item.get("Everfull Dart Holster")) &&
+    haveEquipped($item`Everfull Dart Holster`) &&
     toInt(getProperty("_dartsLeft")) > 0 &&
-    !Monster.get(["Naughty Sorceress", "Naughty Sorceress (2)"]).includes(enemy)
+    !$monsters`Naughty Sorceress, Naughty Sorceress (2)`.includes(enemy)
   ) {
     return useSkill$1(dartSkill(), false);
   }
   //mortar shell is amazing. it really should not be limited to sauceror only.
   if (
-    canUse$2(Skill.get("Stuffed Mortar Shell")) &&
-    myClass() === Class.get("Sauceror") &&
+    canUse$2($skill`Stuffed Mortar Shell`) &&
+    myClass() === $class`Sauceror` &&
     canSurvive$1(2.0) &&
     (currentFlavour() !== monsterElement(enemy) ||
       currentFlavour() === Element.none)
   ) {
     setProperty("_auto_combatTracker_MortarRound", round_1.toString());
-    return useSkill$2(Skill.get("Stuffed Mortar Shell"));
+    return useSkill$2($skill`Stuffed Mortar Shell`);
   }
   //Roman Candelabra red candle
   if (
-    haveEquipped(Item.get("Roman Candelabra")) &&
-    haveEffect(Effect.get("Everything Looks Red")) === 0 &&
+    haveEquipped($item`Roman Candelabra`) &&
+    haveEffect($effect`Everything Looks Red`) === 0 &&
     !auto_haveDarts()
   ) {
-    return useSkill$2(Skill.get("Blow the Red Candle!"));
+    return useSkill$2($skill`Blow the Red Candle!`);
   }
   //general killing code
   {
@@ -319,32 +325,32 @@ export function auto_combatDefaultStage5(
 
     let punch: Skill = Skill.none;
     switch (myClass()) {
-      case Class.get("Seal Clubber"):
+      case $class`Seal Clubber`:
         attackMinor = "attack with weapon";
         if (
-          canUse$1(Skill.get("Lunge Smack"), false) &&
-          weaponType(equippedItem(Slot.get("weapon"))) === Stat.get("Muscle")
+          canUse$1($skill`Lunge Smack`, false) &&
+          weaponType(equippedItem($slot`weapon`)) === $stat`Muscle`
         ) {
-          attackMinor = useSkill$1(Skill.get("Lunge Smack"), false);
-          costMinor = mpCost(Skill.get("Lunge Smack"));
+          attackMinor = useSkill$1($skill`Lunge Smack`, false);
+          costMinor = mpCost($skill`Lunge Smack`);
         }
         if (
-          canUse$1(Skill.get("Lunging Thrust-Smack"), false) &&
-          weaponType(equippedItem(Slot.get("weapon"))) === Stat.get("Muscle")
+          canUse$1($skill`Lunging Thrust-Smack`, false) &&
+          weaponType(equippedItem($slot`weapon`)) === $stat`Muscle`
         ) {
-          attackMajor = useSkill$1(Skill.get("Lunging Thrust-Smack"), false);
-          costMajor = mpCost(Skill.get("Lunging Thrust-Smack"));
+          attackMajor = useSkill$1($skill`Lunging Thrust-Smack`, false);
+          costMajor = mpCost($skill`Lunging Thrust-Smack`);
         }
         if (
           buffedHitStat() - 20 < monsterDefense() &&
-          canUse$1(Skill.get("Saucestorm"), false) &&
+          canUse$1($skill`Saucestorm`, false) &&
           !hasClubEquipped()
         ) {
-          attackMajor = useSkill$1(Skill.get("Saucestorm"), false);
-          costMajor = mpCost(Skill.get("Saucestorm"));
+          attackMajor = useSkill$1($skill`Saucestorm`, false);
+          costMajor = mpCost($skill`Saucestorm`);
         }
         if (enemy.physicalResistance > 80) {
-          for (const sk of Skill.get(["Saucestorm", "Saucegeyser"])) {
+          for (const sk of $skills`Saucestorm, Saucegeyser`) {
             if (canUse$1(sk, false)) {
               attackMinor = useSkill$1(sk, false);
               attackMajor = useSkill$1(sk, false);
@@ -354,49 +360,49 @@ export function auto_combatDefaultStage5(
             }
           }
           if (
-            canUse$1(Skill.get("Northern Explosion"), false) &&
+            canUse$1($skill`Northern Explosion`, false) &&
             !auto_canNorthernExplosionFE()
           ) {
-            attackMinor = useSkill$1(Skill.get("Northern Explosion"), false);
-            attackMajor = useSkill$1(Skill.get("Northern Explosion"), false);
-            costMinor = mpCost(Skill.get("Northern Explosion"));
-            costMajor = mpCost(Skill.get("Northern Explosion"));
+            attackMinor = useSkill$1($skill`Northern Explosion`, false);
+            attackMajor = useSkill$1($skill`Northern Explosion`, false);
+            costMinor = mpCost($skill`Northern Explosion`);
+            costMajor = mpCost($skill`Northern Explosion`);
           }
         }
         break;
-      case Class.get("Turtle Tamer"):
+      case $class`Turtle Tamer`:
         attackMinor = "attack with weapon";
-        if (myMp() > 150 && canUse$1(Skill.get("Shieldbutt"), false)) {
-          attackMinor = useSkill$1(Skill.get("Shieldbutt"), false);
-          costMinor = mpCost(Skill.get("Shieldbutt"));
+        if (myMp() > 150 && canUse$1($skill`Shieldbutt`, false)) {
+          attackMinor = useSkill$1($skill`Shieldbutt`, false);
+          costMinor = mpCost($skill`Shieldbutt`);
         } else if (
           myMp() > 80 &&
           myHp() * 2 < myMaxhp() &&
-          canUse$1(Skill.get("Kneebutt"), false)
+          canUse$1($skill`Kneebutt`, false)
         ) {
-          attackMinor = useSkill$1(Skill.get("Kneebutt"), false);
-          costMinor = mpCost(Skill.get("Kneebutt"));
+          attackMinor = useSkill$1($skill`Kneebutt`, false);
+          costMinor = mpCost($skill`Kneebutt`);
         }
         if (
           (round_1 > 15 || myHp() * 2 < myMaxhp()) &&
-          canUse$1(Skill.get("Kneebutt"), false)
+          canUse$1($skill`Kneebutt`, false)
         ) {
-          attackMajor = useSkill$1(Skill.get("Kneebutt"), false);
-          costMajor = mpCost(Skill.get("Kneebutt"));
+          attackMajor = useSkill$1($skill`Kneebutt`, false);
+          costMajor = mpCost($skill`Kneebutt`);
         }
-        if (canUse$1(Skill.get("Shieldbutt"), false)) {
-          attackMajor = useSkill$1(Skill.get("Shieldbutt"), false);
-          costMajor = mpCost(Skill.get("Shieldbutt"));
+        if (canUse$1($skill`Shieldbutt`, false)) {
+          attackMajor = useSkill$1($skill`Shieldbutt`, false);
+          costMajor = mpCost($skill`Shieldbutt`);
         }
         if (
           buffedHitStat() - 20 < monsterDefense() &&
-          canUse$1(Skill.get("Saucestorm"), false)
+          canUse$1($skill`Saucestorm`, false)
         ) {
-          attackMajor = useSkill$1(Skill.get("Saucestorm"), false);
-          costMajor = mpCost(Skill.get("Saucestorm"));
+          attackMajor = useSkill$1($skill`Saucestorm`, false);
+          costMajor = mpCost($skill`Saucestorm`);
         }
         if (enemy.physicalResistance > 80) {
-          for (const sk of Skill.get(["Saucestorm", "Saucegeyser"])) {
+          for (const sk of $skills`Saucestorm, Saucegeyser`) {
             if (canUse$1(sk, false)) {
               attackMinor = useSkill$1(sk, false);
               attackMajor = useSkill$1(sk, false);
@@ -407,84 +413,83 @@ export function auto_combatDefaultStage5(
           }
         }
         break;
-      case Class.get("Pastamancer"):
-        if (canUse$1(Skill.get("Cannelloni Cannon"), false)) {
-          attackMinor = useSkill$1(Skill.get("Cannelloni Cannon"), false);
-          costMinor = mpCost(Skill.get("Cannelloni Cannon"));
+      case $class`Pastamancer`:
+        if (canUse$1($skill`Cannelloni Cannon`, false)) {
+          attackMinor = useSkill$1($skill`Cannelloni Cannon`, false);
+          costMinor = mpCost($skill`Cannelloni Cannon`);
         }
-        if (canUse$1(Skill.get("Weapon of the Pastalord"), false)) {
-          attackMajor = useSkill$2(Skill.get("Weapon of the Pastalord"));
-          costMajor = mpCost(Skill.get("Weapon of the Pastalord"));
+        if (canUse$1($skill`Weapon of the Pastalord`, false)) {
+          attackMajor = useSkill$2($skill`Weapon of the Pastalord`);
+          costMajor = mpCost($skill`Weapon of the Pastalord`);
         }
-        if (canUse$1(Skill.get("Saucestorm"), false)) {
-          attackMajor = useSkill$1(Skill.get("Saucestorm"), false);
-          attackMinor = useSkill$1(Skill.get("Saucestorm"), false);
-          costMinor = mpCost(Skill.get("Saucestorm"));
-          costMajor = mpCost(Skill.get("Saucestorm"));
+        if (canUse$1($skill`Saucestorm`, false)) {
+          attackMajor = useSkill$1($skill`Saucestorm`, false);
+          attackMinor = useSkill$1($skill`Saucestorm`, false);
+          costMinor = mpCost($skill`Saucestorm`);
+          costMajor = mpCost($skill`Saucestorm`);
         }
         if (
-          canUse$1(Skill.get("Utensil Twist"), false) &&
-          itemType(equippedItem(Slot.get("weapon"))) === "utensil"
+          canUse$1($skill`Utensil Twist`, false) &&
+          itemType(equippedItem($slot`weapon`)) === "utensil"
         ) {
           if (
-            equippedItem(Slot.get("weapon")) ===
-            Item.get("Hand that Rocks the Ladle")
+            equippedItem($slot`weapon`) === $item`Hand that Rocks the Ladle`
           ) {
-            attackMajor = useSkill$1(Skill.get("Utensil Twist"), false);
-            attackMinor = useSkill$1(Skill.get("Utensil Twist"), false);
-            costMinor = mpCost(Skill.get("Utensil Twist"));
-            costMajor = mpCost(Skill.get("Utensil Twist"));
+            attackMajor = useSkill$1($skill`Utensil Twist`, false);
+            attackMinor = useSkill$1($skill`Utensil Twist`, false);
+            costMinor = mpCost($skill`Utensil Twist`);
+            costMajor = mpCost($skill`Utensil Twist`);
           } else if (
             enemy.physicalResistance <= 80 &&
-            attackMinor !== useSkill$1(Skill.get("Saucestorm"), false)
+            attackMinor !== useSkill$1($skill`Saucestorm`, false)
           ) {
-            attackMinor = useSkill$1(Skill.get("Utensil Twist"), false);
-            costMinor = mpCost(Skill.get("Utensil Twist"));
+            attackMinor = useSkill$1($skill`Utensil Twist`, false);
+            costMinor = mpCost($skill`Utensil Twist`);
           }
         }
         if (
           (in_glover() || attackMinor === "attack with weapon") &&
-          canUse$1(Skill.get("Saucegeyser"), false)
+          canUse$1($skill`Saucegeyser`, false)
         ) {
-          attackMinor = useSkill$1(Skill.get("Saucegeyser"), false);
-          costMinor = mpCost(Skill.get("Saucegeyser"));
+          attackMinor = useSkill$1($skill`Saucegeyser`, false);
+          costMinor = mpCost($skill`Saucegeyser`);
         }
         break;
-      case Class.get("Sauceror"):
-        if (canUse$1(Skill.get("Saucegeyser"), false)) {
-          attackMinor = useSkill$1(Skill.get("Saucegeyser"), false);
-          attackMajor = useSkill$1(Skill.get("Saucegeyser"), false);
-          costMinor = mpCost(Skill.get("Saucegeyser"));
-          costMajor = mpCost(Skill.get("Saucegeyser"));
+      case $class`Sauceror`:
+        if (canUse$1($skill`Saucegeyser`, false)) {
+          attackMinor = useSkill$1($skill`Saucegeyser`, false);
+          attackMajor = useSkill$1($skill`Saucegeyser`, false);
+          costMinor = mpCost($skill`Saucegeyser`);
+          costMajor = mpCost($skill`Saucegeyser`);
         } else if (
-          canUse$1(Skill.get("Saucecicle"), false) &&
-          monsterElement(enemy) !== Element.get("cold")
+          canUse$1($skill`Saucecicle`, false) &&
+          monsterElement(enemy) !== $element`cold`
         ) {
-          attackMinor = useSkill$1(Skill.get("Saucecicle"), false);
-          attackMajor = useSkill$1(Skill.get("Saucecicle"), false);
-          costMinor = mpCost(Skill.get("Saucecicle"));
-          costMajor = mpCost(Skill.get("Saucecicle"));
-        } else if (canUse$1(Skill.get("Saucestorm"), false)) {
-          attackMinor = useSkill$1(Skill.get("Saucestorm"), false);
-          attackMajor = useSkill$1(Skill.get("Saucestorm"), false);
-          costMinor = mpCost(Skill.get("Saucestorm"));
-          costMajor = mpCost(Skill.get("Saucestorm"));
+          attackMinor = useSkill$1($skill`Saucecicle`, false);
+          attackMajor = useSkill$1($skill`Saucecicle`, false);
+          costMinor = mpCost($skill`Saucecicle`);
+          costMajor = mpCost($skill`Saucecicle`);
+        } else if (canUse$1($skill`Saucestorm`, false)) {
+          attackMinor = useSkill$1($skill`Saucestorm`, false);
+          attackMajor = useSkill$1($skill`Saucestorm`, false);
+          costMinor = mpCost($skill`Saucestorm`);
+          costMajor = mpCost($skill`Saucestorm`);
         } else if (
-          canUse$1(Skill.get("Wave of Sauce"), false) &&
-          monsterElement(enemy) !== Element.get("hot")
+          canUse$1($skill`Wave of Sauce`, false) &&
+          monsterElement(enemy) !== $element`hot`
         ) {
-          attackMinor = useSkill$1(Skill.get("Wave of Sauce"), false);
-          attackMajor = useSkill$1(Skill.get("Wave of Sauce"), false);
-          costMinor = mpCost(Skill.get("Wave of Sauce"));
-          costMajor = mpCost(Skill.get("Wave of Sauce"));
+          attackMinor = useSkill$1($skill`Wave of Sauce`, false);
+          attackMajor = useSkill$1($skill`Wave of Sauce`, false);
+          costMinor = mpCost($skill`Wave of Sauce`);
+          costMajor = mpCost($skill`Wave of Sauce`);
         } else if (
-          canUse$1(Skill.get("Stream of Sauce"), false) &&
-          monsterElement(enemy) !== Element.get("hot")
+          canUse$1($skill`Stream of Sauce`, false) &&
+          monsterElement(enemy) !== $element`hot`
         ) {
-          attackMinor = useSkill$1(Skill.get("Stream of Sauce"), false);
-          attackMajor = useSkill$1(Skill.get("Stream of Sauce"), false);
-          costMinor = mpCost(Skill.get("Stream of Sauce"));
-          costMajor = mpCost(Skill.get("Stream of Sauce"));
+          attackMinor = useSkill$1($skill`Stream of Sauce`, false);
+          attackMajor = useSkill$1($skill`Stream of Sauce`, false);
+          costMinor = mpCost($skill`Stream of Sauce`);
+          costMajor = mpCost($skill`Stream of Sauce`);
         }
         mortar_round = toInt(getProperty("_auto_combatTracker_MortarRound"));
         if (
@@ -492,224 +497,206 @@ export function auto_combatDefaultStage5(
           mortar_round === round_1 - 1 &&
           canSurvive$1(2.0)
         ) {
-          if (monsterHp() > 1 && canUse$3(Item.get("seal tooth"), false)) {
-            return useItem(Item.get("seal tooth"), false);
+          if (monsterHp() > 1 && canUse$3($item`seal tooth`, false)) {
+            return useItem($item`seal tooth`, false);
           }
-          if (monsterHp() > 15 && canUse$1(Skill.get("Salsaball"), false)) {
-            return useSkill$1(Skill.get("Salsaball"), false);
+          if (monsterHp() > 15 && canUse$1($skill`Salsaball`, false)) {
+            return useSkill$1($skill`Salsaball`, false);
           }
         }
         break;
-      case Class.get("Avatar of Boris"):
+      case $class`Avatar of Boris`:
         if (
-          canUse$1(Skill.get("Heroic Belch"), false) &&
+          canUse$1($skill`Heroic Belch`, false) &&
           enemy.physicalResistance >= 80 &&
-          Element.get("stench") !== monsterElement(enemy)
+          $element`stench` !== monsterElement(enemy)
         ) {
-          attackMinor = useSkill$2(Skill.get("Heroic Belch"));
-          attackMajor = useSkill$2(Skill.get("Heroic Belch"));
-          costMinor = mpCost(Skill.get("Heroic Belch"));
-          costMajor = mpCost(Skill.get("Heroic Belch"));
+          attackMinor = useSkill$2($skill`Heroic Belch`);
+          attackMajor = useSkill$2($skill`Heroic Belch`);
+          costMinor = mpCost($skill`Heroic Belch`);
+          costMajor = mpCost($skill`Heroic Belch`);
         }
-        if (canUse$1(Skill.get("Mighty Axing"), false)) {
-          attackMinor = useSkill$1(Skill.get("Mighty Axing"), false);
-          attackMajor = useSkill$1(Skill.get("Mighty Axing"), false);
-          costMinor = mpCost(Skill.get("Mighty Axing"));
-          costMajor = mpCost(Skill.get("Mighty Axing"));
+        if (canUse$1($skill`Mighty Axing`, false)) {
+          attackMinor = useSkill$1($skill`Mighty Axing`, false);
+          attackMajor = useSkill$1($skill`Mighty Axing`, false);
+          costMinor = mpCost($skill`Mighty Axing`);
+          costMajor = mpCost($skill`Mighty Axing`);
         }
-        if (canUse$1(Skill.get("Cleave"), false)) {
-          attackMajor = useSkill$1(Skill.get("Cleave"), false);
-          costMajor = mpCost(Skill.get("Cleave"));
+        if (canUse$1($skill`Cleave`, false)) {
+          attackMajor = useSkill$1($skill`Cleave`, false);
+          costMajor = mpCost($skill`Cleave`);
         }
         if (
-          equippedItem(Slot.get("weapon")) === Item.get("Trusty") &&
-          canUse$1(Skill.get("Throw Trusty"), false) &&
-          Monster.get([
-            "apathetic lizardman",
-            "Procrastination Giant",
-          ]).includes(enemy)
+          equippedItem($slot`weapon`) === $item`Trusty` &&
+          canUse$1($skill`Throw Trusty`, false) &&
+          $monsters`apathetic lizardman, Procrastination Giant`.includes(enemy)
         ) {
-          attackMinor = useSkill$1(Skill.get("Throw Trusty"), false);
-          attackMajor = useSkill$1(Skill.get("Throw Trusty"), false);
-          costMinor = mpCost(Skill.get("Throw Trusty"));
-          costMajor = mpCost(Skill.get("Throw Trusty"));
+          attackMinor = useSkill$1($skill`Throw Trusty`, false);
+          attackMajor = useSkill$1($skill`Throw Trusty`, false);
+          costMinor = mpCost($skill`Throw Trusty`);
+          costMajor = mpCost($skill`Throw Trusty`);
         }
         if (
-          canUse$1(Skill.get("Heroic Belch"), false) &&
+          canUse$1($skill`Heroic Belch`, false) &&
           enemy.physicalResistance >= 100 &&
-          monsterElement(enemy) !== Element.get("stench") &&
+          monsterElement(enemy) !== $element`stench` &&
           myFullness() >= 5
         ) {
-          attackMinor = useSkill$1(Skill.get("Heroic Belch"), false);
-          attackMajor = useSkill$1(Skill.get("Heroic Belch"), false);
-          costMinor = mpCost(Skill.get("Heroic Belch"));
-          costMajor = mpCost(Skill.get("Heroic Belch"));
+          attackMinor = useSkill$1($skill`Heroic Belch`, false);
+          attackMajor = useSkill$1($skill`Heroic Belch`, false);
+          costMinor = mpCost($skill`Heroic Belch`);
+          costMajor = mpCost($skill`Heroic Belch`);
         }
         break;
-      case Class.get("Avatar of Jarlsberg"):
-        attackMinor = useSkill$1(Skill.get("Curdle"), false);
-        attackMajor = useSkill$1(Skill.get("Curdle"), false);
-        costMinor = mpCost(Skill.get("Curdle"));
-        costMajor = mpCost(Skill.get("Curdle"));
+      case $class`Avatar of Jarlsberg`:
+        attackMinor = useSkill$1($skill`Curdle`, false);
+        attackMajor = useSkill$1($skill`Curdle`, false);
+        costMinor = mpCost($skill`Curdle`);
+        costMajor = mpCost($skill`Curdle`);
         if (enemy.physicalResistance < 50) {
-          if (canUse$1(Skill.get("Chop"), false)) {
-            attackMinor = useSkill$1(Skill.get("Chop"), false);
-            attackMajor = useSkill$1(Skill.get("Chop"), false);
-            costMinor = mpCost(Skill.get("Chop"));
-            costMajor = mpCost(Skill.get("Chop"));
+          if (canUse$1($skill`Chop`, false)) {
+            attackMinor = useSkill$1($skill`Chop`, false);
+            attackMajor = useSkill$1($skill`Chop`, false);
+            costMinor = mpCost($skill`Chop`);
+            costMajor = mpCost($skill`Chop`);
           }
 
-          if (canUse$1(Skill.get("Slice"), false)) {
-            attackMajor = useSkill$1(Skill.get("Slice"), false);
-            costMajor = mpCost(Skill.get("Slice"));
+          if (canUse$1($skill`Slice`, false)) {
+            attackMajor = useSkill$1($skill`Slice`, false);
+            costMajor = mpCost($skill`Slice`);
           }
         }
         if (
-          Element.get(["cold", "spooky"]).includes(monsterElement(enemy)) &&
-          canUse$2(Skill.get("Bake"))
+          $elements`cold, spooky`.includes(monsterElement(enemy)) &&
+          canUse$2($skill`Bake`)
         ) {
-          attackMinor = useSkill$2(Skill.get("Bake"));
-          attackMajor = useSkill$2(Skill.get("Bake"));
-          costMinor = mpCost(Skill.get("Bake"));
-          costMajor = mpCost(Skill.get("Bake"));
+          attackMinor = useSkill$2($skill`Bake`);
+          attackMajor = useSkill$2($skill`Bake`);
+          costMinor = mpCost($skill`Bake`);
+          costMajor = mpCost($skill`Bake`);
         } else if (
-          Element.get(["cold", "spooky"]).includes(monsterElement(enemy)) &&
-          canUse$1(Skill.get("Boil"), false)
+          $elements`cold, spooky`.includes(monsterElement(enemy)) &&
+          canUse$1($skill`Boil`, false)
         ) {
-          attackMinor = useSkill$1(Skill.get("Boil"), false);
-          attackMajor = useSkill$1(Skill.get("Boil"), false);
-          costMinor = mpCost(Skill.get("Boil"));
-          costMajor = mpCost(Skill.get("Boil"));
+          attackMinor = useSkill$1($skill`Boil`, false);
+          attackMajor = useSkill$1($skill`Boil`, false);
+          costMinor = mpCost($skill`Boil`);
+          costMajor = mpCost($skill`Boil`);
         } else if (
-          Element.get(["stench", "sleaze"]).includes(monsterElement(enemy)) &&
-          canUse$1(Skill.get("Freeze"), false)
+          $elements`stench, sleaze`.includes(monsterElement(enemy)) &&
+          canUse$1($skill`Freeze`, false)
         ) {
-          attackMinor = useSkill$1(Skill.get("Freeze"), false);
-          attackMajor = useSkill$1(Skill.get("Freeze"), false);
-          costMinor = mpCost(Skill.get("Freeze"));
-          costMajor = mpCost(Skill.get("Freeze"));
+          attackMinor = useSkill$1($skill`Freeze`, false);
+          attackMajor = useSkill$1($skill`Freeze`, false);
+          costMinor = mpCost($skill`Freeze`);
+          costMajor = mpCost($skill`Freeze`);
         } else if (enemy.physicalResistance >= 50) {
           if (
-            monsterElement(enemy) !== Element.get("hot") &&
-            canUse$2(Skill.get("Bake"))
+            monsterElement(enemy) !== $element`hot` &&
+            canUse$2($skill`Bake`)
           ) {
-            attackMinor = useSkill$2(Skill.get("Bake"));
-            attackMajor = useSkill$2(Skill.get("Bake"));
-            costMinor = mpCost(Skill.get("Bake"));
-            costMajor = mpCost(Skill.get("Bake"));
+            attackMinor = useSkill$2($skill`Bake`);
+            attackMajor = useSkill$2($skill`Bake`);
+            costMinor = mpCost($skill`Bake`);
+            costMajor = mpCost($skill`Bake`);
           } else if (
-            monsterElement(enemy) !== Element.get("hot") &&
-            canUse$1(Skill.get("Boil"), false)
+            monsterElement(enemy) !== $element`hot` &&
+            canUse$1($skill`Boil`, false)
           ) {
-            attackMinor = useSkill$1(Skill.get("Boil"), false);
-            attackMajor = useSkill$1(Skill.get("Boil"), false);
-            costMinor = mpCost(Skill.get("Boil"));
-            costMajor = mpCost(Skill.get("Boil"));
+            attackMinor = useSkill$1($skill`Boil`, false);
+            attackMajor = useSkill$1($skill`Boil`, false);
+            costMinor = mpCost($skill`Boil`);
+            costMajor = mpCost($skill`Boil`);
           } else if (
-            monsterElement(enemy) !== Element.get("cold") &&
-            canUse$1(Skill.get("Freeze"), false)
+            monsterElement(enemy) !== $element`cold` &&
+            canUse$1($skill`Freeze`, false)
           ) {
-            attackMinor = useSkill$1(Skill.get("Freeze"), false);
-            attackMajor = useSkill$1(Skill.get("Freeze"), false);
-            costMinor = mpCost(Skill.get("Freeze"));
-            costMajor = mpCost(Skill.get("Freeze"));
+            attackMinor = useSkill$1($skill`Freeze`, false);
+            attackMajor = useSkill$1($skill`Freeze`, false);
+            costMinor = mpCost($skill`Freeze`);
+            costMajor = mpCost($skill`Freeze`);
           }
         }
         if (
-          Element.get(["hot", "stench"]).includes(monsterElement(enemy)) &&
-          canUse$1(Skill.get("Fry"), false)
+          $elements`hot, stench`.includes(monsterElement(enemy)) &&
+          canUse$1($skill`Fry`, false)
         ) {
-          attackMajor = useSkill$1(Skill.get("Fry"), false);
-          costMajor = mpCost(Skill.get("Fry"));
+          attackMajor = useSkill$1($skill`Fry`, false);
+          costMajor = mpCost($skill`Fry`);
         } else if (
           monsterElement(enemy) !== Element.none &&
-          canUse$1(Skill.get("Grill"), false)
+          canUse$1($skill`Grill`, false)
         ) {
-          attackMajor = useSkill$1(Skill.get("Grill"), false);
-          costMajor = mpCost(Skill.get("Grill"));
+          attackMajor = useSkill$1($skill`Grill`, false);
+          costMajor = mpCost($skill`Grill`);
         } else if (enemy.physicalResistance >= 50) {
           if (
-            monsterElement(enemy) !== Element.get("sleaze") &&
-            canUse$1(Skill.get("Fry"), false)
+            monsterElement(enemy) !== $element`sleaze` &&
+            canUse$1($skill`Fry`, false)
           ) {
-            attackMajor = useSkill$1(Skill.get("Fry"), false);
-            costMajor = mpCost(Skill.get("Fry"));
-          } else if (canUse$1(Skill.get("Grill"), false)) {
-            attackMajor = useSkill$1(Skill.get("Grill"), false);
-            costMajor = mpCost(Skill.get("Grill"));
+            attackMajor = useSkill$1($skill`Fry`, false);
+            costMajor = mpCost($skill`Fry`);
+          } else if (canUse$1($skill`Grill`, false)) {
+            attackMajor = useSkill$1($skill`Grill`, false);
+            costMajor = mpCost($skill`Grill`);
           }
         }
         break;
-      case Class.get("Avatar of Sneaky Pete"):
-        if (canUse$1(Skill.get("Pop Wheelie"), false)) {
-          attackMajor = useSkill$1(Skill.get("Pop Wheelie"), false);
-          costMajor = mpCost(Skill.get("Pop Wheelie"));
+      case $class`Avatar of Sneaky Pete`:
+        if (canUse$1($skill`Pop Wheelie`, false)) {
+          attackMajor = useSkill$1($skill`Pop Wheelie`, false);
+          costMajor = mpCost($skill`Pop Wheelie`);
         }
-        if (
-          canUse$2(Skill.get("Smoke Break")) &&
-          enemy.physicalResistance >= 80
-        ) {
-          attackMinor = useSkill$2(Skill.get("Smoke Break"));
-          attackMajor = useSkill$2(Skill.get("Smoke Break"));
-          costMinor = mpCost(Skill.get("Smoke Break"));
-          costMajor = mpCost(Skill.get("Smoke Break"));
+        if (canUse$2($skill`Smoke Break`) && enemy.physicalResistance >= 80) {
+          attackMinor = useSkill$2($skill`Smoke Break`);
+          attackMajor = useSkill$2($skill`Smoke Break`);
+          costMinor = mpCost($skill`Smoke Break`);
+          costMajor = mpCost($skill`Smoke Break`);
         } else if (
-          canUse$2(Skill.get("Flash Headlight")) &&
+          canUse$2($skill`Flash Headlight`) &&
           enemy.physicalResistance >= 80 &&
           (getProperty("peteMotorbikeHeadlight") === "Party Bulb" ||
             (getProperty("peteMotorbikeHeadlight") === "Blacklight Bulb" &&
-              monsterElement(enemy) !== Element.get("sleaze")))
+              monsterElement(enemy) !== $element`sleaze`))
         ) {
-          attackMinor = useSkill$2(Skill.get("Flash Headlight"));
-          attackMajor = useSkill$2(Skill.get("Flash Headlight"));
-          costMinor = mpCost(Skill.get("Flash Headlight"));
-          costMajor = mpCost(Skill.get("Flash Headlight"));
+          attackMinor = useSkill$2($skill`Flash Headlight`);
+          attackMajor = useSkill$2($skill`Flash Headlight`);
+          costMinor = mpCost($skill`Flash Headlight`);
+          costMajor = mpCost($skill`Flash Headlight`);
         } else if (
-          canUse$3(Item.get("firebomb"), false) &&
+          canUse$3($item`firebomb`, false) &&
           enemy.physicalResistance >= 100 &&
-          monsterElement(enemy) !== Element.get("hot")
+          monsterElement(enemy) !== $element`hot`
         ) {
-          attackMinor = useItem(Item.get("firebomb"), false);
-          attackMajor = useItem(Item.get("firebomb"), false);
+          attackMinor = useItem($item`firebomb`, false);
+          attackMajor = useItem($item`firebomb`, false);
           costMinor = 0;
           costMajor = 0;
         }
         break;
-      case Class.get("Accordion Thief"):
+      case $class`Accordion Thief`:
         if (
-          canUse$2(Skill.get("Cadenza")) &&
-          itemType(equippedItem(Slot.get("weapon"))) === "accordion" &&
+          canUse$2($skill`Cadenza`) &&
+          itemType(equippedItem($slot`weapon`)) === "accordion" &&
           canSurvive$1(2.0)
         ) {
           if (
-            Item.get([
-              "accordion file",
-              "alarm accordion",
-              "autocalliope",
-              "Bal-musette accordion",
-              "baritone accordion",
-              "Cajun accordion",
-              "ghost accordion",
-              "peace accordion",
-              "pentatonic accordion",
-              "pygmy concertinette",
-              "Skipper's accordion",
-              "Squeezebox of the Ages",
-              "The Trickster's Trikitixa",
-            ]).includes(equippedItem(Slot.get("weapon")))
+            $items`accordion file, alarm accordion, autocalliope, Bal-musette accordion, baritone accordion, Cajun accordion, ghost accordion, peace accordion, pentatonic accordion, pygmy concertinette, Skipper's accordion, Squeezebox of the Ages, The Trickster's Trikitixa`.includes(
+              equippedItem($slot`weapon`),
+            )
           ) {
-            return useSkill$2(Skill.get("Cadenza"));
+            return useSkill$2($skill`Cadenza`);
           }
         }
         if (
           buffedHitStat() - 20 < monsterDefense() &&
-          canUse$1(Skill.get("Saucestorm"), false)
+          canUse$1($skill`Saucestorm`, false)
         ) {
-          attackMajor = useSkill$1(Skill.get("Saucestorm"), false);
-          costMajor = mpCost(Skill.get("Saucestorm"));
+          attackMajor = useSkill$1($skill`Saucestorm`, false);
+          costMajor = mpCost($skill`Saucestorm`);
         }
         if (enemy.physicalResistance > 80) {
-          for (const sk of Skill.get(["Saucestorm", "Saucegeyser"])) {
+          for (const sk of $skills`Saucestorm, Saucegeyser`) {
             if (canUse$1(sk, false)) {
               attackMinor = useSkill$1(sk, false);
               attackMajor = useSkill$1(sk, false);
@@ -720,12 +707,12 @@ export function auto_combatDefaultStage5(
           }
         }
         break;
-      case Class.get("Disco Bandit"):
+      case $class`Disco Bandit`:
         if (
-          auto_have_skill(Skill.get("Disco State of Mind")) &&
-          auto_have_skill(Skill.get("Flashy Dancer")) &&
-          auto_have_skill(Skill.get("Disco Greed")) &&
-          auto_have_skill(Skill.get("Disco Bravado")) &&
+          auto_have_skill($skill`Disco State of Mind`) &&
+          auto_have_skill($skill`Flashy Dancer`) &&
+          auto_have_skill($skill`Disco Greed`) &&
+          auto_have_skill($skill`Disco Bravado`) &&
           stunnable(enemy) &&
           monsterLevelAdjustment() < 150
         ) {
@@ -735,11 +722,7 @@ export function auto_combatDefaultStage5(
             2;
           let netCost: number = 0;
 
-          for (const dance of Skill.get([
-            "Disco Dance of Doom",
-            "Disco Dance II: Electric Boogaloo",
-            "Disco Dance 3: Back in the Habit",
-          ])) {
+          for (const dance of $skills`Disco Dance of Doom, Disco Dance II: Electric Boogaloo, Disco Dance 3: Back in the Habit`) {
             netCost += mpCost(dance);
             if (canUse$2(dance) && mpRegen > netCost * 2) {
               return useSkill$2(dance);
@@ -748,13 +731,13 @@ export function auto_combatDefaultStage5(
         }
         if (
           buffedHitStat() - 20 < monsterDefense() &&
-          canUse$1(Skill.get("Saucestorm"), false)
+          canUse$1($skill`Saucestorm`, false)
         ) {
-          attackMajor = useSkill$1(Skill.get("Saucestorm"), false);
-          costMajor = mpCost(Skill.get("Saucestorm"));
+          attackMajor = useSkill$1($skill`Saucestorm`, false);
+          costMajor = mpCost($skill`Saucestorm`);
         }
         if (enemy.physicalResistance > 80) {
-          for (const sk of Skill.get(["Saucestorm", "Saucegeyser"])) {
+          for (const sk of $skills`Saucestorm, Saucegeyser`) {
             if (canUse$1(sk, false)) {
               attackMinor = useSkill$1(sk, false);
               attackMajor = useSkill$1(sk, false);
@@ -765,150 +748,108 @@ export function auto_combatDefaultStage5(
           }
         }
         break;
-      case Class.get("Cow Puncher"):
-      case Class.get("Beanslinger"):
-      case Class.get("Snake Oiler"):
+      case $class`Cow Puncher`:
+      case $class`Beanslinger`:
+      case $class`Snake Oiler`:
         if (
-          canUse$2(Skill.get("Extract Oil")) &&
+          canUse$2($skill`Extract Oil`) &&
           myHp() > 80 &&
-          myMp() >= 3 * mpCost(Skill.get("Extract Oil"))
+          myMp() >= 3 * mpCost($skill`Extract Oil`)
         ) {
           if (
-            Monster.get([
-              "aggressive grass snake",
-              "bacon snake",
-              "Batsnake",
-              "black adder",
-              "Burning Snake of Fire",
-              "coal snake",
-              "diamondback rattler",
-              "frontwinder",
-              "Frozen Solid Snake",
-              "king snake",
-              "licorice snake",
-              "mutant rattlesnake",
-              "prince snake",
-              "sewer snake with a sewer snake in it",
-              "Snakeleton",
-              "The Snake With Like Ten Heads",
-              "tomb asp",
-              "Trouser Snake",
-              "whitesnake",
-            ]).includes(enemy) &&
-            itemAmount(Item.get("snake oil")) < 4
+            $monsters`aggressive grass snake, bacon snake, Batsnake, black adder, Burning Snake of Fire, coal snake, diamondback rattler, frontwinder, Frozen Solid Snake, king snake, licorice snake, mutant rattlesnake, prince snake, sewer snake with a sewer snake in it, Snakeleton, The Snake With Like Ten Heads, tomb asp, Trouser Snake, whitesnake`.includes(
+              enemy,
+            ) &&
+            itemAmount($item`snake oil`) < 4
           ) {
-            return useSkill$2(Skill.get("Extract Oil"));
+            return useSkill$2($skill`Extract Oil`);
           } else if (
-            Phylum.get([
-              "beast",
-              "dude",
-              "hippy",
-              "humanoid",
-              "orc",
-              "pirate",
-            ]).includes(type_1) &&
-            itemAmount(Item.get("skin oil")) < 3
+            $phyla`beast, dude, hippy, humanoid, orc, pirate`.includes(
+              type_1,
+            ) &&
+            itemAmount($item`skin oil`) < 3
           ) {
-            return useSkill$2(Skill.get("Extract Oil"));
+            return useSkill$2($skill`Extract Oil`);
           } else if (
-            Phylum.get([
-              "bug",
-              "construct",
-              "constellation",
-              "demon",
-              "elemental",
-              "elf",
-              "fish",
-              "goblin",
-              "hobo",
-              "horror",
-              "mer-kin",
-              "penguin",
-              "plant",
-              "slime",
-              "weird",
-            ]).includes(type_1) &&
-            itemAmount(Item.get("unusual oil")) < 4
+            $phyla`bug, construct, constellation, demon, elemental, elf, fish, goblin, hobo, horror, mer-kin, penguin, plant, slime, weird`.includes(
+              type_1,
+            ) &&
+            itemAmount($item`unusual oil`) < 4
           ) {
-            return useSkill$2(Skill.get("Extract Oil"));
+            return useSkill$2($skill`Extract Oil`);
           } else if (
-            Phylum.get(["undead"]).includes(type_1) &&
-            itemAmount(Item.get("eldritch oil")) < 5
+            $phyla`undead`.includes(type_1) &&
+            itemAmount($item`eldritch oil`) < 5
           ) {
-            return useSkill$2(Skill.get("Extract Oil"));
+            return useSkill$2($skill`Extract Oil`);
           }
         }
         if (
-          canUse$2(Skill.get("Good Medicine")) &&
-          myMp() >= 3 * mpCost(Skill.get("Good Medicine"))
+          canUse$2($skill`Good Medicine`) &&
+          myMp() >= 3 * mpCost($skill`Good Medicine`)
         ) {
-          return useSkill$2(Skill.get("Good Medicine"));
+          return useSkill$2($skill`Good Medicine`);
         }
         if (
-          canUse$1(Skill.get("Lavafava"), false) &&
-          enemy.defenseElement !== Element.get("hot")
+          canUse$1($skill`Lavafava`, false) &&
+          enemy.defenseElement !== $element`hot`
         ) {
-          attackMajor = useSkill$1(Skill.get("Lavafava"), false);
-          attackMinor = useSkill$1(Skill.get("Lavafava"), false);
-          costMajor = mpCost(Skill.get("Lavafava"));
-          costMinor = mpCost(Skill.get("Lavafava"));
+          attackMajor = useSkill$1($skill`Lavafava`, false);
+          attackMinor = useSkill$1($skill`Lavafava`, false);
+          costMajor = mpCost($skill`Lavafava`);
+          costMinor = mpCost($skill`Lavafava`);
         }
-        if (canUse$1(Skill.get("Beanstorm"), false)) {
-          attackMajor = useSkill$1(Skill.get("Beanstorm"), false);
-          attackMinor = useSkill$1(Skill.get("Beanstorm"), false);
-          costMajor = mpCost(Skill.get("Beanstorm"));
-          costMinor = mpCost(Skill.get("Beanstorm"));
+        if (canUse$1($skill`Beanstorm`, false)) {
+          attackMajor = useSkill$1($skill`Beanstorm`, false);
+          attackMinor = useSkill$1($skill`Beanstorm`, false);
+          costMajor = mpCost($skill`Beanstorm`);
+          costMinor = mpCost($skill`Beanstorm`);
         }
         if (
-          canUse$1(Skill.get("Fan Hammer"), false) &&
+          canUse$1($skill`Fan Hammer`, false) &&
           enemy.physicalResistance < 80
         ) {
-          attackMajor = useSkill$1(Skill.get("Fan Hammer"), false);
-          attackMinor = useSkill$1(Skill.get("Fan Hammer"), false);
-          costMajor = mpCost(Skill.get("Fan Hammer"));
-          costMinor = mpCost(Skill.get("Fan Hammer"));
+          attackMajor = useSkill$1($skill`Fan Hammer`, false);
+          attackMinor = useSkill$1($skill`Fan Hammer`, false);
+          costMajor = mpCost($skill`Fan Hammer`);
+          costMinor = mpCost($skill`Fan Hammer`);
         }
         if (
-          canUse$1(Skill.get("Snakewhip"), false) &&
+          canUse$1($skill`Snakewhip`, false) &&
           enemy.physicalResistance < 80
         ) {
-          attackMajor = useSkill$1(Skill.get("Snakewhip"), false);
-          attackMinor = useSkill$1(Skill.get("Snakewhip"), false);
-          costMajor = mpCost(Skill.get("Snakewhip"));
-          costMinor = mpCost(Skill.get("Snakewhip"));
+          attackMajor = useSkill$1($skill`Snakewhip`, false);
+          attackMinor = useSkill$1($skill`Snakewhip`, false);
+          costMajor = mpCost($skill`Snakewhip`);
+          costMinor = mpCost($skill`Snakewhip`);
         }
         if (
-          canUse$1(Skill.get("Pungent Mung"), false) &&
-          enemy.defenseElement !== Element.get("stench")
+          canUse$1($skill`Pungent Mung`, false) &&
+          enemy.defenseElement !== $element`stench`
         ) {
-          attackMajor = useSkill$1(Skill.get("Pungent Mung"), false);
-          attackMinor = useSkill$1(Skill.get("Pungent Mung"), false);
-          costMajor = mpCost(Skill.get("Pungent Mung"));
-          costMinor = mpCost(Skill.get("Pungent Mung"));
+          attackMajor = useSkill$1($skill`Pungent Mung`, false);
+          attackMinor = useSkill$1($skill`Pungent Mung`, false);
+          costMajor = mpCost($skill`Pungent Mung`);
+          costMinor = mpCost($skill`Pungent Mung`);
         }
         if (
-          canUse$1(Skill.get("Cowcall"), false) &&
-          type_1 !== Phylum.get("undead") &&
-          enemy.defenseElement !== Element.get("spooky") &&
-          (haveEffect(Effect.get("Cowrruption")) >= 60 ||
-            myClass() === Class.get("Cow Puncher"))
+          canUse$1($skill`Cowcall`, false) &&
+          type_1 !== $phylum`undead` &&
+          enemy.defenseElement !== $element`spooky` &&
+          (haveEffect($effect`Cowrruption`) >= 60 ||
+            myClass() === $class`Cow Puncher`)
         ) {
-          attackMajor = useSkill$1(Skill.get("Cowcall"), false);
-          attackMinor = useSkill$1(Skill.get("Cowcall"), false);
-          costMajor = mpCost(Skill.get("Cowcall"));
-          costMinor = mpCost(Skill.get("Cowcall"));
+          attackMajor = useSkill$1($skill`Cowcall`, false);
+          attackMinor = useSkill$1($skill`Cowcall`, false);
+          costMajor = mpCost($skill`Cowcall`);
+          costMinor = mpCost($skill`Cowcall`);
         }
         break;
-      case Class.get("Vampyre"):
-        for (const sk of Skill.get([
-          "Chill of the Tomb",
-          "Blood Spike",
-          "Piercing Gaze",
-          "Savage Bite",
-        ])) {
+      case $class`Vampyre`:
+        for (const sk of $skills`Chill of the Tomb, Blood Spike, Piercing Gaze, Savage Bite`) {
           if (
-            sk === Skill.get("Chill of the Tomb") &&
-            monsterElement(enemy) === Element.get("cold")
+            sk === $skill`Chill of the Tomb` &&
+            monsterElement(enemy) === $element`cold`
           ) {
             continue;
           }
@@ -920,159 +861,152 @@ export function auto_combatDefaultStage5(
         }
         if (
           myHp() > 0.5 * myMaxhp() &&
-          attackMajor === useSkill$1(Skill.get("Chill of the Tomb"), false) &&
-          myLocation() === Location.get("The Smut Orc Logging Camp")
+          attackMajor === useSkill$1($skill`Chill of the Tomb`, false) &&
+          myLocation() === $location`The Smut Orc Logging Camp`
         ) {
           break;
         }
         if (
           myHp() < myMaxhp() &&
           (monsterHp() <= 30 ||
-            (monsterHp() <= 100 &&
-              auto_have_skill(Skill.get("Hypnotic Eyes")))) &&
-          canUse$2(Skill.get("Dark Feast"))
+            (monsterHp() <= 100 && auto_have_skill($skill`Hypnotic Eyes`))) &&
+          canUse$2($skill`Dark Feast`)
         ) {
-          return useSkill$2(Skill.get("Dark Feast"));
+          return useSkill$2($skill`Dark Feast`);
         }
         if (
           attackMinor === "attack with weapon" &&
-          !haveSkill(Skill.get("Preternatural Strength")) &&
-          canUse$4(Item.get("beehive")) &&
-          Stat.get("Moxie") !== weaponType(equippedItem(Slot.get("weapon")))
+          !haveSkill($skill`Preternatural Strength`) &&
+          canUse$4($item`beehive`) &&
+          $stat`Moxie` !== weaponType(equippedItem($slot`weapon`))
         ) {
-          attackMinor = useItem(Item.get("beehive"), false);
+          attackMinor = useItem($item`beehive`, false);
         }
         break;
-      case Class.get("Pig Skinner"):
+      case $class`Pig Skinner`:
         attackMinor = "attack with weapon";
         if (
-          canUse$1(Skill.get("Ball Throw"), true) &&
+          canUse$1($skill`Ball Throw`, true) &&
           enemy.physicalResistance < 80
         ) {
-          attackMajor = useSkill$1(Skill.get("Ball Throw"), true);
-          attackMinor = useSkill$1(Skill.get("Ball Throw"), true);
-          costMajor = mpCost(Skill.get("Ball Throw"));
-          costMinor = mpCost(Skill.get("Ball Throw"));
+          attackMajor = useSkill$1($skill`Ball Throw`, true);
+          attackMinor = useSkill$1($skill`Ball Throw`, true);
+          costMajor = mpCost($skill`Ball Throw`);
+          costMinor = mpCost($skill`Ball Throw`);
         }
         if (
-          canUse$1(Skill.get("Hot Foot"), true) &&
-          enemy.defenseElement !== Element.get("hot") &&
+          canUse$1($skill`Hot Foot`, true) &&
+          enemy.defenseElement !== $element`hot` &&
           !enemyCanBlocksSkills()
         ) {
-          attackMajor = useSkill$1(Skill.get("Hot Foot"), true);
-          attackMinor = useSkill$1(Skill.get("Hot Foot"), true);
-          costMajor = mpCost(Skill.get("Hot Foot"));
-          costMinor = mpCost(Skill.get("Hot Foot"));
+          attackMajor = useSkill$1($skill`Hot Foot`, true);
+          attackMinor = useSkill$1($skill`Hot Foot`, true);
+          costMajor = mpCost($skill`Hot Foot`);
+          costMinor = mpCost($skill`Hot Foot`);
         }
         if (
-          canUse$1(Skill.get("Stop Hitting Yourself"), true) &&
+          canUse$1($skill`Stop Hitting Yourself`, true) &&
           enemy.physicalResistance < 80
         ) {
-          attackMajor = useSkill$1(Skill.get("Stop Hitting Yourself"), true);
-          attackMinor = useSkill$1(Skill.get("Stop Hitting Yourself"), true);
-          costMajor = mpCost(Skill.get("Stop Hitting Yourself"));
-          costMinor = mpCost(Skill.get("Stop Hitting Yourself"));
+          attackMajor = useSkill$1($skill`Stop Hitting Yourself`, true);
+          attackMinor = useSkill$1($skill`Stop Hitting Yourself`, true);
+          costMajor = mpCost($skill`Stop Hitting Yourself`);
+          costMinor = mpCost($skill`Stop Hitting Yourself`);
         }
-        if (
-          myHp() / 0.5 < myMaxhp() &&
-          canUse$1(Skill.get("Second Wind"), true)
-        ) {
-          attackMajor = useSkill$1(Skill.get("Second Wind"), true);
-          attackMinor = useSkill$1(Skill.get("Second Wind"), true);
-          costMajor = mpCost(Skill.get("Second Wind"));
-          costMinor = mpCost(Skill.get("Second Wind"));
+        if (myHp() / 0.5 < myMaxhp() && canUse$1($skill`Second Wind`, true)) {
+          attackMajor = useSkill$1($skill`Second Wind`, true);
+          attackMinor = useSkill$1($skill`Second Wind`, true);
+          costMajor = mpCost($skill`Second Wind`);
+          costMinor = mpCost($skill`Second Wind`);
         }
         break;
-      case Class.get("Cheese Wizard"):
+      case $class`Cheese Wizard`:
         attackMinor = "attack with weapon";
-        if (canUse$2(Skill.get("Parmesan Missile"))) {
-          attackMajor = useSkill$1(Skill.get("Parmesan Missile"), false);
-          attackMinor = useSkill$1(Skill.get("Parmesan Missile"), false);
-          costMajor = mpCost(Skill.get("Parmesan Missile"));
-          costMinor = mpCost(Skill.get("Parmesan Missile"));
+        if (canUse$2($skill`Parmesan Missile`)) {
+          attackMajor = useSkill$1($skill`Parmesan Missile`, false);
+          attackMinor = useSkill$1($skill`Parmesan Missile`, false);
+          costMajor = mpCost($skill`Parmesan Missile`);
+          costMinor = mpCost($skill`Parmesan Missile`);
+        }
+        if (canUse$2($skill`Crack Knuckles`) && enemy.physicalResistance < 80) {
+          attackMajor = useSkill$1($skill`Crack Knuckles`, true);
+          attackMinor = useSkill$1($skill`Crack Knuckles`, true);
+          costMajor = mpCost($skill`Crack Knuckles`);
+          costMinor = mpCost($skill`Crack Knuckles`);
+        }
+        if (canUse$1($skill`Mind Melt`, true)) {
+          attackMajor = useSkill$1($skill`Mind Melt`, true);
+          attackMinor = useSkill$1($skill`Mind Melt`, true);
+          costMajor = mpCost($skill`Mind Melt`);
+          costMinor = mpCost($skill`Mind Melt`);
         }
         if (
-          canUse$2(Skill.get("Crack Knuckles")) &&
+          canUse$1($skill`Stilton Splatter`, true) &&
           enemy.physicalResistance < 80
         ) {
-          attackMajor = useSkill$1(Skill.get("Crack Knuckles"), true);
-          attackMinor = useSkill$1(Skill.get("Crack Knuckles"), true);
-          costMajor = mpCost(Skill.get("Crack Knuckles"));
-          costMinor = mpCost(Skill.get("Crack Knuckles"));
-        }
-        if (canUse$1(Skill.get("Mind Melt"), true)) {
-          attackMajor = useSkill$1(Skill.get("Mind Melt"), true);
-          attackMinor = useSkill$1(Skill.get("Mind Melt"), true);
-          costMajor = mpCost(Skill.get("Mind Melt"));
-          costMinor = mpCost(Skill.get("Mind Melt"));
+          attackMajor = useSkill$1($skill`Stilton Splatter`, true);
+          attackMinor = useSkill$1($skill`Stilton Splatter`, true);
+          costMajor = mpCost($skill`Stilton Splatter`);
+          costMinor = mpCost($skill`Stilton Splatter`);
         }
         if (
-          canUse$1(Skill.get("Stilton Splatter"), true) &&
-          enemy.physicalResistance < 80
-        ) {
-          attackMajor = useSkill$1(Skill.get("Stilton Splatter"), true);
-          attackMinor = useSkill$1(Skill.get("Stilton Splatter"), true);
-          costMajor = mpCost(Skill.get("Stilton Splatter"));
-          costMinor = mpCost(Skill.get("Stilton Splatter"));
-        }
-        if (
-          canUse$1(Skill.get("Emmental Elemental"), true) &&
+          canUse$1($skill`Emmental Elemental`, true) &&
           myHp() / 0.7 < myMaxhp()
         ) {
-          attackMajor = useSkill$1(Skill.get("Emmental Elemental"), true);
-          attackMinor = useSkill$1(Skill.get("Emmental Elemental"), true);
-          costMajor = mpCost(Skill.get("Emmental Elemental"));
-          costMinor = mpCost(Skill.get("Emmental Elemental"));
+          attackMajor = useSkill$1($skill`Emmental Elemental`, true);
+          attackMinor = useSkill$1($skill`Emmental Elemental`, true);
+          costMajor = mpCost($skill`Emmental Elemental`);
+          costMinor = mpCost($skill`Emmental Elemental`);
         }
         break;
-      case Class.get("Jazz Agent"):
+      case $class`Jazz Agent`:
         attackMinor = "attack with weapon";
         if (
-          canUse$1(Skill.get("Orchestra Strike"), false) &&
+          canUse$1($skill`Orchestra Strike`, false) &&
           enemy.physicalResistance < 80
         ) {
-          attackMajor = useSkill$1(Skill.get("Orchestra Strike"), false);
-          attackMinor = useSkill$1(Skill.get("Orchestra Strike"), false);
-          costMajor = mpCost(Skill.get("Orchestra Strike"));
-          costMinor = mpCost(Skill.get("Orchestra Strike"));
+          attackMajor = useSkill$1($skill`Orchestra Strike`, false);
+          attackMinor = useSkill$1($skill`Orchestra Strike`, false);
+          costMajor = mpCost($skill`Orchestra Strike`);
+          costMinor = mpCost($skill`Orchestra Strike`);
         }
         if (
-          canUse$1(Skill.get("Sax of Violence"), false) &&
-          enemy.defenseElement !== Element.get("sleaze")
+          canUse$1($skill`Sax of Violence`, false) &&
+          enemy.defenseElement !== $element`sleaze`
         ) {
-          attackMajor = useSkill$1(Skill.get("Sax of Violence"), false);
-          attackMinor = useSkill$1(Skill.get("Sax of Violence"), false);
-          costMajor = mpCost(Skill.get("Sax of Violence"));
-          costMinor = mpCost(Skill.get("Sax of Violence"));
+          attackMajor = useSkill$1($skill`Sax of Violence`, false);
+          attackMinor = useSkill$1($skill`Sax of Violence`, false);
+          costMajor = mpCost($skill`Sax of Violence`);
+          costMinor = mpCost($skill`Sax of Violence`);
         }
-        if (canUse$1(Skill.get("Venomous Riff"), true)) {
-          attackMajor = useSkill$1(Skill.get("Venomous Riff"), true);
-          attackMinor = useSkill$1(Skill.get("Venomous Riff"), true);
-          costMajor = mpCost(Skill.get("Venomous Riff"));
-          costMinor = mpCost(Skill.get("Venomous Riff"));
+        if (canUse$1($skill`Venomous Riff`, true)) {
+          attackMajor = useSkill$1($skill`Venomous Riff`, true);
+          attackMinor = useSkill$1($skill`Venomous Riff`, true);
+          costMajor = mpCost($skill`Venomous Riff`);
+          costMinor = mpCost($skill`Venomous Riff`);
         }
         if (
-          canUse$1(Skill.get("Knife In The Darkness"), true) &&
+          canUse$1($skill`Knife In The Darkness`, true) &&
           zone_combatMod(myLocation())._int < 0
         ) {
-          attackMajor = useSkill$1(Skill.get("Knife In The Darkness"), true);
-          attackMinor = useSkill$1(Skill.get("Knife In The Darkness"), true);
-          costMajor = mpCost(Skill.get("Knife In The Darkness"));
-          costMinor = mpCost(Skill.get("Knife In The Darkness"));
+          attackMajor = useSkill$1($skill`Knife In The Darkness`, true);
+          attackMinor = useSkill$1($skill`Knife In The Darkness`, true);
+          costMajor = mpCost($skill`Knife In The Darkness`);
+          costMinor = mpCost($skill`Knife In The Darkness`);
         }
         if (
-          canUse(Skill.get("Grit Teeth"), false, true) &&
+          canUse($skill`Grit Teeth`, false, true) &&
           myHp() < myMaxhp() &&
           combat_status_check("stunned") &&
           round_1 < 5
         ) {
-          attackMajor = useSkill$1(Skill.get("Grit Teeth"), true);
-          attackMinor = useSkill$1(Skill.get("Grit Teeth"), true);
-          costMajor = mpCost(Skill.get("Grit Teeth"));
-          costMinor = mpCost(Skill.get("Grit Teeth"));
+          attackMajor = useSkill$1($skill`Grit Teeth`, true);
+          attackMinor = useSkill$1($skill`Grit Teeth`, true);
+          costMajor = mpCost($skill`Grit Teeth`);
+          costMinor = mpCost($skill`Grit Teeth`);
         }
         break;
-      case Class.get("Zootomist"):
+      case $class`Zootomist`:
         punch = getZooBestPunch$1(enemy);
         if (punch === Skill.none) {
           return "attack with weapon";
@@ -1086,61 +1020,51 @@ export function auto_combatDefaultStage5(
   } // class attack selection
 
   if ((myHp() * 10) / 3 < myMaxhp()) {
-    if (
-      canUse$2(Skill.get("Thunderstrike")) &&
-      monsterLevelAdjustment() <= 150
-    ) {
-      return useSkill$2(Skill.get("Thunderstrike"));
+    if (canUse$2($skill`Thunderstrike`) && monsterLevelAdjustment() <= 150) {
+      return useSkill$2($skill`Thunderstrike`);
     }
 
     if (
-      canUse$2(Skill.get("Unleash the Greash")) &&
-      monsterElement(enemy) !== Element.get("sleaze") &&
-      haveEffect(Effect.get("Takin' It Greasy")) > 100
+      canUse$2($skill`Unleash the Greash`) &&
+      monsterElement(enemy) !== $element`sleaze` &&
+      haveEffect($effect`Takin' It Greasy`) > 100
     ) {
-      return useSkill$2(Skill.get("Unleash the Greash"));
+      return useSkill$2($skill`Unleash the Greash`);
     }
     if (
-      canUse$2(Skill.get("Thousand-Yard Stare")) &&
-      monsterElement(enemy) !== Element.get("spooky") &&
-      haveEffect(Effect.get("Intimidating Mien")) > 100
+      canUse$2($skill`Thousand-Yard Stare`) &&
+      monsterElement(enemy) !== $element`spooky` &&
+      haveEffect($effect`Intimidating Mien`) > 100
     ) {
-      return useSkill$2(Skill.get("Thousand-Yard Stare"));
+      return useSkill$2($skill`Thousand-Yard Stare`);
     }
     if (
-      Monster.get([
-        "Aquagoblin",
-        "Lord Soggyraven",
-        "Groar",
-        "The Big Wisniewski",
-        "The Man",
-      ]).includes(enemy) &&
+      $monsters`Aquagoblin, Lord Soggyraven, Groar, The Big Wisniewski, The Man`.includes(
+        enemy,
+      ) &&
       myMp() >= costMajor
     ) {
       return attackMajor;
     }
-    if (
-      myClass() === Class.get("Turtle Tamer") &&
-      canUse$2(Skill.get("Spirit Snap"))
-    ) {
+    if (myClass() === $class`Turtle Tamer` && canUse$2($skill`Spirit Snap`)) {
       if (
-        haveEffect(Effect.get("Blessing of the Storm Tortoise")) > 0 ||
-        haveEffect(Effect.get("Grand Blessing of the Storm Tortoise")) > 0 ||
-        haveEffect(Effect.get("Glorious Blessing of the Storm Tortoise")) > 0 ||
-        haveEffect(Effect.get("Glorious Blessing of the War Snapper")) > 0 ||
-        haveEffect(Effect.get("Glorious Blessing of She-Who-Was")) > 0
+        haveEffect($effect`Blessing of the Storm Tortoise`) > 0 ||
+        haveEffect($effect`Grand Blessing of the Storm Tortoise`) > 0 ||
+        haveEffect($effect`Glorious Blessing of the Storm Tortoise`) > 0 ||
+        haveEffect($effect`Glorious Blessing of the War Snapper`) > 0 ||
+        haveEffect($effect`Glorious Blessing of She-Who-Was`) > 0
       ) {
-        return useSkill$2(Skill.get("Spirit Snap"));
+        return useSkill$2($skill`Spirit Snap`);
       }
     }
     if (
-      canUse$2(Skill.get("Northern Explosion")) &&
+      canUse$2($skill`Northern Explosion`) &&
       !auto_canNorthernExplosionFE() &&
-      myClass() === Class.get("Seal Clubber") &&
-      monsterElement(enemy) !== Element.get("cold") &&
+      myClass() === $class`Seal Clubber` &&
+      monsterElement(enemy) !== $element`cold` &&
       (hasClubEquipped() || buffedHitStat() - 20 > monsterDefense())
     ) {
-      return useSkill$2(Skill.get("Northern Explosion"));
+      return useSkill$2($skill`Northern Explosion`);
     }
     if (!combat_status_check("last attempt") && myMp() >= costMajor) {
       if (canSurvive$1(1.4)) {
@@ -1161,57 +1085,57 @@ export function auto_combatDefaultStage5(
       }
       return "attack with weapon";
     }
-    if (myLocation() !== Location.get("The Slime Tube")) {
+    if (myLocation() !== $location`The Slime Tube`) {
       abort("Could not handle monster, sorry");
     }
   }
   if (
     monsterLevelAdjustment() > 150 &&
     myMp() >= 45 &&
-    canUse$2(Skill.get("Shell Up")) &&
-    myClass() === Class.get("Turtle Tamer")
+    canUse$2($skill`Shell Up`) &&
+    myClass() === $class`Turtle Tamer`
   ) {
-    return useSkill$2(Skill.get("Shell Up"));
+    return useSkill$2($skill`Shell Up`);
   }
 
   if (
     enemy.physicalResistance >= 100 &&
-    monsterElement(enemy) !== Element.get("cold") &&
-    canUse$1(Skill.get("Throat Refrigerant"), false)
+    monsterElement(enemy) !== $element`cold` &&
+    canUse$1($skill`Throat Refrigerant`, false)
   ) {
-    return useSkill$1(Skill.get("Throat Refrigerant"), false);
+    return useSkill$1($skill`Throat Refrigerant`, false);
   }
 
   if (
     enemy.physicalResistance >= 100 &&
-    monsterElement(enemy) !== Element.get("hot") &&
-    canUse$1(Skill.get("Boiling Tear Ducts"), false)
+    monsterElement(enemy) !== $element`hot` &&
+    canUse$1($skill`Boiling Tear Ducts`, false)
   ) {
-    return useSkill$1(Skill.get("Boiling Tear Ducts"), false);
+    return useSkill$1($skill`Boiling Tear Ducts`, false);
   }
 
   if (
     enemy.physicalResistance >= 100 &&
-    monsterElement(enemy) !== Element.get("sleaze") &&
-    canUse$2(Skill.get("Projectile Salivary Glands"))
+    monsterElement(enemy) !== $element`sleaze` &&
+    canUse$2($skill`Projectile Salivary Glands`)
   ) {
-    return useSkill$2(Skill.get("Projectile Salivary Glands"));
+    return useSkill$2($skill`Projectile Salivary Glands`);
   }
 
   if (
     enemy.physicalResistance >= 100 &&
-    monsterElement(enemy) !== Element.get("spooky") &&
-    canUse$1(Skill.get("Translucent Skin"), false)
+    monsterElement(enemy) !== $element`spooky` &&
+    canUse$1($skill`Translucent Skin`, false)
   ) {
-    return useSkill$1(Skill.get("Translucent Skin"), false);
+    return useSkill$1($skill`Translucent Skin`, false);
   }
 
   if (
     enemy.physicalResistance >= 100 &&
-    monsterElement(enemy) !== Element.get("stench") &&
-    canUse$1(Skill.get("Skunk Glands"), false)
+    monsterElement(enemy) !== $element`stench` &&
+    canUse$1($skill`Skunk Glands`, false)
   ) {
-    return useSkill$1(Skill.get("Skunk Glands"), false);
+    return useSkill$1($skill`Skunk Glands`, false);
   }
   // final check for physically immune monsters we are planning on simply attacking
   // determine if attacking will deal reasonable damage
@@ -1225,27 +1149,27 @@ export function auto_combatDefaultStage5(
     let m_sleaze: number = 1;
     let m_stench: number = 1;
     switch (monsterElement(enemy)) {
-      case Element.get("hot"):
+      case $element`hot`:
         m_hot = 0;
         m_sleaze = 2;
         m_stench = 2;
         break;
-      case Element.get("cold"):
+      case $element`cold`:
         m_cold = 0;
         m_hot = 2;
         m_spooky = 2;
         break;
-      case Element.get("spooky"):
+      case $element`spooky`:
         m_spooky = 0;
         m_hot = 2;
         m_stench = 2;
         break;
-      case Element.get("sleaze"):
+      case $element`sleaze`:
         m_sleaze = 0;
         m_cold = 2;
         m_spooky = 2;
         break;
-      case Element.get("stench"):
+      case $element`stench`:
         m_stench = 0;
         m_sleaze = 2;
         m_cold = 2;
@@ -1267,17 +1191,8 @@ export function auto_combatDefaultStage5(
     }
   }
   // Wu Tang the Betrayer is immune to spells and normal attacks, but not Fist skills or Spectral Snapper
-  if (enemy === Monster.get("Wu Tang the Betrayer")) {
-    for (const sk of Skill.get([
-      "Spectral Snapper",
-      "Stinkpalm",
-      "Drunken Baby Style",
-      "Zendo Kobushi Kancho",
-      "Chilled Monkey Brain Technique",
-      "Knuckle Sandwich",
-      "Seven-Finger Strike",
-      "Flying Fire Fist",
-    ])) {
+  if (enemy === $monster`Wu Tang the Betrayer`) {
+    for (const sk of $skills`Spectral Snapper, Stinkpalm, Drunken Baby Style, Zendo Kobushi Kancho, Chilled Monkey Brain Technique, Knuckle Sandwich, Seven-Finger Strike, Flying Fire Fist`) {
       if (canUse$1(sk, false)) {
         return useSkill$1(sk, false);
       }
@@ -1288,7 +1203,7 @@ export function auto_combatDefaultStage5(
   }
 
   if (
-    myLocation() === Location.get("The X-32-F Combat Training Snowman") &&
+    myLocation() === $location`The X-32-F Combat Training Snowman` &&
     containsText(text, "Cattle Prod") &&
     myMp() >= costMajor
   ) {
@@ -1304,22 +1219,18 @@ export function auto_combatDefaultStage5(
   }
 
   if (
-    Monster.get([
-      "Aquagoblin",
-      "Lord Soggyraven",
-      "Groar",
-      "The Big Wisniewski",
-      "The Man",
-    ]).includes(enemy) &&
+    $monsters`Aquagoblin, Lord Soggyraven, Groar, The Big Wisniewski, The Man`.includes(
+      enemy,
+    ) &&
     myMp() >= costMajor
   ) {
     return attackMajor;
   }
 
   if (
-    canUse$1(Skill.get("Lunge Smack"), false) &&
+    canUse$1($skill`Lunge Smack`, false) &&
     attackMinor !== "attack with weapon" &&
-    weaponType(equippedItem(Slot.get("weapon"))) === Stat.get("Muscle")
+    weaponType(equippedItem($slot`weapon`)) === $stat`Muscle`
   ) {
     return attackMinor;
   }
@@ -1327,17 +1238,17 @@ export function auto_combatDefaultStage5(
     return attackMinor;
   }
 
-  if (round_1 > 20 && canUse$1(Skill.get("Saucestorm"), false)) {
-    return useSkill$1(Skill.get("Saucestorm"), false);
+  if (round_1 > 20 && canUse$1($skill`Saucestorm`, false)) {
+    return useSkill$1($skill`Saucestorm`, false);
   }
 
   if (
     attackMinor === "attack with weapon" &&
     monsterDefense() > 20 &&
     buffedHitStat() - 20 < monsterDefense() &&
-    canUse$1(Skill.get("Saucestorm"), false)
+    canUse$1($skill`Saucestorm`, false)
   ) {
-    return useSkill$1(Skill.get("Saucestorm"), false);
+    return useSkill$1($skill`Saucestorm`, false);
   }
 
   return attackMinor;

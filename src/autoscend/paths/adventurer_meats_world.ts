@@ -1,9 +1,7 @@
 import {
   abort,
   getProperty,
-  Item,
   itemAmount,
-  Location,
   max,
   meatCost,
   min,
@@ -14,7 +12,6 @@ import {
   myLevel,
   myMeat,
   myPath,
-  Path,
   pullsRemaining,
   runChoice,
   setProperty,
@@ -25,6 +22,8 @@ import {
   turnsPlayed,
   visitUrl,
 } from "kolmafia";
+import { $item, $location, $path, $skill, $stat } from "libram";
+
 import { pull_meat } from "../auto_acquire";
 import { autoAdv$2, autoLuckyAdv$1 } from "../auto_adventure";
 import { addToMaximize, simValue } from "../auto_equipment";
@@ -45,7 +44,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/adventurer_meats_world.ash
 export function in_amw(): boolean {
-  return myPath() === Path.get("Adventurer Meats World");
+  return myPath() === $path`Adventurer Meats World`;
 }
 
 export function amw_initializeSettings(): void {
@@ -73,13 +72,13 @@ export function amw_wantMeat(): boolean {
 // Calculates how many adventures we get in the smallest bundle/package/whatever
 function amw_advPerTrade(): number {
   let advs_per_trade: number = 10;
-  if (auto_have_skill(Skill.get("Pork Belly"))) {
+  if (auto_have_skill($skill`Pork Belly`)) {
     advs_per_trade += 1;
   }
-  if (auto_have_skill(Skill.get("Umami"))) {
+  if (auto_have_skill($skill`Umami`)) {
     advs_per_trade += 1;
   }
-  if (auto_have_skill(Skill.get("Grass-Fed"))) {
+  if (auto_have_skill($skill`Grass-Fed`)) {
     advs_per_trade += 1;
   }
   return advs_per_trade;
@@ -151,13 +150,13 @@ function amw_buySubstat(st: Stat, numberToBuy: number): boolean {
   }
   // setting which substat to buy
   let option: number = 0;
-  if (st === Stat.get("Muscle") || st === Stat.get("SubMuscle")) {
+  if (st === $stat`Muscle` || st === $stat`SubMuscle`) {
     option = 1;
   }
-  if (st === Stat.get("Mysticality") || st === Stat.get("SubMysticality")) {
+  if (st === $stat`Mysticality` || st === $stat`SubMysticality`) {
     option = 2;
   }
-  if (st === Stat.get("Moxie") || st === Stat.get("SubMoxie")) {
+  if (st === $stat`Moxie` || st === $stat`SubMoxie`) {
     option = 3;
   }
 
@@ -208,128 +207,128 @@ class amw_statAmount {
 function amw_nextSkillSubstats(): amw_statAmount {
   const goal: amw_statAmount = new amw_statAmount();
   // getting elemental res for kitchen
-  if (myBasestat(Stat.get("Muscle")) < 10) {
-    goal.st = Stat.get("SubMuscle");
+  if (myBasestat($stat`Muscle`) < 10) {
+    goal.st = $stat`SubMuscle`;
     goal.amount = 100;
     return goal;
   } else if (
     myBasestat(
       // survivability
-      Stat.get("Moxie"),
+      $stat`Moxie`,
     ) < 17
   ) {
-    goal.st = Stat.get("SubMoxie");
+    goal.st = $stat`SubMoxie`;
     goal.amount = 289;
     return goal;
   } else if (
     myBasestat(
       // getting some HP
-      Stat.get("Muscle"),
+      $stat`Muscle`,
     ) < 30
   ) {
-    goal.st = Stat.get("SubMuscle");
+    goal.st = $stat`SubMuscle`;
     goal.amount = 900;
     return goal;
   } else if (
     myBasestat(
       // survivability
-      Stat.get("Moxie"),
+      $stat`Moxie`,
     ) < 30
   ) {
-    goal.st = Stat.get("SubMoxie");
+    goal.st = $stat`SubMoxie`;
     goal.amount = 900;
     return goal;
   } else if (
     myBasestat(
       // more elemental res/item drop/famwt/in-combat heal/elem dmg
-      Stat.get("Mysticality"),
+      $stat`Mysticality`,
     ) < 50
   ) {
-    goal.st = Stat.get("SubMysticality");
+    goal.st = $stat`SubMysticality`;
     goal.amount = 2500;
     return goal;
   } else if (
     myBasestat(
       // +1 adv per bundle
-      Stat.get("Mysticality"),
+      $stat`Mysticality`,
     ) < 70
   ) {
-    goal.st = Stat.get("SubMysticality");
+    goal.st = $stat`SubMysticality`;
     goal.amount = 4900;
     return goal;
   } else if (
     myBasestat(
       // +20 adv per day/survivability
-      Stat.get("Moxie"),
+      $stat`Moxie`,
     ) < 50
   ) {
-    goal.st = Stat.get("SubMoxie");
+    goal.st = $stat`SubMoxie`;
     goal.amount = 2500;
     return goal;
   } else if (
     (myBasestat(
       // item/meat cute and lvl 11. lvl 11 not necessary if moxie is already our "mainstat"
-      Stat.get("Mysticality"),
+      $stat`Mysticality`,
     ) < 104 &&
-      myBasestat(Stat.get("Moxie")) < 104) ||
-    !auto_have_skill(Skill.get("Meat Cute"))
+      myBasestat($stat`Moxie`) < 104) ||
+    !auto_have_skill($skill`Meat Cute`)
   ) {
-    goal.st = Stat.get("SubMysticality");
+    goal.st = $stat`SubMysticality`;
     goal.amount = 10816;
     return goal;
   } else if (
     myBasestat(
       // -combat, elemental res
-      Stat.get("Moxie"),
+      $stat`Moxie`,
     ) < 90
   ) {
-    goal.st = Stat.get("SubMoxie");
+    goal.st = $stat`SubMoxie`;
     goal.amount = 8100;
     return goal;
   } else if (
     myBasestat(
       // tad more hp. necessary??
-      Stat.get("Muscle"),
+      $stat`Muscle`,
     ) < 50
   ) {
-    goal.st = Stat.get("SubMuscle");
+    goal.st = $stat`SubMuscle`;
     goal.amount = 2500;
     return goal;
   } else if (
     myBasestat(
       // +1 adv per bundle/lvl 12
-      Stat.get("Moxie"),
+      $stat`Moxie`,
     ) < 125
   ) {
-    goal.st = Stat.get("SubMoxie");
+    goal.st = $stat`SubMoxie`;
     goal.amount = 15625;
     return goal;
   } else if (
     !auto_have_skill(
       // +1 adv per bundle
-      Skill.get("Pork Belly"),
+      $skill`Pork Belly`,
     )
   ) {
-    goal.st = Stat.get("SubMuscle");
+    goal.st = $stat`SubMuscle`;
     goal.amount = 10000;
     return goal;
   } else if (
     !auto_have_skill(
       // initiative
-      Skill.get("Tender Loins"),
+      $skill`Tender Loins`,
     )
   ) {
-    goal.st = Stat.get("SubMysticality");
+    goal.st = $stat`SubMysticality`;
     goal.amount = 12100;
     return goal;
   } else if (
     myDaycount() > 1 &&
     myBasestat(
       // level 13 if not d1
-      Stat.get("Moxie"),
+      $stat`Moxie`,
     ) < 148
   ) {
-    goal.st = Stat.get("SubMoxie");
+    goal.st = $stat`SubMoxie`;
     goal.amount = 21904;
     return goal;
   }
@@ -342,12 +341,12 @@ function amw_nextLevelSubstats(): amw_statAmount {
   let next_level: number = 0;
   const goal: amw_statAmount = new amw_statAmount();
   next_level = myLevel() + 1;
-  let mainstat: Stat = Stat.get("SubMysticality");
+  let mainstat: Stat = $stat`SubMysticality`;
   // which stat is our mainstat should be mostly consistent with the priority of amw_nextSkillSubstats()
   // the difference between that function and this one is that this focuses on leveling priority if we have to meatlevel,
   // while the other one focuses on acquiring skills
   if (next_level === 12 || next_level === 13) {
-    mainstat = Stat.get("SubMoxie");
+    mainstat = $stat`SubMoxie`;
   }
   goal.st = mainstat;
   goal.amount = ((next_level - 1) ** 2 + 4) ** 2;
@@ -442,16 +441,16 @@ function LX_attemptPowerLevelMeat$1(skills: boolean): boolean {
   // "best" meatleveling zone at top
   if (
     meatDrop_1 >= 300 &&
-    zone_isAvailable(Location.get("The Hidden Hospital"), true)
+    zone_isAvailable($location`The Hidden Hospital`, true)
   ) {
     // could lower meatDrop a bit when janitor is banished
-    return autoAdv$2(Location.get("The Hidden Hospital"));
-  } else if (zone_isAvailable(Location.get("The Haunted Bedroom"), true)) {
-    return autoAdv$2(Location.get("The Haunted Bedroom"));
-  } else if (zone_isAvailable(Location.get("The Icy Peak"), false)) {
-    return autoAdv$2(Location.get("The Icy Peak"));
-  } else if (zone_isAvailable(Location.get("Cobb's Knob Treasury"), true)) {
-    return autoAdv$2(Location.get("Cobb's Knob Treasury"));
+    return autoAdv$2($location`The Hidden Hospital`);
+  } else if (zone_isAvailable($location`The Haunted Bedroom`, true)) {
+    return autoAdv$2($location`The Haunted Bedroom`);
+  } else if (zone_isAvailable($location`The Icy Peak`, false)) {
+    return autoAdv$2($location`The Icy Peak`);
+  } else if (zone_isAvailable($location`Cobb's Knob Treasury`, true)) {
+    return autoAdv$2($location`Cobb's Knob Treasury`);
   } else if (myAdventures() > 3) {
     visitUrl("place.php?whichplace=town&action=town_oddjobs");
     runChoice(1);
@@ -494,9 +493,9 @@ export function LM_adventurerMeatsWorld(): boolean {
   if (
     toBoolean(getProperty("auto_shouldMeatLevel")) &&
     cloversAvailable$1() > 1 &&
-    myBuffedstat(Stat.get("Moxie")) > 25 &&
+    myBuffedstat($stat`Moxie`) > 25 &&
     myLevel() < 12 &&
-    zone_isAvailable(Location.get("Cobb's Knob Treasury"), true)
+    zone_isAvailable($location`Cobb's Knob Treasury`, true)
   ) {
     if (amw_buyStats$1()) {
       // before we lucky adventure, we want to make sure we wouldn't buy our way to lvl 12
@@ -504,10 +503,10 @@ export function LM_adventurerMeatsWorld(): boolean {
     }
     // we also need to make sure we have the key, might need to burn an adventure to catch the superlikely
     // otherwise autoscend gets confused and aborts when it enounters the superlikely for the key instead of the lucky! nc
-    if (itemAmount(Item.get("Cobb's Knob lab key")) < 1) {
-      return autoAdv$2(Location.get("Cobb's Knob Treasury"));
+    if (itemAmount($item`Cobb's Knob lab key`) < 1) {
+      return autoAdv$2($location`Cobb's Knob Treasury`);
     }
-    return autoLuckyAdv$1(Location.get("Cobb's Knob Treasury"));
+    return autoLuckyAdv$1($location`Cobb's Knob Treasury`);
   }
 
   if (amw_buyStats$1()) {
@@ -519,7 +518,7 @@ export function LM_adventurerMeatsWorld(): boolean {
   // mobius ring and/or pulling meat avoid this
   if (
     turnsPlayed() > 8 &&
-    myBasestat(Stat.get("Mysticality")) < 30 &&
+    myBasestat($stat`Mysticality`) < 30 &&
     !auto_haveMobiusRing()
   ) {
     auto_log_info$1("Low skills after 8 turns, going to meatfarm");

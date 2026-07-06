@@ -1,13 +1,6 @@
-import {
-  Class,
-  containsText,
-  Item,
-  myClass,
-  myDaycount,
-  myPath,
-  Path,
-  visitUrl,
-} from "kolmafia";
+import { containsText, myClass, myDaycount, myPath, visitUrl } from "kolmafia";
+import { $class, $item, $path } from "libram";
+
 import { pullXWhenHaveY } from "../auto_acquire";
 import { auto_log_info } from "../auto_util";
 
@@ -15,7 +8,7 @@ import { auto_log_info } from "../auto_util";
 
 //Defined in autoscend/paths/picky.ash
 export function in_picky(): boolean {
-  return myPath() === Path.get("Picky");
+  return myPath() === $path`Picky`;
 }
 
 export function picky_pulls(): void {
@@ -23,7 +16,7 @@ export function picky_pulls(): void {
     if (myDaycount() === 3) {
       //pullXWhenHaveY($item[Wand of Nagamar], 1, 0);		//Pull made obsolete by Questificaton
       //pullXWhenHaveY($item[Star Key Lime Pie], 3, 0);
-      pullXWhenHaveY(Item.get("cold hi mein"), 3, 0);
+      pullXWhenHaveY($item`cold hi mein`, 3, 0);
     }
   }
 }
@@ -31,8 +24,8 @@ export function picky_pulls(): void {
 export function picky_startAscension(): void {
   auto_log_info("In Being Picky Adventure", "blue");
   if (
-    myClass() === Class.get("Turtle Tamer") ||
-    myClass() === Class.get("Seal Clubber")
+    myClass() === $class`Turtle Tamer` ||
+    myClass() === $class`Seal Clubber`
   ) {
     auto_log_info("Selecting skills", "blue");
     const page: string = visitUrl(

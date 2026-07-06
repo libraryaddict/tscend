@@ -3,7 +3,6 @@ import {
   availableAmount,
   containsText,
   council,
-  Effect,
   getProperty,
   haveOutfit,
   Item,
@@ -11,21 +10,28 @@ import {
   Location,
   max,
   Modifier,
-  Monster,
   monsterAttack,
   myBuffedstat,
   myLevel,
   myPath,
   myPrimestat,
   numericModifier,
-  Path,
   setProperty,
-  Slot,
-  Stat,
   toBoolean,
   toInt,
   towerDoor,
 } from "kolmafia";
+import {
+  $effect,
+  $item,
+  $location,
+  $locations,
+  $monster,
+  $path,
+  $slot,
+  $stat,
+} from "libram";
+
 import { LX_burnDelay } from "../../autoscend";
 import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
 import { buffMaintain$4 } from "../auto_buff";
@@ -155,54 +161,33 @@ import {
 
 // These are listed in the order they will be iterated (item id ascending) to make debugging easier.
 const lowKeys: Map<Item, Location> = new Map();
-lowKeys.set(Item.get("clown car key"), Location.get('The "Fun" House'));
-lowKeys.set(
-  Item.get("batting cage key"),
-  Location.get("The Bat Hole Entrance"),
-);
-lowKeys.set(Item.get("aqu&iacute;"), Location.get("South of the Border"));
-lowKeys.set(
-  Item.get("knob labinet key"),
-  Location.get("Cobb's Knob Laboratory"),
-);
-lowKeys.set(
-  Item.get("weremoose key"),
-  Location.get("Cobb's Knob Menagerie, Level 2"),
-);
-lowKeys.set(Item.get("peg key"), Location.get("The Obligatory Pirate's Cove"));
-lowKeys.set(Item.get("kekekey"), Location.get("The Valley of Rof L'm Fao"));
-lowKeys.set(Item.get("rabbit's foot key"), Location.get("The Dire Warren"));
-lowKeys.set(Item.get("knob shaft skate key"), Location.get("The Knob Shaft"));
-lowKeys.set(Item.get("ice key"), Location.get("The Icy Peak"));
-lowKeys.set(Item.get("anchovy can key"), Location.get("The Haunted Pantry"));
-lowKeys.set(Item.get("cactus key"), Location.get("The Arid, Extra-Dry Desert"));
-lowKeys.set(Item.get("f'c'le sh'c'le k'y"), Location.get("The F'c'le"));
-lowKeys.set(Item.get("treasure chest key"), Location.get("Belowdecks"));
-lowKeys.set(Item.get("demonic key"), Location.get("Pandamonium Slums"));
-lowKeys.set(Item.get("key sausage"), Location.get("Cobb's Knob Kitchens"));
-lowKeys.set(
-  Item.get("knob treasury key"),
-  Location.get("Cobb's Knob Treasury"),
-);
-lowKeys.set(Item.get("scrap metal key"), Location.get("The Old Landfill"));
-lowKeys.set(
-  Item.get("black rose key"),
-  Location.get("The Haunted Conservatory"),
-);
-lowKeys.set(
-  Item.get("actual skeleton key"),
-  Location.get("The Skeleton Store"),
-);
-lowKeys.set(Item.get("music box key"), Location.get("The Haunted Nursery"));
-lowKeys.set(Item.get("deep-fried key"), Location.get("Madness Bakery"));
-lowKeys.set(
-  Item.get("discarded bike lock key"),
-  Location.get("The Overgrown Lot"),
-);
+lowKeys.set($item`clown car key`, $location`The "Fun" House`);
+lowKeys.set($item`batting cage key`, $location`The Bat Hole Entrance`);
+lowKeys.set($item`aquí`, $location`South of the Border`);
+lowKeys.set($item`knob labinet key`, $location`Cobb's Knob Laboratory`);
+lowKeys.set($item`weremoose key`, $location`Cobb's Knob Menagerie\, Level 2`);
+lowKeys.set($item`peg key`, $location`The Obligatory Pirate's Cove`);
+lowKeys.set($item`kekekey`, $location`The Valley of Rof L'm Fao`);
+lowKeys.set($item`rabbit's foot key`, $location`The Dire Warren`);
+lowKeys.set($item`knob shaft skate key`, $location`The Knob Shaft`);
+lowKeys.set($item`ice key`, $location`The Icy Peak`);
+lowKeys.set($item`anchovy can key`, $location`The Haunted Pantry`);
+lowKeys.set($item`cactus key`, $location`The Arid\, Extra-Dry Desert`);
+lowKeys.set($item`f'c'le sh'c'le k'y`, $location`The F'c'le`);
+lowKeys.set($item`treasure chest key`, $location`Belowdecks`);
+lowKeys.set($item`demonic key`, $location`Pandamonium Slums`);
+lowKeys.set($item`key sausage`, $location`Cobb's Knob Kitchens`);
+lowKeys.set($item`knob treasury key`, $location`Cobb's Knob Treasury`);
+lowKeys.set($item`scrap metal key`, $location`The Old Landfill`);
+lowKeys.set($item`black rose key`, $location`The Haunted Conservatory`);
+lowKeys.set($item`actual skeleton key`, $location`The Skeleton Store`);
+lowKeys.set($item`music box key`, $location`The Haunted Nursery`);
+lowKeys.set($item`deep-fried key`, $location`Madness Bakery`);
+lowKeys.set($item`discarded bike lock key`, $location`The Overgrown Lot`);
 
 //Defined in autoscend/paths/low_key_summer.ash
 export function in_lowkeysummer(): boolean {
-  return myPath() === Path.get("Low Key Summer");
+  return myPath() === $path`Low Key Summer`;
 }
 
 export function lowkey_initializeSettings(): void {
@@ -251,27 +236,27 @@ function lowkey_keysRemaining(): number {
 function lowkey_levelNeededToUnlockZone(loc: Location): number {
   // returns level under which it is normal for the key zones not to be accessible in the path
   switch (loc) {
-    case Location.get("The Arid, Extra-Dry Desert"):
+    case $location`The Arid\, Extra-Dry Desert`:
       return 11;
-    case Location.get("Belowdecks"):
+    case $location`Belowdecks`:
       return 11;
-    case Location.get("The Valley of Rof L'm Fao"):
+    case $location`The Valley of Rof L'm Fao`:
       return 9;
-    case Location.get("The Icy Peak"):
+    case $location`The Icy Peak`:
       return 8;
-    case Location.get("The Old Landfill"):
+    case $location`The Old Landfill`:
       return 6;
-    case Location.get("Cobb's Knob Laboratory"):
+    case $location`Cobb's Knob Laboratory`:
       return 5;
-    case Location.get("Cobb's Knob Menagerie, Level 2"):
+    case $location`Cobb's Knob Menagerie\, Level 2`:
       return 5;
-    case Location.get("The Knob Shaft"):
+    case $location`The Knob Shaft`:
       return 5;
-    case Location.get("Cobb's Knob Kitchens"):
+    case $location`Cobb's Knob Kitchens`:
       return 5;
-    case Location.get("Cobb's Knob Treasury"):
+    case $location`Cobb's Knob Treasury`:
       return 5;
-    case Location.get("The Bat Hole Entrance"):
+    case $location`The Bat Hole Entrance`:
       return 4;
     default:
       return 1;
@@ -336,13 +321,13 @@ function lowkey_keyAdv(key: Item): boolean {
     return false;
   }
   // Pirate equipment
-  if (Location.get(["The F'c'le", "Belowdecks"]).includes(loc)) {
-    if (possessEquipment(Item.get("pirate fledges"))) {
-      autoEquip$1(Item.get("pirate fledges"));
+  if ($locations`The F'c'le, Belowdecks`.includes(loc)) {
+    if (possessEquipment($item`pirate fledges`)) {
+      autoEquip$1($item`pirate fledges`);
     } else if (haveOutfit("swashbuckling getup")) {
-      autoEquip$1(Item.get("eyepatch"));
-      autoEquip$1(Item.get("swashbuckling pants"));
-      autoEquip$1(Item.get("stuffed shoulder parrot"));
+      autoEquip$1($item`eyepatch`);
+      autoEquip$1($item`swashbuckling pants`);
+      autoEquip$1($item`stuffed shoulder parrot`);
     } else {
       // Shouldn't get here due to zone_isAvailable check
       return false;
@@ -387,70 +372,67 @@ function LX_findHelpfulLowKey(): boolean {
   if (myLevel() < 13) {
     // needs knob lab access
     if (
-      myPrimestat() === Stat.get("Muscle") &&
-      lowkey_keyAdv(Item.get("knob labinet key"))
+      myPrimestat() === $stat`Muscle` &&
+      lowkey_keyAdv($item`knob labinet key`)
     ) {
       return true;
     }
     // needs accept landfil quest
     if (
-      myPrimestat() === Stat.get("Moxie") &&
-      (LX_hippyBoatman() || lowkey_keyAdv(Item.get("scrap metal key")))
+      myPrimestat() === $stat`Moxie` &&
+      (LX_hippyBoatman() || lowkey_keyAdv($item`scrap metal key`))
     ) {
       return true;
     }
     // Needs Pandamonium access
     if (
-      myPrimestat() === Stat.get("Mysticality") &&
-      lowkey_keyAdv(Item.get("demonic key"))
+      myPrimestat() === $stat`Mysticality` &&
+      lowkey_keyAdv($item`demonic key`)
     ) {
       return true;
     }
   }
   // familiar weight
-  if (!possessEquipment(Item.get("black rose key"))) {
-    if (
-      myBuffedstat(Stat.get("Moxie")) <
-      monsterAttack(Monster.get("skeletal cat"))
-    ) {
+  if (!possessEquipment($item`black rose key`)) {
+    if (myBuffedstat($stat`Moxie`) < monsterAttack($monster`skeletal cat`)) {
       //conservatory is available when very underleveled so going there this early can be dangerous
-      buffMaintain$4(Effect.get("Vital"));
+      buffMaintain$4($effect`Vital`);
     }
-    if (lowkey_keyAdv(Item.get("black rose key"))) {
+    if (lowkey_keyAdv($item`black rose key`)) {
       return true;
     }
   }
   // -combat. Key sausage needs Cobb's Knob Access
-  if (lowkey_keyAdv(Item.get("key sausage"))) {
+  if (lowkey_keyAdv($item`key sausage`)) {
     return true;
   }
   // +item
   // Treasure chest key needs Belowdecks access
-  if (lowkey_keyAdv(Item.get("treasure chest key"))) {
+  if (lowkey_keyAdv($item`treasure chest key`)) {
     return true;
   }
   // +meat. Knob treasury key needs Cobb's Knob Access. Kekekey needs The Valley of Rof L'm Fao access.
-  if (lowkey_keyAdv(Item.get("kekekey"))) {
+  if (lowkey_keyAdv($item`kekekey`)) {
     return true;
   }
   if (
-    myPrimestat() !== Stat.get("Mysticality") ||
-    possessEquipment(Item.get("demonic key"))
+    myPrimestat() !== $stat`Mysticality` ||
+    possessEquipment($item`demonic key`)
   ) {
     // all these locations unlock at the same time but for a myst class we should only get
     //  the -combat key from Cobb's Knob (above) to speed up the friars before we have the +20% myst xp key
     // +adv. Knob shaft skate key needs Cobb's Knob lab key for access to Knob Shaft
-    if (lowkey_keyAdv(Item.get("knob shaft skate key"))) {
+    if (lowkey_keyAdv($item`knob shaft skate key`)) {
       return true;
     }
     //will probably get Cobb's Knob lab key here if still missing it
-    if (lowkey_keyAdv(Item.get("knob treasury key"))) {
+    if (lowkey_keyAdv($item`knob treasury key`)) {
       return true;
     }
     // Knob labinet key to unlock Menagerie. needs Cobb's Knob lab key for access to the lab
     if (
-      itemAmount(Item.get("Cobb's Knob Menagerie key")) < 1 &&
-      lowkey_keyAdv(Item.get("knob labinet key"))
+      itemAmount($item`Cobb's Knob Menagerie key`) < 1 &&
+      lowkey_keyAdv($item`knob labinet key`)
     ) {
       return true;
     }
@@ -458,10 +440,10 @@ function LX_findHelpfulLowKey(): boolean {
 
   if (
     internalQuestStatus("questL08Trapper") === 1 &&
-    itemAmount(Item.get("goat cheese")) < 3
+    itemAmount($item`goat cheese`) < 3
   ) {
     // food drop key for Goatlet
-    if (lowkey_keyAdv(Item.get("anchovy can key"))) {
+    if (lowkey_keyAdv($item`anchovy can key`)) {
       return true;
     }
   }
@@ -472,19 +454,19 @@ function LX_findHelpfulLowKey(): boolean {
   ) {
     // +ml (before oil peak)
     // F'c'le sh'c'le k'y needs F'c'le access
-    if (lowkey_keyAdv(Item.get("f'c'le sh'c'le k'y"))) {
+    if (lowkey_keyAdv($item`f'c'le sh'c'le k'y`)) {
       return true;
     }
     // Clown car key needs "Fun" house access, may be delayed for shen
-    if (lowkey_keyAdv(Item.get("clown car key"))) {
+    if (lowkey_keyAdv($item`clown car key`)) {
       return true;
     }
     // cold res before aboo. Needs Icy Peak Access
-    if (lowkey_keyAdv(Item.get("ice key"))) {
+    if (lowkey_keyAdv($item`ice key`)) {
       return true;
     }
     // spooky res before aboo. Needs Menagerie access.
-    if (lowkey_keyAdv(Item.get("weremoose key"))) {
+    if (lowkey_keyAdv($item`weremoose key`)) {
       return true;
     }
   }
@@ -493,11 +475,11 @@ function LX_findHelpfulLowKey(): boolean {
     internalQuestStatus("questL11Ron") > -1 &&
     internalQuestStatus("questL11Ron") < 2
   ) {
-    if (lowkey_keyAdv(Item.get("deep-fried key"))) {
+    if (lowkey_keyAdv($item`deep-fried key`)) {
       return true;
     }
     // Clown car key needs "Fun" house access, may be delayed for shen
-    if (lowkey_keyAdv(Item.get("clown car key"))) {
+    if (lowkey_keyAdv($item`clown car key`)) {
       return true;
     }
   }
@@ -506,13 +488,13 @@ function LX_findHelpfulLowKey(): boolean {
     internalQuestStatus("questL09Topping") === 0 &&
     toInt(getProperty("chasmBridgeProgress")) < bridgeGoal()
   ) {
-    if (lowkey_keyAdv(Item.get("ice key"))) {
+    if (lowkey_keyAdv($item`ice key`)) {
       return true;
     }
   }
   // +combat before sonofa or pirate insults. Music Box Key needs Spookyraven Manor third floor access
   if (internalQuestStatus("questM12Pirate") === 4 && numPirateInsults() < 6) {
-    if (lowkey_keyAdv(Item.get("music box key"))) {
+    if (lowkey_keyAdv($item`music box key`)) {
       return true;
     }
   }
@@ -652,24 +634,24 @@ export function LX_lowkeySummer(): boolean {
 
   if (myLevel() < 12) {
     if (
-      myPrimestat() === Stat.get("Mysticality") &&
-      possessEquipment(Item.get("key sausage"))
+      myPrimestat() === $stat`Mysticality` &&
+      possessEquipment($item`key sausage`)
     ) {
       // Myst classes want access to Pandamonium Slums to find the demonic key (+20% to all Mysticality Gains).
       // Get the -combat key first.
       if (
-        !possessEquipment(Item.get("demonic key")) &&
-        myBuffedstat(Stat.get("Moxie")) < monsterAttack(Monster.get("Hellion"))
+        !possessEquipment($item`demonic key`) &&
+        myBuffedstat($stat`Moxie`) < monsterAttack($monster`Hellion`)
       ) {
         //starting the level 6 quest as early as possible can be dangerous?
-        buffMaintain$4(Effect.get("Vital"));
+        buffMaintain$4($effect`Vital`);
       }
       if (L6_friarsGetParts()) {
         return true;
       }
     } else if (
-      myPrimestat() === Stat.get("Muscle") &&
-      itemAmount(Item.get("Cobb's Knob lab key")) === 0
+      myPrimestat() === $stat`Muscle` &&
+      itemAmount($item`Cobb's Knob lab key`) === 0
     ) {
       // Mus classes want access to the laboratory to find the Knob labinet key (+20% to all Muscle Gains).
       // Have already gone after Key sausage and Knob treasury key by now, if still missing lab key give priority to the Knob
@@ -697,13 +679,12 @@ export function LX_lowkeySummer(): boolean {
     return true;
   }
   // Get the -combat key before attempting the Friars or the Spooky Forest. Unlocking hidden temple is only a priority for possible rollover lucky lindy since SemiRare no longer exist
-  if (possessEquipment(Item.get("key sausage"))) {
+  if (possessEquipment($item`key sausage`)) {
     if (
       L6_friarsGetParts() ||
       L2_mosquito() ||
       LX_unlockHauntedLibrary() ||
-      (canDrinkSpeakeasyDrink(Item.get("Lucky Lindy")) &&
-        LX_unlockHiddenTemple()) ||
+      (canDrinkSpeakeasyDrink($item`Lucky Lindy`) && LX_unlockHiddenTemple()) ||
       LX_getLadySpookyravensDancingShoes() ||
       LX_getLadySpookyravensPowderPuff()
     ) {
@@ -719,7 +700,7 @@ export function LX_lowkeySummer(): boolean {
   if (internalQuestStatus("questL12War") > -1) {
     // Don't start the war unless we've acquired the key from Belowdecks first as it gives +item.
     // TODO these aren't the full L12 tasks, could filthworms earlier here if Yellow Ray available
-    if (possessEquipment(Item.get("treasure chest key"))) {
+    if (possessEquipment($item`treasure chest key`)) {
       if (L12_preOutfit() || L12_getOutfit() || L12_startWar()) {
         return true;
       }
@@ -732,7 +713,7 @@ export function LX_lowkeySummer(): boolean {
 
     L12_flyerFinish(); // Finish flyers whenever possible.
     // Get the +combat key before attempting Sonofa Beach.
-    if (possessEquipment(Item.get("music box key"))) {
+    if (possessEquipment($item`music box key`)) {
       if (L12_sonofaBeach() || L12_sonofaFinish()) {
         return true;
       }
@@ -745,17 +726,17 @@ export function LX_lowkeySummer(): boolean {
         internalQuestStatus("questL12War") === 1 &&
         getProperty("sidequestLighthouseCompleted") === "none"
       ) {
-        if (lowkey_keyAdv(Item.get("music box key"))) {
+        if (lowkey_keyAdv($item`music box key`)) {
           return true;
         }
       }
     }
     // Check our meat accessories, grab +meat keys before attempting Themthar Hills if they'll help.
     let n_meat_drop_acc_50plus: number = 0;
-    for (const [it, n] of auto_getAllEquipabble$1(Slot.get("acc1"))) {
+    for (const [it, n] of auto_getAllEquipabble$1($slot`acc1`)) {
       if (
         numericModifier(it, Modifier.get("Meat Drop")) >= 45 ||
-        it === Item.get("backup camera")
+        it === $item`backup camera`
       ) {
         // backup camera isn't always meat
         n_meat_drop_acc_50plus += n;
@@ -804,7 +785,7 @@ export function LX_lowkeySummer(): boolean {
   // Shen can still block Clown car key after zones are locked in if we don't chase the Snakeleton here
   if (
     internalQuestStatus("questG04Nemesis") < 5 &&
-    shenShouldDelayZone(Location.get("The Unquiet Garves")) &&
+    shenShouldDelayZone($location`The Unquiet Garves`) &&
     L11_shenCopperhead()
   ) {
     return true;
@@ -816,12 +797,12 @@ export function LX_lowkeySummer(): boolean {
 
   if (internalQuestStatus("questL09Topping") > -1) {
     // Get the Sleaze res key before doing the Orcs for better Blech
-    if (lowkey_keyAdv(Item.get("deep-fried key"))) {
+    if (lowkey_keyAdv($item`deep-fried key`)) {
       return true;
     }
     // Get the Cold Damage key before doing the Orcs
     // This gets blocked by the Shen softlock so do it as soon as we feasibly can as one of the +meat keys requires the L9 quest finished.
-    if (possessEquipment(Item.get("ice key"))) {
+    if (possessEquipment($item`ice key`)) {
       if (L9_chasmBuild()) {
         return true;
       }
@@ -834,9 +815,9 @@ export function LX_lowkeySummer(): boolean {
     // Get the ML keys before doing Oil peak and Spooky Res key before doing Aboo Peak (should have Cold Res key already for the Orc Chasm).
     // Get +item key before the Peaks if questL11MacGuffin already allows it
     if (
-      possessEquipment(Item.get("f'c'le sh'c'le k'y")) &&
-      possessEquipment(Item.get("clown car key")) &&
-      possessEquipment(Item.get("weremoose key"))
+      possessEquipment($item`f'c'le sh'c'le k'y`) &&
+      possessEquipment($item`clown car key`) &&
+      possessEquipment($item`weremoose key`)
     ) {
       if (L9_highLandlord()) {
         return true;
@@ -845,8 +826,8 @@ export function LX_lowkeySummer(): boolean {
       // Make sure the F'c'le is open so we can get the key. Once gathering insults do it on the way to the Peg key before doing it in the barrr
       if (
         LX_pirateOutfit() ||
-        (itemAmount(Item.get("The Big Book of Pirate Insults")) > 0 &&
-          lowkey_keyAdv(Item.get("peg key"))) ||
+        (itemAmount($item`The Big Book of Pirate Insults`) > 0 &&
+          lowkey_keyAdv($item`peg key`)) ||
         LX_joinPirateCrew()
       ) {
         return true;
@@ -860,7 +841,7 @@ export function LX_lowkeySummer(): boolean {
 
   if (internalQuestStatus("questL11MacGuffin") > -1) {
     // +item helps with getting fulminate ingredients, Hidden City drops and Copperhead/Zeppelin.
-    if (!possessEquipment(Item.get("treasure chest key"))) {
+    if (!possessEquipment($item`treasure chest key`)) {
       // Make sure Belowdecks is open so we can get the key.
       if (LX_pirateQuest()) {
         return true;
@@ -879,7 +860,7 @@ export function LX_lowkeySummer(): boolean {
       return true;
     }
     // food drop key before Eye of Ed for the blasting soda
-    if (lowkey_keyAdv(Item.get("anchovy can key"))) {
+    if (lowkey_keyAdv($item`anchovy can key`)) {
       return true;
     }
     // Murder pygmies for the ancient amulet.
@@ -890,7 +871,7 @@ export function LX_lowkeySummer(): boolean {
     if (L11_aridDesert()) {
       return true;
     }
-    if (possessEquipment(Item.get("treasure chest key"))) {
+    if (possessEquipment($item`treasure chest key`)) {
       if (
         L11_talismanOfNam() ||
         L11_mauriceSpookyraven() ||
@@ -902,7 +883,7 @@ export function LX_lowkeySummer(): boolean {
     }
     // should do the tavern before trying to do the pyramid so we can use any tangles we get lucky with.
     // Clown car key for tavern noncombats. needs "Fun" house access
-    if (lowkey_keyAdv(Item.get("clown car key"))) {
+    if (lowkey_keyAdv($item`clown car key`)) {
       return true;
     }
     if (internalQuestStatus("questL03Rat") > 2) {
@@ -922,7 +903,7 @@ export function LX_lowkeySummer(): boolean {
     return true;
   }
   // Should have the -combat key long before level 10 but lets just make sure.
-  if (possessEquipment(Item.get("key sausage"))) {
+  if (possessEquipment($item`key sausage`)) {
     if (
       L10_airship() ||
       L10_basement() ||
@@ -952,7 +933,7 @@ export function LX_lowkeySummer(): boolean {
   }
   // Fix that dripping tap.
   // Clown car key for tavern noncombats. needs "Fun" house access, may be delayed for shen
-  if (lowkey_keyAdv(Item.get("clown car key"))) {
+  if (lowkey_keyAdv($item`clown car key`)) {
     return true;
   } else if (LX_acquireEpicWeapon()) {
     return true;
@@ -963,8 +944,8 @@ export function LX_lowkeySummer(): boolean {
   // this quest and these zones are open either from the start or level 4.
   // so lets do this if we have nothing better to do yet.
   if (
-    possessEquipment(Item.get("aqu&iacute;")) &&
-    possessEquipment(Item.get("batting cage key"))
+    possessEquipment($item`aquí`) &&
+    possessEquipment($item`batting cage key`)
   ) {
     if (LX_unlockHauntedBilliardsRoom$1()) {
       return true;
@@ -972,17 +953,17 @@ export function LX_lowkeySummer(): boolean {
   } else {
     if (internalQuestStatus("questM20Necklace") === 0) {
       // hot res for the Haunted Kitchen. aquí needs Desert Beach Access
-      if (lowkey_keyAdv(Item.get("aqu&iacute;"))) {
+      if (lowkey_keyAdv($item`aquí`)) {
         return true;
       }
       // stench res for the Haunted Kitchen
-      if (lowkey_keyAdv(Item.get("batting cage key"))) {
+      if (lowkey_keyAdv($item`batting cage key`)) {
         return true;
       }
     }
   }
   // open the hidden temple if not already done at higher priority and not still waiting for the -combat key
-  if (possessEquipment(Item.get("key sausage")) && LX_unlockHiddenTemple()) {
+  if (possessEquipment($item`key sausage`) && LX_unlockHiddenTemple()) {
     return true;
   }
   // Spookyraven quest steps that don't need -combat or resists, just monster killin' (or dancing with a ghost for stats).

@@ -18,6 +18,8 @@ import {
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
+import { $item, $location } from "libram";
+
 import {
   auto_canForceNextNoncombat,
   auto_is_valid,
@@ -92,7 +94,7 @@ export function solveDelayZone(skipOutdoorZones: boolean): Location {
         burnZone = loc;
       }
       if (
-        loc === Location.get("The Spooky Forest") &&
+        loc === $location`The Spooky Forest` &&
         delay ===
           (delayableZones.get(burnZone) ??
             delayableZones.set(burnZone, 0).get(burnZone))
@@ -103,7 +105,7 @@ export function solveDelayZone(skipOutdoorZones: boolean): Location {
     }
   }
   // If we're going to Megalo-city, do the prep work to acquire enough DA
-  if (burnZone === Location.get("Megalo-City")) {
+  if (burnZone === $location`Megalo-City`) {
     prepForMegaloCity();
   }
 
@@ -114,18 +116,18 @@ export function solveDelayZone(skipOutdoorZones: boolean): Location {
   // Shorten the time before finding Gnasir, so that we can start acquiring desert pages sooner
   if (
     !skipOutdoorZones &&
-    zone_isAvailable$1(Location.get("The Arid, Extra-Dry Desert")) &&
-    Location.get("The Arid, Extra-Dry Desert").turnsSpent >= 1 &&
-    Location.get("The Arid, Extra-Dry Desert").turnsSpent < 10
+    zone_isAvailable$1($location`The Arid\, Extra-Dry Desert`) &&
+    $location`The Arid\, Extra-Dry Desert`.turnsSpent >= 1 &&
+    $location`The Arid\, Extra-Dry Desert`.turnsSpent < 10
   ) {
-    burnZone = Location.get("The Arid, Extra-Dry Desert");
+    burnZone = $location`The Arid\, Extra-Dry Desert`;
   }
   // Shorten the time until the first "burn a food or drink" noncombat
   // There's some opportunity to be clever here, but this is probably good enough.
   // If we didn't check turns_spent we'd have to be careful to equip the war outfit,
   // just in case the noncombat shows up.
-  if (in_koe() && Location.get("The Exploaded Battlefield").turnsSpent < 5) {
-    burnZone = Location.get("The Exploaded Battlefield");
+  if (in_koe() && $location`The Exploaded Battlefield`.turnsSpent < 5) {
+    burnZone = $location`The Exploaded Battlefield`;
   }
 
   if (in_lowkeysummer()) {
@@ -224,17 +226,17 @@ export function auto_reserveUndergroundAdventures(): boolean {
     (auto_haveColdMedCabinet() &&
       auto_CMCconsultsLeft() === 0 &&
       myDaycount() > 1) ||
-    !auto_is_valid(Item.get("cold medicine cabinet"))
+    !auto_is_valid($item`cold medicine cabinet`)
   ) {
     // softblock has been released or we have no more Breathitins to collect.
     return false;
   }
   if (
-    getWorkshed() !== Item.get("cold medicine cabinet") &&
-    auto_is_valid(Item.get("cold medicine cabinet")) &&
-    itemAmount(Item.get("cold medicine cabinet")) > 0 &&
+    getWorkshed() !== $item`cold medicine cabinet` &&
+    auto_is_valid($item`cold medicine cabinet`) &&
+    itemAmount($item`cold medicine cabinet`) > 0 &&
     !toBoolean(getProperty("_workshedItemUsed")) &&
-    (LX_getDesiredWorkshed() === Item.get("cold medicine cabinet") ||
+    (LX_getDesiredWorkshed() === $item`cold medicine cabinet` ||
       LX_getDesiredWorkshed() === Item.none) &&
     haveCampground()
   ) {
@@ -296,18 +298,18 @@ function auto_reserveOutdoorAdventures(): boolean {
     (auto_haveColdMedCabinet() &&
       auto_CMCconsultsLeft() === 0 &&
       myDaycount() > 1) ||
-    !auto_is_valid(Item.get("cold medicine cabinet")) ||
+    !auto_is_valid($item`cold medicine cabinet`) ||
     toInt(getProperty("breathitinCharges")) > 0
   ) {
     // softblock has been released or we have no more Breathitins to collect (or we have Breathitin charges to use).
     return false;
   }
   if (
-    getWorkshed() !== Item.get("cold medicine cabinet") &&
-    auto_is_valid(Item.get("cold medicine cabinet")) &&
-    itemAmount(Item.get("cold medicine cabinet")) > 0 &&
+    getWorkshed() !== $item`cold medicine cabinet` &&
+    auto_is_valid($item`cold medicine cabinet`) &&
+    itemAmount($item`cold medicine cabinet`) > 0 &&
     !toBoolean(getProperty("_workshedItemUsed")) &&
-    (LX_getDesiredWorkshed() === Item.get("cold medicine cabinet") ||
+    (LX_getDesiredWorkshed() === $item`cold medicine cabinet` ||
       LX_getDesiredWorkshed() === Item.none)
   ) {
     auto_log_debug$1(
@@ -341,7 +343,7 @@ export function auto_earlyRoutingHandling(): boolean {
     internalQuestStatus("questL12War") === 1 &&
     !toBoolean(getProperty("auto_hippyInstead")) &&
     getProperty("sidequestArenaCompleted") !== "fratboy" &&
-    availableAmount(Item.get("rock band flyers")) === 0
+    availableAmount($item`rock band flyers`) === 0
   ) {
     outfit("frat warrior fatigues"); // don't use the equipOutfit func here since this is just temporary, we don't want to adventure like this.
     visitUrl("bigisland.php?place=concert&pwd");

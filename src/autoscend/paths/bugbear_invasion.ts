@@ -1,34 +1,38 @@
 import {
   abort,
   canEquip,
-  Class,
   cliExecute,
   create,
-  Effect,
-  Familiar,
   getProperty,
   haveEffect,
   isBanished,
   isUnrestricted,
-  Item,
   itemAmount,
   Location,
   myClass,
   myDaycount,
   myPath,
-  Path,
-  Phylum,
   pullsRemaining,
   replaceString,
   setProperty,
-  Skill,
-  Slot,
   toBoolean,
   toInt,
   toLowerCase,
   use,
   visitUrl,
 } from "kolmafia";
+import {
+  $class,
+  $effect,
+  $familiar,
+  $item,
+  $location,
+  $path,
+  $phylum,
+  $skill,
+  $slot,
+} from "libram";
+
 import { pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$2, autoAdvBypass$6 } from "../auto_adventure";
 import {
@@ -54,7 +58,7 @@ import { inAftercore } from "./casual";
 
 //Defined in autoscend/paths/bugbear_invasion.ash
 export function in_bugbear(): boolean {
-  return myPath() === Path.get("Bugbear Invasion");
+  return myPath() === $path`Bugbear Invasion`;
 }
 
 export function bugbear_initializeSettings(): void {
@@ -86,17 +90,17 @@ export function bugbear_BioDataRemaining(loc: Location): number {
     return 0;
   }
   switch (loc) {
-    case Location.get("Waste Processing"):
-    case Location.get("Medbay"):
-    case Location.get("Sonar"):
+    case $location`Waste Processing`:
+    case $location`Medbay`:
+    case $location`Sonar`:
       return 3 - toInt(value);
-    case Location.get("Science Lab"):
-    case Location.get("Morgue"):
-    case Location.get("Special Ops"):
+    case $location`Science Lab`:
+    case $location`Morgue`:
+    case $location`Special Ops`:
       return 6 - toInt(value);
-    case Location.get("Engineering"):
-    case Location.get("Navigation"):
-    case Location.get("Galley"):
+    case $location`Engineering`:
+    case $location`Navigation`:
+    case $location`Galley`:
       return 9 - toInt(value);
     default:
       abort(`Invalid Biodata location ${loc}`);
@@ -123,46 +127,46 @@ function bugbear_UnlockMothership(loc: Location): boolean {
 
   let unlockLocation: Location = Location.none;
   switch (loc) {
-    case Location.get("Waste Processing"):
-      unlockLocation = Location.get("The Sleazy Back Alley");
+    case $location`Waste Processing`:
+      unlockLocation = $location`The Sleazy Back Alley`;
       break;
-    case Location.get("Medbay"):
+    case $location`Medbay`:
       if (internalQuestStatus("questL02Larva") !== 9999) {
         return false;
       }
-      unlockLocation = Location.get("The Spooky Forest");
+      unlockLocation = $location`The Spooky Forest`;
       break;
-    case Location.get("Sonar"):
+    case $location`Sonar`:
       if (internalQuestStatus("questL04Bat") !== 9999) {
         return false;
       }
-      unlockLocation = Location.get("The Batrat and Ratbat Burrow");
+      unlockLocation = $location`The Batrat and Ratbat Burrow`;
       break;
-    case Location.get("Science Lab"):
-      unlockLocation = Location.get("Cobb's Knob Laboratory");
+    case $location`Science Lab`:
+      unlockLocation = $location`Cobb's Knob Laboratory`;
       break;
-    case Location.get("Morgue"):
-      unlockLocation = Location.get("The VERY Unquiet Garves");
+    case $location`Morgue`:
+      unlockLocation = $location`The VERY Unquiet Garves`;
       break;
-    case Location.get("Special Ops"):
+    case $location`Special Ops`:
       if (internalQuestStatus("questL08Trapper") !== 9999) {
         return false;
       }
-      unlockLocation = Location.get("Lair of the Ninja Snowmen");
+      unlockLocation = $location`Lair of the Ninja Snowmen`;
       break;
-    case Location.get("Engineering"):
+    case $location`Engineering`:
       if (internalQuestStatus("questL10Garbage") !== 9999) {
         return false;
       }
-      unlockLocation = Location.get("The Penultimate Fantasy Airship");
+      unlockLocation = $location`The Penultimate Fantasy Airship`;
       break;
-    case Location.get("Navigation"):
+    case $location`Navigation`:
       if (internalQuestStatus("questL11Manor") !== 9999) {
         return false;
       }
-      unlockLocation = Location.get("The Haunted Gallery");
+      unlockLocation = $location`The Haunted Gallery`;
       break;
-    case Location.get("Galley"):
+    case $location`Galley`:
       unlockLocation = Location.get(
         "The Hippy Camp (Bombed Back to the Stone Age)",
       );
@@ -181,45 +185,42 @@ function bugbear_UnlockMothership(loc: Location): boolean {
     return false;
   }
 
-  if (isBanished(Phylum.get("beast"))) {
+  if (isBanished($phylum`beast`)) {
     setProperty("screechDelay", "beast");
     return false; // Can't fight bugbears if beasts are banished
   }
 
-  if (
-    itemAmount(Item.get("key-o-tron")) === 0 &&
-    itemAmount(Item.get("BURT")) >= 5
-  ) {
-    create(1, Item.get("key-o-tron"));
-    use(1, Item.get("key-o-tron"));
+  if (itemAmount($item`key-o-tron`) === 0 && itemAmount($item`BURT`) >= 5) {
+    create(1, $item`key-o-tron`);
+    use(1, $item`key-o-tron`);
   }
 
-  if (!possessEquipment(Item.get("bugbear detector"))) {
-    pullXWhenHaveY(Item.get("bugbear detector"), 1, 0);
+  if (!possessEquipment($item`bugbear detector`)) {
+    pullXWhenHaveY($item`bugbear detector`, 1, 0);
   }
 
   if (
-    !possessEquipment(Item.get("bugbear detector")) &&
-    itemAmount(Item.get("BURT")) >= 25
+    !possessEquipment($item`bugbear detector`) &&
+    itemAmount($item`BURT`) >= 25
   ) {
-    create(1, Item.get("bugbear detector"));
+    create(1, $item`bugbear detector`);
   }
 
-  if (possessEquipment(Item.get("bugbear detector"))) {
-    autoEquip$1(Item.get("bugbear detector"));
+  if (possessEquipment($item`bugbear detector`)) {
+    autoEquip$1($item`bugbear detector`);
   }
 
   if (
     toInt(getProperty("_hipsterAdv")) < 7 &&
-    isUnrestricted(Familiar.get("Artistic Goth Kid")) &&
-    auto_have_familiar(Familiar.get("Artistic Goth Kid"))
+    isUnrestricted($familiar`Artistic Goth Kid`) &&
+    auto_have_familiar($familiar`Artistic Goth Kid`)
   ) {
     // TODO: Use crayon shavings to copy
     auto_log_info(`Hipster Adv: ${getProperty("_hipsterAdv")}`, "blue");
-    handleFamiliar$1(Familiar.get("Artistic Goth Kid"));
+    handleFamiliar$1($familiar`Artistic Goth Kid`);
   }
 
-  if (itemAmount(Item.get("key-o-tron")) === 0) {
+  if (itemAmount($item`key-o-tron`) === 0) {
     auto_log_info("Need a Key-o-tron to scan bugbears", "blue");
   } else {
     auto_log_info(
@@ -234,15 +235,15 @@ function bugbear_UnlockMothership(loc: Location): boolean {
 }
 
 function LX_bugbearKeyOTron(): boolean {
-  if (itemAmount(Item.get("key-o-tron")) !== 0) {
+  if (itemAmount($item`key-o-tron`) !== 0) {
     return false;
   }
 
-  return bugbear_UnlockMothership(Location.get("Waste Processing"));
+  return bugbear_UnlockMothership($location`Waste Processing`);
 }
 
 function LX_bugbearWasteProcessing(): boolean {
-  const loc: Location = Location.get("Waste Processing");
+  const loc: Location = $location`Waste Processing`;
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
@@ -251,15 +252,15 @@ function LX_bugbearWasteProcessing(): boolean {
   }
 
   if (
-    !possessEquipment(Item.get("bugbear communicator badge")) &&
-    itemAmount(Item.get("handful of juicy garbage")) > 0
+    !possessEquipment($item`bugbear communicator badge`) &&
+    itemAmount($item`handful of juicy garbage`) > 0
   ) {
-    use(1, Item.get("handful of juicy garbage"));
+    use(1, $item`handful of juicy garbage`);
     return true;
   }
 
-  if (possessEquipment(Item.get("bugbear communicator badge"))) {
-    autoEquip$1(Item.get("bugbear communicator badge"));
+  if (possessEquipment($item`bugbear communicator badge`)) {
+    autoEquip$1($item`bugbear communicator badge`);
   } else {
     handleFamiliar("item");
   }
@@ -270,7 +271,7 @@ function LX_bugbearWasteProcessing(): boolean {
 }
 
 function LX_bugbearMedbay(): boolean {
-  const loc: Location = Location.get("Medbay");
+  const loc: Location = $location`Medbay`;
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
@@ -284,7 +285,7 @@ function LX_bugbearMedbay(): boolean {
 }
 
 function LX_bugbearSonar(): boolean {
-  const loc: Location = Location.get("Sonar");
+  const loc: Location = $location`Sonar`;
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
@@ -298,7 +299,7 @@ function LX_bugbearSonar(): boolean {
 }
 
 function LX_bugbearScienceLab(): boolean {
-  const loc: Location = Location.get("Science Lab");
+  const loc: Location = $location`Science Lab`;
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
@@ -314,7 +315,7 @@ function LX_bugbearScienceLab(): boolean {
 }
 
 function LX_bugbearMorgue(): boolean {
-  const loc: Location = Location.get("Morgue");
+  const loc: Location = $location`Morgue`;
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
@@ -328,7 +329,7 @@ function LX_bugbearMorgue(): boolean {
 }
 
 function LX_bugbearSpecialOps(): boolean {
-  const loc: Location = Location.get("Special Ops");
+  const loc: Location = $location`Special Ops`;
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
@@ -336,45 +337,42 @@ function LX_bugbearSpecialOps(): boolean {
     return false;
   }
 
-  if (!possessEquipment(Item.get("UV monocular"))) {
-    pullXWhenHaveY(Item.get("UV monocular"), 1, 0);
+  if (!possessEquipment($item`UV monocular`)) {
+    pullXWhenHaveY($item`UV monocular`, 1, 0);
   }
 
-  if (
-    !possessEquipment(Item.get("UV monocular")) &&
-    itemAmount(Item.get("BURT")) >= 50
-  ) {
-    create(1, Item.get("UV monocular"));
+  if (!possessEquipment($item`UV monocular`) && itemAmount($item`BURT`) >= 50) {
+    create(1, $item`UV monocular`);
   }
 
-  if (!possessEquipment(Item.get("UV monocular"))) {
+  if (!possessEquipment($item`UV monocular`)) {
     return false;
   }
 
   if (
-    !possessEquipment(Item.get("fluorescent lightbulb")) &&
-    auto_have_skill(Skill.get("Summon Clip Art")) &&
+    !possessEquipment($item`fluorescent lightbulb`) &&
+    auto_have_skill($skill`Summon Clip Art`) &&
     toInt(getProperty("tomeSummons")) < 3
   ) {
     cliExecute("make fluorescent lightbulb");
   }
 
-  autoEquip$1(Item.get("UV monocular"));
+  autoEquip$1($item`UV monocular`);
 
-  if (possessEquipment(Item.get("fire"))) {
-    autoEquip$1(Item.get("fire"));
+  if (possessEquipment($item`fire`)) {
+    autoEquip$1($item`fire`);
   }
 
-  if (possessEquipment(Item.get("fluorescent lightbulb"))) {
-    autoEquip$1(Item.get("fluorescent lightbulb"));
+  if (possessEquipment($item`fluorescent lightbulb`)) {
+    autoEquip$1($item`fluorescent lightbulb`);
   }
 
-  if (possessEquipment(Item.get("Rain-Doh green lantern"))) {
-    autoEquip$1(Item.get("Rain-Doh green lantern"));
-  } else if (possessEquipment(Item.get("magic lamp"))) {
-    autoEquip$1(Item.get("magic lamp"));
-  } else if (possessEquipment(Item.get("oil lamp"))) {
-    autoEquip$1(Item.get("oil lamp"));
+  if (possessEquipment($item`Rain-Doh green lantern`)) {
+    autoEquip$1($item`Rain-Doh green lantern`);
+  } else if (possessEquipment($item`magic lamp`)) {
+    autoEquip$1($item`magic lamp`);
+  } else if (possessEquipment($item`oil lamp`)) {
+    autoEquip$1($item`oil lamp`);
   }
 
   auto_log_info(`Clearing Bugbear Mothership - ${loc}`, "blue");
@@ -383,7 +381,7 @@ function LX_bugbearSpecialOps(): boolean {
 }
 
 function LX_bugbearEngineering(): boolean {
-  const loc: Location = Location.get("Engineering");
+  const loc: Location = $location`Engineering`;
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
@@ -399,7 +397,7 @@ function LX_bugbearEngineering(): boolean {
 }
 
 function LX_bugbearNavigation(): boolean {
-  const loc: Location = Location.get("Navigation");
+  const loc: Location = $location`Navigation`;
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
@@ -407,7 +405,7 @@ function LX_bugbearNavigation(): boolean {
     return false;
   }
 
-  if (haveEffect(Effect.get("N-Spatial vision")) > 0) {
+  if (haveEffect($effect`N-Spatial vision`) > 0) {
     return false;
   }
 
@@ -417,7 +415,7 @@ function LX_bugbearNavigation(): boolean {
 }
 
 function LX_bugbearNavigationForce(): boolean {
-  const loc: Location = Location.get("Navigation");
+  const loc: Location = $location`Navigation`;
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
@@ -425,11 +423,11 @@ function LX_bugbearNavigationForce(): boolean {
     return false;
   }
 
-  if (haveEffect(Effect.get("N-Spatial vision")) > 0) {
-    uneffect(Effect.get("N-Spatial vision"));
+  if (haveEffect($effect`N-Spatial vision`) > 0) {
+    uneffect($effect`N-Spatial vision`);
   }
 
-  if (haveEffect(Effect.get("N-Spatial vision")) > 0) {
+  if (haveEffect($effect`N-Spatial vision`) > 0) {
     return false;
   }
 
@@ -439,7 +437,7 @@ function LX_bugbearNavigationForce(): boolean {
 }
 
 function LX_bugbearGallery(): boolean {
-  const loc: Location = Location.get("Galley");
+  const loc: Location = $location`Galley`;
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
@@ -479,30 +477,30 @@ function LX_bugbearBridge(): boolean {
 
   auto_log_info("Clearing Bugbear Mothership - Bridge", "blue");
 
-  if (itemAmount(Item.get("Jeff Goldblum larva")) === 0) {
+  if (itemAmount($item`Jeff Goldblum larva`) === 0) {
     visitUrl("council.php");
   }
 
   cliExecute("scripts/autoscend/auto_post_adv.js");
 
-  if (myClass() === Class.get("Turtle Tamer")) {
-    autoEquip$1(Item.get("Ouija Board, Ouija Board"));
+  if (myClass() === $class`Turtle Tamer`) {
+    autoEquip$1($item`Ouija Board\, Ouija Board`);
   }
 
   if (pullsRemaining() === -1 || pullsRemaining() > 0) {
-    if (canEquip(Item.get("Oscus's garbage can lid"))) {
-      pullXWhenHaveY(Item.get("Oscus's garbage can lid"), 1, 0);
+    if (canEquip($item`Oscus's garbage can lid`)) {
+      pullXWhenHaveY($item`Oscus's garbage can lid`, 1, 0);
     }
   }
 
-  autoEquip(Slot.get("off-hand"), Item.get("Oscus's garbage can lid"));
+  autoEquip($slot`off-hand`, $item`Oscus's garbage can lid`);
 
   handleFamiliar("boss");
 
   addToMaximize("10dr,3moxie,0.5da 1000max,-5ml,1.5hp,0item,0meat");
 
   let ret: boolean = false;
-  if (itemAmount(Item.get("Jeff Goldblum larva")) > 0) {
+  if (itemAmount($item`Jeff Goldblum larva`) > 0) {
     ret = autoAdvBypass$6("place.php?whichplace=bugbearship&action=bb_bridge");
   }
 
@@ -531,7 +529,7 @@ export function LX_bugbearInvasion(): boolean {
     return true;
   }
 
-  if (itemAmount(Item.get("key-o-tron")) === 0) {
+  if (itemAmount($item`key-o-tron`) === 0) {
     return false;
   }
   // First floor
@@ -572,7 +570,7 @@ export function LX_bugbearInvasionFinale(): boolean {
   if (!in_bugbear()) {
     return false;
   }
-  if (itemAmount(Item.get("key-o-tron")) === 0) {
+  if (itemAmount($item`key-o-tron`) === 0) {
     return false;
   }
 

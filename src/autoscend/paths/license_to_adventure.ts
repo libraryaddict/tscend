@@ -1,5 +1,4 @@
 import {
-  Effect,
   getProperty,
   haveEffect,
   haveSkill,
@@ -7,21 +6,20 @@ import {
   isUnrestricted,
   Item,
   itemAmount,
-  Location,
   mpCost,
   myAdventures,
   myLevel,
   myMp,
   myPath,
-  Path,
   setProperty,
-  Skill,
   toBoolean,
   toInt,
   use,
   useSkill,
   visitUrl,
 } from "kolmafia";
+import { $effect, $item, $location, $path, $skill } from "libram";
+
 import { autoAdv$2 } from "../auto_adventure";
 import { itemList, ListInsert$3 } from "../auto_list";
 import { auto_log_info } from "../auto_util";
@@ -30,7 +28,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/license_to_adventure.ash
 export function in_lta(): boolean {
-  return myPath() === Path.get("License to Adventure");
+  return myPath() === $path`License to Adventure`;
 }
 
 export function bond_initializeSettings(): void {
@@ -158,19 +156,16 @@ export function LM_bond(): boolean {
   }
 
   if (
-    itemAmount(Item.get("Victor's Spoils")) > 0 &&
+    itemAmount($item`Victor's Spoils`) > 0 &&
     !toBoolean(getProperty("_victorSpoilsUsed")) &&
     myAdventures() < 10
   ) {
-    use(1, Item.get("Victor's Spoils"));
+    use(1, $item`Victor's Spoils`);
   }
 
-  if (haveEffect(Effect.get("Disavowed")) > 0) {
-    if (
-      haveSkill(Skill.get("Disco Nap")) &&
-      myMp() > mpCost(Skill.get("Disco Nap"))
-    ) {
-      useSkill(1, Skill.get("Disco Nap"));
+  if (haveEffect($effect`Disavowed`) > 0) {
+    if (haveSkill($skill`Disco Nap`) && myMp() > mpCost($skill`Disco Nap`)) {
+      useSkill(1, $skill`Disco Nap`);
     }
     setProperty("_auto_bondBriefing", "started");
   }
@@ -183,7 +178,7 @@ export function LM_bond(): boolean {
   }
 
   if (getProperty("_auto_bondBriefing") === "started") {
-    const retval: boolean = autoAdv$2(Location.get("Super Villain's Lair"));
+    const retval: boolean = autoAdv$2($location`Super Villain's Lair`);
     if (!retval) {
       setProperty("_auto_bondBriefing", "finished");
       bond_buySkills();

@@ -10,6 +10,7 @@ import {
   toBoolean,
   userConfirm,
 } from "kolmafia";
+
 import {
   auto_log_error,
   auto_log_info,

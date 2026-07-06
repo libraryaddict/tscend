@@ -3,11 +3,8 @@ import {
   buy,
   ceil,
   cliExecute,
-  Coinmaster,
   council,
   create,
-  Effect,
-  Element,
   getProperty,
   haveEffect,
   haveSkill,
@@ -19,18 +16,28 @@ import {
   myMeat,
   myPath,
   myPrimestat,
-  Path,
   pullsRemaining,
   retrieveItem,
   runChoice,
   setProperty,
-  Skill,
-  Slot,
   splitString,
-  Stat,
   toBoolean,
   toInt,
 } from "kolmafia";
+import {
+  $coinmaster,
+  $effect,
+  $element,
+  $elements,
+  $item,
+  $items,
+  $location,
+  $path,
+  $skill,
+  $slot,
+  $stat,
+} from "libram";
+
 import {
   acquireOrPull,
   canPull$1,
@@ -65,7 +72,7 @@ import { needDigitalKey } from "../quests/level_13";
 
 //Defined in autoscend/paths/kingdom_of_exploathing.ash
 export function in_koe(): boolean {
-  return myPath() === Path.get("Kingdom of Exploathing");
+  return myPath() === $path`Kingdom of Exploathing`;
 }
 
 export function koe_initializeSettings(): boolean {
@@ -84,14 +91,14 @@ export function koe_initializeSettings(): boolean {
 export function koe_rmi_count(): number {
   //counts how much [rare meat isotopes] you effectively have. since you can convert meat to rmi with no limit at a 1000 to 1 ratio
   return toInt(
-    itemAmount(Item.get("rare Meat isotope")) +
+    itemAmount($item`rare Meat isotope`) +
       myMeat() / (1000 * npcStoreDiscountMulti()),
   );
 }
 
 export function koe_acquire_rmi$1(target: number): boolean {
   //acquires target amount of rare meat isotopes by converting meat into rmi
-  const it: Item = Item.get("rare Meat isotope");
+  const it: Item = $item`rare Meat isotope`;
   if (itemAmount(it) >= target) {
     return true; //we already have the desired amount
   }
@@ -107,7 +114,7 @@ export function koe_acquire_rmi$1(target: number): boolean {
     `Attempting to purchase ${need} [rare Meat Isotope] from [Cosmic Ray's Bazaar]`,
     "blue",
   );
-  buy(Coinmaster.get("Cosmic Ray's Bazaar"), need, it);
+  buy($coinmaster`Cosmic Ray's Bazaar`, need, it);
   return itemAmount(it) >= target;
 }
 
@@ -122,36 +129,36 @@ export function LX_koeInvaderHandler(): boolean {
     return false;
   }
 
-  if (haveEffect(Effect.get("Flared Nostrils")) > 0) {
+  if (haveEffect($effect`Flared Nostrils`) > 0) {
     doHottub();
   }
-  uneffect(Effect.get("Flared Nostrils"));
-  if (haveEffect(Effect.get("Flared Nostrils")) > 0) {
+  uneffect($effect`Flared Nostrils`);
+  if (haveEffect($effect`Flared Nostrils`) > 0) {
     // Delay until after the rest of the tower, I suppose
     return false;
   }
 
-  buffMaintain$3(Effect.get("Astral Shell"), 10, 1, 1);
-  buffMaintain$3(Effect.get("Elemental Saucesphere"), 10, 1, 1);
-  buffMaintain$3(Effect.get("Scariersauce"), 10, 1, 1);
-  buffMaintain$3(Effect.get("Scarysauce"), 10, 1, 1);
-  buffMaintain$4(Effect.get("Oiled-Up"));
+  buffMaintain$3($effect`Astral Shell`, 10, 1, 1);
+  buffMaintain$3($effect`Elemental Saucesphere`, 10, 1, 1);
+  buffMaintain$3($effect`Scariersauce`, 10, 1, 1);
+  buffMaintain$3($effect`Scarysauce`, 10, 1, 1);
+  buffMaintain$4($effect`Oiled-Up`);
 
-  buffMaintain$4(Effect.get("Minor Invulnerability"));
-  buffMaintain$4(Effect.get("Feeling Peaceful"));
-  buffMaintain$4(Effect.get("Covered in the Rainbow"));
+  buffMaintain$4($effect`Minor Invulnerability`);
+  buffMaintain$4($effect`Feeling Peaceful`);
+  buffMaintain$4($effect`Covered in the Rainbow`);
 
   resetMaximize();
 
-  if (acquireOrPull(Item.get("meteorb"))) {
-    autoEquip(Slot.get("off-hand"), Item.get("meteorb"));
+  if (acquireOrPull($item`meteorb`)) {
+    autoEquip($slot`off-hand`, $item`meteorb`);
   }
 
   simMaximizeWith(Location.none, "200 all res");
 
   let damagePerRound: number = 0.0;
   const baseDamage: number = 1.0 - 0.1 * myDaycount();
-  for (const el of Element.get(["cold", "hot", "sleaze", "spooky", "stench"])) {
+  for (const el of $elements`cold, hot, sleaze, spooky, stench`) {
     const offset: number = auto_canBeachCombHead(el.toString()) ? 3.0 : 0.0;
     damagePerRound +=
       (baseDamage *
@@ -170,8 +177,8 @@ export function LX_koeInvaderHandler(): boolean {
   const damageCap: number = 100 * myDaycount();
   // It's easiest to kill the invader in two hits with the June cleaver and Lunging Thrust Smack
   if (
-    haveSkill(Skill.get("Lunging Thrust-Smack")) &&
-    auto_is_valid$2(Skill.get("Lunging Thrust-Smack")) &&
+    haveSkill($skill`Lunging Thrust-Smack`) &&
+    auto_is_valid$2($skill`Lunging Thrust-Smack`) &&
     auto_canUseJuneCleaver()
   ) {
     // To kill in 3 rounds, need 19 of each element, or 10 plus bend hell. Check we have it.
@@ -189,13 +196,13 @@ export function LX_koeInvaderHandler(): boolean {
     // Cast bend hell if needed
     if (have_10_each) {
       if (
-        haveSkill(Skill.get("Bend Hell")) &&
-        auto_is_valid$2(Skill.get("Bend Hell")) &&
+        haveSkill($skill`Bend Hell`) &&
+        auto_is_valid$2($skill`Bend Hell`) &&
         !have_19_each
       ) {
-        buffMaintain$4(Effect.get("Bendin' Hell"));
+        buffMaintain$4($effect`Bendin' Hell`);
       }
-      if (haveEffect(Effect.get("Bendin' Hell")) > 0) {
+      if (haveEffect($effect`Bendin' Hell`) > 0) {
         have_19_each = true;
       }
     }
@@ -207,8 +214,8 @@ export function LX_koeInvaderHandler(): boolean {
         "blue",
       );
       addToMaximize("200 all res, +equip june cleaver");
-      const ret: boolean = autoAdv$1(1, Location.get("The Invader"));
-      if (haveEffect(Effect.get("Beaten Up")) > 0) {
+      const ret: boolean = autoAdv$1(1, $location`The Invader`);
+      if (haveEffect($effect`Beaten Up`) > 0) {
         abort("We died to the invader. Do it manually please?");
       }
       return ret;
@@ -217,37 +224,31 @@ export function LX_koeInvaderHandler(): boolean {
   // End of the June cleaver logic. Try a spell instead?
   // How many damage sources do we need?
   if (
-    haveSkill(Skill.get("Weapon of the Pastalord")) &&
-    auto_is_valid$2(Skill.get("Weapon of the Pastalord"))
+    haveSkill($skill`Weapon of the Pastalord`) &&
+    auto_is_valid$2($skill`Weapon of the Pastalord`)
   ) {
     let sources: number = 2;
     let hot_source: Item = Item.none;
     if (
-      itemAmount(Item.get("big hot pepper")) > 0 &&
-      auto_is_valid(Item.get("big hot pepper"))
+      itemAmount($item`big hot pepper`) > 0 &&
+      auto_is_valid($item`big hot pepper`)
     ) {
-      hot_source = Item.get("big hot pepper");
+      hot_source = $item`big hot pepper`;
       sources++;
-    } else if (acquireOrPull(Item.get("meteorb"))) {
-      hot_source = Item.get("meteorb");
+    } else if (acquireOrPull($item`meteorb`)) {
+      hot_source = $item`meteorb`;
       sources++;
     }
 
     if (sources * turns * damageCap >= 1000) {
-      for (const el of Element.get([
-        "cold",
-        "hot",
-        "sleaze",
-        "spooky",
-        "stench",
-      ])) {
+      for (const el of $elements`cold, hot, sleaze, spooky, stench`) {
         auto_beachCombHead(el.toString());
       }
       // Meteorb/pepper is going to add +hot, so remove that
-      setFlavour(Element.get("cold"));
-      buffMaintain$3(Effect.get("Carol of the Hells"), 50, 1, 1);
-      buffMaintain$3(Effect.get("Song of Sauce"), 150, 1, 1);
-      buffMaintain$4(Effect.get("Glittering Eyelashes"));
+      setFlavour($element`cold`);
+      buffMaintain$3($effect`Carol of the Hells`, 50, 1, 1);
+      buffMaintain$3($effect`Song of Sauce`, 150, 1, 1);
+      buffMaintain$4($effect`Glittering Eyelashes`);
       acquireMP$2(100, 0);
 
       auto_log_info(
@@ -260,8 +261,8 @@ export function LX_koeInvaderHandler(): boolean {
         addToMaximize(`+equip ${hot_source.toString()}`);
       }
 
-      const ret: boolean = autoAdv$1(1, Location.get("The Invader"));
-      if (haveEffect(Effect.get("Beaten Up")) > 0) {
+      const ret: boolean = autoAdv$1(1, $location`The Invader`);
+      if (haveEffect($effect`Beaten Up`) > 0) {
         abort("We died to the invader. Do it manually please?");
       }
       return ret;
@@ -277,22 +278,7 @@ export function LX_koeInvaderHandler(): boolean {
 function koe_L12FoodSelect(): Item {
   //selects a desireable food item to toss at enemies during L12 war quest battlefield in koe
   let food_item: Item = Item.none;
-  for (const it of Item.get([
-    "pie man was not meant to eat",
-    "spaghetti with Skullheads",
-    "gnocchetti di Nietzsche",
-    "spaghetti con calaveras",
-    "space chowder",
-    "spaghetti with ghost balls",
-    "crudles",
-    "agnolotti arboli",
-    "shells a la shellfish",
-    "linguini immondizia bianco",
-    "fettucini Inconnu",
-    "ghuol guolash",
-    "suggestive strozzapreti",
-    "fusilli marrownarrow",
-  ])) {
+  for (const it of $items`pie man was not meant to eat, spaghetti with Skullheads, gnocchetti di Nietzsche, spaghetti con calaveras, space chowder, spaghetti with ghost balls, crudles, agnolotti arboli, shells a la shellfish, linguini immondizia bianco, fettucini Inconnu, ghuol guolash, suggestive strozzapreti, fusilli marrownarrow`) {
     if (itemAmount(it) > 0) {
       food_item = it;
       break;
@@ -333,7 +319,7 @@ export function L12_koe_clearBattlefield(): boolean {
     return false;
   }
   //turn in the quest if done
-  if (itemAmount(Item.get("solid gold bowling ball")) > 0) {
+  if (itemAmount($item`solid gold bowling ball`) > 0) {
     council();
     if (internalQuestStatus("questL12HippyFrat") > 1) {
       return true;
@@ -345,8 +331,8 @@ export function L12_koe_clearBattlefield(): boolean {
     }
   }
   //prepare food to kill enemies with in the war. always keep a space chowder on hand if possible before going further. just in case.
-  if (itemAmount(Item.get("space chowder")) === 0 && koe_rmi_count() > 4) {
-    retrieveItem(1, Item.get("space chowder"));
+  if (itemAmount($item`space chowder`) === 0 && koe_rmi_count() > 4) {
+    retrieveItem(1, $item`space chowder`);
   }
   if (koe_L12FoodSelect() === Item.none) {
     abort(
@@ -356,15 +342,15 @@ export function L12_koe_clearBattlefield(): boolean {
   //equip yourself for the war
   equipWarOutfit();
   const warKillDoubler: Item =
-    myPrimestat() === Stat.get("Mysticality")
-      ? Item.get("Jacob's rung")
-      : Item.get("haunted paddle-ball");
+    myPrimestat() === $stat`Mysticality`
+      ? $item`Jacob's rung`
+      : $item`haunted paddle-ball`;
   pullXWhenHaveY(warKillDoubler, 1, 0);
   if (possessEquipment(warKillDoubler)) {
-    autoEquip(Slot.get("weapon"), warKillDoubler);
+    autoEquip($slot`weapon`, warKillDoubler);
   }
 
-  return autoAdv$2(Location.get("The Exploaded Battlefield"));
+  return autoAdv$2($location`The Exploaded Battlefield`);
 }
 
 export function L12_koe_finalizeWar(): boolean {
@@ -387,7 +373,7 @@ export function L12_koe_finalizeWar(): boolean {
   acquireHP();
   acquireMP$1(60);
   auto_log_info("Let's fight the final boss of the frat-hippy war!", "blue");
-  const retval: boolean = autoAdv$2(Location.get("The Exploaded Battlefield"));
+  const retval: boolean = autoAdv$2($location`The Exploaded Battlefield`);
   council(); //need to visit to grab 10 rare meat isotopes and get next quests
   cliExecute("refresh quests"); //needed to recognize that war is over
   if (!retval) {
@@ -411,7 +397,7 @@ export function L13_koe_towerNSNagamar(): boolean {
   if (!toBoolean(getProperty("auto_wandOfNagamar"))) {
     return false; //internal tracking says we do not want wand
   }
-  if (itemAmount(Item.get("Wand of Nagamar")) > 0) {
+  if (itemAmount($item`Wand of Nagamar`) > 0) {
     //if we already have wand we should adjust our internal tracking to say so
     setProperty("auto_wandOfNagamar", false.toString());
     return false;
@@ -422,15 +408,11 @@ export function L13_koe_towerNSNagamar(): boolean {
   }
   //softcore it is cheaper to pull then craft the wand components. if we do not have enough pulls then buy it from ray's bazaar
   if (!inHardcore()) {
-    if (
-      canPull$1(Item.get("WA")) &&
-      canPull$1(Item.get("ND")) &&
-      pullsRemaining() > 1
-    ) {
+    if (canPull$1($item`WA`) && canPull$1($item`ND`) && pullsRemaining() > 1) {
       //need 2 pulls to get both
-      acquireOrPull(Item.get("WA"));
-      acquireOrPull(Item.get("ND"));
-      if (create(1, Item.get("Wand of Nagamar"))) {
+      acquireOrPull($item`WA`);
+      acquireOrPull($item`ND`);
+      if (create(1, $item`Wand of Nagamar`)) {
         return true;
       } else {
         abort(
@@ -451,7 +433,7 @@ export function L13_koe_towerNSNagamar(): boolean {
       "attempting to buy [wand of nagamar] from [Cosmic Ray's Bazaar]",
       "blue",
     );
-    buy(Coinmaster.get("Cosmic Ray's Bazaar"), 1, Item.get("Wand of Nagamar"));
+    buy($coinmaster`Cosmic Ray's Bazaar`, 1, $item`Wand of Nagamar`);
   } else {
     auto_log_info(
       "I was unable to acquire 30 [rare Meat isotope] needed for the [wand of nagamar]",
@@ -459,7 +441,7 @@ export function L13_koe_towerNSNagamar(): boolean {
     );
   }
 
-  if (itemAmount(Item.get("Wand of Nagamar")) > 0) {
+  if (itemAmount($item`Wand of Nagamar`) > 0) {
     return true;
   }
   abort("I failed to acquire [Wand of Nagamar]");
@@ -473,5 +455,5 @@ export function koe_NeedWhitePixels(): boolean {
   const pixels_needed: number = toBoolean(getProperty("spaceInvaderDefeated"))
     ? 30
     : 20;
-  return itemAmount(Item.get("white pixel")) < pixels_needed;
+  return itemAmount($item`white pixel`) < pixels_needed;
 }

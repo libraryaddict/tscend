@@ -1,7 +1,6 @@
 import {
   abort,
   containsText,
-  Element,
   equip,
   equippedItem,
   getCounters,
@@ -20,16 +19,15 @@ import {
   myPath,
   myWildfireWater,
   npcPrice,
-  Path,
   runChoice,
   setProperty,
-  Skill,
-  Slot,
   toBoolean,
   toInt,
   use,
   visitUrl,
 } from "kolmafia";
+import { $element, $item, $location, $path, $skill, $slot } from "libram";
+
 import { auto_advToReserve } from "../../autoscend";
 import { auto_buyUpTo, pull_meat } from "../auto_acquire";
 import { autoAdv$2 } from "../auto_adventure";
@@ -61,7 +59,7 @@ import { auto_warSide, haveWarOutfit$1 } from "../quests/level_12";
 
 //Defined in autoscend/paths/wildfire.ash
 export function in_wildfire(): boolean {
-  return myPath() === Path.get("Wildfire");
+  return myPath() === $path`Wildfire`;
 }
 
 export function wildfire_initializeSettings(): void {
@@ -85,7 +83,7 @@ export function wildfire_groar_check(): boolean {
   if (!acquireHP() || !acquireMP$1(150)) {
     return true; //killing groar requires lots of MP and full HP.
   }
-  setFlavour(Element.get("sleaze")); //deal extra damage against hot opponent
+  setFlavour($element`sleaze`); //deal extra damage against hot opponent
 
   return false;
 }
@@ -100,7 +98,7 @@ export function wildfire_warboss_check(): boolean {
   if (!acquireHP() || !acquireMP$1(150)) {
     return true; //killing warboss requires lots of MP and full HP.
   }
-  setFlavour(Element.get("sleaze")); //deal extra damage against hot opponent
+  setFlavour($element`sleaze`); //deal extra damage against hot opponent
 
   return false;
 }
@@ -111,7 +109,7 @@ export function LX_wildfire_calculateTheUniverse(): boolean {
   if (!in_wildfire()) {
     return false;
   }
-  if (myMp() < mpCost(Skill.get("Calculate the Universe"))) {
+  if (myMp() < mpCost($skill`Calculate the Universe`)) {
     return false;
   }
 
@@ -121,7 +119,7 @@ export function LX_wildfire_calculateTheUniverse(): boolean {
     auto_saberChargesAvailable() > 0
   ) {
     if (doNumberology$2("battlefield", false) !== -1) {
-      autoEquip(Slot.get("weapon"), Item.get("Fourth of May Cosplay Saber"));
+      autoEquip($slot`weapon`, $item`Fourth of May Cosplay Saber`);
       return doNumberology("battlefield") !== -1;
     }
     return false; //we want 151 and can get it in general. but not right now. so save it for later
@@ -155,9 +153,9 @@ function wildfire_refillExtinguiser(): void {
   }
   //need extinguisher equiped for it to be refilled
   let old: Item = Item.none;
-  if (!haveEquipped(Item.get("industrial fire extinguisher"))) {
-    old = equippedItem(Slot.get("weapon"));
-    equip(Slot.get("weapon"), Item.get("industrial fire extinguisher"));
+  if (!haveEquipped($item`industrial fire extinguisher`)) {
+    old = equippedItem($slot`weapon`);
+    equip($slot`weapon`, $item`industrial fire extinguisher`);
   }
 
   auto_log_info$1(
@@ -167,7 +165,7 @@ function wildfire_refillExtinguiser(): void {
   runChoice(3);
   //equip prior weapon
   if (old !== Item.none) {
-    equip(Slot.get("weapon"), old);
+    equip($slot`weapon`, old);
   }
 }
 
@@ -234,30 +232,30 @@ function LX_wildfire_grease_pump(): boolean {
     return false; //already greased
   }
   if (
-    itemAmount(Item.get("pump grease")) === 0 &&
-    npcPrice(Item.get("pump grease")) === 0
+    itemAmount($item`pump grease`) === 0 &&
+    npcPrice($item`pump grease`) === 0
   ) {
     abort(
       "We are showing you did not grease the pump & do not have [pump grease] & cannot buy pump grease. Something is wrong. please fix it",
     );
   }
 
-  if (itemAmount(Item.get("pump grease")) === 0) {
+  if (itemAmount($item`pump grease`) === 0) {
     //buy the grease
-    pull_meat(npcPrice(Item.get("pump grease")));
-    if (myMeat() >= npcPrice(Item.get("pump grease"))) {
-      auto_buyUpTo(1, Item.get("pump grease"));
+    pull_meat(npcPrice($item`pump grease`));
+    if (myMeat() >= npcPrice($item`pump grease`)) {
+      auto_buyUpTo(1, $item`pump grease`);
     } else {
       if (toInt(getProperty("lastSecondFloorUnlock")) < myAscensions()) {
         return false; //go do other stuff until spookyraven second floor is unlocked
       }
-      return autoAdv$2(Location.get("The Haunted Bedroom")); //get enough meat to grease the pump
+      return autoAdv$2($location`The Haunted Bedroom`); //get enough meat to grease the pump
     }
   }
 
-  if (itemAmount(Item.get("pump grease")) > 0) {
+  if (itemAmount($item`pump grease`) > 0) {
     //use the grease
-    use(1, Item.get("pump grease"));
+    use(1, $item`pump grease`);
     if (!toBoolean(getProperty("wildfirePumpGreased"))) {
       abort(
         "Failed to use [pump grease] or mafia is tracking it incorrectly. please resolve the issue and run me again",
@@ -462,14 +460,14 @@ function LX_wildfire_water(): boolean {
   //individual location watering first
   //for stone wool. needed at level 11 but we acquire it early using [Baa'baa'bu'ran]. Skip if we've somehow already progressed past that stage
   if (internalQuestStatus("questL11Worship") < 3) {
-    if (LX_wildfire_hose$1(Location.get("The Hidden Temple"))) {
+    if (LX_wildfire_hose$1($location`The Hidden Temple`)) {
       return true;
     }
   }
 
   if (!isDesertAvailable() && !inKnollSign()) {
     //knoll sign does not need to farm components for bitchin meatcar
-    if (LX_wildfire_hose$1(Location.get("The Degrassi Knoll Garage"))) {
+    if (LX_wildfire_hose$1($location`The Degrassi Knoll Garage`)) {
       return true;
     }
   }
@@ -486,21 +484,18 @@ function LX_wildfire_water(): boolean {
     ) > -1
   ) {
     //can not hose these until quest is started
-    if (LX_wildfire_hose$1(Location.get("The Laugh Floor"))) {
+    if (LX_wildfire_hose$1($location`The Laugh Floor`)) {
       //need [imp air]
       return true;
     }
-    if (LX_wildfire_hose$1(Location.get("Infernal Rackets Backstage"))) {
+    if (LX_wildfire_hose$1($location`Infernal Rackets Backstage`)) {
       //need [bus pass]
       return true;
     }
   }
 
-  if (
-    myLevel() > 10 &&
-    zone_available(Location.get("The Hidden Bowling Alley"))
-  ) {
-    LX_wildfire_hose$1(Location.get("The Hidden Bowling Alley")); //part of level 11 quest. potentially might want to go after NC instead
+  if (myLevel() > 10 && zone_available($location`The Hidden Bowling Alley`)) {
+    LX_wildfire_hose$1($location`The Hidden Bowling Alley`); //part of level 11 quest. potentially might want to go after NC instead
   }
 
   if (
@@ -559,7 +554,7 @@ function LX_wildfire_spookyravenManorFirstFloor(): boolean {
     doing_haunted_library &&
     containsText(getProperty("auto_beatenUpLocations"), "The Haunted Library")
   ) {
-    LX_wildfire_hose(Location.get("The Haunted Library"), 3); //to make combat easier
+    LX_wildfire_hose($location`The Haunted Library`, 3); //to make combat easier
   }
   if (LX_spookyravenManorFirstFloor()) {
     return true;

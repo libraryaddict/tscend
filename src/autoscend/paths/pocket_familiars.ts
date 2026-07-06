@@ -2,18 +2,18 @@ import {
   cliExecute,
   getProperty,
   gitExists,
-  Item,
   itemAmount,
   myLevel,
   myPath,
   myPrimestat,
-  Path,
   retrieveItem,
   setProperty,
   toBoolean,
   toInt,
   visitUrl,
 } from "kolmafia";
+import { $item, $items, $path } from "libram";
+
 import { possessEquipment } from "../auto_equipment";
 import { auto_log_info, internalQuestStatus } from "../auto_util";
 import { equipWarOutfit, warAdventure } from "../quests/level_12";
@@ -21,7 +21,7 @@ import { equipWarOutfit, warAdventure } from "../quests/level_12";
 // This uses Ezandora's wonderful Helix Fossil script to handle building a team and combat.
 //Defined in autoscend/paths/pocket_familiars.ash
 export function in_pokefam(): boolean {
-  return myPath() === Path.get("Pocket Familiars");
+  return myPath() === $path`Pocket Familiars`;
 }
 
 export function pokefam_initializeSettings(): void {
@@ -53,18 +53,13 @@ export function pokefam_getHats(): void {
     return;
   }
   visitUrl("shop.php?whichshop=pokefam");
-  if (itemAmount(Item.get("1,960 pok&eacute;dollar bill")) < 50) {
+  if (itemAmount($item`1,960 pokédollar bill`) < 50) {
     return;
   }
-  for (const it of Item.get([
-    "Team Avarice cap",
-    "Team Sloth cap",
-    "Team Wrath cap",
-    "Mu cap",
-  ])) {
+  for (const it of $items`Team Avarice cap, Team Sloth cap, Team Wrath cap, Mu cap`) {
     if (
       !possessEquipment(it) &&
-      itemAmount(Item.get("1,960 pok&eacute;dollar bill")) >= 50
+      itemAmount($item`1,960 pokédollar bill`) >= 50
     ) {
       retrieveItem(1, it);
     }

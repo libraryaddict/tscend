@@ -1,11 +1,9 @@
 import {
   abort,
-  Effect,
   floor,
   getProperty,
   haveEffect,
   haveSkill,
-  Item,
   itemAmount,
   min,
   myBuffedstat,
@@ -16,15 +14,14 @@ import {
   myMp,
   myPath,
   numericModifier,
-  Path,
   setProperty,
-  Skill,
-  Stat,
   toInt,
   use,
   useSkill,
   visitUrl,
 } from "kolmafia";
+import { $effect, $item, $path, $skill, $stat } from "libram";
+
 import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
 import { autoForceEquip$3, equipBaseline } from "../auto_equipment";
 import { acquireMP$1 } from "../auto_restore";
@@ -39,7 +36,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/avatar_of_boris.ash
 export function is_boris(): boolean {
-  return myPath() === Path.get("Avatar of Boris");
+  return myPath() === $path`Avatar of Boris`;
 }
 
 export function borisTrusty(): void {
@@ -47,7 +44,7 @@ export function borisTrusty(): void {
   if (!is_boris()) {
     return;
   }
-  autoForceEquip$3(Item.get("Trusty")); //ensure we have trusty equipped
+  autoForceEquip$3($item`Trusty`); //ensure we have trusty equipped
 }
 
 export function borisAdjustML(): boolean {
@@ -56,11 +53,11 @@ export function borisAdjustML(): boolean {
     return false;
   }
 
-  if (myBuffedstat(Stat.get("Muscle")) < 30) {
+  if (myBuffedstat($stat`Muscle`) < 30) {
     return auto_change_mcd(0);
   }
 
-  const strong: boolean = auto_have_skill(Skill.get("Barrel Chested"));
+  const strong: boolean = auto_have_skill($skill`Barrel Chested`);
 
   if (!strong) {
     auto_change_mcd(0);
@@ -70,11 +67,11 @@ export function borisAdjustML(): boolean {
   //Overconfident is an intrinsic +30 ML. By the time you are strong enough to use it it can be turned on and left on
   if (
     strong &&
-    myBuffedstat(Stat.get("Muscle")) > 100 &&
-    haveSkill(Skill.get("Pep Talk")) &&
-    haveEffect(Effect.get("Overconfident")) === 0
+    myBuffedstat($stat`Muscle`) > 100 &&
+    haveSkill($skill`Pep Talk`) &&
+    haveEffect($effect`Overconfident`) === 0
   ) {
-    useSkill(1, Skill.get("Pep Talk"));
+    useSkill(1, $skill`Pep Talk`);
   }
 
   return true;
@@ -103,25 +100,25 @@ export function boris_initializeDay(day: number): void {
     ovenHandle();
 
     if (toInt(getProperty("auto_day_init")) < 2) {
-      if (itemAmount(Item.get("gym membership card")) > 0) {
-        use(1, Item.get("gym membership card"));
+      if (itemAmount($item`gym membership card`) > 0) {
+        use(1, $item`gym membership card`);
       }
 
-      if (itemAmount(Item.get("seal tooth")) === 0) {
-        acquireHermitItem(Item.get("seal tooth"));
+      if (itemAmount($item`seal tooth`) === 0) {
+        acquireHermitItem($item`seal tooth`);
       }
-      while (acquireHermitItem(Item.get("11-leaf clover"))) {}
-      pullXWhenHaveY(Item.get("Hand in Glove"), 1, 0);
-      pullXWhenHaveY(Item.get("blackberry galoshes"), 1, 0);
+      while (acquireHermitItem($item`11-leaf clover`)) {}
+      pullXWhenHaveY($item`Hand in Glove`, 1, 0);
+      pullXWhenHaveY($item`blackberry galoshes`, 1, 0);
     }
   } else if (day === 3) {
     if (toInt(getProperty("auto_day_init")) < 3) {
-      while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+      while (acquireHermitItem($item`11-leaf clover`)) {}
       setProperty("auto_day_init", (3).toString());
     }
   } else if (day === 4) {
     if (toInt(getProperty("auto_day_init")) < 4) {
-      while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+      while (acquireHermitItem($item`11-leaf clover`)) {}
       setProperty("auto_day_init", (4).toString());
     }
   }
@@ -136,9 +133,9 @@ export function boris_buySkills(): void {
   }
   //if you have these 3 skills then you have all skills
   if (
-    haveSkill(Skill.get("Bifurcating Blow")) &&
-    haveSkill(Skill.get("Banishing Shout")) &&
-    haveSkill(Skill.get("Gourmand"))
+    haveSkill($skill`Bifurcating Blow`) &&
+    haveSkill($skill`Banishing Shout`) &&
+    haveSkill($skill`Gourmand`)
   ) {
     return;
   }
@@ -160,96 +157,96 @@ export function boris_buySkills(): void {
       let tree: number = 1;
       //skills are listed in reverse order. from last to first to buy.
       //Correct Boris strat is super easy. get all feasting, then all shouting, then fighting last.
-      if (!haveSkill(Skill.get("Bifurcating Blow"))) {
+      if (!haveSkill($skill`Bifurcating Blow`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Legendary Impatience"))) {
+      if (!haveSkill($skill`Legendary Impatience`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Song of Cockiness"))) {
+      if (!haveSkill($skill`Song of Cockiness`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Legendary Luck"))) {
+      if (!haveSkill($skill`Legendary Luck`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Throw Trusty"))) {
+      if (!haveSkill($skill`Throw Trusty`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Pep Talk"))) {
+      if (!haveSkill($skill`Pep Talk`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Sick Pythons"))) {
+      if (!haveSkill($skill`Sick Pythons`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Broadside"))) {
+      if (!haveSkill($skill`Broadside`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("[11002]Ferocity"))) {
+      if (!haveSkill($skill`[11002]Ferocity`)) {
         tree = 1;
       }
-      if (!haveSkill(Skill.get("Cleave"))) {
+      if (!haveSkill($skill`Cleave`)) {
         tree = 1;
       }
 
-      if (!haveSkill(Skill.get("Banishing Shout"))) {
+      if (!haveSkill($skill`Banishing Shout`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Song of Battle"))) {
+      if (!haveSkill($skill`Song of Battle`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Louder Bellows"))) {
+      if (!haveSkill($skill`Louder Bellows`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Song of Fortune"))) {
+      if (!haveSkill($skill`Song of Fortune`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Good Singing Voice"))) {
+      if (!haveSkill($skill`Good Singing Voice`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Song of Solitude"))) {
+      if (!haveSkill($skill`Song of Solitude`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Big Lungs"))) {
+      if (!haveSkill($skill`Big Lungs`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Song of Accompaniment"))) {
+      if (!haveSkill($skill`Song of Accompaniment`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Legendary Bravado"))) {
+      if (!haveSkill($skill`Legendary Bravado`)) {
         tree = 2;
       }
-      if (!haveSkill(Skill.get("Intimidating Bellow"))) {
+      if (!haveSkill($skill`Intimidating Bellow`)) {
         tree = 2;
       }
 
-      if (!haveSkill(Skill.get("Gourmand"))) {
+      if (!haveSkill($skill`Gourmand`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Barrel Chested"))) {
+      if (!haveSkill($skill`Barrel Chested`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("More to Love"))) {
+      if (!haveSkill($skill`More to Love`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Hungry Eyes"))) {
+      if (!haveSkill($skill`Hungry Eyes`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Heroic Belch"))) {
+      if (!haveSkill($skill`Heroic Belch`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Legendary Appetite"))) {
+      if (!haveSkill($skill`Legendary Appetite`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Big Boned"))) {
+      if (!haveSkill($skill`Big Boned`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Song of the Glorious Lunch"))) {
+      if (!haveSkill($skill`Song of the Glorious Lunch`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Legendary Girth"))) {
+      if (!haveSkill($skill`Legendary Girth`)) {
         tree = 3;
       }
-      if (!haveSkill(Skill.get("Demand Sandwich"))) {
+      if (!haveSkill($skill`Demand Sandwich`)) {
         tree = 3;
       }
 
@@ -281,7 +278,7 @@ export function borisDemandSandwich(immediately: boolean): boolean {
   if (!immediately && myLevel() > 8) {
     const cast_count: number = min(remainingDaily(), floor(myMp() / 5));
     if (cast_count > 0) {
-      return useSkill(cast_count, Skill.get("Demand Sandwich"));
+      return useSkill(cast_count, $skill`Demand Sandwich`);
     }
   }
   //if we are forced to get them all right now then we don't care about level nor MP regen. We will restore MP as needed.
@@ -294,11 +291,11 @@ export function borisDemandSandwich(immediately: boolean): boolean {
           "failed to acquire the MP needed to cast [Demand Sandwich], aborting to prevent diet mishap",
         );
       }
-      return useSkill(remainingDaily(), Skill.get("Demand Sandwich"));
+      return useSkill(remainingDaily(), $skill`Demand Sandwich`);
     } else {
       while (remainingDaily() > 0) {
         if (acquireMP$1(5)) {
-          useSkill(remainingDaily(), Skill.get("Demand Sandwich"));
+          useSkill(remainingDaily(), $skill`Demand Sandwich`);
         } else {
           abort(
             "failed to acquire the MP needed to cast [Demand Sandwich], aborting to prevent diet mishap",
@@ -336,7 +333,7 @@ export function borisWastedMP(): void {
     }
 
     potential_mp_wasted = potential_mp_wasted - castAmount;
-    useSkill(castAmount, Skill.get("Laugh It Off"));
+    useSkill(castAmount, $skill`Laugh It Off`);
   }
 }
 
@@ -372,7 +369,7 @@ export function borisAcquireHP(goal: number): boolean {
       //if I reached this point with no MP I am done
       break;
     }
-    useSkill(castAmount, Skill.get("Laugh It Off")); //multi restore HP
+    useSkill(castAmount, $skill`Laugh It Off`); //multi restore HP
     if (failed_acquireMP) {
       //MP restore failed so we are done.
       break;

@@ -10,7 +10,6 @@ import {
   equip,
   equippedAmount,
   equippedItem,
-  Familiar,
   floor,
   freeCrafts,
   getMonsters,
@@ -34,8 +33,6 @@ import {
   myPath,
   myPrimestat,
   numericModifier,
-  Path,
-  Phylum,
   runChoice,
   setProperty,
   shrunkenHeadZombie,
@@ -55,6 +52,22 @@ import {
   visitUrl,
   weaponHands,
 } from "kolmafia";
+import {
+  $effect,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $locations,
+  $monster,
+  $path,
+  $phyla,
+  $phylum,
+  $skill,
+  $slot,
+  $stat,
+} from "libram";
+
 import { canChew, canDrink$1, canEat$1 } from "../auto_consume";
 import {
   autoForceEquip,
@@ -82,11 +95,6 @@ import {
   zoneRank$1,
 } from "../auto_util";
 import { canUse$2 } from "../combat/auto_combat_util";
-import {
-  auto_haveEternityCodpiece,
-  auto_isInEternityCodpiece,
-  auto_spadeDigsRemaining,
-} from "./mr2026";
 import { amw_wantMeat, in_amw } from "../paths/adventurer_meats_world";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_hattrick } from "../paths/hattrick";
@@ -94,12 +102,17 @@ import { in_zootomist } from "../paths/zootomist";
 import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
 import { needStarKey } from "../quests/level_13";
 import { AshMatcher } from "../utils/kolmafiaUtils";
+import {
+  auto_haveEternityCodpiece,
+  auto_isInEternityCodpiece,
+  auto_spadeDigsRemaining,
+} from "./mr2026";
 
 // This is meant for items that have a date of 2025
 
 //Defined in autoscend/iotms/mr2025.ash
 export function auto_haveCyberRealm(): boolean {
-  if (!isUnrestricted(Item.get("server room key"))) {
+  if (!isUnrestricted($item`server room key`)) {
     return false;
   }
   if (
@@ -113,8 +126,8 @@ export function auto_haveCyberRealm(): boolean {
 
 export function auto_haveMcHugeLargeSkis(): boolean {
   if (
-    auto_is_valid(Item.get("McHugeLarge duffel bag")) &&
-    availableAmount(Item.get("McHugeLarge duffel bag")) > 0
+    auto_is_valid($item`McHugeLarge duffel bag`) &&
+    availableAmount($item`McHugeLarge duffel bag`) > 0
   ) {
     return true;
   }
@@ -126,13 +139,7 @@ export function auto_canEquipAllMcHugeLarge(): boolean {
     return false;
   }
   let success: boolean = true;
-  for (const it of Item.get([
-    "McHugeLarge duffel bag",
-    "McHugeLarge right pole",
-    "McHugeLarge left pole",
-    "McHugeLarge right ski",
-    "McHugeLarge left ski",
-  ])) {
+  for (const it of $items`McHugeLarge duffel bag, McHugeLarge right pole, McHugeLarge left pole, McHugeLarge right ski, McHugeLarge left ski`) {
     success = canEquip(it) && success;
   }
   return success;
@@ -142,14 +149,14 @@ export function auto_equipAllMcHugeLarge(): boolean {
   if (!auto_haveMcHugeLargeSkis()) {
     return false;
   }
-  if (!possessEquipment(Item.get("McHugeLarge right pole"))) {
+  if (!possessEquipment($item`McHugeLarge right pole`)) {
     auto_openMcLargeHugeSkis();
   }
-  autoForceEquip$1(Slot.get("back"), Item.get("McHugeLarge duffel bag"));
-  autoForceEquip$1(Slot.get("weapon"), Item.get("McHugeLarge right pole"));
-  autoForceEquip$1(Slot.get("off-hand"), Item.get("McHugeLarge left pole"));
-  autoForceEquip$1(Slot.get("acc1"), Item.get("McHugeLarge left ski"));
-  autoForceEquip$1(Slot.get("acc2"), Item.get("McHugeLarge right ski"));
+  autoForceEquip$1($slot`back`, $item`McHugeLarge duffel bag`);
+  autoForceEquip$1($slot`weapon`, $item`McHugeLarge right pole`);
+  autoForceEquip$1($slot`off-hand`, $item`McHugeLarge left pole`);
+  autoForceEquip$1($slot`acc1`, $item`McHugeLarge left ski`);
+  autoForceEquip$1($slot`acc2`, $item`McHugeLarge right ski`);
   return true;
 }
 
@@ -157,12 +164,12 @@ export function auto_openMcLargeHugeSkis(): boolean {
   if (!auto_haveMcHugeLargeSkis()) {
     return false;
   }
-  if (possessEquipment(Item.get("McHugeLarge right pole"))) {
+  if (possessEquipment($item`McHugeLarge right pole`)) {
     return true;
   }
   //~ use($item[McHugeLarge duffel bag]); // does not work - need Mafia CLI tool?
   visitUrl("inventory.php?action=skiduffel");
-  return possessEquipment(Item.get("McHugeLarge right pole"));
+  return possessEquipment($item`McHugeLarge right pole`);
 }
 
 export function auto_McLargeHugeForcesLeft(): number {
@@ -182,14 +189,13 @@ export function auto_McLargeHugeSniffsLeft(): number {
 }
 
 export function auto_haveCupidBow(): boolean {
-  const bow: Item = Item.get("toy Cupid bow");
+  const bow: Item = $item`toy Cupid bow`;
   return auto_is_valid(bow) && possessEquipment(bow);
 }
 
 function auto_haveLeprecondo(): boolean {
   return (
-    auto_is_valid(Item.get("Leprecondo")) &&
-    availableAmount(Item.get("Leprecondo")) > 0
+    auto_is_valid($item`Leprecondo`) && availableAmount($item`Leprecondo`) > 0
   );
 }
 
@@ -273,7 +279,7 @@ export function auto_setLeprecondo(): boolean {
         picks.set(n_picks++, f);
       }
     }
-    visitUrl(`inv_use.php?whichitem=${toInt(Item.get("Leprecondo"))}`);
+    visitUrl(`inv_use.php?whichitem=${toInt($item`Leprecondo`)}`);
     const url: string = `choice.php?whichchoice=1556&option=1&r0=${picks.get(3) ?? picks.set(3, 0).get(3)}&r1=${picks.get(2) ?? picks.set(2, 0).get(2)}&r2=${picks.get(1) ?? picks.set(1, 0).get(1)}&r3=${picks.get(0) ?? picks.set(0, 0).get(0)}`;
     auto_log_debug(`Condo set URL: ${url}`, "blue");
     visitUrl(url);
@@ -282,8 +288,8 @@ export function auto_setLeprecondo(): boolean {
 }
 
 export function auto_useLeprecondoDrops(): boolean {
-  while (availableAmount(Item.get("crafting plans")) > 0 && freeCrafts() < 2) {
-    use(Item.get("crafting plans"));
+  while (availableAmount($item`crafting plans`) > 0 && freeCrafts() < 2) {
+    use($item`crafting plans`);
   }
   return true;
 }
@@ -297,7 +303,7 @@ function auto_afterimagesLeft(): number {
 }
 
 export function auto_haveAprilShowerShield(): boolean {
-  const shield: Item = Item.get("April Shower Thoughts shield");
+  const shield: Item = $item`April Shower Thoughts shield`;
   return auto_is_valid(shield) && possessEquipment(shield);
 }
 
@@ -318,18 +324,18 @@ export function auto_equipAprilShieldBuff(): boolean {
     return false;
   }
   //force equip the shield if this is called
-  if (weaponHands(equippedItem(Slot.get("weapon"))) > 1) {
+  if (weaponHands(equippedItem($slot`weapon`)) > 1) {
     //if a 2 handed weapon is equipped, unequip it
-    equip(Item.none, Slot.get("weapon"));
+    equip(Item.none, $slot`weapon`);
   }
-  return autoForceEquip$2(Item.get("April Shower Thoughts shield"), true);
+  return autoForceEquip$2($item`April Shower Thoughts shield`, true);
 }
 
 export function auto_unequipAprilShieldBuff(): boolean {
   //Because Empathy gets replaced by Thoughtful Empathy when cast with the Shield equipped,
   //we need to make sure this is unequipped if we want to have both Empathy and Thoughtful Empathy
-  if (haveEquipped(Item.get("April Shower Thoughts shield"))) {
-    return autoForceEquip(Slot.get("off-hand"), Item.none, true);
+  if (haveEquipped($item`April Shower Thoughts shield`)) {
+    return autoForceEquip($slot`off-hand`, Item.none, true);
   }
   return true;
 }
@@ -339,7 +345,7 @@ export function auto_canNorthernExplosionFE(): boolean {
   if (!auto_haveAprilShowerShield()) {
     return false;
   }
-  if (!auto_have_skill(Skill.get("Northern Explosion"))) {
+  if (!auto_have_skill($skill`Northern Explosion`)) {
     return false;
   }
   if (toBoolean(getProperty("_aprilShowerNorthernExplosion"))) {
@@ -349,29 +355,29 @@ export function auto_canNorthernExplosionFE(): boolean {
 }
 
 export function auto_havePeridot(): boolean {
-  const pop: Item = Item.get("Peridot of Peril");
+  const pop: Item = $item`Peridot of Peril`;
   return auto_is_valid(pop) && possessEquipment(pop);
 }
 
 export function peridotManuallyDesiredMonsters(): Map<Monster, boolean> {
   // manually specify some favoured monsters
   const desired_monsters: Map<Monster, boolean> = new Map();
-  desired_monsters.set(Monster.get("lobsterfrogman"), true);
-  desired_monsters.set(Monster.get("black panther"), true);
-  desired_monsters.set(Monster.get("white lion"), true);
-  desired_monsters.set(Monster.get("monstrous boiler"), true);
-  desired_monsters.set(Monster.get("modern zmobie"), true);
-  desired_monsters.set(Monster.get("dairy goat"), true);
-  desired_monsters.set(Monster.get("writing desk"), true);
+  desired_monsters.set($monster`lobsterfrogman`, true);
+  desired_monsters.set($monster`black panther`, true);
+  desired_monsters.set($monster`white lion`, true);
+  desired_monsters.set($monster`monstrous boiler`, true);
+  desired_monsters.set($monster`modern zmobie`, true);
+  desired_monsters.set($monster`dairy goat`, true);
+  desired_monsters.set($monster`writing desk`, true);
   // we sniff the two-star, two-line monster, but we want exactly one star chart
-  if (itemAmount(Item.get("star chart")) === 0) {
-    desired_monsters.set(Monster.get("Astronomer"), true);
+  if (itemAmount($item`star chart`) === 0) {
+    desired_monsters.set($monster`Astronomer`, true);
   }
   // Quest gremlins need IDs because there's multiple
-  desired_monsters.set(Monster.get("erudite gremlin (tool)"), true); // erudite gremlin (tool)
-  desired_monsters.set(Monster.get("batwinged gremlin (tool)"), true); // batwinged gremlin (tool)
-  desired_monsters.set(Monster.get("vegetable gremlin (tool)"), true); // vegetable gremlin (tool)
-  desired_monsters.set(Monster.get("spider gremlin (tool)"), true); // spider gremlin (tool)
+  desired_monsters.set($monster`erudite gremlin (tool)`, true); // erudite gremlin (tool)
+  desired_monsters.set($monster`batwinged gremlin (tool)`, true); // batwinged gremlin (tool)
+  desired_monsters.set($monster`vegetable gremlin (tool)`, true); // vegetable gremlin (tool)
+  desired_monsters.set($monster`spider gremlin (tool)`, true); // spider gremlin (tool)
 
   return desired_monsters;
 }
@@ -384,18 +390,18 @@ export function auto_peridotSetZone(loc: Location): boolean {
     return false;
   }
   // we don't have enough digs to make it through the beach, so we don't merely want to set the zone
-  if (loc === Location.get("Sonofa Beach") && auto_spadeDigsRemaining() < 5) {
+  if (loc === $location`Sonofa Beach` && auto_spadeDigsRemaining() < 5) {
     return false;
   }
 
   const desired_locations: Map<Location, boolean> = new Map();
-  desired_locations.set(Location.get("Sonofa Beach"), true);
-  desired_locations.set(Location.get("The Hatching Chamber"), true);
-  desired_locations.set(Location.get("The Feeding Chamber"), true);
-  desired_locations.set(Location.get("The Royal Guard Chamber"), true);
-  desired_locations.set(Location.get("The Haunted Kitchen"), true);
-  desired_locations.set(Location.get("The Unquiet Garves"), true);
-  desired_locations.set(Location.get("The Haunted Ballroom"), true);
+  desired_locations.set($location`Sonofa Beach`, true);
+  desired_locations.set($location`The Hatching Chamber`, true);
+  desired_locations.set($location`The Feeding Chamber`, true);
+  desired_locations.set($location`The Royal Guard Chamber`, true);
+  desired_locations.set($location`The Haunted Kitchen`, true);
+  desired_locations.set($location`The Unquiet Garves`, true);
+  desired_locations.set($location`The Haunted Ballroom`, true);
 
   if (desired_locations.has(loc)) {
     return true;
@@ -442,7 +448,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
   if (toInt(popChoice) === 0 || auto_peridotSetZone(loc)) {
     //still nothing found so just peace out. Or we want to set the zone without using an adventure.
     handleTracker$2(
-      Item.get("Peridot of Peril").toString(),
+      $item`Peridot of Peril`.toString(),
       loc.toString(),
       "Peace out",
       "auto_mapperidot",
@@ -451,7 +457,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     return;
   }
   handleTracker$2(
-    Item.get("Peridot of Peril").toString(),
+    $item`Peridot of Peril`.toString(),
     loc.toString(),
     popChoice.toString(),
     "auto_mapperidot",
@@ -477,7 +483,7 @@ export function haveUsedPeridot$1(loc: Location): boolean {
 }
 
 function auto_havePrismaticBeret(): boolean {
-  const pb: Item = Item.get("prismatic beret");
+  const pb: Item = $item`prismatic beret`;
   return auto_is_valid(pb) && possessEquipment(pb);
 }
 
@@ -503,22 +509,22 @@ function beretPower(
   const powers: Map<string, number> = new Map();
   //possible power calculations
   if (!in_hattrick()) {
-    if (auto_have_familiar(Familiar.get("Mad Hatrack"))) {
+    if (auto_have_familiar($familiar`Mad Hatrack`)) {
       //prismatic beret on the hatrack and another hat on you
       for (const [i, h] of allHats) {
         hatPowers.set(
           hatPowers.size,
           getPower(h) *
-            (multipliers.get(Slot.get("hat")) ??
-              multipliers.set(Slot.get("hat"), 0).get(Slot.get("hat"))),
+            (multipliers.get($slot`hat`) ??
+              multipliers.set($slot`hat`, 0).get($slot`hat`)),
         );
       }
     } else {
       hatPowers.set(
         0,
-        getPower(Item.get("prismatic beret")) *
-          (multipliers.get(Slot.get("hat")) ??
-            multipliers.set(Slot.get("hat"), 0).get(Slot.get("hat"))),
+        getPower($item`prismatic beret`) *
+          (multipliers.get($slot`hat`) ??
+            multipliers.set($slot`hat`, 0).get($slot`hat`)),
       );
     }
   } else {
@@ -528,8 +534,8 @@ function beretPower(
           0,
           (hatPowers.get(0) ?? 0) +
             getPower(h) *
-              (multipliers.get(Slot.get("hat")) ??
-                multipliers.set(Slot.get("hat"), 0).get(Slot.get("hat"))),
+              (multipliers.get($slot`hat`) ??
+                multipliers.set($slot`hat`, 0).get($slot`hat`)),
         );
       }
     }
@@ -538,8 +544,8 @@ function beretPower(
     pantPowers.set(
       pantPowers.size,
       getPower(p) *
-        (multipliers.get(Slot.get("pants")) ??
-          multipliers.set(Slot.get("pants"), 0).get(Slot.get("pants"))),
+        (multipliers.get($slot`pants`) ??
+          multipliers.set($slot`pants`, 0).get($slot`pants`)),
     );
   }
   for (const [i, s] of allShirts) {
@@ -548,7 +554,7 @@ function beretPower(
   for (const [i, hp] of hatPowers) {
     for (const [i_1, pp] of pantPowers) {
       for (const [i_2, sp] of shirtPowers) {
-        const concat: string = `${auto_have_familiar(Familiar.get("Mad Hatrack")) ? `${(hp / (multipliers.get(Slot.get("hat")) ?? multipliers.set(Slot.get("hat"), 0).get(Slot.get("hat")))).toString()},` : ""}${(pp / (multipliers.get(Slot.get("pants")) ?? multipliers.set(Slot.get("pants"), 0).get(Slot.get("pants")))).toString()},${sp.toString()}`;
+        const concat: string = `${auto_have_familiar($familiar`Mad Hatrack`) ? `${(hp / (multipliers.get($slot`hat`) ?? multipliers.set($slot`hat`, 0).get($slot`hat`))).toString()},` : ""}${(pp / (multipliers.get($slot`pants`) ?? multipliers.set($slot`pants`, 0).get($slot`pants`))).toString()},${sp.toString()}`;
         powers.set(concat, hp + pp + sp);
       }
     }
@@ -650,9 +656,7 @@ export function beretBusk(effectMultiplier: string): boolean {
   const allHats: Map<number, Item> = new Map();
   const allShirts: Map<number, Item> = new Map();
   const allPants: Map<number, Item> = new Map();
-  const bestBuskHROffset: number = auto_have_familiar(
-    Familiar.get("Mad Hatrack"),
-  )
+  const bestBuskHROffset: number = auto_have_familiar($familiar`Mad Hatrack`)
     ? 0
     : 1;
   let buskPower: number = 0;
@@ -12670,13 +12674,13 @@ export function beretBusk(effectMultiplier: string): boolean {
     //only record items we have
     if (possessEquipment(it)) {
       switch (toSlot(it)) {
-        case Slot.get("hat"):
+        case $slot`hat`:
           allHats.set(allHats.size, it);
           break;
-        case Slot.get("shirt"):
+        case $slot`shirt`:
           allShirts.set(allShirts.size, it);
           break;
-        case Slot.get("pants"):
+        case $slot`pants`:
           allPants.set(allPants.size, it);
           break;
         default:
@@ -12693,7 +12697,7 @@ export function beretBusk(effectMultiplier: string): boolean {
     splitString(bestBuskPowers, ",").map((_v, _i) => [_i, _v]),
   );
   if (!in_hattrick()) {
-    if (auto_have_familiar(Familiar.get("Mad Hatrack"))) {
+    if (auto_have_familiar($familiar`Mad Hatrack`)) {
       for (const [i, hat] of allHats) {
         if (
           getPower(hat) ===
@@ -12701,36 +12705,32 @@ export function beretBusk(effectMultiplier: string): boolean {
               bestBuskPowersSplit.get(0) ??
                 bestBuskPowersSplit.set(0, "").get(0),
             ) &&
-          hat !== Item.get("prismatic beret")
+          hat !== $item`prismatic beret`
         ) {
           //equip the hat and put the beret on the Hatrack to be able to busk
           autoForceEquip$2(hat, true);
           buskPower +=
             getPower(hat) *
-            (multipliers.get(Slot.get("hat")) ??
-              multipliers.set(Slot.get("hat"), 0).get(Slot.get("hat")));
-          if (useFamiliar(Familiar.get("Mad Hatrack"))) {
+            (multipliers.get($slot`hat`) ??
+              multipliers.set($slot`hat`, 0).get($slot`hat`));
+          if (useFamiliar($familiar`Mad Hatrack`)) {
             //Force the beret to the Hatrack if we were able to use the Hatrack.
-            autoForceEquip(
-              Slot.get("familiar"),
-              Item.get("prismatic beret"),
-              true,
-            );
+            autoForceEquip($slot`familiar`, $item`prismatic beret`, true);
           }
           break;
-        } else if (hat === Item.get("prismatic beret")) {
+        } else if (hat === $item`prismatic beret`) {
           //don't equip the beret yet, in case there is another 10 power hat to wear
           continue;
         }
       }
     }
-    if (!haveEquipped(Item.get("prismatic beret"))) {
+    if (!haveEquipped($item`prismatic beret`)) {
       //equip the beret if it is not equipped anywhere else
-      autoForceEquip(Slot.get("hat"), Item.get("prismatic beret"), true);
+      autoForceEquip($slot`hat`, $item`prismatic beret`, true);
       buskPower +=
-        getPower(Item.get("prismatic beret")) *
-        (multipliers.get(Slot.get("hat")) ??
-          multipliers.set(Slot.get("hat"), 0).get(Slot.get("hat")));
+        getPower($item`prismatic beret`) *
+        (multipliers.get($slot`hat`) ??
+          multipliers.set($slot`hat`, 0).get($slot`hat`));
     }
   } else {
     //get the power of all hats equipped in Hat Trick
@@ -12738,8 +12738,8 @@ export function beretBusk(effectMultiplier: string): boolean {
       if (equippedAmount(h) > 0) {
         buskPower +=
           getPower(h) *
-          (multipliers.get(Slot.get("hat")) ??
-            multipliers.set(Slot.get("hat"), 0).get(Slot.get("hat")));
+          (multipliers.get($slot`hat`) ??
+            multipliers.set($slot`hat`, 0).get($slot`hat`));
       }
     }
   }
@@ -12753,7 +12753,7 @@ export function beretBusk(effectMultiplier: string): boolean {
             .get(1 - bestBuskHROffset),
       ) === 0
     ) {
-      autoForceEquip(Slot.get("pants"), Item.none, true);
+      autoForceEquip($slot`pants`, Item.none, true);
     } else {
       for (const [i, pant] of allPants) {
         if (
@@ -12768,8 +12768,8 @@ export function beretBusk(effectMultiplier: string): boolean {
           autoForceEquip$2(pant, true);
           buskPower +=
             getPower(pant) *
-            (multipliers.get(Slot.get("pants")) ??
-              multipliers.set(Slot.get("pants"), 0).get(Slot.get("pants")));
+            (multipliers.get($slot`pants`) ??
+              multipliers.set($slot`pants`, 0).get($slot`pants`));
           break;
         }
       }
@@ -12785,7 +12785,7 @@ export function beretBusk(effectMultiplier: string): boolean {
             .get(2 - bestBuskHROffset),
       ) === 0
     ) {
-      autoForceEquip(Slot.get("shirt"), Item.none, true);
+      autoForceEquip($slot`shirt`, Item.none, true);
     } else {
       for (const [i, shirt] of allShirts) {
         if (
@@ -12805,9 +12805,9 @@ export function beretBusk(effectMultiplier: string): boolean {
     }
   }
 
-  if (useSkill(1, Skill.get("Beret Busking"))) {
+  if (useSkill(1, $skill`Beret Busking`)) {
     handleTracker$2(
-      Item.get("prismatic beret").toString(),
+      $item`prismatic beret`.toString(),
       myLocation().toString(),
       `Beret busk ${getProperty("_beretBuskingUses")} at ${buskPower} power`,
       "auto_otherstuff",
@@ -12823,14 +12823,14 @@ function beretBusk$1(): boolean {
 }
 
 export function auto_haveCoolerYeti(): boolean {
-  if (auto_have_familiar(Familiar.get("Cooler Yeti"))) {
+  if (auto_have_familiar($familiar`Cooler Yeti`)) {
     return true;
   }
   return false;
 }
 
 export function auto_haveMobiusRing(): boolean {
-  const ring: Item = Item.get("M&ouml;bius ring");
+  const ring: Item = $item`Möbius ring`;
   return auto_is_valid(ring) && possessEquipment(ring);
 }
 
@@ -12863,11 +12863,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
 
   function mobiusChoice(opt: string): void {
     const num: number = choiceMap.get(opt) ?? choiceMap.set(opt, 0).get(opt);
-    handleTracker$1(
-      Item.get("M&ouml;bius ring").toString(),
-      opt,
-      "auto_otherstuff",
-    );
+    handleTracker$1($item`Möbius ring`.toString(), opt, "auto_otherstuff");
     runChoice(num);
   }
 
@@ -12914,21 +12910,21 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
       return;
     }
     switch (myPrimestat()) {
-      case Stat.get("Muscle"):
+      case $stat`Muscle`:
         pos = "Lift yourself up by your bootstraps";
         if (choiceMap.has(pos)) {
           mobiusChoice(pos);
           return;
         }
         break;
-      case Stat.get("Mysticality"):
+      case $stat`Mysticality`:
         pos = "Mind your own business";
         if (choiceMap.has(pos)) {
           mobiusChoice(pos);
           return;
         }
         break;
-      case Stat.get("Moxie"):
+      case $stat`Moxie`:
         pos = "Shoot yourself in the foot";
         if (choiceMap.has(pos)) {
           mobiusChoice(pos);
@@ -12938,7 +12934,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
     }
   }
   // cupcake is 5-7 adv for 1 full, +1 paradox
-  if (canEat$1(Item.get("Susie's cupcake"))) {
+  if (canEat$1($item`Susie's cupcake`)) {
     pos = "Steal a cupcake from young Susie";
     if (choiceMap.has(pos)) {
       mobiusChoice(pos);
@@ -12950,8 +12946,8 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
     pos = "Go back and set an alarm";
     if (choiceMap.has(pos)) {
       mobiusChoice(pos);
-      if (itemAmount(Item.get("clock")) > 0) {
-        use(1, Item.get("clock"));
+      if (itemAmount($item`clock`) > 0) {
+        use(1, $item`clock`);
       }
       return;
     }
@@ -12963,7 +12959,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
     }
   }
   // 100 turns of +5 fam xp is worth refreshing
-  if (haveEffect(Effect.get("Lifted by your Bootstraps")) === 0) {
+  if (haveEffect($effect`Lifted by your Bootstraps`) === 0) {
     pos = "Let yourself get lifted up by your bootstraps";
     if (choiceMap.has(pos)) {
       mobiusChoice(pos);
@@ -13002,7 +12998,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
     }
   }
   // we've done everything we care about, find a loop
-  if (canEat$1(Item.get("Susie's cupcake"))) {
+  if (canEat$1($item`Susie's cupcake`)) {
     pos = "Steal a cupcake from young Susie";
     if (choiceMap.has(pos)) {
       mobiusChoice(pos);
@@ -13035,7 +13031,7 @@ export function auto_timeCopFights(): number {
 }
 
 function auto_haveMonodent(): boolean {
-  const dent: Item = Item.get("Monodent of the Sea");
+  const dent: Item = $item`Monodent of the Sea`;
   return auto_is_valid(dent) && possessEquipment(dent);
 }
 
@@ -13052,34 +13048,27 @@ export function auto_waveTheZone(): boolean {
   //Force the Monodent of the Sea when adventuring in a zone that we might want to Summon a Wave in
   //Get Fishy turns from free fights
   if (
-    Location.get([
-      "Shadow Rift (The Ancient Buried Pyramid)",
-      "Shadow Rift (The Hidden City)",
-      "Shadow Rift (The Misspelled Cemetary)",
-      "Cyberzone 1",
-      "Cyberzone 2",
-      "Cyberzone 3",
-    ]).includes(myLocation()) &&
-    myPath() === Path.get("11,037 Leagues Under the Sea")
+    $locations`Shadow Rift (The Ancient Buried Pyramid), Shadow Rift (The Hidden City), Shadow Rift (The Misspelled Cemetary), Cyberzone 1, Cyberzone 2, Cyberzone 3`.includes(
+      myLocation(),
+    ) &&
+    myPath() === $path`11\,037 Leagues Under the Sea`
   ) {
-    autoForceEquip$2(Item.get("Monodent of the Sea"), true);
+    autoForceEquip$2($item`Monodent of the Sea`, true);
     waveTheZone = true;
   }
   //Get 30% more meat drop. Only useful if weapon slot has < 30% meat drop
   if (
-    myLocation() === Location.get("The Themthar Hills") &&
-    numericModifier(
-      equippedItem(Slot.get("weapon")),
-      Modifier.get("Meat Drop"),
-    ) < 30.0
+    myLocation() === $location`The Themthar Hills` &&
+    numericModifier(equippedItem($slot`weapon`), Modifier.get("Meat Drop")) <
+      30.0
   ) {
-    autoForceEquip$2(Item.get("Monodent of the Sea"), true);
+    autoForceEquip$2($item`Monodent of the Sea`, true);
     waveTheZone = true;
   }
   if (waveTheZone) {
-    if (useSkill(1, Skill.get("Sea *dent: Summon a Wave"))) {
+    if (useSkill(1, $skill`Sea *dent: Summon a Wave`)) {
       handleTracker$2(
-        Item.get("Monodent of the Sea").toString(),
+        $item`Monodent of the Sea`.toString(),
         myLocation().toString(),
         "Summon a Wave",
         "auto_otherstuff",
@@ -13097,7 +13086,7 @@ export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
   if (!auto_haveMonodent()) {
     return false;
   }
-  if (!auto_is_valid$2(Skill.get("Sea *dent: Talk to Some Fish"))) {
+  if (!auto_is_valid$2($skill`Sea *dent: Talk to Some Fish`)) {
     return false;
   }
   // don't use Talk to Some Fish against inherently free fights
@@ -13105,22 +13094,22 @@ export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
     return false;
   }
   // don't try and use the skill if we have already turned them into some fish
-  if (enemy === Monster.get("some fish")) {
+  if (enemy === $monster`some fish`) {
     return false;
   }
   // need hippy / frat kills
   if (
-    loc === Location.get("The Battlefield (Frat Uniform)") ||
-    loc === Location.get("The Battlefield (Hippy Uniform)")
+    loc === $location`The Battlefield (Frat Uniform)` ||
+    loc === $location`The Battlefield (Hippy Uniform)`
   ) {
     return false;
   }
   // need chained fights
-  if (loc === Location.get("The Haunted Bedroom")) {
+  if (loc === $location`The Haunted Bedroom`) {
     return false;
   }
   // some fish has no meat drop, so this doesn't take familiar meat modifiers into account
-  if (loc === Location.get("The Fungus Plains")) {
+  if (loc === $location`The Fungus Plains`) {
     return false;
   }
   //bcz has great synergy with talk to some fish to get all the drops in a zone
@@ -13134,7 +13123,7 @@ export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
 export function auto_throwLightningRemaining(): number {
   if (
     !auto_haveMonodent() ||
-    !auto_is_valid$2(Skill.get("Sea *dent: Throw a Lightning Bolt"))
+    !auto_is_valid$2($skill`Sea *dent: Throw a Lightning Bolt`)
   ) {
     return 0;
   }
@@ -13144,14 +13133,14 @@ export function auto_throwLightningRemaining(): number {
 
 export function auto_haveBCZ(): boolean {
   if (
-    auto_is_valid(Item.get("blood cubic zirconia")) &&
-    possessEquipment(Item.get("blood cubic zirconia"))
+    auto_is_valid($item`blood cubic zirconia`) &&
+    possessEquipment($item`blood cubic zirconia`)
   ) {
     return true;
   }
   if (
     auto_haveEternityCodpiece() &&
-    auto_isInEternityCodpiece(Item.get("blood cubic zirconia"))
+    auto_isInEternityCodpiece($item`blood cubic zirconia`)
   ) {
     return true;
   }
@@ -13161,24 +13150,24 @@ export function auto_haveBCZ(): boolean {
 export function auto_getItemToEquipBCZ(): Item {
   if (
     auto_haveEternityCodpiece() &&
-    auto_isInEternityCodpiece(Item.get("blood cubic zirconia"))
+    auto_isInEternityCodpiece($item`blood cubic zirconia`)
   ) {
-    return Item.get("The Eternity Codpiece");
+    return $item`The Eternity Codpiece`;
   }
   if (auto_haveBCZ()) {
-    return Item.get("blood cubic zirconia");
+    return $item`blood cubic zirconia`;
   }
   return Item.none;
 }
 
 function auto_BCZEquipped(): boolean {
   if (
-    auto_isInEternityCodpiece(Item.get("blood cubic zirconia")) &&
-    haveEquipped(Item.get("The Eternity Codpiece"))
+    auto_isInEternityCodpiece($item`blood cubic zirconia`) &&
+    haveEquipped($item`The Eternity Codpiece`)
   ) {
     return true;
   }
-  if (haveEquipped(Item.get("blood cubic zirconia"))) {
+  if (haveEquipped($item`blood cubic zirconia`)) {
     return true;
   }
   return false;
@@ -13266,57 +13255,48 @@ export function auto_wantToBCZ(sk: Skill): boolean {
   }
 
   switch (sk) {
-    case Skill.get("BCZ: Blood Geyser"):
+    case $skill`BCZ: Blood Geyser`:
       //Muscle Casts
       return (
-        statChange(Stat.get("Muscle"), bloodGeyserCasts) && bloodGeyserCasts < 6
+        statChange($stat`Muscle`, bloodGeyserCasts) && bloodGeyserCasts < 6
       );
-    case Skill.get("BCZ: Blood Bath"):
-      return (
-        statChange(Stat.get("Muscle"), bloodBathCasts) && bloodBathCasts < 6
-      );
-    case Skill.get("BCZ: Create Blood Thinner"): //should never be cast, but if we want to support in the future, we can
-      if (!canChew(Item.get("blood thinner"))) {
+    case $skill`BCZ: Blood Bath`:
+      return statChange($stat`Muscle`, bloodBathCasts) && bloodBathCasts < 6;
+    case $skill`BCZ: Create Blood Thinner`: //should never be cast, but if we want to support in the future, we can
+      if (!canChew($item`blood thinner`)) {
         return false;
       }
       return (
-        statChange(Stat.get("Muscle"), bloodThinnerCasts) &&
-        bloodThinnerCasts === 0
+        statChange($stat`Muscle`, bloodThinnerCasts) && bloodThinnerCasts === 0
       );
-    case Skill.get("BCZ: Dial it up to 11"):
+    case $skill`BCZ: Dial it up to 11`:
       //Mysticality Casts
+      return statChange($stat`Mysticality`, dialItUpCasts) && dialItUpCasts < 3;
+    case $skill`BCZ: Refracted Gaze`:
       return (
-        statChange(Stat.get("Mysticality"), dialItUpCasts) && dialItUpCasts < 3
-      );
-    case Skill.get("BCZ: Refracted Gaze"):
-      return (
-        statChange(Stat.get("Mysticality"), refractedGazeCasts) &&
+        statChange($stat`Mysticality`, refractedGazeCasts) &&
         refractedGazeCasts < 6
       );
-    case Skill.get("BCZ: Prepare Spinal Tapas"):
-      if (!canEat$1(Item.get("spinal tapas"))) {
+    case $skill`BCZ: Prepare Spinal Tapas`:
+      if (!canEat$1($item`spinal tapas`)) {
         return false;
       }
       return (
-        statChange(Stat.get("Mysticality"), spinalTapasCasts) &&
-        spinalTapasCasts < 3
+        statChange($stat`Mysticality`, spinalTapasCasts) && spinalTapasCasts < 3
       );
-    case Skill.get("BCZ: Sweat Bullets"):
+    case $skill`BCZ: Sweat Bullets`:
       //Moxie Casts
       return (
-        statChange(Stat.get("Moxie"), sweatBulletsCasts) &&
-        sweatBulletsCasts < 6
+        statChange($stat`Moxie`, sweatBulletsCasts) && sweatBulletsCasts < 6
       );
-    case Skill.get("BCZ: Sweat Equity"):
-      return (
-        statChange(Stat.get("Moxie"), sweatEquityCasts) && sweatEquityCasts < 2
-      );
-    case Skill.get("BCZ: Craft a Pheromone Cocktail"):
-      if (!canDrink$1(Item.get("pheromone cocktail"))) {
+    case $skill`BCZ: Sweat Equity`:
+      return statChange($stat`Moxie`, sweatEquityCasts) && sweatEquityCasts < 2;
+    case $skill`BCZ: Craft a Pheromone Cocktail`:
+      if (!canDrink$1($item`pheromone cocktail`)) {
         return false;
       }
       return (
-        statChange(Stat.get("Moxie"), pheromoneCocktailCasts) &&
+        statChange($stat`Moxie`, pheromoneCocktailCasts) &&
         pheromoneCocktailCasts < 6
       );
     default:
@@ -13325,7 +13305,7 @@ export function auto_wantToBCZ(sk: Skill): boolean {
 }
 
 export function auto_bczRefractedGaze(): boolean {
-  if (!auto_wantToBCZ(Skill.get("BCZ: Refracted Gaze"))) {
+  if (!auto_wantToBCZ($skill`BCZ: Refracted Gaze`)) {
     // we don't want to refreact if we don't have the stats.
     return false;
   }
@@ -13336,43 +13316,43 @@ export function auto_bczRefractedGaze(): boolean {
     return false;
   }
   if (
-    (myLocation() === Location.get("The Smut Orc Logging Camp") &&
+    (myLocation() === $location`The Smut Orc Logging Camp` &&
       lumberCount() < bridgeGoal() &&
       fastenerCount() < bridgeGoal()) ||
-    (myLocation() === Location.get("The Penultimate Fantasy Airship") &&
-      itemAmount(Item.get("Mohawk wig")) < 1 &&
-      itemAmount(Item.get("amulet of extreme plot significance")) < 1) ||
-    myLocation() === Location.get("The Battlefield (Frat Uniform)") ||
-    (myLocation() === Location.get("A-Boo Peak") &&
-      itemAmount(Item.get("A-Boo clue")) * 30 <
+    (myLocation() === $location`The Penultimate Fantasy Airship` &&
+      itemAmount($item`Mohawk wig`) < 1 &&
+      itemAmount($item`amulet of extreme plot significance`) < 1) ||
+    myLocation() === $location`The Battlefield (Frat Uniform)` ||
+    (myLocation() === $location`A-Boo Peak` &&
+      itemAmount($item`A-Boo clue`) * 30 <
         toInt(getProperty("booPeakProgress"))) ||
-    (myLocation() === Location.get("Cobb's Knob Harem") &&
-      (lastMonster() === Monster.get("Knob Goblin Harem Guard") ||
-        lastMonster() === Monster.get("some fish"))) ||
-    (myLocation() === Location.get("Twin Peak") &&
-      itemAmount(Item.get("rusty hedge trimmers")) < 4) ||
-    (myLocation() === Location.get("The Black Forest") &&
+    (myLocation() === $location`Cobb's Knob Harem` &&
+      (lastMonster() === $monster`Knob Goblin Harem Guard` ||
+        lastMonster() === $monster`some fish`)) ||
+    (myLocation() === $location`Twin Peak` &&
+      itemAmount($item`rusty hedge trimmers`) < 4) ||
+    (myLocation() === $location`The Black Forest` &&
       !blackMarketAvailable() &&
-      itemAmount(Item.get("reassembled blackbird")) === 0 &&
-      monsterPhylum() !== Phylum.get("beast")) ||
-    (myLocation() === Location.get("Whitey's Grove") &&
-      itemAmount(Item.get("lion oil")) === 0 &&
-      itemAmount(Item.get("bird rib")) === 0 &&
-      itemAmount(Item.get("wet stew")) === 0 &&
-      itemAmount(Item.get("wet stunt nut stew")) === 0 &&
-      monsterPhylum() !== Phylum.get("beast")) ||
-    (myLocation() === Location.get("The Hidden Apartment Building") &&
-      (lastMonster() === Monster.get("pygmy shaman") ||
-        lastMonster() === Monster.get("some fish"))) ||
-    (myLocation() === Location.get("The Defiled Nook") &&
-      (lastMonster() === Monster.get("party skelteon") ||
-        lastMonster() === Monster.get("some fish"))) ||
-    (myLocation() === Location.get("The Hole in the Sky") &&
+      itemAmount($item`reassembled blackbird`) === 0 &&
+      monsterPhylum() !== $phylum`beast`) ||
+    (myLocation() === $location`Whitey's Grove` &&
+      itemAmount($item`lion oil`) === 0 &&
+      itemAmount($item`bird rib`) === 0 &&
+      itemAmount($item`wet stew`) === 0 &&
+      itemAmount($item`wet stunt nut stew`) === 0 &&
+      monsterPhylum() !== $phylum`beast`) ||
+    (myLocation() === $location`The Hidden Apartment Building` &&
+      (lastMonster() === $monster`pygmy shaman` ||
+        lastMonster() === $monster`some fish`)) ||
+    (myLocation() === $location`The Defiled Nook` &&
+      (lastMonster() === $monster`party skelteon` ||
+        lastMonster() === $monster`some fish`)) ||
+    (myLocation() === $location`The Hole in the Sky` &&
       needStarKey() &&
-      ((monsterPhylum() === Phylum.get("constellation") &&
-        lastMonster() !== Monster.get("Astronomer")) ||
-        lastMonster() === Monster.get("some fish"))) ||
-    (myLocation() === Location.get("Guano Junction") &&
+      ((monsterPhylum() === $phylum`constellation` &&
+        lastMonster() !== $monster`Astronomer`) ||
+        lastMonster() === $monster`some fish`)) ||
+    (myLocation() === $location`Guano Junction` &&
       internalQuestStatus("questL04Bat") < 3)
   ) {
     return true;
@@ -13385,21 +13365,21 @@ export function auto_getBCZItems(): void {
     return;
   }
 
-  if (auto_wantToBCZ(Skill.get("BCZ: Craft a Pheromone Cocktail"))) {
+  if (auto_wantToBCZ($skill`BCZ: Craft a Pheromone Cocktail`)) {
     handleTracker$1(
-      Item.get("blood cubic zirconia").toString(),
-      Item.get("pheromone cocktail").toString(),
+      $item`blood cubic zirconia`.toString(),
+      $item`pheromone cocktail`.toString(),
       "auto_iotm_claim",
     );
-    useSkill(1, Skill.get("BCZ: Craft a Pheromone Cocktail"));
+    useSkill(1, $skill`BCZ: Craft a Pheromone Cocktail`);
   }
-  if (auto_wantToBCZ(Skill.get("BCZ: Prepare Spinal Tapas"))) {
+  if (auto_wantToBCZ($skill`BCZ: Prepare Spinal Tapas`)) {
     handleTracker$1(
-      Item.get("blood cubic zirconia").toString(),
-      Item.get("spinal tapas").toString(),
+      $item`blood cubic zirconia`.toString(),
+      $item`spinal tapas`.toString(),
       "auto_iotm_claim",
     );
-    useSkill(1, Skill.get("BCZ: Prepare Spinal Tapas"));
+    useSkill(1, $skill`BCZ: Prepare Spinal Tapas`);
   }
 
   return;
@@ -13408,7 +13388,7 @@ export function auto_getBCZItems(): void {
 function auto_haveShrunkenHead(): boolean {
   if (
     toBoolean(getProperty("hasShrunkenHead")) &&
-    auto_is_valid(Item.get("shrunken head"))
+    auto_is_valid($item`shrunken head`)
   ) {
     return true;
   }
@@ -13420,7 +13400,7 @@ export function auto_wantToShrunkenHead(enemy: Monster): boolean {
     return false;
   }
 
-  if (!canUse$2(Skill.get("Prepare to reanimate your Foe"))) {
+  if (!canUse$2($skill`Prepare to reanimate your Foe`)) {
     return false;
   }
 
@@ -13463,7 +13443,7 @@ export function auto_wantToShrunkenHead$1(place: Location): boolean {
 }
 
 export function auto_haveCrimboSkeleton(): boolean {
-  if (auto_have_familiar(Familiar.get("Skeleton of Crimbo Past"))) {
+  if (auto_have_familiar($familiar`Skeleton of Crimbo Past`)) {
     return true;
   }
   return false;
@@ -13480,16 +13460,7 @@ export function auto_wantSoCP(): void {
     return;
   }
   let amt: number = 0;
-  for (const phyl of Phylum.get([
-    "constellation",
-    "elemental",
-    "hippy",
-    "horror",
-    "mer-kin",
-    "plant",
-    "slime",
-    "bug",
-  ])) {
+  for (const phyl of $phyla`constellation, elemental, hippy, horror, mer-kin, plant, slime, bug`) {
     amt += auto_zonePhylumPercent(myLocation(), phyl);
   }
   if (amt > 0.1) {

@@ -1,39 +1,38 @@
 import {
   abort,
   availableAmount,
-  Effect,
   getProperty,
   haveEffect,
   haveSkill,
-  Item,
   itemAmount,
   lastMonster,
   Monster,
   myLevel,
   runChoice,
   setProperty,
-  Skill,
   toBoolean,
   toInt,
   toMonster,
 } from "kolmafia";
+import { $effect, $item, $monster, $skill } from "libram";
+
 import { auto_log_info, handleCopiedMonster } from "../auto_util";
 
 //	This is meant for items that have a date of 2012
 
 //Defined in autoscend/iotms/mr2012.ash
 export function auto_reagnimatedGetPart(choice: number): void {
-  if (availableAmount(Item.get("gnomish housemaid's kgnee")) === 0) {
+  if (availableAmount($item`gnomish housemaid's kgnee`) === 0) {
     // The housemaid's kgnee is the equipment that justified using the gnome.
     runChoice(4);
-  } else if (availableAmount(Item.get("gnomish coal miner's lung")) === 0) {
+  } else if (availableAmount($item`gnomish coal miner's lung`) === 0) {
     // May as well get the rest of these on subsequent days.
     runChoice(2);
-  } else if (availableAmount(Item.get("gnomish athlete's foot")) === 0) {
+  } else if (availableAmount($item`gnomish athlete's foot`) === 0) {
     runChoice(5);
-  } else if (availableAmount(Item.get("gnomish tennis elbow")) === 0) {
+  } else if (availableAmount($item`gnomish tennis elbow`) === 0) {
     runChoice(3);
-  } else if (availableAmount(Item.get("gnomish swimmer's ears")) === 0) {
+  } else if (availableAmount($item`gnomish swimmer's ears`) === 0) {
     runChoice(1);
   } else {
     abort("unhandled choice in auto_reagnimatedGetPart");
@@ -41,13 +40,13 @@ export function auto_reagnimatedGetPart(choice: number): void {
 }
 
 export function handleRainDoh(): boolean {
-  if (itemAmount(Item.get("Rain-Doh box full of monster")) === 0) {
+  if (itemAmount($item`Rain-Doh box full of monster`) === 0) {
     return false;
   }
   if (myLevel() <= 3) {
     return false;
   }
-  if (haveEffect(Effect.get("Ultrahydrated")) > 0) {
+  if (haveEffect($effect`Ultrahydrated`) > 0) {
     return false;
   }
 
@@ -55,7 +54,7 @@ export function handleRainDoh(): boolean {
   auto_log_info(`Black boxing: ${enemy}`, "blue");
 
   function validate_rainDohBox(): void {
-    if (enemy !== Monster.get("Source Agent") && enemy !== lastMonster()) {
+    if (enemy !== $monster`Source Agent` && enemy !== lastMonster()) {
       //general failure detection
       //special exclusion for path The Source where [source agent] might randomly replace our target
       abort(
@@ -64,21 +63,21 @@ export function handleRainDoh(): boolean {
     }
   }
 
-  if (enemy === Monster.get("lobsterfrogman")) {
+  if (enemy === $monster`lobsterfrogman`) {
     if (
-      haveSkill(Skill.get("Rain Man")) &&
-      itemAmount(Item.get("barrel of gunpowder")) < 4
+      haveSkill($skill`Rain Man`) &&
+      itemAmount($item`barrel of gunpowder`) < 4
     ) {
       setProperty("auto_doCombatCopy", "yes");
     }
-    handleCopiedMonster(Item.get("Rain-Doh box full of monster"));
+    handleCopiedMonster($item`Rain-Doh box full of monster`);
     validate_rainDohBox();
     setProperty("auto_doCombatCopy", "no");
     return true;
   }
-  if (enemy === Monster.get("Skinflute")) {
-    const stars: number = itemAmount(Item.get("star"));
-    const lines: number = itemAmount(Item.get("line"));
+  if (enemy === $monster`Skinflute`) {
+    const stars: number = itemAmount($item`star`);
+    const lines: number = itemAmount($item`line`);
 
     if (
       stars < 7 &&
@@ -88,7 +87,7 @@ export function handleRainDoh(): boolean {
     ) {
       setProperty("auto_doCombatCopy", "yes");
     }
-    handleCopiedMonster(Item.get("Rain-Doh box full of monster"));
+    handleCopiedMonster($item`Rain-Doh box full of monster`);
     validate_rainDohBox();
     setProperty("auto_doCombatCopy", "no");
     return true;
@@ -98,7 +97,7 @@ export function handleRainDoh(): boolean {
 	*/
   //If doesn\'t match a special condition
   if (enemy !== Monster.none) {
-    handleCopiedMonster(Item.get("Rain-Doh box full of monster"));
+    handleCopiedMonster($item`Rain-Doh box full of monster`);
     validate_rainDohBox();
     return true;
   }

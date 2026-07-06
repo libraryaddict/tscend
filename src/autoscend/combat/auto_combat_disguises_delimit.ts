@@ -8,10 +8,13 @@ import {
   myMask,
   numericModifier,
   setProperty,
-  Skill,
   toInt,
 } from "kolmafia";
+import { $monster, $skill } from "libram";
+
 import { auto_log_info } from "../auto_util";
+import { in_disguises } from "../paths/disguises_delimit";
+import { AshMatcher } from "../utils/kolmafiaUtils";
 import {
   canSurvive$1,
   canUse$1,
@@ -19,8 +22,6 @@ import {
   useSkill$1,
   useSkill$2,
 } from "./auto_combat_util";
-import { in_disguises } from "../paths/disguises_delimit";
-import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Path specific combat handling for Disguises Delimit
 
@@ -43,7 +44,7 @@ export function disguises_combat_helper(
     if (round_1 === 0) {
       auto_log_info(`Found mask: ${disguises}`, "green");
     }
-  } else if (enemy === Monster.get("Your Shadow")) {
+  } else if (enemy === $monster`Your Shadow`) {
     //matcher fails on your shadow and it always wears mask 1.
     disguises = 1;
     auto_log_info("Found mask: 1", "green");
@@ -69,8 +70,8 @@ export function auto_combatDisguisesStage1(
     getProperty("_auto_combatDisguisesDelimitMask"),
   );
   //mask 7 = bandit mask = +300% enemy defense
-  if (disguises === 7 && canUse$2(Skill.get("Swap Mask"))) {
-    return useSkill$2(Skill.get("Swap Mask"));
+  if (disguises === 7 && canUse$2($skill`Swap Mask`)) {
+    return useSkill$2($skill`Swap Mask`);
   }
   //mask 3 = protest mask = +30ML. can only attack with weapon or change mask. if changed can only use items or attack with weapon
   if (disguises === 3) {
@@ -82,8 +83,8 @@ export function auto_combatDisguisesStage1(
     );
   }
   //this is code is unreachable. it needs fixing.
-  if (myMask() === "protest mask" && canUse$2(Skill.get("Swap Mask"))) {
-    return useSkill$2(Skill.get("Swap Mask"));
+  if (myMask() === "protest mask" && canUse$2($skill`Swap Mask`)) {
+    return useSkill$2($skill`Swap Mask`);
   }
 
   return "";
@@ -108,14 +109,11 @@ export function auto_combatDisguisesStage5(
     //some spells actually damage the monster too.
     //saucegeyser confirmed to not damage the monster. saucestorm confirmed to damage the monster.
     if (enemy.physicalResistance >= 80) {
-      if (
-        myHp() > monsterHp() + 150 &&
-        canUse$1(Skill.get("Saucestorm"), false)
-      ) {
-        return useSkill$1(Skill.get("Saucestorm"), false);
+      if (myHp() > monsterHp() + 150 && canUse$1($skill`Saucestorm`, false)) {
+        return useSkill$1($skill`Saucestorm`, false);
       }
-      if (canUse$2(Skill.get("Implode Universe"))) {
-        return useSkill$1(Skill.get("Implode Universe"), true);
+      if (canUse$2($skill`Implode Universe`)) {
+        return useSkill$1($skill`Implode Universe`, true);
       }
       //TODO check if our physical attack can deal elemental damage.
       abort(
@@ -125,8 +123,8 @@ export function auto_combatDisguisesStage5(
     if (canSurvive$1(1.5) && round_1 < 10) {
       return "attack with weapon";
     }
-    if (canUse$2(Skill.get("Implode Universe"))) {
-      return useSkill$1(Skill.get("Implode Universe"), true);
+    if (canUse$2($skill`Implode Universe`)) {
+      return useSkill$1($skill`Implode Universe`, true);
     }
     abort("Not sure how to handle welding mask.");
   }
@@ -145,8 +143,8 @@ export function auto_combatDisguisesStage5(
     if (attack_dmg > 20) {
       return "attack with weapon";
     }
-    if (canUse$1(Skill.get("Saucestorm"), false)) {
-      return useSkill$1(Skill.get("Saucestorm"), false);
+    if (canUse$1($skill`Saucestorm`, false)) {
+      return useSkill$1($skill`Saucestorm`, false);
     }
   }
 

@@ -12,6 +12,7 @@ import {
   toInt,
   toLowerCase,
 } from "kolmafia";
+
 import { auto_log_debug, auto_log_info$1 } from "./auto_util";
 import { AshMatcher } from "./utils/kolmafiaUtils";
 

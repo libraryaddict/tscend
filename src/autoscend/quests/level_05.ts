@@ -1,26 +1,29 @@
 import {
   abort,
-  Class,
   council,
-  Effect,
-  Familiar,
   getProperty,
   haveEffect,
   haveSkill,
-  Item,
   itemAmount,
-  Location,
-  Monster,
   myAdventures,
   myClass,
   myDaycount,
   myPrimestat,
   setProperty,
-  Skill,
-  Stat,
   use,
   visitUrl,
 } from "kolmafia";
+import {
+  $class,
+  $effect,
+  $familiar,
+  $item,
+  $location,
+  $monster,
+  $skill,
+  $stat,
+} from "libram";
+
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$2 } from "../auto_adventure";
 import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
@@ -56,12 +59,12 @@ import { in_zootomist } from "../paths/zootomist";
 export function L5_getEncryptionKey(): boolean {
   if (
     internalQuestStatus("questL05Goblin") > 0 ||
-    itemAmount(Item.get("Knob Goblin Encryption Key")) > 0
+    itemAmount($item`Knob Goblin Encryption Key`) > 0
   ) {
     return false;
   }
 
-  if (itemAmount(Item.get("11-inch knob sausage")) === 1) {
+  if (itemAmount($item`11-inch knob sausage`) === 1) {
     visitUrl("guild.php?place=challenge");
     return true;
   }
@@ -70,33 +73,33 @@ export function L5_getEncryptionKey(): boolean {
   // in Zootomist it's a valuable levelling zone that drops wishes
   if (
     !(in_lol() || in_lowkeysummer() || in_zootomist()) &&
-    canBurnDelay(Location.get("The Outskirts of Cobb's Knob"))
+    canBurnDelay($location`The Outskirts of Cobb's Knob`)
   ) {
     return false;
   }
 
-  if (in_gnoob() && auto_have_familiar(Familiar.get("Robortender"))) {
+  if (in_gnoob() && auto_have_familiar($familiar`Robortender`)) {
     if (
-      !haveSkill(Skill.get("Retractable Toes")) &&
-      itemAmount(Item.get("cocktail mushroom")) === 0
+      !haveSkill($skill`Retractable Toes`) &&
+      itemAmount($item`cocktail mushroom`) === 0
     ) {
-      handleFamiliar$1(Familiar.get("Robortender"));
+      handleFamiliar$1($familiar`Robortender`);
     }
   }
 
   auto_log_info("Looking for the knob.", "blue");
-  return autoAdv$2(Location.get("The Outskirts of Cobb's Knob"));
+  return autoAdv$2($location`The Outskirts of Cobb's Knob`);
 }
 
 export function L5_findKnob(): boolean {
   if (internalQuestStatus("questL05Goblin") !== 0) {
     return false;
   }
-  if (itemAmount(Item.get("Knob Goblin Encryption Key")) === 1) {
-    if (itemAmount(Item.get("Cobb's Knob map")) === 0) {
+  if (itemAmount($item`Knob Goblin Encryption Key`) === 1) {
+    if (itemAmount($item`Cobb's Knob map`) === 0) {
       council();
     }
-    use(1, Item.get("Cobb's Knob map"));
+    use(1, $item`Cobb's Knob map`);
     return true;
   }
   return false;
@@ -111,14 +114,14 @@ export function L5_haremOutfit(): boolean {
   }
   // Just pull it if d2
   if (myDaycount() > 1) {
-    pullXWhenHaveY(Item.get("Knob Goblin harem veil"), 1, 0);
-    pullXWhenHaveY(Item.get("Knob Goblin harem pants"), 1, 0);
+    pullXWhenHaveY($item`Knob Goblin harem veil`, 1, 0);
+    pullXWhenHaveY($item`Knob Goblin harem pants`, 1, 0);
   }
   // want to fight goblin king quickly in legacy of loathing to get another replica mr a
   // want to fight quickly in amw for meat
   // check for LoL path so we actually prep for yellow raying
   if (
-    !adjustForYellowRayIfPossible(Monster.get("Knob Goblin Harem Girl")) &&
+    !adjustForYellowRayIfPossible($monster`Knob Goblin Harem Girl`) &&
     !in_lol() &&
     !in_amw()
   ) {
@@ -128,12 +131,12 @@ export function L5_haremOutfit(): boolean {
   }
 
   if (in_heavyrains()) {
-    buffMaintain$4(Effect.get("Fishy Whiskers"));
+    buffMaintain$4($effect`Fishy Whiskers`);
   }
   bat_formBats$1();
 
   auto_log_info("Looking for some sexy lingerie!", "blue");
-  if (autoAdv$2(Location.get("Cobb's Knob Harem"))) {
+  if (autoAdv$2($location`Cobb's Knob Harem`)) {
     return true;
   }
   return false;
@@ -161,33 +164,33 @@ export function L5_goblinKing(): boolean {
   if (!autoOutfit("Knob Goblin Harem Girl Disguise")) {
     abort("Could not put on Knob Goblin Harem Girl Disguise, aborting");
   }
-  buffMaintain$4(Effect.get("Knob Goblin Perfume"));
-  if (haveEffect(Effect.get("Knob Goblin Perfume")) === 0) {
-    let advSpent_1: boolean = autoAdv$2(Location.get("Cobb's Knob Harem"));
-    if (haveEffect(Effect.get("Knob Goblin Perfume")) === 0) {
-      advSpent_1 = autoAdv$2(Location.get("Cobb's Knob Harem"));
+  buffMaintain$4($effect`Knob Goblin Perfume`);
+  if (haveEffect($effect`Knob Goblin Perfume`) === 0) {
+    let advSpent_1: boolean = autoAdv$2($location`Cobb's Knob Harem`);
+    if (haveEffect($effect`Knob Goblin Perfume`) === 0) {
+      advSpent_1 = autoAdv$2($location`Cobb's Knob Harem`);
     }
     return advSpent_1;
   }
 
-  if (myPrimestat() === Stat.get("Muscle")) {
-    auto_buyUpTo(1, Item.get("Ben-Gal&trade; Balm"));
-    buffMaintain$4(Effect.get("Go Get 'Em, Tiger!"));
+  if (myPrimestat() === $stat`Muscle`) {
+    auto_buyUpTo(1, $item`Ben-Gal™ Balm`);
+    buffMaintain$4($effect`Go Get 'Em\, Tiger!`);
   }
-  auto_buyUpTo(1, Item.get("hair spray"));
-  buffMaintain$4(Effect.get("Butt-Rock Hair"));
+  auto_buyUpTo(1, $item`hair spray`);
+  buffMaintain$4($effect`Butt-Rock Hair`);
 
   if (
-    myClass() === Class.get("Seal Clubber") ||
-    myClass() === Class.get("Turtle Tamer")
+    myClass() === $class`Seal Clubber` ||
+    myClass() === $class`Turtle Tamer`
   ) {
-    auto_buyUpTo(1, Item.get("blood of the Wereseal"));
-    buffMaintain$4(Effect.get("Temporary Lycanthropy"));
+    auto_buyUpTo(1, $item`blood of the Wereseal`);
+    buffMaintain$4($effect`Temporary Lycanthropy`);
   }
   //AoSOL buffs
   if (in_aosol()) {
-    buffMaintain$3(Effect.get("Queso Fustulento"), 10, 1, 10);
-    buffMaintain$3(Effect.get("Tricky Timpani"), 30, 1, 10);
+    buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
+    buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
   }
   // TODO: I died here, maybe we should heal a bit?
   if (!in_plumber()) {
@@ -195,15 +198,15 @@ export function L5_goblinKing(): boolean {
   }
   setProperty("auto_nextEncounter", "Knob Goblin King");
   setProperty("auto_nonAdvLoc", true.toString());
-  const advSpent: boolean = autoAdv$2(Location.get("Throne Room"));
+  const advSpent: boolean = autoAdv$2($location`Throne Room`);
 
   if (
-    itemAmount(Item.get("Crown of the Goblin King")) > 0 ||
-    itemAmount(Item.get("Glass Balls of the Goblin King")) > 0 ||
-    itemAmount(Item.get("Codpiece of the Goblin King")) > 0 ||
+    itemAmount($item`Crown of the Goblin King`) > 0 ||
+    itemAmount($item`Glass Balls of the Goblin King`) > 0 ||
+    itemAmount($item`Codpiece of the Goblin King`) > 0 ||
     getProperty("questL05Goblin") === "finished" ||
     in_plumber() ||
-    itemAmount(Item.get("cursed goblin cape")) > 0
+    itemAmount($item`cursed goblin cape`) > 0
   ) {
     council();
   }

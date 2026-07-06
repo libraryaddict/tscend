@@ -19,13 +19,14 @@ import {
   myMeat,
   myPath,
   npcPrice,
-  Path,
   retrieveItem,
   Skill,
   stringModifier,
   toInt,
   visitUrl,
 } from "kolmafia";
+import { $item, $path, $skill, $skills } from "libram";
+
 import { auto_advToReserve } from "../../autoscend";
 import { auto_buyUpTo, auto_mall_price } from "../auto_acquire";
 import {
@@ -41,7 +42,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/gelatinous_noob.ash
 export function in_gnoob(): boolean {
-  return myPath() === Path.get("Gelatinous Noob");
+  return myPath() === $path`Gelatinous Noob`;
 }
 
 export function gnoob_startAscension(page: string): void {
@@ -97,7 +98,7 @@ function gnoobAbsorbCost(it: Item): number {
   if (!canInteract()) {
     //do not have unrestricted mall access. meaning ronin or hardcore
     if (
-      auto_have_skill(Skill.get("Summon Clip Art")) &&
+      auto_have_skill($skill`Summon Clip Art`) &&
       toInt(getProperty("_clipartSummons")) < 3 &&
       isClipartItem(it)
     ) {
@@ -128,14 +129,14 @@ function gnoob_buySkills(): void {
 
   const blacklist: Map<Item, boolean> = new Map();
 
-  if (itemAmount(Item.get("Pick-O-Matic lockpicks")) === 1) {
-    blacklist.set(Item.get("Pick-O-Matic lockpicks"), true); //do not absorb our last lockpick. could have more than 1 in postronin
+  if (itemAmount($item`Pick-O-Matic lockpicks`) === 1) {
+    blacklist.set($item`Pick-O-Matic lockpicks`, true); //do not absorb our last lockpick. could have more than 1 in postronin
   }
   if (
     internalQuestStatus("questL10Garbage") < 2 &&
-    itemAmount(Item.get("enchanted bean")) === 1
+    itemAmount($item`enchanted bean`) === 1
   ) {
-    blacklist.set(Item.get("enchanted bean"), true); //need to keep our only enchanted bean to be planted
+    blacklist.set($item`enchanted bean`, true); //need to keep our only enchanted bean to be planted
   }
 
   let available: Map<Item, string> = gnoob_lister$1();
@@ -149,62 +150,7 @@ function gnoob_buySkills(): void {
     toInt(getProperty("noobPoints")) +
     2;
 
-  for (const sk of Skill.get([
-    "Large Intestine",
-    "Small Intestine",
-    "Stomach-Like Thing",
-    "Rudimentary Alimentary Canal",
-    "Central Hypothalamus",
-    "Arrogance",
-    "Sense of Pride",
-    "Sense of Purpose",
-    "Retractable Toes",
-    "Bendable Knees",
-    "Ink Gland",
-    "Anger Glands",
-    "Basic Self-Worth",
-    "Work Ethic",
-    "Visual Cortex",
-    "Saccade Reflex",
-    "Frown Muscles",
-    "Powerful Vocal Chords",
-    "Optic Nerves",
-    "Right Eyeball",
-    "Left Eyeball",
-    "Thumbs",
-    "Index Fingers",
-    "Middle Fingers",
-    "Ring Fingers",
-    "Pinky Fingers",
-    "Hot Headedness",
-    "Sunglasses",
-    "Sense of Sarcasm",
-    "Beating Human Heart",
-    "Oversized Right Kidney",
-    "Anterior Cruciate Ligaments",
-    "Achilles Tendons",
-    "Kneecaps",
-    "Ankle Joints",
-    "Hamstrings",
-    "Pathological Greed",
-    "Sense of Entitlement",
-    "Business Acumen",
-    "Financial Ambition",
-    "The Concept of Property",
-    "Bravery Gland",
-    "Subcutaneous Fat",
-    "Adrenal Gland",
-    "Nasal Septum",
-    "Hyperactive Amygdala",
-    "Nasal Lamina Propria",
-    "Right Eyelid",
-    "Pinchable Nose",
-    "Left Eyelid",
-    "Nose Hair",
-    "Overalls",
-    "Rigid Rib Cage",
-    "Rigid Headbone",
-  ])) {
+  for (const sk of $skills`Large Intestine, Small Intestine, Stomach-Like Thing, Rudimentary Alimentary Canal, Central Hypothalamus, Arrogance, Sense of Pride, Sense of Purpose, Retractable Toes, Bendable Knees, Ink Gland, Anger Glands, Basic Self-Worth, Work Ethic, Visual Cortex, Saccade Reflex, Frown Muscles, Powerful Vocal Chords, Optic Nerves, Right Eyeball, Left Eyeball, Thumbs, Index Fingers, Middle Fingers, Ring Fingers, Pinky Fingers, Hot Headedness, Sunglasses, Sense of Sarcasm, Beating Human Heart, Oversized Right Kidney, Anterior Cruciate Ligaments, Achilles Tendons, Kneecaps, Ankle Joints, Hamstrings, Pathological Greed, Sense of Entitlement, Business Acumen, Financial Ambition, The Concept of Property, Bravery Gland, Subcutaneous Fat, Adrenal Gland, Nasal Septum, Hyperactive Amygdala, Nasal Lamina Propria, Right Eyelid, Pinchable Nose, Left Eyelid, Nose Hair, Overalls, Rigid Rib Cage, Rigid Headbone`) {
     if (haveSkill(sk)) {
       continue; //no need to do anything for a skill you already have. do not decrement earlyTerm either.
     }
@@ -286,8 +232,8 @@ function gnoob_buySkills(): void {
     myAdventures() <= 1 + auto_advToReserve() &&
     myLevel() >= 12
   ) {
-    auto_buyUpTo(1, Item.get("potted cactus"));
-    if (itemAmount(Item.get("potted cactus")) > 0) {
+    auto_buyUpTo(1, $item`potted cactus`);
+    if (itemAmount($item`potted cactus`) > 0) {
       cliExecute("absorb Potted Cactus");
     }
   }
@@ -12320,14 +12266,9 @@ function gnoob_lister(goal: string): Map<Item, string> {
         "Modifiers",
       );
       if (
-        Skill.get([
-          "Anger Glands",
-          "Bendable Knees",
-          "Frown Muscles",
-          "Ink Gland",
-          "Powerful Vocal Chords",
-          "Retractable Toes",
-        ]).includes(it.noobSkill)
+        $skills`Anger Glands, Bendable Knees, Frown Muscles, Ink Gland, Powerful Vocal Chords, Retractable Toes`.includes(
+          it.noobSkill,
+        )
       ) {
         result_1 = "Combat Rate";
       }

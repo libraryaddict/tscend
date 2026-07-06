@@ -31,7 +31,6 @@ import {
   random,
   runChoice,
   setProperty,
-  Slot,
   splitString,
   Stat,
   toBoolean,
@@ -43,6 +42,18 @@ import {
   useFamiliar,
   visitUrl,
 } from "kolmafia";
+import {
+  $effect,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $locations,
+  $monster,
+  $slot,
+  $stat,
+} from "libram";
+
 import {
   autoAdv$1,
   autoAdv$2,
@@ -78,7 +89,6 @@ import {
   internalQuestStatus,
   wrap_item,
 } from "../auto_util";
-import { auto_havePillKeeper } from "./mr2019";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { is_boris } from "../paths/avatar_of_boris";
@@ -92,12 +102,13 @@ import { in_quantumTerrarium } from "../paths/quantum_terrarium";
 import { in_wotsf } from "../paths/way_of_the_surprising_fist";
 import { hedgeTrimmersNeeded } from "../quests/level_09";
 import { AshMatcher } from "../utils/kolmafiaUtils";
+import { auto_havePillKeeper } from "./mr2019";
 
 //	This is meant for items that have a date of 2018.
 
 //Defined in autoscend/iotms/mr2018.ash
 export function isjanuaryToteAvailable(): boolean {
-  const tote: Item = wrap_item(Item.get("January's Garbage Tote"));
+  const tote: Item = wrap_item($item`January's Garbage Tote`);
   return itemAmount(tote) > 0 && auto_is_valid(tote) && !in_bhy();
 }
 
@@ -110,13 +121,13 @@ export function januaryToteTurnsLeft(it: Item): number {
 
   if (getRevision() < 18848) {
     switch (it) {
-      case Item.get("deceased crimbo tree"):
+      case $item`deceased crimbo tree`:
         score = toInt(getProperty("_garbageTreeCharge"));
         break;
-      case Item.get("broken champagne bottle"):
+      case $item`broken champagne bottle`:
         score = toInt(getProperty("_garbageChampagneCharge"));
         break;
-      case Item.get("makeshift garbage shirt"):
+      case $item`makeshift garbage shirt`:
         score = toInt(getProperty("_garbageShirtCharge"));
         break;
     }
@@ -124,26 +135,26 @@ export function januaryToteTurnsLeft(it: Item): number {
   }
 
   switch (it) {
-    case Item.get("deceased crimbo tree"):
+    case $item`deceased crimbo tree`:
       score = toInt(getProperty("garbageTreeCharge"));
       break;
-    case Item.get("broken champagne bottle"):
+    case $item`broken champagne bottle`:
       score = toInt(getProperty("garbageChampagneCharge"));
       break;
-    case Item.get("makeshift garbage shirt"):
+    case $item`makeshift garbage shirt`:
       score = toInt(getProperty("garbageShirtCharge"));
       break;
   }
 
   if (!toBoolean(getProperty("_garbageItemChanged"))) {
     switch (it) {
-      case Item.get("deceased crimbo tree"):
+      case $item`deceased crimbo tree`:
         score += 1000;
         break;
-      case Item.get("broken champagne bottle"):
+      case $item`broken champagne bottle`:
         score += 11;
         break;
-      case Item.get("makeshift garbage shirt"):
+      case $item`makeshift garbage shirt`:
         score += 37;
         break;
     }
@@ -163,11 +174,9 @@ export function januaryToteAcquire(it: Item): boolean {
   //by default resetMaximize() will add a block for not equipping garbage tote items with charges to preserve the charges.
   //If we call januaryToteAcquire for an item we want to remove that block for that item.
   if (
-    Item.get([
-      "deceased crimbo tree",
-      "broken champagne bottle",
-      "makeshift garbage shirt",
-    ]).includes(it)
+    $items`deceased crimbo tree, broken champagne bottle, makeshift garbage shirt`.includes(
+      it,
+    )
   ) {
     removeFromMaximize(`-equip ${it}`);
   }
@@ -181,19 +190,19 @@ export function januaryToteAcquire(it: Item): boolean {
       //since item was not changed yet, count leftover charges from yesterday.
       //If target item has no charges at all then pretend it has 1 leftover to not replace it with itself.
       switch (it) {
-        case Item.get("deceased crimbo tree"):
+        case $item`deceased crimbo tree`:
           leftover_charges = toInt(getProperty("garbageTreeCharge"));
           break;
-        case Item.get("broken champagne bottle"):
+        case $item`broken champagne bottle`:
           leftover_charges = toInt(getProperty("garbageChampagneCharge"));
           break;
-        case Item.get("tinsel tights"):
+        case $item`tinsel tights`:
           leftover_charges = 1;
           break;
-        case Item.get("wad of used tape"):
+        case $item`wad of used tape`:
           leftover_charges = 1;
           break;
-        case Item.get("makeshift garbage shirt"):
+        case $item`makeshift garbage shirt`:
           leftover_charges = toInt(getProperty("garbageShirtCharge"));
           break;
       }
@@ -205,22 +214,22 @@ export function januaryToteAcquire(it: Item): boolean {
 
   let choice: number = 0;
   switch (it) {
-    case Item.get("deceased crimbo tree"):
+    case $item`deceased crimbo tree`:
       choice = 1;
       break;
-    case Item.get("broken champagne bottle"):
+    case $item`broken champagne bottle`:
       choice = 2;
       break;
-    case Item.get("tinsel tights"):
+    case $item`tinsel tights`:
       choice = 3;
       break;
-    case Item.get("wad of used tape"):
+    case $item`wad of used tape`:
       choice = 4;
       break;
-    case Item.get("makeshift garbage shirt"):
+    case $item`makeshift garbage shirt`:
       choice = 5;
       break;
-    case Item.get("Letter for Melvign the Gnome"):
+    case $item`Letter for Melvign the Gnome`:
       choice = 7;
       break;
   }
@@ -243,13 +252,13 @@ export function januaryToteAcquire(it: Item): boolean {
     //can only get one letter per ascension
     if (
       getProperty("questM22Shirt") !== "unstarted" ||
-      itemAmount(Item.get("Letter for Melvign the Gnome")) > 0
+      itemAmount($item`Letter for Melvign the Gnome`) > 0
     ) {
       return false;
     }
-    if (availableAmount(Item.get("makeshift garbage shirt")) === 0) {
+    if (availableAmount($item`makeshift garbage shirt`) === 0) {
       //only rummage a new shirt if we don't already have one on hand.
-      const tote: Item = wrap_item(Item.get("January's Garbage Tote"));
+      const tote: Item = wrap_item($item`January's Garbage Tote`);
       visitUrl(
         `inv_use.php?pwd=${myHash()}&which=3&whichitem=${tote.id}`,
         false,
@@ -258,7 +267,7 @@ export function januaryToteAcquire(it: Item): boolean {
     }
     visitUrl("inv_equip.php?pwd=&which=2&action=equip&whichitem=9699"); //url fail to equip shirt to get a letter
   } else {
-    const tote: Item = wrap_item(Item.get("January's Garbage Tote"));
+    const tote: Item = wrap_item($item`January's Garbage Tote`);
     visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=${tote.id}`, false); //rummage in your garbage tote
     runChoice(choice); //get desired item
   }
@@ -292,7 +301,7 @@ function godLobsterCombat$3(
 ): boolean {
   // it = equipment we want the God Lobster to wear
   // goal = option we want to select in the post-combat choice
-  if (!canChangeToFamiliar(Familiar.get("God Lobster"))) {
+  if (!canChangeToFamiliar($familiar`God Lobster`)) {
     return false;
   }
   if (goal < 1 || goal > 3) {
@@ -304,17 +313,17 @@ function godLobsterCombat$3(
   if (it !== Item.none && availableAmount(it) === 0) {
     return false;
   }
-  if (goal === 1 && it === Item.get("God Lobster's Crown")) {
+  if (goal === 1 && it === $item`God Lobster's Crown`) {
     return false;
   }
 
   if (!in_quantumTerrarium()) {
-    handleFamiliar$1(Familiar.get("God Lobster"));
-    useFamiliar(Familiar.get("God Lobster"));
+    handleFamiliar$1($familiar`God Lobster`);
+    useFamiliar($familiar`God Lobster`);
   }
 
-  if (equippedItem(Slot.get("familiar")) !== it && it !== Item.none) {
-    equip(Slot.get("familiar"), it);
+  if (equippedItem($slot`familiar`) !== it && it !== Item.none) {
+    equip($slot`familiar`, it);
   }
 
   setProperty("_auto_lobsterChoice", goal.toString());
@@ -322,7 +331,7 @@ function godLobsterCombat$3(
 }
 
 export function fantasyRealmAvailable(): boolean {
-  if (!isUnrestricted(Item.get("FantasyRealm membership packet"))) {
+  if (!isUnrestricted($item`FantasyRealm membership packet`)) {
     return false;
   }
   if (
@@ -354,7 +363,7 @@ export function acquiredFantasyRealmToken(): boolean {
 }
 
 export function fantasyRealmToken(): boolean {
-  if (!isUnrestricted(Item.get("FantasyRealm membership packet"))) {
+  if (!isUnrestricted($item`FantasyRealm membership packet`)) {
     return false;
   }
 
@@ -365,40 +374,34 @@ export function fantasyRealmToken(): boolean {
   if (
     (toBoolean(getProperty("frAlways")) ||
       toBoolean(getProperty("_frToday"))) &&
-    !possessEquipment(Item.get("FantasyRealm G. E. M."))
+    !possessEquipment($item`FantasyRealm G. E. M.`)
   ) {
     let option: number = 1;
     switch (myPrimestat()) {
-      case Stat.get("Muscle"):
+      case $stat`Muscle`:
         option = 1;
         break;
-      case Stat.get("Mysticality"):
+      case $stat`Mysticality`:
         option = 2;
         break;
-      case Stat.get("Moxie"):
+      case $stat`Moxie`:
         option = 3;
         break;
     }
-    if (
-      option === 1 &&
-      possessEquipment(Item.get("FantasyRealm Warrior's Helm"))
-    ) {
+    if (option === 1 && possessEquipment($item`FantasyRealm Warrior's Helm`)) {
       option = 2;
     }
-    if (option === 2 && possessEquipment(Item.get("FantasyRealm Mage's Hat"))) {
+    if (option === 2 && possessEquipment($item`FantasyRealm Mage's Hat`)) {
       option = 3;
     }
-    if (
-      option === 3 &&
-      possessEquipment(Item.get("FantasyRealm Rogue's Mask"))
-    ) {
+    if (option === 3 && possessEquipment($item`FantasyRealm Rogue's Mask`)) {
       option = 1;
     }
     visitUrl("place.php?whichplace=realm_fantasy&action=fr_initcenter", false);
     visitUrl(`choice.php?whichchoice=1280&pwd=&option=${option}`);
   }
 
-  if (!possessEquipment(Item.get("FantasyRealm G. E. M."))) {
+  if (!possessEquipment($item`FantasyRealm G. E. M.`)) {
     return false;
   }
   // If we're not allowed to adventure without a familiar due to being in a 100% familiar run or Avant Guard
@@ -406,41 +409,41 @@ export function fantasyRealmToken(): boolean {
     return false;
   }
 
-  if (possessEquipment(Item.get("FantasyRealm G. E. M."))) {
-    autoEquip(Slot.get("acc3"), Item.get("FantasyRealm G. E. M."));
+  if (possessEquipment($item`FantasyRealm G. E. M.`)) {
+    autoEquip($slot`acc3`, $item`FantasyRealm G. E. M.`);
   }
   //This does not appear to check that we no longer need to adventure there...
 
-  return autoAdv$1(1, Location.get("The Bandit Crossroads"));
+  return autoAdv$1(1, $location`The Bandit Crossroads`);
 }
 
 function allFantasyRealmLocations(): Map<Location, boolean> {
   return new Map([
-    [Location.get("The Bandit Crossroads"), true],
-    [Location.get("The Cursed Village"), true],
-    [Location.get("The Evil Cathedral"), true],
-    [Location.get("The Archwizard's Tower"), true],
-    [Location.get("The Cursed Village Thieves' Guild"), true],
-    [Location.get("The Towering Mountains"), true],
-    [Location.get("The Foreboding Cave"), true],
-    [Location.get("The Lair of the Phoenix"), true],
-    [Location.get("The Old Rubee Mine"), true],
-    [Location.get("The Ogre Chieftain's Keep"), true],
-    [Location.get("The Master Thief's Chalet"), true],
-    [Location.get("The Mystic Wood"), true],
-    [Location.get("The Faerie Cyrkle"), true],
-    [Location.get("The Spider Queen's Lair"), true],
-    [Location.get("The Druidic Campsite"), true],
-    [Location.get("The Ley Nexus"), true],
-    [Location.get("The Putrid Swamp"), true],
-    [Location.get("Near the Witch's House"), true],
-    [Location.get("The Troll Fortress"), true],
-    [Location.get("The Dragon's Moor"), true],
-    [Location.get("The Sprawling Cemetery"), true],
-    [Location.get("The Labyrinthine Crypt"), true],
-    [Location.get("The Barrow Mounds"), true],
-    [Location.get("The Ghoul King's Catacomb"), true],
-    [Location.get("Duke Vampire's Chateau"), true],
+    [$location`The Bandit Crossroads`, true],
+    [$location`The Cursed Village`, true],
+    [$location`The Evil Cathedral`, true],
+    [$location`The Archwizard's Tower`, true],
+    [$location`The Cursed Village Thieves' Guild`, true],
+    [$location`The Towering Mountains`, true],
+    [$location`The Foreboding Cave`, true],
+    [$location`The Lair of the Phoenix`, true],
+    [$location`The Old Rubee Mine`, true],
+    [$location`The Ogre Chieftain's Keep`, true],
+    [$location`The Master Thief's Chalet`, true],
+    [$location`The Mystic Wood`, true],
+    [$location`The Faerie Cyrkle`, true],
+    [$location`The Spider Queen's Lair`, true],
+    [$location`The Druidic Campsite`, true],
+    [$location`The Ley Nexus`, true],
+    [$location`The Putrid Swamp`, true],
+    [$location`Near the Witch's House`, true],
+    [$location`The Troll Fortress`, true],
+    [$location`The Dragon's Moor`, true],
+    [$location`The Sprawling Cemetery`, true],
+    [$location`The Labyrinthine Crypt`, true],
+    [$location`The Barrow Mounds`, true],
+    [$location`The Ghoul King's Catacomb`, true],
+    [$location`Duke Vampire's Chateau`, true],
   ]);
 }
 
@@ -455,7 +458,7 @@ export function songboomSetting(goal: string): boolean {
     goal === "eye of the giger" ||
     goal === "spooky" ||
     goal === "nightmare" ||
-    goal === Item.get("Nightmare Fuel").toString() ||
+    goal === $item`Nightmare Fuel`.toString() ||
     goal === "stats"
   ) {
     option = 1;
@@ -463,7 +466,7 @@ export function songboomSetting(goal: string): boolean {
     goal === "food vibrations" ||
     goal === "food" ||
     goal === "food drops" ||
-    goal === Item.get("Special Seasoning").toString() ||
+    goal === $item`Special Seasoning`.toString() ||
     goal === "spell damage" ||
     goal === "adventures" ||
     goal === "adv"
@@ -473,7 +476,7 @@ export function songboomSetting(goal: string): boolean {
     goal === "remainin' alive" ||
     goal === "dr" ||
     goal === "damage reduction" ||
-    goal === Item.get("Shielding Potion").toString() ||
+    goal === $item`Shielding Potion`.toString() ||
     goal === "delevel"
   ) {
     option = 3;
@@ -481,7 +484,7 @@ export function songboomSetting(goal: string): boolean {
     goal === "these fists were made for punchin'" ||
     goal === "weapon damage" ||
     goal === "prismatic damage" ||
-    goal === Item.get("Punching Potion").toString() ||
+    goal === $item`Punching Potion`.toString() ||
     goal === "prismatic"
   ) {
     option = 4;
@@ -489,7 +492,7 @@ export function songboomSetting(goal: string): boolean {
     goal === "total eclipse of your meat" ||
     goal === "meat" ||
     goal === "meat drop" ||
-    goal === Item.get("Gathered Meat-Clip").toString() ||
+    goal === $item`Gathered Meat-Clip`.toString() ||
     goal === "base meat"
   ) {
     option = 5;
@@ -501,10 +504,10 @@ export function songboomSetting(goal: string): boolean {
 }
 
 function songboomSetting$1(option: number): boolean {
-  if (!auto_is_valid(Item.get("SongBoom&trade; BoomBox"))) {
+  if (!auto_is_valid($item`SongBoom™ BoomBox`)) {
     return false;
   }
-  if (itemAmount(Item.get("SongBoom&trade; BoomBox")) === 0) {
+  if (itemAmount($item`SongBoom™ BoomBox`) === 0) {
     return false;
   }
   if (toInt(getProperty("_boomBoxSongsLeft")) === 0) {
@@ -565,10 +568,10 @@ function songboomSetting$1(option: number): boolean {
 }
 
 export function auto_setSongboom(): void {
-  if (!auto_is_valid(Item.get("SongBoom&trade; BoomBox"))) {
+  if (!auto_is_valid($item`SongBoom™ BoomBox`)) {
     return;
   }
-  if (itemAmount(Item.get("SongBoom&trade; BoomBox")) === 0) {
+  if (itemAmount($item`SongBoom™ BoomBox`) === 0) {
     return;
   }
   if (toInt(getProperty("auto_beatenUpCount")) > 5) {
@@ -594,7 +597,7 @@ export function auto_setSongboom(): void {
   ) {
     songboomSetting("nightmare");
   } else {
-    if (myFullness() === 0 || itemAmount(Item.get("Special Seasoning")) < 4) {
+    if (myFullness() === 0 || itemAmount($item`Special Seasoning`) < 4) {
       songboomSetting("food");
     } else {
       if (in_glover() && myMeat() > 10000) {
@@ -608,8 +611,8 @@ export function auto_setSongboom(): void {
 
 export function catBurglarHeistsLeft(): number {
   if (
-    !haveFamiliar(Familiar.get("Cat Burglar")) ||
-    !auto_is_valid$1(Familiar.get("Cat Burglar"))
+    !haveFamiliar($familiar`Cat Burglar`) ||
+    !auto_is_valid$1($familiar`Cat Burglar`)
   ) {
     return 0;
   }
@@ -639,7 +642,7 @@ function catBurglarHeist$1(it: Item): boolean {
   auto_log_info(`Trying to heist a ${it}`, "blue");
   const backup_familiar: Familiar = myFamiliar();
   try {
-    useFamiliar(Familiar.get("Cat Burglar"));
+    useFamiliar($familiar`Cat Burglar`);
 
     let page: string = visitUrl("main.php?heist=1");
     const button: AshMatcher = new AshMatcher(
@@ -651,7 +654,7 @@ function catBurglarHeist$1(it: Item): boolean {
       const url: string = `choice.php?whichchoice=1320&option=1&${choice_name}=${it.toString()}&pwd=${myHash()}`;
       page = visitUrl(url);
       handleTracker$1(
-        Familiar.get("Cat Burglar").toString(),
+        $familiar`Cat Burglar`.toString(),
         it.toString(),
         "auto_otherstuff",
       );
@@ -674,35 +677,35 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
   const wannaHeists: Map<Monster, Item> = new Map();
 
   if (
-    !canChangeToFamiliar(Familiar.get("XO Skeleton")) &&
+    !canChangeToFamiliar($familiar`XO Skeleton`) &&
     getProperty("sidequestOrchardCompleted") === "none"
   ) {
     // Can't hugpocket? 1 turn filthworms is still a thing you can do!
     if (
-      haveEffect(Effect.get("Filthworm Larva Stench")) === 0 &&
-      itemAmount(Item.get("filthworm hatchling scent gland")) === 0
+      haveEffect($effect`Filthworm Larva Stench`) === 0 &&
+      itemAmount($item`filthworm hatchling scent gland`) === 0
     ) {
       wannaHeists.set(
-        Monster.get("larval filthworm"),
-        Item.get("filthworm hatchling scent gland"),
+        $monster`larval filthworm`,
+        $item`filthworm hatchling scent gland`,
       );
     }
     if (
-      haveEffect(Effect.get("Filthworm Drone Stench")) === 0 &&
-      itemAmount(Item.get("filthworm drone scent gland")) === 0
+      haveEffect($effect`Filthworm Drone Stench`) === 0 &&
+      itemAmount($item`filthworm drone scent gland`) === 0
     ) {
       wannaHeists.set(
-        Monster.get("filthworm drone"),
-        Item.get("filthworm drone scent gland"),
+        $monster`filthworm drone`,
+        $item`filthworm drone scent gland`,
       );
     }
     if (
-      haveEffect(Effect.get("Filthworm Guard Stench")) === 0 &&
-      itemAmount(Item.get("filthworm royal guard scent gland")) === 0
+      haveEffect($effect`Filthworm Guard Stench`) === 0 &&
+      itemAmount($item`filthworm royal guard scent gland`) === 0
     ) {
       wannaHeists.set(
-        Monster.get("filthworm royal guard"),
-        Item.get("filthworm royal guard scent gland"),
+        $monster`filthworm royal guard`,
+        $item`filthworm royal guard scent gland`,
       );
     }
   }
@@ -714,29 +717,29 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
     internalQuestStatus("questL08Trapper") < 2 &&
     inHardcore()
   ) {
-    wannaHeists.set(Monster.get("mountain man"), oreGoal);
+    wannaHeists.set($monster`mountain man`, oreGoal);
   }
 
   if (
-    itemAmount(Item.get("killing jar")) === 0 &&
+    itemAmount($item`killing jar`) === 0 &&
     (toInt(getProperty("gnasirProgress")) & 4) === 0 &&
     inHardcore()
   ) {
-    wannaHeists.set(Monster.get("banshee librarian"), Item.get("killing jar"));
+    wannaHeists.set($monster`banshee librarian`, $item`killing jar`);
   }
 
   if (
     myLevel() >= 11 &&
-    !possessEquipment(Item.get("Mega Gem")) &&
+    !possessEquipment($item`Mega Gem`) &&
     inHardcore() &&
-    itemAmount(Item.get("wet stew")) === 0 &&
-    itemAmount(Item.get("wet stunt nut stew")) === 0
+    itemAmount($item`wet stew`) === 0 &&
+    itemAmount($item`wet stunt nut stew`) === 0
   ) {
-    if (itemAmount(Item.get("bird rib")) === 0) {
-      wannaHeists.set(Monster.get("whitesnake"), Item.get("bird rib"));
+    if (itemAmount($item`bird rib`) === 0) {
+      wannaHeists.set($monster`whitesnake`, $item`bird rib`);
     }
-    if (itemAmount(Item.get("lion oil")) === 0) {
-      wannaHeists.set(Monster.get("white lion"), Item.get("lion oil"));
+    if (itemAmount($item`lion oil`) === 0) {
+      wannaHeists.set($monster`white lion`, $item`lion oil`);
     }
   }
 
@@ -746,16 +749,16 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
     hedgeTrimmersNeeded() > 0
   ) {
     wannaHeists.set(
-      Monster.get("bearpig topiary animal"),
-      Item.get("rusty hedge trimmers"),
+      $monster`bearpig topiary animal`,
+      $item`rusty hedge trimmers`,
     );
     wannaHeists.set(
-      Monster.get("elephant (meatcar?) topiary animal"),
-      Item.get("rusty hedge trimmers"),
+      $monster`elephant (meatcar?) topiary animal`,
+      $item`rusty hedge trimmers`,
     );
     wannaHeists.set(
-      Monster.get("spider (duck?) topiary animal"),
-      Item.get("rusty hedge trimmers"),
+      $monster`spider (duck?) topiary animal`,
+      $item`rusty hedge trimmers`,
     );
   }
 
@@ -764,27 +767,24 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
     internalQuestStatus("questL11Ron") === 1 &&
     catBurglarHeistsLeft() >= 2
   ) {
-    wannaHeists.set(
-      Monster.get("Blue Oyster cultist"),
-      Item.get("cigarette lighter"),
-    );
+    wannaHeists.set($monster`Blue Oyster cultist`, $item`cigarette lighter`);
   }
   // 18 is a totally arbitrary cutoff here, but it's probably fine.
-  if (Location.get("The Penultimate Fantasy Airship").turnsSpent >= 18) {
+  if ($location`The Penultimate Fantasy Airship`.turnsSpent >= 18) {
     if (
-      !possessEquipment(Item.get("amulet of extreme plot significance")) &&
+      !possessEquipment($item`amulet of extreme plot significance`) &&
       internalQuestStatus("questL10Garbage") < 8
     ) {
       wannaHeists.set(
-        Monster.get("Quiet Healer"),
-        Item.get("amulet of extreme plot significance"),
+        $monster`Quiet Healer`,
+        $item`amulet of extreme plot significance`,
       );
     }
     if (
-      !possessEquipment(Item.get("Mohawk wig")) &&
+      !possessEquipment($item`Mohawk wig`) &&
       internalQuestStatus("questL10Garbage") < 10
     ) {
-      wannaHeists.set(Monster.get("Burly Sidekick"), Item.get("Mohawk wig"));
+      wannaHeists.set($monster`Burly Sidekick`, $item`Mohawk wig`);
     }
   }
 
@@ -816,10 +816,10 @@ export function cheeseWarMachine(
   eff: number,
   potion: number,
 ): boolean {
-  if (!auto_is_valid(Item.get("Bastille Battalion control rig"))) {
+  if (!auto_is_valid($item`Bastille Battalion control rig`)) {
     return false;
   }
-  if (itemAmount(Item.get("Bastille Battalion control rig")) === 0) {
+  if (itemAmount($item`Bastille Battalion control rig`) === 0) {
     return false;
   }
   if (toInt(getProperty("_bastilleGames")) !== 0) {
@@ -828,26 +828,26 @@ export function cheeseWarMachine(
 
   if (stats === 0) {
     switch (myPrimestat()) {
-      case Stat.get("Muscle"):
+      case $stat`Muscle`:
         stats = 2;
         break;
-      case Stat.get("Mysticality"):
+      case $stat`Mysticality`:
         stats = 1;
         break;
-      case Stat.get("Moxie"):
+      case $stat`Moxie`:
         stats = 3;
         break;
     }
   }
   if (it === 0) {
     switch (myPrimestat()) {
-      case Stat.get("Muscle"):
+      case $stat`Muscle`:
         it = 1;
         break;
-      case Stat.get("Mysticality"):
+      case $stat`Mysticality`:
         it = 2;
         break;
-      case Stat.get("Moxie"):
+      case $stat`Moxie`:
         it = 3;
         break;
     }
@@ -855,13 +855,13 @@ export function cheeseWarMachine(
 
   if (eff === 0) {
     switch (myPrimestat()) {
-      case Stat.get("Muscle"):
+      case $stat`Muscle`:
         eff = 1;
         break;
-      case Stat.get("Mysticality"):
+      case $stat`Mysticality`:
         eff = 2;
         break;
-      case Stat.get("Moxie"):
+      case $stat`Moxie`:
         eff = 3;
         break;
     }
@@ -995,7 +995,7 @@ export function neverendingPartyAvailable(): boolean {
     // check mafia properties which track access.
     return false;
   }
-  if (!auto_is_valid(Item.get("Neverending Party invitation envelope"))) {
+  if (!auto_is_valid($item`Neverending Party invitation envelope`)) {
     return false;
   }
   if (getProperty("_questPartyFair") === "finished") {
@@ -1012,7 +1012,7 @@ export function neverendingPartyCombat(): boolean {
 
   if (in_glover()) {
     // only non stat effect is valid in G-Lover
-    fightClubSpa$1(Effect.get("Flagrantly Fragrant"));
+    fightClubSpa$1($effect`Flagrantly Fragrant`);
   } else {
     fightClubSpa();
   }
@@ -1020,14 +1020,14 @@ export function neverendingPartyCombat(): boolean {
 
   if (
     hasTorso$1() &&
-    januaryToteTurnsLeft(Item.get("makeshift garbage shirt")) > 0 &&
-    auto_is_valid(Item.get("makeshift garbage shirt"))
+    januaryToteTurnsLeft($item`makeshift garbage shirt`) > 0 &&
+    auto_is_valid($item`makeshift garbage shirt`)
   ) {
-    januaryToteAcquire(Item.get("makeshift garbage shirt"));
-    autoEquip(Slot.get("shirt"), Item.get("makeshift garbage shirt"));
+    januaryToteAcquire($item`makeshift garbage shirt`);
+    autoEquip($slot`shirt`, $item`makeshift garbage shirt`);
   }
 
-  return autoAdv$2(Location.get("The Neverending Party"));
+  return autoAdv$2($location`The Neverending Party`);
 }
 
 export function neverendingPartyChoiceHandler(choice: number): void {
@@ -1041,14 +1041,14 @@ export function neverendingPartyChoiceHandler(choice: number): void {
     // It Hasn't Ended, It's Just Paused
     let buff: Effect = Effect.none;
     switch (myPrimestat()) {
-      case Stat.get("Muscle"):
-        buff = Effect.get("Spiced Up");
+      case $stat`Muscle`:
+        buff = $effect`Spiced Up`;
         break;
-      case Stat.get("Mysticality"):
-        buff = Effect.get("Tomes of Opportunity");
+      case $stat`Mysticality`:
+        buff = $effect`Tomes of Opportunity`;
         break;
-      case Stat.get("Moxie"):
-        buff = Effect.get("The Best Hair You've Ever Had");
+      case $stat`Moxie`:
+        buff = $effect`The Best Hair You've Ever Had`;
         break;
     }
     if (in_glover()) {
@@ -1057,15 +1057,15 @@ export function neverendingPartyChoiceHandler(choice: number): void {
     } else if (buff !== Effect.none && haveEffect(buff) < 9) {
       // Get the +mainstat% buff if we don't have enough turns of it to get us to the next scheduled NC.
       switch (myPrimestat()) {
-        case Stat.get("Muscle"):
+        case $stat`Muscle`:
           runChoice(2); // Check out the kitchen (go to Gone Kitchin')
 
           break;
-        case Stat.get("Mysticality"):
+        case $stat`Mysticality`:
           runChoice(1); // Head upstairs (go to A Room With a View... Of a Bed)
 
           break;
-        case Stat.get("Moxie"):
+        case $stat`Moxie`:
           runChoice(4); // Investigate the basement (go to Basement Urges)
 
           break;
@@ -1077,7 +1077,7 @@ export function neverendingPartyChoiceHandler(choice: number): void {
     } else if (isAboutToPowerlevel() || isActuallyEd()) {
       // If we're powerlevelling (or farming Ka) grab the +ML buff if we don't have enough turns
       // of it to get us to the next scheduled NC. Otherwise take the combat.
-      if (haveEffect(Effect.get("Citronella Armpits")) < 9) {
+      if (haveEffect($effect`Citronella Armpits`) < 9) {
         runChoice(3); // Go to the back yard (go to Forward to the Back)
       } else {
         runChoice(5); // Pick a fight (fight a random monster from the zone)
@@ -1087,14 +1087,14 @@ export function neverendingPartyChoiceHandler(choice: number): void {
     }
   } else if (choice === 1325) {
     // A Room With a View... Of a Bed
-    if (myPrimestat() === Stat.get("Mysticality")) {
+    if (myPrimestat() === $stat`Mysticality`) {
       runChoice(2); // Read the tomes (Get Tomes of Opportunity buff. 20 advs of +20% to all Mysticality Gains)
     } else {
       runChoice(1); // Take a quick nap (Full HP & MP restore)
     }
   } else if (choice === 1326) {
     // Gone Kitchin'
-    if (myPrimestat() === Stat.get("Muscle")) {
+    if (myPrimestat() === $stat`Muscle`) {
       runChoice(2); // Check out the muscle spice (Get Spiced Up buff. 20 advs of +20% to all Muscle Gains)
     } else {
       runChoice(1); // Peruse the cookbooks (get some myst substats)
@@ -1104,7 +1104,7 @@ export function neverendingPartyChoiceHandler(choice: number): void {
     runChoice(2); // Rub the candle wax under your arms (Get Citronella Armpits buff. 50 advs of +30 to Monster Level)
   } else if (choice === 1328) {
     // Basement Urges
-    if (myPrimestat() === Stat.get("Moxie")) {
+    if (myPrimestat() === $stat`Moxie`) {
       runChoice(2); // Use the hair gel (Get The Best Hair You've Ever Had buff. 20 advs of +20% to all Moxie Gains)
     } else {
       runChoice(1); // Use the workout equipment (get some muscle substats)
@@ -1116,107 +1116,107 @@ export function neverendingPartyChoiceHandler(choice: number): void {
 
 export function auto_latteDropName(l: Location): string {
   switch (l) {
-    case Location.get("The Mouldering Mansion"):
+    case $location`The Mouldering Mansion`:
       return "ancient";
-    case Location.get("The Overgrown Lot"):
+    case $location`The Overgrown Lot`:
       return "basil";
-    case Location.get("Whitey's Grove"):
+    case $location`Whitey's Grove`:
       return "belgian";
-    case Location.get("The Bugbear Pen"):
+    case $location`The Bugbear Pen`:
       return "bug-thistle";
-    case Location.get("Madness Bakery"):
+    case $location`Madness Bakery`:
       return "butternut";
-    case Location.get("The Black Forest"):
+    case $location`The Black Forest`:
       return "cajun";
-    case Location.get("The Haunted Billiards Room"):
+    case $location`The Haunted Billiards Room`:
       return "chalk";
-    case Location.get("The Dire Warren"):
+    case $location`The Dire Warren`:
       return "carrot";
-    case Location.get("Barrrney's Barrr"):
+    case $location`Barrrney's Barrr`:
       return "carrrdamom";
-    case Location.get("The Haunted Kitchen"):
+    case $location`The Haunted Kitchen`:
       return "chili";
-    case Location.get("The Sleazy Back Alley"):
+    case $location`The Sleazy Back Alley`:
       return "cloves";
-    case Location.get("The Haunted Boiler Room"):
+    case $location`The Haunted Boiler Room`:
       return "coal";
-    case Location.get("The Icy Peak"):
+    case $location`The Icy Peak`:
       return "cocoa";
-    case Location.get("The Cola Wars Battlefield"):
+    case $location`The Cola Wars Battlefield`:
       return "diet";
-    case Location.get("Itznotyerzitz Mine"):
+    case $location`Itznotyerzitz Mine`:
       return "dwarf";
-    case Location.get("The Feeding Chamber"):
+    case $location`The Feeding Chamber`:
       return "filth";
-    case Location.get("The Road to the White Citadel"):
+    case $location`The Road to the White Citadel`:
       return "flour";
-    case Location.get("The Fungal Nethers"):
+    case $location`The Fungal Nethers`:
       return "fungus";
-    case Location.get("The Hidden Park"):
+    case $location`The Hidden Park`:
       return "grass";
-    case Location.get("Cobb's Knob Barracks"):
+    case $location`Cobb's Knob Barracks`:
       return "greasy";
-    case Location.get("The Daily Dungeon"):
+    case $location`The Daily Dungeon`:
       return "healing";
-    case Location.get("The Dark Neck of the Woods"):
+    case $location`The Dark Neck of the Woods`:
       return "hellion";
-    case Location.get("Wartime Frat House (Hippy Disguise)"):
+    case $location`Wartime Frat House (Hippy Disguise)`:
       return "greek";
-    case Location.get("The Old Rubee Mine"):
+    case $location`The Old Rubee Mine`:
       return "grobold";
-    case Location.get("The Bat Hole Entrance"):
+    case $location`The Bat Hole Entrance`:
       return "guarna";
-    case Location.get("1st Floor, Shiawase-Mitsuhama Building"):
+    case $location`1st Floor\, Shiawase-Mitsuhama Building`:
       return "gunpowder";
-    case Location.get("Hobopolis Town Square"):
+    case $location`Hobopolis Town Square`:
       return "hobo";
-    case Location.get("The Haunted Library"):
+    case $location`The Haunted Library`:
       return "ink";
-    case Location.get("Wartime Hippy Camp (Frat Disguise)"):
+    case $location`Wartime Hippy Camp (Frat Disguise)`:
       return "kombucha";
-    case Location.get("The Defiled Niche"):
+    case $location`The Defiled Niche`:
       return "lihc";
-    case Location.get("The Arid, Extra-Dry Desert"):
+    case $location`The Arid\, Extra-Dry Desert`:
       return "lizard";
-    case Location.get("Cobb's Knob Laboratory"):
+    case $location`Cobb's Knob Laboratory`:
       return "mega";
-    case Location.get("The Unquiet Garves"):
+    case $location`The Unquiet Garves`:
       return "mold";
-    case Location.get("The Briniest Deepests"):
+    case $location`The Briniest Deepests`:
       return "msg";
-    case Location.get("The Haunted Pantry"):
+    case $location`The Haunted Pantry`:
       return "noodles";
-    case Location.get("The Ice Hole"):
+    case $location`The Ice Hole`:
       return "norwhal";
-    case Location.get("The Old Landfill"):
+    case $location`The Old Landfill`:
       return "oil";
-    case Location.get("The Haunted Gallery"):
+    case $location`The Haunted Gallery`:
       return "paint";
-    case Location.get("The Stately Pleasure Dome"):
+    case $location`The Stately Pleasure Dome`:
       return "paradise";
-    case Location.get("The Spooky Forest"):
+    case $location`The Spooky Forest`:
       return "rawhide";
-    case Location.get("The Brinier Deepers"):
+    case $location`The Brinier Deepers`:
       return "rock";
-    case Location.get("The Briny Deeps"):
+    case $location`The Briny Deeps`:
       return "salt";
-    case Location.get("Noob Cave"):
+    case $location`Noob Cave`:
       return "sandalwood";
-    case Location.get("Cobb's Knob Kitchens"):
+    case $location`Cobb's Knob Kitchens`:
       return "sausage";
-    case Location.get("The Hole in the Sky"):
+    case $location`The Hole in the Sky`:
       return "space";
-    case Location.get("The Copperhead Club"):
+    case $location`The Copperhead Club`:
       return "squash";
-    case Location.get("The Caliginous Abyss"):
+    case $location`The Caliginous Abyss`:
       return "squamous";
-    case Location.get("The VERY Unquiet Garves"):
+    case $location`The VERY Unquiet Garves`:
       return "teeth";
-    case Location.get("The Middle Chamber"):
+    case $location`The Middle Chamber`:
       return "venom";
-    case Location.get("The Dark Elbow of the Woods"):
+    case $location`The Dark Elbow of the Woods`:
       return "vitamins";
-    case Location.get("The Dark Heart of the Woods"):
+    case $location`The Dark Heart of the Woods`:
       return "wing";
     default:
       return "";
@@ -1225,7 +1225,7 @@ export function auto_latteDropName(l: Location): string {
 
 export function auto_latteDropAvailable(l: Location): boolean {
   // obviously no latte drops are available if you don't HAVE a latte
-  if (availableAmount(Item.get("latte lovers member's mug")) === 0) {
+  if (availableAmount($item`latte lovers member's mug`) === 0) {
     return false;
   }
   const latteDrop: string = auto_latteDropName(l);
@@ -1238,11 +1238,9 @@ export function auto_latteDropAvailable(l: Location): boolean {
 export function auto_latteDropWanted(l: Location): boolean {
   return (
     auto_latteDropAvailable(l) &&
-    !Location.get([
-      "Noob Cave",
-      "The Haunted Boiler Room",
-      "The Arid, Extra-Dry Desert",
-    ]).includes(l)
+    !$locations`Noob Cave, The Haunted Boiler Room, The Arid\, Extra-Dry Desert`.includes(
+      l,
+    )
   );
 }
 
@@ -1257,11 +1255,11 @@ function auto_latteTranslate(ingredient: string): string {
       return "vitamins";
     case "exp":
       switch (myPrimestat()) {
-        case Stat.get("Muscle"):
+        case $stat`Muscle`:
           return "vanilla";
-        case Stat.get("Mysticality"):
+        case $stat`Mysticality`:
           return "pumpkin";
-        case Stat.get("Moxie"):
+        case $stat`Moxie`:
           return "cinnamon";
       }
       break;
@@ -1287,7 +1285,7 @@ function auto_latteRefill(
   want3: string,
   force: boolean,
 ): boolean {
-  if (availableAmount(Item.get("latte lovers member's mug")) === 0) {
+  if (availableAmount($item`latte lovers member's mug`) === 0) {
     return false;
   }
 
@@ -1427,7 +1425,7 @@ export function auto_haveVotingBooth(): boolean {
   return (
     (toBoolean(getProperty("_voteToday")) ||
       toBoolean(getProperty("voteAlways"))) &&
-    isUnrestricted(Item.get("voter registration form"))
+    isUnrestricted($item`voter registration form`)
   );
 }
 
@@ -1462,7 +1460,7 @@ export function auto_voteSetup$2(
   if (getProperty("_voteModifier") !== "") {
     return false;
   }
-  if (possessEquipment(Item.get("&quot;I Voted!&quot; sticker"))) {
+  if (possessEquipment($item`"I Voted!" sticker`)) {
     return false;
   }
 
@@ -1517,8 +1515,8 @@ export function auto_voteMonster$2(freeMon: boolean, loc: Location): boolean {
   }
   // is_unrestricted instead of auto_is_valid as the monsters can be encountered in g-lover
   if (
-    !possessEquipment(Item.get("&quot;I Voted!&quot; sticker")) ||
-    !isUnrestricted(Item.get("&quot;I Voted!&quot; sticker"))
+    !possessEquipment($item`"I Voted!" sticker`) ||
+    !isUnrestricted($item`"I Voted!" sticker`)
   ) {
     return false;
   }
@@ -1531,7 +1529,7 @@ export function auto_voteMonster$2(freeMon: boolean, loc: Location): boolean {
     return true;
   }
 
-  if (autoEquip(Slot.get("acc3"), Item.get("&quot;I Voted!&quot; sticker"))) {
+  if (autoEquip($slot`acc3`, $item`"I Voted!" sticker`)) {
     setProperty("auto_nextEncounter", getProperty("_voteMonster"));
     return autoAdv$2(loc);
   }
@@ -1540,7 +1538,7 @@ export function auto_voteMonster$2(freeMon: boolean, loc: Location): boolean {
 }
 
 export function fightClubNap(): boolean {
-  if (!isUnrestricted(Item.get("Boxing Day care package"))) {
+  if (!isUnrestricted($item`Boxing Day care package`)) {
     return false;
   }
   if (!toBoolean(getProperty("daycareOpen"))) {
@@ -1570,16 +1568,16 @@ function fightClubSpa(): boolean {
   let st: Stat = myPrimestat();
   if (in_plumber()) {
     // We deal 250% of our Moxie, so if our Muscle is too high we... die.
-    st = Stat.get("Moxie");
+    st = $stat`Moxie`;
   }
   switch (st) {
-    case Stat.get("Muscle"):
+    case $stat`Muscle`:
       option = 1;
       break;
-    case Stat.get("Mysticality"):
+    case $stat`Mysticality`:
       option = 3;
       break;
-    case Stat.get("Moxie"):
+    case $stat`Moxie`:
       option = 2;
       break;
   }
@@ -1590,16 +1588,16 @@ export function fightClubSpa$1(eff: Effect): boolean {
   let option: number = 0;
 
   switch (eff) {
-    case Effect.get("Muddled"):
+    case $effect`Muddled`:
       option = 1;
       break;
-    case Effect.get("Ten out of Ten"):
+    case $effect`Ten out of Ten`:
       option = 2;
       break;
-    case Effect.get("Uncucumbered"):
+    case $effect`Uncucumbered`:
       option = 3;
       break;
-    case Effect.get("Flagrantly Fragrant"):
+    case $effect`Flagrantly Fragrant`:
       option = 4;
       break;
   }
@@ -1611,7 +1609,7 @@ export function fightClubSpa$1(eff: Effect): boolean {
 }
 
 function fightClubSpa$2(option: number): boolean {
-  if (!isUnrestricted(Item.get("Boxing Day care package"))) {
+  if (!isUnrestricted($item`Boxing Day care package`)) {
     return false;
   }
   if (!toBoolean(getProperty("daycareOpen"))) {
@@ -1644,7 +1642,7 @@ function fightClubSpa$2(option: number): boolean {
 }
 
 export function fightClubStats(): boolean {
-  if (!isUnrestricted(Item.get("Boxing Day care package"))) {
+  if (!isUnrestricted($item`Boxing Day care package`)) {
     return false;
   }
   if (!toBoolean(getProperty("daycareOpen"))) {
@@ -1677,7 +1675,7 @@ export function fightClubStats(): boolean {
 let $_isTallGrassAvailable_tallGrass: Item | undefined;
 
 function isTallGrassAvailable(): boolean {
-  $_isTallGrassAvailable_tallGrass ??= Item.get("packet of tall grass seeds");
+  $_isTallGrassAvailable_tallGrass ??= $item`packet of tall grass seeds`;
   return (
     auto_is_valid($_isTallGrassAvailable_tallGrass) &&
     auto_get_campground().has($_isTallGrassAvailable_tallGrass)
@@ -1705,12 +1703,12 @@ let $_haveAnyPokeFamiliarEquipment_poke_fam_equipment:
 
 function haveAnyPokeFamiliarEquipment(): boolean {
   $_haveAnyPokeFamiliarEquipment_poke_fam_equipment ??= new Map([
-    [Item.get("amulet coin"), true],
-    [Item.get("luck incense"), true],
-    [Item.get("muscle band"), true],
-    [Item.get("razor fang"), true],
-    [Item.get("shell bell"), true],
-    [Item.get("smoke ball"), true],
+    [$item`amulet coin`, true],
+    [$item`luck incense`, true],
+    [$item`muscle band`, true],
+    [$item`razor fang`, true],
+    [$item`shell bell`, true],
+    [$item`smoke ball`, true],
   ]);
   for (const [i, _] of $_haveAnyPokeFamiliarEquipment_poke_fam_equipment) {
     if (equipmentAmount(i) > 0) {
@@ -1727,7 +1725,5 @@ function pokeFertilizeAndHarvest(): boolean {
   }
 
   auto_log_debug$1("sew and reap.");
-  return (
-    use(1, Item.get("Pok&eacute;-Gro fertilizer")) && cliExecute("garden pick")
-  );
+  return use(1, $item`Poké-Gro fertilizer`) && cliExecute("garden pick");
 }

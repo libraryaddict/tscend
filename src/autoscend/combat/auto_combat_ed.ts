@@ -1,8 +1,6 @@
 import {
   abort,
   containsText,
-  Effect,
-  Element,
   equippedItem,
   expectedDamage,
   getProperty,
@@ -11,7 +9,6 @@ import {
   indexOf,
   Item,
   itemAmount,
-  Location,
   Monster,
   monsterAttack,
   monsterDefense,
@@ -27,12 +24,9 @@ import {
   myMaxhp,
   myMaxmp,
   myMp,
-  Phylum,
   removeProperty,
   setProperty,
   Skill,
-  Slot,
-  Stat,
   substring,
   toBoolean,
   toFamiliar,
@@ -44,6 +38,21 @@ import {
   toSkill,
   weaponType,
 } from "kolmafia";
+import {
+  $effect,
+  $element,
+  $item,
+  $items,
+  $location,
+  $locations,
+  $monster,
+  $monsters,
+  $phylum,
+  $skill,
+  $slot,
+  $stat,
+} from "libram";
+
 import { possessEquipment } from "../auto_equipment";
 import {
   auto_have_skill,
@@ -64,6 +73,18 @@ import {
   isGhost,
   loopHandlerDelayAll,
 } from "../auto_util";
+import { elementalPlanes_access } from "../iotms/elementalPlanes";
+import { auto_spoonCombatSkill } from "../iotms/mr2019";
+import {
+  auto_backupTarget,
+  auto_fireExtinguisherCharges,
+  auto_FireExtinguisherCombatString,
+} from "../iotms/mr2021";
+import { auto_bowlingBallCombatString } from "../iotms/mr2022";
+import { dartELRcd, dartSkill } from "../iotms/mr2024";
+import { ed_needShop, isActuallyEd } from "../paths/actually_ed_the_undying";
+import { cyrptEvilBonus } from "../quests/level_07";
+import { fastenerCount, lumberCount } from "../quests/level_09";
 import {
   banisherCombatString$1,
   canSurvive$1,
@@ -85,18 +106,6 @@ import {
   wantToForceDrop,
   yellowRayCombatString,
 } from "./auto_combat_util";
-import { elementalPlanes_access } from "../iotms/elementalPlanes";
-import { auto_spoonCombatSkill } from "../iotms/mr2019";
-import {
-  auto_backupTarget,
-  auto_fireExtinguisherCharges,
-  auto_FireExtinguisherCombatString,
-} from "../iotms/mr2021";
-import { auto_bowlingBallCombatString } from "../iotms/mr2022";
-import { dartELRcd, dartSkill } from "../iotms/mr2024";
-import { ed_needShop, isActuallyEd } from "../paths/actually_ed_the_undying";
-import { cyrptEvilBonus } from "../quests/level_07";
-import { fastenerCount, lumberCount } from "../quests/level_09";
 
 //Path specific combat handling for Actually Ed the Undying
 
@@ -144,21 +153,15 @@ export function auto_edCombatHandler(
   );
 
   if (
-    Location.get([
-      "The Hippy Camp",
-      "The Outskirts of Cobb's Knob",
-      "The Spooky Forest",
-    ]).includes(myLocation())
+    $locations`The Hippy Camp, The Outskirts of Cobb's Knob, The Spooky Forest`.includes(
+      myLocation(),
+    )
   ) {
     if (
-      myMp() < mpCost(Skill.get("Fist of the Mummy")) &&
+      myMp() < mpCost($skill`Fist of the Mummy`) &&
       toInt(getProperty("_edDefeats")) < 2
     ) {
-      for (const it of Item.get([
-        "holy spring water",
-        "spirit beer",
-        "sacramental wine",
-      ])) {
+      for (const it of $items`holy spring water, spirit beer, sacramental wine`) {
         if (canUse$4(it)) {
           return useItem(it, false);
         }
@@ -174,69 +177,65 @@ export function auto_edCombatHandler(
     abort("Somehow got to 60 rounds.... aborting");
   }
 
-  if (
-    Monster.get(["LOV Enforcer", "LOV Engineer", "LOV Equivocator"]).includes(
-      enemy,
-    )
-  ) {
+  if ($monsters`LOV Enforcer, LOV Engineer, LOV Equivocator`.includes(enemy)) {
     setProperty("auto_edStatus", "dying");
   }
 
   if (
     auto_backupTarget() &&
     enemy !== toMonster(getProperty("lastCopyableMonster")) &&
-    canUse$2(Skill.get("Back-Up to your Last Enemy"))
+    canUse$2($skill`Back-Up to your Last Enemy`)
   ) {
     handleTracker$1(
       enemy.toString(),
-      Skill.get("Back-Up to your Last Enemy").toString(),
+      $skill`Back-Up to your Last Enemy`.toString(),
       "auto_replaces",
     );
     handleTracker$1(
       toMonster(getProperty("lastCopyableMonster")).toString(),
-      Skill.get("Back-Up to your Last Enemy").toString(),
+      $skill`Back-Up to your Last Enemy`.toString(),
       "auto_copies",
     );
-    return useSkill$2(Skill.get("Back-Up to your Last Enemy"));
+    return useSkill$2($skill`Back-Up to your Last Enemy`);
   }
 
-  if (haveEffect(Effect.get("Temporary Amnesia")) > 0) {
+  if (haveEffect($effect`Temporary Amnesia`) > 0) {
     return "attack with weapon";
   }
 
-  if (canUse$2(Skill.get("Pocket Crumbs"))) {
-    return useSkill$2(Skill.get("Pocket Crumbs"));
+  if (canUse$2($skill`Pocket Crumbs`)) {
+    return useSkill$2($skill`Pocket Crumbs`);
   }
 
-  if (canUse$2(Skill.get("Micrometeorite"))) {
-    return useSkill$2(Skill.get("Micrometeorite"));
+  if (canUse$2($skill`Micrometeorite`)) {
+    return useSkill$2($skill`Micrometeorite`);
   }
 
-  if (canUse$2(Skill.get("Air Dirty Laundry"))) {
-    return useSkill$2(Skill.get("Air Dirty Laundry"));
+  if (canUse$2($skill`Air Dirty Laundry`)) {
+    return useSkill$2($skill`Air Dirty Laundry`);
   }
 
-  if (canUse$2(Skill.get("Summon Love Scarabs"))) {
-    return useSkill$2(Skill.get("Summon Love Scarabs"));
+  if (canUse$2($skill`Summon Love Scarabs`)) {
+    return useSkill$2($skill`Summon Love Scarabs`);
   }
 
-  if (canUse$4(Item.get("Time-Spinner"))) {
-    return useItem$1(Item.get("Time-Spinner"));
+  if (canUse$4($item`Time-Spinner`)) {
+    return useItem$1($item`Time-Spinner`);
   }
 
-  if (canUse$2(Skill.get("Sing Along"))) {
+  if (canUse$2($skill`Sing Along`)) {
     //ed can easily survive singing along thanks to undying. and healing him is essentially free.
     if (
       getProperty("boomBoxSong") === "Remainin' Alive" ||
       (getProperty("boomBoxSong") === "Total Eclipse of Your Meat" &&
         canSurvive$1(2.0))
     ) {
-      return useSkill$2(Skill.get("Sing Along"));
+      return useSkill$2($skill`Sing Along`);
     }
   }
   //iotm back item and the enemies it spawns (free fights) can be killed using special skills to get extra XP and item drops
   if (
-    haveEquipped(Item.get("protonic accelerator pack")) &&
+    haveEquipped($item`protonic accelerator pack`) &&
     isGhost(enemy) &&
     !combat_status_check("skipGhostbusting")
   ) {
@@ -247,20 +246,20 @@ export function auto_edCombatHandler(
       return useSkill$2(stunner);
     }
     //shots_takens tracks how many times we used [shoot ghost] skill this combat. it is reset in combat initialize
-    const shots_takens: number = usedCount(Skill.get("Shoot Ghost"));
-    if (canUse$1(Skill.get("Shoot Ghost"), false) && shots_takens < 3) {
+    const shots_takens: number = usedCount($skill`Shoot Ghost`);
+    if (canUse$1($skill`Shoot Ghost`, false) && shots_takens < 3) {
       const survive_needed: number = 3.05 - toFloat(shots_takens);
       if (canSurvive$1(survive_needed)) {
-        markAsUsed(Skill.get("Shoot Ghost")); //needs to be manually done for skills with a use limit that is not 1
-        return useSkill$1(Skill.get("Shoot Ghost"), false);
+        markAsUsed($skill`Shoot Ghost`); //needs to be manually done for skills with a use limit that is not 1
+        return useSkill$1($skill`Shoot Ghost`, false);
       } else {
         combat_status_add("skipGhostbusting");
       }
     }
 
-    if (canUse$2(Skill.get("Trap Ghost")) && shots_takens === 3) {
+    if (canUse$2($skill`Trap Ghost`) && shots_takens === 3) {
       auto_log_info("Busting makes me feel good!!", "green");
-      return useSkill$2(Skill.get("Trap Ghost"));
+      return useSkill$2($skill`Trap Ghost`);
     }
   }
   //use industrial fire extinguisher zone specific skills
@@ -268,7 +267,7 @@ export function auto_edCombatHandler(
     auto_FireExtinguisherCombatString(myLocation());
   if (
     extinguisherSkill !== "" &&
-    haveEquipped(Item.get("industrial fire extinguisher"))
+    haveEquipped($item`industrial fire extinguisher`)
   ) {
     handleTracker$1(
       enemy.toString(),
@@ -279,9 +278,9 @@ export function auto_edCombatHandler(
   }
   // Instakill handler
   let doInstaKill: boolean = true;
-  if (Monster.get(["lobsterfrogman"]).includes(enemy)) {
+  if ($monsters`lobsterfrogman`.includes(enemy)) {
     if (
-      auto_have_skill(Skill.get("Digitize")) &&
+      auto_have_skill($skill`Digitize`) &&
       getProperty("_sourceTerminalDigitizeMonster") !== enemy.toString()
     ) {
       doInstaKill = false;
@@ -289,8 +288,8 @@ export function auto_edCombatHandler(
   }
 
   if (getProperty("auto_edStatus") === "UNDYING!") {
-    if (canUse$2(Skill.get("Summon Love Gnats"))) {
-      return useSkill$2(Skill.get("Summon Love Gnats"));
+    if (canUse$2($skill`Summon Love Gnats`)) {
+      return useSkill$2($skill`Summon Love Gnats`);
     }
   } else if (getProperty("auto_edStatus") === "dying") {
     let doStunner: boolean = true;
@@ -300,29 +299,29 @@ export function auto_edCombatHandler(
     }
 
     if (doStunner) {
-      if (canUse$2(Skill.get("Summon Love Gnats"))) {
-        return useSkill$2(Skill.get("Summon Love Gnats"));
+      if (canUse$2($skill`Summon Love Gnats`)) {
+        return useSkill$2($skill`Summon Love Gnats`);
       }
     }
   } else {
     auto_log_warning("Ed combat state does not exist, winging it....", "red");
   }
 
-  if (canUse$2(Skill.get("Fire Sewage Pistol"))) {
-    return useSkill$2(Skill.get("Fire Sewage Pistol"));
+  if (canUse$2($skill`Fire Sewage Pistol`)) {
+    return useSkill$2($skill`Fire Sewage Pistol`);
   }
 
-  if (enemy === Monster.get("Protagonist")) {
+  if (enemy === $monster`Protagonist`) {
     setProperty("auto_edStatus", "dying");
   }
 
   if (
-    myLocation() !== Location.get("The Battlefield (Frat Uniform)") &&
-    myLocation() !== Location.get("The Battlefield (Hippy Uniform)") &&
+    myLocation() !== $location`The Battlefield (Frat Uniform)` &&
+    myLocation() !== $location`The Battlefield (Hippy Uniform)` &&
     !toBoolean(getProperty("auto_ignoreFlyer"))
   ) {
     if (
-      canUse$4(Item.get("rock band flyers")) &&
+      canUse$4($item`rock band flyers`) &&
       toInt(getProperty("flyeredML")) < 10000
     ) {
       if (
@@ -332,10 +331,10 @@ export function auto_edCombatHandler(
         setProperty("auto_edStatus", "UNDYING!");
         // abuse the ability to flyer the same monster multiple times (optimal!)
       }
-      return useItem$1(Item.get("rock band flyers"));
+      return useItem$1($item`rock band flyers`);
     }
     if (
-      canUse$4(Item.get("jam band flyers")) &&
+      canUse$4($item`jam band flyers`) &&
       toInt(getProperty("flyeredML")) < 10000
     ) {
       if (
@@ -345,26 +344,26 @@ export function auto_edCombatHandler(
         setProperty("auto_edStatus", "UNDYING!");
         // abuse the ability to flyer the same monster multiple times (optimal!)
       }
-      return useItem$1(Item.get("jam band flyers"));
+      return useItem$1($item`jam band flyers`);
     }
   }
 
   if (
-    canUse$4(Item.get("chaos butterfly")) &&
+    canUse$4($item`chaos butterfly`) &&
     !toBoolean(getProperty("chaosButterflyThrown")) &&
     !toBoolean(getProperty("auto_skipL12Farm"))
   ) {
-    return useItem$1(Item.get("chaos butterfly"));
+    return useItem$1($item`chaos butterfly`);
   }
 
   if (
-    enemy === Monster.get("dirty thieving brigand") &&
-    canUse$2(Skill.get("Curse of Fortune"))
+    enemy === $monster`dirty thieving brigand` &&
+    canUse$2($skill`Curse of Fortune`)
   ) {
-    if (itemAmount(Item.get("Ka coin")) > 0 && myHp() > expectedDamage() + 15) {
+    if (itemAmount($item`Ka coin`) > 0 && myHp() > expectedDamage() + 15) {
       // need to kill the monster without resurrecting to get the bonus meat drop so only use it if we have enough HP to survive a hit
       setProperty("auto_edStatus", "dying");
-      return useSkill$2(Skill.get("Curse of Fortune"));
+      return useSkill$2($skill`Curse of Fortune`);
     } else if (
       toInt(getProperty("_edDefeats")) === 0 &&
       myMaxhp() > expectedDamage() + 15
@@ -375,40 +374,39 @@ export function auto_edCombatHandler(
   }
 
   if (
-    canUse$2(Skill.get("Curse of Stench")) &&
+    canUse$2($skill`Curse of Stench`) &&
     toMonster(getProperty("stenchCursedMonster")) !== enemy &&
     toInt(getProperty("_edDefeats")) < 3
   ) {
     if (auto_wantToSniff(enemy, myLocation())) {
       handleTracker$1(
         enemy.toString(),
-        Skill.get("Curse of Stench").toString(),
+        $skill`Curse of Stench`.toString(),
         "auto_sniffs",
       );
-      return useSkill$2(Skill.get("Curse of Stench"));
+      return useSkill$2($skill`Curse of Stench`);
     }
   }
 
-  if (myLocation() === Location.get("The Secret Council Warehouse")) {
+  if (myLocation() === $location`The Secret Council Warehouse`) {
     if (
-      canUse$2(Skill.get("Curse of Stench")) &&
+      canUse$2($skill`Curse of Stench`) &&
       toMonster(getProperty("stenchCursedMonster")) !== enemy &&
       toInt(getProperty("_edDefeats")) < 3
     ) {
       let doStench: boolean = false;
       //	Rememeber, we are looking to see if we have enough of the opposite item here.
-      if (enemy === Monster.get("warehouse guard")) {
+      if (enemy === $monster`warehouse guard`) {
         let progress: number = toInt(getProperty("warehouseProgress"));
-        progress =
-          progress + 8 * itemAmount(Item.get("warehouse inventory page"));
+        progress = progress + 8 * itemAmount($item`warehouse inventory page`);
         if (progress >= 50) {
           doStench = true;
         }
       }
 
-      if (enemy === Monster.get("warehouse clerk")) {
+      if (enemy === $monster`warehouse clerk`) {
         let progress: number = toInt(getProperty("warehouseProgress"));
-        progress = progress + 8 * itemAmount(Item.get("warehouse map page"));
+        progress = progress + 8 * itemAmount($item`warehouse map page`);
         if (progress >= 50) {
           doStench = true;
         }
@@ -416,17 +414,17 @@ export function auto_edCombatHandler(
       if (doStench) {
         handleTracker$1(
           enemy.toString(),
-          Skill.get("Curse of Stench").toString(),
+          $skill`Curse of Stench`.toString(),
           "auto_sniffs",
         );
-        return useSkill$2(Skill.get("Curse of Stench"));
+        return useSkill$2($skill`Curse of Stench`);
       }
     }
   }
 
-  if (myLocation() === Location.get("The Smut Orc Logging Camp")) {
+  if (myLocation() === $location`The Smut Orc Logging Camp`) {
     if (
-      canUse$2(Skill.get("Curse of Stench")) &&
+      canUse$2($skill`Curse of Stench`) &&
       toMonster(getProperty("stenchCursedMonster")) !== enemy &&
       toInt(getProperty("_edDefeats")) < 3
     ) {
@@ -440,8 +438,8 @@ export function auto_edCombatHandler(
       ) {
         //	Sniff 100% lumber
         if (
-          enemy === Monster.get("smut orc pipelayer") ||
-          enemy === Monster.get("smut orc jacker")
+          enemy === $monster`smut orc pipelayer` ||
+          enemy === $monster`smut orc jacker`
         ) {
           doStench = true;
         }
@@ -453,8 +451,8 @@ export function auto_edCombatHandler(
       ) {
         //	Sniff 100% fastener
         if (
-          enemy === Monster.get("smut orc screwer") ||
-          enemy === Monster.get("smut orc nailer")
+          enemy === $monster`smut orc screwer` ||
+          enemy === $monster`smut orc nailer`
         ) {
           doStench = true;
         }
@@ -463,10 +461,10 @@ export function auto_edCombatHandler(
       if (doStench) {
         handleTracker$1(
           enemy.toString(),
-          Skill.get("Curse of Stench").toString(),
+          $skill`Curse of Stench`.toString(),
           "auto_sniffs",
         );
-        return useSkill$2(Skill.get("Curse of Stench"));
+        return useSkill$2($skill`Curse of Stench`);
       }
     }
   }
@@ -478,12 +476,9 @@ export function auto_edCombatHandler(
     const combatAction: string = yellowRayCombatString(
       enemy,
       true,
-      Monster.get([
-        "bearpig topiary animal",
-        "elephant (meatcar?) topiary animal",
-        "spider (duck?) topiary animal",
-        "knight (Snake)",
-      ]).includes(enemy),
+      $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
+        enemy,
+      ),
     );
     if (combatAction !== "") {
       combat_status_add("yellowray");
@@ -507,7 +502,7 @@ export function auto_edCombatHandler(
       }
       if (
         combatAction ===
-        useSkill$1(Skill.get("Asdon Martin: Missile Launcher"), false)
+        useSkill$1($skill`Asdon Martin: Missile Launcher`, false)
       ) {
         setProperty("_missileLauncherUsed", true.toString());
       }
@@ -626,10 +621,10 @@ export function auto_edCombatHandler(
       if (indexOf(combatAction, "skill") === 0) {
         if (
           toSkill(substring(combatAction, 6)) ===
-          Skill.get("CHEAT CODE: Replace Enemy")
+          $skill`CHEAT CODE: Replace Enemy`
         ) {
           handleTracker(
-            Skill.get("CHEAT CODE: Replace Enemy").toString(),
+            $skill`CHEAT CODE: Replace Enemy`.toString(),
             "auto_powerfulglove",
           );
         }
@@ -658,249 +653,238 @@ export function auto_edCombatHandler(
   }
 
   if (
-    canUse$4(Item.get("disposable instant camera")) &&
-    Monster.get(["Bob Racecar", "Racecar Bob"]).includes(enemy)
+    canUse$4($item`disposable instant camera`) &&
+    $monsters`Bob Racecar, Racecar Bob`.includes(enemy)
   ) {
-    return useItem$1(Item.get("disposable instant camera"));
+    return useItem$1($item`disposable instant camera`);
   }
 
   if (
-    myLocation() === Location.get("Oil Peak") &&
-    canUse$4(Item.get("Duskwalker syringe"))
+    myLocation() === $location`Oil Peak` &&
+    canUse$4($item`Duskwalker syringe`)
   ) {
     const oilProgress: number = toInt(getProperty("twinPeakProgress"));
     let wantCrude: boolean = (oilProgress & 4) === 0;
     if (
-      itemAmount(Item.get("bubblin' crude")) > 11 ||
-      itemAmount(Item.get("jar of oil")) > 0
+      itemAmount($item`bubblin' crude`) > 11 ||
+      itemAmount($item`jar of oil`) > 0
     ) {
       wantCrude = false;
     }
 
     if (wantCrude) {
-      return useItem$1(Item.get("Duskwalker syringe"));
+      return useItem$1($item`Duskwalker syringe`);
     }
   }
 
   if (
-    canUse$4(Item.get("glark cable")) &&
-    myLocation() === Location.get("The Red Zeppelin") &&
+    canUse$4($item`glark cable`) &&
+    myLocation() === $location`The Red Zeppelin` &&
     internalQuestStatus("questL11Ron") === 3 &&
     toInt(getProperty("_glarkCableUses")) < 5 &&
     getProperty("auto_edStatus") === "dying"
   ) {
     if (
-      Monster.get([
-        "man with the red buttons",
-        "red butler",
-        "Red Fox",
-        "red skeleton",
-      ]).includes(enemy)
+      $monsters`man with the red buttons, red butler, Red Fox, red skeleton`.includes(
+        enemy,
+      )
     ) {
-      return useItem$1(Item.get("glark cable"));
+      return useItem$1($item`glark cable`);
       // free insta-kill (optimal!)
     }
   }
 
   if (
     !toBoolean(getProperty("edUsedLash")) &&
-    canUse$2(Skill.get("Lash of the Cobra")) &&
+    canUse$2($skill`Lash of the Cobra`) &&
     toInt(getProperty("_edLashCount")) < 30
   ) {
     let doLash: boolean = false;
-    if (enemy === Monster.get("shadow slab")) {
+    if (enemy === $monster`shadow slab`) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("Big Wheelin' Twins") &&
-      !possessEquipment(Item.get("badge of authority"))
+      enemy === $monster`Big Wheelin' Twins` &&
+      !possessEquipment($item`badge of authority`)
     ) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("fishy pirate") &&
-      !possessEquipment(Item.get("perfume-soaked bandana"))
+      enemy === $monster`fishy pirate` &&
+      !possessEquipment($item`perfume-soaked bandana`)
     ) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("funky pirate") &&
-      !possessEquipment(Item.get("sewage-clogged pistol")) &&
-      elementalPlanes_access(Element.get("spooky"))
+      enemy === $monster`funky pirate` &&
+      !possessEquipment($item`sewage-clogged pistol`) &&
+      elementalPlanes_access($element`spooky`)
     ) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("garbage tourist") &&
-      itemAmount(Item.get("bag of park garbage")) === 0
+      enemy === $monster`garbage tourist` &&
+      itemAmount($item`bag of park garbage`) === 0
     ) {
       doLash = true;
     }
-    if (
-      enemy === Monster.get("dairy goat") &&
-      itemAmount(Item.get("goat cheese")) < 3
-    ) {
+    if (enemy === $monster`dairy goat` && itemAmount($item`goat cheese`) < 3) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("monstrous boiler") &&
-      itemAmount(Item.get("red-hot boilermaker")) < 1 &&
+      enemy === $monster`monstrous boiler` &&
+      itemAmount($item`red-hot boilermaker`) < 1 &&
       toInt(getProperty("booPeakProgress")) > 0
     ) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("Fitness Giant") &&
-      itemAmount(Item.get("pec oil")) < 1 &&
+      enemy === $monster`Fitness Giant` &&
+      itemAmount($item`pec oil`) < 1 &&
       toInt(getProperty("booPeakProgress")) > 0
     ) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("Renaissance Giant") &&
-      itemAmount(Item.get("Ye Olde Meade")) < 1
+      enemy === $monster`Renaissance Giant` &&
+      itemAmount($item`Ye Olde Meade`) < 1
     ) {
       doLash = true;
     }
     if (
-      Monster.get([
-        "bearpig topiary animal",
-        "elephant (meatcar?) topiary animal",
-        "spider (duck?) topiary animal",
-      ]).includes(enemy)
+      $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`.includes(
+        enemy,
+      )
     ) {
       doLash = true;
     }
-    if (Monster.get(["beanbat", "bookbat"]).includes(enemy)) {
+    if ($monsters`beanbat, bookbat`.includes(enemy)) {
       doLash = true;
     }
     if (
-      (enemy === Monster.get("toothy sklelton") ||
-        enemy === Monster.get("spiny skelelton")) &&
+      (enemy === $monster`toothy sklelton` ||
+        enemy === $monster`spiny skelelton`) &&
       toInt(getProperty("cyrptNookEvilness")) > 14 + cyrptEvilBonus(true)
     ) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("oil baron") &&
-      itemAmount(Item.get("bubblin' crude")) < 12 &&
-      itemAmount(Item.get("jar of oil")) === 0
+      enemy === $monster`oil baron` &&
+      itemAmount($item`bubblin' crude`) < 12 &&
+      itemAmount($item`jar of oil`) === 0
     ) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("blackberry bush") &&
-      itemAmount(Item.get("blackberry")) < 3 &&
-      !possessEquipment(Item.get("blackberry galoshes"))
+      enemy === $monster`blackberry bush` &&
+      itemAmount($item`blackberry`) < 3 &&
+      !possessEquipment($item`blackberry galoshes`)
     ) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("pygmy bowler") &&
+      enemy === $monster`pygmy bowler` &&
       toInt(getProperty("_edLashCount")) < 26
     ) {
       doLash = true;
     }
     if (
-      Monster.get([
-        "filthworm drone",
-        "filthworm royal guard",
-        "larval filthworm",
-      ]).includes(enemy)
+      $monsters`filthworm drone, filthworm royal guard, larval filthworm`.includes(
+        enemy,
+      )
     ) {
       doLash = true;
     }
-    if (enemy === Monster.get("Knob Goblin Madam")) {
-      if (itemAmount(Item.get("Knob Goblin perfume")) === 0) {
+    if (enemy === $monster`Knob Goblin Madam`) {
+      if (itemAmount($item`Knob Goblin perfume`) === 0) {
         doLash = true;
       }
     }
-    if (enemy === Monster.get("Knob Goblin Harem Girl")) {
+    if (enemy === $monster`Knob Goblin Harem Girl`) {
       if (
-        !possessEquipment(Item.get("Knob Goblin harem veil")) ||
-        !possessEquipment(Item.get("Knob Goblin harem pants"))
+        !possessEquipment($item`Knob Goblin harem veil`) ||
+        !possessEquipment($item`Knob Goblin harem pants`)
       ) {
         doLash = true;
       }
     }
     if (
-      (myLocation() === Location.get("The Hippy Camp") ||
-        myLocation() === Location.get("Wartime Hippy Camp")) &&
+      (myLocation() === $location`The Hippy Camp` ||
+        myLocation() === $location`Wartime Hippy Camp`) &&
       containsText(enemy.toString(), "hippy") &&
       myLevel() >= 12
     ) {
       if (
-        !possessEquipment(Item.get("filthy knitted dread sack")) ||
-        !possessEquipment(Item.get("filthy corduroys"))
+        !possessEquipment($item`filthy knitted dread sack`) ||
+        !possessEquipment($item`filthy corduroys`)
       ) {
         if (getProperty("auto_edStatus") !== "dying") {
           doLash = true;
         }
       }
     }
-    if (myLocation() === Location.get("Wartime Frat House")) {
+    if (myLocation() === $location`Wartime Frat House`) {
       if (
-        !possessEquipment(Item.get("beer helmet")) ||
-        !possessEquipment(Item.get("bejeweled pledge pin")) ||
-        !possessEquipment(Item.get("distressed denim pants"))
+        !possessEquipment($item`beer helmet`) ||
+        !possessEquipment($item`bejeweled pledge pin`) ||
+        !possessEquipment($item`distressed denim pants`)
       ) {
         doLash = true;
       }
     }
     if (
-      enemy === Monster.get("dopey 7-Foot Dwarf") &&
-      !possessEquipment(Item.get("miner's helmet"))
+      enemy === $monster`dopey 7-Foot Dwarf` &&
+      !possessEquipment($item`miner's helmet`)
     ) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("grumpy 7-Foot Dwarf") &&
-      !possessEquipment(Item.get("7-Foot Dwarven mattock"))
+      enemy === $monster`grumpy 7-Foot Dwarf` &&
+      !possessEquipment($item`7-Foot Dwarven mattock`)
     ) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("sleepy 7-Foot Dwarf") &&
-      !possessEquipment(Item.get("miner's pants"))
+      enemy === $monster`sleepy 7-Foot Dwarf` &&
+      !possessEquipment($item`miner's pants`)
     ) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("Burly Sidekick") &&
-      !possessEquipment(Item.get("Mohawk wig"))
+      enemy === $monster`Burly Sidekick` &&
+      !possessEquipment($item`Mohawk wig`)
     ) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("Spunky Princess") &&
-      !possessEquipment(Item.get("titanium assault umbrella")) &&
-      !possessEquipment(Item.get("unbreakable umbrella"))
+      enemy === $monster`Spunky Princess` &&
+      !possessEquipment($item`titanium assault umbrella`) &&
+      !possessEquipment($item`unbreakable umbrella`)
     ) {
       doLash = true;
     }
     if (
-      enemy === Monster.get("Quiet Healer") &&
-      !possessEquipment(Item.get("amulet of extreme plot significance"))
+      enemy === $monster`Quiet Healer` &&
+      !possessEquipment($item`amulet of extreme plot significance`)
     ) {
       doLash = true;
     }
-    if (enemy === Monster.get("warehouse clerk")) {
+    if (enemy === $monster`warehouse clerk`) {
       let progress: number = toInt(getProperty("warehouseProgress"));
-      progress =
-        progress + 8 * itemAmount(Item.get("warehouse inventory page"));
+      progress = progress + 8 * itemAmount($item`warehouse inventory page`);
       if (progress < 50) {
         doLash = true;
       }
     }
-    if (enemy === Monster.get("warehouse guard")) {
+    if (enemy === $monster`warehouse guard`) {
       let progress: number = toInt(getProperty("warehouseProgress"));
-      progress = progress + 8 * itemAmount(Item.get("warehouse map page"));
+      progress = progress + 8 * itemAmount($item`warehouse map page`);
       if (progress < 50) {
         doLash = true;
       }
     }
     if (
-      enemy === Monster.get("Copperhead Club bartender") &&
+      enemy === $monster`Copperhead Club bartender` &&
       internalQuestStatus("questL11Ron") < 2
     ) {
       doLash = true;
@@ -908,156 +892,146 @@ export function auto_edCombatHandler(
 
     if (doLash) {
       handleTracker(enemy.toString(), "auto_lashes");
-      return useSkill$2(Skill.get("Lash of the Cobra"));
+      return useSkill$2($skill`Lash of the Cobra`);
     }
   }
 
   if (
     !combat_status_check("talismanofrenenutet") &&
-    canUse$4(Item.get("talisman of Renenutet"))
+    canUse$4($item`talisman of Renenutet`)
   ) {
     let doRenenutet: boolean = false;
     if (
-      enemy === Monster.get("cabinet of Dr. Limpieza") &&
-      Location.get("The Haunted Laundry Room").turnsSpent > 2
+      enemy === $monster`cabinet of Dr. Limpieza` &&
+      $location`The Haunted Laundry Room`.turnsSpent > 2
     ) {
       doRenenutet = true;
     }
     if (
-      enemy === Monster.get("possessed wine rack") &&
-      Location.get("The Haunted Wine Cellar").turnsSpent > 2
+      enemy === $monster`possessed wine rack` &&
+      $location`The Haunted Wine Cellar`.turnsSpent > 2
     ) {
       doRenenutet = true;
     }
     if (
-      enemy === Monster.get("Baa'baa'bu'ran") &&
-      itemAmount(Item.get("stone wool")) < 2
+      enemy === $monster`Baa'baa'bu'ran` &&
+      itemAmount($item`stone wool`) < 2
     ) {
       doRenenutet = true;
     }
     if (
-      Monster.get([
-        "mountain man",
-        "warehouse clerk",
-        "warehouse guard",
-        "waiter dressed as a ninja",
-        "ninja dressed as a waiter",
-      ]).includes(enemy)
+      $monsters`mountain man, warehouse clerk, warehouse guard, waiter dressed as a ninja, ninja dressed as a waiter`.includes(
+        enemy,
+      )
     ) {
       doRenenutet = true;
     }
     if (
-      enemy === Monster.get("Quiet Healer") &&
-      !possessEquipment(Item.get("amulet of extreme plot significance"))
+      enemy === $monster`Quiet Healer` &&
+      !possessEquipment($item`amulet of extreme plot significance`)
     ) {
       doRenenutet = true;
     }
     if (
-      enemy === Monster.get("pygmy janitor") &&
-      itemAmount(Item.get("book of matches")) === 0 &&
+      enemy === $monster`pygmy janitor` &&
+      itemAmount($item`book of matches`) === 0 &&
       toInt(getProperty("hiddenTavernUnlock")) !== myAscensions()
     ) {
       doRenenutet = true;
     }
-    if (enemy === Monster.get("blackberry bush")) {
+    if (enemy === $monster`blackberry bush`) {
       if (
-        !possessEquipment(Item.get("blackberry galoshes")) &&
-        itemAmount(Item.get("blackberry")) < 3
+        !possessEquipment($item`blackberry galoshes`) &&
+        itemAmount($item`blackberry`) < 3
       ) {
         doRenenutet = true;
       }
     }
-    if (myLocation() === Location.get("Wartime Frat House")) {
+    if (myLocation() === $location`Wartime Frat House`) {
       if (
-        !possessEquipment(Item.get("beer helmet")) ||
-        !possessEquipment(Item.get("bejeweled pledge pin")) ||
-        !possessEquipment(Item.get("distressed denim pants"))
+        !possessEquipment($item`beer helmet`) ||
+        !possessEquipment($item`bejeweled pledge pin`) ||
+        !possessEquipment($item`distressed denim pants`)
       ) {
         doRenenutet = true;
       }
     }
     if (
-      Monster.get([
-        "Battlie Knight Ghost",
-        "Claybender Sorcerer Ghost",
-        "Dusken Raider Ghost",
-        "Space Tourist Explorer Ghost",
-        "Whatsian Commando Ghost",
-      ]).includes(enemy)
+      $monsters`Battlie Knight Ghost, Claybender Sorcerer Ghost, Dusken Raider Ghost, Space Tourist Explorer Ghost, Whatsian Commando Ghost`.includes(
+        enemy,
+      )
     ) {
       if (
-        itemAmount(Item.get("A-Boo clue")) <
+        itemAmount($item`A-Boo clue`) <
         toInt(getProperty("booPeakProgress")) / 30
       ) {
         doRenenutet = true;
       }
     }
-    if (Monster.get(["toothy sklelton", "spiny skelelton"]).includes(enemy)) {
+    if ($monsters`toothy sklelton, spiny skelelton`.includes(enemy)) {
       if (
-        myLocation() === Location.get("The Defiled Nook") &&
-        itemAmount(Item.get("evil eye")) === 0
+        myLocation() === $location`The Defiled Nook` &&
+        itemAmount($item`evil eye`) === 0
       ) {
         // lash didn't get it)
         doRenenutet = true;
       }
     }
     if (
-      Monster.get([
-        "bearpig topiary animal",
-        "elephant (meatcar?) topiary animal",
-        "spider (duck?) topiary animal",
-      ]).includes(enemy)
+      $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`.includes(
+        enemy,
+      )
     ) {
-      if (itemAmount(Item.get("rusty hedge trimmers")) === 0) {
+      if (itemAmount($item`rusty hedge trimmers`) === 0) {
         // lash didn't get it
         doRenenutet = true;
       }
     }
-    if (Monster.get(["Blue Oyster cultist"]).includes(enemy)) {
+    if ($monsters`Blue Oyster cultist`.includes(enemy)) {
       doRenenutet = true;
     }
     if (doRenenutet) {
       if (
         !combat_status_check("curseofindecision") &&
-        canUse$2(Skill.get("Curse of Indecision"))
+        canUse$2($skill`Curse of Indecision`)
       ) {
         combat_status_add("curseofindecision");
-        return useSkill$2(Skill.get("Curse of Indecision"));
+        return useSkill$2($skill`Curse of Indecision`);
       }
       combat_status_add("talismanofrenenutet");
       handleTracker(enemy.toString(), "auto_renenutet");
       setProperty("auto_edStatus", "dying");
-      return useItem$1(Item.get("talisman of Renenutet"));
+      return useItem$1($item`talisman of Renenutet`);
     }
   }
 
   if (
-    canUse$4(Item.get("cigarette lighter")) &&
-    myLocation() === Location.get("A Mob of Zeppelin Protesters") &&
+    canUse$4($item`cigarette lighter`) &&
+    myLocation() === $location`A Mob of Zeppelin Protesters` &&
     internalQuestStatus("questL11Ron") === 1 &&
     getProperty("auto_edStatus") === "dying"
   ) {
-    return useItem$1(Item.get("cigarette lighter"));
+    return useItem$1($item`cigarette lighter`);
     // insta-kills protestors and removes an additional 5-7 (optimal!)
   }
 
   if (
-    enemy === Monster.get("pygmy orderlies") &&
-    canUse$3(Item.get("short writ of habeas corpus"), false) &&
-    haveEffect(Effect.get("Everything Looks Green")) === 0
+    enemy === $monster`pygmy orderlies` &&
+    canUse$3($item`short writ of habeas corpus`, false) &&
+    haveEffect($effect`Everything Looks Green`) === 0
   ) {
-    return useItem$1(Item.get("short writ of habeas corpus"));
+    return useItem$1($item`short writ of habeas corpus`);
   }
 
   if (
-    canUse$2(Skill.get("Darts: Aim for the Bullseye")) &&
-    haveEffect(Effect.get("Everything Looks Red")) === 0 &&
+    canUse$2($skill`Darts: Aim for the Bullseye`) &&
+    haveEffect($effect`Everything Looks Red`) === 0 &&
     dartELRcd() <= 40
   ) {
     setProperty("auto_instakillSource", "darts bullseye");
     setProperty("auto_instakillSuccess", true.toString());
     loopHandlerDelayAll();
-    return useSkill$2(Skill.get("Darts: Aim for the Bullseye"));
+    return useSkill$2($skill`Darts: Aim for the Bullseye`);
   }
   // use cosmic bowling ball iotm
   if (auto_bowlingBallCombatString(myLocation(), true) !== "" && !enemy.boss) {
@@ -1065,21 +1039,21 @@ export function auto_edCombatHandler(
   }
   // prep avalanche if requested
   if (
-    canUse$2(Skill.get("McHugeLarge Avalanche")) &&
+    canUse$2($skill`McHugeLarge Avalanche`) &&
     getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
     !toBoolean(getProperty("auto_avalancheDeployed"))
   ) {
     setProperty("auto_avalancheDeployed", true.toString());
-    return useSkill$2(Skill.get("McHugeLarge Avalanche"));
+    return useSkill$2($skill`McHugeLarge Avalanche`);
   }
   // prep parka NC forcing if requested
   if (
-    canUse$2(Skill.get("Launch spikolodon spikes")) &&
+    canUse$2($skill`Launch spikolodon spikes`) &&
     getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
     !toBoolean(getProperty("auto_parkaSpikesDeployed"))
   ) {
     setProperty("auto_parkaSpikesDeployed", true.toString());
-    return useSkill$2(Skill.get("Launch spikolodon spikes"));
+    return useSkill$2($skill`Launch spikolodon spikes`);
   }
 
   if (
@@ -1089,7 +1063,7 @@ export function auto_edCombatHandler(
   ) {
     if (
       !combat_status_check("batoomerang") &&
-      itemAmount(Item.get("replica bat-oomerang")) > 0
+      itemAmount($item`replica bat-oomerang`) > 0
     ) {
       if (toInt(getProperty("auto_batoomerangDay")) !== myDaycount()) {
         setProperty("auto_batoomerangDay", myDaycount().toString());
@@ -1103,70 +1077,67 @@ export function auto_edCombatHandler(
         combat_status_add("batoomerang");
         handleTracker$1(
           enemy.toString(),
-          Item.get("replica bat-oomerang").toString(),
+          $item`replica bat-oomerang`.toString(),
           "auto_instakill",
         );
         loopHandlerDelayAll();
-        return `item ${Item.get("replica bat-oomerang")}`;
+        return `item ${$item`replica bat-oomerang`}`;
       }
     }
 
     if (
-      canUse$4(Item.get("shadow brick")) &&
+      canUse$4($item`shadow brick`) &&
       toInt(getProperty("_shadowBricksUsed")) < 13
     ) {
       handleTracker$1(
         enemy.toString(),
-        Item.get("shadow brick").toString(),
+        $item`shadow brick`.toString(),
         "auto_instakill",
       );
       loopHandlerDelayAll();
-      return useItems$1(Item.get("shadow brick"), Item.none);
+      return useItems$1($item`shadow brick`, Item.none);
     }
 
     if (
       !combat_status_check("jokesterGun") &&
-      equippedItem(Slot.get("weapon")) === Item.get("The Jokester's gun") &&
+      equippedItem($slot`weapon`) === $item`The Jokester's gun` &&
       !toBoolean(getProperty("_firedJokestersGun")) &&
-      auto_have_skill(Skill.get("Fire the Jokester's Gun"))
+      auto_have_skill($skill`Fire the Jokester's Gun`)
     ) {
       combat_status_add("jokesterGun");
       handleTracker$1(
         enemy.toString(),
-        Skill.get("Fire the Jokester's Gun").toString(),
+        $skill`Fire the Jokester's Gun`.toString(),
         "auto_instakill",
       );
       loopHandlerDelayAll();
-      return `skill${Skill.get("Fire the Jokester's Gun")}`;
+      return `skill${$skill`Fire the Jokester's Gun`}`;
     }
 
-    if (
-      canUse$2(Skill.get("Slay the Dead")) &&
-      enemy.phylum === Phylum.get("undead")
-    ) {
+    if (canUse$2($skill`Slay the Dead`) && enemy.phylum === $phylum`undead`) {
       // instakills Undead and reduces evilness in Cyrpt zones.
-      return useSkill$2(Skill.get("Slay the Dead"));
+      return useSkill$2($skill`Slay the Dead`);
     }
   }
 
   if (getProperty("auto_edStatus") === "UNDYING!") {
     // We're taking a trip to the underworld. Either we want to abuse resurrection or we want to go shopping
-    if (myLocation() === Location.get("The Secret Government Laboratory")) {
+    if (myLocation() === $location`The Secret Government Laboratory`) {
       if (
-        itemAmount(Item.get("rock band flyers")) === 0 &&
-        itemAmount(Item.get("jam band flyers")) === 0
+        itemAmount($item`rock band flyers`) === 0 &&
+        itemAmount($item`jam band flyers`) === 0
       ) {
         if (
           !combat_status_check("love stinkbug") &&
           toBoolean(getProperty("lovebugsUnlocked"))
         ) {
           combat_status_add("love stinkbug2");
-          return `skill ${Skill.get("Summon Love Stinkbug")}`;
+          return `skill ${$skill`Summon Love Stinkbug`}`;
         }
       }
     }
 
-    if (canUse$3(Item.get("seal tooth"), false)) {
+    if (canUse$3($item`seal tooth`, false)) {
       return "use Seal Tooth; repeat; ";
     }
 
@@ -1174,7 +1145,7 @@ export function auto_edCombatHandler(
   }
   //Everfull Dart Holder
   if (
-    haveEquipped(Item.get("Everfull Dart Holster")) &&
+    haveEquipped($item`Everfull Dart Holster`) &&
     toInt(getProperty("_dartsLeft")) > 0
   ) {
     return useSkill$1(dartSkill(), false);
@@ -1183,27 +1154,27 @@ export function auto_edCombatHandler(
   if (toInt(getProperty("_edDefeats")) < 2) {
     if (wantToForceDrop(enemy)) {
       const polarVortexAvailable: boolean =
-        canUse$1(Skill.get("Fire Extinguisher: Polar Vortex"), false) &&
+        canUse$1($skill`Fire Extinguisher: Polar Vortex`, false) &&
         auto_fireExtinguisherCharges() > 10;
       const mildEvilAvailable: boolean =
-        canUse$1(Skill.get("Perpetrate Mild Evil"), false) &&
+        canUse$1($skill`Perpetrate Mild Evil`, false) &&
         toInt(getProperty("_mildEvilPerpetrated")) < 3;
       // mild evil only can pick pocket. Use it before fire extinguisher
       if (mildEvilAvailable) {
         handleTracker$1(
           enemy.toString(),
-          Skill.get("Perpetrate Mild Evil").toString(),
+          $skill`Perpetrate Mild Evil`.toString(),
           "auto_otherstuff",
         );
-        return useSkill$2(Skill.get("Perpetrate Mild Evil"));
+        return useSkill$2($skill`Perpetrate Mild Evil`);
       }
       if (polarVortexAvailable) {
         handleTracker$1(
           enemy.toString(),
-          Skill.get("Fire Extinguisher: Polar Vortex").toString(),
+          $skill`Fire Extinguisher: Polar Vortex`.toString(),
           "auto_otherstuff",
         );
-        return useSkill$2(Skill.get("Fire Extinguisher: Polar Vortex"));
+        return useSkill$2($skill`Fire Extinguisher: Polar Vortex`);
       }
     }
   }
@@ -1213,45 +1184,38 @@ export function auto_edCombatHandler(
   }
 
   if (
-    myLocation() === Location.get("The Secret Government Laboratory") &&
-    canUse$1(Skill.get("Roar of the Lion"), false)
+    myLocation() === $location`The Secret Government Laboratory` &&
+    canUse$1($skill`Roar of the Lion`, false)
   ) {
     if (
-      canUse$1(Skill.get("Storm of the Scarab"), false) &&
-      myBuffedstat(Stat.get("Mysticality")) >= 60
+      canUse$1($skill`Storm of the Scarab`, false) &&
+      myBuffedstat($stat`Mysticality`) >= 60
     ) {
-      return useSkill$1(Skill.get("Storm of the Scarab"), false);
+      return useSkill$1($skill`Storm of the Scarab`, false);
     }
-    return useSkill$1(Skill.get("Roar of the Lion"), false);
+    return useSkill$1($skill`Roar of the Lion`, false);
   }
 
   if (
-    Location.get([
-      "Pirates of the Garbage Barges",
-      "The SMOOCH Army HQ",
-      "VYKEA",
-    ]).includes(myLocation()) &&
-    canUse$1(Skill.get("Storm of the Scarab"), false)
+    $locations`Pirates of the Garbage Barges, The SMOOCH Army HQ, VYKEA`.includes(
+      myLocation(),
+    ) &&
+    canUse$1($skill`Storm of the Scarab`, false)
   ) {
-    return useSkill$1(Skill.get("Storm of the Scarab"), false);
+    return useSkill$1($skill`Storm of the Scarab`, false);
   }
 
   if (
-    Location.get([
-      "The Hippy Camp",
-      "The Outskirts of Cobb's Knob",
-      "The Spooky Forest",
-      "The Batrat and Ratbat Burrow",
-      "The Boss Bat's Lair",
-      "Cobb's Knob Harem",
-    ]).includes(myLocation()) &&
-    canUse$1(Skill.get("Fist of the Mummy"), false)
+    $locations`The Hippy Camp, The Outskirts of Cobb's Knob, The Spooky Forest, The Batrat and Ratbat Burrow, The Boss Bat's Lair, Cobb's Knob Harem`.includes(
+      myLocation(),
+    ) &&
+    canUse$1($skill`Fist of the Mummy`, false)
   ) {
-    return useSkill$1(Skill.get("Fist of the Mummy"), false);
+    return useSkill$1($skill`Fist of the Mummy`, false);
   }
 
   const fightStat: number =
-    myBuffedstat(weaponType(equippedItem(Slot.get("weapon")))) - 20;
+    myBuffedstat(weaponType(equippedItem($slot`weapon`))) - 20;
   if (
     fightStat > monsterDefense() &&
     round_1 < 20 &&
@@ -1261,37 +1225,29 @@ export function auto_edCombatHandler(
     return "attack with weapon";
   }
 
-  if (canUse$2(Skill.get("Cowboy Kick"))) {
-    return useSkill$2(Skill.get("Cowboy Kick"));
+  if (canUse$2($skill`Cowboy Kick`)) {
+    return useSkill$2($skill`Cowboy Kick`);
+  }
+
+  if (canUse$4($item`ice-cold Cloaca Zero`) && myMp() < 15 && myMaxmp() > 200) {
+    return useItem$1($item`ice-cold Cloaca Zero`);
   }
 
   if (
-    canUse$4(Item.get("ice-cold Cloaca Zero")) &&
-    myMp() < 15 &&
-    myMaxmp() > 200
+    canUse$1($skill`Storm of the Scarab`, false) &&
+    myBuffedstat($stat`Mysticality`) > 35
   ) {
-    return useItem$1(Item.get("ice-cold Cloaca Zero"));
-  }
-
-  if (
-    canUse$1(Skill.get("Storm of the Scarab"), false) &&
-    myBuffedstat(Stat.get("Mysticality")) > 35
-  ) {
-    return useSkill$1(Skill.get("Storm of the Scarab"), false);
+    return useSkill$1($skill`Storm of the Scarab`, false);
   }
 
   if (enemy.physicalResistance >= 100 || round_1 >= 25 || canSurvive$1(1.25)) {
-    if (canUse$1(Skill.get("Fist of the Mummy"), false)) {
-      return useSkill$1(Skill.get("Fist of the Mummy"), false);
+    if (canUse$1($skill`Fist of the Mummy`, false)) {
+      return useSkill$1($skill`Fist of the Mummy`, false);
     }
   }
 
-  if (myMp() < mpCost(Skill.get("Storm of the Scarab"))) {
-    for (const it of Item.get([
-      "holy spring water",
-      "spirit beer",
-      "sacramental wine",
-    ])) {
+  if (myMp() < mpCost($skill`Storm of the Scarab`)) {
+    for (const it of $items`holy spring water, spirit beer, sacramental wine`) {
       if (canUse$4(it)) {
         return useItem(it, false);
       }
@@ -1317,5 +1273,5 @@ export function auto_edCombatHandler(
     return "attack with weapon";
   }
 
-  return useSkill$1(Skill.get("Mild Curse"), false);
+  return useSkill$1($skill`Mild Curse`, false);
 }

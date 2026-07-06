@@ -1,8 +1,5 @@
-import {
-  auto_log_error,
-  LX_summonMonster,
-  woods_questStart,
-} from "./auto_util";
+import { inHardcore } from "kolmafia";
+
 import { Lsc_flyerSeals, LX_burnDelay } from "../autoscend";
 import { auto_breakfastCounterVisit } from "./auto_consume";
 import { LX_attemptPowerLevel, LX_freeCombatsTask } from "./auto_powerlevel";
@@ -11,12 +8,21 @@ import {
   auto_earlyRoutingHandling,
   auto_softBlockHandler,
 } from "./auto_routing";
+import {
+  LX_summonMonster,
+  woods_questStart,
+} from "./auto_util";
 import { handleRainDoh } from "./iotms/mr2012";
 import { fancyOilPainting, LX_ornateDowsingRod } from "./iotms/mr2014";
 import { chateauPainting, resolveSixthDMT } from "./iotms/mr2015";
 import { catBurglarHeist } from "./iotms/mr2018";
 import { LX_unlockPirateRealm } from "./iotms/mr2019";
 import { LM_edTheUndying } from "./paths/actually_ed_the_undying";
+import {
+  LX_attemptPowerLevelMeat,
+  LX_needMeatSkills,
+} from "./paths/adventurer_meats_world";
+import { LM_avantGuard } from "./paths/avant_guard";
 import { LM_jarlsberg } from "./paths/avatar_of_jarlsberg";
 import {
   LX_bugbearInvasion,
@@ -25,6 +31,13 @@ import {
 import { LX_koeInvaderHandler } from "./paths/kingdom_of_exploathing";
 import { LX_lowkeySummer } from "./paths/low_key_summer";
 import { LX_quantumTerrarium } from "./paths/quantum_terrarium";
+import {
+  is_professor,
+  is_werewolf,
+  LM_wereprof,
+  LX_wereprof_getSmashedEquip,
+} from "./paths/wereprofessor";
+import { LM_zombieSlayer } from "./paths/zombie_slayer";
 import { L2_mosquito } from "./quests/level_02";
 import { L3_tavern } from "./quests/level_03";
 import { L4_batCave } from "./quests/level_04";
@@ -128,19 +141,6 @@ import {
   LX_steelOrgan,
   LX_steelOrgan_condition_slow,
 } from "./quests/optional";
-import {
-  LX_attemptPowerLevelMeat,
-  LX_needMeatSkills,
-} from "./paths/adventurer_meats_world";
-import { LM_avantGuard } from "./paths/avant_guard";
-import {
-  is_professor,
-  is_werewolf,
-  LM_wereprof,
-  LX_wereprof_getSmashedEquip,
-} from "./paths/wereprofessor";
-import { LM_zombieSlayer } from "./paths/zombie_slayer";
-import { inHardcore } from "kolmafia";
 
 const taskFunctionRegistry: Record<string, () => boolean> = {
   LX_freeCombatsTask,

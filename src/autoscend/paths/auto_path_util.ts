@@ -1,10 +1,8 @@
 import {
-  Class,
   getProperty,
   gnomadsAvailable,
   guildStoreAvailable,
   haveSkill,
-  Item,
   itemAmount,
   myClass,
   myLevel,
@@ -12,16 +10,17 @@ import {
   myPath,
   print,
   setProperty,
-  Skill,
   toBoolean,
   visitUrl,
 } from "kolmafia";
+import { $class, $item, $skill } from "libram";
+
 import { initializeSettings } from "../../autoscend";
 import { stomach_left } from "../auto_consume";
 import { hasTorso$1, hasUsefulShirt, meatReserve } from "../auto_util";
+import { auto_bestWarPlan } from "../quests/level_12";
 import { in_aosol } from "./avatar_of_shadows_over_loathing";
 import { in_tcrs } from "./two_crazy_random_summer";
-import { auto_bestWarPlan } from "../quests/level_12";
 
 // Functions designed for general utility in any path
 
@@ -51,252 +50,236 @@ export function auto_buySkills(): boolean {
     return false;
   }
   switch (myClass()) {
-    case Class.get("Seal Clubber"):
+    case $class`Seal Clubber`:
       if (
         myLevel() >= 1 &&
         myMeat() >= 800 &&
-        !haveSkill(Skill.get("Lunge Smack"))
+        !haveSkill($skill`Lunge Smack`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=4", true);
       }
       if (
         myLevel() >= 1 &&
         myMeat() >= 1500 &&
-        !haveSkill(Skill.get("Fortitude of the Muskox"))
+        !haveSkill($skill`Fortitude of the Muskox`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=8", true);
       }
       if (
         myLevel() >= 3 &&
         myMeat() >= 2500 &&
-        !haveSkill(Skill.get("Cold Shoulder"))
+        !haveSkill($skill`Cold Shoulder`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=28", true);
       }
       if (
         myLevel() >= 4 &&
-        !haveSkill(Skill.get("Wrath of the Wolverine")) &&
+        !haveSkill($skill`Wrath of the Wolverine`) &&
         (myMeat() >= 5500 ||
-          (myMeat() >= 3500 && haveSkill(Skill.get("Club Foot"))) ||
+          (myMeat() >= 3500 && haveSkill($skill`Club Foot`)) ||
           (myMeat() >= 2500 &&
-            haveSkill(Skill.get("Batter Up!")) &&
-            haveSkill(Skill.get("Ire of the Orca"))))
+            haveSkill($skill`Batter Up!`) &&
+            haveSkill($skill`Ire of the Orca`)))
       ) {
         visitUrl("guild.php?action=buyskill&skillid=29", true);
       }
-      if (
-        myLevel() >= 8 &&
-        myMeat() >= 8000 &&
-        !haveSkill(Skill.get("Club Foot"))
-      ) {
+      if (myLevel() >= 8 && myMeat() >= 8000 && !haveSkill($skill`Club Foot`)) {
         visitUrl("guild.php?action=buyskill&skillid=33", true);
       }
       if (
         myLevel() >= 10 &&
         myMeat() >= 12000 &&
-        !haveSkill(Skill.get("Ire of the Orca"))
+        !haveSkill($skill`Ire of the Orca`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=35", true);
       }
       if (
         myLevel() >= 11 &&
         myMeat() >= 12000 &&
-        !haveSkill(Skill.get("Batter Up!"))
+        !haveSkill($skill`Batter Up!`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=14", true);
       }
       break;
-    case Class.get("Turtle Tamer"):
+    case $class`Turtle Tamer`:
       if (
         myLevel() >= 3 &&
         myMeat() >= 1000 &&
-        !haveSkill(Skill.get("Amphibian Sympathy"))
+        !haveSkill($skill`Amphibian Sympathy`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=14", true);
       }
       if (
         myLevel() >= 2 &&
         myMeat() >= 5000 &&
-        !haveSkill(Skill.get("Skin of the Leatherback"))
+        !haveSkill($skill`Skin of the Leatherback`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=4", true);
       }
-      if (
-        myLevel() >= 2 &&
-        myMeat() >= 1250 &&
-        !haveSkill(Skill.get("Headbutt"))
-      ) {
+      if (myLevel() >= 2 && myMeat() >= 1250 && !haveSkill($skill`Headbutt`)) {
         visitUrl("guild.php?action=buyskill&skillid=3", true);
       }
       if (
         myLevel() >= 2 &&
         myMeat() >= 800 &&
-        !haveSkill(Skill.get("Blessing of the War Snapper"))
+        !haveSkill($skill`Blessing of the War Snapper`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=30", true);
       }
       if (
         myLevel() >= 8 &&
         myMeat() >= 3500 &&
-        !haveSkill(Skill.get("Empathy of the Newt"))
+        !haveSkill($skill`Empathy of the Newt`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=9", true);
       }
       if (
         myLevel() >= 9 &&
         myMeat() >= 12000 &&
-        !haveSkill(Skill.get("Spiky Shell"))
+        !haveSkill($skill`Spiky Shell`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=31", true);
       }
       if (
         myLevel() >= 11 &&
         myMeat() >= 9000 &&
-        !haveSkill(Skill.get("Shieldbutt"))
+        !haveSkill($skill`Shieldbutt`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=5", true);
       }
       if (
         myLevel() >= 11 &&
         myMeat() >= 9000 &&
-        !haveSkill(Skill.get("Butts of Steel"))
+        !haveSkill($skill`Butts of Steel`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=34", true);
       }
-      if (
-        myLevel() >= 7 &&
-        myMeat() >= 13000 &&
-        !haveSkill(Skill.get("Kneebutt"))
-      ) {
+      if (myLevel() >= 7 && myMeat() >= 13000 && !haveSkill($skill`Kneebutt`)) {
         visitUrl("guild.php?action=buyskill&skillid=15", true);
       }
-      if (
-        myLevel() >= 5 &&
-        myMeat() >= 11000 &&
-        !haveSkill(Skill.get("Shell Up"))
-      ) {
+      if (myLevel() >= 5 && myMeat() >= 11000 && !haveSkill($skill`Shell Up`)) {
         visitUrl("guild.php?action=buyskill&skillid=28", true);
       }
       if (
         myLevel() >= 11 &&
         myMeat() >= 17000 &&
-        !haveSkill(Skill.get("Blessing of the Storm Tortoise"))
+        !haveSkill($skill`Blessing of the Storm Tortoise`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=37", true);
       }
       if (
         myLevel() >= 6 &&
         myMeat() >= 17400 &&
-        !haveSkill(Skill.get("Spirit Snap"))
+        !haveSkill($skill`Spirit Snap`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=32", true);
       }
       break;
-    case Class.get("Pastamancer"):
+    case $class`Pastamancer`:
       if (
         myLevel() >= 1 &&
         myMeat() >= 500 &&
-        !haveSkill(Skill.get("Utensil Twist"))
+        !haveSkill($skill`Utensil Twist`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=25", true);
       }
       if (
         myLevel() >= 2 &&
         myMeat() >= 1000 &&
-        !haveSkill(Skill.get("Entangling Noodles"))
+        !haveSkill($skill`Entangling Noodles`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=4", true);
       }
       if (
         myLevel() >= 5 &&
         myMeat() >= 4000 &&
-        !haveSkill(Skill.get("Pastamastery"))
+        !haveSkill($skill`Pastamastery`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=6", true);
       }
       if (
         myLevel() >= 5 &&
         myMeat() >= 4000 &&
-        !haveSkill(Skill.get("Bind Vermincelli"))
+        !haveSkill($skill`Bind Vermincelli`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=29", true);
       }
       if (
         myLevel() >= 9 &&
         myMeat() >= 12500 &&
-        !haveSkill(Skill.get("Spirit of Ravioli"))
+        !haveSkill($skill`Spirit of Ravioli`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=14", true);
       }
       if (
         myLevel() >= 11 &&
         myMeat() >= 15000 &&
-        !haveSkill(Skill.get("Leash of Linguini"))
+        !haveSkill($skill`Leash of Linguini`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=10", true);
       }
       if (
         myLevel() >= 12 &&
         myMeat() >= 25000 &&
-        !haveSkill(Skill.get("Cannelloni Cocoon"))
+        !haveSkill($skill`Cannelloni Cocoon`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=12", true);
       }
       if (
         myLevel() >= 15 &&
         myMeat() >= 32500 &&
-        !haveSkill(Skill.get("Bind Spice Ghost"))
+        !haveSkill($skill`Bind Spice Ghost`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=39", true);
       }
       break;
-    case Class.get("Sauceror"):
+    case $class`Sauceror`:
       if (
         myLevel() >= 3 &&
         myMeat() >= 1000 &&
-        !haveSkill(Skill.get("Expert Panhandling"))
+        !haveSkill($skill`Expert Panhandling`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=4", true);
       }
       if (
         myLevel() >= 4 &&
         myMeat() >= 3000 &&
-        !haveSkill(Skill.get("Elemental Saucesphere"))
+        !haveSkill($skill`Elemental Saucesphere`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=7", true);
       }
       if (
         myLevel() >= 4 &&
         myMeat() >= 1000 &&
-        !haveSkill(Skill.get("Inner Sauce"))
+        !haveSkill($skill`Inner Sauce`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=28", true);
       }
       if (
         myLevel() >= 5 &&
         myMeat() >= 5000 &&
-        !haveSkill(Skill.get("Advanced Saucecrafting"))
+        !haveSkill($skill`Advanced Saucecrafting`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=6", true);
       }
       if (
         myLevel() >= 5 &&
         myMeat() >= 4000 &&
-        !haveSkill(Skill.get("Saucestorm"))
+        !haveSkill($skill`Saucestorm`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=5", true);
       }
       if (
         myLevel() >= 6 &&
         myMeat() >= 2500 &&
-        !haveSkill(Skill.get("Soul Saucery"))
+        !haveSkill($skill`Soul Saucery`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=27", true);
       }
       if (
         myLevel() >= 11 &&
         myMeat() >= 20000 &&
-        !haveSkill(Skill.get("Saucemaven")) &&
+        !haveSkill($skill`Saucemaven`) &&
         (stomach_left() >= 4 || in_tcrs())
       ) {
         visitUrl("guild.php?action=buyskill&skillid=39", true);
@@ -304,60 +287,60 @@ export function auto_buySkills(): boolean {
       if (
         myLevel() >= 12 &&
         myMeat() >= 20000 &&
-        !haveSkill(Skill.get("Curse of Weaksauce"))
+        !haveSkill($skill`Curse of Weaksauce`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=34", true);
       }
       if (
         myLevel() >= 8 &&
         myMeat() >= 12000 &&
-        !haveSkill(Skill.get("Itchy Curse Finger")) &&
-        haveSkill(Skill.get("Curse of Weaksauce"))
+        !haveSkill($skill`Itchy Curse Finger`) &&
+        haveSkill($skill`Curse of Weaksauce`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=30", true);
       }
       break;
-    case Class.get("Disco Bandit"):
+    case $class`Disco Bandit`:
       if (
         myLevel() >= 2 &&
         myMeat() >= 2100 &&
-        !haveSkill(Skill.get("Overdeveloped Sense of Self Preservation"))
+        !haveSkill($skill`Overdeveloped Sense of Self Preservation`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=10", true);
       }
       if (
         myLevel() >= 5 &&
         myMeat() >= 2500 &&
-        !haveSkill(Skill.get("Advanced Cocktailcrafting"))
+        !haveSkill($skill`Advanced Cocktailcrafting`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=14", true);
       }
       if (
         myLevel() >= 6 &&
         myMeat() >= 2500 &&
-        !haveSkill(Skill.get("Nimble Fingers"))
+        !haveSkill($skill`Nimble Fingers`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=4", true);
       }
       if (
         myLevel() >= 8 &&
         myMeat() >= 7500 &&
-        !haveSkill(Skill.get("Mad Looting Skillz"))
+        !haveSkill($skill`Mad Looting Skillz`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=6", true);
       }
       if (
         myLevel() >= 12 &&
         myMeat() >= 500 &&
-        !haveSkill(Skill.get("Deft Hands")) &&
+        !haveSkill($skill`Deft Hands`) &&
         getProperty("sidequestArenaCompleted") === "none"
       ) {
         //safe flyering
         const noStaggerItem: boolean =
-          itemAmount(Item.get("beehive")) === 0 &&
-          itemAmount(Item.get("Time-Spinner")) === 0;
+          itemAmount($item`beehive`) === 0 &&
+          itemAmount($item`Time-Spinner`) === 0;
         const cantStagger: boolean =
-          noStaggerItem || !haveSkill(Skill.get("Ambidextrous Funkslinging"));
+          noStaggerItem || !haveSkill($skill`Ambidextrous Funkslinging`);
         if (
           cantStagger &&
           !toBoolean(getProperty("auto_ignoreFlyer")) &&
@@ -368,74 +351,74 @@ export function auto_buySkills(): boolean {
         }
       }
       break;
-    case Class.get("Accordion Thief"):
+    case $class`Accordion Thief`:
       if (
         myLevel() >= 1 &&
         myMeat() >= 400 &&
-        !haveSkill(Skill.get("The Moxious Madrigal"))
+        !haveSkill($skill`The Moxious Madrigal`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=4", true);
       }
       if (
         myLevel() >= 2 &&
         myMeat() >= 1250 &&
-        !haveSkill(Skill.get("The Magical Mojomuscular Melody"))
+        !haveSkill($skill`The Magical Mojomuscular Melody`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=7", true);
       }
       if (
         myLevel() >= 4 &&
         myMeat() >= 3500 &&
-        !haveSkill(Skill.get("The Power Ballad of the Arrowsmith"))
+        !haveSkill($skill`The Power Ballad of the Arrowsmith`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=8", true);
       }
       if (
         myLevel() >= 5 &&
         myMeat() >= 2000 &&
-        !haveSkill(Skill.get("The Polka of Plenty"))
+        !haveSkill($skill`The Polka of Plenty`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=6", true);
       }
       if (
         myLevel() >= 7 &&
         myMeat() >= 7500 &&
-        !haveSkill(Skill.get("Fat Leon's Phat Loot Lyric"))
+        !haveSkill($skill`Fat Leon's Phat Loot Lyric`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=10", true);
       }
       if (
         myLevel() >= 10 &&
         myMeat() >= 12500 &&
-        !haveSkill(Skill.get("Thief Among the Honorable"))
+        !haveSkill($skill`Thief Among the Honorable`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=38", true);
       }
       if (
         myLevel() >= 11 &&
         myMeat() >= 20000 &&
-        !haveSkill(Skill.get("Sticky Fingers"))
+        !haveSkill($skill`Sticky Fingers`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=39", true);
       }
       if (
         myLevel() >= 12 &&
         myMeat() >= 25000 &&
-        !haveSkill(Skill.get("The Ode to Booze"))
+        !haveSkill($skill`The Ode to Booze`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=14", true);
       }
       if (
         myLevel() >= 13 &&
         myMeat() >= 30000 &&
-        !haveSkill(Skill.get("The Sonata of Sneakiness"))
+        !haveSkill($skill`The Sonata of Sneakiness`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=15", true);
       }
       if (
         myLevel() >= 13 &&
         myMeat() >= 30000 &&
-        !haveSkill(Skill.get("Master Accordion Master Thief"))
+        !haveSkill($skill`Master Accordion Master Thief`)
       ) {
         visitUrl("guild.php?action=buyskill&skillid=41", true);
       }

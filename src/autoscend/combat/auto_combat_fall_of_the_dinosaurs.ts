@@ -5,10 +5,12 @@ import {
   lastMonster,
   Monster,
   setProperty,
-  Skill,
   splitString,
   toInt,
 } from "kolmafia";
+import { $skill } from "libram";
+
+import { in_fotd } from "../paths/fall_of_the_dinosaurs";
 import {
   canSurvive$1,
   canUse$1,
@@ -16,7 +18,6 @@ import {
   haveUsed,
   useSkill$1,
 } from "./auto_combat_util";
-import { in_fotd } from "../paths/fall_of_the_dinosaurs";
 
 //Path specific combat handling for Fall of the Dinosaurs
 
@@ -84,15 +85,12 @@ export function auto_combatFallOfTheDinosaursStage5(
   const dino: string = getProperty("_auto_combatFotdDinosaur");
   if (dino === "archelon") {
     // reflects damage from spells back to player.
-    if (
-      enemy.physicalResistance >= 80 &&
-      !haveUsed(Skill.get("Silent Treatment"))
-    ) {
-      if (canUse$2(Skill.get("Implode Universe"))) {
-        return useSkill$1(Skill.get("Implode Universe"), true);
+    if (enemy.physicalResistance >= 80 && !haveUsed($skill`Silent Treatment`)) {
+      if (canUse$2($skill`Implode Universe`)) {
+        return useSkill$1($skill`Implode Universe`, true);
       }
-      if (canUse$2(Skill.get("Silent Treatment"))) {
-        return useSkill$1(Skill.get("Silent Treatment"), true);
+      if (canUse$2($skill`Silent Treatment`)) {
+        return useSkill$1($skill`Silent Treatment`, true);
       }
       abort(
         "Not sure how to handle a physically resistent enemy eaten by a glass-shelled archelon.",
@@ -101,30 +99,30 @@ export function auto_combatFallOfTheDinosaursStage5(
     if (canSurvive$1(1.5) && round_1 < 25) {
       return "attack with weapon";
     }
-    if (canUse$2(Skill.get("Implode Universe"))) {
-      return useSkill$1(Skill.get("Implode Universe"), true);
+    if (canUse$2($skill`Implode Universe`)) {
+      return useSkill$1($skill`Implode Universe`, true);
     }
     abort("Not sure how to handle monster eaten by a glass-shelled archelon.");
   }
   if (dino === "pterodactyl") {
     // immune to melee
-    if (canUse$1(Skill.get("Snipe Pterodactyl"), false)) {
-      return useSkill$1(Skill.get("Snipe Pterodactyl"), false);
+    if (canUse$1($skill`Snipe Pterodactyl`, false)) {
+      return useSkill$1($skill`Snipe Pterodactyl`, false);
     }
-    if (canUse$1(Skill.get("Saucegeyser"), false)) {
-      return useSkill$1(Skill.get("Saucegeyser"), false);
+    if (canUse$1($skill`Saucegeyser`, false)) {
+      return useSkill$1($skill`Saucegeyser`, false);
     }
-    if (canUse$1(Skill.get("Saucestorm"), false)) {
-      return useSkill$1(Skill.get("Saucestorm"), false);
+    if (canUse$1($skill`Saucestorm`, false)) {
+      return useSkill$1($skill`Saucestorm`, false);
     }
   }
   if (dino === "spikolodon") {
     // returns stinging damage on melee attacks
-    if (canUse$1(Skill.get("Saucegeyser"), false)) {
-      return useSkill$1(Skill.get("Saucegeyser"), false);
+    if (canUse$1($skill`Saucegeyser`, false)) {
+      return useSkill$1($skill`Saucegeyser`, false);
     }
-    if (canUse$1(Skill.get("Saucestorm"), false)) {
-      return useSkill$1(Skill.get("Saucestorm"), false);
+    if (canUse$1($skill`Saucestorm`, false)) {
+      return useSkill$1($skill`Saucestorm`, false);
     }
   }
   if (dino === "ghostasaurus") {
@@ -132,11 +130,11 @@ export function auto_combatFallOfTheDinosaursStage5(
     const dino_difficulty: number = containsText(enemy.attributes, "Scale:")
       ? 0
       : toInt(enemy.baseAttack / 1.8);
-    if (dino_difficulty >= 75 && canUse$2(Skill.get("Silent Treatment"))) {
-      return useSkill$1(Skill.get("Silent Treatment"), true);
+    if (dino_difficulty >= 75 && canUse$2($skill`Silent Treatment`)) {
+      return useSkill$1($skill`Silent Treatment`, true);
     }
-    if (canUse$1(Skill.get("Saucestorm"), false)) {
-      return useSkill$1(Skill.get("Saucestorm"), false);
+    if (canUse$1($skill`Saucestorm`, false)) {
+      return useSkill$1($skill`Saucestorm`, false);
     }
   }
 

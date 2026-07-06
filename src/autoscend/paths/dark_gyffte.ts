@@ -1,7 +1,6 @@
 import {
   availableAmount,
   cliExecute,
-  Coinmaster,
   craft,
   creatableAmount,
   create,
@@ -27,18 +26,29 @@ import {
   myLevel,
   myLocation,
   myPath,
-  Path,
   Phylum,
   sell,
   setProperty,
   Skill,
-  Stat,
   toInt,
   toMonster,
   toSkill,
   useSkill,
   visitUrl,
 } from "kolmafia";
+import {
+  $coinmaster,
+  $effect,
+  $effects,
+  $item,
+  $items,
+  $path,
+  $phylum,
+  $skill,
+  $skills,
+  $stat,
+} from "libram";
+
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import {
   autoChew,
@@ -64,7 +74,7 @@ import { auto_warSide } from "../quests/level_12";
 
 //Defined in autoscend/paths/dark_gyffte.ash
 export function in_darkGyffte(): boolean {
-  return myPath() === Path.get("Dark Gyffte");
+  return myPath() === $path`Dark Gyffte`;
 }
 
 export function bat_initializeSettings(): void {
@@ -82,7 +92,7 @@ export function bat_initializeSettings(): void {
 // or wasting HP switching back and forth.
 
 export function bat_wantHowl(loc: Location): boolean {
-  if (!auto_have_skill(Skill.get("Baleful Howl"))) {
+  if (!auto_have_skill($skill`Baleful Howl`)) {
     return false;
   }
   if (auto_banishesUsedAt(loc).has("baleful howl")) {
@@ -91,7 +101,7 @@ export function bat_wantHowl(loc: Location): boolean {
   if (toInt(getProperty("_balefulHowlUses")) >= 10) {
     return false;
   }
-  if (myHp() <= hpCost(Skill.get("Baleful Howl"))) {
+  if (myHp() <= hpCost($skill`Baleful Howl`)) {
     // DG doesn't heal in pre-adv, so current HP is how much we will have when we adv
     return false;
   }
@@ -128,7 +138,7 @@ export function bat_formWolf(speculative: boolean): boolean {
     return false;
   }
   setProperty("auto_bat_desiredForm", "wolf");
-  return bat_switchForm(Effect.get("Wolf Form"), speculative);
+  return bat_switchForm($effect`Wolf Form`, speculative);
 }
 
 function bat_formWolf$1(): boolean {
@@ -140,7 +150,7 @@ export function bat_formMist(speculative: boolean): boolean {
     return false;
   }
   setProperty("auto_bat_desiredForm", "mist");
-  return bat_switchForm(Effect.get("Mist Form"), speculative);
+  return bat_switchForm($effect`Mist Form`, speculative);
 }
 
 export function bat_formMist$1(): boolean {
@@ -152,7 +162,7 @@ export function bat_formBats(speculative: boolean): boolean {
     return false;
   }
   setProperty("auto_bat_desiredForm", "bats");
-  return bat_switchForm(Effect.get("Bats Form"), speculative);
+  return bat_switchForm($effect`Bats Form`, speculative);
 }
 
 export function bat_formBats$1(): boolean {
@@ -160,7 +170,7 @@ export function bat_formBats$1(): boolean {
 }
 
 function bat_clearForms(): void {
-  for (const ef of Effect.get(["Wolf Form", "Mist Form", "Bats Form"])) {
+  for (const ef of $effects`Wolf Form, Mist Form, Bats Form`) {
     if (0 !== haveEffect(ef)) {
       useSkill(toSkill(ef));
     }
@@ -205,11 +215,11 @@ export function bat_formPreAdventure(): boolean {
   const form: Effect = Effect.none;
   switch (desiredForm) {
     case "wolf":
-      return bat_switchForm$1(Effect.get("Wolf Form"));
+      return bat_switchForm$1($effect`Wolf Form`);
     case "mist":
-      return bat_switchForm$1(Effect.get("Mist Form"));
+      return bat_switchForm$1($effect`Mist Form`);
     case "bats":
-      return bat_switchForm$1(Effect.get("Bats Form"));
+      return bat_switchForm$1($effect`Bats Form`);
     case "":
       bat_clearForms();
       return true;
@@ -264,38 +274,38 @@ export function bat_initializeDay(day: number): void {
 
 function bat_maxHPCost(sk: Skill): number {
   switch (sk) {
-    case Skill.get("Baleful Howl"):
-    case Skill.get("Intimidating Aura"):
-    case Skill.get("Mist Form"):
-    case Skill.get("Sharp Eyes"):
+    case $skill`Baleful Howl`:
+    case $skill`Intimidating Aura`:
+    case $skill`Mist Form`:
+    case $skill`Sharp Eyes`:
       return 30;
-    case Skill.get("Madness of Untold Aeons"):
+    case $skill`Madness of Untold Aeons`:
       return 25;
-    case Skill.get("Crush"):
-    case Skill.get("Wolf Form"):
-    case Skill.get("Blood Spike"):
-    case Skill.get("Blood Cloak"):
-    case Skill.get("Macabre Cunning"):
-    case Skill.get("Piercing Gaze"):
-    case Skill.get("Ensorcel"):
-    case Skill.get("Flock of Bats Form"):
+    case $skill`Crush`:
+    case $skill`Wolf Form`:
+    case $skill`Blood Spike`:
+    case $skill`Blood Cloak`:
+    case $skill`Macabre Cunning`:
+    case $skill`Piercing Gaze`:
+    case $skill`Ensorcel`:
+    case $skill`Flock of Bats Form`:
       return 20;
-    case Skill.get("Ceaseless Snarl"):
-    case Skill.get("Preternatural Strength"):
-    case Skill.get("Blood Chains"):
-    case Skill.get("Sanguine Magnetism"):
-    case Skill.get("Perceive Soul"):
-    case Skill.get("Sinister Charm"):
-    case Skill.get("Batlike Reflexes"):
-    case Skill.get("Spot Weakness"):
+    case $skill`Ceaseless Snarl`:
+    case $skill`Preternatural Strength`:
+    case $skill`Blood Chains`:
+    case $skill`Sanguine Magnetism`:
+    case $skill`Perceive Soul`:
+    case $skill`Sinister Charm`:
+    case $skill`Batlike Reflexes`:
+    case $skill`Spot Weakness`:
       return 15;
-    case Skill.get("Savage Bite"):
-    case Skill.get("[24017]Ferocity"):
-    case Skill.get("Chill of the Tomb"):
-    case Skill.get("Spectral Awareness"):
+    case $skill`Savage Bite`:
+    case $skill`[24017]Ferocity`:
+    case $skill`Chill of the Tomb`:
+    case $skill`Spectral Awareness`:
       return 10;
-    case Skill.get("Flesh Scent"):
-    case Skill.get("Hypnotic Eyes"):
+    case $skill`Flesh Scent`:
+    case $skill`Hypnotic Eyes`:
       return 5;
     default:
       return 0;
@@ -305,7 +315,7 @@ function bat_maxHPCost(sk: Skill): number {
 function bat_baseHP(): number {
   return (
     20 * min(23, toInt(getProperty("darkGyfftePoints"))) +
-    myBasestat(Stat.get("Muscle")) +
+    myBasestat($stat`Muscle`) +
     20
   );
 }
@@ -1982,7 +1992,7 @@ function bat_desiredSkills$1(
   const picks: Map<Skill, boolean> = new Map();
 
   if (getProperty("_auto_bat_bloodBank") !== "2") {
-    forcedPicks.set(Skill.get("Intimidating Aura"), true);
+    forcedPicks.set($skill`Intimidating Aura`, true);
   }
 
   function addPick(sk: Skill): boolean {
@@ -3731,7 +3741,7 @@ function bat_shouldPickSkills(hpLeft: number): boolean {
 
 function bat_haveEnsorcelee(): boolean {
   // checks if you have a current Ensorceled Monster
-  if (!auto_have_skill(Skill.get("Ensorcel"))) {
+  if (!auto_have_skill($skill`Ensorcel`)) {
     //in case mafia doesn't clear ensorcelee property when you change skills and drop Ensorcel.
     return false;
   }
@@ -3745,13 +3755,13 @@ function bat_ensorceledMonster(): Phylum {
 }
 
 export function bat_shouldEnsorcel(m: Monster): boolean {
-  if (!in_darkGyffte() || !auto_have_skill(Skill.get("Ensorcel"))) {
+  if (!in_darkGyffte() || !auto_have_skill($skill`Ensorcel`)) {
     return false;
   }
   // until we have a way to tell what we already have as an ensorcelee, just ensorcel goblins
   // to help avoid getting beaten up...
   if (
-    monsterPhylum(m) === Phylum.get("goblin") &&
+    monsterPhylum(m) === $phylum`goblin` &&
     !isFreeMonster$1(m, myLocation()) &&
     !bat_haveEnsorcelee()
   ) {
@@ -3767,49 +3777,49 @@ function bat_creatable_amount(desired: Item): number {
   if (!in_darkGyffte()) {
     return 0;
   }
-  if (itemAmount(Item.get("blood bag")) === 0) {
+  if (itemAmount($item`blood bag`) === 0) {
     return 0;
   }
 
   switch (desired) {
-    case Item.get("bloodstick"):
-      if (itemAmount(Item.get("wad of dough")) === 0) {
-        pullXWhenHaveY(Item.get("wad of dough"), 1, 0);
+    case $item`bloodstick`:
+      if (itemAmount($item`wad of dough`) === 0) {
+        pullXWhenHaveY($item`wad of dough`, 1, 0);
       }
-      if (itemAmount(Item.get("wad of dough")) === 0) {
-        auto_buyUpTo(1, Item.get("wad of dough"));
-      }
-      return creatableAmount(desired);
-    case Item.get("blood snowcone"):
-      if (itemAmount(Item.get("plain snowcone")) === 0) {
-        pullXWhenHaveY(Item.get("plain snowcone"), 1, 0);
-      }
-      if (itemAmount(Item.get("plain snowcone")) === 0) {
-        auto_buyUpTo(1, Item.get("plain snowcone"));
+      if (itemAmount($item`wad of dough`) === 0) {
+        auto_buyUpTo(1, $item`wad of dough`);
       }
       return creatableAmount(desired);
-    case Item.get("blood roll-up"):
-      if (itemAmount(Item.get("blackberry")) === 0) {
-        pullXWhenHaveY(Item.get("blackberry"), 1, 0);
+    case $item`blood snowcone`:
+      if (itemAmount($item`plain snowcone`) === 0) {
+        pullXWhenHaveY($item`plain snowcone`, 1, 0);
+      }
+      if (itemAmount($item`plain snowcone`) === 0) {
+        auto_buyUpTo(1, $item`plain snowcone`);
       }
       return creatableAmount(desired);
-    case Item.get("bottle of Sanguiovese"):
-      if (itemAmount(Item.get("fermenting powder")) === 0) {
-        pullXWhenHaveY(Item.get("fermenting powder"), 1, 0);
+    case $item`blood roll-up`:
+      if (itemAmount($item`blackberry`) === 0) {
+        pullXWhenHaveY($item`blackberry`, 1, 0);
       }
       return creatableAmount(desired);
-    case Item.get("mulled blood"):
-      if (itemAmount(Item.get("spices")) === 0) {
-        pullXWhenHaveY(Item.get("spices"), 1, 0);
+    case $item`bottle of Sanguiovese`:
+      if (itemAmount($item`fermenting powder`) === 0) {
+        pullXWhenHaveY($item`fermenting powder`, 1, 0);
       }
       return creatableAmount(desired);
-    case Item.get("Red Russian"):
-      if (itemAmount(Item.get("glass of goat's milk")) === 0) {
-        pullXWhenHaveY(Item.get("glass of goat's milk"), 1, 0);
+    case $item`mulled blood`:
+      if (itemAmount($item`spices`) === 0) {
+        pullXWhenHaveY($item`spices`, 1, 0);
       }
       return creatableAmount(desired);
-    case Item.get("actual blood sausage"):
-      for (const it of Item.get(["batgut", "ratgut"])) {
+    case $item`Red Russian`:
+      if (itemAmount($item`glass of goat's milk`) === 0) {
+        pullXWhenHaveY($item`glass of goat's milk`, 1, 0);
+      }
+      return creatableAmount(desired);
+    case $item`actual blood sausage`:
+      for (const it of $items`batgut, ratgut`) {
         if (itemAmount(it) === 0) {
           if (pullXWhenHaveY(it, 1, 0)) {
             break;
@@ -3817,16 +3827,16 @@ function bat_creatable_amount(desired: Item): number {
         }
       }
       return min(
-        itemAmount(Item.get("blood bag")),
+        itemAmount($item`blood bag`),
         total_items(
           new Map([
-            [Item.get("batgut"), true],
-            [Item.get("ratgut"), true],
+            [$item`batgut`, true],
+            [$item`ratgut`, true],
           ]),
         ),
       );
-    case Item.get("blood-soaked sponge cake"):
-      for (const it of Item.get(["gauze garter", "filthy poultice"])) {
+    case $item`blood-soaked sponge cake`:
+      for (const it of $items`gauze garter, filthy poultice`) {
         if (itemAmount(it) === 0) {
           if (pullXWhenHaveY(it, 1, 0)) {
             break;
@@ -3834,23 +3844,16 @@ function bat_creatable_amount(desired: Item): number {
         }
       }
       return min(
-        itemAmount(Item.get("blood bag")),
+        itemAmount($item`blood bag`),
         total_items(
           new Map([
-            [Item.get("gauze garter"), true],
-            [Item.get("filthy poultice"), true],
+            [$item`gauze garter`, true],
+            [$item`filthy poultice`, true],
           ]),
         ),
       );
-    case Item.get("dusty bottle of blood"):
-      for (const it of Item.get([
-        "dusty bottle of Merlot",
-        "dusty bottle of Port",
-        "dusty bottle of Pinot Noir",
-        "dusty bottle of Zinfandel",
-        "dusty bottle of Marsala",
-        "dusty bottle of Muscat",
-      ])) {
+    case $item`dusty bottle of blood`:
+      for (const it of $items`dusty bottle of Merlot, dusty bottle of Port, dusty bottle of Pinot Noir, dusty bottle of Zinfandel, dusty bottle of Marsala, dusty bottle of Muscat`) {
         if (itemAmount(it) === 0) {
           if (pullXWhenHaveY(it, 1, 0)) {
             break;
@@ -3858,23 +3861,20 @@ function bat_creatable_amount(desired: Item): number {
         }
       }
       return min(
-        itemAmount(Item.get("blood bag")),
+        itemAmount($item`blood bag`),
         total_items(
           new Map([
-            [Item.get("dusty bottle of Merlot"), true],
-            [Item.get("dusty bottle of Port"), true],
-            [Item.get("dusty bottle of Pinot Noir"), true],
-            [Item.get("dusty bottle of Zinfandel"), true],
-            [Item.get("dusty bottle of Marsala"), true],
-            [Item.get("dusty bottle of Muscat"), true],
+            [$item`dusty bottle of Merlot`, true],
+            [$item`dusty bottle of Port`, true],
+            [$item`dusty bottle of Pinot Noir`, true],
+            [$item`dusty bottle of Zinfandel`, true],
+            [$item`dusty bottle of Marsala`, true],
+            [$item`dusty bottle of Muscat`, true],
           ]),
         ),
       );
-    case Item.get("vampagne"):
-      for (const it of Item.get([
-        "carbonated soy milk",
-        "Monstar energy beverage",
-      ])) {
+    case $item`vampagne`:
+      for (const it of $items`carbonated soy milk, Monstar energy beverage`) {
         if (itemAmount(it) === 0) {
           if (pullXWhenHaveY(it, 1, 0)) {
             break;
@@ -3882,11 +3882,11 @@ function bat_creatable_amount(desired: Item): number {
         }
       }
       return min(
-        itemAmount(Item.get("blood bag")),
+        itemAmount($item`blood bag`),
         total_items(
           new Map([
-            [Item.get("carbonated soy milk"), true],
-            [Item.get("Monstar energy beverage"), true],
+            [$item`carbonated soy milk`, true],
+            [$item`Monstar energy beverage`, true],
           ]),
         ),
       );
@@ -3899,13 +3899,13 @@ function bat_multicraft(mode: string, options: Map<Item, boolean>): boolean {
   if (!in_darkGyffte()) {
     return false;
   }
-  if (itemAmount(Item.get("blood bag")) === 0) {
+  if (itemAmount($item`blood bag`) === 0) {
     return false;
   }
 
   for (const ingredient of options.keys()) {
     if (itemAmount(ingredient) > 0) {
-      if (craft(mode, 1, Item.get("blood bag"), ingredient) > 0) {
+      if (craft(mode, 1, $item`blood bag`, ingredient) > 0) {
         return true;
       }
     }
@@ -3918,52 +3918,52 @@ function bat_cook(desired: Item): boolean {
   if (!in_darkGyffte()) {
     return false;
   }
-  if (itemAmount(Item.get("blood bag")) === 0) {
+  if (itemAmount($item`blood bag`) === 0) {
     return false;
   }
 
   switch (desired) {
-    case Item.get("bloodstick"):
-    case Item.get("blood snowcone"):
-    case Item.get("blood roll-up"):
-    case Item.get("bottle of Sanguiovese"):
-    case Item.get("mulled blood"):
-    case Item.get("Red Russian"):
+    case $item`bloodstick`:
+    case $item`blood snowcone`:
+    case $item`blood roll-up`:
+    case $item`bottle of Sanguiovese`:
+    case $item`mulled blood`:
+    case $item`Red Russian`:
       return create(1, desired);
-    case Item.get("actual blood sausage"):
+    case $item`actual blood sausage`:
       return bat_multicraft(
         "cook",
         new Map([
-          [Item.get("batgut"), true],
-          [Item.get("ratgut"), true],
+          [$item`batgut`, true],
+          [$item`ratgut`, true],
         ]),
       );
-    case Item.get("blood-soaked sponge cake"):
+    case $item`blood-soaked sponge cake`:
       return bat_multicraft(
         "cook",
         new Map([
-          [Item.get("filthy poultice"), true],
-          [Item.get("gauze garter"), true],
+          [$item`filthy poultice`, true],
+          [$item`gauze garter`, true],
         ]),
       );
-    case Item.get("dusty bottle of blood"):
+    case $item`dusty bottle of blood`:
       return bat_multicraft(
         "cocktail",
         new Map([
-          [Item.get("dusty bottle of Merlot"), true],
-          [Item.get("dusty bottle of Port"), true],
-          [Item.get("dusty bottle of Pinot Noir"), true],
-          [Item.get("dusty bottle of Zinfandel"), true],
-          [Item.get("dusty bottle of Marsala"), true],
-          [Item.get("dusty bottle of Muscat"), true],
+          [$item`dusty bottle of Merlot`, true],
+          [$item`dusty bottle of Port`, true],
+          [$item`dusty bottle of Pinot Noir`, true],
+          [$item`dusty bottle of Zinfandel`, true],
+          [$item`dusty bottle of Marsala`, true],
+          [$item`dusty bottle of Muscat`, true],
         ]),
       );
-    case Item.get("vampagne"):
+    case $item`vampagne`:
       return bat_multicraft(
         "cocktail",
         new Map([
-          [Item.get("carbonated soy milk"), true],
-          [Item.get("Monstar energy beverage"), true],
+          [$item`carbonated soy milk`, true],
+          [$item`Monstar energy beverage`, true],
         ]),
       );
   }
@@ -3978,52 +3978,52 @@ export function bat_consumption(): boolean {
 
   if (
     possessOutfit$1("War Hippy Fatigues") &&
-    isAccessible(Coinmaster.get("Dimemaster"))
+    isAccessible($coinmaster`Dimemaster`)
   ) {
     sell(
-      Item.get("PADL Phone").buyer,
-      itemAmount(Item.get("PADL Phone")),
-      Item.get("PADL Phone"),
+      $item`PADL Phone`.buyer,
+      itemAmount($item`PADL Phone`),
+      $item`PADL Phone`,
     );
     sell(
-      Item.get("red class ring").buyer,
-      itemAmount(Item.get("red class ring")),
-      Item.get("red class ring"),
+      $item`red class ring`.buyer,
+      itemAmount($item`red class ring`),
+      $item`red class ring`,
     );
     sell(
-      Item.get("blue class ring").buyer,
-      itemAmount(Item.get("blue class ring")),
-      Item.get("blue class ring"),
+      $item`blue class ring`.buyer,
+      itemAmount($item`blue class ring`),
+      $item`blue class ring`,
     );
     sell(
-      Item.get("white class ring").buyer,
-      itemAmount(Item.get("white class ring")),
-      Item.get("white class ring"),
+      $item`white class ring`.buyer,
+      itemAmount($item`white class ring`),
+      $item`white class ring`,
     );
   }
   if (
     possessOutfit$1("Frat Warrior Fatigues") &&
-    isAccessible(Coinmaster.get("Quartersmaster"))
+    isAccessible($coinmaster`Quartersmaster`)
   ) {
     sell(
-      Item.get("pink clay bead").buyer,
-      itemAmount(Item.get("pink clay bead")),
-      Item.get("pink clay bead"),
+      $item`pink clay bead`.buyer,
+      itemAmount($item`pink clay bead`),
+      $item`pink clay bead`,
     );
     sell(
-      Item.get("purple clay bead").buyer,
-      itemAmount(Item.get("purple clay bead")),
-      Item.get("purple clay bead"),
+      $item`purple clay bead`.buyer,
+      itemAmount($item`purple clay bead`),
+      $item`purple clay bead`,
     );
     sell(
-      Item.get("green clay bead").buyer,
-      itemAmount(Item.get("green clay bead")),
-      Item.get("green clay bead"),
+      $item`green clay bead`.buyer,
+      itemAmount($item`green clay bead`),
+      $item`green clay bead`,
     );
     sell(
-      Item.get("communications windchimes").buyer,
-      itemAmount(Item.get("communications windchimes")),
-      Item.get("communications windchimes"),
+      $item`communications windchimes`.buyer,
+      itemAmount($item`communications windchimes`),
+      $item`communications windchimes`,
     );
   }
 
@@ -4059,66 +4059,64 @@ export function bat_consumption(): boolean {
   if (auto_warSide() === "fratboy") {
     if (
       fullness_left() > 0 &&
-      itemAmount(Item.get("gauze garter")) === 0 &&
-      Coinmaster.get("Quartersmaster").availableTokens >= 2
+      itemAmount($item`gauze garter`) === 0 &&
+      $coinmaster`Quartersmaster`.availableTokens >= 2
     ) {
       cliExecute("make 1 gauze garter");
     }
     if (
       inebriety_left() > 0 &&
-      itemAmount(Item.get("Monstar energy beverage")) === 0 &&
-      Coinmaster.get("Quartersmaster").availableTokens >= 3
+      itemAmount($item`Monstar energy beverage`) === 0 &&
+      $coinmaster`Quartersmaster`.availableTokens >= 3
     ) {
       cliExecute("make 1 monstar energy beverage");
     }
   } else {
     if (
       fullness_left() > 0 &&
-      itemAmount(Item.get("filthy poultice")) === 0 &&
-      Coinmaster.get("Dimemaster").availableTokens >= 2
+      itemAmount($item`filthy poultice`) === 0 &&
+      $coinmaster`Dimemaster`.availableTokens >= 2
     ) {
       cliExecute("make 1 filthy poultice");
     }
     if (
       inebriety_left() > 0 &&
-      itemAmount(Item.get("carbonated soy milk")) === 0 &&
-      Coinmaster.get("Dimemaster").availableTokens >= 3
+      itemAmount($item`carbonated soy milk`) === 0 &&
+      $coinmaster`Dimemaster`.availableTokens >= 3
     ) {
       cliExecute("make 1 carbonated soy milk");
     }
   }
 
   if (fullness_left() > 0) {
-    pullXWhenHaveY(Item.get("dieting pill"), 1, 0);
+    pullXWhenHaveY($item`dieting pill`, 1, 0);
   }
 
   if (
     myLevel() >= 7 &&
     spleen_left() >= 3 &&
     fullness_left() >= 2 &&
-    itemAmount(Item.get("dieting pill")) > 0 &&
-    (itemAmount(Item.get("blood-soaked sponge cake")) > 0 ||
-      bat_creatable_amount(Item.get("blood-soaked sponge cake")) > 0)
+    itemAmount($item`dieting pill`) > 0 &&
+    (itemAmount($item`blood-soaked sponge cake`) > 0 ||
+      bat_creatable_amount($item`blood-soaked sponge cake`) > 0)
   ) {
-    if (itemAmount(Item.get("blood-soaked sponge cake")) === 0) {
-      bat_cook(Item.get("blood-soaked sponge cake"));
+    if (itemAmount($item`blood-soaked sponge cake`) === 0) {
+      bat_cook($item`blood-soaked sponge cake`);
     }
-    if (itemAmount(Item.get("blood-soaked sponge cake")) > 0) {
-      autoChew(1, Item.get("dieting pill"));
-      autoEat(1, Item.get("blood-soaked sponge cake"));
+    if (itemAmount($item`blood-soaked sponge cake`) > 0) {
+      autoChew(1, $item`dieting pill`);
+      autoEat(1, $item`blood-soaked sponge cake`);
       return true;
     }
   }
   // attempt to fill organs with best consumables all the time, don't wait to be at low adventure count
   if (inebriety_left() > 0) {
-    if (consume_first(new Map([[Item.get("vampagne"), true]]))) {
+    if (consume_first(new Map([[$item`vampagne`, true]]))) {
       return true;
     }
   }
   if (fullness_left() > 0) {
-    if (
-      consume_first(new Map([[Item.get("blood-soaked sponge cake"), true]]))
-    ) {
+    if (consume_first(new Map([[$item`blood-soaked sponge cake`, true]]))) {
       return true;
     }
   }
@@ -4130,14 +4128,14 @@ export function bat_consumption(): boolean {
       if (
         consume_first(
           new Map([
-            [Item.get("vampagne"), true],
-            [Item.get("blood-soaked sponge cake"), true],
-            [Item.get("dusty bottle of blood"), true],
-            [Item.get("blood roll-up"), true],
-            [Item.get("Red Russian"), true],
-            [Item.get("blood snowcone"), true],
-            [Item.get("mulled blood"), true],
-            [Item.get("actual blood sausage"), true],
+            [$item`vampagne`, true],
+            [$item`blood-soaked sponge cake`, true],
+            [$item`dusty bottle of blood`, true],
+            [$item`blood roll-up`, true],
+            [$item`Red Russian`, true],
+            [$item`blood snowcone`, true],
+            [$item`mulled blood`, true],
+            [$item`actual blood sausage`, true],
           ]),
         )
       ) {
@@ -4147,10 +4145,10 @@ export function bat_consumption(): boolean {
       if (
         consume_first(
           new Map([
-            [Item.get("vampagne"), true],
-            [Item.get("dusty bottle of blood"), true],
-            [Item.get("Red Russian"), true],
-            [Item.get("mulled blood"), true],
+            [$item`vampagne`, true],
+            [$item`dusty bottle of blood`, true],
+            [$item`Red Russian`, true],
+            [$item`mulled blood`, true],
           ]),
         )
       ) {
@@ -4160,10 +4158,10 @@ export function bat_consumption(): boolean {
       if (
         consume_first(
           new Map([
-            [Item.get("blood-soaked sponge cake"), true],
-            [Item.get("blood roll-up"), true],
-            [Item.get("blood snowcone"), true],
-            [Item.get("actual blood sausage"), true],
+            [$item`blood-soaked sponge cake`, true],
+            [$item`blood roll-up`, true],
+            [$item`blood snowcone`, true],
+            [$item`actual blood sausage`, true],
           ]),
         )
       ) {
@@ -4174,12 +4172,12 @@ export function bat_consumption(): boolean {
 
   if (myAdventures() <= 1) {
     if (fullness_left() > 0) {
-      if (consume_first(new Map([[Item.get("bloodstick"), true]]))) {
+      if (consume_first(new Map([[$item`bloodstick`, true]]))) {
         return true;
       }
     }
     if (inebriety_left() > 0) {
-      if (consume_first(new Map([[Item.get("bottle of Sanguiovese"), true]]))) {
+      if (consume_first(new Map([[$item`bottle of Sanguiovese`, true]]))) {
         return true;
       }
     }
@@ -4190,40 +4188,26 @@ export function bat_consumption(): boolean {
 
 export function bat_skillValid(sk: Skill): boolean {
   if (
-    Skill.get([
-      "Savage Bite",
-      "Crush",
-      "Baleful Howl",
-      "Ceaseless Snarl",
-    ]).includes(sk) &&
-    haveEffect(Effect.get("Bats Form")) + haveEffect(Effect.get("Mist Form")) >
-      0
+    $skills`Savage Bite, Crush, Baleful Howl, Ceaseless Snarl`.includes(sk) &&
+    haveEffect($effect`Bats Form`) + haveEffect($effect`Mist Form`) > 0
   ) {
     return false;
   }
 
   if (
-    Skill.get([
-      "Blood Spike",
-      "Blood Chains",
-      "Chill of the Tomb",
-      "Blood Cloak",
-    ]).includes(sk) &&
-    haveEffect(Effect.get("Wolf Form")) + haveEffect(Effect.get("Bats Form")) >
-      0
+    $skills`Blood Spike, Blood Chains, Chill of the Tomb, Blood Cloak`.includes(
+      sk,
+    ) &&
+    haveEffect($effect`Wolf Form`) + haveEffect($effect`Bats Form`) > 0
   ) {
     return false;
   }
 
   if (
-    Skill.get([
-      "Piercing Gaze",
-      "Perceive Soul",
-      "Ensorcel",
-      "Spectral Awareness",
-    ]).includes(sk) &&
-    haveEffect(Effect.get("Wolf Form")) + haveEffect(Effect.get("Mist Form")) >
-      0
+    $skills`Piercing Gaze, Perceive Soul, Ensorcel, Spectral Awareness`.includes(
+      sk,
+    ) &&
+    haveEffect($effect`Wolf Form`) + haveEffect($effect`Mist Form`) > 0
   ) {
     return false;
   }
@@ -4239,14 +4223,12 @@ function bat_tryBloodBank(): boolean {
   const bloodBank: number = toInt(getProperty("_auto_bat_bloodBank"));
   if (
     bloodBank === 0 ||
-    (bloodBank === 1 && haveSkill(Skill.get("Intimidating Aura")))
+    (bloodBank === 1 && haveSkill($skill`Intimidating Aura`))
   ) {
     visitUrl("place.php?whichplace=town_right&action=town_bloodbank");
     setProperty(
       "_auto_bat_bloodBank",
-      haveSkill(Skill.get("Intimidating Aura"))
-        ? (2).toString()
-        : (1).toString(),
+      haveSkill($skill`Intimidating Aura`) ? (2).toString() : (1).toString(),
     );
     return true;
   }

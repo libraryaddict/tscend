@@ -6,15 +6,12 @@ import {
   canDrink,
   canEat,
   canInteract,
-  Class,
   cliExecute,
   closetAmount,
   create,
   Effect,
-  Element,
   equippedAmount,
   equippedItem,
-  Familiar,
   friarsAvailable,
   getCampground,
   getClanId,
@@ -35,7 +32,6 @@ import {
   knollAvailable,
   max,
   min,
-  Monster,
   mpCost,
   myAdventures,
   myAscensions,
@@ -56,12 +52,10 @@ import {
   myRobotEnergy,
   mySpleenUse,
   numericModifier,
-  Path,
   print,
   pullsRemaining,
   putCloset,
   runChoice,
-  Servant,
   setProperty,
   Skill,
   Slot,
@@ -83,6 +77,22 @@ import {
   visitUrl,
   weaponHands,
 } from "kolmafia";
+import {
+  $class,
+  $effect,
+  $element,
+  $familiar,
+  $item,
+  $items,
+  $monster,
+  $path,
+  $servant,
+  $skill,
+  $slot,
+  $slots,
+  $stat,
+} from "libram";
+
 import { auto_unreservedAdvRemaining, dailyEvents } from "../autoscend";
 import {
   acquireHermitItem,
@@ -232,14 +242,7 @@ function bedtime_still(): void {
     //spend remaining still uses
     let target: Item = Item.none;
     //first try to get at least 1 each of each of the imrpoved booze if possible
-    for (const it of Item.get([
-      "bottle of Calcutta Emerald",
-      "bottle of Lieutenant Freeman",
-      "bottle of Jorge Sinsonte",
-      "bottle of Definit",
-      "bottle of Domesticated Turkey",
-      "boxed champagne",
-    ])) {
+    for (const it of $items`bottle of Calcutta Emerald, bottle of Lieutenant Freeman, bottle of Jorge Sinsonte, bottle of Definit, bottle of Domesticated Turkey, boxed champagne`) {
       if (
         target === Item.none &&
         itemAmount(it) === 0 &&
@@ -254,28 +257,15 @@ function bedtime_still(): void {
       myMeat() > meatReserve() + 100 &&
       isGeneralStoreAvailable()
     ) {
-      if (auto_buyUpTo(1, Item.get("soda water"))) {
-        target = Item.get("tonic water");
+      if (auto_buyUpTo(1, $item`soda water`)) {
+        target = $item`tonic water`;
       }
     }
     //if we can not afford tonic water use it on the improved item we have the least of.
     if (target === Item.none) {
       //below we will replace target with a better target. only do so if we reached this spot without a target
       //all possible still items except [tonic water] and [bottle of Ooze-O]
-      for (const it of Item.get([
-        "bottle of Calcutta Emerald",
-        "bottle of Lieutenant Freeman",
-        "bottle of Jorge Sinsonte",
-        "bottle of Definit",
-        "bottle of Domesticated Turkey",
-        "boxed champagne",
-        "bottle of Pete's Sake",
-        "tangerine",
-        "kiwi",
-        "cocktail onion",
-        "kumquat",
-        "raspberry",
-      ])) {
+      for (const it of $items`bottle of Calcutta Emerald, bottle of Lieutenant Freeman, bottle of Jorge Sinsonte, bottle of Definit, bottle of Domesticated Turkey, boxed champagne, bottle of Pete's Sake, tangerine, kiwi, cocktail onion, kumquat, raspberry`) {
         if (target === Item.none && itemAmount(still_targetToOrigin(it)) > 0) {
           //do not have a target yet
           target = it;
@@ -323,15 +313,7 @@ function bedtime_still(): void {
 }
 
 function bedtime_spleen(): boolean {
-  const to_try: Item[] = Item.get([
-    "Breathitin&trade;",
-    "Extrovermectin&trade;",
-    "hot jelly",
-    "scoop of pre-workout powder",
-    "Homebodyl&trade;",
-    "phosphor traces",
-    "energized spores",
-  ]);
+  const to_try: Item[] = $items`Breathitin™, Extrovermectin™, hot jelly, scoop of pre-workout powder, Homebodyl™, phosphor traces, energized spores`;
 
   let done: boolean = false;
   while (spleen_left() > 0 && !done) {
@@ -393,31 +375,31 @@ function pullsNeeded(data: string): number {
     }
 
     switch (ns_crowd2()) {
-      case Stat.get("Moxie"):
-        crowd2score = (myBuffedstat(Stat.get("Moxie")) - 150) / 40;
+      case $stat`Moxie`:
+        crowd2score = (myBuffedstat($stat`Moxie`) - 150) / 40;
         break;
-      case Stat.get("Muscle"):
-        crowd2score = (myBuffedstat(Stat.get("Muscle")) - 150) / 40;
+      case $stat`Muscle`:
+        crowd2score = (myBuffedstat($stat`Muscle`) - 150) / 40;
         break;
-      case Stat.get("Mysticality"):
-        crowd2score = (myBuffedstat(Stat.get("Mysticality")) - 150) / 40;
+      case $stat`Mysticality`:
+        crowd2score = (myBuffedstat($stat`Mysticality`) - 150) / 40;
         break;
     }
 
     switch (ns_crowd3()) {
-      case Element.get("cold"):
+      case $element`cold`:
         crowd3score = toInt(numericModifier("cold damage") / 9);
         break;
-      case Element.get("hot"):
+      case $element`hot`:
         crowd3score = toInt(numericModifier("hot damage") / 9);
         break;
-      case Element.get("sleaze"):
+      case $element`sleaze`:
         crowd3score = toInt(numericModifier("sleaze damage") / 9);
         break;
-      case Element.get("spooky"):
+      case $element`spooky`:
         crowd3score = toInt(numericModifier("spooky damage") / 9);
         break;
-      case Element.get("stench"):
+      case $element`stench`:
         crowd3score = toInt(numericModifier("stench damage") / 9);
         break;
     }
@@ -442,8 +424,8 @@ function pullsNeeded(data: string): number {
 
   if (progress < 3) {
     if (
-      itemAmount(Item.get("Richard's star key")) === 0 &&
-      itemAmount(Item.get("star chart")) === 0
+      itemAmount($item`Richard's star key`) === 0 &&
+      itemAmount($item`star chart`) === 0
     ) {
       auto_log_warning("Need star chart", "red");
       if (in_heavyrains() && myRain() >= 50) {
@@ -453,9 +435,9 @@ function pullsNeeded(data: string): number {
       }
     }
 
-    if (itemAmount(Item.get("Richard's star key")) === 0) {
-      const stars: number = itemAmount(Item.get("star"));
-      const lines: number = itemAmount(Item.get("line"));
+    if (itemAmount($item`Richard's star key`) === 0) {
+      const stars: number = itemAmount($item`star`);
+      const lines: number = itemAmount($item`line`);
 
       if (stars < 8) {
         auto_log_warning(`Need ${8 - stars} stars.`, "red");
@@ -467,15 +449,15 @@ function pullsNeeded(data: string): number {
       }
     }
 
-    if (itemAmount(Item.get("skeleton key")) === 0) {
+    if (itemAmount($item`skeleton key`) === 0) {
       if (
-        itemAmount(Item.get("skeleton bone")) > 0 &&
-        itemAmount(Item.get("loose teeth")) > 0
+        itemAmount($item`skeleton bone`) > 0 &&
+        itemAmount($item`loose teeth`) > 0
       ) {
         cliExecute("make skeleton key");
       }
     }
-    if (itemAmount(Item.get("skeleton key")) === 0) {
+    if (itemAmount($item`skeleton key`) === 0) {
       auto_log_warning$1(
         "Need a skeleton key or the ingredients (skeleton bone, loose teeth) for it.",
       );
@@ -486,7 +468,7 @@ function pullsNeeded(data: string): number {
     adv = adv + 6;
     if (
       toBoolean(getProperty("auto_wandOfNagamar")) &&
-      itemAmount(Item.get("Wand of Nagamar")) === 0 &&
+      itemAmount($item`Wand of Nagamar`) === 0 &&
       cloversAvailable$1() === 0
     ) {
       auto_log_warning("Need a wand of nagamar (can be clovered).", "red");
@@ -511,15 +493,15 @@ function rollover_value(it: Item): number {
     return 0.0;
   }
   let retval: number = numericModifier(it, "adventures");
-  if (hippyStoneBroken() && myPath() !== Path.get("Oxygenarian")) {
+  if (hippyStoneBroken() && myPath() !== $path`Oxygenarian`) {
     retval +=
       toFloat(getProperty("auto_bedtime_pulls_pvp_multi")) *
       numericModifier(it, "PvP Fights");
   }
-  if (it === Item.get("your cowboy boots")) {
+  if (it === $item`your cowboy boots`) {
     //your cowboy boot's add-ons are considered seperate items in their own slots
-    retval += rollover_value(equippedItem(Slot.get("bootspur")));
-    retval += rollover_value(equippedItem(Slot.get("bootskin")));
+    retval += rollover_value(equippedItem($slot`bootspur`));
+    retval += rollover_value(equippedItem($slot`bootskin`));
   }
   return retval;
 }
@@ -528,7 +510,7 @@ function rollover_improvement(it: Item, sl: Slot): number {
   //some items can go in multiple slots so we need to specify which slot we want to compare it to.
   //we can then compare such items to multiple slots and find the best slot for it
   if (
-    sl === Slot.get("weapon") &&
+    sl === $slot`weapon` &&
     weaponHands(it) > 1 &&
     weaponHands(equippedItem(sl)) <= 1
   ) {
@@ -536,25 +518,20 @@ function rollover_improvement(it: Item, sl: Slot): number {
     return (
       rollover_value(it) -
       rollover_value(equippedItem(sl)) -
-      rollover_value(equippedItem(Slot.get("off-hand")))
+      rollover_value(equippedItem($slot`off-hand`))
     );
   }
-  if (
-    sl === Slot.get("off-hand") &&
-    weaponHands(equippedItem(Slot.get("weapon"))) > 1
-  ) {
+  if (sl === $slot`off-hand` && weaponHands(equippedItem($slot`weapon`)) > 1) {
     //offhand slot must compare to 2h weapon and not empty offhand. TODO ?would need averaged values with best owned or pullable 1h
-    return (
-      rollover_value(it) - rollover_value(equippedItem(Slot.get("weapon")))
-    );
+    return rollover_value(it) - rollover_value(equippedItem($slot`weapon`));
   }
-  if (it === Item.get("time halo")) {
+  if (it === $item`time halo`) {
     //time halo is special. cannot have any weapons or off-hand items equipped. TODO ?compare hand slots and replacement accessory against time halo
     return (
       rollover_value(it) -
       rollover_value(equippedItem(sl)) -
-      rollover_value(equippedItem(Slot.get("weapon"))) -
-      rollover_value(equippedItem(Slot.get("off-hand")))
+      rollover_value(equippedItem($slot`weapon`)) -
+      rollover_value(equippedItem($slot`off-hand`))
     );
   }
   return rollover_value(it) - rollover_value(equippedItem(sl));
@@ -579,34 +556,27 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
     let very_best_val: number = 0;
     let very_best_improvement: number = 0;
     let very_best_slot: Slot = Slot.none;
-    const a1: Slot = Slot.get("acc1");
-    const a2: Slot = Slot.get("acc2");
-    const a3: Slot = Slot.get("acc3");
+    const a1: Slot = $slot`acc1`;
+    const a2: Slot = $slot`acc2`;
+    const a3: Slot = $slot`acc3`;
     //we will need to know which accessory slot is the worst
     let worst_acc_slot: Slot = a1;
     if (
       rollover_value(equippedItem(worst_acc_slot)) >
       rollover_value(equippedItem(a2))
     ) {
-      worst_acc_slot = Slot.get("acc2");
+      worst_acc_slot = $slot`acc2`;
     }
     if (
       rollover_value(equippedItem(worst_acc_slot)) >
       rollover_value(equippedItem(a3))
     ) {
-      worst_acc_slot = Slot.get("acc3");
+      worst_acc_slot = $slot`acc3`;
     }
     //populate best with current equipment as a baseline
-    for (let sl of Slot.get([
-      "hat",
-      "back",
-      "shirt",
-      "pants",
-      "acc1",
-      "familiar",
-    ])) {
+    for (let sl of $slots`hat, back, shirt, pants, acc1, familiar`) {
       //populating with current item as baseline is necessary for accessories. harmful for weapon/off-hand. and harmless elsewhere.
-      if (sl === Slot.get("acc1")) {
+      if (sl === $slot`acc1`) {
         sl = worst_acc_slot;
       }
       best.set(sl, equippedItem(sl));
@@ -12625,16 +12595,9 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
     ])) {
       let sl: Slot = toSlot(it);
       if (
-        !Slot.get([
-          "hat",
-          "weapon",
-          "off-hand",
-          "back",
-          "shirt",
-          "pants",
-          "acc1",
-          "familiar",
-        ]).includes(sl)
+        !$slots`hat, weapon, off-hand, back, shirt, pants, acc1, familiar`.includes(
+          sl,
+        )
       ) {
         //exotic slot or not equip
         continue;
@@ -12656,13 +12619,13 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
         continue;
       }
 
-      if (Slot.get("familiar") === sl && !pathHasFamiliar()) {
+      if ($slot`familiar` === sl && !pathHasFamiliar()) {
         //in paths without familiar do not pull familiar equip.
         if (!in_robot()) {
           continue;
         }
       }
-      if (Slot.get("acc1") === sl) {
+      if ($slot`acc1` === sl) {
         //all accessories always return acc1 from to_slot() function.
         //since we are pulling one item at a time we only want to look at the worst slot each time
         //we just need to make sure that equip conflicts do not arise.
@@ -12689,7 +12652,7 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
           }
         }
 
-        if (it === Item.get("time halo")) {
+        if (it === $item`time halo`) {
           //needs special check later
           continue;
         }
@@ -12708,31 +12671,27 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
         ) {
           best.set(sl, it);
         }
-      } else if (Slot.get("weapon") === sl) {
+      } else if ($slot`weapon` === sl) {
         //weapon and off-hand slots might conflict and require special handling
         //two or more handed weapons just need to make sure they are better than best weapon and off-hand combined
         if (weaponHands(it) > 1) {
           if (
             weaponHands(
-              best.get(Slot.get("weapon")) ??
-                best.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon")),
+              best.get($slot`weapon`) ??
+                best.set($slot`weapon`, Item.none).get($slot`weapon`),
             ) > 1
           ) {
             //if best weapon is already more than 1 handed, must not add off-hand to that weapon
             if (
               rollover_value(it) >
                 rollover_value(
-                  best.get(Slot.get("weapon")) ??
-                    best
-                      .set(Slot.get("weapon"), Item.none)
-                      .get(Slot.get("weapon")),
+                  best.get($slot`weapon`) ??
+                    best.set($slot`weapon`, Item.none).get($slot`weapon`),
                 ) &&
               rollover_value(it) >
                 rollover_value(
-                  best.get(Slot.get("off-hand")) ??
-                    best
-                      .set(Slot.get("off-hand"), Item.none)
-                      .get(Slot.get("off-hand")),
+                  best.get($slot`off-hand`) ??
+                    best.set($slot`off-hand`, Item.none).get($slot`off-hand`),
                 )
             ) {
               best.set(sl, it);
@@ -12740,21 +12699,19 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
           } else if (
             rollover_value(it) >
             rollover_value(
-              best.get(Slot.get("weapon")) ??
-                best.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon")),
+              best.get($slot`weapon`) ??
+                best.set($slot`weapon`, Item.none).get($slot`weapon`),
             ) +
               rollover_value(
-                best.get(Slot.get("off-hand")) ??
-                  best
-                    .set(Slot.get("off-hand"), Item.none)
-                    .get(Slot.get("off-hand")),
+                best.get($slot`off-hand`) ??
+                  best.set($slot`off-hand`, Item.none).get($slot`off-hand`),
               )
           ) {
             //for non conflicting slots. calculate normally
             //remember best 1h to compare again when better off-hand slots are found
             best1hweapon =
-              best.get(Slot.get("weapon")) ??
-              best.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon"));
+              best.get($slot`weapon`) ??
+              best.set($slot`weapon`, Item.none).get($slot`weapon`);
             //there is no need to change offhand target since we pull one item at a time. in fact we prefer offhand to retain an independent value
             best.set(sl, it);
           }
@@ -12767,10 +12724,8 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
             if (
               rollover_value(it) +
                 rollover_value(
-                  best.get(Slot.get("off-hand")) ??
-                    best
-                      .set(Slot.get("off-hand"), Item.none)
-                      .get(Slot.get("off-hand")),
+                  best.get($slot`off-hand`) ??
+                    best.set($slot`off-hand`, Item.none).get($slot`off-hand`),
                 ) >
               rollover_value(best.get(sl) ?? best.set(sl, Item.none).get(sl))
             ) {
@@ -12783,17 +12738,17 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
             //the currently desired best weapon is 1 handed. So we just compare it to best weapon.
             best.set(sl, it);
             best1hweapon =
-              best.get(Slot.get("weapon")) ??
-              best.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon"));
+              best.get($slot`weapon`) ??
+              best.set($slot`weapon`, Item.none).get($slot`weapon`);
           } else if (rollover_value(it) > rollover_value(best1hweapon)) {
             //keep best1hweapon updated even if not best weapon
             best1hweapon =
-              best.get(Slot.get("weapon")) ??
-              best.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon"));
+              best.get($slot`weapon`) ??
+              best.set($slot`weapon`, Item.none).get($slot`weapon`);
           }
           //single handed weapons for the off-hand slot
           const weapon_offhand: boolean = haveSkill(
-            Skill.get("Double-Fisted Skull Smashing"),
+            $skill`Double-Fisted Skull Smashing`,
           );
           const conflict_mainhand: boolean =
             booleanModifier(it, "Single Equip") &&
@@ -12806,13 +12761,11 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
             if (
               rollover_value(it) >
               rollover_value(
-                best.get(Slot.get("off-hand")) ??
-                  best
-                    .set(Slot.get("off-hand"), Item.none)
-                    .get(Slot.get("off-hand")),
+                best.get($slot`off-hand`) ??
+                  best.set($slot`off-hand`, Item.none).get($slot`off-hand`),
               )
             ) {
-              best.set(Slot.get("off-hand"), it);
+              best.set($slot`off-hand`, it);
             }
           }
         } else {
@@ -12829,67 +12782,58 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
         best.set(sl, it);
         //best off-hand slot can make best remembered 1h weapon better than current best 2h weapon
         if (
-          Slot.get("off-hand") === sl &&
+          $slot`off-hand` === sl &&
           weaponHands(
-            best.get(Slot.get("weapon")) ??
-              best.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon")),
+            best.get($slot`weapon`) ??
+              best.set($slot`weapon`, Item.none).get($slot`weapon`),
           ) > 1
         ) {
           if (
             rollover_value(it) + rollover_value(best1hweapon) >
             rollover_value(
-              best.get(Slot.get("weapon")) ??
-                best.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon")),
+              best.get($slot`weapon`) ??
+                best.set($slot`weapon`, Item.none).get($slot`weapon`),
             )
           ) {
-            best.set(Slot.get("weapon"), best1hweapon);
+            best.set($slot`weapon`, best1hweapon);
           }
         }
       }
     }
     //time halo is special. cannot have any weapons or off-hand items equipped
     if (
-      rollover_value(Item.get("time halo")) >
+      rollover_value($item`time halo`) >
       rollover_value(
         best.get(worst_acc_slot) ??
           best.set(worst_acc_slot, Item.none).get(worst_acc_slot),
       ) +
         rollover_value(
-          best.get(Slot.get("weapon")) ??
-            best.set(Slot.get("weapon"), Item.none).get(Slot.get("weapon")),
+          best.get($slot`weapon`) ??
+            best.set($slot`weapon`, Item.none).get($slot`weapon`),
         ) +
         rollover_value(
-          best.get(Slot.get("off-hand")) ??
-            best.set(Slot.get("off-hand"), Item.none).get(Slot.get("off-hand")),
+          best.get($slot`off-hand`) ??
+            best.set($slot`off-hand`, Item.none).get($slot`off-hand`),
         )
     ) {
       if (
-        (possessEquipment(Item.get("time halo")) ||
-          canPull(Item.get("time halo"), true)) &&
-        auto_can_equip(Item.get("time halo"))
+        (possessEquipment($item`time halo`) ||
+          canPull($item`time halo`, true)) &&
+        auto_can_equip($item`time halo`)
       ) {
-        best.set(worst_acc_slot, Item.get("time halo"));
+        best.set(worst_acc_slot, $item`time halo`);
         //clearing weapon and off-hand here at least avoids pulling them after a time halo in the same rollover.
         //should technically decide based on improvement value instead, but if the best of 3 slots together are beaten by 5 their improvement value would be low
-        best.set(Slot.get("weapon"), Item.none);
-        best.set(Slot.get("off-hand"), Item.none);
+        best.set($slot`weapon`, Item.none);
+        best.set($slot`off-hand`, Item.none);
       }
     }
     //find the very best item
     const extra_debug: boolean = toBoolean(
       getProperty("_auto_extra_debug_bedtime_pulls"),
     );
-    for (let sl of Slot.get([
-      "hat",
-      "weapon",
-      "off-hand",
-      "back",
-      "shirt",
-      "pants",
-      "acc1",
-      "familiar",
-    ])) {
-      if (sl === Slot.get("acc1")) {
+    for (let sl of $slots`hat, weapon, off-hand, back, shirt, pants, acc1, familiar`) {
+      if (sl === $slot`acc1`) {
         sl = worst_acc_slot;
       }
 
@@ -12965,49 +12909,42 @@ function bedtime_pulls(): void {
     toFloat(getProperty("auto_bedtime_pulls_min_desirability")) <= 5.0 &&
     !in_lol()
   ) {
-    if (storageAmount(Item.get("potato alarm clock")) > 0) {
-      pullXWhenHaveY(Item.get("potato alarm clock"), 1, 0);
+    if (storageAmount($item`potato alarm clock`) > 0) {
+      pullXWhenHaveY($item`potato alarm clock`, 1, 0);
     }
   }
 
   if (
-    itemAmount(Item.get("muculent machete")) === 0 &&
+    itemAmount($item`muculent machete`) === 0 &&
     !(is_boris() || in_wotsf() || in_pokefam() || in_lol())
   ) {
     // no need in paths where can't use machete
-    pullXWhenHaveY(Item.get("antique machete"), 1, 0);
+    pullXWhenHaveY($item`antique machete`, 1, 0);
   }
   if (
-    itemAmount(Item.get("wet stunt nut stew")) === 0 &&
-    !possessEquipment(Item.get("Mega Gem")) &&
+    itemAmount($item`wet stunt nut stew`) === 0 &&
+    !possessEquipment($item`Mega Gem`) &&
     !isActuallyEd()
   ) {
-    pullXWhenHaveY(Item.get("wet stew"), 1, 0);
+    pullXWhenHaveY($item`wet stew`, 1, 0);
   }
   if (!blackMarketAvailable() && !in_lol()) {
-    pullXWhenHaveY(Item.get("blackberry galoshes"), 1, 0);
+    pullXWhenHaveY($item`blackberry galoshes`, 1, 0);
   }
   if (internalQuestStatus("questL11Desert") < 1) {
     const gnasirProgress: number = toInt(getProperty("gnasirProgress"));
-    if (
-      (gnasirProgress & 16) === 0 &&
-      auto_is_valid(Item.get("drum machine"))
-    ) {
-      pullXWhenHaveY(Item.get("drum machine"), 1, 0);
+    if ((gnasirProgress & 16) === 0 && auto_is_valid($item`drum machine`)) {
+      pullXWhenHaveY($item`drum machine`, 1, 0);
     }
     if ((gnasirProgress & 4) === 0) {
-      pullXWhenHaveY(Item.get("killing jar"), 1, 0);
+      pullXWhenHaveY($item`killing jar`, 1, 0);
     }
   }
   //scan through all pullable items for items that have a better rollover adv gain than currently best equipped item.
   bedtime_pulls_rollover_equip();
   //pull 11-leaf clover if we can use it
-  if (auto_is_valid(Item.get("11-leaf clover"))) {
-    pullXWhenHaveY(
-      Item.get("11-leaf clover"),
-      1,
-      itemAmount(Item.get("11-leaf clover")),
-    );
+  if (auto_is_valid($item`11-leaf clover`)) {
+    pullXWhenHaveY($item`11-leaf clover`, 1, itemAmount($item`11-leaf clover`));
   }
 }
 
@@ -13026,13 +12963,13 @@ export function doBedtime(): boolean {
   if (!almostRollover()) {
     if (myAdventures() > 4) {
       if (myInebriety() <= inebrietyLimit()) {
-        if (!in_gnoob() && myFamiliar() !== Familiar.get("Stooper")) {
+        if (!in_gnoob() && myFamiliar() !== $familiar`Stooper`) {
           auto_log_warning("Still adventurous! Stopping bedtime.", "red");
           return false;
         }
       }
     }
-    out_of_blood = in_darkGyffte() && itemAmount(Item.get("blood bag")) === 0;
+    out_of_blood = in_darkGyffte() && itemAmount($item`blood bag`) === 0;
     if (fullness_left() > 0 && canEat() && !out_of_blood) {
       auto_log_warning("Still hungry! Stopping bedtime.", "red");
       return false;
@@ -13067,7 +13004,7 @@ export function doBedtime(): boolean {
   while (LX_freeCombats()) {}
   // although seals can be fought drunk, it complicates code without a meaningful benefit
   if (
-    myClass() === Class.get("Seal Clubber") &&
+    myClass() === $class`Seal Clubber` &&
     guildStoreAvailable() &&
     myInebriety() <= inebrietyLimit() &&
     !in_avantGuard()
@@ -13082,27 +13019,27 @@ export function doBedtime(): boolean {
       let summoned: boolean = false;
       if (myDaycount() === 1 && myLevel() >= 6 && isHermitAvailable()) {
         cliExecute("make figurine of an ancient seal");
-        auto_buyUpTo(3, Item.get("seal-blubber candle"));
+        auto_buyUpTo(3, $item`seal-blubber candle`);
         ensureSealClubs();
         handleSealAncient();
         summoned = true;
       } else if (myLevel() >= 9) {
-        auto_buyUpTo(1, Item.get("figurine of an armored seal"));
-        auto_buyUpTo(10, Item.get("seal-blubber candle"));
+        auto_buyUpTo(1, $item`figurine of an armored seal`);
+        auto_buyUpTo(10, $item`seal-blubber candle`);
         ensureSealClubs();
-        handleSealNormal(Item.get("figurine of an armored seal"));
+        handleSealNormal($item`figurine of an armored seal`);
         summoned = true;
       } else if (myLevel() >= 5) {
-        auto_buyUpTo(1, Item.get("figurine of a cute baby seal"));
-        auto_buyUpTo(5, Item.get("seal-blubber candle"));
+        auto_buyUpTo(1, $item`figurine of a cute baby seal`);
+        auto_buyUpTo(5, $item`seal-blubber candle`);
         ensureSealClubs();
-        handleSealNormal(Item.get("figurine of a cute baby seal"));
+        handleSealNormal($item`figurine of a cute baby seal`);
         summoned = true;
       } else {
-        auto_buyUpTo(1, Item.get("figurine of a wretched-looking seal"));
-        auto_buyUpTo(1, Item.get("seal-blubber candle"));
+        auto_buyUpTo(1, $item`figurine of a wretched-looking seal`);
+        auto_buyUpTo(1, $item`seal-blubber candle`);
         ensureSealClubs();
-        handleSealNormal(Item.get("figurine of a wretched-looking seal"));
+        handleSealNormal($item`figurine of a wretched-looking seal`);
         summoned = true;
       }
       const newSeals: number = toInt(getProperty("_sealsSummoned"));
@@ -13123,10 +13060,10 @@ export function doBedtime(): boolean {
   }
 
   if (
-    itemAmount(Item.get("License to Chill")) > 0 &&
+    itemAmount($item`License to Chill`) > 0 &&
     !toBoolean(getProperty("_licenseToChillUsed"))
   ) {
-    use(1, Item.get("License to Chill"));
+    use(1, $item`License to Chill`);
   }
 
   if (
@@ -13136,7 +13073,7 @@ export function doBedtime(): boolean {
     myAdventures() >= 1
   ) {
     if (myDaycount() === 1) {
-      if (itemAmount(Item.get("Rain-Doh indigo cup")) > 0) {
+      if (itemAmount($item`Rain-Doh indigo cup`) > 0) {
         auto_log_info(
           `Copies left: ${5 - toInt(getProperty("_raindohCopiesMade"))}`,
           "olive",
@@ -13175,7 +13112,7 @@ export function doBedtime(): boolean {
       }
     }
     if (
-      auto_have_familiar(Familiar.get("Machine Elf")) &&
+      auto_have_familiar($familiar`Machine Elf`) &&
       toInt(getProperty("_machineTunnelsAdv")) < 5 &&
       inebriety_left() >= 0 &&
       myAdventures() > 0
@@ -13193,14 +13130,14 @@ export function doBedtime(): boolean {
   }
   //We are committing to end of day now...
   getSpaceJelly();
-  while (acquireHermitItem(Item.get("11-leaf clover"))) {}
+  while (acquireHermitItem($item`11-leaf clover`)) {}
 
   auto_burnRemainingSpadeDigs(); // use archaeologist spade
 
-  januaryToteAcquire(Item.get("makeshift garbage shirt")); //doubles stat gains in the LOV tunnel. also keep leftover charges for tomorrow.
+  januaryToteAcquire($item`makeshift garbage shirt`); //doubles stat gains in the LOV tunnel. also keep leftover charges for tomorrow.
   loveTunnelAcquire(true, Stat.none, true, 3, true, 1);
 
-  const bottle: Item = wrap_item(Item.get("genie bottle"));
+  const bottle: Item = wrap_item($item`genie bottle`);
   if (itemAmount(bottle) > 0 && auto_is_valid(bottle)) {
     //we are in bedtime so any wishes we planned to use today were already used. thus even if we can not use pocket wishes in this path we should still make them to avoid waste
     for (let i: number = toInt(getProperty("_genieWishesUsed")); i < 3; i++) {
@@ -13208,7 +13145,7 @@ export function doBedtime(): boolean {
     }
   }
   if (
-    canGenieCombat(Monster.get("Orcish Frat Boy Spy")) &&
+    canGenieCombat($monster`Orcish Frat Boy Spy`) &&
     !possessOutfit$1("frat warrior fatigues")
   ) {
     auto_log_info(
@@ -13218,22 +13155,21 @@ export function doBedtime(): boolean {
   }
 
   if (
-    itemAmount(Item.get("infinite BACON machine")) > 0 &&
+    itemAmount($item`infinite BACON machine`) > 0 &&
     !toBoolean(getProperty("_internetViralVideoBought")) &&
     !canInteract()
   ) {
     const hasDisintegrate: boolean =
-      auto_have_skill(Skill.get("Disintegrate")) &&
-      myMaxmp() >= 1.5 * mpCost(Skill.get("Disintegrate")); //will be limited by current mp, try to gauge if it will be available
+      auto_have_skill($skill`Disintegrate`) &&
+      myMaxmp() >= 1.5 * mpCost($skill`Disintegrate`); //will be limited by current mp, try to gauge if it will be available
     const notNeeded: boolean =
-      haveEffect(Effect.get("Everything Looks Yellow")) > 0 ||
+      haveEffect($effect`Everything Looks Yellow`) > 0 ||
       hasDisintegrate ||
       canYellowRay$1(); //have a common unlimited source of YR, no need to make viral video
     const baconUnused: boolean =
-      itemAmount(Item.get("BACON")) >=
-      100 * myDaycount() - 20 * (myDaycount() - 1); //BACON hasn't been used for something else this ascension
+      itemAmount($item`BACON`) >= 100 * myDaycount() - 20 * (myDaycount() - 1); //BACON hasn't been used for something else this ascension
     if (
-      auto_is_valid(Item.get("viral video")) &&
+      auto_is_valid($item`viral video`) &&
       !notNeeded &&
       baconUnused &&
       !in_koe() &&
@@ -13241,7 +13177,7 @@ export function doBedtime(): boolean {
     ) {
       //bacon store is unreachable in kingdom of exploathing or as werewolf
       //can only buy 1 per day and more than one a day might be wanted later so buy today's viral video
-      create(1, Item.get("viral video"));
+      create(1, $item`viral video`);
     }
   }
 
@@ -13259,8 +13195,8 @@ export function doBedtime(): boolean {
 
   if (
     !toBoolean(getProperty("_mayoTankSoaked")) &&
-    auto_get_campground().has(Item.get("portable Mayo Clinic")) &&
-    isUnrestricted(Item.get("portable Mayo Clinic"))
+    auto_get_campground().has($item`portable Mayo Clinic`) &&
+    isUnrestricted($item`portable Mayo Clinic`)
   ) {
     const temp: string = visitUrl("shop.php?action=bacta&whichshop=mayoclinic");
   }
@@ -13287,19 +13223,19 @@ export function doBedtime(): boolean {
   }
 
   if (
-    isUnrestricted(Item.get("Clan pool table")) &&
+    isUnrestricted($item`Clan pool table`) &&
     toInt(getProperty("_poolGames")) < 3 &&
-    itemAmount(Item.get("Clan VIP Lounge key")) > 0
+    itemAmount($item`Clan VIP Lounge key`) > 0
   ) {
     visitUrl("clan_viplounge.php?preaction=poolgame&stance=1");
     visitUrl("clan_viplounge.php?preaction=poolgame&stance=1");
-    if (auto_is_valid$3(Effect.get("Hustlin'"))) {
+    if (auto_is_valid$3($effect`Hustlin'`)) {
       visitUrl("clan_viplounge.php?preaction=poolgame&stance=3");
     }
     visitUrl("clan_viplounge.php?preaction=poolgame&stance=1");
   }
   if (
-    isUnrestricted(Item.get("colorful plastic ball")) &&
+    isUnrestricted($item`colorful plastic ball`) &&
     !toBoolean(getProperty("_ballpit")) &&
     getClanId() !== -1
   ) {
@@ -13311,44 +13247,44 @@ export function doBedtime(): boolean {
   ) {
     if (
       getProperty("telescopeLookedHigh") === "false" &&
-      auto_is_valid$3(Effect.get("Starry-Eyed"))
+      auto_is_valid$3($effect`Starry-Eyed`)
     ) {
       cliExecute("telescope high");
     }
   }
 
   if (
-    !possessEquipment(Item.get("Vicar's Tutu")) &&
+    !possessEquipment($item`Vicar's Tutu`) &&
     myDaycount() === 1 &&
-    itemAmount(Item.get("lump of Brituminous coal")) > 0
+    itemAmount($item`lump of Brituminous coal`) > 0
   ) {
-    if (itemAmount(Item.get("frilly skirt")) < 1 && knollAvailable()) {
-      auto_buyUpTo(1, Item.get("frilly skirt"));
+    if (itemAmount($item`frilly skirt`) < 1 && knollAvailable()) {
+      auto_buyUpTo(1, $item`frilly skirt`);
     }
-    if (itemAmount(Item.get("frilly skirt")) > 0) {
+    if (itemAmount($item`frilly skirt`) > 0) {
       autoCraft(
         "smith",
         1,
-        Item.get("lump of Brituminous coal"),
-        Item.get("frilly skirt"),
+        $item`lump of Brituminous coal`,
+        $item`frilly skirt`,
       );
     }
   }
 
   if (
     myDaycount() === 1 &&
-    (possessEquipment(Item.get("Thor's Pliers")) || freeCrafts$1() > 0) &&
-    !possessEquipment(Item.get("chrome sword")) &&
-    auto_is_valid(Item.get("chrome sword")) &&
+    (possessEquipment($item`Thor's Pliers`) || freeCrafts$1() > 0) &&
+    !possessEquipment($item`chrome sword`) &&
+    auto_is_valid($item`chrome sword`) &&
     !inAftercore() &&
     !in_tcrs()
   ) {
     const oreGoal: Item = toItem(getProperty("trapperOre"));
     let need: number = 1;
     const haveAdvSmithing: boolean = haveSkill(
-      Skill.get("Super-Advanced Meatsmithing"),
+      $skill`Super-Advanced Meatsmithing`,
     );
-    if (oreGoal === Item.get("chrome ore")) {
+    if (oreGoal === $item`chrome ore`) {
       need = 4;
     }
     if (!haveAdvSmithing) {
@@ -13357,12 +13293,12 @@ export function doBedtime(): boolean {
       );
     }
     if (
-      itemAmount(Item.get("chrome ore")) >= need &&
-      !possessEquipment(Item.get("chrome sword")) &&
+      itemAmount($item`chrome ore`) >= need &&
+      !possessEquipment($item`chrome sword`) &&
       isArmoryAvailable() &&
       haveAdvSmithing
     ) {
-      cliExecute(`make ${Item.get("chrome sword")}`);
+      cliExecute(`make ${$item`chrome sword`}`);
     } else {
       auto_log_info$1("Did not make chrome sword");
     }
@@ -13372,12 +13308,12 @@ export function doBedtime(): boolean {
 
   while (
     myDaycount() === 1 &&
-    auto_is_valid(Item.get("resolution: be more adventurous")) &&
-    itemAmount(Item.get("resolution: be more adventurous")) > 0 &&
+    auto_is_valid($item`resolution: be more adventurous`) &&
+    itemAmount($item`resolution: be more adventurous`) > 0 &&
     toInt(getProperty("_resolutionAdv")) < 10 &&
     !canInteract()
   ) {
-    use(1, Item.get("resolution: be more adventurous"));
+    use(1, $item`resolution: be more adventurous`);
   }
   // If in TCRS skip using freecrafts but alert user of how many they can manually use.
   if (in_tcrs() && freeCrafts$1() > 0) {
@@ -13393,22 +13329,22 @@ export function doBedtime(): boolean {
     // Check for rapid prototyping
     while (
       freeCrafts$1() > 0 &&
-      itemAmount(Item.get("scrumptious reagent")) > 0 &&
-      itemAmount(Item.get("cranberries")) > 0 &&
-      itemAmount(Item.get("cranberry cordial")) < 2 &&
-      haveSkill(Skill.get("Advanced Saucecrafting"))
+      itemAmount($item`scrumptious reagent`) > 0 &&
+      itemAmount($item`cranberries`) > 0 &&
+      itemAmount($item`cranberry cordial`) < 2 &&
+      haveSkill($skill`Advanced Saucecrafting`)
     ) {
-      cliExecute(`make ${Item.get("cranberry cordial")}`);
+      cliExecute(`make ${$item`cranberry cordial`}`);
     }
-    putCloset(itemAmount(Item.get("cranberries")), Item.get("cranberries"));
+    putCloset(itemAmount($item`cranberries`), $item`cranberries`);
     while (
       freeCrafts$1() > 0 &&
-      itemAmount(Item.get("scrumptious reagent")) > 0 &&
-      itemAmount(Item.get("glass of goat's milk")) > 0 &&
-      itemAmount(Item.get("milk of magnesium")) < 2 &&
-      haveSkill(Skill.get("Advanced Saucecrafting"))
+      itemAmount($item`scrumptious reagent`) > 0 &&
+      itemAmount($item`glass of goat's milk`) > 0 &&
+      itemAmount($item`milk of magnesium`) < 2 &&
+      haveSkill($skill`Advanced Saucecrafting`)
     ) {
-      cliExecute(`make ${Item.get("milk of magnesium")}`);
+      cliExecute(`make ${$item`milk of magnesium`}`);
     }
   }
 
@@ -13416,7 +13352,7 @@ export function doBedtime(): boolean {
 
   if (
     getProperty("_grimBuff") === "false" &&
-    auto_have_familiar(Familiar.get("Grim Brother"))
+    auto_have_familiar($familiar`Grim Brother`)
   ) {
     const temp: string = visitUrl(
       "choice.php?pwd=&whichchoice=835&option=1",
@@ -13437,21 +13373,21 @@ export function doBedtime(): boolean {
       cliExecute("clan_rumpus.php?action=click&spot=3&furni=3");
       cliExecute("clan_rumpus.php?action=click&spot=3&furni=3");
     }
-    if (itemAmount(Item.get("Clan VIP Lounge key")) > 0) {
+    if (itemAmount($item`Clan VIP Lounge key`) > 0) {
       if (
-        isUnrestricted(Item.get("Olympic-sized Clan crate")) &&
+        isUnrestricted($item`Olympic-sized Clan crate`) &&
         !toBoolean(getProperty("_olympicSwimmingPool"))
       ) {
         cliExecute("swim noncombat");
       }
       if (
-        isUnrestricted(Item.get("Olympic-sized Clan crate")) &&
+        isUnrestricted($item`Olympic-sized Clan crate`) &&
         !toBoolean(getProperty("_olympicSwimmingPoolItemFound"))
       ) {
         cliExecute("swim item");
       }
       if (
-        isUnrestricted(Item.get("Clan looking glass")) &&
+        isUnrestricted($item`Clan looking glass`) &&
         !toBoolean(getProperty("_lookingGlass"))
       ) {
         const temp: string = visitUrl("clan_viplounge.php?action=lookingglass");
@@ -13471,7 +13407,7 @@ export function doBedtime(): boolean {
         }
       }
       if (
-        isUnrestricted(Item.get("Crimbough")) &&
+        isUnrestricted($item`Crimbough`) &&
         !toBoolean(getProperty("_crimboTree"))
       ) {
         cliExecute("crimbotree get");
@@ -13495,46 +13431,46 @@ export function doBedtime(): boolean {
   }
   if (inAftercore()) {
     if (
-      itemAmount(Item.get("The Legendary Beat")) > 0 &&
+      itemAmount($item`The Legendary Beat`) > 0 &&
       !toBoolean(getProperty("_legendaryBeat"))
     ) {
-      use(1, Item.get("The Legendary Beat"));
+      use(1, $item`The Legendary Beat`);
     }
     if (
-      auto_have_skill(Skill.get("Summon Clip Art")) &&
+      auto_have_skill($skill`Summon Clip Art`) &&
       toInt(getProperty("_clipartSummons")) === 0
     ) {
       cliExecute("make unbearable light");
     }
     if (
-      auto_have_skill(Skill.get("Summon Clip Art")) &&
+      auto_have_skill($skill`Summon Clip Art`) &&
       toInt(getProperty("_clipartSummons")) === 1
     ) {
       cliExecute("make cold-filtered water");
     }
     if (
-      auto_have_skill(Skill.get("Summon Clip Art")) &&
+      auto_have_skill($skill`Summon Clip Art`) &&
       toInt(getProperty("_clipartSummons")) === 2
     ) {
       cliExecute("make bucket of wine");
     }
     if (
-      itemAmount(Item.get("handmade hobby horse")) > 0 &&
+      itemAmount($item`handmade hobby horse`) > 0 &&
       !toBoolean(getProperty("_hobbyHorseUsed"))
     ) {
-      use(1, Item.get("handmade hobby horse"));
+      use(1, $item`handmade hobby horse`);
     }
     if (
-      itemAmount(Item.get("ball-in-a-cup")) > 0 &&
+      itemAmount($item`ball-in-a-cup`) > 0 &&
       !toBoolean(getProperty("_ballInACupUsed"))
     ) {
-      use(1, Item.get("ball-in-a-cup"));
+      use(1, $item`ball-in-a-cup`);
     }
     if (
-      itemAmount(Item.get("set of jacks")) > 0 &&
+      itemAmount($item`set of jacks`) > 0 &&
       !toBoolean(getProperty("_setOfJacksUsed"))
     ) {
-      use(1, Item.get("set of jacks"));
+      use(1, $item`set of jacks`);
     }
   }
 
@@ -13566,19 +13502,19 @@ export function doBedtime(): boolean {
     }
   }
   // Is +50% to all stats the best choice here? I don't know!
-  if (auto_is_valid$3(Effect.get("Broad-Spectrum Vaccine"))) {
-    spacegateVaccine(Effect.get("Broad-Spectrum Vaccine"));
+  if (auto_is_valid$3($effect`Broad-Spectrum Vaccine`)) {
+    spacegateVaccine($effect`Broad-Spectrum Vaccine`);
   }
 
-  if (!auto_is_valid$3(Effect.get("There's No N in Love"))) {
+  if (!auto_is_valid$3($effect`There's No N in Love`)) {
     zataraSeaside("familiar");
   } else {
     zataraSeaside("item");
   }
 
   if (
-    isUnrestricted(Item.get("Source terminal")) &&
-    Item.get("Source terminal").toString() in getCampground()
+    isUnrestricted($item`Source terminal`) &&
+    $item`Source terminal`.toString() in getCampground()
   ) {
     if (!inAftercore() && getProperty("auto_extrudeChoice") !== "none") {
       let count_1: number = 3 - toInt(getProperty("_sourceTerminalExtrudes"));
@@ -13611,7 +13547,7 @@ export function doBedtime(): boolean {
       }
       let amt: number = extrudeChoice.size;
       let acquire: string = "booze";
-      if (myPath() === Path.get("Teetotaler")) {
+      if (myPath() === $path`Teetotaler`) {
         acquire = "food";
       }
       while (amt < 3) {
@@ -13619,7 +13555,7 @@ export function doBedtime(): boolean {
         amt++;
       }
 
-      while (count_1 > 0 && itemAmount(Item.get("Source essence")) >= 10) {
+      while (count_1 > 0 && itemAmount($item`Source essence`) >= 10) {
         auto_sourceTerminalExtrude(
           extrudeChoice.get(3 - count_1) ??
             extrudeChoice.set(3 - count_1, "").get(3 - count_1),
@@ -13632,7 +13568,7 @@ export function doBedtime(): boolean {
     if (
       extrudeLeft > 0 &&
       !in_pokefam() &&
-      itemAmount(Item.get("Source essence")) >= 10
+      itemAmount($item`Source essence`) >= 10
     ) {
       auto_log_info(
         `You still have ${extrudeLeft} Source Extrusions left`,
@@ -13643,7 +13579,7 @@ export function doBedtime(): boolean {
 
   auto_burnPowerfulGloveCharges();
 
-  if (itemAmount(Item.get("Rain-Doh indigo cup")) > 0) {
+  if (itemAmount($item`Rain-Doh indigo cup`) > 0) {
     auto_log_info(
       `Copies left: ${5 - toInt(getProperty("_raindohCopiesMade"))}`,
       "olive",
@@ -13653,11 +13589,11 @@ export function doBedtime(): boolean {
     auto_log_info(`Pulls remaining: ${pullsRemaining()}`, "olive");
   }
 
-  if (haveSkill(Skill.get("Inigo's Incantation of Inspiration"))) {
+  if (haveSkill($skill`Inigo's Incantation of Inspiration`)) {
     const craftingLeft: number = 5 - toInt(getProperty("_inigosCasts"));
     auto_log_info(`Free Inigo's craftings left: ${craftingLeft}`, "blue");
   }
-  if (itemAmount(Item.get("Loathing Legion jackhammer")) > 0) {
+  if (itemAmount($item`Loathing Legion jackhammer`) > 0) {
     const craftingLeft: number =
       3 - toInt(getProperty("_legionJackhammerCrafting"));
     auto_log_info(
@@ -13665,7 +13601,7 @@ export function doBedtime(): boolean {
       "blue",
     );
   }
-  if (itemAmount(Item.get("Thor's Pliers")) > 0) {
+  if (itemAmount($item`Thor's Pliers`) > 0) {
     const craftingLeft: number =
       10 - toInt(getProperty("_thorsPliersCrafting"));
     auto_log_info(`Free Thor's Pliers craftings left: ${craftingLeft}`, "blue");
@@ -13680,7 +13616,7 @@ export function doBedtime(): boolean {
     );
   }
   if (
-    possessEquipment(Item.get("Kremlin's Greatest Briefcase")) &&
+    possessEquipment($item`Kremlin's Greatest Briefcase`) &&
     toInt(getProperty("_kgbClicksUsed")) < 24
   ) {
     kgbWasteClicks();
@@ -13707,9 +13643,9 @@ export function doBedtime(): boolean {
 
   let smiles: number =
     5 *
-      (itemAmount(Item.get("Golden Mr. Accessory")) +
-        storageAmount(Item.get("Golden Mr. Accessory")) +
-        closetAmount(Item.get("Golden Mr. Accessory"))) -
+      (itemAmount($item`Golden Mr. Accessory`) +
+        storageAmount($item`Golden Mr. Accessory`) +
+        closetAmount($item`Golden Mr. Accessory`)) -
     toInt(getProperty("_smilesOfMrA"));
   if (in_glover()) {
     smiles = 0;
@@ -13723,13 +13659,13 @@ export function doBedtime(): boolean {
   }
 
   if (
-    itemAmount(Item.get("CSA fire-starting kit")) > 0 &&
+    itemAmount($item`CSA fire-starting kit`) > 0 &&
     !toBoolean(getProperty("_fireStartingKitUsed"))
   ) {
     auto_log_info("Still have a CSA Fire-Starting Kit you can use!", "blue");
   }
   if (
-    itemAmount(Item.get("Glenn's golden dice")) > 0 &&
+    itemAmount($item`Glenn's golden dice`) > 0 &&
     !toBoolean(getProperty("_glennGoldenDiceUsed"))
   ) {
     auto_log_info(
@@ -13738,22 +13674,22 @@ export function doBedtime(): boolean {
     );
   }
   if (
-    itemAmount(Item.get("License to Chill")) > 0 &&
+    itemAmount($item`License to Chill`) > 0 &&
     !toBoolean(getProperty("_licenseToChillUsed"))
   ) {
     auto_log_info("You are still licensed enough to be able to chill.", "blue");
   }
 
   if (
-    itemAmount(Item.get("School of Hard Knocks Diploma")) > 0 &&
+    itemAmount($item`School of Hard Knocks Diploma`) > 0 &&
     !toBoolean(getProperty("_hardKnocksDiplomaUsed"))
   ) {
-    use(1, Item.get("School of Hard Knocks Diploma"));
+    use(1, $item`School of Hard Knocks Diploma`);
   }
 
   if (
     !toBoolean(getProperty("_lyleFavored")) &&
-    auto_is_valid$3(Effect.get("Favored by Lyle"))
+    auto_is_valid$3($effect`Favored by Lyle`)
   ) {
     const temp: string = visitUrl(
       "place.php?whichplace=monorail&action=monorail_lyle",
@@ -13774,9 +13710,9 @@ export function doBedtime(): boolean {
     }
   }
 
-  elementalPlanes_takeJob(Element.get("spooky"));
-  elementalPlanes_takeJob(Element.get("stench"));
-  elementalPlanes_takeJob(Element.get("cold"));
+  elementalPlanes_takeJob($element`spooky`);
+  elementalPlanes_takeJob($element`stench`);
+  elementalPlanes_takeJob($element`cold`);
 
   auto_beachUseFreeCombs();
   auto_drinkNightcap();
@@ -13788,12 +13724,12 @@ export function doBedtime(): boolean {
   equipRollover(false);
   // Use up any cursed monkey paw wishes on Frosty (+100% item, +100% meat, +25 ML)
   // Unless we're limiting ML, then do One Very Clear Eye
-  let effect_to_wish: Effect = Effect.get("Frosty");
+  let effect_to_wish: Effect = $effect`Frosty`;
   if (getProperty("auto_MLSafetyLimit") !== "" || in_wereprof()) {
     // Professor hates ML
     if (toInt(getProperty("auto_MLSafetyLimit")) < 25 || in_wereprof()) {
       // We're adding +25 ML that won't be shrugged. Professor hates ML
-      effect_to_wish = Effect.get("One Very Clear Eye");
+      effect_to_wish = $effect`One Very Clear Eye`;
     }
   }
   if (auto_haveMonkeyPaw() && auto_monkeyPawWishesLeft() > 0) {
@@ -13801,7 +13737,7 @@ export function doBedtime(): boolean {
     // if we unlocked the guild and have a meatcar, unlock Whitey's Grove so we can get bird rib / lion oil
     if (
       toInt(getProperty("lastGuildStoreOpen")) === myAscensions() &&
-      itemAmount(Item.get("bitchin' meatcar")) > 0
+      itemAmount($item`bitchin' meatcar`) > 0
     ) {
       // start, then finish the meatcar quest
       if (internalQuestStatus("questG01Meatcar") < 1) {
@@ -13815,7 +13751,7 @@ export function doBedtime(): boolean {
         visitUrl("guild.php?place=paco");
         runChoice(1);
       }
-      for (const it of Item.get(["lion oil", "bird rib"])) {
+      for (const it of $items`lion oil, bird rib`) {
         if (itemAmount(it) > 0) {
           continue;
         }
@@ -13840,7 +13776,7 @@ export function doBedtime(): boolean {
   //There is a bug where Ed servant's can't be switched due to an issue in KoL itself
   //Per Discord, work around is to never log out with a level 7 or greater Scribe
   //Priest is always unlocked prior to Scribe. Just always attempt to switch to Priest at bedtime
-  handleServant(Servant.get("Priest"));
+  handleServant($servant`Priest`);
 
   function canChangeToStooper(): boolean {
     if (in_small() || in_wereprof()) {
@@ -13848,9 +13784,9 @@ export function doBedtime(): boolean {
       return false;
     }
     if (
-      haveFamiliar(Familiar.get("Stooper")) &&
+      haveFamiliar($familiar`Stooper`) &&
       pathAllowsChangingFamiliar() &&
-      myFamiliar() !== Familiar.get("Stooper")
+      myFamiliar() !== $familiar`Stooper`
     ) {
       //do not use auto_ that returns false in 100run, which stooper drinking does not interrupt.
       //some paths forbid familiar or dont allow changing it but mafia still indicates you have the familiar
@@ -13885,10 +13821,10 @@ export function doBedtime(): boolean {
     if (canChangeToStooper() && inebriety_left() === 0) {
       //stooper drinking is only useful when liver is exactly at max without a stooper equipped.
       auto_log_info("You have a Stooper, you can increase liver by 1!", "blue");
-      useFamiliar(Familiar.get("Stooper"));
+      useFamiliar($familiar`Stooper`);
     }
     if (
-      auto_have_familiar(Familiar.get("Machine Elf")) &&
+      auto_have_familiar($familiar`Machine Elf`) &&
       toInt(getProperty("_machineTunnelsAdv")) < 5
     ) {
       auto_log_info(
@@ -13912,9 +13848,9 @@ export function doBedtime(): boolean {
       "You need to overdrink and then run me again. Beep.",
       "red",
     );
-    if (haveSkill(Skill.get("The Ode to Booze"))) {
-      shrugAT$1(Effect.get("Ode to Booze"));
-      buffMaintain$4(Effect.get("Ode to Booze"));
+    if (haveSkill($skill`The Ode to Booze`)) {
+      shrugAT$1($effect`Ode to Booze`);
+      buffMaintain$4($effect`Ode to Booze`);
     }
     return false;
   } else {
@@ -13933,10 +13869,10 @@ export function doBedtime(): boolean {
       }
       if (
         !toBoolean(getProperty("_photocopyUsed")) &&
-        isUnrestricted(Item.get("deluxe fax machine")) &&
+        isUnrestricted($item`deluxe fax machine`) &&
         myAdventures() > 0 &&
         !(is_boris() || is_jarlsberg() || is_pete()) &&
-        itemAmount(Item.get("Clan VIP Lounge key")) > 0
+        itemAmount($item`Clan VIP Lounge key`) > 0
       ) {
         auto_log_info(
           "You may have a fax that you can use. Check it out!",
@@ -13948,8 +13884,8 @@ export function doBedtime(): boolean {
     bedtime_still(); //quickly use up all remaining uses of Nash Crosby's Still during bedtime
 
     if (
-      getWorkshed() === Item.get("spinning wheel") &&
-      isUnrestricted(Item.get("spinning wheel")) &&
+      getWorkshed() === $item`spinning wheel` &&
+      isUnrestricted($item`spinning wheel`) &&
       !toBoolean(getProperty("_spinningWheel"))
     ) {
       auto_log_info("Using the spinning wheel in your workshed", "blue");
@@ -13968,15 +13904,15 @@ export function doBedtime(): boolean {
     auto_scepterRollover();
 
     if (
-      haveSkill(Skill.get("Calculate the Universe")) &&
-      auto_is_valid$2(Skill.get("Calculate the Universe")) &&
+      haveSkill($skill`Calculate the Universe`) &&
+      auto_is_valid$2($skill`Calculate the Universe`) &&
       toInt(getProperty("_universeCalculated")) <
         min(3, toInt(getProperty("skillLevel144")))
     ) {
       auto_log_info("You can still Calculate the Universe!", "blue");
     }
 
-    const deck: Item = wrap_item(Item.get("Deck of Every Card"));
+    const deck: Item = wrap_item($item`Deck of Every Card`);
     if (
       isUnrestricted(deck) &&
       itemAmount(deck) > 0 &&
@@ -13990,10 +13926,10 @@ export function doBedtime(): boolean {
     }
 
     if (
-      isUnrestricted(Item.get("Time-Spinner")) &&
-      itemAmount(Item.get("Time-Spinner")) > 0 &&
+      isUnrestricted($item`Time-Spinner`) &&
+      itemAmount($item`Time-Spinner`) > 0 &&
       toInt(getProperty("_timeSpinnerMinutesUsed")) < 10 &&
-      auto_is_valid(Item.get("Time-Spinner"))
+      auto_is_valid($item`Time-Spinner`)
     ) {
       auto_log_info(
         `You have ${10 - toInt(getProperty("_timeSpinnerMinutesUsed"))} minutes left to Time-Spinner!`,
@@ -14002,7 +13938,7 @@ export function doBedtime(): boolean {
     }
 
     if (
-      isUnrestricted(wrap_item(Item.get("Chateau Mantegna room key"))) &&
+      isUnrestricted(wrap_item($item`Chateau Mantegna room key`)) &&
       !toBoolean(getProperty("_chateauMonsterFought")) &&
       toBoolean(getProperty("chateauAvailable"))
     ) {
@@ -14014,28 +13950,25 @@ export function doBedtime(): boolean {
 
     if (
       !toBoolean(getProperty("_streamsCrossed")) &&
-      possessEquipment(Item.get("protonic accelerator pack")) &&
-      auto_is_valid$3(Effect.get("Total Protonic Reversal"))
+      possessEquipment($item`protonic accelerator pack`) &&
+      auto_is_valid$3($effect`Total Protonic Reversal`)
     ) {
       cliExecute("crossstreams");
     }
 
     if (
-      isUnrestricted(Item.get("shrine to the Barrel god")) &&
+      isUnrestricted($item`shrine to the Barrel god`) &&
       !toBoolean(getProperty("_barrelPrayer")) &&
       toBoolean(getProperty("barrelShrineUnlocked"))
     ) {
       auto_log_info("You can still worship the barrel god today.", "blue");
     }
     if (
-      isUnrestricted(Item.get("airplane charter: Dinseylandfill")) &&
+      isUnrestricted($item`airplane charter: Dinseylandfill`) &&
       !toBoolean(getProperty("_dinseyGarbageDisposed")) &&
-      elementalPlanes_access(Element.get("stench"))
+      elementalPlanes_access($element`stench`)
     ) {
-      if (
-        itemAmount(Item.get("bag of park garbage")) > 0 ||
-        pullsRemaining() > 0
-      ) {
+      if (itemAmount($item`bag of park garbage`) > 0 || pullsRemaining() > 0) {
         auto_log_info(
           "You can still dispose of Garbage in Dinseyland.",
           "blue",
@@ -14043,17 +13976,17 @@ export function doBedtime(): boolean {
       }
     }
     if (
-      isUnrestricted(Item.get("airplane charter: That 70s Volcano")) &&
+      isUnrestricted($item`airplane charter: That 70s Volcano`) &&
       !toBoolean(getProperty("_infernoDiscoVisited")) &&
-      elementalPlanes_access(Element.get("hot"))
+      elementalPlanes_access($element`hot`)
     ) {
       if (
-        itemAmount(Item.get("smooth velvet hat")) > 0 ||
-        itemAmount(Item.get("smooth velvet shirt")) > 0 ||
-        itemAmount(Item.get("smooth velvet pants")) > 0 ||
-        itemAmount(Item.get("smooth velvet hanky")) > 0 ||
-        itemAmount(Item.get("smooth velvet pocket square")) > 0 ||
-        itemAmount(Item.get("smooth velvet socks")) > 0
+        itemAmount($item`smooth velvet hat`) > 0 ||
+        itemAmount($item`smooth velvet shirt`) > 0 ||
+        itemAmount($item`smooth velvet pants`) > 0 ||
+        itemAmount($item`smooth velvet hanky`) > 0 ||
+        itemAmount($item`smooth velvet pocket square`) > 0 ||
+        itemAmount($item`smooth velvet socks`) > 0
       ) {
         auto_log_info(
           "You can still disco inferno at the Inferno Disco.",
@@ -14062,9 +13995,9 @@ export function doBedtime(): boolean {
       }
     }
     if (
-      isUnrestricted(Item.get("potted tea tree")) &&
+      isUnrestricted($item`potted tea tree`) &&
       !toBoolean(getProperty("_pottedTeaTreeUsed")) &&
-      auto_get_campground().has(Item.get("potted tea tree"))
+      auto_get_campground().has($item`potted tea tree`)
     ) {
       auto_log_info("You have a tea tree to shake!", "blue");
     }

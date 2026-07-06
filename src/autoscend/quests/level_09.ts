@@ -6,12 +6,10 @@ import {
   canadiaAvailable,
   cliExecute,
   closetAmount,
-  Coinmaster,
   containsText,
   council,
   creatableAmount,
   create,
-  Effect,
   Element,
   Familiar,
   floor,
@@ -25,7 +23,6 @@ import {
   itemDropModifier,
   Location,
   min,
-  Monster,
   monsterLevelAdjustment,
   myBjornedFamiliar,
   myHp,
@@ -37,10 +34,7 @@ import {
   myTurncount,
   npcPrice,
   numericModifier,
-  Servant,
   setProperty,
-  Skill,
-  Slot,
   squareRoot,
   takeCloset,
   toBoolean,
@@ -48,6 +42,19 @@ import {
   use,
   visitUrl,
 } from "kolmafia";
+import {
+  $coinmaster,
+  $effect,
+  $element,
+  $familiar,
+  $item,
+  $location,
+  $monster,
+  $servant,
+  $skill,
+  $slot,
+} from "libram";
+
 import { resetState } from "../../autoscend";
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv$1, autoAdv$2, autoLuckyAdv$1 } from "../auto_adventure";
@@ -143,20 +150,20 @@ export function LX_loggingHatchet(): boolean {
   if (kolhs_mandatorySchool()) {
     return false; //avoid infinite loop in kolhs. we can not get the hatchet until we finish mandatory school for the day
   }
-  if (availableAmount(Item.get("logging hatchet")) > 0) {
+  if (availableAmount($item`logging hatchet`) > 0) {
     return false;
   }
 
   if (
-    Location.get("Camp Logging Camp").turnsSpent > 0 ||
-    Location.get("Camp Logging Camp").combatQueue !== "" ||
-    Location.get("Camp Logging Camp").noncombatQueue !== ""
+    $location`Camp Logging Camp`.turnsSpent > 0 ||
+    $location`Camp Logging Camp`.combatQueue !== "" ||
+    $location`Camp Logging Camp`.noncombatQueue !== ""
   ) {
     return false;
   }
 
   auto_log_info("Acquiring the logging hatchet from Camp Logging Camp", "blue");
-  autoAdv$1(1, Location.get("Camp Logging Camp"));
+  autoAdv$1(1, $location`Camp Logging Camp`);
   return true;
 }
 
@@ -174,12 +181,12 @@ export function L9_leafletQuest(): boolean {
     return false;
   }
   //get a [strange leaflet]
-  if (closetAmount(Item.get("strange leaflet")) > 0) {
-    takeCloset(1, Item.get("strange leaflet"));
+  if (closetAmount($item`strange leaflet`) > 0) {
+    takeCloset(1, $item`strange leaflet`);
   }
-  if (availableAmount(Item.get("strange leaflet")) === 0) {
+  if (availableAmount($item`strange leaflet`) === 0) {
     council();
-    if (itemAmount(Item.get("strange leaflet")) === 0) {
+    if (itemAmount($item`strange leaflet`) === 0) {
       auto_log_debug$1(
         "Tried to grab a [strange leaflet] from the council and it did not work... This needs fixing. skipping for now.",
       );
@@ -206,7 +213,7 @@ export function L9_leafletQuest(): boolean {
 function L9_chasmMaximizeForNoncombat(): void {
   auto_log_info("Let's assess our scores for blech house", "blue");
   let best: string = "mus";
-  const loc: Location = Location.get("The Smut Orc Logging Camp");
+  const loc: Location = $location`The Smut Orc Logging Camp`;
   const mustry: string =
     "1000muscle,1000weapon damage,10000weapon damage percent";
   const mystry: string =
@@ -264,20 +271,20 @@ export function bridgeGoal(): number {
 
 export function fastenerCount(): number {
   let base: number = toInt(getProperty("chasmBridgeProgress"));
-  base = base + itemAmount(Item.get("thick caulk"));
-  base = base + itemAmount(Item.get("long hard screw"));
-  base = base + itemAmount(Item.get("messy butt joint"));
-  base = base + 5 * itemAmount(Item.get("smut orc keepsake box"));
+  base = base + itemAmount($item`thick caulk`);
+  base = base + itemAmount($item`long hard screw`);
+  base = base + itemAmount($item`messy butt joint`);
+  base = base + 5 * itemAmount($item`smut orc keepsake box`);
 
   return base;
 }
 
 export function lumberCount(): number {
   let base: number = toInt(getProperty("chasmBridgeProgress"));
-  base = base + itemAmount(Item.get("morningwood plank"));
-  base = base + itemAmount(Item.get("raging hardwood plank"));
-  base = base + itemAmount(Item.get("weirdwood plank"));
-  base = base + 5 * itemAmount(Item.get("smut orc keepsake box"));
+  base = base + itemAmount($item`morningwood plank`);
+  base = base + itemAmount($item`raging hardwood plank`);
+  base = base + itemAmount($item`weirdwood plank`);
+  base = base + 5 * itemAmount($item`smut orc keepsake box`);
 
   return base;
 }
@@ -290,7 +297,7 @@ export function finishBuildingSmutOrcBridge(): boolean {
     return false;
   }
   // use any keepsake boxes we have
-  const keepsakeBox: Item = Item.get("smut orc keepsake box");
+  const keepsakeBox: Item = $item`smut orc keepsake box`;
   if (itemAmount(keepsakeBox) > 0 && auto_is_valid(keepsakeBox)) {
     use(itemAmount(keepsakeBox), keepsakeBox);
   }
@@ -300,7 +307,7 @@ export function finishBuildingSmutOrcBridge(): boolean {
   );
   // finish chasm if we can
   if (auto_canLeapBridge()) {
-    autoForceEquip$3(Item.get("bat wings"));
+    autoForceEquip$3($item`bat wings`);
     visitUrl("place.php?whichplace=orc_chasm&action=bridge_jump");
     visitUrl("place.php?whichplace=highlands&action=highlands_dude");
     return true;
@@ -326,7 +333,7 @@ export function prepareForSmutOrcs(): void {
   }
   // -Combat is useless here since NC is triggered by killing Orcs...So we kill orcs better!
   // -ML helps us deal more cold damage and trigger the NC faster.
-  asdonBuff$1(Effect.get("Driving Intimidatingly"));
+  asdonBuff$1($effect`Driving Intimidatingly`);
   // Check our Load out to see if spells are the best option for Orc-Thumping
   if (isGuildClass()) {
     // This only applies to classes which can use perm'd skills,
@@ -334,25 +341,22 @@ export function prepareForSmutOrcs(): void {
     let useSpellsInOrcCamp: boolean = false;
 
     acquireMP$2(32, 0); //pre_adv will always do this later, but waiting for it may fail checks of ability to cast spells here
-    if (
-      setFlavour(Element.get("cold")) &&
-      canUse$2(Skill.get("Stuffed Mortar Shell"))
-    ) {
+    if (setFlavour($element`cold`) && canUse$2($skill`Stuffed Mortar Shell`)) {
       useSpellsInOrcCamp = true;
     }
 
     if (
-      setFlavour(Element.get("cold")) &&
-      canUse$1(Skill.get("Cannelloni Cannon"), false)
+      setFlavour($element`cold`) &&
+      canUse$1($skill`Cannelloni Cannon`, false)
     ) {
       useSpellsInOrcCamp = true;
     }
 
-    if (canUse$1(Skill.get("Saucegeyser"), false)) {
+    if (canUse$1($skill`Saucegeyser`, false)) {
       useSpellsInOrcCamp = true;
     }
 
-    if (canUse$1(Skill.get("Saucecicle"), false)) {
+    if (canUse$1($skill`Saucecicle`, false)) {
       useSpellsInOrcCamp = true;
     }
     // Always Maximize and choose our default Non-Com First, in case we are wrong about the non-com we MAY have some gear still equipped to help us.
@@ -361,8 +365,8 @@ export function prepareForSmutOrcs(): void {
       addToMaximize(
         "myst,40spell damage,80spell damage percent,40cold spell damage,-1000 ml",
       );
-      buffMaintain$3(Effect.get("Carol of the Hells"), 50, 1, 1);
-      buffMaintain$3(Effect.get("Song of Sauce"), 150, 1, 1);
+      buffMaintain$3($effect`Carol of the Hells`, 50, 1, 1);
+      buffMaintain$3($effect`Song of Sauce`, 150, 1, 1);
 
       auto_log_info(
         "If we encounter Blech House when we are not expecting it we will stop.",
@@ -378,8 +382,8 @@ export function prepareForSmutOrcs(): void {
       addToMaximize(
         "muscle,40weapon damage,60weapon damage percent,40cold damage,-1000 ml",
       );
-      buffMaintain$3(Effect.get("Carol of the Bulls"), 50, 1, 1);
-      buffMaintain$3(Effect.get("Song of the North"), 150, 1, 1);
+      buffMaintain$3($effect`Carol of the Bulls`, 50, 1, 1);
+      buffMaintain$3($effect`Song of the North`, 150, 1, 1);
 
       auto_log_info(
         "If we encounter Blech House when we are not expecting it we will stop.",
@@ -393,7 +397,7 @@ export function prepareForSmutOrcs(): void {
     }
   }
   // This adds a tonne of damage and NC progress
-  buffMaintain$4(Effect.get("Triple-Sized"));
+  buffMaintain$4($effect`Triple-Sized`);
 
   if (toInt(getProperty("smutOrcNoncombatProgress")) === 15) {
     // If we think the non-com will hit NOW we clear maximizer to keep previous settings from carrying forward
@@ -407,25 +411,25 @@ export function prepareForSmutOrcs(): void {
     return;
   }
 
-  if (in_plumber() && possessEquipment(Item.get("frosty button"))) {
-    autoEquip$1(Item.get("frosty button"));
+  if (in_plumber() && possessEquipment($item`frosty button`)) {
+    autoEquip$1($item`frosty button`);
   }
 
   if (inHardcore()) {
-    if (in_gnoob() && auto_have_familiar(Familiar.get("Robortender"))) {
+    if (in_gnoob() && auto_have_familiar($familiar`Robortender`)) {
       if (
-        !haveSkill(Skill.get("Powerful Vocal Chords")) &&
-        itemAmount(Item.get("baby oil shooter")) === 0
+        !haveSkill($skill`Powerful Vocal Chords`) &&
+        itemAmount($item`baby oil shooter`) === 0
       ) {
-        handleFamiliar$1(Familiar.get("Robortender"));
+        handleFamiliar$1($familiar`Robortender`);
       }
     }
 
     if (fastenerCount() < bridgeGoal()) {
-      autoEquip$1(Item.get("loadstone"));
+      autoEquip$1($item`loadstone`);
     }
     if (lumberCount() < bridgeGoal()) {
-      autoEquip$1(Item.get("logging hatchet"));
+      autoEquip$1($item`logging hatchet`);
     }
 
     return;
@@ -434,7 +438,7 @@ export function prepareForSmutOrcs(): void {
   let need: number =
     (bridgeGoal() - toInt(getProperty("chasmBridgeProgress"))) / 5;
   if (need > 0) {
-    while (need > 0 && itemAmount(Item.get("snow berries")) >= 2) {
+    while (need > 0 && itemAmount($item`snow berries`) >= 2) {
       cliExecute("make 1 snow boards");
       need = need - 1;
       visitUrl(
@@ -445,10 +449,10 @@ export function prepareForSmutOrcs(): void {
 
   if (toInt(getProperty("chasmBridgeProgress")) < bridgeGoal()) {
     if (fastenerCount() < bridgeGoal()) {
-      autoEquip$1(Item.get("loadstone"));
+      autoEquip$1($item`loadstone`);
     }
     if (lumberCount() < bridgeGoal()) {
-      autoEquip$1(Item.get("logging hatchet"));
+      autoEquip$1($item`logging hatchet`);
     }
 
     return;
@@ -478,7 +482,7 @@ export function L9_chasmBuild(): boolean {
     }
   }
 
-  if (shenShouldDelayZone(Location.get("The Smut Orc Logging Camp"))) {
+  if (shenShouldDelayZone($location`The Smut Orc Logging Camp`)) {
     auto_log_debug$1("Delaying Logging Camp in case of Shen.");
     return false;
   }
@@ -488,7 +492,7 @@ export function L9_chasmBuild(): boolean {
   if (
     auto_hasAutumnaton() &&
     !isAboutToPowerlevel() &&
-    Location.get("The Smut Orc Logging Camp").turnsSpent > 0 &&
+    $location`The Smut Orc Logging Camp`.turnsSpent > 0 &&
     (fastenerCount() < bridgeGoal() || lumberCount() < bridgeGoal())
   ) {
     // delay zone to allow autumnaton to grab bridge parts
@@ -503,7 +507,7 @@ export function L9_chasmBuild(): boolean {
 
   auto_log_info("Chasm time", "blue");
   // prepareForSmutOrcs() called in pre-adv
-  autoAdv$1(1, Location.get("The Smut Orc Logging Camp"));
+  autoAdv$1(1, $location`The Smut Orc Logging Camp`);
 
   return true;
 }
@@ -520,12 +524,12 @@ export function L9_aBooPeak(): boolean {
     return false;
   }
 
-  let clue: Item = Item.get("A-Boo clue");
+  let clue: Item = $item`A-Boo clue`;
   if (in_glover()) {
-    if (itemAmount(Item.get("A-Boo glue")) > 0 && itemAmount(clue) > 0) {
-      use(1, Item.get("A-Boo glue"));
+    if (itemAmount($item`A-Boo glue`) > 0 && itemAmount(clue) > 0) {
+      use(1, $item`A-Boo glue`);
     }
-    clue = Item.get("glued A-Boo clue");
+    clue = $item`glued A-Boo clue`;
   }
   const clueAmt: number = itemAmount(clue);
 
@@ -541,16 +545,16 @@ export function L9_aBooPeak(): boolean {
 
     if (clueAmt < 3) {
       // boo clues have 15% drop
-      provideItem$2(567, Location.get("A-Boo Peak"), false);
+      provideItem$2(567, $location`A-Boo Peak`, false);
     }
 
-    return autoAdv$1(1, Location.get("A-Boo Peak"));
+    return autoAdv$1(1, $location`A-Boo Peak`);
   }
 
   let booCloversOk: boolean = false;
   if (cloversAvailable$1() > 0) {
     if (in_glover()) {
-      if (itemAmount(Item.get("A-Boo glue")) > 0) {
+      if (itemAmount($item`A-Boo glue`) > 0) {
         booCloversOk = true;
       }
     } else if (in_bhy()) {
@@ -580,7 +584,7 @@ export function L9_aBooPeak(): boolean {
     toInt(getProperty("booPeakProgress")) >= 30 &&
     booCloversOk
   ) {
-    if (autoLuckyAdv$1(Location.get("A-Boo Peak"))) {
+    if (autoLuckyAdv$1($location`A-Boo Peak`)) {
       setProperty("auto_abooclover", false.toString());
       return true;
     }
@@ -592,7 +596,7 @@ export function L9_aBooPeak(): boolean {
     let lihcface: string = "";
     if (
       isActuallyEd() &&
-      possessEquipment(Item.get("The Crown of Ed the Undying"))
+      possessEquipment($item`The Crown of Ed the Undying`)
     ) {
       lihcface = "-equip lihc face";
     }
@@ -618,30 +622,30 @@ export function L9_aBooPeak(): boolean {
 
     if (
       blackMarketAvailable() &&
-      itemAmount(Item.get("can of black paint")) === 0 &&
-      haveEffect(Effect.get("Red Door Syndrome")) === 0 &&
-      myMeat() >= npcPrice(Item.get("can of black paint")) &&
+      itemAmount($item`can of black paint`) === 0 &&
+      haveEffect($effect`Red Door Syndrome`) === 0 &&
+      myMeat() >= npcPrice($item`can of black paint`) &&
       !is_werewolf()
     ) {
-      auto_buyUpTo(1, Item.get("can of black paint"));
+      auto_buyUpTo(1, $item`can of black paint`);
       coldResist += 2;
       spookyResist += 2;
     } else if (
-      itemAmount(Item.get("can of black paint")) > 0 &&
-      haveEffect(Effect.get("Red Door Syndrome")) === 0
+      itemAmount($item`can of black paint`) > 0 &&
+      haveEffect($effect`Red Door Syndrome`) === 0
     ) {
       coldResist += 2;
       spookyResist += 2;
     }
 
-    if (0 === haveEffect(Effect.get("Mist Form"))) {
-      if (haveSkill(Skill.get("Mist Form"))) {
+    if (0 === haveEffect($effect`Mist Form`)) {
+      if (haveSkill($skill`Mist Form`)) {
         coldResist += 4;
         spookyResist += 4;
         effectiveCurrentHP -= 10;
       } else if (
-        haveSkill(Skill.get("Spectral Awareness")) &&
-        0 === haveEffect(Effect.get("Spectral Awareness"))
+        haveSkill($skill`Spectral Awareness`) &&
+        0 === haveEffect($effect`Spectral Awareness`)
       ) {
         coldResist += 2;
         spookyResist += 2;
@@ -650,26 +654,26 @@ export function L9_aBooPeak(): boolean {
     }
 
     if (
-      itemAmount(Item.get("spooky powder")) > 0 &&
-      haveEffect(Effect.get("Spookypants")) === 0
+      itemAmount($item`spooky powder`) > 0 &&
+      haveEffect($effect`Spookypants`) === 0
     ) {
       spookyResist = spookyResist + 1;
     }
     if (
-      itemAmount(Item.get("ectoplasmic orbs")) > 0 &&
-      haveEffect(Effect.get("Balls of Ectoplasm")) === 0
+      itemAmount($item`ectoplasmic orbs`) > 0 &&
+      haveEffect($effect`Balls of Ectoplasm`) === 0
     ) {
       spookyResist = spookyResist + 1;
     }
     if (
-      itemAmount(Item.get("black eyedrops")) > 0 &&
-      haveEffect(Effect.get("Hyphemariffic")) === 0
+      itemAmount($item`black eyedrops`) > 0 &&
+      haveEffect($effect`Hyphemariffic`) === 0
     ) {
       spookyResist = spookyResist + 9;
     }
     if (
-      itemAmount(Item.get("cold powder")) > 0 &&
-      haveEffect(Effect.get("Insulated Trousers")) === 0
+      itemAmount($item`cold powder`) > 0 &&
+      haveEffect($effect`Insulated Trousers`) === 0
     ) {
       coldResist = coldResist + 1;
     }
@@ -751,7 +755,7 @@ export function L9_aBooPeak(): boolean {
     if (
       considerHP >= totalDamage &&
       myMp() >= mp_need &&
-      haveSkill(Skill.get("Cannelloni Cocoon"))
+      haveSkill($skill`Cannelloni Cocoon`)
     ) {
       doThisBoo = true;
     }
@@ -759,7 +763,7 @@ export function L9_aBooPeak(): boolean {
     if (
       considerHP >= totalDamage &&
       isActuallyEd() &&
-      itemAmount(Item.get("linen bandages")) * 20 + myHp() >= totalDamage
+      itemAmount($item`linen bandages`) * 20 + myHp() >= totalDamage
     ) {
       doThisBoo = true;
     }
@@ -769,29 +773,29 @@ export function L9_aBooPeak(): boolean {
     }
 
     if (doThisBoo) {
-      buffMaintain$4(Effect.get("Go Get 'Em, Tiger!"));
+      buffMaintain$4($effect`Go Get 'Em\, Tiger!`);
       bat_formMist$1();
-      if (0 === haveEffect(Effect.get("Mist Form"))) {
-        buffMaintain$3(Effect.get("Spectral Awareness"), 10, 1, 1);
+      if (0 === haveEffect($effect`Mist Form`)) {
+        buffMaintain$3($effect`Spectral Awareness`, 10, 1, 1);
       }
       addToMaximize(`1000spooky res,1000cold res,10hp${parrot}`);
       adjustEdHat("ml");
 
-      buffMaintain$3(Effect.get("Astral Shell"), 10, 1, 1);
-      buffMaintain$3(Effect.get("Elemental Saucesphere"), 10, 1, 1);
-      buffMaintain$3(Effect.get("Scariersauce"), 10, 1, 1);
-      buffMaintain$3(Effect.get("Scarysauce"), 10, 1, 1);
-      buffMaintain$4(Effect.get("Spookypants"));
-      buffMaintain$4(Effect.get("Hyphemariffic"));
-      buffMaintain$4(Effect.get("Insulated Trousers"));
-      buffMaintain$4(Effect.get("Balls of Ectoplasm"));
-      buffMaintain$4(Effect.get("Red Door Syndrome"));
-      buffMaintain$4(Effect.get("Well-Oiled"));
+      buffMaintain$3($effect`Astral Shell`, 10, 1, 1);
+      buffMaintain$3($effect`Elemental Saucesphere`, 10, 1, 1);
+      buffMaintain$3($effect`Scariersauce`, 10, 1, 1);
+      buffMaintain$3($effect`Scarysauce`, 10, 1, 1);
+      buffMaintain$4($effect`Spookypants`);
+      buffMaintain$4($effect`Hyphemariffic`);
+      buffMaintain$4($effect`Insulated Trousers`);
+      buffMaintain$4($effect`Balls of Ectoplasm`);
+      buffMaintain$4($effect`Red Door Syndrome`);
+      buffMaintain$4($effect`Well-Oiled`);
 
-      if (auto_is_valid$3(Effect.get("Cold as Nice"))) {
+      if (auto_is_valid$3($effect`Cold as Nice`)) {
         auto_beachCombHead("cold");
       }
-      if (auto_is_valid$3(Effect.get("Does It Have a Skull In There??"))) {
+      if (auto_is_valid$3($effect`Does It Have a Skull In There??`)) {
         auto_beachCombHead("spooky");
       }
 
@@ -802,12 +806,12 @@ export function L9_aBooPeak(): boolean {
           setProperty("auto_aboopending", myTurncount().toString());
         }
       }
-      if (canChangeToFamiliar(Familiar.get("Trick-or-Treating Tot"))) {
-        handleFamiliar$1(Familiar.get("Trick-or-Treating Tot"));
-      } else if (canChangeToFamiliar(Familiar.get("Mu"))) {
-        handleFamiliar$1(Familiar.get("Mu"));
-      } else if (canChangeToFamiliar(Familiar.get("Exotic Parrot"))) {
-        handleFamiliar$1(Familiar.get("Exotic Parrot"));
+      if (canChangeToFamiliar($familiar`Trick-or-Treating Tot`)) {
+        handleFamiliar$1($familiar`Trick-or-Treating Tot`);
+      } else if (canChangeToFamiliar($familiar`Mu`)) {
+        handleFamiliar$1($familiar`Mu`);
+      } else if (canChangeToFamiliar($familiar`Exotic Parrot`)) {
+        handleFamiliar$1($familiar`Exotic Parrot`);
       }
       // When booPeakProgress <= 0, we want to leave this adventure. Can we?
       // I can not figure out how to do this via ASH since the adventure completes itself?
@@ -815,7 +819,7 @@ export function L9_aBooPeak(): boolean {
       // upon case 611, if booPeakProgress <= 0, set choiceAdventure611 to 2
       // If lastDecision was 2, revert choiceAdventure611 to 1 (or perhaps unset it?)
       try {
-        autoAdv$1(1, Location.get("A-Boo Peak"));
+        autoAdv$1(1, $location`A-Boo Peak`);
       } finally {
         if (getProperty("lastEncounter") !== "The Horror...") {
           auto_log_warning(
@@ -845,10 +849,10 @@ export function L9_aBooPeak(): boolean {
       acquireFullHP();
       if (
         myHp() * 4 < myMaxhp() &&
-        itemAmount(Item.get("scroll of drastic healing")) > 0 &&
+        itemAmount($item`scroll of drastic healing`) > 0 &&
         (!isActuallyEd() || !in_darkGyffte())
       ) {
-        use(1, Item.get("scroll of drastic healing"));
+        use(1, $item`scroll of drastic healing`);
       }
       handleBjornify(priorBjorn);
       return true;
@@ -858,12 +862,12 @@ export function L9_aBooPeak(): boolean {
     resetState();
     handleBjornify(priorBjorn);
   } else {
-    if (Location.get("A-Boo Peak").turnsSpent < 10) {
+    if ($location`A-Boo Peak`.turnsSpent < 10) {
       // boo clues have 15% drop
-      provideItem$2(567, Location.get("A-Boo Peak"), false);
+      provideItem$2(567, $location`A-Boo Peak`, false);
     }
 
-    autoAdv$1(1, Location.get("A-Boo Peak"));
+    autoAdv$1(1, $location`A-Boo Peak`);
     setProperty("auto_aboopending", (0).toString());
 
     return true;
@@ -878,7 +882,7 @@ export function hedgeTrimmersNeeded(): number {
   const needJar: boolean = (twinPeakProgress & 4) === 0;
   const needInit: boolean =
     needStench || needFood || needJar || twinPeakProgress === 7;
-  let neededTrimmers: number = -itemAmount(Item.get("rusty hedge trimmers"));
+  let neededTrimmers: number = -itemAmount($item`rusty hedge trimmers`);
   if (needStench) {
     neededTrimmers++;
   }
@@ -903,9 +907,7 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
   const needInit: boolean = progress === 7;
 
   if (needInit) {
-    if (
-      provideInitiative(40, Location.get("Twin Peak"), true, speculative) >= 40
-    ) {
+    if (provideInitiative(40, $location`Twin Peak`, true, speculative) >= 40) {
       return true;
     } else {
       //init test shows up last. if we can't do it there is no point in checking rest of function.
@@ -913,7 +915,7 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
     }
   }
 
-  if (needJar && itemAmount(Item.get("jar of oil")) >= 1) {
+  if (needJar && itemAmount($item`jar of oil`) >= 1) {
     return true;
   }
 
@@ -921,18 +923,18 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
     let food_drop: number = itemDropModifier() + numericModifier("Food Drop");
     food_drop -= auto_famModifiers$2("Item Drop");
 
-    if (myServant() === Servant.get("Cat")) {
+    if (myServant() === $servant`Cat`) {
       food_drop -= numericModifier(
-        Familiar.get("Baby Gravy Fairy"),
+        $familiar`Baby Gravy Fairy`,
         "Item Drop",
-        Servant.get("Cat").level,
+        $servant`Cat`.level,
         Item.none,
       );
     }
     if (
       food_drop < 50 &&
       food_drop >= 20 &&
-      haveEffect(Effect.get("Brother Flying Burrito's Blessing")) === 0
+      haveEffect($effect`Brother Flying Burrito's Blessing`) === 0
     ) {
       if (
         friarsAvailable() &&
@@ -941,29 +943,29 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
       ) {
         cliExecute("friars food");
       }
-      if (haveEffect(Effect.get("Brother Flying Burrito's Blessing")) > 0) {
+      if (haveEffect($effect`Brother Flying Burrito's Blessing`) > 0) {
         food_drop = food_drop + 30;
       }
     }
     if (
       food_drop < 50.0 &&
-      itemAmount(Item.get("eagle feather")) > 0 &&
-      haveEffect(Effect.get("Eagle Eyes")) === 0 &&
-      auto_is_valid(Item.get("eagle feather"))
+      itemAmount($item`eagle feather`) > 0 &&
+      haveEffect($effect`Eagle Eyes`) === 0 &&
+      auto_is_valid($item`eagle feather`)
     ) {
       if (!speculative) {
-        use(1, Item.get("eagle feather"));
+        use(1, $item`eagle feather`);
       }
       food_drop = food_drop + 20;
     }
     if (
       food_drop < 50.0 &&
-      itemAmount(Item.get("resolution: be happier")) > 0 &&
-      haveEffect(Effect.get("Joyful Resolve")) === 0 &&
-      auto_is_valid(Item.get("resolution: be happier"))
+      itemAmount($item`resolution: be happier`) > 0 &&
+      haveEffect($effect`Joyful Resolve`) === 0 &&
+      auto_is_valid($item`resolution: be happier`)
     ) {
       if (!speculative) {
-        buffMaintain$4(Effect.get("Joyful Resolve"));
+        buffMaintain$4($effect`Joyful Resolve`);
       }
       food_drop = food_drop + 15;
     }
@@ -974,28 +976,21 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
 
   if (needStench) {
     const resGoal: Map<Element, number> = new Map();
-    resGoal.set(Element.get("stench"), 4);
+    resGoal.set($element`stench`, 4);
     // check if we can get enough stench res before we start applying anything
     const resPossible: Map<Element, number> = provideResistances(
       resGoal,
-      Location.get("Twin Peak"),
+      $location`Twin Peak`,
       true,
       true,
       true,
     );
     if (
-      (resPossible.get(Element.get("stench")) ??
-        resPossible.set(Element.get("stench"), 0).get(Element.get("stench"))) >=
-      4
+      (resPossible.get($element`stench`) ??
+        resPossible.set($element`stench`, 0).get($element`stench`)) >= 4
     ) {
       if (!speculative) {
-        provideResistances(
-          resGoal,
-          Location.get("Twin Peak"),
-          true,
-          true,
-          false,
-        );
+        provideResistances(resGoal, $location`Twin Peak`, true, true, false);
       }
       return true;
     }
@@ -1018,9 +1013,9 @@ export function L9_twinPeak(): boolean {
 
   if (
     hedgeTrimmersNeeded() > 0 &&
-    auto_autumnatonCanAdv(Location.get("Twin Peak")) &&
+    auto_autumnatonCanAdv($location`Twin Peak`) &&
     !isAboutToPowerlevel() &&
-    (Location.get("Twin Peak").turnsSpent > 0 ||
+    ($location`Twin Peak`.turnsSpent > 0 ||
       toInt(getProperty("twinPeakProgress")) > 0)
   ) {
     // using trimmers doesn't increment turns_spent, so look at quest status also
@@ -1032,16 +1027,16 @@ export function L9_twinPeak(): boolean {
   setProperty("choiceAdventure606", "0");
   //-combat via combining 2 IOTMs. Needs to be moved to providePlusNonCombat
   if (myMp() > 60 || considerGrimstoneGolem(true)) {
-    handleBjornify(Familiar.get("Grimstone Golem"));
+    handleBjornify($familiar`Grimstone Golem`);
   }
 
-  buffMaintain$4(Effect.get("Fishy Whiskers")); //heavy rains specific reduce item drop penalty by 10%
+  buffMaintain$4($effect`Fishy Whiskers`); //heavy rains specific reduce item drop penalty by 10%
   //BHY specific prevent wandering bees from skipping the burning the hotel down choice and wasting turns
-  buffMaintain$4(Effect.get("Float Like a Butterfly, Smell Like a Bee"));
+  buffMaintain$4($effect`Float Like a Butterfly\, Smell Like a Bee`);
 
   if (in_bhy()) {
     // we can't make an oil jar to solve the quest, just adventure until the hotel is burned down
-    return autoAdv$2(Location.get("Twin Peak"));
+    return autoAdv$2($location`Twin Peak`);
   }
 
   if (!prepareForTwinPeak(true)) {
@@ -1054,22 +1049,20 @@ export function L9_twinPeak(): boolean {
   auto_log_info("Twin Peak", "blue");
 
   if (
-    itemAmount(Item.get("rusty hedge trimmers")) === 0 &&
-    Location.get("Twin Peak").turnsSpent === 0 &&
+    itemAmount($item`rusty hedge trimmers`) === 0 &&
+    $location`Twin Peak`.turnsSpent === 0 &&
     auto_hasAutumnaton()
   ) {
     // wish for trimmer so we can later send fallbot for the rest
-    auto_makeMonkeyPawWish$1(Item.get("rusty hedge trimmers"));
+    auto_makeMonkeyPawWish$1($item`rusty hedge trimmers`);
   }
 
-  const starting_trimmers: number = itemAmount(
-    Item.get("rusty hedge trimmers"),
-  );
+  const starting_trimmers: number = itemAmount($item`rusty hedge trimmers`);
   if (starting_trimmers > 0) {
     equipMaximizedGear();
-    use(1, Item.get("rusty hedge trimmers"));
+    use(1, $item`rusty hedge trimmers`);
     cliExecute("refresh inv");
-    if (itemAmount(Item.get("rusty hedge trimmers")) === starting_trimmers) {
+    if (itemAmount($item`rusty hedge trimmers`) === starting_trimmers) {
       abort("Tried using a rusty hedge trimmer but that didn't seem to work");
     }
     auto_log_info(
@@ -1095,9 +1088,9 @@ export function L9_twinPeak(): boolean {
     auto_canMapTheMonsters()
   ) {
     // Shh! You want to get sued?
-    if (adjustForYellowRayIfPossible(Monster.get("bearpig topiary animal"))) {
+    if (adjustForYellowRayIfPossible($monster`bearpig topiary animal`)) {
       if (auto_mapTheMonsters()) {
-        handleFamiliar$1(Familiar.get("Melodramedary"));
+        handleFamiliar$1($familiar`Melodramedary`);
         auto_log_info$1(
           "Attemping to use Map the Monsters to Yellow Ray a Camel Spitted bearpig topiary animal. Yes that is a mouthful but lets hope it works and we get 4 rusty hedge trimmers!",
         );
@@ -1110,9 +1103,9 @@ export function L9_twinPeak(): boolean {
     auto_log_info$1(
       "Bringing the Grey Goose to emit some drones to get some hedge trimmers.",
     );
-    handleFamiliar$1(Familiar.get("Grey Goose"));
+    handleFamiliar$1($familiar`Grey Goose`);
   }
-  return autoAdv$2(Location.get("Twin Peak"));
+  return autoAdv$2($location`Twin Peak`);
 }
 
 export function L9_oilPeak(): boolean {
@@ -1140,65 +1133,65 @@ export function L9_oilPeak(): boolean {
   if (containsText(visitUrl("place.php?whichplace=highlands"), "fire3.gif")) {
     const oilProgress: number = toInt(getProperty("twinPeakProgress"));
     const needJar: boolean =
-      (oilProgress & 4) === 0 && itemAmount(Item.get("jar of oil")) === 0;
+      (oilProgress & 4) === 0 && itemAmount($item`jar of oil`) === 0;
     if (!needJar || in_bhy()) {
       return false;
-    } else if (itemAmount(Item.get("bubblin' crude")) >= 12) {
+    } else if (itemAmount($item`bubblin' crude`) >= 12) {
       if (in_glover()) {
-        if (itemAmount(Item.get("crude oil congealer")) > 0) {
-          use(1, Item.get("crude oil congealer"));
+        if (itemAmount($item`crude oil congealer`) > 0) {
+          use(1, $item`crude oil congealer`);
         } else {
-          if (itemAmount(Item.get("G")) > 2) {
-            buy(Coinmaster.get("G-Mart"), 1, Item.get("crude oil congealer"));
-            use(1, Item.get("crude oil congealer"));
+          if (itemAmount($item`G`) > 2) {
+            buy($coinmaster`G-Mart`, 1, $item`crude oil congealer`);
+            use(1, $item`crude oil congealer`);
           } else {
             return false;
           }
         }
       } else if (
-        auto_is_valid(Item.get("bubblin' crude")) &&
-        creatableAmount(Item.get("jar of oil")) > 0
+        auto_is_valid($item`bubblin' crude`) &&
+        creatableAmount($item`jar of oil`) > 0
       ) {
-        create(1, Item.get("jar of oil"));
+        create(1, $item`jar of oil`);
       }
-      if (itemAmount(Item.get("jar of oil")) > 0) {
+      if (itemAmount($item`jar of oil`) > 0) {
         return true;
       }
     }
     auto_log_info("Oil Peak is finished but we need more crude!", "blue");
   }
 
-  buffMaintain$4(Effect.get("Fishy Whiskers"));
+  buffMaintain$4($effect`Fishy Whiskers`);
 
   auto_MaxMLToCap(auto_convertDesiredML(100), true);
 
   if (monsterLevelAdjustment() < 50) {
-    buffMaintain$4(Effect.get("The Dinsey Look"));
+    buffMaintain$4($effect`The Dinsey Look`);
   }
   if (monsterLevelAdjustment() < 60) {
-    if (itemAmount(Item.get("dress pants")) > 0) {
-      autoEquip(Slot.get("pants"), Item.get("dress pants"));
+    if (itemAmount($item`dress pants`) > 0) {
+      autoEquip($slot`pants`, $item`dress pants`);
     } else {
-      januaryToteAcquire(Item.get("tinsel tights"));
+      januaryToteAcquire($item`tinsel tights`);
     }
   }
   // Maximize Asdon usage
   if (
-    haveEffect(Effect.get("Driving Recklessly")) === 0 &&
-    haveEffect(Effect.get("Driving Wastefully")) === 0
+    haveEffect($effect`Driving Recklessly`) === 0 &&
+    haveEffect($effect`Driving Wastefully`) === 0
   ) {
-    const loc: Location = Location.get("Oil Peak");
+    const loc: Location = $location`Oil Peak`;
     if (
       ((simMaximizeWith(loc, "1000ml 75min") &&
         !simMaximizeWith(loc, "1000ml 100min")) ||
         (simMaximizeWith(loc, "1000ml 25min") &&
           !simMaximizeWith(loc, "1000ml 50min")) ||
         !simMaximizeWith(loc, "1000ml 11min")) &&
-      haveEffect(Effect.get("Driving Wastefully")) === 0
+      haveEffect($effect`Driving Wastefully`) === 0
     ) {
-      asdonBuff$1(Effect.get("Driving Recklessly"));
-    } else if (haveEffect(Effect.get("Driving Recklessly")) === 0) {
-      asdonBuff$1(Effect.get("Driving Wastefully"));
+      asdonBuff$1($effect`Driving Recklessly`);
+    } else if (haveEffect($effect`Driving Recklessly`) === 0) {
+      asdonBuff$1($effect`Driving Wastefully`);
     }
   }
 
@@ -1206,7 +1199,7 @@ export function L9_oilPeak(): boolean {
 
   auto_log_info(`Oil Peak with ML: ${monsterLevelAdjustment()}`, "blue");
 
-  autoAdv$1(1, Location.get("Oil Peak"));
+  autoAdv$1(1, $location`Oil Peak`);
   if (getProperty("lastEncounter") === "Unimpressed with Pressure") {
     setProperty("oilPeakProgress", (0.0).toString());
     // Brute Force grouping with tavern (if not done) to maximize tangles while we have a high ML.
@@ -1216,8 +1209,8 @@ export function L9_oilPeak(): boolean {
     );
     setProperty("auto_forceTavern", true.toString());
     // Remove Driving Wastefully if we had it
-    if (0 < haveEffect(Effect.get("Driving Wastefully"))) {
-      uneffect(Effect.get("Driving Wastefully"));
+    if (0 < haveEffect($effect`Driving Wastefully`)) {
+      uneffect($effect`Driving Wastefully`);
     }
   }
   return true;

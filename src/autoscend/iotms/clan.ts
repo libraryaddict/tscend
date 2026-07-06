@@ -4,7 +4,6 @@ import {
   canFaxbot,
   cliExecute,
   containsText,
-  Effect,
   faxbot,
   getClanId,
   getClanLounge,
@@ -38,6 +37,8 @@ import {
   visitUrl,
   wait,
 } from "kolmafia";
+import { $effect, $effects, $item, $items, $location } from "libram";
+
 import { autoAdvBypass$2, CombatMacro } from "../auto_adventure";
 import { fullness_left, inebriety_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
@@ -94,16 +95,16 @@ function handleFaxMonster$3(
   if (toBoolean(getProperty("_photocopyUsed"))) {
     return false;
   }
-  if (!isUnrestricted(Item.get("deluxe fax machine"))) {
+  if (!isUnrestricted($item`deluxe fax machine`)) {
     return false;
   }
   if (is_boris() || is_jarlsberg() || is_pete() || in_glover()) {
     return false;
   }
-  if (itemAmount(Item.get("Clan VIP Lounge key")) === 0) {
+  if (itemAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
   }
-  if (!auto_get_clan_lounge().has(Item.get("deluxe fax machine"))) {
+  if (!auto_get_clan_lounge().has($item`deluxe fax machine`)) {
     return false;
   }
   // don't try to fax unfaxable monsters
@@ -113,18 +114,18 @@ function handleFaxMonster$3(
 
   auto_log_info(`Using fax machine to summon ${enemy.name}`, "blue");
 
-  if (itemAmount(Item.get("photocopied monster")) !== 0) {
+  if (itemAmount($item`photocopied monster`) !== 0) {
     if (getProperty("photocopyMonster") === enemy.toString()) {
       auto_log_info("We already have the copy! Let's jam!", "blue");
       if (fightIt) {
         handleTracker$1(
           enemy.toString(),
-          Item.get("deluxe fax machine").toString(),
+          $item`deluxe fax machine`.toString(),
           "auto_copies",
         );
         return autoAdvBypass$2(
           "inv_use.php?pwd&which=3&whichitem=4873",
-          Location.get("Noob Cave"),
+          $location`Noob Cave`,
           option,
         );
       }
@@ -149,12 +150,12 @@ function handleFaxMonster$3(
       if (fightIt) {
         handleTracker$1(
           enemy.toString(),
-          Item.get("deluxe fax machine").toString(),
+          $item`deluxe fax machine`.toString(),
           "auto_copies",
         );
         return autoAdvBypass$2(
           "inv_use.php?pwd&which=3&whichitem=4873",
-          Location.get("Noob Cave"),
+          $location`Noob Cave`,
           option,
         );
       }
@@ -170,7 +171,7 @@ function handleFaxMonster$3(
 }
 
 function checkFax(enemy: Monster): boolean {
-  if (itemAmount(Item.get("photocopied monster")) === 0) {
+  if (itemAmount($item`photocopied monster`) === 0) {
     cliExecute("fax receive");
   }
 
@@ -207,7 +208,7 @@ export function get_floundry_locations(): Map<Location, boolean> {
     return $_get_floundry_locations_floundryLocations;
   }
 
-  if (!auto_get_clan_lounge().has(Item.get("Clan Floundry"))) {
+  if (!auto_get_clan_lounge().has($item`Clan Floundry`)) {
     return $_get_floundry_locations_floundryLocations;
   }
 
@@ -365,11 +366,7 @@ export function hotTubSoaksRemaining(): number {
   if (toInt(getProperty("hiddenApartmentProgress")) < 7) {
     // apartment not done, check if we have a curse
     let haveCurse: boolean = false;
-    for (const eff of Effect.get([
-      "Once-Cursed",
-      "Thrice-Cursed",
-      "Twice-Cursed",
-    ])) {
+    for (const eff of $effects`Once-Cursed, Thrice-Cursed, Twice-Cursed`) {
       if (haveEffect(eff) > 0) {
         haveCurse = true;
       }
@@ -384,8 +381,8 @@ export function hotTubSoaksRemaining(): number {
 
 export function isHotTubAvailable(): boolean {
   return (
-    itemAmount(Item.get("Clan VIP Lounge key")) > 0 &&
-    isUnrestricted(Item.get("Clan VIP Lounge key"))
+    itemAmount($item`Clan VIP Lounge key`) > 0 &&
+    isUnrestricted($item`Clan VIP Lounge key`)
   );
 }
 
@@ -401,19 +398,9 @@ export function doHottub(): number {
 }
 
 export function isSpeakeasyDrink(drink_1: Item): boolean {
-  return Item.get([
-    "glass of &quot;milk&quot;",
-    "cup of &quot;tea&quot;",
-    "thermos of &quot;whiskey&quot;",
-    "Lucky Lindy",
-    "Bee's Knees",
-    "Sockdollager",
-    "Ish Kabibble",
-    "Hot Socks",
-    "Phonus Balonus",
-    "Flivver",
-    "Sloppy Jalopy",
-  ]).includes(drink_1);
+  return $items`glass of "milk", cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy`.includes(
+    drink_1,
+  );
 }
 
 export function canDrinkSpeakeasyDrink(drink_1: Item): boolean {
@@ -421,7 +408,7 @@ export function canDrinkSpeakeasyDrink(drink_1: Item): boolean {
     return false;
   }
 
-  if (itemAmount(Item.get("Clan VIP Lounge key")) === 0) {
+  if (itemAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
   }
 
@@ -429,7 +416,7 @@ export function canDrinkSpeakeasyDrink(drink_1: Item): boolean {
     return false;
   }
 
-  if (!auto_get_clan_lounge().has(Item.get("Clan speakeasy"))) {
+  if (!auto_get_clan_lounge().has($item`Clan speakeasy`)) {
     return false;
   }
 
@@ -457,7 +444,7 @@ export function drinkSpeakeasyDrink(drink_1: Item): boolean {
 }
 
 function drinkSpeakeasyDrink$1(drink_1: string): boolean {
-  if (!auto_get_clan_lounge().has(Item.get("Clan speakeasy"))) {
+  if (!auto_get_clan_lounge().has($item`Clan speakeasy`)) {
     return false;
   }
 
@@ -469,18 +456,18 @@ function drinkSpeakeasyDrink$1(drink_1: string): boolean {
 }
 
 export function zataraAvailable(): boolean {
-  if (itemAmount(Item.get("Clan VIP Lounge key")) === 0) {
+  if (itemAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
   }
   if (toBoolean(getProperty("_clanFortuneBuffUsed"))) {
     return false;
   }
 
-  if (!isUnrestricted(Item.get("Clan Carnival Game"))) {
+  if (!isUnrestricted($item`Clan Carnival Game`)) {
     return false;
   }
 
-  if (!auto_get_clan_lounge().has(Item.get("Clan Carnival Game"))) {
+  if (!auto_get_clan_lounge().has($item`Clan Carnival Game`)) {
     return false;
   }
   return true;
@@ -499,7 +486,7 @@ export function zataraSeaside(who: string): boolean {
     who === "susie" ||
     who === "familiar" ||
     who === "-1" ||
-    who === Effect.get("A Girl Named Sue").toString()
+    who === $effect`A Girl Named Sue`.toString()
   ) {
     id = -1;
   } else if (
@@ -508,7 +495,7 @@ export function zataraSeaside(who: string): boolean {
     who === "booze" ||
     who === "item" ||
     who === "-2" ||
-    who === Effect.get("There's No N in Love").toString()
+    who === $effect`There's No N in Love`.toString()
   ) {
     id = -2;
   } else if (
@@ -516,7 +503,7 @@ export function zataraSeaside(who: string): boolean {
     who === "gear" ||
     who === "meat" ||
     who === "-3" ||
-    who === Effect.get("Meet the Meat").toString()
+    who === $effect`Meet the Meat`.toString()
   ) {
     id = -3;
   } else if (
@@ -524,7 +511,7 @@ export function zataraSeaside(who: string): boolean {
     who === "muscle" ||
     who === "hp" ||
     who === "-4" ||
-    who === Effect.get("Gunther Than Thou").toString()
+    who === $effect`Gunther Than Thou`.toString()
   ) {
     id = -4;
   } else if (
@@ -533,7 +520,7 @@ export function zataraSeaside(who: string): boolean {
     who === "mysticality" ||
     who === "mp" ||
     who === "-5" ||
-    who === Effect.get("Everybody Calls Him Gorgon").toString()
+    who === $effect`Everybody Calls Him Gorgon`.toString()
   ) {
     id = -5;
   } else if (
@@ -541,7 +528,7 @@ export function zataraSeaside(who: string): boolean {
     who === "moxie" ||
     who === "init" ||
     who === "-6" ||
-    who === Effect.get("They Call Him Shifty Because...").toString()
+    who === $effect`They Call Him Shifty Because...`.toString()
   ) {
     id = -6;
   }
@@ -557,15 +544,15 @@ export function zataraSeaside(who: string): boolean {
 }
 
 export function zataraClanmate(): boolean {
-  if (itemAmount(Item.get("Clan VIP Lounge key")) === 0) {
+  if (itemAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
   }
 
-  if (!isUnrestricted(Item.get("Clan Carnival Game"))) {
+  if (!isUnrestricted($item`Clan Carnival Game`)) {
     return false;
   }
 
-  if (!auto_get_clan_lounge().has(Item.get("Clan Carnival Game"))) {
+  if (!auto_get_clan_lounge().has($item`Clan Carnival Game`)) {
     return false;
   }
 
@@ -675,14 +662,14 @@ let $_eatFancyDog_dogAmt: Map<string, number> | undefined;
 let $_eatFancyDog_dogID: Map<string, number> | undefined;
 
 function eatFancyDog(dog: string): boolean {
-  if (itemAmount(Item.get("Clan VIP Lounge key")) === 0) {
+  if (itemAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
   }
   if (toBoolean(getProperty("_fancyHotDogEaten")) && dog !== "basic hot dog") {
     return false;
   }
 
-  if (!auto_get_clan_lounge().has(Item.get("Clan hot dog stand"))) {
+  if (!auto_get_clan_lounge().has($item`Clan hot dog stand`)) {
     return false;
   }
 
@@ -706,19 +693,19 @@ function eatFancyDog(dog: string): boolean {
   $_eatFancyDog_dogFull.set("video games hot dog", 3);
 
   $_eatFancyDog_dogReq.set("basic hot dog", Item.none);
-  $_eatFancyDog_dogReq.set("savage macho dog", Item.get("furry fur"));
-  $_eatFancyDog_dogReq.set("one with everything", Item.get("cranberries"));
-  $_eatFancyDog_dogReq.set("sly dog", Item.get("skeleton bone"));
-  $_eatFancyDog_dogReq.set("devil dog", Item.get("hot wad"));
-  $_eatFancyDog_dogReq.set("chilly dog", Item.get("cold wad"));
-  $_eatFancyDog_dogReq.set("ghost dog", Item.get("spooky wad"));
-  $_eatFancyDog_dogReq.set("junkyard dog", Item.get("stench wad"));
-  $_eatFancyDog_dogReq.set("wet dog", Item.get("sleaze wad"));
-  $_eatFancyDog_dogReq.set("optimal dog", Item.get("tattered scrap of paper"));
-  $_eatFancyDog_dogReq.set("sleeping dog", Item.get("gauze hammock"));
+  $_eatFancyDog_dogReq.set("savage macho dog", $item`furry fur`);
+  $_eatFancyDog_dogReq.set("one with everything", $item`cranberries`);
+  $_eatFancyDog_dogReq.set("sly dog", $item`skeleton bone`);
+  $_eatFancyDog_dogReq.set("devil dog", $item`hot wad`);
+  $_eatFancyDog_dogReq.set("chilly dog", $item`cold wad`);
+  $_eatFancyDog_dogReq.set("ghost dog", $item`spooky wad`);
+  $_eatFancyDog_dogReq.set("junkyard dog", $item`stench wad`);
+  $_eatFancyDog_dogReq.set("wet dog", $item`sleaze wad`);
+  $_eatFancyDog_dogReq.set("optimal dog", $item`tattered scrap of paper`);
+  $_eatFancyDog_dogReq.set("sleeping dog", $item`gauze hammock`);
   $_eatFancyDog_dogReq.set(
     "video games hot dog",
-    Item.get("GameInformPowerDailyPro magazine"),
+    $item`GameInformPowerDailyPro magazine`,
   );
 
   $_eatFancyDog_dogAmt.set("basic hot dog", 0);
@@ -828,7 +815,7 @@ function eatFancyDog(dog: string): boolean {
 
 export function auto_floundryUse(): boolean {
   if (!toBoolean(getProperty("_floundryItemUsed"))) {
-    for (const it of Item.get(["bass clarinet", "codpiece", "fish hatchet"])) {
+    for (const it of $items`bass clarinet, codpiece, fish hatchet`) {
       if (possessEquipment(it)) {
         use(1, it);
         return true;
@@ -844,7 +831,7 @@ export function auto_floundryAction(): boolean {
   }
   if (
     !toBoolean(getProperty("_floundryItemGot")) &&
-    auto_get_clan_lounge().has(Item.get("Clan Floundry")) &&
+    auto_get_clan_lounge().has($item`Clan Floundry`) &&
     !inAftercore()
   ) {
     if (getProperty("auto_floundryChoice") !== "") {
@@ -864,9 +851,7 @@ export function auto_floundryAction(): boolean {
       );
       if (auto_floundryAction$1(myFloundry)) {
         if (
-          Item.get(["bass clarinet", "codpiece", "fish hatchet"]).includes(
-            myFloundry,
-          ) &&
+          $items`bass clarinet, codpiece, fish hatchet`.includes(myFloundry) &&
           !toBoolean(getProperty("_floundryItemUsed")) &&
           itemAmount(myFloundry) > 0
         ) {

@@ -18,6 +18,8 @@ import {
   setProperty,
   visitUrl,
 } from "kolmafia";
+import { $location } from "libram";
+
 import {
   auto_log_debug,
   auto_log_info,
@@ -28,13 +30,13 @@ import {
   cloverUsageRestart,
 } from "./auto_util";
 import { zone_isAvailable } from "./auto_zone";
+import { auto_combatHandler } from "./combat/auto_combat";
+import { auto_edCombatHandler } from "./combat/auto_combat_ed";
 import {
   ed_handleAdventureServant,
   isActuallyEd,
 } from "./paths/actually_ed_the_undying";
 import { in_pokefam } from "./paths/pocket_familiars";
-import { auto_edCombatHandler } from "./combat/auto_combat_ed";
-import { auto_combatHandler } from "./combat/auto_combat";
 
 export type CombatMacro = (
   round: number,
@@ -260,17 +262,17 @@ function autoAdvBypass$4(
 }
 
 function autoAdvBypass$5(snarfblat: number): boolean {
-  return autoAdvBypass$3(snarfblat, Location.get("Noob Cave"));
+  return autoAdvBypass$3(snarfblat, $location`Noob Cave`);
 }
 
 export function autoAdvBypass$6(url: string): boolean {
-  return autoAdvBypass$1(url, Location.get("Noob Cave"));
+  return autoAdvBypass$1(url, $location`Noob Cave`);
 }
 
 function autoAdvBypass$7(snarfblat: number, option: CombatMacro): boolean {
-  return autoAdvBypass$4(snarfblat, Location.get("Noob Cave"), option);
+  return autoAdvBypass$4(snarfblat, $location`Noob Cave`, option);
 }
 
 export function autoAdvBypass$8(url: string, option: CombatMacro): boolean {
-  return autoAdvBypass$2(url, Location.get("Noob Cave"), option);
+  return autoAdvBypass$2(url, $location`Noob Cave`, option);
 }

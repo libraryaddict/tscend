@@ -1,7 +1,6 @@
 import {
   abort,
   canEquip,
-  Class,
   cliExecute,
   containsText,
   Effect,
@@ -28,12 +27,10 @@ import {
   myPath,
   myPrimestat,
   myTurncount,
-  Path,
   replaceString,
   runChoice,
   setProperty,
   Skill,
-  Slot,
   splitString,
   stringModifier,
   toBoolean,
@@ -46,6 +43,19 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
+import {
+  $class,
+  $effect,
+  $effects,
+  $item,
+  $items,
+  $location,
+  $locations,
+  $path,
+  $skill,
+  $slot,
+} from "libram";
+
 import { auto_mall_price } from "../auto_acquire";
 import { autoAdv$2, autoAdvBypass, CombatMacro } from "../auto_adventure";
 import { fullness_left, spleen_left } from "../auto_consume";
@@ -96,8 +106,8 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 //Defined in autoscend/iotms/mr2016.ash
 function auto_haveJokestersGun(): boolean {
   if (
-    possessEquipment(Item.get("The Jokester's gun")) &&
-    auto_can_equip(Item.get("The Jokester's gun"))
+    possessEquipment($item`The Jokester's gun`) &&
+    auto_can_equip($item`The Jokester's gun`)
   ) {
     return true;
   }
@@ -107,7 +117,7 @@ function auto_haveJokestersGun(): boolean {
 export function auto_jokesterGunFreeKillAvailable(): boolean {
   if (
     !auto_haveJokestersGun() ||
-    !auto_is_valid$2(Skill.get("Fire the Jokester's Gun"))
+    !auto_is_valid$2($skill`Fire the Jokester's Gun`)
   ) {
     return false;
   }
@@ -116,7 +126,7 @@ export function auto_jokesterGunFreeKillAvailable(): boolean {
 }
 
 export function snojoFightAvailable(): boolean {
-  if (!isUnrestricted(Item.get("X-32-F snowman crate"))) {
+  if (!isUnrestricted($item`X-32-F snowman crate`)) {
     return false;
   }
   if (!toBoolean(getProperty("snojoAvailable"))) {
@@ -146,8 +156,8 @@ export function snojoFightAvailable(): boolean {
 
     if (
       is_boris() &&
-      (possessEquipment(Item.get("Boris's Helm")) ||
-        possessEquipment(Item.get("Boris's Helm (askew)")))
+      (possessEquipment($item`Boris's Helm`) ||
+        possessEquipment($item`Boris's Helm (askew)`))
     ) {
       standard.set(0, "Muscle");
       standard.set(1, "Mysticality");
@@ -274,7 +284,7 @@ export function snojoFightAvailable(): boolean {
 let $_auto_haveSourceTerminal_didCheck: boolean | undefined;
 
 export function auto_haveSourceTerminal(): boolean {
-  const terminal: Item = wrap_item(Item.get("Source terminal"));
+  const terminal: Item = wrap_item($item`Source terminal`);
   if (!isUnrestricted(terminal) && !in_lol()) {
     return false;
   }
@@ -289,7 +299,7 @@ export function auto_haveSourceTerminal(): boolean {
     }
   }
 
-  return auto_get_campground().has(Item.get("Source terminal"));
+  return auto_get_campground().has($item`Source terminal`);
 }
 
 export function isOverdueDigitize(): boolean {
@@ -629,10 +639,10 @@ function auto_sourceTerminalEducate$1(first: Skill): boolean {
 }
 
 export function auto_haveWitchess(): boolean {
-  if (!isUnrestricted(Item.get("Witchess Set"))) {
+  if (!isUnrestricted($item`Witchess Set`)) {
     return false;
   }
-  return auto_get_campground().has(Item.get("Witchess Set"));
+  return auto_get_campground().has($item`Witchess Set`);
 }
 
 function auto_advWitchess(target: string, option?: CombatMacro): boolean {
@@ -688,7 +698,7 @@ function auto_advWitchess(target: string, option?: CombatMacro): boolean {
     `choice.php?pwd=${myHash()}&whichchoice=1182&option=1&piece=${goal}`,
   );
   // We use 4 to cause pages[2] to use GET.
-  return autoAdvBypass(4, pages, Location.get("Noob Cave"), option);
+  return autoAdvBypass(4, pages, $location`Noob Cave`, option);
 }
 
 function auto_advWitchessTargets(target: string): number {
@@ -706,7 +716,7 @@ function auto_advWitchessTargets(target: string): number {
     return 1938;
   }
 
-  if (toInt(target) == 1942 && myPath() === Path.get("Teetotaler")) {
+  if (toInt(target) == 1942 && myPath() === $path`Teetotaler`) {
     return 1936;
   }
 
@@ -774,7 +784,7 @@ export function witchessFights(): boolean {
 
   switch (myDaycount()) {
     case 1:
-      if (itemAmount(Item.get("Greek fire")) === 0) {
+      if (itemAmount($item`Greek fire`) === 0) {
         return auto_advWitchess("ml");
       }
       return auto_advWitchess("booze");
@@ -782,7 +792,7 @@ export function witchessFights(): boolean {
       if (
         getProperty("sidequestNunsCompleted") === "none" &&
         getProperty("auto_skipNuns") === "false" &&
-        itemAmount(Item.get("jumping horseradish")) === 0
+        itemAmount($item`jumping horseradish`) === 0
       ) {
         return auto_advWitchess("meat");
       }
@@ -790,7 +800,7 @@ export function witchessFights(): boolean {
       if (
         getProperty("sidequestNunsCompleted") === "none" &&
         getProperty("auto_skipNuns") === "false" &&
-        itemAmount(Item.get("jumping horseradish")) === 0
+        itemAmount($item`jumping horseradish`) === 0
       ) {
         return auto_advWitchess("meat");
       }
@@ -798,7 +808,7 @@ export function witchessFights(): boolean {
       if (
         getProperty("sidequestNunsCompleted") === "none" &&
         getProperty("auto_skipNuns") === "false" &&
-        itemAmount(Item.get("jumping horseradish")) === 0
+        itemAmount($item`jumping horseradish`) === 0
       ) {
         return auto_advWitchess("meat");
       }
@@ -811,12 +821,7 @@ export function witchessFights(): boolean {
 
 function auto_bestBadge(): Item {
   let retval: Item = Item.none;
-  for (const it of Item.get([
-    "plastic detective badge",
-    "bronze detective badge",
-    "silver detective badge",
-    "gold detective badge",
-  ])) {
+  for (const it of $items`plastic detective badge, bronze detective badge, silver detective badge, gold detective badge`) {
     if (possessEquipment(it)) {
       retval = it;
     }
@@ -826,7 +831,7 @@ function auto_bestBadge(): Item {
 }
 
 export function auto_doPrecinct(): boolean {
-  if (!isUnrestricted(Item.get("detective school application"))) {
+  if (!isUnrestricted($item`detective school application`)) {
     return false;
   }
   if (!toBoolean(getProperty("hasDetectiveSchool"))) {
@@ -1308,8 +1313,8 @@ export function LX_ghostBusting(): boolean {
     return false;
   }
   if (
-    goal === Location.get("Inside the Palindome") &&
-    !possessEquipment(Item.get("Talisman o' Namsilat"))
+    goal === $location`Inside the Palindome` &&
+    !possessEquipment($item`Talisman o' Namsilat`)
   ) {
     return false;
   }
@@ -1323,11 +1328,9 @@ export function LX_ghostBusting(): boolean {
   startArmorySubQuest(); //unlocks $location[Madness Bakery]
   startGalaktikSubQuest(); //unlocks $location[The Overgrown Lot]
   if (
-    Location.get([
-      "The Skeleton Store",
-      "Madness Bakery",
-      "The Overgrown Lot",
-    ]).includes(goal) &&
+    $locations`The Skeleton Store, Madness Bakery, The Overgrown Lot`.includes(
+      goal,
+    ) &&
     !zone_available(goal)
   ) {
     auto_log_error(
@@ -1339,11 +1342,11 @@ export function LX_ghostBusting(): boolean {
   }
 
   if (
-    possessEquipment(Item.get("protonic accelerator pack")) &&
-    auto_can_equip(Item.get("protonic accelerator pack"))
+    possessEquipment($item`protonic accelerator pack`) &&
+    auto_can_equip($item`protonic accelerator pack`)
   ) {
     auto_log_info(`Ghost busting time! At: ${goal}`, "blue");
-    autoForceEquip$3(Item.get("protonic accelerator pack"));
+    autoForceEquip$3($item`protonic accelerator pack`);
   } else {
     //hypothetical future path where pack cannot be equipped. or we used [Almost-dead_walkie-talkie] to get a ghost without the pack
     auto_log_info(
@@ -1351,8 +1354,8 @@ export function LX_ghostBusting(): boolean {
       "blue",
     );
   }
-  if (goal === Location.get("Inside the Palindome")) {
-    autoForceEquip$1(Slot.get("acc3"), Item.get("Talisman o' Namsilat"));
+  if (goal === $location`Inside the Palindome`) {
+    autoForceEquip$1($slot`acc3`, $item`Talisman o' Namsilat`);
   }
   acquireHP();
   return autoAdv$2(goal);
@@ -1365,8 +1368,8 @@ function timeSpinnerRemaining(): number {
 function timeSpinnerRemaining$1(verify: boolean): number {
   //how many time spinner minutes remain to be used.
   if (
-    !auto_is_valid(Item.get("Time-Spinner")) ||
-    itemAmount(Item.get("Time-Spinner")) === 0
+    !auto_is_valid($item`Time-Spinner`) ||
+    itemAmount($item`Time-Spinner`) === 0
   ) {
     return 0; //time-spinner is not available at all. thus we have 0 minutes to utilize
   }
@@ -1472,7 +1475,7 @@ export function timeSpinnerAdventure(option?: CombatMacro): boolean {
   const pages: Map<number, string> = new Map();
   pages.set(0, "inv_use.php?pwd=&which=3&whichitem=9104");
   pages.set(1, "choice.php?pwd=&whichchoice=1195&option=3");
-  return autoAdvBypass(0, pages, Location.get("Noob Cave"), option);
+  return autoAdvBypass(0, pages, $location`Noob Cave`, option);
 }
 
 function canTimeSpinnerMonster(mon: Monster): boolean {
@@ -2123,10 +2126,10 @@ function timeSpinnerCombat$2(
   pages.set(0, "inv_use.php?pwd=&which=3&whichitem=9104");
   pages.set(1, "choice.php?pwd=&whichchoice=1195&option=1");
   pages.set(2, `choice.php?pwd=&whichchoice=1196&option=1&monid=${goal.id}`);
-  if (autoAdvBypass(0, pages, Location.get("Noob Cave"), option)) {
+  if (autoAdvBypass(0, pages, $location`Noob Cave`, option)) {
     handleTracker$1(
       goal.toString(),
-      Item.get("Time-Spinner").toString(),
+      $item`Time-Spinner`.toString(),
       "auto_copies",
     );
     return true;
@@ -2142,62 +2145,43 @@ function timeSpinnerCombat$2(
 }
 
 export function auto_chapeau(): void {
-  if (!canEquip(Item.get("no hat"))) {
+  if (!canEquip($item`no hat`)) {
     //requires 150 Moxie to wear, so will stop at this check alone most of the time, except in BIG! or level 13 moxie class
     return;
   }
-  if (!auto_have_skill(Skill.get("Ceci N'Est Pas Un Chapeau"))) {
+  if (!auto_have_skill($skill`Ceci N'Est Pas Un Chapeau`)) {
     return;
   }
-  if (myMp() < mpCost(Skill.get("Ceci N'Est Pas Un Chapeau"))) {
+  if (myMp() < mpCost($skill`Ceci N'Est Pas Un Chapeau`)) {
     return;
   }
-  if (
-    possessEquipment(Item.get("no hat")) ||
-    !auto_can_equip(Item.get("no hat"))
-  ) {
+  if (possessEquipment($item`no hat`) || !auto_can_equip($item`no hat`)) {
     return;
   }
   //300 MP cost is high and non sauceror classes that rely on meat for MP may need to check reserve first
   let doGetNoHat: boolean = false;
-  if (myMp() >= 100 + mpCost(Skill.get("Ceci N'Est Pas Un Chapeau"))) {
+  if (myMp() >= 100 + mpCost($skill`Ceci N'Est Pas Un Chapeau`)) {
     doGetNoHat = true;
   } else if (
-    myMp() >= 32 + mpCost(Skill.get("Ceci N'Est Pas Un Chapeau")) &&
+    myMp() >= 32 + mpCost($skill`Ceci N'Est Pas Un Chapeau`) &&
     mp_regen() >= 32
   ) {
     doGetNoHat = true;
   } else {
     const minimumMeat: number =
-      meatReserve() + (myClass() === Class.get("Sauceror") ? 500 : 2000);
+      meatReserve() + (myClass() === $class`Sauceror` ? 500 : 2000);
     if (myMeat() >= minimumMeat) {
       doGetNoHat = true;
     }
   }
 
   if (doGetNoHat) {
-    useSkill(1, Skill.get("Ceci N'Est Pas Un Chapeau"));
+    useSkill(1, $skill`Ceci N'Est Pas Un Chapeau`);
   }
 }
 
 function rethinkingCandyList(): boolean {
-  const synthesis: Effect[] = Effect.get([
-    "Synthesis: Hot",
-    "Synthesis: Cold",
-    "Synthesis: Pungent",
-    "Synthesis: Scary",
-    "Synthesis: Greasy",
-    "Synthesis: Strong",
-    "Synthesis: Smart",
-    "Synthesis: Cool",
-    "Synthesis: Hardy",
-    "Synthesis: Energy",
-    "Synthesis: Greed",
-    "Synthesis: Collection",
-    "Synthesis: Movement",
-    "Synthesis: Learning",
-    "Synthesis: Style",
-  ]);
+  const synthesis: Effect[] = $effects`Synthesis: Hot, Synthesis: Cold, Synthesis: Pungent, Synthesis: Scary, Synthesis: Greasy, Synthesis: Strong, Synthesis: Smart, Synthesis: Cool, Synthesis: Hardy, Synthesis: Energy, Synthesis: Greed, Synthesis: Collection, Synthesis: Movement, Synthesis: Learning, Synthesis: Style`;
   for (const eff of synthesis) {
     auto_log_info(
       `Trying effect: ${eff}: ${stringModifier(eff, "Modifiers")}`,
@@ -2214,8 +2198,8 @@ export function rethinkingCandy(acquire: Effect): boolean {
 
 function rethinkingCandy$1(acquire: Effect, simulate: boolean): boolean {
   if (
-    (!haveSkill(Skill.get("Sweet Synthesis")) ||
-      !auto_is_valid$2(Skill.get("Sweet Synthesis"))) &&
+    (!haveSkill($skill`Sweet Synthesis`) ||
+      !auto_is_valid$2($skill`Sweet Synthesis`)) &&
     !simulate
   ) {
     return false;
@@ -2225,21 +2209,21 @@ function rethinkingCandy$1(acquire: Effect, simulate: boolean): boolean {
   }
 
   const synthesisList: Map<Effect, boolean> = new Map([
-    [Effect.get("Synthesis: Hot"), true],
-    [Effect.get("Synthesis: Cold"), true],
-    [Effect.get("Synthesis: Pungent"), true],
-    [Effect.get("Synthesis: Scary"), true],
-    [Effect.get("Synthesis: Greasy"), true],
-    [Effect.get("Synthesis: Strong"), true],
-    [Effect.get("Synthesis: Smart"), true],
-    [Effect.get("Synthesis: Cool"), true],
-    [Effect.get("Synthesis: Hardy"), true],
-    [Effect.get("Synthesis: Energy"), true],
-    [Effect.get("Synthesis: Greed"), true],
-    [Effect.get("Synthesis: Collection"), true],
-    [Effect.get("Synthesis: Movement"), true],
-    [Effect.get("Synthesis: Learning"), true],
-    [Effect.get("Synthesis: Style"), true],
+    [$effect`Synthesis: Hot`, true],
+    [$effect`Synthesis: Cold`, true],
+    [$effect`Synthesis: Pungent`, true],
+    [$effect`Synthesis: Scary`, true],
+    [$effect`Synthesis: Greasy`, true],
+    [$effect`Synthesis: Strong`, true],
+    [$effect`Synthesis: Smart`, true],
+    [$effect`Synthesis: Cool`, true],
+    [$effect`Synthesis: Hardy`, true],
+    [$effect`Synthesis: Energy`, true],
+    [$effect`Synthesis: Greed`, true],
+    [$effect`Synthesis: Collection`, true],
+    [$effect`Synthesis: Movement`, true],
+    [$effect`Synthesis: Learning`, true],
+    [$effect`Synthesis: Style`, true],
   ]);
   const synthesis: Map<number, Effect> = List$1(synthesisList);
 
@@ -14306,13 +14290,9 @@ function rethinkingCandy$1(acquire: Effect, simulate: boolean): boolean {
   let bestFirst: Item = Item.none;
   let bestSecond: Item = Item.none;
   if (
-    Effect.get([
-      "Synthesis: Hot",
-      "Synthesis: Cold",
-      "Synthesis: Pungent",
-      "Synthesis: Scary",
-      "Synthesis: Greasy",
-    ]).includes(acquire)
+    $effects`Synthesis: Hot, Synthesis: Cold, Synthesis: Pungent, Synthesis: Scary, Synthesis: Greasy`.includes(
+      acquire,
+    )
   ) {
     const goal: number = ListFind(synthesis, acquire) % 5;
     for (let i: number = 0; i < simple.size; i++) {
@@ -14353,13 +14333,9 @@ function rethinkingCandy$1(acquire: Effect, simulate: boolean): boolean {
       }
     }
   } else if (
-    Effect.get([
-      "Synthesis: Strong",
-      "Synthesis: Smart",
-      "Synthesis: Cool",
-      "Synthesis: Hardy",
-      "Synthesis: Energy",
-    ]).includes(acquire)
+    $effects`Synthesis: Strong, Synthesis: Smart, Synthesis: Cool, Synthesis: Hardy, Synthesis: Energy`.includes(
+      acquire,
+    )
   ) {
     const goal: number = ListFind(synthesis, acquire) % 5;
     for (let i: number = 0; i < simple.size; i++) {
@@ -14399,13 +14375,9 @@ function rethinkingCandy$1(acquire: Effect, simulate: boolean): boolean {
       }
     }
   } else if (
-    Effect.get([
-      "Synthesis: Greed",
-      "Synthesis: Collection",
-      "Synthesis: Movement",
-      "Synthesis: Learning",
-      "Synthesis: Style",
-    ]).includes(acquire)
+    $effects`Synthesis: Greed, Synthesis: Collection, Synthesis: Movement, Synthesis: Learning, Synthesis: Style`.includes(
+      acquire,
+    )
   ) {
     const goal: number = ListFind(synthesis, acquire) % 5;
     for (let i: number = 0; i < complex.size; i++) {

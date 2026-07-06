@@ -1,28 +1,26 @@
 import {
-  Class,
   cliExecute,
   getProperty,
   haveSkill,
-  Item,
   itemAmount,
   myClass,
   myHp,
   myLevel,
   myMeat,
   myPath,
-  Path,
   setProperty,
-  Skill,
   toBoolean,
   toInt,
   visitUrl,
 } from "kolmafia";
+import { $class, $item, $path, $skill } from "libram";
+
 import { auto_log_info$1, meatReserve } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/avatar_of_shadows_over_loathing.ash
 export function in_aosol(): boolean {
-  return myPath() === Path.get("Avatar of Shadows Over Loathing");
+  return myPath() === $path`Avatar of Shadows Over Loathing`;
 }
 
 export function aosol_initializeSettings(): boolean {
@@ -42,27 +40,27 @@ export function aosol_unCurse(): void {
   if (toBoolean(getProperty("auto_aosol_dontUnCurse"))) {
     return;
   }
-  if (itemAmount(Item.get("cursed goblin cape")) > 0) {
+  if (itemAmount($item`cursed goblin cape`) > 0) {
     //-15% combat and vulnerability to 2 elements
     visitUrl("inv_use.php?pwd&which=2&whichitem=11149"); //-5% combat after uncursing
     cliExecute("refresh inventory");
   }
-  if (itemAmount(Item.get("cursed bat paw")) > 0) {
+  if (itemAmount($item`cursed bat paw`) > 0) {
     //+ML and -Attributes
     visitUrl("inv_use.php?pwd&which=2&whichitem=11147"); //-25 ML after uncursing
     cliExecute("refresh inventory");
   }
-  if (itemAmount(Item.get("cursed stats")) > 0) {
+  if (itemAmount($item`cursed stats`) > 0) {
     //+5 stats but limits stats to NIIIIICCCCEE (69)
     visitUrl("inv_use.php?pwd&which=2&whichitem=11153"); //+1 stat per fight
     cliExecute("refresh inventory");
   }
-  if (itemAmount(Item.get("cursed machete")) > 0) {
+  if (itemAmount($item`cursed machete`) > 0) {
     //+50% meat, but cut yourself every turn
     visitUrl("inv_use.php?pwd&which=2&whichitem=11157"); //+20% meat after uncursing
     cliExecute("refresh inventory");
   }
-  if (itemAmount(Item.get("cursed medallion")) > 0) {
+  if (itemAmount($item`cursed medallion`) > 0) {
     //+100% initiative, but -50% Weapon Dmg and -50% Spell Dmg
     visitUrl("inv_use.php?pwd&which=2&whichitem=11161"); //+25% Initiative after uncursing
     cliExecute("refresh inventory");
@@ -75,7 +73,7 @@ export function aosol_buySkills(): boolean {
   }
 
   if (toInt(getProperty("auto_aosolLastSkill")) < myLevel()) {
-    if (myClass() === Class.get("Pig Skinner")) {
+    if (myClass() === $class`Pig Skinner`) {
       let page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11163");
       //Check if there are already skill points
       const my_skillPoints: AshMatcher = new AshMatcher(
@@ -86,77 +84,77 @@ export function aosol_buySkills(): boolean {
         let skillPoints: number = toInt(my_skillPoints.group(1));
         auto_log_info$1(`Skill points found: ${skillPoints}`);
         while (skillPoints > 0) {
-          if (!haveSkill(Skill.get("[28021]Punt"))) {
+          if (!haveSkill($skill`[28021]Punt`)) {
             //Banish for the day
             page = visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=21",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Second Wind"))) {
+          if (!haveSkill($skill`Second Wind`)) {
             //Restore 50% max HP during combat
             page = visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=16",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Free-For-All"))) {
+          if (!haveSkill($skill`Free-For-All`)) {
             //Free kill
             page = visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=19",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Hot Foot"))) {
+          if (!haveSkill($skill`Hot Foot`)) {
             //Deal Mys in Fire Dmg and set enemy on fire
             page = visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=15",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Competitive Instincts"))) {
+          if (!haveSkill($skill`Competitive Instincts`)) {
             //+100% Meat
             page = visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=10",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Noogie"))) {
+          if (!haveSkill($skill`Noogie`)) {
             //Weaken and stun enemy
             page = visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=14",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Fancy Footwork"))) {
+          if (!haveSkill($skill`Fancy Footwork`)) {
             //25% Item Drops
             page = visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=6",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Cheerlead"))) {
+          if (!haveSkill($skill`Cheerlead`)) {
             //Cheerled (10 advs, +50% all stats)
             page = visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=18",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Strong Back"))) {
+          if (!haveSkill($skill`Strong Back`)) {
             //Passive Mus +20
             page = visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=3",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Stop Hitting Yourself"))) {
+          if (!haveSkill($skill`Stop Hitting Yourself`)) {
             //Deal Moxie in phys dmg and stun
             page = visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=17",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Ripped Triceps"))) {
+          if (!haveSkill($skill`Ripped Triceps`)) {
             //Damaging skills deal 25% more dmg
             page = visitUrl(
               "choice.php?pwd&option=1&whichchoice=1495&use=points&whichsk=8",
@@ -168,7 +166,7 @@ export function aosol_buySkills(): boolean {
       }
       //If there are no skill points, we still want to buy skills outright
       if (
-        !haveSkill(Skill.get("Ribald Memories")) &&
+        !haveSkill($skill`Ribald Memories`) &&
         myLevel() >= 1 &&
         myMeat() > 100 + meatReserve()
       ) {
@@ -180,7 +178,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (1).toString());
       }
       if (
-        !haveSkill(Skill.get("Blasted Glutes")) &&
+        !haveSkill($skill`Blasted Glutes`) &&
         myLevel() >= 2 &&
         myMeat() > 200 + meatReserve()
       ) {
@@ -192,7 +190,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (1).toString());
       }
       if (
-        !haveSkill(Skill.get("Stretch")) &&
+        !haveSkill($skill`Stretch`) &&
         myLevel() >= 2 &&
         myMeat() > 200 + meatReserve()
       ) {
@@ -204,7 +202,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (2).toString());
       }
       if (
-        !haveSkill(Skill.get("Ball Throw")) &&
+        !haveSkill($skill`Ball Throw`) &&
         myLevel() >= 3 &&
         myMeat() > 300 + meatReserve()
       ) {
@@ -216,7 +214,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (2).toString());
       }
       if (
-        !haveSkill(Skill.get("Strong Back")) &&
+        !haveSkill($skill`Strong Back`) &&
         myLevel() >= 3 &&
         myMeat() > 300 + meatReserve()
       ) {
@@ -228,7 +226,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (3).toString());
       }
       if (
-        !haveSkill(Skill.get("Noogie")) &&
+        !haveSkill($skill`Noogie`) &&
         myLevel() >= 4 &&
         myMeat() > 400 + meatReserve()
       ) {
@@ -240,7 +238,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (3).toString());
       }
       if (
-        !haveSkill(Skill.get("Overconfidence")) &&
+        !haveSkill($skill`Overconfidence`) &&
         myLevel() >= 4 &&
         myMeat() > 400 + meatReserve()
       ) {
@@ -252,7 +250,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (4).toString());
       }
       if (
-        !haveSkill(Skill.get("Anatomy Expertise")) &&
+        !haveSkill($skill`Anatomy Expertise`) &&
         myLevel() >= 5 &&
         myMeat() > 500 + meatReserve()
       ) {
@@ -264,7 +262,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (4).toString());
       }
       if (
-        !haveSkill(Skill.get("Hot Foot")) &&
+        !haveSkill($skill`Hot Foot`) &&
         myLevel() >= 5 &&
         myMeat() > 500 + meatReserve()
       ) {
@@ -276,7 +274,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (5).toString());
       }
       if (
-        !haveSkill(Skill.get("Fancy Footwork")) &&
+        !haveSkill($skill`Fancy Footwork`) &&
         myLevel() >= 6 &&
         myMeat() > 600 + meatReserve()
       ) {
@@ -288,7 +286,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (5).toString());
       }
       if (
-        !haveSkill(Skill.get("Second Wind")) &&
+        !haveSkill($skill`Second Wind`) &&
         myLevel() >= 6 &&
         myMeat() > 600 + meatReserve()
       ) {
@@ -300,7 +298,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (6).toString());
       }
       if (
-        !haveSkill(Skill.get("Stop Hitting Yourself")) &&
+        !haveSkill($skill`Stop Hitting Yourself`) &&
         myLevel() >= 7 &&
         myMeat() > 700 + meatReserve()
       ) {
@@ -312,7 +310,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (6).toString());
       }
       if (
-        !haveSkill(Skill.get("Taut Hamstrings")) &&
+        !haveSkill($skill`Taut Hamstrings`) &&
         myLevel() >= 7 &&
         myMeat() > 700 + meatReserve()
       ) {
@@ -324,7 +322,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (7).toString());
       }
       if (
-        !haveSkill(Skill.get("Cheerlead")) &&
+        !haveSkill($skill`Cheerlead`) &&
         myLevel() >= 8 &&
         myMeat() > 800 + meatReserve()
       ) {
@@ -336,7 +334,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (7).toString());
       }
       if (
-        !haveSkill(Skill.get("Ripped Triceps")) &&
+        !haveSkill($skill`Ripped Triceps`) &&
         myLevel() >= 8 &&
         myMeat() > 800 + meatReserve()
       ) {
@@ -348,7 +346,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (8).toString());
       }
       if (
-        !haveSkill(Skill.get("Free-For-All")) &&
+        !haveSkill($skill`Free-For-All`) &&
         myLevel() >= 9 &&
         myMeat() > 900 + meatReserve()
       ) {
@@ -360,7 +358,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (8).toString());
       }
       if (
-        !haveSkill(Skill.get("Head in the Game")) &&
+        !haveSkill($skill`Head in the Game`) &&
         myLevel() >= 9 &&
         myMeat() > 900 + meatReserve()
       ) {
@@ -372,7 +370,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (9).toString());
       }
       if (
-        !haveSkill(Skill.get("Competitive Instincts")) &&
+        !haveSkill($skill`Competitive Instincts`) &&
         myLevel() >= 10 &&
         myMeat() > 1000 + meatReserve()
       ) {
@@ -384,7 +382,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (9).toString());
       }
       if (
-        !haveSkill(Skill.get("Tape Up")) &&
+        !haveSkill($skill`Tape Up`) &&
         myLevel() >= 10 &&
         myMeat() > 1000 + meatReserve()
       ) {
@@ -396,7 +394,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (10).toString());
       }
       if (
-        !haveSkill(Skill.get("Matter Over Mind")) &&
+        !haveSkill($skill`Matter Over Mind`) &&
         myLevel() >= 11 &&
         myMeat() > 1100 + meatReserve()
       ) {
@@ -408,7 +406,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (10).toString());
       }
       if (
-        !haveSkill(Skill.get("[28021]Punt")) &&
+        !haveSkill($skill`[28021]Punt`) &&
         myLevel() >= 11 &&
         myMeat() > 1100 + meatReserve()
       ) {
@@ -420,7 +418,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (100).toString());
       }
     }
-    if (myClass() === Class.get("Cheese Wizard")) {
+    if (myClass() === $class`Cheese Wizard`) {
       let page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11164");
       //Check if there are already skill points
       const my_skillPoints: AshMatcher = new AshMatcher(
@@ -431,77 +429,77 @@ export function aosol_buySkills(): boolean {
         let skillPoints: number = toInt(my_skillPoints.group(1));
         auto_log_info$1(`Skill points found: ${skillPoints}`);
         while (skillPoints > 0) {
-          if (!haveSkill(Skill.get("Fondeluge"))) {
+          if (!haveSkill($skill`Fondeluge`)) {
             //50 turn yellow ray
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=21",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Emmental Elemental"))) {
+          if (!haveSkill($skill`Emmental Elemental`)) {
             //Deal Moxie in cold dmg and heal for same amt
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=17",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Peccorino Bravado"))) {
+          if (!haveSkill($skill`Peccorino Bravado`)) {
             //+20% all stats
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=6",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Fingers of Fontina"))) {
+          if (!haveSkill($skill`Fingers of Fontina`)) {
             //+50% item drops
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=11",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Quick Wit"))) {
+          if (!haveSkill($skill`Quick Wit`)) {
             //Passive Mys +20
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=3",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Gather Cheese-Chi"))) {
+          if (!haveSkill($skill`Gather Cheese-Chi`)) {
             //Heal +30HP and stun enemy
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=14",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Mind Melt"))) {
+          if (!haveSkill($skill`Mind Melt`)) {
             //Deal your Mys in hot damage and stun enemy
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=16",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Crack Knuckles"))) {
+          if (!haveSkill($skill`Crack Knuckles`)) {
             //Deal Mus in phys Dmg and weaken enemy
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=15",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Stilton Splatter"))) {
+          if (!haveSkill($skill`Stilton Splatter`)) {
             //Deal mys in phys dmg and +fam exp
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=19",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Bleu Brilliance"))) {
+          if (!haveSkill($skill`Bleu Brilliance`)) {
             //Cheese spells deal 50% more damage
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=8",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Gorgonzola's Guile"))) {
+          if (!haveSkill($skill`Gorgonzola's Guile`)) {
             //+25% Item Drops
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=9",
@@ -513,7 +511,7 @@ export function aosol_buySkills(): boolean {
       }
       //If there are no skill points, we still want to buy skills outright
       if (
-        !haveSkill(Skill.get("Mind Over Muenster")) &&
+        !haveSkill($skill`Mind Over Muenster`) &&
         myLevel() >= 1 &&
         myMeat() > 100 + meatReserve()
       ) {
@@ -525,7 +523,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (1).toString());
       }
       if (
-        !haveSkill(Skill.get("Cheddarmor")) &&
+        !haveSkill($skill`Cheddarmor`) &&
         myLevel() >= 2 &&
         myMeat() > 200 + meatReserve()
       ) {
@@ -537,7 +535,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (1).toString());
       }
       if (
-        !haveSkill(Skill.get("Subcutaneous Gouda")) &&
+        !haveSkill($skill`Subcutaneous Gouda`) &&
         myLevel() >= 2 &&
         myMeat() > 200 + meatReserve()
       ) {
@@ -549,7 +547,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (2).toString());
       }
       if (
-        !haveSkill(Skill.get("Parmesan Missile")) &&
+        !haveSkill($skill`Parmesan Missile`) &&
         myLevel() >= 3 &&
         myMeat() > 300 + meatReserve()
       ) {
@@ -561,7 +559,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (2).toString());
       }
       if (
-        !haveSkill(Skill.get("Quick Wit")) &&
+        !haveSkill($skill`Quick Wit`) &&
         myLevel() >= 3 &&
         myMeat() > 300 + meatReserve()
       ) {
@@ -573,7 +571,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (3).toString());
       }
       if (
-        !haveSkill(Skill.get("Gather Cheese-Chi")) &&
+        !haveSkill($skill`Gather Cheese-Chi`) &&
         myLevel() >= 4 &&
         myMeat() > 400 + meatReserve()
       ) {
@@ -585,7 +583,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (3).toString());
       }
       if (
-        !haveSkill(Skill.get("Limberger Limberness")) &&
+        !haveSkill($skill`Limberger Limberness`) &&
         myLevel() >= 4 &&
         myMeat() > 400 + meatReserve()
       ) {
@@ -597,7 +595,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (4).toString());
       }
       if (
-        !haveSkill(Skill.get("Swiss Cunning")) &&
+        !haveSkill($skill`Swiss Cunning`) &&
         myLevel() >= 5 &&
         myMeat() > 500 + meatReserve()
       ) {
@@ -609,7 +607,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (4).toString());
       }
       if (
-        !haveSkill(Skill.get("Crack Knuckles")) &&
+        !haveSkill($skill`Crack Knuckles`) &&
         myLevel() >= 5 &&
         myMeat() > 500 + meatReserve()
       ) {
@@ -621,7 +619,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (5).toString());
       }
       if (
-        !haveSkill(Skill.get("Peccorino Bravado")) &&
+        !haveSkill($skill`Peccorino Bravado`) &&
         myLevel() >= 6 &&
         myMeat() > 600 + meatReserve()
       ) {
@@ -633,7 +631,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (5).toString());
       }
       if (
-        !haveSkill(Skill.get("Mind Melt")) &&
+        !haveSkill($skill`Mind Melt`) &&
         myLevel() >= 6 &&
         myMeat() > 600 + meatReserve()
       ) {
@@ -645,7 +643,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (6).toString());
       }
       if (
-        !haveSkill(Skill.get("Emmental Elemental")) &&
+        !haveSkill($skill`Emmental Elemental`) &&
         myLevel() >= 7 &&
         myMeat() > 700 + meatReserve()
       ) {
@@ -657,7 +655,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (6).toString());
       }
       if (
-        !haveSkill(Skill.get("Wisdom of Jarlsberg")) &&
+        !haveSkill($skill`Wisdom of Jarlsberg`) &&
         myLevel() >= 7 &&
         myMeat() > 700 + meatReserve()
       ) {
@@ -669,7 +667,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (7).toString());
       }
       if (
-        !haveSkill(Skill.get("Reality Shift")) &&
+        !haveSkill($skill`Reality Shift`) &&
         myLevel() >= 8 &&
         myMeat() > 800 + meatReserve()
       ) {
@@ -681,7 +679,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (7).toString());
       }
       if (
-        !haveSkill(Skill.get("Bleu Brilliance")) &&
+        !haveSkill($skill`Bleu Brilliance`) &&
         myLevel() >= 8 &&
         myMeat() > 800 + meatReserve()
       ) {
@@ -693,7 +691,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (8).toString());
       }
       if (
-        !haveSkill(Skill.get("Stilton Splatter")) &&
+        !haveSkill($skill`Stilton Splatter`) &&
         myLevel() >= 9 &&
         myMeat() > 900 + meatReserve()
       ) {
@@ -705,7 +703,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (8).toString());
       }
       if (
-        !haveSkill(Skill.get("Gorgonzola's Guile")) &&
+        !haveSkill($skill`Gorgonzola's Guile`) &&
         myLevel() >= 9 &&
         myMeat() > 900 + meatReserve()
       ) {
@@ -717,7 +715,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (9).toString());
       }
       if (
-        !haveSkill(Skill.get("Medical Manchego")) &&
+        !haveSkill($skill`Medical Manchego`) &&
         myLevel() >= 10 &&
         myMeat() > 1000 + meatReserve()
       ) {
@@ -729,7 +727,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (9).toString());
       }
       if (
-        !haveSkill(Skill.get("Queso Fustulento")) &&
+        !haveSkill($skill`Queso Fustulento`) &&
         myLevel() >= 10 &&
         myMeat() > 1000 + meatReserve()
       ) {
@@ -741,7 +739,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (10).toString());
       }
       if (
-        !haveSkill(Skill.get("Fingers of Fontina")) &&
+        !haveSkill($skill`Fingers of Fontina`) &&
         myLevel() >= 11 &&
         myMeat() > 1100 + meatReserve()
       ) {
@@ -753,7 +751,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (10).toString());
       }
       if (
-        !haveSkill(Skill.get("Fondeluge")) &&
+        !haveSkill($skill`Fondeluge`) &&
         myLevel() >= 11 &&
         myMeat() > 1100 + meatReserve()
       ) {
@@ -765,7 +763,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (100).toString());
       }
     }
-    if (myClass() === Class.get("Jazz Agent")) {
+    if (myClass() === $class`Jazz Agent`) {
       let page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11165");
       //Check if there are already skill points
       const my_skillPoints: AshMatcher = new AshMatcher(
@@ -776,77 +774,77 @@ export function aosol_buySkills(): boolean {
         let skillPoints: number = toInt(my_skillPoints.group(1));
         auto_log_info$1(`Skill points found: ${skillPoints}`);
         while (skillPoints > 0) {
-          if (!haveSkill(Skill.get("Motif"))) {
+          if (!haveSkill($skill`Motif`)) {
             //25 turn blue ray (olfaction-esque)
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=21",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Air of Mystery"))) {
+          if (!haveSkill($skill`Air of Mystery`)) {
             //First attack against you always misses
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=6",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Sax of Violence"))) {
+          if (!haveSkill($skill`Sax of Violence`)) {
             //Deal Mus in Sleaze dmg
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=17",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Drum Roll"))) {
+          if (!haveSkill($skill`Drum Roll`)) {
             //Stun enemy for a few rounds
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=16",
               true,
             );
           }
-          if (!haveSkill(Skill.get("C Sharp Eyes"))) {
+          if (!haveSkill($skill`C Sharp Eyes`)) {
             //+50% item drop, +50% meat drop
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=5",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Fashion Sense"))) {
+          if (!haveSkill($skill`Fashion Sense`)) {
             //Mox +20
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=3",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Knife In The Darkness"))) {
+          if (!haveSkill($skill`Knife In The Darkness`)) {
             //Deal 50% of your foe's HP and gives 10 adv In The Darkness (-10% combat)
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=14",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Orchestra Strike"))) {
+          if (!haveSkill($skill`Orchestra Strike`)) {
             //Deal your Mox in Phys Dmg, Weaken Enemy
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=13",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Venomous Riff"))) {
+          if (!haveSkill($skill`Venomous Riff`)) {
             //Deal Mys in dmg and poison foe
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=15",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Grit Teeth"))) {
+          if (!haveSkill($skill`Grit Teeth`)) {
             //In combat 20 HP heal
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=19",
               true,
             );
           }
-          if (!haveSkill(Skill.get("Perfect Embouchure"))) {
+          if (!haveSkill($skill`Perfect Embouchure`)) {
             //Musical skills deal 33% more damage
             page = visitUrl(
               "choice.php?pwd&whichchoice=1495&option=1&use=points&whichsk=8",
@@ -858,7 +856,7 @@ export function aosol_buySkills(): boolean {
       }
       //If there are no skill points, we still want to buy skills outright
       if (
-        !haveSkill(Skill.get("Thick Calluses")) &&
+        !haveSkill($skill`Thick Calluses`) &&
         myLevel() >= 1 &&
         myMeat() > 100 + meatReserve()
       ) {
@@ -870,7 +868,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (1).toString());
       }
       if (
-        !haveSkill(Skill.get("Call For Backup")) &&
+        !haveSkill($skill`Call For Backup`) &&
         myLevel() >= 2 &&
         myMeat() > 200 + meatReserve()
       ) {
@@ -882,7 +880,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (1).toString());
       }
       if (
-        !haveSkill(Skill.get("Virtuosity")) &&
+        !haveSkill($skill`Virtuosity`) &&
         myLevel() >= 2 &&
         myMeat() > 200 + meatReserve()
       ) {
@@ -894,7 +892,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (2).toString());
       }
       if (
-        !haveSkill(Skill.get("Orchestra Strike")) &&
+        !haveSkill($skill`Orchestra Strike`) &&
         myLevel() >= 3 &&
         myMeat() > 300 + meatReserve()
       ) {
@@ -906,7 +904,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (2).toString());
       }
       if (
-        !haveSkill(Skill.get("Fashion Sense")) &&
+        !haveSkill($skill`Fashion Sense`) &&
         myLevel() >= 3 &&
         myMeat() > 300 + meatReserve()
       ) {
@@ -918,7 +916,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (3).toString());
       }
       if (
-        !haveSkill(Skill.get("Knife In The Darkness")) &&
+        !haveSkill($skill`Knife In The Darkness`) &&
         myLevel() >= 4 &&
         myMeat() > 400 + meatReserve()
       ) {
@@ -930,7 +928,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (3).toString());
       }
       if (
-        !haveSkill(Skill.get("Jazz Hands")) &&
+        !haveSkill($skill`Jazz Hands`) &&
         myLevel() >= 4 &&
         myMeat() > 400 + meatReserve()
       ) {
@@ -942,7 +940,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (4).toString());
       }
       if (
-        !haveSkill(Skill.get("C Sharp Eyes")) &&
+        !haveSkill($skill`C Sharp Eyes`) &&
         myLevel() >= 5 &&
         myMeat() > 500 + meatReserve()
       ) {
@@ -954,7 +952,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (4).toString());
       }
       if (
-        !haveSkill(Skill.get("Venomous Riff")) &&
+        !haveSkill($skill`Venomous Riff`) &&
         myLevel() >= 5 &&
         myMeat() > 500 + meatReserve()
       ) {
@@ -966,7 +964,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (5).toString());
       }
       if (
-        !haveSkill(Skill.get("Air of Mystery")) &&
+        !haveSkill($skill`Air of Mystery`) &&
         myLevel() >= 6 &&
         myMeat() > 600 + meatReserve()
       ) {
@@ -978,7 +976,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (5).toString());
       }
       if (
-        !haveSkill(Skill.get("Drum Roll")) &&
+        !haveSkill($skill`Drum Roll`) &&
         myLevel() >= 6 &&
         myMeat() > 600 + meatReserve()
       ) {
@@ -990,7 +988,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (6).toString());
       }
       if (
-        !haveSkill(Skill.get("Sax of Violence")) &&
+        !haveSkill($skill`Sax of Violence`) &&
         myLevel() >= 7 &&
         myMeat() > 700 + meatReserve()
       ) {
@@ -1002,7 +1000,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (6).toString());
       }
       if (
-        !haveSkill(Skill.get("Rhythmic Precision")) &&
+        !haveSkill($skill`Rhythmic Precision`) &&
         myLevel() >= 7 &&
         myMeat() > 700 + meatReserve()
       ) {
@@ -1014,7 +1012,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (7).toString());
       }
       if (
-        !haveSkill(Skill.get("Tricky Timpani")) &&
+        !haveSkill($skill`Tricky Timpani`) &&
         myLevel() >= 8 &&
         myMeat() > 800 + meatReserve()
       ) {
@@ -1026,7 +1024,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (7).toString());
       }
       if (
-        !haveSkill(Skill.get("Perfect Embouchure")) &&
+        !haveSkill($skill`Perfect Embouchure`) &&
         myLevel() >= 8 &&
         myMeat() > 800 + meatReserve()
       ) {
@@ -1038,7 +1036,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (8).toString());
       }
       if (
-        !haveSkill(Skill.get("Grit Teeth")) &&
+        !haveSkill($skill`Grit Teeth`) &&
         myLevel() >= 9 &&
         myMeat() > 900 + meatReserve()
       ) {
@@ -1050,7 +1048,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (8).toString());
       }
       if (
-        !haveSkill(Skill.get("Improv Muscles")) &&
+        !haveSkill($skill`Improv Muscles`) &&
         myLevel() >= 9 &&
         myMeat() > 900 + meatReserve()
       ) {
@@ -1062,7 +1060,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (9).toString());
       }
       if (
-        !haveSkill(Skill.get("Impeccable Timing")) &&
+        !haveSkill($skill`Impeccable Timing`) &&
         myLevel() >= 10 &&
         myMeat() > 1000 + meatReserve()
       ) {
@@ -1074,7 +1072,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (9).toString());
       }
       if (
-        !haveSkill(Skill.get("Soothing Flute")) &&
+        !haveSkill($skill`Soothing Flute`) &&
         myLevel() >= 10 &&
         myMeat() > 1000 + meatReserve()
       ) {
@@ -1086,7 +1084,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (10).toString());
       }
       if (
-        !haveSkill(Skill.get("Rhythm In Your Blood")) &&
+        !haveSkill($skill`Rhythm In Your Blood`) &&
         myLevel() >= 11 &&
         myMeat() > 1100 + meatReserve()
       ) {
@@ -1098,7 +1096,7 @@ export function aosol_buySkills(): boolean {
         setProperty("auto_aosolLastSkill", (10).toString());
       }
       if (
-        !haveSkill(Skill.get("Motif")) &&
+        !haveSkill($skill`Motif`) &&
         myLevel() >= 11 &&
         myMeat() > 1100 + meatReserve()
       ) {

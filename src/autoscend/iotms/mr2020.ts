@@ -2,16 +2,13 @@ import {
   abort,
   availablePocket,
   buy,
-  Class,
   cliExecute,
   cliExecuteOutput,
-  Coinmaster,
   containsText,
   Effect,
   equip,
   equippedAmount,
   equippedItem,
-  Familiar,
   getCampground,
   getProperty,
   haveEffect,
@@ -36,7 +33,6 @@ import {
   runChoice,
   setProperty,
   Skill,
-  Slot,
   splitString,
   squareRoot,
   Stat,
@@ -51,6 +47,20 @@ import {
   visitUrl,
   wait,
 } from "kolmafia";
+import {
+  $class,
+  $coinmaster,
+  $effect,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $skill,
+  $slot,
+  $slots,
+  $stat,
+} from "libram";
+
 import { autoAdv$2, autoAdvBypass } from "../auto_adventure";
 import {
   addToMaximize,
@@ -84,15 +94,15 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 //Defined in autoscend/iotms/mr2020.ash
 function auto_haveBirdADayCalendar(): boolean {
   return (
-    itemAmount(Item.get("Bird-a-Day calendar")) > 0 &&
-    auto_is_valid(Item.get("Bird-a-Day calendar"))
+    itemAmount($item`Bird-a-Day calendar`) > 0 &&
+    auto_is_valid($item`Bird-a-Day calendar`)
   );
 }
 
 export function auto_birdOfTheDay(): boolean {
   if (auto_haveBirdADayCalendar() && getProperty("_birdOfTheDay") === "") {
     auto_log_info$1("What a beautiful morning! What's today's bird?");
-    return use(1, Item.get("Bird-a-Day calendar"));
+    return use(1, $item`Bird-a-Day calendar`);
   }
   return false;
 }
@@ -112,7 +122,7 @@ function auto_birdIsValid(): boolean {
   }
 
   if (!toBoolean(getProperty("_canSeekBirds"))) {
-    use(1, Item.get("Bird-a-Day calendar"));
+    use(1, $item`Bird-a-Day calendar`);
   }
 
   return true;
@@ -123,11 +133,11 @@ export function auto_birdModifier(mod: string): number {
     return 0;
   }
 
-  return numericModifier(Effect.get("Blessing of the Bird"), mod);
+  return numericModifier($effect`Blessing of the Bird`, mod);
 }
 
 export function auto_favoriteBirdModifier(mod: string): number {
-  return numericModifier(Effect.get("Blessing of your favorite Bird"), mod);
+  return numericModifier($effect`Blessing of your favorite Bird`, mod);
 }
 
 function auto_birdsSought(): number {
@@ -143,7 +153,7 @@ export function auto_birdCanSeek(): boolean {
     return false;
   }
 
-  return auto_have_skill(Skill.get("Seek out a Bird"));
+  return auto_have_skill($skill`Seek out a Bird`);
 }
 
 export function auto_favoriteBirdCanSeek(): boolean {
@@ -152,13 +162,13 @@ export function auto_favoriteBirdCanSeek(): boolean {
     return false;
   }
 
-  return auto_have_skill(Skill.get("Visit your Favorite Bird"));
+  return auto_have_skill($skill`Visit your Favorite Bird`);
 }
 
 export function auto_hasPowerfulGlove(): boolean {
   return (
-    possessEquipment(Item.get("Powerful Glove")) &&
-    auto_is_valid(Item.get("mint-in-box Powerful Glove"))
+    possessEquipment($item`Powerful Glove`) &&
+    auto_is_valid($item`mint-in-box Powerful Glove`)
   );
 }
 
@@ -179,15 +189,15 @@ function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean {
   }
 
   let old: Item = Item.none;
-  if (!haveEquipped(Item.get("Powerful Glove"))) {
-    old = equippedItem(Slot.get("acc3"));
-    equip(Slot.get("acc3"), Item.get("Powerful Glove"));
+  if (!haveEquipped($item`Powerful Glove`)) {
+    old = equippedItem($slot`acc3`);
+    equip($slot`acc3`, $item`Powerful Glove`);
   }
 
   const ret: boolean = useSkill(1, sk);
 
   if (old !== Item.none) {
-    equip(Slot.get("acc3"), old);
+    equip($slot`acc3`, old);
   }
 
   if (ret) {
@@ -213,7 +223,7 @@ export function auto_powerfulGloveReplacesAvailable(inCombat: boolean): number {
     return 0;
   }
 
-  if (inCombat && !haveEquipped(Item.get("Powerful Glove"))) {
+  if (inCombat && !haveEquipped($item`Powerful Glove`)) {
     return 0;
   }
 
@@ -225,17 +235,15 @@ function auto_powerfulGloveReplacesAvailable$1(): number {
 }
 
 export function auto_powerfulGloveNoncombat(): boolean {
-  if (0 < haveEffect(Effect.get("Invisible Avatar"))) {
+  if (0 < haveEffect($effect`Invisible Avatar`)) {
     return false;
   }
 
-  return auto_powerfulGloveNoncombatSkill(
-    Skill.get("CHEAT CODE: Invisible Avatar"),
-  );
+  return auto_powerfulGloveNoncombatSkill($skill`CHEAT CODE: Invisible Avatar`);
 }
 
 export function auto_powerfulGloveStats(): boolean {
-  return auto_powerfulGloveNoncombatSkill(Skill.get("CHEAT CODE: Triple Size"));
+  return auto_powerfulGloveNoncombatSkill($skill`CHEAT CODE: Triple Size`);
 }
 
 function auto_wantToEquipPowerfulGlove(): boolean {
@@ -251,10 +259,10 @@ function auto_wantToEquipPowerfulGlove(): boolean {
 }
 
 function auto_willEquipPowerfulGlove(): boolean {
-  for (const s of Slot.get(["acc1", "acc2", "acc3"])) {
+  for (const s of $slots`acc1, acc2, acc3`) {
     const pref: string = getMaximizeSlotPref(s);
     const toEquip: string = getProperty(pref);
-    if (toEquip === Item.get("Powerful Glove").toString()) {
+    if (toEquip === $item`Powerful Glove`.toString()) {
       return true;
     }
   }
@@ -271,17 +279,17 @@ export function auto_forceEquipPowerfulGlove(): boolean {
     return true;
   }
 
-  return autoEquip(Slot.get("acc3"), Item.get("Powerful Glove"));
+  return autoEquip($slot`acc3`, $item`Powerful Glove`);
 }
 
 export function auto_burnPowerfulGloveCharges(): void {
   while (
-    auto_is_valid$2(Skill.get("CHEAT CODE: Triple Size")) &&
+    auto_is_valid$2($skill`CHEAT CODE: Triple Size`) &&
     auto_hasPowerfulGlove() &&
     auto_powerfulGloveCharges() >= 5
   ) {
-    if (equippedAmount(Item.get("Powerful Glove")) === 0) {
-      equip(Item.get("Powerful Glove")); //equip it to prevent use command from doing 20 cycles of equip, use skill, unequip.
+    if (equippedAmount($item`Powerful Glove`) === 0) {
+      equip($item`Powerful Glove`); //equip it to prevent use command from doing 20 cycles of equip, use skill, unequip.
     }
     auto_powerfulGloveStats();
   }
@@ -290,8 +298,8 @@ export function auto_burnPowerfulGloveCharges(): void {
 export function auto_canFightPiranhaPlant(): boolean {
   const numMushroomFights: number = in_plumber() ? 5 : 1;
   if (
-    auto_is_valid(Item.get("packet of mushroom spores")) &&
-    Item.get("packet of mushroom spores").toString() in getCampground() &&
+    auto_is_valid($item`packet of mushroom spores`) &&
+    $item`packet of mushroom spores`.toString() in getCampground() &&
     toInt(getProperty("_mushroomGardenFights")) < numMushroomFights
   ) {
     return true;
@@ -301,8 +309,8 @@ export function auto_canFightPiranhaPlant(): boolean {
 
 export function auto_canTendMushroomGarden(): boolean {
   if (
-    auto_is_valid(Item.get("packet of mushroom spores")) &&
-    Item.get("packet of mushroom spores").toString() in getCampground() &&
+    auto_is_valid($item`packet of mushroom spores`) &&
+    $item`packet of mushroom spores`.toString() in getCampground() &&
     !toBoolean(getProperty("_mushroomGardenVisited"))
   ) {
     return true;
@@ -320,34 +328,31 @@ export function auto_piranhaPlantFightsRemaining(): number {
 
 export function auto_mushroomGardenHandler(): boolean {
   if (auto_piranhaPlantFightsRemaining() > 0) {
-    return autoAdv$2(Location.get("Your Mushroom Garden"));
+    return autoAdv$2($location`Your Mushroom Garden`);
   } else if (auto_canTendMushroomGarden()) {
-    autoAdv$2(Location.get("Your Mushroom Garden"));
+    autoAdv$2($location`Your Mushroom Garden`);
     // TODO: Malibu Stacey - move all this to a more central location after refactor
     use(
-      itemAmount(Item.get("colossal free-range mushroom")),
-      Item.get("colossal free-range mushroom"),
+      itemAmount($item`colossal free-range mushroom`),
+      $item`colossal free-range mushroom`,
     );
     use(
-      itemAmount(Item.get("immense free-range mushroom")),
-      Item.get("immense free-range mushroom"),
+      itemAmount($item`immense free-range mushroom`),
+      $item`immense free-range mushroom`,
     );
     use(
-      itemAmount(Item.get("giant free-range mushroom")),
-      Item.get("giant free-range mushroom"),
+      itemAmount($item`giant free-range mushroom`),
+      $item`giant free-range mushroom`,
     );
     use(
-      itemAmount(Item.get("bulky free-range mushroom")),
-      Item.get("bulky free-range mushroom"),
+      itemAmount($item`bulky free-range mushroom`),
+      $item`bulky free-range mushroom`,
     );
     use(
-      itemAmount(Item.get("plump free-range mushroom")),
-      Item.get("plump free-range mushroom"),
+      itemAmount($item`plump free-range mushroom`),
+      $item`plump free-range mushroom`,
     );
-    use(
-      itemAmount(Item.get("free-range mushroom")),
-      Item.get("free-range mushroom"),
-    );
+    use(itemAmount($item`free-range mushroom`), $item`free-range mushroom`);
     return true;
   }
   return false;
@@ -373,8 +378,8 @@ export function mushroomGardenChoiceHandler(choice: number): void {
 
 export function auto_getGuzzlrCocktailSet(): boolean {
   if (
-    possessEquipment(Item.get("Guzzlr tablet")) &&
-    auto_is_valid(Item.get("Guzzlr tablet")) &&
+    possessEquipment($item`Guzzlr tablet`) &&
+    auto_is_valid($item`Guzzlr tablet`) &&
     !toBoolean(getProperty("auto_skipGuzzlrCocktailSet"))
   ) {
     if (
@@ -400,18 +405,18 @@ export function auto_getGuzzlrCocktailSet(): boolean {
 
 export function auto_canCamelSpit(): boolean {
   return (
-    canChangeToFamiliar(Familiar.get("Melodramedary")) &&
+    canChangeToFamiliar($familiar`Melodramedary`) &&
     toInt(getProperty("camelSpit")) === 100
   );
 }
 
 function auto_latheHardwood(toLathe: Item): boolean {
   // can't lathe if lathe is out of standard (or otherwise unusable)
-  if (!auto_is_valid(Item.get("SpinMaster&trade; lathe"))) {
+  if (!auto_is_valid($item`SpinMaster™ lathe`)) {
     return false;
   }
   // can't lathe... without a lathe
-  if (itemAmount(Item.get("SpinMaster&trade; lathe")) < 1) {
+  if (itemAmount($item`SpinMaster™ lathe`) < 1) {
     return false;
   }
   // if breakfast hasn't run and you haven't grabbed it manually, we won't
@@ -420,45 +425,41 @@ function auto_latheHardwood(toLathe: Item): boolean {
     visitUrl("shop.php?whichshop=lathe");
   }
   // can't lathe without hardwood
-  if (itemAmount(Item.get("flimsy hardwood scraps")) < 1) {
+  if (itemAmount($item`flimsy hardwood scraps`) < 1) {
     return false;
   }
   // can't lathe things that aren't made of hardwood
   if (
-    !Item.get([
-      "beechwood blowgun",
-      "birch battery",
-      "ebony epee",
-      "maple magnet",
-      "weeping willow wand",
-    ]).includes(toLathe)
+    !$items`beechwood blowgun, birch battery, ebony epee, maple magnet, weeping willow wand`.includes(
+      toLathe,
+    )
   ) {
     return false;
   }
 
-  return buy(Coinmaster.get("Your SpinMaster&trade; lathe"), 1, toLathe);
+  return buy($coinmaster`Your SpinMaster&trade; lathe`, 1, toLathe);
 }
 
 export function auto_latheAppropriateWeapon(): boolean {
   let toLathe: Item = Item.none;
 
   switch (myPrimestat()) {
-    case Stat.get("Muscle"):
-      toLathe = Item.get("ebony epee");
+    case $stat`Muscle`:
+      toLathe = $item`ebony epee`;
       break;
-    case Stat.get("Mysticality"):
-      toLathe = Item.get("weeping willow wand");
+    case $stat`Mysticality`:
+      toLathe = $item`weeping willow wand`;
       break;
-    case Stat.get("Moxie"):
-      toLathe = Item.get("beechwood blowgun");
+    case $stat`Moxie`:
+      toLathe = $item`beechwood blowgun`;
       break;
   }
 
   switch (myClass()) {
-    case Class.get("Plumber"):
+    case $class`Plumber`:
       // autoscend likes Plumber to go for moxie, so let's make sure it
       // does even if another stat is ahead at the start of the day.
-      toLathe = Item.get("beechwood blowgun");
+      toLathe = $item`beechwood blowgun`;
       break;
   }
   // If any future classes also have a variable mainstat, specify the desired item here
@@ -472,8 +473,8 @@ export function auto_latheAppropriateWeapon(): boolean {
 
 function auto_hasCargoShorts(): boolean {
   return (
-    possessEquipment(wrap_item(Item.get("Cargo Cultist Shorts"))) &&
-    auto_is_valid(wrap_item(Item.get("Cargo Cultist Shorts")))
+    possessEquipment(wrap_item($item`Cargo Cultist Shorts`)) &&
+    auto_is_valid(wrap_item($item`Cargo Cultist Shorts`))
   );
 }
 
@@ -595,10 +596,10 @@ export function auto_cargoShortsOpenPocket$2(
     1,
     `choice.php?pwd=${myHash()}&whichchoice=1420&option=1&pocket=${availablePocket(m)}`,
   );
-  if (autoAdvBypass(0, pages, Location.get("Noob Cave"), null)) {
+  if (autoAdvBypass(0, pages, $location`Noob Cave`, null)) {
     handleTracker$1(
       m.toString(),
-      wrap_item(Item.get("Cargo Cultist Shorts")).toString(),
+      wrap_item($item`Cargo Cultist Shorts`).toString(),
       "auto_copies",
     );
     return true;
@@ -645,8 +646,8 @@ function auto_cargoShortsOpenPocket$5(s: string): boolean {
 
 export function auto_canMapTheMonsters(): boolean {
   if (
-    haveSkill(Skill.get("Map the Monsters")) &&
-    auto_is_valid$2(Skill.get("Map the Monsters"))
+    haveSkill($skill`Map the Monsters`) &&
+    auto_is_valid$2($skill`Map the Monsters`)
   ) {
     return toInt(getProperty("_monstersMapped")) < 3;
   }
@@ -662,7 +663,7 @@ export function auto_mapTheMonsters(): boolean {
     return true;
   }
   if (auto_canMapTheMonsters()) {
-    return useSkill(1, Skill.get("Map the Monsters"));
+    return useSkill(1, $skill`Map the Monsters`);
   }
   return false;
 }
@@ -697,16 +698,16 @@ function auto_monsterToMap(loc: Location, page: string): Monster {
 export function cartographyChoiceHandler(choice: number, page: string): void {
   auto_log_info(`cartographyChoiceHandler Running choice ${choice}`, "blue");
   if (choice === 1425) {
-    if (itemAmount(Item.get("Orcish frat-paddle")) > 0) {
+    if (itemAmount($item`Orcish frat-paddle`) > 0) {
       runChoice(1); // choosing baseball cap + cargo shorts to complete outfit
-    } else if (itemAmount(Item.get("Orcish baseball cap")) > 0) {
+    } else if (itemAmount($item`Orcish baseball cap`) > 0) {
       runChoice(2); // choosing frat-paddle + cargo shorts to complete outfit
-    } else if (itemAmount(Item.get("Orcish cargo shorts")) > 0) {
+    } else if (itemAmount($item`Orcish cargo shorts`) > 0) {
       runChoice(3); // choosing frat-paddle + baseball cap to complete outfit
     } else if (
-      itemAmount(Item.get("Orcish frat-paddle")) > 0 &&
-      itemAmount(Item.get("Orcish baseball cap")) > 0 &&
-      itemAmount(Item.get("Orcish cargo shorts")) > 0
+      itemAmount($item`Orcish frat-paddle`) > 0 &&
+      itemAmount($item`Orcish baseball cap`) > 0 &&
+      itemAmount($item`Orcish cargo shorts`) > 0
     ) {
       runChoice(4); // if you have each outfit piece, just fight the orcs
     } else {
@@ -727,9 +728,9 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
   } else if (choice === 1431) {
     // Here There Be Giants (Cartography)
     if (internalQuestStatus("questL10Garbage") === 9) {
-      if (itemAmount(Item.get("model airship")) > 0) {
+      if (itemAmount($item`model airship`) > 0) {
         runChoice(1); // go to steampunk choice to complete the quest
-      } else if (haveEquipped(Item.get("Mohawk wig"))) {
+      } else if (haveEquipped($item`Mohawk wig`)) {
         runChoice(4); // go to the punk rock choice to complete the quest
       } else {
         runChoice(3); // go to the raver choice to get the record?
@@ -740,16 +741,12 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
   } else if (choice === 1432) {
     // Mob Maptality (A Mob of Zeppelin Protesters)
     const fire_protestors: number =
-      itemAmount(Item.get("Flamin' Whatshisname")) > 0 ? 10 : 3;
+      itemAmount($item`Flamin' Whatshisname`) > 0 ? 10 : 3;
     const sleaze_amount: number =
       numericModifier("sleaze damage") + numericModifier("sleaze spell damage");
     const sleaze_protestors: number = squareRoot(sleaze_amount);
-    let lynyrd_protestors: number = haveEffect(Effect.get("Musky")) > 0 ? 6 : 3;
-    for (const it of Item.get([
-      "lynyrdskin cap",
-      "lynyrdskin tunic",
-      "lynyrdskin breeches",
-    ])) {
+    let lynyrd_protestors: number = haveEffect($effect`Musky`) > 0 ? 6 : 3;
+    for (const it of $items`lynyrdskin cap, lynyrdskin tunic, lynyrdskin breeches`) {
       if (equippedAmount(it) > 0) {
         lynyrd_protestors += 5;
       }
@@ -776,7 +773,7 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
     const enemy: Monster = auto_monsterToMap(myLocation(), page);
     if (enemy !== Monster.none) {
       handleTracker$1(
-        Skill.get("Map the Monsters").toString(),
+        $skill`Map the Monsters`.toString(),
         enemy.toString(),
         "auto_mapperidot",
       );
@@ -798,8 +795,8 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
 
 export function auto_hasRetrocape(): boolean {
   return (
-    possessEquipment(Item.get("unwrapped knock-off retro superhero cape")) &&
-    auto_is_valid(Item.get("unwrapped knock-off retro superhero cape"))
+    possessEquipment($item`unwrapped knock-off retro superhero cape`) &&
+    auto_is_valid($item`unwrapped knock-off retro superhero cape`)
   );
 }
 
@@ -875,17 +872,17 @@ export function auto_handleRetrocape(): boolean {
     // retrocape [muscle | mysticality | moxie | vampire | heck | robot] [hold | thrill | kiss | kill]
     cliExecute(`retrocape ${tempHero} ${tag}`); // configures and equips
   } else {
-    equip(Item.get("unwrapped knock-off retro superhero cape")); // already configured, just equip
+    equip($item`unwrapped knock-off retro superhero cape`); // already configured, just equip
   }
   return (
     getProperty("retroCapeSuperhero") === tempHero &&
     getProperty("retroCapeWashingInstructions") === tag &&
-    haveEquipped(Item.get("unwrapped knock-off retro superhero cape"))
+    haveEquipped($item`unwrapped knock-off retro superhero cape`)
   );
 }
 
 export function auto_buyCrimboCommerceMallItem(): boolean {
-  if (!auto_is_valid$1(Familiar.get("Ghost of Crimbo Commerce"))) {
+  if (!auto_is_valid$1($familiar`Ghost of Crimbo Commerce`)) {
     return false;
   }
 

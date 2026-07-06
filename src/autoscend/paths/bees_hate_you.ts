@@ -2,17 +2,13 @@ import {
   abort,
   cliExecute,
   containsText,
-  Effect,
   getProperty,
   haveEffect,
   isUnrestricted,
   Item,
   itemAmount,
   lastMonster,
-  Location,
-  Monster,
   myPath,
-  Path,
   putCloset,
   setProperty,
   Slot,
@@ -20,13 +16,15 @@ import {
   toSlot,
   visitUrl,
 } from "kolmafia";
+import { $effect, $item, $items, $location, $monster, $path } from "libram";
+
 import { autoAdvBypass$1 } from "../auto_adventure";
 import { internalQuestStatus } from "../auto_util";
 import { inAftercore } from "./casual";
 
 //Defined in autoscend/paths/bees_hate_you.ash
 export function in_bhy(): boolean {
-  return myPath() === Path.get("Bees Hate You");
+  return myPath() === $path`Bees Hate You`;
 }
 
 export function bhy_initializeSettings(): void {
@@ -84,15 +82,9 @@ export function bhy_is_item_valid(it: Item): boolean {
     return isUnrestricted(it); //this is equipment. equipment can be worn. you take backlash damage from it
   }
   if (
-    Item.get([
-      "Cobb's Knob map",
-      "enchanted bean",
-      "ball polish",
-      "black market map",
-      "boring binder clip",
-      "beehive",
-      "electric boning knife",
-    ]).includes(it)
+    $items`Cobb's Knob map, enchanted bean, ball polish, black market map, boring binder clip, beehive, electric boning knife`.includes(
+      it,
+    )
   ) {
     return true; //these items are explicit exceptions which are allowed in BHY
   }
@@ -106,7 +98,7 @@ export function LM_bhy(): boolean {
     return false;
   }
   // pension check keeps trying to be used
-  for (const it of Item.get(["black pension check"])) {
+  for (const it of $items`black pension check`) {
     if (itemAmount(it) > 0) {
       putCloset(itemAmount(it), it);
     }
@@ -121,7 +113,7 @@ export function L13_bhy_towerFinal(): boolean {
     return false;
   }
 
-  if (itemAmount(Item.get("antique hand mirror")) < 1) {
+  if (itemAmount($item`antique hand mirror`) < 1) {
     abort(
       "Need the [antique hand mirror] to defeat the guy made of bees. Please get one from the jewelry of the animated rustic nightstand and try again.",
     );
@@ -131,13 +123,13 @@ export function L13_bhy_towerFinal(): boolean {
   setProperty("auto_disableAdventureHandling", true.toString());
   autoAdvBypass$1(
     "place.php?whichplace=nstower&action=ns_10_sorcfight",
-    Location.get("Noob Cave"),
+    $location`Noob Cave`,
   );
 
-  if (lastMonster() !== Monster.get("Guy Made Of Bees")) {
+  if (lastMonster() !== $monster`Guy Made Of Bees`) {
     abort("Failed to start the battle with Guy Made Of Bees");
   }
-  if (haveEffect(Effect.get("Beaten Up")) > 0) {
+  if (haveEffect($effect`Beaten Up`) > 0) {
     abort("The Guy Made Of Bees beat me up! Please finish him off manually");
   }
   if (toBoolean(getProperty("auto_stayInRun"))) {

@@ -12,6 +12,8 @@ import {
   use,
   visitUrl,
 } from "kolmafia";
+import { $item } from "libram";
+
 import { possessEquipment } from "../auto_equipment";
 import {
   auto_is_valid,
@@ -25,53 +27,53 @@ import { in_zootomist } from "../paths/zootomist";
 function eudora_xiblaxian(): Map<Item, number> {
   const retval: Map<Item, number> = new Map();
   if (
-    itemAmount(Item.get("Xiblaxian 5D printer")) > 0 &&
-    isUnrestricted(Item.get("Xiblaxian 5D printer"))
+    itemAmount($item`Xiblaxian 5D printer`) > 0 &&
+    isUnrestricted($item`Xiblaxian 5D printer`)
   ) {
     const canMake: string = visitUrl("shop.php?whichshop=5dprinter");
-    const polymer: number = itemAmount(Item.get("Xiblaxian polymer"));
-    const crystal: number = itemAmount(Item.get("Xiblaxian crystal"));
-    const circuitry: number = itemAmount(Item.get("Xiblaxian circuitry"));
-    const alloy: number = itemAmount(Item.get("Xiblaxian alloy"));
+    const polymer: number = itemAmount($item`Xiblaxian polymer`);
+    const crystal: number = itemAmount($item`Xiblaxian crystal`);
+    const circuitry: number = itemAmount($item`Xiblaxian circuitry`);
+    const alloy: number = itemAmount($item`Xiblaxian alloy`);
     if (containsText(canMake, "Xiblaxian xeno-detection goggles")) {
       retval.set(
-        Item.get("Xiblaxian xeno-detection goggles"),
+        $item`Xiblaxian xeno-detection goggles`,
         min(polymer / 4, crystal / 2),
       );
     }
     if (containsText(canMake, "Xiblaxian stealth cowl") && !in_hattrick()) {
       retval.set(
-        Item.get("Xiblaxian stealth cowl"),
+        $item`Xiblaxian stealth cowl`,
         min(circuitry / 4, min(polymer / 9, alloy / 5)),
       );
     }
     if (containsText(canMake, "Xiblaxian stealth trousers")) {
       retval.set(
-        Item.get("Xiblaxian stealth trousers"),
+        $item`Xiblaxian stealth trousers`,
         min(circuitry / 9, min(polymer / 4, alloy / 5)),
       );
     }
     if (containsText(canMake, "Xiblaxian stealth vest")) {
       retval.set(
-        Item.get("Xiblaxian stealth vest"),
+        $item`Xiblaxian stealth vest`,
         min(circuitry / 5, min(polymer / 4, alloy / 9)),
       );
     }
     if (containsText(canMake, "Xiblaxian ultraburrito")) {
       retval.set(
-        Item.get("Xiblaxian ultraburrito"),
+        $item`Xiblaxian ultraburrito`,
         min(circuitry / 1, min(polymer / 1, alloy / 3)),
       );
     }
     if (containsText(canMake, "Xiblaxian space-whiskey")) {
       retval.set(
-        Item.get("Xiblaxian space-whiskey"),
+        $item`Xiblaxian space-whiskey`,
         min(circuitry / 3, min(polymer / 1, alloy / 1)),
       );
     }
     if (containsText(canMake, "Xiblaxian residence-cube")) {
       retval.set(
-        Item.get("Xiblaxian residence-cube"),
+        $item`Xiblaxian residence-cube`,
         min(min(circuitry / 11, crystal / 3), min(polymer / 11, alloy / 11)),
       );
     }
@@ -80,10 +82,10 @@ function eudora_xiblaxian(): Map<Item, number> {
 }
 
 export function auto_useWardrobe(): void {
-  if (!auto_is_valid(Item.get("wardrobe-o-matic"))) {
+  if (!auto_is_valid($item`wardrobe-o-matic`)) {
     return;
   }
-  if (itemAmount(Item.get("wardrobe-o-matic")) === 0) {
+  if (itemAmount($item`wardrobe-o-matic`) === 0) {
     return;
   }
   // check one of the 3 prefs which get set when wardrobe is used each day
@@ -104,13 +106,13 @@ export function auto_useWardrobe(): void {
   }
   // only need to use it so we get the hat, shirt, fam equip
   // let maximizer handle if any of it is worth equipping
-  use(Item.get("wardrobe-o-matic"));
+  use($item`wardrobe-o-matic`);
 }
 
 export function auto_haveARB(): boolean {
   return (
-    possessEquipment(Item.get("Allied Radio Backpack")) &&
-    auto_is_valid(Item.get("Allied Radio Backpack"))
+    possessEquipment($item`Allied Radio Backpack`) &&
+    auto_is_valid($item`Allied Radio Backpack`)
   );
 }
 
@@ -119,13 +121,13 @@ export function auto_canARBSupplyDrop(): boolean {
 }
 
 export function auto_ARBSupplyDropsLeft(): number {
-  if (!auto_is_valid(Item.get("Allied Radio Backpack"))) {
+  if (!auto_is_valid($item`Allied Radio Backpack`)) {
     return 0;
   }
   const n_backpack_left: number = auto_haveARB()
     ? 3 - toInt(getProperty("_alliedRadioDropsUsed"))
     : 0;
-  return n_backpack_left + itemAmount(Item.get("handheld Allied radio"));
+  return n_backpack_left + itemAmount($item`handheld Allied radio`);
 }
 
 export function ARBSupplyDrop(req: string): boolean {
@@ -172,7 +174,7 @@ export function ARBSupplyDrop(req: string): boolean {
   }
   if (alliedRadio(radio)) {
     handleTracker$1(
-      Item.get("Allied Radio Backpack").toString(),
+      $item`Allied Radio Backpack`.toString(),
       radio,
       "auto_iotm_claim",
     );

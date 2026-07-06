@@ -2,12 +2,8 @@ import {
   availableAmount,
   canadiaAvailable,
   canAdventure,
-  Class,
   containsText,
-  Effect,
-  Element,
   equippedItem,
-  Familiar,
   fullnessLimit,
   getLocationMonsters,
   getMonsters,
@@ -31,14 +27,26 @@ import {
   myClass,
   myLevel,
   myPrimestat,
-  Skill,
-  Slot,
-  Stat,
   toBoolean,
   toFloat,
   toInt,
   toLocation,
 } from "kolmafia";
+import {
+  $class,
+  $effect,
+  $element,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $locations,
+  $skill,
+  $slot,
+  $slots,
+  $stat,
+} from "libram";
+
 import { fullness_left, inebriety_left } from "./auto_consume";
 import { possessEquipment, possessOutfit$1 } from "./auto_equipment";
 import {
@@ -84,7 +92,7 @@ import {
 //Defined in autoscend/auto_zone.ash
 function zone_unlock(loc: Location): boolean {
   let unlocked: boolean = false;
-  if (loc === Location.get("The Thinknerd Warehouse")) {
+  if (loc === $location`The Thinknerd Warehouse`) {
     unlocked = LX_unlockThinknerdWarehouse(false);
   } else {
     auto_log_debug$1(`Don't know how to unlock ${loc}`);
@@ -746,22 +754,19 @@ export function zone_needItem(loc: Location): generic_t {
     let milksPerMilk: number = 0;
     let milkUsed: number = 0;
     switch (loc) {
-      case Location.get("Hero's Field"):
+      case $location`Hero's Field`:
         value = 20.0;
         break;
-      case Location.get("The Hole in the Sky"):
-        if (
-          itemAmount(Item.get("star")) < 8 ||
-          itemAmount(Item.get("line")) < 7
-        ) {
+      case $location`The Hole in the Sky`:
+        if (itemAmount($item`star`) < 8 || itemAmount($item`line`) < 7) {
           value = 30.0;
         }
         break;
-      case Location.get("The Orcish Frat House"):
-      case Location.get("The Hippy Camp"):
+      case $location`The Orcish Frat House`:
+      case $location`The Hippy Camp`:
         value = 5.0;
         break;
-      case Location.get("Wartime Frat House"):
+      case $location`Wartime Frat House`:
         if (
           !possessOutfit$1("Frat Warrior Fatigues") &&
           !isWearingOutfit("War Hippy Fatigues")
@@ -769,7 +774,7 @@ export function zone_needItem(loc: Location): generic_t {
           value = 5.0;
         }
         break;
-      case Location.get("Wartime Hippy Camp"):
+      case $location`Wartime Hippy Camp`:
         if (
           !possessOutfit$1("War Hippy Fatigues") &&
           !isWearingOutfit("Frat Warrior Fatigues")
@@ -777,123 +782,121 @@ export function zone_needItem(loc: Location): generic_t {
           value = 5.0;
         }
         break;
-      case Location.get("The Battlefield (Frat Uniform)"):
-      case Location.get("The Battlefield (Hippy Uniform)"):
+      case $location`The Battlefield (Frat Uniform)`:
+      case $location`The Battlefield (Hippy Uniform)`:
         value = 5.0;
         break;
-      case Location.get("The Hatching Chamber"):
-      case Location.get("The Feeding Chamber"):
-      case Location.get("The Royal Guard Chamber"):
+      case $location`The Hatching Chamber`:
+      case $location`The Feeding Chamber`:
+      case $location`The Royal Guard Chamber`:
         value = 10.0;
         break;
-      case Location.get("The Oasis"):
-        if (haveEffect(Effect.get("Ultrahydrated")) > 0) {
+      case $location`The Oasis`:
+        if (haveEffect($effect`Ultrahydrated`) > 0) {
           value = 30.0;
         }
         break;
-      case Location.get("The Middle Chamber"):
+      case $location`The Middle Chamber`:
         value = 20.0;
         break;
-      case Location.get("The Haunted Library"):
+      case $location`The Haunted Library`:
         if (
-          itemAmount(Item.get("killing jar")) < 1 &&
+          itemAmount($item`killing jar`) < 1 &&
           (toInt(getProperty("gnasirProgress")) & 4) === 0 &&
           toInt(getProperty("desertExploration")) < 100
         ) {
           value = 10.0;
         }
         break;
-      case Location.get("The Haunted Laundry Room"):
+      case $location`The Haunted Laundry Room`:
         value = 5.0 * (1.0 + toFloat(getProperty("auto_cabinetsencountered")));
         break;
-      case Location.get("The Haunted Wine Cellar"):
+      case $location`The Haunted Wine Cellar`:
         value = 5.0 * (1.0 + toFloat(getProperty("auto_wineracksencountered")));
         break;
-      case Location.get("The Hidden Park"):
+      case $location`The Hidden Park`:
         if (toInt(getProperty("hiddenTavernUnlock")) < myAscensions()) {
           value = 20.0;
         }
         break;
-      case Location.get("The Hidden Bowling Alley"):
+      case $location`The Hidden Bowling Alley`:
         if (
-          itemAmount(Item.get("bowling ball")) === 0 &&
+          itemAmount($item`bowling ball`) === 0 &&
           toInt(getProperty("hiddenBowlingAlleyProgress")) < 5
         ) {
           value = 40.0;
         }
         break;
-      case Location.get("The Hidden Temple"):
-        if (haveEffect(Effect.get("Stone-Faced")) === 0) {
+      case $location`The Hidden Temple`:
+        if (haveEffect($effect`Stone-Faced`) === 0) {
           value = 20.0;
         }
         break;
-      case Location.get("The Black Forest"):
-        if (!possessEquipment(Item.get("blackberry galoshes"))) {
+      case $location`The Black Forest`:
+        if (!possessEquipment($item`blackberry galoshes`)) {
           value = 20.0;
         }
         break;
-      case Location.get("Inside the Palindome"):
+      case $location`Inside the Palindome`:
         if (
-          itemAmount(Item.get("stunt nuts")) === 0 &&
-          itemAmount(Item.get("wet stunt nut stew")) === 0
+          itemAmount($item`stunt nuts`) === 0 &&
+          itemAmount($item`wet stunt nut stew`) === 0
         ) {
           value = 30.0;
         }
         break;
-      case Location.get("Whitey's Grove"):
+      case $location`Whitey's Grove`:
         if (
-          (itemAmount(Item.get("lion oil")) === 0 ||
-            itemAmount(Item.get("bird rib")) === 0) &&
-          itemAmount(Item.get("wet stew")) === 0 &&
-          itemAmount(Item.get("wet stunt nut stew")) === 0 &&
+          (itemAmount($item`lion oil`) === 0 ||
+            itemAmount($item`bird rib`) === 0) &&
+          itemAmount($item`wet stew`) === 0 &&
+          itemAmount($item`wet stunt nut stew`) === 0 &&
           internalQuestStatus("questL11Palindome") < 5
         ) {
           value = 25.0;
         }
         break;
-      case Location.get("The Copperhead Club"):
-      case Location.get("A Mob of Zeppelin Protesters"):
+      case $location`The Copperhead Club`:
+      case $location`A Mob of Zeppelin Protesters`:
         if (internalQuestStatus("questL11Ron") >= 1) {
           value = 15.0;
         }
         break;
-      case Location.get("The Red Zeppelin"):
+      case $location`The Red Zeppelin`:
         value = 30.0;
         break;
-      case Location.get("The Penultimate Fantasy Airship"):
-        if (
-          !possessEquipment(Item.get("amulet of extreme plot significance"))
-        ) {
+      case $location`The Penultimate Fantasy Airship`:
+        if (!possessEquipment($item`amulet of extreme plot significance`)) {
           value = 10.0;
         }
-        if (!possessEquipment(Item.get("Mohawk wig"))) {
+        if (!possessEquipment($item`Mohawk wig`)) {
           value = 10.0;
         }
         break;
-      case Location.get("The Castle in the Clouds in the Sky (Basement)"):
+      case $location`The Castle in the Clouds in the Sky (Basement)`:
         value = 40.0;
         break;
-      case Location.get("The Castle in the Clouds in the Sky (Ground Floor)"):
+      case $location`The Castle in the Clouds in the Sky (Ground Floor)`:
         value = 20.0;
         break;
-      case Location.get("The Smut Orc Logging Camp"):
+      case $location`The Smut Orc Logging Camp`:
         if (toInt(getProperty("chasmBridgeProgress")) < bridgeGoal()) {
           value = 10.0;
         }
         break;
-      case Location.get("A-Boo Peak"):
+      case $location`A-Boo Peak`:
         if (toInt(getProperty("auto_aboopending")) === 0) {
           value = 15.0;
         }
         break;
-      case Location.get("Twin Peak"):
+      case $location`Twin Peak`:
         value = 15.0;
         break;
-      case Location.get("Oil Peak"):
+      case $location`Oil Peak`:
         if (
           (toInt(getProperty("twinPeakProgress")) & 4) === 0 &&
-          itemAmount(Item.get("bubblin' crude")) < 12 &&
-          itemAmount(Item.get("jar of oil")) < 1
+          itemAmount($item`bubblin' crude`) < 12 &&
+          itemAmount($item`jar of oil`) < 1
         ) {
           if (monsterLevelAdjustment() > 100) {
             value = 10.0;
@@ -904,36 +907,36 @@ export function zone_needItem(loc: Location): generic_t {
           }
         }
         break;
-      case Location.get("The Valley of Rof L'm Fao"):
+      case $location`The Valley of Rof L'm Fao`:
         if (
-          itemAmount(Item.get("lowercase N")) === 0 &&
-          itemAmount(Item.get("ND")) === 0 &&
-          itemAmount(Item.get("Wand of Nagamar")) === 0 &&
+          itemAmount($item`lowercase N`) === 0 &&
+          itemAmount($item`ND`) === 0 &&
+          itemAmount($item`Wand of Nagamar`) === 0 &&
           toBoolean(getProperty("auto_wandOfNagamar"))
         ) {
           value = 30.0;
         }
-      case Location.get("Itznotyerzitz Mine"):
+      case $location`Itznotyerzitz Mine`:
         if (!possessOutfit$1("Mining Gear") && cloversAvailable$1() === 0) {
           value = 10.0;
         }
         break;
-      case Location.get("The Goatlet"):
+      case $location`The Goatlet`:
         getMilk =
-          (haveSkill(Skill.get("Advanced Saucecrafting")) ||
-            (myClass() === Class.get("Sauceror") &&
+          (haveSkill($skill`Advanced Saucecrafting`) ||
+            (myClass() === $class`Sauceror` &&
               (guildAvailable() ||
                 !toBoolean(getProperty("auto_skipUnlockGuild"))))) &&
           fullnessLimit() !== 0;
-        milksPerMilk = myClass() === Class.get("Sauceror") ? 3 : 1;
+        milksPerMilk = myClass() === $class`Sauceror` ? 3 : 1;
         milkUsed =
           toBoolean(getProperty("_milkOfMagnesiumUsed")) ||
           fullness_left() === 0
             ? 1
             : 0;
         if (
-          itemAmount(Item.get("milk of magnesium")) +
-            milksPerMilk * itemAmount(Item.get("glass of goat's milk")) +
+          itemAmount($item`milk of magnesium`) +
+            milksPerMilk * itemAmount($item`glass of goat's milk`) +
             milkUsed >=
           3
         ) {
@@ -945,102 +948,102 @@ export function zone_needItem(loc: Location): generic_t {
           value = 40.0;
         }
         break;
-      case Location.get("The eXtreme Slope"):
+      case $location`The eXtreme Slope`:
         if (!possessOutfit$1("eXtreme Cold-Weather Gear")) {
           value = 10.0;
         }
-      case Location.get("The Defiled Nook"):
+      case $location`The Defiled Nook`:
         // Handle for a gravy boat?
         if (toInt(getProperty("cyrptNookEvilness")) > 14) {
           value = 20.0;
         }
         break;
-      case Location.get("The Dark Neck of the Woods"):
-      case Location.get("The Dark Heart of the Woods"):
-      case Location.get("The Dark Elbow of the Woods"):
-      case Location.get("Pandamonium Slums"):
+      case $location`The Dark Neck of the Woods`:
+      case $location`The Dark Heart of the Woods`:
+      case $location`The Dark Elbow of the Woods`:
+      case $location`Pandamonium Slums`:
         if (
           LX_doingPirates() &&
-          itemAmount(Item.get("hot wing")) < 3 &&
+          itemAmount($item`hot wing`) < 3 &&
           internalQuestStatus("questM12Pirate") <= 2
         ) {
           value = 30;
         }
         break;
-      case Location.get("Cobb's Knob Barracks"):
+      case $location`Cobb's Knob Barracks`:
         if (!haveOutfit("Knob Goblin Elite Guard Uniform")) {
           value = 10.0;
         }
         break;
-      case Location.get("Cobb's Knob Harem"):
-        if (itemAmount(Item.get("Knob Goblin perfume")) === 0) {
+      case $location`Cobb's Knob Harem`:
+        if (itemAmount($item`Knob Goblin perfume`) === 0) {
           value = 25.0;
         }
         if (!possessOutfit$1("Knob Goblin Harem Girl Disguise")) {
           value = 20.0;
         }
         break;
-      case Location.get("The Beanbat Chamber"):
-        if (itemAmount(Item.get("enchanted bean")) === 0) {
+      case $location`The Beanbat Chamber`:
+        if (itemAmount($item`enchanted bean`) === 0) {
           value = 50.0;
         }
         if (internalQuestStatus("questL04Bat") < 3) {
           value = 10.0;
         }
         break;
-      case Location.get("The Batrat and Ratbat Burrow"):
+      case $location`The Batrat and Ratbat Burrow`:
         if (internalQuestStatus("questL04Bat") < 3) {
           value = 15.0;
         }
         break;
-      case Location.get("The Bat Hole Entrance"):
-      case Location.get("Guano Junction"):
+      case $location`The Bat Hole Entrance`:
+      case $location`Guano Junction`:
         if (internalQuestStatus("questL04Bat") < 3) {
           value = 10.0;
         }
         break;
-      case Location.get("The Laugh Floor"):
-        if (itemAmount(Item.get("imp air")) < 5) {
+      case $location`The Laugh Floor`:
+        if (itemAmount($item`imp air`) < 5) {
           value = 15.0;
         }
         break;
-      case Location.get("Infernal Rackets Backstage"):
-        if (itemAmount(Item.get("bus pass")) < 5) {
+      case $location`Infernal Rackets Backstage`:
+        if (itemAmount($item`bus pass`) < 5) {
           value = 15.0;
         }
         break;
-      case Location.get("Barrrney's Barrr"):
-        if (itemAmount(Item.get("cocktail napkin")) === 0) {
+      case $location`Barrrney's Barrr`:
+        if (itemAmount($item`cocktail napkin`) === 0) {
           value = 10.0;
         }
         break;
-      case Location.get("The F'c'le"):
+      case $location`The F'c'le`:
         if (
-          itemAmount(Item.get("ball polish")) === 0 ||
-          itemAmount(Item.get("mizzenmast mop")) === 0 ||
-          itemAmount(Item.get("rigging shampoo")) === 0
+          itemAmount($item`ball polish`) === 0 ||
+          itemAmount($item`mizzenmast mop`) === 0 ||
+          itemAmount($item`rigging shampoo`) === 0
         ) {
-          if (!possessEquipment(Item.get("pirate fledges"))) {
+          if (!possessEquipment($item`pirate fledges`)) {
             value = 30.0;
           }
         }
         break;
-      case Location.get("The Obligatory Pirate's Cove"):
+      case $location`The Obligatory Pirate's Cove`:
         if (
           !possessOutfit$1("Swashbuckling Getup") &&
-          !possessEquipment(Item.get("pirate fledges"))
+          !possessEquipment($item`pirate fledges`)
         ) {
           value = 10.0;
         }
-      case Location.get("The Old Landfill"):
+      case $location`The Old Landfill`:
         value =
           5.0 * (1.0 + toFloat(getProperty("auto_junkspritesencountered")));
         break;
-      case Location.get("The Deep Machine Tunnels"):
+      case $location`The Deep Machine Tunnels`:
         value = 30.0; //Just a guess.
 
         break;
-      case Location.get("Barf Mountain"):
+      case $location`Barf Mountain`:
         retval._float = 15.0;
         break;
       case Location.get("The Velvet / Gold Mine"):
@@ -1049,38 +1052,38 @@ export function zone_needItem(loc: Location): generic_t {
           retval._float = 10.0;
         }
         break;
-      case Location.get("The Haunted Pantry"):
+      case $location`The Haunted Pantry`:
         break;
-      case Location.get("The Skeleton Store"):
+      case $location`The Skeleton Store`:
         break;
-      case Location.get("The Secret Government Laboratory"):
+      case $location`The Secret Government Laboratory`:
         break;
-      case Location.get("Waste Processing"):
+      case $location`Waste Processing`:
         // Bugbear Invasion Locations
-        if (!possessEquipment(Item.get("bugbear communicator badge"))) {
+        if (!possessEquipment($item`bugbear communicator badge`)) {
           retval._float = 20.0;
         }
         break;
-      case Location.get("Science Lab"):
+      case $location`Science Lab`:
         retval._float = 30.0;
         break;
-      case Location.get("Engineering"):
+      case $location`Engineering`:
         retval._float = 50.0;
         break;
-      case Location.get("Fight in the Dirt"):
+      case $location`Fight in the Dirt`:
         // End Bugbear Invasion Locations
         // A Shrunken Adventurer Am I (Small) Locations
         value = 50.0;
         break;
-      case Location.get("Fight in the Tall Grass"):
+      case $location`Fight in the Tall Grass`:
         value = 50.0;
         break;
-      case Location.get("Fight in the Very Tall Grass"):
+      case $location`Fight in the Very Tall Grass`:
         value = 50.0;
         break;
-      case Location.get("Shadow Rift (The Ancient Buried Pyramid)"):
-      case Location.get("Shadow Rift (The Hidden City)"):
-      case Location.get("Shadow Rift (The Misspelled Cemetary)"):
+      case $location`Shadow Rift (The Ancient Buried Pyramid)`:
+      case $location`Shadow Rift (The Hidden City)`:
+      case $location`Shadow Rift (The Misspelled Cemetary)`:
         // End A Shrunken Adventurer Am I (Small) Locations
         // Shadow Rifts via cursed payphone or AoSOL path
         value = 10.0;
@@ -1117,7 +1120,7 @@ export function zone_needItemBooze(loc: Location): generic_t {
   const retval: generic_t = new generic_t();
   let value: number = 0.0;
   switch (loc) {
-    case Location.get("The Haunted Wine Cellar"):
+    case $location`The Haunted Wine Cellar`:
       value = 5.0 * (1.0 + toFloat(getProperty("auto_wineracksencountered")));
       break;
     default:
@@ -1154,44 +1157,44 @@ export function zone_needItemFood(loc: Location): generic_t {
     let milksPerMilk: number = 0;
     let milkUsed: number = 0;
     switch (loc) {
-      case Location.get("The Haunted Laundry Room"):
+      case $location`The Haunted Laundry Room`:
         value = 5.0 * (1.0 + toFloat(getProperty("auto_cabinetsencountered")));
         break;
-      case Location.get("Inside the Palindome"):
+      case $location`Inside the Palindome`:
         if (
-          itemAmount(Item.get("stunt nuts")) === 0 &&
-          itemAmount(Item.get("wet stunt nut stew")) === 0
+          itemAmount($item`stunt nuts`) === 0 &&
+          itemAmount($item`wet stunt nut stew`) === 0
         ) {
           value = 30.0;
         }
         break;
-      case Location.get("Whitey's Grove"):
+      case $location`Whitey's Grove`:
         if (
-          (itemAmount(Item.get("lion oil")) === 0 ||
-            itemAmount(Item.get("bird rib")) === 0) &&
-          itemAmount(Item.get("wet stew")) === 0 &&
-          itemAmount(Item.get("wet stunt nut stew")) === 0 &&
+          (itemAmount($item`lion oil`) === 0 ||
+            itemAmount($item`bird rib`) === 0) &&
+          itemAmount($item`wet stew`) === 0 &&
+          itemAmount($item`wet stunt nut stew`) === 0 &&
           internalQuestStatus("questL11Palindome") < 5
         ) {
           value = 25.0;
         }
         break;
-      case Location.get("The Goatlet"):
+      case $location`The Goatlet`:
         getMilk =
-          (haveSkill(Skill.get("Advanced Saucecrafting")) ||
-            (myClass() === Class.get("Sauceror") &&
+          (haveSkill($skill`Advanced Saucecrafting`) ||
+            (myClass() === $class`Sauceror` &&
               (guildAvailable() ||
                 !toBoolean(getProperty("auto_skipUnlockGuild"))))) &&
           fullnessLimit() !== 0;
-        milksPerMilk = myClass() === Class.get("Sauceror") ? 3 : 1;
+        milksPerMilk = myClass() === $class`Sauceror` ? 3 : 1;
         milkUsed =
           toBoolean(getProperty("_milkOfMagnesiumUsed")) ||
           fullness_left() === 0
             ? 1
             : 0;
         if (
-          itemAmount(Item.get("milk of magnesium")) +
-            milksPerMilk * itemAmount(Item.get("glass of goat's milk")) +
+          itemAmount($item`milk of magnesium`) +
+            milksPerMilk * itemAmount($item`glass of goat's milk`) +
             milkUsed >=
           3
         ) {
@@ -1203,21 +1206,21 @@ export function zone_needItemFood(loc: Location): generic_t {
           value = 40.0;
         }
         break;
-      case Location.get("The Dark Neck of the Woods"):
-      case Location.get("The Dark Heart of the Woods"):
-      case Location.get("The Dark Elbow of the Woods"):
-      case Location.get("Pandamonium Slums"):
+      case $location`The Dark Neck of the Woods`:
+      case $location`The Dark Heart of the Woods`:
+      case $location`The Dark Elbow of the Woods`:
+      case $location`Pandamonium Slums`:
         if (
           LX_doingPirates() &&
-          itemAmount(Item.get("hot wing")) < 3 &&
+          itemAmount($item`hot wing`) < 3 &&
           internalQuestStatus("questM12Pirate") <= 2
         ) {
           value = 30;
         }
         break;
-      case Location.get("The Haunted Pantry"):
+      case $location`The Haunted Pantry`:
         break;
-      case Location.get("The Skeleton Store"):
+      case $location`The Skeleton Store`:
         break;
       default:
         retval._error = true;
@@ -1252,23 +1255,23 @@ export function zone_combatMod(loc: Location): generic_t {
   const delay: generic_t = zone_delay(loc);
   let value: number = 0;
   switch (loc) {
-    case Location.get("The Orcish Frat House"):
-    case Location.get("The Hippy Camp"):
+    case $location`The Orcish Frat House`:
+    case $location`The Hippy Camp`:
       if (myLevel() >= 9) {
         value = -85;
       }
       break;
-    case Location.get("Wartime Frat House"):
-    case Location.get("Wartime Hippy Camp"):
+    case $location`Wartime Frat House`:
+    case $location`Wartime Hippy Camp`:
       value = -80;
       break;
-    case Location.get("Sonofa Beach"):
+    case $location`Sonofa Beach`:
       //when wanderer replacing strategy is about to be used, combat modifier is useless. these are the replaced wanderers
       if (auto_voteMonster()) {
-        for (const sl of Slot.get(["acc3", "acc2", "acc1"])) {
+        for (const sl of $slots`acc3, acc2, acc1`) {
           if (
             getProperty(`_auto_maximize_equip_${sl.toString()}`) ===
-            Item.get("&quot;I Voted!&quot; sticker").toString()
+            $item`"I Voted!" sticker`.toString()
           ) {
             value = 0;
             break;
@@ -1278,7 +1281,7 @@ export function zone_combatMod(loc: Location): generic_t {
       if (
         auto_sausageGoblin() &&
         getProperty("_auto_maximize_equip_off-hand") ===
-          Item.get("Kramco Sausage-o-Matic&trade;").toString()
+          $item`Kramco Sausage-o-Matic™`.toString()
       ) {
         value = 0;
         break;
@@ -1287,13 +1290,13 @@ export function zone_combatMod(loc: Location): generic_t {
       //otherwise if no wanderer replace
       value = 90;
       break;
-    case Location.get("The Upper Chamber"):
+    case $location`The Upper Chamber`:
       value = -85;
       break;
-    case Location.get("The Haunted Billiards Room"):
+    case $location`The Haunted Billiards Room`:
       value = -85;
       break;
-    case Location.get("The Haunted Gallery"):
+    case $location`The Haunted Gallery`:
       if (
         delay._int === 0 ||
         !containsText(getProperty("relayCounters"), "Garden Banished")
@@ -1301,41 +1304,41 @@ export function zone_combatMod(loc: Location): generic_t {
         value = -80;
       }
       break;
-    case Location.get("The Haunted Bathroom"):
+    case $location`The Haunted Bathroom`:
       if (delay._int === 0) {
         value = -90;
       }
       break;
-    case Location.get("The Haunted Ballroom"):
+    case $location`The Haunted Ballroom`:
       if (delay._int === 0 && loc.turnsSpent > 0) {
         value = -90;
       }
       break;
-    case Location.get("The Hidden Park"):
+    case $location`The Hidden Park`:
       value = -85;
       break;
-    case Location.get("The Hidden Temple"):
-      if (haveEffect(Effect.get("Stone-Faced")) === 0) {
+    case $location`The Hidden Temple`:
+      if (haveEffect($effect`Stone-Faced`) === 0) {
         value = -90;
       }
       break;
-    case Location.get("A Mob of Zeppelin Protesters"):
+    case $location`A Mob of Zeppelin Protesters`:
       if (internalQuestStatus("questL11Ron") >= 1) {
         value = -70;
       }
       break;
-    case Location.get("The Black Forest"):
+    case $location`The Black Forest`:
       if (internalQuestStatus("questL13Final") < 6) {
         value = 5;
       } else if (internalQuestStatus("questL13Final") === 6) {
         value = -95;
       }
       break;
-    case Location.get("Inside the Palindome"):
+    case $location`Inside the Palindome`:
       if (
-        (itemAmount(Item.get("photograph of a red nugget")) === 0 ||
-          itemAmount(Item.get("photograph of an ostrich egg")) === 0 ||
-          itemAmount(Item.get("photograph of God")) === 0) &&
+        (itemAmount($item`photograph of a red nugget`) === 0 ||
+          itemAmount($item`photograph of an ostrich egg`) === 0 ||
+          itemAmount($item`photograph of God`) === 0) &&
         internalQuestStatus("questL11Palindome") <= 2
       ) {
         value = -70;
@@ -1346,26 +1349,26 @@ export function zone_combatMod(loc: Location): generic_t {
         value = 25;
       }
       break;
-    case Location.get("Whitey's Grove"):
+    case $location`Whitey's Grove`:
       if (
-        (itemAmount(Item.get("lion oil")) === 0 ||
-          itemAmount(Item.get("bird rib")) === 0) &&
-        itemAmount(Item.get("wet stew")) === 0 &&
-        itemAmount(Item.get("wet stunt nut stew")) === 0 &&
+        (itemAmount($item`lion oil`) === 0 ||
+          itemAmount($item`bird rib`) === 0) &&
+        itemAmount($item`wet stew`) === 0 &&
+        itemAmount($item`wet stunt nut stew`) === 0 &&
         internalQuestStatus("questL11Palindome") < 5
       ) {
         value = 15;
       }
       break;
-    case Location.get("The Penultimate Fantasy Airship"):
+    case $location`The Penultimate Fantasy Airship`:
       if (
         delay._int === 0 ||
-        (auto_haveBatWings() && availableAmount(Item.get("S.O.C.K.")) === 0)
+        (auto_haveBatWings() && availableAmount($item`S.O.C.K.`) === 0)
       ) {
         value = -80;
       } else if (
         in_bugbear() &&
-        bugbear_BioDataRemaining(Location.get("Engineering")) > 0
+        bugbear_BioDataRemaining($location`Engineering`) > 0
       ) {
         // When hunting bugbears, we want normal combats, not NC combats
         value = 10;
@@ -1374,79 +1377,79 @@ export function zone_combatMod(loc: Location): generic_t {
         //value = 20;
       }
       break;
-    case Location.get("The Castle in the Clouds in the Sky (Basement)"):
-    case Location.get("The Castle in the Clouds in the Sky (Ground Floor)"):
-    case Location.get("The Castle in the Clouds in the Sky (Top Floor)"):
+    case $location`The Castle in the Clouds in the Sky (Basement)`:
+    case $location`The Castle in the Clouds in the Sky (Ground Floor)`:
+    case $location`The Castle in the Clouds in the Sky (Top Floor)`:
       value = -95;
       break;
-    case Location.get("Twin Peak"):
+    case $location`Twin Peak`:
       value = -85;
       break;
-    case Location.get("The eXtreme Slope"):
+    case $location`The eXtreme Slope`:
       value = -95;
       break;
-    case Location.get("Itznotyerzitz Mine"):
+    case $location`Itznotyerzitz Mine`:
       if (!possessOutfit$1("Mining Gear") && cloversAvailable$1() === 0) {
         value = -90;
       }
       break;
-    case Location.get("Lair of the Ninja Snowmen"):
+    case $location`Lair of the Ninja Snowmen`:
       if (
         internalQuestStatus("questL08Trapper") < 3 &&
         !L8_forceExtremeInstead() &&
-        itemAmount(Item.get("ninja carabiner")) === 0
+        itemAmount($item`ninja carabiner`) === 0
       ) {
         value = 80;
       }
       break;
-    case Location.get("The Dark Neck of the Woods"):
-    case Location.get("The Dark Heart of the Woods"):
-    case Location.get("The Dark Elbow of the Woods"):
+    case $location`The Dark Neck of the Woods`:
+    case $location`The Dark Heart of the Woods`:
+    case $location`The Dark Elbow of the Woods`:
       value = -95;
       break;
-    case Location.get("The Defiled Cranny"):
-    case Location.get("The Defiled Alcove"):
+    case $location`The Defiled Cranny`:
+    case $location`The Defiled Alcove`:
       value = -85;
       break;
-    case Location.get("The Typical Tavern Cellar"):
+    case $location`The Typical Tavern Cellar`:
       //We could cut it off early if the Rat Faucet is the last one
       //And marginally if we know the 3rd/6th square are forced events.
       //actual desired value for combat or non combat is decided by level_03.ash based on elemental damage bonus
       break;
-    case Location.get("The Spooky Forest"):
+    case $location`The Spooky Forest`:
       if (delay._int === 0) {
         value = -85;
       }
       break;
-    case Location.get("The Laugh Floor"):
-      if (itemAmount(Item.get("Azazel's lollipop")) < 1) {
+    case $location`The Laugh Floor`:
+      if (itemAmount($item`Azazel's lollipop`) < 1) {
         value = toInt(15.0);
       }
       break;
-    case Location.get("Infernal Rackets Backstage"):
-      if (itemAmount(Item.get("Azazel's unicorn")) < 1) {
+    case $location`Infernal Rackets Backstage`:
+      if (itemAmount($item`Azazel's unicorn`) < 1) {
         value = -70;
       }
       break;
-    case Location.get("Barrrney's Barrr"):
+    case $location`Barrrney's Barrr`:
       if (numPirateInsults() >= 6) {
         value = -80;
       } else {
         value = 20;
       }
       break;
-    case Location.get("The F'c'le"):
-      if (!possessEquipment(Item.get("pirate fledges"))) {
+    case $location`The F'c'le`:
+      if (!possessEquipment($item`pirate fledges`)) {
         value = 20;
       }
       break;
-    case Location.get("The Poop Deck"):
+    case $location`The Poop Deck`:
       value = -80;
       break;
-    case Location.get("The Obligatory Pirate's Cove"):
+    case $location`The Obligatory Pirate's Cove`:
       if (!possessOutfit$1("Swashbuckling Getup")) {
         if (
-          itemAmount(Item.get("The Big Book of Pirate Insults")) > 0 &&
+          itemAmount($item`The Big Book of Pirate Insults`) > 0 &&
           numPirateInsults() < 3
         ) {
           value = 0; // fights can give both outfit pieces and insults. better not start avoiding fights until first insults learned
@@ -1457,34 +1460,34 @@ export function zone_combatMod(loc: Location): generic_t {
         value = 40;
       }
       break;
-    case Location.get("The Knob Shaft"):
+    case $location`The Knob Shaft`:
       value = 15;
       break;
-    case Location.get("South of the Border"):
+    case $location`South of the Border`:
       value = 50;
       break;
-    case Location.get("The Icy Peak"):
+    case $location`The Icy Peak`:
       value = 15;
       break;
-    case Location.get("Pandamonium Slums"):
+    case $location`Pandamonium Slums`:
       value = 5;
       break;
-    case Location.get("The Haunted Pantry"):
+    case $location`The Haunted Pantry`:
       value = 20;
       break;
-    case Location.get("Cobb's Knob Treasury"):
+    case $location`Cobb's Knob Treasury`:
       value = 15;
       break;
-    case Location.get("The VERY Unquiet Garves"):
+    case $location`The VERY Unquiet Garves`:
       if (
-        itemAmount(Item.get("Wand of Nagamar")) === 0 &&
+        itemAmount($item`Wand of Nagamar`) === 0 &&
         internalQuestStatus("questL13Final") === 12 &&
         !in_koe()
       ) {
         value = -100;
       }
       break;
-    case Location.get("Super Villain's Lair"):
+    case $location`Super Villain's Lair`:
       if (
         !toBoolean(getProperty("_villainLairColorChoiceUsed")) ||
         !toBoolean(getProperty("_villainLairDoorChoiceUsed")) ||
@@ -1493,18 +1496,18 @@ export function zone_combatMod(loc: Location): generic_t {
         value = -70;
       }
       break;
-    case Location.get("Through the Spacegate"):
+    case $location`Through the Spacegate`:
       value = 5;
       break;
-    case Location.get("The Ice Hotel"):
+    case $location`The Ice Hotel`:
       value = -85;
       break;
-    case Location.get("Sonar"):
+    case $location`Sonar`:
       // Bugbear Invasion Locations
       value = -70;
       break;
-    case Location.get("Morgue"):
-      if (itemAmount(Item.get("bugbear autopsy tweezers")) > 0) {
+    case $location`Morgue`:
+      if (itemAmount($item`bugbear autopsy tweezers`) > 0) {
         value = -70;
       }
       break;
@@ -1538,40 +1541,40 @@ export function zone_delay(loc: Location): generic_t {
   let value: number = 0;
   const shenZones: Map<Location, number> = getShenZonesTurnsSpent();
   switch (loc) {
-    case Location.get("The Oasis"):
+    case $location`The Oasis`:
       // Superlikely adventures take priority over all wanderers now.
       if (
         toInt(getProperty("desertExploration")) < 100 &&
-        haveEffect(Effect.get("Ultrahydrated")) > 0
+        haveEffect($effect`Ultrahydrated`) > 0
       ) {
         value = 5 - loc.turnsSpent;
       }
       break;
-    case Location.get("The Upper Chamber"):
+    case $location`The Upper Chamber`:
       value = 5 - loc.turnsSpent;
       break;
-    case Location.get("The Middle Chamber"):
+    case $location`The Middle Chamber`:
       value = 10 - loc.turnsSpent;
       break;
-    case Location.get("The Haunted Gallery"):
+    case $location`The Haunted Gallery`:
       value = 5 - loc.turnsSpent;
       break;
-    case Location.get("The Haunted Bathroom"):
+    case $location`The Haunted Bathroom`:
       value = 5 - loc.turnsSpent;
       break;
-    case Location.get("The Haunted Ballroom"):
+    case $location`The Haunted Ballroom`:
       value = 5 - loc.turnsSpent;
       break;
-    case Location.get("The Hidden Park"):
+    case $location`The Hidden Park`:
       if (
-        !possessEquipment(Item.get("antique machete")) &&
-        !possessEquipment(Item.get("muculent machete")) &&
+        !possessEquipment($item`antique machete`) &&
+        !possessEquipment($item`muculent machete`) &&
         inHardcore()
       ) {
         value = 6 - loc.turnsSpent;
       }
       break;
-    case Location.get("The Hidden Apartment Building"):
+    case $location`The Hidden Apartment Building`:
       if (internalQuestStatus("questL11Curses") < 2) {
         if (loc.turnsSpent < 9) {
           value = 8 - loc.turnsSpent;
@@ -1580,7 +1583,7 @@ export function zone_delay(loc: Location): generic_t {
         }
       }
       break;
-    case Location.get("The Hidden Office Building"):
+    case $location`The Hidden Office Building`:
       if (internalQuestStatus("questL11Business") < 2) {
         if (loc.turnsSpent < 6) {
           value = 5 - loc.turnsSpent;
@@ -1589,20 +1592,20 @@ export function zone_delay(loc: Location): generic_t {
         }
       }
       break;
-    case Location.get("The Spooky Forest"):
+    case $location`The Spooky Forest`:
       value = 5 - loc.turnsSpent;
       break;
-    case Location.get("The Boss Bat's Lair"):
+    case $location`The Boss Bat's Lair`:
       value = 4 - loc.turnsSpent;
       break;
-    case Location.get("The Outskirts of Cobb's Knob"):
+    case $location`The Outskirts of Cobb's Knob`:
       if (internalQuestStatus("questL05Goblin") < 1) {
         value = 10 - loc.turnsSpent;
       } else {
         retval._error = true;
       }
       break;
-    case Location.get("The Penultimate Fantasy Airship"):
+    case $location`The Penultimate Fantasy Airship`:
       if (getProperty("questL10Garbage") === "step2") {
         value = 5 - loc.turnsSpent;
       } else if (getProperty("questL10Garbage") === "step3") {
@@ -1615,28 +1618,28 @@ export function zone_delay(loc: Location): generic_t {
         value = 25 - loc.turnsSpent;
       }
       break;
-    case Location.get("The Castle in the Clouds in the Sky (Ground Floor)"):
+    case $location`The Castle in the Clouds in the Sky (Ground Floor)`:
       value = 10 - loc.turnsSpent;
       break;
-    case Location.get("The Haunted Pantry"):
+    case $location`The Haunted Pantry`:
       if (
         isGuildClass() &&
-        myPrimestat() === Stat.get("Mysticality") &&
+        myPrimestat() === $stat`Mysticality` &&
         !toBoolean(getProperty("auto_skipUnlockGuild"))
       ) {
         value = 5 - loc.turnsSpent;
       }
       break;
-    case Location.get("The Sleazy Back Alley"):
+    case $location`The Sleazy Back Alley`:
       if (
         isGuildClass() &&
-        myPrimestat() === Stat.get("Moxie") &&
+        myPrimestat() === $stat`Moxie` &&
         !toBoolean(getProperty("auto_skipUnlockGuild"))
       ) {
         value = 5 - loc.turnsSpent;
       }
       break;
-    case Location.get("The Smut Orc Logging Camp"):
+    case $location`The Smut Orc Logging Camp`:
       if (
         shenZones.has(loc) &&
         toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal()
@@ -1647,7 +1650,7 @@ export function zone_delay(loc: Location): generic_t {
             (shenZones.get(loc) ?? shenZones.set(loc, 0).get(loc)));
       }
       break;
-    case Location.get("The Hole in the Sky"):
+    case $location`The Hole in the Sky`:
       if (shenZones.has(loc) && !needStarKey()) {
         value =
           3 -
@@ -1655,10 +1658,10 @@ export function zone_delay(loc: Location): generic_t {
             (shenZones.get(loc) ?? shenZones.set(loc, 0).get(loc)));
       }
       break;
-    case Location.get("The Unquiet Garves"):
-    case Location.get("The Castle in the Clouds in the Sky (Top Floor)"):
-    case Location.get("Lair of the Ninja Snowmen"):
-    case Location.get("The Batrat and Ratbat Burrow"):
+    case $location`The Unquiet Garves`:
+    case $location`The Castle in the Clouds in the Sky (Top Floor)`:
+    case $location`Lair of the Ninja Snowmen`:
+    case $location`The Batrat and Ratbat Burrow`:
       if (shenZones.has(loc)) {
         value =
           3 -
@@ -1666,7 +1669,7 @@ export function zone_delay(loc: Location): generic_t {
             (shenZones.get(loc) ?? shenZones.set(loc, 0).get(loc)));
       }
       break;
-    case Location.get("The Copperhead Club"):
+    case $location`The Copperhead Club`:
       if (
         internalQuestStatus("questL11Shen") > 0 &&
         internalQuestStatus("questL11Shen") < 8
@@ -1674,47 +1677,47 @@ export function zone_delay(loc: Location): generic_t {
         value = 5 - (loc.turnsSpent - toInt(getProperty("auto_lastShenTurn")));
       }
       break;
-    case Location.get("The Hallowed Halls"):
-    case Location.get("Art Class"):
-    case Location.get("Chemistry Class"):
-    case Location.get("Shop Class"):
+    case $location`The Hallowed Halls`:
+    case $location`Art Class`:
+    case $location`Chemistry Class`:
+    case $location`Shop Class`:
       if (kolhs_mandatorySchool()) {
         //KOLHS path specific delay locations
         value = 40 - toInt(getProperty("_kolhsAdventures")); //shared counter of 40 adv between all 4 zones
       }
       break;
-    case Location.get("Vanya's Castle"):
+    case $location`Vanya's Castle`:
       if (
         need8BitPoints() &&
-        possessEquipment(Item.get("continuum transfunctioner")) &&
+        possessEquipment($item`continuum transfunctioner`) &&
         (getProperty("8BitColor") === "black" ||
           getProperty("8BitColor") === "")
       ) {
         value = 5 - toInt(getProperty("8BitBonusTurns"));
       }
       break;
-    case Location.get("The Fungus Plains"):
+    case $location`The Fungus Plains`:
       if (
         need8BitPoints() &&
-        possessEquipment(Item.get("continuum transfunctioner")) &&
+        possessEquipment($item`continuum transfunctioner`) &&
         getProperty("8BitColor") === "red"
       ) {
         value = 5 - toInt(getProperty("8BitBonusTurns"));
       }
       break;
-    case Location.get("Megalo-City"):
+    case $location`Megalo-City`:
       if (
         need8BitPoints() &&
-        possessEquipment(Item.get("continuum transfunctioner")) &&
+        possessEquipment($item`continuum transfunctioner`) &&
         getProperty("8BitColor") === "blue"
       ) {
         value = 5 - toInt(getProperty("8BitBonusTurns"));
       }
       break;
-    case Location.get("Hero's Field"):
+    case $location`Hero's Field`:
       if (
         need8BitPoints() &&
-        possessEquipment(Item.get("continuum transfunctioner")) &&
+        possessEquipment($item`continuum transfunctioner`) &&
         getProperty("8BitColor") === "green"
       ) {
         value = 5 - toInt(getProperty("8BitBonusTurns"));
@@ -1738,12 +1741,9 @@ export function zone_available(loc: Location): boolean {
   if (kolhs_mandatorySchool()) {
     //kolhs path specifically blocks non school zones until school is done.
     if (
-      Location.get([
-        "The Hallowed Halls",
-        "Art Class",
-        "Chemistry Class",
-        "Shop Class",
-      ]).includes(loc)
+      $locations`The Hallowed Halls, Art Class, Chemistry Class, Shop Class`.includes(
+        loc,
+      )
     ) {
       retval = true;
     }
@@ -1751,18 +1751,18 @@ export function zone_available(loc: Location): boolean {
   }
 
   switch (loc) {
-    case Location.get("The Copperhead Club"):
-    case Location.get("A Mob of Zeppelin Protesters"):
+    case $location`The Copperhead Club`:
+    case $location`A Mob of Zeppelin Protesters`:
       if (internalQuestStatus("questL11Shen") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("The Red Zeppelin"):
+    case $location`The Red Zeppelin`:
       if (internalQuestStatus("questL11Ron") >= 2) {
         retval = true;
       }
       break;
-    case Location.get("Super Villain's Lair"):
+    case $location`Super Villain's Lair`:
       if (
         in_lta() &&
         toInt(getProperty("_villainLairProgress")) < 999 &&
@@ -1771,136 +1771,136 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("South of the Border"):
-    case Location.get("The Shore, Inc. Travel Agency"):
+    case $location`South of the Border`:
+    case $location`The Shore\, Inc. Travel Agency`:
       if (isDesertAvailable()) {
         retval = true;
       }
       break;
-    case Location.get("The Arid, Extra-Dry Desert"):
+    case $location`The Arid\, Extra-Dry Desert`:
       if (internalQuestStatus("questL11Desert") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("The Oasis"):
-      if (Location.get("The Arid, Extra-Dry Desert").turnsSpent > 0) {
+    case $location`The Oasis`:
+      if ($location`The Arid\, Extra-Dry Desert`.turnsSpent > 0) {
         retval = true;
       }
       break;
-    case Location.get("The Upper Chamber"):
+    case $location`The Upper Chamber`:
       if (internalQuestStatus("questL11Pyramid") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("The Middle Chamber"):
+    case $location`The Middle Chamber`:
       retval = toBoolean(getProperty("middleChamberUnlock"));
       break;
-    case Location.get("The Lower Chambers"):
+    case $location`The Lower Chambers`:
       retval = toBoolean(getProperty("lowerChamberUnlock"));
       break;
-    case Location.get("The Daily Dungeon"):
+    case $location`The Daily Dungeon`:
       retval = !toBoolean(getProperty("dailyDungeonDone"));
       break;
-    case Location.get("The Overgrown Lot"):
+    case $location`The Overgrown Lot`:
       if (internalQuestStatus("questM24Doc") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("The Skeleton Store"):
+    case $location`The Skeleton Store`:
       if (internalQuestStatus("questM23Meatsmith") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("Madness Bakery"): //can also be unlocked via hypnotic breadcrumbs. which matter in koe and nuclear autumn. but currently not tracked
+    case $location`Madness Bakery`: //can also be unlocked via hypnotic breadcrumbs. which matter in koe and nuclear autumn. but currently not tracked
       if (internalQuestStatus("questM25Armorer") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("The Deep Machine Tunnels"):
+    case $location`The Deep Machine Tunnels`:
       if (
-        haveFamiliar(Familiar.get("Machine Elf")) ||
-        haveEffect(Effect.get("Inside The Snowglobe")) > 0
+        haveFamiliar($familiar`Machine Elf`) ||
+        haveEffect($effect`Inside The Snowglobe`) > 0
       ) {
         retval = true;
       }
       break;
-    case Location.get("The Haunted Pantry"):
-    case Location.get("The Haunted Kitchen"):
-    case Location.get("The Haunted Conservatory"):
+    case $location`The Haunted Pantry`:
+    case $location`The Haunted Kitchen`:
+    case $location`The Haunted Conservatory`:
       if (internalQuestStatus("questM20Necklace") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("The Haunted Gallery"):
-    case Location.get("The Haunted Bathroom"):
-    case Location.get("The Haunted Bedroom"):
+    case $location`The Haunted Gallery`:
+    case $location`The Haunted Bathroom`:
+    case $location`The Haunted Bedroom`:
       if (internalQuestStatus("questM21Dance") >= 1) {
         retval = true;
       }
       break;
-    case Location.get("The Haunted Billiards Room"):
-      if (itemAmount(Item.get("Spookyraven billiards room key")) > 0) {
+    case $location`The Haunted Billiards Room`:
+      if (itemAmount($item`Spookyraven billiards room key`) > 0) {
         retval = true;
       }
       break;
-    case Location.get("The Haunted Library"):
-      if (itemAmount(Item.get("[7302]Spookyraven library key")) > 0) {
+    case $location`The Haunted Library`:
+      if (itemAmount($item`[7302]Spookyraven library key`) > 0) {
         retval = true;
       }
       break;
-    case Location.get("The Haunted Ballroom"):
+    case $location`The Haunted Ballroom`:
       if (internalQuestStatus("questM21Dance") >= 3) {
         retval = true;
       }
       break;
-    case Location.get("The Haunted Boiler Room"):
-    case Location.get("The Haunted Laundry Room"):
-    case Location.get("The Haunted Wine Cellar"):
+    case $location`The Haunted Boiler Room`:
+    case $location`The Haunted Laundry Room`:
+    case $location`The Haunted Wine Cellar`:
       if (internalQuestStatus("questL11Manor") >= 1) {
         retval = true;
       }
       break;
-    case Location.get("Summoning Chamber"):
+    case $location`Summoning Chamber`:
       if (internalQuestStatus("questL11Manor") >= 11) {
         retval = true;
       }
       break;
-    case Location.get("The Hidden Park"):
-    case Location.get("An Overgrown Shrine (Northwest)"):
-    case Location.get("An Overgrown Shrine (Southwest)"):
-    case Location.get("An Overgrown Shrine (Northeast)"):
-    case Location.get("An Overgrown Shrine (Southeast)"):
-    case Location.get("A Massive Ziggurat"):
+    case $location`The Hidden Park`:
+    case $location`An Overgrown Shrine (Northwest)`:
+    case $location`An Overgrown Shrine (Southwest)`:
+    case $location`An Overgrown Shrine (Northeast)`:
+    case $location`An Overgrown Shrine (Southeast)`:
+    case $location`A Massive Ziggurat`:
       if (internalQuestStatus("questL11Worship") >= 3) {
         retval = true;
       }
       break;
-    case Location.get("The Hidden Apartment Building"):
+    case $location`The Hidden Apartment Building`:
       if (internalQuestStatus("questL11Curses") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("The Hidden Hospital"):
+    case $location`The Hidden Hospital`:
       if (internalQuestStatus("questL11Doctor") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("The Hidden Office Building"):
+    case $location`The Hidden Office Building`:
       if (internalQuestStatus("questL11Business") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("The Hidden Bowling Alley"):
+    case $location`The Hidden Bowling Alley`:
       if (internalQuestStatus("questL11Spare") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("The Typical Tavern Cellar"):
+    case $location`The Typical Tavern Cellar`:
       if (internalQuestStatus("questL03Rat") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("The Spooky Forest"):
+    case $location`The Spooky Forest`:
       if (
         internalQuestStatus("questL02Larva") >= 0 ||
         internalQuestStatus("questG02Whitecastle") >= 0
@@ -1908,62 +1908,62 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("The Hidden Temple"):
+    case $location`The Hidden Temple`:
       if (toInt(getProperty("lastTempleUnlock")) === myAscensions()) {
         retval = true;
       }
       break;
-    case Location.get("Vanya's Castle"):
-    case Location.get("The Fungus Plains"):
-    case Location.get("Megalo-City"):
-    case Location.get("Hero's Field"):
+    case $location`Vanya's Castle`:
+    case $location`The Fungus Plains`:
+    case $location`Megalo-City`:
+    case $location`Hero's Field`:
       if (
-        possessEquipment(Item.get("continuum transfunctioner")) &&
+        possessEquipment($item`continuum transfunctioner`) &&
         (internalQuestStatus("questL02Larva") >= 0 ||
           internalQuestStatus("questG02Whitecastle") >= 0)
       ) {
         retval = true;
       }
       break;
-    case Location.get("The Black Forest"):
+    case $location`The Black Forest`:
       if (internalQuestStatus("questL11MacGuffin") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("The Bat Hole Entrance"):
+    case $location`The Bat Hole Entrance`:
       if (internalQuestStatus("questL04Bat") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("Guano Junction"):
+    case $location`Guano Junction`:
       if (
-        elemental_resist(Element.get("stench")) >= 1 &&
+        elemental_resist($element`stench`) >= 1 &&
         internalQuestStatus("questL04Bat") >= 0
       ) {
         retval = true;
       }
       break;
-    case Location.get("The Batrat and Ratbat Burrow"):
+    case $location`The Batrat and Ratbat Burrow`:
       if (internalQuestStatus("questL04Bat") >= 1) {
         retval = true;
       }
       break;
-    case Location.get("The Beanbat Chamber"):
+    case $location`The Beanbat Chamber`:
       if (internalQuestStatus("questL04Bat") >= 2) {
         retval = true;
       }
       break;
-    case Location.get("The Boss Bat's Lair"):
+    case $location`The Boss Bat's Lair`:
       if (internalQuestStatus("questL04Bat") === 3) {
         retval = true;
       }
       break;
-    case Location.get("The VERY Unquiet Garves"):
+    case $location`The VERY Unquiet Garves`:
       if (getProperty("questL07Cyrptic") === "finished") {
         retval = true;
       }
       break;
-    case Location.get("Whitey's Grove"):
+    case $location`Whitey's Grove`:
       if (
         internalQuestStatus("questG02Whitecastle") >= 0 ||
         internalQuestStatus("questL11Palindome") >= 3
@@ -1971,27 +1971,27 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("Inside the Palindome"):
-      if (possessEquipment(Item.get("Talisman o' Namsilat"))) {
+    case $location`Inside the Palindome`:
+      if (possessEquipment($item`Talisman o' Namsilat`)) {
         retval = true;
       }
       break;
-    case Location.get("Noob Cave"):
-    case Location.get("The Outskirts of Cobb's Knob"):
+    case $location`Noob Cave`:
+    case $location`The Outskirts of Cobb's Knob`:
       retval = true;
       break;
-    case Location.get("Cobb's Knob Barracks"):
-    case Location.get("Cobb's Knob Kitchens"):
-    case Location.get("Cobb's Knob Harem"):
-    case Location.get("Cobb's Knob Treasury"):
-    case Location.get("Throne Room"):
+    case $location`Cobb's Knob Barracks`:
+    case $location`Cobb's Knob Kitchens`:
+    case $location`Cobb's Knob Harem`:
+    case $location`Cobb's Knob Treasury`:
+    case $location`Throne Room`:
       if (internalQuestStatus("questL05Goblin") >= 1) {
         retval = true;
       }
       break;
-    case Location.get("The Dark Neck of the Woods"):
-    case Location.get("The Dark Heart of the Woods"):
-    case Location.get("The Dark Elbow of the Woods"):
+    case $location`The Dark Neck of the Woods`:
+    case $location`The Dark Heart of the Woods`:
+    case $location`The Dark Elbow of the Woods`:
       if (
         internalQuestStatus("questL06Friar") >= 0 &&
         getProperty("questL06Friar") !== "finished"
@@ -1999,22 +1999,22 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("The Defiled Nook"):
-    case Location.get("The Defiled Cranny"):
-    case Location.get("The Defiled Alcove"):
-    case Location.get("The Defiled Niche"):
+    case $location`The Defiled Nook`:
+    case $location`The Defiled Cranny`:
+    case $location`The Defiled Alcove`:
+    case $location`The Defiled Niche`:
       if (internalQuestStatus("questL07Cyrptic") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("Pandamonium Slums"):
-    case Location.get("The Laugh Floor"):
-    case Location.get("Infernal Rackets Backstage"):
+    case $location`Pandamonium Slums`:
+    case $location`The Laugh Floor`:
+    case $location`Infernal Rackets Backstage`:
       if (internalQuestStatus("questL06Friar") >= 10) {
         retval = true;
       }
       break;
-    case Location.get("The Obligatory Pirate's Cove"):
+    case $location`The Obligatory Pirate's Cove`:
       if (toInt(getProperty("lastIslandUnlock")) === myAscensions()) {
         if (
           getProperty("questL12War") === "unstarted" ||
@@ -2024,10 +2024,10 @@ export function zone_available(loc: Location): boolean {
         }
       }
       break;
-    case Location.get("Barrrney's Barrr"):
+    case $location`Barrrney's Barrr`:
       if (
         (haveOutfit("swashbuckling getup") ||
-          possessEquipment(Item.get("pirate fledges"))) &&
+          possessEquipment($item`pirate fledges`)) &&
         toInt(getProperty("lastIslandUnlock")) === myAscensions()
       ) {
         if (
@@ -2038,10 +2038,10 @@ export function zone_available(loc: Location): boolean {
         }
       }
       break;
-    case Location.get("The F'c'le"):
+    case $location`The F'c'le`:
       if (
         (haveOutfit("swashbuckling getup") ||
-          possessEquipment(Item.get("pirate fledges"))) &&
+          possessEquipment($item`pirate fledges`)) &&
         toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
         internalQuestStatus("questM12Pirate") >= 5
       ) {
@@ -2053,10 +2053,10 @@ export function zone_available(loc: Location): boolean {
         }
       }
       break;
-    case Location.get("The Poop Deck"):
+    case $location`The Poop Deck`:
       if (
         (haveOutfit("swashbuckling getup") ||
-          possessEquipment(Item.get("pirate fledges"))) &&
+          possessEquipment($item`pirate fledges`)) &&
         toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
         internalQuestStatus("questM12Pirate") >= 6
       ) {
@@ -2068,10 +2068,10 @@ export function zone_available(loc: Location): boolean {
         }
       }
       break;
-    case Location.get("Belowdecks"):
+    case $location`Belowdecks`:
       if (
         (haveOutfit("swashbuckling getup") ||
-          possessEquipment(Item.get("pirate fledges"))) &&
+          possessEquipment($item`pirate fledges`)) &&
         toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
         getProperty("questM12Pirate") === "finished"
       ) {
@@ -2083,25 +2083,25 @@ export function zone_available(loc: Location): boolean {
         }
       }
       break;
-    case Location.get("The Smut Orc Logging Camp"):
+    case $location`The Smut Orc Logging Camp`:
       if (internalQuestStatus("questL09Topping") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("A-Boo Peak"):
-    case Location.get("Twin Peak"):
-    case Location.get("Oil Peak"):
+    case $location`A-Boo Peak`:
+    case $location`Twin Peak`:
+    case $location`Oil Peak`:
       if (internalQuestStatus("questL09Topping") >= 1) {
         retval = true;
       }
       break;
-    case Location.get("The Orcish Frat House"):
-    case Location.get("The Hippy Camp"):
+    case $location`The Orcish Frat House`:
+    case $location`The Hippy Camp`:
       if (toInt(getProperty("lastIslandUnlock")) === myAscensions()) {
         retval = true;
       }
       break;
-    case Location.get("The Orcish Frat House (In Disguise)"):
+    case $location`The Orcish Frat House (In Disguise)`:
       if (
         toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
         haveOutfit("Frat Boy Ensemble") &&
@@ -2115,7 +2115,7 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("The Hippy Camp (In Disguise)"):
+    case $location`The Hippy Camp (In Disguise)`:
       if (
         toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
         haveOutfit("Filthy Hippy Disguise") &&
@@ -2129,7 +2129,7 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("Wartime Hippy Camp (Frat Disguise)"):
+    case $location`Wartime Hippy Camp (Frat Disguise)`:
       if (
         internalQuestStatus("questL12War") === 0 &&
         (haveOutfit("frat warrior fatigues") || haveOutfit("frat boy ensemble"))
@@ -2137,7 +2137,7 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("The Battlefield (Frat Uniform)"):
+    case $location`The Battlefield (Frat Uniform)`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
         toInt(getProperty("hippiesDefeated")) < 1000 &&
@@ -2147,7 +2147,7 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("Wartime Frat House (Hippy Disguise)"):
+    case $location`Wartime Frat House (Hippy Disguise)`:
       if (
         internalQuestStatus("questL12War") === 0 &&
         (haveOutfit("war hippy fatigues") ||
@@ -2156,7 +2156,7 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("The Battlefield (Hippy Uniform)"):
+    case $location`The Battlefield (Hippy Uniform)`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
         toInt(getProperty("fratboysDefeated")) < 1000 &&
@@ -2166,10 +2166,10 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("Next to that Barrel with Something Burning in it"):
-    case Location.get("Near an Abandoned Refrigerator"):
-    case Location.get("Over Where the Old Tires Are"):
-    case Location.get("Out by that Rusted-Out Car"):
+    case $location`Next to that Barrel with Something Burning in it`:
+    case $location`Near an Abandoned Refrigerator`:
+    case $location`Over Where the Old Tires Are`:
+    case $location`Out by that Rusted-Out Car`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
         (getProperty("sidequestJunkyardCompleted") === "none" ||
@@ -2179,12 +2179,12 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("Sonofa Beach"):
+    case $location`Sonofa Beach`:
       if (internalQuestStatus("questL12War") >= 1) {
         retval = true;
       }
       break;
-    case Location.get("The Themthar Hills"):
+    case $location`The Themthar Hills`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
         getProperty("sidequestNunsCompleted") === "none" &&
@@ -2193,7 +2193,7 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("The Hatching Chamber"):
+    case $location`The Hatching Chamber`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
         getProperty("sidequestOrchardCompleted") === "none" &&
@@ -2202,88 +2202,85 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("The Feeding Chamber"):
+    case $location`The Feeding Chamber`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
         getProperty("sidequestOrchardCompleted") === "none" &&
-        haveEffect(Effect.get("Filthworm Larva Stench")) > 0 &&
+        haveEffect($effect`Filthworm Larva Stench`) > 0 &&
         getProperty("questL12War") !== "finished"
       ) {
         retval = true;
       }
       break;
-    case Location.get("The Royal Guard Chamber"):
+    case $location`The Royal Guard Chamber`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
         getProperty("sidequestOrchardCompleted") === "none" &&
-        haveEffect(Effect.get("Filthworm Drone Stench")) > 0 &&
+        haveEffect($effect`Filthworm Drone Stench`) > 0 &&
         getProperty("questL12War") !== "finished"
       ) {
         retval = true;
       }
       break;
-    case Location.get("The Filthworm Queen's Chamber"):
+    case $location`The Filthworm Queen's Chamber`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
         getProperty("sidequestOrchardCompleted") === "none" &&
-        itemAmount(Item.get("heart of the filthworm queen")) === 0 &&
-        haveEffect(Effect.get("Filthworm Guard Stench")) > 0 &&
+        itemAmount($item`heart of the filthworm queen`) === 0 &&
+        haveEffect($effect`Filthworm Guard Stench`) > 0 &&
         getProperty("questL12War") !== "finished"
       ) {
         retval = true;
       }
       break;
-    case Location.get("Itznotyerzitz Mine"):
-    case Location.get("The Goatlet"):
+    case $location`Itznotyerzitz Mine`:
+    case $location`The Goatlet`:
       if (internalQuestStatus("questL08Trapper") >= 1) {
         retval = true;
       }
       break;
-    case Location.get("The eXtreme Slope"):
-    case Location.get("Lair of the Ninja Snowmen"):
+    case $location`The eXtreme Slope`:
+    case $location`Lair of the Ninja Snowmen`:
       if (internalQuestStatus("questL08Trapper") >= 2) {
         retval = true;
       }
       break;
-    case Location.get("Mist-Shrouded Peak"):
+    case $location`Mist-Shrouded Peak`:
       if (internalQuestStatus("questL08Trapper") >= 3) {
         retval = true;
       }
       break;
-    case Location.get("The Icy Peak"):
+    case $location`The Icy Peak`:
       if (internalQuestStatus("questL08Trapper") >= 6) {
         retval = true;
       }
       break;
-    case Location.get("The Penultimate Fantasy Airship"):
+    case $location`The Penultimate Fantasy Airship`:
       if (internalQuestStatus("questL10Garbage") >= 1) {
         retval = true;
       }
       break;
-    case Location.get("The Castle in the Clouds in the Sky (Basement)"):
-      if (itemAmount(Item.get("S.O.C.K.")) > 0) {
+    case $location`The Castle in the Clouds in the Sky (Basement)`:
+      if (itemAmount($item`S.O.C.K.`) > 0) {
         retval = true;
       }
       break;
-    case Location.get("The Castle in the Clouds in the Sky (Ground Floor)"):
+    case $location`The Castle in the Clouds in the Sky (Ground Floor)`:
       if (toInt(getProperty("lastCastleGroundUnlock")) === myAscensions()) {
         retval = true;
       }
       break;
-    case Location.get("The Castle in the Clouds in the Sky (Top Floor)"):
+    case $location`The Castle in the Clouds in the Sky (Top Floor)`:
       if (toInt(getProperty("lastCastleTopUnlock")) === myAscensions()) {
         retval = true;
       }
       break;
-    case Location.get("The Hole in the Sky"):
-      if (
-        itemAmount(Item.get("steam-powered model rocketship")) > 0 ||
-        in_koe()
-      ) {
+    case $location`The Hole in the Sky`:
+      if (itemAmount($item`steam-powered model rocketship`) > 0 || in_koe()) {
         retval = true;
       }
       break;
-    case Location.get("The Tunnel of L.O.V.E."):
+    case $location`The Tunnel of L.O.V.E.`:
       if (
         toBoolean(getProperty("loveTunnelAvailable")) &&
         !toBoolean(getProperty("_loveTunnelUsed"))
@@ -2291,223 +2288,223 @@ export function zone_available(loc: Location): boolean {
         retval = true;
       }
       break;
-    case Location.get("Fastest Adventurer Contest"):
+    case $location`Fastest Adventurer Contest`:
       if (toInt(getProperty("nsContestants1")) > 0) {
         retval = true;
       }
       break;
-    case Location.get("The Enormous Greater-Than Sign"):
+    case $location`The Enormous Greater-Than Sign`:
       if (toInt(getProperty("lastPlusSignUnlock")) < myAscensions()) {
         retval = true;
       }
       break;
-    case Location.get("The Dungeons of Doom"):
+    case $location`The Dungeons of Doom`:
       if (toInt(getProperty("lastPlusSignUnlock")) === myAscensions()) {
         retval = true;
       }
       break;
-    case Location.get("The Limerick Dungeon"):
-    case Location.get("The Sleazy Back Alley"):
-    case Location.get("The Haiku Dungeon"):
+    case $location`The Limerick Dungeon`:
+    case $location`The Sleazy Back Alley`:
+    case $location`The Haiku Dungeon`:
       retval = true;
       break;
-    case Location.get("Smartest Adventurer Contest"):
-    case Location.get("Strongest Adventurer Contest"):
-    case Location.get("Smoothest Adventurer Contest"):
+    case $location`Smartest Adventurer Contest`:
+    case $location`Strongest Adventurer Contest`:
+    case $location`Smoothest Adventurer Contest`:
       if (toInt(getProperty("nsContestants2")) > 0) {
         retval = true;
       }
       break;
-    case Location.get("Coldest Adventurer Contest"):
-    case Location.get("Hottest Adventurer Contest"):
-    case Location.get("Sleaziest Adventurer Contest"):
-    case Location.get("Spookiest Adventurer Contest"):
-    case Location.get("Stinkiest Adventurer Contest"):
+    case $location`Coldest Adventurer Contest`:
+    case $location`Hottest Adventurer Contest`:
+    case $location`Sleaziest Adventurer Contest`:
+    case $location`Spookiest Adventurer Contest`:
+    case $location`Stinkiest Adventurer Contest`:
       if (toInt(getProperty("nsContestants3")) > 0) {
         retval = true;
       }
       break;
-    case Location.get("Tower Level 1"):
+    case $location`Tower Level 1`:
       if (getProperty("questL13Final") === "step6") {
         retval = true;
       }
       break;
-    case Location.get("Tower Level 2"):
+    case $location`Tower Level 2`:
       if (getProperty("questL13Final") === "step7") {
         retval = true;
       }
       break;
-    case Location.get("Tower Level 3"):
+    case $location`Tower Level 3`:
       if (getProperty("questL13Final") === "step8") {
         retval = true;
       }
       break;
-    case Location.get("Tower Level 4"):
+    case $location`Tower Level 4`:
       if (getProperty("questL13Final") === "step9") {
         retval = true;
       }
       break;
-    case Location.get("Tower Level 5"):
+    case $location`Tower Level 5`:
       if (getProperty("questL13Final") === "step10") {
         retval = true;
       }
       break;
-    case Location.get("The Naughty Sorceress' Chamber"):
+    case $location`The Naughty Sorceress' Chamber`:
       if (getProperty("questL13Final") === "step11") {
         retval = true;
       }
       break;
-    case Location.get("Barf Mountain"):
-    case Location.get("Pirates of the Garbage Barges"):
-    case Location.get("Uncle Gator's Country Fun-Time Liquid Waste Sluice"):
-    case Location.get("The Toxic Teacups"):
+    case $location`Barf Mountain`:
+    case $location`Pirates of the Garbage Barges`:
+    case $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`:
+    case $location`The Toxic Teacups`:
       retval =
         toBoolean(getProperty("stenchAirportAlways")) ||
         toBoolean(getProperty("_stenchAirportToday"));
       break;
-    case Location.get("The Fun-Guy Mansion"):
-    case Location.get("The Sunken Party Yacht"):
-    case Location.get("Sloppy Seconds Diner"):
+    case $location`The Fun-Guy Mansion`:
+    case $location`The Sunken Party Yacht`:
+    case $location`Sloppy Seconds Diner`:
       retval =
         toBoolean(getProperty("sleazeAirportAlways")) ||
         toBoolean(getProperty("_sleazeAirportToday"));
       break;
-    case Location.get("The Secret Government Laboratory"):
-    case Location.get("The Deep Dark Jungle"):
-    case Location.get("The Mansion of Dr. Weirdeaux"):
+    case $location`The Secret Government Laboratory`:
+    case $location`The Deep Dark Jungle`:
+    case $location`The Mansion of Dr. Weirdeaux`:
       retval =
         toBoolean(getProperty("spookyAirportAlways")) ||
         toBoolean(getProperty("_spookyAirportToday"));
       break;
-    case Location.get("The Ice Hotel"):
-    case Location.get("VYKEA"):
-    case Location.get("The Ice Hole"):
+    case $location`The Ice Hotel`:
+    case $location`VYKEA`:
+    case $location`The Ice Hole`:
       retval =
         toBoolean(getProperty("coldAirportAlways")) ||
         toBoolean(getProperty("_coldAirportToday"));
       break;
-    case Location.get("The SMOOCH Army HQ"):
-    case Location.get("LavaCo&trade; Lamp Factory"):
+    case $location`The SMOOCH Army HQ`:
+    case $location`LavaCo™ Lamp Factory`:
     case Location.get("The Velvet / Gold Mine"):
-    case Location.get("The Bubblin' Caldera"):
+    case $location`The Bubblin' Caldera`:
       retval =
         toBoolean(getProperty("hotAirportAlways")) ||
         toBoolean(getProperty("_hotAirportToday"));
       break;
-    case Location.get("The X-32-F Combat Training Snowman"):
+    case $location`The X-32-F Combat Training Snowman`:
       retval = toBoolean(getProperty("snojoAvailable"));
       break;
-    case Location.get("Through the Spacegate"):
+    case $location`Through the Spacegate`:
       retval =
         toBoolean(getProperty("spacegateAlways")) ||
         toBoolean(getProperty("_spacegateToday"));
       break;
-    case Location.get("The Old Landfill"):
+    case $location`The Old Landfill`:
       if (internalQuestStatus("questM19Hippy") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("Cobb's Knob Laboratory"):
-    case Location.get("The Knob Shaft"):
-      if (itemAmount(Item.get("Cobb's Knob lab key")) > 0) {
+    case $location`Cobb's Knob Laboratory`:
+    case $location`The Knob Shaft`:
+      if (itemAmount($item`Cobb's Knob lab key`) > 0) {
         retval = true;
       }
       break;
-    case Location.get("Cobb's Knob Menagerie, Level 1"):
-    case Location.get("Cobb's Knob Menagerie, Level 2"):
-    case Location.get("Cobb's Knob Menagerie, Level 3"):
-      if (itemAmount(Item.get("Cobb's Knob Menagerie key")) > 0) {
+    case $location`Cobb's Knob Menagerie\, Level 1`:
+    case $location`Cobb's Knob Menagerie\, Level 2`:
+    case $location`Cobb's Knob Menagerie\, Level 3`:
+      if (itemAmount($item`Cobb's Knob Menagerie key`) > 0) {
         retval = true;
       }
       break;
-    case Location.get("The Red Queen's Garden"):
-      if (haveEffect(Effect.get("Down the Rabbit Hole")) > 0) {
+    case $location`The Red Queen's Garden`:
+      if (haveEffect($effect`Down the Rabbit Hole`) > 0) {
         retval = true;
       }
       break;
-    case Location.get("The Bugbear Pen"):
+    case $location`The Bugbear Pen`:
       if (internalQuestStatus("questM03Bugbear") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("The Spooky Gravy Burrow"):
+    case $location`The Spooky Gravy Burrow`:
       //May need to be corrected
       if (internalQuestStatus("questM03Bugbear") >= 99) {
         retval = true;
       }
       break;
-    case Location.get("Investigating a Plaintive Telegram"):
+    case $location`Investigating a Plaintive Telegram`:
       if (
-        itemAmount(Item.get("plaintive telegram")) > 0 &&
+        itemAmount($item`plaintive telegram`) > 0 &&
         internalQuestStatus("questLTTQuestByWire") >= 0
       ) {
         retval = true;
       }
       break;
-    case Location.get("Drunken Stupor"):
+    case $location`Drunken Stupor`:
       if (inebriety_left() < 0) {
         retval = true;
       }
       break;
-    case Location.get("Thugnderdome"):
+    case $location`Thugnderdome`:
       if (isDesertAvailable()) {
         retval = gnomadsAvailable();
       }
       break;
-    case Location.get("Camp Logging Camp"):
+    case $location`Camp Logging Camp`:
       // We go here to get the Logging Hatchet
       if (!in_koe() && canadiaAvailable()) {
         retval = true;
       }
       break;
-    case Location.get("The Thinknerd Warehouse"):
+    case $location`The Thinknerd Warehouse`:
       if (internalQuestStatus("questM22Shirt") >= 0) {
         retval = true;
       }
       break;
-    case Location.get("Gingerbread Upscale Retail District"):
+    case $location`Gingerbread Upscale Retail District`:
       if (toBoolean(getProperty("gingerRetailUnlocked"))) {
         retval =
           toBoolean(getProperty("gingerbreadCityAvailable")) ||
           toBoolean(getProperty("_gingerbreadCityToday"));
       }
       break;
-    case Location.get("Gingerbread Sewers"):
+    case $location`Gingerbread Sewers`:
       if (toBoolean(getProperty("gingerSewersUnlocked"))) {
         retval =
           toBoolean(getProperty("gingerbreadCityAvailable")) ||
           toBoolean(getProperty("_gingerbreadCityToday"));
       }
       break;
-    case Location.get("Gingerbread Civic Center"):
-    case Location.get("Gingerbread Industrial Zone"):
-    case Location.get("Gingerbread Train Station"):
+    case $location`Gingerbread Civic Center`:
+    case $location`Gingerbread Industrial Zone`:
+    case $location`Gingerbread Train Station`:
       retval =
         toBoolean(getProperty("gingerbreadCityAvailable")) ||
         toBoolean(getProperty("_gingerbreadCityToday"));
       break;
-    case Location.get("The Bandit Crossroads"):
+    case $location`The Bandit Crossroads`:
       retval = containsText(getProperty("_frAreasUnlocked"), loc.toString());
       break;
-    case Location.get("The Towering Mountains"):
+    case $location`The Towering Mountains`:
       retval = containsText(getProperty("_frAreasUnlocked"), loc.toString());
       break;
-    case Location.get("The Mystic Wood"):
+    case $location`The Mystic Wood`:
       retval = containsText(getProperty("_frAreasUnlocked"), loc.toString());
       break;
-    case Location.get("The Putrid Swamp"):
+    case $location`The Putrid Swamp`:
       retval = containsText(getProperty("_frAreasUnlocked"), loc.toString());
       break;
-    case Location.get("The Cursed Village"):
+    case $location`The Cursed Village`:
       retval = containsText(getProperty("_frAreasUnlocked"), loc.toString());
       break;
-    case Location.get("The Sprawling Cemetery"):
+    case $location`The Sprawling Cemetery`:
       retval = containsText(getProperty("_frAreasUnlocked"), loc.toString());
       break;
-    case Location.get("Monorail Work Site"):
+    case $location`Monorail Work Site`:
       retval = false;
       break;
-    case Location.get("Your Mushroom Garden"):
+    case $location`Your Mushroom Garden`:
       retval = auto_canFightPiranhaPlant() || auto_canTendMushroomGarden();
       break;
   }
@@ -2545,260 +2542,260 @@ function zone_difficulty(loc: Location): generic_t {
   }
 
   switch (loc) {
-    case Location.get("The Shore, Inc. Travel Agency"):
+    case $location`The Shore\, Inc. Travel Agency`:
       retval._int = 0;
       break;
-    case Location.get("Super Villain's Lair"):
+    case $location`Super Villain's Lair`:
       break;
-    case Location.get("South of the Border"):
+    case $location`South of the Border`:
       break;
-    case Location.get("The Arid, Extra-Dry Desert"):
+    case $location`The Arid\, Extra-Dry Desert`:
       break;
-    case Location.get("The Oasis"):
-      if (haveEffect(Effect.get("Ultrahydrated")) === 0) {
+    case $location`The Oasis`:
+      if (haveEffect($effect`Ultrahydrated`) === 0) {
         retval._int = 0;
       }
       break;
-    case Location.get("The Upper Chamber"):
+    case $location`The Upper Chamber`:
       break;
-    case Location.get("The Middle Chamber"):
+    case $location`The Middle Chamber`:
       break;
-    case Location.get("The Lower Chambers"):
+    case $location`The Lower Chambers`:
       break;
-    case Location.get("The Daily Dungeon"):
+    case $location`The Daily Dungeon`:
       break;
-    case Location.get("The Overgrown Lot"):
+    case $location`The Overgrown Lot`:
       break;
-    case Location.get("The Skeleton Store"):
+    case $location`The Skeleton Store`:
       break;
-    case Location.get("Madness Bakery"):
+    case $location`Madness Bakery`:
       break;
-    case Location.get("The Deep Machine Tunnels"):
+    case $location`The Deep Machine Tunnels`:
       break;
-    case Location.get("The Haunted Pantry"):
+    case $location`The Haunted Pantry`:
       break;
-    case Location.get("The Haunted Kitchen"):
+    case $location`The Haunted Kitchen`:
       break;
-    case Location.get("The Haunted Conservatory"):
+    case $location`The Haunted Conservatory`:
       break;
-    case Location.get("The Haunted Gallery"):
-    case Location.get("The Haunted Bathroom"):
-    case Location.get("The Haunted Bedroom"):
+    case $location`The Haunted Gallery`:
+    case $location`The Haunted Bathroom`:
+    case $location`The Haunted Bedroom`:
       break;
-    case Location.get("The Haunted Billiards Room"):
+    case $location`The Haunted Billiards Room`:
       break;
-    case Location.get("The Haunted Library"):
+    case $location`The Haunted Library`:
       break;
-    case Location.get("The Haunted Ballroom"):
+    case $location`The Haunted Ballroom`:
       break;
-    case Location.get("The Haunted Boiler Room"):
-    case Location.get("The Haunted Laundry Room"):
-    case Location.get("The Haunted Wine Cellar"):
+    case $location`The Haunted Boiler Room`:
+    case $location`The Haunted Laundry Room`:
+    case $location`The Haunted Wine Cellar`:
       break;
-    case Location.get("Summoning Chamber"):
+    case $location`Summoning Chamber`:
       break;
-    case Location.get("The Hidden Park"):
+    case $location`The Hidden Park`:
       break;
-    case Location.get("An Overgrown Shrine (Northwest)"):
-    case Location.get("An Overgrown Shrine (Southwest)"):
-    case Location.get("An Overgrown Shrine (Northeast)"):
-    case Location.get("An Overgrown Shrine (Southeast)"):
+    case $location`An Overgrown Shrine (Northwest)`:
+    case $location`An Overgrown Shrine (Southwest)`:
+    case $location`An Overgrown Shrine (Northeast)`:
+    case $location`An Overgrown Shrine (Southeast)`:
       if (
-        Item.get(["antique machete", "muculent machete"]).includes(
-          equippedItem(Slot.get("weapon")),
+        $items`antique machete, muculent machete`.includes(
+          equippedItem($slot`weapon`),
         )
       ) {
         retval._int = 0;
       }
       break;
-    case Location.get("A Massive Ziggurat"):
+    case $location`A Massive Ziggurat`:
       break;
-    case Location.get("The Hidden Apartment Building"):
+    case $location`The Hidden Apartment Building`:
       break;
-    case Location.get("The Hidden Hospital"):
+    case $location`The Hidden Hospital`:
       break;
-    case Location.get("The Hidden Office Building"):
+    case $location`The Hidden Office Building`:
       break;
-    case Location.get("The Hidden Bowling Alley"):
+    case $location`The Hidden Bowling Alley`:
       break;
-    case Location.get("The Typical Tavern Cellar"):
+    case $location`The Typical Tavern Cellar`:
       break;
-    case Location.get("The Spooky Forest"):
+    case $location`The Spooky Forest`:
       break;
-    case Location.get("The Hidden Temple"):
+    case $location`The Hidden Temple`:
       break;
-    case Location.get("The Black Forest"):
+    case $location`The Black Forest`:
       break;
-    case Location.get("The Bat Hole Entrance"):
+    case $location`The Bat Hole Entrance`:
       break;
-    case Location.get("Guano Junction"):
+    case $location`Guano Junction`:
       break;
-    case Location.get("The Batrat and Ratbat Burrow"):
+    case $location`The Batrat and Ratbat Burrow`:
       break;
-    case Location.get("The Beanbat Chamber"):
+    case $location`The Beanbat Chamber`:
       break;
-    case Location.get("The Boss Bat's Lair"):
+    case $location`The Boss Bat's Lair`:
       break;
-    case Location.get("The VERY Unquiet Garves"):
+    case $location`The VERY Unquiet Garves`:
       break;
-    case Location.get("Whitey's Grove"):
+    case $location`Whitey's Grove`:
       break;
-    case Location.get("Inside the Palindome"):
+    case $location`Inside the Palindome`:
       break;
-    case Location.get("Noob Cave"):
-    case Location.get("The Outskirts of Cobb's Knob"):
+    case $location`Noob Cave`:
+    case $location`The Outskirts of Cobb's Knob`:
       retval._boolean = true;
       break;
-    case Location.get("Cobb's Knob Barracks"):
-    case Location.get("Cobb's Knob Kitchens"):
-    case Location.get("Cobb's Knob Harem"):
-    case Location.get("Cobb's Knob Treasury"):
-    case Location.get("Throne Room"):
+    case $location`Cobb's Knob Barracks`:
+    case $location`Cobb's Knob Kitchens`:
+    case $location`Cobb's Knob Harem`:
+    case $location`Cobb's Knob Treasury`:
+    case $location`Throne Room`:
       break;
-    case Location.get("The Dark Neck of the Woods"):
-    case Location.get("The Dark Heart of the Woods"):
-    case Location.get("The Dark Elbow of the Woods"):
+    case $location`The Dark Neck of the Woods`:
+    case $location`The Dark Heart of the Woods`:
+    case $location`The Dark Elbow of the Woods`:
       break;
-    case Location.get("The Defiled Nook"):
-    case Location.get("The Defiled Cranny"):
-    case Location.get("The Defiled Alcove"):
-    case Location.get("The Defiled Niche"):
+    case $location`The Defiled Nook`:
+    case $location`The Defiled Cranny`:
+    case $location`The Defiled Alcove`:
+    case $location`The Defiled Niche`:
       break;
-    case Location.get("Pandamonium Slums"):
-    case Location.get("The Laugh Floor"):
-    case Location.get("Infernal Rackets Backstage"):
+    case $location`Pandamonium Slums`:
+    case $location`The Laugh Floor`:
+    case $location`Infernal Rackets Backstage`:
       break;
-    case Location.get("The Obligatory Pirate's Cove"):
+    case $location`The Obligatory Pirate's Cove`:
       break;
-    case Location.get("Barrrney's Barrr"):
+    case $location`Barrrney's Barrr`:
       break;
-    case Location.get("The F'c'le"):
+    case $location`The F'c'le`:
       break;
-    case Location.get("The Poop Deck"):
+    case $location`The Poop Deck`:
       break;
-    case Location.get("Belowdecks"):
+    case $location`Belowdecks`:
       break;
-    case Location.get("The Smut Orc Logging Camp"):
+    case $location`The Smut Orc Logging Camp`:
       break;
-    case Location.get("A-Boo Peak"):
-    case Location.get("Twin Peak"):
-    case Location.get("Oil Peak"):
+    case $location`A-Boo Peak`:
+    case $location`Twin Peak`:
+    case $location`Oil Peak`:
       break;
-    case Location.get("Wartime Hippy Camp (Frat Disguise)"):
+    case $location`Wartime Hippy Camp (Frat Disguise)`:
       break;
-    case Location.get("The Battlefield (Frat Uniform)"):
+    case $location`The Battlefield (Frat Uniform)`:
       break;
-    case Location.get("Next to that Barrel with Something Burning in it"):
-    case Location.get("Near an Abandoned Refrigerator"):
-    case Location.get("Over Where the Old Tires Are"):
-    case Location.get("Out by that Rusted-Out Car"):
+    case $location`Next to that Barrel with Something Burning in it`:
+    case $location`Near an Abandoned Refrigerator`:
+    case $location`Over Where the Old Tires Are`:
+    case $location`Out by that Rusted-Out Car`:
       break;
-    case Location.get("Sonofa Beach"):
+    case $location`Sonofa Beach`:
       break;
-    case Location.get("The Themthar Hills"):
+    case $location`The Themthar Hills`:
       break;
-    case Location.get("The Hatching Chamber"):
+    case $location`The Hatching Chamber`:
       break;
-    case Location.get("The Feeding Chamber"):
+    case $location`The Feeding Chamber`:
       break;
-    case Location.get("The Royal Guard Chamber"):
+    case $location`The Royal Guard Chamber`:
       break;
-    case Location.get("The Filthworm Queen's Chamber"):
+    case $location`The Filthworm Queen's Chamber`:
       break;
-    case Location.get("Itznotyerzitz Mine"):
-    case Location.get("The Goatlet"):
+    case $location`Itznotyerzitz Mine`:
+    case $location`The Goatlet`:
       break;
-    case Location.get("The eXtreme Slope"):
-    case Location.get("Lair of the Ninja Snowmen"):
+    case $location`The eXtreme Slope`:
+    case $location`Lair of the Ninja Snowmen`:
       break;
-    case Location.get("Mist-Shrouded Peak"):
+    case $location`Mist-Shrouded Peak`:
       break;
-    case Location.get("The Icy Peak"):
+    case $location`The Icy Peak`:
       break;
-    case Location.get("The Penultimate Fantasy Airship"):
+    case $location`The Penultimate Fantasy Airship`:
       break;
-    case Location.get("The Castle in the Clouds in the Sky (Basement)"):
+    case $location`The Castle in the Clouds in the Sky (Basement)`:
       break;
-    case Location.get("The Castle in the Clouds in the Sky (Ground Floor)"):
+    case $location`The Castle in the Clouds in the Sky (Ground Floor)`:
       break;
-    case Location.get("The Castle in the Clouds in the Sky (Top Floor)"):
+    case $location`The Castle in the Clouds in the Sky (Top Floor)`:
       break;
-    case Location.get("The Hole in the Sky"):
+    case $location`The Hole in the Sky`:
       break;
-    case Location.get("Fastest Adventurer Contest"):
+    case $location`Fastest Adventurer Contest`:
       break;
-    case Location.get("The Enormous Greater-Than Sign"):
+    case $location`The Enormous Greater-Than Sign`:
       break;
-    case Location.get("The Dungeons of Doom"):
+    case $location`The Dungeons of Doom`:
       break;
-    case Location.get("The Limerick Dungeon"):
-    case Location.get("The Sleazy Back Alley"):
-    case Location.get("The Haiku Dungeon"):
+    case $location`The Limerick Dungeon`:
+    case $location`The Sleazy Back Alley`:
+    case $location`The Haiku Dungeon`:
       break;
-    case Location.get("Smartest Adventurer Contest"):
-    case Location.get("Strongest Adventurer Contest"):
-    case Location.get("Smoothest Adventurer Contest"):
+    case $location`Smartest Adventurer Contest`:
+    case $location`Strongest Adventurer Contest`:
+    case $location`Smoothest Adventurer Contest`:
       break;
-    case Location.get("Coldest Adventurer Contest"):
-    case Location.get("Hottest Adventurer Contest"):
-    case Location.get("Sleaziest Adventurer Contest"):
-    case Location.get("Spookiest Adventurer Contest"):
-    case Location.get("Stinkiest Adventurer Contest"):
+    case $location`Coldest Adventurer Contest`:
+    case $location`Hottest Adventurer Contest`:
+    case $location`Sleaziest Adventurer Contest`:
+    case $location`Spookiest Adventurer Contest`:
+    case $location`Stinkiest Adventurer Contest`:
       break;
-    case Location.get("Barf Mountain"):
-    case Location.get("Pirates of the Garbage Barges"):
-    case Location.get("Uncle Gator's Country Fun-Time Liquid Waste Sluice"):
-    case Location.get("The Toxic Teacups"):
+    case $location`Barf Mountain`:
+    case $location`Pirates of the Garbage Barges`:
+    case $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`:
+    case $location`The Toxic Teacups`:
       break;
-    case Location.get("The Fun-Guy Mansion"):
-    case Location.get("The Sunken Party Yacht"):
-    case Location.get("Sloppy Seconds Diner"):
+    case $location`The Fun-Guy Mansion`:
+    case $location`The Sunken Party Yacht`:
+    case $location`Sloppy Seconds Diner`:
       break;
-    case Location.get("The Secret Government Laboratory"):
-    case Location.get("The Deep Dark Jungle"):
-    case Location.get("The Mansion of Dr. Weirdeaux"):
+    case $location`The Secret Government Laboratory`:
+    case $location`The Deep Dark Jungle`:
+    case $location`The Mansion of Dr. Weirdeaux`:
       break;
-    case Location.get("The Ice Hotel"):
-    case Location.get("VYKEA"):
-    case Location.get("The Ice Hole"):
+    case $location`The Ice Hotel`:
+    case $location`VYKEA`:
+    case $location`The Ice Hole`:
       break;
-    case Location.get("The SMOOCH Army HQ"):
-    case Location.get("LavaCo&trade; Lamp Factory"):
+    case $location`The SMOOCH Army HQ`:
+    case $location`LavaCo™ Lamp Factory`:
     case Location.get("The Velvet / Gold Mine"):
-    case Location.get("The Bubblin' Caldera"):
+    case $location`The Bubblin' Caldera`:
       break;
-    case Location.get("The X-32-F Combat Training Snowman"):
+    case $location`The X-32-F Combat Training Snowman`:
       break;
-    case Location.get("Through the Spacegate"):
+    case $location`Through the Spacegate`:
       break;
-    case Location.get("The Old Landfill"):
+    case $location`The Old Landfill`:
       break;
-    case Location.get("The Red Queen's Garden"):
+    case $location`The Red Queen's Garden`:
       break;
-    case Location.get("The Bugbear Pen"):
+    case $location`The Bugbear Pen`:
       break;
-    case Location.get("The Spooky Gravy Burrow"):
+    case $location`The Spooky Gravy Burrow`:
       break;
-    case Location.get("Investigating a Plaintive Telegram"):
+    case $location`Investigating a Plaintive Telegram`:
       break;
-    case Location.get("Drunken Stupor"):
+    case $location`Drunken Stupor`:
       retval._int = 0;
       break;
-    case Location.get("Thugnderdome"):
+    case $location`Thugnderdome`:
       break;
-    case Location.get("The Thinknerd Warehouse"):
+    case $location`The Thinknerd Warehouse`:
       break;
-    case Location.get("Gingerbread Upscale Retail District"):
+    case $location`Gingerbread Upscale Retail District`:
       break;
-    case Location.get("Gingerbread Sewers"):
+    case $location`Gingerbread Sewers`:
       break;
-    case Location.get("Gingerbread Civic Center"):
-    case Location.get("Gingerbread Industrial Zone"):
-    case Location.get("Gingerbread Train Station"):
+    case $location`Gingerbread Civic Center`:
+    case $location`Gingerbread Industrial Zone`:
+    case $location`Gingerbread Train Station`:
       break;
-    case Location.get("Monorail Work Site"):
+    case $location`Monorail Work Site`:
       break;
-    case Location.get("A Maze of Sewer Tunnels"):
+    case $location`A Maze of Sewer Tunnels`:
       break;
   }
   //	This is just to do a mass test.
@@ -2811,101 +2808,9 @@ function zone_difficulty(loc: Location): generic_t {
 
 export function zone_hasLuckyAdventure(loc: Location): boolean {
   if (
-    Location.get([
-      "Vanya's Castle",
-      "The Fungus Plains",
-      "Megalo-City",
-      "Hero's Field",
-      "A Maze of Sewer Tunnels",
-      "A Mob of Zeppelin Protesters",
-      "A-Boo Peak",
-      "An Octopus's Garden",
-      "Art Class",
-      "Cola Wars Battlefield (Cloaca Uniform)",
-      "Cola Wars Battlefield (Dyspepsi Uniform)",
-      "The Cola Wars Battlefield",
-      "Burnbarrel Blvd.",
-      "Camp Logging Camp",
-      "Chemistry Class",
-      "Cobb's Knob Barracks",
-      "Cobb's Knob Harem",
-      "Cobb's Knob Kitchens",
-      "Cobb's Knob Laboratory",
-      "Cobb's Knob Menagerie, Level 2",
-      "Cobb's Knob Treasury",
-      "Elf Alley",
-      "Exposure Esplanade",
-      "The Orcish Frat House",
-      "The Orcish Frat House (In Disguise)",
-      "Guano Junction",
-      "The Hippy Camp",
-      "The Hippy Camp (In Disguise)",
-      "Itznotyerzitz Mine",
-      "Lair of the Ninja Snowmen",
-      "Lemon Party",
-      "Madness Reef",
-      "Oil Peak",
-      "Outskirts of Camp Logging Camp",
-      "Pandamonium Slums",
-      "Shop Class",
-      "South of the Border",
-      'The "Fun" House',
-      "The Ancient Hobo Burial Ground",
-      "The Batrat and Ratbat Burrow",
-      "The Black Forest",
-      "The Brinier Deepers",
-      "The Briny Deeps",
-      "The Bugbear Pen",
-      "The Castle in the Clouds in the Sky (Basement)",
-      "The Castle in the Clouds in the Sky (Ground Floor)",
-      "The Castle in the Clouds in the Sky (Top Floor)",
-      "The Copperhead Club",
-      "The Dark Elbow of the Woods",
-      "The Dark Heart of the Woods",
-      "The Dark Neck of the Woods",
-      "The Dive Bar",
-      "The Goatlet",
-      "The Hallowed Halls",
-      "The Haunted Ballroom",
-      "The Haunted Billiards Room",
-      "The Haunted Boiler Room",
-      "The Haunted Conservatory",
-      "The Haunted Gallery",
-      "The Haunted Kitchen",
-      "The Haunted Library",
-      "The Haunted Pantry",
-      "The Haunted Storage Room",
-      "The Heap",
-      "The Hidden Park",
-      "The Hidden Temple",
-      "The Icy Peak",
-      "The Knob Shaft",
-      "The Limerick Dungeon",
-      "The Mer-Kin Outpost",
-      "The Oasis",
-      "The Obligatory Pirate's Cove",
-      "The Outskirts of Cobb's Knob",
-      "The Poker Room",
-      "The Primordial Soup",
-      "The Purple Light District",
-      "The Red Zeppelin",
-      "The Roulette Tables",
-      "The Sleazy Back Alley",
-      "The Smut Orc Logging Camp",
-      "The Spectral Pickle Factory",
-      "The Spooky Forest",
-      "The Spooky Gravy Burrow",
-      "The Unquiet Garves",
-      "The VERY Unquiet Garves",
-      "The Valley of Rof L'm Fao",
-      "The Wreck of the Edgar Fitzsimmons",
-      "Thugnderdome",
-      "Tower Ruins",
-      "Twin Peak",
-      "Vanya's Castle Chapel",
-      "Whitey's Grove",
-      "Ye Olde Medievale Villagee",
-    ]).includes(loc)
+    $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field, A Maze of Sewer Tunnels, A Mob of Zeppelin Protesters, A-Boo Peak, An Octopus's Garden, Art Class, Cola Wars Battlefield (Cloaca Uniform), Cola Wars Battlefield (Dyspepsi Uniform), The Cola Wars Battlefield, Burnbarrel Blvd., Camp Logging Camp, Chemistry Class, Cobb's Knob Barracks, Cobb's Knob Harem, Cobb's Knob Kitchens, Cobb's Knob Laboratory, Cobb's Knob Menagerie\, Level 2, Cobb's Knob Treasury, Elf Alley, Exposure Esplanade, The Orcish Frat House, The Orcish Frat House (In Disguise), Guano Junction, The Hippy Camp, The Hippy Camp (In Disguise), Itznotyerzitz Mine, Lair of the Ninja Snowmen, Lemon Party, Madness Reef, Oil Peak, Outskirts of Camp Logging Camp, Pandamonium Slums, Shop Class, South of the Border, The "Fun" House, The Ancient Hobo Burial Ground, The Batrat and Ratbat Burrow, The Black Forest, The Brinier Deepers, The Briny Deeps, The Bugbear Pen, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Castle in the Clouds in the Sky (Top Floor), The Copperhead Club, The Dark Elbow of the Woods, The Dark Heart of the Woods, The Dark Neck of the Woods, The Dive Bar, The Goatlet, The Hallowed Halls, The Haunted Ballroom, The Haunted Billiards Room, The Haunted Boiler Room, The Haunted Conservatory, The Haunted Gallery, The Haunted Kitchen, The Haunted Library, The Haunted Pantry, The Haunted Storage Room, The Heap, The Hidden Park, The Hidden Temple, The Icy Peak, The Knob Shaft, The Limerick Dungeon, The Mer-Kin Outpost, The Oasis, The Obligatory Pirate's Cove, The Outskirts of Cobb's Knob, The Poker Room, The Primordial Soup, The Purple Light District, The Red Zeppelin, The Roulette Tables, The Sleazy Back Alley, The Smut Orc Logging Camp, The Spectral Pickle Factory, The Spooky Forest, The Spooky Gravy Burrow, The Unquiet Garves, The VERY Unquiet Garves, The Valley of Rof L'm Fao, The Wreck of the Edgar Fitzsimmons, Thugnderdome, Tower Ruins, Twin Peak, Vanya's Castle Chapel, Whitey's Grove, Ye Olde Medievale Villagee`.includes(
+      loc,
+    )
   ) {
     return true;
   }
@@ -3578,7 +3483,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
   //special location handling
   let totalTurnsSpent: number = 0;
   let delayForNextNoncombat: number = 0;
-  if (haveEffect(Effect.get("Lucky!")) > 0) {
+  if (haveEffect($effect`Lucky!`) > 0) {
     return false; //we are grabbing a Lucky! so we will not encounter a ghost unless it is a wandering monster
   }
   {
@@ -3599,7 +3504,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
 
     let apprates: Map<Monster, number> = new Map();
     switch (loc) {
-      case Location.get("A-Boo Peak"):
+      case $location`A-Boo Peak`:
         if (
           toInt(getProperty("booPeakProgress")) === 0 &&
           !toBoolean(getProperty("booPeakLit"))
@@ -3610,26 +3515,25 @@ export function is_ghost_in_zone(loc: Location): boolean {
           return false;
         }
         return true;
-      case Location.get("The Haunted Gallery"):
+      case $location`The Haunted Gallery`:
         return false;
-      case Location.get("Summoning Chamber"):
+      case $location`Summoning Chamber`:
         return in_plumber();
-      case Location.get("The Hidden Hospital"):
+      case $location`The Hidden Hospital`:
         return (
           toInt(getProperty("hiddenHospitalProgress")) > 0 &&
           toInt(getProperty("hiddenHospitalProgress")) < 7
         );
-      case Location.get("The Hidden Office Building"):
-        hasMcCluskyFile =
-          availableAmount(Item.get("McClusky file (complete)")) > 0;
-        totalTurnsSpent = Location.get("The Hidden Office Building").turnsSpent;
+      case $location`The Hidden Office Building`:
+        hasMcCluskyFile = availableAmount($item`McClusky file (complete)`) > 0;
+        totalTurnsSpent = $location`The Hidden Office Building`.turnsSpent;
         delayForNextNoncombat = 4 - ((totalTurnsSpent - 1) % 5);
         if (auto_haveQueuedForcedNonCombat()) {
           delayForNextNoncombat = 0;
         }
         return hasMcCluskyFile && delayForNextNoncombat === 0;
-      case Location.get("The Hidden Apartment Building"):
-        cursed = haveEffect(Effect.get("Thrice-Cursed")) > 0;
+      case $location`The Hidden Apartment Building`:
+        cursed = haveEffect($effect`Thrice-Cursed`) > 0;
         totalTurnsSpent = Location.get(
           "The Hidden Apartment Building",
         ).turnsSpent;
@@ -3641,18 +3545,18 @@ export function is_ghost_in_zone(loc: Location): boolean {
           delayForNextNoncombat = 0;
         }
         return cursed && delayForNextNoncombat === 0;
-      case Location.get("The Hidden Bowling Alley"):
+      case $location`The Hidden Bowling Alley`:
         return (
           toInt(getProperty("hiddenBowlingAlleyProgress")) === 6 &&
-          availableAmount(Item.get("bowling ball")) > 0
+          availableAmount($item`bowling ball`) > 0
         );
-      case Location.get("A Massive Ziggurat"):
+      case $location`A Massive Ziggurat`:
         if (in_robot()) {
           return false;
         }
         return (
-          liana_cleared(Location.get("A Massive Ziggurat")) &&
-          availableAmount(Item.get("stone triangle")) === 4
+          liana_cleared($location`A Massive Ziggurat`) &&
+          availableAmount($item`stone triangle`) === 4
         );
       default:
         apprates = auto_combat_appearance_rates(loc, true);
@@ -4288,11 +4192,11 @@ export function monster_to_location(target: Monster): Map<Location, boolean> {
 
 export function auto_swoopLocations(): Map<Location, boolean> {
   return new Map([
-    [Location.get("The Hatching Chamber"), true],
-    [Location.get("The Feeding Chamber"), true],
-    [Location.get("The Royal Guard Chamber"), true],
-    [Location.get("The Hidden Temple"), true],
-    [Location.get("The Goatlet"), true],
+    [$location`The Hatching Chamber`, true],
+    [$location`The Feeding Chamber`, true],
+    [$location`The Royal Guard Chamber`, true],
+    [$location`The Hidden Temple`, true],
+    [$location`The Goatlet`, true],
   ]);
 } /*
 	case $location[The Oasis]:

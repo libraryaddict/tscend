@@ -1,6 +1,6 @@
-import { myPath, Path } from "kolmafia";
-
+import { myPath } from "kolmafia";
+import { $path } from "libram";
 //Defined in autoscend/paths/class_act_two.ash
 export function in_class_act_two(): boolean {
-  return myPath() === Path.get("Class Act II: A Class For Pigs");
+  return myPath() === $path`Class Act II: A Class For Pigs`;
 }

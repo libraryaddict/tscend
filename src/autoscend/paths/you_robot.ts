@@ -4,12 +4,10 @@ import {
   canInteract,
   cliExecute,
   containsText,
-  Familiar,
   familiarWeight,
   getProperty,
   haveFamiliar,
   inHardcore,
-  Item,
   itemAmount,
   Location,
   myAdventures,
@@ -23,7 +21,6 @@ import {
   myRobotEnergy,
   myRobotScraps,
   myTurncount,
-  Path,
   removeProperty,
   round,
   runChoice,
@@ -35,6 +32,8 @@ import {
   visitUrl,
   wait,
 } from "kolmafia";
+import { $familiar, $item, $location, $path, $stat } from "libram";
+
 import { auto_unreservedAdvRemaining } from "../../autoscend";
 import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$2, autoLuckyAdv$1 } from "../auto_adventure";
@@ -92,7 +91,7 @@ import { LX_galaktikSubQuest } from "../quests/optional";
 
 //Defined in autoscend/paths/you_robot.ash
 export function in_robot(): boolean {
-  return myPath() === Path.get("You, Robot");
+  return myPath() === $path`You\, Robot`;
 }
 
 export function robot_initializeSettings(): void {
@@ -111,17 +110,17 @@ export function robot_defaultMaximizeStatement(): string {
   //custom default maximizer statement for You, Robot.
   let res: string =
     "5item,meat,0.5initiative,0.4hp,0.1da 1000max,dr,0.5all res,-fumble,-ml";
-  if (myPrimestat() === Stat.get("Moxie")) {
+  if (myPrimestat() === $stat`Moxie`) {
     res += ",3mox";
   } else {
     res += ",mox";
   }
-  if (myPrimestat() === Stat.get("Muscle")) {
+  if (myPrimestat() === $stat`Muscle`) {
     res += ",3mus";
   }
-  if (myPrimestat() === Stat.get("Mysticality")) {
+  if (myPrimestat() === $stat`Mysticality`) {
     if (
-      possessEquipment(Item.get("Fourth of May Cosplay Saber")) ||
+      possessEquipment($item`Fourth of May Cosplay Saber`) ||
       toInt(getProperty("youRobotLeft")) === 5
     ) {
       //sniper rifle attachment
@@ -131,11 +130,11 @@ export function robot_defaultMaximizeStatement(): string {
   //weapon handling
   if (toInt(getProperty("youRobotLeft")) === 4) {
     //vice grips. unlocks weapon slot
-    if (possessEquipment(Item.get("Fourth of May Cosplay Saber"))) {
-      autoEquip$1(Item.get("Fourth of May Cosplay Saber"));
+    if (possessEquipment($item`Fourth of May Cosplay Saber`)) {
+      autoEquip$1($item`Fourth of May Cosplay Saber`);
     } else {
       res += ",0.3weapon damage,0.2weapon damage percent,0.5elemental damage";
-      if (myPrimestat() === Stat.get("Muscle")) {
+      if (myPrimestat() === $stat`Muscle`) {
         res += ",melee";
       } else {
         res += ",-melee";
@@ -602,7 +601,7 @@ function robot_skillbuy(): void {
   //myst classes can benefit from the extra damage
   //2. [Dynamic Arcane Flux Modeling] = +15 Buffed Mysticality. costs 30 energy.
   if (
-    myPrimestat() === Stat.get("Mysticality") &&
+    myPrimestat() === $stat`Mysticality` &&
     !robot_cpu(2, false) &&
     myRobotEnergy() > 60
   ) {
@@ -611,7 +610,7 @@ function robot_skillbuy(): void {
   //muscle classes can benefit from the extra damage
   //1. [Leverage Coprocessing] = +15 Buffed Muscle. costs 30 energy.
   if (
-    myPrimestat() === Stat.get("Muscle") &&
+    myPrimestat() === $stat`Muscle` &&
     !robot_cpu(1, false) &&
     myRobotEnergy() > 60
   ) {
@@ -764,10 +763,10 @@ function robot_statbot(target: Stat): boolean {
   }
 
   let nn: number = 1; //muscle
-  if (target === Stat.get("Mysticality")) {
+  if (target === $stat`Mysticality`) {
     nn = 2;
   }
-  if (target === Stat.get("Moxie")) {
+  if (target === $stat`Moxie`) {
     nn = 3;
   }
 
@@ -783,13 +782,13 @@ function robot_statbot(target: Stat): boolean {
 
 function robot_stat_wanted(): Stat {
   //which stat do we most want to raise next as a robot. If we want multiple stats that would be handled elsewhere.
-  const is_mus: boolean = myPrimestat() === Stat.get("Muscle");
-  const is_mys: boolean = myPrimestat() === Stat.get("Mysticality");
-  const is_mox: boolean = myPrimestat() === Stat.get("Moxie");
-  if (!is_mox && myBasestat(Stat.get("Moxie")) < myBasestat(myPrimestat())) {
+  const is_mus: boolean = myPrimestat() === $stat`Muscle`;
+  const is_mys: boolean = myPrimestat() === $stat`Mysticality`;
+  const is_mox: boolean = myPrimestat() === $stat`Moxie`;
+  if (!is_mox && myBasestat($stat`Moxie`) < myBasestat(myPrimestat())) {
     //mys classes should keep moxie higher than their mainstat since they are effectively a discount moxie class in this path
     //mus classes should keep moxie higher than their mainstat due to low init, no healing skill, & very low HP in this path
-    return Stat.get("Moxie");
+    return $stat`Moxie`;
   }
   if (myLevel() < 13) {
     //raise primestat until we are level 13 to unlock all quests
@@ -797,25 +796,25 @@ function robot_stat_wanted(): Stat {
   }
   if (
     disregardInstantKarma() &&
-    possessEquipment(Item.get("Fourth of May Cosplay Saber"))
+    possessEquipment($item`Fourth of May Cosplay Saber`)
   ) {
     //you can never have enough dakka. with lightsaber increasing primestat increases your damage.
     return myPrimestat();
   }
   if (is_mys) {
     //if we are not raising mys for saber then after level 13 mys classes should stop raising their mys and only raise their mox
-    return Stat.get("Moxie");
+    return $stat`Moxie`;
   } else if (disregardInstantKarma()) {
     //mox and muscle should just keep on raising that offense stat if they do not care about karma.
     return myPrimestat();
   }
-  if (myBasestat(Stat.get("Moxie")) < 70) {
+  if (myBasestat($stat`Moxie`) < 70) {
     //we need 70 mox to wear the war outfit
-    return Stat.get("Moxie");
+    return $stat`Moxie`;
   }
-  if (myBasestat(Stat.get("Mysticality")) < 70) {
+  if (myBasestat($stat`Mysticality`) < 70) {
     //we need 70 mox to wear the war outfit
-    return Stat.get("Mysticality");
+    return $stat`Mysticality`;
   }
 
   return Stat.none;
@@ -847,7 +846,7 @@ function LX_robot_level(): boolean {
   //Haunted Bedroom is ideal for it as it raises all 3 stats. provides meat. and does it all through noncombats.
   //we should grab several levels there early on before we start relying on statbot
   if (myLevel() < 9) {
-    if (autoAdv$2(Location.get("The Haunted Bedroom"))) {
+    if (autoAdv$2($location`The Haunted Bedroom`)) {
       return true;
     }
   }
@@ -883,8 +882,8 @@ export function LX_robot_powerlevel(): boolean {
   }
   if (
     myLevel() > 12 &&
-    myBasestat(Stat.get("Mysticality")) >= 70 &&
-    myBasestat(Stat.get("Moxie")) >= 70
+    myBasestat($stat`Mysticality`) >= 70 &&
+    myBasestat($stat`Moxie`) >= 70
   ) {
     return false;
   }
@@ -904,11 +903,11 @@ export function LX_robot_powerlevel(): boolean {
   //mus needs to be leveled up to 62 to equip [antique machete] to clear dense lianas
   //Haunted Bedroom is ideal for it as it raises all 3 stats. provides meat. and does it all through noncombats.
   //however we should not over rely on it. it is best to allow statbot to operate as well
-  const need_mus: boolean = myBasestat(Stat.get("Muscle")) < 62;
-  const need_mys: boolean = myBasestat(Stat.get("Mysticality")) < 70;
-  const need_mox: boolean = myBasestat(Stat.get("Moxie")) < 70;
+  const need_mus: boolean = myBasestat($stat`Muscle`) < 62;
+  const need_mys: boolean = myBasestat($stat`Mysticality`) < 70;
+  const need_mox: boolean = myBasestat($stat`Moxie`) < 70;
   if (need_mus || need_mys || need_mox) {
-    if (autoAdv$2(Location.get("The Haunted Bedroom"))) {
+    if (autoAdv$2($location`The Haunted Bedroom`)) {
       return true;
     }
   }
@@ -922,7 +921,7 @@ export function LX_robot_powerlevel(): boolean {
     income++; //overclocking cpu upgrade installed
   }
   if (robot_chronolith_cost() <= 10 * income) {
-    if (autoAdv$2(Location.get("The Haunted Bedroom"))) {
+    if (autoAdv$2($location`The Haunted Bedroom`)) {
       return true;
     }
   }
@@ -935,14 +934,14 @@ export function LX_robot_powerlevel(): boolean {
       //Determine where to go for clover stats, do not worry about clover failures
       let whereTo: Location = Location.none;
       switch (target) {
-        case Stat.get("Muscle"):
-          whereTo = Location.get("The Haunted Gallery");
+        case $stat`Muscle`:
+          whereTo = $location`The Haunted Gallery`;
           break;
-        case Stat.get("Mysticality"):
-          whereTo = Location.get("The Haunted Bathroom");
+        case $stat`Mysticality`:
+          whereTo = $location`The Haunted Bathroom`;
           break;
-        case Stat.get("Moxie"):
-          whereTo = Location.get("The Haunted Ballroom");
+        case $stat`Moxie`:
+          whereTo = $location`The Haunted Ballroom`;
           break;
       }
       if (autoLuckyAdv$1(whereTo)) {
@@ -955,7 +954,7 @@ export function LX_robot_powerlevel(): boolean {
     }
   }
   //in case we can not afford statbot cost. try a final time in haunted bedroom
-  if (autoAdv$2(Location.get("The Haunted Bedroom"))) {
+  if (autoAdv$2($location`The Haunted Bedroom`)) {
     return true;
   }
 
@@ -980,7 +979,7 @@ function robot_assemble(): boolean {
     robot_top(4); //Mannequin Head. hat slot unlocked
   } else if (
     robot_directive_check("chasm") &&
-    myPrimestat() === Stat.get("Muscle")
+    myPrimestat() === $stat`Muscle`
   ) {
     if (toInt(getProperty("youRobotTop")) !== 8) {
       if (LX_robot_get_scrap(40)) {
@@ -1032,7 +1031,7 @@ function robot_assemble(): boolean {
   //"right" arm. offhand
   if (
     robot_directive_check("desert") ||
-    (robot_directive_check("chasm") && possessEquipment(Item.get("loadstone")))
+    (robot_directive_check("chasm") && possessEquipment($item`loadstone`))
   ) {
     if (toInt(getProperty("youRobotRight")) !== 4) {
       if (LX_robot_get_scrap(15)) {
@@ -1092,17 +1091,17 @@ function robot_assemble_want_sniper(): boolean {
   if (robot_directive_check("machete")) {
     return false;
   }
-  if (myPrimestat() !== Stat.get("Mysticality")) {
+  if (myPrimestat() !== $stat`Mysticality`) {
     return false; //only mys classes ever want to use the sniper rifle
   }
-  if (possessEquipment(Item.get("Fourth of May Cosplay Saber"))) {
+  if (possessEquipment($item`Fourth of May Cosplay Saber`)) {
     return false; //saber is so good to obsoletes sniper rifle
   }
   if (robot_directive_check("outfit3")) {
     //fighting L12 warboss
     return true; //as a mys class without a saber we need some way to kill the warboss
   }
-  if (myBasestat(Stat.get("Moxie")) > 110) {
+  if (myBasestat($stat`Moxie`) > 110) {
     //can not use buffed or we risk a loop of switching back and forth.
     return false; //we are powerful enough to dump the sniper and switch to a weapon slot
   }
@@ -1121,7 +1120,7 @@ function robot_assemble_want_rocket_crotch(): boolean {
   }
   const left_vice: boolean = toInt(getProperty("youRobotLeft")) === 4; //vice grips. unlock weapon slot
   const left_sniper: boolean = toInt(getProperty("youRobotLeft")) === 5; //sniper rifle. deal 100% mys damage
-  if (myPrimestat() === Stat.get("Mysticality") && !left_vice && !left_sniper) {
+  if (myPrimestat() === $stat`Mysticality` && !left_vice && !left_sniper) {
     //generally it is only wanted by mys classes who have no other means of attack
     return true;
   }
@@ -1133,11 +1132,11 @@ function robot_assemble_want_bird_cage(): boolean {
   //to prevent issues. our autoscend functions related to familiars say we do not have familiars at all if we do not have a [bird cage] already
   //as such you should use mafia's have_familiar(familiar name) function to check availability.
   if (getProperty("auto_robot_directive") === "desert") {
-    if (haveFamiliar(Familiar.get("Melodramedary"))) {
+    if (haveFamiliar($familiar`Melodramedary`)) {
       return true; //+1%p desert exploration. it is great
     } else if (
-      haveFamiliar(Familiar.get("Left-Hand Man")) &&
-      possessUnrestricted(Item.get("ornate dowsing rod"))
+      haveFamiliar($familiar`Left-Hand Man`) &&
+      possessUnrestricted($item`ornate dowsing rod`)
     ) {
       return true; //we can use both the rod and the compass this way
     }
@@ -1176,17 +1175,16 @@ export function robot_choice_adv(choice: number, page: string): boolean {
     switch (choice) {
       case 876:
         robot_need_mus =
-          myPrimestat() === Stat.get("Muscle") ||
-          myBasestat(Stat.get("Muscle")) < 62;
+          myPrimestat() === $stat`Muscle` || myBasestat($stat`Muscle`) < 62;
         if (
           myMeat() < 1000 + meatReserve() &&
-          auto_is_valid(Item.get("old leather wallet")) &&
+          auto_is_valid($item`old leather wallet`) &&
           !robot_need_mus
         ) {
           runChoice(1);
         } else if (
-          itemAmount(Item.get("ghost key")) > 0 &&
-          myPrimestat() === Stat.get("Muscle")
+          itemAmount($item`ghost key`) > 0 &&
+          myPrimestat() === $stat`Muscle`
         ) {
           runChoice(3);
         } else {
@@ -1195,23 +1193,23 @@ export function robot_choice_adv(choice: number, page: string): boolean {
         break;
       case 878:
         robot_need_mys =
-          myPrimestat() === Stat.get("Mysticality") ||
-          myBasestat(Stat.get("Mysticality")) < 70;
+          myPrimestat() === $stat`Mysticality` ||
+          myBasestat($stat`Mysticality`) < 70;
         needSpectacles =
-          itemAmount(Item.get("Lord Spookyraven's spectacles")) === 0 &&
+          itemAmount($item`Lord Spookyraven's spectacles`) === 0 &&
           internalQuestStatus("questL11Manor") < 2;
         if (needSpectacles) {
           runChoice(3);
         } else if (
-          itemAmount(Item.get("disposable instant camera")) === 0 &&
+          itemAmount($item`disposable instant camera`) === 0 &&
           internalQuestStatus("questL11Palindome") < 1
         ) {
           runChoice(4);
         } else if (!robot_need_mys || myMeat() < 1000 + meatReserve()) {
           runChoice(1);
         } else if (
-          itemAmount(Item.get("ghost key")) > 0 &&
-          myPrimestat() === Stat.get("Mysticality")
+          itemAmount($item`ghost key`) > 0 &&
+          myPrimestat() === $stat`Mysticality`
         ) {
           runChoice(5);
         } else {
@@ -1228,8 +1226,8 @@ export function robot_choice_adv(choice: number, page: string): boolean {
         if (options.has(4)) {
           runChoice(4); // only shows up rarely. when this line was added it was worth 1.3 million in mall
         } else if (
-          itemAmount(Item.get("ghost key")) > 0 &&
-          myPrimestat() === Stat.get("Moxie")
+          itemAmount($item`ghost key`) > 0 &&
+          myPrimestat() === $stat`Moxie`
         ) {
           runChoice(5); // spend 1 ghost key for primestat, get ~200 moxie XP
         } else {
@@ -1282,7 +1280,7 @@ function robot_directive(): void {
     internalQuestStatus("questL10Garbage") === 9 ||
     internalQuestStatus("questL10Garbage") === 10;
   const castle_wig_route: boolean =
-    possessEquipment(Item.get("Mohawk wig")) || !inHardcore();
+    possessEquipment($item`Mohawk wig`) || !inHardcore();
   const castle_done: boolean =
     !castle_wig_route || getProperty("questL10Garbage") === "finished";
 
@@ -1299,15 +1297,14 @@ function robot_directive(): void {
     toInt(getProperty("flyeredML")) > 9999 ||
     auto_warSide() === "hippy"; //hippy arena not implemented yet
   const war_can_kill_boss: boolean =
-    myPrimestat() !== Stat.get("Mysticality") ||
-    possessEquipment(Item.get("Fourth of May Cosplay Saber"));
+    myPrimestat() !== $stat`Mysticality` ||
+    possessEquipment($item`Fourth of May Cosplay Saber`);
   const war_battlefield_cleared: boolean = auto_warEnemiesRemaining() === 0;
   const war_have_preoutfit: boolean =
     possessOutfit$1("Filthy Hippy Disguise") ||
     possessOutfit$1("Frat Boy Ensemble");
   const war_have_stats: boolean =
-    myBasestat(Stat.get("Moxie")) >= 70 &&
-    myBasestat(Stat.get("Mysticality")) >= 70;
+    myBasestat($stat`Moxie`) >= 70 && myBasestat($stat`Mysticality`) >= 70;
   //ready to start the war
   const war_ready1: boolean =
     internalQuestStatus("questL12War") === 0 &&
@@ -1358,11 +1355,11 @@ function robot_directive(): void {
   const desert_ready: boolean = internalQuestStatus("questL11Desert") === 0;
   const desert_done: boolean = internalQuestStatus("questL11Desert") > 0;
   const chasm_offhand_slot_needed: boolean =
-    possessEquipment(Item.get("loadstone")) || canPull$1(Item.get("loadstone"));
+    possessEquipment($item`loadstone`) || canPull$1($item`loadstone`);
   const chasm_ready: boolean =
     internalQuestStatus("questL09Topping") === 0 &&
     toInt(getProperty("chasmBridgeProgress")) < bridgeGoal() &&
-    !shenShouldDelayZone(Location.get("The Smut Orc Logging Camp"));
+    !shenShouldDelayZone($location`The Smut Orc Logging Camp`);
   const chasm_done: boolean = internalQuestStatus("questL09Topping") > 0;
 
   if (directive === "chasm" && chasm_done) {
@@ -1404,7 +1401,7 @@ function robot_directive(): void {
   if (
     directive === "" &&
     city_ready &&
-    myPrimestat() === Stat.get("Mysticality") &&
+    myPrimestat() === $stat`Mysticality` &&
     !liana_cleared_1
   ) {
     setProperty("auto_robot_directive", "machete");
@@ -1447,9 +1444,9 @@ export function LM_robot(): boolean {
     return false;
   }
   //every boss drops 1 of those. it is a quest item which gives you 30 to 50 energy when used.
-  if (itemAmount(Item.get("robo-battery")) > 0) {
+  if (itemAmount($item`robo-battery`) > 0) {
     cliExecute("refresh quests"); //there are some quest tracking issues in you robot. this alleviates them
-    use(itemAmount(Item.get("robo-battery")), Item.get("robo-battery"));
+    use(itemAmount($item`robo-battery`), $item`robo-battery`);
   }
 
   if (robot_energy_per_collect() > 3) {
@@ -1508,7 +1505,7 @@ export function LA_robot(): boolean {
     if (L8_trapperSlope()) {
       return true;
     }
-    if (possessEquipment(Item.get("Mohawk wig")) || !inHardcore()) {
+    if (possessEquipment($item`Mohawk wig`) || !inHardcore()) {
       //we are in the mohawk wig route
       if (L10_topFloor()) {
         return true;
@@ -1534,8 +1531,8 @@ export function LA_robot(): boolean {
       //no adv spent.
       return true;
     }
-    pullXWhenHaveY(Item.get("loadstone"), 1, 0);
-    pullXWhenHaveY(Item.get("logging hatchet"), 1, 0);
+    pullXWhenHaveY($item`loadstone`, 1, 0);
+    pullXWhenHaveY($item`logging hatchet`, 1, 0);
     if (robot_assemble()) {
       //switch offhand in case we pulled a loadstone
       return true;

@@ -10,18 +10,16 @@ import {
   myMaxhp,
   myMp,
   myPath,
-  Path,
   putCloset,
   setProperty,
-  Skill,
   toInt,
   toItem,
   useSkill,
 } from "kolmafia";
-
+import { $effects, $item, $items, $path, $skill } from "libram";
 //Defined in autoscend/paths/g_lover.ash
 export function in_glover(): boolean {
-  return myPath() === Path.get("G-Lover");
+  return myPath() === $path`G-Lover`;
 }
 
 export function glover_initializeDay(day: number): void {
@@ -42,16 +40,13 @@ export function glover_initializeSettings(): void {
     );
     //Buy Crude Oil Congealer and um... A-Boo Glues.
     if (
-      itemAmount(Item.get("crude oil congealer")) === 0 &&
-      itemAmount(Item.get("G")) > 0
+      itemAmount($item`crude oil congealer`) === 0 &&
+      itemAmount($item`G`) > 0
     ) {
-      cliExecute(`make ${Item.get("crude oil congealer")}`);
+      cliExecute(`make ${$item`crude oil congealer`}`);
     }
-    while (
-      itemAmount(Item.get("A-Boo glue")) < 3 &&
-      itemAmount(Item.get("G")) > 0
-    ) {
-      cliExecute(`make ${Item.get("A-Boo glue")}`);
+    while (itemAmount($item`A-Boo glue`) < 3 && itemAmount($item`G`) > 0) {
+      cliExecute(`make ${$item`A-Boo glue`}`);
     }
   }
 }
@@ -112,7 +107,7 @@ export function glover_usable$1(eff: Effect): boolean {
   if (!in_glover()) {
     return true;
   }
-  if (Effect.get(["Stone-Faced"]).includes(eff)) {
+  if ($effects`Stone-Faced`.includes(eff)) {
     return true; //explicit exceptions that work in glover despite not having G in the name
   }
   return glover_usable(eff.toString());
@@ -122,22 +117,7 @@ export function LM_glover(): boolean {
   if (!in_glover()) {
     return false;
   }
-  for (const it of Item.get([
-    "chaos butterfly",
-    "cornucopia",
-    "disassembled clover",
-    "filthy poultice",
-    "metal meteoroid",
-    "Oil of Parrrlay",
-    "pec oil",
-    "Polysniff Perfume",
-    "smut orc keepsake box",
-    "sonar-in-a-biscuit",
-    "T.U.R.D.S. Key",
-    "11-leaf clover",
-    "tonic djinn",
-    "turtle wax",
-  ])) {
+  for (const it of $items`chaos butterfly, cornucopia, disassembled clover, filthy poultice, metal meteoroid, Oil of Parrrlay, pec oil, Polysniff Perfume, smut orc keepsake box, sonar-in-a-biscuit, T.U.R.D.S. Key, 11-leaf clover, tonic djinn, turtle wax`) {
     if (itemAmount(it) > 0) {
       putCloset(itemAmount(it), it);
     }
@@ -145,10 +125,10 @@ export function LM_glover(): boolean {
 
   if (
     myMaxhp() - myHp() > 40 &&
-    haveSkill(Skill.get("Tongue of the Walrus")) &&
+    haveSkill($skill`Tongue of the Walrus`) &&
     myMp() > 100
   ) {
-    useSkill(1, Skill.get("Tongue of the Walrus"));
+    useSkill(1, $skill`Tongue of the Walrus`);
   }
 
   return false;

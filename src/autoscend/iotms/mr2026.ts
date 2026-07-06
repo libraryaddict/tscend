@@ -11,12 +11,13 @@ import {
   myLocation,
   runChoice,
   setProperty,
-  Slot,
   toBoolean,
   toInt,
   toLocation,
   visitUrl,
 } from "kolmafia";
+import { $item, $location, $slots } from "libram";
+
 import { autoAdvBypass } from "../auto_adventure";
 import { spleen_left } from "../auto_consume";
 import {
@@ -33,8 +34,8 @@ import { zone_delay } from "../auto_zone";
 
 export function auto_haveEternityCodpiece(): boolean {
   if (
-    auto_is_valid(Item.get("The Eternity Codpiece")) &&
-    availableAmount(Item.get("The Eternity Codpiece")) > 0
+    auto_is_valid($item`The Eternity Codpiece`) &&
+    availableAmount($item`The Eternity Codpiece`) > 0
   ) {
     return true;
   }
@@ -42,13 +43,7 @@ export function auto_haveEternityCodpiece(): boolean {
 }
 
 export function auto_isInEternityCodpiece(it: Item): boolean {
-  for (const s of Slot.get([
-    "codpiece1",
-    "codpiece2",
-    "codpiece3",
-    "codpiece4",
-    "codpiece5",
-  ])) {
+  for (const s of $slots`codpiece1, codpiece2, codpiece3, codpiece4, codpiece5`) {
     const b = true;
     if (equippedItem(s) === it) {
       return true;
@@ -60,8 +55,8 @@ export function auto_isInEternityCodpiece(it: Item): boolean {
 //Defined in autoscend/iotms/mr2026.ash
 function auto_haveLegendarySealClubbingClub(): boolean {
   if (
-    auto_is_valid(Item.get("legendary seal-clubbing club")) &&
-    availableAmount(Item.get("legendary seal-clubbing club")) > 0
+    auto_is_valid($item`legendary seal-clubbing club`) &&
+    availableAmount($item`legendary seal-clubbing club`) > 0
   ) {
     return true;
   }
@@ -112,13 +107,13 @@ export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean {
 }
 
 function auto_haveHeartstone(): boolean {
-  if (!auto_is_valid(Item.get("Heartstone"))) {
+  if (!auto_is_valid($item`Heartstone`)) {
     return false;
   }
-  if (availableAmount(Item.get("Heartstone")) > 0) {
+  if (availableAmount($item`Heartstone`) > 0) {
     return true;
   }
-  if (auto_isInEternityCodpiece(Item.get("Heartstone"))) {
+  if (auto_isInEternityCodpiece($item`Heartstone`)) {
     return true;
   }
   return false;
@@ -195,8 +190,8 @@ function auto_heartstoneStunRemaining(): number {
 
 export function auto_haveArchaeologistSpade(): boolean {
   if (
-    auto_is_valid(Item.get("Archaeologist's Spade")) &&
-    availableAmount(Item.get("Archaeologist's Spade")) > 0
+    auto_is_valid($item`Archaeologist's Spade`) &&
+    availableAmount($item`Archaeologist's Spade`) > 0
   ) {
     return true;
   }
@@ -212,7 +207,7 @@ export function auto_spadeDigsRemaining(): number {
 }
 
 export function auto_spadeDigItem(): boolean {
-  const SPADE: Item = Item.get("Archaeologist's Spade");
+  const SPADE: Item = $item`Archaeologist's Spade`;
   const choice_adv_num: number = 1596;
   const choice_num: number = 1;
   const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
@@ -266,7 +261,7 @@ export function auto_spadeDigItem(): boolean {
 }
 
 function auto_spadeDigAncient(): boolean {
-  const SPADE: Item = Item.get("Archaeologist's Spade");
+  const SPADE: Item = $item`Archaeologist's Spade`;
   const choice_adv_num: number = 1596;
   const choice_num: number = 2;
   const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
@@ -289,7 +284,7 @@ function auto_spadeDigAncient(): boolean {
 }
 
 export function auto_spadeDigSkeleton(): boolean {
-  const SPADE: Item = Item.get("Archaeologist's Spade");
+  const SPADE: Item = $item`Archaeologist's Spade`;
   const choice_adv_num: number = 1596;
   const choice_num: number = 3;
   const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
@@ -301,7 +296,7 @@ export function auto_spadeDigSkeleton(): boolean {
     pages.set(0, use_url);
     pages.set(1, choice_url);
     const loc: Location = myLocation();
-    if (autoAdvBypass(0, pages, Location.get("Noob Cave"), null)) {
+    if (autoAdvBypass(0, pages, $location`Noob Cave`, null)) {
       handleTracker$1(
         SPADE.toString(),
         `Dig up a skeleton - ${loc}`,
@@ -333,8 +328,8 @@ export function auto_wantToSpadeDigSkeleton(loc: Location): boolean {
 
 export function spadeDelayZones(): Map<Location, boolean> {
   const desired_zones: Map<Location, boolean> = new Map();
-  desired_zones.set(Location.get("The Unquiet Garves"), true);
-  desired_zones.set(Location.get("The Haunted Ballroom"), true);
+  desired_zones.set($location`The Unquiet Garves`, true);
+  desired_zones.set($location`The Haunted Ballroom`, true);
   return desired_zones;
 }
 

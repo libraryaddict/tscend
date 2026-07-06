@@ -1,12 +1,10 @@
 import {
   ceil,
   containsText,
-  Effect,
   Familiar,
   floor,
   fullnessLimit,
   haveEffect,
-  Item,
   itemAmount,
   max,
   min,
@@ -20,14 +18,13 @@ import {
   myMeat,
   myMp,
   myPath,
-  Path,
-  Phylum,
   setProperty,
-  Skill,
   toFloat,
   useSkill,
   visitUrl,
 } from "kolmafia";
+import { $effect, $item, $path, $phyla, $skill } from "libram";
+
 import { autoEat } from "../auto_consume";
 import {
   auto_have_skill,
@@ -53,7 +50,7 @@ import {
 
 //Defined in autoscend/paths/zombie_slayer.ash
 export function in_zombieSlayer(): boolean {
-  return myPath() === Path.get("Zombie Slayer");
+  return myPath() === $path`Zombie Slayer`;
 }
 
 export function zombieSlayer_initializeSettings(): void {
@@ -70,9 +67,9 @@ export function zombieSlayer_buySkills(): boolean {
   }
 
   if (
-    auto_have_skill(Skill.get("Ravenous Pounce")) &&
-    auto_have_skill(Skill.get("Howl of the Alpha")) &&
-    auto_have_skill(Skill.get("Zombie Maestro"))
+    auto_have_skill($skill`Ravenous Pounce`) &&
+    auto_have_skill($skill`Howl of the Alpha`) &&
+    auto_have_skill($skill`Zombie Maestro`)
   ) {
     return false;
   }
@@ -108,7 +105,7 @@ export function zombieSlayer_buySkills(): boolean {
 }
 
 function lureMinions(target: number): boolean {
-  if (!in_zombieSlayer() || !auto_have_skill(Skill.get("Lure Minions"))) {
+  if (!in_zombieSlayer() || !auto_have_skill($skill`Lure Minions`)) {
     return false;
   }
 
@@ -146,16 +143,12 @@ function lureMinions(target: number): boolean {
     return myMp() >= target;
   }
 
-  check_brains(itemAmount(Item.get("hunter brain")));
-  check_brains(itemAmount(Item.get("boss brain")));
+  check_brains(itemAmount($item`hunter brain`));
+  check_brains(itemAmount($item`boss brain`));
   // Count hunter and boss brains, but do not trade them, so number need not be remembered
-  const spare_good: number = check_brains(itemAmount(Item.get("good brain")));
-  const spare_decent: number = check_brains(
-    itemAmount(Item.get("decent brain")),
-  );
-  const spare_crappy: number = check_brains(
-    itemAmount(Item.get("crappy brain")),
-  );
+  const spare_good: number = check_brains(itemAmount($item`good brain`));
+  const spare_decent: number = check_brains(itemAmount($item`decent brain`));
+  const spare_crappy: number = check_brains(itemAmount($item`crappy brain`));
   // Reserve them in order from best to worst. Then trade them worst first. Stop once one returns true.
   if (lure(spare_crappy, 1) || lure(spare_decent, 2) || lure(spare_good, 3)) {
   }
@@ -168,7 +161,7 @@ function lureMinions(target: number): boolean {
 }
 
 function summonMinions(target: number, meat_reserve: number): boolean {
-  if (!in_zombieSlayer() || !auto_have_skill(Skill.get("Summon Minion"))) {
+  if (!in_zombieSlayer() || !auto_have_skill($skill`Summon Minion`)) {
     return false;
   }
 
@@ -179,7 +172,7 @@ function summonMinions(target: number, meat_reserve: number): boolean {
 
   let x: number = target - myMp();
   // Never use Summon Minion if you have Summon Horde because +20% combats could cause trouble
-  if (auto_have_skill(Skill.get("Summon Horde"))) {
+  if (auto_have_skill($skill`Summon Horde`)) {
     x = ceil(x / 12.0);
     x = min((myMeat() - meat_reserve) / 1000, x);
     //if(Verbosity > 2) print("Summoning a horde "+ x+" times");
@@ -245,19 +238,19 @@ export function zombieSlayer_acquireHP(goal: number): boolean {
 
   let missingHP: number = goal - myHp();
   // Devour Minions if you need at least 4 casts of Bite Minion or if doing the Hidden Apartment Building
-  if (auto_have_skill(Skill.get("Devour Minions"))) {
+  if (auto_have_skill($skill`Devour Minions`)) {
     while (
       (missingHP > floor(myMaxhp() * 0.3) ||
-        ((haveEffect(Effect.get("Thrice-Cursed")) > 0 ||
-          haveEffect(Effect.get("Twice-Cursed")) > 0 ||
-          haveEffect(Effect.get("Once-Cursed")) > 0) &&
+        ((haveEffect($effect`Thrice-Cursed`) > 0 ||
+          haveEffect($effect`Twice-Cursed`) > 0 ||
+          haveEffect($effect`Once-Cursed`) > 0) &&
           !(
             internalQuestStatus("questL11Curses") > 1 ||
-            itemAmount(Item.get("moss-covered stone sphere")) > 0
+            itemAmount($item`moss-covered stone sphere`) > 0
           ))) &&
-      zombieSlayer_acquireMP$1(mpCost(Skill.get("Devour Minions")))
+      zombieSlayer_acquireMP$1(mpCost($skill`Devour Minions`))
     ) {
-      useSkill(1, Skill.get("Devour Minions"));
+      useSkill(1, $skill`Devour Minions`);
       if (myHp() >= goal) {
         break;
       }
@@ -270,12 +263,12 @@ export function zombieSlayer_acquireHP(goal: number): boolean {
     missingHP = goal - myHp();
   }
 
-  if (auto_have_skill(Skill.get("Bite Minion"))) {
+  if (auto_have_skill($skill`Bite Minion`)) {
     while (
       missingHP > 0 &&
-      zombieSlayer_acquireMP$1(mpCost(Skill.get("Bite Minion")))
+      zombieSlayer_acquireMP$1(mpCost($skill`Bite Minion`))
     ) {
-      useSkill(1, Skill.get("Bite Minion"));
+      useSkill(1, $skill`Bite Minion`);
       if (myHp() >= goal) {
         break;
       }
@@ -291,14 +284,7 @@ export function zombieSlayer_acquireHP(goal: number): boolean {
 }
 
 function zombieSlayer_canInfect(enemy: Monster): boolean {
-  for (const phy of Phylum.get([
-    "plant",
-    "bug",
-    "constellation",
-    "construct",
-    "elemental",
-    "slime",
-  ])) {
+  for (const phy of $phyla`plant, bug, constellation, construct, elemental, slime`) {
     if (monsterPhylum(enemy) === phy) {
       return false;
     }
@@ -323,12 +309,12 @@ export function LM_zombieSlayer(): boolean {
   }
 
   while (
-    itemAmount(Item.get("hunter brain")) > 0 &&
+    itemAmount($item`hunter brain`) > 0 &&
     myFullness() < fullnessLimit()
   ) {
     autoEat(
-      min(itemAmount(Item.get("hunter brain")), fullnessLimit() - myFullness()),
-      Item.get("hunter brain"),
+      min(itemAmount($item`hunter brain`), fullnessLimit() - myFullness()),
+      $item`hunter brain`,
     );
   }
 

@@ -2,11 +2,8 @@ import {
   abort,
   cliExecute,
   containsText,
-  Effect,
-  Element,
   equip,
   equippedItem,
-  Familiar,
   getProperty,
   haveEffect,
   haveEquipped,
@@ -15,9 +12,7 @@ import {
   isUnrestricted,
   Item,
   itemAmount,
-  Location,
   min,
-  Monster,
   myAdventures,
   myDaycount,
   myHp,
@@ -27,8 +22,6 @@ import {
   npcPrice,
   runChoice,
   setProperty,
-  Skill,
-  Slot,
   splitString,
   Stat,
   toBoolean,
@@ -38,6 +31,18 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
+import {
+  $effect,
+  $element,
+  $familiar,
+  $item,
+  $location,
+  $monster,
+  $skill,
+  $slot,
+  $stat,
+} from "libram";
+
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv$2, autoAdvBypass$2, CombatMacro } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
@@ -60,9 +65,6 @@ import {
   organsFull,
   wrap_item,
 } from "../auto_util";
-import { elementalPlanes_access } from "./elementalPlanes";
-import { auto_sourceTerminalEducate } from "./mr2016";
-import { auto_haveTrainSet } from "./mr2022";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { is_boris } from "../paths/avatar_of_boris";
 import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
@@ -80,6 +82,9 @@ import { in_theSource } from "../paths/the_source";
 import { in_wotsf } from "../paths/way_of_the_surprising_fist";
 import { needOre } from "../quests/level_08";
 import { towerKeyCount } from "../quests/level_13";
+import { elementalPlanes_access } from "./elementalPlanes";
+import { auto_sourceTerminalEducate } from "./mr2016";
+import { auto_haveTrainSet } from "./mr2022";
 
 //	This is meant for items that have a date of 2015
 //	Handling: shrine to the Barrel God, Chateau Mantegna Room Key, Deck of Every Card
@@ -89,22 +94,22 @@ import { towerKeyCount } from "../quests/level_13";
 function auto_haveLovebugs(): boolean {
   return (
     toBoolean(getProperty("lovebugsUnlocked")) &&
-    auto_is_valid$2(Skill.get("Summon Love Stinkbug"))
+    auto_is_valid$2($skill`Summon Love Stinkbug`)
   );
 }
 
 function mayo_acquireMayo(it: Item): boolean {
-  if (!isUnrestricted(Item.get("portable Mayo Clinic"))) {
+  if (!isUnrestricted($item`portable Mayo Clinic`)) {
     return false;
   }
-  if (!auto_get_campground().has(Item.get("portable Mayo Clinic"))) {
+  if (!auto_get_campground().has($item`portable Mayo Clinic`)) {
     return false;
   }
   return true;
 }
 
 export function auto_barrelPrayers(): boolean {
-  if (!isUnrestricted(Item.get("shrine to the Barrel god"))) {
+  if (!isUnrestricted($item`shrine to the Barrel god`)) {
     return false;
   }
   if (toBoolean(getProperty("_barrelPrayer"))) {
@@ -381,7 +386,7 @@ export function auto_barrelPrayers(): boolean {
     }
   } else if (isActuallyEd()) {
     if (
-      elementalPlanes_access(Element.get("spooky")) &&
+      elementalPlanes_access($element`spooky`) &&
       toInt(getProperty("edPoints")) >= 2
     ) {
       switch (myDaycount()) {
@@ -493,7 +498,7 @@ export function auto_barrelPrayers(): boolean {
 }
 
 export function auto_mayoItems(): boolean {
-  if (!isUnrestricted(Item.get("portable Mayo Clinic"))) {
+  if (!isUnrestricted($item`portable Mayo Clinic`)) {
     return false;
   }
   if (toBoolean(getProperty("_mayoDeviceRented"))) {
@@ -502,7 +507,7 @@ export function auto_mayoItems(): boolean {
   if (inAftercore()) {
     return false;
   }
-  if (!auto_get_campground().has(Item.get("portable Mayo Clinic"))) {
+  if (!auto_get_campground().has($item`portable Mayo Clinic`)) {
     return false;
   }
   if (myMeat() < 10000) {
@@ -510,7 +515,7 @@ export function auto_mayoItems(): boolean {
   }
 
   let haveYR: boolean = false;
-  if (haveFamiliar(Familiar.get("Crimbo Shrub"))) {
+  if (haveFamiliar($familiar`Crimbo Shrub`)) {
     haveYR = true;
   }
 
@@ -518,16 +523,16 @@ export function auto_mayoItems(): boolean {
   if (is_boris()) {
     switch (myDaycount()) {
       case 1:
-        mayos = new Map([[Item.get("tomayohawk-style reflex hammer"), true]]);
+        mayos = new Map([[$item`tomayohawk-style reflex hammer`, true]]);
         break;
       case 2:
-        mayos = new Map([[Item.get("mayo lance"), true]]);
+        mayos = new Map([[$item`mayo lance`, true]]);
         break;
       case 3:
-        mayos = new Map([[Item.get("mayo lance"), true]]);
+        mayos = new Map([[$item`mayo lance`, true]]);
         break;
       case 4:
-        mayos = new Map([[Item.get("mayo lance"), true]]);
+        mayos = new Map([[$item`mayo lance`, true]]);
         break;
     }
   } else if (in_heavyrains() && !inHardcore()) {
@@ -536,13 +541,13 @@ export function auto_mayoItems(): boolean {
         mayos = new Map([[Item.none, true]]);
         break;
       case 2:
-        mayos = new Map([[Item.get("miracle whip"), true]]);
+        mayos = new Map([[$item`miracle whip`, true]]);
         break;
       case 3:
-        mayos = new Map([[Item.get("sphygmayomanometer"), true]]);
+        mayos = new Map([[$item`sphygmayomanometer`, true]]);
         break;
       case 4:
-        mayos = new Map([[Item.get("sphygmayomanometer"), true]]);
+        mayos = new Map([[$item`sphygmayomanometer`, true]]);
         break;
     }
   } else if (in_gnoob()) {
@@ -560,26 +565,26 @@ export function auto_mayoItems(): boolean {
   } else {
     switch (myDaycount()) {
       case 1:
-        mayos = new Map([[Item.get("mayo lance"), true]]);
+        mayos = new Map([[$item`mayo lance`, true]]);
         break;
       case 2:
-        mayos = new Map([[Item.get("mayo lance"), true]]);
+        mayos = new Map([[$item`mayo lance`, true]]);
         break;
       case 3:
-        mayos = new Map([[Item.get("mayo lance"), true]]);
+        mayos = new Map([[$item`mayo lance`, true]]);
         break;
       case 4:
-        mayos = new Map([[Item.get("mayo lance"), true]]);
+        mayos = new Map([[$item`mayo lance`, true]]);
         break;
     }
   }
 
   for (const mayo of mayos.keys()) {
-    if (mayo === Item.get("mayo lance")) {
-      if (haveFamiliar(Familiar.get("Crimbo Shrub"))) {
+    if (mayo === $item`mayo lance`) {
+      if (haveFamiliar($familiar`Crimbo Shrub`)) {
         continue;
       }
-      if (haveFamiliar(Familiar.get("Intergnat"))) {
+      if (haveFamiliar($familiar`Intergnat`)) {
         continue;
       }
     }
@@ -596,7 +601,7 @@ export function auto_mayoItems(): boolean {
 }
 
 export function chateaumantegna_available(): boolean {
-  const chateau_key: Item = wrap_item(Item.get("Chateau Mantegna room key"));
+  const chateau_key: Item = wrap_item($item`Chateau Mantegna room key`);
   if (
     !in_lol() &&
     toBoolean(getProperty("chateauAvailable")) &&
@@ -648,29 +653,23 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
     return false;
   }
 
-  if (
-    getProperty("chateauMonster") === Monster.get("lobsterfrogman").toString()
-  ) {
-    if (itemAmount(Item.get("barrel of gunpowder")) >= 5) {
+  if (getProperty("chateauMonster") === $monster`lobsterfrogman`.toString()) {
+    if (itemAmount($item`barrel of gunpowder`) >= 5) {
       return false;
     }
     if (getProperty("sidequestLighthouseCompleted") !== "none") {
       return false;
     }
   }
-  if (
-    getProperty("chateauMonster") === Monster.get("Bram the Stoker").toString()
-  ) {
+  if (getProperty("chateauMonster") === $monster`Bram the Stoker`.toString()) {
     if (
-      haveEquipped(Item.get("Bram's choker")) ||
-      itemAmount(Item.get("Bram's choker")) > 0
+      haveEquipped($item`Bram's choker`) ||
+      itemAmount($item`Bram's choker`) > 0
     ) {
       return false;
     }
   }
-  if (
-    getProperty("chateauMonster") === Monster.get("mountain man").toString()
-  ) {
+  if (getProperty("chateauMonster") === $monster`mountain man`.toString()) {
     if (!needOre()) {
       return false;
     }
@@ -678,7 +677,7 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
   if (chateaumantegna_available()) {
     return autoAdvBypass$2(
       "place.php?whichplace=chateau&action=chateau_painting",
-      Location.get("Noob Cave"),
+      $location`Noob Cave`,
       option,
     );
   }
@@ -692,25 +691,25 @@ export function chateaumantegna_decorations(): Map<Item, boolean> {
   }
   const chateau: string = toLowerCase(visitUrl("place.php?whichplace=chateau"));
   if (containsText(chateau, "electric muscle stimulator")) {
-    retval.set(Item.get("electric muscle stimulator"), true);
+    retval.set($item`electric muscle stimulator`, true);
   } else if (containsText(chateau, "foreign language tapes")) {
-    retval.set(Item.get("foreign language tapes"), true);
+    retval.set($item`foreign language tapes`, true);
   } else if (containsText(chateau, "bowl of potpourri")) {
-    retval.set(Item.get("bowl of potpourri"), true);
+    retval.set($item`bowl of potpourri`, true);
   }
   if (containsText(chateau, "antler chandelier")) {
-    retval.set(Item.get("antler chandelier"), true);
+    retval.set($item`antler chandelier`, true);
   } else if (containsText(chateau, "artificial skylight")) {
-    retval.set(Item.get("artificial skylight"), true);
+    retval.set($item`artificial skylight`, true);
   } else if (containsText(chateau, "ceiling fan")) {
-    retval.set(Item.get("ceiling fan"), true);
+    retval.set($item`ceiling fan`, true);
   }
   if (containsText(chateau, "continental juice bar")) {
-    retval.set(Item.get("continental juice bar"), true);
+    retval.set($item`continental juice bar`, true);
   } else if (containsText(chateau, "fancy stationery set")) {
-    retval.set(Item.get("fancy stationery set"), true);
+    retval.set($item`fancy stationery set`, true);
   } else if (containsText(chateau, "swiss piggy bank")) {
-    retval.set(Item.get("Swiss piggy bank"), true);
+    retval.set($item`Swiss piggy bank`, true);
   }
   return retval;
 }
@@ -720,64 +719,64 @@ function chateaumantegna_buyStuff(toBuy: Item): void {
     return;
   }
 
-  if (toBuy === Item.get("electric muscle stimulator") && myMeat() >= 500) {
+  if (toBuy === $item`electric muscle stimulator` && myMeat() >= 500) {
     visitUrl(
       "shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=411&quantity=1",
       true,
     );
   }
-  if (toBuy === Item.get("foreign language tapes") && myMeat() >= 500) {
+  if (toBuy === $item`foreign language tapes` && myMeat() >= 500) {
     visitUrl(
       "shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=412&quantity=1",
       true,
     );
   }
-  if (toBuy === Item.get("bowl of potpourri") && myMeat() >= 500) {
+  if (toBuy === $item`bowl of potpourri` && myMeat() >= 500) {
     visitUrl(
       "shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=413&quantity=1",
       true,
     );
   }
 
-  if (toBuy === Item.get("antler chandelier") && myMeat() >= 1500) {
+  if (toBuy === $item`antler chandelier` && myMeat() >= 1500) {
     visitUrl(
       "shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=415&quantity=1",
       true,
     );
   }
-  if (toBuy === Item.get("artificial skylight") && myMeat() >= 1500) {
+  if (toBuy === $item`artificial skylight` && myMeat() >= 1500) {
     visitUrl(
       "shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=416&quantity=1",
       true,
     );
   }
-  if (toBuy === Item.get("ceiling fan") && myMeat() >= 1500) {
+  if (toBuy === $item`ceiling fan` && myMeat() >= 1500) {
     visitUrl(
       "shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=414&quantity=1",
       true,
     );
   }
 
-  if (toBuy === Item.get("continental juice bar") && myMeat() >= 2500) {
+  if (toBuy === $item`continental juice bar` && myMeat() >= 2500) {
     visitUrl(
       "shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=418&quantity=1",
       true,
     );
   }
-  if (toBuy === Item.get("fancy calligraphy pen") && myMeat() >= 2500) {
+  if (toBuy === $item`fancy calligraphy pen` && myMeat() >= 2500) {
     visitUrl(
       "shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=419&quantity=1",
       true,
     );
   }
-  if (toBuy === Item.get("Swiss piggy bank") && myMeat() >= 2500) {
+  if (toBuy === $item`Swiss piggy bank` && myMeat() >= 2500) {
     visitUrl(
       "shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=417&quantity=1",
       true,
     );
   }
 
-  if (toBuy === Item.get("alpine watercolor set") && myMeat() >= 5000) {
+  if (toBuy === $item`alpine watercolor set` && myMeat() >= 5000) {
     visitUrl(
       "shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=420&quantity=1",
       true,
@@ -807,12 +806,12 @@ export function chateaumantegna_nightstandSet(): boolean {
 
   const furniture: Map<Item, boolean> = chateaumantegna_decorations();
   let need: Item = Item.none;
-  if (myStat === Stat.get("Muscle")) {
-    need = Item.get("electric muscle stimulator");
-  } else if (myStat === Stat.get("Mysticality")) {
-    need = Item.get("foreign language tapes");
-  } else if (myStat === Stat.get("Moxie")) {
-    need = Item.get("bowl of potpourri");
+  if (myStat === $stat`Muscle`) {
+    need = $item`electric muscle stimulator`;
+  } else if (myStat === $stat`Mysticality`) {
+    need = $item`foreign language tapes`;
+  } else if (myStat === $stat`Moxie`) {
+    need = $item`bowl of potpourri`;
   }
 
   if (need === Item.none) {
@@ -846,7 +845,7 @@ export function chateauPainting(): boolean {
     myDaycount() <= 3
   ) {
     if (canYellowRay$1()) {
-      auto_sourceTerminalEducate(Skill.get("Extract"), Skill.get("Digitize"));
+      auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
       if (chateaumantegna_usePainting()) {
         return true;
       }
@@ -861,7 +860,7 @@ export function chateauPainting(): boolean {
     myDaycount() === 1 &&
     !isActuallyEd()
   ) {
-    auto_sourceTerminalEducate(Skill.get("Extract"), Skill.get("Digitize"));
+    auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
     if (chateaumantegna_usePainting()) {
       return true;
     }
@@ -873,7 +872,7 @@ export function chateauPainting(): boolean {
     myDaycount() === 2 &&
     !isActuallyEd()
   ) {
-    auto_sourceTerminalEducate(Skill.get("Extract"), Skill.get("Digitize"));
+    auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
     if (chateaumantegna_usePainting()) {
       return true;
     }
@@ -882,7 +881,7 @@ export function chateauPainting(): boolean {
 }
 
 function deck_available(): boolean {
-  const deck: Item = wrap_item(Item.get("Deck of Every Card"));
+  const deck: Item = wrap_item($item`Deck of Every Card`);
   return itemAmount(deck) > 0 && isUnrestricted(deck) && auto_is_valid(deck);
 }
 
@@ -906,7 +905,7 @@ function deck_draw(): boolean {
   if (myHp() === 0) {
     return false;
   }
-  const deck: Item = wrap_item(Item.get("Deck of Every Card"));
+  const deck: Item = wrap_item($item`Deck of Every Card`);
   let page: string = visitUrl(
     `inv_use.php?pwd=&which=3&whichitem=${toInt(deck)}`,
   );
@@ -1046,7 +1045,7 @@ function deck_cheat(cheat: string): boolean {
     }
   }
 
-  const deck: Item = wrap_item(Item.get("Deck of Every Card"));
+  const deck: Item = wrap_item($item`Deck of Every Card`);
   const page: string = visitUrl(
     `inv_use.php?cheat=1&pwd=&whichitem=${toInt(deck)}`,
   );
@@ -1141,7 +1140,7 @@ export function deck_useScheme(action: string): boolean {
     if (
       cards.size < 3 &&
       internalQuestStatus("questL11Worship") < 2 &&
-      itemAmount(Item.get("stone wool")) < 2
+      itemAmount($item`stone wool`) < 2
     ) {
       cards.set("stone wool", true);
     }
@@ -1169,9 +1168,9 @@ export function deck_useScheme(action: string): boolean {
   let count_1: number = 0;
   for (const card of cards.keys()) {
     if (
-      possessEquipment(Item.get("bass clarinet")) ||
-      possessEquipment(Item.get("fish hatchet")) ||
-      possessEquipment(Item.get("dented scepter"))
+      possessEquipment($item`bass clarinet`) ||
+      possessEquipment($item`fish hatchet`) ||
+      possessEquipment($item`dented scepter`)
     ) {
       if (
         [
@@ -1233,15 +1232,15 @@ export function deck_useScheme(action: string): boolean {
 
   if (action === "" && myMeat() < 10000) {
     auto_autosell(
-      min(1, itemAmount(Item.get("1952 Mickey Mantle card"))),
-      Item.get("1952 Mickey Mantle card"),
+      min(1, itemAmount($item`1952 Mickey Mantle card`)),
+      $item`1952 Mickey Mantle card`,
     );
   }
 
   if (action === "farming" || action === "turns") {
-    let count_2: number = itemAmount(Item.get("blue mana"));
+    let count_2: number = itemAmount($item`blue mana`);
     while (count_2 > 0 && toInt(getProperty("_ancestralRecallCasts")) < 10) {
-      useSkill(1, Skill.get("Ancestral Recall"));
+      useSkill(1, $skill`Ancestral Recall`);
       count_2 -= 1;
     }
   }
@@ -1250,7 +1249,7 @@ export function deck_useScheme(action: string): boolean {
 }
 
 export function adjustEdHat(goal: string): boolean {
-  if (!possessEquipment(Item.get("The Crown of Ed the Undying"))) {
+  if (!possessEquipment($item`The Crown of Ed the Undying`)) {
     return false;
   }
   let option: number = -1;
@@ -1300,16 +1299,16 @@ export function adjustEdHat(goal: string): boolean {
     option = 7;
   }
 
-  const oldHat: Item = equippedItem(Slot.get("hat"));
+  const oldHat: Item = equippedItem($slot`hat`);
 
   if (option !== -1) {
-    if (oldHat !== Item.get("The Crown of Ed the Undying")) {
-      equip(Slot.get("hat"), Item.get("The Crown of Ed the Undying"));
+    if (oldHat !== $item`The Crown of Ed the Undying`) {
+      equip($slot`hat`, $item`The Crown of Ed the Undying`);
     }
     visitUrl("inventory.php?action=activateedhat");
     visitUrl(`choice.php?pwd=&whichchoice=1063&option=${option}`, true);
-    if (oldHat !== Item.get("The Crown of Ed the Undying")) {
-      equip(Slot.get("hat"), oldHat);
+    if (oldHat !== $item`The Crown of Ed the Undying`) {
+      equip($slot`hat`, oldHat);
     }
     return true;
   }
@@ -1321,16 +1320,16 @@ export function resolveSixthDMT(): boolean {
   if (in_koe()) {
     return false;
   }
-  if (!canChangeToFamiliar(Familiar.get("Machine Elf"))) {
+  if (!canChangeToFamiliar($familiar`Machine Elf`)) {
     return false;
   }
-  if (Location.get("The Deep Machine Tunnels").turnsSpent !== 5) {
+  if ($location`The Deep Machine Tunnels`.turnsSpent !== 5) {
     // need to figure out the exact schedule for 2nd and later occurences then add it here.
     return false;
   }
 
-  handleFamiliar$1(Familiar.get("Machine Elf"));
-  return autoAdv$2(Location.get("The Deep Machine Tunnels"));
+  handleFamiliar$1($familiar`Machine Elf`);
+  return autoAdv$2($location`The Deep Machine Tunnels`);
 }
 
 export function doghouseChoiceHandler(choice: number): void {
@@ -1338,8 +1337,8 @@ export function doghouseChoiceHandler(choice: number): void {
     // Wooof! Wooooooof! (Ghost Dog)
     if (
       (inHardcore() &&
-        haveEffect(Effect.get("Adventurer's Best Friendship")) > 120) ||
-      (haveEffect(Effect.get("Adventurer's Best Friendship")) > 30 &&
+        haveEffect($effect`Adventurer's Best Friendship`) > 120) ||
+      (haveEffect($effect`Adventurer's Best Friendship`) > 30 &&
         pathHasFamiliar())
     ) {
       runChoice(3); // ghost dog chow

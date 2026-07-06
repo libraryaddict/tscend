@@ -6,12 +6,11 @@ import {
   mallPrice,
   maximize,
   myPath,
-  Path,
 } from "kolmafia";
-
+import { $path } from "libram";
 //Defined in autoscend/paths/two_crazy_random_summer.ash
 export function in_tcrs(): boolean {
-  return myPath() === Path.get("Two Crazy Random Summer");
+  return myPath() === $path`Two Crazy Random Summer`;
 }
 
 export function tcrs_expectedAdvPerFill(quality: string): number {

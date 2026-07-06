@@ -1,8 +1,8 @@
-import { abort, myDaycount, myPath, Path, print } from "kolmafia";
-
+import { abort, myDaycount, myPath, print } from "kolmafia";
+import { $path } from "libram";
 //Defined in autoscend/paths/grey_goo.ash
 export function in_ggoo(): boolean {
-  return myPath() === Path.get("Grey Goo");
+  return myPath() === $path`Grey Goo`;
 }
 
 export function LA_grey_goo_tasks(): boolean {
