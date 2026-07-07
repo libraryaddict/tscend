@@ -2025,7 +2025,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
 
 export function monster_to_location(target: Monster): Map<Location, boolean> {
   const retval: Map<Location, boolean> = new Map();
-oInt(getProperty("_machineTunnelsAdv")) < 5 &&  for (const loc of $locations.all()) {
+  for (const loc of $locations.all()) {
     //check all locations in the game
     for (const [, mon] of getMonsters(loc).entries()) {
       if (target === mon) {
