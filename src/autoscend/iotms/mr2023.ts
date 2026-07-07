@@ -105,7 +105,7 @@ import { solveDelayZone$1 } from "../auto_routing";
 import {
   auto_can_equip,
   auto_canForceNextNoncombat,
-  auto_forceNextNoncombat$1,
+  auto_forceNextNoncombat,
   auto_get_campground,
   auto_have_skill,
   auto_haveQueuedForcedNonCombat,
@@ -128,7 +128,7 @@ import {
   meatReserve,
   wrap_item,
 } from "../auto_util";
-import { canUse$2 } from "../combat/auto_combat_util";
+import { canUse } from "../combat/auto_combat_util";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_lol } from "../paths/legacy_of_loathing";
 import { in_pokefam } from "../paths/pocket_familiars";
@@ -406,7 +406,7 @@ export function auto_doPhoneQuest(): boolean {
 
   if (auto_canForceNextNoncombat() && in_avantGuard()) {
     //in avant guard, want to avoid adventuring here unless you can force an NC
-    return auto_forceNextNoncombat$1(auto_availableBrickRift());
+    return auto_forceNextNoncombat(auto_availableBrickRift());
   }
 
   backupSetting("shadowLabyrinthGoal", "browser"); // use mafia's automation handling for the Shadow Rift NC.
@@ -586,7 +586,7 @@ export function shouldCinchoConfetti(): boolean {
   // costs 5 cinch and flips out the monster
   // cast this skill when we can't cast any more fiesta exists
   // can't cast it if we don't have it
-  if (!canUse$2($skill`Cincho: Confetti Extravaganza`)) {
+  if (!canUse($skill`Cincho: Confetti Extravaganza`)) {
     return false;
   }
   // don't over level
@@ -844,13 +844,13 @@ export function auto_scepterSkills(): void {
   }
 
   if (
-    canUse$2($skill`Aug. 24th: Waffle Day!`) &&
+    canUse($skill`Aug. 24th: Waffle Day!`) &&
     !toBoolean(getProperty("_aug24Cast"))
   ) {
     useSkill($skill`Aug. 24th: Waffle Day!`); //get some waffles to hopefully change some bad monsters to better ones
   }
   if (
-    canUse$2($skill`Aug. 28th: Race Your Mouse Day!`) &&
+    canUse($skill`Aug. 28th: Race Your Mouse Day!`) &&
     !toBoolean(getProperty("_aug28Cast")) &&
     pathHasFamiliar()
   ) {
@@ -879,7 +879,7 @@ export function auto_scepterSkills(): void {
   if (!auto_turbo()) {
     if (
       manaCostMaximize < 3 &&
-      canUse$2($skill`Aug. 30th: Beach Day!`) &&
+      canUse($skill`Aug. 30th: Beach Day!`) &&
       !toBoolean(getProperty("_aug30Cast")) &&
       toInt(getProperty("_augSkillsCast")) < 5
     ) {
@@ -902,7 +902,7 @@ export function auto_scepterRollover(): void {
       numericModifier(equippedItem($slot`acc3`), "Adventures") >= 7);
   if (
     !noWatch &&
-    canUse$2($skill`Aug. 30th: Beach Day!`) &&
+    canUse($skill`Aug. 30th: Beach Day!`) &&
     !toBoolean(getProperty("_aug30Cast")) &&
     toInt(getProperty("_augSkillsCast")) < 5
   ) {
@@ -912,21 +912,21 @@ export function auto_scepterRollover(): void {
   //Get mainstats
   if (toInt(getProperty("_augSkillsCast")) < 5 && myLevel() < 13) {
     if (
-      canUse$2($skill`Aug. 12th: Elephant Day!`) &&
+      canUse($skill`Aug. 12th: Elephant Day!`) &&
       !toBoolean(getProperty("_aug12Cast")) &&
       myPrimestat() === $stat`Muscle`
     ) {
       useSkill($skill`Aug. 12th: Elephant Day!`); //get muscle stubstats
     }
     if (
-      canUse$2($skill`Aug. 11th: Presidential Joke Day!`) &&
+      canUse($skill`Aug. 11th: Presidential Joke Day!`) &&
       !toBoolean(getProperty("_aug11Cast")) &&
       myPrimestat() === $stat`Mysticality`
     ) {
       useSkill($skill`Aug. 11th: Presidential Joke Day!`); //get mysticality stubstats
     }
     if (
-      canUse$2($skill`Aug. 23rd: Ride the Wind Day!`) &&
+      canUse($skill`Aug. 23rd: Ride the Wind Day!`) &&
       !toBoolean(getProperty("_aug23Cast")) &&
       myPrimestat() === $stat`Moxie`
     ) {
@@ -934,7 +934,7 @@ export function auto_scepterRollover(): void {
     }
   }
   if (
-    canUse$2(Skill.get("Aug. 13th: Left/Off Hander's Day!")) &&
+    canUse(Skill.get("Aug. 13th: Left/Off Hander's Day!")) &&
     !toBoolean(getProperty("_aug13Cast")) &&
     toInt(getProperty("_augSkillsCast")) < 5 &&
     numericModifier(equippedItem($slot`off-hand`), "Adventures") > 0 &&
@@ -943,7 +943,7 @@ export function auto_scepterRollover(): void {
     useSkill(Skill.get("Aug. 13th: Left/Off Hander's Day!")); //bump up the off-hand
   }
   if (
-    canUse$2($skill`Aug. 27th: Just Because Day!`) &&
+    canUse($skill`Aug. 27th: Just Because Day!`) &&
     !toBoolean(getProperty("_aug27Cast")) &&
     toInt(getProperty("_augSkillsCast")) < 5
   ) {
@@ -951,7 +951,7 @@ export function auto_scepterRollover(): void {
   }
 }
 
-export function auto_lostStomach$1(force: boolean): void {
+export function auto_lostStomach(force: boolean): void {
   if (!auto_haveAugustScepter() || in_small() || fullnessLimit() === 0) {
     return;
   }
@@ -1405,19 +1405,16 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
     return false;
   }
   //set goal for tracking
-  if (specZones.has(loc)) {
+  if (
+    specZones.has(loc) &&
+    auto_goingToMouthwashLevel() &&
+    expected_level_after_mouthwash() < 13 &&
+    turnsPlayed() === 0
+  ) {
     //only want spec to get cold res for septEmberCenser usage and only if we don't get to L13. Don't want to do this outside of D1
     //ideally also have spring away or some other free run
-    // TODO Maybe inline this so it doesn't get overwritten?
-    if (
-      auto_goingToMouthwashLevel() &&
-      expected_level_after_mouthwash() < 13 &&
-      turnsPlayed() === 0
-    ) {
-      goal = "spec";
-    }
-  }
-  if (meatZones.has(loc)) {
+    goal = "spec";
+  } else if (meatZones.has(loc)) {
     goal = "meat";
   } else if (itemZones.has(loc)) {
     goal = "item";

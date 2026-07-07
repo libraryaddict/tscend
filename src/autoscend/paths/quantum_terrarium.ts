@@ -91,6 +91,7 @@ export function LX_quantumTerrarium(): boolean {
       )) {
         return L11_aridDesert();
       }
+      break;
     default:
       break;
   }

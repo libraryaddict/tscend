@@ -76,7 +76,7 @@ import {
   handleTracker,
   handleTracker$1,
   meatReserve,
-  shrugAT$1,
+  shrugAT,
 } from "./auto_util";
 import {
   auto_birdCanSeek,
@@ -1367,7 +1367,7 @@ export function buffMaintain$2(
       useItem_1 = $item`cuppa Obscuri tea`;
       break;
     case $effect`Ode to Booze`:
-      shrugAT$1($effect`Ode to Booze`);
+      shrugAT($effect`Ode to Booze`);
       useSkill_1 = $skill`The Ode to Booze`;
       break;
     case $effect`The Odour of Magick`:
@@ -1476,7 +1476,7 @@ export function buffMaintain$2(
       useItem_1 = $item`tobiko marble soda`;
       break;
     case $effect`Psalm of Pointiness`:
-      shrugAT$1($effect`Psalm of Pointiness`);
+      shrugAT($effect`Psalm of Pointiness`);
       useSkill_1 = $skill`The Psalm of Pointiness`;
       break;
     case $effect`Prayer of Seshat`:

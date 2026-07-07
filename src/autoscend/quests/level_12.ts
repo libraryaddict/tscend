@@ -82,10 +82,10 @@ import {
 } from "../auto_adventure";
 import { buffMaintain$3 } from "../auto_buff";
 import {
+  auto_canEat,
   autoChew,
   autoEat,
   canChew,
-  canEat$1,
   spleen_left,
   stomach_left,
 } from "../auto_consume";
@@ -125,7 +125,7 @@ import {
   adjustForReplaceIfPossible$1,
   auto_combatModCap,
   auto_forceNextCombat$1,
-  auto_forceNextNoncombat$1,
+  auto_forceNextNoncombat,
   auto_get_campground,
   auto_have_skill,
   auto_haveQueuedForcedCombat,
@@ -933,7 +933,7 @@ export function L12_startWar(): boolean {
   if (!toBoolean(getProperty("auto_hippyInstead"))) {
     auto_log_info("Must save the ferret!!", "blue");
     if (L12_singleNCForWarStart()) {
-      auto_forceNextNoncombat$1($location`Wartime Hippy Camp`);
+      auto_forceNextNoncombat($location`Wartime Hippy Camp`);
     }
     autoAdv$1(1, $location`Wartime Hippy Camp`);
     //if war started, accept flyer quest for fratboys.
@@ -946,7 +946,7 @@ export function L12_startWar(): boolean {
     // start the war when siding with hippies
     auto_log_info("Must save the goldfish!!", "blue");
     if (L12_singleNCForWarStart()) {
-      auto_forceNextNoncombat$1($location`Wartime Frat House`);
+      auto_forceNextNoncombat($location`Wartime Frat House`);
     }
     autoAdv$1(1, $location`Wartime Frat House`);
   }
@@ -1151,7 +1151,7 @@ export function L12_filthworms(): boolean {
           );
           glandGuaranteed = true;
         } else if (
-          canEat$1($item`toast with spooky jelly`) &&
+          auto_canEat($item`toast with spooky jelly`) &&
           stomach_left() >= $item`toast with spooky jelly`.fullness &&
           acquireOrPull($item`toast with spooky jelly`) &&
           autoEat(1, $item`toast with spooky jelly`)
@@ -2239,21 +2239,25 @@ export function L12_farm(): boolean {
         return true;
       }
       setProperty("auto_L12FarmStage", "1");
+    // INTENTIONAL LACK OF BREAK
     case 1:
       if (autoAdv$1(1, $location`McMillicancuddy's Pond`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "2");
+    // INTENTIONAL LACK OF BREAK
     case 2:
       if (autoAdv$1(1, $location`McMillicancuddy's Back 40`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "3");
+    // INTENTIONAL LACK OF BREAK
     case 3:
       if (autoAdv$1(1, $location`McMillicancuddy's Other Back 40`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "4");
+    // INTENTIONAL LACK OF BREAK
     case 4:
       equipWarOutfit();
       visitUrl("bigisland.php?place=farm&action=farmer&pwd");

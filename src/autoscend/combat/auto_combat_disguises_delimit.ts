@@ -15,13 +15,7 @@ import { $monster, $skill } from "libram";
 import { auto_log_info } from "../auto_util";
 import { in_disguises } from "../paths/disguises_delimit";
 import { AshMatcher } from "../utils/kolmafiaUtils";
-import {
-  canSurvive$1,
-  canUse$1,
-  canUse$2,
-  useSkill$1,
-  useSkill$2,
-} from "./auto_combat_util";
+import { auto_useSkill, canSurvive$1, canUse } from "./auto_combat_util";
 
 //Path specific combat handling for Disguises Delimit
 
@@ -70,8 +64,8 @@ export function auto_combatDisguisesStage1(
     getProperty("_auto_combatDisguisesDelimitMask"),
   );
   //mask 7 = bandit mask = +300% enemy defense
-  if (disguises === 7 && canUse$2($skill`Swap Mask`)) {
-    return useSkill$2($skill`Swap Mask`);
+  if (disguises === 7 && canUse($skill`Swap Mask`)) {
+    return auto_useSkill($skill`Swap Mask`);
   }
   //mask 3 = protest mask = +30ML. can only attack with weapon or change mask. if changed can only use items or attack with weapon
   if (disguises === 3) {
@@ -83,8 +77,8 @@ export function auto_combatDisguisesStage1(
     );
   }
   //this is code is unreachable. it needs fixing.
-  if (myMask() === "protest mask" && canUse$2($skill`Swap Mask`)) {
-    return useSkill$2($skill`Swap Mask`);
+  if (myMask() === "protest mask" && canUse($skill`Swap Mask`)) {
+    return auto_useSkill($skill`Swap Mask`);
   }
 
   return "";
@@ -109,11 +103,11 @@ export function auto_combatDisguisesStage5(
     //some spells actually damage the monster too.
     //saucegeyser confirmed to not damage the monster. saucestorm confirmed to damage the monster.
     if (enemy.physicalResistance >= 80) {
-      if (myHp() > monsterHp() + 150 && canUse$1($skill`Saucestorm`, false)) {
-        return useSkill$1($skill`Saucestorm`, false);
+      if (myHp() > monsterHp() + 150 && canUse($skill`Saucestorm`, false)) {
+        return auto_useSkill($skill`Saucestorm`, false);
       }
-      if (canUse$2($skill`Implode Universe`)) {
-        return useSkill$1($skill`Implode Universe`, true);
+      if (canUse($skill`Implode Universe`)) {
+        return auto_useSkill($skill`Implode Universe`, true);
       }
       //TODO check if our physical attack can deal elemental damage.
       abort(
@@ -123,8 +117,8 @@ export function auto_combatDisguisesStage5(
     if (canSurvive$1(1.5) && round_1 < 10) {
       return "attack with weapon";
     }
-    if (canUse$2($skill`Implode Universe`)) {
-      return useSkill$1($skill`Implode Universe`, true);
+    if (canUse($skill`Implode Universe`)) {
+      return auto_useSkill($skill`Implode Universe`, true);
     }
     abort("Not sure how to handle welding mask.");
   }
@@ -143,8 +137,8 @@ export function auto_combatDisguisesStage5(
     if (attack_dmg > 20) {
       return "attack with weapon";
     }
-    if (canUse$1($skill`Saucestorm`, false)) {
-      return useSkill$1($skill`Saucestorm`, false);
+    if (canUse($skill`Saucestorm`, false)) {
+      return auto_useSkill($skill`Saucestorm`, false);
     }
   }
 

@@ -72,6 +72,7 @@ import {
   auto_can_equip,
   auto_combat_appearance_rates,
   auto_combatModCap,
+  auto_freeCrafts,
   auto_get_campground,
   auto_is_valid,
   auto_is_valid$1,
@@ -85,7 +86,6 @@ import {
   auto_wantToReplace,
   auto_wantToSniff,
   auto_wantToYellowRay,
-  freeCrafts$1,
   internalQuestStatus,
   meatReserve,
   wrap_item,
@@ -1091,7 +1091,7 @@ export function auto_CMCconsult(): void {
   ) {
     autoChew(1, $item`Breathitin™`);
   }
-  if (itemAmount($item`Homebodyl™`) > 0 && freeCrafts$1() < 5) {
+  if (itemAmount($item`Homebodyl™`) > 0 && auto_freeCrafts() < 5) {
     autoChew(1, $item`Homebodyl™`);
   }
   //use fleshazole if we don't have much meat
@@ -1112,7 +1112,7 @@ export function auto_CMCconsult(): void {
     setProperty("_auto_coldMedicineLocked", "false");
   } else if (
     auto_CMCconsultsLeft() <= 2 &&
-    freeCrafts$1() >= 5 &&
+    auto_freeCrafts() >= 5 &&
     possessEquipment($item`ice crown`) &&
     myMeat() >= meatReserve()
   ) {
@@ -1137,7 +1137,7 @@ export function auto_CMCconsult(): void {
       knollAvailable()
     ) &&
     containsText(page, "Homebodyl") &&
-    freeCrafts$1() < 5
+    auto_freeCrafts() < 5
   ) {
     // don't need free crafts if we have the Cookbookbat in knoll signs.
     // Cookbookbat gives us 5 free cooks every day & we only use free crafting on cooking in knoll signs

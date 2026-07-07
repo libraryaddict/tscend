@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { fileToBuffer } from "kolmafia";
 
 // Wrap a class in ctor(...) to construct it from the remaining columns.

@@ -5,7 +5,7 @@ import { readFileSync } from "fs";
 
 await esbuild.build({
   entryPoints: {
-    "autoscend": "src/index.ts",
+    autoscend: "src/index.ts",
     "autoscend/auto_choice_adv": "src/autoscend/auto_choice_adv.ts",
     "autoscend/auto_post_adv": "src/autoscend/auto_post_adv.ts",
     "autoscend/auto_pre_adv": "src/autoscend/auto_pre_adv.ts",
@@ -13,8 +13,8 @@ await esbuild.build({
   bundle: true,
   outdir: "RELEASE/scripts/",
   external: ["kolmafia"],
-  "mainFields": ["main"],
-  format:"cjs",
+  mainFields: ["main"],
+  format: "cjs",
   plugins: [
     babel({
       filter: /\.[jt]sx?$/,

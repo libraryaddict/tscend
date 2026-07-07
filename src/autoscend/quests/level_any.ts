@@ -102,7 +102,7 @@ import {
   summonMonster,
 } from "../auto_util";
 import { zone_isAvailable$1 } from "../auto_zone";
-import { canUse$1 } from "../combat/auto_combat_util";
+import { canUse } from "../combat/auto_combat_util";
 import {
   acquiredFantasyRealmToken,
   fantasyBanditsFought,
@@ -1194,13 +1194,10 @@ export function LX_dronesOut(): boolean {
   if (!dronesOut()) {
     return false;
   }
-  let canExtingo: boolean = true;
-  if (
-    auto_fireExtinguisherCharges() <= 30 ||
-    !canUse$1($skill`Fire Extinguisher: Polar Vortex`, false)
-  ) {
-    canExtingo = false;
-  }
+  const canExtingo: boolean =
+    auto_fireExtinguisherCharges() > 30 &&
+    canUse($skill`Fire Extinguisher: Polar Vortex`, false);
+
   auto_log_info$1("Have drones out so re-routing to not waste");
   //where to go to. Not handling Smut Orc Keepsake, Blackberry Bush due to adventuring conditions required. If they happen to show up, they are handled in auto_combat
   if (
@@ -1267,12 +1264,11 @@ export function LX_dronesOut(): boolean {
     return autoAdv$2($location`The Red Zeppelin`); //Glark cables
   }
   if (
-    (canExtingo =
-      false &&
-      toInt(getProperty("hiddenBowlingAlleyProgress")) +
-        itemAmount($item`bowling ball`) <
-        6 &&
-      zone_isAvailable$1($location`The Hidden Bowling Alley`))
+    !canExtingo &&
+    toInt(getProperty("hiddenBowlingAlleyProgress")) +
+      itemAmount($item`bowling ball`) <
+      6 &&
+    zone_isAvailable$1($location`The Hidden Bowling Alley`)
   ) {
     auto_log_info$1("Going to the Hidden Bowling Alley");
     if (

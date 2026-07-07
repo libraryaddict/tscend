@@ -87,10 +87,10 @@ import { needStarKey } from "../quests/level_13";
 import { auto_combatMeatGolemStage3 } from "./auto_combat_adventurer_meats_world";
 import { auto_combatHeavyRainsStage3 } from "./auto_combat_heavy_rains";
 import {
+  auto_useSkill,
   canSurvive$1,
-  canUse$1,
-  canUse$2,
-  canUse$4,
+  canUse,
+  canUse$3,
   combat_status_add,
   enemyCanBlocksSkills,
   getSniffer$1,
@@ -99,8 +99,6 @@ import {
   isSniffed$1,
   maxRoundsToDouse,
   useItem$1,
-  useSkill$1,
-  useSkill$2,
   wantToDouse,
   wantToForceDrop,
 } from "./auto_combat_util";
@@ -140,44 +138,41 @@ export function auto_combatDefaultStage3(
   }
   //delevel (10 + medicine_level)% in avatar of west of loathing path
   if (
-    canUse$2($skill`Bad Medicine`) &&
+    canUse($skill`Bad Medicine`) &&
     myMp() >= 3 * mpCost($skill`Bad Medicine`)
   ) {
-    return useSkill$2($skill`Bad Medicine`);
+    return auto_useSkill($skill`Bad Medicine`);
   }
   //boris specific 3MP skill that delevels by 15%, with an upgrade it delevels 30% and stuns.
   //even without the upgrade it it is worth it. actually without upgrade you need it more due to low skill.
   if (
-    canUse$2($skill`Intimidating Bellow`) &&
+    canUse($skill`Intimidating Bellow`) &&
     expectedDamage() > 0 &&
     !enemyCanBlocksSkills()
   ) {
-    return useSkill$2($skill`Intimidating Bellow`);
+    return auto_useSkill($skill`Intimidating Bellow`);
   }
   //if monster level adjustment is over 150 then they are immune to staggers. many deleveling skills also stagger.
   let enemy_la: number = monsterLevelAdjustment();
   //shape of a mole when using Llama lama gong. delevel by 5
   if (
-    canUse$2($skill`Tunnel Downwards`) &&
+    canUse($skill`Tunnel Downwards`) &&
     haveEffect($effect`Shape of...Mole!`) > 0 &&
     myLocation() === $location`Mt. Molehill`
   ) {
-    return useSkill$2($skill`Tunnel Downwards`);
+    return auto_useSkill($skill`Tunnel Downwards`);
   }
   //iotm skill that duplicates dropped items
   //prioritize grey goose over xo and extinguisher because the drones last multiple fights until they are consumed
   if (
-    canUse$2($skill`Emit Matter Duplicating Drones`) &&
+    canUse($skill`Emit Matter Duplicating Drones`) &&
     myFamiliar() === $familiar`Grey Goose`
   ) {
     let emitDrones: boolean = false;
-    let canExtingo: boolean = true;
-    if (
-      auto_fireExtinguisherCharges() <= 30 ||
-      !canUse$1($skill`Fire Extinguisher: Polar Vortex`, false)
-    ) {
-      canExtingo = false;
-    }
+    const canExtingo: boolean =
+      auto_fireExtinguisherCharges() > 30 &&
+      canUse($skill`Fire Extinguisher: Polar Vortex`, false);
+
     const drones: boolean = gooseExpectedDrones() >= 1; //only want to try if we expect any number of drones.
     //dupe a sonar-in-a-biscuit if we're lucky, only want to try it if we need more than 1 biscuit
     if (
@@ -199,7 +194,9 @@ export function auto_combatDefaultStage3(
     //dupe goat cheese
     if (
       enemy === $monster`dairy goat` &&
-      (canExtingo = false && itemAmount($item`goat cheese`) < 3 && drones)
+      !canExtingo &&
+      itemAmount($item`goat cheese`) < 3 &&
+      drones
     ) {
       emitDrones = true;
     }
@@ -214,14 +211,13 @@ export function auto_combatDefaultStage3(
     }
     //dupe some hedge trimmers if we're lucky
     if (
-      (canExtingo =
-        false &&
-        $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`.includes(
-          enemy,
-        ) &&
-        auto_autumnatonQuestingIn() !== $location`Twin Peak` &&
-        hedgeTrimmersNeeded() > 1 &&
-        drones)
+      !canExtingo &&
+      $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`.includes(
+        enemy,
+      ) &&
+      auto_autumnatonQuestingIn() !== $location`Twin Peak` &&
+      hedgeTrimmersNeeded() > 1 &&
+      drones
     ) {
       emitDrones = true;
     }
@@ -247,13 +243,12 @@ export function auto_combatDefaultStage3(
     }
     //dupe some bowling balls if we can't use an Industrial Fire Extinguisher
     if (
-      (canExtingo =
-        false &&
-        enemy === $monster`pygmy bowler` &&
-        toInt(getProperty("hiddenBowlingAlleyProgress")) +
-          itemAmount($item`bowling ball`) <
-          6 &&
-        drones)
+      !canExtingo &&
+      enemy === $monster`pygmy bowler` &&
+      toInt(getProperty("hiddenBowlingAlleyProgress")) +
+        itemAmount($item`bowling ball`) <
+        6 &&
+      drones
     ) {
       emitDrones = true;
     }
@@ -292,12 +287,12 @@ export function auto_combatDefaultStage3(
         $skill`Emit Matter Duplicating Drones`.toString(),
         "auto_otherstuff",
       );
-      return useSkill$2($skill`Emit Matter Duplicating Drones`);
+      return auto_useSkill($skill`Emit Matter Duplicating Drones`);
     }
   }
   //iotm skill that can be used on any combat round, repeatedly until an item is stolen
   if (
-    canUse$2($skill`Hugs and Kisses!`) &&
+    canUse($skill`Hugs and Kisses!`) &&
     myFamiliar() === $familiar`XO Skeleton` &&
     toInt(getProperty("_xoHugsUsed")) < 11
   ) {
@@ -349,7 +344,7 @@ export function auto_combatDefaultStage3(
         $skill`Hugs and Kisses!`.toString(),
         "auto_otherstuff",
       );
-      return useSkill$2($skill`Hugs and Kisses!`);
+      return auto_useSkill($skill`Hugs and Kisses!`);
     }
   }
 
@@ -361,22 +356,22 @@ export function auto_combatDefaultStage3(
     // dousing can have a low chance of success, so only do it for a while
     const douse: Skill = $skill`Douse Foe`;
     const douseAvailable: boolean =
-      canUse$1(douse, false) && auto_dousesRemaining() > 0;
+      canUse(douse, false) && auto_dousesRemaining() > 0;
     if (douseAvailable) {
       handleTracker$1(enemy.toString(), douse.toString(), "auto_otherstuff");
-      return useSkill$2(douse);
+      return auto_useSkill(douse);
     }
   }
 
   if (wantToForceDrop(enemy)) {
     const polarVortexAvailable: boolean =
-      canUse$1($skill`Fire Extinguisher: Polar Vortex`, false) &&
+      canUse($skill`Fire Extinguisher: Polar Vortex`, false) &&
       auto_fireExtinguisherCharges() > 10;
     const mildEvilAvailable: boolean =
-      canUse$1($skill`Perpetrate Mild Evil`, false) &&
+      canUse($skill`Perpetrate Mild Evil`, false) &&
       toInt(getProperty("_mildEvilPerpetrated")) < 3;
     const swoopAvailable: boolean =
-      canUse$1($skill`Swoop like a Bat`, true) &&
+      canUse($skill`Swoop like a Bat`, true) &&
       toInt(getProperty("_batWingsSwoopUsed")) < 11;
     // mild evil and swoop can only pick pocket. Use them before fire extinguisher
     if (swoopAvailable) {
@@ -385,7 +380,7 @@ export function auto_combatDefaultStage3(
         $skill`Swoop like a Bat`.toString(),
         "auto_otherstuff",
       );
-      return useSkill$2($skill`Swoop like a Bat`);
+      return auto_useSkill($skill`Swoop like a Bat`);
     }
     if (mildEvilAvailable) {
       handleTracker$1(
@@ -393,7 +388,7 @@ export function auto_combatDefaultStage3(
         $skill`Perpetrate Mild Evil`.toString(),
         "auto_otherstuff",
       );
-      return useSkill$2($skill`Perpetrate Mild Evil`);
+      return auto_useSkill($skill`Perpetrate Mild Evil`);
     }
     if (polarVortexAvailable) {
       handleTracker$1(
@@ -401,7 +396,7 @@ export function auto_combatDefaultStage3(
         $skill`Fire Extinguisher: Polar Vortex`.toString(),
         "auto_otherstuff",
       );
-      return useSkill$2($skill`Fire Extinguisher: Polar Vortex`);
+      return auto_useSkill($skill`Fire Extinguisher: Polar Vortex`);
     }
   }
   //delevel ~3% per combat round for rest of combat.
@@ -418,12 +413,12 @@ export function auto_combatDefaultStage3(
     doWeaksauce = false;
   }
   if (
-    canUse$2($skill`Curse of Weaksauce`) &&
+    canUse($skill`Curse of Weaksauce`) &&
     haveSkill($skill`Itchy Curse Finger`) &&
     myMp() >= 60 &&
     doWeaksauce
   ) {
-    return useSkill$2($skill`Curse of Weaksauce`);
+    return auto_useSkill($skill`Curse of Weaksauce`);
   }
   //[Eldritch Tentacle] is Immune to Stuns, Staggers, automatic kills and has a 50% resistance to Deleveling
   if (enemy === $monster`Eldritch Tentacle`) {
@@ -452,23 +447,23 @@ export function auto_combatDefaultStage3(
   if (enemy_la <= 150) {
     //enemy has not been rendered immune to staggering from monster level
     if (
-      canUse$2($skill`Curse of Weaksauce`) &&
+      canUse($skill`Curse of Weaksauce`) &&
       haveSkill($skill`Itchy Curse Finger`) &&
       myMp() >= 60 &&
       doWeaksauce
     ) {
-      return useSkill$2($skill`Curse of Weaksauce`);
+      return auto_useSkill($skill`Curse of Weaksauce`);
     }
     //HP reduction if the monster has high HP
     if (monsterHp() > 1500 || enemy.physicalResistance > 90) {
       if (
-        canUse$2($skill`Surprisingly Sweet Slash`) &&
+        canUse($skill`Surprisingly Sweet Slash`) &&
         auto_remainingCandyCaneSlashes() > 1
       ) {
         // reserve a slash for wall of bones
-        return useSkill$2($skill`Surprisingly Sweet Slash`); // 75% less HP
+        return auto_useSkill($skill`Surprisingly Sweet Slash`); // 75% less HP
       }
-      if (canUse$4($item`autumnic bomb`)) {
+      if (canUse$3($item`autumnic bomb`)) {
         //50% less hp && prismatic damage on hit
         return useItem$1($item`autumnic bomb`);
       }
@@ -476,21 +471,21 @@ export function auto_combatDefaultStage3(
     // delevel and 75% less HP if you have a candy cane sword cane
     // Need this separate because want to reserve the Slash in Avant Guard for high HP bodyguards
     if (
-      canUse$2($skill`Surprisingly Sweet Slash`) &&
+      canUse($skill`Surprisingly Sweet Slash`) &&
       !in_avantGuard() &&
       auto_remainingCandyCaneSlashes() > 1
     ) {
       // reserve a slash for wall of bones
-      return useSkill$2($skill`Surprisingly Sweet Slash`);
+      return auto_useSkill($skill`Surprisingly Sweet Slash`);
     }
     //delevel if you have a loofah lei
-    if (canUse$2($skill`Loofah Lei Lasso`)) {
-      return useSkill$2($skill`Loofah Lei Lasso`);
+    if (canUse($skill`Loofah Lei Lasso`)) {
+      return auto_useSkill($skill`Loofah Lei Lasso`);
     }
 
     if ($item`Daily Affirmation: Keep Free Hate in your Heart`.combat) {
       if (
-        canUse$4($item`Daily Affirmation: Keep Free Hate in your Heart`) &&
+        canUse$3($item`Daily Affirmation: Keep Free Hate in your Heart`) &&
         inAftercore() &&
         hippyStoneBroken() &&
         !toBoolean(getProperty("_affirmationHateUsed"))
@@ -501,18 +496,18 @@ export function auto_combatDefaultStage3(
       }
     }
 
-    if (canUse$2($skill`Canhandle`)) {
+    if (canUse($skill`Canhandle`)) {
       if (
         $items`Frigid Northern Beans, Heimz Fortified Kidney Beans, Hellfire Spicy Beans, Mixed Garbanzos and Chickpeas, Pork 'n' Pork 'n' Pork 'n' Beans, Shrub's Premium Baked Beans, Tesla's Electroplated Beans, Trader Olaf's Exotic Stinkbeans, World's Blackest-Eyed Peas`.includes(
           equippedItem($slot`off-hand`),
         )
       ) {
-        return useSkill$2($skill`Canhandle`);
+        return auto_useSkill($skill`Canhandle`);
       }
     }
 
     if (
-      canUse$2($skill`Curse of Weaksauce`) &&
+      canUse($skill`Curse of Weaksauce`) &&
       myClass() === $class`Sauceror` &&
       doWeaksauce
     ) {
@@ -522,20 +517,20 @@ export function auto_combatDefaultStage3(
         myMp() - mpCost($skill`Curse of Weaksauce`);
       let canCastAfterWeaksauce: boolean = false;
       for (const sp of $skills`Saucestorm, Stuffed Mortar Shell, Saucegeyser`) {
-        if (canUse$1(sp, false) && MPafterWeaksauce >= mpCost(sp)) {
+        if (canUse(sp, false) && MPafterWeaksauce >= mpCost(sp)) {
           canCastAfterWeaksauce = true;
           break;
         }
       }
       if (!canCastAfterWeaksauce) {
         if (
-          canUse$1($skill`Wave of Sauce`, false) &&
+          canUse($skill`Wave of Sauce`, false) &&
           monsterElement(enemy) !== $element`hot` &&
           MPafterWeaksauce >= mpCost($skill`Wave of Sauce`)
         ) {
           canCastAfterWeaksauce = true;
         } else if (
-          canUse$1($skill`Saucecicle`, false) &&
+          canUse($skill`Saucecicle`, false) &&
           monsterElement(enemy) !== $element`cold` &&
           MPafterWeaksauce >= mpCost($skill`Saucecicle`)
         ) {
@@ -543,27 +538,27 @@ export function auto_combatDefaultStage3(
         }
       }
       if (canCastAfterWeaksauce) {
-        return useSkill$2($skill`Curse of Weaksauce`);
+        return auto_useSkill($skill`Curse of Weaksauce`);
       }
     }
 
-    if (canUse$2($skill`Detect Weakness`)) {
-      return useSkill$2($skill`Detect Weakness`);
+    if (canUse($skill`Detect Weakness`)) {
+      return auto_useSkill($skill`Detect Weakness`);
     }
 
-    if (canUse$2($skill`Deploy Robo-Handcuffs`)) {
-      return useSkill$2($skill`Deploy Robo-Handcuffs`);
+    if (canUse($skill`Deploy Robo-Handcuffs`)) {
+      return auto_useSkill($skill`Deploy Robo-Handcuffs`);
     }
 
-    if (canUse$2($skill`Pocket Crumbs`)) {
-      return useSkill$2($skill`Pocket Crumbs`);
+    if (canUse($skill`Pocket Crumbs`)) {
+      return auto_useSkill($skill`Pocket Crumbs`);
     }
 
-    if (canUse$2($skill`Micrometeorite`)) {
-      return useSkill$2($skill`Micrometeorite`);
+    if (canUse($skill`Micrometeorite`)) {
+      return auto_useSkill($skill`Micrometeorite`);
     }
 
-    if (canUse$4($item`cow poker`)) {
+    if (canUse$3($item`cow poker`)) {
       if (
         $monsters`caugr, moomy, Pharaoh Amoon-Ra Cowtep, pyrobove, spidercow`.includes(
           enemy,
@@ -573,7 +568,7 @@ export function auto_combatDefaultStage3(
       }
     }
 
-    if (canUse$4($item`western-style skinning knife`)) {
+    if (canUse$3($item`western-style skinning knife`)) {
       if (
         $monsters`caugr, coal snake, diamondback rattler, frontwinder, grizzled bear, mountain lion`.includes(
           enemy,
@@ -589,14 +584,14 @@ export function auto_combatDefaultStage3(
       toInt(getProperty("chasmBridgeProgress")) < bridgeGoal()
     ) {
       const coldMortarShell: boolean =
-        canUse$2($skill`Stuffed Mortar Shell`) &&
+        canUse($skill`Stuffed Mortar Shell`) &&
         haveEffect($effect`Spirit of Peppermint`) !== 0;
       let coldSkillToUse: Skill = Skill.none;
       let coldAttackDamageMultiplier: number = 1;
       if (myClass() === $class`Seal Clubber`) {
-        if (canUse$1($skill`Lunging Thrust-Smack`, false)) {
+        if (canUse($skill`Lunging Thrust-Smack`, false)) {
           coldAttackDamageMultiplier = 3; //triple elemental bonus
-        } else if (canUse$1($skill`Thrust-Smack`, false)) {
+        } else if (canUse($skill`Thrust-Smack`, false)) {
           coldAttackDamageMultiplier = 2; //double elemental bonus
         }
       }
@@ -605,27 +600,27 @@ export function auto_combatDefaultStage3(
       ); //todo add ML damage multiplier
       // Listed from Most to Least Damaging to hopefully cause Death on the turn when the Shell hits.
       if (
-        canUse$1($skill`Saucegeyser`, false) &&
+        canUse($skill`Saucegeyser`, false) &&
         numericModifier("Cold Spell Damage") >
           numericModifier("Hot Spell Damage")
       ) {
         //100% chance of cold Saucegeyser
         coldSkillToUse = $skill`Saucegeyser`;
-      } else if (canUse$1($skill`Saucecicle`, false)) {
+      } else if (canUse($skill`Saucecicle`, false)) {
         coldSkillToUse = $skill`Saucecicle`;
       } else if (
-        canUse$1($skill`Cannelloni Cannon`, false) &&
+        canUse($skill`Cannelloni Cannon`, false) &&
         haveEffect($effect`Spirit of Peppermint`) !== 0
       ) {
         coldSkillToUse = $skill`Cannelloni Cannon`;
       } else if (
-        canUse$1($skill`Northern Explosion`, false) &&
+        canUse($skill`Northern Explosion`, false) &&
         !auto_canNorthernExplosionFE()
       ) {
         coldSkillToUse = $skill`Northern Explosion`;
       } else if (
         monsterLevelAdjustment() < -65 &&
-        canUse$1($skill`Saucestorm`, false)
+        canUse($skill`Saucestorm`, false)
       ) {
         //in extreme case where orcs are reduced to few HP by -ML Saucestorm is better than 50% chance of cold Saucegeyser
         //todo compare actual damage predictions instead
@@ -634,23 +629,23 @@ export function auto_combatDefaultStage3(
         //cold bonus weapon attack can also be better than 50% chance of cold Saucegeyser
         //todo compare actual damage predictions instead
         if (myClass() === $class`Seal Clubber`) {
-          if (canUse$1($skill`Lunging Thrust-Smack`, false)) {
+          if (canUse($skill`Lunging Thrust-Smack`, false)) {
             coldSkillToUse = $skill`Lunging Thrust-Smack`; //triple elemental bonus
-          } else if (canUse$1($skill`Thrust-Smack`, false)) {
+          } else if (canUse($skill`Thrust-Smack`, false)) {
             coldSkillToUse = $skill`Thrust-Smack`; //double elemental bonus
-          } else if (canUse$1($skill`Lunge Smack`, false)) {
+          } else if (canUse($skill`Lunge Smack`, false)) {
             coldSkillToUse = $skill`Lunge Smack`;
           }
         }
         //other classes default to regular attack later
       } else if (
-        canUse$1($skill`Saucegeyser`, false) &&
+        canUse($skill`Saucegeyser`, false) &&
         numericModifier("Cold Spell Damage") ===
           numericModifier("Hot Spell Damage")
       ) {
         //equal is 50% chance of cold Saucegeyser. "cold > hot" is used higher in priority. "cold < hot" is 100% hot Saucegeyser and not worth using
         coldSkillToUse = $skill`Saucegeyser`;
-      } else if (in_nuclear() && canUse$1($skill`Throat Refrigerant`, false)) {
+      } else if (in_nuclear() && canUse($skill`Throat Refrigerant`, false)) {
         coldSkillToUse = $skill`Throat Refrigerant`;
       }
 
@@ -662,7 +657,7 @@ export function auto_combatDefaultStage3(
       }
       // Mating Call has unlimited uses and a small effect so unlike other sniff skills there is no reason not to use it here to balance bridge parts except MP cost
       if (
-        canUse$1($skill`Gallapagosian Mating Call`, false) &&
+        canUse($skill`Gallapagosian Mating Call`, false) &&
         myMp() >=
           MPreservedForColdSpells + mpCost($skill`Gallapagosian Mating Call`)
       ) {
@@ -731,14 +726,14 @@ export function auto_combatDefaultStage3(
             $skill`Gallapagosian Mating Call`.toString(),
             "auto_sniffs",
           );
-          return useSkill$1($skill`Gallapagosian Mating Call`, false);
+          return auto_useSkill($skill`Gallapagosian Mating Call`, false);
         }
       }
 
       if (coldMortarShell) {
-        return useSkill$2($skill`Stuffed Mortar Shell`);
+        return auto_useSkill($skill`Stuffed Mortar Shell`);
       } else if (coldSkillToUse !== Skill.none) {
-        return useSkill$1(coldSkillToUse, false);
+        return auto_useSkill(coldSkillToUse, false);
       } else if (
         !in_robot() &&
         $classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief`.includes(
@@ -751,12 +746,12 @@ export function auto_combatDefaultStage3(
         ) {
           //if cold damage bonus > their health make sure an attack that uses elemental bonus gets to be used
           if (myClass() === $class`Seal Clubber`) {
-            if (canUse$1($skill`Lunging Thrust-Smack`, false)) {
-              return useSkill$1($skill`Lunging Thrust-Smack`, false); //triple elemental bonus
-            } else if (canUse$1($skill`Thrust-Smack`, false)) {
-              return useSkill$1($skill`Thrust-Smack`, false); //double elemental bonus
-            } else if (canUse$1($skill`Lunge Smack`, false)) {
-              return useSkill$1($skill`Lunge Smack`, false);
+            if (canUse($skill`Lunging Thrust-Smack`, false)) {
+              return auto_useSkill($skill`Lunging Thrust-Smack`, false); //triple elemental bonus
+            } else if (canUse($skill`Thrust-Smack`, false)) {
+              return auto_useSkill($skill`Thrust-Smack`, false); //double elemental bonus
+            } else if (canUse($skill`Lunge Smack`, false)) {
+              return auto_useSkill($skill`Lunge Smack`, false);
             } else {
               return "attack with weapon";
             }
@@ -765,14 +760,14 @@ export function auto_combatDefaultStage3(
           }
         } else if (
           monsterLevelAdjustment() <= -25 &&
-          canUse$1($skill`Saucestorm`, false)
+          canUse($skill`Saucestorm`, false)
         ) {
           //todo check predicted damage instead of arbitrary values
           auto_log_warning(
             "None of the best [cold] skills available against smut orcs but trying weaker alternative in view of the negative monster level.",
             "red",
           );
-          return useSkill$1($skill`Saucestorm`, false);
+          return auto_useSkill($skill`Saucestorm`, false);
         } else {
           auto_log_warning(
             "None of our preferred [cold] skills available against smut orcs. Engaging in Fisticuffs.",
@@ -784,7 +779,7 @@ export function auto_combatDefaultStage3(
 
     if (
       myLocation() === $location`The Haunted Kitchen` &&
-      canUse$2($skill`Become a Cloud of Mist`) &&
+      canUse($skill`Become a Cloud of Mist`) &&
       toInt(getProperty("_vampyreCloakeFormUses")) < 10
     ) {
       const hot: number = toInt(numericModifier("Hot Resistance"));
@@ -792,50 +787,50 @@ export function auto_combatDefaultStage3(
 
       if (
         ((hot < 9 && hot % 3 !== 0) || (stench < 9 && stench % 3 !== 0)) &&
-        canUse$2($skill`Become a Cloud of Mist`)
+        canUse($skill`Become a Cloud of Mist`)
       ) {
-        return useSkill$2($skill`Become a Cloud of Mist`);
+        return auto_useSkill($skill`Become a Cloud of Mist`);
       }
     }
 
     if (
       enemy === $monster`dirty thieving brigand` &&
-      canUse$2($skill`Become a Wolf`) &&
+      canUse($skill`Become a Wolf`) &&
       toInt(getProperty("_vampyreCloakeFormUses")) < 10
     ) {
-      return useSkill$2($skill`Become a Wolf`);
+      return auto_useSkill($skill`Become a Wolf`);
     }
 
-    if (canUse$2($skill`Air Dirty Laundry`)) {
-      return useSkill$2($skill`Air Dirty Laundry`);
+    if (canUse($skill`Air Dirty Laundry`)) {
+      return auto_useSkill($skill`Air Dirty Laundry`);
     }
 
-    if (canUse$2($skill`Cowboy Kick`)) {
-      return useSkill$2($skill`Cowboy Kick`);
+    if (canUse($skill`Cowboy Kick`)) {
+      return auto_useSkill($skill`Cowboy Kick`);
     }
 
-    if (canUse$2($skill`Fire Death Ray`)) {
-      return useSkill$2($skill`Fire Death Ray`);
+    if (canUse($skill`Fire Death Ray`)) {
+      return auto_useSkill($skill`Fire Death Ray`);
     }
 
-    if (canUse$2($skill`Ply Reality`)) {
-      return useSkill$2($skill`Ply Reality`);
+    if (canUse($skill`Ply Reality`)) {
+      return auto_useSkill($skill`Ply Reality`);
     }
 
-    if (canUse$4($item`Rain-Doh indigo cup`)) {
+    if (canUse$3($item`Rain-Doh indigo cup`)) {
       return useItem$1($item`Rain-Doh indigo cup`);
     }
 
-    if (canUse$2($skill`Summon Love Mosquito`)) {
-      return useSkill$2($skill`Summon Love Mosquito`);
+    if (canUse($skill`Summon Love Mosquito`)) {
+      return auto_useSkill($skill`Summon Love Mosquito`);
     }
 
-    if (canUse$4($item`tomayohawk-style reflex hammer`)) {
+    if (canUse$3($item`tomayohawk-style reflex hammer`)) {
       return useItem$1($item`tomayohawk-style reflex hammer`);
     }
     //If you have tearaway pants equipped, use its skill
     if (
-      canUse$2($skill`Tear Away your Pants!`) &&
+      canUse($skill`Tear Away your Pants!`) &&
       ((getProperty("auto_forceNonCombatSource") === "" &&
         !(
           auto_wantToSniff(enemy, myLocation()) &&
@@ -843,22 +838,22 @@ export function auto_combatDefaultStage3(
         )) ||
         monsterPhylum() === $phylum`plant`)
     ) {
-      return useSkill$2($skill`Tear Away your Pants!`);
+      return auto_useSkill($skill`Tear Away your Pants!`);
     }
     // skills from Lathe weapons
     // Ebony Epee
-    if (canUse$2($skill`Disarming Thrust`)) {
-      return useSkill$2($skill`Disarming Thrust`);
+    if (canUse($skill`Disarming Thrust`)) {
+      return auto_useSkill($skill`Disarming Thrust`);
     }
     // Weeping Willow Wand
-    if (canUse$2($skill`Barrage of Tears`)) {
-      return useSkill$2($skill`Barrage of Tears`);
+    if (canUse($skill`Barrage of Tears`)) {
+      return auto_useSkill($skill`Barrage of Tears`);
     }
     // Poison Dart (from beechwood blowgun) is not used here
     // because it does not stagger the enemy like the others
 
     if (
-      canUse$2($skill`Cadenza`) &&
+      canUse($skill`Cadenza`) &&
       itemType(equippedItem($slot`weapon`)) === "accordion"
     ) {
       if (
@@ -866,55 +861,55 @@ export function auto_combatDefaultStage3(
           equippedItem($slot`weapon`),
         )
       ) {
-        return useSkill$2($skill`Cadenza`);
+        return auto_useSkill($skill`Cadenza`);
       }
     }
     //source terminal iotm specific skill to acquire source essence from enemies
     if (
-      canUse$2($skill`Extract`) &&
+      canUse($skill`Extract`) &&
       myMp() > mpCost($skill`Extract`) * 3 &&
       itemAmount($item`Source essence`) <= 60 &&
       canSurvive$1(2.0)
     ) {
-      return useSkill$2($skill`Extract`);
+      return auto_useSkill($skill`Extract`);
     }
 
     if (
-      canUse$2($skill`Extract Jelly`) &&
+      canUse($skill`Extract Jelly`) &&
       myMp() > mpCost($skill`Extract Jelly`) * 3 &&
       canSurvive$1(2.0) &&
       myFamiliar() === $familiar`Space Jellyfish` &&
       toInt(getProperty("_spaceJellyfishDrops")) < 3 &&
       $elements`hot, spooky, stench`.includes(monsterElement(enemy))
     ) {
-      return useSkill$2($skill`Extract Jelly`);
+      return auto_useSkill($skill`Extract Jelly`);
     }
 
     if (
-      canUse$2($skill`Science! Fight with Medicine`) &&
+      canUse($skill`Science! Fight with Medicine`) &&
       myHp() * 2 < myMaxhp()
     ) {
-      return useSkill$2($skill`Science! Fight with Medicine`);
+      return auto_useSkill($skill`Science! Fight with Medicine`);
     }
     if (
-      canUse$2($skill`Science! Fight with Rational Thought`) &&
+      canUse($skill`Science! Fight with Rational Thought`) &&
       haveEffect($effect`Rational Thought`) < 10
     ) {
-      return useSkill$2($skill`Science! Fight with Rational Thought`);
+      return auto_useSkill($skill`Science! Fight with Rational Thought`);
     }
 
-    if (canUse$4($item`Time-Spinner`)) {
+    if (canUse$3($item`Time-Spinner`)) {
       return useItem$1($item`Time-Spinner`);
     }
 
-    if (canUse$2($skill`Sing Along`)) {
+    if (canUse($skill`Sing Along`)) {
       //15% devel, but no stun.
 
       if (
         canSurvive$1(2.0) &&
         getProperty("boomBoxSong") === "Remainin' Alive"
       ) {
-        return useSkill$2($skill`Sing Along`);
+        return auto_useSkill($skill`Sing Along`);
       }
       //this is for increasing meat income. gain +25 meat per monster, at the cost of letting it act once. If healing is too costly this can be a net loss of meat. until a full cost calculator is made, limit to under 10 HP damage and no more than 20% of your remaining HP.
 
@@ -924,7 +919,7 @@ export function auto_combatDefaultStage3(
         expectedDamage() < 10 &&
         !in_wotsf()
       ) {
-        return useSkill$2($skill`Sing Along`);
+        return auto_useSkill($skill`Sing Along`);
       }
       //if doing nuns quest or wall of meat, disregard profit and only check if you can survive using sing along.
 
@@ -933,43 +928,43 @@ export function auto_combatDefaultStage3(
         getProperty("boomBoxSong") === "Total Eclipse of Your Meat" &&
         $monsters`dirty thieving brigand, wall of meat`.includes(enemy)
       ) {
-        return useSkill$2($skill`Sing Along`);
+        return auto_useSkill($skill`Sing Along`);
       }
     }
   }
   //Default behaviors, multi-staggers when chance is 50% or greater
   if (enemy_la < 100 && stunnable(enemy)) {
-    if (canUse$4($item`Rain-Doh blue balls`)) {
+    if (canUse$3($item`Rain-Doh blue balls`)) {
       return useItem$1($item`Rain-Doh blue balls`);
     }
 
-    if (canUse$2($skill`Summon Love Gnats`)) {
-      return useSkill$2($skill`Summon Love Gnats`);
+    if (canUse($skill`Summon Love Gnats`)) {
+      return auto_useSkill($skill`Summon Love Gnats`);
     }
 
     if (!(haveEquipped($item`protonic accelerator pack`) && isGhost(enemy))) {
       if (
-        canUse$2($skill`Summon Love Stinkbug`) &&
+        canUse($skill`Summon Love Stinkbug`) &&
         haveUsed($skill`Summon Love Gnats`) &&
         !containsText(text, "STUN RESIST")
       ) {
-        return useSkill$2($skill`Summon Love Stinkbug`);
+        return auto_useSkill($skill`Summon Love Stinkbug`);
       }
     }
   }
   //weaksauce has probably already been cast in one of several checks above, except when above 150 ML, or without itchy curse finger or mp < 60
   if (
-    canUse$2($skill`Curse of Weaksauce`) &&
+    canUse($skill`Curse of Weaksauce`) &&
     myClass() === $class`Sauceror` &&
     (myMp() >= 32 || haveUsed($skill`Stuffed Mortar Shell`)) &&
     doWeaksauce
   ) {
-    return useSkill$2($skill`Curse of Weaksauce`);
+    return auto_useSkill($skill`Curse of Weaksauce`);
   }
   //turtle tamer specific damage over time
   if (
     myClass() === $class`Turtle Tamer` &&
-    canUse$2($skill`Spirit Snap`) &&
+    canUse($skill`Spirit Snap`) &&
     myMp() > 80
   ) {
     //storm turtle blessings makes spirit snap cause 15/20/25% buffed muscle as DoT for rest of combat
@@ -982,17 +977,13 @@ export function auto_combatDefaultStage3(
       (haveEffect($effect`Glorious Blessing of the Storm Tortoise`) > 0 &&
         monsterHp() > 0.25 * myBuffedstat($stat`Muscle`))
     ) {
-      return useSkill$2($skill`Spirit Snap`);
+      return auto_useSkill($skill`Spirit Snap`);
     }
   }
   // Multi-round stuns
-  if (
-    canUse$2($skill`Thunderstrike`) &&
-    enemy_la <= 150 &&
-    !canSurvive$1(5.0)
-  ) {
+  if (canUse($skill`Thunderstrike`) && enemy_la <= 150 && !canSurvive$1(5.0)) {
     combat_status_add("stunned");
-    return useSkill$2($skill`Thunderstrike`);
+    return auto_useSkill($skill`Thunderstrike`);
   }
 
   if (
@@ -1003,17 +994,17 @@ export function auto_combatDefaultStage3(
     const stunner: Skill = getStunner(enemy);
     if (stunner !== Skill.none) {
       combat_status_add("stunned");
-      return useSkill$2(stunner);
+      return auto_useSkill(stunner);
     }
   }
   if (
     auto_wantToBCZ($skill`BCZ: Blood Geyser`) &&
-    canUse$2($skill`BCZ: Blood Geyser`) &&
+    canUse($skill`BCZ: Blood Geyser`) &&
     enemy_la <= 150 &&
     !canSurvive$1(5.0)
   ) {
     combat_status_add("stunned");
-    return useSkill$2($skill`BCZ: Blood Geyser`);
+    return auto_useSkill($skill`BCZ: Blood Geyser`);
   }
 
   return "";

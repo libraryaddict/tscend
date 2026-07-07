@@ -1,7 +1,6 @@
 import { myPath, setProperty } from "kolmafia";
 import { $path } from "libram";
 
-
 /* TODO - banishing chickens prior to Nuns
 		- wearing chicken hat (and ensuring chickens arent banished) for tower
 		- obtaining chicken hat and dino banishing items

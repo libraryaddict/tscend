@@ -63,9 +63,10 @@ import { numPirateInsults } from "../quests/optional";
 import { auto_combatLicenseToAdventureStage4 } from "./auto_combat_license_to_adventure";
 import { auto_combatTheSourceStage4 } from "./auto_combat_the_source";
 import {
+  auto_useSkill,
   canSurvive$1,
-  canUse$2,
-  canUse$4,
+  canUse,
+  canUse$3,
   combat_status_add,
   combat_status_check,
   getCopier$1,
@@ -77,7 +78,6 @@ import {
   markAsUsed$1,
   useItem$1,
   useItems$1,
-  useSkill$2,
 } from "./auto_combat_util";
 import { auto_combatWereProfessorStage4 } from "./auto_combat_wereprofessor";
 import { auto_combatZombieSlayerStage4 } from "./auto_combat_zombie_slayer";
@@ -127,7 +127,7 @@ export function auto_combatDefaultStage4(
       }
       handleTracker$1(enemy.toString(), sniffer.toString(), "auto_sniffs");
       combat_status_add("sniffed");
-      return useSkill$2(sniffer);
+      return auto_useSkill(sniffer);
     }
   }
 
@@ -135,7 +135,7 @@ export function auto_combatDefaultStage4(
     enemy === $monster`animated ornate nightstand` &&
     myFamiliar() === $familiar`Nosy Nose` &&
     !is100FamRun() &&
-    canUse$2($skill`Get a Good Whiff of This Guy`) &&
+    canUse($skill`Get a Good Whiff of This Guy`) &&
     !isSniffed(enemy, $skill`Get a Good Whiff of This Guy`)
   ) {
     //this is a special case, if Nosy Nose is used in the bedroom in a non 100 fam run it is to whiff this monster
@@ -145,7 +145,7 @@ export function auto_combatDefaultStage4(
       $skill`Get a Good Whiff of This Guy`.toString(),
       "auto_sniffs",
     );
-    return useSkill$2($skill`Get a Good Whiff of This Guy`);
+    return auto_useSkill($skill`Get a Good Whiff of This Guy`);
   }
   //TODO auto_doCombatCopy property is silly. get rid of it
   if (
@@ -162,7 +162,7 @@ export function auto_combatDefaultStage4(
     }
   }
   if (
-    canUse$4($item`Rain-Doh black box`) &&
+    canUse$3($item`Rain-Doh black box`) &&
     getProperty("auto_doCombatCopy") === "yes" &&
     enemy !== $monster`gourmet gourami` &&
     !ag_is_bodyguard()
@@ -204,7 +204,7 @@ export function auto_combatDefaultStage4(
   }
   //iotm monster copier that works by creating wandering copies of the targetted monster
   if (
-    canUse$2($skill`Digitize`) &&
+    canUse($skill`Digitize`) &&
     toInt(getProperty("_sourceTerminalDigitizeUses")) === 0 &&
     !inAftercore()
   ) {
@@ -215,12 +215,12 @@ export function auto_combatDefaultStage4(
           $skill`Digitize`.toString(),
           "auto_copies",
         );
-        return useSkill$2($skill`Digitize`);
+        return auto_useSkill($skill`Digitize`);
       }
     }
   }
   if (
-    canUse$2($skill`Digitize`) &&
+    canUse($skill`Digitize`) &&
     toInt(getProperty("_sourceTerminalDigitizeUses")) < 3 &&
     !inAftercore()
   ) {
@@ -231,48 +231,48 @@ export function auto_combatDefaultStage4(
           $skill`Digitize`.toString(),
           "auto_copies",
         );
-        return useSkill$2($skill`Digitize`);
+        return auto_useSkill($skill`Digitize`);
       }
     }
   }
   //iotm monster duplicator that creates a chained fight of the current monster
   if (auto_wantToCopy(enemy, myLocation()) && !ag_is_bodyguard()) {
     const copier: Skill = getCopier$1(enemy);
-    if (copier !== Skill.none && canUse$2(copier)) {
+    if (copier !== Skill.none && canUse(copier)) {
       if (copier === $skill`Blow the Purple Candle!`) {
         //mafia does not track the target of this skill so we must do so.
         setProperty("auto_purple_candled", enemy.toString());
       }
       handleTracker$1(enemy.toString(), copier.toString(), "auto_copies");
       combat_status_add("copied");
-      return useSkill$2(copier);
+      return auto_useSkill(copier);
     }
   }
   //accordion thief mechanic. unlike pickpocket it can be done at any round
   if (
-    canUse$2($skill`Steal Accordion`) &&
+    canUse($skill`Steal Accordion`) &&
     myClass() === $class`Accordion Thief` &&
     canSurvive$1(2.0)
   ) {
-    return useSkill$2($skill`Steal Accordion`);
+    return auto_useSkill($skill`Steal Accordion`);
   }
   //in [The Deep Machine Tunnels] will stagger enemy and grants another abstraction
   if (
-    canUse$4($item`abstraction: sensation`) &&
+    canUse$3($item`abstraction: sensation`) &&
     enemy === $monster`Performer of Actions`
   ) {
     //	Change +100% Moxie to +100% Init
     return useItem$1($item`abstraction: sensation`);
   }
   if (
-    canUse$4($item`abstraction: thought`) &&
+    canUse$3($item`abstraction: thought`) &&
     enemy === $monster`Perceiver of Sensations`
   ) {
     // Change +100% Myst to +100% Items
     return useItem$1($item`abstraction: thought`);
   }
   if (
-    canUse$4($item`abstraction: action`) &&
+    canUse$3($item`abstraction: action`) &&
     enemy === $monster`Thinker of Thoughts`
   ) {
     // Change +100% Muscle to +10 Familiar Weight
@@ -280,14 +280,14 @@ export function auto_combatDefaultStage4(
   }
   //these loofah skills stagger and provide MP, meat, or XP
   if (monsterLevelAdjustment() <= 150) {
-    if (canUse$2($skill`Loofah Leglifts`)) {
-      return useSkill$2($skill`Loofah Leglifts`);
+    if (canUse($skill`Loofah Leglifts`)) {
+      return auto_useSkill($skill`Loofah Leglifts`);
     }
-    if (canUse$2($skill`Loofah Hosenzittern`)) {
-      return useSkill$2($skill`Loofah Hosenzittern`);
+    if (canUse($skill`Loofah Hosenzittern`)) {
+      return auto_useSkill($skill`Loofah Hosenzittern`);
     }
-    if (canUse$2($skill`Loofah Head-Scratch`)) {
-      return useSkill$2($skill`Loofah Head-Scratch`);
+    if (canUse($skill`Loofah Head-Scratch`)) {
+      return auto_useSkill($skill`Loofah Head-Scratch`);
     }
   }
   //stocking mimic can produce meat until round 10.
@@ -302,21 +302,21 @@ export function auto_combatDefaultStage4(
   }
   //winking is a monster copier familiar skill. they share a daily counter
   let wink_skill: Skill = Skill.none;
-  if (canUse$2($skill`Wink at`)) {
+  if (canUse($skill`Wink at`)) {
     wink_skill = $skill`Wink at`;
   }
-  if (canUse$2($skill`Fire a badly romantic arrow`)) {
+  if (canUse($skill`Fire a badly romantic arrow`)) {
     wink_skill = $skill`Fire a badly romantic arrow`;
   }
   if (wink_skill !== Skill.none) {
     //we can wink / romatic arrow
     if ($monsters`lobsterfrogman, modern zmobie`.includes(enemy)) {
-      return useSkill$2(wink_skill);
+      return auto_useSkill(wink_skill);
     }
   }
   //insults are used as part of the pirates quest
   if (
-    canUse$4($item`The Big Book of Pirate Insults`) &&
+    canUse$3($item`The Big Book of Pirate Insults`) &&
     numPirateInsults() < 8 &&
     internalQuestStatus("questM12Pirate") < 5
   ) {
@@ -344,7 +344,7 @@ export function auto_combatDefaultStage4(
     flyer = $item`jam band flyers`;
   }
   if (
-    canUse$4(flyer) &&
+    canUse$3(flyer) &&
     toInt(getProperty("flyeredML")) < 10000 &&
     myLocation() !== $location`The Battlefield (Frat Uniform)` &&
     myLocation() !== $location`The Battlefield (Hippy Uniform)` &&
@@ -362,10 +362,10 @@ export function auto_combatDefaultStage4(
       staggeringFlyer = true;
     }
     if (auto_have_skill($skill`Ambidextrous Funkslinging`)) {
-      if (canUse$4($item`Time-Spinner`)) {
+      if (canUse$3($item`Time-Spinner`)) {
         flyerWith = $item`Time-Spinner`;
         staggeringFlyer = true;
-      } else if (canUse$4($item`beehive`)) {
+      } else if (canUse$3($item`beehive`)) {
         if (
           myClass() === $class`Sauceror` &&
           haveUsed($skill`Curse of Weaksauce`)
@@ -396,7 +396,7 @@ export function auto_combatDefaultStage4(
       stunned = combat_status_check("stunned");
       if (stunner !== Skill.none && !stunned) {
         combat_status_add("stunned");
-        return useSkill$2(stunner);
+        return auto_useSkill(stunner);
       }
     }
     if (canSurvive$1(3.0) || stunned || staggeringFlyer) {
@@ -412,12 +412,12 @@ export function auto_combatDefaultStage4(
   }
   //chaos butterfly if thrown in combat once per ascension will accelerate the dooks farm sidequest for the frat-hippy war.
   if (
-    canUse$4($item`chaos butterfly`) &&
+    canUse$3($item`chaos butterfly`) &&
     !toBoolean(getProperty("chaosButterflyThrown")) &&
     !toBoolean(getProperty("auto_skipL12Farm"))
   ) {
     if (
-      canUse$4($item`Time-Spinner`) &&
+      canUse$3($item`Time-Spinner`) &&
       auto_have_skill($skill`Ambidextrous Funkslinging`)
     ) {
       return useItems$1($item`chaos butterfly`, $item`Time-Spinner`);
@@ -425,7 +425,7 @@ export function auto_combatDefaultStage4(
     return useItem$1($item`chaos butterfly`);
   }
   //accelerate palindrome quest
-  if (canUse$4($item`disposable instant camera`)) {
+  if (canUse$3($item`disposable instant camera`)) {
     if ($monsters`Bob Racecar, Racecar Bob`.includes(enemy)) {
       return useItem$1($item`disposable instant camera`);
     }
@@ -440,7 +440,7 @@ export function auto_combatDefaultStage4(
   }
   //used by [Little Geneticist DNA-Splicing Lab] iotm
   if (
-    canUse$4($item`DNA extraction syringe`) &&
+    canUse$3($item`DNA extraction syringe`) &&
     monsterLevelAdjustment() < 150
   ) {
     if (monsterPhylum(enemy) !== toPhylum(getProperty("dnaSyringe"))) {
@@ -452,42 +452,42 @@ export function auto_combatDefaultStage4(
     !in_plumber() &&
     !in_darkGyffte() &&
     !in_zombieSlayer() &&
-    canUse$2(
+    canUse(
       //paths that do not use MP
       $skill`Gulp Latte`,
     ) &&
     myMp() * 2 < myMaxmp()
   ) {
     //gulp latte restores 50% of your MP. do not waste it.
-    return useSkill$2($skill`Gulp Latte`);
+    return auto_useSkill($skill`Gulp Latte`);
   }
   //use haiku katana's HP and MP restore skill
   if (
     !in_plumber() &&
     !in_darkGyffte() &&
     !in_zombieSlayer() &&
-    canUse$2(
+    canUse(
       //paths that do not use MP
       $skill`Spring Raindrop Attack`,
     ) &&
     myMp() < 0.9 * myMaxmp()
   ) {
-    return useSkill$2($skill`Spring Raindrop Attack`);
+    return auto_useSkill($skill`Spring Raindrop Attack`);
   }
   //stinkbug physically resistant monsters
   if (!(haveEquipped($item`protonic accelerator pack`) && isGhost(enemy))) {
     if (
-      canUse$2($skill`Summon Love Stinkbug`) &&
+      canUse($skill`Summon Love Stinkbug`) &&
       enemy.physicalResistance >= 100 &&
       monsterElement(enemy) !== $element`stench`
     ) {
-      return useSkill$2($skill`Summon Love Stinkbug`);
+      return auto_useSkill($skill`Summon Love Stinkbug`);
     }
   }
   // use red rocket from Clan VIP Lounge to get 5x stats from next food item consumed. Does not stagger on use
   if (
     fullness_left() > 0 &&
-    canUse$4($item`red rocket`) &&
+    canUse$3($item`red rocket`) &&
     haveEffect($effect`Everything Looks Red`) <= 0 &&
     haveEffect($effect`Ready to Eat`) <= 0 &&
     canSurvive$1(5.0) &&
@@ -510,25 +510,25 @@ export function auto_combatDefaultStage4(
   }
   // prep avalanche if requested
   if (
-    canUse$2($skill`McHugeLarge Avalanche`) &&
+    canUse($skill`McHugeLarge Avalanche`) &&
     getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
     !toBoolean(getProperty("auto_avalancheDeployed"))
   ) {
     setProperty("auto_avalancheDeployed", true.toString());
-    return useSkill$2($skill`McHugeLarge Avalanche`);
+    return auto_useSkill($skill`McHugeLarge Avalanche`);
   }
   // prep parka NC forcing if requested
   if (
-    canUse$2($skill`Launch spikolodon spikes`) &&
+    canUse($skill`Launch spikolodon spikes`) &&
     getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
     !toBoolean(getProperty("auto_parkaSpikesDeployed"))
   ) {
     setProperty("auto_parkaSpikesDeployed", true.toString());
-    return useSkill$2($skill`Launch spikolodon spikes`);
+    return auto_useSkill($skill`Launch spikolodon spikes`);
   }
   // get extra combat stats
   if (shouldCinchoConfetti() && canSurvive$1(5.0)) {
-    return useSkill$2($skill`Cincho: Confetti Extravaganza`);
+    return auto_useSkill($skill`Cincho: Confetti Extravaganza`);
   }
 
   return "";

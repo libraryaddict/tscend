@@ -81,7 +81,7 @@ import {
   auto_log_info,
   auto_log_warning,
   handleTracker$1,
-  hasTorso$1,
+  hasTorso,
   internalQuestStatus,
   wrap_item,
 } from "../auto_util";
@@ -236,7 +236,7 @@ export function januaryToteAcquire(it: Item): boolean {
     }
   }
 
-  if (choice === 5 && !hasTorso$1()) {
+  if (choice === 5 && !hasTorso()) {
     return false;
   }
 
@@ -1000,7 +1000,7 @@ export function neverendingPartyCombat(): boolean {
   //May need to actually have 1 adventure left.
 
   if (
-    hasTorso$1() &&
+    hasTorso() &&
     januaryToteTurnsLeft($item`makeshift garbage shirt`) > 0 &&
     auto_is_valid($item`makeshift garbage shirt`)
   ) {
@@ -1398,7 +1398,7 @@ export function auto_haveVotingBooth(): boolean {
   );
 }
 
-export function auto_voteSetup$2(
+export function auto_voteSetup(
   candidate: number,
   first: number,
   second: number,

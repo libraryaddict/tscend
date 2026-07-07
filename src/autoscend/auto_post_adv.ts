@@ -74,11 +74,7 @@ import {
   $stat,
 } from "libram";
 
-import {
-  auto_buyUpTo,
-  buyableMaintain$1,
-  buyableMaintain$2,
-} from "./auto_acquire";
+import { auto_buyUpTo, buyableMaintain } from "./auto_acquire";
 import { autoAdv$2 } from "./auto_adventure";
 import { auto_faceCheck, buffMaintain$3, buffMaintain$4 } from "./auto_buff";
 import {
@@ -91,7 +87,7 @@ import {
   removeFromMaximize,
 } from "./auto_equipment";
 import { pathHasFamiliar } from "./auto_familiar";
-import { acquireHP, acquireMP$2, uneffect } from "./auto_restore";
+import { acquireHP, acquireMP, uneffect } from "./auto_restore";
 import {
   auto_have_skill,
   auto_haveQueuedForcedNonCombat,
@@ -543,7 +539,7 @@ function auto_post_adventure(): boolean {
     }
 
     if (myMp() + 100 < myMaxmp()) {
-      acquireMP$2(100, myMeat());
+      acquireMP(100, myMeat());
     }
     return true;
   }
@@ -1245,22 +1241,22 @@ function auto_post_adventure(): boolean {
     buffMaintain$4($effect`From Nantucket`);
     buffMaintain$4($effect`Squatting and Thrusting`);
     buffMaintain$4($effect`You Read The Manual`);
-    buyableMaintain$2(
+    buyableMaintain(
       $item`hair spray`,
       1,
       200,
       myClass() !== $class`Turtle Tamer`,
     );
-    buyableMaintain$2(
+    buyableMaintain(
       $item`blood of the Wereseal`,
       1,
       3500,
       monsterLevelAdjustment() > 135,
     );
-    buyableMaintain$1($item`Ben-Gal™ Balm`, 1, 200);
+    buyableMaintain($item`Ben-Gal™ Balm`, 1, 200);
   }
 
-  buyableMaintain$2(
+  buyableMaintain(
     $item`turtle pheromones`,
     1,
     800,

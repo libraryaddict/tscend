@@ -68,7 +68,7 @@ import {
   $stat,
 } from "libram";
 
-import { canChew, canDrink$1, canEat$1 } from "../auto_consume";
+import { auto_canDrink, auto_canEat, canChew } from "../auto_consume";
 import {
   autoForceEquip,
   autoForceEquip$1,
@@ -92,9 +92,9 @@ import {
   isFreeMonster$1,
   level_to_min_substat,
   stat_to_substat,
-  zoneRank$1,
+  zoneRank,
 } from "../auto_util";
-import { canUse$2 } from "../combat/auto_combat_util";
+import { canUse } from "../combat/auto_combat_util";
 import { amw_wantMeat, in_amw } from "../paths/adventurer_meats_world";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_hattrick } from "../paths/hattrick";
@@ -428,8 +428,8 @@ export function peridotChoiceHandler(choice: number, page: string): void {
       break; // if we've got a force desired monster, don't bother with the rankings any more
     }
     if (
-      zoneRank$1(monOpts.get(i) ?? monOpts.set(i, Monster.none).get(i), loc) <=
-      zoneRank$1(
+      zoneRank(monOpts.get(i) ?? monOpts.set(i, Monster.none).get(i), loc) <=
+      zoneRank(
         monOpts.get(bestmon) ?? monOpts.set(bestmon, Monster.none).get(bestmon),
         loc,
       )
@@ -913,7 +913,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
     }
   }
   // cupcake is 5-7 adv for 1 full, +1 paradox
-  if (canEat$1($item`Susie's cupcake`)) {
+  if (auto_canEat($item`Susie's cupcake`)) {
     pos = "Steal a cupcake from young Susie";
     if (choiceMap.has(pos)) {
       mobiusChoice(pos);
@@ -977,7 +977,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
     }
   }
   // we've done everything we care about, find a loop
-  if (canEat$1($item`Susie's cupcake`)) {
+  if (auto_canEat($item`Susie's cupcake`)) {
     pos = "Steal a cupcake from young Susie";
     if (choiceMap.has(pos)) {
       mobiusChoice(pos);
@@ -1154,7 +1154,7 @@ function auto_BCZEquipped(): boolean {
 
 export function auto_wantToBCZ(sk: Skill): boolean {
   // zootomist doesn't have substats
-  if (!auto_haveBCZ() || !canUse$2(sk) || in_zootomist()) {
+  if (!auto_haveBCZ() || !canUse(sk) || in_zootomist()) {
     return false;
   }
   const bloodBathCasts: number = toInt(getProperty("_bczBloodBathCasts"));
@@ -1257,7 +1257,7 @@ export function auto_wantToBCZ(sk: Skill): boolean {
         refractedGazeCasts < 6
       );
     case $skill`BCZ: Prepare Spinal Tapas`:
-      if (!canEat$1($item`spinal tapas`)) {
+      if (!auto_canEat($item`spinal tapas`)) {
         return false;
       }
       return (
@@ -1271,7 +1271,7 @@ export function auto_wantToBCZ(sk: Skill): boolean {
     case $skill`BCZ: Sweat Equity`:
       return statChange($stat`Moxie`, sweatEquityCasts) && sweatEquityCasts < 2;
     case $skill`BCZ: Craft a Pheromone Cocktail`:
-      if (!canDrink$1($item`pheromone cocktail`)) {
+      if (!auto_canDrink($item`pheromone cocktail`)) {
         return false;
       }
       return (
@@ -1379,7 +1379,7 @@ export function auto_wantToShrunkenHead(enemy: Monster): boolean {
     return false;
   }
 
-  if (!canUse$2($skill`Prepare to reanimate your Foe`)) {
+  if (!canUse($skill`Prepare to reanimate your Foe`)) {
     return false;
   }
 

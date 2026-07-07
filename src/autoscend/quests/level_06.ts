@@ -26,7 +26,7 @@ import { autoEquip } from "../auto_equipment";
 import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
-  auto_forceNextNoncombat$1,
+  auto_forceNextNoncombat,
   auto_log_debug,
   auto_log_info,
   auto_roughExpectedTurnsLeftToday,
@@ -116,7 +116,7 @@ export function L6_friarsGetParts(): boolean {
 
   if (itemAmount($item`dodecagram`) === 0) {
     auto_log_info("Getting Dodecagram", "blue");
-    const NCForced: boolean = auto_forceNextNoncombat$1(
+    const NCForced: boolean = auto_forceNextNoncombat(
       $location`The Dark Neck of the Woods`,
     );
     // delay if we are out of NC forcers and haven't run out of things to do
@@ -132,7 +132,7 @@ export function L6_friarsGetParts(): boolean {
   }
   if (itemAmount($item`eldritch butterknife`) === 0) {
     auto_log_info("Getting Eldritch Butterknife", "blue");
-    const NCForced: boolean = auto_forceNextNoncombat$1(
+    const NCForced: boolean = auto_forceNextNoncombat(
       $location`The Dark Elbow of the Woods`,
     );
     // delay if we are out of NC forcers and haven't run out of things to do
@@ -156,7 +156,7 @@ export function L6_friarsGetParts(): boolean {
       return false;
     }
     auto_log_info("Getting Box of Birthday Candles", "blue");
-    const NCForced: boolean = auto_forceNextNoncombat$1(
+    const NCForced: boolean = auto_forceNextNoncombat(
       $location`The Dark Heart of the Woods`,
     );
     // delay if we are out of NC forcers and haven't run out of things to do

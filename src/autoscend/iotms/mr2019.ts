@@ -62,7 +62,7 @@ import {
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv, CombatMacro } from "../auto_adventure";
 import {
-  canEat$1,
+  auto_canEat,
   consumptionProgress,
   spleen_left,
   stomach_left,
@@ -131,7 +131,7 @@ export function auto_sausageBlocked(): boolean {
     return true;
   }
 
-  if (!canEat$1($item`magical sausage`)) {
+  if (!auto_canEat($item`magical sausage`)) {
     return true;
   }
 

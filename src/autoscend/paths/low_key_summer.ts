@@ -37,7 +37,7 @@ import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
 import { buffMaintain$4 } from "../auto_buff";
 import { auto_breakfastCounterVisit } from "../auto_consume";
 import {
-  auto_getAllEquipabble$1,
+  auto_getAllEquipabble,
   autoEquip$1,
   possessEquipment,
 } from "../auto_equipment";
@@ -727,7 +727,7 @@ export function LX_lowkeySummer(): boolean {
     }
     // Check our meat accessories, grab +meat keys before attempting Themthar Hills if they'll help.
     let n_meat_drop_acc_50plus: number = 0;
-    for (const [it, n] of auto_getAllEquipabble$1($slot`acc1`)) {
+    for (const [it, n] of auto_getAllEquipabble($slot`acc1`)) {
       if (
         numericModifier(it, Modifier.get("Meat Drop")) >= 45 ||
         it === $item`backup camera`

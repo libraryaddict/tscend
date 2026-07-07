@@ -11,19 +11,12 @@ import {
   setProperty,
   toInt,
 } from "kolmafia";
-import {
-  $class,
-  $familiar,
-  $item,
-  $location,
-  $monster,
-  $path,
-} from "libram";
+import { $class, $familiar, $item, $location, $monster, $path } from "libram";
 
 import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$2 } from "../auto_adventure";
 import { auto_have_familiar } from "../auto_familiar";
-import { hasTorso$1 } from "../auto_util";
+import { hasTorso } from "../auto_util";
 
 //Defined in autoscend/paths/the_source.ash
 export function in_small(): boolean {
@@ -86,7 +79,7 @@ export function auto_SmallPulls(): void {
     pullXWhenHaveY($item`nurse's hat`, 1, 0);
   }
   // pull sea salt scrubs in small path if aware of torso
-  if (hasTorso$1()) {
+  if (hasTorso()) {
     pullXWhenHaveY($item`sea salt scrubs`, 1, 0);
   }
 }

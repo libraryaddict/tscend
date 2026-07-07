@@ -1688,7 +1688,7 @@ export function is_watch(it: Item): boolean {
   return booleanModifier(it, Modifier.get("Nonstackable Watch"));
 }
 
-export function auto_getAllEquipabble$1(s: Slot): Map<Item, number> {
+export function auto_getAllEquipabble(s: Slot): Map<Item, number> {
   const ignore_slot: boolean = s === Slot.none;
   s = s === $slot`acc2` || s === $slot`acc3` ? $slot`acc1` : s; // all accessories checked against slot 1
   const valid_and_equippable: Map<Item, number> = new Map();

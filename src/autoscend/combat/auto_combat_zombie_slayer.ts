@@ -18,13 +18,13 @@ import {
 } from "../auto_util";
 import { in_zombieSlayer } from "../paths/zombie_slayer";
 import { cyrptEvilBonus } from "../quests/level_07";
-import { canSurvive$1, canUse$2, useSkill$2 } from "./auto_combat_util";
+import { auto_useSkill, canSurvive$1, canUse } from "./auto_combat_util";
 
 //Path specific combat handling for Zombie Slayer
 
 function wantBearHug(enemy: Monster): boolean {
   return (
-    canUse$2($skill`Bear Hug`) &&
+    canUse($skill`Bear Hug`) &&
     toInt(getProperty("_bearHugs")) < 10 &&
     !enemy.boss &&
     !containsText(enemy.attributes, "FREE") &&
@@ -33,7 +33,7 @@ function wantBearHug(enemy: Monster): boolean {
 }
 
 function wantKodiakMoment(enemy: Monster): boolean {
-  return canUse$2($skill`Kodiak Moment`) && enemy.physicalResistance >= 80;
+  return canUse($skill`Kodiak Moment`) && enemy.physicalResistance >= 80;
 }
 
 //defined in /autoscend/combat/auto_combat_zombie_slayer.ash
@@ -47,20 +47,20 @@ export function auto_combatZombieSlayerStage3(
     return "";
   }
 
-  if (canUse$2($skill`Infectious Bite`) && canSurvive$1(4.0)) {
-    return useSkill$2($skill`Infectious Bite`);
+  if (canUse($skill`Infectious Bite`) && canSurvive$1(4.0)) {
+    return auto_useSkill($skill`Infectious Bite`);
   }
 
-  if (canUse$2($skill`Meat Shields`) && enemy.boss && canSurvive$1(4.0)) {
-    return useSkill$2($skill`Meat Shields`);
+  if (canUse($skill`Meat Shields`) && enemy.boss && canSurvive$1(4.0)) {
+    return auto_useSkill($skill`Meat Shields`);
   }
   // Just always use Bear-ly Legal for the delevel + meat, unless we want to Bear Hug or Kodiak Moment
   if (
-    canUse$2($skill`Bear-ly Legal`) &&
+    canUse($skill`Bear-ly Legal`) &&
     !wantBearHug(enemy) &&
     !wantKodiakMoment(enemy)
   ) {
-    return useSkill$2($skill`Bear-ly Legal`);
+    return auto_useSkill($skill`Bear-ly Legal`);
   }
 
   return "";
@@ -77,7 +77,7 @@ export function auto_combatZombieSlayerStage4(
   }
   // Basically stolen from Ed's Lash targets
   if (
-    canUse$2($skill`Smash & Graaagh`) &&
+    canUse($skill`Smash & Graaagh`) &&
     toInt(getProperty("_zombieSmashPocketsUsed")) < 30 &&
     canSurvive$1(2.0)
   ) {
@@ -267,7 +267,7 @@ export function auto_combatZombieSlayerStage4(
         $skill`Smash & Graaagh`.toString(),
         "auto_otherstuff",
       );
-      return useSkill$2($skill`Smash & Graaagh`);
+      return auto_useSkill($skill`Smash & Graaagh`);
     }
   }
 
@@ -284,7 +284,7 @@ export function auto_combatZombieSlayerStage5(
   }
 
   if (wantBearHug(enemy)) {
-    return useSkill$2($skill`Bear Hug`);
+    return auto_useSkill($skill`Bear Hug`);
   }
   // Spam plague claws if we won't die
   if (
@@ -293,15 +293,15 @@ export function auto_combatZombieSlayerStage5(
     auto_have_skill($skill`Plague Claws`) &&
     enemy.physicalResistance < 80
   ) {
-    return useSkill$2($skill`Plague Claws`);
+    return auto_useSkill($skill`Plague Claws`);
   }
 
   if (wantKodiakMoment(enemy)) {
-    return useSkill$2($skill`Kodiak Moment`);
+    return auto_useSkill($skill`Kodiak Moment`);
   }
 
-  if (canUse$2($skill`Bilious Burst`) && enemy.physicalResistance >= 80) {
-    return useSkill$2($skill`Bilious Burst`);
+  if (canUse($skill`Bilious Burst`) && enemy.physicalResistance >= 80) {
+    return auto_useSkill($skill`Bilious Burst`);
   }
 
   return "";

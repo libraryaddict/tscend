@@ -24,7 +24,7 @@ import { $effect, $item, $path, $skill, $stat } from "libram";
 
 import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
 import { autoForceEquip$3, equipBaseline } from "../auto_equipment";
-import { acquireMP$1 } from "../auto_restore";
+import { acquireMP } from "../auto_restore";
 import {
   auto_change_mcd,
   auto_have_skill,
@@ -280,7 +280,7 @@ export function borisDemandSandwich(immediately: boolean): boolean {
   if (immediately) {
     const total_cost: number = remainingDaily() * 5;
     if (myMaxmp() >= total_cost) {
-      if (myMp() < total_cost && !acquireMP$1(total_cost)) {
+      if (myMp() < total_cost && !acquireMP(total_cost)) {
         //can't afford it AND failed to restore
         abort(
           "failed to acquire the MP needed to cast [Demand Sandwich], aborting to prevent diet mishap",
@@ -289,7 +289,7 @@ export function borisDemandSandwich(immediately: boolean): boolean {
       return useSkill(remainingDaily(), $skill`Demand Sandwich`);
     } else {
       while (remainingDaily() > 0) {
-        if (acquireMP$1(5)) {
+        if (acquireMP(5)) {
           useSkill(remainingDaily(), $skill`Demand Sandwich`);
         } else {
           abort(
@@ -353,7 +353,7 @@ export function borisAcquireHP(goal: number): boolean {
     if (myMp() < mp_desired && myMaxmp() > 10) {
       //if maxMP is too low. do not wastefully try restoring it.
       //I do not have enough MP to cast as many laugh it off as I would like
-      if (!acquireMP$1(mp_desired)) {
+      if (!acquireMP(mp_desired)) {
         //try to acquireMP to target. if we already have it acquireMP will just return true.
         failed_acquireMP = true;
       }

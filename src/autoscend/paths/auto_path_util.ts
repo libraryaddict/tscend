@@ -17,7 +17,7 @@ import { $class, $item, $skill } from "libram";
 
 import { initializeSettings } from "../../autoscend";
 import { stomach_left } from "../auto_consume";
-import { hasTorso$1, hasUsefulShirt, meatReserve } from "../auto_util";
+import { hasTorso, hasUsefulShirt, meatReserve } from "../auto_util";
 import { auto_bestWarPlan } from "../quests/level_12";
 import { in_aosol } from "./avatar_of_shadows_over_loathing";
 import { in_tcrs } from "./two_crazy_random_summer";
@@ -31,7 +31,7 @@ export function auto_buySkills(): boolean {
   if (
     myMeat() >= meatReserve() + 6000 &&
     gnomadsAvailable() &&
-    !hasTorso$1() &&
+    !hasTorso() &&
     hasUsefulShirt() &&
     !in_aosol()
   ) {
@@ -39,7 +39,7 @@ export function auto_buySkills(): boolean {
   } else if (
     myMeat() >= meatReserve() &&
     gnomadsAvailable() &&
-    !hasTorso$1() &&
+    !hasTorso() &&
     hasUsefulShirt() &&
     in_aosol()
   ) {

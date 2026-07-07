@@ -209,22 +209,22 @@ import {
 } from "./auto_familiar";
 import { auto_sortedByModifier$3, List$8 } from "./auto_list";
 import { providePlusCombat$3, providePlusNonCombat$3 } from "./auto_providers";
-import { acquireMP$1, uneffect } from "./auto_restore";
+import { acquireMP, uneffect } from "./auto_restore";
 import { solveDelayZone$1 } from "./auto_routing";
 import { zone_hasLuckyAdventure } from "./auto_zone";
 import { kmailObject } from "./autoscend_record";
 import {
   banisherCombatString$2,
   banisherCombatString$3,
-  canUse$2,
-  canUse$4,
+  canUse,
+  canUse$3,
   getCopier,
   getSniffer,
   replaceMonsterCombatString$1,
   useItem$1,
   yellowRayCombatString,
 } from "./combat/auto_combat_util";
-import { auto_get_clan_lounge, handleFaxMonster$2 } from "./iotms/clan";
+import { auto_get_clan_lounge, handleFaxMonster } from "./iotms/clan";
 import { auto_hasNavelRing, auto_navelFreeRunChance } from "./iotms/mr2007";
 import {
   expectGhostReport,
@@ -233,7 +233,7 @@ import {
   timeSpinnerCombat$1,
 } from "./iotms/mr2016";
 import {
-  asdonBuff$1,
+  asdonBuff,
   auto_breatheOutsLeft,
   auto_haveGenieBottleOrPocketWishes,
   auto_wishesAvailable,
@@ -850,7 +850,7 @@ export function canYellowRay(target: Monster): boolean {
     if (
       auto_hasParka() &&
       auto_is_valid$2($skill`Spit jurassic acid`) &&
-      hasTorso$1()
+      hasTorso()
     ) {
       return (
         yellowRayCombatString(
@@ -1320,14 +1320,14 @@ export function freeRunCombatStringPreBanish(
     // todo: other ghosts
     if (
       isGhost(enemy) &&
-      canUse$4($item`T.U.R.D.S. Key`) &&
+      canUse$3($item`T.U.R.D.S. Key`) &&
       itemAmount($item`T.U.R.D.S. Key`) > 0
     ) {
       return useItem$1($item`T.U.R.D.S. Key`);
     }
     //free runaway against pygmies. accelerates hidden city quest
     if (
-      canUse$4($item`short writ of habeas corpus`) &&
+      canUse$3($item`short writ of habeas corpus`) &&
       itemAmount($item`short writ of habeas corpus`) > 0 &&
       $monsters`pygmy orderlies, pygmy witch lawyer, pygmy witch nurse`.includes(
         enemy,
@@ -1363,7 +1363,7 @@ export function freeRunCombatString(
         autoEquip$1($item`spring shoes`);
         return `skill ${$skill`Spring Away`}`;
       } else {
-        if (canUse$2($skill`Spring Away`)) {
+        if (canUse($skill`Spring Away`)) {
           return `skill ${$skill`Spring Away`}`;
         }
       }
@@ -1374,14 +1374,14 @@ export function freeRunCombatString(
         autoEquip$1($item`Roman Candelabra`);
         return `skill ${$skill`Blow the Green Candle!`}`;
       } else {
-        if (canUse$2($skill`Blow the Green Candle!`)) {
+        if (canUse($skill`Blow the Green Candle!`)) {
           return `skill ${$skill`Blow the Green Candle!`}`;
         }
       }
     }
 
     for (const it of $items`green smoke bomb, tattered scrap of paper, GOTO`) {
-      if (canUse$4(it) && itemAmount(it) > 0) {
+      if (canUse$3(it) && itemAmount(it) > 0) {
         return useItem$1(it);
       }
     }
@@ -1467,7 +1467,7 @@ export function freeRunCombatString(
     }
   }
 
-  if (canUse$2($skill`Peel Out`) && pete_peelOutRemaining() > 0) {
+  if (canUse($skill`Peel Out`) && pete_peelOutRemaining() > 0) {
     return `skill ${$skill`Peel Out`}`;
   }
   // Bowling ball is a banish as well, but is available enough that we want to use it as a free run source too
@@ -1494,7 +1494,7 @@ export function freeRunCombatString(
   if (!inAftercore()) {
     for (const it of $items`giant eraser`) {
       //assuming additional ones will be added, eventually
-      if (canUse$4(it) && itemAmount(it) > 0) {
+      if (canUse$3(it) && itemAmount(it) > 0) {
         return useItem$1(it);
       }
     }
@@ -1630,7 +1630,7 @@ export function adjustForSniffingIfPossible(target: Monster): boolean {
     return autoEquip$1($item`cursed monkey's paw`);
   }
   if (sniffer !== Skill.none) {
-    return acquireMP$1(mpCost(sniffer));
+    return acquireMP(mpCost(sniffer));
   }
   return false;
 }
@@ -1720,7 +1720,7 @@ export function banishSources(): number {
       continue;
     }
   }
-  if (canUse$2(getZooKickBanish())) {
+  if (canUse(getZooKickBanish())) {
     count_1 += 1;
   }
   //equipment
@@ -1832,7 +1832,7 @@ export function freeKillSources(): number {
       continue;
     }
   }
-  if (canUse$2(getZooKickInstaKill())) {
+  if (canUse(getZooKickInstaKill())) {
     count_1 += 1;
   }
   //equipment
@@ -1929,7 +1929,7 @@ export function yellowRaySources(): number {
       continue;
     }
   }
-  if (canUse$2(getZooKickYR())) {
+  if (canUse(getZooKickYR())) {
     count_1 += 1;
   }
   //equipment
@@ -2058,7 +2058,7 @@ export function sniffSources(): number {
       continue;
     }
   }
-  if (canUse$2(getZooKickSniff())) {
+  if (canUse(getZooKickSniff())) {
     count_1 += 1;
   }
   //equipment
@@ -2078,7 +2078,7 @@ export function sniffSources(): number {
   return count_1;
 }
 
-export function hasTorso$1(): boolean {
+export function hasTorso(): boolean {
   return (
     haveSkill($skill`Torso Awareness`) ||
     haveSkill($skill`Best Dressed`) ||
@@ -2398,7 +2398,7 @@ export function cloverUsageInit(override: boolean): boolean {
     //try to get one out of closet, catch to avoid an error being thrown
     try {
       retrieveItem(1, $item`11-leaf clover`);
-    } catch (e: any) {}
+    } catch {}
   }
   if (itemAmount($item`11-leaf clover`) > 0) {
     use(1, $item`11-leaf clover`);
@@ -2757,7 +2757,7 @@ export function MLDamageToMonsterMultiplier(): number {
   return retval;
 }
 
-export function freeCrafts$1(): number {
+export function auto_freeCrafts(): number {
   let retval: number = 0;
   if (
     haveSkill($skill`Rapid Prototyping`) &&
@@ -3231,7 +3231,7 @@ function summonMonster$1(mon: Monster, speculative: boolean): boolean {
     );
     return true;
   }
-  if (handleFaxMonster$2(mon, !speculative)) {
+  if (handleFaxMonster(mon, !speculative)) {
     auto_log_debug(
       `${speculative ? "Can" : "Did"} summon ${mon} via fax`,
       "blue",
@@ -3337,7 +3337,7 @@ export function maxSealSummons(): number {
   return 5;
 }
 
-export function acquireCombatMods$1(amt: number, doEquips: boolean): boolean {
+export function acquireCombatMods(amt: number, doEquips: boolean): boolean {
   if (amt < 0) {
     return providePlusNonCombat$3(min(auto_combatModCap(), -1 * amt), doEquips);
   } else if (amt > 0) {
@@ -3681,7 +3681,7 @@ export function auto_autosell(quantity: number, toSell: Item): boolean {
   return false;
 }
 
-export function runChoice$1(page_text: string): string {
+export function auto_runChoice(page_text: string): string {
   while (containsText(page_text, "choice.php")) {
     //# Get choice adventure number
     const begin_choice_adv_num: number =
@@ -4019,7 +4019,6 @@ cabinet of Dr. Limpieza
 
 export function effectiveDropChance(it: Item, baseDropRate: number): number {
   //0 to 100 chance to drop at end of fight
-  let retval: number = 0;
   let item_modifier: number = itemDropModifier();
 
   if (baseDropRate > 0) {
@@ -4063,7 +4062,7 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
     }
   }
 
-  retval = (baseDropRate * (100 + item_modifier)) / 100.0;
+  let retval: number = (baseDropRate * (100 + item_modifier)) / 100.0;
   retval = min(100, retval); //final drop chance % before special modifiers
 
   if (retval > 0) {
@@ -4097,14 +4096,19 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
       switch (myLocation().fireLevel) {
         case 5:
           wildfireBurnChance = 1;
+          break;
         case 4:
           wildfireBurnChance = 0.768;
+          break;
         case 3:
           wildfireBurnChance = 0.361;
+          break;
         case 2:
           wildfireBurnChance = 0.109;
+          break;
         default:
           wildfireBurnChance = 0;
+          break;
       }
       retval = retval * (1 - wildfireBurnChance);
     }
@@ -4156,7 +4160,7 @@ export function ATSongList(): Map<Effect, boolean> {
   return songs;
 }
 
-export function shrugAT$1(anticipated: Effect): void {
+export function shrugAT(anticipated: Effect): void {
   if (
     is_boris() ||
     is_jarlsberg() ||
@@ -4456,7 +4460,7 @@ export function auto_can_equip(it: Item): boolean {
 }
 
 export function auto_can_equip$1(it: Item, s: Slot): boolean {
-  if (s === $slot`shirt` && !hasTorso$1()) {
+  if (s === $slot`shirt` && !hasTorso()) {
     return false;
   }
 
@@ -4534,148 +4538,79 @@ export function auto_check_conditions(conds: string): boolean {
     const condition_type: string = m.group(1);
     const condition_data: string = m.group(2);
     {
-      // data: The text name of the class, as used by to_class()
-      // You must be the given class
-      // As a precaution, autoscend aborts if to_class returns $class[none]
-
-      let req_class: Class = Class.none;
-      // data: The text name of the mainstat, as used by to_stat()
-      // Your mainstat must be the given stat
-      // As a precaution, autoscend aborts if to_stat returns $stat[none]
-
-      let req_mainstat: Stat = Stat.none;
-      // data: The text name of the path, as returned by my_path().name
-      // You must be currently on that path
-      // No safety checking possible here, so hopefully you don't misspell anything
-      // data: The int id name of the path, as returned by my_path().id
-      // You must be currently on that path
-      // As a precaution, autoscend aborts if to_int returns 0
-
-      let req_pathid: number = 0;
-      // data: Text name of the skill, as used by to_skill()
-      // You must have the given skill
-      // As a precaution, autoscend aborts if to_skill returns $skill[none]
-
-      let req_skill: Skill = Skill.none;
-      // data: Text name of the effect, as used by to_effect()
-      // You must have at least one turn of the given effect
-      // As a precaution, autoscend aborts if to_effect returns $effect[none]
-
-      let req_effect: Effect = Effect.none;
-      // data: <item name><comparison operator><value>
-      // The number of that item you have must compare properly
-      // As a precaution, autoscend aborts if to_item returns $item[none]
-
-      let m5: AshMatcher = undefined;
-      let req_item: Item = Item.none;
-      // data: <value><equal sign separator><item name>
-      // The chance of getting the item at the end of the fight from that base drop rate value must be 100
-      // As a precaution, autoscend aborts if to_item returns $item[none]
-
-      let m7: AshMatcher = undefined;
-      let todrop_item: Item = Item.none;
-      let base_drop_chance: number = 0.0;
-      // data: The outfit name as used by have_outfit
-      // You must have the given outfit
-      // No safety checking here possible, at least not conveniently
-      // data: Text name of the familiar, as used by to_familiar()
-      // You must be currently using this familiar
-      // As a precaution, autoscend aborts if to_familiar returns $familiar[none]
-      // Unless the text is literall "none" (case sensitive)
-
-      let req_familiar: Familiar = Familiar.none;
-      // data: Text name of the familiar, as used by to_familiar()
-      // You must own this familiar, and it must be legal
-      // As a precaution, autoscend aborts if to_familiar returns $familiar[none]
-
-      let havefamiliar: Familiar = Familiar.none;
-      // data: Text name of the location, as used by to_location()
-      // You must be in this location (if you want to check for elsewhere, temporarily set_location)
-      // As a precaution, autoscend aborts if to_location returns $location[none]
-
-      let req_loc: Location = Location.none;
-      // data: <location><comparison operator><integer value>
-      // As a precaution, autoscend aborts if to_location returns $location[none]
-
-      let loc: Location = Location.none;
-      // data: <propname><comparison operator><value>
-      // >/</>=/<= only supported for integer properties!
-
-      let prop: string = "";
-      // data: <propname>
-      // gets propname and converts to a boolean
-      // data: <questpropname><comparison operator><value>
-      // like prop, but with > and < and >= and <= and uses internalQuestStatus
-      // the value to compare to should always be an integer
-
-      let m3: AshMatcher = undefined;
-      let quest_state: number = 0;
-      let compare_to: number = 0;
-      // data: Text name of the monster, as used by to_monster()
-      // True if that monster has been sniffed by any olfaction-like
-      // As a precaution, autoscend will abort if to_monster returns $monster[none]
-
-      let check_sniffed: Monster = Monster.none;
-      // data: Doesn't matter, but put something so I don't have to support dataless conditions
-      // True when you expect a protonic ghost report
-      // Pretty much just for the protonic accelerator pack
-      // data: Doesn't matter, but put something so I don't have to support dataless conditions
-      // True when there is a latte unlock available in the area (that you don't have, of course)
-      // Pretty much just for the latte
-      // data: Doesn't matter, but put something so I don't have to support dataless conditions
-      // True if the hidden tavern has been unlocked this ascension
-      // data: The number of sgeeas you want to have
-      // True if you have at least that many sgeeas at your disposal
-
-      let sgeeas: number = 0;
-      // data: The day to check for
-      // True if we are currently on that day
-
-      let day: number = 0;
-      let m4: AshMatcher = undefined;
       switch (condition_type) {
-        case "class":
-          req_class = toClass(condition_data);
+        case "class": {
+          // data: The text name of the class, as used by to_class()
+          // You must be the given class
+          // As a precaution, autoscend aborts if to_class returns $class[none]
+          const req_class: Class = toClass(condition_data);
           if (req_class === Class.none) {
             abort(`"${condition_data}" does not properly convert to a class!`);
           }
           return req_class === myClass();
-        case "mainstat":
-          req_mainstat = toStat(condition_data);
+        }
+        case "mainstat": {
+          // data: The text name of the mainstat, as used by to_stat()
+          // Your mainstat must be the given stat
+          // As a precaution, autoscend aborts if to_stat returns $stat[none]
+          const req_mainstat: Stat = toStat(condition_data);
           if (req_mainstat === Stat.none) {
             abort(`"${condition_data}" does not properly convert to a stat!`);
           }
           return req_mainstat === myPrimestat();
-        case "path":
+        }
+        case "path": {
+          // data: The text name of the path, as returned by my_path().name
+          // You must be currently on that path
+          // No safety checking possible here, so hopefully you don't misspell anything
           return condition_data === myPath().name;
-        case "pathid":
-          req_pathid = toInt(condition_data);
+        }
+        case "pathid": {
+          // data: The int id name of the path, as returned by my_path().id
+          // You must be currently on that path
+          // As a precaution, autoscend aborts if to_int returns 0
+          const req_pathid: number = toInt(condition_data);
           if (req_pathid === 0) {
             abort(
               `"${condition_data}" does not properly convert to a path id!`,
             );
           }
           return req_pathid === myPath().id;
-        case "skill":
-          req_skill = toSkill(condition_data);
+        }
+        case "skill": {
+          // data: Text name of the skill, as used by to_skill()
+          // You must have the given skill
+          // As a precaution, autoscend aborts if to_skill returns $skill[none]
+          const req_skill: Skill = toSkill(condition_data);
           if (req_skill === Skill.none) {
             abort(`"${condition_data}" does not properly convert to a skill!`);
           }
           return auto_have_skill(req_skill);
-        case "effect":
-          req_effect = toEffect(condition_data);
+        }
+        case "effect": {
+          // data: Text name of the effect, as used by to_effect()
+          // You must have at least one turn of the given effect
+          // As a precaution, autoscend aborts if to_effect returns $effect[none]
+          const req_effect: Effect = toEffect(condition_data);
           if (req_effect === Effect.none) {
             abort(
               `"${condition_data}" does not properly convert to an effect!`,
             );
           }
           return haveEffect(req_effect) > 0;
-        case "item":
-          m5 = new AshMatcher("([^=<>]+)([=<>]+)(.+)", condition_data);
+        }
+        case "item": {
+          // data: <item name><comparison operator><value>
+          // The number of that item you have must compare properly
+          // As a precaution, autoscend aborts if to_item returns $item[none]
+          const m5: AshMatcher = new AshMatcher(
+            "([^=<>]+)([=<>]+)(.+)",
+            condition_data,
+          );
           if (!m5.find()) {
             abort(`"${condition_data}" is not a proper item condition format!`);
           }
-          req_item = toItem(m5.group(1));
+          const req_item: Item = toItem(m5.group(1));
           if (req_item === Item.none) {
             abort(`"${m5.group(1)}" does not properly convert to an item!`);
           }
@@ -4684,44 +4619,70 @@ export function auto_check_conditions(conds: string): boolean {
             toInt(m5.group(3)),
             m5.group(2),
           );
-        case "itemdropcapped":
-          m7 = new AshMatcher("([^=<>]+)=(.+)", condition_data);
+        }
+        case "itemdropcapped": {
+          // data: <value><equal sign separator><item name>
+          // The chance of getting the item at the end of the fight from that base drop rate value must be 100
+          // As a precaution, autoscend aborts if to_item returns $item[none]
+          const m7: AshMatcher = new AshMatcher(
+            "([^=<>]+)=(.+)",
+            condition_data,
+          );
           if (!m7.find()) {
             abort(`"${condition_data}" is not a proper item condition format!`);
           }
-          todrop_item = toItem(m7.group(2));
-          base_drop_chance = toFloat(m7.group(1));
+          const todrop_item: Item = toItem(m7.group(2));
+          const base_drop_chance: number = toFloat(m7.group(1));
           if (todrop_item === Item.none) {
             abort(`"${m7.group(1)}" does not properly convert to an item!`);
           }
           return effectiveDropChance(todrop_item, base_drop_chance) >= 100;
+        }
         case "outfit":
+          // data: The outfit name as used by have_outfit
+          // You must have the given outfit
+          // No safety checking here possible, at least not conveniently
           return haveOutfit(condition_data);
-        case "familiar":
-          req_familiar = toFamiliar(condition_data);
+        case "familiar": {
+          // data: Text name of the familiar, as used by to_familiar()
+          // You must be currently using this familiar
+          // As a precaution, autoscend aborts if to_familiar returns $familiar[none]
+          // Unless the text is literall "none" (case sensitive)
+          const req_familiar: Familiar = toFamiliar(condition_data);
           if (req_familiar === Familiar.none && condition_data !== "none") {
             abort(
               `"${condition_data}" does not properly convert to a familiar!`,
             );
           }
           return myFamiliar() === req_familiar;
-        case "havefamiliar":
-          havefamiliar = toFamiliar(condition_data);
+        }
+        case "havefamiliar": {
+          // data: Text name of the familiar, as used by to_familiar()
+          // You must own this familiar, and it must be legal
+          // As a precaution, autoscend aborts if to_familiar returns $familiar[none]
+          const havefamiliar: Familiar = toFamiliar(condition_data);
           if (havefamiliar === Familiar.none) {
             abort(
               `"${condition_data}" does not properly convert to a familiar!`,
             );
           }
           return auto_have_familiar(havefamiliar);
-        case "loc":
-          req_loc = toLocation(condition_data);
+        }
+        case "loc": {
+          // data: Text name of the location, as used by to_location()
+          // You must be in this location (if you want to check for elsewhere, temporarily set_location)
+          // As a precaution, autoscend aborts if to_location returns $location[none]
+          const req_loc: Location = toLocation(condition_data);
           if (req_loc === Location.none) {
             abort(
               `"${condition_data}" does not properly convert to a location!`,
             );
           }
           return myLocation() === req_loc;
+        }
         case "turnsspent": {
+          // data: <location><comparison operator><integer value>
+          // As a precaution, autoscend aborts if to_location returns $location[none]
           const m6: AshMatcher = new AshMatcher(
             "([^=<>]+)([=<>]+)(.+)",
             condition_data,
@@ -4731,7 +4692,7 @@ export function auto_check_conditions(conds: string): boolean {
               `"${condition_data}" is not a proper turnsspent condition format!`,
             );
           }
-          loc = toLocation(m6.group(1));
+          const loc: Location = toLocation(m6.group(1));
           if (loc === Location.none) {
             abort(
               `"${condition_data}" does not properly convert to a location!`,
@@ -4747,6 +4708,8 @@ export function auto_check_conditions(conds: string): boolean {
           return loc.turnsSpent === toInt(m6.group(3));
         }
         case "prop": {
+          // data: <propname><comparison operator><value>
+          // >/</>=/<= only supported for integer properties!
           const m2: AshMatcher = new AshMatcher(
             "([^=<>]+)([=<>]+)(.+)",
             condition_data,
@@ -4754,7 +4717,7 @@ export function auto_check_conditions(conds: string): boolean {
           if (!m2.find()) {
             abort(`"${condition_data}" is not a proper prop condition format!`);
           }
-          prop = getProperty(m2.group(1));
+          const prop: string = getProperty(m2.group(1));
           if (!["=", "=="].includes(m2.group(2))) {
             return compare_numbers(
               toInt(prop),
@@ -4765,19 +4728,31 @@ export function auto_check_conditions(conds: string): boolean {
           return prop === m2.group(3);
         }
         case "prop_boolean":
+          // data: <propname>
+          // gets propname and converts to a boolean
           return toBoolean(getProperty(condition_data));
-        case "quest":
-          m3 = new AshMatcher("([^=<>]+)([=<>]+)(.+)", condition_data);
+        case "quest": {
+          // data: <questpropname><comparison operator><value>
+          // like prop, but with > and < and >= and <= and uses internalQuestStatus
+          // the value to compare to should always be an integer
+          const m3: AshMatcher = new AshMatcher(
+            "([^=<>]+)([=<>]+)(.+)",
+            condition_data,
+          );
           if (!m3.find()) {
             abort(
               `"${condition_data}" is not a proper quest condition format!`,
             );
           }
-          quest_state = internalQuestStatus(m3.group(1));
-          compare_to = toInt(m3.group(3));
+          const quest_state: number = internalQuestStatus(m3.group(1));
+          const compare_to: number = toInt(m3.group(3));
           return compare_numbers(quest_state, compare_to, m3.group(2));
-        case "sniffed":
-          check_sniffed = toMonster(condition_data);
+        }
+        case "sniffed": {
+          // data: Text name of the monster, as used by to_monster()
+          // True if that monster has been sniffed by any olfaction-like
+          // As a precaution, autoscend will abort if to_monster returns $monster[none]
+          const check_sniffed: Monster = toMonster(condition_data);
           if (check_sniffed === Monster.none) {
             abort(
               `"${condition_data}" does not properly convert to a monster!`,
@@ -4828,20 +4803,35 @@ export function auto_check_conditions(conds: string): boolean {
             return true;
           }
           return false;
+        }
         case "expectghostreport":
+          // data: Doesn't matter, but put something so I don't have to support dataless conditions
+          // True when you expect a protonic ghost report
+          // Pretty much just for the protonic accelerator pack
           return expectGhostReport();
         case "latte":
+          // data: Doesn't matter, but put something so I don't have to support dataless conditions
+          // True when there is a latte unlock available in the area (that you don't have, of course)
+          // Pretty much just for the latte
           return auto_latteDropAvailable(myLocation());
         case "tavern":
+          // data: Doesn't matter, but put something so I don't have to support dataless conditions
+          // True if the hidden tavern has been unlocked this ascension
           return toInt(getProperty("hiddenTavernUnlock")) >= myAscensions();
-        case "sgeea":
-          sgeeas = toInt(condition_data);
+        case "sgeea": {
+          // data: The number of sgeeas you want to have
+          // True if you have at least that many sgeeas at your disposal
+          const sgeeas: number = toInt(condition_data);
           return itemAmount($item`soft green echo eyedrop antidote`) >= sgeeas;
-        case "day":
-          day = toInt(condition_data);
+        }
+        case "day": {
+          // data: The day to check for
+          // True if we are currently on that day
+          const day: number = toInt(condition_data);
           return myDaycount() === day;
-        case "ML":
-          m4 = new AshMatcher("([=<>]+)(.+)", condition_data);
+        }
+        case "ML": {
+          const m4: AshMatcher = new AshMatcher("([=<>]+)(.+)", condition_data);
           if (!m4.find()) {
             abort(`"${condition_data}" is not a proper ML condition format!`);
           }
@@ -4850,7 +4840,8 @@ export function auto_check_conditions(conds: string): boolean {
             toInt(m4.group(2)),
             m4.group(1),
           );
-        case "consume":
+        }
+        case "consume": {
           // data: eat\drink\chew
           // True if we can eat\drink\chew anything today
           switch (condition_data) {
@@ -4860,9 +4851,12 @@ export function auto_check_conditions(conds: string): boolean {
               return inebriety_left() > 0;
             case "chew":
               return spleen_left() > 0;
-            default:
+            default: {
               abort(`Invalid consume type "${condition_type}" found!`);
+            }
           }
+          break;
+        }
         default:
           abort(`Invalid condition type "${condition_type}" found!`);
       }
@@ -4990,7 +4984,7 @@ function auto_wantToCopy$1(enemy: Monster): boolean {
   return toCopy.get(enemy) ?? toCopy.set(enemy, false).get(enemy);
 }
 
-export function zoneRank$1(mon: Monster, loc: Location): number {
+export function zoneRank(mon: Monster, loc: Location): number {
   if (auto_wantToYellowRay(mon, loc)) {
     return 1;
   }
@@ -5189,6 +5183,7 @@ function autoFlavour(place: Location): boolean {
         setFlavour($element`hot`); // doing 100 hot damage in a fight will fill bucket faster
         return true;
       }
+    // INTENTIONAL LACK OF BREAK
     case $location`VYKEA`:
       // INTENTIONAL LACK OF BREAK
       if (
@@ -5593,7 +5588,7 @@ function UrKelCheck(
       getProperty("auto_MLSafetyLimit") === "" ||
       (2 * myLevel() <= UrKelUpperLimit && 2 * myLevel() >= UrKelLowerLimit)
     ) {
-      shrugAT$1($effect`Ur-Kel's Aria of Annoyance`);
+      shrugAT($effect`Ur-Kel's Aria of Annoyance`);
       buffMaintain$3($effect`Ur-Kel's Aria of Annoyance`, 0, 1, 10);
     }
   }
@@ -5665,7 +5660,7 @@ export function auto_MaxMLToCap(ToML: number, doAltML: boolean): boolean {
   angryAgateCheck(ToML, 29, 25);
   // 25
   if (doAltML && monsterLevelAdjustment() + 25 <= auto_convertDesiredML(ToML)) {
-    asdonBuff$1($effect`Driving Recklessly`);
+    asdonBuff($effect`Driving Recklessly`);
   }
   if (doAltML) {
     tryEffects(
@@ -5795,7 +5790,7 @@ function _auto_forceNextNoncombat(
   } else if (
     auto_hasParka() &&
     toInt(getProperty("_spikolodonSpikeUses")) < 5 &&
-    hasTorso$1() &&
+    hasTorso() &&
     (!in_wereprof() || !is_professor())
   ) {
     // if we're a professor, we can't use the spikes
@@ -5867,7 +5862,7 @@ function _auto_forceNextNoncombat$1(loc: Location): boolean {
   return _auto_forceNextNoncombat(loc, false);
 }
 
-export function auto_forceNextNoncombat$1(loc: Location): boolean {
+export function auto_forceNextNoncombat(loc: Location): boolean {
   if (auto_haveQueuedForcedNonCombat()) {
     auto_log_warning(
       "Trying to force a noncombat adventure, but I think we've already forced one...",
@@ -6179,15 +6174,10 @@ export function meatReserve(): number {
   ) {
     reserve_extra += npcPrice($item`pump grease`);
   }
-  if (
-    !hasTorso$1() &&
-    hasUsefulShirt() &&
-    !gnomadsAvailable() &&
-    inGnomeSign()
-  ) {
+  if (!hasTorso() && hasUsefulShirt() && !gnomadsAvailable() && inGnomeSign()) {
     reserve_extra += toInt(5000 * npcStoreDiscountMulti()); //Going to need 5k anyway if we need torso so might as well start saving early. Worst case scenario we make a meatcar
   }
-  if (!hasTorso$1() && gnomadsAvailable() && hasUsefulShirt()) {
+  if (!hasTorso() && gnomadsAvailable() && hasUsefulShirt()) {
     reserve_extra += 5000; //we want Torso ASAP if we have a useful shirt
   }
 
@@ -6437,7 +6427,7 @@ export function turnsUsedByRemainingNCForcesToday(): number {
   return forces;
 }
 
-export function substat_to_level$1(n: number): number {
+export function substat_to_level(n: number): number {
   if (n <= 16) {
     return 1; // All substats less than 16 are level 1, before the formula takes effect
   }

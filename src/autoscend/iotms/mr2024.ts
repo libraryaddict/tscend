@@ -82,9 +82,9 @@ import {
   internalQuestStatus,
   stat_exp_percent,
   stat_to_substat,
-  substat_to_level$1,
+  substat_to_level,
 } from "../auto_util";
-import { canUse$2 } from "../combat/auto_combat_util";
+import { canUse } from "../combat/auto_combat_util";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { in_bhy } from "../paths/bees_hate_you";
 import { in_glover } from "../paths/g_lover";
@@ -711,7 +711,7 @@ export function auto_buyFromSeptEmberStore(): void {
         equippedItem($slot`off-hand`) === $item`McHugeLarge left pole`;
       if (using_mchugelarge_oh || cold_res_from_oh > 2.9) {
         const lefty: Skill = Skill.get("Aug. 13th: Left/Off Hander's Day!");
-        if (canUse$2(lefty) && !toBoolean(getProperty("_aug13Cast"))) {
+        if (canUse(lefty) && !toBoolean(getProperty("_aug13Cast"))) {
           useSkill(lefty);
         }
       }
@@ -768,7 +768,7 @@ export function auto_buyFromSeptEmberStore(): void {
   return;
 }
 
-function expected_mouthwash_main_substat$1(cold_res: number): number {
+function expected_mouthwash_main_substat(cold_res: number): number {
   const boost_factor: number = 1 + stat_exp_percent(myPrimestat()) / 100;
   return (boost_factor * 14 * cold_res ** 1.7) / 2;
 }
@@ -785,10 +785,10 @@ function expected_level_after_mouthwash$2(
   cold_res: number,
 ): number {
   const gained_main_substats: number =
-    n_mouthwash * expected_mouthwash_main_substat$1(cold_res);
+    n_mouthwash * expected_mouthwash_main_substat(cold_res);
   const old_main_substats: number = myBasestat(stat_to_substat(myPrimestat()));
   const new_main_substats: number = old_main_substats + gained_main_substats;
-  const level: number = substat_to_level$1(toInt(new_main_substats));
+  const level: number = substat_to_level(toInt(new_main_substats));
   return level;
 }
 
@@ -1029,7 +1029,7 @@ function auto_remainingClanPhotoBoothEffects(): number {
   return 3 - toInt(getProperty("_photoBoothEffects"));
 }
 
-export function auto_getClanPhotoBoothEffect$3(
+export function auto_getClanPhotoBoothEffect(
   ef_string: string,
   n_times: number,
 ): boolean {

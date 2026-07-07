@@ -64,16 +64,14 @@ import { auto_combat_nanorhinoBuff } from "./auto_combat_mr2012";
 import { auto_combatPeteStage1 } from "./auto_combat_pete";
 import { auto_combatTheSourceStage1 } from "./auto_combat_the_source";
 import {
+  auto_useSkill,
   canSurvive$1,
-  canUse$1,
-  canUse$2,
-  canUse$4,
+  canUse,
+  canUse$3,
   combat_status_add,
   combat_status_check,
   markAsUsed$1,
   useItems$1,
-  useSkill$1,
-  useSkill$2,
 } from "./auto_combat_util";
 import { auto_combatWereProfessorStage1 } from "./auto_combat_wereprofessor";
 import { auto_combatWildfireStage1 } from "./auto_combat_wildfire";
@@ -147,8 +145,8 @@ export function auto_combatDefaultStage1(
   }
 
   if (enemy === $monster`Your Shadow`) {
-    if (in_amw() && canUse$1($skill`Chew the Fat`, false)) {
-      return useSkill$1($skill`Chew the Fat`, false);
+    if (in_amw() && canUse($skill`Chew the Fat`, false)) {
+      return auto_useSkill($skill`Chew the Fat`, false);
     }
     if (in_plumber()) {
       if (itemAmount($item`super deluxe mushroom`) > 0) {
@@ -162,7 +160,7 @@ export function auto_combatDefaultStage1(
     let hand_1: Item = Item.none;
     let hand_2: Item = Item.none;
     const icup: Item = $item`Rain-Doh indigo cup`; //restore 20% of max HP. only once per combat
-    if (canUse$4(icup)) {
+    if (canUse$3(icup)) {
       if (myMaxhp() > 500 && hand_1 === Item.none) {
         markAsUsed$1(icup);
         hand_1 = icup;
@@ -201,8 +199,8 @@ export function auto_combatDefaultStage1(
   }
 
   if (enemy === $monster`wall of meat`) {
-    if (canUse$2($skill`Make it Rain`)) {
-      return useSkill$2($skill`Make it Rain`);
+    if (canUse($skill`Make it Rain`)) {
+      return auto_useSkill($skill`Make it Rain`);
     }
   }
 
@@ -211,23 +209,23 @@ export function auto_combatDefaultStage1(
       return `item ${$item`beehive`}`;
     }
 
-    if (canUse$2($skill`Shell Up`) && round_1 >= 3) {
-      return useSkill$2($skill`Shell Up`);
+    if (canUse($skill`Shell Up`) && round_1 >= 3) {
+      return auto_useSkill($skill`Shell Up`);
     }
 
-    if (canUse$2($skill`Sauceshell`) && round_1 >= 4) {
-      return useSkill$2($skill`Sauceshell`);
+    if (canUse($skill`Sauceshell`) && round_1 >= 4) {
+      return auto_useSkill($skill`Sauceshell`);
     }
 
-    if (canUse$1($skill`Belch The Rainbow`, false)) {
-      return useSkill$1($skill`Belch The Rainbow`, false);
+    if (canUse($skill`Belch The Rainbow`, false)) {
+      return auto_useSkill($skill`Belch The Rainbow`, false);
     }
 
-    if (canUse$1($skill`Kneebutt`, false)) {
-      return useSkill$1($skill`Kneebutt`, false);
+    if (canUse($skill`Kneebutt`, false)) {
+      return auto_useSkill($skill`Kneebutt`, false);
     }
-    if (canUse$1($skill`Headbutt`, false)) {
-      return useSkill$1($skill`Headbutt`, false);
+    if (canUse($skill`Headbutt`, false)) {
+      return auto_useSkill($skill`Headbutt`, false);
     }
     return "attack with weapon";
   }
@@ -237,22 +235,22 @@ export function auto_combatDefaultStage1(
       return `item ${$item`electric boning knife`}`;
     }
     if (myHp() * 4 < myMaxhp() && haveEffect($effect`Takin' It Greasy`) > 0) {
-      return useSkill$1($skill`Unleash the Greash`, false);
+      return auto_useSkill($skill`Unleash the Greash`, false);
     }
 
     if (
-      canUse$1($skill`Surprisingly Sweet Slash`, true) &&
+      canUse($skill`Surprisingly Sweet Slash`, true) &&
       auto_remainingCandyCaneSlashes() > 0
     ) {
-      return useSkill$1($skill`Surprisingly Sweet Slash`, true);
+      return auto_useSkill($skill`Surprisingly Sweet Slash`, true);
     }
 
-    if (canUse$1($skill`Garbage Nova`, false)) {
-      return useSkill$1($skill`Garbage Nova`, false);
+    if (canUse($skill`Garbage Nova`, false)) {
+      return auto_useSkill($skill`Garbage Nova`, false);
     }
 
-    if (canUse$1($skill`Saucegeyser`, false)) {
-      return useSkill$2($skill`Saucegeyser`);
+    if (canUse($skill`Saucegeyser`, false)) {
+      return auto_useSkill($skill`Saucegeyser`);
     }
   }
   //nanorhino familiar buff acquisition. Must be the first action taken in combat.
@@ -267,7 +265,7 @@ export function auto_combatDefaultStage1(
       myClass(),
     ) ||
     haveEffect($effect`Riboflavin'`) > 0 ||
-    amw_wanttoPP(enemy);
+    amw_wanttoPP();
   if (
     !combat_status_check("pickpocket") &&
     ableToPickpocket &&
@@ -312,7 +310,7 @@ export function auto_combatDefaultStage1(
     auto_canCircadianRhythm() &&
     (auto_circadianRhythmTarget(enemy) ||
       auto_circadianRhythmTarget$1(monsterPhylum(enemy))) &&
-    canUse$2($skill`Recall Facts: %phylum Circadian Rhythms`) &&
+    canUse($skill`Recall Facts: %phylum Circadian Rhythms`) &&
     !ag_is_bodyguard()
   ) {
     handleTracker$1(
@@ -320,13 +318,13 @@ export function auto_combatDefaultStage1(
       monsterPhylum(enemy).toString(),
       "auto_otherstuff",
     );
-    return useSkill$2($skill`Recall Facts: %phylum Circadian Rhythms`);
+    return auto_useSkill($skill`Recall Facts: %phylum Circadian Rhythms`);
   }
 
   if (
     auto_canHabitat() &&
     auto_habitatTarget(enemy) &&
-    canUse$2($skill`Recall Facts: Monster Habitats`) &&
+    canUse($skill`Recall Facts: Monster Habitats`) &&
     !ag_is_bodyguard()
   ) {
     handleTracker$1(
@@ -334,20 +332,20 @@ export function auto_combatDefaultStage1(
       enemy.toString(),
       "auto_copies",
     );
-    return useSkill$2($skill`Recall Facts: Monster Habitats`);
+    return auto_useSkill($skill`Recall Facts: Monster Habitats`);
   }
 
   if (
     auto_canRWBBlast() &&
     auto_RWBBlastTarget(enemy) &&
-    canUse$2($skill`%fn, fire a Red, White and Blue Blast`)
+    canUse($skill`%fn, fire a Red, White and Blue Blast`)
   ) {
     handleTracker$1(
       $skill`%fn, fire a Red, White and Blue Blast`.toString(),
       enemy.toString(),
       "auto_copies",
     );
-    return useSkill$2($skill`%fn, fire a Red, White and Blue Blast`);
+    return auto_useSkill($skill`%fn, fire a Red, White and Blue Blast`);
   }
 
   const backedUpMonster: Monster = toMonster(
@@ -359,7 +357,7 @@ export function auto_combatDefaultStage1(
   if (
     auto_backupTarget() &&
     enemy !== backedUpMonster &&
-    canUse$2($skill`Back-Up to your Last Enemy`) &&
+    canUse($skill`Back-Up to your Last Enemy`) &&
     !reserveAdvsForFreeFights
   ) {
     handleTracker$1(
@@ -372,7 +370,7 @@ export function auto_combatDefaultStage1(
       $skill`Back-Up to your Last Enemy`.toString(),
       "auto_copies",
     );
-    return useSkill$2($skill`Back-Up to your Last Enemy`);
+    return auto_useSkill($skill`Back-Up to your Last Enemy`);
   }
   //saber copy (iotm) is different from other copies in that it comes with a free escape
   //technically it is an ender. but one that should be run before duplications.
@@ -390,29 +388,29 @@ export function auto_combatDefaultStage1(
     $monsters`pygmy bowler, bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, red butler`.includes(
       enemy,
     ) &&
-    canUse$2($skill`%fn, spit on them!`)
+    canUse($skill`%fn, spit on them!`)
   ) {
     handleTracker$1(
       $skill`%fn, spit on them!`.toString(),
       enemy.toString(),
       "auto_otherstuff",
     );
-    return useSkill$1($skill`%fn, spit on them!`, true);
+    return auto_useSkill($skill`%fn, spit on them!`, true);
   }
   //[Patriotic Eagle] familiar skill that gives a useful buff
-  if (canUse$2($skill`%fn, let's pledge allegiance to a Zone`)) {
+  if (canUse($skill`%fn, let's pledge allegiance to a Zone`)) {
     auto_getCitizenZone(myLocation(), true);
-    return useSkill$1($skill`%fn, let's pledge allegiance to a Zone`, true);
+    return auto_useSkill($skill`%fn, let's pledge allegiance to a Zone`, true);
   }
   //duplicate turns the enemy from a single enemy into a mob containing 2 copies of this enemy. Doubling their stats and doubling their drops
   if (
-    canUse$2($skill`Duplicate`) &&
+    canUse($skill`Duplicate`) &&
     toInt(getProperty("_sourceTerminalDuplicateUses")) === 0 &&
     !inAftercore() &&
     !in_nuclear()
   ) {
     if ($monsters`dairy goat`.includes(enemy)) {
-      return useSkill$2($skill`Duplicate`);
+      return auto_useSkill($skill`Duplicate`);
     }
   }
   //convert enemy into a scaling fish monster
@@ -425,7 +423,7 @@ export function auto_combatDefaultStage1(
       $skill`Sea *dent: Talk to Some Fish`.toString(),
       "auto_otherstuff",
     );
-    return useSkill$2($skill`Sea *dent: Talk to Some Fish`);
+    return auto_useSkill($skill`Sea *dent: Talk to Some Fish`);
   }
   //these special conditions make it impossible to do anything but attack with weapon.
   if (haveEffect($effect`Temporary Amnesia`) > 0) {

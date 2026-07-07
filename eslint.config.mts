@@ -51,6 +51,10 @@ export default defineConfig(
       "sort-imports": "off",
       "libram/verify-constants": "error",
       "unused-imports/no-unused-imports": "error",
+      "no-fallthrough": [
+        "error",
+        { commentPattern: "INTENTIONAL LACK OF BREAK" },
+      ],
       "unused-imports/no-unused-vars": [
         "warn",
         {

@@ -647,6 +647,7 @@ export function witchessFights(): boolean {
       ) {
         return auto_advWitchess("meat");
       }
+      // INTENTIONAL LACK OF BREAK
     }
     case 3: {
       if (
@@ -656,6 +657,7 @@ export function witchessFights(): boolean {
       ) {
         return auto_advWitchess("meat");
       }
+      // INTENTIONAL LACK OF BREAK
     }
     case 4: {
       if (
@@ -1203,7 +1205,7 @@ export function LX_ghostBusting(): boolean {
   return autoAdv$2(goal);
 }
 
-function timeSpinnerRemaining$1(verify: boolean): number {
+function timeSpinnerRemaining(verify: boolean): number {
   //how many time spinner minutes remain to be used.
   if (
     !auto_is_valid($item`Time-Spinner`) ||
@@ -1228,7 +1230,7 @@ function timeSpinnerRemaining$1(verify: boolean): number {
 
 export function timeSpinnerAdventure(option?: CombatMacro): boolean {
   //spend 1 minutes to Adventure Way Back in Time
-  if (timeSpinnerRemaining$1(true) < 1) {
+  if (timeSpinnerRemaining(true) < 1) {
     return false;
   }
   const pages: Map<number, string> = new Map();
@@ -1269,7 +1271,7 @@ function timeSpinnerCombat$2(
   speculative: boolean,
 ): boolean {
   //spend 3 minutes to Travel to a Recent Fight
-  if (timeSpinnerRemaining$1(!speculative) < 3) {
+  if (timeSpinnerRemaining(!speculative) < 3) {
     return false;
   }
   if (!canTimeSpinnerMonster(goal)) {
