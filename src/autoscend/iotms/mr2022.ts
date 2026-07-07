@@ -850,7 +850,7 @@ export function auto_autumnatonQuest(): boolean {
   if (completedQuestsToday > lastQuestUpgradesChecked) {
     try {
       cliExecute("autumnaton upgrade");
-    } catch (e: any) {}
+    } catch {}
     setProperty("_auto_lastAutumnatonUpgrade", completedQuestsToday.toString());
   }
   // prioritize getting important upgrades

@@ -839,7 +839,7 @@ export function L9_aBooPeak(): boolean {
             //clue usage probably failed somehow
             try {
               use(1, clue); //will not be consumed if a clue is already active
-            } catch (e: any) {}
+            } catch {}
           }
         } else {
           setProperty("auto_aboopending", (0).toString());

@@ -3010,10 +3010,12 @@ export function main(...input: string[]): void {
             break;
           }
         }
+      // INTENTIONAL LACK OF BREAK
       default:
         auto_log_info$1(
           "Running normal autoscend because you didn't enter in a valid parameter",
         );
+        break;
     }
   }
 

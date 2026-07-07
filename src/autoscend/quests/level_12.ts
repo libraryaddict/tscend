@@ -2219,21 +2219,25 @@ export function L12_farm(): boolean {
         return true;
       }
       setProperty("auto_L12FarmStage", "1");
+    // INTENTIONAL LACK OF BREAK
     case 1:
       if (autoAdv$1(1, $location`McMillicancuddy's Pond`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "2");
+    // INTENTIONAL LACK OF BREAK
     case 2:
       if (autoAdv$1(1, $location`McMillicancuddy's Back 40`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "3");
+    // INTENTIONAL LACK OF BREAK
     case 3:
       if (autoAdv$1(1, $location`McMillicancuddy's Other Back 40`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "4");
+    // INTENTIONAL LACK OF BREAK
     case 4:
       equipWarOutfit();
       visitUrl("bigisland.php?place=farm&action=farmer&pwd");

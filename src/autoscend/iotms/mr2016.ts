@@ -647,6 +647,7 @@ export function witchessFights(): boolean {
       ) {
         return auto_advWitchess("meat");
       }
+      // INTENTIONAL LACK OF BREAK
     }
     case 3: {
       if (
@@ -656,6 +657,7 @@ export function witchessFights(): boolean {
       ) {
         return auto_advWitchess("meat");
       }
+      // INTENTIONAL LACK OF BREAK
     }
     case 4: {
       if (

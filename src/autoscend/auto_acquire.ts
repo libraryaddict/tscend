@@ -563,7 +563,7 @@ function auto_hermit(amt: number, it: Item): boolean {
   const initial: number = itemAmount(it);
   try {
     hermit(amt, it);
-  } catch (e: any) {}
+  } catch {}
   return itemAmount(it) === initial + amt;
 }
 

@@ -334,6 +334,7 @@ export function LX_steelOrgan(): boolean {
       }
       if (need > 0) {
         let cake: number = itemAmount($item`sponge cake`);
+        let paper: number = itemAmount($item`gin-soaked blotter paper`);
         if (jim === 0 && cake > 0) {
           jim = toInt($item`sponge cake`);
           need -= 1;
@@ -342,9 +343,7 @@ export function LX_steelOrgan(): boolean {
         if (flargwurm === 0 && cake > 0) {
           flargwurm = toInt($item`sponge cake`);
           need -= 1;
-          cake -= 1;
         }
-        let paper: number = itemAmount($item`gin-soaked blotter paper`);
         if (bognort === 0 && paper > 0) {
           bognort = toInt($item`gin-soaked blotter paper`);
           need -= 1;
@@ -353,7 +352,6 @@ export function LX_steelOrgan(): boolean {
         if (stinkface === 0 && paper > 0) {
           stinkface = toInt($item`gin-soaked blotter paper`);
           need -= 1;
-          paper -= 1;
         }
       }
 

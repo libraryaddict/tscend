@@ -1526,6 +1526,7 @@ function L13_towerNSTowerSkin(): boolean {
     if (availableAmount(it) > 0 && canEquip(it)) {
       if (!acc1_occupied) {
         autoEquip($slot`acc1`, it);
+        acc1_occupied = true;
         break;
       } else if (!acc2_occupied) {
         autoEquip($slot`acc2`, it);

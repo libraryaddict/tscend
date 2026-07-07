@@ -2388,7 +2388,7 @@ export function cloverUsageInit(override: boolean): boolean {
     //try to get one out of closet, catch to avoid an error being thrown
     try {
       retrieveItem(1, $item`11-leaf clover`);
-    } catch (e: any) {}
+    } catch {}
   }
   if (itemAmount($item`11-leaf clover`) > 0) {
     use(1, $item`11-leaf clover`);
@@ -4009,7 +4009,6 @@ cabinet of Dr. Limpieza
 
 export function effectiveDropChance(it: Item, baseDropRate: number): number {
   //0 to 100 chance to drop at end of fight
-  let retval: number = 0;
   let item_modifier: number = itemDropModifier();
 
   if (baseDropRate > 0) {
@@ -4053,7 +4052,7 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
     }
   }
 
-  retval = (baseDropRate * (100 + item_modifier)) / 100.0;
+  let retval: number = (baseDropRate * (100 + item_modifier)) / 100.0;
   retval = min(100, retval); //final drop chance % before special modifiers
 
   if (retval > 0) {
@@ -4087,14 +4086,19 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
       switch (myLocation().fireLevel) {
         case 5:
           wildfireBurnChance = 1;
+          break;
         case 4:
           wildfireBurnChance = 0.768;
+          break;
         case 3:
           wildfireBurnChance = 0.361;
+          break;
         case 2:
           wildfireBurnChance = 0.109;
+          break;
         default:
           wildfireBurnChance = 0;
+          break;
       }
       retval = retval * (1 - wildfireBurnChance);
     }
@@ -5179,6 +5183,7 @@ function autoFlavour(place: Location): boolean {
         setFlavour($element`hot`); // doing 100 hot damage in a fight will fill bucket faster
         return true;
       }
+    // INTENTIONAL LACK OF BREAK
     case $location`VYKEA`:
       // INTENTIONAL LACK OF BREAK
       if (

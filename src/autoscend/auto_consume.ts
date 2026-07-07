@@ -2143,9 +2143,6 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
       (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)).size;
     if (tentative_desirability_per_fill > best_desirability_per_fill) {
       best_desirability_per_fill = tentative_desirability_per_fill;
-      (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i))
-        .adventures /
-        (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)).size;
       best = i;
     }
   }
