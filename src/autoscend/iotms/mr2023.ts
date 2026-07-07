@@ -1405,19 +1405,16 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
     return false;
   }
   //set goal for tracking
-  if (specZones.has(loc)) {
+  if (
+    specZones.has(loc) &&
+    auto_goingToMouthwashLevel() &&
+    expected_level_after_mouthwash() < 13 &&
+    turnsPlayed() === 0
+  ) {
     //only want spec to get cold res for septEmberCenser usage and only if we don't get to L13. Don't want to do this outside of D1
     //ideally also have spring away or some other free run
-    // TODO Maybe inline this so it doesn't get overwritten?
-    if (
-      auto_goingToMouthwashLevel() &&
-      expected_level_after_mouthwash() < 13 &&
-      turnsPlayed() === 0
-    ) {
-      goal = "spec";
-    }
-  }
-  if (meatZones.has(loc)) {
+    goal = "spec";
+  } else if (meatZones.has(loc)) {
     goal = "meat";
   } else if (itemZones.has(loc)) {
     goal = "item";

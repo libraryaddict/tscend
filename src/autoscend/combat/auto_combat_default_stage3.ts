@@ -171,7 +171,7 @@ export function auto_combatDefaultStage3(
     myFamiliar() === $familiar`Grey Goose`
   ) {
     let emitDrones: boolean = false;
-    let canExtingo: boolean =
+    const canExtingo: boolean =
       auto_fireExtinguisherCharges() > 30 &&
       canUse$1($skill`Fire Extinguisher: Polar Vortex`, false);
 
@@ -196,7 +196,9 @@ export function auto_combatDefaultStage3(
     //dupe goat cheese
     if (
       enemy === $monster`dairy goat` &&
-      (canExtingo = false && itemAmount($item`goat cheese`) < 3 && drones)
+      !canExtingo &&
+      itemAmount($item`goat cheese`) < 3 &&
+      drones
     ) {
       emitDrones = true;
     }
@@ -211,14 +213,13 @@ export function auto_combatDefaultStage3(
     }
     //dupe some hedge trimmers if we're lucky
     if (
-      (canExtingo =
-        false &&
-        $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`.includes(
-          enemy,
-        ) &&
-        auto_autumnatonQuestingIn() !== $location`Twin Peak` &&
-        hedgeTrimmersNeeded() > 1 &&
-        drones)
+      !canExtingo &&
+      $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`.includes(
+        enemy,
+      ) &&
+      auto_autumnatonQuestingIn() !== $location`Twin Peak` &&
+      hedgeTrimmersNeeded() > 1 &&
+      drones
     ) {
       emitDrones = true;
     }
@@ -244,13 +245,12 @@ export function auto_combatDefaultStage3(
     }
     //dupe some bowling balls if we can't use an Industrial Fire Extinguisher
     if (
-      (canExtingo =
-        false &&
-        enemy === $monster`pygmy bowler` &&
-        toInt(getProperty("hiddenBowlingAlleyProgress")) +
-          itemAmount($item`bowling ball`) <
-          6 &&
-        drones)
+      !canExtingo &&
+      enemy === $monster`pygmy bowler` &&
+      toInt(getProperty("hiddenBowlingAlleyProgress")) +
+        itemAmount($item`bowling ball`) <
+        6 &&
+      drones
     ) {
       emitDrones = true;
     }

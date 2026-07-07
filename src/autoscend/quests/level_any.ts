@@ -1194,7 +1194,7 @@ export function LX_dronesOut(): boolean {
   if (!dronesOut()) {
     return false;
   }
-  let canExtingo: boolean =
+  const canExtingo: boolean =
     auto_fireExtinguisherCharges() > 30 &&
     canUse$1($skill`Fire Extinguisher: Polar Vortex`, false);
 
@@ -1264,12 +1264,11 @@ export function LX_dronesOut(): boolean {
     return autoAdv$2($location`The Red Zeppelin`); //Glark cables
   }
   if (
-    (canExtingo =
-      false &&
-      toInt(getProperty("hiddenBowlingAlleyProgress")) +
-        itemAmount($item`bowling ball`) <
-        6 &&
-      zone_isAvailable$1($location`The Hidden Bowling Alley`))
+    !canExtingo &&
+    toInt(getProperty("hiddenBowlingAlleyProgress")) +
+      itemAmount($item`bowling ball`) <
+      6 &&
+    zone_isAvailable$1($location`The Hidden Bowling Alley`)
   ) {
     auto_log_info$1("Going to the Hidden Bowling Alley");
     if (
