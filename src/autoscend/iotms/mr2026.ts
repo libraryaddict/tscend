@@ -10,6 +10,7 @@ import {
   Location,
   Monster,
   myLocation,
+  myPath,
   runChoice,
   setProperty,
   toBoolean,
@@ -36,6 +37,7 @@ import {
 } from "../auto_util";
 import { zone_delay } from "../auto_zone";
 import { ConsumeAction } from "../autoscend_record";
+import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_plumber } from "../paths/path_of_the_plumber";
 import { in_small } from "../paths/small";
 
@@ -305,14 +307,16 @@ export function legendaryNoodleDishes(): Map<Item, Item> {
 export function numPreparedLegendaryNoodleDishes(): number {
   let num: number = 0;
   for (const dish of legendaryNoodleDishes().keys()) {
-    num += itemAmount(dish);
+    if (canEat$1(dish)) {
+      num += itemAmount(dish);
+    }
   }
   return num;
 }
 // pick a legendary noodle to consume (or to check that we have one avail. to consume)
 export function auto_findPreparedLegendaryNoods(): Item {
   for (const it of legendaryNoodleDishes().keys()) {
-    if (itemAmount(it) > 0) {
+    if (canEat$1(it) && itemAmount(it) > 0) {
       return it;
     }
   }
@@ -322,10 +326,13 @@ export function auto_findPreparedLegendaryNoods(): Item {
 export function numBaseLegendaryNoodleDishes(): number {
   let num: number = 0;
   for (const preparedDish of legendaryNoodleDishes().keys()) {
-    num += itemAmount(
-      legendaryNoodleDishes().get(preparedDish) ??
-        legendaryNoodleDishes().set(preparedDish, Item.none).get(preparedDish),
-    );
+    if (canEat$1(preparedDish))
+      num += itemAmount(
+        legendaryNoodleDishes().get(preparedDish) ??
+          legendaryNoodleDishes()
+            .set(preparedDish, Item.none)
+            .get(preparedDish),
+      );
   }
   return num;
 }
@@ -340,7 +347,8 @@ export function auto_findBaseLegendaryNoods(): Item {
       itemAmount(
         legendaryNoodleDishes().get(it) ??
           legendaryNoodleDishes().set(it, Item.none).get(it),
-      ) > 0
+      ) > 0 &&
+      canEat$1(it)
     ) {
       return it;
     }
@@ -348,10 +356,26 @@ export function auto_findBaseLegendaryNoods(): Item {
   return Item.none;
 }
 
+function canEatSomeLegNoods(): boolean {
+  // testing Gnocci Domani first because it satisfies all three of the "current" letter-restricted paths (BHY, 11TIHAU, G-lover)
+  if (canEat$1($item`Gnocci Domani`)) {
+    return true;
+  }
+  // all other paths "currently" must not be able to eat legendary noodles. 57 is Thrifty.
+  else if (myPath().id < 58) {
+    return false;
+  }
+  // heuristics not good enough here, we need to test each dish
+  for (const it of legendaryNoodleDishes().keys()) {
+    if (canEat$1(it)) return true;
+  }
+  return false;
+}
+
 export function auto_willEatLegendaryNoodles(): boolean {
-  // the specific dish we check for canEat doesn't matter, just that it's *A* legendary pasta dish
   // We exclude small because we want to be careful about maximizing the quality of our food when we only have two space, and we exclude plumber because plumber consumption is weird
   return (
+    canEatSomeLegNoods() &&
     canEat$1($item`Orzo di Riso`) &&
     !toBoolean(getProperty("auto_limitConsume")) &&
     !in_small() &&
@@ -427,7 +451,8 @@ export function legendaryNoodlesChoiceHandler(): void {
       // or use a spleen instead of a stomach
       getProperty("_legendaryNoodlesSpleen"),
     ) &&
-    spleen_left() > 0
+    spleen_left() > 0 &&
+    !isActuallyEd()
   ) {
     target_choice = 1;
   } else {

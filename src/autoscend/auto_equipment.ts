@@ -1209,7 +1209,7 @@ function finalizeMaximize(speculative: boolean): void {
     myThrall().level < 11 &&
     (myThrall() === $thrall`Vermincelli` || myThrall() === $thrall`Spice Ghost`)
   ) {
-    addBonusToMaximize($item`legendary pasta wand`, 40); // bonus for the thrallxp, if we have a thrall we wanna lvl up
+    addToMaximize("40 Pasta Thrall Experience"); // bonus for the thrallxp, if we have a thrall we wanna lvl up
   }
   // We still need pixels in KoE, badly.
   if (in_koe() && auto_hasPowerfulGlove()) {

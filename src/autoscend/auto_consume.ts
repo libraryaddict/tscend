@@ -1391,12 +1391,12 @@ function loadConsumables(
       ) {
         potentialTurnGain.set(it, 2.0);
       } else if (legendaryNoodleDishes().has(it)) {
-        // we have the option, after eating the dish, to consume spleen instead 1/day.
-        // which is quite good for minimizing daycount. We want that if it's available.
+        // which is quite good for minimizing daycount. We want that if it's available (except Ed, who has better spleen).
         if (
           !toBoolean(getProperty("_legendaryNoodlesSpleen")) &&
           spleen_left() > 0 &&
-          auto_willEatLegendaryNoodles()
+          auto_willEatLegendaryNoodles() &&
+          !isActuallyEd()
         ) {
           potentialTurnGain.set(it, 20.0); // not actually 20, but we almost certainly want to consume it
           // doing the auto_willEatLegendaryNoodles() to exclude paths that might be too weird to assume this
