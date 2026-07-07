@@ -11,14 +11,7 @@ import {
   setProperty,
   toInt,
 } from "kolmafia";
-import {
-  $class,
-  $familiar,
-  $item,
-  $location,
-  $monster,
-  $path,
-} from "libram";
+import { $class, $familiar, $item, $location, $monster, $path } from "libram";
 
 import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$2 } from "../auto_adventure";

@@ -11,9 +11,8 @@ This document describes our development process. Following these guidelines show
 3. [Questions](#questions)
 4. [Reporting Bugs and Feature Requests](#reporting-bugs-and-feature-requests)
 5. [Contributing Code](#contributing-code)
-	1. [Forks and Branches](#forks-and-branches)
-	2. [Merging Pull Requests](#merging-pull-requests)
-
+   1. [Forks and Branches](#forks-and-branches)
+   2. [Merging Pull Requests](#merging-pull-requests)
 
 ## Code of Conduct
 
@@ -25,10 +24,10 @@ That covers a surprising number of bases.
 
 ## Important Resources
 
-* [autoscend channel on the Ascension Speed Society discord server](https://discord.gg/96xZxv3)
-* [KoLMafia Ash Function Reference](https://wiki.kolmafia.us/index.php?title=Ash_Functions)
-* [KoLMafia Basic Scripting](http://kolmafia.sourceforge.net/scripting.html)
-* [KoLMafia Advanced Scripting](http://kolmafia.sourceforge.net/advanced.html)
+- [autoscend channel on the Ascension Speed Society discord server](https://discord.gg/96xZxv3)
+- [KoLMafia Ash Function Reference](https://wiki.kolmafia.us/index.php?title=Ash_Functions)
+- [KoLMafia Basic Scripting](http://kolmafia.sourceforge.net/scripting.html)
+- [KoLMafia Advanced Scripting](http://kolmafia.sourceforge.net/advanced.html)
 
 ## Questions
 
@@ -46,12 +45,13 @@ When writing code to contribute please take notice of the general style of the c
 
 Working on your first open source project or pull request? Her are some helpful tutorials:
 
-* [How to Contribute to an Open Source Project on GitHub][1]
-* [Make a Pull Request][2]
-* [First Timers Only][3]
-* [Github forking, branching and pull requests][4]
+- [How to Contribute to an Open Source Project on GitHub][1]
+- [Make a Pull Request][2]
+- [First Timers Only][3]
+- [Github forking, branching and pull requests][4]
 
 ### Forks and Branches
+
 You can request access to the project which will let you push working branches to the project, but you can also just (or even prefer) to fork the repository and submit pull requests from your fork.
 
 **main** branch:
@@ -60,6 +60,7 @@ The main branch is the current "release" of autoscend. When someone does `git ch
 `main` is restricted and can only be merged into with a pull request which requires approval from 1 other developer (though admins can by pass this requirements if they need to).
 
 For all of our sanity a good git work flow is something like this:
+
 1. `git checkout main`
 2. `git pull`
 3. `git checkout -b my-cool-new-feature`
@@ -67,6 +68,7 @@ For all of our sanity a good git work flow is something like this:
 5. when ready, submit a [pull request](https://github.com/loathers/autoscend/compare/beta...loathers:main) for your `my-cool-new-feature` branch against the `main` branch
 
 ### Merging Pull Requests
+
 When closing pull requests, please use the "Squash and Merge" option when merging the branch. This creates much cleaner git commit histories and make it much easier to cherry-pick features from one branch to another. After the merge its also good practice to delete the branch from the remote, again trying to keep the repository clean.
 
 [1]: https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github

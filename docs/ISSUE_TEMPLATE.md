@@ -10,11 +10,11 @@ Please answer the following questions for yourself before submitting an issue. *
 
 # Context
 
-* KolMafia version:
-* Class:
-* Run type (Casual/Normal/Hardcore/Aftercore):
-* Challenge Path (Standard/Path Name/None):
-* Number of Ascensions:
+- KolMafia version:
+- Class:
+- Run type (Casual/Normal/Hardcore/Aftercore):
+- Challenge Path (Standard/Path Name/None):
+- Number of Ascensions:
 
 # Expected/Desired Behavior
 

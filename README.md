@@ -32,15 +32,18 @@ autoscend's goal is to be able to brute force an ascension for all paths of KoL,
 A general purpose ascension script, which supports accounts with any number of perms and/or Mr Store items from none to almost all, will not be optimally tuned to your specific situation. We suggest you adjust your expectations accordingly.
 
 ## License
+
 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)  
 This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
 
 ## Installation
 
 Run this command in the graphical CLI:
+
 ```
 svn checkout https://github.com/Loathing-Associates-Scripting-Society/autoscend/branches/master/RELEASE/
 ```
+
 Will require [a recent build of KoLMafia](http://builds.kolmafia.us/job/Kolmafia/lastSuccessfulBuild/).
 
 ## Usage
@@ -56,14 +59,14 @@ There are a couple specific requirements to run autoscend effectively. If you ru
 a path that allows access to your normally permed skills, don't report them if you don't have these
 skills permed:
 
-* Saucestorm
-* Cannelloni Cocoon
+- Saucestorm
+- Cannelloni Cocoon
 
 Other things that help greatly but shouldn't be strictly required (I think):
 
-* Curse of Weaksauce + Itchy Curse Finger
-* Stuffed Mortar Shell
-* Saucegeyser
+- Curse of Weaksauce + Itchy Curse Finger
+- Stuffed Mortar Shell
+- Saucegeyser
 
 ## Community Service
 
@@ -76,11 +79,11 @@ We do not recommend running autoscend on this path as the item seeds change almo
 
 ## Actually Ed the Undying
 
-The recommended choices in Valhalla for Actually Ed the Undying are 
+The recommended choices in Valhalla for Actually Ed the Undying are
 
-* Astral Pilsners.
-* Astral Ring if you have less than 20 skill points, Astral Belt otherwise.
-* Opossum moon sign
+- Astral Pilsners.
+- Astral Ring if you have less than 20 skill points, Astral Belt otherwise.
+- Opossum moon sign
 
 ## Warning
 
