@@ -23,7 +23,7 @@ import {
 } from "./auto_combat_util";
 
 //defined in /autoscend/combat/auto_combat_adventurer_meats_world.ash
-export function amw_wanttoPP(enemy: Monster): boolean {
+export function amw_wanttoPP(): boolean {
   if (!in_amw() || !auto_have_skill($skill`Chicken Fingers`)) {
     return false;
   }

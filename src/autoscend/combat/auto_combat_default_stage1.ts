@@ -267,7 +267,7 @@ export function auto_combatDefaultStage1(
       myClass(),
     ) ||
     haveEffect($effect`Riboflavin'`) > 0 ||
-    amw_wanttoPP(enemy);
+    amw_wanttoPP();
   if (
     !combat_status_check("pickpocket") &&
     ableToPickpocket &&

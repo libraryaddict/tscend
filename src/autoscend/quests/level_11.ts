@@ -83,6 +83,7 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $monster,
   $path,
   $phylum,
@@ -369,105 +370,82 @@ function shenItemsReturnedOrInProgress(): number {
 export function shenSnakeLocations(
   day: number,
   n_items_returned: number,
-): Map<Location, boolean> {
+): Location[] {
   // Returns the locations in which we will find snakes for Shen, on a particular day.
   // From https://kol.coldfront.net/thekolwiki/index.php/Shen_Copperhead,_Nightclub_Owner
+  const batsnake = $locations`The Batrat and Ratbat Burrow`;
+  const frozen = $locations`Lair of the Ninja Snowmen`;
+  const burning = $locations`The Castle in the Clouds in the Sky (Top Floor)`;
+  const ten_heads = $locations`The Hole in the Sky`;
+  const frattle = $locations`The Smut Orc Logging Camp`;
+  const snakleton = $locations`The Unquiet Garves, The VERY Unquiet Garves`;
 
-  function union(
-    one: Map<Location, boolean>,
-    two: Map<Location, boolean>,
-    three: Map<Location, boolean>,
-  ): Map<Location, boolean> {
-    const ret: Map<Location, boolean> = new Map();
-    switch (n_items_returned) {
-      case 0:
-        for (const [z] of one) {
-          ret.set(z, true);
-        }
-      case 1:
-        for (const [z] of two) {
-          ret.set(z, true);
-        }
-      case 2:
-        for (const [z] of three) {
-          ret.set(z, true);
-        }
-      case 3:
-    }
-    return ret;
-  }
-  const batsnake: Map<Location, boolean> = new Map([
-    [$location`The Batrat and Ratbat Burrow`, true],
-  ]);
-  const frozen: Map<Location, boolean> = new Map([
-    [$location`Lair of the Ninja Snowmen`, true],
-  ]);
-  const burning: Map<Location, boolean> = new Map([
-    [$location`The Castle in the Clouds in the Sky (Top Floor)`, true],
-  ]);
-  const ten_heads: Map<Location, boolean> = new Map([
-    [$location`The Hole in the Sky`, true],
-  ]);
-  const frattle: Map<Location, boolean> = new Map([
-    [$location`The Smut Orc Logging Camp`, true],
-  ]);
-  const snakleton: Map<Location, boolean> = new Map([
-    [$location`The Unquiet Garves`, true],
-    [$location`The VERY Unquiet Garves`, true],
-  ]);
+  // The three snakes for the current day, in the order Shen assigns them.
+  let snakes: Location[][] = [];
 
   if (in_koe()) {
-    return union(ten_heads, frattle, frozen);
+    snakes = [ten_heads, frattle, frozen];
+  } else {
+    switch (day) {
+      case 1:
+        snakes = [batsnake, frozen, burning];
+        break;
+      case 2:
+        snakes = [frattle, snakleton, ten_heads];
+        break;
+      case 3:
+        snakes = [frozen, batsnake, snakleton];
+        break;
+      case 4:
+        snakes = [frattle, batsnake, snakleton];
+        break;
+      case 5:
+        snakes = [burning, frattle, ten_heads];
+        break;
+      case 6:
+        snakes = [burning, batsnake, ten_heads];
+        break;
+      case 7:
+        snakes = [frattle, snakleton, ten_heads];
+        break;
+      case 8:
+        snakes = [snakleton, burning, frattle];
+        break;
+      case 9:
+        snakes = [snakleton, frattle, ten_heads];
+        break;
+      case 10:
+        snakes = [ten_heads, batsnake, burning];
+        break;
+      case 11:
+        snakes = [frozen, batsnake, burning];
+        break;
+    }
   }
 
-  switch (day) {
-    case 1:
-      return union(batsnake, frozen, burning);
-    case 2:
-      return union(frattle, snakleton, ten_heads);
-    case 3:
-      return union(frozen, batsnake, snakleton);
-    case 4:
-      return union(frattle, batsnake, snakleton);
-    case 5:
-      return union(burning, batsnake, ten_heads);
-    case 6:
-      return union(burning, batsnake, ten_heads);
-    case 7:
-      return union(frattle, snakleton, ten_heads);
-    case 8:
-      return union(snakleton, burning, frattle);
-    case 9:
-      return union(snakleton, frattle, ten_heads);
-    case 10:
-      return union(ten_heads, batsnake, burning);
-    case 11:
-      return union(frozen, batsnake, burning);
-  }
-  const empty: Map<Location, boolean> = new Map();
-  return empty;
+  return snakes.flatMap((l) => l).slice(n_items_returned);
 }
 
-function shenZonesToAvoidBecauseMaybeSnake(): Map<Location, boolean> {
+function shenZonesToAvoidBecauseMaybeSnake(): Location[] {
   if (toInt(getProperty("shenInitiationDay")) > 0) {
     const day: number = toInt(getProperty("shenInitiationDay"));
     const items_returned: number = shenItemsReturnedOrInProgress();
     return shenSnakeLocations(day, items_returned);
   } else {
     // Assume we're going to start Shen today, tomorrow, or two days from now.
-    const zones_to_avoid: Map<Location, boolean> = new Map();
+    const zones_to_avoid: Set<Location> = new Set();
     if (myLevel() < 11) {
       //if level 10, assume shen today or tomorrow, otherwise up to two days from now
       const beforeThatDay: number = myLevel() >= 10 ? 2 : 3;
       for (let day: number = 0; day < beforeThatDay; day++) {
-        for (const [z] of shenSnakeLocations(day + myDaycount(), 0)) {
-          zones_to_avoid.set(z, true);
+        for (const z of shenSnakeLocations(day + myDaycount(), 0)) {
+          zones_to_avoid.add(z);
         }
       }
     } else {
       // if we're already level 11, well either be starting ASAP
-      for (const [z] of shenSnakeLocations(myDaycount(), 0)) {
-        zones_to_avoid.set(z, true);
+      for (const z of shenSnakeLocations(myDaycount(), 0)) {
+        zones_to_avoid.add(z);
       }
     }
     // if ran out of stuff to do and need to get enchanted bean for L10 quest, don't delay for bat snake
@@ -476,24 +454,23 @@ function shenZonesToAvoidBecauseMaybeSnake(): Map<Location, boolean> {
       toInt(getProperty("auto_delayLastLevel")) === 10 &&
       itemAmount($item`enchanted bean`) === 0
     ) {
-      zones_to_avoid.set($location`The Batrat and Ratbat Burrow`, false);
+      zones_to_avoid.delete($location`The Batrat and Ratbat Burrow`);
     }
     // don't delay Hole in the Sky in WereProf if ran out of stuff to do
     if (
       toInt(getProperty("auto_powerLevelLastAttempted")) === myTurncount() &&
       in_wereprof()
     ) {
-      zones_to_avoid.set($location`The Hole in the Sky`, false);
+      zones_to_avoid.delete($location`The Hole in the Sky`);
     }
-    return zones_to_avoid;
+
+    return [...zones_to_avoid];
   }
 }
 
 export function shenShouldDelayZone(loc: Location): boolean {
   return (
-    (shenZonesToAvoidBecauseMaybeSnake().get(loc) ??
-      shenZonesToAvoidBecauseMaybeSnake().set(loc, false).get(loc)) &&
-    !isAboutToPowerlevel()
+    shenZonesToAvoidBecauseMaybeSnake().includes(loc) && !isAboutToPowerlevel()
   ); // don't bother with delaying a Shen zone if we've run out of stuff to do
 }
 
@@ -3379,7 +3356,7 @@ export function L11_shenStartQuest(): boolean {
         "I am going to avoid the following zones until Shen tells me to go there or until I run out of other things to do:",
       );
       let linec: number = 1;
-      for (const [z] of shenZonesToAvoidBecauseMaybeSnake()) {
+      for (const z of shenZonesToAvoidBecauseMaybeSnake()) {
         auto_log_info$1(`${linec++}. ${z}`);
         setProperty(
           "auto_shenZonesTurnsSpent",

@@ -171,13 +171,10 @@ export function auto_combatDefaultStage3(
     myFamiliar() === $familiar`Grey Goose`
   ) {
     let emitDrones: boolean = false;
-    let canExtingo: boolean = true;
-    if (
-      auto_fireExtinguisherCharges() <= 30 ||
-      !canUse$1($skill`Fire Extinguisher: Polar Vortex`, false)
-    ) {
-      canExtingo = false;
-    }
+    let canExtingo: boolean =
+      auto_fireExtinguisherCharges() > 30 &&
+      canUse$1($skill`Fire Extinguisher: Polar Vortex`, false);
+
     const drones: boolean = gooseExpectedDrones() >= 1; //only want to try if we expect any number of drones.
     //dupe a sonar-in-a-biscuit if we're lucky, only want to try it if we need more than 1 biscuit
     if (

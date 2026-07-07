@@ -953,7 +953,7 @@ function ed_shopping(): boolean {
           true,
         );
         visitUrl("choice.php?pwd&option=2&whichchoice=1052", true);
-        coins -= requiredKa;
+        //coins -= requiredKa;
       }
     } else if (
       haveSkill($skill`Okay Seriously, This is the Last Spleen`) &&
@@ -1026,7 +1026,7 @@ function ed_shopping(): boolean {
           "shop.php?pwd=&whichshop=edunder_shopshop&action=buyitem&quantity=1&whichrow=433",
           true,
         );
-        coins -= 3;
+        //coins -= 3;
       }
     }
   }

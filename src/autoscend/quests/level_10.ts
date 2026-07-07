@@ -468,8 +468,8 @@ export function L10_holeInTheSkyUnlock(): boolean {
   }
   LX_buyStarKeyParts();
   const day: number = toInt(getProperty("shenInitiationDay"));
-  const shenLocs: Map<Location, boolean> = shenSnakeLocations(day, 0);
-  if (!needStarKey() && !shenLocs.has($location`The Hole in the Sky`)) {
+  const shenLocs: Location[] = shenSnakeLocations(day, 0);
+  if (!needStarKey() && !shenLocs.includes($location`The Hole in the Sky`)) {
     // we force auto_holeinthesky to true in L11_shenCopperhead() as Ed if Shen sends us to the Hole in the Sky
     // as otherwise the zone isn't required at all for Ed.
     // Should also handle situations where the player manually got the star key before unlocking Shen.

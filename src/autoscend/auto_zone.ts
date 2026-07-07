@@ -84,7 +84,7 @@ import {
 
 //Defined in autoscend/auto_zone.ash
 function zone_unlock(loc: Location): boolean {
-  let unlocked: boolean = false;
+  let unlocked: boolean;
   if (loc === $location`The Thinknerd Warehouse`) {
     unlocked = LX_unlockThinknerdWarehouse(false);
   } else {
@@ -142,9 +142,6 @@ export function zone_needItem(loc: Location): generic_t {
     //Only if we need stone wool manually for some reason.
     //Or via the semi-rare!		(100/50/20 for SR, 25 Sheep)
 
-    let getMilk: boolean = false;
-    let milksPerMilk: number = 0;
-    let milkUsed: number = 0;
     switch (loc) {
       case $location`Hero's Field`:
         value = 20.0;
@@ -308,20 +305,21 @@ export function zone_needItem(loc: Location): generic_t {
         ) {
           value = 30.0;
         }
+        break;
       case $location`Itznotyerzitz Mine`:
         if (!possessOutfit$1("Mining Gear") && cloversAvailable$1() === 0) {
           value = 10.0;
         }
         break;
-      case $location`The Goatlet`:
-        getMilk =
+      case $location`The Goatlet`: {
+        let getMilk: boolean =
           (haveSkill($skill`Advanced Saucecrafting`) ||
             (myClass() === $class`Sauceror` &&
               (guildAvailable() ||
                 !toBoolean(getProperty("auto_skipUnlockGuild"))))) &&
           fullnessLimit() !== 0;
-        milksPerMilk = myClass() === $class`Sauceror` ? 3 : 1;
-        milkUsed =
+        const milksPerMilk: number = myClass() === $class`Sauceror` ? 3 : 1;
+        const milkUsed: number =
           toBoolean(getProperty("_milkOfMagnesiumUsed")) ||
           fullness_left() === 0
             ? 1
@@ -340,10 +338,12 @@ export function zone_needItem(loc: Location): generic_t {
           value = 40.0;
         }
         break;
+      }
       case $location`The eXtreme Slope`:
         if (!possessOutfit$1("eXtreme Cold-Weather Gear")) {
           value = 10.0;
         }
+        break;
       case $location`The Defiled Nook`:
         // Handle for a gravy boat?
         if (toInt(getProperty("cyrptNookEvilness")) > 14) {
@@ -427,6 +427,7 @@ export function zone_needItem(loc: Location): generic_t {
         ) {
           value = 10.0;
         }
+        break;
       case $location`The Old Landfill`:
         value =
           5.0 * (1.0 + toFloat(getProperty("auto_junkspritesencountered")));
@@ -545,9 +546,6 @@ export function zone_needItemFood(loc: Location): generic_t {
   const retval: generic_t = new generic_t();
   let value: number = 0.0;
   {
-    let getMilk: boolean = false;
-    let milksPerMilk: number = 0;
-    let milkUsed: number = 0;
     switch (loc) {
       case $location`The Haunted Laundry Room`:
         value = 5.0 * (1.0 + toFloat(getProperty("auto_cabinetsencountered")));
@@ -571,15 +569,15 @@ export function zone_needItemFood(loc: Location): generic_t {
           value = 25.0;
         }
         break;
-      case $location`The Goatlet`:
-        getMilk =
+      case $location`The Goatlet`: {
+        let getMilk: boolean =
           (haveSkill($skill`Advanced Saucecrafting`) ||
             (myClass() === $class`Sauceror` &&
               (guildAvailable() ||
                 !toBoolean(getProperty("auto_skipUnlockGuild"))))) &&
           fullnessLimit() !== 0;
-        milksPerMilk = myClass() === $class`Sauceror` ? 3 : 1;
-        milkUsed =
+        const milksPerMilk: number = myClass() === $class`Sauceror` ? 3 : 1;
+        const milkUsed: number =
           toBoolean(getProperty("_milkOfMagnesiumUsed")) ||
           fullness_left() === 0
             ? 1
@@ -598,6 +596,7 @@ export function zone_needItemFood(loc: Location): generic_t {
           value = 40.0;
         }
         break;
+      }
       case $location`The Dark Neck of the Woods`:
       case $location`The Dark Heart of the Woods`:
       case $location`The Dark Elbow of the Woods`:
@@ -646,7 +645,7 @@ export function zone_combatMod(loc: Location): generic_t {
   const retval: generic_t = new generic_t();
   const delay: generic_t = zone_delay(loc);
   let value: number = 0;
-  switch (loc) {
+  switching: switch (loc) {
     case $location`The Orcish Frat House`:
     case $location`The Hippy Camp`:
       if (myLevel() >= 9) {
@@ -666,7 +665,7 @@ export function zone_combatMod(loc: Location): generic_t {
             $item`"I Voted!" sticker`.toString()
           ) {
             value = 0;
-            break;
+            break switching;
           }
         }
       }
@@ -1925,7 +1924,6 @@ export function zone_hasLuckyAdventure(loc: Location): boolean {
 
 export function is_ghost_in_zone(loc: Location): boolean {
   //special location handling
-  let delayForNextNoncombat: number = 0;
   if (haveEffect($effect`Lucky!`) > 0) {
     return false; //we are grabbing a Lucky! so we will not encounter a ghost unless it is a wandering monster
   }
@@ -1938,14 +1936,11 @@ export function is_ghost_in_zone(loc: Location): boolean {
     //special case for King Boo
     //if liana cleared then we can encounter ghost
 
-    let hasMcCluskyFile: boolean = false;
-    let cursed: boolean = false;
     //if tracker is 6 we used just the right amount of bowling bowls
     //massive ziggurat
     //[Protector_S._P._E._C._T._R._E.] has 0 phys res and 100% all element res
     //for all other zones
 
-    let apprates: Map<Monster, number> = new Map();
     switch (loc) {
       case $location`A-Boo Peak`:
         if (
@@ -1968,21 +1963,22 @@ export function is_ghost_in_zone(loc: Location): boolean {
           toInt(getProperty("hiddenHospitalProgress")) < 7
         );
       case $location`The Hidden Office Building`: {
-        hasMcCluskyFile = availableAmount($item`McClusky file (complete)`) > 0;
+        const hasMcCluskyFile: boolean =
+          availableAmount($item`McClusky file (complete)`) > 0;
         const totalTurnsSpent: number = $location`The Hidden Office Building`
           .turnsSpent;
-        delayForNextNoncombat = 4 - ((totalTurnsSpent - 1) % 5);
+        let delayForNextNoncombat: number = 4 - ((totalTurnsSpent - 1) % 5);
         if (auto_haveQueuedForcedNonCombat()) {
           delayForNextNoncombat = 0;
         }
         return hasMcCluskyFile && delayForNextNoncombat === 0;
       }
       case $location`The Hidden Apartment Building`: {
-        cursed = haveEffect($effect`Thrice-Cursed`) > 0;
+        const cursed: boolean = haveEffect($effect`Thrice-Cursed`) > 0;
         const totalTurnsSpent: number = Location.get(
           "The Hidden Apartment Building",
         ).turnsSpent;
-        delayForNextNoncombat = 7 - ((totalTurnsSpent - 9) % 8);
+        let delayForNextNoncombat: number = 7 - ((totalTurnsSpent - 9) % 8);
         if (totalTurnsSpent < 9) {
           delayForNextNoncombat = 8 - totalTurnsSpent;
         }
@@ -2004,8 +2000,11 @@ export function is_ghost_in_zone(loc: Location): boolean {
           liana_cleared($location`A Massive Ziggurat`) &&
           availableAmount($item`stone triangle`) === 4
         );
-      default:
-        apprates = auto_combat_appearance_rates(loc, true);
+      default: {
+        const apprates: Map<Monster, number> = auto_combat_appearance_rates(
+          loc,
+          true,
+        );
         for (const [, mob] of getMonsters(loc).entries()) {
           if ((apprates.get(mob) ?? apprates.set(mob, 0.0).get(mob)) <= 0) {
             //won't show up because banished or req's not fulfilled
@@ -2015,6 +2014,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
             return true;
           }
         }
+      }
     }
   }
 

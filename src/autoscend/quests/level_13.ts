@@ -77,6 +77,7 @@ import {
   $slot,
   $slots,
   $stat,
+  have,
 } from "libram";
 
 import {
@@ -1506,35 +1507,22 @@ function L13_towerNSTowerSkin(): boolean {
     // hippies need sleaze
     damage_accs = $items`kick-ass kicks, Jefferson wings, ghost of a necklace`;
   }
-  for (const it of damage_accs) {
-    if (availableAmount(it) > 0 && canEquip(it)) {
-      if (!acc1_occupied) {
-        autoEquip($slot`acc1`, it);
-        acc1_occupied = true;
-        damage += 1;
-        break;
-      } else if (!acc2_occupied) {
-        autoEquip($slot`acc2`, it);
-        acc2_occupied = true;
-        damage += 1;
-        break;
-      }
-    } // available/can_equip
-  } // elemental damage accessory loop
+  // elemental damage accessory loop
   // Extra stinging accessories
-  for (const it of $items`hippy protest button, bottle opener belt buckle`) {
-    if (availableAmount(it) > 0 && canEquip(it)) {
-      if (!acc1_occupied) {
-        autoEquip($slot`acc1`, it);
-        acc1_occupied = true;
-        break;
-      } else if (!acc2_occupied) {
-        autoEquip($slot`acc2`, it);
-        acc2_occupied = true;
-        damage += 1;
-      }
-    } // available/can_equip
-  } // stinging accessories loop
+  const stinging_accs: Item[] = $items`hippy protest button, bottle opener belt buckle`;
+  for (const it of [...damage_accs, ...stinging_accs]) {
+    if (!have(it) || !canEquip(it)) continue;
+
+    if (!acc1_occupied) {
+      autoEquip($slot`acc1`, it);
+      acc1_occupied = true;
+      damage++;
+    } else if (!acc2_occupied) {
+      autoEquip($slot`acc2`, it);
+      acc2_occupied = true;
+      damage++;
+    }
+  }
 
   if (damage < 13) {
     auto_log_info(
