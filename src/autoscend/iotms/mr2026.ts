@@ -23,7 +23,7 @@ import { $item, $location, $slots } from "libram";
 import { autoAdvBypass } from "../auto_adventure";
 import {
   auto_autoConsumeOne,
-  canEat$1,
+  auto_canEat,
   spleen_left,
   stomach_left,
 } from "../auto_consume";
@@ -307,7 +307,7 @@ export function legendaryNoodleDishes(): Map<Item, Item> {
 export function numPreparedLegendaryNoodleDishes(): number {
   let num: number = 0;
   for (const dish of legendaryNoodleDishes().keys()) {
-    if (canEat$1(dish)) {
+    if (auto_canEat(dish)) {
       num += itemAmount(dish);
     }
   }
@@ -316,7 +316,7 @@ export function numPreparedLegendaryNoodleDishes(): number {
 // pick a legendary noodle to consume (or to check that we have one avail. to consume)
 export function auto_findPreparedLegendaryNoods(): Item {
   for (const it of legendaryNoodleDishes().keys()) {
-    if (canEat$1(it) && itemAmount(it) > 0) {
+    if (auto_canEat(it) && itemAmount(it) > 0) {
       return it;
     }
   }
@@ -326,7 +326,7 @@ export function auto_findPreparedLegendaryNoods(): Item {
 export function numBaseLegendaryNoodleDishes(): number {
   let num: number = 0;
   for (const preparedDish of legendaryNoodleDishes().keys()) {
-    if (canEat$1(preparedDish))
+    if (auto_canEat(preparedDish))
       num += itemAmount(
         legendaryNoodleDishes().get(preparedDish) ??
           legendaryNoodleDishes()
@@ -348,7 +348,7 @@ export function auto_findBaseLegendaryNoods(): Item {
         legendaryNoodleDishes().get(it) ??
           legendaryNoodleDishes().set(it, Item.none).get(it),
       ) > 0 &&
-      canEat$1(it)
+      auto_canEat(it)
     ) {
       return it;
     }
@@ -358,7 +358,7 @@ export function auto_findBaseLegendaryNoods(): Item {
 
 function canEatSomeLegNoods(): boolean {
   // testing Gnocci Domani first because it satisfies all three of the "current" letter-restricted paths (BHY, 11TIHAU, G-lover)
-  if (canEat$1($item`Gnocci Domani`)) {
+  if (auto_canEat($item`Gnocci Domani`)) {
     return true;
   }
   // all other paths "currently" must not be able to eat legendary noodles. 57 is Thrifty.
@@ -367,7 +367,7 @@ function canEatSomeLegNoods(): boolean {
   }
   // heuristics not good enough here, we need to test each dish
   for (const it of legendaryNoodleDishes().keys()) {
-    if (canEat$1(it)) return true;
+    if (auto_canEat(it)) return true;
   }
   return false;
 }
@@ -376,7 +376,7 @@ export function auto_willEatLegendaryNoodles(): boolean {
   // We exclude small because we want to be careful about maximizing the quality of our food when we only have two space, and we exclude plumber because plumber consumption is weird
   return (
     canEatSomeLegNoods() &&
-    canEat$1($item`Orzo di Riso`) &&
+    auto_canEat($item`Orzo di Riso`) &&
     !toBoolean(getProperty("auto_limitConsume")) &&
     !in_small() &&
     !in_plumber()
