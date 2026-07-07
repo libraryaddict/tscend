@@ -31,11 +31,10 @@ import { auto_warSide } from "../quests/level_12";
 import { auto_combatHandler } from "./auto_combat";
 import { auto_edCombatHandler } from "./auto_combat_ed";
 import {
+  auto_useSkill,
   canSurvive$1,
-  canUse$1,
-  canUse$2,
+  canUse,
   canUse$3,
-  canUse$4,
   combat_status_add,
   combat_status_check,
   findBanisher,
@@ -44,8 +43,6 @@ import {
   useItem,
   useItem$1,
   useItems$1,
-  useSkill$1,
-  useSkill$2,
 } from "./auto_combat_util";
 
 // This file is for quest specific combat handling.
@@ -92,7 +89,7 @@ export function auto_JunkyardCombatHandler(
   if (in_fotd()) {
     // In Fall of the Dinosaurs just use the magnet without waiting for a message
     if (
-      canUse$4($item`molybdenum magnet`) &&
+      canUse$3($item`molybdenum magnet`) &&
       $monsters`batwinged gremlin (tool), erudite gremlin (tool), spider gremlin (tool), vegetable gremlin (tool)`.includes(
         enemy,
       )
@@ -103,10 +100,10 @@ export function auto_JunkyardCombatHandler(
   }
 
   if (round_1 >= 28) {
-    if (canUse$1($skill`Storm of the Scarab`, false)) {
-      return useSkill$1($skill`Storm of the Scarab`, false);
-    } else if (canUse$1($skill`Lunging Thrust-Smack`, false)) {
-      return useSkill$1($skill`Lunging Thrust-Smack`, false);
+    if (canUse($skill`Storm of the Scarab`, false)) {
+      return auto_useSkill($skill`Storm of the Scarab`, false);
+    } else if (canUse($skill`Lunging Thrust-Smack`, false)) {
+      return auto_useSkill($skill`Lunging Thrust-Smack`, false);
     }
     return "attack with weapon";
   }
@@ -120,12 +117,12 @@ export function auto_JunkyardCombatHandler(
     return useItem$1($item`molybdenum magnet`);
   }
 
-  if (canUse$2($skill`Summon Love Scarabs`)) {
-    return useSkill$2($skill`Summon Love Scarabs`);
+  if (canUse($skill`Summon Love Scarabs`)) {
+    return auto_useSkill($skill`Summon Love Scarabs`);
   }
 
-  if (canUse$2($skill`Good Medicine`) && canSurvive$1(2.1)) {
-    return useSkill$2($skill`Good Medicine`);
+  if (canUse($skill`Good Medicine`) && canSurvive$1(2.1)) {
+    return auto_useSkill($skill`Good Medicine`);
   }
 
   let flyer: Item = $item`rock band flyers`;
@@ -149,10 +146,10 @@ export function auto_JunkyardCombatHandler(
     staggeringFlyer = true;
   }
   if (auto_have_skill($skill`Ambidextrous Funkslinging`)) {
-    if (canUse$4($item`Time-Spinner`)) {
+    if (canUse$3($item`Time-Spinner`)) {
       flyerWith = $item`Time-Spinner`;
       staggeringFlyer = true;
-    } else if (canUse$4($item`beehive`)) {
+    } else if (canUse$3($item`beehive`)) {
       let canBeehiveGremlin: boolean;
       const beehiveDamage: number = ceil(
         30 * combatItemDamageMultiplier() * MLDamageToMonsterMultiplier(),
@@ -187,13 +184,13 @@ export function auto_JunkyardCombatHandler(
     stunner = Skill.none;
   }
   if (
-    canUse$4(flyer) &&
+    canUse$3(flyer) &&
     toInt(getProperty("flyeredML")) < 10000 &&
     !toBoolean(getProperty("auto_ignoreFlyer"))
   ) {
     if (!staggeringFlyer && stunner !== Skill.none && !stunned) {
       combat_status_add("stunned");
-      return useSkill$2(stunner);
+      return auto_useSkill(stunner);
     }
     if (isActuallyEd()) {
       setProperty("auto_edStatus", "UNDYING!");
@@ -237,12 +234,12 @@ export function auto_JunkyardCombatHandler(
     }
   }
 
-  if (canUse$1($skill`Toss`, false)) {
-    return useSkill$1($skill`Toss`, false);
+  if (canUse($skill`Toss`, false)) {
+    return auto_useSkill($skill`Toss`, false);
   }
 
-  if (canUse$1($skill`Plague Claws`, false)) {
-    return useSkill$1($skill`Plague Claws`, false);
+  if (canUse($skill`Plague Claws`, false)) {
+    return auto_useSkill($skill`Plague Claws`, false);
   }
 
   return "attack with weapon";

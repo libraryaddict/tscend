@@ -49,7 +49,7 @@ import {
 } from "../auto_routing";
 import {
   auto_can_equip,
-  auto_forceNextNoncombat$1,
+  auto_forceNextNoncombat,
   auto_is_valid,
   auto_log_debug$1,
   auto_log_info,
@@ -274,7 +274,7 @@ export function L10_basement(): boolean {
     }
   }
 
-  const NCForced: boolean = auto_forceNextNoncombat$1(
+  const NCForced: boolean = auto_forceNextNoncombat(
     $location`The Castle in the Clouds in the Sky (Basement)`,
   );
   // delay if we are out of NC forcers and haven't run out of things to do
@@ -364,7 +364,7 @@ export function L10_topFloor(): boolean {
     pullXWhenHaveY($item`Mohawk wig`, 1, 0);
   }
 
-  const NCForced: boolean = auto_forceNextNoncombat$1(
+  const NCForced: boolean = auto_forceNextNoncombat(
     $location`The Castle in the Clouds in the Sky (Top Floor)`,
   );
   // delay if we are out of NC forcers and haven't run out of things to do
@@ -489,7 +489,7 @@ export function L10_holeInTheSkyUnlock(): boolean {
 
   auto_log_info("Castle (Top Floor) - Opening the Hole in the Sky.", "blue");
   // set location "wrong" so that LX_ForceNC can properly direct back to this function (L10_holeInTheSkyUnlock)
-  const NCForced: boolean = auto_forceNextNoncombat$1(
+  const NCForced: boolean = auto_forceNextNoncombat(
     $location`The Hole in the Sky`,
   );
   // delay if we are out of NC forcers and haven't run out of things to do

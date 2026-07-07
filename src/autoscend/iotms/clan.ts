@@ -70,14 +70,10 @@ export function auto_get_clan_lounge(): Map<Item, number> {
   return retval;
 }
 
-export function handleFaxMonster$2(enemy: Monster, fightIt: boolean): boolean {
-  return handleFaxMonster$3(enemy, fightIt, null);
-}
-
-function handleFaxMonster$3(
+export function handleFaxMonster(
   enemy: Monster,
   fightIt: boolean,
-  option: CombatMacro,
+  option?: CombatMacro,
 ): boolean {
   if (toBoolean(getProperty("_photocopyUsed"))) {
     return false;

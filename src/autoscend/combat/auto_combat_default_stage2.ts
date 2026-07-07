@@ -94,12 +94,11 @@ import { bridgeGoal } from "../quests/level_09";
 import { towerKeyCount$1 } from "../quests/level_13";
 import { auto_combatDarkGyffteStage2 } from "./auto_combat_dark_gyffte";
 import {
+  auto_useSkill,
   banisherCombatString,
   banisherCombatString$1,
-  canUse$1,
-  canUse$2,
+  canUse,
   canUse$3,
-  canUse$4,
   combat_status_add,
   combat_status_check,
   getSniffer$1,
@@ -108,8 +107,6 @@ import {
   replaceMonsterCombatString,
   useItem$1,
   useItems$1,
-  useSkill$1,
-  useSkill$2,
   wantToDouse,
   wantToForceDrop,
   yellowRayCombatString,
@@ -181,7 +178,7 @@ export function auto_combatDefaultStage2(
       "auto_otherstuff",
     );
     combat_status_add("droptablereplaced");
-    return useSkill$2($skill`BCZ: Refracted Gaze`);
+    return auto_useSkill($skill`BCZ: Refracted Gaze`);
   }
   //use industrial fire extinguisher zone specific skills
   const extinguisherSkill: string =
@@ -221,7 +218,7 @@ export function auto_combatDefaultStage2(
   }
   //instakill enemies in [A Mob Of Zeppelin Protesters]
   if (
-    canUse$4($item`cigarette lighter`) &&
+    canUse$3($item`cigarette lighter`) &&
     myLocation() === $location`A Mob of Zeppelin Protesters` &&
     getProperty("questL11Ron") === "step1"
   ) {
@@ -261,9 +258,9 @@ export function auto_combatDefaultStage2(
       !$locations`The Laugh Floor, Infernal Rackets Backstage`.includes(
         myLocation(),
       ) &&
-      canUse$2($skill`Release the Boots`)
+      canUse($skill`Release the Boots`)
     ) {
-      return useSkill$2($skill`Release the Boots`);
+      return auto_useSkill($skill`Release the Boots`);
     }
   }
   // Dupe Tomb Rat King drops with pro skateboard
@@ -272,7 +269,7 @@ export function auto_combatDefaultStage2(
     itemAmount($item`crumbling wooden wheel`) +
       itemAmount($item`tomb ratchet`) <
       10 &&
-    canUse$2($skill`Do an epic McTwist!`) &&
+    canUse($skill`Do an epic McTwist!`) &&
     !toBoolean(getProperty("_epicMcTwistUsed"))
   ) {
     handleTracker$1(
@@ -280,14 +277,14 @@ export function auto_combatDefaultStage2(
       $skill`Do an epic McTwist!`.toString(),
       "auto_otherstuff",
     );
-    return useSkill$2($skill`Do an epic McTwist!`);
+    return auto_useSkill($skill`Do an epic McTwist!`);
   }
   // Dupe Mountain Man drops with pro skateboard on day 1, not in turbo
   if (
     enemy === $monster`mountain man` &&
     myDaycount() === 1 &&
     !auto_turbo() &&
-    canUse$2($skill`Do an epic McTwist!`) &&
+    canUse($skill`Do an epic McTwist!`) &&
     !toBoolean(getProperty("_epicMcTwistUsed"))
   ) {
     handleTracker$1(
@@ -295,7 +292,7 @@ export function auto_combatDefaultStage2(
       $skill`Do an epic McTwist!`.toString(),
       "auto_otherstuff",
     );
-    return useSkill$2($skill`Do an epic McTwist!`);
+    return auto_useSkill($skill`Do an epic McTwist!`);
   }
 
   if (auto_wantToShrunkenHead(enemy)) {
@@ -304,7 +301,7 @@ export function auto_combatDefaultStage2(
       $skill`Prepare to reanimate your Foe`.toString(),
       "auto_otherstuff",
     );
-    return useSkill$2($skill`Prepare to reanimate your Foe`);
+    return auto_useSkill($skill`Prepare to reanimate your Foe`);
   }
   // yellowray instantly kills the enemy and makes them drop all items they can drop.
   // don't yellow ray if we'll be dousing
@@ -312,11 +309,11 @@ export function auto_combatDefaultStage2(
   const isDouseTarget: boolean =
     wantToDouse(enemy) && round_1 < maxRoundsToDouse(enemy) - 1; // dousing can have a low chance of success, so only do it for a while then yellow
   const douseAvailable: boolean =
-    canUse$1(douse, false) && auto_dousesRemaining() > 0;
+    canUse(douse, false) && auto_dousesRemaining() > 0;
   const willDouse: boolean = isDouseTarget && douseAvailable;
   // And don't yellow ray if we'll be swooping
   const swoopAvailable: boolean =
-    canUse$1($skill`Swoop like a Bat`, true) &&
+    canUse($skill`Swoop like a Bat`, true) &&
     toInt(getProperty("_batWingsSwoopUsed")) < 11;
   const willSwoop: boolean =
     auto_swoopLocations().has(myLocation()) && swoopAvailable;
@@ -357,7 +354,7 @@ export function auto_combatDefaultStage2(
       }
       if (
         combatAction ===
-        useSkill$1($skill`Asdon Martin: Missile Launcher`, false)
+        auto_useSkill($skill`Asdon Martin: Missile Launcher`, false)
       ) {
         setProperty("_missileLauncherUsed", true.toString());
       }
@@ -368,20 +365,20 @@ export function auto_combatDefaultStage2(
   }
   //convert enemy into a helpless frog/newt/lizard
   if (toBoolean(getProperty("auto_useCleesh"))) {
-    if (canUse$2($skill`CLEESH`)) {
+    if (canUse($skill`CLEESH`)) {
       setProperty("auto_useCleesh", false.toString());
-      return useSkill$2($skill`CLEESH`);
+      return auto_useSkill($skill`CLEESH`);
     }
   }
   //club em back in time to free kill the enemy but don't get any items
   if (wantToClubEmBackInTime(myLocation(), enemy)) {
-    if (canUse$2($skill`Club 'Em Back in Time`)) {
+    if (canUse($skill`Club 'Em Back in Time`)) {
       handleTracker$1(
         enemy.toString(),
         $skill`Club 'Em Back in Time`.toString(),
         "auto_instakill",
       );
-      return useSkill$2($skill`Club 'Em Back in Time`);
+      return auto_useSkill($skill`Club 'Em Back in Time`);
     }
   }
   //throw gravel to free kill the enemy but don't get any items
@@ -794,18 +791,18 @@ export function auto_combatDefaultStage2(
       (waitForDesert || waitForCyrpt);
 
     if (
-      canUse$2($skill`Darts: Aim for the Bullseye`) &&
+      canUse($skill`Darts: Aim for the Bullseye`) &&
       haveEffect($effect`Everything Looks Red`) === 0 &&
       dartELRcd() <= 40
     ) {
       setProperty("auto_instakillSource", "darts bullseye");
       setProperty("auto_instakillSuccess", true.toString());
       loopHandlerDelayAll();
-      return useSkill$2($skill`Darts: Aim for the Bullseye`);
+      return auto_useSkill($skill`Darts: Aim for the Bullseye`);
     }
 
     if (
-      canUse$2($skill`Free-For-All`) &&
+      canUse($skill`Free-For-All`) &&
       haveEffect($effect`Everything Looks Red`) === 0 &&
       (wantFreeKillNowEspecially || !reserveFreekills) &&
       myMp() > 80
@@ -817,11 +814,11 @@ export function auto_combatDefaultStage2(
         "auto_instakill",
       );
       loopHandlerDelayAll();
-      return useSkill$2($skill`Free-For-All`);
+      return auto_useSkill($skill`Free-For-All`);
     }
 
     if (
-      canUse$2($skill`Lightning Strike`) &&
+      canUse($skill`Lightning Strike`) &&
       (wantFreeKillNowEspecially || !reserveFreekills || myLightning() >= 60)
     ) {
       handleTracker$1(
@@ -830,18 +827,18 @@ export function auto_combatDefaultStage2(
         "auto_instakill",
       );
       loopHandlerDelayAll();
-      return useSkill$2($skill`Lightning Strike`);
+      return auto_useSkill($skill`Lightning Strike`);
     }
     //Depending on the fam used for instakill, it could be a turn free YR, or it could be turn taking and not a YR, but still give ELY.
     const z_kick: Skill = getZooKickInstaKill();
-    if (canUse$2(z_kick)) {
+    if (canUse(z_kick)) {
       setProperty("auto_instakillSource", "zootomist kick");
       setProperty("auto_instakillSuccess", true.toString());
       loopHandlerDelayAll();
-      return useSkill$2(z_kick);
+      return auto_useSkill(z_kick);
     }
 
-    if (canUse$2($skill`Chest X-Ray`) && auto_chestXraysRemaining() > 0) {
+    if (canUse($skill`Chest X-Ray`) && auto_chestXraysRemaining() > 0) {
       if (
         wantFreeKillNowEspecially ||
         !reserveFreekills ||
@@ -854,12 +851,12 @@ export function auto_combatDefaultStage2(
           "auto_instakill",
         );
         loopHandlerDelayAll();
-        return useSkill$2($skill`Chest X-Ray`);
+        return auto_useSkill($skill`Chest X-Ray`);
       }
     }
 
     if (
-      canUse$2($skill`Fire the Jokester's Gun`) &&
+      canUse($skill`Fire the Jokester's Gun`) &&
       auto_jokesterGunFreeKillAvailable() &&
       (wantFreeKillNowEspecially || !reserveFreekills)
     ) {
@@ -869,7 +866,7 @@ export function auto_combatDefaultStage2(
         "auto_instakill",
       );
       loopHandlerDelayAll();
-      return useSkill$2($skill`Fire the Jokester's Gun`);
+      return auto_useSkill($skill`Fire the Jokester's Gun`);
     }
 
     if (
@@ -882,11 +879,11 @@ export function auto_combatDefaultStage2(
         "auto_instakill",
       );
       loopHandlerDelayAll();
-      return useSkill$2($skill`BCZ: Sweat Bullets`);
+      return auto_useSkill($skill`BCZ: Sweat Bullets`);
     }
 
     if (
-      canUse$2($skill`Shattering Punch`) &&
+      canUse($skill`Shattering Punch`) &&
       toInt(getProperty("_shatteringPunchUsed")) < 3 &&
       !reserveFreekills
     ) {
@@ -904,11 +901,11 @@ export function auto_combatDefaultStage2(
           "auto_instakill",
         );
         loopHandlerDelayAll();
-        return useSkill$2($skill`Shattering Punch`);
+        return auto_useSkill($skill`Shattering Punch`);
       }
     }
     if (
-      canUse$2($skill`Gingerbread Mob Hit`) &&
+      canUse($skill`Gingerbread Mob Hit`) &&
       !toBoolean(getProperty("_gingerbreadMobHitUsed")) &&
       !reserveFreekills &&
       myMp() > 50
@@ -919,13 +916,13 @@ export function auto_combatDefaultStage2(
         "auto_instakill",
       );
       loopHandlerDelayAll();
-      return useSkill$2($skill`Gingerbread Mob Hit`);
+      return auto_useSkill($skill`Gingerbread Mob Hit`);
     }
     //		Can not use _usedReplicaBatoomerang if we have more than 1 because of the double item use issue...
     //		Sure, we can try to use a second item (if we have it or are forced to buy it... ugh).
     //		if(!combat_status_check("batoomerang") && (item_amount($item[Replica Bat-oomerang]) > 0) && (get_property("_usedReplicaBatoomerang").to_int() < 3))
     //		THIS IS COPIED TO THE ED SECTION, IF IT IS FIXED, FIX IT THERE TOO!
-    if (canUse$4($item`replica bat-oomerang`) && !reserveFreekills) {
+    if (canUse$3($item`replica bat-oomerang`) && !reserveFreekills) {
       if (toInt(getProperty("auto_batoomerangDay")) !== myDaycount()) {
         setProperty("auto_batoomerangDay", myDaycount().toString());
         setProperty("auto_batoomerangUse", (0).toString());
@@ -946,7 +943,7 @@ export function auto_combatDefaultStage2(
     }
 
     if (
-      canUse$4($item`shadow brick`) &&
+      canUse$3($item`shadow brick`) &&
       toInt(getProperty("_shadowBricksUsed")) < 13 &&
       !reserveFreekills
     ) {
@@ -960,22 +957,22 @@ export function auto_combatDefaultStage2(
     }
   } // instakills
   //wearing [retro superhero cape] iotm set to vampire slicer mode instakills Undead and reduces evilness in Cyrpt zones.
-  if (canUse$2($skill`Slay the Dead`) && enemy.phylum === $phylum`undead`) {
-    return useSkill$2($skill`Slay the Dead`);
+  if (canUse($skill`Slay the Dead`) && enemy.phylum === $phylum`undead`) {
+    return auto_useSkill($skill`Slay the Dead`);
   }
   //autokill duplicated enemies. this still costs a turn
-  if (canUse$4($item`exploding cigar`) && haveUsed($skill`Duplicate`)) {
+  if (canUse$3($item`exploding cigar`) && haveUsed($skill`Duplicate`)) {
     return useItem$1($item`exploding cigar`);
   }
   // Slaughter is an instakill, but not free; only use if you have no other options and never when we want free kill
   if (
-    canUse$2($skill`Slaughter`) &&
+    canUse($skill`Slaughter`) &&
     haveEffect($effect`Everything Looks Red`) === 0
   ) {
     setProperty("auto_instakillSource", "slaughter");
     setProperty("auto_instakillSuccess", true.toString());
     loopHandlerDelayAll();
-    return useSkill$2($skill`Slaughter`);
+    return auto_useSkill($skill`Slaughter`);
   }
 
   return "";

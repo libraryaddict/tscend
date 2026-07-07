@@ -73,7 +73,7 @@ import {
   adjustForYellowRayIfPossible$1,
   auto_can_equip,
   auto_combatModCap,
-  auto_forceNextNoncombat$1,
+  auto_forceNextNoncombat,
   auto_inRonin,
   auto_log_debug,
   auto_log_debug$1,
@@ -94,7 +94,7 @@ import { auto_sourceTerminalEducate } from "../iotms/mr2016";
 import { catBurglarHeistsLeft } from "../iotms/mr2018";
 import { auto_mapTheMonsters } from "../iotms/mr2020";
 import { auto_haveGreyGoose, auto_haveTrainSet } from "../iotms/mr2022";
-import { auto_getCitizenZone, auto_lostStomach$1 } from "../iotms/mr2023";
+import { auto_getCitizenZone, auto_lostStomach } from "../iotms/mr2023";
 import { auto_haveChestMimic, auto_haveMayamCalendar } from "../iotms/mr2024";
 import {
   auto_canEquipAllMcHugeLarge,
@@ -384,7 +384,7 @@ function L8_getGoatCheese(): boolean {
       "Attemping to use Map the Monsters to olfact a Dairy Goat.",
     );
   }
-  auto_lostStomach$1(true);
+  auto_lostStomach(true);
 
   const retval: boolean = autoAdv$2($location`The Goatlet`);
   auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
@@ -578,7 +578,7 @@ function L8_trapperExtreme(): boolean {
   // We don't need to force the first NC, it''s superlikely. The other two we can.
   const currentExtremity: number = toInt(getProperty("currentExtremity"));
   if (currentExtremity === 1 || currentExtremity === 2) {
-    const NCForced: boolean = auto_forceNextNoncombat$1(
+    const NCForced: boolean = auto_forceNextNoncombat(
       $location`The eXtreme Slope`,
     );
     auto_log_info(

@@ -54,7 +54,7 @@ import {
   simMaximizeWith,
   simValue,
 } from "../auto_equipment";
-import { acquireHP, acquireMP$1, acquireMP$2, uneffect } from "../auto_restore";
+import { acquireHP, acquireMP, uneffect } from "../auto_restore";
 import {
   auto_is_valid,
   auto_is_valid$2,
@@ -96,7 +96,7 @@ export function koe_rmi_count(): number {
   );
 }
 
-export function koe_acquire_rmi$1(target: number): boolean {
+export function koe_acquire_rmi(target: number): boolean {
   //acquires target amount of rare meat isotopes by converting meat into rmi
   const it: Item = $item`rare Meat isotope`;
   if (itemAmount(it) >= target) {
@@ -208,7 +208,7 @@ export function LX_koeInvaderHandler(): boolean {
     }
     // Actually go in for the kill
     if (have_19_each) {
-      acquireMP$2(24, 0);
+      acquireMP(24, 0);
       auto_log_info(
         "Attacking the Invader, using June Cleaver and LTS.",
         "blue",
@@ -249,7 +249,7 @@ export function LX_koeInvaderHandler(): boolean {
       buffMaintain$3($effect`Carol of the Hells`, 50, 1, 1);
       buffMaintain$3($effect`Song of Sauce`, 150, 1, 1);
       buffMaintain$4($effect`Glittering Eyelashes`);
-      acquireMP$2(100, 0);
+      acquireMP(100, 0);
 
       auto_log_info(
         "Attacking the Invader, using Weapon of the Pastalord.",
@@ -371,7 +371,7 @@ export function L12_koe_finalizeWar(): boolean {
   //koe does not have coin masters. there is nothing to sell here.
   equipWarOutfit();
   acquireHP();
-  acquireMP$1(60);
+  acquireMP(60);
   auto_log_info("Let's fight the final boss of the frat-hippy war!", "blue");
   const retval: boolean = autoAdv$2($location`The Exploaded Battlefield`);
   council(); //need to visit to grab 10 rare meat isotopes and get next quests
@@ -427,7 +427,7 @@ export function L13_koe_towerNSNagamar(): boolean {
     }
   }
 
-  if (koe_acquire_rmi$1(30)) {
+  if (koe_acquire_rmi(30)) {
     //it costs 30 rmi to get wand.
     auto_log_info(
       "attempting to buy [wand of nagamar] from [Cosmic Ray's Bazaar]",

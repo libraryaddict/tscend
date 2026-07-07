@@ -114,9 +114,9 @@ import {
 import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
 import {
   auto_autoConsumeOne,
+  auto_canDrink,
   auto_findBestConsumeAction,
   autoDrink,
-  canDrink$1,
   expectedAdventuresFrom,
   inebriety_left,
 } from "../auto_consume";
@@ -149,7 +149,7 @@ import {
   provideResistances,
   provideResistances$4,
 } from "../auto_providers";
-import { acquireHP, acquireMP$2, uneffect } from "../auto_restore";
+import { acquireHP, acquireMP, uneffect } from "../auto_restore";
 import {
   auto_reserveUndergroundAdventures,
   auto_waitForDay2,
@@ -161,7 +161,7 @@ import {
   auto_change_mcd,
   auto_combat_appearance_rates$1,
   auto_convertDesiredML,
-  auto_forceNextNoncombat$1,
+  auto_forceNextNoncombat,
   auto_haveQueuedForcedNonCombat,
   auto_inRonin,
   auto_is_valid,
@@ -205,7 +205,7 @@ import {
   auto_habitatFightsLeft,
   auto_haveBofa,
   auto_haveCCSC,
-  auto_lostStomach$1,
+  auto_lostStomach,
   auto_makeMonkeyPawWish$1,
   auto_monkeyPawWishesLeft,
 } from "../iotms/mr2023";
@@ -715,7 +715,7 @@ export function LX_unlockHauntedLibrary(): boolean {
 
   if (internalQuestStatus("questM20Necklace") === 2) {
     // only force after we get the pool cue NC.
-    const NCForced: boolean = auto_forceNextNoncombat$1(
+    const NCForced: boolean = auto_forceNextNoncombat(
       $location`The Haunted Billiards Room`,
     );
     // delay if we are out of NC forcers and haven't run out of things to do
@@ -1047,7 +1047,7 @@ export function LX_getLadySpookyravensPowderPuff(): boolean {
   auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
 
   if (!zone_delay($location`The Haunted Bathroom`)._boolean) {
-    const NCForced: boolean = auto_forceNextNoncombat$1(
+    const NCForced: boolean = auto_forceNextNoncombat(
       $location`The Haunted Bathroom`,
     );
     // delay if we are out of NC forcers and haven't run out of things to do
@@ -1260,7 +1260,7 @@ export function L11_getBeehive(): boolean {
 
   auto_log_info("Must find a beehive!", "blue");
 
-  const NCForced: boolean = auto_forceNextNoncombat$1(
+  const NCForced: boolean = auto_forceNextNoncombat(
     $location`The Black Forest`,
   );
   // delay if we are out of NC forcers and haven't run out of things to do
@@ -2220,7 +2220,7 @@ export function L11_hiddenCity(): boolean {
     !in_robot() &&
     !in_darkGyffte() &&
     weapon_ghost_dmg < 20 &&
-    !acquireMP$2(
+    !acquireMP(
       //we can not rely on melee/ranged weapon to kill the ghost
       30,
       0,
@@ -2245,7 +2245,7 @@ export function L11_hiddenCity(): boolean {
       auto_haveQueuedForcedNonCombat();
 
     let canDrinkCursedPunch: boolean =
-      canDrink$1($item`Cursed Punch`) &&
+      auto_canDrink($item`Cursed Punch`) &&
       !toBoolean(getProperty("auto_limitConsume")) &&
       !in_tcrs() &&
       !in_small();
@@ -2322,7 +2322,7 @@ export function L11_hiddenCity(): boolean {
       }
 
       if (shouldForceElevatorAction) {
-        elevatorAction = auto_forceNextNoncombat$1(
+        elevatorAction = auto_forceNextNoncombat(
           $location`The Hidden Apartment Building`,
         );
         // delay if we are out of NC forcers and haven't run out of things to do
@@ -2440,7 +2440,7 @@ export function L11_hiddenCity(): boolean {
       itemAmount($item`McClusky file (complete)`) > 0 &&
       auto_canForceNextNoncombat()
     ) {
-      if (auto_forceNextNoncombat$1($location`The Hidden Office Building`)) {
+      if (auto_forceNextNoncombat($location`The Hidden Office Building`)) {
         //how many delay turns should this save to be considered?
         workingHoliday = true;
       } else if (
@@ -3031,7 +3031,7 @@ export function L11_mauriceSpookyraven(): boolean {
     if (!bat_wantHowl($location`The Haunted Wine Cellar`)) {
       bat_formBats$1();
     }
-    auto_lostStomach$1(true);
+    auto_lostStomach(true);
     if (
       canSniff(
         $monster`cabinet of Dr. Limpieza`,
@@ -3676,7 +3676,7 @@ export function L11_palindome(): boolean {
     providePlusCombat$2(15, $location`Whitey's Grove`, false);
     // +item is nice to get that food
     bat_formBats$1();
-    auto_lostStomach$1(true);
+    auto_lostStomach(true);
     auto_log_info("Off to the grove for some doofy food!", "blue");
     return autoAdv$1(1, $location`Whitey's Grove`);
   }

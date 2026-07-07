@@ -84,7 +84,7 @@ import {
   internalQuestStatus,
   poolSkillPracticeGains,
   wrap_item,
-  zoneRank$1,
+  zoneRank,
 } from "../auto_util";
 import { in_plumber } from "../paths/path_of_the_plumber";
 import { AshMatcher } from "../utils/kolmafiaUtils";
@@ -665,8 +665,8 @@ function auto_monsterToMap(loc: Location, page: string): Monster {
     //record the possible monsters and identify the best one to target
     monOpts.set(i, toMonster(toInt(mons.group(1))));
     if (
-      zoneRank$1(monOpts.get(i) ?? monOpts.set(i, Monster.none).get(i), loc) <=
-      zoneRank$1(
+      zoneRank(monOpts.get(i) ?? monOpts.set(i, Monster.none).get(i), loc) <=
+      zoneRank(
         monOpts.get(bestmon) ?? monOpts.set(bestmon, Monster.none).get(bestmon),
         loc,
       )

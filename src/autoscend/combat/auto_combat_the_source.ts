@@ -14,7 +14,7 @@ import {
 import { $effect, $locations, $monsters, $skill } from "libram";
 
 import { auto_have_skill } from "../auto_util";
-import { canUse$1, canUse$2, useSkill$1, useSkill$2 } from "./auto_combat_util";
+import { auto_useSkill, canUse } from "./auto_combat_util";
 
 //Path specific combat handling for The Source
 
@@ -33,43 +33,43 @@ export function auto_combatTheSourceStage1(
           auto_have_skill($skill`Source Punch`) &&
           myMp() >= mpCost($skill`Source Punch`)
         ) {
-          return useSkill$1($skill`Source Punch`, false);
+          return auto_useSkill($skill`Source Punch`, false);
         }
       } else if (myMp() > 125) {
         if (
-          canUse$2($skill`Reboot`) &&
+          canUse($skill`Reboot`) &&
           (haveEffect($effect`Latency`) > 0 || myHp() * 2 < myMaxhp())
         ) {
-          return useSkill$2($skill`Reboot`);
+          return auto_useSkill($skill`Reboot`);
         }
-        if (canUse$2($skill`Humiliating Hack`)) {
-          return useSkill$2($skill`Humiliating Hack`);
+        if (canUse($skill`Humiliating Hack`)) {
+          return auto_useSkill($skill`Humiliating Hack`);
         }
-        if (canUse$2($skill`Disarmament`)) {
-          return useSkill$2($skill`Disarmament`);
+        if (canUse($skill`Disarmament`)) {
+          return auto_useSkill($skill`Disarmament`);
         }
-        if (canUse$2($skill`Big Guns`) && myHp() < 100) {
-          return useSkill$2($skill`Big Guns`);
+        if (canUse($skill`Big Guns`) && myHp() < 100) {
+          return auto_useSkill($skill`Big Guns`);
         }
       } else if (myMp() > 100) {
-        if (canUse$2($skill`Humiliating Hack`)) {
-          return useSkill$2($skill`Humiliating Hack`);
+        if (canUse($skill`Humiliating Hack`)) {
+          return auto_useSkill($skill`Humiliating Hack`);
         }
-        if (canUse$2($skill`Disarmament`)) {
-          return useSkill$2($skill`Disarmament`);
+        if (canUse($skill`Disarmament`)) {
+          return auto_useSkill($skill`Disarmament`);
         }
       }
 
-      if (canUse$1($skill`Source Kick`, false)) {
-        return useSkill$1($skill`Source Kick`, false);
+      if (canUse($skill`Source Kick`, false)) {
+        return auto_useSkill($skill`Source Kick`, false);
       }
     }
 
-    if (canUse$2($skill`Big Guns`)) {
-      return useSkill$2($skill`Big Guns`);
+    if (canUse($skill`Big Guns`)) {
+      return auto_useSkill($skill`Big Guns`);
     }
-    if (canUse$1($skill`Source Punch`, false)) {
-      return useSkill$1($skill`Source Punch`, false);
+    if (canUse($skill`Source Punch`, false)) {
+      return auto_useSkill($skill`Source Punch`, false);
     }
     return "runaway";
   }
@@ -86,7 +86,7 @@ export function auto_combatTheSourceStage4(
   //source terminal iotm source path specific action. provokes an agent into attacking you next turn 3/day
   //is turn referring to combat round or next adv? this is placed in stage 4 on the assumption it means next adv. if it means next combat round then it should be moved to stage 2
   if (
-    canUse$2($skill`Portscan`) &&
+    canUse($skill`Portscan`) &&
     myLocation().turnsSpent < 8 &&
     toInt(getProperty("_sourceTerminalPortscanUses")) < 3 &&
     !toBoolean(getProperty("_portscanPending"))
@@ -97,7 +97,7 @@ export function auto_combatTheSourceStage4(
       )
     ) {
       setProperty("_portscanPending", true.toString());
-      return useSkill$2($skill`Portscan`);
+      return auto_useSkill($skill`Portscan`);
     }
   }
 

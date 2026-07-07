@@ -60,7 +60,7 @@ import {
 } from "libram";
 
 import { autoAdv$1, autoAdv$2, autoAdvBypass } from "../auto_adventure";
-import { canDrink$1, spleen_left } from "../auto_consume";
+import { auto_canDrink, spleen_left } from "../auto_consume";
 import {
   addToMaximize,
   autoEquip,
@@ -85,14 +85,14 @@ import {
   auto_log_warning$1,
   handleTracker,
   handleTracker$1,
-  hasTorso$1,
+  hasTorso,
   internalQuestStatus,
   meatReserve,
   wrap_item,
 } from "../auto_util";
 import { zone_available, zone_needItem } from "../auto_zone";
 import { generic_t } from "../autoscend_record";
-import { canUse$2, useItem, useSkill$1 } from "../combat/auto_combat_util";
+import { auto_useSkill, canUse, useItem } from "../combat/auto_combat_util";
 import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
 import { in_darkGyffte } from "../paths/dark_gyffte";
 import { in_koe } from "../paths/kingdom_of_exploathing";
@@ -193,28 +193,28 @@ export function auto_bowlingBallCombatString(
     return useItem($item`cosmic bowling ball`, !speculation);
   }
   // determine if we want more stats
-  if (canUse$2($skill`Bowl Sideways`)) {
+  if (canUse($skill`Bowl Sideways`)) {
     // increase stats if we are power leveling
     if (isAboutToPowerlevel()) {
-      return useSkill$1($skill`Bowl Sideways`, !speculation);
+      return auto_useSkill($skill`Bowl Sideways`, !speculation);
     }
     // increase stats if we are farming Ka as Ed
     if (toBoolean(getProperty("_auto_farmingKaAsEd"))) {
-      return useSkill$1($skill`Bowl Sideways`, !speculation);
+      return auto_useSkill($skill`Bowl Sideways`, !speculation);
     }
   }
   // determine if we want more item or meat bonus
-  if (canUse$2($skill`Bowl Straight Up`)) {
+  if (canUse($skill`Bowl Straight Up`)) {
     // increase item bonus if not item capped in current zone
     const itemNeed: generic_t = zone_needItem(place);
     if (itemNeed._boolean) {
       if (itemDropModifier() < itemNeed._float) {
-        return useSkill$1($skill`Bowl Straight Up`, !speculation);
+        return auto_useSkill($skill`Bowl Straight Up`, !speculation);
       }
     }
     // increase meat bonus if doing nuns
     if (place === $location`The Themthar Hills`) {
-      return useSkill$1($skill`Bowl Straight Up`, !speculation);
+      return auto_useSkill($skill`Bowl Straight Up`, !speculation);
     }
   }
 
@@ -456,7 +456,7 @@ export function juneCleaverChoiceHandler(choice: number): void {
       if (myMeat() < meatReserve()) {
         runChoice(3); // 1500 meat
       } else if (
-        canDrink$1($item`Dad's brandy`) &&
+        auto_canDrink($item`Dad's brandy`) &&
         myInebriety() < inebrietyLimit()
       ) {
         runChoice(2); // size 1 awesome booze
@@ -718,7 +718,7 @@ export function auto_hasParka(): boolean {
 }
 
 export function auto_configureParka(tag: string): boolean {
-  if (!auto_hasParka() || !hasTorso$1()) {
+  if (!auto_hasParka() || !hasTorso()) {
     return false;
   }
   // store the requested setting in a property so we can handle them later
@@ -729,7 +729,7 @@ export function auto_configureParka(tag: string): boolean {
 }
 
 export function auto_handleParka(): boolean {
-  if (!auto_hasParka() || !hasTorso$1()) {
+  if (!auto_hasParka() || !hasTorso()) {
     return false;
   }
   const dino: string = getProperty("auto_parkaSetting");

@@ -21,7 +21,7 @@ import {
 import { $effect, $item, $items, $location, $path, $skill } from "libram";
 
 import { autoAdv$2 } from "../auto_adventure";
-import { itemList, ListInsert$3 } from "../auto_list";
+import { itemList, ListInsert } from "../auto_list";
 import { auto_log_info } from "../auto_util";
 import { bridgeGoal } from "../quests/level_09";
 import { AshMatcher } from "../utils/kolmafiaUtils";
@@ -208,7 +208,7 @@ export function bondDrinks(): Map<number, Item> {
         it.smallimage === "martini.gif" &&
         isUnrestricted(it)
       ) {
-        bondDrinksCached = ListInsert$3(bondDrinksCached, it);
+        bondDrinksCached = ListInsert(bondDrinksCached, it);
       }
     }
   }

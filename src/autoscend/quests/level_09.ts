@@ -84,7 +84,7 @@ import {
   provideItem$2,
   provideResistances,
 } from "../auto_providers";
-import { acquireFullHP, acquireMP$2, uneffect } from "../auto_restore";
+import { acquireFullHP, acquireMP, uneffect } from "../auto_restore";
 import { auto_waitForDay2 } from "../auto_routing";
 import {
   adjustForYellowRayIfPossible,
@@ -106,10 +106,10 @@ import {
   loopHandler,
   setFlavour,
 } from "../auto_util";
-import { canUse$1, canUse$2 } from "../combat/auto_combat_util";
+import { canUse } from "../combat/auto_combat_util";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { adjustEdHat } from "../iotms/mr2015";
-import { asdonBuff$1 } from "../iotms/mr2017";
+import { asdonBuff } from "../iotms/mr2017";
 import { januaryToteAcquire } from "../iotms/mr2018";
 import { auto_beachCombHead, auto_canBeachCombHead } from "../iotms/mr2019";
 import {
@@ -333,30 +333,30 @@ export function prepareForSmutOrcs(): void {
   }
   // -Combat is useless here since NC is triggered by killing Orcs...So we kill orcs better!
   // -ML helps us deal more cold damage and trigger the NC faster.
-  asdonBuff$1($effect`Driving Intimidatingly`);
+  asdonBuff($effect`Driving Intimidatingly`);
   // Check our Load out to see if spells are the best option for Orc-Thumping
   if (isGuildClass()) {
     // This only applies to classes which can use perm'd skills,
     // so let's not waste time and console spam when we're a class or path that can't do any of this.
     let useSpellsInOrcCamp: boolean = false;
 
-    acquireMP$2(32, 0); //pre_adv will always do this later, but waiting for it may fail checks of ability to cast spells here
-    if (setFlavour($element`cold`) && canUse$2($skill`Stuffed Mortar Shell`)) {
+    acquireMP(32, 0); //pre_adv will always do this later, but waiting for it may fail checks of ability to cast spells here
+    if (setFlavour($element`cold`) && canUse($skill`Stuffed Mortar Shell`)) {
       useSpellsInOrcCamp = true;
     }
 
     if (
       setFlavour($element`cold`) &&
-      canUse$1($skill`Cannelloni Cannon`, false)
+      canUse($skill`Cannelloni Cannon`, false)
     ) {
       useSpellsInOrcCamp = true;
     }
 
-    if (canUse$1($skill`Saucegeyser`, false)) {
+    if (canUse($skill`Saucegeyser`, false)) {
       useSpellsInOrcCamp = true;
     }
 
-    if (canUse$1($skill`Saucecicle`, false)) {
+    if (canUse($skill`Saucecicle`, false)) {
       useSpellsInOrcCamp = true;
     }
     // Always Maximize and choose our default Non-Com First, in case we are wrong about the non-com we MAY have some gear still equipped to help us.
@@ -1189,9 +1189,9 @@ export function L9_oilPeak(): boolean {
         !simMaximizeWith(loc, "1000ml 11min")) &&
       haveEffect($effect`Driving Wastefully`) === 0
     ) {
-      asdonBuff$1($effect`Driving Recklessly`);
+      asdonBuff($effect`Driving Recklessly`);
     } else if (haveEffect($effect`Driving Recklessly`) === 0) {
-      asdonBuff$1($effect`Driving Wastefully`);
+      asdonBuff($effect`Driving Wastefully`);
     }
   }
 

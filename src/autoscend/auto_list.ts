@@ -61,7 +61,7 @@ export function List$8(data: Map<number, Item>): Map<number, Item> {
   return retval;
 }
 
-export function ListInsert$3(
+export function ListInsert(
   list: Map<number, Item>,
   what: Item,
 ): Map<number, Item> {

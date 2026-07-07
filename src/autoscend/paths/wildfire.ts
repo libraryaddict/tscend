@@ -33,7 +33,7 @@ import { auto_buyUpTo, pull_meat } from "../auto_acquire";
 import { autoAdv$2 } from "../auto_adventure";
 import { inebriety_left, stomach_left } from "../auto_consume";
 import { autoEquip, possessOutfit$1 } from "../auto_equipment";
-import { acquireHP, acquireMP$1 } from "../auto_restore";
+import { acquireHP, acquireMP } from "../auto_restore";
 import {
   auto_log_info$1,
   auto_log_warning$1,
@@ -80,7 +80,7 @@ export function wildfire_groar_check(): boolean {
   if (myLevel() < 13) {
     return true; //we want to delay this until we are level 13. The more stats we have the easier the fight is.
   }
-  if (!acquireHP() || !acquireMP$1(150)) {
+  if (!acquireHP() || !acquireMP(150)) {
     return true; //killing groar requires lots of MP and full HP.
   }
   setFlavour($element`sleaze`); //deal extra damage against hot opponent
@@ -95,7 +95,7 @@ export function wildfire_warboss_check(): boolean {
   if (!in_wildfire()) {
     return false; //since we are not in wildfire, we are considered "ready" so we do not block the quest in other paths
   }
-  if (!acquireHP() || !acquireMP$1(150)) {
+  if (!acquireHP() || !acquireMP(150)) {
     return true; //killing warboss requires lots of MP and full HP.
   }
   setFlavour($element`sleaze`); //deal extra damage against hot opponent

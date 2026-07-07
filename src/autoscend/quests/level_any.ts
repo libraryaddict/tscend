@@ -102,7 +102,7 @@ import {
   summonMonster,
 } from "../auto_util";
 import { zone_isAvailable$1 } from "../auto_zone";
-import { canUse$1 } from "../combat/auto_combat_util";
+import { canUse } from "../combat/auto_combat_util";
 import {
   acquiredFantasyRealmToken,
   fantasyBanditsFought,
@@ -1196,7 +1196,7 @@ export function LX_dronesOut(): boolean {
   }
   const canExtingo: boolean =
     auto_fireExtinguisherCharges() > 30 &&
-    canUse$1($skill`Fire Extinguisher: Polar Vortex`, false);
+    canUse($skill`Fire Extinguisher: Polar Vortex`, false);
 
   auto_log_info$1("Have drones out so re-routing to not waste");
   //where to go to. Not handling Smut Orc Keepsake, Blackberry Bush due to adventuring conditions required. If they happen to show up, they are handled in auto_combat

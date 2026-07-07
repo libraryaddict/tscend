@@ -205,22 +205,22 @@ import {
 } from "./auto_familiar";
 import { auto_sortedByModifier$3, List$8 } from "./auto_list";
 import { providePlusCombat$3, providePlusNonCombat$3 } from "./auto_providers";
-import { acquireMP$1, uneffect } from "./auto_restore";
+import { acquireMP, uneffect } from "./auto_restore";
 import { solveDelayZone$1 } from "./auto_routing";
 import { zone_hasLuckyAdventure } from "./auto_zone";
 import { kmailObject } from "./autoscend_record";
 import {
   banisherCombatString$2,
   banisherCombatString$3,
-  canUse$2,
-  canUse$4,
+  canUse,
+  canUse$3,
   getCopier,
   getSniffer,
   replaceMonsterCombatString$1,
   useItem$1,
   yellowRayCombatString,
 } from "./combat/auto_combat_util";
-import { auto_get_clan_lounge, handleFaxMonster$2 } from "./iotms/clan";
+import { auto_get_clan_lounge, handleFaxMonster } from "./iotms/clan";
 import { auto_hasNavelRing, auto_navelFreeRunChance } from "./iotms/mr2007";
 import {
   expectGhostReport,
@@ -229,7 +229,7 @@ import {
   timeSpinnerCombat$1,
 } from "./iotms/mr2016";
 import {
-  asdonBuff$1,
+  asdonBuff,
   auto_breatheOutsLeft,
   auto_haveGenieBottleOrPocketWishes,
   auto_wishesAvailable,
@@ -840,7 +840,7 @@ export function canYellowRay(target: Monster): boolean {
     if (
       auto_hasParka() &&
       auto_is_valid$2($skill`Spit jurassic acid`) &&
-      hasTorso$1()
+      hasTorso()
     ) {
       return (
         yellowRayCombatString(
@@ -1310,14 +1310,14 @@ export function freeRunCombatStringPreBanish(
     // todo: other ghosts
     if (
       isGhost(enemy) &&
-      canUse$4($item`T.U.R.D.S. Key`) &&
+      canUse$3($item`T.U.R.D.S. Key`) &&
       itemAmount($item`T.U.R.D.S. Key`) > 0
     ) {
       return useItem$1($item`T.U.R.D.S. Key`);
     }
     //free runaway against pygmies. accelerates hidden city quest
     if (
-      canUse$4($item`short writ of habeas corpus`) &&
+      canUse$3($item`short writ of habeas corpus`) &&
       itemAmount($item`short writ of habeas corpus`) > 0 &&
       $monsters`pygmy orderlies, pygmy witch lawyer, pygmy witch nurse`.includes(
         enemy,
@@ -1353,7 +1353,7 @@ export function freeRunCombatString(
         autoEquip$1($item`spring shoes`);
         return `skill ${$skill`Spring Away`}`;
       } else {
-        if (canUse$2($skill`Spring Away`)) {
+        if (canUse($skill`Spring Away`)) {
           return `skill ${$skill`Spring Away`}`;
         }
       }
@@ -1364,14 +1364,14 @@ export function freeRunCombatString(
         autoEquip$1($item`Roman Candelabra`);
         return `skill ${$skill`Blow the Green Candle!`}`;
       } else {
-        if (canUse$2($skill`Blow the Green Candle!`)) {
+        if (canUse($skill`Blow the Green Candle!`)) {
           return `skill ${$skill`Blow the Green Candle!`}`;
         }
       }
     }
 
     for (const it of $items`green smoke bomb, tattered scrap of paper, GOTO`) {
-      if (canUse$4(it) && itemAmount(it) > 0) {
+      if (canUse$3(it) && itemAmount(it) > 0) {
         return useItem$1(it);
       }
     }
@@ -1457,7 +1457,7 @@ export function freeRunCombatString(
     }
   }
 
-  if (canUse$2($skill`Peel Out`) && pete_peelOutRemaining() > 0) {
+  if (canUse($skill`Peel Out`) && pete_peelOutRemaining() > 0) {
     return `skill ${$skill`Peel Out`}`;
   }
   // Bowling ball is a banish as well, but is available enough that we want to use it as a free run source too
@@ -1484,7 +1484,7 @@ export function freeRunCombatString(
   if (!inAftercore()) {
     for (const it of $items`giant eraser`) {
       //assuming additional ones will be added, eventually
-      if (canUse$4(it) && itemAmount(it) > 0) {
+      if (canUse$3(it) && itemAmount(it) > 0) {
         return useItem$1(it);
       }
     }
@@ -1620,7 +1620,7 @@ export function adjustForSniffingIfPossible(target: Monster): boolean {
     return autoEquip$1($item`cursed monkey's paw`);
   }
   if (sniffer !== Skill.none) {
-    return acquireMP$1(mpCost(sniffer));
+    return acquireMP(mpCost(sniffer));
   }
   return false;
 }
@@ -1710,7 +1710,7 @@ export function banishSources(): number {
       continue;
     }
   }
-  if (canUse$2(getZooKickBanish())) {
+  if (canUse(getZooKickBanish())) {
     count_1 += 1;
   }
   //equipment
@@ -1822,7 +1822,7 @@ export function freeKillSources(): number {
       continue;
     }
   }
-  if (canUse$2(getZooKickInstaKill())) {
+  if (canUse(getZooKickInstaKill())) {
     count_1 += 1;
   }
   //equipment
@@ -1919,7 +1919,7 @@ export function yellowRaySources(): number {
       continue;
     }
   }
-  if (canUse$2(getZooKickYR())) {
+  if (canUse(getZooKickYR())) {
     count_1 += 1;
   }
   //equipment
@@ -2048,7 +2048,7 @@ export function sniffSources(): number {
       continue;
     }
   }
-  if (canUse$2(getZooKickSniff())) {
+  if (canUse(getZooKickSniff())) {
     count_1 += 1;
   }
   //equipment
@@ -2068,7 +2068,7 @@ export function sniffSources(): number {
   return count_1;
 }
 
-export function hasTorso$1(): boolean {
+export function hasTorso(): boolean {
   return (
     haveSkill($skill`Torso Awareness`) ||
     haveSkill($skill`Best Dressed`) ||
@@ -2747,7 +2747,7 @@ export function MLDamageToMonsterMultiplier(): number {
   return retval;
 }
 
-export function freeCrafts$1(): number {
+export function auto_freeCrafts(): number {
   let retval: number = 0;
   if (
     haveSkill($skill`Rapid Prototyping`) &&
@@ -3221,7 +3221,7 @@ function summonMonster$1(mon: Monster, speculative: boolean): boolean {
     );
     return true;
   }
-  if (handleFaxMonster$2(mon, !speculative)) {
+  if (handleFaxMonster(mon, !speculative)) {
     auto_log_debug(
       `${speculative ? "Can" : "Did"} summon ${mon} via fax`,
       "blue",
@@ -3327,7 +3327,7 @@ export function maxSealSummons(): number {
   return 5;
 }
 
-export function acquireCombatMods$1(amt: number, doEquips: boolean): boolean {
+export function acquireCombatMods(amt: number, doEquips: boolean): boolean {
   if (amt < 0) {
     return providePlusNonCombat$3(min(auto_combatModCap(), -1 * amt), doEquips);
   } else if (amt > 0) {
@@ -3671,7 +3671,7 @@ export function auto_autosell(quantity: number, toSell: Item): boolean {
   return false;
 }
 
-export function runChoice$1(page_text: string): string {
+export function auto_runChoice(page_text: string): string {
   while (containsText(page_text, "choice.php")) {
     //# Get choice adventure number
     const begin_choice_adv_num: number =
@@ -4150,7 +4150,7 @@ export function ATSongList(): Map<Effect, boolean> {
   return songs;
 }
 
-export function shrugAT$1(anticipated: Effect): void {
+export function shrugAT(anticipated: Effect): void {
   if (
     is_boris() ||
     is_jarlsberg() ||
@@ -4450,7 +4450,7 @@ export function auto_can_equip(it: Item): boolean {
 }
 
 export function auto_can_equip$1(it: Item, s: Slot): boolean {
-  if (s === $slot`shirt` && !hasTorso$1()) {
+  if (s === $slot`shirt` && !hasTorso()) {
     return false;
   }
 
@@ -4974,7 +4974,7 @@ function auto_wantToCopy$1(enemy: Monster): boolean {
   return toCopy.get(enemy) ?? toCopy.set(enemy, false).get(enemy);
 }
 
-export function zoneRank$1(mon: Monster, loc: Location): number {
+export function zoneRank(mon: Monster, loc: Location): number {
   if (auto_wantToYellowRay(mon, loc)) {
     return 1;
   }
@@ -5578,7 +5578,7 @@ function UrKelCheck(
       getProperty("auto_MLSafetyLimit") === "" ||
       (2 * myLevel() <= UrKelUpperLimit && 2 * myLevel() >= UrKelLowerLimit)
     ) {
-      shrugAT$1($effect`Ur-Kel's Aria of Annoyance`);
+      shrugAT($effect`Ur-Kel's Aria of Annoyance`);
       buffMaintain$3($effect`Ur-Kel's Aria of Annoyance`, 0, 1, 10);
     }
   }
@@ -5650,7 +5650,7 @@ export function auto_MaxMLToCap(ToML: number, doAltML: boolean): boolean {
   angryAgateCheck(ToML, 29, 25);
   // 25
   if (doAltML && monsterLevelAdjustment() + 25 <= auto_convertDesiredML(ToML)) {
-    asdonBuff$1($effect`Driving Recklessly`);
+    asdonBuff($effect`Driving Recklessly`);
   }
   if (doAltML) {
     tryEffects(
@@ -5780,7 +5780,7 @@ function _auto_forceNextNoncombat(
   } else if (
     auto_hasParka() &&
     toInt(getProperty("_spikolodonSpikeUses")) < 5 &&
-    hasTorso$1() &&
+    hasTorso() &&
     (!in_wereprof() || !is_professor())
   ) {
     // if we're a professor, we can't use the spikes
@@ -5852,7 +5852,7 @@ function _auto_forceNextNoncombat$1(loc: Location): boolean {
   return _auto_forceNextNoncombat(loc, false);
 }
 
-export function auto_forceNextNoncombat$1(loc: Location): boolean {
+export function auto_forceNextNoncombat(loc: Location): boolean {
   if (auto_haveQueuedForcedNonCombat()) {
     auto_log_warning(
       "Trying to force a noncombat adventure, but I think we've already forced one...",
@@ -6097,15 +6097,10 @@ export function meatReserve(): number {
   ) {
     reserve_extra += npcPrice($item`pump grease`);
   }
-  if (
-    !hasTorso$1() &&
-    hasUsefulShirt() &&
-    !gnomadsAvailable() &&
-    inGnomeSign()
-  ) {
+  if (!hasTorso() && hasUsefulShirt() && !gnomadsAvailable() && inGnomeSign()) {
     reserve_extra += toInt(5000 * npcStoreDiscountMulti()); //Going to need 5k anyway if we need torso so might as well start saving early. Worst case scenario we make a meatcar
   }
-  if (!hasTorso$1() && gnomadsAvailable() && hasUsefulShirt()) {
+  if (!hasTorso() && gnomadsAvailable() && hasUsefulShirt()) {
     reserve_extra += 5000; //we want Torso ASAP if we have a useful shirt
   }
 
@@ -6355,7 +6350,7 @@ export function turnsUsedByRemainingNCForcesToday(): number {
   return forces;
 }
 
-export function substat_to_level$1(n: number): number {
+export function substat_to_level(n: number): number {
   if (n <= 16) {
     return 1; // All substats less than 16 are level 1, before the formula takes effect
   }

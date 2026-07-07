@@ -72,7 +72,7 @@ import {
   $slot,
 } from "libram";
 
-import { canDrink$1, inebriety_left, spleen_left } from "../auto_consume";
+import { auto_canDrink, inebriety_left, spleen_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
 import {
   auto_famKill,
@@ -91,7 +91,7 @@ import {
   auto_wantToBanish$1,
   handleTracker$1,
   hasShieldEquipped,
-  hasTorso$1,
+  hasTorso,
   isFreeMonster$1,
   loopHandlerDelayAll,
   wrap_item,
@@ -210,8 +210,8 @@ let $_canUse_exclusives: Map<number, $_canUse_SkillSet> | undefined;
 
 export function canUse(
   sk: Skill,
-  onlyOnce: boolean,
-  inCombat: boolean,
+  onlyOnce: boolean = true, // assume onlyOnce unless specified otherwise
+  inCombat: boolean = true, //assume we are in combat unless specified otherwise
 ): boolean {
   if (onlyOnce && haveUsed(sk)) {
     return false;
@@ -357,17 +357,10 @@ export function canUse(
   return true;
 }
 
-export function canUse$1(sk: Skill, onlyOnce: boolean): boolean {
-  //assume we are in combat unless specified otherwise
-  return canUse(sk, onlyOnce, true);
-}
-
-export function canUse$2(sk: Skill): boolean {
-  // assume onlyOnce unless specified otherwise
-  return canUse$1(sk, true);
-}
-
-export function canUse$3(it: Item, onlyOnce: boolean): boolean {
+export function canUse$3(
+  it: Item,
+  onlyOnce: boolean = true, // assume onlyOnce unless specified otherwise
+): boolean {
   if (onlyOnce && haveUsed$1(it)) {
     return false;
   }
@@ -383,21 +376,12 @@ export function canUse$3(it: Item, onlyOnce: boolean): boolean {
   return true;
 }
 
-export function canUse$4(it: Item): boolean {
-  // assume onlyOnce unless specified otherwise
-  return canUse$3(it, true);
-}
-
-export function useSkill$1(sk: Skill, mark: boolean): string {
+export function auto_useSkill(sk: Skill, mark: boolean = true): string {
   if (mark) {
     markAsUsed(sk);
   }
 
   return `skill ${sk.name}`;
-}
-
-export function useSkill$2(sk: Skill): string {
-  return useSkill$1(sk, true);
 }
 
 export function useItem(it: Item, mark: boolean): string {
@@ -542,7 +526,7 @@ export function getSniffer(enemy: Monster, inCombat: boolean): Skill {
   }
   if (
     myFamiliar() === $familiar`Nosy Nose` &&
-    canUse$2($skill`Get a Good Whiff of This Guy`) &&
+    canUse($skill`Get a Good Whiff of This Guy`) &&
     !isSniffed(enemy, $skill`Get a Good Whiff of This Guy`)
   ) {
     return $skill`Get a Good Whiff of This Guy`;
@@ -556,7 +540,7 @@ export function getSniffer(enemy: Monster, inCombat: boolean): Skill {
   }
   // Zootomist kicks. We might have to move this depending on what happens with cooldowns
   const z_kick: Skill = getZooKickSniff();
-  if (canUse$2(z_kick)) {
+  if (canUse(z_kick)) {
     return z_kick;
   }
 
@@ -593,7 +577,7 @@ export function getCopier$1(enemy: Monster): Skill {
 
 export function getStunner(enemy: Monster): Skill {
   if (
-    canUse$2($skill`Blow the Blue Candle!`) &&
+    canUse($skill`Blow the Blue Candle!`) &&
     haveEffect($effect`Everything Looks Blue`) === 0
   ) {
     return $skill`Blow the Blue Candle!`; //20 Turns
@@ -601,12 +585,12 @@ export function getStunner(enemy: Monster): Skill {
   // Class specific
   switch (myClass()) {
     case $class`Seal Clubber`:
-      if (canUse$2($skill`Club Foot`) && (myFury() > 0 || hasClubEquipped())) {
+      if (canUse($skill`Club Foot`) && (myFury() > 0 || hasClubEquipped())) {
         return $skill`Club Foot`;
       }
       break;
     case $class`Turtle Tamer`:
-      if (canUse$2($skill`Shell Up`)) {
+      if (canUse($skill`Shell Up`)) {
         //storm turtle blessings makes shell up a multi-round stun, otherwise it's just a (special) stagger
         if (
           haveEffect($effect`Blessing of the Storm Tortoise`) > 0 ||
@@ -619,45 +603,45 @@ export function getStunner(enemy: Monster): Skill {
       break;
     case $class`Accordion Thief`:
       if (
-        canUse$2($skill`Accordion Bash`) &&
+        canUse($skill`Accordion Bash`) &&
         itemType(equippedItem($slot`weapon`)) === "accordion"
       ) {
         return $skill`Accordion Bash`;
       }
       break;
     case $class`Pastamancer`:
-      if (canUse$2($skill`Entangling Noodles`)) {
+      if (canUse($skill`Entangling Noodles`)) {
         return $skill`Entangling Noodles`;
       }
       break;
     case $class`Sauceror`:
-      if (canUse$2($skill`Soul Bubble`)) {
+      if (canUse($skill`Soul Bubble`)) {
         return $skill`Soul Bubble`;
       }
       break;
     case $class`Avatar of Boris`:
-      if (canUse$2($skill`Broadside`)) {
+      if (canUse($skill`Broadside`)) {
         return $skill`Broadside`;
       }
       break;
     case $class`Avatar of Sneaky Pete`:
-      if (canUse$2($skill`Snap Fingers`)) {
+      if (canUse($skill`Snap Fingers`)) {
         return $skill`Snap Fingers`;
       }
       break;
     case $class`Avatar of Jarlsberg`:
-      if (canUse$2($skill`Blend`)) {
+      if (canUse($skill`Blend`)) {
         return $skill`Blend`;
       }
       break;
     case $class`Cow Puncher`:
     case $class`Beanslinger`:
     case $class`Snake Oiler`:
-      if (canUse$2($skill`Beanscreen`)) {
+      if (canUse($skill`Beanscreen`)) {
         return $skill`Beanscreen`;
       }
       if (
-        canUse$2($skill`Hogtie`) &&
+        canUse($skill`Hogtie`) &&
         !haveUsed($skill`Beanscreen`) &&
         enemy.parts.includes("leg")
       ) {
@@ -666,47 +650,47 @@ export function getStunner(enemy: Monster): Skill {
       break;
     case $class`Vampyre`:
       if (
-        canUse$2($skill`Blood Chains`) &&
+        canUse($skill`Blood Chains`) &&
         myHp() > 3 * hpCost($skill`Blood Chains`)
       ) {
         return $skill`Blood Chains`;
       }
       break;
     case $class`Pig Skinner`:
-      if (canUse$2($skill`Noogie`)) {
+      if (canUse($skill`Noogie`)) {
         return $skill`Noogie`;
       }
       break;
     case $class`Cheese Wizard`:
-      if (canUse$2($skill`Gather Cheese-Chi`)) {
+      if (canUse($skill`Gather Cheese-Chi`)) {
         return $skill`Gather Cheese-Chi`;
       }
       break;
     case $class`Jazz Agent`:
-      if (canUse$1($skill`Drum Roll`, true)) {
+      if (canUse($skill`Drum Roll`, true)) {
         return $skill`Drum Roll`;
       }
       break;
     case $class`Meat Golem`:
-      if (canUse$1($skill`Meat Locker`, true)) {
+      if (canUse($skill`Meat Locker`, true)) {
         return $skill`Meat Locker`;
       }
       break;
   }
   // From Designer Sweatpants. Use when have nearly full sweat or when losing combat
   if (
-    canUse$2($skill`Sweat Flood`) &&
+    canUse($skill`Sweat Flood`) &&
     (getSweat() > 98 ||
       containsText(getProperty("_auto_combatState"), "last attempt"))
   ) {
     return $skill`Sweat Flood`;
   }
   // Decreases in stun duration the more it's used
-  if (canUse$2($skill`Summon Love Gnats`)) {
+  if (canUse($skill`Summon Love Gnats`)) {
     return $skill`Summon Love Gnats`;
   }
   // Nuclear Autum
-  if (canUse$2($skill`Mind Bullets`)) {
+  if (canUse($skill`Mind Bullets`)) {
     return $skill`Mind Bullets`;
   }
 
@@ -781,8 +765,8 @@ export function findBanisher(
     }
     return banishAction;
   }
-  if (canUse$1($skill`Storm of the Scarab`, false)) {
-    return useSkill$1($skill`Storm of the Scarab`, false);
+  if (canUse($skill`Storm of the Scarab`, false)) {
+    return auto_useSkill($skill`Storm of the Scarab`, false);
   }
   return auto_combatHandler(round_1, enemy, text);
 }
@@ -1016,7 +1000,7 @@ export function banisherCombatString$1(
       : auto_is_valid$2($skill`Mark Your Territory`) &&
         (auto_have_skill($skill`Mark Your Territory`) ||
           (availableAmount($item`pheromone cocktail`) > 0 &&
-            canDrink$1($item`pheromone cocktail`) &&
+            auto_canDrink($item`pheromone cocktail`) &&
             inebriety_left() > 1 &&
             !isActuallyEd()))
   ) {
@@ -1199,7 +1183,7 @@ export function banisherCombatString$1(
   }
   //[Nanorhino] familiar specific banish. fairly low priority as it consumes 40 to 50 adv worth of a decent buff.
   if (
-    canUse$2($skill`Unleash Nanites`) &&
+    canUse($skill`Unleash Nanites`) &&
     haveEffect($effect`Nanobrawny`) >= 40
   ) {
     return `skill ${$skill`Unleash Nanites`}`;
@@ -1396,7 +1380,7 @@ export function yellowRayCombatString(
         ? haveSkill($skill`Spit jurassic acid`)
         : auto_hasParka() &&
           auto_is_valid$2($skill`Spit jurassic acid`) &&
-          hasTorso$1()
+          hasTorso()
     ) {
       return `skill ${$skill`Spit jurassic acid`}`; //100 Turns and free kill
     }
@@ -1544,7 +1528,7 @@ export function replaceMonsterCombatString(
   ) {
     return `skill ${$skill`CHEAT CODE: Replace Enemy`}`;
   }
-  if (canUse$4($item`waffle`) && !in_avantGuard()) {
+  if (canUse$3($item`waffle`) && !in_avantGuard()) {
     return useItems$1($item`waffle`, Item.none);
   }
   return "";
@@ -1575,10 +1559,10 @@ export function wantToForceDrop(enemy: Monster): boolean {
   //skills that can be used on any combat round, repeatedly until an item is stolen
   //take into account if a yellow ray has been used. Must have been one that doesn't insta-kill
   const mildEvilAvailable: boolean =
-    canUse$1($skill`Perpetrate Mild Evil`, false) &&
+    canUse($skill`Perpetrate Mild Evil`, false) &&
     toInt(getProperty("_mildEvilPerpetrated")) < 3;
   const swoopAvailable: boolean =
-    canUse$1($skill`Swoop like a Bat`, true) &&
+    canUse($skill`Swoop like a Bat`, true) &&
     toInt(getProperty("_batWingsSwoopUsed")) < 11;
 
   let forceDrop: boolean = false;
@@ -1711,22 +1695,22 @@ export function maxRoundsToDouse(enemy: Monster): number {
     auto_warSide() === "hippy"
       ? $item`jam band flyers`
       : $item`rock band flyers`;
-  if (canUse$4(flyer) && toInt(getProperty("flyeredML")) < 10000) {
+  if (canUse$3(flyer) && toInt(getProperty("flyeredML")) < 10000) {
     rounds -= 1;
   }
   // Or pants removal
-  if (canUse$2($skill`Tear Away your Pants!`)) {
+  if (canUse($skill`Tear Away your Pants!`)) {
     rounds -= 1;
   }
-  if (canUse$2($skill`Perpetrate Mild Evil`)) {
+  if (canUse($skill`Perpetrate Mild Evil`)) {
     // We'll be mild eviling any monsters we douse most likely
     rounds -= auto_remainingMildEvilUses();
   }
-  if (canUse$2($skill`Swoop like a Bat`)) {
+  if (canUse($skill`Swoop like a Bat`)) {
     // swoopin' em too
     rounds -= 1;
   }
-  if (canUse$2($skill`Fire Extinguisher: Polar Vortex`)) {
+  if (canUse($skill`Fire Extinguisher: Polar Vortex`)) {
     // and extingo
     rounds -= auto_fireExtinguisherCharges();
   }

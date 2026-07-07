@@ -129,10 +129,10 @@ import {
   provideItem$2,
   provideMeat$2,
 } from "./auto_providers";
-import { acquireHP, acquireMP$2, mp_regen, uneffect } from "./auto_restore";
+import { acquireHP, acquireMP, mp_regen, uneffect } from "./auto_restore";
 import { solveDelayZone$1 } from "./auto_routing";
 import {
-  acquireCombatMods$1,
+  acquireCombatMods,
   adjustForBanishIfPossible,
   adjustForBanishIfPossible$1,
   adjustForCopyIfPossible,
@@ -181,7 +181,7 @@ import {
   zone_needItem,
 } from "./auto_zone";
 import { generic_t } from "./autoscend_record";
-import { canUse$2 } from "./combat/auto_combat_util";
+import { canUse } from "./combat/auto_combat_util";
 import { get_floundry_locations } from "./iotms/clan";
 import { horsePreAdventure } from "./iotms/mr2017";
 import {
@@ -262,7 +262,7 @@ function low_mp_handler(): void {
   auto_log_debug("Low max MP detected.", "red");
   const MIN_USEFUL_MP: number = 6; //Saucestorm
   const TARGET_MP: number = myMaxmp() - (myMaxmp() % MIN_USEFUL_MP);
-  acquireMP$2(TARGET_MP, 0);
+  acquireMP(TARGET_MP, 0);
 }
 
 function print_footer(): void {
@@ -384,12 +384,12 @@ function auto_ghost_prep(place: Location): void {
     if (auto_have_skill(sk)) {
       if (myMaxmp() >= 32) {
         //make sure we actually have the MP to cast spells
-        acquireMP$2(32, 0);
+        acquireMP(32, 0);
       } else {
         low_mp_handler();
       }
     }
-    if (canUse$2(sk)) {
+    if (canUse(sk)) {
       //we can kill them with a spell
       return;
     }
@@ -641,10 +641,10 @@ function auto_pre_adventure(): boolean {
     // make sure we have enough MP to cast our most expensive spells
     // Wrath of Ra (yellow ray) is 40 MP, Curse of Stench (sniff) is 35 MP & Curse of Vacation (banish) is 30 MP.
     if (place !== $location`The Shore, Inc. Travel Agency`) {
-      acquireMP$2(40, 1000);
+      acquireMP(40, 1000);
       // ensure we can cast at least Fist of the Mummy or Storm of the Scarab.
       // so we don't waste adventures when we can't actually kill a monster.
-      acquireMP$2(8, 0);
+      acquireMP(8, 0);
     }
 
     if (myHp() === 0) {
@@ -693,7 +693,7 @@ function auto_pre_adventure(): boolean {
   const forcedNonCombat: boolean = auto_haveQueuedForcedNonCombat();
   const combatModifier: generic_t = zone_combatMod(place);
   if (combatModifier._boolean && !auto_queueIgnore()) {
-    acquireCombatMods$1(combatModifier._int, true);
+    acquireCombatMods(combatModifier._int, true);
   }
   //evaluate a boolean prop for the familiar files
   auto_wantSoCP();
@@ -1361,7 +1361,7 @@ function auto_pre_adventure(): boolean {
     default:
       break;
   }
-  acquireMP$2(mpNeeded, 0);
+  acquireMP(mpNeeded, 0);
   //acquireMP won't do anything if the maxMP isn't big enough,
   //so we'll use this to ensure we have MP in low max scenarios
   if (myMaxmp() < mpNeeded) {

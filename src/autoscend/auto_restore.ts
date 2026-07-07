@@ -1877,7 +1877,7 @@ function __restore(
 
     if (metadata.type === "skill") {
       const s: Skill = toSkill(metadata.name);
-      if (myMp() < mpCost(s) && !acquireMP$3(mpCost(s), 0, useFreeRests)) {
+      if (myMp() < mpCost(s) && !acquireMP(mpCost(s), 0, useFreeRests)) {
         auto_log_warning(`Couldnt acquire enough MP to cast ${s}`, "red");
         return false;
       }
@@ -2083,31 +2083,16 @@ export function invalidateRestoreOptionCache(): void {
   $_f___known_restoration_sources.clear();
   $_f___restore_maximizer_cache.clear();
 }
-/**
- * Try to acquire up to the mp goal (useFreeRests: true). Will also cure poisoned and beaten up before restoring any mp.
- *
- * returns true if my_mp() >= goal after attempting to restore.
- */
-export function acquireMP$1(goal: number): boolean {
-  return acquireMP$2(goal, meatReserve());
-}
-/**
- * Try to acquire up to the mp goal, optionally buying items (useFreeRests: true). Will also cure poisoned and beaten up before restoring any mp.
- *
- * returns true if my_mp() >= goal after attempting to restore.
- */
-export function acquireMP$2(goal: number, meat_reserve: number): boolean {
-  return acquireMP$3(goal, meat_reserve, true);
-}
+
 /**
  * Try to acquire up to the mp goal, optionally buying items and using free rests. Will also cure poisoned and beaten up before restoring any mp.
  *
  * returns true if my_mp() >= goal after attempting to restore.
  */
-function acquireMP$3(
+export function acquireMP(
   goal: number,
-  meat_reserve: number,
-  useFreeRests: boolean,
+  meat_reserve: number = meatReserve(),
+  useFreeRests: boolean = true,
 ): boolean {
   //vampyres don't use MP
   if (in_darkGyffte()) {

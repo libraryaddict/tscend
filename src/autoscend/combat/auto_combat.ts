@@ -39,10 +39,10 @@ import { disguises_combat_helper } from "./auto_combat_disguises_delimit";
 import { fotd_combat_helper } from "./auto_combat_fall_of_the_dinosaurs";
 import { ocrs_combat_helper } from "./auto_combat_ocrs";
 import {
-  canUse$2,
+  auto_useSkill,
+  canUse,
   combat_status_add,
   defaultRoundLimit,
-  useSkill$1,
 } from "./auto_combat_util";
 
 //header file for combat
@@ -139,8 +139,8 @@ export function auto_combatHandler(
     !$monsters`The Man, The Big Wisniewski`.includes(enemy)
   ) {
     //war bosses can go to round 50
-    if (canUse$2($skill`Implode Universe`)) {
-      return useSkill$1($skill`Implode Universe`, true);
+    if (canUse($skill`Implode Universe`)) {
+      return auto_useSkill($skill`Implode Universe`, true);
     }
     abort(
       `Some sort of problem occurred, it is past round ${defaultRoundLimit()} but we are still in non-gremlin combat...`,

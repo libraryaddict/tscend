@@ -1,7 +1,7 @@
 import { abort, Monster } from "kolmafia";
 import { $item, $monster } from "libram";
 
-import { canUse$4, useItem$1 } from "./auto_combat_util";
+import { canUse$3, useItem$1 } from "./auto_combat_util";
 
 //Path specific combat handling for Bees Hate You
 
@@ -15,7 +15,7 @@ export function auto_combatBHYStage1(
   //Bees Hate You path final boss instakill.
   //technically also a hidden boss in all paths but we never want to fight it in other paths
   if (enemy === $monster`Guy Made Of Bees`) {
-    if (canUse$4($item`antique hand mirror`)) {
+    if (canUse$3($item`antique hand mirror`)) {
       return useItem$1($item`antique hand mirror`);
     } else {
       abort(

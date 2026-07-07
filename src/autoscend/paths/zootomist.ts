@@ -47,7 +47,7 @@ import {
 import { auto_doTempleSummit } from "../../autoscend";
 import { pullXWhenHaveY } from "../auto_acquire";
 import {
-  auto_getAllEquipabble$1,
+  auto_getAllEquipabble,
   possessOutfit$1,
   simMaximizeWith$1,
 } from "../auto_equipment";
@@ -179,7 +179,7 @@ export function zoo_d2Pulls(): void {
     }
     const m: Modifier = Modifier.get("Monster Level");
     const s: Slot = toSlot(it);
-    const alternatives: Map<Item, number> = auto_getAllEquipabble$1(s);
+    const alternatives: Map<Item, number> = auto_getAllEquipabble(s);
     const ranked_alternatives: Map<number, Item> = auto_sortedByModifier(
       alternatives,
       m,
@@ -314,7 +314,7 @@ function zoo_getBodyPartPriority(): Map<number, number> {
   return priority;
 }
 
-function zoo_getBestFam$1(bodyPart: number, verbose: boolean): Familiar {
+function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
   //Identifies the 11 familiars we want based on what we have and stores them in prefs so we only go through the list of fams once
   //Goes through fam attributes of all familiars and filters from there
   const famAttributes: Map<Familiar, string> = new Map();
@@ -763,7 +763,7 @@ function zoo_getNextFam(): Familiar {
   if (!in_zootomist() || myLevel() > 11) {
     return Familiar.none;
   }
-  return zoo_getBestFam$1(zoo_getNextPart(), false);
+  return zoo_getBestFam(zoo_getNextPart(), false);
 }
 
 export function zoo_graftFam(): boolean {
@@ -810,12 +810,12 @@ export function zoo_graftFam(): boolean {
     if (existing_graft !== Familiar.none) {
       continue;
     }
-    const fam: Familiar = zoo_getBestFam$1(p, false);
+    const fam: Familiar = zoo_getBestFam(p, false);
     handleFamiliar$1(fam);
     const next_graft_weight: number = zoo_nextGraftWeight();
     if (familiarWeight(fam) < next_graft_weight) {
       //can only graft if the fam is higher than the level at the last graft
-      zoo_boostWeight$1(fam, next_graft_weight);
+      zoo_boostWeight(fam, next_graft_weight);
       return false;
     }
     equip(fam, Item.none); //unequip fam equipment to not lose it, just in case
@@ -841,7 +841,7 @@ function zoo_nextGraftWeight(): number {
   return min(myLevel() + 2, 13);
 }
 
-function zoo_boostWeight$1(f: Familiar, target_weight: number): boolean {
+function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
   if (myFamiliar() !== f) {
     useFamiliar(f);
   }

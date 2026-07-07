@@ -66,7 +66,7 @@ import {
   $stat,
 } from "libram";
 
-import { canEat$1, fullness_left } from "./auto_consume";
+import { auto_canEat, fullness_left } from "./auto_consume";
 import { auto_fold } from "./auto_craft";
 import { possessEquipment } from "./auto_equipment";
 import { canChangeFamiliar, pathHasFamiliar } from "./auto_familiar";
@@ -83,7 +83,7 @@ import {
   auto_turbo,
   autoCraft,
   handleTracker,
-  hasTorso$1,
+  hasTorso,
   internalQuestStatus,
   isGeneralStoreAvailable,
   isGuildClass,
@@ -92,11 +92,11 @@ import {
   isUnclePAvailable,
   wrap_item,
 } from "./auto_util";
-import { canUse$2 } from "./combat/auto_combat_util";
+import { canUse } from "./combat/auto_combat_util";
 import { auto_floundryUse, isSpeakeasyDrink } from "./iotms/clan";
 import { pullLegionKnife } from "./iotms/mr2011";
 import { auto_mayoItems } from "./iotms/mr2015";
-import { pantogramPants$1 } from "./iotms/mr2017";
+import { pantogramPants } from "./iotms/mr2017";
 import { auto_checkTakerSpace } from "./iotms/mr2024";
 import { in_amw } from "./paths/adventurer_meats_world";
 import { ag_pulls } from "./paths/avant_guard";
@@ -417,19 +417,11 @@ export function pulverizeThing(it: Item): boolean {
   return true;
 }
 
-export function buyableMaintain$1(
+export function buyableMaintain(
   toMaintain: Item,
   howMany: number,
   meatMin: number,
-): boolean {
-  return buyableMaintain$2(toMaintain, howMany, meatMin, true);
-}
-
-export function buyableMaintain$2(
-  toMaintain: Item,
-  howMany: number,
-  meatMin: number,
-  condition: boolean,
+  condition: boolean = true,
 ): boolean {
   if (!condition || myMeat() < meatMin || in_wotsf()) {
     return false;
@@ -717,7 +709,7 @@ export function handlePulls(day: number): number {
       //Make sure we have the legendary pizzas if we want to/can consume them so we take full advantage of the dieting pills
       if (!toBoolean(getProperty("auto_dontConsumeLegendPizzas"))) {
         for (const it of $items`Pizza of Legend, Calzone of Legend, Deep Dish of Legend`) {
-          if (canEat$1(it) && !pulledToday(it)) {
+          if (auto_canEat(it) && !pulledToday(it)) {
             pullXWhenHaveY(it, 1, 0);
           }
           // Pull at least one early dieting pill if we've acquired a legendary pizza
@@ -783,7 +775,7 @@ export function handlePulls(day: number): number {
       }
       if (!possessEquipment($item`astral shirt`)) {
         let getPeteShirt: boolean = true;
-        if (!hasTorso$1()) {
+        if (!hasTorso()) {
           getPeteShirt = false;
         }
         if (
@@ -918,7 +910,7 @@ export function handlePulls(day: number): number {
     ) {
       if (
         itemAmount($item`Boris's key`) === 0 &&
-        canEat$1($item`Boris's key lime pie`) &&
+        auto_canEat($item`Boris's key lime pie`) &&
         !containsText(
           getProperty("nsTowerDoorKeysUsed"),
           $item`Boris's key`.toString(),
@@ -928,7 +920,7 @@ export function handlePulls(day: number): number {
       }
       if (
         itemAmount($item`Sneaky Pete's key`) === 0 &&
-        canEat$1($item`Sneaky Pete's key lime pie`) &&
+        auto_canEat($item`Sneaky Pete's key lime pie`) &&
         !containsText(
           getProperty("nsTowerDoorKeysUsed"),
           $item`Sneaky Pete's key`.toString(),
@@ -938,7 +930,7 @@ export function handlePulls(day: number): number {
       }
       if (
         itemAmount($item`Jarlsberg's key`) === 0 &&
-        canEat$1($item`Jarlsberg's key lime pie`) &&
+        auto_canEat($item`Jarlsberg's key lime pie`) &&
         !containsText(
           getProperty("nsTowerDoorKeysUsed"),
           $item`Jarlsberg's key`.toString(),
@@ -1095,7 +1087,7 @@ export function LX_craftAcquireItems(): boolean {
     //TODO: add delaying for mortar for other classes in combat and then remove the sauceror requirement here.
     if (
       myMeat() > 7500 ||
-      (myClass() === $class`Sauceror` && canUse$2($skill`Stuffed Mortar Shell`))
+      (myClass() === $class`Sauceror` && canUse($skill`Stuffed Mortar Shell`))
     ) {
       acquireHermitItem($item`seal tooth`);
     }
@@ -1254,10 +1246,10 @@ export function LX_craftAcquireItems(): boolean {
     if (itemAmount($item`portable pantogram`) > 0) {
       switch (myDaycount()) {
         case 1:
-          pantogramPants$1(myPrimestat(), $element`hot`, 1, 1, 1);
+          pantogramPants(myPrimestat(), $element`hot`, 1, 1, 1);
           break;
         default:
-          pantogramPants$1(myPrimestat(), $element`cold`, 1, 2, 1);
+          pantogramPants(myPrimestat(), $element`cold`, 1, 2, 1);
           break;
       }
     }

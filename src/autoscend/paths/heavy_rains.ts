@@ -52,15 +52,15 @@ import {
   possessEquipment,
 } from "../auto_equipment";
 import { canChangeToFamiliar } from "../auto_familiar";
-import { acquireHP, acquireMP$1 } from "../auto_restore";
+import { acquireHP, acquireMP } from "../auto_restore";
 import {
   auto_have_skill,
   auto_log_info,
+  auto_runChoice,
   effectAblativeArmor,
   executeFlavour,
   handleTracker$1,
   internalQuestStatus,
-  runChoice$1,
   setFlavour,
 } from "../auto_util";
 import { inAftercore } from "./casual";
@@ -190,7 +190,7 @@ export function heavyrains_buySkills(): boolean {
       }
 
       setProperty("choiceAdventure967", skillChoice.toString());
-      runChoice$1(page);
+      auto_runChoice(page);
       visitUrl("main.php");
       return true;
     }
@@ -222,7 +222,7 @@ export function heavyrains_buySkills(): boolean {
       }
 
       setProperty("choiceAdventure968", skillChoice.toString());
-      runChoice$1(page);
+      auto_runChoice(page);
       visitUrl("main.php");
       return true;
     }
@@ -263,7 +263,7 @@ export function heavyrains_buySkills(): boolean {
       }
 
       setProperty("choiceAdventure969", skillChoice.toString());
-      runChoice$1(page);
+      auto_runChoice(page);
       visitUrl("main.php");
       return true;
     }
@@ -510,7 +510,7 @@ export function L13_heavyrains_towerFinal(): boolean {
   //Fight!
   //auto_disableAdventureHandling because we don't want maximize, switch familiar, change buffs, or anything else that might break our specific prepwork.
   acquireHP();
-  acquireMP$1(200);
+  acquireMP(200);
   setProperty("auto_disableAdventureHandling", true.toString());
   autoAdvBypass$1(
     "place.php?whichplace=nstower&action=ns_10_sorcfight",

@@ -221,7 +221,7 @@ export function mummifyFamiliar$2(): boolean {
   return mummifyFamiliar$1(myFamiliar());
 }
 
-export function pantogramPants$1(
+export function pantogramPants(
   st: Stat,
   el: Element,
   hpmp: number,
@@ -1158,7 +1158,7 @@ export function canAsdonBuff(goal: Effect): boolean {
   return true;
 }
 
-export function asdonBuff$1(goal: Effect): boolean {
+export function asdonBuff(goal: Effect): boolean {
   if (!canAsdonBuff(goal)) {
     return false;
   }

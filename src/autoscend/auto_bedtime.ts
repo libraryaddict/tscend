@@ -136,6 +136,7 @@ import {
   almostRollover,
   auto_can_equip,
   auto_deleteMail,
+  auto_freeCrafts,
   auto_get_campground,
   auto_have_skill,
   auto_is_valid,
@@ -149,7 +150,6 @@ import {
   autoCraft,
   canYellowRay$1,
   cloversAvailable$1,
-  freeCrafts$1,
   handleSealAncient,
   handleSealNormal,
   internalQuestStatus,
@@ -159,7 +159,7 @@ import {
   meatReserve,
   meatReserveMessage,
   preferredLibram,
-  shrugAT$1,
+  shrugAT,
   trim,
   wrap_item,
 } from "./auto_util";
@@ -1263,7 +1263,7 @@ export function doBedtime(): boolean {
 
   if (
     myDaycount() === 1 &&
-    (possessEquipment($item`Thor's Pliers`) || freeCrafts$1() > 0) &&
+    (possessEquipment($item`Thor's Pliers`) || auto_freeCrafts() > 0) &&
     !possessEquipment($item`chrome sword`) &&
     auto_is_valid($item`chrome sword`) &&
     !inAftercore() &&
@@ -1306,19 +1306,19 @@ export function doBedtime(): boolean {
     use(1, $item`resolution: be more adventurous`);
   }
   // If in TCRS skip using freecrafts but alert user of how many they can manually use.
-  if (in_tcrs() && freeCrafts$1() > 0) {
+  if (in_tcrs() && auto_freeCrafts() > 0) {
     auto_log_warning(
       "In TCRS: Items are variable, skipping End Of Day crafting",
       "red",
     );
     auto_log_warning(
-      `Consider manually using your ${freeCrafts$1()} free crafts`,
+      `Consider manually using your ${auto_freeCrafts()} free crafts`,
       "red",
     );
-  } else if (myDaycount() <= 2 && freeCrafts$1() > 0 && myAdventures() > 0) {
+  } else if (myDaycount() <= 2 && auto_freeCrafts() > 0 && myAdventures() > 0) {
     // Check for rapid prototyping
     while (
-      freeCrafts$1() > 0 &&
+      auto_freeCrafts() > 0 &&
       itemAmount($item`scrumptious reagent`) > 0 &&
       itemAmount($item`cranberries`) > 0 &&
       itemAmount($item`cranberry cordial`) < 2 &&
@@ -1328,7 +1328,7 @@ export function doBedtime(): boolean {
     }
     putCloset(itemAmount($item`cranberries`), $item`cranberries`);
     while (
-      freeCrafts$1() > 0 &&
+      auto_freeCrafts() > 0 &&
       itemAmount($item`scrumptious reagent`) > 0 &&
       itemAmount($item`glass of goat's milk`) > 0 &&
       itemAmount($item`milk of magnesium`) < 2 &&
@@ -1593,8 +1593,8 @@ export function doBedtime(): boolean {
       10 - toInt(getProperty("_thorsPliersCrafting"));
     auto_log_info(`Free Thor's Pliers craftings left: ${craftingLeft}`, "blue");
   }
-  if (freeCrafts$1() > 0) {
-    auto_log_info(`Free craftings left: ${freeCrafts$1()}`, "blue");
+  if (auto_freeCrafts() > 0) {
+    auto_log_info(`Free craftings left: ${auto_freeCrafts()}`, "blue");
   }
   if (toInt(getProperty("timesRested")) < totalFreeRests()) {
     auto_log_info(
@@ -1834,7 +1834,7 @@ export function doBedtime(): boolean {
       "red",
     );
     if (haveSkill($skill`The Ode to Booze`)) {
-      shrugAT$1($effect`Ode to Booze`);
+      shrugAT($effect`Ode to Booze`);
       buffMaintain$4($effect`Ode to Booze`);
     }
     return false;

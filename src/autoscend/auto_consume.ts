@@ -109,9 +109,10 @@ import {
   auto_freeCombatsRemaining,
   isAboutToPowerlevel,
 } from "./auto_powerlevel";
-import { acquireMP$2 } from "./auto_restore";
+import { acquireMP } from "./auto_restore";
 import {
   almostRollover,
+  auto_freeCrafts,
   auto_get_campground,
   auto_have_skill,
   auto_is_valid,
@@ -125,7 +126,6 @@ import {
   auto_reserveCraftAmount,
   auto_turbo,
   banishSources,
-  freeCrafts$1,
   handleTracker,
   handleTracker$1,
   internalQuestStatus,
@@ -133,7 +133,7 @@ import {
   meatReserve,
   needToConsumeForEmergencyRollover,
   ovenHandle,
-  shrugAT$1,
+  shrugAT,
 } from "./auto_util";
 import { ConsumeAction } from "./autoscend_record";
 import {
@@ -342,7 +342,7 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
   if (itemAmount(toDrink) < howMany && !isSpeakeasy) {
     return false;
   }
-  if (!canDrink$1(toDrink)) {
+  if (!auto_canDrink(toDrink)) {
     return false;
   }
 
@@ -388,10 +388,10 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
   }
 
   if (canOde(toDrink) && auto_have_skill($skill`The Ode to Booze`)) {
-    shrugAT$1($effect`Ode to Booze`);
+    shrugAT($effect`Ode to Booze`);
     // get enough turns of ode
     while (
-      acquireMP$2(mpCost($skill`The Ode to Booze`), 0) &&
+      acquireMP(mpCost($skill`The Ode to Booze`), 0) &&
       buffMaintain$3(
         $effect`Ode to Booze`,
         mpCost($skill`The Ode to Booze`),
@@ -586,7 +586,7 @@ function autoEat$1(howMany: number, toEat: Item, silent: boolean): boolean {
   if (itemAmount(toEat) < howMany) {
     return false;
   }
-  if (!canEat$1(toEat)) {
+  if (!auto_canEat(toEat)) {
     return false;
   }
 
@@ -711,7 +711,7 @@ export function acquireMilkOfMagnesiumIfUnused(useAdv: boolean): boolean {
     if (itemAmount($item`scrumptious reagent`) > 0) {
       if (useAdv) {
         cliExecute(`make ${$item`milk of magnesium`}`);
-      } else if (freeCrafts$1() > 0) {
+      } else if (auto_freeCrafts() > 0) {
         cliExecute(`make ${$item`milk of magnesium`}`);
       }
     }
@@ -782,7 +782,10 @@ function wantDietPill(toEat: Item): boolean {
   return false;
 }
 
-function canDrink$2(toDrink: Item, checkValidity: boolean): boolean {
+export function auto_canDrink(
+  toDrink: Item,
+  checkValidity: boolean = true,
+): boolean {
   if (!canDrink()) {
     return false;
   }
@@ -850,11 +853,10 @@ function canDrink$2(toDrink: Item, checkValidity: boolean): boolean {
   return true;
 }
 
-export function canDrink$1(toDrink: Item): boolean {
-  return canDrink$2(toDrink, true);
-}
-
-function canEat$2(toEat: Item, checkValidity: boolean): boolean {
+export function auto_canEat(
+  toEat: Item,
+  checkValidity: boolean = true,
+): boolean {
   if (!canEat()) {
     return false;
   }
@@ -898,10 +900,6 @@ function canEat$2(toEat: Item, checkValidity: boolean): boolean {
   }
 
   return true;
-}
-
-export function canEat$1(toEat: Item): boolean {
-  return canEat$2(toEat, true);
 }
 
 export function canChew(toChew: Item): boolean {
@@ -1107,8 +1105,8 @@ function loadConsumables(
       return false;
     }
     return type_1 === AUTO_ORGAN_STOMACH
-      ? canEat$2(it, checkValidity)
-      : canDrink$2(it, checkValidity);
+      ? auto_canEat(it, checkValidity)
+      : auto_canDrink(it, checkValidity);
   }
 
   function canConsume$1(it: Item): boolean {
@@ -1944,7 +1942,7 @@ function auto_overdrinkGreenBeers(): void {
   //called after nightcap, auto_drinkNightcap() needs to have already made the necessary checks
   if (
     !containsText(holiday(), "St. Sneaky Pete's Day") ||
-    !canDrink$2($item`green beer`, false)
+    !auto_canDrink($item`green beer`, false)
   ) {
     return;
   }
@@ -2532,7 +2530,7 @@ export function consumeStuff(): void {
   if (
     isAboutToPowerlevel() &&
     auto_is_valid($item`guilty sprout`) &&
-    canEat$1($item`guilty sprout`) &&
+    auto_canEat($item`guilty sprout`) &&
     myLevel() < 13 &&
     !in_tcrs()
   ) {

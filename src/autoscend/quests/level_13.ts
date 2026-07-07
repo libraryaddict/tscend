@@ -119,12 +119,7 @@ import {
   provideResistances$4,
   provideStats$2,
 } from "../auto_providers";
-import {
-  acquireFullHP,
-  acquireMP$1,
-  acquireMP$2,
-  uneffect,
-} from "../auto_restore";
+import { acquireFullHP, acquireMP, uneffect } from "../auto_restore";
 import {
   auto_can_equip,
   auto_equalizeStats,
@@ -145,18 +140,18 @@ import {
   cloverUsageFinish,
   cloverUsageInit$1,
   cloverUsageRestart,
-  hasTorso$1,
+  hasTorso,
   hasUsefulShirt,
   internalQuestStatus,
   isGuildClass,
   MLDamageToMonsterMultiplier,
-  shrugAT$1,
+  shrugAT,
   summonedMonsterToday,
   summonMonster,
   woods_questStart,
 } from "../auto_util";
 import { zone_isAvailable$1 } from "../auto_zone";
-import { canUse$2 } from "../combat/auto_combat_util";
+import { canUse } from "../combat/auto_combat_util";
 import { fightClubSpa$1 } from "../iotms/mr2018";
 import { auto_beachCombHead } from "../iotms/mr2019";
 import { auto_backupUsesLeft, auto_haveBackupCamera } from "../iotms/mr2021";
@@ -304,7 +299,7 @@ export function prepForMegaloCity(): boolean {
   if (
     myMeat() >= 6000 &&
     gnomadsAvailable() &&
-    !hasTorso$1() &&
+    !hasTorso() &&
     hasUsefulShirt()
   ) {
     visitUrl("gnomes.php?action=trainskill&whichskill=12");
@@ -727,7 +722,7 @@ export function L13_towerNSContests(): boolean {
       }
       switch (ns_crowd1()) {
         case 1:
-          acquireMP$1(160); // only uses free rests or items on hand by default
+          acquireMP(160); // only uses free rests or items on hand by default
 
           autoMaximize$1("initiative -equip snow suit", 1500, 0, false);
           provideInitiative$2(400, $location`Noob Cave`, true);
@@ -769,7 +764,7 @@ export function L13_towerNSContests(): boolean {
       ) {
         visitUrl("place.php?whichplace=monorail&action=monorail_lyle");
       }
-      acquireMP$1(150); // only uses free rests or items on hand by default
+      acquireMP(150); // only uses free rests or items on hand by default
       if (in_darkGyffte()) {
         if (
           crowd_stat === $stat`Muscle` &&
@@ -881,7 +876,7 @@ export function L13_towerNSContests(): boolean {
     }
     if (toInt(getProperty("nsContestants3")) === -1) {
       resetMaximize();
-      acquireMP$1(125); // only uses free rests or items on hand by default
+      acquireMP(125); // only uses free rests or items on hand by default
 
       if (challenge !== Element.none) {
         autoMaximize$1(
@@ -1006,11 +1001,11 @@ export function L13_towerNSContests(): boolean {
           // at this point, an example list of songs is phat loot / polka / celerity / madrigal
           if (crowd3Insufficient()) {
             // specify normal effect to avoid failing the skill check
-            shrugAT$1($effect`Dirge of Dreadfulness`);
+            shrugAT($effect`Dirge of Dreadfulness`);
             buffMaintain$4($effect`Dirge of Dreadfulness (Remastered)`);
           }
           if (crowd3Insufficient()) {
-            shrugAT$1($effect`Dirge of Dreadfulness`);
+            shrugAT($effect`Dirge of Dreadfulness`);
             buffMaintain$3($effect`Dirge of Dreadfulness`, 10, 1, 1);
           }
           if (crowd3Insufficient()) {
@@ -1572,14 +1567,14 @@ function L13_towerNSTowerMeat(): boolean {
     abort("auto_towerBreak set to abort here.");
   }
   equipBaseline();
-  shrugAT$1($effect`Polka of Plenty`);
+  shrugAT($effect`Polka of Plenty`);
   provideMeat$1(526, true, false);
   if (meatDropModifier() < 475) {
     auto_getCitizenZone$1("meat");
   }
 
   if (in_zombieSlayer()) {
-    acquireMP$2(30, 0);
+    acquireMP(30, 0);
   }
 
   acquireFullHP();
@@ -1612,7 +1607,7 @@ function L13_towerNSTowerBones(): boolean {
     has_boning_knife ||
     in_pokefam() ||
     (in_wereprof() &&
-      canUse$2($skill`Slaughter`) &&
+      canUse($skill`Slaughter`) &&
       haveEffect($effect`Everything Looks Red`) === 0)
   ) {
     //I have everything I need. just go fight
@@ -1670,7 +1665,7 @@ function L13_towerNSTowerBones(): boolean {
   uneffect($effect`Carlweather's Cantata of Confrontation`);
   uneffect($effect`Ode to Booze`);
 
-  acquireMP$2(150, 0);
+  acquireMP(150, 0);
   buffMaintain$4($effect`Jackasses' Symphony of Destruction`);
   buffMaintain$4($effect`Stevedave's Shanty of Superiority`);
   buffMaintain$4($effect`Seeing Colors`);
@@ -1781,7 +1776,7 @@ function L13_towerNSTowerBones(): boolean {
     }
   }
 
-  acquireMP$2(216, 0);
+  acquireMP(216, 0);
   acquireFullHP();
   autoAdvBypass$1(
     "place.php?whichplace=nstower&action=ns_07_monster3",
@@ -1957,7 +1952,7 @@ export function L13_towerNSFinal(): boolean {
   }
 
   if (in_theSource()) {
-    acquireMP$2(200, 0);
+    acquireMP(200, 0);
   }
 
   if (!(

@@ -54,11 +54,11 @@ import {
 import { auto_buyUpTo } from "./auto_acquire";
 import { buffMaintain$2, buffMaintain$4 } from "./auto_buff";
 import {
+  auto_canDrink,
+  auto_canEat,
   autoChew,
   autoDrink,
   autoEat,
-  canDrink$1,
-  canEat$1,
   fullness_left,
   inebriety_left,
   shouldUseSpleenForLowPriority,
@@ -100,7 +100,7 @@ import {
   autoCraft,
   candyEggDeviler,
   meatReserve,
-  shrugAT$1,
+  shrugAT,
 } from "./auto_util";
 import { zone_needItemBooze, zone_needItemFood } from "./auto_zone";
 import { generic_t } from "./autoscend_record";
@@ -112,7 +112,7 @@ import {
   rethinkingCandy,
 } from "./iotms/mr2016";
 import {
-  asdonBuff$1,
+  asdonBuff,
   canAsdonBuff,
   horseCost,
   horseDark,
@@ -285,7 +285,7 @@ export function providePlusCombat(
   // Now handle buffs that cost MP, items or other resources
   // Cheap effects
   if (!speculative) {
-    shrugAT$1($effect`Carlweather's Cantata of Confrontation`);
+    shrugAT($effect`Carlweather's Cantata of Confrontation`);
   }
   if (
     tryEffects$5(
@@ -346,7 +346,7 @@ export function providePlusCombat(
 
   if (canAsdonBuff($effect`Driving Obnoxiously`)) {
     if (!speculative) {
-      asdonBuff$1($effect`Driving Obnoxiously`);
+      asdonBuff($effect`Driving Obnoxiously`);
     }
     handleEffect$4($effect`Driving Obnoxiously`);
   }
@@ -529,7 +529,7 @@ export function providePlusNonCombat(
   }
 
   if (!speculative) {
-    shrugAT$1($effect`The Sonata of Sneakiness`);
+    shrugAT($effect`The Sonata of Sneakiness`);
   }
   if (
     tryEffects$6(
@@ -603,7 +603,7 @@ export function providePlusNonCombat(
 
   if (canAsdonBuff($effect`Driving Stealthily`)) {
     if (!speculative) {
-      asdonBuff$1($effect`Driving Stealthily`);
+      asdonBuff($effect`Driving Stealthily`);
     }
     handleEffect$5($effect`Driving Stealthily`);
   }
@@ -778,7 +778,7 @@ export function provideInitiative(
 
   if (canAsdonBuff($effect`Driving Quickly`)) {
     if (!speculative) {
-      asdonBuff$1($effect`Driving Quickly`);
+      asdonBuff($effect`Driving Quickly`);
     }
     handleEffect$1($effect`Driving Quickly`);
   }
@@ -1662,7 +1662,7 @@ function provideMeat(
   if (canAsdonBuff($effect`Driving Observantly`)) {
     //50% meat, 50% item, 50% booze drops
     if (!speculative) {
-      asdonBuff$1($effect`Driving Observantly`);
+      asdonBuff($effect`Driving Observantly`);
     }
     handleEffect$3($effect`Driving Observantly`);
   }
@@ -1917,7 +1917,7 @@ function provideMeat(
       !toBoolean(getProperty("auto_limitConsume")) &&
       haveEffect($effect`Tryptofan`) === 0 &&
       creatableAmount($item`prize turkey`) > 0 &&
-      canEat$1($item`prize turkey`) &&
+      auto_canEat($item`prize turkey`) &&
       stomach_left() > $item`prize turkey`.fullness
     ) {
       if (!speculative) {
@@ -2145,7 +2145,7 @@ function provideItem(
   if (canAsdonBuff($effect`Driving Observantly`)) {
     //50% meat, 50% item, 50% booze drops
     if (!speculative) {
-      asdonBuff$1($effect`Driving Observantly`);
+      asdonBuff($effect`Driving Observantly`);
     }
     handleEffect$2($effect`Driving Observantly`);
   }
@@ -2400,7 +2400,7 @@ function provideItem(
       !toBoolean(getProperty("auto_limitConsume")) &&
       haveEffect($effect`Ordained`) === 0 &&
       creatableAmount($item`Smoking Pope`) > 0 &&
-      canDrink$1($item`Smoking Pope`) &&
+      auto_canDrink($item`Smoking Pope`) &&
       inebriety_left() > $item`Smoking Pope`.inebriety
     ) {
       if (!speculative) {

@@ -3,7 +3,7 @@ import { $skill } from "libram";
 
 import { handleTracker$1 } from "../auto_util";
 import { bat_shouldEnsorcel } from "../paths/dark_gyffte";
-import { canUse$2, useSkill$2 } from "./auto_combat_util";
+import { auto_useSkill, canUse } from "./auto_combat_util";
 
 //Path specific combat handling for dark gyffte
 
@@ -18,7 +18,7 @@ export function auto_combatDarkGyffteStage2(
   //mechanically it is a free runaway that also gives you a vampyre specific pet based on the phylum of the monster you are facing.
   if (
     bat_shouldEnsorcel(enemy) &&
-    canUse$2($skill`Ensorcel`) &&
+    canUse($skill`Ensorcel`) &&
     toInt(getProperty("auto_bat_ensorcels")) < 3
   ) {
     setProperty(
@@ -30,7 +30,7 @@ export function auto_combatDarkGyffteStage2(
       $skill`Ensorcel`.toString(),
       "auto_otherstuff",
     );
-    return useSkill$2($skill`Ensorcel`);
+    return auto_useSkill($skill`Ensorcel`);
   }
 
   return "";

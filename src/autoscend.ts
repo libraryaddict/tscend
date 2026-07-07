@@ -173,6 +173,7 @@ import {
   almostRollover,
   auto_amIRich,
   auto_autosell,
+  auto_freeCrafts,
   auto_get_campground,
   auto_have_skill,
   auto_interruptCheck,
@@ -193,7 +194,6 @@ import {
   copySources,
   doNumberology,
   doNumberology$2,
-  freeCrafts$1,
   freeKillSources,
   freeRunSources,
   handleBarrelFullOfBarrels,
@@ -263,7 +263,7 @@ import {
   auto_setSongboom,
   auto_voteMonster$1,
   auto_voteMonster$2,
-  auto_voteSetup$2,
+  auto_voteSetup,
   cheeseWarMachine,
   fightClubNap,
   fightClubStats,
@@ -306,7 +306,7 @@ import {
   auto_doPhoneQuest,
   auto_habitatMonster,
   auto_initBurningLeaves,
-  auto_lostStomach$1,
+  auto_lostStomach,
   auto_scepterSkills,
   auto_SITCourse,
   auto_useBlackMonolith,
@@ -317,7 +317,7 @@ import {
   auto_buyFromSeptEmberStore,
   auto_getAprilingBandItems,
   auto_getClanPhotoBoothDefaultItems,
-  auto_getClanPhotoBoothEffect$3,
+  auto_getClanPhotoBoothEffect,
   auto_haveMayamCalendar,
   auto_MayamAllUsed,
   auto_MayamClaimAll,
@@ -421,7 +421,7 @@ import {
 import { iluh_buyEquiq } from "./autoscend/paths/i_love_u_hate";
 import {
   in_koe,
-  koe_acquire_rmi$1,
+  koe_acquire_rmi,
   koe_initializeSettings,
   koe_rmi_count,
 } from "./autoscend/paths/kingdom_of_exploathing";
@@ -745,7 +745,7 @@ export function auto_advToReserve(): number {
     reserveadv = max(2, reserveadv);
   }
 
-  if (freeCrafts$1() < 2) {
+  if (auto_freeCrafts() < 2) {
     //smallest Pasta dish that takes 2 adv to craft is 3 fullness.
     //Pastamastery is required for all pasta and having it alone is enough to craft foods that take 2 adv to craft
     if (
@@ -1221,7 +1221,7 @@ function initializeDay(day: number): void {
 
   auto_MayamClaimAll(); // Want Mayam before booth to decide if we want a feather boa given yamtility.
   auto_getClanPhotoBoothDefaultItems();
-  auto_getClanPhotoBoothEffect$3("space", 3);
+  auto_getClanPhotoBoothEffect("space", 3);
 
   auto_initBurningLeaves();
 
@@ -1384,7 +1384,7 @@ function initializeDay(day: number): void {
           itemAmount($item`antique accordion`) === 0 &&
           koe_rmi_count() >= 10
         ) {
-          koe_acquire_rmi$1(10);
+          koe_acquire_rmi(10);
           buy($coinmaster`Cosmic Ray's Bazaar`, 1, $item`antique accordion`);
         }
         acquireTotem();
@@ -2722,7 +2722,7 @@ function doTasks(): boolean {
     );
   }
 
-  auto_voteSetup$2(0, 0, 0);
+  auto_voteSetup(0, 0, 0);
   auto_setSongboom();
   if (auto_juneCleaverAdventure()) {
     return true;
@@ -2755,7 +2755,7 @@ function doTasks(): boolean {
   if (auto_smallCampgroundGear()) {
     return true;
   }
-  auto_lostStomach$1(false);
+  auto_lostStomach(false);
   autoCleanse(); //running turbo only
   if (auto_doPhoneQuest()) {
     return true;

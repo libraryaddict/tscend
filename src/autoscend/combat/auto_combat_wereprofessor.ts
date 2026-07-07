@@ -20,14 +20,12 @@ import {
   wereprof_oculus,
 } from "../paths/wereprofessor";
 import {
-  canUse$1,
-  canUse$2,
-  canUse$4,
+  auto_useSkill,
+  canUse,
+  canUse$3,
   haveUsed,
   markAsUsed,
   useItem$1,
-  useSkill$1,
-  useSkill$2,
 } from "./auto_combat_util";
 
 //defined in /autoscend/combat/auto_combat_wereprofessor.ash
@@ -46,10 +44,10 @@ export function auto_combatWereProfessorStage1(
 
   if (enemy === $monster`wall of bones`) {
     if (
-      canUse$2($skill`Slaughter`) &&
+      canUse($skill`Slaughter`) &&
       haveEffect($effect`Everything Looks Red`) === 0
     ) {
-      return useSkill$2($skill`Slaughter`);
+      return auto_useSkill($skill`Slaughter`);
     }
   }
 
@@ -94,17 +92,17 @@ export function auto_combatWereProfessorStage5(
   const enemy_physical_immune: boolean = enemy.physicalResistance > 99;
 
   if (is_werewolf()) {
-    if (enemy_physical_immune && canUse$1($skill`Bite`, true)) {
-      return useSkill$1($skill`Bite`, true); // elemental damage skill
+    if (enemy_physical_immune && canUse($skill`Bite`, true)) {
+      return auto_useSkill($skill`Bite`, true); // elemental damage skill
     } else if (
       haveEquipped($item`Everfull Dart Holster`) &&
       toInt(getProperty("_dartsLeft")) > 0
     ) {
       //want dart skill as high as possible for Professor
-      return useSkill$2(dartSkill());
+      return auto_useSkill(dartSkill());
     }
-    if (!enemy_physical_immune && canUse$1($skill`Rend`, false)) {
-      return useSkill$1($skill`Rend`, true);
+    if (!enemy_physical_immune && canUse($skill`Rend`, false)) {
+      return auto_useSkill($skill`Rend`, true);
     }
     return "attack with weapon"; //worst case scenario just use this
   }
@@ -114,10 +112,10 @@ export function auto_combatWereProfessorStage5(
       toInt(getProperty("_dartsLeft")) > 0
     ) {
       //want dart skill as high as possible for Professor
-      return useSkill$2(dartSkill());
+      return auto_useSkill(dartSkill());
     } else if (
       auto_haveCosmicBowlingBall() &&
-      canUse$4($item`cosmic bowling ball`) &&
+      canUse$3($item`cosmic bowling ball`) &&
       !enemy_physical_immune &&
       monsterHp() < 100
     ) {

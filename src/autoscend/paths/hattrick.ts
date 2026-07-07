@@ -9,7 +9,7 @@ import {
 } from "kolmafia";
 import { $items, $path, $slot } from "libram";
 
-import { auto_getAllEquipabble$1 } from "../auto_equipment";
+import { auto_getAllEquipabble } from "../auto_equipment";
 import { auto_can_equip } from "../auto_util";
 
 //Defined in autoscend/paths/hattrick.ash
@@ -21,7 +21,7 @@ export function ht_equip_hats(): boolean {
   if (!in_hattrick()) {
     return false;
   }
-  const availableHats: Map<Item, number> = auto_getAllEquipabble$1($slot`hat`);
+  const availableHats: Map<Item, number> = auto_getAllEquipabble($slot`hat`);
   for (const [it] of availableHats) {
     let skip: boolean = false;
     //don't equip the following because they can mess us up later in the run or are useful for consumption (+/- combat and Thorns)
