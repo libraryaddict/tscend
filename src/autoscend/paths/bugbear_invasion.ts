@@ -167,15 +167,11 @@ function bugbear_UnlockMothership(loc: Location): boolean {
       unlockLocation = $location`The Haunted Gallery`;
       break;
     case $location`Galley`:
-      unlockLocation = Location.get(
-        "The Hippy Camp (Bombed Back to the Stone Age)",
-      );
+      unlockLocation = $location`The Hippy Camp (Bombed Back to the Stone Age)`;
       if (zone_available(unlockLocation)) {
         break;
       }
-      unlockLocation = Location.get(
-        "The Orcish Frat House (Bombed Back to the Stone Age)",
-      );
+      unlockLocation = $location`The Orcish Frat House (Bombed Back to the Stone Age)`;
       break;
     default:
       abort(`Invalid Biodata location ${loc}`);

@@ -79,6 +79,7 @@ import {
   auto_handleJillOfAllTrades,
   auto_haveCCSC,
 } from "./iotms/mr2023";
+import { auto_haveChestMimic } from "./iotms/mr2024";
 import { auto_haveCupidBow } from "./iotms/mr2025";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_wantMeat, in_amw } from "./paths/adventurer_meats_world";
@@ -1109,4 +1110,33 @@ export function auto_famModifiers$2(mod: string): number {
     auto_famWeight(fam, false),
     familiarEquippedEquipment(fam),
   );
+}
+// Fam XP specific stuff
+// used by mayam calendar and legendary noodles (in consume.ash) to decide if we would like to choose a famxp option. Adventureless fam xp is definitely underutilized (piccolo is also only zooto-supported currently).
+// difference: auto_wantFamXP should be used to see if we should incentivize adventureless famxp (weight options giving famxp more), switchToFamXP should be used once we've decided to take the famxp option.
+// requires max_fam_experience because famxp sources often fizzle if the familiar has too much experience (e.g. mayam fizzles if current familiar has 300+ xp)
+export function auto_wantFamXP(max_fam_experience: number): boolean {
+  if (!pathAllowsChangingFamiliar()) {
+    return false;
+  }
+  if (
+    auto_haveChestMimic() &&
+    Familiar.get("Chest Mimic").experience <= max_fam_experience
+  ) {
+    return true;
+  }
+  return false;
+}
+// switch to a familiar we want famxp on. Should never be called if we're about to adventure because doesn't check if we can change to familiar.
+export function switchToFamXP(max_fam_experience: number): void {
+  if (!pathAllowsChangingFamiliar()) {
+    return;
+  }
+  auto_log_debug$1("Possibly switching to a familiar we want famxp on");
+  if (
+    auto_haveChestMimic() &&
+    Familiar.get("Chest Mimic").experience <= max_fam_experience
+  ) {
+    useFamiliar(Familiar.get("Chest Mimic"));
+  }
 }

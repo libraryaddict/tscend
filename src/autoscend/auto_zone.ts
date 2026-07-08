@@ -69,7 +69,7 @@ import { in_lta } from "./paths/license_to_adventure";
 import { in_lar } from "./paths/live_ascend_repeat";
 import { in_plumber } from "./paths/path_of_the_plumber";
 import { in_robot } from "./paths/you_robot";
-import { L8_forceExtremeInstead } from "./quests/level_08";
+import { L8_forceExtremeInstead, L8_trapperTalk } from "./quests/level_08";
 import { bridgeGoal } from "./quests/level_09";
 import { getShenZonesTurnsSpent, liana_cleared } from "./quests/level_11";
 import { need8BitPoints, needStarKey } from "./quests/level_13";
@@ -87,6 +87,8 @@ function zone_unlock(loc: Location): boolean {
   let unlocked: boolean;
   if (loc === $location`The Thinknerd Warehouse`) {
     unlocked = LX_unlockThinknerdWarehouse(false);
+  } else if (loc === $location`Lair of the Ninja Snowmen` && L8_trapperTalk()) {
+    unlocked = true;
   } else {
     auto_log_debug$1(`Don't know how to unlock ${loc}`);
     return false;
@@ -439,7 +441,7 @@ export function zone_needItem(loc: Location): generic_t {
       case $location`Barf Mountain`:
         retval._float = 15.0;
         break;
-      case Location.get("The Velvet / Gold Mine"):
+      case $location`The Velvet / Gold Mine`:
         if (!canYellowRay$1()) {
           //Just a guess
           retval._float = 10.0;
@@ -1776,7 +1778,7 @@ export function zone_available(loc: Location): boolean {
       break;
     case $location`The SMOOCH Army HQ`:
     case $location`LavaCo™ Lamp Factory`:
-    case Location.get("The Velvet / Gold Mine"):
+    case $location`The Velvet / Gold Mine`:
     case $location`The Bubblin' Caldera`:
       retval =
         toBoolean(getProperty("hotAirportAlways")) ||
