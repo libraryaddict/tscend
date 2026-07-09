@@ -84,6 +84,7 @@ import {
   mySign,
   mySoulsauce,
   mySpleenUse,
+  myThrall,
   myThunder,
   myTurncount,
   nowToInt,
@@ -112,6 +113,7 @@ import {
   Stat,
   storageAmount,
   substring,
+  Thrall,
   thunderCost,
   timeToString,
   toBoolean,
@@ -131,6 +133,7 @@ import {
   toSkill,
   toSlot,
   toStat,
+  toThrall,
   turnsPerCast,
   use,
   useFamiliar,
@@ -161,6 +164,7 @@ import {
   $slots,
   $stat,
   $stats,
+  $thrall,
 } from "libram";
 
 import { LX_calculateTheUniverse } from "../autoscend";
@@ -298,7 +302,13 @@ import {
   auto_punchOutsLeft,
   auto_wantToBCZ,
 } from "./iotms/mr2025";
-import { auto_heartstoneLuckRemaining } from "./iotms/mr2026";
+import {
+  auto_forceCombatLegendaryNoodles,
+  auto_havePastaWand,
+  auto_heartstoneLuckRemaining,
+  auto_legendaryNoodlesAvailable,
+  auto_willEatLegendaryNoodles,
+} from "./iotms/mr2026";
 import {
   ARBSupplyDrop,
   auto_ARBSupplyDropsLeft,
@@ -5879,6 +5889,73 @@ export function auto_forceNextNoncombat(loc: Location): boolean {
 export function auto_haveQueuedForcedNonCombat(): boolean {
   return toBoolean(getProperty("noncombatForcerActive"));
 }
+// now time for combat forcing!
+export function _auto_forceNextCombat(
+  loc: Location,
+  speculative: boolean,
+): boolean {
+  // return true if already have a forcer acitve
+  if (auto_haveQueuedForcedCombat()) {
+    return true;
+  }
+
+  if (auto_legendaryNoodlesAvailable()) {
+    if (speculative) {
+      return true;
+    }
+    auto_forceCombatLegendaryNoodles();
+    if (!auto_haveQueuedForcedCombat()) {
+      abort(
+        "Attempted to force a combat with legendary pasta noodles but was unable to.",
+      );
+    }
+    setProperty("auto_forceCombatSource", "legendary noodle dish");
+    return true;
+  }
+  return false;
+}
+
+export function auto_canForceNextCombat(): boolean {
+  return _auto_forceNextCombat(Location.none, true);
+}
+
+export function _auto_forceNextCombat$1(loc: Location): boolean {
+  return _auto_forceNextCombat(loc, false);
+}
+
+export function auto_forceNextCombat$1(loc: Location): boolean {
+  if (auto_haveQueuedForcedCombat()) {
+    auto_log_warning(
+      "Trying to force a combat adventure, but I think we've already forced one...",
+      "red",
+    );
+    return true;
+  }
+  if (_auto_forceNextCombat$1(loc)) {
+    const forceCMethod: string = getProperty("auto_forceCombatSource");
+    auto_log_info(
+      `Next combat adventure has been forced with ${forceCMethod}`,
+      "blue",
+    );
+    return true;
+  }
+  return false;
+}
+
+export function auto_haveQueuedForcedCombat(): boolean {
+  return auto_numQueuedForcedCombat() > 0;
+}
+
+export function auto_numQueuedForcedCombat(): number {
+  return toInt(getProperty("legendaryNoodlesAmygdala"));
+}
+
+export function auto_haveCombatForceSource(): boolean {
+  if (auto_havePastaWand() && auto_willEatLegendaryNoodles()) {
+    return true;
+  }
+  return false;
+}
 // Function to Predict how many turns we will get from an AT buff
 export function auto_predictAccordionTurns(): number {
   // List of all Accordions for AT usage
@@ -6591,6 +6668,89 @@ export function auto_remainingShantyTurns(): number {
     turns = max(turns, haveEffect(ef));
   }
   return turns;
+}
+
+export function rat_locations(): Map<Location, boolean> {
+  const rats: Map<Location, boolean> = new Map();
+  rats.set($location`The Batrat and Ratbat Burrow`, true);
+  rats.set($location`The Typical Tavern Cellar`, true);
+  rats.set($location`The Middle Chamber`, true);
+  return rats;
+}
+// when updating this function, update the corresponding comment in auto_pre_adv
+// where this gets called to improve readability over there
+export function pm_updateThrall(
+  place: Location,
+  going_to_eat: boolean,
+): boolean {
+  if (
+    myThrall() === $thrall`Vampieroghi` &&
+    place === $location`The Hidden Apartment Building` &&
+    auto_have_skill(Skill.get("Dismiss Pasta Thrall"))
+  ) {
+    // vampieroghi can dispell the shaman curse, preventing us from making quest progress
+    useSkill(Skill.get("Dismiss Pasta Thrall"));
+  }
+
+  const cur: Thrall = myThrall();
+  let consider: Thrall = Thrall.none;
+  /*							Cost		L1				L5				L10				L11
+		Vampieroghi			12			1-2 (Dmg, Heal)	Dispel Neg		+60 Max HP		Slight Spooky Resistance
+		Vermincelli			30			2 MP Regen		Dmg, Poison		+30 Max MP		First 3 rats each day free, then very occasionally up to 11
+		Angel Hair Wisp		60			5% init			Block Crits		Block			+20 Mys
+(Undead)Elbow Maraconi		100			Equalize Mus	+2 Weapon Dmg	+10% crit		+20 Mus
+		Penne Dreadful		150			Equalize Mox	Jump Delevel	DR + 10			+20 Mox
+		Spaghetti Elemental	150			+Stats Ceil(/3)	Block First Att	+5 spell dmg	+10 Spooky dmg
+		Lasagmbie			200			20+2 Meat		Spooky Dmg		+10 spooky spell dmg	Occasionally refills MP (capped at 10k, 11/day)
+		Spice Ghost			250			10+1 Item		Spices			Stun Increase	+2 advs to the first food eaten each day with spice ghost active
+*/
+  const baseline_ver: boolean =
+    myMp() >= 1.2 * mpCost(Skill.get("Bind Vermincelli")) &&
+    auto_have_skill(Skill.get("Bind Vermincelli"));
+  const ver_level: number = toThrall("ver").level;
+  const base_spice: boolean =
+    myMp() >= 1.2 * mpCost(Skill.get("Bind Spice Ghost")) &&
+    auto_have_skill(Skill.get("Bind Spice Ghost")) &&
+    myDaycount() > 1 &&
+    toInt(numericModifier("MP Regen Min")) > 9;
+  if (going_to_eat) {
+    // if we are consuming food and our spice thrall is lvl 11 (with pasta wand or spice whorl), +2 advs 1/day
+    if (
+      base_spice &&
+      toThrall("spice").level > 10 &&
+      !toBoolean(getProperty("_legendarySpiceGhostFood"))
+    ) {
+      consider = $thrall`Spice Ghost`;
+    }
+  } else {
+    if (baseline_ver && cur === Thrall.none) {
+      consider = $thrall`Vermincelli`;
+    }
+    if (base_spice) {
+      consider = $thrall`Spice Ghost`;
+    }
+    if (baseline_ver && ver_level > 10 && rat_locations().has(place)) {
+      consider = $thrall`Vermincelli`;
+    } else if (baseline_ver && ver_level < 11 && auto_havePastaWand()) {
+      consider = $thrall`Vermincelli`;
+    }
+  }
+
+  if (consider !== cur && consider !== Thrall.none) {
+    const toEquip: Skill = toSkill(`Bind ${consider}`);
+    if (toEquip !== Skill.none) {
+      if (myMp() >= mpCost(toEquip)) {
+        useSkill(1, toEquip);
+      }
+    } else {
+      auto_log_warning(
+        "Thrall handler error. Could not generate appropriate skill.",
+        "red",
+      );
+      return false;
+    }
+  }
+  return true;
 }
 
 export function auto_meetsMinimumRequirements(): boolean {

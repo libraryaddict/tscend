@@ -83,6 +83,7 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   $path,
   $skill,
   $slot,
@@ -99,11 +100,13 @@ import {
 } from "./auto_equipment";
 import {
   auto_have_familiar,
+  auto_wantFamXP,
   canChangeFamiliar,
   findNonRockFamiliarInTerrarium,
   haveSpleenFamiliar,
   pathAllowsChangingFamiliar,
   pathHasFamiliar,
+  switchToFamXP,
 } from "./auto_familiar";
 import {
   auto_freeCombatsRemaining,
@@ -133,6 +136,7 @@ import {
   meatReserve,
   needToConsumeForEmergencyRollover,
   ovenHandle,
+  pm_updateThrall,
   shrugAT,
 } from "./auto_util";
 import { ConsumeAction } from "./autoscend_record";
@@ -153,6 +157,13 @@ import {
   auto_haveSeptEmberCenser,
   consumeBlackAndWhiteApronKit,
 } from "./iotms/mr2024";
+import {
+  auto_havePastaWand,
+  auto_willEatLegendaryNoodles,
+  legendaryNoodleDishes,
+  numBaseLegendaryNoodleDishes,
+  numPreparedLegendaryNoodleDishes,
+} from "./iotms/mr2026";
 import { ed_eatStuff, isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_buyAdv, in_amw } from "./paths/adventurer_meats_world";
 import { borisDemandSandwich, is_boris } from "./paths/avatar_of_boris";
@@ -583,6 +594,21 @@ function autoEat$1(howMany: number, toEat: Item, silent: boolean): boolean {
       );
     }
   }
+  if (
+    legendaryNoodleDishes().has(toEat) &&
+    !toBoolean(
+      // This stuff relates to the Legendary Digestion choice adv from eating legendary noods
+      getProperty("auto_forceCombatWithLegendaryNoodles"),
+    ) &&
+    (toBoolean(
+      // check that we aren't forcing combat via amygdala option
+      getProperty("_legendaryNoodlesSpleen"),
+    ) ||
+      spleen_left() < 1)
+  ) {
+    // check that we aren't gonna take the spleen option
+    switchToFamXP(400); // we're getting famxp by process of elimination; trying to switch to a fam we want famxp on
+  }
   if (itemAmount(toEat) < howMany) {
     return false;
   }
@@ -596,6 +622,10 @@ function autoEat$1(howMany: number, toEat: Item, silent: boolean): boolean {
   acquireMilkOfMagnesiumIfUnused(true);
   consumeMilkOfMagnesiumIfUnused();
   wantDietPill(toEat);
+  if (myClass() === $class`Pastamancer`) {
+    // might switch to spice ghost for advs
+    pm_updateThrall($location`Noob Cave`, true);
+  }
 
   if (possessEquipment($item`Wrist-Boy`) && myMeat() > 6500) {
     if (
@@ -1001,6 +1031,7 @@ function to_debug_string(action: ConsumeAction): string {
   return ret;
 }
 
+// note that the ConsumeAction record is defined in autoscend_record.ash
 function MakeConsumeAction(it: Item): ConsumeAction {
   const organ: number =
     it.inebriety > 0 ? AUTO_ORGAN_LIVER : AUTO_ORGAN_STOMACH;
@@ -1070,6 +1101,7 @@ function loadConsumables(
   _type: string,
   actions: Map<number, ConsumeAction>,
 ): boolean {
+  // Step 0: Definitions
   // Just in case!
   if (in_darkGyffte()) {
     abort(
@@ -1130,6 +1162,7 @@ function loadConsumables(
   const blacklist: Map<Item, boolean> = new Map();
   const craftable_blacklist: Map<Item, boolean> = new Map();
 
+  // Step 1: Blacklist items we don't want to consume
   for (const it of $items`Cursed Punch, unidentified drink, bag of QWOP, FantasyRealm turkey leg, FantasyRealm mead, waffle`) {
     blacklist.set(it, true);
   }
@@ -1173,6 +1206,31 @@ function loadConsumables(
     if (itemAmount($item`Devil's Elbow Hot Sauce`) === 0) {
       //don't use hot wings if pirates quest still needs them
       craftable_blacklist.set($item`devil hair pasta`, true);
+    }
+  }
+
+  if (internalQuestStatus("questL08Trapper") < 3 && auto_havePastaWand()) {
+    const legendary_noodle_dishes: Map<Item, Item> = legendaryNoodleDishes();
+    // consider blacklisting legendary noodles so we have some available for combat forcing if we still need to climb slope and have the wand
+    if (numPreparedLegendaryNoodleDishes() === 1) {
+      for (const dish of legendary_noodle_dishes.keys()) {
+        blacklist.set(dish, true);
+      }
+    } else if (
+      numPreparedLegendaryNoodleDishes() < 1 &&
+      min(
+        numBaseLegendaryNoodleDishes(),
+        itemAmount($item`legendary noodles`),
+      ) < 2
+    ) {
+      for (const dish of legendary_noodle_dishes.keys()) {
+        blacklist.set(dish, true);
+        blacklist.set(
+          legendary_noodle_dishes.get(dish) ??
+            legendary_noodle_dishes.set(dish, Item.none).get(dish),
+          true,
+        );
+      }
     }
   }
 
@@ -1226,6 +1284,7 @@ function loadConsumables(
       [$item`perfect negroni`, true],
     ]),
   );
+  // Step 2: move items to categorized source maps, and add turnsave
 
   const potentialTurnGain: Map<Item, number> = new Map(); // for anything the charges up a banish, YR, sniff, etc.
 
@@ -1328,7 +1387,20 @@ function loadConsumables(
         itemAmount(it) > 0 &&
         banishSources() - itemAmount(it) < 3
       ) {
-        potentialTurnGain.set(it, 2);
+        potentialTurnGain.set(it, 2.0);
+      } else if (legendaryNoodleDishes().has(it)) {
+        // which is quite good for minimizing daycount. We want that if it's available (except Ed, who has better spleen).
+        if (
+          !toBoolean(getProperty("_legendaryNoodlesSpleen")) &&
+          spleen_left() > 0 &&
+          auto_willEatLegendaryNoodles() &&
+          !isActuallyEd()
+        ) {
+          potentialTurnGain.set(it, 20.0); // not actually 20, but we almost certainly want to consume it
+          // doing the auto_willEatLegendaryNoodles() to exclude paths that might be too weird to assume this
+        } else if (auto_wantFamXP(400)) {
+          potentialTurnGain.set(it, 0.75); // arbitrary, but probably good enough
+        }
       }
       // speakeasy drinks are not available as items and will cause a crash here if not excluded.
       if (!isSpeakeasyDrink(it) && canPull$1(it)) {
@@ -1342,6 +1414,8 @@ function loadConsumables(
       }
     }
   }
+
+  // Step 3: Handle Key Lime Pie Desireability (turnsave)
 
   let keyLimePieDesirabilityBonus: number = 0;
   let keyLimePieDesirabilityBonusType: string = "";
@@ -1495,6 +1569,8 @@ function loadConsumables(
     }
   }
 
+  // Step 4: Add the items to actions[n], incorporating incentives and penalties
+
   function add(it: Item, obtain_mode: number, howmany: number): void {
     for (let i: number = 0; i < howmany; i++) {
       const n: number = actions.size;
@@ -1593,17 +1669,18 @@ function loadConsumables(
             actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
           ).desirability += keyLimePieDesirabilityBonus;
         }
-        if (
-          i === 0 &&
-          it === $item`pheromone cocktail` &&
-          (potentialTurnGain.get(it) ?? potentialTurnGain.set(it, 0).get(it)) >
-            0
-        ) {
-          (
-            actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
-          ).desirability +=
-            potentialTurnGain.get(it) ?? potentialTurnGain.set(it, 0).get(it);
-        }
+      }
+      // below code not included next to the KLPs because sometime legendary noodles want crafting
+      if (
+        i === 0 &&
+        (it === $item`pheromone cocktail` || legendaryNoodleDishes().has(it)) &&
+        (potentialTurnGain.get(it) ?? potentialTurnGain.set(it, 0.0).get(it)) >
+          0
+      ) {
+        (
+          actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
+        ).desirability +=
+          potentialTurnGain.get(it) ?? potentialTurnGain.set(it, 0.0).get(it);
       }
       (actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)).howtoget =
         obtain_mode;
@@ -1625,6 +1702,7 @@ function loadConsumables(
   for (const [it, howmany] of craftables) {
     add(it, AUTO_OBTAIN_CRAFT, howmany);
   }
+  // Step 5: Special adds
   // Add still suit if we are looking to drink
   if (
     type_1 === AUTO_ORGAN_LIVER &&
@@ -1671,7 +1749,7 @@ function loadConsumables(
       ),
     );
   }
-  // Now, to load cafe consumables. This has some TCRS-specific code.
+  // Step 6: Now, to load cafe consumables. This has some TCRS-specific code.
 
   if (type_1 === AUTO_ORGAN_LIVER && !gnomadsAvailable()) {
     return false;
@@ -2595,6 +2673,13 @@ export function shouldUseSpleenForLowPriority(): boolean {
   spleen_likely_to_use += 2 * auto_CMCconsultsLeft();
   spleen_likely_to_use +=
     $item`dieting pill`.spleen * availableAmount($item`dieting pill`);
+  if (
+    auto_havePastaWand() &&
+    !toBoolean(getProperty("_legendaryNoodlesSpleen")) &&
+    fullness_left() > 0
+  ) {
+    spleen_likely_to_use += 1;
+  }
 
   return spleen_left() > spleen_likely_to_use;
 }

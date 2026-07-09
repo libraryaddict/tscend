@@ -157,11 +157,14 @@ import {
 } from "../auto_routing";
 import {
   auto_can_equip,
+  auto_canForceNextCombat,
   auto_canForceNextNoncombat,
   auto_change_mcd,
   auto_combat_appearance_rates$1,
   auto_convertDesiredML,
   auto_forceNextNoncombat,
+  auto_haveCombatForceSource,
+  auto_haveQueuedForcedCombat,
   auto_haveQueuedForcedNonCombat,
   auto_inRonin,
   auto_is_valid,
@@ -254,6 +257,7 @@ import { in_robot, robot_delay } from "../paths/you_robot";
 import { in_zootomist } from "../paths/zootomist";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { L3_tavern } from "./level_03";
+import { L8_trapperNinjaLair } from "./level_08";
 import { L9_chasmBuild } from "./level_09";
 import { L10_holeInTheSkyUnlock, L10_topFloor } from "./level_10";
 
@@ -3514,6 +3518,23 @@ export function L11_shenCopperhead(): boolean {
         return true;
       } else if (auto_wantToSpadeDigSkeleton(goal)) {
         return auto_spadeDigSkeleton();
+      }
+      // similar if statements exist in the L8 quest file (see comments over there)
+      // before delayburn because we *want* to fight NSAs if we're going ninja lair, not avoid them by burning delay
+      if (goal === $location`Lair of the Ninja Snowmen`) {
+        if (auto_canForceNextCombat() || auto_haveQueuedForcedCombat()) {
+          if (L8_trapperNinjaLair()) {
+            return true;
+          }
+        }
+        if (
+          toInt(internalQuestStatus("questL08Trapper")) === 2 &&
+          auto_haveCombatForceSource() &&
+          !isAboutToPowerlevel() &&
+          !toBoolean(getProperty("auto_L8_extremeInstead"))
+        ) {
+          return false;
+        }
       }
       if (canBurnDelay(goal)) {
         // Snakes have variable delay of 3-5 adventures but we can burn at least 3 of that.

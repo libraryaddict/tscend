@@ -38,7 +38,6 @@ import {
   toLowerCase,
   toSkill,
   use,
-  useFamiliar,
   useSkill,
   visitUrl,
 } from "kolmafia";
@@ -63,7 +62,11 @@ import {
 import { autoAdvBypass$6 } from "../auto_adventure";
 import { fullness_left } from "../auto_consume";
 import { equipMaximizedGear, possessEquipment } from "../auto_equipment";
-import { auto_have_familiar } from "../auto_familiar";
+import {
+  auto_have_familiar,
+  auto_wantFamXP,
+  switchToFamXP,
+} from "../auto_familiar";
 import { provideResistances } from "../auto_providers";
 import {
   auto_get_campground,
@@ -512,13 +515,9 @@ function auto_MayamClaimWhatever(): boolean {
   let ring4: string = "BAD_VALUE";
   let failure: boolean = false;
 
-  if (
-    !auto_MayamIsUsed("fur") &&
-    auto_haveChestMimic() &&
-    $familiar`Chest Mimic`.experience <= 300
-  ) {
+  if (!auto_MayamIsUsed("fur") && auto_wantFamXP(300)) {
     ring1 = "fur";
-    useFamiliar($familiar`Chest Mimic`);
+    switchToFamXP(300);
   } else if (!auto_MayamIsUsed("chair") && auto_haveCincho()) {
     ring1 = "chair";
   } else if (!auto_MayamIsUsed("eye")) {

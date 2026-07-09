@@ -1,5 +1,6 @@
 import {
   abort,
+  appearanceRates,
   cliExecute,
   Familiar,
   floor,
@@ -11,26 +12,32 @@ import {
   myAdventures,
   myBasestat,
   myBjornedFamiliar,
+  myClass,
   myInebriety,
   myLevel,
   myMeat,
   myPrimestat,
+  myThrall,
   myTurncount,
   print,
   setProperty,
   toBoolean,
   toInt,
+  toThrall,
   useSkill,
   wait,
 } from "kolmafia";
 import {
+  $class,
   $element,
   $familiar,
   $item,
   $location,
+  $monster,
   $phylum,
   $skill,
   $stat,
+  $thrall,
 } from "libram";
 
 import { auto_advToReserve } from "../autoscend";
@@ -58,7 +65,9 @@ import {
   internalQuestStatus,
   loopHandlerDelayAll,
   meatReserve,
+  pm_updateThrall,
 } from "./auto_util";
+import { zone_isAvailable } from "./auto_zone";
 import { canUse } from "./combat/auto_combat_util";
 import { elementalPlanes_access } from "./iotms/elementalPlanes";
 import { handleBjornify } from "./iotms/mr2014";
@@ -467,6 +476,27 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
         auto_changeSnapperPhylum($phylum`dude`);
       }
       if (neverendingPartyCombat()) {
+        return true;
+      }
+    }
+  }
+
+  const burrow: Location = $location`The Batrat and Ratbat Burrow`;
+  if (
+    myClass() === $class`Pastamancer` &&
+    toThrall("ver").level > 10 &&
+    toInt(getProperty("_legendaryVermincelliFreeRats")) < 3 &&
+    zone_isAvailable(burrow, true) &&
+    (appearanceRates(burrow)[$monster`screambat`.toString()] ??= 0.0) < 0.01
+  ) {
+    // first three fights each day with Vermincelli vs rats are guaranteed free. Choosing to go to the burrow, but need it to be available and no screambats.
+    pm_updateThrall(burrow, false);
+    if (myThrall() === $thrall`Vermincelli`) {
+      auto_log_debug$1(
+        "LX_freeCombats is adventuring in [The Batrat and Ratbat Burrow] with Vermincelli",
+      );
+      const adv_done: boolean = autoAdv$1(1, burrow);
+      if (adv_done) {
         return true;
       }
     }
