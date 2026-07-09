@@ -64,6 +64,7 @@ import {
   $skills,
   $slot,
   $stat,
+  get,
 } from "libram";
 
 import { auto_canEat, fullness_left } from "./auto_consume";
@@ -905,6 +906,7 @@ export function handlePulls(day: number): number {
     }
     if (
       (in_picky() || !canChangeFamiliar()) &&
+      !get("auto_dontConsumeKeyLimePies", false) &&
       itemAmount(wrap_item($item`Deck of Every Card`)) === 0 &&
       fullness_left() >= 4
     ) {
