@@ -258,7 +258,6 @@ function c2t_megg_readFile(): Map<string, boolean> {
 }
 
 function c2t_megg_writeFile(list: Map<string, boolean>): boolean {
-  const buf: string = null;
   const neat: Map<number, boolean> = new Map();
   const prefCount: string = "_c2t_megg_maxlistCount";
   const prefLast: string = "_c2t_megg_lastCheck";
@@ -276,9 +275,8 @@ function c2t_megg_writeFile(list: Map<string, boolean>): boolean {
   for (const x of list.keys()) {
     neat.set(toInt(x), true);
   }
-  for (const x of neat.keys()) {
-    append(buf, `${x}\n`);
-  }
+  const buf: string = [...neat.keys()].map((s) => String(s)).join("\n");
+
   if (bufferToFile(buf, "c2t_megg_maxlist.txt")) {
     c2t_megg_print(`maxed egg list updated with ${size} entries`);
     setProperty(prefLast, nowToInt().toString());

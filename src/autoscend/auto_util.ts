@@ -5040,16 +5040,14 @@ export function meatReserveMessage(): void {
 function auto_interruptZoneCheck(): boolean {
   const currentZone: string = myLocation().toString();
   const interruptZones: string = getProperty("auto_interruptZones");
-  const interruptedZones: string = toBuffer(
-    getProperty("auto_interruptedZones"),
-  );
-  if (interruptZones === "" || containsText(interruptedZones, currentZone)) {
+  let interruptedZones: string = getProperty("auto_interruptedZones");
+  if (interruptZones === "" || interruptedZones.includes(currentZone)) {
     return false;
   }
 
   for (const [, zone] of splitString(interruptZones, ";").entries()) {
     if (toLocation(zone) === myLocation()) {
-      append(interruptedZones, `${currentZone};`);
+      interruptedZones += `${currentZone};`;
       setProperty("auto_interruptedZones", interruptedZones);
       return true;
     }
