@@ -4,6 +4,7 @@ import {
   ceil,
   cliExecute,
   closetAmount,
+  Coinmaster,
   containsText,
   council,
   create,
@@ -135,6 +136,7 @@ import {
   auto_log_info,
   auto_log_info$1,
   auto_log_warning,
+  auto_log_warning$1,
   auto_totalEffectWishesAvailable,
   canSummonMonster,
   canYellowRay,
@@ -2486,10 +2488,16 @@ export function L12_finalizeWar(): boolean {
     if (have_1 < 5) {
       let need: number = 5 - have_1;
       if (!toBoolean(getProperty("auto_hippyInstead"))) {
-        need = min(need, $coinmaster`Quartersmaster`.availableTokens / 3);
+        need = min(
+          need,
+          Math.floor($coinmaster`Quartersmaster`.availableTokens / 3),
+        );
         cliExecute(`make ${need} Monstar energy beverage`);
       } else {
-        need = min(need, $coinmaster`Dimemaster`.availableTokens / 3);
+        need = min(
+          need,
+          Math.floor($coinmaster`Dimemaster`.availableTokens / 3),
+        );
         cliExecute(`make ${need} carbonated soy milk`);
       }
     }
@@ -2500,13 +2508,39 @@ export function L12_finalizeWar(): boolean {
   if (have < 10 && !isActuallyEd()) {
     let need: number = 10 - have;
     if (!toBoolean(getProperty("auto_hippyInstead"))) {
-      need = min(need, $coinmaster`Quartersmaster`.availableTokens / 2);
+      need = min(
+        need,
+        Math.floor($coinmaster`Quartersmaster`.availableTokens / 2),
+      );
       cliExecute(`make ${need} gauze garter`);
     } else {
-      need = min(need, $coinmaster`Dimemaster`.availableTokens / 2);
+      need = min(need, Math.floor($coinmaster`Dimemaster`.availableTokens / 2));
       cliExecute(`make ${need} filthy poultice`);
     }
   }
+
+  const purchase = (coinmaster: Coinmaster, item: Item, price: number) => {
+    let failures: number = 0;
+
+    while (coinmaster.availableTokens >= price) {
+      let lastCoins: number = coinmaster.availableTokens;
+      cliExecute(
+        `make ${Math.floor(coinmaster.availableTokens / price)} ${item.name}`,
+      );
+
+      if (lastCoins == coinmaster.availableTokens) {
+        cliExecute("refresh inventory");
+
+        auto_log_warning$1(
+          `Unexpectably had ${lastCoins} reported for coinmaster ${coinmaster} instead of ${coinmaster.availableTokens}`,
+        );
+
+        if (failures++ > 5) {
+          abort(`Autoscend is failing to purchase items from ${coinmaster}`);
+        }
+      }
+    }
+  };
 
   if (possessOutfit$1("War Hippy Fatigues")) {
     if (in_wereprof()) {
@@ -2521,21 +2555,10 @@ export function L12_finalizeWar(): boolean {
         equip($item`reinforced beaded headband`);
       }
     }
-    while ($coinmaster`Dimemaster`.availableTokens >= 5) {
-      cliExecute(
-        `make ${$coinmaster`Dimemaster`.availableTokens / 5} fancy seashell necklace`,
-      );
-    }
-    while ($coinmaster`Dimemaster`.availableTokens >= 2) {
-      cliExecute(
-        `make ${$coinmaster`Dimemaster`.availableTokens / 2} filthy poultice`,
-      );
-    }
-    while ($coinmaster`Dimemaster`.availableTokens >= 1) {
-      cliExecute(
-        `make ${$coinmaster`Dimemaster`.availableTokens} water pipe bomb`,
-      );
-    }
+
+    purchase($coinmaster`Dimemaster`, $item`fancy seashell necklace`, 5);
+    purchase($coinmaster`Dimemaster`, $item`filthy poultice`, 2);
+    purchase($coinmaster`Dimemaster`, $item`water pipe bomb`, 1);
   }
 
   if (possessOutfit$1("Frat Warrior Fatigues")) {
@@ -2551,21 +2574,10 @@ export function L12_finalizeWar(): boolean {
         equip($item`bejeweled pledge pin`);
       }
     }
-    while ($coinmaster`Quartersmaster`.availableTokens >= 5) {
-      cliExecute(
-        `make ${$coinmaster`Quartersmaster`.availableTokens / 5} commemorative war stein`,
-      );
-    }
-    while ($coinmaster`Quartersmaster`.availableTokens >= 2) {
-      cliExecute(
-        `make ${$coinmaster`Quartersmaster`.availableTokens / 2} gauze garter`,
-      );
-    }
-    while ($coinmaster`Quartersmaster`.availableTokens >= 1) {
-      cliExecute(
-        `make ${$coinmaster`Quartersmaster`.availableTokens} beer bomb`,
-      );
-    }
+
+    purchase($coinmaster`Quartersmaster`, $item`commemorative war stein`, 5);
+    purchase($coinmaster`Quartersmaster`, $item`gauze garter`, 2);
+    purchase($coinmaster`Quartersmaster`, $item`beer bomb`, 1);
   }
 
   if (myMp() < 40) {
