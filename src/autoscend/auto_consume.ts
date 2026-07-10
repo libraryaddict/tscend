@@ -213,28 +213,28 @@ export function inebriety_left(): number {
   return inebrietyLimit() - myInebriety();
 }
 
-let $_saucemavenApplies_saucy_foods: Item[] | undefined;
+const $_saucemavenApplies_saucy_foods: Item[] = $items`cold hi mein, devil hair pasta, Fettris, fettucini Inconnu, fleetwood mac 'n' cheese, fusillocybin, gnocchetti di Nietzsche, haunted Hell ramen, Hell ramen, hot hi mein, libertagliatelle, linguini immondizia bianco, linguini of the sea, prescription noodles, shells a la shellfish, sleazy hi mein, spagecialetti, spaghetti con calaveras, spaghetti with Skullheads, spooky hi mein, stinky hi mein, turkish mostaccioli`;
 
 function saucemavenApplies(it: Item): boolean {
-  $_saucemavenApplies_saucy_foods ??= $items`cold hi mein, devil hair pasta, Fettris, fettucini Inconnu, fleetwood mac 'n' cheese, fusillocybin, gnocchetti di Nietzsche, haunted Hell ramen, Hell ramen, hot hi mein, libertagliatelle, linguini immondizia bianco, linguini of the sea, prescription noodles, shells a la shellfish, sleazy hi mein, spagecialetti, spaghetti con calaveras, spaghetti with Skullheads, spooky hi mein, stinky hi mein, turkish mostaccioli`;
   return $_saucemavenApplies_saucy_foods.includes(it);
 }
 
+function parseRawAdventures(it: Item): number {
+  // Split array, filter to non-empty then map to number
+  const advs: number[] = it.adventures.split("-").filter(Boolean).map(Number);
+
+  // If empty array
+  if (!advs.length) return 0;
+
+  // Reduce it, if only 1 item, will not be halved
+  const avgAdvs: number = advs.reduce((l, r) => (l + r) / 2);
+
+  // Safeguard for invalid number
+  return isNaN(avgAdvs) ? 0 : avgAdvs;
+}
+
 export function expectedAdventuresFrom(it: Item): number {
-  function parse(): number {
-    if (!containsText(it.adventures, "-")) {
-      return toInt(it.adventures);
-    }
-    const s: Map<number, string> = new Map(
-      splitString(it.adventures, "-").map((_v, _i) => [_i, _v]),
-    );
-    return (
-      (toInt(s.get(1) ?? s.set(1, "").get(1)) +
-        toInt(s.get(0) ?? s.set(0, "").get(0))) /
-      2.0
-    );
-  }
-  let expected: number = parse();
+  let expected: number = parseRawAdventures(it);
   if (auto_have_skill($skill`Saucemaven`) && saucemavenApplies(it)) {
     if ($classes`Sauceror, Pastamancer`.includes(myClass())) {
       expected += 5;
@@ -881,7 +881,7 @@ export function auto_canDrink(
     return false;
   }
 
-  return true;
+  return meetsMinAdvPerFillReq(toDrink);
 }
 
 export function meetsMinAdvPerFillReq(it: Item): boolean {
@@ -897,7 +897,7 @@ export function auto_canEat(
   toEat: Item,
   checkValidity: boolean = true,
 ): boolean {
-  if (!canEat() || !meetsMinAdvPerFillReq(toEat)) {
+  if (!canEat()) {
     return false;
   }
   if (!auto_is_valid(toEat) && checkValidity) {
@@ -939,7 +939,7 @@ export function auto_canEat(
     return false;
   }
 
-  return true;
+  return meetsMinAdvPerFillReq(toEat);
 }
 
 export function canChew(toChew: Item): boolean {
@@ -1299,128 +1299,121 @@ function loadConsumables(
   const potentialTurnGain: Map<Item, number> = new Map(); // for anything the charges up a banish, YR, sniff, etc.
 
   for (const it of $items.all()) {
-    if (
-      !blacklist.has(it) &&
-      canConsume$1(it) &&
-      organCost(it) > 0 &&
-      (it.fullness === 0 || it.inebriety === 0) &&
-      auto_is_valid(it)
-    ) {
-      const value_allowed: boolean =
-        historicalPrice(it) < auto_getConsumablePriceLimit() ||
-        ($items`blueberry muffin, bran muffin, chocolate chip muffin`.includes(
-          it,
-        ) &&
-          itemAmount(it) > 0 &&
-          myPath() !== $path`Grey You`); //Grey You should not even get to here if ever supported but it consumes the tin so blocked just in case
-      //muffins are expensive but renewable
+    if (organCost(it) <= 0 || (it.fullness !== 0 && it.inebriety !== 0))
+      continue;
 
-      if (!value_allowed) {
-        continue;
-      }
-      if (
-        (it === $item`astral pilsner` ||
-          it === $item`Cold One` ||
-          it === $item`astral hot dog`) &&
-        myLevel() < 11
-      ) {
-        continue;
-      }
-      if (
-        it === $item`spaghetti breakfast` &&
-        (myLevel() < 11 ||
-          myFullness() > 0 ||
-          toBoolean(getProperty("_spaghettiBreakfastEaten")))
-      ) {
-        continue;
-      }
-      if (
-        it === $item`Pizza of Legend` &&
-        toBoolean(getProperty("pizzaOfLegendEaten"))
-      ) {
-        continue;
-      }
-      if (
-        it === $item`Calzone of Legend` &&
-        toBoolean(getProperty("calzoneOfLegendEaten"))
-      ) {
-        continue;
-      }
-      if (
-        it === $item`Deep Dish of Legend` &&
-        toBoolean(getProperty("deepDishOfLegendEaten"))
-      ) {
-        continue;
-      }
+    if (blacklist.has(it) || !auto_is_valid(it)) continue;
 
-      let howmany: number = it.inebriety > 0 ? 1 : 0; //can consider a drink action past inebriety limit. but not food past fullness limit
-      howmany += organLeft$2() / organCost(it);
-      if (howmany < 1) {
-        continue;
-      }
-      // Only one Spaghetti Breakfast can be eaten
-      if (it === $item`spaghetti breakfast`) {
-        howmany = 1;
-      }
-      if (itemAmount(it) > 0 && organCost(it) <= 5) {
-        small_owned.set(
-          it,
-          min(max(itemAmount(it) - auto_reserveAmount(it), 0), howmany),
-        );
-      }
-      // don't add speakeasy drinks, because they can't actually be bought as items
-      if (npcPrice(it) > 0 && !isSpeakeasyDrink(it)) {
-        buyables.set(it, min(howmany, myMeat() / npcPrice(it)));
-      } else if (buyPrice($coinmaster`Hermit`, it) > 0) {
-        buyables.set(
-          it,
-          (buyables.get(it) ?? 0) + min(howmany, myMeat() / 500),
-        );
-      }
-      if (itemAmount(it) > 0 && organCost(it) > 5) {
-        large_owned.set(
-          it,
-          min(max(itemAmount(it) - auto_reserveAmount(it), 0), howmany),
-        );
-      }
-      if (!craftable_blacklist.has(it) && creatableAmount(it) > 0) {
-        craftables.set(
-          it,
-          min(
-            howmany,
-            max(0, creatableAmount(it) - auto_reserveCraftAmount(it)),
-          ),
-        );
-      }
-      if (
-        it === $item`pheromone cocktail` &&
+    if (!canConsume$1(it)) continue;
+
+    const value_allowed: boolean =
+      historicalPrice(it) < auto_getConsumablePriceLimit() ||
+      ($items`blueberry muffin, bran muffin, chocolate chip muffin`.includes(
+        it,
+      ) &&
         itemAmount(it) > 0 &&
-        banishSources() - itemAmount(it) < 3
+        myPath() !== $path`Grey You`); //Grey You should not even get to here if ever supported but it consumes the tin so blocked just in case
+    //muffins are expensive but renewable
+
+    if (!value_allowed) {
+      continue;
+    }
+    if (
+      (it === $item`astral pilsner` ||
+        it === $item`Cold One` ||
+        it === $item`astral hot dog`) &&
+      myLevel() < 11
+    ) {
+      continue;
+    }
+    if (
+      it === $item`spaghetti breakfast` &&
+      (myLevel() < 11 ||
+        myFullness() > 0 ||
+        toBoolean(getProperty("_spaghettiBreakfastEaten")))
+    ) {
+      continue;
+    }
+    if (
+      it === $item`Pizza of Legend` &&
+      toBoolean(getProperty("pizzaOfLegendEaten"))
+    ) {
+      continue;
+    }
+    if (
+      it === $item`Calzone of Legend` &&
+      toBoolean(getProperty("calzoneOfLegendEaten"))
+    ) {
+      continue;
+    }
+    if (
+      it === $item`Deep Dish of Legend` &&
+      toBoolean(getProperty("deepDishOfLegendEaten"))
+    ) {
+      continue;
+    }
+
+    let howmany: number = it.inebriety > 0 ? 1 : 0; //can consider a drink action past inebriety limit. but not food past fullness limit
+    howmany += organLeft$2() / organCost(it);
+    if (howmany < 1) {
+      continue;
+    }
+    // Only one Spaghetti Breakfast can be eaten
+    if (it === $item`spaghetti breakfast`) {
+      howmany = 1;
+    }
+    if (itemAmount(it) > 0 && organCost(it) <= 5) {
+      small_owned.set(
+        it,
+        min(max(itemAmount(it) - auto_reserveAmount(it), 0), howmany),
+      );
+    }
+    // don't add speakeasy drinks, because they can't actually be bought as items
+    if (npcPrice(it) > 0 && !isSpeakeasyDrink(it)) {
+      buyables.set(it, min(howmany, myMeat() / npcPrice(it)));
+    } else if (buyPrice($coinmaster`Hermit`, it) > 0) {
+      buyables.set(it, (buyables.get(it) ?? 0) + min(howmany, myMeat() / 500));
+    }
+    if (itemAmount(it) > 0 && organCost(it) > 5) {
+      large_owned.set(
+        it,
+        min(max(itemAmount(it) - auto_reserveAmount(it), 0), howmany),
+      );
+    }
+    if (!craftable_blacklist.has(it) && creatableAmount(it) > 0) {
+      craftables.set(
+        it,
+        min(howmany, max(0, creatableAmount(it) - auto_reserveCraftAmount(it))),
+      );
+    }
+    if (
+      it === $item`pheromone cocktail` &&
+      itemAmount(it) > 0 &&
+      banishSources() - itemAmount(it) < 3
+    ) {
+      potentialTurnGain.set(it, 2.0);
+    } else if (legendaryNoodleDishes().has(it)) {
+      // which is quite good for minimizing daycount. We want that if it's available (except Ed, who has better spleen).
+      if (
+        !toBoolean(getProperty("_legendaryNoodlesSpleen")) &&
+        spleen_left() > 0 &&
+        auto_willEatLegendaryNoodles() &&
+        !isActuallyEd()
       ) {
-        potentialTurnGain.set(it, 2.0);
-      } else if (legendaryNoodleDishes().has(it)) {
-        // which is quite good for minimizing daycount. We want that if it's available (except Ed, who has better spleen).
-        if (
-          !toBoolean(getProperty("_legendaryNoodlesSpleen")) &&
-          spleen_left() > 0 &&
-          auto_willEatLegendaryNoodles() &&
-          !isActuallyEd()
-        ) {
-          potentialTurnGain.set(it, 20.0); // not actually 20, but we almost certainly want to consume it
-          // doing the auto_willEatLegendaryNoodles() to exclude paths that might be too weird to assume this
-        } else if (auto_wantFamXP(400)) {
-          potentialTurnGain.set(it, 0.75); // arbitrary, but probably good enough
-        }
+        potentialTurnGain.set(it, 20.0); // not actually 20, but we almost certainly want to consume it
+        // doing the auto_willEatLegendaryNoodles() to exclude paths that might be too weird to assume this
+      } else if (auto_wantFamXP(400)) {
+        potentialTurnGain.set(it, 0.75); // arbitrary, but probably good enough
       }
-      // speakeasy drinks are not available as items and will cause a crash here if not excluded.
-      if (!isSpeakeasyDrink(it) && canPull$1(it)) {
-        if (!canInteract()) {
-          pullables.set(it, 1);
-        } else {
-          //pullable amount here was coded before the change to daily limit of 1 pull each
-          //now pulling more than 1 is only possible out of ronin. is storage ever not completely pulled already in this case?
-          pullables.set(it, min(howmany, pullsRemaining()));
-        }
+    }
+    // speakeasy drinks are not available as items and will cause a crash here if not excluded.
+    if (!isSpeakeasyDrink(it) && canPull$1(it)) {
+      if (!canInteract()) {
+        pullables.set(it, 1);
+      } else {
+        //pullable amount here was coded before the change to daily limit of 1 pull each
+        //now pulling more than 1 is only possible out of ronin. is storage ever not completely pulled already in this case?
+        pullables.set(it, min(howmany, pullsRemaining()));
       }
     }
   }
