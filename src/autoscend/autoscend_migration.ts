@@ -30,7 +30,7 @@ const $_f___migrate_sl_ascend_properties_remove_confirmation: string =
   "Would you like to clean up old sl_ascend properties after migrating them? Will default to false in 10 seconds.";
 
 //Defined in autoscend/autoscend_migration.ash
-function autoscend_current_version(): string {
+export function autoscend_current_version(): string {
   if (!propertyExists("auto_current_version")) {
     setProperty("auto_current_version", $_f___autoscend_version);
   }

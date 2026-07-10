@@ -708,7 +708,7 @@ export function L8_trapperNinjaLair(): boolean {
     return false;
   }
   // can we provide enough combat bonus to encounter snowman assassins, or force them?
-  let CForced: boolean = false;
+  let CForced: boolean;
   if (auto_haveQueuedForcedCombat()) {
     CForced = true;
     auto_log_info$1(

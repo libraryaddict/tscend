@@ -403,7 +403,7 @@ export function auto_forceCombatLegendaryNoodles(): boolean {
   const AUTO_ORGAN_STOMACH_1: number = 1;
   const AUTO_OBTAIN_NULL_1: number = 100;
   const AUTO_OBTAIN_CRAFT_1: number = 101;
-  let action: ConsumeAction = new ConsumeAction();
+  let action: ConsumeAction;
   // select a dish and then create a record, prioritizing dishes that are already crafted first
   const prospective_dish: Item = auto_findPreparedLegendaryNoods();
   if (prospective_dish !== Item.none) {
