@@ -21,6 +21,7 @@ import {
 import { $location } from "libram";
 
 import {
+  auto_interruptCheck,
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
@@ -76,8 +77,10 @@ export function autoAdv(
   const previousEncounter: string = getProperty("lastEncounter");
   const turncount: number = myTurncount();
   print(`Doing option ${option}`);
+  auto_interruptCheck(false);
   let advReturn: boolean = adv1(loc, -1, option);
   if (!advReturn) {
+    auto_interruptCheck(false);
     auto_log_debug(
       "adv1 returned false for some reason. Did we actually adventure though?",
       "blue",
