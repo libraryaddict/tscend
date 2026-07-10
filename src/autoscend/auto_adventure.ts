@@ -45,6 +45,13 @@ export type CombatMacro = (
   text: string,
 ) => string;
 
+function findMacroName(func: unknown): string {
+  const asStr = String(func);
+  const match = asStr.match(/^function ([^( ]+)\(/);
+
+  return match ? match[1] : asStr;
+}
+
 // autoAdv is used to automate adventuring *once* in adventure.php zones
 // it will (should?) handle the complete adventure from start to finish regardless of
 // how many choices or combats it encounters (this is mafia's adv1 behaviour)
@@ -76,7 +83,7 @@ export function autoAdv(
   // undo all this when (if?) that ever gets fixed
   const previousEncounter: string = getProperty("lastEncounter");
   const turncount: number = myTurncount();
-  print(`Doing option ${option}`);
+  print(`Doing option ${findMacroName(option)}`);
   auto_interruptCheck(false);
   let advReturn: boolean = adv1(loc, -1, option);
   if (!advReturn) {
