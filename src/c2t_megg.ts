@@ -1,6 +1,5 @@
 import {
   abort,
-  append,
   bufferToFile,
   cliExecute,
   containsText,

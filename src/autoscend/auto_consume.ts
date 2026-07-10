@@ -88,6 +88,7 @@ import {
   $skill,
   $slot,
   $stat,
+  get,
 } from "libram";
 
 import { auto_advToReserve } from "../autoscend";
@@ -883,11 +884,20 @@ export function auto_canDrink(
   return true;
 }
 
+export function meetsMinAdvPerFillReq(it: Item): boolean {
+  if (it.fullness + it.inebriety <= 0) return true;
+
+  const advs =
+    expectedAdventuresFrom(it) / Math.max(1, it.fullness + it.inebriety);
+
+  return advs >= get("auto_consumeMinAdvPerFill", 0.0);
+}
+
 export function auto_canEat(
   toEat: Item,
   checkValidity: boolean = true,
 ): boolean {
-  if (!canEat()) {
+  if (!canEat() || !meetsMinAdvPerFillReq(toEat)) {
     return false;
   }
   if (!auto_is_valid(toEat) && checkValidity) {
