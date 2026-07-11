@@ -1,14 +1,11 @@
 import {
-  containsText,
   entityEncode,
   Familiar,
-  formField,
   formFields,
   getProperty,
   inHardcore,
   Item,
   itemAmount,
-  length,
   Location,
   myAscensions,
   myDaycount,
@@ -17,7 +14,6 @@ import {
   myTurncount,
   setProperty,
   splitString,
-  substring,
   toFamiliar,
   toInt,
   turnsPlayed,
@@ -100,7 +96,7 @@ function handleSetting(type_1: string, x: number): void {
     default:
       write(`<tr bgcolor=${color}><td align=center>${name}</td>`);
       write(
-        `<td><input type='text' name='${name}' value="${encodedValue}" /></td>`,
+        `<td align='center'><input type='text' name='${name}' value="${encodedValue}" /></td>`,
       );
       writeln(`<td>${entityEncode(set.description)}</td></tr>`);
       break;
@@ -257,6 +253,37 @@ function write_familiar(): void {
   }
 }
 
+function applySettingChanges(): void {
+  const fields = formFields();
+  for (const x of Object.keys(fields)) {
+    //Checkboxes that are false are not supplied, so we have to look at the *_oldvalue
+    //fields to see whether there is a "false" checkbox we're not seeing.  So, ignore
+    //the fields that don't end in _oldvalue.
+    if (!x.endsWith("_oldvalue")) {
+      continue;
+    }
+
+    //Recover name of property and its value.
+    //If the new value field isn't present, the checkbox was unticked -> "false".
+    const prop: string = x.slice(0, -"_oldvalue".length);
+    const newSetting: string = prop in fields ? fields[prop] : "false";
+    const oldSetting: string = fields[x];
+
+    if (oldSetting === newSetting) {
+      if (getProperty(prop) !== newSetting) {
+        writeln(
+          `You did not change setting ${prop}. It changed since you last loaded the page, ignoring.<br>`,
+        );
+      }
+      continue;
+    }
+    if (getProperty(prop) !== newSetting) {
+      writeln(`Changing setting ${prop} to ${newSetting}<br>`);
+      setProperty(prop, newSetting);
+    }
+  }
+}
+
 function write_locations_visited(): void {
   // Display the locations we've spent turns
   // Make a list of the locations we've visited
@@ -330,66 +357,28 @@ function loadMain(): void {
   //generate settings table
   loadRelaySettings("autoscend_settings.txt");
 
-  const fields: Map<string, string> = new Map(
-    Object.entries(formFields()).map(([_k, _v]) => [_k, _v]),
-  );
-  if (fields.size > 0) {
-    for (const x of fields.keys()) {
-      //Checkboxes that are false are not supplied, so we have to look at the *_oldvalue
-      //fields to see whether there is a "false" checkbox we're not seeing.  So, ignore
-      //the fields that don't end in _ignore.
-      if (!containsText(x, "_oldvalue")) {
-        continue;
-      }
-      //Recover name of property and its value.
-      //If new value field doesn't exist, it's a "false" checkbox
-      const prop: string = substring(x, 0, length(x) - 9);
-      let newSetting: string =
-        fields.get(prop) ?? fields.set(prop, "").get(prop);
-      if (!fields.has(prop)) {
-        //writeln("Empty checkbox for " + prop + "<br>");
-        newSetting = "false";
-      }
-
-      const oldSetting: string = formField(x);
-      if (oldSetting === newSetting) {
-        if (getProperty(prop) !== newSetting) {
-          writeln(
-            `You did not change setting ${prop}. It changed since you last loaded the page, ignoring.<br>`,
-          );
-        }
-        continue;
-      }
-      if (getProperty(prop) !== newSetting) {
-        writeln(`Changing setting ${prop} to ${newSetting}<br>`);
-        setProperty(prop, newSetting);
-      }
-    }
-  }
+  applySettingChanges();
 
   writeln("<form action='' method='post'>");
   writeln(
     "<table><tr><th width=20%>Setting</th><th width=20%>Value</th><th width=60%>Description</th></tr>",
   );
-  for (const x of (s.get("any") ?? s.set("any", new Map()).get("any")).keys()) {
+
+  const get = (key: string) => (s.has(key) ? s.get(key).keys() : []);
+
+  for (const x of get("any")) {
     handleSetting("any", x);
   }
-  for (const x of (s.get("pre") ?? s.set("pre", new Map()).get("pre")).keys()) {
+  for (const x of get("pre")) {
     handleSetting("pre", x);
   }
-  for (const x of (
-    s.get("post") ?? s.set("post", new Map()).get("post")
-  ).keys()) {
+  for (const x of get("post")) {
     handleSetting("post", x);
   }
-  for (const x of (
-    s.get("action") ?? s.set("action", new Map()).get("action")
-  ).keys()) {
+  for (const x of get("action")) {
     handleSetting("action", x);
   }
-  for (const x of (
-    s.get("sharing") ?? s.set("sharing", new Map()).get("sharing")
-  ).keys()) {
+  for (const x of get("sharing")) {
     handleSetting("sharing", x);
   }
   writeln(
@@ -521,41 +510,7 @@ function loadExtra() {
   );
 
   //generate settings table
-  const fields = formFields();
-
-  for (const [x] of Object.entries(fields)) {
-    //Checkboxes that are false are not supplied, so we have to look at the *_oldvalue
-    //fields to see whether there is a "false" checkbox we're not seeing.  So, ignore
-    //the fields that don't end in _ignore.
-    if (!x.includes("_oldvalue")) {
-      continue;
-    }
-
-    //Recover name of property and its value.
-    //If new value field doesn't exist, it's a "false" checkbox
-    const prop: string = substring(x, 0, length(x) - 9);
-    let newSetting: string = fields[prop];
-    if (!Object.keys(formFields()).includes(prop)) {
-      //writeln("Empty checkbox for " + prop + "<br>");
-      newSetting = "false";
-    }
-
-    const oldSetting: string = formField(x);
-    if (oldSetting === newSetting) {
-      if (getProperty(prop) !== newSetting) {
-        writeln(
-          `You did not change setting ${
-            prop
-          }. It changed since you last loaded the page, ignoring.<br>`,
-        );
-      }
-      continue;
-    }
-    if (getProperty(prop) !== newSetting) {
-      writeln(`Changing setting ${prop} to ${newSetting}<br>`);
-      setProperty(prop, newSetting);
-    }
-  }
+  applySettingChanges();
 
   writeln("<form action='' method='post'>");
   writeln(
