@@ -63,6 +63,7 @@ import {
   $skill,
   $slot,
   $stat,
+  set,
 } from "libram";
 
 import { resetState } from "../../autoscend";
@@ -1907,12 +1908,12 @@ export function L12_themtharHills(): boolean {
 
   handleFamiliar("meat");
   //can only do this in Avant Guard in 6 turns in HC or 8 turns in Normal. Need the August Scepter. If day 1, can't get enough waffles so don't even bother with this
-  setProperty("auto_delayWar", false.toString());
+  set("auto_delayWar", false);
   if (in_avantGuard()) {
     if (!auto_haveAugustScepter()) {
       // no scepter = no waffles = impossible
       // macrometeorite / replace enemy use different code and don't work for this
-      setProperty("auto_skipNuns", "true");
+      set("auto_skipNuns", true);
       return false;
     }
     if (myDaycount() === 1) {
@@ -1994,14 +1995,14 @@ export function L12_themtharHills(): boolean {
     itemAmount($item`Mick's IcyVapoHotness Inhaler`) > 0 ||
     (cloversAvailable$1() > 0 && considerCloverForInhaler)
   ) {
-    meat_need = meat_need - 200;
+    meat_need -= 200;
   }
   if (
     in_darkGyffte() &&
     haveSkill($skill`Wolf Form`) &&
     0 === haveEffect($effect`Wolf Form`)
   ) {
-    meat_need = meat_need - 150;
+    meat_need -= 150;
   }
   if (
     zataraAvailable() &&
@@ -2010,7 +2011,7 @@ export function L12_themtharHills(): boolean {
         toInt(auto_is_valid$3($effect`Meet the Meat`)),
     )
   ) {
-    meat_need = meat_need - 100;
+    meat_need -= 100;
   }
 
   const famChoice: Familiar = toFamiliar(getProperty("auto_familiarChoice"));
@@ -2523,12 +2524,12 @@ export function L12_finalizeWar(): boolean {
     let failures: number = 0;
 
     while (coinmaster.availableTokens >= price) {
-      let lastCoins: number = coinmaster.availableTokens;
+      const lastCoins: number = coinmaster.availableTokens;
       cliExecute(
         `make ${Math.floor(coinmaster.availableTokens / price)} ${item.name}`,
       );
 
-      if (lastCoins == coinmaster.availableTokens) {
+      if (lastCoins === coinmaster.availableTokens) {
         cliExecute("refresh inventory");
 
         auto_log_warning$1(
