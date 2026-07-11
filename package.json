@@ -30,10 +30,11 @@
     "jiti": "^2.7.0",
     "prettier": "3.9.4",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.62.1"
+    "typescript-eslint": "^8.62.1",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
-    "kolmafia": "^5.29089.0",
+    "kolmafia": "^5.29099.0",
     "libram": "^0.11.23"
   }
 }

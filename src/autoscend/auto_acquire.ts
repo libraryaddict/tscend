@@ -548,7 +548,7 @@ export function acquireTotem(): boolean {
   return false;
 }
 
-function auto_hermit(amt: number, it: Item): boolean {
+export function auto_hermit(amt: number, it: Item): boolean {
   //workaround for this bug https://kolmafia.us/threads/27105/
   if (it !== $item`11-leaf clover`) {
     return hermit(amt, it);

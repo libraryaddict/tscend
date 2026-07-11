@@ -159,6 +159,7 @@ import {
   consumeBlackAndWhiteApronKit,
 } from "./iotms/mr2024";
 import {
+  auto_cupOfThirteenBestConsumeAction,
   auto_havePastaWand,
   auto_willEatLegendaryNoodles,
   legendaryNoodleDishes,
@@ -345,72 +346,72 @@ export function autoDrink(
     return false;
   }
   if (action?.data?.consume === undefined) {
-  if (itemAmount(toDrink) < howMany && !isSpeakeasy) {
-    return false;
+    if (itemAmount(toDrink) < howMany && !isSpeakeasy) {
+      return false;
+    }
+    if (!auto_canDrink(toDrink)) {
+      return false;
+    }
   }
-  if (!auto_canDrink(toDrink)) {
-    return false;
-  }
-  }
-
-  const it: Item = equippedItem($slot`acc3`);
 
   // These only take effect when ode is active
   if (canOde(toDrink, action)) {
     if (itemAmount($item`hard rock`) > 0) {
-    //only want to hard rock if the booze is also Ode-able
-    use(1, $item`hard rock`);
-  }
-
-  if (
-    minAdvPerDrunk(toDrink) >= 5.0 &&
-    $familiar`Cooler Yeti`.experience >= 400 &&
-    ((auto_haveSeptEmberCenser() && myLevel() >= 15) ||
-      $familiar`Cooler Yeti`.experience > 800 ||
-      !auto_haveSeptEmberCenser())
-  ) {
-    //only want to yeti chat if the booze is also Ode-able and we don't need to level via sept-ember censer or using it won't affect our fam weight
-    useFamiliar($familiar`Cooler Yeti`);
-    if (containsText(visitUrl("main.php?talktoyeti=1"), "choiceform2")) {
-      handleTracker$1(
-        $familiar`Cooler Yeti`.toString(),
-        `Double adv of ${toDrink.toString()}`,
-        "auto_otherstuff",
-      );
-      visitUrl("choice.php?pwd=&whichchoice=1560&option=2");
+      //only want to hard rock if the booze is also Ode-able
+      use(1, $item`hard rock`);
     }
-  }
 
-  const expectedInebriety: number = toDrink.inebriety * howMany;
+    if (
+      minAdvPerDrunk(toDrink) >= 5.0 &&
+      $familiar`Cooler Yeti`.experience >= 400 &&
+      ((auto_haveSeptEmberCenser() && myLevel() >= 15) ||
+        $familiar`Cooler Yeti`.experience > 800 ||
+        !auto_haveSeptEmberCenser())
+    ) {
+      //only want to yeti chat if the booze is also Ode-able and we don't need to level via sept-ember censer or using it won't affect our fam weight
+      useFamiliar($familiar`Cooler Yeti`);
+      if (containsText(visitUrl("main.php?talktoyeti=1"), "choiceform2")) {
+        handleTracker$1(
+          $familiar`Cooler Yeti`.toString(),
+          `Double adv of ${toDrink.toString()}`,
+          "auto_otherstuff",
+        );
+        visitUrl("choice.php?pwd=&whichchoice=1560&option=2");
+      }
+    }
+
+    const expectedInebriety: number = toDrink.inebriety * howMany;
 
     if (possessEquipment($item`Wrist-Boy`) && myMeat() > 6500) {
-    if (
-      haveEffect($effect`Drunk and Avuncular`) < expectedInebriety &&
-      itemAmount($item`Drunk Uncles holo-record`) === 0
-    ) {
-      auto_buyUpTo(1, $item`Drunk Uncles holo-record`);
+      if (
+        haveEffect($effect`Drunk and Avuncular`) < expectedInebriety &&
+        itemAmount($item`Drunk Uncles holo-record`) === 0
+      ) {
+        auto_buyUpTo(1, $item`Drunk Uncles holo-record`);
+      }
+      buffMaintain$3($effect`Drunk and Avuncular`, 0, 1, expectedInebriety);
     }
-    buffMaintain$3($effect`Drunk and Avuncular`, 0, 1, expectedInebriety);
-  }
 
     if (auto_have_skill($skill`The Ode to Booze`)) {
-    shrugAT($effect`Ode to Booze`);
-    // get enough turns of ode
-    while (
-      acquireMP(mpCost($skill`The Ode to Booze`), 0) &&
-      buffMaintain$3(
-        $effect`Ode to Booze`,
-        mpCost($skill`The Ode to Booze`),
-        1,
-        expectedInebriety,
-      )
-    ) {
-      /*do nothing, the loop condition is doing the work*/
+      shrugAT($effect`Ode to Booze`);
+      // get enough turns of ode
+      while (
+        acquireMP(mpCost($skill`The Ode to Booze`), 0) &&
+        buffMaintain$3(
+          $effect`Ode to Booze`,
+          mpCost($skill`The Ode to Booze`),
+          1,
+          expectedInebriety,
+        )
+      ) {
+        /*do nothing, the loop condition is doing the work*/
       }
     }
   }
 
   equipStatgainIncreasersFor(toDrink);
+
+  const it: Item = equippedItem($slot`acc3`);
 
   if (
     it !== $item`mafia pinky ring` &&
@@ -1061,6 +1062,9 @@ function autoPrepConsume(action: ConsumeAction): boolean {
     auto_log_info(`autoPrepConsume: Buying a ${action.it}`, "blue");
     action.howtoget = AUTO_OBTAIN_NULL;
     return auto_buyUpTo(1, action.it);
+  } else if (action.data?.prep) {
+    action.howtoget = AUTO_OBTAIN_NULL;
+    return action.data.prep();
   } else if (action.howtoget === AUTO_OBTAIN_NULL) {
     auto_log_info(
       `autoPrepConsume: Doing nothing to get a ${action.it}`,
@@ -1129,6 +1133,16 @@ function loadConsumables(
     type_1 = AUTO_ORGAN_LIVER;
   } else {
     return false;
+  }
+
+  if (type_1 === AUTO_ORGAN_LIVER) {
+    // Cup of 13's adventures depend on which 3 ingredients we mix in, which the loop below has no way to know - inject its best current pick as a candidate directly.
+    const cupOfThirteenAction: ConsumeAction | undefined =
+      auto_cupOfThirteenBestConsumeAction();
+
+    if (cupOfThirteenAction) {
+      actions.set(actions.size, cupOfThirteenAction);
+    }
   }
 
   function canConsume(it: Item, checkValidity: boolean): boolean {

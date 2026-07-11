@@ -85,6 +85,7 @@ export class ConsumeAction {
 
 export interface ConsumeData {
   castOde?: boolean; // If we should cast ode for booze, defaults to true. Also controls if we bother equipping items
+  prep?: () => boolean; // Tries to prep this, if undefined, doesn't need prepping
   consume?: () => boolean; // Try to consume this item, otherwise consumed as normal. If this is defined, we skip the validity check because it's assumed this item is not normal
   hasOwnTracking?: boolean; // If this is going to track the items consumed itself or not
 }

@@ -54,6 +54,7 @@ import {
 import { auto_buyUpTo } from "./auto_acquire";
 import { buffMaintain$2, buffMaintain$4 } from "./auto_buff";
 import {
+  auto_autoConsumeOne,
   auto_canDrink,
   auto_canEat,
   autoChew,
@@ -147,6 +148,7 @@ import {
   beretBusk,
   canBusk,
 } from "./iotms/mr2025";
+import { auto_getDrinkCupOfThirteenForEffect } from "./iotms/mr2026";
 import { ARBSupplyDrop, auto_canARBSupplyDrop } from "./iotms/ttt";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_canAfford, in_amw } from "./paths/adventurer_meats_world";
@@ -1942,6 +1944,29 @@ function provideMeat(
       handleEffect$3($effect`Grueling Gravitas`); //5 fam weight
       if (pass$3()) {
         return result$3();
+      }
+    }
+    if (
+      // If we're this far, we don't care about the "wait until we've drunk a bit" check.
+      inebriety_left() > 0 &&
+      // The checks for 'can we use this' is done as part of 'auto_getDrinkCupOfThirteenForEffect'
+      // eslint-disable-next-line libram/verify-constants
+      !haveEffect($effect`Runneth On Empty`)
+    ) {
+      const cupConsume = auto_getDrinkCupOfThirteenForEffect(
+        // eslint-disable-next-line libram/verify-constants
+        $effect`Runneth On Empty`,
+      );
+
+      if (cupConsume) {
+        if (!speculative) {
+          auto_autoConsumeOne(cupConsume);
+        }
+        // eslint-disable-next-line libram/verify-constants
+        handleEffect$3($effect`Runneth On Empty`); //100% meat drop
+        if (pass$3()) {
+          return result$3();
+        }
       }
     }
     if (auto_totalEffectWishesAvailable() > 0) {
