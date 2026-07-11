@@ -886,11 +886,10 @@ export function auto_canDrink(
 
 export function meetsMinAdvPerFillReq(it: Item): boolean {
   if (it.fullness + it.inebriety <= 0) return true;
+  const advs = expectedAdventuresFrom(it) / (it.fullness + it.inebriety);
 
-  return (
-    expectedAdventuresFrom(it) / (it.fullness + it.inebriety) >=
-    get("auto_consumeMinAdvPerFill", 0.0)
-  );
+  // Allow foods that are consumed despite no adv gain, eg, steel organs
+  return advs === 0 || advs >= get("auto_consumeMinAdvPerFill", 0.0);
 }
 
 export function auto_canEat(
