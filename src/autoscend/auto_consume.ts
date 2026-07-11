@@ -247,7 +247,11 @@ export function expectedAdventuresFrom(it: Item): number {
   return expected;
 }
 
-function canOde(toDrink: Item): boolean {
+function canOde(toDrink: Item, action?: ConsumeAction): boolean {
+  // If we've explicitly defined if this item gets ode, even if it's not a drink!
+  if (action && action.data && action.data.castOde !== undefined) {
+    return action.data.castOde;
+  }
   if (in_tcrs()) {
     return true;
   }
@@ -258,10 +262,6 @@ function canOde(toDrink: Item): boolean {
   ) {
     return false;
   }
-  if (toDrink === $item`tiny stillsuit`) {
-    return false;
-  }
-
   return true;
 }
 
@@ -327,11 +327,12 @@ export function autoCleanse(): boolean {
   return false;
 }
 
-export function autoDrink(howMany: number, toDrink: Item): boolean {
-  return autoDrink$1(howMany, toDrink, false);
-}
-
-function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
+export function autoDrink(
+  howMany: number,
+  toDrink: Item,
+  silent: boolean = false,
+  action?: ConsumeAction,
+): boolean {
   if (toBoolean(getProperty("auto_limitConsume"))) {
     return false;
   }
@@ -343,28 +344,25 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
   if (isSpeakeasy && !canDrinkSpeakeasyDrink(toDrink)) {
     return false;
   }
-  if (toDrink === $item`tiny stillsuit`) {
-    // record adv gain for more detailed reporting to user
-    const stillsuitAdvs: number = auto_expectedStillsuitAdvs();
-    visitUrl("inventory.php?action=distill&pwd");
-    visitUrl("choice.php?pwd&whichchoice=1476&option=1");
-    handleTracker$1(toDrink.toString(), `${stillsuitAdvs}Advs`, "auto_drunken");
-    return true;
-  }
+  if (action?.data?.consume === undefined) {
   if (itemAmount(toDrink) < howMany && !isSpeakeasy) {
     return false;
   }
   if (!auto_canDrink(toDrink)) {
     return false;
   }
+  }
 
-  if (canOde(toDrink) && itemAmount($item`hard rock`) > 0) {
+  const it: Item = equippedItem($slot`acc3`);
+
+  // These only take effect when ode is active
+  if (canOde(toDrink, action)) {
+    if (itemAmount($item`hard rock`) > 0) {
     //only want to hard rock if the booze is also Ode-able
     use(1, $item`hard rock`);
   }
 
   if (
-    canOde(toDrink) &&
     minAdvPerDrunk(toDrink) >= 5.0 &&
     $familiar`Cooler Yeti`.experience >= 400 &&
     ((auto_haveSeptEmberCenser() && myLevel() >= 15) ||
@@ -385,11 +383,7 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
 
   const expectedInebriety: number = toDrink.inebriety * howMany;
 
-  if (
-    canOde(toDrink) &&
-    possessEquipment($item`Wrist-Boy`) &&
-    myMeat() > 6500
-  ) {
+    if (possessEquipment($item`Wrist-Boy`) && myMeat() > 6500) {
     if (
       haveEffect($effect`Drunk and Avuncular`) < expectedInebriety &&
       itemAmount($item`Drunk Uncles holo-record`) === 0
@@ -399,7 +393,7 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
     buffMaintain$3($effect`Drunk and Avuncular`, 0, 1, expectedInebriety);
   }
 
-  if (canOde(toDrink) && auto_have_skill($skill`The Ode to Booze`)) {
+    if (auto_have_skill($skill`The Ode to Booze`)) {
     shrugAT($effect`Ode to Booze`);
     // get enough turns of ode
     while (
@@ -412,12 +406,12 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
       )
     ) {
       /*do nothing, the loop condition is doing the work*/
+      }
     }
   }
 
   equipStatgainIncreasersFor(toDrink);
 
-  const it: Item = equippedItem($slot`acc3`);
   if (
     it !== $item`mafia pinky ring` &&
     itemAmount($item`mafia pinky ring`) > 0 &&
@@ -431,7 +425,10 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
 
   let retval: boolean = false;
   while (howMany > 0) {
-    if (!isSpeakeasy) {
+    // If this item has a special consume action, call that instead
+    if (action?.data?.consume) {
+      retval = action.data.consume();
+    } else if (!isSpeakeasy) {
       if (silent) {
         retval = drinksilent(1, toDrink);
       } else {
@@ -441,7 +438,8 @@ function autoDrink$1(howMany: number, toDrink: Item, silent: boolean): boolean {
       retval = drinkSpeakeasyDrink(toDrink);
     }
 
-    if (retval) {
+    // If success and item is not doing it's own tracking
+    if (retval && action?.data?.hasOwnTracking !== true) {
       handleTracker(toDrink.toString(), "auto_drunken");
     }
     howMany = howMany - 1;
@@ -991,13 +989,13 @@ export function consumptionProgress(): number {
   }
 }
 
-const AUTO_ORGAN_STOMACH: number = 1;
-const AUTO_ORGAN_LIVER: number = 2;
+export const AUTO_ORGAN_STOMACH: number = 1;
+export const AUTO_ORGAN_LIVER: number = 2;
 
-const AUTO_OBTAIN_NULL: number = 100;
-const AUTO_OBTAIN_CRAFT: number = 101;
-const AUTO_OBTAIN_PULL: number = 102;
-const AUTO_OBTAIN_BUY: number = 103;
+export const AUTO_OBTAIN_NULL: number = 100;
+export const AUTO_OBTAIN_CRAFT: number = 101;
+export const AUTO_OBTAIN_PULL: number = 102;
+export const AUTO_OBTAIN_BUY: number = 103;
 
 function consumable_name(action: ConsumeAction): string {
   let name: string = "<name not found>";
@@ -1080,11 +1078,9 @@ function autoConsume(action: ConsumeAction): boolean {
   if (action.howtoget !== AUTO_OBTAIN_NULL) {
     abort(`ConsumeAction not prepped: ${to_debug_string(action)}`);
   }
-
-  if (
-    action.organ === AUTO_ORGAN_LIVER &&
-    action.it !== $item`tiny stillsuit`
-  ) {
+  // If not defined, then fall back to checking if this is a drink.
+  // Otherwise, use the defined 'castOde' value
+  if (action.data?.castOde ?? action.organ === AUTO_ORGAN_LIVER) {
     buffMaintain$3($effect`Ode to Booze`, 20, 1, action.size);
   }
   if (action.cafeid !== 0) {
@@ -1095,7 +1091,7 @@ function autoConsume(action: ConsumeAction): boolean {
     }
   } else if (action.it !== Item.none) {
     if (action.organ === AUTO_ORGAN_LIVER) {
-      return autoDrink(1, action.it);
+      return autoDrink(1, action.it, false, action);
     } else if (action.organ === AUTO_ORGAN_STOMACH) {
       return autoEat(1, action.it);
     } else {
@@ -1725,6 +1721,23 @@ function loadConsumables(
         adv,
         AUTO_ORGAN_LIVER,
         AUTO_OBTAIN_NULL,
+        {
+          castOde: false,
+          hasOwnTracking: true,
+          consume: () => {
+            // record adv gain for more detailed reporting to user
+            const stillsuitAdvs: number = auto_expectedStillsuitAdvs();
+            visitUrl("inventory.php?action=distill&pwd");
+            visitUrl("choice.php?pwd&whichchoice=1476&option=1");
+            handleTracker$1(
+              $item`tiny stillsuit`.toString(),
+              `${stillsuitAdvs}Advs`,
+              "auto_drunken",
+            );
+
+            return true;
+          },
+        },
       ),
     );
   }
@@ -2154,7 +2167,7 @@ export function auto_drinkNightcap(): void {
   if (!autoPrepConsume(target)) {
     abort(`Unexpectedly couldn't prep ${to_pretty_string(target)}`);
   }
-  autoDrink$1(1, target.it, true); // added a silent flag to autoDrink to avoid the overdrink confirmation popup
+  autoDrink(1, target.it, true, target); // added a silent flag to autoDrink to avoid the overdrink confirmation popup
 
   if (overdrunk()) {
     //another round? (green beers)
