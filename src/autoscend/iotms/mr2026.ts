@@ -714,9 +714,15 @@ function auto_bestCupOfThirteenAction(
   // Boost these effects up when we're comparing, we prioritize item drop if we don't need meat
   const effectScores: Map<Effect, number> = new Map([
     // eslint-disable-next-line libram/verify-constants
-    [$effect`Runneth Over`, 10],
+    [$effect`Runneth Over`, 100], // 50% item drop
     // eslint-disable-next-line libram/verify-constants
-    [$effect`Runneth On Empty`, myMeat() + 3000 > meatReserve() ? 1 : 20],
+    [$effect`Runneth On Empty`, myMeat() > meatReserve() + 3000 ? 5 : 200], // 100% meat drop
+    // eslint-disable-next-line libram/verify-constants
+    [$effect`Runneth a Tight Ship `, 1], // +5 fam exp
+    // eslint-disable-next-line libram/verify-constants
+    [$effect`Runneth With The Pack`, 3], // +5 fam weight
+    // eslint-disable-next-line libram/verify-constants
+    [$effect`Runneth Wild`, 0.1], // +100 init
   ]);
 
   // Cache prices
@@ -764,6 +770,11 @@ function auto_bestCupOfThirteenAction(
       // Prefer the ingredient that gives us the better effects
       if (effScore1 !== effScore2) {
         return effScore2 - effScore1;
+      }
+
+      if (a.statAmount !== b.statAmount) {
+        // Should add some weight for our lowest stat perhaps?
+        return (b.statAmount ?? 0) - (a.statAmount ?? 0);
       }
 
       // Otherwise prefer the lower mall price
