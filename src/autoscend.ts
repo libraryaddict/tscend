@@ -120,6 +120,7 @@ import {
   $skill,
   $slot,
   $stat,
+  sinceKolmafiaRevision,
 } from "libram";
 
 import {
@@ -2977,9 +2978,7 @@ function safe_preference_reset_wrapper(level: number): void {
 }
 
 export function main(...input: string[]): void {
-  if (getRevision() < 29094) {
-    throw `Requires KoLMafia 29094 or newer, please update your KoLMafia`;
-  }
+  sinceKolmafiaRevision(29097);
 
   backupSetting("printStackOnAbort", true.toString());
   // parse input
