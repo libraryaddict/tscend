@@ -120,6 +120,7 @@ import {
   $skill,
   $slot,
   $stat,
+  set,
   sinceKolmafiaRevision,
 } from "libram";
 
@@ -3030,5 +3031,9 @@ export function main(...input: string[]): void {
   ) {
     abort("User aborted script after failed migration.");
   }
-  safe_preference_reset_wrapper(3);
+  try {
+    safe_preference_reset_wrapper(3);
+  } finally {
+    set("auto_interrupt", false);
+  }
 }
