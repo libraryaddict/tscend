@@ -491,8 +491,6 @@ export function legendaryNoodlesChoiceHandler(): void {
   }
 }
 
-export type CupOfThirteenEffect = "meat drop" | "item drop";
-
 class CupOfThirteenData {
   constructor(
     public item: Item,
