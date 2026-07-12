@@ -1,0 +1,27 @@
+auto_getSteelOrgan:
+  type: boolean
+  description: Get Steel Organ in this ascension?
+auto_getBeehive:
+  type: boolean
+  description: Get Beehive in this ascension?
+auto_getStarKey:
+  type: boolean
+  description: Get Richard's Star Key in this ascension?
+auto_holeinthesky:
+  type: boolean
+  description: Open the Hole in the Sky in this ascension?
+auto_hippyInstead:
+  type: boolean
+  description: Fight on the side of the hippies instead of the Frat Warriors in this ascension?
+auto_ignoreFlyer:
+  type: boolean
+  description: Do not do the flyer quest in this ascension? recommended to set true if fighting for the hippies.
+auto_wandOfNagamar:
+  type: boolean
+  description: Do we need to get a Wand of Nagamar in this ascension?
+auto_dontPhylumBanish:
+  type: boolean
+  description: If false will banish enemy phyla. Banishing should save some turns, but can interfere with the routing, and may mess up later banishes / tracks.
+auto_runDayCount:
+  type: integer
+  description: How many days do you think your run will take? Defaults to 2.

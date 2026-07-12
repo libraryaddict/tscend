@@ -1,0 +1,81 @@
+auto_chasmBusted:
+  type: boolean
+  description: Has the orc chasm bridge been 'trolled yet? Ed only.
+auto_day1_dna:
+  type: string
+  description: "'finished' if we have hybridized ourselves at the start of Ascension."
+auto_day_init:
+  type: string
+  description: Current daycount if we finished initializing today.
+auto_getBoningKnife:
+  type: boolean
+  description: Do we want Boning Knife this ascension?
+auto_gnasirUnlocked:
+  type: boolean
+  description: Have we found gnasir in the Desert?
+auto_grimstoneFancyOilPainting:
+  type: boolean
+  description: do grimstone for fancy oil painting this ascension?
+auto_grimstoneOrnateDowsingRod:
+  type: boolean
+  description: do grimstone for ornate dowsing rod this ascension?
+auto_hedge:
+  type: string
+  description: "'fast' or 'slow', determining how quickly we want to finish the Hedge Maze."
+auto_powerLevelLastLevel:
+  type: string
+  description: Last Level that we had nothing to do.
+auto_powerLevelAdvCount:
+  type: string
+  description: Adventures count of times we had nothing to do.
+auto_powerLevelLastAttempted:
+  type: string
+  description: Last adventure that we did nothing on.
+auto_skipNuns:
+  type: boolean
+  description: Skip nuns quest this ascension?
+auto_100familiar:
+  type: string
+  description: If a familiar type, do not allow familiar switching (for 100% runs). Otherwise, can be none or blank.
+auto_beatenUpCount:
+  type: integer
+  description: How many times were we beaten up this ascension. Affects ML and whether we try to heal or abort when we get beaten up.
+auto_doneInitialize:
+  type: integer
+  description: Indicates last ascension that we initialized with the script.
+auto_noSnakeOil:
+  type: integer
+  description: Last day that we could no longer Extract Oil.
+auto_renenutetBought:
+  type: integer
+  description: Number of Talisman of Renenutet's bought on last tracking.
+auto_batoomerangDay:
+  type: integer
+  description: Part of Replica Bat-oomerang Tracker
+auto_batoomerangUse:
+  type: integer
+  description: Part of Replica Bat-oomerang Tracker
+_auto_lastABooConsider:
+  type: integer
+  description: Last turn that we considered doing A-Boo Peak
+_auto_lastABooCycleFix:
+  type: integer
+  description: Tracker to prevent us infinitely looping on A-Boo Peak
+_auto_witchessBattles:
+  type: integer
+  description: Tracker for Witchess Combats (yes, this is actually needed).
+auto_needLegs:
+  type: boolean
+  description: In Ed, do we require getting legs before trying to Ka farm?
+auto_haveoven:
+  type: boolean
+  description: Track oven status. If you have an oven this should be true. But we can't always check the campground.
+auto_doGalaktik:
+  type: boolean
+  description: Do Galaktik optional sidequest this ascension?
+auto_L8_ninjaAssassinFail:
+  type: boolean
+  description: True means we think we cannot defeat ninja snowmen assassins and are thus avoiding them this ascension. We will not copy them nor adventure in the lair of the ninja snowmen
+auto_L8_extremeInstead:
+  type: boolean
+  description: True means we want to adventure in the extreme slope path instead of the ninja snowmen lair this ascension.

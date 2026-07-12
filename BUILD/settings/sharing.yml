@@ -1,0 +1,3 @@
+auto_disableExcavator:
+  type: boolean
+  description: When set to true will disable automatically sending spading data via the Extractor script

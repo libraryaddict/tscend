@@ -1,0 +1,15 @@
+auto_interrupt:
+  type: boolean
+  description: Script will abort after the next action is finished (instead of mid turn which can cause problems). Will be reset to false after every time it is used.
+auto_debugging:
+  type: boolean
+  description: Every time you run the script it will perform one adventure and then stop by setting auto_interrupt = true
+auto_paranoia:
+  type: integer
+  description: If quest tracking is broken enable this. It determines how often should we refresh quests. measured in adventures. -1 is never. 1 = every single adventure
+auto_inv_paranoia:
+  type: boolean
+  description: If item drop tracking is broken enable this. It will refresh inventory every loop.
+auto_newbieOverride:
+  type: boolean
+  description: If true will override newbie block once then set itself to false. Newbie block is enabled used when you fight a crate (please report crate fighting) or when you spent too many adventures in a zone
