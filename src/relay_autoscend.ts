@@ -59,6 +59,9 @@ function handleSetting(type_1: string, x: number): void {
     case "any":
       color = "#00ffff";
       break;
+    case "iotm":
+      color = "#00b7c4";
+      break;
     case "pre":
       color = "#ffff00";
       break;
@@ -112,6 +115,9 @@ function write_settings_key(): void {
   writeln("<table><tr><th>Settings Color Codings</th></tr>");
   writeln(
     "<tr bgcolor=#00ffff><td>Anytime: This setting can be changed at any time and takes effect immediately.</td></tr>",
+  );
+  writeln(
+    "<tr bgcolor=#00b7c4><td>Iotm: Settings for items bound to accounts, sorted by year of release descending.</td></tr>",
   );
   writeln(
     "<tr bgcolor=#ffff00><td>Pre: Next time we initialize settings for autoscend this will be used to determine what we should set some Post type settings to.</td></tr>",
@@ -366,20 +372,10 @@ function loadMain(): void {
 
   const get = (key: string) => (s.has(key) ? s.get(key).keys() : []);
 
-  for (const x of get("any")) {
-    handleSetting("any", x);
-  }
-  for (const x of get("pre")) {
-    handleSetting("pre", x);
-  }
-  for (const x of get("post")) {
-    handleSetting("post", x);
-  }
-  for (const x of get("action")) {
-    handleSetting("action", x);
-  }
-  for (const x of get("sharing")) {
-    handleSetting("sharing", x);
+  for (const name of ["any", "iotm", "pre", "post", "action", "sharing"]) {
+    for (const x of get(name)) {
+      handleSetting(name, x);
+    }
   }
   writeln(
     "<tr><td align=center colspan='3'><input type='submit' name='' value='Save Changes'/></td></tr></table></form>",
@@ -518,21 +514,10 @@ function loadExtra() {
   );
   const get = (key: string) => (s.has(key) ? s.get(key).keys() : []);
 
-  for (const x of get("any")) {
-    handleSetting("any", x);
-  }
-
-  for (const x of get("pre")) {
-    handleSetting("pre", x);
-  }
-  for (const x of get("post")) {
-    handleSetting("post", x);
-  }
-  for (const x of get("action")) {
-    handleSetting("action", x);
-  }
-  for (const x of get("sharing")) {
-    handleSetting("sharing", x);
+  for (const name of ["any", "iotm", "pre", "post", "action", "sharing"]) {
+    for (const x of get(name)) {
+      handleSetting(name, x);
+    }
   }
 
   writeln(

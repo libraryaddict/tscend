@@ -1,9 +1,3 @@
-auto_skipGuzzlrCocktailSet:
-  type: boolean
-  description: If true will not accept and abandon a Platinum Guzzlr quest for the cocktail set.
-auto_mushroomGardenGrowth:
-  type: integer
-  description: Picks the mushroom when growth reaches the given value (or higher). Defaults to 1 to pick every day, capped at 11.
 auto_delayTimer:
   type: integer
   description: Sets the delay before each action, default is 1 second(s). It is not recommended to reduce this below 1.
@@ -16,21 +10,9 @@ auto_stayInRun:
 auto_confidence:
   type: boolean
   description: If true, we'll get the confidence buff instead of breaking the mirror. Good if your combat suite isn't very fleshed out yet, since it makes the Naughty Sorceress dramatically easier.
-auto_teaChoice:
-  type: string
-  description: When using the tea tree, grab this 'tea'. Must use a string that acceptable to Mafia's 'teatree' command (Use ; to separate by daycount, leave blank to skip a day).
-auto_floundryChoice:
-  type: string
-  description: Force floundry usage. Must use the item name (Use ; to separate by daycount, leave blank to skip a day).
-auto_extrudeChoice:
-  type: string
-  description: ": separated by day, ; separated by order. Use food, booze. Defaults to booze for any empty fields."
 auto_blacklistFamiliar:
   type: string
   description: A semi-colon separated string of familiar names that we do not want to use. They still may get used but this will minimize their usage.
-auto_ashtonLimit:
-  type: integer
-  description: If set, makes sure you save X of an item before feeding it to the Asdon Martin (ignores Soda Bread).
 auto_limitConsume:
   type: boolean
   description: When true will not eat or drink anything automatically.
@@ -88,18 +70,7 @@ auto_equipment_override_acc:
 auto_equipment_override_familiar:
   type: string
   description: A semicolon separated list of overrides for the familiar equipment slot.
-auto_hideAdultery:
-  type: boolean
-  description: When true, automatically deletes Zatara Consults from Kmails during end of day cleanup.
-auto_optimizeConsultsInRun:
-  type: boolean
-  description: When true, optimize our consults in run to get Ascension relevant rewards.
-auto_consultClan:
-  type: string
-  description: The clan name of the player you want to do Zatara consults with.
-auto_consultChoice:
-  type: string
-  description: The name of the player you want to do Zatara consults with.
+
 auto_considerGalaktik:
   type: boolean
   description: When true autoscend may automatically enable galaktik quest for this run if it decides it is needed.
@@ -112,9 +83,6 @@ auto_skipUnlockGuild:
 auto_save_adv_override:
   type: integer
   description: Set an override to amount of adv to save at end of day. Set to -1 to handle this automatically.
-auto_spoonsign:
-  type: string
-  description: What sign to change to with the hewn moon-rune spoon after finishing any business in the current sign. If blank or invalid, we won't switch automatically. Can be set to any of the 9 main sign names, or knoll/canadia/gnomad to automatically select the appropriate sign within that zone based on your mainstat. Also some shorthands are allowed in case you forgot which moonsign is which, such as famweight/clover/food/booze. You will be prompted to confirm that you actually do want to change signs automatically once per ascension (although it will automatically assume that you do after 15 seconds of inactivity), so forgetting to change the value in advance should not be a concern.
 auto_MLSafetyLimit:
   type: integer
   description: "If set this will be the (approximate) cap for +ML. WARNING: Certain conditions may require the script to exceed this by a small margin. For best results set this 10 below the maximum ML you can handle. Setting to -1 will cause the lowest possible ML to be equipped, including going negative if possible - this can cause non-optimal gear to be equipped."

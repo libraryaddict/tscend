@@ -80,7 +80,7 @@ function assembleDataPlugin() {
             let num = 0;
 
             for (const [property, value] of Object.entries(data)) {
-              const line = `${property}\t${value.type}\t${value.description}`;
+              const line = `${property}\t${value.type}\t${value.description}${value.tags ? `\t${Array.isArray(value.tags) ? value.tags.join(",") : value.tags}` : ""}`;
 
               if (filename === entry.name) {
                 output += `${line}\n`;
