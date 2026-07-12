@@ -32,7 +32,7 @@ import { ctor, fileAsMap } from "./autoscend/utils/kolmafiaUtils";
 
 // Thanks to relay_cheeseascend.ash for a starting point here.
 
-class setting {
+class Setting {
   constructor(
     public name: string = "",
     public type: string = "",
@@ -40,11 +40,49 @@ class setting {
   ) {}
 }
 
-let s: Map<string, Map<number, setting>>;
-
-function loadRelaySettings(file: string) {
-  s = fileAsMap(file, [String, Number, ctor(setting)]);
+interface SettingCategory {
+  name: string;
+  description: string;
+  color: string;
 }
+
+const settingCategories: SettingCategory[] = [
+  {
+    name: "Anytime",
+    description:
+      "This setting can be changed at any time and takes effect immediately.",
+    color: "#00ffff",
+  },
+  {
+    name: "Iotm",
+    description:
+      "Settings for items bound to accounts, sorted by year of release descending.",
+    color: "#00b7c4",
+  },
+  {
+    name: "Pre",
+    description:
+      "Next time we initialize settings for autoscend this will be used to determine what we should set some Post type settings to.",
+    color: "#ffff00",
+  },
+  {
+    name: "Post",
+    description:
+      "Settings for current ascension. Automatically reconfigured each ascension when we initialize setting for that ascension. After settings have been initialized you may change this. Under some circumstances they will be automatically changed mid ascension.",
+    color: "#00ff00",
+  },
+  {
+    name: "Action",
+    description:
+      "This causes something to immediately (or when reasonable) happen.",
+    color: "#af6fbf",
+  },
+  {
+    name: "Sharing",
+    description: "Allows sharing game data.",
+    color: "#ff6644",
+  },
+];
 
 function write_styles(): void {
   // This function provided by Zen00.
@@ -53,37 +91,7 @@ function write_styles(): void {
   );
 }
 
-function handleSetting(type_1: string, x: number): void {
-  let color: string;
-  switch (type_1) {
-    case "any":
-      color = "#00ffff";
-      break;
-    case "iotm":
-      color = "#00b7c4";
-      break;
-    case "pre":
-      color = "#ffff00";
-      break;
-    case "post":
-      color = "#00ff00";
-      break;
-    case "action":
-      color = "#af6fbf";
-      break;
-    case "sharing":
-      color = "#ff6644";
-      break;
-    default:
-      color = "#ffffff";
-      break;
-  }
-
-  const set: setting =
-    (s.get(type_1) ?? s.set(type_1, new Map()).get(type_1)).get(x) ??
-    (s.get(type_1) ?? s.set(type_1, new Map()).get(type_1))
-      .set(x, new setting())
-      .get(x);
+function handleSetting(category: SettingCategory, set: Setting): void {
   const name = entityEncode(set.name);
   const encodedValue: string = entityEncode(getProperty(name));
 
@@ -91,13 +99,13 @@ function handleSetting(type_1: string, x: number): void {
     case "boolean": {
       const checked: string = get(name, false) ? ` checked` : ``;
       write(
-        `<tr bgcolor=${color}><td align=center>${name}</td><td align=center><input type='checkbox' name='${name}' value='true'${checked}>`,
+        `<tr bgcolor=${category.color}><td align=center>${name}</td><td align=center><input type='checkbox' name='${name}' value='true'${checked}>`,
       );
       writeln(`</td><td>${entityEncode(set.description)}</td></tr>`);
       break;
     }
     default:
-      write(`<tr bgcolor=${color}><td align=center>${name}</td>`);
+      write(`<tr bgcolor=${category.color}><td align=center>${name}</td>`);
       write(
         `<td align='center'><input type='text' name='${name}' value="${encodedValue}" /></td>`,
       );
@@ -113,24 +121,11 @@ function handleSetting(type_1: string, x: number): void {
 function write_settings_key(): void {
   //display the key to the settings table.
   writeln("<table><tr><th>Settings Color Codings</th></tr>");
-  writeln(
-    "<tr bgcolor=#00ffff><td>Anytime: This setting can be changed at any time and takes effect immediately.</td></tr>",
-  );
-  writeln(
-    "<tr bgcolor=#00b7c4><td>Iotm: Settings for items bound to accounts, sorted by year of release descending.</td></tr>",
-  );
-  writeln(
-    "<tr bgcolor=#ffff00><td>Pre: Next time we initialize settings for autoscend this will be used to determine what we should set some Post type settings to.</td></tr>",
-  );
-  writeln(
-    "<tr bgcolor=#00ff00><td>Post: settings for current ascension. Automatically reconfigured each ascension when we initialize setting for that ascension. After settings have been initialized you may change this. Under some circumstances they will be automatically changed mid ascension</td></tr>",
-  );
-  writeln(
-    "<tr bgcolor=#af6fbf><td>Action: This causes something to immediately (or when reasonable) happen.</td></tr>",
-  );
-  writeln(
-    "<tr bgcolor=#ff6644><td>Sharing: Allows sharing game data.</td></tr>",
-  );
+  for (const category of settingCategories) {
+    writeln(
+      `<tr bgcolor=${category.color}><td>${category.name}: ${category.description}</td></tr>`,
+    );
+  }
   writeln("</table>");
 }
 
@@ -185,19 +180,12 @@ function generateTrackingData(
       }
       writeln(`<b>Day ${day}:</b>`);
     }
-    let toWrite: string = "(";
-    for (
-      let i = 1,
-        _last_6 = current.size - 1,
-        _step_6 = 1,
-        _up_6 = i <= _last_6,
-        _inc_6 = _up_6 ? Math.abs(_step_6) : -Math.abs(_step_6);
-      _up_6 ? i <= _last_6 : i >= _last_6;
-      i += _inc_6
-    ) {
-      toWrite = toWrite + (current.get(i) ?? current.set(i, "").get(i));
-      if (i !== current.size - 1) {
-        toWrite = `${toWrite}:`;
+    let toWrite = "(";
+
+    for (let i = 1; i < current.size; i++) {
+      toWrite += current.get(i) ?? current.set(i, "").get(i);
+      if (i < current.size - 1) {
+        toWrite += ":";
       }
     }
     if (stacked) {
@@ -319,6 +307,20 @@ function write_locations_visited(): void {
   writeln("</table>");
 }
 
+function writeSettings(filename: string) {
+  const fromMap = fileAsMap(filename, [String, Number, ctor(Setting)]);
+
+  for (const category of settingCategories) {
+    const settings = fromMap.get(category.name.toLowerCase());
+
+    if (!settings?.size) continue;
+
+    for (const setting of settings.values()) {
+      handleSetting(category, setting);
+    }
+  }
+}
+
 export function main(): void {
   if (formFields()["extraSettings"] === undefined) {
     loadMain();
@@ -360,8 +362,6 @@ function loadMain(): void {
   writeln(
     `<br><a href="#" onclick="document.body.insertAdjacentHTML('beforeend','<form id=f method=post action=relay_autoscend.js?relay=true><input name=extraSettings value=1></form>');f.submit();return false;">For extra settings click here</a><br><br>`,
   );
-  //generate settings table
-  loadRelaySettings("autoscend_settings.txt");
 
   applySettingChanges();
 
@@ -370,13 +370,8 @@ function loadMain(): void {
     "<table><tr><th width=20%>Setting</th><th width=20%>Value</th><th width=60%>Description</th></tr>",
   );
 
-  const get = (key: string) => (s.has(key) ? s.get(key).keys() : []);
+  writeSettings("autoscend_settings.txt");
 
-  for (const name of ["any", "iotm", "pre", "post", "action", "sharing"]) {
-    for (const x of get(name)) {
-      handleSetting(name, x);
-    }
-  }
   writeln(
     "<tr><td align=center colspan='3'><input type='submit' name='' value='Save Changes'/></td></tr></table></form>",
   );
@@ -499,8 +494,6 @@ function loadExtra() {
   writeln("<html><head><title>autoscend extra settings</title>");
   writeln("</head><body><h1>autoscend extra settings</h1>");
 
-  loadRelaySettings("autoscend_settings_extra.txt");
-
   writeln(
     '<br><a href="relay_autoscend.js?relay=true">Return to main autoscend page</a><br><br>',
   );
@@ -512,13 +505,8 @@ function loadExtra() {
   writeln(
     "<table><tr><th width=20%>Setting</th><th width=20%>Value</th><th width=60%>Description</th></tr>",
   );
-  const get = (key: string) => (s.has(key) ? s.get(key).keys() : []);
 
-  for (const name of ["any", "iotm", "pre", "post", "action", "sharing"]) {
-    for (const x of get(name)) {
-      handleSetting(name, x);
-    }
-  }
+  writeSettings("autoscend_settings_extra.txt");
 
   writeln(
     "<tr><td align=center colspan='3'><input type='submit' name='' value='Save Changes'/></td></tr></table></form>",
