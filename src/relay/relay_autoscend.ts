@@ -22,13 +22,13 @@ import {
 } from "kolmafia";
 import { $locations, get } from "libram";
 
-import { initializeSettings } from "./autoscend";
-import { auto_settings } from "./autoscend/auto_settings";
-import { autoscend_current_version } from "./autoscend/autoscend_migration";
-import { auto_hasPowerfulGlove } from "./autoscend/iotms/mr2020";
-import { isActuallyEd } from "./autoscend/paths/actually_ed_the_undying";
-import { in_ocrs } from "./autoscend/paths/one_crazy_random_summer";
-import { ctor, fileAsMap } from "./autoscend/utils/kolmafiaUtils";
+import { initializeSettings } from "../kolmafia/autoscend";
+import { auto_settings } from "../kolmafia/autoscend/auto_settings";
+import { autoscend_current_version } from "../kolmafia/autoscend/autoscend_migration";
+import { auto_hasPowerfulGlove } from "../kolmafia/autoscend/iotms/mr2020";
+import { isActuallyEd } from "../kolmafia/autoscend/paths/actually_ed_the_undying";
+import { in_ocrs } from "../kolmafia/autoscend/paths/one_crazy_random_summer";
+import { ctor, fileAsMap } from "../kolmafia/autoscend/utils/kolmafiaUtils";
 
 // Thanks to relay_cheeseascend.ash for a starting point here.
 

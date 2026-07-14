@@ -102,11 +102,13 @@ function assembleDataPlugin() {
 
 await esbuild.build({
   entryPoints: {
-    "relay/relay_autoscend": "src/relay_autoscend.ts",
-    "scripts/autoscend": "src/index.ts",
-    "scripts/autoscend/auto_choice_adv": "src/autoscend/auto_choice_adv.ts",
-    "scripts/autoscend/auto_post_adv": "src/autoscend/auto_post_adv.ts",
-    "scripts/autoscend/auto_pre_adv": "src/autoscend/auto_pre_adv.ts",
+    "relay/relay_autoscend": "src/relay/relay_autoscend.ts",
+    "scripts/autoscend": "src/kolmafia/index.ts",
+    "scripts/autoscend/auto_choice_adv":
+      "src/kolmafia/autoscend/auto_choice_adv.ts",
+    "scripts/autoscend/auto_post_adv":
+      "src/kolmafia/autoscend/auto_post_adv.ts",
+    "scripts/autoscend/auto_pre_adv": "src/kolmafia/autoscend/auto_pre_adv.ts",
   },
   bundle: true,
   outdir: "RELEASE/",
