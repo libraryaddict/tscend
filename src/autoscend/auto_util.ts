@@ -5066,6 +5066,7 @@ function auto_interruptZoneCheck(): boolean {
 
 export function auto_interruptCheck(debug: boolean): void {
   if (toBoolean(getProperty("auto_interrupt"))) {
+    setProperty("auto_interrupt", false.toString());
     restoreAllSettings();
     meatReserveMessage();
     abort("auto_interrupt detected and aborting, auto_interrupt disabled.");
