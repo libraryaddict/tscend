@@ -2,6 +2,7 @@ import {
   availableAmount,
   availableChoiceOptions,
   canDrink,
+  canEat,
   canInteract,
   cliExecute,
   cupOf13sTier,
@@ -9,16 +10,18 @@ import {
   entityDecode,
   equippedItem,
   extractItems,
+  fullnessLimit,
   getProperty,
+  haveCampground,
   heartstoneStringLength,
   historicalPrice,
-  inebrietyLimit,
   Item,
   itemAmount,
   knollAvailable,
   Location,
   Monster,
   myAdventures,
+  myFullness,
   myHash,
   myInebriety,
   myLocation,
@@ -46,7 +49,9 @@ import {
   spleen_left,
   stomach_left,
 } from "../auto_consume";
+import { haveFreeRestAvailable } from "../auto_restore";
 import {
+  auto_get_campground,
   auto_is_valid,
   auto_log_error,
   auto_log_warning$1,
@@ -64,6 +69,7 @@ import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_plumber } from "../paths/path_of_the_plumber";
 import { in_small } from "../paths/small";
 import { in_tcrs } from "../paths/two_crazy_random_summer";
+import { is_werewolf } from "../paths/wereprofessor";
 
 // This is meant for items that have a date of 2026
 
@@ -149,6 +155,28 @@ export function auto_heartstoneLuckRemaining(): number {
     return 0;
   }
   return 1;
+}
+
+export function auto_haveElfToilet(): boolean {
+  return (
+    auto_is_valid($item`Archaeologist's Spade`) &&
+    !is_werewolf() && // Werewolf doesn't have campground?
+    !in_small() &&
+    canEat() &&
+    fullnessLimit() > 1 &&
+    haveCampground() &&
+    // Coerce to a boolean
+    !!auto_get_campground().get($item`Pork Elf toilet`)
+  );
+}
+
+export function auto_elfToiletReady(): boolean {
+  return (
+    auto_haveElfToilet() &&
+    myFullness() > 1 &&
+    !get("_porkElfToiletUsed") &&
+    (haveFreeRestAvailable() || myAdventures() > 0)
+  );
 }
 
 export function auto_haveArchaeologistSpade(): boolean {
@@ -946,9 +974,14 @@ export function auto_cupOfThirteenBestConsumeAction():
   // If the adv gain is less than what we could possibly gain, we aim for 4+ adv ingreds, so we lower the desirability
   if (
     action.adventures < Math.min(auto_cupOfThirteenAdvRemaining(), 12) &&
-    myInebriety() + 3 < inebrietyLimit()
+    inebriety_left() >= 4
   ) {
-    action.desirability /= 2;
+    // If we have at least 7 inebriety left, we're probably not going to run out of room on our next drink, so lower the desirability further to avoid drinking at 9 when we could go higher.
+    if (inebriety_left() > 6) {
+      action.desirability /= 4;
+    } else {
+      action.desirability /= 2;
+    }
   }
 
   return action;

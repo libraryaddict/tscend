@@ -65,6 +65,7 @@ import {
   $stat,
 } from "libram";
 
+import { auto_advToReserve,LX_doVacation } from "../../autoscend";
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv$1, autoAdv$2, autoAdvBypass$6 } from "../auto_adventure";
 import {
@@ -152,7 +153,6 @@ import {
   towerKeyCount,
   towerKeyCount$1,
 } from "./level_13";
-import { LX_doVacation, auto_advToReserve } from "../../autoscend";
 
 // This file should contain functions for adventuring which are not related to any of the council quests nor any "optional" quests.
 

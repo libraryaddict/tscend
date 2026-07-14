@@ -113,7 +113,7 @@ import {
   auto_freeCombatsRemaining,
   isAboutToPowerlevel,
 } from "./auto_powerlevel";
-import { acquireMP } from "./auto_restore";
+import { acquireMP, doRest } from "./auto_restore";
 import {
   almostRollover,
   auto_freeCrafts,
@@ -160,6 +160,7 @@ import {
 } from "./iotms/mr2024";
 import {
   auto_cupOfThirteenBestConsumeAction,
+  auto_elfToiletReady,
   auto_havePastaWand,
   auto_willEatLegendaryNoodles,
   legendaryNoodleDishes,
@@ -203,7 +204,15 @@ export function spleen_left(): number {
 }
 
 export function stomach_left(): number {
-  return fullnessLimit() - myFullness();
+  let stomachLeft = fullnessLimit() - myFullness();
+
+  // We increase the stomach left if the elf toilet is ready
+  // This allows us to save the rest until it's needed
+  if (auto_elfToiletReady()) {
+    stomachLeft++;
+  }
+
+  return stomachLeft;
 }
 
 export function fullness_left(): number {
@@ -675,6 +684,22 @@ function autoEat$1(howMany: number, toEat: Item, silent: boolean): boolean {
     }
     if (haveEffect($effect`Ready to Eat`) > 0) {
       wasReadyToEat = true;
+    }
+    // We don't check via 'my_fullness' as that's been overridden
+    // Check if we need to lose a fullness
+    if (
+      toEat.fullness > fullnessLimit() - myFullness() &&
+      auto_elfToiletReady()
+    ) {
+      // We should be automatically using campground to rest
+      doRest();
+
+      // If we still would overeat, instead abort as this was not antipicated
+      if (toEat.fullness > fullnessLimit() - myFullness()) {
+        abort(
+          `Expected to have lost a fullness when using elf toilet, but we still cannot eat ${toEat}`,
+        );
+      }
     }
     if (silent) {
       retval = eatsilent(1, toEat);

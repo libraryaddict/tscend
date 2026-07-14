@@ -73,6 +73,7 @@ import {
   $skill,
   $slot,
   $stat,
+  get,
 } from "libram";
 
 import { auto_mall_price } from "./auto_acquire";
@@ -125,6 +126,7 @@ import {
   auto_haveAprilShowerShield,
   auto_haveCrimboSkeleton,
 } from "./iotms/mr2025";
+import { auto_elfToiletReady } from "./iotms/mr2026";
 import { edAcquireHP, isActuallyEd } from "./paths/actually_ed_the_undying";
 import { in_amw } from "./paths/adventurer_meats_world";
 import { borisAcquireHP, is_boris } from "./paths/avatar_of_boris";
@@ -2358,7 +2360,15 @@ export function doRest(): number {
   ) {
     useFamiliar($familiar`Skeleton of Crimbo Past`);
   }
-  if (chateaumantegna_available()) {
+  // Elf toilet requires campground!
+
+  if (auto_elfToiletReady()) {
+    cliExecute("campground rest campground");
+
+    if (!get("_porkElfToiletUsed") || auto_elfToiletReady()) {
+      abort(`Expected elf toilet to have been used, but was not.`);
+    }
+  } else if (chateaumantegna_available()) {
     cliExecute("outfit save Backup");
     chateaumantegna_nightstandSet();
 
@@ -2429,6 +2439,7 @@ export function doRest(): number {
     cliExecute("rest");
     setProperty("restUsingChateau", true.toString());
   }
+
   return toInt(getProperty("timesRested"));
 }
 
