@@ -53,7 +53,11 @@ import {
   providePlusNonCombat$1,
   providePlusNonCombat$3,
 } from "./auto_providers";
-import { doFreeRest, haveFreeRestAvailable } from "./auto_restore";
+import {
+  doFreeRest,
+  freeRestsRemaining,
+  haveFreeRestAvailable,
+} from "./auto_restore";
 import {
   auto_combatModCap,
   auto_have_skill,
@@ -96,6 +100,7 @@ import {
   auto_haveBurningLeaves,
   auto_remainingBurningLeavesFights,
 } from "./iotms/mr2023";
+import { auto_haveElfToilet } from "./iotms/mr2026";
 import { in_avantGuard } from "./paths/avant_guard";
 import { inAftercore } from "./paths/casual";
 import { in_koe } from "./paths/kingdom_of_exploathing";
@@ -192,10 +197,11 @@ export function LX_attemptPowerLevel(): boolean {
 
   if (
     chateaumantegna_available() &&
-    haveFreeRestAvailable() &&
+    // If we have elf toilet, save a rest for it
+    (!auto_haveElfToilet() || freeRestsRemaining() > 1) &&
     !in_theSource()
   ) {
-    doFreeRest();
+    doFreeRest(false);
     cliExecute("scripts/autoscend/auto_post_adv.ash");
     loopHandlerDelayAll();
     return true;

@@ -331,6 +331,10 @@ import {
   auto_useLeprecondoDrops,
   auto_waveTheZone,
 } from "./autoscend/iotms/mr2025";
+import {
+  auto_elfToiletReady,
+  auto_useElfToilet,
+} from "./autoscend/iotms/mr2026";
 import { auto_useWardrobe } from "./autoscend/iotms/ttt";
 import {
   ed_initializeDay,
@@ -2755,6 +2759,9 @@ function doTasks(): boolean {
   }
   if (auto_smallCampgroundGear()) {
     return true;
+  }
+  if (auto_elfToiletReady(false)) {
+    auto_useElfToilet();
   }
   auto_lostStomach(false);
   autoCleanse(); //running turbo only

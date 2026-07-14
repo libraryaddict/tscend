@@ -575,15 +575,7 @@ export function autoChew(howMany: number, toChew: Item): boolean {
 export function autoEat(
   howMany: number,
   toEat: Item,
-  action?: ConsumeAction,
-): boolean {
-  return autoEat$1(howMany, toEat, true, action);
-}
-
-function autoEat$1(
-  howMany: number,
-  toEat: Item,
-  silent: boolean,
+  silent: boolean = true,
   action?: ConsumeAction,
 ): boolean {
   if (toBoolean(getProperty("auto_limitConsume"))) {
@@ -1110,7 +1102,7 @@ function autoConsume(action: ConsumeAction): boolean {
     if (action.organ === AUTO_ORGAN_LIVER) {
       return autoDrink(1, action.it, false, action);
     } else if (action.organ === AUTO_ORGAN_STOMACH) {
-      return autoEat(1, action.it, action);
+      return autoEat(1, action.it, true, action);
     } else {
       abort(`autoConsume: Unrecognized organ ${action.organ}`);
     }

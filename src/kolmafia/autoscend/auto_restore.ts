@@ -73,7 +73,6 @@ import {
   $skill,
   $slot,
   $stat,
-  get,
 } from "libram";
 
 import { auto_mall_price } from "./auto_acquire";
@@ -126,7 +125,7 @@ import {
   auto_haveAprilShowerShield,
   auto_haveCrimboSkeleton,
 } from "./iotms/mr2025";
-import { auto_elfToiletReady } from "./iotms/mr2026";
+import { auto_elfToiletReady, auto_useElfToilet } from "./iotms/mr2026";
 import { edAcquireHP, isActuallyEd } from "./paths/actually_ed_the_undying";
 import { in_amw } from "./paths/adventurer_meats_world";
 import { borisAcquireHP, is_boris } from "./paths/avatar_of_boris";
@@ -2353,21 +2352,20 @@ function acquireHP$3(
  *
  * returns the number of times rested today (caller will have to work out if it rested or not)
  */
-export function doRest(): number {
+export function doRest(useCampground?: boolean): number {
   if (
     auto_haveCrimboSkeleton() &&
     toInt(getProperty("_knuckleboneRests")) < 5
   ) {
     useFamiliar($familiar`Skeleton of Crimbo Past`);
-  }
-  // Elf toilet requires campground!
-
-  if (auto_elfToiletReady()) {
-    cliExecute("campground rest campground");
-
-    if (!get("_porkElfToiletUsed") || auto_elfToiletReady()) {
-      abort(`Expected elf toilet to have been used, but was not.`);
+    // We may have lost max hp/mp, so we burn the MP off to let this rest work.
+    if (myMp() >= myMaxmp() && myHp() >= myMaxhp()) {
+      auto_burnMP(1);
     }
+  }
+  if (auto_elfToiletReady(false) && useCampground !== false) {
+    // Elf toilet requires campground, takes priority while it's ready.
+    auto_useElfToilet();
   } else if (chateaumantegna_available()) {
     cliExecute("outfit save Backup");
     chateaumantegna_nightstandSet();
@@ -2451,7 +2449,7 @@ export function haveFreeRestAvailable(): boolean {
   return toInt(getProperty("timesRested")) < totalFreeRests();
 }
 
-function freeRestsRemaining(): number {
+export function freeRestsRemaining(): number {
   // save free rests to charge cincho
   if (auto_haveCincho() && auto_nextRestOverCinch()) {
     return 0;
@@ -2481,36 +2479,42 @@ export function haveAnyIotmAlternativeRestSiteAvailable(): boolean {
   return chateaumantegna_available() || auto_campawayAvailable();
 }
 /*
- * Try to use a free rest.
+ * Try to use a free rest. If we specifically don't want to use the campground (and it's not available), then set the parameter.
  *
  * returns true if a rest was used false if it wasnt (for any reason)
  */
-export function doFreeRest(): boolean {
+export function doFreeRest(useCampground?: boolean): boolean {
   if (haveFreeRestAvailable()) {
+    if (useCampground === undefined && auto_elfToiletReady()) {
+      useCampground = true;
+    }
     // burn MP if possible prior to resting
     const restorableMp: number = myMaxmp() - myMp();
-    let mpToBurn: number;
-    if (chateaumantegna_available() || auto_campawayAvailable()) {
+    let burnsMp: number;
+    if (
+      useCampground !== true &&
+      (chateaumantegna_available() || auto_campawayAvailable())
+    ) {
       // will restore at least 100 MP
-      mpToBurn = 100 - restorableMp;
+      burnsMp = 100;
     } else if (
       getDwelling() === $item`Frobozz Real-Estate Company Instant House (TM)`
     ) {
-      mpToBurn = 40 - restorableMp;
+      burnsMp = 40;
     } else if (getDwelling() === $item`Newbiesport™ tent`) {
-      mpToBurn = 10 - restorableMp;
+      burnsMp = 10;
     } else {
       // assume resting on the ground
-      mpToBurn = 5 - restorableMp;
+      burnsMp = 5;
     }
 
-    if (mpToBurn > 0) {
-      auto_burnMP(mpToBurn);
+    if (restorableMp < burnsMp) {
+      auto_burnMP(burnsMp - restorableMp);
     }
     // resting and success check
     const hpMp_before: number = myHp() + myMp();
     const rest_count: number = toInt(getProperty("timesRested"));
-    const result_1: boolean = doRest() > rest_count;
+    const result_1: boolean = doRest(useCampground) > rest_count;
     const hpMp_after: number = myHp() + myMp();
     const success: boolean = hpMp_after > hpMp_before || result_1;
     return success;

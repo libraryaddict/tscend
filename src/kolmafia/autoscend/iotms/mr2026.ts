@@ -1,4 +1,5 @@
 import {
+  abort,
   availableAmount,
   availableChoiceOptions,
   canDrink,
@@ -70,6 +71,7 @@ import { in_plumber } from "../paths/path_of_the_plumber";
 import { in_small } from "../paths/small";
 import { in_tcrs } from "../paths/two_crazy_random_summer";
 import { is_werewolf } from "../paths/wereprofessor";
+import { auto_unreservedAdvRemaining } from "../../autoscend";
 
 // This is meant for items that have a date of 2026
 
@@ -170,13 +172,24 @@ export function auto_haveElfToilet(): boolean {
   );
 }
 
-export function auto_elfToiletReady(): boolean {
+export function auto_elfToiletReady(freeOnly: boolean = true): boolean {
   return (
     auto_haveElfToilet() &&
     myFullness() > 1 &&
     !get("_porkElfToiletUsed") &&
-    (haveFreeRestAvailable() || myAdventures() > 0)
+    (haveFreeRestAvailable() || (!freeOnly && auto_unreservedAdvRemaining()))
   );
+}
+
+export function auto_useElfToilet(): boolean {
+  // Elf toilet requires campground, but takes priority over any other rest site while it's ready.
+  cliExecute("campground rest campground");
+
+  if (!get("_porkElfToiletUsed") || auto_elfToiletReady()) {
+    abort(`Expected elf toilet to have been used, but was not.`);
+  }
+
+  return true;
 }
 
 export function auto_haveArchaeologistSpade(): boolean {
