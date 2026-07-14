@@ -46,31 +46,39 @@ auto_bedtime_pulls_min_desirability:
 auto_maximize_baseline:
   type: string
   description: The string to use as the baseline for the maximizer when deciding gear. If this is blank or "default", it will use a generated maximizer statement that takes your current situation in to account somewhat.
+  tags: [equipment]
 auto_equipment_override_hat:
   type: string
   description: A semicolon separated list of overrides for the hat slot.
+  tags: [equipment]
 auto_equipment_override_back:
   type: string
   description: A semicolon separated list of overrides for the back slot.
+  tags: [equipment]
 auto_equipment_override_shirt:
   type: string
   description: A semicolon separated list of overrides for the shirt slot.
+  tags: [equipment]
 auto_equipment_override_weapon:
   type: string
   description: A semicolon separated list of overrides for the weapon slot.
+  tags: [equipment]
 auto_equipment_override_off-hand:
   type: string
   description: A semicolon separated list of overrides for the off-hand slot.
+  tags: [equipment]
 auto_equipment_override_pants:
   type: string
   description: A semicolon separated list of overrides for the pants slot.
+  tags: [equipment]
 auto_equipment_override_acc:
   type: string
   description: A semicolon separated list of overrides for the acc slots.
+  tags: [equipment]
 auto_equipment_override_familiar:
   type: string
   description: A semicolon separated list of overrides for the familiar equipment slot.
-
+  tags: [equipment]
 auto_considerGalaktik:
   type: boolean
   description: When true autoscend may automatically enable galaktik quest for this run if it decides it is needed.
