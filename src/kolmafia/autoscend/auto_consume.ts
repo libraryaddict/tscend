@@ -581,11 +581,20 @@ export function autoChew(howMany: number, toChew: Item): boolean {
   return retval;
 }
 
-export function autoEat(howMany: number, toEat: Item): boolean {
-  return autoEat$1(howMany, toEat, true);
+export function autoEat(
+  howMany: number,
+  toEat: Item,
+  action?: ConsumeAction,
+): boolean {
+  return autoEat$1(howMany, toEat, true, action);
 }
 
-function autoEat$1(howMany: number, toEat: Item, silent: boolean): boolean {
+function autoEat$1(
+  howMany: number,
+  toEat: Item,
+  silent: boolean,
+  action?: ConsumeAction,
+): boolean {
   if (toBoolean(getProperty("auto_limitConsume"))) {
     return false;
   }
@@ -618,11 +627,13 @@ function autoEat$1(howMany: number, toEat: Item, silent: boolean): boolean {
     // check that we aren't gonna take the spleen option
     switchToFamXP(400); // we're getting famxp by process of elimination; trying to switch to a fam we want famxp on
   }
-  if (itemAmount(toEat) < howMany) {
-    return false;
-  }
-  if (!auto_canEat(toEat)) {
-    return false;
+  if (action?.data?.consume === undefined) {
+    if (itemAmount(toEat) < howMany) {
+      return false;
+    }
+    if (!auto_canEat(toEat)) {
+      return false;
+    }
   }
 
   equipStatgainIncreasersFor(toEat);
@@ -701,12 +712,14 @@ function autoEat$1(howMany: number, toEat: Item, silent: boolean): boolean {
         );
       }
     }
-    if (silent) {
+    if (action?.data?.consume) {
+      retval = action.data.consume();
+    } else if (silent) {
       retval = eatsilent(1, toEat);
     } else {
       retval = eat(1, toEat);
     }
-    if (retval) {
+    if (retval && action?.data?.hasOwnTracking !== true) {
       let detail: string = "";
       if (wasReadyToEat && haveEffect($effect`Ready to Eat`) <= 0) {
         detail = detail !== "" ? `${detail}, Red Rocketed!` : "Red Rocketed!";
@@ -1122,7 +1135,7 @@ function autoConsume(action: ConsumeAction): boolean {
     if (action.organ === AUTO_ORGAN_LIVER) {
       return autoDrink(1, action.it, false, action);
     } else if (action.organ === AUTO_ORGAN_STOMACH) {
-      return autoEat(1, action.it);
+      return autoEat(1, action.it, action);
     } else {
       abort(`autoConsume: Unrecognized organ ${action.organ}`);
     }
