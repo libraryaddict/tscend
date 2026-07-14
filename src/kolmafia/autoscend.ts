@@ -2978,7 +2978,7 @@ function safe_preference_reset_wrapper(level: number): void {
 }
 
 export function main(...input: string[]): void {
-  sinceKolmafiaRevision(29097);
+  sinceKolmafiaRevision(29104);
 
   backupSetting("printStackOnAbort", true.toString());
   // parse input
