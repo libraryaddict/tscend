@@ -15,13 +15,12 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $location, $path } from "libram";
 
-import { autoAdv$1 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
 import { internalQuestStatus } from "../auto_util";
 import {
   auto_godLobsterFightsRemaining,
   godLobsterCombat,
-  godLobsterCombat$2,
 } from "../iotms/mr2018";
 import { L11_aridDesert, L11_blackMarket } from "../quests/level_11";
 import { AshMatcher } from "../utils/kolmafiaUtils";
@@ -45,7 +44,7 @@ export function LX_quantumTerrarium(): boolean {
       // lets order this by familiar ID in ascending order
       // use free fights for experience and abstractions
       if (toInt(getProperty("_machineTunnelsAdv")) < 5) {
-        return autoAdv$1(1, $location`The Deep Machine Tunnels`);
+        return autoAdv($location`The Deep Machine Tunnels`);
       }
       break;
     case $familiar`God Lobster`:
@@ -55,10 +54,10 @@ export function LX_quantumTerrarium(): boolean {
           // 33 advs worth of +10 stats/combat is better than 1.5*70 to all 3 stats
           if (!possessEquipment($item`God Lobster's Scepter`)) {
             // fight it with no equipment to get the Scepter
-            return godLobsterCombat$2(Item.none, 1);
+            return godLobsterCombat(Item.none, 1);
           } else {
             // fight it with the Scepter for the stats buff
-            return godLobsterCombat$2($item`God Lobster's Scepter`, 2);
+            return godLobsterCombat($item`God Lobster's Scepter`, 2);
           }
         } else {
           // get experience

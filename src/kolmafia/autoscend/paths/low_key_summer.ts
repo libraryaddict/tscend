@@ -33,7 +33,7 @@ import {
 } from "libram";
 
 import { LX_burnDelay } from "../../autoscend";
-import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { buffMaintain$4 } from "../auto_buff";
 import { auto_breakfastCounterVisit } from "../auto_consume";
 import {
@@ -328,7 +328,7 @@ function lowkey_keyAdv(key: Item): boolean {
     }
   }
 
-  return autoAdv$1(1, loc);
+  return autoAdv(loc);
 }
 
 function lowkey_zoneUnlocks(): boolean {
@@ -549,7 +549,7 @@ export function L13_sorceressDoorLowKey(): boolean {
     return false;
   }
 
-  return autoAdv$1(1, loc);
+  return autoAdv(loc);
 }
 
 export function LX_lowkeySummer(): boolean {
@@ -982,7 +982,7 @@ export function LX_lowkeySummer(): boolean {
   }
   // If literally nothing better to do, go find some of the keys we don't actually care about but have to find anyway.
   const loc: Location = lowkey_nextAvailableKeyLocation();
-  if (loc !== Location.none && autoAdv$2(loc)) {
+  if (loc !== Location.none && autoAdv(loc)) {
     return true;
   }
   // Make sure to unlock Menagerie if it wasn't done while getting Knob labinet key

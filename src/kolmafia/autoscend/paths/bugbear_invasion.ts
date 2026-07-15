@@ -34,7 +34,7 @@ import {
 } from "libram";
 
 import { pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv$2, autoAdvBypass$6 } from "../auto_adventure";
+import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
 import {
   addToMaximize,
   autoEquip,
@@ -227,7 +227,7 @@ function bugbear_UnlockMothership(loc: Location): boolean {
   // TODO: Backups and copies would be real good but
   // existing copying code is real bad
 
-  return autoAdv$2(unlockLocation);
+  return autoAdv(unlockLocation);
 }
 
 function LX_bugbearKeyOTron(): boolean {
@@ -263,7 +263,7 @@ function LX_bugbearWasteProcessing(): boolean {
 
   auto_log_info(`Clearing Bugbear Mothership - ${loc}`, "blue");
 
-  return autoAdv$2(loc);
+  return autoAdv(loc);
 }
 
 function LX_bugbearMedbay(): boolean {
@@ -277,7 +277,7 @@ function LX_bugbearMedbay(): boolean {
 
   auto_log_info(`Clearing Bugbear Mothership - ${loc}`, "blue");
 
-  return autoAdv$2(loc);
+  return autoAdv(loc);
 }
 
 function LX_bugbearSonar(): boolean {
@@ -291,7 +291,7 @@ function LX_bugbearSonar(): boolean {
 
   auto_log_info(`Clearing Bugbear Mothership - ${loc}`, "blue");
 
-  return autoAdv$2(loc);
+  return autoAdv(loc);
 }
 
 function LX_bugbearScienceLab(): boolean {
@@ -307,7 +307,7 @@ function LX_bugbearScienceLab(): boolean {
 
   auto_log_info(`Clearing Bugbear Mothership - ${loc}`, "blue");
 
-  return autoAdv$2(loc);
+  return autoAdv(loc);
 }
 
 function LX_bugbearMorgue(): boolean {
@@ -321,7 +321,7 @@ function LX_bugbearMorgue(): boolean {
 
   handleFamiliar("item");
 
-  return autoAdv$2(loc);
+  return autoAdv(loc);
 }
 
 function LX_bugbearSpecialOps(): boolean {
@@ -373,7 +373,7 @@ function LX_bugbearSpecialOps(): boolean {
 
   auto_log_info(`Clearing Bugbear Mothership - ${loc}`, "blue");
 
-  return autoAdv$2(loc);
+  return autoAdv(loc);
 }
 
 function LX_bugbearEngineering(): boolean {
@@ -389,7 +389,7 @@ function LX_bugbearEngineering(): boolean {
 
   auto_log_info(`Clearing Bugbear Mothership - ${loc}`, "blue");
 
-  return autoAdv$2(loc);
+  return autoAdv(loc);
 }
 
 function LX_bugbearNavigation(): boolean {
@@ -407,7 +407,7 @@ function LX_bugbearNavigation(): boolean {
 
   auto_log_info(`Clearing Bugbear Mothership - ${loc}`, "blue");
 
-  return autoAdv$2(loc);
+  return autoAdv(loc);
 }
 
 function LX_bugbearNavigationForce(): boolean {
@@ -429,7 +429,7 @@ function LX_bugbearNavigationForce(): boolean {
 
   auto_log_info(`Clearing Bugbear Mothership - ${loc}`, "blue");
 
-  return autoAdv$2(loc);
+  return autoAdv(loc);
 }
 
 function LX_bugbearGallery(): boolean {
@@ -445,7 +445,7 @@ function LX_bugbearGallery(): boolean {
 
   auto_log_info(`Clearing Bugbear Mothership - ${loc}`, "blue");
 
-  return autoAdv$2(loc);
+  return autoAdv(loc);
 }
 
 function LX_bugbearBridge(): boolean {
@@ -496,10 +496,10 @@ function LX_bugbearBridge(): boolean {
   addToMaximize("10dr,3moxie,0.5da 1000max,-5ml,1.5hp,0item,0meat");
 
   if (itemAmount($item`Jeff Goldblum larva`) > 0) {
-    autoAdvBypass$6("place.php?whichplace=bugbearship&action=bb_bridge");
+    autoAdvBypass$1("place.php?whichplace=bugbearship&action=bb_bridge");
   }
 
-  const ret: boolean = autoAdvBypass$6(
+  const ret: boolean = autoAdvBypass$1(
     "place.php?whichplace=bugbearship&action=bb_bridge",
   );
 

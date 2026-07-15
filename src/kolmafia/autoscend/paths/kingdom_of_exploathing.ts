@@ -44,7 +44,7 @@ import {
   npcStoreDiscountMulti,
   pullXWhenHaveY,
 } from "../auto_acquire";
-import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
 import {
   addToMaximize,
@@ -214,7 +214,7 @@ export function LX_koeInvaderHandler(): boolean {
         "blue",
       );
       addToMaximize("200 all res, +equip june cleaver");
-      const ret: boolean = autoAdv$1(1, $location`The Invader`);
+      const ret: boolean = autoAdv($location`The Invader`);
       if (haveEffect($effect`Beaten Up`) > 0) {
         abort("We died to the invader. Do it manually please?");
       }
@@ -261,7 +261,7 @@ export function LX_koeInvaderHandler(): boolean {
         addToMaximize(`+equip ${hot_source.toString()}`);
       }
 
-      const ret: boolean = autoAdv$1(1, $location`The Invader`);
+      const ret: boolean = autoAdv($location`The Invader`);
       if (haveEffect($effect`Beaten Up`) > 0) {
         abort("We died to the invader. Do it manually please?");
       }
@@ -350,7 +350,7 @@ export function L12_koe_clearBattlefield(): boolean {
     autoEquip($slot`weapon`, warKillDoubler);
   }
 
-  return autoAdv$2($location`The Exploaded Battlefield`);
+  return autoAdv($location`The Exploaded Battlefield`);
 }
 
 export function L12_koe_finalizeWar(): boolean {
@@ -373,7 +373,7 @@ export function L12_koe_finalizeWar(): boolean {
   acquireHP();
   acquireMP(60);
   auto_log_info("Let's fight the final boss of the frat-hippy war!", "blue");
-  const retval: boolean = autoAdv$2($location`The Exploaded Battlefield`);
+  const retval: boolean = autoAdv($location`The Exploaded Battlefield`);
   council(); //need to visit to grab 10 rare meat isotopes and get next quests
   cliExecute("refresh quests"); //needed to recognize that war is over
   if (!retval) {

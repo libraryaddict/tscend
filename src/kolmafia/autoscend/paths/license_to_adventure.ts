@@ -20,7 +20,7 @@ import {
 } from "kolmafia";
 import { $effect, $item, $items, $location, $path, $skill } from "libram";
 
-import { autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { itemList, ListInsert } from "../auto_list";
 import { auto_log_info } from "../auto_util";
 import { bridgeGoal } from "../quests/level_09";
@@ -178,7 +178,7 @@ export function LM_bond(): boolean {
   }
 
   if (getProperty("_auto_bondBriefing") === "started") {
-    const retval: boolean = autoAdv$2($location`Super Villain's Lair`);
+    const retval: boolean = autoAdv($location`Super Villain's Lair`);
     if (!retval) {
       setProperty("_auto_bondBriefing", "finished");
       bond_buySkills();

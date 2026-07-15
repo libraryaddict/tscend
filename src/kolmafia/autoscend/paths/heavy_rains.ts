@@ -311,7 +311,7 @@ export function rainManSummon(target: Monster, speculative: boolean): boolean {
     `choice.php?pwd&whichchoice=970&whichmonster=${target.id}&option=1&choice2=and+Fight%21`,
   );
   // autoAdvBypass will escape from the choice and return false if the monster cannot be fought
-  if (autoAdvBypass(0, pages, $location`Noob Cave`, null)) {
+  if (autoAdvBypass(0, pages, $location`Noob Cave`)) {
     handleTracker$1(
       target.toString(),
       $skill`Rain Man`.toString(),

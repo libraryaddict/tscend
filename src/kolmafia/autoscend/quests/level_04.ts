@@ -12,7 +12,7 @@ import {
 import { $effect, $element, $familiar, $item, $location } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
-import { autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
 import { autoForceEquip$3 } from "../auto_equipment";
 import { handleFamiliar$1 } from "../auto_familiar";
@@ -85,7 +85,7 @@ export function L4_batCave(): boolean {
         $item`bat wing`.toString(),
         "auto_otherstuff",
       );
-      return autoAdv$2($location`The Bat Hole Entrance`);
+      return autoAdv($location`The Bat Hole Entrance`);
     } else if (
       !toBoolean(getProperty("batWingsGuanoJunction")) &&
       zone_available($location`Guano Junction`) &&
@@ -101,7 +101,7 @@ export function L4_batCave(): boolean {
         $item`sonar-in-a-biscuit`.toString(),
         "auto_otherstuff",
       );
-      return autoAdv$2($location`Guano Junction`);
+      return autoAdv($location`Guano Junction`);
     } else if (
       !toBoolean(getProperty("batWingsBatratBurrow")) &&
       zone_available($location`The Batrat and Ratbat Burrow`)
@@ -116,7 +116,7 @@ export function L4_batCave(): boolean {
         $item`sonar-in-a-biscuit`.toString(),
         "auto_otherstuff",
       );
-      return autoAdv$2($location`The Batrat and Ratbat Burrow`);
+      return autoAdv($location`The Batrat and Ratbat Burrow`);
     } else if (
       !toBoolean(getProperty("batWingsBeanbatChamber")) &&
       zone_available($location`The Beanbat Chamber`)
@@ -128,7 +128,7 @@ export function L4_batCave(): boolean {
         $item`enchanted bean`.toString(),
         "auto_otherstuff",
       );
-      return autoAdv$2($location`The Beanbat Chamber`);
+      return autoAdv($location`The Beanbat Chamber`);
     }
   }
 
@@ -169,7 +169,7 @@ export function L4_batCave(): boolean {
       internalQuestStatus("questL10Garbage") < 1 &&
       !isActuallyEd()
     ) {
-      return autoAdv$2($location`The Beanbat Chamber`);
+      return autoAdv($location`The Beanbat Chamber`);
     }
     council();
     if (in_koe()) {
@@ -202,7 +202,7 @@ export function L4_batCave(): boolean {
       handleFamiliar$1($familiar`Chest Mimic`);
       provideFamExp$2(50, $location`The Boss Bat's Lair`, true, false);
     }
-    autoAdv$2($location`The Boss Bat's Lair`);
+    autoAdv($location`The Boss Bat's Lair`);
     // POCKET FAMILIARS remove once mafia tracks this
     if (itemAmount($item`batskin belt`) !== batskinBelt) {
       auto_badassBelt(); // mafia doesn't make this any more even if autoCraft = true for some random reason so lets do it manually.
@@ -219,7 +219,7 @@ export function L4_batCave(): boolean {
       internalQuestStatus("questL10Garbage") < 2 &&
       !isActuallyEd()
     ) {
-      autoAdv$2($location`The Beanbat Chamber`);
+      autoAdv($location`The Beanbat Chamber`);
       return true;
     }
     // prioritize getting replica Mr. A in LoL
@@ -235,7 +235,7 @@ export function L4_batCave(): boolean {
     if (auto_haveGreyGoose()) {
       handleFamiliar$1($familiar`Grey Goose`);
     }
-    autoAdv$2($location`The Batrat and Ratbat Burrow`);
+    autoAdv($location`The Batrat and Ratbat Burrow`);
     return true;
   }
   if (batStatus >= 1) {
@@ -253,7 +253,7 @@ export function L4_batCave(): boolean {
     if (auto_haveGreyGoose()) {
       handleFamiliar$1($familiar`Grey Goose`);
     }
-    autoAdv$2($location`The Batrat and Ratbat Burrow`);
+    autoAdv($location`The Batrat and Ratbat Burrow`);
     return true;
   }
 
@@ -265,5 +265,5 @@ export function L4_batCave(): boolean {
   if (auto_haveGreyGoose()) {
     handleFamiliar$1($familiar`Grey Goose`);
   }
-  return autoAdv$2($location`Guano Junction`);
+  return autoAdv($location`Guano Junction`);
 }

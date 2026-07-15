@@ -49,7 +49,7 @@ import {
 } from "libram";
 
 import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv$2, autoLuckyAdv$1 } from "../auto_adventure";
+import { autoAdv, autoLuckyAdv$1 } from "../auto_adventure";
 import { buffMaintain$3 } from "../auto_buff";
 import {
   autoEquip$1,
@@ -390,7 +390,7 @@ function L8_getGoatCheese(): boolean {
   }
   auto_lostStomach(true);
 
-  const retval: boolean = autoAdv$2($location`The Goatlet`);
+  const retval: boolean = autoAdv($location`The Goatlet`);
   auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
   return retval;
 }
@@ -476,7 +476,7 @@ function L8_getMineOres(): boolean {
   if (isAboutToPowerlevel()) {
     if (!possessOutfit$1("Mining Gear")) {
       auto_log_info("Getting Mining Gear.", "blue");
-      return autoAdv$2($location`Itznotyerzitz Mine`);
+      return autoAdv($location`Itznotyerzitz Mine`);
     } else if (possessOutfit("Mining Gear", true)) {
       equipMaximizedGear();
       outfit("Mining Gear");
@@ -592,7 +592,7 @@ function L8_trapperExtreme(): boolean {
   }
   // try to get extreme points
   auto_log_info("Penguin Tony Hawk time. Extreme!! SSX Tricky!!", "blue");
-  return autoAdv$2($location`The eXtreme Slope`);
+  return autoAdv($location`The eXtreme Slope`);
 }
 
 export function theeXtremeSlopeChoiceHandler(choice: number): void {
@@ -753,7 +753,7 @@ export function L8_trapperNinjaLair(): boolean {
 
   auto_getCitizenZone($location`Lair of the Ninja Snowmen`, false); //since we want to adventure in the Lair anyway
 
-  if (autoAdv$2($location`Lair of the Ninja Snowmen`)) {
+  if (autoAdv($location`Lair of the Ninja Snowmen`)) {
     return true;
   }
   auto_log_warning(
@@ -828,7 +828,7 @@ export function L8_trapperGroar(): boolean {
       provideFamExp$2(50, $location`Mist-Shrouded Peak`, true, false);
     }
 
-    retval = autoAdv$2($location`Mist-Shrouded Peak`);
+    retval = autoAdv($location`Mist-Shrouded Peak`);
   }
   if (retval && initial_adv === mySessionAdv()) {
     //several inf loops can occur here

@@ -25,7 +25,7 @@ import {
 import { $item, $location, $path, $skill, $stat } from "libram";
 
 import { pull_meat } from "../auto_acquire";
-import { autoAdv$2, autoLuckyAdv$1 } from "../auto_adventure";
+import { autoAdv, autoLuckyAdv$1 } from "../auto_adventure";
 import { addToMaximize, simValue } from "../auto_equipment";
 import { handleFamiliar$1, lookupFamiliarDatafile } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
@@ -440,13 +440,13 @@ function LX_attemptPowerLevelMeat$1(skills: boolean): boolean {
     zone_isAvailable($location`The Hidden Hospital`, true)
   ) {
     // could lower meatDrop a bit when janitor is banished
-    return autoAdv$2($location`The Hidden Hospital`);
+    return autoAdv($location`The Hidden Hospital`);
   } else if (zone_isAvailable($location`The Haunted Bedroom`, true)) {
-    return autoAdv$2($location`The Haunted Bedroom`);
+    return autoAdv($location`The Haunted Bedroom`);
   } else if (zone_isAvailable($location`The Icy Peak`, false)) {
-    return autoAdv$2($location`The Icy Peak`);
+    return autoAdv($location`The Icy Peak`);
   } else if (zone_isAvailable($location`Cobb's Knob Treasury`, true)) {
-    return autoAdv$2($location`Cobb's Knob Treasury`);
+    return autoAdv($location`Cobb's Knob Treasury`);
   } else if (myAdventures() > 3) {
     visitUrl("place.php?whichplace=town&action=town_oddjobs");
     runChoice(1);
@@ -500,7 +500,7 @@ export function LM_adventurerMeatsWorld(): boolean {
     // we also need to make sure we have the key, might need to burn an adventure to catch the superlikely
     // otherwise autoscend gets confused and aborts when it enounters the superlikely for the key instead of the lucky! nc
     if (itemAmount($item`Cobb's Knob lab key`) < 1) {
-      return autoAdv$2($location`Cobb's Knob Treasury`);
+      return autoAdv($location`Cobb's Knob Treasury`);
     }
     return autoLuckyAdv$1($location`Cobb's Knob Treasury`);
   }

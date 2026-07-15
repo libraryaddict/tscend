@@ -133,7 +133,7 @@ import {
   pullXWhenHaveY,
   pulverizeThing,
 } from "./autoscend/auto_acquire";
-import { autoAdv$1, autoAdv$2 } from "./autoscend/auto_adventure";
+import { autoAdv } from "./autoscend/auto_adventure";
 import { doBedtime } from "./autoscend/auto_bedtime";
 import { buffMaintain$4 } from "./autoscend/auto_buff";
 import {
@@ -194,7 +194,6 @@ import {
   can_read_skillbook,
   copySources,
   doNumberology,
-  doNumberology$2,
   freeKillSources,
   freeRunSources,
   handleBarrelFullOfBarrels,
@@ -275,7 +274,6 @@ import {
   auto_campawayGrabBuffs,
   auto_saberDailyUpgrade,
   auto_sausageGoblin,
-  auto_sausageGoblin$2,
   auto_spoonTuneConfirm,
   auto_spoonTuneMoon,
 } from "./autoscend/iotms/mr2019";
@@ -851,7 +849,7 @@ export function LX_burnDelay(): boolean {
       "auto_nextEncounter",
       getProperty("_sourceTerminalDigitizeMonster"),
     );
-    if (autoAdv$2(digitizeZone)) {
+    if (autoAdv(digitizeZone)) {
       return true;
     }
     setProperty("auto_nextEncounter", "");
@@ -887,7 +885,7 @@ export function LX_burnDelay(): boolean {
         `Fighting a Sausage Goblin in ${goblinZone.toString()} to burn delay!`,
         "green",
       );
-      if (auto_sausageGoblin$2(goblinZone, null)) {
+      if (auto_sausageGoblin(goblinZone)) {
         return true;
       }
     }
@@ -919,7 +917,7 @@ export function LX_burnDelay(): boolean {
         `Might be fighting a ${auto_habitatMonster()} in ${habitatZone.toString()} to burn delay!`,
         "green",
       );
-      if (autoAdv$2(habitatZone)) {
+      if (autoAdv(habitatZone)) {
         return true;
       }
     }
@@ -977,7 +975,7 @@ export function LX_calculateTheUniverse(speculative: boolean): boolean {
     auto_warSide() === "fratboy"
   ) {
     if (
-      doNumberology$2("battlefield", false) !== -1 &&
+      doNumberology("battlefield", false) !== -1 &&
       adjustForYellowRayIfPossible($monster`War Frat 151st Infantryman`)
     ) {
       if (speculative) {
@@ -1073,7 +1071,7 @@ export function LX_doVacation(): boolean {
     equipMaximizedGear();
   }
 
-  return autoAdv$1(1, $location`The Shore, Inc. Travel Agency`);
+  return autoAdv($location`The Shore, Inc. Travel Agency`);
 }
 
 export function auto_doTempleSummit(): boolean {
@@ -1096,7 +1094,7 @@ export function auto_doTempleSummit(): boolean {
   if (haveEffect($effect`Stone-Faced`) === 0) {
     return false;
   }
-  return autoAdv$2($location`The Hidden Temple`);
+  return autoAdv($location`The Hidden Temple`);
 }
 
 function initializeDay(day: number): void {
@@ -1237,7 +1235,7 @@ function initializeDay(day: number): void {
     visitUrl("inv_use.php?pwd=&which=3&whichitem=6174", true);
     visitUrl("inv_use.php?pwd=&which=3&whichitem=6174&confirm=Yep.", true);
     setProperty("auto_disableAdventureHandling", true.toString());
-    autoAdv$1(1, $location`[DungeonFAQ - Level 1]`);
+    autoAdv($location`[DungeonFAQ - Level 1]`);
     setProperty("auto_disableAdventureHandling", false.toString());
     if (itemAmount($item`dungeoneering kit`) > 0) {
       use(1, $item`dungeoneering kit`);

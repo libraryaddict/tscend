@@ -15,7 +15,7 @@ import {
 } from "kolmafia";
 import { $effect, $item, $location, $path, $skill } from "libram";
 
-import { autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import {
   auto_log_debug$1,
   auto_log_info,
@@ -105,7 +105,7 @@ function L8_theSourceNinjaOracle(): boolean {
   }
   if (internalQuestStatus("questL08Trapper") > 2) {
     //done with the slope this ascension so just adventure in the lair
-    return autoAdv$2($location`Lair of the Ninja Snowmen`);
+    return autoAdv($location`Lair of the Ninja Snowmen`);
   }
   if (internalQuestStatus("questL08Trapper") < 2) {
     //try to advance quest to step2 to unlock the ninja snowman lair
@@ -124,7 +124,7 @@ function L8_theSourceNinjaOracle(): boolean {
     return false;
   }
 
-  return autoAdv$2($location`Lair of the Ninja Snowmen`);
+  return autoAdv($location`Lair of the Ninja Snowmen`);
 }
 
 export function LX_theSource(): boolean {
@@ -193,7 +193,7 @@ export function LX_theSource(): boolean {
     }
 
     auto_log_info("Not searching for a spoon, not at all...", "green");
-    return autoAdv$2(goal);
+    return autoAdv(goal);
   }
   return false;
 }
@@ -239,5 +239,5 @@ export function LX_attemptPowerLevelTheSource(): boolean {
     return false;
   }
   //Banish mahogant, elegant after gown only. (Harold\'s Bell?)
-  return autoAdv$2($location`The Haunted Bedroom`);
+  return autoAdv($location`The Haunted Bedroom`);
 }

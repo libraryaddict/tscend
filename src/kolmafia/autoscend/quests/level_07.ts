@@ -47,7 +47,7 @@ import {
 } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
-import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
 import {
   auto_spleenFamiliarAdvItemsPossessed,
@@ -294,7 +294,7 @@ function L7_defiledAlcove(): boolean {
   if (toInt(getProperty("cyrptAlcoveEvilness")) <= 13) {
     setProperty("auto_nextEncounter", "conjoined zmombie");
   }
-  return autoAdv$2($location`The Defiled Alcove`);
+  return autoAdv($location`The Defiled Alcove`);
 }
 
 export function L7_defiledNook(): boolean {
@@ -337,7 +337,7 @@ export function L7_defiledNook(): boolean {
     if (toInt(getProperty("cyrptNookEvilness")) <= 13) {
       setProperty("auto_nextEncounter", "giant skeelton");
     }
-    return autoAdv$2($location`The Defiled Nook`);
+    return autoAdv($location`The Defiled Nook`);
   } else if (skip_in_koe) {
     auto_log_debug$1(
       "In Exploathing, skipping Defiled Nook until we get more evil eyes.",
@@ -429,7 +429,7 @@ function L7_defiledNiche(): boolean {
     if (toInt(getProperty("cyrptNicheEvilness")) <= 13) {
       setProperty("auto_nextEncounter", "gargantulihc");
     }
-    return autoAdv$2($location`The Defiled Niche`);
+    return autoAdv($location`The Defiled Niche`);
   }
   return false;
 }
@@ -505,7 +505,7 @@ function L7_defiledCranny(): boolean {
     if (toInt(getProperty("cyrptCrannyEvilness")) <= 13) {
       setProperty("auto_nextEncounter", "huge ghuol");
     }
-    return autoAdv$2($location`The Defiled Cranny`);
+    return autoAdv($location`The Defiled Cranny`);
   }
   return false;
 }
@@ -583,7 +583,7 @@ export function L7_crypt(): boolean {
     auto_change_mcd(10); // get vertebra to make the necklace.
     setProperty("auto_nextEncounter", "Bonerdagon");
     setProperty("auto_nonAdvLoc", true.toString());
-    const tryBoner: boolean = autoAdv$1(1, $location`Haert of the Cyrpt`);
+    const tryBoner: boolean = autoAdv($location`Haert of the Cyrpt`);
     council();
     cliExecute("refresh quests");
     if (itemAmount($item`chest of the Bonerdagon`) === 1) {

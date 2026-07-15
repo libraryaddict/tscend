@@ -52,7 +52,7 @@ import {
 
 import { auto_advToReserve } from "../../autoscend";
 import { pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import {
   autoChew,
   fullness_left,
@@ -490,7 +490,7 @@ export function auto_backupToYourLastEnemy(loc: Location): boolean {
 
   if (autoEquip($slot`acc3`, $item`backup camera`)) {
     setProperty("auto_nextEncounter", getProperty("lastCopyableMonster"));
-    return autoAdv$2(loc);
+    return autoAdv(loc);
   }
   setProperty("auto_nextEncounter", "");
   return false;

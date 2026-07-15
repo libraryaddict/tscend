@@ -41,7 +41,7 @@ import {
 } from "libram";
 
 import { auto_advToReserve } from "../autoscend";
-import { autoAdv$1, autoAdv$2 } from "./auto_adventure";
+import { autoAdv } from "./auto_adventure";
 import { inebriety_left, stomach_left } from "./auto_consume";
 import { addToMaximize, resetMaximize } from "./auto_equipment";
 import {
@@ -53,11 +53,7 @@ import {
   providePlusNonCombat$1,
   providePlusNonCombat$3,
 } from "./auto_providers";
-import {
-  doFreeRest,
-  freeRestsRemaining,
-  haveFreeRestAvailable,
-} from "./auto_restore";
+import { doFreeRest, freeRestsRemaining } from "./auto_restore";
 import {
   auto_combatModCap,
   auto_have_skill,
@@ -242,7 +238,7 @@ export function LX_attemptPowerLevel(): boolean {
     return neverendingPartyCombat();
   }
   if (scalezone !== Location.none) {
-    return autoAdv$2(scalezone);
+    return autoAdv(scalezone);
   }
   if (timeSpinnerAdventure()) {
     return true;
@@ -286,7 +282,7 @@ export function LX_attemptPowerLevel(): boolean {
     }
 
     if (prefer_bedroom) {
-      if (autoAdv$2($location`The Haunted Bedroom`)) {
+      if (autoAdv($location`The Haunted Bedroom`)) {
         return true;
       }
     } else {
@@ -308,7 +304,7 @@ export function LX_attemptPowerLevel(): boolean {
           break;
       }
       providePlusNonCombat$3(auto_combatModCap(), true);
-      if (autoAdv$2($location`The Haunted Gallery`)) {
+      if (autoAdv($location`The Haunted Gallery`)) {
         return true;
       }
     }
@@ -501,7 +497,7 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
       auto_log_debug$1(
         "LX_freeCombats is adventuring in [The Batrat and Ratbat Burrow] with Vermincelli",
       );
-      const adv_done: boolean = autoAdv$1(1, burrow);
+      const adv_done: boolean = autoAdv(burrow);
       if (adv_done) {
         return true;
       }
@@ -521,7 +517,7 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
     if (bjorn === $familiar`Machine Elf`) {
       handleBjornify($familiar`Grinning Turtle`);
     }
-    const adv_done: boolean = autoAdv$1(1, $location`The Deep Machine Tunnels`);
+    const adv_done: boolean = autoAdv($location`The Deep Machine Tunnels`);
     if (bjorn === $familiar`Machine Elf`) {
       handleBjornify(bjorn);
     }
@@ -534,8 +530,7 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
 
   if (snojoFightAvailable()) {
     auto_log_debug$1("LX_freeCombats is adventuring in [The Snojo]");
-    const adv_done: boolean = autoAdv$1(
-      1,
+    const adv_done: boolean = autoAdv(
       $location`The X-32-F Combat Training Snowman`,
     );
     loopHandlerDelayAll();
@@ -565,8 +560,7 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
     auto_log_debug$1(
       "LX_freeCombats is adventuring in [An Unusually Quiet Barroom Brawl]",
     );
-    const adv_done: boolean = autoAdv$1(
-      1,
+    const adv_done: boolean = autoAdv(
       $location`An Unusually Quiet Barroom Brawl`,
     );
     if (adv_done) {

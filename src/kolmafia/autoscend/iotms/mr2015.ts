@@ -44,7 +44,7 @@ import {
 } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
-import { autoAdv$2, autoAdvBypass$2, CombatMacro } from "../auto_adventure";
+import { autoAdv, autoAdvBypass$1, CombatMacro } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
 import {
   canChangeToFamiliar,
@@ -653,7 +653,7 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
     }
   }
   if (chateaumantegna_available()) {
-    return autoAdvBypass$2(
+    return autoAdvBypass$1(
       "place.php?whichplace=chateau&action=chateau_painting",
       $location`Noob Cave`,
       option,
@@ -1287,7 +1287,7 @@ export function resolveSixthDMT(): boolean {
   }
 
   handleFamiliar$1($familiar`Machine Elf`);
-  return autoAdv$2($location`The Deep Machine Tunnels`);
+  return autoAdv($location`The Deep Machine Tunnels`);
 }
 
 export function doghouseChoiceHandler(choice: number): void {

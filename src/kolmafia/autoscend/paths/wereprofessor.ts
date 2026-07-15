@@ -20,7 +20,7 @@ import { $effect, $item, $locations, $path } from "libram";
 
 import { auto_advToReserve } from "../../autoscend";
 import { auto_buyUpTo } from "../auto_acquire";
-import { autoAdv$1 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
 import {
   auto_log_info,
@@ -418,7 +418,7 @@ export function LX_wereprof_getSmashedEquip(): boolean {
         `Going for Smashed Scientific Equipment in ${sl.toString()}`,
         "blue",
       );
-      return autoAdv$1(1, sl);
+      return autoAdv(sl);
     }
   }
   return false;

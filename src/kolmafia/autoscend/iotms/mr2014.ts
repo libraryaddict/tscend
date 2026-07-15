@@ -44,7 +44,7 @@ import {
 } from "libram";
 
 import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { fullness_left, inebriety_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
 import {
@@ -172,16 +172,16 @@ export function dna_startAcquire(): boolean {
         handleBjornify($familiar`Grinning Turtle`);
       }
       handleFamiliar$1($familiar`Machine Elf`);
-      autoAdv$1(1, $location`The Deep Machine Tunnels`);
+      autoAdv($location`The Deep Machine Tunnels`);
       if (bjorn === $familiar`Machine Elf`) {
         handleBjornify(bjorn);
       }
       cliExecute("camp dnainject");
     } else if (elementalPlanes_access($element`sleaze`)) {
       if ($location`Sloppy Seconds Diner`.turnsSpent === 0) {
-        autoAdv$1(1, $location`Sloppy Seconds Diner`);
+        autoAdv($location`Sloppy Seconds Diner`);
       }
-      autoAdv$1(1, $location`Sloppy Seconds Diner`);
+      autoAdv($location`Sloppy Seconds Diner`);
       cliExecute("camp dnainject");
     }
   }
@@ -448,19 +448,19 @@ export function LX_ornateDowsingRod$1(doing_desert_now: boolean): boolean {
   use(1, $item`grimstone mask`);
 
   while (itemAmount($item`odd silver coin`) < 1) {
-    autoAdv$2($location`The Prince's Balcony`);
+    autoAdv($location`The Prince's Balcony`);
   }
   while (itemAmount($item`odd silver coin`) < 2) {
-    autoAdv$2($location`The Prince's Dance Floor`);
+    autoAdv($location`The Prince's Dance Floor`);
   }
   while (itemAmount($item`odd silver coin`) < 3) {
-    autoAdv$2($location`The Prince's Lounge`);
+    autoAdv($location`The Prince's Lounge`);
   }
   while (itemAmount($item`odd silver coin`) < 4) {
-    autoAdv$2($location`The Prince's Kitchen`);
+    autoAdv($location`The Prince's Kitchen`);
   }
   while (itemAmount($item`odd silver coin`) < 5) {
-    autoAdv$2($location`The Prince's Restroom`);
+    autoAdv($location`The Prince's Restroom`);
   }
 
   if (create(1, $item`ornate dowsing rod`)) {
@@ -504,16 +504,16 @@ export function fancyOilPainting(): boolean {
   use(1, $item`grimstone mask`);
 
   while (itemAmount($item`odd silver coin`) < 1) {
-    autoAdv$1(1, $location`The Prince's Balcony`);
+    autoAdv($location`The Prince's Balcony`);
   }
   while (itemAmount($item`odd silver coin`) < 2) {
-    autoAdv$1(1, $location`The Prince's Dance Floor`);
+    autoAdv($location`The Prince's Dance Floor`);
   }
   while (itemAmount($item`odd silver coin`) < 3) {
-    autoAdv$1(1, $location`The Prince's Lounge`);
+    autoAdv($location`The Prince's Lounge`);
   }
   while (itemAmount($item`odd silver coin`) < 4) {
-    autoAdv$1(1, $location`The Prince's Kitchen`);
+    autoAdv($location`The Prince's Kitchen`);
   }
   cliExecute("make fancy oil painting");
   setProperty("auto_grimstoneFancyOilPainting", false.toString());

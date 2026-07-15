@@ -36,7 +36,7 @@ import { $familiar, $item, $location, $path, $stat } from "libram";
 
 import { auto_unreservedAdvRemaining } from "../../autoscend";
 import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv$2, autoLuckyAdv$1 } from "../auto_adventure";
+import { autoAdv, autoLuckyAdv$1 } from "../auto_adventure";
 import {
   autoEquip$1,
   possessEquipment,
@@ -845,7 +845,7 @@ function LX_robot_level(): boolean {
   //Haunted Bedroom is ideal for it as it raises all 3 stats. provides meat. and does it all through noncombats.
   //we should grab several levels there early on before we start relying on statbot
   if (myLevel() < 9) {
-    if (autoAdv$2($location`The Haunted Bedroom`)) {
+    if (autoAdv($location`The Haunted Bedroom`)) {
       return true;
     }
   }
@@ -906,7 +906,7 @@ export function LX_robot_powerlevel(): boolean {
   const need_mys: boolean = myBasestat($stat`Mysticality`) < 70;
   const need_mox: boolean = myBasestat($stat`Moxie`) < 70;
   if (need_mus || need_mys || need_mox) {
-    if (autoAdv$2($location`The Haunted Bedroom`)) {
+    if (autoAdv($location`The Haunted Bedroom`)) {
       return true;
     }
   }
@@ -920,7 +920,7 @@ export function LX_robot_powerlevel(): boolean {
     income++; //overclocking cpu upgrade installed
   }
   if (robot_chronolith_cost() <= 10 * income) {
-    if (autoAdv$2($location`The Haunted Bedroom`)) {
+    if (autoAdv($location`The Haunted Bedroom`)) {
       return true;
     }
   }
@@ -953,7 +953,7 @@ export function LX_robot_powerlevel(): boolean {
     }
   }
   //in case we can not afford statbot cost. try a final time in haunted bedroom
-  if (autoAdv$2($location`The Haunted Bedroom`)) {
+  if (autoAdv($location`The Haunted Bedroom`)) {
     return true;
   }
 

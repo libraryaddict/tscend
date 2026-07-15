@@ -9,7 +9,7 @@ import {
 } from "kolmafia";
 import { $item, $location } from "libram";
 
-import { autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { canBurnDelay } from "../auto_routing";
 import {
   auto_log_info,
@@ -119,7 +119,7 @@ export function L2_mosquito(): boolean {
     return false;
   }
   auto_log_info("Trying to find a mosquito.", "blue");
-  if (autoAdv$2($location`The Spooky Forest`)) {
+  if (autoAdv($location`The Spooky Forest`)) {
     if (
       internalQuestStatus("questL02Larva") > 0 ||
       itemAmount($item`mosquito larva`) > 0

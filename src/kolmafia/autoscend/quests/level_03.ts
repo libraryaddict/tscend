@@ -33,7 +33,7 @@ import {
 } from "libram";
 
 import { pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv$1, autoAdvBypass$1 } from "../auto_adventure";
+import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
 import { buffMaintain$3 } from "../auto_buff";
 import {
   addToMaximize,
@@ -249,7 +249,7 @@ function auto_tavern(): boolean {
           "Tavern handler: You are RL drunk, you should not be here.",
           "red",
         );
-        autoAdv$1(1, $location`Noob Cave`);
+        autoAdv($location`Noob Cave`);
       }
       if (
         lastMonster() === $monster`crate` ||

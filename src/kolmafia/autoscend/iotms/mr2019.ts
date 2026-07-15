@@ -370,13 +370,9 @@ export function auto_haveKramcoSausageOMatic(): boolean {
   return false;
 }
 
-export function auto_sausageGoblin(): boolean {
-  return auto_sausageGoblin$2(Location.none, null);
-}
-
-export function auto_sausageGoblin$2(
-  loc: Location,
-  option: CombatMacro,
+export function auto_sausageGoblin(
+  loc: Location = Location.none,
+  option?: CombatMacro,
 ): boolean {
   // Sausage Goblins have super low encounter priority so they will be overriden
   // by all sorts stuff like superlikelies, wanderers and semi-rares.
@@ -405,7 +401,7 @@ export function auto_sausageGoblin$2(
 
   if (autoEquip$1(wrap_item($item`Kramco Sausage-o-Matic™`))) {
     setProperty("auto_nextEncounter", "sausage goblin");
-    return autoAdv(1, loc, option);
+    return autoAdv(loc, option);
   }
   setProperty("auto_nextEncounter", "");
   return false;

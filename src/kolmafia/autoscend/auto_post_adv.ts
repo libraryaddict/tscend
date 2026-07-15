@@ -75,7 +75,7 @@ import {
 } from "libram";
 
 import { auto_buyUpTo, buyableMaintain } from "./auto_acquire";
-import { autoAdv$2 } from "./auto_adventure";
+import { autoAdv } from "./auto_adventure";
 import { auto_faceCheck, buffMaintain$3, buffMaintain$4 } from "./auto_buff";
 import {
   addToMaximize,
@@ -291,7 +291,7 @@ function auto_post_adventure(): boolean {
           );
           return false;
         }
-        autoAdv$2(myLocation());
+        autoAdv(myLocation());
         return true;
       }
     }

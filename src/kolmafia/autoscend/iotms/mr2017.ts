@@ -62,7 +62,7 @@ import {
   $stat,
 } from "libram";
 
-import { autoAdv$2, autoAdvBypass, CombatMacro } from "../auto_adventure";
+import { autoAdv, autoAdvBypass, CombatMacro } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
 import {
   canChangeFamiliar,
@@ -618,7 +618,7 @@ function loveTunnelAcquire$1(
   //6		Toast? Only with Space Jellyfish?
   //7		Nothing
 
-  const retval: boolean = autoAdv$2($location`The Tunnel of L.O.V.E.`);
+  const retval: boolean = autoAdv($location`The Tunnel of L.O.V.E.`);
 
   if (itemAmount($item`LOV Extraterrestrial Chocolate`) > 0) {
     use(1, $item`LOV Extraterrestrial Chocolate`);

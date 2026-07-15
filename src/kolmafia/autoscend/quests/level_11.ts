@@ -105,8 +105,7 @@ import {
   pullXWhenHaveY,
 } from "../auto_acquire";
 import {
-  autoAdv$1,
-  autoAdv$2,
+  autoAdv,
   autoAdvBypass,
   autoAdvBypass$1,
   autoLuckyAdv$1,
@@ -517,7 +516,7 @@ export function LX_unlockHiddenTemple(): boolean {
   }
   auto_log_info("Attempting to make the Hidden Temple less hidden.", "blue");
   pullXWhenHaveY($item`Spooky-Gro fertilizer`, 1, 0);
-  if (autoAdv$2($location`The Spooky Forest`)) {
+  if (autoAdv($location`The Spooky Forest`)) {
     if (
       itemAmount($item`Spooky Temple map`) > 0 &&
       itemAmount($item`Spooky-Gro fertilizer`) > 0 &&
@@ -617,7 +616,7 @@ export function LX_unlockHauntedBilliardsRoom(delayKitchen: boolean): boolean {
     ) {
       return auto_spadeDigSkeleton();
     }
-    if (autoAdv$2($location`The Haunted Kitchen`)) {
+    if (autoAdv($location`The Haunted Kitchen`)) {
       return true;
     }
   }
@@ -733,7 +732,7 @@ export function LX_unlockHauntedLibrary(): boolean {
     }
   }
   auto_log_info("It's billiards time!", "blue");
-  return autoAdv$2($location`The Haunted Billiards Room`);
+  return autoAdv($location`The Haunted Billiards Room`);
 }
 
 export function LX_unlockManorSecondFloor(): boolean {
@@ -806,7 +805,7 @@ export function LX_unlockManorSecondFloor(): boolean {
   }
 
   auto_getCitizenZone($location`The Haunted Library`, false); //since want to adventure in the Haunted Library anyway
-  return autoAdv$2($location`The Haunted Library`);
+  return autoAdv($location`The Haunted Library`);
 }
 
 export function LX_spookyravenManorFirstFloor(): boolean {
@@ -841,7 +840,7 @@ export function LX_danceWithLadySpookyraven(): boolean {
   }
 
   auto_log_info("Finished Spookyraven, just dancing with the lady.", "blue");
-  if (autoAdv$2($location`The Haunted Ballroom`)) {
+  if (autoAdv($location`The Haunted Ballroom`)) {
     if (in_lowkeysummer()) {
       // need to open the Haunted Nursery for the music box key.
       visitUrl("place.php?whichplace=manor3&action=manor3_ladys");
@@ -1001,7 +1000,7 @@ export function LX_getLadySpookyravensFinestGown(): boolean {
     "Spookyraven: Bedroom, rummaging through nightstands looking for naughty meatbag trinkets.",
     "blue",
   );
-  if (autoAdv$2($location`The Haunted Bedroom`)) {
+  if (autoAdv($location`The Haunted Bedroom`)) {
     return true;
   }
   return false;
@@ -1026,7 +1025,7 @@ export function LX_getLadySpookyravensDancingShoes(): boolean {
 
   auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
 
-  if (autoAdv$2($location`The Haunted Gallery`)) {
+  if (autoAdv($location`The Haunted Gallery`)) {
     return true;
   }
   return false;
@@ -1063,7 +1062,7 @@ export function LX_getLadySpookyravensPowderPuff(): boolean {
       return false;
     }
   }
-  if (autoAdv$2($location`The Haunted Bathroom`)) {
+  if (autoAdv($location`The Haunted Bathroom`)) {
     return true;
   }
   return false;
@@ -1232,7 +1231,7 @@ export function L11_blackMarket(): boolean {
     handleFamiliar$1($familiar`Grey Goose`);
   }
 
-  const advSpent: boolean = autoAdv$2($location`The Black Forest`);
+  const advSpent: boolean = autoAdv($location`The Black Forest`);
   //For people with autoCraft set to false for some reason
   if (
     itemAmount($item`reassembled blackbird`) === 0 &&
@@ -1275,7 +1274,7 @@ export function L11_getBeehive(): boolean {
   ) {
     return false;
   }
-  const advSpent: boolean = autoAdv$2($location`The Black Forest`);
+  const advSpent: boolean = autoAdv($location`The Black Forest`);
   if (itemAmount($item`beehive`) > 0) {
     setProperty("auto_getBeehive", false.toString());
   }
@@ -1311,7 +1310,7 @@ export function L11_forgedDocuments(): boolean {
     const pages: Map<number, string> = new Map();
     pages.set(0, "shop.php?whichshop=blackmarket");
     pages.set(1, "shop.php?whichshop=blackmarket&action=fightbmguy");
-    return autoAdvBypass(0, pages, $location`Noob Cave`, null);
+    return autoAdvBypass(0, pages, $location`Noob Cave`);
   }
   if (is_werewolf()) {
     return false; // can't access shops as a werewolf
@@ -1715,7 +1714,7 @@ export function L11_aridDesert(): boolean {
         use(1, $item`drum machine`);
       } else {
         auto_log_info("Off to find the drums!", "blue");
-        autoAdv$1(1, $location`The Oasis`);
+        autoAdv($location`The Oasis`);
       }
       return true;
     }
@@ -1733,7 +1732,7 @@ export function L11_aridDesert(): boolean {
         itemAmount($item`stone rose`) === 0
       ) {
         auto_log_info("It seems raisinable to hunt a Stone Rose. Beep", "blue");
-        autoAdv$1(1, $location`The Oasis`);
+        autoAdv($location`The Oasis`);
         return true;
       }
     }
@@ -1805,7 +1804,7 @@ export function L11_aridDesert(): boolean {
       return true;
     }
 
-    autoAdv$1(1, $location`The Arid, Extra-Dry Desert`);
+    autoAdv($location`The Arid, Extra-Dry Desert`);
 
     if (containsText(getProperty("lastEncounter"), "A Sietch in Time")) {
       auto_log_info(
@@ -1838,7 +1837,7 @@ export function L11_aridDesert(): boolean {
       !toBoolean(getProperty("oasisAvailable")) &&
       haveEffect($effect`Ultrahydrated`) === 0
     ) {
-      return autoAdv$1(1, $location`The Arid, Extra-Dry Desert`);
+      return autoAdv($location`The Arid, Extra-Dry Desert`);
     }
 
     if (auto_haveBofa() && !isAboutToPowerlevel()) {
@@ -1846,7 +1845,7 @@ export function L11_aridDesert(): boolean {
       return false;
     }
 
-    if (!autoAdv$1(1, $location`The Oasis`)) {
+    if (!autoAdv($location`The Oasis`)) {
       auto_log_warning(
         "Could not visit the Oasis for some reason, desertExploration may be incorrect.",
         "red",
@@ -1867,7 +1866,7 @@ export function L11_aridDesert(): boolean {
           setProperty("desertExploration", found.toString());
           return true;
         }
-        if (!autoAdv$1(1, $location`The Oasis`)) {
+        if (!autoAdv($location`The Oasis`)) {
           abort(
             "Tried to adventure in The Oasis but could not. property desertExploration determined to be correct",
           );
@@ -1959,7 +1958,7 @@ export function L11_unlockHiddenCity(): boolean {
       return false;
     }
   }
-  return autoAdv$2($location`The Hidden Temple`);
+  return autoAdv($location`The Hidden Temple`);
 }
 
 export function hiddenTempleChoiceHandler(choice: number, page: string): void {
@@ -2387,7 +2386,7 @@ export function L11_hiddenCity(): boolean {
           }
         }
       }
-      return autoAdv$2($location`The Hidden Apartment Building`);
+      return autoAdv($location`The Hidden Apartment Building`);
     } else {
       if (haveEffect($effect`Thrice-Cursed`) === 0) {
         //can drink and inebriety allows it
@@ -2416,7 +2415,7 @@ export function L11_hiddenCity(): boolean {
         `Hidden Apartment Progress: ${getProperty("hiddenApartmentProgress")}`,
         "blue",
       );
-      return autoAdv$2($location`The Hidden Apartment Building`);
+      return autoAdv($location`The Hidden Apartment Building`);
     }
   }
 
@@ -2520,7 +2519,7 @@ export function L11_hiddenCity(): boolean {
       ) {
         handleFamiliar$1($familiar`Nosy Nose`); //whiff increases chance of witch accountant
       }
-      return autoAdv$2($location`The Hidden Apartment Building`);
+      return autoAdv($location`The Hidden Apartment Building`);
     }
 
     if (workingHoliday && itemAmount($item`McClusky file (complete)`) > 0) {
@@ -2529,7 +2528,7 @@ export function L11_hiddenCity(): boolean {
         "ancient protector spirit (The Hidden Office Building)",
       );
     }
-    return autoAdv$2($location`The Hidden Office Building`);
+    return autoAdv($location`The Hidden Office Building`);
   }
 
   if (internalQuestStatus("questL11Spare") === 0) {
@@ -2586,7 +2585,7 @@ export function L11_hiddenCity(): boolean {
         "ancient protector spirit (The Hidden Bowling Alley)",
       );
     }
-    return autoAdv$2($location`The Hidden Bowling Alley`);
+    return autoAdv($location`The Hidden Bowling Alley`);
   }
 
   if (internalQuestStatus("questL11Doctor") === 0) {
@@ -2632,27 +2631,27 @@ export function L11_hiddenCity(): boolean {
       `Hidden Hospital Progress: ${getProperty("hiddenHospitalProgress")}`,
       "blue",
     );
-    return autoAdv$2($location`The Hidden Hospital`);
+    return autoAdv($location`The Hidden Hospital`);
   }
 
   if (itemAmount($item`moss-covered stone sphere`) > 0) {
     auto_log_info("Getting the stone triangles", "blue");
-    return autoAdv$2($location`An Overgrown Shrine (Northwest)`);
+    return autoAdv($location`An Overgrown Shrine (Northwest)`);
   }
 
   if (itemAmount($item`crackling stone sphere`) > 0) {
     auto_log_info("Getting the stone triangles", "blue");
-    return autoAdv$2($location`An Overgrown Shrine (Northeast)`);
+    return autoAdv($location`An Overgrown Shrine (Northeast)`);
   }
 
   if (itemAmount($item`dripping stone sphere`) > 0) {
     auto_log_info("Getting the stone triangles", "blue");
-    return autoAdv$2($location`An Overgrown Shrine (Southwest)`);
+    return autoAdv($location`An Overgrown Shrine (Southwest)`);
   }
 
   if (itemAmount($item`scorched stone sphere`) > 0) {
     auto_log_info("Getting the stone triangles", "blue");
-    return autoAdv$2($location`An Overgrown Shrine (Southeast)`);
+    return autoAdv($location`An Overgrown Shrine (Southeast)`);
   }
 
   if (itemAmount($item`stone triangle`) === 4) {
@@ -2665,7 +2664,7 @@ export function L11_hiddenCity(): boolean {
     }
     setProperty("auto_nextEncounter", "Protector Spectre");
     handleFamiliar("boss");
-    const advSpent: boolean = autoAdv$2($location`A Massive Ziggurat`);
+    const advSpent: boolean = autoAdv($location`A Massive Ziggurat`);
     if (internalQuestStatus("questL11MacGuffin") > 2) {
       // Actually Ed finishes this quest when all 3 parts of the staff are returned
       council();
@@ -2726,7 +2725,7 @@ export function L11_hiddenCityZones(): boolean {
     if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
       auto_changeSnapperPhylum($phylum`dude`);
     }
-    return autoAdv$2($location`The Hidden Park`);
+    return autoAdv($location`The Hidden Park`);
   }
 
   if (toInt(getProperty("breathitinCharges")) > 0) {
@@ -2746,7 +2745,7 @@ export function L11_hiddenCityZones(): boolean {
     if (!canUseMachete && auto_haveTearawayPants()) {
       autoForceEquip$3($item`tearaway pants`);
     }
-    return autoAdv$2($location`An Overgrown Shrine (Northwest)`);
+    return autoAdv($location`An Overgrown Shrine (Northwest)`);
   }
 
   if (toInt(getProperty("hiddenOfficeProgress")) === 0) {
@@ -2756,7 +2755,7 @@ export function L11_hiddenCityZones(): boolean {
     if (!canUseMachete && auto_haveTearawayPants()) {
       autoForceEquip$3($item`tearaway pants`);
     }
-    return autoAdv$2($location`An Overgrown Shrine (Northeast)`);
+    return autoAdv($location`An Overgrown Shrine (Northeast)`);
   }
 
   if (toInt(getProperty("hiddenHospitalProgress")) === 0) {
@@ -2766,7 +2765,7 @@ export function L11_hiddenCityZones(): boolean {
     if (!canUseMachete && auto_haveTearawayPants()) {
       autoForceEquip$3($item`tearaway pants`);
     }
-    return autoAdv$2($location`An Overgrown Shrine (Southwest)`);
+    return autoAdv($location`An Overgrown Shrine (Southwest)`);
   }
 
   if (toInt(getProperty("hiddenBowlingAlleyProgress")) === 0) {
@@ -2776,7 +2775,7 @@ export function L11_hiddenCityZones(): boolean {
     if (!canUseMachete && auto_haveTearawayPants()) {
       autoForceEquip$3($item`tearaway pants`);
     }
-    return autoAdv$2($location`An Overgrown Shrine (Southeast)`);
+    return autoAdv($location`An Overgrown Shrine (Southeast)`);
   }
 
   if (!toBoolean(getProperty("auto_openedziggurat"))) {
@@ -2786,7 +2785,7 @@ export function L11_hiddenCityZones(): boolean {
     if (!canUseMachete && auto_haveTearawayPants()) {
       autoForceEquip$3($item`tearaway pants`);
     }
-    const advSpent: boolean = autoAdv$2($location`A Massive Ziggurat`);
+    const advSpent: boolean = autoAdv($location`A Massive Ziggurat`);
     if (
       getProperty("lastEncounter") ===
         "Legend of the Temple in the Hidden City" ||
@@ -2833,7 +2832,7 @@ export function L11_mauriceSpookyraven(): boolean {
       // We'll All Be Flat choice adventure has a delay of 5 adventures.
       return false;
     }
-    return autoAdv$2($location`The Haunted Ballroom`);
+    return autoAdv($location`The Haunted Ballroom`);
   }
   if (itemAmount($item`recipe: mortar-dissolving solution`) === 0) {
     if (possessEquipment($item`Lord Spookyraven's spectacles`)) {
@@ -2868,7 +2867,7 @@ export function L11_mauriceSpookyraven(): boolean {
       }
     } else {
       setProperty("auto_nonAdvLoc", true.toString());
-      autoAdv$2($location`Summoning Chamber`);
+      autoAdv($location`Summoning Chamber`);
     }
     return true;
   }
@@ -2897,26 +2896,26 @@ export function L11_mauriceSpookyraven(): boolean {
     auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
     // I suppose we can let anyone in without the Spectacles.
     if (itemAmount($item`loosening powder`) === 0) {
-      return autoAdv$2($location`The Haunted Kitchen`);
+      return autoAdv($location`The Haunted Kitchen`);
     }
     if (itemAmount($item`powdered castoreum`) === 0) {
-      return autoAdv$2($location`The Haunted Conservatory`);
+      return autoAdv($location`The Haunted Conservatory`);
     }
     if (itemAmount($item`drain dissolver`) === 0) {
-      return autoAdv$2($location`The Haunted Bathroom`);
+      return autoAdv($location`The Haunted Bathroom`);
     }
     if (itemAmount($item`triple-distilled turpentine`) === 0) {
-      return autoAdv$2($location`The Haunted Gallery`);
+      return autoAdv($location`The Haunted Gallery`);
     }
     //3rd floor unlock fix. can manually adv without starting quest. but autoAdv fails until quest is started. so start the quest
     if (internalQuestStatus("questM17Babies") === -1) {
       visitUrl("place.php?whichplace=manor3&action=manor3_ladys"); //talk to 3rd floor ghost to start quest
     }
     if (itemAmount($item`detartrated anhydrous sublicalc`) === 0) {
-      return autoAdv$2($location`The Haunted Laboratory`);
+      return autoAdv($location`The Haunted Laboratory`);
     }
     if (itemAmount($item`triatomaceous dust`) === 0) {
-      return autoAdv$2($location`The Haunted Storage Room`);
+      return autoAdv($location`The Haunted Storage Room`);
     }
 
     visitUrl("place.php?whichplace=manor4&action=manor4_chamberwall");
@@ -3016,7 +3015,7 @@ export function L11_mauriceSpookyraven(): boolean {
         "Attemping to use Map the Monsters to olfact a Possessed Wine Rack.",
       );
     }
-    return autoAdv$2($location`The Haunted Wine Cellar`);
+    return autoAdv($location`The Haunted Wine Cellar`);
   }
   if (
     itemAmount($item`blasting soda`) === 0 &&
@@ -3047,7 +3046,7 @@ export function L11_mauriceSpookyraven(): boolean {
         "Attemping to use Map the Monsters to olfact a Cabinet of Dr. Limpieza.",
       );
     }
-    return autoAdv$2($location`The Haunted Laundry Room`);
+    return autoAdv($location`The Haunted Laundry Room`);
   }
 
   if (
@@ -3087,7 +3086,7 @@ export function L11_mauriceSpookyraven(): boolean {
     }
 
     auto_log_info("Now we mix and heat it up.", "blue");
-    return autoAdv$2($location`The Haunted Boiler Room`);
+    return autoAdv($location`The Haunted Boiler Room`);
   }
   return false;
 }
@@ -3105,7 +3104,7 @@ function L11_redZeppelin(): boolean {
   }
 
   if (internalQuestStatus("questL11Ron") === 0) {
-    return autoAdv$2($location`A Mob of Zeppelin Protesters`);
+    return autoAdv($location`A Mob of Zeppelin Protesters`);
   }
   // TODO: create lynyrd skin items
 
@@ -3257,7 +3256,7 @@ function L11_redZeppelin(): boolean {
       "Attemping to use Map the Monsters to olfact a Blue Oyster Cultist.",
     );
   }
-  const retval: boolean = autoAdv$2($location`A Mob of Zeppelin Protesters`);
+  const retval: boolean = autoAdv($location`A Mob of Zeppelin Protesters`);
   if (!lastAdventureSpecialNC()) {
     if (lastProtest === toInt(getProperty("zeppelinProtestors"))) {
       setProperty(
@@ -3326,7 +3325,7 @@ function L11_ronCopperhead(): boolean {
     if (internalQuestStatus("questL11Ron") === 4) {
       setProperty("auto_nextEncounter", 'Ron "The Weasel" Copperhead');
     }
-    const retval: boolean = autoAdv$2($location`The Red Zeppelin`);
+    const retval: boolean = autoAdv($location`The Red Zeppelin`);
     // open red boxes when we get them (not sure if this is the place for this but it'll do for now)
     if (itemAmount($item`red box`) > 0) {
       use(itemAmount($item`red box`), $item`red box`);
@@ -3353,7 +3352,7 @@ export function L11_shenStartQuest(): boolean {
     "Going to see the World's Biggest Jerk about some snakes and stones and stuff.",
     "blue",
   );
-  if (autoAdv$2($location`The Copperhead Club`)) {
+  if (autoAdv($location`The Copperhead Club`)) {
     if (internalQuestStatus("questL11Shen") === 1) {
       auto_log_info("It seems Shen has given us a quest.", "blue");
       auto_log_info$1(
@@ -3447,7 +3446,7 @@ export function L11_shenCopperhead(): boolean {
     // monster level increases zone damage
     addToMaximize("-10ml");
     uneffect($effect`Ur-Kel's Aria of Annoyance`);
-    if (autoAdv$2($location`The Copperhead Club`)) {
+    if (autoAdv($location`The Copperhead Club`)) {
       if (containsText(getProperty("lastEncounter"), "Shen Copperhead, ")) {
         setProperty(
           "auto_lastShenTurn",
@@ -3541,7 +3540,7 @@ export function L11_shenCopperhead(): boolean {
         return false;
       }
 
-      return autoAdv$2(goal);
+      return autoAdv(goal);
     }
   }
 
@@ -3681,7 +3680,7 @@ export function L11_palindome(): boolean {
         1,
         `choice.php?pwd&whichchoice=940&option=${getProperty("choiceAdventure940")}`,
       );
-      if (autoAdvBypass(0, pages, $location`Whitey's Grove`, null)) {
+      if (autoAdvBypass(0, pages, $location`Whitey's Grove`)) {
       }
       restoreSetting("lastGuildStoreOpen");
       return true;
@@ -3699,7 +3698,7 @@ export function L11_palindome(): boolean {
     bat_formBats$1();
     auto_lostStomach(true);
     auto_log_info("Off to the grove for some doofy food!", "blue");
-    return autoAdv$1(1, $location`Whitey's Grove`);
+    return autoAdv($location`Whitey's Grove`);
   }
 
   if (
@@ -3740,7 +3739,7 @@ export function L11_palindome(): boolean {
       } else if (itemAmount($item`stunt nuts`) === 0) {
         auto_log_info("We got no nuts!! :O", "Blue");
         autoEquip($slot`acc3`, $item`Talisman o' Namsilat`);
-        return autoAdv$1(1, $location`Inside the Palindome`);
+        return autoAdv($location`Inside the Palindome`);
       } else {
         abort("Some sort of Wet Stunt Nut Stew error. Try making it yourself?");
       }
@@ -3838,7 +3837,7 @@ export function L11_palindome(): boolean {
       buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
       buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
     }
-    autoAdvBypass(0, pages, $location`Noob Cave`, null);
+    autoAdvBypass(0, pages, $location`Noob Cave`);
     return true;
   } else {
     if (pullsRemaining() === 0) {
@@ -3970,7 +3969,7 @@ export function L11_palindome(): boolean {
         "Attemping to use Map the Monsters to olfact a Bob Racecar.",
       );
     }
-    const advSpent: boolean = autoAdv$2($location`Inside the Palindome`);
+    const advSpent: boolean = autoAdv($location`Inside the Palindome`);
     if (
       $location`Inside the Palindome`.turnsSpent > 30 &&
       !in_pokefam() &&
@@ -4087,7 +4086,7 @@ export function L11_unlockEd(): boolean {
   );
 
   if (!toBoolean(getProperty("middleChamberUnlock"))) {
-    return autoAdv$1(1, $location`The Upper Chamber`);
+    return autoAdv($location`The Upper Chamber`);
   }
 
   let total: number = itemAmount($item`crumbling wooden wheel`);
@@ -4137,7 +4136,7 @@ export function L11_unlockEd(): boolean {
       ) &&
       getProperty("olfactedMonster") !== $monster`tomb rat`.toString()
     ) {
-      return autoAdv$1(1, $location`The Upper Chamber`);
+      return autoAdv($location`The Upper Chamber`);
     }
   }
 
@@ -4166,7 +4165,7 @@ export function L11_unlockEd(): boolean {
     autoEquip$1($item`pro skateboard`);
   }
 
-  return autoAdv$1(1, $location`The Middle Chamber`);
+  return autoAdv($location`The Middle Chamber`);
 }
 
 export function L11_defeatEd(): boolean {
@@ -4216,7 +4215,7 @@ export function L11_defeatEd(): boolean {
 
   setProperty("auto_nextEncounter", "Ed the Undying");
   setProperty("auto_nonAdvLoc", true.toString());
-  autoAdv$2($location`The Lower Chambers`);
+  autoAdv($location`The Lower Chambers`);
   if (in_pokefam() || in_koe()) {
     cliExecute("refresh inv");
   }

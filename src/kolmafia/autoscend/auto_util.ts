@@ -173,7 +173,7 @@ import {
   npcStoreDiscountMulti,
   pullXWhenHaveY,
 } from "./auto_acquire";
-import { autoAdvBypass, autoAdvBypass$2, CombatMacro } from "./auto_adventure";
+import { autoAdvBypass, autoAdvBypass$1, CombatMacro } from "./auto_adventure";
 import { buffMaintain$3, buffMaintain$4 } from "./auto_buff";
 import {
   autoChew,
@@ -228,7 +228,7 @@ import {
   expectGhostReport,
   haveGhostReport,
   isOverdueDigitize,
-  timeSpinnerCombat$1,
+  timeSpinnerCombat,
 } from "./iotms/mr2016";
 import {
   asdonBuff,
@@ -3206,7 +3206,7 @@ function summonMonster$1(mon: Monster, speculative: boolean): boolean {
     return true;
   }
   // todo add support for Baa'baa'bu'ran with deck of every card sheep card
-  if (timeSpinnerCombat$1(mon, speculative)) {
+  if (timeSpinnerCombat(mon, speculative)) {
     auto_log_debug(
       `${speculative ? "Can" : "Did"} summon ${mon} via time spinner`,
       "blue",
@@ -3261,23 +3261,19 @@ export function summonedMonsterToday(mon: Monster): boolean {
   return containsText(copiedMonsters, searchString);
 }
 
-export function handleCopiedMonster(itm: Item): boolean {
-  return handleCopiedMonster$1(itm, null);
-}
-
-function handleCopiedMonster$1(itm: Item, option: CombatMacro): boolean {
+export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
   let id: number = 0;
   switch (itm) {
     case $item`Rain-Doh black box`:
-      return handleCopiedMonster$1($item`Rain-Doh box full of monster`, option);
+      return handleCopiedMonster($item`Rain-Doh box full of monster`, option);
     case $item`Spooky Putty sheet`:
-      return handleCopiedMonster$1($item`Spooky Putty monster`, option);
+      return handleCopiedMonster($item`Spooky Putty monster`, option);
     case $item`4-d camera`:
-      return handleCopiedMonster$1($item`shaking 4-d camera`, option);
+      return handleCopiedMonster($item`shaking 4-d camera`, option);
     case $item`unfinished ice sculpture`:
-      return handleCopiedMonster$1($item`ice sculpture`, option);
+      return handleCopiedMonster($item`ice sculpture`, option);
     case $item`print screen button`:
-      return handleCopiedMonster$1($item`screencapped monster`, option);
+      return handleCopiedMonster($item`screencapped monster`, option);
     case $item`Rain-Doh box full of monster`:
       if (getProperty("rainDohMonster") === "") {
         abort(`${itm} has no monster so we can't use it`);
@@ -3319,7 +3315,7 @@ function handleCopiedMonster$1(itm: Item, option: CombatMacro): boolean {
       break;
   }
   if (id !== 0) {
-    return autoAdvBypass$2(
+    return autoAdvBypass$1(
       `inv_use.php?pwd&which=3&whichitem=${id}`,
       $location`Noob Cave`,
       option,
@@ -3494,7 +3490,7 @@ export function fightScienceTentacle(): boolean {
   const pages: Map<number, string> = new Map();
   pages.set(0, "place.php?whichplace=forestvillage&action=fv_scientist");
   pages.set(1, "choice.php?whichchoice=1201&pwd=&option=1");
-  return autoAdvBypass(0, pages, $location`Noob Cave`, null);
+  return autoAdvBypass(0, pages, $location`Noob Cave`);
 }
 
 export function handleSealNormal(it: Item, option?: CombatMacro): boolean {
@@ -3526,7 +3522,7 @@ export function handleSealNormal(it: Item, option?: CombatMacro): boolean {
     myLevel() >= level
   ) {
     ensureSealClubs();
-    return autoAdvBypass$2(
+    return autoAdvBypass$1(
       `inv_use.php?pwd=&whichitem=${toInt(it)}&checked=1`,
       $location`Noob Cave`,
       option,
@@ -3542,7 +3538,7 @@ export function handleSealAncient(option?: CombatMacro): boolean {
     itemAmount($item`figurine of an ancient seal`) > 0 &&
     itemAmount($item`seal-blubber candle`) >= 3
   ) {
-    return autoAdvBypass$2(
+    return autoAdvBypass$1(
       "inv_use.php?pwd=&whichitem=3905&checked=1",
       $location`Noob Cave`,
       option,
@@ -3597,7 +3593,7 @@ export function handleSealElement(
   ) {
     page = "inv_use.php?pwd=&whichitem=3908&checked=1";
   }
-  return autoAdvBypass$2(page, $location`Noob Cave`, option);
+  return autoAdvBypass$1(page, $location`Noob Cave`, option);
 }
 
 export function handleBarrelFullOfBarrels(daily: boolean): boolean {
@@ -3707,18 +3703,10 @@ export function auto_runChoice(page_text: string): string {
   return page_text;
 }
 
-export function doNumberology(goal: string): number {
-  return doNumberology$3(goal, true, null);
-}
-
-export function doNumberology$2(goal: string, doIt: boolean): number {
-  return doNumberology$3(goal, doIt, null);
-}
-
-function doNumberology$3(
+export function doNumberology(
   goal: string,
-  doIt: boolean,
-  option: CombatMacro,
+  doIt: boolean = true,
+  option?: CombatMacro,
 ): number {
   if (!auto_have_skill($skill`Calculate the Universe`)) {
     return -1;

@@ -65,9 +65,9 @@ import {
   $stat,
 } from "libram";
 
-import { auto_advToReserve,LX_doVacation } from "../../autoscend";
+import { auto_advToReserve, LX_doVacation } from "../../autoscend";
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv$1, autoAdv$2, autoAdvBypass$6 } from "../auto_adventure";
+import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
 import {
   autoEquip,
   autoOutfit,
@@ -321,7 +321,7 @@ export function LX_bitchinMeatcar(): boolean {
     );
   }
   //attempt to adventure in degrassi knoll garage, if failed attempt to unlock it via guild
-  if (autoAdv$1(1, $location`The Degrassi Knoll Garage`)) {
+  if (autoAdv($location`The Degrassi Knoll Garage`)) {
     return true;
   } else if (guildStoreAvailable()) {
     visitUrl("guild.php?place=paco");
@@ -565,7 +565,7 @@ export function LX_hippyBoatman(): boolean {
     );
   }
 
-  return autoAdv$2($location`The Old Landfill`);
+  return autoAdv($location`The Old Landfill`);
 }
 
 export function oldLandfillChoiceHandler(choice: number): void {
@@ -858,7 +858,7 @@ function LX_dailyDungeonToken(): boolean {
     autoEquip($slot`acc3`, $item`ring of Detect Boring Doors`);
   }
 
-  return autoAdv$1(1, $location`The Daily Dungeon`);
+  return autoAdv($location`The Daily Dungeon`);
 }
 
 export function dailyDungeonChoiceHandler(
@@ -1214,7 +1214,7 @@ export function LX_dronesOut(): boolean {
       setProperty("auto_skipStage2", true.toString());
       setProperty("auto_skipStage4", true.toString());
     }
-    return autoAdv$2($location`The Hole in the Sky`); //Stars and Lines
+    return autoAdv($location`The Hole in the Sky`); //Stars and Lines
   }
   if (
     toBoolean(getProperty("middleChamberUnlock")) &&
@@ -1231,7 +1231,7 @@ export function LX_dronesOut(): boolean {
     ) {
       setProperty("auto_skipStage4", true.toString()); //don't set skipStage2 because rat king
     }
-    return autoAdv$2($location`The Middle Chamber`); //Tomb ratchets
+    return autoAdv($location`The Middle Chamber`); //Tomb ratchets
   }
   if (
     internalQuestStatus("questL09Topping") >= 2 &&
@@ -1247,7 +1247,7 @@ export function LX_dronesOut(): boolean {
       setProperty("auto_skipStage2", true.toString());
       setProperty("auto_skipStage4", true.toString());
     }
-    return autoAdv$2($location`Twin Peak`); //Hedge trimmers
+    return autoAdv($location`Twin Peak`); //Hedge trimmers
   }
   if (
     internalQuestStatus("questL11Ron") > 1 &&
@@ -1261,7 +1261,7 @@ export function LX_dronesOut(): boolean {
     ) {
       setProperty("auto_skipStage4", true.toString()); //don't set skipStage2 because glark cables
     }
-    return autoAdv$2($location`The Red Zeppelin`); //Glark cables
+    return autoAdv($location`The Red Zeppelin`); //Glark cables
   }
   if (
     !canExtingo &&
@@ -1278,7 +1278,7 @@ export function LX_dronesOut(): boolean {
       setProperty("auto_skipStage2", true.toString());
       setProperty("auto_skipStage4", true.toString());
     }
-    return autoAdv$2($location`The Hidden Bowling Alley`); //Bowling balls
+    return autoAdv($location`The Hidden Bowling Alley`); //Bowling balls
   }
   if (
     internalQuestStatus("questL04Bat") <= 1 &&
@@ -1292,7 +1292,7 @@ export function LX_dronesOut(): boolean {
       setProperty("auto_skipStage2", true.toString());
       setProperty("auto_skipStage4", true.toString());
     }
-    return autoAdv$2($location`The Batrat and Ratbat Burrow`); //Sonar-in-a-Biscuit
+    return autoAdv($location`The Batrat and Ratbat Burrow`); //Sonar-in-a-Biscuit
   }
   if (
     internalQuestStatus("questL08Trapper") === 1 &&
@@ -1305,7 +1305,7 @@ export function LX_dronesOut(): boolean {
       setProperty("auto_skipStage2", true.toString());
       setProperty("auto_skipStage4", true.toString());
     }
-    return autoAdv$2($location`The Goatlet`); //Goat cheese
+    return autoAdv($location`The Goatlet`); //Goat cheese
   }
   if (
     itemAmount($item`stone wool`) === 0 &&
@@ -1440,7 +1440,7 @@ export function candyBlock(): boolean {
       //trick
       if (trick.find()) {
         autoOutfit(candyBlockOutfit("treat"));
-        tricked = autoAdvBypass$6(
+        tricked = autoAdvBypass$1(
           `choice.php?whichchoice=804&option=3&whichhouse=${house}&pwd`,
         );
         refreshBlock();
@@ -1528,19 +1528,19 @@ export function LX_lastChance(): boolean {
       } else {
         if (LX_unlockManorSecondFloor() && L11_mauriceSpookyraven()) {
           banishLoc = $location`Noob Cave`;
-          autoAdv$2(banishLoc); //adventure here to banish constructs and be able to progress other quests after we no longer need constructs
+          autoAdv(banishLoc); //adventure here to banish constructs and be able to progress other quests after we no longer need constructs
         } else if (
           canAdventure($location`Cobb's Knob Harem`) &&
           !isBanished($phylum`goblin`)
         ) {
           banishLoc = $location`Cobb's Knob Harem`;
-          autoAdv$2(banishLoc);
+          autoAdv(banishLoc);
         } else if (
           canAdventure($location`The Outskirts of Cobb's Knob`) &&
           !isBanished($phylum`goblin`)
         ) {
           //to open up access to the Harem. Not banishing in the Outskirts so that we can get the combat in the Harem if needed
-          autoAdv$2($location`The Outskirts of Cobb's Knob`);
+          autoAdv($location`The Outskirts of Cobb's Knob`);
         } else {
           //Nothing else to do but abort and have the user manually clear it
           abort(
@@ -1557,7 +1557,7 @@ export function LX_lastChance(): boolean {
       return false;
     }
     if (isBanished(toPhylum(getProperty("screechDelay")))) {
-      autoAdv$2(banishLoc); //adventure here to banish goblins or constructs and be able to progress other quests
+      autoAdv(banishLoc); //adventure here to banish goblins or constructs and be able to progress other quests
     }
     setProperty("screechDelay", "");
     return true;

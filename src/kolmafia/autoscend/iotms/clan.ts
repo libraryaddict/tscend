@@ -35,7 +35,7 @@ import {
 } from "kolmafia";
 import { $effect, $effects, $item, $items, $location } from "libram";
 
-import { autoAdvBypass$2, CombatMacro } from "../auto_adventure";
+import { autoAdvBypass$1, CombatMacro } from "../auto_adventure";
 import { inebriety_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
 import {
@@ -106,7 +106,7 @@ export function handleFaxMonster(
           $item`deluxe fax machine`.toString(),
           "auto_copies",
         );
-        return autoAdvBypass$2(
+        return autoAdvBypass$1(
           "inv_use.php?pwd&which=3&whichitem=4873",
           $location`Noob Cave`,
           option,
@@ -136,7 +136,7 @@ export function handleFaxMonster(
           $item`deluxe fax machine`.toString(),
           "auto_copies",
         );
-        return autoAdvBypass$2(
+        return autoAdvBypass$1(
           "inv_use.php?pwd&which=3&whichitem=4873",
           $location`Noob Cave`,
           option,

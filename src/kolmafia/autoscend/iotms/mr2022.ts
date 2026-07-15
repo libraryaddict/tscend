@@ -59,7 +59,7 @@ import {
   $stat,
 } from "libram";
 
-import { autoAdv$1, autoAdv$2, autoAdvBypass } from "../auto_adventure";
+import { autoAdv, autoAdvBypass } from "../auto_adventure";
 import { auto_canDrink, spleen_left } from "../auto_consume";
 import {
   addToMaximize,
@@ -153,7 +153,7 @@ export function auto_voidMonster$1(loc: Location): boolean {
 
   if (autoEquip$1($item`cursed magnifying glass`)) {
     setProperty("auto_nextEncounter", "void guy"); //which of the 3 is random, but they're all same phylum and free under same conditions
-    return autoAdv$2(loc);
+    return autoAdv(loc);
   }
   setProperty("auto_nextEncounter", "");
   return false;
@@ -292,7 +292,7 @@ export function auto_fightLocketMonster(
   const pages: Map<number, string> = new Map();
   pages.set(0, "inventory.php?reminisce=1");
   pages.set(1, `choice.php?whichchoice=1463&pwd&option=1&mid=${mon.id}`);
-  if (autoAdvBypass(1, pages, $location`Noob Cave`, null)) {
+  if (autoAdvBypass(1, pages, $location`Noob Cave`)) {
     handleTracker$1(
       mon.toString(),
       $item`combat lover's locket`.toString(),
@@ -412,7 +412,7 @@ export function auto_juneCleaverAdventure(): boolean {
     if (in_koe()) {
       cleaverLoc = $location`Cobb's Knob Treasury`; // arbitrarily picked always accessible location
     }
-    return autoAdv$2(cleaverLoc);
+    return autoAdv(cleaverLoc);
   }
   return false;
 }
@@ -914,7 +914,7 @@ export function auto_autumnatonQuest(): boolean {
       zone_available(targetLocation)
     ) {
       // force one turn in zone to unlock it for bot
-      return autoAdv$1(1, targetLocation);
+      return autoAdv(targetLocation);
     }
     if (auto_sendAutumnaton(targetLocation)) {
       return false;
@@ -928,7 +928,7 @@ export function auto_autumnatonQuest(): boolean {
       zone_available(targetLocation)
     ) {
       // force one turn in zone to unlock it for bot
-      return autoAdv$1(1, targetLocation);
+      return autoAdv(targetLocation);
     }
     if (auto_sendAutumnaton(targetLocation)) {
       return false;
@@ -998,7 +998,7 @@ export function speakeasyCombat(): boolean {
   }
 
   if (auto_remainingSpeakeasyFreeFights() > 0) {
-    return autoAdv$2($location`An Unusually Quiet Barroom Brawl`);
+    return autoAdv($location`An Unusually Quiet Barroom Brawl`);
   }
   return false;
 }

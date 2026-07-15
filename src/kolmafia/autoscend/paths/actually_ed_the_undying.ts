@@ -66,7 +66,7 @@ import {
   auto_buyUpTo,
   pullXWhenHaveY,
 } from "../auto_acquire";
-import { autoAdv$2, autoAdvBypass$1 } from "../auto_adventure";
+import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
 import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
 import { autoChew, spleen_left } from "../auto_consume";
 import {
@@ -290,7 +290,7 @@ function L13_ed_councilWarehouse(): boolean {
   }
 
   if (itemAmount($item`[7965]Holy MacGuffin`) === 0) {
-    autoAdv$2($location`The Secret Council Warehouse`);
+    autoAdv($location`The Secret Council Warehouse`);
   } else {
     //Complete: Should not get here though.
     abort(
@@ -1212,7 +1212,7 @@ function L1_ed_island(): boolean {
   buffMaintain$4($effect`Experimental Effect G-9`);
   //track that we are farming Ka as Ed
   setProperty("_auto_farmingKaAsEd", true.toString());
-  autoAdv$2($location`The Secret Government Laboratory`);
+  autoAdv($location`The Secret Government Laboratory`);
   if (itemAmount($item`bottle-opener keycard`) > 0) {
     use(1, $item`bottle-opener keycard`);
   }
@@ -1245,15 +1245,15 @@ function L1_ed_islandFallback(): boolean {
     return neverendingPartyCombat();
   }
   if (elementalPlanes_access($element`stench`)) {
-    return autoAdv$2($location`Pirates of the Garbage Barges`);
+    return autoAdv($location`Pirates of the Garbage Barges`);
   }
   if (elementalPlanes_access($element`cold`)) {
-    return autoAdv$2($location`VYKEA`);
+    return autoAdv($location`VYKEA`);
   }
   if (elementalPlanes_access($element`hot`)) {
     //Maybe this is a good choice?
     setProperty("choiceAdventure1094", (5).toString());
-    autoAdv$2($location`The SMOOCH Army HQ`);
+    autoAdv($location`The SMOOCH Army HQ`);
     setProperty("choiceAdventure1094", (2).toString());
     return true;
   }
@@ -1298,7 +1298,7 @@ function L1_ed_islandFallback(): boolean {
 
   if (haveSkill($skill`Upgraded Legs`) || itemAmount($item`Ka coin`) >= 10) {
     auto_change_mcd(11);
-    const retVal: boolean = autoAdv$2($location`The Hippy Camp`);
+    const retVal: boolean = autoAdv($location`The Hippy Camp`);
     if (itemAmount($item`filthy corduroys`) > 0) {
       if (closetAmount($item`filthy corduroys`) > 0) {
         autosell(itemAmount($item`filthy corduroys`), $item`filthy corduroys`);
@@ -1351,7 +1351,7 @@ function L1_ed_islandFallback(): boolean {
   setProperty("auto_needLegs", true.toString());
   addToMaximize("-10ml");
   auto_change_mcd(0);
-  return autoAdv$2($location`The Outskirts of Cobb's Knob`);
+  return autoAdv($location`The Outskirts of Cobb's Knob`);
 }
 
 export function L9_ed_chasmStart(): boolean {

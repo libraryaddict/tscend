@@ -57,7 +57,7 @@ import {
 } from "libram";
 
 import { acquireTotem, auto_buyUpTo } from "./auto_acquire";
-import { autoAdv$2 } from "./auto_adventure";
+import { autoAdv } from "./auto_adventure";
 import { isSpleenConsumable } from "./auto_consume";
 import {
   auto_loadEquipped,
@@ -1701,7 +1701,7 @@ export function buffMaintain$2(
         // don't want it unless actually going to a shadow rift
         const savedLoc: Location = myLocation();
         setProperty("auto_disableAdventureHandling", true.toString());
-        autoAdv$2(auto_availableBrickRift());
+        autoAdv(auto_availableBrickRift());
         setProperty("auto_disableAdventureHandling", false.toString());
         setLocation(savedLoc);
         ret = true;

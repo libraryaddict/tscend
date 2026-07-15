@@ -61,7 +61,7 @@ import {
   $stat,
 } from "libram";
 
-import { autoAdv$2, autoAdvBypass } from "../auto_adventure";
+import { autoAdv, autoAdvBypass } from "../auto_adventure";
 import {
   addToMaximize,
   autoEquip,
@@ -313,9 +313,9 @@ export function auto_piranhaPlantFightsRemaining(): number {
 
 export function auto_mushroomGardenHandler(): boolean {
   if (auto_piranhaPlantFightsRemaining() > 0) {
-    return autoAdv$2($location`Your Mushroom Garden`);
+    return autoAdv($location`Your Mushroom Garden`);
   } else if (auto_canTendMushroomGarden()) {
-    autoAdv$2($location`Your Mushroom Garden`);
+    autoAdv($location`Your Mushroom Garden`);
     // TODO: Malibu Stacey - move all this to a more central location after refactor
     use(
       itemAmount($item`colossal free-range mushroom`),
@@ -581,7 +581,7 @@ export function auto_cargoShortsOpenPocket$2(
     1,
     `choice.php?pwd=${myHash()}&whichchoice=1420&option=1&pocket=${availablePocket(m)}`,
   );
-  if (autoAdvBypass(0, pages, $location`Noob Cave`, null)) {
+  if (autoAdvBypass(0, pages, $location`Noob Cave`)) {
     handleTracker$1(
       m.toString(),
       wrap_item($item`Cargo Cultist Shorts`).toString(),

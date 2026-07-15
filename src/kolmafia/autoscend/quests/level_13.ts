@@ -86,12 +86,7 @@ import {
   canPull$1,
   pullXWhenHaveY,
 } from "../auto_acquire";
-import {
-  autoAdv$1,
-  autoAdv$2,
-  autoAdvBypass$1,
-  autoLuckyAdv,
-} from "../auto_adventure";
+import { autoAdv, autoAdvBypass$1, autoLuckyAdv } from "../auto_adventure";
 import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
 import {
   addToMaximize,
@@ -336,7 +331,7 @@ function EightBitRealmHandler(): boolean {
     case "black":
       // limited buff that is helpful for 3 of 4 8-bit zones
       buffMaintain$4($effect`Shadow Waters`);
-      adv_spent = autoAdv$2($location`Vanya's Castle`);
+      adv_spent = autoAdv($location`Vanya's Castle`);
       break;
     case "red":
       // limited buff that is helpful for 3 of 4 8-bit zones
@@ -344,16 +339,16 @@ function EightBitRealmHandler(): boolean {
       if (meatDropModifier() < 395) {
         auto_getCitizenZone$1("meat");
       }
-      adv_spent = autoAdv$2($location`The Fungus Plains`);
+      adv_spent = autoAdv($location`The Fungus Plains`);
       break;
     case "blue":
       prepForMegaloCity();
-      adv_spent = autoAdv$2($location`Megalo-City`);
+      adv_spent = autoAdv($location`Megalo-City`);
       break;
     case "green":
       // limited buff that is helpful for 3 of 4 8-bit zones
       buffMaintain$4($effect`Shadow Waters`);
-      adv_spent = autoAdv$2($location`Hero's Field`);
+      adv_spent = autoAdv($location`Hero's Field`);
       break;
     default:
       abort("Property 8BitColor not set to a valid value");
@@ -548,7 +543,7 @@ export function LX_getStarKey(): boolean {
     );
     handleFamiliar$1($familiar`Grey Goose`);
   }
-  return autoAdv$1(1, $location`The Hole in the Sky`);
+  return autoAdv($location`The Hole in the Sky`);
 }
 
 export function beehiveConsider(at_tower: boolean): boolean {
@@ -1116,7 +1111,7 @@ export function L13_towerNSContests(): boolean {
   equipBaseline();
 
   if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_crowd1")) {
-    autoAdv$1(1, $location`Fastest Adventurer Contest`);
+    autoAdv($location`Fastest Adventurer Contest`);
     return true;
   }
 
@@ -1136,7 +1131,7 @@ export function L13_towerNSContests(): boolean {
     if (toCompete === Location.none) {
       abort("nsChallenge1 is invalid. This is a severe error.");
     }
-    autoAdv$1(1, toCompete);
+    autoAdv(toCompete);
     return true;
   }
 
@@ -1162,7 +1157,7 @@ export function L13_towerNSContests(): boolean {
     if (toCompete === Location.none) {
       abort("nsChallenge1 is invalid. This is a severe error.");
     }
-    autoAdv$1(1, toCompete);
+    autoAdv(toCompete);
     return true;
   }
   auto_log_info("No challenges left!", "green");
@@ -1634,7 +1629,7 @@ function L13_towerNSTowerBones(): boolean {
       lar_repeat($location`The Castle in the Clouds in the Sky (Ground Floor)`)
     ) {
       auto_log_info("Backfarming an Electric Boning Knife", "green");
-      return autoAdv$2(
+      return autoAdv(
         $location`The Castle in the Clouds in the Sky (Ground Floor)`,
       );
     } else {
@@ -1867,9 +1862,9 @@ function L13_towerNSTowerShadow(): boolean {
     // If we're in Kingdom of Exploathing, there's no realm . Let's try clovering for massage oil instead
     if (in_koe()) {
       cloverUsageInit$1();
-      autoAdv$2($location`Cobb's Knob Harem`);
+      autoAdv($location`Cobb's Knob Harem`);
       if (cloverUsageRestart()) {
-        autoAdv$2($location`Cobb's Knob Harem`);
+        autoAdv($location`Cobb's Knob Harem`);
       }
       cloverUsageFinish();
     } else {
@@ -1885,7 +1880,7 @@ function L13_towerNSTowerShadow(): boolean {
           "I tried to create [red pixel potions] for the shadow and mysteriously failed",
         );
       }
-      return autoAdv$2($location`The Fungus Plains`);
+      return autoAdv($location`The Fungus Plains`);
     }
   }
 
@@ -2008,13 +2003,13 @@ export function L13_towerNSFinal(): boolean {
       return true;
     }
     if (lastMonster() === $monster`Naughty Sorceress`) {
-      autoAdv$1(1, $location`Noob Cave`);
+      autoAdv($location`Noob Cave`);
       if (haveEffect($effect`Beaten Up`) > 0) {
         auto_log_warning("Blobbage Sorceress beat us up. Wahhh.", "red");
         setProperty("auto_disableAdventureHandling", true.toString());
         return true;
       }
-      autoAdv$1(1, $location`Noob Cave`);
+      autoAdv($location`Noob Cave`);
       if (haveEffect($effect`Beaten Up`) > 0) {
         if (getProperty("lastEncounter") === "The Naughty Sorceress (3)") {
           visitUrl("choice.php");
@@ -2188,7 +2183,7 @@ export function L13_towerNSNagamar(): boolean {
     internalQuestStatus("questL13Final") === 12 &&
     !in_koe()
   ) {
-    return autoAdv$2($location`The VERY Unquiet Garves`);
+    return autoAdv($location`The VERY Unquiet Garves`);
   }
 
   if (

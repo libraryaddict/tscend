@@ -75,13 +75,7 @@ import {
   pullXWhenHaveY,
   pulverizeThing,
 } from "../auto_acquire";
-import {
-  autoAdv,
-  autoAdv$1,
-  autoAdv$2,
-  autoAdvBypass,
-  autoLuckyAdv$1,
-} from "../auto_adventure";
+import { autoAdv, autoAdvBypass, autoLuckyAdv$1 } from "../auto_adventure";
 import { buffMaintain$3 } from "../auto_buff";
 import {
   auto_canEat,
@@ -168,7 +162,7 @@ import {
   neverendingPartyCombat,
   songboomSetting,
 } from "../iotms/mr2018";
-import { auto_sausageGoblin, auto_sausageGoblin$2 } from "../iotms/mr2019";
+import { auto_sausageGoblin } from "../iotms/mr2019";
 import { auto_cargoShortsOpenPocket } from "../iotms/mr2020";
 import {
   auto_backupTarget,
@@ -713,7 +707,7 @@ export function warAdventure(): boolean {
       );
       handleFamiliar$1($familiar`Grey Goose`);
     }
-    if (!autoAdv$1(1, $location`The Battlefield (Frat Uniform)`)) {
+    if (!autoAdv($location`The Battlefield (Frat Uniform)`)) {
       setProperty(
         "hippiesDefeated",
         (toInt(getProperty("hippiesDefeated")) + 1).toString(),
@@ -721,7 +715,7 @@ export function warAdventure(): boolean {
       visitUrl("island.php");
     }
   } else {
-    if (!autoAdv$1(1, $location`The Battlefield (Hippy Uniform)`)) {
+    if (!autoAdv($location`The Battlefield (Hippy Uniform)`)) {
       setProperty(
         "fratboysDefeated",
         (toInt(getProperty("fratboysDefeated")) + 1).toString(),
@@ -788,12 +782,12 @@ export function L12_getOutfit(): boolean {
     possessOutfit$1("Filthy Hippy Disguise")
   ) {
     autoOutfit("Filthy Hippy Disguise");
-    return autoAdv$2($location`Wartime Frat House (Hippy Disguise)`);
+    return autoAdv($location`Wartime Frat House (Hippy Disguise)`);
   }
   // if outfit could not be pulled and have a [Frat Boy Ensemble] outfit then wear it and adventure in Hippy Camp to get war outfit
   if (auto_warSide() === "hippy" && possessOutfit$1("Frat Boy Ensemble")) {
     autoOutfit("Frat Boy Ensemble");
-    return autoAdv$2($location`Wartime Hippy Camp (Frat Disguise)`);
+    return autoAdv($location`Wartime Hippy Camp (Frat Disguise)`);
   }
 
   if (L12_preOutfit()) {
@@ -873,17 +867,17 @@ export function L12_preOutfit(): boolean {
   if (!toBoolean(getProperty("auto_hippyInstead"))) {
     auto_log_info("Trying to acquire a filthy hippy outfit", "blue");
     if (internalQuestStatus("questL12War") === -1) {
-      adventure_status = autoAdv$1(1, $location`The Hippy Camp`);
+      adventure_status = autoAdv($location`The Hippy Camp`);
     } else {
-      adventure_status = autoAdv$1(1, $location`Wartime Hippy Camp`);
+      adventure_status = autoAdv($location`Wartime Hippy Camp`);
     }
   } else {
     // fighting for hippies, adventure in orcish frat house for [Frat Boy Ensemble] outfit to then adventure in hippy camp for hippy war outfit
     auto_log_info("Trying to acquire a frat boy ensemble", "blue");
     if (internalQuestStatus("questL12War") === -1) {
-      adventure_status = autoAdv$1(1, $location`The Orcish Frat House`);
+      adventure_status = autoAdv($location`The Orcish Frat House`);
     } else {
-      adventure_status = autoAdv$1(1, $location`Wartime Frat House`);
+      adventure_status = autoAdv($location`Wartime Frat House`);
     }
   }
   // We check the adventure status to avoid an infinite loop if we can't access any of these zones.
@@ -938,7 +932,7 @@ export function L12_startWar(): boolean {
     if (L12_singleNCForWarStart()) {
       auto_forceNextNoncombat($location`Wartime Hippy Camp`);
     }
-    autoAdv$1(1, $location`Wartime Hippy Camp`);
+    autoAdv($location`Wartime Hippy Camp`);
     //if war started, accept flyer quest for fratboys.
     //this is only started here and only for frat.
     //move this to dedicated function that can start it for both sides as appropriate
@@ -951,7 +945,7 @@ export function L12_startWar(): boolean {
     if (L12_singleNCForWarStart()) {
       auto_forceNextNoncombat($location`Wartime Frat House`);
     }
-    autoAdv$1(1, $location`Wartime Frat House`);
+    autoAdv($location`Wartime Frat House`);
   }
 
   return true;
@@ -999,7 +993,7 @@ export function L12_filthworms(): boolean {
   if (haveEffect($effect`Filthworm Guard Stench`) > 0) {
     auto_log_info("Finishing the orchard.", "blue");
     preventFratOutfitsIfNeeded();
-    return autoAdv$1(1, $location`The Filthworm Queen's Chamber`);
+    return autoAdv($location`The Filthworm Queen's Chamber`);
   }
   //if we can guarentee stealing the stench gland then no point in buffing item drop
   let glandGuaranteed: boolean = true;
@@ -1177,11 +1171,11 @@ export function L12_filthworms(): boolean {
       }
       //todo if still not glandGuaranteed try to force the use of free kills in combat?
     }
-    retval = autoAdv$1(1, $location`The Royal Guard Chamber`);
+    retval = autoAdv($location`The Royal Guard Chamber`);
   } else if (haveEffect($effect`Filthworm Larva Stench`) > 0) {
-    retval = autoAdv$1(1, $location`The Feeding Chamber`);
+    retval = autoAdv($location`The Feeding Chamber`);
   } else {
-    retval = autoAdv$1(1, $location`The Hatching Chamber`);
+    retval = autoAdv($location`The Hatching Chamber`);
   }
 
   return retval;
@@ -1393,7 +1387,6 @@ export function L12_gremlins(): boolean {
   songboomSetting("dr");
   if (itemAmount($item`molybdenum hammer`) === 0) {
     autoAdv(
-      1,
       $location`Next to that Barrel with Something Burning in it`,
       auto_JunkyardCombatHandler,
     );
@@ -1401,17 +1394,12 @@ export function L12_gremlins(): boolean {
   }
 
   if (itemAmount($item`molybdenum screwdriver`) === 0) {
-    autoAdv(
-      1,
-      $location`Out by that Rusted-Out Car`,
-      auto_JunkyardCombatHandler,
-    );
+    autoAdv($location`Out by that Rusted-Out Car`, auto_JunkyardCombatHandler);
     return true;
   }
 
   if (itemAmount($item`molybdenum crescent wrench`) === 0) {
     autoAdv(
-      1,
       $location`Over Where the Old Tires Are`,
       auto_JunkyardCombatHandler,
     );
@@ -1420,7 +1408,6 @@ export function L12_gremlins(): boolean {
 
   if (itemAmount($item`molybdenum pliers`) === 0) {
     autoAdv(
-      1,
       $location`Near an Abandoned Refrigerator`,
       auto_JunkyardCombatHandler,
     );
@@ -1528,7 +1515,7 @@ export function L12_sonofaBeach(): boolean {
     setProperty("auto_doCombatCopy", "yes");
   }
 
-  const retval: boolean = autoAdv$2($location`Sonofa Beach`);
+  const retval: boolean = autoAdv($location`Sonofa Beach`);
 
   setProperty("auto_doCombatCopy", "no");
   edAcquireHP();
@@ -1599,7 +1586,7 @@ export function L12_sonofaPrefix(): boolean {
           auto_voteMonster$2(false, $location`Sonofa Beach`);
           return true;
         } else if (auto_sausageGoblin() && !auto_haveVotingBooth()) {
-          auto_sausageGoblin$2($location`Sonofa Beach`, null);
+          auto_sausageGoblin($location`Sonofa Beach`);
           return true;
         }
       } finally {
@@ -1695,7 +1682,7 @@ export function L12_sonofaPrefix(): boolean {
 
   auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
 
-  const retval: boolean = autoAdv$2($location`Sonofa Beach`);
+  const retval: boolean = autoAdv($location`Sonofa Beach`);
   if (!retval) {
     auto_log_error("Failed to adventure in [Sonofa Beach]");
     resetState();
@@ -1824,7 +1811,7 @@ export function L12_lastDitchFlyer(): boolean {
     return neverendingPartyCombat();
   }
   if (scalezone !== Location.none) {
-    return autoAdv$2(scalezone);
+    return autoAdv(scalezone);
   }
   return false;
 }
@@ -2091,7 +2078,7 @@ export function L12_themtharHills(): boolean {
     const lastMeat: number = toInt(getProperty("currentNunneryMeat"));
     const myLastMeat: number = myMeat();
     auto_log_info(`Meat drop to start: ${meatDropModifier()}`, "blue");
-    if (!autoAdv$1(1, $location`The Themthar Hills`)) {
+    if (!autoAdv($location`The Themthar Hills`)) {
       //Maybe we passed it!
       visitUrl("bigisland.php?place=nunnery");
     }
@@ -2154,10 +2141,7 @@ function LX_obtainChaosButterfly(): boolean {
     auto_estimatedAdventuresForChaosButterfly() < 15
   ) {
     if (
-      autoAdv$1(
-        1,
-        $location`The Castle in the Clouds in the Sky (Ground Floor)`,
-      )
+      autoAdv($location`The Castle in the Clouds in the Sky (Ground Floor)`)
     ) {
       return true;
     } else {
@@ -2186,7 +2170,7 @@ function LX_obtainChaosButterfly(): boolean {
         "Looks like I should use the [chaos butterfly] in [McMillicancuddy's Barn]",
         "blue",
       );
-      return autoAdv$1(1, $location`McMillicancuddy's Barn`);
+      return autoAdv($location`McMillicancuddy's Barn`);
     }
   }
 
@@ -2238,25 +2222,25 @@ export function L12_farm(): boolean {
 
   switch (toInt(getProperty("auto_L12FarmStage"))) {
     case 0:
-      if (autoAdv$1(1, $location`McMillicancuddy's Barn`)) {
+      if (autoAdv($location`McMillicancuddy's Barn`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "1");
     // INTENTIONAL LACK OF BREAK
     case 1:
-      if (autoAdv$1(1, $location`McMillicancuddy's Pond`)) {
+      if (autoAdv($location`McMillicancuddy's Pond`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "2");
     // INTENTIONAL LACK OF BREAK
     case 2:
-      if (autoAdv$1(1, $location`McMillicancuddy's Back 40`)) {
+      if (autoAdv($location`McMillicancuddy's Back 40`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "3");
     // INTENTIONAL LACK OF BREAK
     case 3:
-      if (autoAdv$1(1, $location`McMillicancuddy's Other Back 40`)) {
+      if (autoAdv($location`McMillicancuddy's Other Back 40`)) {
         return true;
       }
       setProperty("auto_L12FarmStage", "4");
@@ -2611,7 +2595,7 @@ export function L12_finalizeWar(): boolean {
   pages.set(0, "bigisland.php?place=camp&whichcamp=1");
   pages.set(1, "bigisland.php?place=camp&whichcamp=2");
   pages.set(2, "bigisland.php?action=bossfight&pwd");
-  if (!autoAdvBypass(0, pages, bossFight, null)) {
+  if (!autoAdvBypass(0, pages, bossFight)) {
     auto_log_warning("Boss already defeated, ignoring", "red");
   }
 

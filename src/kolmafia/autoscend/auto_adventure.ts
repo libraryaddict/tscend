@@ -58,9 +58,8 @@ function findMacroName(func: unknown): string {
 // TODO: seems to return false even if it adventures successfully but doesn't cost an adventure (mafia issue?)
 //Defined in autoscend/auto_adventure.ash
 export function autoAdv(
-  num: number,
-  loc: Location,
-  option: CombatMacro,
+  loc: Location = Location.none,
+  option?: CombatMacro,
 ): boolean {
   //num is ignored
   if (!zone_isAvailable(loc, true)) {
@@ -110,22 +109,13 @@ export function autoAdv(
   return advReturn;
 }
 
-export function autoAdv$1(num: number, loc: Location): boolean {
-  //num is ignored
-  return autoAdv(num, loc, null);
-}
-
-export function autoAdv$2(loc: Location): boolean {
-  return autoAdv(1, loc, null);
-}
-
 export function autoLuckyAdv(loc: Location, override: boolean): boolean {
   let gotLucky: boolean = false;
   if (cloversAvailable(override) > 0) {
     cloverUsageInit(override);
-    gotLucky = autoAdv$2(loc);
+    gotLucky = autoAdv(loc);
     if (cloverUsageRestart()) {
-      gotLucky = autoAdv$2(loc);
+      gotLucky = autoAdv(loc);
     }
     cloverUsageFinish();
   }
@@ -143,7 +133,7 @@ export function autoAdvBypass(
   urlGetFlags: number,
   url: Map<number, string>,
   loc: Location,
-  option: CombatMacro,
+  option?: CombatMacro,
 ): boolean {
   if (!zone_isAvailable(loc, true)) {
     // reinstate this check for now. Didn't fix the War boss fight outside of Ed & KoE,
@@ -238,24 +228,12 @@ export function autoAdvBypass(
   return true;
 }
 
-export function autoAdvBypass$1(url: string, loc: Location): boolean {
-  return autoAdvBypass$2(url, loc, null);
-}
-
-export function autoAdvBypass$2(
+export function autoAdvBypass$1(
   url: string,
-  loc: Location,
-  option: CombatMacro,
+  loc: Location = $location`Noob Cave`,
+  option?: CombatMacro,
 ): boolean {
   const urlConvert: Map<number, string> = new Map();
   urlConvert.set(0, url);
   return autoAdvBypass(0, urlConvert, loc, option);
-}
-
-export function autoAdvBypass$6(url: string): boolean {
-  return autoAdvBypass$1(url, $location`Noob Cave`);
-}
-
-export function autoAdvBypass$8(url: string, option: CombatMacro): boolean {
-  return autoAdvBypass$2(url, $location`Noob Cave`, option);
 }

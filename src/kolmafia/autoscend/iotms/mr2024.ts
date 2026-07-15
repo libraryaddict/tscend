@@ -59,7 +59,7 @@ import {
   c2t_megg_maxed,
   c2t_megg_preAdv,
 } from "../../c2t_megg";
-import { autoAdvBypass$6 } from "../auto_adventure";
+import { autoAdvBypass$1 } from "../auto_adventure";
 import { fullness_left } from "../auto_consume";
 import { equipMaximizedGear, possessEquipment } from "../auto_equipment";
 import {
@@ -1179,7 +1179,7 @@ export function auto_meggFight(mon: Monster, speculative: boolean): boolean {
   }
 
   if (
-    autoAdvBypass$6(`choice.php?pwd&whichchoice=1516&option=1&mid=${monstring}`)
+    autoAdvBypass$1(`choice.php?pwd&whichchoice=1516&option=1&mid=${monstring}`)
   ) {
     handleTracker$1(
       mon.toString(),

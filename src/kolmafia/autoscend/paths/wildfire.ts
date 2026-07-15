@@ -30,7 +30,7 @@ import { $element, $item, $location, $path, $skill, $slot } from "libram";
 
 import { auto_advToReserve } from "../../autoscend";
 import { auto_buyUpTo, pull_meat } from "../auto_acquire";
-import { autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { inebriety_left, stomach_left } from "../auto_consume";
 import { autoEquip, possessOutfit$1 } from "../auto_equipment";
 import { acquireHP, acquireMP } from "../auto_restore";
@@ -38,7 +38,6 @@ import {
   auto_log_info$1,
   auto_log_warning$1,
   doNumberology,
-  doNumberology$2,
   inKnollSign,
   internalQuestStatus,
   isDesertAvailable,
@@ -118,7 +117,7 @@ export function LX_wildfire_calculateTheUniverse(): boolean {
     auto_warSide() === "fratboy" &&
     auto_saberChargesAvailable() > 0
   ) {
-    if (doNumberology$2("battlefield", false) !== -1) {
+    if (doNumberology("battlefield", false) !== -1) {
       autoEquip($slot`weapon`, $item`Fourth of May Cosplay Saber`);
       return doNumberology("battlefield") !== -1;
     }
@@ -249,7 +248,7 @@ function LX_wildfire_grease_pump(): boolean {
       if (toInt(getProperty("lastSecondFloorUnlock")) < myAscensions()) {
         return false; //go do other stuff until spookyraven second floor is unlocked
       }
-      return autoAdv$2($location`The Haunted Bedroom`); //get enough meat to grease the pump
+      return autoAdv($location`The Haunted Bedroom`); //get enough meat to grease the pump
     }
   }
 

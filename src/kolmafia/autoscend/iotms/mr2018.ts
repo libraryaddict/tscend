@@ -53,12 +53,7 @@ import {
   $stat,
 } from "libram";
 
-import {
-  autoAdv$1,
-  autoAdv$2,
-  autoAdvBypass$8,
-  CombatMacro,
-} from "../auto_adventure";
+import { autoAdv, autoAdvBypass$1, CombatMacro } from "../auto_adventure";
 import {
   auto_spleenFamiliarAdvItemsPossessed,
   spleen_left,
@@ -278,22 +273,10 @@ export function auto_godLobsterFightsRemaining(): number {
   return 3 - toInt(getProperty("_godLobsterFights"));
 }
 
-export function godLobsterCombat(): boolean {
-  return godLobsterCombat$1(Item.none);
-}
-
-function godLobsterCombat$1(it: Item): boolean {
-  return godLobsterCombat$2(it, 3);
-}
-
-export function godLobsterCombat$2(it: Item, goal: number): boolean {
-  return godLobsterCombat$3(it, goal, null);
-}
-
-function godLobsterCombat$3(
-  it: Item,
-  goal: number,
-  option: CombatMacro,
+export function godLobsterCombat(
+  it: Item = Item.none,
+  goal: number = 3,
+  option?: CombatMacro,
 ): boolean {
   // it = equipment we want the God Lobster to wear
   // goal = option we want to select in the post-combat choice
@@ -323,7 +306,11 @@ function godLobsterCombat$3(
   }
 
   setProperty("_auto_lobsterChoice", goal.toString());
-  return autoAdvBypass$8("main.php?fightgodlobster=1", option);
+  return autoAdvBypass$1(
+    "main.php?fightgodlobster=1",
+    $location`Noob Cave`,
+    option,
+  );
 }
 
 export function fantasyRealmAvailable(): boolean {
@@ -410,7 +397,7 @@ export function fantasyRealmToken(): boolean {
   }
   //This does not appear to check that we no longer need to adventure there...
 
-  return autoAdv$1(1, $location`The Bandit Crossroads`);
+  return autoAdv($location`The Bandit Crossroads`);
 }
 
 function allFantasyRealmLocations(): Map<Location, boolean> {
@@ -1008,7 +995,7 @@ export function neverendingPartyCombat(): boolean {
     autoEquip($slot`shirt`, $item`makeshift garbage shirt`);
   }
 
-  return autoAdv$2($location`The Neverending Party`);
+  return autoAdv($location`The Neverending Party`);
 }
 
 export function neverendingPartyChoiceHandler(choice: number): void {
@@ -1489,7 +1476,7 @@ export function auto_voteMonster$2(freeMon: boolean, loc: Location): boolean {
 
   if (autoEquip($slot`acc3`, $item`"I Voted!" sticker`)) {
     setProperty("auto_nextEncounter", getProperty("_voteMonster"));
-    return autoAdv$2(loc);
+    return autoAdv(loc);
   }
   setProperty("auto_nextEncounter", "");
   return false;

@@ -25,7 +25,7 @@ import {
 } from "libram";
 
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
 import { autoOutfit, possessOutfit$1 } from "../auto_equipment";
 import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
@@ -88,7 +88,7 @@ export function L5_getEncryptionKey(): boolean {
   }
 
   auto_log_info("Looking for the knob.", "blue");
-  return autoAdv$2($location`The Outskirts of Cobb's Knob`);
+  return autoAdv($location`The Outskirts of Cobb's Knob`);
 }
 
 export function L5_findKnob(): boolean {
@@ -136,7 +136,7 @@ export function L5_haremOutfit(): boolean {
   bat_formBats$1();
 
   auto_log_info("Looking for some sexy lingerie!", "blue");
-  if (autoAdv$2($location`Cobb's Knob Harem`)) {
+  if (autoAdv($location`Cobb's Knob Harem`)) {
     return true;
   }
   return false;
@@ -166,9 +166,9 @@ export function L5_goblinKing(): boolean {
   }
   buffMaintain$4($effect`Knob Goblin Perfume`);
   if (haveEffect($effect`Knob Goblin Perfume`) === 0) {
-    let advSpent_1: boolean = autoAdv$2($location`Cobb's Knob Harem`);
+    let advSpent_1: boolean = autoAdv($location`Cobb's Knob Harem`);
     if (haveEffect($effect`Knob Goblin Perfume`) === 0) {
-      advSpent_1 = autoAdv$2($location`Cobb's Knob Harem`);
+      advSpent_1 = autoAdv($location`Cobb's Knob Harem`);
     }
     return advSpent_1;
   }
@@ -198,7 +198,7 @@ export function L5_goblinKing(): boolean {
   }
   setProperty("auto_nextEncounter", "Knob Goblin King");
   setProperty("auto_nonAdvLoc", true.toString());
-  const advSpent: boolean = autoAdv$2($location`Throne Room`);
+  const advSpent: boolean = autoAdv($location`Throne Room`);
 
   if (
     itemAmount($item`Crown of the Goblin King`) > 0 ||

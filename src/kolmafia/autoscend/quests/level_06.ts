@@ -21,7 +21,7 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $location, $locations, $skill, $slot } from "libram";
 
-import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { autoEquip } from "../auto_equipment";
 import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
@@ -128,7 +128,7 @@ export function L6_friarsGetParts(): boolean {
     ) {
       return false;
     }
-    return autoAdv$2($location`The Dark Neck of the Woods`);
+    return autoAdv($location`The Dark Neck of the Woods`);
   }
   if (itemAmount($item`eldritch butterknife`) === 0) {
     auto_log_info("Getting Eldritch Butterknife", "blue");
@@ -144,7 +144,7 @@ export function L6_friarsGetParts(): boolean {
     ) {
       return false;
     }
-    return autoAdv$2($location`The Dark Elbow of the Woods`);
+    return autoAdv($location`The Dark Elbow of the Woods`);
   }
   if (itemAmount($item`box of birthday candles`) === 0) {
     if (
@@ -168,7 +168,7 @@ export function L6_friarsGetParts(): boolean {
     ) {
       return false;
     }
-    return autoAdv$2($location`The Dark Heart of the Woods`);
+    return autoAdv($location`The Dark Heart of the Woods`);
   }
 
   auto_log_info("Finishing friars", "blue");
@@ -190,15 +190,15 @@ export function L6_dakotaFanning(): boolean {
   }
 
   if (itemAmount($item`pellet of plant food`) === 0) {
-    autoAdv$1(1, $location`The Haunted Conservatory`);
+    autoAdv($location`The Haunted Conservatory`);
     return true;
   }
 
   if (itemAmount($item`heavy-duty bendy straw`) === 0) {
     if (getProperty("questL06Friar") !== "finished") {
-      autoAdv$1(1, $location`The Dark Heart of the Woods`);
+      autoAdv($location`The Dark Heart of the Woods`);
     } else {
-      autoAdv$1(1, $location`Pandamonium Slums`);
+      autoAdv($location`Pandamonium Slums`);
     }
     return true;
   }

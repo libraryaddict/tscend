@@ -72,7 +72,7 @@ import {
   $stat,
 } from "libram";
 
-import { autoAdv$2, autoAdvBypass } from "../auto_adventure";
+import { autoAdv, autoAdvBypass } from "../auto_adventure";
 import { fullness_left, inebriety_left } from "../auto_consume";
 import {
   addBonusToMaximize,
@@ -401,7 +401,7 @@ export function auto_doPhoneQuest(): boolean {
   }
   //Force a non combat instead of adventuring there to save turns, especially in AG
   if (auto_haveQueuedForcedNonCombat()) {
-    return autoAdv$2(auto_availableBrickRift());
+    return autoAdv(auto_availableBrickRift());
   }
 
   if (auto_canForceNextNoncombat() && in_avantGuard()) {
@@ -410,7 +410,7 @@ export function auto_doPhoneQuest(): boolean {
   }
 
   backupSetting("shadowLabyrinthGoal", "browser"); // use mafia's automation handling for the Shadow Rift NC.
-  return autoAdv$2(auto_availableBrickRift());
+  return autoAdv(auto_availableBrickRift());
 }
 
 export function auto_isShadowRiftMonster(m: Monster): boolean {
@@ -1444,7 +1444,7 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
       if (wantToFreeRun()) {
         setProperty("auto_forceFreeRun", true.toString());
       }
-      if (!autoAdv$2(loc)) {
+      if (!autoAdv(loc)) {
         auto_log_debug$1(
           `Attempted to get citizen of a zone buff for ${goal} goal however we failed.`,
         );
@@ -1612,7 +1612,7 @@ export function auto_fightFlamingLeaflet(): boolean {
   const pages: Map<number, string> = new Map();
   pages.set(0, "campground.php?preaction=leaves");
   pages.set(1, "choice.php?pwd&whichchoice=1510&option=1&leaves=11");
-  return autoAdvBypass(0, pages, $location`Noob Cave`, null);
+  return autoAdvBypass(0, pages, $location`Noob Cave`);
 }
 
 export function auto_haveCCSC(): boolean {

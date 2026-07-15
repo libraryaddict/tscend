@@ -38,7 +38,7 @@ import {
 } from "libram";
 
 import { auto_buyUpTo, canPull$1, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv$1, autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { buffMaintain$4 } from "../auto_buff";
 import { autoEquip$1, possessEquipment } from "../auto_equipment";
 import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
@@ -109,7 +109,7 @@ export function L10_plantThatBean(): boolean {
         "No enchanted bean. Getting one from The Beanbat Chamber.",
         "blue",
       );
-      return autoAdv$2($location`The Beanbat Chamber`);
+      return autoAdv($location`The Beanbat Chamber`);
     }
   }
   return false;
@@ -180,7 +180,7 @@ export function L10_airship(): boolean {
   if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
     auto_changeSnapperPhylum($phylum`dude`);
   }
-  autoAdv$2($location`The Penultimate Fantasy Airship`);
+  autoAdv($location`The Penultimate Fantasy Airship`);
   return true;
 }
 
@@ -290,7 +290,7 @@ export function L10_basement(): boolean {
       autoEquip$1($item`titanium assault umbrella`);
     }
   }
-  autoAdv$1(1, $location`The Castle in the Clouds in the Sky (Basement)`);
+  autoAdv($location`The Castle in the Clouds in the Sky (Basement)`);
 
   return true;
 }
@@ -325,9 +325,7 @@ export function L10_ground(): boolean {
     }
   }
 
-  return autoAdv$2(
-    $location`The Castle in the Clouds in the Sky (Ground Floor)`,
-  );
+  return autoAdv($location`The Castle in the Clouds in the Sky (Ground Floor)`);
 }
 
 export function L10_topFloor(): boolean {
@@ -376,7 +374,7 @@ export function L10_topFloor(): boolean {
     return false;
   }
   autoEquip$1($item`Mohawk wig`);
-  autoAdv$1(1, $location`The Castle in the Clouds in the Sky (Top Floor)`);
+  autoAdv($location`The Castle in the Clouds in the Sky (Top Floor)`);
 
   if (internalQuestStatus("questL10Garbage") > 9) {
     council();
@@ -501,7 +499,7 @@ export function L10_holeInTheSkyUnlock(): boolean {
     return false;
   }
 
-  autoAdv$1(1, $location`The Castle in the Clouds in the Sky (Top Floor)`);
+  autoAdv($location`The Castle in the Clouds in the Sky (Top Floor)`);
 
   return true;
 }

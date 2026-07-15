@@ -14,7 +14,7 @@ import {
 import { $class, $familiar, $item, $location, $monster, $path } from "libram";
 
 import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import { auto_have_familiar } from "../auto_familiar";
 import { hasTorso } from "../auto_util";
 
@@ -116,7 +116,7 @@ export function auto_smallCampgroundGear(): boolean {
   // get drops from dirt if we can survive at least 2 rounds of getting hit
   // always get dirt drops in HC small
   if (!haveGear(dirtGear)) {
-    return autoAdv$2($location`Fight in the Dirt`);
+    return autoAdv($location`Fight in the Dirt`);
   } else if (
     beatenUpCount > 0 &&
     !haveGear(
@@ -125,7 +125,7 @@ export function auto_smallCampgroundGear(): boolean {
     ) &&
     myMaxhp() > expectedDamage($monster`kilopede`) * 2
   ) {
-    return autoAdv$2($location`Fight in the Tall Grass`);
+    return autoAdv($location`Fight in the Tall Grass`);
   }
   /*
 	// monsters here need spading. Don't know details of how they scale. Uncomment when mafia gets this info

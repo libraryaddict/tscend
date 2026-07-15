@@ -57,7 +57,7 @@ import {
 
 import { resetState } from "../../autoscend";
 import { auto_buyUpTo } from "../auto_acquire";
-import { autoAdv$1, autoAdv$2, autoLuckyAdv$1 } from "../auto_adventure";
+import { autoAdv, autoLuckyAdv$1 } from "../auto_adventure";
 import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
 import {
   addToMaximize,
@@ -163,7 +163,7 @@ export function LX_loggingHatchet(): boolean {
   }
 
   auto_log_info("Acquiring the logging hatchet from Camp Logging Camp", "blue");
-  autoAdv$1(1, $location`Camp Logging Camp`);
+  autoAdv($location`Camp Logging Camp`);
   return true;
 }
 
@@ -507,7 +507,7 @@ export function L9_chasmBuild(): boolean {
 
   auto_log_info("Chasm time", "blue");
   // prepareForSmutOrcs() called in pre-adv
-  autoAdv$1(1, $location`The Smut Orc Logging Camp`);
+  autoAdv($location`The Smut Orc Logging Camp`);
 
   return true;
 }
@@ -548,7 +548,7 @@ export function L9_aBooPeak(): boolean {
       provideItem$2(567, $location`A-Boo Peak`, false);
     }
 
-    return autoAdv$1(1, $location`A-Boo Peak`);
+    return autoAdv($location`A-Boo Peak`);
   }
 
   let booCloversOk: boolean = false;
@@ -819,7 +819,7 @@ export function L9_aBooPeak(): boolean {
       // upon case 611, if booPeakProgress <= 0, set choiceAdventure611 to 2
       // If lastDecision was 2, revert choiceAdventure611 to 1 (or perhaps unset it?)
       try {
-        autoAdv$1(1, $location`A-Boo Peak`);
+        autoAdv($location`A-Boo Peak`);
       } finally {
         if (getProperty("lastEncounter") !== "The Horror...") {
           auto_log_warning(
@@ -867,7 +867,7 @@ export function L9_aBooPeak(): boolean {
       provideItem$2(567, $location`A-Boo Peak`, false);
     }
 
-    autoAdv$1(1, $location`A-Boo Peak`);
+    autoAdv($location`A-Boo Peak`);
     setProperty("auto_aboopending", (0).toString());
 
     return true;
@@ -1036,7 +1036,7 @@ export function L9_twinPeak(): boolean {
 
   if (in_bhy()) {
     // we can't make an oil jar to solve the quest, just adventure until the hotel is burned down
-    return autoAdv$2($location`Twin Peak`);
+    return autoAdv($location`Twin Peak`);
   }
 
   if (!prepareForTwinPeak(true)) {
@@ -1105,7 +1105,7 @@ export function L9_twinPeak(): boolean {
     );
     handleFamiliar$1($familiar`Grey Goose`);
   }
-  return autoAdv$2($location`Twin Peak`);
+  return autoAdv($location`Twin Peak`);
 }
 
 export function L9_oilPeak(): boolean {
@@ -1199,7 +1199,7 @@ export function L9_oilPeak(): boolean {
 
   auto_log_info(`Oil Peak with ML: ${monsterLevelAdjustment()}`, "blue");
 
-  autoAdv$1(1, $location`Oil Peak`);
+  autoAdv($location`Oil Peak`);
   if (getProperty("lastEncounter") === "Unimpressed with Pressure") {
     setProperty("oilPeakProgress", (0.0).toString());
     // Brute Force grouping with tavern (if not done) to maximize tangles while we have a high ML.

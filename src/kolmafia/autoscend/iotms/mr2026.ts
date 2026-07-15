@@ -38,6 +38,7 @@ import {
 } from "kolmafia";
 import { $effect, $item, $items, $location, $slots, get, have } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../autoscend";
 import { auto_buyUpTo, auto_hermit } from "../auto_acquire";
 import { autoAdvBypass } from "../auto_adventure";
 import {
@@ -71,7 +72,6 @@ import { in_plumber } from "../paths/path_of_the_plumber";
 import { in_small } from "../paths/small";
 import { in_tcrs } from "../paths/two_crazy_random_summer";
 import { is_werewolf } from "../paths/wereprofessor";
-import { auto_unreservedAdvRemaining } from "../../autoscend";
 
 // This is meant for items that have a date of 2026
 
@@ -300,7 +300,7 @@ export function auto_spadeDigSkeleton(): boolean {
     pages.set(0, use_url);
     pages.set(1, choice_url);
     const loc: Location = myLocation();
-    if (autoAdvBypass(0, pages, $location`Noob Cave`, null)) {
+    if (autoAdvBypass(0, pages, $location`Noob Cave`)) {
       handleTracker$1(
         SPADE.toString(),
         `Dig up a skeleton - ${loc}`,

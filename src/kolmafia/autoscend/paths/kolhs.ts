@@ -37,7 +37,7 @@ import {
   $slot,
 } from "libram";
 
-import { autoAdv$2 } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import {
   auto_autoConsumeOne$1,
   auto_chewAdventures,
@@ -200,7 +200,7 @@ function LX_kolhs_visitYearbookClub(): boolean {
   }
   auto_log_info("Visiting the yearbook club", "blue");
   setProperty("_NC772_directive", (3).toString()); //NC772 [saved by the bell] should visit yearbook club
-  return autoAdv$2($location`The Hallowed Halls`); //goto NC772
+  return autoAdv($location`The Hallowed Halls`); //goto NC772
 }
 
 function LX_kolhs_yearbookCameraGet(): boolean {
@@ -254,7 +254,7 @@ function LX_kolhs_yearbookCameraQuest(): boolean {
   }
 
   autoEquip$1($item`Yearbook Club Camera`);
-  return autoAdv$2(adv_target);
+  return autoAdv(adv_target);
 
   return false;
 }
@@ -265,7 +265,7 @@ function LX_kolhs_school(): boolean {
     return false; //done for today
   }
 
-  return autoAdv$2($location`The Hallowed Halls`);
+  return autoAdv($location`The Hallowed Halls`);
   //TODO specific classes https://kol.coldfront.net/thekolwiki/index.php/KoL_High_School
   //TODO sniff wastoid in hallowed halls
 }

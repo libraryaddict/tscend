@@ -56,7 +56,7 @@ import {
 } from "libram";
 
 import { auto_mall_price } from "../auto_acquire";
-import { autoAdv$2, autoAdvBypass, CombatMacro } from "../auto_adventure";
+import { autoAdv, autoAdvBypass, CombatMacro } from "../auto_adventure";
 import { spleen_left } from "../auto_consume";
 import {
   autoForceEquip$1,
@@ -1202,7 +1202,7 @@ export function LX_ghostBusting(): boolean {
     autoForceEquip$1($slot`acc3`, $item`Talisman o' Namsilat`);
   }
   acquireHP();
-  return autoAdv$2(goal);
+  return autoAdv(goal);
 }
 
 function timeSpinnerRemaining(verify: boolean): number {
@@ -1254,21 +1254,10 @@ function canTimeSpinnerMonster(mon: Monster): boolean {
   return false;
 }
 
-export function timeSpinnerCombat(goal: Monster): boolean {
-  return timeSpinnerCombat$2(goal, null, false);
-}
-
-export function timeSpinnerCombat$1(
+export function timeSpinnerCombat(
   goal: Monster,
-  speculative: boolean,
-): boolean {
-  return timeSpinnerCombat$2(goal, null, speculative);
-}
-
-function timeSpinnerCombat$2(
-  goal: Monster,
-  option: CombatMacro,
-  speculative: boolean,
+  speculative: boolean = false,
+  option?: CombatMacro,
 ): boolean {
   //spend 3 minutes to Travel to a Recent Fight
   if (timeSpinnerRemaining(!speculative) < 3) {

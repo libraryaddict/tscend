@@ -53,12 +53,7 @@ import {
   canPull$1,
   pullXWhenHaveY,
 } from "../auto_acquire";
-import {
-  autoAdv$1,
-  autoAdv$2,
-  autoAdvBypass$1,
-  autoAdvBypass$6,
-} from "../auto_adventure";
+import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
 import {
   autoChew,
   autoDrink,
@@ -305,7 +300,7 @@ export function LX_steelOrgan(): boolean {
         itemAmount($item`imp air`) < 5) &&
       itemAmount($item`Azazel's tutu`) === 0
     ) {
-      autoAdv$1(1, $location`The Laugh Floor`);
+      autoAdv($location`The Laugh Floor`);
     } else if (
       (itemAmount($item`Azazel's unicorn`) === 0 ||
         itemAmount($item`bus pass`) < 5) &&
@@ -375,7 +370,7 @@ export function LX_steelOrgan(): boolean {
         return true;
       }
 
-      autoAdv$1(1, $location`Infernal Rackets Backstage`);
+      autoAdv($location`Infernal Rackets Backstage`);
     } else if (
       itemAmount($item`Azazel's lollipop`) === 0 &&
       itemAmount($item`Azazel's tutu`) === 0
@@ -505,7 +500,7 @@ export function LX_guildUnlock(): boolean {
 
     auto_log_info("Let's unlock the guild.", "green");
 
-    autoAdv$2(loc);
+    autoAdv(loc);
     if (internalQuestStatus(pref) === 1) {
       visitUrl("guild.php?place=challenge");
     }
@@ -671,7 +666,7 @@ export function LX_galaktikSubQuest(): boolean {
     return true;
   }
 
-  return autoAdv$2($location`The Overgrown Lot`);
+  return autoAdv($location`The Overgrown Lot`);
 }
 
 export function LX_doingPirates(): boolean {
@@ -710,7 +705,7 @@ export function LX_pirateOutfit(): boolean {
     return false;
   }
   auto_log_info("Searching for a pirate outfit.", "blue");
-  return autoAdv$2($location`The Obligatory Pirate's Cove`);
+  return autoAdv($location`The Obligatory Pirate's Cove`);
 }
 
 export function piratesCoveChoiceHandler(choice: number): void {
@@ -911,7 +906,7 @@ export function LX_joinPirateCrew(): boolean {
   ) {
     auto_log_info("Findin' the Cap'n", "blue");
     autoOutfit("Swashbuckling Getup");
-    autoAdv$2($location`Barrrney's Barrr`); // this returns false on the Cap'n Caronch adventures for some reason.
+    autoAdv($location`Barrrney's Barrr`); // this returns false on the Cap'n Caronch adventures for some reason.
     return true;
   } else if (internalQuestStatus("questM12Pirate") === 0) {
     auto_log_info("Nasty Booty time!", "red");
@@ -1010,7 +1005,7 @@ export function LX_joinPirateCrew(): boolean {
                   "place.php?whichplace=forestvillage&preaction=screwquest&action=fv_untinker_quest",
                 );
               }
-              if (autoAdv$2($location`The Degrassi Knoll Gym`)) {
+              if (autoAdv($location`The Degrassi Knoll Gym`)) {
                 return true;
               }
             }
@@ -1059,7 +1054,7 @@ export function LX_joinPirateCrew(): boolean {
       // If we're wearing the pirate outfit already, autoAdv will fail to adventure
       // in the cove since the zone isn't available unless we remove it (which wouldn't happen until auto_pre_adv runs)
       autoStripOutfit("Swashbuckling Getup");
-      if (autoAdv$2($location`The Obligatory Pirate's Cove`)) {
+      if (autoAdv($location`The Obligatory Pirate's Cove`)) {
         return true;
       }
     }
@@ -1102,7 +1097,7 @@ function LX_fledglingPirateIsYou(): boolean {
 
   auto_log_info("F'c'le t'me!", "blue");
   autoOutfit("Swashbuckling Getup");
-  return autoAdv$2($location`The F'c'le`);
+  return autoAdv($location`The F'c'le`);
 }
 
 export function fcleChoiceHandler(choice: number): void {
@@ -1141,7 +1136,7 @@ function LX_unlockBelowdecks(): boolean {
 
   auto_log_info("Swordfish? Every password was swordfish!", "blue");
   autoEquip$1($item`pirate fledges`);
-  return autoAdv$2($location`The Poop Deck`);
+  return autoAdv($location`The Poop Deck`);
 }
 
 export function LX_pirateQuest(): boolean {
@@ -1195,7 +1190,7 @@ export function LX_unlockKnobMenagerie(): boolean {
     }
   }
   auto_log_info("Looking for the Cobb's Knob Menagerie key.", "blue");
-  return autoAdv$1(1, $location`Cobb's Knob Laboratory`);
+  return autoAdv($location`Cobb's Knob Laboratory`);
 }
 
 const $_f_epicWeapons: Map<Class, Item> = new Map([
@@ -1276,10 +1271,10 @@ export function LX_acquireEpicWeapon(): boolean {
     `-equip ${($_f_starterWeapons.get(myClass()) ?? $_f_starterWeapons.set(myClass(), Item.none).get(myClass())).toString()}`,
   );
   if (tomb_already_found()) {
-    return autoAdvBypass$6("place.php?whichplace=cemetery&action=cem_advtomb");
+    return autoAdvBypass$1("place.php?whichplace=cemetery&action=cem_advtomb");
   }
 
-  return autoAdv$2($location`The Unquiet Garves`);
+  return autoAdv($location`The Unquiet Garves`);
 }
 // TODO: Add the rest of the Nemesis quest with a flag to enable doing it in-run?
 
