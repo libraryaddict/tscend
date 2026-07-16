@@ -976,7 +976,7 @@ export function resetMaximize(): void {
 
 export function addBonusToMaximize(it: Item, amt: number): void {
   if (possessEquipment(it) && auto_can_equip(it)) {
-    addToMaximize(`+"${amt}bonus ${it}"`);
+    addToMaximize(`+${amt}"bonus ${it}"`);
   }
 }
 
