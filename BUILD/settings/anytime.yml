@@ -45,7 +45,7 @@ auto_bedtime_pulls_min_desirability:
   description: During bedtime we pull and wear equipment that gives extra adventures and optionally PVP fights on rollover. This variable determines the minimum allowed score improvement compared to current equipment before we consider pulling it.
 auto_maximize_baseline:
   type: string
-  description: The string to use as the baseline for the maximizer when deciding gear. If this is blank or "default", it will use a generated maximizer statement that takes your current situation in to account somewhat.
+  description: The string to use as the baseline for the maximizer when deciding gear. If this is blank or "default", it will use a generated maximizer statement that takes your current situation in to account somewhat. Use "{default}" if you want that string to be injected into your provided statement, eg if you were trying to wear an item as much as possible "+10000 bonus iotm_name, {default}" to get the best of both worlds.
   tags: [equipment]
 auto_equipment_override_hat:
   type: string

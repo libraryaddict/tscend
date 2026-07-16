@@ -921,6 +921,10 @@ export function resetMaximize(): void {
     res = defaultMaximizeStatement(); //automatically generated baseline statement
   }
 
+  if (res.includes("{default}")) {
+    res = res.replaceAll("{default}", defaultMaximizeStatement());
+  }
+
   function exclude(it: Item): void {
     if (res !== "") {
       res += ",";
