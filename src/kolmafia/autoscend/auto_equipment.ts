@@ -622,9 +622,9 @@ export function equipStatgainIncreasers(
   let MPlost: number;
   let mostMPlost: number = 0;
   let speculateOneItem: string;
-  let speculateAllItems: string;
+  let speculateAllItems: string = "";
   for (const sl of statgainIncreasers.keys()) {
-    speculateOneItem = `equip ${sl.toString()} ${(statgainIncreasers.get(sl) ?? statgainIncreasers.set(sl, Item.none).get(sl)).toString()}; `;
+    speculateOneItem = `"equip ${sl.toString()} ${(statgainIncreasers.get(sl) ?? statgainIncreasers.set(sl, Item.none).get(sl)).toString()};" `;
     cliExecute(`speculate quiet; ${speculateOneItem}`);
     HPlost = toInt(myHp() - simValue("Buffed HP Maximum"));
     MPlost = toInt(myMp() - simValue("Buffed MP Maximum"));
@@ -711,7 +711,7 @@ export function equipStatgainIncreasers(
   simulatedEquipment.clear();
   simulatedEquipment = speculatedMaximizerEquipment(maximizerStatement);
   for (const sl of simulatedEquipment.keys()) {
-    speculateOneItem = `equip ${sl.toString()} ${(simulatedEquipment.get(sl) ?? simulatedEquipment.set(sl, Item.none).get(sl)).toString()}; `;
+    speculateOneItem = `"equip ${sl.toString()} ${(simulatedEquipment.get(sl) ?? simulatedEquipment.set(sl, Item.none).get(sl)).toString()};" `;
     cliExecute(`speculate quiet; ${speculateOneItem}`);
     if (simValue("Buffed HP Maximum") < myHp()) {
       //skip on collateral loss
@@ -976,7 +976,7 @@ export function resetMaximize(): void {
 
 export function addBonusToMaximize(it: Item, amt: number): void {
   if (possessEquipment(it) && auto_can_equip(it)) {
-    addToMaximize(`+${amt}bonus ${it}`);
+    addToMaximize(`+"${amt}bonus ${it}"`);
   }
 }
 
