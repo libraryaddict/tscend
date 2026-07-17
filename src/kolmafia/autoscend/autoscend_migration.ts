@@ -20,7 +20,7 @@ import {
 } from "./auto_util";
 import { fileAsMap } from "./utils/kolmafiaUtils";
 
-const $_f___autoscend_version: string = "1.8.0";
+const $_f___autoscend_version: string = "2.0.0";
 const $_f___autoscend_confirm_timeoutMS: number = 10000;
 const $_f___remove_sl_ascend_confirmation: string =
   "Looks like you have the old sl_ascend project installed as well. Would you like to remove it? (it is no longer maintained). Will default to false in 10 seconds.";
