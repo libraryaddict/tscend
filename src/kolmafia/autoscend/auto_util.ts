@@ -163,6 +163,7 @@ import {
   $stat,
   $stats,
   $thrall,
+  set,
 } from "libram";
 
 import { LX_calculateTheUniverse } from "../autoscend";
@@ -5891,6 +5892,7 @@ export function _auto_forceNextCombat(
     }
     auto_forceCombatLegendaryNoodles();
     if (!auto_haveQueuedForcedCombat()) {
+      set("auto_forceCombatWithLegendaryNoodles", false);
       abort(
         "Attempted to force a combat with legendary pasta noodles but was unable to.",
       );

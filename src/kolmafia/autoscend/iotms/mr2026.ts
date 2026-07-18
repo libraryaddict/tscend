@@ -438,11 +438,12 @@ function canEatSomeLegNoods(): boolean {
 }
 
 export function auto_willEatLegendaryNoodles(): boolean {
-  // We exclude small because we want to be careful about maximizing the quality of our food when we only have two space, and we exclude plumber because plumber consumption is weird
+  // Min adv per full filter is set to four because we don't differentiate between the quality of the noodles when we force-eat them, and the "worst" ones average 4 per full (others are 5)
   return (
     canEatSomeLegNoods() &&
     auto_canEat($item`Orzo di Riso`) &&
     !toBoolean(getProperty("auto_limitConsume")) &&
+    get("auto_consumeMinAdvPerFill", 0) <= 4.0 &&
     !in_small() &&
     !in_plumber()
   );
@@ -488,7 +489,7 @@ export function auto_forceCombatLegendaryNoodles(): boolean {
         prospective_dish_1,
         0,
         1,
-        5,
+        4,
         10,
         AUTO_ORGAN_STOMACH_1,
         AUTO_OBTAIN_CRAFT_1,
