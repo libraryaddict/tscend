@@ -36,7 +36,16 @@ import {
   toLocation,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $items, $location, $slots, get, have } from "libram";
+import {
+  $effect,
+  $item,
+  $items,
+  $location,
+  $slots,
+  get,
+  have,
+  set,
+} from "libram";
 
 import { auto_unreservedAdvRemaining } from "../../autoscend";
 import { auto_buyUpTo, auto_hermit } from "../auto_acquire";
@@ -499,10 +508,12 @@ export function auto_forceCombatLegendaryNoodles(): boolean {
     }
   }
   // we communicate via the pref to the ChoiceHandler below to take the amygdala force-combat option
-  setProperty("auto_forceCombatWithLegendaryNoodles", true.toString());
+  set("auto_forceCombatWithLegendaryNoodles", true);
   if (auto_autoConsumeOne(action)) {
     return true;
   }
+  // We unset it if we didn't consume it
+  set("auto_forceCombatWithLegendaryNoodles", false);
   return false;
 }
 
