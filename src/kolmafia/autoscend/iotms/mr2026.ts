@@ -653,13 +653,6 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
     addIngredient(item, () => itemAmount(item));
   }
 
-  // Some +meat drop from npc store
-  /*  addIngredient(
-    $item`loose purse strings`,
-    () => Math.max(0, Math.floor((myMeat() - meatReserve()) / 100)), // Store has @ 100 meat
-    (count: number) => auto_buyUpTo(count, $item`loose purse strings`),
-  );*/
-
   if (knollAvailable()) {
     // 4 adv turn gen, requires 2 meat smiths so only if knoll
     addIngredient(
