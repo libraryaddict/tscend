@@ -2,6 +2,10 @@ auto_interrupt:
   name: "Auto Interrupt"
   type: boolean
   description: Script will abort after the next action is finished (instead of mid turn which can cause problems). Will be reset to false after every time it is used.
+auto_stop:
+  name: "Auto Stop"
+  type: boolean
+  description: Script will gracefully stop (not abort) before or after attempting to adventure somewhere, but not during the pre or post adventure script. This is an alternative to abort, where you do not want to kill the entire script chain. Eg, when you're calling autoscend as part of your day in an advanced setup.
 auto_debugging:
   name: "Debugging Stop"
   type: boolean

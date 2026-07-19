@@ -39,7 +39,7 @@ import { autoAdvBypass$1, CombatMacro } from "../auto_adventure";
 import { inebriety_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
 import {
-  auto_interruptCheck$1,
+  auto_interruptCheck,
   auto_log_debug,
   auto_log_debug$1,
   auto_log_error,
@@ -144,7 +144,7 @@ export function handleFaxMonster(
       }
       return true;
     }
-    auto_interruptCheck$1();
+    auto_interruptCheck();
   }
 
   auto_log_error(

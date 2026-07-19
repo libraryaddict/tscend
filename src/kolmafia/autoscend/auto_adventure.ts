@@ -83,10 +83,10 @@ export function autoAdv(
   const previousEncounter: string = getProperty("lastEncounter");
   const turncount: number = myTurncount();
   print(`Doing option ${findMacroName(option)}`);
-  auto_interruptCheck(false);
+  auto_interruptCheck("main", false);
   let advReturn: boolean = adv1(loc, -1, option);
   if (!advReturn) {
-    auto_interruptCheck(false);
+    auto_interruptCheck("main", false);
     auto_log_debug(
       "adv1 returned false for some reason. Did we actually adventure though?",
       "blue",

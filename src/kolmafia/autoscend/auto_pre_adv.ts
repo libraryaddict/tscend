@@ -147,7 +147,7 @@ import {
   auto_have_skill,
   auto_haveQueuedForcedCombat,
   auto_haveQueuedForcedNonCombat,
-  auto_interruptCheck$1,
+  auto_interruptCheck,
   auto_is_valid,
   auto_log_debug,
   auto_log_debug$1,
@@ -1425,6 +1425,6 @@ export function main(): void {
       );
       setProperty("auto_interrupt", true.toString());
     }
-    auto_interruptCheck$1();
+    auto_interruptCheck("pre/post script");
   }
 }

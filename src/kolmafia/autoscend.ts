@@ -120,6 +120,8 @@ import {
   $skill,
   $slot,
   $stat,
+  get,
+  set,
   sinceKolmafiaRevision,
 } from "libram";
 
@@ -188,6 +190,7 @@ import {
   auto_needAccordion,
   auto_predictAccordionTurns,
   autoCraft,
+  AutoStopError,
   backupSetting,
   banishSources,
   basicAdjustML,
@@ -2528,7 +2531,7 @@ function doTasks(): boolean {
 
   print_header();
 
-  auto_interruptCheck(false);
+  auto_interruptCheck("main", false);
 
   const delay: number = toInt(getProperty("auto_delayTimer"));
   if (delay > 0) {
@@ -3035,5 +3038,19 @@ export function main(...input: string[]): void {
   ) {
     abort("User aborted script after failed migration.");
   }
-  safe_preference_reset_wrapper(3);
+  try {
+    safe_preference_reset_wrapper(3);
+  } catch (e) {
+    if (!(e instanceof AutoStopError)) {
+      throw e;
+    }
+  } finally {
+    if (get("auto_stop", false)) {
+      set("auto_stop", false);
+      meatReserveMessage();
+      auto_log_info$1(
+        "auto_stop detected and quietly exiting, auto_stop disabled.",
+      );
+    }
+  }
 }

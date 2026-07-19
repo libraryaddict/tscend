@@ -5053,12 +5053,25 @@ function auto_interruptZoneCheck(): boolean {
   return false;
 }
 
-export function auto_interruptCheck(debug: boolean): void {
+export class AutoStopError {
+  constructor(
+    public message: string = "auto_stop requested that the script quietly stop",
+  ) {}
+}
+
+export function auto_interruptCheck(
+  source: "main" | "pre/post script" = "main",
+  debug: boolean = true,
+): void {
+  //we check for interrupt at multiple locations. but we only want to set it once per loop in debug mode.
   if (toBoolean(getProperty("auto_interrupt"))) {
     setProperty("auto_interrupt", false.toString());
     restoreAllSettings();
     meatReserveMessage();
     abort("auto_interrupt detected and aborting, auto_interrupt disabled.");
+  } else if (source === "main" && toBoolean(getProperty("auto_stop"))) {
+    //auto_stop is not reset here, only the main script's main() may consume the setting.
+    throw new AutoStopError();
   } else if (auto_interruptZoneCheck()) {
     abort(
       `auto_interruptZones detected, aborting at ${myLocation().toString()}`,
@@ -5067,11 +5080,6 @@ export function auto_interruptCheck(debug: boolean): void {
     setProperty("auto_interrupt", true.toString());
     auto_log_info$1("auto_debugging detected, auto_interrupt enabled.");
   }
-}
-
-export function auto_interruptCheck$1(): void {
-  //we check for interrupt at multiple locations. but we only want to set it once per loop in debug mode.
-  auto_interruptCheck(true);
 }
 
 export function currentFlavour(): Element {
