@@ -53,6 +53,8 @@ script autoscend. If you ever want to interrupt the script, please use the inter
 the autoscend relay script rather than terminating via mafia with escape. Otherwise certain settings
 may not be restored properly to their pre-run values.
 
+You can directly open the relay page by accessing `relay_autoscend.js?relay=true`. You can do this via a chat macro with `/goto relay_autoscend.js?relay=true`.
+
 ## Requirements
 
 There are a couple specific requirements to run autoscend effectively. If you run in to issues in
