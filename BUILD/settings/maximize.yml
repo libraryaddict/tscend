@@ -1,0 +1,50 @@
+auto_maximize_baseline:
+  name: "Maximizer Baseline"
+  type: string
+  description: The string to use as the baseline for the maximizer when deciding gear. If this is blank or "default", it will use a generated maximizer statement that takes your current situation in to account somewhat. Use "{default}" if you want that string to be injected into your provided statement, eg if you were trying to wear a certain item as much as possible "+10000 bonus iotm_name, {default}" to get the best of both worlds.
+  tags: [equipment]
+auto_equipment_override_hat:
+  name: "Hat Override"
+  type: string
+  description: A semicolon separated list of overrides for the hat slot.
+  tags: [equipment]
+auto_equipment_override_back:
+  name: "Back Override"
+  type: string
+  description: A semicolon separated list of overrides for the back slot.
+  tags: [equipment]
+auto_equipment_override_shirt:
+  name: "Shirt Override"
+  type: string
+  description: A semicolon separated list of overrides for the shirt slot.
+  tags: [equipment]
+auto_equipment_override_weapon:
+  name: "Weapon Override"
+  type: string
+  description: A semicolon separated list of overrides for the weapon slot.
+  tags: [equipment]
+auto_equipment_override_off-hand:
+  name: "Off-hand Override"
+  type: string
+  description: A semicolon separated list of overrides for the off-hand slot.
+  tags: [equipment]
+auto_equipment_override_pants:
+  name: "Pants Override"
+  type: string
+  description: A semicolon separated list of overrides for the pants slot.
+  tags: [equipment]
+auto_equipment_override_acc:
+  name: "Accessory Override"
+  type: string
+  description: A semicolon separated list of overrides for the acc slots.
+  tags: [equipment]
+auto_equipment_override_familiar:
+  name: "Familiar Equipment Override"
+  type: string
+  description: A semicolon separated list of overrides for the familiar equipment slot.
+  tags: [equipment]
+auto_debug_maximizer:
+  name: "Debug Maximizer"
+  type: boolean
+  description: Help debug maximizer issue where it is not equipping a weapon
+  tags: [equipment]

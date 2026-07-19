@@ -1,0 +1,4 @@
+auto_teaChoice:
+  name: "Tea Tree Choice"
+  type: string
+  description: When using the tea tree, grab this 'tea'. Must use a string that acceptable to Mafia's 'teatree' command (Use ; to separate by daycount, leave blank to skip a day).

@@ -1,0 +1,16 @@
+auto_hideAdultery:
+  name: "Hide Zatara Consults"
+  type: boolean
+  description: When true, automatically deletes Zatara Consults from Kmails during end of day cleanup.
+auto_optimizeConsultsInRun:
+  name: "Optimize Zatara Consults"
+  type: boolean
+  description: When true, optimize our consults in run to get Ascension relevant rewards.
+auto_consultClan:
+  name: "Zatara Consult Clan"
+  type: string
+  description: The clan name of the player you want to do Zatara consults with.
+auto_consultChoice:
+  name: "Zatara Consult Player"
+  type: string
+  description: The name of the player you want to do Zatara consults with.

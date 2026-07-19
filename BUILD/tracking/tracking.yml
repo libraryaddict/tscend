@@ -1,0 +1,116 @@
+path:
+  title: "Ascension Path"
+  property: "auto_tracker_path"
+  columns: ["Subject", "Detail", "Turn"]
+banishes:
+  title: "Banishes"
+  property: "auto_banishes"
+  columns: ["Monster", "Location", "Type", "Turn"]
+
+freeRuns:
+  title: "Free Runs"
+  property: "auto_freeruns"
+  columns: ["Monster", "Type", "Turn"]
+
+yellowRays:
+  title: "Yellow Rays"
+  property: "auto_yellowRays"
+  columns: ["Monster", "Source", "Turn"]
+  icon: images/itemimages/eyes.gif
+
+sniffing:
+  title: "Sniffing"
+  property: "auto_sniffs"
+  columns: ["Monster", "Source", "Turn"]
+
+copies:
+  title: "Copies"
+  property: "auto_copies"
+  columns: ["Monster", "Source", "Turn"]
+
+replaces:
+  title: "Replaces"
+  property: "auto_replaces"
+  columns: ["Monster", "Source", "Turn"]
+
+instakills:
+  title: "Instakills"
+  property: "auto_instakill"
+  columns: ["Monster", "Source", "Turn"]
+
+forcedNoncombats:
+  title: "Forced Noncombats"
+  property: "auto_forcedNC"
+  columns: ["Source", "Location", "Encounter", "Turn"]
+
+stomach:
+  title: "Stomach"
+  property: "auto_eaten"
+  columns: ["Item", "Detail", "Turn"]
+
+liver:
+  title: "Liver"
+  property: "auto_drunken"
+  columns: ["Item", "Detail", "Turn"]
+
+spleen:
+  title: "Spleen"
+  property: "auto_chewed"
+  columns: ["Item", "Detail", "Turn"]
+
+wishes:
+  title: "Wishes"
+  property: "auto_wishes"
+  columns: ["Source", "Location", "Wish", "Turn"]
+
+luckyAdventures:
+  title: "Lucky Adventures"
+  property: "auto_lucky"
+  columns: ["Source", "Location", "Encounter", "Turn"]
+
+lashOfTheCobra:
+  title: "Lash of the Cobra"
+  property: "auto_lashes"
+  columns: ["Monster", "Turn"]
+  icon: images/itemimages/cobrahead.gif
+  condition: isActuallyEd
+
+talismanOfRenenutet:
+  title: "Talisman of Renenutet"
+  property: "auto_renenutet"
+  columns: ["Monster", "Turn"]
+  icon: images/itemimages/tal_r.gif
+  condition: isActuallyEd
+
+ocrsFunTimes:
+  title: "OCRS Fun Times"
+  property: "auto_funTracker"
+  columns: ["Monster", "Fun", "Turn"]
+  condition: inOcrs
+
+pulls:
+  title: "Pulls"
+  property: "auto_pulls"
+  columns: ["Item", "Turn"]
+  condition: notHardcore
+
+powerfulGlove:
+  title: "Powerful Glove"
+  property: "auto_powerfulglove"
+  columns: ["Skill", "Turn"]
+  condition: hasPowerfulGlove
+
+iotmsUsed:
+  title: "IOTM's Used"
+  property: "auto_iotm_claim"
+  columns: ["Source", "Type", "Turn"]
+
+monstersMapped:
+  title: "Monsters Mapped"
+  property: "auto_mapperidot"
+  columns: ["Source", "Location", "Monster", "Turn"]
+
+otherStuff:
+  title: "Other Stuff"
+  property: "auto_otherstuff"
+  columns: ["Event", "Location", "Detail", "Turn"]

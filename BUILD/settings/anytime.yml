@@ -1,129 +1,144 @@
 auto_delayTimer:
+  name: "Action Delay"
   type: integer
   description: Sets the delay before each action, default is 1 second(s). It is not recommended to reduce this below 1.
 auto_powerLevelTimer:
+  name: "Powerleveling Delay"
   type: integer
   description: Delay in seconds before each time we spend an adv powerleveling. default is 10 sec. lowest valid value is 1.
 auto_stayInRun:
+  name: "Stay In Run"
   type: boolean
   description: If true, we stop when the King can be freed but do not free the King. Paths with a choice at liberation time will always stayInRun regardless of this setting.
 auto_confidence:
+  name: "Use Confidence Buff"
   type: boolean
   description: If true, we'll get the confidence buff instead of breaking the mirror. Good if your combat suite isn't very fleshed out yet, since it makes the Naughty Sorceress dramatically easier.
 auto_blacklistFamiliar:
+  name: "Blacklist Familiars"
   type: string
   description: A semi-colon separated string of familiar names that we do not want to use. They still may get used but this will minimize their usage.
 auto_limitConsume:
+  name: "Limit Consumption"
   type: boolean
   description: When true will not eat or drink anything automatically.
 auto_skipNightcap:
+  name: "Skip Nightcap"
   type: boolean
   description: When true will not get overdrunk at the end of the day
 auto_consumablePriceLimit:
+  name: "Consumable Price Limit"
   type: int
   description: Max price of consumables to eat (including pulls). Will still not go above mafia autobuy limit.
 auto_consumeMinAdvPerFill:
+  name: "Min Adventures Per Fill"
   type: float
   description: The minimum adventures per fill to consider for a consumable before eating or drinking it. Defaults to 0.0 and will consume whatever is available if necessary.
 auto_consumePullDesirability:
+  name: "Pull Desirability Weight"
   type: float
   description: This value is used as a rough estimate of how much a pull is "worth" when the consumption algorithm is considering using pulls. Higher values will make it more conservative and vice-versa. Defaults to 5.0.
 auto_dontConsumeKeyLimePies:
+  name: "Don't Consume Key Lime Pies"
   type: boolean
   description: When false, will pull and eat key lime pies if we require keys. Does nothing if auto_limitConsume is true;
 auto_dontConsumeLegendPizzas:
+  name: "Don't Consume Legend Pizzas"
   type: boolean
   description: When false, will craft or pull and eat Cookbookbat Legend Pizzas. Does nothing if auto_limitConsume is true;
 auto_bedtime_pulls_skip:
+  name: "Skip Bedtime Pulls"
   type: boolean
   description: If true will not automatically pull any items at the end of day.
 auto_bedtime_pulls_pvp_multi:
+  name: "Bedtime Pulls PVP Multiplier"
   type: float
   description: Set the value of X for the formula for pull of rollover equipment. desireability = 1*rollover adventures + X*rollover PVP fights (if hippy stone is unlocked).
 auto_bedtime_pulls_min_desirability:
+  name: "Bedtime Pulls Min Desirability"
   type: float
   description: During bedtime we pull and wear equipment that gives extra adventures and optionally PVP fights on rollover. This variable determines the minimum allowed score improvement compared to current equipment before we consider pulling it.
-auto_maximize_baseline:
-  type: string
-  description: The string to use as the baseline for the maximizer when deciding gear. If this is blank or "default", it will use a generated maximizer statement that takes your current situation in to account somewhat. Use "{default}" if you want that string to be injected into your provided statement, eg if you were trying to wear an item as much as possible "+10000 bonus iotm_name, {default}" to get the best of both worlds.
-  tags: [equipment]
-auto_equipment_override_hat:
-  type: string
-  description: A semicolon separated list of overrides for the hat slot.
-  tags: [equipment]
-auto_equipment_override_back:
-  type: string
-  description: A semicolon separated list of overrides for the back slot.
-  tags: [equipment]
-auto_equipment_override_shirt:
-  type: string
-  description: A semicolon separated list of overrides for the shirt slot.
-  tags: [equipment]
-auto_equipment_override_weapon:
-  type: string
-  description: A semicolon separated list of overrides for the weapon slot.
-  tags: [equipment]
-auto_equipment_override_off-hand:
-  type: string
-  description: A semicolon separated list of overrides for the off-hand slot.
-  tags: [equipment]
-auto_equipment_override_pants:
-  type: string
-  description: A semicolon separated list of overrides for the pants slot.
-  tags: [equipment]
-auto_equipment_override_acc:
-  type: string
-  description: A semicolon separated list of overrides for the acc slots.
-  tags: [equipment]
-auto_equipment_override_familiar:
-  type: string
-  description: A semicolon separated list of overrides for the familiar equipment slot.
-  tags: [equipment]
 auto_considerGalaktik:
+  name: "Consider Galaktik"
   type: boolean
   description: When true autoscend may automatically enable galaktik quest for this run if it decides it is needed.
 auto_slowSteelOrgan:
+  name: "Slow Steel Organ"
   type: boolean
   description: When true, don't immediately go for the Steel Organ (assuming we want a steel organ).
 auto_skipUnlockGuild:
+  name: "Skip Unlocking Guild"
   type: boolean
   description: When true, don't unlock the guild.
 auto_save_adv_override:
+  name: "Save Adventures Override"
   type: integer
   description: Set an override to amount of adv to save at end of day. Set to -1 to handle this automatically.
 auto_MLSafetyLimit:
+  name: "ML Safety Limit"
   type: integer
   description: "If set this will be the (approximate) cap for +ML. WARNING: Certain conditions may require the script to exceed this by a small margin. For best results set this 10 below the maximum ML you can handle. Setting to -1 will cause the lowest possible ML to be equipped, including going negative if possible - this can cause non-optimal gear to be equipped."
 auto_disregardInstantKarma:
+  name: "Disregard Instant Karma"
   type: boolean
   description: "When true, the script will not scale back ML after reaching Level 13, if you also set auto_MLSafetyLimit to 999 the script will passively power level. WARNING: You are unlikely to get Instant Karma (This is useful if your run preceeds The Sea, The Basement, or Dungeons)"
 auto_secondPlaceOrBust:
+  name: "Second Place Or Bust"
   type: boolean
   description: When true, abort before each tower test if we can't get to second place.
 auto_log_level:
+  name: "Log Level"
   type: int
   description: "valid choices: 0 = error. 1 = warning. 2 = info. 3 = debug. Sets the level of logging which autoscend will output to gCLI and session log. Defaults to 3 (debug)."
 auto_log_level_restore:
+  name: "Restore Log Level"
   type: int
   description: "valid choices: 0 = no extra debugging. 1 = log the stages and their results 2 = log restorer data dump. Sets the level of extra debug logging which autoscend restore code will output to gCLI and session log. Defaults to 0. Note that this is just for extra debugging."
 auto_restoreUseBloodBond:
+  name: "Use Blood Bond For Restores"
   type: boolean
   description: Whether to use extra hp to cast blood bond. Blood bond has a recurring HP drain, set to false if you are worried about getting killed or wasting resources healing. Defaults to false.
 auto_forceFatLootToken:
+  name: "Force Fat Loot Token"
   type: boolean
   description: force grabbing the fat loot tokens from daily dungeon and fantasy realm every day even if you already have enough for this run. This is mainly for new accounts who want to get the cubeling and/or skillbooks.
 auto_pvpEnable:
+  name: "Enable PVP"
   type: boolean
   description: Break the hippy stone to unlock PvP? This may also let autoscend collect low-effort PVP items.
 auto_towerBreak:
+  name: "Tower Break Location"
   type: string
   description: Where should we break in the tower? (e.g. wall of skin, wall of bones, shadow, ns). Blank by default.
 auto_ignoreRestoreFailure:
+  name: "Ignore Restore Failure"
   type: boolean
   description: if true we will always ignore failure to restore MP or HP and just continue playing
 auto_workshed:
+  name: "Workshed Item"
   type: string
   description: What workshed item should we initialize with? If blank or invalid, we will change workshed based on priorities. There are some shorthands or you can use the full name of the workshed item. Some worksheds are not implemented so unless you are certain you want to deviate, use auto.
 auto_stopMinutesToRollover:
+  name: "Rollover Abort Time"
   type: int
   description: How many minutes before rollover do we need to start getting ready for bed?
+auto_abooclover:
+  name: "Use Clover At A-Boo Peak"
+  type: boolean
+  description: Are we considering using a clover at A-Boo Peak?
+auto_clanstuff:
+  name: "Last 'end of day' for Clan"
+  type: string
+  description: What was the last day we did 'end of day' clan stuff.
+auto_maxCandyPrice:
+  name: "Max Candy Price"
+  type: integer
+  description: Max allowable price per candy for Rethinking Candy (default 2500)
+_auto_ignoreRestoreFailureToday:
+  name: "Ignore Restore Failure Today"
+  type: boolean
+  description: if true we will for today only ignore failure to restore MP or HP and just continue playing
+auto_aosol_dontUnCurse:
+  name: "Keep Cursed Items (AoSOL)"
+  type: boolean
+  description: "Avatar of Shadows Over Loathing: if true will keep all cursed items."

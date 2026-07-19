@@ -1,0 +1,765 @@
+$darkColor: #000000;
+$accent: #00529b;
+$accent-hover: #002c53;
+$border: #ccc;
+$text: #222222;
+$muted: #666666;
+$surface: #ffffff;
+$surface2: #f4f4f4;
+$stripe: rgba(0, 0, 0, 0.03);
+
+body {
+  margin: 0;
+  background: $surface2;
+  color: $text;
+}
+
+#relayContainer {
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+  max-width: 1500px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#notificationsContainer {
+  pointer-events: none;
+  position: fixed;
+  top: 5%;
+  left: 70%;
+  transform: translateX(-50%);
+  z-index: 999;
+}
+
+input {
+  outline: none;
+}
+
+td {
+  padding: 0.5rem;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background-color: $darkColor;
+}
+
+.tabEntry a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 6px 14px;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.tabEntry a:hover {
+  background-color: #111111;
+}
+
+.tabEntry a[aria-current="page"] {
+  background-color: $accent;
+}
+
+.tabEntry a:hover[aria-current="page"] {
+  background-color: $accent-hover;
+}
+
+.notification {
+  border: 3px solid $accent;
+  background-color: #bde5f8;
+  width: fit-content;
+  margin: 0 auto;
+  border-radius: 40px;
+  color: $accent;
+  padding: 7px 60px;
+  animation: fadeOut 2s 5s forwards;
+  cursor: default;
+  pointer-events: auto;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  99% {
+    height: 100%;
+  }
+  100% {
+    opacity: 0;
+    height: 0;
+  }
+}
+
+.searchInput {
+  border: 1px solid $border;
+  background-color: $surface;
+  padding: 6px 12px;
+  min-width: 260px;
+  color: $text;
+}
+
+.searchInput::placeholder {
+  color: $muted;
+}
+
+.searchInput:focus,
+input.stringcontainer:focus {
+  border-color: $accent;
+}
+
+.settingsSearchBar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.searchCount {
+  color: $muted;
+  font-size: small;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 0;
+  margin-bottom: 15px;
+}
+
+.topRowSide {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.topRowSide[aria-hidden="true"] {
+  visibility: hidden;
+}
+
+.topRowCenter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  flex: 0 1 auto;
+}
+
+.topRowCenter input.interrupt {
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+@media screen and (max-width: 600px) {
+  .topRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .topRowSide[aria-hidden="true"] {
+    display: none;
+  }
+
+  .settingsSearchBar {
+    justify-content: center;
+  }
+
+  .searchInput {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+.settingsGroup {
+  border: 1px solid $border;
+  background-color: $surface;
+  margin: 12px 0;
+}
+
+// Collapsible group headers and tracking card headers share the same look
+.groupHeader,
+.trackingCardHeader {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: $darkColor;
+  border: none;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.groupHeader:hover,
+.trackingCardHeader:hover {
+  background-color: #111111;
+}
+
+.groupHeader {
+  gap: 10px;
+  padding: 10px 16px;
+}
+
+// The expand/collapse arrow
+.chevron {
+  display: inline-block;
+  color: #ccc;
+}
+
+.chevron.open {
+  transform: rotate(90deg);
+}
+
+.groupCount {
+  margin-left: auto;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 2px 10px;
+  font-size: small;
+  font-weight: 600;
+}
+
+.groupBody {
+  border: 1px solid $border;
+  background-color: $surface;
+  margin: -12px 0 12px;
+}
+
+.groupDescription {
+  margin: 0;
+  text-align: center;
+  padding: 0 16px 8px;
+  font-size: 0.88rem;
+}
+
+.settingsSubgroups {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 0 16px 8px;
+
+  .settingsGroup {
+    flex: 0 0 auto;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .groupBody {
+    flex-basis: 100%;
+    width: auto;
+    min-width: 0;
+    margin: 4px 0 0;
+  }
+}
+
+.relayTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.userPreference {
+  td {
+    border-top: 1px solid $border;
+  }
+
+  td:first-child {
+    width: 20%;
+  }
+  td:nth-child(2) {
+    width: 20%;
+  }
+}
+
+.userPreference:hover {
+  background-color: $stripe;
+}
+
+.userPreference td:last-child {
+  font-size: 0.92rem;
+}
+
+.setting {
+  position: relative;
+  overflow-wrap: anywhere;
+}
+
+.setting .settingNameHover {
+  visibility: hidden;
+  background-color: $surface2;
+  border: 1px solid $border;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  margin-left: 15px;
+  position: absolute;
+  z-index: 1000;
+}
+
+.setting:hover .settingNameHover {
+  visibility: visible;
+}
+
+.hoverBox {
+  position: relative;
+  white-space: nowrap;
+}
+
+.settingInput .settingDefaultHover {
+  visibility: hidden;
+  color: $muted;
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.settingInput:hover .settingDefaultHover {
+  visibility: visible;
+}
+
+.invalid-setting input,
+.invalid-setting select,
+.invalid-setting .toggle-track {
+  background: pink !important;
+  border-color: darkred !important;
+}
+
+.invalid-reason {
+  text-align: center;
+}
+
+.invalid-reason small {
+  padding: 0 5px;
+  color: red;
+}
+
+input.stringcontainer {
+  border: 1px solid $border;
+  background-color: $surface;
+  color: $text;
+  height: 26px;
+  margin: auto;
+  display: block;
+  padding-left: 5px;
+  width: min(260px, 95%);
+}
+
+.dropdowncontainer {
+  border: 1px solid $border;
+  background-color: $surface;
+  padding: 7px 14px;
+  color: $text;
+}
+
+input.save {
+  display: block;
+  margin: 20px auto;
+  background-color: $accent;
+  color: white;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: x-large;
+  padding: 8px 30px;
+  cursor: pointer;
+}
+
+input.save:hover {
+  background-color: $accent-hover;
+}
+
+input.interrupt {
+  display: block;
+  width: max-content;
+  margin: 10px auto 25px;
+  background-color: #f1948a;
+  border: 1px solid;
+  font-size: x-large;
+  padding: 8px 25px;
+  cursor: pointer;
+}
+
+input.interrupt:hover {
+  background-color: #f5867a;
+}
+
+input.interrupt:active {
+  background-color: #f77163;
+}
+
+input.interrupt.interrupt-primary {
+  margin: 10px auto;
+  background-color: $surface;
+  border-color: $accent;
+  color: $accent;
+  font-size: large;
+}
+
+input.interrupt.interrupt-primary:hover {
+  background-color: $surface2;
+}
+
+input.interrupt + div {
+  padding-top: 5px;
+}
+
+.toggle-track {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 100px;
+  cursor: pointer;
+  display: flex;
+  height: 30px;
+  margin-left: 5%;
+  position: relative;
+  width: 60px;
+}
+
+.toggle-indicator {
+  align-items: center;
+  background: $darkColor;
+  border-radius: 24px;
+  bottom: 2px;
+  display: flex;
+  height: 24px;
+  justify-content: center;
+  left: 2px;
+  position: absolute;
+  transition: all 0.4s;
+  width: 24px;
+}
+
+.checkMark {
+  fill: white;
+  height: 20px;
+  width: 20px;
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+input[value="true"] + .toggle-track {
+  background: #e3edf6;
+  border-color: $accent;
+}
+
+input[value="true"] + .toggle-track .toggle-indicator {
+  background: $accent;
+  transform: translateX(30px);
+}
+
+input[value="true"] + .toggle-track .checkMark {
+  opacity: 1;
+}
+
+.settingTag {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  margin: 5px;
+}
+
+.settingTag input {
+  background: transparent;
+  border: none;
+  color: $text;
+}
+
+.settingTagClose {
+  cursor: pointer;
+  position: absolute;
+  right: 4px;
+  top: 0;
+  color: $muted;
+  line-height: 1;
+}
+
+.settingTagClose:hover {
+  color: $text;
+}
+
+.settingTagSingle {
+  display: inline-flex;
+  border: 1.5px solid #764abc;
+  padding: 2px 5px 0;
+  border-radius: 5px;
+  white-space: nowrap;
+  color: #764abc;
+  margin: 0 5px 5px 0;
+  cursor: grab;
+  position: relative;
+}
+
+.settingTagSingleCloseVisible {
+  padding-right: 20px;
+}
+
+.dropdownMenu {
+  position: absolute;
+  transform: translateY(1.5em);
+  border: 1px solid $muted;
+  overflow-y: auto;
+  overflow-x: clip;
+  overflow-wrap: break-word;
+  max-height: 250px;
+  background-color: $surface;
+  z-index: 99;
+  user-select: none;
+}
+
+.dropdownItem {
+  padding: 3px 3px 3px 0.2em;
+  cursor: pointer;
+}
+
+.dropdownMenu > div + div {
+  border-top: 1px solid $border;
+}
+
+.dropdownItem:hover {
+  background-color: #9fc3f870;
+}
+
+.hintTagDrop {
+  width: 40px;
+  min-height: 100%;
+  height: 20px;
+  background-image: linear-gradient(rgb(162, 162, 162), transparent);
+  border-radius: 5px;
+  padding-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 2px;
+}
+
+.hintTagDropOriginal {
+  background-image: linear-gradient(rgb(176, 94, 168), transparent);
+}
+
+.tagContainer {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  height: 2em;
+  max-height: 2em;
+}
+
+.draggedItem {
+  opacity: 0.4;
+}
+
+.hidden {
+  display: none;
+}
+
+.rearrangedTag {
+  animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.trackingControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 12px 0;
+}
+
+.trackingDayFilter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-right: auto;
+}
+
+.trackingDayFilter button {
+  border: 1px solid $border;
+  background-color: $surface;
+  color: $text;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+
+.trackingDayFilter button:hover {
+  background-color: $surface2;
+}
+
+.trackingDayFilter button.active {
+  background-color: $accent;
+  border-color: $accent;
+  color: white;
+}
+
+.trackingSearch {
+  margin-left: auto;
+}
+
+.trackingGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: start;
+}
+
+.trackingCard {
+  border: 1px solid $border;
+  background-color: $surface;
+  overflow: hidden;
+  flex: 1 1 max-content;
+  min-width: 340px;
+}
+
+.trackingCardHeader {
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+.trackingCardHeader img {
+  width: 20px;
+  height: 20px;
+}
+
+.trackingCardTitle {
+  flex-grow: 1;
+}
+
+.trackingCardTotal {
+  background-color: $accent;
+  color: white;
+  padding: 1px 10px;
+  font-size: small;
+}
+
+.trackingCardBody {
+  display: none;
+}
+
+.trackingCardBody.open {
+  display: block;
+}
+
+.trackingTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.trackingTable tr.trackingTableDay td {
+  background-color: $surface2;
+  font-weight: 700;
+}
+
+.trackingRowEven td {
+  background-color: $stripe;
+}
+
+.trackingDay {
+  padding: 10px 12px;
+  border-bottom: 1px solid $border;
+}
+
+.trackingDay:nth-child(even) {
+  background-color: $stripe;
+}
+
+.trackingDay:last-child {
+  border-bottom: none;
+}
+
+.trackingDayLabel {
+  font-size: small;
+  font-weight: 700;
+  color: $accent;
+  margin-bottom: 5px;
+}
+
+.trackingChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.trackingChip {
+  border: 1px solid $border;
+  background-color: $surface2;
+  padding: 2px 8px;
+  font-size: small;
+}
+
+.trackingChipCount {
+  margin-left: 6px;
+  color: $accent;
+}
+
+.trackingText {
+  font-size: small;
+  overflow-wrap: anywhere;
+}
+
+.trackingEmpty {
+  padding: 30px;
+  color: $muted;
+}
+
+.infoGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.infoTile {
+  border: 1px solid $border;
+  background-color: $surface;
+  padding: 10px 20px;
+  min-width: 120px;
+}
+
+.infoTileLabel {
+  font-size: small;
+  font-weight: 700;
+  color: $muted;
+}
+
+.infoTileValue {
+  font-size: x-large;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+table.locationsTable {
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse;
+}
+
+table.locationsTable tr:nth-child(even) {
+  background-color: $stripe;
+}
+
+.trackingTable th,
+table.locationsTable th {
+  background-color: $darkColor;
+  color: white;
+  padding: 6px 16px;
+  border: 1px solid $darkColor;
+}
+
+.trackingTable td,
+table.locationsTable td {
+  border: 1px solid $border;
+  padding: 4px 16px;
+}

@@ -20,6 +20,8 @@
     "@types/babel__core": "^7",
     "@types/babel__preset-env": "^7",
     "@types/node": "^26.1.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
     "esbuild": "^0.28.1",
     "esbuild-plugin-babel": "^0.2.3",
     "eslint": "^10.6.0",
@@ -29,12 +31,16 @@
     "eslint-plugin-unused-imports": "^4.4.1",
     "jiti": "^2.7.0",
     "prettier": "3.9.4",
+    "sass": "^1.101.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.62.1",
     "yaml": "^2.9.0"
   },
   "dependencies": {
     "kolmafia": "^5.29099.0",
-    "libram": "^0.11.23"
+    "libram": "^0.11.23",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.1"
   }
 }

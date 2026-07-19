@@ -1,6 +1,5 @@
 *.bak
 *.sh
-.github/kolmafia.jar
 .yarn/*
 !.yarn/patches
 !.yarn/plugins

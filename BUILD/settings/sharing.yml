@@ -1,3 +1,4 @@
 auto_disableExcavator:
+  name: "Disable Spading Sharing"
   type: boolean
   description: When set to true will disable automatically sending spading data via the Extractor script

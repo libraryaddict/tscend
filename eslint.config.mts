@@ -64,5 +64,30 @@ export default defineConfig(
       ],
     },
   },
+  // Below two rules are meant to prevent cross-imports, eg, react in kolmafia, and kolmafia in react
+  {
+    files: ["src/browser/**/*.ts", "src/browser/**/*.tsx"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: ["kolmafia"],
+          patterns: ["**/kolmafia/**", "**/relay/**"],
+        },
+      ],
+    },
+  },
+  {
+    files: ["src/kolmafia/**/*.ts", "src/relay/**/*.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: ["react", "react-dom", "react-router-dom"],
+          patterns: ["**/browser/**"],
+        },
+      ],
+    },
+  },
   prettier,
 );

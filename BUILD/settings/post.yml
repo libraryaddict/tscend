@@ -1,27 +1,148 @@
 auto_getSteelOrgan:
+  name: "Get Steel Organ"
   type: boolean
   description: Get Steel Organ in this ascension?
 auto_getBeehive:
+  name: "Get Beehive"
   type: boolean
   description: Get Beehive in this ascension?
 auto_getStarKey:
+  name: "Get Richard's Star Key"
   type: boolean
   description: Get Richard's Star Key in this ascension?
 auto_holeinthesky:
+  name: "Open Hole In The Sky"
   type: boolean
   description: Open the Hole in the Sky in this ascension?
 auto_hippyInstead:
+  name: "Fight For Hippies"
   type: boolean
   description: Fight on the side of the hippies instead of the Frat Warriors in this ascension?
 auto_ignoreFlyer:
+  name: "Skip Flyer Quest"
   type: boolean
   description: Do not do the flyer quest in this ascension? recommended to set true if fighting for the hippies.
 auto_wandOfNagamar:
+  name: "Get Wand Of Nagamar"
   type: boolean
   description: Do we need to get a Wand of Nagamar in this ascension?
 auto_dontPhylumBanish:
+  name: "Don't Banish Phylums"
   type: boolean
   description: If false will banish enemy phyla. Banishing should save some turns, but can interfere with the routing, and may mess up later banishes / tracks.
 auto_runDayCount:
+  name: "Expected Day Count"
   type: integer
   description: How many days do you think your run will take? Defaults to 2.
+auto_chasmBusted:
+  name: "Orc Chasm Bridge Trolled"
+  type: boolean
+  description: Has the orc chasm bridge been 'trolled yet? Ed only.
+auto_day1_dna:
+  name: "Day 1 DNA Hybridization"
+  type: string
+  description: "'finished' if we have hybridized ourselves at the start of Ascension."
+auto_day_init:
+  name: "Day Initialized"
+  type: string
+  description: Current daycount if we finished initializing today.
+auto_getBoningKnife:
+  name: "Get Boning Knife"
+  type: boolean
+  description: Do we want Boning Knife this ascension?
+auto_gnasirUnlocked:
+  name: "Gnasir Found (Desert Quest)"
+  type: boolean
+  description: Have we found gnasir in the Desert?
+auto_grimstoneFancyOilPainting:
+  name: "Grimstone For Fancy Oil Painting"
+  type: boolean
+  description: do grimstone for fancy oil painting this ascension?
+auto_grimstoneOrnateDowsingRod:
+  name: "Grimstone For Ornate Dowsing Rod"
+  type: boolean
+  description: do grimstone for ornate dowsing rod this ascension?
+auto_hedge:
+  name: "Hedge Maze Speed"
+  type: string
+  description: "'fast' or 'slow', determining how quickly we want to finish the Hedge Maze."
+auto_powerLevelLastLevel:
+  name: "Last Powerleveling Level"
+  type: string
+  description: Last Level that we had nothing to do.
+auto_powerLevelAdvCount:
+  name: "Powerleveling Adventure Count"
+  type: string
+  description: Adventures count of times we had nothing to do.
+auto_powerLevelLastAttempted:
+  name: "Last Powerleveling Adventure"
+  type: string
+  description: Last adventure that we did nothing on.
+auto_skipNuns:
+  name: "Mysterious Island War: Skip Nuns Quest"
+  type: boolean
+  description: Skip nuns quest this ascension?
+auto_100familiar:
+  name: "100% Familiar"
+  type: string
+  description: If a familiar type, do not allow familiar switching (for 100% runs). Otherwise, can be none or blank.
+auto_beatenUpCount:
+  name: "Beaten Up Count"
+  type: integer
+  description: How many times were we beaten up this ascension. Affects ML and whether we try to heal or abort when we get beaten up.
+auto_doneInitialize:
+  name: "Last Initialized Ascension"
+  type: integer
+  description: Indicates last ascension that we initialized with the script.
+auto_noSnakeOil:
+  name: "Last Snake Oil Extraction Day"
+  type: integer
+  description: Last day that we could no longer Extract Oil.
+auto_renenutetBought:
+  name: "Talismans Of Renenutet Bought"
+  type: integer
+  description: Number of Talisman of Renenutet's bought on last tracking.
+auto_batoomerangDay:
+  name: "Bat-oomerang Tracker Day"
+  type: integer
+  description: Part of Replica Bat-oomerang Tracker
+auto_batoomerangUse:
+  name: "Bat-oomerang Tracker Use"
+  type: integer
+  description: Part of Replica Bat-oomerang Tracker
+_auto_lastABooConsider:
+  name: "Last A-Boo Peak Consideration"
+  type: integer
+  description: Last turn that we considered doing A-Boo Peak
+_auto_lastABooCycleFix:
+  name: "A-Boo Peak Loop Fix Tracker"
+  type: integer
+  description: Tracker to prevent us infinitely looping on A-Boo Peak
+_auto_witchessBattles:
+  name: "Witchess Battle Tracker"
+  type: integer
+  description: Tracker for Witchess Combats (yes, this is actually needed).
+auto_needLegs:
+  name: "Need Legs Before Ka Farming"
+  type: boolean
+  description: In Ed, do we require getting legs before trying to Ka farm?
+auto_haveoven:
+  name: "Have Oven"
+  type: boolean
+  description: Track oven status. If you have an oven this should be true. But we can't always check the campground.
+auto_doGalaktik:
+  name: "Galaktik Sidequest"
+  type: boolean
+  description: Do Galaktik optional sidequest this ascension?
+auto_L8_ninjaAssassinFail:
+  name: "Avoid Ninja Snowmen Assassins"
+  type: boolean
+  description: True means we think we cannot defeat ninja snowmen assassins and are thus avoiding them this ascension. We will not copy them nor adventure in the lair of the ninja snowmen
+auto_L8_extremeInstead:
+  name: "Use Extreme Slope Instead"
+  type: boolean
+  description: True means we want to adventure in the extreme slope path instead of the ninja snowmen lair this ascension.
+auto_aboopending:
+  name: "Pending A-Boo Clue Turn"
+  type: integer
+  description: The last turn of a pending A-Boo Clue. 0 if no clue active.

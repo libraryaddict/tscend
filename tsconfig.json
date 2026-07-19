@@ -3,13 +3,15 @@
     "rootDir": "src",
     "module": "commonjs",
     "target": "es2020",
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM"],
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
     "declaration": false,
     "strict": false,
-    "types": [],
+    "types": ["node", "react"],
     "isolatedModules": true,
     "useDefineForClassFields": false,
     "noUnusedLocals": false
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

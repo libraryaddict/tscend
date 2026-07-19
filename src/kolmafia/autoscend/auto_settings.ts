@@ -339,19 +339,25 @@ function defaultConfig(prop: string, val: string): void {
   }
 }
 
+export const settingDefaults: ReadonlyMap<string, string> = new Map([
+  ["auto_delayTimer", "1"],
+  ["auto_abooclover", "true"], //Are we considering using a clover at A-Boo Peak?
+  ["auto_consumablePriceLimit", "12000"], // Max mall price for consumables to eat/drink (also won't exceed mafia's autobuy limit).
+  ["auto_paranoia", "-1"],
+  ["auto_inv_paranoia", "false"],
+  ["auto_save_adv_override", "-1"],
+  ["auto_log_level", "3"],
+  ["auto_log_level_restore", "0"],
+  ["auto_bedtime_pulls_skip", "false"],
+  ["auto_bedtime_pulls_pvp_multi", "0.3"],
+  ["auto_bedtime_pulls_min_desirability", "1.0"],
+]);
+
 function auto_settingsDefaults(): void {
   //set default values for settings which have not yet been configured
-  defaultConfig("auto_delayTimer", "1");
-  defaultConfig("auto_abooclover", "true"); //Are we considering using a clover at A-Boo Peak?
-  defaultConfig("auto_consumablePriceLimit", "12000"); // Max mall price for consumables to eat/drink (also won't exceed mafia's autobuy limit).
-  defaultConfig("auto_paranoia", "-1");
-  defaultConfig("auto_inv_paranoia", "false");
-  defaultConfig("auto_save_adv_override", "-1");
-  defaultConfig("auto_log_level", "3");
-  defaultConfig("auto_log_level_restore", "0");
-  defaultConfig("auto_bedtime_pulls_skip", "false");
-  defaultConfig("auto_bedtime_pulls_pvp_multi", "0.3");
-  defaultConfig("auto_bedtime_pulls_min_desirability", "1.0");
+  for (const [prop, val] of settingDefaults) {
+    defaultConfig(prop, val);
+  }
 }
 
 export function auto_settings(): void {

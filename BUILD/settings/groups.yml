@@ -1,0 +1,40 @@
+anytime:
+  name: "General"
+  description: "This setting can be changed at any time and takes effect immediately."
+  color: "#4cc9f0"
+  children:
+    maximize:
+      name: "Maximize"
+iotm:
+  name: "Iotm Settings"
+  description: "Settings for items bound to accounts, sorted by year of release descending."
+  color: "#22c3a6"
+  children:
+    iotm/mr2020:
+      name: "2020"
+    iotm/mr2019:
+      name: "2019"
+    iotm/mr2018:
+      name: "2018"
+    iotm/mr2017:
+      name: "2017"
+    iotm/mr2016:
+      name: "2016"
+    iotm/mr2015:
+      name: "2015"
+pre:
+  name: "Initial Ascension Defaults"
+  description: "Next time we initialize settings for autoscend this will be used to determine what we should set some Post type settings to."
+  color: "#f2c14e"
+post:
+  name: "Ascension Defaults"
+  description: "Settings for this ascension"
+  color: "#7bd88f"
+action:
+  name: "Auto Triggers"
+  description: "This causes something to immediately (or when reasonable) happen."
+  color: "#b07fd8"
+sharing:
+  name: "Other"
+  description: "Allows sharing game data."
+  color: "#f28d6b"

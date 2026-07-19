@@ -1,0 +1,19 @@
+Change setting files away from "any"
+
+
+
+Categorize settings better
+
+
+
+Populate "auto stop" setting and add dropdown values maybe for other settings
+
+
+
+For search, match more stuff, tags? Match setting categories?
+
+Maybe add defaults to setting files, but those are mostly conditional so meh.
+
+
+
+Figure out how to collapse the Run Info page into easier to read locations, instead of a giant list

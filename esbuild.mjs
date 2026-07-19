@@ -1,9 +1,37 @@
-// esbuild.mjs
 import esbuild from "esbuild";
 import babel from "esbuild-plugin-babel";
-import { promises as fs } from "fs";
+import { existsSync, promises as fs } from "fs";
 import path from "path";
+import * as sass from "sass";
 import { parse } from "yaml";
+
+function sassPlugin() {
+  return {
+    name: "sass",
+    setup(build) {
+      build.onLoad({ filter: /\.scss$/ }, async (args) => {
+        const result = sass.compile(args.path);
+        return { contents: result.css, loader: "css" };
+      });
+    },
+  };
+}
+
+function dataPlugin(sources) {
+  const namespace = "data";
+
+  return {
+    name: "data",
+    setup(build) {
+      build.onResolve({ filter: new RegExp(`^${namespace}:`) }, (args) => ({
+        path: args.path.slice(namespace.length + 1),
+        namespace,
+      }));
+
+      build.onLoad({ filter: /.*/, namespace }, (args) => sources[args.path]);
+    },
+  };
+}
 
 function assembleDataPlugin() {
   return {
@@ -22,7 +50,7 @@ function assembleDataPlugin() {
         const entries = await fs.readdir(buildDir, { withFileTypes: true });
 
         for (const entry of entries) {
-          if (!entry.isDirectory()) continue;
+          if (!entry.isDirectory() || entry.name === "tracking") continue;
 
           const dir = path.join(buildDir, entry.name);
           const outFile = path.join(releaseDir, `autoscend_${entry.name}.txt`);
@@ -31,13 +59,19 @@ function assembleDataPlugin() {
 
           // header.txt
           const headerPath = path.join(dir, "header.txt");
+
+          if (!existsSync(headerPath)) continue;
+
           output += await fs.readFile(headerPath, "utf8");
 
-          // Ignore header files, include all other files, sorted case-insensitively
-          const datFiles = (await fs.readdir(dir))
+          const datFiles = (await fs.readdir(dir, { withFileTypes: true }))
             .filter(
-              (f) => path.basename(f) !== "header.txt" && !f.endsWith(".yml"),
+              (f) =>
+                f.isFile() &&
+                f.name !== "header.txt" &&
+                !f.name.endsWith(".yml"),
             )
+            .map((f) => f.name)
             .sort((a, b) =>
               a.localeCompare(b, undefined, { sensitivity: "base" }),
             );
@@ -60,45 +94,93 @@ function assembleDataPlugin() {
             }
           }
 
-          // Ignore header.txt, include all .yml files, sorted case-insensitively
-          const yamlFiles = (await fs.readdir(dir))
-            .filter((f) => f.endsWith(".yml"))
-            .sort((a, b) =>
-              a.localeCompare(b, undefined, { sensitivity: "base" }),
-            );
-
-          for (const file of yamlFiles) {
-            const filename = path.basename(file, ".yml");
-            const contents = await fs.readFile(path.join(dir, file), "utf8");
-            const data = parse(contents);
-
-            if (!data) {
-              console.warn(`The data file ${file} did not generate any output`);
-              continue;
-            }
-
-            let num = 0;
-
-            for (const [property, value] of Object.entries(data)) {
-              const line = `${property}\t${value.type}\t${value.description}${value.tags ? `\t${Array.isArray(value.tags) ? value.tags.join(",") : value.tags}` : ""}`;
-
-              if (filename === entry.name) {
-                output += `${line}\n`;
-              } else {
-                output += `${filename}\t${num}\t${line}\n`;
-                num++;
-              }
-            }
-          }
-
           await fs.writeFile(outFile, output);
         }
 
-        console.log("Assembled data files.");
+        console.log("Assembled files.");
       });
     },
   };
 }
+
+// Record<groupPath, {name, property, type, description, tags}[]>
+async function buildSettingsData() {
+  const dir = "BUILD/settings";
+  const yamlFiles = (
+    await fs.readdir(dir, { recursive: true, withFileTypes: true })
+  ).filter(
+    (f) => f.isFile() && f.name.endsWith(".yml") && f.name !== "groups.yml",
+  );
+
+  const result = {};
+
+  for (const file of yamlFiles) {
+    const relativePath = path.relative(
+      dir,
+      path.join(file.parentPath, file.name),
+    );
+    const groupPath = relativePath.slice(0, -".yml".length);
+    const data = parse(await fs.readFile(path.join(dir, relativePath), "utf8"));
+
+    if (!data) continue;
+
+    result[groupPath] = Object.entries(data).map(([property, value]) => ({
+      name: value.name,
+      property,
+      type: value.type,
+      description: value.description,
+      tags: value.tags
+        ? Array.isArray(value.tags)
+          ? value.tags.join(",")
+          : value.tags
+        : "",
+    }));
+  }
+
+  return result;
+}
+
+const browserBuild = await esbuild.build({
+  entryPoints: {
+    "react/script": "src/browser/index.tsx",
+    "react/main": "src/browser/css/app.scss",
+  },
+  bundle: true,
+  outdir: "dist",
+  platform: "browser",
+  format: "iife",
+  write: false, // Do not write to disk
+  minify: true,
+  jsx: "automatic",
+  plugins: [sassPlugin()],
+});
+
+const outputText = (name) =>
+  browserBuild.outputFiles.find((f) => f.path === path.resolve("dist", name))
+    .text;
+const reactScriptSource = outputText("react/script.js");
+const reactCssSource = outputText("react/main.css");
+
+async function readYaml(filePath) {
+  return parse(await fs.readFile(filePath, "utf8"));
+}
+
+const dataSources = {
+  autoscend_settings: {
+    contents: JSON.stringify(await buildSettingsData()),
+    loader: "json",
+  },
+  setting_groups: {
+    contents: JSON.stringify(await readYaml("BUILD/settings/groups.yml")),
+    loader: "json",
+  },
+  tracking: {
+    contents: JSON.stringify(await readYaml("BUILD/tracking/tracking.yml")),
+    loader: "json",
+  },
+  react_script: { contents: reactScriptSource, loader: "text" },
+  react_css: { contents: reactCssSource, loader: "text" },
+};
 
 await esbuild.build({
   entryPoints: {
@@ -116,6 +198,7 @@ await esbuild.build({
   mainFields: ["main"],
   format: "cjs",
   plugins: [
+    dataPlugin(dataSources),
     babel({
       filter: /\.[jt]sx?$/,
       configFile: "./babel.config.json",
@@ -124,5 +207,6 @@ await esbuild.build({
   ],
   loader: {
     ".ts": "ts",
+    ".css": "text",
   },
 });

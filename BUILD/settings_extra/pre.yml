@@ -1,3 +1,0 @@
-auto_doGalaktik_initialize:
-  type: boolean
-  description: When we initialize an ascension this will be copied to auto_doGalaktik

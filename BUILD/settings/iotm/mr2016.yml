@@ -1,0 +1,8 @@
+auto_floundryChoice:
+  name: "Floundry Item"
+  type: string
+  description: Force floundry usage. Must use the item name (Use ; to separate by daycount, leave blank to skip a day).
+auto_extrudeChoice:
+  name: "Source Terminal: Extrude Choice"
+  type: string
+  description: ": separated by day, ; separated by order. For Source Terminal. Use food, booze. Defaults to booze for any empty fields."

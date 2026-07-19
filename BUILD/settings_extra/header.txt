@@ -1,2 +1,0 @@
-# variable timing, number, variable name, variable type, description
-

@@ -1,0 +1,8 @@
+auto_mushroomGardenGrowth:
+  name: "Mushroom Garden Pick"
+  type: integer
+  description: Picks the mushroom when growth reaches the given value (or higher). Defaults to 1 to pick every day, capped at 11.
+auto_skipGuzzlrCocktailSet:
+  name: "Skip Guzzlr Cocktail Quest"
+  type: boolean
+  description: If true will not accept and abandon a Platinum Guzzlr quest for the cocktail set.
