@@ -52,7 +52,7 @@ import {
   $slot,
 } from "libram";
 
-import { c2t_apron$1 } from "../../c2t_apron";
+import { c2t_apron } from "../../c2t_apron";
 import {
   c2t_megg_eggs,
   c2t_megg_extract,
@@ -156,7 +156,7 @@ export function consumeBlackAndWhiteApronKit(): boolean {
   // consume the apron kit using c2t's script
   // this will default to consuming food for our current mainstat
   // https://github.com/C2Talon/c2t_apron
-  return c2t_apron$1();
+  return c2t_apron();
 }
 
 export function auto_haveSpringShoes(): boolean {

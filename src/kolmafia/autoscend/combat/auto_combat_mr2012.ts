@@ -14,7 +14,7 @@ import { auto_have_skill, stunnable } from "../auto_util";
 import { in_glover } from "../paths/g_lover";
 import {
   auto_useSkill,
-  canSurvive$1,
+  canSurvive,
   canUse,
   combat_status_add,
   combat_status_check,
@@ -49,7 +49,7 @@ export function auto_combat_nanorhinoBuff(
         target === Skill.none &&
         in_glover() &&
         canUse($skill`Lunge Smack`) &&
-        canSurvive$1(4.0)
+        canSurvive(4.0)
       ) {
         target = $skill`Lunge Smack`;
       }
@@ -65,7 +65,7 @@ export function auto_combat_nanorhinoBuff(
       ) {
         target = $skill`Club Foot`; //8MP. 3-5 enemy defense debuff. seal clubbers also stuns enemy
       }
-      if (target === Skill.none && canSurvive$1(4.0)) {
+      if (target === Skill.none && canSurvive(4.0)) {
         //choose the cheapest skill available
         for (const sk of $skills`Toss, Clobber, Lunge Smack, Thrust-Smack, Headbutt, Kneebutt, Lunging Thrust-Smack, Club Foot, Shieldbutt, Spirit Snap, Cavalcade of Fury, Northern Explosion, Spectral Snapper`) {
           if (canUse(sk)) {
@@ -97,7 +97,7 @@ export function auto_combat_nanorhinoBuff(
         target = $skill`Accordion Bash`;
         target_mark = true;
       }
-      if (!canSurvive$1(4.0)) {
+      if (!canSurvive(4.0)) {
         break; //too risky to continue
       }
       if (target === Skill.none && canUse($skill`Cadenza`)) {

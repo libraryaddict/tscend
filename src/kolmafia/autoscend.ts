@@ -137,7 +137,7 @@ import {
 } from "./autoscend/auto_acquire";
 import { autoAdv } from "./autoscend/auto_adventure";
 import { doBedtime } from "./autoscend/auto_bedtime";
-import { buffMaintain$4 } from "./autoscend/auto_buff";
+import { buffMaintain$2 } from "./autoscend/auto_buff";
 import {
   autoCleanse,
   consumeStuff,
@@ -150,7 +150,7 @@ import {
   equipMaximizedGear,
   equipStatgainIncreasers$2,
   possessEquipment,
-  possessOutfit$1,
+  possessOutfit,
   resetMaximize,
 } from "./autoscend/auto_equipment";
 import {
@@ -262,10 +262,9 @@ import {
   makeGeniePocket,
 } from "./autoscend/iotms/mr2017";
 import {
-  auto_latteRefill$6,
+  auto_latteRefill$4,
   auto_setSongboom,
-  auto_voteMonster$1,
-  auto_voteMonster$2,
+  auto_voteMonster,
   auto_voteSetup,
   cheeseWarMachine,
   fightClubNap,
@@ -299,7 +298,6 @@ import {
   auto_checkTrainSet,
   auto_juneCleaverAdventure,
   auto_voidMonster,
-  auto_voidMonster$1,
   prioritizeGoose,
 } from "./autoscend/iotms/mr2022";
 import {
@@ -457,7 +455,7 @@ import {
   in_plumber,
   LM_plumber,
   plumber_canDealScalingDamage,
-  plumber_equipTool$1,
+  plumber_equipTool,
   plumber_initializeSettings,
 } from "./autoscend/paths/path_of_the_plumber";
 import { picky_pulls } from "./autoscend/paths/picky";
@@ -787,7 +785,7 @@ export function auto_unreservedAdvRemaining(): boolean {
 }
 
 export function LX_burnDelay(): boolean {
-  let voteMonsterAvailable: boolean = auto_voteMonster$1(true);
+  let voteMonsterAvailable: boolean = auto_voteMonster(true);
   const digitizeMonsterNext: boolean = isOverdueDigitize();
   let sausageGoblinAvailable: boolean = auto_sausageGoblin();
   const backupTargetAvailable: boolean = auto_backupTarget();
@@ -825,7 +823,7 @@ export function LX_burnDelay(): boolean {
         "green",
       );
       setProperty("auto_nextEncounter", getProperty("_voteMonster"));
-      if (auto_voteMonster$2(true, voterZone)) {
+      if (auto_voteMonster(true, voterZone)) {
         return true;
       }
       setProperty("auto_nextEncounter", "");
@@ -904,7 +902,7 @@ export function LX_burnDelay(): boolean {
         `Fighting a Void monster in ${voidZone.toString()} to burn delay!`,
         "green",
       );
-      if (auto_voidMonster$1(voidZone)) {
+      if (auto_voidMonster(voidZone)) {
         return true;
       }
     }
@@ -973,10 +971,7 @@ export function LX_calculateTheUniverse(speculative: boolean): boolean {
     return false;
   }
   //do we want to summon a [War Frat 151st Infantryman] for the frat warrior outfit?
-  if (
-    !possessOutfit$1("Frat Warrior Fatigues") &&
-    auto_warSide() === "fratboy"
-  ) {
+  if (!possessOutfit("Frat Warrior Fatigues") && auto_warSide() === "fratboy") {
     if (
       doNumberology("battlefield", false) !== -1 &&
       adjustForYellowRayIfPossible($monster`War Frat 151st Infantryman`)
@@ -1070,7 +1065,7 @@ export function LX_doVacation(): boolean {
   }
   if (in_plumber()) {
     //avoid error for not having plumber gear equipped.
-    plumber_equipTool$1($stat`Moxie`);
+    plumber_equipTool($stat`Moxie`);
     equipMaximizedGear();
   }
 
@@ -1093,7 +1088,7 @@ export function auto_doTempleSummit(): boolean {
     );
     return false;
   }
-  buffMaintain$4($effect`Stone-Faced`);
+  buffMaintain$2($effect`Stone-Faced`);
   if (haveEffect($effect`Stone-Faced`) === 0) {
     return false;
   }
@@ -2593,7 +2588,7 @@ function doTasks(): boolean {
 
   oldPeoplePlantStuff();
   use_barrels();
-  auto_latteRefill$6();
+  auto_latteRefill$4();
   auto_buyCrimboCommerceMallItem();
   houseUpgrade();
   //This just closets stuff so G-Lover does not mess with us.

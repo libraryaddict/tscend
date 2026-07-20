@@ -92,14 +92,14 @@ import {
 
 import { speculative_pool_skill } from "../autoscend";
 import { auto_buyUpTo } from "./auto_acquire";
-import { buffMaintain$3, buffMaintain$4 } from "./auto_buff";
+import { buffMaintain$2 } from "./auto_buff";
 import {
   addBonusToMaximize,
   addToMaximize,
   auto_equipFreekill,
   autoEquip,
-  autoEquip$1,
-  autoForceEquip$1,
+  autoEquipToSlot,
+  autoForceEquip,
   autoForceEquip$3,
   autoOutfit,
   equipMaximizedGear,
@@ -107,13 +107,13 @@ import {
   equipStatgainIncreasers$1,
   equipStatgainIncreasers$2,
   possessEquipment,
-  possessOutfit$1,
+  possessOutfit,
   removeFromMaximize,
-  simMaximizeWith$1,
+  simMaximizeWith,
   simValue,
 } from "./auto_equipment";
 import {
-  auto_famWeight$2,
+  auto_famWeight,
   canChangeFamiliar,
   canChangeToFamiliar,
   handleFamiliar$1,
@@ -127,7 +127,7 @@ import {
   provideMeat$2,
 } from "./auto_providers";
 import { acquireHP, acquireMP, mp_regen, uneffect } from "./auto_restore";
-import { solveDelayZone$1 } from "./auto_routing";
+import { solveDelayZone } from "./auto_routing";
 import {
   acquireCombatMods,
   adjustForBanishIfPossible,
@@ -225,7 +225,7 @@ import {
   auto_peridotSetZone,
   auto_wantSoCP,
   auto_wantToShrunkenHead$1,
-  haveUsedPeridot$1,
+  haveUsedPeridot,
   peridotManuallyDesiredMonsters,
 } from "./iotms/mr2025";
 import {
@@ -245,7 +245,7 @@ import { kolhs_preadv } from "./paths/kolhs";
 import { lar_abort } from "./paths/live_ascend_repeat";
 import {
   in_plumber,
-  plumber_equipTool$1,
+  plumber_equipTool,
   plumber_forceEquipTool,
 } from "./paths/path_of_the_plumber";
 import { in_pokefam, pokefam_makeTeam } from "./paths/pocket_familiars";
@@ -306,7 +306,7 @@ function print_footer(): void {
 
   next_line = "";
   if (pathHasFamiliar()) {
-    next_line += `Familiar: ${myFamiliar()} @ ${auto_famWeight$2()}lbs. `;
+    next_line += `Familiar: ${myFamiliar()} @ ${auto_famWeight()}lbs. `;
   }
   if (myClass() === $class`Pastamancer`) {
     next_line += `Thrall: [${myThrall()}] @ level ${myThrall().level}`;
@@ -461,7 +461,7 @@ function auto_ghost_prep(place: Location): void {
     max_with += `,${10 * m_stench}stench dmg`;
   }
 
-  simMaximizeWith$1(max_with);
+  simMaximizeWith(max_with);
   if (m_hot !== 0) {
     bonus += toInt(simValue("hot damage"));
   }
@@ -508,7 +508,7 @@ function auto_pre_adventure(): boolean {
   }
 
   if (get_floundry_locations().has(place)) {
-    buffMaintain$4($effect`Baited Hook`);
+    buffMaintain$2($effect`Baited Hook`);
   }
   // be ready to use red rocket if we don't have one
   if (
@@ -581,9 +581,9 @@ function auto_pre_adventure(): boolean {
     addToMaximize("200meat drop 550max");
   }
   if (place === $location`Megalo-City`) {
-    buffMaintain$3($effect`Ghostly Shell`, 30, 1, 1); //+80 DA. 6 MP
-    buffMaintain$3($effect`Astral Shell`, 30, 1, 1); //+80 DA, 10 MP
-    buffMaintain$3($effect`Feeling Peaceful`, 0, 1, 1);
+    buffMaintain$2($effect`Ghostly Shell`, 30, 1, 1); //+80 DA. 6 MP
+    buffMaintain$2($effect`Astral Shell`, 30, 1, 1); //+80 DA, 10 MP
+    buffMaintain$2($effect`Feeling Peaceful`, 0, 1, 1);
     addToMaximize("200DA 600max");
   }
   if (place === $location`Hero's Field`) {
@@ -614,18 +614,18 @@ function auto_pre_adventure(): boolean {
       haveEffect($effect`Song of Battle`) === 0
     ) {
       //When do we consider Song of Cockiness?
-      buffMaintain$3($effect`Song of Fortune`, 10, 1, 1);
+      buffMaintain$2($effect`Song of Fortune`, 10, 1, 1);
       if (haveEffect($effect`Song of Fortune`) === 0) {
-        buffMaintain$3($effect`Song of Accompaniment`, 10, 1, 1);
+        buffMaintain$2($effect`Song of Accompaniment`, 10, 1, 1);
       }
     } else if (
       place.turnsSpent > 1 &&
       place !== toLocation(getProperty("auto_priorLocation"))
     ) {
       //When do we consider Song of Cockiness?
-      buffMaintain$3($effect`Song of Fortune`, 10, 1, 1);
+      buffMaintain$2($effect`Song of Fortune`, 10, 1, 1);
       if (haveEffect($effect`Song of Fortune`) === 0) {
-        buffMaintain$3($effect`Song of Accompaniment`, 10, 1, 1);
+        buffMaintain$2($effect`Song of Accompaniment`, 10, 1, 1);
       }
     }
   }
@@ -666,7 +666,7 @@ function auto_pre_adventure(): boolean {
   if (in_zootomist() && myLevel() < 13) {
     for (const ef of $effects`Milk of Familiar Kindness, Milk of Familiar Cruelty`) {
       if (numericModifier(ef, Modifier.get("Familiar Experience")) > 0) {
-        buffMaintain$4(ef);
+        buffMaintain$2(ef);
       }
     }
   }
@@ -774,7 +774,7 @@ function auto_pre_adventure(): boolean {
       if (
         auto_havePeridot() &&
         peridotManuallyDesiredMonsters().has(mon) &&
-        !haveUsedPeridot$1(place)
+        !haveUsedPeridot(place)
       ) {
         zoneHasWantedMonsters = true;
       }
@@ -811,14 +811,14 @@ function auto_pre_adventure(): boolean {
           `We want to get the "${mon}" monster into the combat lover's locket from ${place}, so we're bringing it along.`,
           "blue",
         );
-        autoEquip$1($item`combat lover's locket`);
+        autoEquip($item`combat lover's locket`);
         break;
       }
     }
   }
 
   if (in_koe() && possessEquipment($item`low-pressure oxygen tank`)) {
-    autoEquip$1($item`low-pressure oxygen tank`);
+    autoEquip($item`low-pressure oxygen tank`);
   }
   // Latte may conflict with certain quests. Ignore latte drops for the greater good.
   const IgnoreLatteDrop: Location[] = $locations`The Haunted Boiler Room`;
@@ -828,7 +828,7 @@ function auto_pre_adventure(): boolean {
     !is_boris()
   ) {
     // boris has no way to equip latte mug or Kramco (no offhand or familiar)
-    if (auto_sausageGoblin() && place === solveDelayZone$1()) {
+    if (auto_sausageGoblin() && place === solveDelayZone()) {
       // Burning delay using a Sausage Goblin. Can't hold both the Kramco and the Latte, we only have one off-hand!
       if (canChangeToFamiliar($familiar`Left-Hand Man`)) {
         // If we can use the Left-Hand man, we can get a two-fer with both the Kramco and Latte
@@ -840,14 +840,14 @@ function auto_pre_adventure(): boolean {
         handleFamiliar$1($familiar`Left-Hand Man`);
         handleFamiliar$1($familiar`Left-Hand Man`);
         useFamiliar($familiar`Left-Hand Man`); // update familiar already called so have to force.
-        autoEquip($slot`familiar`, $item`latte lovers member's mug`);
+        autoEquipToSlot($slot`familiar`, $item`latte lovers member's mug`);
       }
     } else {
       auto_log_info(
         `We want to get the "${auto_latteDropName(place)}" ingredient for our Latte from ${place}, so we're bringing it along.`,
         "blue",
       );
-      autoEquip$1($item`latte lovers member's mug`);
+      autoEquip($item`latte lovers member's mug`);
     }
   }
 
@@ -855,7 +855,7 @@ function auto_pre_adventure(): boolean {
     getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
     !toBoolean(getProperty("auto_avalancheDeployed"))
   ) {
-    autoForceEquip$1($slot`acc2`, wrap_item($item`McHugeLarge left ski`));
+    autoForceEquip($slot`acc2`, wrap_item($item`McHugeLarge left ski`));
     // We put it in acc2 so it can't clash with the war accessory in acc3
   }
 
@@ -877,7 +877,7 @@ function auto_pre_adventure(): boolean {
     (douse_locs.includes(place) || auto_allRifts().has(place)) &&
     auto_dousesRemaining() > 0
   ) {
-    autoEquip$1(fluda);
+    autoEquip(fluda);
   }
 
   const bat_wings: Item = $item`bat wings`;
@@ -886,7 +886,7 @@ function auto_pre_adventure(): boolean {
     (swoop_locs.has(place) || auto_allRifts().has(place)) &&
     auto_swoopsRemaining() > 0
   ) {
-    autoEquip$1(bat_wings);
+    autoEquip(bat_wings);
   }
 
   const exting: Item = wrap_item($item`industrial fire extinguisher`);
@@ -896,12 +896,12 @@ function auto_pre_adventure(): boolean {
       place,
     )
   ) {
-    autoEquip$1(exting);
+    autoEquip(exting);
   } else if (
     auto_availableBrickRift() === place &&
     auto_fireExtinguisherCharges() >= 30
   ) {
-    autoEquip$1(exting); // Can do at least 1 polar vortex for shadow bricks while keeping 20 for a zone specific skill
+    autoEquip(exting); // Can do at least 1 polar vortex for shadow bricks while keeping 20 for a zone specific skill
   } else if (
     in_wildfire() &&
     auto_haveFireExtinguisher() &&
@@ -915,7 +915,7 @@ function auto_pre_adventure(): boolean {
   }
 
   if (
-    !haveUsedPeridot$1(place) &&
+    !haveUsedPeridot(place) &&
     auto_havePeridot() &&
     (zoneHasWantedMonsters || auto_peridotSetZone(place))
   ) {
@@ -928,7 +928,7 @@ function auto_pre_adventure(): boolean {
     auto_haveBatWings()
   ) {
     // only here to get immateria. Get it faster with bat wings
-    autoEquip$1($item`bat wings`);
+    autoEquip($item`bat wings`);
   }
 
   if (in_plumber()) {
@@ -958,13 +958,13 @@ function auto_pre_adventure(): boolean {
       (place === $location`The Smut Orc Logging Camp` &&
         possessEquipment($item`frosty button`))
     ) {
-      if (!plumber_equipTool$1($stat`Mysticality`)) {
+      if (!plumber_equipTool($stat`Mysticality`)) {
         abort(
           "I'm scared to adventure in a zone with ghosts without a fire flower. Please fight a bit and buy me a fire flower.",
         );
       }
     } else {
-      plumber_equipTool$1($stat`Moxie`);
+      plumber_equipTool($stat`Moxie`);
     }
     // It is dangerous out there! Take this!
     const flyeredML: number = toInt(getProperty("flyeredML"));
@@ -981,7 +981,7 @@ function auto_pre_adventure(): boolean {
       auto_log_debug$1(
         "I expect to be flyering, equipping Pill Keeper to skip the first hit.",
       );
-      autoEquip($slot`acc3`, $item`Eight Days a Week Pill Keeper`);
+      autoEquipToSlot($slot`acc3`, $item`Eight Days a Week Pill Keeper`);
     }
   }
 
@@ -1009,14 +1009,14 @@ function auto_pre_adventure(): boolean {
     if (!possessEquipment($item`continuum transfunctioner`)) {
       abort("Tried to be retro but lacking the Continuum Transfunctioner.");
     }
-    autoEquip($slot`acc3`, $item`continuum transfunctioner`);
+    autoEquipToSlot($slot`acc3`, $item`continuum transfunctioner`);
   }
 
   if (place === $location`Inside the Palindome` && myTurncount() !== 0) {
     if (!possessEquipment($item`Talisman o' Namsilat`)) {
       abort("Tried to go to The Palindome but don't have the Namsilat");
     }
-    autoEquip($slot`acc3`, $item`Talisman o' Namsilat`);
+    autoEquipToSlot($slot`acc3`, $item`Talisman o' Namsilat`);
   }
 
   if (
@@ -1032,7 +1032,7 @@ function auto_pre_adventure(): boolean {
         "Tried to adventure in [The Haunted Boiler Room] without an [Unstable Fulminate]... correcting",
         "red",
       );
-      autoForceEquip$1($slot`off-hand`, $item`unstable fulminate`);
+      autoForceEquip($slot`off-hand`, $item`unstable fulminate`);
       if (equippedAmount($item`unstable fulminate`) === 0) {
         abort(
           "Correction failed, please report this. Manually get the [wine bomb] then run me again",
@@ -1042,7 +1042,7 @@ function auto_pre_adventure(): boolean {
   }
 
   if (place === $location`The Black Forest`) {
-    autoEquip($slot`acc3`, $item`blackberry galoshes`);
+    autoEquipToSlot($slot`acc3`, $item`blackberry galoshes`);
   }
 
   if (
@@ -1051,8 +1051,8 @@ function auto_pre_adventure(): boolean {
     )
   ) {
     if (possessEquipment($item`pirate fledges`)) {
-      autoEquip($slot`acc3`, $item`pirate fledges`);
-    } else if (possessOutfit$1("Swashbuckling Getup")) {
+      autoEquipToSlot($slot`acc3`, $item`pirate fledges`);
+    } else if (possessOutfit("Swashbuckling Getup")) {
       autoOutfit("Swashbuckling Getup");
     } else {
       abort("Trying to be a pirate without being able to dress like a pirate.");
@@ -1092,7 +1092,7 @@ function auto_pre_adventure(): boolean {
     auto_predictAccordionTurns() >= 8 &&
     numericModifier(Modifier.get("MP Regen Min")) < 5
   ) {
-    buffMaintain$4($effect`Paul's Passionate Pop Song`);
+    buffMaintain$2($effect`Paul's Passionate Pop Song`);
   }
   // ML adjustment zone section
   let doML: boolean = true;

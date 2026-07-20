@@ -46,11 +46,11 @@ import {
 } from "../auto_consume";
 import {
   addToMaximize,
-  autoEquip$1,
-  autoForceEquip$1,
+  autoEquip,
+  autoForceEquip,
   possessEquipment,
 } from "../auto_equipment";
-import { LX_freeCombats$1 } from "../auto_powerlevel";
+import { LX_freeCombats } from "../auto_powerlevel";
 import {
   auto_log_debug$1,
   auto_log_info,
@@ -178,7 +178,7 @@ export function kolhs_preadv(place: Location): void {
         `Tried to adventure in [${place}] to do the yearbook camera quest without a [Yearbook Club Camera] equipped... correcting`,
         "red",
       );
-      autoForceEquip$1($slot`acc2`, $item`Yearbook Club Camera`);
+      autoForceEquip($slot`acc2`, $item`Yearbook Club Camera`);
       if (equippedAmount($item`Yearbook Club Camera`) === 0) {
         abort(
           `Correction failed, please report this. Manually photograph a [${getProperty("yearbookCameraTarget")}] then run me again`,
@@ -253,7 +253,7 @@ function LX_kolhs_yearbookCameraQuest(): boolean {
     return false; //just in case. should not be possible since it picks from reachable locations
   }
 
-  autoEquip$1($item`Yearbook Club Camera`);
+  autoEquip($item`Yearbook Club Camera`);
   return autoAdv(adv_target);
 
   return false;
@@ -356,7 +356,7 @@ export function LM_kolhs(): boolean {
   }
   if (myLevel() < 9) {
     //important to rush level 9 for the superior drink drops
-    if (LX_freeCombats$1(true)) {
+    if (LX_freeCombats(true)) {
       return true;
     }
   }

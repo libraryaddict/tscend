@@ -58,11 +58,11 @@ import {
 import { resetState } from "../../autoscend";
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv, autoLuckyAdv$1 } from "../auto_adventure";
-import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
+import { buffMaintain$2 } from "../auto_buff";
 import {
   addToMaximize,
   autoEquip,
-  autoEquip$1,
+  autoEquipToSlot,
   autoForceEquip$3,
   equipMaximizedGear,
   equipStatgainIncreasers$2,
@@ -132,7 +132,7 @@ import {
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_bhy } from "../paths/bees_hate_you";
-import { bat_formMist$1, in_darkGyffte } from "../paths/dark_gyffte";
+import { bat_formMist, in_darkGyffte } from "../paths/dark_gyffte";
 import { in_glover } from "../paths/g_lover";
 import { in_gnoob } from "../paths/gelatinous_noob";
 import { in_koe } from "../paths/kingdom_of_exploathing";
@@ -219,7 +219,7 @@ function L9_chasmMaximizeForNoncombat(): void {
   const mystry: string =
     "1000mysticality,1000spell damage,10000 spell damage percent";
   const moxtry: string = "1000moxie,10000sleaze resistance";
-  simMaximizeWith(loc, mustry);
+  simMaximizeWith(mustry, loc);
   const musmus: number = simValue("Buffed Muscle");
   const musflat: number = simValue("Weapon Damage"); //incorrectly includes 15% weapon power
   const musperc: number = simValue("Weapon Damage Percent");
@@ -227,7 +227,7 @@ function L9_chasmMaximizeForNoncombat(): void {
     squareRoot(((musmus + musflat) / 15) * (1 + musperc / 100)),
   );
   auto_log_info(`Muscle score: ${musscore}`, "blue");
-  simMaximizeWith(loc, mystry);
+  simMaximizeWith(mystry, loc);
   const mysmys: number = simValue("Buffed Mysticality");
   const mysflat: number = simValue("Spell Damage");
   const mysperc: number = simValue("Spell Damage Percent");
@@ -239,7 +239,7 @@ function L9_chasmMaximizeForNoncombat(): void {
     //overwrite equal muscle score if possible because it may be 1 lower than predicted due to the above weapon damage issue
     best = "mys";
   }
-  simMaximizeWith(loc, moxtry);
+  simMaximizeWith(moxtry, loc);
   const moxmox: number = simValue("Buffed Moxie");
   const moxres: number = simValue("Sleaze Resistance");
   const moxscore: number = floor(
@@ -365,8 +365,8 @@ export function prepareForSmutOrcs(): void {
       addToMaximize(
         "myst,40spell damage,80spell damage percent,40cold spell damage,-1000 ml",
       );
-      buffMaintain$3($effect`Carol of the Hells`, 50, 1, 1);
-      buffMaintain$3($effect`Song of Sauce`, 150, 1, 1);
+      buffMaintain$2($effect`Carol of the Hells`, 50, 1, 1);
+      buffMaintain$2($effect`Song of Sauce`, 150, 1, 1);
 
       auto_log_info(
         "If we encounter Blech House when we are not expecting it we will stop.",
@@ -382,8 +382,8 @@ export function prepareForSmutOrcs(): void {
       addToMaximize(
         "muscle,40weapon damage,60weapon damage percent,40cold damage,-1000 ml",
       );
-      buffMaintain$3($effect`Carol of the Bulls`, 50, 1, 1);
-      buffMaintain$3($effect`Song of the North`, 150, 1, 1);
+      buffMaintain$2($effect`Carol of the Bulls`, 50, 1, 1);
+      buffMaintain$2($effect`Song of the North`, 150, 1, 1);
 
       auto_log_info(
         "If we encounter Blech House when we are not expecting it we will stop.",
@@ -397,7 +397,7 @@ export function prepareForSmutOrcs(): void {
     }
   }
   // This adds a tonne of damage and NC progress
-  buffMaintain$4($effect`Triple-Sized`);
+  buffMaintain$2($effect`Triple-Sized`);
 
   if (toInt(getProperty("smutOrcNoncombatProgress")) === 15) {
     // If we think the non-com will hit NOW we clear maximizer to keep previous settings from carrying forward
@@ -412,7 +412,7 @@ export function prepareForSmutOrcs(): void {
   }
 
   if (in_plumber() && possessEquipment($item`frosty button`)) {
-    autoEquip$1($item`frosty button`);
+    autoEquip($item`frosty button`);
   }
 
   if (inHardcore()) {
@@ -426,10 +426,10 @@ export function prepareForSmutOrcs(): void {
     }
 
     if (fastenerCount() < bridgeGoal()) {
-      autoEquip$1($item`loadstone`);
+      autoEquip($item`loadstone`);
     }
     if (lumberCount() < bridgeGoal()) {
-      autoEquip$1($item`logging hatchet`);
+      autoEquip($item`logging hatchet`);
     }
 
     return;
@@ -449,10 +449,10 @@ export function prepareForSmutOrcs(): void {
 
   if (toInt(getProperty("chasmBridgeProgress")) < bridgeGoal()) {
     if (fastenerCount() < bridgeGoal()) {
-      autoEquip$1($item`loadstone`);
+      autoEquip($item`loadstone`);
     }
     if (lumberCount() < bridgeGoal()) {
-      autoEquip$1($item`logging hatchet`);
+      autoEquip($item`logging hatchet`);
     }
 
     return;
@@ -773,24 +773,24 @@ export function L9_aBooPeak(): boolean {
     }
 
     if (doThisBoo) {
-      buffMaintain$4($effect`Go Get 'Em, Tiger!`);
-      bat_formMist$1();
+      buffMaintain$2($effect`Go Get 'Em, Tiger!`);
+      bat_formMist();
       if (0 === haveEffect($effect`Mist Form`)) {
-        buffMaintain$3($effect`Spectral Awareness`, 10, 1, 1);
+        buffMaintain$2($effect`Spectral Awareness`, 10, 1, 1);
       }
       addToMaximize(`1000spooky res,1000cold res,10hp${parrot}`);
       adjustEdHat("ml");
 
-      buffMaintain$3($effect`Astral Shell`, 10, 1, 1);
-      buffMaintain$3($effect`Elemental Saucesphere`, 10, 1, 1);
-      buffMaintain$3($effect`Scariersauce`, 10, 1, 1);
-      buffMaintain$3($effect`Scarysauce`, 10, 1, 1);
-      buffMaintain$4($effect`Spookypants`);
-      buffMaintain$4($effect`Hyphemariffic`);
-      buffMaintain$4($effect`Insulated Trousers`);
-      buffMaintain$4($effect`Balls of Ectoplasm`);
-      buffMaintain$4($effect`Red Door Syndrome`);
-      buffMaintain$4($effect`Well-Oiled`);
+      buffMaintain$2($effect`Astral Shell`, 10, 1, 1);
+      buffMaintain$2($effect`Elemental Saucesphere`, 10, 1, 1);
+      buffMaintain$2($effect`Scariersauce`, 10, 1, 1);
+      buffMaintain$2($effect`Scarysauce`, 10, 1, 1);
+      buffMaintain$2($effect`Spookypants`);
+      buffMaintain$2($effect`Hyphemariffic`);
+      buffMaintain$2($effect`Insulated Trousers`);
+      buffMaintain$2($effect`Balls of Ectoplasm`);
+      buffMaintain$2($effect`Red Door Syndrome`);
+      buffMaintain$2($effect`Well-Oiled`);
 
       if (auto_is_valid$3($effect`Cold as Nice`)) {
         auto_beachCombHead("cold");
@@ -965,7 +965,7 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
       auto_is_valid($item`resolution: be happier`)
     ) {
       if (!speculative) {
-        buffMaintain$4($effect`Joyful Resolve`);
+        buffMaintain$2($effect`Joyful Resolve`);
       }
       food_drop = food_drop + 15;
     }
@@ -1030,9 +1030,9 @@ export function L9_twinPeak(): boolean {
     handleBjornify($familiar`Grimstone Golem`);
   }
 
-  buffMaintain$4($effect`Fishy Whiskers`); //heavy rains specific reduce item drop penalty by 10%
+  buffMaintain$2($effect`Fishy Whiskers`); //heavy rains specific reduce item drop penalty by 10%
   //BHY specific prevent wandering bees from skipping the burning the hotel down choice and wasting turns
-  buffMaintain$4($effect`Float Like a Butterfly, Smell Like a Bee`);
+  buffMaintain$2($effect`Float Like a Butterfly, Smell Like a Bee`);
 
   if (in_bhy()) {
     // we can't make an oil jar to solve the quest, just adventure until the hotel is burned down
@@ -1161,16 +1161,16 @@ export function L9_oilPeak(): boolean {
     auto_log_info("Oil Peak is finished but we need more crude!", "blue");
   }
 
-  buffMaintain$4($effect`Fishy Whiskers`);
+  buffMaintain$2($effect`Fishy Whiskers`);
 
   auto_MaxMLToCap(auto_convertDesiredML(100), true);
 
   if (monsterLevelAdjustment() < 50) {
-    buffMaintain$4($effect`The Dinsey Look`);
+    buffMaintain$2($effect`The Dinsey Look`);
   }
   if (monsterLevelAdjustment() < 60) {
     if (itemAmount($item`dress pants`) > 0) {
-      autoEquip($slot`pants`, $item`dress pants`);
+      autoEquipToSlot($slot`pants`, $item`dress pants`);
     } else {
       januaryToteAcquire($item`tinsel tights`);
     }
@@ -1182,11 +1182,11 @@ export function L9_oilPeak(): boolean {
   ) {
     const loc: Location = $location`Oil Peak`;
     if (
-      ((simMaximizeWith(loc, "1000ml 75min") &&
-        !simMaximizeWith(loc, "1000ml 100min")) ||
-        (simMaximizeWith(loc, "1000ml 25min") &&
-          !simMaximizeWith(loc, "1000ml 50min")) ||
-        !simMaximizeWith(loc, "1000ml 11min")) &&
+      ((simMaximizeWith("1000ml 75min", loc) &&
+        !simMaximizeWith("1000ml 100min", loc)) ||
+        (simMaximizeWith("1000ml 25min", loc) &&
+          !simMaximizeWith("1000ml 50min", loc)) ||
+        !simMaximizeWith("1000ml 11min", loc)) &&
       haveEffect($effect`Driving Wastefully`) === 0
     ) {
       asdonBuff($effect`Driving Recklessly`);

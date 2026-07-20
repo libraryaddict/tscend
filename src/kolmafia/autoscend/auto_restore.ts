@@ -76,7 +76,7 @@ import {
 } from "libram";
 
 import { auto_mall_price } from "./auto_acquire";
-import { buffMaintain$4 } from "./auto_buff";
+import { buffMaintain$2 } from "./auto_buff";
 import { equipStatgainIncreasers$1, possessEquipment } from "./auto_equipment";
 import { pathHasFamiliar } from "./auto_familiar";
 import {
@@ -2115,18 +2115,18 @@ export function acquireMP(
     return true;
   }
   //since we need to restore, lets reduce MP cost of future skills
-  buffMaintain$4($effect`The Odour of Magick`);
-  buffMaintain$4($effect`Using Protection`);
+  buffMaintain$2($effect`The Odour of Magick`);
+  buffMaintain$2($effect`Using Protection`);
   //also use items/skills which give free mp regen
-  buffMaintain$4($effect`Tingly Tongue`);
-  buffMaintain$4($effect`Tingling Insides`);
-  buffMaintain$4($effect`Wisdom of the Autumn Years`);
+  buffMaintain$2($effect`Tingly Tongue`);
+  buffMaintain$2($effect`Tingling Insides`);
+  buffMaintain$2($effect`Wisdom of the Autumn Years`);
   if (
     auto_equipAprilShieldBuff() &&
     !toBoolean(getProperty("_aprilShowerSimmer"))
   ) {
     //Free mp regen on the first cast of the day with the April Shower Thoughts Shield equipped
-    buffMaintain$4($effect`Simmering`);
+    buffMaintain$2($effect`Simmering`);
   }
   // Sausages restore 999MP, this is a pretty arbitrary cutoff but it should reduce pain
   // TODO: move this to general effectiveness method
@@ -2212,7 +2212,7 @@ export function acquireHP(): boolean {
     // limited restores & meat is important, needs lower default
     goal = toInt(myMaxhp() * 0.6);
   }
-  return acquireHP$1(goal);
+  return acquireHP$3(goal);
 }
 /**
  * Try to acquire your max hp (useFreeRests: true). Will also cure poisoned and beaten up before restoring any hp.
@@ -2220,29 +2220,17 @@ export function acquireHP(): boolean {
  * returns true if my_hp() >= my_maxhp() after attempting to restore.
  */
 export function acquireFullHP(): boolean {
-  return acquireHP$1(myMaxhp());
-}
-/**
- * Try to acquire up to the hp goal (useFreeRests: true). Will also cure poisoned and beaten up before restoring any hp.
- *
- * returns true if my_hp() >= goal after attempting to restore.
- */
-export function acquireHP$1(goal: number): boolean {
-  return acquireHP$2(goal, meatReserve());
+  return acquireHP$3(myMaxhp());
 }
 /**
  * Try to acquire up to the hp goal, optionally buying items (useFreeRests: true). Will also cure poisoned and beaten up before restoring any hp.
  *
  * returns true if my_hp() >= goal after attempting to restore.
  */
-function acquireHP$2(goal: number, meat_reserve: number): boolean {
-  return acquireHP$3(goal, meat_reserve, true);
-}
-
-function acquireHP$3(
+export function acquireHP$3(
   goal: number,
-  meat_reserve: number,
-  useFreeRests: boolean,
+  meat_reserve: number = meatReserve(),
+  useFreeRests: boolean = true,
 ): boolean {
   //Try to acquire up to the hp goal, optionally buying items and using free rests. Will also cure poisoned and beaten up before restoring any hp.
   //returns true if my_hp() >= goal after attempting to restore.
@@ -2296,7 +2284,7 @@ function acquireHP$3(
     return true;
   }
 
-  buffMaintain$4($effect`Extra-Green`);
+  buffMaintain$2($effect`Extra-Green`);
 
   if (myClass() === $class`Pig Skinner` && haveSkill($skill`Second Wind`)) {
     return auto_pigSkinnerAcquireHP(toInt(0.7 * goal));

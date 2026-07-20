@@ -62,9 +62,9 @@ import {
 import { canUntinker, untinker } from "../auto_craft";
 import {
   addToMaximize,
-  autoEquip,
+  autoEquipToSlot,
   possessEquipment,
-  possessOutfit$1,
+  possessOutfit,
 } from "../auto_equipment";
 import { haveSpleenFamiliar, pathHasFamiliar } from "../auto_familiar";
 import { providePlusCombat, providePlusNonCombat } from "../auto_providers";
@@ -102,7 +102,7 @@ import { in_tcrs } from "../paths/two_crazy_random_summer";
 import { in_wereprof, is_werewolf } from "../paths/wereprofessor";
 import { in_wildfire } from "../paths/wildfire";
 import { in_robot } from "../paths/you_robot";
-import { cyrptEvilBonus$1 } from "../quests/level_07";
+import { cyrptEvilBonus } from "../quests/level_07";
 import { bridgeGoal } from "../quests/level_09";
 import { auto_bestWarPlan, auto_warKillsPerBattle } from "../quests/level_12";
 import { needStarKey } from "../quests/level_13";
@@ -406,11 +406,11 @@ export function auto_backupTarget(): boolean {
     !in_koe();
   const habitatZombieEvil: number =
     auto_habitatMonster() === $monster`modern zmobie`
-      ? auto_habitatFightsLeft() * (5 + cyrptEvilBonus$1())
+      ? auto_habitatFightsLeft() * (5 + cyrptEvilBonus())
       : 0;
   const wantBackupZmobie: boolean =
     toInt(getProperty("cyrptAlcoveEvilness")) >
-      14 + cyrptEvilBonus$1() + habitatZombieEvil &&
+      14 + cyrptEvilBonus() + habitatZombieEvil &&
     internalQuestStatus("questL07Cyrptic") === 0;
 
   switch (toMonster(getProperty("lastCopyableMonster"))) {
@@ -488,7 +488,7 @@ export function auto_backupToYourLastEnemy(loc: Location): boolean {
     return false;
   }
 
-  if (autoEquip($slot`acc3`, $item`backup camera`)) {
+  if (autoEquipToSlot($slot`acc3`, $item`backup camera`)) {
     setProperty("auto_nextEncounter", getProperty("lastCopyableMonster"));
     return autoAdv(loc);
   }
@@ -555,11 +555,7 @@ function totalBatteryPoints(): number {
   return totalPoints;
 }
 
-function batteryCombine(battery: Item): boolean {
-  return batteryCombine$1(battery, false);
-}
-
-function batteryCombine$1(battery: Item, simulate: boolean): boolean {
+function batteryCombine(battery: Item, simulate: boolean = false): boolean {
   // Mafia's create() function only allows one single recipe for crafting batteries. This can result in situations where you can in fact craft a battery but it fails due to it not being the singular recipe supported by it.
   // Mafia's can_create() has the same issue. use simulate in this function to determine if we can actually create a battery (or already have it).
   // To get batteries use can_get_battery() and auto_getBattery(), which will be calling this function and untinker as necessary
@@ -775,7 +771,7 @@ export function can_get_battery(target: Item): boolean {
   if (canUntinker()) {
     return totalBatteryPoints() >= batteryPoints(target); //we can untinker. so just count battery points
   }
-  return batteryCombine$1(target, true); //can not untinker. only check meatpasting by simulating batteryCombine
+  return batteryCombine(target, true); //can not untinker. only check meatpasting by simulating batteryCombine
 }
 
 export function auto_getBattery(target: Item): boolean {
@@ -952,7 +948,7 @@ export function auto_FireExtinguisherCombatString(place: Location): string {
   if (
     place === $location`Cobb's Knob Harem` &&
     !toBoolean(getProperty("fireExtinguisherHaremUsed")) &&
-    !possessOutfit$1("Knob Goblin Harem Girl Disguise")
+    !possessOutfit("Knob Goblin Harem Girl Disguise")
   ) {
     return `skill ${$skill`Fire Extinguisher: Zone Specific`}`;
   }

@@ -208,7 +208,7 @@ function summonMinions(target: number, meat_reserve: number): boolean {
 
 export function zombieSlayer_acquireMP(
   goal: number,
-  meat_reserve: number,
+  meat_reserve: number = meatReserve(),
 ): boolean {
   if (!in_zombieSlayer()) {
     return false;
@@ -219,10 +219,6 @@ export function zombieSlayer_acquireMP(
   }
 
   return lureMinions(goal) || summonMinions(goal, meat_reserve);
-}
-
-function zombieSlayer_acquireMP$1(goal: number): boolean {
-  return zombieSlayer_acquireMP(goal, meatReserve());
 }
 
 export function zombieSlayer_acquireHP(goal: number): boolean {
@@ -246,7 +242,7 @@ export function zombieSlayer_acquireHP(goal: number): boolean {
             internalQuestStatus("questL11Curses") > 1 ||
             itemAmount($item`moss-covered stone sphere`) > 0
           ))) &&
-      zombieSlayer_acquireMP$1(mpCost($skill`Devour Minions`))
+      zombieSlayer_acquireMP(mpCost($skill`Devour Minions`))
     ) {
       useSkill(1, $skill`Devour Minions`);
       if (myHp() >= goal) {
@@ -264,7 +260,7 @@ export function zombieSlayer_acquireHP(goal: number): boolean {
   if (auto_have_skill($skill`Bite Minion`)) {
     while (
       missingHP > 0 &&
-      zombieSlayer_acquireMP$1(mpCost($skill`Bite Minion`))
+      zombieSlayer_acquireMP(mpCost($skill`Bite Minion`))
     ) {
       useSkill(1, $skill`Bite Minion`);
       if (myHp() >= goal) {

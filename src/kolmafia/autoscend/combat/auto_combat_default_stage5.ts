@@ -65,7 +65,7 @@ import { auto_haveDarts, dartSkill } from "../iotms/mr2024";
 import { auto_canNorthernExplosionFE } from "../iotms/mr2025";
 import { inAftercore } from "../paths/casual";
 import { in_glover } from "../paths/g_lover";
-import { getZooBestPunch$1 } from "../paths/zootomist";
+import { getZooBestPunch } from "../paths/zootomist";
 import { auto_combatMeatGolemStage5 } from "./auto_combat_adventurer_meats_world";
 import { auto_combatDisguisesStage5 } from "./auto_combat_disguises_delimit";
 import { auto_combatFallOfTheDinosaursStage5 } from "./auto_combat_fall_of_the_dinosaurs";
@@ -74,7 +74,7 @@ import { auto_combatHeavyRainsStage5 } from "./auto_combat_heavy_rains";
 import { auto_combatPlumberStage5 } from "./auto_combat_plumber";
 import {
   auto_useSkill,
-  canSurvive$1,
+  canSurvive,
   canSurviveShootGhost,
   canUse,
   canUse$3,
@@ -86,7 +86,6 @@ import {
   markAsUsed,
   usedCount,
   useItem,
-  useItem$1,
 } from "./auto_combat_util";
 import { auto_combatWereProfessorStage5 } from "./auto_combat_wereprofessor";
 import { auto_combat_robot_stage5 } from "./auto_combat_you_robot";
@@ -172,7 +171,7 @@ export function auto_combatDefaultStage5(
     }
     if (enemy === $monster`mother hellseal`) {
       if (canUse$3($item`Rain-Doh indigo cup`)) {
-        return useItem$1($item`Rain-Doh indigo cup`);
+        return useItem($item`Rain-Doh indigo cup`);
       }
       return auto_useSkill($skill`Lunging Thrust-Smack`, false);
     }
@@ -249,7 +248,7 @@ export function auto_combatDefaultStage5(
     canUse$3($item`cosmic bowling ball`) &&
     monsterHp() < 100
   ) {
-    return useItem$1($item`cosmic bowling ball`);
+    return useItem($item`cosmic bowling ball`);
   }
 
   if (canUse($skill`Surprisingly Sweet Stab`)) {
@@ -267,7 +266,7 @@ export function auto_combatDefaultStage5(
   if (
     canUse($skill`Stuffed Mortar Shell`) &&
     myClass() === $class`Sauceror` &&
-    canSurvive$1(2.0) &&
+    canSurvive(2.0) &&
     (currentFlavour() !== monsterElement(enemy) ||
       currentFlavour() === Element.none)
   ) {
@@ -480,7 +479,7 @@ export function auto_combatDefaultStage5(
         if (
           mortar_round > -1 &&
           mortar_round === round_1 - 1 &&
-          canSurvive$1(2.0)
+          canSurvive(2.0)
         ) {
           if (monsterHp() > 1 && canUse$3($item`seal tooth`, false)) {
             return useItem($item`seal tooth`, false);
@@ -664,7 +663,7 @@ export function auto_combatDefaultStage5(
         if (
           canUse($skill`Cadenza`) &&
           itemType(equippedItem($slot`weapon`)) === "accordion" &&
-          canSurvive$1(2.0)
+          canSurvive(2.0)
         ) {
           if (
             $items`accordion file, alarm accordion, autocalliope, Bal-musette accordion, baritone accordion, Cajun accordion, ghost accordion, peace accordion, pentatonic accordion, pygmy concertinette, Skipper's accordion, Squeezebox of the Ages, The Trickster's Trikitixa`.includes(
@@ -989,7 +988,7 @@ export function auto_combatDefaultStage5(
         }
         break;
       case $class`Zootomist`: {
-        const punch: Skill = getZooBestPunch$1(enemy);
+        const punch: Skill = getZooBestPunch(enemy);
         if (punch === Skill.none) {
           return "attack with weapon";
         }
@@ -1050,13 +1049,13 @@ export function auto_combatDefaultStage5(
       return auto_useSkill($skill`Northern Explosion`);
     }
     if (!combat_status_check("last attempt") && myMp() >= costMajor) {
-      if (canSurvive$1(1.4)) {
+      if (canSurvive(1.4)) {
         combat_status_add("last attempt");
         auto_log_warning("Uh oh, I'm having trouble in combat.", "red");
       }
       return attackMajor;
     }
-    if (canSurvive$1(2.5)) {
+    if (canSurvive(2.5)) {
       auto_log_warning(
         "Hmmm, I don't really know what to do in this combat but it looks like I'll live.",
         "red",

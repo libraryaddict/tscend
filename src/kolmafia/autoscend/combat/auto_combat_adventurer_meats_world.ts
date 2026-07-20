@@ -14,7 +14,7 @@ import { $element, $item, $monster, $skill, $stat } from "libram";
 import { auto_have_skill } from "../auto_util";
 import { dartSkill } from "../iotms/mr2024";
 import { in_amw } from "../paths/adventurer_meats_world";
-import { auto_useSkill, canSurvive$1, canUse } from "./auto_combat_util";
+import { auto_useSkill, canSurvive, canUse } from "./auto_combat_util";
 
 //defined in /autoscend/combat/auto_combat_adventurer_meats_world.ash
 export function amw_wanttoPP(): boolean {
@@ -23,7 +23,7 @@ export function amw_wanttoPP(): boolean {
   }
   // cannot autosell for meat so pickpocketing is less profitable,
   // so higher survive requirement than default. maybe exempt certain monsters from higher req?
-  if (!canSurvive$1(8.0)) {
+  if (!canSurvive(8.0)) {
     return false;
   }
   return true;
@@ -46,7 +46,7 @@ export function auto_combatMeatGolemStage3(
   // also skipping if we might die after delevel, because we may be able to stun instead
   if (
     canUse($skill`Meat Cleaver`, true, true) &&
-    (((!canSurvive$1(8.0) || monsterHp() >= 500) && canSurvive$1(0.7)) ||
+    (((!canSurvive(8.0) || monsterHp() >= 500) && canSurvive(0.7)) ||
       enemy === $monster`The Manwich` ||
       enemy === $monster`The Big Mac Wisniewski` ||
       enemy === $monster`Naughty Sorceress, all sausage`)
@@ -68,7 +68,7 @@ export function auto_combatMeatGolemStage5(
   }
   // make sure to heal if possible and necessary
   if (
-    (!canSurvive$1(1.4) || myHp() < 0.5 * myMaxhp()) &&
+    (!canSurvive(1.4) || myHp() < 0.5 * myMaxhp()) &&
     canUse($skill`Chew the Fat`, false) &&
     myHp() < myMaxhp() * 0.95
   ) {

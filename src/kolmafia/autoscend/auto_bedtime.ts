@@ -100,7 +100,7 @@ import {
   canPull,
   pullXWhenHaveY,
 } from "./auto_acquire";
-import { buffMaintain$4 } from "./auto_buff";
+import { buffMaintain$2 } from "./auto_buff";
 import {
   acquireMilkOfMagnesiumIfUnused,
   auto_drinkNightcap,
@@ -120,7 +120,7 @@ import {
   equipRollover,
   is_watch,
   possessEquipment,
-  possessOutfit$1,
+  possessOutfit,
 } from "./auto_equipment";
 import {
   auto_have_familiar,
@@ -148,7 +148,7 @@ import {
   auto_log_warning,
   auto_log_warning$1,
   autoCraft,
-  canYellowRay$1,
+  canYellowRay,
   cloversAvailable$1,
   handleSealAncient,
   handleSealNormal,
@@ -1075,25 +1075,25 @@ export function doBedtime(): boolean {
         auto_log_info(`Pulls remaining: ${pullsRemaining()}`, "olive");
       }
       if (
-        !possessOutfit$1("frat warrior fatigues") &&
+        !possessOutfit("frat warrior fatigues") &&
         !toBoolean(getProperty("auto_hippyInstead"))
       ) {
         auto_log_info(
           "Please consider an orcish frat boy spy (You want Frat Warrior Fatigues).",
           "blue",
         );
-        if (canYellowRay$1()) {
+        if (canYellowRay()) {
           auto_log_info("Make sure to Ball Lightning the spy!!", "red");
         }
       } else if (
-        !possessOutfit$1("War Hippy Fatigues") &&
+        !possessOutfit("War Hippy Fatigues") &&
         toBoolean(getProperty("auto_hippyInstead"))
       ) {
         auto_log_info(
           "Please consider a Bailey's Beetle (You want War Hippy Fatigues).",
           "blue",
         );
-        if (canYellowRay$1()) {
+        if (canYellowRay()) {
           auto_log_info("Make sure to Ball Lightning the hippy!!", "red");
         }
       } else {
@@ -1138,7 +1138,7 @@ export function doBedtime(): boolean {
   }
   if (
     canGenieCombat($monster`Orcish Frat Boy Spy`) &&
-    !possessOutfit$1("frat warrior fatigues")
+    !possessOutfit("frat warrior fatigues")
   ) {
     auto_log_info(
       "Please consider genie wishing for an orcish frat boy spy (You want Frat Warrior Fatigues).",
@@ -1157,7 +1157,7 @@ export function doBedtime(): boolean {
     const notNeeded: boolean =
       haveEffect($effect`Everything Looks Yellow`) > 0 ||
       hasDisintegrate ||
-      canYellowRay$1(); //have a common unlimited source of YR, no need to make viral video
+      canYellowRay(); //have a common unlimited source of YR, no need to make viral video
     const baconUnused: boolean =
       itemAmount($item`BACON`) >= 100 * myDaycount() - 20 * (myDaycount() - 1); //BACON hasn't been used for something else this ascension
     if (
@@ -1835,7 +1835,7 @@ export function doBedtime(): boolean {
     );
     if (haveSkill($skill`The Ode to Booze`)) {
       shrugAT($effect`Ode to Booze`);
-      buffMaintain$4($effect`Ode to Booze`);
+      buffMaintain$2($effect`Ode to Booze`);
     }
     return false;
   } else {

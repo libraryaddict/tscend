@@ -30,7 +30,7 @@ import {
   auto_turbo,
   internalQuestStatus,
 } from "./auto_util";
-import { zone_delay, zone_delayable, zone_isAvailable$1 } from "./auto_zone";
+import { zone_delay, zone_delayable, zone_isAvailable } from "./auto_zone";
 import { auto_haveVotingBooth } from "./iotms/mr2018";
 import {
   auto_haveKramcoSausageOMatic,
@@ -78,7 +78,7 @@ import { prepForMegaloCity } from "./quests/level_13";
 import { LX_fatLootToken, LX_getDesiredWorkshed } from "./quests/level_any";
 
 //Defined in autoscend/auto_routing.ash
-export function solveDelayZone(skipOutdoorZones: boolean): Location {
+export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
   const delayableZones: Map<Location, number> = zone_delayable();
   let burnZone: Location = Location.none;
   if (delayableZones.size > 0) {
@@ -118,7 +118,7 @@ export function solveDelayZone(skipOutdoorZones: boolean): Location {
   // Shorten the time before finding Gnasir, so that we can start acquiring desert pages sooner
   if (
     !skipOutdoorZones &&
-    zone_isAvailable$1($location`The Arid, Extra-Dry Desert`) &&
+    zone_isAvailable($location`The Arid, Extra-Dry Desert`) &&
     $location`The Arid, Extra-Dry Desert`.turnsSpent >= 1 &&
     $location`The Arid, Extra-Dry Desert`.turnsSpent < 10
   ) {
@@ -137,10 +137,6 @@ export function solveDelayZone(skipOutdoorZones: boolean): Location {
   }
 
   return burnZone;
-}
-
-export function solveDelayZone$1(): Location {
-  return solveDelayZone(false);
 }
 
 export function allowSoftblockDelay(): boolean {

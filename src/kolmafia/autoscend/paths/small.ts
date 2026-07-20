@@ -13,7 +13,7 @@ import {
 } from "kolmafia";
 import { $class, $familiar, $item, $location, $monster, $path } from "libram";
 
-import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
+import { canPull, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
 import { auto_have_familiar } from "../auto_familiar";
 import { hasTorso } from "../auto_util";
@@ -56,9 +56,9 @@ export function small_initializeSettings(): void {
   } else {
     if (
       auto_have_familiar($familiar`Cookbookbat`) &&
-      (canPull$1($item`Calzone of Legend`) ||
-        canPull$1($item`Deep Dish of Legend`) ||
-        canPull$1($item`Pizza of Legend`))
+      (canPull($item`Calzone of Legend`) ||
+        canPull($item`Deep Dish of Legend`) ||
+        canPull($item`Pizza of Legend`))
     ) {
       setProperty("auto_dontUseCookBookBat", true.toString()); // don't need the CBB in Normal if we can pull a legend food.
     }

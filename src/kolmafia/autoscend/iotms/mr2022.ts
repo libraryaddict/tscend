@@ -64,7 +64,7 @@ import { auto_canDrink, spleen_left } from "../auto_consume";
 import {
   addToMaximize,
   autoEquip,
-  autoEquip$1,
+  autoEquipToSlot,
   possessEquipment,
 } from "../auto_equipment";
 import {
@@ -125,11 +125,7 @@ export function auto_haveCursedMagnifyingGlass(): boolean {
   return false;
 }
 
-export function auto_voidMonster(): boolean {
-  return auto_voidMonster$1(Location.none);
-}
-
-export function auto_voidMonster$1(loc: Location): boolean {
+export function auto_voidMonster(loc: Location = Location.none): boolean {
   // Cursed Magnifying Glass gives a void monster combat every 13 turns. The first 5 are free fights
   // _voidFreeFights counts up from 0 and stays at 5 once all free fights are completed for the day
   if (!auto_haveCursedMagnifyingGlass()) {
@@ -151,7 +147,7 @@ export function auto_voidMonster$1(loc: Location): boolean {
     return true;
   }
 
-  if (autoEquip$1($item`cursed magnifying glass`)) {
+  if (autoEquip($item`cursed magnifying glass`)) {
     setProperty("auto_nextEncounter", "void guy"); //which of the 3 is random, but they're all same phylum and free under same conditions
     return autoAdv(loc);
   }
@@ -407,7 +403,7 @@ export function auto_juneCleaverAdventure(): boolean {
     return false;
   }
 
-  if (autoEquip($slot`weapon`, $item`June cleaver`)) {
+  if (autoEquipToSlot($slot`weapon`, $item`June cleaver`)) {
     let cleaverLoc: Location = $location`The Dire Warren`;
     if (in_koe()) {
       cleaverLoc = $location`Cobb's Knob Treasury`; // arbitrarily picked always accessible location

@@ -13,7 +13,7 @@ import { $skill } from "libram";
 import { in_fotd } from "../paths/fall_of_the_dinosaurs";
 import {
   auto_useSkill,
-  canSurvive$1,
+  canSurvive,
   canUse,
   haveUsed,
 } from "./auto_combat_util";
@@ -95,7 +95,7 @@ export function auto_combatFallOfTheDinosaursStage5(
         "Not sure how to handle a physically resistent enemy eaten by a glass-shelled archelon.",
       ); // TODO - work something out here?
     }
-    if (canSurvive$1(1.5) && round_1 < 25) {
+    if (canSurvive(1.5) && round_1 < 25) {
       return "attack with weapon";
     }
     if (canUse($skill`Implode Universe`)) {

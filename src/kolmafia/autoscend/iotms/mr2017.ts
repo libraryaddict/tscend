@@ -190,7 +190,7 @@ function mummifyFamiliar(fam: Familiar, bonus: string): boolean {
   return true;
 }
 // Will provide the appropriate bonus to an arbitrary familiar.
-function mummifyFamiliar$1(fam: Familiar): boolean {
+export function mummifyFamiliar$2(fam: Familiar = myFamiliar()): boolean {
   if (!auto_hasMummingTrunk() || !auto_checkFamiliarMummery(fam)) {
     return false;
   }
@@ -215,10 +215,6 @@ function mummifyFamiliar$1(fam: Familiar): boolean {
       break;
   }
   return mummifyFamiliar(fam, targetBonus);
-}
-
-export function mummifyFamiliar$2(): boolean {
-  return mummifyFamiliar$1(myFamiliar());
 }
 
 export function pantogramPants(
@@ -923,22 +919,17 @@ export function kgbSetup(): boolean {
   setProperty("auto_kgbAscension", myAscensions().toString());
   setProperty("auto_kgbButton100", button.toString());
 
-  if (!kgb_getMartini$1(page)) {
+  if (!kgb_getMartini(page)) {
     auto_log_warning("Failed to get martini", "red");
   }
 
   return true;
 }
 
-export function kgb_getMartini(): boolean {
-  return kgb_getMartini$2("", false);
-}
-
-function kgb_getMartini$1(page: string): boolean {
-  return kgb_getMartini$2(page, false);
-}
-
-function kgb_getMartini$2(page: string, dontCare: boolean): boolean {
+export function kgb_getMartini(
+  page: string = "",
+  dontCare: boolean = false,
+): boolean {
   if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
@@ -1209,11 +1200,7 @@ export function asdonBuff(goal: Effect): boolean {
   return true;
 }
 
-export function asdonAutoFeed(): boolean {
-  return asdonAutoFeed$1(-1);
-}
-
-function asdonAutoFeed$1(goal: number): boolean {
+export function asdonAutoFeed(goal: number = -1): boolean {
   if (myClass() === $class`Ed the Undying`) {
     return false;
   }

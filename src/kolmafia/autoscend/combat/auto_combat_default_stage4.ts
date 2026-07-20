@@ -58,26 +58,26 @@ import { in_heavyrains } from "../paths/heavy_rains";
 import { in_plumber } from "../paths/path_of_the_plumber";
 import { in_zombieSlayer } from "../paths/zombie_slayer";
 import { auto_warSide } from "../quests/level_12";
-import { towerKeyCount$1 } from "../quests/level_13";
+import { towerKeyCount } from "../quests/level_13";
 import { numPirateInsults } from "../quests/optional";
 import { auto_combatLicenseToAdventureStage4 } from "./auto_combat_license_to_adventure";
 import { auto_combatTheSourceStage4 } from "./auto_combat_the_source";
 import {
   auto_useSkill,
-  canSurvive$1,
+  canSurvive,
   canUse,
   canUse$3,
   combat_status_add,
   combat_status_check,
-  getCopier$1,
-  getSniffer$1,
+  getCopier,
+  getSniffer,
   getStunner,
   haveUsed,
   haveUsed$1,
   isSniffed,
   markAsUsed$1,
-  useItem$1,
-  useItems$1,
+  useItem,
+  useItems,
 } from "./auto_combat_util";
 import { auto_combatWereProfessorStage4 } from "./auto_combat_wereprofessor";
 import { auto_combatZombieSlayerStage4 } from "./auto_combat_zombie_slayer";
@@ -119,7 +119,7 @@ export function auto_combatDefaultStage4(
   }
   //sniffers are skills that increase the odds of encountering this same monster again in the current zone.
   if (auto_wantToSniff(enemy, myLocation()) && !ag_is_bodyguard()) {
-    const sniffer: Skill = getSniffer$1(enemy);
+    const sniffer: Skill = getSniffer(enemy);
     if (sniffer !== Skill.none) {
       if (sniffer === $skill`Perceive Soul`) {
         //mafia does not track the target of this skill so we must do so.
@@ -189,7 +189,7 @@ export function auto_combatDefaultStage4(
   if (myLocation() === $location`The Daily Dungeon`) {
     // If we are in The Daily Dungeon, assume we get 1 token, so only if we need more than 1.
     if (
-      towerKeyCount$1(false) < 2 &&
+      towerKeyCount(false) < 2 &&
       !toBoolean(getProperty("_dailyDungeonMalwareUsed")) &&
       itemAmount($item`daily dungeon malware`) > 0
     ) {
@@ -237,7 +237,7 @@ export function auto_combatDefaultStage4(
   }
   //iotm monster duplicator that creates a chained fight of the current monster
   if (auto_wantToCopy(enemy, myLocation()) && !ag_is_bodyguard()) {
-    const copier: Skill = getCopier$1(enemy);
+    const copier: Skill = getCopier(enemy);
     if (copier !== Skill.none && canUse(copier)) {
       if (copier === $skill`Blow the Purple Candle!`) {
         //mafia does not track the target of this skill so we must do so.
@@ -252,7 +252,7 @@ export function auto_combatDefaultStage4(
   if (
     canUse($skill`Steal Accordion`) &&
     myClass() === $class`Accordion Thief` &&
-    canSurvive$1(2.0)
+    canSurvive(2.0)
   ) {
     return auto_useSkill($skill`Steal Accordion`);
   }
@@ -262,21 +262,21 @@ export function auto_combatDefaultStage4(
     enemy === $monster`Performer of Actions`
   ) {
     //	Change +100% Moxie to +100% Init
-    return useItem$1($item`abstraction: sensation`);
+    return useItem($item`abstraction: sensation`);
   }
   if (
     canUse$3($item`abstraction: thought`) &&
     enemy === $monster`Perceiver of Sensations`
   ) {
     // Change +100% Myst to +100% Items
-    return useItem$1($item`abstraction: thought`);
+    return useItem($item`abstraction: thought`);
   }
   if (
     canUse$3($item`abstraction: action`) &&
     enemy === $monster`Thinker of Thoughts`
   ) {
     // Change +100% Muscle to +10 Familiar Weight
-    return useItem$1($item`abstraction: action`);
+    return useItem($item`abstraction: action`);
   }
   //these loofah skills stagger and provide MP, meat, or XP
   if (monsterLevelAdjustment() <= 150) {
@@ -294,7 +294,7 @@ export function auto_combatDefaultStage4(
   if (
     myFamiliar() === $familiar`Stocking Mimic` &&
     round_1 < 12 &&
-    canSurvive$1(1.5)
+    canSurvive(1.5)
   ) {
     if (itemAmount($item`seal tooth`) > 0) {
       return `item ${$item`seal tooth`}`;
@@ -326,7 +326,7 @@ export function auto_combatDefaultStage4(
         myLocation(),
       )
     ) {
-      return useItem$1($item`The Big Book of Pirate Insults`);
+      return useItem($item`The Big Book of Pirate Insults`);
     }
   }
   //cocktail napkin can banish clingy pirates (only them and no other monster). this accelerates the pirates quest
@@ -399,14 +399,14 @@ export function auto_combatDefaultStage4(
         return auto_useSkill(stunner);
       }
     }
-    if (canSurvive$1(3.0) || stunned || staggeringFlyer) {
+    if (canSurvive(3.0) || stunned || staggeringFlyer) {
       shouldFlyer = true;
     }
     if (shouldFlyer) {
       if (flyerWith !== Item.none) {
-        return useItems$1(flyer, flyerWith);
+        return useItems(flyer, flyerWith);
       } else {
-        return useItem$1(flyer);
+        return useItem(flyer);
       }
     }
   }
@@ -420,14 +420,14 @@ export function auto_combatDefaultStage4(
       canUse$3($item`Time-Spinner`) &&
       auto_have_skill($skill`Ambidextrous Funkslinging`)
     ) {
-      return useItems$1($item`chaos butterfly`, $item`Time-Spinner`);
+      return useItems($item`chaos butterfly`, $item`Time-Spinner`);
     }
-    return useItem$1($item`chaos butterfly`);
+    return useItem($item`chaos butterfly`);
   }
   //accelerate palindrome quest
   if (canUse$3($item`disposable instant camera`)) {
     if ($monsters`Bob Racecar, Racecar Bob`.includes(enemy)) {
-      return useItem$1($item`disposable instant camera`);
+      return useItem($item`disposable instant camera`);
     }
   }
   //accelerate oil peak in highlands quest
@@ -444,7 +444,7 @@ export function auto_combatDefaultStage4(
     monsterLevelAdjustment() < 150
   ) {
     if (monsterPhylum(enemy) !== toPhylum(getProperty("dnaSyringe"))) {
-      return useItem$1($item`DNA extraction syringe`);
+      return useItem($item`DNA extraction syringe`);
     }
   }
   //use latte iotm to restore 50% of max MP
@@ -490,18 +490,18 @@ export function auto_combatDefaultStage4(
     canUse$3($item`red rocket`) &&
     haveEffect($effect`Everything Looks Red`) <= 0 &&
     haveEffect($effect`Ready to Eat`) <= 0 &&
-    canSurvive$1(5.0) &&
+    canSurvive(5.0) &&
     myAdventures() < 100
   ) {
     if (in_plumber()) {
-      return useItem$1($item`red rocket`);
+      return useItem($item`red rocket`);
     }
     //use if next food is large in size. Currently autoConsume doesn't analyze stat gain, which would be better
     //disabled until fix: https://github.com/loathers/autoscend/issues/1053
     //item simulationOutput = auto_autoConsumeOneSimulation("eat");
     //if (simulationOutput !== $item[none] && simulationOutput.fullness > 3)
     //{
-    return useItem$1($item`red rocket`);
+    return useItem($item`red rocket`);
     //}
   }
   // use cosmic bowling ball iotm
@@ -527,7 +527,7 @@ export function auto_combatDefaultStage4(
     return auto_useSkill($skill`Launch spikolodon spikes`);
   }
   // get extra combat stats
-  if (shouldCinchoConfetti() && canSurvive$1(5.0)) {
+  if (shouldCinchoConfetti() && canSurvive(5.0)) {
     return auto_useSkill($skill`Cincho: Confetti Extravaganza`);
   }
 

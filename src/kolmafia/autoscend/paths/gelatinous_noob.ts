@@ -139,7 +139,7 @@ function gnoob_buySkills(): void {
     blacklist.set($item`enchanted bean`, true); //need to keep our only enchanted bean to be planted
   }
 
-  let available: Map<Item, string> = gnoob_lister$1();
+  let available: Map<Item, string> = gnoob_lister();
   const starting_absorb_count: number = myAbsorbs();
   let earlyTerm: number =
     max(
@@ -221,7 +221,7 @@ function gnoob_buySkills(): void {
           `Tried and failed to absorb [${possible.get(i) ?? possible.set(i, Item.none).get(i)}]. this should not have happened and needs to be fixed`,
         );
       } else {
-        available = gnoob_lister$1(); //recheck item availability now that one was consumed. necessary for tome handling and NPC stores.
+        available = gnoob_lister(); //recheck item availability now that one was consumed. necessary for tome handling and NPC stores.
       }
     }
   }
@@ -238,7 +238,7 @@ function gnoob_buySkills(): void {
   }
 }
 
-function gnoob_lister(goal: string): Map<Item, string> {
+function gnoob_lister(goal: string = ""): Map<Item, string> {
   const retval: Map<Item, string> = new Map();
   for (const it of $items.all()) {
     let canGet: boolean = itemAmount(it) > 0 || creatableAmount(it) > 0;
@@ -275,10 +275,6 @@ function gnoob_absorbsLeft(): number {
   }
   const absorbs: number = min(myLevel() + 2, 15);
   return absorbs - myAbsorbs();
-}
-
-function gnoob_lister$1(): Map<Item, string> {
-  return gnoob_lister("");
 }
 
 export function LM_gnoob(): boolean {

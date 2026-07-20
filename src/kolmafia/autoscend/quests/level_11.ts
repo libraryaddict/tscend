@@ -100,7 +100,7 @@ import {
 } from "../../autoscend";
 import {
   auto_buyUpTo,
-  canPull$1,
+  canPull,
   npcStoreDiscountMulti,
   pullXWhenHaveY,
 } from "../auto_acquire";
@@ -110,7 +110,7 @@ import {
   autoAdvBypass$1,
   autoLuckyAdv$1,
 } from "../auto_adventure";
-import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
+import { buffMaintain$2 } from "../auto_buff";
 import {
   auto_autoConsumeOne,
   auto_canDrink,
@@ -122,8 +122,8 @@ import {
 import {
   addToMaximize,
   autoEquip,
-  autoEquip$1,
-  autoForceEquip$1,
+  autoEquipToSlot,
+  autoForceEquip,
   autoForceEquip$3,
   equipBaseline,
   equipMaximizedGear,
@@ -144,7 +144,7 @@ import {
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   provideItem$2,
-  providePlusCombat$2,
+  providePlusCombat,
   provideResistances,
   provideResistances$4,
 } from "../auto_providers";
@@ -190,13 +190,13 @@ import {
   restoreSetting,
   summonMonster,
 } from "../auto_util";
-import { zone_delay, zone_isAvailable$1 } from "../auto_zone";
+import { zone_delay, zone_isAvailable } from "../auto_zone";
 import { ConsumeAction } from "../autoscend_record";
 import { getSniffer, isSniffed } from "../combat/auto_combat_util";
 import {
   considerGrimstoneGolem,
   handleBjornify,
-  LX_ornateDowsingRod$1,
+  LX_ornateDowsingRod,
 } from "../iotms/mr2014";
 import { auto_sourceTerminalEducate } from "../iotms/mr2016";
 import { auto_beachCombHead, auto_changeSnapperPhylum } from "../iotms/mr2019";
@@ -227,7 +227,7 @@ import { is_boris } from "../paths/avatar_of_boris";
 import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
 import { in_bhy } from "../paths/bees_hate_you";
 import {
-  bat_formBats$1,
+  bat_formBats,
   bat_reallyPickSkills,
   bat_wantHowl,
   in_darkGyffte,
@@ -240,7 +240,7 @@ import { lar_repeat } from "../paths/live_ascend_repeat";
 import { in_lowkeysummer } from "../paths/low_key_summer";
 import { in_nuclear } from "../paths/nuclear_autumn";
 import { in_ocrs } from "../paths/one_crazy_random_summer";
-import { in_plumber, plumber_equipTool$1 } from "../paths/path_of_the_plumber";
+import { in_plumber, plumber_equipTool } from "../paths/path_of_the_plumber";
 import { in_picky } from "../paths/picky";
 import { in_pokefam } from "../paths/pocket_familiars";
 import {
@@ -552,7 +552,9 @@ function useILoveMeVolI(): boolean {
   return false;
 }
 
-export function LX_unlockHauntedBilliardsRoom(delayKitchen: boolean): boolean {
+export function LX_unlockHauntedBilliardsRoom(
+  delayKitchen: boolean = true,
+): boolean {
   // delayKitchen if true will force the check for 9 hot res & 9 stench res to be used
   if (internalQuestStatus("questM20Necklace") !== 0) {
     return false;
@@ -623,10 +625,6 @@ export function LX_unlockHauntedBilliardsRoom(delayKitchen: boolean): boolean {
   return false;
 }
 
-export function LX_unlockHauntedBilliardsRoom$1(): boolean {
-  return LX_unlockHauntedBilliardsRoom(true);
-}
-
 export function LX_unlockHauntedLibrary(): boolean {
   //Adventure in the haunted billiards room to get the key to the haunted library
   if (
@@ -658,16 +656,16 @@ export function LX_unlockHauntedLibrary(): boolean {
     auto_log_info("I don't need to equip a cue to beat this ghostie.", "blue");
   } else {
     if (possessEquipment(staffOfFats)) {
-      autoEquip$1(staffOfFats); //+5 pool skill & +2 training gains.
+      autoEquip(staffOfFats); //+5 pool skill & +2 training gains.
       expectPool += 5;
     } else if (possessEquipment(EdStaffOfEd) && expectPool + 5 > 13) {
-      autoEquip$1(EdStaffOfEd); //+5 pool skill
+      autoEquip(EdStaffOfEd); //+5 pool skill
       expectPool += 5;
     } else if (possessEquipment(EdStaffOfFats) && expectPool + 5 > 13) {
-      autoEquip$1(EdStaffOfFats); //+5 pool skill
+      autoEquip(EdStaffOfFats); //+5 pool skill
       expectPool += 5;
     } else if (possessEquipment($item`pool cue`) && expectPool + 3 > 13) {
-      autoEquip$1($item`pool cue`); //+3 pool skill
+      autoEquip($item`pool cue`); //+3 pool skill
       expectPool += 3;
     }
   }
@@ -714,7 +712,7 @@ export function LX_unlockHauntedLibrary(): boolean {
     }
   }
   //+3 pool skill & +1 training gains. speculative_pool_skill() already assumed we would use it if we can.
-  buffMaintain$4($effect`Chalky Hand`);
+  buffMaintain$2($effect`Chalky Hand`);
 
   if (internalQuestStatus("questM20Necklace") === 2) {
     // only force after we get the pool cue NC.
@@ -816,7 +814,7 @@ export function LX_spookyravenManorFirstFloor(): boolean {
   if (
     LX_unlockManorSecondFloor() ||
     LX_unlockHauntedLibrary() ||
-    LX_unlockHauntedBilliardsRoom$1()
+    LX_unlockHauntedBilliardsRoom()
   ) {
     return true;
   }
@@ -1203,7 +1201,7 @@ export function L11_blackMarket(): boolean {
     if (
       !possessEquipment(galoshes) &&
       auto_can_equip(galoshes) &&
-      canPull$1(galoshes)
+      canPull(galoshes)
     ) {
       pullXWhenHaveY(galoshes, 1, 0);
     }
@@ -1213,7 +1211,7 @@ export function L11_blackMarket(): boolean {
     setProperty("auto_getBeehive", false.toString());
   }
 
-  autoEquip($slot`acc3`, $item`blackberry galoshes`);
+  autoEquipToSlot($slot`acc3`, $item`blackberry galoshes`);
   //If we want the Beehive, and don\'t have enough adventures, this is dangerous.
   if (toBoolean(getProperty("auto_getBeehive")) && myAdventures() < 3) {
     return false;
@@ -1468,7 +1466,7 @@ export function L11_aridDesert(): boolean {
     }
   }
 
-  if (LX_ornateDowsingRod$1(true)) {
+  if (LX_ornateDowsingRod(true)) {
     //spend adv trying to get [Ornate Dowsing Rod]. doing_desert_now = true.
     return true;
   }
@@ -1676,7 +1674,7 @@ export function L11_aridDesert(): boolean {
   ) {
     auto_log_info("Searching for the pyramid", "blue");
     if (in_heavyrains()) {
-      autoEquip$1($item`Thor's Pliers`);
+      autoEquip($item`Thor's Pliers`);
     }
 
     if (
@@ -1690,12 +1688,12 @@ export function L11_aridDesert(): boolean {
     }
 
     auto_buyUpTo(1, $item`hair spray`);
-    buffMaintain$4($effect`Butt-Rock Hair`);
+    buffMaintain$2($effect`Butt-Rock Hair`);
     if (myPrimestat() === $stat`Muscle`) {
       auto_buyUpTo(1, $item`Ben-Gal™ Balm`);
-      buffMaintain$4($effect`Go Get 'Em, Tiger!`);
+      buffMaintain$2($effect`Go Get 'Em, Tiger!`);
       auto_buyUpTo(1, $item`blood of the Wereseal`);
-      buffMaintain$4($effect`Temporary Lycanthropy`);
+      buffMaintain$2($effect`Temporary Lycanthropy`);
     }
 
     if (myMp() > 30 && myHp() < myMaxhp() * 0.5) {
@@ -1745,13 +1743,13 @@ export function L11_aridDesert(): boolean {
       }
     }
     if (dbr.weapon !== Item.none) {
-      autoEquip($slot`weapon`, dbr.weapon);
+      autoEquipToSlot($slot`weapon`, dbr.weapon);
     }
     if (dbr.offhand !== Item.none) {
-      autoEquip($slot`off-hand`, dbr.offhand);
+      autoEquipToSlot($slot`off-hand`, dbr.offhand);
     }
     if (dbr.famEquip !== Item.none) {
-      autoEquip($slot`familiar`, dbr.famEquip);
+      autoEquipToSlot($slot`familiar`, dbr.famEquip);
     }
     setProperty("choiceAdventure805", (1).toString());
     const need: number = 100 - toInt(getProperty("desertExploration"));
@@ -1938,7 +1936,7 @@ export function L11_unlockHiddenCity(): boolean {
       pullXWhenHaveY($item`stone wool`, 1, 0);
     }
 
-    buffMaintain$4($effect`Stone-Faced`);
+    buffMaintain$2($effect`Stone-Faced`);
     if (haveEffect($effect`Stone-Faced`) === 0) {
       if (isAboutToPowerlevel()) {
         //we ran out of other quests to do. stop waiting for optimal conditions
@@ -2036,11 +2034,7 @@ export function liana_cleared(loc: Location): boolean {
   return dense_liana_defeated > 2;
 }
 
-function L11_hiddenTavernUnlock(): boolean {
-  return L11_hiddenTavernUnlock$1(false);
-}
-
-function L11_hiddenTavernUnlock$1(force: boolean): boolean {
+function L11_hiddenTavernUnlock(force: boolean = false): boolean {
   if (!auto_is_valid($item`book of matches`)) {
     return false;
   }
@@ -2315,7 +2309,7 @@ export function L11_hiddenCity(): boolean {
             !is_werewolf(); //can't buy cursed punch as a werewolf
 
           if (canBuyCursedPunch) {
-            L11_hiddenTavernUnlock$1(true);
+            L11_hiddenTavernUnlock(true);
 
             if (myAscensions() === toInt(getProperty("hiddenTavernUnlock"))) {
               shouldForceElevatorAction = true;
@@ -2391,7 +2385,7 @@ export function L11_hiddenCity(): boolean {
       if (haveEffect($effect`Thrice-Cursed`) === 0) {
         //can drink and inebriety allows it
         if (canDrinkCursedPunch) {
-          L11_hiddenTavernUnlock$1(true);
+          L11_hiddenTavernUnlock(true);
           if (
             myAscensions() === toInt(getProperty("hiddenTavernUnlock")) &&
             !is_werewolf()
@@ -2533,7 +2527,7 @@ export function L11_hiddenCity(): boolean {
 
   if (internalQuestStatus("questL11Spare") === 0) {
     auto_log_info("The idden [sic] bowling alley!", "blue");
-    L11_hiddenTavernUnlock$1(true);
+    L11_hiddenTavernUnlock(true);
     if (myAscensions() === toInt(getProperty("hiddenTavernUnlock"))) {
       if (itemAmount($item`Bowl of Scorpions`) === 0 && !is_werewolf()) {
         //can't access shops as werewolf
@@ -2544,7 +2538,7 @@ export function L11_hiddenCity(): boolean {
       }
     }
 
-    buffMaintain$4($effect`Fishy Whiskers`);
+    buffMaintain$2($effect`Fishy Whiskers`);
     auto_log_info(
       `Hidden Bowling Alley Progress: ${getProperty("hiddenBowlingAlleyProgress")}`,
       "blue",
@@ -2594,11 +2588,11 @@ export function L11_hiddenCity(): boolean {
     }
     auto_log_info("The idden [sic] ospital!", "blue");
 
-    autoEquip$1($item`bloodied surgical dungarees`);
-    autoEquip$1($item`half-size scalpel`);
-    autoEquip$1($item`surgical apron`);
-    autoEquip($slot`acc3`, $item`head mirror`);
-    autoEquip($slot`acc2`, $item`surgical mask`);
+    autoEquip($item`bloodied surgical dungarees`);
+    autoEquip($item`half-size scalpel`);
+    autoEquip($item`surgical apron`);
+    autoEquipToSlot($slot`acc3`, $item`head mirror`);
+    autoEquipToSlot($slot`acc2`, $item`surgical mask`);
 
     let surgeonGearWanted: number = 0;
     for (const it of $items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`) {
@@ -2659,8 +2653,8 @@ export function L11_hiddenCity(): boolean {
     acquireHP();
     //AoSOL buffs
     if (in_aosol()) {
-      buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
-      buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
+      buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
+      buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
     }
     setProperty("auto_nextEncounter", "Protector Spectre");
     handleFamiliar("boss");
@@ -2692,7 +2686,7 @@ export function L11_hiddenCityZones(): boolean {
         return autoForceEquip$3($item`antique machete`);
       } else if (
         !possessEquipment($item`muculent machete`) &&
-        canPull$1($item`antique machete`)
+        canPull($item`antique machete`)
       ) {
         pullXWhenHaveY($item`antique machete`, 1, 0);
         return autoForceEquip$3($item`antique machete`);
@@ -2701,7 +2695,7 @@ export function L11_hiddenCityZones(): boolean {
     if (auto_can_equip($item`muculent machete`)) {
       if (
         !possessEquipment($item`muculent machete`) &&
-        canPull$1($item`muculent machete`)
+        canPull($item`muculent machete`)
       ) {
         pullXWhenHaveY($item`muculent machete`, 1, 0);
       }
@@ -2849,8 +2843,8 @@ export function L11_mauriceSpookyraven(): boolean {
     auto_log_info("Down with the tyrant of Spookyraven!", "blue");
     //AoSOL buffs
     if (in_aosol()) {
-      buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
-      buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
+      buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
+      buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
     }
     acquireHP();
     const resGoal: Map<Element, number> = new Map();
@@ -2996,7 +2990,7 @@ export function L11_mauriceSpookyraven(): boolean {
 
     auto_log_info("Searching for vinegar", "blue");
     if (!bat_wantHowl($location`The Haunted Wine Cellar`)) {
-      bat_formBats$1();
+      bat_formBats();
     }
     if (
       friarsAvailable() &&
@@ -3032,7 +3026,7 @@ export function L11_mauriceSpookyraven(): boolean {
 
     auto_log_info("Searching for baking soda, I mean, blasting pop.", "blue");
     if (!bat_wantHowl($location`The Haunted Wine Cellar`)) {
-      bat_formBats$1();
+      bat_formBats();
     }
     auto_lostStomach(true);
     if (
@@ -3066,7 +3060,7 @@ export function L11_mauriceSpookyraven(): boolean {
 
     if (in_picky() && itemAmount($item`gumshoes`) > 0) {
       auto_change_mcd(0);
-      autoEquip($slot`acc2`, $item`gumshoes`);
+      autoEquipToSlot($slot`acc2`, $item`gumshoes`);
     }
 
     if (is_professor()) {
@@ -3076,10 +3070,10 @@ export function L11_mauriceSpookyraven(): boolean {
     }
 
     if (monsterLevelAdjustment() < 57) {
-      buffMaintain$4($effect`Sweetbreads Flambé`);
+      buffMaintain$2($effect`Sweetbreads Flambé`);
     }
 
-    if (!autoForceEquip$1($slot`off-hand`, $item`unstable fulminate`)) {
+    if (!autoForceEquip($slot`off-hand`, $item`unstable fulminate`)) {
       abort(
         "Unstable Fulminate was not equipped. Please report this and include the following: Equipped items and if you have or don't have an Unstable Fulminate. For now, get the wine bomb manually, and run again.",
       );
@@ -3115,9 +3109,9 @@ function L11_redZeppelin(): boolean {
     setProperty("choiceAdventure857", (1).toString());
   }
   setProperty("choiceAdventure858", (1).toString());
-  buffMaintain$4($effect`Greasy Peasy`);
-  buffMaintain$4($effect`Musky`);
-  buffMaintain$4($effect`Blood-Gorged`);
+  buffMaintain$2($effect`Greasy Peasy`);
+  buffMaintain$2($effect`Musky`);
+  buffMaintain$2($effect`Blood-Gorged`);
   if (!in_wotsf()) {
     pullXWhenHaveY($item`deck of lewd playing cards`, 1, 0);
   }
@@ -3170,7 +3164,7 @@ function L11_redZeppelin(): boolean {
     if (cloversAvailable$1() >= 3) {
       if (!in_koe() || myDaycount() > 1) {
         // in koe, if d1 save bend hell for invader
-        buffMaintain$3($effect`Bendin' Hell`, 0, 0, 1);
+        buffMaintain$2($effect`Bendin' Hell`, 0, 0, 1);
       }
       for (const ef of $effects`Dirty Pear, Fifty Ways to Bereave Your Lover`) {
         // double sleaze dmg, +100 sleaze dmg,
@@ -3223,7 +3217,7 @@ function L11_redZeppelin(): boolean {
     if (best_protestors >= 10) {
       if (best_protestors === lynyrd_protestors) {
         for (const it of $items`lynyrdskin cap, lynyrdskin tunic, lynyrdskin breeches`) {
-          autoEquip$1(it);
+          autoEquip(it);
         }
         setProperty("choiceAdventure866", (1).toString());
       } else if (best_protestors === sleaze_protestors) {
@@ -3301,7 +3295,7 @@ function L11_ronCopperhead(): boolean {
       }
     }
     // For Glark Cables. OPTIMAL!
-    bat_formBats$1();
+    bat_formBats();
     if (
       canSniff($monster`red butler`, $location`The Red Zeppelin`) &&
       auto_mapTheMonsters()
@@ -3494,7 +3488,7 @@ export function L11_shenCopperhead(): boolean {
       abort("Could not parse Shen event");
     }
 
-    if (!zone_isAvailable$1(goal)) {
+    if (!zone_isAvailable(goal)) {
       // handle paths which don't need Tower keys but the World's Biggest Jerk asks for The Eye of the Stars
       if (goal === $location`The Hole in the Sky`) {
         if (!toBoolean(getProperty("auto_holeinthesky"))) {
@@ -3693,9 +3687,9 @@ export function L11_palindome(): boolean {
       setProperty("screechDelay", "beast");
       return false; //If new phylum banishers come out, this should be updated.
     }
-    providePlusCombat$2(15, $location`Whitey's Grove`, false);
+    providePlusCombat(15, $location`Whitey's Grove`, false);
     // +item is nice to get that food
-    bat_formBats$1();
+    bat_formBats();
     auto_lostStomach(true);
     auto_log_info("Off to the grove for some doofy food!", "blue");
     return autoAdv($location`Whitey's Grove`);
@@ -3738,7 +3732,7 @@ export function L11_palindome(): boolean {
         return doWhiteys();
       } else if (itemAmount($item`stunt nuts`) === 0) {
         auto_log_info("We got no nuts!! :O", "Blue");
-        autoEquip($slot`acc3`, $item`Talisman o' Namsilat`);
+        autoEquipToSlot($slot`acc3`, $item`Talisman o' Namsilat`);
         return autoAdv($location`Inside the Palindome`);
       } else {
         abort("Some sort of Wet Stunt Nut Stew error. Try making it yourself?");
@@ -3821,8 +3815,8 @@ export function L11_palindome(): boolean {
       );
       return false;
     }
-    autoEquip($slot`acc2`, $item`Mega Gem`);
-    autoEquip($slot`acc3`, $item`Talisman o' Namsilat`);
+    autoEquipToSlot($slot`acc2`, $item`Mega Gem`);
+    autoEquipToSlot($slot`acc3`, $item`Talisman o' Namsilat`);
     const palinChoice: number = random(3) + 1;
     setProperty("choiceAdventure131", palinChoice.toString());
 
@@ -3834,8 +3828,8 @@ export function L11_palindome(): boolean {
     setProperty("auto_nextEncounter", "Dr. Awkward");
     //AoSOL buffs
     if (in_aosol()) {
-      buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
-      buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
+      buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
+      buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
     }
     autoAdvBypass(0, pages, $location`Noob Cave`);
     return true;
@@ -3888,7 +3882,7 @@ export function L11_palindome(): boolean {
       }
     }
 
-    autoEquip($slot`acc3`, $item`Talisman o' Namsilat`);
+    autoEquipToSlot($slot`acc3`, $item`Talisman o' Namsilat`);
     if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
       auto_changeSnapperPhylum($phylum`dude`);
     } else if (
@@ -4162,7 +4156,7 @@ export function L11_unlockEd(): boolean {
     !in_pokefam()
   ) {
     auto_log_info$1("Be like Tony Hawk on a Tomb Rat King!");
-    autoEquip$1($item`pro skateboard`);
+    autoEquip($item`pro skateboard`);
   }
 
   return autoAdv($location`The Middle Chamber`);
@@ -4201,7 +4195,7 @@ export function L11_defeatEd(): boolean {
     }
     uneffect($effect`Ur-Kel's Aria of Annoyance`);
     if (possessEquipment($item`beer helmet`)) {
-      autoEquip$1($item`beer helmet`);
+      autoEquip($item`beer helmet`);
     }
   }
   if (in_koe()) {
@@ -4209,7 +4203,7 @@ export function L11_defeatEd(): boolean {
     autoForceEquip$3($item`low-pressure oxygen tank`);
   }
 
-  plumber_equipTool$1($stat`Moxie`);
+  plumber_equipTool($stat`Moxie`);
 
   auto_log_info("Time to waste all of Ed's Ka Coins :(", "blue");
 

@@ -43,7 +43,7 @@ import {
   $slot,
 } from "libram";
 
-import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
+import { canPull, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
 import { fullness_left, inebriety_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
@@ -360,7 +360,9 @@ export function dna_bedtime(): boolean {
   return false;
 }
 
-export function LX_ornateDowsingRod$1(doing_desert_now: boolean): boolean {
+export function LX_ornateDowsingRod(
+  doing_desert_now: boolean = false,
+): boolean {
   if (!toBoolean(getProperty("auto_grimstoneOrnateDowsingRod"))) {
     return false;
   }
@@ -401,10 +403,10 @@ export function LX_ornateDowsingRod$1(doing_desert_now: boolean): boolean {
   if (
     itemAmount($item`grimstone mask`) === 0 &&
     !canChangeToFamiliar($familiar`Grimstone Golem`) &&
-    canPull$1($item`grimstone mask`)
+    canPull($item`grimstone mask`)
   ) {
     if (
-      canPull$1($item`Shore Inc. Ship Trip Scrip`) &&
+      canPull($item`Shore Inc. Ship Trip Scrip`) &&
       storageAmount($item`Shore Inc. Ship Trip Scrip`) > 2
     ) {
       //since drum machine and killing jar get pulled it's not useful to explore faster than compass just to need more fights gathering pages anyway
@@ -472,10 +474,6 @@ export function LX_ornateDowsingRod$1(doing_desert_now: boolean): boolean {
     );
   }
   return false;
-}
-
-export function LX_ornateDowsingRod(): boolean {
-  return LX_ornateDowsingRod$1(false);
 }
 
 export function fancyOilPainting(): boolean {

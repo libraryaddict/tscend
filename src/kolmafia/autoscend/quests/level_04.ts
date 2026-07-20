@@ -13,7 +13,7 @@ import { $effect, $element, $familiar, $item, $location } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
-import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
+import { buffMaintain$2 } from "../auto_buff";
 import { autoForceEquip$3 } from "../auto_equipment";
 import { handleFamiliar$1 } from "../auto_familiar";
 import {
@@ -40,7 +40,7 @@ import { auto_haveBatWings, auto_haveChestMimic } from "../iotms/mr2024";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
-import { bat_formBats$1 } from "../paths/dark_gyffte";
+import { bat_formBats } from "../paths/dark_gyffte";
 import { in_koe } from "../paths/kingdom_of_exploathing";
 import { in_lol } from "../paths/legacy_of_loathing";
 import { shenShouldDelayZone } from "./level_11";
@@ -135,7 +135,7 @@ export function L4_batCave(): boolean {
   if (considerGrimstoneGolem(true)) {
     handleBjornify($familiar`Grimstone Golem`);
   }
-  buffMaintain$4($effect`Fishy Whiskers`);
+  buffMaintain$2($effect`Fishy Whiskers`);
 
   const batStatus: number = internalQuestStatus("questL04Bat");
   if (batStatus < 3) {
@@ -186,8 +186,8 @@ export function L4_batCave(): boolean {
     provideMeat$2(50, $location`The Boss Bat's Lair`, false);
     //AoSOL buffs
     if (in_aosol()) {
-      buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
-      buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
+      buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
+      buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
       if (
         auto_haveGreyGoose() &&
         $location`The Boss Bat's Lair`.turnsSpent >= 4
@@ -213,7 +213,7 @@ export function L4_batCave(): boolean {
     return true;
   }
   if (batStatus >= 2) {
-    bat_formBats$1();
+    bat_formBats();
     if (
       itemAmount($item`enchanted bean`) === 0 &&
       internalQuestStatus("questL10Garbage") < 2 &&
@@ -249,7 +249,7 @@ export function L4_batCave(): boolean {
       auto_log_debug$1("Delaying Batrat Burrow in case of Shen.");
       return false;
     }
-    bat_formBats$1();
+    bat_formBats();
     if (auto_haveGreyGoose()) {
       handleFamiliar$1($familiar`Grey Goose`);
     }
@@ -261,7 +261,7 @@ export function L4_batCave(): boolean {
     return false;
   }
 
-  bat_formBats$1();
+  bat_formBats();
   if (auto_haveGreyGoose()) {
     handleFamiliar$1($familiar`Grey Goose`);
   }

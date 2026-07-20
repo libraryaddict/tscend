@@ -86,7 +86,10 @@ function amw_advPerTrade(): number {
 // Parses the cost of the (adv_bundles)-th bundle
 // if non-cumulative, subtracts the cost of the previous bundles to calculate the cost of the "last" trade of 10-13 advs in the bundle
 // function is currently unused (calculateReserve is sometimes called from pre_adventure and visiting url can cause issues with that)
-function amw_advBundleCost(adv_bundles: number, cumulative: boolean): number {
+function amw_advBundleCost(
+  adv_bundles: number,
+  cumulative: boolean = true,
+): number {
   if (adv_bundles > 5 || adv_bundles < 1) {
     abort(
       `I can't calculate the cost of the ${adv_bundles.toString()}-th bundle!`,
@@ -109,16 +112,14 @@ function amw_advBundleCost(adv_bundles: number, cumulative: boolean): number {
   }
   return meat_cost;
 }
-function amw_advBundleCost$1(adv_bundles: number): number {
-  return amw_advBundleCost(adv_bundles, true);
-}
+
 // attempt to buy the cheapest bundle of advs
 export function amw_buyAdv(): boolean {
   const starting_meat: number = myMeat();
   if (
-    starting_meat + 50 < amw_advBundleCost$1(1) ||
+    starting_meat + 50 < amw_advBundleCost(1) ||
     (isAboutToPowerlevel() &&
-      amw_advBundleCost$1(
+      amw_advBundleCost(
         // if true, can't afford adventures
         1,
       ) > 2000 &&
@@ -384,7 +385,9 @@ function amw_substatsBuyable(
 }
 // by default we aren't meatleveling
 // decides whether or not to buy stats, and how much. Acts differently if we're meatleveling. amw_buySubstats does the actual purchasing
-function amw_buyStats(meatleveling: boolean): boolean {
+function amw_buyStats(
+  meatleveling: boolean = false, // do not meatlevel by default
+): boolean {
   let next: amw_statAmount;
   if (meatleveling) {
     // fetch substats to get to next level
@@ -402,14 +405,14 @@ function amw_buyStats(meatleveling: boolean): boolean {
   }
   return false;
 }
-function amw_buyStats$1(): boolean {
-  return amw_buyStats(false); // do not meatlevel by default
-}
 //#######################################################################################################
 // Powerleveling Functions
 // will go to next skill goal if skills = true
 // will go to next level goal if skills = false
-function LX_attemptPowerLevelMeat$1(skills: boolean): boolean {
+export function LX_attemptPowerLevelMeat(
+  // as it's in the function name, assume we're meat*leveling* not meat*skilling* by default
+  skills: boolean = false,
+): boolean {
   if (!isAboutToPowerlevel()) {
     //determined that the softblock on quests waiting for optimal conditions is still on
     auto_log_warning(
@@ -455,10 +458,6 @@ function LX_attemptPowerLevelMeat$1(skills: boolean): boolean {
   }
   return false;
 }
-// as it's in the function name, assume we're meat*leveling* not meat*skilling* by default
-export function LX_attemptPowerLevelMeat(): boolean {
-  return LX_attemptPowerLevelMeat$1(false);
-}
 // stricter than amw_wantMeat() because this changes the quest order. If true, levels 4, 5, 7 quests may be done early.
 export function LX_needMeatSkills(): boolean {
   if (toBoolean(getProperty("auto_shouldMeatLevel")) && myLevel() < 12) {
@@ -493,7 +492,7 @@ export function LM_adventurerMeatsWorld(): boolean {
     myLevel() < 12 &&
     zone_isAvailable($location`Cobb's Knob Treasury`, true)
   ) {
-    if (amw_buyStats$1()) {
+    if (amw_buyStats()) {
       // before we lucky adventure, we want to make sure we wouldn't buy our way to lvl 12
       return true;
     }
@@ -505,7 +504,7 @@ export function LM_adventurerMeatsWorld(): boolean {
     return autoLuckyAdv$1($location`Cobb's Knob Treasury`);
   }
 
-  if (amw_buyStats$1()) {
+  if (amw_buyStats()) {
     // want to run again to put meat towards the next goal if applicable
     return true;
   }
@@ -518,7 +517,7 @@ export function LM_adventurerMeatsWorld(): boolean {
     !auto_haveMobiusRing()
   ) {
     auto_log_info$1("Low skills after 8 turns, going to meatfarm");
-    return LX_attemptPowerLevelMeat$1(true);
+    return LX_attemptPowerLevelMeat(true);
   }
   return false;
 }

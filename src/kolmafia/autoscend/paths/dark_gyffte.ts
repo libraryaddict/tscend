@@ -56,7 +56,7 @@ import {
   inebriety_left,
   spleen_left,
 } from "../auto_consume";
-import { possessOutfit$1 } from "../auto_equipment";
+import { possessOutfit } from "../auto_equipment";
 import {
   auto_banishesUsedAt,
   auto_have_skill,
@@ -65,7 +65,7 @@ import {
   auto_log_warning,
   auto_wantToBanish,
   banishedMonsters,
-  isFreeMonster$1,
+  isFreeMonster,
   total_items,
 } from "../auto_util";
 import { auto_warSide } from "../quests/level_12";
@@ -139,7 +139,7 @@ export function bat_formWolf(speculative: boolean): boolean {
   return bat_switchForm($effect`Wolf Form`, speculative);
 }
 
-export function bat_formMist(speculative: boolean): boolean {
+export function bat_formMist(speculative: boolean = false): boolean {
   if (!in_darkGyffte()) {
     return false;
   }
@@ -147,20 +147,12 @@ export function bat_formMist(speculative: boolean): boolean {
   return bat_switchForm($effect`Mist Form`, speculative);
 }
 
-export function bat_formMist$1(): boolean {
-  return bat_formMist(false);
-}
-
-export function bat_formBats(speculative: boolean): boolean {
+export function bat_formBats(speculative: boolean = false): boolean {
   if (!in_darkGyffte()) {
     return false;
   }
   setProperty("auto_bat_desiredForm", "bats");
   return bat_switchForm($effect`Bats Form`, speculative);
-}
-
-export function bat_formBats$1(): boolean {
-  return bat_formBats(false);
 }
 
 function bat_clearForms(): void {
@@ -171,7 +163,7 @@ function bat_clearForms(): void {
   }
 }
 
-function bat_switchForm(form: Effect, speculative: boolean): boolean {
+function bat_switchForm(form: Effect, speculative: boolean = false): boolean {
   if (0 !== haveEffect(form)) {
     return true;
   }
@@ -196,10 +188,6 @@ function bat_switchForm(form: Effect, speculative: boolean): boolean {
   return useSkill(1, toSkill(form));
 }
 
-function bat_switchForm$1(form: Effect): boolean {
-  return bat_switchForm(form, false);
-}
-
 export function bat_formPreAdventure(): boolean {
   if (!in_darkGyffte()) {
     return false;
@@ -208,11 +196,11 @@ export function bat_formPreAdventure(): boolean {
   const desiredForm: string = getProperty("auto_bat_desiredForm");
   switch (desiredForm) {
     case "wolf":
-      return bat_switchForm$1($effect`Wolf Form`);
+      return bat_switchForm($effect`Wolf Form`);
     case "mist":
-      return bat_switchForm$1($effect`Mist Form`);
+      return bat_switchForm($effect`Mist Form`);
     case "bats":
-      return bat_switchForm$1($effect`Bats Form`);
+      return bat_switchForm($effect`Bats Form`);
     case "":
       bat_clearForms();
       return true;
@@ -458,7 +446,7 @@ export function bat_shouldEnsorcel(m: Monster): boolean {
   // to help avoid getting beaten up...
   if (
     monsterPhylum(m) === $phylum`goblin` &&
-    !isFreeMonster$1(m, myLocation()) &&
+    !isFreeMonster(m, myLocation()) &&
     !bat_haveEnsorcelee()
   ) {
     //stop wasting additional Ensorcel casts once we already have an Ensorcelee
@@ -673,7 +661,7 @@ export function bat_consumption(): boolean {
   }
 
   if (
-    possessOutfit$1("War Hippy Fatigues") &&
+    possessOutfit("War Hippy Fatigues") &&
     isAccessible($coinmaster`Dimemaster`)
   ) {
     sell(
@@ -698,7 +686,7 @@ export function bat_consumption(): boolean {
     );
   }
   if (
-    possessOutfit$1("Frat Warrior Fatigues") &&
+    possessOutfit("Frat Warrior Fatigues") &&
     isAccessible($coinmaster`Quartersmaster`)
   ) {
     sell(

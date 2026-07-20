@@ -32,7 +32,7 @@ import { auto_combatHandler } from "./auto_combat";
 import { auto_edCombatHandler } from "./auto_combat_ed";
 import {
   auto_useSkill,
-  canSurvive$1,
+  canSurvive,
   canUse,
   canUse$3,
   combat_status_add,
@@ -41,8 +41,7 @@ import {
   getStunner,
   haveUsed,
   useItem,
-  useItem$1,
-  useItems$1,
+  useItems,
 } from "./auto_combat_util";
 
 // This file is for quest specific combat handling.
@@ -94,7 +93,7 @@ export function auto_JunkyardCombatHandler(
         enemy,
       )
     ) {
-      return useItem$1($item`molybdenum magnet`);
+      return useItem($item`molybdenum magnet`);
     }
     return auto_combatHandler(round_1, enemy, text);
   }
@@ -114,14 +113,14 @@ export function auto_JunkyardCombatHandler(
     containsText(text, "<!--moly3-->") ||
     containsText(text, "<!--moly4-->")
   ) {
-    return useItem$1($item`molybdenum magnet`);
+    return useItem($item`molybdenum magnet`);
   }
 
   if (canUse($skill`Summon Love Scarabs`)) {
     return auto_useSkill($skill`Summon Love Scarabs`);
   }
 
-  if (canUse($skill`Good Medicine`) && canSurvive$1(2.1)) {
+  if (canUse($skill`Good Medicine`) && canSurvive(2.1)) {
     return auto_useSkill($skill`Good Medicine`);
   }
 
@@ -195,14 +194,14 @@ export function auto_JunkyardCombatHandler(
     if (isActuallyEd()) {
       setProperty("auto_edStatus", "UNDYING!");
     }
-    if (canSurvive$1(3.0) || stunned || staggeringFlyer) {
+    if (canSurvive(3.0) || stunned || staggeringFlyer) {
       shouldFlyer = true;
     }
     if (shouldFlyer) {
       if (flyerWith !== Item.none) {
-        return useItems$1(flyer, flyerWith);
+        return useItems(flyer, flyerWith);
       } else {
-        return useItem$1(flyer);
+        return useItem(flyer);
       }
     }
   }
@@ -222,7 +221,7 @@ export function auto_JunkyardCombatHandler(
     }
   }
 
-  if (!canSurvive$1(1.5)) {
+  if (!canSurvive(1.5)) {
     if (!isActuallyEd() || toInt(getProperty("_edDefeats")) >= 2) {
       abort("I am too weak to safely stasis this gremlin");
     }

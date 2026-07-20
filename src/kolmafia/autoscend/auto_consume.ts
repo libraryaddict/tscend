@@ -92,8 +92,8 @@ import {
 } from "libram";
 
 import { auto_advToReserve } from "../autoscend";
-import { auto_buyUpTo, canPull$1, pullXWhenHaveY } from "./auto_acquire";
-import { buffMaintain$3 } from "./auto_buff";
+import { auto_buyUpTo, canPull, pullXWhenHaveY } from "./auto_acquire";
+import { buffMaintain$2 } from "./auto_buff";
 import {
   equipStatgainIncreasers,
   equipStatgainIncreasersFor,
@@ -389,7 +389,7 @@ export function autoDrink(
       ) {
         auto_buyUpTo(1, $item`Drunk Uncles holo-record`);
       }
-      buffMaintain$3($effect`Drunk and Avuncular`, 0, 1, expectedInebriety);
+      buffMaintain$2($effect`Drunk and Avuncular`, 0, 1, expectedInebriety);
     }
 
     if (auto_have_skill($skill`The Ode to Booze`)) {
@@ -397,7 +397,7 @@ export function autoDrink(
       // get enough turns of ode
       while (
         acquireMP(mpCost($skill`The Ode to Booze`), 0) &&
-        buffMaintain$3(
+        buffMaintain$2(
           $effect`Ode to Booze`,
           mpCost($skill`The Ode to Booze`),
           1,
@@ -637,13 +637,13 @@ export function autoEat(
     ) {
       auto_buyUpTo(1, $item`The Pigs holo-record`);
     }
-    buffMaintain$3($effect`Record Hunger`, 0, 1, expectedFullness);
+    buffMaintain$2($effect`Record Hunger`, 0, 1, expectedFullness);
   }
 
   let retval: boolean = false;
   let wasReadyToEat: boolean = false;
   while (howMany > 0) {
-    buffMaintain$3($effect`Song of the Glorious Lunch`, 10, 1, toEat.fullness);
+    buffMaintain$2($effect`Song of the Glorious Lunch`, 10, 1, toEat.fullness);
     if (
       auto_get_campground().has($item`portable Mayo Clinic`) &&
       myMeat() - meatReserve() > npcPrice($item`Mayoflex`) &&
@@ -1090,7 +1090,7 @@ function autoConsume(action: ConsumeAction): boolean {
   // If not defined, then fall back to checking if this is a drink.
   // Otherwise, use the defined 'castOde' value
   if (action.data?.castOde ?? action.organ === AUTO_ORGAN_LIVER) {
-    buffMaintain$3($effect`Ode to Booze`, 20, 1, action.size);
+    buffMaintain$2($effect`Ode to Booze`, 20, 1, action.size);
   }
   if (action.cafeid !== 0) {
     if (action.organ === AUTO_ORGAN_LIVER) {
@@ -1422,7 +1422,7 @@ function loadConsumables(
       }
     }
     // speakeasy drinks are not available as items and will cause a crash here if not excluded.
-    if (!isSpeakeasyDrink(it) && canPull$1(it)) {
+    if (!isSpeakeasyDrink(it) && canPull(it)) {
       if (!canInteract()) {
         pullables.set(it, 1);
       } else {
@@ -1764,7 +1764,7 @@ function loadConsumables(
   const apronKit: Item = $item`Black and White Apron Meal Kit`;
   if (
     type_1 === AUTO_ORGAN_STOMACH &&
-    (itemAmount(apronKit) > 0 || canPull$1(apronKit)) &&
+    (itemAmount(apronKit) > 0 || canPull(apronKit)) &&
     auto_is_valid(apronKit)
   ) {
     const size: number = 3;

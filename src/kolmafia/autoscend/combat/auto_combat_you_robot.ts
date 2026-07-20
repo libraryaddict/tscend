@@ -12,7 +12,7 @@ import { $element, $monster, $monsters, $skill, $slot, $stat } from "libram";
 import { in_robot } from "../paths/you_robot";
 import {
   auto_useSkill,
-  canSurvive$1,
+  canSurvive,
   canUse,
   turns_to_kill,
 } from "./auto_combat_util";
@@ -40,7 +40,7 @@ export function auto_combat_robot_stage5(
     const better_than_crotch_burn: boolean =
       monsterHp() > 40 || enemy_hot_immune;
     dmg = myBuffedstat($stat`Mysticality`) * enemy_physical_res;
-    if (canSurvive$1(turns_to_kill(dmg)) && better_than_crotch_burn) {
+    if (canSurvive(turns_to_kill(dmg)) && better_than_crotch_burn) {
       return auto_useSkill($skill`Snipe`, false);
     }
   }
@@ -51,7 +51,7 @@ export function auto_combat_robot_stage5(
       enemy,
     )
   ) {
-    if (canSurvive$1(turns_to_kill(myBuffedstat($stat`Muscle`)))) {
+    if (canSurvive(turns_to_kill(myBuffedstat($stat`Muscle`)))) {
       return auto_useSkill($skill`Blow Snow`, false);
     }
   }
@@ -59,21 +59,21 @@ export function auto_combat_robot_stage5(
   if (canUse($skill`Swing Pound-O-Tron`, false) && !enemy_physical_immune) {
     //20 + 0.1*mus damage
     dmg = (20 + 0.1 * myBuffedstat($stat`Muscle`)) * enemy_physical_res;
-    if (canSurvive$1(turns_to_kill(dmg))) {
+    if (canSurvive(turns_to_kill(dmg))) {
       return auto_useSkill($skill`Swing Pound-O-Tron`, false);
     }
   }
   if (canUse($skill`Crotch Burn`, false) && !enemy_hot_immune) {
     //20 + 0.1*mys fire damage
     dmg = 20 + 0.1 * myBuffedstat($stat`Mysticality`);
-    if (canSurvive$1(turns_to_kill(dmg))) {
+    if (canSurvive(turns_to_kill(dmg))) {
       return auto_useSkill($skill`Crotch Burn`, false);
     }
   }
   if (canUse($skill`Shoot Pea`, false) && !enemy_physical_immune) {
     //20 + 0.1*mox damage
     dmg = (20 + 0.1 * myBuffedstat($stat`Moxie`)) * enemy_physical_res;
-    if (canSurvive$1(turns_to_kill(dmg))) {
+    if (canSurvive(turns_to_kill(dmg))) {
       return auto_useSkill($skill`Shoot Pea`, false);
     }
   }

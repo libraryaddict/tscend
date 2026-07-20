@@ -48,17 +48,16 @@ import {
   $slot,
 } from "libram";
 
-import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
+import { canPull, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv, autoLuckyAdv$1 } from "../auto_adventure";
-import { buffMaintain$3 } from "../auto_buff";
+import { buffMaintain$2 } from "../auto_buff";
 import {
-  autoEquip$1,
-  autoForceEquip$1,
+  autoEquip,
+  autoForceEquip,
   autoOutfit,
   equipMaximizedGear,
   possessEquipment,
   possessOutfit,
-  possessOutfit$1,
 } from "../auto_equipment";
 import { handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
@@ -67,10 +66,10 @@ import {
   providePlusCombat,
   provideResistances$4,
 } from "../auto_providers";
-import { acquireHP$1 } from "../auto_restore";
+import { acquireHP$3 } from "../auto_restore";
 import { auto_waitForDay2 } from "../auto_routing";
 import {
-  adjustForYellowRayIfPossible$1,
+  adjustForYellowRayIfPossible,
   auto_can_equip,
   auto_canForceNextCombat,
   auto_combatModCap,
@@ -87,7 +86,7 @@ import {
   auto_log_warning$1,
   canSniff,
   canSummonMonster,
-  canYellowRay$1,
+  canYellowRay,
   internalQuestStatus,
   summonMonster,
 } from "../auto_util";
@@ -417,7 +416,7 @@ export function L8_mountainManSummon(): boolean {
     return summonMonster($monster`mountain man`);
   }
   // use a summon if we can guarantee it will be enough via pro skateboard and YR
-  if (canSummonMonster($monster`mountain man`) && canYellowRay$1()) {
+  if (canSummonMonster($monster`mountain man`) && canYellowRay()) {
     const need_dupe: boolean = current_ore < 1;
     const can_mctwist: boolean =
       auto_can_equip($item`pro skateboard`) &&
@@ -426,9 +425,9 @@ export function L8_mountainManSummon(): boolean {
     auto_log_info$1(
       `Trying to summon a mountain man, which we will YR${will_mctwist ? " and McTwist." : "."}`,
     );
-    adjustForYellowRayIfPossible$1();
+    adjustForYellowRayIfPossible();
     if (will_mctwist) {
-      autoEquip$1($item`pro skateboard`);
+      autoEquip($item`pro skateboard`);
       return summonMonster($monster`mountain man`);
     } else if (!need_dupe) {
       return summonMonster($monster`mountain man`);
@@ -458,7 +457,7 @@ function L8_getMineOres(): boolean {
 
   L8_mountainManSummon();
   // in softcore we want to pull an ore
-  if (canPull$1(oreGoal)) {
+  if (canPull(oreGoal)) {
     pullXWhenHaveY(oreGoal, 1, itemAmount(oreGoal));
     if (itemAmount(oreGoal) === 3) {
       return true; // pulled successfully the last ore
@@ -474,13 +473,13 @@ function L8_getMineOres(): boolean {
   }
 
   if (isAboutToPowerlevel()) {
-    if (!possessOutfit$1("Mining Gear")) {
+    if (!possessOutfit("Mining Gear")) {
       auto_log_info("Getting Mining Gear.", "blue");
       return autoAdv($location`Itznotyerzitz Mine`);
     } else if (possessOutfit("Mining Gear", true)) {
       equipMaximizedGear();
       outfit("Mining Gear");
-      acquireHP$1(1);
+      acquireHP$3(1);
       auto_log_info("Mining in Itznotyerzitz Mine for Trapper ore", "blue");
       const cell: number = getCellToMine(oreGoal);
       if (cell !== 0) {
@@ -537,7 +536,7 @@ export function itznotyerzitzMineChoiceHandler(choice: number): void {
     }
   } else if (choice === 556) {
     // More Locker Than Morlock
-    if (!possessOutfit$1("Mining Gear")) {
+    if (!possessOutfit("Mining Gear")) {
       runChoice(1); // get an outfit piece
     } else {
       runChoice(2); // skip
@@ -560,7 +559,7 @@ function L8_trapperExtreme(): boolean {
     auto_equipAllMcHugeLarge();
     // plumber literally wont let you adventure if you have no way to fight in plumber.
     if (in_plumber()) {
-      autoForceEquip$1($slot`acc3`, $item`work boots`);
+      autoForceEquip($slot`acc3`, $item`work boots`);
     }
   } else if (
     possessOutfit(
@@ -571,7 +570,7 @@ function L8_trapperExtreme(): boolean {
   ) {
     // own and can equip
     autoOutfit("eXtreme Cold-Weather Gear");
-  } else if (possessOutfit$1("eXtreme Cold-Weather Gear")) {
+  } else if (possessOutfit("eXtreme Cold-Weather Gear")) {
     // just own. thanks to else can not equip
     auto_log_warning(
       "I can not wear the eXtreme Gear, I'm just not awesome enough :(",
@@ -637,7 +636,7 @@ export function theeXtremeSlopeChoiceHandler(choice: number): void {
     // Duffel on the Double
     if (haveEquipped($item`candy cane sword cane`)) {
       runChoice(5); // get mittens and pants and lucky pill
-    } else if (!possessOutfit$1("eXtreme Cold-Weather Gear")) {
+    } else if (!possessOutfit("eXtreme Cold-Weather Gear")) {
       runChoice(1); // get an outfit piece
     } else {
       if (isActuallyEd()) {
@@ -812,8 +811,8 @@ export function L8_trapperGroar(): boolean {
     equipMaximizedGear();
     //AoSOL buffs
     if (in_aosol()) {
-      buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
-      buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
+      buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
+      buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
     }
     if ($location`Mist-Shrouded Peak`.turnsSpent >= 3) {
       //does not account for possible defeats

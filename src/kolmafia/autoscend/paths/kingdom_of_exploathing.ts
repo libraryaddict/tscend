@@ -40,15 +40,15 @@ import {
 
 import {
   acquireOrPull,
-  canPull$1,
+  canPull,
   npcStoreDiscountMulti,
   pullXWhenHaveY,
 } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
-import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
+import { buffMaintain$2 } from "../auto_buff";
 import {
   addToMaximize,
-  autoEquip,
+  autoEquipToSlot,
   possessEquipment,
   resetMaximize,
   simMaximizeWith,
@@ -138,23 +138,23 @@ export function LX_koeInvaderHandler(): boolean {
     return false;
   }
 
-  buffMaintain$3($effect`Astral Shell`, 10, 1, 1);
-  buffMaintain$3($effect`Elemental Saucesphere`, 10, 1, 1);
-  buffMaintain$3($effect`Scariersauce`, 10, 1, 1);
-  buffMaintain$3($effect`Scarysauce`, 10, 1, 1);
-  buffMaintain$4($effect`Oiled-Up`);
+  buffMaintain$2($effect`Astral Shell`, 10, 1, 1);
+  buffMaintain$2($effect`Elemental Saucesphere`, 10, 1, 1);
+  buffMaintain$2($effect`Scariersauce`, 10, 1, 1);
+  buffMaintain$2($effect`Scarysauce`, 10, 1, 1);
+  buffMaintain$2($effect`Oiled-Up`);
 
-  buffMaintain$4($effect`Minor Invulnerability`);
-  buffMaintain$4($effect`Feeling Peaceful`);
-  buffMaintain$4($effect`Covered in the Rainbow`);
+  buffMaintain$2($effect`Minor Invulnerability`);
+  buffMaintain$2($effect`Feeling Peaceful`);
+  buffMaintain$2($effect`Covered in the Rainbow`);
 
   resetMaximize();
 
   if (acquireOrPull($item`meteorb`)) {
-    autoEquip($slot`off-hand`, $item`meteorb`);
+    autoEquipToSlot($slot`off-hand`, $item`meteorb`);
   }
 
-  simMaximizeWith(Location.none, "200 all res");
+  simMaximizeWith("200 all res", Location.none);
 
   let damagePerRound: number = 0.0;
   const baseDamage: number = 1.0 - 0.1 * myDaycount();
@@ -200,7 +200,7 @@ export function LX_koeInvaderHandler(): boolean {
         auto_is_valid$2($skill`Bend Hell`) &&
         !have_19_each
       ) {
-        buffMaintain$4($effect`Bendin' Hell`);
+        buffMaintain$2($effect`Bendin' Hell`);
       }
       if (haveEffect($effect`Bendin' Hell`) > 0) {
         have_19_each = true;
@@ -246,9 +246,9 @@ export function LX_koeInvaderHandler(): boolean {
       }
       // Meteorb/pepper is going to add +hot, so remove that
       setFlavour($element`cold`);
-      buffMaintain$3($effect`Carol of the Hells`, 50, 1, 1);
-      buffMaintain$3($effect`Song of Sauce`, 150, 1, 1);
-      buffMaintain$4($effect`Glittering Eyelashes`);
+      buffMaintain$2($effect`Carol of the Hells`, 50, 1, 1);
+      buffMaintain$2($effect`Song of Sauce`, 150, 1, 1);
+      buffMaintain$2($effect`Glittering Eyelashes`);
       acquireMP(100, 0);
 
       auto_log_info(
@@ -347,7 +347,7 @@ export function L12_koe_clearBattlefield(): boolean {
       : $item`haunted paddle-ball`;
   pullXWhenHaveY(warKillDoubler, 1, 0);
   if (possessEquipment(warKillDoubler)) {
-    autoEquip($slot`weapon`, warKillDoubler);
+    autoEquipToSlot($slot`weapon`, warKillDoubler);
   }
 
   return autoAdv($location`The Exploaded Battlefield`);
@@ -408,7 +408,7 @@ export function L13_koe_towerNSNagamar(): boolean {
   }
   //softcore it is cheaper to pull then craft the wand components. if we do not have enough pulls then buy it from ray's bazaar
   if (!inHardcore()) {
-    if (canPull$1($item`WA`) && canPull$1($item`ND`) && pullsRemaining() > 1) {
+    if (canPull($item`WA`) && canPull($item`ND`) && pullsRemaining() > 1) {
       //need 2 pulls to get both
       acquireOrPull($item`WA`);
       acquireOrPull($item`ND`);

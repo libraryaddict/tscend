@@ -64,7 +64,7 @@ import {
   handleTracker$2,
   instakillable,
   internalQuestStatus,
-  isFreeMonster$1,
+  isFreeMonster,
   loopHandlerDelayAll,
   wrap_item,
 } from "../auto_util";
@@ -91,7 +91,7 @@ import { inAftercore } from "../paths/casual";
 import { getZooKickInstaKill } from "../paths/zootomist";
 import { cyrptEvilBonus } from "../quests/level_07";
 import { bridgeGoal } from "../quests/level_09";
-import { towerKeyCount$1 } from "../quests/level_13";
+import { towerKeyCount } from "../quests/level_13";
 import { auto_combatDarkGyffteStage2 } from "./auto_combat_dark_gyffte";
 import {
   auto_useSkill,
@@ -101,12 +101,12 @@ import {
   canUse$3,
   combat_status_add,
   combat_status_check,
-  getSniffer$1,
+  getSniffer,
   haveUsed,
   maxRoundsToDouse,
   replaceMonsterCombatString,
-  useItem$1,
-  useItems$1,
+  useItem,
+  useItems,
   wantToDouse,
   wantToForceDrop,
   yellowRayCombatString,
@@ -140,7 +140,7 @@ export function auto_combatDefaultStage2(
   //we do not want to olfact now because we should do stage 3 first to stun and/or debuff the enemy first before olfacting.
   if (
     auto_wantToSniff(enemy, myLocation()) &&
-    getSniffer$1(enemy) !== Skill.none &&
+    getSniffer(enemy) !== Skill.none &&
     !ag_is_bodyguard()
   ) {
     auto_log_debug$1(
@@ -152,7 +152,7 @@ export function auto_combatDefaultStage2(
     myLocation() === $location`The Daily Dungeon` &&
     itemAmount($item`daily dungeon malware`) > 0 &&
     auto_is_valid($item`daily dungeon malware`) &&
-    towerKeyCount$1(false) < 2 &&
+    towerKeyCount(false) < 2 &&
     !toBoolean(getProperty("_dailyDungeonMalwareUsed"))
   ) {
     auto_log_debug$1(
@@ -213,7 +213,7 @@ export function auto_combatDefaultStage2(
         $item`glark cable`.toString(),
         "auto_instakill",
       );
-      return useItem$1($item`glark cable`);
+      return useItem($item`glark cable`);
     }
   }
   //instakill enemies in [A Mob Of Zeppelin Protesters]
@@ -227,7 +227,7 @@ export function auto_combatDefaultStage2(
       $item`cigarette lighter`.toString(),
       "auto_instakill",
     );
-    return useItems$1($item`cigarette lighter`, Item.none);
+    return useItems($item`cigarette lighter`, Item.none);
   }
   //instakill using [Power Pill] which is iotm familiar derivative
   if (
@@ -388,7 +388,7 @@ export function auto_combatDefaultStage2(
       $item`groveling gravel`.toString(),
       "auto_instakill",
     );
-    return useItem$1($item`groveling gravel`);
+    return useItem($item`groveling gravel`);
   }
   // Free run before banishing for a few monsters
   if (
@@ -725,7 +725,7 @@ export function auto_combatDefaultStage2(
 
   if (
     instakillable(enemy) &&
-    !isFreeMonster$1(enemy, myLocation()) &&
+    !isFreeMonster(enemy, myLocation()) &&
     couldInstaKill
   ) {
     let wantFreeKillNowEspecially: boolean = false;
@@ -938,7 +938,7 @@ export function auto_combatDefaultStage2(
           "auto_instakill",
         );
         loopHandlerDelayAll();
-        return useItem$1($item`replica bat-oomerang`);
+        return useItem($item`replica bat-oomerang`);
       }
     }
 
@@ -953,7 +953,7 @@ export function auto_combatDefaultStage2(
         "auto_instakill",
       );
       loopHandlerDelayAll();
-      return useItems$1($item`shadow brick`, Item.none);
+      return useItems($item`shadow brick`, Item.none);
     }
   } // instakills
   //wearing [retro superhero cape] iotm set to vampire slicer mode instakills Undead and reduces evilness in Cyrpt zones.
@@ -962,7 +962,7 @@ export function auto_combatDefaultStage2(
   }
   //autokill duplicated enemies. this still costs a turn
   if (canUse$3($item`exploding cigar`) && haveUsed($skill`Duplicate`)) {
-    return useItem$1($item`exploding cigar`);
+    return useItem($item`exploding cigar`);
   }
   // Slaughter is an instakill, but not free; only use if you have no other options and never when we want free kill
   if (

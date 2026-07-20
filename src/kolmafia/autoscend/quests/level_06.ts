@@ -22,7 +22,7 @@ import {
 import { $familiar, $item, $location, $locations, $skill, $slot } from "libram";
 
 import { autoAdv } from "../auto_adventure";
-import { autoEquip } from "../auto_equipment";
+import { autoEquipToSlot } from "../auto_equipment";
 import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
@@ -68,7 +68,7 @@ export function L6_friarsGetParts(): boolean {
   }
 
   if (equippedItem($slot`shirt`) === $item`tunac`) {
-    autoEquip($slot`shirt`, Item.none);
+    autoEquipToSlot($slot`shirt`, Item.none);
   }
 
   if (

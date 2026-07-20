@@ -24,10 +24,10 @@ import {
 } from "kolmafia";
 import { $item, $path, $skill, $slot, $stat, $stats } from "libram";
 
-import { acquireOrPull, canPull$1 } from "../auto_acquire";
+import { acquireOrPull, canPull } from "../auto_acquire";
 import { autoEat, fullness_left, prepare_food_xp_multi } from "../auto_consume";
 import {
-  autoEquip$1,
+  autoEquip,
   autoForceEquip$3,
   possessEquipment,
 } from "../auto_equipment";
@@ -432,7 +432,10 @@ export function plumber_skillValid(sk: Skill): boolean {
   return true;
 }
 
-function plumber_equipTool(st: Stat, forceEquipRightNow: boolean): boolean {
+export function plumber_equipTool(
+  st: Stat,
+  forceEquipRightNow: boolean = false,
+): boolean {
   if (!in_plumber()) {
     return false;
   }
@@ -442,13 +445,13 @@ function plumber_equipTool(st: Stat, forceEquipRightNow: boolean): boolean {
       if (forceEquipRightNow) {
         return autoForceEquip$3(to_equip);
       } else {
-        return autoEquip$1(to_equip);
+        return autoEquip(to_equip);
       }
     } else if (possessEquipment(fallback_to_equip)) {
       if (forceEquipRightNow) {
         return autoForceEquip$3(fallback_to_equip);
       } else {
-        return autoEquip$1(fallback_to_equip);
+        return autoEquip(fallback_to_equip);
       }
     } else if (itemAmount($item`coin`) >= 20) {
       // 20 coins to avoid doing clever re-routing? Yes please!
@@ -456,7 +459,7 @@ function plumber_equipTool(st: Stat, forceEquipRightNow: boolean): boolean {
       if (forceEquipRightNow) {
         return autoForceEquip$3(fallback_to_equip);
       } else {
-        return autoEquip$1(fallback_to_equip);
+        return autoEquip(fallback_to_equip);
       }
     }
     return false;
@@ -474,10 +477,6 @@ function plumber_equipTool(st: Stat, forceEquipRightNow: boolean): boolean {
       return equipWithFallback($item`fancy boots`, $item`work boots`);
   }
   return false;
-}
-
-export function plumber_equipTool$1(st: Stat): boolean {
-  return plumber_equipTool(st, false);
 }
 
 export function plumber_forceEquipTool(): boolean {
@@ -510,7 +509,7 @@ function plumber_eat_xp(): void {
 
   const milk: Item = $item`gallon of milk`;
   const got_milk: boolean =
-    creatableAmount(milk) > 0 || itemAmount(milk) > 0 || canPull$1(milk);
+    creatableAmount(milk) > 0 || itemAmount(milk) > 0 || canPull(milk);
   if (got_milk && fullness_left() >= 15) {
     acquireOrPull(milk);
     autoEat(1, milk);

@@ -65,13 +65,13 @@ import { auto_combatPeteStage1 } from "./auto_combat_pete";
 import { auto_combatTheSourceStage1 } from "./auto_combat_the_source";
 import {
   auto_useSkill,
-  canSurvive$1,
+  canSurvive,
   canUse,
   canUse$3,
   combat_status_add,
   combat_status_check,
   markAsUsed$1,
-  useItems$1,
+  useItems,
 } from "./auto_combat_util";
 import { auto_combatWereProfessorStage1 } from "./auto_combat_wereprofessor";
 import { auto_combatWildfireStage1 } from "./auto_combat_wildfire";
@@ -141,7 +141,7 @@ export function auto_combatDefaultStage1(
       $item`waffle`.toString(),
       "auto_replaces",
     );
-    return useItems$1($item`waffle`, Item.none);
+    return useItems($item`waffle`, Item.none);
   }
 
   if (enemy === $monster`Your Shadow`) {
@@ -270,7 +270,7 @@ export function auto_combatDefaultStage1(
     !combat_status_check("pickpocket") &&
     ableToPickpocket &&
     containsText(text, 'value="Pick') &&
-    canSurvive$1(4.0)
+    canSurvive(4.0)
   ) {
     let tryIt: boolean = false;
     for (const [, drop] of itemDropsArray(enemy).entries()) {
@@ -286,7 +286,7 @@ export function auto_combatDefaultStage1(
         tryIt = true;
       }
       if (tryIt) {
-        if (auto_have_skill($skill`Sticky Fingers`) && canSurvive$1(8.0)) {
+        if (auto_have_skill($skill`Sticky Fingers`) && canSurvive(8.0)) {
           //free meat, tryIt
         } else if (
           drop.type !== "p" &&

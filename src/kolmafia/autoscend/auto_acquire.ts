@@ -135,7 +135,7 @@ export function acquireOrPull(it: Item): boolean {
   if (retrieveItem(1, it)) {
     return true;
   }
-  if (canPull$1(it)) {
+  if (canPull(it)) {
     if (pullXWhenHaveY(it, 1, 0)) {
       return true;
     }
@@ -146,7 +146,7 @@ export function acquireOrPull(it: Item): boolean {
       it,
     )
   ) {
-    if (canPull$1($item`metal meteoroid`)) {
+    if (canPull($item`metal meteoroid`)) {
       if (pullXWhenHaveY($item`metal meteoroid`, 1, 0)) {
         if (retrieveItem(1, it)) {
           return true;
@@ -158,7 +158,7 @@ export function acquireOrPull(it: Item): boolean {
   return false;
 }
 
-export function canPull(it: Item, historical: boolean): boolean {
+export function canPull(it: Item, historical: boolean = false): boolean {
   if (inHardcore()) {
     return false;
   }
@@ -215,10 +215,6 @@ export function canPull(it: Item, historical: boolean): boolean {
   }
 
   return false;
-}
-
-export function canPull$1(it: Item): boolean {
-  return canPull(it, false);
 }
 
 function pulledToday(it: Item): boolean {
@@ -328,7 +324,7 @@ export function pullXWhenHaveY(
   if (canInteract()) {
     return pullXWhenHaveYCasual(it, howMany, whenHave);
   }
-  if (!canPull$1(it)) {
+  if (!canPull(it)) {
     return false;
   }
   if (itemAmount(it) + equippedAmount(it) === whenHave) {
@@ -975,7 +971,7 @@ export function handlePulls(day: number): number {
   }
   // do this regardless of day if we still need to complete the bridge.
   if (
-    canPull$1($item`smut orc keepsake box`) &&
+    canPull($item`smut orc keepsake box`) &&
     toInt(getProperty("chasmBridgeProgress")) +
       min(lumberCount(), fastenerCount()) <
       bridgeGoal()

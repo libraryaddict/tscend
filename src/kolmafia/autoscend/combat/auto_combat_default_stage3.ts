@@ -88,17 +88,17 @@ import { auto_combatMeatGolemStage3 } from "./auto_combat_adventurer_meats_world
 import { auto_combatHeavyRainsStage3 } from "./auto_combat_heavy_rains";
 import {
   auto_useSkill,
-  canSurvive$1,
+  canSurvive,
   canUse,
   canUse$3,
   combat_status_add,
   enemyCanBlocksSkills,
-  getSniffer$1,
+  getSniffer,
   getStunner,
   haveUsed,
   isSniffed$1,
   maxRoundsToDouse,
-  useItem$1,
+  useItem,
   wantToDouse,
   wantToForceDrop,
 } from "./auto_combat_util";
@@ -465,7 +465,7 @@ export function auto_combatDefaultStage3(
       }
       if (canUse$3($item`autumnic bomb`)) {
         //50% less hp && prismatic damage on hit
-        return useItem$1($item`autumnic bomb`);
+        return useItem($item`autumnic bomb`);
       }
     }
     // delevel and 75% less HP if you have a candy cane sword cane
@@ -490,9 +490,7 @@ export function auto_combatDefaultStage3(
         hippyStoneBroken() &&
         !toBoolean(getProperty("_affirmationHateUsed"))
       ) {
-        return useItem$1(
-          $item`Daily Affirmation: Keep Free Hate in your Heart`,
-        );
+        return useItem($item`Daily Affirmation: Keep Free Hate in your Heart`);
       }
     }
 
@@ -564,7 +562,7 @@ export function auto_combatDefaultStage3(
           enemy,
         )
       ) {
-        return useItem$1($item`cow poker`);
+        return useItem($item`cow poker`);
       }
     }
 
@@ -574,13 +572,13 @@ export function auto_combatDefaultStage3(
           enemy,
         )
       ) {
-        return useItem$1($item`western-style skinning knife`);
+        return useItem($item`western-style skinning knife`);
       }
     }
 
     if (
       myLocation() === $location`The Smut Orc Logging Camp` &&
-      canSurvive$1(1.0) &&
+      canSurvive(1.0) &&
       toInt(getProperty("chasmBridgeProgress")) < bridgeGoal()
     ) {
       const coldMortarShell: boolean =
@@ -818,7 +816,7 @@ export function auto_combatDefaultStage3(
     }
 
     if (canUse$3($item`Rain-Doh indigo cup`)) {
-      return useItem$1($item`Rain-Doh indigo cup`);
+      return useItem($item`Rain-Doh indigo cup`);
     }
 
     if (canUse($skill`Summon Love Mosquito`)) {
@@ -826,7 +824,7 @@ export function auto_combatDefaultStage3(
     }
 
     if (canUse$3($item`tomayohawk-style reflex hammer`)) {
-      return useItem$1($item`tomayohawk-style reflex hammer`);
+      return useItem($item`tomayohawk-style reflex hammer`);
     }
     //If you have tearaway pants equipped, use its skill
     if (
@@ -834,7 +832,7 @@ export function auto_combatDefaultStage3(
       ((getProperty("auto_forceNonCombatSource") === "" &&
         !(
           auto_wantToSniff(enemy, myLocation()) &&
-          getSniffer$1(enemy) !== Skill.none
+          getSniffer(enemy) !== Skill.none
         )) ||
         monsterPhylum() === $phylum`plant`)
     ) {
@@ -869,7 +867,7 @@ export function auto_combatDefaultStage3(
       canUse($skill`Extract`) &&
       myMp() > mpCost($skill`Extract`) * 3 &&
       itemAmount($item`Source essence`) <= 60 &&
-      canSurvive$1(2.0)
+      canSurvive(2.0)
     ) {
       return auto_useSkill($skill`Extract`);
     }
@@ -877,7 +875,7 @@ export function auto_combatDefaultStage3(
     if (
       canUse($skill`Extract Jelly`) &&
       myMp() > mpCost($skill`Extract Jelly`) * 3 &&
-      canSurvive$1(2.0) &&
+      canSurvive(2.0) &&
       myFamiliar() === $familiar`Space Jellyfish` &&
       toInt(getProperty("_spaceJellyfishDrops")) < 3 &&
       $elements`hot, spooky, stench`.includes(monsterElement(enemy))
@@ -899,22 +897,19 @@ export function auto_combatDefaultStage3(
     }
 
     if (canUse$3($item`Time-Spinner`)) {
-      return useItem$1($item`Time-Spinner`);
+      return useItem($item`Time-Spinner`);
     }
 
     if (canUse($skill`Sing Along`)) {
       //15% devel, but no stun.
 
-      if (
-        canSurvive$1(2.0) &&
-        getProperty("boomBoxSong") === "Remainin' Alive"
-      ) {
+      if (canSurvive(2.0) && getProperty("boomBoxSong") === "Remainin' Alive") {
         return auto_useSkill($skill`Sing Along`);
       }
       //this is for increasing meat income. gain +25 meat per monster, at the cost of letting it act once. If healing is too costly this can be a net loss of meat. until a full cost calculator is made, limit to under 10 HP damage and no more than 20% of your remaining HP.
 
       if (
-        canSurvive$1(5.0) &&
+        canSurvive(5.0) &&
         getProperty("boomBoxSong") === "Total Eclipse of Your Meat" &&
         expectedDamage() < 10 &&
         !in_wotsf()
@@ -924,7 +919,7 @@ export function auto_combatDefaultStage3(
       //if doing nuns quest or wall of meat, disregard profit and only check if you can survive using sing along.
 
       if (
-        canSurvive$1(3.0) &&
+        canSurvive(3.0) &&
         getProperty("boomBoxSong") === "Total Eclipse of Your Meat" &&
         $monsters`dirty thieving brigand, wall of meat`.includes(enemy)
       ) {
@@ -935,7 +930,7 @@ export function auto_combatDefaultStage3(
   //Default behaviors, multi-staggers when chance is 50% or greater
   if (enemy_la < 100 && stunnable(enemy)) {
     if (canUse$3($item`Rain-Doh blue balls`)) {
-      return useItem$1($item`Rain-Doh blue balls`);
+      return useItem($item`Rain-Doh blue balls`);
     }
 
     if (canUse($skill`Summon Love Gnats`)) {
@@ -981,7 +976,7 @@ export function auto_combatDefaultStage3(
     }
   }
   // Multi-round stuns
-  if (canUse($skill`Thunderstrike`) && enemy_la <= 150 && !canSurvive$1(5.0)) {
+  if (canUse($skill`Thunderstrike`) && enemy_la <= 150 && !canSurvive(5.0)) {
     combat_status_add("stunned");
     return auto_useSkill($skill`Thunderstrike`);
   }
@@ -989,7 +984,7 @@ export function auto_combatDefaultStage3(
   if (
     enemy_la <= 100 &&
     stunnable(enemy) &&
-    (!canSurvive$1(5.0) || $monsters`Groar`.includes(enemy))
+    (!canSurvive(5.0) || $monsters`Groar`.includes(enemy))
   ) {
     const stunner: Skill = getStunner(enemy);
     if (stunner !== Skill.none) {
@@ -1001,7 +996,7 @@ export function auto_combatDefaultStage3(
     auto_wantToBCZ($skill`BCZ: Blood Geyser`) &&
     canUse($skill`BCZ: Blood Geyser`) &&
     enemy_la <= 150 &&
-    !canSurvive$1(5.0)
+    !canSurvive(5.0)
   ) {
     combat_status_add("stunned");
     return auto_useSkill($skill`BCZ: Blood Geyser`);

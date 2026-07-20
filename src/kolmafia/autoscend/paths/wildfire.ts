@@ -32,7 +32,7 @@ import { auto_advToReserve } from "../../autoscend";
 import { auto_buyUpTo, pull_meat } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
 import { inebriety_left, stomach_left } from "../auto_consume";
-import { autoEquip, possessOutfit$1 } from "../auto_equipment";
+import { autoEquipToSlot, possessOutfit } from "../auto_equipment";
 import { acquireHP, acquireMP } from "../auto_restore";
 import {
   auto_log_info$1,
@@ -54,7 +54,7 @@ import {
   LX_spookyravenManorFirstFloor,
   LX_unlockHauntedBilliardsRoom,
 } from "../quests/level_11";
-import { auto_warSide, haveWarOutfit$1 } from "../quests/level_12";
+import { auto_warSide, haveWarOutfit } from "../quests/level_12";
 
 //Defined in autoscend/paths/wildfire.ash
 export function in_wildfire(): boolean {
@@ -113,12 +113,12 @@ export function LX_wildfire_calculateTheUniverse(): boolean {
   }
 
   if (
-    !possessOutfit$1("Frat Warrior Fatigues") &&
+    !possessOutfit("Frat Warrior Fatigues") &&
     auto_warSide() === "fratboy" &&
     auto_saberChargesAvailable() > 0
   ) {
     if (doNumberology("battlefield", false) !== -1) {
-      autoEquip($slot`weapon`, $item`Fourth of May Cosplay Saber`);
+      autoEquipToSlot($slot`weapon`, $item`Fourth of May Cosplay Saber`);
       return doNumberology("battlefield") !== -1;
     }
     return false; //we want 151 and can get it in general. but not right now. so save it for later
@@ -385,7 +385,7 @@ function LX_wildfire_hose_once(place: Location): boolean {
   return retval;
 }
 
-function LX_wildfire_hose(place: Location, target_fire: number): boolean {
+function LX_wildfire_hose(place: Location, target_fire: number = 2): boolean {
   //have cpt hangk send water hosers to hose loc down until fire level reaches target_fire
   //only return true if the loop needs to be restarted. which only occurs if we adv were spent on pumping water
   if (!in_wildfire()) {
@@ -425,23 +425,19 @@ function LX_wildfire_hose(place: Location, target_fire: number): boolean {
   return retval; //we only return true during water pumping if adv was used
 }
 
-function LX_wildfire_hose$1(place: Location): boolean {
-  return LX_wildfire_hose(place, 2);
-}
-
 function LX_wildfire_water(): boolean {
   //use water in a variety of ways to reduce fire levels. putting it in pre-adv is problematic since we need to spend adventures here
   //individual location watering first
   //for stone wool. needed at level 11 but we acquire it early using [Baa'baa'bu'ran]. Skip if we've somehow already progressed past that stage
   if (internalQuestStatus("questL11Worship") < 3) {
-    if (LX_wildfire_hose$1($location`The Hidden Temple`)) {
+    if (LX_wildfire_hose($location`The Hidden Temple`)) {
       return true;
     }
   }
 
   if (!isDesertAvailable() && !inKnollSign()) {
     //knoll sign does not need to farm components for bitchin meatcar
-    if (LX_wildfire_hose$1($location`The Degrassi Knoll Garage`)) {
+    if (LX_wildfire_hose($location`The Degrassi Knoll Garage`)) {
       return true;
     }
   }
@@ -458,23 +454,23 @@ function LX_wildfire_water(): boolean {
     ) > -1
   ) {
     //can not hose these until quest is started
-    if (LX_wildfire_hose$1($location`The Laugh Floor`)) {
+    if (LX_wildfire_hose($location`The Laugh Floor`)) {
       //need [imp air]
       return true;
     }
-    if (LX_wildfire_hose$1($location`Infernal Rackets Backstage`)) {
+    if (LX_wildfire_hose($location`Infernal Rackets Backstage`)) {
       //need [bus pass]
       return true;
     }
   }
 
   if (myLevel() > 10 && zone_available($location`The Hidden Bowling Alley`)) {
-    LX_wildfire_hose$1($location`The Hidden Bowling Alley`); //part of level 11 quest. potentially might want to go after NC instead
+    LX_wildfire_hose($location`The Hidden Bowling Alley`); //part of level 11 quest. potentially might want to go after NC instead
   }
 
   if (
     inHardcore() &&
-    !haveWarOutfit$1() &&
+    !haveWarOutfit() &&
     internalQuestStatus("questL12War") === 0
   ) {
     //we need war outfit

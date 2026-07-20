@@ -64,7 +64,7 @@ import {
 import { autoAdv, autoAdvBypass } from "../auto_adventure";
 import {
   addToMaximize,
-  autoEquip,
+  autoEquipToSlot,
   getMaximizeSlotPref,
   possessEquipment,
 } from "../auto_equipment";
@@ -264,7 +264,7 @@ export function auto_forceEquipPowerfulGlove(): boolean {
     return true;
   }
 
-  return autoEquip($slot`acc3`, $item`Powerful Glove`);
+  return autoEquipToSlot($slot`acc3`, $item`Powerful Glove`);
 }
 
 export function auto_burnPowerfulGloveCharges(): void {

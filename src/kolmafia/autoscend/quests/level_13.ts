@@ -83,16 +83,16 @@ import {
 import {
   acquireOrPull,
   auto_buyUpTo,
-  canPull$1,
+  canPull,
   pullXWhenHaveY,
 } from "../auto_acquire";
 import { autoAdv, autoAdvBypass$1, autoLuckyAdv } from "../auto_adventure";
-import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
+import { buffMaintain$2 } from "../auto_buff";
 import {
   addToMaximize,
   autoEquip,
-  autoEquip$1,
-  autoForceEquip$1,
+  autoEquipToSlot,
+  autoForceEquip,
   autoForceEquip$3,
   equipBaseline,
   equipMaximizedGear,
@@ -145,7 +145,7 @@ import {
   summonMonster,
   woods_questStart,
 } from "../auto_util";
-import { zone_isAvailable$1 } from "../auto_zone";
+import { zone_isAvailable } from "../auto_zone";
 import { canUse } from "../combat/auto_combat_util";
 import { fightClubSpa$1 } from "../iotms/mr2018";
 import { auto_beachCombHead } from "../iotms/mr2019";
@@ -227,11 +227,7 @@ export function need8BitPoints(): boolean {
   return needDigitalKey();
 }
 
-export function towerKeyCount(): number {
-  return towerKeyCount$1(true);
-}
-
-export function towerKeyCount$1(effective: boolean): number {
+export function towerKeyCount(effective: boolean = true): number {
   //Returns how many Hero Keys and Fat Loot tokens we have.
   //effective count (with malware) vs true count.
 
@@ -330,12 +326,12 @@ function EightBitRealmHandler(): boolean {
   switch (color) {
     case "black":
       // limited buff that is helpful for 3 of 4 8-bit zones
-      buffMaintain$4($effect`Shadow Waters`);
+      buffMaintain$2($effect`Shadow Waters`);
       adv_spent = autoAdv($location`Vanya's Castle`);
       break;
     case "red":
       // limited buff that is helpful for 3 of 4 8-bit zones
-      buffMaintain$4($effect`Shadow Waters`);
+      buffMaintain$2($effect`Shadow Waters`);
       if (meatDropModifier() < 395) {
         auto_getCitizenZone$1("meat");
       }
@@ -347,7 +343,7 @@ function EightBitRealmHandler(): boolean {
       break;
     case "green":
       // limited buff that is helpful for 3 of 4 8-bit zones
-      buffMaintain$4($effect`Shadow Waters`);
+      buffMaintain$2($effect`Shadow Waters`);
       adv_spent = autoAdv($location`Hero's Field`);
       break;
     default:
@@ -363,7 +359,7 @@ export function get8BitFatLootToken(): boolean {
   //Acquire the [Fat Loot Token] from 8 bit realm
   // start quest and equip to refresh mafia's prefs
   woods_questStart();
-  autoForceEquip$1($slot`acc3`, $item`continuum transfunctioner`);
+  autoForceEquip($slot`acc3`, $item`continuum transfunctioner`);
   // buy fat loot token if you can
   if (EightBitScore() >= 20000) {
     equip($slot`acc3`, $item`continuum transfunctioner`);
@@ -408,7 +404,7 @@ export function LX_getDigitalKey(): boolean {
   }
   // start quest and equip to refresh mafia's prefs
   woods_questStart();
-  autoForceEquip$1($slot`acc3`, $item`continuum transfunctioner`);
+  autoForceEquip($slot`acc3`, $item`continuum transfunctioner`);
   // buy key if you can
   if (EightBitScore() >= 10000) {
     equip($slot`acc3`, $item`continuum transfunctioner`);
@@ -521,7 +517,7 @@ export function LX_getStarKey(): boolean {
     return false;
   }
 
-  if (!zone_isAvailable$1($location`The Hole in the Sky`)) {
+  if (!zone_isAvailable($location`The Hole in the Sky`)) {
     auto_log_warning(
       "The Hole In The Sky is not available, we have to do something else...",
       "red",
@@ -887,10 +883,10 @@ export function L13_towerNSContests(): boolean {
       );
 
       if (crowd3Insufficient()) {
-        buffMaintain$4($effect`All Glory To the Toad`);
+        buffMaintain$2($effect`All Glory To the Toad`);
       }
       if (crowd3Insufficient()) {
-        buffMaintain$3($effect`Bendin' Hell`, 120, 1, 1);
+        buffMaintain$2($effect`Bendin' Hell`, 120, 1, 1);
       }
       switch (challenge) {
         case $element`cold`:
@@ -898,16 +894,16 @@ export function L13_towerNSContests(): boolean {
             auto_beachCombHead("cold");
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Cold Hard Skin`);
+            buffMaintain$2($effect`Cold Hard Skin`);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$3($effect`Frostbeard`, 15, 1, 1);
+            buffMaintain$2($effect`Frostbeard`, 15, 1, 1);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$3($effect`Icy Glare`, 10, 1, 1);
+            buffMaintain$2($effect`Icy Glare`, 10, 1, 1);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$3($effect`Song of the North`, 100, 1, 1);
+            buffMaintain$2($effect`Song of the North`, 100, 1, 1);
           }
           break;
         case $element`hot`:
@@ -915,28 +911,28 @@ export function L13_towerNSContests(): boolean {
             auto_beachCombHead("hot");
           }
           if (crowd3Insufficient()) {
-            buffMaintain$3($effect`Song of Sauce`, 100, 1, 1);
+            buffMaintain$2($effect`Song of Sauce`, 100, 1, 1);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Flamibili Tea`);
+            buffMaintain$2($effect`Flamibili Tea`);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Flaming Weapon`);
+            buffMaintain$2($effect`Flaming Weapon`);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Human-Demon Hybrid`);
+            buffMaintain$2($effect`Human-Demon Hybrid`);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Lit Up`);
+            buffMaintain$2($effect`Lit Up`);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Fire Inside`);
+            buffMaintain$2($effect`Fire Inside`);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$3($effect`Pyromania`, 15, 1, 1);
+            buffMaintain$2($effect`Pyromania`, 15, 1, 1);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$3($effect`Your Fifteen Minutes`, 50, 1, 1);
+            buffMaintain$2($effect`Your Fifteen Minutes`, 50, 1, 1);
           }
           break;
         case $element`sleaze`:
@@ -944,13 +940,13 @@ export function L13_towerNSContests(): boolean {
             auto_beachCombHead("sleaze");
           }
           if (crowd3Insufficient()) {
-            buffMaintain$3($effect`Takin' It Greasy`, 15, 1, 1);
+            buffMaintain$2($effect`Takin' It Greasy`, 15, 1, 1);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Blood-Gorged`);
+            buffMaintain$2($effect`Blood-Gorged`);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Greasy Peasy`);
+            buffMaintain$2($effect`Greasy Peasy`);
           }
           break;
         case $element`stench`:
@@ -958,21 +954,21 @@ export function L13_towerNSContests(): boolean {
             auto_beachCombHead("stench");
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Drenched With Filth`);
+            buffMaintain$2($effect`Drenched With Filth`);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Musky`);
+            buffMaintain$2($effect`Musky`);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Stinky Hands`);
+            buffMaintain$2($effect`Stinky Hands`);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Stinky Weapon`);
+            buffMaintain$2($effect`Stinky Weapon`);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$3($effect`Rotten Memories`, 15, 1, 1);
+            buffMaintain$2($effect`Rotten Memories`, 15, 1, 1);
           }
-          if (canPull$1($item`halibut`) && auto_can_equip($item`halibut`)) {
+          if (canPull($item`halibut`) && auto_can_equip($item`halibut`)) {
             pullXWhenHaveY($item`halibut`, 1, 0);
             autoMaximize$1(
               `${challenge} dmg, ${challenge} spell dmg -equip snow suit`,
@@ -987,30 +983,30 @@ export function L13_towerNSContests(): boolean {
             auto_beachCombHead("spooky");
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Spooky Hands`);
+            buffMaintain$2($effect`Spooky Hands`);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Spooky Weapon`);
+            buffMaintain$2($effect`Spooky Weapon`);
           }
 
           // at this point, an example list of songs is phat loot / polka / celerity / madrigal
           if (crowd3Insufficient()) {
             // specify normal effect to avoid failing the skill check
             shrugAT($effect`Dirge of Dreadfulness`);
-            buffMaintain$4($effect`Dirge of Dreadfulness (Remastered)`);
+            buffMaintain$2($effect`Dirge of Dreadfulness (Remastered)`);
           }
           if (crowd3Insufficient()) {
             shrugAT($effect`Dirge of Dreadfulness`);
-            buffMaintain$3($effect`Dirge of Dreadfulness`, 10, 1, 1);
+            buffMaintain$2($effect`Dirge of Dreadfulness`, 10, 1, 1);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$3($effect`Intimidating Mien`, 15, 1, 1);
+            buffMaintain$2($effect`Intimidating Mien`, 15, 1, 1);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$4($effect`Snarl of Three Timberwolves`);
+            buffMaintain$2($effect`Snarl of Three Timberwolves`);
           }
           if (crowd3Insufficient()) {
-            buffMaintain$3($effect`Snarl of the Timberwolf`, 10, 1, 1);
+            buffMaintain$2($effect`Snarl of the Timberwolf`, 10, 1, 1);
           }
           break;
       }
@@ -1018,7 +1014,7 @@ export function L13_towerNSContests(): boolean {
       let score: number = numericModifier(`${challenge} damage`);
       score += numericModifier(`${challenge} spell damage`);
       if (score > 20.0 && score < 85.0) {
-        buffMaintain$3($effect`Bendin' Hell`, 100, 1, 1);
+        buffMaintain$2($effect`Bendin' Hell`, 100, 1, 1);
       }
 
       score = numericModifier(`${challenge} damage`);
@@ -1451,7 +1447,7 @@ function L13_towerNSTowerSkin(): boolean {
   }
   // We've probably got a tiny bowler, that'll help.
   if (availableAmount($item`tiny bowler`) > 0 && canEquip($item`tiny bowler`)) {
-    autoEquip$1($item`tiny bowler`);
+    autoEquip($item`tiny bowler`);
     damage += 1; //familiar attack
   }
   // apply skills
@@ -1504,11 +1500,11 @@ function L13_towerNSTowerSkin(): boolean {
     if (!have(it) || !canEquip(it)) continue;
 
     if (!acc1_occupied) {
-      autoEquip($slot`acc1`, it);
+      autoEquipToSlot($slot`acc1`, it);
       acc1_occupied = true;
       damage++;
     } else if (!acc2_occupied) {
-      autoEquip($slot`acc2`, it);
+      autoEquipToSlot($slot`acc2`, it);
       acc2_occupied = true;
       damage++;
     }
@@ -1661,21 +1657,21 @@ function L13_towerNSTowerBones(): boolean {
   uneffect($effect`Ode to Booze`);
 
   acquireMP(150, 0);
-  buffMaintain$4($effect`Jackasses' Symphony of Destruction`);
-  buffMaintain$4($effect`Stevedave's Shanty of Superiority`);
-  buffMaintain$4($effect`Seeing Colors`);
-  buffMaintain$4($effect`Glittering Eyelashes`);
-  buffMaintain$4($effect`OMG WTF`);
-  buffMaintain$4($effect`There Is A Spoon`);
-  buffMaintain$4($effect`Song of Sauce`);
-  buffMaintain$4($effect`Carol of the Hells`);
-  buffMaintain$4($effect`Sauce Monocle`);
-  buffMaintain$4($effect`Arched Eyebrow of the Archmage`);
-  buffMaintain$4($effect`Rosewater Mark`);
-  buffMaintain$4($effect`Black Eyes`);
-  buffMaintain$4($effect`Imported Strength`);
-  buffMaintain$4($effect`Mystically Oiled`);
-  buffMaintain$4($effect`Tomato Power`);
+  buffMaintain$2($effect`Jackasses' Symphony of Destruction`);
+  buffMaintain$2($effect`Stevedave's Shanty of Superiority`);
+  buffMaintain$2($effect`Seeing Colors`);
+  buffMaintain$2($effect`Glittering Eyelashes`);
+  buffMaintain$2($effect`OMG WTF`);
+  buffMaintain$2($effect`There Is A Spoon`);
+  buffMaintain$2($effect`Song of Sauce`);
+  buffMaintain$2($effect`Carol of the Hells`);
+  buffMaintain$2($effect`Sauce Monocle`);
+  buffMaintain$2($effect`Arched Eyebrow of the Archmage`);
+  buffMaintain$2($effect`Rosewater Mark`);
+  buffMaintain$2($effect`Black Eyes`);
+  buffMaintain$2($effect`Imported Strength`);
+  buffMaintain$2($effect`Mystically Oiled`);
+  buffMaintain$2($effect`Tomato Power`);
   //~ buffMaintain($effect[Visions of the Deep Dark Deeps]);
   // Maximizer tries to force familiar equipment. and prefers passive dmg a that. Avoid dealing damage from familiar and losing
   if (canChangeFamiliar()) {
@@ -1885,11 +1881,11 @@ function L13_towerNSTowerShadow(): boolean {
   }
 
   if (myMaxhp() < 800) {
-    buffMaintain$4($effect`Industrial Strength Starch`);
-    buffMaintain$4($effect`Truly Gritty`);
-    buffMaintain$4($effect`Superheroic`);
-    buffMaintain$4($effect`Strong Grip`);
-    buffMaintain$4($effect`Spiky Hair`);
+    buffMaintain$2($effect`Industrial Strength Starch`);
+    buffMaintain$2($effect`Truly Gritty`);
+    buffMaintain$2($effect`Superheroic`);
+    buffMaintain$2($effect`Strong Grip`);
+    buffMaintain$2($effect`Spiky Hair`);
   }
   cliExecute("scripts/autoscend/auto_post_adv.js");
   if (!acquireFullHP()) {
@@ -1967,27 +1963,27 @@ export function L13_towerNSFinal(): boolean {
   }
 
   if (myClass() === $class`Turtle Tamer`) {
-    autoEquip$1($item`Ouija Board, Ouija Board`);
+    autoEquip($item`Ouija Board, Ouija Board`);
   }
 
   if (auto_can_equip($item`Oscus's garbage can lid`)) {
     pullXWhenHaveY($item`Oscus's garbage can lid`, 1, 0);
   }
 
-  autoEquip($slot`off-hand`, $item`Oscus's garbage can lid`);
+  autoEquipToSlot($slot`off-hand`, $item`Oscus's garbage can lid`);
 
   handleFamiliar("boss");
 
   addToMaximize("10dr,3moxie,0.5da 1000max,-5ml,1.5hp,0item,0meat");
-  autoEquip($slot`acc2`, $item`attorney's badge`);
+  autoEquipToSlot($slot`acc2`, $item`attorney's badge`);
   //AoSOL buffs
   if (in_aosol()) {
-    buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
-    buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
+    buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
+    buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
   }
   // AMW buff
   if (in_amw()) {
-    buffMaintain$3($effect`Stewing`, 0, 1, 10);
+    buffMaintain$2($effect`Stewing`, 0, 1, 10);
   }
 
   if (internalQuestStatus("questL13Final") < 13) {

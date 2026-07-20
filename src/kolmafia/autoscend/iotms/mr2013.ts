@@ -18,7 +18,7 @@ import {
 import { $class, $effect, $item, $location, $skill } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
-import { buffMaintain$3 } from "../auto_buff";
+import { buffMaintain$2 } from "../auto_buff";
 import { possessEquipment } from "../auto_equipment";
 import { auto_have_skill, auto_log_warning, autoCraft } from "../auto_util";
 import { is_professor } from "../paths/wereprofessor";
@@ -143,7 +143,7 @@ export function makeStartingSmiths(): void {
   ) {
     autoCraft("smith", 1, $item`lump of Brituminous coal`, $item`maiden wig`);
   }
-  buffMaintain$3($effect`Merry Smithsness`, 0, 1, 10);
+  buffMaintain$2($effect`Merry Smithsness`, 0, 1, 10);
 }
 
 function didWePlantHere(loc: Location): boolean {

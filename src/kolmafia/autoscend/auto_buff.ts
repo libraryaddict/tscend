@@ -274,10 +274,10 @@ function buffMaintain$1(
 
 export function buffMaintain$2(
   buff: Effect,
-  mp_min: number,
-  casts: number,
-  turns: number,
-  speculative: boolean,
+  mp_min: number = 0,
+  casts: number = 1,
+  turns: number = 1,
+  speculative: boolean = false,
 ): boolean {
   let useSkill_1: Skill = Skill.none;
   let useItem_1: Item = Item.none;
@@ -2409,18 +2409,6 @@ export function buffMaintain$2(
   return ret;
 }
 
-export function buffMaintain$3(
-  buff: Effect,
-  mp_min: number,
-  casts: number,
-  turns: number,
-): boolean {
-  return buffMaintain$2(buff, mp_min, casts, turns, false);
-}
-
-export function buffMaintain$4(buff: Effect): boolean {
-  return buffMaintain$3(buff, 0, 1, 1);
-}
 // Checks to see if we are already wearing a facial expression before using buffMaintain
 //	if an expression is REQUIRED force it using buffMaintain
 export function auto_faceCheck(face: Effect): boolean {
@@ -2434,7 +2422,7 @@ export function auto_faceCheck(face: Effect): boolean {
   }
 
   if (CanEmote) {
-    buffMaintain$4(face);
+    buffMaintain$2(face);
   } else {
     auto_log_debug$1(
       `Can not get ${face} expression as we are already emoting.`,

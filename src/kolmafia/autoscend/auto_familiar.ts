@@ -53,9 +53,9 @@ import {
 } from "./auto_consume";
 import {
   autoEquip,
-  autoEquip$1,
+  autoEquipToSlot,
   possessEquipment,
-  possessOutfit$1,
+  possessOutfit,
 } from "./auto_equipment";
 import {
   auto_check_conditions,
@@ -213,7 +213,7 @@ export function auto_famKill(fam: Familiar, place: Location): boolean {
     //Mafia doesn't output the expected damage of the familiar so going with the highest possible for most users (NPZR)
     if (
       mon !== Monster.none &&
-      monsterHp(mon) < floor(1.5 * (auto_famWeight$1(fam) + 3)) + passiveDamage
+      monsterHp(mon) < floor(1.5 * (auto_famWeight(fam) + 3)) + passiveDamage
     ) {
       return true;
     }
@@ -611,7 +611,7 @@ function autoChooseFamiliar(place: Location): boolean {
   // only need +item in the pirates cove if we're faming the outfit (may be farming insults here or getting the key in LKS otherwise)
   if (
     $location`The Obligatory Pirate's Cove` === place &&
-    !possessOutfit$1("Swashbuckling Getup")
+    !possessOutfit("Swashbuckling Getup")
   ) {
     famChoice = lookupFamiliarDatafile("item");
   }
@@ -668,7 +668,7 @@ function autoChooseFamiliar(place: Location): boolean {
   // only need +item on the extreme slope if we're faming the outfit.
   if (
     $location`The eXtreme Slope` === place &&
-    !possessOutfit$1("eXtreme Cold-Weather Gear")
+    !possessOutfit("eXtreme Cold-Weather Gear")
   ) {
     famChoice = lookupFamiliarDatafile("item");
   }
@@ -728,8 +728,8 @@ function autoChooseFamiliar(place: Location): boolean {
   // only need +item in the war camps if we are farming the outfit.
   if ($locations`Wartime Frat House, Wartime Hippy Camp`.includes(place)) {
     if (
-      !possessOutfit$1("Frat Warrior Fatigues") ||
-      !possessOutfit$1("War Hippy Fatigues")
+      !possessOutfit("Frat Warrior Fatigues") ||
+      !possessOutfit("War Hippy Fatigues")
     ) {
       famChoice = lookupFamiliarDatafile("item");
     }
@@ -993,7 +993,7 @@ export function preAdvUpdateFamiliar(place: Location): void {
   //familiar equipment overrides
   if (in_heavyrains()) {
     if (famChoice !== $familiar`Left-Hand Man`) {
-      autoEquip($slot`familiar`, $item`miniature life preserver`);
+      autoEquipToSlot($slot`familiar`, $item`miniature life preserver`);
     }
   }
 
@@ -1012,7 +1012,7 @@ export function preAdvUpdateFamiliar(place: Location): void {
       runChoice(-1);
       setProperty("_auto_gnomeArenaVisited", "true");
     }
-    autoEquip($slot`familiar`, $item`gnomish housemaid's kgnee`);
+    autoEquipToSlot($slot`familiar`, $item`gnomish housemaid's kgnee`);
   }
 
   if (myFamiliar() === $familiar`Baby Bugged Bugbear`) {
@@ -1040,7 +1040,7 @@ export function preAdvUpdateFamiliar(place: Location): void {
     // maximizer uses whatever mode LED candle is in, won't change it
     // so ensure in correct mode prior to maximizing
     auto_handleJillOfAllTrades();
-    autoEquip$1($item`LED candle`); // force maximizer to equip it when we have it.
+    autoEquip($item`LED candle`); // force maximizer to equip it when we have it.
   }
 
   if (auto_checkFamiliarMummery(myFamiliar())) {
@@ -1061,7 +1061,10 @@ export function auto_needsGoodFamiliarEquipment(): boolean {
   return true;
 }
 
-function auto_famWeight(fam: Familiar, include_equip: boolean): number {
+export function auto_famWeight(
+  fam: Familiar = myFamiliar(),
+  include_equip: boolean = true,
+): number {
   let famEquipWeight: number = 0;
   if (fam === Familiar.none) {
     return 0;
@@ -1072,14 +1075,6 @@ function auto_famWeight(fam: Familiar, include_equip: boolean): number {
     );
   }
   return familiarWeight(fam) + weightAdjustment() - famEquipWeight;
-}
-
-export function auto_famWeight$1(fam: Familiar): number {
-  return auto_famWeight(fam, true);
-}
-
-export function auto_famWeight$2(): number {
-  return auto_famWeight(myFamiliar(), true);
 }
 
 export function auto_famModifiers(

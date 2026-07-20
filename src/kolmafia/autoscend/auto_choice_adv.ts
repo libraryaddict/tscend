@@ -73,7 +73,7 @@ import {
   hiddenCityChoiceHandler,
   hiddenTempleChoiceHandler,
 } from "./quests/level_11";
-import { haveWarOutfit$1 } from "./quests/level_12";
+import { haveWarOutfit } from "./quests/level_12";
 import {
   dailyDungeonChoiceHandler,
   oldLandfillChoiceHandler,
@@ -479,14 +479,14 @@ function auto_run_choice(choice: number, page: string): boolean {
         hiddenTempleChoiceHandler(choice, page);
         break;
       case 139:
-        if (options.has(4) && haveWarOutfit$1()) {
+        if (options.has(4) && haveWarOutfit()) {
           runChoice(4);
         } else {
           runChoice(3);
         }
         break;
       case 140:
-        if (options.has(4) && haveWarOutfit$1()) {
+        if (options.has(4) && haveWarOutfit()) {
           runChoice(4);
         } else {
           runChoice(3);
@@ -499,14 +499,14 @@ function auto_run_choice(choice: number, page: string): boolean {
         runChoice(3);
         break;
       case 143:
-        if (options.has(4) && haveWarOutfit$1()) {
+        if (options.has(4) && haveWarOutfit()) {
           runChoice(4);
         } else {
           runChoice(3);
         }
         break;
       case 144:
-        if (options.has(4) && haveWarOutfit$1()) {
+        if (options.has(4) && haveWarOutfit()) {
           runChoice(4);
         } else {
           runChoice(3);

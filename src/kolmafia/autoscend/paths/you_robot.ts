@@ -35,18 +35,18 @@ import {
 import { $familiar, $item, $location, $path, $stat } from "libram";
 
 import { auto_unreservedAdvRemaining } from "../../autoscend";
-import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
+import { canPull, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv, autoLuckyAdv$1 } from "../auto_adventure";
 import {
-  autoEquip$1,
+  autoEquip,
   possessEquipment,
-  possessOutfit$1,
+  possessOutfit,
   possessUnrestricted,
 } from "../auto_equipment";
 import {
   disregardInstantKarma,
   isAboutToPowerlevel,
-  LX_freeCombats$1,
+  LX_freeCombats,
 } from "../auto_powerlevel";
 import { doFreeRest, haveFreeRestAvailable } from "../auto_restore";
 import {
@@ -81,7 +81,7 @@ import {
 import {
   auto_warEnemiesRemaining,
   auto_warSide,
-  haveWarOutfit$1,
+  haveWarOutfit,
   L12_finalizeWar,
   L12_islandWar,
   L12_preOutfit,
@@ -131,7 +131,7 @@ export function robot_defaultMaximizeStatement(): string {
   if (toInt(getProperty("youRobotLeft")) === 4) {
     //vice grips. unlocks weapon slot
     if (possessEquipment($item`Fourth of May Cosplay Saber`)) {
-      autoEquip$1($item`Fourth of May Cosplay Saber`);
+      autoEquip($item`Fourth of May Cosplay Saber`);
     } else {
       res += ",0.3weapon damage,0.2weapon damage percent,0.5elemental damage";
       if (myPrimestat() === $stat`Muscle`) {
@@ -462,7 +462,7 @@ function robot_bottom(choice: number): boolean {
   return true;
 }
 
-export function robot_cpu(choice: number, want_buy: boolean): boolean {
+export function robot_cpu(choice: number, want_buy: boolean = true): boolean {
   //CPU Upgrades. buys the upgrade which matches choice
   //returns true if bought now or if we already had it.
   //want_buy means we want to actually purcahse it. otherwise we will only check if we have it already
@@ -572,10 +572,6 @@ export function robot_cpu(choice: number, want_buy: boolean): boolean {
   return true;
 }
 
-function robot_cpu$1(choice: number): boolean {
-  return robot_cpu(choice, true);
-}
-
 function robot_skillbuy(): void {
   //select robot skills to install into your CPU. this costs energy.
   if (!in_robot()) {
@@ -587,7 +583,7 @@ function robot_skillbuy(): void {
   //massive turngen that pays for itself in 50 fights
   //10. [Overclocking] = Gain 1 Energy per fight. costs 50 energy.
   if (!robot_cpu(10, false) && myRobotEnergy() > 80) {
-    robot_cpu$1(10); //buy it if we can
+    robot_cpu(10); //buy it if we can
   }
   if (!robot_cpu(10, false)) {
     //still don't have it?
@@ -596,7 +592,7 @@ function robot_skillbuy(): void {
   //robots are pretty fragile and should all get this ASAP
   //3. [Upgraded Fashion Sensor] = +15 Buffed Moxie. costs 30 energy.
   if (!robot_cpu(3, false) && myRobotEnergy() > 60) {
-    robot_cpu$1(3); //buy it if we can
+    robot_cpu(3); //buy it if we can
   }
   //myst classes can benefit from the extra damage
   //2. [Dynamic Arcane Flux Modeling] = +15 Buffed Mysticality. costs 30 energy.
@@ -605,7 +601,7 @@ function robot_skillbuy(): void {
     !robot_cpu(2, false) &&
     myRobotEnergy() > 60
   ) {
-    robot_cpu$1(2); //buy it if we can
+    robot_cpu(2); //buy it if we can
   }
   //muscle classes can benefit from the extra damage
   //1. [Leverage Coprocessing] = +15 Buffed Muscle. costs 30 energy.
@@ -614,12 +610,12 @@ function robot_skillbuy(): void {
     !robot_cpu(1, false) &&
     myRobotEnergy() > 60
   ) {
-    robot_cpu$1(1); //buy it if we can
+    robot_cpu(1); //buy it if we can
   }
   //we should get passive HP recovery
   //6. [Self-Repair Routines] = Regenerate +10 HP per Adventure. costs 40 energy
   if (!robot_cpu(6, false) && myRobotEnergy() > 70) {
-    robot_cpu$1(6); //buy it if we can
+    robot_cpu(6); //buy it if we can
   }
   //once we have unlocked the 2nd spookyraven floor we should get the first maxHP boost.
   //5. [Spatial Compression Functions] = +30 Maximum HP. costs 40 energy
@@ -628,16 +624,16 @@ function robot_skillbuy(): void {
     !robot_cpu(5, false) &&
     myRobotEnergy() > 70
   ) {
-    robot_cpu$1(5); //buy it if we can
+    robot_cpu(5); //buy it if we can
   }
   //we already have essentials. The rest should be acquired using excess energy.
   if (robot_chronolith_cost() > 47) {
-    robot_cpu$1(8); //8. [Improved Optical Processing] = +20% Item Drops. costs 40 energy.
-    robot_cpu$1(4); //4. [Financial Neural Net] = +20% Meat Drops. costs 30 energy.
-    robot_cpu$1(12); //12. [Holographic Deflector Projection] = +30 Maximum HP. costs 50 energy.
-    robot_cpu$1(11); //11. [Biomass Processing Function] = Allows use of potions. costs 50 energy.
-    robot_cpu$1(7); //7. [Weather Control Algorithms] = +2 Resistance to all elements. costs 40 energy.
-    robot_cpu$1(9); //9. [Topology Grid] = Allows you to equip shirts. costs 50 energy.
+    robot_cpu(8); //8. [Improved Optical Processing] = +20% Item Drops. costs 40 energy.
+    robot_cpu(4); //4. [Financial Neural Net] = +20% Meat Drops. costs 30 energy.
+    robot_cpu(12); //12. [Holographic Deflector Projection] = +30 Maximum HP. costs 50 energy.
+    robot_cpu(11); //11. [Biomass Processing Function] = Allows use of potions. costs 50 energy.
+    robot_cpu(7); //7. [Weather Control Algorithms] = +2 Resistance to all elements. costs 40 energy.
+    robot_cpu(9); //9. [Topology Grid] = Allows you to equip shirts. costs 50 energy.
   }
   //if we bought [Topology Grid] we are done. shirt helps with surgeonosity which we why we even bother with it
   if (robot_cpu(9, false)) {
@@ -1271,7 +1267,7 @@ function robot_directive(): void {
 
   const gob_ready: boolean =
     internalQuestStatus("questL05Goblin") === 1 &&
-    possessOutfit$1("Knob Goblin Harem Girl Disguise");
+    possessOutfit("Knob Goblin Harem Girl Disguise");
   const gob_done: boolean = getProperty("questL05Goblin") === "finished";
 
   const castle_ready: boolean =
@@ -1299,15 +1295,15 @@ function robot_directive(): void {
     possessEquipment($item`Fourth of May Cosplay Saber`);
   const war_battlefield_cleared: boolean = auto_warEnemiesRemaining() === 0;
   const war_have_preoutfit: boolean =
-    possessOutfit$1("Filthy Hippy Disguise") ||
-    possessOutfit$1("Frat Boy Ensemble");
+    possessOutfit("Filthy Hippy Disguise") ||
+    possessOutfit("Frat Boy Ensemble");
   const war_have_stats: boolean =
     myBasestat($stat`Moxie`) >= 70 && myBasestat($stat`Mysticality`) >= 70;
   //ready to start the war
   const war_ready1: boolean =
     internalQuestStatus("questL12War") === 0 &&
     war_have_stats &&
-    (haveWarOutfit$1() || war_have_preoutfit);
+    (haveWarOutfit() || war_have_preoutfit);
   //ready to clear the battlefield
   const war_ready2: boolean =
     internalQuestStatus("questL12War") === 1 &&
@@ -1353,7 +1349,7 @@ function robot_directive(): void {
   const desert_ready: boolean = internalQuestStatus("questL11Desert") === 0;
   const desert_done: boolean = internalQuestStatus("questL11Desert") > 0;
   const chasm_offhand_slot_needed: boolean =
-    possessEquipment($item`loadstone`) || canPull$1($item`loadstone`);
+    possessEquipment($item`loadstone`) || canPull($item`loadstone`);
   const chasm_ready: boolean =
     internalQuestStatus("questL09Topping") === 0 &&
     toInt(getProperty("chasmBridgeProgress")) < bridgeGoal() &&
@@ -1557,7 +1553,7 @@ export function LA_robot(): boolean {
     abort(`Failed to execute directive: ${directive}`);
   }
   //while only god lobster gives XP. the rest give you energy and scrap.
-  if (LX_freeCombats$1(true)) {
+  if (LX_freeCombats(true)) {
     return true;
   }
 

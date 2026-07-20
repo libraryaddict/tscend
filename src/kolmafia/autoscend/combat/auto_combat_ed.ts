@@ -69,7 +69,7 @@ import {
   handleTracker$1,
   instakillable,
   internalQuestStatus,
-  isFreeMonster$1,
+  isFreeMonster,
   isGhost,
   loopHandlerDelayAll,
 } from "../auto_util";
@@ -88,7 +88,7 @@ import { fastenerCount, lumberCount } from "../quests/level_09";
 import {
   auto_useSkill,
   banisherCombatString$1,
-  canSurvive$1,
+  canSurvive,
   canUse,
   canUse$3,
   combat_status_add,
@@ -98,8 +98,7 @@ import {
   replaceMonsterCombatString,
   usedCount,
   useItem,
-  useItem$1,
-  useItems$1,
+  useItems,
   wantToForceDrop,
   yellowRayCombatString,
 } from "./auto_combat_util";
@@ -214,7 +213,7 @@ export function auto_edCombatHandler(
   }
 
   if (canUse$3($item`Time-Spinner`)) {
-    return useItem$1($item`Time-Spinner`);
+    return useItem($item`Time-Spinner`);
   }
 
   if (canUse($skill`Sing Along`)) {
@@ -222,7 +221,7 @@ export function auto_edCombatHandler(
     if (
       getProperty("boomBoxSong") === "Remainin' Alive" ||
       (getProperty("boomBoxSong") === "Total Eclipse of Your Meat" &&
-        canSurvive$1(2.0))
+        canSurvive(2.0))
     ) {
       return auto_useSkill($skill`Sing Along`);
     }
@@ -243,7 +242,7 @@ export function auto_edCombatHandler(
     const shots_takens: number = usedCount($skill`Shoot Ghost`);
     if (canUse($skill`Shoot Ghost`, false) && shots_takens < 3) {
       const survive_needed: number = 3.05 - toFloat(shots_takens);
-      if (canSurvive$1(survive_needed)) {
+      if (canSurvive(survive_needed)) {
         markAsUsed($skill`Shoot Ghost`); //needs to be manually done for skills with a use limit that is not 1
         return auto_useSkill($skill`Shoot Ghost`, false);
       } else {
@@ -288,7 +287,7 @@ export function auto_edCombatHandler(
   } else if (getProperty("auto_edStatus") === "dying") {
     let doStunner: boolean = true;
 
-    if (monsterLevelAdjustment() > 50 && canSurvive$1(1.15)) {
+    if (monsterLevelAdjustment() > 50 && canSurvive(1.15)) {
       doStunner = false;
     }
 
@@ -325,7 +324,7 @@ export function auto_edCombatHandler(
         setProperty("auto_edStatus", "UNDYING!");
         // abuse the ability to flyer the same monster multiple times (optimal!)
       }
-      return useItem$1($item`rock band flyers`);
+      return useItem($item`rock band flyers`);
     }
     if (
       canUse$3($item`jam band flyers`) &&
@@ -338,7 +337,7 @@ export function auto_edCombatHandler(
         setProperty("auto_edStatus", "UNDYING!");
         // abuse the ability to flyer the same monster multiple times (optimal!)
       }
-      return useItem$1($item`jam band flyers`);
+      return useItem($item`jam band flyers`);
     }
   }
 
@@ -347,7 +346,7 @@ export function auto_edCombatHandler(
     !toBoolean(getProperty("chaosButterflyThrown")) &&
     !toBoolean(getProperty("auto_skipL12Farm"))
   ) {
-    return useItem$1($item`chaos butterfly`);
+    return useItem($item`chaos butterfly`);
   }
 
   if (
@@ -650,7 +649,7 @@ export function auto_edCombatHandler(
     canUse$3($item`disposable instant camera`) &&
     $monsters`Bob Racecar, Racecar Bob`.includes(enemy)
   ) {
-    return useItem$1($item`disposable instant camera`);
+    return useItem($item`disposable instant camera`);
   }
 
   if (
@@ -667,7 +666,7 @@ export function auto_edCombatHandler(
     }
 
     if (wantCrude) {
-      return useItem$1($item`Duskwalker syringe`);
+      return useItem($item`Duskwalker syringe`);
     }
   }
 
@@ -683,7 +682,7 @@ export function auto_edCombatHandler(
         enemy,
       )
     ) {
-      return useItem$1($item`glark cable`);
+      return useItem($item`glark cable`);
       // free insta-kill (optimal!)
     }
   }
@@ -995,7 +994,7 @@ export function auto_edCombatHandler(
       combat_status_add("talismanofrenenutet");
       handleTracker(enemy.toString(), "auto_renenutet");
       setProperty("auto_edStatus", "dying");
-      return useItem$1($item`talisman of Renenutet`);
+      return useItem($item`talisman of Renenutet`);
     }
   }
 
@@ -1005,7 +1004,7 @@ export function auto_edCombatHandler(
     internalQuestStatus("questL11Ron") === 1 &&
     getProperty("auto_edStatus") === "dying"
   ) {
-    return useItem$1($item`cigarette lighter`);
+    return useItem($item`cigarette lighter`);
     // insta-kills protestors and removes an additional 5-7 (optimal!)
   }
 
@@ -1014,7 +1013,7 @@ export function auto_edCombatHandler(
     canUse$3($item`short writ of habeas corpus`, false) &&
     haveEffect($effect`Everything Looks Green`) === 0
   ) {
-    return useItem$1($item`short writ of habeas corpus`);
+    return useItem($item`short writ of habeas corpus`);
   }
 
   if (
@@ -1052,7 +1051,7 @@ export function auto_edCombatHandler(
 
   if (
     instakillable(enemy) &&
-    !isFreeMonster$1(enemy, myLocation()) &&
+    !isFreeMonster(enemy, myLocation()) &&
     doInstaKill
   ) {
     if (
@@ -1089,7 +1088,7 @@ export function auto_edCombatHandler(
         "auto_instakill",
       );
       loopHandlerDelayAll();
-      return useItems$1($item`shadow brick`, Item.none);
+      return useItems($item`shadow brick`, Item.none);
     }
 
     if (
@@ -1213,7 +1212,7 @@ export function auto_edCombatHandler(
   if (
     fightStat > monsterDefense() &&
     round_1 < 20 &&
-    canSurvive$1(1.1) &&
+    canSurvive(1.1) &&
     getProperty("auto_edStatus") === "UNDYING!"
   ) {
     return "attack with weapon";
@@ -1224,7 +1223,7 @@ export function auto_edCombatHandler(
   }
 
   if (canUse$3($item`ice-cold Cloaca Zero`) && myMp() < 15 && myMaxmp() > 200) {
-    return useItem$1($item`ice-cold Cloaca Zero`);
+    return useItem($item`ice-cold Cloaca Zero`);
   }
 
   if (
@@ -1234,7 +1233,7 @@ export function auto_edCombatHandler(
     return auto_useSkill($skill`Storm of the Scarab`, false);
   }
 
-  if (enemy.physicalResistance >= 100 || round_1 >= 25 || canSurvive$1(1.25)) {
+  if (enemy.physicalResistance >= 100 || round_1 >= 25 || canSurvive(1.25)) {
     if (canUse($skill`Fist of the Mummy`, false)) {
       return auto_useSkill($skill`Fist of the Mummy`, false);
     }
@@ -1257,7 +1256,7 @@ export function auto_edCombatHandler(
   if (
     fightStat > monsterDefense() &&
     round_1 < 20 &&
-    canSurvive$1(1.1) &&
+    canSurvive(1.1) &&
     getProperty("auto_edStatus") === "dying"
   ) {
     auto_log_warning(

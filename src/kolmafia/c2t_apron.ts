@@ -23,13 +23,11 @@ import { AshMatcher } from "./autoscend/utils/kolmafiaUtils";
 //simply selects meal based on stat and selects all the extra ingredients that are available
 //cli flag
 //eats a meal kit with a provided stat
-export function c2t_apron$1(): boolean {
-  return c2t_apron(myPrimestat());
-}
+
 //CLI handling
 
 //returns true on success
-function c2t_apron(select: Stat): boolean {
+export function c2t_apron(select: Stat = myPrimestat()): boolean {
   let meal: number;
   const kit: Item = $item`Black and White Apron Meal Kit`;
   let page: string;

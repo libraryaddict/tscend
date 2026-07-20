@@ -92,7 +92,7 @@ import {
   handleTracker$1,
   hasShieldEquipped,
   hasTorso,
-  isFreeMonster$1,
+  isFreeMonster,
   loopHandlerDelayAll,
   wrap_item,
 } from "../auto_util";
@@ -384,7 +384,7 @@ export function auto_useSkill(sk: Skill, mark: boolean = true): string {
   return `skill ${sk.name}`;
 }
 
-export function useItem(it: Item, mark: boolean): string {
+export function useItem(it: Item, mark: boolean = true): string {
   if (mark) {
     markAsUsed$1(it);
   }
@@ -395,20 +395,12 @@ export function useItem(it: Item, mark: boolean): string {
   return `item ${it}`;
 }
 
-export function useItem$1(it: Item): string {
-  return useItem(it, true);
-}
-
-function useItems(it1: Item, it2: Item, mark: boolean): string {
+export function useItems(it1: Item, it2: Item, mark: boolean = true): string {
   if (mark) {
     markAsUsed$1(it1);
     markAsUsed$1(it2);
   }
   return `item ${it1}, ${it2}`;
-}
-
-export function useItems$1(it1: Item, it2: Item): string {
-  return useItems(it1, it2, true);
 }
 
 export function isSniffed(enemy: Monster, sk: Skill): boolean {
@@ -438,7 +430,7 @@ export function isSniffed$1(enemy: Monster): boolean {
   return false;
 }
 
-export function getSniffer(enemy: Monster, inCombat: boolean): Skill {
+export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
   //returns the skill we want to use to sniff the enemy
   //sniffers are skills that increase the odds of encountering this same monster again in the current zone.
   if (
@@ -547,11 +539,7 @@ export function getSniffer(enemy: Monster, inCombat: boolean): Skill {
   return Skill.none;
 }
 
-export function getSniffer$1(enemy: Monster): Skill {
-  return getSniffer(enemy, true);
-}
-
-export function getCopier(enemy: Monster, inCombat: boolean): Skill {
+export function getCopier(enemy: Monster, inCombat: boolean = true): Skill {
   if (
     (auto_haveRoman() && haveEffect($effect`Everything Looks Purple`) === 0) ||
     (haveEquipped($item`Roman Candelabra`) &&
@@ -569,10 +557,6 @@ export function getCopier(enemy: Monster, inCombat: boolean): Skill {
     return $skill`%fn, fire a Red, White and Blue Blast`;
   }
   return Skill.none;
-}
-
-export function getCopier$1(enemy: Monster): Skill {
-  return getCopier(enemy, true);
 }
 
 export function getStunner(enemy: Monster): Skill {
@@ -714,15 +698,11 @@ export function enemyCanBlocksSkills(): boolean {
   return false;
 }
 
-function canSurvive(mult: number, add_1: number): boolean {
+export function canSurvive(mult: number, add_1: number = 0): boolean {
   let damage: number = expectedDamage();
   damage *= toInt(mult);
   damage += add_1;
   return damage < myHp();
-}
-
-export function canSurvive$1(mult: number): boolean {
-  return canSurvive(mult, 0);
 }
 
 export function hasClubEquipped(): boolean {
@@ -774,7 +754,7 @@ export function findBanisher(
 export function banisherCombatString(
   enemyPhylum: Phylum,
   loc: Location,
-  inCombat: boolean,
+  inCombat: boolean = false,
 ): string {
   if (inAftercore()) {
     return "";
@@ -816,7 +796,7 @@ export function banisherCombatString(
 export function banisherCombatString$1(
   enemy: Monster,
   loc: Location,
-  inCombat: boolean,
+  inCombat: boolean = false,
 ): string {
   if (inAftercore()) {
     return "";
@@ -1311,17 +1291,6 @@ export function banisherCombatString$1(
   return "";
 }
 
-export function banisherCombatString$2(
-  enemyPhylum: Phylum,
-  loc: Location,
-): string {
-  return banisherCombatString(enemyPhylum, loc, false);
-}
-
-export function banisherCombatString$3(enemy: Monster, loc: Location): string {
-  return banisherCombatString$1(enemy, loc, false);
-}
-
 export function yellowRayCombatString(
   target: Monster,
   inCombat: boolean,
@@ -1351,7 +1320,7 @@ export function yellowRayCombatString(
   }
 
   const free_monster: boolean =
-    isFreeMonster$1(target, myLocation()) ||
+    isFreeMonster(target, myLocation()) ||
     (toInt(getProperty("breathitinCharges")) > 0 &&
       myLocation().environment === "outdoor");
 
@@ -1511,7 +1480,7 @@ export function yellowRayCombatString$1(
 
 export function replaceMonsterCombatString(
   target: Monster,
-  inCombat: boolean,
+  inCombat: boolean = false,
 ): string {
   if (in_pokefam()) {
     return "";
@@ -1529,13 +1498,9 @@ export function replaceMonsterCombatString(
     return `skill ${$skill`CHEAT CODE: Replace Enemy`}`;
   }
   if (canUse$3($item`waffle`) && !in_avantGuard()) {
-    return useItems$1($item`waffle`, Item.none);
+    return useItems($item`waffle`, Item.none);
   }
   return "";
-}
-
-export function replaceMonsterCombatString$1(target: Monster): string {
-  return replaceMonsterCombatString(target, false);
 }
 
 export function turns_to_kill(dmg: number): number {

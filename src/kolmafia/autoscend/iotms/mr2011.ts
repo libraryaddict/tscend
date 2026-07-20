@@ -7,7 +7,7 @@ import {
 } from "kolmafia";
 import { $item, $items } from "libram";
 
-import { canPull$1, pullXWhenHaveY } from "../auto_acquire";
+import { canPull, pullXWhenHaveY } from "../auto_acquire";
 import { auto_log_warning } from "../auto_util";
 
 //	This is meant for items that have a date of 2011
@@ -55,7 +55,7 @@ export function pullLegionKnife(): boolean {
   for (const it of Item.get(
     Object.keys(getRelated($item`Loathing Legion knife`, "fold")),
   )) {
-    if (canPull$1(it)) {
+    if (canPull(it)) {
       target = it;
       break;
     }

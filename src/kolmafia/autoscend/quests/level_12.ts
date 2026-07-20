@@ -71,12 +71,12 @@ import {
   acquireHermitItem,
   acquireOrPull,
   auto_buyUpTo,
-  canPull$1,
+  canPull,
   pullXWhenHaveY,
   pulverizeThing,
 } from "../auto_acquire";
 import { autoAdv, autoAdvBypass, autoLuckyAdv$1 } from "../auto_adventure";
-import { buffMaintain$3 } from "../auto_buff";
+import { buffMaintain$2 } from "../auto_buff";
 import {
   auto_canEat,
   autoChew,
@@ -87,13 +87,12 @@ import {
 } from "../auto_consume";
 import {
   addToMaximize,
-  autoEquip,
+  autoEquipToSlot,
   autoForceEquip$3,
   autoOutfit,
   equipMaximizedGear,
   possessEquipment,
   possessOutfit,
-  possessOutfit$1,
   simMaximizeWith,
   simValue,
 } from "../auto_equipment";
@@ -109,7 +108,7 @@ import {
 import {
   highestScalingZone,
   isAboutToPowerlevel,
-  LX_freeCombats$1,
+  LX_freeCombats,
 } from "../auto_powerlevel";
 import {
   provideItem$2,
@@ -118,7 +117,7 @@ import {
 } from "../auto_providers";
 import { acquireHP, doRest, uneffect } from "../auto_restore";
 import {
-  adjustForReplaceIfPossible$1,
+  adjustForReplaceIfPossible,
   auto_combatModCap,
   auto_forceNextCombat$1,
   auto_forceNextNoncombat,
@@ -135,7 +134,6 @@ import {
   auto_totalEffectWishesAvailable,
   canSummonMonster,
   canYellowRay,
-  canYellowRay$1,
   cloversAvailable$1,
   handleTracker$1,
   internalQuestStatus,
@@ -143,7 +141,7 @@ import {
   summonMonster,
   wrap_item,
 } from "../auto_util";
-import { zone_isAvailable$1 } from "../auto_zone";
+import { zone_isAvailable } from "../auto_zone";
 import { WarPlan } from "../autoscend_record";
 import { auto_JunkyardCombatHandler } from "../combat/auto_combat_quest";
 import { zataraAvailable } from "../iotms/clan";
@@ -156,8 +154,6 @@ import { auto_sourceTerminalEducate, timeSpinnerCombat } from "../iotms/mr2016";
 import {
   auto_haveVotingBooth,
   auto_voteMonster,
-  auto_voteMonster$1,
-  auto_voteMonster$2,
   januaryToteTurnsLeft,
   neverendingPartyCombat,
   songboomSetting,
@@ -178,7 +174,7 @@ import {
   auto_havePayPhone,
 } from "../iotms/mr2023";
 import { auto_swoopsRemaining } from "../iotms/mr2024";
-import { auto_havePeridot, haveUsedPeridot$1 } from "../iotms/mr2025";
+import { auto_havePeridot, haveUsedPeridot } from "../iotms/mr2025";
 import {
   auto_haveArchaeologistSpade,
   auto_spadeDigsRemaining,
@@ -194,7 +190,7 @@ import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
 import { in_bhy } from "../paths/bees_hate_you";
 import { inAftercore } from "../paths/casual";
 import {
-  bat_formMist$1,
+  bat_formMist,
   bat_wantHowl,
   in_darkGyffte,
 } from "../paths/dark_gyffte";
@@ -351,13 +347,13 @@ function auto_estimatedAdventuresForChaosButterfly(): number {
   ) {
     return 0;
   }
-  if (canPull$1($item`chaos butterfly`)) {
+  if (canPull($item`chaos butterfly`)) {
     return 0;
   }
   // 4 enemies in [The Castle in the Clouds in the Sky (Ground Floor)] ~25% chance to encounter the one we want.
   // roughly estimate 4 turns per possibility giant encounter. at base drop this means ~20 adv needed.
   const expected_turns_until_fight: number = 4;
-  if (canYellowRay$1()) {
+  if (canYellowRay()) {
     return expected_turns_until_fight;
   }
   // This function is called frequently (especially by auto_bestWarPlan), so
@@ -373,8 +369,8 @@ function auto_estimatedAdventuresForChaosButterfly(): number {
     );
     handleFamiliar("item");
     simMaximizeWith(
-      $location`The Castle in the Clouds in the Sky (Ground Floor)`,
       "20 item",
+      $location`The Castle in the Clouds in the Sky (Ground Floor)`,
     );
     $_auto_estimatedAdventuresForChaosButterfly_expectedItemDropMulti =
       1 + simValue("Item Drop") / 100;
@@ -505,9 +501,7 @@ export function auto_bestWarPlan(): WarPlan {
       copy_warplan(test, retval);
       test.doFarm = true;
       profit =
-        auto_warTotalBattles$1(retval) -
-        auto_warTotalBattles$1(test) -
-        advCostFarm;
+        auto_warTotalBattles(retval) - auto_warTotalBattles(test) - advCostFarm;
       if (profit > bestQuestProfit) {
         bestQuestProfit = profit;
         copy_warplan(prospective_plan, test);
@@ -518,9 +512,7 @@ export function auto_bestWarPlan(): WarPlan {
       copy_warplan(test, retval);
       test.doNuns = true;
       profit =
-        auto_warTotalBattles$1(retval) -
-        auto_warTotalBattles$1(test) -
-        advCostNuns;
+        auto_warTotalBattles(retval) - auto_warTotalBattles(test) - advCostNuns;
       if (profit > bestQuestProfit) {
         bestQuestProfit = profit;
         copy_warplan(prospective_plan, test);
@@ -531,8 +523,8 @@ export function auto_bestWarPlan(): WarPlan {
       copy_warplan(test, retval);
       test.doOrchard = true;
       profit =
-        auto_warTotalBattles$1(retval) -
-        auto_warTotalBattles$1(test) -
+        auto_warTotalBattles(retval) -
+        auto_warTotalBattles(test) -
         advCostOrchard;
       if (profit > bestQuestProfit) {
         bestQuestProfit = profit;
@@ -544,8 +536,8 @@ export function auto_bestWarPlan(): WarPlan {
       copy_warplan(test, retval);
       test.doLighthouse = true;
       profit =
-        auto_warTotalBattles$1(retval) -
-        auto_warTotalBattles$1(test) -
+        auto_warTotalBattles(retval) -
+        auto_warTotalBattles(test) -
         advCostLighthouse;
       if (profit > bestQuestProfit) {
         bestQuestProfit = profit;
@@ -557,8 +549,8 @@ export function auto_bestWarPlan(): WarPlan {
       copy_warplan(test, retval);
       test.doJunkyard = true;
       profit =
-        auto_warTotalBattles$1(retval) -
-        auto_warTotalBattles$1(test) -
+        auto_warTotalBattles(retval) -
+        auto_warTotalBattles(test) -
         advCostJunkyard;
       if (profit > bestQuestProfit) {
         bestQuestProfit = profit;
@@ -570,8 +562,8 @@ export function auto_bestWarPlan(): WarPlan {
       copy_warplan(test, retval);
       test.doArena = true;
       profit =
-        auto_warTotalBattles$1(retval) -
-        auto_warTotalBattles$1(test) -
+        auto_warTotalBattles(retval) -
+        auto_warTotalBattles(test) -
         advCostArena;
       if (profit > bestQuestProfit) {
         copy_warplan(prospective_plan, test);
@@ -628,12 +620,11 @@ function __auto_warTotalBattles(plan: number, remaining: number): number {
   return total_battles;
 }
 
-function auto_warTotalBattles(plan: WarPlan, remaining: number): number {
+function auto_warTotalBattles(
+  plan: WarPlan,
+  remaining: number = auto_warEnemiesRemaining(),
+): number {
   return __auto_warTotalBattles(bitmask_from_warplan(plan), remaining);
-}
-
-function auto_warTotalBattles$1(plan: WarPlan): number {
-  return auto_warTotalBattles(plan, auto_warEnemiesRemaining());
 }
 
 export function equipWarOutfit(): void {
@@ -678,17 +669,13 @@ function equipWarOutfit$1(lock: boolean): void {
   }
 }
 
-export function haveWarOutfit(canWear: boolean): boolean {
+export function haveWarOutfit(canWear: boolean = false): boolean {
   if (!toBoolean(getProperty("auto_hippyInstead"))) {
     return possessOutfit("Frat Warrior Fatigues", canWear);
   } else {
     return possessOutfit("War Hippy Fatigues", canWear);
   }
   return true;
-}
-
-export function haveWarOutfit$1(): boolean {
-  return haveWarOutfit(false);
 }
 
 export function warAdventure(): boolean {
@@ -731,7 +718,7 @@ export function L12_getOutfit(): boolean {
     return false;
   }
   // if you already have the war outfit we don't need to do anything now
-  if (haveWarOutfit$1()) {
+  if (haveWarOutfit()) {
     return false;
   }
   //heavy rains softcore pull handling
@@ -768,7 +755,7 @@ export function L12_getOutfit(): boolean {
     }
   }
   // if you have war outfit now then you just pulled it. so this time we return true as something changed
-  if (haveWarOutfit$1()) {
+  if (haveWarOutfit()) {
     return true;
   }
   // if you reached this point you are either in hardcore or are in softcore but ran out of pulls
@@ -777,15 +764,12 @@ export function L12_getOutfit(): boolean {
     return false;
   }
   // if outfit could not be pulled and have a [Filthy Hippy Disguise] outfit then wear it and adventure in Frat House to get war outfit
-  if (
-    auto_warSide() === "fratboy" &&
-    possessOutfit$1("Filthy Hippy Disguise")
-  ) {
+  if (auto_warSide() === "fratboy" && possessOutfit("Filthy Hippy Disguise")) {
     autoOutfit("Filthy Hippy Disguise");
     return autoAdv($location`Wartime Frat House (Hippy Disguise)`);
   }
   // if outfit could not be pulled and have a [Frat Boy Ensemble] outfit then wear it and adventure in Hippy Camp to get war outfit
-  if (auto_warSide() === "hippy" && possessOutfit$1("Frat Boy Ensemble")) {
+  if (auto_warSide() === "hippy" && possessOutfit("Frat Boy Ensemble")) {
     autoOutfit("Frat Boy Ensemble");
     return autoAdv($location`Wartime Hippy Camp (Frat Disguise)`);
   }
@@ -809,26 +793,26 @@ export function L12_preOutfit(): boolean {
     return false;
   }
 
-  if (haveWarOutfit$1()) {
+  if (haveWarOutfit()) {
     return false;
   }
   // if siding with frat and already own [Filthy Hippy Disguise] outfit needed to get the frat boy war outfit
   if (
     !toBoolean(getProperty("auto_hippyInstead")) &&
-    possessOutfit$1("Filthy Hippy Disguise")
+    possessOutfit("Filthy Hippy Disguise")
   ) {
     return false;
   }
   // if siding with hippies and already own [Frat Boy Ensemble] outfit needed to get the hippy war outfit
   if (
     toBoolean(getProperty("auto_hippyInstead")) &&
-    possessOutfit$1("Frat Boy Ensemble")
+    possessOutfit("Frat Boy Ensemble")
   ) {
     return false;
   }
 
   if (isActuallyEd()) {
-    if (!canYellowRay$1() && myLevel() < 12) {
+    if (!canYellowRay() && myLevel() < 12) {
       return false;
     }
   }
@@ -842,7 +826,7 @@ export function L12_preOutfit(): boolean {
     return false;
   }
   //use a summon if we can guarentee outfit drops via yellow ray
-  if (canSummonMonster($monster`Orcish Frat Boy Spy`) && canYellowRay$1()) {
+  if (canSummonMonster($monster`Orcish Frat Boy Spy`) && canYellowRay()) {
     let summonTarget: Monster = $monster`War Hippy Spy`;
     if (!toBoolean(getProperty("auto_hippyInstead"))) {
       summonTarget = $monster`Orcish Frat Boy Spy`;
@@ -977,11 +961,11 @@ export function L12_filthworms(): boolean {
       toInt(getProperty("hippiesDefeated")) < 64
     ) {
       //helmet is least useful with +40 max MP enchantment.
-      if (possessOutfit$1("frat warrior fatigues")) {
+      if (possessOutfit("frat warrior fatigues")) {
         addToMaximize("-equip beer helmet");
       }
       //pants and hat are identical, randomly selected hat for exclusion
-      if (possessOutfit$1("frat boy ensemble")) {
+      if (possessOutfit("frat boy ensemble")) {
         addToMaximize("-equip orcish baseball cap");
       }
     }
@@ -1382,7 +1366,7 @@ export function L12_gremlins(): boolean {
   autoForceEquip$3($item`Peridot of Peril`);
   acquireHP();
   if (!bat_wantHowl($location`Over Where the Old Tires Are`)) {
-    bat_formMist$1();
+    bat_formMist();
   }
   songboomSetting("dr");
   if (itemAmount($item`molybdenum hammer`) === 0) {
@@ -1576,14 +1560,14 @@ export function L12_sonofaPrefix(): boolean {
   if (!auto_get_campground().has($item`Source terminal`)) {
     if (
       (auto_voteMonster() || auto_sausageGoblin()) &&
-      adjustForReplaceIfPossible$1()
+      adjustForReplaceIfPossible()
     ) {
       try {
         if (itemAmount($item`barrel of gunpowder`) < 4) {
           setProperty("auto_doCombatCopy", "yes");
         }
-        if (auto_voteMonster() && !auto_voteMonster$1(true)) {
-          auto_voteMonster$2(false, $location`Sonofa Beach`);
+        if (auto_voteMonster() && !auto_voteMonster(true)) {
+          auto_voteMonster(false, $location`Sonofa Beach`);
           return true;
         } else if (auto_sausageGoblin() && !auto_haveVotingBooth()) {
           auto_sausageGoblin($location`Sonofa Beach`);
@@ -1619,7 +1603,7 @@ export function L12_sonofaPrefix(): boolean {
   let CForced: boolean = false;
   // skills/items that let us select monsters can have the effect of forcing
   // combat here too. Think PoP is the only one implemented for this quest (map the monsters being the other, not implemented).
-  if (!auto_havePeridot() || haveUsedPeridot$1($location`Sonofa Beach`)) {
+  if (!auto_havePeridot() || haveUsedPeridot($location`Sonofa Beach`)) {
     if (auto_haveQueuedForcedCombat()) {
       CForced = true;
       auto_log_info$1(
@@ -1673,7 +1657,7 @@ export function L12_sonofaPrefix(): boolean {
     ) {
       if (auto_voteMonster()) {
         setProperty("auto_combatDirective", "start;skill macrometeorite");
-        autoEquip($slot`acc3`, $item`"I Voted!" sticker`);
+        autoEquipToSlot($slot`acc3`, $item`"I Voted!" sticker`);
       } else {
         return false;
       }
@@ -1704,7 +1688,7 @@ export function L12_sonofaFinish(): boolean {
   if (itemAmount($item`barrel of gunpowder`) < 5) {
     return false;
   }
-  if (!haveWarOutfit$1()) {
+  if (!haveWarOutfit()) {
     return false;
   }
   if (
@@ -1740,7 +1724,7 @@ export function L12_flyerBackup(): boolean {
     return false;
   }
 
-  return LX_freeCombats$1(true);
+  return LX_freeCombats(true);
 }
 
 export function L12_lastDitchFlyer(): boolean {
@@ -1771,7 +1755,7 @@ export function L12_lastDitchFlyer(): boolean {
     "Not enough flyer ML but we are ready for the war... uh oh",
     "blue",
   );
-  if (LX_freeCombats$1(true)) {
+  if (LX_freeCombats(true)) {
     //try to use free combats to make up the difference.
     return true;
   }
@@ -1800,8 +1784,7 @@ export function L12_lastDitchFlyer(): boolean {
   const plan_no_arena: WarPlan = auto_bestWarPlan();
   plan_no_arena.doArena = false;
   const adv_saved: number =
-    auto_warTotalBattles$1(plan_no_arena) -
-    auto_warTotalBattles$1(plan_do_arena);
+    auto_warTotalBattles(plan_no_arena) - auto_warTotalBattles(plan_do_arena);
 
   if (adv_needed > adv_saved) {
     return false; //if we lose advs by doing last ditch flyering then do not do it
@@ -1931,7 +1914,7 @@ export function L12_themtharHills(): boolean {
         itemAmount($item`Mick's IcyVapoHotness Inhaler`) < 1 &&
         auto_is_valid($item`Mick's IcyVapoHotness Inhaler`) &&
         cloversAvailable$1() > 0 &&
-        zone_isAvailable$1(
+        zone_isAvailable(
           $location`The Castle in the Clouds in the Sky (Top Floor)`,
         )
       ) {
@@ -1972,7 +1955,7 @@ export function L12_themtharHills(): boolean {
     auto_is_valid($item`Mick's IcyVapoHotness Inhaler`);
   considerCloverForInhaler =
     considerCloverForInhaler &&
-    zone_isAvailable$1(
+    zone_isAvailable(
       $location`The Castle in the Clouds in the Sky (Top Floor)`,
     );
   // Target 1000 + 400% = 5000 meat per brigand. Of course we want more, but don\'t bother unless we can get this.
@@ -2121,7 +2104,7 @@ function LX_obtainChaosButterfly(): boolean {
   }
   // Softcore pull
   if (
-    canPull$1($item`chaos butterfly`) &&
+    canPull($item`chaos butterfly`) &&
     !toBoolean(getProperty("chaosButterflyThrown")) &&
     itemAmount($item`chaos butterfly`) === 0
   ) {
@@ -2409,7 +2392,7 @@ export function L12_finalizeWar(): boolean {
     return false; //need to wait until werewolf because can't survive combat long enough as a Prof
   }
 
-  if (possessOutfit$1("War Hippy Fatigues")) {
+  if (possessOutfit("War Hippy Fatigues")) {
     auto_log_info("Getting dimes.", "blue");
     if (in_wereprof()) {
       //Need to manually equip because professor
@@ -2437,7 +2420,7 @@ export function L12_finalizeWar(): boolean {
       }
     }
   }
-  if (possessOutfit$1("Frat Warrior Fatigues")) {
+  if (possessOutfit("Frat Warrior Fatigues")) {
     auto_log_info("Getting quarters.", "blue");
     if (in_wereprof()) {
       //Need to manually equip because professor
@@ -2527,7 +2510,7 @@ export function L12_finalizeWar(): boolean {
     }
   };
 
-  if (possessOutfit$1("War Hippy Fatigues")) {
+  if (possessOutfit("War Hippy Fatigues")) {
     if (in_wereprof()) {
       //Need to manually equip because professor
       if (!haveEquipped($item`bullet-proof corduroys`)) {
@@ -2546,7 +2529,7 @@ export function L12_finalizeWar(): boolean {
     purchase($coinmaster`Dimemaster`, $item`water pipe bomb`, 1);
   }
 
-  if (possessOutfit$1("Frat Warrior Fatigues")) {
+  if (possessOutfit("Frat Warrior Fatigues")) {
     if (in_wereprof()) {
       //Need to manually equip because professor
       if (!haveEquipped($item`beer helmet`)) {
@@ -2576,12 +2559,12 @@ export function L12_finalizeWar(): boolean {
   equipWarOutfit();
   //AoSOL buffs
   if (in_aosol()) {
-    buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
-    buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
+    buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
+    buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
   }
   // AMW buff
   if (in_amw()) {
-    buffMaintain$3($effect`Stewing`, 0, 1, 10);
+    buffMaintain$2($effect`Stewing`, 0, 1, 10);
   }
   acquireHP();
   auto_log_info("Let's fight the boss!", "blue");

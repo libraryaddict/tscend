@@ -71,7 +71,6 @@ import {
 import { auto_canDrink, auto_canEat, canChew } from "../auto_consume";
 import {
   autoForceEquip,
-  autoForceEquip$1,
   autoForceEquip$2,
   possessEquipment,
   powerMultipliers,
@@ -89,7 +88,7 @@ import {
   handleTracker$1,
   handleTracker$2,
   internalQuestStatus,
-  isFreeMonster$1,
+  isFreeMonster,
   level_to_min_substat,
   stat_to_substat,
   zoneRank,
@@ -152,11 +151,11 @@ export function auto_equipAllMcHugeLarge(): boolean {
   if (!possessEquipment($item`McHugeLarge right pole`)) {
     auto_openMcLargeHugeSkis();
   }
-  autoForceEquip$1($slot`back`, $item`McHugeLarge duffel bag`);
-  autoForceEquip$1($slot`weapon`, $item`McHugeLarge right pole`);
-  autoForceEquip$1($slot`off-hand`, $item`McHugeLarge left pole`);
-  autoForceEquip$1($slot`acc1`, $item`McHugeLarge left ski`);
-  autoForceEquip$1($slot`acc2`, $item`McHugeLarge right ski`);
+  autoForceEquip($slot`back`, $item`McHugeLarge duffel bag`);
+  autoForceEquip($slot`weapon`, $item`McHugeLarge right pole`);
+  autoForceEquip($slot`off-hand`, $item`McHugeLarge left pole`);
+  autoForceEquip($slot`acc1`, $item`McHugeLarge left ski`);
+  autoForceEquip($slot`acc2`, $item`McHugeLarge right ski`);
   return true;
 }
 
@@ -461,20 +460,16 @@ export function peridotChoiceHandler(choice: number, page: string): void {
   return;
 }
 
-function haveUsedPeridot(loc: number): boolean {
+export function haveUsedPeridot(loc: Location): boolean {
   const perilLocs: Map<number, string> = new Map(
     splitString(getProperty("_perilLocations"), ",").map((_v, _i) => [_i, _v]),
   );
   for (const [, str] of perilLocs) {
-    if (loc === toInt(str)) {
+    if (toInt(loc) === toInt(str)) {
       return true;
     }
   }
   return false;
-}
-
-export function haveUsedPeridot$1(loc: Location): boolean {
-  return haveUsedPeridot(toInt(loc));
 }
 
 function auto_havePrismaticBeret(): boolean {
@@ -1069,7 +1064,7 @@ export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
     return false;
   }
   // don't use Talk to Some Fish against inherently free fights
-  if (isFreeMonster$1(enemy, loc)) {
+  if (isFreeMonster(enemy, loc)) {
     return false;
   }
   // don't try and use the skill if we have already turned them into some fish
@@ -1288,7 +1283,7 @@ export function auto_bczRefractedGaze(): boolean {
     // we don't want to refreact if we don't have the stats.
     return false;
   }
-  if (auto_havePeridot() && !haveUsedPeridot$1(myLocation())) {
+  if (auto_havePeridot() && !haveUsedPeridot(myLocation())) {
     //Will undoubtedly want Peridot in these locations
     //Other sources of issue (pocket wishes/mimic eggs) are fought in Noob Cave
     //Don't have support for the Crepe Paper Parachute Cape but that also causes issues

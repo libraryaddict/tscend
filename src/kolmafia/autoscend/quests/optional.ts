@@ -50,7 +50,7 @@ import {
 import {
   acquireGumItem,
   auto_buyUpTo,
-  canPull$1,
+  canPull,
   pullXWhenHaveY,
 } from "../auto_acquire";
 import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
@@ -63,13 +63,12 @@ import {
 } from "../auto_consume";
 import {
   addToMaximize,
-  autoEquip$1,
+  autoEquip,
   autoForceEquip$3,
   autoOutfit,
   autoStripOutfit,
   possessEquipment,
   possessOutfit,
-  possessOutfit$1,
 } from "../auto_equipment";
 import { provideItem$2 } from "../auto_providers";
 import { canBurnDelay } from "../auto_routing";
@@ -169,7 +168,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
     if (hasShirt) {
       return;
     }
-    if (canPull$1(it)) {
+    if (canPull(it)) {
       if (pullXWhenHaveY(it, 1, 0)) {
         target_shirt = it;
         hasShirt = true;
@@ -694,7 +693,7 @@ export function LX_pirateOutfit(): boolean {
       }
     }
   }
-  if (possessOutfit$1("Swashbuckling Getup")) {
+  if (possessOutfit("Swashbuckling Getup")) {
     if (
       possessOutfit("Swashbuckling Getup", true) &&
       itemAmount($item`The Big Book of Pirate Insults`) === 0 &&
@@ -1135,7 +1134,7 @@ function LX_unlockBelowdecks(): boolean {
   }
 
   auto_log_info("Swordfish? Every password was swordfish!", "blue");
-  autoEquip$1($item`pirate fledges`);
+  autoEquip($item`pirate fledges`);
   return autoAdv($location`The Poop Deck`);
 }
 

@@ -41,12 +41,12 @@ import {
 } from "libram";
 
 import { fullness_left, inebriety_left } from "./auto_consume";
-import { possessEquipment, possessOutfit$1 } from "./auto_equipment";
+import { possessEquipment, possessOutfit } from "./auto_equipment";
 import {
   auto_combat_appearance_rates,
   auto_haveQueuedForcedNonCombat,
   auto_log_debug$1,
-  canYellowRay$1,
+  canYellowRay,
   cloversAvailable$1,
   elemental_resist,
   internalQuestStatus,
@@ -103,7 +103,7 @@ function zone_unlock(loc: Location): boolean {
 
 export function zone_isAvailable(
   loc: Location,
-  unlockIfPossible: boolean,
+  unlockIfPossible: boolean = true,
 ): boolean {
   if (zone_available(loc)) {
     return true;
@@ -116,15 +116,11 @@ export function zone_isAvailable(
   return zone_available(loc);
 }
 
-export function zone_isAvailable$1(loc: Location): boolean {
-  return zone_isAvailable(loc, true);
-}
-
 export function zone_delayable(): Map<Location, number> {
   const retval: Map<Location, number> = new Map();
   for (const loc of $locations.all()) {
     const locValue: generic_t = zone_delay(loc);
-    if (locValue._boolean && zone_isAvailable$1(loc)) {
+    if (locValue._boolean && zone_isAvailable(loc)) {
       retval.set(loc, locValue._int);
     }
   }
@@ -159,7 +155,7 @@ export function zone_needItem(loc: Location): generic_t {
         break;
       case $location`Wartime Frat House`:
         if (
-          !possessOutfit$1("Frat Warrior Fatigues") &&
+          !possessOutfit("Frat Warrior Fatigues") &&
           !isWearingOutfit("War Hippy Fatigues")
         ) {
           value = 5.0;
@@ -167,7 +163,7 @@ export function zone_needItem(loc: Location): generic_t {
         break;
       case $location`Wartime Hippy Camp`:
         if (
-          !possessOutfit$1("War Hippy Fatigues") &&
+          !possessOutfit("War Hippy Fatigues") &&
           !isWearingOutfit("Frat Warrior Fatigues")
         ) {
           value = 5.0;
@@ -309,7 +305,7 @@ export function zone_needItem(loc: Location): generic_t {
         }
         break;
       case $location`Itznotyerzitz Mine`:
-        if (!possessOutfit$1("Mining Gear") && cloversAvailable$1() === 0) {
+        if (!possessOutfit("Mining Gear") && cloversAvailable$1() === 0) {
           value = 10.0;
         }
         break;
@@ -342,7 +338,7 @@ export function zone_needItem(loc: Location): generic_t {
         break;
       }
       case $location`The eXtreme Slope`:
-        if (!possessOutfit$1("eXtreme Cold-Weather Gear")) {
+        if (!possessOutfit("eXtreme Cold-Weather Gear")) {
           value = 10.0;
         }
         break;
@@ -373,7 +369,7 @@ export function zone_needItem(loc: Location): generic_t {
         if (itemAmount($item`Knob Goblin perfume`) === 0) {
           value = 25.0;
         }
-        if (!possessOutfit$1("Knob Goblin Harem Girl Disguise")) {
+        if (!possessOutfit("Knob Goblin Harem Girl Disguise")) {
           value = 20.0;
         }
         break;
@@ -424,7 +420,7 @@ export function zone_needItem(loc: Location): generic_t {
         break;
       case $location`The Obligatory Pirate's Cove`:
         if (
-          !possessOutfit$1("Swashbuckling Getup") &&
+          !possessOutfit("Swashbuckling Getup") &&
           !possessEquipment($item`pirate fledges`)
         ) {
           value = 10.0;
@@ -442,7 +438,7 @@ export function zone_needItem(loc: Location): generic_t {
         retval._float = 15.0;
         break;
       case $location`The Velvet / Gold Mine`:
-        if (!canYellowRay$1()) {
+        if (!canYellowRay()) {
           //Just a guess
           retval._float = 10.0;
         }
@@ -782,7 +778,7 @@ export function zone_combatMod(loc: Location): generic_t {
       value = -95;
       break;
     case $location`Itznotyerzitz Mine`:
-      if (!possessOutfit$1("Mining Gear") && cloversAvailable$1() === 0) {
+      if (!possessOutfit("Mining Gear") && cloversAvailable$1() === 0) {
         value = -90;
       }
       break;
@@ -840,7 +836,7 @@ export function zone_combatMod(loc: Location): generic_t {
       value = -80;
       break;
     case $location`The Obligatory Pirate's Cove`:
-      if (!possessOutfit$1("Swashbuckling Getup")) {
+      if (!possessOutfit("Swashbuckling Getup")) {
         if (
           itemAmount($item`The Big Book of Pirate Insults`) > 0 &&
           numPirateInsults() < 3

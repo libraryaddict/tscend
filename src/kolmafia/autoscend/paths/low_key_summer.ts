@@ -34,11 +34,11 @@ import {
 
 import { LX_burnDelay } from "../../autoscend";
 import { autoAdv } from "../auto_adventure";
-import { buffMaintain$4 } from "../auto_buff";
+import { buffMaintain$2 } from "../auto_buff";
 import { auto_breakfastCounterVisit } from "../auto_consume";
 import {
   auto_getAllEquipabble,
-  autoEquip$1,
+  autoEquip,
   possessEquipment,
 } from "../auto_equipment";
 import { LX_attemptPowerLevel, LX_freeCombatsTask } from "../auto_powerlevel";
@@ -50,7 +50,7 @@ import {
   LX_summonMonster,
   woods_questStart,
 } from "../auto_util";
-import { zone_isAvailable$1 } from "../auto_zone";
+import { zone_isAvailable } from "../auto_zone";
 import { canDrinkSpeakeasyDrink } from "../iotms/clan";
 import { chateauPainting } from "../iotms/mr2015";
 import { catBurglarHeist } from "../iotms/mr2018";
@@ -106,7 +106,6 @@ import {
   LX_spookyravenManorFirstFloor,
   LX_spookyravenManorSecondFloor,
   LX_unlockHauntedBilliardsRoom,
-  LX_unlockHauntedBilliardsRoom$1,
   LX_unlockHauntedLibrary,
   LX_unlockHiddenTemple,
   LX_unlockManorSecondFloor,
@@ -270,7 +269,7 @@ function lowkey_nextKeyLocation(checkAvailable: boolean): Location {
     const loc: Location =
       lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key);
     if (lowkey_needKey(key)) {
-      if (!checkAvailable || zone_isAvailable$1(loc)) {
+      if (!checkAvailable || zone_isAvailable(loc)) {
         return lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key);
       }
     }
@@ -293,7 +292,7 @@ export function lowkey_nextAvailableKeyDelayLocation(): Location {
       lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key);
     if (
       lowkey_needKey(key) &&
-      zone_isAvailable$1(loc) &&
+      zone_isAvailable(loc) &&
       lowkey_keyDelayRemaining(loc) > 0 &&
       loc.wanderers
     ) {
@@ -311,17 +310,17 @@ function lowkey_keyAdv(key: Item): boolean {
 
   const loc: Location =
     lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key);
-  if (!zone_isAvailable$1(loc)) {
+  if (!zone_isAvailable(loc)) {
     return false;
   }
   // Pirate equipment
   if ($locations`The F'c'le, Belowdecks`.includes(loc)) {
     if (possessEquipment($item`pirate fledges`)) {
-      autoEquip$1($item`pirate fledges`);
+      autoEquip($item`pirate fledges`);
     } else if (haveOutfit("swashbuckling getup")) {
-      autoEquip$1($item`eyepatch`);
-      autoEquip$1($item`swashbuckling pants`);
-      autoEquip$1($item`stuffed shoulder parrot`);
+      autoEquip($item`eyepatch`);
+      autoEquip($item`swashbuckling pants`);
+      autoEquip($item`stuffed shoulder parrot`);
     } else {
       // Shouldn't get here due to zone_isAvailable check
       return false;
@@ -390,7 +389,7 @@ function LX_findHelpfulLowKey(): boolean {
   if (!possessEquipment($item`black rose key`)) {
     if (myBuffedstat($stat`Moxie`) < monsterAttack($monster`skeletal cat`)) {
       //conservatory is available when very underleveled so going there this early can be dangerous
-      buffMaintain$4($effect`Vital`);
+      buffMaintain$2($effect`Vital`);
     }
     if (lowkey_keyAdv($item`black rose key`)) {
       return true;
@@ -638,7 +637,7 @@ export function LX_lowkeySummer(): boolean {
         myBuffedstat($stat`Moxie`) < monsterAttack($monster`Hellion`)
       ) {
         //starting the level 6 quest as early as possible can be dangerous?
-        buffMaintain$4($effect`Vital`);
+        buffMaintain$2($effect`Vital`);
       }
       if (L6_friarsGetParts()) {
         return true;
@@ -941,7 +940,7 @@ export function LX_lowkeySummer(): boolean {
     possessEquipment($item`aquí`) &&
     possessEquipment($item`batting cage key`)
   ) {
-    if (LX_unlockHauntedBilliardsRoom$1()) {
+    if (LX_unlockHauntedBilliardsRoom()) {
       return true;
     }
   } else {

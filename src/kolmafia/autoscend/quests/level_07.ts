@@ -48,7 +48,7 @@ import {
 
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
-import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
+import { buffMaintain$2 } from "../auto_buff";
 import {
   auto_spleenFamiliarAdvItemsPossessed,
   autoChew,
@@ -57,8 +57,7 @@ import {
 import {
   addToMaximize,
   auto_forceEquipSword,
-  auto_forceEquipSword$1,
-  autoEquip$1,
+  autoEquip,
   equipStatgainIncreasers$2,
   possessEquipment,
 } from "../auto_equipment";
@@ -175,7 +174,7 @@ export function cyrptChoiceHandler(choice: number): void {
   }
 }
 
-export function cyrptEvilBonus(inCombat: boolean): number {
+export function cyrptEvilBonus(inCombat: boolean = false): number {
   //returns value of next fight (inCombat: currently) available bonus to evil reduction
   let cyrptBonus: number =
     is_pete() && getProperty("peteMotorbikeCowling") === "Ghost Vacuum" ? 1 : 0;
@@ -210,10 +209,6 @@ export function cyrptEvilBonus(inCombat: boolean): number {
   return cyrptBonus;
 }
 
-export function cyrptEvilBonus$1(): number {
-  return cyrptEvilBonus(false);
-}
-
 function useNightmareFuelIfPossible(): void {
   // chews this when there are no guaranteed uses for spleen
   if (
@@ -238,12 +233,12 @@ function knockOffCapePrep(): void {
       //slay the dead needs the sword to count as a sword and not as a club
       useSkill(1, $skill`Iron Palm Technique`);
     }
-    auto_forceEquipSword$1();
+    auto_forceEquipSword();
   }
 }
 
 function L7_defiledAlcove(): boolean {
-  const evilBonus: number = cyrptEvilBonus$1();
+  const evilBonus: number = cyrptEvilBonus();
 
   if (
     internalQuestStatus("questL07Cyrptic") !== 0 ||
@@ -262,7 +257,7 @@ function L7_defiledAlcove(): boolean {
     }
     if (
       toInt(getProperty("cyrptAlcoveEvilness")) <=
-      13 + auto_habitatFightsLeft() * (cyrptEvilBonus$1() + 5)
+      13 + auto_habitatFightsLeft() * (cyrptEvilBonus() + 5)
     ) {
       // we have enough Habitants to get to 13 or less evilness. Don't need to adventure in this zone.
       return false;
@@ -283,7 +278,7 @@ function L7_defiledAlcove(): boolean {
     addToMaximize("100initiative 850max");
   }
 
-  autoEquip$1($item`gravy boat`);
+  autoEquip($item`gravy boat`);
   knockOffCapePrep();
 
   if (toInt(getProperty("cyrptAlcoveEvilness")) >= 16 + evilBonus) {
@@ -298,7 +293,7 @@ function L7_defiledAlcove(): boolean {
 }
 
 export function L7_defiledNook(): boolean {
-  const evilBonus: number = cyrptEvilBonus$1();
+  const evilBonus: number = cyrptEvilBonus();
   // current mafia bug causes us to lose track of the amount of Evil Eyes in inventory so adding a refresh here
   cliExecute("refresh inv");
   // in KoE, skeleton astronauts are random encounters that drop Evil Eyes.
@@ -323,7 +318,7 @@ export function L7_defiledNook(): boolean {
     !skip_in_koe
   ) {
     auto_log_info("The Nook!", "blue");
-    autoEquip$1($item`gravy boat`);
+    autoEquip($item`gravy boat`);
     knockOffCapePrep();
 
     if (
@@ -347,7 +342,7 @@ export function L7_defiledNook(): boolean {
 }
 
 function L7_defiledNiche(): boolean {
-  const evilBonus: number = cyrptEvilBonus$1();
+  const evilBonus: number = cyrptEvilBonus();
 
   if (
     toInt(getProperty("cyrptNicheEvilness")) > 13 &&
@@ -355,7 +350,7 @@ function L7_defiledNiche(): boolean {
   ) {
     if (
       toInt(getProperty("cyrptNicheEvilness")) <=
-      13 + auto_habitatFightsLeft() * (cyrptEvilBonus$1() + 3)
+      13 + auto_habitatFightsLeft() * (cyrptEvilBonus() + 3)
     ) {
       // we have enough Habitants to get to 13 or less evilness. Don't need to adventure in this zone.
       return false;
@@ -374,7 +369,7 @@ function L7_defiledNiche(): boolean {
     ) {
       handleFamiliar$1($familiar`Artistic Goth Kid`);
     }
-    autoEquip$1($item`gravy boat`);
+    autoEquip($item`gravy boat`);
     // prioritize extinguisher over slay the dead in Defiled Niche if its available and unused in the cyrpt
     if (
       auto_FireExtinguisherCombatString($location`The Defiled Niche`) === ""
@@ -435,7 +430,7 @@ function L7_defiledNiche(): boolean {
 }
 
 function L7_defiledCranny(): boolean {
-  const evilBonus: number = cyrptEvilBonus$1();
+  const evilBonus: number = cyrptEvilBonus();
 
   if (toInt(getProperty("cyrptCrannyEvilness")) > 0) {
     if (is_professor()) {
@@ -448,7 +443,7 @@ function L7_defiledCranny(): boolean {
       handleBjornify($familiar`Grimstone Golem`);
     }
 
-    autoEquip$1($item`gravy boat`);
+    autoEquip($item`gravy boat`);
     knockOffCapePrep();
 
     if (auto_is_valid$3($effect`Emotional Vaccine`)) {
@@ -523,7 +518,7 @@ export function L7_crypt(): boolean {
   visitUrl("crypt.php");
   use(1, $item`Evilometer`);
 
-  cyrptEvilBonus$1();
+  cyrptEvilBonus();
 
   if (L7_defiledAlcove()) {
     return true;
@@ -563,14 +558,14 @@ export function L7_crypt(): boolean {
 
     if (myPrimestat() === $stat`Muscle`) {
       auto_buyUpTo(1, $item`Ben-Gal™ Balm`);
-      buffMaintain$4($effect`Go Get 'Em, Tiger!`);
+      buffMaintain$2($effect`Go Get 'Em, Tiger!`);
       auto_buyUpTo(1, $item`blood of the Wereseal`);
-      buffMaintain$4($effect`Temporary Lycanthropy`);
+      buffMaintain$2($effect`Temporary Lycanthropy`);
     }
     //AoSOL buffs
     if (in_aosol()) {
-      buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
-      buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
+      buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
+      buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
       if (auto_haveGreyGoose()) {
         handleFamiliar$1($familiar`Grey Goose`);
       }
@@ -621,7 +616,7 @@ export function L7_override(): boolean {
     return false;
   }
 
-  const evilBonus: number = cyrptEvilBonus$1();
+  const evilBonus: number = cyrptEvilBonus();
   if (
     toInt(getProperty("cyrptNookEvilness")) > 14 + evilBonus &&
     isBanished($monster`party skelteon`)

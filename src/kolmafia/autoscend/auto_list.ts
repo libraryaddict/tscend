@@ -102,14 +102,10 @@ function List$5(data: Map<number, Effect>): Map<number, Effect> {
   return retval;
 }
 
-export function ListFind(list: Map<number, Effect>, what: Effect): number {
-  return ListFind$1(list, what, 0);
-}
-
-function ListFind$1(
+export function ListFind(
   list: Map<number, Effect>,
   what: Effect,
-  idx: number,
+  idx: number = 0,
 ): number {
   if (idx < 0) {
     abort(`Attempted index out of bounds: ${idx}`);

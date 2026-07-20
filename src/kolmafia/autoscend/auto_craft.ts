@@ -84,18 +84,17 @@ function untinkerable(target: Item): boolean {
   return craftType(target) === "Meatpasting";
 }
 
-export function canUntinker(): boolean {
-  //do we possess the means to untinker.
-  if (
-    hasLegionKnife() &&
-    auto_is_valid($item`Loathing Legion universal screwdriver`)
-  ) {
-    return true; //universal screwdriver can be used to untinker items
+export function canUntinker(target: Item = Item.none): boolean {
+  if (target === Item.none) {
+    //do we possess the means to untinker.
+    if (
+      hasLegionKnife() &&
+      auto_is_valid($item`Loathing Legion universal screwdriver`)
+    ) {
+      return true; //universal screwdriver can be used to untinker items
+    }
+    return getProperty("questM01Untinker") === "finished";
   }
-  return getProperty("questM01Untinker") === "finished";
-}
-
-function canUntinker$1(target: Item): boolean {
   if (!canUntinker()) {
     auto_log_debug$1(
       `We can not untinker [${target}] because we can not untinker anything right now`,
@@ -111,12 +110,8 @@ function canUntinker$1(target: Item): boolean {
   return untinkerable(target);
 }
 
-export function untinker(target: Item): boolean {
-  return untinker$1(1, target);
-}
-
-function untinker$1(amount: number, target: Item): boolean {
-  if (!canUntinker$1(target)) {
+export function untinker(target: Item, amount: number = 1): boolean {
+  if (!canUntinker(target)) {
     return false;
   }
   if (amount < 1) {

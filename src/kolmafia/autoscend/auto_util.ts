@@ -175,7 +175,7 @@ import {
   pullXWhenHaveY,
 } from "./auto_acquire";
 import { autoAdvBypass, autoAdvBypass$1, CombatMacro } from "./auto_adventure";
-import { buffMaintain$3, buffMaintain$4 } from "./auto_buff";
+import { buffMaintain$2 } from "./auto_buff";
 import {
   autoChew,
   autoDrink,
@@ -189,16 +189,16 @@ import {
   auto_loadEquipped,
   auto_saveEquipped,
   autoEquip,
-  autoEquip$1,
+  autoEquipToSlot,
   ensureSealClubs,
   equipMaximizedGear,
   equipmentAmount,
   possessEquipment,
-  possessOutfit$1,
+  possessOutfit,
   removeFromMaximize,
 } from "./auto_equipment";
 import {
-  auto_famWeight$1,
+  auto_famWeight,
   auto_have_familiar,
   canChangeToFamiliar,
   handleFamiliar,
@@ -207,20 +207,20 @@ import {
   is100FamRun,
 } from "./auto_familiar";
 import { auto_sortedByModifier$3, List$8 } from "./auto_list";
-import { providePlusCombat$3, providePlusNonCombat$3 } from "./auto_providers";
+import { providePlusCombat, providePlusNonCombat$3 } from "./auto_providers";
 import { acquireMP, uneffect } from "./auto_restore";
-import { solveDelayZone$1 } from "./auto_routing";
+import { solveDelayZone } from "./auto_routing";
 import { zone_hasLuckyAdventure } from "./auto_zone";
 import { kmailObject } from "./autoscend_record";
 import {
-  banisherCombatString$2,
-  banisherCombatString$3,
+  banisherCombatString,
+  banisherCombatString$1,
   canUse,
   canUse$3,
   getCopier,
   getSniffer,
-  replaceMonsterCombatString$1,
-  useItem$1,
+  replaceMonsterCombatString,
+  useItem,
   yellowRayCombatString,
 } from "./combat/auto_combat_util";
 import { auto_get_clan_lounge, handleFaxMonster } from "./iotms/clan";
@@ -240,7 +240,7 @@ import {
   makeGenieCombat,
   makeGenieWish$1,
 } from "./iotms/mr2017";
-import { auto_latteDropAvailable, auto_voteMonster$1 } from "./iotms/mr2018";
+import { auto_latteDropAvailable, auto_voteMonster } from "./iotms/mr2018";
 import {
   auto_havePillKeeper,
   auto_pillKeeper$1,
@@ -750,13 +750,9 @@ export function loopHandler(
   return false;
 }
 
-function loopHandlerDelay(counterSetting: string): boolean {
-  return loopHandlerDelay$1(counterSetting, 3);
-}
-
-function loopHandlerDelay$1(
+function loopHandlerDelay(
   counterSetting: string,
-  threshold: number,
+  threshold: number = 3,
 ): boolean {
   if (toInt(getProperty(counterSetting)) >= threshold) {
     setProperty(
@@ -837,7 +833,7 @@ export function internalQuestStatus(prop: string): number {
   return -1;
 }
 
-export function canYellowRay(target: Monster): boolean {
+export function canYellowRay(target: Monster = Monster.none): boolean {
   // Use this to determine if it is safe to enter a yellow ray combat.
 
   if (in_pokefam()) {
@@ -1012,10 +1008,6 @@ export function canYellowRay(target: Monster): boolean {
   );
 }
 
-export function canYellowRay$1(): boolean {
-  return canYellowRay(Monster.none);
-}
-
 export function auto_combat_appearance_rates(
   place: Location,
   queue: boolean,
@@ -1148,11 +1140,11 @@ export function auto_wantToBanish$1(
 }
 
 function canBanish(enemy: Monster, loc: Location): boolean {
-  return banisherCombatString$3(enemy, loc) !== "";
+  return banisherCombatString$1(enemy, loc) !== "";
 }
 
 function canBanish$1(enemyphylum: Phylum, loc: Location): boolean {
-  return banisherCombatString$2(enemyphylum, loc) !== "";
+  return banisherCombatString(enemyphylum, loc) !== "";
 }
 
 function adjustForBanish(combat_string: string): boolean {
@@ -1163,16 +1155,16 @@ function adjustForBanish(combat_string: string): boolean {
     return autoDrink(1, $item`pheromone cocktail`);
   }
   if (combat_string === `skill ${$skill`Throw Latte on Opponent`}`) {
-    return autoEquip$1($item`latte lovers member's mug`);
+    return autoEquip($item`latte lovers member's mug`);
   }
   if (combat_string === `skill ${$skill`Give Your Opponent the Stinkeye`}`) {
-    return autoEquip$1($item`stinky cheese eye`);
+    return autoEquip($item`stinky cheese eye`);
   }
   if (combat_string === `skill ${$skill`Creepy Grin`}`) {
-    return autoEquip$1($item`V for Vivala mask`);
+    return autoEquip($item`V for Vivala mask`);
   }
   if (combat_string === `skill ${$skill`Show them your ring`}`) {
-    return autoEquip$1($item`mafia middle finger ring`);
+    return autoEquip($item`mafia middle finger ring`);
   }
   if (combat_string === `skill ${$skill`Batter Up!`}`) {
     cliExecute("acquire 1 seal-clubbing club");
@@ -1180,39 +1172,39 @@ function adjustForBanish(combat_string: string): boolean {
     return true;
   }
   if (combat_string === `skill ${$skill`Talk About Politics`}`) {
-    return autoEquip$1($item`Pantsgiving`);
+    return autoEquip($item`Pantsgiving`);
   }
   if (combat_string === `skill ${$skill`Reflex Hammer`}`) {
-    return autoEquip$1($item`Lil' Doctor™ bag`);
+    return autoEquip($item`Lil' Doctor™ bag`);
   }
   if (combat_string === `skill ${$skill`Show your boring familiar pictures`}`) {
-    return autoEquip$1($item`familiar scrapbook`);
+    return autoEquip($item`familiar scrapbook`);
   }
   if (combat_string === `skill ${$skill`Spring Kick`}`) {
-    return autoEquip$1($item`spring shoes`);
+    return autoEquip($item`spring shoes`);
   }
   if (combat_string === `skill ${$skill`Use the Force`}`) {
-    return autoEquip(
+    return autoEquipToSlot(
       $slot`weapon`,
       wrap_item($item`Fourth of May Cosplay Saber`),
     );
   }
   if (combat_string === `skill ${$skill`KGB tranquilizer dart`}`) {
-    return autoEquip$1($item`Kremlin's Greatest Briefcase`);
+    return autoEquip($item`Kremlin's Greatest Briefcase`);
   }
   if (combat_string === `skill ${$skill`Beancannon`}`) {
     for (const beancan of $items`Frigid Northern Beans, Heimz Fortified Kidney Beans, Hellfire Spicy Beans, Mixed Garbanzos and Chickpeas, Pork 'n' Pork 'n' Pork 'n' Beans, Shrub's Premium Baked Beans, Tesla's Electroplated Beans, Trader Olaf's Exotic Stinkbeans, World's Blackest-Eyed Peas`) {
-      if (autoEquip$1(beancan)) {
+      if (autoEquip(beancan)) {
         return true;
       }
     }
     return false;
   }
   if (combat_string === `skill ${$skill`Monkey Slap`}`) {
-    return autoEquip$1($item`cursed monkey's paw`);
+    return autoEquip($item`cursed monkey's paw`);
   }
   if (combat_string === `skill ${$skill`Sea *dent: Throw a Lightning Bolt`}`) {
-    return autoEquip$1($item`Monodent of the Sea`);
+    return autoEquip($item`Monodent of the Sea`);
   }
   if (
     combat_string === `item ${$item`handful of split pea soup`}` &&
@@ -1244,7 +1236,7 @@ export function adjustForBanishIfPossible(
   loc: Location,
 ): boolean {
   if (canBanish(enemy, loc)) {
-    const banish_string: string = banisherCombatString$3(enemy, loc);
+    const banish_string: string = banisherCombatString$1(enemy, loc);
     auto_log_info(
       `Adjusting to have banisher available for ${enemy}: ${banish_string}`,
       "blue",
@@ -1259,7 +1251,7 @@ export function adjustForBanishIfPossible$1(
   loc: Location,
 ): boolean {
   if (canBanish$1(enemyphylum, loc)) {
-    const banish_string: string = banisherCombatString$2(enemyphylum, loc);
+    const banish_string: string = banisherCombatString(enemyphylum, loc);
     auto_log_info(
       `Adjusting to have phylum banisher available for ${enemyphylum}: ${banish_string}`,
       "blue",
@@ -1307,7 +1299,7 @@ export function freeRunCombatStringPreBanish(
   loc: Location,
   inCombat: boolean,
 ): string {
-  if (isFreeMonster$1(enemy, loc)) {
+  if (isFreeMonster(enemy, loc)) {
     return "";
   }
   if (is_werewolf()) {
@@ -1322,7 +1314,7 @@ export function freeRunCombatStringPreBanish(
       canUse$3($item`T.U.R.D.S. Key`) &&
       itemAmount($item`T.U.R.D.S. Key`) > 0
     ) {
-      return useItem$1($item`T.U.R.D.S. Key`);
+      return useItem($item`T.U.R.D.S. Key`);
     }
     //free runaway against pygmies. accelerates hidden city quest
     if (
@@ -1332,7 +1324,7 @@ export function freeRunCombatStringPreBanish(
         enemy,
       )
     ) {
-      return useItem$1($item`short writ of habeas corpus`);
+      return useItem($item`short writ of habeas corpus`);
     }
   }
 
@@ -1344,7 +1336,7 @@ export function freeRunCombatString(
   loc: Location,
   inCombat: boolean,
 ): string {
-  if (isFreeMonster$1(enemy, myLocation())) {
+  if (isFreeMonster(enemy, myLocation())) {
     return "";
   }
   if (is_werewolf()) {
@@ -1359,7 +1351,7 @@ export function freeRunCombatString(
   if (!inAftercore() && haveEffect($effect`Everything Looks Green`) === 0) {
     if (auto_haveSpringShoes() && auto_is_valid$2($skill`Spring Away`)) {
       if (!inCombat) {
-        autoEquip$1($item`spring shoes`);
+        autoEquip($item`spring shoes`);
         return `skill ${$skill`Spring Away`}`;
       } else {
         if (canUse($skill`Spring Away`)) {
@@ -1370,7 +1362,7 @@ export function freeRunCombatString(
 
     if (auto_haveRoman() && auto_is_valid$2($skill`Blow the Green Candle!`)) {
       if (!inCombat) {
-        autoEquip$1($item`Roman Candelabra`);
+        autoEquip($item`Roman Candelabra`);
         return `skill ${$skill`Blow the Green Candle!`}`;
       } else {
         if (canUse($skill`Blow the Green Candle!`)) {
@@ -1381,7 +1373,7 @@ export function freeRunCombatString(
 
     for (const it of $items`green smoke bomb, tattered scrap of paper, GOTO`) {
       if (canUse$3(it) && itemAmount(it) > 0) {
-        return useItem$1(it);
+        return useItem(it);
       }
     }
   }
@@ -1389,7 +1381,7 @@ export function freeRunCombatString(
   if (canChangeToFamiliar($familiar`Frumious Bandersnatch`)) {
     // TODO add fam weight buffing
     const banderRunsLeft: number =
-      floor(auto_famWeight$1($familiar`Frumious Bandersnatch`) / 5) -
+      floor(auto_famWeight($familiar`Frumious Bandersnatch`) / 5) -
       toInt(getProperty("_banderRunaways"));
     if (is_professor()) {
       return "";
@@ -1399,7 +1391,7 @@ export function freeRunCombatString(
         auto_have_skill($skill`The Ode to Booze`) &&
         banderRunsLeft > 0 &&
         (haveEffect($effect`Ode to Booze`) > 0 ||
-          buffMaintain$4($effect`Ode to Booze`)) &&
+          buffMaintain$2($effect`Ode to Booze`)) &&
         handleFamiliar$1($familiar`Frumious Bandersnatch`)
       ) {
         // update familiar already called in pre-adv so have to force.
@@ -1421,7 +1413,7 @@ export function freeRunCombatString(
     // TODO add fam weight buffing
     // boots and bander share same counter
     const banderRunsLeft: number =
-      floor(auto_famWeight$1($familiar`Pair of Stomping Boots`) / 5) -
+      floor(auto_famWeight($familiar`Pair of Stomping Boots`) / 5) -
       toInt(getProperty("_banderRunaways"));
     if (is_professor()) {
       return "";
@@ -1449,9 +1441,9 @@ export function freeRunCombatString(
     // currently only prioritize equipping if at least 80% chance of free run away
     if (!inCombat && auto_navelFreeRunChance() >= 80) {
       if (in_lol()) {
-        autoEquip$1($item`replica navel ring of navel gazing`);
+        autoEquip($item`replica navel ring of navel gazing`);
       } else {
-        autoEquip$1($item`navel ring of navel gazing`);
+        autoEquip($item`navel ring of navel gazing`);
       }
       return `runaway item ${$item`navel ring of navel gazing`}`;
     } else {
@@ -1494,7 +1486,7 @@ export function freeRunCombatString(
     for (const it of $items`giant eraser`) {
       //assuming additional ones will be added, eventually
       if (canUse$3(it) && itemAmount(it) > 0) {
-        return useItem$1(it);
+        return useItem(it);
       }
     }
   }
@@ -1526,7 +1518,7 @@ function adjustForYellowRay(combat_string: string): boolean {
     return true;
   }
   if (combat_string === `skill ${$skill`Use the Force`}`) {
-    return autoEquip(
+    return autoEquipToSlot(
       $slot`weapon`,
       wrap_item($item`Fourth of May Cosplay Saber`),
     );
@@ -1538,7 +1530,7 @@ function adjustForYellowRay(combat_string: string): boolean {
     auto_configureRetrocape("heck", "kiss");
   }
   if (combat_string === `skill ${$skill`Blow the Yellow Candle!`}`) {
-    return autoEquip($slot`off-hand`, wrap_item($item`Roman Candelabra`));
+    return autoEquipToSlot($slot`off-hand`, wrap_item($item`Roman Candelabra`));
   }
   // craft and consume 9-volt battery if we are using shocking lick and don't have any charges already
   if (
@@ -1554,12 +1546,14 @@ function adjustForYellowRay(combat_string: string): boolean {
     }
   }
   if (combat_string === `skill ${$skill`Northern Explosion`}`) {
-    return autoEquip$1($item`April Shower Thoughts shield`);
+    return autoEquip($item`April Shower Thoughts shield`);
   }
   return true;
 }
 
-export function adjustForYellowRayIfPossible(target: Monster): boolean {
+export function adjustForYellowRayIfPossible(
+  target: Monster = Monster.none,
+): boolean {
   if (canYellowRay(target)) {
     const yr_string: string = yellowRayCombatString(
       target,
@@ -1577,13 +1571,9 @@ export function adjustForYellowRayIfPossible(target: Monster): boolean {
   return false;
 }
 
-export function adjustForYellowRayIfPossible$1(): boolean {
-  return adjustForYellowRayIfPossible(Monster.none);
-}
-
 function canReplace(target: Monster): boolean {
   //Use this to determine if it is safe to enter a replace monster combat.
-  return replaceMonsterCombatString$1(target) !== "";
+  return replaceMonsterCombatString(target) !== "";
 }
 
 function adjustForReplace(combat_string: string): boolean {
@@ -1597,9 +1587,11 @@ function adjustForReplace(combat_string: string): boolean {
   return false;
 }
 
-export function adjustForReplaceIfPossible(target: Monster): boolean {
+export function adjustForReplaceIfPossible(
+  target: Monster = Monster.none,
+): boolean {
   if (canReplace(target)) {
-    const rep_string: string = replaceMonsterCombatString$1(target);
+    const rep_string: string = replaceMonsterCombatString(target);
     auto_log_info(
       `Adjusting to have replace available for ${target}: ${rep_string}`,
       "blue",
@@ -1607,10 +1599,6 @@ export function adjustForReplaceIfPossible(target: Monster): boolean {
     return adjustForReplace(rep_string);
   }
   return false;
-}
-
-export function adjustForReplaceIfPossible$1(): boolean {
-  return adjustForReplaceIfPossible(Monster.none);
 }
 
 export function canSniff(enemy: Monster, loc: Location): boolean {
@@ -1623,10 +1611,10 @@ export function canSniff(enemy: Monster, loc: Location): boolean {
 export function adjustForSniffingIfPossible(target: Monster): boolean {
   const sniffer: Skill = getSniffer(target, false);
   if (sniffer === $skill`McHugeLarge Slash`) {
-    return autoEquip$1($item`McHugeLarge left pole`);
+    return autoEquip($item`McHugeLarge left pole`);
   }
   if (sniffer === $skill`Monkey Point`) {
-    return autoEquip$1($item`cursed monkey's paw`);
+    return autoEquip($item`cursed monkey's paw`);
   }
   if (sniffer !== Skill.none) {
     return acquireMP(mpCost(sniffer));
@@ -1637,7 +1625,7 @@ export function adjustForSniffingIfPossible(target: Monster): boolean {
 export function adjustForCopyIfPossible(target: Monster): boolean {
   const copier: Skill = getCopier(target, false);
   if (copier === $skill`Blow the Purple Candle!`) {
-    return autoEquip$1($item`Roman Candelabra`);
+    return autoEquip($item`Roman Candelabra`);
   }
   if (copier === $skill`%fn, fire a Red, White and Blue Blast`) {
     handleFamiliar$1($familiar`Patriotic Eagle`);
@@ -2787,11 +2775,10 @@ export function auto_freeCrafts(): number {
   return retval;
 }
 
-export function isFreeMonster(mon: Monster): boolean {
-  return isFreeMonster$1(mon, Location.none);
-}
-
-export function isFreeMonster$1(mon: Monster, loc: Location): boolean {
+export function isFreeMonster(
+  mon: Monster,
+  loc: Location = Location.none,
+): boolean {
   //No free fights in Avant Guard. Well, there are, but they now have non-free bodyguards so anything that is free now costs a turn
   if (in_avantGuard()) {
     return false;
@@ -2878,12 +2865,12 @@ export function isFreeMonster$1(mon: Monster, loc: Location): boolean {
 
 export function auto_burningDelay(): boolean {
   if (
-    (auto_voteMonster$1(true) ||
+    (auto_voteMonster(true) ||
       isOverdueDigitize() ||
       auto_sausageGoblin() ||
       auto_backupTarget() ||
       auto_voidMonster()) &&
-    myLocation() === solveDelayZone$1()
+    myLocation() === solveDelayZone()
   ) {
     return true;
   }
@@ -2984,10 +2971,10 @@ export function LX_summonMonster(): boolean {
     auto_haveTrainSet() &&
     oreGoal !== Item.none &&
     itemAmount(oreGoal) < 2 &&
-    canYellowRay$1() &&
+    canYellowRay() &&
     canSummonMonster($monster`mountain man`)
   ) {
-    adjustForYellowRayIfPossible$1();
+    adjustForYellowRayIfPossible();
     const need_dupe: boolean = itemAmount(oreGoal) < 1;
     const can_mctwist: boolean =
       auto_can_equip($item`pro skateboard`) &&
@@ -2997,7 +2984,7 @@ export function LX_summonMonster(): boolean {
       `Trying to summon a mountain man${will_mctwist ? " which we will McTwist." : "."}`,
     );
     if (will_mctwist) {
-      autoEquip$1($item`pro skateboard`);
+      autoEquip($item`pro skateboard`);
     }
     if (summonMonster($monster`mountain man`)) {
       return true;
@@ -3043,15 +3030,15 @@ export function LX_summonMonster(): boolean {
   // get war outfit if have yr available.
   // check for lvl 9 as that is when "L12_preOutfit" will try to get the prewar outfit. Better to summon and skip to war outfit
   if (
-    !possessOutfit$1("Frat Warrior Fatigues") &&
+    !possessOutfit("Frat Warrior Fatigues") &&
     auto_warSide() === "fratboy" &&
-    canYellowRay$1() &&
+    canYellowRay() &&
     myLevel() >= 9 &&
     (canSummonMonster($monster`War Frat 151st Infantryman`) ||
       canSummonMonster($monster`War Frat Mobile Grill Unit`) ||
       canSummonMonster($monster`Orcish Frat Boy Spy`))
   ) {
-    adjustForYellowRayIfPossible$1();
+    adjustForYellowRayIfPossible();
     // attempt to use calculate the universe
     if (summonMonster($monster`War Frat 151st Infantryman`)) {
       return true;
@@ -3065,14 +3052,14 @@ export function LX_summonMonster(): boolean {
     }
   }
   if (
-    !possessOutfit$1("War Hippy Fatigues") &&
+    !possessOutfit("War Hippy Fatigues") &&
     auto_warSide() === "hippy" &&
-    canYellowRay$1() &&
+    canYellowRay() &&
     myLevel() >= 12 &&
     (canSummonMonster($monster`War Hippy Airborne Commander`) ||
       canSummonMonster($monster`War Hippy Spy`))
   ) {
-    adjustForYellowRayIfPossible$1();
+    adjustForYellowRayIfPossible();
     if (summonMonster($monster`War Hippy Airborne Commander`)) {
       return true;
     }
@@ -3152,14 +3139,13 @@ export function LX_summonMonster(): boolean {
 }
 
 export function canSummonMonster(mon: Monster): boolean {
-  return summonMonster$1(mon, true);
+  return summonMonster(mon, true);
 }
 
-export function summonMonster(mon: Monster): boolean {
-  return summonMonster$1(mon, false);
-}
-
-function summonMonster$1(mon: Monster, speculative: boolean): boolean {
+export function summonMonster(
+  mon: Monster,
+  speculative: boolean = false,
+): boolean {
   if (!speculative) {
     auto_log_debug(`Trying to summon ${mon}`, "blue");
     setProperty("auto_nonAdvLoc", true.toString());
@@ -3178,7 +3164,7 @@ function summonMonster$1(mon: Monster, speculative: boolean): boolean {
         `We want to get the "${mon}" monster into the combat lover's locket from summoning, so we're bringing it along.`,
         "blue",
       );
-      autoEquip$1($item`combat lover's locket`);
+      autoEquip($item`combat lover's locket`);
     }
     // Equip a copier if we want to copy it
     if (auto_wantToCopy$1(mon)) {
@@ -3336,7 +3322,11 @@ export function acquireCombatMods(amt: number, doEquips: boolean): boolean {
   if (amt < 0) {
     return providePlusNonCombat$3(min(auto_combatModCap(), -1 * amt), doEquips);
   } else if (amt > 0) {
-    return providePlusCombat$3(min(auto_combatModCap(), amt), doEquips);
+    const desiredAmount = min(auto_combatModCap(), amt);
+
+    return (
+      providePlusCombat(desiredAmount, myLocation(), doEquips) >= desiredAmount
+    );
   }
   return true;
 }
@@ -3392,11 +3382,10 @@ export function highest_available_mcd(): number {
   return currentMcd();
 }
 
-export function auto_change_mcd(mcd: number): boolean {
-  return auto_change_mcd$1(mcd, false);
-}
-
-function auto_change_mcd$1(mcd: number, immediately: boolean): boolean {
+export function auto_change_mcd(
+  mcd: number,
+  immediately: boolean = false,
+): boolean {
   let best: number = highest_available_mcd();
   if (inBadMoon()) {
     best = 11;
@@ -4442,11 +4431,7 @@ export function auto_turbo(): boolean {
   return toBoolean(getProperty("auto_turbo"));
 }
 
-export function auto_can_equip(it: Item): boolean {
-  return auto_can_equip$1(it, toSlot(it));
-}
-
-export function auto_can_equip$1(it: Item, s: Slot): boolean {
+export function auto_can_equip(it: Item, s: Slot = toSlot(it)): boolean {
   if (s === $slot`shirt` && !hasTorso()) {
     return false;
   }
@@ -5582,7 +5567,7 @@ function UrKelCheck(
       (2 * myLevel() <= UrKelUpperLimit && 2 * myLevel() >= UrKelLowerLimit)
     ) {
       shrugAT($effect`Ur-Kel's Aria of Annoyance`);
-      buffMaintain$3($effect`Ur-Kel's Aria of Annoyance`, 0, 1, 10);
+      buffMaintain$2($effect`Ur-Kel's Aria of Annoyance`, 0, 1, 10);
     }
   }
 
@@ -5612,7 +5597,7 @@ function angryAgateCheck(
         3 * myLevel() >= angryAgateLowerLimit)
     ) {
       uneffect($effect`Misplaced Rage`);
-      buffMaintain$4($effect`Misplaced Rage`);
+      buffMaintain$2($effect`Misplaced Rage`);
     }
   }
 
@@ -5628,7 +5613,7 @@ export function auto_MaxMLToCap(ToML: number, doAltML: boolean): boolean {
         monsterLevelAdjustment() + numericModifier(eff, "Monster Level") <=
         auto_convertDesiredML(ToML)
       ) {
-        buffMaintain$4(eff);
+        buffMaintain$2(eff);
       }
     }
   }
@@ -5708,7 +5693,7 @@ export function auto_MaxMLToCap(ToML: number, doAltML: boolean): boolean {
 // ADVENTURE FORCING FUNCTIONS
 function _auto_forceNextNoncombat(
   loc: Location,
-  speculative: boolean,
+  speculative: boolean = false,
 ): boolean {
   // return true if already have a forcer acitve
   if (auto_haveQueuedForcedNonCombat()) {
@@ -5851,10 +5836,6 @@ export function auto_canForceNextNoncombat(): boolean {
   return _auto_forceNextNoncombat(Location.none, true);
 }
 
-function _auto_forceNextNoncombat$1(loc: Location): boolean {
-  return _auto_forceNextNoncombat(loc, false);
-}
-
 export function auto_forceNextNoncombat(loc: Location): boolean {
   if (auto_haveQueuedForcedNonCombat()) {
     auto_log_warning(
@@ -5863,7 +5844,7 @@ export function auto_forceNextNoncombat(loc: Location): boolean {
     );
     return true;
   }
-  if (_auto_forceNextNoncombat$1(loc)) {
+  if (_auto_forceNextNoncombat(loc)) {
     const forceNCMethod: string = getProperty("auto_forceNonCombatSource");
     if (forceNCMethod === "jurassic parka") {
       auto_log_info(
@@ -5887,7 +5868,7 @@ export function auto_haveQueuedForcedNonCombat(): boolean {
 // now time for combat forcing!
 export function _auto_forceNextCombat(
   loc: Location,
-  speculative: boolean,
+  speculative: boolean = false,
 ): boolean {
   // return true if already have a forcer acitve
   if (auto_haveQueuedForcedCombat()) {
@@ -5915,10 +5896,6 @@ export function auto_canForceNextCombat(): boolean {
   return _auto_forceNextCombat(Location.none, true);
 }
 
-export function _auto_forceNextCombat$1(loc: Location): boolean {
-  return _auto_forceNextCombat(loc, false);
-}
-
 export function auto_forceNextCombat$1(loc: Location): boolean {
   if (auto_haveQueuedForcedCombat()) {
     auto_log_warning(
@@ -5927,7 +5904,7 @@ export function auto_forceNextCombat$1(loc: Location): boolean {
     );
     return true;
   }
-  if (_auto_forceNextCombat$1(loc)) {
+  if (_auto_forceNextCombat(loc)) {
     const forceCMethod: string = getProperty("auto_forceCombatSource");
     auto_log_info(
       `Next combat adventure has been forced with ${forceCMethod}`,
@@ -6039,68 +6016,68 @@ export function effectAblativeArmor(passive_dmg_allowed: boolean): void {
   equipMaximizedGear();
   //Passive damage
   if (passive_dmg_allowed) {
-    buffMaintain$4($effect`Spiky Shell`); //8 MP
-    buffMaintain$4($effect`Jalapeño Saucesphere`); //5 MP
-    buffMaintain$4($effect`Scariersauce`); //10 MP
-    buffMaintain$4($effect`Scarysauce`); //10 MP
+    buffMaintain$2($effect`Spiky Shell`); //8 MP
+    buffMaintain$2($effect`Jalapeño Saucesphere`); //5 MP
+    buffMaintain$2($effect`Scariersauce`); //10 MP
+    buffMaintain$2($effect`Scarysauce`); //10 MP
     if (in_aosol()) {
-      buffMaintain$4($effect`Queso Fustulento`); //10 MP
-      buffMaintain$4($effect`Tricky Timpani`); //30 MP
+      buffMaintain$2($effect`Queso Fustulento`); //10 MP
+      buffMaintain$2($effect`Tricky Timpani`); //30 MP
     }
   }
   //1MP Non-Combat skills from each class
-  buffMaintain$4($effect`Seal Clubbing Frenzy`);
-  buffMaintain$4($effect`Patience of the Tortoise`);
-  buffMaintain$4($effect`Pasta Oneness`);
-  buffMaintain$4($effect`Saucemastery`);
-  buffMaintain$4($effect`Disco State of Mind`);
-  buffMaintain$4($effect`Mariachi Mood`);
+  buffMaintain$2($effect`Seal Clubbing Frenzy`);
+  buffMaintain$2($effect`Patience of the Tortoise`);
+  buffMaintain$2($effect`Pasta Oneness`);
+  buffMaintain$2($effect`Saucemastery`);
+  buffMaintain$2($effect`Disco State of Mind`);
+  buffMaintain$2($effect`Mariachi Mood`);
   //Seal clubber Non-Combat skills
-  buffMaintain$4($effect`Blubbered Up`); //7 MP
-  buffMaintain$4($effect`Rage of the Reindeer`); //10 MP
-  buffMaintain$4($effect`A Few Extra Pounds`); //10 MP
+  buffMaintain$2($effect`Blubbered Up`); //7 MP
+  buffMaintain$2($effect`Rage of the Reindeer`); //10 MP
+  buffMaintain$2($effect`A Few Extra Pounds`); //10 MP
   //Turtle Tamer Non-Combat skills
   if (!hasTTBlessing()) {
-    buffMaintain$4($effect`Blessing of the War Snapper`); //15 MP. other blessings too expensive.
+    buffMaintain$2($effect`Blessing of the War Snapper`); //15 MP. other blessings too expensive.
   }
   //Pastamancer Non-Combat skills
-  buffMaintain$4($effect`Springy Fusilli`); //10 MP
-  buffMaintain$4($effect`Shield of the Pastalord`); //20 MP
-  buffMaintain$4($effect`Leash of Linguini`); //12 MP
+  buffMaintain$2($effect`Springy Fusilli`); //10 MP
+  buffMaintain$2($effect`Shield of the Pastalord`); //20 MP
+  buffMaintain$2($effect`Leash of Linguini`); //12 MP
   //Sauceror Non-Combat skills
-  buffMaintain$4($effect`Sauce Monocle`); //20 MP
+  buffMaintain$2($effect`Sauce Monocle`); //20 MP
   //Disco Bandit Non-Combat skills
-  buffMaintain$4($effect`Disco Fever`); //10 MP
+  buffMaintain$2($effect`Disco Fever`); //10 MP
   //Turtle Tamer Buffs
-  buffMaintain$4($effect`Ghostly Shell`); //6 MP
-  buffMaintain$4($effect`Tenacity of the Snapper`); //8 MP
-  buffMaintain$4($effect`Empathy`); //15 MP
-  buffMaintain$4($effect`Thoughtful Empathy`); //15 MP
-  buffMaintain$4($effect`Reptilian Fortitude`); //8 MP
-  buffMaintain$4($effect`Astral Shell`); //10 MP
-  buffMaintain$4($effect`Jingle Jangle Jingle`); //5 MP
-  buffMaintain$4($effect`Curiosity of Br'er Tarrypin`); //5 MP
+  buffMaintain$2($effect`Ghostly Shell`); //6 MP
+  buffMaintain$2($effect`Tenacity of the Snapper`); //8 MP
+  buffMaintain$2($effect`Empathy`); //15 MP
+  buffMaintain$2($effect`Thoughtful Empathy`); //15 MP
+  buffMaintain$2($effect`Reptilian Fortitude`); //8 MP
+  buffMaintain$2($effect`Astral Shell`); //10 MP
+  buffMaintain$2($effect`Jingle Jangle Jingle`); //5 MP
+  buffMaintain$2($effect`Curiosity of Br'er Tarrypin`); //5 MP
   //Sauceror Buffs
-  buffMaintain$4($effect`Elemental Saucesphere`); //10 MP
-  buffMaintain$4($effect`Antibiotic Saucesphere`); //15 MP
+  buffMaintain$2($effect`Elemental Saucesphere`); //10 MP
+  buffMaintain$2($effect`Antibiotic Saucesphere`); //15 MP
   //Accordion Thief Buffs. We are not shrugging so it will only apply new ones if we have space for them
-  buffMaintain$4($effect`The Moxious Madrigal`); //2 MP
-  buffMaintain$4($effect`The Magical Mojomuscular Melody`); //3 MP
-  buffMaintain$4($effect`Cletus's Canticle of Celerity`); //4 MP
-  buffMaintain$4($effect`Power Ballad of the Arrowsmith`); //5 MP
-  buffMaintain$4($effect`Polka of Plenty`); //7 MP
+  buffMaintain$2($effect`The Moxious Madrigal`); //2 MP
+  buffMaintain$2($effect`The Magical Mojomuscular Melody`); //3 MP
+  buffMaintain$2($effect`Cletus's Canticle of Celerity`); //4 MP
+  buffMaintain$2($effect`Power Ballad of the Arrowsmith`); //5 MP
+  buffMaintain$2($effect`Polka of Plenty`); //7 MP
   //Mutually exclusive effects
   if (
     haveEffect($effect`Musk of the Moose`) === 0 &&
     haveEffect($effect`Hippy Stench`) === 0
   ) {
-    buffMaintain$4($effect`Smooth Movements`); //10 MP
+    buffMaintain$2($effect`Smooth Movements`); //10 MP
   }
   if (
     haveEffect($effect`Smooth Movements`) === 0 &&
     haveEffect($effect`Fresh Scent`) === 0
   ) {
-    buffMaintain$4($effect`Musk of the Moose`); //10 MP
+    buffMaintain$2($effect`Musk of the Moose`); //10 MP
   }
   //TODO facial expressions, need to check you are not wearing one first and which ones you have
   //Maybe just not do facial expressions? too much complexity for a singular effect.
@@ -6471,11 +6448,11 @@ export function auto_equalizeStats(): boolean {
   }
   switch (highest_basestat) {
     case $stat`Muscle`:
-      return buffMaintain$4($effect`Stabilizing Oiliness`);
+      return buffMaintain$2($effect`Stabilizing Oiliness`);
     case $stat`Mysticality`:
-      return buffMaintain$4($effect`Expert Oiliness`);
+      return buffMaintain$2($effect`Expert Oiliness`);
     case $stat`Moxie`:
-      return buffMaintain$4($effect`Slippery Oiliness`);
+      return buffMaintain$2($effect`Slippery Oiliness`);
   }
   return false;
 }

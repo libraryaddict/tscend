@@ -187,7 +187,7 @@ export function LX_attemptPowerLevel(): boolean {
   }
   wait(delay);
 
-  if (LX_freeCombats$1(true)) {
+  if (LX_freeCombats(true)) {
     return true;
   }
 
@@ -325,11 +325,9 @@ export function disregardInstantKarma(): boolean {
   return toBoolean(getProperty("auto_disregardInstantKarma"));
 }
 
-export function auto_freeCombatsRemaining(): number {
-  return auto_freeCombatsRemaining$1(false);
-}
-
-function auto_freeCombatsRemaining$1(print_remaining_fights: boolean): number {
+export function auto_freeCombatsRemaining(
+  print_remaining_fights: boolean = false,
+): number {
   if (in_avantGuard()) {
     //may need to revisit after Avant Guard leaves standard
     return 0;
@@ -410,11 +408,9 @@ function auto_freeCombatsRemaining$1(print_remaining_fights: boolean): number {
   return count_1;
 }
 
-export function LX_freeCombats(): boolean {
-  return LX_freeCombats$1(disregardInstantKarma());
-}
-
-export function LX_freeCombats$1(powerlevel: boolean): boolean {
+export function LX_freeCombats(
+  powerlevel: boolean = disregardInstantKarma(),
+): boolean {
   if (auto_freeCombatsRemaining() === 0) {
     auto_log_debug$1("Could not use free combats because you have none");
     return false;
@@ -434,7 +430,7 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
   }
 
   if (myAdventures() < 2) {
-    auto_freeCombatsRemaining$1(true); //print remaining free combats.
+    auto_freeCombatsRemaining(true); //print remaining free combats.
     auto_log_warning(
       "Too few adventures to safely automate free combats",
       "red",
@@ -592,7 +588,7 @@ export function LX_freeCombats$1(powerlevel: boolean): boolean {
     auto_log_debug$1(
       "I reached the end of LX_freeCombats() but I think the following free combats were not used for some reason:",
     );
-    auto_freeCombatsRemaining$1(true); //print remaining free combats.
+    auto_freeCombatsRemaining(true); //print remaining free combats.
   }
 
   return false;

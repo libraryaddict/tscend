@@ -52,7 +52,7 @@ import {
 } from "libram";
 
 import { auto_buyUpTo } from "./auto_acquire";
-import { buffMaintain$2, buffMaintain$4 } from "./auto_buff";
+import { buffMaintain$2 } from "./auto_buff";
 import {
   auto_autoConsumeOne,
   auto_canDrink,
@@ -68,18 +68,17 @@ import {
 } from "./auto_consume";
 import {
   addToMaximize,
-  autoEquip$1,
+  autoEquip,
   possessEquipment,
   simMaximize,
   simMaximize$1,
   simMaximizeWith,
-  simMaximizeWith$1,
   simValue,
 } from "./auto_equipment";
 import {
   auto_famModifiers,
   auto_famModifiers$2,
-  auto_famWeight$1,
+  auto_famWeight,
   auto_have_familiar,
   canChangeFamiliar,
   canChangeToFamiliar,
@@ -122,7 +121,7 @@ import {
   isHorseryAvailable,
 } from "./iotms/mr2017";
 import {
-  auto_latteRefill$5,
+  auto_latteRefill$4,
   januaryToteAcquire,
   songboomSetting,
 } from "./iotms/mr2018";
@@ -170,8 +169,8 @@ import { in_zootomist } from "./paths/zootomist";
 export function providePlusCombat(
   amt: number,
   loc: Location,
-  doEquips: boolean,
-  speculative: boolean,
+  doEquips: boolean = true,
+  speculative: boolean = false,
 ): number {
   auto_log_info(
     `${speculative ? "Checking if we can" : "Trying to"} provide ${amt} positive combat rate, ${doEquips ? "with" : "without"} equipment`,
@@ -202,7 +201,7 @@ export function providePlusCombat(
   if (doEquips) {
     const max_1: string = `200combat ${amt}max`;
     if (speculative) {
-      simMaximizeWith(loc, max_1);
+      simMaximizeWith(max_1, loc);
     } else {
       addToMaximize(max_1);
       simMaximize$1(loc);
@@ -376,27 +375,11 @@ export function providePlusCombat(
   return result$4();
 }
 
-export function providePlusCombat$2(
-  amt: number,
-  loc: Location,
-  doEquips: boolean,
-): boolean {
-  return providePlusCombat(amt, loc, doEquips, false) >= amt;
-}
-
-export function providePlusCombat$3(amt: number, doEquips: boolean): boolean {
-  return providePlusCombat$2(amt, myLocation(), doEquips);
-}
-
-export function providePlusCombat$4(amt: number, loc: Location): boolean {
-  return providePlusCombat$2(amt, loc, true);
-}
-
 export function providePlusNonCombat(
   amt: number,
-  loc: Location,
-  doEquips: boolean,
-  speculative: boolean,
+  loc: Location = myLocation(),
+  doEquips: boolean = true,
+  speculative: boolean = false,
 ): number {
   auto_log_info(
     `${speculative ? "Checking if we can" : "Trying to"} provide ${amt} negative combat rate, ${doEquips ? "with" : "without"} equipment`,
@@ -428,7 +411,7 @@ export function providePlusNonCombat(
   if (doEquips) {
     const max_1: string = `-200combat ${amt}max`;
     if (speculative) {
-      simMaximizeWith$1(max_1);
+      simMaximizeWith(max_1);
     } else {
       addToMaximize(max_1);
       simMaximize();
@@ -655,16 +638,16 @@ export function providePlusNonCombat(
 
 export function providePlusNonCombat$1(
   amt: number,
-  doEquips: boolean,
-  speculative: boolean,
+  doEquips: boolean = true,
+  speculative: boolean = false,
 ): number {
   return providePlusNonCombat(amt, myLocation(), doEquips, speculative);
 }
 
-function providePlusNonCombat$2(
+export function providePlusNonCombat$2(
   amt: number,
-  loc: Location,
-  doEquips: boolean,
+  loc: Location = myLocation(),
+  doEquips: boolean = true,
 ): boolean {
   return providePlusNonCombat(amt, loc, doEquips, false) >= amt;
 }
@@ -674,10 +657,6 @@ export function providePlusNonCombat$3(
   doEquips: boolean,
 ): boolean {
   return providePlusNonCombat$2(amt, myLocation(), doEquips);
-}
-
-export function providePlusNonCombat$4(amt: number, loc: Location): boolean {
-  return providePlusNonCombat$2(amt, loc, true);
 }
 
 export function provideInitiative(
@@ -711,7 +690,7 @@ export function provideInitiative(
   if (doEquips) {
     const max_1: string = `500initiative ${amt}max`;
     if (speculative) {
-      simMaximizeWith(loc, max_1);
+      simMaximizeWith(max_1, loc);
     } else {
       addToMaximize(max_1);
       simMaximize$1(loc);
@@ -1058,7 +1037,7 @@ export function provideResistances(
         }
         max_1 += `2000${ele} resistance ${goal}max`;
       }
-      simMaximizeWith(loc, max_1);
+      simMaximizeWith(max_1, loc);
     } else {
       for (const [ele, goal] of amt) {
         addToMaximize(`2000${ele} resistance ${goal}max`);
@@ -1137,12 +1116,12 @@ export function provideResistances(
     }
     if (resfam !== Familiar.none) {
       //Buff fam weight early
-      buffMaintain$4($effect`Leash of Linguini`);
-      buffMaintain$4($effect`Thoughtful Empathy`);
-      buffMaintain$4($effect`Empathy`);
-      buffMaintain$4($effect`Blood Bond`);
-      buffMaintain$4($effect`Only Dogs Love a Drunken Sailor`);
-      buffMaintain$4($effect`Best Pals`);
+      buffMaintain$2($effect`Leash of Linguini`);
+      buffMaintain$2($effect`Thoughtful Empathy`);
+      buffMaintain$2($effect`Empathy`);
+      buffMaintain$2($effect`Blood Bond`);
+      buffMaintain$2($effect`Only Dogs Love a Drunken Sailor`);
+      buffMaintain$2($effect`Best Pals`);
       //Manual override for the resfam to be the Cooler Yeti when we ONLY want Cold Resistance and it is better than what we already chose from one of the multi-res fams
       if (
         auto_haveCoolerYeti() &&
@@ -1152,9 +1131,9 @@ export function provideResistances(
       ) {
         if (
           ((resfam === $familiar`Mu` || resfam === $familiar`Exotic Parrot`) &&
-            floor((auto_famWeight$1(resfam) - 5) / 20 + 1) <
-              floor(auto_famWeight$1($familiar`Cooler Yeti`) / 11)) ||
-          5 < floor(auto_famWeight$1($familiar`Cooler Yeti`) / 11)
+            floor((auto_famWeight(resfam) - 5) / 20 + 1) <
+              floor(auto_famWeight($familiar`Cooler Yeti`) / 11)) ||
+          5 < floor(auto_famWeight($familiar`Cooler Yeti`) / 11)
         ) {
           resfam = $familiar`Cooler Yeti`;
         }
@@ -1347,7 +1326,7 @@ function provideStats(
         }
         max_1 += `200${st} ${goal}max`;
       }
-      simMaximizeWith(loc, max_1);
+      simMaximizeWith(max_1, loc);
     } else {
       for (const [st, goal] of amt) {
         addToMaximize(`200${st} ${goal}max`);
@@ -1598,7 +1577,7 @@ function provideMeat(
   if (doEverything) {
     const max_1: string = `500meat ${amt + 100}max`;
     if (speculative) {
-      simMaximizeWith(loc, max_1);
+      simMaximizeWith(max_1, loc);
     } else {
       addToMaximize(max_1);
       simMaximize$1(loc);
@@ -1781,7 +1760,7 @@ function provideMeat(
     !in_heavyrains()
   ) {
     useFamiliar($familiar`Trick-or-Treating Tot`);
-    autoEquip$1($item`li'l pirate costume`); //300% meat
+    autoEquip($item`li'l pirate costume`); //300% meat
     handleFamiliar$1($familiar`Trick-or-Treating Tot`);
     if (pass$3()) {
       return result$3();
@@ -1839,7 +1818,7 @@ function provideMeat(
     }
     const max_1: string = `500meat ${amt + 100}max`;
     if (speculative) {
-      simMaximizeWith(loc, max_1);
+      simMaximizeWith(max_1, loc);
     } else {
       addToMaximize(max_1);
       simMaximize$1(loc);
@@ -2089,7 +2068,7 @@ function provideItem(
   if (doEverything) {
     const max_1: string = `500item ${amt + 100}max`;
     if (speculative) {
-      simMaximizeWith(loc, max_1);
+      simMaximizeWith(max_1, loc);
     } else {
       addToMaximize(max_1);
       simMaximize$1(loc);
@@ -2145,7 +2124,7 @@ function provideItem(
   }
 
   if (in_heavyrains()) {
-    buffMaintain$4($effect`Fishy Whiskers`); // HR only
+    buffMaintain$2($effect`Fishy Whiskers`); // HR only
   }
 
   if (in_amw() && amw_canAfford($skill`Beef Goggles`)) {
@@ -2313,7 +2292,7 @@ function provideItem(
 
     const max_1: string = `500item ${amt + 100}max`;
     if (speculative) {
-      simMaximizeWith(loc, max_1);
+      simMaximizeWith(max_1, loc);
     } else {
       addToMaximize(max_1);
       simMaximize$1(loc);
@@ -2543,7 +2522,7 @@ export function provideFamExp(
   if (doEquips || doEverything) {
     const max_1: string = `1000familiar experience ${amt + 10}max`;
     if (speculative) {
-      simMaximizeWith(loc, max_1);
+      simMaximizeWith(max_1, loc);
     } else {
       addToMaximize(max_1);
       simMaximize$1(loc);
@@ -2605,11 +2584,11 @@ export function provideFamExp(
   // craft equipment, even limited use, here
   if (doEverything) {
     //craft IOTM derivative that gives high fam xp bonus
-    auto_latteRefill$5("famxp"); //+3
+    auto_latteRefill$4("famxp"); //+3
 
     const max_1: string = `1000familiar experience ${amt + 100}max`;
     if (speculative) {
-      simMaximizeWith(loc, max_1);
+      simMaximizeWith(max_1, loc);
     } else {
       addToMaximize(max_1);
       simMaximize$1(loc);

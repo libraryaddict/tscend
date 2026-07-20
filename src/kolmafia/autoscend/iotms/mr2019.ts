@@ -69,7 +69,7 @@ import {
 } from "../auto_consume";
 import {
   addToMaximize,
-  autoEquip$1,
+  autoEquip,
   equipMaximizedGear,
   possessEquipment,
 } from "../auto_equipment";
@@ -101,7 +101,7 @@ import { in_darkGyffte } from "../paths/dark_gyffte";
 import { in_lowkeysummer } from "../paths/low_key_summer";
 import { in_plumber } from "../paths/path_of_the_plumber";
 import { in_tcrs } from "../paths/two_crazy_random_summer";
-import { cyrptEvilBonus$1 } from "../quests/level_07";
+import { cyrptEvilBonus } from "../quests/level_07";
 
 // This is meant for items that have a date of 2019
 
@@ -228,13 +228,9 @@ export function auto_sausageWanted(): boolean {
   return false;
 }
 
-export function auto_sausageGrind(numSaus: number): boolean {
-  return auto_sausageGrind$1(numSaus, false);
-}
-
-function auto_sausageGrind$1(
+export function auto_sausageGrind(
   numSaus: number,
-  failIfCantMakeAll: boolean,
+  failIfCantMakeAll: boolean = false,
 ): boolean {
   // Some paths are pretty meat-intensive early. Just in case...
   if (myTurncount() < 90 || !isDesertAvailable()) {
@@ -399,7 +395,7 @@ export function auto_sausageGoblin(
     return true;
   }
 
-  if (autoEquip$1(wrap_item($item`Kramco Sausage-o-Matic™`))) {
+  if (autoEquip(wrap_item($item`Kramco Sausage-o-Matic™`))) {
     setProperty("auto_nextEncounter", "sausage goblin");
     return autoAdv(loc, option);
   }
@@ -677,7 +673,7 @@ function auto_spoonReadyToTuneMoon(): boolean {
 
   if (
     mySign() === "Vole" &&
-    (toInt(getProperty("cyrptAlcoveEvilness")) > 14 + cyrptEvilBonus$1() ||
+    (toInt(getProperty("cyrptAlcoveEvilness")) > 14 + cyrptEvilBonus() ||
       getProperty("questL07Cyrptic") === "unstarted")
   ) {
     // we want to stay vole long enough to do the alcove, since the initiative helps

@@ -38,7 +38,7 @@ import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
 import {
   addToMaximize,
   autoEquip,
-  autoEquip$1,
+  autoEquipToSlot,
   possessEquipment,
 } from "../auto_equipment";
 import {
@@ -203,7 +203,7 @@ function bugbear_UnlockMothership(loc: Location): boolean {
   }
 
   if (possessEquipment($item`bugbear detector`)) {
-    autoEquip$1($item`bugbear detector`);
+    autoEquip($item`bugbear detector`);
   }
 
   if (
@@ -256,7 +256,7 @@ function LX_bugbearWasteProcessing(): boolean {
   }
 
   if (possessEquipment($item`bugbear communicator badge`)) {
-    autoEquip$1($item`bugbear communicator badge`);
+    autoEquip($item`bugbear communicator badge`);
   } else {
     handleFamiliar("item");
   }
@@ -353,22 +353,22 @@ function LX_bugbearSpecialOps(): boolean {
     cliExecute("make fluorescent lightbulb");
   }
 
-  autoEquip$1($item`UV monocular`);
+  autoEquip($item`UV monocular`);
 
   if (possessEquipment($item`fire`)) {
-    autoEquip$1($item`fire`);
+    autoEquip($item`fire`);
   }
 
   if (possessEquipment($item`fluorescent lightbulb`)) {
-    autoEquip$1($item`fluorescent lightbulb`);
+    autoEquip($item`fluorescent lightbulb`);
   }
 
   if (possessEquipment($item`Rain-Doh green lantern`)) {
-    autoEquip$1($item`Rain-Doh green lantern`);
+    autoEquip($item`Rain-Doh green lantern`);
   } else if (possessEquipment($item`magic lamp`)) {
-    autoEquip$1($item`magic lamp`);
+    autoEquip($item`magic lamp`);
   } else if (possessEquipment($item`oil lamp`)) {
-    autoEquip$1($item`oil lamp`);
+    autoEquip($item`oil lamp`);
   }
 
   auto_log_info(`Clearing Bugbear Mothership - ${loc}`, "blue");
@@ -480,7 +480,7 @@ function LX_bugbearBridge(): boolean {
   cliExecute("scripts/autoscend/auto_post_adv.js");
 
   if (myClass() === $class`Turtle Tamer`) {
-    autoEquip$1($item`Ouija Board, Ouija Board`);
+    autoEquip($item`Ouija Board, Ouija Board`);
   }
 
   if (pullsRemaining() === -1 || pullsRemaining() > 0) {
@@ -489,7 +489,7 @@ function LX_bugbearBridge(): boolean {
     }
   }
 
-  autoEquip($slot`off-hand`, $item`Oscus's garbage can lid`);
+  autoEquipToSlot($slot`off-hand`, $item`Oscus's garbage can lid`);
 
   handleFamiliar("boss");
 

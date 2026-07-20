@@ -59,7 +59,7 @@ import {
   spleen_left,
 } from "../auto_consume";
 import {
-  autoEquip,
+  autoEquipToSlot,
   equipStatgainIncreasers$1,
   possessEquipment,
   removeFromMaximize,
@@ -393,7 +393,7 @@ export function fantasyRealmToken(): boolean {
   }
 
   if (possessEquipment($item`FantasyRealm G. E. M.`)) {
-    autoEquip($slot`acc3`, $item`FantasyRealm G. E. M.`);
+    autoEquipToSlot($slot`acc3`, $item`FantasyRealm G. E. M.`);
   }
   //This does not appear to check that we no longer need to adventure there...
 
@@ -992,7 +992,7 @@ export function neverendingPartyCombat(): boolean {
     auto_is_valid($item`makeshift garbage shirt`)
   ) {
     januaryToteAcquire($item`makeshift garbage shirt`);
-    autoEquip($slot`shirt`, $item`makeshift garbage shirt`);
+    autoEquipToSlot($slot`shirt`, $item`makeshift garbage shirt`);
   }
 
   return autoAdv($location`The Neverending Party`);
@@ -1364,16 +1364,11 @@ function auto_latteRefill$2(
   return auto_latteRefill(want1, want2, "", force);
 }
 
-function auto_latteRefill$4(want1: string, force: boolean): boolean {
+export function auto_latteRefill$4(
+  want1: string = "",
+  force: boolean = false,
+): boolean {
   return auto_latteRefill$2(want1, "", force);
-}
-
-export function auto_latteRefill$5(want1: string): boolean {
-  return auto_latteRefill$4(want1, false);
-}
-
-export function auto_latteRefill$6(): boolean {
-  return auto_latteRefill$5("");
 }
 
 export function auto_haveVotingBooth(): boolean {
@@ -1435,15 +1430,10 @@ export function auto_voteSetup(
   return true;
 }
 
-export function auto_voteMonster(): boolean {
-  return auto_voteMonster$1(false);
-}
-
-export function auto_voteMonster$1(freeMon: boolean): boolean {
-  return auto_voteMonster$2(freeMon, Location.none);
-}
-
-export function auto_voteMonster$2(freeMon: boolean, loc: Location): boolean {
+export function auto_voteMonster(
+  freeMon: boolean = false,
+  loc: Location = Location.none,
+): boolean {
   if (!auto_haveVotingBooth()) {
     return false;
   }
@@ -1474,7 +1464,7 @@ export function auto_voteMonster$2(freeMon: boolean, loc: Location): boolean {
     return true;
   }
 
-  if (autoEquip($slot`acc3`, $item`"I Voted!" sticker`)) {
+  if (autoEquipToSlot($slot`acc3`, $item`"I Voted!" sticker`)) {
     setProperty("auto_nextEncounter", getProperty("_voteMonster"));
     return autoAdv(loc);
   }

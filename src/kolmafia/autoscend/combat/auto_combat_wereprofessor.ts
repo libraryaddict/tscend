@@ -25,7 +25,7 @@ import {
   canUse$3,
   haveUsed,
   markAsUsed,
-  useItem$1,
+  useItem,
 } from "./auto_combat_util";
 
 //defined in /autoscend/combat/auto_combat_wereprofessor.ash
@@ -119,7 +119,7 @@ export function auto_combatWereProfessorStage5(
       !enemy_physical_immune &&
       monsterHp() < 100
     ) {
-      return useItem$1($item`cosmic bowling ball`); // 100 physical damage
+      return useItem($item`cosmic bowling ball`); // 100 physical damage
     } else {
       return "runaway"; //Can't do anything further as Professor other than using items/running away
     }

@@ -44,10 +44,10 @@ import {
 
 import { acquireOrPull, auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdvBypass, autoAdvBypass$1 } from "../auto_adventure";
-import { buffMaintain$4 } from "../auto_buff";
+import { buffMaintain$2 } from "../auto_buff";
 import {
   addToMaximize,
-  autoEquip,
+  autoEquipToSlot,
   equipMaximizedGear,
   possessEquipment,
 } from "../auto_equipment";
@@ -347,11 +347,11 @@ export function L13_heavyrains_towerFinal(): boolean {
     useFamiliar($familiar`Angry Goat`);
   }
   //buff up before the boss
-  buffMaintain$4($effect`Benetton's Medley of Diversity`); //15 prismatic weapon dmg.
-  buffMaintain$4($effect`Dirge of Dreadfulness (Remastered)`); //36 spooky spell & weapon dmg
-  buffMaintain$4($effect`Dirge of Dreadfulness`); //12 spooky weapon dmg
-  buffMaintain$4($effect`Boner Battalion`); //32-33 sleaze and spooky passive dmg
-  buffMaintain$4($effect`Frigidalmatian`); //40 (due to cap) cold passive dmg
+  buffMaintain$2($effect`Benetton's Medley of Diversity`); //15 prismatic weapon dmg.
+  buffMaintain$2($effect`Dirge of Dreadfulness (Remastered)`); //36 spooky spell & weapon dmg
+  buffMaintain$2($effect`Dirge of Dreadfulness`); //12 spooky weapon dmg
+  buffMaintain$2($effect`Boner Battalion`); //32-33 sleaze and spooky passive dmg
+  buffMaintain$2($effect`Frigidalmatian`); //40 (due to cap) cold passive dmg
   effectAblativeArmor(true); //Unimportant effects protect your important one from being removed.
   //Calculate melee/ranged damage. Each element is capped at 40. assume you will be able to deal 40 physical damage.
   cliExecute("outfit Birthday Suit"); //Need to get naked so we can check our stats properly.
@@ -485,11 +485,11 @@ export function L13_heavyrains_towerFinal(): boolean {
     if (spell_extra_element) {
       addToMaximize("spell damage percent, +weapon");
       if (itemAmount($item`Rain-Doh green lantern`) > 0) {
-        autoEquip($slot`off-hand`, $item`Rain-Doh green lantern`);
+        autoEquipToSlot($slot`off-hand`, $item`Rain-Doh green lantern`);
       } else if (itemAmount($item`meteorb`) > 0) {
-        autoEquip($slot`off-hand`, $item`meteorb`);
+        autoEquipToSlot($slot`off-hand`, $item`meteorb`);
       } else if (itemAmount($item`snow mobile`) > 0) {
-        autoEquip($slot`off-hand`, $item`snow mobile`);
+        autoEquipToSlot($slot`off-hand`, $item`snow mobile`);
       }
     } else {
       addToMaximize("spell damage percent, +weapon, +offhand");

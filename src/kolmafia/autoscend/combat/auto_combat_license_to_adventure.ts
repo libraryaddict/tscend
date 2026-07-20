@@ -8,7 +8,7 @@ import {
 import { $item, $location, $monster } from "libram";
 
 import { in_lta } from "../paths/license_to_adventure";
-import { canSurvive$1 } from "./auto_combat_util";
+import { canSurvive } from "./auto_combat_util";
 
 //Path specific combat handling for license to adventure
 
@@ -23,7 +23,7 @@ export function auto_combatLicenseToAdventureStage4(
   if (
     myLocation() === $location`Super Villain's Lair` &&
     in_lta() &&
-    canSurvive$1(2.0) &&
+    canSurvive(2.0) &&
     enemy === $monster`Villainous Minion`
   ) {
     if (

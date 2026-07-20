@@ -71,7 +71,7 @@ import {
   handleTracker$1,
   handleTracker$2,
   internalQuestStatus,
-  isFreeMonster$1,
+  isFreeMonster,
   meatReserve,
 } from "../auto_util";
 import { zone_delay } from "../auto_zone";
@@ -129,7 +129,7 @@ export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean {
     return false;
   }
 
-  if (isFreeMonster$1(enemy, loc)) {
+  if (isFreeMonster(enemy, loc)) {
     // don't use free kills against inherently free fights
     return false;
   }

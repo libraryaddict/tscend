@@ -15,7 +15,7 @@ import { $monster, $skill } from "libram";
 import { auto_log_info } from "../auto_util";
 import { in_disguises } from "../paths/disguises_delimit";
 import { AshMatcher } from "../utils/kolmafiaUtils";
-import { auto_useSkill, canSurvive$1, canUse } from "./auto_combat_util";
+import { auto_useSkill, canSurvive, canUse } from "./auto_combat_util";
 
 //Path specific combat handling for Disguises Delimit
 
@@ -69,7 +69,7 @@ export function auto_combatDisguisesStage1(
   }
   //mask 3 = protest mask = +30ML. can only attack with weapon or change mask. if changed can only use items or attack with weapon
   if (disguises === 3) {
-    if (canSurvive$1(1.5)) {
+    if (canSurvive(1.5)) {
       return "attack with weapon";
     }
     abort(
@@ -114,7 +114,7 @@ export function auto_combatDisguisesStage5(
         "Not sure how to handle a physically resistent enemy wearing a welding mask.",
       );
     }
-    if (canSurvive$1(1.5) && round_1 < 10) {
+    if (canSurvive(1.5) && round_1 < 10) {
       return "attack with weapon";
     }
     if (canUse($skill`Implode Universe`)) {

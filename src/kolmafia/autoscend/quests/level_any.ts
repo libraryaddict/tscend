@@ -69,11 +69,11 @@ import { auto_advToReserve, LX_doVacation } from "../../autoscend";
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
 import {
-  autoEquip,
+  autoEquipToSlot,
   autoOutfit,
   equipStatgainIncreasers$1,
   possessEquipment,
-  possessOutfit$1,
+  possessOutfit,
 } from "../auto_equipment";
 import {
   canChangeToFamiliar,
@@ -101,7 +101,7 @@ import {
   meatReserve,
   summonMonster,
 } from "../auto_util";
-import { zone_isAvailable$1 } from "../auto_zone";
+import { zone_isAvailable } from "../auto_zone";
 import { canUse } from "../combat/auto_combat_util";
 import {
   acquiredFantasyRealmToken,
@@ -151,7 +151,6 @@ import {
   LX_getStarKey,
   needStarKey,
   towerKeyCount,
-  towerKeyCount$1,
 } from "./level_13";
 
 // This file should contain functions for adventuring which are not related to any of the council quests nor any "optional" quests.
@@ -627,7 +626,7 @@ export function LX_lockPicking(): boolean {
     return false;
   }
 
-  if (towerKeyCount$1(false) >= 3) {
+  if (towerKeyCount(false) >= 3) {
     return false;
   }
 
@@ -687,7 +686,7 @@ export function estimateDailyDungeonAdvNeeded(): number {
 
 export function LX_fatLootToken(): boolean {
   if (
-    towerKeyCount$1(false) >= 3 &&
+    towerKeyCount(false) >= 3 &&
     !toBoolean(getProperty("auto_forceFatLootToken"))
   ) {
     return false; //have enough tokens
@@ -709,7 +708,7 @@ export function LX_fatLootToken(): boolean {
     }
   }
   if (
-    towerKeyCount$1(false) < 3 &&
+    towerKeyCount(false) < 3 &&
     (internalQuestStatus("questL13Final") === 5 || auto_turbo())
   ) {
     // at NS tower door and still need hero keys or going for turbo
@@ -855,7 +854,7 @@ function LX_dailyDungeonToken(): boolean {
     toInt(getProperty("_lastDailyDungeonRoom")) === 4 ||
     toInt(getProperty("_lastDailyDungeonRoom")) === 9
   ) {
-    autoEquip($slot`acc3`, $item`ring of Detect Boring Doors`);
+    autoEquipToSlot($slot`acc3`, $item`ring of Detect Boring Doors`);
   }
 
   return autoAdv($location`The Daily Dungeon`);
@@ -1204,7 +1203,7 @@ export function LX_dronesOut(): boolean {
     needStarKey() &&
     itemAmount($item`star`) < 7 &&
     itemAmount($item`line`) < 6 &&
-    zone_isAvailable$1($location`The Hole in the Sky`)
+    zone_isAvailable($location`The Hole in the Sky`)
   ) {
     auto_log_info$1("Going to HiTS");
     if (
@@ -1222,7 +1221,7 @@ export function LX_dronesOut(): boolean {
       itemAmount($item`tomb ratchet`) <
       10 &&
     itemAmount($item`tangle of rat tails`) >= 1 &&
-    zone_isAvailable$1($location`The Middle Chamber`)
+    zone_isAvailable($location`The Middle Chamber`)
   ) {
     auto_log_info$1("Going to Middle Chamber");
     if (
@@ -1237,7 +1236,7 @@ export function LX_dronesOut(): boolean {
     internalQuestStatus("questL09Topping") >= 2 &&
     internalQuestStatus("questL09Topping") <= 3 &&
     hedgeTrimmersNeeded() > 1 &&
-    zone_isAvailable$1($location`Twin Peak`) &&
+    zone_isAvailable($location`Twin Peak`) &&
     prepareForTwinPeak(true)
   ) {
     auto_log_info$1("Going to Twin Peak");
@@ -1252,7 +1251,7 @@ export function LX_dronesOut(): boolean {
   if (
     internalQuestStatus("questL11Ron") > 1 &&
     internalQuestStatus("questL11Ron") < 5 &&
-    zone_isAvailable$1($location`The Red Zeppelin`)
+    zone_isAvailable($location`The Red Zeppelin`)
   ) {
     auto_log_info$1("Going to the Red Zeppelin");
     if (
@@ -1268,7 +1267,7 @@ export function LX_dronesOut(): boolean {
     toInt(getProperty("hiddenBowlingAlleyProgress")) +
       itemAmount($item`bowling ball`) <
       6 &&
-    zone_isAvailable$1($location`The Hidden Bowling Alley`)
+    zone_isAvailable($location`The Hidden Bowling Alley`)
   ) {
     auto_log_info$1("Going to the Hidden Bowling Alley");
     if (
@@ -1282,7 +1281,7 @@ export function LX_dronesOut(): boolean {
   }
   if (
     internalQuestStatus("questL04Bat") <= 1 &&
-    zone_isAvailable$1($location`The Batrat and Ratbat Burrow`)
+    zone_isAvailable($location`The Batrat and Ratbat Burrow`)
   ) {
     auto_log_info$1("Going to the Batrat and Ratbat Burrow");
     if (
@@ -1296,7 +1295,7 @@ export function LX_dronesOut(): boolean {
   }
   if (
     internalQuestStatus("questL08Trapper") === 1 &&
-    zone_isAvailable$1($location`The Goatlet`)
+    zone_isAvailable($location`The Goatlet`)
   ) {
     auto_log_info$1("Going to the Goatlet");
     if (
@@ -1499,7 +1498,7 @@ export function candyBlockOutfit(type_1: string): string {
         }
         buy(1, it);
       }
-      if (possessOutfit$1("Bugbear Costume")) {
+      if (possessOutfit("Bugbear Costume")) {
         return "Bugbear Costume";
       }
     }

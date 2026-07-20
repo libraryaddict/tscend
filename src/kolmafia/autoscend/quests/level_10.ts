@@ -37,10 +37,10 @@ import {
   $stat,
 } from "libram";
 
-import { auto_buyUpTo, canPull$1, pullXWhenHaveY } from "../auto_acquire";
+import { auto_buyUpTo, canPull, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
-import { buffMaintain$4 } from "../auto_buff";
-import { autoEquip$1, possessEquipment } from "../auto_equipment";
+import { buffMaintain$2 } from "../auto_buff";
+import { autoEquip, possessEquipment } from "../auto_equipment";
 import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
@@ -65,7 +65,7 @@ import { auto_canHabitat } from "../iotms/mr2023";
 import { auto_haveSpringShoes } from "../iotms/mr2024";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { is_boris } from "../paths/avatar_of_boris";
-import { bat_formBats$1 } from "../paths/dark_gyffte";
+import { bat_formBats } from "../paths/dark_gyffte";
 import { in_gnoob } from "../paths/gelatinous_noob";
 import { in_koe } from "../paths/kingdom_of_exploathing";
 import { lar_repeat } from "../paths/live_ascend_repeat";
@@ -154,7 +154,7 @@ export function L10_airship(): boolean {
   }
 
   if ($location`The Penultimate Fantasy Airship`.turnsSpent < 10) {
-    bat_formBats$1();
+    bat_formBats();
   }
 
   if (
@@ -239,7 +239,7 @@ export function L10_basement(): boolean {
     if (
       !possessEquipment(amulet) &&
       auto_can_equip(amulet) &&
-      canPull$1(amulet)
+      canPull(amulet)
     ) {
       pullXWhenHaveY(amulet, 1, 0);
     }
@@ -250,7 +250,7 @@ export function L10_basement(): boolean {
       if (
         !possessEquipment(umbrella) &&
         auto_can_equip(umbrella) &&
-        canPull$1(umbrella) &&
+        canPull(umbrella) &&
         !possessEquipment($item`unbreakable umbrella`)
       ) {
         pullXWhenHaveY(umbrella, 1, 0);
@@ -260,10 +260,10 @@ export function L10_basement(): boolean {
 
   if (myPrimestat() === $stat`Muscle`) {
     auto_buyUpTo(1, $item`Ben-Gal™ Balm`);
-    buffMaintain$4($effect`Go Get 'Em, Tiger!`);
+    buffMaintain$2($effect`Go Get 'Em, Tiger!`);
   }
   auto_buyUpTo(1, $item`hair spray`);
-  buffMaintain$4($effect`Butt-Rock Hair`);
+  buffMaintain$2($effect`Butt-Rock Hair`);
 
   if (in_gnoob() && auto_have_familiar($familiar`Robortender`)) {
     if (
@@ -285,9 +285,9 @@ export function L10_basement(): boolean {
   ) {
     return false;
   }
-  if (!autoEquip$1($item`amulet of extreme plot significance`)) {
-    if (!autoEquip$1($item`unbreakable umbrella`)) {
-      autoEquip$1($item`titanium assault umbrella`);
+  if (!autoEquip($item`amulet of extreme plot significance`)) {
+    if (!autoEquip($item`unbreakable umbrella`)) {
+      autoEquip($item`titanium assault umbrella`);
     }
   }
   autoAdv($location`The Castle in the Clouds in the Sky (Basement)`);
@@ -357,7 +357,7 @@ export function L10_topFloor(): boolean {
   if (
     !possessEquipment($item`Mohawk wig`) &&
     auto_can_equip($item`Mohawk wig`) &&
-    canPull$1($item`Mohawk wig`)
+    canPull($item`Mohawk wig`)
   ) {
     pullXWhenHaveY($item`Mohawk wig`, 1, 0);
   }
@@ -373,7 +373,7 @@ export function L10_topFloor(): boolean {
   ) {
     return false;
   }
-  autoEquip$1($item`Mohawk wig`);
+  autoEquip($item`Mohawk wig`);
   autoAdv($location`The Castle in the Clouds in the Sky (Top Floor)`);
 
   if (internalQuestStatus("questL10Garbage") > 9) {

@@ -1,7 +1,7 @@
 import { abort, Monster } from "kolmafia";
 import { $item, $monster } from "libram";
 
-import { canUse$3, useItem$1 } from "./auto_combat_util";
+import { canUse$3, useItem } from "./auto_combat_util";
 
 //Path specific combat handling for Bees Hate You
 
@@ -16,7 +16,7 @@ export function auto_combatBHYStage1(
   //technically also a hidden boss in all paths but we never want to fight it in other paths
   if (enemy === $monster`Guy Made Of Bees`) {
     if (canUse$3($item`antique hand mirror`)) {
-      return useItem$1($item`antique hand mirror`);
+      return useItem($item`antique hand mirror`);
     } else {
       abort(
         "We attacked [Guy Made Of Bees] without an [antique hand mirror]. Report this then get the mirror before running autoscend again",

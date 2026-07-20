@@ -58,7 +58,7 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
-  canYellowRay$1,
+  canYellowRay,
   handleTracker$1,
   internalQuestStatus,
   organsFull,
@@ -822,7 +822,7 @@ export function chateauPainting(): boolean {
     isActuallyEd() &&
     myDaycount() <= 3
   ) {
-    if (canYellowRay$1()) {
+    if (canYellowRay()) {
       auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
       if (chateaumantegna_usePainting()) {
         return true;

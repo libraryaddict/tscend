@@ -93,11 +93,10 @@ import {
   pathHasFamiliar,
 } from "./auto_familiar";
 import { disregardInstantKarma } from "./auto_powerlevel";
-import { solveDelayZone$1 } from "./auto_routing";
+import { solveDelayZone } from "./auto_routing";
 import {
   auto_burnMP,
   auto_can_equip,
-  auto_can_equip$1,
   auto_have_skill,
   auto_ignoreExperience,
   auto_is_valid,
@@ -186,7 +185,7 @@ function getTentativeMaximizeEquip(s: Slot): Item {
   return toItem(getProperty(getMaximizeSlotPref(s)));
 }
 
-export function autoEquip(s: Slot, it: Item): boolean {
+export function autoEquipToSlot(s: Slot, it: Item): boolean {
   if (!possessEquipment(it) || !auto_can_equip(it)) {
     return false;
   }
@@ -229,8 +228,8 @@ export function autoEquip(s: Slot, it: Item): boolean {
   return tryAddItemToMaximize(s, it);
 }
 
-export function autoEquip$1(it: Item): boolean {
-  return autoEquip(toSlot(it), it);
+export function autoEquip(it: Item): boolean {
+  return autoEquipToSlot(toSlot(it), it);
 }
 // specifically intended for forcing something in to a specific slot,
 // instead of just forcing it to be equipped in general
@@ -238,7 +237,7 @@ export function autoEquip$1(it: Item): boolean {
 export function autoForceEquip(
   s: Slot,
   it: Item,
-  noMaximize: boolean,
+  noMaximize: boolean = false,
 ): boolean {
   if (it === Item.none) {
     return equip(s, it);
@@ -269,10 +268,6 @@ export function autoForceEquip(
   return false;
 }
 
-export function autoForceEquip$1(s: Slot, it: Item): boolean {
-  return autoForceEquip(s, it, false);
-}
-
 export function autoForceEquip$2(it: Item, noMaximize: boolean): boolean {
   // Maximizer will put its preferred accessories in order acc1,acc2,acc3
   // So for accessories, use acc3 for a force as that will get the best remaining maximizer score.
@@ -286,7 +281,7 @@ export function autoForceEquip$3(it: Item): boolean {
   // Maximizer will put its preferred accessories in order acc1,acc2,acc3
   // So for accessories, use acc3 for a force as that will get the best remaining maximizer score.
   if (toSlot(it) === $slot`acc1`) {
-    return autoForceEquip$1($slot`acc3`, it);
+    return autoForceEquip($slot`acc3`, it);
   }
   return autoForceEquip$2(it, false);
 }
@@ -304,9 +299,9 @@ export function autoOutfit(toWear: string): boolean {
   for (const [, it] of outfitPieces(toWear).entries()) {
     // Keep required accessories in acc3 slot to preserve our format
     if (CommonOutfitAccessories.includes(it)) {
-      pass_1 = pass_1 && autoEquip($slot`acc3`, it);
+      pass_1 = pass_1 && autoEquipToSlot($slot`acc3`, it);
     } else {
-      pass_1 = pass_1 && autoEquip$1(it);
+      pass_1 = pass_1 && autoEquip(it);
     }
   }
   return pass_1;
@@ -1016,7 +1011,7 @@ function finalizeMaximize(speculative: boolean): void {
     const saveGoblinForDelay: boolean =
       auto_sausageFightsToday() < 8 &&
       !zone_delay(myLocation())._boolean &&
-      solveDelayZone$1() !== Location.none;
+      solveDelayZone() !== Location.none;
     // don't interfere with backups unless they're equivalent or worse
     const dontSausageBackups: boolean =
       auto_backupTarget() &&
@@ -1087,7 +1082,7 @@ function finalizeMaximize(speculative: boolean): void {
     } else if (
       !nextMonsterIsFree &&
       toInt(getProperty("cursedMagnifyingGlassCount")) < 13 &&
-      solveDelayZone$1() !== Location.none
+      solveDelayZone() !== Location.none
     ) {
       // add bonus to charge free fights. charge is added when completing nonfree fights only
       // also we can pre-charge it for the next day once we have used our 5 free fights.
@@ -1389,17 +1384,16 @@ export function simMaximize$1(loc: Location): boolean {
   return res;
 }
 
-export function simMaximizeWith(loc: Location, add_1: string): boolean {
+export function simMaximizeWith(
+  add_1: string,
+  loc: Location = myLocation(),
+): boolean {
   const backup: string = getProperty("auto_maximize_current");
   addToMaximize(add_1);
   auto_log_debug(`Simulating: ${getProperty("auto_maximize_current")}`, "gold");
   const res: boolean = simMaximize$1(loc);
   setProperty("auto_maximize_current", backup);
   return res;
-}
-
-export function simMaximizeWith$1(add_1: string): boolean {
-  return simMaximizeWith(myLocation(), add_1);
 }
 
 export function simValue(mod: string): number {
@@ -1489,7 +1483,7 @@ export function equipOverrides(): void {
         );
         continue;
       }
-      if (autoEquip(s, it)) {
+      if (autoEquipToSlot(s, it)) {
         // if equipping to accessories, now move on to the next slot
         // otherwise, stop equipping, since items are listed from highest
         // to lowest priority
@@ -1532,7 +1526,7 @@ export function possessUnrestricted(it: Item): boolean {
 
 export function possessOutfit(
   outfitToCheck: string,
-  checkCanEquip: boolean,
+  checkCanEquip: boolean = false,
 ): boolean {
   // have_outfit will report false if you're wearing some of the items
   // it will only report true if you have all in inventory or are wearing the whole thing
@@ -1553,10 +1547,6 @@ export function possessOutfit(
   return true;
 }
 
-export function possessOutfit$1(outfitToCheck: string): boolean {
-  return possessOutfit(outfitToCheck, false);
-}
-
 export function equipBaseline(): void {
   equipMaximizedGear();
 }
@@ -1565,7 +1555,7 @@ export function ensureSealClubs(): void {
   cliExecute("acquire 1 seal-clubbing club");
   for (const club of $items`legendary seal-clubbing club, Meat Tenderizer is Murder, lead pipe, porcelain police baton, stainless steel shillelagh, frozen seal spine, ghast iron cleaver, oversized pipe, curmudgel, elegant nightstick, Maxwell's Silver Hammer, red-hot poker, giant foam finger, hilarious comedy prop, infernal toilet brush, mannequin leg, gnawed-up dog bone, severed flipper, spiked femur, corrupt club of corrupt corruption, kneecapping stick, Orcish frat-paddle, flaming crutch, corrupt club of corruption, skeleton bone, remaindered axe, club of corruption, Gnollish flyswatter, seal-clubbing club`) {
     if (possessEquipment(club)) {
-      autoForceEquip$1($slot`weapon`, club);
+      autoForceEquip($slot`weapon`, club);
       return;
     }
   }
@@ -1621,7 +1611,7 @@ export function equipRollover(silent: boolean): void {
   }
 }
 
-export function auto_forceEquipSword(speculative: boolean): boolean {
+export function auto_forceEquipSword(speculative: boolean = false): boolean {
   let swordToEquip: Item = Item.none;
   // use the ebony epee if we have it
   if (possessEquipment($item`ebony epee`)) {
@@ -1658,7 +1648,7 @@ export function auto_forceEquipSword(speculative: boolean): boolean {
 
   if (
     toItem(getProperty("auto_equipment_override_weapon")) !== Item.none &&
-    auto_can_equip$1(
+    auto_can_equip(
       toItem(getProperty("auto_equipment_override_weapon")),
       $slot`weapon`,
     )
@@ -1678,13 +1668,9 @@ export function auto_forceEquipSword(speculative: boolean): boolean {
   }
 
   if (speculative) {
-    return auto_can_equip$1(swordToEquip, $slot`weapon`);
+    return auto_can_equip(swordToEquip, $slot`weapon`);
   }
-  return autoForceEquip$1($slot`weapon`, swordToEquip);
-}
-
-export function auto_forceEquipSword$1(): boolean {
-  return auto_forceEquipSword(false);
+  return autoForceEquip($slot`weapon`, swordToEquip);
 }
 
 export function is_watch(it: Item): boolean {
@@ -1852,26 +1838,26 @@ export function auto_equipFreekill(): void {
     auto_log_info$1(
       "We don't have ELR so let's hit a bullseye. Equipping Everful Dart holster.",
     );
-    autoEquip($slot`acc3`, dartHolster);
+    autoEquipToSlot($slot`acc3`, dartHolster);
   } else if (chestXrayAvailable) {
     auto_log_info$1(
       "We still have Chest X-Rays available. Equipping Lil' Doctor bag.",
     );
-    autoEquip($slot`acc3`, doctorBag);
+    autoEquipToSlot($slot`acc3`, doctorBag);
   } else if (fireGunAvailable) {
     auto_log_info$1("Let's be a jokester. Equipping The Jokester's gun.");
-    autoEquip($slot`weapon`, joksterGun);
+    autoEquipToSlot($slot`weapon`, joksterGun);
   } else if (sweatBulletsAvailable) {
     auto_log_info$1(
       "Man, we about to sweat bullets up in here. Equipping BCZ.",
     );
-    autoEquip($slot`acc3`, bcz);
+    autoEquipToSlot($slot`acc3`, bcz);
   } else if (clubBackAvailable) {
     // club back is last because it destroys drops, so we may choose to not use it
     auto_log_info$1(
       "They may not be seals, but we're gonna kill them last week. Equipping Legendary Seal Clubbing Club.",
     );
-    autoEquip($slot`weapon`, legendClub);
+    autoEquipToSlot($slot`weapon`, legendClub);
   } else {
     auto_log_info$1(
       "No free kill sources found to equip, maybe you have some others, but we'll let combat figure that out.",

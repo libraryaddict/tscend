@@ -34,17 +34,17 @@ import {
 
 import { pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
-import { buffMaintain$3 } from "../auto_buff";
+import { buffMaintain$2 } from "../auto_buff";
 import {
   addToMaximize,
   possessEquipment,
   resetMaximize,
-  simMaximizeWith$1,
+  simMaximizeWith,
   simValue,
   simValue$1,
 } from "../auto_equipment";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
-import { providePlusCombat$4, providePlusNonCombat$4 } from "../auto_providers";
+import { providePlusCombat, providePlusNonCombat$2 } from "../auto_providers";
 import {
   auto_combatModCap,
   auto_convertDesiredML,
@@ -109,7 +109,7 @@ function auto_tavern(): boolean {
   // We need 20 each of the elements except sleaze to skip noncombats
   function try_buff_damage(el: Element, ef: Effect): void {
     if (numericModifier(damageModifier(el)) < 20.0) {
-      buffMaintain$3(ef, 20, 1, 1);
+      buffMaintain$2(ef, 20, 1, 1);
     }
   }
 
@@ -145,7 +145,7 @@ function auto_tavern(): boolean {
   }
 
   // Tails are a better time saving investment. Add -combat to ensure sim and real maximizer results match
-  simMaximizeWith$1(
+  simMaximizeWith(
     `80cold damage 20max,80hot damage 20max,80spooky damage 20max,80stench damage 20max,500ml ${auto_convertDesiredML(max_ml_target)}max,-200combat 25max`,
   );
 
@@ -167,7 +167,7 @@ function auto_tavern(): boolean {
   for (const it of $items`17-ball, rare oboe`) {
     if (!all_passed()) {
       if (pullXWhenHaveY(it, 1, 0)) {
-        simMaximizeWith$1(
+        simMaximizeWith(
           `80cold damage 20max,80hot damage 20max,80spooky damage 20max,80stench damage 20max,500ml ${auto_convertDesiredML(max_ml_target)}max,-200combat 25max`,
         );
       }
@@ -193,9 +193,9 @@ function auto_tavern(): boolean {
   addToMaximize(`500ml ${auto_convertDesiredML(max_ml_target)}max`);
 
   if (capped >= 3) {
-    providePlusNonCombat$4(auto_combatModCap(), $location`Noob Cave`);
+    providePlusNonCombat$2(auto_combatModCap(), $location`Noob Cave`);
   } else {
-    providePlusCombat$4(20, $location`Noob Cave`);
+    providePlusCombat(20, $location`Noob Cave`);
   }
 
   let tavern_1: string = getProperty("tavernLayout");

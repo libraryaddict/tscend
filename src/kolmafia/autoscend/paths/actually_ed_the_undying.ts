@@ -67,12 +67,12 @@ import {
   pullXWhenHaveY,
 } from "../auto_acquire";
 import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
-import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
+import { buffMaintain$2 } from "../auto_buff";
 import { autoChew, spleen_left } from "../auto_consume";
 import {
   addToMaximize,
   autoEquip,
-  autoEquip$1,
+  autoEquipToSlot,
   equipBaseline,
   possessEquipment,
 } from "../auto_equipment";
@@ -362,12 +362,12 @@ export function ed_doResting(): boolean {
   if (isActuallyEd()) {
     const maxBuff: number = 675 - myTurncount();
     while (haveAnyIotmAlternativeRestSiteAvailable() && doFreeRest()) {
-      buffMaintain$3($effect`Purr of the Feline`, 30, 3, maxBuff);
-      buffMaintain$3($effect`Hide of Sobek`, 30, 3, maxBuff);
-      buffMaintain$3($effect`Bounty of Renenutet`, 30, 3, maxBuff);
-      buffMaintain$3($effect`Prayer of Seshat`, 15, 3, maxBuff);
-      buffMaintain$3($effect`Wisdom of Thoth`, 15, 3, maxBuff);
-      buffMaintain$3($effect`Power of Heka`, 15, 3, maxBuff);
+      buffMaintain$2($effect`Purr of the Feline`, 30, 3, maxBuff);
+      buffMaintain$2($effect`Hide of Sobek`, 30, 3, maxBuff);
+      buffMaintain$2($effect`Bounty of Renenutet`, 30, 3, maxBuff);
+      buffMaintain$2($effect`Prayer of Seshat`, 15, 3, maxBuff);
+      buffMaintain$2($effect`Wisdom of Thoth`, 15, 3, maxBuff);
+      buffMaintain$2($effect`Power of Heka`, 15, 3, maxBuff);
     }
     return true;
   }
@@ -1188,11 +1188,11 @@ function L1_ed_island(): boolean {
   }
 
   if (itemAmount($item`gore bucket`) > 0) {
-    autoEquip$1($item`gore bucket`);
+    autoEquip($item`gore bucket`);
   }
 
   if (itemAmount($item`Personal Ventilation Unit`) > 0) {
-    autoEquip($slot`acc2`, $item`Personal Ventilation Unit`);
+    autoEquipToSlot($slot`acc2`, $item`Personal Ventilation Unit`);
   }
   if (
     possessEquipment($item`gore bucket`) &&
@@ -1209,7 +1209,7 @@ function L1_ed_island(): boolean {
     cliExecute("auto_post_adv.js");
   }
 
-  buffMaintain$4($effect`Experimental Effect G-9`);
+  buffMaintain$2($effect`Experimental Effect G-9`);
   //track that we are farming Ka as Ed
   setProperty("_auto_farmingKaAsEd", true.toString());
   autoAdv($location`The Secret Government Laboratory`);
@@ -1293,7 +1293,7 @@ function L1_ed_islandFallback(): boolean {
   if (myServant() === $servant`Priest` && myServant().experience < 196) {
     // make sure we have a level 15 Priest if possible
     // so we get the extra Ka from Hippies and Goblins.
-    buffMaintain$3($effect`Purr of the Feline`, 10, 1, 10);
+    buffMaintain$2($effect`Purr of the Feline`, 10, 1, 10);
   }
 
   if (haveSkill($skill`Upgraded Legs`) || itemAmount($item`Ka coin`) >= 10) {

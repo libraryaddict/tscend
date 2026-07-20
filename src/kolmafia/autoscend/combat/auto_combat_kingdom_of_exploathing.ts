@@ -10,7 +10,7 @@ import {
 } from "kolmafia";
 import { $elements, $item, $monster, $skill } from "libram";
 
-import { auto_useSkill, canUse, canUse$3, useItem$1 } from "./auto_combat_util";
+import { auto_useSkill, canUse, canUse$3, useItem } from "./auto_combat_util";
 
 //Path specific combat handling for Kingdom of Exploathing
 
@@ -39,7 +39,7 @@ export function auto_combatExploathingStage1(
 
   if (enemy === $monster`skeleton astronaut`) {
     if (myDaycount() === 1 && canUse$3($item`exploding cigar`, false)) {
-      return useItem$1($item`exploding cigar`);
+      return useItem($item`exploding cigar`);
     }
     let dmg: number = 0;
     for (const el of $elements`hot, cold, sleaze, spooky, stench`) {

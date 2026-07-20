@@ -59,7 +59,7 @@ import { auto_mall_price } from "../auto_acquire";
 import { autoAdv, autoAdvBypass, CombatMacro } from "../auto_adventure";
 import { spleen_left } from "../auto_consume";
 import {
-  autoForceEquip$1,
+  autoForceEquip,
   autoForceEquip$3,
   possessEquipment,
 } from "../auto_equipment";
@@ -1199,7 +1199,7 @@ export function LX_ghostBusting(): boolean {
     );
   }
   if (goal === $location`Inside the Palindome`) {
-    autoForceEquip$1($slot`acc3`, $item`Talisman o' Namsilat`);
+    autoForceEquip($slot`acc3`, $item`Talisman o' Namsilat`);
   }
   acquireHP();
   return autoAdv(goal);
@@ -1329,11 +1329,10 @@ export function auto_chapeau(): void {
   }
 }
 
-export function rethinkingCandy(acquire: Effect): boolean {
-  return rethinkingCandy$1(acquire, false);
-}
-
-function rethinkingCandy$1(acquire: Effect, simulate: boolean): boolean {
+export function rethinkingCandy(
+  acquire: Effect,
+  simulate: boolean = false,
+): boolean {
   if (
     (!haveSkill($skill`Sweet Synthesis`) ||
       !auto_is_valid$2($skill`Sweet Synthesis`)) &&

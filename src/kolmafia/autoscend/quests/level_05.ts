@@ -26,8 +26,8 @@ import {
 
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
-import { buffMaintain$3, buffMaintain$4 } from "../auto_buff";
-import { autoOutfit, possessOutfit$1 } from "../auto_equipment";
+import { buffMaintain$2 } from "../auto_buff";
+import { autoOutfit, possessOutfit } from "../auto_equipment";
 import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import { canBurnDelay } from "../auto_routing";
@@ -37,10 +37,10 @@ import {
   auto_log_info,
   internalQuestStatus,
 } from "../auto_util";
-import { canSurvive$1 } from "../combat/auto_combat_util";
+import { canSurvive } from "../combat/auto_combat_util";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
-import { bat_formBats$1 } from "../paths/dark_gyffte";
+import { bat_formBats } from "../paths/dark_gyffte";
 import { in_gnoob } from "../paths/gelatinous_noob";
 import { in_heavyrains } from "../paths/heavy_rains";
 import { in_lol } from "../paths/legacy_of_loathing";
@@ -109,7 +109,7 @@ export function L5_haremOutfit(): boolean {
   if (internalQuestStatus("questL05Goblin") !== 1) {
     return false;
   }
-  if (possessOutfit$1("Knob Goblin Harem Girl Disguise")) {
+  if (possessOutfit("Knob Goblin Harem Girl Disguise")) {
     return false;
   }
   // Just pull it if d2
@@ -131,9 +131,9 @@ export function L5_haremOutfit(): boolean {
   }
 
   if (in_heavyrains()) {
-    buffMaintain$4($effect`Fishy Whiskers`);
+    buffMaintain$2($effect`Fishy Whiskers`);
   }
-  bat_formBats$1();
+  bat_formBats();
 
   auto_log_info("Looking for some sexy lingerie!", "blue");
   if (autoAdv($location`Cobb's Knob Harem`)) {
@@ -146,14 +146,14 @@ export function L5_goblinKing(): boolean {
   if (internalQuestStatus("questL05Goblin") !== 1) {
     return false;
   }
-  if (!canSurvive$1(3.0)) {
+  if (!canSurvive(3.0)) {
     return false;
   }
   if (myAdventures() <= 2) {
     return false;
   }
 
-  if (!possessOutfit$1("Knob Goblin Harem Girl Disguise")) {
+  if (!possessOutfit("Knob Goblin Harem Girl Disguise")) {
     return false;
   }
   if (robot_delay("outfit")) {
@@ -164,7 +164,7 @@ export function L5_goblinKing(): boolean {
   if (!autoOutfit("Knob Goblin Harem Girl Disguise")) {
     abort("Could not put on Knob Goblin Harem Girl Disguise, aborting");
   }
-  buffMaintain$4($effect`Knob Goblin Perfume`);
+  buffMaintain$2($effect`Knob Goblin Perfume`);
   if (haveEffect($effect`Knob Goblin Perfume`) === 0) {
     let advSpent_1: boolean = autoAdv($location`Cobb's Knob Harem`);
     if (haveEffect($effect`Knob Goblin Perfume`) === 0) {
@@ -175,22 +175,22 @@ export function L5_goblinKing(): boolean {
 
   if (myPrimestat() === $stat`Muscle`) {
     auto_buyUpTo(1, $item`Ben-Gal™ Balm`);
-    buffMaintain$4($effect`Go Get 'Em, Tiger!`);
+    buffMaintain$2($effect`Go Get 'Em, Tiger!`);
   }
   auto_buyUpTo(1, $item`hair spray`);
-  buffMaintain$4($effect`Butt-Rock Hair`);
+  buffMaintain$2($effect`Butt-Rock Hair`);
 
   if (
     myClass() === $class`Seal Clubber` ||
     myClass() === $class`Turtle Tamer`
   ) {
     auto_buyUpTo(1, $item`blood of the Wereseal`);
-    buffMaintain$4($effect`Temporary Lycanthropy`);
+    buffMaintain$2($effect`Temporary Lycanthropy`);
   }
   //AoSOL buffs
   if (in_aosol()) {
-    buffMaintain$3($effect`Queso Fustulento`, 10, 1, 10);
-    buffMaintain$3($effect`Tricky Timpani`, 30, 1, 10);
+    buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
+    buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
   }
   // TODO: I died here, maybe we should heal a bit?
   if (!in_plumber()) {

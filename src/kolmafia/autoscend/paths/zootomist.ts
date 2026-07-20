@@ -48,14 +48,14 @@ import { auto_doTempleSummit } from "../../autoscend";
 import { pullXWhenHaveY } from "../auto_acquire";
 import {
   auto_getAllEquipabble,
-  possessOutfit$1,
-  simMaximizeWith$1,
+  possessOutfit,
+  simMaximizeWith,
 } from "../auto_equipment";
 import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { auto_sortedByModifier } from "../auto_list";
 import { provideFamExp, provideFamExp$3 } from "../auto_providers";
 import {
-  adjustForYellowRayIfPossible$1,
+  adjustForYellowRayIfPossible,
   auto_is_valid,
   auto_is_valid$2,
   auto_log_info,
@@ -170,7 +170,7 @@ export function zoo_d2Pulls(): void {
   }
   // Pull enough ML for oil peak, we need a provider function here.
   const ml_target: number = toInt(100.0);
-  simMaximizeWith$1("monster level");
+  simMaximizeWith("monster level");
   let curr_ml: number = toInt(numericModifier(Modifier.get("Monster Level")));
   // Function to try pulling an ML item, if it improves our ML by at least 10 over best alternative.
   function try_ml_pull(it: Item): number {
@@ -972,11 +972,7 @@ export function getZooKickInstaKill(): Skill {
   return Skill.none;
 }
 
-export function getZooBestPunch(): Skill {
-  return getZooBestPunch$1($monster`fluffy bunny`);
-}
-
-export function getZooBestPunch$1(m: Monster): Skill {
+export function getZooBestPunch(m: Monster = $monster`fluffy bunny`): Skill {
   if (haveSkill($skill`Left %n Punch`)) {
     return $skill`Left %n Punch`;
   } else {
@@ -1145,12 +1141,12 @@ export function LX_zootoFight(): boolean {
     if (yellowRayCombatString$1(Monster.none, false) !== "") {
       if (
         toBoolean(getProperty("auto_hippyInstead")) &&
-        !possessOutfit$1("War Hippy Fatigues")
+        !possessOutfit("War Hippy Fatigues")
       ) {
-        adjustForYellowRayIfPossible$1();
+        adjustForYellowRayIfPossible();
         return summonMonster($monster`War Hippy Airborne Commander`);
-      } else if (!possessOutfit$1("Frat Warrior Fatigues")) {
-        adjustForYellowRayIfPossible$1();
+      } else if (!possessOutfit("Frat Warrior Fatigues")) {
+        adjustForYellowRayIfPossible();
         return summonMonster($monster`War Frat Mobile Grill Unit`);
       }
     }

@@ -18,7 +18,7 @@ import {
 } from "../auto_util";
 import { in_zombieSlayer } from "../paths/zombie_slayer";
 import { cyrptEvilBonus } from "../quests/level_07";
-import { auto_useSkill, canSurvive$1, canUse } from "./auto_combat_util";
+import { auto_useSkill, canSurvive, canUse } from "./auto_combat_util";
 
 //Path specific combat handling for Zombie Slayer
 
@@ -47,11 +47,11 @@ export function auto_combatZombieSlayerStage3(
     return "";
   }
 
-  if (canUse($skill`Infectious Bite`) && canSurvive$1(4.0)) {
+  if (canUse($skill`Infectious Bite`) && canSurvive(4.0)) {
     return auto_useSkill($skill`Infectious Bite`);
   }
 
-  if (canUse($skill`Meat Shields`) && enemy.boss && canSurvive$1(4.0)) {
+  if (canUse($skill`Meat Shields`) && enemy.boss && canSurvive(4.0)) {
     return auto_useSkill($skill`Meat Shields`);
   }
   // Just always use Bear-ly Legal for the delevel + meat, unless we want to Bear Hug or Kodiak Moment
@@ -79,7 +79,7 @@ export function auto_combatZombieSlayerStage4(
   if (
     canUse($skill`Smash & Graaagh`) &&
     toInt(getProperty("_zombieSmashPocketsUsed")) < 30 &&
-    canSurvive$1(2.0)
+    canSurvive(2.0)
   ) {
     let doSmash: boolean = false;
 
@@ -289,7 +289,7 @@ export function auto_combatZombieSlayerStage5(
   // Spam plague claws if we won't die
   if (
     round_1 < 20 &&
-    canSurvive$1(5.0) &&
+    canSurvive(5.0) &&
     auto_have_skill($skill`Plague Claws`) &&
     enemy.physicalResistance < 80
   ) {

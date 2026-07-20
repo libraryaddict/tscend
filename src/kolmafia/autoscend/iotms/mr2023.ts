@@ -79,8 +79,8 @@ import {
   equipRollover,
   is_watch,
   possessEquipment,
-  possessOutfit$1,
-  simMaximizeWith$1,
+  possessOutfit,
+  simMaximizeWith,
   simValue,
 } from "../auto_equipment";
 import {
@@ -101,7 +101,7 @@ import {
   haveFreeRestAvailable,
   uneffect,
 } from "../auto_restore";
-import { solveDelayZone$1 } from "../auto_routing";
+import { solveDelayZone } from "../auto_routing";
 import {
   auto_can_equip,
   auto_canForceNextNoncombat,
@@ -123,7 +123,7 @@ import {
   handleTracker$1,
   handleTracker$2,
   haveCampgroundMaid,
-  isFreeMonster$1,
+  isFreeMonster,
   isGuildClass,
   meatReserve,
   wrap_item,
@@ -134,7 +134,7 @@ import { in_lol } from "../paths/legacy_of_loathing";
 import { in_pokefam } from "../paths/pocket_familiars";
 import { in_small } from "../paths/small";
 import { in_wereprof, is_werewolf } from "../paths/wereprofessor";
-import { cyrptEvilBonus$1 } from "../quests/level_07";
+import { cyrptEvilBonus } from "../quests/level_07";
 import { L10_needUmbrella } from "../quests/level_10";
 import { fantasyBanditsFought } from "./mr2018";
 import { auto_haveTrainSet } from "./mr2022";
@@ -202,7 +202,7 @@ export function wantToThrowGravel(loc: Location, enemy: Monster): boolean {
   if (!auto_is_valid($item`groveling gravel`)) {
     return false;
   }
-  if (isFreeMonster$1(enemy, loc)) {
+  if (isFreeMonster(enemy, loc)) {
     // don't use gravel against inherently free fights
     return false;
   }
@@ -382,7 +382,7 @@ export function auto_doPhoneQuest(): boolean {
   }
   // don't start quest if fights will already be free... unless we already have shadow affinity
   if (
-    isFreeMonster$1($monster`shadow slab`, auto_availableBrickRift()) &&
+    isFreeMonster($monster`shadow slab`, auto_availableBrickRift()) &&
     haveEffect($effect`Shadow Affinity`) === 0
   ) {
     return false;
@@ -873,7 +873,7 @@ export function auto_scepterSkills(): void {
     }
   }
   //see how much mana cost reduction we can get (up to 3mp)
-  simMaximizeWith$1("-1000mana cost");
+  simMaximizeWith("-1000mana cost");
 
   const manaCostMaximize: number = toInt(simValue("Mana Cost"));
   if (!auto_turbo()) {
@@ -1031,14 +1031,14 @@ export function auto_habitatTarget(target: Monster): boolean {
       case $monster`modern zmobie`:
         return (
           toInt(getProperty("cyrptAlcoveEvilness")) -
-            5 * (5 + cyrptEvilBonus$1()) >
+            5 * (5 + cyrptEvilBonus()) >
           13
         );
       case $monster`dirty old lihc`:
         return (
           in_avantGuard() &&
           toInt(getProperty("cyrptNicheEvilness")) -
-            5 * (3 + cyrptEvilBonus$1()) >
+            5 * (3 + cyrptEvilBonus()) >
             13
         );
       case $monster`lobsterfrogman`: {
@@ -1240,15 +1240,13 @@ export function auto_RWBBlastTarget(target: Monster): boolean {
     case $monster`modern zmobie`:
       // only worth it if we need 15 or more evilness reduced
       return (
-        toInt(getProperty("cyrptAlcoveEvilness")) -
-          3 * (5 + cyrptEvilBonus$1()) >
+        toInt(getProperty("cyrptAlcoveEvilness")) - 3 * (5 + cyrptEvilBonus()) >
         13
       );
     case $monster`dirty old lihc`:
       // only worth it if we need 9 or more evilness reduced.
       return (
-        toInt(getProperty("cyrptNicheEvilness")) -
-          3 * (3 + cyrptEvilBonus$1()) >
+        toInt(getProperty("cyrptNicheEvilness")) - 3 * (3 + cyrptEvilBonus()) >
         13
       );
     default:
@@ -1434,7 +1432,7 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
   }
 
   function wantToFreeRun(): boolean {
-    if (loc === solveDelayZone$1()) {
+    if (loc === solveDelayZone()) {
       return true;
     }
     return false;
@@ -1676,9 +1674,9 @@ export function auto_handleCCSC(): boolean {
     (place === $location`The Penultimate Fantasy Airship` &&
       L10_needUmbrella()) ||
     (place === $location`Wartime Frat House` &&
-      possessOutfit$1("War Hippy Fatigues")) ||
+      possessOutfit("War Hippy Fatigues")) ||
     (place === $location`Wartime Hippy Camp` &&
-      possessOutfit$1("Frat Warrior Fatigues")) ||
+      possessOutfit("Frat Warrior Fatigues")) ||
     $locations`The Sleazy Back Alley, A Mob of Zeppelin Protesters, The Daily Dungeon`.includes(
       place,
     )
