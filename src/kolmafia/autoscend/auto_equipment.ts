@@ -84,6 +84,7 @@ import {
   $slots,
   $stat,
   $thrall,
+  have,
 } from "libram";
 
 import { consumptionProgress } from "./auto_consume";
@@ -248,19 +249,19 @@ export function autoForceEquip(
   if ($slot`off-hand` === s) {
     if (weaponHands(equippedItem($slot`weapon`)) > 1) {
       if (!noMaximize) {
-        removeFromMaximize(`+equip ${equippedItem($slot`weapon`)}`);
+        removeFromMaximize(`+"equip ${equippedItem($slot`weapon`)}"`);
       }
       equip($slot`weapon`, Item.none);
     }
     if (!noMaximize) {
-      removeFromMaximize(`-equip ${it}`);
+      removeFromMaximize(`-"equip ${it}"`);
       addToMaximize("-off-hand, 1hand");
     }
     return equip($slot`off-hand`, it);
   }
   if (equip(s, it)) {
     if (!noMaximize) {
-      removeFromMaximize(`-equip ${it}`);
+      removeFromMaximize(`-"equip ${it}"`);
       addToMaximize(`-${s}`);
     }
     return true;
@@ -924,7 +925,7 @@ export function resetMaximize(): void {
     if (res !== "") {
       res += ",";
     }
-    res += `-equip ${it}`;
+    res += `-"equip ${it}"`;
   }
   // don't want to equip these items automatically
   // snow suit bonus drops every 5 combats so is best saved for important things
@@ -1025,7 +1026,7 @@ function finalizeMaximize(speculative: boolean): void {
       toBoolean(getProperty("mappingMonsters"))
     ) {
       addToMaximize(
-        `-equip ${wrap_item($item`Kramco Sausage-o-Matic™`).toString()}`,
+        `-"equip ${wrap_item($item`Kramco Sausage-o-Matic™`).toString()}"`,
       );
     }
   }
@@ -1038,7 +1039,7 @@ function finalizeMaximize(speculative: boolean): void {
       ) {
         // don't equip for non free fights in softcore? (pending allowed conditions like delay zone && none of the monsters in the zone is a sniff/YR target?)
         // don't interfere with backups or Map the Monsters
-        addToMaximize(`-equip ${$item`Möbius ring`.toString()}`);
+        addToMaximize(`-"equip ${$item`Möbius ring`.toString()}"`);
       }
     } else {
       // we want to make sure we equip mobius ring in meatpath when it's important,
@@ -1077,7 +1078,7 @@ function finalizeMaximize(speculative: boolean): void {
       ) {
         // don't equip for non free fights in softcore? (pending allowed conditions like delay zone && none of the monsters in the zone is a sniff/YR target?)
         // don't interfere with backups or Map the Monsters
-        addToMaximize(`-equip ${$item`cursed magnifying glass`.toString()}`);
+        addToMaximize(`-"equip ${$item`cursed magnifying glass`.toString()}"`);
       }
     } else if (
       !nextMonsterIsFree &&
@@ -1089,12 +1090,23 @@ function finalizeMaximize(speculative: boolean): void {
       addBonusToMaximize($item`cursed magnifying glass`, 200);
     }
   }
+
+  if (
+    have($item`Cup of 13s`) &&
+    inebrietyLimit() > 6 &&
+    !in_small() &&
+    !in_plumber()
+  ) {
+    // It gives some booze drops, scale up the bonus by our max liver
+    addBonusToMaximize($item`Cup of 13s`, inebrietyLimit() * 7);
+  }
+
   for (const s of $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`) {
     const pref: string = getMaximizeSlotPref(s);
     const toEquip: string = getProperty(pref);
     if (toEquip !== "") {
-      removeFromMaximize(`-equip ${toEquip}`);
-      addToMaximize(`+equip ${toEquip}`);
+      removeFromMaximize(`-"equip ${toEquip}"`);
+      addToMaximize(`+"equip ${toEquip}"`);
     }
   }
 
@@ -1103,7 +1115,7 @@ function finalizeMaximize(speculative: boolean): void {
     if (is_werewolf()) {
       addBonusToMaximize($item`Everfull Dart Holster`, 1000);
     } else {
-      addToMaximize(`+equip ${$item`Everfull Dart Holster`}`);
+      addToMaximize(`+"equip ${$item`Everfull Dart Holster`}"`);
     }
   }
 
@@ -1151,9 +1163,9 @@ function finalizeMaximize(speculative: boolean): void {
     }
     if (!nooculus) {
       if (possessEquipment($item`biphasic molecular oculus`)) {
-        addToMaximize(`+equip ${$item`biphasic molecular oculus`}`);
+        addToMaximize(`+"equip ${$item`biphasic molecular oculus`}"`);
       } else {
-        addToMaximize(`+equip ${$item`triphasic molecular oculus`}`);
+        addToMaximize(`+"equip ${$item`triphasic molecular oculus`}"`);
       }
     }
   }
@@ -1172,11 +1184,11 @@ function finalizeMaximize(speculative: boolean): void {
       )
     ) {
       if (possessEquipment($item`high-tension exoskeleton`)) {
-        addToMaximize(`+equip ${$item`high-tension exoskeleton`}`);
+        addToMaximize(`+"equip ${$item`high-tension exoskeleton`}"`);
       } else if (possessEquipment($item`ultra-high-tension exoskeleton`)) {
-        addToMaximize(`+equip ${$item`ultra-high-tension exoskeleton`}`);
+        addToMaximize(`+"equip ${$item`ultra-high-tension exoskeleton`}"`);
       } else {
-        addToMaximize(`+equip ${$item`irresponsible-tension exoskeleton`}`);
+        addToMaximize(`+"equip ${$item`irresponsible-tension exoskeleton`}"`);
       }
     }
   }
@@ -1227,7 +1239,7 @@ function finalizeMaximize(speculative: boolean): void {
     if (toBoolean(getProperty("mappingMonsters")) || auto_backupTarget()) {
       // don't interfere with backups or Map the Monsters
       // should also block equipping if support is added for Feel Nostalgic, Lecture on relativity, or fax for YR or other special combat actions
-      addToMaximize(`-equip ${$item`carnivorous potted plant`.toString()}`);
+      addToMaximize(`-"equip ${$item`carnivorous potted plant`.toString()}"`);
     } else if (
       ((nextMonster === Monster.none || instakillable(nextMonster)) &&
         !in_pokefam() &&
@@ -1267,7 +1279,7 @@ function finalizeMaximize(speculative: boolean): void {
   }
 
   if (myLocation() === toLocation(getProperty("_seadentWaveZone"))) {
-    addToMaximize(`+equip ${$item`Monodent of the Sea`}`); //Don't want to spend an extra turn if we don't have to
+    addToMaximize(`+"equip ${$item`Monodent of the Sea`}"`); //Don't want to spend an extra turn if we don't have to
   }
 
   if (
@@ -1306,7 +1318,7 @@ function finalizeMaximize(speculative: boolean): void {
   }
   // We could have added LED Candle to maximizer earlier when Jill was our familiar, but it's been replaced.
   if (myFamiliar() !== $familiar`Jill-of-All-Trades`) {
-    const candle_force: string = `+equip ${$item`LED candle`}`;
+    const candle_force: string = `+"equip ${$item`LED candle`}"`;
     if (maximizeContains(candle_force)) {
       removeFromMaximize(candle_force);
     }
