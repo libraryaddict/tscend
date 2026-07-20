@@ -804,8 +804,8 @@ export function LX_burnDelay(): boolean {
       );
       voteMonsterAvailable = false;
       sausageGoblinAvailable = false;
-      addToMaximize("-equip Kramco Sausage O-Matic");
-      addToMaximize("-equip &quot;I Voted!&quot; sticker");
+      addToMaximize(`-"equip Kramco Sausage O-Matic"`);
+      addToMaximize(`-"equip &quot;I Voted!&quot; sticker"`);
     }
   }
   // See the encounter priority flowcharts available at https://i.imgur.com/sdVH4SPh.jpg

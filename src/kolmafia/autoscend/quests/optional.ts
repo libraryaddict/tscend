@@ -1267,7 +1267,7 @@ export function LX_acquireEpicWeapon(): boolean {
   }
 
   addToMaximize(
-    `-equip ${($_f_starterWeapons.get(myClass()) ?? $_f_starterWeapons.set(myClass(), Item.none).get(myClass())).toString()}`,
+    `-"equip ${($_f_starterWeapons.get(myClass()) ?? $_f_starterWeapons.set(myClass(), Item.none).get(myClass())).toString()}"`,
   );
   if (tomb_already_found()) {
     return autoAdvBypass$1("place.php?whichplace=cemetery&action=cem_advtomb");

@@ -720,7 +720,7 @@ export function auto_configureParka(tag: string): boolean {
   // store the requested setting in a property so we can handle them later
   setProperty("auto_parkaSetting", tag);
   // cut down potential server hits by telling the maximizer to not consider it.
-  addToMaximize(`-equip ${wrap_item($item`Jurassic Parka`).toString()}`);
+  addToMaximize(`-"equip ${wrap_item($item`Jurassic Parka`).toString()}"`);
   return true;
 }
 

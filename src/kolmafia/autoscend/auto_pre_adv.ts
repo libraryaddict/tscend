@@ -394,7 +394,7 @@ function auto_ghost_prep(place: Location): void {
     }
   }
   if (auto_haveDarts() && dartEleDmg()) {
-    addToMaximize(`+equip ${$item`Everfull Dart Holster`}`); //If we have darts and an elemental damage buff, might as well use that
+    addToMaximize(`+"equip ${$item`Everfull Dart Holster`}"`); //If we have darts and an elemental damage buff, might as well use that
     return;
   }
 
@@ -789,7 +789,7 @@ function auto_pre_adventure(): boolean {
       (zoneHasWantedMonsters ? 300 : 0);
     if (crystalBallMaximizerBonus !== 0) {
       addToMaximize(
-        `+${crystalBallMaximizerBonus}bonus ${wrap_item($item`miniature crystal ball`).toString()}`,
+        `+${crystalBallMaximizerBonus}"bonus ${wrap_item($item`miniature crystal ball`).toString()}"`,
       );
     }
   }

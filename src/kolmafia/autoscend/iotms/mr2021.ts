@@ -244,11 +244,11 @@ export function auto_forceHandleCrystalBall(loc: Location): boolean {
 
   const crystal_ball: Item = wrap_item($item`miniature crystal ball`);
   if (shouldForceEquip) {
-    addToMaximize(`+equip ${crystal_ball.toString()}`);
+    addToMaximize(`+"equip ${crystal_ball.toString()}"`);
     setProperty("auto_nextEncounter", predicted_monster.toString());
     return true; //handled
   } else if (!auto_allowCrystalBall(predicted_monster, loc)) {
-    addToMaximize(`-equip ${crystal_ball.toString()}`);
+    addToMaximize(`-"equip ${crystal_ball.toString()}"`);
     return true; //handled
   }
   //equipping the crystal ball can't hurt but it is neither forced nor forbidden
@@ -315,7 +315,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
     if (crystalBallMaximizerBonus !== 0) {
       const crystal_ball: Item = wrap_item($item`miniature crystal ball`);
       addToMaximize(
-        `+${crystalBallMaximizerBonus}bonus ${crystal_ball.toString()}`,
+        `+${crystalBallMaximizerBonus}"bonus ${crystal_ball.toString()}"`,
       );
     }
   }

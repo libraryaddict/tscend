@@ -715,7 +715,7 @@ export function L13_towerNSContests(): boolean {
         case 1:
           acquireMP(160); // only uses free rests or items on hand by default
 
-          autoMaximize$1("initiative -equip snow suit", 1500, 0, false);
+          autoMaximize$1(`initiative -"equip snow suit"`, 1500, 0, false);
           provideInitiative$2(400, $location`Noob Cave`, true);
           if (
             crowd1Insufficient() &&
@@ -785,7 +785,7 @@ export function L13_towerNSContests(): boolean {
       provideStats$2(statGoal, $location`Noob Cave`, true);
       switch (crowd_stat) {
         case $stat`Moxie`:
-          autoMaximize$1("moxie -equip snow suit", 1500, 0, false);
+          autoMaximize$1(`moxie -"equip snow suit"`, 1500, 0, false);
           if (
             haveEffect($effect`Ten out of Ten`) === 0 &&
             auto_is_valid$3($effect`Ten out of Ten`)
@@ -803,7 +803,7 @@ export function L13_towerNSContests(): boolean {
           }
           break;
         case $stat`Muscle`:
-          autoMaximize$1("muscle -equip snow suit", 1500, 0, false);
+          autoMaximize$1(`muscle -"equip snow suit"`, 1500, 0, false);
           if (
             haveEffect($effect`Muddled`) === 0 &&
             auto_is_valid$3($effect`Muddled`)
@@ -821,7 +821,7 @@ export function L13_towerNSContests(): boolean {
           }
           break;
         case $stat`Mysticality`:
-          autoMaximize$1("myst -equip snow suit", 1500, 0, false);
+          autoMaximize$1(`myst -"equip snow suit"`, 1500, 0, false);
           if (
             haveEffect($effect`Uncucumbered`) === 0 &&
             auto_is_valid$3($effect`Uncucumbered`)
@@ -871,7 +871,7 @@ export function L13_towerNSContests(): boolean {
 
       if (challenge !== Element.none) {
         autoMaximize$1(
-          `${challenge} dmg, ${challenge} spell dmg -equip snow suit`,
+          `${challenge} dmg, ${challenge} spell dmg -"equip snow suit"`,
           1500,
           0,
           false,
@@ -971,7 +971,7 @@ export function L13_towerNSContests(): boolean {
           if (canPull($item`halibut`) && auto_can_equip($item`halibut`)) {
             pullXWhenHaveY($item`halibut`, 1, 0);
             autoMaximize$1(
-              `${challenge} dmg, ${challenge} spell dmg -equip snow suit`,
+              `${challenge} dmg, ${challenge} spell dmg -"equip snow suit"`,
               1500,
               0,
               false,
@@ -1695,17 +1695,17 @@ function L13_towerNSTowerBones(): boolean {
   }
 
   if (auto_remainingCandyCaneSlashes() > 0) {
-    addToMaximize(`+equip ${$item`candy cane sword cane`}`);
+    addToMaximize(`+"equip ${$item`candy cane sword cane`}"`);
   }
 
   if (possessEquipment($item`big hot pepper`)) {
-    addToMaximize(`+equip ${$item`big hot pepper`}`);
+    addToMaximize(`+"equip ${$item`big hot pepper`}"`);
   }
 
   for (const lantern of $items`Congressional Medal of Insanity, petrified wood water purifier, petrified wood wizard's pouch`) {
     acquireOrPull(lantern);
     if (possessEquipment(lantern)) {
-      addToMaximize(`+equip ${lantern}`);
+      addToMaximize(`+"equip ${lantern}"`);
       break; // we only need to pull one megalantern
     }
   }

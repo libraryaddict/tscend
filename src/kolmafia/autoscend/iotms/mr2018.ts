@@ -169,7 +169,7 @@ export function januaryToteAcquire(it: Item): boolean {
       it,
     )
   ) {
-    removeFromMaximize(`-equip ${it}`);
+    removeFromMaximize(`-"equip ${it}"`);
   }
   //Special handling for if we already have the item on hand. We might want to replace it with itself
   //do not use possessEquipment nor equipmentAmount here, they have special handling for tote foldables that always counts number of january's garbage totes instead of the target item. Resulting in this if always being true.

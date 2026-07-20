@@ -962,11 +962,11 @@ export function L12_filthworms(): boolean {
     ) {
       //helmet is least useful with +40 max MP enchantment.
       if (possessOutfit("frat warrior fatigues")) {
-        addToMaximize("-equip beer helmet");
+        addToMaximize(`-"equip beer helmet"`);
       }
       //pants and hat are identical, randomly selected hat for exclusion
       if (possessOutfit("frat boy ensemble")) {
-        addToMaximize("-equip orcish baseball cap");
+        addToMaximize(`-"equip orcish baseball cap"`);
       }
     }
   }
@@ -1090,7 +1090,7 @@ export function L12_filthworms(): boolean {
       glandGuaranteed = false;
       if (possessEquipment($item`Retrospecs`)) {
         //preadv would give a 50%item accessory a value of 2500 but when multiple fights are expected in each zone this accessory should be equivalent to 100%item?
-        addToMaximize("+2500bonus Retrospecs");
+        addToMaximize(`+2500"bonus Retrospecs"`);
       }
     }
   }
@@ -1150,7 +1150,7 @@ export function L12_filthworms(): boolean {
           possessEquipment($item`broken champagne bottle`) &&
           januaryToteTurnsLeft($item`broken champagne bottle`) > 0
         ) {
-          addToMaximize("-equip Broken Champagne Bottle"); //using this charge is no longer necessary, restore maximizer block that was removed
+          addToMaximize(`-"equip Broken Champagne Bottle"`); //using this charge is no longer necessary, restore maximizer block that was removed
         }
       }
       //todo if still not glandGuaranteed try to force the use of free kills in combat?
@@ -1247,7 +1247,7 @@ function gremlinsFamiliar(): void {
     for (const fameq of $items`tiny bowler, ant hoe, ant pick, ant pitchfork, ant rake, ant sickle, oversized fish scaler, filthy child leash, plastic pumpkin bucket, little box of fireworks, moveable feast`) {
       const wrapped_fameq: Item = wrap_item(fameq);
       if (possessEquipment(wrapped_fameq)) {
-        addToMaximize(`-equip ${wrapped_fameq.toString()}`);
+        addToMaximize(`-"equip ${wrapped_fameq.toString()}"`);
       }
     }
   }

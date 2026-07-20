@@ -787,7 +787,7 @@ export function auto_configureRetrocape(hero: string, tag: string): boolean {
   const settings: string = `${hero},${tag}`;
   setProperty("auto_retrocapeSettings", settings);
   // cut down potential server hits by telling the maximizer to not consider it.
-  addToMaximize("-equip unwrapped knock-off retro superhero cape");
+  addToMaximize(`-"equip unwrapped knock-off retro superhero cape"`);
   return true;
 }
 

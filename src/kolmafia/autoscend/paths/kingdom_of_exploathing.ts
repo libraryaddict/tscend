@@ -213,7 +213,7 @@ export function LX_koeInvaderHandler(): boolean {
         "Attacking the Invader, using June Cleaver and LTS.",
         "blue",
       );
-      addToMaximize("200 all res, +equip june cleaver");
+      addToMaximize(`200 all res, +"equip june cleaver"`);
       const ret: boolean = autoAdv($location`The Invader`);
       if (haveEffect($effect`Beaten Up`) > 0) {
         abort("We died to the invader. Do it manually please?");
@@ -258,7 +258,7 @@ export function LX_koeInvaderHandler(): boolean {
       // Use maximizer now that we are for sure fighting the Invader
       addToMaximize("200 all res");
       if (hot_source !== Item.none) {
-        addToMaximize(`+equip ${hot_source.toString()}`);
+        addToMaximize(`+"equip ${hot_source.toString()}"`);
       }
 
       const ret: boolean = autoAdv($location`The Invader`);

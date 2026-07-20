@@ -598,7 +598,7 @@ export function L9_aBooPeak(): boolean {
       isActuallyEd() &&
       possessEquipment($item`The Crown of Ed the Undying`)
     ) {
-      lihcface = "-equip lihc face";
+      lihcface = `-"equip lihc face"`;
     }
     let parrot: string =
       ", switch exotic parrot, switch mu, switch trick-or-treating tot";
@@ -607,7 +607,7 @@ export function L9_aBooPeak(): boolean {
     }
 
     autoMaximize$1(
-      `spooky res, cold res, 0.01hp ${lihcface} -equip snow suit${parrot}`,
+      `spooky res, cold res, 0.01hp ${lihcface} -"equip snow suit${parrot}"`,
       0,
       0,
       true,
