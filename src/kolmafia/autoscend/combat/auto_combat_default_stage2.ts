@@ -297,8 +297,8 @@ export function auto_combatDefaultStage2(
 
   if (auto_wantToShrunkenHead(enemy)) {
     handleTracker$1(
-      enemy.toString(),
       $skill`Prepare to reanimate your Foe`.toString(),
+      enemy.toString(),
       "auto_otherstuff",
     );
     return auto_useSkill($skill`Prepare to reanimate your Foe`);
