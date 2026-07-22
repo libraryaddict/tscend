@@ -132,7 +132,7 @@ export function autoLuckyAdv$1(loc: Location): boolean {
 export function autoAdvBypass(
   urlGetFlags: number,
   url: Map<number, string>,
-  loc: Location,
+  loc: Location = $location`Noob Cave`,
   option?: CombatMacro,
 ): boolean {
   if (!zone_isAvailable(loc, true)) {
