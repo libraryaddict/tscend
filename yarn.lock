@@ -1583,25 +1583,25 @@ __metadata:
   linkType: hard
 
 "@mikro-orm/core@npm:^7.0.14":
-  version: 7.1.5
-  resolution: "@mikro-orm/core@npm:7.1.5"
+  version: 7.1.7
+  resolution: "@mikro-orm/core@npm:7.1.7"
   peerDependencies:
     dataloader: 2.2.3
   peerDependenciesMeta:
     dataloader:
       optional: true
-  checksum: 10c0/b6e60f3326000949f6bfa405cb2695a4bac985c94bed7d24242a57370dcdc1d0174405fa70693714896d70dbcf8fd5e1df864f009b1cbc1e6b0cff9cf4b4a45a
+  checksum: 10c0/de9d3ad98e186d65023b757f39abbfd9ecd160924225697dbd219bb876c174a684f4d6102d5a194ee474a2768c2a60af2b3e76f7985acdfd9a7838ef9f6dc356
   languageName: node
   linkType: hard
 
 "@mikro-orm/sql@npm:^7.0.14":
-  version: 7.1.5
-  resolution: "@mikro-orm/sql@npm:7.1.5"
+  version: 7.1.7
+  resolution: "@mikro-orm/sql@npm:7.1.7"
   dependencies:
-    kysely: "npm:0.29.2"
+    kysely: "npm:0.29.3"
   peerDependencies:
-    "@mikro-orm/core": 7.1.5
-  checksum: 10c0/2fbff581642635c5e3b588680e33ae560c41ff9ca8b4d9c98899b2d1ac5b223a0de4cceab1dedece786ae7926471b1cd106954ce3b62eb2fe750687716db37b4
+    "@mikro-orm/core": 7.1.7
+  checksum: 10c0/a2ecb15e10eaa5ff4db975c6372d3d378d701d195a485c9db8694575c51d48e680724c9e988c59a4dcdda30306894a3b99f2fc0119127a527e81d12cff60d07f
   languageName: node
   linkType: hard
 
@@ -3015,10 +3015,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kysely@npm:0.29.2":
-  version: 0.29.2
-  resolution: "kysely@npm:0.29.2"
-  checksum: 10c0/ed2c4b438fc685def6ce15f1cc8a35192903fa0dd74ee84d959cbd61b3bc8c13e24618aeaf0495298f99f84024181e91d4506b74bec38b7ec325a733dff01dad
+"kysely@npm:0.29.3":
+  version: 0.29.3
+  resolution: "kysely@npm:0.29.3"
+  checksum: 10c0/ab23e82f67c4ed17fce1ed14573ea806944b8516f57d837c3dd3bf2df6eef9d2bc12300525007a865506e595ec1da3d7cd372b8c17029313b5c9e8976a3147f2
   languageName: node
   linkType: hard
 

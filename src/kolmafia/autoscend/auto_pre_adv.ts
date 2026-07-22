@@ -220,6 +220,7 @@ import {
   dartEleDmg,
 } from "./iotms/mr2024";
 import {
+  auto_bankChestMimicExpForBandit,
   auto_haveCupidBow,
   auto_havePeridot,
   auto_peridotSetZone,
@@ -695,6 +696,7 @@ function auto_pre_adventure(): boolean {
   }
   //evaluate a boolean prop for the familiar files
   auto_wantSoCP();
+  auto_bankChestMimicExpForBandit();
   // Update our familiar after combat modifiers (which can set the familiar), but before Crystal Ball (familiar equip)
   preAdvUpdateFamiliar(place);
   ed_handleAdventureServant(place);

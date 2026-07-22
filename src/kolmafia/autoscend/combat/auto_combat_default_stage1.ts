@@ -48,7 +48,7 @@ import {
   auto_remainingCandyCaneSlashes,
   auto_RWBBlastTarget,
 } from "../iotms/mr2023";
-import { auto_talkToSomeFish } from "../iotms/mr2025";
+import { auto_talkToSomeFish, auto_tracesTarget } from "../iotms/mr2025";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/avant_guard";
 import { inAftercore } from "../paths/casual";
@@ -333,6 +333,20 @@ export function auto_combatDefaultStage1(
       "auto_copies",
     );
     return auto_useSkill($skill`Recall Facts: Monster Habitats`);
+  }
+
+  if (
+    auto_tracesTarget(enemy) &&
+    canUse($skill`Create an Afterimage`) &&
+    !ag_is_bodyguard()
+  ) {
+    handleTracker$1(
+      $skill`Create an Afterimage`.toString(),
+      enemy.toString(),
+      "auto_copies",
+    );
+    combat_status_add("copied");
+    return auto_useSkill($skill`Create an Afterimage`);
   }
 
   if (

@@ -2621,6 +2621,7 @@ function doTasks(): boolean {
   lar_safeguard();
 
   auto_useLeprecondoDrops();
+  auto_setLeprecondo();
 
   if (LX_zootoFight()) {
     return true;

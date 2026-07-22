@@ -115,6 +115,7 @@ import {
 } from "../iotms/mr2021";
 import { dronesOut } from "../iotms/mr2022";
 import { auto_canHabitat, auto_haveCCSC } from "../iotms/mr2023";
+import { auto_canTracesBandit, auto_tracesUsesLeft } from "../iotms/mr2025";
 import {
   ed_DelayNC_DailyDungeon,
   edUnderworldChoiceHandler,
@@ -717,7 +718,9 @@ export function LX_fatLootToken(): boolean {
       !acquiredFantasyRealmToken() &&
       ((auto_haveBackupCamera() &&
         auto_backupUsesLeft() >= 4 - fantasyBanditsFought()) ||
-        auto_canHabitat()) &&
+        auto_canHabitat() ||
+        (auto_canTracesBandit() &&
+          auto_tracesUsesLeft() >= 4 - fantasyBanditsFought())) &&
       canSummonMonster($monster`fantasy bandit`)
     ) {
       return summonMonster($monster`fantasy bandit`);

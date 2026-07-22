@@ -4,7 +4,10 @@ import {
   availableChoiceOptions,
   beretBuskingEffects,
   blackMarketAvailable,
+  canDrink,
+  canEat,
   canEquip,
+  closetAmount,
   containsText,
   Effect,
   equip,
@@ -12,32 +15,40 @@ import {
   equippedItem,
   floor,
   freeCrafts,
+  fullnessLimit,
   getMonsters,
   getPower,
   getProperty,
   haveEffect,
   haveEquipped,
+  inebrietyLimit,
   isUnrestricted,
   Item,
   itemAmount,
   lastMonster,
   Location,
+  max,
+  min,
   Modifier,
   Monster,
   monsterPhylum,
   myBasestat,
   myDaycount,
+  myFullness,
+  myInebriety,
   myLevel,
   myLocation,
   myParadoxicity,
   myPath,
   myPrimestat,
+  mySpleenUse,
   numericModifier,
   runChoice,
   setProperty,
   shrunkenHeadZombie,
   Skill,
   Slot,
+  spleenLimit,
   splitString,
   Stat,
   toBoolean,
@@ -66,25 +77,39 @@ import {
   $skill,
   $slot,
   $stat,
+  get,
+  getAverageAdventures,
+  Leprecondo,
+  set,
 } from "libram";
 
-import { auto_canDrink, auto_canEat, canChew } from "../auto_consume";
+import {
+  auto_canDrink,
+  auto_canEat,
+  autoChew,
+  canChew,
+  spleen_left,
+} from "../auto_consume";
 import {
   autoForceEquip,
   autoForceEquip$2,
   possessEquipment,
   powerMultipliers,
 } from "../auto_equipment";
-import { auto_have_familiar, pathHasFamiliar } from "../auto_familiar";
+import {
+  auto_have_familiar,
+  handleFamiliar$1,
+  pathHasFamiliar,
+} from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$2,
-  auto_log_debug,
   auto_log_info,
   auto_wantToFreeKillWithNoDrops,
   auto_zonePhylumPercent,
+  canSummonMonster,
   handleTracker$1,
   handleTracker$2,
   internalQuestStatus,
@@ -94,13 +119,17 @@ import {
   zoneRank,
 } from "../auto_util";
 import { canUse } from "../combat/auto_combat_util";
+import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { amw_wantMeat, in_amw } from "../paths/adventurer_meats_world";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_hattrick } from "../paths/hattrick";
+import { in_small } from "../paths/small";
 import { in_zootomist } from "../paths/zootomist";
 import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
-import { needStarKey } from "../quests/level_13";
+import { needStarKey, towerKeyCount } from "../quests/level_13";
 import { AshMatcher } from "../utils/kolmafiaUtils";
+import { acquiredFantasyRealmToken, fantasyBanditsFought } from "./mr2018";
+import { auto_haveChestMimic } from "./mr2024";
 import {
   auto_haveEternityCodpiece,
   auto_isInEternityCodpiece,
@@ -193,104 +222,476 @@ export function auto_haveCupidBow(): boolean {
 }
 
 function auto_haveLeprecondo(): boolean {
+  return auto_is_valid($item`Leprecondo`) && Leprecondo.have();
+}
+
+type LeprecondoPiece = Leprecondo.FurniturePiece;
+type LeprecondoValues = Partial<
+  Record<LeprecondoPiece, Partial<Record<Leprecondo.Need, number>>>
+>;
+
+// Map of Leprecondo result (Effect or Item) to its score.
+const LEPRECONDO_RESULTS_SCORE = new Map<Effect | Item, number>([
+  [
+    $effect`Your Days Are Numbed`,
+    !pathHasFamiliar() || in_avantGuard() ? 0 : 100,
+  ], // +5 fam weight & exp effect
+  [$effect`Vicarious Sweat`, 90], // +30hp, 15% item drop effect
+  [$effect`Counter Intelligence`, 80], // +30% meat effect
+  [$item`crafting plans`, 70], // crafting plans
+  [$effect`Spacious Night's Sleep`, 50], // 100% init, all stats +10% effect
+  [$effect`Sur La Table`, 50], // mp/hp regen effect
+  [$effect`Wasting Time`, 40], // Moxie effect
+  [
+    $effect`Alone with Your Thoughts`,
+    myPrimestat() === $stat`Mysticality` ? 40 : 11,
+  ], // 20 myst & spell dmg, 50% max mp effect
+  [$effect`Work Out Smarter, Not Harder`, 40], // 20 mus & weapon dmg, 50% max hp effect
+  [$effect`Well Stimulated`, 40], // Myst effect
+  [$effect`Gym Bros`, 40], // Muscles effect
+  [
+    $effect`You Might Have Gotten Wet`,
+    myPrimestat() === $stat`Moxie` ? 40 : 10,
+  ], // 20 mox & ranged dmg, 10 dr effect
+  [$item`phosphor traces`, 10], // phosphor traces
+  [$effect`Moist Night's Sleep`, 10], // 50% init, 2 hot res, 10 cold dmg effect
+  [$effect`Quiet Night's Sleep`, 10], // 50% init, mp regen effect
+  [$effect`Good Night's Sleep`, 10], // +25 init
+  [$item`table tennis ball`, 10], // table tennis ball
+  [$item`bar dart`, 0], // bar dart
+  [$item`scoop of pre-workout powder`, 0], // scoop of pre-workout powder
+  [$item`leprechaun antidepressant pill`, 0], // leprechaun antidepressant pill
+  [$effect`Tired Muscles`, -10], // -combat effect
+]);
+
+// Transformer for the above values
+export function auto_leprecondoBaseValues(): LeprecondoValues {
+  const baseValues: LeprecondoValues = {};
+
+  for (const piece of Leprecondo.FURNITURE_PIECES) {
+    if (piece === "empty") continue;
+
+    const stats = Leprecondo.getStats(piece);
+
+    for (const need of Leprecondo.NEEDS) {
+      const result = stats[need];
+      if (!result) continue;
+
+      let score: number;
+
+      if (need === "food" || need === "booze") {
+        if (in_amw()) {
+          score =
+            piece === "Omnipot" || piece === "fully-stocked wet bar" ? 1 : 0;
+        } else {
+          score = countItemAverageAdvs(need, piece);
+        }
+      } else {
+        const key: Effect | Item =
+          "effect" in result ? result.effect : (result as Item);
+        score = LEPRECONDO_RESULTS_SCORE.get(key);
+      }
+
+      baseValues[piece] ??= {};
+      baseValues[piece][need] = score;
+    }
+  }
+
+  return baseValues;
+}
+
+// Situational bonuses added on top of the baseline
+function auto_leprecondoExtras(): {
+  condition: boolean;
+  values: LeprecondoValues;
+}[] {
+  // Here, we're just doing some basic logic to try group rearranges together
+  const doneOrgans = get("_auto_leprecondoDoneWith").split(",").filter(Boolean);
+
+  function markDone(key: string) {
+    if (doneOrgans.includes(key)) return;
+
+    doneOrgans.push(key);
+    set("_auto_leprecondoDoneWith", doneOrgans.join(","));
+  }
+
+  const canConsume = !in_small() && !in_amw();
+
+  const organs = {
+    food: {
+      active: canEat() && canConsume && !doneOrgans.includes("food"),
+      surplus: leprecondoFoodSurplus(),
+    },
+    booze: {
+      active: canDrink() && canConsume && !doneOrgans.includes("booze"),
+      surplus: leprecondoBoozeSurplus(),
+    },
+    traces: {
+      active:
+        spleenLimit() > 0 &&
+        !isActuallyEd() &&
+        canConsume &&
+        !doneOrgans.includes("traces"),
+      surplus: leprecondoTracesSurplus(),
+    },
+  };
+
+  const extraFill = 6;
+
+  // Is any active organ currently behind, but within the extraFill threshold?
+  const isSomeoneCatchingUp = Object.values(organs).some(
+    (o) => o.active && o.surplus < 0 && o.surplus >= -extraFill,
+  );
+
+  for (const [id, organ] of Object.entries(organs)) {
+    // Skip if we don't want it, or if it hasn't reached surplus yet
+    if (!organ.active || organ.surplus < 0) continue;
+
+    // We wait if we are <= extraFill and someone is actively catching up
+    const shouldWait = organ.surplus <= extraFill && isSomeoneCatchingUp;
+
+    if (!shouldWait) {
+      organ.active = false;
+      markDone(id);
+    }
+  }
+
+  // This should be a total of 1 to 3 rearrangements in a day
+  return [
+    {
+      // Still want today's food
+      condition: organs.food.active,
+      values: { Omnipot: { food: 500 } },
+    },
+    {
+      // Still want today's booze
+      condition: organs.booze.active,
+      values: { "fully-stocked wet bar": { booze: 500 } },
+    },
+    {
+      // Still want today's phosphor traces
+      condition: organs.traces.active,
+      values: {
+        "ultimate retro game console": { "dumb entertainment": 500 },
+      },
+    },
+    {
+      // +5 fam weight & exp effect
+      condition: pathHasFamiliar() && !in_avantGuard(),
+      values: {
+        "cupcake treadmill": { exercise: 200 },
+        "couch and flatscreen": { "dumb entertainment": 200 },
+        "UltraDance karaoke machine": { "dumb entertainment": 200 },
+      },
+    },
+  ];
+}
+
+function getLeprecondoItems(
+  need: Leprecondo.Need,
+  piece: LeprecondoPiece,
+): Item[] {
+  // Add a safety check in case getLeprecondoItems handles a missed need
+  const result = Leprecondo.getStats(piece)[need];
+  if (!result) return [];
+
+  const items = Array.isArray(result) ? result : [result];
+
+  return items.filter((i) => i instanceof Item) as Item[];
+}
+
+// Counts the amount of organ this piece's items fills up
+function leprecondoPieceOrgansSize(
+  need: Leprecondo.Need,
+  piece: LeprecondoPiece,
+): number {
+  return getLeprecondoItems(need, piece)
+    .map(
+      (i) =>
+        (itemAmount(i) + closetAmount(i)) *
+        (i.fullness + i.inebriety + i.spleen),
+    )
+    .reduce((l, r) => l + r, 0);
+}
+
+// Get's the average avgs from this item's piece, used for food/booze
+function countItemAverageAdvs(
+  need: Leprecondo.Need,
+  piece: LeprecondoPiece,
+): number {
+  return getLeprecondoItems(need, piece)
+    .map((i) => getAverageAdventures(i) / (i.fullness + i.inebriety + i.spleen))
+    .reduce((l, r) => l + r, 0);
+}
+
+function leprecondoFoodSurplus(): number {
   return (
-    auto_is_valid($item`Leprecondo`) && availableAmount($item`Leprecondo`) > 0
+    leprecondoPieceOrgansSize("food", "Omnipot") -
+    max(fullnessLimit(), isActuallyEd() ? 5 : 15) -
+    myFullness()
   );
 }
 
-function auto_haveDiscoveredLeprecondoFurniture(furn: number): boolean {
-  const discovered_furn: Map<number, string> = new Map(
-    splitString(getProperty("leprecondoDiscovered"), ",").map((_v, _i) => [
-      _i,
-      _v,
-    ]),
+function leprecondoBoozeSurplus(): number {
+  return (
+    leprecondoPieceOrgansSize("booze", "fully-stocked wet bar") -
+    max(inebrietyLimit(), isActuallyEd() ? 5 : 15) -
+    myInebriety()
   );
-  for (const [, s] of discovered_furn) {
-    if (furn === toInt(s)) {
-      return true;
+}
+
+function leprecondoTracesSurplus(): number {
+  return (
+    leprecondoPieceOrgansSize(
+      "dumb entertainment",
+      "ultimate retro game console",
+    ) -
+    min(15, spleenLimit()) -
+    mySpleenUse()
+  );
+}
+
+// Declares how much each need is worth per furniture piece
+function auto_leprecondoValues(): LeprecondoValues {
+  const values: LeprecondoValues = {};
+
+  const addAll = (table: LeprecondoValues) => {
+    for (const [piece, needs] of Object.entries(table) as [
+      LeprecondoPiece,
+      Partial<Record<Leprecondo.Need, number>>,
+    ][]) {
+      values[piece] ??= {};
+      for (const [need, score] of Object.entries(needs!) as [
+        Leprecondo.Need,
+        number,
+      ][]) {
+        values[piece]![need] ??= 0;
+        values[piece]![need]! += score;
+      }
+    }
+  };
+
+  addAll(auto_leprecondoBaseValues());
+  for (const extra of auto_leprecondoExtras()) {
+    if (!extra.condition) {
+      continue;
+    }
+
+    addAll(extra.values);
+  }
+
+  return values;
+}
+
+// Greedy picks the piece with the highest remaining value until 4 slots are filled or nothing left.
+function auto_leprecondoTarget(): LeprecondoPiece[] {
+  const values = auto_leprecondoValues();
+  const discovered = new Set(Leprecondo.discoveredFurniture());
+  let candidates = Leprecondo.FURNITURE_PIECES.filter(
+    (p) => p !== "empty" && discovered.has(p) && values[p] !== undefined,
+  );
+
+  const claimedNeeds = new Map<Leprecondo.Need, number>();
+  const target: LeprecondoPiece[] = [];
+
+  // Pick up to 4 pieces that provide the highest marginal value for unfulfilled needs.
+  // This doesn't do the optimal, just a quick pass
+  while (target.length < 4) {
+    let best: LeprecondoPiece | undefined;
+    let maxScore = 0;
+
+    for (const piece of candidates) {
+      let score = 0;
+      const stats = Object.entries(values[piece]) as [
+        Leprecondo.Need,
+        number,
+      ][];
+
+      for (const [need, val] of stats) {
+        const claimed = claimedNeeds.get(need) ?? 0;
+        score += Math.max(0, val - claimed);
+      }
+
+      if (score > maxScore) {
+        maxScore = score;
+        best = piece;
+      }
+    }
+
+    if (!best) break; // No remaining pieces provide any value
+    target.push(best);
+
+    // Update claimed needs with the newly selected piece
+    const bestStats = Object.entries(values[best]!) as [
+      Leprecondo.Need,
+      number,
+    ][];
+    for (const [need, val] of bestStats) {
+      const claimed = claimedNeeds.get(need) ?? 0;
+      claimedNeeds.set(need, Math.max(claimed, val));
+    }
+
+    candidates = candidates.filter((p) => p !== best);
+  }
+
+  // Pad any remaining empty slots
+  while (target.length < 4) {
+    target.push("empty");
+  }
+
+  // Brute-force all 24 combos of the 4 chosen pieces.
+  // If pieces share a need, only the first piece grants its value.
+  let bestOrder = target;
+  let highestRealValue = -1;
+
+  // Iterate through 3 indices; the 4th is deterministic since 0 + 1 + 2 + 3 = 6.
+  for (let a = 0; a < 4; a++) {
+    for (let b = 0; b < 4; b++) {
+      if (a === b) continue;
+      for (let c = 0; c < 4; c++) {
+        if (a === c || b === c) continue;
+
+        const d = 6 - a - b - c; // The remaining unique index
+        const order = [target[a], target[b], target[c], target[d]];
+
+        let currentScore = 0;
+        const seenNeeds = new Set<Leprecondo.Need>();
+
+        // Calculate the actual value realized by this specific ordering
+        for (const piece of order) {
+          if (piece === "empty") continue;
+
+          const stats = Object.entries(values[piece]) as [
+            Leprecondo.Need,
+            number,
+          ][];
+          // Give score to first piece to claim the need
+          for (const [need, val] of stats) {
+            if (seenNeeds.has(need)) {
+              continue;
+            }
+
+            seenNeeds.add(need);
+            currentScore += val;
+          }
+        }
+
+        // Save the permutation if it outperforms previous ones
+        if (currentScore > highestRealValue) {
+          highestRealValue = currentScore;
+          bestOrder = order;
+        }
+      }
     }
   }
-  return false;
+
+  return bestOrder;
 }
 
 export function auto_setLeprecondo(): boolean {
-  if (!auto_haveLeprecondo()) {
+  if (!auto_haveLeprecondo() || Leprecondo.rearrangesRemaining() <= 0) {
     return false;
   }
-  // This is a toy.
-  // We'll replace this with real logic once the Mafia CLI tool exists.
-  // Don't complain about optimality, only complain if it literally breaks.
-  // Low priority spleeners because we're not using them
-  const installed: string = getProperty("leprecondoInstalled");
-  if (installed === "" || installed === "0,0,0,0") {
-    auto_log_info("Setting Leprecondo", "blue");
-    let priority: Map<number, number> = new Map([
-      [1, 25], // omnipot
-      [2, 9], // cupcake treadmill
-      [3, 18], // couch and flatscreen
-      [4, 12], // internet connected laptop
-      [5, 26], // wet bar (last need, anything below this point will likely be overridden if it gets installed)
-      [6, 22], // home workout
-      [7, 14], // whiskeybed
-      [8, 21], // programmable blender
-      [9, 23], // classics library
-      [10, 24], // retro video games
-      [11, 11], // weight bench
-      [12, 1], // crap
-      [13, 2], // crap
-      [14, 3], // crap
-      [15, 4], // crap
-      [16, 5], // crap
-      [17, 6], // crap
-    ]);
-
-    if (in_amw()) {
-      priority = new Map([
-        [1, 9], // cupcake treadmill
-        [2, 8], // karaoke machine
-        [3, 14], // programmable blender, prioritize meat over crafts?
-        [4, 27], // four-poster bed
-        [5, 12], // internet connected laptop
-        [6, 18], // couch and flatscreen
-        [7, 21], // whiskeybed
-        [8, 23], // classics library
-        [9, 11], // weight bench
-        [10, 6], // crap
-        [11, 1], // crap
-        [12, 2], // crap
-        [13, 3], // crap
-        [14, 4], // crap
-        [15, 5], // crap
-      ]);
+  const installed = Leprecondo.installedFurniture();
+  const target = auto_leprecondoTarget();
+  let alreadyInstalled = true;
+  for (let i = 0; i < target.length && alreadyInstalled; i++) {
+    if (target[i] === installed[i]) {
+      continue;
     }
-
-    const picks: Map<number, number> = new Map();
-    let n_picks: number = 0;
-    for (const [, f] of priority) {
-      if (n_picks === 4) {
-        break;
-      }
-      // Ignore the Fam Exp buffs in some paths
-      if ((in_avantGuard() || !pathHasFamiliar()) && (f === 9 || f === 18)) {
-        continue;
-      }
-      if (auto_haveDiscoveredLeprecondoFurniture(f)) {
-        picks.set(n_picks++, f);
-      }
-    }
-    visitUrl(`inv_use.php?whichitem=${toInt($item`Leprecondo`)}`);
-    const url: string = `choice.php?whichchoice=1556&option=1&r0=${picks.get(3) ?? picks.set(3, 0).get(3)}&r1=${picks.get(2) ?? picks.set(2, 0).get(2)}&r2=${picks.get(1) ?? picks.set(1, 0).get(1)}&r3=${picks.get(0) ?? picks.set(0, 0).get(0)}`;
-    auto_log_debug(`Condo set URL: ${url}`, "blue");
-    visitUrl(url);
+    alreadyInstalled = false;
   }
-  return true;
+  if (alreadyInstalled) {
+    return true;
+  }
+  auto_log_info(
+    `Rearranging Leprecondo: [${installed.join(", ")}] -> [${target.join(", ")}] (${Leprecondo.rearrangesRemaining() - 1} rearranges left)`,
+    "blue",
+  );
+
+  const success = Leprecondo.setFurniture(
+    target[0],
+    target[1],
+    target[2],
+    target[3],
+  );
+  if (success) {
+    handleTracker$1(
+      $item`Leprecondo`.toString(),
+      target.join(", "),
+      "auto_iotm_claim",
+    );
+  } else {
+    auto_log_info("Leprecondo.setFurniture() reported failure", "red");
+  }
+  return success;
 }
 
 export function auto_useLeprecondoDrops(): boolean {
   while (availableAmount($item`crafting plans`) > 0 && freeCrafts() < 2) {
     use($item`crafting plans`);
   }
+  auto_stockTracesBandit();
   return true;
+}
+
+// Whether we're actually committed to chaining fantasy bandit fights with Create an Afterimage right now.
+export function auto_canTracesBandit(): boolean {
+  return (
+    !acquiredFantasyRealmToken() &&
+    towerKeyCount(false) < 3 &&
+    (lastMonster() === $monster`fantasy bandit` ||
+      internalQuestStatus("questL13Final") === 5)
+  );
+}
+
+export function auto_tracesUsesLeft(): number {
+  return get("phosphorTracesUses");
+}
+
+// Bank Chest Mimic experience toward the 100 needed to extract a fantasy bandit egg.
+export function auto_bankChestMimicExpForBandit(): boolean {
+  if (
+    acquiredFantasyRealmToken() ||
+    !auto_haveChestMimic() ||
+    $familiar`Chest Mimic`.experience >= 100 ||
+    canSummonMonster($monster`fantasy bandit`)
+  ) {
+    return false;
+  }
+  return handleFamiliar$1($familiar`Chest Mimic`);
+}
+
+// Chew banked phosphor traces up to 4 charges
+// Gated on auto_canTracesBandit (not just auto_wantTracesBandit) so this doesn't compete with other spleen items until we're actually about to use it.
+// Any earlier banking happens for free via leftover end of day spleen instead (see bedtime_spleen).
+function auto_stockTracesBandit(): void {
+  if (
+    !auto_canTracesBandit() ||
+    auto_tracesUsesLeft() >= 4 ||
+    !canSummonMonster($monster`fantasy bandit`)
+  ) {
+    return;
+  }
+  while (
+    auto_tracesUsesLeft() < 4 &&
+    canChew($item`phosphor traces`) &&
+    availableAmount($item`phosphor traces`) > 0 &&
+    spleen_left() >= $item`phosphor traces`.spleen
+  ) {
+    if (autoChew(1, $item`phosphor traces`)) continue;
+    break;
+  }
+}
+
+export function auto_tracesTarget(target: Monster): boolean {
+  return (
+    auto_canTracesBandit() &&
+    target === $monster`fantasy bandit` &&
+    auto_tracesUsesLeft() > 0 &&
+    // Fought count only ticks up after each kill, so this is still 4 during the 5th (final) fight - don't chain a 6th.
+    fantasyBanditsFought() < 4
+  );
 }
 
 export function auto_punchOutsLeft(): number {

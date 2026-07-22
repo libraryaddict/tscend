@@ -1092,12 +1092,14 @@ function finalizeMaximize(speculative: boolean): void {
   }
 
   if (
+    // eslint-disable-next-line libram/verify-constants
     have($item`Cup of 13s`) &&
     inebrietyLimit() > 6 &&
     !in_small() &&
     !in_plumber()
   ) {
     // It gives some booze drops, scale up the bonus by our max liver
+    // eslint-disable-next-line libram/verify-constants
     addBonusToMaximize($item`Cup of 13s`, inebrietyLimit() * 7);
   }
 
