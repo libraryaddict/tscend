@@ -10,6 +10,8 @@ LX_galaktikSubQuest
 L9_leafletQuest
 L5_findKnob
 L12_sonofaPrefix
+# burn any unused Lucky! (Heartstone/Apriling sax/August scepter) before bedtime
+LX_burnUnusedLuck	LX_needToBurnUnusedLuck
 LX_burnDelay
 LX_summonMonster
 # Get Smashed Scientific Equipment ASAP

@@ -108,7 +108,7 @@ import {
   autoAdv,
   autoAdvBypass,
   autoAdvBypass$1,
-  autoLuckyAdv$1,
+  autoLuckyAdv,
 } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import {
@@ -1897,7 +1897,7 @@ export function LX_killBaaBaaBuran(): boolean {
     addToMaximize("20 item 400max");
     // Right now clovers are "cheaper" than summons, so use clover first, but not our last.
     if (cloversAvailable() > 1) {
-      return autoLuckyAdv$1($location`The Hidden Temple`);
+      return autoLuckyAdv($location`The Hidden Temple`);
     }
 
     if (canSummonMonster($monster`Baa'baa'bu'ran`)) {
@@ -3220,7 +3220,7 @@ function L11_redZeppelin(): boolean {
       } else if (best_protestors === fire_protestors) {
         setProperty("choiceAdventure866", (3).toString());
       }
-      return autoLuckyAdv$1($location`A Mob of Zeppelin Protesters`);
+      return autoLuckyAdv($location`A Mob of Zeppelin Protesters`);
     }
   }
 

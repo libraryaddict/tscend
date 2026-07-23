@@ -75,7 +75,7 @@ import {
   pullXWhenHaveY,
   pulverizeThing,
 } from "../auto_acquire";
-import { autoAdv, autoAdvBypass, autoLuckyAdv$1 } from "../auto_adventure";
+import { autoAdv, autoAdvBypass, autoLuckyAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import {
   auto_canEat,
@@ -1844,6 +1844,13 @@ export function L12_flyerFinish(): boolean {
   return false;
 }
 
+export function L12_castleTopFloorWorthBurningLuckOn(): boolean {
+  return (
+    itemAmount($item`Mick's IcyVapoHotness Inhaler`) < 1 &&
+    auto_is_valid($item`Mick's IcyVapoHotness Inhaler`)
+  );
+}
+
 export function L12_themtharHills(): boolean {
   if (
     internalQuestStatus("questL12War") !== 1 ||
@@ -1909,8 +1916,7 @@ export function L12_themtharHills(): boolean {
       let doRufus: boolean = false;
       if (
         haveEffect($effect`Sinuses For Miles`) <= 0 &&
-        itemAmount($item`Mick's IcyVapoHotness Inhaler`) < 1 &&
-        auto_is_valid($item`Mick's IcyVapoHotness Inhaler`) &&
+        L12_castleTopFloorWorthBurningLuckOn() &&
         cloversAvailable() > 0 &&
         zone_isAvailable(
           $location`The Castle in the Clouds in the Sky (Top Floor)`,
@@ -1933,7 +1939,7 @@ export function L12_themtharHills(): boolean {
       if (bonusMeatNeeded - bonusMeat <= 0) {
         if (getInhaler) {
           auto_log_info("Getting Inhaler");
-          return autoLuckyAdv$1(
+          return autoLuckyAdv(
             $location`The Castle in the Clouds in the Sky (Top Floor)`,
           );
         }
@@ -2044,7 +2050,7 @@ export function L12_themtharHills(): boolean {
       cloversAvailable() > 0
     ) {
       //use clover to get inhaler
-      return autoLuckyAdv$1(
+      return autoLuckyAdv(
         $location`The Castle in the Clouds in the Sky (Top Floor)`,
       );
     }

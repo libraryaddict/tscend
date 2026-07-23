@@ -135,10 +135,12 @@ import {
   pullXWhenHaveY,
   pulverizeThing,
 } from "./autoscend/auto_acquire";
-import { autoAdv } from "./autoscend/auto_adventure";
+import { autoAdv, autoLuckyAdv } from "./autoscend/auto_adventure";
 import { doBedtime } from "./autoscend/auto_bedtime";
 import { buffMaintain$2 } from "./autoscend/auto_buff";
 import {
+  auto_canDrink,
+  auto_canEat,
   autoCleanse,
   consumeStuff,
   consumptionProgress,
@@ -187,6 +189,7 @@ import {
   auto_meetsMinimumRequirements,
   auto_needAccordion,
   auto_predictAccordionTurns,
+  auto_unusedPerishableLuckySources,
   autoCraft,
   AutoStopError,
   backupSetting,
@@ -216,6 +219,7 @@ import {
   use_barrels,
   yellowRaySources,
 } from "./autoscend/auto_util";
+import { zone_isAvailable } from "./autoscend/auto_zone";
 import { autoscend_migrate } from "./autoscend/autoscend_migration";
 import {
   auto_floundryAction,
@@ -502,10 +506,23 @@ import {
 } from "./autoscend/paths/zombie_slayer";
 import { LX_zootoFight, zoo_graftFam } from "./autoscend/paths/zootomist";
 import { tootGetMeat, tootOriole } from "./autoscend/quests/level_01";
-import { L8_mountainManSummon } from "./autoscend/quests/level_08";
-import { finishBuildingSmutOrcBridge } from "./autoscend/quests/level_09";
-import { auto_warSide } from "./autoscend/quests/level_12";
-import { beehiveConsider, ns_crowd3 } from "./autoscend/quests/level_13";
+import {
+  L8_mineOreWorthBurningLuckOn,
+  L8_mountainManSummon,
+} from "./autoscend/quests/level_08";
+import {
+  finishBuildingSmutOrcBridge,
+  L9_aBooPeakWorthBurningLuckOn,
+} from "./autoscend/quests/level_09";
+import {
+  auto_warSide,
+  L12_castleTopFloorWorthBurningLuckOn,
+} from "./autoscend/quests/level_12";
+import {
+  beehiveConsider,
+  L13_wantsTheD,
+  ns_crowd3,
+} from "./autoscend/quests/level_13";
 import {
   LX_dronesOut,
   LX_ForceNC,
@@ -953,6 +970,54 @@ export function LX_burnDelay(): boolean {
     );
   }
   return false;
+}
+
+export function LX_needToBurnUnusedLuck(): boolean {
+  const unusedLucky: number = auto_unusedPerishableLuckySources();
+  if (unusedLucky === 0) {
+    return false;
+  }
+  const spareAdv: number = myAdventures() - auto_advToReserve();
+  return consumptionProgress() >= 0.999 || spareAdv <= unusedLucky;
+}
+
+function LX_bestLuckyBurnLocation(): Location {
+  const candidates: [Location, boolean][] = [
+    [$location`Itznotyerzitz Mine`, L8_mineOreWorthBurningLuckOn()],
+    [$location`A-Boo Peak`, L9_aBooPeakWorthBurningLuckOn()],
+    [
+      $location`The Castle in the Clouds in the Sky (Top Floor)`,
+      L12_castleTopFloorWorthBurningLuckOn(),
+    ],
+    [
+      $location`The Castle in the Clouds in the Sky (Basement)`,
+      L13_wantsTheD(),
+    ],
+    [$location`The Haunted Pantry`, auto_canEat($item`tasty tart`)],
+    [
+      $location`The Sleazy Back Alley`,
+      auto_canDrink($item`distilled fortified wine`),
+    ],
+    [$location`The Castle in the Clouds in the Sky (Top Floor)`, true],
+  ];
+  for (const [loc, worthwhile] of candidates) {
+    if (worthwhile && zone_isAvailable(loc, true)) {
+      return loc;
+    }
+  }
+  return Location.none;
+}
+
+export function LX_burnUnusedLuck(): boolean {
+  const luckyLoc: Location = LX_bestLuckyBurnLocation();
+  if (luckyLoc === Location.none) {
+    return false;
+  }
+  auto_log_info(
+    `Have an unused Lucky! source, burning it in ${luckyLoc.toString()} before it goes to waste.`,
+    "green",
+  );
+  return autoLuckyAdv(luckyLoc, true);
 }
 
 export function LX_calculateTheUniverse(speculative: boolean): boolean {

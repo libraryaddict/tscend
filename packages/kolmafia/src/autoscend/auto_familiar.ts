@@ -96,6 +96,7 @@ import { in_lowkeysummer } from "./paths/low_key_summer";
 import { in_pokefam } from "./paths/pocket_familiars";
 import { in_quantumTerrarium } from "./paths/quantum_terrarium";
 import { in_robot } from "./paths/you_robot";
+import { L13_wantsTheD } from "./quests/level_13";
 import { fileAsMap } from "./utils/kolmafiaUtils";
 import { AshMatcher } from "./utils/kolmafiaUtils";
 
@@ -636,10 +637,7 @@ function autoChooseFamiliar(place: Location): boolean {
   // this is only in Low Key Summer for now, but can be in other paths if they get support: Journeyman, Grey You
   if (
     $location`The Castle in the Clouds in the Sky (Basement)` === place &&
-    itemAmount($item`heavy D`) === 0 &&
-    itemAmount($item`ND`) === 0 &&
-    itemAmount($item`Wand of Nagamar`) === 0 &&
-    toBoolean(getProperty("auto_wandOfNagamar"))
+    L13_wantsTheD()
   ) {
     const wantTheD: boolean =
       in_lowkeysummer() &&

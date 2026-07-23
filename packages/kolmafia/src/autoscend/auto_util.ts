@@ -2325,6 +2325,24 @@ export function cloversAvailable(
   return numClovers;
 }
 
+export function auto_unusedPerishableLuckySources(): number {
+  // Sources of Lucky! that expire and would otherwise be wasted
+  if (in_glover()) {
+    return 0;
+  }
+  let sources: number = 0;
+  sources += auto_heartstoneLuckRemaining();
+  sources += auto_AprilSaxLuckyLeft();
+  if (
+    auto_haveAugustScepter() &&
+    toInt(getProperty("_augSkillsCast")) < 5 &&
+    !toBoolean(getProperty("_aug2Cast"))
+  ) {
+    sources += 1;
+  }
+  return sources;
+}
+
 export function cloverUsageInit(override: boolean): boolean {
   if (cloversAvailable(override) === 0) {
     abort("Called cloverUsageInit but have no clovers");

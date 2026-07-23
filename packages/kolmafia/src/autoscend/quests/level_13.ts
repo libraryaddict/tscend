@@ -2198,6 +2198,15 @@ export function L13_towerNSNagamar(): boolean {
   return false;
 }
 
+export function L13_wantsTheD(): boolean {
+  return (
+    itemAmount($item`heavy D`) === 0 &&
+    itemAmount($item`ND`) === 0 &&
+    itemAmount($item`Wand of Nagamar`) === 0 &&
+    toBoolean(getProperty("auto_wandOfNagamar"))
+  );
+}
+
 export function L13_towerAscent(): boolean {
   if (
     L13_towerNSContests() ||

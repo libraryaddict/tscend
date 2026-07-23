@@ -57,7 +57,7 @@ import {
 
 import { resetState } from "../../autoscend";
 import { auto_buyUpTo } from "../auto_acquire";
-import { autoAdv, autoLuckyAdv$1 } from "../auto_adventure";
+import { autoAdv, autoLuckyAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import {
   addToMaximize,
@@ -511,6 +511,34 @@ export function L9_chasmBuild(): boolean {
   return true;
 }
 
+export function L9_aBooPeakWorthBurningLuckOn(): boolean {
+  if (in_bhy() || is_professor() || in_glover()) {
+    return false;
+  }
+  if (
+    internalQuestStatus("questL09Topping") < 2 ||
+    internalQuestStatus("questL09Topping") > 3
+  ) {
+    return false;
+  }
+  const clueAmt: number =
+    itemAmount($item`A-Boo clue`) +
+    (toBoolean(getProperty("auto_abooclover")) ? 1 : 0);
+
+  const progressLeft: number = toInt(getProperty("booPeakProgress"));
+
+  // If we would not finish it in 3 fights, 2 would effectively be a clue + adv after all.
+  if (clueAmt * 30 + 6 >= progressLeft) {
+    return false;
+  }
+
+  if (containsText(visitUrl("place.php?whichplace=highlands"), "fire1.gif")) {
+    return false;
+  }
+
+  return true;
+}
+
 export function L9_aBooPeak(): boolean {
   if (
     internalQuestStatus("questL09Topping") < 2 ||
@@ -583,7 +611,7 @@ export function L9_aBooPeak(): boolean {
     toInt(getProperty("booPeakProgress")) >= 30 &&
     booCloversOk
   ) {
-    if (autoLuckyAdv$1($location`A-Boo Peak`)) {
+    if (autoLuckyAdv($location`A-Boo Peak`)) {
       setProperty("auto_abooclover", false.toString());
       return true;
     }

@@ -1,6 +1,11 @@
 import { inHardcore } from "kolmafia";
 
-import { Lsc_flyerSeals, LX_burnDelay } from "../autoscend";
+import {
+  Lsc_flyerSeals,
+  LX_burnDelay,
+  LX_burnUnusedLuck,
+  LX_needToBurnUnusedLuck,
+} from "../autoscend";
 import { auto_breakfastCounterVisit } from "./auto_consume";
 import { LX_attemptPowerLevel, LX_freeCombatsTask } from "./auto_powerlevel";
 import {
@@ -229,7 +234,9 @@ const taskFunctionRegistry: Record<string, () => boolean> = {
   LX_bugbearInvasion,
   LX_bugbearInvasionFinale,
   LX_burnDelay,
+  LX_burnUnusedLuck,
   LX_fatLootToken,
+  LX_needToBurnUnusedLuck,
   LX_freeCombatsTask,
   LX_galaktikSubQuest,
   LX_getDigitalKey,

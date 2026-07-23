@@ -46,10 +46,11 @@ import {
   $monster,
   $skill,
   $slot,
+  get,
 } from "libram";
 
 import { canPull, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv, autoLuckyAdv$1 } from "../auto_adventure";
+import { autoAdv, autoLuckyAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import {
   autoEquip,
@@ -433,6 +434,26 @@ export function L8_mountainManSummon(): boolean {
   return false;
 }
 
+export function L8_mineOreWorthBurningLuckOn(): boolean {
+  if (internalQuestStatus("questL08Trapper") !== 1) {
+    return false;
+  }
+  const oreGoal: Item = toItem(getProperty("trapperOre"));
+  if (itemAmount(oreGoal) >= 3) {
+    return false;
+  }
+  if (
+    !get("_chateauMonsterFought") &&
+    toMonster(getProperty("chateauMonster")) === $monster`mountain man`
+  ) {
+    return false;
+  }
+  if (auto_haveTrainSet()) {
+    return false;
+  }
+  return true;
+}
+
 function L8_getMineOres(): boolean {
   if (internalQuestStatus("questL08Trapper") !== 1) {
     // step1 = we spoke to trapper to learn what ores he wants
@@ -463,7 +484,7 @@ function L8_getMineOres(): boolean {
     return false; //will get ore organically through the train set so no need to adventure for it
   }
   // try to clover for the ore
-  if (autoLuckyAdv$1($location`Itznotyerzitz Mine`)) {
+  if (autoLuckyAdv($location`Itznotyerzitz Mine`)) {
     return true;
   }
 

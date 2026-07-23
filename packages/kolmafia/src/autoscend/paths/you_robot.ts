@@ -36,7 +36,7 @@ import { $familiar, $item, $location, $path, $stat } from "libram";
 
 import { auto_unreservedAdvRemaining } from "../../autoscend";
 import { canPull, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv, autoLuckyAdv$1 } from "../auto_adventure";
+import { autoAdv, autoLuckyAdv } from "../auto_adventure";
 import {
   autoEquip,
   possessEquipment,
@@ -939,7 +939,7 @@ export function LX_robot_powerlevel(): boolean {
           whereTo = $location`The Haunted Ballroom`;
           break;
       }
-      if (autoLuckyAdv$1(whereTo)) {
+      if (autoLuckyAdv(whereTo)) {
         return true;
       }
     }

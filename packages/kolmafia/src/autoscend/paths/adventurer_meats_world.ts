@@ -25,7 +25,7 @@ import {
 import { $item, $location, $path, $skill, $stat } from "libram";
 
 import { pull_meat } from "../auto_acquire";
-import { autoAdv, autoLuckyAdv$1 } from "../auto_adventure";
+import { autoAdv, autoLuckyAdv } from "../auto_adventure";
 import { addToMaximize, simValue } from "../auto_equipment";
 import { handleFamiliar$1, lookupFamiliarDatafile } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
@@ -501,7 +501,7 @@ export function LM_adventurerMeatsWorld(): boolean {
     if (itemAmount($item`Cobb's Knob lab key`) < 1) {
       return autoAdv($location`Cobb's Knob Treasury`);
     }
-    return autoLuckyAdv$1($location`Cobb's Knob Treasury`);
+    return autoLuckyAdv($location`Cobb's Knob Treasury`);
   }
 
   if (amw_buyStats()) {

@@ -109,7 +109,11 @@ export function autoAdv(
   return advReturn;
 }
 
-export function autoLuckyAdv(loc: Location, override: boolean): boolean {
+export function autoLuckyAdv(
+  loc: Location,
+  // overload to not override clover usage by default as this is the general case
+  override: boolean = false,
+): boolean {
   let gotLucky: boolean = false;
   if (cloversAvailable(override) > 0) {
     cloverUsageInit(override);
@@ -122,10 +126,6 @@ export function autoLuckyAdv(loc: Location, override: boolean): boolean {
   return gotLucky;
 }
 
-export function autoLuckyAdv$1(loc: Location): boolean {
-  // overload to not override clover usage by default as this is the general case
-  return autoLuckyAdv(loc, false);
-}
 // autoAdvBypass is used to automate adventuring *once* in non-adventure.php zones
 // it will (should?) handle the complete adventure from start to finish regardless of
 // how many choices or combats it encounters
