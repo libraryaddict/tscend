@@ -265,7 +265,7 @@ const LEPRECONDO_RESULTS_SCORE = new Map<Effect | Item, number>([
 ]);
 
 // Transformer for the above values
-export function auto_leprecondoBaseValues(): LeprecondoValues {
+function auto_leprecondoBaseValues(): LeprecondoValues {
   const baseValues: LeprecondoValues = {};
 
   for (const piece of Leprecondo.FURNITURE_PIECES) {
@@ -301,7 +301,7 @@ export function auto_leprecondoBaseValues(): LeprecondoValues {
 }
 
 // Situational bonuses added on top of the baseline
-function auto_leprecondoExtras(): {
+function auto_leprecondoExtras(doingBedtime: boolean): {
   condition: boolean;
   values: LeprecondoValues;
 }[] {
@@ -319,20 +319,26 @@ function auto_leprecondoExtras(): {
 
   const organs = {
     food: {
-      active: canEat() && canConsume && !doneOrgans.includes("food"),
-      surplus: leprecondoFoodSurplus(),
+      active:
+        canEat() &&
+        canConsume &&
+        (doingBedtime || !doneOrgans.includes("food")),
+      surplus: leprecondoFoodSurplus(doingBedtime),
     },
     booze: {
-      active: canDrink() && canConsume && !doneOrgans.includes("booze"),
-      surplus: leprecondoBoozeSurplus(),
+      active:
+        canDrink() &&
+        canConsume &&
+        (doingBedtime || !doneOrgans.includes("booze")),
+      surplus: leprecondoBoozeSurplus(doingBedtime),
     },
     traces: {
       active:
         spleenLimit() > 0 &&
         !isActuallyEd() &&
         canConsume &&
-        !doneOrgans.includes("traces"),
-      surplus: leprecondoTracesSurplus(),
+        (doingBedtime || !doneOrgans.includes("traces")),
+      surplus: leprecondoTracesSurplus(doingBedtime),
     },
   };
 
@@ -424,35 +430,38 @@ function countItemAverageAdvs(
     .reduce((l, r) => l + r, 0);
 }
 
-function leprecondoFoodSurplus(): number {
+function leprecondoFoodSurplus(doingBedtime: boolean): number {
   return (
     leprecondoPieceOrgansSize("food", "Omnipot") -
-    max(fullnessLimit(), isActuallyEd() ? 5 : 15) -
+    max(fullnessLimit(), isActuallyEd() ? 5 : 15) * (doingBedtime ? 2 : 1) -
     myFullness()
   );
 }
 
-function leprecondoBoozeSurplus(): number {
+function leprecondoBoozeSurplus(doingBedtime: boolean): number {
+  const inebCap = max(inebrietyLimit(), isActuallyEd() ? 5 : 15);
   return (
     leprecondoPieceOrgansSize("booze", "fully-stocked wet bar") -
-    max(inebrietyLimit(), isActuallyEd() ? 5 : 15) -
-    myInebriety()
+    inebCap * (doingBedtime ? 2 : 1) -
+    min(inebCap, myInebriety())
   );
 }
 
-function leprecondoTracesSurplus(): number {
+function leprecondoTracesSurplus(doingBedtime: boolean): number {
+  const spleenCap = min(15, spleenLimit());
+  const spleenUse = Math.floor((spleenCap - mySpleenUse()) / 3) * 3;
   return (
     leprecondoPieceOrgansSize(
       "dumb entertainment",
       "ultimate retro game console",
     ) -
-    min(15, spleenLimit()) -
-    mySpleenUse()
+    spleenCap * (doingBedtime ? 2 : 1) -
+    spleenUse
   );
 }
 
 // Declares how much each need is worth per furniture piece
-function auto_leprecondoValues(): LeprecondoValues {
+function auto_leprecondoValues(doingBedtime: boolean): LeprecondoValues {
   const values: LeprecondoValues = {};
 
   const addAll = (table: LeprecondoValues) => {
@@ -472,7 +481,7 @@ function auto_leprecondoValues(): LeprecondoValues {
   };
 
   addAll(auto_leprecondoBaseValues());
-  for (const extra of auto_leprecondoExtras()) {
+  for (const extra of auto_leprecondoExtras(doingBedtime)) {
     if (!extra.condition) {
       continue;
     }
@@ -484,8 +493,8 @@ function auto_leprecondoValues(): LeprecondoValues {
 }
 
 // Greedy picks the piece with the highest remaining value until 4 slots are filled or nothing left.
-function auto_leprecondoTarget(): LeprecondoPiece[] {
-  const values = auto_leprecondoValues();
+function auto_leprecondoTarget(doingBedtime: boolean): LeprecondoPiece[] {
+  const values = auto_leprecondoValues(doingBedtime);
   const discovered = new Set(Leprecondo.discoveredFurniture());
   let candidates = Leprecondo.FURNITURE_PIECES.filter(
     (p) => p !== "empty" && discovered.has(p) && values[p] !== undefined,
@@ -588,12 +597,12 @@ function auto_leprecondoTarget(): LeprecondoPiece[] {
   return bestOrder;
 }
 
-export function auto_setLeprecondo(): boolean {
+export function auto_setLeprecondo(doingBedtime: boolean): boolean {
   if (!auto_haveLeprecondo() || Leprecondo.rearrangesRemaining() <= 0) {
     return false;
   }
   const installed = Leprecondo.installedFurniture();
-  const target = auto_leprecondoTarget();
+  const target = auto_leprecondoTarget(doingBedtime);
   let alreadyInstalled = true;
   for (let i = 0; i < target.length && alreadyInstalled; i++) {
     if (target[i] === installed[i]) {

@@ -1727,7 +1727,7 @@ export function dailyEvents(): boolean {
   auto_MayamClaimAll();
   auto_buyFromSeptEmberStore();
   auto_getGlobs();
-  auto_setLeprecondo();
+  auto_setLeprecondo(false);
   auto_getBCZItems();
 
   return true;
@@ -2619,7 +2619,7 @@ function doTasks(): boolean {
   lar_safeguard();
 
   auto_useLeprecondoDrops();
-  auto_setLeprecondo();
+  auto_setLeprecondo(false);
 
   if (LX_zootoFight()) {
     return true;

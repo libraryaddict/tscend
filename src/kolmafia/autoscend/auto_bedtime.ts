@@ -194,6 +194,7 @@ import {
   auto_monkeyPawWishesLeft,
   auto_scepterRollover,
 } from "./iotms/mr2023";
+import { auto_setLeprecondo } from "./iotms/mr2025";
 import { auto_burnRemainingSpadeDigs } from "./iotms/mr2026";
 import {
   ed_doResting,
@@ -1883,6 +1884,7 @@ export function doBedtime(): boolean {
     acquireMilkOfMagnesiumIfUnused(true);
     consumeMilkOfMagnesiumIfUnused();
     auto_scepterRollover();
+    auto_setLeprecondo(true);
 
     if (
       haveSkill($skill`Calculate the Universe`) &&
