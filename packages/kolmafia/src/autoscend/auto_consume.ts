@@ -54,6 +54,7 @@ import {
   myPrimestat,
   mySign,
   mySpleenUse,
+  myTurncount,
   npcPrice,
   pullsRemaining,
   replaceString,
@@ -1109,6 +1110,69 @@ function autoConsume(action: ConsumeAction): boolean {
   return false;
 }
 
+function organCapacityFor(type: string): number {
+  return type === "eat" ? fullnessLimit() : inebrietyLimit();
+}
+
+function organUseFor(type: string): number {
+  return type === "eat" ? myFullness() : myInebriety();
+}
+
+interface CachedConsumables {
+  turncount: number;
+  organCapacity: number;
+  organUse: number;
+  level: number;
+  actions: Map<number, ConsumeAction>;
+}
+
+const consumablesCache: Partial<Record<string, CachedConsumables>> = {};
+
+function cacheConsumables(type: string, actions: Map<number, ConsumeAction>) {
+  consumablesCache[type] = {
+    turncount: myTurncount(),
+    organCapacity: organCapacityFor(type),
+    organUse: organUseFor(type),
+    level: myLevel(),
+    actions,
+  };
+}
+
+export interface GetCachedConsumablesOptions {
+  updateOnLevelChange?: boolean; // default true
+  updateAfterAdvs?: number; // default 50
+  updateOnOrganChange?: number; // default 0 - organ capacity must move by more than this to invalidate
+  updateAfterDiet?: boolean; // default true - invalidate once organ use has moved since caching
+}
+
+export function getCachedConsumables(
+  type: string,
+  options: GetCachedConsumablesOptions = {},
+): Map<number, ConsumeAction> | undefined {
+  const {
+    updateOnLevelChange = true,
+    updateAfterAdvs = 50,
+    updateOnOrganChange = 0,
+    updateAfterDiet = true,
+  } = options;
+
+  const cached = consumablesCache[type];
+  const isValid =
+    cached &&
+    myTurncount() - cached.turncount <= updateAfterAdvs &&
+    (!updateOnLevelChange || cached.level === myLevel()) &&
+    (!updateOnOrganChange ||
+      Math.abs(organCapacityFor(type) - cached.organCapacity) <
+        updateOnOrganChange) &&
+    (!updateAfterDiet || organUseFor(type) === cached.organUse);
+
+  if (isValid) return cached.actions;
+
+  const actions: Map<number, ConsumeAction> = new Map();
+  loadAndCacheConsumables(type, actions);
+  return actions;
+}
+
 function loadConsumables(
   _type: string,
   actions: Map<number, ConsumeAction>,
@@ -1946,9 +2010,18 @@ function loadConsumables(
   return true;
 }
 
+function loadAndCacheConsumables(
+  type: string,
+  actions: Map<number, ConsumeAction>,
+): boolean {
+  const result = loadConsumables(type, actions);
+  cacheConsumables(type, actions);
+  return result;
+}
+
 function auto_bestNightcap(): ConsumeAction {
   const actions: Map<number, ConsumeAction> = new Map();
-  loadConsumables("drink", actions);
+  loadAndCacheConsumables("drink", actions);
 
   const have_ode: boolean = auto_have_skill($skill`The Ode to Booze`);
   let greenBeersDrinkable: number = 0;
@@ -2218,7 +2291,7 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
   }
 
   const actions: Map<number, ConsumeAction> = new Map();
-  loadConsumables(type_1, actions);
+  loadAndCacheConsumables(type_1, actions);
 
   const remaining_space: number = organLeft();
 

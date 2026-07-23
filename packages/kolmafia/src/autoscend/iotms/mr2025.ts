@@ -88,6 +88,7 @@ import {
   auto_canEat,
   autoChew,
   canChew,
+  getCachedConsumables,
   spleen_left,
 } from "../auto_consume";
 import {
@@ -114,6 +115,7 @@ import {
   handleTracker$2,
   internalQuestStatus,
   isFreeMonster,
+  knapsack,
   level_to_min_substat,
   stat_to_substat,
   zoneRank,
@@ -122,8 +124,11 @@ import { canUse } from "../combat/auto_combat_util";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { amw_wantMeat, in_amw } from "../paths/adventurer_meats_world";
 import { in_avantGuard } from "../paths/avant_guard";
+import { in_darkGyffte } from "../paths/dark_gyffte";
 import { in_hattrick } from "../paths/hattrick";
+import { in_kolhs } from "../paths/kolhs";
 import { in_small } from "../paths/small";
+import { in_zombieSlayer } from "../paths/zombie_slayer";
 import { in_zootomist } from "../paths/zootomist";
 import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
 import { needStarKey, towerKeyCount } from "../quests/level_13";
@@ -315,13 +320,15 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
     set("_auto_leprecondoDoneWith", doneOrgans.join(","));
   }
 
-  const canConsume = !in_small() && !in_amw();
+  const canConsume =
+    !in_small() && !in_amw() && !in_darkGyffte() && !in_kolhs();
 
   const organs = {
     food: {
       active:
         canEat() &&
         canConsume &&
+        !in_zombieSlayer() &&
         (doingBedtime || !doneOrgans.includes("food")),
       surplus: leprecondoFoodSurplus(doingBedtime),
     },
@@ -430,19 +437,65 @@ function countItemAverageAdvs(
     .reduce((l, r) => l + r, 0);
 }
 
+// Space the normal diet loop would fill with non-leprecondo stuff that's at least as good as what we have installed
+function leprecondoReservedSpace(
+  need: "food" | "booze",
+  piece: LeprecondoPiece,
+  requiredSpace: number,
+): number {
+  if (requiredSpace <= 0) return 0;
+
+  const actions = getCachedConsumables(need === "food" ? "eat" : "drink");
+  if (!actions) return 0;
+
+  const ownItems = new Set(getLeprecondoItems(need, piece));
+  const ownAdvsPerFill = countItemAverageAdvs(need, piece);
+
+  const weight = new Map<number, number>();
+  const desirability = new Map<number, number>();
+  let idx = 0;
+  for (const action of actions.values()) {
+    if (
+      action.size <= 0 ||
+      ownItems.has(action.it) ||
+      getAverageAdventures(action.it) / action.size < ownAdvsPerFill
+    )
+      continue;
+    weight.set(idx, action.size);
+    desirability.set(idx, action.desirability);
+    idx++;
+  }
+
+  const packed = knapsack(requiredSpace, weight.size, weight, desirability);
+  let filled = 0;
+  for (const i of packed.keys()) {
+    filled += weight.get(i) ?? 0;
+  }
+  return filled;
+}
+
 function leprecondoFoodSurplus(doingBedtime: boolean): number {
+  const cap =
+    max(fullnessLimit(), isActuallyEd() ? 5 : 15) * (doingBedtime ? 2 : 1);
+  const reserved = leprecondoReservedSpace("food", "Omnipot", cap);
   return (
     leprecondoPieceOrgansSize("food", "Omnipot") -
-    max(fullnessLimit(), isActuallyEd() ? 5 : 15) * (doingBedtime ? 2 : 1) -
+    (cap - reserved) -
     myFullness()
   );
 }
 
 function leprecondoBoozeSurplus(doingBedtime: boolean): number {
-  const inebCap = max(inebrietyLimit(), isActuallyEd() ? 5 : 15);
+  const inebCap = max(inebrietyLimit(), isActuallyEd() ? 5 : 14);
+  const cap = inebCap * (doingBedtime ? 2 : 1);
+  const reserved = leprecondoReservedSpace(
+    "booze",
+    "fully-stocked wet bar",
+    cap,
+  );
   return (
     leprecondoPieceOrgansSize("booze", "fully-stocked wet bar") -
-    inebCap * (doingBedtime ? 2 : 1) -
+    (cap - reserved) -
     min(inebCap, myInebriety())
   );
 }
@@ -597,22 +650,28 @@ function auto_leprecondoTarget(doingBedtime: boolean): LeprecondoPiece[] {
   return bestOrder;
 }
 
+function leprecondoAlreadyInstalled(
+  target: LeprecondoPiece[],
+  installed: readonly LeprecondoPiece[],
+): boolean {
+  for (let i = 0; i < target.length; i++) {
+    if (target[i] !== installed[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export function auto_setLeprecondo(doingBedtime: boolean): boolean {
   if (!auto_haveLeprecondo() || Leprecondo.rearrangesRemaining() <= 0) {
     return false;
   }
   const installed = Leprecondo.installedFurniture();
   const target = auto_leprecondoTarget(doingBedtime);
-  let alreadyInstalled = true;
-  for (let i = 0; i < target.length && alreadyInstalled; i++) {
-    if (target[i] === installed[i]) {
-      continue;
-    }
-    alreadyInstalled = false;
-  }
-  if (alreadyInstalled) {
+  if (leprecondoAlreadyInstalled(target, installed)) {
     return true;
   }
+
   auto_log_info(
     `Rearranging Leprecondo: [${installed.join(", ")}] -> [${target.join(", ")}] (${Leprecondo.rearrangesRemaining() - 1} rearranges left)`,
     "blue",
