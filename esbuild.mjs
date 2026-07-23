@@ -142,8 +142,8 @@ async function buildSettingsData() {
 
 const browserBuild = await esbuild.build({
   entryPoints: {
-    "react/script": "src/browser/index.tsx",
-    "react/main": "src/browser/css/app.scss",
+    "react/script": "packages/browser/src/index.tsx",
+    "react/main": "packages/browser/src/css/app.scss",
   },
   bundle: true,
   outdir: "dist",
@@ -184,13 +184,14 @@ const dataSources = {
 
 await esbuild.build({
   entryPoints: {
-    "relay/relay_autoscend": "src/relay/relay_autoscend.ts",
-    "scripts/autoscend": "src/kolmafia/index.ts",
+    "relay/relay_autoscend": "packages/relay/src/relay_autoscend.ts",
+    "scripts/autoscend": "packages/kolmafia/src/index.ts",
     "scripts/autoscend/auto_choice_adv":
-      "src/kolmafia/autoscend/auto_choice_adv.ts",
+      "packages/kolmafia/src/autoscend/auto_choice_adv.ts",
     "scripts/autoscend/auto_post_adv":
-      "src/kolmafia/autoscend/auto_post_adv.ts",
-    "scripts/autoscend/auto_pre_adv": "src/kolmafia/autoscend/auto_pre_adv.ts",
+      "packages/kolmafia/src/autoscend/auto_post_adv.ts",
+    "scripts/autoscend/auto_pre_adv":
+      "packages/kolmafia/src/autoscend/auto_pre_adv.ts",
   },
   bundle: true,
   outdir: "RELEASE/",

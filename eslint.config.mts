@@ -6,11 +6,11 @@ import tseslint from "typescript-eslint";
 import unusedImports from "eslint-plugin-unused-imports";
 import importSort from "eslint-plugin-simple-import-sort";
 
-const KOLMAFIA_VERSION = 28984;
+const KOLMAFIA_VERSION = 29112;
 await verifyConstantsSinceRevision(KOLMAFIA_VERSION);
 
 export default defineConfig(
-  globalIgnores(["dist/**"]),
+  globalIgnores(["**/dist/**"]),
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   ...libram.configs.recommended,
@@ -25,7 +25,12 @@ export default defineConfig(
       "unused-imports": unusedImports,
       "simple-import-sort": importSort,
     },
-    files: ["src/**/*.ts", "src/**/*.tsx", "**/*.ts", "**/*.tsx"],
+    files: [
+      "packages/**/src/**/*.ts",
+      "packages/**/src/**/*.tsx",
+      "**/*.ts",
+      "**/*.tsx",
+    ],
     rules: {
       "no-empty": "off",
       "block-scoped-var": "error",
@@ -60,31 +65,6 @@ export default defineConfig(
         {
           vars: "all",
           args: "none",
-        },
-      ],
-    },
-  },
-  // Below two rules are meant to prevent cross-imports, eg, react in kolmafia, and kolmafia in react
-  {
-    files: ["src/browser/**/*.ts", "src/browser/**/*.tsx"],
-    rules: {
-      "no-restricted-imports": [
-        "error",
-        {
-          paths: ["kolmafia"],
-          patterns: ["**/kolmafia/**", "**/relay/**"],
-        },
-      ],
-    },
-  },
-  {
-    files: ["src/kolmafia/**/*.ts", "src/relay/**/*.ts"],
-    rules: {
-      "no-restricted-imports": [
-        "error",
-        {
-          paths: ["react", "react-dom", "react-router-dom"],
-          patterns: ["**/browser/**"],
         },
       ],
     },

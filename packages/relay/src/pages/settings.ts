@@ -9,14 +9,14 @@ import {
   turnsPlayed,
 } from "kolmafia";
 
-import { settingDefaults } from "../../kolmafia/autoscend/auto_settings";
+import { settingDefaults } from "../../../kolmafia/src/autoscend/auto_settings";
 import {
   RelayComponent,
   RelayGroup,
   RelayInterrupt,
   RelayPage,
   RelaySetting,
-} from "../../shared/relayTypes";
+} from "../../../shared/src/relayTypes";
 import { html } from "../relayUtils";
 
 interface SettingEntry {

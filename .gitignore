@@ -21,3 +21,5 @@ RELEASE/scripts
 RELEASE/relay
 RELEASE/data
 TODO.txt
+packages/*/dist
+packages/*/tsconfig.tsbuildinfo

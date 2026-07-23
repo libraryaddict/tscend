@@ -1,12 +1,22 @@
 {
   "name": "autoscend",
-  "packageManager": "yarn@4.14.1",
+  "packageManager": "yarn@4.17.1",
+  "workspaces": [
+    "packages/shared",
+    "packages/kolmafia",
+    "packages/relay",
+    "packages/browser"
+  ],
+  "resolutions": {
+    "kolmafia": "5.29112.0",
+    "libram": "0.11.23"
+  },
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc -b",
     "bundle": "node esbuild.mjs",
     "build": "yarn typecheck && yarn bundle",
-    "lint": "eslint src && prettier --check .",
-    "format": "eslint src --fix && prettier --write ."
+    "lint": "eslint packages && prettier --check .",
+    "format": "eslint packages --fix && prettier --write ."
   },
   "devDependencies": {
     "@babel/cli": "^7.29.7",
@@ -19,9 +29,6 @@
     "@eslint/js": "^10.0.1",
     "@types/babel__core": "^7",
     "@types/babel__preset-env": "^7",
-    "@types/node": "^26.1.0",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
     "esbuild": "^0.28.1",
     "esbuild-plugin-babel": "^0.2.3",
     "eslint": "^10.6.0",
@@ -35,12 +42,5 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.62.1",
     "yaml": "^2.9.0"
-  },
-  "dependencies": {
-    "kolmafia": "^5.29099.0",
-    "libram": "^0.11.23",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "react-router-dom": "^7.18.1"
   }
 }

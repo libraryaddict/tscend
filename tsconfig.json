@@ -1,17 +1,9 @@
 {
-  "compilerOptions": {
-    "rootDir": "src",
-    "module": "commonjs",
-    "target": "es2020",
-    "lib": ["ESNext", "DOM"],
-    "jsx": "react-jsx",
-    "esModuleInterop": true,
-    "declaration": false,
-    "strict": false,
-    "types": ["node", "react"],
-    "isolatedModules": true,
-    "useDefineForClassFields": false,
-    "noUnusedLocals": false
-  },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "files": [],
+  "references": [
+    { "path": "packages/shared" },
+    { "path": "packages/kolmafia" },
+    { "path": "packages/relay" },
+    { "path": "packages/browser" }
+  ]
 }

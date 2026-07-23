@@ -15,8 +15,8 @@ import {
   RelayPage,
   RelaySetting,
   RelayTags,
-} from "../shared/relayTypes";
-import { RelayHtml } from "../shared/relayTypes";
+} from "../../shared/src/relayTypes";
+import { RelayHtml } from "../../shared/src/relayTypes";
 
 export function html(data: string): RelayHtml {
   return { type: "html", data: data };

@@ -1,0 +1,8 @@
+{
+  "name": "kolmafia",
+  "version": "1.0.0",
+  "dependencies": {
+    "kolmafia": "*",
+    "libram": "*"
+  }
+}

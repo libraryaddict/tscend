@@ -9,9 +9,9 @@ import {
 } from "kolmafia";
 import { $locations } from "libram";
 
-import { autoscend_current_version } from "../../kolmafia/autoscend/autoscend_migration";
-import { isActuallyEd } from "../../kolmafia/autoscend/paths/actually_ed_the_undying";
-import { RelayPage } from "../../shared/relayTypes";
+import { autoscend_current_version } from "../../../kolmafia/src/autoscend/autoscend_migration";
+import { isActuallyEd } from "../../../kolmafia/src/autoscend/paths/actually_ed_the_undying";
+import { RelayPage } from "../../../shared/src/relayTypes";
 import { html } from "../relayUtils";
 
 function infoTile(label: string, value: string) {

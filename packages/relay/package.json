@@ -1,0 +1,11 @@
+{
+  "name": "relay",
+  "version": "1.0.0",
+  "dependencies": {
+    "kolmafia": "*",
+    "libram": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.0"
+  }
+}

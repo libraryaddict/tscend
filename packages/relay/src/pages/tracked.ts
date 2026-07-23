@@ -1,14 +1,14 @@
 import { entityDecode, getProperty, inHardcore, toInt } from "kolmafia";
 
-import { auto_hasPowerfulGlove } from "../../kolmafia/autoscend/iotms/mr2020";
-import { isActuallyEd } from "../../kolmafia/autoscend/paths/actually_ed_the_undying";
-import { in_ocrs } from "../../kolmafia/autoscend/paths/one_crazy_random_summer";
+import { auto_hasPowerfulGlove } from "../../../kolmafia/src/autoscend/iotms/mr2020";
+import { isActuallyEd } from "../../../kolmafia/src/autoscend/paths/actually_ed_the_undying";
+import { in_ocrs } from "../../../kolmafia/src/autoscend/paths/one_crazy_random_summer";
 import {
   RelayPage,
   RelayTracking,
   TrackingEvent,
   TrackingSection,
-} from "../../shared/relayTypes";
+} from "../../../shared/src/relayTypes";
 
 const trackingConfig =
   // eslint-disable-next-line @typescript-eslint/no-require-imports

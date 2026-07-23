@@ -2,7 +2,7 @@ import type {
   RelayPage,
   RelaySetting,
   TrackingSection,
-} from "../../shared/relayTypes";
+} from "../../../shared/src/relayTypes";
 
 export type {
   RelayComponent,
@@ -13,7 +13,7 @@ export type {
   RelayPage,
   TrackingEvent,
   TrackingSection,
-} from "../../shared/relayTypes";
+} from "../../../shared/src/relayTypes";
 
 export type SettingValidator = (value: string, objects: object) => boolean;
 
