@@ -1840,31 +1840,29 @@ export function auto_equipFreekill(): void {
   const redDartAvailable: boolean =
     auto_haveDarts() && haveEffect($effect`Everything Looks Red`) === 0;
   const chestXrayAvailable: boolean = auto_chestXraysRemaining() > 0;
-  const fireGunAvailable: boolean =
-    auto_jokesterGunFreeKillAvailable() && !maximizeContains("-weapon");
+  const fireGunAvailable: boolean = auto_jokesterGunFreeKillAvailable();
   const sweatBulletsAvailable: boolean = auto_wantToBCZ(
     $skill`BCZ: Sweat Bullets`,
   );
-  const clubBackAvailable: boolean =
-    auto_clubEmBackInTimesRemaining() > 0 && !maximizeContains("-weapon");
+  const clubBackAvailable: boolean = auto_clubEmBackInTimesRemaining() > 0;
 
-  if (redDartAvailable) {
+  if (redDartAvailable && !maximizeContains("-acc3")) {
     auto_log_info(
       "We don't have ELR so let's hit a bullseye. Equipping Everful Dart holster.",
     );
     autoEquipToSlot($slot`acc3`, dartHolster);
-  } else if (chestXrayAvailable) {
+  } else if (chestXrayAvailable && !maximizeContains("-acc3")) {
     auto_log_info(
       "We still have Chest X-Rays available. Equipping Lil' Doctor bag.",
     );
     autoEquipToSlot($slot`acc3`, doctorBag);
-  } else if (fireGunAvailable) {
+  } else if (fireGunAvailable && !maximizeContains("-weapon")) {
     auto_log_info("Let's be a jokester. Equipping The Jokester's gun.");
     autoEquipToSlot($slot`weapon`, joksterGun);
-  } else if (sweatBulletsAvailable) {
+  } else if (sweatBulletsAvailable && !maximizeContains("-acc3")) {
     auto_log_info("Man, we about to sweat bullets up in here. Equipping BCZ.");
     autoEquipToSlot($slot`acc3`, bcz);
-  } else if (clubBackAvailable) {
+  } else if (clubBackAvailable && !maximizeContains("-weapon")) {
     // club back is last because it destroys drops, so we may choose to not use it
     auto_log_info(
       "They may not be seals, but we're gonna kill them last week. Equipping Legendary Seal Clubbing Club.",
