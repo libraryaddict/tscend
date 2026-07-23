@@ -1842,11 +1842,13 @@ export function auto_equipFreekill(): void {
   const redDartAvailable: boolean =
     auto_haveDarts() && haveEffect($effect`Everything Looks Red`) === 0;
   const chestXrayAvailable: boolean = auto_chestXraysRemaining() > 0;
-  const fireGunAvailable: boolean = auto_jokesterGunFreeKillAvailable();
+  const fireGunAvailable: boolean =
+    auto_jokesterGunFreeKillAvailable() && !maximizeContains("-weapon");
   const sweatBulletsAvailable: boolean = auto_wantToBCZ(
     $skill`BCZ: Sweat Bullets`,
   );
-  const clubBackAvailable: boolean = auto_clubEmBackInTimesRemaining() > 0;
+  const clubBackAvailable: boolean =
+    auto_clubEmBackInTimesRemaining() > 0 && !maximizeContains("-weapon");
 
   if (redDartAvailable) {
     auto_log_info$1(
