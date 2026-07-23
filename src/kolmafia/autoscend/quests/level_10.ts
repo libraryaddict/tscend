@@ -51,9 +51,8 @@ import {
   auto_can_equip,
   auto_forceNextNoncombat,
   auto_is_valid,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
   fightScienceTentacle,
   internalQuestStatus,
@@ -124,7 +123,7 @@ export function L10_airship(): boolean {
   }
 
   if (myTurncount() === toInt(getProperty("_LAR_skipNC178"))) {
-    auto_log_info$1(
+    auto_log_info(
       "In LAR path NC178 is forced to reoccur if we skip it. Go do something else.",
     );
     return false;
@@ -348,7 +347,7 @@ export function L10_topFloor(): boolean {
       $location`The Castle in the Clouds in the Sky (Top Floor)`,
     )
   ) {
-    auto_log_debug$1("Delaying Castle (Top Floor) in case of Shen.");
+    auto_log_debug("Delaying Castle (Top Floor) in case of Shen.");
     return false;
   }
 
@@ -481,7 +480,7 @@ export function L10_holeInTheSkyUnlock(): boolean {
       $location`The Castle in the Clouds in the Sky (Top Floor)`,
     )
   ) {
-    auto_log_debug$1("Delaying unlocking Hole in the Sky in case of Shen.");
+    auto_log_debug("Delaying unlocking Hole in the Sky in case of Shen.");
     return false;
   }
 

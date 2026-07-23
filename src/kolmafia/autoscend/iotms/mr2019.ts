@@ -82,7 +82,7 @@ import {
   auto_is_valid,
   auto_is_valid$1,
   auto_is_valid$2,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_error,
   auto_log_info,
   auto_log_warning,
@@ -1144,7 +1144,7 @@ export function auto_snapperPreAdventure(loc: Location): void {
   }
 
   if (getProperty("redSnapperPhylum") === desiredPhylum) {
-    auto_log_debug$1(
+    auto_log_debug(
       `Red-Nosed Snapper is already guiding you towards ${desiredPhylum}`,
     );
     return;

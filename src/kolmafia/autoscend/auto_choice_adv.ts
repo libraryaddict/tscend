@@ -22,10 +22,10 @@ import { $item, $location, $stat } from "libram";
 
 import { possessEquipment } from "./auto_equipment";
 import {
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_error,
-  auto_log_info$1,
-  auto_log_warning$1,
+  auto_log_info,
+  auto_log_warning,
   currentPoolSkill,
   internalQuestStatus,
   poolSkillPracticeGains,
@@ -90,7 +90,7 @@ function auto_run_choice(choice: number, page: string): boolean {
     return true;
   }
 
-  auto_log_debug$1("Running auto_choice_adv.js");
+  auto_log_debug("Running auto_choice_adv.js");
   const options: Map<number, string> = new Map(
     Object.entries(availableChoiceOptions()).map(([_k, _v]) => [toInt(_k), _v]),
   );
@@ -687,7 +687,7 @@ function auto_run_choice(choice: number, page: string): boolean {
           runChoice(1);
           break;
         }
-        auto_log_warning$1(
+        auto_log_warning(
           "Got the Twin Peak NC (Lost in the Great Overlook) without able to complete any of the tasks :(",
         );
         break;
@@ -983,7 +983,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         neverendingPartyChoiceHandler(choice);
         break;
       case 1340: // Is There A Doctor In The House? (Lil' Doctor Bag™)
-        auto_log_info$1("Accepting doctor quest, it's our job!");
+        auto_log_info("Accepting doctor quest, it's our job!");
         runChoice(1);
         break;
       case 1342: // Torpor (Dark Gyffte)

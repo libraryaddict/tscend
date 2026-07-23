@@ -17,7 +17,7 @@ import { $effect, $item, $location, $path, $skill } from "libram";
 
 import { autoAdv } from "../auto_adventure";
 import {
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_info,
   internalQuestStatus,
 } from "../auto_util";
@@ -120,7 +120,7 @@ function L8_theSourceNinjaOracle(): boolean {
     return false; //delaying to not disrupt hidden city
   }
   if (shenShouldDelayZone($location`Lair of the Ninja Snowmen`)) {
-    auto_log_debug$1("Delaying Lair of the Ninja Snowmen in case of Shen.");
+    auto_log_debug("Delaying Lair of the Ninja Snowmen in case of Shen.");
     return false;
   }
 

@@ -15,7 +15,7 @@ import {
 } from "kolmafia";
 import { $class, $item, $path, $skill } from "libram";
 
-import { auto_log_info$1, meatReserve } from "../auto_util";
+import { auto_log_info, meatReserve } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/avatar_of_shadows_over_loathing.ash
@@ -82,7 +82,7 @@ export function aosol_buySkills(): boolean {
       );
       if (my_skillPoints.find()) {
         let skillPoints: number = toInt(my_skillPoints.group(1));
-        auto_log_info$1(`Skill points found: ${skillPoints}`);
+        auto_log_info(`Skill points found: ${skillPoints}`);
         while (skillPoints > 0) {
           if (!haveSkill($skill`[28021]Punt`)) {
             //Banish for the day
@@ -364,7 +364,7 @@ export function aosol_buySkills(): boolean {
       );
       if (my_skillPoints.find()) {
         let skillPoints: number = toInt(my_skillPoints.group(1));
-        auto_log_info$1(`Skill points found: ${skillPoints}`);
+        auto_log_info(`Skill points found: ${skillPoints}`);
         while (skillPoints > 0) {
           if (!haveSkill($skill`Fondeluge`)) {
             //50 turn yellow ray
@@ -646,7 +646,7 @@ export function aosol_buySkills(): boolean {
       );
       if (my_skillPoints.find()) {
         let skillPoints: number = toInt(my_skillPoints.group(1));
-        auto_log_info$1(`Skill points found: ${skillPoints}`);
+        auto_log_info(`Skill points found: ${skillPoints}`);
         while (skillPoints > 0) {
           if (!haveSkill($skill`Motif`)) {
             //25 turn blue ray (olfaction-esque)

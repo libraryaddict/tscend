@@ -26,7 +26,7 @@ import {
   auto_badassBelt,
   auto_change_mcd,
   auto_is_valid,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_info,
   auto_log_warning,
   handleTracker$1,
@@ -229,7 +229,7 @@ export function L4_batCave(): boolean {
       !in_lol() &&
       !in_amw()
     ) {
-      auto_log_debug$1("Delaying Batrat Burrow in case of Shen.");
+      auto_log_debug("Delaying Batrat Burrow in case of Shen.");
       return false;
     }
     if (auto_haveGreyGoose()) {
@@ -246,7 +246,7 @@ export function L4_batCave(): boolean {
       !in_lol() &&
       !in_amw()
     ) {
-      auto_log_debug$1("Delaying Batrat Burrow in case of Shen.");
+      auto_log_debug("Delaying Batrat Burrow in case of Shen.");
       return false;
     }
     bat_formBats();

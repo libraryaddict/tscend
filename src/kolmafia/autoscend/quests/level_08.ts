@@ -79,11 +79,8 @@ import {
   auto_haveQueuedForcedCombat,
   auto_inRonin,
   auto_log_debug,
-  auto_log_debug$1,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
-  auto_log_warning$1,
   canSniff,
   canSummonMonster,
   canYellowRay,
@@ -364,7 +361,7 @@ function L8_getGoatCheese(): boolean {
   // Condider softblocking until day 2 for Mayam
   if (auto_haveMayamCalendar() && itemAmount($item`goat cheese`) === 2) {
     if (auto_waitForDay2()) {
-      auto_log_debug$1("Delaying Goatlet waiting for day 2.");
+      auto_log_debug("Delaying Goatlet waiting for day 2.");
       return false;
     }
   }
@@ -374,7 +371,7 @@ function L8_getGoatCheese(): boolean {
     auto_sourceTerminalEducate($skill`Extract`, $skill`Duplicate`);
   }
   if (auto_haveGreyGoose() && itemAmount($item`goat cheese`) <= 1) {
-    auto_log_info$1(
+    auto_log_info(
       "Bringing the Grey Goose to emit some drones at a Dairy Goat for cheese, Gromit.",
     );
     handleFamiliar$1($familiar`Grey Goose`);
@@ -383,9 +380,7 @@ function L8_getGoatCheese(): boolean {
     canSniff($monster`dairy goat`, $location`The Goatlet`) &&
     auto_mapTheMonsters()
   ) {
-    auto_log_info$1(
-      "Attemping to use Map the Monsters to olfact a Dairy Goat.",
-    );
+    auto_log_info("Attemping to use Map the Monsters to olfact a Dairy Goat.");
   }
   auto_lostStomach(true);
 
@@ -409,7 +404,7 @@ export function L8_mountainManSummon(): boolean {
   }
   // use a summon if we can guarantee it will be enough via cat burglar
   if (canSummonMonster($monster`mountain man`) && catBurglarHeistsLeft() > 1) {
-    auto_log_info$1(
+    auto_log_info(
       "Trying to summon a mountain man, which the cat will then burgle, hopefully.",
     );
     handleFamiliar$1($familiar`Cat Burglar`);
@@ -422,7 +417,7 @@ export function L8_mountainManSummon(): boolean {
       auto_can_equip($item`pro skateboard`) &&
       !toBoolean(getProperty("_epicMcTwistUsed"));
     const will_mctwist: boolean = can_mctwist && need_dupe;
-    auto_log_info$1(
+    auto_log_info(
       `Trying to summon a mountain man, which we will YR${will_mctwist ? " and McTwist." : "."}`,
     );
     adjustForYellowRayIfPossible();
@@ -703,14 +698,14 @@ export function L8_trapperNinjaLair(): boolean {
   }
 
   if (shenShouldDelayZone($location`Lair of the Ninja Snowmen`)) {
-    auto_log_debug$1("Delaying Lair of the Ninja Snowmen in case of Shen.");
+    auto_log_debug("Delaying Lair of the Ninja Snowmen in case of Shen.");
     return false;
   }
   // can we provide enough combat bonus to encounter snowman assassins, or force them?
   let CForced: boolean;
   if (auto_haveQueuedForcedCombat()) {
     CForced = true;
-    auto_log_info$1(
+    auto_log_info(
       "Not trying to force combat again at Lair of the Ninja Showmen because we already have a forced combat queued",
     );
   } else {
@@ -771,7 +766,7 @@ export function L8_trapperGroar(): boolean {
     return false; // peak not yet unlocked or we are done with groar
   }
   if (toBoolean(getProperty("_auto_skip_L8_trapperGroar"))) {
-    auto_log_warning$1(
+    auto_log_warning(
       "Skipping L8_trapperGroar() today as per _auto_skip_L8_trapperGroar",
     );
     return false;
@@ -858,7 +853,7 @@ export function L8_trapperGroar(): boolean {
         );
       }
     } else {
-      auto_log_debug$1(
+      auto_log_debug(
         "questL08Trapper value was correct despite oddity with adv spent",
       );
     }

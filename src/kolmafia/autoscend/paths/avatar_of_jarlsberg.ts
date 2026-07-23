@@ -19,12 +19,7 @@ import { $item, $path, $skill, $skills } from "libram";
 
 import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
 import { equipBaseline } from "../auto_equipment";
-import {
-  auto_have_skill,
-  auto_log_info,
-  auto_log_info$1,
-  ovenHandle,
-} from "../auto_util";
+import { auto_have_skill, auto_log_info, ovenHandle } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/avatar_of_jarlsberg.ash
@@ -89,7 +84,7 @@ export function jarlsberg_buySkills(): void {
   const my_skillPoints: AshMatcher = new AshMatcher("(\\d+) skill point", page);
   if (my_skillPoints.find()) {
     let skillPoints: number = toInt(my_skillPoints.group(1));
-    auto_log_info$1(`Skill points found: ${skillPoints}`);
+    auto_log_info(`Skill points found: ${skillPoints}`);
 
     while (skillPoints > 0) {
       skillPoints = skillPoints - 1;

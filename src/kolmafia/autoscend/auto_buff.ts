@@ -71,8 +71,7 @@ import {
   auto_have_skill,
   auto_is_valid,
   auto_log_debug,
-  auto_log_debug$1,
-  auto_log_warning$1,
+  auto_log_warning,
   handleTracker,
   handleTracker$1,
   meatReserve,
@@ -169,7 +168,7 @@ function buffMaintain(
       //wear it now before using the buff.
       autoForceEquip(equip_slot, mustEquip, true);
       if (equippedAmount(mustEquip) === 0) {
-        auto_log_warning$1(
+        auto_log_warning(
           `buffMaintain failed to equip [${mustEquip}] for some reason. which is necessary in order to apply [${buff}] using the skill [${source}].`,
         );
         return false;
@@ -2424,9 +2423,7 @@ export function auto_faceCheck(face: Effect): boolean {
   if (CanEmote) {
     buffMaintain$2(face);
   } else {
-    auto_log_debug$1(
-      `Can not get ${face} expression as we are already emoting.`,
-    );
+    auto_log_debug(`Can not get ${face} expression as we are already emoting.`);
     return false;
   }
 

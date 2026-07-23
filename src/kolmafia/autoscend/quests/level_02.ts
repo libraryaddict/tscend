@@ -13,7 +13,7 @@ import { autoAdv } from "../auto_adventure";
 import { canBurnDelay } from "../auto_routing";
 import {
   auto_log_info,
-  auto_log_warning$1,
+  auto_log_warning,
   internalQuestStatus,
 } from "../auto_util";
 import { in_koe } from "../paths/kingdom_of_exploathing";
@@ -46,7 +46,7 @@ export function spookyForestChoiceHandler(choice: number): void {
         runChoice(1); // go to The Road Less Traveled (#503)
       }
     } else {
-      auto_log_warning$1(
+      auto_log_warning(
         "In Arboreal Respite for some reason but we don't need a mosquito larva or to unlock the hidden temple!",
       );
       runChoice(2); // go to Consciousness of a Stream (#505)

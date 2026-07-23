@@ -41,12 +41,9 @@ import { possessEquipment } from "../auto_equipment";
 import {
   auto_interruptCheck,
   auto_log_debug,
-  auto_log_debug$1,
   auto_log_error,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
-  auto_log_warning$1,
   handleTracker$1,
   trim,
 } from "../auto_util";
@@ -129,7 +126,7 @@ export function handleFaxMonster(
     wait(10);
     if (checkFax(enemy)) {
       //got correct photocopied monster! Fight it now if desired
-      auto_log_info$1(`Sucessfully faxed ${enemy}`);
+      auto_log_info(`Sucessfully faxed ${enemy}`);
       if (fightIt) {
         handleTracker$1(
           enemy.toString(),
@@ -248,7 +245,7 @@ function whitelistedClanToID(clanName: string): number {
   while (clan_matcher.find()) {
     if (clan_matcher.group(2) === clanName) {
       clanID = toInt(clan_matcher.group(1));
-      auto_log_debug$1(
+      auto_log_debug(
         `Found clan ${clan_matcher.group(1)} and name: ${clan_matcher.group(2)}`,
       );
       break;
@@ -267,13 +264,13 @@ function changeClan(clanName: string): number {
   const toClan: number = whitelistedClanToID(clanName);
 
   if (toClan === 0) {
-    auto_log_warning$1(
+    auto_log_warning(
       "Do not have a whitelist to destination clan, can not change clans.",
     );
     return 0;
   }
   if (!canReturn) {
-    auto_log_warning$1(
+    auto_log_warning(
       "Do not have a whitelist to our own clan, can not change clans.",
     );
     return 0;
@@ -313,13 +310,13 @@ export function changeClan$1(toClan: number): number {
 
   const page: string = visitUrl("clan_signup.php");
   if (!containsText(page, `option value=${oldClan}>`)) {
-    auto_log_warning$1(
+    auto_log_warning(
       "Do not have a whitelist to our own clan, can not change clans.",
     );
     return 0;
   }
   if (!containsText(page, `option value=${toClan}>`)) {
-    auto_log_warning$1(
+    auto_log_warning(
       "Do not have a whitelist to destination clan, can not change clans.",
     );
     return 0;

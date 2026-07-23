@@ -31,11 +31,11 @@ import { handleFamiliar$1, lookupFamiliarDatafile } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   auto_have_skill,
-  auto_log_debug$1,
-  auto_log_info$1,
+  auto_log_debug,
+  auto_log_info,
   auto_log_warning,
   autoMaximize,
-  cloversAvailable$1,
+  cloversAvailable,
   meatReserve,
 } from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
@@ -130,7 +130,7 @@ export function amw_buyAdv(): boolean {
     return false;
   }
 
-  auto_log_debug$1(`Buying ${amw_advPerTrade().toString()} adventures`);
+  auto_log_debug(`Buying ${amw_advPerTrade().toString()} adventures`);
   visitUrl("place.php?whichplace=meatground&action=meatground_turns");
   const url: string = "choice.php?whichchoice=1593&pwd&option=1";
   visitUrl(url, true);
@@ -145,7 +145,7 @@ export function amw_buyAdv(): boolean {
 
 function amw_buySubstat(st: Stat, numberToBuy: number): boolean {
   // buys in terms of substats, whether st is a stat or a substat
-  auto_log_info$1(`Buying ${numberToBuy.toString()} ${st.toString()}`);
+  auto_log_info(`Buying ${numberToBuy.toString()} ${st.toString()}`);
   if (numberToBuy > myMeat()) {
     return false;
   }
@@ -371,7 +371,7 @@ function amw_substatsBuyable(
     return 0;
   }
   const substats_to_goal: number = goal.amount - myBasestat(goal.st);
-  auto_log_debug$1(`Substats to next goal: ${substats_to_goal.toString()}`);
+  auto_log_debug(`Substats to next goal: ${substats_to_goal.toString()}`);
 
   if (!meatleveling) {
     // return either the meat within budget or the substats we need to reach the goal
@@ -487,7 +487,7 @@ export function LM_adventurerMeatsWorld(): boolean {
   }
   if (
     toBoolean(getProperty("auto_shouldMeatLevel")) &&
-    cloversAvailable$1() > 1 &&
+    cloversAvailable() > 1 &&
     myBuffedstat($stat`Moxie`) > 25 &&
     myLevel() < 12 &&
     zone_isAvailable($location`Cobb's Knob Treasury`, true)
@@ -516,7 +516,7 @@ export function LM_adventurerMeatsWorld(): boolean {
     myBasestat($stat`Mysticality`) < 30 &&
     !auto_haveMobiusRing()
   ) {
-    auto_log_info$1("Low skills after 8 turns, going to meatfarm");
+    auto_log_info("Low skills after 8 turns, going to meatfarm");
     return LX_attemptPowerLevelMeat(true);
   }
   return false;

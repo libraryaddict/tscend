@@ -81,8 +81,7 @@ import {
   auto_is_valid$1,
   auto_log_error,
   auto_log_info,
-  auto_log_info$1,
-  auto_log_warning$1,
+  auto_log_warning,
   handleTracker,
   handleTracker$1,
   hasTorso,
@@ -182,7 +181,7 @@ export function auto_bowlingBallCombatString(
   ) {
     if (!speculation) {
       setProperty("auto_bowledAtAlley", myAscensions().toString());
-      auto_log_info$1(
+      auto_log_info(
         "Cosmic Bowling Ball used at Hidden Bowling Alley to advance quest.",
       );
     }
@@ -698,7 +697,7 @@ export function utilizeStillsuit(): void {
     if (itemAmount($item`tiny stillsuit`) > 0) {
       equip(chosenStillsuitFamiliar, $item`tiny stillsuit`);
     } else {
-      auto_log_warning$1(
+      auto_log_warning(
         "Failed to recover tiny stillsuit from the familiar mafia thinks is wearing it",
       );
     }

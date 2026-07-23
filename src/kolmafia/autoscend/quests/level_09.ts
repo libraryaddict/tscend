@@ -93,13 +93,12 @@ import {
   auto_inRonin,
   auto_is_valid,
   auto_is_valid$3,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
   auto_MaxMLToCap,
   autoMaximize$1,
-  cloversAvailable$1,
+  cloversAvailable,
   elemental_resist_value,
   internalQuestStatus,
   isGuildClass,
@@ -187,7 +186,7 @@ export function L9_leafletQuest(): boolean {
   if (availableAmount($item`strange leaflet`) === 0) {
     council();
     if (itemAmount($item`strange leaflet`) === 0) {
-      auto_log_debug$1(
+      auto_log_debug(
         "Tried to grab a [strange leaflet] from the council and it did not work... This needs fixing. skipping for now.",
       );
       return false;
@@ -403,7 +402,7 @@ export function prepareForSmutOrcs(): void {
     // If we think the non-com will hit NOW we clear maximizer to keep previous settings from carrying forward
     resetMaximize();
 
-    auto_log_info$1("The smut orc noncombat is about to hit...");
+    auto_log_info("The smut orc noncombat is about to hit...");
     // This is a hardcoded patch for Dark Gyffte
     // TODO: once explicit formulas are spaded, use simulated maximizer
     // to determine best approach.
@@ -477,13 +476,13 @@ export function L9_chasmBuild(): boolean {
     auto_haveSeptEmberCenser()
   ) {
     if (auto_waitForDay2()) {
-      auto_log_debug$1("Delaying Logging Camp waiting for day 2.");
+      auto_log_debug("Delaying Logging Camp waiting for day 2.");
       return false;
     }
   }
 
   if (shenShouldDelayZone($location`The Smut Orc Logging Camp`)) {
-    auto_log_debug$1("Delaying Logging Camp in case of Shen.");
+    auto_log_debug("Delaying Logging Camp in case of Shen.");
     return false;
   }
   if (robot_delay("chasm")) {
@@ -552,7 +551,7 @@ export function L9_aBooPeak(): boolean {
   }
 
   let booCloversOk: boolean = false;
-  if (cloversAvailable$1() > 0) {
+  if (cloversAvailable() > 0) {
     if (in_glover()) {
       if (itemAmount($item`A-Boo glue`) > 0) {
         booCloversOk = true;
@@ -570,7 +569,7 @@ export function L9_aBooPeak(): boolean {
     clueAmt >= toInt(getProperty("booPeakProgress")) / 30
   ) {
     // if you get lucky/have enough item drop to get 3 clues while getting to 90% haunted, don't waste a clover getting more.
-    auto_log_info$1(
+    auto_log_info(
       "We have enough A-boo clues to clear the peak, lets not waste a clover",
     );
     setProperty("auto_abooclover", false.toString());
@@ -1040,7 +1039,7 @@ export function L9_twinPeak(): boolean {
   }
 
   if (!prepareForTwinPeak(true)) {
-    auto_log_debug$1(
+    auto_log_debug(
       "Can't complete any task at the Great Overlook Lodge. Will come back to Twin Peak later",
     );
     return false;
@@ -1091,7 +1090,7 @@ export function L9_twinPeak(): boolean {
     if (adjustForYellowRayIfPossible($monster`bearpig topiary animal`)) {
       if (auto_mapTheMonsters()) {
         handleFamiliar$1($familiar`Melodramedary`);
-        auto_log_info$1(
+        auto_log_info(
           "Attemping to use Map the Monsters to Yellow Ray a Camel Spitted bearpig topiary animal. Yes that is a mouthful but lets hope it works and we get 4 rusty hedge trimmers!",
         );
       }
@@ -1100,7 +1099,7 @@ export function L9_twinPeak(): boolean {
     }
   }
   if (auto_haveGreyGoose()) {
-    auto_log_info$1(
+    auto_log_info(
       "Bringing the Grey Goose to emit some drones to get some hedge trimmers.",
     );
     handleFamiliar$1($familiar`Grey Goose`);

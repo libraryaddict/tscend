@@ -25,7 +25,7 @@ import {
   auto_canForceNextNoncombat,
   auto_haveQueuedForcedCombat,
   auto_is_valid,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_warning,
   auto_turbo,
   internalQuestStatus,
@@ -238,7 +238,7 @@ export function auto_reserveUndergroundAdventures(): boolean {
       LX_getDesiredWorkshed() === Item.none) &&
     haveCampground()
   ) {
-    auto_log_debug$1(
+    auto_log_debug(
       "Reserving underground adventures as we will be switching to the CMC.",
     );
     // Don't have the CMC installed yet but we can still switch today and want to switch to it so save underground zones until then.
@@ -258,7 +258,7 @@ export function auto_reserveUndergroundAdventures(): boolean {
       turns_until_next_consult < 12 &&
       (envs.get("u") ?? envs.set("u", 0).get("u")) > 10
     ) {
-      auto_log_debug$1(
+      auto_log_debug(
         "Reserving underground adventures as we can still get more Breathitins today.",
       );
       // have the CMC installed & still have consults to use today.
@@ -281,7 +281,7 @@ export function auto_waitForDay2(): boolean {
   if (!allowSoftblockDay2Wait()) {
     return false;
   }
-  auto_log_debug$1("Waiting for day 2 for this.");
+  auto_log_debug("Waiting for day 2 for this.");
   return true;
 }
 
@@ -310,7 +310,7 @@ export function auto_earlyRoutingHandling(): boolean {
   }
   // force forcing non-combats.
   if (auto_canForceNextNoncombat()) {
-    auto_log_debug$1(
+    auto_log_debug(
       "Forcing a non-combat somewhere. Strap yourselves in, kids.",
     );
     if (
@@ -325,7 +325,7 @@ export function auto_earlyRoutingHandling(): boolean {
   }
   // force forcing combats.
   if (auto_canForceNextCombat() || auto_haveQueuedForcedCombat()) {
-    auto_log_debug$1(
+    auto_log_debug(
       "Possibly forcing a combat somewhere. Strap yourselves in, kids.",
     );
     if (L8_trapperSlope()) {
@@ -340,7 +340,7 @@ export function auto_earlyRoutingHandling(): boolean {
       toInt(getProperty("_nextColdMedicineConsult")) - totalTurnsPlayed() <
       12
     ) {
-      auto_log_debug$1(
+      auto_log_debug(
         "Have a CMC consult coming up in 11 or fewer adventures. Calling a quest function with underground zones.",
       );
       // we have a CMC consult coming up in 11 turns or less
@@ -362,7 +362,7 @@ export function auto_earlyRoutingHandling(): boolean {
         (getLastCombatEnvironmentCounts(9).get("u") ??
           getLastCombatEnvironmentCounts(9).set("u", 0).get("u")) > 0
       ) {
-        auto_log_debug$1(
+        auto_log_debug(
           "Have a CMC consult coming up in 12 or more adventures. Calling a quest function with zoneless encounters.",
         );
         // some of the last 11 adventures were underground, lets try to "push" the CMC counter & preserve our underground combats
@@ -380,7 +380,7 @@ export function auto_earlyRoutingHandling(): boolean {
   }
   // Using up Breathitin charges if we have them
   if (toInt(getProperty("breathitinCharges")) > 0) {
-    auto_log_debug$1(
+    auto_log_debug(
       "Have Breathitin Charges to burn. Calling a quest function with outdoor zones.",
     );
     if (

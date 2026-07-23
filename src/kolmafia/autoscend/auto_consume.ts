@@ -121,11 +121,9 @@ import {
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$2,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
-  auto_log_warning$1,
   auto_reserveAmount,
   auto_reserveCraftAmount,
   auto_turbo,
@@ -1054,7 +1052,7 @@ function MakeConsumeAction(it: Item): ConsumeAction {
 }
 
 function autoPrepConsume(action: ConsumeAction): boolean {
-  auto_log_info$1(to_debug_string(action));
+  auto_log_info(to_debug_string(action));
   if (action.howtoget === AUTO_OBTAIN_PULL) {
     auto_log_info(`autoPrepConsume: Pulling a ${action.it}`, "blue");
     action.howtoget = AUTO_OBTAIN_NULL;
@@ -1629,7 +1627,7 @@ function loadConsumables(
               actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
             ).desirability -= 50;
           } else {
-            auto_log_info$1(
+            auto_log_info(
               "Spaghetti Breakfast available, we should eat that first.",
             );
             (
@@ -1657,7 +1655,7 @@ function loadConsumables(
             ) {
               //eating it at 12 would probably mean having to pull something smaller than a hi mein and missing out on Saucemaven?
             } else {
-              auto_log_info$1(
+              auto_log_info(
                 `${it.toString()} available, we should eat that first.`,
               );
               (
@@ -1680,7 +1678,7 @@ function loadConsumables(
             (it === $item`Jarlsberg's key lime pie` && wantJarlsbergPie) ||
             (it === $item`Sneaky Pete's key lime pie` && wantPetePie))
         ) {
-          auto_log_info$1(
+          auto_log_info(
             `If we ate a ${it} we could skip getting a fat loot token...`,
           );
           (
@@ -2281,12 +2279,12 @@ function auto_findBestConsumeAction$1(): ConsumeAction {
   // deterimine if we want to avoid drinking
   let considerDrink: boolean = true;
   if (!hasSpookyravenLibraryKey() && myInebriety() >= 10) {
-    auto_log_info$1(
+    auto_log_info(
       "Will not drink to maintain pool skill for Haunted Billiards room.",
     );
     considerDrink = false;
     if (fullness_left() === 0) {
-      auto_log_warning$1(
+      auto_log_warning(
         "Need to drink as no fullness is available, pool skill will suffer.",
       );
       considerDrink = true;
@@ -2350,7 +2348,7 @@ export function auto_autoConsumeOne(action: ConsumeAction): boolean {
     "blue",
   );
   if (best_adv_per_fill < toFloat(getProperty("auto_consumeMinAdvPerFill"))) {
-    auto_log_warning$1(
+    auto_log_warning(
       `auto_autoConsumeOne: Will not consume, min adventures per full ${best_adv_per_fill} is less than auto_consumeMinAdvPerFill ${getProperty("auto_consumeMinAdvPerFill")}`,
     );
     return false;
@@ -2449,7 +2447,7 @@ export function auto_breakfastCounterVisit(): boolean {
         toItem(getProperty("muffinOnOrder")),
       ))
   ) {
-    auto_log_info$1(
+    auto_log_info(
       "Going to the breakfast counter to grab/order a breakfast muffin.",
     );
     visitUrl("place.php?whichplace=monorail&action=monorail_downtown");
@@ -2466,9 +2464,7 @@ export function auto_breakfastCounterVisit(): boolean {
       !toBoolean(getProperty("_muffinOrderedToday")) &&
       itemAmount($item`earthenware muffin tin`) > 0
     ) {
-      auto_log_info$1(
-        "Ordering a bran muffin for tomorrow to keep you regular.",
-      );
+      auto_log_info("Ordering a bran muffin for tomorrow to keep you regular.");
       runChoice(2); // Order a bran muffin
     }
     runChoice(1); // Back to the Platform!
@@ -2503,7 +2499,7 @@ export function still_targetToOrigin(target: Item): Item {
       $_still_targetToOrigin_originNeeded.set(target, Item.none).get(target)
     );
   } else {
-    auto_log_debug$1(
+    auto_log_debug(
       `still_targetToOrigin failed to lookup the item [${target}]`,
     );
   }
@@ -2524,15 +2520,15 @@ export function stillReachable(): boolean {
 
 export function distill(target: Item): boolean {
   //use Nash Crosby's Still to create target
-  auto_log_debug$1(`distill(item target) called to create [${target}]`);
+  auto_log_debug(`distill(item target) called to create [${target}]`);
   if (!stillReachable()) {
-    auto_log_warning$1(
+    auto_log_warning(
       `distill(item target) tried to create [${target}] but Nash Crosby's Still is not reachable`,
     );
     return false;
   }
   if (stillsAvailable() === 0) {
-    auto_log_warning$1(
+    auto_log_warning(
       `distill(item target) tried to create [${target}] but Nash Crosby's Still is out of uses`,
     );
     return false;
@@ -2542,7 +2538,7 @@ export function distill(target: Item): boolean {
   if (start_amount + 1 === itemAmount(target)) {
     return true;
   }
-  auto_log_warning$1(
+  auto_log_warning(
     `distill(item target) mysteriously failed to create [${target}]`,
   );
   return false;

@@ -87,7 +87,6 @@ import {
   auto_change_mcd,
   auto_log_debug,
   auto_log_info,
-  auto_log_info$1,
   backupSetting,
   internalQuestStatus,
   ovenHandle,
@@ -390,7 +389,7 @@ function ed_buySkills(): boolean {
   );
   if (my_skillPoints.find()) {
     let skillPoints: number = toInt(my_skillPoints.group(1));
-    auto_log_info$1(`Skill points found: ${skillPoints}`);
+    auto_log_info(`Skill points found: ${skillPoints}`);
     possEdPoints = skillPoints - 1;
     if (
       haveSkill($skill`Bounty of Renenutet`) &&
@@ -475,7 +474,7 @@ function ed_buySkills(): boolean {
   let imbuePoints: number = 0;
   if (my_imbuePoints.find()) {
     imbuePoints = toInt(my_imbuePoints.group(1));
-    auto_log_info$1(`Imbuement points found: ${imbuePoints}`);
+    auto_log_info(`Imbuement points found: ${imbuePoints}`);
   }
   possEdPoints += imbuePoints;
 
@@ -490,7 +489,7 @@ function ed_buySkills(): boolean {
   );
   if (my_servantPoints.find()) {
     let servantPoints: number = toInt(my_servantPoints.group(1));
-    auto_log_info$1(`Servants points found: ${servantPoints}`);
+    auto_log_info(`Servants points found: ${servantPoints}`);
     while (servantPoints > 0) {
       servantPoints -= 1;
       let sid: number = -1;
@@ -755,7 +754,7 @@ export function ed_needShop(): boolean {
     toBoolean(getProperty("auto_needLegs")) &&
     coins >= ed_KaCost($skill`Upgraded Legs`)
   ) {
-    auto_log_info$1(
+    auto_log_info(
       "Ed needs legs (and can afford them)! UNDYING for a free trip to the Underworld!",
     );
     return true;
@@ -764,7 +763,7 @@ export function ed_needShop(): boolean {
   let canEat_1: number = (spleenLimit() - mySpleenUse()) / 5;
   canEat_1 = max(0, canEat_1 - itemAmount($item`mummified beef haunch`));
   if (canEat_1 > 0 && coins >= 15) {
-    auto_log_info$1(
+    auto_log_info(
       "Ed needs beef haunches (and can afford them)! UNDYING for a free trip to the Underworld!",
     );
     return true;
@@ -776,7 +775,7 @@ export function ed_needShop(): boolean {
       itemAmount($item`spirit beer`) < 1 &&
       itemAmount($item`sacramental wine`) < 1
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Ed needs MP restores! UNDYING for a free trip to the Underworld!",
       );
       return true;
@@ -786,7 +785,7 @@ export function ed_needShop(): boolean {
   const nextUpgrade: Skill = ed_nextUpgrade();
   const requiredKa: number = ed_KaCost(nextUpgrade);
   if (canEat_1 < 1 && requiredKa !== -1 && coins >= requiredKa) {
-    auto_log_info$1(
+    auto_log_info(
       `Ed needs ${nextUpgrade.toString()} (and can afford it)! UNDYING for a free trip to the Underworld!`,
     );
     return true;
@@ -799,12 +798,12 @@ export function ed_needShop(): boolean {
       toInt(getProperty("auto_renenutetBought")) < 7 &&
       coins >= 7 - toInt(getProperty("auto_renenutetBought"))
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Ed needs Talismens of Renenutet! UNDYING for a free trip to the Underworld!",
       );
       return true;
     } else if (itemAmount($item`linen bandages`) < 1 && coins >= 4) {
-      auto_log_info$1(
+      auto_log_info(
         "Ed needs Linen Bandages! UNDYING for a free trip to the Underworld!",
       );
       return true;
@@ -813,17 +812,17 @@ export function ed_needShop(): boolean {
       coins >= 1 &&
       myMaxmp() - myMp() > 50
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Ed needs Holy Spring Water! UNDYING for a free trip to the Underworld!",
       );
       return true;
     } else if (itemAmount($item`talisman of Horus`) < 1 && coins >= 5) {
-      auto_log_info$1(
+      auto_log_info(
         "Ed needs Talismens of Horus! UNDYING for a free trip to the Underworld!",
       );
       return true;
     } else if (itemAmount($item`spirit beer`) < 1 && coins >= 30) {
-      auto_log_info$1(
+      auto_log_info(
         "Ed needs Spirit Beer! UNDYING for a free trip to the Underworld!",
       );
       return true;
@@ -833,12 +832,12 @@ export function ed_needShop(): boolean {
         1 &&
       coins >= 30
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Ed needs Ancient Cure-All! UNDYING for a free trip to the Underworld!",
       );
       return true;
     } else if (itemAmount($item`sacramental wine`) < 1 && coins >= 30) {
-      auto_log_info$1(
+      auto_log_info(
         "Ed needs Sacramental Wine! UNDYING for a free trip to the Underworld!",
       );
       return true;
@@ -1669,7 +1668,7 @@ export function edUnderworldChoiceHandler(choice: number): void {
     } else {
       // resurrecting will cost Ka
       runChoice(2); // Accept the cold embrace of death (Return to the Pyramid)
-      auto_log_info$1("Ed died in combat for reals!");
+      auto_log_info("Ed died in combat for reals!");
       setProperty(
         "auto_beatenUpCount",
         (toInt(getProperty("auto_beatenUpCount")) + 1).toString(),

@@ -13,7 +13,7 @@ import {
   toLowerCase,
 } from "kolmafia";
 
-import { auto_log_debug, auto_log_info$1 } from "./auto_util";
+import { auto_log_debug, auto_log_info } from "./auto_util";
 import { AshMatcher } from "./utils/kolmafiaUtils";
 
 //# These functions are used to either upgrade format on properties. delete obsolete properties. or set default values for new properties
@@ -332,7 +332,7 @@ function auto_settingsDelete(): void {
 function defaultConfig(prop: string, val: string): void {
   //this function is used to configure default values. it only makes a change if the current value is nothing
   if (!propertyExists(prop)) {
-    auto_log_info$1(
+    auto_log_info(
       `${prop} has no value set. setting it to the default value of ${val}`,
     );
     setProperty(prop, val);

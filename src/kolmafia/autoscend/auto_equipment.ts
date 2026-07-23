@@ -104,9 +104,7 @@ import {
   auto_log_debug,
   auto_log_error,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
-  auto_log_warning$1,
   autoMaximize,
   instakillable,
   isArmoryAndLeggeryStoreAvailable,
@@ -197,7 +195,7 @@ export function autoEquipToSlot(s: Slot, it: Item): boolean {
     it.toString() === getProperty("_auto_maximize_equip_acc2") ||
     it.toString() === getProperty("_auto_maximize_equip_acc3")
   ) {
-    auto_log_warning$1(`Ignoring duplicate equip of accessory ${it}`);
+    auto_log_warning(`Ignoring duplicate equip of accessory ${it}`);
     return true;
   }
   // This logic lets us force the equipping of multiple accessories with minimal conflict
@@ -1546,7 +1544,7 @@ export function possessOutfit(
   // it will only report true if you have all in inventory or are wearing the whole thing
   // hence this now exists.
   if (outfitPieces(outfitToCheck).length === 0) {
-    auto_log_warning$1(`${outfitToCheck} is not a valid outfit!`);
+    auto_log_warning(`${outfitToCheck} is not a valid outfit!`);
     return false;
   }
 
@@ -1832,7 +1830,7 @@ export function auto_equipFreekill(): void {
     return;
   }
 
-  auto_log_info$1("Looking for an equipment with free kills available...");
+  auto_log_info("Looking for an equipment with free kills available...");
   const dartHolster: Item = $item`Everfull Dart Holster`;
   const doctorBag: Item = $item`Lil' Doctor™ bag`;
   const joksterGun: Item = $item`The Jokester's gun`;
@@ -1851,31 +1849,29 @@ export function auto_equipFreekill(): void {
     auto_clubEmBackInTimesRemaining() > 0 && !maximizeContains("-weapon");
 
   if (redDartAvailable) {
-    auto_log_info$1(
+    auto_log_info(
       "We don't have ELR so let's hit a bullseye. Equipping Everful Dart holster.",
     );
     autoEquipToSlot($slot`acc3`, dartHolster);
   } else if (chestXrayAvailable) {
-    auto_log_info$1(
+    auto_log_info(
       "We still have Chest X-Rays available. Equipping Lil' Doctor bag.",
     );
     autoEquipToSlot($slot`acc3`, doctorBag);
   } else if (fireGunAvailable) {
-    auto_log_info$1("Let's be a jokester. Equipping The Jokester's gun.");
+    auto_log_info("Let's be a jokester. Equipping The Jokester's gun.");
     autoEquipToSlot($slot`weapon`, joksterGun);
   } else if (sweatBulletsAvailable) {
-    auto_log_info$1(
-      "Man, we about to sweat bullets up in here. Equipping BCZ.",
-    );
+    auto_log_info("Man, we about to sweat bullets up in here. Equipping BCZ.");
     autoEquipToSlot($slot`acc3`, bcz);
   } else if (clubBackAvailable) {
     // club back is last because it destroys drops, so we may choose to not use it
-    auto_log_info$1(
+    auto_log_info(
       "They may not be seals, but we're gonna kill them last week. Equipping Legendary Seal Clubbing Club.",
     );
     autoEquipToSlot($slot`weapon`, legendClub);
   } else {
-    auto_log_info$1(
+    auto_log_info(
       "No free kill sources found to equip, maybe you have some others, but we'll let combat figure that out.",
     );
   }

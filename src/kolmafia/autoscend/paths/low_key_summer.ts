@@ -45,7 +45,6 @@ import { LX_attemptPowerLevel, LX_freeCombatsTask } from "../auto_powerlevel";
 import { auto_earlyRoutingHandling } from "../auto_routing";
 import {
   auto_log_warning,
-  auto_log_warning$1,
   internalQuestStatus,
   LX_summonMonster,
   woods_questStart,
@@ -510,11 +509,11 @@ export function L13_sorceressDoorLowKey(): boolean {
   if (loc === Location.none) {
     const remaining: number = lowkey_keysRemaining();
     if (remaining > 0) {
-      auto_log_warning$1("Unable to adventure for remaining low keys");
+      auto_log_warning("Unable to adventure for remaining low keys");
       let needHigherLevelForKey: boolean = true;
       for (const key of lowKeys.keys()) {
         if (lowkey_needKey(key)) {
-          auto_log_warning$1(
+          auto_log_warning(
             `${lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key)}: ${key}`,
           );
           if (

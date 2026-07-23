@@ -85,12 +85,10 @@ import {
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$2,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_error,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
-  auto_log_warning$1,
   isMystGuildStoreAvailable,
   meatReserve,
 } from "./auto_util";
@@ -253,7 +251,7 @@ function auto_log_restore_debug(s: string, level: number): void {
     return; //regular debugging is off. so extra debugging is also off.
   }
   if (toInt(getProperty("auto_log_level_restore")) >= level) {
-    auto_log_debug$1(s);
+    auto_log_debug(s);
   }
 }
 
@@ -298,7 +296,7 @@ function __init_restoration_metadata(): void {
         if (e !== Effect.none) {
           parsed_effects.set(e, true);
         } else {
-          auto_log_warning$1(
+          auto_log_warning(
             `Unknown effect found parsing restoration metadata: ${name} removes effect: ${s}`,
           );
         }
@@ -431,7 +429,7 @@ function __init_restoration_metadata(): void {
     }
   }
 
-  auto_log_info$1("Loading restoration data.");
+  auto_log_info("Loading restoration data.");
   init();
   $_f___restore_maximizer_cache.clear();
 }
@@ -1927,7 +1925,7 @@ function __restore(
     `Target ${resource_type} => ${goal} - Considering restore options at ${myHp()}/${myMaxhp()} HP with ${myMp()}/${myMaxmp()} MP`,
     "blue",
   );
-  auto_log_info$1(
+  auto_log_info(
     `Active Negative Effects => ${list_to_string(negative_effects())}`,
   );
 
@@ -1991,7 +1989,7 @@ function __restore(
               mustnotpants = true;
             }
             if (mustnotpants) {
-              auto_log_info$1("Avoiding any discount pants restore loops");
+              auto_log_info("Avoiding any discount pants restore loops");
               putCloset(1, discountpants); //yes this was the recommended and only? way to make mafia not auto equip the discount pants
             }
           }
@@ -2012,7 +2010,7 @@ function __restore(
       if (success) {
         break;
       } else {
-        auto_log_warning$1(
+        auto_log_warning(
           `Target ${resource_type} => ${goal} option ${o.metadata.name} failed. Trying next option (if available).`,
         );
       }
@@ -2034,7 +2032,7 @@ function __restore(
           max_resource() -
             numericModifier(current_back, `Maximum ${resource_type}`)
         ) {
-          auto_log_info$1("Manually equipping the bat wings");
+          auto_log_info("Manually equipping the bat wings");
           equip($item`bat wings`);
           recover_discount_pants();
           success = useSkill(1, $skill`Rest upside down`);
@@ -2062,7 +2060,7 @@ export function __cure_bad_stuff(): void {
   }
   // let mafia figure out how to best remove beaten up
   if (haveEffect($effect`Beaten Up`) > 0) {
-    auto_log_info$1(
+    auto_log_info(
       "Ouch, you got beaten up. Lets get you patched up, if we can.",
     );
     uneffect($effect`Beaten Up`);
@@ -2316,7 +2314,7 @@ export function acquireHP$3(
       use(1, $item`super deluxe mushroom`);
     }
     if (myHp() <= 10) {
-      auto_log_info$1("Spending a turn to heal.");
+      auto_log_info("Spending a turn to heal.");
       visitUrl("place.php?whichplace=mario&action=mush_saveblock");
     }
   } else {

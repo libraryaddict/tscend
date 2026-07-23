@@ -51,10 +51,10 @@ import {
 import { doFreeRest, haveFreeRestAvailable } from "../auto_restore";
 import {
   auto_is_valid,
-  auto_log_debug$1,
-  auto_log_info$1,
+  auto_log_debug,
+  auto_log_info,
   auto_log_warning,
-  cloversAvailable$1,
+  cloversAvailable,
   internalQuestStatus,
   loopHandlerDelayAll,
   meatReserve,
@@ -214,7 +214,7 @@ function robot_top(choice: number): boolean {
   }
 
   const starting_scrap: number = myRobotScraps();
-  auto_log_info$1(
+  auto_log_info(
     `Setting Robot Top Attachment to ${name}, Have ${myRobotScraps()} scrap on hand`,
   );
   visitUrl("place.php?whichplace=scrapheap&action=sh_configure");
@@ -294,7 +294,7 @@ function robot_left(choice: number): boolean {
   }
 
   const starting_scrap: number = myRobotScraps();
-  auto_log_info$1(
+  auto_log_info(
     `Setting Robot Left Arm to ${name}, Have ${myRobotScraps()} scrap on hand`,
   );
   visitUrl("place.php?whichplace=scrapheap&action=sh_configure");
@@ -372,7 +372,7 @@ function robot_right(choice: number): boolean {
   }
 
   const starting_scrap: number = myRobotScraps();
-  auto_log_info$1(
+  auto_log_info(
     `Setting Robot Right Arm to ${name}, Have ${myRobotScraps()} scrap on hand`,
   );
   visitUrl("place.php?whichplace=scrapheap&action=sh_configure");
@@ -444,7 +444,7 @@ function robot_bottom(choice: number): boolean {
   }
 
   const starting_scrap: number = myRobotScraps();
-  auto_log_info$1(
+  auto_log_info(
     `Setting Robot Propulsion System to ${name}, Have ${myRobotScraps()} scrap on hand`,
   );
   visitUrl("place.php?whichplace=scrapheap&action=sh_configure");
@@ -559,7 +559,7 @@ export function robot_cpu(choice: number, want_buy: boolean = true): boolean {
   }
 
   const starting_energy: number = myRobotEnergy();
-  auto_log_info$1(`Upgrading CPU with ${name}`);
+  auto_log_info(`Upgrading CPU with ${name}`);
   visitUrl("place.php?whichplace=scrapheap&action=sh_configure");
   visitUrl("choice.php?whichchoice=1445&show=cpus");
   visitUrl(
@@ -924,7 +924,7 @@ export function LX_robot_powerlevel(): boolean {
   const target: Stat = robot_stat_wanted();
   if (target !== Stat.none) {
     // use spare clovers to powerlevel mainstat if you have spare clovers
-    if (myLevel() < 13 && cloversAvailable$1() > 0 && !canInteract()) {
+    if (myLevel() < 13 && cloversAvailable() > 0 && !canInteract()) {
       //do not waste all clovers in postronin
       //Determine where to go for clover stats, do not worry about clover failures
       let whereTo: Location = Location.none;
@@ -1146,7 +1146,7 @@ export function robot_choice_adv(choice: number, page: string): boolean {
   if (!in_robot()) {
     return false;
   }
-  auto_log_debug$1("Running robot_choice_adv");
+  auto_log_debug("Running robot_choice_adv");
 
   {
     // One Simple Nightstand (The Haunted Bedroom)

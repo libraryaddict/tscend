@@ -76,9 +76,7 @@ import {
   auto_have_skill,
   auto_is_valid,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
-  auto_log_warning$1,
   auto_predictAccordionTurns,
   auto_setMCDToCap,
   auto_turbo,
@@ -373,7 +371,7 @@ export function pullXWhenHaveY(
     }
 
     if (storageAmount(it) < howMany) {
-      auto_log_warning$1("Can not pull what we don't have. Sorry");
+      auto_log_warning("Can not pull what we don't have. Sorry");
       return false;
     }
 
@@ -683,7 +681,7 @@ export function handlePulls(day: number): number {
     setProperty("lightsOutAutomation", "1");
     // Do starting pulls:
     if (pullsRemaining() !== 20 && !inHardcore() && myTurncount() > 0) {
-      auto_log_info$1(
+      auto_log_info(
         "I assume you've handled your pulls yourself... who knows.",
       );
       return 0;

@@ -128,13 +128,11 @@ import {
   auto_is_valid$3,
   auto_log_error,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
-  auto_log_warning$1,
   auto_totalEffectWishesAvailable,
   canSummonMonster,
   canYellowRay,
-  cloversAvailable$1,
+  cloversAvailable,
   handleTracker$1,
   internalQuestStatus,
   remainingNCForcesToday,
@@ -689,7 +687,7 @@ export function warAdventure(): boolean {
   if (!toBoolean(getProperty("auto_hippyInstead"))) {
     //Commented out until Green smoke bomb support is added
     if (auto_warEnemiesRemaining() <= 600 && auto_haveGreyGoose()) {
-      auto_log_info$1(
+      auto_log_info(
         "Bringing the Grey Goose to emit some drones at a GrOPs hopefully.",
       );
       handleFamiliar$1($familiar`Grey Goose`);
@@ -831,7 +829,7 @@ export function L12_preOutfit(): boolean {
     if (!toBoolean(getProperty("auto_hippyInstead"))) {
       summonTarget = $monster`Orcish Frat Boy Spy`;
     }
-    auto_log_info$1(
+    auto_log_info(
       `Trying to summon a ${summonTarget}, which we will yellow ray for war outfit.`,
     );
     return summonMonster(summonTarget);
@@ -985,7 +983,7 @@ export function L12_filthworms(): boolean {
     auto_have_skill($skill`Lash of the Cobra`) &&
     toInt(getProperty("_edLashCount")) < 30
   ) {
-    auto_log_info$1("Ed will steal stench glands using [Lash of the Cobra]");
+    auto_log_info("Ed will steal stench glands using [Lash of the Cobra]");
   } else if (
     toInt(
       //	else if(auto_have_skill($skill[Smash & Graaagh]))
@@ -998,14 +996,14 @@ export function L12_filthworms(): boolean {
     ) < 10 &&
     canChangeToFamiliar($familiar`XO Skeleton`)
   ) {
-    auto_log_info$1("Will steal stench glands using [XO Skeleton]");
+    auto_log_info("Will steal stench glands using [XO Skeleton]");
     handleFamiliar$1($familiar`XO Skeleton`);
   } else if (auto_dousesRemaining() > 0) {
-    auto_log_info$1("Will steal stench glands using FLUDA douse");
+    auto_log_info("Will steal stench glands using FLUDA douse");
   } else if (auto_swoopsRemaining() > 0) {
-    auto_log_info$1("Will steal stench glands using Swoop like a Bat");
+    auto_log_info("Will steal stench glands using Swoop like a Bat");
   } else if (auto_fireExtinguisherCharges() > 10) {
-    auto_log_info$1(
+    auto_log_info(
       "Will steal stench glands using polar vortex ability of [Industrial Fire Extinguisher]",
     );
   } else if (
@@ -1015,9 +1013,9 @@ export function L12_filthworms(): boolean {
       $monster`filthworm drone`,
     )
   ) {
-    auto_log_info$1("We're going to yellow ray the stench glands.");
+    auto_log_info("We're going to yellow ray the stench glands.");
   } else if (auto_haveArchaeologistSpade() && auto_spadeDigsRemaining() >= 3) {
-    auto_log_info$1(
+    auto_log_info(
       "Will dig up stench glands with Archaeologist's Spade if we don't get it in combat",
     );
   } else if (itemDropModifier() < 900.0) {
@@ -1032,7 +1030,7 @@ export function L12_filthworms(): boolean {
       if (getProperty("questL11MacGuffin") !== "finished") {
         //level 11 quest not finished, filthworms can wait
         if (isAboutToPowerlevel()) {
-          auto_log_info$1(
+          auto_log_info(
             "Proceeding with filthworms because something seems to be holding up the level 11 quest.",
           );
         } else {
@@ -1070,7 +1068,7 @@ export function L12_filthworms(): boolean {
       }
 
       if (delayFilthworms) {
-        auto_log_info$1("Delaying filthworms because Everything Looks Yellow");
+        auto_log_info("Delaying filthworms because Everything Looks Yellow");
         return false;
       }
     }
@@ -1127,7 +1125,7 @@ export function L12_filthworms(): boolean {
           acquireOrPull($item`spooky jelly`) &&
           autoChew(1, $item`spooky jelly`)
         ) {
-          auto_log_info$1(
+          auto_log_info(
             "Only one turn left in The Royal Guard Chamber, using spooky jelly emanations to avoid having to start over from the beginning",
           );
           glandGuaranteed = true;
@@ -1138,7 +1136,7 @@ export function L12_filthworms(): boolean {
           autoEat(1, $item`toast with spooky jelly`)
         ) {
           //with values like 10 to 20 turns saved, not checking get_property("auto_consumeMinAdvPerFill").to_float()
-          auto_log_info$1(
+          auto_log_info(
             "Only one turn left in The Royal Guard Chamber, using spooky jelly toast emanations to avoid having to start over from the beginning",
           );
           glandGuaranteed = true;
@@ -1316,7 +1314,7 @@ export function L12_gremlins(): boolean {
   ) {
     //normally effect would not be used close enough to this quest for this to happen
     if (!isAboutToPowerlevel()) {
-      auto_log_info$1("Delaying gremlins because Everything Is Bananas");
+      auto_log_info("Delaying gremlins because Everything Is Bananas");
       return false;
     } else {
       abort(
@@ -1606,7 +1604,7 @@ export function L12_sonofaPrefix(): boolean {
   if (!auto_havePeridot() || haveUsedPeridot($location`Sonofa Beach`)) {
     if (auto_haveQueuedForcedCombat()) {
       CForced = true;
-      auto_log_info$1(
+      auto_log_info(
         "Not trying to force combat again at Sonofa Beach because we already have a forced combat queued",
       );
     } else {
@@ -1890,7 +1888,7 @@ export function L12_themtharHills(): boolean {
       // don't have enough waffles yet
       return false;
     }
-    auto_log_info$1("Checking how much meat drop we can get");
+    auto_log_info("Checking how much meat drop we can get");
     if (
       (inHardcore() &&
         itemAmount($item`waffle`) <= 6 &&
@@ -1913,7 +1911,7 @@ export function L12_themtharHills(): boolean {
         haveEffect($effect`Sinuses For Miles`) <= 0 &&
         itemAmount($item`Mick's IcyVapoHotness Inhaler`) < 1 &&
         auto_is_valid($item`Mick's IcyVapoHotness Inhaler`) &&
-        cloversAvailable$1() > 0 &&
+        cloversAvailable() > 0 &&
         zone_isAvailable(
           $location`The Castle in the Clouds in the Sky (Top Floor)`,
         )
@@ -1934,13 +1932,13 @@ export function L12_themtharHills(): boolean {
         : 1600 - meatProvide;
       if (bonusMeatNeeded - bonusMeat <= 0) {
         if (getInhaler) {
-          auto_log_info$1("Getting Inhaler");
+          auto_log_info("Getting Inhaler");
           return autoLuckyAdv$1(
             $location`The Castle in the Clouds in the Sky (Top Floor)`,
           );
         }
         if (doRufus) {
-          auto_log_info$1("Doing Pay Phone Quest for Shadow Waters");
+          auto_log_info("Doing Pay Phone Quest for Shadow Waters");
           return auto_doPhoneQuest();
         }
       } else {
@@ -1963,7 +1961,7 @@ export function L12_themtharHills(): boolean {
   //count inhaler if we have one or if we have a clover to obtain one and can use one
   if (
     itemAmount($item`Mick's IcyVapoHotness Inhaler`) > 0 ||
-    (cloversAvailable$1() > 0 && considerCloverForInhaler)
+    (cloversAvailable() > 0 && considerCloverForInhaler)
   ) {
     meat_need -= 200;
   }
@@ -2043,7 +2041,7 @@ export function L12_themtharHills(): boolean {
     if (
       haveEffect($effect`Sinuses For Miles`) <= 0 &&
       itemAmount($item`Mick's IcyVapoHotness Inhaler`) < 1 &&
-      cloversAvailable$1() > 0
+      cloversAvailable() > 0
     ) {
       //use clover to get inhaler
       return autoLuckyAdv$1(
@@ -2499,7 +2497,7 @@ export function L12_finalizeWar(): boolean {
       if (lastCoins === coinmaster.availableTokens) {
         cliExecute("refresh inventory");
 
-        auto_log_warning$1(
+        auto_log_warning(
           `Unexpectably had ${lastCoins} reported for coinmaster ${coinmaster} instead of ${coinmaster.availableTokens}`,
         );
 

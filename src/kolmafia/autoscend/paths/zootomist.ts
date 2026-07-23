@@ -59,7 +59,6 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_log_info,
-  auto_log_info$1,
   handleTracker$1,
   internalQuestStatus,
   summonMonster,
@@ -833,7 +832,7 @@ export function zoo_graftFam(): boolean {
     return true;
   }
 
-  auto_log_info$1("No more to graft");
+  auto_log_info("No more to graft");
   return false;
 }
 
@@ -872,13 +871,13 @@ function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
     false,
   );
   const fight: number = numericModifier("familiar experience") + 1;
-  auto_log_info$1(`${f} needs ${experience_needed} experience`);
-  auto_log_info$1("To level up your familiar, you should:");
+  auto_log_info(`${f} needs ${experience_needed} experience`);
+  auto_log_info("To level up your familiar, you should:");
   let amt: number = 0;
   let diff: number = experience_needed - amt;
   while (diff >= 1) {
     if (diff >= 100 && mayamavailable) {
-      auto_log_info$1("Use the Mayam calendar and get fur on the outer ring");
+      auto_log_info("Use the Mayam calendar and get fur on the outer ring");
       amt += mayam_exp;
       auto_MayamClaim("fur wood yam clock");
       handleTracker$1(
@@ -888,22 +887,22 @@ function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
       );
       mayamavailable = false;
     } else if (diff >= 40 && auto_AprilPiccoloBoostsLeft() > 0) {
-      auto_log_info$1("Play the Apriling Band Piccolo");
+      auto_log_info("Play the Apriling Band Piccolo");
       amt += piccolo_exp;
       auto_playAprilPiccolo();
     } else if (diff >= 20 && zoo_specimenPreparationsLeft() > 0) {
-      auto_log_info$1("Try to use the Specimen Preparation Bench");
+      auto_log_info("Try to use the Specimen Preparation Bench");
       amt += specimen_exp;
       zoo_prepareSpecimen();
     } else if (diff <= 0) {
       return true;
     } else {
       const fights_needed: number = ceil(diff / fight);
-      auto_log_info$1(`Do ${fights_needed} (preferably free) fights`);
+      auto_log_info(`Do ${fights_needed} (preferably free) fights`);
       amt += fight * fights_needed;
     }
     diff = experience_needed - amt;
-    auto_log_info$1(`Diff = ${diff}`);
+    auto_log_info(`Diff = ${diff}`);
   }
   return false;
 }

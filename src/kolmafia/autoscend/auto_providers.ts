@@ -91,9 +91,8 @@ import {
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$3,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
   auto_totalEffectWishesAvailable,
   auto_wishForEffect,
@@ -185,11 +184,11 @@ export function providePlusCombat(
   const need: number = amt - alreadyHave;
 
   if (need > 0) {
-    auto_log_debug$1(
+    auto_log_debug(
       `We currently have ${alreadyHave}, so we need an extra ${need}`,
     );
   } else {
-    auto_log_debug$1("We already have enough!");
+    auto_log_debug("We already have enough!");
   }
 
   let delta: number = 0;
@@ -207,7 +206,7 @@ export function providePlusCombat(
       simMaximize$1(loc);
     }
     delta = simValue("Combat Rate") - numericModifier("Combat Rate");
-    auto_log_debug$1(`With gear we can get to ${result$4()}`);
+    auto_log_debug(`With gear we can get to ${result$4()}`);
   }
 
   function pass$4(): boolean {
@@ -238,7 +237,7 @@ export function providePlusCombat(
       horseNone();
     }
     delta += -1.0 * numericModifier("Horsery:dark horse", "Combat Rate"); // horsery changes don't happen until pre-adventure so this needs to be manually added otherwise it won't count.
-    auto_log_debug$1(
+    auto_log_debug(
       `We ${speculative ? "can remove" : "will remove"} Dark Horse, we will have ${result$4()}`,
     );
   } else if (!speculative) {
@@ -267,7 +266,7 @@ export function providePlusCombat(
           numericModifier($effect`The Sonata of Sneakiness`, "Combat Rate");
       }
     }
-    auto_log_debug$1(
+    auto_log_debug(
       `We ${speculative ? "can gain" : "just gained"} ${eff.toString()}, now we have ${result$4()}`,
     );
   }
@@ -395,11 +394,11 @@ export function providePlusNonCombat(
   const need: number = amt - alreadyHave;
 
   if (need > 0) {
-    auto_log_debug$1(
+    auto_log_debug(
       `We currently have ${alreadyHave}, so we need an extra ${need}`,
     );
   } else {
-    auto_log_debug$1("We already have enough!");
+    auto_log_debug("We already have enough!");
   }
 
   let delta: number = 0;
@@ -418,7 +417,7 @@ export function providePlusNonCombat(
     }
     delta =
       -1.0 * simValue("Combat Rate") - -1.0 * numericModifier("Combat Rate");
-    auto_log_debug$1(`With gear we can get to ${result$5()}`);
+    auto_log_debug(`With gear we can get to ${result$5()}`);
   }
 
   function pass$5(): boolean {
@@ -469,7 +468,7 @@ export function providePlusNonCombat(
       horseDark();
     }
     delta += -1.0 * numericModifier("Horsery:dark horse", "Combat Rate"); // horsery changes don't happen until pre-adventure so this needs to be manually added otherwise it won't count.
-    auto_log_debug$1(
+    auto_log_debug(
       `We ${speculative ? "can gain" : "will gain"} Dark Horse, we will have ${result$5()}`,
     );
   } else if (!speculative) {
@@ -489,7 +488,7 @@ export function providePlusNonCombat(
         delta += numericModifier($effect`Musk of the Moose`, "Combat Rate"); // numeric_modifier doesn't take into account uneffecting the opposite skill so we have to add it manually.
       }
     }
-    auto_log_debug$1(
+    auto_log_debug(
       `We ${speculative ? "can gain" : "just gained"} ${eff.toString()}, now we have ${result$5()}`,
     );
   }
@@ -674,11 +673,11 @@ export function provideInitiative(
   const need: number = amt - alreadyHave;
 
   if (need > 0) {
-    auto_log_debug$1(
+    auto_log_debug(
       `We currently have ${alreadyHave}, so we need an extra ${need}`,
     );
   } else {
-    auto_log_debug$1("We already have enough!");
+    auto_log_debug("We already have enough!");
   }
 
   let delta: number = 0;
@@ -696,7 +695,7 @@ export function provideInitiative(
       simMaximize$1(loc);
     }
     delta = simValue("Initiative") - numericModifier("Initiative");
-    auto_log_debug$1(`With gear we can get to ${result$1()}`);
+    auto_log_debug(`With gear we can get to ${result$1()}`);
   }
 
   function pass$1(): boolean {
@@ -718,7 +717,7 @@ export function provideInitiative(
     if (speculative) {
       delta += numericModifier(eff, "Initiative");
     }
-    auto_log_debug$1(
+    auto_log_debug(
       `We ${speculative ? "can gain" : "just gained"} ${eff.toString()}, now we have ${result$1()}`,
     );
   }
@@ -796,9 +795,9 @@ export function provideInitiative(
   ) {
     if (!speculative) {
       // We must visit the familiar's page before we can select the choice.
-      auto_log_debug$1("Attempting to visit Grim brother");
+      auto_log_debug("Attempting to visit Grim brother");
       visitUrl("familiar.php?action=chatgrim&pwd", true);
-      auto_log_debug$1("Attempting to select Soles of Glass");
+      auto_log_debug("Attempting to select Soles of Glass");
       visitUrl("choice.php?pwd&whichchoice=835&option=1", true);
     }
 
@@ -884,7 +883,7 @@ export function provideInitiative(
       if (speculative) {
         delta += delta + numericModifier("Initiative");
       }
-      auto_log_debug$1(
+      auto_log_debug(
         `With Bow-Legged Swagger we ${speculative ? "can get to" : "now have"} ${result$1()}`,
       );
     }
@@ -999,7 +998,7 @@ export function provideResistances(
         );
       }
     }
-    auto_log_debug$1(
+    auto_log_debug(
       `We ${speculative ? "can gain" : "just gained"} ${eff.toString()}, now we have ${resultstring()}`,
     );
   }
@@ -1052,7 +1051,7 @@ export function provideResistances(
         ),
       );
     }
-    auto_log_debug$1(`With gear we can get to ${resultstring()}`);
+    auto_log_debug(`With gear we can get to ${resultstring()}`);
   }
 
   if (pass$7()) {
@@ -1299,7 +1298,7 @@ function provideStats(
         );
       }
     }
-    auto_log_debug$1(
+    auto_log_debug(
       `We ${speculative ? "can gain" : "just gained"} ${eff.toString()}, now we have ${resultstring$1()}`,
     );
   }
@@ -1336,7 +1335,7 @@ function provideStats(
     for (const st of amt.keys()) {
       delta.set(st, simValue(`Buffed ${st}`) - myBuffedstat(st));
     }
-    auto_log_debug$1(`With gear we can get to ${resultstring$1()}`);
+    auto_log_debug(`With gear we can get to ${resultstring$1()}`);
   }
 
   if (pass$9()) {
@@ -1556,11 +1555,11 @@ function provideMeat(
   const alreadyHave: number = numericModifier("Meat Drop");
   const need: number = amt - alreadyHave;
   if (need > 0) {
-    auto_log_debug$1(
+    auto_log_debug(
       `We currently have ${alreadyHave}, so we need an extra ${need}`,
     );
   } else {
-    auto_log_debug$1("We already have enough +meat!");
+    auto_log_debug("We already have enough +meat!");
     return alreadyHave;
   }
   let delta: number = 0;
@@ -1583,7 +1582,7 @@ function provideMeat(
       simMaximize$1(loc);
     }
     delta = simValue("Meat Drop") - numericModifier("Meat Drop");
-    auto_log_debug$1(`With existing gear we can get to ${result$3()}`);
+    auto_log_debug(`With existing gear we can get to ${result$3()}`);
     if (pass$3()) {
       return result$3();
     }
@@ -1598,11 +1597,11 @@ function provideMeat(
     const target: Familiar = lookupFamiliarDatafile("meat");
     if (target !== Familiar.none && target !== myFamiliar()) {
       delta += auto_famModifiers(target, "Meat Drop", Item.none);
-      auto_log_debug$1(
+      auto_log_debug(
         `With using familiar: ${target} we can get to ${result$3()}`,
       );
     } else {
-      auto_log_debug$1(`Already have desired familar, ${target}, active.`);
+      auto_log_debug(`Already have desired familar, ${target}, active.`);
     }
     if (pass$3()) {
       return result$3();
@@ -1612,7 +1611,7 @@ function provideMeat(
     if (speculative) {
       delta += numericModifier(eff, "Meat Drop");
     }
-    auto_log_debug$1(
+    auto_log_debug(
       `We ${speculative ? "can gain" : "just gained"} ${eff.toString()}, now we have ${result$3()}`,
     );
   }
@@ -1824,7 +1823,7 @@ function provideMeat(
       simMaximize$1(loc);
     }
     delta = simValue("Meat Drop") - numericModifier("Meat Drop");
-    auto_log_debug$1(
+    auto_log_debug(
       `With existing and crafted gear we can get to ${result$3()}`,
     );
     if (pass$3()) {
@@ -2002,7 +2001,7 @@ function provideMeat(
         }
       }
     }
-    auto_log_debug$1(`With limited buffs we can get to ${result$3()}`);
+    auto_log_debug(`With limited buffs we can get to ${result$3()}`);
     if (pass$3()) {
       return result$3();
     }
@@ -2043,11 +2042,11 @@ function provideItem(
   const need: number = amt - alreadyHave;
 
   if (need > 0) {
-    auto_log_debug$1(
+    auto_log_debug(
       `We currently have ${alreadyHave}, so we need an extra ${need}`,
     );
   } else {
-    auto_log_debug$1("We already have enough +item!");
+    auto_log_debug("We already have enough +item!");
     return alreadyHave;
   }
 
@@ -2074,7 +2073,7 @@ function provideItem(
       simMaximize$1(loc);
     }
     delta = simValue("Item Drop") - numericModifier("Item Drop");
-    auto_log_debug$1(`With existing gear we can get to ${result$2()}`);
+    auto_log_debug(`With existing gear we can get to ${result$2()}`);
 
     if (pass$2()) {
       return result$2();
@@ -2090,11 +2089,11 @@ function provideItem(
     const target: Familiar = lookupFamiliarDatafile("item");
     if (target !== Familiar.none && target !== myFamiliar()) {
       delta += auto_famModifiers(target, "Item Drop", Item.none);
-      auto_log_debug$1(
+      auto_log_debug(
         `With using familiar: ${target} we can get to ${result$2()}`,
       );
     } else {
-      auto_log_debug$1(`Already have desired familar, ${target}, active.`);
+      auto_log_debug(`Already have desired familar, ${target}, active.`);
     }
 
     if (pass$2()) {
@@ -2106,7 +2105,7 @@ function provideItem(
     if (speculative) {
       delta += numericModifier(eff, "Item Drop");
     }
-    auto_log_debug$1(
+    auto_log_debug(
       `We ${speculative ? "can gain" : "just gained"} ${eff.toString()}, now we have ${result$2()}`,
     );
   }
@@ -2248,7 +2247,7 @@ function provideItem(
     itemFoodNeed._boolean &&
     result$2() + simValue("Food Drop") < itemFoodNeed._float
   ) {
-    auto_log_debug$1("Trying food drop supplements");
+    auto_log_debug("Trying food drop supplements");
     //max at start of an expression with item and food drop is ineffective in combining them, have to let the maximizer try to add on top
     addToMaximize(`49food drop ${ceil(itemFoodNeed._float)}max`);
     simMaximize();
@@ -2257,7 +2256,7 @@ function provideItem(
     itemBoozeNeed._boolean &&
     result$2() + simValue("Booze Drop") < itemBoozeNeed._float
   ) {
-    auto_log_debug$1("Trying booze drop supplements");
+    auto_log_debug("Trying booze drop supplements");
     addToMaximize(`49booze drop ${ceil(itemBoozeNeed._float)}max`);
     simMaximize();
     //no zone item yet needs both food and booze, bottle of Chateau de Vinegar exception is a cooking ingredient but doesn't use food drop bonus
@@ -2298,7 +2297,7 @@ function provideItem(
       simMaximize$1(loc);
     }
     delta = simValue("Item Drop") - numericModifier("Item Drop");
-    auto_log_debug$1(
+    auto_log_debug(
       `With existing and crafted gear we can get to ${result$2()}`,
     );
 
@@ -2315,7 +2314,7 @@ function provideItem(
       if (speculative) {
         delta += delta + numericModifier("Item Drop");
       }
-      auto_log_debug$1(
+      auto_log_debug(
         `With Steely Eyed Squint we ${speculative ? "can get to" : "now have"} ${result$2()}`,
       );
     }
@@ -2464,7 +2463,7 @@ function provideItem(
         }
       }
     }
-    auto_log_debug$1(`With limited buffs we can get to ${result$2()}`);
+    auto_log_debug(`With limited buffs we can get to ${result$2()}`);
     if (pass$2()) {
       return result$2();
     }
@@ -2497,11 +2496,11 @@ export function provideFamExp(
   const need: number = amt - alreadyHave;
 
   if (need > 0) {
-    auto_log_debug$1(
+    auto_log_debug(
       `We currently have ${alreadyHave}, so we need an extra ${need}`,
     );
   } else {
-    auto_log_debug$1("We already have enough +fam experience!");
+    auto_log_debug("We already have enough +fam experience!");
     return alreadyHave;
   }
 
@@ -2529,7 +2528,7 @@ export function provideFamExp(
     }
     delta =
       simValue("Familiar Experience") - numericModifier("Familiar Experience");
-    auto_log_debug$1(`With existing gear we can get to ${result()}`);
+    auto_log_debug(`With existing gear we can get to ${result()}`);
 
     if (pass()) {
       return result();
@@ -2540,7 +2539,7 @@ export function provideFamExp(
     if (speculative) {
       delta += numericModifier(eff, "Familiar Experience");
     }
-    auto_log_debug$1(
+    auto_log_debug(
       `We ${speculative ? "can gain" : "just gained"} ${eff.toString()}, now we have ${result()}`,
     );
   }
@@ -2595,9 +2594,7 @@ export function provideFamExp(
     }
     delta =
       simValue("familiar experience") - numericModifier("familiar experience");
-    auto_log_debug$1(
-      `With existing and crafted gear we can get to ${result()}`,
-    );
+    auto_log_debug(`With existing and crafted gear we can get to ${result()}`);
 
     if (pass()) {
       return result();
@@ -2609,7 +2606,7 @@ export function provideFamExp(
       haveEffect($effect`Blue Swayed`) < 31 &&
       itemAmount($item`pulled blue taffy`) > 0
     ) {
-      auto_log_info$1("Getting Blue Swayed");
+      auto_log_info("Getting Blue Swayed");
       if (tryEffects$1(new Map([[$effect`Blue Swayed`, true]]))) {
         //+X/5, decreasing by 5 every 5 turns so keeping it separate
         if (pass()) {
@@ -2720,7 +2717,7 @@ export function provideFamExp(
         }
       }
     }
-    auto_log_debug$1(`With limited buffs we can get to ${result()}`);
+    auto_log_debug(`With limited buffs we can get to ${result()}`);
     if (pass()) {
       return result();
     }

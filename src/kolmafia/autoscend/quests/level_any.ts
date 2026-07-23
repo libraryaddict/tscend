@@ -86,9 +86,7 @@ import {
   auto_have_skill,
   auto_is_valid,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
-  auto_log_warning$1,
   auto_turbo,
   canSummonMonster,
   have_workshed,
@@ -1070,35 +1068,35 @@ export function LX_setWorkshed(): boolean {
     if (existingShed === Item.none) {
       if (canSetWorkshed($item`model train set`)) {
         use(1, $item`model train set`);
-        auto_log_info$1("Installed your model train set");
+        auto_log_info("Installed your model train set");
         return true;
       }
       if (canSetWorkshed($item`Asdon Martin keyfob (on ring)`)) {
         use(1, $item`Asdon Martin keyfob (on ring)`);
-        auto_log_info$1("Installed your Asdon Martin keyfob");
+        auto_log_info("Installed your Asdon Martin keyfob");
         return true;
       }
       if (canSetWorkshed($item`cold medicine cabinet`)) {
         use(1, $item`cold medicine cabinet`);
-        auto_log_info$1("Installed your cold medicine cabinet");
+        auto_log_info("Installed your cold medicine cabinet");
         return true;
       }
       if (canSetWorkshed($item`TakerSpace letter of Marque`)) {
         use(1, $item`TakerSpace letter of Marque`);
-        auto_log_info$1("Installed your TakerSpace letter of Marque");
+        auto_log_info("Installed your TakerSpace letter of Marque");
         return true;
       }
       if (canSetWorkshed($item`Little Geneticist DNA-Splicing Lab`)) {
         use(1, $item`Little Geneticist DNA-Splicing Lab`);
-        auto_log_info$1("Installed your little geneticist dna-splicing lab");
+        auto_log_info("Installed your little geneticist dna-splicing lab");
         return true;
       }
       if (canSetWorkshed($item`portable Mayo Clinic`)) {
         use(1, $item`portable Mayo Clinic`);
-        auto_log_info$1("Installed your portable mayo clinic");
+        auto_log_info("Installed your portable mayo clinic");
         return true;
       }
-      auto_log_warning$1("Unable to find workshed to install");
+      auto_log_warning("Unable to find workshed to install");
       return false;
     }
     //once we have enough fasteners and only if we are currently using the model train set
@@ -1109,27 +1107,27 @@ export function LX_setWorkshed(): boolean {
     ) {
       if (canSetWorkshed($item`Asdon Martin keyfob (on ring)`)) {
         use(1, $item`Asdon Martin keyfob (on ring)`);
-        auto_log_info$1("Changed your workshed to Asdon Martin keyfob");
+        auto_log_info("Changed your workshed to Asdon Martin keyfob");
         return true;
       }
       if (canSetWorkshed($item`cold medicine cabinet`)) {
         use(1, $item`cold medicine cabinet`);
-        auto_log_info$1("Changed your workshed to cold medicine cabinet");
+        auto_log_info("Changed your workshed to cold medicine cabinet");
         return true;
       }
       if (canSetWorkshed($item`Little Geneticist DNA-Splicing Lab`)) {
         use(1, $item`Little Geneticist DNA-Splicing Lab`);
-        auto_log_info$1(
+        auto_log_info(
           "Changed your workshed to little geneticist dna-splicing lab",
         );
         return true;
       }
       if (canSetWorkshed($item`portable Mayo Clinic`)) {
         use(1, $item`portable Mayo Clinic`);
-        auto_log_info$1("Changed your workshed to portable mayo clinic");
+        auto_log_info("Changed your workshed to portable mayo clinic");
         return true;
       }
-      auto_log_warning$1(
+      auto_log_warning(
         `You have no workshed to change to so leaving it as ${getWorkshed().toString()}`,
       );
       return false; //return false if no other workshed is available
@@ -1185,7 +1183,7 @@ export function LX_ForceNC(): boolean {
     case $location`The eXtreme Slope`:
       return L8_trapperQuest();
     default:
-      auto_log_warning$1(
+      auto_log_warning(
         `Attempted to force NC in unexpected location: ${desiredNCLocation}`,
       );
       return false;
@@ -1200,7 +1198,7 @@ export function LX_dronesOut(): boolean {
     auto_fireExtinguisherCharges() > 30 &&
     canUse($skill`Fire Extinguisher: Polar Vortex`, false);
 
-  auto_log_info$1("Have drones out so re-routing to not waste");
+  auto_log_info("Have drones out so re-routing to not waste");
   //where to go to. Not handling Smut Orc Keepsake, Blackberry Bush due to adventuring conditions required. If they happen to show up, they are handled in auto_combat
   if (
     needStarKey() &&
@@ -1208,7 +1206,7 @@ export function LX_dronesOut(): boolean {
     itemAmount($item`line`) < 6 &&
     zone_isAvailable($location`The Hole in the Sky`)
   ) {
-    auto_log_info$1("Going to HiTS");
+    auto_log_info("Going to HiTS");
     if (
       toLocation(getProperty("auto_priorLocation")) !==
       $location`The Hole in the Sky`
@@ -1226,7 +1224,7 @@ export function LX_dronesOut(): boolean {
     itemAmount($item`tangle of rat tails`) >= 1 &&
     zone_isAvailable($location`The Middle Chamber`)
   ) {
-    auto_log_info$1("Going to Middle Chamber");
+    auto_log_info("Going to Middle Chamber");
     if (
       toLocation(getProperty("auto_priorLocation")) !==
       $location`The Middle Chamber`
@@ -1242,7 +1240,7 @@ export function LX_dronesOut(): boolean {
     zone_isAvailable($location`Twin Peak`) &&
     prepareForTwinPeak(true)
   ) {
-    auto_log_info$1("Going to Twin Peak");
+    auto_log_info("Going to Twin Peak");
     if (
       toLocation(getProperty("auto_priorLocation")) !== $location`Twin Peak`
     ) {
@@ -1256,7 +1254,7 @@ export function LX_dronesOut(): boolean {
     internalQuestStatus("questL11Ron") < 5 &&
     zone_isAvailable($location`The Red Zeppelin`)
   ) {
-    auto_log_info$1("Going to the Red Zeppelin");
+    auto_log_info("Going to the Red Zeppelin");
     if (
       toLocation(getProperty("auto_priorLocation")) !==
       $location`The Red Zeppelin`
@@ -1272,7 +1270,7 @@ export function LX_dronesOut(): boolean {
       6 &&
     zone_isAvailable($location`The Hidden Bowling Alley`)
   ) {
-    auto_log_info$1("Going to the Hidden Bowling Alley");
+    auto_log_info("Going to the Hidden Bowling Alley");
     if (
       toLocation(getProperty("auto_priorLocation")) !==
       $location`The Hidden Bowling Alley`
@@ -1286,7 +1284,7 @@ export function LX_dronesOut(): boolean {
     internalQuestStatus("questL04Bat") <= 1 &&
     zone_isAvailable($location`The Batrat and Ratbat Burrow`)
   ) {
-    auto_log_info$1("Going to the Batrat and Ratbat Burrow");
+    auto_log_info("Going to the Batrat and Ratbat Burrow");
     if (
       toLocation(getProperty("auto_priorLocation")) !==
       $location`The Batrat and Ratbat Burrow`
@@ -1300,7 +1298,7 @@ export function LX_dronesOut(): boolean {
     internalQuestStatus("questL08Trapper") === 1 &&
     zone_isAvailable($location`The Goatlet`)
   ) {
-    auto_log_info$1("Going to the Goatlet");
+    auto_log_info("Going to the Goatlet");
     if (
       toLocation(getProperty("auto_priorLocation")) !== $location`The Goatlet`
     ) {
@@ -1316,7 +1314,7 @@ export function LX_dronesOut(): boolean {
     internalQuestStatus("questL11Worship") < 3 &&
     myLevel() >= 11
   ) {
-    auto_log_info$1("Summoning Baa baa buran");
+    auto_log_info("Summoning Baa baa buran");
     return summonMonster($monster`Baa'baa'bu'ran`); //Stone wool
   }
   return false;
@@ -1401,7 +1399,7 @@ export function candyBlock(): boolean {
       );
     }
     //treat
-    auto_log_info$1("Get some treats");
+    auto_log_info("Get some treats");
     for (const house of houseNumbers.keys()) {
       outfit(candyBlockOutfit("treat"));
       const treat: AshMatcher = new AshMatcher(
@@ -1430,7 +1428,7 @@ export function candyBlock(): boolean {
     }
     refreshBlock();
     //trick
-    auto_log_info$1("Perform some tricks");
+    auto_log_info("Perform some tricks");
     for (const house of houseNumbers.keys()) {
       if (treatedHouse.has(house)) {
         continue;
@@ -1515,7 +1513,7 @@ export function LX_lastChance(): boolean {
   //miscellaneous calls that aren't powerlevelling but need to be done at some point based on certain conditions
   if (getProperty("screechDelay") !== "") {
     let banishLoc: Location = Location.none;
-    auto_log_warning$1(
+    auto_log_warning(
       "Patriotic Eagle's screech banished something we need and we can't adventure anywhere else",
     );
     while (
@@ -1553,7 +1551,7 @@ export function LX_lastChance(): boolean {
       }
     }
     if (toInt(getProperty("screechCombats")) > 0) {
-      auto_log_warning$1(
+      auto_log_warning(
         "Couldn't clear screech delay without running out of adventures",
       );
       return false;

@@ -76,7 +76,6 @@ import {
   auto_is_valid$2,
   auto_log_error,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
   currentPoolSkill,
   handleTracker,
@@ -101,7 +100,7 @@ function auto_haveBirdADayCalendar(): boolean {
 
 export function auto_birdOfTheDay(): boolean {
   if (auto_haveBirdADayCalendar() && getProperty("_birdOfTheDay") === "") {
-    auto_log_info$1("What a beautiful morning! What's today's bird?");
+    auto_log_info("What a beautiful morning! What's today's bird?");
     return use(1, $item`Bird-a-Day calendar`);
   }
   return false;
@@ -373,7 +372,7 @@ export function auto_getGuzzlrCocktailSet(): boolean {
       toInt(getProperty("_guzzlrPlatinumDeliveries")) === 0 &&
       !toBoolean(getProperty("_guzzlrQuestAbandoned"))
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Getting a Guzzlr Cocktail Set (for all the good it will do).",
       );
       visitUrl("inventory.php?tap=guzzlr", false);
@@ -876,7 +875,7 @@ export function auto_buyCrimboCommerceMallItem(): boolean {
     return false;
   }
 
-  auto_log_info$1(
+  auto_log_info(
     `Commerce Ghost wants us to buy a ${ghostItemString} which will give us roughly ${myLevel() * 25} substats in the next combat with it.`,
   );
 

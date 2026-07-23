@@ -75,9 +75,7 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
-  auto_log_warning$1,
   backupSetting,
   handleTracker$1,
   handleTracker$2,
@@ -633,7 +631,7 @@ export function kgbWasteClicks(): boolean {
     return false;
   }
 
-  auto_log_info$1("kgbWasteClicks() will now use up remaining KGB clicks");
+  auto_log_info("kgbWasteClicks() will now use up remaining KGB clicks");
   let clicked: number = 0;
   while (kgbDiscovery() && clicked < 10) {
     clicked++;
@@ -656,7 +654,7 @@ export function kgbWasteClicks(): boolean {
       }
     }
     if (start_1 === clicked) {
-      auto_log_warning$1(
+      auto_log_warning(
         "kgbWasteClicks() was unable to spend your remaining KGB clicks on buffs for some reason. Please spend them manually",
       );
       break; //prevent infinite loop

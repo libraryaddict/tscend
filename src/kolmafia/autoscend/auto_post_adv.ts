@@ -93,12 +93,10 @@ import {
   auto_haveQueuedForcedNonCombat,
   auto_ignoreExperience,
   auto_is_valid,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_error,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
-  auto_log_warning$1,
   auto_remainingShantyTurns,
   handleTracker$1,
   handleTracker$2,
@@ -133,9 +131,7 @@ function auto_beaten_handler(): void {
     return; //we are not beaten up. nothing to handle
   }
   if (lastChoice() === 1467) {
-    auto_log_info$1(
-      "Getting beaten up here gave us 5 adventures, that's a win.",
-    );
+    auto_log_info("Getting beaten up here gave us 5 adventures, that's a win.");
     return;
   }
   setProperty(
@@ -183,7 +179,7 @@ function auto_beaten_handler(): void {
     if (haveEffect($effect`Beaten Up`) === 0) {
       return;
     } else {
-      auto_log_warning$1(
+      auto_log_warning(
         "Mysteriously failed to recover beaten up with [Tongue of the Walrus]",
       );
     }
@@ -191,7 +187,7 @@ function auto_beaten_handler(): void {
 }
 
 function auto_post_adventure(): boolean {
-  auto_log_debug$1("Running auto_post_adv.js");
+  auto_log_debug("Running auto_post_adv.js");
 
   if (limitMode() === "spelunky") {
     return true;
@@ -1315,7 +1311,7 @@ function auto_post_adventure(): boolean {
   //try to catch infinite loop where we repeatedly try to do the same thing.
   //works with code found in auto_pre_adv.ash
   if (mySessionAdv() === toInt(getProperty("_auto_inf_session_adv"))) {
-    auto_log_debug$1(
+    auto_log_debug(
       "auto_post_adv.js detected that no adventure was spent since last auto_pre_adv.js",
     );
     //count how many times in a row we went with no adv spent
@@ -1336,7 +1332,7 @@ function auto_post_adventure(): boolean {
       removeProperty("_auto_inf_counter");
       setProperty("auto_interrupt", true.toString());
     } else if (toInt(getProperty("_auto_inf_counter")) > 10) {
-      auto_log_warning$1(
+      auto_log_warning(
         `no adventure was spent ${getProperty("_auto_inf_counter")} times in a row`,
       );
     }

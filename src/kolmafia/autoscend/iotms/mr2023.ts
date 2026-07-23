@@ -113,8 +113,8 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_is_valid$4,
-  auto_log_debug$1,
-  auto_log_info$1,
+  auto_log_debug,
+  auto_log_info,
   auto_queueIgnore,
   auto_turbo,
   auto_wantToFreeKillWithNoDrops,
@@ -439,13 +439,13 @@ export function auto_monkeyPawWishesLeft(): number {
 
 export function auto_makeMonkeyPawWish(wish: Effect): boolean {
   if (!auto_haveMonkeyPaw()) {
-    auto_log_info$1(
+    auto_log_info(
       `Requested monkey paw wish without paw available, skipping ${wish.toString()}`,
     );
     return false;
   }
   if (auto_monkeyPawWishesLeft() < 1) {
-    auto_log_info$1(`Out of monkey paw wishes, skipping ${wish.toString()}`);
+    auto_log_info(`Out of monkey paw wishes, skipping ${wish.toString()}`);
     return false;
   }
   const success: boolean = monkeyPaw(wish);
@@ -462,13 +462,13 @@ export function auto_makeMonkeyPawWish(wish: Effect): boolean {
 
 export function auto_makeMonkeyPawWish$1(wish: Item): boolean {
   if (!auto_haveMonkeyPaw()) {
-    auto_log_info$1(
+    auto_log_info(
       `Requested monkey paw wish without paw available, skipping ${wish.toString()}`,
     );
     return false;
   }
   if (auto_monkeyPawWishesLeft() < 1) {
-    auto_log_info$1(`Out of monkey paw wishes, skipping ${wish.toString()}`);
+    auto_log_info(`Out of monkey paw wishes, skipping ${wish.toString()}`);
     return false;
   }
   const success: boolean = monkeyPaw(wish);
@@ -563,9 +563,7 @@ export function auto_getCinch(goal: number): boolean {
     !in_wereprof()
   ) {
     if (!doFreeRest()) {
-      auto_log_debug$1(
-        "Failed to rest to charge cincho. Will try again later.",
-      );
+      auto_log_debug("Failed to rest to charge cincho. Will try again later.");
       return false;
     }
   }
@@ -676,7 +674,7 @@ export function auto_buyFrom2002MrStore(): void {
   if (remainingCatalogCredits() === 0) {
     return;
   }
-  auto_log_debug$1(
+  auto_log_debug(
     `Have ${remainingCatalogCredits()} credit(s) to buy from Mr. Store 2002. Let's spend them!`,
   );
   // manual of secret door detection. skill: Secret door awareness
@@ -1161,7 +1159,7 @@ export function auto_handleJillOfAllTrades(): void {
   // want to configure jill to have bonus of whatever fam type we last looked up
   const desiredCandleMode: string = getProperty("auto_lastFamiliarLookupType");
 
-  auto_log_debug$1(
+  auto_log_debug(
     `Jill current mode: ${currentMode} and desired is ${desiredCandleMode}`,
   );
   if (currentMode === desiredCandleMode) {
@@ -1208,7 +1206,7 @@ export function auto_forceEagle(famChoice: Familiar): Familiar {
     toInt(getProperty("screechCombats")) > 0 &&
     !auto_queueIgnore()
   ) {
-    auto_log_info$1("Forcing Patriotic Eagle");
+    auto_log_info("Forcing Patriotic Eagle");
     return $familiar`Patriotic Eagle`;
   }
   return famChoice;
@@ -1295,7 +1293,7 @@ function auto_citizenZonePrep(goal: string): boolean {
     haveEffect($effect`Citizen of a Zone`) > 0 &&
     containsText(activeCitZoneMod_1, goal)
   ) {
-    auto_log_info$1("No need to remove Citizen of a Zone");
+    auto_log_info("No need to remove Citizen of a Zone");
     return false;
   }
   if (
@@ -1303,7 +1301,7 @@ function auto_citizenZonePrep(goal: string): boolean {
     !containsText(activeCitZoneMod_1, goal) &&
     itemAmount($item`soft green echo eyedrop antidote`) === 0
   ) {
-    auto_log_info$1("Can't remove Citizen of a Zone");
+    auto_log_info("Can't remove Citizen of a Zone");
     return false;
   }
   if (
@@ -1313,7 +1311,7 @@ function auto_citizenZonePrep(goal: string): boolean {
     //try to remove Citizen of a Zone
     uneffect($effect`Citizen of a Zone`);
     if (haveEffect($effect`Citizen of a Zone`) > 0) {
-      auto_log_debug$1("Tried to remove Citizen of a Zone but couldn't");
+      auto_log_debug("Tried to remove Citizen of a Zone but couldn't");
       return false;
     }
   }
@@ -1422,7 +1420,7 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
     goal = "mp";
   } else {
     //if for some reason we make it into the location getCitizenZone and it's not in any of the defined zones, get the item buff
-    auto_log_debug$1(
+    auto_log_debug(
       "Somehow we got here and don't actually want to use the Eagle",
     );
     return false;
@@ -1443,7 +1441,7 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
         setProperty("auto_forceFreeRun", true.toString());
       }
       if (!autoAdv(loc)) {
-        auto_log_debug$1(
+        auto_log_debug(
           `Attempted to get citizen of a zone buff for ${goal} goal however we failed.`,
         );
         return false;

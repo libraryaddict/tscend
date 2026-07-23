@@ -35,8 +35,8 @@ import { inebriety_left, stomach_left } from "../auto_consume";
 import { autoEquipToSlot, possessOutfit } from "../auto_equipment";
 import { acquireHP, acquireMP } from "../auto_restore";
 import {
-  auto_log_info$1,
-  auto_log_warning$1,
+  auto_log_info,
+  auto_log_warning,
   doNumberology,
   inKnollSign,
   internalQuestStatus,
@@ -157,7 +157,7 @@ function wildfire_refillExtinguiser(): void {
     equip($slot`weapon`, $item`industrial fire extinguisher`);
   }
 
-  auto_log_info$1(
+  auto_log_info(
     "Refilling Industrial Fire Extinguisher with Fire Captain Hagnk.",
   );
   visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_captain");
@@ -276,7 +276,7 @@ function LX_wildfire_pump(target: number): boolean {
     return false; //already done
   }
 
-  auto_log_info$1(`Attempting to pump water until we have ${target}`);
+  auto_log_info(`Attempting to pump water until we have ${target}`);
   const start_water: number = myWildfireWater();
   const start_adv: number = myAdventures();
   while (target > myWildfireWater() && getCounters("", 0, 0) === "") {
@@ -316,7 +316,7 @@ function LX_wildfire_dust(): boolean {
   const retval: boolean = LX_wildfire_pump(wildfire_water_cost("dust"));
 
   if (wildfire_water_cost("dust") <= myWildfireWater()) {
-    auto_log_info$1("Dusting with Cropduster Dusty");
+    auto_log_info("Dusting with Cropduster Dusty");
     visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_cropster");
     runChoice(1);
     if (!toBoolean(getProperty("wildfireDusted"))) {
@@ -340,7 +340,7 @@ function LX_wildfire_frack(): boolean {
   const retval: boolean = LX_wildfire_pump(wildfire_water_cost("frack"));
 
   if (wildfire_water_cost("frack") <= myWildfireWater()) {
-    auto_log_info$1("Fracking with Fracker Dan");
+    auto_log_info("Fracking with Fracker Dan");
     visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_fracker");
     runChoice(1);
     if (!toBoolean(getProperty("wildfireFracked"))) {
@@ -357,7 +357,7 @@ function LX_wildfire_hose_once(place: Location): boolean {
     return false;
   }
   if (place.fireLevel === 0) {
-    auto_log_warning$1(
+    auto_log_warning(
       `I can not Hose down [${place}] with fire captain hangk as it is already at fire level 0`,
     );
     return false;
@@ -366,7 +366,7 @@ function LX_wildfire_hose_once(place: Location): boolean {
 
   const start_level: number = place.fireLevel;
   if (wildfire_water_cost("hose") <= myWildfireWater()) {
-    auto_log_info$1(`Hosing down [${place}]`);
+    auto_log_info(`Hosing down [${place}]`);
     visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_captain");
     visitUrl(`choice.php?option=1&whichchoice=1451&pwd=&zid=${place.id}`);
     if (start_level - 1 === place.fireLevel) {
@@ -397,7 +397,7 @@ function LX_wildfire_hose(place: Location, target_fire: number = 2): boolean {
   if (place.fireLevel <= target_fire) {
     return false; //already done
   }
-  auto_log_info$1(
+  auto_log_info(
     `Trying to hose down [${place}] from fire level ${place.fireLevel} to fire level ${target_fire}`,
   );
 

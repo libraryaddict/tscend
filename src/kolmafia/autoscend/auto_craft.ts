@@ -12,11 +12,7 @@ import {
 } from "kolmafia";
 import { $item, $items } from "libram";
 
-import {
-  auto_is_valid,
-  auto_log_debug$1,
-  auto_log_warning$1,
-} from "./auto_util";
+import { auto_is_valid, auto_log_debug, auto_log_warning } from "./auto_util";
 import { hasLegionKnife } from "./iotms/mr2011";
 
 //Defined in autoscend/auto_craft.ash
@@ -41,19 +37,19 @@ function foldable_amount(target: Item): number {
 export function auto_fold(target: Item): boolean {
   //fold an item using mafia fold cli command. with checks to ensure everything worked as expected.
   if (!is_foldable(target)) {
-    auto_log_debug$1(`[${target}] is not foldable`);
+    auto_log_debug(`[${target}] is not foldable`);
     return false;
   }
   if (itemAmount(target) > 0) {
     return true; //we already have the desired item
   }
   if (foldable_amount(target) === 0) {
-    auto_log_debug$1(
+    auto_log_debug(
       `Can not fold [${target}] because we do not possess the required items`,
     );
     return false;
   }
-  auto_log_debug$1(`folding [${target}]`);
+  auto_log_debug(`folding [${target}]`);
   const start_amt: number = itemAmount(target);
   cliExecute(`fold ${target}`);
   if (itemAmount(target) === start_amt + 1) {
@@ -96,13 +92,13 @@ export function canUntinker(target: Item = Item.none): boolean {
     return getProperty("questM01Untinker") === "finished";
   }
   if (!canUntinker()) {
-    auto_log_debug$1(
+    auto_log_debug(
       `We can not untinker [${target}] because we can not untinker anything right now`,
     );
     return false;
   }
   if (itemAmount(target) === 0) {
-    auto_log_debug$1(
+    auto_log_debug(
       `We can not untinker [${target}] because we do not have any`,
     );
     return false;
@@ -115,20 +111,20 @@ export function untinker(target: Item, amount: number = 1): boolean {
     return false;
   }
   if (amount < 1) {
-    auto_log_debug$1(
+    auto_log_debug(
       `Attempted to untinker [${target}] and detected an invalid desired untinker amount of ${amount}`,
     );
     return false;
   }
   if (itemAmount(target) < amount) {
-    auto_log_warning$1(
+    auto_log_warning(
       `Attempted to untinker ${amount} [${target}] but we only have ${itemAmount(target)}. which is how many we will untinker instead`,
     );
     amount = itemAmount(target); //we can not untinker more than we have
   }
 
   const untinker_all: boolean = amount === itemAmount(target);
-  auto_log_debug$1(`Attempted to untinker ${amount} [${target}]`);
+  auto_log_debug(`Attempted to untinker ${amount} [${target}]`);
   const start_amt: number = itemAmount(target);
   const LLUS: Item = $item`Loathing Legion universal screwdriver`;
 
@@ -180,7 +176,7 @@ export function untinker(target: Item, amount: number = 1): boolean {
   if (success_amt === amount) {
     return true;
   }
-  auto_log_warning$1(
+  auto_log_warning(
     `Untinkering ${amount} [${target}] mysteriously failed. Only ${success_amt} were untinkered`,
   );
   return false;

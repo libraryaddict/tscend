@@ -31,9 +31,8 @@ import { auto_advToReserve } from "../../autoscend";
 import { auto_buyUpTo, auto_mall_price } from "../auto_acquire";
 import {
   auto_have_skill,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_info,
-  auto_log_info$1,
   internalQuestStatus,
 } from "../auto_util";
 import { isSpeakeasyDrink } from "../iotms/clan";
@@ -110,13 +109,13 @@ function gnoobAbsorbCost(it: Item): number {
   }
 
   if (retval === 999999) {
-    auto_log_debug$1(
+    auto_log_debug(
       `gnoobAbsorbCost tried to find absorb price of the item [${it}] and could not find a means to acquire it. Returned a massively high price to prevent errors. This should get fixed`,
     );
   }
   if (retval < 0) {
     retval = 999999;
-    auto_log_debug$1(
+    auto_log_debug(
       `gnoobAbsorbCost tried to find absorb price of the item [${it}] and somehow got a result lower than 0. Which is probably indicative of the item being incorrectly listed as tradeable. Returned a massively high price to prevent errors.`,
     );
   }
@@ -156,7 +155,7 @@ function gnoob_buySkills(): void {
     }
     earlyTerm--;
     if (earlyTerm <= 0) {
-      auto_log_debug$1(
+      auto_log_debug(
         "gnoob_buySkills checked too many skills without getting any. terminating loop early",
       );
       break;
@@ -207,7 +206,7 @@ function gnoob_buySkills(): void {
         if (
           itemAmount(possible.get(i) ?? possible.set(i, Item.none).get(i)) === 0
         ) {
-          auto_log_info$1(
+          auto_log_info(
             `Failed to acquire [${possible.get(i) ?? possible.set(i, Item.none).get(i)}] for gnoob_buySkills`,
           );
           continue;

@@ -76,11 +76,9 @@ import {
   auto_can_equip,
   auto_is_valid,
   auto_log_debug,
-  auto_log_debug$1,
   auto_log_error,
   auto_log_info,
   auto_log_warning,
-  auto_log_warning$1,
   backupSetting,
   internalQuestStatus,
   isGuildClass,
@@ -119,7 +117,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
     return false;
   }
 
-  auto_log_debug$1(
+  auto_log_debug(
     `Trying to unlock [The Thinknerd Warehouse] with spend_resources set to ${spend_resources}`,
   );
   //unlocking is a multi step process. We want to try things in reverse to conserve resources and in case some steps were already complete.
@@ -127,7 +125,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
   function useLetter(): boolean {
     if (itemAmount($item`Letter for Melvign the Gnome`) > 0) {
       if (use(1, $item`Letter for Melvign the Gnome`)) {
-        auto_log_debug$1("Successfully unlocked the [The Thinknerd Warehouse]");
+        auto_log_debug("Successfully unlocked the [The Thinknerd Warehouse]");
         return true;
       } else {
         abort(
@@ -231,7 +229,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
     return true;
   }
   //sadness, we couldn't unlock this zone.
-  auto_log_debug$1("Failed to unlock [The Thinknerd Warehouse]");
+  auto_log_debug("Failed to unlock [The Thinknerd Warehouse]");
   return false;
 }
 
@@ -1160,7 +1158,7 @@ export function LX_unlockKnobMenagerie(): boolean {
       if (L5_slayTheGoblinKing()) {
         return true;
       }
-      auto_log_warning$1(
+      auto_log_warning(
         "Unable to finish the King of Cobb's Knob Quest yet to obtain the Cobb's Knob lab key, so can't unlock the Menagerie.",
       );
       return false;
@@ -1249,7 +1247,7 @@ export function LX_acquireEpicWeapon(): boolean {
   }
 
   if (shenShouldDelayZone($location`The Unquiet Garves`)) {
-    auto_log_debug$1("Delaying The Unquiet Garves in case of Shen.");
+    auto_log_debug("Delaying The Unquiet Garves in case of Shen.");
     return false;
   }
 

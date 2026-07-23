@@ -46,7 +46,7 @@ import {
   auto_forceFreeRun,
   auto_have_skill,
   auto_is_valid,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_info,
   auto_log_warning,
   auto_turbo,
@@ -143,7 +143,7 @@ export function auto_combatDefaultStage2(
     getSniffer(enemy) !== Skill.none &&
     !ag_is_bodyguard()
   ) {
-    auto_log_debug$1(
+    auto_log_debug(
       `Skipping stage 2 of combat for now as we intend to olfact [${enemy}]`,
     );
     return "";
@@ -155,7 +155,7 @@ export function auto_combatDefaultStage2(
     towerKeyCount(false) < 2 &&
     !toBoolean(getProperty("_dailyDungeonMalwareUsed"))
   ) {
-    auto_log_debug$1(
+    auto_log_debug(
       "Skipping stage 2 of combat for now as we intend to use Daily Dungeon Malware",
     );
     return "";

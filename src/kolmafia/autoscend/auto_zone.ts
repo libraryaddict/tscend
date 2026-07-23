@@ -45,9 +45,9 @@ import { possessEquipment, possessOutfit } from "./auto_equipment";
 import {
   auto_combat_appearance_rates,
   auto_haveQueuedForcedNonCombat,
-  auto_log_debug$1,
+  auto_log_debug,
   canYellowRay,
-  cloversAvailable$1,
+  cloversAvailable,
   elemental_resist,
   internalQuestStatus,
   isDesertAvailable,
@@ -90,12 +90,12 @@ function zone_unlock(loc: Location): boolean {
   } else if (loc === $location`Lair of the Ninja Snowmen` && L8_trapperTalk()) {
     unlocked = true;
   } else {
-    auto_log_debug$1(`Don't know how to unlock ${loc}`);
+    auto_log_debug(`Don't know how to unlock ${loc}`);
     return false;
   }
 
   if (!unlocked) {
-    auto_log_debug$1(`Wasnt able to unlock ${loc}`);
+    auto_log_debug(`Wasnt able to unlock ${loc}`);
   }
 
   return unlocked;
@@ -305,7 +305,7 @@ export function zone_needItem(loc: Location): generic_t {
         }
         break;
       case $location`Itznotyerzitz Mine`:
-        if (!possessOutfit("Mining Gear") && cloversAvailable$1() === 0) {
+        if (!possessOutfit("Mining Gear") && cloversAvailable() === 0) {
           value = 10.0;
         }
         break;
@@ -778,7 +778,7 @@ export function zone_combatMod(loc: Location): generic_t {
       value = -95;
       break;
     case $location`Itznotyerzitz Mine`:
-      if (!possessOutfit("Mining Gear") && cloversAvailable$1() === 0) {
+      if (!possessOutfit("Mining Gear") && cloversAvailable() === 0) {
         value = -90;
       }
       break;
@@ -1900,7 +1900,7 @@ export function zone_available(loc: Location): boolean {
   // compare our result with Mafia's native function, log a warning if theres a difference. Ideally we can see if there are any differences between our code and Mafia's, and if not remove all of ours in favor of Mafia's
   const canAdvRetval: boolean = canAdventure(loc);
   if (canAdvRetval !== retval) {
-    auto_log_debug$1(
+    auto_log_debug(
       `Uh oh, autoscend and mafia's can_adventure() dont agree on whether we can adventure at ${loc} (autoscend: ${retval}, can_adventure(): ${canAdvRetval}). Will assume location available if either is true.`,
     );
     retval = retval || canAdvRetval;

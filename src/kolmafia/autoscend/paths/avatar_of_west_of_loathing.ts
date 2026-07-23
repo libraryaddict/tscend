@@ -16,7 +16,7 @@ import {
 } from "kolmafia";
 import { $class, $effect, $item, $locations, $path, $skill } from "libram";
 
-import { auto_log_info$1, autoCraft } from "../auto_util";
+import { auto_log_info, autoCraft } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/avatar_of_west_of_loathing.ash
@@ -208,7 +208,7 @@ export function awol_buySkills(): boolean {
     );
     if (my_skillPoints.find()) {
       let skillPoints: number = toInt(my_skillPoints.group(1));
-      auto_log_info$1(`Cow points found: ${skillPoints}`);
+      auto_log_info(`Cow points found: ${skillPoints}`);
       while (skillPoints > 0) {
         if (myClass() === $class`Cow Puncher`) {
           if (!haveSkill($skill`Rugged Survivalist`)) {
@@ -354,7 +354,7 @@ export function awol_buySkills(): boolean {
     );
     if (my_skillPoints.find()) {
       let skillPoints: number = toInt(my_skillPoints.group(1));
-      auto_log_info$1(`Bean points found: ${skillPoints}`);
+      auto_log_info(`Bean points found: ${skillPoints}`);
       while (skillPoints > 0) {
         if (myClass() === $class`Beanslinger`) {
           if (!haveSkill($skill`Lavafava`)) {
@@ -500,7 +500,7 @@ export function awol_buySkills(): boolean {
     );
     if (my_skillPoints.find()) {
       let skillPoints: number = toInt(my_skillPoints.group(1));
-      auto_log_info$1(`Snake points found: ${skillPoints}`);
+      auto_log_info(`Snake points found: ${skillPoints}`);
       while (skillPoints > 0) {
         if (myClass() === $class`Snake Oiler`) {
           if (!haveSkill($skill`Good Medicine`)) {

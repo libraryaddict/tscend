@@ -11,13 +11,7 @@ import {
   userConfirm,
 } from "kolmafia";
 
-import {
-  auto_log_error,
-  auto_log_info,
-  auto_log_info$1,
-  auto_log_warning,
-  auto_log_warning$1,
-} from "./auto_util";
+import { auto_log_error, auto_log_info, auto_log_warning } from "./auto_util";
 import { fileAsMap } from "./utils/kolmafiaUtils";
 
 const $_f___autoscend_version: string = "2.0.0";
@@ -50,7 +44,7 @@ function autoscend_needs_update(): boolean {
     autoscend_current_version() !== $_f___autoscend_version
   ) {
     if (toBoolean(getProperty("auto_need_update"))) {
-      auto_log_info$1(
+      auto_log_info(
         "Forcing migration (partially complete migration or user set flag): auto_need_update => true",
       );
     }
@@ -97,7 +91,7 @@ export function autoscend_migrate(): boolean {
           propertyExists(old_prop) &&
           getProperty(p) !== getProperty(old_prop)
         ) {
-          auto_log_warning$1(
+          auto_log_warning(
             `Conflict: ${old_prop} (${getProperty(old_prop)}) !== ${p} (${getProperty(p)})`,
           );
           prop_conflicts++;
@@ -142,7 +136,7 @@ export function autoscend_migrate(): boolean {
       const old_prop: string = replaceString(p, "auto_", "sl_");
       if (propertyExists(old_prop)) {
         if (!propertyExists(p)) {
-          auto_log_info$1(
+          auto_log_info(
             `Migrating ${old_prop} => ${p} (${getProperty(old_prop)})`,
           );
           setProperty(p, getProperty(old_prop));

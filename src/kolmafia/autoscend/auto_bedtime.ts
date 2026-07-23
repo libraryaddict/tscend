@@ -142,14 +142,12 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_is_valid$3,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
-  auto_log_warning$1,
   autoCraft,
   canYellowRay,
-  cloversAvailable$1,
+  cloversAvailable,
   handleSealAncient,
   handleSealNormal,
   internalQuestStatus,
@@ -290,14 +288,14 @@ function bedtime_still(): void {
     if (target !== Item.none) {
       if (!distill(target)) {
         //try to distill target. do something if it fails
-        auto_log_warning$1(
+        auto_log_warning(
           `bedtime_still() failed to distill [${target}] in Nash Crosby's Still and is giving up to avoid infinite loop`,
         );
         break;
       }
     } else {
       //avoid infinite loop if we did not find any valid targets to distill
-      auto_log_warning$1(
+      auto_log_warning(
         "bedtime_still() could not find any valid targets to distill",
       );
       break;
@@ -458,7 +456,7 @@ function pullsNeeded(data: string): number {
       }
     }
     if (itemAmount($item`skeleton key`) === 0) {
-      auto_log_warning$1(
+      auto_log_warning(
         "Need a skeleton key or the ingredients (skeleton bone, loose teeth) for it.",
       );
     }
@@ -469,7 +467,7 @@ function pullsNeeded(data: string): number {
     if (
       toBoolean(getProperty("auto_wandOfNagamar")) &&
       itemAmount($item`Wand of Nagamar`) === 0 &&
-      cloversAvailable$1() === 0
+      cloversAvailable() === 0
     ) {
       auto_log_warning("Need a wand of nagamar (can be clovered).", "red");
       count_1 = count_1 + 1;
@@ -537,7 +535,11 @@ function rollover_improvement(it: Item, sl: Slot): number {
   return rollover_value(it) - rollover_value(equippedItem(sl));
 }
 
-function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
+function bedtime_pulls_rollover_equip(
+  desirability_1: number = toFloat(
+    getProperty("auto_bedtime_pulls_min_desirability"),
+  ),
+): void {
   //scan through all pullable items for items that have a better rollover adv gain than currently best equipped item.
   // can't pull gear in Legacy of Loathing
   if (in_lol()) {
@@ -828,7 +830,7 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
 
       if (extra_debug) {
         //prints out all the items we want. Too messy for normal runs even in debug mode.
-        auto_log_debug$1(
+        auto_log_debug(
           `[${sl}] wanted [${best.get(sl) ?? best.set(sl, Item.none).get(sl)}] val = ${rollover_value(best.get(sl) ?? best.set(sl, Item.none).get(sl))}. currently [${equippedItem(sl)}] val = ${rollover_value(equippedItem(sl))}. improvement = ${rollover_improvement(best.get(sl) ?? best.set(sl, Item.none).get(sl), sl)}`,
         );
       }
@@ -837,7 +839,7 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
         possessEquipment(best.get(sl) ?? best.set(sl, Item.none).get(sl)) &&
         equippedItem(sl) !== (best.get(sl) ?? best.set(sl, Item.none).get(sl));
       if (maximizer_fail) {
-        auto_log_debug$1(
+        auto_log_debug(
           `Bedtime pulls: maximizer is not equipping [${best.get(sl) ?? best.set(sl, Item.none).get(sl)}] into [${sl}] for some reason. Skipping this slot`,
         );
       } else if (
@@ -862,7 +864,7 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
     if (very_best_improvement < desirability_1) {
       break;
     }
-    auto_log_info$1(
+    auto_log_info(
       `Pulling [${very_best}] which improves desireability score by ${very_best_improvement}`,
     );
     if (extra_debug) {
@@ -871,12 +873,6 @@ function bedtime_pulls_rollover_equip$1(desirability_1: number): void {
     pullXWhenHaveY(very_best, 1, 0);
     equipRollover(true);
   }
-}
-
-function bedtime_pulls_rollover_equip(): void {
-  bedtime_pulls_rollover_equip$1(
-    toFloat(getProperty("auto_bedtime_pulls_min_desirability")),
-  );
 }
 
 function bedtime_pulls(): void {
@@ -894,7 +890,7 @@ function bedtime_pulls(): void {
       5.0,
       toFloat(getProperty("auto_bedtime_pulls_min_desirability")),
     );
-    bedtime_pulls_rollover_equip$1(desirability_1);
+    bedtime_pulls_rollover_equip(desirability_1);
   }
 
   if (
@@ -1043,7 +1039,7 @@ export function doBedtime(): boolean {
   }
 
   if (toInt(getProperty("auto_priorCharpaneMode")) === 1) {
-    auto_log_info$1("Resuming Compact Character Mode.");
+    auto_log_info("Resuming Compact Character Mode.");
     setProperty("auto_priorCharpaneMode", (0).toString());
     visitUrl(
       "account.php?am=1&pwd=&action=flag_compactchar&value=1&ajax=0",
@@ -1278,7 +1274,7 @@ export function doBedtime(): boolean {
       need = 4;
     }
     if (!haveAdvSmithing) {
-      auto_log_info$1(
+      auto_log_info(
         "No Super-Advanced Meatsmithing for chrome sword crafting!",
       );
     }
@@ -1290,7 +1286,7 @@ export function doBedtime(): boolean {
     ) {
       cliExecute(`make ${$item`chrome sword`}`);
     } else {
-      auto_log_info$1("Did not make chrome sword");
+      auto_log_info("Did not make chrome sword");
     }
   }
 
@@ -1844,13 +1840,13 @@ export function doBedtime(): boolean {
         `auto_banishes_day${myDaycount()}`,
       );
       if (banish_str !== "") {
-        auto_log_info$1(banish_str);
+        auto_log_info(banish_str);
       }
       const yellowRay_str: string = getProperty(
         `auto_yellowRay_day${myDaycount()}`,
       );
       if (yellowRay_str !== "") {
-        auto_log_info$1(yellowRay_str);
+        auto_log_info(yellowRay_str);
       }
       if (
         !toBoolean(getProperty("_photocopyUsed")) &&

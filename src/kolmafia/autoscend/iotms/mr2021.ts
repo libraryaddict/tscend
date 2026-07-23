@@ -78,7 +78,6 @@ import {
   auto_is_valid$1,
   auto_is_valid$2,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
   auto_queueIgnore,
   auto_wantToBanish,
@@ -860,7 +859,7 @@ export function auto_buyFireworksHat(): boolean {
     myMeat() < npcPrice($item`porkpie-mounted popper`) + meatReserve() &&
     auto_is_valid($item`porkpie-mounted popper`)
   ) {
-    auto_log_info$1(
+    auto_log_info(
       "Want to buy a hat from the fireworks shop, but don't have enough meat. Will try again later.",
     );
     return false;

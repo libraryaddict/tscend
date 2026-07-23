@@ -73,10 +73,9 @@ import {
   auto_ignoreExperience,
   auto_is_valid,
   auto_is_valid$2,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_error,
   auto_log_info,
-  auto_log_info$1,
   auto_wishForEffectIfNeeded,
   handleTracker$1,
   internalQuestStatus,
@@ -580,7 +579,7 @@ export function auto_MayamClaimAll(): boolean {
   if (auto_MayamAllUsed()) {
     return false;
   }
-  auto_log_info$1("Claiming mayam calendar items");
+  auto_log_info("Claiming mayam calendar items");
   auto_MayamClaimStinkBomb();
   auto_MayamClaimBelt();
 
@@ -730,14 +729,14 @@ export function auto_buyFromSeptEmberStore(): void {
       }
       // buy mouthwash and use it
       buy($coinmaster`Sept-Ember Censer`, 1, mouthwash);
-      auto_log_debug$1(
+      auto_log_debug(
         `Using mouthwash with ${numericModifier(Modifier.get("Cold Resistance"))} cold resistance`,
       );
       use(mouthwash);
     }
   }
 
-  auto_log_debug$1(
+  auto_log_debug(
     `Have ${remainingEmbers()} embers(s) to buy from Sept-Ember Censer. Let's spend them!`,
   );
   // get structural ember if can't cross bridge

@@ -2267,7 +2267,10 @@ function isProtonGhost(mon: Monster): boolean {
   return false;
 }
 
-export function cloversAvailable(override: boolean): number {
+export function cloversAvailable(
+  // overload to not override clover usage by default as this is the general case
+  override: boolean = false,
+): number {
   // set override to true to not reserve a clover for the wand of nagamar.
   //count 11-leaf clovers
   let numClovers: number = 0;
@@ -2322,11 +2325,6 @@ export function cloversAvailable(override: boolean): number {
   return numClovers;
 }
 
-export function cloversAvailable$1(): number {
-  // overload to not override clover usage by default as this is the general case
-  return cloversAvailable(false);
-}
-
 export function cloverUsageInit(override: boolean): boolean {
   if (cloversAvailable(override) === 0) {
     abort("Called cloverUsageInit but have no clovers");
@@ -2341,24 +2339,24 @@ export function cloverUsageInit(override: boolean): boolean {
   if (auto_heartstoneLuckRemaining() > 0) {
     useSkill($skill`Heartstone: %luck`);
     if (haveEffect($effect`Lucky!`) > 0) {
-      auto_log_info$1("Clover usage initialized, using Heartstone LUCK.");
+      auto_log_info("Clover usage initialized, using Heartstone LUCK.");
       setProperty("auto_luckySource", $item`Heartstone`.toString());
       return true;
     } else {
-      auto_log_warning$1("Did not acquire Lucky! after using heartstone LUCK.");
+      auto_log_warning("Did not acquire Lucky! after using heartstone LUCK.");
     }
   }
 
   if (auto_AprilSaxLuckyLeft() > 0) {
     if (auto_playAprilSax()) {
-      auto_log_info$1("Clover usage initialized, using Apriling sax.");
+      auto_log_info("Clover usage initialized, using Apriling sax.");
       setProperty(
         "auto_luckySource",
         $item`Apriling band saxophone`.toString(),
       );
       return true;
     } else {
-      auto_log_warning$1(
+      auto_log_warning(
         "Did not acquire Lucky! after playing the Apriling sax.",
       );
     }
@@ -2371,11 +2369,11 @@ export function cloverUsageInit(override: boolean): boolean {
   ) {
     useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
     if (haveEffect($effect`Lucky!`) > 0) {
-      auto_log_info$1("Clover usage initialized using August Scepter.");
+      auto_log_info("Clover usage initialized using August Scepter.");
       setProperty("auto_luckySource", $item`august scepter`.toString());
       return true;
     } else {
-      auto_log_warning$1(
+      auto_log_warning(
         "Did not acquire Lucky! after casting Aug. 2nd: Find an Eleven-Leaf Clover Day!",
       );
     }
@@ -2390,13 +2388,11 @@ export function cloverUsageInit(override: boolean): boolean {
   if (itemAmount($item`11-leaf clover`) > 0) {
     use(1, $item`11-leaf clover`);
     if (haveEffect($effect`Lucky!`) > 0) {
-      auto_log_info$1("Clover usage initialized using clover.");
+      auto_log_info("Clover usage initialized using clover.");
       setProperty("auto_luckySource", $item`11-leaf clover`.toString());
       return true;
     } else {
-      auto_log_warning$1(
-        "Did not acquire Lucky! after using an 11-Leaf Clover",
-      );
+      auto_log_warning("Did not acquire Lucky! after using an 11-Leaf Clover");
     }
   }
   //use Astral Energy Drinks if we have room
@@ -2408,14 +2404,14 @@ export function cloverUsageInit(override: boolean): boolean {
     if (itemAmount($item`[10883]astral energy drink`) > 0) {
       chew(1, $item`[10883]astral energy drink`);
       if (haveEffect($effect`Lucky!`) > 0) {
-        auto_log_info$1("Clover usage initialized using Astral Energy Drink");
+        auto_log_info("Clover usage initialized using Astral Energy Drink");
         setProperty(
           "auto_luckySource",
           $item`[10883]astral energy drink`.toString(),
         );
         return true;
       } else {
-        auto_log_warning$1(
+        auto_log_warning(
           "Did not acquire Lucky! after drinking an Astral Energy Drink",
         );
       }
@@ -2586,7 +2582,7 @@ export function isUnclePAvailable(): boolean {
 export function isDesertAvailable(): boolean {
   //Is this workaround still needed or is mafia correctly recognizing desert is available in koe?
   if (in_koe()) {
-    auto_log_info$1("The desert exploded so no need to build a meatcar...");
+    auto_log_info("The desert exploded so no need to build a meatcar...");
     setProperty("lastDesertUnlock", myAscensions().toString());
   }
 
@@ -2980,7 +2976,7 @@ export function LX_summonMonster(): boolean {
       auto_can_equip($item`pro skateboard`) &&
       !toBoolean(getProperty("_epicMcTwistUsed"));
     const will_mctwist: boolean = can_mctwist && need_dupe;
-    auto_log_info$1(
+    auto_log_info(
       `Trying to summon a mountain man${will_mctwist ? " which we will McTwist." : "."}`,
     );
     if (will_mctwist) {
@@ -3168,7 +3164,7 @@ export function summonMonster(
     }
     // Equip a copier if we want to copy it
     if (auto_wantToCopy$1(mon)) {
-      auto_log_info$1(
+      auto_log_info(
         `We want to copy the ${mon} so adjusting for our equipment if possible.`,
       );
       adjustForCopyIfPossible(mon);
@@ -3819,7 +3815,7 @@ export function candyEggDeviler(): boolean {
       }
     }
     if (candyList.size === 0) {
-      auto_log_info$1("No candy for a devilled candy egg");
+      auto_log_info("No candy for a devilled candy egg");
       return false;
     }
   }
@@ -3859,7 +3855,7 @@ function getCandy(): void {
   if (candyBlock()) {
     return;
   }
-  auto_log_info$1("Can't get any candy");
+  auto_log_info("Can't get any candy");
   return;
 }
 
@@ -4403,28 +4399,16 @@ export function auto_log_error(s: string): void {
   print(`[ERROR] ${s}`, "red");
 }
 
-export function auto_log_warning(s: string, color: string): void {
+export function auto_log_warning(s: string, color: string = "orange"): void {
   auto_log(s, color, 1);
 }
 
-export function auto_log_warning$1(s: string): void {
-  auto_log(s, "orange", 1);
-}
-
-export function auto_log_info(s: string, color: string): void {
+export function auto_log_info(s: string, color: string = "blue"): void {
   auto_log(s, color, 2);
 }
 
-export function auto_log_info$1(s: string): void {
-  auto_log(s, "blue", 2);
-}
-
-export function auto_log_debug(s: string, color: string): void {
+export function auto_log_debug(s: string, color: string = "black"): void {
   auto_log(s, color, 3);
-}
-
-export function auto_log_debug$1(s: string): void {
-  auto_log(s, "black", 3);
 }
 
 export function auto_turbo(): boolean {
@@ -5012,7 +4996,7 @@ export function auto_badassBelt(): boolean {
 export function meatReserveMessage(): void {
   const reserve: number = meatReserve();
   if (reserve > 0) {
-    auto_log_info$1(
+    auto_log_info(
       `Autoscend thinks that you need ${reserve} meat for remaining quest requirements this ascension.`,
     );
   }
@@ -5063,7 +5047,7 @@ export function auto_interruptCheck(
     );
   } else if (toBoolean(getProperty("auto_debugging")) && debug) {
     setProperty("auto_interrupt", true.toString());
-    auto_log_info$1("auto_debugging detected, auto_interrupt enabled.");
+    auto_log_info("auto_debugging detected, auto_interrupt enabled.");
   }
 }
 
@@ -5345,7 +5329,7 @@ export function knapsack(
   const empty: Map<number, boolean> = new Map();
 
   if (n * maxw >= 100000) {
-    auto_log_warning$1(
+    auto_log_warning(
       `Solving a Knapsack instance with ${n} elements and ${maxw} total weight, this might be slow and memory-intensive.`,
     );
   }

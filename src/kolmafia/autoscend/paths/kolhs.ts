@@ -51,11 +51,7 @@ import {
   possessEquipment,
 } from "../auto_equipment";
 import { LX_freeCombats } from "../auto_powerlevel";
-import {
-  auto_log_debug$1,
-  auto_log_info,
-  auto_log_warning,
-} from "../auto_util";
+import { auto_log_debug, auto_log_info, auto_log_warning } from "../auto_util";
 import { monster_to_location, zone_isAvailable } from "../auto_zone";
 
 //Defined in autoscend/paths/kolhs.ash
@@ -271,7 +267,7 @@ function LX_kolhs_school(): boolean {
 }
 
 export function kolhsChoiceHandler(choice: number): void {
-  auto_log_debug$1("Running kolhsChoiceHandler");
+  auto_log_debug("Running kolhsChoiceHandler");
   {
     // Delirium in the Cafeterium (KOLHS 22nd adventure every day)
     // get XP

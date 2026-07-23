@@ -182,9 +182,7 @@ import {
   auto_interruptCheck,
   auto_is_valid,
   auto_log_debug,
-  auto_log_debug$1,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
   auto_meetsMinimumRequirements,
   auto_needAccordion,
@@ -799,7 +797,7 @@ export function LX_burnDelay(): boolean {
       0.75 * (myBuffedstat($stat`Muscle`) + monsterLevelAdjustment()),
     );
     if (predictedScalerHP > 15) {
-      auto_log_info$1(
+      auto_log_info(
         "Want to burn delay with scaling wanderers, but we can't deal scaling damage yet and it would be too strong :(",
       );
       voteMonsterAvailable = false;
@@ -1083,7 +1081,7 @@ export function auto_doTempleSummit(): boolean {
     return false;
   }
   if (auto_haveMayamCalendar() && !auto_MayamAllUsed()) {
-    auto_log_info$1(
+    auto_log_info(
       "Not getting temple summit adventures since our Mayam calendar isn't spent.",
     );
     return false;
@@ -1280,7 +1278,7 @@ function initializeDay(day: number): void {
   ht_equip_hats(); //equip hats in Hat Trick
   // Bulk cache mall prices
   if (!inHardcore() && toInt(getProperty("auto_day_init")) < day) {
-    auto_log_info$1("Bulk caching mall prices for consumables");
+    auto_log_info("Bulk caching mall prices for consumables");
     if (getProperty("auto_last_mallcached") !== todayToString()) {
       mallPrices("food");
       mallPrices("booze");
@@ -2049,7 +2047,7 @@ function beatenUpResolution(): void {
     ) {
       //beaten up by the quest item when unlocking Dr. Awkward, not by failing a fight
       setProperty("_auto_AwkwardBeatenUp", myTurncount().toString());
-      auto_log_info$1(
+      auto_log_info(
         "We must have failed to remove beaten up before defeating Dr. Awkward and that hasn't stopped us so far...",
       );
     } else if (
@@ -2057,7 +2055,7 @@ function beatenUpResolution(): void {
       toInt(getProperty("_auto_AwkwardBeatenUp")) !== 0 &&
       myTurncount() - toInt(getProperty("_auto_AwkwardBeatenUp")) <= 1
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "This should be the last turn of beaten up from Dr. Awkward",
       );
     } else {
@@ -2450,7 +2448,7 @@ function process_tasks(): boolean {
     task_order.set(task_path, new Map()).get(task_path)) {
     for (const [task_function, _v1] of _v0) {
       const condition_function = _v1;
-      auto_log_debug$1(`Attempting to execute task ${i} ${task_function}`);
+      auto_log_debug(`Attempting to execute task ${i} ${task_function}`);
       if (
         condition_function === "" ||
         callRegisteredTaskFunction(condition_function)
@@ -2537,7 +2535,7 @@ function doTasks(): boolean {
   const paranoia: number = toInt(getProperty("auto_paranoia"));
   const is_april_fools: boolean = substring(todayToString(), 4) === "0401";
   if (is_april_fools) {
-    auto_log_info$1("Salad april fools, so we paranoid salad.");
+    auto_log_info("Salad april fools, so we paranoid salad.");
     cliExecute("refresh quests");
   } else if (paranoia !== -1) {
     const paranoia_counter: number = toInt(
@@ -2841,16 +2839,16 @@ function auto_begin(): void {
     );
   }
 
-  auto_log_info$1(`Hello ${myName()}, time to explode!`);
-  auto_log_info$1(
+  auto_log_info(`Hello ${myName()}, time to explode!`);
+  auto_log_info(
     `This is version: ${gitInfo("autoscend").commit} Mafia: ${getRevision()}`,
   );
-  auto_log_info$1(`This is day ${myDaycount()}.`);
-  auto_log_info$1(
+  auto_log_info(`This is day ${myDaycount()}.`);
+  auto_log_info(
     `Turns played: ${myTurncount()} current adventures: ${myAdventures()}`,
   );
-  auto_log_info$1(`Current Ascension: ${myPath().name}`);
-  auto_log_info$1(
+  auto_log_info(`Current Ascension: ${myPath().name}`);
+  auto_log_info(
     `You have: ${banishSources()} banish sources, ${freeRunSources()} free-run sources, ${freeKillSources()} free kill sources, ${instaKillSources()} insta-kill sources, ${yellowRaySources()} yellow ray sources, ${copySources()} copy sources, and ${sniffSources()} sniff sources.`,
   );
 
@@ -2898,7 +2896,7 @@ function auto_begin(): void {
 
   const charpane: string = visitUrl("charpane.php");
   if (containsText(charpane, "<hr width=50%><table")) {
-    auto_log_info$1(
+    auto_log_info(
       "Switching off Compact Character Mode, will resume during bedtime",
     );
     setProperty("auto_priorCharpaneMode", (1).toString());
@@ -2939,7 +2937,7 @@ function auto_begin(): void {
   }
 
   if (doBedtime()) {
-    auto_log_info$1(`Done for today (${myDaycount()}), beep boop`);
+    auto_log_info(`Done for today (${myDaycount()}), beep boop`);
   }
 }
 
@@ -3009,13 +3007,13 @@ export function main(...input: string[]): void {
             )
           ) {
             setProperty("auto_turbo", "true");
-            auto_log_info$1("Ka-chow! Gotta go fast.");
+            auto_log_info("Ka-chow! Gotta go fast.");
             break;
           }
         }
       // INTENTIONAL LACK OF BREAK
       default:
-        auto_log_info$1(
+        auto_log_info(
           "Running normal autoscend because you didn't enter in a valid parameter",
         );
         break;
@@ -3044,7 +3042,7 @@ export function main(...input: string[]): void {
     if (get("auto_stop", false)) {
       set("auto_stop", false);
       meatReserveMessage();
-      auto_log_info$1(
+      auto_log_info(
         "auto_stop detected and quietly exiting, auto_stop disabled.",
       );
     }

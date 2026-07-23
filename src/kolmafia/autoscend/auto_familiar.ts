@@ -62,9 +62,9 @@ import {
   auto_combat_appearance_rates,
   auto_combat_appearance_rates$1,
   auto_is_valid$1,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_error,
-  auto_log_info$1,
+  auto_log_info,
   auto_turbo,
   internalQuestStatus,
   trim,
@@ -410,7 +410,7 @@ export function lookupFamiliarDatafile(type_1: string): Familiar {
   //This function looks through /data/autoscend_familiars.txt for the matching "type" in order and selects the first match whose conditions are met. Said conditions typically include path exclusions and a check to see if that familiar dropped something today.
   //we do not want a fallback here. if no matching familiar is found then do nothing here, a familiar will be automatically set in pre adventure
 
-  auto_log_debug$1(`lookupFamiliarDatafile is checking for type [${type_1}]`);
+  auto_log_debug(`lookupFamiliarDatafile is checking for type [${type_1}]`);
   // store what type of fam we are looking for
   setProperty("auto_lastFamiliarLookupType", type_1);
   const familiars_text: Map<
@@ -446,7 +446,7 @@ export function lookupFamiliarDatafile(type_1: string): Familiar {
     }
   }
   //no suitable familiars found in datafile
-  auto_log_debug$1(`Could not find any "${type_1}" type familiars!`);
+  auto_log_debug(`Could not find any "${type_1}" type familiars!`);
   return Familiar.none;
 }
 
@@ -655,7 +655,7 @@ function autoChooseFamiliar(place: Location): boolean {
     internalQuestStatus("questL04Bat") < 3 &&
     auto_haveGreyGoose()
   ) {
-    auto_log_info$1(
+    auto_log_info(
       "Bringing the Grey Goose to emit some drones at a bat to get Sonar.",
     );
     famChoice = $familiar`Grey Goose`;
@@ -697,7 +697,7 @@ function autoChooseFamiliar(place: Location): boolean {
     ) &&
     auto_haveGreyGoose()
   ) {
-    auto_log_info$1(
+    auto_log_info(
       "Bringing the Grey Goose to emit some drones at smut orc pervert to dupe a Box.",
     );
     famChoice = $familiar`Grey Goose`;
@@ -958,7 +958,7 @@ export function preAdvUpdateFamiliar(place: Location): void {
           continue;
         }
         if (mmon === mon) {
-          auto_log_debug$1(
+          auto_log_debug(
             `Using cat burglar because we want to burgle a ${it} from ${mon}`,
           );
           wannaHeist = true;
@@ -1127,7 +1127,7 @@ export function switchToFamXP(max_fam_experience: number): void {
   if (!pathAllowsChangingFamiliar()) {
     return;
   }
-  auto_log_debug$1("Possibly switching to a familiar we want famxp on");
+  auto_log_debug("Possibly switching to a familiar we want famxp on");
   if (
     auto_haveChestMimic() &&
     Familiar.get("Chest Mimic").experience <= max_fam_experience

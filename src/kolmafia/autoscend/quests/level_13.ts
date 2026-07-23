@@ -124,9 +124,7 @@ import {
   auto_is_valid$3,
   auto_log_error,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
-  auto_log_warning$1,
   auto_turbo,
   auto_wishForEffect,
   auto_wishForEffectIfNeeded,
@@ -350,7 +348,7 @@ function EightBitRealmHandler(): boolean {
       abort("Property 8BitColor not set to a valid value");
       break;
   }
-  auto_log_info$1(`Current 8bit score: ${EightBitScore()}/10000`);
+  auto_log_info(`Current 8bit score: ${EightBitScore()}/10000`);
 
   return adv_spent;
 }
@@ -368,10 +366,10 @@ export function get8BitFatLootToken(): boolean {
       runChoice(2);
       return true;
     } else {
-      auto_log_warning$1(
+      auto_log_warning(
         "Thought we could buy fat loot token in 8-Bit Realm but was unable.",
       );
-      auto_log_warning$1(`Current score = ${EightBitScore()}`);
+      auto_log_warning(`Current score = ${EightBitScore()}`);
       return false;
     }
   }
@@ -534,7 +532,7 @@ export function LX_getStarKey(): boolean {
     }
   }
   if (auto_haveGreyGoose()) {
-    auto_log_info$1(
+    auto_log_info(
       "Bringing the Grey Goose to emit some drones at some Constellations.",
     );
     handleFamiliar$1($familiar`Grey Goose`);
@@ -1752,7 +1750,7 @@ function L13_towerNSTowerBones(): boolean {
     haveEffect($effect`Takin' It Greasy`) === 0
   ) {
     const total_damage: number = saucegeyserDamage() * rounds * 3;
-    auto_log_info$1(
+    auto_log_info(
       `Wall of bones will have ${wob_hp} hp with ${rounds} rounds to kill.\nSaucegeyser should do ${saucegeyserDamage()} per hit for ${total_damage}`,
     );
     if (total_damage < wob_hp) {

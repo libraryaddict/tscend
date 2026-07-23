@@ -57,7 +57,7 @@ import { doFreeRest, freeRestsRemaining } from "./auto_restore";
 import {
   auto_combatModCap,
   auto_have_skill,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_warning,
   backupSetting,
   evokeEldritchHorror,
@@ -412,12 +412,12 @@ export function LX_freeCombats(
   powerlevel: boolean = disregardInstantKarma(),
 ): boolean {
   if (auto_freeCombatsRemaining() === 0) {
-    auto_log_debug$1("Could not use free combats because you have none");
+    auto_log_debug("Could not use free combats because you have none");
     return false;
   }
 
   if (myInebriety() > inebrietyLimit()) {
-    auto_log_debug$1("Could not use free combats because you are overdrunk");
+    auto_log_debug("Could not use free combats because you are overdrunk");
     return false;
   }
 
@@ -448,9 +448,7 @@ export function LX_freeCombats(
     );
   }
 
-  auto_log_debug$1(
-    `LX_freeCombats active with powerlevel set to ${powerlevel}`,
-  );
+  auto_log_debug(`LX_freeCombats active with powerlevel set to ${powerlevel}`);
 
   resetMaximize();
   if (disregardInstantKarma()) {
@@ -458,18 +456,18 @@ export function LX_freeCombats(
   }
 
   if (auto_canFightPiranhaPlant() || auto_canTendMushroomGarden()) {
-    auto_log_debug$1("LX_freeCombats is calling auto_mushroomGardenHandler()");
+    auto_log_debug("LX_freeCombats is calling auto_mushroomGardenHandler()");
     return auto_mushroomGardenHandler();
   }
 
   if (neverendingPartyRemainingFreeFights() > 0) {
     if (powerlevel) {
-      auto_log_debug$1("LX_freeCombats is calling neverendingPartyCombat()");
+      auto_log_debug("LX_freeCombats is calling neverendingPartyCombat()");
       if (neverendingPartyCombat()) {
         return true;
       }
     } else {
-      auto_log_debug$1("LX_freeCombats is calling neverendingPartyCombat()");
+      auto_log_debug("LX_freeCombats is calling neverendingPartyCombat()");
       if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
         auto_changeSnapperPhylum($phylum`dude`);
       }
@@ -490,7 +488,7 @@ export function LX_freeCombats(
     // first three fights each day with Vermincelli vs rats are guaranteed free. Choosing to go to the burrow, but need it to be available and no screambats.
     pm_updateThrall(burrow, false);
     if (myThrall() === $thrall`Vermincelli`) {
-      auto_log_debug$1(
+      auto_log_debug(
         "LX_freeCombats is adventuring in [The Batrat and Ratbat Burrow] with Vermincelli",
       );
       const adv_done: boolean = autoAdv(burrow);
@@ -505,7 +503,7 @@ export function LX_freeCombats(
     toInt(getProperty("_machineTunnelsAdv")) < 5 &&
     canChangeToFamiliar($familiar`Machine Elf`)
   ) {
-    auto_log_debug$1(
+    auto_log_debug(
       "LX_freeCombats is adventuring in [The Deep Machine Tunnels]",
     );
 
@@ -525,7 +523,7 @@ export function LX_freeCombats(
   }
 
   if (snojoFightAvailable()) {
-    auto_log_debug$1("LX_freeCombats is adventuring in [The Snojo]");
+    auto_log_debug("LX_freeCombats is adventuring in [The Snojo]");
     const adv_done: boolean = autoAdv(
       $location`The X-32-F Combat Training Snowman`,
     );
@@ -536,7 +534,7 @@ export function LX_freeCombats(
   }
 
   if (powerlevel) {
-    auto_log_debug$1("LX_freeCombats is calling godLobsterCombat()");
+    auto_log_debug("LX_freeCombats is calling godLobsterCombat()");
     if (godLobsterCombat()) {
       return true;
     }
@@ -546,14 +544,14 @@ export function LX_freeCombats(
     auto_have_skill($skill`Evoke Eldritch Horror`) &&
     toBoolean(getProperty("_eldritchHorrorEvoked")) === false
   ) {
-    auto_log_debug$1("LX_freeCombats is calling evokeEldritchHorror()");
+    auto_log_debug("LX_freeCombats is calling evokeEldritchHorror()");
     if (evokeEldritchHorror()) {
       return true;
     }
   }
 
   if (auto_hasSpeakEasy() && auto_remainingSpeakeasyFreeFights() > 0) {
-    auto_log_debug$1(
+    auto_log_debug(
       "LX_freeCombats is adventuring in [An Unusually Quiet Barroom Brawl]",
     );
     const adv_done: boolean = autoAdv(
@@ -564,13 +562,13 @@ export function LX_freeCombats(
     }
   }
 
-  auto_log_debug$1("LX_freeCombats is trying to free trick-or-treat.");
+  auto_log_debug("LX_freeCombats is trying to free trick-or-treat.");
   if (candyBlock()) {
     return true;
   }
 
   if (auto_haveBurningLeaves()) {
-    auto_log_debug$1("LX_freeCombats is trying to fight burning leaves.");
+    auto_log_debug("LX_freeCombats is trying to fight burning leaves.");
     if (auto_fightFlamingLeaflet()) {
       return true;
     }
@@ -578,14 +576,14 @@ export function LX_freeCombats(
   // tentacle should be last so it can be backed up, if script wants to
   // see auto_backupTarget()
   if (toBoolean(getProperty("_eldritchTentacleFought")) === false) {
-    auto_log_debug$1("LX_freeCombats is calling fightScienceTentacle()");
+    auto_log_debug("LX_freeCombats is calling fightScienceTentacle()");
     if (fightScienceTentacle()) {
       return true;
     }
   }
 
   if (auto_freeCombatsRemaining() > 0) {
-    auto_log_debug$1(
+    auto_log_debug(
       "I reached the end of LX_freeCombats() but I think the following free combats were not used for some reason:",
     );
     auto_freeCombatsRemaining(true); //print remaining free combats.
@@ -600,7 +598,7 @@ export function LX_freeCombatsTask(): boolean {
     inebriety_left() === 0 &&
     stomach_left() < 1
   ) {
-    auto_log_debug$1(
+    auto_log_debug(
       "Only 1 non reserved adv remains for main loop so doing free combats",
     );
     return LX_freeCombats();
@@ -611,7 +609,7 @@ export function LX_freeCombatsTask(): boolean {
     inebriety_left() === 0 &&
     stomach_left() < 1
   ) {
-    auto_log_debug$1(
+    auto_log_debug(
       "Less than 10 adv remaining today. We should do free fights now in case any of them get replaced with a non free agent fight",
     );
     return LX_freeCombats();

@@ -150,10 +150,8 @@ import {
   auto_interruptCheck,
   auto_is_valid,
   auto_log_debug,
-  auto_log_debug$1,
   auto_log_error,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
   auto_MaxMLToCap,
   auto_predictAccordionTurns,
@@ -980,7 +978,7 @@ function auto_pre_adventure(): boolean {
       in_plumber() &&
       have_pill_keeper
     ) {
-      auto_log_debug$1(
+      auto_log_debug(
         "I expect to be flyering, equipping Pill Keeper to skip the first hit.",
       );
       autoEquipToSlot($slot`acc3`, $item`Eight Days a Week Pill Keeper`);
@@ -997,7 +995,7 @@ function auto_pre_adventure(): boolean {
     // looking at you auto_maximizedConsumeStuff()...
     // and L12_themtharHills()...
     useFamiliar(toFamiliar(getProperty("auto_100familiar")));
-    auto_log_debug$1(
+    auto_log_debug(
       `Re-equipped your ${getProperty("auto_100familiar")} as something had unequipped it. This is bad and should be investigated.`,
     );
   }
@@ -1173,7 +1171,7 @@ function auto_pre_adventure(): boolean {
       haveEffect($effect`Driving Intimidatingly`) > 0 &&
       toInt(getProperty("auto_debuffAsdonDelay")) >= 2
     ) {
-      auto_log_debug$1("No Reason to delay Asdon Usage");
+      auto_log_debug("No Reason to delay Asdon Usage");
       uneffect($effect`Driving Intimidatingly`);
       setProperty("auto_debuffAsdonDelay", (0).toString());
     } else if (
@@ -1186,7 +1184,7 @@ function auto_pre_adventure(): boolean {
         "auto_debuffAsdonDelay",
         (toInt(getProperty("auto_debuffAsdonDelay")) + 1).toString(),
       );
-      auto_log_debug$1(
+      auto_log_debug(
         `Delaying debuffing Asdon: ${getProperty("auto_debuffAsdonDelay")}`,
       );
     }
@@ -1287,14 +1285,14 @@ function auto_pre_adventure(): boolean {
         "Tried to adventure in the Hippy Camp as Actually Ed the Undying wearing the Filthy Hippy Disguise (this is bad).",
       );
     } else {
-      auto_log_info$1(
+      auto_log_info(
         "Took off the Filthy Hippy Disguise before adventuring in the Hippy Camp so we don't waste adventures on non-combats.",
       );
     }
   }
   // Last minute debug logging and a final MCD tweak just in case Maximizer did silly stuff
   if (lowMLZones.includes(place)) {
-    auto_log_debug$1(
+    auto_log_debug(
       `Going into a LOW ML ZONE with ML: ${monsterLevelAdjustment()}`,
     );
   } else {
@@ -1303,7 +1301,7 @@ function auto_pre_adventure(): boolean {
       auto_setMCDToCap();
     }
 
-    auto_log_debug$1(
+    auto_log_debug(
       `Going into High or Standard ML Zone with ML: ${monsterLevelAdjustment()}`,
     );
   }
@@ -1332,7 +1330,7 @@ function auto_pre_adventure(): boolean {
   if (!in_darkGyffte()) {
     const wasted_mp: number = toInt(myMp() + mp_regen() - myMaxmp());
     if (wasted_mp > 0 && myMp() > 400) {
-      auto_log_info$1(`Burning ${wasted_mp} MP...`);
+      auto_log_info(`Burning ${wasted_mp} MP...`);
       auto_burnMP(wasted_mp);
     }
   }

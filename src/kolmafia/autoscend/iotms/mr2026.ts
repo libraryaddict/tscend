@@ -65,7 +65,7 @@ import {
   auto_get_campground,
   auto_is_valid,
   auto_log_error,
-  auto_log_warning$1,
+  auto_log_warning,
   auto_wantToFreeKillWithNoDrops,
   autoCraft,
   handleTracker$1,
@@ -911,7 +911,7 @@ function auto_cupOfThirteenConsumeAction(
         continue;
       }
 
-      auto_log_warning$1(
+      auto_log_warning(
         `Failed to acquire ${need()} x ${ingredient.item} when trying to gather ingredients for cup of 13`,
       );
       return false;
@@ -950,7 +950,7 @@ function auto_mixAndDrinkCupOfThirteen(
 
   if (prevInebriety === myInebriety()) {
     visitUrl("main.php"); // Ensure we're not 'still in choice'
-    auto_log_warning$1(
+    auto_log_warning(
       `Failed to consume cup of 13s ingredients: ${pick.map((i) => i.item.name).join(", ")}`,
     );
     cliExecute("refresh inventory");

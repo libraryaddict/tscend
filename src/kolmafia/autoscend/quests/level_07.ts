@@ -74,9 +74,8 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_is_valid$3,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
   auto_MaxMLToCap,
   auto_turbo,
@@ -334,7 +333,7 @@ export function L7_defiledNook(): boolean {
     }
     return autoAdv($location`The Defiled Nook`);
   } else if (skip_in_koe) {
-    auto_log_debug$1(
+    auto_log_debug(
       "In Exploathing, skipping Defiled Nook until we get more evil eyes.",
     );
   }
@@ -417,7 +416,7 @@ function L7_defiledNiche(): boolean {
       toInt(getProperty("cyrptNicheEvilness")) >= 14 + evilBonus &&
       auto_mapTheMonsters()
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Attemping to use Map the Monsters to olfact a Dirty Old Lihc.",
       );
     }
@@ -621,7 +620,7 @@ export function L7_override(): boolean {
     toInt(getProperty("cyrptNookEvilness")) > 14 + evilBonus &&
     isBanished($monster`party skelteon`)
   ) {
-    auto_log_info$1(
+    auto_log_info(
       "Trying to check on the ongoing Nook before moving on to a different task",
     );
     if (L7_crypt()) {
@@ -634,7 +633,7 @@ export function L7_override(): boolean {
       isBanished($monster`senile lihc`) ||
       isBanished($monster`slick lihc`);
     if (lihcbanihced || isSniffed$1($monster`dirty old lihc`)) {
-      auto_log_info$1(
+      auto_log_info(
         "Trying to check on the ongoing Niche before moving on to a different task",
       );
       if (L7_crypt()) {

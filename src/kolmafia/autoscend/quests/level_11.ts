@@ -169,19 +169,17 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_is_valid$3,
-  auto_log_debug$1,
+  auto_log_debug,
   auto_log_error,
   auto_log_info,
-  auto_log_info$1,
   auto_log_warning,
-  auto_log_warning$1,
   auto_MaxMLToCap,
   auto_wishForEffect,
   autoCraft,
   backupSetting,
   canSniff,
   canSummonMonster,
-  cloversAvailable$1,
+  cloversAvailable,
   internalQuestStatus,
   isGuildClass,
   lastAdventureSpecialNC,
@@ -677,7 +675,7 @@ export function LX_unlockHauntedLibrary(): boolean {
     if (bestDrinkAction.it === $item`astral pilsner`) {
       auto_autoConsumeOne(bestDrinkAction);
     } else {
-      auto_log_info$1(
+      auto_log_info(
         "You didn't take astral pilsners or you're somehow on day 4 of Small. Make better life choices.",
       );
     }
@@ -763,7 +761,7 @@ export function LX_unlockManorSecondFloor(): boolean {
   }
 
   if (myTurncount() === toInt(getProperty("_LAR_skipNC163"))) {
-    auto_log_info$1(
+    auto_log_info(
       "In LAR path NC163 is forced to reoccur if we skip it. Go do something else.",
     );
     return false;
@@ -796,7 +794,7 @@ export function LX_unlockManorSecondFloor(): boolean {
       canSniff($monster`writing desk`, $location`The Haunted Library`) &&
       auto_mapTheMonsters()
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Attemping to use Map the Monsters to olfact a writing desk.",
       );
     }
@@ -1223,7 +1221,7 @@ export function L11_blackMarket(): boolean {
     itemAmount($item`blackberry`) < 2 &&
     !in_darkGyffte()
   ) {
-    auto_log_info$1(
+    auto_log_info(
       "Bringing the Grey Goose to emit some drones at a blackberry bush.",
     );
     handleFamiliar$1($familiar`Grey Goose`);
@@ -1889,7 +1887,7 @@ export function LX_killBaaBaaBuran(): boolean {
   ) {
     // try to clover/summon baa baa first
     if (auto_haveGreyGoose()) {
-      auto_log_info$1(
+      auto_log_info(
         "Bringing the Grey Goose to emit some drones at a Sheep carving.",
       );
       handleFamiliar$1($familiar`Grey Goose`);
@@ -1898,7 +1896,7 @@ export function LX_killBaaBaaBuran(): boolean {
     }
     addToMaximize("20 item 400max");
     // Right now clovers are "cheaper" than summons, so use clover first, but not our last.
-    if (cloversAvailable$1() > 1) {
+    if (cloversAvailable() > 1) {
       return autoLuckyAdv$1($location`The Hidden Temple`);
     }
 
@@ -2196,7 +2194,7 @@ export function L11_hiddenCity(): boolean {
   if (!in_pokefam() && !in_darkGyffte() && !in_aosol() && !in_wereprof()) {
     if (!acquireHP()) {
       //try to restore HP to max.
-      auto_log_warning$1(
+      auto_log_warning(
         "Delaying hidden city because we are unable to restore HP",
       );
       return false; //could not heal HP. we should go do something else first
@@ -2548,7 +2546,7 @@ export function L11_hiddenCity(): boolean {
       itemAmount($item`bowling ball`) < 1 &&
       auto_mapTheMonsters()
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Attemping to use Map the Monsters to olfact a Pygmy Bowler.",
       );
     }
@@ -2556,7 +2554,7 @@ export function L11_hiddenCity(): boolean {
       auto_canCamelSpit() &&
       toInt(getProperty("hiddenBowlingAlleyProgress")) < 2
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Bringing the Camel to spit on a Pygmy Bowler for bowling balls.",
       );
       handleFamiliar$1($familiar`Melodramedary`);
@@ -2565,7 +2563,7 @@ export function L11_hiddenCity(): boolean {
       auto_haveGreyGoose() &&
       toInt(getProperty("hiddenBowlingAlleyProgress")) < 3
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Bringing the Grey Goose to emit some drones at a Pygmy Bowler for bowling balls.",
       );
       handleFamiliar$1($familiar`Grey Goose`);
@@ -3005,7 +3003,7 @@ export function L11_mauriceSpookyraven(): boolean {
       ) &&
       auto_mapTheMonsters()
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Attemping to use Map the Monsters to olfact a Possessed Wine Rack.",
       );
     }
@@ -3036,7 +3034,7 @@ export function L11_mauriceSpookyraven(): boolean {
       ) &&
       auto_mapTheMonsters()
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Attemping to use Map the Monsters to olfact a Cabinet of Dr. Limpieza.",
       );
     }
@@ -3050,7 +3048,7 @@ export function L11_mauriceSpookyraven(): boolean {
     // Zootomist probably wants to wait until D2 in SC for this.
     if (auto_inRonin() && in_zootomist()) {
       if (auto_waitForDay2()) {
-        auto_log_debug$1("Delaying Monstrous Boiler waiting for day 2.");
+        auto_log_debug("Delaying Monstrous Boiler waiting for day 2.");
         return false;
       }
     }
@@ -3156,12 +3154,9 @@ function L11_redZeppelin(): boolean {
     );
   }
 
-  if (
-    toInt(getProperty("zeppelinProtestors")) < 75 &&
-    cloversAvailable$1() > 0
-  ) {
+  if (toInt(getProperty("zeppelinProtestors")) < 75 && cloversAvailable() > 0) {
     // "zeppelinProtestors" is number killed so far, so it ends when we hit 80
-    if (cloversAvailable$1() >= 3) {
+    if (cloversAvailable() >= 3) {
       if (!in_koe() || myDaycount() > 1) {
         // in koe, if d1 save bend hell for invader
         buffMaintain$2($effect`Bendin' Hell`, 0, 0, 1);
@@ -3230,7 +3225,7 @@ function L11_redZeppelin(): boolean {
   }
 
   if (auto_waitForDay2()) {
-    auto_log_debug$1("Delaying zeppelin protestors waiting for day 2 clovers.");
+    auto_log_debug("Delaying zeppelin protestors waiting for day 2 clovers.");
     return false;
   }
 
@@ -3246,7 +3241,7 @@ function L11_redZeppelin(): boolean {
     ) &&
     auto_mapTheMonsters()
   ) {
-    auto_log_info$1(
+    auto_log_info(
       "Attemping to use Map the Monsters to olfact a Blue Oyster Cultist.",
     );
   }
@@ -3300,18 +3295,18 @@ function L11_ronCopperhead(): boolean {
       canSniff($monster`red butler`, $location`The Red Zeppelin`) &&
       auto_mapTheMonsters()
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Attemping to use Map the Monsters to olfact a Red Butler.",
       );
     }
     if (auto_canCamelSpit()) {
-      auto_log_info$1(
+      auto_log_info(
         "Bringing the Camel to spit on a Red Butler for glark cables.",
       );
       handleFamiliar$1($familiar`Melodramedary`);
     }
     if (auto_haveGreyGoose()) {
-      auto_log_info$1(
+      auto_log_info(
         "Bringing the Grey Goose to emit some drones at a Red Butler for glark cables.",
       );
       handleFamiliar$1($familiar`Grey Goose`);
@@ -3349,12 +3344,12 @@ export function L11_shenStartQuest(): boolean {
   if (autoAdv($location`The Copperhead Club`)) {
     if (internalQuestStatus("questL11Shen") === 1) {
       auto_log_info("It seems Shen has given us a quest.", "blue");
-      auto_log_info$1(
+      auto_log_info(
         "I am going to avoid the following zones until Shen tells me to go there or until I run out of other things to do:",
       );
       let linec: number = 1;
       for (const z of shenZonesToAvoidBecauseMaybeSnake()) {
-        auto_log_info$1(`${linec++}. ${z}`);
+        auto_log_info(`${linec++}. ${z}`);
         setProperty(
           "auto_shenZonesTurnsSpent",
           `${getProperty("auto_shenZonesTurnsSpent")}${z}:${z.turnsSpent};`,
@@ -3580,7 +3575,7 @@ export function L11_palindome(): boolean {
         500 &&
     internalQuestStatus("questL11Palindome") < 1
   ) {
-    auto_log_info$1("Not enough meat for the Palindome");
+    auto_log_info("Not enough meat for the Palindome");
     return false;
   }
 
@@ -3837,7 +3832,7 @@ export function L11_palindome(): boolean {
     if (pullsRemaining() === 0) {
       // used our pulls today before getting to palindrome. Delay until next day or run out of other stuff to do
       if (!isAboutToPowerlevel()) {
-        auto_log_debug$1("Delaying palindrome.");
+        auto_log_debug("Delaying palindrome.");
         return false;
       } else {
         if (internalQuestStatus("questL11Palindome") > 2) {
@@ -3959,7 +3954,7 @@ export function L11_palindome(): boolean {
       canSniff($monster`Bob Racecar`, $location`Inside the Palindome`) &&
       auto_mapTheMonsters()
     ) {
-      auto_log_info$1(
+      auto_log_info(
         "Attemping to use Map the Monsters to olfact a Bob Racecar.",
       );
     }
@@ -4138,11 +4133,11 @@ export function L11_unlockEd(): boolean {
     canSniff($monster`tomb rat`, $location`The Middle Chamber`) &&
     auto_mapTheMonsters()
   ) {
-    auto_log_info$1("Attemping to use Map the Monsters to olfact a Tomb Rat.");
+    auto_log_info("Attemping to use Map the Monsters to olfact a Tomb Rat.");
   }
 
   if (auto_haveGreyGoose() && itemAmount($item`tangle of rat tails`) >= 1) {
-    auto_log_info$1(
+    auto_log_info(
       "Bringing the Grey Goose to emit some drones at some rat kings.",
     );
     handleFamiliar$1($familiar`Grey Goose`);
@@ -4155,7 +4150,7 @@ export function L11_unlockEd(): boolean {
     !toBoolean(getProperty("_epicMcTwistUsed")) &&
     !in_pokefam()
   ) {
-    auto_log_info$1("Be like Tony Hawk on a Tomb Rat King!");
+    auto_log_info("Be like Tony Hawk on a Tomb Rat King!");
     autoEquip($item`pro skateboard`);
   }
 
