@@ -1285,6 +1285,8 @@ function auto_citZoneModIsGoal(goal: string): boolean {
 }
 
 function auto_citizenZonePrep(goal: string): boolean {
+  if (!auto_haveEagle()) return false;
+
   const activeCitZoneMod_1: string = activeCitZoneMod();
   if (myMeat() < meatReserve() && goal !== "mp") {
     return false; //don't attempt to change if we don't have a lot of meat and we are going for something other than mp
@@ -1386,6 +1388,8 @@ function citizenZones(goal: string): Map<Location, boolean> {
   return new Map([[Location.none, true]]);
 }
 export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
+  if (!auto_haveEagle()) return false;
+
   const eagle: Familiar = $familiar`Patriotic Eagle`;
   //zones are approximately organized by autoscend level quest structure
   const meatZones: Map<Location, boolean> = citizenZones("meat");
@@ -1436,7 +1440,7 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
     return false;
   }
   if (!inCombat) {
-    if (useFamiliar(eagle)) {
+    if (auto_haveEagle() && useFamiliar(eagle)) {
       if (wantToFreeRun()) {
         setProperty("auto_forceFreeRun", true.toString());
       }
@@ -1460,6 +1464,8 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
 }
 
 export function auto_getCitizenZone$1(goal: string): boolean {
+  if (!auto_haveEagle()) return false;
+
   const zones: Map<Location, boolean> = citizenZones(goal);
 
   if (!auto_citizenZonePrep(goal)) {
