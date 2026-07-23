@@ -1414,7 +1414,7 @@ export function auto_timeCopFights(): number {
   return toInt(getProperty("_timeCopsFoughtToday"));
 }
 
-function auto_haveMonodent(): boolean {
+export function auto_haveMonodent(): boolean {
   const dent: Item = $item`Monodent of the Sea`;
   return auto_is_valid(dent) && possessEquipment(dent);
 }

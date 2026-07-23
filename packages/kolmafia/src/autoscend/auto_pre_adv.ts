@@ -84,10 +84,12 @@ import {
   $location,
   $locations,
   $monster,
+  $skill,
   $skills,
   $slot,
   $slots,
   $stat,
+  have,
 } from "libram";
 
 import { speculative_pool_skill } from "../autoscend";
@@ -200,6 +202,7 @@ import {
 } from "./iotms/mr2021";
 import {
   auto_handleParka,
+  auto_hasParka,
   auto_haveCombatLoversLocket,
   auto_monsterInLocket,
   sweatpantsPreAdventure,
@@ -219,7 +222,11 @@ import {
 } from "./iotms/mr2024";
 import {
   auto_bankChestMimicExpForBandit,
+  auto_getItemToEquipBCZ,
+  auto_haveBCZ,
   auto_haveCupidBow,
+  auto_haveMcHugeLargeSkis,
+  auto_haveMonodent,
   auto_havePeridot,
   auto_peridotSetZone,
   auto_wantSoCP,
@@ -852,6 +859,7 @@ function auto_pre_adventure(): boolean {
   }
 
   if (
+    auto_haveMcHugeLargeSkis() &&
     getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
     !toBoolean(getProperty("auto_avalancheDeployed"))
   ) {
@@ -860,6 +868,7 @@ function auto_pre_adventure(): boolean {
   }
 
   if (
+    auto_hasParka() &&
     getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
     !toBoolean(getProperty("auto_parkaSpikesDeployed"))
   ) {
@@ -874,6 +883,7 @@ function auto_pre_adventure(): boolean {
   const fluda: Item = $item`Flash Liquidizer Ultra Dousing Accessory`;
   const douse_locs: Location[] = $locations`The Hatching Chamber, The Feeding Chamber, The Royal Guard Chamber`;
   if (
+    have(fluda) &&
     (douse_locs.includes(place) || auto_allRifts().has(place)) &&
     auto_dousesRemaining() > 0
   ) {
@@ -883,49 +893,71 @@ function auto_pre_adventure(): boolean {
   const bat_wings: Item = $item`bat wings`;
   const swoop_locs: Map<Location, boolean> = auto_swoopLocations();
   if (
+    auto_haveBatWings() &&
     (swoop_locs.has(place) || auto_allRifts().has(place)) &&
     auto_swoopsRemaining() > 0
   ) {
     autoEquip(bat_wings);
   }
 
-  const exting: Item = wrap_item($item`industrial fire extinguisher`);
-  if (
-    auto_FireExtinguisherCombatString(place) !== "" ||
-    $locations`The Goatlet, Twin Peak, The Hidden Bowling Alley, The Hatching Chamber, The Feeding Chamber, The Royal Guard Chamber`.includes(
-      place,
-    )
-  ) {
-    autoEquip(exting);
-  } else if (
-    auto_availableBrickRift() === place &&
-    auto_fireExtinguisherCharges() >= 30
-  ) {
-    autoEquip(exting); // Can do at least 1 polar vortex for shadow bricks while keeping 20 for a zone specific skill
-  } else if (
-    in_wildfire() &&
-    auto_haveFireExtinguisher() &&
-    place.fireLevel > 3
-  ) {
-    addBonusToMaximize(exting, 200); // extinguisher prevents per-round hot damage in wildfire path
+  if (auto_haveFireExtinguisher()) {
+    const exting: Item = wrap_item($item`industrial fire extinguisher`);
+    if (
+      auto_FireExtinguisherCombatString(place) !== "" ||
+      $locations`The Goatlet, Twin Peak, The Hidden Bowling Alley, The Hatching Chamber, The Feeding Chamber, The Royal Guard Chamber`.includes(
+        place,
+      )
+    ) {
+      autoEquip(exting);
+    } else if (
+      auto_availableBrickRift() === place &&
+      auto_fireExtinguisherCharges() >= 30
+    ) {
+      autoEquip(exting); // Can do at least 1 polar vortex for shadow bricks while keeping 20 for a zone specific skill
+    } else if (
+      in_wildfire() &&
+      auto_haveFireExtinguisher() &&
+      place.fireLevel > 3
+    ) {
+      addBonusToMaximize(exting, 200); // extinguisher prevents per-round hot damage in wildfire path
+    }
   }
 
   if (auto_wantToShrunkenHead$1(place)) {
     addBonusToMaximize($item`shrunken head`, 300);
   }
 
+  const wantBCZRefractedGaze: boolean =
+    place === $location`The Hole in the Sky` &&
+    auto_haveBCZ() &&
+    canUse($skill`BCZ: Refracted Gaze`, true, false);
+
   if (
-    !haveUsedPeridot(place) &&
     auto_havePeridot() &&
-    (zoneHasWantedMonsters || auto_peridotSetZone(place))
+    !haveUsedPeridot(place) &&
+    (zoneHasWantedMonsters || auto_peridotSetZone(place)) &&
+    !wantBCZRefractedGaze
   ) {
     //add a large bonus to Peridot of Peril if the zone has wanted monsters (or we want to set the zone without using an adventure) and we haven't visited there yet
     addBonusToMaximize($item`Peridot of Peril`, 1000);
   }
 
+  if (wantBCZRefractedGaze) {
+    // Peridot doesn't work with refracted gaze, so keep Peridot of Peril off and bring BCZ instead.
+    if (auto_havePeridot()) {
+      addToMaximize(`-"equip ${$item`Peridot of Peril`}"`);
+    }
+
+    autoEquip(auto_getItemToEquipBCZ());
+
+    if (auto_haveMonodent()) {
+      addBonusToMaximize($item`Monodent of the Sea`, 300); // nice to have, not mandatory
+    }
+  }
+
   if (
-    place === $location`The Penultimate Fantasy Airship` &&
-    auto_haveBatWings()
+    auto_haveBatWings() &&
+    place === $location`The Penultimate Fantasy Airship`
   ) {
     // only here to get immateria. Get it faster with bat wings
     autoEquip($item`bat wings`);
