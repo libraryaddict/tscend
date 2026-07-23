@@ -38,7 +38,7 @@ jobs:
           cd /tmp/release
 
           git rm -rf --quiet . >/dev/null 2>&1 || true
-          cp -r "$GITHUB_WORKSPACE/RELEASE/." .
+          cp -r "$GITHUB_WORKSPACE/dist/." .
           git add -A
 
           if git diff --cached --quiet; then

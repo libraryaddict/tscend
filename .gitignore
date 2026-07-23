@@ -17,9 +17,7 @@ node_modules
 
 #!.yarn/cache
 .pnp.*
-RELEASE/scripts
-RELEASE/relay
-RELEASE/data
+/dist
 TODO.txt
 packages/*/dist
 packages/*/tsconfig.tsbuildinfo
