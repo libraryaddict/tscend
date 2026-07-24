@@ -129,6 +129,7 @@ import {
   auto_wishForEffect,
   auto_wishForEffectIfNeeded,
   autoMaximize$1,
+  AutoStopError,
   canSummonMonster,
   cloverUsageFinish,
   cloverUsageInit$1,
@@ -2046,7 +2047,9 @@ export function L13_towerNSFinal(): boolean {
   }
 
   if (toBoolean(getProperty("auto_stayInRun"))) {
-    abort("User wanted to stay in run (auto_stayInRun), we are done.");
+    throw new AutoStopError(
+      "User wanted to stay in run (auto_stayInRun), we are done.",
+    );
   }
 
   if (

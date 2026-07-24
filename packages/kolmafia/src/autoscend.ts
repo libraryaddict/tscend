@@ -3103,6 +3103,9 @@ export function main(...input: string[]): void {
     if (!(e instanceof AutoStopError)) {
       throw e;
     }
+    if (e.message) {
+      print(e.message, "red");
+    }
   } finally {
     if (get("auto_stop", false)) {
       set("auto_stop", false);

@@ -19,7 +19,7 @@ import {
 import { $effect, $item, $items, $location, $monster, $path } from "libram";
 
 import { autoAdvBypass$1 } from "../auto_adventure";
-import { internalQuestStatus } from "../auto_util";
+import { AutoStopError, internalQuestStatus } from "../auto_util";
 import { inAftercore } from "./casual";
 
 //Defined in autoscend/paths/bees_hate_you.ash
@@ -133,7 +133,9 @@ export function L13_bhy_towerFinal(): boolean {
     abort("The Guy Made Of Bees beat me up! Please finish him off manually");
   }
   if (toBoolean(getProperty("auto_stayInRun"))) {
-    abort("User wanted to stay in run (auto_stayInRun), we are done.");
+    throw new AutoStopError(
+      "User wanted to stay in run (auto_stayInRun), we are done.",
+    );
   } else {
     visitUrl("place.php?whichplace=nstower&action=ns_11_prism");
     if (inAftercore()) {

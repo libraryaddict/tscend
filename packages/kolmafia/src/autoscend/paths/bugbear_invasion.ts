@@ -51,6 +51,7 @@ import { uneffect } from "../auto_restore";
 import {
   auto_have_skill,
   auto_log_info,
+  AutoStopError,
   internalQuestStatus,
 } from "../auto_util";
 import { zone_available } from "../auto_zone";
@@ -504,7 +505,9 @@ function LX_bugbearBridge(): boolean {
   );
 
   if (toBoolean(getProperty("auto_stayInRun"))) {
-    abort("User wanted to stay in run (auto_stayInRun), we are done.");
+    throw new AutoStopError(
+      "User wanted to stay in run (auto_stayInRun), we are done.",
+    );
   }
 
   visitUrl("place.php?whichplace=nstower&action=ns_11_prism");

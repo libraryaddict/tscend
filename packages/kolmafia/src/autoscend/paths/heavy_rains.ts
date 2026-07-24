@@ -57,6 +57,7 @@ import {
   auto_have_skill,
   auto_log_info,
   auto_runChoice,
+  AutoStopError,
   effectAblativeArmor,
   executeFlavour,
   handleTracker$1,
@@ -524,7 +525,9 @@ export function L13_heavyrains_towerFinal(): boolean {
     abort("The Rain King beat me up! please finish him off manually");
   }
   if (toBoolean(getProperty("auto_stayInRun"))) {
-    abort("User wanted to stay in run (auto_stayInRun), we are done.");
+    throw new AutoStopError(
+      "User wanted to stay in run (auto_stayInRun), we are done.",
+    );
   } else {
     visitUrl("place.php?whichplace=nstower&action=ns_11_prism");
     if (inAftercore()) {

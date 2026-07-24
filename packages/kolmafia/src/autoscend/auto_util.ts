@@ -5060,7 +5060,7 @@ export function auto_interruptCheck(
     //auto_stop is not reset here, only the main script's main() may consume the setting.
     throw new AutoStopError();
   } else if (auto_interruptZoneCheck()) {
-    abort(
+    throw new AutoStopError(
       `auto_interruptZones detected, aborting at ${myLocation().toString()}`,
     );
   } else if (toBoolean(getProperty("auto_debugging")) && debug) {
