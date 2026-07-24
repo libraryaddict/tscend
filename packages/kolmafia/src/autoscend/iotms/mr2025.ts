@@ -350,7 +350,7 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
     },
   };
 
-  const extraFill = 6;
+  const extraFill = 3;
 
   // Is any active organ currently behind, but within the extraFill threshold?
   const isSomeoneCatchingUp = Object.values(organs).some(
