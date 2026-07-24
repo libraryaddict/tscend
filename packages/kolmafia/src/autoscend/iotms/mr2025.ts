@@ -22,7 +22,6 @@ import {
   getProperty,
   haveEffect,
   haveEquipped,
-  haveSkill,
   inebrietyLimit,
   isUnrestricted,
   Item,

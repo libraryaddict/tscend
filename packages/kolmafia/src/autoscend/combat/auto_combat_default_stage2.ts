@@ -1,24 +1,19 @@
 import {
-  ceil,
   containsText,
-  equippedAmount,
   getProperty,
   haveEffect,
   haveEquipped,
   indexOf,
   Item,
   itemAmount,
-  min,
   Monster,
   monsterPhylum,
   myAdventures,
-  myBasestat,
   myDaycount,
   myFamiliar,
   myLightning,
   myLocation,
   myMp,
-  myPrimestat,
   myTurncount,
   setProperty,
   Skill,
@@ -42,6 +37,7 @@ import {
   $skill,
 } from "libram";
 
+import { auto_wantToReserveFreekills } from "../auto_equipment";
 import {
   auto_forceFreeRun,
   auto_have_skill,
@@ -84,12 +80,10 @@ import {
   auto_wantToShrunkenHead,
 } from "../iotms/mr2025";
 import { wantToClubEmBackInTime } from "../iotms/mr2026";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/avant_guard";
 import { in_bugbear } from "../paths/bugbear_invasion";
 import { inAftercore } from "../paths/casual";
 import { getZooKickInstaKill } from "../paths/zootomist";
-import { cyrptEvilBonus } from "../quests/level_07";
 import { bridgeGoal } from "../quests/level_09";
 import { towerKeyCount } from "../quests/level_13";
 import { auto_combatDarkGyffteStage2 } from "./auto_combat_dark_gyffte";
@@ -728,67 +722,8 @@ export function auto_combatDefaultStage2(
     !isFreeMonster(enemy, myLocation()) &&
     couldInstaKill
   ) {
-    let wantFreeKillNowEspecially: boolean = false;
-
-    let waitForDesert: boolean = false; //free kills can save turns of Ultrahydrated
-    if (toInt(getProperty("desertExploration")) < 100 && !isActuallyEd()) {
-      //need to explore desert
-      const currentDesertProgressPerTurn: number =
-        1 +
-        (toBoolean(getProperty("bondDesert")) ? 2 : 0) +
-        (getProperty("peteMotorbikeHeadlight") === "Blacklight Bulb" ? 2 : 0) +
-        (myFamiliar() === $familiar`Melodramedary` ? 1 : 0) +
-        2 * min(1, equippedAmount($item`survival knife`)) +
-        equippedAmount($item`UV-resistant compass`) +
-        2 * equippedAmount($item`ornate dowsing rod`);
-      const fightsLeftToExplore: number = ceil(
-        (100 - toInt(getProperty("desertExploration"))) /
-          currentDesertProgressPerTurn,
-      );
-      if (
-        haveEffect($effect`Ultrahydrated`) > 0 &&
-        haveEffect($effect`Ultrahydrated`) < fightsLeftToExplore
-      ) {
-        wantFreeKillNowEspecially = true;
-      } else {
-        //near level 11
-        waitForDesert = myBasestat(myPrimestat()) >= 95;
-      }
-    }
-
-    let waitForCyrpt: boolean = false; //free kills can get more modern zmobies from 1 turn of a double initiative effect in The Defiled Alcove
-    if (
-      toInt(getProperty("cyrptAlcoveEvilness")) >=
-      18 + cyrptEvilBonus(true)
-    ) {
-      //need to do Alcove
-      if (
-        myLocation() === $location`The Defiled Alcove` &&
-        haveEffect($effect`Bow-Legged Swagger`) === 1
-      ) {
-        wantFreeKillNowEspecially = true;
-      } else if (
-        auto_have_skill($skill`Bow-Legged Swagger`) &&
-        myBasestat(myPrimestat()) >= 35 &&
-        !toBoolean(getProperty("_bowleggedSwaggerUsed"))
-      ) {
-        waitForCyrpt = true; //near level 7
-      }
-    }
-    //free kills can get more benefit from 1 turn of a double item bonus effect in zones that need high item
-    if (
-      haveEffect($effect`Steely-Eyed Squint`) === 1 &&
-      $locations`The Haunted Wine Cellar, The Haunted Laundry Room, The Hatching Chamber, The Feeding Chamber, The Royal Guard Chamber`.includes(
-        myLocation(),
-      )
-    ) {
-      wantFreeKillNowEspecially = true;
-    }
-
-    const reserveFreekills: boolean =
-      myAdventures() >= 9 &&
-      !wantFreeKillNowEspecially &&
-      (waitForDesert || waitForCyrpt);
+    const { reserveFreekills, wantFreeKillNowEspecially } =
+      auto_wantToReserveFreekills(true);
 
     if (
       auto_canUse($skill`Darts: Aim for the Bullseye`) &&

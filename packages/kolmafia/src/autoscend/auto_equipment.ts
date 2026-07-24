@@ -3,6 +3,7 @@ import {
   appearanceRates,
   booleanModifier,
   canEquip,
+  ceil,
   cliExecute,
   containsText,
   endsWith,
@@ -35,6 +36,7 @@ import {
   myAdventures,
   myBasestat,
   myClass,
+  myDaycount,
   myFamiliar,
   myHp,
   myLevel,
@@ -76,6 +78,7 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   $locations,
   $monsters,
   $path,
@@ -157,6 +160,7 @@ import { in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";
 import { borisTrusty, is_boris } from "./paths/avatar_of_boris";
 import { in_bhy } from "./paths/bees_hate_you";
+import { inAftercore } from "./paths/casual";
 import { in_darkGyffte } from "./paths/dark_gyffte";
 import { in_glover } from "./paths/g_lover";
 import { in_gnoob } from "./paths/gelatinous_noob";
@@ -174,6 +178,7 @@ import { in_wereprof, is_professor, is_werewolf } from "./paths/wereprofessor";
 import { in_wildfire } from "./paths/wildfire";
 import { in_robot, robot_defaultMaximizeStatement } from "./paths/you_robot";
 import { getZooBestPunch, in_zootomist } from "./paths/zootomist";
+import { cyrptEvilBonus } from "./quests/level_07";
 
 //Defined in autoscend/auto_equipment.ash
 export function getMaximizeSlotPref(s: Slot): string {
@@ -1819,6 +1824,76 @@ export function powerMultipliers(): Map<Slot, number> {
 
   return multiplier;
 }
+
+export function auto_wantToReserveFreekills(inCombat: boolean = false): {
+  reserveFreekills: boolean;
+  wantFreeKillNowEspecially: boolean;
+} {
+  let wantFreeKillNowEspecially: boolean = false;
+
+  let waitForDesert: boolean = false; //free kills can save turns of Ultrahydrated
+  if (toInt(getProperty("desertExploration")) < 100 && !isActuallyEd()) {
+    //need to explore desert
+    const currentDesertProgressPerTurn: number =
+      1 +
+      (toBoolean(getProperty("bondDesert")) ? 2 : 0) +
+      (getProperty("peteMotorbikeHeadlight") === "Blacklight Bulb" ? 2 : 0) +
+      (myFamiliar() === $familiar`Melodramedary` ? 1 : 0) +
+      2 * min(1, equippedAmount($item`survival knife`)) +
+      equippedAmount($item`UV-resistant compass`) +
+      2 * equippedAmount($item`ornate dowsing rod`);
+    const fightsLeftToExplore: number = ceil(
+      (100 - toInt(getProperty("desertExploration"))) /
+        currentDesertProgressPerTurn,
+    );
+    if (
+      haveEffect($effect`Ultrahydrated`) > 0 &&
+      haveEffect($effect`Ultrahydrated`) < fightsLeftToExplore
+    ) {
+      wantFreeKillNowEspecially = true;
+    } else {
+      //near level 11
+      waitForDesert = myBasestat(myPrimestat()) >= 95;
+    }
+  }
+
+  let waitForCyrpt: boolean = false; //free kills can get more modern zmobies from 1 turn of a double initiative effect in The Defiled Alcove
+  if (
+    toInt(getProperty("cyrptAlcoveEvilness")) >=
+    18 + cyrptEvilBonus(inCombat)
+  ) {
+    //need to do Alcove
+    if (
+      myLocation() === $location`The Defiled Alcove` &&
+      haveEffect($effect`Bow-Legged Swagger`) === 1
+    ) {
+      wantFreeKillNowEspecially = true;
+    } else if (
+      auto_have_skill($skill`Bow-Legged Swagger`) &&
+      myBasestat(myPrimestat()) >= 35 &&
+      !toBoolean(getProperty("_bowleggedSwaggerUsed"))
+    ) {
+      waitForCyrpt = true; //near level 7
+    }
+  }
+  //free kills can get more benefit from 1 turn of a double item bonus effect in zones that need high item
+  if (
+    haveEffect($effect`Steely-Eyed Squint`) === 1 &&
+    $locations`The Haunted Wine Cellar, The Haunted Laundry Room, The Hatching Chamber, The Feeding Chamber, The Royal Guard Chamber`.includes(
+      myLocation(),
+    )
+  ) {
+    wantFreeKillNowEspecially = true;
+  }
+
+  const reserveFreekills: boolean =
+    myAdventures() >= 9 &&
+    !wantFreeKillNowEspecially &&
+    (waitForDesert || waitForCyrpt);
+
+  return { reserveFreekills, wantFreeKillNowEspecially };
+}
+
 /**
 	Handles selecting and equiping an equipment that would allow a free kill skill to be cast, if able.
 	Only selects one free kill at a time.
@@ -1837,13 +1912,20 @@ export function auto_equipFreekill(): void {
   const bcz: Item = auto_getItemToEquipBCZ();
   const legendClub: Item = $item`legendary seal-clubbing club`;
 
+  const { reserveFreekills, wantFreeKillNowEspecially } =
+    auto_wantToReserveFreekills();
+  const okToUseReservedFreekill: boolean =
+    wantFreeKillNowEspecially || !reserveFreekills;
+
   const redDartAvailable: boolean =
     auto_haveDarts() && haveEffect($effect`Everything Looks Red`) === 0;
-  const chestXrayAvailable: boolean = auto_chestXraysRemaining() > 0;
-  const fireGunAvailable: boolean = auto_jokesterGunFreeKillAvailable();
-  const sweatBulletsAvailable: boolean = auto_wantToBCZ(
-    $skill`BCZ: Sweat Bullets`,
-  );
+  const chestXrayAvailable: boolean =
+    auto_chestXraysRemaining() > 0 &&
+    (okToUseReservedFreekill || inAftercore() || myDaycount() >= 3);
+  const fireGunAvailable: boolean =
+    auto_jokesterGunFreeKillAvailable() && okToUseReservedFreekill;
+  const sweatBulletsAvailable: boolean =
+    auto_wantToBCZ($skill`BCZ: Sweat Bullets`) && okToUseReservedFreekill;
   const clubBackAvailable: boolean = auto_clubEmBackInTimesRemaining() > 0;
 
   if (redDartAvailable && !maximizeContains("-acc3")) {
