@@ -88,10 +88,7 @@ export function boris_initializeSettings(): void {
   }
 }
 
-export function boris_initializeDay(day: number): void {
-  if (!is_boris()) {
-    return;
-  }
+export function avatarStandardInitializeDay(day: number): void {
   if (day === 2) {
     equipBaseline();
     ovenHandle();
@@ -119,6 +116,13 @@ export function boris_initializeDay(day: number): void {
       setProperty("auto_day_init", (4).toString());
     }
   }
+}
+
+export function boris_initializeDay(day: number): void {
+  if (!is_boris()) {
+    return;
+  }
+  avatarStandardInitializeDay(day);
 }
 
 export function boris_buySkills(): void {

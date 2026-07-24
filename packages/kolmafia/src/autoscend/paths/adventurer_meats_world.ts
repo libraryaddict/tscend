@@ -85,7 +85,6 @@ function amw_advPerTrade(): number {
 }
 // Parses the cost of the (adv_bundles)-th bundle
 // if non-cumulative, subtracts the cost of the previous bundles to calculate the cost of the "last" trade of 10-13 advs in the bundle
-// function is currently unused (calculateReserve is sometimes called from pre_adventure and visiting url can cause issues with that)
 function amw_advBundleCost(
   adv_bundles: number,
   cumulative: boolean = true,

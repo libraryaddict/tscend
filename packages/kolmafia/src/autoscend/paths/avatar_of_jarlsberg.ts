@@ -11,16 +11,14 @@ import {
   setProperty,
   toBoolean,
   toInt,
-  use,
   useSkill,
   visitUrl,
 } from "kolmafia";
 import { $item, $path, $skill, $skills } from "libram";
 
-import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
-import { equipBaseline } from "../auto_equipment";
-import { auto_have_skill, auto_log_info, ovenHandle } from "../auto_util";
+import { auto_have_skill, auto_log_info } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
+import { avatarStandardInitializeDay } from "./avatar_of_boris";
 
 //Defined in autoscend/paths/avatar_of_jarlsberg.ash
 export function is_jarlsberg(): boolean {
@@ -38,33 +36,7 @@ export function jarlsberg_initializeDay(day: number): void {
   if (!is_jarlsberg()) {
     return;
   }
-  if (day === 2) {
-    equipBaseline();
-    ovenHandle();
-
-    if (toInt(getProperty("auto_day_init")) < 2) {
-      if (itemAmount($item`gym membership card`) > 0) {
-        use(1, $item`gym membership card`);
-      }
-
-      if (itemAmount($item`seal tooth`) === 0) {
-        acquireHermitItem($item`seal tooth`);
-      }
-      while (acquireHermitItem($item`11-leaf clover`)) {}
-      pullXWhenHaveY($item`Hand in Glove`, 1, 0);
-      pullXWhenHaveY($item`blackberry galoshes`, 1, 0);
-    }
-  } else if (day === 3) {
-    if (toInt(getProperty("auto_day_init")) < 3) {
-      while (acquireHermitItem($item`11-leaf clover`)) {}
-      setProperty("auto_day_init", (3).toString());
-    }
-  } else if (day === 4) {
-    if (toInt(getProperty("auto_day_init")) < 4) {
-      while (acquireHermitItem($item`11-leaf clover`)) {}
-      setProperty("auto_day_init", (4).toString());
-    }
-  }
+  avatarStandardInitializeDay(day);
 }
 
 export function jarlsberg_buySkills(): void {
