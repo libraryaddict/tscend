@@ -1756,7 +1756,13 @@ export function auto_bczRefractedGaze(): boolean {
     // we don't want to refreact if we don't have the stats.
     return false;
   }
-  if (auto_havePeridot() && !haveUsedPeridot(myLocation())) {
+  if (
+    auto_havePeridot() &&
+    !haveUsedPeridot(myLocation()) &&
+    (myLocation().turnsSpent <= 1 ||
+      !getMonsters(myLocation()).includes(lastMonster())) && // If we've spent a turn here already and the last monster was from this location, then don't be conservative
+    (!auto_haveMonodent() || myLocation() !== $location`The Hole in the Sky`)
+  ) {
     //Will undoubtedly want Peridot in these locations
     //Other sources of issue (pocket wishes/mimic eggs) are fought in Noob Cave
     //Don't have support for the Crepe Paper Parachute Cape but that also causes issues
@@ -1769,7 +1775,8 @@ export function auto_bczRefractedGaze(): boolean {
     (myLocation() === $location`The Penultimate Fantasy Airship` &&
       itemAmount($item`Mohawk wig`) < 1 &&
       itemAmount($item`amulet of extreme plot significance`) < 1) ||
-    myLocation() === $location`The Battlefield (Frat Uniform)` ||
+    (myLocation() === $location`The Battlefield (Frat Uniform)` &&
+      get("_bczRefractedGazeCasts") < 2) || // Only use refracted gaze on the battlefield if we've used it less than 2 times
     (myLocation() === $location`A-Boo Peak` &&
       itemAmount($item`A-Boo clue`) * 30 <
         toInt(getProperty("booPeakProgress"))) ||

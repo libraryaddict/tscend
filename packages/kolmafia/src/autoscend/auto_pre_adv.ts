@@ -84,7 +84,6 @@ import {
   $location,
   $locations,
   $monster,
-  $skill,
   $skills,
   $slot,
   $slots,
@@ -222,6 +221,7 @@ import {
 } from "./iotms/mr2024";
 import {
   auto_bankChestMimicExpForBandit,
+  auto_bczRefractedGaze,
   auto_getItemToEquipBCZ,
   auto_haveCupidBow,
   auto_haveMcHugeLargeSkis,
@@ -229,7 +229,6 @@ import {
   auto_havePeridot,
   auto_peridotSetZone,
   auto_wantSoCP,
-  auto_wantToBCZ,
   auto_wantToShrunkenHead$1,
   haveUsedPeridot,
   peridotManuallyDesiredMonsters,
@@ -927,9 +926,7 @@ function auto_pre_adventure(): boolean {
     addBonusToMaximize($item`shrunken head`, 300);
   }
 
-  const wantBCZRefractedGaze: boolean =
-    place === $location`The Hole in the Sky` &&
-    auto_wantToBCZ($skill`BCZ: Refracted Gaze`);
+  const wantBCZRefractedGaze: boolean = auto_bczRefractedGaze();
 
   if (
     auto_havePeridot() &&
@@ -950,7 +947,7 @@ function auto_pre_adventure(): boolean {
     autoEquip(auto_getItemToEquipBCZ());
 
     if (auto_haveMonodent()) {
-      addBonusToMaximize($item`Monodent of the Sea`, 300); // nice to have, not mandatory
+      addBonusToMaximize($item`Monodent of the Sea`, 700); // nice to have, not mandatory
     }
   }
 
