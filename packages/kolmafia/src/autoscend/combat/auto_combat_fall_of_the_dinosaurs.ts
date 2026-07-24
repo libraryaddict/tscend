@@ -12,9 +12,9 @@ import { $skill } from "libram";
 
 import { in_fotd } from "../paths/fall_of_the_dinosaurs";
 import {
+  auto_canUse,
   auto_useSkill,
   canSurvive,
-  canUse,
   haveUsed,
 } from "./auto_combat_util";
 
@@ -85,10 +85,10 @@ export function auto_combatFallOfTheDinosaursStage5(
   if (dino === "archelon") {
     // reflects damage from spells back to player.
     if (enemy.physicalResistance >= 80 && !haveUsed($skill`Silent Treatment`)) {
-      if (canUse($skill`Implode Universe`)) {
+      if (auto_canUse($skill`Implode Universe`)) {
         return auto_useSkill($skill`Implode Universe`, true);
       }
-      if (canUse($skill`Silent Treatment`)) {
+      if (auto_canUse($skill`Silent Treatment`)) {
         return auto_useSkill($skill`Silent Treatment`, true);
       }
       abort(
@@ -98,29 +98,29 @@ export function auto_combatFallOfTheDinosaursStage5(
     if (canSurvive(1.5) && round_1 < 25) {
       return "attack with weapon";
     }
-    if (canUse($skill`Implode Universe`)) {
+    if (auto_canUse($skill`Implode Universe`)) {
       return auto_useSkill($skill`Implode Universe`, true);
     }
     abort("Not sure how to handle monster eaten by a glass-shelled archelon.");
   }
   if (dino === "pterodactyl") {
     // immune to melee
-    if (canUse($skill`Snipe Pterodactyl`, false)) {
+    if (auto_canUse($skill`Snipe Pterodactyl`, false)) {
       return auto_useSkill($skill`Snipe Pterodactyl`, false);
     }
-    if (canUse($skill`Saucegeyser`, false)) {
+    if (auto_canUse($skill`Saucegeyser`, false)) {
       return auto_useSkill($skill`Saucegeyser`, false);
     }
-    if (canUse($skill`Saucestorm`, false)) {
+    if (auto_canUse($skill`Saucestorm`, false)) {
       return auto_useSkill($skill`Saucestorm`, false);
     }
   }
   if (dino === "spikolodon") {
     // returns stinging damage on melee attacks
-    if (canUse($skill`Saucegeyser`, false)) {
+    if (auto_canUse($skill`Saucegeyser`, false)) {
       return auto_useSkill($skill`Saucegeyser`, false);
     }
-    if (canUse($skill`Saucestorm`, false)) {
+    if (auto_canUse($skill`Saucestorm`, false)) {
       return auto_useSkill($skill`Saucestorm`, false);
     }
   }
@@ -129,10 +129,10 @@ export function auto_combatFallOfTheDinosaursStage5(
     const dino_difficulty: number = containsText(enemy.attributes, "Scale:")
       ? 0
       : toInt(enemy.baseAttack / 1.8);
-    if (dino_difficulty >= 75 && canUse($skill`Silent Treatment`)) {
+    if (dino_difficulty >= 75 && auto_canUse($skill`Silent Treatment`)) {
       return auto_useSkill($skill`Silent Treatment`, true);
     }
-    if (canUse($skill`Saucestorm`, false)) {
+    if (auto_canUse($skill`Saucestorm`, false)) {
       return auto_useSkill($skill`Saucestorm`, false);
     }
   }

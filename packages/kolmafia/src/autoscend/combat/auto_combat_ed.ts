@@ -86,10 +86,10 @@ import { ed_needShop, isActuallyEd } from "../paths/actually_ed_the_undying";
 import { cyrptEvilBonus } from "../quests/level_07";
 import { fastenerCount, lumberCount } from "../quests/level_09";
 import {
+  auto_canUse,
   auto_useSkill,
   banisherCombatString$1,
   canSurvive,
-  canUse,
   canUse$3,
   combat_status_add,
   combat_status_check,
@@ -177,7 +177,7 @@ export function auto_edCombatHandler(
   if (
     auto_backupTarget() &&
     enemy !== toMonster(getProperty("lastCopyableMonster")) &&
-    canUse($skill`Back-Up to your Last Enemy`)
+    auto_canUse($skill`Back-Up to your Last Enemy`)
   ) {
     handleTracker$1(
       enemy.toString(),
@@ -196,19 +196,19 @@ export function auto_edCombatHandler(
     return "attack with weapon";
   }
 
-  if (canUse($skill`Pocket Crumbs`)) {
+  if (auto_canUse($skill`Pocket Crumbs`)) {
     return auto_useSkill($skill`Pocket Crumbs`);
   }
 
-  if (canUse($skill`Micrometeorite`)) {
+  if (auto_canUse($skill`Micrometeorite`)) {
     return auto_useSkill($skill`Micrometeorite`);
   }
 
-  if (canUse($skill`Air Dirty Laundry`)) {
+  if (auto_canUse($skill`Air Dirty Laundry`)) {
     return auto_useSkill($skill`Air Dirty Laundry`);
   }
 
-  if (canUse($skill`Summon Love Scarabs`)) {
+  if (auto_canUse($skill`Summon Love Scarabs`)) {
     return auto_useSkill($skill`Summon Love Scarabs`);
   }
 
@@ -216,7 +216,7 @@ export function auto_edCombatHandler(
     return useItem($item`Time-Spinner`);
   }
 
-  if (canUse($skill`Sing Along`)) {
+  if (auto_canUse($skill`Sing Along`)) {
     //ed can easily survive singing along thanks to undying. and healing him is essentially free.
     if (
       getProperty("boomBoxSong") === "Remainin' Alive" ||
@@ -240,7 +240,7 @@ export function auto_edCombatHandler(
     }
     //shots_takens tracks how many times we used [shoot ghost] skill this combat. it is reset in combat initialize
     const shots_takens: number = usedCount($skill`Shoot Ghost`);
-    if (canUse($skill`Shoot Ghost`, false) && shots_takens < 3) {
+    if (auto_canUse($skill`Shoot Ghost`, false) && shots_takens < 3) {
       const survive_needed: number = 3.05 - toFloat(shots_takens);
       if (canSurvive(survive_needed)) {
         markAsUsed($skill`Shoot Ghost`); //needs to be manually done for skills with a use limit that is not 1
@@ -250,7 +250,7 @@ export function auto_edCombatHandler(
       }
     }
 
-    if (canUse($skill`Trap Ghost`) && shots_takens === 3) {
+    if (auto_canUse($skill`Trap Ghost`) && shots_takens === 3) {
       auto_log_info("Busting makes me feel good!!", "green");
       return auto_useSkill($skill`Trap Ghost`);
     }
@@ -281,7 +281,7 @@ export function auto_edCombatHandler(
   }
 
   if (getProperty("auto_edStatus") === "UNDYING!") {
-    if (canUse($skill`Summon Love Gnats`)) {
+    if (auto_canUse($skill`Summon Love Gnats`)) {
       return auto_useSkill($skill`Summon Love Gnats`);
     }
   } else if (getProperty("auto_edStatus") === "dying") {
@@ -292,7 +292,7 @@ export function auto_edCombatHandler(
     }
 
     if (doStunner) {
-      if (canUse($skill`Summon Love Gnats`)) {
+      if (auto_canUse($skill`Summon Love Gnats`)) {
         return auto_useSkill($skill`Summon Love Gnats`);
       }
     }
@@ -300,7 +300,7 @@ export function auto_edCombatHandler(
     auto_log_warning("Ed combat state does not exist, winging it....", "red");
   }
 
-  if (canUse($skill`Fire Sewage Pistol`)) {
+  if (auto_canUse($skill`Fire Sewage Pistol`)) {
     return auto_useSkill($skill`Fire Sewage Pistol`);
   }
 
@@ -351,7 +351,7 @@ export function auto_edCombatHandler(
 
   if (
     enemy === $monster`dirty thieving brigand` &&
-    canUse($skill`Curse of Fortune`)
+    auto_canUse($skill`Curse of Fortune`)
   ) {
     if (itemAmount($item`Ka coin`) > 0 && myHp() > expectedDamage() + 15) {
       // need to kill the monster without resurrecting to get the bonus meat drop so only use it if we have enough HP to survive a hit
@@ -367,7 +367,7 @@ export function auto_edCombatHandler(
   }
 
   if (
-    canUse($skill`Curse of Stench`) &&
+    auto_canUse($skill`Curse of Stench`) &&
     toMonster(getProperty("stenchCursedMonster")) !== enemy &&
     toInt(getProperty("_edDefeats")) < 3
   ) {
@@ -383,7 +383,7 @@ export function auto_edCombatHandler(
 
   if (myLocation() === $location`The Secret Council Warehouse`) {
     if (
-      canUse($skill`Curse of Stench`) &&
+      auto_canUse($skill`Curse of Stench`) &&
       toMonster(getProperty("stenchCursedMonster")) !== enemy &&
       toInt(getProperty("_edDefeats")) < 3
     ) {
@@ -417,7 +417,7 @@ export function auto_edCombatHandler(
 
   if (myLocation() === $location`The Smut Orc Logging Camp`) {
     if (
-      canUse($skill`Curse of Stench`) &&
+      auto_canUse($skill`Curse of Stench`) &&
       toMonster(getProperty("stenchCursedMonster")) !== enemy &&
       toInt(getProperty("_edDefeats")) < 3
     ) {
@@ -689,7 +689,7 @@ export function auto_edCombatHandler(
 
   if (
     !toBoolean(getProperty("edUsedLash")) &&
-    canUse($skill`Lash of the Cobra`) &&
+    auto_canUse($skill`Lash of the Cobra`) &&
     toInt(getProperty("_edLashCount")) < 30
   ) {
     let doLash: boolean = false;
@@ -986,7 +986,7 @@ export function auto_edCombatHandler(
     if (doRenenutet) {
       if (
         !combat_status_check("curseofindecision") &&
-        canUse($skill`Curse of Indecision`)
+        auto_canUse($skill`Curse of Indecision`)
       ) {
         combat_status_add("curseofindecision");
         return auto_useSkill($skill`Curse of Indecision`);
@@ -1017,7 +1017,7 @@ export function auto_edCombatHandler(
   }
 
   if (
-    canUse($skill`Darts: Aim for the Bullseye`) &&
+    auto_canUse($skill`Darts: Aim for the Bullseye`) &&
     haveEffect($effect`Everything Looks Red`) === 0 &&
     dartELRcd() <= 40
   ) {
@@ -1032,7 +1032,7 @@ export function auto_edCombatHandler(
   }
   // prep avalanche if requested
   if (
-    canUse($skill`McHugeLarge Avalanche`) &&
+    auto_canUse($skill`McHugeLarge Avalanche`) &&
     getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
     !toBoolean(getProperty("auto_avalancheDeployed"))
   ) {
@@ -1041,7 +1041,7 @@ export function auto_edCombatHandler(
   }
   // prep parka NC forcing if requested
   if (
-    canUse($skill`Launch spikolodon spikes`) &&
+    auto_canUse($skill`Launch spikolodon spikes`) &&
     getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
     !toBoolean(getProperty("auto_parkaSpikesDeployed"))
   ) {
@@ -1107,7 +1107,10 @@ export function auto_edCombatHandler(
       return `skill${$skill`Fire the Jokester's Gun`}`;
     }
 
-    if (canUse($skill`Slay the Dead`) && enemy.phylum === $phylum`undead`) {
+    if (
+      auto_canUse($skill`Slay the Dead`) &&
+      enemy.phylum === $phylum`undead`
+    ) {
       // instakills Undead and reduces evilness in Cyrpt zones.
       return auto_useSkill($skill`Slay the Dead`);
     }
@@ -1147,10 +1150,10 @@ export function auto_edCombatHandler(
   if (toInt(getProperty("_edDefeats")) < 2) {
     if (wantToForceDrop(enemy)) {
       const polarVortexAvailable: boolean =
-        canUse($skill`Fire Extinguisher: Polar Vortex`, false) &&
+        auto_canUse($skill`Fire Extinguisher: Polar Vortex`, false) &&
         auto_fireExtinguisherCharges() > 10;
       const mildEvilAvailable: boolean =
-        canUse($skill`Perpetrate Mild Evil`, false) &&
+        auto_canUse($skill`Perpetrate Mild Evil`, false) &&
         toInt(getProperty("_mildEvilPerpetrated")) < 3;
       // mild evil only can pick pocket. Use it before fire extinguisher
       if (mildEvilAvailable) {
@@ -1172,16 +1175,16 @@ export function auto_edCombatHandler(
     }
   }
   // Actually killing stuff starts here
-  if (canUse(auto_spoonCombatSkill())) {
+  if (auto_canUse(auto_spoonCombatSkill())) {
     return auto_useSkill(auto_spoonCombatSkill());
   }
 
   if (
     myLocation() === $location`The Secret Government Laboratory` &&
-    canUse($skill`Roar of the Lion`, false)
+    auto_canUse($skill`Roar of the Lion`, false)
   ) {
     if (
-      canUse($skill`Storm of the Scarab`, false) &&
+      auto_canUse($skill`Storm of the Scarab`, false) &&
       myBuffedstat($stat`Mysticality`) >= 60
     ) {
       return auto_useSkill($skill`Storm of the Scarab`, false);
@@ -1193,7 +1196,7 @@ export function auto_edCombatHandler(
     $locations`Pirates of the Garbage Barges, The SMOOCH Army HQ, VYKEA`.includes(
       myLocation(),
     ) &&
-    canUse($skill`Storm of the Scarab`, false)
+    auto_canUse($skill`Storm of the Scarab`, false)
   ) {
     return auto_useSkill($skill`Storm of the Scarab`, false);
   }
@@ -1202,7 +1205,7 @@ export function auto_edCombatHandler(
     $locations`The Hippy Camp, The Outskirts of Cobb's Knob, The Spooky Forest, The Batrat and Ratbat Burrow, The Boss Bat's Lair, Cobb's Knob Harem`.includes(
       myLocation(),
     ) &&
-    canUse($skill`Fist of the Mummy`, false)
+    auto_canUse($skill`Fist of the Mummy`, false)
   ) {
     return auto_useSkill($skill`Fist of the Mummy`, false);
   }
@@ -1218,7 +1221,7 @@ export function auto_edCombatHandler(
     return "attack with weapon";
   }
 
-  if (canUse($skill`Cowboy Kick`)) {
+  if (auto_canUse($skill`Cowboy Kick`)) {
     return auto_useSkill($skill`Cowboy Kick`);
   }
 
@@ -1227,14 +1230,14 @@ export function auto_edCombatHandler(
   }
 
   if (
-    canUse($skill`Storm of the Scarab`, false) &&
+    auto_canUse($skill`Storm of the Scarab`, false) &&
     myBuffedstat($stat`Mysticality`) > 35
   ) {
     return auto_useSkill($skill`Storm of the Scarab`, false);
   }
 
   if (enemy.physicalResistance >= 100 || round_1 >= 25 || canSurvive(1.25)) {
-    if (canUse($skill`Fist of the Mummy`, false)) {
+    if (auto_canUse($skill`Fist of the Mummy`, false)) {
       return auto_useSkill($skill`Fist of the Mummy`, false);
     }
   }

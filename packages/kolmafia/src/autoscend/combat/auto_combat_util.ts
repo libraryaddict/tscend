@@ -208,7 +208,7 @@ export function markAsUsed$1(it: Item): void {
 
 let $_canUse_exclusives: Map<number, $_canUse_SkillSet> | undefined;
 
-export function canUse(
+export function auto_canUse(
   sk: Skill,
   onlyOnce: boolean = true, // assume onlyOnce unless specified otherwise
   inCombat: boolean = true, //assume we are in combat unless specified otherwise
@@ -434,48 +434,48 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
   //returns the skill we want to use to sniff the enemy
   //sniffers are skills that increase the odds of encountering this same monster again in the current zone.
   if (
-    canUse($skill`Transcendent Olfaction`, true, inCombat) &&
+    auto_canUse($skill`Transcendent Olfaction`, true, inCombat) &&
     toInt(getProperty("_olfactionsUsed")) < 3 &&
     !isSniffed(enemy, $skill`Transcendent Olfaction`)
   ) {
     return $skill`Transcendent Olfaction`;
   }
   if (
-    canUse($skill`Make Friends`, true, inCombat) &&
+    auto_canUse($skill`Make Friends`, true, inCombat) &&
     myAudience() >= 20 &&
     !isSniffed(enemy, $skill`Make Friends`)
   ) {
     return $skill`Make Friends`; //avatar of sneaky pete specific skill
   }
   if (
-    canUse($skill`Hunt`, true, inCombat) &&
+    auto_canUse($skill`Hunt`, true, inCombat) &&
     haveEffect($effect`Everything Looks Red`) === 0 &&
     !isSniffed(enemy, $skill`Hunt`)
   ) {
     return $skill`Hunt`; //WereProfessor Werewolf specific skill
   }
   if (
-    canUse($skill`Meat Cute`, true, inCombat) &&
+    auto_canUse($skill`Meat Cute`, true, inCombat) &&
     toInt(getProperty("_meatCuteUsed")) < 5 &&
     !isSniffed(enemy, $skill`Meat Cute`)
   ) {
     return $skill`Meat Cute`; //Meat Golem specific skill
   }
   if (
-    canUse($skill`Long Con`, true, inCombat) &&
+    auto_canUse($skill`Long Con`, true, inCombat) &&
     toInt(getProperty("_longConUsed")) < 5 &&
     !isSniffed(enemy, $skill`Long Con`)
   ) {
     return $skill`Long Con`;
   }
   if (
-    canUse($skill`Perceive Soul`, true, inCombat) &&
+    auto_canUse($skill`Perceive Soul`, true, inCombat) &&
     !isSniffed(enemy, $skill`Perceive Soul`)
   ) {
     return $skill`Perceive Soul`;
   }
   if (
-    canUse($skill`Motif`, true, inCombat) &&
+    auto_canUse($skill`Motif`, true, inCombat) &&
     !isSniffed(enemy, $skill`Motif`) &&
     haveEffect($effect`Everything Looks Blue`) === 0
   ) {
@@ -483,13 +483,13 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
   }
   if (inCombat) {
     if (
-      canUse($skill`Monkey Point`, true, inCombat) &&
+      auto_canUse($skill`Monkey Point`, true, inCombat) &&
       !isSniffed(enemy, $skill`Monkey Point`)
     ) {
       return $skill`Monkey Point`;
     }
     if (
-      canUse($skill`McHugeLarge Slash`, true, inCombat) &&
+      auto_canUse($skill`McHugeLarge Slash`, true, inCombat) &&
       !isSniffed(enemy, $skill`McHugeLarge Slash`) &&
       auto_McLargeHugeSniffsLeft() > 0
     ) {
@@ -511,20 +511,20 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
     }
   }
   if (
-    canUse($skill`Gallapagosian Mating Call`, true, inCombat) &&
+    auto_canUse($skill`Gallapagosian Mating Call`, true, inCombat) &&
     !isSniffed(enemy, $skill`Gallapagosian Mating Call`)
   ) {
     return $skill`Gallapagosian Mating Call`;
   }
   if (
     myFamiliar() === $familiar`Nosy Nose` &&
-    canUse($skill`Get a Good Whiff of This Guy`) &&
+    auto_canUse($skill`Get a Good Whiff of This Guy`) &&
     !isSniffed(enemy, $skill`Get a Good Whiff of This Guy`)
   ) {
     return $skill`Get a Good Whiff of This Guy`;
   }
   if (
-    canUse($skill`Offer Latte to Opponent`, true, inCombat) &&
+    auto_canUse($skill`Offer Latte to Opponent`, true, inCombat) &&
     !toBoolean(getProperty("_latteCopyUsed")) &&
     !isSniffed(enemy, $skill`Offer Latte to Opponent`)
   ) {
@@ -532,7 +532,7 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
   }
   // Zootomist kicks. We might have to move this depending on what happens with cooldowns
   const z_kick: Skill = getZooKickSniff();
-  if (canUse(z_kick)) {
+  if (auto_canUse(z_kick)) {
     return z_kick;
   }
 
@@ -543,14 +543,18 @@ export function getCopier(enemy: Monster, inCombat: boolean = true): Skill {
   if (
     (auto_haveRoman() && haveEffect($effect`Everything Looks Purple`) === 0) ||
     (haveEquipped($item`Roman Candelabra`) &&
-      canUse($skill`Blow the Purple Candle!`, true, inCombat) &&
+      auto_canUse($skill`Blow the Purple Candle!`, true, inCombat) &&
       haveEffect($effect`Everything Looks Purple`) === 0)
   ) {
     return $skill`Blow the Purple Candle!`;
   }
   if (
     auto_haveEagle() &&
-    canUse($skill`%fn, fire a Red, White and Blue Blast`, true, inCombat) &&
+    auto_canUse(
+      $skill`%fn, fire a Red, White and Blue Blast`,
+      true,
+      inCombat,
+    ) &&
     !(haveEffect($effect`Everything Looks Red, White and Blue`) > 0) &&
     enemy.copyable
   ) {
@@ -561,7 +565,7 @@ export function getCopier(enemy: Monster, inCombat: boolean = true): Skill {
 
 export function getStunner(enemy: Monster): Skill {
   if (
-    canUse($skill`Blow the Blue Candle!`) &&
+    auto_canUse($skill`Blow the Blue Candle!`) &&
     haveEffect($effect`Everything Looks Blue`) === 0
   ) {
     return $skill`Blow the Blue Candle!`; //20 Turns
@@ -569,12 +573,15 @@ export function getStunner(enemy: Monster): Skill {
   // Class specific
   switch (myClass()) {
     case $class`Seal Clubber`:
-      if (canUse($skill`Club Foot`) && (myFury() > 0 || hasClubEquipped())) {
+      if (
+        auto_canUse($skill`Club Foot`) &&
+        (myFury() > 0 || hasClubEquipped())
+      ) {
         return $skill`Club Foot`;
       }
       break;
     case $class`Turtle Tamer`:
-      if (canUse($skill`Shell Up`)) {
+      if (auto_canUse($skill`Shell Up`)) {
         //storm turtle blessings makes shell up a multi-round stun, otherwise it's just a (special) stagger
         if (
           haveEffect($effect`Blessing of the Storm Tortoise`) > 0 ||
@@ -587,45 +594,45 @@ export function getStunner(enemy: Monster): Skill {
       break;
     case $class`Accordion Thief`:
       if (
-        canUse($skill`Accordion Bash`) &&
+        auto_canUse($skill`Accordion Bash`) &&
         itemType(equippedItem($slot`weapon`)) === "accordion"
       ) {
         return $skill`Accordion Bash`;
       }
       break;
     case $class`Pastamancer`:
-      if (canUse($skill`Entangling Noodles`)) {
+      if (auto_canUse($skill`Entangling Noodles`)) {
         return $skill`Entangling Noodles`;
       }
       break;
     case $class`Sauceror`:
-      if (canUse($skill`Soul Bubble`)) {
+      if (auto_canUse($skill`Soul Bubble`)) {
         return $skill`Soul Bubble`;
       }
       break;
     case $class`Avatar of Boris`:
-      if (canUse($skill`Broadside`)) {
+      if (auto_canUse($skill`Broadside`)) {
         return $skill`Broadside`;
       }
       break;
     case $class`Avatar of Sneaky Pete`:
-      if (canUse($skill`Snap Fingers`)) {
+      if (auto_canUse($skill`Snap Fingers`)) {
         return $skill`Snap Fingers`;
       }
       break;
     case $class`Avatar of Jarlsberg`:
-      if (canUse($skill`Blend`)) {
+      if (auto_canUse($skill`Blend`)) {
         return $skill`Blend`;
       }
       break;
     case $class`Cow Puncher`:
     case $class`Beanslinger`:
     case $class`Snake Oiler`:
-      if (canUse($skill`Beanscreen`)) {
+      if (auto_canUse($skill`Beanscreen`)) {
         return $skill`Beanscreen`;
       }
       if (
-        canUse($skill`Hogtie`) &&
+        auto_canUse($skill`Hogtie`) &&
         !haveUsed($skill`Beanscreen`) &&
         enemy.parts.includes("leg")
       ) {
@@ -634,47 +641,47 @@ export function getStunner(enemy: Monster): Skill {
       break;
     case $class`Vampyre`:
       if (
-        canUse($skill`Blood Chains`) &&
+        auto_canUse($skill`Blood Chains`) &&
         myHp() > 3 * hpCost($skill`Blood Chains`)
       ) {
         return $skill`Blood Chains`;
       }
       break;
     case $class`Pig Skinner`:
-      if (canUse($skill`Noogie`)) {
+      if (auto_canUse($skill`Noogie`)) {
         return $skill`Noogie`;
       }
       break;
     case $class`Cheese Wizard`:
-      if (canUse($skill`Gather Cheese-Chi`)) {
+      if (auto_canUse($skill`Gather Cheese-Chi`)) {
         return $skill`Gather Cheese-Chi`;
       }
       break;
     case $class`Jazz Agent`:
-      if (canUse($skill`Drum Roll`, true)) {
+      if (auto_canUse($skill`Drum Roll`, true)) {
         return $skill`Drum Roll`;
       }
       break;
     case $class`Meat Golem`:
-      if (canUse($skill`Meat Locker`, true)) {
+      if (auto_canUse($skill`Meat Locker`, true)) {
         return $skill`Meat Locker`;
       }
       break;
   }
   // From Designer Sweatpants. Use when have nearly full sweat or when losing combat
   if (
-    canUse($skill`Sweat Flood`) &&
+    auto_canUse($skill`Sweat Flood`) &&
     (getSweat() > 98 ||
       containsText(getProperty("_auto_combatState"), "last attempt"))
   ) {
     return $skill`Sweat Flood`;
   }
   // Decreases in stun duration the more it's used
-  if (canUse($skill`Summon Love Gnats`)) {
+  if (auto_canUse($skill`Summon Love Gnats`)) {
     return $skill`Summon Love Gnats`;
   }
   // Nuclear Autum
-  if (canUse($skill`Mind Bullets`)) {
+  if (auto_canUse($skill`Mind Bullets`)) {
     return $skill`Mind Bullets`;
   }
 
@@ -745,7 +752,7 @@ export function findBanisher(
     }
     return banishAction;
   }
-  if (canUse($skill`Storm of the Scarab`, false)) {
+  if (auto_canUse($skill`Storm of the Scarab`, false)) {
     return auto_useSkill($skill`Storm of the Scarab`, false);
   }
   return auto_combatHandler(round_1, enemy, text);
@@ -1163,7 +1170,7 @@ export function banisherCombatString$1(
   }
   //[Nanorhino] familiar specific banish. fairly low priority as it consumes 40 to 50 adv worth of a decent buff.
   if (
-    canUse($skill`Unleash Nanites`) &&
+    auto_canUse($skill`Unleash Nanites`) &&
     haveEffect($effect`Nanobrawny`) >= 40
   ) {
     return `skill ${$skill`Unleash Nanites`}`;
@@ -1524,10 +1531,10 @@ export function wantToForceDrop(enemy: Monster): boolean {
   //skills that can be used on any combat round, repeatedly until an item is stolen
   //take into account if a yellow ray has been used. Must have been one that doesn't insta-kill
   const mildEvilAvailable: boolean =
-    canUse($skill`Perpetrate Mild Evil`, false) &&
+    auto_canUse($skill`Perpetrate Mild Evil`, false) &&
     toInt(getProperty("_mildEvilPerpetrated")) < 3;
   const swoopAvailable: boolean =
-    canUse($skill`Swoop like a Bat`, true) &&
+    auto_canUse($skill`Swoop like a Bat`, true) &&
     toInt(getProperty("_batWingsSwoopUsed")) < 11;
 
   let forceDrop: boolean = false;
@@ -1664,18 +1671,18 @@ export function maxRoundsToDouse(enemy: Monster): number {
     rounds -= 1;
   }
   // Or pants removal
-  if (canUse($skill`Tear Away your Pants!`)) {
+  if (auto_canUse($skill`Tear Away your Pants!`)) {
     rounds -= 1;
   }
-  if (canUse($skill`Perpetrate Mild Evil`)) {
+  if (auto_canUse($skill`Perpetrate Mild Evil`)) {
     // We'll be mild eviling any monsters we douse most likely
     rounds -= auto_remainingMildEvilUses();
   }
-  if (canUse($skill`Swoop like a Bat`)) {
+  if (auto_canUse($skill`Swoop like a Bat`)) {
     // swoopin' em too
     rounds -= 1;
   }
-  if (canUse($skill`Fire Extinguisher: Polar Vortex`)) {
+  if (auto_canUse($skill`Fire Extinguisher: Polar Vortex`)) {
     // and extingo
     rounds -= auto_fireExtinguisherCharges();
   }

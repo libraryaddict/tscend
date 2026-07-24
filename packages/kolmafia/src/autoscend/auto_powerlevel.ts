@@ -68,7 +68,7 @@ import {
   pm_updateThrall,
 } from "./auto_util";
 import { zone_isAvailable } from "./auto_zone";
-import { canUse } from "./combat/auto_combat_util";
+import { auto_canUse } from "./combat/auto_combat_util";
 import { elementalPlanes_access } from "./iotms/elementalPlanes";
 import { handleBjornify } from "./iotms/mr2014";
 import { chateaumantegna_available } from "./iotms/mr2015";
@@ -208,7 +208,7 @@ export function LX_attemptPowerLevel(): boolean {
   if (auto_haveAugustScepter() && toInt(getProperty("_augSkillsCast")) < 5) {
     if (myPrimestat() === $stat`Muscle`) {
       if (
-        canUse($skill`Aug. 12th: Elephant Day!`) &&
+        auto_canUse($skill`Aug. 12th: Elephant Day!`) &&
         !toBoolean(getProperty("_aug12Cast"))
       ) {
         useSkill($skill`Aug. 12th: Elephant Day!`);
@@ -216,7 +216,7 @@ export function LX_attemptPowerLevel(): boolean {
     }
     if (myPrimestat() === $stat`Mysticality`) {
       if (
-        canUse($skill`Aug. 11th: Presidential Joke Day!`) &&
+        auto_canUse($skill`Aug. 11th: Presidential Joke Day!`) &&
         !toBoolean(getProperty("_aug11Cast"))
       ) {
         useSkill($skill`Aug. 11th: Presidential Joke Day!`);
@@ -224,7 +224,7 @@ export function LX_attemptPowerLevel(): boolean {
     }
     if (myPrimestat() === $stat`Moxie`) {
       if (
-        canUse($skill`Aug. 23rd: Ride the Wind Day!`) &&
+        auto_canUse($skill`Aug. 23rd: Ride the Wind Day!`) &&
         !toBoolean(getProperty("_aug23Cast"))
       ) {
         useSkill($skill`Aug. 23rd: Ride the Wind Day!`);

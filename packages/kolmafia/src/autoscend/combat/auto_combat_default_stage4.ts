@@ -63,9 +63,9 @@ import { numPirateInsults } from "../quests/optional";
 import { auto_combatLicenseToAdventureStage4 } from "./auto_combat_license_to_adventure";
 import { auto_combatTheSourceStage4 } from "./auto_combat_the_source";
 import {
+  auto_canUse,
   auto_useSkill,
   canSurvive,
-  canUse,
   canUse$3,
   combat_status_add,
   combat_status_check,
@@ -135,7 +135,7 @@ export function auto_combatDefaultStage4(
     enemy === $monster`animated ornate nightstand` &&
     myFamiliar() === $familiar`Nosy Nose` &&
     !is100FamRun() &&
-    canUse($skill`Get a Good Whiff of This Guy`) &&
+    auto_canUse($skill`Get a Good Whiff of This Guy`) &&
     !isSniffed(enemy, $skill`Get a Good Whiff of This Guy`)
   ) {
     //this is a special case, if Nosy Nose is used in the bedroom in a non 100 fam run it is to whiff this monster
@@ -204,7 +204,7 @@ export function auto_combatDefaultStage4(
   }
   //iotm monster copier that works by creating wandering copies of the targetted monster
   if (
-    canUse($skill`Digitize`) &&
+    auto_canUse($skill`Digitize`) &&
     toInt(getProperty("_sourceTerminalDigitizeUses")) === 0 &&
     !inAftercore()
   ) {
@@ -220,7 +220,7 @@ export function auto_combatDefaultStage4(
     }
   }
   if (
-    canUse($skill`Digitize`) &&
+    auto_canUse($skill`Digitize`) &&
     toInt(getProperty("_sourceTerminalDigitizeUses")) < 3 &&
     !inAftercore()
   ) {
@@ -238,7 +238,7 @@ export function auto_combatDefaultStage4(
   //iotm monster duplicator that creates a chained fight of the current monster
   if (auto_wantToCopy(enemy, myLocation()) && !ag_is_bodyguard()) {
     const copier: Skill = getCopier(enemy);
-    if (copier !== Skill.none && canUse(copier)) {
+    if (copier !== Skill.none && auto_canUse(copier)) {
       if (copier === $skill`Blow the Purple Candle!`) {
         //mafia does not track the target of this skill so we must do so.
         setProperty("auto_purple_candled", enemy.toString());
@@ -250,7 +250,7 @@ export function auto_combatDefaultStage4(
   }
   //accordion thief mechanic. unlike pickpocket it can be done at any round
   if (
-    canUse($skill`Steal Accordion`) &&
+    auto_canUse($skill`Steal Accordion`) &&
     myClass() === $class`Accordion Thief` &&
     canSurvive(2.0)
   ) {
@@ -280,13 +280,13 @@ export function auto_combatDefaultStage4(
   }
   //these loofah skills stagger and provide MP, meat, or XP
   if (monsterLevelAdjustment() <= 150) {
-    if (canUse($skill`Loofah Leglifts`)) {
+    if (auto_canUse($skill`Loofah Leglifts`)) {
       return auto_useSkill($skill`Loofah Leglifts`);
     }
-    if (canUse($skill`Loofah Hosenzittern`)) {
+    if (auto_canUse($skill`Loofah Hosenzittern`)) {
       return auto_useSkill($skill`Loofah Hosenzittern`);
     }
-    if (canUse($skill`Loofah Head-Scratch`)) {
+    if (auto_canUse($skill`Loofah Head-Scratch`)) {
       return auto_useSkill($skill`Loofah Head-Scratch`);
     }
   }
@@ -302,10 +302,10 @@ export function auto_combatDefaultStage4(
   }
   //winking is a monster copier familiar skill. they share a daily counter
   let wink_skill: Skill = Skill.none;
-  if (canUse($skill`Wink at`)) {
+  if (auto_canUse($skill`Wink at`)) {
     wink_skill = $skill`Wink at`;
   }
-  if (canUse($skill`Fire a badly romantic arrow`)) {
+  if (auto_canUse($skill`Fire a badly romantic arrow`)) {
     wink_skill = $skill`Fire a badly romantic arrow`;
   }
   if (wink_skill !== Skill.none) {
@@ -452,7 +452,7 @@ export function auto_combatDefaultStage4(
     !in_plumber() &&
     !in_darkGyffte() &&
     !in_zombieSlayer() &&
-    canUse(
+    auto_canUse(
       //paths that do not use MP
       $skill`Gulp Latte`,
     ) &&
@@ -466,7 +466,7 @@ export function auto_combatDefaultStage4(
     !in_plumber() &&
     !in_darkGyffte() &&
     !in_zombieSlayer() &&
-    canUse(
+    auto_canUse(
       //paths that do not use MP
       $skill`Spring Raindrop Attack`,
     ) &&
@@ -477,7 +477,7 @@ export function auto_combatDefaultStage4(
   //stinkbug physically resistant monsters
   if (!(haveEquipped($item`protonic accelerator pack`) && isGhost(enemy))) {
     if (
-      canUse($skill`Summon Love Stinkbug`) &&
+      auto_canUse($skill`Summon Love Stinkbug`) &&
       enemy.physicalResistance >= 100 &&
       monsterElement(enemy) !== $element`stench`
     ) {
@@ -510,7 +510,7 @@ export function auto_combatDefaultStage4(
   }
   // prep avalanche if requested
   if (
-    canUse($skill`McHugeLarge Avalanche`) &&
+    auto_canUse($skill`McHugeLarge Avalanche`) &&
     getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
     !toBoolean(getProperty("auto_avalancheDeployed"))
   ) {
@@ -519,7 +519,7 @@ export function auto_combatDefaultStage4(
   }
   // prep parka NC forcing if requested
   if (
-    canUse($skill`Launch spikolodon spikes`) &&
+    auto_canUse($skill`Launch spikolodon spikes`) &&
     getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
     !toBoolean(getProperty("auto_parkaSpikesDeployed"))
   ) {

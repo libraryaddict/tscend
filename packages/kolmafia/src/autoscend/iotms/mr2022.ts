@@ -91,7 +91,11 @@ import {
 } from "../auto_util";
 import { zone_available, zone_needItem } from "../auto_zone";
 import { generic_t } from "../autoscend_record";
-import { auto_useSkill, canUse, useItem } from "../combat/auto_combat_util";
+import {
+  auto_canUse,
+  auto_useSkill,
+  useItem,
+} from "../combat/auto_combat_util";
 import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
 import { in_darkGyffte } from "../paths/dark_gyffte";
 import { in_koe } from "../paths/kingdom_of_exploathing";
@@ -188,7 +192,7 @@ export function auto_bowlingBallCombatString(
     return useItem($item`cosmic bowling ball`, !speculation);
   }
   // determine if we want more stats
-  if (canUse($skill`Bowl Sideways`)) {
+  if (auto_canUse($skill`Bowl Sideways`)) {
     // increase stats if we are power leveling
     if (isAboutToPowerlevel()) {
       return auto_useSkill($skill`Bowl Sideways`, !speculation);
@@ -199,7 +203,7 @@ export function auto_bowlingBallCombatString(
     }
   }
   // determine if we want more item or meat bonus
-  if (canUse($skill`Bowl Straight Up`)) {
+  if (auto_canUse($skill`Bowl Straight Up`)) {
     // increase item bonus if not item capped in current zone
     const itemNeed: generic_t = zone_needItem(place);
     if (itemNeed._boolean) {

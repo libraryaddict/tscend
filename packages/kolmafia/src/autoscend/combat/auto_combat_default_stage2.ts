@@ -94,10 +94,10 @@ import { bridgeGoal } from "../quests/level_09";
 import { towerKeyCount } from "../quests/level_13";
 import { auto_combatDarkGyffteStage2 } from "./auto_combat_dark_gyffte";
 import {
+  auto_canUse,
   auto_useSkill,
   banisherCombatString,
   banisherCombatString$1,
-  canUse,
   canUse$3,
   combat_status_add,
   combat_status_check,
@@ -258,7 +258,7 @@ export function auto_combatDefaultStage2(
       !$locations`The Laugh Floor, Infernal Rackets Backstage`.includes(
         myLocation(),
       ) &&
-      canUse($skill`Release the Boots`)
+      auto_canUse($skill`Release the Boots`)
     ) {
       return auto_useSkill($skill`Release the Boots`);
     }
@@ -269,7 +269,7 @@ export function auto_combatDefaultStage2(
     itemAmount($item`crumbling wooden wheel`) +
       itemAmount($item`tomb ratchet`) <
       10 &&
-    canUse($skill`Do an epic McTwist!`) &&
+    auto_canUse($skill`Do an epic McTwist!`) &&
     !toBoolean(getProperty("_epicMcTwistUsed"))
   ) {
     handleTracker$1(
@@ -284,7 +284,7 @@ export function auto_combatDefaultStage2(
     enemy === $monster`mountain man` &&
     myDaycount() === 1 &&
     !auto_turbo() &&
-    canUse($skill`Do an epic McTwist!`) &&
+    auto_canUse($skill`Do an epic McTwist!`) &&
     !toBoolean(getProperty("_epicMcTwistUsed"))
   ) {
     handleTracker$1(
@@ -309,11 +309,11 @@ export function auto_combatDefaultStage2(
   const isDouseTarget: boolean =
     wantToDouse(enemy) && round_1 < maxRoundsToDouse(enemy) - 1; // dousing can have a low chance of success, so only do it for a while then yellow
   const douseAvailable: boolean =
-    canUse(douse, false) && auto_dousesRemaining() > 0;
+    auto_canUse(douse, false) && auto_dousesRemaining() > 0;
   const willDouse: boolean = isDouseTarget && douseAvailable;
   // And don't yellow ray if we'll be swooping
   const swoopAvailable: boolean =
-    canUse($skill`Swoop like a Bat`, true) &&
+    auto_canUse($skill`Swoop like a Bat`, true) &&
     toInt(getProperty("_batWingsSwoopUsed")) < 11;
   const willSwoop: boolean =
     auto_swoopLocations().has(myLocation()) && swoopAvailable;
@@ -365,14 +365,14 @@ export function auto_combatDefaultStage2(
   }
   //convert enemy into a helpless frog/newt/lizard
   if (toBoolean(getProperty("auto_useCleesh"))) {
-    if (canUse($skill`CLEESH`)) {
+    if (auto_canUse($skill`CLEESH`)) {
       setProperty("auto_useCleesh", false.toString());
       return auto_useSkill($skill`CLEESH`);
     }
   }
   //club em back in time to free kill the enemy but don't get any items
   if (wantToClubEmBackInTime(myLocation(), enemy)) {
-    if (canUse($skill`Club 'Em Back in Time`)) {
+    if (auto_canUse($skill`Club 'Em Back in Time`)) {
       handleTracker$1(
         enemy.toString(),
         $skill`Club 'Em Back in Time`.toString(),
@@ -791,7 +791,7 @@ export function auto_combatDefaultStage2(
       (waitForDesert || waitForCyrpt);
 
     if (
-      canUse($skill`Darts: Aim for the Bullseye`) &&
+      auto_canUse($skill`Darts: Aim for the Bullseye`) &&
       haveEffect($effect`Everything Looks Red`) === 0 &&
       dartELRcd() <= 40
     ) {
@@ -802,7 +802,7 @@ export function auto_combatDefaultStage2(
     }
 
     if (
-      canUse($skill`Free-For-All`) &&
+      auto_canUse($skill`Free-For-All`) &&
       haveEffect($effect`Everything Looks Red`) === 0 &&
       (wantFreeKillNowEspecially || !reserveFreekills) &&
       myMp() > 80
@@ -818,7 +818,7 @@ export function auto_combatDefaultStage2(
     }
 
     if (
-      canUse($skill`Lightning Strike`) &&
+      auto_canUse($skill`Lightning Strike`) &&
       (wantFreeKillNowEspecially || !reserveFreekills || myLightning() >= 60)
     ) {
       handleTracker$1(
@@ -831,14 +831,14 @@ export function auto_combatDefaultStage2(
     }
     //Depending on the fam used for instakill, it could be a turn free YR, or it could be turn taking and not a YR, but still give ELY.
     const z_kick: Skill = getZooKickInstaKill();
-    if (canUse(z_kick)) {
+    if (auto_canUse(z_kick)) {
       setProperty("auto_instakillSource", "zootomist kick");
       setProperty("auto_instakillSuccess", true.toString());
       loopHandlerDelayAll();
       return auto_useSkill(z_kick);
     }
 
-    if (canUse($skill`Chest X-Ray`) && auto_chestXraysRemaining() > 0) {
+    if (auto_canUse($skill`Chest X-Ray`) && auto_chestXraysRemaining() > 0) {
       if (
         wantFreeKillNowEspecially ||
         !reserveFreekills ||
@@ -856,7 +856,7 @@ export function auto_combatDefaultStage2(
     }
 
     if (
-      canUse($skill`Fire the Jokester's Gun`) &&
+      auto_canUse($skill`Fire the Jokester's Gun`) &&
       auto_jokesterGunFreeKillAvailable() &&
       (wantFreeKillNowEspecially || !reserveFreekills)
     ) {
@@ -883,7 +883,7 @@ export function auto_combatDefaultStage2(
     }
 
     if (
-      canUse($skill`Shattering Punch`) &&
+      auto_canUse($skill`Shattering Punch`) &&
       toInt(getProperty("_shatteringPunchUsed")) < 3 &&
       !reserveFreekills
     ) {
@@ -905,7 +905,7 @@ export function auto_combatDefaultStage2(
       }
     }
     if (
-      canUse($skill`Gingerbread Mob Hit`) &&
+      auto_canUse($skill`Gingerbread Mob Hit`) &&
       !toBoolean(getProperty("_gingerbreadMobHitUsed")) &&
       !reserveFreekills &&
       myMp() > 50
@@ -957,7 +957,7 @@ export function auto_combatDefaultStage2(
     }
   } // instakills
   //wearing [retro superhero cape] iotm set to vampire slicer mode instakills Undead and reduces evilness in Cyrpt zones.
-  if (canUse($skill`Slay the Dead`) && enemy.phylum === $phylum`undead`) {
+  if (auto_canUse($skill`Slay the Dead`) && enemy.phylum === $phylum`undead`) {
     return auto_useSkill($skill`Slay the Dead`);
   }
   //autokill duplicated enemies. this still costs a turn
@@ -966,7 +966,7 @@ export function auto_combatDefaultStage2(
   }
   // Slaughter is an instakill, but not free; only use if you have no other options and never when we want free kill
   if (
-    canUse($skill`Slaughter`) &&
+    auto_canUse($skill`Slaughter`) &&
     haveEffect($effect`Everything Looks Red`) === 0
   ) {
     setProperty("auto_instakillSource", "slaughter");

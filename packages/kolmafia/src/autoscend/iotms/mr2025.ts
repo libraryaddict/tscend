@@ -120,7 +120,7 @@ import {
   stat_to_substat,
   zoneRank,
 } from "../auto_util";
-import { canUse } from "../combat/auto_combat_util";
+import { auto_canUse } from "../combat/auto_combat_util";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { amw_wantMeat, in_amw } from "../paths/adventurer_meats_world";
 import { in_avantGuard } from "../paths/avant_guard";
@@ -1618,7 +1618,7 @@ function auto_BCZEquipped(): boolean {
 
 export function auto_wantToBCZ(sk: Skill): boolean {
   // zootomist doesn't have substats
-  if (!auto_haveBCZ() || !canUse(sk) || in_zootomist()) {
+  if (!auto_haveBCZ() || !auto_is_valid$2(sk) || in_zootomist()) {
     return false;
   }
   const bloodBathCasts: number = toInt(getProperty("_bczBloodBathCasts"));
@@ -1843,7 +1843,7 @@ export function auto_wantToShrunkenHead(enemy: Monster): boolean {
     return false;
   }
 
-  if (!canUse($skill`Prepare to reanimate your Foe`)) {
+  if (!auto_canUse($skill`Prepare to reanimate your Foe`)) {
     return false;
   }
 

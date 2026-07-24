@@ -105,7 +105,7 @@ import {
   loopHandler,
   setFlavour,
 } from "../auto_util";
-import { canUse } from "../combat/auto_combat_util";
+import { auto_canUse } from "../combat/auto_combat_util";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { adjustEdHat } from "../iotms/mr2015";
 import { asdonBuff } from "../iotms/mr2017";
@@ -340,22 +340,25 @@ export function prepareForSmutOrcs(): void {
     let useSpellsInOrcCamp: boolean = false;
 
     acquireMP(32, 0); //pre_adv will always do this later, but waiting for it may fail checks of ability to cast spells here
-    if (setFlavour($element`cold`) && canUse($skill`Stuffed Mortar Shell`)) {
+    if (
+      setFlavour($element`cold`) &&
+      auto_canUse($skill`Stuffed Mortar Shell`)
+    ) {
       useSpellsInOrcCamp = true;
     }
 
     if (
       setFlavour($element`cold`) &&
-      canUse($skill`Cannelloni Cannon`, false)
+      auto_canUse($skill`Cannelloni Cannon`, false)
     ) {
       useSpellsInOrcCamp = true;
     }
 
-    if (canUse($skill`Saucegeyser`, false)) {
+    if (auto_canUse($skill`Saucegeyser`, false)) {
       useSpellsInOrcCamp = true;
     }
 
-    if (canUse($skill`Saucecicle`, false)) {
+    if (auto_canUse($skill`Saucecicle`, false)) {
       useSpellsInOrcCamp = true;
     }
     // Always Maximize and choose our default Non-Com First, in case we are wrong about the non-com we MAY have some gear still equipped to help us.

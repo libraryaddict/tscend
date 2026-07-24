@@ -39,8 +39,8 @@ import { disguises_combat_helper } from "./auto_combat_disguises_delimit";
 import { fotd_combat_helper } from "./auto_combat_fall_of_the_dinosaurs";
 import { ocrs_combat_helper } from "./auto_combat_ocrs";
 import {
+  auto_canUse,
   auto_useSkill,
-  canUse,
   combat_status_add,
   defaultRoundLimit,
 } from "./auto_combat_util";
@@ -139,7 +139,7 @@ export function auto_combatHandler(
     !$monsters`The Man, The Big Wisniewski`.includes(enemy)
   ) {
     //war bosses can go to round 50
-    if (canUse($skill`Implode Universe`)) {
+    if (auto_canUse($skill`Implode Universe`)) {
       return auto_useSkill($skill`Implode Universe`, true);
     }
     abort(

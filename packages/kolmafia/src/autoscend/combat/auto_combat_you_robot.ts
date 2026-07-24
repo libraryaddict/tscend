@@ -11,9 +11,9 @@ import { $element, $monster, $monsters, $skill, $slot, $stat } from "libram";
 
 import { in_robot } from "../paths/you_robot";
 import {
+  auto_canUse,
   auto_useSkill,
   canSurvive,
-  canUse,
   turns_to_kill,
 } from "./auto_combat_util";
 
@@ -35,7 +35,7 @@ export function auto_combat_robot_stage5(
   const enemy_physical_res: number = 1 - enemy.physicalResistance * 0.01; //convert % into float
   let dmg: number;
   //scrap using attacks. reserved for beefier monsters with at least 40 HP
-  if (canUse($skill`Snipe`, false) && !enemy_physical_immune) {
+  if (auto_canUse($skill`Snipe`, false) && !enemy_physical_immune) {
     //Spend 1 Scrap to deal 100% of your Mysticality in damage
     const better_than_crotch_burn: boolean =
       monsterHp() > 40 || enemy_hot_immune;
@@ -46,7 +46,7 @@ export function auto_combat_robot_stage5(
   }
   //blow snow is an energy using attack. normally we do not want to use it. But it is important in the blech house
   if (
-    canUse($skill`Blow Snow`, false) &&
+    auto_canUse($skill`Blow Snow`, false) &&
     $monsters`smut orc jacker, smut orc nailer, smut orc pipelayer, smut orc screwer`.includes(
       enemy,
     )
@@ -56,21 +56,24 @@ export function auto_combat_robot_stage5(
     }
   }
   //basic attacks as a robot which are free.
-  if (canUse($skill`Swing Pound-O-Tron`, false) && !enemy_physical_immune) {
+  if (
+    auto_canUse($skill`Swing Pound-O-Tron`, false) &&
+    !enemy_physical_immune
+  ) {
     //20 + 0.1*mus damage
     dmg = (20 + 0.1 * myBuffedstat($stat`Muscle`)) * enemy_physical_res;
     if (canSurvive(turns_to_kill(dmg))) {
       return auto_useSkill($skill`Swing Pound-O-Tron`, false);
     }
   }
-  if (canUse($skill`Crotch Burn`, false) && !enemy_hot_immune) {
+  if (auto_canUse($skill`Crotch Burn`, false) && !enemy_hot_immune) {
     //20 + 0.1*mys fire damage
     dmg = 20 + 0.1 * myBuffedstat($stat`Mysticality`);
     if (canSurvive(turns_to_kill(dmg))) {
       return auto_useSkill($skill`Crotch Burn`, false);
     }
   }
-  if (canUse($skill`Shoot Pea`, false) && !enemy_physical_immune) {
+  if (auto_canUse($skill`Shoot Pea`, false) && !enemy_physical_immune) {
     //20 + 0.1*mox damage
     dmg = (20 + 0.1 * myBuffedstat($stat`Moxie`)) * enemy_physical_res;
     if (canSurvive(turns_to_kill(dmg))) {

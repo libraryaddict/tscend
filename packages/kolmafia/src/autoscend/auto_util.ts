@@ -213,9 +213,9 @@ import { solveDelayZone } from "./auto_routing";
 import { zone_hasLuckyAdventure } from "./auto_zone";
 import { kmailObject } from "./autoscend_record";
 import {
+  auto_canUse,
   banisherCombatString,
   banisherCombatString$1,
-  canUse,
   canUse$3,
   getCopier,
   getSniffer,
@@ -1354,7 +1354,7 @@ export function freeRunCombatString(
         autoEquip($item`spring shoes`);
         return `skill ${$skill`Spring Away`}`;
       } else {
-        if (canUse($skill`Spring Away`)) {
+        if (auto_canUse($skill`Spring Away`)) {
           return `skill ${$skill`Spring Away`}`;
         }
       }
@@ -1365,7 +1365,7 @@ export function freeRunCombatString(
         autoEquip($item`Roman Candelabra`);
         return `skill ${$skill`Blow the Green Candle!`}`;
       } else {
-        if (canUse($skill`Blow the Green Candle!`)) {
+        if (auto_canUse($skill`Blow the Green Candle!`)) {
           return `skill ${$skill`Blow the Green Candle!`}`;
         }
       }
@@ -1458,7 +1458,7 @@ export function freeRunCombatString(
     }
   }
 
-  if (canUse($skill`Peel Out`) && pete_peelOutRemaining() > 0) {
+  if (auto_canUse($skill`Peel Out`) && pete_peelOutRemaining() > 0) {
     return `skill ${$skill`Peel Out`}`;
   }
   // Bowling ball is a banish as well, but is available enough that we want to use it as a free run source too
@@ -1707,7 +1707,7 @@ export function banishSources(): number {
       continue;
     }
   }
-  if (canUse(getZooKickBanish())) {
+  if (auto_canUse(getZooKickBanish())) {
     count_1 += 1;
   }
   //equipment
@@ -1819,7 +1819,7 @@ export function freeKillSources(): number {
       continue;
     }
   }
-  if (canUse(getZooKickInstaKill())) {
+  if (auto_canUse(getZooKickInstaKill())) {
     count_1 += 1;
   }
   //equipment
@@ -1916,7 +1916,7 @@ export function yellowRaySources(): number {
       continue;
     }
   }
-  if (canUse(getZooKickYR())) {
+  if (auto_canUse(getZooKickYR())) {
     count_1 += 1;
   }
   //equipment
@@ -2045,7 +2045,7 @@ export function sniffSources(): number {
       continue;
     }
   }
-  if (canUse(getZooKickSniff())) {
+  if (auto_canUse(getZooKickSniff())) {
     count_1 += 1;
   }
   //equipment

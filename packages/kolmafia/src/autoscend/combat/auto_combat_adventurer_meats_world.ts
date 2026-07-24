@@ -14,7 +14,7 @@ import { $element, $item, $monster, $skill, $stat } from "libram";
 import { auto_have_skill } from "../auto_util";
 import { dartSkill } from "../iotms/mr2024";
 import { in_amw } from "../paths/adventurer_meats_world";
-import { auto_useSkill, canSurvive, canUse } from "./auto_combat_util";
+import { auto_canUse, auto_useSkill, canSurvive } from "./auto_combat_util";
 
 //defined in /autoscend/combat/auto_combat_adventurer_meats_world.ash
 export function amw_wanttoPP(): boolean {
@@ -45,7 +45,7 @@ export function auto_combatMeatGolemStage3(
   // since meat = adv, don't want to delevel if not necessary
   // also skipping if we might die after delevel, because we may be able to stun instead
   if (
-    canUse($skill`Meat Cleaver`, true, true) &&
+    auto_canUse($skill`Meat Cleaver`, true, true) &&
     (((!canSurvive(8.0) || monsterHp() >= 500) && canSurvive(0.7)) ||
       enemy === $monster`The Manwich` ||
       enemy === $monster`The Big Mac Wisniewski` ||
@@ -69,7 +69,7 @@ export function auto_combatMeatGolemStage5(
   // make sure to heal if possible and necessary
   if (
     (!canSurvive(1.4) || myHp() < 0.5 * myMaxhp()) &&
-    canUse($skill`Chew the Fat`, false) &&
+    auto_canUse($skill`Chew the Fat`, false) &&
     myHp() < myMaxhp() * 0.95
   ) {
     return auto_useSkill($skill`Chew the Fat`, false);
@@ -77,14 +77,14 @@ export function auto_combatMeatGolemStage5(
   // make sure high HP combats conclude in a timely fashion
   // only if needed; these skills cost 4-10x more than a regular combat skill
   if (
-    canUse($skill`Steak Through the Heart`, true) &&
+    auto_canUse($skill`Steak Through the Heart`, true) &&
     combatSkillAvailable($skill`Steak Through the Heart`) &&
     round_1 > 12
   ) {
     return auto_useSkill($skill`Steak Through the Heart`, true);
   }
   if (
-    canUse($skill`Wet Rub`, true) &&
+    auto_canUse($skill`Wet Rub`, true) &&
     (monsterHp() >= 400 ||
       enemy === $monster`The Manwich` ||
       enemy === $monster`The Big Mac Wisniewski` ||
@@ -93,7 +93,7 @@ export function auto_combatMeatGolemStage5(
     return auto_useSkill($skill`Wet Rub`, true);
   }
   if (
-    canUse($skill`Meat Cleaver`, true, true) &&
+    auto_canUse($skill`Meat Cleaver`, true, true) &&
     (monsterHp() >= 400 ||
       enemy === $monster`The Manwich` ||
       enemy === $monster`The Big Mac Wisniewski` ||
@@ -114,17 +114,20 @@ export function auto_combatMeatGolemStage5(
   let bacon_ray_value: number = toInt(0.55 * myBuffedstat($stat`Moxie`)); // deals base dmg equal to half moxie, but it's a little cheaper
   // Step 2: apply disqualifications
   // the physical resistance bit is entirely arbitrary, maybe should be tweaked
-  if (!canUse($skill`Beef Shank`, false) || enemy.physicalResistance > 70) {
+  if (
+    !auto_canUse($skill`Beef Shank`, false) ||
+    enemy.physicalResistance > 70
+  ) {
     beef_shank_value = 0;
   }
   if (
-    !canUse($skill`Spicy Meatball`, false) ||
+    !auto_canUse($skill`Spicy Meatball`, false) ||
     enemy.defenseElement === $element`hot`
   ) {
     spicy_meatball_value = 0;
   }
   if (
-    !canUse($skill`Bacon Ray`, false) ||
+    !auto_canUse($skill`Bacon Ray`, false) ||
     enemy.defenseElement === $element`sleaze`
   ) {
     bacon_ray_value = 0;

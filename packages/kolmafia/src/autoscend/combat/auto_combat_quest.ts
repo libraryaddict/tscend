@@ -31,9 +31,9 @@ import { auto_warSide } from "../quests/level_12";
 import { auto_combatHandler } from "./auto_combat";
 import { auto_edCombatHandler } from "./auto_combat_ed";
 import {
+  auto_canUse,
   auto_useSkill,
   canSurvive,
-  canUse,
   canUse$3,
   combat_status_add,
   combat_status_check,
@@ -99,9 +99,9 @@ export function auto_JunkyardCombatHandler(
   }
 
   if (round_1 >= 28) {
-    if (canUse($skill`Storm of the Scarab`, false)) {
+    if (auto_canUse($skill`Storm of the Scarab`, false)) {
       return auto_useSkill($skill`Storm of the Scarab`, false);
-    } else if (canUse($skill`Lunging Thrust-Smack`, false)) {
+    } else if (auto_canUse($skill`Lunging Thrust-Smack`, false)) {
       return auto_useSkill($skill`Lunging Thrust-Smack`, false);
     }
     return "attack with weapon";
@@ -116,11 +116,11 @@ export function auto_JunkyardCombatHandler(
     return useItem($item`molybdenum magnet`);
   }
 
-  if (canUse($skill`Summon Love Scarabs`)) {
+  if (auto_canUse($skill`Summon Love Scarabs`)) {
     return auto_useSkill($skill`Summon Love Scarabs`);
   }
 
-  if (canUse($skill`Good Medicine`) && canSurvive(2.1)) {
+  if (auto_canUse($skill`Good Medicine`) && canSurvive(2.1)) {
     return auto_useSkill($skill`Good Medicine`);
   }
 
@@ -233,11 +233,11 @@ export function auto_JunkyardCombatHandler(
     }
   }
 
-  if (canUse($skill`Toss`, false)) {
+  if (auto_canUse($skill`Toss`, false)) {
     return auto_useSkill($skill`Toss`, false);
   }
 
-  if (canUse($skill`Plague Claws`, false)) {
+  if (auto_canUse($skill`Plague Claws`, false)) {
     return auto_useSkill($skill`Plague Claws`, false);
   }
 

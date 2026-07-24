@@ -91,7 +91,7 @@ import {
   isUnclePAvailable,
   wrap_item,
 } from "./auto_util";
-import { canUse } from "./combat/auto_combat_util";
+import { auto_canUse } from "./combat/auto_combat_util";
 import { auto_floundryUse, isSpeakeasyDrink } from "./iotms/clan";
 import { pullLegionKnife } from "./iotms/mr2011";
 import { auto_mayoItems } from "./iotms/mr2015";
@@ -1083,7 +1083,8 @@ export function LX_craftAcquireItems(): boolean {
     //TODO: add delaying for mortar for other classes in combat and then remove the sauceror requirement here.
     if (
       myMeat() > 7500 ||
-      (myClass() === $class`Sauceror` && canUse($skill`Stuffed Mortar Shell`))
+      (myClass() === $class`Sauceror` &&
+        auto_canUse($skill`Stuffed Mortar Shell`))
     ) {
       acquireHermitItem($item`seal tooth`);
     }

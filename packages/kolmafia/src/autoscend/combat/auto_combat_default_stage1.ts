@@ -64,9 +64,9 @@ import { auto_combat_nanorhinoBuff } from "./auto_combat_mr2012";
 import { auto_combatPeteStage1 } from "./auto_combat_pete";
 import { auto_combatTheSourceStage1 } from "./auto_combat_the_source";
 import {
+  auto_canUse,
   auto_useSkill,
   canSurvive,
-  canUse,
   canUse$3,
   combat_status_add,
   combat_status_check,
@@ -145,7 +145,7 @@ export function auto_combatDefaultStage1(
   }
 
   if (enemy === $monster`Your Shadow`) {
-    if (in_amw() && canUse($skill`Chew the Fat`, false)) {
+    if (in_amw() && auto_canUse($skill`Chew the Fat`, false)) {
       return auto_useSkill($skill`Chew the Fat`, false);
     }
     if (in_plumber()) {
@@ -199,7 +199,7 @@ export function auto_combatDefaultStage1(
   }
 
   if (enemy === $monster`wall of meat`) {
-    if (canUse($skill`Make it Rain`)) {
+    if (auto_canUse($skill`Make it Rain`)) {
       return auto_useSkill($skill`Make it Rain`);
     }
   }
@@ -209,22 +209,22 @@ export function auto_combatDefaultStage1(
       return `item ${$item`beehive`}`;
     }
 
-    if (canUse($skill`Shell Up`) && round_1 >= 3) {
+    if (auto_canUse($skill`Shell Up`) && round_1 >= 3) {
       return auto_useSkill($skill`Shell Up`);
     }
 
-    if (canUse($skill`Sauceshell`) && round_1 >= 4) {
+    if (auto_canUse($skill`Sauceshell`) && round_1 >= 4) {
       return auto_useSkill($skill`Sauceshell`);
     }
 
-    if (canUse($skill`Belch The Rainbow`, false)) {
+    if (auto_canUse($skill`Belch The Rainbow`, false)) {
       return auto_useSkill($skill`Belch The Rainbow`, false);
     }
 
-    if (canUse($skill`Kneebutt`, false)) {
+    if (auto_canUse($skill`Kneebutt`, false)) {
       return auto_useSkill($skill`Kneebutt`, false);
     }
-    if (canUse($skill`Headbutt`, false)) {
+    if (auto_canUse($skill`Headbutt`, false)) {
       return auto_useSkill($skill`Headbutt`, false);
     }
     return "attack with weapon";
@@ -239,17 +239,17 @@ export function auto_combatDefaultStage1(
     }
 
     if (
-      canUse($skill`Surprisingly Sweet Slash`, true) &&
+      auto_canUse($skill`Surprisingly Sweet Slash`, true) &&
       auto_remainingCandyCaneSlashes() > 0
     ) {
       return auto_useSkill($skill`Surprisingly Sweet Slash`, true);
     }
 
-    if (canUse($skill`Garbage Nova`, false)) {
+    if (auto_canUse($skill`Garbage Nova`, false)) {
       return auto_useSkill($skill`Garbage Nova`, false);
     }
 
-    if (canUse($skill`Saucegeyser`, false)) {
+    if (auto_canUse($skill`Saucegeyser`, false)) {
       return auto_useSkill($skill`Saucegeyser`);
     }
   }
@@ -310,7 +310,7 @@ export function auto_combatDefaultStage1(
     auto_canCircadianRhythm() &&
     (auto_circadianRhythmTarget(enemy) ||
       auto_circadianRhythmTarget$1(monsterPhylum(enemy))) &&
-    canUse($skill`Recall Facts: %phylum Circadian Rhythms`) &&
+    auto_canUse($skill`Recall Facts: %phylum Circadian Rhythms`) &&
     !ag_is_bodyguard()
   ) {
     handleTracker$1(
@@ -324,7 +324,7 @@ export function auto_combatDefaultStage1(
   if (
     auto_canHabitat() &&
     auto_habitatTarget(enemy) &&
-    canUse($skill`Recall Facts: Monster Habitats`) &&
+    auto_canUse($skill`Recall Facts: Monster Habitats`) &&
     !ag_is_bodyguard()
   ) {
     handleTracker$1(
@@ -337,7 +337,7 @@ export function auto_combatDefaultStage1(
 
   if (
     auto_tracesTarget(enemy) &&
-    canUse($skill`Create an Afterimage`) &&
+    auto_canUse($skill`Create an Afterimage`) &&
     !ag_is_bodyguard()
   ) {
     handleTracker$1(
@@ -352,7 +352,7 @@ export function auto_combatDefaultStage1(
   if (
     auto_canRWBBlast() &&
     auto_RWBBlastTarget(enemy) &&
-    canUse($skill`%fn, fire a Red, White and Blue Blast`)
+    auto_canUse($skill`%fn, fire a Red, White and Blue Blast`)
   ) {
     handleTracker$1(
       $skill`%fn, fire a Red, White and Blue Blast`.toString(),
@@ -371,7 +371,7 @@ export function auto_combatDefaultStage1(
   if (
     auto_backupTarget() &&
     enemy !== backedUpMonster &&
-    canUse($skill`Back-Up to your Last Enemy`) &&
+    auto_canUse($skill`Back-Up to your Last Enemy`) &&
     !reserveAdvsForFreeFights
   ) {
     handleTracker$1(
@@ -402,7 +402,7 @@ export function auto_combatDefaultStage1(
     $monsters`pygmy bowler, bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, red butler`.includes(
       enemy,
     ) &&
-    canUse($skill`%fn, spit on them!`)
+    auto_canUse($skill`%fn, spit on them!`)
   ) {
     handleTracker$1(
       $skill`%fn, spit on them!`.toString(),
@@ -412,13 +412,13 @@ export function auto_combatDefaultStage1(
     return auto_useSkill($skill`%fn, spit on them!`, true);
   }
   //[Patriotic Eagle] familiar skill that gives a useful buff
-  if (canUse($skill`%fn, let's pledge allegiance to a Zone`)) {
+  if (auto_canUse($skill`%fn, let's pledge allegiance to a Zone`)) {
     auto_getCitizenZone(myLocation(), true);
     return auto_useSkill($skill`%fn, let's pledge allegiance to a Zone`, true);
   }
   //duplicate turns the enemy from a single enemy into a mob containing 2 copies of this enemy. Doubling their stats and doubling their drops
   if (
-    canUse($skill`Duplicate`) &&
+    auto_canUse($skill`Duplicate`) &&
     toInt(getProperty("_sourceTerminalDuplicateUses")) === 0 &&
     !inAftercore() &&
     !in_nuclear()

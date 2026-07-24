@@ -18,13 +18,13 @@ import {
 } from "../auto_util";
 import { in_zombieSlayer } from "../paths/zombie_slayer";
 import { cyrptEvilBonus } from "../quests/level_07";
-import { auto_useSkill, canSurvive, canUse } from "./auto_combat_util";
+import { auto_canUse, auto_useSkill, canSurvive } from "./auto_combat_util";
 
 //Path specific combat handling for Zombie Slayer
 
 function wantBearHug(enemy: Monster): boolean {
   return (
-    canUse($skill`Bear Hug`) &&
+    auto_canUse($skill`Bear Hug`) &&
     toInt(getProperty("_bearHugs")) < 10 &&
     !enemy.boss &&
     !containsText(enemy.attributes, "FREE") &&
@@ -33,7 +33,7 @@ function wantBearHug(enemy: Monster): boolean {
 }
 
 function wantKodiakMoment(enemy: Monster): boolean {
-  return canUse($skill`Kodiak Moment`) && enemy.physicalResistance >= 80;
+  return auto_canUse($skill`Kodiak Moment`) && enemy.physicalResistance >= 80;
 }
 
 //defined in /autoscend/combat/auto_combat_zombie_slayer.ash
@@ -47,16 +47,16 @@ export function auto_combatZombieSlayerStage3(
     return "";
   }
 
-  if (canUse($skill`Infectious Bite`) && canSurvive(4.0)) {
+  if (auto_canUse($skill`Infectious Bite`) && canSurvive(4.0)) {
     return auto_useSkill($skill`Infectious Bite`);
   }
 
-  if (canUse($skill`Meat Shields`) && enemy.boss && canSurvive(4.0)) {
+  if (auto_canUse($skill`Meat Shields`) && enemy.boss && canSurvive(4.0)) {
     return auto_useSkill($skill`Meat Shields`);
   }
   // Just always use Bear-ly Legal for the delevel + meat, unless we want to Bear Hug or Kodiak Moment
   if (
-    canUse($skill`Bear-ly Legal`) &&
+    auto_canUse($skill`Bear-ly Legal`) &&
     !wantBearHug(enemy) &&
     !wantKodiakMoment(enemy)
   ) {
@@ -77,7 +77,7 @@ export function auto_combatZombieSlayerStage4(
   }
   // Basically stolen from Ed's Lash targets
   if (
-    canUse($skill`Smash & Graaagh`) &&
+    auto_canUse($skill`Smash & Graaagh`) &&
     toInt(getProperty("_zombieSmashPocketsUsed")) < 30 &&
     canSurvive(2.0)
   ) {
@@ -300,7 +300,7 @@ export function auto_combatZombieSlayerStage5(
     return auto_useSkill($skill`Kodiak Moment`);
   }
 
-  if (canUse($skill`Bilious Burst`) && enemy.physicalResistance >= 80) {
+  if (auto_canUse($skill`Bilious Burst`) && enemy.physicalResistance >= 80) {
     return auto_useSkill($skill`Bilious Burst`);
   }
 

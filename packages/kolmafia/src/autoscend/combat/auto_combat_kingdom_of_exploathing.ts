@@ -10,7 +10,12 @@ import {
 } from "kolmafia";
 import { $elements, $item, $monster, $skill } from "libram";
 
-import { auto_useSkill, canUse, canUse$3, useItem } from "./auto_combat_util";
+import {
+  auto_canUse,
+  auto_useSkill,
+  canUse$3,
+  useItem,
+} from "./auto_combat_util";
 
 //Path specific combat handling for Kingdom of Exploathing
 
@@ -24,7 +29,7 @@ export function auto_combatExploathingStage1(
 
   if (
     enemy === $monster`the invader` &&
-    canUse($skill`Lunging Thrust-Smack`, false) &&
+    auto_canUse($skill`Lunging Thrust-Smack`, false) &&
     haveEquipped($item`June cleaver`)
   ) {
     return auto_useSkill($skill`Lunging Thrust-Smack`, false);
@@ -32,7 +37,7 @@ export function auto_combatExploathingStage1(
 
   if (
     enemy === $monster`the invader` &&
-    canUse($skill`Weapon of the Pastalord`, false)
+    auto_canUse($skill`Weapon of the Pastalord`, false)
   ) {
     return auto_useSkill($skill`Weapon of the Pastalord`, false);
   }
@@ -49,7 +54,7 @@ export function auto_combatExploathingStage1(
     // Otherwise, saucestorm deals 20 damage/round.
     if (dmg >= 10 && buffedHitStat() >= 120 + monsterLevelAdjustment()) {
       return "attack with weapon";
-    } else if (canUse($skill`Saucestorm`, false)) {
+    } else if (auto_canUse($skill`Saucestorm`, false)) {
       return auto_useSkill($skill`Saucestorm`, false);
     }
   }

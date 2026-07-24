@@ -144,7 +144,7 @@ import {
   woods_questStart,
 } from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
-import { canUse } from "../combat/auto_combat_util";
+import { auto_canUse } from "../combat/auto_combat_util";
 import { fightClubSpa$1 } from "../iotms/mr2018";
 import { auto_beachCombHead } from "../iotms/mr2019";
 import { auto_backupUsesLeft, auto_haveBackupCamera } from "../iotms/mr2021";
@@ -1596,7 +1596,7 @@ function L13_towerNSTowerBones(): boolean {
     has_boning_knife ||
     in_pokefam() ||
     (in_wereprof() &&
-      canUse($skill`Slaughter`) &&
+      auto_canUse($skill`Slaughter`) &&
       haveEffect($effect`Everything Looks Red`) === 0)
   ) {
     //I have everything I need. just go fight

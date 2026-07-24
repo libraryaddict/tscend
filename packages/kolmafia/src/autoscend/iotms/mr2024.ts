@@ -83,7 +83,7 @@ import {
   stat_to_substat,
   substat_to_level,
 } from "../auto_util";
-import { canUse } from "../combat/auto_combat_util";
+import { auto_canUse } from "../combat/auto_combat_util";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { in_bhy } from "../paths/bees_hate_you";
 import { in_glover } from "../paths/g_lover";
@@ -710,7 +710,7 @@ export function auto_buyFromSeptEmberStore(): void {
         equippedItem($slot`off-hand`) === $item`McHugeLarge left pole`;
       if (using_mchugelarge_oh || cold_res_from_oh > 2.9) {
         const lefty: Skill = Skill.get("Aug. 13th: Left/Off Hander's Day!");
-        if (canUse(lefty) && !toBoolean(getProperty("_aug13Cast"))) {
+        if (auto_canUse(lefty) && !toBoolean(getProperty("_aug13Cast"))) {
           useSkill(lefty);
         }
       }

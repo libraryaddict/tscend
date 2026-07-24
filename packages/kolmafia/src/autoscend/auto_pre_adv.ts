@@ -180,7 +180,7 @@ import {
   zone_needItem,
 } from "./auto_zone";
 import { generic_t } from "./autoscend_record";
-import { canUse } from "./combat/auto_combat_util";
+import { auto_canUse } from "./combat/auto_combat_util";
 import { get_floundry_locations } from "./iotms/clan";
 import { horsePreAdventure } from "./iotms/mr2017";
 import {
@@ -223,13 +223,13 @@ import {
 import {
   auto_bankChestMimicExpForBandit,
   auto_getItemToEquipBCZ,
-  auto_haveBCZ,
   auto_haveCupidBow,
   auto_haveMcHugeLargeSkis,
   auto_haveMonodent,
   auto_havePeridot,
   auto_peridotSetZone,
   auto_wantSoCP,
+  auto_wantToBCZ,
   auto_wantToShrunkenHead$1,
   haveUsedPeridot,
   peridotManuallyDesiredMonsters,
@@ -394,7 +394,7 @@ function auto_ghost_prep(place: Location): void {
         low_mp_handler();
       }
     }
-    if (canUse(sk)) {
+    if (auto_canUse(sk)) {
       //we can kill them with a spell
       return;
     }
@@ -929,8 +929,7 @@ function auto_pre_adventure(): boolean {
 
   const wantBCZRefractedGaze: boolean =
     place === $location`The Hole in the Sky` &&
-    auto_haveBCZ() &&
-    canUse($skill`BCZ: Refracted Gaze`, true, false);
+    auto_wantToBCZ($skill`BCZ: Refracted Gaze`);
 
   if (
     auto_havePeridot() &&

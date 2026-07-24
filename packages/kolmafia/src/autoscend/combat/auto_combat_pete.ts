@@ -2,7 +2,7 @@ import { equippedItem, Monster, myAudience, myClass } from "kolmafia";
 import { $class, $items, $skill, $slot } from "libram";
 
 import { disregardInstantKarma } from "../auto_powerlevel";
-import { auto_useSkill, canSurvive, canUse } from "./auto_combat_util";
+import { auto_canUse, auto_useSkill, canSurvive } from "./auto_combat_util";
 
 //Path specific combat handling for Avatar of Sneaky Pete
 
@@ -25,7 +25,7 @@ export function auto_combatPeteStage1(
       maxAudience = 50;
     }
     if (
-      canUse($skill`Mug for the Audience`) &&
+      auto_canUse($skill`Mug for the Audience`) &&
       (myAudience() < maxAudience || disregardInstantKarma())
     ) {
       return auto_useSkill($skill`Mug for the Audience`);

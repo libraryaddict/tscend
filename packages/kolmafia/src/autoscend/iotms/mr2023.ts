@@ -128,7 +128,7 @@ import {
   meatReserve,
   wrap_item,
 } from "../auto_util";
-import { canUse } from "../combat/auto_combat_util";
+import { auto_canUse } from "../combat/auto_combat_util";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_lol } from "../paths/legacy_of_loathing";
 import { in_pokefam } from "../paths/pocket_familiars";
@@ -584,7 +584,7 @@ export function shouldCinchoConfetti(): boolean {
   // costs 5 cinch and flips out the monster
   // cast this skill when we can't cast any more fiesta exists
   // can't cast it if we don't have it
-  if (!canUse($skill`Cincho: Confetti Extravaganza`)) {
+  if (!auto_canUse($skill`Cincho: Confetti Extravaganza`)) {
     return false;
   }
   // don't over level
@@ -842,13 +842,13 @@ export function auto_scepterSkills(): void {
   }
 
   if (
-    canUse($skill`Aug. 24th: Waffle Day!`) &&
+    auto_canUse($skill`Aug. 24th: Waffle Day!`) &&
     !toBoolean(getProperty("_aug24Cast"))
   ) {
     useSkill($skill`Aug. 24th: Waffle Day!`); //get some waffles to hopefully change some bad monsters to better ones
   }
   if (
-    canUse($skill`Aug. 28th: Race Your Mouse Day!`) &&
+    auto_canUse($skill`Aug. 28th: Race Your Mouse Day!`) &&
     !toBoolean(getProperty("_aug28Cast")) &&
     pathHasFamiliar()
   ) {
@@ -877,7 +877,7 @@ export function auto_scepterSkills(): void {
   if (!auto_turbo()) {
     if (
       manaCostMaximize < 3 &&
-      canUse($skill`Aug. 30th: Beach Day!`) &&
+      auto_canUse($skill`Aug. 30th: Beach Day!`) &&
       !toBoolean(getProperty("_aug30Cast")) &&
       toInt(getProperty("_augSkillsCast")) < 5
     ) {
@@ -900,7 +900,7 @@ export function auto_scepterRollover(): void {
       numericModifier(equippedItem($slot`acc3`), "Adventures") >= 7);
   if (
     !noWatch &&
-    canUse($skill`Aug. 30th: Beach Day!`) &&
+    auto_canUse($skill`Aug. 30th: Beach Day!`) &&
     !toBoolean(getProperty("_aug30Cast")) &&
     toInt(getProperty("_augSkillsCast")) < 5
   ) {
@@ -910,21 +910,21 @@ export function auto_scepterRollover(): void {
   //Get mainstats
   if (toInt(getProperty("_augSkillsCast")) < 5 && myLevel() < 13) {
     if (
-      canUse($skill`Aug. 12th: Elephant Day!`) &&
+      auto_canUse($skill`Aug. 12th: Elephant Day!`) &&
       !toBoolean(getProperty("_aug12Cast")) &&
       myPrimestat() === $stat`Muscle`
     ) {
       useSkill($skill`Aug. 12th: Elephant Day!`); //get muscle stubstats
     }
     if (
-      canUse($skill`Aug. 11th: Presidential Joke Day!`) &&
+      auto_canUse($skill`Aug. 11th: Presidential Joke Day!`) &&
       !toBoolean(getProperty("_aug11Cast")) &&
       myPrimestat() === $stat`Mysticality`
     ) {
       useSkill($skill`Aug. 11th: Presidential Joke Day!`); //get mysticality stubstats
     }
     if (
-      canUse($skill`Aug. 23rd: Ride the Wind Day!`) &&
+      auto_canUse($skill`Aug. 23rd: Ride the Wind Day!`) &&
       !toBoolean(getProperty("_aug23Cast")) &&
       myPrimestat() === $stat`Moxie`
     ) {
@@ -932,7 +932,7 @@ export function auto_scepterRollover(): void {
     }
   }
   if (
-    canUse(Skill.get("Aug. 13th: Left/Off Hander's Day!")) &&
+    auto_canUse(Skill.get("Aug. 13th: Left/Off Hander's Day!")) &&
     !toBoolean(getProperty("_aug13Cast")) &&
     toInt(getProperty("_augSkillsCast")) < 5 &&
     numericModifier(equippedItem($slot`off-hand`), "Adventures") > 0 &&
@@ -941,7 +941,7 @@ export function auto_scepterRollover(): void {
     useSkill(Skill.get("Aug. 13th: Left/Off Hander's Day!")); //bump up the off-hand
   }
   if (
-    canUse($skill`Aug. 27th: Just Because Day!`) &&
+    auto_canUse($skill`Aug. 27th: Just Because Day!`) &&
     !toBoolean(getProperty("_aug27Cast")) &&
     toInt(getProperty("_augSkillsCast")) < 5
   ) {

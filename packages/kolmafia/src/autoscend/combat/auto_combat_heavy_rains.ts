@@ -12,7 +12,7 @@ import {
 import { $item, $monster, $monsters, $skill } from "libram";
 
 import { auto_have_skill } from "../auto_util";
-import { auto_useSkill, canUse } from "./auto_combat_util";
+import { auto_canUse, auto_useSkill } from "./auto_combat_util";
 
 //Path specific combat handling for Heavy Rains
 
@@ -25,7 +25,7 @@ export function auto_combatHeavyRainsStage1(
   // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
   // Unique Heavy Rains Enemy that Reflects Spells.
   if (enemy.toString() === "Gurgle") {
-    if (canUse($skill`Summon Love Stinkbug`)) {
+    if (auto_canUse($skill`Summon Love Stinkbug`)) {
       return auto_useSkill($skill`Summon Love Stinkbug`);
     }
     return "attack with weapon";
@@ -33,13 +33,13 @@ export function auto_combatHeavyRainsStage1(
   // Unique Heavy Rains Enemy that reduces Spells damage to 1 and caps non spell damage at 39 per source and type
   // Has low enough HP it can be defeated in 10 combat turns using simple melee attacks that deal only physical damage
   if (enemy.toString() === "Dr. Aquard") {
-    if (canUse($skill`Curse of Weaksauce`)) {
+    if (auto_canUse($skill`Curse of Weaksauce`)) {
       return auto_useSkill($skill`Curse of Weaksauce`);
     }
-    if (canUse($skill`Micrometeorite`)) {
+    if (auto_canUse($skill`Micrometeorite`)) {
       return auto_useSkill($skill`Micrometeorite`);
     }
-    if (canUse($skill`Summon Love Stinkbug`)) {
+    if (auto_canUse($skill`Summon Love Stinkbug`)) {
       return auto_useSkill($skill`Summon Love Stinkbug`);
     }
     return "attack with weapon";
@@ -99,7 +99,7 @@ export function auto_combatHeavyRainsStage3(
       }
     } else {
       //stunable
-      if (canUse($skill`Micrometeorite`)) {
+      if (auto_canUse($skill`Micrometeorite`)) {
         //stun and delevel 10% (or theoretically up to 25% if it was not used constantly)
         setProperty(
           "auto_combatHandlerThunderBird",
@@ -108,18 +108,18 @@ export function auto_combatHeavyRainsStage3(
         return auto_useSkill($skill`Micrometeorite`);
       }
       if (
-        canUse($skill`Curse of Weaksauce`) &&
+        auto_canUse($skill`Curse of Weaksauce`) &&
         myMp() >= 50 &&
         auto_have_skill($skill`Itchy Curse Finger`)
       ) {
         //every round delevel 3% of original attack value
         return auto_useSkill($skill`Curse of Weaksauce`);
       }
-      if (canUse($skill`Thunderstrike`) && myThunder() >= 5) {
+      if (auto_canUse($skill`Thunderstrike`) && myThunder() >= 5) {
         //Once per combat multiround stun ability that does not delevel
         return auto_useSkill($skill`Thunderstrike`);
       }
-      if (canUse($skill`Curse of Weaksauce`) && myMp() >= 50) {
+      if (auto_canUse($skill`Curse of Weaksauce`) && myMp() >= 50) {
         //rely on thunderstrike stun if you do not have [Itchy Curse Finger]
         return auto_useSkill($skill`Curse of Weaksauce`);
       }
@@ -133,7 +133,7 @@ export function auto_combatHeavyRainsStage3(
     }
     if (
       toInt(getProperty("auto_combatHandlerThunderBird")) > 0 &&
-      canUse($skill`Thunder Bird`, false)
+      auto_canUse($skill`Thunder Bird`, false)
     ) {
       setProperty(
         "auto_combatHandlerThunderBird",
@@ -155,32 +155,32 @@ export function auto_combatHeavyRainsStage5(
   // Heavy Rains Final Boss. strips you of positive effects every time it hits you. Capped at 40 damage per source per element.
   if (enemy.toString() === "The Rain King") {
     if (getProperty("auto_rain_king_combat") === "attack") {
-      if (canUse($skill`Lunging Thrust-Smack`, false)) {
+      if (auto_canUse($skill`Lunging Thrust-Smack`, false)) {
         return auto_useSkill($skill`Lunging Thrust-Smack`, false);
       }
-      if (canUse($skill`Thrust-Smack`, false)) {
+      if (auto_canUse($skill`Thrust-Smack`, false)) {
         return auto_useSkill($skill`Thrust-Smack`, false);
       }
-      if (canUse($skill`Lunge Smack`, false)) {
+      if (auto_canUse($skill`Lunge Smack`, false)) {
         return auto_useSkill($skill`Lunge Smack`, false);
       }
       return "attack with weapon";
     }
     if (
       getProperty("auto_rain_king_combat") === "saucestorm" &&
-      canUse($skill`Saucestorm`, false)
+      auto_canUse($skill`Saucestorm`, false)
     ) {
       return auto_useSkill($skill`Saucestorm`, false);
     }
     if (
       getProperty("auto_rain_king_combat") === "weapon_of_the_pastalord" &&
-      canUse($skill`Weapon of the Pastalord`, false)
+      auto_canUse($skill`Weapon of the Pastalord`, false)
     ) {
       return auto_useSkill($skill`Weapon of the Pastalord`, false);
     }
     if (
       getProperty("auto_rain_king_combat") === "turtleini" &&
-      canUse($skill`Turtleini`, false)
+      auto_canUse($skill`Turtleini`, false)
     ) {
       return auto_useSkill($skill`Turtleini`, false);
     }

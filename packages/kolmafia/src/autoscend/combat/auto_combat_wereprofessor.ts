@@ -20,8 +20,8 @@ import {
   wereprof_oculus,
 } from "../paths/wereprofessor";
 import {
+  auto_canUse,
   auto_useSkill,
-  canUse,
   canUse$3,
   haveUsed,
   markAsUsed,
@@ -44,7 +44,7 @@ export function auto_combatWereProfessorStage1(
 
   if (enemy === $monster`wall of bones`) {
     if (
-      canUse($skill`Slaughter`) &&
+      auto_canUse($skill`Slaughter`) &&
       haveEffect($effect`Everything Looks Red`) === 0
     ) {
       return auto_useSkill($skill`Slaughter`);
@@ -92,7 +92,7 @@ export function auto_combatWereProfessorStage5(
   const enemy_physical_immune: boolean = enemy.physicalResistance > 99;
 
   if (is_werewolf()) {
-    if (enemy_physical_immune && canUse($skill`Bite`, true)) {
+    if (enemy_physical_immune && auto_canUse($skill`Bite`, true)) {
       return auto_useSkill($skill`Bite`, true); // elemental damage skill
     } else if (
       haveEquipped($item`Everfull Dart Holster`) &&
@@ -101,7 +101,7 @@ export function auto_combatWereProfessorStage5(
       //want dart skill as high as possible for Professor
       return auto_useSkill(dartSkill());
     }
-    if (!enemy_physical_immune && canUse($skill`Rend`, false)) {
+    if (!enemy_physical_immune && auto_canUse($skill`Rend`, false)) {
       return auto_useSkill($skill`Rend`, true);
     }
     return "attack with weapon"; //worst case scenario just use this
