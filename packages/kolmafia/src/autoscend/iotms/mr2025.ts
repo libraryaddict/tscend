@@ -9,6 +9,7 @@ import {
   canEquip,
   closetAmount,
   containsText,
+  currentRound,
   Effect,
   equip,
   equippedAmount,
@@ -21,6 +22,7 @@ import {
   getProperty,
   haveEffect,
   haveEquipped,
+  haveSkill,
   inebrietyLimit,
   isUnrestricted,
   Item,
@@ -1621,6 +1623,9 @@ export function auto_wantToBCZ(sk: Skill): boolean {
   if (!auto_haveBCZ() || !auto_is_valid$2(sk) || in_zootomist()) {
     return false;
   }
+  // If we're in combat, and we can't use it
+  if (currentRound() !== 0 && !auto_canUse(sk)) return;
+
   const bloodBathCasts: number = toInt(getProperty("_bczBloodBathCasts"));
   const bloodGeyserCasts: number = toInt(getProperty("_bczBloodGeyserCasts"));
   const bloodThinnerCasts: number = toInt(getProperty("_bczBloodThinnerCasts"));
