@@ -3,7 +3,8 @@
     [
       "@babel/preset-env",
       {
-        "targets": { "rhino": "1.9.1" }
+        "targets": { "rhino": "1.9.1" },
+        "modules": false
       }
     ],
     [
