@@ -70,6 +70,7 @@ import {
   $skill,
   $skills,
   $slot,
+  get,
 } from "libram";
 
 import { auto_canDrink, inebriety_left, spleen_left } from "../auto_consume";
@@ -1025,6 +1026,18 @@ export function banisherCombatString$1(
     !used.has("pantsgiving")
   ) {
     return `skill ${$skill`Talk About Politics`}`;
+  }
+  if (
+    get("heartstoneBanishUnlocked") &&
+    (inCombat
+      ? auto_have_skill($skill`Heartstone: %banish`)
+      : possessEquipment($item`Heartstone`)) &&
+    auto_is_valid$2($skill`Heartstone: %banish`) &&
+    get("_heartstoneBanishUsed") < 5 &&
+    haveEquipped($item`Heartstone`) &&
+    !used.has("heartstone")
+  ) {
+    return `skill ${$skill`Heartstone: %banish`}`;
   }
   if (
     inCombat

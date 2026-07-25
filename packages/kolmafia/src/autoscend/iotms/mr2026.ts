@@ -1,5 +1,6 @@
 import {
   abort,
+  appearanceRates,
   availableAmount,
   availableChoiceOptions,
   canDrink,
@@ -8,8 +9,8 @@ import {
   cliExecute,
   cupOf13sTier,
   Effect,
+  Element,
   entityDecode,
-  equippedItem,
   extractItems,
   fullnessLimit,
   getProperty,
@@ -38,10 +39,14 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $element,
+  $elements,
   $item,
   $items,
   $location,
-  $slots,
+  $monster,
+  $monsters,
+  EternityCodpiece,
   get,
   have,
   set,
@@ -67,6 +72,8 @@ import {
   auto_log_error,
   auto_log_warning,
   auto_wantToFreeKillWithNoDrops,
+  auto_wantToSniff,
+  auto_wantToYellowRay,
   autoCraft,
   handleTracker$1,
   handleTracker$2,
@@ -74,13 +81,19 @@ import {
   isFreeMonster,
   meatReserve,
 } from "../auto_util";
-import { zone_delay } from "../auto_zone";
+import { monster_to_location, zone_delay } from "../auto_zone";
 import { ConsumeAction } from "../autoscend_record";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_plumber } from "../paths/path_of_the_plumber";
 import { in_small } from "../paths/small";
 import { in_tcrs } from "../paths/two_crazy_random_summer";
 import { is_werewolf } from "../paths/wereprofessor";
+import {
+  auto_haveBatWings,
+  auto_haveChestMimic,
+  auto_haveMayamCalendar,
+} from "./mr2024";
+import { auto_haveMonodent } from "./mr2025";
 
 // This is meant for items that have a date of 2026
 
@@ -95,12 +108,7 @@ export function auto_haveEternityCodpiece(): boolean {
 }
 
 export function auto_isInEternityCodpiece(it: Item): boolean {
-  for (const s of $slots`codpiece1, codpiece2, codpiece3, codpiece4, codpiece5`) {
-    if (equippedItem(s) === it) {
-      return true;
-    }
-  }
-  return false;
+  return EternityCodpiece.currentGems().includes(it);
 }
 
 //Defined in autoscend/iotms/mr2026.ash
@@ -141,7 +149,7 @@ export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean {
   return auto_wantToFreeKillWithNoDrops(loc, enemy);
 }
 
-function auto_haveHeartstone(): boolean {
+export function auto_haveHeartstone(): boolean {
   if (!auto_is_valid($item`Heartstone`)) {
     return false;
   }
@@ -152,6 +160,19 @@ function auto_haveHeartstone(): boolean {
     return true;
   }
   return false;
+}
+
+export function auto_getItemToEquipHeartstone(): Item {
+  if (
+    auto_haveEternityCodpiece() &&
+    auto_isInEternityCodpiece($item`Heartstone`)
+  ) {
+    return $item`The Eternity Codpiece`;
+  }
+  if (auto_haveHeartstone()) {
+    return $item`Heartstone`;
+  }
+  return Item.none;
 }
 
 export function auto_heartstoneLuckRemaining(): number {
@@ -999,4 +1020,329 @@ export function auto_cupOfThirteenBestConsumeAction():
   }
 
   return action;
+}
+
+export function auto_have_baseball_diamond(): boolean {
+  if (!auto_is_valid($item`Baseball Diamond`)) {
+    return false;
+  }
+  if (availableAmount($item`Baseball Diamond`) > 0) {
+    return true;
+  }
+  if (auto_isInEternityCodpiece($item`Baseball Diamond`)) {
+    return true;
+  }
+  return false;
+}
+
+export function auto_getItemToEquipBaseballDiamond(): Item {
+  if (
+    auto_haveEternityCodpiece() &&
+    auto_isInEternityCodpiece($item`Baseball Diamond`)
+  ) {
+    return $item`The Eternity Codpiece`;
+  }
+  if (auto_have_baseball_diamond()) {
+    return $item`Baseball Diamond`;
+  }
+  return Item.none;
+}
+
+export function auto_baseball_innings_left(): number {
+  return 3 - get("_baseballInnings");
+}
+
+export function auto_baseball_team(): Monster[] {
+  // Fills to 9; once full, recruiting a new monster bumps slot 0 out.
+  return get("baseballTeam")
+    .split(",")
+    .filter(Boolean)
+    .map((s) => Monster.get(s));
+}
+
+export function auto_baseball_game(plan: Element[]): boolean {
+  if (plan.length !== 9) return false;
+
+  if (auto_baseball_innings_left() === 0) return false;
+
+  if (auto_baseball_team().length !== 9) return false;
+
+  visitUrl(`inventory.php?pwd=${myHash()}&action=pball?ajax=1`, false);
+
+  const order: Element[] = $elements`hot, cold, spooky, stench, sleaze`;
+
+  for (let i = 0; i < 9; i++) {
+    visitUrl(
+      `choice.php?pwd&whichchoice=1598&option=${order.indexOf(plan[i]) + 1}`,
+    );
+  }
+
+  if (auto_baseball_team().length > 0)
+    abort(`Expected to have played baseball, did not.`);
+  return true;
+}
+
+interface BaseballAssignment {
+  element: Element;
+  finisherSlot: number;
+  normalSlots: number[];
+}
+
+function auto_baseballScorchExtras(mon: Monster): boolean {
+  // Extra-copy targets that aren't Yellow Ray candidates
+  if (mon === $monster`shadow slab`) {
+    return auto_haveChestMimic();
+  }
+  if (mon === $monster`dairy goat`) {
+    return !auto_haveMayamCalendar();
+  }
+  if (mon === $monster`beanbat`) {
+    return !auto_haveBatWings();
+  }
+  return $monsters`pygmy bowler, red butler, baa-relief sheep, blackberry bush`.includes(
+    mon,
+  );
+}
+
+export function auto_baseballScorchWorthy(
+  mon: Monster,
+  loc: Location,
+): boolean {
+  // Scorcher guarantees every drop from one fight, so YR's target list applies here too.
+  return auto_wantToYellowRay(mon, loc) || auto_baseballScorchExtras(mon);
+}
+
+function auto_baseballWorthyTarget(mon: Monster, loc: Location): boolean {
+  return auto_baseballScorchWorthy(mon, loc) || auto_wantToSniff(mon, loc);
+}
+
+function auto_baseballScorchWorthyAnywhere(mon: Monster): boolean {
+  if (auto_baseballScorchExtras(mon)) {
+    return true;
+  }
+  for (const loc of monster_to_location(mon).keys()) {
+    if (auto_wantToYellowRay(mon, loc)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function auto_baseballWantsSniffAnywhere(mon: Monster): boolean {
+  for (const loc of monster_to_location(mon).keys()) {
+    if (auto_wantToSniff(mon, loc)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function auto_baseballBuildAssignments(team: Monster[]): BaseballAssignment[] {
+  const claimed: boolean[] = new Array(team.length).fill(false);
+  const assignments: BaseballAssignment[] = [];
+  let hotAssigned = false;
+  let stenchAssigned = false;
+  let spookyAssigned = false;
+
+  for (let i = 0; i < team.length; i++) {
+    const unclaimedBefore: number[] = [];
+    for (let j = 0; j < i; j++) {
+      if (!claimed[j]) {
+        unclaimedBefore.push(j);
+      }
+    }
+    if (unclaimedBefore.length < 2) {
+      continue;
+    }
+
+    const mon = team[i];
+    let element: Element | undefined;
+    if (!hotAssigned && auto_baseballScorchWorthyAnywhere(mon)) {
+      element = $element`hot`;
+    } else if (!stenchAssigned && auto_baseballWantsSniffAnywhere(mon)) {
+      element = $element`stench`;
+    } else if (!spookyAssigned) {
+      element = $element`spooky`;
+    }
+    if (!element) {
+      continue;
+    }
+
+    const normalSlots = unclaimedBefore.slice(0, 2);
+    claimed[i] = true;
+    claimed[normalSlots[0]] = true;
+    claimed[normalSlots[1]] = true;
+
+    assignments.push({ element, finisherSlot: i, normalSlots });
+
+    if (element === $element`hot`) {
+      hotAssigned = true;
+    } else if (element === $element`stench`) {
+      stenchAssigned = true;
+    } else {
+      spookyAssigned = true;
+    }
+  }
+
+  return assignments;
+}
+
+function auto_baseballIsSlotZeroLoadBearing(
+  assignments: BaseballAssignment[],
+): boolean {
+  return assignments.some(
+    (a) => a.finisherSlot === 0 || a.normalSlots.includes(0),
+  );
+}
+
+export function auto_baseballSlotZeroLoadBearing(): boolean {
+  const team = auto_baseball_team();
+  if (team.length !== 9) {
+    return false;
+  }
+  return auto_baseballIsSlotZeroLoadBearing(
+    auto_baseballBuildAssignments(team),
+  );
+}
+
+export function auto_baseballPitchPlan(): Element[] | undefined {
+  const team = auto_baseball_team();
+  if (team.length !== 9) {
+    return undefined;
+  }
+
+  const assignments = auto_baseballBuildAssignments(team);
+  const plan: Element[] = new Array(9).fill(Element.none);
+  const claimedSlots = new Set<number>();
+
+  for (const a of assignments) {
+    plan[a.finisherSlot] = a.element;
+    claimedSlots.add(a.finisherSlot);
+    for (const s of a.normalSlots) {
+      plan[s] = a.element;
+      claimedSlots.add(s);
+    }
+  }
+
+  // Leftover slots just repeat an already-active element
+  const fillerElement = assignments[0]?.element ?? $element`stench`;
+  for (let i = 0; i < 9; i++) {
+    if (!claimedSlots.has(i)) {
+      plan[i] = fillerElement;
+    }
+  }
+
+  return plan;
+}
+
+const BASEBALL_TARGET_BONUS = 250;
+const BASEBALL_FILLER_BONUS = 50;
+const BASEBALL_FILLER_BONUS_REPEAT_ZONE = 8;
+
+// Once a zone has already secured a finisher target, don't keep burning filler slots on it.
+function auto_baseballZoneAlreadyTapped(loc: Location): boolean {
+  const team = auto_baseball_team();
+  for (const a of auto_baseballBuildAssignments(team)) {
+    if (monster_to_location(team[a.finisherSlot]).has(loc)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Score bonus rather than forcing the item on, so it only wins its equip slot when worth it.
+export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
+  if (!auto_have_baseball_diamond()) {
+    return 0;
+  }
+  if (auto_baseball_team().length === 9 && auto_baseballSlotZeroLoadBearing()) {
+    return 0;
+  }
+
+  const fillerBonus = auto_baseballZoneAlreadyTapped(loc)
+    ? BASEBALL_FILLER_BONUS_REPEAT_ZONE
+    : BASEBALL_FILLER_BONUS;
+
+  let bonus = 0;
+  for (const [mon, rate] of Object.entries(appearanceRates(loc)).map(
+    ([_k, _v]) => [Monster.get(_k), _v] as [Monster, number],
+  )) {
+    if (!(rate > 0 && mon.id > 0 && mon.copyable && !mon.boss)) {
+      continue;
+    }
+    if (auto_baseballWorthyTarget(mon, loc)) {
+      return BASEBALL_TARGET_BONUS;
+    }
+    bonus = Math.max(bonus, fillerBonus);
+  }
+  return bonus;
+}
+
+export function auto_baseballWantsSomeFish(
+  loc: Location,
+  enemy: Monster,
+): boolean {
+  if (!auto_have_baseball_diamond() || !auto_haveMonodent()) {
+    return false;
+  }
+  if (enemy === $monster`some fish`) {
+    return false;
+  }
+  if (auto_baseballWorthyTarget(enemy, loc)) {
+    // Already a good target, no need to replace it.
+    return false;
+  }
+
+  const team = auto_baseball_team();
+  if (team.length < 9) {
+    return true;
+  }
+  return !auto_baseballSlotZeroLoadBearing();
+}
+
+export function auto_tryPlayBaseball(): boolean {
+  const team = auto_baseball_team();
+  if (team.length !== 9) {
+    return false;
+  }
+
+  const assignments = auto_baseballBuildAssignments(team);
+  const slotZeroLoadBearing = auto_baseballIsSlotZeroLoadBearing(assignments);
+  if (!slotZeroLoadBearing && assignments.length < 3) {
+    return false; // safe to hold out for a better lineup
+  }
+
+  const plan = auto_baseballPitchPlan();
+  if (!plan || !auto_baseball_game(plan)) {
+    return false;
+  }
+
+  for (const a of assignments) {
+    handleTracker$1(
+      team[a.finisherSlot].toString(),
+      `baseball ${a.element}`,
+      "auto_baseball",
+    );
+  }
+
+  return true;
+}
+
+export function auto_forcePlayRemainingBaseballGames(): boolean {
+  if (auto_baseball_team().length < 9) return false;
+
+  const plan = auto_baseballPitchPlan();
+
+  if (!plan || !auto_baseball_game(plan)) {
+    return false;
+  }
+  return true;
+}
+
+export function auto_baseball_freefight_monster(): Monster {
+  return get("_curveballMonster", $monster.none);
+}
+
+export function auto_baseball_freefights_left(): number {
+  return get("_curveballFightsLeft", 0);
 }

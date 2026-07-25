@@ -95,6 +95,10 @@ import {
   auto_haveBCZ,
   auto_unequipAprilShieldBuff,
 } from "./iotms/mr2025";
+import {
+  auto_getItemToEquipHeartstone,
+  auto_haveHeartstone,
+} from "./iotms/mr2026";
 import { ARBSupplyDrop, auto_canARBSupplyDrop } from "./iotms/ttt";
 import { in_bhy } from "./paths/bees_hate_you";
 import { inAftercore } from "./paths/casual";
@@ -421,7 +425,10 @@ export function buffMaintain$2(
       useItem_1 = $item`Snarf berry`;
       break;
     case $effect`Best Pals`:
-      useSkill_1 = $skill`Heartstone: %pals`;
+      if (auto_haveHeartstone()) {
+        mustEquip = auto_getItemToEquipHeartstone();
+        useSkill_1 = $skill`Heartstone: %pals`;
+      }
       break;
     case $effect`Bet Your Autumn Dollar`:
       useItem_1 = $item`autumn dollar`;
@@ -2084,7 +2091,10 @@ export function buffMaintain$2(
       useItem_1 = $item`ultra-soft ferns`;
       break;
     case $effect`Ultraheart`:
-      useSkill_1 = $skill`Heartstone: %buff`;
+      if (auto_haveHeartstone()) {
+        mustEquip = auto_getItemToEquipHeartstone();
+        useSkill_1 = $skill`Heartstone: %buff`;
+      }
       break;
     case $effect`Unmuffled`:
       if (getProperty("peteMotorbikeMuffler") === "Extra-Loud Muffler") {

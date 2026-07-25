@@ -16,7 +16,7 @@
     "bundle": "node esbuild.mjs",
     "build": "yarn typecheck && yarn bundle",
     "lint": "eslint packages && prettier --check .",
-    "format": "eslint packages --fix && prettier --write ."
+    "format": "eslint packages --fix && prettier --write . --log-level warn"
   },
   "devDependencies": {
     "@babel/cli": "^7.29.7",

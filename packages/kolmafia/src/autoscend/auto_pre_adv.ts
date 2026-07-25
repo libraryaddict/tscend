@@ -234,6 +234,10 @@ import {
   peridotManuallyDesiredMonsters,
 } from "./iotms/mr2025";
 import {
+  auto_baseballDiamondMaximizerBonus,
+  auto_getItemToEquipBaseballDiamond,
+} from "./iotms/mr2026";
+import {
   ed_handleAdventureServant,
   edAcquireHP,
   edAcquireHP$1,
@@ -821,6 +825,14 @@ function auto_pre_adventure(): boolean {
         break;
       }
     }
+  }
+
+  const baseballDiamondBonus = auto_baseballDiamondMaximizerBonus(place);
+  if (baseballDiamondBonus > 0) {
+    addBonusToMaximize(
+      auto_getItemToEquipBaseballDiamond(),
+      baseballDiamondBonus,
+    );
   }
 
   if (in_koe() && possessEquipment($item`low-pressure oxygen tank`)) {

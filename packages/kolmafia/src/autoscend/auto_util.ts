@@ -302,7 +302,10 @@ import {
   auto_wantToBCZ,
 } from "./iotms/mr2025";
 import {
+  auto_baseball_freefight_monster,
+  auto_baseball_freefights_left,
   auto_forceCombatLegendaryNoodles,
+  auto_getItemToEquipHeartstone,
   auto_havePastaWand,
   auto_heartstoneLuckRemaining,
   auto_legendaryNoodlesAvailable,
@@ -1174,6 +1177,9 @@ function adjustForBanish(combat_string: string): boolean {
   if (combat_string === `skill ${$skill`Talk About Politics`}`) {
     return autoEquip($item`Pantsgiving`);
   }
+  if (combat_string === `skill ${$skill`Heartstone: %banish`}`) {
+    return autoEquip(auto_getItemToEquipHeartstone());
+  }
   if (combat_string === `skill ${$skill`Reflex Hammer`}`) {
     return autoEquip($item`Lil' Doctor™ bag`);
   }
@@ -1656,6 +1662,7 @@ export function banishSources(): number {
   // Banishing Shout: Skill
   // Walk Away From Explosion: Skill
   // Talk About Politics: Equipment
+  // Heartstone: %banish: Equipment
   // Reflex Hammer: Equipment
   // Show Your Boring Familiar Pictures: Equipment
   // Bowl a Curveball: Item
@@ -1711,7 +1718,7 @@ export function banishSources(): number {
     count_1 += 1;
   }
   //equipment
-  for (const eq of $items`spring shoes, latte lovers member's mug, stinky cheese eye, V for Vivala mask, mafia middle finger ring, Pantsgiving, Lil' Doctor™ bag, familiar scrapbook, Fourth of May Cosplay Saber, Kremlin's Greatest Briefcase, cursed monkey's paw, Monodent of the Sea`) {
+  for (const eq of $items`spring shoes, latte lovers member's mug, stinky cheese eye, V for Vivala mask, mafia middle finger ring, Pantsgiving, Heartstone, Lil' Doctor™ bag, familiar scrapbook, Fourth of May Cosplay Saber, Kremlin's Greatest Briefcase, cursed monkey's paw, Monodent of the Sea`) {
     if (possessEquipment(eq) && auto_can_equip(eq)) {
       count_1 += 1;
       continue;
@@ -2871,6 +2878,13 @@ export function isFreeMonster(
   }
 
   if (containsText(toLowerCase(mon.attributes), "free")) {
+    return true;
+  }
+
+  if (
+    mon === auto_baseball_freefight_monster() &&
+    auto_baseball_freefights_left() > 0
+  ) {
     return true;
   }
 

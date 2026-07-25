@@ -110,6 +110,7 @@ import {
   auto_haveArchaeologistSpade,
   auto_spadeDigItem,
   auto_spadeDigsRemaining,
+  auto_tryPlayBaseball,
 } from "./iotms/mr2026";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_canAfford, in_amw } from "./paths/adventurer_meats_world";
@@ -346,6 +347,8 @@ function auto_post_adventure(): boolean {
       }
     }
   }
+
+  auto_tryPlayBaseball();
 
   if (
     myLocation() === $location`The Old Landfill` &&
