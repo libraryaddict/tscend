@@ -50,6 +50,7 @@ import {
   $location,
   $skill,
   $slot,
+  AprilingBandHelmet,
 } from "libram";
 
 import { c2t_apron } from "../../c2t_apron";
@@ -259,7 +260,7 @@ export function auto_setAprilBandCombat(): boolean {
   if (toBoolean(haveEffect($effect`Apriling Band Battle Cadence`))) {
     return true;
   }
-  if (!auto_haveAprilingBandHelmet()) {
+  if (!auto_haveAprilingBandHelmet() || !AprilingBandHelmet.canChangeSong()) {
     return false;
   }
   cliExecute("aprilband effect c");
