@@ -504,15 +504,10 @@ function leprecondoBoozeSurplus(doingBedtime: boolean): number {
 
 function leprecondoTracesSurplus(doingBedtime: boolean): number {
   const spleenCap = min(15, spleenLimit());
-  const spleenUse = Math.floor((spleenCap - mySpleenUse()) / 3) * 3;
-  return (
-    leprecondoPieceOrgansSize(
-      "dumb entertainment",
-      "ultimate retro game console",
-    ) -
-    spleenCap * (doingBedtime ? 2 : 1) -
-    spleenUse
-  );
+  const spleenUsable = Math.floor((spleenCap - mySpleenUse()) / 3) * 3;
+  const totalSpleenAvailable = spleenUsable + (doingBedtime ? spleenCap : 0);
+
+  return availableAmount($item`phosphor traces`) * 3 - totalSpleenAvailable;
 }
 
 // Declares how much each need is worth per furniture piece
