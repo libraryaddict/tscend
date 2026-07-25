@@ -68,7 +68,7 @@ const TagsInput = ({ button }: { button: ComponentSetting }) => {
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && event.currentTarget.value !== "") {
+    if (event.key === "Enter" && event.currentTarget.value.trim() !== "") {
       const dropdownValue = button.dropdown?.find(
         (d) =>
           d.display.toLowerCase() === event.currentTarget.value.toLowerCase(),

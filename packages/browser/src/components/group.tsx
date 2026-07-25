@@ -34,7 +34,7 @@ function Group({
     return null;
   }
 
-  const expanded = search !== "" || open;
+  const expanded = search.trim() !== "" || open;
 
   return (
     <>

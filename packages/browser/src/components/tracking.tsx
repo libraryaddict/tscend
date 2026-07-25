@@ -161,7 +161,7 @@ function TrackingCard({
     matches(section, e, day, search),
   );
 
-  const filtering = day !== ALL_DAYS || search !== "";
+  const filtering = day !== ALL_DAYS || search.trim() !== "";
 
   if (section.text && filtering) {
     return null;
