@@ -310,9 +310,10 @@ export function auto_spadeDigSkeleton(): boolean {
     pages.set(1, choice_url);
     const loc: Location = myLocation();
     if (autoAdvBypass(0, pages, $location`Noob Cave`)) {
-      handleTracker$1(
+      handleTracker$2(
         SPADE.toString(),
-        `Dig up a skeleton - ${loc}`,
+        loc,
+        `Dig up a skeleton`,
         "auto_otherstuff",
       );
       return true;
