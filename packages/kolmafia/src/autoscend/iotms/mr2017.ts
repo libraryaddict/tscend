@@ -1569,7 +1569,7 @@ export function makeGenieWish(wish: string): boolean {
 
   handleTracker$2(
     toItem(wish_provider).toString(),
-    myLocation().toString(),
+    myLocation(),
     wish,
     "auto_wishes",
   );
@@ -1667,7 +1667,7 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
   );
   handleTracker$2(
     toItem(wish_provider).toString(),
-    myLocation().toString(),
+    myLocation(),
     wish,
     "auto_wishes",
   );

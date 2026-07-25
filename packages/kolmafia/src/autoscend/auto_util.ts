@@ -633,7 +633,7 @@ export function handleTracker$1(
 
 export function handleTracker$2(
   used: string,
-  loc: string,
+  loc: Location,
   detail: string,
   tracker: string,
 ): void {
@@ -641,11 +641,11 @@ export function handleTracker$2(
   if (cur !== "") {
     cur = `${cur}, `;
   }
-  if (loc === "none") {
+  if (!loc || loc === Location.none) {
     handleTracker$1(used, detail, tracker);
     return;
   }
-  cur = `${cur}(${myDaycount()}:${safeString(used)}:${safeString(loc)}:${safeString(detail)}:${myTurncount()})`;
+  cur = `${cur}(${myDaycount()}:${safeString(used)}:${safeString(loc.toString())}:${safeString(detail)}:${myTurncount()})`;
   setProperty(tracker, cur);
 }
 
@@ -2478,7 +2478,7 @@ export function cloverUsageFinish(): boolean {
   } else {
     handleTracker$2(
       getProperty("auto_luckySource"),
-      myLocation().toString(),
+      myLocation(),
       getProperty("lastEncounter"),
       "auto_lucky",
     );

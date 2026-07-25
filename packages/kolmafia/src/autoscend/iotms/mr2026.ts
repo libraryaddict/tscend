@@ -248,7 +248,7 @@ export function auto_spadeDigItem(): boolean {
       );
       handleTracker$2(
         SPADE.toString(),
-        myLocation().toString(),
+        myLocation(),
         `Dig up something nearby reported ${total_items_dropped} drops`,
         "auto_otherstuff",
       );
@@ -258,8 +258,8 @@ export function auto_spadeDigItem(): boolean {
       // check we actually have fewer digs left now before returning
       handleTracker$2(
         SPADE.toString(),
-        `Dig up something nearby - ${myLocation()}`,
-        my_drop.toString(),
+        myLocation(),
+        `Dig up something nearby - ${my_drop}`,
         "auto_otherstuff",
       );
       return true;

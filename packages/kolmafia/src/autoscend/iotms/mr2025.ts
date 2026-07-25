@@ -909,7 +909,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     //still nothing found so just peace out. Or we want to set the zone without using an adventure.
     handleTracker$2(
       $item`Peridot of Peril`.toString(),
-      loc.toString(),
+      loc,
       "Peace out",
       "auto_mapperidot",
     );
@@ -918,7 +918,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
   }
   handleTracker$2(
     $item`Peridot of Peril`.toString(),
-    loc.toString(),
+    loc,
     popChoice.toString(),
     "auto_mapperidot",
   );
@@ -1245,7 +1245,7 @@ export function beretBusk(effectMultiplier: string): boolean {
   if (useSkill(1, $skill`Beret Busking`)) {
     handleTracker$2(
       $item`prismatic beret`.toString(),
-      myLocation().toString(),
+      myLocation(),
       `Beret busk ${getProperty("_beretBuskingUses")} at ${buskPower} power`,
       "auto_otherstuff",
     );
@@ -1502,7 +1502,7 @@ export function auto_waveTheZone(): boolean {
     if (useSkill(1, $skill`Sea *dent: Summon a Wave`)) {
       handleTracker$2(
         $item`Monodent of the Sea`.toString(),
-        myLocation().toString(),
+        myLocation(),
         "Summon a Wave",
         "auto_otherstuff",
       );

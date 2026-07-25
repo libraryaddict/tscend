@@ -232,7 +232,7 @@ function auto_post_adventure(): boolean {
       );
       handleTracker$2(
         getProperty("auto_forceNonCombatSource"),
-        myLocation().toString(),
+        myLocation(),
         getProperty("lastEncounter"),
         "auto_forcedNC",
       );

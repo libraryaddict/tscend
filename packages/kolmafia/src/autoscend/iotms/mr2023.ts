@@ -452,7 +452,7 @@ export function auto_makeMonkeyPawWish(wish: Effect): boolean {
   if (success) {
     handleTracker$2(
       $item`cursed monkey's paw`.toString(),
-      myLocation().toString(),
+      myLocation(),
       wish.toString(),
       "auto_wishes",
     );
@@ -1452,12 +1452,7 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
       }
     }
   } else {
-    handleTracker$2(
-      "Citizen of a Zone",
-      myLocation().toString(),
-      goal,
-      "auto_otherstuff",
-    );
+    handleTracker$2("Citizen of a Zone", myLocation(), goal, "auto_otherstuff");
     return true;
   }
   return false;

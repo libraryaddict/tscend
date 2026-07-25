@@ -168,8 +168,9 @@ export function auto_combatDefaultStage2(
     !combat_status_check("droptablereplaced") &&
     auto_have_skill($skill`BCZ: Refracted Gaze`)
   ) {
-    handleTracker$1(
+    handleTracker$2(
       enemy.toString(),
+      myLocation(),
       $skill`BCZ: Refracted Gaze`.toString(),
       "auto_otherstuff",
     );
@@ -438,14 +439,14 @@ export function auto_combatDefaultStage2(
       if (indexOf(banishAction, "skill") === 0) {
         handleTracker$2(
           monsterPhylum(enemy).toString(),
-          myLocation().toString(),
+          myLocation(),
           toSkill(substring(banishAction, 6)).toString(),
           "auto_banishes",
         );
       } else if (indexOf(banishAction, "item") === 0) {
         handleTracker$2(
           monsterPhylum(enemy).toString(),
-          myLocation().toString(),
+          myLocation(),
           toItem(substring(banishAction, 5)).toString(),
           "auto_banishes",
         );
