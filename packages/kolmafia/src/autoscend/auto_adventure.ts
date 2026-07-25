@@ -82,7 +82,7 @@ export function autoAdv(
   // undo all this when (if?) that ever gets fixed
   const previousEncounter: string = getProperty("lastEncounter");
   const turncount: number = myTurncount();
-  print(`Doing combat macro ${findMacroName(option)}`, "gray");
+  print(`Doing combat (${findMacroName(option)})`, "gray");
   auto_interruptCheck("main", false);
   let advReturn: boolean = adv1(loc, -1, option);
   if (!advReturn) {
