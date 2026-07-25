@@ -42,6 +42,7 @@ import {
   auto_canUse,
   auto_useSkill,
   combat_status_add,
+  CombatStatusType,
   defaultRoundLimit,
 } from "./auto_combat_util";
 
@@ -216,7 +217,7 @@ export function auto_combatHandler(
         containsText(doThis, ")") &&
         idx < actions.size
       ) {
-        combat_status_add(doThis);
+        combat_status_add(doThis as CombatStatusType);
         idx++;
         if (idx >= actions.size) {
           break;

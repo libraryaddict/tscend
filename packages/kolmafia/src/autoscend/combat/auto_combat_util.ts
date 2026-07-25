@@ -1515,11 +1515,40 @@ export function turns_to_kill(dmg: number): number {
   return toFloat(monsterHp()) / dmg;
 }
 
-export function combat_status_check(mark: string): boolean {
+export type CombatStatusType =
+  | "extractSnakeOil"
+  | "pickpocket"
+  | "choiceMonster"
+  | "banishercheck"
+  | "phylumbanishercheck"
+  | "droptablereplaced"
+  | "banisher"
+  | "yellowray"
+  | "freeruncheck"
+  | "replacercheck"
+  | "replacer"
+  | "(it"
+  | "sniffed"
+  | "copied"
+  | "stunned"
+  | "skipGhostbusting"
+  | "last attempt"
+  | "nanorhino_buffed"
+  | "gremlinNeedBanish"
+  | "cleesh"
+  | "curseofindecision"
+  | "talismanofrenenutet"
+  | "batoomerang"
+  | "jokesterGun"
+  | "love stinkbug"
+  | "love stinkbug2"
+  | "unstoppable";
+
+export function combat_status_check(mark: CombatStatusType): boolean {
   return containsText(getProperty("_auto_combatState"), mark);
 }
 
-export function combat_status_add(mark: string): void {
+export function combat_status_add(mark: CombatStatusType): void {
   let st: string = getProperty("_auto_combatState");
   if (!combat_status_check(mark)) {
     st = `${st}(${mark})`;

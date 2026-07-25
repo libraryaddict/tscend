@@ -162,6 +162,8 @@ export function auto_combatDefaultStage2(
   //Refracted Gaze sets drop table of monster to EVERYTHING else in zone so YRs are great
   //Monsters might be banished/freeran from/replaced because they are now useful so need to handle that too
   if (
+    // we don't want to refract if the monster was from a choice
+    !combat_status_check("choiceMonster") &&
     auto_bczRefractedGaze() &&
     !combat_status_check("droptablereplaced") &&
     auto_have_skill($skill`BCZ: Refracted Gaze`)

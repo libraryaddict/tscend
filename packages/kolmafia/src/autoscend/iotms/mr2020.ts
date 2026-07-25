@@ -85,6 +85,7 @@ import {
   wrap_item,
   zoneRank,
 } from "../auto_util";
+import { combat_status_add } from "../combat/auto_combat_util";
 import { in_plumber } from "../paths/path_of_the_plumber";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
@@ -755,6 +756,7 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
         enemy.toString(),
         "auto_mapperidot",
       );
+      combat_status_add("choiceMonster");
       runChoice(1, `heyscriptswhatsupwinkwink=${toInt(enemy)}`);
     } else {
       abort("trying to map a monster but don't know which monster to map!");

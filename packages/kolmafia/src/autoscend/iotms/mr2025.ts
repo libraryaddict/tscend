@@ -81,6 +81,7 @@ import {
   get,
   getAverageAdventures,
   Leprecondo,
+  PeridotOfPeril,
   set,
 } from "libram";
 
@@ -121,7 +122,7 @@ import {
   stat_to_substat,
   zoneRank,
 } from "../auto_util";
-import { auto_canUse } from "../combat/auto_combat_util";
+import { auto_canUse, combat_status_add } from "../combat/auto_combat_util";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { amw_wantMeat, in_amw } from "../paths/adventurer_meats_world";
 import { in_avantGuard } from "../paths/avant_guard";
@@ -926,20 +927,13 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     popChoice.toString(),
     "auto_mapperidot",
   );
+  combat_status_add("choiceMonster");
   runChoice(1, `bandersnatch=${toInt(popChoice)}`);
   return;
 }
 
 export function haveUsedPeridot(loc: Location): boolean {
-  const perilLocs: Map<number, string> = new Map(
-    splitString(getProperty("_perilLocations"), ",").map((_v, _i) => [_i, _v]),
-  );
-  for (const [, str] of perilLocs) {
-    if (toInt(loc) === toInt(str)) {
-      return true;
-    }
-  }
-  return false;
+  return PeridotOfPeril.periledToday(loc);
 }
 
 function auto_havePrismaticBeret(): boolean {
@@ -1617,6 +1611,68 @@ function auto_BCZEquipped(): boolean {
   return false;
 }
 
+function auto_bczCastMath(cast: number): number {
+  if (cast === 12) {
+    return 420000;
+  }
+  let castMath: number = cast;
+  if (cast > 12) {
+    castMath -= 1;
+  }
+  let castMathFloor: number = floor(castMath / 3);
+  if (cast > 12) {
+    castMathFloor += 1;
+  }
+  const castMathModulo: number = castMath % 3;
+  let substatBase: number = 0;
+
+  switch (castMathModulo) {
+    case 0:
+      substatBase = 11;
+      break;
+    case 1:
+      substatBase = 23;
+      break;
+    case 2:
+      substatBase = 37;
+      break;
+  }
+  return substatBase * 10 ** castMathFloor;
+  //11, 23, 37, 110, 230, 370, etc. 13th cast follows a different pattern but we will never get there but better to be safe than sorry
+}
+
+function statChange(st: Stat, casts: number): boolean {
+  let level: number = myLevel();
+  if (myLevel() >= 13) {
+    level = 13;
+  }
+  // disallow casts until level is above a certain threshold
+  switch (true) {
+    case level < 10 && casts >= 3:
+      return false;
+    case level < 11 && casts >= 5:
+      return false;
+    case in_amw() && casts >= 5:
+      return false;
+    case st === myPrimestat():
+      //Don't want to use so many substats we go down too many levels or we have cast more than we really need to/should
+      //Don't go beneath our current level or level 13 if we cast the skill
+      return (
+        myBasestat(stat_to_substat(st)) - level_to_min_substat(level) >
+        auto_bczCastMath(casts)
+      );
+    case myBasestat(st) < 70 && casts < 3:
+      //For an offstat that is not yet to 70, allow if the cost is less than 1 full stat in cost. don't cast more than 3 times per day
+      return (
+        myBasestat(stat_to_substat(st)) - myBasestat(st) ** 2 >
+        auto_bczCastMath(casts)
+      );
+    default:
+      //don't go below 70 of the other stats
+      return myBasestat(st) ** 2 - 70 ** 2 > auto_bczCastMath(casts);
+  }
+}
+
 export function auto_wantToBCZ(sk: Skill): boolean {
   // zootomist doesn't have substats
   if (!auto_haveBCZ() || !auto_is_valid$2(sk) || in_zootomist()) {
@@ -1638,68 +1694,6 @@ export function auto_wantToBCZ(sk: Skill): boolean {
   const spinalTapasCasts: number = toInt(getProperty("_bczSpinalTapasCasts"));
   const sweatBulletsCasts: number = toInt(getProperty("_bczSweatBulletsCasts"));
   const sweatEquityCasts: number = toInt(getProperty("_bczSweatEquityCasts"));
-
-  function auto_bczCastMath(cast: number): number {
-    if (cast === 12) {
-      return 420000;
-    }
-    let castMath: number = cast;
-    if (cast > 12) {
-      castMath -= 1;
-    }
-    let castMathFloor: number = floor(castMath / 3);
-    if (cast > 12) {
-      castMathFloor += 1;
-    }
-    const castMathModulo: number = castMath % 3;
-    let substatBase: number = 0;
-
-    switch (castMathModulo) {
-      case 0:
-        substatBase = 11;
-        break;
-      case 1:
-        substatBase = 23;
-        break;
-      case 2:
-        substatBase = 37;
-        break;
-    }
-    return substatBase * 10 ** castMathFloor;
-    //11, 23, 37, 110, 230, 370, etc. 13th cast follows a different pattern but we will never get there but better to be safe than sorry
-  }
-
-  function statChange(st: Stat, casts: number): boolean {
-    let level: number = myLevel();
-    if (myLevel() >= 13) {
-      level = 13;
-    }
-    // disallow casts until level is above a certain threshold
-    switch (true) {
-      case level < 10 && casts >= 3:
-        return false;
-      case level < 11 && casts >= 5:
-        return false;
-      case in_amw() && casts >= 5:
-        return false;
-      case st === myPrimestat():
-        //Don't want to use so many substats we go down too many levels or we have cast more than we really need to/should
-        //Don't go beneath our current level or level 13 if we cast the skill
-        return (
-          myBasestat(stat_to_substat(st)) - level_to_min_substat(level) >
-          auto_bczCastMath(casts)
-        );
-      case myBasestat(st) < 70 && casts < 3:
-        //For an offstat that is not yet to 70, allow if the cost is less than 1 full stat in cost. don't cast more than 3 times per day
-        return (
-          myBasestat(stat_to_substat(st)) - myBasestat(st) ** 2 >
-          auto_bczCastMath(casts)
-        );
-      default:
-        //don't go below 70 of the other stats
-        return myBasestat(st) ** 2 - 70 ** 2 > auto_bczCastMath(casts);
-    }
-  }
 
   switch (sk) {
     case $skill`BCZ: Blood Geyser`:
@@ -1751,16 +1745,15 @@ export function auto_wantToBCZ(sk: Skill): boolean {
   }
 }
 
-export function auto_bczRefractedGaze(): boolean {
+export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
   if (!auto_wantToBCZ($skill`BCZ: Refracted Gaze`)) {
-    // we don't want to refreact if we don't have the stats.
+    // we don't want to refract if we don't have the stats.
     return false;
   }
   if (
     auto_havePeridot() &&
     !haveUsedPeridot(myLocation()) &&
-    (myLocation().turnsSpent <= 1 ||
-      !getMonsters(myLocation()).includes(lastMonster())) && // If we've spent a turn here already and the last monster was from this location, then don't be conservative
+    planToPeridot && // Only fallthrough if we explicitly plan to peridot
     (!auto_haveMonodent() || myLocation() !== $location`The Hole in the Sky`)
   ) {
     //Will undoubtedly want Peridot in these locations
@@ -1768,18 +1761,35 @@ export function auto_bczRefractedGaze(): boolean {
     //Don't have support for the Crepe Paper Parachute Cape but that also causes issues
     return false;
   }
+  const onFinalDay: boolean = myDaycount() >= get("auto_runDayCount", 0);
+  const refractedGazeCastsUsed: number = get("_bczRefractedGazeCasts");
+  // Would we still want to gaze again after this cast? If not, this is the last one we're
+  // stat-willing to make today, so reserve it for the star key instead of spending it here.
+  const isLastWillingGaze: boolean =
+    !statChange($stat`Mysticality`, refractedGazeCastsUsed + 1) ||
+    refractedGazeCastsUsed + 1 >= 6;
+  if (
+    onFinalDay &&
+    needStarKey() &&
+    myLocation() !== $location`The Hole in the Sky` &&
+    isLastWillingGaze
+  ) {
+    return false;
+  }
   if (
     (myLocation() === $location`The Smut Orc Logging Camp` &&
       lumberCount() < bridgeGoal() &&
       fastenerCount() < bridgeGoal()) ||
     (myLocation() === $location`The Penultimate Fantasy Airship` &&
+      internalQuestStatus("questL10Garbage") >= 4 &&
       itemAmount($item`Mohawk wig`) < 1 &&
       itemAmount($item`amulet of extreme plot significance`) < 1) ||
     (myLocation() === $location`The Battlefield (Frat Uniform)` &&
       get("_bczRefractedGazeCasts") < 2) || // Only use refracted gaze on the battlefield if we've used it less than 2 times
     (myLocation() === $location`A-Boo Peak` &&
       itemAmount($item`A-Boo clue`) * 30 <
-        toInt(getProperty("booPeakProgress"))) ||
+        // We would take 2 advs regardless, we don't want to waste our time on a clue we didn't need!
+        toInt(getProperty("booPeakProgress")) - 4) ||
     (myLocation() === $location`Cobb's Knob Harem` &&
       (lastMonster() === $monster`Knob Goblin Harem Guard` ||
         lastMonster() === $monster`some fish`)) ||

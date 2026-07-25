@@ -739,10 +739,8 @@ export function auto_canDrinkCupOfThirteen(): boolean {
 
   if (auto_cupOfThirteenAdvRemaining() < minAdvPerFill) return false;
 
-  // eslint-disable-next-line libram/verify-constants
   if (!auto_is_valid($item`Cup of 13s`)) return false;
 
-  // eslint-disable-next-line libram/verify-constants
   if (!have($item`Cup of 13s`)) return false;
 
   return true;
@@ -759,15 +757,14 @@ function auto_bestCupOfThirteenAction(
   const ingredients: CupOfThirteenIngredient[] = getCupIngredients();
   // Boost these effects up when we're comparing, we prioritize item drop if we don't need meat
   const effectScores: Map<Effect, number> = new Map([
-    // eslint-disable-next-line libram/verify-constants
     [$effect`Runneth Over`, 100], // 50% item drop
-    // eslint-disable-next-line libram/verify-constants
+
     [$effect`Runneth On Empty`, myMeat() > meatReserve() + 3000 ? 5 : 200], // 100% meat drop
     // eslint-disable-next-line libram/verify-constants
     [$effect`Runneth a Tight Ship `, 1], // +5 fam exp
-    // eslint-disable-next-line libram/verify-constants
+
     [$effect`Runneth With The Pack`, 3], // +5 fam weight
-    // eslint-disable-next-line libram/verify-constants
+
     [$effect`Runneth Wild`, 0.1], // +100 init
   ]);
 
@@ -920,7 +917,6 @@ function auto_cupOfThirteenConsumeAction(
   };
 
   return new ConsumeAction(
-    // eslint-disable-next-line libram/verify-constants
     $item`Cup of 13s`,
     0,
     1,
@@ -957,7 +953,6 @@ function auto_mixAndDrinkCupOfThirteen(
   }
 
   handleTracker$1(
-    // eslint-disable-next-line libram/verify-constants
     $item`Cup of 13s`.toString(),
     `${myAdventures() - preAdvs}Advs`,
     "auto_drunken",
