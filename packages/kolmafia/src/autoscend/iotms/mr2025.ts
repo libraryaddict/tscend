@@ -1771,6 +1771,7 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
   ) {
     return false;
   }
+  const speculating: boolean = currentRound() === 0;
   if (
     (myLocation() === $location`The Smut Orc Logging Camp` &&
       lumberCount() < bridgeGoal() &&
@@ -1786,30 +1787,36 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
         // We would take 2 advs regardless, we don't want to waste our time on a clue we didn't need!
         toInt(getProperty("booPeakProgress")) - 4) ||
     (myLocation() === $location`Cobb's Knob Harem` &&
-      (lastMonster() === $monster`Knob Goblin Harem Guard` ||
+      (speculating ||
+        lastMonster() === $monster`Knob Goblin Harem Guard` ||
         lastMonster() === $monster`some fish`)) ||
     (myLocation() === $location`Twin Peak` &&
       itemAmount($item`rusty hedge trimmers`) < 4) ||
     (myLocation() === $location`The Black Forest` &&
       !blackMarketAvailable() &&
       itemAmount($item`reassembled blackbird`) === 0 &&
-      monsterPhylum() !== $phylum`beast`) ||
+      (speculating || monsterPhylum() !== $phylum`beast`)) ||
     (myLocation() === $location`Whitey's Grove` &&
       itemAmount($item`lion oil`) === 0 &&
       itemAmount($item`bird rib`) === 0 &&
       itemAmount($item`wet stew`) === 0 &&
       itemAmount($item`wet stunt nut stew`) === 0 &&
-      monsterPhylum() !== $phylum`beast`) ||
+      (speculating || monsterPhylum() !== $phylum`beast`)) ||
     (myLocation() === $location`The Hidden Apartment Building` &&
-      (lastMonster() === $monster`pygmy shaman` ||
+      (speculating ||
+        lastMonster() === $monster`pygmy shaman` ||
         lastMonster() === $monster`some fish`)) ||
     (myLocation() === $location`The Defiled Nook` &&
-      (lastMonster() === $monster`party skelteon` ||
+      (speculating ||
+        lastMonster() === $monster`party skelteon` ||
         lastMonster() === $monster`some fish`)) ||
     (myLocation() === $location`The Hole in the Sky` &&
       needStarKey() &&
-      ((monsterPhylum() === $phylum`constellation` &&
-        lastMonster() !== $monster`Astronomer`) ||
+      (speculating ||
+        (lastMonster() === $monster`Astronomer` &&
+          (itemAmount($item`star chart`) > 0 ||
+            auto_have_skill($skill`Sea *dent: Talk to Some Fish`))) ||
+        monsterPhylum() === $phylum`constellation` ||
         lastMonster() === $monster`some fish`)) ||
     (myLocation() === $location`Guano Junction` &&
       internalQuestStatus("questL04Bat") < 3)
