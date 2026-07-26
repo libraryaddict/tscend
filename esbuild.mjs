@@ -1,9 +1,65 @@
+import babelCore from "@babel/core";
+import { createHash } from "crypto";
 import esbuild from "esbuild";
-import babel from "esbuild-plugin-babel";
 import { existsSync, promises as fs } from "fs";
 import path from "path";
 import * as sass from "sass";
 import { parse } from "yaml";
+
+function cachedBabelPlugin({ filter, configFile }) {
+  const cacheDir = "node_modules/.cache/esbuild-babel";
+
+  return {
+    name: "cached-babel",
+    async setup(build) {
+      const configHash = createHash("sha1")
+        .update(await fs.readFile(configFile, "utf8"))
+        .digest("hex");
+
+      await fs.mkdir(cacheDir, { recursive: true });
+
+      const usedFiles = new Set();
+
+      build.onLoad({ filter }, async (args) => {
+        const contents = await fs.readFile(args.path, "utf8");
+        const key = createHash("sha1")
+          .update(contents)
+          .update(configHash)
+          .digest("hex");
+        const cacheFile = `${key}.js`;
+        usedFiles.add(cacheFile);
+
+        const cachePath = path.join(cacheDir, cacheFile);
+
+        if (existsSync(cachePath)) {
+          return { contents: await fs.readFile(cachePath, "utf8") };
+        }
+
+        const result = await babelCore.transformAsync(contents, {
+          filename: args.path,
+          configFile,
+        });
+
+        await fs.writeFile(cachePath, result.code);
+
+        return { contents: result.code };
+      });
+
+      build.onEnd(async (result) => {
+        if (result.errors.length) return;
+
+        const entries = await fs.readdir(cacheDir);
+        if (entries.length === usedFiles.size) return;
+
+        await Promise.all(
+          entries
+            .filter((entry) => !usedFiles.has(entry))
+            .map((entry) => fs.unlink(path.join(cacheDir, entry))),
+        );
+      });
+    },
+  };
+}
 
 function sassPlugin() {
   return {
@@ -104,6 +160,10 @@ function assembleDataPlugin() {
   };
 }
 
+async function readYaml(filePath) {
+  return parse(await fs.readFile(filePath, "utf8"));
+}
+
 // Record<groupPath, {name, property, type, description, tags}[]>
 async function buildSettingsData() {
   const dir = "data/settings";
@@ -141,20 +201,28 @@ async function buildSettingsData() {
   return result;
 }
 
-const browserBuild = await esbuild.build({
-  entryPoints: {
-    "react/script": "packages/browser/src/index.tsx",
-    "react/main": "packages/browser/src/css/app.scss",
-  },
-  bundle: true,
-  outdir: "dist",
-  platform: "browser",
-  format: "iife",
-  write: false, // Do not write to disk
-  minify: true,
-  jsx: "automatic",
-  plugins: [sassPlugin()],
-});
+const [browserBuild, settingsData, settingGroups, tracking, packageJson] =
+  await Promise.all([
+    esbuild.build({
+      entryPoints: {
+        "react/script": "packages/browser/src/index.tsx",
+        "react/main": "packages/browser/src/css/app.scss",
+      },
+      bundle: true,
+      outdir: "dist",
+      platform: "browser",
+      format: "iife",
+      write: false, // Do not write to disk
+      minify: true,
+      jsx: "automatic",
+      plugins: [sassPlugin()],
+    }),
+    buildSettingsData(),
+    readYaml("data/settings/groups.yml"),
+    readYaml("data/tracking/tracking.yml"),
+    fs.readFile("package.json", "utf8").then(JSON.parse),
+    fs.cp("data/resources", "dist", { recursive: true }),
+  ]);
 
 const outputText = (name) =>
   browserBuild.outputFiles.find((f) => f.path === path.resolve("dist", name))
@@ -162,18 +230,13 @@ const outputText = (name) =>
 const reactScriptSource = outputText("react/script.js");
 const reactCssSource = outputText("react/main.css");
 
-async function readYaml(filePath) {
-  return parse(await fs.readFile(filePath, "utf8"));
-}
-
-const packageJson = JSON.parse(await fs.readFile("package.json", "utf8"));
 const kolmafiaRevision = Number(
   packageJson.resolutions.kolmafia.match(/\d+/g)[1],
 );
 
 const dataSources = {
   autoscend_settings: {
-    contents: JSON.stringify(await buildSettingsData()),
+    contents: JSON.stringify(settingsData),
     loader: "json",
   },
   kolmafia_revision: {
@@ -181,11 +244,11 @@ const dataSources = {
     loader: "json",
   },
   setting_groups: {
-    contents: JSON.stringify(await readYaml("data/settings/groups.yml")),
+    contents: JSON.stringify(settingGroups),
     loader: "json",
   },
   tracking: {
-    contents: JSON.stringify(await readYaml("data/tracking/tracking.yml")),
+    contents: JSON.stringify(tracking),
     loader: "json",
   },
   react_script: { contents: reactScriptSource, loader: "text" },
@@ -210,7 +273,7 @@ await esbuild.build({
   format: "cjs",
   plugins: [
     dataPlugin(dataSources),
-    babel({
+    cachedBabelPlugin({
       filter: /\.[jt]sx?$/,
       configFile: "./babel.config.json",
     }),
@@ -221,5 +284,3 @@ await esbuild.build({
     ".css": "text",
   },
 });
-
-await fs.cp("data/resources", "dist", { recursive: true });

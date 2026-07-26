@@ -16,7 +16,7 @@
     "bundle": "node esbuild.mjs",
     "build": "yarn typecheck && yarn bundle",
     "lint": "eslint packages && prettier --check .",
-    "format": "eslint packages --fix && prettier --write . --log-level warn"
+    "format": "eslint packages --fix --cache --cache-location node_modules/.cache/eslint && prettier --write . --log-level warn --cache --cache-location node_modules/.cache/prettier"
   },
   "devDependencies": {
     "@babel/cli": "^7.29.7",
@@ -30,7 +30,6 @@
     "@types/babel__core": "^7",
     "@types/babel__preset-env": "^7",
     "esbuild": "^0.28.1",
-    "esbuild-plugin-babel": "^0.2.3",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-libram": "^0.6.0",
