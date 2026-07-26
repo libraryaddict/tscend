@@ -358,19 +358,21 @@ input.stringcontainer {
   color: $text;
 }
 
-input.save {
-  display: block;
-  margin: 20px auto;
+.floatingButton {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 500;
   background-color: $accent;
   color: white;
   border: 1px solid transparent;
   border-radius: 10px;
-  font-size: x-large;
-  padding: 8px 30px;
+  font-size: medium;
+  padding: 8px 20px;
   cursor: pointer;
 }
 
-input.save:hover {
+.floatingButton:hover {
   background-color: $accent-hover;
 }
 

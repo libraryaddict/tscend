@@ -4,6 +4,7 @@ import { useState } from "react";
 import { addNotification, saveSettings } from "../api/apiRequest";
 import { collectSettings, settingMatches } from "../api/settingSearch";
 import { createValidator } from "../api/settingValidator";
+import FloatingButton from "../components/floatingButton";
 import Group from "../components/group";
 import Interrupt from "../components/interrupt";
 import SettingsTable from "../components/settings/settingsTable";
@@ -126,6 +127,16 @@ function RelayPage({
 
   return (
     <>
+      <FloatingButton
+        label="Save"
+        onClick={() =>
+          saveSettings(allSettings).then((notifs) => {
+            for (const notif of notifs) {
+              addNotification(notif);
+            }
+          })
+        }
+      />
       <div className="topRow">
         <div className="topRowSide">
           <div className="settingsSearchBar">
@@ -147,18 +158,6 @@ function RelayPage({
         <div className="topRowSide" aria-hidden="true" />
       </div>
       {elements.slice(leadingCount)}
-      <input
-        className="save"
-        onClick={() =>
-          saveSettings(allSettings).then((notifs) => {
-            for (const notif of notifs) {
-              addNotification(notif);
-            }
-          })
-        }
-        type="submit"
-        value="Save Changes"
-      />
     </>
   );
 }

@@ -89,6 +89,7 @@ export interface TrackingSection {
   text?: string;
   columns?: string[];
   events?: TrackingEvent[];
+  property?: string;
 }
 
 export interface RelayTracking extends RelayComponent {

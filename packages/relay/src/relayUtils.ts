@@ -1,14 +1,11 @@
 import {
-  getProperty,
   myHash,
   print,
   propertyDefaultValue,
-  propertyExists,
   propertyHasDefault,
 } from "kolmafia";
 
 import {
-  DropdownValue,
   RelayComponent,
   RelayDropdown,
   RelayGroup,
@@ -86,31 +83,6 @@ function validateComponents(components: RelayComponent[]) {
     if (!button.placeholderText) {
       button.placeholderText = button.default ? button.default : "";
     }
-
-    if (button.value !== undefined) {
-      continue;
-    }
-
-    let val: string;
-
-    if (propertyExists(button.preference)) {
-      val = getProperty(button.preference);
-    } else if (button.default !== undefined) {
-      val = button.default;
-    } else if (button.type === "dropdown") {
-      const first = (button as RelayDropdown).dropdown?.[0];
-
-      val =
-        typeof first === "string"
-          ? first
-          : ((first as DropdownValue)?.value ?? "");
-    } else if (button.type === "boolean") {
-      val = "false";
-    } else {
-      val = "";
-    }
-
-    button.value = val;
   }
 }
 

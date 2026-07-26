@@ -1,4 +1,11 @@
-import { ComponentSetting } from "../types/types";
+import {
+  ComponentSetting,
+  ComponentTracking,
+  RelayPage,
+  TrackingEvent,
+  TrackingSection,
+} from "../types/types";
+import { collectSettings } from "./settingSearch";
 
 export function addNotification(notification: string) {
   const ele = document.createElement("div");
@@ -20,14 +27,24 @@ interface FunctionCall {
   args: unknown[];
 }
 
-async function callMafia(functions: FunctionCall[]): Promise<unknown[]> {
+interface JsonApiRequest {
+  properties?: string[];
+  functions?: FunctionCall[];
+}
+
+interface JsonApiResponse {
+  properties?: string[];
+  functions?: unknown[];
+}
+
+async function callJsonApi(request: JsonApiRequest): Promise<JsonApiResponse> {
   const response = await fetch("/KoLmafia/jsonApi", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams({
-      body: JSON.stringify({ functions }),
+      body: JSON.stringify(request),
       pwd,
     }),
   });
@@ -42,7 +59,136 @@ async function callMafia(functions: FunctionCall[]): Promise<unknown[]> {
     throw json.error;
   }
 
-  return json.functions ?? [];
+  return json;
+}
+
+async function callMafia(functions: FunctionCall[]): Promise<unknown[]> {
+  const result = await callJsonApi({ functions });
+
+  return result.functions ?? [];
+}
+
+async function callProperties(properties: string[]): Promise<string[]> {
+  if (properties.length === 0) {
+    return [];
+  }
+
+  const result = await callJsonApi({ properties });
+
+  return result.properties ?? [];
+}
+
+function fallbackValue(setting: ComponentSetting): string {
+  if (setting.default !== undefined) {
+    return setting.default;
+  }
+
+  if (setting.type === "dropdown" || setting.type === "tags") {
+    return setting.dropdown?.[0]?.value ?? "";
+  }
+
+  if (setting.type === "boolean") {
+    return "false";
+  }
+
+  return "";
+}
+
+export async function hydrateSettingValues(pages: RelayPage[]): Promise<void> {
+  const settings = pages.flatMap((page) => collectSettings(page.components));
+  const values = await callProperties(settings.map((s) => s.preference));
+
+  settings.forEach((setting, index) => {
+    setting.value = values[index] ?? fallbackValue(setting);
+    setting.previousValue = setting.value;
+
+    if (setting.validate) {
+      setting.validate = new Function(
+        `return (${setting.validate as unknown as string})`,
+      )();
+    }
+  });
+}
+
+function entityDecode(text: string): string {
+  const textarea = document.createElement("textarea");
+  textarea.innerHTML = text;
+
+  return textarea.value;
+}
+
+function parseTrackingEvents(raw: string): TrackingEvent[] {
+  const events: TrackingEvent[] = [];
+
+  if (raw === "") {
+    return events;
+  }
+
+  for (let entry of raw.split(", ")) {
+    if (entry === "") {
+      continue;
+    }
+
+    entry = entry
+      .replace(/[()]/g, "")
+      .replace(/Asdon Marton:/g, "Asdon Martin -")
+      .replace(/CHEAT CODE:/g, "CHEAT CODE -");
+
+    const fields = entry.split(":").map((field) => entityDecode(field.trim()));
+    const day = parseInt(fields[0], 10) || 0;
+    const values = fields.slice(1);
+
+    const last = events[events.length - 1];
+
+    if (
+      last &&
+      last.day === day &&
+      last.values.join(":") === values.join(":")
+    ) {
+      last.count++;
+    } else {
+      events.push({ day, values, count: 1 });
+    }
+  }
+
+  return events;
+}
+
+export async function refreshTrackingSections(
+  sections: TrackingSection[],
+): Promise<TrackingSection[]> {
+  const tracked = sections.filter((s) => s.property);
+  const values = await callProperties(tracked.map((s) => s.property as string));
+  const valueByProperty = new Map(
+    tracked.map((s, i) => [s.property, values[i]]),
+  );
+
+  return sections.map((section) => {
+    if (!section.property || !valueByProperty.has(section.property)) {
+      return section;
+    }
+
+    const raw = valueByProperty.get(section.property) ?? "";
+
+    return section.text !== undefined
+      ? { ...section, text: raw }
+      : { ...section, events: parseTrackingEvents(raw) };
+  });
+}
+
+export async function hydrateTrackingSections(
+  pages: RelayPage[],
+): Promise<void> {
+  for (const page of pages) {
+    for (const component of page.components) {
+      if (component.type !== "tracking") {
+        continue;
+      }
+
+      const tracking = component as ComponentTracking;
+      tracking.sections = await refreshTrackingSections(tracking.sections);
+    }
+  }
 }
 
 export async function setProperties(

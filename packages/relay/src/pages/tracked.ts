@@ -1,4 +1,4 @@
-import { entityDecode, getProperty, inHardcore, toInt } from "kolmafia";
+import { inHardcore } from "kolmafia";
 
 import { auto_hasPowerfulGlove } from "../../../kolmafia/src/autoscend/iotms/mr2020";
 import { isActuallyEd } from "../../../kolmafia/src/autoscend/paths/actually_ed_the_undying";
@@ -6,7 +6,6 @@ import { in_ocrs } from "../../../kolmafia/src/autoscend/paths/one_crazy_random_
 import {
   RelayPage,
   RelayTracking,
-  TrackingEvent,
   TrackingSection,
 } from "../../../shared/src/relayTypes";
 
@@ -20,44 +19,6 @@ interface TrackingEntry {
   columns?: string[];
   icon?: string;
   condition?: string;
-}
-
-function parseTrackingEvents(propertyName: string): TrackingEvent[] {
-  const events: TrackingEvent[] = [];
-  const raw = getProperty(propertyName);
-
-  if (raw === "") {
-    return events;
-  }
-
-  for (let entry of raw.split(", ")) {
-    if (entry === "") {
-      continue;
-    }
-
-    entry = entry
-      .replace(/[()]/g, "")
-      .replace(/Asdon Marton:/g, "Asdon Martin -")
-      .replace(/CHEAT CODE:/g, "CHEAT CODE -");
-
-    const fields = entry.split(":").map((field) => entityDecode(field.trim()));
-    const day = toInt(fields[0]);
-    const values = fields.slice(1);
-
-    const last = events[events.length - 1];
-
-    if (
-      last &&
-      last.day === day &&
-      last.values.join(":") === values.join(":")
-    ) {
-      last.count++;
-    } else {
-      events.push({ day: day, values: values, count: 1 });
-    }
-  }
-
-  return events;
 }
 
 const trackingConditions: Record<string, () => boolean> = {
@@ -75,24 +36,19 @@ function trackedSections(): TrackingSection[] {
       continue;
     }
 
-    const events = parseTrackingEvents(entry.property);
-
-    if (events.length > 0) {
-      sections.push({
-        title: entry.title,
-        icon: entry.icon,
-        columns: entry.columns,
-        events: events,
-      });
-    }
-  }
-
-  if (getProperty("auto_beatenUpLocations") !== "") {
     sections.push({
-      title: "Beaten Up",
-      text: getProperty("auto_beatenUpLocations"),
+      title: entry.title,
+      icon: entry.icon,
+      columns: entry.columns,
+      property: entry.property,
     });
   }
+
+  sections.push({
+    title: "Beaten Up",
+    text: "",
+    property: "auto_beatenUpLocations",
+  });
 
   return sections;
 }
