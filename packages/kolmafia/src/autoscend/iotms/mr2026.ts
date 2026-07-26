@@ -1175,7 +1175,7 @@ export function auto_baseball_game(plan: Element[]): boolean {
 
   if (auto_baseball_team().length !== 9) return false;
 
-  visitUrl(`inventory.php?pwd=${myHash()}&action=pball?ajax=1`, false);
+  visitUrl(`inventory.php?pwd=${myHash()}&action=pball`, false);
 
   const order: Element[] = $elements`hot, cold, spooky, stench, sleaze`;
 
@@ -1184,6 +1184,7 @@ export function auto_baseball_game(plan: Element[]): boolean {
       `choice.php?pwd&whichchoice=1598&option=${order.indexOf(plan[i]) + 1}`,
     );
   }
+  visitUrl(`choice.php?pwd&whichchoice=1598&option=6`);
 
   if (auto_baseball_team().length > 0)
     abort(`Expected to have played baseball, did not.`);
