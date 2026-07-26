@@ -1225,22 +1225,11 @@ function auto_baseballWorthyTarget(mon: Monster, loc: Location): boolean {
 }
 
 function auto_baseballScorchWorthyAnywhere(mon: Monster): boolean {
-  if (auto_baseballScorchExtras(mon)) {
+  if (
+    auto_baseballScorchExtras(mon) ||
+    auto_wantToYellowRay(mon, myLocation())
+  ) {
     return true;
-  }
-  for (const loc of monster_to_location(mon).keys()) {
-    if (auto_wantToYellowRay(mon, loc)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function auto_baseballWantsSniffAnywhere(mon: Monster): boolean {
-  for (const loc of monster_to_location(mon).keys()) {
-    if (auto_wantToSniff(mon, loc)) {
-      return true;
-    }
   }
   return false;
 }
@@ -1267,7 +1256,7 @@ function auto_baseballBuildAssignments(team: Monster[]): BaseballAssignment[] {
     let element: Element | undefined;
     if (!hotAssigned && auto_baseballScorchWorthyAnywhere(mon)) {
       element = $element`hot`;
-    } else if (!stenchAssigned && auto_baseballWantsSniffAnywhere(mon)) {
+    } else if (!stenchAssigned && auto_wantToSniff(mon, myLocation())) {
       element = $element`stench`;
     } else if (!spookyAssigned) {
       element = $element`spooky`;
