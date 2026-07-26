@@ -71,7 +71,12 @@ import { in_plumber } from "./paths/path_of_the_plumber";
 import { in_robot } from "./paths/you_robot";
 import { L8_forceExtremeInstead, L8_trapperTalk } from "./quests/level_08";
 import { bridgeGoal } from "./quests/level_09";
-import { getShenZonesTurnsSpent, liana_cleared } from "./quests/level_11";
+import { L10_needAmuletOfPlotSignificance } from "./quests/level_10";
+import {
+  getShenZonesTurnsSpent,
+  L11_needWetStew,
+  liana_cleared,
+} from "./quests/level_11";
 import { need8BitPoints, needStarKey } from "./quests/level_13";
 import {
   LX_doingPirates,
@@ -253,7 +258,7 @@ export function zone_needItem(loc: Location): generic_t {
         value = 30.0;
         break;
       case $location`The Penultimate Fantasy Airship`:
-        if (!possessEquipment($item`amulet of extreme plot significance`)) {
+        if (L10_needAmuletOfPlotSignificance()) {
           value = 10.0;
         }
         if (!possessEquipment($item`Mohawk wig`)) {
@@ -739,13 +744,7 @@ export function zone_combatMod(loc: Location): generic_t {
       }
       break;
     case $location`Whitey's Grove`:
-      if (
-        (itemAmount($item`lion oil`) === 0 ||
-          itemAmount($item`bird rib`) === 0) &&
-        itemAmount($item`wet stew`) === 0 &&
-        itemAmount($item`wet stunt nut stew`) === 0 &&
-        internalQuestStatus("questL11Palindome") < 5
-      ) {
+      if (L11_needWetStew()) {
         value = 15;
       }
       break;

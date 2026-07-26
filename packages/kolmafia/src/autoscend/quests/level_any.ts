@@ -140,6 +140,7 @@ import {
   L11_getBeehive,
   L11_hiddenCity,
   L11_mauriceSpookyraven,
+  L11_needTombRatchet,
   LX_getLadySpookyravensPowderPuff,
   LX_unlockHauntedLibrary,
   LX_unlockManorSecondFloor,
@@ -1218,9 +1219,7 @@ export function LX_dronesOut(): boolean {
   }
   if (
     toBoolean(getProperty("middleChamberUnlock")) &&
-    itemAmount($item`crumbling wooden wheel`) +
-      itemAmount($item`tomb ratchet`) <
-      10 &&
+    L11_needTombRatchet() &&
     itemAmount($item`tangle of rat tails`) >= 1 &&
     zone_isAvailable($location`The Middle Chamber`)
   ) {

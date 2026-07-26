@@ -4214,3 +4214,30 @@ export function L11_defeatEd(): boolean {
   }
   return true;
 }
+
+export function L11_needDrumMachine(): boolean {
+  return (
+    (toInt(getProperty("gnasirProgress")) & 16) === 0 &&
+    auto_is_valid($item`drum machine`) &&
+    !itemAmount($item`drum machine`) &&
+    getProperty("questL11Desert") !== "finished"
+  );
+}
+
+export function L11_needWetStew(): boolean {
+  return (
+    (itemAmount($item`lion oil`) === 0 || itemAmount($item`bird rib`) === 0) &&
+    itemAmount($item`wet stew`) === 0 &&
+    itemAmount($item`wet stunt nut stew`) === 0 &&
+    !isActuallyEd() &&
+    internalQuestStatus("questL11Palindome") < 5
+  );
+}
+
+export function L11_needTombRatchet(): boolean {
+  return (
+    itemAmount($item`crumbling wooden wheel`) +
+      itemAmount($item`tomb ratchet`) <
+      10 && !toBoolean(getProperty("pyramidBombUsed"))
+  );
+}

@@ -83,6 +83,7 @@ import {
   hedgeTrimmersNeeded,
   lumberCount,
 } from "../quests/level_09";
+import { L11_needTombRatchet } from "../quests/level_11";
 import { needStarKey } from "../quests/level_13";
 import { auto_combatMeatGolemStage3 } from "./auto_combat_adventurer_meats_world";
 import { auto_combatHeavyRainsStage3 } from "./auto_combat_heavy_rains";
@@ -253,13 +254,7 @@ export function auto_combatDefaultStage3(
       emitDrones = true;
     }
     //dupe tomb ratchets if we're lucky
-    if (
-      enemy === $monster`tomb rat king` &&
-      itemAmount($item`crumbling wooden wheel`) +
-        itemAmount($item`tomb ratchet`) <
-        10 &&
-      drones
-    ) {
+    if (enemy === $monster`tomb rat king` && L11_needTombRatchet() && drones) {
       emitDrones = true;
     }
     //dupe Cursed Dragon Wishbone and Cursed Bat Paw if in AoSOL

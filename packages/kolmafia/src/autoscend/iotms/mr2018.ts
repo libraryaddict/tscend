@@ -92,6 +92,7 @@ import { in_plumber } from "../paths/path_of_the_plumber";
 import { in_quantumTerrarium } from "../paths/quantum_terrarium";
 import { in_wotsf } from "../paths/way_of_the_surprising_fist";
 import { hedgeTrimmersNeeded } from "../quests/level_09";
+import { L10_needAmuletOfPlotSignificance } from "../quests/level_10";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { auto_havePillKeeper } from "./mr2019";
 
@@ -754,10 +755,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
   }
   // 18 is a totally arbitrary cutoff here, but it's probably fine.
   if ($location`The Penultimate Fantasy Airship`.turnsSpent >= 18) {
-    if (
-      !possessEquipment($item`amulet of extreme plot significance`) &&
-      internalQuestStatus("questL10Garbage") < 8
-    ) {
+    if (L10_needAmuletOfPlotSignificance()) {
       wannaHeists.set(
         $monster`Quiet Healer`,
         $item`amulet of extreme plot significance`,

@@ -132,6 +132,7 @@ import { in_small } from "../paths/small";
 import { in_zombieSlayer } from "../paths/zombie_slayer";
 import { in_zootomist } from "../paths/zootomist";
 import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
+import { L11_needWetStew } from "../quests/level_11";
 import { needStarKey, towerKeyCount } from "../quests/level_13";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { acquiredFantasyRealmToken, fantasyBanditsFought } from "./mr2018";
@@ -1800,10 +1801,7 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
       itemAmount($item`reassembled blackbird`) === 0 &&
       (speculating || monsterPhylum() !== $phylum`beast`)) ||
     (myLocation() === $location`Whitey's Grove` &&
-      itemAmount($item`lion oil`) === 0 &&
-      itemAmount($item`bird rib`) === 0 &&
-      itemAmount($item`wet stew`) === 0 &&
-      itemAmount($item`wet stunt nut stew`) === 0 &&
+      L11_needWetStew() &&
       (speculating || monsterPhylum() !== $phylum`beast`)) ||
     (myLocation() === $location`The Hidden Apartment Building` &&
       (speculating ||

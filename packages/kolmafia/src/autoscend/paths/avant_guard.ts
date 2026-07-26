@@ -33,7 +33,11 @@ import { L5_goblinKing } from "../quests/level_05";
 import { L7_crypt } from "../quests/level_07";
 import { L8_trapperGroar, needOre } from "../quests/level_08";
 import { hedgeTrimmersNeeded } from "../quests/level_09";
-import { L11_defeatEd } from "../quests/level_11";
+import {
+  L11_defeatEd,
+  L11_needDrumMachine,
+  L11_needTombRatchet,
+} from "../quests/level_11";
 import { needStarKey } from "../quests/level_13";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
@@ -170,10 +174,7 @@ function ag_bgToChat(): Monster {
     mon = $monster`pygmy witch surgeon`;
   } else if (needOre()) {
     mon = $monster`mountain man`;
-  } else if (
-    itemAmount($item`drum machine`) === 0 &&
-    getProperty("questL11Desert") !== "finished"
-  ) {
+  } else if (L11_needDrumMachine()) {
     mon = $monster`blur`;
   } else if (hedgeTrimmersNeeded() > 0) {
     mon = $monster`bearpig topiary animal`;
@@ -186,12 +187,7 @@ function ag_bgToChat(): Monster {
     } else if (itemAmount($item`blasting soda`) === 0) {
       mon = $monster`cabinet of Dr. Limpieza`;
     }
-  } else if (
-    itemAmount($item`crumbling wooden wheel`) +
-      itemAmount($item`tomb ratchet`) <
-      10 &&
-    !toBoolean(getProperty("pyramidBombUsed"))
-  ) {
+  } else if (L11_needTombRatchet()) {
     mon = $monster`tomb rat`;
   } else if (
     (!possessEquipment($item`Lord Spookyraven's spectacles`) &&

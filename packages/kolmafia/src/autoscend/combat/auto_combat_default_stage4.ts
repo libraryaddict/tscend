@@ -3,8 +3,10 @@ import {
   getProperty,
   haveEffect,
   haveEquipped,
+  heartstoneMiddleLetter,
   Item,
   itemAmount,
+  lastMonster,
   Monster,
   monsterElement,
   monsterHp,
@@ -33,6 +35,7 @@ import {
   $monster,
   $monsters,
   $skill,
+  get,
 } from "libram";
 
 import { fullness_left } from "../auto_consume";
@@ -51,6 +54,7 @@ import {
 } from "../auto_util";
 import { auto_bowlingBallCombatString } from "../iotms/mr2022";
 import { shouldCinchoConfetti } from "../iotms/mr2023";
+import { auto_heartstoneShouldStealHeart } from "../iotms/mr2026";
 import { ag_is_bodyguard } from "../paths/avant_guard";
 import { inAftercore } from "../paths/casual";
 import { in_darkGyffte } from "../paths/dark_gyffte";
@@ -537,6 +541,16 @@ export function auto_combatDefaultStage4(
   // get extra combat stats
   if (shouldCinchoConfetti() && canSurvive(5.0)) {
     return auto_useSkill($skill`Cincho: Confetti Extravaganza`);
+  }
+
+  if (auto_heartstoneShouldStealHeart()) {
+    handleTracker({
+      what: $skill`Steal Monster's Heart`,
+      location: myLocation(),
+      detail: `${lastMonster()}: ${get("heartstoneLetters")} -> ${get("heartstoneLetters") + heartstoneMiddleLetter()}`,
+      property: "auto_otherstuff",
+    });
+    return auto_useSkill($skill`Steal Monster's Heart`);
   }
 
   return "";

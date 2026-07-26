@@ -525,3 +525,11 @@ export function L10_needUmbrella(): boolean {
   }
   return true;
 }
+
+export function L10_needAmuletOfPlotSignificance(): boolean {
+  return (
+    auto_is_valid($item`amulet of extreme plot significance`) &&
+    !possessEquipment($item`amulet of extreme plot significance`) &&
+    internalQuestStatus("questL10Garbage") < 8
+  );
+}

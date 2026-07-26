@@ -15,6 +15,8 @@ import {
   fullnessLimit,
   getProperty,
   haveCampground,
+  haveEquipped,
+  heartstoneMiddleLetter,
   heartstoneStringLength,
   historicalPrice,
   Item,
@@ -31,6 +33,7 @@ import {
   myPath,
   runChoice,
   setProperty,
+  spleenLimit,
   Stat,
   toBoolean,
   toInt,
@@ -46,6 +49,7 @@ import {
   $location,
   $monster,
   $monsters,
+  $skill,
   EternityCodpiece,
   get,
   have,
@@ -65,9 +69,11 @@ import {
   spleen_left,
   stomach_left,
 } from "../auto_consume";
+import { pathHasFamiliar } from "../auto_familiar";
 import { haveFreeRestAvailable } from "../auto_restore";
 import {
   auto_get_campground,
+  auto_have_skill,
   auto_is_valid,
   auto_log_error,
   auto_log_warning,
@@ -83,10 +89,17 @@ import {
 import { monster_to_location, zone_delay } from "../auto_zone";
 import { ConsumeAction } from "../autoscend_record";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
+import { in_avantGuard } from "../paths/avant_guard";
 import { in_plumber } from "../paths/path_of_the_plumber";
 import { in_small } from "../paths/small";
 import { in_tcrs } from "../paths/two_crazy_random_summer";
 import { is_werewolf } from "../paths/wereprofessor";
+import { L10_needAmuletOfPlotSignificance } from "../quests/level_10";
+import {
+  L11_needDrumMachine,
+  L11_needTombRatchet,
+  L11_needWetStew,
+} from "../quests/level_11";
 import {
   auto_haveBatWings,
   auto_haveChestMimic,
@@ -186,6 +199,105 @@ export function auto_heartstoneLuckRemaining(): number {
     return 0;
   }
   return 1;
+}
+
+function auto_heartstoneWordsToAimFor(): string[] {
+  // This function could be better, instead of being greedy
+  // It also doesn't consider what we can realistically encounter
+  const words: string[] = [];
+
+  // Try to learn these skills, unless we are low karma, then only LUCK
+  for (const [prop, word, always] of [
+    ["heartstoneBanishUnlocked", "GONE", false],
+    ["heartstoneBuffUnlocked", "BUFF", false],
+    ["heartstoneKillUnlocked", "KILL", false],
+    ["heartstoneLuckUnlocked", "LUCK", true],
+    ["heartstonePalsUnlocked", "PALS", false],
+    ["heartstoneStunUnlocked", "STUN", false],
+  ] as [string, string, boolean][]) {
+    if (!always && get("bankedKarma") < 1000) continue;
+
+    if (get(prop) === "false") words.push(word);
+  }
+
+  if (L11_needDrumMachine()) words.push("DRUM");
+
+  if (L10_needAmuletOfPlotSignificance()) words.push("PLOT");
+
+  // Copy / YR
+  words.push("TAPE");
+  // Free run + 30 turn banish
+  words.push("SOUP");
+
+  if (
+    auto_is_valid($item`grim fairy tale`) &&
+    !isActuallyEd() &&
+    spleenLimit() >= 3
+  ) {
+    words.push("TALE");
+  }
+
+  if (L11_needWetStew()) {
+    words.push("STEW");
+  }
+
+  if (L11_needTombRatchet()) {
+    words.push("TOMB");
+  }
+
+  // Go for +fam if we can
+  if (pathHasFamiliar() && !in_avantGuard()) {
+    words.push(
+      "CUTE",
+      "WARM",
+      "ROCK",
+      "WEEK",
+      "GRIN",
+      "CHOW",
+      "LOVE",
+      "WITH",
+      "WITH",
+      "TEAR",
+      "TIES",
+      "JIVE",
+      "GLOW",
+      "BLUE",
+      "FOOT",
+    );
+  }
+  // Some +item
+  words.push("BETA", "FIVE", "SOLE", "SOUL", "WIDE", "GAME", "FAST", "RAVE");
+
+  // BEAN?
+  return words;
+}
+
+export function auto_heartstoneShouldStealHeart(): boolean {
+  if (
+    !auto_haveHeartstone() ||
+    !haveEquipped(auto_getItemToEquipHeartstone()) ||
+    !auto_have_skill($skill`Steal Monster's Heart`)
+  ) {
+    return false;
+  }
+
+  const letter = heartstoneMiddleLetter().toUpperCase();
+
+  if (letter === "") return false;
+
+  const current = get("heartstoneLetters").toUpperCase();
+
+  let getRidOfCurrentWord = false;
+
+  for (const word of auto_heartstoneWordsToAimFor()) {
+    if (!word.startsWith(current)) continue;
+
+    if (word.startsWith(current + letter)) return true;
+    // If we're still on track for our current word, don't discard it
+    getRidOfCurrentWord = false;
+  }
+
+  return getRidOfCurrentWord;
 }
 
 export function auto_haveElfToilet(): boolean {
