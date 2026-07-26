@@ -432,12 +432,14 @@ export function auto_combatDefaultStage1(
   //convert enemy into a scaling fish monster
   if (
     (auto_talkToSomeFish(myLocation(), enemy) ||
+      // I'm too lazy at this time as this should be harmless, but the baseball check has a lot of overlap it feels like with the normal check
       (auto_baseballWantsSomeFish(myLocation(), enemy) &&
         auto_wantToBanish(enemy, myLocation()))) &&
     auto_have_skill($skill`Sea *dent: Talk to Some Fish`)
   ) {
     handleTracker({
       what: enemy,
+      location: myLocation(),
       detail: $skill`Sea *dent: Talk to Some Fish`.toString(),
       property: "auto_otherstuff",
     });

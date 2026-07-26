@@ -340,6 +340,7 @@ export function auto_spadeDigSkeleton(): boolean {
     }
     handleTracker({
       what: SPADE,
+      location: loc,
       detail: "FAILED: Dig up a skeleton",
       property: "auto_otherstuff",
     });

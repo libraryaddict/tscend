@@ -648,10 +648,6 @@ export function handleTracker({
   detail?: string;
   property: TrackerKey;
 }): void {
-  const entries: string[] = getProperty(property)
-    .split(/(?<!\\), /)
-    .filter(Boolean);
-
   const parts: string[] = [myDaycount().toString(), safeString(String(what))];
 
   if (location && location !== Location.none) {
@@ -663,6 +659,10 @@ export function handleTracker({
   }
 
   parts.push(myTurncount().toString());
+
+  const entries: string[] = getProperty(property)
+    .split(/(?<!\\), /)
+    .filter(Boolean);
 
   entries.push(`(${parts.join(":")})`);
 

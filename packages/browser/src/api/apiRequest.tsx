@@ -133,13 +133,10 @@ function parseTrackingEvents(raw: string): TrackingEvent[] {
       continue;
     }
 
-    entry = entry
-      .replace(/[()]/g, "")
-      .replace(/Asdon Marton:/g, "Asdon Martin -")
-      .replace(/CHEAT CODE:/g, "CHEAT CODE -");
+    entry = entry.replace(/^\(|\)$/g, "");
 
     const fields = splitUnescaped(entry, ":").map((field) =>
-      entityDecode(field.trim().replace(/\\(.)/g, "$1")),
+      entityDecode(field.trim().replace(/\\([.:])/g, "$1")),
     );
     const day = parseInt(fields[0], 10) || 0;
     const values = fields.slice(1);

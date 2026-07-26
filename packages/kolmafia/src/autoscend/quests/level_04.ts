@@ -82,6 +82,7 @@ export function L4_batCave(): boolean {
       auto_log_info("Wearing bat wings to get a free bat wing", "green");
       handleTracker({
         what: $item`bat wings`,
+        location: $location`The Bat Hole Entrance`,
         detail: $item`bat wing`.toString(),
         property: "auto_otherstuff",
       });
