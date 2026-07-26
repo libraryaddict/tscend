@@ -194,10 +194,7 @@ import {
   auto_scepterRollover,
 } from "./iotms/mr2023";
 import { auto_setLeprecondo } from "./iotms/mr2025";
-import {
-  auto_burnRemainingSpadeDigs,
-  auto_forcePlayRemainingBaseballGames,
-} from "./iotms/mr2026";
+import { auto_burnRemainingSpadeDigs } from "./iotms/mr2026";
 import {
   ed_doResting,
   ed_terminateSession,
@@ -1124,7 +1121,6 @@ export function doBedtime(): boolean {
   while (acquireHermitItem($item`11-leaf clover`)) {}
 
   auto_burnRemainingSpadeDigs(); // use archaeologist spade
-  auto_forcePlayRemainingBaseballGames(); // don't waste unused innings at rollover
 
   januaryToteAcquire($item`makeshift garbage shirt`); //doubles stat gains in the LOV tunnel. also keep leftover charges for tomorrow.
   loveTunnelAcquire(true, Stat.none, true, 3, true, 1);

@@ -977,7 +977,7 @@ export function LX_needToBurnUnusedLuck(): boolean {
     return false;
   }
   const spareAdv: number = myAdventures() - auto_advToReserve();
-  return consumptionProgress() >= 0.999 || spareAdv <= unusedLucky;
+  return consumptionProgress() >= 0.999 || spareAdv <= unusedLucky + 1;
 }
 
 function LX_bestLuckyBurnLocation(): Location {

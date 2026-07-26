@@ -1168,7 +1168,7 @@ export function auto_baseball_team(): Monster[] {
     .map((s) => Monster.get(s));
 }
 
-export function auto_baseball_game(plan: Element[]): boolean {
+function auto_baseball_game(plan: Element[]): boolean {
   if (plan.length !== 9) return false;
 
   if (auto_baseball_innings_left() === 0) return false;
@@ -1429,17 +1429,6 @@ export function auto_tryPlayBaseball(): boolean {
     });
   }
 
-  return true;
-}
-
-export function auto_forcePlayRemainingBaseballGames(): boolean {
-  if (auto_baseball_team().length < 9) return false;
-
-  const plan = auto_baseballPitchPlan();
-
-  if (!plan || !auto_baseball_game(plan)) {
-    return false;
-  }
   return true;
 }
 
