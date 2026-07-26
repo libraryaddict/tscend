@@ -1,3 +1,5 @@
+// @ts-expect-error TS2591 - avoid @types/node in our packages
+import { readFileSync } from "fs";
 import * as eslint from "@eslint/js";
 import { defineConfig, globalIgnores } from "eslint/config";
 import prettier from "eslint-config-prettier";
@@ -6,8 +8,38 @@ import tseslint from "typescript-eslint";
 import unusedImports from "eslint-plugin-unused-imports";
 import importSort from "eslint-plugin-simple-import-sort";
 
-const KOLMAFIA_VERSION = 29112;
-await verifyConstantsSinceRevision(KOLMAFIA_VERSION);
+// KoLmafia revision is taken from package.json, update it there.
+let cachedRevision = 0;
+
+// We try to get the revision from libram's cache before making a http request
+try {
+  cachedRevision = parseInt(
+    readFileSync(
+      "node_modules/eslint-plugin-libram/data/revision.json",
+      "utf-8",
+    ),
+  );
+} catch (e) {
+  // No cached data yet or malformed file
+}
+
+const KOLMAFIA_VERSION = parseInt(
+  JSON.parse(readFileSync("package.json", "utf-8")).resolutions.kolmafia.match(
+    /\d+/g,
+  )[1],
+);
+
+if (cachedRevision < KOLMAFIA_VERSION) {
+  console.log(
+    `Updating libram eslint plugin's data from ${cachedRevision} to ${KOLMAFIA_VERSION}`,
+  );
+  try {
+    // Rational is that the plugin will always perform a http request when invoking this function, etag header may be neglibable, but we want to skip it if possible
+    await verifyConstantsSinceRevision(KOLMAFIA_VERSION);
+  } catch (error) {
+    console.warn("Could not refresh libram eslint's data:", error);
+  }
+}
 
 export default defineConfig(
   globalIgnores(["**/dist/**"]),

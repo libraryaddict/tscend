@@ -97,6 +97,7 @@ function assembleDataPlugin() {
           await fs.writeFile(outFile, output);
         }
 
+        // eslint-disable-next-line no-undef
         console.log("Assembled files.");
       });
     },
@@ -165,9 +166,18 @@ async function readYaml(filePath) {
   return parse(await fs.readFile(filePath, "utf8"));
 }
 
+const packageJson = JSON.parse(await fs.readFile("package.json", "utf8"));
+const kolmafiaRevision = Number(
+  packageJson.resolutions.kolmafia.match(/\d+/g)[1],
+);
+
 const dataSources = {
   autoscend_settings: {
     contents: JSON.stringify(await buildSettingsData()),
+    loader: "json",
+  },
+  kolmafia_revision: {
+    contents: JSON.stringify(kolmafiaRevision),
     loader: "json",
   },
   setting_groups: {

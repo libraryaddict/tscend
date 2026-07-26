@@ -779,13 +779,9 @@ function auto_bestCupOfThirteenAction(
   // Boost these effects up when we're comparing, we prioritize item drop if we don't need meat
   const effectScores: Map<Effect, number> = new Map([
     [$effect`Runneth Over`, 100], // 50% item drop
-
     [$effect`Runneth On Empty`, myMeat() > meatReserve() + 3000 ? 5 : 200], // 100% meat drop
-    // eslint-disable-next-line libram/verify-constants
-    [$effect`Runneth a Tight Ship `, 1], // +5 fam exp
-
+    [$effect`Runneth a Tight Ship`, 1], // +5 fam exp
     [$effect`Runneth With The Pack`, 3], // +5 fam weight
-
     [$effect`Runneth Wild`, 0.1], // +100 init
   ]);
 
@@ -1324,7 +1320,7 @@ export function auto_tryPlayBaseball(): boolean {
           ? "Free Fights"
           : "Extra Zone Copies";
     handleTracker({
-      what: $item`baseball dIamond`,
+      what: $item`Baseball Diamond`,
       detail: `${team[a.finisherSlot]} - ${effect}`,
       property: "auto_otherstuff",
     });

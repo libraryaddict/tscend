@@ -3044,7 +3044,10 @@ function safe_preference_reset_wrapper(level: number): void {
 }
 
 export function main(...input: string[]): void {
-  sinceKolmafiaRevision(29104);
+  // Rationale for using package.json revision is that if we bumped the kolmafia version, then we clearly are building against newer features.
+
+  // @ts-expect-error TS2304 - 'require' is used for esbuild
+  sinceKolmafiaRevision(require("data:kolmafia_revision") as number); // eslint-disable-line @typescript-eslint/no-require-imports
 
   backupSetting("printStackOnAbort", true.toString());
   // parse input
