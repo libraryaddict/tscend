@@ -1,30 +1,40 @@
 anytime:
   name: "General"
-  description: "This setting can be changed at any time and takes effect immediately."
+  description: "These settings can be changed at any time and takes effect immediately."
   color: "#4cc9f0"
   children:
-    maximize:
+    anytime/maximize:
       name: "Maximize"
+    anytime/diet:
+      name: "Diet"
+    anytime/pulls:
+      name: "Pulls"
+    anytime/prices:
+      name: "Prices"
 iotm:
   name: "Iotm Settings"
-  description: "Settings for items bound to accounts, sorted by year of release descending."
+  description: "Settings for items bound to accounts"
   color: "#22c3a6"
   children:
-    iotm/mr2020:
-      name: "2020"
-    iotm/mr2019:
-      name: "2019"
-    iotm/mr2018:
-      name: "2018"
-    iotm/mr2017:
-      name: "2017"
-    iotm/mr2016:
-      name: "2016"
-    iotm/mr2015:
-      name: "2015"
+    iotm/guzzler:
+      name: "Guzzler (2020)"
+    iotm/mushroom:
+      name: "Mushroom Garden (2020)"
+    iotm/moonspoon:
+      name: "Moon Rune Spoon (2019)"
+    iotm/fortune:
+      name: "Clan Fortune Teller (2018)"
+    iotm/ashton:
+      name: "Ashton Martin (2017)"
+    iotm/floundry:
+      name: "Floundry (2016)"
+    iotm/sourceterminal:
+      name: "Source Terminal (2016)"
+    iotm/teatree:
+      name: "Tea Tree (2015)"
 pre:
   name: "Initial Ascension Defaults"
-  description: "Next time we initialize settings for autoscend this will be used to determine what we should set some Post type settings to."
+  description: "Next time we initialize settings for autoscend this will be used to determine what we should set some post type settings to."
   color: "#f2c14e"
 post:
   name: "Ascension Defaults"

@@ -1,0 +1,24 @@
+auto_limitConsume:
+  name: "Limit Consumption"
+  type: boolean
+  description: When true will not eat or drink anything automatically.
+auto_skipNightcap:
+  name: "Skip Nightcap"
+  type: boolean
+  description: When true will not get overdrunk at the end of the day
+auto_consumeMinAdvPerFill:
+  name: "Min Adventures Per Fill"
+  type: float
+  description: The minimum adventures per fill to consider for a consumable before eating or drinking it. Defaults to 0.0 and will consume whatever is available if necessary.
+auto_dontConsumeKeyLimePies:
+  name: "Don't Consume Key Lime Pies"
+  type: boolean
+  description: When false, will pull and eat key lime pies if we require keys. Does nothing if auto_limitConsume is true;
+auto_dontConsumeLegendPizzas:
+  name: "Don't Consume Legend Pizzas"
+  type: boolean
+  description: When false, will craft or pull and eat Cookbookbat Legend Pizzas. Does nothing if auto_limitConsume is true;
+auto_slowSteelOrgan:
+  name: "Slow Steel Organ"
+  type: boolean
+  description: When true, don't immediately go for the Steel Organ (assuming we want a steel organ).

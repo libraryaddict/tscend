@@ -1,0 +1,16 @@
+auto_consumePullDesirability:
+  name: "Pull Desirability Weight"
+  type: float
+  description: This value is used as a rough estimate of how much a pull is "worth" when the consumption algorithm is considering using pulls. Higher values will make it more conservative and vice-versa. Defaults to 5.0.
+auto_bedtime_pulls_skip:
+  name: "Skip Bedtime Pulls"
+  type: boolean
+  description: If true will not automatically pull any items at the end of day.
+auto_bedtime_pulls_pvp_multi:
+  name: "Bedtime Pulls PVP Multiplier"
+  type: float
+  description: Set the value of X for the formula for pull of rollover equipment. desireability = 1*rollover adventures + X*rollover PVP fights (if hippy stone is unlocked).
+auto_bedtime_pulls_min_desirability:
+  name: "Bedtime Pulls Min Desirability"
+  type: float
+  description: During bedtime we pull and wear equipment that gives extra adventures and optionally PVP fights on rollover. This variable determines the minimum allowed score improvement compared to current equipment before we consider pulling it.
