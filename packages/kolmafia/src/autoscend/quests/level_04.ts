@@ -29,7 +29,7 @@ import {
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
-  handleTracker$1,
+  handleTracker,
   internalQuestStatus,
 } from "../auto_util";
 import { zone_available } from "../auto_zone";
@@ -80,11 +80,11 @@ export function L4_batCave(): boolean {
     ) {
       autoForceEquip$3($item`bat wings`);
       auto_log_info("Wearing bat wings to get a free bat wing", "green");
-      handleTracker$1(
-        $item`bat wings`.toString(),
-        $item`bat wing`.toString(),
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: $item`bat wings`,
+        detail: $item`bat wing`.toString(),
+        property: "auto_otherstuff",
+      });
       return autoAdv($location`The Bat Hole Entrance`);
     } else if (
       !toBoolean(getProperty("batWingsGuanoJunction")) &&
@@ -96,11 +96,11 @@ export function L4_batCave(): boolean {
         "Wearing bat wings to get a free sonar-in-a-biscuit",
         "green",
       );
-      handleTracker$1(
-        $item`bat wings`.toString(),
-        $item`sonar-in-a-biscuit`.toString(),
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: $item`bat wings`,
+        detail: $item`sonar-in-a-biscuit`.toString(),
+        property: "auto_otherstuff",
+      });
       return autoAdv($location`Guano Junction`);
     } else if (
       !toBoolean(getProperty("batWingsBatratBurrow")) &&
@@ -111,11 +111,11 @@ export function L4_batCave(): boolean {
         "Wearing bat wings to get another free sonar-in-a-biscuit",
         "green",
       );
-      handleTracker$1(
-        $item`bat wings`.toString(),
-        $item`sonar-in-a-biscuit`.toString(),
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: $item`bat wings`,
+        detail: $item`sonar-in-a-biscuit`.toString(),
+        property: "auto_otherstuff",
+      });
       return autoAdv($location`The Batrat and Ratbat Burrow`);
     } else if (
       !toBoolean(getProperty("batWingsBeanbatChamber")) &&
@@ -123,11 +123,11 @@ export function L4_batCave(): boolean {
     ) {
       autoForceEquip$3($item`bat wings`);
       auto_log_info("Wearing bat wings to get a free enchanted bean", "green");
-      handleTracker$1(
-        $item`bat wings`.toString(),
-        $item`enchanted bean`.toString(),
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: $item`bat wings`,
+        detail: $item`enchanted bean`.toString(),
+        property: "auto_otherstuff",
+      });
       return autoAdv($location`The Beanbat Chamber`);
     }
   }

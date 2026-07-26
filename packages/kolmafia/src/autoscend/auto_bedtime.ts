@@ -158,7 +158,6 @@ import {
   meatReserveMessage,
   preferredLibram,
   shrugAT,
-  trim,
   wrap_item,
 } from "./auto_util";
 import { auto_process_kmail } from "./auto_zlib";
@@ -1517,12 +1516,12 @@ export function doBedtime(): boolean {
         );
         const tempChoice: Map<number, string> = new Map(
           splitString(
-            trim(
+            String(
               extrudeDays.get(min(extrudeDays.size, myDaycount()) - 1) ??
                 extrudeDays
                   .set(min(extrudeDays.size, myDaycount()) - 1, "")
                   .get(min(extrudeDays.size, myDaycount()) - 1),
-            ),
+            ).trim(),
             ";",
           ).map((_v, _i) => [_i, _v]),
         );

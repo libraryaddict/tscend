@@ -34,7 +34,7 @@ import {
   auto_have_skill,
   auto_wantToBanish,
   effectiveDropChance,
-  handleTracker$1,
+  handleTracker,
   isFreeMonster,
 } from "../auto_util";
 import { auto_backupTarget } from "../iotms/mr2021";
@@ -138,11 +138,11 @@ export function auto_combatDefaultStage1(
     myLocation() === $location`The Themthar Hills` &&
     enemy !== $monster`dirty thieving brigand`
   ) {
-    handleTracker$1(
-      enemy.toString(),
-      $item`waffle`.toString(),
-      "auto_replaces",
-    );
+    handleTracker({
+      what: enemy,
+      detail: $item`waffle`.toString(),
+      property: "auto_replaces",
+    });
     return useItems($item`waffle`, Item.none);
   }
 
@@ -315,11 +315,11 @@ export function auto_combatDefaultStage1(
     auto_canUse($skill`Recall Facts: %phylum Circadian Rhythms`) &&
     !ag_is_bodyguard()
   ) {
-    handleTracker$1(
-      $skill`Recall Facts: %phylum Circadian Rhythms`.toString(),
-      monsterPhylum(enemy).toString(),
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: $skill`Recall Facts: %phylum Circadian Rhythms`,
+      detail: monsterPhylum(enemy).toString(),
+      property: "auto_otherstuff",
+    });
     return auto_useSkill($skill`Recall Facts: %phylum Circadian Rhythms`);
   }
 
@@ -329,11 +329,11 @@ export function auto_combatDefaultStage1(
     auto_canUse($skill`Recall Facts: Monster Habitats`) &&
     !ag_is_bodyguard()
   ) {
-    handleTracker$1(
-      $skill`Recall Facts: Monster Habitats`.toString(),
-      enemy.toString(),
-      "auto_copies",
-    );
+    handleTracker({
+      what: $skill`Recall Facts: Monster Habitats`,
+      detail: enemy.toString(),
+      property: "auto_copies",
+    });
     return auto_useSkill($skill`Recall Facts: Monster Habitats`);
   }
 
@@ -342,11 +342,11 @@ export function auto_combatDefaultStage1(
     auto_canUse($skill`Create an Afterimage`) &&
     !ag_is_bodyguard()
   ) {
-    handleTracker$1(
-      $skill`Create an Afterimage`.toString(),
-      enemy.toString(),
-      "auto_copies",
-    );
+    handleTracker({
+      what: $skill`Create an Afterimage`,
+      detail: enemy.toString(),
+      property: "auto_copies",
+    });
     combat_status_add("copied");
     return auto_useSkill($skill`Create an Afterimage`);
   }
@@ -356,11 +356,11 @@ export function auto_combatDefaultStage1(
     auto_RWBBlastTarget(enemy) &&
     auto_canUse($skill`%fn, fire a Red, White and Blue Blast`)
   ) {
-    handleTracker$1(
-      $skill`%fn, fire a Red, White and Blue Blast`.toString(),
-      enemy.toString(),
-      "auto_copies",
-    );
+    handleTracker({
+      what: $skill`%fn, fire a Red, White and Blue Blast`,
+      detail: enemy.toString(),
+      property: "auto_copies",
+    });
     return auto_useSkill($skill`%fn, fire a Red, White and Blue Blast`);
   }
 
@@ -376,16 +376,16 @@ export function auto_combatDefaultStage1(
     auto_canUse($skill`Back-Up to your Last Enemy`) &&
     !reserveAdvsForFreeFights
   ) {
-    handleTracker$1(
-      enemy.toString(),
-      $skill`Back-Up to your Last Enemy`.toString(),
-      "auto_replaces",
-    );
-    handleTracker$1(
-      backedUpMonster.toString(),
-      $skill`Back-Up to your Last Enemy`.toString(),
-      "auto_copies",
-    );
+    handleTracker({
+      what: enemy,
+      detail: $skill`Back-Up to your Last Enemy`.toString(),
+      property: "auto_replaces",
+    });
+    handleTracker({
+      what: backedUpMonster,
+      detail: $skill`Back-Up to your Last Enemy`.toString(),
+      property: "auto_copies",
+    });
     return auto_useSkill($skill`Back-Up to your Last Enemy`);
   }
   //saber copy (iotm) is different from other copies in that it comes with a free escape
@@ -395,7 +395,7 @@ export function auto_combatDefaultStage1(
   //{
   //	if(enemy===$monster[Blooper] && needDigitalKey())
   //	{
-  //		handleTracker(enemy, $skill[Use the Force], "auto_copies");
+  //		handleTracker({ what: enemy, detail: $skill[Use the Force], property: "auto_copies" });
   //		return auto_combatSaberCopy();
   //	}
   //}
@@ -406,11 +406,11 @@ export function auto_combatDefaultStage1(
     ) &&
     auto_canUse($skill`%fn, spit on them!`)
   ) {
-    handleTracker$1(
-      $skill`%fn, spit on them!`.toString(),
-      enemy.toString(),
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: $skill`%fn, spit on them!`,
+      detail: enemy.toString(),
+      property: "auto_otherstuff",
+    });
     return auto_useSkill($skill`%fn, spit on them!`, true);
   }
   //[Patriotic Eagle] familiar skill that gives a useful buff
@@ -436,11 +436,11 @@ export function auto_combatDefaultStage1(
         auto_wantToBanish(enemy, myLocation()))) &&
     auto_have_skill($skill`Sea *dent: Talk to Some Fish`)
   ) {
-    handleTracker$1(
-      enemy.toString(),
-      $skill`Sea *dent: Talk to Some Fish`.toString(),
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: enemy,
+      detail: $skill`Sea *dent: Talk to Some Fish`.toString(),
+      property: "auto_otherstuff",
+    });
     return auto_useSkill($skill`Sea *dent: Talk to Some Fish`);
   }
   //these special conditions make it impossible to do anything but attack with weapon.

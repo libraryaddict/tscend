@@ -98,8 +98,7 @@ import {
   auto_log_info,
   auto_log_warning,
   auto_remainingShantyTurns,
-  handleTracker$1,
-  handleTracker$2,
+  handleTracker,
   isGalaktikAvailable,
   meatReserve,
   preferredLibram,
@@ -231,12 +230,12 @@ function auto_post_adventure(): boolean {
         `Encountered forced noncombat: ${getProperty("lastEncounter")}`,
         "blue",
       );
-      handleTracker$2(
-        getProperty("auto_forceNonCombatSource"),
-        myLocation(),
-        getProperty("lastEncounter"),
-        "auto_forcedNC",
-      );
+      handleTracker({
+        what: getProperty("auto_forceNonCombatSource"),
+        location: myLocation(),
+        detail: getProperty("lastEncounter"),
+        property: "auto_forcedNC",
+      });
     }
     setProperty("auto_forceNonCombatSource", "");
     setProperty("auto_forceNonCombatLocation", "");
@@ -254,11 +253,11 @@ function auto_post_adventure(): boolean {
     );
     if (toMonster(getProperty("lastEncounter")) === lastMonster()) {
       //only track the combat part of a combat+NC encounter (like everfull dart perks)
-      handleTracker$1(
-        getProperty("lastEncounter"),
-        getProperty("auto_instakillSource"),
-        "auto_instakill",
-      );
+      handleTracker({
+        what: getProperty("lastEncounter"),
+        detail: getProperty("auto_instakillSource"),
+        property: "auto_instakill",
+      });
     }
     setProperty("auto_instakillSource", "");
     setProperty("auto_instakillSuccess", false.toString());

@@ -133,7 +133,7 @@ import {
   canSummonMonster,
   canYellowRay,
   cloversAvailable,
-  handleTracker$1,
+  handleTracker,
   internalQuestStatus,
   remainingNCForcesToday,
   summonMonster,
@@ -1104,11 +1104,11 @@ export function L12_filthworms(): boolean {
 
   if (auto_cargoShortsOpenPocket(343)) {
     // skip straight to the Royal Guard Chamber
-    handleTracker$1(
-      wrap_item($item`Cargo Cultist Shorts`).toString(),
-      $effect`Filthworm Drone Stench`.toString(),
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: wrap_item($item`Cargo Cultist Shorts`),
+      detail: $effect`Filthworm Drone Stench`.toString(),
+      property: "auto_otherstuff",
+    });
   }
 
   preventFratOutfitsIfNeeded();

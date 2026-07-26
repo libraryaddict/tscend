@@ -604,52 +604,69 @@ function debugMaximize(req: string, meat: number): void {
   //cli_execute("ashref get_inventory");
 }
 
-export function trim(input: string): string {
-  return input.trim();
-}
-
 function safeString(input: string): string {
-  return input.replaceAll(/[,:]/g, ".");
+  return input.replaceAll(/[\\,:]/g, (match) => `\\${match}`);
 }
 
-export function handleTracker(used: string, tracker: string): void {
-  let cur: string = getProperty(tracker);
-  if (cur !== "") {
-    cur = `${cur}, `;
-  }
-  cur = `${cur}(${myDaycount()}:${safeString(used)}:${myTurncount()})`;
-  setProperty(tracker, cur);
-}
+export type TrackerKey =
+  | "auto_banishes"
+  | "auto_baseball"
+  | "auto_chewed"
+  | "auto_copies"
+  | "auto_drunken"
+  | "auto_eaten"
+  | "auto_forcedNC"
+  | "auto_forceNonCombatSource"
+  | "auto_freeruns"
+  | "auto_funPrefix"
+  | "auto_funTracker"
+  | "auto_instakill"
+  | "auto_instakillSource"
+  | "auto_iotm_claim"
+  | "auto_lashes"
+  | "auto_lucky"
+  | "auto_luckySource"
+  | "auto_mapperidot"
+  | "auto_otherstuff"
+  | "auto_powerfulglove"
+  | "auto_pulls"
+  | "auto_renenutet"
+  | "auto_replaces"
+  | "auto_sniffs"
+  | "auto_tracker_path"
+  | "auto_wishes"
+  | "auto_yellowRays";
 
-export function handleTracker$1(
-  used: string,
-  detail: string,
-  tracker: string,
-): void {
-  let cur: string = getProperty(tracker);
-  if (cur !== "") {
-    cur = `${cur}, `;
-  }
-  cur = `${cur}(${myDaycount()}:${safeString(used)}:${safeString(detail)}:${myTurncount()})`;
-  setProperty(tracker, cur);
-}
+export function handleTracker({
+  what,
+  location,
+  detail,
+  property,
+}: {
+  what: string | Monster | Phylum | Item | Familiar | Skill;
+  location?: Location;
+  detail?: string;
+  property: TrackerKey;
+}): void {
+  const entries: string[] = getProperty(property)
+    .split(/(?<!\\), /)
+    .filter(Boolean);
 
-export function handleTracker$2(
-  used: string,
-  loc: Location,
-  detail: string,
-  tracker: string,
-): void {
-  let cur: string = getProperty(tracker);
-  if (cur !== "") {
-    cur = `${cur}, `;
+  const parts: string[] = [myDaycount().toString(), safeString(String(what))];
+
+  if (location && location !== Location.none) {
+    parts.push(safeString(location.toString()));
   }
-  if (!loc || loc === Location.none) {
-    handleTracker$1(used, detail, tracker);
-    return;
+
+  if (detail !== undefined) {
+    parts.push(safeString(detail));
   }
-  cur = `${cur}(${myDaycount()}:${safeString(used)}:${safeString(loc.toString())}:${safeString(detail)}:${myTurncount()})`;
-  setProperty(tracker, cur);
+
+  parts.push(myTurncount().toString());
+
+  entries.push(`(${parts.join(":")})`);
+
+  setProperty(property, entries.join(", "));
 }
 
 export function organsFull(): boolean {
@@ -916,11 +933,11 @@ export function canYellowRay(target: Monster = Monster.none): boolean {
     ) {
       //need at least 1 glob of wet paper to buy one
       if (buy($coinmaster`Using your Shower Thoughts`, 1, $item`spitball`)) {
-        handleTracker$1(
-          $item`April Shower Thoughts shield`.toString(),
-          $item`spitball`.toString(),
-          "auto_iotm_claim",
-        );
+        handleTracker({
+          what: $item`April Shower Thoughts shield`,
+          detail: $item`spitball`.toString(),
+          property: "auto_iotm_claim",
+        });
       }
     }
     // Spitball from April Shower Thoughts Shiled has a 100 turn cd, but is a free-kill but is not unlimited
@@ -2483,12 +2500,12 @@ export function cloverUsageFinish(): boolean {
       `Wandering adventure interrupted our clover adventure (${myLocation()}).`,
     );
   } else {
-    handleTracker$2(
-      getProperty("auto_luckySource"),
-      myLocation(),
-      getProperty("lastEncounter"),
-      "auto_lucky",
-    );
+    handleTracker({
+      what: getProperty("auto_luckySource"),
+      location: myLocation(),
+      detail: getProperty("lastEncounter"),
+      property: "auto_lucky",
+    });
     setProperty("auto_luckySource", "none");
   }
   return true;
@@ -3769,11 +3786,11 @@ export function doNumberology(
         `choice.php?whichchoice=1103&pwd=&option=1&num=${numberology.get(numberwang) ?? numberology.set(numberwang, 0).get(numberwang)}`,
       );
       autoAdvBypass(0, pages, $location`Noob Cave`, option);
-      handleTracker$1(
-        $monster`War Frat 151st Infantryman`.toString(),
-        $skill`Calculate the Universe`.toString(),
-        "auto_copies",
-      );
+      handleTracker({
+        what: $monster`War Frat 151st Infantryman`,
+        detail: $skill`Calculate the Universe`.toString(),
+        property: "auto_copies",
+      });
     } else {
       visitUrl(
         "runskillz.php?pwd&action=Skillz&whichskill=144&quantity=1",

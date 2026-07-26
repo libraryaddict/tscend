@@ -60,7 +60,7 @@ import {
   AutoStopError,
   effectAblativeArmor,
   executeFlavour,
-  handleTracker$1,
+  handleTracker,
   internalQuestStatus,
   setFlavour,
 } from "../auto_util";
@@ -313,11 +313,11 @@ export function rainManSummon(target: Monster, speculative: boolean): boolean {
   );
   // autoAdvBypass will escape from the choice and return false if the monster cannot be fought
   if (autoAdvBypass(0, pages, $location`Noob Cave`)) {
-    handleTracker$1(
-      target.toString(),
-      $skill`Rain Man`.toString(),
-      "auto_copies",
-    );
+    handleTracker({
+      what: target,
+      detail: $skill`Rain Man`.toString(),
+      property: "auto_copies",
+    });
     return true;
   }
   return false;

@@ -12,7 +12,7 @@ import { $item } from "libram";
 import { possessEquipment } from "../auto_equipment";
 import {
   auto_is_valid,
-  handleTracker$1,
+  handleTracker,
   internalQuestStatus,
 } from "../auto_util";
 import { in_zootomist } from "../paths/zootomist";
@@ -111,11 +111,11 @@ export function ARBSupplyDrop(req: string): boolean {
       break;
   }
   if (alliedRadio(radio)) {
-    handleTracker$1(
-      $item`Allied Radio Backpack`.toString(),
-      radio,
-      "auto_iotm_claim",
-    );
+    handleTracker({
+      what: $item`Allied Radio Backpack`,
+      detail: radio,
+      property: "auto_iotm_claim",
+    });
     return true;
   }
 

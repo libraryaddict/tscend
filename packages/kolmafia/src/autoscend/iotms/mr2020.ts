@@ -79,7 +79,6 @@ import {
   auto_log_warning,
   currentPoolSkill,
   handleTracker,
-  handleTracker$1,
   internalQuestStatus,
   poolSkillPracticeGains,
   wrap_item,
@@ -201,7 +200,7 @@ function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean {
   }
 
   if (ret) {
-    handleTracker(sk.toString(), "auto_powerfulglove");
+    handleTracker({ what: sk, property: "auto_powerfulglove" });
   } else {
     // if we fail to cast a skill, odds are something has gone wrong with
     // mafia's tracking. Let's check to make sure, then make sure we stop
@@ -582,11 +581,11 @@ export function auto_cargoShortsOpenPocket$2(
     `choice.php?pwd=${myHash()}&whichchoice=1420&option=1&pocket=${availablePocket(m)}`,
   );
   if (autoAdvBypass(0, pages, $location`Noob Cave`)) {
-    handleTracker$1(
-      m.toString(),
-      wrap_item($item`Cargo Cultist Shorts`).toString(),
-      "auto_copies",
-    );
+    handleTracker({
+      what: m,
+      detail: wrap_item($item`Cargo Cultist Shorts`).toString(),
+      property: "auto_copies",
+    });
     return true;
   }
   return false;
@@ -751,11 +750,11 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
     // Leading Yourself Right to Them (Map the Monsters)
     const enemy: Monster = auto_monsterToMap(myLocation(), page);
     if (enemy !== Monster.none) {
-      handleTracker$1(
-        $skill`Map the Monsters`.toString(),
-        enemy.toString(),
-        "auto_mapperidot",
-      );
+      handleTracker({
+        what: $skill`Map the Monsters`,
+        detail: enemy.toString(),
+        property: "auto_mapperidot",
+      });
       combat_status_add("choiceMonster");
       runChoice(1, `heyscriptswhatsupwinkwink=${toInt(enemy)}`);
     } else {

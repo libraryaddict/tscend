@@ -44,8 +44,7 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
-  handleTracker$1,
-  trim,
+  handleTracker,
 } from "../auto_util";
 import { is_boris } from "../paths/avatar_of_boris";
 import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
@@ -98,11 +97,11 @@ export function handleFaxMonster(
     if (getProperty("photocopyMonster") === enemy.toString()) {
       auto_log_info("We already have the copy! Let's jam!", "blue");
       if (fightIt) {
-        handleTracker$1(
-          enemy.toString(),
-          $item`deluxe fax machine`.toString(),
-          "auto_copies",
-        );
+        handleTracker({
+          what: enemy,
+          detail: $item`deluxe fax machine`.toString(),
+          property: "auto_copies",
+        });
         return autoAdvBypass$1(
           "inv_use.php?pwd&which=3&whichitem=4873",
           $location`Noob Cave`,
@@ -128,11 +127,11 @@ export function handleFaxMonster(
       //got correct photocopied monster! Fight it now if desired
       auto_log_info(`Sucessfully faxed ${enemy}`);
       if (fightIt) {
-        handleTracker$1(
-          enemy.toString(),
-          $item`deluxe fax machine`.toString(),
-          "auto_copies",
-        );
+        handleTracker({
+          what: enemy,
+          detail: $item`deluxe fax machine`.toString(),
+          property: "auto_copies",
+        });
         return autoAdvBypass$1(
           "inv_use.php?pwd&which=3&whichitem=4873",
           $location`Noob Cave`,
@@ -649,12 +648,12 @@ export function auto_floundryAction(): boolean {
         ]),
       );
       const myFloundry: Item = toItem(
-        trim(
+        String(
           floundryChoice.get(min(floundryChoice.size, myDaycount()) - 1) ??
             floundryChoice
               .set(min(floundryChoice.size, myDaycount()) - 1, "")
               .get(min(floundryChoice.size, myDaycount()) - 1),
-        ),
+        ).trim(),
       );
       if (auto_floundryAction$1(myFloundry)) {
         if (

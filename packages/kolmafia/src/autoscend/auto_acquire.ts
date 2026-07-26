@@ -381,7 +381,7 @@ export function pullXWhenHaveY(
       auto_log_warning(`Failed pulling ${howMany} of ${it}`, "red");
     } else {
       for (let i: number = 0; i < howMany; ++i) {
-        handleTracker(it.toString(), "auto_pulls");
+        handleTracker({ what: it, property: "auto_pulls" });
       }
     }
     return retval;

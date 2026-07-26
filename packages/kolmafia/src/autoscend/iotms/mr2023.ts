@@ -120,8 +120,7 @@ import {
   auto_wantToFreeKillWithNoDrops,
   backupSetting,
   can_read_skillbook,
-  handleTracker$1,
-  handleTracker$2,
+  handleTracker,
   haveCampgroundMaid,
   isFreeMonster,
   isGuildClass,
@@ -450,12 +449,12 @@ export function auto_makeMonkeyPawWish(wish: Effect): boolean {
   }
   const success: boolean = monkeyPaw(wish);
   if (success) {
-    handleTracker$2(
-      $item`cursed monkey's paw`.toString(),
-      myLocation(),
-      wish.toString(),
-      "auto_wishes",
-    );
+    handleTracker({
+      what: $item`cursed monkey's paw`,
+      location: myLocation(),
+      detail: wish.toString(),
+      property: "auto_wishes",
+    });
   }
   return success;
 }
@@ -473,11 +472,11 @@ export function auto_makeMonkeyPawWish$1(wish: Item): boolean {
   }
   const success: boolean = monkeyPaw(wish);
   if (success) {
-    handleTracker$1(
-      $item`cursed monkey's paw`.toString(),
-      wish.toString(),
-      "auto_wishes",
-    );
+    handleTracker({
+      what: $item`cursed monkey's paw`,
+      detail: wish.toString(),
+      property: "auto_wishes",
+    });
   }
   return success;
 }
@@ -687,11 +686,11 @@ export function auto_buyFrom2002MrStore(): void {
   ) {
     buy($coinmaster`Mr. Store 2002`, 1, itemConsidering);
     use(itemConsidering);
-    handleTracker$1(
-      "Mr. Store 2002",
-      `Claimed ${itemConsidering}`,
-      "auto_iotm_claim",
-    );
+    handleTracker({
+      what: "Mr. Store 2002",
+      detail: `Claimed ${itemConsidering}`,
+      property: "auto_iotm_claim",
+    });
   }
   //Pro skateboard to dupe tomb rat king drops
   itemConsidering = $item`pro skateboard`;
@@ -701,11 +700,11 @@ export function auto_buyFrom2002MrStore(): void {
     !possessEquipment(itemConsidering)
   ) {
     buy($coinmaster`Mr. Store 2002`, 1, itemConsidering);
-    handleTracker$1(
-      "Mr. Store 2002",
-      `Claimed ${itemConsidering}`,
-      "auto_iotm_claim",
-    );
+    handleTracker({
+      what: "Mr. Store 2002",
+      detail: `Claimed ${itemConsidering}`,
+      property: "auto_iotm_claim",
+    });
   }
   //FLUDA is +25% item, and a pickpocket
   itemConsidering = $item`Flash Liquidizer Ultra Dousing Accessory`;
@@ -715,11 +714,11 @@ export function auto_buyFrom2002MrStore(): void {
     !possessEquipment(itemConsidering)
   ) {
     buy($coinmaster`Mr. Store 2002`, 1, itemConsidering);
-    handleTracker$1(
-      "Mr. Store 2002",
-      `Claimed ${itemConsidering}`,
-      "auto_iotm_claim",
-    );
+    handleTracker({
+      what: "Mr. Store 2002",
+      detail: `Claimed ${itemConsidering}`,
+      property: "auto_iotm_claim",
+    });
   }
   // meat butler on day 1 of run
   itemConsidering = $item`Meat Butler`;
@@ -733,11 +732,11 @@ export function auto_buyFrom2002MrStore(): void {
     buy($coinmaster`Mr. Store 2002`, 1, itemConsidering);
     use(itemConsidering);
     visitUrl("campground.php"); // get butler meat
-    handleTracker$1(
-      "Mr. Store 2002",
-      `Claimed ${itemConsidering}`,
-      "auto_iotm_claim",
-    );
+    handleTracker({
+      what: "Mr. Store 2002",
+      detail: `Claimed ${itemConsidering}`,
+      property: "auto_iotm_claim",
+    });
   }
   // giant black monolith. Mostly useful at low level for stats
   if (
@@ -754,11 +753,11 @@ export function auto_buyFrom2002MrStore(): void {
     ) {
       buy($coinmaster`Mr. Store 2002`, 1, itemConsidering);
       use(itemConsidering);
-      handleTracker$1(
-        "Mr. Store 2002",
-        `Claimed ${itemConsidering}`,
-        "auto_iotm_claim",
-      );
+      handleTracker({
+        what: "Mr. Store 2002",
+        detail: `Claimed ${itemConsidering}`,
+        property: "auto_iotm_claim",
+      });
       visitUrl("campground.php?action=monolith");
     }
   }
@@ -775,11 +774,11 @@ export function auto_buyFrom2002MrStore(): void {
       remainingCatalogCredits(),
       itemConsidering,
     );
-    handleTracker$1(
-      "Mr. Store 2002",
-      `Claimed ${itemConsidering}`,
-      "auto_iotm_claim",
-    );
+    handleTracker({
+      what: "Mr. Store 2002",
+      detail: `Claimed ${itemConsidering}`,
+      property: "auto_iotm_claim",
+    });
   }
   // loathing idol microphone. Use remaining credits
   itemConsidering = $item`Loathing Idol Microphone`;
@@ -789,11 +788,11 @@ export function auto_buyFrom2002MrStore(): void {
       remainingCatalogCredits(),
       itemConsidering,
     );
-    handleTracker$1(
-      "Mr. Store 2002",
-      `Claimed ${itemConsidering}`,
-      "auto_iotm_claim",
-    );
+    handleTracker({
+      what: "Mr. Store 2002",
+      detail: `Claimed ${itemConsidering}`,
+      property: "auto_iotm_claim",
+    });
   }
 }
 
@@ -1452,7 +1451,12 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
       }
     }
   } else {
-    handleTracker$2("Citizen of a Zone", myLocation(), goal, "auto_otherstuff");
+    handleTracker({
+      what: "Citizen of a Zone",
+      location: myLocation(),
+      detail: goal,
+      property: "auto_otherstuff",
+    });
     return true;
   }
   return false;
@@ -1512,11 +1516,11 @@ export function auto_defaultBurnLeaves(): boolean {
   ) {
     // get and use the forest canopy bed if we don't have one already and have a Cincho as it is +5 free rests
     if (create(1, $item`forest canopy bed`)) {
-      handleTracker$1(
-        "Burning Leaves",
-        `Claimed ${$item`forest canopy bed`}`,
-        "auto_iotm_claim",
-      );
+      handleTracker({
+        what: "Burning Leaves",
+        detail: `Claimed ${$item`forest canopy bed`}`,
+        property: "auto_iotm_claim",
+      });
       success = success && use(1, $item`forest canopy bed`);
     } else {
       return false;
@@ -1530,11 +1534,11 @@ export function auto_defaultBurnLeaves(): boolean {
   ) {
     // Get the Resined effect if we don't have it as it is net positive for leaves.
     if (create(1, $item`distilled resin`)) {
-      handleTracker$1(
-        "Burning Leaves",
-        `Claimed ${$item`distilled resin`}`,
-        "auto_iotm_claim",
-      );
+      handleTracker({
+        what: "Burning Leaves",
+        detail: `Claimed ${$item`distilled resin`}`,
+        property: "auto_iotm_claim",
+      });
       success = success && use(1, $item`distilled resin`);
     } else {
       return false;
@@ -1548,11 +1552,11 @@ export function auto_defaultBurnLeaves(): boolean {
   ) {
     if (create(1, $item`autumnic bomb`)) {
       //Reduces enemy hp in half, useful for bodyguards with 40K hp
-      handleTracker$1(
-        "Burning Leaves",
-        `Claimed ${$item`autumnic bomb`}`,
-        "auto_iotm_claim",
-      );
+      handleTracker({
+        what: "Burning Leaves",
+        detail: `Claimed ${$item`autumnic bomb`}`,
+        property: "auto_iotm_claim",
+      });
     } else {
       success = false;
     }
@@ -1577,11 +1581,11 @@ export function auto_makeAutumnalAegis(): boolean {
   ) {
     if (create(1, $item`autumnal aegis`)) {
       // So-so resistance to all elements, 250 DA (for megalo-city)
-      handleTracker$1(
-        "Burning Leaves",
-        `Claimed ${$item`autumnal aegis`}`,
-        "auto_iotm_claim",
-      );
+      handleTracker({
+        what: "Burning Leaves",
+        detail: `Claimed ${$item`autumnal aegis`}`,
+        property: "auto_iotm_claim",
+      });
     }
   }
   return availableAmount($item`autumnal aegis`) > 0;

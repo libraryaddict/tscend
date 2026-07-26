@@ -113,8 +113,7 @@ import {
   auto_wantToFreeKillWithNoDrops,
   auto_zonePhylumPercent,
   canSummonMonster,
-  handleTracker$1,
-  handleTracker$2,
+  handleTracker,
   internalQuestStatus,
   isFreeMonster,
   knapsack,
@@ -681,11 +680,11 @@ export function auto_setLeprecondo(doingBedtime: boolean): boolean {
     target[3],
   );
   if (success) {
-    handleTracker$1(
-      $item`Leprecondo`.toString(),
-      target.join(", "),
-      "auto_iotm_claim",
-    );
+    handleTracker({
+      what: $item`Leprecondo`,
+      detail: target.join(", "),
+      property: "auto_iotm_claim",
+    });
   } else {
     auto_log_info("Leprecondo.setFurniture() reported failure", "red");
   }
@@ -907,21 +906,21 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     monOpts.get(bestmon) ?? monOpts.set(bestmon, Monster.none).get(bestmon);
   if (toInt(popChoice) === 0 || auto_peridotSetZone(loc)) {
     //still nothing found so just peace out. Or we want to set the zone without using an adventure.
-    handleTracker$2(
-      $item`Peridot of Peril`.toString(),
-      loc,
-      "Peace out",
-      "auto_mapperidot",
-    );
+    handleTracker({
+      what: $item`Peridot of Peril`,
+      location: loc,
+      detail: "Peace out",
+      property: "auto_mapperidot",
+    });
     runChoice(2); //if no match is found, hit the exit choice
     return;
   }
-  handleTracker$2(
-    $item`Peridot of Peril`.toString(),
-    loc,
-    popChoice.toString(),
-    "auto_mapperidot",
-  );
+  handleTracker({
+    what: $item`Peridot of Peril`,
+    location: loc,
+    detail: popChoice.toString(),
+    property: "auto_mapperidot",
+  });
   combat_status_add("choiceMonster");
   runChoice(1, `bandersnatch=${toInt(popChoice)}`);
   return;
@@ -1243,12 +1242,12 @@ export function beretBusk(effectMultiplier: string): boolean {
   }
 
   if (useSkill(1, $skill`Beret Busking`)) {
-    handleTracker$2(
-      $item`prismatic beret`.toString(),
-      myLocation(),
-      `Beret busk ${getProperty("_beretBuskingUses")} at ${buskPower} power`,
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: $item`prismatic beret`,
+      location: myLocation(),
+      detail: `Beret busk ${getProperty("_beretBuskingUses")} at ${buskPower} power`,
+      property: "auto_otherstuff",
+    });
     return true;
   }
 
@@ -1296,7 +1295,11 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
 
   function mobiusChoice(opt: string): void {
     const num: number = choiceMap.get(opt) ?? choiceMap.set(opt, 0).get(opt);
-    handleTracker$1($item`Möbius ring`.toString(), opt, "auto_otherstuff");
+    handleTracker({
+      what: $item`Möbius ring`,
+      detail: opt,
+      property: "auto_otherstuff",
+    });
     runChoice(num);
   }
 
@@ -1500,12 +1503,12 @@ export function auto_waveTheZone(): boolean {
   }
   if (waveTheZone) {
     if (useSkill(1, $skill`Sea *dent: Summon a Wave`)) {
-      handleTracker$2(
-        $item`Monodent of the Sea`.toString(),
-        myLocation(),
-        "Summon a Wave",
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: $item`Monodent of the Sea`,
+        location: myLocation(),
+        detail: "Summon a Wave",
+        property: "auto_otherstuff",
+      });
       return true;
     }
   }
@@ -1832,19 +1835,19 @@ export function auto_getBCZItems(): void {
   }
 
   if (auto_wantToBCZ($skill`BCZ: Craft a Pheromone Cocktail`)) {
-    handleTracker$1(
-      $item`blood cubic zirconia`.toString(),
-      $item`pheromone cocktail`.toString(),
-      "auto_iotm_claim",
-    );
+    handleTracker({
+      what: $item`blood cubic zirconia`,
+      detail: $item`pheromone cocktail`.toString(),
+      property: "auto_iotm_claim",
+    });
     useSkill(1, $skill`BCZ: Craft a Pheromone Cocktail`);
   }
   if (auto_wantToBCZ($skill`BCZ: Prepare Spinal Tapas`)) {
-    handleTracker$1(
-      $item`blood cubic zirconia`.toString(),
-      $item`spinal tapas`.toString(),
-      "auto_iotm_claim",
-    );
+    handleTracker({
+      what: $item`blood cubic zirconia`,
+      detail: $item`spinal tapas`.toString(),
+      property: "auto_iotm_claim",
+    });
     useSkill(1, $skill`BCZ: Prepare Spinal Tapas`);
   }
 

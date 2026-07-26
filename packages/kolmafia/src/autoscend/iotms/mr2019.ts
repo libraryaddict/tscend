@@ -87,7 +87,6 @@ import {
   auto_log_info,
   auto_log_warning,
   handleTracker,
-  handleTracker$1,
   inCanadiaSign,
   inGnomeSign,
   inKnollSign,
@@ -343,7 +342,10 @@ export function auto_sausageEatEmUp(maxToEat: number): boolean {
       auto_log_warning("Somehow failed to eat a sausage! What??", "red");
       return false;
     }
-    handleTracker($item`magical sausage`.toString(), "auto_eaten");
+    handleTracker({
+      what: $item`magical sausage`,
+      property: "auto_eaten",
+    });
     maxToEat--;
   }
   // burn any mp that'll go away when equipment switches back
@@ -917,7 +919,11 @@ export function auto_beachCombHead(name: string): boolean {
   );
 
   if (ret) {
-    handleTracker$1($item`Beach Comb`.toString(), name, "auto_otherstuff");
+    handleTracker({
+      what: $item`Beach Comb`,
+      detail: name,
+      property: "auto_otherstuff",
+    });
   }
   return ret;
 }
@@ -1048,11 +1054,11 @@ function auto_pillKeeper(pill: number): boolean {
         detail = "random";
         break;
     }
-    handleTracker$1(
-      $item`Eight Days a Week Pill Keeper`.toString(),
-      detail,
-      "auto_chewed",
-    );
+    handleTracker({
+      what: $item`Eight Days a Week Pill Keeper`,
+      detail: detail,
+      property: "auto_chewed",
+    });
     return true;
   }
   // yellow ray, noncombat, or semirare already queued

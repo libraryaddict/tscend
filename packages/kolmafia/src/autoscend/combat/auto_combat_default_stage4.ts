@@ -43,7 +43,7 @@ import {
   auto_wantToCopy,
   auto_wantToSniff,
   combatItemDamageMultiplier,
-  handleTracker$1,
+  handleTracker,
   internalQuestStatus,
   isGhost,
   MLDamageToMonsterMultiplier,
@@ -125,7 +125,11 @@ export function auto_combatDefaultStage4(
         //mafia does not track the target of this skill so we must do so.
         setProperty("auto_bat_soulmonster", enemy.toString());
       }
-      handleTracker$1(enemy.toString(), sniffer.toString(), "auto_sniffs");
+      handleTracker({
+        what: enemy,
+        detail: sniffer.toString(),
+        property: "auto_sniffs",
+      });
       combat_status_add("sniffed");
       return auto_useSkill(sniffer);
     }
@@ -140,11 +144,11 @@ export function auto_combatDefaultStage4(
   ) {
     //this is a special case, if Nosy Nose is used in the bedroom in a non 100 fam run it is to whiff this monster
     //and use only this sniffer because the elegant monster must be found next and this one gets turned off easily by using a different familiar
-    handleTracker$1(
-      enemy.toString(),
-      $skill`Get a Good Whiff of This Guy`.toString(),
-      "auto_sniffs",
-    );
+    handleTracker({
+      what: enemy,
+      detail: $skill`Get a Good Whiff of This Guy`.toString(),
+      property: "auto_sniffs",
+    });
     return auto_useSkill($skill`Get a Good Whiff of This Guy`);
   }
   //TODO auto_doCombatCopy property is silly. get rid of it
@@ -170,11 +174,11 @@ export function auto_combatDefaultStage4(
     setProperty("auto_doCombatCopy", "no");
     markAsUsed$1($item`Rain-Doh black box`); // mark even if not used so we don't spam the error message
     if (toInt(getProperty("_raindohCopiesMade")) < 5) {
-      handleTracker$1(
-        enemy.toString(),
-        $item`Rain-Doh black box`.toString(),
-        "auto_copies",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $item`Rain-Doh black box`.toString(),
+        property: "auto_copies",
+      });
       return `item ${$item`Rain-Doh black box`}`;
     }
     auto_log_warning(
@@ -210,11 +214,11 @@ export function auto_combatDefaultStage4(
   ) {
     if ($monsters`lobsterfrogman`.includes(enemy)) {
       if (getProperty("_sourceTerminalDigitizeMonster") !== enemy.toString()) {
-        handleTracker$1(
-          enemy.toString(),
-          $skill`Digitize`.toString(),
-          "auto_copies",
-        );
+        handleTracker({
+          what: enemy,
+          detail: $skill`Digitize`.toString(),
+          property: "auto_copies",
+        });
         return auto_useSkill($skill`Digitize`);
       }
     }
@@ -226,11 +230,11 @@ export function auto_combatDefaultStage4(
   ) {
     if (getProperty("auto_digitizeDirective") === enemy.toString()) {
       if (getProperty("_sourceTerminalDigitizeMonster") !== enemy.toString()) {
-        handleTracker$1(
-          enemy.toString(),
-          $skill`Digitize`.toString(),
-          "auto_copies",
-        );
+        handleTracker({
+          what: enemy,
+          detail: $skill`Digitize`.toString(),
+          property: "auto_copies",
+        });
         return auto_useSkill($skill`Digitize`);
       }
     }
@@ -243,7 +247,11 @@ export function auto_combatDefaultStage4(
         //mafia does not track the target of this skill so we must do so.
         setProperty("auto_purple_candled", enemy.toString());
       }
-      handleTracker$1(enemy.toString(), copier.toString(), "auto_copies");
+      handleTracker({
+        what: enemy,
+        detail: copier.toString(),
+        property: "auto_copies",
+      });
       combat_status_add("copied");
       return auto_useSkill(copier);
     }

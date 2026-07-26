@@ -73,7 +73,6 @@ import {
   auto_log_debug,
   auto_log_warning,
   handleTracker,
-  handleTracker$1,
   meatReserve,
   shrugAT,
 } from "./auto_util";
@@ -245,11 +244,11 @@ function buffMaintain$1(
     const n_can_craft: number = creatableAmount(source);
     const turns_to_craft: number = creatableTurns(source, needed, true);
     if (turns_to_craft === 0 && n_can_craft >= needed) {
-      handleTracker$1(
-        "buffMaintain",
-        `${speculative ? "Speculatively c" : "C"}rafting ${needed.toString()} ${source.toString()}`,
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: "buffMaintain",
+        detail: `${speculative ? "Speculatively c" : "C"}rafting ${needed.toString()} ${source.toString()}`,
+        property: "auto_otherstuff",
+      });
       if (!speculative) {
         create(source, needed);
       } else {
@@ -263,11 +262,11 @@ function buffMaintain$1(
   if (!speculative) {
     if (isSpleenConsumable(source)) {
       chew(uses, source);
-      handleTracker$1(
-        source.toString(),
-        myLocation().toString(),
-        "auto_chewed",
-      );
+      handleTracker({
+        what: source,
+        location: myLocation(),
+        property: "auto_chewed",
+      });
     } else {
       use(uses, source);
     }
@@ -2372,7 +2371,10 @@ export function buffMaintain$2(
         return feeling.timescast < feeling.dailylimit;
       } else if (feeling.timescast < feeling.dailylimit) {
         useSkill_1 = toSkill(buff);
-        handleTracker(useSkill_1.toString(), "auto_otherstuff");
+        handleTracker({
+          what: useSkill_1,
+          property: "auto_otherstuff",
+        });
       } else {
         return false;
       }

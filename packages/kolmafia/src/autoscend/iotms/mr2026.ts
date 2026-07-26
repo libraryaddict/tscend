@@ -75,8 +75,7 @@ import {
   auto_wantToSniff,
   auto_wantToYellowRay,
   autoCraft,
-  handleTracker$1,
-  handleTracker$2,
+  handleTracker,
   internalQuestStatus,
   isFreeMonster,
   meatReserve,
@@ -267,29 +266,29 @@ export function auto_spadeDigItem(): boolean {
       auto_log_error(
         `Seem to have got ${total_items_dropped} from spade dig nearby, expecting 1.`,
       );
-      handleTracker$2(
-        SPADE.toString(),
-        myLocation(),
-        `Dig up something nearby reported ${total_items_dropped} drops`,
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: SPADE,
+        location: myLocation(),
+        detail: `Dig up something nearby reported ${total_items_dropped} drops`,
+        property: "auto_otherstuff",
+      });
       return total_items_dropped !== 0;
     }
     if (n_digs > auto_spadeDigsRemaining()) {
       // check we actually have fewer digs left now before returning
-      handleTracker$2(
-        SPADE.toString(),
-        myLocation(),
-        `Dig up something nearby - ${my_drop}`,
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: SPADE,
+        location: myLocation(),
+        detail: `Dig up something nearby - ${my_drop}`,
+        property: "auto_otherstuff",
+      });
       return true;
     }
-    handleTracker$1(
-      SPADE.toString(),
-      "FAILED: Dig up something nearby",
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: SPADE,
+      detail: "FAILED: Dig up something nearby",
+      property: "auto_otherstuff",
+    });
   }
   return false;
 }
@@ -306,11 +305,11 @@ function auto_spadeDigAncient(): boolean {
     visitUrl(choice_url);
     if (n_digs > auto_spadeDigsRemaining()) {
       // check we actually have fewer digs left now before returning
-      handleTracker$1(
-        SPADE.toString(),
-        "Dig up something ancient",
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: SPADE,
+        detail: "Dig up something ancient",
+        property: "auto_otherstuff",
+      });
       return true;
     }
   }
@@ -331,19 +330,19 @@ export function auto_spadeDigSkeleton(): boolean {
     pages.set(1, choice_url);
     const loc: Location = myLocation();
     if (autoAdvBypass(0, pages, $location`Noob Cave`)) {
-      handleTracker$2(
-        SPADE.toString(),
-        loc,
-        `Dig up a skeleton`,
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: SPADE,
+        location: loc,
+        detail: `Dig up a skeleton`,
+        property: "auto_otherstuff",
+      });
       return true;
     }
-    handleTracker$1(
-      SPADE.toString(),
-      "FAILED: Dig up a skeleton",
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: SPADE,
+      detail: "FAILED: Dig up a skeleton",
+      property: "auto_otherstuff",
+    });
   }
   return false;
 }
@@ -974,11 +973,11 @@ function auto_mixAndDrinkCupOfThirteen(
     cliExecute("refresh inventory");
   }
 
-  handleTracker$1(
-    $item`Cup of 13s`.toString(),
-    `${myAdventures() - preAdvs}Advs`,
-    "auto_drunken",
-  );
+  handleTracker({
+    what: $item`Cup of 13s`,
+    detail: `${myAdventures() - preAdvs}Advs`,
+    property: "auto_drunken",
+  });
 
   return myInebriety() !== prevInebriety;
 }
@@ -1318,11 +1317,17 @@ export function auto_tryPlayBaseball(): boolean {
   }
 
   for (const a of assignments) {
-    handleTracker$1(
-      team[a.finisherSlot].toString(),
-      `baseball ${a.element}`,
-      "auto_baseball",
-    );
+    const effect =
+      a.element === $element`hot`
+        ? "Drop Items"
+        : a.element === $element`spooky`
+          ? "Free Fights"
+          : "Extra Zone Copies";
+    handleTracker({
+      what: $item`baseball dIamond`,
+      detail: `${team[a.finisherSlot]} - ${effect}`,
+      property: "auto_otherstuff",
+    });
   }
 
   return true;

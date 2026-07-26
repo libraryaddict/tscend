@@ -22,7 +22,7 @@ import {
   auto_is_valid,
   auto_log_info,
   auto_turbo,
-  handleTracker$1,
+  handleTracker,
   internalQuestStatus,
   LX_summonMonster,
 } from "../auto_util";
@@ -96,11 +96,11 @@ export function ag_bgChat(): void {
     const mon: Monster = ag_bgToChat();
     visitUrl(`choice.php?pwd=&whichchoice=1532&option=1&bgid=${mon.id}`, true);
     auto_log_info(`Making the next bodyguard a ${mon.toString()}`, "blue");
-    handleTracker$1(
-      $familiar`Burly Bodyguard`.toString(),
-      mon.toString(),
-      "auto_copies",
-    );
+    handleTracker({
+      what: $familiar`Burly Bodyguard`,
+      detail: mon.toString(),
+      property: "auto_copies",
+    });
   }
   return;
 }

@@ -215,7 +215,6 @@ import {
   ovenHandle,
   restoreAllSettings,
   sniffSources,
-  trim,
   use_barrels,
   yellowRaySources,
 } from "./autoscend/auto_util";
@@ -1250,12 +1249,12 @@ function initializeDay(day: number): void {
           _v,
         ]),
       );
-      const myTea: string = trim(
+      const myTea: string = String(
         teaChoice.get(min(teaChoice.size, myDaycount()) - 1) ??
           teaChoice
             .set(min(teaChoice.size, myDaycount()) - 1, "")
             .get(min(teaChoice.size, myDaycount()) - 1),
-      );
+      ).trim();
       if (toItem(myTea) !== Item.none || myTea === "shake") {
         cliExecute(`teatree ${myTea}`);
       }

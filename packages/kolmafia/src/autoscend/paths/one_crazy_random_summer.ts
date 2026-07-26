@@ -9,7 +9,7 @@ import {
 import { $effect, $path } from "libram";
 
 import { acquireHP } from "../auto_restore";
-import { auto_log_warning, handleTracker$1 } from "../auto_util";
+import { auto_log_warning, handleTracker } from "../auto_util";
 
 //Defined in autoscend/paths/one_crazy_random_summer.ash
 export function in_ocrs(): boolean {
@@ -37,11 +37,11 @@ export function ocrs_postCombatResolve(): boolean {
         "Probably beaten up by FUN! Trying to recover instead of aborting",
         "red",
       );
-      handleTracker$1(
-        lastMonster().toString(),
-        getProperty("auto_funPrefix"),
-        "auto_funTracker",
-      );
+      handleTracker({
+        what: lastMonster(),
+        detail: getProperty("auto_funPrefix"),
+        property: "auto_funTracker",
+      });
       acquireHP();
     }
   }

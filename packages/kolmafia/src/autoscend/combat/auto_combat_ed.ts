@@ -66,7 +66,6 @@ import {
   auto_wantToYellowRay,
   freeRunCombatString,
   handleTracker,
-  handleTracker$1,
   instakillable,
   internalQuestStatus,
   isFreeMonster,
@@ -179,16 +178,16 @@ export function auto_edCombatHandler(
     enemy !== toMonster(getProperty("lastCopyableMonster")) &&
     auto_canUse($skill`Back-Up to your Last Enemy`)
   ) {
-    handleTracker$1(
-      enemy.toString(),
-      $skill`Back-Up to your Last Enemy`.toString(),
-      "auto_replaces",
-    );
-    handleTracker$1(
-      toMonster(getProperty("lastCopyableMonster")).toString(),
-      $skill`Back-Up to your Last Enemy`.toString(),
-      "auto_copies",
-    );
+    handleTracker({
+      what: enemy,
+      detail: $skill`Back-Up to your Last Enemy`.toString(),
+      property: "auto_replaces",
+    });
+    handleTracker({
+      what: toMonster(getProperty("lastCopyableMonster")),
+      detail: $skill`Back-Up to your Last Enemy`.toString(),
+      property: "auto_copies",
+    });
     return auto_useSkill($skill`Back-Up to your Last Enemy`);
   }
 
@@ -262,11 +261,11 @@ export function auto_edCombatHandler(
     extinguisherSkill !== "" &&
     haveEquipped($item`industrial fire extinguisher`)
   ) {
-    handleTracker$1(
-      enemy.toString(),
-      toSkill(substring(extinguisherSkill, 6)).toString(),
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: enemy,
+      detail: toSkill(substring(extinguisherSkill, 6)).toString(),
+      property: "auto_otherstuff",
+    });
     return extinguisherSkill;
   }
   // Instakill handler
@@ -372,11 +371,11 @@ export function auto_edCombatHandler(
     toInt(getProperty("_edDefeats")) < 3
   ) {
     if (auto_wantToSniff(enemy, myLocation())) {
-      handleTracker$1(
-        enemy.toString(),
-        $skill`Curse of Stench`.toString(),
-        "auto_sniffs",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`Curse of Stench`.toString(),
+        property: "auto_sniffs",
+      });
       return auto_useSkill($skill`Curse of Stench`);
     }
   }
@@ -405,11 +404,11 @@ export function auto_edCombatHandler(
         }
       }
       if (doStench) {
-        handleTracker$1(
-          enemy.toString(),
-          $skill`Curse of Stench`.toString(),
-          "auto_sniffs",
-        );
+        handleTracker({
+          what: enemy,
+          detail: $skill`Curse of Stench`.toString(),
+          property: "auto_sniffs",
+        });
         return auto_useSkill($skill`Curse of Stench`);
       }
     }
@@ -452,11 +451,11 @@ export function auto_edCombatHandler(
       }
 
       if (doStench) {
-        handleTracker$1(
-          enemy.toString(),
-          $skill`Curse of Stench`.toString(),
-          "auto_sniffs",
-        );
+        handleTracker({
+          what: enemy,
+          detail: $skill`Curse of Stench`.toString(),
+          property: "auto_sniffs",
+        });
         return auto_useSkill($skill`Curse of Stench`);
       }
     }
@@ -476,17 +475,17 @@ export function auto_edCombatHandler(
     if (combatAction !== "") {
       combat_status_add("yellowray");
       if (indexOf(combatAction, "skill") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toSkill(substring(combatAction, 6)).toString(),
-          "auto_yellowRays",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toSkill(substring(combatAction, 6)).toString(),
+          property: "auto_yellowRays",
+        });
       } else if (indexOf(combatAction, "item") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toItem(substring(combatAction, 5)).toString(),
-          "auto_yellowRays",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toItem(substring(combatAction, 5)).toString(),
+          property: "auto_yellowRays",
+        });
       } else {
         auto_log_warning(
           `Unable to track yellow ray behavior: ${combatAction}`,
@@ -518,25 +517,25 @@ export function auto_edCombatHandler(
       auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
       combat_status_add("banisher");
       if (indexOf(banishAction, "skill") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toSkill(substring(banishAction, 6)).toString(),
-          "auto_banishes",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toSkill(substring(banishAction, 6)).toString(),
+          property: "auto_banishes",
+        });
       } else if (indexOf(banishAction, "item") === 0) {
         if (containsText(banishAction, ", none")) {
           const commapos: number = indexOf(banishAction, ", none");
-          handleTracker$1(
-            enemy.toString(),
-            toItem(substring(banishAction, 5, commapos)).toString(),
-            "auto_banishes",
-          );
+          handleTracker({
+            what: enemy,
+            detail: toItem(substring(banishAction, 5, commapos)).toString(),
+            property: "auto_banishes",
+          });
         } else {
-          handleTracker$1(
-            enemy.toString(),
-            toItem(substring(banishAction, 5)).toString(),
-            "auto_banishes",
-          );
+          handleTracker({
+            what: enemy,
+            detail: toItem(substring(banishAction, 5)).toString(),
+            property: "auto_banishes",
+          });
         }
       } else {
         auto_log_warning(
@@ -558,39 +557,39 @@ export function auto_edCombatHandler(
     let freeRunAction: string = freeRunCombatString(enemy, myLocation(), true);
     if (freeRunAction !== "") {
       if (indexOf(freeRunAction, "runaway familiar") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toFamiliar(substring(freeRunAction, 17)).toString(),
-          "auto_freeruns",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toFamiliar(substring(freeRunAction, 17)).toString(),
+          property: "auto_freeruns",
+        });
         freeRunAction = "runaway";
       } else if (indexOf(freeRunAction, "runaway item") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toItem(substring(freeRunAction, 13)).toString(),
-          "auto_freeruns",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toItem(substring(freeRunAction, 13)).toString(),
+          property: "auto_freeruns",
+        });
         freeRunAction = "runaway";
       } else if (indexOf(freeRunAction, "skill") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toSkill(substring(freeRunAction, 6)).toString(),
-          "auto_freeruns",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toSkill(substring(freeRunAction, 6)).toString(),
+          property: "auto_freeruns",
+        });
       } else if (indexOf(freeRunAction, "item") === 0) {
         if (containsText(freeRunAction, ", none")) {
           const commapos: number = indexOf(freeRunAction, ", none");
-          handleTracker$1(
-            enemy.toString(),
-            toItem(substring(freeRunAction, 5, commapos)).toString(),
-            "auto_freeruns",
-          );
+          handleTracker({
+            what: enemy,
+            detail: toItem(substring(freeRunAction, 5, commapos)).toString(),
+            property: "auto_freeruns",
+          });
         } else {
-          handleTracker$1(
-            enemy.toString(),
-            toItem(substring(freeRunAction, 5)).toString(),
-            "auto_freeruns",
-          );
+          handleTracker({
+            what: enemy,
+            detail: toItem(substring(freeRunAction, 5)).toString(),
+            property: "auto_freeruns",
+          });
         }
       } else {
         auto_log_warning(
@@ -616,22 +615,22 @@ export function auto_edCombatHandler(
           toSkill(substring(combatAction, 6)) ===
           $skill`CHEAT CODE: Replace Enemy`
         ) {
-          handleTracker(
-            $skill`CHEAT CODE: Replace Enemy`.toString(),
-            "auto_powerfulglove",
-          );
+          handleTracker({
+            what: $skill`CHEAT CODE: Replace Enemy`,
+            property: "auto_powerfulglove",
+          });
         }
-        handleTracker$1(
-          enemy.toString(),
-          toSkill(substring(combatAction, 6)).toString(),
-          "auto_replaces",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toSkill(substring(combatAction, 6)).toString(),
+          property: "auto_replaces",
+        });
       } else if (indexOf(combatAction, "item") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toItem(substring(combatAction, 5)).toString(),
-          "auto_replaces",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toItem(substring(combatAction, 5)).toString(),
+          property: "auto_replaces",
+        });
       } else {
         auto_log_warning(
           `Unable to track replacer behavior: ${combatAction}`,
@@ -884,7 +883,7 @@ export function auto_edCombatHandler(
     }
 
     if (doLash) {
-      handleTracker(enemy.toString(), "auto_lashes");
+      handleTracker({ what: enemy, property: "auto_lashes" });
       return auto_useSkill($skill`Lash of the Cobra`);
     }
   }
@@ -992,7 +991,7 @@ export function auto_edCombatHandler(
         return auto_useSkill($skill`Curse of Indecision`);
       }
       combat_status_add("talismanofrenenutet");
-      handleTracker(enemy.toString(), "auto_renenutet");
+      handleTracker({ what: enemy, property: "auto_renenutet" });
       setProperty("auto_edStatus", "dying");
       return useItem($item`talisman of Renenutet`);
     }
@@ -1068,11 +1067,11 @@ export function auto_edCombatHandler(
           (toInt(getProperty("auto_batoomerangUse")) + 1).toString(),
         );
         combat_status_add("batoomerang");
-        handleTracker$1(
-          enemy.toString(),
-          $item`replica bat-oomerang`.toString(),
-          "auto_instakill",
-        );
+        handleTracker({
+          what: enemy,
+          detail: $item`replica bat-oomerang`.toString(),
+          property: "auto_instakill",
+        });
         loopHandlerDelayAll();
         return `item ${$item`replica bat-oomerang`}`;
       }
@@ -1082,11 +1081,11 @@ export function auto_edCombatHandler(
       canUse$3($item`shadow brick`) &&
       toInt(getProperty("_shadowBricksUsed")) < 13
     ) {
-      handleTracker$1(
-        enemy.toString(),
-        $item`shadow brick`.toString(),
-        "auto_instakill",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $item`shadow brick`.toString(),
+        property: "auto_instakill",
+      });
       loopHandlerDelayAll();
       return useItems($item`shadow brick`, Item.none);
     }
@@ -1098,11 +1097,11 @@ export function auto_edCombatHandler(
       auto_have_skill($skill`Fire the Jokester's Gun`)
     ) {
       combat_status_add("jokesterGun");
-      handleTracker$1(
-        enemy.toString(),
-        $skill`Fire the Jokester's Gun`.toString(),
-        "auto_instakill",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`Fire the Jokester's Gun`.toString(),
+        property: "auto_instakill",
+      });
       loopHandlerDelayAll();
       return `skill${$skill`Fire the Jokester's Gun`}`;
     }
@@ -1157,19 +1156,19 @@ export function auto_edCombatHandler(
         toInt(getProperty("_mildEvilPerpetrated")) < 3;
       // mild evil only can pick pocket. Use it before fire extinguisher
       if (mildEvilAvailable) {
-        handleTracker$1(
-          enemy.toString(),
-          $skill`Perpetrate Mild Evil`.toString(),
-          "auto_otherstuff",
-        );
+        handleTracker({
+          what: enemy,
+          detail: $skill`Perpetrate Mild Evil`.toString(),
+          property: "auto_otherstuff",
+        });
         return auto_useSkill($skill`Perpetrate Mild Evil`);
       }
       if (polarVortexAvailable) {
-        handleTracker$1(
-          enemy.toString(),
-          $skill`Fire Extinguisher: Polar Vortex`.toString(),
-          "auto_otherstuff",
-        );
+        handleTracker({
+          what: enemy,
+          detail: $skill`Fire Extinguisher: Polar Vortex`.toString(),
+          property: "auto_otherstuff",
+        });
         return auto_useSkill($skill`Fire Extinguisher: Polar Vortex`);
       }
     }

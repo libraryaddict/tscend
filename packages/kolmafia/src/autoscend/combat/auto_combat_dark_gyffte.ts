@@ -1,7 +1,7 @@
 import { getProperty, Monster, setProperty, toInt } from "kolmafia";
 import { $skill } from "libram";
 
-import { handleTracker$1 } from "../auto_util";
+import { handleTracker } from "../auto_util";
 import { bat_shouldEnsorcel } from "../paths/dark_gyffte";
 import { auto_canUse, auto_useSkill } from "./auto_combat_util";
 
@@ -25,11 +25,11 @@ export function auto_combatDarkGyffteStage2(
       "auto_bat_ensorcels",
       (toInt(getProperty("auto_bat_ensorcels")) + 1).toString(),
     );
-    handleTracker$1(
-      enemy.toString(),
-      $skill`Ensorcel`.toString(),
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: enemy,
+      detail: $skill`Ensorcel`.toString(),
+      property: "auto_otherstuff",
+    });
     return auto_useSkill($skill`Ensorcel`);
   }
 

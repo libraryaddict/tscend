@@ -90,7 +90,7 @@ import {
   auto_log_warning,
   auto_wantToBanish,
   auto_wantToBanish$1,
-  handleTracker$1,
+  handleTracker,
   hasShieldEquipped,
   hasTorso,
   isFreeMonster,
@@ -734,17 +734,17 @@ export function findBanisher(
   if (banishAction !== "") {
     auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
     if (indexOf(banishAction, "skill") === 0) {
-      handleTracker$1(
-        enemy.toString(),
-        toSkill(substring(banishAction, 6)).toString(),
-        "auto_banishes",
-      );
+      handleTracker({
+        what: enemy,
+        detail: toSkill(substring(banishAction, 6)).toString(),
+        property: "auto_banishes",
+      });
     } else if (indexOf(banishAction, "item") === 0) {
-      handleTracker$1(
-        enemy.toString(),
-        toItem(substring(banishAction, 5)).toString(),
-        "auto_banishes",
-      );
+      handleTracker({
+        what: enemy,
+        detail: toItem(substring(banishAction, 5)).toString(),
+        property: "auto_banishes",
+      });
     } else {
       auto_log_warning(
         `Unable to track banisher behavior: ${banishAction}`,

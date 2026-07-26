@@ -130,7 +130,6 @@ import {
   auto_turbo,
   banishSources,
   handleTracker,
-  handleTracker$1,
   internalQuestStatus,
   knapsack,
   meatReserve,
@@ -287,7 +286,10 @@ export function autoCleanse(): boolean {
     itemAmount($item`spice melange`) > 0 &&
     !toBoolean(getProperty("spiceMelangeUsed"))
   ) {
-    handleTracker(`Cleansed with ${$item`spice melange`}`, "auto_otherstuff");
+    handleTracker({
+      what: `Cleansed with ${$item`spice melange`}`,
+      property: "auto_otherstuff",
+    });
     return use(1, $item`spice melange`);
   }
 
@@ -296,10 +298,10 @@ export function autoCleanse(): boolean {
     itemAmount($item`Ultra Mega Sour Ball`) > 0 &&
     !toBoolean(getProperty("_ultraMegaSourBallUsed"))
   ) {
-    handleTracker(
-      `Cleansed with ${$item`Ultra Mega Sour Ball`}`,
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: `Cleansed with ${$item`Ultra Mega Sour Ball`}`,
+      property: "auto_otherstuff",
+    });
     return use(1, $item`Ultra Mega Sour Ball`);
   }
 
@@ -308,7 +310,10 @@ export function autoCleanse(): boolean {
     itemAmount($item`alien plant pod`) > 0 &&
     !toBoolean(getProperty("_alienPlantPodUsed"))
   ) {
-    handleTracker(`Cleansed with ${$item`alien plant pod`}`, "auto_otherstuff");
+    handleTracker({
+      what: `Cleansed with ${$item`alien plant pod`}`,
+      property: "auto_otherstuff",
+    });
     return use(1, $item`alien plant pod`);
   }
 
@@ -317,10 +322,10 @@ export function autoCleanse(): boolean {
     itemAmount($item`alien animal milk`) > 0 &&
     !toBoolean(getProperty("_alienAnimalMilkUsed"))
   ) {
-    handleTracker(
-      `Cleansed with ${$item`alien animal milk`}`,
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: `Cleansed with ${$item`alien animal milk`}`,
+      property: "auto_otherstuff",
+    });
     return use(1, $item`alien animal milk`);
   }
 
@@ -370,11 +375,11 @@ export function autoDrink(
       //only want to yeti chat if the booze is also Ode-able and we don't need to level via sept-ember censer or using it won't affect our fam weight
       useFamiliar($familiar`Cooler Yeti`);
       if (containsText(visitUrl("main.php?talktoyeti=1"), "choiceform2")) {
-        handleTracker$1(
-          $familiar`Cooler Yeti`.toString(),
-          `Double adv of ${toDrink.toString()}`,
-          "auto_otherstuff",
-        );
+        handleTracker({
+          what: $familiar`Cooler Yeti`,
+          detail: `Double adv of ${toDrink.toString()}`,
+          property: "auto_otherstuff",
+        });
         visitUrl("choice.php?pwd=&whichchoice=1560&option=2");
       }
     }
@@ -440,7 +445,7 @@ export function autoDrink(
 
     // If success and item is not doing it's own tracking
     if (retval && action?.data?.hasOwnTracking !== true) {
-      handleTracker(toDrink.toString(), "auto_drunken");
+      handleTracker({ what: toDrink, property: "auto_drunken" });
     }
     howMany = howMany - 1;
   }
@@ -519,7 +524,7 @@ function autoDrinkCafe(howmany: number, id: number): boolean {
     visitUrl(
       `cafe.php?pwd=${myHash()}&phash=${myHash()}&cafeid=2&whichitem=${id}&action=CONSUME!`,
     );
-    handleTracker(name, "auto_drunken");
+    handleTracker({ what: name, property: "auto_drunken" });
   }
   return true;
 }
@@ -542,7 +547,7 @@ function autoEatCafe(howmany: number, id: number): boolean {
     visitUrl(
       `cafe.php?pwd=${myHash()}&phash=${myHash()}&cafeid=1&whichitem=${id}&action=CONSUME!`,
     );
-    handleTracker(name, "auto_eaten");
+    handleTracker({ what: name, property: "auto_eaten" });
   }
   return true;
 }
@@ -564,7 +569,7 @@ export function autoChew(howMany: number, toChew: Item): boolean {
 
   if (retval) {
     for (let i: number = 0; i < howMany; ++i) {
-      handleTracker(toChew.toString(), "auto_chewed");
+      handleTracker({ what: toChew, property: "auto_chewed" });
     }
   }
 
@@ -586,7 +591,10 @@ export function autoEat(
   }
   if (toEat === $item`Black and White Apron Meal Kit`) {
     if (consumeBlackAndWhiteApronKit()) {
-      handleTracker("Black and White Apron Kit", "auto_eaten");
+      handleTracker({
+        what: $item`Black and White Apron Meal Kit`,
+        property: "auto_eaten",
+      });
       return true;
     } else {
       abort(
@@ -655,7 +663,10 @@ export function autoEat(
     if (itemAmount($item`whet stone`) > 0) {
       //use whet stone if we got one from the rock garden
       use(1, $item`whet stone`);
-      handleTracker(`Used ${$item`whet stone`}`, "auto_otherstuff");
+      handleTracker({
+        what: `Used ${$item`whet stone`}`,
+        property: "auto_otherstuff",
+      });
     }
     if (
       itemAmount($item`mini kiwi aioli`) > 0 ||
@@ -669,10 +680,10 @@ export function autoEat(
           create(1, $item`mini kiwi aioli`); //create the aioli to actually use it
         }
         use(1, $item`mini kiwi aioli`);
-        handleTracker(
-          `Used ${$item`mini kiwi aioli`} for ${toEat}`,
-          "auto_otherstuff",
-        );
+        handleTracker({
+          what: `Used ${$item`mini kiwi aioli`} for ${toEat}`,
+          property: "auto_otherstuff",
+        });
       }
     }
     if (haveEffect($effect`Ready to Eat`) > 0) {
@@ -700,9 +711,13 @@ export function autoEat(
         );
       }
       if (detail !== "") {
-        handleTracker$1(toEat.toString(), detail, "auto_eaten");
+        handleTracker({
+          what: toEat,
+          detail: detail,
+          property: "auto_eaten",
+        });
       } else {
-        handleTracker(toEat.toString(), "auto_eaten");
+        handleTracker({ what: toEat, property: "auto_eaten" });
       }
     }
     howMany = howMany - 1;
@@ -803,7 +818,7 @@ function wantDietPill(toEat: Item): boolean {
     if (fullness_left() >= 2 * toEat.fullness && spleen_left() >= 3) {
       pullXWhenHaveY(pill, 1, 0);
       if (itemAmount(pill) > 0) {
-        handleTracker(pill.toString(), "auto_chewed");
+        handleTracker({ what: pill, property: "auto_chewed" });
         setProperty(
           "auto_dietpills",
           (toInt(getProperty("auto_dietpills")) + 1).toString(),
@@ -1810,11 +1825,11 @@ function loadConsumables(
             const stillsuitAdvs: number = auto_expectedStillsuitAdvs();
             visitUrl("inventory.php?action=distill&pwd");
             visitUrl("choice.php?pwd&whichchoice=1476&option=1");
-            handleTracker$1(
-              $item`tiny stillsuit`.toString(),
-              `${stillsuitAdvs}Advs`,
-              "auto_drunken",
-            );
+            handleTracker({
+              what: $item`tiny stillsuit`,
+              detail: `${stillsuitAdvs}Advs`,
+              property: "auto_drunken",
+            });
 
             return true;
           },

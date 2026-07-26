@@ -77,8 +77,7 @@ import {
   auto_log_info,
   auto_log_warning,
   backupSetting,
-  handleTracker$1,
-  handleTracker$2,
+  handleTracker,
   internalQuestStatus,
   isGeneralStoreAvailable,
   meatReserve,
@@ -1567,12 +1566,12 @@ export function makeGenieWish(wish: string): boolean {
     return false;
   }
 
-  handleTracker$2(
-    toItem(wish_provider).toString(),
-    myLocation(),
-    wish,
-    "auto_wishes",
-  );
+  handleTracker({
+    what: toItem(wish_provider),
+    location: myLocation(),
+    detail: wish,
+    property: "auto_wishes",
+  });
   return true;
 }
 
@@ -1660,17 +1659,17 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
     auto_log_warning(`Wish: '${wish}' failed`, "red");
     return false;
   }
-  handleTracker$1(
-    mon.toString(),
-    toItem(wish_provider).toString(),
-    "auto_copies",
-  );
-  handleTracker$2(
-    toItem(wish_provider).toString(),
-    myLocation(),
-    wish,
-    "auto_wishes",
-  );
+  handleTracker({
+    what: mon,
+    detail: toItem(wish_provider).toString(),
+    property: "auto_copies",
+  });
+  handleTracker({
+    what: toItem(wish_provider),
+    location: myLocation(),
+    detail: wish,
+    property: "auto_wishes",
+  });
   return true;
 }
 
@@ -1696,7 +1695,11 @@ export function makeGeniePocket(): boolean {
     return false;
   }
 
-  handleTracker$1(bottle.toString(), "for more wishes", "auto_wishes");
+  handleTracker({
+    what: bottle,
+    detail: "for more wishes",
+    property: "auto_wishes",
+  });
   return true;
 }
 

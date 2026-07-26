@@ -67,7 +67,6 @@ import {
   auto_log_info,
   auto_turbo,
   internalQuestStatus,
-  trim,
 } from "./auto_util";
 import { considerGrimstoneGolem } from "./iotms/mr2014";
 import { auto_checkFamiliarMummery, mummifyFamiliar$2 } from "./iotms/mr2017";
@@ -272,7 +271,7 @@ export function auto_have_familiar(fam: Familiar): boolean {
       ]),
     );
     for (const [, fam_1] of noFams) {
-      blacklist.set(toFamiliar(trim(fam_1)), 1);
+      blacklist.set(toFamiliar(fam_1.trim()), 1);
     }
   }
   if (blacklist.has(fam)) {

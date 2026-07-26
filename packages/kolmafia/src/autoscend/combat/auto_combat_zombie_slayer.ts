@@ -13,7 +13,7 @@ import { $item, $location, $monster, $monsters, $skill } from "libram";
 import { possessEquipment } from "../auto_equipment";
 import {
   auto_have_skill,
-  handleTracker$1,
+  handleTracker,
   internalQuestStatus,
 } from "../auto_util";
 import { in_zombieSlayer } from "../paths/zombie_slayer";
@@ -262,11 +262,11 @@ export function auto_combatZombieSlayerStage4(
     }
 
     if (doSmash) {
-      handleTracker$1(
-        enemy.toString(),
-        $skill`Smash & Graaagh`.toString(),
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`Smash & Graaagh`.toString(),
+        property: "auto_otherstuff",
+      });
       return auto_useSkill($skill`Smash & Graaagh`);
     }
   }

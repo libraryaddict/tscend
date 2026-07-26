@@ -83,7 +83,6 @@ import {
   auto_log_info,
   auto_log_warning,
   handleTracker,
-  handleTracker$1,
   hasTorso,
   internalQuestStatus,
   meatReserve,
@@ -292,11 +291,11 @@ export function auto_fightLocketMonster(
   pages.set(0, "inventory.php?reminisce=1");
   pages.set(1, `choice.php?whichchoice=1463&pwd&option=1&mid=${mon.id}`);
   if (autoAdvBypass(1, pages, $location`Noob Cave`)) {
-    handleTracker$1(
-      mon.toString(),
-      $item`combat lover's locket`.toString(),
-      "auto_copies",
-    );
+    handleTracker({
+      what: mon,
+      detail: $item`combat lover's locket`.toString(),
+      property: "auto_copies",
+    });
   }
 
   if (!auto_haveReminiscedMonster(mon)) {
@@ -830,7 +829,10 @@ function auto_autumnatonCheckForUpgrade(upgrade: string): boolean {
 function auto_sendAutumnaton(loc: Location): boolean {
   if (auto_autumnatonCanAdv(loc)) {
     cliExecute(`autumnaton send ${loc}`);
-    handleTracker(`Autumnaton sent to ${loc}`, "auto_otherstuff");
+    handleTracker({
+      what: `Autumnaton sent to ${loc}`,
+      property: "auto_otherstuff",
+    });
     return true;
   }
   return false;

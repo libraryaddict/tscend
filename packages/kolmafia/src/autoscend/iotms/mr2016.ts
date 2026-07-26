@@ -74,9 +74,8 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
-  handleTracker$1,
+  handleTracker,
   meatReserve,
-  trim,
   wrap_item,
 } from "../auto_util";
 import { zone_available } from "../auto_zone";
@@ -429,9 +428,9 @@ export function auto_sourceTerminalEnhanceLeft(): number {
         ]),
       );
       for (const index of chips.keys()) {
-        const chip: string = trim(
+        const chip: string = String(
           chips.get(index) ?? chips.set(index, "").get(index),
-        );
+        ).trim();
         if (chip === "CRAM" || chip === "SCRAM") {
           total += 1;
         }
@@ -1276,11 +1275,11 @@ export function timeSpinnerCombat(
   pages.set(1, "choice.php?pwd=&whichchoice=1195&option=1");
   pages.set(2, `choice.php?pwd=&whichchoice=1196&option=1&monid=${goal.id}`);
   if (autoAdvBypass(0, pages, $location`Noob Cave`, option)) {
-    handleTracker$1(
-      goal.toString(),
-      $item`Time-Spinner`.toString(),
-      "auto_copies",
-    );
+    handleTracker({
+      what: goal,
+      detail: $item`Time-Spinner`.toString(),
+      property: "auto_copies",
+    });
     return true;
   }
   if (getProperty("lastEncounter") === "Travel to a Recent Fight") {

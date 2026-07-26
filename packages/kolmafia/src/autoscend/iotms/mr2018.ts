@@ -75,7 +75,7 @@ import {
   auto_is_valid$1,
   auto_log_info,
   auto_log_warning,
-  handleTracker$1,
+  handleTracker,
   hasTorso,
   internalQuestStatus,
   wrap_item,
@@ -636,11 +636,11 @@ function catBurglarHeist$1(it: Item): boolean {
       const choice_name: string = button.group(1);
       const url: string = `choice.php?whichchoice=1320&option=1&${choice_name}=${it.toString()}&pwd=${myHash()}`;
       page = visitUrl(url);
-      handleTracker$1(
-        $familiar`Cat Burglar`.toString(),
-        it.toString(),
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: $familiar`Cat Burglar`,
+        detail: it.toString(),
+        property: "auto_otherstuff",
+      });
       return true;
     }
     auto_log_warning(

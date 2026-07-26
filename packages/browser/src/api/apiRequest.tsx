@@ -117,6 +117,10 @@ function entityDecode(text: string): string {
   return textarea.value;
 }
 
+function splitUnescaped(input: string, delimiter: string): string[] {
+  return input.split(new RegExp(`(?<!\\\\)${delimiter}`));
+}
+
 function parseTrackingEvents(raw: string): TrackingEvent[] {
   const events: TrackingEvent[] = [];
 
@@ -124,7 +128,7 @@ function parseTrackingEvents(raw: string): TrackingEvent[] {
     return events;
   }
 
-  for (let entry of raw.split(", ")) {
+  for (let entry of splitUnescaped(raw, ", ")) {
     if (entry === "") {
       continue;
     }
@@ -134,7 +138,9 @@ function parseTrackingEvents(raw: string): TrackingEvent[] {
       .replace(/Asdon Marton:/g, "Asdon Martin -")
       .replace(/CHEAT CODE:/g, "CHEAT CODE -");
 
-    const fields = entry.split(":").map((field) => entityDecode(field.trim()));
+    const fields = splitUnescaped(entry, ":").map((field) =>
+      entityDecode(field.trim().replace(/\\(.)/g, "$1")),
+    );
     const day = parseInt(fields[0], 10) || 0;
     const values = fields.slice(1);
 

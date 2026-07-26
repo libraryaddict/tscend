@@ -59,7 +59,7 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_log_info,
-  handleTracker$1,
+  handleTracker,
   internalQuestStatus,
   summonMonster,
 } from "../auto_util";
@@ -126,11 +126,11 @@ function zoo_prepareSpecimen(): boolean {
     visitUrl("choice.php?pwd=&whichchoice=1555&option=1", true);
     refreshStatus();
     const new_weight: number = familiarWeight(f);
-    handleTracker$1(
-      f.toString(),
-      `Specimen prepared to ${f.experience} XP {${new_weight} lb}`,
-      "auto_tracker_path",
-    );
+    handleTracker({
+      what: f,
+      detail: `Specimen prepared to ${f.experience} XP {${new_weight} lb}`,
+      property: "auto_tracker_path",
+    });
     return true;
   }
   return false;
@@ -823,11 +823,11 @@ export function zoo_graftFam(): boolean {
       `choice.php?pwd=&whichchoice=1553&option=1&slot=${p}&fam=${toInt(fam)}`,
     );
     auto_log_info(`Grafting a ${fam} to you`, "blue");
-    handleTracker$1(
-      fam.toString(),
-      `Grafted to ${bodyPartName.get(p) ?? bodyPartName.set(p, "").get(p)}`,
-      "auto_tracker_path",
-    );
+    handleTracker({
+      what: fam,
+      detail: `Grafted to ${bodyPartName.get(p) ?? bodyPartName.set(p, "").get(p)}`,
+      property: "auto_tracker_path",
+    });
     refreshStatus();
     return true;
   }
@@ -880,11 +880,11 @@ function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
       auto_log_info("Use the Mayam calendar and get fur on the outer ring");
       amt += mayam_exp;
       auto_MayamClaim("fur wood yam clock");
-      handleTracker$1(
-        f.toString(),
-        `Mayam fur used to ${f.experience} XP {${familiarWeight(f)} lb}`,
-        "auto_tracker_path",
-      );
+      handleTracker({
+        what: f,
+        detail: `Mayam fur used to ${f.experience} XP {${familiarWeight(f)} lb}`,
+        property: "auto_tracker_path",
+      });
       mayamavailable = false;
     } else if (diff >= 40 && auto_AprilPiccoloBoostsLeft() > 0) {
       auto_log_info("Play the Apriling Band Piccolo");

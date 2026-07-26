@@ -59,7 +59,7 @@ import {
   auto_log_info,
   auto_log_warning,
   canYellowRay,
-  handleTracker$1,
+  handleTracker,
   internalQuestStatus,
   organsFull,
   wrap_item,
@@ -1019,7 +1019,11 @@ function deck_cheat(cheat: string): boolean {
       // Do we need to accept a combat filter?
     }
 
-    handleTracker$1(deck.toString(), cheat, "auto_otherstuff");
+    handleTracker({
+      what: deck,
+      detail: cheat,
+      property: "auto_otherstuff",
+    });
     // If mafia is not tracking cheats, we can track them here.
     let found: boolean = false;
     const cheated_1: Map<number, string> = new Map(

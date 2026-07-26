@@ -56,8 +56,6 @@ import {
   freeRunCombatString,
   freeRunCombatStringPreBanish,
   handleTracker,
-  handleTracker$1,
-  handleTracker$2,
   instakillable,
   internalQuestStatus,
   isFreeMonster,
@@ -168,12 +166,12 @@ export function auto_combatDefaultStage2(
     !combat_status_check("droptablereplaced") &&
     auto_have_skill($skill`BCZ: Refracted Gaze`)
   ) {
-    handleTracker$2(
-      enemy.toString(),
-      myLocation(),
-      $skill`BCZ: Refracted Gaze`.toString(),
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: enemy,
+      location: myLocation(),
+      detail: $skill`BCZ: Refracted Gaze`.toString(),
+      property: "auto_otherstuff",
+    });
     combat_status_add("droptablereplaced");
     return auto_useSkill($skill`BCZ: Refracted Gaze`);
   }
@@ -186,11 +184,11 @@ export function auto_combatDefaultStage2(
     enemy !== $monster`screambat`
   ) {
     //below is temp workaround for https://github.com/loathers/autoscend/issues/1011
-    handleTracker$1(
-      enemy.toString(),
-      toSkill(substring(extinguisherSkill, 6)).toString(),
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: enemy,
+      detail: toSkill(substring(extinguisherSkill, 6)).toString(),
+      property: "auto_otherstuff",
+    });
     return extinguisherSkill;
   }
   //instakill enemies in [The Red Zeppelin]
@@ -205,11 +203,11 @@ export function auto_combatDefaultStage2(
         enemy,
       )
     ) {
-      handleTracker$1(
-        enemy.toString(),
-        $item`glark cable`.toString(),
-        "auto_instakill",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $item`glark cable`.toString(),
+        property: "auto_instakill",
+      });
       return useItem($item`glark cable`);
     }
   }
@@ -219,11 +217,11 @@ export function auto_combatDefaultStage2(
     myLocation() === $location`A Mob of Zeppelin Protesters` &&
     getProperty("questL11Ron") === "step1"
   ) {
-    handleTracker$1(
-      enemy.toString(),
-      $item`cigarette lighter`.toString(),
-      "auto_instakill",
-    );
+    handleTracker({
+      what: enemy,
+      detail: $item`cigarette lighter`.toString(),
+      property: "auto_instakill",
+    });
     return useItems($item`cigarette lighter`, Item.none);
   }
   //instakill using [Power Pill] which is iotm familiar derivative
@@ -233,11 +231,11 @@ export function auto_combatDefaultStage2(
     instakillable(enemy)
   ) {
     if (itemAmount($item`power pill`) > 0) {
-      handleTracker$1(
-        enemy.toString(),
-        $item`power pill`.toString(),
-        "auto_instakill",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $item`power pill`.toString(),
+        property: "auto_instakill",
+      });
       return `item ${$item`power pill`}`;
     }
   }
@@ -269,11 +267,11 @@ export function auto_combatDefaultStage2(
     auto_canUse($skill`Do an epic McTwist!`) &&
     !toBoolean(getProperty("_epicMcTwistUsed"))
   ) {
-    handleTracker$1(
-      enemy.toString(),
-      $skill`Do an epic McTwist!`.toString(),
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: enemy,
+      detail: $skill`Do an epic McTwist!`.toString(),
+      property: "auto_otherstuff",
+    });
     return auto_useSkill($skill`Do an epic McTwist!`);
   }
   // Dupe Mountain Man drops with pro skateboard on day 1, not in turbo
@@ -284,20 +282,20 @@ export function auto_combatDefaultStage2(
     auto_canUse($skill`Do an epic McTwist!`) &&
     !toBoolean(getProperty("_epicMcTwistUsed"))
   ) {
-    handleTracker$1(
-      enemy.toString(),
-      $skill`Do an epic McTwist!`.toString(),
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: enemy,
+      detail: $skill`Do an epic McTwist!`.toString(),
+      property: "auto_otherstuff",
+    });
     return auto_useSkill($skill`Do an epic McTwist!`);
   }
 
   if (auto_wantToShrunkenHead(enemy)) {
-    handleTracker$1(
-      $skill`Prepare to reanimate your Foe`.toString(),
-      enemy.toString(),
-      "auto_otherstuff",
-    );
+    handleTracker({
+      what: $skill`Prepare to reanimate your Foe`,
+      detail: enemy.toString(),
+      property: "auto_otherstuff",
+    });
     return auto_useSkill($skill`Prepare to reanimate your Foe`);
   }
   // yellowray instantly kills the enemy and makes them drop all items they can drop.
@@ -332,17 +330,17 @@ export function auto_combatDefaultStage2(
     if (combatAction !== "") {
       combat_status_add("yellowray");
       if (indexOf(combatAction, "skill") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toSkill(substring(combatAction, 6)).toString(),
-          "auto_yellowRays",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toSkill(substring(combatAction, 6)).toString(),
+          property: "auto_yellowRays",
+        });
       } else if (indexOf(combatAction, "item") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toItem(substring(combatAction, 5)).toString(),
-          "auto_yellowRays",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toItem(substring(combatAction, 5)).toString(),
+          property: "auto_yellowRays",
+        });
       } else {
         auto_log_warning(
           `Unable to track yellow ray behavior: ${combatAction}`,
@@ -370,21 +368,21 @@ export function auto_combatDefaultStage2(
   //club em back in time to free kill the enemy but don't get any items
   if (wantToClubEmBackInTime(myLocation(), enemy)) {
     if (auto_canUse($skill`Club 'Em Back in Time`)) {
-      handleTracker$1(
-        enemy.toString(),
-        $skill`Club 'Em Back in Time`.toString(),
-        "auto_instakill",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`Club 'Em Back in Time`.toString(),
+        property: "auto_instakill",
+      });
       return auto_useSkill($skill`Club 'Em Back in Time`);
     }
   }
   //throw gravel to free kill the enemy but don't get any items
   if (wantToThrowGravel(myLocation(), enemy)) {
-    handleTracker$1(
-      enemy.toString(),
-      $item`groveling gravel`.toString(),
-      "auto_instakill",
-    );
+    handleTracker({
+      what: enemy,
+      detail: $item`groveling gravel`.toString(),
+      property: "auto_instakill",
+    });
     return useItem($item`groveling gravel`);
   }
   // Free run before banishing for a few monsters
@@ -400,17 +398,17 @@ export function auto_combatDefaultStage2(
     );
     if (freeRunAction !== "") {
       if (indexOf(freeRunAction, "skill") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toSkill(substring(freeRunAction, 6)).toString(),
-          "auto_freeruns",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toSkill(substring(freeRunAction, 6)).toString(),
+          property: "auto_freeruns",
+        });
       } else if (indexOf(freeRunAction, "item") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toItem(substring(freeRunAction, 5)).toString(),
-          "auto_freeruns",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toItem(substring(freeRunAction, 5)).toString(),
+          property: "auto_freeruns",
+        });
       } else {
         auto_log_warning(
           `Unable to track runaway behavior: ${freeRunAction}`,
@@ -437,19 +435,19 @@ export function auto_combatDefaultStage2(
       auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
       combat_status_add("banisher");
       if (indexOf(banishAction, "skill") === 0) {
-        handleTracker$2(
-          monsterPhylum(enemy).toString(),
-          myLocation(),
-          toSkill(substring(banishAction, 6)).toString(),
-          "auto_banishes",
-        );
+        handleTracker({
+          what: monsterPhylum(enemy),
+          location: myLocation(),
+          detail: toSkill(substring(banishAction, 6)).toString(),
+          property: "auto_banishes",
+        });
       } else if (indexOf(banishAction, "item") === 0) {
-        handleTracker$2(
-          monsterPhylum(enemy).toString(),
-          myLocation(),
-          toItem(substring(banishAction, 5)).toString(),
-          "auto_banishes",
-        );
+        handleTracker({
+          what: monsterPhylum(enemy),
+          location: myLocation(),
+          detail: toItem(substring(banishAction, 5)).toString(),
+          property: "auto_banishes",
+        });
       } else {
         auto_log_warning(
           `Unable to track banisher behavior: ${banishAction}`,
@@ -474,17 +472,17 @@ export function auto_combatDefaultStage2(
     );
     if (freeRunAction !== "") {
       if (indexOf(freeRunAction, "skill") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toSkill(substring(freeRunAction, 6)).toString(),
-          "auto_freeruns",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toSkill(substring(freeRunAction, 6)).toString(),
+          property: "auto_freeruns",
+        });
       } else if (indexOf(freeRunAction, "item") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toItem(substring(freeRunAction, 5)).toString(),
-          "auto_freeruns",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toItem(substring(freeRunAction, 5)).toString(),
+          property: "auto_freeruns",
+        });
       } else {
         auto_log_warning(
           `Unable to track runaway behavior: ${freeRunAction}`,
@@ -511,25 +509,25 @@ export function auto_combatDefaultStage2(
       auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
       combat_status_add("banisher");
       if (indexOf(banishAction, "skill") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toSkill(substring(banishAction, 6)).toString(),
-          "auto_banishes",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toSkill(substring(banishAction, 6)).toString(),
+          property: "auto_banishes",
+        });
       } else if (indexOf(banishAction, "item") === 0) {
         if (containsText(banishAction, ", none")) {
           const commapos: number = indexOf(banishAction, ", none");
-          handleTracker$1(
-            enemy.toString(),
-            toItem(substring(banishAction, 5, commapos)).toString(),
-            "auto_banishes",
-          );
+          handleTracker({
+            what: enemy,
+            detail: toItem(substring(banishAction, 5, commapos)).toString(),
+            property: "auto_banishes",
+          });
         } else {
-          handleTracker$1(
-            enemy.toString(),
-            toItem(substring(banishAction, 5)).toString(),
-            "auto_banishes",
-          );
+          handleTracker({
+            what: enemy,
+            detail: toItem(substring(banishAction, 5)).toString(),
+            property: "auto_banishes",
+          });
         }
       } else {
         auto_log_warning(
@@ -558,39 +556,39 @@ export function auto_combatDefaultStage2(
     let freeRunAction: string = freeRunCombatString(enemy, myLocation(), true);
     if (freeRunAction !== "") {
       if (indexOf(freeRunAction, "runaway familiar") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toFamiliar(substring(freeRunAction, 17)).toString(),
-          "auto_freeruns",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toFamiliar(substring(freeRunAction, 17)).toString(),
+          property: "auto_freeruns",
+        });
         freeRunAction = "runaway";
       } else if (indexOf(freeRunAction, "runaway item") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toItem(substring(freeRunAction, 13)).toString(),
-          "auto_freeruns",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toItem(substring(freeRunAction, 13)).toString(),
+          property: "auto_freeruns",
+        });
         freeRunAction = "runaway";
       } else if (indexOf(freeRunAction, "skill") === 0) {
-        handleTracker$1(
-          enemy.toString(),
-          toSkill(substring(freeRunAction, 6)).toString(),
-          "auto_freeruns",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toSkill(substring(freeRunAction, 6)).toString(),
+          property: "auto_freeruns",
+        });
       } else if (indexOf(freeRunAction, "item") === 0) {
         if (containsText(freeRunAction, ", none")) {
           const commapos: number = indexOf(freeRunAction, ", none");
-          handleTracker$1(
-            enemy.toString(),
-            toItem(substring(freeRunAction, 5, commapos)).toString(),
-            "auto_freeruns",
-          );
+          handleTracker({
+            what: enemy,
+            detail: toItem(substring(freeRunAction, 5, commapos)).toString(),
+            property: "auto_freeruns",
+          });
         } else {
-          handleTracker$1(
-            enemy.toString(),
-            toItem(substring(freeRunAction, 5)).toString(),
-            "auto_freeruns",
-          );
+          handleTracker({
+            what: enemy,
+            detail: toItem(substring(freeRunAction, 5)).toString(),
+            property: "auto_freeruns",
+          });
         }
       } else {
         auto_log_warning(
@@ -617,30 +615,30 @@ export function auto_combatDefaultStage2(
           toSkill(substring(combatAction, 6)) ===
           $skill`CHEAT CODE: Replace Enemy`
         ) {
-          handleTracker(
-            $skill`CHEAT CODE: Replace Enemy`.toString(),
-            "auto_powerfulglove",
-          );
+          handleTracker({
+            what: $skill`CHEAT CODE: Replace Enemy`,
+            property: "auto_powerfulglove",
+          });
         }
-        handleTracker$1(
-          enemy.toString(),
-          toSkill(substring(combatAction, 6)).toString(),
-          "auto_replaces",
-        );
+        handleTracker({
+          what: enemy,
+          detail: toSkill(substring(combatAction, 6)).toString(),
+          property: "auto_replaces",
+        });
       } else if (indexOf(combatAction, "item") === 0) {
         if (containsText(combatAction, ", none")) {
           const commapos: number = indexOf(combatAction, ", none");
-          handleTracker$1(
-            enemy.toString(),
-            toItem(substring(combatAction, 5, commapos)).toString(),
-            "auto_replaces",
-          );
+          handleTracker({
+            what: enemy,
+            detail: toItem(substring(combatAction, 5, commapos)).toString(),
+            property: "auto_replaces",
+          });
         } else {
-          handleTracker$1(
-            enemy.toString(),
-            toItem(substring(combatAction, 5)).toString(),
-            "auto_replaces",
-          );
+          handleTracker({
+            what: enemy,
+            detail: toItem(substring(combatAction, 5)).toString(),
+            property: "auto_replaces",
+          });
         }
       } else {
         auto_log_warning(
@@ -746,11 +744,11 @@ export function auto_combatDefaultStage2(
       myMp() > 80
     ) {
       //Only want to cast this when you have mp to spare because it is 50mp
-      handleTracker$1(
-        enemy.toString(),
-        $skill`Free-For-All`.toString(),
-        "auto_instakill",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`Free-For-All`.toString(),
+        property: "auto_instakill",
+      });
       loopHandlerDelayAll();
       return auto_useSkill($skill`Free-For-All`);
     }
@@ -759,11 +757,11 @@ export function auto_combatDefaultStage2(
       auto_canUse($skill`Lightning Strike`) &&
       (wantFreeKillNowEspecially || !reserveFreekills || myLightning() >= 60)
     ) {
-      handleTracker$1(
-        enemy.toString(),
-        $skill`Lightning Strike`.toString(),
-        "auto_instakill",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`Lightning Strike`.toString(),
+        property: "auto_instakill",
+      });
       loopHandlerDelayAll();
       return auto_useSkill($skill`Lightning Strike`);
     }
@@ -783,11 +781,11 @@ export function auto_combatDefaultStage2(
         inAftercore() ||
         myDaycount() >= 3
       ) {
-        handleTracker$1(
-          enemy.toString(),
-          $skill`Chest X-Ray`.toString(),
-          "auto_instakill",
-        );
+        handleTracker({
+          what: enemy,
+          detail: $skill`Chest X-Ray`.toString(),
+          property: "auto_instakill",
+        });
         loopHandlerDelayAll();
         return auto_useSkill($skill`Chest X-Ray`);
       }
@@ -798,11 +796,11 @@ export function auto_combatDefaultStage2(
       auto_jokesterGunFreeKillAvailable() &&
       (wantFreeKillNowEspecially || !reserveFreekills)
     ) {
-      handleTracker$1(
-        enemy.toString(),
-        $skill`Fire the Jokester's Gun`.toString(),
-        "auto_instakill",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`Fire the Jokester's Gun`.toString(),
+        property: "auto_instakill",
+      });
       loopHandlerDelayAll();
       return auto_useSkill($skill`Fire the Jokester's Gun`);
     }
@@ -811,11 +809,11 @@ export function auto_combatDefaultStage2(
       auto_wantToBCZ($skill`BCZ: Sweat Bullets`) &&
       (wantFreeKillNowEspecially || !reserveFreekills)
     ) {
-      handleTracker$1(
-        enemy.toString(),
-        $skill`BCZ: Sweat Bullets`.toString(),
-        "auto_instakill",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`BCZ: Sweat Bullets`.toString(),
+        property: "auto_instakill",
+      });
       loopHandlerDelayAll();
       return auto_useSkill($skill`BCZ: Sweat Bullets`);
     }
@@ -833,11 +831,11 @@ export function auto_combatDefaultStage2(
       ) {
         //avoid sudden drain of 3x30 MP just 20 turns after the run starts, there is no mp regen or sauceror mp when using this
       } else {
-        handleTracker$1(
-          enemy.toString(),
-          $skill`Shattering Punch`.toString(),
-          "auto_instakill",
-        );
+        handleTracker({
+          what: enemy,
+          detail: $skill`Shattering Punch`.toString(),
+          property: "auto_instakill",
+        });
         loopHandlerDelayAll();
         return auto_useSkill($skill`Shattering Punch`);
       }
@@ -848,11 +846,11 @@ export function auto_combatDefaultStage2(
       !reserveFreekills &&
       myMp() > 50
     ) {
-      handleTracker$1(
-        enemy.toString(),
-        $skill`Gingerbread Mob Hit`.toString(),
-        "auto_instakill",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`Gingerbread Mob Hit`.toString(),
+        property: "auto_instakill",
+      });
       loopHandlerDelayAll();
       return auto_useSkill($skill`Gingerbread Mob Hit`);
     }
@@ -870,11 +868,11 @@ export function auto_combatDefaultStage2(
           "auto_batoomerangUse",
           (toInt(getProperty("auto_batoomerangUse")) + 1).toString(),
         );
-        handleTracker$1(
-          enemy.toString(),
-          $item`replica bat-oomerang`.toString(),
-          "auto_instakill",
-        );
+        handleTracker({
+          what: enemy,
+          detail: $item`replica bat-oomerang`.toString(),
+          property: "auto_instakill",
+        });
         loopHandlerDelayAll();
         return useItem($item`replica bat-oomerang`);
       }
@@ -885,11 +883,11 @@ export function auto_combatDefaultStage2(
       toInt(getProperty("_shadowBricksUsed")) < 13 &&
       !reserveFreekills
     ) {
-      handleTracker$1(
-        enemy.toString(),
-        $item`shadow brick`.toString(),
-        "auto_instakill",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $item`shadow brick`.toString(),
+        property: "auto_instakill",
+      });
       loopHandlerDelayAll();
       return useItems($item`shadow brick`, Item.none);
     }

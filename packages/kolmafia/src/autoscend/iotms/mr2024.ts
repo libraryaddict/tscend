@@ -78,11 +78,12 @@ import {
   auto_log_error,
   auto_log_info,
   auto_wishForEffectIfNeeded,
-  handleTracker$1,
+  handleTracker,
   internalQuestStatus,
   stat_exp_percent,
   stat_to_substat,
   substat_to_level,
+  TrackerKey,
 } from "../auto_util";
 import { auto_canUse } from "../combat/auto_combat_util";
 import { in_amw } from "../paths/adventurer_meats_world";
@@ -191,11 +192,11 @@ export function auto_getAprilingBandItems(): boolean {
   }
   function track(it: Item): void {
     if (availableAmount(it) > 0) {
-      handleTracker$1(
-        $item`Apriling band helmet`.toString(),
-        `Claimed ${it}`,
-        "auto_iotm_claim",
-      );
+      handleTracker({
+        what: $item`Apriling band helmet`,
+        detail: `Claimed ${it}`,
+        property: "auto_iotm_claim",
+      });
     }
   }
   if (in_zootomist() && myLevel() < 13) {
@@ -224,14 +225,14 @@ export function auto_playAprilPiccolo(): boolean {
     cliExecute("aprilband play piccolo");
     success = f.experience > startexp;
   }
-  const tracker: string = in_zootomist()
+  const tracker: TrackerKey = in_zootomist()
     ? "auto_tracker_path"
     : "auto_otherstuff";
-  handleTracker$1(
-    $item`Apriling band piccolo`.toString(),
-    `${success ? "Played" : "Failed to play"} to ${f}`,
-    tracker,
-  );
+  handleTracker({
+    what: $item`Apriling band piccolo`,
+    detail: `${success ? "Played" : "Failed to play"} to ${f}`,
+    property: tracker,
+  });
   return success;
 }
 
@@ -457,7 +458,11 @@ export function auto_MayamClaim(str: string): boolean {
     }
   }
   cliExecute(`mayam rings ${str}`);
-  handleTracker$1("Mayam Calendar", `Claimed ${str}`, "auto_iotm_claim");
+  handleTracker({
+    what: "Mayam Calendar",
+    detail: `Claimed ${str}`,
+    property: "auto_iotm_claim",
+  });
   return true;
 }
 
@@ -477,7 +482,11 @@ function auto_MayamClaimStinkBomb(): boolean {
   const n_start: number = availableAmount(it);
   cliExecute("mayam rings vessel yam cheese explosion");
   if (availableAmount(it) > n_start) {
-    handleTracker$1("Mayam Calendar", `Claimed ${it}`, "auto_iotm_claim");
+    handleTracker({
+      what: "Mayam Calendar",
+      detail: `Claimed ${it}`,
+      property: "auto_iotm_claim",
+    });
     return true;
   }
   return false;
@@ -499,7 +508,11 @@ function auto_MayamClaimBelt(): boolean {
   const n_start: number = availableAmount(it);
   cliExecute("mayam rings yam meat eyepatch yam");
   if (availableAmount(it) > n_start) {
-    handleTracker$1("Mayam Calendar", `Claimed ${it}`, "auto_iotm_claim");
+    handleTracker({
+      what: "Mayam Calendar",
+      detail: `Claimed ${it}`,
+      property: "auto_iotm_claim",
+    });
     return true;
   }
   return false;
@@ -827,11 +840,11 @@ export function auto_checkTakerSpace(): void {
     creatableAmount($item`pirate dinghy`) > 0
   ) {
     if (create(1, $item`pirate dinghy`)) {
-      handleTracker$1(
-        $_auto_checkTakerSpace_ts_letter.toString(),
-        $item`pirate dinghy`.toString(),
-        "auto_iotm_claim",
-      );
+      handleTracker({
+        what: $_auto_checkTakerSpace_ts_letter,
+        detail: $item`pirate dinghy`.toString(),
+        property: "auto_iotm_claim",
+      });
     }
   }
   // deft pirate hook would be worth it but hard for autoscend to use
@@ -841,11 +854,11 @@ export function auto_checkTakerSpace(): void {
     creatableAmount($item`anchor bomb`) > 0
   ) {
     if (create(1, $item`anchor bomb`)) {
-      handleTracker$1(
-        $_auto_checkTakerSpace_ts_letter.toString(),
-        $item`anchor bomb`.toString(),
-        "auto_iotm_claim",
-      );
+      handleTracker({
+        what: $_auto_checkTakerSpace_ts_letter,
+        detail: $item`anchor bomb`.toString(),
+        property: "auto_iotm_claim",
+      });
     }
   }
   // goldschlepper is EPIC booze
@@ -854,33 +867,33 @@ export function auto_checkTakerSpace(): void {
   );
   if (createable > 0) {
     if (create(1, $item`tankard of spiced Goldschlepper`)) {
-      handleTracker$1(
-        $_auto_checkTakerSpace_ts_letter.toString(),
-        $item`tankard of spiced Goldschlepper`.toString(),
-        "auto_iotm_claim",
-      );
+      handleTracker({
+        what: $_auto_checkTakerSpace_ts_letter,
+        detail: $item`tankard of spiced Goldschlepper`.toString(),
+        property: "auto_iotm_claim",
+      });
     }
   }
   // tankard of spiced rum is awesome booze
   createable = creatableAmount($item`tankard of spiced rum`);
   if (createable > 0) {
     if (create(1, $item`tankard of spiced rum`)) {
-      handleTracker$1(
-        $_auto_checkTakerSpace_ts_letter.toString(),
-        $item`tankard of spiced rum`.toString(),
-        "auto_iotm_claim",
-      );
+      handleTracker({
+        what: $_auto_checkTakerSpace_ts_letter,
+        detail: $item`tankard of spiced rum`.toString(),
+        property: "auto_iotm_claim",
+      });
     }
   }
   // cursed Aztec tamale is awesome food, and only uses spices
   createable = creatableAmount($item`cursed Aztec tamale`);
   if (createable > 0) {
     if (create(1, $item`cursed Aztec tamale`)) {
-      handleTracker$1(
-        $_auto_checkTakerSpace_ts_letter.toString(),
-        $item`cursed Aztec tamale`.toString(),
-        "auto_iotm_claim",
-      );
+      handleTracker({
+        what: $_auto_checkTakerSpace_ts_letter,
+        detail: $item`cursed Aztec tamale`.toString(),
+        property: "auto_iotm_claim",
+      });
     }
   }
 }
@@ -1010,7 +1023,11 @@ function auto_getClanPhotoBoothItem(it: Item): boolean {
   }
   // Actually claim the item
   cliExecute(`photobooth item ${it.toString()}`);
-  handleTracker$1("Clan Photo Booth", `Claimed ${it}`, "auto_iotm_claim");
+  handleTracker({
+    what: "Clan Photo Booth",
+    detail: `Claimed ${it}`,
+    property: "auto_iotm_claim",
+  });
   // Go home if we BAFH'd it
   if (orig_clan_id !== getClanId()) {
     changeClan$1(orig_clan_id);
@@ -1065,11 +1082,11 @@ export function auto_getClanPhotoBoothEffect(
     case west_string:
       for (let i: number = 0; i < n_times; i++) {
         cliExecute("photobooth effect wild");
-        handleTracker$1(
-          "Clan Photo Booth",
-          `Claimed ${west_ef}`,
-          "auto_iotm_claim",
-        );
+        handleTracker({
+          what: "Clan Photo Booth",
+          detail: `Claimed ${west_ef}`,
+          property: "auto_iotm_claim",
+        });
       }
       success = toBoolean(haveEffect(west_ef));
       break;
@@ -1077,11 +1094,11 @@ export function auto_getClanPhotoBoothEffect(
     case tower_string:
       for (let i: number = 0; i < n_times; i++) {
         cliExecute("photobooth effect tower");
-        handleTracker$1(
-          "Clan Photo Booth",
-          `Claimed ${tower_ef}`,
-          "auto_iotm_claim",
-        );
+        handleTracker({
+          what: "Clan Photo Booth",
+          detail: `Claimed ${tower_ef}`,
+          property: "auto_iotm_claim",
+        });
       }
       success = toBoolean(haveEffect(tower_ef));
       break;
@@ -1089,11 +1106,11 @@ export function auto_getClanPhotoBoothEffect(
     case space_string:
       for (let i: number = 0; i < n_times; i++) {
         cliExecute("photobooth effect space");
-        handleTracker$1(
-          "Clan Photo Booth",
-          `Claimed ${space_ef}`,
-          "auto_iotm_claim",
-        );
+        handleTracker({
+          what: "Clan Photo Booth",
+          detail: `Claimed ${space_ef}`,
+          property: "auto_iotm_claim",
+        });
       }
       success = toBoolean(haveEffect(space_ef));
       break;
@@ -1187,11 +1204,11 @@ export function auto_meggFight(mon: Monster, speculative: boolean): boolean {
       ]),
     )
   ) {
-    handleTracker$1(
-      mon.toString(),
-      $familiar`Chest Mimic`.toString(),
-      "auto_copies",
-    );
+    handleTracker({
+      what: mon,
+      detail: $familiar`Chest Mimic`.toString(),
+      property: "auto_copies",
+    });
     return true;
   }
   return false;

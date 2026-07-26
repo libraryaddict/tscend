@@ -56,7 +56,7 @@ import { possessEquipment } from "../auto_equipment";
 import {
   auto_log_warning,
   auto_wantToSniff,
-  handleTracker$1,
+  handleTracker,
   internalQuestStatus,
   isGhost,
   stunnable,
@@ -282,11 +282,11 @@ export function auto_combatDefaultStage3(
     }
 
     if (emitDrones) {
-      handleTracker$1(
-        enemy.toString(),
-        $skill`Emit Matter Duplicating Drones`.toString(),
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`Emit Matter Duplicating Drones`.toString(),
+        property: "auto_otherstuff",
+      });
       return auto_useSkill($skill`Emit Matter Duplicating Drones`);
     }
   }
@@ -339,11 +339,11 @@ export function auto_combatDefaultStage3(
     }
 
     if (forceDrop) {
-      handleTracker$1(
-        enemy.toString(),
-        $skill`Hugs and Kisses!`.toString(),
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`Hugs and Kisses!`.toString(),
+        property: "auto_otherstuff",
+      });
       return auto_useSkill($skill`Hugs and Kisses!`);
     }
   }
@@ -358,7 +358,11 @@ export function auto_combatDefaultStage3(
     const douseAvailable: boolean =
       auto_canUse(douse, false) && auto_dousesRemaining() > 0;
     if (douseAvailable) {
-      handleTracker$1(enemy.toString(), douse.toString(), "auto_otherstuff");
+      handleTracker({
+        what: enemy,
+        detail: douse.toString(),
+        property: "auto_otherstuff",
+      });
       return auto_useSkill(douse);
     }
   }
@@ -375,27 +379,27 @@ export function auto_combatDefaultStage3(
       toInt(getProperty("_batWingsSwoopUsed")) < 11;
     // mild evil and swoop can only pick pocket. Use them before fire extinguisher
     if (swoopAvailable) {
-      handleTracker$1(
-        enemy.toString(),
-        $skill`Swoop like a Bat`.toString(),
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`Swoop like a Bat`.toString(),
+        property: "auto_otherstuff",
+      });
       return auto_useSkill($skill`Swoop like a Bat`);
     }
     if (mildEvilAvailable) {
-      handleTracker$1(
-        enemy.toString(),
-        $skill`Perpetrate Mild Evil`.toString(),
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`Perpetrate Mild Evil`.toString(),
+        property: "auto_otherstuff",
+      });
       return auto_useSkill($skill`Perpetrate Mild Evil`);
     }
     if (polarVortexAvailable) {
-      handleTracker$1(
-        enemy.toString(),
-        $skill`Fire Extinguisher: Polar Vortex`.toString(),
-        "auto_otherstuff",
-      );
+      handleTracker({
+        what: enemy,
+        detail: $skill`Fire Extinguisher: Polar Vortex`.toString(),
+        property: "auto_otherstuff",
+      });
       return auto_useSkill($skill`Fire Extinguisher: Polar Vortex`);
     }
   }
@@ -722,11 +726,11 @@ export function auto_combatDefaultStage3(
           }
         }
         if (useMiniSniff) {
-          handleTracker$1(
-            enemy.toString(),
-            $skill`Gallapagosian Mating Call`.toString(),
-            "auto_sniffs",
-          );
+          handleTracker({
+            what: enemy,
+            detail: $skill`Gallapagosian Mating Call`.toString(),
+            property: "auto_sniffs",
+          });
           return auto_useSkill($skill`Gallapagosian Mating Call`, false);
         }
       }
