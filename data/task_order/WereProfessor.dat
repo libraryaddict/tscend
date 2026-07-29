@@ -11,7 +11,7 @@ L9_leafletQuest
 L5_findKnob
 L12_sonofaPrefix
 # burn any unused Lucky! (Heartstone/Apriling sax/August scepter) before bedtime
-LX_burnUnusedLuck	LX_needToBurnUnusedLuck
+LX_burnUnusedLuck
 LX_burnDelay
 LX_summonMonster
 # Get Smashed Scientific Equipment ASAP
@@ -19,14 +19,14 @@ LX_wereprof_getSmashedEquip
 # make sure we don't waste turns of Ultrahydrated doing something else.
 L11_aridDesert	L11_hasUltrahydrated
 # Lock in the Shen zones as soon as we can as it (potentially) unlocks a bunch of stuff.
-L11_shenStartQuest	is_werewolf
+L11_shenStartQuest
 # Build the Bridge when we have enough parts as we may want to spend daily resources at the peaks.
 finishBuildingSmutOrcBridge
 # Call quest handlers based on current state if applicable
 auto_earlyRoutingHandling
 # Guild access.
 LX_guildUnlock
-LX_bitchinMeatcar	LX_bitchinMeatcar_condition
+LX_bitchinMeatcar
 #	Desert access, Daily Dungeon and other early random stuff that we don't want to miss.
 LX_unlockDesert
 LX_lockPicking
@@ -42,13 +42,13 @@ LX_spookyravenManorFirstFloor
 L5_getEncryptionKey
 L5_findKnob
 # Quests with Werewolf/Professor specific limitations should have higher priority so we do those when we can
-L12_gremlins	is_werewolf
-L11_forgedDocuments	is_professor
-L11_mcmuffinDiary	is_professor
-L11_getUVCompass	is_professor
+L12_gremlins
+L11_forgedDocuments
+L11_mcmuffinDiary
+L11_getUVCompass
 # Putting Lord Spookyraven here because he is limited but to get to him isn't
 L11_mauriceSpookyraven
-L11_shenCopperhead	is_werewolf
+L11_shenCopperhead
 L9_aBooPeak
 L9_oilPeak
 L8_trapperGroar

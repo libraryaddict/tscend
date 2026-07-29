@@ -59,7 +59,6 @@ import {
   pullsRemaining,
   replaceString,
   retrieveItem,
-  runChoice,
   sellCost,
   setProperty,
   spleenLimit,
@@ -127,6 +126,7 @@ import {
   auto_log_warning,
   auto_reserveAmount,
   auto_reserveCraftAmount,
+  auto_runChoice,
   auto_turbo,
   banishSources,
   handleTracker,
@@ -139,6 +139,7 @@ import {
   shrugAT,
 } from "./auto_util";
 import { ConsumeAction } from "./autoscend_record";
+import { QuestTask, registerQuestTask, runQuestTask } from "./engine/engine";
 import {
   canDrinkSpeakeasyDrink,
   drinkSpeakeasyDrink,
@@ -2527,38 +2528,46 @@ export function auto_chewAdventures(): boolean {
   return oldSpleenUse !== mySpleenUse();
 }
 
-export function auto_breakfastCounterVisit(): boolean {
+function auto_breakfastCounterVisitDo(): boolean {
+  auto_log_info(
+    "Going to the breakfast counter to grab/order a breakfast muffin.",
+  );
+  visitUrl("place.php?whichplace=monorail&action=monorail_downtown");
+  auto_runChoice(7); // Visit the Breakfast Counter
+  if (getProperty("muffinOnOrder") !== "") {
+    cliExecute("refresh inv");
+    if (itemAmount(toItem(getProperty("muffinOnOrder"))) > 0) {
+      // workaround mafia not clearing the property occasionally
+      // see https://kolmafia.us/threads/ordering-a-muffin-at-the-breakfast-counter-doesnt-always-set-the-muffinonorder-property.26072/
+      setProperty("muffinOnOrder", "");
+    }
+  }
   if (
+    !toBoolean(getProperty("_muffinOrderedToday")) &&
+    itemAmount($item`earthenware muffin tin`) > 0
+  ) {
+    auto_log_info("Ordering a bran muffin for tomorrow to keep you regular.");
+    auto_runChoice(2); // Order a bran muffin
+  }
+  auto_runChoice(1); // Back to the Platform!
+  auto_runChoice(8); // Nevermind
+  return false; // not adventuring, no need to restart doTasks loop.
+}
+
+export const auto_breakfastCounterVisitTask: QuestTask = registerQuestTask({
+  name: "auto_breakfastCounterVisit",
+  completed: () => toBoolean(getProperty("_muffinOrderedToday")),
+  ready: () =>
     itemAmount($item`earthenware muffin tin`) > 0 ||
     (!toBoolean(getProperty("_muffinOrderedToday")) &&
       $items`blueberry muffin, bran muffin, chocolate chip muffin, earthenware muffin tin`.includes(
         toItem(getProperty("muffinOnOrder")),
-      ))
-  ) {
-    auto_log_info(
-      "Going to the breakfast counter to grab/order a breakfast muffin.",
-    );
-    visitUrl("place.php?whichplace=monorail&action=monorail_downtown");
-    runChoice(7); // Visit the Breakfast Counter
-    if (getProperty("muffinOnOrder") !== "") {
-      cliExecute("refresh inv");
-      if (itemAmount(toItem(getProperty("muffinOnOrder"))) > 0) {
-        // workaround mafia not clearing the property occasionally
-        // see https://kolmafia.us/threads/ordering-a-muffin-at-the-breakfast-counter-doesnt-always-set-the-muffinonorder-property.26072/
-        setProperty("muffinOnOrder", "");
-      }
-    }
-    if (
-      !toBoolean(getProperty("_muffinOrderedToday")) &&
-      itemAmount($item`earthenware muffin tin`) > 0
-    ) {
-      auto_log_info("Ordering a bran muffin for tomorrow to keep you regular.");
-      runChoice(2); // Order a bran muffin
-    }
-    runChoice(1); // Back to the Platform!
-    runChoice(8); // Nevermind
-  }
-  return false; // not adventuring, no need to restart doTasks loop.
+      )),
+  do: auto_breakfastCounterVisitDo,
+});
+
+export function auto_breakfastCounterVisit(): boolean {
+  return runQuestTask(auto_breakfastCounterVisitTask);
 }
 
 let $_still_targetToOrigin_originNeeded: Map<Item, Item> | undefined;

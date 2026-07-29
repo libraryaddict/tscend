@@ -23,7 +23,6 @@ import {
   myTurncount,
   removeProperty,
   round,
-  runChoice,
   setProperty,
   Stat,
   toBoolean,
@@ -36,7 +35,11 @@ import { $familiar, $item, $location, $path, $stat } from "libram";
 
 import { auto_unreservedAdvRemaining } from "../../autoscend";
 import { canPull, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv, autoLuckyAdv } from "../auto_adventure";
+import {
+  auto_triggerPostAdventure,
+  autoAdv,
+  autoLuckyAdv,
+} from "../auto_adventure";
 import {
   autoEquip,
   possessEquipment,
@@ -54,14 +57,16 @@ import {
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   cloversAvailable,
   internalQuestStatus,
   loopHandlerDelayAll,
   meatReserve,
 } from "../auto_util";
+import { runTaskChain } from "../engine/engine";
 import { chateaumantegna_available } from "../iotms/mr2015";
-import { L5_slayTheGoblinKing } from "../quests/level_05";
-import { L8_trapperSlope } from "../quests/level_08";
+import { L5_slayTheGoblinKingTask } from "../quests/level_05";
+import { L8_trapperSlopeTask } from "../quests/level_08";
 import {
   bridgeGoal,
   L9_chasmBuild,
@@ -84,9 +89,9 @@ import {
   haveWarOutfit,
   L12_finalizeWar,
   L12_islandWar,
-  L12_preOutfit,
+  L12_preOutfitTask,
 } from "../quests/level_12";
-import { LX_islandAccess } from "../quests/level_any";
+import { LX_islandAccessTask } from "../quests/level_any";
 import { LX_galaktikSubQuest } from "../quests/optional";
 
 //Defined in autoscend/paths/you_robot.ash
@@ -768,7 +773,7 @@ function robot_statbot(target: Stat): boolean {
 
   const start_uses: number = toInt(getProperty("statbotUses"));
   visitUrl("place.php?whichplace=scrapheap&action=sh_upgrade");
-  runChoice(nn);
+  auto_runChoice(nn);
 
   if (toInt(getProperty("statbotUses")) !== 1 + start_uses) {
     abort("Using Statbot-5000 mysteriously failed. Beep Boop.");
@@ -826,7 +831,7 @@ function LX_robot_level(): boolean {
   //grab the XP from free rests in chateau mantegna
   if (chateaumantegna_available() && haveFreeRestAvailable()) {
     doFreeRest();
-    cliExecute("scripts/autoscend/auto_post_adv.js");
+    auto_triggerPostAdventure();
     loopHandlerDelayAll();
     return true;
   }
@@ -1172,14 +1177,14 @@ export function robot_choice_adv(choice: number, page: string): boolean {
           auto_is_valid($item`old leather wallet`) &&
           !robot_need_mus
         ) {
-          runChoice(1);
+          auto_runChoice(1);
         } else if (
           itemAmount($item`ghost key`) > 0 &&
           myPrimestat() === $stat`Muscle`
         ) {
-          runChoice(3);
+          auto_runChoice(3);
         } else {
-          runChoice(2);
+          auto_runChoice(2);
         }
         break;
       }
@@ -1191,21 +1196,21 @@ export function robot_choice_adv(choice: number, page: string): boolean {
           itemAmount($item`Lord Spookyraven's spectacles`) === 0 &&
           internalQuestStatus("questL11Manor") < 2;
         if (needSpectacles) {
-          runChoice(3);
+          auto_runChoice(3);
         } else if (
           itemAmount($item`disposable instant camera`) === 0 &&
           internalQuestStatus("questL11Palindome") < 1
         ) {
-          runChoice(4);
+          auto_runChoice(4);
         } else if (!robot_need_mys || myMeat() < 1000 + meatReserve()) {
-          runChoice(1);
+          auto_runChoice(1);
         } else if (
           itemAmount($item`ghost key`) > 0 &&
           myPrimestat() === $stat`Mysticality`
         ) {
-          runChoice(5);
+          auto_runChoice(5);
         } else {
-          runChoice(2);
+          auto_runChoice(2);
         }
         break;
       }
@@ -1217,14 +1222,14 @@ export function robot_choice_adv(choice: number, page: string): boolean {
           ]),
         );
         if (options.has(4)) {
-          runChoice(4); // only shows up rarely. when this line was added it was worth 1.3 million in mall
+          auto_runChoice(4); // only shows up rarely. when this line was added it was worth 1.3 million in mall
         } else if (
           itemAmount($item`ghost key`) > 0 &&
           myPrimestat() === $stat`Moxie`
         ) {
-          runChoice(5); // spend 1 ghost key for primestat, get ~200 moxie XP
+          auto_runChoice(5); // spend 1 ghost key for primestat, get ~200 moxie XP
         } else {
-          runChoice(1); // get moxie substats
+          auto_runChoice(1); // get moxie substats
         }
         break;
       }
@@ -1493,10 +1498,7 @@ export function LA_robot(): boolean {
   }
   if (directive === "outfit1" || directive === "outfit2") {
     //we are at portions of quests that need an outfit. first two are specific portions so they should be done first.
-    if (L5_slayTheGoblinKing()) {
-      return true;
-    }
-    if (L8_trapperSlope()) {
+    if (runTaskChain([L5_slayTheGoblinKingTask, L8_trapperSlopeTask])) {
       return true;
     }
     if (possessEquipment($item`Mohawk wig`) || !inHardcore()) {
@@ -1567,12 +1569,14 @@ export function LA_robot(): boolean {
   }
 
   if (myLevel() > 12) {
-    //island access is needed to start the war
-    if (LX_islandAccess()) {
-      return true;
-    }
-    //we do not actually need to be wearing an outfit to do the pre outfit. so this does not go in directives
-    if (L12_preOutfit()) {
+    if (
+      runTaskChain([
+        //island access is needed to start the war
+        LX_islandAccessTask,
+        //we do not actually need to be wearing an outfit to do the pre outfit. so this does not go in directives
+        L12_preOutfitTask,
+      ])
+    ) {
       return true;
     }
   }

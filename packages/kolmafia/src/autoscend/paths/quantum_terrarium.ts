@@ -18,6 +18,7 @@ import { $familiar, $item, $location, $path } from "libram";
 import { autoAdv } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
 import { internalQuestStatus } from "../auto_util";
+import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import {
   auto_godLobsterFightsRemaining,
   godLobsterCombat,
@@ -34,11 +35,7 @@ function qt_turnsToNextQuantumAlignment(): number {
   return totalTurnsPlayed() - toInt(getProperty("_nextQuantumAlignment"));
 }
 
-export function LX_quantumTerrarium(): boolean {
-  if (!in_quantumTerrarium()) {
-    return false;
-  }
-
+function LX_quantumTerrariumDo(): boolean {
   switch (myFamiliar()) {
     case $familiar`Machine Elf`:
       // lets order this by familiar ID in ascending order
@@ -95,6 +92,18 @@ export function LX_quantumTerrarium(): boolean {
       break;
   }
   return false;
+}
+
+const LX_quantumTerrariumTask: QuestTask = registerQuestTask({
+  name: "LX_quantumTerrarium",
+  completed: () => !in_quantumTerrarium(),
+  ready: () => true,
+  do: LX_quantumTerrariumDo,
+  locations: $location`The Deep Machine Tunnels`,
+});
+
+export function LX_quantumTerrarium(): boolean {
+  return runQuestTask(LX_quantumTerrariumTask);
 }
 
 export function qt_initializeSettings(): void {

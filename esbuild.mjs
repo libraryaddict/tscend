@@ -269,7 +269,7 @@ await esbuild.build({
   bundle: true,
   outdir: "dist/",
   external: ["kolmafia"],
-  mainFields: ["main"],
+  mainFields: ["main", "module"],
   format: "cjs",
   plugins: [
     dataPlugin(dataSources),

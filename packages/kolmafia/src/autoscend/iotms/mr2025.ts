@@ -20,12 +20,14 @@ import {
   getMonsters,
   getPower,
   getProperty,
+  handlingChoice,
   haveEffect,
   haveEquipped,
   inebrietyLimit,
   isUnrestricted,
   Item,
   itemAmount,
+  lastChoice,
   lastMonster,
   Location,
   max,
@@ -36,6 +38,7 @@ import {
   myBasestat,
   myDaycount,
   myFullness,
+  myId,
   myInebriety,
   myLevel,
   myLocation,
@@ -44,7 +47,6 @@ import {
   myPrimestat,
   mySpleenUse,
   numericModifier,
-  runChoice,
   setProperty,
   shrunkenHeadZombie,
   Skill,
@@ -85,6 +87,7 @@ import {
   set,
 } from "libram";
 
+import { main as handleChoiceAdv } from "../auto_choice_adv";
 import {
   auto_canDrink,
   auto_canEat,
@@ -110,6 +113,7 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_log_info,
+  auto_runChoice,
   auto_wantToFreeKillWithNoDrops,
   auto_zonePhylumPercent,
   canSummonMonster,
@@ -872,7 +876,7 @@ export function auto_peridotSetZone(loc: Location): boolean {
 
 export function peridotChoiceHandler(choice: number, page: string): void {
   if (!auto_havePeridot()) {
-    runChoice(2); //should never get here but might as well mitigate
+    auto_runChoice(2); //should never get here but might as well mitigate
   }
 
   const loc: Location = myLocation();
@@ -913,7 +917,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
       detail: "Peace out",
       property: "auto_mapperidot",
     });
-    runChoice(2); //if no match is found, hit the exit choice
+    auto_runChoice(2); //if no match is found, hit the exit choice
     return;
   }
   handleTracker({
@@ -923,7 +927,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     property: "auto_mapperidot",
   });
   combat_status_add("choiceMonster");
-  runChoice(1, `bandersnatch=${toInt(popChoice)}`);
+  auto_runChoice(1, `bandersnatch=${toInt(popChoice)}`);
   return;
 }
 
@@ -1283,7 +1287,7 @@ export function auto_timeIsAStripPossible(): boolean {
 
 export function mobiusChoiceHandler(choice: number, page: string): void {
   if (!auto_haveMobiusRing()) {
-    runChoice(1); //should never get here but might as well mitigate
+    auto_runChoice(1); //should never get here but might as well mitigate
   }
 
   const choices: Map<number, string> = new Map(
@@ -1301,7 +1305,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
       detail: opt,
       property: "auto_otherstuff",
     });
-    runChoice(num);
+    auto_runChoice(num);
   }
 
   let pos: string;
@@ -1459,7 +1463,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
     return;
   }
 
-  runChoice(1);
+  auto_runChoice(1);
   return;
 }
 
@@ -1503,15 +1507,20 @@ export function auto_waveTheZone(): boolean {
     waveTheZone = true;
   }
   if (waveTheZone) {
-    if (useSkill(1, $skill`Sea *dent: Summon a Wave`)) {
-      handleTracker({
-        what: $item`Monodent of the Sea`,
-        location: myLocation(),
-        detail: "Summon a Wave",
-        property: "auto_otherstuff",
-      });
-      return true;
+    // visitUrl, not useSkill: useSkill aborts on the choice.php redirect (#1566)
+    const waveText = visitUrl(
+      `runskillz.php?action=Skillz&whichskill=${toInt($skill`Sea *dent: Summon a Wave`)}&quantity=1&targetplayer=${myId()}&pwd`,
+    );
+    if (handlingChoice()) {
+      handleChoiceAdv(lastChoice(), waveText);
     }
+    handleTracker({
+      what: $item`Monodent of the Sea`,
+      location: myLocation(),
+      detail: "Summon a Wave",
+      property: "auto_otherstuff",
+    });
+    return true;
   }
   return false;
 }

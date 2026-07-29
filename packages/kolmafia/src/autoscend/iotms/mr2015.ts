@@ -20,7 +20,6 @@ import {
   myMeat,
   myPrimestat,
   npcPrice,
-  runChoice,
   setProperty,
   splitString,
   Stat,
@@ -58,12 +57,14 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   canYellowRay,
   handleTracker,
   internalQuestStatus,
   organsFull,
   wrap_item,
 } from "../auto_util";
+import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { is_boris } from "../paths/avatar_of_boris";
 import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
@@ -77,6 +78,7 @@ import { in_lol } from "../paths/legacy_of_loathing";
 import { in_lta } from "../paths/license_to_adventure";
 import { in_nuclear } from "../paths/nuclear_autumn";
 import { in_ocrs } from "../paths/one_crazy_random_summer";
+import { in_quantumTerrarium } from "../paths/quantum_terrarium";
 import { in_theSource } from "../paths/the_source";
 import { in_wotsf } from "../paths/way_of_the_surprising_fist";
 import { needOre } from "../quests/level_08";
@@ -810,7 +812,7 @@ export function chateaumantegna_nightstandSet(): boolean {
   return true;
 }
 
-export function chateauPainting(): boolean {
+function chateauPaintingDo(): boolean {
   let paintingLevel: number = 8;
   if (in_ocrs()) {
     paintingLevel = 9;
@@ -856,6 +858,17 @@ export function chateauPainting(): boolean {
     }
   }
   return false;
+}
+
+export const chateauPaintingTask: QuestTask = registerQuestTask({
+  name: "chateauPainting",
+  completed: () => toBoolean(getProperty("chateauMonsterFought")),
+  ready: () => true,
+  do: chateauPaintingDo,
+});
+
+export function chateauPainting(): boolean {
+  return runQuestTask(chateauPaintingTask);
 }
 
 function deck_available(): boolean {
@@ -1277,21 +1290,29 @@ export function adjustEdHat(goal: string): boolean {
   return false;
 }
 
-export function resolveSixthDMT(): boolean {
-  // In the Deep Machine Tunnels the sixth and every 50th visit after that in a single ascension will be a noncombat. This prepares for it and executes it.
-  if (in_koe()) {
-    return false;
-  }
-  if (!canChangeToFamiliar($familiar`Machine Elf`)) {
-    return false;
-  }
-  if ($location`The Deep Machine Tunnels`.turnsSpent !== 5) {
-    // need to figure out the exact schedule for 2nd and later occurences then add it here.
-    return false;
-  }
-
+function resolveSixthDMTDo(): boolean {
   handleFamiliar$1($familiar`Machine Elf`);
   return autoAdv($location`The Deep Machine Tunnels`);
+}
+
+const resolveSixthDMTTask: QuestTask = registerQuestTask({
+  name: "resolveSixthDMT",
+  completed: () =>
+    in_koe() ||
+    (!canChangeToFamiliar($familiar`Machine Elf`) && !in_quantumTerrarium()) ||
+    $location`The Deep Machine Tunnels`.turnsSpent > 5,
+  // In the Deep Machine Tunnels the sixth and every 50th visit after that in a single ascension will be a noncombat. This prepares for it and executes it.
+  ready: () =>
+    !in_koe() &&
+    canChangeToFamiliar($familiar`Machine Elf`) &&
+    // need to figure out the exact schedule for 2nd and later occurences then add it here.
+    $location`The Deep Machine Tunnels`.turnsSpent === 5,
+  do: resolveSixthDMTDo,
+  locations: $location`The Deep Machine Tunnels`,
+});
+
+export function resolveSixthDMT(): boolean {
+  return runQuestTask(resolveSixthDMTTask);
 }
 
 export function doghouseChoiceHandler(choice: number): void {
@@ -1303,16 +1324,16 @@ export function doghouseChoiceHandler(choice: number): void {
       (haveEffect($effect`Adventurer's Best Friendship`) > 30 &&
         pathHasFamiliar())
     ) {
-      runChoice(3); // ghost dog chow
+      auto_runChoice(3); // ghost dog chow
     } else {
-      runChoice(2); // 30 turns of adventurer's best friendship
+      auto_runChoice(2); // 30 turns of adventurer's best friendship
     }
   } else if (choice === 1107) {
     // Playing Fetch (Ghost Dog)
-    runChoice(1); // get tennis ball
+    auto_runChoice(1); // get tennis ball
   } else if (choice === 1108) {
     // Your Dog Found Something Again (Ghost Dog)
-    runChoice(3); // get other stuff as recommended by ASS
+    auto_runChoice(3); // get other stuff as recommended by ASS
   } else {
     abort("unhandled choice in doghouseChoiceHandler");
   }

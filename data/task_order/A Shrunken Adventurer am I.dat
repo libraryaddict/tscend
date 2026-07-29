@@ -10,7 +10,7 @@ L9_leafletQuest
 L5_findKnob
 L12_sonofaPrefix
 # burn any unused Lucky! (Heartstone/Apriling sax/August scepter) before bedtime
-LX_burnUnusedLuck	LX_needToBurnUnusedLuck
+LX_burnUnusedLuck
 LX_burnDelay
 LX_summonMonster
 # make sure we don't waste turns of Ultrahydrated doing something else.

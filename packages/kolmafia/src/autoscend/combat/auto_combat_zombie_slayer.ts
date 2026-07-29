@@ -10,6 +10,7 @@ import {
 } from "kolmafia";
 import { $item, $location, $monster, $monsters, $skill } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
 import {
   auto_have_skill,
@@ -41,10 +42,10 @@ export function auto_combatZombieSlayerStage3(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 3 = debuff: delevel, stun, curse, damage over time
   if (!in_zombieSlayer()) {
-    return "";
+    return undefined;
   }
 
   if (auto_canUse($skill`Infectious Bite`) && canSurvive(4.0)) {
@@ -63,17 +64,17 @@ export function auto_combatZombieSlayerStage3(
     return auto_useSkill($skill`Bear-ly Legal`);
   }
 
-  return "";
+  return undefined;
 }
 
 export function auto_combatZombieSlayerStage4(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 4 = prekill. copy, sing along, flyer and other things that need to be done after delevel but before killing
   if (!in_zombieSlayer()) {
-    return "";
+    return undefined;
   }
   // Basically stolen from Ed's Lash targets
   if (
@@ -271,16 +272,16 @@ export function auto_combatZombieSlayerStage4(
     }
   }
 
-  return "";
+  return undefined;
 }
 
 export function auto_combatZombieSlayerStage5(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   if (!in_zombieSlayer()) {
-    return "";
+    return undefined;
   }
 
   if (wantBearHug(enemy)) {
@@ -304,5 +305,5 @@ export function auto_combatZombieSlayerStage5(
     return auto_useSkill($skill`Bilious Burst`);
   }
 
-  return "";
+  return undefined;
 }

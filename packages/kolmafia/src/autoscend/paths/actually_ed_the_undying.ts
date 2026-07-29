@@ -33,7 +33,6 @@ import {
   myTurncount,
   putCloset,
   removeProperty,
-  runChoice,
   Servant,
   setProperty,
   Skill,
@@ -66,7 +65,11 @@ import {
   auto_buyUpTo,
   pullXWhenHaveY,
 } from "../auto_acquire";
-import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
+import {
+  auto_triggerPostAdventure,
+  autoAdv,
+  autoAdvBypass$1,
+} from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import { autoChew, spleen_left } from "../auto_consume";
 import {
@@ -87,10 +90,12 @@ import {
   auto_change_mcd,
   auto_log_debug,
   auto_log_info,
+  auto_runChoice,
   backupSetting,
   internalQuestStatus,
   ovenHandle,
 } from "../auto_util";
+import { QuestTask, registerQuestTask, runTaskChain } from "../engine/engine";
 import {
   elementalPlanes_access,
   elementalPlanes_takeJob,
@@ -106,41 +111,11 @@ import {
   speakeasyCombat,
 } from "../iotms/mr2022";
 import { tootGetMeat } from "../quests/level_01";
-import { L2_mosquito } from "../quests/level_02";
-import { L3_tavern } from "../quests/level_03";
-import { L4_batCave } from "../quests/level_04";
 import {
-  L5_getEncryptionKey,
-  L5_goblinKing,
-  L5_haremOutfit,
-} from "../quests/level_05";
-import { L8_trapperQuest } from "../quests/level_08";
-import { L9_chasmBuild } from "../quests/level_09";
-import {
-  L10_airship,
-  L10_basement,
-  L10_ground,
-  L10_plantThatBean,
-  L10_topFloor,
-} from "../quests/level_10";
-import {
-  L11_blackMarket,
-  L11_forgedDocuments,
-  L11_hiddenCity,
-  L11_hiddenCityZones,
-  L11_mauriceSpookyraven,
-  L11_mcmuffinDiary,
-  L11_palindome,
-  L11_shenStartQuest,
-  L11_talismanOfNam,
-  L11_unlockHiddenCity,
-  LX_spookyravenManorSecondFloor,
   LX_unlockHauntedBilliardsRoom,
-  LX_unlockHauntedLibrary,
-  LX_unlockHiddenTemple,
-  LX_unlockManorSecondFloor,
+  LX_unlockHauntedLibraryTask,
+  LX_unlockManorSecondFloorTask,
 } from "../quests/level_11";
-import { L12_islandWar } from "../quests/level_12";
 import { LX_islandAccess } from "../quests/level_any";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
@@ -1205,7 +1180,7 @@ function L1_ed_island(): boolean {
     const need: number = min(4, (myMaxmp() - myMp()) / 10);
     auto_buyUpTo(need, $item`Doc Galaktik's Invigorating Tonic`);
     use(need, $item`Doc Galaktik's Invigorating Tonic`);
-    cliExecute("auto_post_adv.js");
+    auto_triggerPostAdventure();
   }
 
   buffMaintain$2($effect`Experimental Effect G-9`);
@@ -1427,11 +1402,11 @@ function edUnderworldAdv(): boolean {
   const initial_turncount: number = myTurncount();
 
   visitUrl("place.php?whichplace=edbase&action=edbase_portal"); //click on portal in base
-  runChoice(1); //Enter the Underworld
-  runChoice(1); //Need to click through another window
+  auto_runChoice(1); //Enter the Underworld
+  auto_runChoice(1); //Need to click through another window
   ed_shopping(); //Shop while there
   visitUrl("place.php?whichplace=edunder&action=edunder_leave"); //click on portal in underworld
-  runChoice(1); //Exit the Underworld
+  auto_runChoice(1); //Exit the Underworld
 
   return myTurncount() === 1 + initial_turncount;
 }
@@ -1483,11 +1458,14 @@ export function edAcquireHP$1(goal: number): boolean {
   return myHp() >= goal;
 }
 
-export function LM_edTheUndying(): boolean {
-  if (!isActuallyEd()) {
-    return false;
-  }
+// The functions and tasks below are the flattened, in-order replacement for the
+// old LM_edTheUndying monolith. They are only ever reached via
+// data/task_order/Actually Ed the Undying.dat, which lists them (plus a
+// handful of pre-existing tasks by name) in the exact order the monolith used
+// to check them in. Each `do` body below is a byte-for-byte copy of the
+// corresponding chunk of the old monolith.
 
+function LM_ed_setupDo(): boolean {
   ed_buySkills();
 
   if (getProperty("edPiece") !== "hyena") {
@@ -1526,18 +1504,35 @@ export function LM_edTheUndying(): boolean {
     acquireHermitItem($item`seal tooth`);
   }
 
-  if (L1_ed_island() || L1_ed_islandFallback()) {
-    return true;
-  }
+  return false;
+}
 
-  if (L5_getEncryptionKey()) {
-    return true;
-  }
+export const LM_ed_setupTask: QuestTask = registerQuestTask({
+  name: "LM_ed_setup",
+  completed: () => !isActuallyEd(),
+  ready: () => true,
+  do: LM_ed_setupDo,
+});
 
-  if (LX_islandAccess()) {
-    return true;
-  }
+export const L1_ed_islandTask: QuestTask = registerQuestTask({
+  name: "L1_ed_island",
+  completed: () =>
+    myLevel() >= 10 ||
+    (myLevel() >= 8 && haveSkill($skill`Still Another Extra Spleen`)) ||
+    !isActuallyEd(),
+  ready: () => true,
+  do: L1_ed_island,
+  locations: $location`The Secret Government Laboratory`,
+});
 
+export const L1_ed_islandFallbackTask: QuestTask = registerQuestTask({
+  name: "L1_ed_islandFallback",
+  completed: () => !isActuallyEd(),
+  ready: () => true,
+  do: L1_ed_islandFallback,
+});
+
+function LM_ed_miscHousekeepingDo(): boolean {
   if (closetAmount($item`filthy corduroys`) > 0) {
     takeCloset(closetAmount($item`filthy corduroys`), $item`filthy corduroys`);
   }
@@ -1550,108 +1545,98 @@ export function LM_edTheUndying(): boolean {
     acquireHermitItem($item`seal tooth`);
   }
 
+  return false;
+}
+
+export const LM_ed_miscHousekeepingTask: QuestTask = registerQuestTask({
+  name: "LM_ed_miscHousekeeping",
+  completed: () => !isActuallyEd(),
+  ready: () => true,
+  do: LM_ed_miscHousekeepingDo,
+});
+
+function LM_ed_restIfAvailableDo(): boolean {
   if (myLevel() >= 9) {
     if (haveAnyIotmAlternativeRestSiteAvailable() && doFreeRest()) {
-      cliExecute("scripts/autoscend/auto_post_adv.js");
+      auto_triggerPostAdventure();
       return true;
     }
-  }
-  // we should open the manor second floor sooner rather than later as starting the level 11 quest
-  // ruins our pool skill and having delay burning zones open is nice.
-  if (myLevel() < 11) {
-    if (
-      LX_unlockManorSecondFloor() ||
-      LX_unlockHauntedLibrary() ||
-      LX_unlockHauntedBilliardsRoom(true)
-    ) {
-      return true;
-    }
-  }
-  // as we do hippy side, the war is a 2 Ka quest (excluding sidequests but that shouldn't matter)
-  if (L12_islandWar()) {
-    return true;
-  }
-  // start the macguffin quest, conveniently the black forest is a 1.4 Ka zone.
-  if (
-    L11_blackMarket() ||
-    L11_forgedDocuments() ||
-    L11_mcmuffinDiary() ||
-    L11_shenStartQuest()
-  ) {
-    return true;
-  }
-  // The hidden city is mostly 2 Ka monsters so do it ASAP.
-  if (L11_unlockHiddenCity() || L11_hiddenCityZones() || L11_hiddenCity()) {
-    return true;
-  }
-  // Airship is 1.5 Ka or 1.8 Ka with the construct banished so third highest priorty after the war
-  // Castle zones are all 1 Ka so may as well finish it off
-  if (
-    L10_plantThatBean() ||
-    L10_airship() ||
-    L10_basement() ||
-    L10_ground() ||
-    L10_topFloor()
-  ) {
-    return true;
-  }
-  // If we didn't get the Spookyraven unlock done before level 11, do it now since airship is done and we want more delay zones open
-  if (
-    LX_unlockManorSecondFloor() ||
-    LX_unlockHauntedLibrary() ||
-    LX_unlockHauntedBilliardsRoom(true)
-  ) {
-    return true;
-  }
-  // Smut Orcs are 1 Ka so build the bridge.
-  if (L9_ed_chasmStart() || L9_chasmBuild()) {
-    return true;
-  }
-  // L8 quest is all 1 Ka zones for Ed (unlikely to survive Ninja Snowmen Assassins so they don't count)
-  if (L8_trapperQuest()) {
-    return true;
-  }
-  // Goblins are 1 Ka and the rewards are useful
-  if (L5_haremOutfit() || L5_goblinKing()) {
-    return true;
-  }
-  // Bats are 1 Ka and the rewards are useful
-  if (L4_batCave()) {
-    return true;
-  }
-  // need to do L2 quest to unlock the L3. 0.83 Ka zone or 1/1.25/1.67 with 1/2/3 banishes
-  if (L2_mosquito() || LX_unlockHiddenTemple()) {
-    return true;
-  }
-  // should probably complete the tavern for drinking purposes (and rats are 1 Ka).
-  if (L3_tavern()) {
-    return true;
-  }
-  // Copperhead Club & Mob of Zeppelin Protestors are 2 Ka zones (with a banish use) but we want to delay them so we can semi-rare Copperhead
-  if (
-    LX_spookyravenManorSecondFloor() ||
-    L11_mauriceSpookyraven() ||
-    L11_talismanOfNam() ||
-    L11_palindome()
-  ) {
-    return true;
-  }
-  // Crush the jackass adventurer!
-  if (L13_ed_towerHandler()) {
-    return true;
-  }
-  // Back to square frigging one, I guess.
-  if (L13_ed_councilWarehouse()) {
-    return true;
   }
   return false;
 }
+
+export const LM_ed_restIfAvailableTask: QuestTask = registerQuestTask({
+  name: "LM_ed_restIfAvailable",
+  completed: () => !isActuallyEd(),
+  ready: () => true,
+  do: LM_ed_restIfAvailableDo,
+});
+
+// Deliberately left as one cohesive block rather than split apart: the
+// myLevel() < 11 gate only makes this attempt at the manor/library/billiards
+// unlock chain fire before level 11 -- the exact same chain (minus the gate)
+// is retried unconditionally later via the LX_unlockManorSecondFloor /
+// LX_unlockHauntedLibrary / LX_unlockHauntedBilliardsRoom lines further down
+// the task order as a fallback. Expressing the level gate would require a new
+// registered task-order condition function, which is riskier than keeping
+// this verbatim.
+function LM_ed_earlyManorUnlockDo(): boolean {
+  return (
+    myLevel() < 11 &&
+    runTaskChain([
+      LX_unlockManorSecondFloorTask,
+      LX_unlockHauntedLibraryTask,
+      LX_unlockHauntedBilliardsRoomTask,
+    ])
+  );
+}
+
+export const LM_ed_earlyManorUnlockTask: QuestTask = registerQuestTask({
+  name: "LM_ed_earlyManorUnlock",
+  completed: () => !isActuallyEd(),
+  ready: () => true,
+  do: LM_ed_earlyManorUnlockDo,
+});
+
+// Bare wrapper so the level-11-and-later fallback unlock attempt (see comment
+// above) can be listed by name in the task order, same as the other
+// already-registered tasks it runs alongside.
+export const LX_unlockHauntedBilliardsRoomTask: QuestTask = registerQuestTask({
+  name: "LX_unlockHauntedBilliardsRoom",
+  completed: () =>
+    itemAmount($item`Spookyraven billiards room key`) > 0 || !isActuallyEd(),
+  ready: () => true,
+  do: () => LX_unlockHauntedBilliardsRoom(true),
+});
+
+export const L9_ed_chasmStartTask: QuestTask = registerQuestTask({
+  name: "L9_ed_chasmStart",
+  completed: () => !isActuallyEd(),
+  ready: () => true,
+  do: L9_ed_chasmStart,
+  locations: $location`The Smut Orc Logging Camp`,
+});
+
+export const L13_ed_towerHandlerTask: QuestTask = registerQuestTask({
+  name: "L13_ed_towerHandler",
+  completed: () => !isActuallyEd(),
+  ready: () => true,
+  do: L13_ed_towerHandler,
+});
+
+export const L13_ed_councilWarehouseTask: QuestTask = registerQuestTask({
+  name: "L13_ed_councilWarehouse",
+  completed: () => !isActuallyEd(),
+  ready: () => true,
+  do: L13_ed_councilWarehouse,
+  locations: $location`The Secret Council Warehouse`,
+});
 
 export function edUnderworldChoiceHandler(choice: number): void {
   auto_log_debug(`edUnderworldChoiceHandler Running choice ${choice}`, "blue");
   if (choice === 1023) {
     // Like a Bat Into Hell
-    runChoice(1); // Enter the Underworld
+    auto_runChoice(1); // Enter the Underworld
     auto_log_info(
       `Ed died in combat ${toInt(getProperty("_edDefeats"))} time(s)`,
       "blue",
@@ -1664,10 +1649,10 @@ export function edUnderworldChoiceHandler(choice: number): void {
       toInt(getProperty("_edDefeats")) < toInt(getProperty("edDefeatAbort"))
     ) {
       // resurrecting is still free.
-      runChoice(1, false); // UNDYING!
+      auto_runChoice(1); // UNDYING!
     } else {
       // resurrecting will cost Ka
-      runChoice(2); // Accept the cold embrace of death (Return to the Pyramid)
+      auto_runChoice(2); // Accept the cold embrace of death (Return to the Pyramid)
       auto_log_info("Ed died in combat for reals!");
       setProperty(
         "auto_beatenUpCount",

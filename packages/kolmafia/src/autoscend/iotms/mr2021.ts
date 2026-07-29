@@ -28,8 +28,8 @@ import {
   myMeat,
   npcPrice,
   retrieveItem,
-  runChoice,
   setProperty,
+  Skill,
   splitString,
   toBoolean,
   toInt,
@@ -80,6 +80,7 @@ import {
   auto_log_info,
   auto_log_warning,
   auto_queueIgnore,
+  auto_runChoice,
   auto_wantToBanish,
   auto_wantToBanish$1,
   auto_wantToReplace,
@@ -920,16 +921,16 @@ export function auto_fireExtinguisherCharges(): number {
   return toInt(getProperty("_fireExtinguisherCharge"));
 }
 // returns zone specific skill if in usable zone and hasn't been used yet there this ascension. Otherwise returns empty string
-export function auto_FireExtinguisherCombatString(place: Location): string {
+export function auto_FireExtinguisherCombatSkill(place: Location): Skill {
   if (
     auto_fireExtinguisherCharges() < 20 ||
     !auto_is_valid$2($skill`Fire Extinguisher: Zone Specific`)
   ) {
-    return "";
+    return undefined;
   }
 
   if (in_wereprof()) {
-    return "";
+    return undefined;
   }
   // once per ascension uses
   if (
@@ -940,7 +941,7 @@ export function auto_FireExtinguisherCombatString(place: Location): string {
   ) {
     //sonar-in-a-biscuits are used before combat, if available. Knock a wall down if any are still standing
     if (internalQuestStatus("questL04Bat") < 3) {
-      return `skill ${$skill`Fire Extinguisher: Zone Specific`}`;
+      return $skill`Fire Extinguisher: Zone Specific`;
     }
   }
 
@@ -949,14 +950,14 @@ export function auto_FireExtinguisherCombatString(place: Location): string {
     !toBoolean(getProperty("fireExtinguisherHaremUsed")) &&
     !possessOutfit("Knob Goblin Harem Girl Disguise")
   ) {
-    return `skill ${$skill`Fire Extinguisher: Zone Specific`}`;
+    return $skill`Fire Extinguisher: Zone Specific`;
   }
 
   if (
     place === $location`The Defiled Niche` &&
     !toBoolean(getProperty("fireExtinguisherCyrptUsed"))
   ) {
-    return `skill ${$skill`Fire Extinguisher: Zone Specific`}`;
+    return $skill`Fire Extinguisher: Zone Specific`;
   }
 
   if (
@@ -965,7 +966,7 @@ export function auto_FireExtinguisherCombatString(place: Location): string {
     toInt(getProperty("chasmBridgeProgress")) < bridgeGoal() &&
     !auto_hasAutumnaton()
   ) {
-    return `skill ${$skill`Fire Extinguisher: Zone Specific`}`;
+    return $skill`Fire Extinguisher: Zone Specific`;
   }
 
   if (
@@ -974,10 +975,10 @@ export function auto_FireExtinguisherCombatString(place: Location): string {
     !toBoolean(getProperty("fireExtinguisherDesertUsed")) &&
     !auto_haveBofa()
   ) {
-    return `skill ${$skill`Fire Extinguisher: Zone Specific`}`;
+    return $skill`Fire Extinguisher: Zone Specific`;
   }
 
-  return "";
+  return undefined;
 }
 
 export function auto_canExtinguisherBeRefilled(): boolean {
@@ -1169,7 +1170,7 @@ export function auto_CMCconsult(): void {
 
   if (bestOption !== -1) {
     setProperty("_auto_coldMedicineLocked", "true"); //when taking a consultation, set property as a reminder to always check again next time consultations are unlocked
-    runChoice(bestOption);
+    auto_runChoice(bestOption);
   }
 
   if (

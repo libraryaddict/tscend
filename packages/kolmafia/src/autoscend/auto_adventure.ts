@@ -1,30 +1,36 @@
 import {
-  adv1,
+  canWalkFromChoice,
   choiceFollowsFight,
-  cliExecute,
   containsText,
+  currentRound,
   fightFollowsChoice,
   getProperty,
   handlingChoice,
   inMultiFight,
+  Item,
   lastChoice,
+  limitMode,
   Location,
   Monster,
   myTurncount,
   print,
   removeProperty,
-  runChoice,
-  runCombat,
   setProperty,
+  Skill,
   visitUrl,
 } from "kolmafia";
-import { $location } from "libram";
+import { $location, Macro } from "libram";
 
+import { auto_runPostAdventure } from "./auto_post_adv";
+import { auto_runPreAdventure } from "./auto_pre_adv";
 import {
+  auto_adv1,
   auto_interruptCheck,
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
+  auto_runCombat,
+  auto_runSomeChoice,
   cloversAvailable,
   cloverUsageFinish,
   cloverUsageInit,
@@ -39,17 +45,51 @@ import {
 } from "./paths/actually_ed_the_undying";
 import { in_pokefam } from "./paths/pocket_familiars";
 
+export type CombatMacroReturns =
+  | "attack"
+  | "pickpocket"
+  | "runaway"
+  | Item
+  | Item[]
+  | Skill
+  | Macro
+  | { macro: CombatMacroReturns; detail: string };
+
 export type CombatMacro = (
   round: number,
   monster: Monster,
   text: string,
-) => string;
+) => CombatMacroReturns;
 
 function findMacroName(func: unknown): string {
   const asStr = String(func);
   const match = asStr.match(/^function ([^( ]+)\(/);
 
   return match ? match[1] : asStr;
+}
+
+// Mirrors RecoveryManager.isRecoveryPossible()
+export function auto_canRunBetweenBattleChecks(): boolean {
+  return (
+    currentRound() === 0 &&
+    !inMultiFight() &&
+    !choiceFollowsFight() &&
+    (!handlingChoice() || canWalkFromChoice()) &&
+    limitMode() !== "spelunky"
+  );
+}
+
+// Runs pre-adv inline; auto_pre_adv.ts's main() stays wired up as a fallback
+// for any call site that misses this.
+export function auto_triggerPreAdventure(): void {
+  if (!auto_canRunBetweenBattleChecks()) return;
+  auto_runPreAdventure();
+}
+
+// Same fallback pattern for post-adv (auto_post_adv.ts's main()).
+export function auto_triggerPostAdventure(): void {
+  if (!auto_canRunBetweenBattleChecks()) return;
+  auto_runPostAdventure();
 }
 
 // autoAdv is used to automate adventuring *once* in adventure.php zones
@@ -84,7 +124,9 @@ export function autoAdv(
   const turncount: number = myTurncount();
   print(`Doing combat (${findMacroName(option)})`, "gray");
   auto_interruptCheck("main", false);
-  let advReturn: boolean = adv1(loc, -1, option);
+  auto_triggerPreAdventure();
+  let advReturn: boolean = auto_adv1(loc, option);
+  auto_triggerPostAdventure();
   if (!advReturn) {
     auto_interruptCheck("main", false);
     auto_log_debug(
@@ -143,7 +185,7 @@ export function autoAdvBypass(
   }
 
   setProperty("nextAdventure", loc.toString());
-  cliExecute("auto_pre_adv.js");
+  auto_triggerPreAdventure();
   removeProperty("_auto_combatState");
   setProperty("auto_diag_round", (0).toString());
 
@@ -179,14 +221,14 @@ export function autoAdvBypass(
   }
   if (containsText(page, combatPage)) {
     auto_log_info(`autoAdvBypass has encountered a combat!`, "green");
-    runCombat(option);
+    page = auto_runCombat(page, option);
   } else {
     const choice_id: number = lastChoice();
     auto_log_info(
       `autoAdvBypass has encountered a choice: ${choice_id}`,
       "green",
     );
-    runChoice(-1);
+    page = auto_runSomeChoice(page);
   }
   // this should handle stuff like Ed's resurrect/fight loop
   // and anything else that chains combats & choices in any order
@@ -202,7 +244,7 @@ export function autoAdvBypass(
       !handlingChoice()
     ) {
       auto_log_info(`autoAdvBypass has encountered a combat!`, "green");
-      runCombat(option);
+      page = auto_runCombat(page, option);
     }
     if (choiceFollowsFight() || handlingChoice()) {
       const choice_id: number = lastChoice();
@@ -210,11 +252,11 @@ export function autoAdvBypass(
         `autoAdvBypass has encountered a choice: ${choice_id}`,
         "green",
       );
-      runChoice(-1);
+      page = auto_runSomeChoice(page);
     }
   }
 
-  cliExecute("auto_post_adv.js");
+  auto_triggerPostAdventure();
   // Encounters that need to generate a false so we handle them manually should go here.
   if (getProperty("lastEncounter") === "Travel to a Recent Fight") {
     return false;

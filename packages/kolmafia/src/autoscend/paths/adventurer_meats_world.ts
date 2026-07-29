@@ -13,7 +13,6 @@ import {
   myMeat,
   myPath,
   pullsRemaining,
-  runChoice,
   setProperty,
   Skill,
   Stat,
@@ -22,7 +21,7 @@ import {
   turnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $item, $location, $path, $skill, $stat } from "libram";
+import { $item, $location, $locations, $path, $skill, $stat } from "libram";
 
 import { pull_meat } from "../auto_acquire";
 import { autoAdv, autoLuckyAdv } from "../auto_adventure";
@@ -34,11 +33,13 @@ import {
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   autoMaximize,
   cloversAvailable,
   meatReserve,
 } from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
+import { QuestTask, registerQuestTask } from "../engine/engine";
 import { auto_haveMobiusRing } from "../iotms/mr2025";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
@@ -451,12 +452,20 @@ export function LX_attemptPowerLevelMeat(
     return autoAdv($location`Cobb's Knob Treasury`);
   } else if (myAdventures() > 3) {
     visitUrl("place.php?whichplace=town&action=town_oddjobs");
-    runChoice(1);
+    auto_runChoice(1);
     return true;
     // 93? MPA, odd jobs board :p
   }
   return false;
 }
+registerQuestTask({
+  name: "LX_attemptPowerLevelMeat",
+  completed: () => !in_amw(),
+  ready: () => true,
+  do: () => LX_attemptPowerLevelMeat(),
+  locations: $locations`The Hidden Hospital, The Haunted Bedroom, The Icy Peak, Cobb's Knob Treasury`,
+});
+
 // stricter than amw_wantMeat() because this changes the quest order. If true, levels 4, 5, 7 quests may be done early.
 export function LX_needMeatSkills(): boolean {
   if (toBoolean(getProperty("auto_shouldMeatLevel")) && myLevel() < 12) {
@@ -468,10 +477,7 @@ export function LX_needMeatSkills(): boolean {
 // The core AMW function that gets called every loop of doTasks()!
 //if something in this function returns true then it will restart the loop and get called again.
 
-export function LM_adventurerMeatsWorld(): boolean {
-  if (!in_amw()) {
-    return false;
-  }
+function LM_adventurerMeatsWorldDo(): boolean {
   // if we've meatleveled before, we might want to clover for meat or pull it if available
   if (
     toBoolean(getProperty("auto_shouldMeatLevel")) &&
@@ -520,3 +526,11 @@ export function LM_adventurerMeatsWorld(): boolean {
   }
   return false;
 }
+
+export const LM_adventurerMeatsWorldTask: QuestTask = registerQuestTask({
+  name: "LM_adventurerMeatsWorld",
+  completed: () => !in_amw(),
+  ready: () => true,
+  do: LM_adventurerMeatsWorldDo,
+  locations: $locations`Cobb's Knob Treasury, The Hidden Hospital, The Haunted Bedroom, The Icy Peak`,
+});

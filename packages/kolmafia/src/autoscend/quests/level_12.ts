@@ -59,10 +59,12 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $monster,
   $skill,
   $slot,
   $stat,
+  get,
   set,
 } from "libram";
 
@@ -142,6 +144,12 @@ import {
 import { zone_isAvailable } from "../auto_zone";
 import { WarPlan } from "../autoscend_record";
 import { auto_JunkyardCombatHandler } from "../combat/auto_combat_quest";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import { zataraAvailable } from "../iotms/clan";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import {
@@ -711,14 +719,7 @@ export function warAdventure(): boolean {
   return true;
 }
 
-export function L12_getOutfit(): boolean {
-  if (internalQuestStatus("questL12War") !== 0) {
-    return false;
-  }
-  // if you already have the war outfit we don't need to do anything now
-  if (haveWarOutfit()) {
-    return false;
-  }
+function L12_getOutfitDo(): boolean {
   //heavy rains softcore pull handling
   if (!inHardcore() && in_heavyrains()) {
     // auto_warhippyspy indicates rainman was already used to copy a war hippy spy in heavy rains. if it failed to YR pull missing items
@@ -778,22 +779,19 @@ export function L12_getOutfit(): boolean {
   return false;
 }
 
-export function L12_preOutfit(): boolean {
-  if (toInt(getProperty("lastIslandUnlock")) !== myAscensions()) {
-    return false;
-  }
-  // in softcore you will pull the war outfit, no need to get pre outfit
-  if (!inHardcore() && !in_lol()) {
-    return false;
-  }
+export const L12_getOutfitTask: QuestTask = registerQuestTask({
+  name: "L12_getOutfit",
+  completed: () => internalQuestStatus("questL12War") > 0,
+  // if you already have the war outfit we don't need to do anything now
+  ready: () => internalQuestStatus("questL12War") === 0 && !haveWarOutfit(),
+  do: L12_getOutfitDo,
+});
 
-  if (myLevel() < 9) {
-    return false;
-  }
+export function L12_getOutfit(): boolean {
+  return runQuestTask(L12_getOutfitTask);
+}
 
-  if (haveWarOutfit()) {
-    return false;
-  }
+function L12_preOutfitDo(): boolean {
   // if siding with frat and already own [Filthy Hippy Disguise] outfit needed to get the frat boy war outfit
   if (
     !toBoolean(getProperty("auto_hippyInstead")) &&
@@ -873,23 +871,35 @@ export function L12_preOutfit(): boolean {
   }
 }
 
-export function L12_startWar(): boolean {
-  if (internalQuestStatus("questL12War") !== 0) {
-    return false;
-  }
+export const L12_preOutfitTask: QuestTask = registerQuestTask({
+  name: "L12_preOutfit",
+  completed: () => internalQuestStatus("questL12War") > 0,
+  // in softcore you will pull the war outfit, no need to get pre outfit
+  ready: () =>
+    toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
+    (inHardcore() || in_lol()) &&
+    myLevel() >= 9 &&
+    !haveWarOutfit(),
+  do: L12_preOutfitDo,
+  locations: () =>
+    toBoolean(getProperty("auto_hippyInstead"))
+      ? [
+          internalQuestStatus("questL12War") === -1
+            ? $location`The Orcish Frat House`
+            : $location`Wartime Frat House`,
+        ]
+      : [
+          internalQuestStatus("questL12War") === -1
+            ? $location`The Hippy Camp`
+            : $location`Wartime Hippy Camp`,
+        ],
+});
 
-  if (in_koe()) {
-    return false;
-  }
+export function L12_preOutfit(): boolean {
+  return runQuestTask(L12_preOutfitTask);
+}
 
-  if (!haveWarOutfit(true)) {
-    return false;
-  }
-
-  if (toInt(getProperty("lastIslandUnlock")) < myAscensions()) {
-    return false;
-  }
-
+function L12_startWarDo(): boolean {
   if (myMp() > 60 || considerGrimstoneGolem(true)) {
     handleBjornify($familiar`Grimstone Golem`);
   }
@@ -933,22 +943,26 @@ export function L12_startWar(): boolean {
   return true;
 }
 
-export function L12_filthworms(): boolean {
-  if (
-    internalQuestStatus("questL12War") !== 1 ||
-    getProperty("sidequestOrchardCompleted") !== "none"
-  ) {
-    return false;
-  }
-  if (in_tcrs() || in_koe()) {
-    return false;
-  }
-  if (itemAmount($item`heart of the filthworm queen`) > 0) {
-    return false;
-  }
-  if (auto_warEnemiesRemaining() === 0) {
-    return false;
-  }
+export const L12_startWarTask: QuestTask = registerQuestTask({
+  name: "L12_startWar",
+  completed: () => internalQuestStatus("questL12War") > 0,
+  ready: () =>
+    !in_koe() &&
+    internalQuestStatus("questL12War") === 0 &&
+    haveWarOutfit(true) &&
+    toInt(getProperty("lastIslandUnlock")) >= myAscensions(),
+  do: L12_startWarDo,
+  locations: () =>
+    toBoolean(getProperty("auto_hippyInstead"))
+      ? [$location`Wartime Frat House`]
+      : [$location`Wartime Hippy Camp`],
+});
+
+export function L12_startWar(): boolean {
+  return runQuestTask(L12_startWarTask);
+}
+
+function L12_filthwormsDo(): boolean {
   //can fight filthworms early as fratboys so long as you do not wear a frat outfit.
   //maximizer can accidentally end up wearing the outfit and cause infinite loop.
   //might want to fight filthworms early to flyer. determining exactly when is overly complex so we are just assuming always.
@@ -1163,19 +1177,40 @@ export function L12_filthworms(): boolean {
   return retval;
 }
 
-export function L12_orchardFinalize(): boolean {
-  if (
-    toInt(getProperty("hippiesDefeated")) < 64 &&
-    !toBoolean(getProperty("auto_hippyInstead"))
-  ) {
-    return false;
-  }
-  if (
-    getProperty("sidequestOrchardCompleted") !== "none" ||
-    itemAmount($item`heart of the filthworm queen`) === 0
-  ) {
-    return false;
-  }
+export const L12_filthwormsTask: QuestTask = registerQuestTask({
+  name: "L12_filthworms",
+  completed: () => internalQuestStatus("questL12War") > 1,
+  ready: () =>
+    internalQuestStatus("questL12War") === 1 &&
+    getProperty("sidequestOrchardCompleted") === "none" &&
+    !in_tcrs() &&
+    !in_koe() &&
+    itemAmount($item`heart of the filthworm queen`) === 0 &&
+    auto_warEnemiesRemaining() > 0,
+  do: L12_filthwormsDo,
+  locations: () =>
+    [
+      $location`The Filthworm Queen's Chamber`,
+      $location`The Royal Guard Chamber`,
+      $location`The Feeding Chamber`,
+      $location`The Hatching Chamber`,
+    ].filter((_, i) =>
+      [
+        haveEffect($effect`Filthworm Guard Stench`),
+        haveEffect($effect`Filthworm Drone Stench`),
+        haveEffect($effect`Filthworm Larva Stench`),
+        0,
+      ]
+        .slice(0, i + 1)
+        .every((x) => x === 0),
+    ),
+});
+
+export function L12_filthworms(): boolean {
+  return runQuestTask(L12_filthwormsTask);
+}
+
+function L12_orchardFinalizeDo(): boolean {
   if (itemAmount($item`A Light that Never Goes Out`) === 1) {
     pulverizeThing($item`A Light that Never Goes Out`);
   }
@@ -1188,6 +1223,25 @@ export function L12_orchardFinalize(): boolean {
     visitUrl("shop.php?whichshop=hippy");
   }
   return true;
+}
+
+export const L12_orchardFinalizeTask: QuestTask = registerQuestTask({
+  name: "L12_orchardFinalize",
+  completed: () =>
+    getProperty("sidequestOrchardCompleted") !== "none" ||
+    internalQuestStatus("questL12War") > 1,
+  ready: () =>
+    !(
+      toInt(getProperty("hippiesDefeated")) < 64 &&
+      !toBoolean(getProperty("auto_hippyInstead"))
+    ) &&
+    getProperty("sidequestOrchardCompleted") === "none" &&
+    itemAmount($item`heart of the filthworm queen`) > 0,
+  do: L12_orchardFinalizeDo,
+});
+
+export function L12_orchardFinalize(): boolean {
+  return runQuestTask(L12_orchardFinalizeTask);
 }
 
 function gremlinsFamiliar(): void {
@@ -1254,28 +1308,7 @@ function gremlinsFamiliar(): void {
   }
 }
 
-export function L12_gremlins(): boolean {
-  if (
-    internalQuestStatus("questL12War") !== 1 ||
-    getProperty("sidequestJunkyardCompleted") !== "none"
-  ) {
-    return false;
-  }
-  if (in_koe() || in_pokefam() || in_bhy()) {
-    return false;
-  }
-  if (is_professor()) {
-    return false; //Only 1 HP as a professor so can't stasis long enough
-  }
-  if (
-    toBoolean(getProperty("auto_hippyInstead")) &&
-    toInt(getProperty("fratboysDefeated")) < 192
-  ) {
-    return false;
-  }
-  if (auto_warEnemiesRemaining() === 0) {
-    return false;
-  }
+function L12_gremlinsDo(): boolean {
   if (in_zombieSlayer()) {
     if (
       !auto_have_skill($skill`Plague Claws`) &&
@@ -1367,62 +1400,120 @@ export function L12_gremlins(): boolean {
     bat_formMist();
   }
   songboomSetting("dr");
-  if (itemAmount($item`molybdenum hammer`) === 0) {
-    autoAdv(
-      $location`Next to that Barrel with Something Burning in it`,
-      auto_JunkyardCombatHandler,
-    );
-    return true;
-  }
 
-  if (itemAmount($item`molybdenum screwdriver`) === 0) {
-    autoAdv($location`Out by that Rusted-Out Car`, auto_JunkyardCombatHandler);
-    return true;
-  }
+  return runTaskChain([
+    L12_gremlinsHammerTask,
+    L12_gremlinsScrewdriverTask,
+    L12_gremlinsCrescentWrenchTask,
+    L12_gremlinsPliersTask,
+    L12_gremlinsFinishTask,
+  ]);
+}
 
-  if (itemAmount($item`molybdenum crescent wrench`) === 0) {
-    autoAdv(
-      $location`Over Where the Old Tires Are`,
-      auto_JunkyardCombatHandler,
-    );
-    return true;
-  }
+function L12_gremlinsHammer(): boolean {
+  autoAdv(
+    $location`Next to that Barrel with Something Burning in it`,
+    auto_JunkyardCombatHandler,
+  );
+  return true;
+}
 
-  if (itemAmount($item`molybdenum pliers`) === 0) {
-    autoAdv(
-      $location`Near an Abandoned Refrigerator`,
-      auto_JunkyardCombatHandler,
-    );
-    return true;
-  }
+const L12_gremlinsHammerTask: QuestTask = registerQuestTask({
+  name: "L12_gremlinsHammer",
+  completed: () =>
+    itemAmount($item`molybdenum hammer`) > 0 ||
+    internalQuestStatus("questL12War") > 1,
+  ready: () => itemAmount($item`molybdenum hammer`) === 0,
+  do: L12_gremlinsHammer,
+  locations: $location`Next to that Barrel with Something Burning in it`,
+});
+
+function L12_gremlinsScrewdriver(): boolean {
+  autoAdv($location`Out by that Rusted-Out Car`, auto_JunkyardCombatHandler);
+  return true;
+}
+
+const L12_gremlinsScrewdriverTask: QuestTask = registerQuestTask({
+  name: "L12_gremlinsScrewdriver",
+  completed: () =>
+    itemAmount($item`molybdenum screwdriver`) > 0 ||
+    internalQuestStatus("questL12War") > 1,
+  ready: () => itemAmount($item`molybdenum screwdriver`) === 0,
+  do: L12_gremlinsScrewdriver,
+  locations: $location`Out by that Rusted-Out Car`,
+});
+
+function L12_gremlinsCrescentWrench(): boolean {
+  autoAdv($location`Over Where the Old Tires Are`, auto_JunkyardCombatHandler);
+  return true;
+}
+
+const L12_gremlinsCrescentWrenchTask: QuestTask = registerQuestTask({
+  name: "L12_gremlinsCrescentWrench",
+  completed: () =>
+    itemAmount($item`molybdenum crescent wrench`) > 0 ||
+    internalQuestStatus("questL12War") > 1,
+  ready: () => itemAmount($item`molybdenum crescent wrench`) === 0,
+  do: L12_gremlinsCrescentWrench,
+  locations: $location`Over Where the Old Tires Are`,
+});
+
+function L12_gremlinsPliers(): boolean {
+  autoAdv(
+    $location`Near an Abandoned Refrigerator`,
+    auto_JunkyardCombatHandler,
+  );
+  return true;
+}
+
+const L12_gremlinsPliersTask: QuestTask = registerQuestTask({
+  name: "L12_gremlinsPliers",
+  completed: () =>
+    itemAmount($item`molybdenum pliers`) > 0 ||
+    internalQuestStatus("questL12War") > 1,
+  ready: () => itemAmount($item`molybdenum pliers`) === 0,
+  do: L12_gremlinsPliers,
+  locations: $location`Near an Abandoned Refrigerator`,
+});
+
+function L12_gremlinsFinish(): boolean {
   equipWarOutfit();
   visitUrl("bigisland.php?action=junkman&pwd");
   return true;
 }
 
-export function L12_sonofaBeach(): boolean {
-  if (
-    internalQuestStatus("questL12War") !== 1 ||
-    getProperty("sidequestLighthouseCompleted") !== "none"
-  ) {
-    return false;
-  }
-  if (in_koe()) {
-    return false;
-  }
-  if (auto_warEnemiesRemaining() === 0) {
-    return false;
-  }
-  if (
-    toInt(getProperty("fratboysDefeated")) < 64 &&
-    toBoolean(getProperty("auto_hippyInstead"))
-  ) {
-    return false;
-  }
-  if (itemAmount($item`barrel of gunpowder`) >= 5) {
-    return false;
-  }
+const L12_gremlinsFinishTask: QuestTask = registerQuestTask({
+  name: "L12_gremlinsFinish",
+  completed: () =>
+    internalQuestStatus("questL12War") > 1 ||
+    get("sidequestJunkyardCompleted") !== "none",
+  ready: () => true,
+  do: L12_gremlinsFinish,
+});
 
+export const L12_gremlinsTask: QuestTask = registerQuestTask({
+  name: "L12_gremlins",
+  completed: () => internalQuestStatus("questL12War") > 1,
+  ready: () =>
+    internalQuestStatus("questL12War") === 1 &&
+    getProperty("sidequestJunkyardCompleted") === "none" &&
+    !in_koe() &&
+    !in_pokefam() &&
+    !in_bhy() &&
+    // Only 1 HP as a professor so can't stasis long enough
+    (!in_wereprof() || is_werewolf()) &&
+    (!toBoolean(getProperty("auto_hippyInstead")) ||
+      toInt(getProperty("fratboysDefeated")) >= 192) &&
+    auto_warEnemiesRemaining() > 0,
+  do: L12_gremlinsDo,
+  locations: $locations`Next to that Barrel with Something Burning in it, Out by that Rusted-Out Car, Over Where the Old Tires Are, Near an Abandoned Refrigerator`,
+});
+
+export function L12_gremlins(): boolean {
+  return runQuestTask(L12_gremlinsTask);
+}
+
+function L12_sonofaBeachDo(): boolean {
   if (
     auto_hasAutumnaton() &&
     !isAboutToPowerlevel() &&
@@ -1505,9 +1596,30 @@ export function L12_sonofaBeach(): boolean {
   return retval;
 }
 
-export function L12_sonofaPrefix(): boolean {
+export const L12_sonofaBeachTask: QuestTask = registerQuestTask({
+  name: "L12_sonofaBeach",
+  completed: () =>
+    internalQuestStatus("questL12War") > 1 ||
+    get("sidequestLighthouseCompleted") !== "none",
+  ready: () =>
+    !in_koe() &&
+    internalQuestStatus("questL12War") === 1 &&
+    getProperty("sidequestLighthouseCompleted") === "none" &&
+    auto_warEnemiesRemaining() > 0 &&
+    (toInt(getProperty("fratboysDefeated")) >= 64 ||
+      !toBoolean(getProperty("auto_hippyInstead"))) &&
+    itemAmount($item`barrel of gunpowder`) < 5,
+  do: L12_sonofaBeachDo,
+  locations: $location`Sonofa Beach`,
+});
+
+export function L12_sonofaBeach(): boolean {
+  return runQuestTask(L12_sonofaBeachTask);
+}
+
+function L12_sonofaPrefixDo(): boolean {
   // this appears to be a copy & paste of L12_sonofaBeach() with some small changes
-  // for Vote Monster/Macrometeor shenanigans. Refactor this so only the relevant code remains.
+  // for Vote Monster/Macrometeor shenanigans. Need to refactor this so only the relevant code remains.
 
   if (
     internalQuestStatus("questL12War") !== 1 ||
@@ -1673,7 +1785,21 @@ export function L12_sonofaPrefix(): boolean {
   return retval;
 }
 
-export function L12_sonofaFinish(): boolean {
+export const L12_sonofaPrefixTask: QuestTask = registerQuestTask({
+  name: "L12_sonofaPrefix",
+  completed: () =>
+    internalQuestStatus("questL12War") > 1 ||
+    getProperty("sidequestLighthouseCompleted") !== "none",
+  ready: () => true,
+  do: L12_sonofaPrefixDo,
+  locations: $location`Sonofa Beach`,
+});
+
+export function L12_sonofaPrefix(): boolean {
+  return runQuestTask(L12_sonofaPrefixTask);
+}
+
+function L12_sonofaFinishDo(): boolean {
   if (
     internalQuestStatus("questL12War") !== 1 ||
     getProperty("sidequestLighthouseCompleted") !== "none"
@@ -1702,53 +1828,43 @@ export function L12_sonofaFinish(): boolean {
   return true;
 }
 
-export function L12_flyerBackup(): boolean {
-  if (internalQuestStatus("questL12War") !== 1) {
-    return false;
-  }
-  if (toInt(getProperty("flyeredML")) >= 10000) {
-    return false;
-  }
-  if (
-    itemAmount($item`rock band flyers`) === 0 &&
-    itemAmount($item`jam band flyers`) === 0
-  ) {
-    return false;
-  }
-  if (toInt(getProperty("choiceAdventure1003")) >= 3) {
-    return false;
-  }
-  if (toBoolean(getProperty("auto_ignoreFlyer"))) {
-    return false;
-  }
+export const L12_sonofaFinishTask: QuestTask = registerQuestTask({
+  name: "L12_sonofaFinish",
+  completed: () =>
+    getProperty("sidequestLighthouseCompleted") !== "none" ||
+    internalQuestStatus("questL12War") > 1,
+  ready: () => true,
+  do: L12_sonofaFinishDo,
+});
 
+export function L12_sonofaFinish(): boolean {
+  return runQuestTask(L12_sonofaFinishTask);
+}
+
+function L12_flyerBackupDo(): boolean {
   return LX_freeCombats(true);
 }
 
-export function L12_lastDitchFlyer(): boolean {
-  if (toBoolean(getProperty("auto_ignoreFlyer"))) {
-    return false;
-  }
-  if (!auto_bestWarPlan().doArena) {
-    return false; //we are not planning to do arena this ascension
-  }
-  if (
-    internalQuestStatus("questL12War") !== 1 ||
-    getProperty("sidequestArenaCompleted") !== "none" ||
-    toInt(getProperty("flyeredML")) >= 10000
-  ) {
-    return false;
-  }
-  if (
-    itemAmount($item`rock band flyers`) === 0 &&
-    itemAmount($item`jam band flyers`) === 0
-  ) {
-    return false;
-  }
-  if (myLevel() < 13 && !isAboutToPowerlevel()) {
-    return false; //let the powerlevel lock release first so we can do quests that are waiting for optimal conditions.
-  }
+const L12_flyerBackupTask: QuestTask = registerQuestTask({
+  name: "L12_flyerBackup",
+  completed: () =>
+    internalQuestStatus("questL12War") > 1 ||
+    get("sidequestArenaCompleted") !== "none",
+  ready: () =>
+    internalQuestStatus("questL12War") === 1 &&
+    toInt(getProperty("flyeredML")) < 10000 &&
+    (itemAmount($item`rock band flyers`) > 0 ||
+      itemAmount($item`jam band flyers`) > 0) &&
+    toInt(getProperty("choiceAdventure1003")) < 3 &&
+    !toBoolean(getProperty("auto_ignoreFlyer")),
+  do: L12_flyerBackupDo,
+});
 
+export function L12_flyerBackup(): boolean {
+  return runQuestTask(L12_flyerBackupTask);
+}
+
+function L12_lastDitchFlyerDo(): boolean {
   auto_log_info(
     "Not enough flyer ML but we are ready for the war... uh oh",
     "blue",
@@ -1797,16 +1913,28 @@ export function L12_lastDitchFlyer(): boolean {
   return false;
 }
 
-export function L12_flyerFinish(): boolean {
-  if (internalQuestStatus("questL12War") !== 1) {
-    return false;
-  }
-  if (
-    itemAmount($item`rock band flyers`) === 0 &&
-    itemAmount($item`jam band flyers`) === 0
-  ) {
-    return false;
-  }
+export const L12_lastDitchFlyerTask: QuestTask = registerQuestTask({
+  name: "L12_lastDitchFlyer",
+  completed: () =>
+    getProperty("sidequestArenaCompleted") !== "none" ||
+    internalQuestStatus("questL12War") > 1,
+  ready: () =>
+    !toBoolean(getProperty("auto_ignoreFlyer")) &&
+    auto_bestWarPlan().doArena &&
+    internalQuestStatus("questL12War") === 1 &&
+    getProperty("sidequestArenaCompleted") === "none" &&
+    toInt(getProperty("flyeredML")) < 10000 &&
+    (itemAmount($item`rock band flyers`) > 0 ||
+      itemAmount($item`jam band flyers`) > 0) &&
+    (myLevel() >= 13 || isAboutToPowerlevel()), //let the powerlevel lock release first so we can do quests that are waiting for optimal conditions.
+  do: L12_lastDitchFlyerDo,
+});
+
+export function L12_lastDitchFlyer(): boolean {
+  return runQuestTask(L12_lastDitchFlyerTask);
+}
+
+function L12_flyerFinishDo(): boolean {
   if (toInt(getProperty("flyeredML")) < 10000) {
     if (getProperty("sidequestArenaCompleted") !== "none") {
       auto_log_warning(
@@ -1844,6 +1972,22 @@ export function L12_flyerFinish(): boolean {
   return false;
 }
 
+export const L12_flyerFinishTask: QuestTask = registerQuestTask({
+  name: "L12_flyerFinish",
+  completed: () =>
+    internalQuestStatus("questL12War") > 1 ||
+    get("sidequestArenaCompleted") !== "none",
+  ready: () =>
+    internalQuestStatus("questL12War") === 1 &&
+    (itemAmount($item`rock band flyers`) > 0 ||
+      itemAmount($item`jam band flyers`) > 0),
+  do: L12_flyerFinishDo,
+});
+
+export function L12_flyerFinish(): boolean {
+  return runQuestTask(L12_flyerFinishTask);
+}
+
 export function L12_castleTopFloorWorthBurningLuckOn(): boolean {
   return (
     itemAmount($item`Mick's IcyVapoHotness Inhaler`) < 1 &&
@@ -1851,21 +1995,7 @@ export function L12_castleTopFloorWorthBurningLuckOn(): boolean {
   );
 }
 
-export function L12_themtharHills(): boolean {
-  if (
-    internalQuestStatus("questL12War") !== 1 ||
-    getProperty("sidequestNunsCompleted") !== "none"
-  ) {
-    return false;
-  }
-
-  if (auto_warEnemiesRemaining() === 0) {
-    return false;
-  }
-
-  if (in_tcrs() || in_koe() || in_wotsf()) {
-    return false;
-  }
+function L12_themtharHillsDo(): boolean {
   // delay nuns if we have free fights available as it would cap meat drop to 1,000
   if (toInt(getProperty("breathitinCharges")) > 0 && !isAboutToPowerlevel()) {
     return false;
@@ -2093,6 +2223,26 @@ export function L12_themtharHills(): boolean {
   return true;
 }
 
+export const L12_themtharHillsTask: QuestTask = registerQuestTask({
+  name: "L12_themtharHills",
+  completed: () =>
+    internalQuestStatus("questL12War") > 1 ||
+    get("sidequestNunsCompleted") !== "none",
+  ready: () =>
+    internalQuestStatus("questL12War") === 1 &&
+    getProperty("sidequestNunsCompleted") === "none" &&
+    auto_warEnemiesRemaining() > 0 &&
+    !in_tcrs() &&
+    !in_koe() &&
+    !in_wotsf(),
+  do: L12_themtharHillsDo,
+  locations: $locations`The Themthar Hills`,
+});
+
+export function L12_themtharHills(): boolean {
+  return runQuestTask(L12_themtharHillsTask);
+}
+
 function LX_obtainChaosButterfly(): boolean {
   if (in_bhy() || in_pokefam() || in_glover()) {
     return false;
@@ -2164,10 +2314,7 @@ function LX_obtainChaosButterfly(): boolean {
   return false;
 }
 
-export function L12_farm(): boolean {
-  if (toBoolean(getProperty("auto_skipL12Farm"))) {
-    return false;
-  }
+function L12_farmDo(): boolean {
   if (getProperty("sidequestFarmCompleted") !== "none") {
     setProperty("auto_skipL12Farm", "true");
     return false;
@@ -2249,7 +2396,21 @@ export function L12_farm(): boolean {
   return false;
 }
 
-export function L12_clearBattlefield(): boolean {
+export const L12_farmTask: QuestTask = registerQuestTask({
+  name: "L12_farm",
+  completed: () =>
+    getProperty("sidequestFarmCompleted") !== "none" ||
+    internalQuestStatus("questL12War") > 1,
+  ready: () => !toBoolean(getProperty("auto_skipL12Farm")),
+  do: L12_farmDo,
+  locations: $locations`McMillicancuddy's Barn, McMillicancuddy's Pond, McMillicancuddy's Back 40, McMillicancuddy's Other Back 40, The Castle in the Clouds in the Sky (Ground Floor)`,
+});
+
+export function L12_farm(): boolean {
+  return runQuestTask(L12_farmTask);
+}
+
+function L12_clearBattlefieldDo(): boolean {
   if (
     !inAftercore() &&
     myInebriety() < inebrietyLimit() &&
@@ -2371,7 +2532,21 @@ export function L12_clearBattlefield(): boolean {
   return warAdventure();
 }
 
-export function L12_finalizeWar(): boolean {
+export const L12_clearBattlefieldTask: QuestTask = registerQuestTask({
+  name: "L12_clearBattlefield",
+  completed: () =>
+    (auto_warSide() === "hippy"
+      ? toInt(getProperty("fratboysDefeated"))
+      : toInt(getProperty("hippiesDefeated"))) >= 1000,
+  ready: () => true,
+  do: L12_clearBattlefieldDo,
+});
+
+export function L12_clearBattlefield(): boolean {
+  return runQuestTask(L12_clearBattlefieldTask);
+}
+
+function L12_finalizeWarDo(): boolean {
   if (in_koe()) {
     return L12_koe_finalizeWar();
   }
@@ -2599,7 +2774,18 @@ export function L12_finalizeWar(): boolean {
   return true;
 }
 
-export function L12_islandWar(): boolean {
+export const L12_finalizeWarTask: QuestTask = registerQuestTask({
+  name: "L12_finalizeWar",
+  completed: () => internalQuestStatus("questL12War") > 1,
+  ready: () => true,
+  do: L12_finalizeWarDo,
+});
+
+export function L12_finalizeWar(): boolean {
+  return runQuestTask(L12_finalizeWarTask);
+}
+
+function L12_islandWarDo(): boolean {
   if (
     internalQuestStatus("questL12War") === 0 &&
     toInt(getProperty("lastIslandUnlock")) !== myAscensions()
@@ -2613,41 +2799,38 @@ export function L12_islandWar(): boolean {
     setProperty("auto_delayWar", false.toString());
     return false; //delay war at Nuns so we can maybe get the Inhaler
   }
-  if (L12_preOutfit() || L12_getOutfit() || L12_startWar()) {
+  if (runTaskChain([L12_preOutfitTask, L12_getOutfitTask, L12_startWarTask])) {
     return true;
   }
   if (
-    L12_filthworms() ||
-    L12_orchardFinalize() ||
-    L12_gremlins() ||
-    L12_flyerFinish() ||
-    L12_sonofaBeach() ||
-    L12_sonofaFinish() ||
-    L12_themtharHills() ||
-    L12_farm()
+    runTaskChain([
+      L12_filthwormsTask,
+      L12_orchardFinalizeTask,
+      L12_gremlinsTask,
+      L12_flyerFinishTask,
+      L12_sonofaBeachTask,
+      L12_sonofaFinishTask,
+      L12_themtharHillsTask,
+      L12_farmTask,
+    ])
   ) {
     return true;
   }
-  if (L12_clearBattlefield() || L12_finalizeWar()) {
-    return true;
-  }
-  return false;
+  return runTaskChain([L12_clearBattlefieldTask, L12_finalizeWarTask]);
 }
 
-export function L12_opportunisticWarStart(): boolean {
-  // If we have all the resources to start the war in one turn, do that.
-  if (internalQuestStatus("questL12War") !== 0) {
-    return false;
-  }
-  if (!haveWarOutfit(true)) {
-    return false;
-  }
-  if (!L12_singleNCForWarStart()) {
-    return false;
-  }
-  if (remainingNCForcesToday() === 0) {
-    return false;
-  }
+const L12_islandWarTask: QuestTask = registerQuestTask({
+  name: "L12_islandWar",
+  completed: () => internalQuestStatus("questL12War") > 1,
+  ready: () => true,
+  do: L12_islandWarDo,
+});
+
+export function L12_islandWar(): boolean {
+  return runQuestTask(L12_islandWarTask);
+}
+
+function L12_opportunisticWarStartDo(): boolean {
   // Dinghy the island if we can.
   if (toInt(getProperty("lastIslandUnlock")) !== myAscensions()) {
     if (availableAmount($item`pirate dinghy`) > 0) {
@@ -2658,6 +2841,22 @@ export function L12_opportunisticWarStart(): boolean {
     return false;
   }
   return L12_startWar();
+}
+
+export const L12_opportunisticWarStartTask: QuestTask = registerQuestTask({
+  name: "L12_opportunisticWarStart",
+  completed: () => internalQuestStatus("questL12War") > 0,
+  // If we have all the resources to start the war in one turn, do that.
+  ready: () =>
+    internalQuestStatus("questL12War") === 0 &&
+    haveWarOutfit(true) &&
+    L12_singleNCForWarStart() &&
+    remainingNCForcesToday() > 0,
+  do: L12_opportunisticWarStartDo,
+});
+
+export function L12_opportunisticWarStart(): boolean {
+  return runQuestTask(L12_opportunisticWarStartTask);
 }
 
 function L12_singleNCForWarStart(): boolean {

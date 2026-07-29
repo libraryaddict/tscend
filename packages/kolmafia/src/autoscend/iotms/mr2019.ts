@@ -95,6 +95,7 @@ import {
   meatReserve,
   wrap_item,
 } from "../auto_util";
+import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_darkGyffte } from "../paths/dark_gyffte";
 import { in_lowkeysummer } from "../paths/low_key_summer";
@@ -444,19 +445,24 @@ function pirateRealmAvailable(): boolean {
   return false;
 }
 
-export function LX_unlockPirateRealm(): boolean {
-  if (!pirateRealmAvailable()) {
-    return false;
-  }
-  if (possessEquipment($item`PirateRealm eyepatch`)) {
-    return false;
-  }
-  if (myAdventures() < 40) {
-    return false;
-  }
-
+function LX_unlockPirateRealmDo(): boolean {
   visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
   return true;
+}
+
+export const LX_unlockPirateRealmTask: QuestTask = registerQuestTask({
+  name: "LX_unlockPirateRealm",
+  completed: () =>
+    possessEquipment($item`PirateRealm eyepatch`) || !pirateRealmAvailable(),
+  ready: () =>
+    pirateRealmAvailable() &&
+    !possessEquipment($item`PirateRealm eyepatch`) &&
+    myAdventures() >= 40,
+  do: LX_unlockPirateRealmDo,
+});
+
+export function LX_unlockPirateRealm(): boolean {
+  return runQuestTask(LX_unlockPirateRealmTask);
 }
 
 function auto_saberChoice(choice: string): boolean {
@@ -526,14 +532,14 @@ export function auto_saberChargesAvailable(): number {
   return 5 - toInt(getProperty("_saberForceUses"));
 }
 
-export function auto_combatSaberBanish(): string {
+export function auto_combatSaberBanish(): Skill {
   setProperty("choiceAdventure1387", (1).toString());
-  return `skill ${$skill`Use the Force`}`;
+  return $skill`Use the Force`;
 }
 
-export function auto_combatSaberYR(): string {
+export function auto_combatSaberYR(): Skill {
   setProperty("choiceAdventure1387", (3).toString());
-  return `skill ${$skill`Use the Force`}`;
+  return $skill`Use the Force`;
 }
 
 export function auto_spoonCombatSkill(): Skill {

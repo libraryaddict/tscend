@@ -1,6 +1,7 @@
 import { Monster } from "kolmafia";
 import { $monsters, $skill } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { in_gnoob } from "../paths/gelatinous_noob";
 import { auto_canUse, auto_useSkill, haveUsed } from "./auto_combat_util";
 
@@ -9,10 +10,10 @@ export function auto_combatGelatinousNoobStage5(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 5 = kill
   if (!in_gnoob()) {
-    return "";
+    return undefined;
   }
   //3x elemental damage bonuses attack against duplicated [goat]. duplicated means double stats and double drops
   if (
@@ -24,5 +25,5 @@ export function auto_combatGelatinousNoobStage5(
     }
   }
 
-  return "";
+  return undefined;
 }

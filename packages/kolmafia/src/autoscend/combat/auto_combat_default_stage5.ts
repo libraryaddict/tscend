@@ -50,6 +50,7 @@ import {
   $stat,
 } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import {
   auto_have_skill,
   auto_log_info,
@@ -96,55 +97,59 @@ export function auto_combatDefaultStage5(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 5 = kill
   //Unskip stage 4
   if (toBoolean(getProperty("auto_skipStage4"))) {
     setProperty("auto_skipStage4", false.toString());
   }
   // Path = Heavy Rains
-  let retval: string = auto_combatHeavyRainsStage5(round_1, enemy, text);
-  if (retval !== "") {
+  let retval: CombatMacroReturns = auto_combatHeavyRainsStage5(
+    round_1,
+    enemy,
+    text,
+  );
+  if (retval !== undefined) {
     return retval;
   }
   // Path = path of the plumber
   retval = auto_combatPlumberStage5(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = disguises delimit
   retval = auto_combatDisguisesStage5(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = gelatinous noob
   retval = auto_combatGelatinousNoobStage5(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = you, robot
   retval = auto_combat_robot_stage5(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = zombie slayer
   retval = auto_combatZombieSlayerStage5(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = fall of the dinosaurs
   retval = auto_combatFallOfTheDinosaursStage5(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = Wereprofessor
   retval = auto_combatWereProfessorStage5(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = adventurer meats world
   retval = auto_combatMeatGolemStage5(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   //with loofah, you can stagger and deal cold or hot damage
@@ -162,8 +167,8 @@ export function auto_combatDefaultStage5(
   }
 
   const type_1: Phylum = monsterPhylum(enemy);
-  let attackMinor: string = "attack with weapon";
-  let attackMajor: string = "attack with weapon";
+  let attackMinor: CombatMacroReturns = "attack";
+  let attackMajor: CombatMacroReturns = "attack";
   let costMinor: number = 0;
   let costMajor: number = 0;
 
@@ -317,7 +322,7 @@ export function auto_combatDefaultStage5(
 
     switch (myClass()) {
       case $class`Seal Clubber`:
-        attackMinor = "attack with weapon";
+        attackMinor = "attack";
         if (
           auto_canUse($skill`Lunge Smack`, false) &&
           weaponType(equippedItem($slot`weapon`)) === $stat`Muscle`
@@ -362,7 +367,7 @@ export function auto_combatDefaultStage5(
         }
         break;
       case $class`Turtle Tamer`:
-        attackMinor = "attack with weapon";
+        attackMinor = "attack";
         if (myMp() > 150 && auto_canUse($skill`Shieldbutt`, false)) {
           attackMinor = auto_useSkill($skill`Shieldbutt`, false);
           costMinor = mpCost($skill`Shieldbutt`);
@@ -439,7 +444,7 @@ export function auto_combatDefaultStage5(
           }
         }
         if (
-          (in_glover() || attackMinor === "attack with weapon") &&
+          (in_glover() || attackMinor === "attack") &&
           auto_canUse($skill`Saucegeyser`, false)
         ) {
           attackMinor = auto_useSkill($skill`Saucegeyser`, false);
@@ -877,7 +882,7 @@ export function auto_combatDefaultStage5(
           return auto_useSkill($skill`Dark Feast`);
         }
         if (
-          attackMinor === "attack with weapon" &&
+          attackMinor === "attack" &&
           !haveSkill($skill`Preternatural Strength`) &&
           canUse$3($item`beehive`) &&
           $stat`Moxie` !== weaponType(equippedItem($slot`weapon`))
@@ -886,7 +891,7 @@ export function auto_combatDefaultStage5(
         }
         break;
       case $class`Pig Skinner`:
-        attackMinor = "attack with weapon";
+        attackMinor = "attack";
         if (
           auto_canUse($skill`Ball Throw`, true) &&
           enemy.physicalResistance < 80
@@ -926,7 +931,7 @@ export function auto_combatDefaultStage5(
         }
         break;
       case $class`Cheese Wizard`:
-        attackMinor = "attack with weapon";
+        attackMinor = "attack";
         if (auto_canUse($skill`Parmesan Missile`)) {
           attackMajor = auto_useSkill($skill`Parmesan Missile`, false);
           attackMinor = auto_useSkill($skill`Parmesan Missile`, false);
@@ -968,7 +973,7 @@ export function auto_combatDefaultStage5(
         }
         break;
       case $class`Jazz Agent`:
-        attackMinor = "attack with weapon";
+        attackMinor = "attack";
         if (
           auto_canUse($skill`Orchestra Strike`, false) &&
           enemy.physicalResistance < 80
@@ -1017,7 +1022,7 @@ export function auto_combatDefaultStage5(
       case $class`Zootomist`: {
         const punch: Skill = getZooBestPunch(enemy);
         if (punch === Skill.none) {
-          return "attack with weapon";
+          return "attack";
         }
         attackMajor = auto_useSkill(punch, false);
         attackMinor = auto_useSkill(punch, false);
@@ -1095,7 +1100,7 @@ export function auto_combatDefaultStage5(
       } else if (myMp() >= costMinor) {
         return attackMinor;
       }
-      return "attack with weapon";
+      return "attack";
     }
     if (myLocation() !== $location`The Slime Tube`) {
       abort("Could not handle monster, sorry");
@@ -1153,7 +1158,7 @@ export function auto_combatDefaultStage5(
   // determine if attacking will deal reasonable damage
   // note preadv *should* ensure we can damage physically immune monsters via a spell or attack
   // this check could be redundant. If preadv worked as intended and we haven't picked a spell yet, attack should deal damage
-  if (enemy.physicalResistance >= 80 && attackMinor === "attack with weapon") {
+  if (enemy.physicalResistance >= 80 && attackMinor === "attack") {
     let m_hot: number = 1;
     let m_cold: number = 1;
     let m_spooky: number = 1;
@@ -1224,7 +1229,7 @@ export function auto_combatDefaultStage5(
   if (
     monsterLevelAdjustment() > 150 &&
     myMp() >= costMajor &&
-    attackMajor !== "attack with weapon"
+    attackMajor !== "attack"
   ) {
     return attackMajor;
   }
@@ -1240,12 +1245,12 @@ export function auto_combatDefaultStage5(
 
   if (
     auto_canUse($skill`Lunge Smack`, false) &&
-    attackMinor !== "attack with weapon" &&
+    attackMinor !== "attack" &&
     weaponType(equippedItem($slot`weapon`)) === $stat`Muscle`
   ) {
     return attackMinor;
   }
-  if (myMp() >= costMinor && attackMinor !== "attack with weapon") {
+  if (myMp() >= costMinor && attackMinor !== "attack") {
     return attackMinor;
   }
 
@@ -1254,7 +1259,7 @@ export function auto_combatDefaultStage5(
   }
 
   if (
-    attackMinor === "attack with weapon" &&
+    attackMinor === "attack" &&
     monsterDefense() > 20 &&
     buffedHitStat() - 20 < monsterDefense() &&
     auto_canUse($skill`Saucestorm`, false)

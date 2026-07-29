@@ -13,6 +13,72 @@ L12_sonofaPrefix
 LX_burnUnusedLuck
 LX_burnDelay
 LX_summonMonster
+# path handling which should be in it's own task order but pre-dates task order functionality (tech debt FTW).
+# Flattened out of the LM_edTheUndying monolith (Actually Ed the Undying path only).
+# Buy Ed skills, keep the hat adjusted, restock whittled campfire gear, and grab a
+# seal tooth early if we can afford it (Mild Curse is too likely to overkill things).
+LM_ed_setup
+L1_ed_island
+L1_ed_islandFallback
+L5_getEncryptionKey
+LX_islandAccess
+# Misc housekeeping: pull filthy corduroys, run breakfast, grab a seal tooth if we
+# still don't have one.
+LM_ed_miscHousekeeping
+# Rest for free if we have the means once we're past the early game.
+LM_ed_restIfAvailable
+# We should open the manor second floor sooner rather than later as starting the level 11
+# quest ruins our pool skill and having delay burning zones open is nice. This is only
+# attempted before level 11; LX_unlockManorSecondFloor/LX_unlockHauntedLibrary/
+# LX_unlockHauntedBilliardsRoom below are the level-11-and-later fallback for the same
+# unlock chain, so this is left as one cohesive block rather than split apart.
+LM_ed_earlyManorUnlock
+# as we do hippy side, the war is a 2 Ka quest (excluding sidequests but that shouldn't matter)
+L12_islandWar
+# start the macguffin quest, conveniently the black forest is a 1.4 Ka zone.
+L11_blackMarket
+L11_forgedDocuments
+L11_mcmuffinDiary
+L11_shenStartQuest
+# The hidden city is mostly 2 Ka monsters so do it ASAP.
+L11_unlockHiddenCity
+L11_hiddenCityZones
+L11_hiddenCity
+# Airship is 1.5 Ka or 1.8 Ka with the construct banished so third highest priorty after the war
+# Castle zones are all 1 Ka so may as well finish it off
+L10_plantThatBean
+L10_airship
+L10_basement
+L10_ground
+L10_topFloor
+# If we didn't get the Spookyraven unlock done before level 11, do it now since airship is done and we want more delay zones open
+LX_unlockManorSecondFloor
+LX_unlockHauntedLibrary
+LX_unlockHauntedBilliardsRoom
+# Smut Orcs are 1 Ka so build the bridge.
+L9_ed_chasmStart
+L9_chasmBuild
+# L8 quest is all 1 Ka zones for Ed (unlikely to survive Ninja Snowmen Assassins so they don't count)
+L8_trapperQuest
+# Goblins are 1 Ka and the rewards are useful
+L5_haremOutfit
+L5_goblinKing
+# Bats are 1 Ka and the rewards are useful
+L4_batCave
+# need to do L2 quest to unlock the L3. 0.83 Ka zone or 1/1.25/1.67 with 1/2/3 banishes
+L2_mosquito
+LX_unlockHiddenTemple
+# should probably complete the tavern for drinking purposes (and rats are 1 Ka).
+L3_tavern
+# Copperhead Club & Mob of Zeppelin Protestors are 2 Ka zones (with a banish use) but we want to delay them so we can semi-rare Copperhead
+LX_spookyravenManorSecondFloor
+L11_mauriceSpookyraven
+L11_talismanOfNam
+L11_palindome
+# Crush the jackass adventurer!
+L13_ed_towerHandler
+# Back to square frigging one, I guess.
+L13_ed_councilWarehouse
 # make sure we don't waste turns of Ultrahydrated doing something else.
 L11_aridDesert	L11_hasUltrahydrated
 # Lock in the Shen zones as soon as we can as it (potentially) unlocks a bunch of stuff.
@@ -31,8 +97,6 @@ LX_lockPicking
 LX_fatLootToken
 #	Get the Steel Organ if the user wants it (needs L6 quest complete)
 LX_steelOrgan
-# need meat for first set of adventures
-L4_batCave	LX_needMeatSkills
 # open up delay zones.
 LX_spookyravenManorFirstFloor
 # open up zones where we want to force non-combats.
@@ -46,10 +110,6 @@ L11_blackMarket
 L11_forgedDocuments
 L11_mcmuffinDiary
 L11_getBeehive
-# make sure we get early boss meat if we've meatleveled (likely a low-meat run, need extra generation early for quick skills)
-L5_slayTheGoblinKing	LX_needMeatSkills
-L7_crypt	LX_needMeatSkills
-# L8_trapperQuest	LX_needMeatSkills comment out until we check for nc skill (bad idea for low non-combat%)
 # open the hidden city up (delay zones)
 L2_mosquito
 LX_unlockHiddenTemple
@@ -90,6 +150,8 @@ L4_batCave
 L3_tavern
 # Basic fetch quest is the first thing the council demand of you. Is this 2002 or what?
 L2_mosquito
+# There's an extra task in KoE
+LX_koeInvaderHandler
 # "win" the contests, navigate the maze, unlock the door, climb the tower, commit sorceresscide.
 L13_towerAscent
 # not powerlevelling but something that needs to be done if nothing else is available
@@ -97,4 +159,4 @@ LX_lastChance
 # release the hounds!
 auto_softBlockHandler
 # if all else fails, powerlevel like there's no tomorrow.
-LX_attemptPowerLevelMeat
+LX_attemptPowerLevel

@@ -38,6 +38,7 @@ import {
   get,
 } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { fullness_left } from "../auto_consume";
 import { is100FamRun } from "../auto_familiar";
 import {
@@ -91,35 +92,39 @@ export function auto_combatDefaultStage4(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 4 = prekill. copy, sing along, flyer and other things that need to be done after delevel but before killing
   //Unskip stage 3
   if (toBoolean(getProperty("auto_skipStage3"))) {
     setProperty("auto_skipStage3", false.toString());
   }
   // Path = The Source
-  let retval: string = auto_combatTheSourceStage4(round_1, enemy, text);
-  if (retval !== "") {
+  let retval: CombatMacroReturns = auto_combatTheSourceStage4(
+    round_1,
+    enemy,
+    text,
+  );
+  if (retval !== undefined) {
     return retval;
   }
   // Path = license to adventure
   retval = auto_combatLicenseToAdventureStage4(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = The Source
   retval = auto_combatZombieSlayerStage4(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = WereProfessor
   retval = auto_combatWereProfessorStage4(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Skip if have drones out
   if (toBoolean(getProperty("auto_skipStage4"))) {
-    return "";
+    return undefined;
   }
   //sniffers are skills that increase the odds of encountering this same monster again in the current zone.
   if (auto_wantToSniff(enemy, myLocation()) && !ag_is_bodyguard()) {
@@ -183,7 +188,7 @@ export function auto_combatDefaultStage4(
         detail: $item`Rain-Doh black box`.toString(),
         property: "auto_copies",
       });
-      return `item ${$item`Rain-Doh black box`}`;
+      return $item`Rain-Doh black box`;
     }
     auto_log_warning(
       "Can not issue copy directive because we have no copies left",
@@ -206,7 +211,7 @@ export function auto_combatDefaultStage4(
           enemy,
         )
       ) {
-        return `item ${$item`daily dungeon malware`}`;
+        return $item`daily dungeon malware`;
       }
     }
   }
@@ -309,7 +314,7 @@ export function auto_combatDefaultStage4(
     canSurvive(1.5)
   ) {
     if (itemAmount($item`seal tooth`) > 0) {
-      return `item ${$item`seal tooth`}`;
+      return $item`seal tooth`;
     }
   }
   //winking is a monster copier familiar skill. they share a daily counter
@@ -346,7 +351,7 @@ export function auto_combatDefaultStage4(
     if (
       $monsters`clingy pirate (female), clingy pirate (male)`.includes(enemy)
     ) {
-      return `item ${$item`cocktail napkin`}`;
+      return $item`cocktail napkin`;
     }
   }
   //this completes the quest Advertise for the Mysterious Island Arena which is a sidequest which accelerates the L12 frat-hippy war quest
@@ -447,7 +452,7 @@ export function auto_combatDefaultStage4(
     if (
       $monsters`oil baron, oil cartel, oil slick, oil tycoon`.includes(enemy)
     ) {
-      return `item ${$item`Duskwalker syringe`}`;
+      return $item`Duskwalker syringe`;
     }
   }
   //used by [Little Geneticist DNA-Splicing Lab] iotm
@@ -517,7 +522,10 @@ export function auto_combatDefaultStage4(
     //}
   }
   // use cosmic bowling ball iotm
-  if (auto_bowlingBallCombatString(myLocation(), true) !== "" && !enemy.boss) {
+  if (
+    auto_bowlingBallCombatString(myLocation(), true) !== undefined &&
+    !enemy.boss
+  ) {
     return auto_bowlingBallCombatString(myLocation(), false);
   }
   // prep avalanche if requested
@@ -553,5 +561,5 @@ export function auto_combatDefaultStage4(
     return auto_useSkill($skill`Steal Monster's Heart`);
   }
 
-  return "";
+  return undefined;
 }

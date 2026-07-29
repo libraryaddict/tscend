@@ -27,6 +27,7 @@ import {
   $familiar,
   $item,
   $location,
+  $locations,
   $path,
   $phylum,
   $skill,
@@ -34,7 +35,11 @@ import {
 } from "libram";
 
 import { pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
+import {
+  auto_triggerPostAdventure,
+  autoAdv,
+  autoAdvBypass$1,
+} from "../auto_adventure";
 import {
   addToMaximize,
   autoEquip,
@@ -46,7 +51,7 @@ import {
   handleFamiliar,
   handleFamiliar$1,
 } from "../auto_familiar";
-import { LX_attemptPowerLevel } from "../auto_powerlevel";
+import { LX_attemptPowerLevelTask } from "../auto_powerlevel";
 import { uneffect } from "../auto_restore";
 import {
   auto_have_skill,
@@ -55,6 +60,12 @@ import {
   internalQuestStatus,
 } from "../auto_util";
 import { zone_available } from "../auto_zone";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import { inAftercore } from "./casual";
 
 //Defined in autoscend/paths/bugbear_invasion.ash
@@ -478,7 +489,7 @@ function LX_bugbearBridge(): boolean {
     visitUrl("council.php");
   }
 
-  cliExecute("scripts/autoscend/auto_post_adv.js");
+  auto_triggerPostAdventure();
 
   if (myClass() === $class`Turtle Tamer`) {
     autoEquip($item`Ouija Board, Ouija Board`);
@@ -520,70 +531,144 @@ function LX_bugbearBridge(): boolean {
   return ret;
 }
 
-export function LX_bugbearInvasion(): boolean {
-  if (!in_bugbear()) {
-    return false;
-  }
+registerQuestTask({
+  name: "LX_bugbearKeyOTron",
+  completed: () => !in_bugbear() || itemAmount($item`key-o-tron`) > 0,
+  ready: () => true,
+  do: LX_bugbearKeyOTron,
+  locations: $location`The Sleazy Back Alley`,
+});
 
-  if (LX_bugbearKeyOTron()) {
-    return true;
-  }
+const LX_bugbearWasteProcessingTask: QuestTask = registerQuestTask({
+  name: "LX_bugbearWasteProcessing",
+  completed: () =>
+    !in_bugbear() || bugbear_ZoneCleared($location`Waste Processing`),
+  ready: () => true,
+  do: LX_bugbearWasteProcessing,
+  locations: $locations`The Sleazy Back Alley, Waste Processing`,
+});
+const LX_bugbearMedbayTask: QuestTask = registerQuestTask({
+  name: "LX_bugbearMedbay",
+  completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Medbay`),
+  ready: () => true,
+  do: LX_bugbearMedbay,
+  locations: $locations`The Spooky Forest, Medbay`,
+});
+const LX_bugbearSonarTask: QuestTask = registerQuestTask({
+  name: "LX_bugbearSonar",
+  completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Sonar`),
+  ready: () => true,
+  do: LX_bugbearSonar,
+  locations: $locations`The Batrat and Ratbat Burrow, Sonar`,
+});
+const LX_bugbearScienceLabTask: QuestTask = registerQuestTask({
+  name: "LX_bugbearScienceLab",
+  completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Science Lab`),
+  ready: () => true,
+  do: LX_bugbearScienceLab,
+  locations: $locations`Cobb's Knob Laboratory, Science Lab`,
+});
+const LX_bugbearMorgueTask: QuestTask = registerQuestTask({
+  name: "LX_bugbearMorgue",
+  completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Morgue`),
+  ready: () => true,
+  do: LX_bugbearMorgue,
+  locations: $locations`The VERY Unquiet Garves, Morgue`,
+});
+const LX_bugbearSpecialOpsTask: QuestTask = registerQuestTask({
+  name: "LX_bugbearSpecialOps",
+  completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Special Ops`),
+  ready: () => true,
+  do: LX_bugbearSpecialOps,
+  locations: $locations`Lair of the Ninja Snowmen, Special Ops`,
+});
+const LX_bugbearNavigationTask: QuestTask = registerQuestTask({
+  name: "LX_bugbearNavigation",
+  completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Navigation`),
+  ready: () => true,
+  do: LX_bugbearNavigation,
+  locations: $locations`The Haunted Gallery, Navigation`,
+});
+const LX_bugbearEngineeringTask: QuestTask = registerQuestTask({
+  name: "LX_bugbearEngineering",
+  completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Engineering`),
+  ready: () => true,
+  do: LX_bugbearEngineering,
+  locations: $locations`The Penultimate Fantasy Airship, Engineering`,
+});
+const LX_bugbearGalleryTask: QuestTask = registerQuestTask({
+  name: "LX_bugbearGallery",
+  completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Galley`),
+  ready: () => true,
+  do: LX_bugbearGallery,
+  locations: $locations`The Hippy Camp (Bombed Back to the Stone Age), The Orcish Frat House (Bombed Back to the Stone Age), Galley`,
+});
 
+function LX_bugbearInvasionFloorsDo(): boolean {
   if (itemAmount($item`key-o-tron`) === 0) {
     return false;
   }
-  // First floor
-  if (LX_bugbearWasteProcessing()) {
-    return true;
-  }
-  if (LX_bugbearMedbay()) {
-    return true;
-  }
-  if (LX_bugbearSonar()) {
-    return true;
-  }
-  // Second floor
-  if (LX_bugbearScienceLab()) {
-    return true;
-  }
-  if (LX_bugbearMorgue()) {
-    return true;
-  }
-  if (LX_bugbearSpecialOps()) {
-    return true;
-  }
-  // Third floor
-  if (LX_bugbearNavigation()) {
-    return true;
-  }
-  if (LX_bugbearEngineering()) {
-    return true;
-  }
-  if (LX_bugbearGallery()) {
-    return true;
-  }
 
-  return false;
+  return runTaskChain([
+    // First floor
+    LX_bugbearWasteProcessingTask,
+    LX_bugbearMedbayTask,
+    LX_bugbearSonarTask,
+    // Second floor
+    LX_bugbearScienceLabTask,
+    LX_bugbearMorgueTask,
+    LX_bugbearSpecialOpsTask,
+    // Third floor
+    LX_bugbearNavigationTask,
+    LX_bugbearEngineeringTask,
+    LX_bugbearGalleryTask,
+  ]);
 }
 
-export function LX_bugbearInvasionFinale(): boolean {
-  if (!in_bugbear()) {
-    return false;
-  }
-  if (itemAmount($item`key-o-tron`) === 0) {
-    return false;
-  }
+registerQuestTask({
+  name: "LX_bugbearInvasionFloorsDo",
+  completed: () => !in_bugbear(),
+  ready: () => true,
+  do: LX_bugbearInvasionFloorsDo,
+});
 
-  if (internalQuestStatus("questL12War") >= 1 && LX_bugbearNavigationForce()) {
-    return true;
-  }
-  if (LX_bugbearBridge()) {
-    return true;
-  }
-  if (LX_attemptPowerLevel()) {
+const LX_bugbearNavigationForceTask: QuestTask = registerQuestTask({
+  name: "LX_bugbearNavigationForce",
+  completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Navigation`),
+  ready: () => true,
+  do: () =>
+    internalQuestStatus("questL12War") >= 1 && LX_bugbearNavigationForce(),
+  locations: $locations`The Haunted Gallery, Navigation`,
+});
+const LX_bugbearBridgeTask: QuestTask = registerQuestTask({
+  name: "LX_bugbearBridge",
+  completed: () => !in_bugbear() || internalQuestStatus("questL13Final") > 3,
+  ready: () => true,
+  do: LX_bugbearBridge,
+});
+
+function LX_bugbearInvasionFinaleDo(): boolean {
+  if (
+    runTaskChain([
+      LX_bugbearNavigationForceTask,
+      LX_bugbearBridgeTask,
+      LX_attemptPowerLevelTask,
+    ])
+  ) {
     return true;
   }
 
   abort("Bugbear Invasion tasks remain but can't figure out what to do.");
   return false;
+}
+
+const LX_bugbearInvasionFinaleTask: QuestTask = registerQuestTask({
+  name: "LX_bugbearInvasionFinale",
+  completed: () => !in_bugbear(),
+  ready: () => itemAmount($item`key-o-tron`) > 0,
+  do: LX_bugbearInvasionFinaleDo,
+});
+
+export function LX_bugbearInvasionFinale(): boolean {
+  return runQuestTask(LX_bugbearInvasionFinaleTask);
 }

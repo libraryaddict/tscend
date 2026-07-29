@@ -20,7 +20,6 @@ import {
   myRain,
   myThunder,
   numericModifier,
-  runChoice,
   setProperty,
   toBoolean,
   toInt,
@@ -57,6 +56,7 @@ import {
   auto_have_skill,
   auto_log_info,
   auto_runChoice,
+  auto_runChoiceText,
   AutoStopError,
   effectAblativeArmor,
   executeFlavour,
@@ -191,7 +191,7 @@ export function heavyrains_buySkills(): boolean {
       }
 
       setProperty("choiceAdventure967", skillChoice.toString());
-      auto_runChoice(page);
+      auto_runChoiceText(page);
       visitUrl("main.php");
       return true;
     }
@@ -223,7 +223,7 @@ export function heavyrains_buySkills(): boolean {
       }
 
       setProperty("choiceAdventure968", skillChoice.toString());
-      auto_runChoice(page);
+      auto_runChoiceText(page);
       visitUrl("main.php");
       return true;
     }
@@ -264,7 +264,7 @@ export function heavyrains_buySkills(): boolean {
       }
 
       setProperty("choiceAdventure969", skillChoice.toString());
-      auto_runChoice(page);
+      auto_runChoiceText(page);
       visitUrl("main.php");
       return true;
     }
@@ -293,7 +293,7 @@ function canRainManSummon(target: Monster): boolean {
     "runskillz.php?pwd&action=Skillz&whichskill=16011&quantity=1",
   );
   // Escape
-  runChoice(2);
+  auto_runChoice(2);
 
   return containsText(page, `<option value=${target.id}>`);
 }

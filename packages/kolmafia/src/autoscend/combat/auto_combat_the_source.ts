@@ -13,6 +13,7 @@ import {
 } from "kolmafia";
 import { $effect, $locations, $monsters, $skill } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { auto_have_skill } from "../auto_util";
 import { auto_canUse, auto_useSkill } from "./auto_combat_util";
 
@@ -23,7 +24,7 @@ export function auto_combatTheSourceStage1(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   //#stage1 = 1st round actions: puzzle boss, banish, escape, pickpocket, etc. things that need to be done before debuff
 
   if ($monsters`One Thousand Source Agents, Source Agent`.includes(enemy)) {
@@ -74,14 +75,14 @@ export function auto_combatTheSourceStage1(
     return "runaway";
   }
 
-  return "";
+  return undefined;
 }
 
 export function auto_combatTheSourceStage4(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 4 = prekill. copy, sing along, flyer and other things that need to be done after delevel but before killing
   //source terminal iotm source path specific action. provokes an agent into attacking you next turn 3/day
   //is turn referring to combat round or next adv? this is placed in stage 4 on the assumption it means next adv. if it means next combat round then it should be moved to stage 2
@@ -101,5 +102,5 @@ export function auto_combatTheSourceStage4(
     }
   }
 
-  return "";
+  return undefined;
 }

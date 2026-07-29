@@ -1,6 +1,7 @@
 import { abort, Monster } from "kolmafia";
 import { $item, $monster } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { canUse$3, useItem } from "./auto_combat_util";
 
 //Path specific combat handling for Bees Hate You
@@ -10,7 +11,7 @@ export function auto_combatBHYStage1(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
   //Bees Hate You path final boss instakill.
   //technically also a hidden boss in all paths but we never want to fight it in other paths
@@ -24,5 +25,5 @@ export function auto_combatBHYStage1(
     }
   }
 
-  return "";
+  return undefined;
 }

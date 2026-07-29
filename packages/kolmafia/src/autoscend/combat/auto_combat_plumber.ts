@@ -1,6 +1,7 @@
 import { equippedAmount, Monster, myClass, myLocation, myPp } from "kolmafia";
 import { $class, $item, $location, $skill } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { auto_canUse, auto_useSkill } from "./auto_combat_util";
 
 //Path specific combat handling for path of the plumber
@@ -10,11 +11,11 @@ export function auto_combatPlumberStage5(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   //stage 5 killing the enemy. plumber specific
 
   if (myClass() !== $class`Plumber`) {
-    return "";
+    return undefined;
   }
   // note: Juggle Fireballs CAN be used multiple times, but it is only
   // useful if you have level 3 fire and therefore get healed
@@ -52,11 +53,8 @@ export function auto_combatPlumberStage5(
   }
   // Fallback, since maybe we only have fire flower equipped.
   if (auto_canUse($skill`[7333]Fireball Barrage`, false)) {
-    {
-      return auto_useSkill($skill`[7333]Fireball Barrage`);
-    }
-    return auto_useSkill($skill`Fireball Toss`, false);
+    return auto_useSkill($skill`[7333]Fireball Barrage`);
   }
 
-  return "";
+  return auto_useSkill($skill`Fireball Toss`, false);
 }

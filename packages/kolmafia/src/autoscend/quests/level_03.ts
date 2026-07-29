@@ -55,6 +55,7 @@ import {
   damageModifier,
   internalQuestStatus,
 } from "../auto_util";
+import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { auto_beachCombHead } from "../iotms/mr2019";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
@@ -290,16 +291,12 @@ function auto_tavern(): boolean {
   return true;
 }
 
-export function L3_tavern(): boolean {
+function L3_tavernReady(): boolean {
   if (
     internalQuestStatus("questL03Rat") < 0 ||
     internalQuestStatus("questL03Rat") > 2
   ) {
     return false;
-  }
-
-  if (internalQuestStatus("questL03Rat") < 1) {
-    visitUrl("tavern.php?place=barkeep");
   }
 
   let mpNeed: number = 0;
@@ -338,26 +335,38 @@ export function L3_tavern(): boolean {
     delayTavern = false;
   }
 
-  if (delayTavern) {
-    return false;
-  }
+  return !delayTavern;
+}
 
-  auto_log_info("Doing Tavern", "blue");
+export const L3_tavernTask: QuestTask = registerQuestTask({
+  name: "L3_tavern",
+  completed: () => internalQuestStatus("questL03Rat") > 2,
+  ready: L3_tavernReady,
+  do: () => {
+    if (internalQuestStatus("questL03Rat") < 1) {
+      visitUrl("tavern.php?place=barkeep");
+    }
 
-  if (myMp() > 60 || considerGrimstoneGolem(true)) {
-    handleBjornify($familiar`Grimstone Golem`);
-  }
+    auto_log_info("Doing Tavern", "blue");
 
-  auto_setMCDToCap();
+    if (myMp() > 60 || considerGrimstoneGolem(true)) {
+      handleBjornify($familiar`Grimstone Golem`);
+    }
 
-  if (auto_tavern()) {
-    return true;
-  }
+    auto_setMCDToCap();
 
-  if (internalQuestStatus("questL03Rat") > 1) {
-    visitUrl("tavern.php?place=barkeep");
-    council();
-    return true;
-  }
-  return false;
+    if (auto_tavern()) {
+      return;
+    }
+
+    if (internalQuestStatus("questL03Rat") > 1) {
+      visitUrl("tavern.php?place=barkeep");
+      council();
+    }
+  },
+  locations: $location`The Typical Tavern Cellar`,
+});
+
+export function L3_tavern(): boolean {
+  return runQuestTask(L3_tavernTask);
 }

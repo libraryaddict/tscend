@@ -75,7 +75,7 @@ import {
 } from "libram";
 
 import { auto_buyUpTo, buyableMaintain } from "./auto_acquire";
-import { autoAdv } from "./auto_adventure";
+import { auto_canRunBetweenBattleChecks, autoAdv } from "./auto_adventure";
 import { auto_faceCheck, buffMaintain$2 } from "./auto_buff";
 import {
   addToMaximize,
@@ -1347,7 +1347,8 @@ function auto_post_adventure(): boolean {
   return true;
 }
 
-export function main(): void {
+export function auto_runPostAdventure(): boolean {
+  if (!auto_canRunBetweenBattleChecks()) return;
   let ret: boolean = false;
   try {
     ret = auto_post_adventure();
@@ -1359,4 +1360,9 @@ export function main(): void {
       setProperty("auto_interrupt", true.toString());
     }
   }
+  return ret;
+}
+
+export function main(): void {
+  auto_runPostAdventure();
 }

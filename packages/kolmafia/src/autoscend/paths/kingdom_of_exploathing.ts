@@ -18,7 +18,6 @@ import {
   myPrimestat,
   pullsRemaining,
   retrieveItem,
-  runChoice,
   setProperty,
   splitString,
   toBoolean,
@@ -60,10 +59,12 @@ import {
   auto_is_valid$2,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   elemental_resist_value,
   internalQuestStatus,
   setFlavour,
 } from "../auto_util";
+import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { doHottub } from "../iotms/clan";
 import { auto_beachCombHead, auto_canBeachCombHead } from "../iotms/mr2019";
 import { auto_canUseJuneCleaver } from "../iotms/mr2022";
@@ -118,17 +119,7 @@ export function koe_acquire_rmi(target: number): boolean {
   return itemAmount(it) >= target;
 }
 
-export function LX_koeInvaderHandler(): boolean {
-  if (!in_koe()) {
-    return false;
-  }
-  if (toBoolean(getProperty("spaceInvaderDefeated"))) {
-    // invader drops 10 white pixels so fight it before we do the hedge maze
-    // as we need elemental resists for both and we may be able to get enough
-    // pixels for the digital key if we still require them.
-    return false;
-  }
-
+function LX_koeInvaderHandlerDo(): boolean {
   if (haveEffect($effect`Flared Nostrils`) > 0) {
     doHottub();
   }
@@ -275,6 +266,21 @@ export function LX_koeInvaderHandler(): boolean {
   return false;
 }
 
+const LX_koeInvaderHandlerTask: QuestTask = registerQuestTask({
+  name: "LX_koeInvaderHandler",
+  completed: () => !in_koe(),
+  // invader drops 10 white pixels so fight it before we do the hedge maze
+  // as we need elemental resists for both and we may be able to get enough
+  // pixels for the digital key if we still require them.
+  ready: () => !toBoolean(getProperty("spaceInvaderDefeated")),
+  do: LX_koeInvaderHandlerDo,
+  locations: $location`The Invader`,
+});
+
+export function LX_koeInvaderHandler(): boolean {
+  return runQuestTask(LX_koeInvaderHandlerTask);
+}
+
 function koe_L12FoodSelect(): Item {
   //selects a desireable food item to toss at enemies during L12 war quest battlefield in koe
   let food_item: Item = Item.none;
@@ -296,7 +302,7 @@ export function koe_RationingOutDestruction(): void {
       "I am at the choice adventure and do not know what food I should kill my enemies with during L12 war quest",
     );
   }
-  runChoice(1, `tossid=${toInt(food_item)}`);
+  auto_runChoice(1, `tossid=${toInt(food_item)}`);
 }
 
 export function L12_koe_clearBattlefield(): boolean {

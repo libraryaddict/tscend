@@ -10,6 +10,7 @@ import {
 } from "kolmafia";
 import { $class, $familiar, $skill, $skills, $stat } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { auto_have_skill, stunnable } from "../auto_util";
 import { in_glover } from "../paths/g_lover";
 import {
@@ -27,17 +28,17 @@ export function auto_combat_nanorhinoBuff(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   //nanorhino familiar buff acquisition. Must be the first action taken in combat.
   //done after puzzle bosses. if puzzle bosses get a random buff that is ok, we would rather beat the puzzle boss.
   if (
     myFamiliar() !== $familiar`Nanorhino` ||
     combat_status_check("nanorhino_buffed")
   ) {
-    return "";
+    return undefined;
   }
   if (toInt(getProperty("_nanorhinoCharge")) < 100) {
-    return "";
+    return undefined;
   }
 
   let target: Skill = Skill.none;
@@ -119,5 +120,5 @@ export function auto_combat_nanorhinoBuff(
   if (target !== Skill.none) {
     return auto_useSkill(target, target_mark);
   }
-  return "";
+  return undefined;
 }

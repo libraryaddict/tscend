@@ -9,6 +9,7 @@ import {
 } from "kolmafia";
 import { $element, $monster, $monsters, $skill, $slot, $stat } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { in_robot } from "../paths/you_robot";
 import {
   auto_canUse,
@@ -22,10 +23,10 @@ export function auto_combat_robot_stage5(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 5 = kill
   if (!in_robot()) {
-    return "";
+    return undefined;
   }
 
   const enemy_physical_immune: boolean = enemy.physicalResistance > 99;
@@ -84,5 +85,5 @@ export function auto_combat_robot_stage5(
   if (equippedItem($slot`weapon`) === Item.none) {
     abort("Robot does not know how to fight this enemy. Beep Boop.");
   }
-  return "";
+  return undefined;
 }

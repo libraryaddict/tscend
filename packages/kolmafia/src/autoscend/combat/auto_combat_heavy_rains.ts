@@ -11,6 +11,7 @@ import {
 } from "kolmafia";
 import { $item, $monster, $monsters, $skill } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { auto_have_skill } from "../auto_util";
 import { auto_canUse, auto_useSkill } from "./auto_combat_util";
 
@@ -21,14 +22,14 @@ export function auto_combatHeavyRainsStage1(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
   // Unique Heavy Rains Enemy that Reflects Spells.
   if (enemy.toString() === "Gurgle") {
     if (auto_canUse($skill`Summon Love Stinkbug`)) {
       return auto_useSkill($skill`Summon Love Stinkbug`);
     }
-    return "attack with weapon";
+    return "attack";
   }
   // Unique Heavy Rains Enemy that reduces Spells damage to 1 and caps non spell damage at 39 per source and type
   // Has low enough HP it can be defeated in 10 combat turns using simple melee attacks that deal only physical damage
@@ -42,17 +43,17 @@ export function auto_combatHeavyRainsStage1(
     if (auto_canUse($skill`Summon Love Stinkbug`)) {
       return auto_useSkill($skill`Summon Love Stinkbug`);
     }
-    return "attack with weapon";
+    return "attack";
   }
 
-  return "";
+  return undefined;
 }
 
 export function auto_combatHeavyRainsStage3(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 3 = debuff: delevel, stun, curse, damage over time
   //Heavy Rain bosses delevel & stun. we only do this to the tougher bosses
   if ($monsters`Big Wisnaqua, The Aquaman, The Rain King`.includes(enemy)) {
@@ -88,14 +89,14 @@ export function auto_combatHeavyRainsStage3(
           "auto_combatHandlerThunderBird",
           (toInt(getProperty("auto_combatHandlerThunderBird")) - 4).toString(),
         );
-        return `item ${$item`crayon shavings`}, ${$item`crayon shavings`}`;
+        return [$item`crayon shavings`, $item`crayon shavings`];
       }
       if (itemAmount($item`crayon shavings`) > 0) {
         setProperty(
           "auto_combatHandlerThunderBird",
           (toInt(getProperty("auto_combatHandlerThunderBird")) - 2).toString(),
         );
-        return `item ${$item`crayon shavings`}`;
+        return $item`crayon shavings`;
       }
     } else {
       //stunable
@@ -143,14 +144,14 @@ export function auto_combatHeavyRainsStage3(
     }
   }
 
-  return "";
+  return undefined;
 }
 
 export function auto_combatHeavyRainsStage5(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 5 = kill
   // Heavy Rains Final Boss. strips you of positive effects every time it hits you. Capped at 40 damage per source per element.
   if (enemy.toString() === "The Rain King") {
@@ -164,7 +165,7 @@ export function auto_combatHeavyRainsStage5(
       if (auto_canUse($skill`Lunge Smack`, false)) {
         return auto_useSkill($skill`Lunge Smack`, false);
       }
-      return "attack with weapon";
+      return "attack";
     }
     if (
       getProperty("auto_rain_king_combat") === "saucestorm" &&
@@ -194,5 +195,5 @@ export function auto_combatHeavyRainsStage5(
     return auto_useSkill($skill`Unleash the Greash`, false);
   }
 
-  return "";
+  return undefined;
 }

@@ -52,6 +52,7 @@ import {
   $stat,
 } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
 import {
   auto_log_warning,
@@ -110,7 +111,7 @@ export function auto_combatDefaultStage3(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 3 = debuff: delevel, stun, curse, damage over time
   // Set to false because instakills are in stage 2 and if we get here, it was not successful
   setProperty("auto_instakillSuccess", false.toString());
@@ -120,21 +121,25 @@ export function auto_combatDefaultStage3(
   }
   //Skip stage 3 if set
   if (toBoolean(getProperty("auto_skipStage3"))) {
-    return "";
+    return undefined;
   }
   // Path = Heavy Rains
-  let retval: string = auto_combatHeavyRainsStage3(round_1, enemy, text);
-  if (retval !== "") {
+  let retval: CombatMacroReturns = auto_combatHeavyRainsStage3(
+    round_1,
+    enemy,
+    text,
+  );
+  if (retval !== undefined) {
     return retval;
   }
   // Path = zombie slayer
   retval = auto_combatZombieSlayerStage3(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = Adventurer Meats World
   retval = auto_combatMeatGolemStage3(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   //delevel (10 + medicine_level)% in avatar of west of loathing path
@@ -753,10 +758,10 @@ export function auto_combatDefaultStage3(
             } else if (auto_canUse($skill`Lunge Smack`, false)) {
               return auto_useSkill($skill`Lunge Smack`, false);
             } else {
-              return "attack with weapon";
+              return "attack";
             }
           } else {
-            return "attack with weapon";
+            return "attack";
           }
         } else if (
           monsterLevelAdjustment() <= -25 &&
@@ -1008,5 +1013,5 @@ export function auto_combatDefaultStage3(
     return auto_useSkill($skill`BCZ: Blood Geyser`);
   }
 
-  return "";
+  return undefined;
 }

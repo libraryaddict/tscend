@@ -17,6 +17,7 @@ import {
 } from "kolmafia";
 import { $class, $item, $items, $monsters, $skill } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { isAttackFamiliar } from "../auto_familiar";
 import {
   auto_have_skill,
@@ -51,7 +52,7 @@ export function auto_JunkyardCombatHandler(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   if (
     !$monsters`A.M.C. gremlin, batwinged gremlin, batwinged gremlin (tool), erudite gremlin, erudite gremlin (tool), spider gremlin, spider gremlin (tool), vegetable gremlin, vegetable gremlin (tool)`.includes(
       enemy,
@@ -104,7 +105,7 @@ export function auto_JunkyardCombatHandler(
     } else if (auto_canUse($skill`Lunging Thrust-Smack`, false)) {
       return auto_useSkill($skill`Lunging Thrust-Smack`, false);
     }
-    return "attack with weapon";
+    return "attack";
   }
 
   if (
@@ -241,5 +242,5 @@ export function auto_JunkyardCombatHandler(
     return auto_useSkill($skill`Plague Claws`, false);
   }
 
-  return "attack with weapon";
+  return "attack";
 }

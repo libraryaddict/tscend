@@ -29,6 +29,7 @@ import {
   ovenHandle,
 } from "../auto_util";
 import { zone_available } from "../auto_zone";
+import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 
 //Defined in autoscend/paths/wereprofessor.ash
 export function in_wereprof(): boolean {
@@ -370,13 +371,7 @@ export function wereprof_oculus(): boolean {
   return false;
 }
 
-export function LM_wereprof(): boolean {
-  if (!in_wereprof()) {
-    return false;
-  }
-  if (is_werewolf()) {
-    return false;
-  }
+function LM_wereprofDo(): boolean {
   const elixer: Item = $item`Doc Galaktik's Homeopathic Elixir`;
   const elixerAmount: number = itemAmount(elixer);
   if (elixerAmount < 10 && myMeat() - npcPrice(elixer) > meatReserve()) {
@@ -399,14 +394,18 @@ export function LM_wereprof(): boolean {
   return false;
 }
 
-export function LX_wereprof_getSmashedEquip(): boolean {
-  if (!in_wereprof()) {
-    return false;
-  }
-  if (is_professor() || wereprof_haveAllEquipment()) {
-    return false;
-  }
+const LM_wereprofTask: QuestTask = registerQuestTask({
+  name: "LM_wereprof",
+  completed: () => !in_wereprof(),
+  ready: () => !is_werewolf(),
+  do: LM_wereprofDo,
+});
 
+export function LM_wereprof(): boolean {
+  return runQuestTask(LM_wereprofTask);
+}
+
+function LX_wereprof_getSmashedEquipDo(): boolean {
   const alreadySmashedLocs: string = getProperty("antiScientificMethod");
   //There's a couple other locations, but we shouldn't EVER visit them
   for (const sl of $locations`The Hidden Hospital, The Castle in the Clouds in the Sky (Top Floor), Noob Cave, The Haunted Pantry, The Thinknerd Warehouse, Vanya's Castle`) {
@@ -422,6 +421,18 @@ export function LX_wereprof_getSmashedEquip(): boolean {
     }
   }
   return false;
+}
+
+const LX_wereprof_getSmashedEquipTask: QuestTask = registerQuestTask({
+  name: "LX_wereprof_getSmashedEquip",
+  completed: () => !in_wereprof(),
+  ready: () => !is_professor() && !wereprof_haveAllEquipment(),
+  do: LX_wereprof_getSmashedEquipDo,
+  locations: $locations`The Hidden Hospital, The Castle in the Clouds in the Sky (Top Floor), Noob Cave, The Haunted Pantry, The Thinknerd Warehouse, Vanya's Castle`,
+});
+
+export function LX_wereprof_getSmashedEquip(): boolean {
+  return runQuestTask(LX_wereprof_getSmashedEquipTask);
 }
 
 export function wereprof_usable(str: string): boolean {

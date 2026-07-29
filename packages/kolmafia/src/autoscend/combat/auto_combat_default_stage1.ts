@@ -30,6 +30,7 @@ import {
   $skill,
 } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import {
   auto_have_skill,
   auto_wantToBanish,
@@ -83,51 +84,55 @@ export function auto_combatDefaultStage1(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
   // Path = Heavy Rains
-  let retval: string = auto_combatHeavyRainsStage1(round_1, enemy, text);
-  if (retval !== "") {
+  let retval: CombatMacroReturns = auto_combatHeavyRainsStage1(
+    round_1,
+    enemy,
+    text,
+  );
+  if (retval !== undefined) {
     return retval;
   }
   // Path = The Source
   retval = auto_combatTheSourceStage1(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = Kingdom of Exploathing
   retval = auto_combatExploathingStage1(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = Avatar of Sneaky Pete
   retval = auto_combatPeteStage1(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = Bees Hate You
   retval = auto_combatBHYStage1(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = Disguises Delimit
   retval = auto_combatDisguisesStage1(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = wildfire
   retval = auto_combatWildfireStage1(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = Fall of the Dinosaurs
   retval = auto_combatFallOfTheDinosaursStage1(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // Path = WereProfessor
   retval = auto_combatWereProfessorStage1(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   //In Avant Guard, waffle the bodyguard in Themthar Hills ASAP to replace with the Dirty Thieving Brigand
@@ -152,7 +157,7 @@ export function auto_combatDefaultStage1(
     }
     if (in_plumber()) {
       if (itemAmount($item`super deluxe mushroom`) > 0) {
-        return `item ${$item`super deluxe mushroom`}`;
+        return $item`super deluxe mushroom`;
       }
       abort(
         "Oh no, I don't have any super deluxe mushrooms to deal with this shadow plumber :(",
@@ -186,10 +191,10 @@ export function auto_combatDefaultStage1(
     }
 
     if (ambi && hand_1 !== Item.none && hand_2 !== Item.none) {
-      return `item ${hand_1}, ${hand_2}`;
+      return [hand_1, hand_2];
     }
     if (hand_1 !== Item.none) {
-      return `item ${hand_1}`;
+      return [hand_1];
     }
     if (itemAmount($item`scented massage oil`) === 0) {
       abort("Uh oh, I ran out of healing items to use against your shadow");
@@ -208,7 +213,7 @@ export function auto_combatDefaultStage1(
 
   if (enemy === $monster`wall of skin`) {
     if (itemAmount($item`beehive`) > 0) {
-      return `item ${$item`beehive`}`;
+      return $item`beehive`;
     }
 
     if (auto_canUse($skill`Shell Up`) && round_1 >= 3) {
@@ -229,12 +234,12 @@ export function auto_combatDefaultStage1(
     if (auto_canUse($skill`Headbutt`, false)) {
       return auto_useSkill($skill`Headbutt`, false);
     }
-    return "attack with weapon";
+    return "attack";
   }
 
   if (enemy === $monster`wall of bones`) {
     if (itemAmount($item`electric boning knife`) > 0) {
-      return `item ${$item`electric boning knife`}`;
+      return $item`electric boning knife`;
     }
     if (myHp() * 4 < myMaxhp() && haveEffect($effect`Takin' It Greasy`) > 0) {
       return auto_useSkill($skill`Unleash the Greash`, false);
@@ -258,7 +263,7 @@ export function auto_combatDefaultStage1(
   //nanorhino familiar buff acquisition. Must be the first action taken in combat.
   //done after puzzle bosses. if puzzle bosses get a random buff that is ok, we would rather beat the puzzle boss.
   retval = auto_combat_nanorhinoBuff(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   //pickpocket. do this after puzzle bosses but before escapes/instakills
@@ -447,11 +452,11 @@ export function auto_combatDefaultStage1(
   }
   //these special conditions make it impossible to do anything but attack with weapon.
   if (haveEffect($effect`Temporary Amnesia`) > 0) {
-    return "attack with weapon";
+    return "attack";
   }
   if (haveEquipped($item`Drunkula's wineglass`)) {
-    return "attack with weapon";
+    return "attack";
   }
 
-  return "";
+  return undefined;
 }

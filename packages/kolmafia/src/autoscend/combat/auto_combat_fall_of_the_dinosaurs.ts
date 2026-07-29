@@ -10,6 +10,7 @@ import {
 } from "kolmafia";
 import { $skill } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { in_fotd } from "../paths/fall_of_the_dinosaurs";
 import {
   auto_canUse,
@@ -56,29 +57,29 @@ export function auto_combatFallOfTheDinosaursStage1(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
   if (!in_fotd()) {
-    return "";
+    return undefined;
   }
   // Only get 1 combat round with Velociraptor
 
   const dino: string = getProperty("_auto_combatFotdDinosaur");
   if (dino === "velociraptor") {
-    return "attack with weapon"; // TODO - needs some logic to determine best auto-kill method -whether that be saucestorm, saucegeyser or attack with weapon
+    return "attack"; // TODO - needs some logic to determine best auto-kill method -whether that be saucestorm, saucegeyser or attack with weapon
   }
 
-  return "";
+  return undefined;
 }
 
 export function auto_combatFallOfTheDinosaursStage5(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 5 = kill
   if (!in_fotd()) {
-    return "";
+    return undefined;
   }
 
   const dino: string = getProperty("_auto_combatFotdDinosaur");
@@ -96,7 +97,7 @@ export function auto_combatFallOfTheDinosaursStage5(
       ); // TODO - work something out here?
     }
     if (canSurvive(1.5) && round_1 < 25) {
-      return "attack with weapon";
+      return "attack";
     }
     if (auto_canUse($skill`Implode Universe`)) {
       return auto_useSkill($skill`Implode Universe`, true);
@@ -137,5 +138,5 @@ export function auto_combatFallOfTheDinosaursStage5(
     }
   }
 
-  return "";
+  return undefined;
 }

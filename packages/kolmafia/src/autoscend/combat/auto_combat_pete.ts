@@ -1,6 +1,7 @@
 import { equippedItem, Monster, myAudience, myClass } from "kolmafia";
 import { $class, $items, $skill, $slot } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { disregardInstantKarma } from "../auto_powerlevel";
 import { auto_canUse, auto_useSkill, canSurvive } from "./auto_combat_util";
 
@@ -11,7 +12,7 @@ export function auto_combatPeteStage1(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
   //adjust audience love/hate. must be first action done in combat
   //TODO rush to max love, then max hate, then max love again for the consumables
@@ -32,5 +33,5 @@ export function auto_combatPeteStage1(
     }
   }
 
-  return "";
+  return undefined;
 }

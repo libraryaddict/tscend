@@ -7,6 +7,7 @@ import {
 } from "kolmafia";
 import { $item, $location, $monster } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { in_lta } from "../paths/license_to_adventure";
 import { canSurvive } from "./auto_combat_util";
 
@@ -17,7 +18,7 @@ export function auto_combatLicenseToAdventureStage4(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 4 = prekill. copy, sing along, flyer and other things that need to be done after delevel but before killing
   //each of the 3 items reduces minion count by 3. does NOT auto defeat current minion you are fighting
   if (
@@ -30,21 +31,21 @@ export function auto_combatLicenseToAdventureStage4(
       !toBoolean(getProperty("_villainLairCanLidUsed")) &&
       itemAmount($item`razor-sharp can lid`) > 0
     ) {
-      return `item ${$item`razor-sharp can lid`}`;
+      return $item`razor-sharp can lid`;
     }
     if (
       !toBoolean(getProperty("_villainLairWebUsed")) &&
       itemAmount($item`spider web`) > 0
     ) {
-      return `item ${$item`spider web`}`;
+      return $item`spider web`;
     }
     if (
       !toBoolean(getProperty("_villainLairFirecrackerUsed")) &&
       itemAmount($item`Knob Goblin firecracker`) > 0
     ) {
-      return `item ${$item`Knob Goblin firecracker`}`;
+      return $item`Knob Goblin firecracker`;
     }
   }
 
-  return "";
+  return undefined;
 }

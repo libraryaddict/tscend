@@ -31,6 +31,12 @@ import {
   internalQuestStatus,
 } from "./auto_util";
 import { zone_delay, zone_delayable, zone_isAvailable } from "./auto_zone";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "./engine/engine";
 import { auto_haveVotingBooth } from "./iotms/mr2018";
 import {
   auto_haveKramcoSausageOMatic,
@@ -53,29 +59,30 @@ import {
   in_lowkeysummer,
   lowkey_nextAvailableKeyDelayLocation,
 } from "./paths/low_key_summer";
-import { L3_tavern } from "./quests/level_03";
-import { L4_batCave } from "./quests/level_04";
-import { L5_getEncryptionKey, L5_haremOutfit } from "./quests/level_05";
-import { L6_friarsGetParts } from "./quests/level_06";
-import { L7_crypt } from "./quests/level_07";
-import { L8_trapperGroar, L8_trapperSlope } from "./quests/level_08";
-import { L9_chasmBuild, L9_highLandlord } from "./quests/level_09";
+import { L3_tavernTask } from "./quests/level_03";
+import { L4_batCaveTask } from "./quests/level_04";
+import { L5_getEncryptionKeyTask, L5_haremOutfitTask } from "./quests/level_05";
+import { L6_friarsGetPartsTask } from "./quests/level_06";
+import { L7_cryptTask } from "./quests/level_07";
+import { L8_trapperGroarTask, L8_trapperSlope } from "./quests/level_08";
+import { L9_chasmBuildTask, L9_highLandlord } from "./quests/level_09";
 import {
-  L10_airship,
-  L10_basement,
-  L10_holeInTheSkyUnlock,
-  L10_topFloor,
+  L10_airshipTask,
+  L10_basementTask,
+  L10_holeInTheSkyUnlockTask,
+  L10_topFloorTask,
 } from "./quests/level_10";
 import {
-  L11_defeatEd,
+  L11_defeatEdTask,
   L11_hiddenCityZones,
-  L11_mauriceSpookyraven,
-  L11_unlockEd,
-  LX_unlockHiddenTemple,
+  L11_hiddenCityZonesTask,
+  L11_mauriceSpookyravenTask,
+  L11_unlockEdTask,
+  LX_unlockHiddenTempleTask,
 } from "./quests/level_11";
-import { L12_filthworms } from "./quests/level_12";
+import { L12_filthwormsTask } from "./quests/level_12";
 import { prepForMegaloCity } from "./quests/level_13";
-import { LX_fatLootToken, LX_getDesiredWorkshed } from "./quests/level_any";
+import { LX_fatLootTokenTask, LX_getDesiredWorkshed } from "./quests/level_any";
 
 //Defined in autoscend/auto_routing.ash
 export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
@@ -289,7 +296,15 @@ function allowSoftblockOutdoorAdvs(): boolean {
   return toInt(getProperty("auto_breathitinLastLevel")) < myLevel();
 }
 
-export function auto_earlyRoutingHandling(): boolean {
+const L9_highLandlordBreathitinTask: QuestTask = registerQuestTask({
+  name: "L9_highLandlordBreathitin",
+  completed: () => false,
+  ready: () => true,
+  do: () =>
+    toInt(getProperty("_auto_lastABooCycleFix")) < 5 && L9_highLandlord(),
+});
+
+function auto_earlyRoutingHandlingDo(): boolean {
   // wrapper function for "early" adventure choices depending on state.
   // updating this will be less 'scary' than updating n task order files any time we make a change
   // this function should go very high in task orders, potentially the first thing that spends adventures.
@@ -314,10 +329,12 @@ export function auto_earlyRoutingHandling(): boolean {
       "Forcing a non-combat somewhere. Strap yourselves in, kids.",
     );
     if (
-      L6_friarsGetParts() ||
-      L10_basement() ||
-      L10_topFloor() ||
-      L10_holeInTheSkyUnlock()
+      runTaskChain([
+        L6_friarsGetPartsTask,
+        L10_basementTask,
+        L10_topFloorTask,
+        L10_holeInTheSkyUnlockTask,
+      ])
     ) {
       // quests where we want to force non-combats
       return true;
@@ -345,13 +362,15 @@ export function auto_earlyRoutingHandling(): boolean {
       );
       // we have a CMC consult coming up in 11 turns or less
       if (
-        L4_batCave() ||
-        L10_basement() ||
-        L12_filthworms() ||
-        L11_mauriceSpookyraven() ||
-        L11_unlockEd() ||
-        L7_crypt() ||
-        L5_haremOutfit()
+        runTaskChain([
+          L4_batCaveTask,
+          L10_basementTask,
+          L12_filthwormsTask,
+          L11_mauriceSpookyravenTask,
+          L11_unlockEdTask,
+          L7_cryptTask,
+          L5_haremOutfitTask,
+        ])
       ) {
         // quests with adventures in underground zones in some sort of priority order here.
         return true;
@@ -368,10 +387,12 @@ export function auto_earlyRoutingHandling(): boolean {
         // some of the last 11 adventures were underground, lets try to "push" the CMC counter & preserve our underground combats
         // while burning down the counter until the next consult by spending adventures in non-adventure.php locations.
         if (
-          LX_fatLootToken() ||
-          L11_defeatEd() ||
-          L8_trapperGroar() ||
-          L3_tavern()
+          runTaskChain([
+            LX_fatLootTokenTask,
+            L11_defeatEdTask,
+            L8_trapperGroarTask,
+            L3_tavernTask,
+          ])
         ) {
           return true;
         }
@@ -384,13 +405,15 @@ export function auto_earlyRoutingHandling(): boolean {
       "Have Breathitin Charges to burn. Calling a quest function with outdoor zones.",
     );
     if (
-      LX_unlockHiddenTemple() ||
-      L11_hiddenCityZones() ||
-      L5_getEncryptionKey() ||
-      L10_airship() ||
-      L9_chasmBuild() ||
-      (toInt(getProperty("_auto_lastABooCycleFix")) < 5 && L9_highLandlord()) ||
-      L6_friarsGetParts()
+      runTaskChain([
+        LX_unlockHiddenTempleTask,
+        L11_hiddenCityZonesTask,
+        L5_getEncryptionKeyTask,
+        L10_airshipTask,
+        L9_chasmBuildTask,
+        L9_highLandlordBreathitinTask,
+        L6_friarsGetPartsTask,
+      ])
     ) {
       // quests with adventures in outdoor zones in some sort of priority order here.
       // LX_unlockHiddenTemple unlocks the Hidden Temple by adventuring in the Spooky Forest. High priority as Hidden City has a lot of delay
@@ -411,7 +434,18 @@ export function auto_earlyRoutingHandling(): boolean {
   return false;
 }
 
-export function auto_softBlockHandler(): boolean {
+export const auto_earlyRoutingHandlingTask: QuestTask = registerQuestTask({
+  name: "auto_earlyRoutingHandling",
+  completed: () => false,
+  ready: () => true,
+  do: auto_earlyRoutingHandlingDo,
+});
+
+export function auto_earlyRoutingHandling(): boolean {
+  return runQuestTask(auto_earlyRoutingHandlingTask);
+}
+
+function auto_softBlockHandlerDo(): boolean {
   // "catch all" function to release softblocks one by one.
   // updating this will be less 'scary' than updating n task order files any time we make a change
   // this function should go in task orders after the call to L13_towerAscent
@@ -451,4 +485,15 @@ export function auto_softBlockHandler(): boolean {
     return true;
   }
   return false;
+}
+
+const auto_softBlockHandlerTask: QuestTask = registerQuestTask({
+  name: "auto_softBlockHandler",
+  completed: () => false,
+  ready: () => true,
+  do: auto_softBlockHandlerDo,
+});
+
+export function auto_softBlockHandler(): boolean {
+  return runQuestTask(auto_softBlockHandlerTask);
 }

@@ -5,14 +5,13 @@ import {
   lastChoice,
   myLevel,
   myPath,
-  runChoice,
   setProperty,
   toInt,
   visitUrl,
 } from "kolmafia";
 import { $path, $skill } from "libram";
 
-import { auto_log_info } from "../auto_util";
+import { auto_log_info, auto_runChoice } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { avatarStandardInitializeDay } from "./avatar_of_boris";
 
@@ -192,7 +191,7 @@ export function pete_buySkills(): void {
     } else if (getProperty("peteMotorbikeSeat") === "") {
       firstChoice = 6;
       secondChoice = 1;
-      runChoice(6);
+      auto_runChoice(6);
     }
 
     if (firstChoice === -1) {

@@ -13,6 +13,7 @@ import {
   canInteract,
   changeMcd,
   chew,
+  choiceFollowsFight,
   Class,
   cliExecute,
   cliExecuteOutput,
@@ -20,12 +21,14 @@ import {
   craft,
   create,
   currentMcd,
+  currentRound,
   Effect,
   Element,
   equip,
   equippedAmount,
   equippedItem,
   Familiar,
+  fightFollowsChoice,
   floor,
   fullnessLimit,
   getCampground,
@@ -35,6 +38,7 @@ import {
   getProperty,
   gnomadsAvailable,
   guildStoreAvailable,
+  handlingChoice,
   haveCampground,
   haveEffect,
   haveEquipped,
@@ -44,6 +48,7 @@ import {
   indexOf,
   inebrietyLimit,
   inHardcore,
+  inMultiFight,
   isTrendy,
   isUnrestricted,
   Item,
@@ -51,7 +56,9 @@ import {
   itemDropModifier,
   itemType,
   knollAvailable,
+  lastChoice,
   lastIndexOf,
+  lastMonster,
   length,
   lightningCost,
   Location,
@@ -91,6 +98,8 @@ import {
   numericModifier,
   Path,
   Phylum,
+  prepareForAdventure,
+  preValidateAdventure,
   print,
   printHtml,
   pullsRemaining,
@@ -132,6 +141,7 @@ import {
   toSlot,
   toStat,
   toThrall,
+  toUrl,
   turnsPerCast,
   use,
   useFamiliar,
@@ -163,6 +173,7 @@ import {
   $stat,
   $stats,
   $thrall,
+  Macro,
   set,
 } from "libram";
 
@@ -174,8 +185,14 @@ import {
   npcStoreDiscountMulti,
   pullXWhenHaveY,
 } from "./auto_acquire";
-import { autoAdvBypass, autoAdvBypass$1, CombatMacro } from "./auto_adventure";
+import {
+  autoAdvBypass,
+  autoAdvBypass$1,
+  CombatMacro,
+  CombatMacroReturns,
+} from "./auto_adventure";
 import { buffMaintain$2 } from "./auto_buff";
+import { main } from "./auto_choice_adv";
 import {
   autoChew,
   autoDrink,
@@ -214,8 +231,8 @@ import { zone_hasLuckyAdventure } from "./auto_zone";
 import { kmailObject } from "./autoscend_record";
 import {
   auto_canUse,
+  banisherCombatAction$1,
   banisherCombatString,
-  banisherCombatString$1,
   canUse$3,
   getCopier,
   getSniffer,
@@ -223,6 +240,7 @@ import {
   useItem,
   yellowRayCombatString,
 } from "./combat/auto_combat_util";
+import { QuestTask, registerQuestTask, runQuestTask } from "./engine/engine";
 import { auto_get_clan_lounge, handleFaxMonster } from "./iotms/clan";
 import { auto_hasNavelRing, auto_navelFreeRunChance } from "./iotms/mr2007";
 import {
@@ -874,7 +892,7 @@ export function canYellowRay(target: Monster = Monster.none): boolean {
           $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
             target,
           ),
-        ) !== ""
+        ) !== undefined
       );
     }
     // Get a yellow rocket if we don't have a parka
@@ -911,7 +929,7 @@ export function canYellowRay(target: Monster = Monster.none): boolean {
         $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
           target,
         ),
-      ) !== ""
+      ) !== undefined
     ) {
       return true;
     }
@@ -949,7 +967,7 @@ export function canYellowRay(target: Monster = Monster.none): boolean {
           $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
             target,
           ),
-        ) !== ""
+        ) !== undefined
       );
     }
     // roman candelabra, also a 75 turn cooldown
@@ -965,7 +983,7 @@ export function canYellowRay(target: Monster = Monster.none): boolean {
           $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
             target,
           ),
-        ) !== ""
+        ) !== undefined
       );
     }
 
@@ -977,7 +995,7 @@ export function canYellowRay(target: Monster = Monster.none): boolean {
           $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
             target,
           ),
-        ) !== ""
+        ) !== undefined
       );
     }
 
@@ -1024,7 +1042,7 @@ export function canYellowRay(target: Monster = Monster.none): boolean {
       $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
         target,
       ),
-    ) !== ""
+    ) !== undefined
   );
 }
 
@@ -1160,62 +1178,62 @@ export function auto_wantToBanish$1(
 }
 
 function canBanish(enemy: Monster, loc: Location): boolean {
-  return banisherCombatString$1(enemy, loc) !== "";
+  return banisherCombatAction$1(enemy, loc) !== undefined;
 }
 
 function canBanish$1(enemyphylum: Phylum, loc: Location): boolean {
-  return banisherCombatString(enemyphylum, loc) !== "";
+  return banisherCombatString(enemyphylum, loc) !== undefined;
 }
 
-function adjustForBanish(combat_string: string): boolean {
+function adjustForBanish(combat_string: CombatMacroReturns): boolean {
   if (combat_string === `skill${$skill`%fn, Release the Patriotic Screech!`}`) {
     return useFamiliar($familiar`Patriotic Eagle`);
   }
   if (combat_string === `skill${$skill`Mark Your Territory`}`) {
     return autoDrink(1, $item`pheromone cocktail`);
   }
-  if (combat_string === `skill ${$skill`Throw Latte on Opponent`}`) {
+  if (combat_string === $skill`Throw Latte on Opponent`) {
     return autoEquip($item`latte lovers member's mug`);
   }
-  if (combat_string === `skill ${$skill`Give Your Opponent the Stinkeye`}`) {
+  if (combat_string === $skill`Give Your Opponent the Stinkeye`) {
     return autoEquip($item`stinky cheese eye`);
   }
-  if (combat_string === `skill ${$skill`Creepy Grin`}`) {
+  if (combat_string === $skill`Creepy Grin`) {
     return autoEquip($item`V for Vivala mask`);
   }
-  if (combat_string === `skill ${$skill`Show them your ring`}`) {
+  if (combat_string === $skill`Show them your ring`) {
     return autoEquip($item`mafia middle finger ring`);
   }
-  if (combat_string === `skill ${$skill`Batter Up!`}`) {
+  if (combat_string === $skill`Batter Up!`) {
     cliExecute("acquire 1 seal-clubbing club");
     ensureSealClubs();
     return true;
   }
-  if (combat_string === `skill ${$skill`Talk About Politics`}`) {
+  if (combat_string === $skill`Talk About Politics`) {
     return autoEquip($item`Pantsgiving`);
   }
-  if (combat_string === `skill ${$skill`Heartstone: %banish`}`) {
+  if (combat_string === $skill`Heartstone: %banish`) {
     return autoEquip(auto_getItemToEquipHeartstone());
   }
-  if (combat_string === `skill ${$skill`Reflex Hammer`}`) {
+  if (combat_string === $skill`Reflex Hammer`) {
     return autoEquip($item`Lil' Doctor™ bag`);
   }
-  if (combat_string === `skill ${$skill`Show your boring familiar pictures`}`) {
+  if (combat_string === $skill`Show your boring familiar pictures`) {
     return autoEquip($item`familiar scrapbook`);
   }
-  if (combat_string === `skill ${$skill`Spring Kick`}`) {
+  if (combat_string === $skill`Spring Kick`) {
     return autoEquip($item`spring shoes`);
   }
-  if (combat_string === `skill ${$skill`Use the Force`}`) {
+  if (combat_string === $skill`Use the Force`) {
     return autoEquipToSlot(
       $slot`weapon`,
       wrap_item($item`Fourth of May Cosplay Saber`),
     );
   }
-  if (combat_string === `skill ${$skill`KGB tranquilizer dart`}`) {
+  if (combat_string === $skill`KGB tranquilizer dart`) {
     return autoEquip($item`Kremlin's Greatest Briefcase`);
   }
-  if (combat_string === `skill ${$skill`Beancannon`}`) {
+  if (combat_string === $skill`Beancannon`) {
     for (const beancan of $items`Frigid Northern Beans, Heimz Fortified Kidney Beans, Hellfire Spicy Beans, Mixed Garbanzos and Chickpeas, Pork 'n' Pork 'n' Pork 'n' Beans, Shrub's Premium Baked Beans, Tesla's Electroplated Beans, Trader Olaf's Exotic Stinkbeans, World's Blackest-Eyed Peas`) {
       if (autoEquip(beancan)) {
         return true;
@@ -1223,10 +1241,10 @@ function adjustForBanish(combat_string: string): boolean {
     }
     return false;
   }
-  if (combat_string === `skill ${$skill`Monkey Slap`}`) {
+  if (combat_string === $skill`Monkey Slap`) {
     return autoEquip($item`cursed monkey's paw`);
   }
-  if (combat_string === `skill ${$skill`Sea *dent: Throw a Lightning Bolt`}`) {
+  if (combat_string === $skill`Sea *dent: Throw a Lightning Bolt`) {
     return autoEquip($item`Monodent of the Sea`);
   }
   if (
@@ -1236,7 +1254,7 @@ function adjustForBanish(combat_string: string): boolean {
     return create(1, $item`handful of split pea soup`);
   }
   if (
-    combat_string === `skill ${$skill`Breathe Out`}` &&
+    combat_string === $skill`Breathe Out` &&
     auto_breatheOutsLeft() === 0 &&
     availableAmount($item`hot jelly`) > 0 &&
     spleen_left() > 1
@@ -1244,7 +1262,7 @@ function adjustForBanish(combat_string: string): boolean {
     return autoChew(1, $item`hot jelly`);
   }
   if (
-    combat_string === `skill ${$skill`Punch Out your Foe`}` &&
+    combat_string === $skill`Punch Out your Foe` &&
     auto_punchOutsLeft() === 0 &&
     availableAmount($item`scoop of pre-workout powder`) > 0 &&
     spleen_left() > 3
@@ -1259,7 +1277,10 @@ export function adjustForBanishIfPossible(
   loc: Location,
 ): boolean {
   if (canBanish(enemy, loc)) {
-    const banish_string: string = banisherCombatString$1(enemy, loc);
+    const banish_string: CombatMacroReturns = banisherCombatAction$1(
+      enemy,
+      loc,
+    );
     auto_log_info(
       `Adjusting to have banisher available for ${enemy}: ${banish_string}`,
       "blue",
@@ -1274,7 +1295,10 @@ export function adjustForBanishIfPossible$1(
   loc: Location,
 ): boolean {
   if (canBanish$1(enemyphylum, loc)) {
-    const banish_string: string = banisherCombatString(enemyphylum, loc);
+    const banish_string: CombatMacroReturns = banisherCombatString(
+      enemyphylum,
+      loc,
+    );
     auto_log_info(
       `Adjusting to have phylum banisher available for ${enemyphylum}: ${banish_string}`,
       "blue",
@@ -1321,13 +1345,13 @@ export function freeRunCombatStringPreBanish(
   enemy: Monster,
   loc: Location,
   inCombat: boolean,
-): string {
+): CombatMacroReturns {
   if (isFreeMonster(enemy, loc)) {
-    return "";
+    return undefined;
   }
   if (is_werewolf()) {
     //can't freerun as a Werewolf in WereProfessor
-    return "";
+    return undefined;
   }
   // Prefer some specalized free run items before other sources
   if (!inAftercore() && haveEffect($effect`Everything Looks Green`) === 0) {
@@ -1351,23 +1375,27 @@ export function freeRunCombatStringPreBanish(
     }
   }
 
-  return "";
+  return undefined;
 }
 
-export function freeRunCombatString(
+export function freeRunCombatAction(
   enemy: Monster,
   loc: Location,
   inCombat: boolean,
-): string {
+): CombatMacroReturns {
   if (isFreeMonster(enemy, myLocation())) {
-    return "";
+    return undefined;
   }
   if (is_werewolf()) {
     //can't freerun as a Werewolf in WereProfessor
-    return "";
+    return undefined;
   }
-  const pre_banish: string = freeRunCombatStringPreBanish(enemy, loc, inCombat);
-  if (pre_banish !== "") {
+  const pre_banish: CombatMacroReturns = freeRunCombatStringPreBanish(
+    enemy,
+    loc,
+    inCombat,
+  );
+  if (pre_banish !== undefined) {
     return pre_banish;
   }
   //Standard free-runs
@@ -1375,10 +1403,10 @@ export function freeRunCombatString(
     if (auto_haveSpringShoes() && auto_is_valid$2($skill`Spring Away`)) {
       if (!inCombat) {
         autoEquip($item`spring shoes`);
-        return `skill ${$skill`Spring Away`}`;
+        return $skill`Spring Away`;
       } else {
         if (auto_canUse($skill`Spring Away`)) {
-          return `skill ${$skill`Spring Away`}`;
+          return $skill`Spring Away`;
         }
       }
     }
@@ -1386,10 +1414,10 @@ export function freeRunCombatString(
     if (auto_haveRoman() && auto_is_valid$2($skill`Blow the Green Candle!`)) {
       if (!inCombat) {
         autoEquip($item`Roman Candelabra`);
-        return `skill ${$skill`Blow the Green Candle!`}`;
+        return $skill`Blow the Green Candle!`;
       } else {
         if (auto_canUse($skill`Blow the Green Candle!`)) {
-          return `skill ${$skill`Blow the Green Candle!`}`;
+          return $skill`Blow the Green Candle!`;
         }
       }
     }
@@ -1407,7 +1435,7 @@ export function freeRunCombatString(
       floor(auto_famWeight($familiar`Frumious Bandersnatch`) / 5) -
       toInt(getProperty("_banderRunaways"));
     if (is_professor()) {
-      return "";
+      return undefined;
     }
     if (!inCombat) {
       if (
@@ -1419,7 +1447,10 @@ export function freeRunCombatString(
       ) {
         // update familiar already called in pre-adv so have to force.
         useFamiliar($familiar`Frumious Bandersnatch`);
-        return `runaway familiar ${$familiar`Frumious Bandersnatch`}`;
+        return {
+          macro: "runaway",
+          detail: $familiar`Frumious Bandersnatch`.toString(),
+        };
       }
     } else {
       if (
@@ -1427,7 +1458,10 @@ export function freeRunCombatString(
         haveEffect($effect`Ode to Booze`) > 0 &&
         banderRunsLeft > 0
       ) {
-        return `runaway familiar ${$familiar`Frumious Bandersnatch`}`;
+        return {
+          macro: "runaway",
+          detail: $familiar`Frumious Bandersnatch`.toString(),
+        };
       }
     }
   }
@@ -1439,7 +1473,7 @@ export function freeRunCombatString(
       floor(auto_famWeight($familiar`Pair of Stomping Boots`) / 5) -
       toInt(getProperty("_banderRunaways"));
     if (is_professor()) {
-      return "";
+      return undefined;
     }
     if (!inCombat) {
       if (
@@ -1448,14 +1482,20 @@ export function freeRunCombatString(
       ) {
         // update familiar already called in pre-adv so have to force.
         useFamiliar($familiar`Pair of Stomping Boots`);
-        return `runaway familiar ${$familiar`Pair of Stomping Boots`}`;
-      }
-    } else {
-      if (
-        myFamiliar() === $familiar`Pair of Stomping Boots` &&
-        banderRunsLeft > 0
-      ) {
-        return `runaway familiar ${$familiar`Pair of Stomping Boots`}`;
+        return {
+          macro: "runaway",
+          detail: $familiar`Pair of Stomping Boots`.toString(),
+        };
+      } else {
+        if (
+          myFamiliar() === $familiar`Pair of Stomping Boots` &&
+          banderRunsLeft > 0
+        ) {
+          return {
+            macro: "runaway",
+            detail: $familiar`Pair of Stomping Boots`.toString(),
+          };
+        }
       }
     }
   }
@@ -1468,7 +1508,10 @@ export function freeRunCombatString(
       } else {
         autoEquip($item`navel ring of navel gazing`);
       }
-      return `runaway item ${$item`navel ring of navel gazing`}`;
+      return {
+        macro: "runaway",
+        detail: $item`navel ring of navel gazing`.toString(),
+      };
     } else {
       // use in combat if have high chance of a free run away or at least level 13
       if (
@@ -1476,13 +1519,16 @@ export function freeRunCombatString(
         (haveEquipped($item`replica navel ring of navel gazing`) &&
           (auto_navelFreeRunChance() >= 80 || myLevel() >= 13))
       ) {
-        return `runaway item ${$item`navel ring of navel gazing`}`;
+        return {
+          macro: "runaway",
+          detail: $item`navel ring of navel gazing`.toString(),
+        };
       }
     }
   }
 
   if (auto_canUse($skill`Peel Out`) && pete_peelOutRemaining() > 0) {
-    return `skill ${$skill`Peel Out`}`;
+    return $skill`Peel Out`;
   }
   // Bowling ball is a banish as well, but is available enough that we want to use it as a free run source too
   // bowling ball is only in inventory if it is available to use in combat. While on cooldown, it is not in inventory
@@ -1492,7 +1538,7 @@ export function freeRunCombatString(
       : itemAmount($item`cosmic bowling ball`) > 0) &&
     auto_is_valid$2($skill`Bowl a Curveball`)
   ) {
-    return `skill ${$skill`Bowl a Curveball`}`;
+    return $skill`Bowl a Curveball`;
   }
   // We have a lot of banishes - we can use handful of split pea soup as runaway, but not our last
   const potential_split_pea_soup: number =
@@ -1502,7 +1548,7 @@ export function freeRunCombatString(
     potential_split_pea_soup > 1 &&
     auto_is_valid($item`handful of split pea soup`)
   ) {
-    return `item ${$item`handful of split pea soup`}`;
+    return $item`handful of split pea soup`;
   }
   //Non-standard free-runs
   if (!inAftercore()) {
@@ -1514,7 +1560,7 @@ export function freeRunCombatString(
     }
   }
 
-  return "";
+  return undefined;
 }
 
 export function adjustForFreeRunIfPossible(
@@ -1522,8 +1568,12 @@ export function adjustForFreeRunIfPossible(
   loc: Location,
 ): boolean {
   if (canFreeRun(enemy, loc)) {
-    const free_run_string: string = freeRunCombatString(enemy, loc, false);
-    if (free_run_string !== "") {
+    const free_run_string: CombatMacroReturns = freeRunCombatAction(
+      enemy,
+      loc,
+      false,
+    );
+    if (free_run_string !== undefined) {
       auto_log_info(
         `Adjusted to have free run available for ${enemy}: ${free_run_string}`,
         "blue",
@@ -1534,30 +1584,30 @@ export function adjustForFreeRunIfPossible(
   return false;
 }
 
-function adjustForYellowRay(combat_string: string): boolean {
+function adjustForYellowRay(combat_string: CombatMacroReturns): boolean {
   //Adjust equipment/familiars to have access to the desired Yellow Ray
-  if (combat_string === `skill ${$skill`Open a Big Yellow Present`}`) {
+  if (combat_string === $skill`Open a Big Yellow Present`) {
     handleFamiliar("yellowray");
     return true;
   }
-  if (combat_string === `skill ${$skill`Use the Force`}`) {
+  if (combat_string === $skill`Use the Force`) {
     return autoEquipToSlot(
       $slot`weapon`,
       wrap_item($item`Fourth of May Cosplay Saber`),
     );
   }
-  if (combat_string === `skill ${$skill`Spit jurassic acid`}`) {
+  if (combat_string === $skill`Spit jurassic acid`) {
     auto_configureParka("acid");
   }
-  if (combat_string === `skill ${$skill`Unleash the Devil's Kiss`}`) {
+  if (combat_string === $skill`Unleash the Devil's Kiss`) {
     auto_configureRetrocape("heck", "kiss");
   }
-  if (combat_string === `skill ${$skill`Blow the Yellow Candle!`}`) {
+  if (combat_string === $skill`Blow the Yellow Candle!`) {
     return autoEquipToSlot($slot`off-hand`, wrap_item($item`Roman Candelabra`));
   }
   // craft and consume 9-volt battery if we are using shocking lick and don't have any charges already
   if (
-    combat_string === `skill ${$skill`Shocking Lick`}` &&
+    combat_string === $skill`Shocking Lick` &&
     toInt(getProperty("shockingLickCharges")) < 1
   ) {
     if (auto_getBattery($item`battery (9-Volt)`)) {
@@ -1568,7 +1618,7 @@ function adjustForYellowRay(combat_string: string): boolean {
       );
     }
   }
-  if (combat_string === `skill ${$skill`Northern Explosion`}`) {
+  if (combat_string === $skill`Northern Explosion`) {
     return autoEquip($item`April Shower Thoughts shield`);
   }
   return true;
@@ -1578,7 +1628,7 @@ export function adjustForYellowRayIfPossible(
   target: Monster = Monster.none,
 ): boolean {
   if (canYellowRay(target)) {
-    const yr_string: string = yellowRayCombatString(
+    const yr_string: CombatMacroReturns = yellowRayCombatString(
       target,
       false,
       $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
@@ -1596,15 +1646,15 @@ export function adjustForYellowRayIfPossible(
 
 function canReplace(target: Monster): boolean {
   //Use this to determine if it is safe to enter a replace monster combat.
-  return replaceMonsterCombatString(target) !== "";
+  return replaceMonsterCombatString(target) !== undefined;
 }
 
-function adjustForReplace(combat_string: string): boolean {
+function adjustForReplace(combat_string: CombatMacroReturns): boolean {
   //Adjust equipment/familiars to have access to the desired replace monster
-  if (combat_string === `skill ${$skill`Macrometeorite`}`) {
+  if (combat_string === $skill`Macrometeorite`) {
     return true;
   }
-  if (combat_string === `skill ${$skill`CHEAT CODE: Replace Enemy`}`) {
+  if (combat_string === $skill`CHEAT CODE: Replace Enemy`) {
     return auto_forceEquipPowerfulGlove();
   }
   return false;
@@ -1614,7 +1664,7 @@ export function adjustForReplaceIfPossible(
   target: Monster = Monster.none,
 ): boolean {
   if (canReplace(target)) {
-    const rep_string: string = replaceMonsterCombatString(target);
+    const rep_string: CombatMacroReturns = replaceMonsterCombatString(target);
     auto_log_info(
       `Adjusting to have replace available for ${target}: ${rep_string}`,
       "blue",
@@ -2996,7 +3046,7 @@ export function auto_deleteMail(msg: kmailObject): boolean {
   return false;
 }
 
-export function LX_summonMonster(): boolean {
+function LX_summonMonsterDo(): boolean {
   // summon screambat if we are at last wall to knock down and don't have a sonar-in-a-biscuit
   if (
     internalQuestStatus("questL04Bat") === 2 &&
@@ -3181,6 +3231,17 @@ export function LX_summonMonster(): boolean {
   }
 
   return false;
+}
+
+export const LX_summonMonsterTask: QuestTask = registerQuestTask({
+  name: "LX_summonMonster",
+  completed: () => false,
+  ready: () => true,
+  do: LX_summonMonsterDo,
+});
+
+export function LX_summonMonster(): boolean {
+  return runQuestTask(LX_summonMonsterTask);
 }
 
 export function canSummonMonster(mon: Monster): boolean {
@@ -3710,7 +3771,7 @@ export function auto_autosell(quantity: number, toSell: Item): boolean {
   return false;
 }
 
-export function auto_runChoice(page_text: string): string {
+export function auto_runChoiceText(page_text: string): string {
   while (containsText(page_text, "choice.php")) {
     //# Get choice adventure number
     const begin_choice_adv_num: number =
@@ -3913,25 +3974,7 @@ export function auto_have_skill(sk: Skill): boolean {
 }
 
 //From Bale\'s woods.ash relay script.
-export function woods_questStart(): boolean {
-  if (myLevel() < 2) {
-    return false;
-  }
-  if (
-    internalQuestStatus("questL02Larva") < 0 &&
-    internalQuestStatus("questG02Whitecastle") < 0
-  ) {
-    // distant woods access is gated behind level 2 quest & whitey's grove quest.
-    // for some reason mafia doesn't track this any other way
-    return false;
-  }
-  if (in_koe()) {
-    // no access to woods or forest village in KoE
-    return false;
-  }
-  if (availableAmount($item`continuum transfunctioner`) > 0) {
-    return false;
-  }
+function woods_questStartDo(): boolean {
   visitUrl("place.php?whichplace=woods");
   visitUrl("place.php?whichplace=forestvillage&action=fv_mystic");
   if (!in_zombieSlayer()) {
@@ -3954,6 +3997,24 @@ export function woods_questStart(): boolean {
     );
   }
   return true;
+}
+
+export const woods_questStartTask: QuestTask = registerQuestTask({
+  name: "woods_questStart",
+  completed: () => availableAmount($item`continuum transfunctioner`) > 0,
+  ready: () =>
+    myLevel() >= 2 &&
+    !in_koe() && // no access to woods or forest village in KoE
+    // distant woods access is gated behind level 2 quest & whitey's grove quest.
+    // for some reason mafia doesn't track this any other way
+    (internalQuestStatus("questL02Larva") >= 0 ||
+      internalQuestStatus("questG02Whitecastle") >= 0) &&
+    availableAmount($item`continuum transfunctioner`) === 0,
+  do: woods_questStartDo,
+});
+
+export function woods_questStart(): boolean {
+  return runQuestTask(woods_questStartTask);
 }
 
 export function hasShieldEquipped(): boolean {
@@ -6783,4 +6844,118 @@ export function auto_meetsMinimumRequirements(): boolean {
   }
   // Otherwise, we just need Saucestorm and Cocoon.
   return haveSkill($skill`Saucestorm`) && haveSkill($skill`Cannelloni Cocoon`);
+}
+
+export function auto_location_monsters(
+  location: Location,
+): [Monster, number][] {
+  return Object.entries(appearanceRates(location)).map(([k, v]) => [
+    Monster.get(k),
+    v,
+  ]);
+}
+
+let auto_lastChoiceText: string | undefined;
+
+export function auto_runSomeChoice(page: string): string {
+  main(lastChoice(), page);
+
+  return auto_lastChoiceText;
+}
+
+export function auto_runChoice(decision: number, extra?: string): string {
+  if (decision <= 0)
+    abort(
+      `Unexpected decision of ${decision} while handling the choice #${lastChoice()}`,
+    );
+  let url = `choice.php?whichchoice=${lastChoice()}&option=${decision}`;
+
+  if (typeof extra === "string" && extra !== "") {
+    url += `&${extra}`; // extra is already "key=val&key2=val2"
+  }
+  const result = visitUrl(url); // defaults to POST, matching run_choice
+  auto_lastChoiceText = result;
+  return result;
+}
+
+export function auto_adv1(
+  location: Location,
+  combatMacro: CombatMacro,
+): boolean {
+  if (!preValidateAdventure(location)) return false;
+  if (!canAdventure(location)) return false;
+  if (!prepareForAdventure(location)) return false; // unlocks the zone (sonar, Batcave, etc.)
+
+  let text = visitUrl(toUrl(location));
+  const createState = () => `${myAdventures()}|${currentRound()}`;
+  let tries: number = 0;
+  let lastState = createState();
+
+  while (
+    currentRound() > 0 ||
+    handlingChoice() ||
+    choiceFollowsFight() ||
+    fightFollowsChoice()
+  ) {
+    if (lastState === createState()) {
+      if (tries++ >= 60) {
+        abort(`We appear to be stuck in a loop with no progress`);
+      }
+    } else {
+      lastState = createState();
+      tries = 0;
+    }
+
+    if (currentRound() > 0 || inMultiFight()) {
+      text = auto_runCombat(text, combatMacro);
+    }
+    if (choiceFollowsFight()) {
+      // fight ended but redirected into a choice you haven't loaded yet
+      text = visitUrl("choice.php");
+    }
+    if (handlingChoice()) {
+      auto_lastChoiceText = undefined;
+      main(lastChoice(), text);
+      text = auto_lastChoiceText ?? text;
+    }
+  }
+
+  return true;
+}
+
+export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
+  while (currentRound() > 0) {
+    let action: CombatMacroReturns = combatMacro(
+      currentRound(),
+      lastMonster(),
+      text,
+    );
+    let macro: Macro;
+
+    while (typeof action === "object" && "detail" in action) {
+      action = action.macro;
+    }
+
+    if (action instanceof Macro) {
+      macro = action;
+    } else if (action instanceof Item) {
+      macro = Macro.item(action);
+    } else if (Array.isArray(action)) {
+      macro = Macro.funkslingItem(...action);
+    } else if (action instanceof Skill) {
+      macro = Macro.skill(action);
+    } else if (action === "attack") {
+      macro = Macro.attack();
+    } else if (action === "pickpocket") {
+      macro = Macro.step("steal");
+    } else if (action === "runaway") {
+      macro = Macro.runaway();
+    } else {
+      abort(`Unknown combat macro action: ${action}`);
+    }
+
+    text = macro.submit();
+  }
+
+  return text;
 }

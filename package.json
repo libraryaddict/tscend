@@ -8,8 +8,9 @@
     "packages/browser"
   ],
   "resolutions": {
-    "kolmafia": "5.29112.0",
-    "libram": "0.11.23"
+    "kolmafia": "5.29121.0",
+    "libram": "0.11.23",
+    "grimoire-kolmafia": "^0.3.33"
   },
   "scripts": {
     "typecheck": "tsc -b",

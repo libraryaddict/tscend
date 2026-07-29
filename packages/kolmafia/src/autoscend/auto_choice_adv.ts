@@ -6,8 +6,10 @@ import {
   containsText,
   equippedAmount,
   getProperty,
+  handlingChoice,
   isWearingOutfit,
   itemAmount,
+  lastChoice,
   myLevel,
   myLocation,
   myMeat,
@@ -18,7 +20,7 @@ import {
   toBoolean,
   toInt,
 } from "kolmafia";
-import { $item, $location, $stat } from "libram";
+import { $item, $location, $stat, get } from "libram";
 
 import { possessEquipment } from "./auto_equipment";
 import {
@@ -26,6 +28,7 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   currentPoolSkill,
   internalQuestStatus,
   poolSkillPracticeGains,
@@ -83,6 +86,24 @@ import {
   fcleChoiceHandler,
   piratesCoveChoiceHandler,
 } from "./quests/optional";
+
+const GOAL_AUTOMATED_CHOICES = new Set<number>([
+  // Violet Fog
+  48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66,
+  67, 68, 69, 70,
+  // The Louvre
+  904, 905, 906, 907, 908, 909, 910, 911, 912, 913, 914,
+  // Ronald Safety Shelter Map
+  535,
+  // Grimace Safety Shelter Map
+  536,
+  // Interview With You
+  546,
+  // A Lost Room
+  594,
+  // A Gracious Maze
+  665,
+]);
 
 function auto_run_choice(choice: number, page: string): boolean {
   if (robot_choice_adv(choice, page)) {
@@ -400,7 +421,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         itznotyerzitzMineChoiceHandler(choice);
         break;
       case 21:
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 22:
       case 23:
@@ -413,66 +434,66 @@ function auto_run_choice(choice: number, page: string): boolean {
           (!possessEquipment($item`serpentine sword`) ||
             !possessEquipment($item`snake shield`))
         ) {
-          runChoice(2);
+          auto_runChoice(2);
         } else {
-          runChoice(4);
+          auto_runChoice(4);
         }
         break;
       case 90:
-        runChoice(3);
+        auto_runChoice(3);
         break;
       case 105:
         if (myPrimestat() === $stat`Mysticality`) {
-          runChoice(1);
+          auto_runChoice(1);
         } else {
-          runChoice(2);
+          auto_runChoice(2);
         }
         break;
       case 106:
-        runChoice(3);
+        auto_runChoice(3);
         break;
       case 107:
-        runChoice(4);
+        auto_runChoice(4);
         break;
       case 108:
-        runChoice(4);
+        auto_runChoice(4);
         break;
       case 109:
         if (options.has(4)) {
-          runChoice(4);
+          auto_runChoice(4);
         } else {
-          runChoice(1);
+          auto_runChoice(1);
         }
         break;
       case 110:
-        runChoice(4);
+        auto_runChoice(4);
         break;
       case 111:
-        runChoice(3);
+        auto_runChoice(3);
         break;
       case 112:
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 113:
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 114:
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 115:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 116:
-        runChoice(4);
+        auto_runChoice(4);
         break;
       case 117:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 118:
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 120:
-        runChoice(4);
+        auto_runChoice(4);
         break;
       case 123:
       case 125:
@@ -480,52 +501,52 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 139:
         if (options.has(4) && haveWarOutfit()) {
-          runChoice(4);
+          auto_runChoice(4);
         } else {
-          runChoice(3);
+          auto_runChoice(3);
         }
         break;
       case 140:
         if (options.has(4) && haveWarOutfit()) {
-          runChoice(4);
+          auto_runChoice(4);
         } else {
-          runChoice(3);
+          auto_runChoice(3);
         }
         break;
       case 141:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 142:
-        runChoice(3);
+        auto_runChoice(3);
         break;
       case 143:
         if (options.has(4) && haveWarOutfit()) {
-          runChoice(4);
+          auto_runChoice(4);
         } else {
-          runChoice(3);
+          auto_runChoice(3);
         }
         break;
       case 144:
         if (options.has(4) && haveWarOutfit()) {
-          runChoice(4);
+          auto_runChoice(4);
         } else {
-          runChoice(3);
+          auto_runChoice(3);
         }
         break;
       case 145:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 146:
-        runChoice(3);
+        auto_runChoice(3);
         break;
       case 147:
-        runChoice(3);
+        auto_runChoice(3);
         break;
       case 148:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 149:
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 153:
       case 155:
@@ -536,23 +557,23 @@ function auto_run_choice(choice: number, page: string): boolean {
         if (in_lar()) {
           setProperty("_LAR_skipNC163", myTurncount().toString());
         }
-        runChoice(4);
+        auto_runChoice(4);
         break;
       case 178:
         if (in_lar()) {
           setProperty("_LAR_skipNC178", myTurncount().toString());
         }
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 182:
         if (itemAmount($item`model airship`) === 0) {
-          runChoice(4);
+          auto_runChoice(4);
         } else if (options.has(6)) {
-          runChoice(6);
+          auto_runChoice(6);
         } else if (options.has(5) && L10_needUmbrella()) {
-          runChoice(5);
+          auto_runChoice(5);
         } else {
-          runChoice(1);
+          auto_runChoice(1);
         }
         break;
       case 184:
@@ -562,17 +583,17 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 188:
         if (isWearingOutfit("Frat Boy Ensemble")) {
-          runChoice(1);
+          auto_runChoice(1);
         } else if (
           equippedAmount($item`mullet wig`) === 1 &&
           itemAmount($item`briefcase`) > 0
         ) {
-          runChoice(2);
+          auto_runChoice(2);
         } else if (
           equippedAmount($item`frilly skirt`) === 1 &&
           itemAmount($item`hot wing`) > 2
         ) {
-          runChoice(3);
+          auto_runChoice(3);
         } else {
           abort(
             "I tried to infiltrate the orcish frat house without being equipped for the job",
@@ -580,16 +601,16 @@ function auto_run_choice(choice: number, page: string): boolean {
         }
         break;
       case 189:
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 191:
         fcleChoiceHandler(choice);
         break;
       case 330:
         if (toInt(getProperty("poolSharkCount")) < 25) {
-          runChoice(1);
+          auto_runChoice(1);
         } else {
-          runChoice(2);
+          auto_runChoice(2);
         }
         break;
       case 502:
@@ -607,7 +628,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 542:
       case 543:
       case 544:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 556:
         itznotyerzitzMineChoiceHandler(choice);
@@ -625,66 +646,66 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 588:
         if (!containsText(page, "name=pingvalue size=5 value=2")) {
-          runChoice(1, "pingvalue=2");
+          auto_runChoice(1, "pingvalue=2");
         } else if (!containsText(page, "name=whurmvalue size=5 value=4")) {
-          runChoice(2, "whurmvalue=4");
+          auto_runChoice(2, "whurmvalue=4");
         } else if (!containsText(page, "name=boomchuckvalue size=5 value=8")) {
-          runChoice(3, "boomchuckvalue=8");
+          auto_runChoice(3, "boomchuckvalue=8");
         }
         break;
       case 589:
         if (itemAmount($item`bugbear autopsy tweezers`) > 0) {
           for (let i = 1; i <= 5; i++) {
             if (options.has(i)) {
-              runChoice(i);
+              auto_runChoice(i);
               break;
             }
           }
         } else {
-          runChoice(6);
+          auto_runChoice(6);
         }
         break;
       case 590:
         if (options.has(2)) {
-          runChoice(2);
+          auto_runChoice(2);
         } else {
-          runChoice(1);
+          auto_runChoice(1);
         }
         break;
       case 591:
       case 592:
       case 593:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 597:
         auto_reagnimatedGetPart();
         break;
       case 604:
       case 605:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 606:
         if (
           in_bhy() ||
           (in_glover() && options.has(3) && itemAmount($item`jar of oil`) === 0)
         ) {
-          runChoice(6);
+          auto_runChoice(6);
           break;
         }
         if (options.has(4)) {
-          runChoice(4);
+          auto_runChoice(4);
           break;
         }
         if (options.has(3) && itemAmount($item`jar of oil`) > 0) {
-          runChoice(3);
+          auto_runChoice(3);
           break;
         }
         if (options.has(2)) {
-          runChoice(2);
+          auto_runChoice(2);
           break;
         }
         if (options.has(1)) {
-          runChoice(1);
+          auto_runChoice(1);
           break;
         }
         auto_log_warning(
@@ -696,10 +717,10 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 609:
       case 610:
       case 616:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 618:
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 669:
       case 670:
@@ -709,7 +730,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 672:
       case 673:
       case 674:
-        runChoice(3);
+        auto_runChoice(3);
         break;
       case 675:
       case 676:
@@ -730,19 +751,19 @@ function auto_run_choice(choice: number, page: string): boolean {
         kolhsChoiceHandler(choice);
         break;
       case 763:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 768:
         if (in_quantumTerrarium()) {
           if (myLocation() === $location`The Themthar Hills`) {
-            runChoice(4);
+            auto_runChoice(4);
           } else if (myLevel() < 13) {
-            runChoice(2);
+            auto_runChoice(2);
           } else {
-            runChoice(6);
+            auto_runChoice(6);
           }
         } else {
-          runChoice(2);
+          auto_runChoice(2);
         }
         break;
       case 772:
@@ -765,13 +786,13 @@ function auto_run_choice(choice: number, page: string): boolean {
           options.has(5) &&
           toBoolean(getProperty("auto_considerCCSCShore"))
         ) {
-          runChoice(5);
+          auto_runChoice(5);
         } else if (myPrimestat() === $stat`Muscle`) {
-          runChoice(1);
+          auto_runChoice(1);
         } else if (myPrimestat() === $stat`Mysticality`) {
-          runChoice(2);
+          auto_runChoice(2);
         } else {
-          runChoice(3);
+          auto_runChoice(3);
         }
         break;
       case 794:
@@ -781,26 +802,26 @@ function auto_run_choice(choice: number, page: string): boolean {
         oldLandfillChoiceHandler(choice);
         break;
       case 804:
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 806:
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 822:
       case 823:
       case 824:
       case 825:
       case 826:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 829:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 875:
         if (poolSkillPracticeGains() === 1 || currentPoolSkill() > 15) {
-          runChoice(1);
+          auto_runChoice(1);
         } else {
-          runChoice(2);
+          auto_runChoice(2);
         }
         break;
       case 876:
@@ -811,31 +832,31 @@ function auto_run_choice(choice: number, page: string): boolean {
         hauntedBedroomChoiceHandler(choice, options);
         break;
       case 881:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 882:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 884:
       case 885:
       case 886:
-        runChoice(6);
+        auto_runChoice(6);
         break;
       case 888:
-        runChoice(5);
+        auto_runChoice(5);
         break;
       case 889:
         if (
           itemAmount($item`dictionary`) === 0 &&
           toBoolean(getProperty("auto_getDictionary"))
         ) {
-          runChoice(4);
+          auto_runChoice(4);
         } else {
-          runChoice(5);
+          auto_runChoice(5);
         }
         break;
       case 921:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 923:
       case 924:
@@ -846,16 +867,16 @@ function auto_run_choice(choice: number, page: string): boolean {
         blackForestChoiceHandler(choice);
         break;
       case 970:
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 976:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 1000:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 1001:
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 1002:
         hiddenCityChoiceHandler(choice);
@@ -875,59 +896,59 @@ function auto_run_choice(choice: number, page: string): boolean {
           in_bugbear() ||
           in_pokefam()
         ) {
-          runChoice(3);
+          auto_runChoice(3);
         } else {
-          runChoice(2);
+          auto_runChoice(2);
         }
         break;
       case 1056:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 1060:
         if (itemAmount($item`Skeleton Store office key`) === 0) {
-          runChoice(1);
+          auto_runChoice(1);
         } else if (internalQuestStatus("questM23Meatsmith") < 1) {
-          runChoice(4);
+          auto_runChoice(4);
         } else {
-          runChoice(2);
+          auto_runChoice(2);
         }
         break;
       case 1061:
         if (internalQuestStatus("questM25Armorer") <= 2) {
-          runChoice(1);
+          auto_runChoice(1);
         } else {
-          runChoice(5);
+          auto_runChoice(5);
         }
         break;
       case 1062:
         if (options.has(6)) {
-          runChoice(6);
+          auto_runChoice(6);
           if (options.has(1)) {
-            runChoice(1);
+            auto_runChoice(1);
           } else {
-            runChoice(4);
+            auto_runChoice(4);
           }
         }
         if (options.has(1)) {
-          runChoice(1);
+          auto_runChoice(1);
         } else if (canDrink() && options.has(5)) {
-          runChoice(5);
+          auto_runChoice(5);
         } else if (canDrink() && !is_boris()) {
-          runChoice(3);
+          auto_runChoice(3);
         } else if (canEat()) {
-          runChoice(2);
+          auto_runChoice(2);
         } else {
-          runChoice(4);
+          auto_runChoice(4);
         }
         break;
       case 1074:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 1082:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 1083:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 1106:
       case 1107:
@@ -936,24 +957,24 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 1115:
         if (!toBoolean(getProperty("_VYKEACafeteriaRaided"))) {
-          runChoice(1);
+          auto_runChoice(1);
         } else if (!toBoolean(getProperty("_VYKEALoungeRaided"))) {
-          runChoice(4);
+          auto_runChoice(4);
         } else {
-          runChoice(6);
+          auto_runChoice(6);
         }
         break;
       case 1119:
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 1258:
-        runChoice(2);
+        auto_runChoice(2);
         break;
       case 1261:
         if (myMeat() > 1000) {
-          runChoice(1);
+          auto_runChoice(1);
         } else {
-          runChoice(4);
+          auto_runChoice(4);
         }
         break;
       case 1310: {
@@ -970,7 +991,7 @@ function auto_run_choice(choice: number, page: string): boolean {
             glchoice = idx;
           }
         }
-        runChoice(glchoice);
+        auto_runChoice(glchoice);
         break;
       }
       case 1322: // The Beginning of the Neverend (The Neverending Party)
@@ -984,7 +1005,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 1340: // Is There A Doctor In The House? (Lil' Doctor Bag™)
         auto_log_info("Accepting doctor quest, it's our job!");
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 1342: // Torpor (Dark Gyffte)
         bat_reallyPickSkills(20);
@@ -993,7 +1014,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         koe_RationingOutDestruction();
         break;
       case 1393: // The Invader (Kingdom of Exploathing)
-        runChoice(1); // fight the invader
+        auto_runChoice(1); // fight the invader
 
         break;
       case 1410: // The Mushy Center (Your Mushroom Garden)
@@ -1025,40 +1046,40 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 1491: // Strange Stalagmite(s) (Rock Garden)
         if (myPrimestat() === $stat`Muscle`) {
-          runChoice(1); // muscle stats
+          auto_runChoice(1); // muscle stats
         } else if (myPrimestat() === $stat`Mysticality`) {
-          runChoice(2); // myst stats
+          auto_runChoice(2); // myst stats
         } else {
           // if no prime stat we still want moxie
-          runChoice(3); // moxie stats
+          auto_runChoice(3); // moxie stats
         }
         break;
       case 1494: // Examine S.I.T. Course Certificate (S.I.T Course)
         if (myLevel() < 8) {
-          runChoice(3); // Cryptobotanist (S.I.T. Course)
+          auto_runChoice(3); // Cryptobotanist (S.I.T. Course)
         } else {
-          runChoice(2); // Insectologist (S.I.T. Course)
+          auto_runChoice(2); // Insectologist (S.I.T. Course)
         }
         break;
       case 1497: // Calling Rufus
-        runChoice(2); // get artifact quest
+        auto_runChoice(2); // get artifact quest
 
         break;
       case 1500: // Like a Loded Stone
-        runChoice(2); // only come here to get shadow waters buff
+        auto_runChoice(2); // only come here to get shadow waters buff
 
         break;
       case 1519: // The coffee was *gasp* decaf!
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 1520: // Hang On to Yourself
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 1521: // Ch-ch-ch-ch-chaaaanges
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 1522: // The Antiscientific Method
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 1525:
         dartChoiceHandler(choice, options);
@@ -1070,12 +1091,19 @@ function auto_run_choice(choice: number, page: string): boolean {
         mobiusChoiceHandler(choice, page);
         break;
       case 1566: //Summon a wave
-        runChoice(1);
+        auto_runChoice(1);
         break;
       case 1599: // Legendary Digestion: if we aren't forcing combat, by default use spleen, else take famxp
         legendaryNoodlesChoiceHandler();
         break;
       default:
+        if (handlingChoice() && lastChoice() === choice) {
+          if (GOAL_AUTOMATED_CHOICES.has(choice)) {
+            runChoice(-1);
+          } else {
+            auto_runChoice(get(`choiceAdventure${lastChoice()}`, 0));
+          }
+        }
         break;
     }
   }

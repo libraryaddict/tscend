@@ -24,17 +24,23 @@ import {
   auto_turbo,
   handleTracker,
   internalQuestStatus,
-  LX_summonMonster,
+  LX_summonMonsterTask,
 } from "../auto_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import { auto_haveAugustScepter } from "../iotms/mr2023";
 import { auto_haveBatWings } from "../iotms/mr2024";
-import { L3_tavern } from "../quests/level_03";
-import { L5_goblinKing } from "../quests/level_05";
-import { L7_crypt } from "../quests/level_07";
-import { L8_trapperGroar, needOre } from "../quests/level_08";
+import { L3_tavernTask } from "../quests/level_03";
+import { L5_goblinKingTask } from "../quests/level_05";
+import { L7_cryptTask } from "../quests/level_07";
+import { L8_trapperGroarTask, needOre } from "../quests/level_08";
 import { hedgeTrimmersNeeded } from "../quests/level_09";
 import {
-  L11_defeatEd,
+  L11_defeatEdTask,
   L11_needDrumMachine,
   L11_needTombRatchet,
 } from "../quests/level_11";
@@ -237,27 +243,30 @@ function ag_bgToChat(): Monster {
   return mon;
 }
 
+function LM_avantGuardDo(): boolean {
+  // functions which spend adventures in non-adv.php locations.
+  // Do these with high priority so we get the cubeling drops in HC and/or farm consumables with CBB/Mini Kiwi
+  // these require auto_nonAdvLoc to be set appropriately before adventuring.
+  // TODO: separate out Bonerdagon handling from L7_crypt()
+  return runTaskChain([
+    LX_summonMonsterTask,
+    L3_tavernTask,
+    L5_goblinKingTask,
+    L7_cryptTask,
+    L8_trapperGroarTask,
+    L11_defeatEdTask,
+  ]);
+}
+
+const LM_avantGuardTask: QuestTask = registerQuestTask({
+  name: "LM_avantGuard",
+  completed: () => !in_avantGuard(),
+  ready: () => true,
+  do: LM_avantGuardDo,
+});
+
 export function LM_avantGuard(): boolean {
-  if (!in_avantGuard()) {
-    return false;
-  }
-
-  if (
-    LX_summonMonster() ||
-    L3_tavern() ||
-    L5_goblinKing() ||
-    L7_crypt() ||
-    L8_trapperGroar() ||
-    L11_defeatEd()
-  ) {
-    // functions which spend adventures in non-adv.php locations.
-    // Do these with high priority so we get the cubeling drops in HC and/or farm consumables with CBB/Mini Kiwi
-    // these require auto_nonAdvLoc to be set appropriately before adventuring.
-    // TODO: separate out Bonerdagon handling from L7_crypt()
-    return true;
-  }
-
-  return false;
+  return runQuestTask(LM_avantGuardTask);
 }
 
 export function ag_is_bodyguard(): boolean {

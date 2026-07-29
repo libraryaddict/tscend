@@ -11,6 +11,7 @@ import {
 } from "kolmafia";
 import { $element, $item, $monster, $skill, $stat } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { auto_have_skill } from "../auto_util";
 import { dartSkill } from "../iotms/mr2024";
 import { in_amw } from "../paths/adventurer_meats_world";
@@ -33,14 +34,14 @@ export function auto_combatMeatGolemStage3(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   if (!in_amw()) {
-    return "";
+    return undefined;
   }
   // this delevel also might deal lots of damage
   // Skip if monster would die quickly, before stage 4 might finish
   if ((monsterHp() - myBuffedstat($stat`Muscle`)) / monsterHp() < 0.55) {
-    return "";
+    return undefined;
   }
   // since meat = adv, don't want to delevel if not necessary
   // also skipping if we might die after delevel, because we may be able to stun instead
@@ -55,16 +56,16 @@ export function auto_combatMeatGolemStage3(
     return auto_useSkill($skill`Meat Cleaver`);
   }
 
-  return "";
+  return undefined;
 }
 
 export function auto_combatMeatGolemStage5(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   if (!in_amw()) {
-    return "";
+    return undefined;
   }
   // make sure to heal if possible and necessary
   if (
@@ -155,5 +156,5 @@ export function auto_combatMeatGolemStage5(
   } else if (beef_shank_value !== 0) {
     return auto_useSkill($skill`Beef Shank`, false);
   }
-  return "";
+  return undefined;
 }

@@ -32,129 +32,111 @@ import {
   $stat,
 } from "libram";
 
-import { LX_burnDelay } from "../../autoscend";
 import { autoAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
-import { auto_breakfastCounterVisit } from "../auto_consume";
 import {
   auto_getAllEquipabble,
   autoEquip,
   possessEquipment,
 } from "../auto_equipment";
-import { LX_attemptPowerLevel, LX_freeCombatsTask } from "../auto_powerlevel";
-import { auto_earlyRoutingHandling } from "../auto_routing";
-import {
-  auto_log_warning,
-  internalQuestStatus,
-  LX_summonMonster,
-  woods_questStart,
-} from "../auto_util";
+import { LX_attemptPowerLevel } from "../auto_powerlevel";
+import { auto_log_warning, internalQuestStatus } from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
+import { QuestTask, registerQuestTask, runTaskChain } from "../engine/engine";
 import { canDrinkSpeakeasyDrink } from "../iotms/clan";
-import { chateauPainting } from "../iotms/mr2015";
-import { catBurglarHeist } from "../iotms/mr2018";
-import { LX_unlockPirateRealm } from "../iotms/mr2019";
-import { L2_mosquito } from "../quests/level_02";
-import { L3_tavern } from "../quests/level_03";
-import { L4_batCave } from "../quests/level_04";
+import { L2_mosquitoTask } from "../quests/level_02";
+import { L3_tavern, L3_tavernTask } from "../quests/level_03";
+import { L4_batCaveTask } from "../quests/level_04";
 import {
-  L5_findKnob,
-  L5_getEncryptionKey,
   L5_slayTheGoblinKing,
+  L5_slayTheGoblinKingTask,
 } from "../quests/level_05";
-import { L6_friarsGetParts } from "../quests/level_06";
-import { L7_crypt } from "../quests/level_07";
-import { L8_trapperQuest } from "../quests/level_08";
+import { L6_friarsGetParts, L6_friarsGetPartsTask } from "../quests/level_06";
+import { L7_cryptTask } from "../quests/level_07";
+import { L8_trapperQuest, L8_trapperQuestTask } from "../quests/level_08";
 import {
   bridgeGoal,
-  finishBuildingSmutOrcBridge,
   L9_chasmBuild,
+  L9_chasmBuildTask,
   L9_highLandlord,
-  L9_leafletQuest,
-  LX_loggingHatchet,
+  L9_highLandlordTask,
 } from "../quests/level_09";
 import {
-  L10_airship,
-  L10_basement,
-  L10_ground,
-  L10_holeInTheSkyUnlock,
+  L10_airshipTask,
+  L10_basementTask,
+  L10_groundTask,
+  L10_holeInTheSkyUnlockTask,
   L10_plantThatBean,
-  L10_topFloor,
+  L10_topFloorTask,
 } from "../quests/level_10";
 import {
   L11_aridDesert,
-  L11_blackMarket,
-  L11_defeatEd,
-  L11_forgedDocuments,
-  L11_getBeehive,
-  L11_hiddenCity,
-  L11_hiddenCityZones,
-  L11_mauriceSpookyraven,
-  L11_mcmuffinDiary,
-  L11_palindome,
+  L11_blackMarketTask,
+  L11_defeatEdTask,
+  L11_forgedDocumentsTask,
+  L11_getBeehiveTask,
+  L11_hiddenCityTask,
+  L11_hiddenCityZonesTask,
+  L11_mauriceSpookyravenTask,
+  L11_mcmuffinDiaryTask,
+  L11_palindomeTask,
   L11_shenCopperhead,
   L11_shenStartQuest,
-  L11_talismanOfNam,
-  L11_unlockEd,
-  L11_unlockHiddenCity,
-  L11_unlockPyramid,
-  LX_danceWithLadySpookyraven,
-  LX_getLadySpookyravensDancingShoes,
-  LX_getLadySpookyravensFinestGown,
-  LX_getLadySpookyravensPowderPuff,
-  LX_spookyravenManorFirstFloor,
-  LX_spookyravenManorSecondFloor,
+  L11_talismanOfNamTask,
+  L11_unlockEdTask,
+  L11_unlockHiddenCityTask,
+  L11_unlockPyramidTask,
+  LX_danceWithLadySpookyravenTask,
+  LX_getLadySpookyravensDancingShoesTask,
+  LX_getLadySpookyravensFinestGownTask,
+  LX_getLadySpookyravensPowderPuffTask,
+  LX_spookyravenManorFirstFloorTask,
+  LX_spookyravenManorSecondFloorTask,
   LX_unlockHauntedBilliardsRoom,
-  LX_unlockHauntedLibrary,
+  LX_unlockHauntedLibraryTask,
   LX_unlockHiddenTemple,
-  LX_unlockManorSecondFloor,
+  LX_unlockHiddenTempleTask,
+  LX_unlockManorSecondFloorTask,
   shenShouldDelayZone,
 } from "../quests/level_11";
 import {
-  L12_clearBattlefield,
-  L12_farm,
-  L12_filthworms,
-  L12_finalizeWar,
+  L12_clearBattlefieldTask,
+  L12_farmTask,
+  L12_filthwormsTask,
+  L12_finalizeWarTask,
   L12_flyerFinish,
-  L12_getOutfit,
-  L12_gremlins,
-  L12_lastDitchFlyer,
-  L12_opportunisticWarStart,
-  L12_orchardFinalize,
-  L12_preOutfit,
-  L12_sonofaBeach,
-  L12_sonofaFinish,
-  L12_sonofaPrefix,
-  L12_startWar,
+  L12_getOutfitTask,
+  L12_gremlinsTask,
+  L12_lastDitchFlyerTask,
+  L12_orchardFinalizeTask,
+  L12_preOutfitTask,
+  L12_sonofaBeachTask,
+  L12_sonofaFinishTask,
+  L12_startWarTask,
   L12_themtharHills,
 } from "../quests/level_12";
 import {
-  L13_sorceressDoor,
-  L13_towerNSFinal,
-  L13_towerNSNagamar,
-  L13_towerNSTower,
+  L13_sorceressDoorTask,
+  L13_towerNSFinalTask,
+  L13_towerNSNagamarTask,
+  L13_towerNSTowerTask,
 } from "../quests/level_13";
 import {
-  LX_fatLootToken,
   LX_hippyBoatman,
-  LX_lockPicking,
-  LX_setWorkshed,
-  LX_unlockDesert,
-  startHippyBoatmanSubQuest,
+  startHippyBoatmanSubQuestTask,
 } from "../quests/level_any";
 import {
-  finishMeatsmithSubQuest,
+  finishMeatsmithSubQuestTask,
   LX_acquireEpicWeapon,
-  LX_galaktikSubQuest,
-  LX_guildUnlock,
+  LX_acquireEpicWeaponTask,
   LX_joinPirateCrew,
   LX_pirateOutfit,
   LX_pirateQuest,
-  LX_steelOrgan,
-  LX_unlockKnobMenagerie,
+  LX_pirateQuestTask,
+  LX_unlockKnobMenagerieTask,
   numPirateInsults,
-  startArmorySubQuest,
-  startMeatsmithSubQuest,
+  startArmorySubQuestTask,
+  startMeatsmithSubQuestTask,
 } from "../quests/optional";
 
 // These are listed in the order they will be iterated (item id ascending) to make debugging easier.
@@ -330,22 +312,15 @@ function lowkey_keyAdv(key: Item): boolean {
 }
 
 function lowkey_zoneUnlocks(): boolean {
-  if (startHippyBoatmanSubQuest()) {
+  return runTaskChain([
     // opens The Old Landfill for scrap metal key (+20% to all Moxie Gains)
-    return true;
-  }
-
-  if (startArmorySubQuest()) {
+    startHippyBoatmanSubQuestTask,
     // opens Madness Bakery for deep-fried key (+3 sleaze res, +15 sleaze dmg, +30 sleaze spell dmg)
-    return true;
-  }
-
-  if (startMeatsmithSubQuest() || finishMeatsmithSubQuest()) {
+    startArmorySubQuestTask,
     // opens The Skeleton Store for actual skeleton key (100 DA, 10 DR)
-    return true;
-  }
-
-  return false;
+    startMeatsmithSubQuestTask,
+    finishMeatsmithSubQuestTask,
+  ]);
 }
 
 function LX_findHelpfulLowKey(): boolean {
@@ -550,86 +525,22 @@ export function L13_sorceressDoorLowKey(): boolean {
   return autoAdv(loc);
 }
 
-export function LX_lowkeySummer(): boolean {
-  if (!in_lowkeysummer()) {
-    return false;
-  }
-  // Copied out of task order default.dat
-  if (LX_freeCombatsTask()) {
-    return true;
-  }
-  if (woods_questStart()) {
-    return true;
-  }
-  if (LX_unlockPirateRealm()) {
-    return true;
-  }
-  if (catBurglarHeist()) {
-    return true;
-  }
-  if (auto_breakfastCounterVisit()) {
-    return true;
-  }
-  if (chateauPainting()) {
-    return true;
-  }
-  if (LX_setWorkshed()) {
-    return true;
-  }
-  if (LX_galaktikSubQuest()) {
-    return true;
-  }
-  if (L9_leafletQuest()) {
-    return true;
-  }
-  if (L5_findKnob()) {
-    return true;
-  }
-  if (L12_sonofaPrefix()) {
-    return true;
-  }
-  if (LX_burnDelay()) {
-    return true;
-  }
-  if (LX_summonMonster()) {
-    return true;
-  }
-  // Lock in the Shen zones as soon as we can as it (potentially) unlocks a bunch of stuff.
-  if (L11_shenStartQuest()) {
-    return true;
-  }
-  // If we have everything to start the war instantly, just do it so we can start flyering.
-  if (L12_opportunisticWarStart()) {
-    return true;
-  }
-  // Build the Bridge when we have enough parts as we may want to spend daily resources at the peaks.
-  if (finishBuildingSmutOrcBridge()) {
-    return true;
-  }
-  // Call quest handlers based on current state if applicable
-  if (auto_earlyRoutingHandling()) {
-    return true;
-  }
-  // Guild access
-  if (LX_guildUnlock()) {
-    return true;
-  }
-  // Find keys that help us save adventures in quests.
-  if (LX_findHelpfulLowKey()) {
-    return true;
-  }
-  // Cobb's Knob unlocks a lot of zones which contain generally useful keys for all classes (-combat, +meat, +adv).
-  // Also the +20% to all Muscle Gains key unlocks here.
-  if (L5_getEncryptionKey() || L5_findKnob()) {
-    return true;
-  }
+export const LX_findHelpfulLowKeyTask: QuestTask = registerQuestTask({
+  name: "LX_findHelpfulLowKey",
+  completed: () => !in_lowkeysummer(),
+  ready: () => true,
+  do: LX_findHelpfulLowKey,
+  locations: () => Array.from(lowKeys.values()),
+});
 
+// Myst classes want access to Pandamonium Slums to find the demonic key (+20% to all Mysticality Gains).
+// Mus classes want access to the laboratory to find the Knob labinet key (+20% to all Muscle Gains).
+function lowkeySummer_mainstatQuestPriority(): boolean {
   if (myLevel() < 12) {
     if (
       myPrimestat() === $stat`Mysticality` &&
       possessEquipment($item`key sausage`)
     ) {
-      // Myst classes want access to Pandamonium Slums to find the demonic key (+20% to all Mysticality Gains).
       // Get the -combat key first.
       if (
         !possessEquipment($item`demonic key`) &&
@@ -645,44 +556,61 @@ export function LX_lowkeySummer(): boolean {
       myPrimestat() === $stat`Muscle` &&
       itemAmount($item`Cobb's Knob lab key`) === 0
     ) {
-      // Mus classes want access to the laboratory to find the Knob labinet key (+20% to all Muscle Gains).
       // Have already gone after Key sausage and Knob treasury key by now, if still missing lab key give priority to the Knob
       if (L5_slayTheGoblinKing()) {
         return true;
       }
     }
   }
-  // Island access for all classes. also farm the +20% to all Moxie Gains key
-  // (adventuring will be handled by LX_findHelpfulLowKey() for moxie classes but this'll complete the quest)
-  if (LX_hippyBoatman()) {
-    return true;
-  }
-  // Desert access, Daily Dungeon and other early random stuff.
-  if (
-    LX_loggingHatchet() ||
-    LX_unlockDesert() ||
-    LX_lockPicking() ||
-    LX_fatLootToken()
-  ) {
-    return true;
-  }
-  // Get the Steel Organ if the user wants it (probably good in this path since turnbloat).
-  if (LX_steelOrgan()) {
-    return true;
-  }
-  // Get the -combat key before attempting the Friars or the Spooky Forest. Unlocking hidden temple is only a priority for possible rollover lucky lindy since SemiRare no longer exist
+  return false;
+}
+
+export const lowkeySummer_mainstatQuestPriorityTask: QuestTask =
+  registerQuestTask({
+    name: "lowkeySummer_mainstatQuestPriority",
+    completed: () => !in_lowkeysummer(),
+    ready: () => true,
+    do: lowkeySummer_mainstatQuestPriority,
+  });
+
+const lowkeySummer_hiddenTempleIfLuckyLindyTask: QuestTask = registerQuestTask({
+  name: "lowkeySummer_hiddenTempleIfLuckyLindy",
+  completed: () => !in_lowkeysummer(),
+  ready: () => true,
+  do: () =>
+    canDrinkSpeakeasyDrink($item`Lucky Lindy`) && LX_unlockHiddenTemple(),
+});
+
+// Get the -combat key before attempting the Friars or the Spooky Forest. Unlocking hidden temple is only a priority for possible rollover lucky lindy since SemiRare no longer exist
+function lowkeySummer_keySausageZones(): boolean {
   if (possessEquipment($item`key sausage`)) {
     if (
-      L6_friarsGetParts() ||
-      L2_mosquito() ||
-      LX_unlockHauntedLibrary() ||
-      (canDrinkSpeakeasyDrink($item`Lucky Lindy`) && LX_unlockHiddenTemple()) ||
-      LX_getLadySpookyravensDancingShoes() ||
-      LX_getLadySpookyravensPowderPuff()
+      runTaskChain([
+        L6_friarsGetPartsTask,
+        L2_mosquitoTask,
+        LX_unlockHauntedLibraryTask,
+        lowkeySummer_hiddenTempleIfLuckyLindyTask,
+        LX_getLadySpookyravensDancingShoesTask,
+        LX_getLadySpookyravensPowderPuffTask,
+      ])
     ) {
       return true;
     }
   }
+  return false;
+}
+
+export const lowkeySummer_keySausageZonesTask: QuestTask = registerQuestTask({
+  name: "lowkeySummer_keySausageZones",
+  completed: () => !in_lowkeysummer(),
+  ready: () => true,
+  do: lowkeySummer_keySausageZones,
+});
+
+// Not split into task-order entries yet: the questM20Necklace check below exits
+// this whole block unconditionally once its guard matches, buggy but unresolved,
+// so splitting further needs that fixed first.
+function LX_lowkeySummerRemainderDo(): boolean {
   // If we have the resources to do the Haunted Kitchen in the minimum adventures, we should do it sooner
   // TODO this is bugged because it can exit the path file, but fixing directly can result in resistance provider constantly switching familiars and wasting a ton of time
   if (internalQuestStatus("questM20Necklace") === 0) {
@@ -693,7 +621,9 @@ export function LX_lowkeySummer(): boolean {
     // Don't start the war unless we've acquired the key from Belowdecks first as it gives +item.
     // TODO these aren't the full L12 tasks, could filthworms earlier here if Yellow Ray available
     if (possessEquipment($item`treasure chest key`)) {
-      if (L12_preOutfit() || L12_getOutfit() || L12_startWar()) {
+      if (
+        runTaskChain([L12_preOutfitTask, L12_getOutfitTask, L12_startWarTask])
+      ) {
         return true;
       }
     } else {
@@ -706,12 +636,17 @@ export function LX_lowkeySummer(): boolean {
     L12_flyerFinish(); // Finish flyers whenever possible.
     // Get the +combat key before attempting Sonofa Beach.
     if (possessEquipment($item`music box key`)) {
-      if (L12_sonofaBeach() || L12_sonofaFinish()) {
+      if (runTaskChain([L12_sonofaBeachTask, L12_sonofaFinishTask])) {
         return true;
       }
     } else {
       // Make sure Spookyraven Third Floor is open so we can get the key.
-      if (LX_spookyravenManorFirstFloor() || LX_spookyravenManorSecondFloor()) {
+      if (
+        runTaskChain([
+          LX_spookyravenManorFirstFloorTask,
+          LX_spookyravenManorSecondFloorTask,
+        ])
+      ) {
         return true;
       }
       if (
@@ -745,28 +680,32 @@ export function LX_lowkeySummer(): boolean {
     ) {
       // about to do nuns. Make sure The Valley is open so we can get the Kekekey.
       // opening Cobb's Knob so we can get the treasury key is already done at higher priority
-      if (L9_chasmBuild() || L9_highLandlord()) {
+      if (runTaskChain([L9_chasmBuildTask, L9_highLandlordTask])) {
         return true;
       }
     }
     // Do the rest of the war. Should have the +item key already before we start the war.
     if (
-      L12_gremlins() ||
-      L12_filthworms() ||
-      L12_orchardFinalize() ||
-      L12_farm() ||
-      L12_clearBattlefield() ||
-      L12_finalizeWar()
+      runTaskChain([
+        L12_gremlinsTask,
+        L12_filthwormsTask,
+        L12_orchardFinalizeTask,
+        L12_farmTask,
+        L12_clearBattlefieldTask,
+        L12_finalizeWarTask,
+      ])
     ) {
       return true;
     }
   }
   // Start the macguffin quest as we need it to unlock Belowdecks.
   if (
-    L11_blackMarket() ||
-    L11_forgedDocuments() ||
-    L11_mcmuffinDiary() ||
-    L11_getBeehive()
+    runTaskChain([
+      L11_blackMarketTask,
+      L11_forgedDocumentsTask,
+      L11_mcmuffinDiaryTask,
+      L11_getBeehiveTask,
+    ])
   ) {
     return true;
   }
@@ -839,16 +778,23 @@ export function LX_lowkeySummer(): boolean {
         return true;
       }
     }
-    // open the hidden temple if it hasn't been done yet
-    if (LX_unlockHiddenTemple()) {
-      return true;
-    }
-    // open the hidden city up.
-    if (L11_unlockHiddenCity()) {
+    if (
+      runTaskChain([
+        // open the hidden temple if it hasn't been done yet
+        LX_unlockHiddenTempleTask,
+        // open the hidden city up.
+        L11_unlockHiddenCityTask,
+      ])
+    ) {
       return true;
     }
     // Dance with lady spookyraven so we can go murder her undead husband and take the Eye of Ed
-    if (LX_spookyravenManorFirstFloor() || LX_spookyravenManorSecondFloor()) {
+    if (
+      runTaskChain([
+        LX_spookyravenManorFirstFloorTask,
+        LX_spookyravenManorSecondFloorTask,
+      ])
+    ) {
       return true;
     }
     // food drop key before Eye of Ed for the blasting soda
@@ -856,7 +802,7 @@ export function LX_lowkeySummer(): boolean {
       return true;
     }
     // Murder pygmies for the ancient amulet.
-    if (L11_hiddenCityZones() || L11_hiddenCity()) {
+    if (runTaskChain([L11_hiddenCityZonesTask, L11_hiddenCityTask])) {
       return true;
     }
     // Finish the other Macguffin zones so we can beat Ed to death repeatedly and waste all his Ka coins.
@@ -865,10 +811,12 @@ export function LX_lowkeySummer(): boolean {
     }
     if (possessEquipment($item`treasure chest key`)) {
       if (
-        L11_talismanOfNam() ||
-        L11_mauriceSpookyraven() ||
-        L11_palindome() ||
-        L11_unlockPyramid()
+        runTaskChain([
+          L11_talismanOfNamTask,
+          L11_mauriceSpookyravenTask,
+          L11_palindomeTask,
+          L11_unlockPyramidTask,
+        ])
       ) {
         return true;
       }
@@ -879,7 +827,7 @@ export function LX_lowkeySummer(): boolean {
       return true;
     }
     if (internalQuestStatus("questL03Rat") > 2) {
-      if (L11_unlockEd() || L11_defeatEd()) {
+      if (runTaskChain([L11_unlockEdTask, L11_defeatEdTask])) {
         return true;
       }
     } else {
@@ -897,40 +845,38 @@ export function LX_lowkeySummer(): boolean {
   // Should have the -combat key long before level 10 but lets just make sure.
   if (possessEquipment($item`key sausage`)) {
     if (
-      L10_airship() ||
-      L10_basement() ||
-      L10_ground() ||
-      L10_topFloor() ||
-      L10_holeInTheSkyUnlock()
+      runTaskChain([
+        L10_airshipTask,
+        L10_basementTask,
+        L10_groundTask,
+        L10_topFloorTask,
+        L10_holeInTheSkyUnlockTask,
+      ])
     ) {
       return true;
     }
   } // Make sure Cobb's Knob is open so we can get the key is already done at higher priority
-  // Ascend the peak.
-  if (L8_trapperQuest()) {
-    return true;
-  }
-  // -combat and ML keys help with 2 of these zones but this quest is a monolithic function.
-  // TODO: split it up into zones then guard with possession of keys.
-  if (L7_crypt()) {
-    return true;
-  }
-  // Finish off the Goblin King.
-  if (L5_slayTheGoblinKing()) {
-    return true;
-  }
-  // Show the Boss bat who's boss.
-  if (L4_batCave()) {
+  if (
+    runTaskChain([
+      // Ascend the peak.
+      L8_trapperQuestTask,
+      // -combat and ML keys help with 2 of these zones but this quest is a monolithic function.
+      // TODO: split it up into zones then guard with possession of keys.
+      L7_cryptTask,
+      // Finish off the Goblin King.
+      L5_slayTheGoblinKingTask,
+      // Show the Boss bat who's boss.
+      L4_batCaveTask,
+    ])
+  ) {
     return true;
   }
   // Fix that dripping tap.
   // Clown car key for tavern noncombats. needs "Fun" house access, may be delayed for shen
   if (lowkey_keyAdv($item`clown car key`)) {
     return true;
-  } else if (LX_acquireEpicWeapon()) {
-    return true;
   }
-  if (L3_tavern()) {
+  if (runTaskChain([LX_acquireEpicWeaponTask, L3_tavernTask])) {
     return true;
   }
   // this quest and these zones are open either from the start or level 4.
@@ -960,22 +906,24 @@ export function LX_lowkeySummer(): boolean {
   }
   // Spookyraven quest steps that don't need -combat or resists, just monster killin' (or dancing with a ghost for stats).
   if (
-    LX_danceWithLadySpookyraven() ||
-    LX_getLadySpookyravensFinestGown() ||
-    LX_unlockManorSecondFloor()
+    runTaskChain([
+      LX_danceWithLadySpookyravenTask,
+      LX_getLadySpookyravensFinestGownTask,
+      LX_unlockManorSecondFloorTask,
+    ])
   ) {
     return true;
   }
 
-  if (L12_clearBattlefield()) {
-    // This is a mess and if it's not last, it screws up the war massively.
-    return true;
-  }
-  // Stuff we need to do in this path to unlock key zones.
-  if (LX_pirateQuest()) {
-    return true;
-  }
-  if (LX_acquireEpicWeapon()) {
+  if (
+    runTaskChain([
+      // This is a mess and if it's not last, it screws up the war massively.
+      L12_clearBattlefieldTask,
+      // Stuff we need to do in this path to unlock key zones.
+      LX_pirateQuestTask,
+      LX_acquireEpicWeaponTask,
+    ])
+  ) {
     return true;
   }
   // If literally nothing better to do, go find some of the keys we don't actually care about but have to find anyway.
@@ -983,20 +931,24 @@ export function LX_lowkeySummer(): boolean {
   if (loc !== Location.none && autoAdv(loc)) {
     return true;
   }
-  // Make sure to unlock Menagerie if it wasn't done while getting Knob labinet key
-  if (LX_unlockKnobMenagerie()) {
-    return true;
-  }
-  // Make sure to go to war
-  if (L12_lastDitchFlyer()) {
+  if (
+    runTaskChain([
+      // Make sure to unlock Menagerie if it wasn't done while getting Knob labinet key
+      LX_unlockKnobMenagerieTask,
+      // Make sure to go to war
+      L12_lastDitchFlyerTask,
+    ])
+  ) {
     return true;
   }
   // unlock the door, climb the tower, commit sorceresscide.
   if (
-    L13_sorceressDoor() ||
-    L13_towerNSTower() ||
-    L13_towerNSNagamar() ||
-    L13_towerNSFinal()
+    runTaskChain([
+      L13_sorceressDoorTask,
+      L13_towerNSTowerTask,
+      L13_towerNSNagamarTask,
+      L13_towerNSFinalTask,
+    ])
   ) {
     return true;
   }
@@ -1014,3 +966,10 @@ export function LX_lowkeySummer(): boolean {
   );
   return false;
 }
+
+export const LX_lowkeySummerRemainderTask: QuestTask = registerQuestTask({
+  name: "LX_lowkeySummerRemainder",
+  completed: () => !in_lowkeysummer(),
+  ready: () => true,
+  do: LX_lowkeySummerRemainderDo,
+});

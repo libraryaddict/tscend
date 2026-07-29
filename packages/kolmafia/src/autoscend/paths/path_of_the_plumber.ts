@@ -14,7 +14,6 @@ import {
   myPath,
   myPrimestat,
   retrieveItem,
-  runChoice,
   setProperty,
   Skill,
   Stat,
@@ -31,6 +30,7 @@ import {
   autoForceEquip$3,
   possessEquipment,
 } from "../auto_equipment";
+import { auto_runChoice } from "../auto_util";
 
 //Defined in autoscend/paths/path_of_the_plumber.ash
 export function in_plumber(): boolean {
@@ -144,7 +144,7 @@ function plumber_buySkill(sk: Skill): boolean {
       abort("Unrecognized skill");
   }
 
-  runChoice(idx);
+  auto_runChoice(idx);
 
   return haveSkill(sk);
 }
@@ -208,13 +208,13 @@ function plumber_buyCostume(st: Stat): boolean {
 
   switch (st) {
     case $stat`Muscle`:
-      runChoice(1);
+      auto_runChoice(1);
       return true;
     case $stat`Mysticality`:
-      runChoice(2);
+      auto_runChoice(2);
       return true;
     case $stat`Moxie`:
-      runChoice(3);
+      auto_runChoice(3);
       return true;
   }
   return false;

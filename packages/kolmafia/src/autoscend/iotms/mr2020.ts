@@ -11,11 +11,13 @@ import {
   equippedItem,
   getCampground,
   getProperty,
+  handlingChoice,
   haveEffect,
   haveEquipped,
   haveSkill,
   Item,
   itemAmount,
+  lastChoice,
   Location,
   max,
   min,
@@ -23,6 +25,7 @@ import {
   monsterPockets,
   myClass,
   myHash,
+  myId,
   myLevel,
   myLocation,
   myPrimestat,
@@ -30,7 +33,6 @@ import {
   pickedPockets,
   pickPocket,
   pocketMonster,
-  runChoice,
   setProperty,
   Skill,
   splitString,
@@ -62,6 +64,7 @@ import {
 } from "libram";
 
 import { autoAdv, autoAdvBypass } from "../auto_adventure";
+import { main as handleChoiceAdv } from "../auto_choice_adv";
 import {
   addToMaximize,
   autoEquipToSlot,
@@ -77,6 +80,7 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   currentPoolSkill,
   handleTracker,
   internalQuestStatus,
@@ -351,9 +355,9 @@ export function mushroomGardenChoiceHandler(choice: number): void {
       pick = min(toInt(growth), 11);
     }
     if (toInt(getProperty("mushroomGardenCropLevel")) >= pick) {
-      runChoice(2); // pick the mushroom.
+      auto_runChoice(2); // pick the mushroom.
     } else {
-      runChoice(1); // fertilise the mushroom
+      auto_runChoice(1); // fertilise the mushroom
     }
   } else {
     abort("unhandled choice in mushroomGardenChoiceHandler");
@@ -376,11 +380,11 @@ export function auto_getGuzzlrCocktailSet(): boolean {
         "Getting a Guzzlr Cocktail Set (for all the good it will do).",
       );
       visitUrl("inventory.php?tap=guzzlr", false);
-      runChoice(4); // take platinum quest
+      auto_runChoice(4); // take platinum quest
       wait(1); // mafia's tracking breaks occasionally if you go too fast.
       visitUrl("inventory.php?tap=guzzlr", false);
-      runChoice(1); // abandon
-      runChoice(5); // leave the choice.
+      auto_runChoice(1); // abandon
+      auto_runChoice(5); // leave the choice.
       return true; // ponder on what else you could've spent the Mr. Accessory on instead.
     }
   }
@@ -647,7 +651,14 @@ export function auto_mapTheMonsters(): boolean {
     return true;
   }
   if (auto_canMapTheMonsters()) {
-    return useSkill(1, $skill`Map the Monsters`);
+    // visitUrl, not useSkill: useSkill aborts on the choice.php redirect (#1435)
+    const mapText = visitUrl(
+      `runskillz.php?action=Skillz&whichskill=${toInt($skill`Map the Monsters`)}&quantity=1&targetplayer=${myId()}&pwd`,
+    );
+    if (handlingChoice()) {
+      handleChoiceAdv(lastChoice(), mapText);
+    }
+    return true;
   }
   return false;
 }
@@ -683,38 +694,38 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
   auto_log_info(`cartographyChoiceHandler Running choice ${choice}`, "blue");
   if (choice === 1425) {
     if (itemAmount($item`Orcish frat-paddle`) > 0) {
-      runChoice(1); // choosing baseball cap + cargo shorts to complete outfit
+      auto_runChoice(1); // choosing baseball cap + cargo shorts to complete outfit
     } else if (itemAmount($item`Orcish baseball cap`) > 0) {
-      runChoice(2); // choosing frat-paddle + cargo shorts to complete outfit
+      auto_runChoice(2); // choosing frat-paddle + cargo shorts to complete outfit
     } else if (itemAmount($item`Orcish cargo shorts`) > 0) {
-      runChoice(3); // choosing frat-paddle + baseball cap to complete outfit
+      auto_runChoice(3); // choosing frat-paddle + baseball cap to complete outfit
     } else {
-      runChoice(4); // if you have each outfit piece, just fight the orcs
+      auto_runChoice(4); // if you have each outfit piece, just fight the orcs
     }
   } else if (choice === 1427) {
     // The Hidden Junction (Guano Junction)
-    runChoice(1); // fight the screambat.
+    auto_runChoice(1); // fight the screambat.
   } else if (choice === 1428) {
     // Your Neck of the Woods (The Dark Neck of the Woods)
-    runChoice(2); // skip first 2 quest non-combats
+    auto_runChoice(2); // skip first 2 quest non-combats
   } else if (choice === 1429) {
     // No Nook Unknown (The Defiled Nook)
-    runChoice(1); // acquire 2 evil eyes
+    auto_runChoice(1); // acquire 2 evil eyes
   } else if (choice === 1430) {
     // Ghostly Memories (A-boo Peak)
-    runChoice(1); // If we are adventuring in the peak we are trying to clear the peak, go to the horror
+    auto_runChoice(1); // If we are adventuring in the peak we are trying to clear the peak, go to the horror
   } else if (choice === 1431) {
     // Here There Be Giants (Cartography)
     if (internalQuestStatus("questL10Garbage") === 9) {
       if (itemAmount($item`model airship`) > 0) {
-        runChoice(1); // go to steampunk choice to complete the quest
+        auto_runChoice(1); // go to steampunk choice to complete the quest
       } else if (haveEquipped($item`Mohawk wig`)) {
-        runChoice(4); // go to the punk rock choice to complete the quest
+        auto_runChoice(4); // go to the punk rock choice to complete the quest
       } else {
-        runChoice(3); // go to the raver choice to get the record?
+        auto_runChoice(3); // go to the raver choice to get the record?
       }
     } else {
-      runChoice(1); // go to steampunk choice to open the hole in the sky.
+      auto_runChoice(1); // go to steampunk choice to open the hole in the sky.
     }
   } else if (choice === 1432) {
     // Mob Maptality (A Mob of Zeppelin Protesters)
@@ -734,18 +745,18 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
       max(sleaze_protestors, lynyrd_protestors),
     );
     if (best_protestors === lynyrd_protestors) {
-      runChoice(2);
+      auto_runChoice(2);
     } else if (best_protestors === sleaze_protestors) {
-      runChoice(1);
+      auto_runChoice(1);
     } else if (best_protestors === fire_protestors) {
-      runChoice(3);
+      auto_runChoice(3);
     }
   } else if (choice === 1433) {
     // Sneaky, Sneaky (The Hippy Camp (Verge of War))
-    runChoice(3); // start the war
+    auto_runChoice(3); // start the war
   } else if (choice === 1434) {
     // Sneaky, Sneaky (Orcish Frat House (Verge of War))
-    runChoice(2); // start the war
+    auto_runChoice(2); // start the war
   } else if (choice === 1435) {
     // Leading Yourself Right to Them (Map the Monsters)
     const enemy: Monster = auto_monsterToMap(myLocation(), page);
@@ -756,16 +767,16 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
         property: "auto_mapperidot",
       });
       combat_status_add("choiceMonster");
-      runChoice(1, `heyscriptswhatsupwinkwink=${toInt(enemy)}`);
+      auto_runChoice(1, `heyscriptswhatsupwinkwink=${toInt(enemy)}`);
     } else {
       abort("trying to map a monster but don't know which monster to map!");
     }
   } else if (choice === 1436) {
     // Billiards Room Options (The Haunted Billiards Room)
     if (poolSkillPracticeGains() === 1 || currentPoolSkill() > 15) {
-      runChoice(2); //try to win the key. on failure still gain 1 pool skill
+      auto_runChoice(2); //try to win the key. on failure still gain 1 pool skill
     } else {
-      runChoice(1); //acquire the pool cue
+      auto_runChoice(1); //acquire the pool cue
     }
   } else {
     abort("unhandled choice in cartographyChoiceHandler");

@@ -19,10 +19,13 @@ import {
   stopCounter,
   substring,
   toInt,
+  toItem,
   toMonster,
+  toSkill,
 } from "kolmafia";
 import { $monster, $monsters, $skill } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { auto_log_info } from "../auto_util";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/avant_guard";
 import { in_awol } from "../paths/avatar_of_west_of_loathing";
@@ -130,11 +133,29 @@ function auto_combatInitialize(
   auto_log_info(tolog, "blue");
 }
 
+// parses one auto_combatDirective token ("skill X", "item X[, Y]", attack/pickpocket/runaway)
+function auto_combatDirectiveAction(doThis: string): CombatMacroReturns {
+  if (doThis === "attack" || doThis === "pickpocket" || doThis === "runaway") {
+    return doThis;
+  }
+  if (doThis.startsWith("skill ")) {
+    return toSkill(doThis.slice("skill ".length));
+  }
+  if (doThis.startsWith("item ")) {
+    const items = doThis
+      .slice("item ".length)
+      .split(",")
+      .map((name) => toItem(name.trim()));
+    return items.length > 1 ? items : items[0];
+  }
+  abort(`Unknown auto_combatDirective action: ${doThis}`);
+}
+
 export function auto_combatHandler(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   if (
     round_1 > defaultRoundLimit() &&
     !$monsters`The Man, The Big Wisniewski`.includes(enemy)
@@ -172,7 +193,7 @@ export function auto_combatHandler(
     if (gitExists("Ezandora-Helix-Fossil")) {
       auto_log_info("Combat via Ezandora:", "green");
       cliExecute("Pocket Familiars");
-      return ""; //does not matter what it returns here. the cli_execute above does the entire combat
+      return undefined; //does not matter what it returns here. the cli_execute above does the entire combat
     }
   }
   //If in Avant Guard, want to make sure the enemy is set correctly to the bodyguard
@@ -233,36 +254,40 @@ export function auto_combatHandler(
       }
       setProperty("auto_combatDirective", restore);
       if (idx < actions.size) {
-        return doThis;
+        return auto_combatDirectiveAction(doThis);
       }
     }
   }
   // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
-  let retval: string = auto_combatDefaultStage1(round_1, enemy, text);
-  if (retval !== "") {
+  let retval: CombatMacroReturns = auto_combatDefaultStage1(
+    round_1,
+    enemy,
+    text,
+  );
+  if (retval !== undefined) {
     return retval;
   }
   // stage 2 = enders: escape, replace, instakill, yellowray and other actions that instantly end combat
   retval = auto_combatDefaultStage2(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // stage 3 = debuff: delevel, stun, curse, damage over time
   retval = auto_combatDefaultStage3(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // stage 4 = prekill. copy, sing along, flyer and other things that need to be done after delevel but before killing
   retval = auto_combatDefaultStage4(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
   // stage 5 = kill
   retval = auto_combatDefaultStage5(round_1, enemy, text);
-  if (retval !== "") {
+  if (retval !== undefined) {
     return retval;
   }
 
   abort("We reached the end of combat script without finding anything to do");
-  return "";
+  return undefined;
 }

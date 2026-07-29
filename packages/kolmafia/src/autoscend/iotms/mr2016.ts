@@ -28,7 +28,6 @@ import {
   myPrimestat,
   myTurncount,
   replaceString,
-  runChoice,
   setProperty,
   Skill,
   splitString,
@@ -74,6 +73,7 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   handleTracker,
   meatReserve,
   wrap_item,
@@ -185,7 +185,7 @@ export function snojoFightAvailable(): boolean {
         toUpperCase(standard.get(0) ?? standard.set(0, "").get(0))
     ) {
       visitUrl("place.php?whichplace=snojo&action=snojo_controller");
-      runChoice(
+      auto_runChoice(
         controls.get(standard.get(0) ?? standard.set(0, "").get(0)) ??
           controls
             .set(standard.get(0) ?? standard.set(0, "").get(0), 0)
@@ -209,7 +209,7 @@ export function snojoFightAvailable(): boolean {
       ) < 14
     ) {
       visitUrl("place.php?whichplace=snojo&action=snojo_controller");
-      runChoice(
+      auto_runChoice(
         controls.get(standard.get(1) ?? standard.set(1, "").get(1)) ??
           controls
             .set(standard.get(1) ?? standard.set(1, "").get(1), 0)
@@ -233,7 +233,7 @@ export function snojoFightAvailable(): boolean {
       ) < 14
     ) {
       visitUrl("place.php?whichplace=snojo&action=snojo_controller");
-      runChoice(
+      auto_runChoice(
         controls.get(standard.get(2) ?? standard.set(2, "").get(2)) ??
           controls
             .set(standard.get(2) ?? standard.set(2, "").get(2), 0)
@@ -252,7 +252,7 @@ export function snojoFightAvailable(): boolean {
         toUpperCase(standard.get(3) ?? standard.set(3, "").get(3))
     ) {
       visitUrl("place.php?whichplace=snojo&action=snojo_controller");
-      runChoice(
+      auto_runChoice(
         controls.get(standard.get(3) ?? standard.set(3, "").get(3)) ??
           controls
             .set(standard.get(3) ?? standard.set(3, "").get(3), 0)

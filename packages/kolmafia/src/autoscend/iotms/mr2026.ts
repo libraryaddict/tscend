@@ -31,7 +31,6 @@ import {
   myLocation,
   myMeat,
   myPath,
-  runChoice,
   setProperty,
   spleenLimit,
   Stat,
@@ -77,6 +76,7 @@ import {
   auto_is_valid,
   auto_log_error,
   auto_log_warning,
+  auto_runChoice,
   auto_wantToFreeKillWithNoDrops,
   auto_wantToSniff,
   auto_wantToYellowRay,
@@ -266,7 +266,7 @@ function auto_heartstoneWordsToAimFor(): string[] {
     );
   }
   // Some +item
-  words.push("BETA", "FIVE", "SOLE", "SOUL", "WIDE", "GAME", "FAST", "RAVE");
+  words.push("BETA", "FIVE", "SOUL", "WIDE", "GAME", "FAST", "RAVE");
 
   // BEAN?
   return words;
@@ -672,9 +672,9 @@ export function legendaryNoodlesChoiceHandler(): void {
   }
   // sometimes options 1 and 4 aren't available, so fallback to 5 (double food effects) which always is and shouldn't ever? be detrimental
   if (target_choice in availableChoiceOptions()) {
-    runChoice(target_choice);
+    auto_runChoice(target_choice);
   } else {
-    runChoice(5);
+    auto_runChoice(5);
   }
 }
 

@@ -1,5 +1,4 @@
 import {
-  containsText,
   getProperty,
   haveEffect,
   haveEquipped,
@@ -19,11 +18,8 @@ import {
   Skill,
   substring,
   toBoolean,
-  toFamiliar,
   toInt,
-  toItem,
   toMonster,
-  toSkill,
 } from "kolmafia";
 import {
   $effect,
@@ -37,6 +33,7 @@ import {
   $skill,
 } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { auto_wantToReserveFreekills } from "../auto_equipment";
 import {
   auto_forceFreeRun,
@@ -53,7 +50,7 @@ import {
   auto_wantToSniff,
   auto_wantToYellowRay,
   careAboutDrops,
-  freeRunCombatString,
+  freeRunCombatAction,
   freeRunCombatStringPreBanish,
   handleTracker,
   instakillable,
@@ -65,7 +62,7 @@ import {
 import { auto_swoopLocations } from "../auto_zone";
 import { auto_jokesterGunFreeKillAvailable } from "../iotms/mr2016";
 import { auto_chestXraysRemaining } from "../iotms/mr2019";
-import { auto_FireExtinguisherCombatString } from "../iotms/mr2021";
+import { auto_FireExtinguisherCombatSkill } from "../iotms/mr2021";
 import {
   auto_dousesRemaining,
   auto_habitatMonster,
@@ -88,8 +85,8 @@ import { auto_combatDarkGyffteStage2 } from "./auto_combat_dark_gyffte";
 import {
   auto_canUse,
   auto_useSkill,
+  banisherCombatAction$1,
   banisherCombatString,
-  banisherCombatString$1,
   canUse$3,
   combat_status_add,
   combat_status_check,
@@ -109,11 +106,11 @@ export function auto_combatDefaultStage2(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 2 = enders: escape, replace, instakill, yellowray and other actions that instantly end combat
   // Skip if have auto_skipStage2 is set
   if (toBoolean(getProperty("auto_skipStage2"))) {
-    return "";
+    return undefined;
   }
   //If in Avant Guard, want to make sure the enemy is set correctly to the bodyguard
   let guardee: Monster = Monster.none;
@@ -138,7 +135,7 @@ export function auto_combatDefaultStage2(
     auto_log_debug(
       `Skipping stage 2 of combat for now as we intend to olfact [${enemy}]`,
     );
-    return "";
+    return undefined;
   }
   if (
     myLocation() === $location`The Daily Dungeon` &&
@@ -150,11 +147,15 @@ export function auto_combatDefaultStage2(
     auto_log_debug(
       "Skipping stage 2 of combat for now as we intend to use Daily Dungeon Malware",
     );
-    return "";
+    return undefined;
   }
   // Path = dark gyffte
-  const retval: string = auto_combatDarkGyffteStage2(round_1, enemy, text);
-  if (retval !== "") {
+  const retval: CombatMacroReturns = auto_combatDarkGyffteStage2(
+    round_1,
+    enemy,
+    text,
+  );
+  if (retval !== undefined) {
     return retval;
   }
   //Refracted Gaze sets drop table of monster to EVERYTHING else in zone so YRs are great
@@ -176,17 +177,17 @@ export function auto_combatDefaultStage2(
     return auto_useSkill($skill`BCZ: Refracted Gaze`);
   }
   //use industrial fire extinguisher zone specific skills
-  const extinguisherSkill: string =
-    auto_FireExtinguisherCombatString(myLocation());
+  const extinguisherSkill: CombatMacroReturns =
+    auto_FireExtinguisherCombatSkill(myLocation());
   if (
-    extinguisherSkill !== "" &&
+    extinguisherSkill !== undefined &&
     haveEquipped(wrap_item($item`industrial fire extinguisher`)) &&
     enemy !== $monster`screambat`
   ) {
     //below is temp workaround for https://github.com/loathers/autoscend/issues/1011
     handleTracker({
       what: enemy,
-      detail: toSkill(substring(extinguisherSkill, 6)).toString(),
+      detail: extinguisherSkill.toString(),
       property: "auto_otherstuff",
     });
     return extinguisherSkill;
@@ -236,7 +237,7 @@ export function auto_combatDefaultStage2(
         detail: $item`power pill`.toString(),
         property: "auto_instakill",
       });
-      return `item ${$item`power pill`}`;
+      return $item`power pill`;
     }
   }
   //instakill using [Pair of Stomping Boots] iotm familiar which will produce spleen consumables
@@ -320,33 +321,20 @@ export function auto_combatDefaultStage2(
     !willDouse &&
     !willSwoop
   ) {
-    const combatAction: string = yellowRayCombatString(
+    const combatAction: CombatMacroReturns = yellowRayCombatString(
       enemy,
       true,
       $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
         enemy,
       ),
     );
-    if (combatAction !== "") {
+    if (combatAction !== undefined) {
       combat_status_add("yellowray");
-      if (indexOf(combatAction, "skill") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toSkill(substring(combatAction, 6)).toString(),
-          property: "auto_yellowRays",
-        });
-      } else if (indexOf(combatAction, "item") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toItem(substring(combatAction, 5)).toString(),
-          property: "auto_yellowRays",
-        });
-      } else {
-        auto_log_warning(
-          `Unable to track yellow ray behavior: ${combatAction}`,
-          "red",
-        );
-      }
+      handleTracker({
+        what: enemy,
+        detail: combatAction.toString(),
+        property: "auto_yellowRays",
+      });
       if (
         combatAction ===
         auto_useSkill($skill`Asdon Martin: Missile Launcher`, false)
@@ -391,30 +379,17 @@ export function auto_combatDefaultStage2(
     !combat_status_check("droptablereplaced") &&
     auto_wantToBanish(enemy, myLocation())
   ) {
-    const freeRunAction: string = freeRunCombatStringPreBanish(
+    const freeRunAction: CombatMacroReturns = freeRunCombatStringPreBanish(
       enemy,
       myLocation(),
       true,
     );
-    if (freeRunAction !== "") {
-      if (indexOf(freeRunAction, "skill") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toSkill(substring(freeRunAction, 6)).toString(),
-          property: "auto_freeruns",
-        });
-      } else if (indexOf(freeRunAction, "item") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toItem(substring(freeRunAction, 5)).toString(),
-          property: "auto_freeruns",
-        });
-      } else {
-        auto_log_warning(
-          `Unable to track runaway behavior: ${freeRunAction}`,
-          "red",
-        );
-      }
+    if (freeRunAction !== undefined) {
+      handleTracker({
+        what: enemy,
+        detail: freeRunAction.toString(),
+        property: "auto_freeruns",
+      });
       return freeRunAction;
     }
   }
@@ -426,34 +401,21 @@ export function auto_combatDefaultStage2(
     auto_wantToBanish$1(monsterPhylum(enemy), myLocation()) &&
     auto_habitatMonster() !== enemy
   ) {
-    const banishAction: string = banisherCombatString(
+    const banishAction: CombatMacroReturns = banisherCombatString(
       monsterPhylum(enemy),
       myLocation(),
       true,
     );
-    if (banishAction !== "") {
+    if (banishAction !== undefined) {
       auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
       combat_status_add("banisher");
-      if (indexOf(banishAction, "skill") === 0) {
-        handleTracker({
-          what: monsterPhylum(enemy),
-          location: myLocation(),
-          detail: toSkill(substring(banishAction, 6)).toString(),
-          property: "auto_banishes",
-        });
-      } else if (indexOf(banishAction, "item") === 0) {
-        handleTracker({
-          what: monsterPhylum(enemy),
-          location: myLocation(),
-          detail: toItem(substring(banishAction, 5)).toString(),
-          property: "auto_banishes",
-        });
-      } else {
-        auto_log_warning(
-          `Unable to track banisher behavior: ${banishAction}`,
-          "red",
-        );
-      }
+
+      handleTracker({
+        what: monsterPhylum(enemy),
+        location: myLocation(),
+        detail: banishAction.toString(),
+        property: "auto_banishes",
+      });
       return banishAction;
     }
     //we wanted to banish an enemy and failed. set a property so we do not bother trying in subsequent rounds
@@ -465,30 +427,18 @@ export function auto_combatDefaultStage2(
     !combat_status_check("droptablereplaced") &&
     auto_wantToBanish(guardee, myLocation())
   ) {
-    const freeRunAction: string = freeRunCombatStringPreBanish(
+    const freeRunAction: CombatMacroReturns = freeRunCombatStringPreBanish(
       enemy,
       myLocation(),
       true,
     );
-    if (freeRunAction !== "") {
-      if (indexOf(freeRunAction, "skill") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toSkill(substring(freeRunAction, 6)).toString(),
-          property: "auto_freeruns",
-        });
-      } else if (indexOf(freeRunAction, "item") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toItem(substring(freeRunAction, 5)).toString(),
-          property: "auto_freeruns",
-        });
-      } else {
-        auto_log_warning(
-          `Unable to track runaway behavior: ${freeRunAction}`,
-          "red",
-        );
-      }
+    if (freeRunAction !== undefined) {
+      handleTracker({
+        what: enemy,
+        detail: freeRunAction.toString(),
+        property: "auto_freeruns",
+      });
+
       return freeRunAction;
     }
   }
@@ -500,41 +450,21 @@ export function auto_combatDefaultStage2(
     auto_wantToBanish(enemy, myLocation()) &&
     !ag_is_bodyguard()
   ) {
-    const banishAction: string = banisherCombatString$1(
+    const banishAction: CombatMacroReturns = banisherCombatAction$1(
       enemy,
       myLocation(),
       true,
     );
-    if (banishAction !== "") {
+    if (banishAction !== undefined) {
       auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
       combat_status_add("banisher");
-      if (indexOf(banishAction, "skill") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toSkill(substring(banishAction, 6)).toString(),
-          property: "auto_banishes",
-        });
-      } else if (indexOf(banishAction, "item") === 0) {
-        if (containsText(banishAction, ", none")) {
-          const commapos: number = indexOf(banishAction, ", none");
-          handleTracker({
-            what: enemy,
-            detail: toItem(substring(banishAction, 5, commapos)).toString(),
-            property: "auto_banishes",
-          });
-        } else {
-          handleTracker({
-            what: enemy,
-            detail: toItem(substring(banishAction, 5)).toString(),
-            property: "auto_banishes",
-          });
-        }
-      } else {
-        auto_log_warning(
-          `Unable to track banisher behavior: ${banishAction}`,
-          "red",
-        );
-      }
+
+      handleTracker({
+        what: enemy,
+        detail: banishAction.toString(),
+        property: "auto_banishes",
+      });
+
       return banishAction;
     }
     //we wanted to banish an enemy and failed or banisher did not end combat.
@@ -553,48 +483,25 @@ export function auto_combatDefaultStage2(
       auto_wantToFreeRun(guardee, myLocation()) ||
       auto_wantToBanish(guardee, myLocation()))
   ) {
-    let freeRunAction: string = freeRunCombatString(enemy, myLocation(), true);
-    if (freeRunAction !== "") {
-      if (indexOf(freeRunAction, "runaway familiar") === 0) {
+    let freeRunAction: CombatMacroReturns = freeRunCombatAction(
+      enemy,
+      myLocation(),
+      true,
+    );
+    if (freeRunAction !== undefined) {
+      if (typeof freeRunAction === "object" && "detail" in freeRunAction) {
         handleTracker({
           what: enemy,
-          detail: toFamiliar(substring(freeRunAction, 17)).toString(),
+          detail: freeRunAction.detail,
           property: "auto_freeruns",
         });
-        freeRunAction = "runaway";
-      } else if (indexOf(freeRunAction, "runaway item") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toItem(substring(freeRunAction, 13)).toString(),
-          property: "auto_freeruns",
-        });
-        freeRunAction = "runaway";
-      } else if (indexOf(freeRunAction, "skill") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toSkill(substring(freeRunAction, 6)).toString(),
-          property: "auto_freeruns",
-        });
-      } else if (indexOf(freeRunAction, "item") === 0) {
-        if (containsText(freeRunAction, ", none")) {
-          const commapos: number = indexOf(freeRunAction, ", none");
-          handleTracker({
-            what: enemy,
-            detail: toItem(substring(freeRunAction, 5, commapos)).toString(),
-            property: "auto_freeruns",
-          });
-        } else {
-          handleTracker({
-            what: enemy,
-            detail: toItem(substring(freeRunAction, 5)).toString(),
-            property: "auto_freeruns",
-          });
-        }
+        freeRunAction = freeRunAction.macro;
       } else {
-        auto_log_warning(
-          `Unable to track runaway behavior: ${freeRunAction}`,
-          "red",
-        );
+        handleTracker({
+          what: enemy,
+          detail: freeRunAction.toString(),
+          property: "auto_freeruns",
+        });
       }
       return freeRunAction;
     }
@@ -607,45 +514,23 @@ export function auto_combatDefaultStage2(
     !combat_status_check("droptablereplaced") &&
     auto_wantToReplace(enemy, myLocation())
   ) {
-    const combatAction: string = replaceMonsterCombatString(enemy, true);
-    if (combatAction !== "") {
+    const combatAction: CombatMacroReturns = replaceMonsterCombatString(
+      enemy,
+      true,
+    );
+    if (combatAction !== undefined) {
       combat_status_add("replacer");
-      if (indexOf(combatAction, "skill") === 0) {
-        if (
-          toSkill(substring(combatAction, 6)) ===
-          $skill`CHEAT CODE: Replace Enemy`
-        ) {
-          handleTracker({
-            what: $skill`CHEAT CODE: Replace Enemy`,
-            property: "auto_powerfulglove",
-          });
-        }
+      if (combatAction === $skill`CHEAT CODE: Replace Enemy`) {
         handleTracker({
-          what: enemy,
-          detail: toSkill(substring(combatAction, 6)).toString(),
-          property: "auto_replaces",
+          what: $skill`CHEAT CODE: Replace Enemy`,
+          property: "auto_powerfulglove",
         });
-      } else if (indexOf(combatAction, "item") === 0) {
-        if (containsText(combatAction, ", none")) {
-          const commapos: number = indexOf(combatAction, ", none");
-          handleTracker({
-            what: enemy,
-            detail: toItem(substring(combatAction, 5, commapos)).toString(),
-            property: "auto_replaces",
-          });
-        } else {
-          handleTracker({
-            what: enemy,
-            detail: toItem(substring(combatAction, 5)).toString(),
-            property: "auto_replaces",
-          });
-        }
-      } else {
-        auto_log_warning(
-          `Unable to track replacer behavior: ${combatAction}`,
-          "red",
-        );
       }
+      handleTracker({
+        what: enemy,
+        detail: combatAction.toString(),
+        property: "auto_replaces",
+      });
       return combatAction;
     } else {
       auto_log_warning("Wanted a replacer but we can not find one.", "red");
@@ -663,11 +548,7 @@ export function auto_combatDefaultStage2(
   ) {
     //wildfire path. ratchets do not burn. king ratchets burn. fire===0 in other paths
     //actually need ratchets
-    let res: string = `item ${$item`tangle of rat tails`}`;
-    if (auto_have_skill($skill`Ambidextrous Funkslinging`)) {
-      res += ", none";
-    }
-    return res;
+    return $item`tangle of rat tails`;
   }
   // Bugbear Invasion
   if (in_bugbear()) {
@@ -675,13 +556,13 @@ export function auto_combatDefaultStage2(
       enemy === $monster`bugbear scientist` &&
       itemAmount($item`quantum nanopolymer spider web`) > 0
     ) {
-      return `item ${$item`quantum nanopolymer spider web`}`;
+      return $item`quantum nanopolymer spider web`;
     }
     if (
       enemy === $monster`liquid metal bugbear` &&
       itemAmount($item`drone self-destruct chip`) > 0
     ) {
-      return `item ${$item`drone self-destruct chip`}`;
+      return $item`drone self-destruct chip`;
     }
   }
   // Instakill handler
@@ -911,5 +792,5 @@ export function auto_combatDefaultStage2(
     return auto_useSkill($skill`Slaughter`);
   }
 
-  return "";
+  return undefined;
 }

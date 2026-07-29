@@ -49,10 +49,12 @@ import {
   $familiar,
   $item,
   $location,
+  $locations,
   $monster,
   $servant,
   $skill,
   $slot,
+  get,
 } from "libram";
 
 import { resetState } from "../../autoscend";
@@ -106,6 +108,12 @@ import {
   setFlavour,
 } from "../auto_util";
 import { auto_canUse } from "../combat/auto_combat_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { adjustEdHat } from "../iotms/mr2015";
 import { asdonBuff } from "../iotms/mr2017";
@@ -142,43 +150,39 @@ import { robot_delay } from "../paths/you_robot";
 import { shenShouldDelayZone } from "./level_11";
 
 //Defined in autoscend/quests/level_09.ash
-export function LX_loggingHatchet(): boolean {
-  if (!canadiaAvailable()) {
-    return false;
-  }
-  if (kolhs_mandatorySchool()) {
-    return false; //avoid infinite loop in kolhs. we can not get the hatchet until we finish mandatory school for the day
-  }
-  if (availableAmount($item`logging hatchet`) > 0) {
-    return false;
-  }
-
-  if (
-    $location`Camp Logging Camp`.turnsSpent > 0 ||
-    $location`Camp Logging Camp`.combatQueue !== "" ||
-    $location`Camp Logging Camp`.noncombatQueue !== ""
-  ) {
-    return false;
-  }
-
+function LX_loggingHatchetDo(): boolean {
   auto_log_info("Acquiring the logging hatchet from Camp Logging Camp", "blue");
   autoAdv($location`Camp Logging Camp`);
   return true;
 }
 
-export function L9_leafletQuest(): boolean {
-  if (myLevel() < 9) {
-    return false;
-  }
-  if (isActuallyEd() || in_koe()) {
-    return false;
-  }
-  if (
-    toBoolean(getProperty("leafletCompleted")) ||
-    toBoolean(getProperty("auto_leaflet_done"))
-  ) {
-    return false;
-  }
+export const LX_loggingHatchetTask: QuestTask = registerQuestTask({
+  name: "LX_loggingHatchet",
+  completed: () =>
+    availableAmount($item`logging hatchet`) > 0 ||
+    (!canadiaAvailable() &&
+      (get("moonTuned") ||
+        !possessEquipment($item`hewn moon-rune spoon`) ||
+        !auto_is_valid($item`hewn moon-rune spoon`))) ||
+    internalQuestStatus("questL09Topping") > 0 ||
+    toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal(),
+  ready: () =>
+    canadiaAvailable() &&
+    // avoid infinite loop in kolhs. we can not get the hatchet until we finish mandatory school for the day
+    !kolhs_mandatorySchool() &&
+    availableAmount($item`logging hatchet`) === 0 &&
+    $location`Camp Logging Camp`.turnsSpent === 0 &&
+    $location`Camp Logging Camp`.combatQueue === "" &&
+    $location`Camp Logging Camp`.noncombatQueue === "",
+  do: LX_loggingHatchetDo,
+  locations: $location`Camp Logging Camp`,
+});
+
+export function LX_loggingHatchet(): boolean {
+  return runQuestTask(LX_loggingHatchetTask);
+}
+
+function L9_leafletQuestDo(): boolean {
   //get a [strange leaflet]
   if (closetAmount($item`strange leaflet`) > 0) {
     takeCloset(1, $item`strange leaflet`);
@@ -207,6 +211,24 @@ export function L9_leafletQuest(): boolean {
   }
 
   return toBoolean(getProperty("leafletCompleted"));
+}
+
+export const L9_leafletQuestTask: QuestTask = registerQuestTask({
+  name: "L9_leafletQuest",
+  completed: () =>
+    toBoolean(getProperty("leafletCompleted")) ||
+    toBoolean(getProperty("auto_leaflet_done")),
+  ready: () =>
+    myLevel() >= 9 &&
+    !isActuallyEd() &&
+    !in_koe() &&
+    !toBoolean(getProperty("leafletCompleted")) &&
+    !toBoolean(getProperty("auto_leaflet_done")),
+  do: L9_leafletQuestDo,
+});
+
+export function L9_leafletQuest(): boolean {
+  return runQuestTask(L9_leafletQuestTask);
 }
 
 function L9_chasmMaximizeForNoncombat(): void {
@@ -288,13 +310,7 @@ export function lumberCount(): number {
   return base;
 }
 
-export function finishBuildingSmutOrcBridge(): boolean {
-  if (
-    internalQuestStatus("questL09Topping") !== 0 ||
-    toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal()
-  ) {
-    return false;
-  }
+function finishBuildingSmutOrcBridgeDo(): boolean {
   // use any keepsake boxes we have
   const keepsakeBox: Item = $item`smut orc keepsake box`;
   if (itemAmount(keepsakeBox) > 0 && auto_is_valid(keepsakeBox)) {
@@ -317,6 +333,21 @@ export function finishBuildingSmutOrcBridge(): boolean {
   }
 
   return false;
+}
+
+export const finishBuildingSmutOrcBridgeTask: QuestTask = registerQuestTask({
+  name: "finishBuildingSmutOrcBridge",
+  completed: () =>
+    internalQuestStatus("questL09Topping") > 0 ||
+    toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal(),
+  ready: () =>
+    internalQuestStatus("questL09Topping") === 0 &&
+    toInt(getProperty("chasmBridgeProgress")) < bridgeGoal(),
+  do: finishBuildingSmutOrcBridgeDo,
+});
+
+export function finishBuildingSmutOrcBridge(): boolean {
+  return runQuestTask(finishBuildingSmutOrcBridgeTask);
 }
 
 export function prepareForSmutOrcs(): void {
@@ -461,14 +492,7 @@ export function prepareForSmutOrcs(): void {
   }
 }
 
-export function L9_chasmBuild(): boolean {
-  if (
-    internalQuestStatus("questL09Topping") !== 0 ||
-    toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal()
-  ) {
-    return false;
-  }
-
+function L9_chasmBuildDo(): boolean {
   if (finishBuildingSmutOrcBridge()) {
     return true;
   }
@@ -514,6 +538,22 @@ export function L9_chasmBuild(): boolean {
   return true;
 }
 
+export const L9_chasmBuildTask: QuestTask = registerQuestTask({
+  name: "L9_chasmBuild",
+  completed: () =>
+    internalQuestStatus("questL09Topping") > 0 ||
+    toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal(),
+  ready: () =>
+    internalQuestStatus("questL09Topping") === 0 &&
+    toInt(getProperty("chasmBridgeProgress")) < bridgeGoal(),
+  do: L9_chasmBuildDo,
+  locations: $locations`The Smut Orc Logging Camp`,
+});
+
+export function L9_chasmBuild(): boolean {
+  return runQuestTask(L9_chasmBuildTask);
+}
+
 export function L9_aBooPeakWorthBurningLuckOn(): boolean {
   if (in_bhy() || is_professor() || in_glover()) {
     return false;
@@ -542,14 +582,7 @@ export function L9_aBooPeakWorthBurningLuckOn(): boolean {
   return true;
 }
 
-export function L9_aBooPeak(): boolean {
-  if (
-    internalQuestStatus("questL09Topping") < 2 ||
-    internalQuestStatus("questL09Topping") > 3
-  ) {
-    return false;
-  }
-
+function L9_aBooPeakDo(): boolean {
   if (containsText(visitUrl("place.php?whichplace=highlands"), "fire1.gif")) {
     return false;
   }
@@ -905,6 +938,18 @@ export function L9_aBooPeak(): boolean {
   return false;
 }
 
+const L9_aBooPeakTask: QuestTask = registerQuestTask({
+  name: "L9_aBooPeak",
+  completed: () => internalQuestStatus("questL09Topping") > 3,
+  ready: () => internalQuestStatus("questL09Topping") >= 2,
+  do: L9_aBooPeakDo,
+  locations: $location`A-Boo Peak`,
+});
+
+export function L9_aBooPeak(): boolean {
+  return runQuestTask(L9_aBooPeakTask);
+}
+
 export function hedgeTrimmersNeeded(): number {
   const twinPeakProgress: number = toInt(getProperty("twinPeakProgress"));
   const needStench: boolean = (twinPeakProgress & 1) === 0;
@@ -1029,14 +1074,7 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
   return false;
 }
 
-export function L9_twinPeak(): boolean {
-  if (
-    internalQuestStatus("questL09Topping") < 2 ||
-    internalQuestStatus("questL09Topping") > 3
-  ) {
-    return false;
-  }
-
+function L9_twinPeakDo(): boolean {
   if (toInt(getProperty("twinPeakProgress")) >= 15) {
     return false;
   }
@@ -1138,14 +1176,19 @@ export function L9_twinPeak(): boolean {
   return autoAdv($location`Twin Peak`);
 }
 
-export function L9_oilPeak(): boolean {
-  if (
-    internalQuestStatus("questL09Topping") < 2 ||
-    internalQuestStatus("questL09Topping") > 3
-  ) {
-    return false;
-  }
+const L9_twinPeakTask: QuestTask = registerQuestTask({
+  name: "L9_twinPeak",
+  completed: () => internalQuestStatus("questL09Topping") > 3,
+  ready: () => internalQuestStatus("questL09Topping") >= 2,
+  do: L9_twinPeakDo,
+  locations: $location`Twin Peak`,
+});
 
+export function L9_twinPeak(): boolean {
+  return runQuestTask(L9_twinPeakTask);
+}
+
+function L9_oilPeakDo(): boolean {
   auto_MaxMLToCap(auto_convertDesiredML(100), false);
 
   if (
@@ -1246,20 +1289,19 @@ export function L9_oilPeak(): boolean {
   return true;
 }
 
-export function L9_highLandlord(): boolean {
-  if (
-    internalQuestStatus("questL09Topping") < 1 ||
-    internalQuestStatus("questL09Topping") > 3
-  ) {
-    return false;
-  }
-  if (toInt(getProperty("chasmBridgeProgress")) < bridgeGoal()) {
-    return false;
-  }
-  if (isActuallyEd() && !toBoolean(getProperty("auto_chasmBusted"))) {
-    return false;
-  }
+const L9_oilPeakTask: QuestTask = registerQuestTask({
+  name: "L9_oilPeak",
+  completed: () => internalQuestStatus("questL09Topping") > 3,
+  ready: () => internalQuestStatus("questL09Topping") >= 2,
+  do: L9_oilPeakDo,
+  locations: $location`Oil Peak`,
+});
 
+export function L9_oilPeak(): boolean {
+  return runQuestTask(L9_oilPeakTask);
+}
+
+function L9_highLandlordDo(): boolean {
   if (internalQuestStatus("questL09Topping") === 1) {
     auto_log_info(
       "Visiting the Highland Lord's tower <ominous music plays>",
@@ -1270,13 +1312,7 @@ export function L9_highLandlord(): boolean {
     return true;
   }
 
-  if (L9_aBooPeak()) {
-    return true;
-  }
-  if (L9_oilPeak()) {
-    return true;
-  }
-  if (L9_twinPeak()) {
+  if (runTaskChain([L9_aBooPeakTask, L9_oilPeakTask, L9_twinPeakTask])) {
     return true;
   }
 
@@ -1291,4 +1327,18 @@ export function L9_highLandlord(): boolean {
   }
 
   return false;
+}
+
+export const L9_highLandlordTask: QuestTask = registerQuestTask({
+  name: "L9_highLandlord",
+  completed: () => internalQuestStatus("questL09Topping") > 3,
+  ready: () =>
+    internalQuestStatus("questL09Topping") >= 1 &&
+    toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal() &&
+    (!isActuallyEd() || toBoolean(getProperty("auto_chasmBusted"))),
+  do: L9_highLandlordDo,
+});
+
+export function L9_highLandlord(): boolean {
+  return runQuestTask(L9_highLandlordTask);
 }

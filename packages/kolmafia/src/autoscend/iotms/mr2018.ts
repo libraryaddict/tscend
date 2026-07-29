@@ -29,7 +29,6 @@ import {
   myMeat,
   myPrimestat,
   random,
-  runChoice,
   setProperty,
   splitString,
   Stat,
@@ -75,11 +74,13 @@ import {
   auto_is_valid$1,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   handleTracker,
   hasTorso,
   internalQuestStatus,
   wrap_item,
 } from "../auto_util";
+import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { is_boris } from "../paths/avatar_of_boris";
@@ -255,13 +256,13 @@ export function januaryToteAcquire(it: Item): boolean {
         `inv_use.php?pwd=${myHash()}&which=3&whichitem=${tote.id}`,
         false,
       ); //rummage in your garbage tote
-      runChoice(5); //get garbage shirt
+      auto_runChoice(5); //get garbage shirt
     }
     visitUrl("inv_equip.php?pwd=&which=2&action=equip&whichitem=9699"); //url fail to equip shirt to get a letter
   } else {
     const tote: Item = wrap_item($item`January's Garbage Tote`);
     visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=${tote.id}`, false); //rummage in your garbage tote
-    runChoice(choice); //get desired item
+    auto_runChoice(choice); //get desired item
   }
 
   if (itemAmount(it) > 0) {
@@ -772,10 +773,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
   return wannaHeists;
 }
 
-export function catBurglarHeist(): boolean {
-  if (catBurglarHeistsLeft() === 0) {
-    return false;
-  }
+function catBurglarHeistDo(): boolean {
   // We can't know what's burgleable without checking the burgle noncombat,
   // and that's expensive to do repeatedly. So we burgle only if we want
   // to burgle the last monster. This is bad if you're about to leave a zone.
@@ -789,6 +787,17 @@ export function catBurglarHeist(): boolean {
   }
   // don't return true from this, isn't adventuring.
   return false;
+}
+
+export const catBurglarHeistTask: QuestTask = registerQuestTask({
+  name: "catBurglarHeist",
+  completed: () => false,
+  ready: () => catBurglarHeistsLeft() > 0,
+  do: catBurglarHeistDo,
+});
+
+export function catBurglarHeist(): boolean {
+  return runQuestTask(catBurglarHeistTask);
 }
 
 export function cheeseWarMachine(
@@ -999,10 +1008,10 @@ export function neverendingPartyCombat(): boolean {
 export function neverendingPartyChoiceHandler(choice: number): void {
   if (choice === 1322) {
     // The Beginning of the Neverend
-    runChoice(2); // No, I'm just here to party (decline quest)
+    auto_runChoice(2); // No, I'm just here to party (decline quest)
   } else if (choice === 1323) {
     // All Done!
-    runChoice(1); // Take your leave (get quest reward)
+    auto_runChoice(1); // Take your leave (get quest reward)
   } else if (choice === 1324) {
     // It Hasn't Ended, It's Just Paused
     let buff: Effect = Effect.none;
@@ -1019,24 +1028,24 @@ export function neverendingPartyChoiceHandler(choice: number): void {
     }
     if (in_glover()) {
       // Can't use any of the buffs, may as well fight
-      runChoice(5); // Pick a fight (fight a random monster from the zone)
+      auto_runChoice(5); // Pick a fight (fight a random monster from the zone)
     } else if (buff !== Effect.none && haveEffect(buff) < 9) {
       // Get the +mainstat% buff if we don't have enough turns of it to get us to the next scheduled NC.
       switch (myPrimestat()) {
         case $stat`Muscle`:
-          runChoice(2); // Check out the kitchen (go to Gone Kitchin')
+          auto_runChoice(2); // Check out the kitchen (go to Gone Kitchin')
 
           break;
         case $stat`Mysticality`:
-          runChoice(1); // Head upstairs (go to A Room With a View... Of a Bed)
+          auto_runChoice(1); // Head upstairs (go to A Room With a View... Of a Bed)
 
           break;
         case $stat`Moxie`:
-          runChoice(4); // Investigate the basement (go to Basement Urges)
+          auto_runChoice(4); // Investigate the basement (go to Basement Urges)
 
           break;
         default:
-          runChoice(5); // Pick a fight (fight a random monster from the zone)
+          auto_runChoice(5); // Pick a fight (fight a random monster from the zone)
 
           break;
       }
@@ -1044,36 +1053,36 @@ export function neverendingPartyChoiceHandler(choice: number): void {
       // If we're powerlevelling (or farming Ka) grab the +ML buff if we don't have enough turns
       // of it to get us to the next scheduled NC. Otherwise take the combat.
       if (haveEffect($effect`Citronella Armpits`) < 9) {
-        runChoice(3); // Go to the back yard (go to Forward to the Back)
+        auto_runChoice(3); // Go to the back yard (go to Forward to the Back)
       } else {
-        runChoice(5); // Pick a fight (fight a random monster from the zone)
+        auto_runChoice(5); // Pick a fight (fight a random monster from the zone)
       }
     } else {
-      runChoice(5); // Pick a fight (fight a random monster from the zone)
+      auto_runChoice(5); // Pick a fight (fight a random monster from the zone)
     }
   } else if (choice === 1325) {
     // A Room With a View... Of a Bed
     if (myPrimestat() === $stat`Mysticality`) {
-      runChoice(2); // Read the tomes (Get Tomes of Opportunity buff. 20 advs of +20% to all Mysticality Gains)
+      auto_runChoice(2); // Read the tomes (Get Tomes of Opportunity buff. 20 advs of +20% to all Mysticality Gains)
     } else {
-      runChoice(1); // Take a quick nap (Full HP & MP restore)
+      auto_runChoice(1); // Take a quick nap (Full HP & MP restore)
     }
   } else if (choice === 1326) {
     // Gone Kitchin'
     if (myPrimestat() === $stat`Muscle`) {
-      runChoice(2); // Check out the muscle spice (Get Spiced Up buff. 20 advs of +20% to all Muscle Gains)
+      auto_runChoice(2); // Check out the muscle spice (Get Spiced Up buff. 20 advs of +20% to all Muscle Gains)
     } else {
-      runChoice(1); // Peruse the cookbooks (get some myst substats)
+      auto_runChoice(1); // Peruse the cookbooks (get some myst substats)
     }
   } else if (choice === 1327) {
     // Forward to the Back
-    runChoice(2); // Rub the candle wax under your arms (Get Citronella Armpits buff. 50 advs of +30 to Monster Level)
+    auto_runChoice(2); // Rub the candle wax under your arms (Get Citronella Armpits buff. 50 advs of +30 to Monster Level)
   } else if (choice === 1328) {
     // Basement Urges
     if (myPrimestat() === $stat`Moxie`) {
-      runChoice(2); // Use the hair gel (Get The Best Hair You've Ever Had buff. 20 advs of +20% to all Moxie Gains)
+      auto_runChoice(2); // Use the hair gel (Get The Best Hair You've Ever Had buff. 20 advs of +20% to all Moxie Gains)
     } else {
-      runChoice(1); // Use the workout equipment (get some muscle substats)
+      auto_runChoice(1); // Use the workout equipment (get some muscle substats)
     }
   } else {
     abort("unhandled choice in neverendingPartyChoiceHandler");

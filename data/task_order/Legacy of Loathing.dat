@@ -10,7 +10,7 @@ L9_leafletQuest
 L5_findKnob
 L12_sonofaPrefix
 # burn any unused Lucky! (Heartstone/Apriling sax/August scepter) before bedtime
-LX_burnUnusedLuck	LX_needToBurnUnusedLuck
+LX_burnUnusedLuck
 LX_burnDelay
 LX_summonMonster
 resolveSixthDMT
@@ -21,7 +21,7 @@ L12_startWar
 LX_loggingHatchet
 auto_earlyRoutingHandling
 LX_guildUnlock
-LX_bitchinMeatcar	LX_bitchinMeatcar_condition
+LX_bitchinMeatcar
 LX_unlockDesert
 handleRainDoh
 LX_spookyravenManorFirstFloor

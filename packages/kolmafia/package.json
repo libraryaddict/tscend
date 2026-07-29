@@ -2,6 +2,7 @@
   "name": "kolmafia",
   "version": "1.0.0",
   "dependencies": {
+    "grimoire-kolmafia": "*",
     "kolmafia": "*",
     "libram": "*"
   }

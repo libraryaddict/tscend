@@ -8,7 +8,6 @@ import {
   lastMonster,
   Monster,
   myLevel,
-  runChoice,
   setProperty,
   toBoolean,
   toInt,
@@ -16,7 +15,12 @@ import {
 } from "kolmafia";
 import { $effect, $item, $monster, $skill } from "libram";
 
-import { auto_log_info, handleCopiedMonster } from "../auto_util";
+import {
+  auto_log_info,
+  auto_runChoice,
+  handleCopiedMonster,
+} from "../auto_util";
+import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 
 //	This is meant for items that have a date of 2012
 
@@ -24,32 +28,22 @@ import { auto_log_info, handleCopiedMonster } from "../auto_util";
 export function auto_reagnimatedGetPart(): void {
   if (availableAmount($item`gnomish housemaid's kgnee`) === 0) {
     // The housemaid's kgnee is the equipment that justified using the gnome.
-    runChoice(4);
+    auto_runChoice(4);
   } else if (availableAmount($item`gnomish coal miner's lung`) === 0) {
     // May as well get the rest of these on subsequent days.
-    runChoice(2);
+    auto_runChoice(2);
   } else if (availableAmount($item`gnomish athlete's foot`) === 0) {
-    runChoice(5);
+    auto_runChoice(5);
   } else if (availableAmount($item`gnomish tennis elbow`) === 0) {
-    runChoice(3);
+    auto_runChoice(3);
   } else if (availableAmount($item`gnomish swimmer's ears`) === 0) {
-    runChoice(1);
+    auto_runChoice(1);
   } else {
     abort("unhandled choice in auto_reagnimatedGetPart");
   }
 }
 
-export function handleRainDoh(): boolean {
-  if (itemAmount($item`Rain-Doh box full of monster`) === 0) {
-    return false;
-  }
-  if (myLevel() <= 3) {
-    return false;
-  }
-  if (haveEffect($effect`Ultrahydrated`) > 0) {
-    return false;
-  }
-
+function handleRainDohDo(): boolean {
   const enemy: Monster = toMonster(getProperty("rainDohMonster"));
   auto_log_info(`Black boxing: ${enemy}`, "blue");
 
@@ -103,4 +97,18 @@ export function handleRainDoh(): boolean {
   }
 
   return false;
+}
+
+const handleRainDohTask: QuestTask = registerQuestTask({
+  name: "handleRainDoh",
+  completed: () => false,
+  ready: () =>
+    itemAmount($item`Rain-Doh box full of monster`) > 0 &&
+    myLevel() > 3 &&
+    haveEffect($effect`Ultrahydrated`) === 0,
+  do: handleRainDohDo,
+});
+
+export function handleRainDoh(): boolean {
+  return runQuestTask(handleRainDohTask);
 }

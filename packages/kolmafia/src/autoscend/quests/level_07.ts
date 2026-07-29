@@ -24,7 +24,6 @@ import {
   myMaxhp,
   myMp,
   myPrimestat,
-  runChoice,
   setProperty,
   splitString,
   toInt,
@@ -40,6 +39,7 @@ import {
   $familiar,
   $item,
   $location,
+  $locations,
   $monster,
   $skill,
   $slot,
@@ -78,11 +78,13 @@ import {
   auto_log_info,
   auto_log_warning,
   auto_MaxMLToCap,
+  auto_runChoice,
   auto_turbo,
   canSniff,
   internalQuestStatus,
 } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
+import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { handleBjornify } from "../iotms/mr2014";
 import { spacegateVaccine } from "../iotms/mr2017";
 import { auto_havePillKeeper } from "../iotms/mr2019";
@@ -93,7 +95,7 @@ import {
 } from "../iotms/mr2020";
 import {
   auto_backupUsesLeft,
-  auto_FireExtinguisherCombatString,
+  auto_FireExtinguisherCombatSkill,
 } from "../iotms/mr2021";
 import { auto_haveGreyGoose } from "../iotms/mr2022";
 import { auto_habitatFightsLeft, auto_habitatMonster } from "../iotms/mr2023";
@@ -110,7 +112,7 @@ import { in_zombieSlayer } from "../paths/zombie_slayer";
 export function cyrptChoiceHandler(choice: number): void {
   if (choice === 153) {
     // Turn Your Head and Coffin (The Defiled Alcove)
-    runChoice(4); // skip
+    auto_runChoice(4); // skip
   } else if (choice === 155) {
     // Skull, Skull, Skull (The Defiled Nook)
     if (
@@ -118,13 +120,13 @@ export function cyrptChoiceHandler(choice: number): void {
       (itemAmount($item`talkative skull`) === 0 ||
         !haveFamiliar($familiar`Hovering Skull`))
     ) {
-      runChoice(1); // get talkative skull
+      auto_runChoice(1); // get talkative skull
     } else {
-      runChoice(5); // skip
+      auto_runChoice(5); // skip
     }
   } else if (choice === 157) {
     // Urning Your Keep (The Defiled Niche)
-    runChoice(4); // skip
+    auto_runChoice(4); // skip
   } else if (choice === 523) {
     // Death Rattlin' (The Defiled Cranny)
     if (
@@ -154,20 +156,20 @@ export function cyrptChoiceHandler(choice: number): void {
         "blue",
       );
       if (itemAmount($item`dieting pill`) < desiredPills) {
-        runChoice(6); // if meets thresholds, skip to farm more dieting pills in DG
+        auto_runChoice(6); // if meets thresholds, skip to farm more dieting pills in DG
       } else if (5 in availableChoiceOptions()) {
-        runChoice(5); // -11 evil, +50 each substat with Candy Cane Sword Cane
+        auto_runChoice(5); // -11 evil, +50 each substat with Candy Cane Sword Cane
       } else {
-        runChoice(4); // fight swarm of ghuol whelps
+        auto_runChoice(4); // fight swarm of ghuol whelps
       }
     } else if (5 in availableChoiceOptions()) {
-      runChoice(5); // -11 evil, +50 each substat with Candy Cane Sword Cane
+      auto_runChoice(5); // -11 evil, +50 each substat with Candy Cane Sword Cane
     } else {
-      runChoice(4); // fight swarm of ghuol whelps
+      auto_runChoice(4); // fight swarm of ghuol whelps
     }
   } else if (choice === 527) {
     // The Haert of Darkness (The Cyrpt)
-    runChoice(1); // fight whichever version of the bonerdagon
+    auto_runChoice(1); // fight whichever version of the bonerdagon
   } else {
     abort("unhandled choice in cyrptChoiceHandler");
   }
@@ -291,7 +293,7 @@ function L7_defiledAlcove(): boolean {
   return autoAdv($location`The Defiled Alcove`);
 }
 
-export function L7_defiledNook(): boolean {
+function L7_defiledNookDo(): boolean {
   const evilBonus: number = cyrptEvilBonus();
   // current mafia bug causes us to lose track of the amount of Evil Eyes in inventory so adding a refresh here
   cliExecute("refresh inv");
@@ -340,6 +342,17 @@ export function L7_defiledNook(): boolean {
   return false;
 }
 
+const L7_defiledNookTask: QuestTask = registerQuestTask({
+  name: "L7_defiledNook",
+  completed: () => false,
+  ready: () => true,
+  do: L7_defiledNookDo,
+});
+
+export function L7_defiledNook(): boolean {
+  return runQuestTask(L7_defiledNookTask);
+}
+
 function L7_defiledNiche(): boolean {
   const evilBonus: number = cyrptEvilBonus();
 
@@ -371,7 +384,8 @@ function L7_defiledNiche(): boolean {
     autoEquip($item`gravy boat`);
     // prioritize extinguisher over slay the dead in Defiled Niche if its available and unused in the cyrpt
     if (
-      auto_FireExtinguisherCombatString($location`The Defiled Niche`) === ""
+      auto_FireExtinguisherCombatSkill($location`The Defiled Niche`) ===
+      undefined
     ) {
       knockOffCapePrep();
     }
@@ -504,10 +518,7 @@ function L7_defiledCranny(): boolean {
   return false;
 }
 
-export function L7_crypt(): boolean {
-  if (internalQuestStatus("questL07Cyrptic") !== 0) {
-    return false;
-  }
+function L7_cryptDo(): boolean {
   if (itemAmount($item`chest of the Bonerdagon`) === 1) {
     equipStatgainIncreasers$2();
     use(1, $item`chest of the Bonerdagon`);
@@ -602,19 +613,18 @@ export function L7_crypt(): boolean {
   return false;
 }
 
-export function L7_override(): boolean {
-  //check if olfaction or banishes are being used for ongoing L7 tasks and give those priority
-  if (internalQuestStatus("questL07Cyrptic") !== 0) {
-    return false;
-  }
+export const L7_cryptTask: QuestTask = registerQuestTask({
+  name: "L7_crypt",
+  completed: () => internalQuestStatus("questL07Cyrptic") > 0,
+  ready: () => internalQuestStatus("questL07Cyrptic") === 0,
+  do: L7_cryptDo,
+});
 
-  if (
-    toInt(getProperty("cyrptNookEvilness")) <= 14 &&
-    toInt(getProperty("cyrptNicheEvilness")) <= 14
-  ) {
-    return false;
-  }
+export function L7_crypt(): boolean {
+  return runQuestTask(L7_cryptTask);
+}
 
+function L7_overrideDo(): boolean {
   const evilBonus: number = cyrptEvilBonus();
   if (
     toInt(getProperty("cyrptNookEvilness")) > 14 + evilBonus &&
@@ -642,4 +652,20 @@ export function L7_override(): boolean {
     }
   }
   return false;
+}
+
+const L7_overrideTask: QuestTask = registerQuestTask({
+  name: "L7_override",
+  completed: () => internalQuestStatus("questL07Cyrptic") > 0,
+  // check if olfaction or banishes are being used for ongoing L7 tasks and give those priority
+  ready: () =>
+    internalQuestStatus("questL07Cyrptic") === 0 &&
+    (toInt(getProperty("cyrptNookEvilness")) > 14 ||
+      toInt(getProperty("cyrptNicheEvilness")) > 14),
+  do: L7_overrideDo,
+  locations: $locations`The Defiled Alcove, The Defiled Niche, The Defiled Cranny, The Defiled Nook`,
+});
+
+export function L7_override(): boolean {
+  return runQuestTask(L7_overrideTask);
 }

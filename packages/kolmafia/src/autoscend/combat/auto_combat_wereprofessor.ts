@@ -11,6 +11,7 @@ import {
 } from "kolmafia";
 import { $effect, $item, $monster, $skill } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { auto_haveCosmicBowlingBall } from "../iotms/mr2022";
 import { dartSkill } from "../iotms/mr2024";
 import {
@@ -33,9 +34,9 @@ export function auto_combatWereProfessorStage1(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   if (!in_wereprof()) {
-    return "";
+    return undefined;
   }
 
   if (is_professor()) {
@@ -51,17 +52,17 @@ export function auto_combatWereProfessorStage1(
     }
   }
 
-  return "";
+  return undefined;
 }
 
 export function auto_combatWereProfessorStage4(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   //only care about Advanced Research as a Professor
   if (!in_wereprof()) {
-    return "";
+    return undefined;
   }
 
   for (const str of splitString(
@@ -69,24 +70,24 @@ export function auto_combatWereProfessorStage4(
     ",",
   )) {
     if (toInt(str) === enemy.id) {
-      return "";
+      return undefined;
     }
   }
 
   if (is_professor() && wereprof_oculus() && !haveUsed(toSkill(7512))) {
     markAsUsed(toSkill(7512));
-    return toSkill(7512).toString();
+    return toSkill(7512);
   }
-  return "";
+  return undefined;
 }
 
 export function auto_combatWereProfessorStage5(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   if (!in_wereprof()) {
-    return "";
+    return undefined;
   }
 
   const enemy_physical_immune: boolean = enemy.physicalResistance > 99;
@@ -104,7 +105,7 @@ export function auto_combatWereProfessorStage5(
     if (!enemy_physical_immune && auto_canUse($skill`Rend`, false)) {
       return auto_useSkill($skill`Rend`, true);
     }
-    return "attack with weapon"; //worst case scenario just use this
+    return "attack"; //worst case scenario just use this
   }
   if (is_professor()) {
     if (
@@ -124,5 +125,5 @@ export function auto_combatWereProfessorStage5(
       return "runaway"; //Can't do anything further as Professor other than using items/running away
     }
   }
-  return "";
+  return undefined;
 }

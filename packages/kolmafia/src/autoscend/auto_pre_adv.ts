@@ -93,6 +93,7 @@ import {
 
 import { speculative_pool_skill } from "../autoscend";
 import { auto_buyUpTo } from "./auto_acquire";
+import { auto_canRunBetweenBattleChecks } from "./auto_adventure";
 import { buffMaintain$2 } from "./auto_buff";
 import {
   addBonusToMaximize,
@@ -193,7 +194,7 @@ import { auto_handleRetrocape } from "./iotms/mr2020";
 import {
   auto_backupTarget,
   auto_fireExtinguisherCharges,
-  auto_FireExtinguisherCombatString,
+  auto_FireExtinguisherCombatSkill,
   auto_forceHandleCrystalBall,
   auto_haveCrystalBall,
   auto_haveFireExtinguisher,
@@ -914,7 +915,7 @@ function auto_pre_adventure(): boolean {
   if (auto_haveFireExtinguisher()) {
     const exting: Item = wrap_item($item`industrial fire extinguisher`);
     if (
-      auto_FireExtinguisherCombatString(place) !== "" ||
+      auto_FireExtinguisherCombatSkill(place) !== undefined ||
       $locations`The Goatlet, Twin Peak, The Hidden Bowling Alley, The Hatching Chamber, The Feeding Chamber, The Royal Guard Chamber`.includes(
         place,
       )
@@ -1445,7 +1446,8 @@ function auto_pre_adventure(): boolean {
   return true;
 }
 
-export function main(): void {
+export function auto_runPreAdventure(): boolean {
+  if (!auto_canRunBetweenBattleChecks()) return;
   let ret: boolean = false;
   try {
     ret = auto_pre_adventure();
@@ -1466,4 +1468,9 @@ export function main(): void {
     }
     auto_interruptCheck("pre/post script");
   }
+  return ret;
+}
+
+export function main(): void {
+  auto_runPreAdventure();
 }

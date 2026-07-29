@@ -45,7 +45,6 @@ import {
   pullsRemaining,
   removeProperty,
   retrieveItem,
-  runChoice,
   setProperty,
   Skill,
   Stat,
@@ -71,6 +70,7 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $monster,
   $skill,
   $skills,
@@ -86,7 +86,13 @@ import {
   canPull,
   pullXWhenHaveY,
 } from "../auto_acquire";
-import { autoAdv, autoAdvBypass$1, autoLuckyAdv } from "../auto_adventure";
+import {
+  auto_triggerPostAdventure,
+  auto_triggerPreAdventure,
+  autoAdv,
+  autoAdvBypass$1,
+  autoLuckyAdv,
+} from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import {
   addToMaximize,
@@ -125,6 +131,7 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   auto_turbo,
   auto_wishForEffect,
   auto_wishForEffectIfNeeded,
@@ -146,6 +153,12 @@ import {
 } from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
 import { auto_canUse } from "../combat/auto_combat_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import { fightClubSpa$1 } from "../iotms/mr2018";
 import { auto_beachCombHead } from "../iotms/mr2019";
 import { auto_backupUsesLeft, auto_haveBackupCamera } from "../iotms/mr2021";
@@ -280,7 +293,7 @@ function EightBitScore(): number {
   return score;
 }
 
-export function prepForMegaloCity(): boolean {
+function prepForMegaloCityDo(): boolean {
   // low DA is punishing here, so if you're a non-guild class get torso and potentially autumn aegis
   if (isGuildClass()) {
     return true; // nothing to do here as guild class
@@ -306,6 +319,20 @@ export function prepForMegaloCity(): boolean {
     pullXWhenHaveY(aegis, 1, 0);
   }
   return availableAmount(aegis) > 0;
+}
+
+const prepForMegaloCityTask: QuestTask = registerQuestTask({
+  name: "prepForMegaloCity",
+  completed: () =>
+    isGuildClass() ||
+    availableAmount($item`autumnal aegis`) > 0 ||
+    !auto_is_valid($item`autumnal aegis`),
+  ready: () => true,
+  do: prepForMegaloCityDo,
+});
+
+export function prepForMegaloCity(): boolean {
+  return runQuestTask(prepForMegaloCityTask);
 }
 
 function EightBitRealmHandler(): boolean {
@@ -354,7 +381,7 @@ function EightBitRealmHandler(): boolean {
   return adv_spent;
 }
 
-export function get8BitFatLootToken(): boolean {
+function get8BitFatLootTokenDo(): boolean {
   //Acquire the [Fat Loot Token] from 8 bit realm
   // start quest and equip to refresh mafia's prefs
   woods_questStart();
@@ -364,7 +391,7 @@ export function get8BitFatLootToken(): boolean {
     equip($slot`acc3`, $item`continuum transfunctioner`);
     visitUrl("place.php?whichplace=8bit&action=8treasure");
     if (2 in availableChoiceOptions()) {
-      runChoice(2);
+      auto_runChoice(2);
       return true;
     } else {
       auto_log_warning(
@@ -378,12 +405,21 @@ export function get8BitFatLootToken(): boolean {
   return EightBitRealmHandler();
 }
 
-export function LX_getDigitalKey(): boolean {
+const get8BitFatLootTokenTask: QuestTask = registerQuestTask({
+  name: "get8BitFatLootToken",
+  completed: () => false,
+  ready: () => true,
+  do: get8BitFatLootTokenDo,
+  locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
+});
+
+export function get8BitFatLootToken(): boolean {
+  return runQuestTask(get8BitFatLootTokenTask);
+}
+
+function LX_getDigitalKeyDo(): boolean {
   //Acquire the [Digital Key]
 
-  if (!needDigitalKey()) {
-    return false;
-  }
   if (itemAmount($item`digital key`) > 0) {
     if (haveEffect($effect`Consumed by Fear`) > 0) {
       uneffect($effect`Consumed by Fear`);
@@ -408,13 +444,25 @@ export function LX_getDigitalKey(): boolean {
   if (EightBitScore() >= 10000) {
     equip($slot`acc3`, $item`continuum transfunctioner`);
     visitUrl("place.php?whichplace=8bit&action=8treasure");
-    runChoice(1);
+    auto_runChoice(1);
     if (!needDigitalKey()) {
       return true;
     }
   }
 
   return EightBitRealmHandler();
+}
+
+export const LX_getDigitalKeyTask: QuestTask = registerQuestTask({
+  name: "LX_getDigitalKey",
+  completed: () => !needDigitalKey(),
+  ready: () => needDigitalKey(),
+  do: LX_getDigitalKeyDo,
+  locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
+});
+
+export function LX_getDigitalKey(): boolean {
+  return runQuestTask(LX_getDigitalKeyTask);
 }
 
 export function LX_buyStarKeyParts(): void {
@@ -432,10 +480,7 @@ export function LX_buyStarKeyParts(): void {
   auto_buyUpTo(7, $item`line`);
 }
 
-export function LX_getStarKey(): boolean {
-  if (!toBoolean(getProperty("auto_getStarKey"))) {
-    return false;
-  }
+function LX_getStarKeyDo(): boolean {
   //needStarKey() checks if you own or have used the star key
   if (!needStarKey()) {
     setProperty("auto_getStarKey", false.toString());
@@ -541,6 +586,18 @@ export function LX_getStarKey(): boolean {
   return autoAdv($location`The Hole in the Sky`);
 }
 
+export const LX_getStarKeyTask: QuestTask = registerQuestTask({
+  name: "LX_getStarKey",
+  completed: () => !needStarKey(),
+  ready: () => toBoolean(getProperty("auto_getStarKey")),
+  do: LX_getStarKeyDo,
+  locations: $location`The Hole in the Sky`,
+});
+
+export function LX_getStarKey(): boolean {
+  return runQuestTask(LX_getStarKeyTask);
+}
+
 export function beehiveConsider(at_tower: boolean): boolean {
   // returns true if we can kill without a beehive
   let damage_sources: number = 1; // basic hit
@@ -637,14 +694,7 @@ export function ns_hedge3(): Element {
   return toElement(getProperty("nsChallenge5"));
 }
 
-export function L13_towerNSContests(): boolean {
-  if (
-    internalQuestStatus("questL13Final") < 0 ||
-    internalQuestStatus("questL13Final") > 3
-  ) {
-    return false;
-  }
-
+function L13_towerNSContestsDo(): boolean {
   if (
     containsText(visitUrl("place.php?whichplace=nstower"), "ns_02_coronation")
   ) {
@@ -1168,6 +1218,13 @@ export function L13_towerNSContests(): boolean {
   return false;
 }
 
+export const L13_towerNSContestsTask: QuestTask = registerQuestTask({
+  name: "L13_towerNSContests",
+  completed: () => internalQuestStatus("questL13Final") > 3,
+  ready: () => internalQuestStatus("questL13Final") >= 0,
+  do: L13_towerNSContestsDo,
+});
+
 function maximize_hedge(): void {
   visitUrl("campground.php?action=telescopelow");
 
@@ -1192,7 +1249,7 @@ function maximize_hedge(): void {
   provideResistances$4(resGoal, $location`Noob Cave`, true);
 }
 
-export function L13_towerNSHedge(): boolean {
+function L13_towerNSHedgeDo(): boolean {
   if (
     internalQuestStatus("questL13Final") === 5 &&
     containsText(visitUrl("place.php?whichplace=nstower"), "hedgemaze")
@@ -1222,7 +1279,7 @@ export function L13_towerNSHedge(): boolean {
   setProperty("choiceAdventure1013", "1"); // Masel Tov!
 
   maximize_hedge();
-  cliExecute("auto_pre_adv.js");
+  auto_triggerPreAdventure();
   setProperty("_auto_forcePokefamRestore", true.toString());
   if (!acquireFullHP()) {
     // couldn't heal so do slow route. May die to fast route
@@ -1230,7 +1287,7 @@ export function L13_towerNSHedge(): boolean {
   }
   visitUrl("place.php?whichplace=nstower&action=ns_03_hedgemaze");
   if (getProperty("lastEncounter") === "This Maze is... Mazelike...") {
-    runChoice(2);
+    auto_runChoice(2);
     abort("May not have enough adventures for the hedge maze. Failing");
   }
 
@@ -1260,12 +1317,15 @@ export function L13_towerNSHedge(): boolean {
   return true;
 }
 
-export function L13_sorceressDoor(): boolean {
-  if (internalQuestStatus("questL13Final") !== 5) {
-    return false;
-  }
+export const L13_towerNSHedgeTask: QuestTask = registerQuestTask({
+  name: "L13_towerNSHedge",
+  completed: () => internalQuestStatus("questL13Final") > 4,
+  ready: () => true,
+  do: L13_towerNSHedgeDo,
+});
 
-  if (LX_getStarKey() || LX_getDigitalKey()) {
+function L13_sorceressDoorDo(): boolean {
+  if (runTaskChain([LX_getStarKeyTask, LX_getDigitalKeyTask])) {
     // should attempt Star Key first as 8-bit zones can be progressed with backups etc.
     return true;
   }
@@ -1358,14 +1418,18 @@ export function L13_sorceressDoor(): boolean {
   return true;
 }
 
-export function L13_towerNSTower(): boolean {
-  if (
-    internalQuestStatus("questL13Final") < 6 ||
-    internalQuestStatus("questL13Final") > 11
-  ) {
-    return false;
-  }
+export const L13_sorceressDoorTask: QuestTask = registerQuestTask({
+  name: "L13_sorceressDoor",
+  completed: () => internalQuestStatus("questL13Final") > 5,
+  ready: () => internalQuestStatus("questL13Final") === 5,
+  do: L13_sorceressDoorDo,
+});
 
+export function L13_sorceressDoor(): boolean {
+  return runQuestTask(L13_sorceressDoorTask);
+}
+
+function L13_towerNSTowerDo(): boolean {
   auto_log_info("Scaling the mighty NStower...", "green");
 
   if (L13_towerNSTowerSkin()) {
@@ -1385,6 +1449,17 @@ export function L13_towerNSTower(): boolean {
   }
 
   return false;
+}
+
+export const L13_towerNSTowerTask: QuestTask = registerQuestTask({
+  name: "L13_towerNSTower",
+  completed: () => internalQuestStatus("questL13Final") > 11,
+  ready: () => internalQuestStatus("questL13Final") >= 6,
+  do: L13_towerNSTowerDo,
+});
+
+export function L13_towerNSTower(): boolean {
+  return runQuestTask(L13_towerNSTowerTask);
 }
 
 function L13_towerNSTowerSkin(): boolean {
@@ -1886,7 +1961,7 @@ function L13_towerNSTowerShadow(): boolean {
     buffMaintain$2($effect`Strong Grip`);
     buffMaintain$2($effect`Spiky Hair`);
   }
-  cliExecute("scripts/autoscend/auto_post_adv.js");
+  auto_triggerPostAdventure();
   if (!acquireFullHP()) {
     abort("Failed to restore max hp for shadow");
   }
@@ -1898,7 +1973,7 @@ function L13_towerNSTowerShadow(): boolean {
   return true;
 }
 
-export function L13_towerNSFinal(): boolean {
+function L13_towerNSFinalDo(): boolean {
   if (
     toLowerCase(getProperty("auto_towerBreak")) === "naughty sorceress" ||
     toLowerCase(getProperty("auto_towerBreak")) === "the naughty sorceress" ||
@@ -1958,7 +2033,7 @@ export function L13_towerNSFinal(): boolean {
     in_aosol()
   )) {
     //Only if the final boss does not unbuff us...
-    cliExecute("scripts/autoscend/auto_post_adv.js");
+    auto_triggerPostAdventure();
   }
 
   if (myClass() === $class`Turtle Tamer`) {
@@ -1986,7 +2061,7 @@ export function L13_towerNSFinal(): boolean {
   }
 
   if (internalQuestStatus("questL13Final") < 13) {
-    cliExecute("scripts/autoscend/auto_pre_adv.js");
+    auto_triggerPreAdventure();
     setProperty("auto_disableAdventureHandling", true.toString());
     autoAdvBypass$1(
       "place.php?whichplace=nstower&action=ns_10_sorcfight",
@@ -2009,7 +2084,7 @@ export function L13_towerNSFinal(): boolean {
         if (getProperty("lastEncounter") === "The Naughty Sorceress (3)") {
           visitUrl("choice.php");
           if (lastChoice() === 1016) {
-            runChoice(1);
+            auto_runChoice(1);
             setProperty("auto_wandOfNagamar", true.toString());
           } else {
             abort("Expected to start Nagamar side-quest but unable to");
@@ -2120,7 +2195,18 @@ export function L13_towerNSFinal(): boolean {
   return true;
 }
 
-export function L13_towerNSNagamar(): boolean {
+export const L13_towerNSFinalTask: QuestTask = registerQuestTask({
+  name: "L13_towerNSFinal",
+  completed: () => inAftercore(),
+  ready: () => true,
+  do: L13_towerNSFinalDo,
+});
+
+export function L13_towerNSFinal(): boolean {
+  return runQuestTask(L13_towerNSFinalTask);
+}
+
+function L13_towerNSNagamarDo(): boolean {
   // the first if check will skip getting a wand if autoscend configuration says we don't want one AND you are not on step12 of the quest
   // if you are on step12 it will override the configuration and proceed to get a wand anyways
   // quest step12 means you fought the sorceress and lost due to not having a wand.
@@ -2201,6 +2287,18 @@ export function L13_towerNSNagamar(): boolean {
   return false;
 }
 
+export const L13_towerNSNagamarTask: QuestTask = registerQuestTask({
+  name: "L13_towerNSNagamar",
+  completed: () => false,
+  ready: () => true,
+  do: L13_towerNSNagamarDo,
+  locations: $location`The VERY Unquiet Garves`,
+});
+
+export function L13_towerNSNagamar(): boolean {
+  return runQuestTask(L13_towerNSNagamarTask);
+}
+
 export function L13_wantsTheD(): boolean {
   return (
     itemAmount($item`heavy D`) === 0 &&
@@ -2210,16 +2308,24 @@ export function L13_wantsTheD(): boolean {
   );
 }
 
+function L13_towerAscentDo(): boolean {
+  return runTaskChain([
+    L13_towerNSContestsTask,
+    L13_towerNSHedgeTask,
+    L13_sorceressDoorTask,
+    L13_towerNSTowerTask,
+    L13_towerNSNagamarTask,
+    L13_towerNSFinalTask,
+  ]);
+}
+
+const L13_towerAscentTask: QuestTask = registerQuestTask({
+  name: "L13_towerAscent",
+  completed: () => inAftercore(),
+  ready: () => true,
+  do: L13_towerAscentDo,
+});
+
 export function L13_towerAscent(): boolean {
-  if (
-    L13_towerNSContests() ||
-    L13_towerNSHedge() ||
-    L13_sorceressDoor() ||
-    L13_towerNSTower() ||
-    L13_towerNSNagamar() ||
-    L13_towerNSFinal()
-  ) {
-    return true;
-  }
-  return false;
+  return runQuestTask(L13_towerAscentTask);
 }

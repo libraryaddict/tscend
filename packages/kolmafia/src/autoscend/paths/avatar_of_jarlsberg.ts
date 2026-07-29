@@ -17,6 +17,7 @@ import {
 import { $item, $path, $skill, $skills } from "libram";
 
 import { auto_have_skill, auto_log_info } from "../auto_util";
+import { QuestTask, registerQuestTask } from "../engine/engine";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { avatarStandardInitializeDay } from "./avatar_of_boris";
 
@@ -81,14 +82,7 @@ export function jarlsberg_buySkills(): void {
   setProperty("_auto_jarlsbergSkills", myLevel().toString());
 }
 
-export function LM_jarlsberg(): boolean {
-  //this function is called early once every loop of doTasks() in autoscend.ash
-  //if something in this function returns true then it will restart the loop and get called again.
-
-  if (!is_jarlsberg()) {
-    return false;
-  }
-
+function LM_jarlsbergDo(): boolean {
   jarlsberg_buySkills();
   // Use egg man for drops
   if (
@@ -106,3 +100,12 @@ export function LM_jarlsberg(): boolean {
 
   return false;
 }
+
+export const LM_jarlsbergTask: QuestTask = registerQuestTask({
+  name: "LM_jarlsberg",
+  //this function is called early once every loop of doTasks() in autoscend.ash
+  //if something in this function returns true then it will restart the loop and get called again.
+  completed: () => !is_jarlsberg(),
+  ready: () => true,
+  do: LM_jarlsbergDo,
+});

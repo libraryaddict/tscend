@@ -1,6 +1,5 @@
 import {
   abort,
-  cliExecute,
   containsText,
   getProperty,
   haveEffect,
@@ -18,7 +17,7 @@ import {
 } from "kolmafia";
 import { $effect, $item, $items, $location, $monster, $path } from "libram";
 
-import { autoAdvBypass$1 } from "../auto_adventure";
+import { auto_triggerPreAdventure, autoAdvBypass$1 } from "../auto_adventure";
 import { AutoStopError, internalQuestStatus } from "../auto_util";
 import { inAftercore } from "./casual";
 
@@ -119,7 +118,7 @@ export function L13_bhy_towerFinal(): boolean {
     );
   }
 
-  cliExecute("scripts/autoscend/auto_pre_adv.js");
+  auto_triggerPreAdventure();
   setProperty("auto_disableAdventureHandling", true.toString());
   autoAdvBypass$1(
     "place.php?whichplace=nstower&action=ns_10_sorcfight",

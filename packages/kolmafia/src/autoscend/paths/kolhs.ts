@@ -18,7 +18,6 @@ import {
   myPath,
   putCloset,
   removeProperty,
-  runChoice,
   setProperty,
   toBoolean,
   toFamiliar,
@@ -51,7 +50,12 @@ import {
   possessEquipment,
 } from "../auto_equipment";
 import { LX_freeCombats } from "../auto_powerlevel";
-import { auto_log_debug, auto_log_info, auto_log_warning } from "../auto_util";
+import {
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+  auto_runChoice,
+} from "../auto_util";
 import { monster_to_location, zone_isAvailable } from "../auto_zone";
 
 //Defined in autoscend/paths/kolhs.ash
@@ -280,17 +284,17 @@ export function kolhsChoiceHandler(choice: number): void {
     switch (choice) {
       case 700:
         if (haveEffect($effect`Jamming with the Jocks`) > 0) {
-          runChoice(1);
+          auto_runChoice(1);
         } else if (haveEffect($effect`Nerd is the Word`) > 0) {
-          runChoice(2);
+          auto_runChoice(2);
         } else if (haveEffect($effect`Greaser Lightnin'`) > 0) {
-          runChoice(3);
+          auto_runChoice(3);
         } else {
           auto_log_warning(
             "I do not have the necessary intrinsic to gain xp in [Delirium in the Cafeterium]",
             "red",
           );
-          runChoice(3);
+          auto_runChoice(3);
         }
         break;
       case 772: {
@@ -307,7 +311,7 @@ export function kolhsChoiceHandler(choice: number): void {
             //yearbook club should only be visited once daily
             setProperty("_yearbookClubVisitedToday", true.toString());
           }
-          runChoice(target);
+          auto_runChoice(target);
         } else {
           abort(
             `We are in [saved by the bell] and do not know what to do. Wanted to press button number ${target} but it mysteriously does not exist. Leaving will waste this NC so do something manually`,

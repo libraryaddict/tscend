@@ -12,6 +12,7 @@ import {
 } from "kolmafia";
 import { $monster, $skill } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { auto_log_info } from "../auto_util";
 import { in_disguises } from "../paths/disguises_delimit";
 import { AshMatcher } from "../utils/kolmafiaUtils";
@@ -54,10 +55,10 @@ export function auto_combatDisguisesStage1(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
   if (!in_disguises()) {
-    return "";
+    return undefined;
   }
   //some masks are treated like puzzle bosses. requiring either an immediate swap or special action handling
   const disguises: number = toInt(
@@ -70,7 +71,7 @@ export function auto_combatDisguisesStage1(
   //mask 3 = protest mask = +30ML. can only attack with weapon or change mask. if changed can only use items or attack with weapon
   if (disguises === 3) {
     if (canSurvive(1.5)) {
-      return "attack with weapon";
+      return "attack";
     }
     abort(
       "May not be able to survive combat. Is swapping protest mask still not allowing us to do anything?",
@@ -81,17 +82,17 @@ export function auto_combatDisguisesStage1(
     return auto_useSkill($skill`Swap Mask`);
   }
 
-  return "";
+  return undefined;
 }
 
 export function auto_combatDisguisesStage5(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 5 = kill
   if (!in_disguises()) {
-    return "";
+    return undefined;
   }
 
   const disguises: number = toInt(
@@ -118,7 +119,7 @@ export function auto_combatDisguisesStage5(
       );
     }
     if (canSurvive(1.5) && round_1 < 10) {
-      return "attack with weapon";
+      return "attack";
     }
     if (auto_canUse($skill`Implode Universe`)) {
       return auto_useSkill($skill`Implode Universe`, true);
@@ -138,12 +139,12 @@ export function auto_combatDisguisesStage5(
       10 + hot_dmg + cold_dmg + stench_dmg + sleaze_dmg + spooky_dmg;
 
     if (attack_dmg > 20) {
-      return "attack with weapon";
+      return "attack";
     }
     if (auto_canUse($skill`Saucestorm`, false)) {
       return auto_useSkill($skill`Saucestorm`, false);
     }
   }
 
-  return "";
+  return undefined;
 }

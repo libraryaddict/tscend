@@ -21,9 +21,13 @@ import {
   auto_log_info,
   internalQuestStatus,
 } from "../auto_util";
+import { runTaskChain } from "../engine/engine";
 import { auto_sourceTerminalEnhance } from "../iotms/mr2016";
 import { L8_trapperQuest } from "../quests/level_08";
-import { L10_holeInTheSkyUnlock, L10_topFloor } from "../quests/level_10";
+import {
+  L10_holeInTheSkyUnlockTask,
+  L10_topFloorTask,
+} from "../quests/level_10";
 import { shenShouldDelayZone } from "../quests/level_11";
 import {
   startArmorySubQuest,
@@ -171,7 +175,7 @@ export function LX_theSource(): boolean {
       if (internalQuestStatus("questL10Garbage") < 9) {
         return false;
       }
-      if (L10_topFloor() || L10_holeInTheSkyUnlock()) {
+      if (runTaskChain([L10_topFloorTask, L10_holeInTheSkyUnlockTask])) {
         return true;
       }
     }

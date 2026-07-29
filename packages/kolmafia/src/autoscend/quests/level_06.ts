@@ -35,6 +35,7 @@ import {
   isGuildClass,
   turnsUsedByRemainingNCForcesToday,
 } from "../auto_util";
+import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { fantasyRealmToken } from "../iotms/mr2018";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
@@ -45,13 +46,7 @@ export function L6_friarsGetParts_condition_hardcore(): boolean {
   return inHardcore() && isGuildClass();
 }
 
-export function L6_friarsGetParts(): boolean {
-  if (
-    internalQuestStatus("questL06Friar") < 0 ||
-    internalQuestStatus("questL06Friar") > 2
-  ) {
-    return false;
-  }
+function L6_friarsGetPartsDo(): boolean {
   if (myMp() > 50 || considerGrimstoneGolem(true)) {
     handleBjornify($familiar`Grimstone Golem`);
   }
@@ -177,10 +172,19 @@ export function L6_friarsGetParts(): boolean {
   return internalQuestStatus("questL06Friar") > 2;
 }
 
-export function L6_dakotaFanning(): boolean {
-  if (!toBoolean(getProperty("auto_dakotaFanning")) || hiddenTempleUnlocked()) {
-    return false;
-  }
+export const L6_friarsGetPartsTask: QuestTask = registerQuestTask({
+  name: "L6_friarsGetParts",
+  completed: () => internalQuestStatus("questL06Friar") > 2,
+  ready: () => internalQuestStatus("questL06Friar") >= 0,
+  do: L6_friarsGetPartsDo,
+  locations: $locations`The Dark Heart of the Woods, The Dark Elbow of the Woods, The Dark Neck of the Woods`,
+});
+
+export function L6_friarsGetParts(): boolean {
+  return runQuestTask(L6_friarsGetPartsTask);
+}
+
+function L6_dakotaFanningDo(): boolean {
   if (internalQuestStatus("questM16Temple") < 0) {
     if (myBasestat(myPrimestat()) < 35) {
       return false;
@@ -217,4 +221,17 @@ export function L6_dakotaFanning(): boolean {
     abort("Could not finish Dakota Fanning quest, aborting.");
   }
   return true;
+}
+
+const L6_dakotaFanningTask: QuestTask = registerQuestTask({
+  name: "L6_dakotaFanning",
+  completed: () => hiddenTempleUnlocked(),
+  ready: () =>
+    toBoolean(getProperty("auto_dakotaFanning")) && !hiddenTempleUnlocked(),
+  do: L6_dakotaFanningDo,
+  locations: $locations`The Haunted Conservatory, The Dark Heart of the Woods, Pandamonium Slums`,
+});
+
+export function L6_dakotaFanning(): boolean {
+  return runQuestTask(L6_dakotaFanningTask);
 }

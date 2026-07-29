@@ -38,6 +38,12 @@ import {
   internalQuestStatus,
 } from "../auto_util";
 import { canSurvive } from "../combat/auto_combat_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
 import { bat_formBats } from "../paths/dark_gyffte";
@@ -56,26 +62,10 @@ import { in_zootomist } from "../paths/zootomist";
 // finished===killed the king. you still need to visit council afterwards to get rewarded.
 
 //Defined in autoscend/quests/level_05.ash
-export function L5_getEncryptionKey(): boolean {
-  if (
-    internalQuestStatus("questL05Goblin") > 0 ||
-    itemAmount($item`Knob Goblin Encryption Key`) > 0
-  ) {
-    return false;
-  }
-
+function L5_getEncryptionKeyDo(): boolean {
   if (itemAmount($item`11-inch knob sausage`) === 1) {
     visitUrl("guild.php?place=challenge");
     return true;
-  }
-  // want to fight goblin king quickly in legacy of loathing to get another replica mr a
-  // In LKS, important keys are gated behind here, and we have tonnes of delay
-  // in Zootomist it's a valuable levelling zone that drops wishes
-  if (
-    !(in_lol() || in_lowkeysummer() || in_zootomist()) &&
-    canBurnDelay($location`The Outskirts of Cobb's Knob`)
-  ) {
-    return false;
   }
 
   if (in_gnoob() && auto_have_familiar($familiar`Robortender`)) {
@@ -91,10 +81,29 @@ export function L5_getEncryptionKey(): boolean {
   return autoAdv($location`The Outskirts of Cobb's Knob`);
 }
 
-export function L5_findKnob(): boolean {
-  if (internalQuestStatus("questL05Goblin") !== 0) {
-    return false;
-  }
+export const L5_getEncryptionKeyTask: QuestTask = registerQuestTask({
+  name: "L5_getEncryptionKey",
+  completed: () =>
+    internalQuestStatus("questL05Goblin") > 0 ||
+    itemAmount($item`Knob Goblin Encryption Key`) > 0,
+  // want to fight goblin king quickly in legacy of loathing to get another replica mr a
+  // In LKS, important keys are gated behind here, and we have tonnes of delay
+  // in Zootomist it's a valuable levelling zone that drops wishes
+  ready: () =>
+    itemAmount($item`11-inch knob sausage`) === 1 ||
+    in_lol() ||
+    in_lowkeysummer() ||
+    in_zootomist() ||
+    !canBurnDelay($location`The Outskirts of Cobb's Knob`),
+  do: L5_getEncryptionKeyDo,
+  locations: $location`The Outskirts of Cobb's Knob`,
+});
+
+export function L5_getEncryptionKey(): boolean {
+  return runQuestTask(L5_getEncryptionKeyTask);
+}
+
+function L5_findKnobDo(): boolean {
   if (itemAmount($item`Knob Goblin Encryption Key`) === 1) {
     if (itemAmount($item`Cobb's Knob map`) === 0) {
       council();
@@ -105,13 +114,18 @@ export function L5_findKnob(): boolean {
   return false;
 }
 
-export function L5_haremOutfit(): boolean {
-  if (internalQuestStatus("questL05Goblin") !== 1) {
-    return false;
-  }
-  if (possessOutfit("Knob Goblin Harem Girl Disguise")) {
-    return false;
-  }
+export const L5_findKnobTask: QuestTask = registerQuestTask({
+  name: "L5_findKnob",
+  completed: () => internalQuestStatus("questL05Goblin") > 0,
+  ready: () => internalQuestStatus("questL05Goblin") === 0,
+  do: L5_findKnobDo,
+});
+
+export function L5_findKnob(): boolean {
+  return runQuestTask(L5_findKnobTask);
+}
+
+function L5_haremOutfitDo(): boolean {
   // Just pull it if d2
   if (myDaycount() > 1) {
     pullXWhenHaveY($item`Knob Goblin harem veil`, 1, 0);
@@ -142,24 +156,17 @@ export function L5_haremOutfit(): boolean {
   return false;
 }
 
-export function L5_goblinKing(): boolean {
-  if (internalQuestStatus("questL05Goblin") !== 1) {
-    return false;
-  }
-  if (!canSurvive(3.0)) {
-    return false;
-  }
-  if (myAdventures() <= 2) {
-    return false;
-  }
+export const L5_haremOutfitTask: QuestTask = registerQuestTask({
+  name: "L5_haremOutfit",
+  completed: () =>
+    internalQuestStatus("questL05Goblin") > 1 ||
+    possessOutfit("Knob Goblin Harem Girl Disguise"),
+  ready: () => internalQuestStatus("questL05Goblin") === 1,
+  do: L5_haremOutfitDo,
+  locations: $location`Cobb's Knob Harem`,
+});
 
-  if (!possessOutfit("Knob Goblin Harem Girl Disguise")) {
-    return false;
-  }
-  if (robot_delay("outfit")) {
-    return false; // delay for You, Robot path
-  }
-
+function L5_goblinKingDo(): boolean {
   auto_log_info("Death to the gobbo!!", "blue");
   if (!autoOutfit("Knob Goblin Harem Girl Disguise")) {
     abort("Could not put on Knob Goblin Harem Girl Disguise, aborting");
@@ -213,14 +220,35 @@ export function L5_goblinKing(): boolean {
   return advSpent;
 }
 
+export const L5_goblinKingTask: QuestTask = registerQuestTask({
+  name: "L5_goblinKing",
+  completed: () => internalQuestStatus("questL05Goblin") > 1,
+  ready: () =>
+    internalQuestStatus("questL05Goblin") === 1 &&
+    canSurvive(3.0) &&
+    myAdventures() > 2 &&
+    possessOutfit("Knob Goblin Harem Girl Disguise") &&
+    // delay for You, Robot path
+    !robot_delay("outfit"),
+  do: L5_goblinKingDo,
+});
+
+function L5_slayTheGoblinKingDo(): boolean {
+  return runTaskChain([
+    L5_getEncryptionKeyTask,
+    L5_findKnobTask,
+    L5_haremOutfitTask,
+    L5_goblinKingTask,
+  ]);
+}
+
+export const L5_slayTheGoblinKingTask: QuestTask = registerQuestTask({
+  name: "L5_slayTheGoblinKing",
+  completed: () => internalQuestStatus("questL05Goblin") > 1,
+  ready: () => true,
+  do: L5_slayTheGoblinKingDo,
+});
+
 export function L5_slayTheGoblinKing(): boolean {
-  if (
-    L5_getEncryptionKey() ||
-    L5_findKnob() ||
-    L5_haremOutfit() ||
-    L5_goblinKing()
-  ) {
-    return true;
-  }
-  return false;
+  return runQuestTask(L5_slayTheGoblinKingTask);
 }

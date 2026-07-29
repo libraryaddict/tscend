@@ -10,6 +10,7 @@ import {
 } from "kolmafia";
 import { $elements, $item, $monster, $skill } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import {
   auto_canUse,
   auto_useSkill,
@@ -24,7 +25,7 @@ export function auto_combatExploathingStage1(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   //#stage1 = 1st round actions: puzzle boss, banish, escape, pickpocket, etc. things that need to be done before debuff
 
   if (
@@ -53,11 +54,11 @@ export function auto_combatExploathingStage1(
     // 10 physical + 10 prismatic is enough to be better than Saucestorm.
     // Otherwise, saucestorm deals 20 damage/round.
     if (dmg >= 10 && buffedHitStat() >= 120 + monsterLevelAdjustment()) {
-      return "attack with weapon";
+      return "attack";
     } else if (auto_canUse($skill`Saucestorm`, false)) {
       return auto_useSkill($skill`Saucestorm`, false);
     }
   }
 
-  return "";
+  return undefined;
 }

@@ -69,6 +69,7 @@ import {
 } from "./auto_util";
 import { zone_isAvailable } from "./auto_zone";
 import { auto_canUse } from "./combat/auto_combat_util";
+import { QuestTask, registerQuestTask, runQuestTask } from "./engine/engine";
 import { elementalPlanes_access } from "./iotms/elementalPlanes";
 import { handleBjornify } from "./iotms/mr2014";
 import { chateaumantegna_available } from "./iotms/mr2015";
@@ -147,7 +148,7 @@ export function highestScalingZone(): Location {
   return Location.none;
 }
 
-export function LX_attemptPowerLevel(): boolean {
+function LX_attemptPowerLevelDo(): boolean {
   if (!isAboutToPowerlevel()) {
     //determined that the softblock on quests waiting for optimal conditions is still on
     auto_log_warning(
@@ -310,6 +311,28 @@ export function LX_attemptPowerLevel(): boolean {
     }
   }
   return false;
+}
+
+export const LX_attemptPowerLevelTask: QuestTask = registerQuestTask({
+  name: "LX_attemptPowerLevel",
+  completed: () =>
+    myLevel() >= 13 &&
+    (!in_robot() ||
+      (myLevel() > 12 &&
+        myBasestat($stat`Mysticality`) >= 70 &&
+        myBasestat($stat`Moxie`) >= 70)),
+  ready: () => true,
+  do: LX_attemptPowerLevelDo,
+  locations: () =>
+    [
+      highestScalingZone(),
+      $location`The Haunted Bedroom`,
+      $location`The Haunted Gallery`,
+    ].filter((loc) => loc !== Location.none),
+});
+
+export function LX_attemptPowerLevel(): boolean {
+  return runQuestTask(LX_attemptPowerLevelTask);
 }
 
 export function disregardInstantKarma(): boolean {
@@ -592,27 +615,30 @@ export function LX_freeCombats(
   return false;
 }
 
-export function LX_freeCombatsTask(): boolean {
-  if (
-    myAdventures() === 1 + auto_advToReserve() &&
-    inebriety_left() === 0 &&
-    stomach_left() < 1
-  ) {
+function LX_freeCombatsTaskDo(): boolean {
+  if (myAdventures() === 1 + auto_advToReserve()) {
     auto_log_debug(
       "Only 1 non reserved adv remains for main loop so doing free combats",
     );
-    return LX_freeCombats();
-  }
-  if (
-    in_theSource() &&
-    myAdventures() < 10 &&
-    inebriety_left() === 0 &&
-    stomach_left() < 1
-  ) {
+  } else {
     auto_log_debug(
       "Less than 10 adv remaining today. We should do free fights now in case any of them get replaced with a non free agent fight",
     );
-    return LX_freeCombats();
   }
-  return false;
+  return LX_freeCombats();
+}
+
+export const LX_freeCombatsTaskTask: QuestTask = registerQuestTask({
+  name: "LX_freeCombatsTask",
+  completed: () => false,
+  ready: () =>
+    inebriety_left() === 0 &&
+    stomach_left() < 1 &&
+    (myAdventures() === 1 + auto_advToReserve() ||
+      (in_theSource() && myAdventures() < 10)),
+  do: LX_freeCombatsTaskDo,
+});
+
+export function LX_freeCombatsTask(): boolean {
+  return runQuestTask(LX_freeCombatsTaskTask);
 }

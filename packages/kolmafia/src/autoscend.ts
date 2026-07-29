@@ -16,14 +16,17 @@ import {
   experienceBonus,
   Familiar,
   familiarEquippedEquipment,
+  floristAvailable,
   fullnessLimit,
   getAutoAttack,
   getClanRumpus,
+  getDwelling,
   getProperty,
   getRevision,
   getWorkshed,
   gitInfo,
   guildStoreAvailable,
+  haveCampground,
   haveEffect,
   haveEquipped,
   haveFamiliar,
@@ -78,7 +81,6 @@ import {
   pullsRemaining,
   putCloset,
   removeProperty,
-  runChoice,
   setAutoAttack,
   setLocation,
   setProperty,
@@ -121,6 +123,8 @@ import {
   $slot,
   $stat,
   get,
+  haveInCampground,
+  Leprecondo,
   set,
   sinceKolmafiaRevision,
 } from "libram";
@@ -189,6 +193,7 @@ import {
   auto_meetsMinimumRequirements,
   auto_needAccordion,
   auto_predictAccordionTurns,
+  auto_runChoice,
   auto_unusedPerishableLuckySources,
   autoCraft,
   AutoStopError,
@@ -220,6 +225,12 @@ import {
 } from "./autoscend/auto_util";
 import { zone_isAvailable } from "./autoscend/auto_zone";
 import { autoscend_migrate } from "./autoscend/autoscend_migration";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+} from "./autoscend/engine/engine";
+import { runNextTask } from "./autoscend/engine/router";
 import {
   auto_floundryAction,
   auto_get_clan_lounge,
@@ -263,6 +274,7 @@ import {
   makeGeniePocket,
 } from "./autoscend/iotms/mr2017";
 import {
+  auto_haveVotingBooth,
   auto_latteRefill$4,
   auto_setSongboom,
   auto_voteMonster,
@@ -296,16 +308,20 @@ import {
 } from "./autoscend/iotms/mr2021";
 import {
   auto_autumnatonQuest,
+  auto_canUseJuneCleaver,
   auto_checkTrainSet,
+  auto_hasAutumnaton,
   auto_juneCleaverAdventure,
   auto_voidMonster,
   prioritizeGoose,
 } from "./autoscend/iotms/mr2022";
 import {
+  auto_availableBrickRift,
   auto_buyFrom2002MrStore,
   auto_defaultBurnLeaves,
   auto_doPhoneQuest,
   auto_habitatMonster,
+  auto_havePayPhone,
   auto_initBurningLeaves,
   auto_lostStomach,
   auto_scepterSkills,
@@ -326,6 +342,7 @@ import {
 import {
   auto_getBCZItems,
   auto_getGlobs,
+  auto_haveMonodent,
   auto_openMcLargeHugeSkis,
   auto_setLeprecondo,
   auto_useLeprecondoDrops,
@@ -345,7 +362,7 @@ import {
 import {
   amw_initializeSettings,
   in_amw,
-  LM_adventurerMeatsWorld,
+  LM_adventurerMeatsWorldTask,
 } from "./autoscend/paths/adventurer_meats_world";
 import {
   auto_buySkills,
@@ -367,7 +384,7 @@ import {
   jarlsberg_buySkills,
   jarlsberg_initializeDay,
   jarlsberg_initializeSettings,
-  LM_jarlsberg,
+  LM_jarlsbergTask,
 } from "./autoscend/paths/avatar_of_jarlsberg";
 import {
   aosol_buySkills,
@@ -385,6 +402,7 @@ import {
   awol_buySkills,
   awol_initializeSettings,
   awol_useStuff,
+  in_awol,
 } from "./autoscend/paths/avatar_of_west_of_loathing";
 import {
   bhy_initializeSettings,
@@ -414,30 +432,36 @@ import {
   in_glover,
   LM_glover,
 } from "./autoscend/paths/g_lover";
-import { LM_gnoob } from "./autoscend/paths/gelatinous_noob";
+import { in_gnoob, LM_gnoob } from "./autoscend/paths/gelatinous_noob";
 import { in_ggoo, LA_grey_goo_tasks } from "./autoscend/paths/grey_goo";
-import { ht_equip_hats } from "./autoscend/paths/hattrick";
+import { ht_equip_hats, in_hattrick } from "./autoscend/paths/hattrick";
 import {
   heavyrains_buySkills,
   heavyrains_initializeDay,
   heavyrains_initializeSettings,
   in_heavyrains,
 } from "./autoscend/paths/heavy_rains";
-import { iluh_buyEquiq } from "./autoscend/paths/i_love_u_hate";
+import { iluh_buyEquiq, in_iluh } from "./autoscend/paths/i_love_u_hate";
 import {
   in_koe,
   koe_acquire_rmi,
   koe_initializeSettings,
   koe_rmi_count,
 } from "./autoscend/paths/kingdom_of_exploathing";
-import { kolhs_initializeSettings, LM_kolhs } from "./autoscend/paths/kolhs";
+import {
+  in_kolhs,
+  kolhs_initializeSettings,
+  LM_kolhs,
+} from "./autoscend/paths/kolhs";
 import {
   auto_LegacyOfLoathingDailies,
+  in_lol,
   lol_buyReplicas,
   lol_initializeSettings,
 } from "./autoscend/paths/legacy_of_loathing";
 import {
   bond_initializeSettings,
+  in_lta,
   LM_bond,
 } from "./autoscend/paths/license_to_adventure";
 import {
@@ -447,11 +471,15 @@ import {
 } from "./autoscend/paths/live_ascend_repeat";
 import { lowkey_initializeSettings } from "./autoscend/paths/low_key_summer";
 import {
+  in_nuclear,
   LM_nuclear,
   nuclear_initializeDay,
   nuclear_initializeSettings,
 } from "./autoscend/paths/nuclear_autumn";
-import { ocrs_postCombatResolve } from "./autoscend/paths/one_crazy_random_summer";
+import {
+  in_ocrs,
+  ocrs_postCombatResolve,
+} from "./autoscend/paths/one_crazy_random_summer";
 import {
   in_plumber,
   LM_plumber,
@@ -467,10 +495,12 @@ import {
 } from "./autoscend/paths/pocket_familiars";
 import {
   auto_refreshQTFam,
+  in_quantumTerrarium,
   qt_initializeSettings,
 } from "./autoscend/paths/quantum_terrarium";
 import {
   auto_smallCampgroundGear,
+  in_small,
   small_initializeSettings,
 } from "./autoscend/paths/small";
 import {
@@ -499,15 +529,20 @@ import {
   robot_initializeSettings,
 } from "./autoscend/paths/you_robot";
 import {
-  LM_zombieSlayer,
+  in_zombieSlayer,
+  LM_zombieSlayerTask,
   zombieSlayer_buySkills,
   zombieSlayer_initializeSettings,
 } from "./autoscend/paths/zombie_slayer";
-import { LX_zootoFight, zoo_graftFam } from "./autoscend/paths/zootomist";
+import {
+  in_zootomist,
+  LX_zootoFight,
+  zoo_graftFam,
+} from "./autoscend/paths/zootomist";
 import { tootGetMeat, tootOriole } from "./autoscend/quests/level_01";
 import {
   L8_mineOreWorthBurningLuckOn,
-  L8_mountainManSummon,
+  L8_mountainManSummonTask,
 } from "./autoscend/quests/level_08";
 import {
   finishBuildingSmutOrcBridge,
@@ -523,14 +558,12 @@ import {
   ns_crowd3,
 } from "./autoscend/quests/level_13";
 import {
-  LX_dronesOut,
-  LX_ForceNC,
+  LX_dronesOutTask,
+  LX_ForceNCTask,
   LX_handleIntroAdventures,
   useTonicDjinn,
 } from "./autoscend/quests/level_any";
 import { houseUpgrade } from "./autoscend/quests/optional";
-import { callRegisteredTaskFunction } from "./autoscend/task_registry";
-import { fileAsMap } from "./autoscend/utils/kolmafiaUtils";
 
 // non-thrifty familiars are unusable in thrifty
 /***
@@ -798,7 +831,7 @@ export function auto_unreservedAdvRemaining(): boolean {
   return false;
 }
 
-export function LX_burnDelay(): boolean {
+function LX_burnDelayDo(): boolean {
   let voteMonsterAvailable: boolean = auto_voteMonster(true);
   const digitizeMonsterNext: boolean = isOverdueDigitize();
   let sausageGoblinAvailable: boolean = auto_sausageGoblin();
@@ -971,6 +1004,17 @@ export function LX_burnDelay(): boolean {
   return false;
 }
 
+const LX_burnDelayTask: QuestTask = registerQuestTask({
+  name: "LX_burnDelay",
+  completed: () => false,
+  ready: () => true,
+  do: LX_burnDelayDo,
+});
+
+export function LX_burnDelay(): boolean {
+  return runQuestTask(LX_burnDelayTask);
+}
+
 export function LX_needToBurnUnusedLuck(): boolean {
   const unusedLucky: number = auto_unusedPerishableLuckySources();
   if (unusedLucky === 0) {
@@ -1007,7 +1051,7 @@ function LX_bestLuckyBurnLocation(): Location {
   return Location.none;
 }
 
-export function LX_burnUnusedLuck(): boolean {
+function LX_burnUnusedLuckDo(): boolean {
   const luckyLoc: Location = LX_bestLuckyBurnLocation();
   if (luckyLoc === Location.none) {
     return false;
@@ -1017,6 +1061,17 @@ export function LX_burnUnusedLuck(): boolean {
     "green",
   );
   return autoLuckyAdv(luckyLoc, true);
+}
+
+const LX_burnUnusedLuckTask: QuestTask = registerQuestTask({
+  name: "LX_burnUnusedLuck",
+  completed: () => auto_unusedPerishableLuckySources() <= 0,
+  ready: () => LX_needToBurnUnusedLuck(),
+  do: LX_burnUnusedLuckDo,
+});
+
+export function LX_burnUnusedLuck(): boolean {
+  return runQuestTask(LX_burnUnusedLuckTask);
 }
 
 export function LX_calculateTheUniverse(speculative: boolean): boolean {
@@ -1276,7 +1331,7 @@ function initializeDay(day: number): void {
       }
     } else {
       visitUrl("campground.php?action=teatree");
-      runChoice(1);
+      auto_runChoice(1);
     }
   }
 
@@ -1797,33 +1852,7 @@ export function dailyEvents(): boolean {
   return true;
 }
 
-export function Lsc_flyerSeals(): boolean {
-  if (myClass() !== $class`Seal Clubber`) {
-    return false;
-  }
-  if (toBoolean(getProperty("auto_ignoreFlyer"))) {
-    return false;
-  }
-  // although seals can be fought drunk, it complicates code without serving a purpose
-  if (myInebriety() > inebrietyLimit()) {
-    return false;
-  }
-  if (internalQuestStatus("questL12War") !== 1) {
-    return false;
-  }
-  if (toInt(getProperty("flyeredML")) >= 10000) {
-    return false;
-  }
-  if (
-    itemAmount($item`rock band flyers`) === 0 &&
-    itemAmount($item`jam band flyers`) === 0
-  ) {
-    return false;
-  }
-  if (toInt(getProperty("choiceAdventure1003")) >= 3) {
-    return false;
-  }
-
+function Lsc_flyerSealsDo(): boolean {
   if (
     toInt(getProperty("_sealsSummoned")) < maxSealSummons() &&
     myMeat() > 500
@@ -1912,6 +1941,26 @@ export function Lsc_flyerSeals(): boolean {
     return clubbedSeal;
   }
   return false;
+}
+
+const Lsc_flyerSealsTask: QuestTask = registerQuestTask({
+  name: "Lsc_flyerSeals",
+  completed: () => !in_lol(),
+  ready: () =>
+    myClass() === $class`Seal Clubber` &&
+    !toBoolean(getProperty("auto_ignoreFlyer")) &&
+    // although seals can be fought drunk, it complicates code without serving a purpose
+    myInebriety() <= inebrietyLimit() &&
+    internalQuestStatus("questL12War") === 1 &&
+    toInt(getProperty("flyeredML")) < 10000 &&
+    (itemAmount($item`rock band flyers`) > 0 ||
+      itemAmount($item`jam band flyers`) > 0) &&
+    toInt(getProperty("choiceAdventure1003")) < 3,
+  do: Lsc_flyerSealsDo,
+});
+
+export function Lsc_flyerSeals(): boolean {
+  return runQuestTask(Lsc_flyerSealsTask);
 }
 
 function councilMaintenance(): boolean {
@@ -2494,39 +2543,928 @@ export function resetState(): void {
   }
 }
 
-function process_tasks(): boolean {
-  const task_order: Map<string, Map<number, Map<string, string>>> = fileAsMap(
-    "autoscend_task_order.txt",
-    [String, Number, String, String],
-  );
-  if (!task_order.size) {
-    abort("Could not load /data/autoscend_task_order.txt");
-  }
+// The fixed lead-in sequence that used to be hardcoded straight-line code at
+// the top of doTasks(): "always run" maintenance calls (never stop the
+// chain) interspersed with the gated ||-chains that were previously separate
+// runTaskChain(...) calls. Folded into one ordered list so it shares the
+// same cached engine/state as the rest of runNextTask()'s dispatch.
+const resetStateTask: QuestTask = registerQuestTask({
+  name: "resetState",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    resetState();
+    return false;
+  },
+});
 
-  let task_path: string = myPath().name;
-  if (!task_order.has(task_path)) {
-    task_path = "default";
-  }
+const basicAdjustMLTask: QuestTask = registerQuestTask({
+  name: "basicAdjustML",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    basicAdjustML();
+    return false;
+  },
+});
 
-  for (const [i, _v0] of task_order.get(task_path) ??
-    task_order.set(task_path, new Map()).get(task_path)) {
-    for (const [task_function, _v1] of _v0) {
-      const condition_function = _v1;
-      auto_log_debug(`Attempting to execute task ${i} ${task_function}`);
-      if (
-        condition_function === "" ||
-        callRegisteredTaskFunction(condition_function)
-      ) {
-        const result_1: boolean = callRegisteredTaskFunction(task_function);
-        if (result_1) {
-          return true;
-        }
+const zoo_graftFamTask: QuestTask = registerQuestTask({
+  name: "zoo_graftFam",
+  completed: () => !in_zootomist(),
+  ready: () => true,
+  do: zoo_graftFam,
+});
+
+const finishBuildingSmutOrcBridgeMaintenanceTask: QuestTask = registerQuestTask(
+  {
+    name: "finishBuildingSmutOrcBridgeMaintenance",
+    completed: () => false,
+    ready: () => true,
+    do: () => {
+      finishBuildingSmutOrcBridge();
+      return false;
+    },
+  },
+);
+
+const councilMaintenanceTask: QuestTask = registerQuestTask({
+  name: "councilMaintenance",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    councilMaintenance();
+    return false;
+  },
+});
+
+// formerly picky_buyskills() now moved here
+const auto_buySkillsTask: QuestTask = registerQuestTask({
+  name: "auto_buySkills",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    auto_buySkills();
+    return false;
+  },
+});
+
+const awol_buySkillsTask: QuestTask = registerQuestTask({
+  name: "awol_buySkills",
+  completed: () => !in_awol(),
+  ready: () => true,
+  do: () => {
+    awol_buySkills();
+    return false;
+  },
+});
+
+const awol_useStuffTask: QuestTask = registerQuestTask({
+  name: "awol_useStuff",
+  completed: () => !in_awol(),
+  ready: () => true,
+  do: () => {
+    awol_useStuff();
+    return false;
+  },
+});
+
+const aosol_unCurseTask: QuestTask = registerQuestTask({
+  name: "aosol_unCurse",
+  completed: () => !in_awol(),
+  ready: () => true,
+  do: () => {
+    aosol_unCurse();
+    return false;
+  },
+});
+
+const aosol_buySkillsTask: QuestTask = registerQuestTask({
+  name: "aosol_buySkills",
+  completed: () => !in_awol(),
+  ready: () => true,
+  do: () => {
+    aosol_buySkills();
+    return false;
+  },
+});
+
+const theSource_buySkillsTask: QuestTask = registerQuestTask({
+  name: "theSource_buySkills",
+  completed: () => !in_theSource(),
+  ready: () => true,
+  do: () => {
+    theSource_buySkills();
+    return false;
+  },
+});
+
+const jarlsberg_buySkillsTask: QuestTask = registerQuestTask({
+  name: "jarlsberg_buySkills",
+  completed: () => !is_jarlsberg(),
+  ready: () => true,
+  do: () => {
+    jarlsberg_buySkills();
+    return false;
+  },
+});
+
+const boris_buySkillsTask: QuestTask = registerQuestTask({
+  name: "boris_buySkills",
+  completed: () => !is_boris(),
+  ready: () => true,
+  do: () => {
+    boris_buySkills();
+    return false;
+  },
+});
+
+const pete_buySkillsTask: QuestTask = registerQuestTask({
+  name: "pete_buySkills",
+  completed: () => !is_pete(),
+  ready: () => true,
+  do: () => {
+    pete_buySkills();
+    return false;
+  },
+});
+
+const zombieSlayer_buySkillsTask: QuestTask = registerQuestTask({
+  name: "zombieSlayer_buySkills",
+  completed: () => !in_zombieSlayer(),
+  ready: () => true,
+  do: () => {
+    zombieSlayer_buySkills();
+    return false;
+  },
+});
+
+const pokefam_getHatsTask: QuestTask = registerQuestTask({
+  name: "pokefam_getHats",
+  completed: () => !in_pokefam(),
+  ready: () => true,
+  do: () => {
+    pokefam_getHats();
+    return false;
+  },
+});
+
+const auto_refreshQTFamTask: QuestTask = registerQuestTask({
+  name: "auto_refreshQTFam",
+  completed: () => !in_quantumTerrarium(),
+  ready: () => true,
+  do: () => {
+    auto_refreshQTFam();
+    return false;
+  },
+});
+
+const lol_buyReplicasTask: QuestTask = registerQuestTask({
+  name: "lol_buyReplicas",
+  completed: () => !in_lol(),
+  ready: () => true,
+  do: () => {
+    lol_buyReplicas();
+    return false;
+  },
+});
+
+const iluh_buyEquiqTask: QuestTask = registerQuestTask({
+  name: "iluh_buyEquiq",
+  completed: () => !in_iluh(),
+  ready: () => true,
+  do: () => {
+    iluh_buyEquiq();
+    return false;
+  },
+});
+
+const ht_equip_hatsTask: QuestTask = registerQuestTask({
+  name: "ht_equip_hats",
+  completed: () => !in_hattrick(),
+  ready: () => true,
+  do: () => {
+    ht_equip_hats();
+    return false;
+  },
+});
+
+const oldPeoplePlantStuffTask: QuestTask = registerQuestTask({
+  name: "oldPeoplePlantStuff",
+  completed: () => !floristAvailable(),
+  ready: () => true,
+  do: () => {
+    oldPeoplePlantStuff();
+    return false;
+  },
+});
+
+const use_barrelsTask: QuestTask = registerQuestTask({
+  name: "use_barrels",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    use_barrels();
+    return false;
+  },
+});
+
+const auto_latteRefillTask: QuestTask = registerQuestTask({
+  name: "auto_latteRefill",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    auto_latteRefill$4();
+    return false;
+  },
+});
+
+const auto_buyCrimboCommerceMallItemTask: QuestTask = registerQuestTask({
+  name: "auto_buyCrimboCommerceMallItem",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    auto_buyCrimboCommerceMallItem();
+    return false;
+  },
+});
+
+const houseUpgradeTask: QuestTask = registerQuestTask({
+  name: "houseUpgrade",
+  completed: () => !$items`big rock, Newbiesport™ tent`.includes(getDwelling()),
+  ready: () => true,
+  do: () => {
+    houseUpgrade();
+    return false;
+  },
+});
+
+//This just closets stuff so G-Lover does not mess with us.
+const LM_gloverTask: QuestTask = registerQuestTask({
+  name: "LM_glover",
+  completed: () => !in_glover(),
+  ready: () => true,
+  do: LM_glover,
+});
+
+//This just closets stuff that bees don't like
+const LM_bhyTask: QuestTask = registerQuestTask({
+  name: "LM_bhy",
+  completed: () => !in_bhy(),
+  ready: () => true,
+  do: LM_bhy,
+});
+
+const tophatMakerTask: QuestTask = registerQuestTask({
+  name: "tophatMaker",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    tophatMaker();
+    return false;
+  },
+});
+
+const deck_useSchemeTask: QuestTask = registerQuestTask({
+  name: "deck_useScheme",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    deck_useScheme("");
+    return false;
+  },
+});
+
+const autosellCrapTask: QuestTask = registerQuestTask({
+  name: "autosellCrap",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    autosellCrap();
+    return false;
+  },
+});
+
+const asdonAutoFeedTask: QuestTask = registerQuestTask({
+  name: "asdonAutoFeed",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    asdonAutoFeed();
+    return false;
+  },
+});
+
+const LX_craftAcquireItemsTask: QuestTask = registerQuestTask({
+  name: "LX_craftAcquireItems",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    LX_craftAcquireItems();
+    return false;
+  },
+});
+
+const auto_spoonTuneMoonTask: QuestTask = registerQuestTask({
+  name: "auto_spoonTuneMoon",
+  completed: () =>
+    !auto_is_valid($item`hewn moon-rune spoon`) ||
+    !possessEquipment($item`hewn moon-rune spoon`),
+  ready: () => true,
+  do: () => {
+    auto_spoonTuneMoon();
+    return false;
+  },
+});
+
+const auto_chapeauTask: QuestTask = registerQuestTask({
+  name: "auto_chapeau",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    auto_chapeau();
+    return false;
+  },
+});
+
+const auto_buyFireworksHatTask: QuestTask = registerQuestTask({
+  name: "auto_buyFireworksHat",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    auto_buyFireworksHat();
+    return false;
+  },
+});
+
+const auto_CMCconsultTask: QuestTask = registerQuestTask({
+  name: "auto_CMCconsult",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    auto_CMCconsult();
+    return false;
+  },
+});
+
+const auto_checkTrainSetTask: QuestTask = registerQuestTask({
+  name: "auto_checkTrainSet",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    auto_checkTrainSet();
+    return false;
+  },
+});
+
+const prioritizeGooseTask: QuestTask = registerQuestTask({
+  name: "prioritizeGoose",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    prioritizeGoose();
+    return false;
+  },
+});
+
+const auto_useWardrobeTask: QuestTask = registerQuestTask({
+  name: "auto_useWardrobe",
+  completed: () =>
+    itemAmount($item`wardrobe-o-matic`) === 0 ||
+    !auto_is_valid($item`wardrobe-o-matic`) ||
+    getProperty("_futuristicHatModifier") !== "",
+  ready: () => true,
+  do: () => {
+    auto_useWardrobe();
+    return false;
+  },
+});
+
+const auto_MayamClaimAllTask: QuestTask = registerQuestTask({
+  name: "auto_MayamClaimAll",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    auto_MayamClaimAll();
+    return false;
+  },
+});
+
+const auto_defaultBurnLeavesTask: QuestTask = registerQuestTask({
+  name: "auto_defaultBurnLeaves",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    auto_defaultBurnLeaves();
+    return false;
+  },
+});
+
+const auto_waveTheZoneTask: QuestTask = registerQuestTask({
+  name: "auto_waveTheZone",
+  completed: () => !auto_haveMonodent() || get("_seadentWaveUsed"),
+  ready: () => true,
+  do: () => {
+    auto_waveTheZone();
+    return false;
+  },
+});
+
+const ocrs_postCombatResolveTask: QuestTask = registerQuestTask({
+  name: "ocrs_postCombatResolve",
+  completed: () => !in_ocrs(),
+  ready: () => true,
+  do: () => {
+    ocrs_postCombatResolve();
+    return false;
+  },
+});
+
+const beatenUpResolutionTask: QuestTask = registerQuestTask({
+  name: "beatenUpResolution",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    beatenUpResolution();
+    return false;
+  },
+});
+
+const lar_safeguardTask: QuestTask = registerQuestTask({
+  name: "lar_safeguard",
+  completed: () => !in_lar(),
+  ready: () => true,
+  do: () => {
+    lar_safeguard();
+    return false;
+  },
+});
+
+const auto_useLeprecondoDropsTask: QuestTask = registerQuestTask({
+  name: "auto_useLeprecondoDrops",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    auto_useLeprecondoDrops();
+    return false;
+  },
+});
+
+const auto_setLeprecondoTask: QuestTask = registerQuestTask({
+  name: "auto_setLeprecondo",
+  completed: () => !Leprecondo.have() || !auto_is_valid($item`Leprecondo`),
+  ready: () => true,
+  do: () => {
+    auto_setLeprecondo(false);
+    return false;
+  },
+});
+
+const LX_zootoFightTask: QuestTask = registerQuestTask({
+  name: "LX_zootoFight",
+  completed: () => !in_zootomist(),
+  ready: () => true,
+  do: LX_zootoFight,
+});
+
+//Early adventure options that we probably want
+const dna_startAcquireTask: QuestTask = registerQuestTask({
+  name: "dna_startAcquire",
+  completed: () =>
+    !isUnrestricted($item`Little Geneticist DNA-Splicing Lab`) ||
+    getProperty("auto_day1_dna") === "finished" ||
+    myDaycount() !== 1,
+  ready: () => true,
+  do: dna_startAcquire,
+});
+
+const LM_borisTask: QuestTask = registerQuestTask({
+  name: "LM_boris",
+  completed: () => !is_boris(),
+  ready: () => true,
+  do: LM_boris,
+});
+
+const LM_peteTask: QuestTask = registerQuestTask({
+  name: "LM_pete",
+  completed: () => !is_pete(),
+  ready: () => true,
+  do: LM_pete,
+});
+
+const LM_gnoobTask: QuestTask = registerQuestTask({
+  name: "LM_gnoob",
+  completed: () => !in_gnoob(),
+  ready: () => true,
+  do: LM_gnoob,
+});
+
+const LM_nuclearTask: QuestTask = registerQuestTask({
+  name: "LM_nuclear",
+  completed: () => !in_nuclear(),
+  ready: () => true,
+  do: LM_nuclear,
+});
+
+const LM_larTask: QuestTask = registerQuestTask({
+  name: "LM_lar",
+  completed: () => !in_lar(),
+  ready: () => true,
+  do: LM_lar,
+});
+
+const LM_batpathTask: QuestTask = registerQuestTask({
+  name: "LM_batpath",
+  completed: () => !in_darkGyffte(),
+  ready: () => true,
+  do: LM_batpath,
+});
+
+const heavyrains_buySkillsTask: QuestTask = registerQuestTask({
+  name: "heavyrains_buySkills",
+  completed: () => !in_heavyrains(),
+  ready: () => true,
+  do: heavyrains_buySkills,
+});
+
+const LM_canInteractTask: QuestTask = registerQuestTask({
+  name: "LM_canInteract",
+  completed: () => false,
+  ready: () => true,
+  do: LM_canInteract,
+});
+
+const LM_kolhsTask: QuestTask = registerQuestTask({
+  name: "LM_kolhs",
+  completed: () => !in_kolhs(),
+  ready: () => true,
+  do: LM_kolhs,
+});
+
+const LM_robotTask: QuestTask = registerQuestTask({
+  name: "LM_robot",
+  completed: () => !in_robot(),
+  ready: () => true,
+  do: LM_robot,
+});
+
+const LM_plumberTask: QuestTask = registerQuestTask({
+  name: "LM_plumber",
+  completed: () => !in_plumber(),
+  ready: () => true,
+  do: LM_plumber,
+});
+
+const cheeseWarMachineAndLoveTunnelTask: QuestTask = registerQuestTask({
+  name: "cheeseWarMachineAndLoveTunnel",
+  completed: () =>
+    (!auto_is_valid($item`Bastille Battalion control rig`) &&
+      itemAmount($item`Bastille Battalion control rig`) === 0) ||
+    toInt(getProperty("_bastilleGames")) !== 0,
+  ready: () => true,
+  do: () => {
+    cheeseWarMachine(0, 0, 0, 0);
+
+    let turnGoal: number = 0;
+    if (
+      isActuallyEd() &&
+      !possessEquipment($item`The Crown of Ed the Undying`)
+    ) {
+      turnGoal = 15;
+    }
+
+    if (myTurncount() >= turnGoal) {
+      switch (myDaycount()) {
+        case 1:
+          loveTunnelAcquire(true, Stat.none, true, 1, true, 3);
+          break;
+        case 2:
+          loveTunnelAcquire(true, Stat.none, true, 3, true, 1);
+          break;
+        default:
+          loveTunnelAcquire(true, Stat.none, true, 2, true, 1);
+          break;
       }
     }
-  }
+    return false;
+  },
+  locations: $location`The Tunnel of L.O.V.E.`,
+});
 
-  return false;
-}
+const theSource_oracleTask: QuestTask = registerQuestTask({
+  name: "theSource_oracle",
+  completed: () => !in_theSource(),
+  ready: () => true,
+  do: theSource_oracle,
+});
+
+const LX_theSourceTask: QuestTask = registerQuestTask({
+  name: "LX_theSource",
+  completed: () => !in_theSource(),
+  ready: () => true,
+  do: LX_theSource,
+});
+
+const LX_ghostBustingTask: QuestTask = registerQuestTask({
+  name: "LX_ghostBusting",
+  completed: () => false,
+  ready: () => true,
+  do: LX_ghostBusting,
+});
+
+const witchessFightsTask: QuestTask = registerQuestTask({
+  name: "witchessFights",
+  completed: () => false,
+  ready: () => true,
+  do: witchessFights,
+});
+
+//
+//Adventuring actually starts here.
+//
+const LA_grey_goo_tasksTask: QuestTask = registerQuestTask({
+  name: "LA_grey_goo_tasks",
+  completed: () => !in_ggoo(),
+  ready: () => true,
+  do: LA_grey_goo_tasks,
+});
+
+const ggooSanityCheckTask: QuestTask = registerQuestTask({
+  name: "ggooSanityCheck",
+  completed: () => !in_ggoo(),
+  ready: () => true,
+  do: () => {
+    if (in_ggoo()) {
+      abort(
+        "Should not have gotten here, aborted LA_grey_goo_tasks method allowed return to caller. Uh oh.",
+      );
+    }
+    return false;
+  },
+});
+
+const auto_voteSetupTask: QuestTask = registerQuestTask({
+  name: "auto_voteSetup",
+  completed: () => !auto_haveVotingBooth() || get("_voteModifier") !== "",
+  ready: () => true,
+  do: () => {
+    auto_voteSetup(0, 0, 0);
+    return false;
+  },
+});
+
+const auto_setSongboomTask: QuestTask = registerQuestTask({
+  name: "auto_setSongboom",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    auto_setSongboom();
+    return false;
+  },
+});
+
+const auto_juneCleaverAdventureTask: QuestTask = registerQuestTask({
+  name: "auto_juneCleaverAdventure",
+  completed: () => !auto_canUseJuneCleaver(),
+  ready: () => true,
+  do: auto_juneCleaverAdventure,
+});
+
+const LM_bondTask: QuestTask = registerQuestTask({
+  name: "LM_bond",
+  completed: () => !in_lta(),
+  ready: () => true,
+  do: LM_bond,
+  locations: $location`Super Villain's Lair`,
+});
+
+const LX_calculateTheUniverseTask: QuestTask = registerQuestTask({
+  name: "LX_calculateTheUniverse",
+  completed: () =>
+    toInt(getProperty("_universeCalculated")) >=
+    min(3, toInt(getProperty("skillLevel144"))),
+  ready: () => true,
+  do: () => LX_calculateTheUniverse(false),
+});
+
+const rockGardenEndTask: QuestTask = registerQuestTask({
+  name: "rockGardenEnd",
+  completed: () =>
+    $items`strange stalagmite, molehill mountain`.every(
+      (i) => !auto_is_valid(i),
+    ) ||
+    (get("_molehillMountainUsed") && get("_strangeStalagmiteUsed")),
+  ready: () => true,
+  do: () => {
+    rockGardenEnd();
+    return false;
+  },
+});
+
+const adventureFailureHandlerTask: QuestTask = registerQuestTask({
+  name: "adventureFailureHandler",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    adventureFailureHandler();
+    return false;
+  },
+});
+
+const dna_sorceressTestTask: QuestTask = registerQuestTask({
+  name: "dna_sorceressTest",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    dna_sorceressTest();
+    return false;
+  },
+});
+
+const dna_genericTask: QuestTask = registerQuestTask({
+  name: "dna_generic",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    dna_generic();
+    return false;
+  },
+});
+
+const LA_wildfireTask: QuestTask = registerQuestTask({
+  name: "LA_wildfire",
+  completed: () => !in_wildfire(),
+  ready: () => true,
+  do: LA_wildfire,
+});
+
+const LA_robotTask: QuestTask = registerQuestTask({
+  name: "LA_robot",
+  completed: () => !in_robot(),
+  ready: () => true,
+  do: LA_robot,
+});
+
+const auto_autumnatonQuestTask: QuestTask = registerQuestTask({
+  name: "auto_autumnatonQuest",
+  completed: () => !auto_hasAutumnaton(),
+  ready: () => true,
+  do: auto_autumnatonQuest,
+});
+
+const auto_smallCampgroundGearTask: QuestTask = registerQuestTask({
+  name: "auto_smallCampgroundGear",
+  completed: () => !in_small(),
+  ready: () => true,
+  do: auto_smallCampgroundGear,
+  locations: $locations`Fight in the Dirt, Fight in the Tall Grass`,
+});
+
+const elfToiletTask: QuestTask = registerQuestTask({
+  name: "elfToilet",
+  completed: () =>
+    !haveCampground() ||
+    !haveInCampground($item`Pork Elf toilet`) ||
+    !auto_is_valid($item`Pork Elf toilet`) ||
+    get("_porkElfToiletUsed"),
+  ready: () => true,
+  do: () => {
+    if (auto_elfToiletReady(false)) {
+      auto_useElfToilet();
+    }
+    return false;
+  },
+});
+
+const auto_lostStomachTask: QuestTask = registerQuestTask({
+  name: "auto_lostStomach",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    auto_lostStomach(false);
+    return false;
+  },
+});
+
+// running turbo only
+const autoCleanseTask: QuestTask = registerQuestTask({
+  name: "autoCleanse",
+  completed: () => false,
+  ready: () => true,
+  do: () => {
+    autoCleanse();
+    return false;
+  },
+});
+
+const auto_doPhoneQuestTask: QuestTask = registerQuestTask({
+  name: "auto_doPhoneQuest",
+  completed: () => !auto_havePayPhone(),
+  ready: () => true,
+  do: auto_doPhoneQuest,
+  locations: () => [auto_availableBrickRift()],
+});
+
+const auto_doTempleSummitTask: QuestTask = registerQuestTask({
+  name: "auto_doTempleSummit",
+  completed: () => toInt(getProperty("lastTempleAdventures")) >= myAscensions(),
+  ready: () => true,
+  do: auto_doTempleSummit,
+  locations: $location`The Hidden Temple`,
+});
+
+const doTasksPrelude: QuestTask[] = [
+  resetStateTask,
+  basicAdjustMLTask,
+  zoo_graftFamTask,
+  finishBuildingSmutOrcBridgeMaintenanceTask,
+  councilMaintenanceTask,
+  auto_buySkillsTask,
+  awol_buySkillsTask,
+  awol_useStuffTask,
+  aosol_unCurseTask,
+  aosol_buySkillsTask,
+  theSource_buySkillsTask,
+  jarlsberg_buySkillsTask,
+  boris_buySkillsTask,
+  pete_buySkillsTask,
+  zombieSlayer_buySkillsTask,
+  pokefam_getHatsTask,
+  auto_refreshQTFamTask,
+  lol_buyReplicasTask,
+  iluh_buyEquiqTask,
+  ht_equip_hatsTask,
+  oldPeoplePlantStuffTask,
+  use_barrelsTask,
+  auto_latteRefillTask,
+  auto_buyCrimboCommerceMallItemTask,
+  houseUpgradeTask,
+  LM_gloverTask,
+  LM_bhyTask,
+  tophatMakerTask,
+  deck_useSchemeTask,
+  autosellCrapTask,
+  asdonAutoFeedTask,
+  LX_craftAcquireItemsTask,
+  auto_spoonTuneMoonTask,
+  auto_chapeauTask,
+  auto_buyFireworksHatTask,
+  auto_CMCconsultTask,
+  auto_checkTrainSetTask,
+  prioritizeGooseTask,
+  auto_useWardrobeTask,
+  auto_MayamClaimAllTask,
+  auto_defaultBurnLeavesTask,
+  auto_waveTheZoneTask,
+  ocrs_postCombatResolveTask,
+  beatenUpResolutionTask,
+  lar_safeguardTask,
+  auto_useLeprecondoDropsTask,
+  auto_setLeprecondoTask,
+  LX_zootoFightTask,
+  dna_startAcquireTask,
+  LM_borisTask,
+  LM_peteTask,
+  LM_gnoobTask,
+  LM_nuclearTask,
+  LM_larTask,
+  LM_batpathTask,
+  heavyrains_buySkillsTask,
+  LM_canInteractTask,
+  LM_kolhsTask,
+  LM_jarlsbergTask,
+  LM_robotTask,
+  LM_plumberTask,
+  LM_zombieSlayerTask,
+  LM_adventurerMeatsWorldTask,
+  cheeseWarMachineAndLoveTunnelTask,
+  theSource_oracleTask,
+  LX_theSourceTask,
+  LX_ghostBustingTask,
+  witchessFightsTask,
+  LA_grey_goo_tasksTask,
+  ggooSanityCheckTask,
+  auto_voteSetupTask,
+  auto_setSongboomTask,
+  auto_juneCleaverAdventureTask,
+  LX_ForceNCTask,
+  LX_dronesOutTask,
+  LM_bondTask,
+  LX_calculateTheUniverseTask,
+  rockGardenEndTask,
+  adventureFailureHandlerTask,
+  dna_sorceressTestTask,
+  dna_genericTask,
+  LA_wildfireTask,
+  LA_robotTask,
+  auto_autumnatonQuestTask,
+  auto_smallCampgroundGearTask,
+  elfToiletTask,
+  auto_lostStomachTask,
+  autoCleanseTask,
+  auto_doPhoneQuestTask,
+  auto_doTempleSummitTask,
+  L8_mountainManSummonTask,
+];
 
 function doTasks(): boolean {
   //this is the main loop for autoscend. returning true will restart from the begining. returning false will quit the loop and go on to do bedtime
@@ -2622,220 +3560,7 @@ function doTasks(): boolean {
     visitUrl("charpane.php", false);
   }
   // actually doing stuff should start from here onwards.
-  resetState();
-
-  basicAdjustML();
-
-  if (zoo_graftFam()) {
-    return true;
-  }
-
-  finishBuildingSmutOrcBridge();
-  councilMaintenance();
-  auto_buySkills(); // formerly picky_buyskills() now moved here
-  awol_buySkills();
-  awol_useStuff();
-  aosol_unCurse();
-  aosol_buySkills();
-  theSource_buySkills();
-  jarlsberg_buySkills();
-  boris_buySkills();
-  pete_buySkills();
-  zombieSlayer_buySkills();
-  pokefam_getHats();
-  auto_refreshQTFam();
-  lol_buyReplicas();
-  iluh_buyEquiq();
-  ht_equip_hats(); //equip hats in Hat Trick
-
-  oldPeoplePlantStuff();
-  use_barrels();
-  auto_latteRefill$4();
-  auto_buyCrimboCommerceMallItem();
-  houseUpgrade();
-  //This just closets stuff so G-Lover does not mess with us.
-  if (LM_glover()) {
-    return true;
-  }
-  //This just closets stuff that bees don't like
-  if (LM_bhy()) {
-    return true;
-  }
-
-  tophatMaker();
-  deck_useScheme("");
-  autosellCrap();
-  asdonAutoFeed();
-  LX_craftAcquireItems();
-  auto_spoonTuneMoon();
-  auto_chapeau();
-  auto_buyFireworksHat();
-  auto_CMCconsult();
-  auto_checkTrainSet();
-  prioritizeGoose();
-  auto_useWardrobe();
-  auto_MayamClaimAll();
-  auto_defaultBurnLeaves();
-  auto_waveTheZone();
-
-  ocrs_postCombatResolve();
-  beatenUpResolution();
-  lar_safeguard();
-
-  auto_useLeprecondoDrops();
-  auto_setLeprecondo(false);
-
-  if (LX_zootoFight()) {
-    return true;
-  }
-  //Early adventure options that we probably want
-  if (dna_startAcquire()) {
-    return true;
-  }
-  if (LM_boris()) {
-    return true;
-  }
-  if (LM_pete()) {
-    return true;
-  }
-  if (LM_gnoob()) {
-    return true;
-  }
-  if (LM_nuclear()) {
-    return true;
-  }
-  if (LM_lar()) {
-    return true;
-  }
-  if (LM_batpath()) {
-    return true;
-  }
-  if (heavyrains_buySkills()) {
-    return true;
-  }
-  if (LM_canInteract()) {
-    return true;
-  }
-  if (LM_kolhs()) {
-    return true;
-  }
-  if (LM_jarlsberg()) {
-    return true;
-  }
-  if (LM_robot()) {
-    return true;
-  }
-  if (LM_plumber()) {
-    return true;
-  }
-  if (LM_zombieSlayer()) {
-    return true;
-  }
-  if (LM_adventurerMeatsWorld()) {
-    return true;
-  }
-
-  {
-    cheeseWarMachine(0, 0, 0, 0);
-
-    let turnGoal: number = 0;
-    if (
-      isActuallyEd() &&
-      !possessEquipment($item`The Crown of Ed the Undying`)
-    ) {
-      turnGoal = 15;
-    }
-
-    if (myTurncount() >= turnGoal) {
-      switch (myDaycount()) {
-        case 1:
-          loveTunnelAcquire(true, Stat.none, true, 1, true, 3);
-          break;
-        case 2:
-          loveTunnelAcquire(true, Stat.none, true, 3, true, 1);
-          break;
-        default:
-          loveTunnelAcquire(true, Stat.none, true, 2, true, 1);
-          break;
-      }
-    }
-  }
-
-  if (theSource_oracle()) {
-    return true;
-  }
-  if (LX_theSource()) {
-    return true;
-  }
-  if (LX_ghostBusting()) {
-    return true;
-  }
-  if (witchessFights()) {
-    return true;
-  }
-  //
-  //Adventuring actually starts here.
-  //
-
-  if (LA_grey_goo_tasks()) {
-    return true;
-  }
-  if (in_ggoo()) {
-    abort(
-      "Should not have gotten here, aborted LA_grey_goo_tasks method allowed return to caller. Uh oh.",
-    );
-  }
-
-  auto_voteSetup(0, 0, 0);
-  auto_setSongboom();
-  if (auto_juneCleaverAdventure()) {
-    return true;
-  }
-  if (LX_ForceNC()) {
-    return true;
-  }
-  if (LX_dronesOut()) {
-    return true;
-  }
-  if (LM_bond()) {
-    return true;
-  }
-  if (LX_calculateTheUniverse(false)) {
-    return true;
-  }
-  rockGardenEnd();
-  adventureFailureHandler();
-  dna_sorceressTest();
-  dna_generic();
-  if (LA_wildfire()) {
-    return true;
-  }
-  if (LA_robot()) {
-    return true;
-  }
-  if (auto_autumnatonQuest()) {
-    return true;
-  }
-  if (auto_smallCampgroundGear()) {
-    return true;
-  }
-  if (auto_elfToiletReady(false)) {
-    auto_useElfToilet();
-  }
-  auto_lostStomach(false);
-  autoCleanse(); //running turbo only
-  if (auto_doPhoneQuest()) {
-    return true;
-  }
-
-  if (auto_doTempleSummit()) {
-    return true;
-  }
-  if (L8_mountainManSummon()) {
-    return true;
-  }
-
-  if (process_tasks()) {
+  if (runNextTask(myPath().name, doTasksPrelude)) {
     return true;
   }
 
@@ -2929,12 +3654,9 @@ function auto_begin(): void {
   backupSetting("autoAntidote", (0).toString());
   backupSetting("dontStopForCounters", true.toString());
   backupSetting("maximizerCombinationLimit", "100000");
-  backupSetting("afterAdventureScript", "scripts/autoscend/auto_post_adv.js");
-  backupSetting(
-    "choiceAdventureScript",
-    "scripts/autoscend/auto_choice_adv.js",
-  );
-  backupSetting("betweenBattleScript", "scripts/autoscend/auto_pre_adv.js");
+  backupSetting("afterAdventureScript", "js abort('Uh oh')");
+  backupSetting("choiceAdventureScript", "js abort('Uh oh')");
+  backupSetting("betweenBattleScript", "js abort('Uh oh')");
   backupSetting("recoveryScript", "");
   backupSetting("counterScript", "");
   if (!toBoolean(getProperty("auto_disableExcavator"))) {

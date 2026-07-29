@@ -64,6 +64,7 @@ import {
   summonMonster,
 } from "../auto_util";
 import { yellowRayCombatString$1 } from "../combat/auto_combat_util";
+import { runTaskChain } from "../engine/engine";
 import { speakeasyCombat } from "../iotms/mr2022";
 import { auto_doPhoneQuest, auto_fightFlamingLeaflet } from "../iotms/mr2023";
 import {
@@ -80,11 +81,12 @@ import {
   LX_killBaaBaaBuran,
   LX_unlockHauntedBilliardsRoom,
   LX_unlockHiddenTemple,
+  LX_unlockHiddenTempleTask,
 } from "../quests/level_11";
 import {
   candyBlock,
   candyBlockOutfit,
-  LX_lastChance,
+  LX_lastChanceTask,
 } from "../quests/level_any";
 
 const $_f_ZOOPART_NONE: number = 0;
@@ -924,7 +926,8 @@ export function getZooKickYR(): Skill {
 }
 
 export function getZooKickSniff(): Skill {
-  const haveYR: boolean = yellowRayCombatString$1(Monster.none, false) !== ""; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
+  const haveYR: boolean =
+    yellowRayCombatString$1(Monster.none, false) !== undefined; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
   if (leftKickHasSniff() && leftKickHasInstaKill() && !haveYR) {
     return $skill`Left %n Kick`;
   }
@@ -955,7 +958,7 @@ export function getZooKickBanish(): Skill {
 
 export function getZooKickInstaKill(): Skill {
   //Only instakill if we can't yellow ray
-  if (yellowRayCombatString$1(Monster.none, false) !== "") {
+  if (yellowRayCombatString$1(Monster.none, false) !== undefined) {
     //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
     return Skill.none;
   }
@@ -1093,11 +1096,13 @@ export function LX_zootoFight(): boolean {
       return true;
     }
 
-    if (LX_unlockHiddenTemple()) {
-      return true;
-    }
-    if (LX_lastChance()) {
-      //Should be high enough level by this point to handle these zones
+    if (
+      runTaskChain([
+        LX_unlockHiddenTempleTask,
+        //Should be high enough level by this point to handle these zones
+        LX_lastChanceTask,
+      ])
+    ) {
       return true;
     }
     return false;
@@ -1137,7 +1142,7 @@ export function LX_zootoFight(): boolean {
     }
     // should get wishes in Shadow Rift. If not can't do this
 
-    if (yellowRayCombatString$1(Monster.none, false) !== "") {
+    if (yellowRayCombatString$1(Monster.none, false) !== undefined) {
       if (
         toBoolean(getProperty("auto_hippyInstead")) &&
         !possessOutfit("War Hippy Fatigues")

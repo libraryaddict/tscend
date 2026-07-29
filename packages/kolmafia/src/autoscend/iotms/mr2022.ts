@@ -37,7 +37,6 @@ import {
   myPrimestat,
   retrieveItem,
   round,
-  runChoice,
   setProperty,
   splitString,
   toBoolean,
@@ -59,7 +58,7 @@ import {
   $stat,
 } from "libram";
 
-import { autoAdv, autoAdvBypass } from "../auto_adventure";
+import { autoAdv, autoAdvBypass, CombatMacroReturns } from "../auto_adventure";
 import { auto_canDrink, spleen_left } from "../auto_consume";
 import {
   addToMaximize,
@@ -82,6 +81,7 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   handleTracker,
   hasTorso,
   internalQuestStatus,
@@ -169,13 +169,13 @@ export function auto_haveCosmicBowlingBall(): boolean {
 export function auto_bowlingBallCombatString(
   place: Location,
   speculation: boolean,
-): string {
+): CombatMacroReturns {
   if (!auto_haveCosmicBowlingBall()) {
-    return "";
+    return undefined;
   }
 
   if (is_professor()) {
-    return ""; //Handle specially in WereProf Combat file
+    return undefined; //Handle specially in WereProf Combat file
   }
 
   if (
@@ -216,7 +216,7 @@ export function auto_bowlingBallCombatString(
     }
   }
 
-  return "";
+  return undefined;
 }
 
 export function auto_haveCombatLoversLocket(): boolean {
@@ -422,7 +422,7 @@ export function juneCleaverChoiceHandler(choice: number): void {
         haveSkill($skill`Tongue of the Walrus`) ||
         itemAmount($item`personal massager`) > 0
       ) {
-        runChoice(3); // +5 adventures, get beaten up
+        auto_runChoice(3); // +5 adventures, get beaten up
       } else if (
         (myPrimestat() === $stat`Mysticality` &&
           (myLevel() < 13 || disregardInstantKarma())) ||
@@ -430,9 +430,9 @@ export function juneCleaverChoiceHandler(choice: number): void {
           myLevel() > 12 &&
           disregardInstantKarma() === false)
       ) {
-        runChoice(2); // 137 myst substat
+        auto_runChoice(2); // 137 myst substat
       } else {
-        runChoice(1); // 250 moxie substat
+        auto_runChoice(1); // 250 moxie substat
       }
       break;
     case 1468: // Aunts not Ants
@@ -443,23 +443,23 @@ export function juneCleaverChoiceHandler(choice: number): void {
           myLevel() > 12 &&
           disregardInstantKarma() === false)
       ) {
-        runChoice(1); // 150 moxie substat
+        auto_runChoice(1); // 150 moxie substat
       } else if (toInt(getProperty("_juneCleaverSkips")) < 5) {
-        runChoice(4); // skip
+        auto_runChoice(4); // skip
       } else {
-        runChoice(2); // 250 muscle substat
+        auto_runChoice(2); // 250 muscle substat
       }
       break;
     case 1469: // Beware of Alligators
       if (myMeat() < meatReserve()) {
-        runChoice(3); // 1500 meat
+        auto_runChoice(3); // 1500 meat
       } else if (
         auto_canDrink($item`Dad's brandy`) &&
         myInebriety() < inebrietyLimit()
       ) {
-        runChoice(2); // size 1 awesome booze
+        auto_runChoice(2); // size 1 awesome booze
       } else {
-        runChoice(3); // 1500 meat
+        auto_runChoice(3); // 1500 meat
       }
       break;
     case 1470: // Teacher's Pet
@@ -467,16 +467,16 @@ export function juneCleaverChoiceHandler(choice: number): void {
         canEquip($item`teacher's pen`) &&
         availableAmount($item`teacher's pen`) < 1
       ) {
-        runChoice(2); // accessory, +2 fam exp, +3 stats per fight
+        auto_runChoice(2); // accessory, +2 fam exp, +3 stats per fight
       } else if (
         myPrimestat() === $stat`Muscle` &&
         (myLevel() < 13 || disregardInstantKarma())
       ) {
-        runChoice(3);
+        auto_runChoice(3);
       } else if (toInt(getProperty("_juneCleaverSkips")) < 5) {
-        runChoice(4); // skip
+        auto_runChoice(4); // skip
       } else {
-        runChoice(2); // accessory, +2 fam exp, +3 stats per fight
+        auto_runChoice(2); // accessory, +2 fam exp, +3 stats per fight
       }
       break;
     case 1471: // Lost and Found
@@ -485,18 +485,18 @@ export function juneCleaverChoiceHandler(choice: number): void {
         getProperty("auto_skipNuns") === "false" &&
         itemAmount($item`savings bond`) === 0
       ) {
-        runChoice(1); // potion, 30 turns of 50% meat
+        auto_runChoice(1); // potion, 30 turns of 50% meat
       } else if (
         myPrimestat() === $stat`Mysticality` &&
         (myLevel() < 13 || disregardInstantKarma())
       ) {
-        runChoice(3); // 250 myst substat
+        auto_runChoice(3); // 250 myst substat
       } else {
-        runChoice(1); // potion, 30 turns of 50% meat
+        auto_runChoice(1); // potion, 30 turns of 50% meat
       }
       break;
     case 1472: // Summer Days
-      runChoice(1); // potion, -5 combat rate, 30 turns
+      auto_runChoice(1); // potion, -5 combat rate, 30 turns
 
       break;
     case 1473: // Bath Time
@@ -504,11 +504,11 @@ export function juneCleaverChoiceHandler(choice: number): void {
         myPrimestat() === $stat`Muscle` &&
         (myLevel() < 13 || disregardInstantKarma())
       ) {
-        runChoice(1); // 250 muscle substat
+        auto_runChoice(1); // 250 muscle substat
       } else if (toInt(getProperty("_juneCleaverSkips")) < 5) {
-        runChoice(4); // skip
+        auto_runChoice(4); // skip
       } else {
-        runChoice(3); // effect, 30 turns of +3 hot res, +50% init
+        auto_runChoice(3); // effect, 30 turns of +3 hot res, +50% init
       }
       break;
     case 1474: // Delicious Sprouts
@@ -527,32 +527,32 @@ export function juneCleaverChoiceHandler(choice: number): void {
         itemAmount($item`guilty sprout`) === 0
       ) {
         // guilty sprout is level 8+ good size 1 food but it gives big stats, would want to use a red rocket
-        runChoice(2);
+        auto_runChoice(2);
       }
       if (
         myPrimestat() === $stat`Mysticality` &&
         (myLevel() < 13 || disregardInstantKarma())
       ) {
-        runChoice(1); // 250 myst substat
+        auto_runChoice(1); // 250 myst substat
       } else if (
         myPrimestat() === $stat`Muscle` &&
         (myLevel() < 13 || disregardInstantKarma())
       ) {
-        runChoice(3); // 138 muscle substat
+        auto_runChoice(3); // 138 muscle substat
       } else {
-        runChoice(2); // guilty sprout is level 8+ good size 1 food but it gives big stats
+        auto_runChoice(2); // guilty sprout is level 8+ good size 1 food but it gives big stats
       }
       break;
     case 1475: // Hypnotic Master
       if (availableAmount($item`mother's necklace`) < 1) {
-        runChoice(1); // 3 RO adventures, 5 free rests (doesn't even need to be equipped), never fumble
+        auto_runChoice(1); // 3 RO adventures, 5 free rests (doesn't even need to be equipped), never fumble
       } else if (
         myPrimestat() === $stat`Muscle` &&
         (myLevel() < 13 || disregardInstantKarma())
       ) {
-        runChoice(2); // 250 muscle substat
+        auto_runChoice(2); // 250 muscle substat
       } else {
-        runChoice(1); // autosells for 1000 meat
+        auto_runChoice(1); // autosells for 1000 meat
       }
       break;
     default:

@@ -28,7 +28,6 @@ import {
   myLevel,
   myPrimestat,
   numericModifier,
-  runChoice,
   setProperty,
   Skill,
   splitString,
@@ -77,6 +76,7 @@ import {
   auto_log_debug,
   auto_log_error,
   auto_log_info,
+  auto_runChoice,
   auto_wishForEffectIfNeeded,
   handleTracker,
   internalQuestStatus,
@@ -334,7 +334,7 @@ export function dartChoiceHandler(
     //if choice is not set, just choose the 1st option
     dcchoice = 1;
   }
-  runChoice(dcchoice);
+  auto_runChoice(dcchoice);
 }
 
 export function dartELRcd(): number {

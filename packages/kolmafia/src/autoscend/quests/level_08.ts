@@ -27,7 +27,6 @@ import {
   outfit,
   print,
   random,
-  runChoice,
   setProperty,
   splitString,
   substring,
@@ -82,6 +81,7 @@ import {
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   canSniff,
   canSummonMonster,
   canYellowRay,
@@ -89,6 +89,12 @@ import {
   summonMonster,
 } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import { elementalPlanes_access } from "../iotms/elementalPlanes";
 import { adjustEdHat } from "../iotms/mr2015";
 import { auto_sourceTerminalEducate } from "../iotms/mr2016";
@@ -390,7 +396,7 @@ function L8_getGoatCheese(): boolean {
   return retval;
 }
 
-export function L8_mountainManSummon(): boolean {
+function L8_mountainManSummonDo(): boolean {
   if (internalQuestStatus("questL08Trapper") < 1 && myLevel() >= 8) {
     L8_trapperTalk();
   }
@@ -434,6 +440,17 @@ export function L8_mountainManSummon(): boolean {
   return false;
 }
 
+export const L8_mountainManSummonTask: QuestTask = registerQuestTask({
+  name: "L8_mountainManSummon",
+  completed: () => itemAmount(toItem(getProperty("trapperOre"))) >= 3,
+  ready: () => true,
+  do: L8_mountainManSummonDo,
+});
+
+export function L8_mountainManSummon(): boolean {
+  return runQuestTask(L8_mountainManSummonTask);
+}
+
 export function L8_mineOreWorthBurningLuckOn(): boolean {
   if (internalQuestStatus("questL08Trapper") !== 1) {
     return false;
@@ -453,6 +470,14 @@ export function L8_mineOreWorthBurningLuckOn(): boolean {
   }
   return true;
 }
+
+const L8_getGoatCheeseTask: QuestTask = registerQuestTask({
+  name: "L8_getGoatCheese",
+  completed: () => itemAmount($item`goat cheese`) >= 3,
+  ready: () => true,
+  do: L8_getGoatCheese,
+  locations: $location`The Goatlet`,
+});
 
 function L8_getMineOres(): boolean {
   if (internalQuestStatus("questL08Trapper") !== 1) {
@@ -512,6 +537,14 @@ function L8_getMineOres(): boolean {
   return false;
 }
 
+const L8_getMineOresTask: QuestTask = registerQuestTask({
+  name: "L8_getMineOres",
+  completed: () => itemAmount(toItem(getProperty("trapperOre"))) >= 3,
+  ready: () => true,
+  do: L8_getMineOres,
+  locations: $location`Itznotyerzitz Mine`,
+});
+
 export function itznotyerzitzMineChoiceHandler(choice: number): void {
   auto_log_info(
     `itznotyerzitzMineChoiceHandler Running choice ${choice}`,
@@ -521,41 +554,41 @@ export function itznotyerzitzMineChoiceHandler(choice: number): void {
     // A Flat Miner
     if (possessEquipment($item`miner's pants`)) {
       if (possessEquipment($item`7-Foot Dwarven mattock`)) {
-        runChoice(3); // get 100 Meat.
+        auto_runChoice(3); // get 100 Meat.
       } else {
-        runChoice(2); // get 7-Foot Dwarven mattock
+        auto_runChoice(2); // get 7-Foot Dwarven mattock
       }
     } else {
-      runChoice(1); // get miner's pants
+      auto_runChoice(1); // get miner's pants
     }
   } else if (choice === 19) {
     // 100% Legal
     if (possessEquipment($item`miner's helmet`)) {
       if (possessEquipment($item`miner's pants`)) {
-        runChoice(3); // get 100 Meat.
+        auto_runChoice(3); // get 100 Meat.
       } else {
-        runChoice(2); // get miner's pants
+        auto_runChoice(2); // get miner's pants
       }
     } else {
-      runChoice(1); // get miner's helmet
+      auto_runChoice(1); // get miner's helmet
     }
   } else if (choice === 20) {
     // See You Next Fall
     if (possessEquipment($item`miner's helmet`)) {
       if (possessEquipment($item`7-Foot Dwarven mattock`)) {
-        runChoice(3); // get 100 Meat.
+        auto_runChoice(3); // get 100 Meat.
       } else {
-        runChoice(2); // get 7-Foot Dwarven mattock
+        auto_runChoice(2); // get 7-Foot Dwarven mattock
       }
     } else {
-      runChoice(1); // get miner's helmet
+      auto_runChoice(1); // get miner's helmet
     }
   } else if (choice === 556) {
     // More Locker Than Morlock
     if (!possessOutfit("Mining Gear")) {
-      runChoice(1); // get an outfit piece
+      auto_runChoice(1); // get an outfit piece
     } else {
-      runChoice(2); // skip
+      auto_runChoice(2); // skip
     }
   } else {
     abort("unhandled choice in itznotyerzitzMineChoiceHandler");
@@ -619,47 +652,47 @@ export function theeXtremeSlopeChoiceHandler(choice: number): void {
     // Yeti Nother Hippy
     if (possessEquipment($item`eXtreme mittens`)) {
       if (possessEquipment($item`eXtreme scarf`)) {
-        runChoice(3); // get 200 Meat.
+        auto_runChoice(3); // get 200 Meat.
       } else {
-        runChoice(2); // get eXtreme scarf
+        auto_runChoice(2); // get eXtreme scarf
       }
     } else {
-      runChoice(1); // get eXtreme mittens
+      auto_runChoice(1); // get eXtreme mittens
     }
   } else if (choice === 16) {
     // Saint Beernard
     if (possessEquipment($item`snowboarder pants`)) {
       if (possessEquipment($item`eXtreme scarf`)) {
-        runChoice(3); // get 200 Meat.
+        auto_runChoice(3); // get 200 Meat.
       } else {
-        runChoice(2); // get eXtreme scarf
+        auto_runChoice(2); // get eXtreme scarf
       }
     } else {
-      runChoice(1); // get snowboarder pants
+      auto_runChoice(1); // get snowboarder pants
     }
   } else if (choice === 17) {
     // Generic Teen Comedy Snowboarding Adventure
     if (possessEquipment($item`eXtreme mittens`)) {
       if (possessEquipment($item`snowboarder pants`)) {
-        runChoice(3); // get 200 Meat.
+        auto_runChoice(3); // get 200 Meat.
       } else {
-        runChoice(2); // get snowboarder pants
+        auto_runChoice(2); // get snowboarder pants
       }
     } else {
-      runChoice(1); // get eXtreme mittens
+      auto_runChoice(1); // get eXtreme mittens
     }
   } else if (choice === 575) {
     // Duffel on the Double
     if (haveEquipped($item`candy cane sword cane`)) {
-      runChoice(5); // get mittens and pants and lucky pill
+      auto_runChoice(5); // get mittens and pants and lucky pill
     } else if (!possessOutfit("eXtreme Cold-Weather Gear")) {
-      runChoice(1); // get an outfit piece
+      auto_runChoice(1); // get an outfit piece
     } else {
       if (isActuallyEd()) {
         // add other paths which don't want to waste spleen (if any) here.
-        runChoice(3); // skip
+        auto_runChoice(3); // skip
       } else {
-        runChoice(4); // Lucky Pill. (Clover for 1 spleen, worth?)
+        auto_runChoice(4); // Lucky Pill. (Clover for 1 spleen, worth?)
       }
     }
   } else {
@@ -667,7 +700,7 @@ export function theeXtremeSlopeChoiceHandler(choice: number): void {
   }
 }
 
-export function L8_trapperNinjaLair(): boolean {
+function L8_trapperNinjaLairDo(): boolean {
   // adventure in the lair of the ninja snowmen to find and fight ninja snowman assassins.
   // ~~usually this would only occur in hardcore~~
   // UPDATE: as of the May '26 IOTM we like ninja lair, so this should be typical with that IOTM.
@@ -778,14 +811,20 @@ export function L8_trapperNinjaLair(): boolean {
   return false;
 }
 
-export function L8_trapperGroar(): boolean {
+const L8_trapperNinjaLairTask: QuestTask = registerQuestTask({
+  name: "L8_trapperNinjaLair",
+  completed: () => internalQuestStatus("questL08Trapper") > 2,
+  ready: () => true,
+  do: L8_trapperNinjaLairDo,
+  locations: $location`Lair of the Ninja Snowmen`,
+});
+
+export function L8_trapperNinjaLair(): boolean {
+  return runQuestTask(L8_trapperNinjaLairTask);
+}
+
+function L8_trapperGroarDo(): boolean {
   // do the peak portion of L8 trapper quest.
-  if (
-    internalQuestStatus("questL08Trapper") < 3 ||
-    internalQuestStatus("questL08Trapper") > 4
-  ) {
-    return false; // peak not yet unlocked or we are done with groar
-  }
   if (toBoolean(getProperty("_auto_skip_L8_trapperGroar"))) {
     auto_log_warning(
       "Skipping L8_trapperGroar() today as per _auto_skip_L8_trapperGroar",
@@ -903,6 +942,19 @@ export function L8_trapperGroar(): boolean {
   return retval;
 }
 
+export const L8_trapperGroarTask: QuestTask = registerQuestTask({
+  name: "L8_trapperGroar",
+  completed: () => internalQuestStatus("questL08Trapper") > 4,
+  // peak not yet unlocked or we are done with groar
+  ready: () => internalQuestStatus("questL08Trapper") >= 3,
+  do: L8_trapperGroarDo,
+  locations: $location`Mist-Shrouded Peak`,
+});
+
+export function L8_trapperGroar(): boolean {
+  return runQuestTask(L8_trapperGroarTask);
+}
+
 export function ninjaItemsRemaining(): number {
   let items_remaining: number = 3;
   if (itemAmount($item`ninja carabiner`) > 0) {
@@ -917,11 +969,8 @@ export function ninjaItemsRemaining(): number {
   return items_remaining;
 }
 
-export function L8_trapperPeak(): boolean {
+function L8_trapperPeakDo(): boolean {
   // unlock the peak in the trapper quest
-  if (internalQuestStatus("questL08Trapper") !== 2) {
-    return false;
-  }
   // unlock peak using ninja climbing gear
   if (ninjaItemsRemaining() < 1) {
     const resGoal: Map<Element, number> = new Map();
@@ -964,6 +1013,17 @@ export function L8_trapperPeak(): boolean {
   return false;
 }
 
+const L8_trapperPeakTask: QuestTask = registerQuestTask({
+  name: "L8_trapperPeak",
+  completed: () => internalQuestStatus("questL08Trapper") > 2,
+  ready: () => internalQuestStatus("questL08Trapper") === 2,
+  do: L8_trapperPeakDo,
+});
+
+export function L8_trapperPeak(): boolean {
+  return runQuestTask(L8_trapperPeakTask);
+}
+
 export function L8_forceExtremeInstead(): boolean {
   // If for some reason we've already got 2 ninja items, no need to get forcey
   if (availableAmount($item`ninja crampons`) > 0) {
@@ -981,12 +1041,9 @@ export function L8_forceExtremeInstead(): boolean {
   return toBoolean(getProperty("auto_L8_extremeInstead"));
 }
 
-export function L8_trapperSlope(): boolean {
+function L8_trapperSlopeDo(): boolean {
   // climb the slope and reach the peak in L8 trapper quest. either via ninja snowmen lair or via the extreme slope
 
-  if (internalQuestStatus("questL08Trapper") !== 2) {
-    return false; // climbing the slope is step2 of the quest. when you unlock the peak it advances to step3
-  }
   if (canInteract()) {
     // casual and postronin special handling
     return L8_slopeCasual(); // mallbuy everything. or go do something else if too poor to do so
@@ -1035,12 +1092,21 @@ export function L8_trapperSlope(): boolean {
   return false;
 }
 
-export function L8_trapperTalk(): boolean {
+export const L8_trapperSlopeTask: QuestTask = registerQuestTask({
+  name: "L8_trapperSlope",
+  completed: () => internalQuestStatus("questL08Trapper") > 2,
+  // climbing the slope is step2 of the quest. when you unlock the peak it advances to step3
+  ready: () => internalQuestStatus("questL08Trapper") === 2,
+  do: L8_trapperSlopeDo,
+});
+
+export function L8_trapperSlope(): boolean {
+  return runQuestTask(L8_trapperSlopeTask);
+}
+
+function L8_trapperTalkDo(): boolean {
   // talk to the trapper to advance the L8 quest.
   const initial_step: number = internalQuestStatus("questL08Trapper");
-  if (initial_step !== 0 && initial_step !== 1 && initial_step !== 5) {
-    return false; // only need to talk to trapper at steps 0, 1, and 5
-  }
 
   if (initial_step === 0) {
     // step0===quest started. we do not know what ores we need yet.
@@ -1089,14 +1155,20 @@ export function L8_trapperTalk(): boolean {
   return true;
 }
 
-export function L8_trapperQuest(): boolean {
+const L8_trapperTalkTask: QuestTask = registerQuestTask({
+  name: "L8_trapperTalk",
+  completed: () => internalQuestStatus("questL08Trapper") > 5,
+  // only need to talk to trapper at steps 0, 1, and 5
+  ready: () => [0, 1, 5].includes(internalQuestStatus("questL08Trapper")),
+  do: L8_trapperTalkDo,
+});
+
+export function L8_trapperTalk(): boolean {
+  return runQuestTask(L8_trapperTalkTask);
+}
+
+function L8_trapperQuestDo(): boolean {
   // do the entire L8 trapper quest
-  if (
-    internalQuestStatus("questL08Trapper") < 0 ||
-    internalQuestStatus("questL08Trapper") > 5
-  ) {
-    return false;
-  }
 
   if (L8_trapperTalk()) {
     return true;
@@ -1115,13 +1187,21 @@ export function L8_trapperQuest(): boolean {
     return true;
   }
 
-  if (
-    L8_getGoatCheese() ||
-    L8_getMineOres() ||
-    L8_trapperSlope() ||
-    L8_trapperGroar()
-  ) {
-    return true;
-  }
-  return false;
+  return runTaskChain([
+    L8_getGoatCheeseTask,
+    L8_getMineOresTask,
+    L8_trapperSlopeTask,
+    L8_trapperGroarTask,
+  ]);
+}
+
+export const L8_trapperQuestTask: QuestTask = registerQuestTask({
+  name: "L8_trapperQuest",
+  completed: () => internalQuestStatus("questL08Trapper") > 5,
+  ready: () => internalQuestStatus("questL08Trapper") >= 0,
+  do: L8_trapperQuestDo,
+});
+
+export function L8_trapperQuest(): boolean {
+  return runQuestTask(L8_trapperQuestTask);
 }

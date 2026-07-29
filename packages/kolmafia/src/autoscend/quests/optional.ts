@@ -28,7 +28,6 @@ import {
   npcPrice,
   outfit,
   outfitPieces,
-  runChoice,
   setProperty,
   toBoolean,
   toInt,
@@ -42,9 +41,11 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $skill,
   $slot,
   $stat,
+  get,
 } from "libram";
 
 import {
@@ -79,11 +80,18 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   backupSetting,
   internalQuestStatus,
   isGuildClass,
   meatReserve,
 } from "../auto_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import { auto_wishesAvailable, makeGenieWish } from "../iotms/mr2017";
 import { januaryToteAcquire } from "../iotms/mr2018";
 import { auto_haveTearawayPants } from "../iotms/mr2024";
@@ -240,10 +248,7 @@ export function LX_steelOrgan_condition_slow(): boolean {
   );
 }
 
-export function LX_steelOrgan(): boolean {
-  if (!toBoolean(getProperty("auto_getSteelOrgan"))) {
-    return false;
-  }
+function LX_steelOrganDo(): boolean {
   if ($classes`Ed the Undying, Gelatinous Noob, Vampyre`.includes(myClass())) {
     auto_log_info(
       `${myClass()} can not use a Steel Organ, turning off setting.`,
@@ -436,24 +441,19 @@ export function LX_steelOrgan(): boolean {
   return false;
 }
 
-export function LX_guildUnlock(): boolean {
-  if (!isGuildClass() || guildStoreAvailable()) {
-    return false;
-  }
-  if (in_nuclear() || in_pokefam() || in_robot()) {
-    return false;
-  }
-  if (
-    !(in_picky() || in_lowkeysummer()) &&
-    toBoolean(getProperty("auto_skipUnlockGuild")) &&
-    !(myPrimestat() === $stat`Moxie` && auto_haveTearawayPants())
-  ) {
-    return false;
-  }
-  if (in_ggoo() && $classes`Seal Clubber, Turtle Tamer`.includes(myClass())) {
-    return false; //muscle classes cannot unlock guild in grey goo
-  }
+const LX_steelOrganTask: QuestTask = registerQuestTask({
+  name: "LX_steelOrgan",
+  completed: () => !get("auto_getSteelOrgan", true),
+  ready: () => toBoolean(getProperty("auto_getSteelOrgan")),
+  do: LX_steelOrganDo,
+  locations: $locations`The Laugh Floor, Infernal Rackets Backstage`,
+});
 
+export function LX_steelOrgan(): boolean {
+  return runQuestTask(LX_steelOrganTask);
+}
+
+function LX_guildUnlockDo(): boolean {
   let pref: string = "";
   let loc: Location = Location.none;
   if (myPrimestat() === $stat`Moxie` && auto_haveTearawayPants()) {
@@ -506,7 +506,42 @@ export function LX_guildUnlock(): boolean {
   return false;
 }
 
-export function startArmorySubQuest(): boolean {
+export const LX_guildUnlockTask: QuestTask = registerQuestTask({
+  name: "LX_guildUnlock",
+  completed: () => guildStoreAvailable(),
+  ready: () =>
+    !in_nuclear() &&
+    !in_pokefam() &&
+    !in_robot() &&
+    isGuildClass() &&
+    !guildStoreAvailable() &&
+    !(
+      !(in_picky() || in_lowkeysummer()) &&
+      toBoolean(getProperty("auto_skipUnlockGuild")) &&
+      !(myPrimestat() === $stat`Moxie` && auto_haveTearawayPants())
+    ) &&
+    //muscle classes cannot unlock guild in grey goo
+    !(in_ggoo() && $classes`Seal Clubber, Turtle Tamer`.includes(myClass())),
+  do: LX_guildUnlockDo,
+  locations: () => {
+    switch (myPrimestat()) {
+      case $stat`Muscle`:
+        return [$location`The Outskirts of Cobb's Knob`];
+      case $stat`Mysticality`:
+        return [$location`The Haunted Pantry`];
+      case $stat`Moxie`:
+        return [$location`The Sleazy Back Alley`];
+      default:
+        return [];
+    }
+  },
+});
+
+export function LX_guildUnlock(): boolean {
+  return runQuestTask(LX_guildUnlockTask);
+}
+
+function startArmorySubQuestDo(): boolean {
   if (in_koe() || in_nuclear()) {
     //will unlock the zone but does not actually start the quest. also currently not tracked by mafia so we will think the zone is unavailable.
     if (itemAmount($item`hypnotic breadcrumbs`) > 0) {
@@ -526,13 +561,18 @@ export function startArmorySubQuest(): boolean {
   return false;
 }
 
-export function startMeatsmithSubQuest(): boolean {
-  if (in_koe()) {
-    return false; //quest cannot be started and zone cannot be unlocked.
-  }
-  if (internalQuestStatus("questM23Meatsmith") !== -1) {
-    return false; //quest already started
-  }
+export const startArmorySubQuestTask: QuestTask = registerQuestTask({
+  name: "startArmorySubQuest",
+  completed: () => internalQuestStatus("questM25Armorer") > -1,
+  ready: () => true,
+  do: startArmorySubQuestDo,
+});
+
+export function startArmorySubQuest(): boolean {
+  return runQuestTask(startArmorySubQuestTask);
+}
+
+function startMeatsmithSubQuestDo(): boolean {
   if (in_nuclear()) {
     if (itemAmount($item`bone with a price tag on it`) > 0) {
       //will unlock the zone but does not actually start the quest. also currently not tracked by mafia so we will think the zone is unavailable.
@@ -543,20 +583,41 @@ export function startMeatsmithSubQuest(): boolean {
 
   visitUrl("shop.php?whichshop=meatsmith");
   visitUrl("shop.php?whichshop=meatsmith&action=talk");
-  runChoice(1);
+  auto_runChoice(1);
   return internalQuestStatus("questM23Meatsmith") > -1;
 }
 
-export function finishMeatsmithSubQuest(): boolean {
-  if (internalQuestStatus("questM23Meatsmith") !== 1) {
-    return false;
-  }
+export const startMeatsmithSubQuestTask: QuestTask = registerQuestTask({
+  name: "startMeatsmithSubQuest",
+  //quest already started or
+  //quest cannot be started and zone cannot be unlocked.
+  completed: () => internalQuestStatus("questM23Meatsmith") !== -1,
+  ready: () => !in_koe(),
+  do: startMeatsmithSubQuestDo,
+});
+
+export function startMeatsmithSubQuest(): boolean {
+  return runQuestTask(startMeatsmithSubQuestTask);
+}
+
+function finishMeatsmithSubQuestDo(): boolean {
   if (itemAmount($item`check to the Meatsmith`) > 0) {
     visitUrl("shop.php?whichshop=meatsmith");
-    runChoice(2);
+    auto_runChoice(2);
     return true;
   }
   return false;
+}
+
+export const finishMeatsmithSubQuestTask: QuestTask = registerQuestTask({
+  name: "finishMeatsmithSubQuest",
+  completed: () => internalQuestStatus("questM23Meatsmith") > 1,
+  ready: () => internalQuestStatus("questM23Meatsmith") === 1,
+  do: finishMeatsmithSubQuestDo,
+});
+
+export function finishMeatsmithSubQuest(): boolean {
+  return runQuestTask(finishMeatsmithSubQuestTask);
 }
 
 function considerGalaktikSubQuest(): void {
@@ -607,10 +668,7 @@ function considerGalaktikSubQuest(): void {
   }
 }
 
-export function startGalaktikSubQuest(): boolean {
-  if (internalQuestStatus("questM24Doc") !== -1) {
-    return false; //quest already started
-  }
+function startGalaktikSubQuestDo(): boolean {
   if (in_nuclear() || in_koe()) {
     //will unlock the zone but does not actually start the quest. also currently not tracked by mafia so we will think the zone is unavailable.
     if (itemAmount($item`map to a hidden booze cache`) > 0) {
@@ -621,8 +679,20 @@ export function startGalaktikSubQuest(): boolean {
 
   visitUrl("shop.php?whichshop=doc");
   visitUrl("shop.php?whichshop=doc&action=talk");
-  runChoice(1);
+  auto_runChoice(1);
   return internalQuestStatus("questM24Doc") > -1;
+}
+
+const startGalaktikSubQuestTask: QuestTask = registerQuestTask({
+  name: "startGalaktikSubQuest",
+  completed: () => internalQuestStatus("questM24Doc") !== -1,
+  //quest already started
+  ready: () => internalQuestStatus("questM24Doc") === -1,
+  do: startGalaktikSubQuestDo,
+});
+
+export function startGalaktikSubQuest(): boolean {
+  return runQuestTask(startGalaktikSubQuestTask);
 }
 
 function finishGalaktikSubQuest(): boolean {
@@ -635,7 +705,7 @@ function finishGalaktikSubQuest(): boolean {
     if (containsText(temp, "What did you need, again?")) {
       visitUrl("shop.php?whichshop=doc&action=talk");
     }
-    runChoice(2);
+    auto_runChoice(2);
     if (internalQuestStatus("questM24Doc") > 1) {
       return true;
     }
@@ -643,7 +713,7 @@ function finishGalaktikSubQuest(): boolean {
   return false;
 }
 
-export function LX_galaktikSubQuest(): boolean {
+function LX_galaktikSubQuestDo(): boolean {
   //do doc galaktik optional subquest.
   if (finishGalaktikSubQuest()) {
     //always turn the quest in if possible
@@ -666,11 +736,23 @@ export function LX_galaktikSubQuest(): boolean {
   return autoAdv($location`The Overgrown Lot`);
 }
 
+export const LX_galaktikSubQuestTask: QuestTask = registerQuestTask({
+  name: "LX_galaktikSubQuest",
+  completed: () => internalQuestStatus("questM24Doc") > 1,
+  ready: () => true,
+  do: LX_galaktikSubQuestDo,
+  locations: $location`The Overgrown Lot`,
+});
+
+export function LX_galaktikSubQuest(): boolean {
+  return runQuestTask(LX_galaktikSubQuestTask);
+}
+
 export function LX_doingPirates(): boolean {
   return in_lowkeysummer(); //we are only doing pirates in that path now
 }
 
-export function LX_pirateOutfit(): boolean {
+function LX_pirateOutfitDo(): boolean {
   if (toInt(getProperty("lastIslandUnlock")) < myAscensions()) {
     return LX_islandAccess();
   }
@@ -705,39 +787,51 @@ export function LX_pirateOutfit(): boolean {
   return autoAdv($location`The Obligatory Pirate's Cove`);
 }
 
+export const LX_pirateOutfitTask: QuestTask = registerQuestTask({
+  name: "LX_pirateOutfit",
+  completed: () => possessOutfit("Swashbuckling Getup") || !in_lowkeysummer(),
+  ready: () => true,
+  do: LX_pirateOutfitDo,
+  locations: $location`The Obligatory Pirate's Cove`,
+});
+
+export function LX_pirateOutfit(): boolean {
+  return runQuestTask(LX_pirateOutfitTask);
+}
+
 export function piratesCoveChoiceHandler(choice: number): void {
   if (choice === 22) {
     // The Arrrbitrator
     if (possessEquipment($item`eyepatch`)) {
       if (possessEquipment($item`swashbuckling pants`)) {
-        runChoice(3); // get 100 Meat.
+        auto_runChoice(3); // get 100 Meat.
       } else {
-        runChoice(2); // get swashbuckling pants
+        auto_runChoice(2); // get swashbuckling pants
       }
     } else {
-      runChoice(1); // get eyepatch
+      auto_runChoice(1); // get eyepatch
     }
   } else if (choice === 23) {
     // Barrie Me at Sea
     if (possessEquipment($item`stuffed shoulder parrot`)) {
       if (possessEquipment($item`swashbuckling pants`)) {
-        runChoice(3); // get 100 Meat.
+        auto_runChoice(3); // get 100 Meat.
       } else {
-        runChoice(2); // get swashbuckling pants
+        auto_runChoice(2); // get swashbuckling pants
       }
     } else {
-      runChoice(1); // get stuffed shoulder parrot
+      auto_runChoice(1); // get stuffed shoulder parrot
     }
   } else if (choice === 24) {
     // Amatearrr Night
     if (possessEquipment($item`stuffed shoulder parrot`)) {
       if (possessEquipment($item`eyepatch`)) {
-        runChoice(2); // get 100 Meat.
+        auto_runChoice(2); // get 100 Meat.
       } else {
-        runChoice(3); // get eyepatch
+        auto_runChoice(3); // get eyepatch
       }
     } else {
-      runChoice(1); // get stuffed shoulder parrot
+      auto_runChoice(1); // get stuffed shoulder parrot
     }
   } else {
     abort("unhandled choice in piratesCoveChoiceHandler");
@@ -873,7 +967,7 @@ export function numPirateInsults(): number {
   return retval;
 }
 
-export function LX_joinPirateCrew(): boolean {
+function LX_joinPirateCrewDo(): boolean {
   if (toInt(getProperty("lastIslandUnlock")) < myAscensions()) {
     return LX_islandAccess();
   }
@@ -1059,24 +1153,37 @@ export function LX_joinPirateCrew(): boolean {
   return false;
 }
 
+export const LX_joinPirateCrewTask: QuestTask = registerQuestTask({
+  name: "LX_joinPirateCrew",
+  completed: () =>
+    internalQuestStatus("questM12Pirate") > 4 || !in_lowkeysummer(),
+  ready: () => true,
+  do: LX_joinPirateCrewDo,
+  locations: $locations`Barrrney's Barrr, Noob Cave, The Degrassi Knoll Gym, The Obligatory Pirate's Cove`,
+});
+
+export function LX_joinPirateCrew(): boolean {
+  return runQuestTask(LX_joinPirateCrewTask);
+}
+
 export function barrrneysBarrrChoiceHandler(choice: number): void {
   auto_log_info(`barrrneysBarrrChoiceHandler Running choice ${choice}`, "blue");
   if (choice === 184) {
     // That Explains All The Eyepatches
     if (myPrimestat() === $stat`Mysticality`) {
-      runChoice(3); // get shot of rotgut
+      auto_runChoice(3); // get shot of rotgut
     } else {
-      runChoice(1); // combat with tipsy pirate
+      auto_runChoice(1); // combat with tipsy pirate
     }
   } else if (choice === 185) {
     // Yes, You're a Rock Starrr
-    runChoice(3); // combat with tetchy pirate at 0 drunkenness or stats otherwise
+    auto_runChoice(3); // combat with tetchy pirate at 0 drunkenness or stats otherwise
   } else if (choice === 186) {
     // A Test of Testarrrsterone
     if (myPrimestat() === $stat`Moxie`) {
-      runChoice(3); // moxie stats
+      auto_runChoice(3); // moxie stats
     } else {
-      runChoice(1); // stats
+      auto_runChoice(1); // stats
     }
   } else {
     abort("unhandled choice in barrrneysBarrrChoiceHandler");
@@ -1100,17 +1207,17 @@ function LX_fledglingPirateIsYou(): boolean {
 export function fcleChoiceHandler(choice: number): void {
   if (choice === 191) {
     if (itemAmount($item`valuable trinket`) > 0) {
-      runChoice(2);
+      auto_runChoice(2);
     } else {
       switch (myPrimestat()) {
         case $stat`Muscle`:
-          runChoice(3);
+          auto_runChoice(3);
           break;
         case $stat`Mysticality`:
-          runChoice(4);
+          auto_runChoice(4);
           break;
         case $stat`Moxie`:
-          runChoice(1);
+          auto_runChoice(1);
           break;
       }
     }
@@ -1136,19 +1243,44 @@ function LX_unlockBelowdecks(): boolean {
   return autoAdv($location`The Poop Deck`);
 }
 
-export function LX_pirateQuest(): boolean {
-  if (
-    LX_pirateOutfit() ||
-    LX_joinPirateCrew() ||
-    LX_fledglingPirateIsYou() ||
-    LX_unlockBelowdecks()
-  ) {
-    return true;
-  }
-  return false;
+const LX_fledglingPirateIsYouTask: QuestTask = registerQuestTask({
+  name: "LX_fledglingPirateIsYou",
+  completed: () =>
+    possessEquipment($item`pirate fledges`) || !in_lowkeysummer(),
+  ready: () => true,
+  do: LX_fledglingPirateIsYou,
+  locations: $location`The F'c'le`,
+});
+const LX_unlockBelowdecksTask: QuestTask = registerQuestTask({
+  name: "LX_unlockBelowdecks",
+  completed: () =>
+    internalQuestStatus("questM12Pirate") > 6 || !in_lowkeysummer(),
+  ready: () => true,
+  do: LX_unlockBelowdecks,
+  locations: $location`The Poop Deck`,
+});
+
+function LX_pirateQuestDo(): boolean {
+  return runTaskChain([
+    LX_pirateOutfitTask,
+    LX_joinPirateCrewTask,
+    LX_fledglingPirateIsYouTask,
+    LX_unlockBelowdecksTask,
+  ]);
 }
 
-export function LX_unlockKnobMenagerie(): boolean {
+export const LX_pirateQuestTask: QuestTask = registerQuestTask({
+  name: "LX_pirateQuest",
+  completed: () => internalQuestStatus("questM12Pirate") > 6,
+  ready: () => true,
+  do: LX_pirateQuestDo,
+});
+
+export function LX_pirateQuest(): boolean {
+  return runQuestTask(LX_pirateQuestTask);
+}
+
+function LX_unlockKnobMenagerieDo(): boolean {
   if (itemAmount($item`Cobb's Knob Menagerie key`) > 0) {
     if (itemAmount($item`Cobb's Knob lab key`) > 0) {
       return false; //already unlocked
@@ -1190,6 +1322,21 @@ export function LX_unlockKnobMenagerie(): boolean {
   return autoAdv($location`Cobb's Knob Laboratory`);
 }
 
+export const LX_unlockKnobMenagerieTask: QuestTask = registerQuestTask({
+  name: "LX_unlockKnobMenagerie",
+  completed: () =>
+    (itemAmount($item`Cobb's Knob Menagerie key`) > 0 &&
+      itemAmount($item`Cobb's Knob lab key`) > 0) ||
+    !in_lowkeysummer(),
+  ready: () => true,
+  do: LX_unlockKnobMenagerieDo,
+  locations: $location`Cobb's Knob Laboratory`,
+});
+
+export function LX_unlockKnobMenagerie(): boolean {
+  return runQuestTask(LX_unlockKnobMenagerieTask);
+}
+
 const $_f_epicWeapons: Map<Class, Item> = new Map([
   [$class`Seal Clubber`, $item`Hammer of Smiting`],
   [$class`Turtle Tamer`, $item`Chelonian Morningstar`],
@@ -1214,13 +1361,7 @@ function tomb_already_found(): boolean {
   return containsText(page, "place.php?whichplace=cemetery&action=cem_advtomb");
 }
 
-export function LX_acquireEpicWeapon(): boolean {
-  if (internalQuestStatus("questG04Nemesis") > 4) {
-    return false; // already done with this part
-  }
-  if (!isGuildClass() || !guildStoreAvailable()) {
-    return false; // no guild access. can't start this quest
-  }
+function LX_acquireEpicWeaponDo(): boolean {
   if (internalQuestStatus("questG04Nemesis") < 0) {
     visitUrl("guild.php?place=scg"); // start quest
     visitUrl("guild.php?place=scg"); // No really, start the quest.
@@ -1272,6 +1413,24 @@ export function LX_acquireEpicWeapon(): boolean {
   }
 
   return autoAdv($location`The Unquiet Garves`);
+}
+
+export const LX_acquireEpicWeaponTask: QuestTask = registerQuestTask({
+  name: "LX_acquireEpicWeapon",
+  // already done with this part
+  completed: () =>
+    !isGuildClass() ||
+    internalQuestStatus("questG04Nemesis") > 4 ||
+    (!guildStoreAvailable() && toBoolean(getProperty("auto_skipUnlockGuild"))),
+  ready: () =>
+    // no guild access. can't start this quest
+    isGuildClass() && guildStoreAvailable(),
+  do: LX_acquireEpicWeaponDo,
+  locations: $location`The Unquiet Garves`,
+});
+
+export function LX_acquireEpicWeapon(): boolean {
+  return runQuestTask(LX_acquireEpicWeaponTask);
 }
 // TODO: Add the rest of the Nemesis quest with a flag to enable doing it in-run?
 

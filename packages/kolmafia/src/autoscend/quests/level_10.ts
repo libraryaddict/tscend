@@ -18,7 +18,6 @@ import {
   myMp,
   myPrimestat,
   myTurncount,
-  runChoice,
   setProperty,
   toBoolean,
   toInt,
@@ -54,9 +53,16 @@ import {
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   fightScienceTentacle,
   internalQuestStatus,
 } from "../auto_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { auto_sourceTerminalEducate } from "../iotms/mr2016";
 import { auto_changeSnapperPhylum } from "../iotms/mr2019";
@@ -74,11 +80,7 @@ import { shenShouldDelayZone, shenSnakeLocations } from "./level_11";
 import { LX_buyStarKeyParts, needStarKey } from "./level_13";
 
 //Defined in autoscend/quests/level_10.ash
-export function L10_plantThatBean(): boolean {
-  if (internalQuestStatus("questL10Garbage") !== 0) {
-    return false;
-  }
-
+function L10_plantThatBeanDo(): boolean {
   auto_log_info(
     "Planting enchanted bean to open the beanstalk and start L10 quest.",
     "blue",
@@ -114,14 +116,18 @@ export function L10_plantThatBean(): boolean {
   return false;
 }
 
-export function L10_airship(): boolean {
-  if (
-    internalQuestStatus("questL10Garbage") < 1 ||
-    internalQuestStatus("questL10Garbage") > 6
-  ) {
-    return false;
-  }
+export const L10_plantThatBeanTask: QuestTask = registerQuestTask({
+  name: "L10_plantThatBean",
+  completed: () => internalQuestStatus("questL10Garbage") > 0,
+  ready: () => internalQuestStatus("questL10Garbage") === 0,
+  do: L10_plantThatBeanDo,
+});
 
+export function L10_plantThatBean(): boolean {
+  return runQuestTask(L10_plantThatBeanTask);
+}
+
+function L10_airshipDo(): boolean {
   if (myTurncount() === toInt(getProperty("_LAR_skipNC178"))) {
     auto_log_info(
       "In LAR path NC178 is forced to reoccur if we skip it. Go do something else.",
@@ -183,37 +189,45 @@ export function L10_airship(): boolean {
   return true;
 }
 
+export const L10_airshipTask: QuestTask = registerQuestTask({
+  name: "L10_airship",
+  completed: () => internalQuestStatus("questL10Garbage") > 6,
+  ready: () => internalQuestStatus("questL10Garbage") >= 1,
+  do: L10_airshipDo,
+  locations: $location`The Penultimate Fantasy Airship`,
+});
+
+export function L10_airship(): boolean {
+  return runQuestTask(L10_airshipTask);
+}
+
 export function castleBasementChoiceHandler(choice: number): void {
   if (choice === 669) {
     // The Fast and the Furry-ous (The Castle in the Clouds in the Sky (Basement))
-    runChoice(1); // if umbrella equipped finish quest. without, go to Out in the Open Source (#671)
+    auto_runChoice(1); // if umbrella equipped finish quest. without, go to Out in the Open Source (#671)
   } else if (choice === 670) {
     // You Don't Mess Around with Gym (The Castle in the Clouds in the Sky (Basement))
     if (
       internalQuestStatus("questL10Garbage") < 8 &&
       equippedAmount($item`amulet of extreme plot significance`) > 0
     ) {
-      runChoice(4); // with amulet equipped, open the ground floor
+      auto_runChoice(4); // with amulet equipped, open the ground floor
     } else {
-      runChoice(1); // with no amulet, grab the dumbbell. will skip if already have dumbbell
+      auto_runChoice(1); // with no amulet, grab the dumbbell. will skip if already have dumbbell
     }
   } else if (choice === 671) {
     // Out in the Open Source (The Castle in the Clouds in the Sky (Basement))
     if (itemAmount($item`massive dumbbell`) > 0) {
-      runChoice(1); // with dumbbell, open the ground floor
+      auto_runChoice(1); // with dumbbell, open the ground floor
     } else {
-      runChoice(4); // without dumbbell, go to You Don't Mess Around with Gym (#670)
+      auto_runChoice(4); // without dumbbell, go to You Don't Mess Around with Gym (#670)
     }
   } else {
     abort("unhandled choice in castleBasementChoiceHandler");
   }
 }
 
-export function L10_basement(): boolean {
-  if (internalQuestStatus("questL10Garbage") !== 7) {
-    return false;
-  }
-
+function L10_basementDo(): boolean {
   if (possessEquipment($item`amulet of extreme plot significance`)) {
     if (!auto_can_equip($item`amulet of extreme plot significance`)) {
       return false;
@@ -294,11 +308,19 @@ export function L10_basement(): boolean {
   return true;
 }
 
-export function L10_ground(): boolean {
-  if (internalQuestStatus("questL10Garbage") !== 8) {
-    return false;
-  }
+export const L10_basementTask: QuestTask = registerQuestTask({
+  name: "L10_basement",
+  completed: () => internalQuestStatus("questL10Garbage") > 7,
+  ready: () => internalQuestStatus("questL10Garbage") === 7,
+  do: L10_basementDo,
+  locations: $location`The Castle in the Clouds in the Sky (Basement)`,
+});
 
+export function L10_basement(): boolean {
+  return runQuestTask(L10_basementTask);
+}
+
+function L10_groundDo(): boolean {
   if (
     !lar_repeat($location`The Castle in the Clouds in the Sky (Ground Floor)`)
   ) {
@@ -327,21 +349,19 @@ export function L10_ground(): boolean {
   return autoAdv($location`The Castle in the Clouds in the Sky (Ground Floor)`);
 }
 
-export function L10_topFloor(): boolean {
-  if (
-    internalQuestStatus("questL10Garbage") < 9 ||
-    internalQuestStatus("questL10Garbage") > 10
-  ) {
-    return false;
-  }
+export const L10_groundTask: QuestTask = registerQuestTask({
+  name: "L10_ground",
+  completed: () => internalQuestStatus("questL10Garbage") > 8,
+  ready: () => internalQuestStatus("questL10Garbage") === 8,
+  do: L10_groundDo,
+  locations: $location`The Castle in the Clouds in the Sky (Ground Floor)`,
+});
 
-  if (
-    possessEquipment($item`Mohawk wig`) &&
-    !auto_can_equip($item`Mohawk wig`)
-  ) {
-    return false;
-  }
+export function L10_ground(): boolean {
+  return runQuestTask(L10_groundTask);
+}
 
+function L10_topFloorDo(): boolean {
   if (
     shenShouldDelayZone(
       $location`The Castle in the Clouds in the Sky (Top Floor)`,
@@ -385,6 +405,20 @@ export function L10_topFloor(): boolean {
   return true;
 }
 
+export const L10_topFloorTask: QuestTask = registerQuestTask({
+  name: "L10_topFloor",
+  completed: () => internalQuestStatus("questL10Garbage") > 10,
+  ready: () =>
+    internalQuestStatus("questL10Garbage") >= 9 &&
+    (!possessEquipment($item`Mohawk wig`) || auto_can_equip($item`Mohawk wig`)),
+  do: L10_topFloorDo,
+  locations: $location`The Castle in the Clouds in the Sky (Top Floor)`,
+});
+
+export function L10_topFloor(): boolean {
+  return runQuestTask(L10_topFloorTask);
+}
+
 export function castleTopFloorChoiceHandler(choice: number): void {
   if (choice === 675) {
     // Melon Collie and the Infinite Lameness (The Castle in the Clouds in the Sky (Top Floor))
@@ -392,11 +426,11 @@ export function castleTopFloorChoiceHandler(choice: number): void {
       internalQuestStatus("questL10Garbage") < 10 &&
       itemAmount($item`drum 'n' bass 'n' drum 'n' bass record`) > 0
     ) {
-      runChoice(2); // if quest not done and have the record, complete the quest
+      auto_runChoice(2); // if quest not done and have the record, complete the quest
     } else if (in_koe() && itemAmount($item`model airship`) === 0) {
-      runChoice(1); // if we're in koe we only want to go to Copper Feel if we can complete the quest, so fight a goth giant otherwise
+      auto_runChoice(1); // if we're in koe we only want to go to Copper Feel if we can complete the quest, so fight a goth giant otherwise
     } else {
-      runChoice(4); // moves to Copper Feel (#677) in all other scenarios
+      auto_runChoice(4); // moves to Copper Feel (#677) in all other scenarios
     }
   } else if (choice === 676) {
     // Flavor of a Raver (The Castle in the Clouds in the Sky (Top Floor))
@@ -404,9 +438,9 @@ export function castleTopFloorChoiceHandler(choice: number): void {
       equippedAmount($item`Mohawk wig`) > 0 ||
       internalQuestStatus("questL10Garbage") >= 10
     ) {
-      runChoice(4); // if quest not done and have mohawk wig on, or quest is done, move to Yeah, You're for Me (#678)
+      auto_runChoice(4); // if quest not done and have mohawk wig on, or quest is done, move to Yeah, You're for Me (#678)
     } else {
-      runChoice(3); // if no mohawk wig and quest not done, grab the drum n bass record. will skip if already have record
+      auto_runChoice(3); // if no mohawk wig and quest not done, grab the drum n bass record. will skip if already have record
     }
   } else if (choice === 677) {
     // Copper Feel (The Castle in the Clouds in the Sky (Top Floor))
@@ -414,15 +448,15 @@ export function castleTopFloorChoiceHandler(choice: number): void {
       internalQuestStatus("questL10Garbage") < 10 &&
       itemAmount($item`model airship`) > 0
     ) {
-      runChoice(1); // if quest not done and have model airship, complete quest
+      auto_runChoice(1); // if quest not done and have model airship, complete quest
     } else if (
       (internalQuestStatus("questL10Garbage") < 10 &&
         itemAmount($item`drum 'n' bass 'n' drum 'n' bass record`) > 0) ||
       in_koe()
     ) {
-      runChoice(4); // if quest not done and have the record, move to Melon Collie (#675). HITS is open in KoE so no need to grab rocket
+      auto_runChoice(4); // if quest not done and have the record, move to Melon Collie (#675). HITS is open in KoE so no need to grab rocket
     } else {
-      runChoice(2); // grab steam-powered rocket ship. will skip if already have rocket
+      auto_runChoice(2); // grab steam-powered rocket ship. will skip if already have rocket
     }
   } else if (choice === 678) {
     // Yeah, You're for Me, Punk Rock Giant (The Castle in the Clouds in the Sky (Top Floor))
@@ -430,35 +464,28 @@ export function castleTopFloorChoiceHandler(choice: number): void {
       internalQuestStatus("questL10Garbage") < 10 &&
       equippedAmount($item`Mohawk wig`) > 0
     ) {
-      runChoice(1); // if quest not done and mohawk wig equipped, finish quest
+      auto_runChoice(1); // if quest not done and mohawk wig equipped, finish quest
     } else if (internalQuestStatus("questL10Garbage") < 10) {
-      runChoice(4); // if wig not equipped and quest not done, go to Flavor of a Raver (#676)
+      auto_runChoice(4); // if wig not equipped and quest not done, go to Flavor of a Raver (#676)
     } else {
-      runChoice(3); // if quest is done, go to Copper Feel (#677) to get rocket ship or skip
+      auto_runChoice(3); // if quest is done, go to Copper Feel (#677) to get rocket ship or skip
     }
   } else if (choice === 679) {
     // Keep On Turnin' the Wheel in the Sky (The Castle in the Clouds in the Sky (Top Floor))
     if (isActuallyEd()) {
-      runChoice(2); // ed advances via choice 2
+      auto_runChoice(2); // ed advances via choice 2
     } else {
-      runChoice(1); // everyone else advances via choice 1
+      auto_runChoice(1); // everyone else advances via choice 1
     }
   } else if (choice === 680) {
     // Are you a Man or a Mouse? (The Castle in the Clouds in the Sky (Top Floor))
-    runChoice(1); // go to finish quest the long way
+    auto_runChoice(1); // go to finish quest the long way
   } else {
     abort("unhandled choice in castleTopFloorChoiceHandler");
   }
 }
 
-export function L10_holeInTheSkyUnlock(): boolean {
-  if (internalQuestStatus("questL10Garbage") < 11) {
-    //top floor opens at step9. but we want to finish the giant trash quest first before we do hole in the sky.
-    return false;
-  }
-  if (!toBoolean(getProperty("auto_holeinthesky"))) {
-    return false;
-  }
+function L10_holeInTheSkyUnlockDo(): boolean {
   if (itemAmount($item`steam-powered model rocketship`) > 0) {
     setProperty("auto_holeinthesky", false.toString());
     return false;
@@ -503,18 +530,41 @@ export function L10_holeInTheSkyUnlock(): boolean {
   return true;
 }
 
+export const L10_holeInTheSkyUnlockTask: QuestTask = registerQuestTask({
+  name: "L10_holeInTheSkyUnlock",
+  completed: () => itemAmount($item`steam-powered model rocketship`) > 0,
+  // top floor opens at step9. but we want to finish the giant trash quest first before we do hole in the sky.
+  ready: () =>
+    internalQuestStatus("questL10Garbage") >= 11 &&
+    toBoolean(getProperty("auto_holeinthesky")),
+  do: L10_holeInTheSkyUnlockDo,
+  locations: $location`The Castle in the Clouds in the Sky (Top Floor)`,
+});
+
+export function L10_holeInTheSkyUnlock(): boolean {
+  return runQuestTask(L10_holeInTheSkyUnlockTask);
+}
+
+function L10_rainOnThePlainsDo(): boolean {
+  return runTaskChain([
+    L10_plantThatBeanTask,
+    L10_airshipTask,
+    L10_basementTask,
+    L10_groundTask,
+    L10_topFloorTask,
+    L10_holeInTheSkyUnlockTask,
+  ]);
+}
+
+const L10_rainOnThePlainsTask: QuestTask = registerQuestTask({
+  name: "L10_rainOnThePlains",
+  completed: () => false,
+  ready: () => true,
+  do: L10_rainOnThePlainsDo,
+});
+
 export function L10_rainOnThePlains(): boolean {
-  if (
-    L10_plantThatBean() ||
-    L10_airship() ||
-    L10_basement() ||
-    L10_ground() ||
-    L10_topFloor() ||
-    L10_holeInTheSkyUnlock()
-  ) {
-    return true;
-  }
-  return false;
+  return runQuestTask(L10_rainOnThePlainsTask);
 }
 
 export function L10_needUmbrella(): boolean {

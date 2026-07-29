@@ -40,7 +40,6 @@ import {
   pullsRemaining,
   putCloset,
   retrieveItem,
-  runChoice,
   setProperty,
   shopAmount,
   splitString,
@@ -78,6 +77,7 @@ import {
   auto_log_info,
   auto_log_warning,
   auto_predictAccordionTurns,
+  auto_runChoice,
   auto_setMCDToCap,
   auto_turbo,
   autoCraft,
@@ -1162,21 +1162,21 @@ export function LX_craftAcquireItems(): boolean {
     !possessEquipment($item`loafers`)
   ) {
     visitUrl("inv_use.php?pwd=&which=1&whichitem=8167");
-    runChoice(2);
+    auto_runChoice(2);
   }
   if (
     itemAmount($item`magical baguette`) > 0 &&
     !possessEquipment($item`bread basket`)
   ) {
     visitUrl("inv_use.php?pwd=&which=1&whichitem=8167");
-    runChoice(3);
+    auto_runChoice(3);
   }
   if (
     itemAmount($item`magical baguette`) > 0 &&
     !possessEquipment($item`breadwand`)
   ) {
     visitUrl("inv_use.php?pwd=&which=1&whichitem=8167");
-    runChoice(1);
+    auto_runChoice(1);
   }
 
   if (

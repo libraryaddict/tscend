@@ -55,7 +55,6 @@ import {
   pullsRemaining,
   random,
   retrieveItem,
-  runChoice,
   setProperty,
   splitString,
   squareRoot,
@@ -174,6 +173,7 @@ import {
   auto_log_info,
   auto_log_warning,
   auto_MaxMLToCap,
+  auto_runChoice,
   auto_wishForEffect,
   autoCraft,
   backupSetting,
@@ -191,6 +191,12 @@ import {
 import { zone_delay, zone_isAvailable } from "../auto_zone";
 import { ConsumeAction } from "../autoscend_record";
 import { getSniffer, isSniffed } from "../combat/auto_combat_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import {
   considerGrimstoneGolem,
   handleBjornify,
@@ -256,7 +262,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 import { L3_tavern } from "./level_03";
 import { L8_trapperNinjaLair } from "./level_08";
 import { L9_chasmBuild } from "./level_09";
-import { L10_holeInTheSkyUnlock, L10_topFloor } from "./level_10";
+import { L10_holeInTheSkyUnlockTask, L10_topFloorTask } from "./level_10";
 
 class desert_buff_record {
   constructor(
@@ -494,24 +500,9 @@ export function getShenZonesTurnsSpent(): Map<Location, number> {
   return delayValues;
 }
 
-export function LX_unlockHiddenTemple(): boolean {
+function LX_unlockHiddenTempleDo(): boolean {
   // replaces L2_treeCoin(),  L2_spookyMap(),  L2_spookyFertilizer() & L2_spookySapling()
 
-  if (in_glover()) {
-    // Spooky Temple map ain't nuthin' but a 'G' Thang.
-    return false;
-  }
-
-  if (hiddenTempleUnlocked()) {
-    return false;
-  }
-  if (itemAmount($item`spooky sapling`) === 0 && myMeat() < 100) {
-    return false;
-  }
-  if (canBurnDelay($location`The Spooky Forest`)) {
-    // Arboreal Respite choice adventure has a delay of 5 adventures.
-    return false;
-  }
   auto_log_info("Attempting to make the Hidden Temple less hidden.", "blue");
   pullXWhenHaveY($item`Spooky-Gro fertilizer`, 1, 0);
   if (autoAdv($location`The Spooky Forest`)) {
@@ -525,6 +516,23 @@ export function LX_unlockHiddenTemple(): boolean {
     return true;
   }
   return false;
+}
+
+export const LX_unlockHiddenTempleTask: QuestTask = registerQuestTask({
+  name: "LX_unlockHiddenTemple",
+  // Spooky Temple map ain't nuthin' but a 'G' Thang.
+  completed: () => hiddenTempleUnlocked(),
+  ready: () =>
+    !in_glover() &&
+    !(itemAmount($item`spooky sapling`) === 0 && myMeat() < 100) &&
+    // Arboreal Respite choice adventure has a delay of 5 adventures.
+    !canBurnDelay($location`The Spooky Forest`),
+  do: LX_unlockHiddenTempleDo,
+  locations: $location`The Spooky Forest`,
+});
+
+export function LX_unlockHiddenTemple(): boolean {
+  return runQuestTask(LX_unlockHiddenTempleTask);
 }
 
 export function hasSpookyravenLibraryKey(): boolean {
@@ -623,20 +631,8 @@ export function LX_unlockHauntedBilliardsRoom(
   return false;
 }
 
-export function LX_unlockHauntedLibrary(): boolean {
+function LX_unlockHauntedLibraryDo(): boolean {
   //Adventure in the haunted billiards room to get the key to the haunted library
-  if (
-    internalQuestStatus("questM20Necklace") < 1 ||
-    internalQuestStatus("questM20Necklace") > 2
-  ) {
-    return false;
-  }
-  if (
-    itemAmount($item`Spookyraven billiards room key`) < 1 ||
-    hasSpookyravenLibraryKey()
-  ) {
-    return false;
-  }
   //equipment handling
   let expectPool: number = speculative_pool_skill();
   const staffOfFats: Item = $item`[2268]Staff of Fats`; //regular staff of fats. +5 pool +2 training
@@ -731,13 +727,22 @@ export function LX_unlockHauntedLibrary(): boolean {
   return autoAdv($location`The Haunted Billiards Room`);
 }
 
-export function LX_unlockManorSecondFloor(): boolean {
-  if (
-    internalQuestStatus("questM20Necklace") < 3 ||
-    internalQuestStatus("questM20Necklace") > 4
-  ) {
-    return false;
-  }
+export const LX_unlockHauntedLibraryTask: QuestTask = registerQuestTask({
+  name: "LX_unlockHauntedLibrary",
+  completed: () =>
+    internalQuestStatus("questM20Necklace") > 2 || hasSpookyravenLibraryKey(),
+  ready: () =>
+    internalQuestStatus("questM20Necklace") >= 1 &&
+    itemAmount($item`Spookyraven billiards room key`) >= 1,
+  do: LX_unlockHauntedLibraryDo,
+  locations: $location`The Haunted Billiards Room`,
+});
+
+export function LX_unlockHauntedLibrary(): boolean {
+  return runQuestTask(LX_unlockHauntedLibraryTask);
+}
+
+function LX_unlockManorSecondFloorDo(): boolean {
   //No sense in trying to go to the library if constructs (writing desk) are banished and we already have a killing jar and haven't done the desert yet
   if (
     isBanished($phylum`construct`) &&
@@ -804,29 +809,48 @@ export function LX_unlockManorSecondFloor(): boolean {
   return autoAdv($location`The Haunted Library`);
 }
 
-export function LX_spookyravenManorFirstFloor(): boolean {
-  if (toInt(getProperty("lastSecondFloorUnlock")) >= myAscensions()) {
-    return false;
-  }
+export const LX_unlockManorSecondFloorTask: QuestTask = registerQuestTask({
+  name: "LX_unlockManorSecondFloor",
+  completed: () => internalQuestStatus("questM20Necklace") > 4,
+  ready: () => internalQuestStatus("questM20Necklace") >= 3,
+  do: LX_unlockManorSecondFloorDo,
+  locations: $location`The Haunted Library`,
+});
 
-  if (
-    LX_unlockManorSecondFloor() ||
-    LX_unlockHauntedLibrary() ||
-    LX_unlockHauntedBilliardsRoom()
-  ) {
-    return true;
-  }
-  return false;
+export function LX_unlockManorSecondFloor(): boolean {
+  return runQuestTask(LX_unlockManorSecondFloorTask);
 }
 
-export function LX_danceWithLadySpookyraven(): boolean {
-  if (
-    internalQuestStatus("questM21Dance") < 2 ||
-    internalQuestStatus("questM21Dance") > 3
-  ) {
-    return false;
-  }
+const LX_unlockHauntedBilliardsRoomFirstFloorTask: QuestTask =
+  registerQuestTask({
+    name: "LX_unlockHauntedBilliardsRoomFirstFloor",
+    completed: () => itemAmount($item`Spookyraven billiards room key`) > 0,
+    ready: () => true,
+    do: () => LX_unlockHauntedBilliardsRoom(),
+    locations: $location`The Haunted Kitchen`,
+  });
 
+function LX_spookyravenManorFirstFloorDo(): boolean {
+  return runTaskChain([
+    LX_unlockManorSecondFloorTask,
+    LX_unlockHauntedLibraryTask,
+    LX_unlockHauntedBilliardsRoomFirstFloorTask,
+  ]);
+}
+
+export const LX_spookyravenManorFirstFloorTask: QuestTask = registerQuestTask({
+  name: "LX_spookyravenManorFirstFloor",
+  completed: () =>
+    toInt(getProperty("lastSecondFloorUnlock")) >= myAscensions(),
+  ready: () => true,
+  do: LX_spookyravenManorFirstFloorDo,
+});
+
+export function LX_spookyravenManorFirstFloor(): boolean {
+  return runQuestTask(LX_spookyravenManorFirstFloorTask);
+}
+
+function LX_danceWithLadySpookyravenDo(): boolean {
   if (
     itemAmount($item`Lady Spookyraven's powder puff`) === 1 &&
     itemAmount($item`Lady Spookyraven's dancing shoes`) === 1 &&
@@ -846,6 +870,18 @@ export function LX_danceWithLadySpookyraven(): boolean {
   return false;
 }
 
+export const LX_danceWithLadySpookyravenTask: QuestTask = registerQuestTask({
+  name: "LX_danceWithLadySpookyraven",
+  completed: () => internalQuestStatus("questM21Dance") > 3,
+  ready: () => internalQuestStatus("questM21Dance") >= 2,
+  do: LX_danceWithLadySpookyravenDo,
+  locations: $location`The Haunted Ballroom`,
+});
+
+export function LX_danceWithLadySpookyraven(): boolean {
+  return runQuestTask(LX_danceWithLadySpookyravenTask);
+}
+
 export function hauntedBedroomChoiceHandler(
   choice: number,
   options: Map<number, string>,
@@ -858,19 +894,19 @@ export function hauntedBedroomChoiceHandler(
         !in_wotsf()) ||
       in_amw()
     ) {
-      runChoice(1); // get old leather wallet worth ~500 meat
+      auto_runChoice(1); // get old leather wallet worth ~500 meat
     } else if (
       itemAmount($item`ghost key`) > 0 &&
       myPrimestat() === $stat`Muscle` &&
       myBuffedstat($stat`Muscle`) < 150
     ) {
-      runChoice(3); // spend 1 ghost key for primestat, get ~200 muscle XP
+      auto_runChoice(3); // spend 1 ghost key for primestat, get ~200 muscle XP
     } else {
-      runChoice(2); // get min(200,muscle) of muscle XP
+      auto_runChoice(2); // get min(200,muscle) of muscle XP
     }
   } else if (choice === 877) {
     // One Mahogany Nightstand (The Haunted Bedroom)
-    runChoice(1); // get half of a memo or old coin purse
+    auto_runChoice(1); // get half of a memo or old coin purse
   } else if (choice === 878) {
     // One Ornate Nightstand (The Haunted Bedroom)
     let needSpectacles: boolean =
@@ -880,42 +916,42 @@ export function hauntedBedroomChoiceHandler(
       needSpectacles = false;
     }
     if (needSpectacles) {
-      runChoice(3); // get Lord Spookyraven's spectacles
+      auto_runChoice(3); // get Lord Spookyraven's spectacles
     } else if (
       itemAmount($item`disposable instant camera`) === 0 &&
       internalQuestStatus("questL11Palindome") < 1
     ) {
-      runChoice(4); // get disposable instant camera
+      auto_runChoice(4); // get disposable instant camera
     } else if (
       myPrimestat() !== $stat`Mysticality` ||
       myMeat() < 1000 + meatReserve() ||
       in_amw()
     ) {
-      runChoice(1); // get ~500 meat
+      auto_runChoice(1); // get ~500 meat
     } else if (
       itemAmount($item`ghost key`) > 0 &&
       myPrimestat() === $stat`Mysticality` &&
       myBuffedstat($stat`Mysticality`) < 150
     ) {
-      runChoice(5); // spend 1 ghost key for primestat, get ~200 mysticality XP
+      auto_runChoice(5); // spend 1 ghost key for primestat, get ~200 mysticality XP
     } else {
-      runChoice(2); // get min(200,mys) of mys XP
+      auto_runChoice(2); // get min(200,mys) of mys XP
     }
   } else if (choice === 879) {
     // One Rustic Nightstand (The Haunted Bedroom)
     if (options.has(4)) {
-      runChoice(4); // only shows up rarely. still worth ~1 mil in mall
+      auto_runChoice(4); // only shows up rarely. still worth ~1 mil in mall
     }
     if (in_bhy() && itemAmount($item`antique hand mirror`) < 1) {
-      runChoice(3); // fight the remains of a jilted mistress for the antique hand mirror
+      auto_runChoice(3); // fight the remains of a jilted mistress for the antique hand mirror
     } else if (
       itemAmount($item`ghost key`) > 0 &&
       myPrimestat() === $stat`Moxie` &&
       myBuffedstat($stat`Moxie`) < 150
     ) {
-      runChoice(5); // spend 1 ghost key for primestat, get ~200 moxie XP
+      auto_runChoice(5); // spend 1 ghost key for primestat, get ~200 moxie XP
     } else {
-      runChoice(1); // get moxie substats
+      auto_runChoice(1); // get moxie substats
     }
   } else if (choice === 880) {
     // One Elegant Nightstand (The Haunted Bedroom)
@@ -923,19 +959,16 @@ export function hauntedBedroomChoiceHandler(
       internalQuestStatus("questM21Dance") < 2 &&
       itemAmount($item`Lady Spookyraven's finest gown`) === 0
     ) {
-      runChoice(1); // get Lady Spookyraven's Gown
+      auto_runChoice(1); // get Lady Spookyraven's Gown
     } else {
-      runChoice(2); // get elegant nightstick
+      auto_runChoice(2); // get elegant nightstick
     }
   } else {
     abort("unhandled choice in hauntedBedroomChoiceHandler");
   }
 }
 
-export function LX_getLadySpookyravensFinestGown(): boolean {
-  if (internalQuestStatus("questM21Dance") !== 1) {
-    return false;
-  }
+function LX_getLadySpookyravensFinestGownDo(): boolean {
   // Elegant animated nightstand has a delay of 6(?) adventures.
   // TODO: add a check for delay burning?
   // Might not be worth it since we need to fight ornate nightstands for the spectacles and camera
@@ -1002,20 +1035,20 @@ export function LX_getLadySpookyravensFinestGown(): boolean {
   return false;
 }
 
-export function LX_getLadySpookyravensDancingShoes(): boolean {
-  if (internalQuestStatus("questM21Dance") !== 1) {
-    return false;
-  }
+export const LX_getLadySpookyravensFinestGownTask: QuestTask =
+  registerQuestTask({
+    name: "LX_getLadySpookyravensFinestGown",
+    completed: () => internalQuestStatus("questM21Dance") > 1,
+    ready: () => internalQuestStatus("questM21Dance") === 1,
+    do: LX_getLadySpookyravensFinestGownDo,
+    locations: $location`The Haunted Bedroom`,
+  });
 
-  if (itemAmount($item`Lady Spookyraven's dancing shoes`) > 0) {
-    return false;
-  }
+export function LX_getLadySpookyravensFinestGown(): boolean {
+  return runQuestTask(LX_getLadySpookyravensFinestGownTask);
+}
 
-  if (canBurnDelay($location`The Haunted Gallery`)) {
-    // Louvre It or Leave It choice adventure has a delay of 5 adventures.
-    return false;
-  }
-
+function LX_getLadySpookyravensDancingShoesDo(): boolean {
   backupSetting("louvreDesiredGoal", "7"); // lets just let mafia automate this for us.
   auto_log_info("Spookyraven: Gallery", "blue");
 
@@ -1027,20 +1060,25 @@ export function LX_getLadySpookyravensDancingShoes(): boolean {
   return false;
 }
 
-export function LX_getLadySpookyravensPowderPuff(): boolean {
-  if (internalQuestStatus("questM21Dance") !== 1) {
-    return false;
-  }
+export const LX_getLadySpookyravensDancingShoesTask: QuestTask =
+  registerQuestTask({
+    name: "LX_getLadySpookyravensDancingShoes",
+    completed: () =>
+      internalQuestStatus("questM21Dance") > 1 ||
+      itemAmount($item`Lady Spookyraven's dancing shoes`) > 0,
+    ready: () =>
+      internalQuestStatus("questM21Dance") === 1 &&
+      // Louvre It or Leave It choice adventure has a delay of 5 adventures.
+      !canBurnDelay($location`The Haunted Gallery`),
+    do: LX_getLadySpookyravensDancingShoesDo,
+    locations: $location`The Haunted Gallery`,
+  });
 
-  if (itemAmount($item`Lady Spookyraven's powder puff`) > 0) {
-    return false;
-  }
+export function LX_getLadySpookyravensDancingShoes(): boolean {
+  return runQuestTask(LX_getLadySpookyravensDancingShoesTask);
+}
 
-  if (canBurnDelay($location`The Haunted Bathroom`)) {
-    // Never Gonna Make You Up choice adventure has a delay of 5 adventures.
-    return false;
-  }
-
+function LX_getLadySpookyravensPowderPuffDo(): boolean {
   auto_log_info("Spookyraven: Bathroom", "blue");
 
   auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
@@ -1064,19 +1102,42 @@ export function LX_getLadySpookyravensPowderPuff(): boolean {
   return false;
 }
 
+export const LX_getLadySpookyravensPowderPuffTask: QuestTask =
+  registerQuestTask({
+    name: "LX_getLadySpookyravensPowderPuff",
+    completed: () =>
+      internalQuestStatus("questM21Dance") > 1 ||
+      itemAmount($item`Lady Spookyraven's powder puff`) > 0,
+    ready: () =>
+      internalQuestStatus("questM21Dance") === 1 &&
+      // Never Gonna Make You Up choice adventure has a delay of 5 adventures.
+      !canBurnDelay($location`The Haunted Bathroom`),
+    do: LX_getLadySpookyravensPowderPuffDo,
+    locations: $location`The Haunted Bathroom`,
+  });
+
+export function LX_getLadySpookyravensPowderPuff(): boolean {
+  return runQuestTask(LX_getLadySpookyravensPowderPuffTask);
+}
+
+function LX_spookyravenManorSecondFloorDo(): boolean {
+  return runTaskChain([
+    LX_danceWithLadySpookyravenTask,
+    LX_getLadySpookyravensFinestGownTask,
+    LX_getLadySpookyravensDancingShoesTask,
+    LX_getLadySpookyravensPowderPuffTask,
+  ]);
+}
+
+export const LX_spookyravenManorSecondFloorTask: QuestTask = registerQuestTask({
+  name: "LX_spookyravenManorSecondFloor",
+  completed: () => internalQuestStatus("questM21Dance") > 3,
+  ready: () => toInt(getProperty("lastSecondFloorUnlock")) >= myAscensions(),
+  do: LX_spookyravenManorSecondFloorDo,
+});
+
 export function LX_spookyravenManorSecondFloor(): boolean {
-  if (toInt(getProperty("lastSecondFloorUnlock")) < myAscensions()) {
-    return false;
-  }
-  if (
-    LX_danceWithLadySpookyraven() ||
-    LX_getLadySpookyravensFinestGown() ||
-    LX_getLadySpookyravensDancingShoes() ||
-    LX_getLadySpookyravensPowderPuff()
-  ) {
-    return true;
-  }
-  return false;
+  return runQuestTask(LX_spookyravenManorSecondFloorTask);
 }
 
 export function blackForestChoiceHandler(choice: number): void {
@@ -1084,77 +1145,62 @@ export function blackForestChoiceHandler(choice: number): void {
     // All Over the Map (The Black Forest)
     if (5 in availableChoiceOptions()) {
       // only available with Candy Cane Sword Cane equipped
-      runChoice(5); // +8 exploration
-      runChoice(1); // go to You Found Your Thrill (#924)
+      auto_runChoice(5); // +8 exploration
+      auto_runChoice(1); // go to You Found Your Thrill (#924)
     } else {
-      runChoice(1); // go to You Found Your Thrill (#924)
+      auto_runChoice(1); // go to You Found Your Thrill (#924)
     }
   } else if (choice === 924) {
     if (toBoolean(getProperty("auto_getBeehive")) && myAdventures() > 3) {
-      runChoice(3); // go to Bee Persistent (#1018)
+      auto_runChoice(3); // go to Bee Persistent (#1018)
     } else if (
       !possessEquipment($item`blackberry galoshes`) &&
       itemAmount($item`blackberry`) >= 3 &&
       !in_darkGyffte()
     ) {
-      runChoice(2); // go to The Blackberry Cobbler (#928)
+      auto_runChoice(2); // go to The Blackberry Cobbler (#928)
     } else {
-      runChoice(1); // Attack the bushes (fight blackberry bush)
+      auto_runChoice(1); // Attack the bushes (fight blackberry bush)
     }
   } else if (choice === 925) {
     // The Blackest Smith (The Black Forest)
-    runChoice(5); // skip
+    auto_runChoice(5); // skip
   } else if (choice === 926) {
     // Be Mine (The Black Forest)
-    runChoice(4); // skip
+    auto_runChoice(4); // skip
   } else if (choice === 927) {
     // Sunday Black Sunday (The Black Forest)
-    runChoice(3); // skip
+    auto_runChoice(3); // skip
   } else if (choice === 928) {
     if (
       !possessEquipment($item`blackberry galoshes`) &&
       itemAmount($item`blackberry`) >= 3 &&
       !in_darkGyffte()
     ) {
-      runChoice(4); // get Blackberry Galoshes
+      auto_runChoice(4); // get Blackberry Galoshes
     } else {
-      runChoice(5); // skip
+      auto_runChoice(5); // skip
     }
   } else if (choice === 1018) {
     // Bee Persistent (The Black Forest)
     if (toBoolean(getProperty("auto_getBeehive")) && myAdventures() > 2) {
-      runChoice(1); // go to Bee Rewarded (#1019)
+      auto_runChoice(1); // go to Bee Rewarded (#1019)
     } else {
-      runChoice(2); // skip
+      auto_runChoice(2); // skip
     }
   } else if (choice === 1019) {
     // Bee Rewarded (The Black Forest)
     if (toBoolean(getProperty("auto_getBeehive"))) {
-      runChoice(1); // get the beehive
+      auto_runChoice(1); // get the beehive
     } else {
-      runChoice(2); // skip
+      auto_runChoice(2); // skip
     }
   } else {
     abort("unhandled choice in blackForestChoiceHandler");
   }
 }
 
-export function L11_blackMarket(): boolean {
-  if (
-    internalQuestStatus("questL11Black") < 0 ||
-    internalQuestStatus("questL11Black") > 1 ||
-    blackMarketAvailable()
-  ) {
-    return false;
-  }
-  if (
-    possessEquipment($item`blackberry galoshes`) &&
-    !auto_can_equip($item`blackberry galoshes`) &&
-    !isAboutToPowerlevel()
-  ) {
-    return false;
-  }
-
+function L11_blackMarketDo(): boolean {
   if (isBanished($phylum`beast`) && toInt(getProperty("screechCombats")) > 0) {
     setProperty("screechDelay", "beast");
     return false; // Can't get the reassembled blackbird if beasts are banished
@@ -1241,10 +1287,26 @@ export function L11_blackMarket(): boolean {
   return false;
 }
 
-export function L11_getBeehive(): boolean {
-  if (!blackMarketAvailable() || !toBoolean(getProperty("auto_getBeehive"))) {
-    return false;
-  }
+export const L11_blackMarketTask: QuestTask = registerQuestTask({
+  name: "L11_blackMarket",
+  completed: () =>
+    internalQuestStatus("questL11Black") > 1 || blackMarketAvailable(),
+  ready: () =>
+    internalQuestStatus("questL11Black") >= 0 &&
+    !(
+      possessEquipment($item`blackberry galoshes`) &&
+      !auto_can_equip($item`blackberry galoshes`) &&
+      !isAboutToPowerlevel()
+    ),
+  do: L11_blackMarketDo,
+  locations: $location`The Black Forest`,
+});
+
+export function L11_blackMarket(): boolean {
+  return runQuestTask(L11_blackMarketTask);
+}
+
+function L11_getBeehiveDo(): boolean {
   if (
     internalQuestStatus("questL13Final") >= 7 ||
     itemAmount($item`beehive`) > 0
@@ -1277,17 +1339,21 @@ export function L11_getBeehive(): boolean {
   return advSpent;
 }
 
-export function L11_forgedDocuments(): boolean {
-  if (
-    internalQuestStatus("questL11Black") < 0 ||
-    internalQuestStatus("questL11Black") > 2 ||
-    !blackMarketAvailable()
-  ) {
-    return false;
-  }
-  if (itemAmount($item`forged identification documents`) > 0) {
-    return false;
-  }
+export const L11_getBeehiveTask: QuestTask = registerQuestTask({
+  name: "L11_getBeehive",
+  completed: () =>
+    internalQuestStatus("questL13Final") >= 7 || itemAmount($item`beehive`) > 0,
+  ready: () =>
+    blackMarketAvailable() && toBoolean(getProperty("auto_getBeehive")),
+  do: L11_getBeehiveDo,
+  locations: $location`The Black Forest`,
+});
+
+export function L11_getBeehive(): boolean {
+  return runQuestTask(L11_getBeehiveTask);
+}
+
+function L11_forgedDocumentsDo(): boolean {
   if (
     !in_wotsf() &&
     myMeat() < npcPrice($item`forged identification documents`)
@@ -1322,16 +1388,23 @@ export function L11_forgedDocuments(): boolean {
   return false;
 }
 
-export function L11_mcmuffinDiary(): boolean {
-  if (
-    internalQuestStatus("questL11MacGuffin") !== 1 ||
-    internalQuestStatus("questL11Black") < 2
-  ) {
-    return false;
-  }
-  if (is_werewolf()) {
-    return false; //can't access stores as werewolf which includes the shore
-  }
+export const L11_forgedDocumentsTask: QuestTask = registerQuestTask({
+  name: "L11_forgedDocuments",
+  completed: () =>
+    internalQuestStatus("questL11Black") > 2 ||
+    itemAmount($item`forged identification documents`) > 0,
+  ready: () =>
+    internalQuestStatus("questL11Black") >= 0 &&
+    blackMarketAvailable() &&
+    (!in_wereprof() || is_professor()),
+  do: L11_forgedDocumentsDo,
+});
+
+export function L11_forgedDocuments(): boolean {
+  return runQuestTask(L11_forgedDocumentsTask);
+}
+
+function L11_mcmuffinDiaryDo(): boolean {
   if (in_koe() && itemAmount($item`forged identification documents`) > 0) {
     council(); // Shore doesn't exist in Exploathing so we acquire diary from the council
   }
@@ -1373,6 +1446,20 @@ export function L11_mcmuffinDiary(): boolean {
   return false;
 }
 
+export const L11_mcmuffinDiaryTask: QuestTask = registerQuestTask({
+  name: "L11_mcmuffinDiary",
+  completed: () => internalQuestStatus("questL11MacGuffin") > 1,
+  ready: () =>
+    internalQuestStatus("questL11MacGuffin") === 1 &&
+    internalQuestStatus("questL11Black") >= 2 &&
+    (!in_wereprof() || is_professor()),
+  do: L11_mcmuffinDiaryDo,
+});
+
+export function L11_mcmuffinDiary(): boolean {
+  return runQuestTask(L11_mcmuffinDiaryTask);
+}
+
 function auto_visit_gnasir(): void {
   //Visits gnasir, can change based on path
   if (in_koe()) {
@@ -1382,27 +1469,8 @@ function auto_visit_gnasir(): void {
   }
 }
 
-export function L11_getUVCompass(): boolean {
+function L11_getUVCompassDo(): boolean {
   //acquire a [UV-resistant compass] if needed
-  if (
-    possessEquipment($item`ornate dowsing rod`) &&
-    auto_can_equip($item`ornate dowsing rod`)
-  ) {
-    return false; //already have a dowsing rod. we do not need a compass.
-  }
-  if (!auto_can_equip($item`UV-resistant compass`)) {
-    return false;
-  }
-  if (possessEquipment($item`UV-resistant compass`)) {
-    return false; //already have compass
-  }
-  if (in_koe()) {
-    return false; //impossible to get compass in this path. [The Shore, Inc] is unavailable
-  }
-  if (is_werewolf()) {
-    return false; // can't access shore as a werewolf
-  }
-
   pullXWhenHaveY($item`Shore Inc. Ship Trip Scrip`, 1, 0);
   if (itemAmount($item`Shore Inc. Ship Trip Scrip`) === 0) {
     return LX_doVacation();
@@ -1424,6 +1492,24 @@ export function L11_getUVCompass(): boolean {
   return false;
 }
 
+const L11_getUVCompassTask: QuestTask = registerQuestTask({
+  name: "L11_getUVCompass",
+  completed: () =>
+    //already have a dowsing rod. we do not need a compass.
+    (possessEquipment($item`ornate dowsing rod`) &&
+      auto_can_equip($item`ornate dowsing rod`)) ||
+    //already have compass
+    possessEquipment($item`UV-resistant compass`) ||
+    //impossible to get compass in this path. [The Shore, Inc] is unavailable
+    in_koe(),
+  ready: () => auto_can_equip($item`UV-resistant compass`) && is_professor(),
+  do: L11_getUVCompassDo,
+});
+
+export function L11_getUVCompass(): boolean {
+  return runQuestTask(L11_getUVCompassTask);
+}
+
 export function L11_hasUltrahydrated(): boolean {
   if (
     haveEffect($effect`Ultrahydrated`) > 0 &&
@@ -1434,10 +1520,7 @@ export function L11_hasUltrahydrated(): boolean {
   return false;
 }
 
-export function L11_aridDesert(): boolean {
-  if (internalQuestStatus("questL11Desert") !== 0) {
-    return false;
-  }
+function L11_aridDesertDo(): boolean {
   // Fix broken desert tracking. pocket familiars failing as of r19010. plumber as of r20019
   if (in_plumber() || in_pokefam()) {
     visitUrl("place.php?whichplace=desertbeach", false);
@@ -1877,10 +1960,18 @@ export function L11_aridDesert(): boolean {
   return true;
 }
 
-export function LX_killBaaBaaBuran(): boolean {
-  if (!hiddenTempleUnlocked()) {
-    return false;
-  }
+const L11_aridDesertTask: QuestTask = registerQuestTask({
+  name: "L11_aridDesert",
+  completed: () => internalQuestStatus("questL11Desert") > 0,
+  ready: () => internalQuestStatus("questL11Desert") === 0,
+  do: L11_aridDesertDo,
+});
+
+export function L11_aridDesert(): boolean {
+  return runQuestTask(L11_aridDesertTask);
+}
+
+function LX_killBaaBaaBuranDo(): boolean {
   if (
     itemAmount($item`stone wool`) === 0 &&
     haveEffect($effect`Stone-Faced`) === 0
@@ -1907,18 +1998,20 @@ export function LX_killBaaBaaBuran(): boolean {
   return false;
 }
 
-export function L11_unlockHiddenCity(): boolean {
-  if (
-    !hiddenTempleUnlocked() ||
-    internalQuestStatus("questL11Worship") < 0 ||
-    internalQuestStatus("questL11Worship") > 2
-  ) {
-    return false;
-  }
-  if (myAdventures() - auto_advToReserve() <= 3) {
-    return false;
-  }
+const LX_killBaaBaaBuranTask: QuestTask = registerQuestTask({
+  name: "LX_killBaaBaaBuran",
+  completed: () =>
+    itemAmount($item`stone wool`) > 0 || haveEffect($effect`Stone-Faced`) > 0,
+  ready: () => hiddenTempleUnlocked(),
+  do: LX_killBaaBaaBuranDo,
+  locations: $location`The Hidden Temple`,
+});
 
+export function LX_killBaaBaaBuran(): boolean {
+  return runQuestTask(LX_killBaaBaaBuranTask);
+}
+
+function L11_unlockHiddenCityDo(): boolean {
   auto_log_info("Searching for the Hidden City", "blue");
   if (!in_glover() && !in_tcrs()) {
     // BaaBaabaran is the best source of stone wool
@@ -1957,29 +2050,44 @@ export function L11_unlockHiddenCity(): boolean {
   return autoAdv($location`The Hidden Temple`);
 }
 
+export const L11_unlockHiddenCityTask: QuestTask = registerQuestTask({
+  name: "L11_unlockHiddenCity",
+  completed: () => internalQuestStatus("questL11Worship") > 2,
+  ready: () =>
+    hiddenTempleUnlocked() &&
+    internalQuestStatus("questL11Worship") >= 0 &&
+    myAdventures() - auto_advToReserve() > 3,
+  do: L11_unlockHiddenCityDo,
+  locations: $location`The Hidden Temple`,
+});
+
+export function L11_unlockHiddenCity(): boolean {
+  return runQuestTask(L11_unlockHiddenCityTask);
+}
+
 export function hiddenTempleChoiceHandler(choice: number, page: string): void {
   if (choice === 123) {
     // At Least It's Not Full Of Trash
-    runChoice(2); // Go to Beginning at the Beginning of Beginning
+    auto_runChoice(2); // Go to Beginning at the Beginning of Beginning
     visitUrl("choice.php");
     cliExecute("dvorak"); // Solve puzzle and go to No Visible Means of Support (#125)
   } else if (choice === 125) {
     // No Visible Means of Support
-    runChoice(3); // Unlock the Hidden City!
+    auto_runChoice(3); // Unlock the Hidden City!
   } else if (choice === 579) {
     // Such Great Heights
     if (
       itemAmount($item`stone wool`) >= 2 &&
       toInt(getProperty("lastTempleAdventures")) < myAscensions()
     ) {
-      runChoice(3); // if we have plenty of stone wool, take the adventures first (and reset Mayam)
+      auto_runChoice(3); // if we have plenty of stone wool, take the adventures first (and reset Mayam)
     } else if (
       itemAmount($item`the Nostril of the Serpent`) === 0 &&
       internalQuestStatus("questL11Worship") < 3
     ) {
-      runChoice(2); // Get The Nostril of the Serpent
+      auto_runChoice(2); // Get The Nostril of the Serpent
     } else {
-      runChoice(3); // +3 adventures and extend 10 effects (first time) or skip
+      auto_runChoice(3); // +3 adventures and extend 10 effects (first time) or skip
     }
   } else if (choice === 580) {
     // The Hidden Heart of the Hidden Temple
@@ -1989,29 +2097,29 @@ export function hiddenTempleChoiceHandler(choice: number, page: string): void {
         "The door is decorated with that little lightning-tailed guy from your father's diary.",
       )
     ) {
-      runChoice(2); // Go to Unconfusing Buttons (#584) or Confusing Buttons (#583)
+      auto_runChoice(2); // Go to Unconfusing Buttons (#584) or Confusing Buttons (#583)
     } else {
-      runChoice(1); // Go to At Least It's Not Full Of Trash (#123)
+      auto_runChoice(1); // Go to At Least It's Not Full Of Trash (#123)
     }
   } else if (choice === 581) {
     // Such Great Depths
-    runChoice(3); // Fight the Clan of cave bars
+    auto_runChoice(3); // Fight the Clan of cave bars
   } else if (choice === 582) {
     // Fitting In
     if (
       itemAmount($item`the Nostril of the Serpent`) > 0 &&
       internalQuestStatus("questL11Worship") < 3
     ) {
-      runChoice(2); // Go to The Hidden Heart of the Hidden Temple (#580)
+      auto_runChoice(2); // Go to The Hidden Heart of the Hidden Temple (#580)
     } else {
-      runChoice(1); // Go to Such Great Heights (#579)
+      auto_runChoice(1); // Go to Such Great Heights (#579)
     }
   } else if (choice === 583) {
     // Confusing Buttons
-    runChoice(1); // Randomly changes The Hidden Heart of the Hidden Temple
+    auto_runChoice(1); // Randomly changes The Hidden Heart of the Hidden Temple
   } else if (choice === 584) {
     // Unconfusing Buttons
-    runChoice(4); // Go to The Hidden Heart of the Hidden Temple (Pikachutlotal) (#580)
+    auto_runChoice(4); // Go to The Hidden Heart of the Hidden Temple (Pikachutlotal) (#580)
   } else {
     abort("unhandled choice in hiddenTempleChoiceHandler");
   }
@@ -2064,47 +2172,47 @@ export function hiddenCityChoiceHandler(choice: number): void {
   if (choice === 780) {
     // Action Elevator (The Hidden Apartment Building)
     if (haveEffect($effect`Thrice-Cursed`) > 0) {
-      runChoice(1); // fight the spirit
+      auto_runChoice(1); // fight the spirit
     } else if (
       4 in availableChoiceOptions() &&
       haveEffect($effect`Thrice-Cursed`) === 0
     ) {
       // Use CCSC to get Cursed +1
-      runChoice(4);
+      auto_runChoice(4);
       if (haveEffect($effect`Thrice-Cursed`) > 0) {
-        runChoice(1); // fight the spirit
+        auto_runChoice(1); // fight the spirit
       } else {
-        runChoice(2); // get cursed
+        auto_runChoice(2); // get cursed
       }
     } else {
-      runChoice(2); // get cursed
+      auto_runChoice(2); // get cursed
     }
   } else if (choice === 781) {
     // Earthbound and Down (An Overgrown Shrine (Northwest))
     if (toInt(getProperty("hiddenApartmentProgress")) === 0) {
-      runChoice(1); // unlock the Hidden Apartment Building
+      auto_runChoice(1); // unlock the Hidden Apartment Building
     } else if (itemAmount($item`moss-covered stone sphere`) > 0) {
-      runChoice(2); // get the stone triangle
+      auto_runChoice(2); // get the stone triangle
     } else {
-      runChoice(6); // skip
+      auto_runChoice(6); // skip
     }
   } else if (choice === 783) {
     // Water You Dune (An Overgrown Shrine (Southwest))
     if (toInt(getProperty("hiddenHospitalProgress")) === 0) {
-      runChoice(1); // unlock the Hidden Hospital
+      auto_runChoice(1); // unlock the Hidden Hospital
     } else if (itemAmount($item`dripping stone sphere`) > 0) {
-      runChoice(2); // get the stone triangle
+      auto_runChoice(2); // get the stone triangle
     } else {
-      runChoice(6); // skip
+      auto_runChoice(6); // skip
     }
   } else if (choice === 784) {
     // You, M. D. (The Hidden Hospital)
-    runChoice(1); // fight the spirit
+    auto_runChoice(1); // fight the spirit
   } else if (choice === 785) {
     // Air Apparent (An Overgrown Shrine (Northeast))
 
     if (toInt(getProperty("hiddenOfficeProgress")) === 0) {
-      runChoice(1); // unlock the Hidden Office Building
+      auto_runChoice(1); // unlock the Hidden Office Building
     } else if (
       itemAmount(
         // either use CCSC + unlock or just unlock based on user sphere presence
@@ -2112,72 +2220,65 @@ export function hiddenCityChoiceHandler(choice: number): void {
       ) > 0
     ) {
       if (4 in availableChoiceOptions()) {
-        runChoice(4); // get free meat via CCSC
+        auto_runChoice(4); // get free meat via CCSC
       }
-      runChoice(2); // get the stone triangle
+      auto_runChoice(2); // get the stone triangle
     } else {
-      runChoice(6); // skip
+      auto_runChoice(6); // skip
     }
   } else if (choice === 786) {
     // Working Holiday (The Hidden Office Building)
     if (itemAmount($item`McClusky file (complete)`) > 0) {
-      runChoice(1); // fight the spirit
+      auto_runChoice(1); // fight the spirit
     } else if (itemAmount($item`boring binder clip`) === 0) {
-      runChoice(2); // get boring binder clip
+      auto_runChoice(2); // get boring binder clip
     } else {
-      runChoice(3); // fight an accountant
+      auto_runChoice(3); // fight an accountant
     }
   } else if (choice === 787) {
     // Fire When Ready (An Overgrown Shrine (Southeast))
     if (toInt(getProperty("hiddenBowlingAlleyProgress")) === 0) {
-      runChoice(1); // unlock the Hidden Bowling Alley
+      auto_runChoice(1); // unlock the Hidden Bowling Alley
     } else if (itemAmount($item`scorched stone sphere`) > 0) {
-      runChoice(2); // get the stone triangle
+      auto_runChoice(2); // get the stone triangle
     } else {
-      runChoice(6); // skip
+      auto_runChoice(6); // skip
     }
   } else if (choice === 788) {
     // Life is Like a Cherry of Bowls (The Hidden Bowling Alley)
     if (2 in availableChoiceOptions()) {
-      runChoice(2); // bowl for stats 4 times then fight the spirit on 5th occurrence
-      runChoice(1); // bowl for stats 4 times then fight the spirit on 5th occurrence
+      auto_runChoice(2); // bowl for stats 4 times then fight the spirit on 5th occurrence
+      auto_runChoice(1); // bowl for stats 4 times then fight the spirit on 5th occurrence
     } else {
-      runChoice(1); // bowl for stats 4 times then fight the spirit on 5th occurrence
+      auto_runChoice(1); // bowl for stats 4 times then fight the spirit on 5th occurrence
     }
   } else if (choice === 789) {
     // Where Does The Lone Ranger Take His Garbagester? (The Hidden Park)
     if (toInt(getProperty("relocatePygmyJanitor")) !== myAscensions()) {
-      runChoice(2); // Relocate the Pygmy Janitor to the park
+      auto_runChoice(2); // Relocate the Pygmy Janitor to the park
     } else {
-      runChoice(1); // Get Hidden City zone items
+      auto_runChoice(1); // Get Hidden City zone items
     }
   } else if (choice === 791) {
     // Legend of the Temple in the Hidden City (A Massive Ziggurat)
     if (itemAmount($item`stone triangle`) === 4) {
-      runChoice(1); // fight the Protector Spirit (or replacement)
+      auto_runChoice(1); // fight the Protector Spirit (or replacement)
     } else {
-      runChoice(6); // skip
+      auto_runChoice(6); // skip
     }
   } else if (choice === 1002) {
     // Temple of the Legend in the Hidden City (A Massive Ziggurat/Actually Ed the Undying)
     if (itemAmount($item`stone triangle`) === 4) {
-      runChoice(1); // Put the Ancient Amulet back
+      auto_runChoice(1); // Put the Ancient Amulet back
     } else {
-      runChoice(6); // skip
+      auto_runChoice(6); // skip
     }
   } else {
     abort("unhandled choice in hiddenCityChoiceHandler");
   }
 }
 
-export function L11_hiddenCity(): boolean {
-  if (
-    internalQuestStatus("questL11Worship") < 3 ||
-    internalQuestStatus("questL11Worship") > 4
-  ) {
-    return false;
-  }
-
+function L11_hiddenCityDo(): boolean {
   if (itemAmount($item`[2180]ancient amulet`) === 1) {
     return true;
   } else if (itemAmount($item`[7963]ancient amulet`) === 0 && isActuallyEd()) {
@@ -2667,53 +2768,75 @@ export function L11_hiddenCity(): boolean {
   return false;
 }
 
-export function L11_hiddenCityZones(): boolean {
-  if (
-    internalQuestStatus("questL11Worship") < 3 ||
-    internalQuestStatus("questL11Worship") > 4
-  ) {
-    return false;
-  }
+export const L11_hiddenCityTask: QuestTask = registerQuestTask({
+  name: "L11_hiddenCity",
+  completed: () => internalQuestStatus("questL11Worship") > 4,
+  ready: () => internalQuestStatus("questL11Worship") >= 3,
+  do: L11_hiddenCityDo,
+  locations: $locations`The Hidden Apartment Building, The Hidden Office Building, The Hidden Bowling Alley, The Hidden Hospital, An Overgrown Shrine (Northwest), An Overgrown Shrine (Northeast), An Overgrown Shrine (Southwest), An Overgrown Shrine (Southeast), A Massive Ziggurat`,
+});
 
-  function equipMachete(): boolean {
-    if (in_avantGuard()) {
-      return false; //combats aren't free so no point in equipping a Machete
-    }
-    if (auto_can_equip($item`antique machete`)) {
-      if (possessEquipment($item`antique machete`)) {
-        return autoForceEquip$3($item`antique machete`);
-      } else if (
-        !possessEquipment($item`muculent machete`) &&
-        canPull($item`antique machete`)
-      ) {
-        pullXWhenHaveY($item`antique machete`, 1, 0);
-        return autoForceEquip$3($item`antique machete`);
-      }
-    }
-    if (auto_can_equip($item`muculent machete`)) {
-      if (
-        !possessEquipment($item`muculent machete`) &&
-        canPull($item`muculent machete`)
-      ) {
-        pullXWhenHaveY($item`muculent machete`, 1, 0);
-      }
-      return autoForceEquip$3($item`muculent machete`);
-    }
-    return false;
-  }
+export function L11_hiddenCity(): boolean {
+  return runQuestTask(L11_hiddenCityTask);
+}
 
-  L11_hiddenTavernUnlock();
+function L11_hiddenCityZonesCanUseMachete(): boolean {
+  return !is_boris() && !in_wotsf() && !in_pokefam() && !in_avantGuard();
+}
 
-  const canUseMachete: boolean =
-    !is_boris() && !in_wotsf() && !in_pokefam() && !in_avantGuard();
+function L11_hiddenCityZonesNeedPark(): boolean {
+  const canUseMachete: boolean = L11_hiddenCityZonesCanUseMachete();
   const needMachete: boolean =
     canUseMachete &&
     !possessEquipment($item`antique machete`) &&
     (inHardcore() || in_lol());
   const needRelocate: boolean =
     toInt(getProperty("relocatePygmyJanitor")) !== myAscensions();
+  return needMachete || needRelocate;
+}
 
-  if (needMachete || needRelocate) {
+function L11_hiddenCityZonesEquipMachete(): boolean {
+  if (in_avantGuard()) {
+    return false; //combats aren't free so no point in equipping a Machete
+  }
+  if (auto_can_equip($item`antique machete`)) {
+    if (possessEquipment($item`antique machete`)) {
+      return autoForceEquip$3($item`antique machete`);
+    } else if (
+      !possessEquipment($item`muculent machete`) &&
+      canPull($item`antique machete`)
+    ) {
+      pullXWhenHaveY($item`antique machete`, 1, 0);
+      return autoForceEquip$3($item`antique machete`);
+    }
+  }
+  if (auto_can_equip($item`muculent machete`)) {
+    if (
+      !possessEquipment($item`muculent machete`) &&
+      canPull($item`muculent machete`)
+    ) {
+      pullXWhenHaveY($item`muculent machete`, 1, 0);
+    }
+    return autoForceEquip$3($item`muculent machete`);
+  }
+  return false;
+}
+
+function L11_hiddenCityZonesEquipForShrine(): boolean {
+  const canUseMachete: boolean = L11_hiddenCityZonesCanUseMachete();
+  if (canUseMachete && !L11_hiddenCityZonesEquipMachete()) {
+    return false;
+  }
+  if (!canUseMachete && auto_haveTearawayPants()) {
+    autoForceEquip$3($item`tearaway pants`);
+  }
+  return true;
+}
+
+function L11_hiddenCityZonesDo(): boolean {
+  L11_hiddenTavernUnlock();
+
+  if (L11_hiddenCityZonesNeedPark()) {
     if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
       auto_changeSnapperPhylum($phylum`dude`);
     }
@@ -2730,77 +2853,113 @@ export function L11_hiddenCityZones(): boolean {
     return false;
   }
 
-  if (toInt(getProperty("hiddenApartmentProgress")) === 0) {
-    if (canUseMachete && !equipMachete()) {
-      return false;
-    }
-    if (!canUseMachete && auto_haveTearawayPants()) {
-      autoForceEquip$3($item`tearaway pants`);
-    }
-    return autoAdv($location`An Overgrown Shrine (Northwest)`);
-  }
-
-  if (toInt(getProperty("hiddenOfficeProgress")) === 0) {
-    if (canUseMachete && !equipMachete()) {
-      return false;
-    }
-    if (!canUseMachete && auto_haveTearawayPants()) {
-      autoForceEquip$3($item`tearaway pants`);
-    }
-    return autoAdv($location`An Overgrown Shrine (Northeast)`);
-  }
-
-  if (toInt(getProperty("hiddenHospitalProgress")) === 0) {
-    if (canUseMachete && !equipMachete()) {
-      return false;
-    }
-    if (!canUseMachete && auto_haveTearawayPants()) {
-      autoForceEquip$3($item`tearaway pants`);
-    }
-    return autoAdv($location`An Overgrown Shrine (Southwest)`);
-  }
-
-  if (toInt(getProperty("hiddenBowlingAlleyProgress")) === 0) {
-    if (canUseMachete && !equipMachete()) {
-      return false;
-    }
-    if (!canUseMachete && auto_haveTearawayPants()) {
-      autoForceEquip$3($item`tearaway pants`);
-    }
-    return autoAdv($location`An Overgrown Shrine (Southeast)`);
-  }
-
-  if (!toBoolean(getProperty("auto_openedziggurat"))) {
-    if (canUseMachete && !equipMachete()) {
-      return false;
-    }
-    if (!canUseMachete && auto_haveTearawayPants()) {
-      autoForceEquip$3($item`tearaway pants`);
-    }
-    const advSpent: boolean = autoAdv($location`A Massive Ziggurat`);
-    if (
-      getProperty("lastEncounter") ===
-        "Legend of the Temple in the Hidden City" ||
-      (isActuallyEd() &&
-        getProperty("lastEncounter") ===
-          "Temple of the Legend in the Hidden City")
-    ) {
-      setProperty("auto_openedziggurat", true.toString());
-    }
-    return advSpent;
-  }
-  return false;
+  return runTaskChain([
+    L11_hiddenCityZonesNorthwestTask,
+    L11_hiddenCityZonesNortheastTask,
+    L11_hiddenCityZonesSouthwestTask,
+    L11_hiddenCityZonesSoutheastTask,
+    L11_hiddenCityZonesZigguratTask,
+  ]);
 }
 
-export function L11_mauriceSpookyraven(): boolean {
-  if (
-    internalQuestStatus("questL11Manor") < 0 ||
-    internalQuestStatus("questL11Manor") > 3 ||
-    internalQuestStatus("questM21Dance") < 4
-  ) {
+function L11_hiddenCityZonesNorthwest(): boolean {
+  if (!L11_hiddenCityZonesEquipForShrine()) {
     return false;
   }
+  return autoAdv($location`An Overgrown Shrine (Northwest)`);
+}
 
+const L11_hiddenCityZonesNorthwestTask: QuestTask = registerQuestTask({
+  name: "L11_hiddenCityZonesNorthwest",
+  completed: () => toInt(getProperty("hiddenApartmentProgress")) > 0,
+  ready: () => toInt(getProperty("hiddenApartmentProgress")) === 0,
+  do: L11_hiddenCityZonesNorthwest,
+  locations: $location`An Overgrown Shrine (Northwest)`,
+});
+
+function L11_hiddenCityZonesNortheast(): boolean {
+  if (!L11_hiddenCityZonesEquipForShrine()) {
+    return false;
+  }
+  return autoAdv($location`An Overgrown Shrine (Northeast)`);
+}
+
+const L11_hiddenCityZonesNortheastTask: QuestTask = registerQuestTask({
+  name: "L11_hiddenCityZonesNortheast",
+  completed: () => toInt(getProperty("hiddenOfficeProgress")) > 0,
+  ready: () => toInt(getProperty("hiddenOfficeProgress")) === 0,
+  do: L11_hiddenCityZonesNortheast,
+  locations: $location`An Overgrown Shrine (Northeast)`,
+});
+
+function L11_hiddenCityZonesSouthwest(): boolean {
+  if (!L11_hiddenCityZonesEquipForShrine()) {
+    return false;
+  }
+  return autoAdv($location`An Overgrown Shrine (Southwest)`);
+}
+
+const L11_hiddenCityZonesSouthwestTask: QuestTask = registerQuestTask({
+  name: "L11_hiddenCityZonesSouthwest",
+  completed: () => toInt(getProperty("hiddenHospitalProgress")) > 0,
+  ready: () => toInt(getProperty("hiddenHospitalProgress")) === 0,
+  do: L11_hiddenCityZonesSouthwest,
+  locations: $location`An Overgrown Shrine (Southwest)`,
+});
+
+function L11_hiddenCityZonesSoutheast(): boolean {
+  if (!L11_hiddenCityZonesEquipForShrine()) {
+    return false;
+  }
+  return autoAdv($location`An Overgrown Shrine (Southeast)`);
+}
+
+const L11_hiddenCityZonesSoutheastTask: QuestTask = registerQuestTask({
+  name: "L11_hiddenCityZonesSoutheast",
+  completed: () => toInt(getProperty("hiddenBowlingAlleyProgress")) > 0,
+  ready: () => toInt(getProperty("hiddenBowlingAlleyProgress")) === 0,
+  do: L11_hiddenCityZonesSoutheast,
+  locations: $location`An Overgrown Shrine (Southeast)`,
+});
+
+function L11_hiddenCityZonesZiggurat(): boolean {
+  if (!L11_hiddenCityZonesEquipForShrine()) {
+    return false;
+  }
+  const advSpent: boolean = autoAdv($location`A Massive Ziggurat`);
+  if (
+    getProperty("lastEncounter") ===
+      "Legend of the Temple in the Hidden City" ||
+    (isActuallyEd() &&
+      getProperty("lastEncounter") ===
+        "Temple of the Legend in the Hidden City")
+  ) {
+    setProperty("auto_openedziggurat", true.toString());
+  }
+  return advSpent;
+}
+
+const L11_hiddenCityZonesZigguratTask: QuestTask = registerQuestTask({
+  name: "L11_hiddenCityZonesZiggurat",
+  completed: () => toBoolean(getProperty("auto_openedziggurat")),
+  ready: () => !toBoolean(getProperty("auto_openedziggurat")),
+  do: L11_hiddenCityZonesZiggurat,
+  locations: $location`A Massive Ziggurat`,
+});
+
+export const L11_hiddenCityZonesTask: QuestTask = registerQuestTask({
+  name: "L11_hiddenCityZones",
+  completed: () => internalQuestStatus("questL11Worship") > 4,
+  ready: () => internalQuestStatus("questL11Worship") >= 3,
+  do: L11_hiddenCityZonesDo,
+  locations: $locations`The Hidden Park, An Overgrown Shrine (Northwest), An Overgrown Shrine (Northeast), An Overgrown Shrine (Southwest), An Overgrown Shrine (Southeast), A Massive Ziggurat`,
+});
+
+export function L11_hiddenCityZones(): boolean {
+  return runQuestTask(L11_hiddenCityZonesTask);
+}
+
+function L11_mauriceSpookyravenDo(): boolean {
   if (
     (isActuallyEd() && itemAmount($item`[7962]Eye of Ed`) === 0) ||
     itemAmount($item`[2286]Eye of Ed`) > 0
@@ -3083,6 +3242,19 @@ export function L11_mauriceSpookyraven(): boolean {
   return false;
 }
 
+export const L11_mauriceSpookyravenTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyraven",
+  completed: () => internalQuestStatus("questL11Manor") > 3,
+  ready: () =>
+    internalQuestStatus("questL11Manor") >= 0 &&
+    internalQuestStatus("questM21Dance") >= 4,
+  do: L11_mauriceSpookyravenDo,
+});
+
+export function L11_mauriceSpookyraven(): boolean {
+  return runQuestTask(L11_mauriceSpookyravenTask);
+}
+
 function L11_redZeppelin(): boolean {
   if (internalQuestStatus("questL11Shen") < 8 && !isAboutToPowerlevel()) {
     return false;
@@ -3329,14 +3501,10 @@ function L11_ronCopperhead(): boolean {
   return false;
 }
 
-export function L11_shenStartQuest(): boolean {
+function L11_shenStartQuestDo(): boolean {
   // as the first adventure in the Copperhead Club is always the first Shen NC
   // we can adventure there once as soon as it's open to start the quest and lock in
   // our zones
-  if (internalQuestStatus("questL11Shen") !== 0) {
-    return false;
-  }
-
   auto_log_info(
     "Going to see the World's Biggest Jerk about some snakes and stones and stuff.",
     "blue",
@@ -3365,14 +3533,21 @@ export function L11_shenStartQuest(): boolean {
   return false;
 }
 
-export function L11_shenCopperhead(): boolean {
-  if (
-    internalQuestStatus("questL11Shen") < 0 ||
-    internalQuestStatus("questL11Shen") > 7
-  ) {
-    return false;
-  }
+export const L11_shenStartQuestTask: QuestTask = registerQuestTask({
+  name: "L11_shenStartQuest",
+  completed: () => internalQuestStatus("questL11Shen") > 0,
+  ready: () =>
+    internalQuestStatus("questL11Shen") === 0 &&
+    (!in_wereprof() || is_werewolf()),
+  do: L11_shenStartQuestDo,
+  locations: $location`The Copperhead Club`,
+});
 
+export function L11_shenStartQuest(): boolean {
+  return runQuestTask(L11_shenStartQuestTask);
+}
+
+function L11_shenCopperheadDo(): boolean {
   if (L11_shenStartQuest()) {
     return true;
   }
@@ -3489,14 +3664,14 @@ export function L11_shenCopperhead(): boolean {
         if (!toBoolean(getProperty("auto_holeinthesky"))) {
           setProperty("auto_holeinthesky", true.toString());
         }
-        return L10_topFloor() || L10_holeInTheSkyUnlock();
+        return runTaskChain([L10_topFloorTask, L10_holeInTheSkyUnlockTask]);
       }
       return false;
     } else {
       // If we haven't completed the top floor, try to complete it.
       if (
         goal === $location`The Castle in the Clouds in the Sky (Top Floor)` &&
-        (L10_topFloor() || L10_holeInTheSkyUnlock())
+        runTaskChain([L10_topFloorTask, L10_holeInTheSkyUnlockTask])
       ) {
         return true;
       } else if (
@@ -3542,8 +3717,40 @@ export function L11_shenCopperhead(): boolean {
   return false;
 }
 
-export function L11_talismanOfNam(): boolean {
-  if (L11_shenCopperhead() || L11_redZeppelin() || L11_ronCopperhead()) {
+export const L11_shenCopperheadTask: QuestTask = registerQuestTask({
+  name: "L11_shenCopperhead",
+  completed: () => internalQuestStatus("questL11Shen") > 7,
+  ready: () => internalQuestStatus("questL11Shen") >= 0 && is_werewolf(),
+  do: L11_shenCopperheadDo,
+});
+
+export function L11_shenCopperhead(): boolean {
+  return runQuestTask(L11_shenCopperheadTask);
+}
+
+const L11_redZeppelinTask: QuestTask = registerQuestTask({
+  name: "L11_redZeppelin",
+  completed: () => internalQuestStatus("questL11Ron") > 1,
+  ready: () => true,
+  do: L11_redZeppelin,
+  locations: $location`A Mob of Zeppelin Protesters`,
+});
+const L11_ronCopperheadTask: QuestTask = registerQuestTask({
+  name: "L11_ronCopperhead",
+  completed: () => internalQuestStatus("questL11Ron") > 4,
+  ready: () => true,
+  do: L11_ronCopperhead,
+  locations: $location`The Red Zeppelin`,
+});
+
+function L11_talismanOfNamDo(): boolean {
+  if (
+    runTaskChain([
+      L11_shenCopperheadTask,
+      L11_redZeppelinTask,
+      L11_ronCopperheadTask,
+    ])
+  ) {
     return true;
   }
   if (creatableAmount($item`Talisman o' Namsilat`) > 0) {
@@ -3555,14 +3762,18 @@ export function L11_talismanOfNam(): boolean {
   return false;
 }
 
-export function L11_palindome(): boolean {
-  if (
-    internalQuestStatus("questL11Palindome") < 0 ||
-    internalQuestStatus("questL11Palindome") > 5
-  ) {
-    return false;
-  }
+export const L11_talismanOfNamTask: QuestTask = registerQuestTask({
+  name: "L11_talismanOfNam",
+  completed: () => itemAmount($item`Talisman o' Namsilat`) > 0,
+  ready: () => true,
+  do: L11_talismanOfNamDo,
+});
 
+export function L11_talismanOfNam(): boolean {
+  return runQuestTask(L11_talismanOfNamTask);
+}
+
+function L11_palindomeDo(): boolean {
   if (!possessEquipment($item`Talisman o' Namsilat`)) {
     return false;
   }
@@ -3976,7 +4187,19 @@ export function L11_palindome(): boolean {
   return false;
 }
 
-export function L11_unlockPyramid(): boolean {
+export const L11_palindomeTask: QuestTask = registerQuestTask({
+  name: "L11_palindome",
+  completed: () => internalQuestStatus("questL11Palindome") > 5,
+  ready: () => internalQuestStatus("questL11Palindome") >= 0,
+  do: L11_palindomeDo,
+  locations: $locations`Whitey's Grove, Inside the Palindome`,
+});
+
+export function L11_palindome(): boolean {
+  return runQuestTask(L11_palindomeTask);
+}
+
+function L11_unlockPyramidDo(): boolean {
   visitUrl("place.php?whichplace=desertbeach");
   if (
     internalQuestStatus("questL11Desert") < 1 ||
@@ -4042,14 +4265,18 @@ export function L11_unlockPyramid(): boolean {
   return false;
 }
 
-export function L11_unlockEd(): boolean {
-  if (
-    internalQuestStatus("questL11Pyramid") < 0 ||
-    internalQuestStatus("questL11Pyramid") > 3 ||
-    toBoolean(getProperty("pyramidBombUsed"))
-  ) {
-    return false;
-  }
+export const L11_unlockPyramidTask: QuestTask = registerQuestTask({
+  name: "L11_unlockPyramid",
+  completed: () => internalQuestStatus("questL11Pyramid") > -1,
+  ready: () => true,
+  do: L11_unlockPyramidDo,
+});
+
+export function L11_unlockPyramid(): boolean {
+  return runQuestTask(L11_unlockPyramidTask);
+}
+
+function L11_unlockEdDo(): boolean {
   if (isActuallyEd()) {
     return true;
   }
@@ -4157,18 +4384,21 @@ export function L11_unlockEd(): boolean {
   return autoAdv($location`The Middle Chamber`);
 }
 
-export function L11_defeatEd(): boolean {
-  if (
-    internalQuestStatus("questL11Pyramid") !== 3 ||
-    !toBoolean(getProperty("pyramidBombUsed"))
-  ) {
-    return false;
-  }
+export const L11_unlockEdTask: QuestTask = registerQuestTask({
+  name: "L11_unlockEd",
+  completed: () =>
+    internalQuestStatus("questL11Pyramid") > 3 ||
+    toBoolean(getProperty("pyramidBombUsed")),
+  ready: () => internalQuestStatus("questL11Pyramid") >= 0,
+  do: L11_unlockEdDo,
+  locations: $locations`The Upper Chamber, The Middle Chamber`,
+});
 
-  if (myAdventures() - auto_advToReserve() <= 7) {
-    return false;
-  }
+export function L11_unlockEd(): boolean {
+  return runQuestTask(L11_unlockEdTask);
+}
 
+function L11_defeatEdDo(): boolean {
   if (itemAmount($item`[2334]Holy MacGuffin`) === 1) {
     council();
     return true;
@@ -4213,6 +4443,21 @@ export function L11_defeatEd(): boolean {
     council();
   }
   return true;
+}
+
+export const L11_defeatEdTask: QuestTask = registerQuestTask({
+  name: "L11_defeatEd",
+  completed: () => internalQuestStatus("questL11Pyramid") > 3,
+  ready: () =>
+    internalQuestStatus("questL11Pyramid") === 3 &&
+    toBoolean(getProperty("pyramidBombUsed")) &&
+    myAdventures() - auto_advToReserve() > 7,
+  do: L11_defeatEdDo,
+  locations: $location`The Lower Chambers`,
+});
+
+export function L11_defeatEd(): boolean {
+  return runQuestTask(L11_defeatEdTask);
 }
 
 export function L11_needDrumMachine(): boolean {

@@ -6,7 +6,6 @@ import {
   getProperty,
   haveEffect,
   haveEquipped,
-  indexOf,
   Item,
   itemAmount,
   Monster,
@@ -27,15 +26,11 @@ import {
   removeProperty,
   setProperty,
   Skill,
-  substring,
   toBoolean,
-  toFamiliar,
   toFloat,
   toInt,
-  toItem,
   toLowerCase,
   toMonster,
-  toSkill,
   weaponType,
 } from "kolmafia";
 import {
@@ -51,8 +46,10 @@ import {
   $skill,
   $slot,
   $stat,
+  Macro,
 } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
 import {
   auto_have_skill,
@@ -64,7 +61,7 @@ import {
   auto_wantToReplace,
   auto_wantToSniff,
   auto_wantToYellowRay,
-  freeRunCombatString,
+  freeRunCombatAction,
   handleTracker,
   instakillable,
   internalQuestStatus,
@@ -77,7 +74,7 @@ import { auto_spoonCombatSkill } from "../iotms/mr2019";
 import {
   auto_backupTarget,
   auto_fireExtinguisherCharges,
-  auto_FireExtinguisherCombatString,
+  auto_FireExtinguisherCombatSkill,
 } from "../iotms/mr2021";
 import { auto_bowlingBallCombatString } from "../iotms/mr2022";
 import { dartELRcd, dartSkill } from "../iotms/mr2024";
@@ -87,7 +84,7 @@ import { fastenerCount, lumberCount } from "../quests/level_09";
 import {
   auto_canUse,
   auto_useSkill,
-  banisherCombatString$1,
+  banisherCombatAction$1,
   canSurvive,
   canUse$3,
   combat_status_add,
@@ -109,7 +106,7 @@ export function auto_edCombatHandler(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   if (!isActuallyEd()) {
     abort(
       "Not in Actually Ed the Undying, this combat filter will result in massive suckage.",
@@ -192,7 +189,7 @@ export function auto_edCombatHandler(
   }
 
   if (haveEffect($effect`Temporary Amnesia`) > 0) {
-    return "attack with weapon";
+    return "attack";
   }
 
   if (auto_canUse($skill`Pocket Crumbs`)) {
@@ -255,15 +252,12 @@ export function auto_edCombatHandler(
     }
   }
   //use industrial fire extinguisher zone specific skills
-  const extinguisherSkill: string =
-    auto_FireExtinguisherCombatString(myLocation());
-  if (
-    extinguisherSkill !== "" &&
-    haveEquipped($item`industrial fire extinguisher`)
-  ) {
+  const extinguisherSkill: Skill =
+    auto_FireExtinguisherCombatSkill(myLocation());
+  if (extinguisherSkill && haveEquipped($item`industrial fire extinguisher`)) {
     handleTracker({
       what: enemy,
-      detail: toSkill(substring(extinguisherSkill, 6)).toString(),
+      detail: extinguisherSkill.toString(),
       property: "auto_otherstuff",
     });
     return extinguisherSkill;
@@ -465,37 +459,21 @@ export function auto_edCombatHandler(
     !combat_status_check("yellowray") &&
     auto_wantToYellowRay(enemy, myLocation())
   ) {
-    const combatAction: string = yellowRayCombatString(
+    const combatAction: CombatMacroReturns = yellowRayCombatString(
       enemy,
       true,
       $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
         enemy,
       ),
     );
-    if (combatAction !== "") {
+    if (combatAction !== undefined) {
       combat_status_add("yellowray");
-      if (indexOf(combatAction, "skill") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toSkill(substring(combatAction, 6)).toString(),
-          property: "auto_yellowRays",
-        });
-      } else if (indexOf(combatAction, "item") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toItem(substring(combatAction, 5)).toString(),
-          property: "auto_yellowRays",
-        });
-      } else {
-        auto_log_warning(
-          `Unable to track yellow ray behavior: ${combatAction}`,
-          "red",
-        );
-      }
-      if (
-        combatAction ===
-        auto_useSkill($skill`Asdon Martin: Missile Launcher`, false)
-      ) {
+      handleTracker({
+        what: enemy,
+        detail: combatAction.toString(),
+        property: "auto_yellowRays",
+      });
+      if (combatAction === $skill`Asdon Martin: Missile Launcher`) {
         setProperty("_missileLauncherUsed", true.toString());
       }
       return combatAction;
@@ -508,41 +486,19 @@ export function auto_edCombatHandler(
     !combat_status_check("banishercheck") &&
     auto_wantToBanish(enemy, myLocation())
   ) {
-    const banishAction: string = banisherCombatString$1(
+    const banishAction: CombatMacroReturns = banisherCombatAction$1(
       enemy,
       myLocation(),
       true,
     );
-    if (banishAction !== "") {
+    if (banishAction !== undefined) {
       auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
       combat_status_add("banisher");
-      if (indexOf(banishAction, "skill") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toSkill(substring(banishAction, 6)).toString(),
-          property: "auto_banishes",
-        });
-      } else if (indexOf(banishAction, "item") === 0) {
-        if (containsText(banishAction, ", none")) {
-          const commapos: number = indexOf(banishAction, ", none");
-          handleTracker({
-            what: enemy,
-            detail: toItem(substring(banishAction, 5, commapos)).toString(),
-            property: "auto_banishes",
-          });
-        } else {
-          handleTracker({
-            what: enemy,
-            detail: toItem(substring(banishAction, 5)).toString(),
-            property: "auto_banishes",
-          });
-        }
-      } else {
-        auto_log_warning(
-          `Unable to track banisher behavior: ${banishAction}`,
-          "red",
-        );
-      }
+      handleTracker({
+        what: enemy,
+        detail: banishAction.toString(),
+        property: "auto_banishes",
+      });
       return banishAction;
     }
     //we wanted to banish an enemy and failed. set a property so we do not bother trying in subsequent rounds
@@ -554,48 +510,25 @@ export function auto_edCombatHandler(
     (auto_wantToFreeRun(enemy, myLocation()) ||
       auto_wantToBanish(enemy, myLocation()))
   ) {
-    let freeRunAction: string = freeRunCombatString(enemy, myLocation(), true);
-    if (freeRunAction !== "") {
-      if (indexOf(freeRunAction, "runaway familiar") === 0) {
+    let freeRunAction: CombatMacroReturns = freeRunCombatAction(
+      enemy,
+      myLocation(),
+      true,
+    );
+    if (freeRunAction !== undefined) {
+      if (typeof freeRunAction === "object" && "detail" in freeRunAction) {
         handleTracker({
           what: enemy,
-          detail: toFamiliar(substring(freeRunAction, 17)).toString(),
+          detail: freeRunAction.detail,
           property: "auto_freeruns",
         });
-        freeRunAction = "runaway";
-      } else if (indexOf(freeRunAction, "runaway item") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toItem(substring(freeRunAction, 13)).toString(),
-          property: "auto_freeruns",
-        });
-        freeRunAction = "runaway";
-      } else if (indexOf(freeRunAction, "skill") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toSkill(substring(freeRunAction, 6)).toString(),
-          property: "auto_freeruns",
-        });
-      } else if (indexOf(freeRunAction, "item") === 0) {
-        if (containsText(freeRunAction, ", none")) {
-          const commapos: number = indexOf(freeRunAction, ", none");
-          handleTracker({
-            what: enemy,
-            detail: toItem(substring(freeRunAction, 5, commapos)).toString(),
-            property: "auto_freeruns",
-          });
-        } else {
-          handleTracker({
-            what: enemy,
-            detail: toItem(substring(freeRunAction, 5)).toString(),
-            property: "auto_freeruns",
-          });
-        }
+        freeRunAction = freeRunAction.macro;
       } else {
-        auto_log_warning(
-          `Unable to track runaway behavior: ${freeRunAction}`,
-          "red",
-        );
+        handleTracker({
+          what: enemy,
+          detail: freeRunAction.toString(),
+          property: "auto_freeruns",
+        });
       }
       return freeRunAction;
     }
@@ -607,36 +540,23 @@ export function auto_edCombatHandler(
     !combat_status_check("replacercheck") &&
     auto_wantToReplace(enemy, myLocation())
   ) {
-    const combatAction: string = replaceMonsterCombatString(enemy, true);
-    if (combatAction !== "") {
+    const combatAction: CombatMacroReturns = replaceMonsterCombatString(
+      enemy,
+      true,
+    );
+    if (combatAction !== undefined) {
       combat_status_add("replacer");
-      if (indexOf(combatAction, "skill") === 0) {
-        if (
-          toSkill(substring(combatAction, 6)) ===
-          $skill`CHEAT CODE: Replace Enemy`
-        ) {
-          handleTracker({
-            what: $skill`CHEAT CODE: Replace Enemy`,
-            property: "auto_powerfulglove",
-          });
-        }
+      if (combatAction === $skill`CHEAT CODE: Replace Enemy`) {
         handleTracker({
-          what: enemy,
-          detail: toSkill(substring(combatAction, 6)).toString(),
-          property: "auto_replaces",
+          what: $skill`CHEAT CODE: Replace Enemy`,
+          property: "auto_powerfulglove",
         });
-      } else if (indexOf(combatAction, "item") === 0) {
-        handleTracker({
-          what: enemy,
-          detail: toItem(substring(combatAction, 5)).toString(),
-          property: "auto_replaces",
-        });
-      } else {
-        auto_log_warning(
-          `Unable to track replacer behavior: ${combatAction}`,
-          "red",
-        );
       }
+      handleTracker({
+        what: enemy,
+        detail: combatAction.toString(),
+        property: "auto_replaces",
+      });
       return combatAction;
     } else {
       auto_log_warning("Wanted a replacer but we can not find one.", "red");
@@ -1026,7 +946,10 @@ export function auto_edCombatHandler(
     return auto_useSkill($skill`Darts: Aim for the Bullseye`);
   }
   // use cosmic bowling ball iotm
-  if (auto_bowlingBallCombatString(myLocation(), true) !== "" && !enemy.boss) {
+  if (
+    auto_bowlingBallCombatString(myLocation(), true) !== undefined &&
+    !enemy.boss
+  ) {
     return auto_bowlingBallCombatString(myLocation(), false);
   }
   // prep avalanche if requested
@@ -1073,7 +996,7 @@ export function auto_edCombatHandler(
           property: "auto_instakill",
         });
         loopHandlerDelayAll();
-        return `item ${$item`replica bat-oomerang`}`;
+        return $item`replica bat-oomerang`;
       }
     }
 
@@ -1103,7 +1026,7 @@ export function auto_edCombatHandler(
         property: "auto_instakill",
       });
       loopHandlerDelayAll();
-      return `skill${$skill`Fire the Jokester's Gun`}`;
+      return $skill`Fire the Jokester's Gun`;
     }
 
     if (
@@ -1127,16 +1050,16 @@ export function auto_edCombatHandler(
           toBoolean(getProperty("lovebugsUnlocked"))
         ) {
           combat_status_add("love stinkbug2");
-          return `skill ${$skill`Summon Love Stinkbug`}`;
+          return $skill`Summon Love Stinkbug`;
         }
       }
     }
 
     if (canUse$3($item`seal tooth`, false)) {
-      return "use Seal Tooth; repeat; ";
+      return Macro.item($item`seal tooth`).repeat();
     }
 
-    return "skill Mild Curse; repeat; ";
+    return Macro.trySkillRepeat($skill`Mild Curse`);
   }
   //Everfull Dart Holder
   if (
@@ -1217,7 +1140,7 @@ export function auto_edCombatHandler(
     canSurvive(1.1) &&
     getProperty("auto_edStatus") === "UNDYING!"
   ) {
-    return "attack with weapon";
+    return "attack";
   }
 
   if (auto_canUse($skill`Cowboy Kick`)) {
@@ -1265,7 +1188,7 @@ export function auto_edCombatHandler(
       `Attacking with weapon because we don't have enough MP. Expected damage: ${expectedDamage()}, current hp: ${myHp()}`,
       "red",
     );
-    return "attack with weapon";
+    return "attack";
   }
 
   return auto_useSkill($skill`Mild Curse`, false);

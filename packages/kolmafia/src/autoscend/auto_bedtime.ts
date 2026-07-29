@@ -55,7 +55,6 @@ import {
   print,
   pullsRemaining,
   putCloset,
-  runChoice,
   setProperty,
   Skill,
   Slot,
@@ -145,6 +144,7 @@ import {
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   autoCraft,
   canYellowRay,
   cloversAvailable,
@@ -1730,7 +1730,7 @@ export function doBedtime(): boolean {
       // open Whitey's Grove
       if (internalQuestStatus("questG02Whitecastle") < 0) {
         visitUrl("guild.php?place=paco");
-        runChoice(1);
+        auto_runChoice(1);
       }
       for (const it of $items`lion oil, bird rib`) {
         if (itemAmount(it) > 0) {

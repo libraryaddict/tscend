@@ -13,7 +13,6 @@ import {
   haveEquipped,
   haveSkill,
   hpCost,
-  indexOf,
   isBanished,
   Item,
   itemAmount,
@@ -48,13 +47,10 @@ import {
   setProperty,
   Skill,
   soulsauceCost,
-  substring,
   thunderCost,
   toBoolean,
   toFloat,
   toInt,
-  toItem,
-  toSkill,
   trackedBy,
 } from "kolmafia";
 import {
@@ -73,6 +69,7 @@ import {
   get,
 } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { auto_canDrink, inebriety_left, spleen_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
 import {
@@ -87,7 +84,6 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_log_info,
-  auto_log_warning,
   auto_wantToBanish,
   auto_wantToBanish$1,
   handleTracker,
@@ -377,31 +373,30 @@ export function canUse$3(
   return true;
 }
 
-export function auto_useSkill(sk: Skill, mark: boolean = true): string {
+export function auto_useSkill(
+  sk: Skill,
+  mark: boolean = true,
+): CombatMacroReturns {
   if (mark) {
     markAsUsed(sk);
   }
 
-  return `skill ${sk.name}`;
+  return sk;
 }
 
-export function useItem(it: Item, mark: boolean = true): string {
+export function useItem(it: Item, mark: boolean = true): Item {
   if (mark) {
     markAsUsed$1(it);
   }
-  if (auto_have_skill($skill`Ambidextrous Funkslinging`)) {
-    //don't double use
-    return `item ${it}, none`;
-  }
-  return `item ${it}`;
+  return it;
 }
 
-export function useItems(it1: Item, it2: Item, mark: boolean = true): string {
+export function useItems(it1: Item, it2: Item, mark: boolean = true): Item[] {
   if (mark) {
     markAsUsed$1(it1);
     markAsUsed$1(it2);
   }
-  return `item ${it1}, ${it2}`;
+  return [it1, it2];
 }
 
 export function isSniffed(enemy: Monster, sk: Skill): boolean {
@@ -725,32 +720,19 @@ export function findBanisher(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
-  const banishAction: string = banisherCombatString$1(
+): CombatMacroReturns {
+  const banishAction: CombatMacroReturns = banisherCombatAction$1(
     enemy,
     myLocation(),
     true,
   );
-  if (banishAction !== "") {
+  if (banishAction !== undefined) {
     auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
-    if (indexOf(banishAction, "skill") === 0) {
-      handleTracker({
-        what: enemy,
-        detail: toSkill(substring(banishAction, 6)).toString(),
-        property: "auto_banishes",
-      });
-    } else if (indexOf(banishAction, "item") === 0) {
-      handleTracker({
-        what: enemy,
-        detail: toItem(substring(banishAction, 5)).toString(),
-        property: "auto_banishes",
-      });
-    } else {
-      auto_log_warning(
-        `Unable to track banisher behavior: ${banishAction}`,
-        "red",
-      );
-    }
+    handleTracker({
+      what: enemy,
+      detail: banishAction.toString(),
+      property: "auto_banishes",
+    });
     return banishAction;
   }
   if (auto_canUse($skill`Storm of the Scarab`, false)) {
@@ -763,17 +745,17 @@ export function banisherCombatString(
   enemyPhylum: Phylum,
   loc: Location,
   inCombat: boolean = false,
-): string {
+): CombatMacroReturns {
   if (inAftercore()) {
-    return "";
+    return undefined;
   }
 
   if (in_pokefam()) {
-    return "";
+    return undefined;
   }
   //Check that we actually want to banish this thing.
   if (!auto_wantToBanish$1(enemyPhylum, loc)) {
-    return "";
+    return undefined;
   }
 
   if (inCombat) {
@@ -795,31 +777,31 @@ export function banisherCombatString(
         toInt(getProperty("screechCombats")) === 0 &&
         !in_glover()
   ) {
-    return `skill${$skill`%fn, Release the Patriotic Screech!`}`;
+    return $skill`%fn, Release the Patriotic Screech!`;
   }
 
-  return "";
+  return undefined;
 }
 
-export function banisherCombatString$1(
+export function banisherCombatAction$1(
   enemy: Monster,
   loc: Location,
   inCombat: boolean = false,
-): string {
+): CombatMacroReturns {
   if (inAftercore()) {
-    return "";
+    return undefined;
   }
 
   if (in_pokefam()) {
-    return "";
+    return undefined;
   }
   //If it's already banished, banishing it again isn't going to do much.
   if (isBanished(enemy)) {
-    return "";
+    return undefined;
   }
   //Check that we actually want to banish this thing.
   if (!auto_wantToBanish(enemy, loc)) {
-    return "";
+    return undefined;
   }
 
   if (inCombat) {
@@ -860,7 +842,7 @@ export function banisherCombatString$1(
     auto_is_valid$2($skill`Spring Kick`) &&
     !used.has("Spring Kick")
   ) {
-    return `skill ${$skill`Spring Kick`}`;
+    return $skill`Spring Kick`;
   }
 
   if (
@@ -870,7 +852,7 @@ export function banisherCombatString$1(
     !used.has("Peel Out") &&
     useFree
   ) {
-    return `skill ${$skill`Peel Out`}`;
+    return $skill`Peel Out`;
   }
 
   if (
@@ -878,7 +860,7 @@ export function banisherCombatString$1(
     myMp() > mpCost($skill`Howl of the Alpha`) &&
     !used.has("Howl of the Alpha")
   ) {
-    return `skill ${$skill`Howl of the Alpha`}`;
+    return $skill`Howl of the Alpha`;
   }
 
   if (
@@ -890,7 +872,7 @@ export function banisherCombatString$1(
     !used.has("Throw Latte on Opponent") &&
     useFree
   ) {
-    return `skill ${$skill`Throw Latte on Opponent`}`;
+    return $skill`Throw Latte on Opponent`;
   }
 
   if (
@@ -902,7 +884,7 @@ export function banisherCombatString$1(
     myMp() >= mpCost($skill`Give Your Opponent the Stinkeye`) &&
     useFree
   ) {
-    return `skill ${$skill`Give Your Opponent the Stinkeye`}`;
+    return $skill`Give Your Opponent the Stinkeye`;
   }
 
   if (
@@ -914,7 +896,7 @@ export function banisherCombatString$1(
     myMp() >= mpCost($skill`Creepy Grin`) &&
     useFree
   ) {
-    return `skill ${$skill`Creepy Grin`}`;
+    return $skill`Creepy Grin`;
   }
 
   if (
@@ -925,7 +907,7 @@ export function banisherCombatString$1(
     useFree
   ) {
     loopHandlerDelayAll();
-    return `skill ${$skill`Baleful Howl`}`;
+    return $skill`Baleful Howl`;
   }
 
   if (
@@ -933,7 +915,7 @@ export function banisherCombatString$1(
     myThunder() >= thunderCost($skill`Thunder Clap`) &&
     !used.has("thunder clap")
   ) {
-    return `skill ${$skill`Thunder Clap`}`;
+    return $skill`Thunder Clap`;
   }
   if (
     auto_have_skill($skill`Asdon Martin: Spring-Loaded Front Bumper`) &&
@@ -948,7 +930,7 @@ export function banisherCombatString$1(
         "Spring-Loaded Front Bumper",
       )
     ) {
-      return `skill ${$skill`Asdon Martin: Spring-Loaded Front Bumper`}`;
+      return $skill`Asdon Martin: Spring-Loaded Front Bumper`;
     }
   }
   if (
@@ -956,7 +938,7 @@ export function banisherCombatString$1(
     myMp() > mpCost($skill`Curse of Vacation`) &&
     !used.has("curse of vacation")
   ) {
-    return `skill ${$skill`Curse of Vacation`}`;
+    return $skill`Curse of Vacation`;
   }
 
   if (
@@ -969,7 +951,7 @@ export function banisherCombatString$1(
     myMp() >= mpCost($skill`Show them your ring`) &&
     useFree
   ) {
-    return `skill ${$skill`Show them your ring`}`;
+    return $skill`Show them your ring`;
   }
   if (
     auto_have_skill($skill`Batter Up!`) &&
@@ -978,7 +960,7 @@ export function banisherCombatString$1(
     auto_is_valid$2($skill`Batter Up!`) &&
     !used.has("batter up!")
   ) {
-    return `skill ${$skill`Batter Up!`}`;
+    return $skill`Batter Up!`;
   }
 
   if (
@@ -992,12 +974,12 @@ export function banisherCombatString$1(
             inebriety_left() > 1 &&
             !isActuallyEd()))
   ) {
-    return `skill ${$skill`Mark Your Territory`}`;
+    return $skill`Mark Your Territory`;
   }
 
   const z_kick: Skill = getZooKickBanish();
   if (auto_have_skill(z_kick) && myMp() > mpCost(z_kick)) {
-    return `skill ${z_kick}`;
+    return z_kick;
   }
 
   if (
@@ -1005,7 +987,7 @@ export function banisherCombatString$1(
     myMp() > mpCost($skill`Banishing Shout`) &&
     !used.has("banishing shout")
   ) {
-    return `skill ${$skill`Banishing Shout`}`;
+    return $skill`Banishing Shout`;
   }
   if (
     auto_have_skill($skill`Walk Away From Explosion`) &&
@@ -1013,7 +995,7 @@ export function banisherCombatString$1(
     haveEffect($effect`Bored With Explosions`) === 0 &&
     !used.has("walk away from explosion")
   ) {
-    return `skill ${$skill`Walk Away From Explosion`}`;
+    return $skill`Walk Away From Explosion`;
   }
 
   if (
@@ -1025,7 +1007,7 @@ export function banisherCombatString$1(
     haveEquipped($item`Pantsgiving`) &&
     !used.has("pantsgiving")
   ) {
-    return `skill ${$skill`Talk About Politics`}`;
+    return $skill`Talk About Politics`;
   }
   if (
     get("heartstoneBanishUnlocked") &&
@@ -1037,7 +1019,7 @@ export function banisherCombatString$1(
     haveEquipped($item`Heartstone`) &&
     !used.has("heartstone")
   ) {
-    return `skill ${$skill`Heartstone: %banish`}`;
+    return $skill`Heartstone: %banish`;
   }
   if (
     inCombat
@@ -1046,7 +1028,7 @@ export function banisherCombatString$1(
         !used.has("Reflex Hammer") &&
         useFree
   ) {
-    return `skill ${$skill`Reflex Hammer`}`;
+    return $skill`Reflex Hammer`;
   }
   if (
     (inCombat
@@ -1058,7 +1040,7 @@ export function banisherCombatString$1(
     !used.has("Show Your Boring Familiar Pictures") &&
     useFree
   ) {
-    return `skill ${$skill`Show your boring familiar pictures`}`;
+    return $skill`Show your boring familiar pictures`;
   }
   // bowling ball is only in inventory if it is available to use in combat. While on cooldown, it is not in inventory
   if (
@@ -1069,7 +1051,7 @@ export function banisherCombatString$1(
     !used.has("Bowl a Curveball") &&
     useFree
   ) {
-    return `skill ${$skill`Bowl a Curveball`}`;
+    return $skill`Bowl a Curveball`;
   }
 
   if (
@@ -1078,11 +1060,11 @@ export function banisherCombatString$1(
     !used.has("Feel Hatred") &&
     useFree
   ) {
-    return `skill ${$skill`Feel Hatred`}`;
+    return $skill`Feel Hatred`;
   }
 
   if (auto_have_skill($skill`[7510]Punt`) && !used.has("Punt")) {
-    return `skill ${$skill`[7510]Punt`}`;
+    return $skill`[7510]Punt`;
   }
 
   if (
@@ -1093,7 +1075,7 @@ export function banisherCombatString$1(
     !used.has("snokebomb") &&
     useFree
   ) {
-    return `skill ${$skill`Snokebomb`}`;
+    return $skill`Snokebomb`;
   }
 
   if (
@@ -1101,7 +1083,7 @@ export function banisherCombatString$1(
     !used.has("stuffed yam stinkbomb") &&
     auto_is_valid($item`stuffed yam stinkbomb`)
   ) {
-    return `item ${$item`stuffed yam stinkbomb`}`;
+    return $item`stuffed yam stinkbomb`;
   }
 
   if (
@@ -1113,7 +1095,7 @@ export function banisherCombatString$1(
       : itemAmount($item`handful of split pea soup`) > 0 ||
         itemAmount($item`whirled peas`) >= 2
   ) {
-    return `item ${$item`handful of split pea soup`}`;
+    return $item`handful of split pea soup`;
   }
 
   if (
@@ -1121,7 +1103,7 @@ export function banisherCombatString$1(
     myMp() > mpCost($skill`[28021]Punt`) &&
     !used.has("Punt")
   ) {
-    return `skill ${$skill`[28021]Punt`}`;
+    return $skill`[28021]Punt`;
   }
 
   const saber: Item = wrap_item($item`Fourth of May Cosplay Saber`);
@@ -1157,7 +1139,7 @@ export function banisherCombatString$1(
     }
 
     if (useIt) {
-      return `skill ${$skill`KGB tranquilizer dart`}`;
+      return $skill`KGB tranquilizer dart`;
     }
   }
 
@@ -1169,7 +1151,7 @@ export function banisherCombatString$1(
     toInt(getProperty("_monkeyPawWishesUsed")) === 0 &&
     !used.has("Monkey Slap")
   ) {
-    return `skill ${$skill`Monkey Slap`}`;
+    return $skill`Monkey Slap`;
   }
 
   if (
@@ -1179,14 +1161,14 @@ export function banisherCombatString$1(
     auto_throwLightningRemaining() > 0 &&
     !used.has("Sea *dent: Throw a Lightning Bolt")
   ) {
-    return `skill ${$skill`Sea *dent: Throw a Lightning Bolt`}`;
+    return $skill`Sea *dent: Throw a Lightning Bolt`;
   }
   //[Nanorhino] familiar specific banish. fairly low priority as it consumes 40 to 50 adv worth of a decent buff.
   if (
     auto_canUse($skill`Unleash Nanites`) &&
     haveEffect($effect`Nanobrawny`) >= 40
   ) {
-    return `skill ${$skill`Unleash Nanites`}`;
+    return $skill`Unleash Nanites`;
   }
 
   if (
@@ -1207,7 +1189,7 @@ export function banisherCombatString$1(
       }
     }
     if (haveBeans) {
-      return `skill ${$skill`Beancannon`}`;
+      return $skill`Beancannon`;
     }
   }
 
@@ -1219,7 +1201,7 @@ export function banisherCombatString$1(
     useFree
   ) {
     //first 3 are free
-    return `item ${$item`human musk`}`;
+    return $item`human musk`;
   }
   // items for which we consume spleen for uses
   if (
@@ -1235,7 +1217,7 @@ export function banisherCombatString$1(
             spleen_left() > 1 &&
             !isActuallyEd()))
   ) {
-    return `skill ${$skill`Breathe Out`}`;
+    return $skill`Breathe Out`;
   }
 
   if (
@@ -1251,7 +1233,7 @@ export function banisherCombatString$1(
             spleen_left() > 3 &&
             !isActuallyEd()))
   ) {
-    return `skill ${$skill`Punch Out your Foe`}`;
+    return $skill`Punch Out your Foe`;
   }
   //We want to limit usage of these much more than the others.
   if (
@@ -1259,7 +1241,7 @@ export function banisherCombatString$1(
       enemy,
     )
   ) {
-    return "";
+    return undefined;
   }
 
   let keep: number = 1;
@@ -1273,7 +1255,7 @@ export function banisherCombatString$1(
     auto_is_valid($item`Louder Than Bomb`) &&
     useFree
   ) {
-    return `item ${$item`Louder Than Bomb`}`;
+    return $item`Louder Than Bomb`;
   }
   if (
     itemAmount($item`tennis ball`) > keep &&
@@ -1281,7 +1263,7 @@ export function banisherCombatString$1(
     auto_is_valid($item`tennis ball`) &&
     useFree
   ) {
-    return `item ${$item`tennis ball`}`;
+    return $item`tennis ball`;
   }
   if (
     itemAmount($item`deathchucks`) > keep &&
@@ -1289,7 +1271,7 @@ export function banisherCombatString$1(
     auto_is_valid($item`deathchucks`) &&
     useFree
   ) {
-    return `item ${$item`deathchucks`}`;
+    return $item`deathchucks`;
   }
   if (
     itemAmount($item`divine champagne popper`) > keep &&
@@ -1297,7 +1279,7 @@ export function banisherCombatString$1(
     auto_is_valid($item`divine champagne popper`) &&
     useFree
   ) {
-    return `item ${$item`divine champagne popper`}`;
+    return $item`divine champagne popper`;
   }
   if (
     itemAmount($item`anchor bomb`) > keep &&
@@ -1305,17 +1287,17 @@ export function banisherCombatString$1(
     auto_is_valid($item`anchor bomb`) &&
     useFree
   ) {
-    return `item ${$item`anchor bomb`}`;
+    return $item`anchor bomb`;
   }
 
-  return "";
+  return undefined;
 }
 
 export function yellowRayCombatString(
   target: Monster,
   inCombat: boolean,
   noForceDrop: boolean,
-): string {
+): CombatMacroReturns {
   if (in_wildfire() && inCombat && myLocation().fireLevel > 2) {
     //high fire level burns yellow ray items. except for saber's [use the force] as it leads to a noncombat
     //we only want special handling if fire level is high. otherwise we can proceed to yellowray as per normal
@@ -1328,14 +1310,14 @@ export function yellowRayCombatString(
         return auto_combatSaberYR();
       }
     } else {
-      return "";
+      return undefined;
     }
   }
 
   if (in_zootomist() && haveEffect($effect`Everything Looks Yellow`) <= 0) {
     const kick: Skill = getZooKickYR();
     if (kick !== Skill.none) {
-      return `skill ${kick}`;
+      return kick;
     }
   }
 
@@ -1349,20 +1331,20 @@ export function yellowRayCombatString(
       auto_have_skill($skill`Fondeluge`) &&
       myMp() >= mpCost($skill`Fondeluge`)
     ) {
-      return `skill ${$skill`Fondeluge`}`; // 50 turns
+      return $skill`Fondeluge`; // 50 turns
     }
     if (
       itemAmount($item`yellowcake bomb`) > 0 &&
       auto_is_valid($item`yellowcake bomb`)
     ) {
-      return `item ${$item`yellowcake bomb`}`; // 75 turns + quest item
+      return $item`yellowcake bomb`; // 75 turns + quest item
     }
     if (
       free_monster &&
       itemAmount($item`yellow rocket`) > 0 &&
       auto_is_valid($item`yellow rocket`)
     ) {
-      return `item ${$item`yellow rocket`}`; // 75 turns & 250 meat - better than wasting a freekill on an already free monster
+      return $item`yellow rocket`; // 75 turns & 250 meat - better than wasting a freekill on an already free monster
     }
     if (
       inCombat
@@ -1371,16 +1353,16 @@ export function yellowRayCombatString(
           auto_is_valid$2($skill`Spit jurassic acid`) &&
           hasTorso()
     ) {
-      return `skill ${$skill`Spit jurassic acid`}`; //100 Turns and free kill
+      return $skill`Spit jurassic acid`; //100 Turns and free kill
     }
     if (
       itemAmount($item`yellow rocket`) > 0 &&
       auto_is_valid($item`yellow rocket`)
     ) {
-      return `item ${$item`yellow rocket`}`; // 75 turns & 250 meat
+      return $item`yellow rocket`; // 75 turns & 250 meat
     }
     if (itemAmount($item`spitball`) > 0 && auto_is_valid($item`spitball`)) {
-      return `item ${$item`spitball`}`; //100 Turns and free kill
+      return $item`spitball`; //100 Turns and free kill
     }
     if (
       inCombat
@@ -1389,7 +1371,7 @@ export function yellowRayCombatString(
           auto_can_equip($item`Roman Candelabra`) &&
           auto_is_valid$2($skill`Blow the Yellow Candle!`)
     ) {
-      return `skill ${$skill`Blow the Yellow Candle!`}`; //75 Turns
+      return $skill`Blow the Yellow Candle!`; //75 Turns
     }
     if (
       inCombat
@@ -1397,26 +1379,26 @@ export function yellowRayCombatString(
         : auto_hasRetrocape() &&
           auto_is_valid$2($skill`Unleash the Devil's Kiss`)
     ) {
-      return `skill ${$skill`Unleash the Devil's Kiss`}`; // 99 turns
+      return $skill`Unleash the Devil's Kiss`; // 99 turns
     }
     if (
       auto_have_skill($skill`Disintegrate`) &&
       auto_is_valid$2($skill`Disintegrate`) &&
       myMp() >= mpCost($skill`Disintegrate`)
     ) {
-      return `skill ${$skill`Disintegrate`}`; // 100 trurns
+      return $skill`Disintegrate`; // 100 trurns
     }
     if (
       auto_have_skill($skill`Ball Lightning`) &&
       myLightning() >= lightningCost($skill`Ball Lightning`)
     ) {
-      return `skill ${$skill`Ball Lightning`}`; // 99 turns + 5 lightning
+      return $skill`Ball Lightning`; // 99 turns + 5 lightning
     }
     if (
       auto_have_skill($skill`Wrath of Ra`) &&
       myMp() >= mpCost($skill`Wrath of Ra`)
     ) {
-      return `skill ${$skill`Wrath of Ra`}`; // 100 turns
+      return $skill`Wrath of Ra`; // 100 turns
     }
     if (
       itemAmount($item`mayo lance`) > 0 &&
@@ -1424,25 +1406,25 @@ export function yellowRayCombatString(
       toInt(getProperty("mayoLevel")) > 0 &&
       auto_is_valid($item`mayo lance`)
     ) {
-      return `item ${$item`mayo lance`}`; // 0 - 145 turns
+      return $item`mayo lance`; // 0 - 145 turns
     }
     if (
       getProperty("peteMotorbikeHeadlight") === "Ultrabright Yellow Bulb" &&
       auto_have_skill($skill`Flash Headlight`) &&
       myMp() >= mpCost($skill`Flash Headlight`)
     ) {
-      return `skill ${$skill`Flash Headlight`}`; // 100 turns
+      return $skill`Flash Headlight`; // 100 turns
     }
     for (const it of $items`Golden Light, pumpkin bomb, unbearable light, viral video, micronova`) {
       if (itemAmount(it) > 0 && auto_is_valid(it)) {
-        return `item ${it}`; // ~150 turns
+        return it; // ~150 turns
       }
     }
     if (
       auto_have_skill($skill`Unleash Cowrruption`) &&
       haveEffect($effect`Cowrruption`) >= 30
     ) {
-      return `skill ${$skill`Unleash Cowrruption`}`; // 149 turns
+      return $skill`Unleash Cowrruption`; // 149 turns
     }
     if (
       (inCombat
@@ -1451,21 +1433,21 @@ export function yellowRayCombatString(
       auto_is_valid$2($skill`Open a Big Yellow Present`) &&
       getProperty("shrubGifts") === "yellow"
     ) {
-      return `skill ${$skill`Open a Big Yellow Present`}`; // 149 turns
+      return $skill`Open a Big Yellow Present`; // 149 turns
     }
   }
 
   if (asdonCanMissile()) {
-    return `skill ${$skill`Asdon Martin: Missile Launcher`}`;
+    return $skill`Asdon Martin: Missile Launcher`;
   }
 
   if (auto_canNorthernExplosionFE()) {
     //With April Shower Thoughts Shield
-    return `skill ${$skill`Northern Explosion`}`;
+    return $skill`Northern Explosion`;
   }
 
   if (auto_canFeelEnvy()) {
-    return `skill ${$skill`Feel Envy`}`;
+    return $skill`Feel Envy`;
   }
 
   const saber: Item = wrap_item($item`Fourth of May Cosplay Saber`);
@@ -1485,42 +1467,42 @@ export function yellowRayCombatString(
       : toInt(getProperty("shockingLickCharges")) > 0 ||
         can_get_battery($item`battery (9-Volt)`)
   ) {
-    return `skill ${$skill`Shocking Lick`}`;
+    return $skill`Shocking Lick`;
   }
 
-  return "";
+  return undefined;
 }
 
 export function yellowRayCombatString$1(
   target: Monster,
   inCombat: boolean,
-): string {
+): CombatMacroReturns {
   return yellowRayCombatString(target, inCombat, false);
 }
 
 export function replaceMonsterCombatString(
   target: Monster,
   inCombat: boolean = false,
-): string {
+): CombatMacroReturns {
   if (in_pokefam()) {
-    return "";
+    return undefined;
   }
   if (
     auto_macrometeoritesAvailable() > 0 &&
     auto_is_valid$2($skill`Macrometeorite`)
   ) {
-    return `skill ${$skill`Macrometeorite`}`;
+    return $skill`Macrometeorite`;
   }
   if (
     auto_powerfulGloveReplacesAvailable(inCombat) > 0 &&
     auto_is_valid$2($skill`CHEAT CODE: Replace Enemy`)
   ) {
-    return `skill ${$skill`CHEAT CODE: Replace Enemy`}`;
+    return $skill`CHEAT CODE: Replace Enemy`;
   }
   if (canUse$3($item`waffle`) && !in_avantGuard()) {
     return useItems($item`waffle`, Item.none);
   }
-  return "";
+  return undefined;
 }
 
 export function turns_to_kill(dmg: number): number {

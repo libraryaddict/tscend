@@ -38,7 +38,6 @@ import {
   npcPrice,
   outfit,
   outfitPieces,
-  runChoice,
   runTurn,
   setProperty,
   storageAmount,
@@ -58,6 +57,7 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $monster,
   $phylum,
   $skill,
@@ -87,6 +87,7 @@ import {
   auto_is_valid,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   auto_turbo,
   canSummonMonster,
   have_workshed,
@@ -101,6 +102,12 @@ import {
 } from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
 import { auto_canUse } from "../combat/auto_combat_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import {
   acquiredFantasyRealmToken,
   fantasyBanditsFought,
@@ -126,6 +133,7 @@ import { in_lowkeysummer } from "../paths/low_key_summer";
 import { in_nuclear } from "../paths/nuclear_autumn";
 import { in_plumber } from "../paths/path_of_the_plumber";
 import { picky_startAscension } from "../paths/picky";
+import { in_quantumTerrarium } from "../paths/quantum_terrarium";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { L6_friarsGetParts } from "./level_06";
 import { L8_trapperQuest } from "./level_08";
@@ -147,8 +155,8 @@ import {
 } from "./level_11";
 import {
   get8BitFatLootToken,
-  LX_getDigitalKey,
-  LX_getStarKey,
+  LX_getDigitalKeyTask,
+  LX_getStarKeyTask,
   needStarKey,
   towerKeyCount,
 } from "./level_13";
@@ -193,7 +201,7 @@ export function LX_handleIntroAdventures(): void {
 
     if (1343 === choice) {
       // 1343 is "Intro: View of a Vampire", intro for Dark Gyffte (Spring 2019 challenge path).
-      runChoice(1);
+      auto_runChoice(1);
       bat_reallyPickSkills(20);
     }
 
@@ -226,7 +234,7 @@ export function LX_handleIntroAdventures(): void {
       // 1552 is "Zoonopeia", intro for Z is for Zootomist (Spring 2025 challenge path).
       // 1559 is "Hat Trick!", intro for Hat Trick (Summer 2025 challenge path).
       // yes they really phoned some of the titles of these in.
-      runChoice(1);
+      auto_runChoice(1);
     }
   }
 }
@@ -238,17 +246,7 @@ export function LX_bitchinMeatcar_condition(): boolean {
   );
 }
 
-export function LX_bitchinMeatcar(): boolean {
-  if (isDesertAvailable()) {
-    return false;
-  }
-  if (itemAmount($item`bitchin' meatcar`) > 0) {
-    return false;
-  }
-  if (in_bhy() && !inKnollSign()) {
-    //it is impossible to make a meatcar in this combo of path and signs.
-    return false;
-  }
+function LX_bitchinMeatcarDo(): boolean {
   //calculate meat costs of building your meatcar.
   //if player manually partially assembled it then it will work, just think it costs slightly more meat than it actually does
   let meatRequired: number = 0;
@@ -330,11 +328,24 @@ export function LX_bitchinMeatcar(): boolean {
   return false;
 }
 
-export function LX_unlockDesert(): boolean {
-  if (isDesertAvailable()) {
-    return false;
-  }
+const LX_bitchinMeatcarTask: QuestTask = registerQuestTask({
+  name: "LX_bitchinMeatcar",
+  completed: () =>
+    isDesertAvailable() || itemAmount($item`bitchin' meatcar`) > 0,
+  ready: () =>
+    itemAmount($item`bitchin' meatcar`) === 0 &&
+    //it is impossible to make a meatcar in this combo of path and signs.
+    !(in_bhy() && !inKnollSign()) &&
+    LX_bitchinMeatcar_condition(),
+  do: LX_bitchinMeatcarDo,
+  locations: $location`The Degrassi Knoll Garage`,
+});
 
+export function LX_bitchinMeatcar(): boolean {
+  return runQuestTask(LX_bitchinMeatcarTask);
+}
+
+function LX_unlockDesertDo(): boolean {
   if (in_nuclear()) {
     if (isAboutToPowerlevel()) {
       auto_log_info(
@@ -384,6 +395,17 @@ export function LX_unlockDesert(): boolean {
   return LX_bitchinMeatcar();
 }
 
+export const LX_unlockDesertTask: QuestTask = registerQuestTask({
+  name: "LX_unlockDesert",
+  completed: () => isDesertAvailable(),
+  ready: () => !isDesertAvailable(),
+  do: LX_unlockDesertDo,
+});
+
+export function LX_unlockDesert(): boolean {
+  return runQuestTask(LX_unlockDesertTask);
+}
+
 function LX_desertAlternate(): boolean {
   if (in_nuclear()) {
     return LX_hippyBoatman();
@@ -406,11 +428,7 @@ function LX_desertAlternate(): boolean {
   return false;
 }
 
-export function LX_islandAccess(): boolean {
-  if (in_koe()) {
-    return false;
-  }
-
+function LX_islandAccessDo(): boolean {
   if (in_lowkeysummer()) {
     return LX_hippyBoatman();
   }
@@ -507,38 +525,40 @@ export function LX_islandAccess(): boolean {
   return false;
 }
 
-export function startHippyBoatmanSubQuest(): boolean {
-  if (
-    myBasestat(myPrimestat()) >= 25 &&
-    getProperty("questM19Hippy") === "unstarted" &&
-    !in_koe()
-  ) {
-    visitUrl("place.php?whichplace=woods&action=woods_smokesignals");
-    visitUrl("choice.php?pwd=&whichchoice=798&option=1");
-    visitUrl("choice.php?pwd=&whichchoice=798&option=2");
-    visitUrl("woods.php");
-    return true;
-  }
-  return false;
+export const LX_islandAccessTask: QuestTask = registerQuestTask({
+  name: "LX_islandAccess",
+  completed: () => false,
+  ready: () => !in_koe(),
+  do: LX_islandAccessDo,
+});
+
+export function LX_islandAccess(): boolean {
+  return runQuestTask(LX_islandAccessTask);
 }
 
-export function LX_hippyBoatman(): boolean {
-  if (toInt(getProperty("lastIslandUnlock")) >= myAscensions()) {
-    return false;
-  }
+function startHippyBoatmanSubQuestDo(): boolean {
+  visitUrl("place.php?whichplace=woods&action=woods_smokesignals");
+  visitUrl("choice.php?pwd=&whichchoice=798&option=1");
+  visitUrl("choice.php?pwd=&whichchoice=798&option=2");
+  visitUrl("woods.php");
+  return true;
+}
 
-  if (itemAmount($item`junk junk`) > 0) {
-    return false;
-  }
+export const startHippyBoatmanSubQuestTask: QuestTask = registerQuestTask({
+  name: "startHippyBoatmanSubQuest",
+  completed: () => getProperty("questM19Hippy") !== "unstarted" || in_koe(),
+  ready: () =>
+    myBasestat(myPrimestat()) >= 25 &&
+    getProperty("questM19Hippy") === "unstarted" &&
+    !in_koe(),
+  do: startHippyBoatmanSubQuestDo,
+});
 
-  if (internalQuestStatus("questM19Hippy") > 3) {
-    return false;
-  }
+export function startHippyBoatmanSubQuest(): boolean {
+  return runQuestTask(startHippyBoatmanSubQuestTask);
+}
 
-  if (myBasestat(myPrimestat()) < 25) {
-    return false;
-  }
-
+function LX_hippyBoatmanDo(): boolean {
   if (internalQuestStatus("questM19Hippy") < 0) {
     startHippyBoatmanSubQuest();
 
@@ -567,72 +587,74 @@ export function LX_hippyBoatman(): boolean {
   return autoAdv($location`The Old Landfill`);
 }
 
+const LX_hippyBoatmanTask: QuestTask = registerQuestTask({
+  name: "LX_hippyBoatman",
+  completed: () =>
+    toInt(getProperty("lastIslandUnlock")) >= myAscensions() ||
+    internalQuestStatus("questM19Hippy") > 3,
+  ready: () =>
+    itemAmount($item`junk junk`) === 0 &&
+    internalQuestStatus("questM19Hippy") <= 3 &&
+    myBasestat(myPrimestat()) >= 25,
+  do: LX_hippyBoatmanDo,
+  locations: $location`The Old Landfill`,
+});
+
+export function LX_hippyBoatman(): boolean {
+  return runQuestTask(LX_hippyBoatmanTask);
+}
+
 export function oldLandfillChoiceHandler(choice: number): void {
   if (choice === 794) {
     // Once More Unto the Junk
     if (itemAmount($item`junk junk`) === 0) {
       if (itemAmount($item`old claw-foot bathtub`) === 0) {
-        runChoice(1); // go to The Bathroom of Ten Men (#795)
+        auto_runChoice(1); // go to The Bathroom of Ten Men (#795)
       } else if (itemAmount($item`old clothesline pole`) === 0) {
-        runChoice(2); // go to The Den of Iquity (#796)
+        auto_runChoice(2); // go to The Den of Iquity (#796)
       } else if (itemAmount($item`antique cigar sign`) === 0) {
-        runChoice(3); // go to Let's Workshop This a Little (#797)
+        auto_runChoice(3); // go to Let's Workshop This a Little (#797)
       } else {
-        runChoice(1); // go to The Bathroom of Ten Men (#795)
+        auto_runChoice(1); // go to The Bathroom of Ten Men (#795)
       }
     } else {
       // TODO: Add handling to get the eternal car battery
       // doesn't look like there's mafia tracking for it yet.
       if (itemAmount($item`tangle of copper wire`) === 0) {
-        runChoice(2); // go to The Den of Iquity (#796)
+        auto_runChoice(2); // go to The Den of Iquity (#796)
       } else if (itemAmount($item`Junk-Bond`) === 0) {
-        runChoice(3); // go to Let's Workshop This a Little (#797)
+        auto_runChoice(3); // go to Let's Workshop This a Little (#797)
       } else {
-        runChoice(1); // go to The Bathroom of Ten Men (#795)
+        auto_runChoice(1); // go to The Bathroom of Ten Men (#795)
       }
     }
   } else if (choice === 795) {
     // The Bathroom of Ten Men
     if (itemAmount($item`old claw-foot bathtub`) === 0) {
-      runChoice(1); // get old claw-foot bathtub
+      auto_runChoice(1); // get old claw-foot bathtub
     } else {
-      runChoice(2); // fight a random enemy from the zone
+      auto_runChoice(2); // fight a random enemy from the zone
     }
   } else if (choice === 796) {
     // The Den of Iquity
     if (itemAmount($item`old clothesline pole`) === 0) {
-      runChoice(2); // get old clothesline pole
+      auto_runChoice(2); // get old clothesline pole
     } else {
-      runChoice(3); // get tangle of copper wire
+      auto_runChoice(3); // get tangle of copper wire
     }
   } else if (choice === 797) {
     // Let's Workshop This a Little
     if (itemAmount($item`antique cigar sign`) === 0) {
-      runChoice(3); // get antique cigar sign
+      auto_runChoice(3); // get antique cigar sign
     } else {
-      runChoice(1); // get Junk-Bond
+      auto_runChoice(1); // get Junk-Bond
     }
   } else {
     abort("unhandled choice in oldLandfillChoiceHandler");
   }
 }
 
-export function LX_lockPicking(): boolean {
-  if (!auto_have_skill($skill`Lock Picking`)) {
-    return false;
-  }
-
-  if (toBoolean(getProperty("lockPicked"))) {
-    return false;
-  }
-
-  if (towerKeyCount(false) >= 3) {
-    return false;
-  }
-
-  if (myMp() < mpCost($skill`Lock Picking`)) {
-    return false;
-  }
+function LX_lockPickingDo(): boolean {
   // As of r20114, this choice does not work in choice adventure script
   if (itemAmount($item`Boris's key`) === 0) {
     setProperty("choiceAdventure1414", (1).toString());
@@ -645,6 +667,21 @@ export function LX_lockPicking(): boolean {
   useSkill(1, $skill`Lock Picking`);
   runTurn();
   return toBoolean(getProperty("lockPicked"));
+}
+
+export const LX_lockPickingTask: QuestTask = registerQuestTask({
+  name: "LX_lockPicking",
+  completed: () => towerKeyCount(false) >= 3,
+  ready: () =>
+    auto_have_skill($skill`Lock Picking`) &&
+    !toBoolean(getProperty("lockPicked")) &&
+    towerKeyCount(false) < 3 &&
+    myMp() >= mpCost($skill`Lock Picking`),
+  do: LX_lockPickingDo,
+});
+
+export function LX_lockPicking(): boolean {
+  return runQuestTask(LX_lockPickingTask);
 }
 
 export function estimateDailyDungeonAdvNeeded(): number {
@@ -684,14 +721,7 @@ export function estimateDailyDungeonAdvNeeded(): number {
   return adv_needed;
 }
 
-export function LX_fatLootToken(): boolean {
-  if (
-    towerKeyCount(false) >= 3 &&
-    !toBoolean(getProperty("auto_forceFatLootToken"))
-  ) {
-    return false; //have enough tokens
-  }
-
+function LX_fatLootTokenDo(): boolean {
   if (!canChangeToFamiliar($familiar`Gelatinous Cubeling`) && inHardcore()) {
     //if unable to get the daily dungeon tools then prefer to do fantasy realm over daily dungeon
     if (fantasyRealmToken()) {
@@ -733,6 +763,22 @@ export function LX_fatLootToken(): boolean {
   }
 
   return false;
+}
+
+export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
+  name: "LX_fatLootToken",
+  completed: () => false,
+  //have enough tokens
+  ready: () =>
+    !(
+      towerKeyCount(false) >= 3 &&
+      !toBoolean(getProperty("auto_forceFatLootToken"))
+    ),
+  do: LX_fatLootTokenDo,
+});
+
+export function LX_fatLootToken(): boolean {
+  return runQuestTask(LX_fatLootTokenTask);
 }
 
 export function useTonicDjinn(): void {
@@ -870,29 +916,29 @@ export function dailyDungeonChoiceHandler(
 
   switch (choice) {
     case 689: // The Final Reward (Daily Dungeon 15th room)
-      runChoice(1); // Get fat loot token
+      auto_runChoice(1); // Get fat loot token
 
       break;
     case 690: // The First Chest Isn't the Deepest. (Daily Dungeon 5th room)
     case 691: // Second Chest (Daily Dungeon 10th room)
       if (options.has(4)) {
-        runChoice(4); // Get a fat loot token with your Candy Cane Sword Cane
+        auto_runChoice(4); // Get a fat loot token with your Candy Cane Sword Cane
         if (options.has(2)) {
-          runChoice(2); // skip 3 rooms using ring of Detect Boring Doors
+          auto_runChoice(2); // skip 3 rooms using ring of Detect Boring Doors
         } else {
-          runChoice(3); // skip 1 room
+          auto_runChoice(3); // skip 1 room
         }
       } else if (options.has(2)) {
-        runChoice(2); // skip 3 rooms using ring of Detect Boring Doors
+        auto_runChoice(2); // skip 3 rooms using ring of Detect Boring Doors
       } else {
-        runChoice(3); // skip 1 room
+        auto_runChoice(3); // skip 1 room
       }
       break;
     case 692: // I Wanna Be a Door (Daily Dungeon)
       if (options.has(3)) {
-        runChoice(3); // use [Pick-O-Matic Lockpicks] to skip
+        auto_runChoice(3); // use [Pick-O-Matic Lockpicks] to skip
       } else if (options.has(7)) {
-        runChoice(7); // use [Platinum Yendorian Express Card] to skip
+        auto_runChoice(7); // use [Platinum Yendorian Express Card] to skip
       } else if (
         itemAmount($item`skeleton key`) > 1 ||
         (itemAmount($item`skeleton key`) > 0 &&
@@ -901,22 +947,22 @@ export function dailyDungeonChoiceHandler(
             $item`skeleton key`.toString(),
           ))
       ) {
-        runChoice(2); // use [Skeleton Key] to skip
+        auto_runChoice(2); // use [Skeleton Key] to skip
       } else if (
         myPrimestat() === $stat`Muscle` &&
         myBuffedstat($stat`Muscle`) >= 30
       ) {
-        runChoice(4); // spend adv and not guarenteed to work
+        auto_runChoice(4); // spend adv and not guarenteed to work
       } else if (
         myPrimestat() === $stat`Mysticality` &&
         myBuffedstat($stat`Mysticality`) >= 30
       ) {
-        runChoice(5); // spend adv and not guarenteed to work
+        auto_runChoice(5); // spend adv and not guarenteed to work
       } else if (
         myPrimestat() === $stat`Moxie` &&
         myBuffedstat($stat`Moxie`) >= 30
       ) {
-        runChoice(6); // spend adv and not guarenteed to work
+        auto_runChoice(6); // spend adv and not guarenteed to work
       } else {
         abort(
           "I made an error and tried to adventure in the daily dungeon when I have no means of handling [I Wanna Be a Door]",
@@ -925,11 +971,11 @@ export function dailyDungeonChoiceHandler(
       break;
     case 693: // It's Almost Certainly a Trap (Daily Dungeon)
       if (options.has(4)) {
-        runChoice(4); // use Candy cane sword cane to skip and get stats
+        auto_runChoice(4); // use Candy cane sword cane to skip and get stats
       } else if (options.has(2)) {
-        runChoice(2); // use eleven-foot pole to skip
+        auto_runChoice(2); // use eleven-foot pole to skip
       } else {
-        runChoice(1); // take damage to progress
+        auto_runChoice(1); // take damage to progress
       }
       break;
     default:
@@ -938,49 +984,51 @@ export function dailyDungeonChoiceHandler(
   }
 }
 
-export function LX_dolphinKingMap(): boolean {
-  if (itemAmount($item`Dolphin King's map`) > 0) {
-    if (
-      possessEquipment($item`snorkel`) ||
-      (myMeat() >= npcPrice($item`snorkel`) && isArmoryAvailable())
-    ) {
-      auto_buyUpTo(1, $item`snorkel`);
-      const oldHat: Item = equippedItem($slot`hat`);
-      equip($item`snorkel`);
-      use(1, $item`Dolphin King's map`);
-      equip(oldHat);
-      return true;
-    }
-  }
-  return false;
+function LX_dolphinKingMapDo(): boolean {
+  auto_buyUpTo(1, $item`snorkel`);
+  const oldHat: Item = equippedItem($slot`hat`);
+  equip($item`snorkel`);
+  use(1, $item`Dolphin King's map`);
+  equip(oldHat);
+  return true;
 }
 
-export function LX_meatMaid(): boolean {
-  if (!haveCampgroundMaid()) {
-    return false;
-  }
-  if (
-    !knollAvailable() ||
-    myDaycount() !== 1 ||
-    getProperty("questL07Cyrptic") !== "finished"
-  ) {
-    return false;
-  }
+const LX_dolphinKingMapTask: QuestTask = registerQuestTask({
+  name: "LX_dolphinKingMap",
+  completed: () => itemAmount($item`Dolphin King's map`) === 0,
+  ready: () =>
+    itemAmount($item`Dolphin King's map`) > 0 &&
+    (possessEquipment($item`snorkel`) ||
+      (myMeat() >= npcPrice($item`snorkel`) && isArmoryAvailable())),
+  do: LX_dolphinKingMapDo,
+});
 
-  if (
+export function LX_dolphinKingMap(): boolean {
+  return runQuestTask(LX_dolphinKingMapTask);
+}
+
+function LX_meatMaidDo(): boolean {
+  auto_log_info("Got a brain, trying to make and use a meat maid now.", "blue");
+  cliExecute("make meat maid");
+  use(1, $item`Meat maid`);
+  return true;
+}
+
+const LX_meatMaidTask: QuestTask = registerQuestTask({
+  name: "LX_meatMaid",
+  completed: () => false,
+  ready: () =>
+    haveCampgroundMaid() &&
+    knollAvailable() &&
+    myDaycount() === 1 &&
+    getProperty("questL07Cyrptic") === "finished" &&
     itemAmount($item`smart skull`) > 0 &&
-    itemAmount($item`disembodied brain`) > 0
-  ) {
-    auto_log_info(
-      "Got a brain, trying to make and use a meat maid now.",
-      "blue",
-    );
-    cliExecute("make meat maid");
-    use(1, $item`Meat maid`);
-    return true;
-  }
+    itemAmount($item`disembodied brain`) > 0,
+  do: LX_meatMaidDo,
+});
 
-  return false;
+export function LX_meatMaid(): boolean {
+  return runQuestTask(LX_meatMaidTask);
 }
 
 export function LX_getDesiredWorkshed(): Item {
@@ -1036,19 +1084,10 @@ export function LX_getDesiredWorkshed(): Item {
   }
 }
 
-export function LX_setWorkshed(): boolean {
+function LX_setWorkshedDo(): boolean {
   const desiredShed: Item = LX_getDesiredWorkshed();
   const existingShed: Item = getWorkshed();
-  const workshedChanged: boolean = toBoolean(getProperty("_workshedItemUsed"));
 
-  if (workshedChanged) {
-    //Don't even try if the workshed has already been changed once
-    return false;
-  }
-  if (!have_workshed()) {
-    //Not usable in certain paths
-    return false;
-  }
   //Check to make sure we can use the workshed item and that it isn't already in the campground. If already in campground, return false also
   //These first 2 ifs are only used if something valid other than auto is specified. Otherwise we go to the auto
   if (
@@ -1137,29 +1176,29 @@ export function LX_setWorkshed(): boolean {
   return false;
 }
 
+export const LX_setWorkshedTask: QuestTask = registerQuestTask({
+  name: "LX_setWorkshed",
+  completed: () => toBoolean(getProperty("_workshedItemUsed")),
+  ready: () =>
+    //Don't even try if the workshed has already been changed once
+    !toBoolean(getProperty("_workshedItemUsed")) &&
+    //Not usable in certain paths
+    have_workshed(),
+  do: LX_setWorkshedDo,
+});
+
+export function LX_setWorkshed(): boolean {
+  return runQuestTask(LX_setWorkshedTask);
+}
+
 function canSetWorkshed(it: Item): boolean {
   return auto_is_valid(it) && itemAmount(it) > 0;
 }
 
-export function LX_ForceNC(): boolean {
-  if (
-    getProperty("auto_forceNonCombatSource") !== "McHugeLarge left ski" ||
-    !toBoolean(getProperty("auto_avalancheDeployed"))
-  ) {
-    return false;
-  }
-  if (
-    getProperty("auto_forceNonCombatSource") !== "jurassic parka" ||
-    !toBoolean(getProperty("auto_parkaSpikesDeployed"))
-  ) {
-    return false;
-  }
+function LX_ForceNCDo(): boolean {
   const desiredNCLocation: Location = toLocation(
     getProperty("auto_forceNonCombatLocation"),
   );
-  if (desiredNCLocation === Location.none) {
-    return false;
-  }
   //return the actual item name in case a shorthand is used
   switch (desiredNCLocation) {
     case $location`The Dark Neck of the Woods`:
@@ -1191,10 +1230,23 @@ export function LX_ForceNC(): boolean {
   }
 }
 
-export function LX_dronesOut(): boolean {
-  if (!dronesOut()) {
-    return false;
-  }
+export const LX_ForceNCTask: QuestTask = registerQuestTask({
+  name: "LX_ForceNC",
+  completed: () => false,
+  ready: () =>
+    getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
+    toBoolean(getProperty("auto_avalancheDeployed")) &&
+    getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
+    toBoolean(getProperty("auto_parkaSpikesDeployed")) &&
+    toLocation(getProperty("auto_forceNonCombatLocation")) !== Location.none,
+  do: LX_ForceNCDo,
+});
+
+export function LX_ForceNC(): boolean {
+  return runQuestTask(LX_ForceNCTask);
+}
+
+function LX_dronesOutDo(): boolean {
   const canExtingo: boolean =
     auto_fireExtinguisherCharges() > 30 &&
     auto_canUse($skill`Fire Extinguisher: Polar Vortex`, false);
@@ -1319,6 +1371,15 @@ export function LX_dronesOut(): boolean {
   return false;
 }
 
+export const LX_dronesOutTask: QuestTask = registerQuestTask({
+  name: "LX_dronesOut",
+  completed: () =>
+    !canChangeToFamiliar($familiar`Grey Goose`) && !in_quantumTerrarium(),
+  ready: () => dronesOut(),
+  do: LX_dronesOutDo,
+  locations: $locations`The Hole in the Sky, The Middle Chamber, Twin Peak, The Red Zeppelin, The Hidden Bowling Alley, The Batrat and Ratbat Burrow, The Goatlet`,
+});
+
 export function freeCandyFightsLeft(): number {
   // Map isn't valid
   if (!auto_is_valid($item`map to a candy-rich block`)) {
@@ -1347,7 +1408,7 @@ export function freeCandyFightsLeft(): number {
   return n_unused_dark;
 }
 
-export function candyBlock(): boolean {
+function candyBlockDo(): boolean {
   // Set choice defaults
   setProperty("choiceAdventure804", "2"); // don't halt on map use
   setProperty("choiceAdventure806", "1"); // grab the big bowl of candy
@@ -1457,6 +1518,20 @@ export function candyBlock(): boolean {
   return false;
 }
 
+const candyBlockTask: QuestTask = registerQuestTask({
+  name: "candyBlock",
+  completed: () =>
+    !auto_is_valid($item`map to a candy-rich block`) ||
+    (toBoolean(getProperty("_mapToACandyRichBlockUsed")) &&
+      toBoolean(getProperty("_auto_candyMapCompleted"))),
+  ready: () => true,
+  do: candyBlockDo,
+});
+
+export function candyBlock(): boolean {
+  return runQuestTask(candyBlockTask);
+}
+
 export function candyBlockOutfit(type_1: string): string {
   if (type_1 === "treat") {
     for (const [x, fit] of getOutfits().entries()) {
@@ -1508,7 +1583,7 @@ export function candyBlockOutfit(type_1: string): string {
 
   return "";
 }
-export function LX_lastChance(): boolean {
+function LX_lastChanceDo(): boolean {
   //miscellaneous calls that aren't powerlevelling but need to be done at some point based on certain conditions
   if (getProperty("screechDelay") !== "") {
     let banishLoc: Location = Location.none;
@@ -1522,7 +1597,7 @@ export function LX_lastChance(): boolean {
       isBanished(toPhylum(getProperty("screechDelay")))
     ) {
       handleFamiliar$1($familiar`Patriotic Eagle`); //force eagle to be used
-      if (LX_getDigitalKey() || LX_getStarKey()) {
+      if (runTaskChain([LX_getDigitalKeyTask, LX_getStarKeyTask])) {
         continue;
       } else {
         if (LX_unlockManorSecondFloor() && L11_mauriceSpookyraven()) {
@@ -1562,8 +1637,20 @@ export function LX_lastChance(): boolean {
     return true;
   }
   // Need the digital key and star key so if we have nothing to do before the L13 quest, might as well do them here
-  if (LX_getDigitalKey() || LX_getStarKey()) {
+  if (runTaskChain([LX_getDigitalKeyTask, LX_getStarKeyTask])) {
     return true;
   }
   return false;
+}
+
+export const LX_lastChanceTask: QuestTask = registerQuestTask({
+  name: "LX_lastChance",
+  completed: () => false,
+  ready: () => true,
+  do: LX_lastChanceDo,
+  locations: $locations`Cobb's Knob Harem, The Outskirts of Cobb's Knob`,
+});
+
+export function LX_lastChance(): boolean {
+  return runQuestTask(LX_lastChanceTask);
 }

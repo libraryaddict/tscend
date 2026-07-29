@@ -29,6 +29,7 @@ import {
   internalQuestStatus,
   meatReserve,
 } from "../auto_util";
+import { QuestTask, registerQuestTask } from "../engine/engine";
 
 // TODO: Visit hermit.php for free (10-leaf) clover _zombieClover
 // DONE: buffs
@@ -284,14 +285,7 @@ export function zombieSlayer_usable(fam: Familiar): boolean {
   return containsText(fam.attributes, "undead");
 }
 
-export function LM_zombieSlayer(): boolean {
-  //this function is called early once every loop of doTasks() in autoscend.ash
-  //if something in this function returns true then it will restart the loop and get called again.
-
-  if (!in_zombieSlayer()) {
-    return false;
-  }
-
+function LM_zombieSlayerDo(): boolean {
   while (
     itemAmount($item`hunter brain`) > 0 &&
     myFullness() < fullnessLimit()
@@ -306,3 +300,12 @@ export function LM_zombieSlayer(): boolean {
 
   return false;
 }
+
+export const LM_zombieSlayerTask: QuestTask = registerQuestTask({
+  name: "LM_zombieSlayer",
+  //this function is called early once every loop of doTasks() in autoscend.ash
+  //if something in this function returns true then it will restart the loop and get called again.
+  completed: () => !in_zombieSlayer(),
+  ready: () => true,
+  do: LM_zombieSlayerDo,
+});

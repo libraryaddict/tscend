@@ -19,7 +19,6 @@ import {
   myPath,
   myWildfireWater,
   npcPrice,
-  runChoice,
   setProperty,
   toBoolean,
   toInt,
@@ -37,6 +36,7 @@ import { acquireHP, acquireMP } from "../auto_restore";
 import {
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   doNumberology,
   inKnollSign,
   internalQuestStatus,
@@ -161,7 +161,7 @@ function wildfire_refillExtinguiser(): void {
     "Refilling Industrial Fire Extinguisher with Fire Captain Hagnk.",
   );
   visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_captain");
-  runChoice(3);
+  auto_runChoice(3);
   //equip prior weapon
   if (old !== Item.none) {
     equip($slot`weapon`, old);
@@ -318,7 +318,7 @@ function LX_wildfire_dust(): boolean {
   if (wildfire_water_cost("dust") <= myWildfireWater()) {
     auto_log_info("Dusting with Cropduster Dusty");
     visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_cropster");
-    runChoice(1);
+    auto_runChoice(1);
     if (!toBoolean(getProperty("wildfireDusted"))) {
       abort(
         "Mysteriously failed to Dust with Cropduster Dusty. fix it and run me again",
@@ -342,7 +342,7 @@ function LX_wildfire_frack(): boolean {
   if (wildfire_water_cost("frack") <= myWildfireWater()) {
     auto_log_info("Fracking with Fracker Dan");
     visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_fracker");
-    runChoice(1);
+    auto_runChoice(1);
     if (!toBoolean(getProperty("wildfireFracked"))) {
       abort(
         "Mysteriously failed to Frack with Fracker Dan. fix it and run me again",

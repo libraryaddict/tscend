@@ -8,6 +8,7 @@ import {
 } from "kolmafia";
 import { $class, $elements, $item, $monster, $monsters, $skill } from "libram";
 
+import { CombatMacroReturns } from "../auto_adventure";
 import { currentFlavour } from "../auto_util";
 import { in_wildfire } from "../paths/wildfire";
 import { auto_canUse, auto_useSkill } from "./auto_combat_util";
@@ -19,10 +20,10 @@ export function auto_combatWildfireStage1(
   round_1: number,
   enemy: Monster,
   text: string,
-): string {
+): CombatMacroReturns {
   // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
   if (!in_wildfire()) {
-    return "";
+    return undefined;
   }
   //always 5 fire bosses. can not be reduced.
   if (
@@ -72,5 +73,5 @@ export function auto_combatWildfireStage1(
     abort(`We do not know what to do next against [${enemy}].`);
   }
 
-  return "";
+  return undefined;
 }

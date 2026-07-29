@@ -20,9 +20,9 @@ import {
   myDaycount,
   myFamiliar,
   myLevel,
+  myPath,
   Phylum,
   print,
-  runChoice,
   setProperty,
   splitString,
   storageAmount,
@@ -39,6 +39,8 @@ import {
   $familiar,
   $item,
   $location,
+  $locations,
+  $paths,
   $phylum,
   $slot,
 } from "libram";
@@ -58,8 +60,10 @@ import {
   auto_is_valid,
   auto_log_info,
   auto_log_warning,
+  auto_runChoice,
   internalQuestStatus,
 } from "../auto_util";
+import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { in_heavyrains } from "../paths/heavy_rains";
 import { in_robot } from "../paths/you_robot";
 import { bridgeGoal } from "../quests/level_09";
@@ -156,7 +160,7 @@ export function dna_startAcquire(): boolean {
   if (getProperty("auto_day1_dna") === "finished" || myDaycount() !== 1) {
     return false;
   }
-  if (haveEffect($effect`Human-Weird Thing Hybrid`) === 2147483647) {
+  if (haveEffect($effect`Human-Weird Thing Hybrid`) > 9999) {
     return false;
   }
   if (itemAmount($item`DNA extraction syringe`) === 0) {
@@ -476,28 +480,22 @@ export function LX_ornateDowsingRod(
   return false;
 }
 
-export function fancyOilPainting(): boolean {
-  if (toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal()) {
-    return false;
-  }
-  if (myAdventures() <= 4) {
-    return false;
-  }
-  if (
+registerQuestTask({
+  name: "LX_ornateDowsingRod",
+  completed: () =>
+    !$paths`Legacy of Loathing, Quantum Terrarium`.includes(myPath()) ||
+    !toBoolean(getProperty("auto_grimstoneOrnateDowsingRod")) ||
     !auto_is_valid($item`grimstone mask`) ||
-    !auto_is_valid($item`fancy oil painting`)
-  ) {
-    return false;
-  }
-  if (itemAmount($item`grimstone mask`) === 0) {
-    return false;
-  }
-  if (!toBoolean(getProperty("auto_grimstoneFancyOilPainting"))) {
-    return false;
-  }
-  if (getCounters("", 0, 6) !== "") {
-    return false;
-  }
+    possessEquipment($item`ornate dowsing rod`) ||
+    possessEquipment($item`UV-resistant compass`) ||
+    toInt(getProperty("desertExploration")) >= 100 ||
+    internalQuestStatus("questL11Desert") > 0,
+  ready: () => true,
+  do: () => LX_ornateDowsingRod(),
+  locations: $locations`The Prince's Balcony, The Prince's Dance Floor, The Prince's Lounge, The Prince's Kitchen, The Prince's Restroom`,
+});
+
+function fancyOilPaintingDo(): boolean {
   auto_log_info("Acquiring a Fancy Oil Painting!", "blue");
   use(1, $item`grimstone mask`);
 
@@ -516,6 +514,26 @@ export function fancyOilPainting(): boolean {
   cliExecute("make fancy oil painting");
   setProperty("auto_grimstoneFancyOilPainting", false.toString());
   return true;
+}
+
+const fancyOilPaintingTask: QuestTask = registerQuestTask({
+  name: "fancyOilPainting",
+  completed: () =>
+    !toBoolean(getProperty("auto_grimstoneFancyOilPainting")) ||
+    !auto_is_valid($item`grimstone mask`) ||
+    !auto_is_valid($item`fancy oil painting`) ||
+    toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal(),
+  ready: () =>
+    toInt(getProperty("chasmBridgeProgress")) < bridgeGoal() &&
+    myAdventures() > 4 &&
+    itemAmount($item`grimstone mask`) > 0 &&
+    getCounters("", 0, 6) === "",
+  do: fancyOilPaintingDo,
+  locations: $locations`The Prince's Balcony, The Prince's Dance Floor, The Prince's Lounge, The Prince's Kitchen`,
+});
+
+export function fancyOilPainting(): boolean {
+  return runQuestTask(fancyOilPaintingTask);
 }
 
 const $_f_importantMonsters: Monster[] = Monster.get([
@@ -602,7 +620,7 @@ export function icehouseUserErrorProtection(): boolean {
       )
     ) {
       visitUrl("museum.php?action=icehouse");
-      runChoice(1);
+      auto_runChoice(1);
       return true;
     } else {
       print("If autoscend runs into problems, it's on you!");

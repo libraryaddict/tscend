@@ -13,6 +13,9 @@ L12_sonofaPrefix
 LX_burnUnusedLuck
 LX_burnDelay
 LX_summonMonster
+# path handling which should be in it's own task order but pre-dates task order functionality (tech debt FTW).
+LX_bugbearKeyOTron
+LX_bugbearInvasionFloorsDo
 # make sure we don't waste turns of Ultrahydrated doing something else.
 L11_aridDesert	L11_hasUltrahydrated
 # Lock in the Shen zones as soon as we can as it (potentially) unlocks a bunch of stuff.
@@ -31,8 +34,6 @@ LX_lockPicking
 LX_fatLootToken
 #	Get the Steel Organ if the user wants it (needs L6 quest complete)
 LX_steelOrgan
-# need meat for first set of adventures
-L4_batCave	LX_needMeatSkills
 # open up delay zones.
 LX_spookyravenManorFirstFloor
 # open up zones where we want to force non-combats.
@@ -46,10 +47,6 @@ L11_blackMarket
 L11_forgedDocuments
 L11_mcmuffinDiary
 L11_getBeehive
-# make sure we get early boss meat if we've meatleveled (likely a low-meat run, need extra generation early for quick skills)
-L5_slayTheGoblinKing	LX_needMeatSkills
-L7_crypt	LX_needMeatSkills
-# L8_trapperQuest	LX_needMeatSkills comment out until we check for nc skill (bad idea for low non-combat%)
 # open the hidden city up (delay zones)
 L2_mosquito
 LX_unlockHiddenTemple
@@ -90,6 +87,8 @@ L4_batCave
 L3_tavern
 # Basic fetch quest is the first thing the council demand of you. Is this 2002 or what?
 L2_mosquito
+# There's an extra task in KoE
+LX_koeInvaderHandler
 # "win" the contests, navigate the maze, unlock the door, climb the tower, commit sorceresscide.
 L13_towerAscent
 # not powerlevelling but something that needs to be done if nothing else is available
@@ -97,4 +96,4 @@ LX_lastChance
 # release the hounds!
 auto_softBlockHandler
 # if all else fails, powerlevel like there's no tomorrow.
-LX_attemptPowerLevelMeat
+LX_attemptPowerLevel
