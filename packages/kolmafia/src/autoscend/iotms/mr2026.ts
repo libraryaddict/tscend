@@ -740,7 +740,7 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
   // Fill in ingredients
   function addIngredient(
     item: Item,
-    count: () => number,
+    count: () => number = () => itemAmount(item),
     acquire?: (count: number) => boolean,
   ): void {
     cupOfThirteenIngredients.push({
@@ -841,6 +841,7 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
   }
 
   // Some other items you might have lying around?
+  addIngredient($item`pristine fish scale`);
   addIngredient($item`mini kiwi bikini`, () =>
     // Only available if we're past the protesters and the tower is known not sleaze
     // Sleaze is the only test that doesn't start with "people"
