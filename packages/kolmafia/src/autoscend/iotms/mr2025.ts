@@ -1841,7 +1841,7 @@ export function auto_getBCZItems(): void {
     return;
   }
 
-  if (auto_wantToBCZ($skill`BCZ: Craft a Pheromone Cocktail`)) {
+  while (auto_wantToBCZ($skill`BCZ: Craft a Pheromone Cocktail`)) {
     handleTracker({
       what: $item`blood cubic zirconia`,
       detail: $item`pheromone cocktail`.toString(),
@@ -1849,7 +1849,7 @@ export function auto_getBCZItems(): void {
     });
     useSkill(1, $skill`BCZ: Craft a Pheromone Cocktail`);
   }
-  if (auto_wantToBCZ($skill`BCZ: Prepare Spinal Tapas`)) {
+  while (auto_wantToBCZ($skill`BCZ: Prepare Spinal Tapas`)) {
     handleTracker({
       what: $item`blood cubic zirconia`,
       detail: $item`spinal tapas`.toString(),

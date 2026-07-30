@@ -342,10 +342,12 @@ import {
 import {
   auto_getBCZItems,
   auto_getGlobs,
+  auto_haveBCZ,
   auto_haveMonodent,
   auto_openMcLargeHugeSkis,
   auto_setLeprecondo,
   auto_useLeprecondoDrops,
+  auto_wantToBCZ,
   auto_waveTheZone,
 } from "./autoscend/iotms/mr2025";
 import {
@@ -1846,8 +1848,6 @@ export function dailyEvents(): boolean {
   auto_MayamClaimAll();
   auto_buyFromSeptEmberStore();
   auto_getGlobs();
-  auto_setLeprecondo(false);
-  auto_getBCZItems();
 
   return true;
 }
@@ -3019,6 +3019,18 @@ const auto_setLeprecondoTask: QuestTask = registerQuestTask({
   },
 });
 
+const auto_grabBCZItemsTask: QuestTask = registerQuestTask({
+  name: "auto_grabBCZItems",
+  completed: () => !auto_haveBCZ(),
+  ready: () =>
+    auto_wantToBCZ($skill`BCZ: Craft a Pheromone Cocktail`) ||
+    auto_wantToBCZ($skill`BCZ: Prepare Spinal Tapas`),
+  do: () => {
+    auto_getBCZItems();
+    return false;
+  },
+});
+
 const LX_zootoFightTask: QuestTask = registerQuestTask({
   name: "LX_zootoFight",
   completed: () => !in_zootomist(),
@@ -3464,6 +3476,7 @@ const doTasksPrelude: QuestTask[] = [
   auto_doPhoneQuestTask,
   auto_doTempleSummitTask,
   L8_mountainManSummonTask,
+  auto_grabBCZItemsTask,
 ];
 
 function doTasks(): boolean {
