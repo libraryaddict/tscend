@@ -38,6 +38,7 @@ import {
   $skill,
   $stat,
   $thrall,
+  get,
 } from "libram";
 
 import { auto_advToReserve } from "../autoscend";
@@ -317,6 +318,7 @@ export const LX_attemptPowerLevelTask: QuestTask = registerQuestTask({
   name: "LX_attemptPowerLevel",
   completed: () =>
     myLevel() >= 13 &&
+    get("auto_powerLevelLastLevel", 0) >= myLevel() &&
     (!in_robot() ||
       (myLevel() > 12 &&
         myBasestat($stat`Mysticality`) >= 70 &&
