@@ -670,7 +670,7 @@ function L9_aBooPeakDo(): boolean {
     }
 
     autoMaximize$1(
-      `spooky res, cold res, 0.01hp ${lihcface} -"equip snow suit${parrot}"`,
+      `spooky res, cold res, 0.01hp ${lihcface} -"equip snow suit"${parrot}`,
       0,
       0,
       true,
