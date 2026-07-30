@@ -25,6 +25,7 @@ import {
   Location,
   Monster,
   myAdventures,
+  myFamiliar,
   myFullness,
   myHash,
   myInebriety,
@@ -43,6 +44,7 @@ import {
   $effect,
   $element,
   $elements,
+  $familiar,
   $item,
   $items,
   $location,
@@ -68,7 +70,11 @@ import {
   spleen_left,
   stomach_left,
 } from "../auto_consume";
-import { pathHasFamiliar } from "../auto_familiar";
+import {
+  canChangeToFamiliar,
+  pathAllowsChangingFamiliar,
+  pathHasFamiliar,
+} from "../auto_familiar";
 import { haveFreeRestAvailable } from "../auto_restore";
 import {
   auto_get_campground,
@@ -103,6 +109,7 @@ import {
   L11_needTombRatchet,
   L11_needWetStew,
 } from "../quests/level_11";
+import { auto_haveCCSC } from "./mr2023";
 import {
   auto_haveBatWings,
   auto_haveChestMimic,
@@ -248,6 +255,33 @@ function auto_heartstoneWordsToAimFor(): string[] {
     words.push("TOMB");
   }
 
+  if (
+    itemAmount($item`enchanted bean`) === 0 &&
+    internalQuestStatus("questL10Garbage") < 2 &&
+    !auto_haveBatWings()
+  ) {
+    words.push("PLOT");
+  }
+
+  if (
+    !auto_haveCCSC() &&
+    !availableAmount($item`eleven-foot pole`) &&
+    !canChangeToFamiliar($familiar`Gelatinous Cubeling`)
+  ) {
+    words.push("POLE");
+  }
+
+  if (!have($item`savings bond`) && auto_is_valid($item`savings bond`)) {
+    words.push("BOND");
+  }
+
+  if (
+    !have($item`the most dangerous bait`) &&
+    auto_is_valid($item`the most dangerous bait`)
+  ) {
+    words.push("MOST");
+  }
+
   // Go for +fam if we can
   if (pathHasFamiliar() && !in_avantGuard()) {
     words.push(
@@ -260,18 +294,18 @@ function auto_heartstoneWordsToAimFor(): string[] {
       "LOVE",
       "WITH",
       "WITH",
-      "TEAR",
-      "TIES",
       "JIVE",
       "GLOW",
       "BLUE",
       "FOOT",
+      "BLUE",
+      "FLAG",
     );
-  }
-  // Some +item
-  words.push("BETA", "FIVE", "SOUL", "WIDE", "GAME", "FAST", "RAVE");
 
-  // BEAN?
+    if (pathAllowsChangingFamiliar() && myFamiliar().experience < 350) {
+      words.push("SLOW");
+    }
+  }
   return words;
 }
 
