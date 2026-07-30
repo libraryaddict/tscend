@@ -12,6 +12,8 @@ export type QuestTask = Task<never, void> & {
   // task's `do` may end up visiting. `noob cave` is not included.
   // Should not include any locations in which we don't actually plan to do anything but 'finish' out things. Eg, no fights.
   locations?: Location | Location[] | (() => Location[]);
+  // The required adventures for this task, will automatically consume enough for this task to become available. Should return 0 if this task isn't ready
+  reqAdventures?: () => number;
 };
 
 export class AutoscendEngine extends Engine<never, QuestTask> {

@@ -2059,6 +2059,10 @@ export const L11_unlockHiddenCityTask: QuestTask = registerQuestTask({
     myAdventures() - auto_advToReserve() > 3,
   do: L11_unlockHiddenCityDo,
   locations: $location`The Hidden Temple`,
+  reqAdventures: () =>
+    hiddenTempleUnlocked() && internalQuestStatus("questL11Worship") >= 0
+      ? 4
+      : 0,
 });
 
 export function L11_unlockHiddenCity(): boolean {
@@ -4454,6 +4458,11 @@ export const L11_defeatEdTask: QuestTask = registerQuestTask({
     myAdventures() - auto_advToReserve() > 7,
   do: L11_defeatEdDo,
   locations: $location`The Lower Chambers`,
+  reqAdventures: () =>
+    internalQuestStatus("questL11Pyramid") === 3 &&
+    toBoolean(getProperty("pyramidBombUsed"))
+      ? 8
+      : 0,
 });
 
 export function L11_defeatEd(): boolean {

@@ -148,6 +148,7 @@ import {
   autoCleanse,
   consumeStuff,
   consumptionProgress,
+  getMinimumAdventuresToMaintain,
 } from "./autoscend/auto_consume";
 import {
   addToMaximize,
@@ -827,7 +828,7 @@ export function auto_advToReserve(): number {
 
 export function auto_unreservedAdvRemaining(): boolean {
   // should the main loop continue to run or not, based on how many adv we wish to reserve.
-  if (myAdventures() > auto_advToReserve()) {
+  if (myAdventures() > getMinimumAdventuresToMaintain()) {
     return true;
   }
   return false;

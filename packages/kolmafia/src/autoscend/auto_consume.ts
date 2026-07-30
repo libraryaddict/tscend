@@ -140,7 +140,12 @@ import {
   shrugAT,
 } from "./auto_util";
 import { ConsumeAction } from "./autoscend_record";
-import { QuestTask, registerQuestTask, runQuestTask } from "./engine/engine";
+import {
+  getIncompleteQuestTasks,
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+} from "./engine/engine";
 import {
   canDrinkSpeakeasyDrink,
   drinkSpeakeasyDrink,
@@ -2502,7 +2507,8 @@ export function auto_chewAdventures(): boolean {
   if (
     liver_check ||
     myFullness() < fullnessLimit() ||
-    (myAdventures() > max(10, 1 + auto_advToReserve()) && !almostRollover())
+    (myAdventures() > max(10, getMinimumAdventuresToMaintain()) &&
+      !almostRollover())
   ) {
     return false; //1.875 A/S is bad. only chew if 1 adv remains
   }
@@ -2706,6 +2712,17 @@ export function prepare_food_xp_multi(): boolean {
   return true;
 }
 
+export function getMinimumAdventuresToMaintain(): number {
+  // Find all tasks that need more advs, to figure out the base advs to get us to
+  return (
+    getIncompleteQuestTasks()
+      .map((t) => (t.reqAdventures ? t.reqAdventures() : 0))
+      .reduce((l, r) => Math.max(l, r), 0) +
+    Math.max(0, auto_advToReserve()) +
+    1
+  );
+}
+
 export function consumeStuff(): void {
   if (auto_haveKramcoSausageOMatic()) {
     auto_sausageWanted();
@@ -2732,7 +2749,7 @@ export function consumeStuff(): void {
   if (in_amw()) {
     if (
       (almostRollover() && needToConsumeForEmergencyRollover()) ||
-      myAdventures() < max(10, 1 + auto_advToReserve())
+      myAdventures() < max(10, getMinimumAdventuresToMaintain())
     ) {
       amw_buyAdv();
     }
@@ -2747,7 +2764,7 @@ export function consumeStuff(): void {
     isActuallyEd() && myLevel() < 11 && spleen_left() > 0; // Ed should fill spleen first
 
   if (
-    myAdventures() < max(10, 1 + auto_advToReserve()) &&
+    myAdventures() < max(10, getMinimumAdventuresToMaintain()) &&
     fullness_left() > 0 &&
     is_boris()
   ) {
@@ -2778,7 +2795,8 @@ export function consumeStuff(): void {
   }
   // If adventures at our reserve amount, or it's almost Rollover, we need to consume
   if (
-    (myAdventures() < max(10, 1 + auto_advToReserve()) && !edSpleenCheck) ||
+    (myAdventures() < max(10, getMinimumAdventuresToMaintain()) &&
+      !edSpleenCheck) ||
     (almostRollover() && needToConsumeForEmergencyRollover())
   ) {
     // always unequip stooper as only useful for roll over
