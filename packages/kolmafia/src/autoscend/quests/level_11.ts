@@ -3720,7 +3720,7 @@ function L11_shenCopperheadDo(): boolean {
 export const L11_shenCopperheadTask: QuestTask = registerQuestTask({
   name: "L11_shenCopperhead",
   completed: () => internalQuestStatus("questL11Shen") > 7,
-  ready: () => internalQuestStatus("questL11Shen") >= 0 && is_werewolf(),
+  ready: () => internalQuestStatus("questL11Shen") >= 0 && !is_professor(),
   do: L11_shenCopperheadDo,
 });
 

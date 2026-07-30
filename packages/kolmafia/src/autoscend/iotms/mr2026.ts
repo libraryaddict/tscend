@@ -74,6 +74,8 @@ import {
   auto_get_campground,
   auto_have_skill,
   auto_is_valid,
+  auto_is_valid$2,
+  auto_location_monsters,
   auto_log_error,
   auto_log_warning,
   auto_runChoice,
@@ -88,6 +90,7 @@ import {
 } from "../auto_util";
 import { monster_to_location, zone_delay } from "../auto_zone";
 import { ConsumeAction } from "../autoscend_record";
+import { getIncompleteQuestTasks } from "../engine/engine";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_plumber } from "../paths/path_of_the_plumber";
@@ -272,31 +275,112 @@ function auto_heartstoneWordsToAimFor(): string[] {
   return words;
 }
 
-export function auto_heartstoneShouldStealHeart(): boolean {
+/**
+ *
+ * @param location non-null if we're speculating for equipping heartstone
+ * @returns true if we should use the skill, or wear the heartstone for a potential stolen heart
+ */
+export function auto_heartstoneShouldStealHeart(location?: Location): boolean {
+  if (location === $location.none || location === $location`Noob Cave`) {
+    return false;
+  }
+
+  const inCombat: boolean = !location;
+
   if (
     !auto_haveHeartstone() ||
     !haveEquipped(auto_getItemToEquipHeartstone()) ||
-    !auto_have_skill($skill`Steal Monster's Heart`)
+    !auto_is_valid$2($skill`Steal Monster's Heart`) ||
+    (inCombat && !auto_have_skill($skill`Steal Monster's Heart`)) || // If in combat and don't have skill
+    get("_lastCombatActions")
+      .split(";")
+      .includes(`sk${$skill`Steal Monster's Heart`.id}`) // If already used this combat
   ) {
     return false;
   }
 
-  const letter = heartstoneMiddleLetter().toUpperCase();
+  const letter = inCombat ? heartstoneMiddleLetter().toUpperCase() : "";
 
-  if (letter === "") return false;
+  // If we can't steal a heart
+  if (inCombat && letter === "") return false;
 
-  const current = get("heartstoneLetters").toUpperCase();
+  let currentWord = get("heartstoneLetters").toUpperCase();
+  // Ensure its always a word that's less than 4 chars
+  currentWord = currentWord.slice(Math.floor(currentWord.length / 4) * 4);
+  currentWord += letter;
+  const allWords = auto_heartstoneWordsToAimFor();
 
-  let getRidOfCurrentWord = false;
+  // If this will sastify a word
+  if (currentWord.length >= 4 && allWords.includes(currentWord)) {
+    return true;
+  }
 
-  for (const word of auto_heartstoneWordsToAimFor()) {
-    if (!word.startsWith(current)) continue;
+  // Get every location of every task we have not finished
+  // This is a bit flawed, as it doesn't yet know what words are going to be more efficient to aim for, could be eyeing a d5 task on d1 for example
+  const allLocations: Location[] = getIncompleteQuestTasks()
+    .map((t) => t.locations)
+    .filter(Boolean)
+    .flatMap((t) =>
+      typeof t === "function" ? t() : !Array.isArray(t) ? [t] : t,
+    )
+    .filter((l) => l && l !== Location.none && l !== $location`Noob Cave`);
 
-    if (word.startsWith(current + letter)) return true;
-    // If we're still on track for our current word, don't discard it
+  if (location && !allLocations.includes(location)) {
+    allLocations.push(location);
+  }
+
+  const locationLetters: Map<string, number> = new Map();
+  const letterChances: Map<string, number> = new Map();
+
+  // Compile a map of chances for the letter to be sastified via a combat
+  for (const loc of allLocations) {
+    if (loc.combatPercent <= 0) continue;
+
+    for (const [monster, chance] of auto_location_monsters(loc)) {
+      if (chance <= 0 || monster.boss) continue;
+
+      const letter = heartstoneMiddleLetter(monster);
+
+      if (!letter) continue;
+
+      letterChances.set(letter, (letterChances.get(letter) ?? 0) + chance);
+
+      if (loc === location) {
+        locationLetters.set(letter, chance);
+      }
+    }
+  }
+
+  // Only if we have letters already and we're in combat
+  let getRidOfCurrentWord = inCombat && currentWord.length > 1;
+
+  for (const word of allWords) {
+    if (!word.startsWith(currentWord)) continue;
+
+    const remainingLetters = word.substring(currentWord.length).split("");
+
+    const chance = remainingLetters
+      .map((l) => letterChances.get(l) ?? 0)
+      .reduce((l, r) => Math.min(l, r), 0);
+
+    // If we have less than 5% chance to fulfil this word, we won't mark it as eligable
+    if (chance <= 5) continue;
+
+    // If we're speculating
+    if (!inCombat) {
+      // If the current location has nothing for us here
+      if ((locationLetters.get(remainingLetters[0]) ?? 0) <= 0) {
+        // Continue, try find another word
+        continue;
+      }
+
+      return true;
+    }
+
     getRidOfCurrentWord = false;
   }
 
+  // At this point, we're either not in combat, or we're in combat but the current monster isn't going to get anywhere good
   return getRidOfCurrentWord;
 }
 

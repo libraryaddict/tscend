@@ -237,6 +237,8 @@ import {
 import {
   auto_baseballDiamondMaximizerBonus,
   auto_getItemToEquipBaseballDiamond,
+  auto_getItemToEquipHeartstone,
+  auto_heartstoneShouldStealHeart,
 } from "./iotms/mr2026";
 import {
   ed_handleAdventureServant,
@@ -834,6 +836,10 @@ function auto_pre_adventure(): boolean {
       auto_getItemToEquipBaseballDiamond(),
       baseballDiamondBonus,
     );
+  }
+
+  if (place && auto_heartstoneShouldStealHeart(place)) {
+    addBonusToMaximize(auto_getItemToEquipHeartstone(), 30);
   }
 
   if (in_koe() && possessEquipment($item`low-pressure oxygen tank`)) {
