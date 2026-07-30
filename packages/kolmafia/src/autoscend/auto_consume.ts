@@ -60,6 +60,7 @@ import {
   replaceString,
   retrieveItem,
   sellCost,
+  sessionStorage,
   setProperty,
   spleenLimit,
   splitString,
@@ -1189,6 +1190,26 @@ export function getCachedConsumables(
   return actions;
 }
 
+function refreshInvIfNoProgress(_type: string) {
+  type AutoscendConsidered = {
+    turn: number;
+    advs: number;
+  };
+
+  const consideredKey = `autoscend_consumeablesConsidered_${_type}`;
+  const considered: AutoscendConsidered = JSON.parse(
+    sessionStorage.getItem(consideredKey) ?? "{}",
+  );
+
+  if (considered.turn === myTurncount() && considered.advs === myAdventures()) {
+    cliExecute("refresh inv");
+  }
+
+  considered.turn = myTurncount();
+  considered.advs = myAdventures();
+  sessionStorage.setItem(consideredKey, JSON.stringify(considered));
+}
+
 function loadConsumables(
   _type: string,
   actions: Map<number, ConsumeAction>,
@@ -1201,7 +1222,7 @@ function loadConsumables(
     );
   }
 
-  cliExecute("refresh inv");
+  refreshInvIfNoProgress(_type);
 
   for (const it of $items`unremarkable duffel bag, van key, Knob Goblin lunchbox, gold Boozehounds Anonymous token, booze bindle`) {
     if (itemAmount(it) > 0 && pullsRemaining() !== -1) {
