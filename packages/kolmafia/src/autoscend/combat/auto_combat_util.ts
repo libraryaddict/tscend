@@ -126,6 +126,7 @@ import {
   auto_McLargeHugeSniffsLeft,
   auto_throwLightningRemaining,
 } from "../iotms/mr2025";
+import { auto_getItemToEquipHeartstone } from "../iotms/mr2026";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { pete_peelOutRemaining } from "../paths/avatar_of_sneaky_pete";
@@ -1013,10 +1014,10 @@ export function banisherCombatAction$1(
     get("heartstoneBanishUnlocked") &&
     (inCombat
       ? auto_have_skill($skill`Heartstone: %banish`)
-      : possessEquipment($item`Heartstone`)) &&
+      : possessEquipment(auto_getItemToEquipHeartstone())) &&
     auto_is_valid$2($skill`Heartstone: %banish`) &&
     get("_heartstoneBanishUsed") < 5 &&
-    haveEquipped($item`Heartstone`) &&
+    haveEquipped(auto_getItemToEquipHeartstone()) &&
     !used.has("heartstone")
   ) {
     return $skill`Heartstone: %banish`;

@@ -313,6 +313,7 @@ import {
 } from "./iotms/mr2024";
 import {
   auto_equipAprilShieldBuff,
+  auto_getItemToEquipBCZ,
   auto_haveAprilShowerShield,
   auto_haveMcHugeLargeSkis,
   auto_McLargeHugeForcesLeft,
@@ -1785,11 +1786,18 @@ export function banishSources(): number {
     count_1 += 1;
   }
   //equipment
-  for (const eq of $items`spring shoes, latte lovers member's mug, stinky cheese eye, V for Vivala mask, mafia middle finger ring, Pantsgiving, Heartstone, Lil' Doctor™ bag, familiar scrapbook, Fourth of May Cosplay Saber, Kremlin's Greatest Briefcase, cursed monkey's paw, Monodent of the Sea`) {
+  for (const eq of $items`spring shoes, latte lovers member's mug, stinky cheese eye, V for Vivala mask, mafia middle finger ring, Pantsgiving, Lil' Doctor™ bag, familiar scrapbook, Fourth of May Cosplay Saber, Kremlin's Greatest Briefcase, cursed monkey's paw, Monodent of the Sea`) {
     if (possessEquipment(eq) && auto_can_equip(eq)) {
       count_1 += 1;
       continue;
     }
+  }
+  // Heartstone may be socketed into the Eternity Codpiece rather than worn directly
+  if (
+    possessEquipment(auto_getItemToEquipHeartstone()) &&
+    auto_can_equip(auto_getItemToEquipHeartstone())
+  ) {
+    count_1 += 1;
   }
   //combat items/IOTMs/IOTM-Derived items that aren't equipment
   for (const it of $items`cosmic bowling ball, stuffed yam stinkbomb, handful of split pea soup, human musk, Louder Than Bomb, tennis ball, deathchucks, divine champagne popper, anchor bomb, hot jelly, scoop of pre-workout powder, pheromone cocktail`) {
@@ -1897,11 +1905,18 @@ export function freeKillSources(): number {
     count_1 += 1;
   }
   //equipment
-  for (const eq of $items`blood cubic zirconia, legendary seal-clubbing club, Everfull Dart Holster, Lil' Doctor™ bag, The Jokester's gun`) {
+  for (const eq of $items`legendary seal-clubbing club, Everfull Dart Holster, Lil' Doctor™ bag, The Jokester's gun`) {
     if (possessEquipment(eq) && auto_can_equip(eq)) {
       count_1 += 1;
       continue;
     }
+  }
+  // blood cubic zirconia may be socketed into the Eternity Codpiece rather than worn directly
+  if (
+    possessEquipment(auto_getItemToEquipBCZ()) &&
+    auto_can_equip(auto_getItemToEquipBCZ())
+  ) {
+    count_1 += 1;
   }
   //campground equipment
   for (const it of $items`cold medicine cabinet`) {
