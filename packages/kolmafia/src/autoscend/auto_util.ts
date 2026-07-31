@@ -6952,6 +6952,12 @@ export function auto_adv1(
 export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
   if (currentRound() === 0 && inMultiFight()) {
     text = visitUrl("fight.php");
+    if (currentRound() === 0 && inMultiFight()) {
+      // fight.php alone doesn't always resume a chained fight (e.g. between
+      // the Naughty Sorceress's forms) - visiting main.php forces mafia to
+      // reparse our actual page and correctly clear/advance the multi-fight state.
+      text = visitUrl("main.php");
+    }
   }
   while (currentRound() > 0) {
     let action: CombatMacroReturns = combatMacro(
