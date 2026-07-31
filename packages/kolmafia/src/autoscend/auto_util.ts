@@ -173,6 +173,7 @@ import {
   $stat,
   $stats,
   $thrall,
+  get,
   Macro,
   set,
 } from "libram";
@@ -6901,13 +6902,23 @@ export function auto_adv1(
   if (!canAdventure(location)) return false;
   if (!prepareForAdventure(location)) return false; // unlocks the zone (sonar, Batcave, etc.)
 
-  let text = visitUrl(toUrl(location));
+  let url: string = toUrl(location);
+  if (
+    location === $location`The Lower Chambers` &&
+    get("pyramidBombUsed") &&
+    !url.endsWith("a")
+  ) {
+    url += "a";
+  }
+
+  let text = visitUrl(url);
   const createState = () => `${myAdventures()}|${currentRound()}`;
   let tries: number = 0;
   let lastState = createState();
 
   while (
     currentRound() > 0 ||
+    inMultiFight() ||
     handlingChoice() ||
     choiceFollowsFight() ||
     fightFollowsChoice()
@@ -6939,6 +6950,9 @@ export function auto_adv1(
 }
 
 export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
+  if (currentRound() === 0 && inMultiFight()) {
+    text = visitUrl("fight.php");
+  }
   while (currentRound() > 0) {
     let action: CombatMacroReturns = combatMacro(
       currentRound(),

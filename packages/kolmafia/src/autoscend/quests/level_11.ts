@@ -2061,7 +2061,7 @@ export const L11_unlockHiddenCityTask: QuestTask = registerQuestTask({
   locations: $location`The Hidden Temple`,
   reqAdventures: () =>
     hiddenTempleUnlocked() && internalQuestStatus("questL11Worship") >= 0
-      ? 4
+      ? 3
       : 0,
 });
 
@@ -4461,7 +4461,7 @@ export const L11_defeatEdTask: QuestTask = registerQuestTask({
   reqAdventures: () =>
     internalQuestStatus("questL11Pyramid") === 3 &&
     toBoolean(getProperty("pyramidBombUsed"))
-      ? 8
+      ? 7
       : 0,
 });
 

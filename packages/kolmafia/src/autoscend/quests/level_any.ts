@@ -721,6 +721,20 @@ export function estimateDailyDungeonAdvNeeded(): number {
   return adv_needed;
 }
 
+function LX_wantSummonFantasyBandit(): boolean {
+  return (
+    towerKeyCount(false) < 3 &&
+    (internalQuestStatus("questL13Final") === 5 || auto_turbo()) &&
+    !acquiredFantasyRealmToken() &&
+    ((auto_haveBackupCamera() &&
+      auto_backupUsesLeft() >= 4 - fantasyBanditsFought()) ||
+      auto_canHabitat() ||
+      (auto_canTracesBandit() &&
+        auto_tracesUsesLeft() >= 4 - fantasyBanditsFought())) &&
+    canSummonMonster($monster`fantasy bandit`)
+  );
+}
+
 function LX_fatLootTokenDo(): boolean {
   if (!canChangeToFamiliar($familiar`Gelatinous Cubeling`) && inHardcore()) {
     //if unable to get the daily dungeon tools then prefer to do fantasy realm over daily dungeon
@@ -741,17 +755,7 @@ function LX_fatLootTokenDo(): boolean {
     towerKeyCount(false) < 3 &&
     (internalQuestStatus("questL13Final") === 5 || auto_turbo())
   ) {
-    // at NS tower door and still need hero keys or going for turbo
-    // summon and copy fantasy realm bandit. Allows for getting fantasy realm token without having FR available
-    if (
-      !acquiredFantasyRealmToken() &&
-      ((auto_haveBackupCamera() &&
-        auto_backupUsesLeft() >= 4 - fantasyBanditsFought()) ||
-        auto_canHabitat() ||
-        (auto_canTracesBandit() &&
-          auto_tracesUsesLeft() >= 4 - fantasyBanditsFought())) &&
-      canSummonMonster($monster`fantasy bandit`)
-    ) {
+    if (LX_wantSummonFantasyBandit()) {
       return summonMonster($monster`fantasy bandit`);
     }
     // todo, add pref for 8bit token already being bought once mafia supports it
@@ -775,6 +779,7 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
       !toBoolean(getProperty("auto_forceFatLootToken"))
     ),
   do: LX_fatLootTokenDo,
+  reqAdventures: () => (LX_wantSummonFantasyBandit() ? 5 : 0),
 });
 
 export function LX_fatLootToken(): boolean {
