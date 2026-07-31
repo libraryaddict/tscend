@@ -18,6 +18,7 @@ import {
   getDwelling,
   getLocationMonsters,
   getProperty,
+  handlingChoice,
   haveCampground,
   haveEffect,
   haveEquipped,
@@ -27,6 +28,7 @@ import {
   Item,
   itemAmount,
   itemFact,
+  lastChoice,
   Location,
   max,
   monkeyPaw,
@@ -35,6 +37,7 @@ import {
   myDaycount,
   myFamiliar,
   myFullness,
+  myHash,
   myLevel,
   myLocation,
   myMaxhp,
@@ -73,6 +76,7 @@ import {
 } from "libram";
 
 import { autoAdv, autoAdvBypass } from "../auto_adventure";
+import { main as handleChoiceAdv } from "../auto_choice_adv";
 import { fullness_left, inebriety_left } from "../auto_consume";
 import {
   addBonusToMaximize,
@@ -172,7 +176,15 @@ export function rockGardenEnd(): void {
     itemAmount($item`strange stalagmite`) > 0 &&
     !toBoolean(getProperty("_strangeStalagmiteUsed"))
   ) {
-    use(1, $item`strange stalagmite`);
+    // use() aborts the whole script with "Unsupported choice adventure #1491"
+    // since this redirects straight into choice.php; visitUrl() bypasses that and
+    // lets the real choice dispatcher handle it instead.
+    const stalagmiteText = visitUrl(
+      `inv_use.php?pwd=${myHash()}&which=3&whichitem=${$item`strange stalagmite`.id}`,
+    );
+    if (handlingChoice()) {
+      handleChoiceAdv(lastChoice(), stalagmiteText);
+    }
   }
   return;
 }
@@ -236,8 +248,15 @@ export function auto_SITCourse(): void {
       myLevel() >= 8 &&
       !haveSkill($skill`Insectologist`))
   ) {
-    use(1, $item`S.I.T. Course Completion Certificate`);
-    //auto_run_choice(1494);
+    // use() aborts the whole script with "Unsupported choice adventure #1494"
+    // since this redirects straight into choice.php; visitUrl() bypasses that and
+    // lets the real choice dispatcher handle it instead.
+    const sitCourseText = visitUrl(
+      `inv_use.php?pwd=${myHash()}&which=3&whichitem=${Item.get("S.I.T. Course Completion Certificate").id}`,
+    );
+    if (handlingChoice()) {
+      handleChoiceAdv(lastChoice(), sitCourseText);
+    }
     return;
   }
 }
@@ -329,8 +348,15 @@ function auto_getPhoneQuest(): boolean {
     return true;
   }
   // get artifact quest
-  // auto_choice_adv handles actually picking it
-  use($item`closed-circuit pay phone`);
+  // use() aborts the whole script with "Unsupported choice adventure #1497"
+  // since this redirects straight into choice.php; visitUrl() bypasses that and
+  // lets the real choice dispatcher handle it instead.
+  const phoneText = visitUrl(
+    `inv_use.php?pwd=${myHash()}&which=3&whichitem=${$item`closed-circuit pay phone`.id}`,
+  );
+  if (handlingChoice()) {
+    handleChoiceAdv(lastChoice(), phoneText);
+  }
 
   return getProperty("questRufus") !== "unstarted";
 }
@@ -392,7 +418,15 @@ export function auto_doPhoneQuest(): boolean {
   }
   // finish quest
   if (getProperty("questRufus") === "step1") {
-    use($item`closed-circuit pay phone`);
+    // use() aborts the whole script with "Unsupported choice adventure #1500"
+    // since this redirects straight into choice.php; visitUrl() bypasses that and
+    // lets the real choice dispatcher handle it instead.
+    const phoneText = visitUrl(
+      `inv_use.php?pwd=${myHash()}&which=3&whichitem=${$item`closed-circuit pay phone`.id}`,
+    );
+    if (handlingChoice()) {
+      handleChoiceAdv(lastChoice(), phoneText);
+    }
     if (getProperty("questRufus") !== "unstarted") {
       abort("Failed to finish Rufus quest from cursed phone.");
     }
@@ -1016,22 +1050,20 @@ export function auto_habitatTarget(target: Monster): boolean {
     return false;
   }
   {
-    // only worth it if we need all 5.
-    // only worth it if we need 30 or more evilness reduced.
-    // only worth it if we need 18 or more evilness reduced.
-    // avant guard makes free fights cost a turn. Use DOL in place of tentacle
-    // only worth it if we need 3+ barrels
-
     switch (target) {
       case $monster`fantasy bandit`:
+        // only worth it if we need all 5.
         return fantasyBanditsFought() === 0;
       case $monster`modern zmobie`:
+        // only worth it if we need 30 or more evilness reduced.
         return (
           toInt(getProperty("cyrptAlcoveEvilness")) -
             5 * (5 + cyrptEvilBonus()) >
           13
         );
       case $monster`dirty old lihc`:
+        // only worth it if we need 18 or more evilness reduced.
+        // avant guard makes free fights cost a turn. Use DOL in place of tentacle
         return (
           in_avantGuard() &&
           toInt(getProperty("cyrptNicheEvilness")) -
@@ -1039,6 +1071,7 @@ export function auto_habitatTarget(target: Monster): boolean {
             13
         );
       case $monster`lobsterfrogman`: {
+        // only worth it if we need 3+ barrels
         const sonofa_complete: boolean =
           getProperty("sidequestLighthouseCompleted") === "hippy" ||
           getProperty("sidequestLighthouseCompleted") === "fratboy";

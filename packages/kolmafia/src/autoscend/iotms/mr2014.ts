@@ -9,16 +9,19 @@ import {
   getCampground,
   getCounters,
   getProperty,
+  handlingChoice,
   haveEffect,
   haveFamiliar,
   inHardcore,
   isUnrestricted,
   itemAmount,
+  lastChoice,
   Monster,
   myAdventures,
   myBjornedFamiliar,
   myDaycount,
   myFamiliar,
+  myHash,
   myLevel,
   myPath,
   Phylum,
@@ -29,7 +32,6 @@ import {
   toBoolean,
   toInt,
   toMonster,
-  use,
   userConfirm,
   visitUrl,
 } from "kolmafia";
@@ -47,6 +49,7 @@ import {
 
 import { canPull, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
+import { main as handleChoiceAdv } from "../auto_choice_adv";
 import { fullness_left, inebriety_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
 import {
@@ -451,7 +454,15 @@ export function LX_ornateDowsingRod(
   }
 
   auto_log_info("Acquiring a Dowsing Rod!", "blue");
-  use(1, $item`grimstone mask`);
+  // use() aborts the whole script with "Unsupported choice adventure #829"
+  // since this redirects straight into choice.php; visitUrl() bypasses that and
+  // lets the real choice dispatcher handle it instead.
+  const maskText = visitUrl(
+    `inv_use.php?pwd=${myHash()}&which=3&whichitem=${$item`grimstone mask`.id}`,
+  );
+  if (handlingChoice()) {
+    handleChoiceAdv(lastChoice(), maskText);
+  }
 
   while (itemAmount($item`odd silver coin`) < 1) {
     autoAdv($location`The Prince's Balcony`);
@@ -497,7 +508,15 @@ registerQuestTask({
 
 function fancyOilPaintingDo(): boolean {
   auto_log_info("Acquiring a Fancy Oil Painting!", "blue");
-  use(1, $item`grimstone mask`);
+  // use() aborts the whole script with "Unsupported choice adventure #829"
+  // since this redirects straight into choice.php; visitUrl() bypasses that and
+  // lets the real choice dispatcher handle it instead.
+  const maskText = visitUrl(
+    `inv_use.php?pwd=${myHash()}&which=3&whichitem=${$item`grimstone mask`.id}`,
+  );
+  if (handlingChoice()) {
+    handleChoiceAdv(lastChoice(), maskText);
+  }
 
   while (itemAmount($item`odd silver coin`) < 1) {
     autoAdv($location`The Prince's Balcony`);

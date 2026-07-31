@@ -26,6 +26,7 @@ import {
   getProperty,
   gnomadsAvailable,
   guildStoreAvailable,
+  handlingChoice,
   haveEffect,
   haveSkill,
   historicalPrice,
@@ -35,6 +36,7 @@ import {
   inHardcore,
   Item,
   itemAmount,
+  lastChoice,
   mallPrice,
   max,
   min,
@@ -95,6 +97,7 @@ import {
 import { auto_advToReserve } from "../autoscend";
 import { auto_buyUpTo, canPull, pullXWhenHaveY } from "./auto_acquire";
 import { buffMaintain$2 } from "./auto_buff";
+import { main as handleChoiceAdv } from "./auto_choice_adv";
 import {
   equipStatgainIncreasers,
   equipStatgainIncreasersFor,
@@ -698,6 +701,15 @@ export function autoEat(
     }
     if (action?.data?.consume) {
       retval = action.data.consume();
+    } else if (legendaryNoodleDishes().has(toEat)) {
+      // Consume it manually to aovid hitting a choice adventure
+      const eatText = visitUrl(
+        `inv_eat.php?whichitem=${toInt(toEat)}&ajax=1&quantity=1&pwd`,
+      );
+      if (handlingChoice()) {
+        handleChoiceAdv(lastChoice(), eatText);
+      }
+      retval = true;
     } else if (silent) {
       retval = eatsilent(1, toEat);
     } else {

@@ -15,16 +15,19 @@ import {
   floor,
   friarsAvailable,
   getProperty,
+  handlingChoice,
   haveEffect,
   haveSkill,
   inHardcore,
   Item,
   itemAmount,
   itemDropModifier,
+  lastChoice,
   Location,
   min,
   monsterLevelAdjustment,
   myBjornedFamiliar,
+  myHash,
   myHp,
   myLevel,
   myMaxhp,
@@ -61,6 +64,7 @@ import { resetState } from "../../autoscend";
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv, autoLuckyAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
+import { main as handleChoiceAdv } from "../auto_choice_adv";
 import {
   addToMaximize,
   autoEquip,
@@ -1128,7 +1132,16 @@ function L9_twinPeakDo(): boolean {
   const starting_trimmers: number = itemAmount($item`rusty hedge trimmers`);
   if (starting_trimmers > 0) {
     equipMaximizedGear();
-    use(1, $item`rusty hedge trimmers`);
+    // use() aborts the whole script with "Manual control requested for choice #606"
+    // (choiceAdventure606 is set to "0" above, which KoLmafia treats as its own abort
+    // sentinel, not a safe no-op) since this redirects straight into choice.php;
+    // visitUrl() bypasses that and lets the real choice dispatcher handle it instead.
+    const trimmerText = visitUrl(
+      `inv_use.php?pwd=${myHash()}&which=3&whichitem=${$item`rusty hedge trimmers`.id}`,
+    );
+    if (handlingChoice()) {
+      handleChoiceAdv(lastChoice(), trimmerText);
+    }
     cliExecute("refresh inv");
     if (itemAmount($item`rusty hedge trimmers`) === starting_trimmers) {
       abort("Tried using a rusty hedge trimmer but that didn't seem to work");
