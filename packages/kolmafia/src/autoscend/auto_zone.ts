@@ -139,14 +139,9 @@ export function zone_needItem(loc: Location): generic_t {
   const retval: generic_t = new generic_t();
   let value: number = 0.0;
   {
-    // bonus points cap at +400% item. Equivalent to a 20% item drop
-    //already in the other war outfit means only there to start the war
-    //already in the other war outfit means only there to start the war
-    //Only if we need stone wool manually for some reason.
-    //Or via the semi-rare!		(100/50/20 for SR, 25 Sheep)
-
     switch (loc) {
       case $location`Hero's Field`:
+        // bonus points cap at +400% item. Equivalent to a 20% item drop
         value = 20.0;
         break;
       case $location`The Hole in the Sky`:
@@ -163,6 +158,7 @@ export function zone_needItem(loc: Location): generic_t {
           !possessOutfit("Frat Warrior Fatigues") &&
           !isWearingOutfit("War Hippy Fatigues")
         ) {
+          //already in the other war outfit means only there to start the war
           value = 5.0;
         }
         break;
@@ -171,6 +167,7 @@ export function zone_needItem(loc: Location): generic_t {
           !possessOutfit("War Hippy Fatigues") &&
           !isWearingOutfit("Frat Warrior Fatigues")
         ) {
+          //already in the other war outfit means only there to start the war
           value = 5.0;
         }
         break;
@@ -220,6 +217,8 @@ export function zone_needItem(loc: Location): generic_t {
         }
         break;
       case $location`The Hidden Temple`:
+        //Only if we need stone wool manually for some reason.
+        //Or via the semi-rare!		(100/50/20 for SR, 25 Sheep)
         if (haveEffect($effect`Stone-Faced`) === 0) {
           value = 20.0;
         }
@@ -454,8 +453,8 @@ export function zone_needItem(loc: Location): generic_t {
         break;
       case $location`The Secret Government Laboratory`:
         break;
+      // Bugbear Invasion Locations
       case $location`Waste Processing`:
-        // Bugbear Invasion Locations
         if (!possessEquipment($item`bugbear communicator badge`)) {
           retval._float = 20.0;
         }
@@ -466,9 +465,9 @@ export function zone_needItem(loc: Location): generic_t {
       case $location`Engineering`:
         retval._float = 50.0;
         break;
+      // End Bugbear Invasion Locations
+      // A Shrunken Adventurer Am I (Small) Locations
       case $location`Fight in the Dirt`:
-        // End Bugbear Invasion Locations
-        // A Shrunken Adventurer Am I (Small) Locations
         value = 50.0;
         break;
       case $location`Fight in the Tall Grass`:
@@ -477,15 +476,15 @@ export function zone_needItem(loc: Location): generic_t {
       case $location`Fight in the Very Tall Grass`:
         value = 50.0;
         break;
+      // End A Shrunken Adventurer Am I (Small) Locations
+      // Shadow Rifts via cursed payphone or AoSOL path
       case $location`Shadow Rift (The Ancient Buried Pyramid)`:
       case $location`Shadow Rift (The Hidden City)`:
       case $location`Shadow Rift (The Misspelled Cemetary)`:
-        // End A Shrunken Adventurer Am I (Small) Locations
-        // Shadow Rifts via cursed payphone or AoSOL path
         value = 10.0;
         break;
+      // End Shadow Rifts
       default:
-        // End Shadow Rifts
         retval._error = true;
         break;
     }
@@ -885,8 +884,8 @@ export function zone_combatMod(loc: Location): generic_t {
     case $location`The Ice Hotel`:
       value = -85;
       break;
+    // Bugbear Invasion Locations
     case $location`Sonar`:
-      // Bugbear Invasion Locations
       value = -70;
       break;
     case $location`Morgue`:
@@ -894,8 +893,8 @@ export function zone_combatMod(loc: Location): generic_t {
         value = -70;
       }
       break;
+    // End Bugbear Invasion Locations
     default:
-      // End Bugbear Invasion Locations
       retval._error = true;
       break;
   }
@@ -1488,13 +1487,9 @@ export function zone_available(loc: Location): boolean {
       if (
         toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
         haveOutfit("Frat Boy Ensemble") &&
-        internalQuestStatus("questL12War") !== 0 &&
-        internalQuestStatus(
-          //mafia always calls location Wartime with L12 quest
-          "questL12War",
-        ) !== 1
+        internalQuestStatus("questL12War") !== 0 && //mafia always calls location Wartime with L12 quest
+        internalQuestStatus("questL12War") !== 1 //mafia always calls location Wartime with L12 quest
       ) {
-        //mafia always calls location Wartime with L12 quest
         retval = true;
       }
       break;
@@ -1502,13 +1497,9 @@ export function zone_available(loc: Location): boolean {
       if (
         toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
         haveOutfit("Filthy Hippy Disguise") &&
-        internalQuestStatus("questL12War") !== 0 &&
-        internalQuestStatus(
-          //mafia always calls location Wartime with L12 quest
-          "questL12War",
-        ) !== 1
+        internalQuestStatus("questL12War") !== 0 && //mafia always calls location Wartime with L12 quest
+        internalQuestStatus("questL12War") !== 1 //mafia always calls location Wartime with L12 quest
       ) {
-        //mafia always calls location Wartime with L12 quest
         retval = true;
       }
       break;
@@ -1834,8 +1825,8 @@ export function zone_available(loc: Location): boolean {
         retval = gnomadsAvailable();
       }
       break;
+    // We go here to get the Logging Hatchet
     case $location`Camp Logging Camp`:
-      // We go here to get the Logging Hatchet
       if (!in_koe() && canadiaAvailable()) {
         retval = true;
       }
@@ -1920,36 +1911,30 @@ export function is_ghost_in_zone(loc: Location): boolean {
     return false; //we are grabbing a Lucky! so we will not encounter a ghost unless it is a wandering monster
   }
   {
-    //forced noncombat of lighting the peak
-    //internal tracking by autoscend
-    //our next visit to the peak will be The Horror NC adventure
-    //special case for [ghost of Elizabeth Spookyraven] which only appears in [the haunted gallery] at the culmination of lights out quest
-    //TODO implement doing the quest and then return true when the quest is at the right stage for her to appear
-    //special case for King Boo
-    //if liana cleared then we can encounter ghost
-
-    //if tracker is 6 we used just the right amount of bowling bowls
-    //massive ziggurat
-    //[Protector_S._P._E._C._T._R._E.] has 0 phys res and 100% all element res
-    //for all other zones
-
     switch (loc) {
       case $location`A-Boo Peak`:
         if (
           toInt(getProperty("booPeakProgress")) === 0 &&
           !toBoolean(getProperty("booPeakLit"))
         ) {
+          //forced noncombat of lighting the peak
           return false;
         }
         if (toInt(getProperty("auto_aboopending")) !== 0) {
+          //internal tracking by autoscend
+          //our next visit to the peak will be The Horror NC adventure
           return false;
         }
         return true;
       case $location`The Haunted Gallery`:
+        //special case for [ghost of Elizabeth Spookyraven] which only appears in [the haunted gallery] at the culmination of lights out quest
+        //TODO implement doing the quest and then return true when the quest is at the right stage for her to appear
         return false;
       case $location`Summoning Chamber`:
+        //special case for King Boo
         return in_plumber();
       case $location`The Hidden Hospital`:
+        //if liana cleared then we can encounter ghost
         return (
           toInt(getProperty("hiddenHospitalProgress")) > 0 &&
           toInt(getProperty("hiddenHospitalProgress")) < 7
@@ -1980,12 +1965,15 @@ export function is_ghost_in_zone(loc: Location): boolean {
         return cursed && delayForNextNoncombat === 0;
       }
       case $location`The Hidden Bowling Alley`:
+        //if tracker is 6 we used just the right amount of bowling bowls
         return (
           toInt(getProperty("hiddenBowlingAlleyProgress")) === 6 &&
           availableAmount($item`bowling ball`) > 0
         );
       case $location`A Massive Ziggurat`:
+        //massive ziggurat
         if (in_robot()) {
+          //[Protector_S._P._E._C._T._R._E.] has 0 phys res and 100% all element res
           return false;
         }
         return (
@@ -1993,6 +1981,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
           availableAmount($item`stone triangle`) === 4
         );
       default: {
+        //for all other zones
         const apprates: Map<Monster, number> = auto_combat_appearance_rates(
           loc,
           true,

@@ -297,29 +297,6 @@ export function auto_combatDefaultStage5(
   }
   //general killing code
   {
-    //let mortar deal the killing blow so we get more MP from the exploding curse of weaksauce
-
-    //mortar was used this combat
-    //mortar will hit this round
-    //TODO make sure mortar will actually kill it
-    //monster is not too scary.
-    //avoid killing blow with seal tooth or else 0 MP will be given
-    //avoid killing blow with salsaball or else ~2MP will be given
-    // If we're fighting a ghost, of course we want to use elemental damage!
-    // Mighty axing is better than attacking as it will never fumble and has no mp cost
-    // Avoid apathy and cunctatitis by using a ranged attack
-    //AoJ spells have a hard DMG cap of 10*(MP Cost) before percentage modifiers are applied.
-    //Things that change the MP costs will change said dmg cap.
-    //AoJ can **only** attack via spells / items / jiggling
-    // Default to curdle if the monster is physically resistant
-    // Prefer double damage
-    // If physically resistant, fallback to an elemental spell that will do normal damage
-    // Prefer double damage
-    // If physically resistant, fallback to an elemental spell that will do normal damage
-    // Hack for Logging Camp: deprioritize Dark Feast, use Chill of the Tomb aggressively
-    // intentionally not setting costMinor or costMajor since they don't cost mp...
-    // If we're in a form or something, a beehive is probably better than just attacking
-
     switch (myClass()) {
       case $class`Seal Clubber`:
         attackMinor = "attack";
@@ -487,24 +464,29 @@ export function auto_combatDefaultStage5(
           costMinor = mpCost($skill`Stream of Sauce`);
           costMajor = mpCost($skill`Stream of Sauce`);
         }
+        //let mortar deal the killing blow so we get more MP from the exploding curse of weaksauce
         const mortar_round: number = toInt(
           getProperty("_auto_combatTracker_MortarRound"),
         );
         if (
-          mortar_round > -1 &&
-          mortar_round === round_1 - 1 &&
-          canSurvive(2.0)
+          mortar_round > -1 && //mortar was used this combat
+          mortar_round === round_1 - 1 && //mortar will hit this round
+          //TODO make sure mortar will actually kill it
+          canSurvive(2.0) //monster is not too scary.
         ) {
           if (monsterHp() > 1 && canUse$3($item`seal tooth`, false)) {
+            //avoid killing blow with seal tooth or else 0 MP will be given
             return useItem($item`seal tooth`, false);
           }
           if (monsterHp() > 15 && auto_canUse($skill`Salsaball`, false)) {
+            //avoid killing blow with salsaball or else ~2MP will be given
             return auto_useSkill($skill`Salsaball`, false);
           }
         }
         break;
       }
       case $class`Avatar of Boris`: {
+        // If we're fighting a ghost, of course we want to use elemental damage!
         if (
           auto_canUse($skill`Heroic Belch`, false) &&
           enemy.physicalResistance >= 80 &&
@@ -515,6 +497,7 @@ export function auto_combatDefaultStage5(
           costMinor = mpCost($skill`Heroic Belch`);
           costMajor = mpCost($skill`Heroic Belch`);
         }
+        // Mighty axing is better than attacking as it will never fumble and has no mp cost
         if (auto_canUse($skill`Mighty Axing`, false)) {
           attackMinor = auto_useSkill($skill`Mighty Axing`, false);
           attackMajor = auto_useSkill($skill`Mighty Axing`, false);
@@ -525,6 +508,7 @@ export function auto_combatDefaultStage5(
           attackMajor = auto_useSkill($skill`Cleave`, false);
           costMajor = mpCost($skill`Cleave`);
         }
+        // Avoid apathy and cunctatitis by using a ranged attack
         if (
           equippedItem($slot`weapon`) === $item`Trusty` &&
           auto_canUse($skill`Throw Trusty`, false) &&
@@ -549,10 +533,14 @@ export function auto_combatDefaultStage5(
         break;
       }
       case $class`Avatar of Jarlsberg`: {
+        //AoJ spells have a hard DMG cap of 10*(MP Cost) before percentage modifiers are applied.
+        //Things that change the MP costs will change said dmg cap.
+        //AoJ can **only** attack via spells / items / jiggling
         attackMinor = auto_useSkill($skill`Curdle`, false);
         attackMajor = auto_useSkill($skill`Curdle`, false);
         costMinor = mpCost($skill`Curdle`);
         costMajor = mpCost($skill`Curdle`);
+        // Default to curdle if the monster is physically resistant
         if (enemy.physicalResistance < 50) {
           if (auto_canUse($skill`Chop`, false)) {
             attackMinor = auto_useSkill($skill`Chop`, false);
@@ -566,6 +554,7 @@ export function auto_combatDefaultStage5(
             costMajor = mpCost($skill`Slice`);
           }
         }
+        // Prefer double damage
         if (
           $elements`cold, spooky`.includes(monsterElement(enemy)) &&
           auto_canUse($skill`Bake`)
@@ -591,6 +580,7 @@ export function auto_combatDefaultStage5(
           costMinor = mpCost($skill`Freeze`);
           costMajor = mpCost($skill`Freeze`);
         } else if (enemy.physicalResistance >= 50) {
+          // If physically resistant, fallback to an elemental spell that will do normal damage
           if (
             monsterElement(enemy) !== $element`hot` &&
             auto_canUse($skill`Bake`)
@@ -617,6 +607,7 @@ export function auto_combatDefaultStage5(
             costMajor = mpCost($skill`Freeze`);
           }
         }
+        // Prefer double damage
         if (
           $elements`hot, stench`.includes(monsterElement(enemy)) &&
           auto_canUse($skill`Fry`, false)
@@ -630,6 +621,7 @@ export function auto_combatDefaultStage5(
           attackMajor = auto_useSkill($skill`Grill`, false);
           costMajor = mpCost($skill`Grill`);
         } else if (enemy.physicalResistance >= 50) {
+          // If physically resistant, fallback to an elemental spell that will do normal damage
           if (
             monsterElement(enemy) !== $element`sleaze` &&
             auto_canUse($skill`Fry`, false)
@@ -866,6 +858,7 @@ export function auto_combatDefaultStage5(
             break;
           }
         }
+        // Hack for Logging Camp: deprioritize Dark Feast, use Chill of the Tomb aggressively
         if (
           myHp() > 0.5 * myMaxhp() &&
           attackMajor === auto_useSkill($skill`Chill of the Tomb`, false) &&
@@ -881,6 +874,8 @@ export function auto_combatDefaultStage5(
         ) {
           return auto_useSkill($skill`Dark Feast`);
         }
+        // intentionally not setting costMinor or costMajor since they don't cost mp...
+        // If we're in a form or something, a beehive is probably better than just attacking
         if (
           attackMinor === "attack" &&
           !haveSkill($skill`Preternatural Strength`) &&

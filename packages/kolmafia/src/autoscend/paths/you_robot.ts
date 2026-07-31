@@ -1154,22 +1154,9 @@ export function robot_choice_adv(choice: number, page: string): boolean {
   auto_log_debug("Running robot_choice_adv");
 
   {
-    // One Simple Nightstand (The Haunted Bedroom)
-
-    //get old leather wallet worth ~500 meat
-    // spend 1 ghost key for primestat, get ~200 muscle XP
-    // get min(200,muscle) of muscle XP
-    // One Ornate Nightstand (The Haunted Bedroom)
-
-    // get Lord Spookyraven's spectacles
-    // get disposable instant camera
-    // get ~500 meat
-    // spend 1 ghost key for primestat, get ~200 mysticality XP
-    // get min(200,mys) of mys XP
-    // One Rustic Nightstand (The Haunted Bedroom)
-
     switch (choice) {
       case 876: {
+        // One Simple Nightstand (The Haunted Bedroom)
         const robot_need_mus: boolean =
           myPrimestat() === $stat`Muscle` || myBasestat($stat`Muscle`) < 62;
         if (
@@ -1177,18 +1164,19 @@ export function robot_choice_adv(choice: number, page: string): boolean {
           auto_is_valid($item`old leather wallet`) &&
           !robot_need_mus
         ) {
-          auto_runChoice(1);
+          auto_runChoice(1); //get old leather wallet worth ~500 meat
         } else if (
           itemAmount($item`ghost key`) > 0 &&
           myPrimestat() === $stat`Muscle`
         ) {
-          auto_runChoice(3);
+          auto_runChoice(3); // spend 1 ghost key for primestat, get ~200 muscle XP
         } else {
-          auto_runChoice(2);
+          auto_runChoice(2); // get min(200,muscle) of muscle XP
         }
         break;
       }
       case 878: {
+        // One Ornate Nightstand (The Haunted Bedroom)
         const robot_need_mys: boolean =
           myPrimestat() === $stat`Mysticality` ||
           myBasestat($stat`Mysticality`) < 70;
@@ -1196,25 +1184,26 @@ export function robot_choice_adv(choice: number, page: string): boolean {
           itemAmount($item`Lord Spookyraven's spectacles`) === 0 &&
           internalQuestStatus("questL11Manor") < 2;
         if (needSpectacles) {
-          auto_runChoice(3);
+          auto_runChoice(3); // get Lord Spookyraven's spectacles
         } else if (
           itemAmount($item`disposable instant camera`) === 0 &&
           internalQuestStatus("questL11Palindome") < 1
         ) {
-          auto_runChoice(4);
+          auto_runChoice(4); // get disposable instant camera
         } else if (!robot_need_mys || myMeat() < 1000 + meatReserve()) {
-          auto_runChoice(1);
+          auto_runChoice(1); // get ~500 meat
         } else if (
           itemAmount($item`ghost key`) > 0 &&
           myPrimestat() === $stat`Mysticality`
         ) {
-          auto_runChoice(5);
+          auto_runChoice(5); // spend 1 ghost key for primestat, get ~200 mysticality XP
         } else {
-          auto_runChoice(2);
+          auto_runChoice(2); // get min(200,mys) of mys XP
         }
         break;
       }
       case 879: {
+        // One Rustic Nightstand (The Haunted Bedroom)
         const options: Map<number, string> = new Map(
           Object.entries(availableChoiceOptions()).map(([_k, _v]) => [
             toInt(_k),

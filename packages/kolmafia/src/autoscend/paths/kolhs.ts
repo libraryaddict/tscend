@@ -273,31 +273,25 @@ function LX_kolhs_school(): boolean {
 export function kolhsChoiceHandler(choice: number): void {
   auto_log_debug("Running kolhsChoiceHandler");
   {
-    // Delirium in the Cafeterium (KOLHS 22nd adventure every day)
-    // get XP
-    // get XP
-    // get XP
-    // lose HP
-    // Saved by the Bell (KOLHS after school)
-    //we use directive property. it both tells us what to do, and helps pre-adv do stuff. for example ensure we are not wearing a familiar that is blocking us
-
     switch (choice) {
-      case 700:
+      case 700: // Delirium in the Cafeterium (KOLHS 22nd adventure every day)
         if (haveEffect($effect`Jamming with the Jocks`) > 0) {
-          auto_runChoice(1);
+          auto_runChoice(1); // get XP
         } else if (haveEffect($effect`Nerd is the Word`) > 0) {
-          auto_runChoice(2);
+          auto_runChoice(2); // get XP
         } else if (haveEffect($effect`Greaser Lightnin'`) > 0) {
-          auto_runChoice(3);
+          auto_runChoice(3); // get XP
         } else {
           auto_log_warning(
             "I do not have the necessary intrinsic to gain xp in [Delirium in the Cafeterium]",
             "red",
           );
-          auto_runChoice(3);
+          auto_runChoice(3); // lose HP
         }
         break;
       case 772: {
+        // Saved by the Bell (KOLHS after school)
+        //we use directive property. it both tells us what to do, and helps pre-adv do stuff. for example ensure we are not wearing a familiar that is blocking us
         const target: number = toInt(getProperty("_NC772_directive"));
         removeProperty("_NC772_directive"); //remove it now in case we abort
 
