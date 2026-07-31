@@ -240,6 +240,7 @@ import {
   auto_getItemToEquipHeartstone,
   auto_heartstoneShouldStealHeart,
 } from "./iotms/mr2026";
+import { maximizer } from "./maximizer";
 import {
   ed_handleAdventureServant,
   edAcquireHP,
@@ -1262,7 +1263,7 @@ function auto_pre_adventure(): boolean {
   // if the limit setting has no value then ML has already been given a value indirectly by "exp" in the default maximizer statement
   if (
     getProperty("auto_MLSafetyLimit") !== "" &&
-    !containsText(getProperty("auto_maximize_current"), "ml")
+    !containsText(maximizer.toString(), "ml")
   ) {
     if (toInt(getProperty("auto_MLSafetyLimit")) === -1) {
       // prevent all ML being equiped if limit is -1 and equip lowest possible ML including going negative

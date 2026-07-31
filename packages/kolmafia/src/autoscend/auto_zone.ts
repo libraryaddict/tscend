@@ -36,7 +36,6 @@ import {
   $location,
   $locations,
   $skill,
-  $slots,
   $stat,
 } from "libram";
 
@@ -62,6 +61,7 @@ import {
   auto_canTendMushroomGarden,
 } from "./iotms/mr2020";
 import { auto_haveBatWings } from "./iotms/mr2024";
+import { maximizer } from "./maximizer";
 import { bugbear_BioDataRemaining, in_bugbear } from "./paths/bugbear_invasion";
 import { in_koe } from "./paths/kingdom_of_exploathing";
 import { kolhs_mandatorySchool } from "./paths/kolhs";
@@ -648,7 +648,7 @@ export function zone_combatMod(loc: Location): generic_t {
   const retval: generic_t = new generic_t();
   const delay: generic_t = zone_delay(loc);
   let value: number = 0;
-  switching: switch (loc) {
+  switch (loc) {
     case $location`The Orcish Frat House`:
     case $location`The Hippy Camp`:
       if (myLevel() >= 9) {
@@ -661,21 +661,16 @@ export function zone_combatMod(loc: Location): generic_t {
       break;
     case $location`Sonofa Beach`:
       //when wanderer replacing strategy is about to be used, combat modifier is useless. these are the replaced wanderers
-      if (auto_voteMonster()) {
-        for (const sl of $slots`acc3, acc2, acc1`) {
-          if (
-            getProperty(`_auto_maximize_equip_${sl.toString()}`) ===
-            $item`"I Voted!" sticker`.toString()
-          ) {
-            value = 0;
-            break switching;
-          }
-        }
+      if (
+        auto_voteMonster() &&
+        maximizer.willEquip($item`"I Voted!" sticker`)
+      ) {
+        value = 0;
+        break;
       }
       if (
         auto_sausageGoblin() &&
-        getProperty("_auto_maximize_equip_off-hand") ===
-          $item`Kramco Sausage-o-Matic™`.toString()
+        maximizer.willEquip($item`Kramco Sausage-o-Matic™`)
       ) {
         value = 0;
         break;

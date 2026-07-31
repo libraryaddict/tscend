@@ -6,7 +6,6 @@ import {
   ceil,
   cliExecute,
   containsText,
-  endsWith,
   equip,
   equippedAmount,
   equippedItem,
@@ -26,7 +25,6 @@ import {
   Item,
   itemAmount,
   itemType,
-  length,
   Location,
   max,
   maximize,
@@ -51,7 +49,6 @@ import {
   npcPrice,
   numericModifier,
   outfitPieces,
-  replaceString,
   retrieveItem,
   setLocation,
   setProperty,
@@ -108,7 +105,6 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
-  autoMaximize,
   instakillable,
   isArmoryAndLeggeryStoreAvailable,
   isFreeMonster,
@@ -155,6 +151,7 @@ import {
   auto_clubEmBackInTimesRemaining,
   auto_havePastaWand,
 } from "./iotms/mr2026";
+import { Maximizer, maximizer } from "./maximizer";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";
@@ -180,39 +177,22 @@ import { in_robot, robot_defaultMaximizeStatement } from "./paths/you_robot";
 import { getZooBestPunch, in_zootomist } from "./paths/zootomist";
 import { cyrptEvilBonus } from "./quests/level_07";
 
-//Defined in autoscend/auto_equipment.ash
-export function getMaximizeSlotPref(s: Slot): string {
-  return `_auto_maximize_equip_${s.toString()}`;
-}
-
-function getTentativeMaximizeEquip(s: Slot): Item {
-  return toItem(getProperty(getMaximizeSlotPref(s)));
-}
-
 export function autoEquipToSlot(s: Slot, it: Item): boolean {
   if (!possessEquipment(it) || !auto_can_equip(it)) {
     return false;
   }
 
-  if (
-    (s === $slot`acc3` &&
-      it.toString() === getProperty("_auto_maximize_equip_acc1")) ||
-    it.toString() === getProperty("_auto_maximize_equip_acc2") ||
-    it.toString() === getProperty("_auto_maximize_equip_acc3")
-  ) {
+  if (maximizer.willEquip(it)) {
     auto_log_warning(`Ignoring duplicate equip of accessory ${it}`);
     return true;
   }
   // This logic lets us force the equipping of multiple accessories with minimal conflict
   const acc1_empty: boolean =
-    "" === getProperty("_auto_maximize_equip_acc1") &&
-    !containsText(getProperty("auto_maximize_current"), "acc1");
+    maximizer.pending($slot`acc1`) === Item.none && !maximizer.has("acc1");
   const acc2_empty: boolean =
-    "" === getProperty("_auto_maximize_equip_acc2") &&
-    !containsText(getProperty("auto_maximize_current"), "acc2");
+    maximizer.pending($slot`acc2`) === Item.none && !maximizer.has("acc2");
   const acc3_empty: boolean =
-    "" === getProperty("_auto_maximize_equip_acc3") &&
-    !containsText(getProperty("auto_maximize_current"), "acc3");
+    maximizer.pending($slot`acc3`) === Item.none && !maximizer.has("acc3");
   if (itemType(it) === "accessory" && s === $slot`acc3` && !acc3_empty) {
     if (acc2_empty) {
       s = $slot`acc2`;
@@ -229,7 +209,7 @@ export function autoEquipToSlot(s: Slot, it: Item): boolean {
 
   auto_log_info(`Equipping ${it} to slot ${s}`, "gold");
 
-  return tryAddItemToMaximize(s, it);
+  return maximizer.equip(it, s);
 }
 
 export function autoEquip(it: Item): boolean {
@@ -249,27 +229,7 @@ export function autoForceEquip(
   if (!possessEquipment(it) || !auto_can_equip(it)) {
     return false;
   }
-  if ($slot`off-hand` === s) {
-    if (weaponHands(equippedItem($slot`weapon`)) > 1) {
-      if (!noMaximize) {
-        removeFromMaximize(`+"equip ${equippedItem($slot`weapon`)}"`);
-      }
-      equip($slot`weapon`, Item.none);
-    }
-    if (!noMaximize) {
-      removeFromMaximize(`-"equip ${it}"`);
-      addToMaximize("-off-hand, 1hand");
-    }
-    return equip($slot`off-hand`, it);
-  }
-  if (equip(s, it)) {
-    if (!noMaximize) {
-      removeFromMaximize(`-"equip ${it}"`);
-      addToMaximize(`-${s}`);
-    }
-    return true;
-  }
-  return false;
+  return maximizer.forceEquip(it, s, !noMaximize);
 }
 
 export function autoForceEquip$2(it: Item, noMaximize: boolean): boolean {
@@ -336,155 +296,6 @@ export function autoStripOutfit(toRemove: string): boolean {
   return isWearingOutfit(toRemove);
 }
 
-function tryAddItemToMaximize(s: Slot, it: Item): boolean {
-  if (
-    !$slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`.includes(
-      s,
-    )
-  ) {
-    auto_log_error(`But ${s} is an invalid equip slot... What?`);
-    return false;
-  }
-  switch (s) {
-    case $slot`weapon`:
-      if (weaponHands(it) > 1) {
-        setProperty(getMaximizeSlotPref($slot`off-hand`), "");
-      }
-      break;
-    case $slot`off-hand`:
-      if (weaponHands(getTentativeMaximizeEquip($slot`weapon`)) > 1) {
-        setProperty(getMaximizeSlotPref($slot`weapon`), "");
-      }
-
-      // TODO: Ranged/melee mismatch handling
-      break;
-  }
-
-  let itString: string = it.toString();
-  // maximizer uses commas, so can't have a comma in an item name
-  // fortunately fuzzy matching means just stripping out the comma is fine
-  itString = replaceString(itString, ",", "");
-  setProperty(getMaximizeSlotPref(s), itString);
-  return true;
-}
-
-function speculatedMaximizerEquipment(statement: string): Map<Slot, Item> {
-  //make maximizer simulate with the given statement then return the list of equipment it has chosen
-  const res: Map<Slot, Item> = new Map();
-  let weaponPicked: boolean = false;
-  let offhandPicked: boolean = false;
-  for (const [i, entry] of maximize(statement, 0, 0, true, true).entries()) {
-    //can't use autoMaximize "Aggregate reference expected"
-    if (i > 15) {
-      //there should not be more than 9 or 10 equipment slots and equipment entries come first. so equipment list is done
-      break;
-    }
-    const maximizerText: string = entry.display;
-    if (containsText(maximizerText, "unequip ")) {
-      continue;
-    }
-    if (!containsText(maximizerText, "equip ")) {
-      const keeping: boolean =
-        entry.command === "" && containsText(maximizerText, "keep "); //already equipped item can be recorded
-      if (!keeping) {
-        //will not know how to handle other special actions like "fold ", "umbrella ", ...
-        continue;
-      }
-    }
-    const maximizerItem: Item = entry.item;
-    if (maximizerItem === Item.none) {
-      continue;
-    }
-    let maximizerItemSlot: Slot = toSlot(maximizerItem);
-    if (maximizerItemSlot === Slot.none) {
-      continue;
-    }
-    let overrideSlot: Slot = Slot.none;
-    if (maximizerItemSlot === $slot`weapon`) {
-      if (weaponPicked) {
-        if (
-          !offhandPicked &&
-          auto_have_skill($skill`Double-Fisted Skull Smashing`) &&
-          weaponType(maximizerItem) ===
-            weaponType(
-              res.get($slot`weapon`) ??
-                res.set($slot`weapon`, Item.none).get($slot`weapon`),
-            ) &&
-          itemType(maximizerItem) !== "chefstaff"
-        ) {
-          //this must be offhand weapon
-          overrideSlot = $slot`off-hand`;
-          offhandPicked = true;
-        } else if (
-          myFamiliar() === $familiar`Disembodied Hand` &&
-          weaponHands(maximizerItem) === 1 &&
-          itemType(maximizerItem) !== "chefstaff" &&
-          itemType(maximizerItem) !== "accordion"
-        ) {
-          //this must be familiar weapon
-          overrideSlot = $slot`familiar`;
-        } else {
-          auto_log_debug(
-            "There are more weapons than we can wear in speculatedMaximizerEquipment, something must be wrong",
-            "gold",
-          );
-          continue;
-        }
-      } else {
-        weaponPicked = true;
-        if (weaponHands(maximizerItem) > 1) {
-          offhandPicked = true;
-        }
-      }
-    } else if (maximizerItemSlot === $slot`off-hand`) {
-      if (offhandPicked) {
-        //this must be familiar offhand
-        if (myFamiliar() === $familiar`Left-Hand Man`) {
-          overrideSlot = $slot`familiar`;
-        } else {
-          auto_log_debug(
-            "Off-hand slot is getting more than one use in speculatedMaximizerEquipment but familiar is not Left-Hand Man, something must be wrong",
-            "gold",
-          );
-          continue;
-        }
-      } else {
-        offhandPicked = true;
-      }
-    } else if (
-      maximizerItemSlot === $slot`acc1` &&
-      (res.get($slot`acc1`) ??
-        res.set($slot`acc1`, Item.none).get($slot`acc1`)) !== Item.none
-    ) {
-      //accessory to slot always returns acc1 and has to be switched if more than one, go from 1 to 3 because that is the equip order the maximizer will use
-      if (
-        (res.get($slot`acc2`) ??
-          res.set($slot`acc2`, Item.none).get($slot`acc2`)) !== Item.none
-      ) {
-        overrideSlot = $slot`acc3`;
-      } else {
-        overrideSlot = $slot`acc2`;
-      }
-    }
-    if (overrideSlot !== Slot.none) {
-      maximizerItemSlot = overrideSlot;
-    }
-    if (
-      (res.get(maximizerItemSlot) ??
-        res.set(maximizerItemSlot, Item.none).get(maximizerItemSlot)) !==
-      Item.none
-    ) {
-      auto_log_debug(
-        `Duplicate entry skipped for slot ${maximizerItemSlot.toString()} in speculatedMaximizerEquipment, something must be wrong`,
-        "gold",
-      );
-      continue;
-    }
-    res.set(maximizerItemSlot, maximizerItem);
-  }
-  return res;
-}
-
 export function equipStatgainIncreasers(
   increaseThisStat: Map<Stat, boolean>,
   alwaysEquip: boolean,
@@ -514,8 +325,9 @@ export function equipStatgainIncreasers(
     }
     maximizerStatement += `${statWeight}${st.toString()} experience percent,`;
   }
-  let simulatedEquipment: Map<Slot, Item> =
-    speculatedMaximizerEquipment(maximizerStatement); //simulate and get list of relevant equipment
+  let simulatedEquipment: Map<Slot, Item> = new Maximizer()
+    .raw(maximizerStatement)
+    .simulate();
   let canIncreaseStatgains: boolean = false;
   for (const st of increaseThisStat.keys()) {
     if (!(
@@ -708,7 +520,7 @@ export function equipStatgainIncreasers(
     "blue",
   );
   simulatedEquipment.clear();
-  simulatedEquipment = speculatedMaximizerEquipment(maximizerStatement);
+  simulatedEquipment = new Maximizer().raw(maximizerStatement).simulate();
   for (const sl of simulatedEquipment.keys()) {
     speculateOneItem = `"equip ${sl.toString()} ${(simulatedEquipment.get(sl) ?? simulatedEquipment.set(sl, Item.none).get(sl)).toString()};" `;
     cliExecute(`speculate quiet; ${speculateOneItem}`);
@@ -911,6 +723,8 @@ function defaultMaximizeStatement(): string {
 }
 
 export function resetMaximize(): void {
+  maximizer.dispose();
+
   let res: string = getProperty("auto_maximize_baseline"); //user configured override baseline statement.
   if (
     res === "" ||
@@ -924,19 +738,15 @@ export function resetMaximize(): void {
     res = res.replaceAll("{default}", defaultMaximizeStatement());
   }
 
-  function exclude(it: Item): void {
-    if (res !== "") {
-      res += ",";
-    }
-    res += `-"equip ${it}"`;
-  }
+  maximizer.raw(res);
+
   // don't want to equip these items automatically
   // snow suit bonus drops every 5 combats so is best saved for important things
   // sword, and staph are text scramblers which cause errors in mafia tracking
   // bathysphere gives -20 lbs familiar weight. under certain circumstances maximizer decides to equip it
   for (const it of $items`sword behind inappropriate prepositions, staph of homophones, Snow Suit, little bitty bathysphere`) {
     if (possessEquipment(it)) {
-      exclude(it);
+      maximizer.exclude(it);
     }
   }
   //IOTM [january's garbage tote] specific handling.
@@ -945,13 +755,13 @@ export function resetMaximize(): void {
     if (!toBoolean(getProperty("_garbageItemChanged"))) {
       //did not change tote item today
       for (const it of $items`deceased crimbo tree, broken champagne bottle, tinsel tights, wad of used tape, makeshift garbage shirt`) {
-        exclude(it);
+        maximizer.exclude(it);
       }
     } else {
       //preserve current charges
       for (const it of $items`deceased crimbo tree, broken champagne bottle, makeshift garbage shirt`) {
         if (januaryToteTurnsLeft(it) > 0) {
-          exclude(it);
+          maximizer.exclude(it);
         }
       }
     }
@@ -961,21 +771,16 @@ export function resetMaximize(): void {
   ) {
     // workaround mafia bug with the maximizer where it tries to equip tote items even though the tote is unusable
     for (const it of $items`deceased crimbo tree, broken champagne bottle, tinsel tights, wad of used tape, makeshift garbage shirt`) {
-      exclude(it);
+      maximizer.exclude(it);
     }
   }
 
-  setProperty("auto_maximize_current", res);
-  auto_log_debug(`Resetting auto_maximize_current to ${res}`, "gold");
-
-  for (const s of $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`) {
-    setProperty(getMaximizeSlotPref(s), "");
-  }
+  auto_log_debug(`Resetting maximizer to ${maximizer.toString()}`, "gold");
 }
 
 export function addBonusToMaximize(it: Item, amt: number): void {
   if (possessEquipment(it) && auto_can_equip(it)) {
-    addToMaximize(`+${amt}"bonus ${it}"`);
+    maximizer.bonus(it, amt);
   }
 }
 
@@ -1103,15 +908,6 @@ function finalizeMaximize(speculative: boolean): void {
     // It gives some booze drops, scale up the bonus by our max liver
 
     addBonusToMaximize($item`Cup of 13s`, inebrietyLimit() * 7);
-  }
-
-  for (const s of $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`) {
-    const pref: string = getMaximizeSlotPref(s);
-    const toEquip: string = getProperty(pref);
-    if (toEquip !== "") {
-      removeFromMaximize(`-"equip ${toEquip}"`);
-      addToMaximize(`+"equip ${toEquip}"`);
-    }
   }
 
   if (in_wereprof() && auto_haveDarts()) {
@@ -1288,7 +1084,7 @@ function finalizeMaximize(speculative: boolean): void {
 
   if (
     !in_plumber() &&
-    getProperty(getMaximizeSlotPref($slot`weapon`)) === "" &&
+    maximizer.pending($slot`weapon`) === Item.none &&
     !maximizeContains("-weapon") &&
     myPrimestat() !== $stat`Mysticality`
   ) {
@@ -1343,45 +1139,24 @@ export function addToMaximize(add_1: string): void {
     return;
   }
   auto_log_debug(`Adding "${add_1}" to current maximizer statement`, "gold");
-  let res: string = getProperty("auto_maximize_current");
-  const addHasComma: boolean = startsWith(add_1, ",");
-  if (res !== "" && !addHasComma) {
-    res += ",";
-  } else if (res === "" && addHasComma) {
-    // maximizer fails on a leading comma
-    add_1 = substring(add_1, 1);
-  }
-  res += add_1;
-  setProperty("auto_maximize_current", res);
+  maximizer.raw(startsWith(add_1, ",") ? substring(add_1, 1) : add_1);
 }
 
 export function removeFromMaximize(rem: string): void {
   auto_log_debug(`Removing "${rem}" from current maximizer statement`, "gold");
-  let res: string = getProperty("auto_maximize_current");
-  res = replaceString(res, rem, "");
-  // let's be safe here
-  res = replaceString(res, " ,", ",");
-  res = replaceString(res, ", ", ",");
-  res = replaceString(res, ",,", ",");
-  if (endsWith(res, ",")) {
-    res = substring(res, 0, length(res) - 1);
-  }
-  if (startsWith(res, ",")) {
-    res = substring(res, 1);
-  }
-  setProperty("auto_maximize_current", res);
+  maximizer.remove(rem);
 }
 
 function maximizeContains(check_1: string): boolean {
-  return containsText(getProperty("auto_maximize_current"), check_1);
+  return maximizer.has(check_1);
 }
 
 export function simMaximize(): boolean {
-  const backup: string = getProperty("auto_maximize_current");
+  const backup: Maximizer = maximizer.clone();
   const backupNextMonster: string = getProperty("auto_nextEncounter");
   finalizeMaximize(true);
-  const res: boolean = autoMaximize(getProperty("auto_maximize_current"), true);
-  setProperty("auto_maximize_current", backup);
+  const res: boolean = maximize(maximizer.toString(), true);
+  maximizer.restore(backup);
   setProperty("auto_nextEncounter", backupNextMonster);
   return res;
 }
@@ -1404,11 +1179,11 @@ export function simMaximizeWith(
   add_1: string,
   loc: Location = myLocation(),
 ): boolean {
-  const backup: string = getProperty("auto_maximize_current");
+  const backup: Maximizer = maximizer.clone();
   addToMaximize(add_1);
-  auto_log_debug(`Simulating: ${getProperty("auto_maximize_current")}`, "gold");
+  auto_log_debug(`Simulating: ${maximizer.toString()}`, "gold");
   const res: boolean = simMaximize$1(loc);
-  setProperty("auto_maximize_current", backup);
+  maximizer.restore(backup);
   return res;
 }
 
@@ -1422,7 +1197,7 @@ export function simValue$1(mod: Modifier): number {
 
 export function equipMaximizedGear(): void {
   finalizeMaximize$1();
-  maximize(getProperty("auto_maximize_current"), 2500, 0, false);
+  maximizer.maximize();
   // below code is to help diagnose, debug and workaround the intermittent issue where the maximizer fails to equip anything in hand slots
   // if this is confirmed as fixed by mafia devs, remove the below code.
   if (
@@ -1443,7 +1218,7 @@ export function equipMaximizedGear(): void {
         "It looks like the maximizer didn't equip any weapons for you. Lets dump some debugging info to help the KolMafia devs look into this.",
       );
       addToMaximize("2 dump"); // maximizer will dump a bunch of stuff to the session log with this
-      maximize(getProperty("auto_maximize_current"), 2500, 0, false);
+      maximizer.maximize();
       removeFromMaximize("2 dump");
       if (toBoolean(getProperty("auto_debug_maximizer"))) {
         abort(
@@ -1453,7 +1228,7 @@ export function equipMaximizedGear(): void {
       if (equippedItem($slot`weapon`) === Item.none) {
         // workaround. equip a weapon & re-running maximizer appears to fix the issue.
         equip(equippableWeapon);
-        maximize(getProperty("auto_maximize_current"), 2500, 0, false);
+        maximizer.maximize();
         auto_log_error(
           "No weapon was equipped by the maximizer. If you want to report this to the mafia devs at kolmafia.us include your session log. We have attempted a work around.",
         );

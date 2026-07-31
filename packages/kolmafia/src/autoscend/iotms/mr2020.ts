@@ -59,7 +59,6 @@ import {
   $location,
   $skill,
   $slot,
-  $slots,
   $stat,
 } from "libram";
 
@@ -68,7 +67,6 @@ import { main as handleChoiceAdv } from "../auto_choice_adv";
 import {
   addToMaximize,
   autoEquipToSlot,
-  getMaximizeSlotPref,
   possessEquipment,
 } from "../auto_equipment";
 import { canChangeToFamiliar } from "../auto_familiar";
@@ -89,6 +87,7 @@ import {
   zoneRank,
 } from "../auto_util";
 import { combat_status_add } from "../combat/auto_combat_util";
+import { maximizer } from "../maximizer";
 import { in_plumber } from "../paths/path_of_the_plumber";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
@@ -247,15 +246,7 @@ export function auto_powerfulGloveStats(): boolean {
 }
 
 function auto_willEquipPowerfulGlove(): boolean {
-  for (const s of $slots`acc1, acc2, acc3`) {
-    const pref: string = getMaximizeSlotPref(s);
-    const toEquip: string = getProperty(pref);
-    if (toEquip === $item`Powerful Glove`.toString()) {
-      return true;
-    }
-  }
-
-  return false;
+  return maximizer.willEquip($item`Powerful Glove`);
 }
 
 export function auto_forceEquipPowerfulGlove(): boolean {

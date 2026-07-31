@@ -80,6 +80,7 @@ import {
 } from "./iotms/mr2023";
 import { auto_haveChestMimic } from "./iotms/mr2024";
 import { auto_haveCupidBow } from "./iotms/mr2025";
+import { maximizer } from "./maximizer";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_wantMeat, in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";
@@ -846,11 +847,11 @@ function autoChooseFamiliar(place: Location): boolean {
   const famComRate: number = auto_famModifiers$1(famChoice, "Combat Rate");
   const plusCombatInMaximize: boolean = new AshMatcher(
     "(?<!-)200 ?combat",
-    getProperty("auto_maximize_current"),
+    maximizer.toString(),
   ).find();
   const minusCombatInMaximize: boolean = new AshMatcher(
     "-200 ?combat",
-    getProperty("auto_maximize_current"),
+    maximizer.toString(),
   ).find();
   if (minusCombatInMaximize && famComRate > 0) {
     famChoice = Familiar.none;
