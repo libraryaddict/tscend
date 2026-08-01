@@ -1472,7 +1472,7 @@ export function auto_runPreAdventure(): boolean {
       abort("Trying to adventure with no familiar.");
     }
   } catch (e) {
-    auto_log_warning(e);
+    auto_log_warning(`${e}${e.stack ? ` - ${e.stack}` : ""}`);
   } finally {
     if (!ret) {
       auto_log_error(

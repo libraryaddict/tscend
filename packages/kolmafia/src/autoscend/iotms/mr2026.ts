@@ -143,7 +143,7 @@ const CODPIECE_MANAGED_GEMS: Item[] = $items`blood cubic zirconia, Baseball Diam
 function auto_codpieceOriginalGems(): Item[] {
   const raw = getProperty("_auto_codpiece_original_gems").split(",");
 
-  if (raw.length !== 5) {
+  if (raw.length === 5) {
     return raw.map((s) => Item.get(parseInt(s)));
   }
 

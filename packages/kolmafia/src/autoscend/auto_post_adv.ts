@@ -1353,7 +1353,7 @@ export function auto_runPostAdventure(): boolean {
   try {
     ret = auto_post_adventure();
   } catch (e) {
-    auto_log_warning(e);
+    auto_log_warning(`${e}${e.stack ? ` - ${e.stack}` : ""}`);
   } finally {
     if (!ret) {
       auto_log_error(
