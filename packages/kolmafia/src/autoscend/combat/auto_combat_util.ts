@@ -1018,7 +1018,7 @@ export function banisherCombatAction$1(
     auto_is_valid$2($skill`Heartstone: %banish`) &&
     get("_heartstoneBanishUsed") < 5 &&
     haveEquipped(auto_getItemToEquipHeartstone()) &&
-    !used.has("heartstone")
+    !used.has("Heartstone: %banish")
   ) {
     return $skill`Heartstone: %banish`;
   }
