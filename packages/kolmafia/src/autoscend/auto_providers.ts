@@ -2601,12 +2601,14 @@ export function provideFamExp(
   }
   // Use limited resources
   if (doEverything) {
+    let gotSwayed = true;
     while (
+      gotSwayed &&
       haveEffect($effect`Blue Swayed`) < 31 &&
       itemAmount($item`pulled blue taffy`) > 0
     ) {
       auto_log_info("Getting Blue Swayed");
-      if (tryEffects$1(new Map([[$effect`Blue Swayed`, true]]))) {
+      if ((gotSwayed = tryEffects$1(new Map([[$effect`Blue Swayed`, true]])))) {
         //+X/5, decreasing by 5 every 5 turns so keeping it separate
         if (pass()) {
           return result();

@@ -1029,6 +1029,7 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
 
   // Some other items you might have lying around?
   addIngredient($item`pristine fish scale`);
+  addIngredient($item`yam`);
   addIngredient($item`mini kiwi bikini`, () =>
     // Only available if we're past the protesters and the tower is known not sleaze
     // Sleaze is the only test that doesn't start with "people"
