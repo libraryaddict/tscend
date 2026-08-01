@@ -820,7 +820,22 @@ function auto_run_choice(choice: number, page: string): boolean {
           if (GOAL_AUTOMATED_CHOICES.has(choice)) {
             runChoice(-1);
           } else {
-            auto_runChoice(get(`choiceAdventure${lastChoice()}`, 0));
+            let choice = get(`choiceAdventure${lastChoice()}`, 0);
+            const avail = availableChoiceOptions();
+
+            if (availableChoiceOptions()[choice.toString()] === undefined) {
+              if (Object.keys(avail).length === 1) {
+                auto_log_info(
+                  `User specified option ${choice} in their settings, but that doesn't seem to be available... Using the only option available to select: ${avail[0]}`,
+                );
+                choice = parseInt(avail[0]);
+              } else {
+                abort(
+                  `Uh oh, we don't think you can use option ${choice} on choice #${lastChoice()}, it has ${JSON.stringify(avail)} options, which yours is not one of.`,
+                );
+              }
+            }
+            auto_runChoice(choice);
           }
         }
         break;
@@ -834,6 +849,8 @@ export function main(choice: number, page: string): void {
   let ret: boolean = false;
   try {
     ret = auto_run_choice(choice, page);
+  } catch (e) {
+    auto_log_warning(e);
   } finally {
     if (!ret) {
       auto_log_error(

@@ -1352,6 +1352,8 @@ export function auto_runPostAdventure(): boolean {
   let ret: boolean = false;
   try {
     ret = auto_post_adventure();
+  } catch (e) {
+    auto_log_warning(e);
   } finally {
     if (!ret) {
       auto_log_error(

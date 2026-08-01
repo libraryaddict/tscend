@@ -6925,6 +6925,12 @@ export function auto_adv1(
   ) {
     if (lastState === createState()) {
       if (tries++ >= 60) {
+        // dump enough to actually diagnose the desync next time instead of guessing at it
+        auto_log_warning(
+          `Stuck loop state: round=${currentRound()} multiFight=${inMultiFight()} handlingChoice=${handlingChoice()} choiceFollowsFight=${choiceFollowsFight()} fightFollowsChoice=${fightFollowsChoice()} lastMonster=${lastMonster()} adv=${myAdventures()} loc=${location}`,
+          "red",
+        );
+        auto_log_warning(`Stuck loop page text: ${text}`, "red");
         abort(`We appear to be stuck in a loop with no progress`);
       }
     } else {
@@ -6951,6 +6957,7 @@ export function auto_adv1(
 
 export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
   if (currentRound() === 0 && inMultiFight()) {
+    auto_log_info(`Multifight time! Let's get that fight started!`);
     text = visitUrl("fight.php");
     if (currentRound() === 0 && inMultiFight()) {
       // fight.php alone doesn't always resume a chained fight (e.g. between
