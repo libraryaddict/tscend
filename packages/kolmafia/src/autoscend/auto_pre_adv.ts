@@ -236,6 +236,7 @@ import {
 } from "./iotms/mr2025";
 import {
   auto_baseballDiamondMaximizerBonus,
+  auto_codpieceReconcileGem,
   auto_getItemToEquipBaseballDiamond,
   auto_getItemToEquipHeartstone,
   auto_heartstoneShouldStealHeart,
@@ -1293,6 +1294,10 @@ function auto_pre_adventure(): boolean {
   equipMaximizedGear();
   auto_handleRetrocape(); // has to be done after equipMaximizedGear otherwise the maximizer reconfigures it
   auto_handleParka(); //same as retrocape above
+
+  auto_codpieceReconcileGem($item`blood cubic zirconia`);
+  auto_codpieceReconcileGem($item`Baseball Diamond`);
+  auto_codpieceReconcileGem($item`Heartstone`);
 
   cliExecute("checkpoint clear");
   //before guaranteed non combats that give stats, overrule maximized equipment to increase stat gains

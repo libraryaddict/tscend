@@ -206,6 +206,9 @@ export class Maximizer {
     }
     return [...this.pendingEquip.values()].includes(item);
   }
+  wantsItem(item: Item): boolean {
+    return (this.pendingBonus.get(item) ?? 0) > 0 || this.willEquip(item);
+  }
 
   // equips immediately; unless lock is false, also locks the slot so maximize() won't override it
   forceEquip(item: Item, slot?: Slot, lock: boolean = true): boolean {

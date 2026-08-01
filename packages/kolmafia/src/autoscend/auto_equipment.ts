@@ -907,7 +907,7 @@ function finalizeMaximize(speculative: boolean): void {
   ) {
     // It gives some booze drops, scale up the bonus by our max liver
 
-    addBonusToMaximize($item`Cup of 13s`, inebrietyLimit() * 7);
+    addBonusToMaximize($item`Cup of 13s`, Math.min(40, inebrietyLimit() * 7));
   }
 
   if (in_wereprof() && auto_haveDarts()) {

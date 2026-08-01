@@ -11,6 +11,8 @@ import {
   Effect,
   Element,
   entityDecode,
+  equip,
+  equippedItem,
   extractItems,
   fullnessLimit,
   getProperty,
@@ -33,6 +35,7 @@ import {
   myMeat,
   myPath,
   setProperty,
+  Slot,
   spleenLimit,
   Stat,
   toBoolean,
@@ -97,6 +100,7 @@ import {
 import { monster_to_location, zone_delay } from "../auto_zone";
 import { ConsumeAction } from "../autoscend_record";
 import { getIncompleteQuestTasks } from "../engine/engine";
+import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_plumber } from "../paths/path_of_the_plumber";
@@ -131,6 +135,71 @@ export function auto_haveEternityCodpiece(): boolean {
 
 export function auto_isInEternityCodpiece(it: Item): boolean {
   return EternityCodpiece.currentGems().includes(it);
+}
+
+const CODPIECE_MANAGED_GEMS: Item[] = $items`blood cubic zirconia, Baseball Diamond, Heartstone`;
+
+// Written once per slot the first time we borrow it, then only ever read.
+function auto_codpieceOriginalGems(): Item[] {
+  const raw = getProperty("_auto_codpiece_original_gems").split(",");
+
+  if (raw.length !== 5) {
+    return raw.map((s) => Item.get(parseInt(s)));
+  }
+
+  setProperty(
+    "_auto_codpiece_original_gems",
+    EternityCodpiece.currentGems()
+      .map((g) => g.id)
+      .join(","),
+  );
+  return EternityCodpiece.currentGems();
+}
+
+export function auto_codpieceReconcileGem(gem: Item): void {
+  if (!CODPIECE_MANAGED_GEMS.includes(gem)) {
+    return;
+  }
+
+  const wanted: boolean = maximizer.wantsItem(gem);
+  const codpieceWorn: boolean = haveEquipped($item`The Eternity Codpiece`);
+  const alreadyActive: boolean =
+    haveEquipped(gem) || auto_isInEternityCodpiece(gem);
+  const slots: readonly Slot[] = EternityCodpiece.SLOTS;
+  const originals: Item[] = auto_codpieceOriginalGems();
+
+  // If we want to wear this
+  if (wanted && codpieceWorn && !alreadyActive) {
+    // Find the first slot that is unused, or not special
+    const emptySlot = slots.find((s) => equippedItem(s) === Item.none);
+    const backfillSlot = [...slots]
+      .reverse()
+      .find(
+        (s) =>
+          !CODPIECE_MANAGED_GEMS.includes(equippedItem(s)) &&
+          equippedItem(s) === originals[slots.indexOf(s)],
+      );
+    const target = emptySlot ?? backfillSlot;
+    // If no slot
+    if (!target) {
+      return;
+    }
+
+    equip(target, gem);
+    return;
+  }
+
+  if (!wanted || !codpieceWorn) {
+    const idx = slots.findIndex((s) => equippedItem(s) === gem);
+    if (
+      idx === -1 ||
+      originals[idx] === Item.none ||
+      itemAmount(originals[idx]) === 0
+    ) {
+      return;
+    }
+    equip(slots[idx], originals[idx]);
+  }
 }
 
 //Defined in autoscend/iotms/mr2026.ash
