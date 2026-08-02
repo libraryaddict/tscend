@@ -576,7 +576,7 @@ function auto_pre_adventure(): boolean {
     pm_updateThrall(place, false); //maybe dismiss Vampieroghi, maybe bind Spice Ghost or Vermincelli
   }
   //save some MP while buffing
-  maximizer.weight($modifier`Mana Cost`, -1000).weight("tie", -1);
+  maximizer.weight($modifier`Mana Cost`, -1000).weight("Tie", -1);
   equipMaximizedGear();
 
   if (place === $location`The Smut Orc Logging Camp`) {

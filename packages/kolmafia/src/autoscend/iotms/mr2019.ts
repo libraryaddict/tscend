@@ -323,7 +323,7 @@ export function auto_sausageEatEmUp(maxToEat: number): boolean {
       "blue",
     );
     cliExecute("checkpoint");
-    maximizer.weight($modifier`Maximum MP`, 1000).weight("tie", -1);
+    maximizer.weight($modifier`Maximum MP`, 1000).weight("Tie", -1);
     equipMaximizedGear();
   }
   // I could optimize this a little more by eating more sausage at once if you have enough max mp...

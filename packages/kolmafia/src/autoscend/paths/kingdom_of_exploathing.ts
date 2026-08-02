@@ -207,7 +207,7 @@ function LX_koeInvaderHandlerDo(): boolean {
         "Attacking the Invader, using June Cleaver and LTS.",
         "blue",
       );
-      maximizer.weight("all res", 200).equip($item`June cleaver`);
+      maximizer.weight("All Resistance", 200).equip($item`June cleaver`);
       const ret: boolean = autoAdv($location`The Invader`);
       if (haveEffect($effect`Beaten Up`) > 0) {
         abort("We died to the invader. Do it manually please?");
@@ -250,7 +250,7 @@ function LX_koeInvaderHandlerDo(): boolean {
         "blue",
       );
       // Use maximizer now that we are for sure fighting the Invader
-      maximizer.weight("all res", 200);
+      maximizer.weight("All Resistance", 200);
       if (hot_source !== Item.none) {
         maximizer.equip(hot_source);
       }

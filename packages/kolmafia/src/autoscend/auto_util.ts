@@ -6277,7 +6277,7 @@ export function effectAblativeArmor(passive_dmg_allowed: boolean): void {
   //I am pretty sure non combat skills that give an effect count.
   //but I am labeling them seperate from buffs in case we ever need to split this function.
   //if you have something that reduces the cost of casting buffs, wear it now.
-  maximizer.weight($modifier`Mana Cost`, -1000).weight("tie", -1);
+  maximizer.weight($modifier`Mana Cost`, -1000).weight("Tie", -1);
   equipMaximizedGear();
   //Passive damage
   if (passive_dmg_allowed) {
@@ -6567,7 +6567,7 @@ export function auto_burnMP(mpToBurn: number): boolean {
 
   const equipped: Map<number, Item> = auto_saveEquipped();
 
-  maximizer.weight($modifier`Mana Cost`, -1000).weight("tie", -1);
+  maximizer.weight($modifier`Mana Cost`, -1000).weight("Tie", -1);
   equipMaximizedGear();
   auto_equipAprilShieldBuff(); //useful additional buffs when equipped
   // record starting MP

@@ -1342,7 +1342,9 @@ function provideStats(
       simMaximizeWith(max_1, loc);
     } else {
       for (const [st, goal] of amt) {
-        maximizer.weight(st.toString(), 200).max(st.toString(), goal);
+        maximizer
+          .weight(Modifier.get(st.toString()), 200)
+          .max(Modifier.get(st.toString()), goal);
       }
       simMaximize$1(loc);
     }

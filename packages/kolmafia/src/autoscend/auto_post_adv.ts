@@ -418,7 +418,7 @@ function auto_post_adventure(): boolean {
     return true;
   }
   //save some MP while buffing
-  maximizer.weight($modifier`Mana Cost`, -1000).weight("tie", -1);
+  maximizer.weight($modifier`Mana Cost`, -1000).weight("Tie", -1);
   equipMaximizedGear();
 
   if (haveEffect($effect`Cunctatitis`) > 0) {

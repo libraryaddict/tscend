@@ -17,7 +17,9 @@ import {
 } from "kolmafia";
 import { $familiar, $skill, $slot } from "libram";
 
-type Criterion = Modifier | string;
+import { MaximizerModifier } from "./utils/modifiers";
+
+type Criterion = Modifier | MaximizerModifier;
 
 function criterionName(mod: Criterion): string {
   return mod instanceof Modifier ? mod.name : mod;
@@ -101,12 +103,9 @@ export class Maximizer {
     return this;
   }
 
-  exclude(item: Item | Slot): this {
-    if (item instanceof Item) {
-      this.excluded.add(item);
-    } else {
-      this.disabledSlots.add(item);
-    }
+  exclude(item: Item): this {
+    this.excluded.add(item);
+
     return this;
   }
 
