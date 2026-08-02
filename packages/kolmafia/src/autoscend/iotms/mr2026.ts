@@ -161,7 +161,9 @@ export function auto_codpieceReconcileGem(gem: Item): void {
     return;
   }
 
-  const wanted: boolean = maximizer.wantsItem(gem);
+  const wanted: boolean =
+    maximizer.wantsItem(gem) ||
+    maximizer.wantsItem($item`The Eternity Codpiece`);
   const codpieceWorn: boolean = haveEquipped($item`The Eternity Codpiece`);
   const alreadyActive: boolean =
     haveEquipped(gem) || auto_isInEternityCodpiece(gem);
@@ -189,7 +191,7 @@ export function auto_codpieceReconcileGem(gem: Item): void {
     return;
   }
 
-  if (!wanted || !codpieceWorn) {
+  if (!wanted && !codpieceWorn) {
     const idx = slots.findIndex((s) => equippedItem(s) === gem);
     if (
       idx === -1 ||
