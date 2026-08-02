@@ -61,7 +61,6 @@ import {
 } from "../auto_consume";
 import { canUntinker, untinker } from "../auto_craft";
 import {
-  addToMaximize,
   autoEquipToSlot,
   possessEquipment,
   possessOutfit,
@@ -91,6 +90,7 @@ import {
   wrap_item,
 } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
+import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_gnoob } from "../paths/gelatinous_noob";
 import { in_hattrick } from "../paths/hattrick";
@@ -244,11 +244,11 @@ export function auto_forceHandleCrystalBall(loc: Location): boolean {
 
   const crystal_ball: Item = wrap_item($item`miniature crystal ball`);
   if (shouldForceEquip) {
-    addToMaximize(`+"equip ${crystal_ball.toString()}"`);
+    maximizer.equip(crystal_ball);
     setProperty("auto_nextEncounter", predicted_monster.toString());
     return true; //handled
   } else if (!auto_allowCrystalBall(predicted_monster, loc)) {
-    addToMaximize(`-"equip ${crystal_ball.toString()}"`);
+    maximizer.exclude(crystal_ball);
     return true; //handled
   }
   //equipping the crystal ball can't hurt but it is neither forced nor forbidden
@@ -314,9 +314,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
       (zoneHasWantedMonsters ? 300 : 0);
     if (crystalBallMaximizerBonus !== 0) {
       const crystal_ball: Item = wrap_item($item`miniature crystal ball`);
-      addToMaximize(
-        `+${crystalBallMaximizerBonus}"bonus ${crystal_ball.toString()}"`,
-      );
+      maximizer.bonus(crystal_ball, crystalBallMaximizerBonus);
     }
   }
 }

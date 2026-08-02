@@ -67,6 +67,7 @@ import {
   $item,
   $location,
   $locations,
+  $modifier,
   $monster,
   $monsters,
   $phyla,
@@ -631,7 +632,7 @@ export function shouldCinchoConfetti(): boolean {
   // use all free rests before using confetti. May get enough cinch to fiesta exit
   if (
     haveFreeRestAvailable() ||
-    numericModifier("Free Rests") < auto_potentialMaxFreeRests()
+    numericModifier($modifier`Free Rests`) < auto_potentialMaxFreeRests()
   ) {
     return false;
   }
@@ -906,7 +907,7 @@ export function auto_scepterSkills(): void {
   //see how much mana cost reduction we can get (up to 3mp)
   simMaximizeWith("-1000mana cost");
 
-  const manaCostMaximize: number = toInt(simValue("Mana Cost"));
+  const manaCostMaximize: number = toInt(simValue($modifier`Mana Cost`));
   if (!auto_turbo()) {
     if (
       manaCostMaximize < 3 &&

@@ -20,7 +20,7 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $path, $skill, $stat } from "libram";
+import { $effect, $item, $modifier, $path, $skill, $stat } from "libram";
 
 import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
 import { autoForceEquip$3, equipBaseline } from "../auto_equipment";
@@ -313,7 +313,9 @@ export function borisWastedMP(): void {
     return;
   }
 
-  const max_potential_mp_regen: number = numericModifier("MP Regen Max");
+  const max_potential_mp_regen: number = numericModifier(
+    $modifier`MP Regen Max`,
+  );
   const missing_mp: number = myMaxmp() - myMp();
   let potential_mp_wasted: number = 0;
   if (max_potential_mp_regen > missing_mp) {

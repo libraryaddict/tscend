@@ -33,6 +33,7 @@ import {
   $familiar,
   $item,
   $location,
+  $modifier,
   $monster,
   $phylum,
   $skill,
@@ -44,7 +45,7 @@ import {
 import { auto_advToReserve } from "../autoscend";
 import { autoAdv } from "./auto_adventure";
 import { inebriety_left, stomach_left } from "./auto_consume";
-import { addToMaximize, resetMaximize } from "./auto_equipment";
+import { resetMaximize } from "./auto_equipment";
 import {
   canChangeToFamiliar,
   handleFamiliar,
@@ -99,6 +100,7 @@ import {
   auto_remainingBurningLeavesFights,
 } from "./iotms/mr2023";
 import { auto_haveElfToilet } from "./iotms/mr2026";
+import { maximizer } from "./maximizer";
 import { in_avantGuard } from "./paths/avant_guard";
 import { inAftercore } from "./paths/casual";
 import { in_koe } from "./paths/kingdom_of_exploathing";
@@ -180,7 +182,7 @@ function LX_attemptPowerLevelDo(): boolean {
   setProperty("auto_powerLevelLastAttempted", myTurncount().toString());
 
   handleFamiliar("stat");
-  addToMaximize("100 exp");
+  maximizer.weight($modifier`Experience`, 100);
 
   auto_log_warning("I need to powerlevel", "red");
   let delay: number = toInt(getProperty("auto_powerLevelTimer"));

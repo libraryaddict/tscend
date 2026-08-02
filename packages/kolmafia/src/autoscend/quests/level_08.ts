@@ -43,6 +43,7 @@ import {
   $item,
   $items,
   $location,
+  $modifier,
   $monster,
   $skill,
   $slot,
@@ -814,14 +815,14 @@ function L8_trapperNinjaLairDo(): boolean {
     // ninja snowman does not show up if +combat is not greater than 0
     if (isAboutToPowerlevel()) {
       auto_log_info(
-        `Something is keeping us from getting a suitable combat rate for ninja snowman assassin. we can only reach: ${numericModifier("Combat Rate")}. Switching to extreme slope route`,
+        `Something is keeping us from getting a suitable combat rate for ninja snowman assassin. we can only reach: ${numericModifier($modifier`Combat Rate`)}. Switching to extreme slope route`,
         "red",
       );
       setProperty("auto_L8_extremeInstead", true.toString());
       return true;
     } else {
       auto_log_warning(
-        `Something is keeping us from getting a suitable combat rate for ninja snowman assassin. we can only reach: ${numericModifier("Combat Rate")}. Will delay and try again later`,
+        `Something is keeping us from getting a suitable combat rate for ninja snowman assassin. we can only reach: ${numericModifier($modifier`Combat Rate`)}. Will delay and try again later`,
         "red",
       );
     }

@@ -40,6 +40,7 @@ import {
   $item,
   $location,
   $locations,
+  $modifier,
   $monster,
   $skill,
   $slot,
@@ -57,7 +58,6 @@ import {
   spleen_left,
 } from "../auto_consume";
 import {
-  addToMaximize,
   auto_forceEquipSword,
   autoEquip,
   equipStatgainIncreasers$2,
@@ -101,6 +101,7 @@ import {
 } from "../iotms/mr2021";
 import { auto_haveGreyGoose } from "../iotms/mr2022";
 import { auto_habitatFightsLeft, auto_habitatMonster } from "../iotms/mr2023";
+import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
 import { is_pete } from "../paths/avatar_of_sneaky_pete";
@@ -278,7 +279,9 @@ function L7_defiledAlcove(): boolean {
 
   if (toInt(getProperty("cyrptAlcoveEvilness")) > 14 + evilBonus) {
     provideInitiative$2(850, $location`The Defiled Alcove`, true);
-    addToMaximize("100initiative 850max");
+    maximizer
+      .weight($modifier`Initiative`, 100)
+      .max($modifier`Initiative`, 850);
   }
 
   autoEquip($item`gravy boat`);
@@ -517,7 +520,9 @@ function L7_defiledCranny(): boolean {
 
     auto_MaxMLToCap(auto_convertDesiredML(149), true);
 
-    addToMaximize(`200ml ${auto_convertDesiredML(149)}max`);
+    maximizer
+      .weight($modifier`Monster Level`, 200)
+      .max($modifier`Monster Level`, auto_convertDesiredML(149));
 
     if (toInt(getProperty("cyrptCrannyEvilness")) <= 13) {
       setProperty("auto_nextEncounter", "huge ghuol");

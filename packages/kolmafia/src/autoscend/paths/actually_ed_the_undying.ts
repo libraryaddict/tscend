@@ -53,6 +53,7 @@ import {
   $items,
   $location,
   $locations,
+  $modifier,
   $path,
   $servant,
   $skill,
@@ -74,7 +75,6 @@ import {
 import { buffMaintain$2 } from "../auto_buff";
 import { autoChew, spleen_left } from "../auto_consume";
 import {
-  addToMaximize,
   autoEquip,
   autoEquipToSlot,
   equipBaseline,
@@ -111,6 +111,7 @@ import {
   auto_remainingSpeakeasyFreeFights,
   speakeasyCombat,
 } from "../iotms/mr2022";
+import { maximizer } from "../maximizer";
 import { tootGetMeat } from "../quests/level_01";
 import {
   LX_unlockHauntedBilliardsRoom,
@@ -1324,7 +1325,7 @@ function L1_ed_islandFallback(): boolean {
     return retVal;
   }
   setProperty("auto_needLegs", true.toString());
-  addToMaximize("-10ml");
+  maximizer.weight($modifier`Monster Level`, -10);
   auto_change_mcd(0);
   return autoAdv($location`The Outskirts of Cobb's Knob`);
 }

@@ -8,6 +8,7 @@ import {
   Monster,
   Phylum,
 } from "kolmafia";
+import { $modifier } from "libram";
 
 import { autoAdv, CombatMacro } from "../auto_adventure";
 import { auto_combatHandler } from "../combat/auto_combat";
@@ -75,7 +76,7 @@ function applyItemDropCap(task: QuestTask): void {
   }
 
   if (cap > 0) {
-    maximizer.max("item drop", cap);
+    maximizer.max($modifier`Item Drop`, cap);
   }
 }
 

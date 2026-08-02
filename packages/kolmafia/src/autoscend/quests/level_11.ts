@@ -83,6 +83,7 @@ import {
   $items,
   $location,
   $locations,
+  $modifier,
   $monster,
   $path,
   $phylum,
@@ -120,7 +121,6 @@ import {
   inebriety_left,
 } from "../auto_consume";
 import {
-  addToMaximize,
   autoEquip,
   autoEquipToSlot,
   autoForceEquip,
@@ -224,6 +224,7 @@ import {
   auto_spadeDigsRemaining,
   auto_wantToSpadeDigSkeleton,
 } from "../iotms/mr2026";
+import { maximizer } from "../maximizer";
 import {
   isActuallyEd,
   L9_ed_chasmStart,
@@ -2024,7 +2025,7 @@ function LX_killBaaBaaBuranDo(): boolean {
     } else {
       handleFamiliar("item");
     }
-    addToMaximize("20 item 400max");
+    maximizer.weight($modifier`Item Drop`, 20).max($modifier`Item Drop`, 400);
     // Right now clovers are "cheaper" than summons, so use clover first, but not our last.
     if (cloversAvailable() > 1) {
       return autoLuckyAdv($location`The Hidden Temple`);
@@ -2360,11 +2361,11 @@ function L11_hiddenCityDo(): boolean {
   }
 
   const weapon_ghost_dmg: number = toInt(
-    numericModifier("hot damage") +
-      numericModifier("cold damage") +
-      numericModifier("stench damage") +
-      numericModifier("sleaze damage") +
-      numericModifier("spooky damage"),
+    numericModifier($modifier`Hot Damage`) +
+      numericModifier($modifier`Cold Damage`) +
+      numericModifier($modifier`Stench Damage`) +
+      numericModifier($modifier`Sleaze Damage`) +
+      numericModifier($modifier`Spooky Damage`),
   );
   if (
     !in_robot() &&
@@ -3336,7 +3337,9 @@ function L11_mauriceSpookyravenDo(): boolean {
     }
 
     auto_MaxMLToCap(auto_convertDesiredML(82), true);
-    addToMaximize(`500ml ${auto_convertDesiredML(82)}max`);
+    maximizer
+      .weight($modifier`Monster Level`, 500)
+      .max($modifier`Monster Level`, auto_convertDesiredML(82));
 
     if (in_picky() && itemAmount($item`gumshoes`) > 0) {
       auto_change_mcd(0);
@@ -3440,7 +3443,9 @@ function L11_redZeppelin(): boolean {
     backupSetting("choiceAdventure866", (2).toString());
   }
 
-  addToMaximize("100sleaze damage,100sleaze spell damage");
+  maximizer
+    .weight($modifier`Sleaze Damage`, 100)
+    .weight($modifier`Sleaze Spell Damage`, 100);
   if (auto_is_valid$3($effect`Oiled, Slick`)) {
     auto_beachCombHead("sleaze");
   }
@@ -3511,7 +3516,8 @@ function L11_redZeppelin(): boolean {
     const fire_protestors: number =
       itemAmount($item`Flamin' Whatshisname`) > 0 ? 10 : 3;
     let sleaze_amount: number =
-      numericModifier("sleaze damage") + numericModifier("sleaze spell damage");
+      numericModifier($modifier`Sleaze Damage`) +
+      numericModifier($modifier`Sleaze Spell Damage`);
     if (auto_haveCCSC()) {
       sleaze_amount = sleaze_amount * 2;
     }
@@ -3756,7 +3762,7 @@ function L11_shenCopperheadDo(): boolean {
       auto_changeSnapperPhylum($phylum`dude`);
     }
     // monster level increases zone damage
-    addToMaximize("-10ml");
+    maximizer.weight($modifier`Monster Level`, -10);
     uneffect($effect`Ur-Kel's Aria of Annoyance`);
     if (autoAdv($location`The Copperhead Club`)) {
       if (containsText(getProperty("lastEncounter"), "Shen Copperhead, ")) {
@@ -4275,7 +4281,7 @@ function L11_palindomeDo(): boolean {
         //unfortunately the sniff condition system means if taking the nose later after using different sniffs on a dude it will only be able to whiff on the same dude
         const stuntNutDropModifierWithoutFamiliar: number = toInt(
           itemDropModifier() +
-            numericModifier("Food Drop") -
+            numericModifier($modifier`Food Drop`) -
             auto_famModifiers$2("Item Drop"),
         );
         if (stuntNutDropModifierWithoutFamiliar < 234) {

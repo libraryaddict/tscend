@@ -40,6 +40,7 @@ import {
   $item,
   $items,
   $location,
+  $modifier,
   $monster,
   $monsters,
   $phyla,
@@ -715,8 +716,8 @@ export function auto_combatDefaultStage5(
           monsterLevelAdjustment() < 150
         ) {
           const mpRegen: number =
-            (numericModifier("MP Regen Min") +
-              numericModifier("MP Regen Max")) /
+            (numericModifier($modifier`MP Regen Min`) +
+              numericModifier($modifier`MP Regen Max`)) /
             2;
           let netCost: number = 0;
 
@@ -1188,11 +1189,11 @@ export function auto_combatDefaultStage5(
     }
 
     const elementalDamage: number = toInt(
-      m_hot * numericModifier("hot damage") +
-        m_cold * numericModifier("cold damage") +
-        m_spooky * numericModifier("spooky damage") +
-        m_sleaze * numericModifier("sleaze damage") +
-        m_stench * numericModifier("stench damage"),
+      m_hot * numericModifier($modifier`Hot Damage`) +
+        m_cold * numericModifier($modifier`Cold Damage`) +
+        m_spooky * numericModifier($modifier`Spooky Damage`) +
+        m_sleaze * numericModifier($modifier`Sleaze Damage`) +
+        m_stench * numericModifier($modifier`Stench Damage`),
     );
     // try to kill within 5 turns
     if (elementalDamage * 5 < monsterHp()) {

@@ -83,6 +83,7 @@ import {
   $familiar,
   $item,
   $items,
+  $modifier,
   $monster,
   $path,
   $servant,
@@ -386,19 +387,19 @@ function pullsNeeded(data: string): number {
 
     switch (ns_crowd3()) {
       case $element`cold`:
-        crowd3score = toInt(numericModifier("cold damage") / 9);
+        crowd3score = toInt(numericModifier($modifier`Cold Damage`) / 9);
         break;
       case $element`hot`:
-        crowd3score = toInt(numericModifier("hot damage") / 9);
+        crowd3score = toInt(numericModifier($modifier`Hot Damage`) / 9);
         break;
       case $element`sleaze`:
-        crowd3score = toInt(numericModifier("sleaze damage") / 9);
+        crowd3score = toInt(numericModifier($modifier`Sleaze Damage`) / 9);
         break;
       case $element`spooky`:
-        crowd3score = toInt(numericModifier("spooky damage") / 9);
+        crowd3score = toInt(numericModifier($modifier`Spooky Damage`) / 9);
         break;
       case $element`stench`:
-        crowd3score = toInt(numericModifier("stench damage") / 9);
+        crowd3score = toInt(numericModifier($modifier`Stench Damage`) / 9);
         break;
     }
 

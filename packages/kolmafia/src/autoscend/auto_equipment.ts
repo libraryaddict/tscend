@@ -77,6 +77,7 @@ import {
   $items,
   $location,
   $locations,
+  $modifier,
   $monsters,
   $path,
   $skill,
@@ -335,7 +336,9 @@ export function equipStatgainIncreasers(
     )) {
       continue;
     }
-    const modifierString: string = `${st.toString()} experience percent`;
+    const modifierString: Modifier = Modifier.get(
+      `${st.toString()} Experience Percent`,
+    );
     if (simValue(modifierString) > numericModifier(modifierString)) {
       canIncreaseStatgains = true;
       break;
@@ -437,8 +440,8 @@ export function equipStatgainIncreasers(
   for (const sl of statgainIncreasers.keys()) {
     speculateOneItem = `"equip ${sl.toString()} ${(statgainIncreasers.get(sl) ?? statgainIncreasers.set(sl, Item.none).get(sl)).toString()};" `;
     cliExecute(`speculate quiet; ${speculateOneItem}`);
-    HPlost = toInt(myHp() - simValue("Buffed HP Maximum"));
-    MPlost = toInt(myMp() - simValue("Buffed MP Maximum"));
+    HPlost = toInt(myHp() - simValue($modifier`Buffed HP Maximum`));
+    MPlost = toInt(myMp() - simValue($modifier`Buffed MP Maximum`));
     if (HPlost <= 0 && MPlost <= 0) {
       //causes no loss so it can be equipped right now
       equip(
@@ -451,8 +454,8 @@ export function equipStatgainIncreasers(
     speculateAllItems += speculateOneItem; //otherwise speculate with all items that have been left out
     if (speculateAllItems !== speculateOneItem) {
       cliExecute(`speculate quiet; ${speculateAllItems}`);
-      HPlost = toInt(myHp() - simValue("Buffed HP Maximum"));
-      MPlost = toInt(myMp() - simValue("Buffed MP Maximum"));
+      HPlost = toInt(myHp() - simValue($modifier`Buffed HP Maximum`));
+      MPlost = toInt(myMp() - simValue($modifier`Buffed MP Maximum`));
     }
     if (HPlost > mostHPlost) {
       mostHPlost = HPlost;
@@ -524,11 +527,11 @@ export function equipStatgainIncreasers(
   for (const sl of simulatedEquipment.keys()) {
     speculateOneItem = `"equip ${sl.toString()} ${(simulatedEquipment.get(sl) ?? simulatedEquipment.set(sl, Item.none).get(sl)).toString()};" `;
     cliExecute(`speculate quiet; ${speculateOneItem}`);
-    if (simValue("Buffed HP Maximum") < myHp()) {
+    if (simValue($modifier`Buffed HP Maximum`) < myHp()) {
       //skip on collateral loss
       continue;
     }
-    if (simValue("Buffed MP Maximum") < myMp()) {
+    if (simValue($modifier`Buffed MP Maximum`) < myMp()) {
       continue;
     }
     equip(
@@ -833,9 +836,7 @@ function finalizeMaximize(speculative: boolean): void {
       dontSausageBackups ||
       toBoolean(getProperty("mappingMonsters"))
     ) {
-      addToMaximize(
-        `-"equip ${wrap_item($item`Kramco Sausage-o-Matic™`).toString()}"`,
-      );
+      maximizer.exclude(wrap_item($item`Kramco Sausage-o-Matic™`));
     }
   }
   if (auto_haveMobiusRing()) {
@@ -847,7 +848,7 @@ function finalizeMaximize(speculative: boolean): void {
       ) {
         // don't equip for non free fights in softcore? (pending allowed conditions like delay zone && none of the monsters in the zone is a sniff/YR target?)
         // don't interfere with backups or Map the Monsters
-        addToMaximize(`-"equip ${$item`Möbius ring`.toString()}"`);
+        maximizer.exclude($item`Möbius ring`);
       }
     } else {
       // we want to make sure we equip mobius ring in meatpath when it's important,
@@ -886,7 +887,7 @@ function finalizeMaximize(speculative: boolean): void {
       ) {
         // don't equip for non free fights in softcore? (pending allowed conditions like delay zone && none of the monsters in the zone is a sniff/YR target?)
         // don't interfere with backups or Map the Monsters
-        addToMaximize(`-"equip ${$item`cursed magnifying glass`.toString()}"`);
+        maximizer.exclude($item`cursed magnifying glass`);
       }
     } else if (
       !nextMonsterIsFree &&
@@ -915,7 +916,7 @@ function finalizeMaximize(speculative: boolean): void {
     if (is_werewolf()) {
       addBonusToMaximize($item`Everfull Dart Holster`, 1000);
     } else {
-      addToMaximize(`+"equip ${$item`Everfull Dart Holster`}"`);
+      maximizer.equip($item`Everfull Dart Holster`);
     }
   }
 
@@ -963,9 +964,9 @@ function finalizeMaximize(speculative: boolean): void {
     }
     if (!nooculus) {
       if (possessEquipment($item`biphasic molecular oculus`)) {
-        addToMaximize(`+"equip ${$item`biphasic molecular oculus`}"`);
+        maximizer.equip($item`biphasic molecular oculus`);
       } else {
-        addToMaximize(`+"equip ${$item`triphasic molecular oculus`}"`);
+        maximizer.equip($item`triphasic molecular oculus`);
       }
     }
   }
@@ -984,11 +985,11 @@ function finalizeMaximize(speculative: boolean): void {
       )
     ) {
       if (possessEquipment($item`high-tension exoskeleton`)) {
-        addToMaximize(`+"equip ${$item`high-tension exoskeleton`}"`);
+        maximizer.equip($item`high-tension exoskeleton`);
       } else if (possessEquipment($item`ultra-high-tension exoskeleton`)) {
-        addToMaximize(`+"equip ${$item`ultra-high-tension exoskeleton`}"`);
+        maximizer.equip($item`ultra-high-tension exoskeleton`);
       } else {
-        addToMaximize(`+"equip ${$item`irresponsible-tension exoskeleton`}"`);
+        maximizer.equip($item`irresponsible-tension exoskeleton`);
       }
     }
   }
@@ -1020,7 +1021,8 @@ function finalizeMaximize(speculative: boolean): void {
     myThrall().level < 11 &&
     (myThrall() === $thrall`Vermincelli` || myThrall() === $thrall`Spice Ghost`)
   ) {
-    addToMaximize("40 Pasta Thrall Experience"); // bonus for the thrallxp, if we have a thrall we wanna lvl up
+    // bonus for the thrallxp, if we have a thrall we wanna lvl up
+    maximizer.weight($modifier`Pasta Thrall Experience`, 40);
   }
   // We still need pixels in KoE, badly.
   if (in_koe() && auto_hasPowerfulGlove()) {
@@ -1039,7 +1041,7 @@ function finalizeMaximize(speculative: boolean): void {
     if (toBoolean(getProperty("mappingMonsters")) || auto_backupTarget()) {
       // don't interfere with backups or Map the Monsters
       // should also block equipping if support is added for Feel Nostalgic, Lecture on relativity, or fax for YR or other special combat actions
-      addToMaximize(`-"equip ${$item`carnivorous potted plant`.toString()}"`);
+      maximizer.exclude($item`carnivorous potted plant`);
     } else if (
       ((nextMonster === Monster.none || instakillable(nextMonster)) &&
         !in_pokefam() &&
@@ -1079,7 +1081,8 @@ function finalizeMaximize(speculative: boolean): void {
   }
 
   if (myLocation() === toLocation(getProperty("_seadentWaveZone"))) {
-    addToMaximize(`+"equip ${$item`Monodent of the Sea`}"`); //Don't want to spend an extra turn if we don't have to
+    //Don't want to spend an extra turn if we don't have to
+    maximizer.equip($item`Monodent of the Sea`);
   }
 
   if (
@@ -1089,11 +1092,11 @@ function finalizeMaximize(speculative: boolean): void {
     myPrimestat() !== $stat`Mysticality`
   ) {
     if (myClass() === $class`Seal Clubber` && in_glover()) {
-      addToMaximize("club");
+      maximizer.raw("club");
     } else if (in_zootomist() && getZooBestPunch() !== Skill.none) {
       // Nothing to do here. Should be a more general case of "classes that never attack with weapon"?
     } else {
-      addToMaximize("effective");
+      maximizer.raw("effective");
     }
   }
 
@@ -1187,11 +1190,7 @@ export function simMaximizeWith(
   return res;
 }
 
-export function simValue(mod: string): number {
-  return numericModifier("Generated:_spec", mod);
-}
-
-export function simValue$1(mod: Modifier): number {
+export function simValue(mod: Modifier): number {
   return numericModifier("Generated:_spec", mod);
 }
 
@@ -1217,7 +1216,8 @@ export function equipMaximizedGear(): void {
       auto_log_error(
         "It looks like the maximizer didn't equip any weapons for you. Lets dump some debugging info to help the KolMafia devs look into this.",
       );
-      addToMaximize("2 dump"); // maximizer will dump a bunch of stuff to the session log with this
+      // maximizer will dump a bunch of stuff to the session log with this
+      maximizer.raw("2 dump");
       maximizer.maximize();
       removeFromMaximize("2 dump");
       if (toBoolean(getProperty("auto_debug_maximizer"))) {

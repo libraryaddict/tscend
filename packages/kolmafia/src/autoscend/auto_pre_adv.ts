@@ -83,6 +83,7 @@ import {
   $item,
   $location,
   $locations,
+  $modifier,
   $monster,
   $skills,
   $slot,
@@ -342,7 +343,7 @@ function print_footer(): void {
     "blue",
   );
   auto_log_info(
-    `Resists: ${numericModifier("Hot Resistance")}/${numericModifier("Cold Resistance")}/${numericModifier("Stench Resistance")}/${numericModifier("Spooky Resistance")}/${numericModifier("Sleaze Resistance")}`,
+    `Resists: ${numericModifier($modifier`Hot Resistance`)}/${numericModifier($modifier`Cold Resistance`)}/${numericModifier($modifier`Stench Resistance`)}/${numericModifier($modifier`Spooky Resistance`)}/${numericModifier($modifier`Sleaze Resistance`)}`,
     "blue",
   );
   //current equipment
@@ -408,7 +409,7 @@ function auto_ghost_prep(place: Location): void {
     }
   }
   if (auto_haveDarts() && dartEleDmg()) {
-    addToMaximize(`+"equip ${$item`Everfull Dart Holster`}"`); //If we have darts and an elemental damage buff, might as well use that
+    maximizer.equip($item`Everfull Dart Holster`); //If we have darts and an elemental damage buff, might as well use that
     return;
   }
 
@@ -477,19 +478,19 @@ function auto_ghost_prep(place: Location): void {
 
   simMaximizeWith(max_with);
   if (m_hot !== 0) {
-    bonus += toInt(simValue("hot damage"));
+    bonus += toInt(simValue($modifier`Hot Damage`));
   }
   if (m_cold !== 0) {
-    bonus += toInt(simValue("cold damage"));
+    bonus += toInt(simValue($modifier`Cold Damage`));
   }
   if (m_spooky !== 0) {
-    bonus += toInt(simValue("spooky damage"));
+    bonus += toInt(simValue($modifier`Spooky Damage`));
   }
   if (m_sleaze !== 0) {
-    bonus += toInt(simValue("sleaze damage"));
+    bonus += toInt(simValue($modifier`Sleaze Damage`));
   }
   if (m_stench !== 0) {
-    bonus += toInt(simValue("stench damage"));
+    bonus += toInt(simValue($modifier`Stench Damage`));
   }
 
   if (bonus > 9) {
@@ -575,7 +576,7 @@ function auto_pre_adventure(): boolean {
     pm_updateThrall(place, false); //maybe dismiss Vampieroghi, maybe bind Spice Ghost or Vermincelli
   }
   //save some MP while buffing
-  addToMaximize("-1000mana cost, -tie");
+  maximizer.weight($modifier`Mana Cost`, -1000).weight("tie", -1);
   equipMaximizedGear();
 
   if (place === $location`The Smut Orc Logging Camp`) {
@@ -588,21 +589,25 @@ function auto_pre_adventure(): boolean {
 
   if (place === $location`Vanya's Castle`) {
     provideInitiative$2(600, $location`Vanya's Castle`, true);
-    addToMaximize("200initiative 800max");
+    maximizer
+      .weight($modifier`Initiative`, 200)
+      .max($modifier`Initiative`, 800);
   }
   if (place === $location`The Fungus Plains`) {
     provideMeat$2(450, $location`The Fungus Plains`, true);
-    addToMaximize("200meat drop 550max");
+    maximizer.weight($modifier`Meat Drop`, 200).max($modifier`Meat Drop`, 550);
   }
   if (place === $location`Megalo-City`) {
     buffMaintain$2($effect`Ghostly Shell`, 30, 1, 1); //+80 DA. 6 MP
     buffMaintain$2($effect`Astral Shell`, 30, 1, 1); //+80 DA, 10 MP
     buffMaintain$2($effect`Feeling Peaceful`, 0, 1, 1);
-    addToMaximize("200DA 600max");
+    maximizer
+      .weight($modifier`Damage Absorption`, 200)
+      .max($modifier`Damage Absorption`, 600);
   }
   if (place === $location`Hero's Field`) {
     provideItem$2(400, $location`Hero's Field`, true);
-    addToMaximize("200item 500max");
+    maximizer.weight($modifier`Item Drop`, 200).max($modifier`Item Drop`, 500);
   }
 
   let junkyardML: boolean = false;
@@ -687,12 +692,12 @@ function auto_pre_adventure(): boolean {
 
   if (place === $location`Cobb's Knob Treasury`) {
     provideMeat$2(1800, $location`Cobb's Knob Treasury`, true);
-    addToMaximize("200meat drop");
+    maximizer.weight($modifier`Meat Drop`, 200);
   }
   // need more meat than usual for skills + level in meatpath
   // as of 2026-03-30 this values meat drop double item drop in the default maximizer statement
   if (in_amw() && myLevel() < 13) {
-    addToMaximize("10meat");
+    maximizer.weight($modifier`Meat Drop`, 10);
   }
   // this calls the appropriate provider for +combat or -combat depending on the zone we are about to adventure in..
   const burningDelay: boolean = auto_burningDelay();
@@ -803,8 +808,9 @@ function auto_pre_adventure(): boolean {
       (zoneHasUnwantedMonsters ? 300 : 0) +
       (zoneHasWantedMonsters ? 300 : 0);
     if (crystalBallMaximizerBonus !== 0) {
-      addToMaximize(
-        `+${crystalBallMaximizerBonus}"bonus ${wrap_item($item`miniature crystal ball`).toString()}"`,
+      maximizer.bonus(
+        wrap_item($item`miniature crystal ball`),
+        crystalBallMaximizerBonus,
       );
     }
   }
@@ -961,7 +967,7 @@ function auto_pre_adventure(): boolean {
   if (wantBCZRefractedGaze) {
     // Peridot doesn't work with refracted gaze, so keep Peridot of Peril off and bring BCZ instead.
     if (auto_havePeridot()) {
-      addToMaximize(`-"equip ${$item`Peridot of Peril`}"`);
+      maximizer.exclude($item`Peridot of Peril`);
     }
 
     autoEquip(auto_getItemToEquipBCZ());
@@ -1242,7 +1248,7 @@ function auto_pre_adventure(): boolean {
   // If we are in some state where we do not want +ML (Level 13 or Smut Orc) make sure ML is removed
   if (removeML) {
     auto_change_mcd(0);
-    addToMaximize("-10ml");
+    maximizer.weight($modifier`Monster Level`, -10);
     uneffect($effect`Driving Recklessly`);
     uneffect($effect`Ur-Kel's Aria of Annoyance`);
 
@@ -1268,7 +1274,7 @@ function auto_pre_adventure(): boolean {
   ) {
     if (toInt(getProperty("auto_MLSafetyLimit")) === -1) {
       // prevent all ML being equiped if limit is -1 and equip lowest possible ML including going negative
-      addToMaximize("-1000ml");
+      maximizer.weight($modifier`Monster Level`, -1000);
     } else if (
       toInt(getProperty("auto_MLSafetyLimit")) <= highest_available_mcd()
     ) {
@@ -1277,7 +1283,10 @@ function auto_pre_adventure(): boolean {
       //0max would just tell the maximizer to add +0 value to ML over 0 which is the same as not giving any value for ML
     } else {
       // note: maximizer will allow to go above the max value, ML just won't contribute to the total score after the max value
-      addToMaximize(`ml ${toInt(getProperty("auto_MLSafetyLimit"))}max`);
+      maximizer.max(
+        $modifier`Monster Level`,
+        toInt(getProperty("auto_MLSafetyLimit")),
+      );
     }
   }
   // Last minute switching for garbage tote. But only if nothing called on januaryToteAcquire this turn.

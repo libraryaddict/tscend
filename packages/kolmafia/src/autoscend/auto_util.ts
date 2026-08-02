@@ -162,6 +162,7 @@ import {
   $items,
   $location,
   $locations,
+  $modifier,
   $monster,
   $monsters,
   $path,
@@ -203,7 +204,6 @@ import {
   stomach_left,
 } from "./auto_consume";
 import {
-  addToMaximize,
   auto_loadEquipped,
   auto_saveEquipped,
   autoEquip,
@@ -337,6 +337,7 @@ import {
   auto_canARBSupplyDrop,
   auto_haveARB,
 } from "./iotms/ttt";
+import { maximizer } from "./maximizer";
 import { handleServant, isActuallyEd } from "./paths/actually_ed_the_undying";
 import { in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";
@@ -413,7 +414,7 @@ export function almostRollover(): boolean {
 }
 
 export function needToConsumeForEmergencyRollover(): boolean {
-  let max_bonus_adv: number = round(numericModifier("adventures"));
+  let max_bonus_adv: number = round(numericModifier($modifier`Adventures`));
   for (const [, rec] of maximize("adventures", 0, 0, true, true).entries()) {
     if (rec.item !== Item.none) {
       max_bonus_adv += toInt(rec.score);
@@ -4276,14 +4277,14 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
   if (baseDropRate > 0) {
     if (itemType(it) === "food") {
       //todo? cooking ingredients
-      item_modifier += numericModifier("Food Drop");
+      item_modifier += numericModifier($modifier`Food Drop`);
     }
     if (itemType(it) === "booze") {
       //todo? cocktailcrafting ingredients
-      item_modifier += numericModifier("Booze Drop");
+      item_modifier += numericModifier($modifier`Booze Drop`);
     }
     if (it.candy) {
-      item_modifier += numericModifier("Candy Drop");
+      item_modifier += numericModifier($modifier`Candy Drop`);
     }
     if (
       toSlot(it) !== Slot.none &&
@@ -4291,25 +4292,25 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
         toSlot(it),
       )
     ) {
-      item_modifier += numericModifier("Gear Drop");
+      item_modifier += numericModifier($modifier`Gear Drop`);
 
       if (toSlot(it) === $slot`hat`) {
-        item_modifier += numericModifier("Hat Drop");
+        item_modifier += numericModifier($modifier`Hat Drop`);
       }
       if (toSlot(it) === $slot`shirt`) {
-        item_modifier += numericModifier("Shirt Drop");
+        item_modifier += numericModifier($modifier`Shirt Drop`);
       }
       if (toSlot(it) === $slot`weapon`) {
-        item_modifier += numericModifier("Weapon Drop");
+        item_modifier += numericModifier($modifier`Weapon Drop`);
       }
       if (toSlot(it) === $slot`off-hand`) {
-        item_modifier += numericModifier("Offhand Drop");
+        item_modifier += numericModifier($modifier`Offhand Drop`);
       }
       if (toSlot(it) === $slot`pants`) {
-        item_modifier += numericModifier("Pants Drop");
+        item_modifier += numericModifier($modifier`Pants Drop`);
       }
       if ($slots`acc1, acc2, acc3`.includes(toSlot(it))) {
-        item_modifier += numericModifier("Accessory Drop");
+        item_modifier += numericModifier($modifier`Accessory Drop`);
       }
     }
   }
@@ -4328,7 +4329,7 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
 
     if (in_heavyrains()) {
       let depth: number = toInt(
-        myLocation().waterLevel + numericModifier("Water Level"),
+        myLocation().waterLevel + numericModifier($modifier`Water Level`),
       );
       depth = max(1, depth);
       depth = min(6, depth);
@@ -6276,7 +6277,7 @@ export function effectAblativeArmor(passive_dmg_allowed: boolean): void {
   //I am pretty sure non combat skills that give an effect count.
   //but I am labeling them seperate from buffs in case we ever need to split this function.
   //if you have something that reduces the cost of casting buffs, wear it now.
-  addToMaximize("-1000mana cost, -tie");
+  maximizer.weight($modifier`Mana Cost`, -1000).weight("tie", -1);
   equipMaximizedGear();
   //Passive damage
   if (passive_dmg_allowed) {
@@ -6566,7 +6567,7 @@ export function auto_burnMP(mpToBurn: number): boolean {
 
   const equipped: Map<number, Item> = auto_saveEquipped();
 
-  addToMaximize("-1000mana cost, -tie");
+  maximizer.weight($modifier`Mana Cost`, -1000).weight("tie", -1);
   equipMaximizedGear();
   auto_equipAprilShieldBuff(); //useful additional buffs when equipped
   // record starting MP
@@ -6949,7 +6950,7 @@ export function pm_updateThrall(
     myMp() >= 1.2 * mpCost(Skill.get("Bind Spice Ghost")) &&
     auto_have_skill(Skill.get("Bind Spice Ghost")) &&
     myDaycount() > 1 &&
-    toInt(numericModifier("MP Regen Min")) > 9;
+    toInt(numericModifier($modifier`MP Regen Min`)) > 9;
   if (going_to_eat) {
     // if we are consuming food and our spice thrall is lvl 11 (with pasta wand or spice whorl), +2 advs 1/day
     if (

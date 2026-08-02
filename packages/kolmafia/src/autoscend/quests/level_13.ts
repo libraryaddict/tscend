@@ -71,6 +71,7 @@ import {
   $items,
   $location,
   $locations,
+  $modifier,
   $monster,
   $skill,
   $skills,
@@ -96,7 +97,6 @@ import {
 } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import {
-  addToMaximize,
   autoEquip,
   autoEquipToSlot,
   autoForceEquip,
@@ -170,6 +170,7 @@ import {
   auto_remainingCandyCaneSlashes,
 } from "../iotms/mr2023";
 import { beretBusk } from "../iotms/mr2025";
+import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { is_boris } from "../paths/avatar_of_boris";
@@ -727,7 +728,7 @@ function L13_towerNSContestsDo(): boolean {
   }
 
   function crowd1Insufficient(): boolean {
-    return numericModifier("Initiative") < 400.0;
+    return numericModifier($modifier`Initiative`) < 400.0;
   }
 
   let crowd_stat: Stat = ns_crowd2();
@@ -1777,7 +1778,7 @@ function L13_towerNSTowerBones(): boolean {
     setProperty("auto_disableFamiliarChanging", true.toString());
   }
   if (myFamiliar() !== Familiar.none) {
-    addToMaximize("-familiar");
+    maximizer.raw("-familiar");
     equip($slot`familiar`, Item.none);
     // Try just boosting weight
     for (const [, it] of auto_getListOfNonDamagingFamiliarEquipment()) {
@@ -1789,22 +1790,26 @@ function L13_towerNSTowerBones(): boolean {
   }
 
   if (auto_remainingCandyCaneSlashes() > 0) {
-    addToMaximize(`+"equip ${$item`candy cane sword cane`}"`);
+    maximizer.equip($item`candy cane sword cane`);
   }
 
   if (possessEquipment($item`big hot pepper`)) {
-    addToMaximize(`+"equip ${$item`big hot pepper`}"`);
+    maximizer.equip($item`big hot pepper`);
   }
 
   for (const lantern of $items`Congressional Medal of Insanity, petrified wood water purifier, petrified wood wizard's pouch`) {
     acquireOrPull(lantern);
     if (possessEquipment(lantern)) {
-      addToMaximize(`+"equip ${lantern}"`);
+      maximizer.equip(lantern);
       break; // we only need to pull one megalantern
     }
   }
 
-  addToMaximize("100myst,60spell damage percent,20spell damage,-20ml");
+  maximizer
+    .weight($modifier`Mysticality`, 100)
+    .weight($modifier`Spell Damage Percent`, 60)
+    .weight($modifier`Spell Damage`, 20)
+    .weight($modifier`Monster Level`, -20);
   equipMaximizedGear();
   for (const s of $slots`acc1, acc2, acc3`) {
     if (equippedItem(s) === $item`Hand in Glove`) {
@@ -1814,12 +1819,12 @@ function L13_towerNSTowerBones(): boolean {
 
   function saucegeyserDamage(): number {
     const base: number = ceil(
-      (numericModifier("Spell Damage Percent") / 100.0) *
+      (numericModifier($modifier`Spell Damage Percent`) / 100.0) *
         (60 +
-          numericModifier("Spell Damage") +
+          numericModifier($modifier`Spell Damage`) +
           max(
-            numericModifier("Hot Spell Damage"),
-            numericModifier("Cold Spell Damage"),
+            numericModifier($modifier`Hot Spell Damage`),
+            numericModifier($modifier`Cold Spell Damage`),
           ) +
           0.4 * myBuffedstat($stat`Mysticality`)),
     );
@@ -2068,7 +2073,15 @@ function L13_towerNSFinalDo(): boolean {
 
   handleFamiliar("boss");
 
-  addToMaximize("10dr,3moxie,0.5da 1000max,-5ml,1.5hp,0item,0meat");
+  maximizer
+    .weight($modifier`Damage Reduction`, 10)
+    .weight($modifier`Moxie`, 3)
+    .weight($modifier`Damage Absorption`, 0.5)
+    .max($modifier`Damage Absorption`, 1000)
+    .weight($modifier`Monster Level`, -5)
+    .weight($modifier`Maximum HP`, 1.5)
+    .weight($modifier`Item Drop`, 0)
+    .weight($modifier`Meat Drop`, 0);
   autoEquipToSlot($slot`acc2`, $item`attorney's badge`);
   //AoSOL buffs
   if (in_aosol()) {

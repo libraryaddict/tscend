@@ -45,6 +45,7 @@ import {
   $familiar,
   $familiars,
   $item,
+  $modifier,
   $servant,
   $skill,
   $slot,
@@ -67,7 +68,6 @@ import {
   stomach_left,
 } from "./auto_consume";
 import {
-  addToMaximize,
   autoEquip,
   possessEquipment,
   simMaximize,
@@ -148,6 +148,7 @@ import {
 } from "./iotms/mr2025";
 import { auto_getDrinkCupOfThirteenForEffect } from "./iotms/mr2026";
 import { ARBSupplyDrop, auto_canARBSupplyDrop } from "./iotms/ttt";
+import { maximizer } from "./maximizer";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_canAfford, in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";
@@ -180,7 +181,7 @@ export function providePlusCombat(
     useFamiliar(Familiar.none);
   }
 
-  const alreadyHave: number = numericModifier("Combat Rate");
+  const alreadyHave: number = numericModifier($modifier`Combat Rate`);
   const need: number = amt - alreadyHave;
 
   if (need > 0) {
@@ -194,7 +195,7 @@ export function providePlusCombat(
   let delta: number = 0;
 
   function result$4(): number {
-    return numericModifier("Combat Rate") + delta;
+    return numericModifier($modifier`Combat Rate`) + delta;
   }
 
   if (doEquips) {
@@ -202,10 +203,14 @@ export function providePlusCombat(
     if (speculative) {
       simMaximizeWith(max_1, loc);
     } else {
-      addToMaximize(max_1);
+      maximizer
+        .weight($modifier`Combat Rate`, 200)
+        .max($modifier`Combat Rate`, amt);
       simMaximize$1(loc);
     }
-    delta = simValue("Combat Rate") - numericModifier("Combat Rate");
+    delta =
+      simValue($modifier`Combat Rate`) -
+      numericModifier($modifier`Combat Rate`);
     auto_log_debug(`With gear we can get to ${result$4()}`);
   }
 
@@ -390,7 +395,7 @@ export function providePlusNonCombat(
   }
   // numeric_modifier will return -combat as a negative value and +combat as a positive value
   // so we will need to invert the return values otherwise this will be wrong (since amt is supposed to be positive).
-  const alreadyHave: number = -1.0 * numericModifier("Combat Rate");
+  const alreadyHave: number = -1.0 * numericModifier($modifier`Combat Rate`);
   const need: number = amt - alreadyHave;
 
   if (need > 0) {
@@ -404,7 +409,7 @@ export function providePlusNonCombat(
   let delta: number = 0;
 
   function result$5(): number {
-    return -1.0 * numericModifier("Combat Rate") + delta;
+    return -1.0 * numericModifier($modifier`Combat Rate`) + delta;
   }
 
   if (doEquips) {
@@ -412,11 +417,14 @@ export function providePlusNonCombat(
     if (speculative) {
       simMaximizeWith(max_1);
     } else {
-      addToMaximize(max_1);
+      maximizer
+        .weight($modifier`Combat Rate`, -200)
+        .max($modifier`Combat Rate`, amt);
       simMaximize();
     }
     delta =
-      -1.0 * simValue("Combat Rate") - -1.0 * numericModifier("Combat Rate");
+      -1.0 * simValue($modifier`Combat Rate`) -
+      -1.0 * numericModifier($modifier`Combat Rate`);
     auto_log_debug(`With gear we can get to ${result$5()}`);
   }
 
@@ -669,7 +677,7 @@ export function provideInitiative(
     "blue",
   );
 
-  const alreadyHave: number = numericModifier("Initiative");
+  const alreadyHave: number = numericModifier($modifier`Initiative`);
   const need: number = amt - alreadyHave;
 
   if (need > 0) {
@@ -683,7 +691,7 @@ export function provideInitiative(
   let delta: number = 0;
 
   function result$1(): number {
-    return numericModifier("Initiative") + delta;
+    return numericModifier($modifier`Initiative`) + delta;
   }
 
   if (doEquips) {
@@ -691,10 +699,13 @@ export function provideInitiative(
     if (speculative) {
       simMaximizeWith(max_1, loc);
     } else {
-      addToMaximize(max_1);
+      maximizer
+        .weight($modifier`Initiative`, 500)
+        .max($modifier`Initiative`, amt);
       simMaximize$1(loc);
     }
-    delta = simValue("Initiative") - numericModifier("Initiative");
+    delta =
+      simValue($modifier`Initiative`) - numericModifier($modifier`Initiative`);
     auto_log_debug(`With gear we can get to ${result$1()}`);
   }
 
@@ -881,7 +892,7 @@ export function provideInitiative(
       buffMaintain$2($effect`Bow-Legged Swagger`, 0, 1, 1, speculative)
     ) {
       if (speculative) {
-        delta += delta + numericModifier("Initiative");
+        delta += delta + numericModifier($modifier`Initiative`);
       }
       auto_log_debug(
         `With Bow-Legged Swagger we ${speculative ? "can get to" : "now have"} ${result$1()}`,
@@ -950,8 +961,8 @@ export function provideResistances(
           toInt(
             min(
               0,
-              simValue(`${ele} resistance`) -
-                numericModifier(`${ele} resistance`),
+              simValue(Modifier.get(`${ele} Resistance`)) -
+                numericModifier(Modifier.get(`${ele} Resistance`)),
             ),
           ),
         );
@@ -1039,7 +1050,9 @@ export function provideResistances(
       simMaximizeWith(max_1, loc);
     } else {
       for (const [ele, goal] of amt) {
-        addToMaximize(`2000${ele} resistance ${goal}max`);
+        maximizer
+          .weight(Modifier.get(`${ele} resistance`), 2000)
+          .max(Modifier.get(`${ele} resistance`), goal);
       }
       simMaximize$1(loc);
     }
@@ -1047,7 +1060,8 @@ export function provideResistances(
       delta.set(
         ele,
         toInt(
-          simValue(`${ele} Resistance`) - numericModifier(`${ele} Resistance`),
+          simValue(Modifier.get(`${ele} Resistance`)) -
+            numericModifier(Modifier.get(`${ele} Resistance`)),
         ),
       );
     }
@@ -1148,8 +1162,8 @@ export function provideResistances(
         delta.set(
           ele,
           toInt(
-            simValue(`${ele} Resistance`) -
-              numericModifier(`${ele} Resistance`),
+            simValue(Modifier.get(`${ele} Resistance`)) -
+              numericModifier(Modifier.get(`${ele} Resistance`)),
           ),
         );
       }
@@ -1328,12 +1342,12 @@ function provideStats(
       simMaximizeWith(max_1, loc);
     } else {
       for (const [st, goal] of amt) {
-        addToMaximize(`200${st} ${goal}max`);
+        maximizer.weight(st.toString(), 200).max(st.toString(), goal);
       }
       simMaximize$1(loc);
     }
     for (const st of amt.keys()) {
-      delta.set(st, simValue(`Buffed ${st}`) - myBuffedstat(st));
+      delta.set(st, simValue(Modifier.get(`Buffed ${st}`)) - myBuffedstat(st));
     }
     auto_log_debug(`With gear we can get to ${resultstring$1()}`);
   }
@@ -1552,7 +1566,7 @@ function provideMeat(
     `${speculative ? "Checking if we can" : "Trying to"} provide ${amt} meat, ${doEverything ? "with" : "without"} equipment, familiar, and limited buffs`,
     "blue",
   );
-  const alreadyHave: number = numericModifier("Meat Drop");
+  const alreadyHave: number = numericModifier($modifier`Meat Drop`);
   const need: number = amt - alreadyHave;
   if (need > 0) {
     auto_log_debug(
@@ -1564,7 +1578,7 @@ function provideMeat(
   }
   let delta: number = 0;
   function result$3(): number {
-    return numericModifier("Meat Drop") + delta;
+    return numericModifier($modifier`Meat Drop`) + delta;
   }
   function pass$3(): boolean {
     return result$3() >= amt;
@@ -1578,10 +1592,13 @@ function provideMeat(
     if (speculative) {
       simMaximizeWith(max_1, loc);
     } else {
-      addToMaximize(max_1);
+      maximizer
+        .weight($modifier`Meat Drop`, 500)
+        .max($modifier`Meat Drop`, amt + 100);
       simMaximize$1(loc);
     }
-    delta = simValue("Meat Drop") - numericModifier("Meat Drop");
+    delta =
+      simValue($modifier`Meat Drop`) - numericModifier($modifier`Meat Drop`);
     auto_log_debug(`With existing gear we can get to ${result$3()}`);
     if (pass$3()) {
       return result$3();
@@ -1819,10 +1836,13 @@ function provideMeat(
     if (speculative) {
       simMaximizeWith(max_1, loc);
     } else {
-      addToMaximize(max_1);
+      maximizer
+        .weight($modifier`Meat Drop`, 500)
+        .max($modifier`Meat Drop`, amt + 100);
       simMaximize$1(loc);
     }
-    delta = simValue("Meat Drop") - numericModifier("Meat Drop");
+    delta =
+      simValue($modifier`Meat Drop`) - numericModifier($modifier`Meat Drop`);
     auto_log_debug(
       `With existing and crafted gear we can get to ${result$3()}`,
     );
@@ -2037,7 +2057,7 @@ function provideItem(
     "blue",
   );
 
-  const alreadyHave: number = numericModifier("Item Drop");
+  const alreadyHave: number = numericModifier($modifier`Item Drop`);
   const need: number = amt - alreadyHave;
 
   if (need > 0) {
@@ -2052,7 +2072,7 @@ function provideItem(
   let delta: number = 0;
 
   function result$2(): number {
-    return numericModifier("Item Drop") + delta;
+    return numericModifier($modifier`Item Drop`) + delta;
   }
 
   function pass$2(): boolean {
@@ -2068,10 +2088,13 @@ function provideItem(
     if (speculative) {
       simMaximizeWith(max_1, loc);
     } else {
-      addToMaximize(max_1);
+      maximizer
+        .weight($modifier`Item Drop`, 500)
+        .max($modifier`Item Drop`, amt + 100);
       simMaximize$1(loc);
     }
-    delta = simValue("Item Drop") - numericModifier("Item Drop");
+    delta =
+      simValue($modifier`Item Drop`) - numericModifier($modifier`Item Drop`);
     auto_log_debug(`With existing gear we can get to ${result$2()}`);
 
     if (pass$2()) {
@@ -2244,19 +2267,23 @@ function provideItem(
 
   if (
     itemFoodNeed._boolean &&
-    result$2() + simValue("Food Drop") < itemFoodNeed._float
+    result$2() + simValue($modifier`Food Drop`) < itemFoodNeed._float
   ) {
     auto_log_debug("Trying food drop supplements");
     //max at start of an expression with item and food drop is ineffective in combining them, have to let the maximizer try to add on top
-    addToMaximize(`49food drop ${ceil(itemFoodNeed._float)}max`);
+    maximizer
+      .weight($modifier`Food Drop`, 49)
+      .max($modifier`Food Drop`, ceil(itemFoodNeed._float));
     simMaximize();
   }
   if (
     itemBoozeNeed._boolean &&
-    result$2() + simValue("Booze Drop") < itemBoozeNeed._float
+    result$2() + simValue($modifier`Booze Drop`) < itemBoozeNeed._float
   ) {
     auto_log_debug("Trying booze drop supplements");
-    addToMaximize(`49booze drop ${ceil(itemBoozeNeed._float)}max`);
+    maximizer
+      .weight($modifier`Booze Drop`, 49)
+      .max($modifier`Booze Drop`, ceil(itemBoozeNeed._float));
     simMaximize();
     //no zone item yet needs both food and booze, bottle of Chateau de Vinegar exception is a cooking ingredient but doesn't use food drop bonus
   }
@@ -2292,10 +2319,13 @@ function provideItem(
     if (speculative) {
       simMaximizeWith(max_1, loc);
     } else {
-      addToMaximize(max_1);
+      maximizer
+        .weight($modifier`Item Drop`, 500)
+        .max($modifier`Item Drop`, amt + 100);
       simMaximize$1(loc);
     }
-    delta = simValue("Item Drop") - numericModifier("Item Drop");
+    delta =
+      simValue($modifier`Item Drop`) - numericModifier($modifier`Item Drop`);
     auto_log_debug(
       `With existing and crafted gear we can get to ${result$2()}`,
     );
@@ -2311,7 +2341,7 @@ function provideItem(
       buffMaintain$2($effect`Steely-Eyed Squint`, 0, 1, 1, speculative)
     ) {
       if (speculative) {
-        delta += delta + numericModifier("Item Drop");
+        delta += delta + numericModifier($modifier`Item Drop`);
       }
       auto_log_debug(
         `With Steely Eyed Squint we ${speculative ? "can get to" : "now have"} ${result$2()}`,
@@ -2491,7 +2521,8 @@ export function provideFamExp(
     "blue",
   );
 
-  const alreadyHave: number = numericModifier("Familiar Experience") + 1; //default of 1 fam exp per combat
+  const alreadyHave: number =
+    numericModifier($modifier`Familiar Experience`) + 1; //default of 1 fam exp per combat
   const need: number = amt - alreadyHave;
 
   if (need > 0) {
@@ -2506,7 +2537,7 @@ export function provideFamExp(
   let delta: number = 0;
 
   function result(): number {
-    return numericModifier("Familiar Experience") + 1 + delta;
+    return numericModifier($modifier`Familiar Experience`) + 1 + delta;
   }
 
   function pass(): boolean {
@@ -2522,11 +2553,14 @@ export function provideFamExp(
     if (speculative) {
       simMaximizeWith(max_1, loc);
     } else {
-      addToMaximize(max_1);
+      maximizer
+        .weight($modifier`Familiar Experience`, 1000)
+        .max($modifier`Familiar Experience`, amt + 10);
       simMaximize$1(loc);
     }
     delta =
-      simValue("Familiar Experience") - numericModifier("Familiar Experience");
+      simValue($modifier`Familiar Experience`) -
+      numericModifier($modifier`Familiar Experience`);
     auto_log_debug(`With existing gear we can get to ${result()}`);
 
     if (pass()) {
@@ -2588,11 +2622,14 @@ export function provideFamExp(
     if (speculative) {
       simMaximizeWith(max_1, loc);
     } else {
-      addToMaximize(max_1);
+      maximizer
+        .weight($modifier`Familiar Experience`, 1000)
+        .max($modifier`Familiar Experience`, amt + 100);
       simMaximize$1(loc);
     }
     delta =
-      simValue("familiar experience") - numericModifier("familiar experience");
+      simValue($modifier`Familiar Experience`) -
+      numericModifier($modifier`Familiar Experience`);
     auto_log_debug(`With existing and crafted gear we can get to ${result()}`);
 
     if (pass()) {

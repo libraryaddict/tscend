@@ -62,7 +62,6 @@ import {
   spleen_left,
 } from "../auto_consume";
 import {
-  addToMaximize,
   autoEquip,
   autoForceEquip$3,
   autoOutfit,
@@ -94,6 +93,7 @@ import {
 import { auto_wishesAvailable, makeGenieWish } from "../iotms/mr2017";
 import { januaryToteAcquire } from "../iotms/mr2018";
 import { auto_haveTearawayPants } from "../iotms/mr2024";
+import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { in_darkGyffte } from "../paths/dark_gyffte";
@@ -1146,7 +1146,7 @@ function LX_joinPirateCrewObligatoryCove(): boolean {
     return true;
   } else {
     auto_log_info("Insult gathering party.", "blue");
-    addToMaximize("-outfit Swashbuckling Getup");
+    maximizer.raw("-outfit Swashbuckling Getup");
     // If we're wearing the pirate outfit already, autoAdv will fail to adventure
     // in the cove since the zone isn't available unless we remove it (which wouldn't happen until auto_pre_adv runs)
     autoStripOutfit("Swashbuckling Getup");
@@ -1586,8 +1586,9 @@ function LX_acquireEpicWeaponDo(): boolean {
     );
   }
 
-  addToMaximize(
-    `-"equip ${($_f_starterWeapons.get(myClass()) ?? $_f_starterWeapons.set(myClass(), Item.none).get(myClass())).toString()}"`,
+  maximizer.exclude(
+    $_f_starterWeapons.get(myClass()) ??
+      $_f_starterWeapons.set(myClass(), Item.none).get(myClass()),
   );
   if (tomb_already_found()) {
     return autoAdvBypass$1("place.php?whichplace=cemetery&action=cem_advtomb");

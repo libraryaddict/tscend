@@ -53,6 +53,7 @@ import {
   $familiar,
   $item,
   $location,
+  $modifier,
   $phylum,
   $skill,
   $slots,
@@ -68,7 +69,6 @@ import {
   stomach_left,
 } from "../auto_consume";
 import {
-  addToMaximize,
   autoEquip,
   equipMaximizedGear,
   possessEquipment,
@@ -96,6 +96,7 @@ import {
   wrap_item,
 } from "../auto_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
+import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_darkGyffte } from "../paths/dark_gyffte";
 import { in_lowkeysummer } from "../paths/low_key_summer";
@@ -322,7 +323,7 @@ export function auto_sausageEatEmUp(maxToEat: number): boolean {
       "blue",
     );
     cliExecute("checkpoint");
-    addToMaximize("1000mp,-tie");
+    maximizer.weight($modifier`Maximum MP`, 1000).weight("tie", -1);
     equipMaximizedGear();
   }
   // I could optimize this a little more by eating more sausage at once if you have enough max mp...

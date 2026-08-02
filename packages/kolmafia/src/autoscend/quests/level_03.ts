@@ -9,6 +9,7 @@ import {
   haveEffect,
   haveSkill,
   lastMonster,
+  Modifier,
   monsterLevelAdjustment,
   myDaycount,
   myLevel,
@@ -28,6 +29,7 @@ import {
   $item,
   $items,
   $location,
+  $modifier,
   $monster,
   $skill,
 } from "libram";
@@ -36,12 +38,10 @@ import { pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import {
-  addToMaximize,
   possessEquipment,
   resetMaximize,
   simMaximizeWith,
   simValue,
-  simValue$1,
 } from "../auto_equipment";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import { providePlusCombat, providePlusNonCombat$2 } from "../auto_providers";
@@ -58,6 +58,7 @@ import {
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { auto_beachCombHead } from "../iotms/mr2019";
+import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_glover } from "../paths/g_lover";
 import { in_wereprof } from "../paths/wereprofessor";
@@ -154,7 +155,7 @@ function auto_tavern(): boolean {
     // We pass an elemental damage check if we have 20 damage for that element
     let n: number = 0;
     for (const el of $elements`hot, cold, spooky, stench`) {
-      if (simValue$1(damageModifier(el)) >= 20.0) {
+      if (simValue(damageModifier(el)) >= 20.0) {
         n++;
       }
     }
@@ -183,15 +184,20 @@ function auto_tavern(): boolean {
   ]);
   let capped: number = 0;
   for (const [ele, choicenum] of eleChoiceCombos) {
-    const passed: boolean = simValue(`${ele} Damage`) >= 20.0;
+    const passed: boolean = simValue(Modifier.get(`${ele} Damage`)) >= 20.0;
     setProperty(`choiceAdventure${choicenum}`, passed ? "2" : "1");
     if (passed) {
       ++capped;
       //adding a 20min argument does not yield better combinations nor avoid giving value to failed elements
-      addToMaximize(`80${ele} Damage 20max`); //only give value to elements that will pass
+      //only give value to elements that will pass
+      maximizer
+        .weight(Modifier.get(`${ele} Damage`), 80)
+        .max(Modifier.get(`${ele} Damage`), 20);
     }
   }
-  addToMaximize(`500ml ${auto_convertDesiredML(max_ml_target)}max`);
+  maximizer
+    .weight($modifier`Monster Level`, 500)
+    .max($modifier`Monster Level`, auto_convertDesiredML(max_ml_target));
 
   if (capped >= 3) {
     providePlusNonCombat$2(auto_combatModCap(), $location`Noob Cave`);
@@ -314,10 +320,10 @@ function L3_tavernReady(): boolean {
   }
 
   const enoughElement: boolean =
-    numericModifier("cold damage") >= 20 &&
-    numericModifier("hot damage") >= 20 &&
-    numericModifier("spooky damage") >= 20 &&
-    numericModifier("stench damage") >= 20;
+    numericModifier($modifier`Cold Damage`) >= 20 &&
+    numericModifier($modifier`Hot Damage`) >= 20 &&
+    numericModifier($modifier`Spooky Damage`) >= 20 &&
+    numericModifier($modifier`Stench Damage`) >= 20;
 
   let delayTavern: boolean = false;
 

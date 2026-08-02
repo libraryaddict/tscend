@@ -28,6 +28,7 @@ import {
   $item,
   $location,
   $locations,
+  $modifier,
   $monster,
   $path,
   $phylum,
@@ -42,7 +43,6 @@ import {
   autoAdvBypass$1,
 } from "../auto_adventure";
 import {
-  addToMaximize,
   autoEquip,
   autoEquipToSlot,
   possessEquipment,
@@ -67,6 +67,7 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { maximizer } from "../maximizer";
 import { inAftercore } from "./casual";
 
 //Defined in autoscend/paths/bugbear_invasion.ash
@@ -454,7 +455,7 @@ function LX_bugbearGallery(): boolean {
     return false;
   }
 
-  addToMaximize("1000ml");
+  maximizer.weight($modifier`Monster Level`, 1000);
 
   auto_log_info(`Clearing Bugbear Mothership - ${loc}`, "blue");
 
@@ -506,7 +507,15 @@ function LX_bugbearBridge(): boolean {
 
   handleFamiliar("boss");
 
-  addToMaximize("10dr,3moxie,0.5da 1000max,-5ml,1.5hp,0item,0meat");
+  maximizer
+    .weight($modifier`Damage Reduction`, 10)
+    .weight($modifier`Moxie`, 3)
+    .weight($modifier`Damage Absorption`, 0.5)
+    .max($modifier`Damage Absorption`, 1000)
+    .weight($modifier`Monster Level`, -5)
+    .weight($modifier`Maximum HP`, 1.5)
+    .weight($modifier`Item Drop`, 0)
+    .weight($modifier`Meat Drop`, 0);
 
   if (itemAmount($item`Jeff Goldblum larva`) > 0) {
     autoAdvBypass$1("place.php?whichplace=bugbearship&action=bb_bridge");

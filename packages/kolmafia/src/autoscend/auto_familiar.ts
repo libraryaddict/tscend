@@ -43,6 +43,7 @@ import {
   $items,
   $location,
   $locations,
+  $modifier,
   $slot,
 } from "libram";
 
@@ -201,10 +202,10 @@ export function auto_famKill(fam: Familiar, place: Location): boolean {
   }
 
   const passiveDamage: number = toInt(
-    numericModifier("Damage Aura") +
+    numericModifier($modifier`Damage Aura`) +
       numericModifier("Sporadic Damage Aura ") +
-      numericModifier("Thorns") +
-      numericModifier("Sporadic Thorns"),
+      numericModifier($modifier`Thorns`) +
+      numericModifier($modifier`Sporadic Thorns`),
   );
 
   for (const [mon, freq] of auto_combat_appearance_rates$1(place)) {

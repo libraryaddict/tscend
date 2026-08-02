@@ -66,6 +66,7 @@ import {
   $items,
   $location,
   $locations,
+  $modifier,
   $monster,
   $monsters,
   $skill,
@@ -78,7 +79,6 @@ import { auto_buyUpTo, buyableMaintain } from "./auto_acquire";
 import { auto_canRunBetweenBattleChecks, autoAdv } from "./auto_adventure";
 import { auto_faceCheck, buffMaintain$2 } from "./auto_buff";
 import {
-  addToMaximize,
   auto_loadEquipped,
   auto_saveEquipped,
   autoOutfit,
@@ -111,6 +111,7 @@ import {
   auto_spadeDigsRemaining,
   auto_tryPlayBaseball,
 } from "./iotms/mr2026";
+import { maximizer } from "./maximizer";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_canAfford, in_amw } from "./paths/adventurer_meats_world";
 import { in_aosol } from "./paths/avatar_of_shadows_over_loathing";
@@ -417,7 +418,7 @@ function auto_post_adventure(): boolean {
     return true;
   }
   //save some MP while buffing
-  addToMaximize("-1000mana cost, -tie");
+  maximizer.weight($modifier`Mana Cost`, -1000).weight("tie", -1);
   equipMaximizedGear();
 
   if (haveEffect($effect`Cunctatitis`) > 0) {
@@ -740,8 +741,8 @@ function auto_post_adventure(): boolean {
   const buff_familiar: boolean =
     pathHasFamiliar() && !toBoolean(getProperty("_auto_bad100Familiar"));
   const regen: number =
-    (toFloat(numericModifier("MP Regen Min")) +
-      toFloat(numericModifier("MP Regen Max"))) /
+    (toFloat(numericModifier($modifier`MP Regen Min`)) +
+      toFloat(numericModifier($modifier`MP Regen Max`))) /
     2.0;
 
   if (myMaxmp() < 50) {

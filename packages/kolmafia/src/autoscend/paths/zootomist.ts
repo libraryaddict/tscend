@@ -38,6 +38,7 @@ import {
   $item,
   $items,
   $location,
+  $modifier,
   $monster,
   $path,
   $skill,
@@ -872,7 +873,7 @@ function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
     true,
     false,
   );
-  const fight: number = numericModifier("familiar experience") + 1;
+  const fight: number = numericModifier($modifier`Familiar Experience`) + 1;
   auto_log_info(`${f} needs ${experience_needed} experience`);
   auto_log_info("To level up your familiar, you should:");
   let amt: number = 0;

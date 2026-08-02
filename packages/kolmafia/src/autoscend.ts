@@ -152,7 +152,6 @@ import {
   getMinimumAdventuresToMaintain,
 } from "./autoscend/auto_consume";
 import {
-  addToMaximize,
   ensureSealClubs,
   equipBaseline,
   equipMaximizedGear,
@@ -357,6 +356,7 @@ import {
   auto_useElfToilet,
 } from "./autoscend/iotms/mr2026";
 import { auto_useWardrobe } from "./autoscend/iotms/ttt";
+import { maximizer } from "./autoscend/maximizer";
 import {
   ed_initializeDay,
   ed_initializeSession,
@@ -855,8 +855,8 @@ function LX_burnDelayDo(): boolean {
       );
       voteMonsterAvailable = false;
       sausageGoblinAvailable = false;
-      addToMaximize(`-"equip Kramco Sausage O-Matic"`);
-      addToMaximize(`-"equip &quot;I Voted!&quot; sticker"`);
+      maximizer.exclude($item`Kramco Sausage-o-Matic™`);
+      maximizer.exclude($item`"I Voted!" sticker`);
     }
   }
   // See the encounter priority flowcharts available at https://i.imgur.com/sdVH4SPh.jpg

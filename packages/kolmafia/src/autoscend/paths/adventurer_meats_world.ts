@@ -21,11 +21,19 @@ import {
   turnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $item, $location, $locations, $path, $skill, $stat } from "libram";
+import {
+  $item,
+  $location,
+  $locations,
+  $modifier,
+  $path,
+  $skill,
+  $stat,
+} from "libram";
 
 import { pull_meat } from "../auto_acquire";
 import { autoAdv, autoLuckyAdv } from "../auto_adventure";
-import { addToMaximize, simValue } from "../auto_equipment";
+import { simValue } from "../auto_equipment";
 import { handleFamiliar$1, lookupFamiliarDatafile } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
@@ -41,6 +49,7 @@ import {
 import { zone_isAvailable } from "../auto_zone";
 import { QuestTask, registerQuestTask } from "../engine/engine";
 import { auto_haveMobiusRing } from "../iotms/mr2025";
+import { maximizer } from "../maximizer";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/adventurer_meats_world.ash
@@ -432,11 +441,11 @@ export function LX_attemptPowerLevelMeat(
     return true;
   }
   // make sure we prioritize getting meat appropriately
-  addToMaximize("200meat");
+  maximizer.weight($modifier`Meat Drop`, 200);
   autoMaximize("meat drop", false);
   handleFamiliar$1(lookupFamiliarDatafile("meat"));
 
-  const meatDrop_1: number = toInt(simValue("Meat Drop"));
+  const meatDrop_1: number = toInt(simValue($modifier`Meat Drop`));
   // "best" meatleveling zone at top
   if (
     meatDrop_1 >= 300 &&

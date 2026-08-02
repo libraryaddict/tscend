@@ -60,6 +60,7 @@ import {
   $items,
   $location,
   $locations,
+  $modifier,
   $monster,
   $skill,
   $slot,
@@ -88,7 +89,6 @@ import {
   stomach_left,
 } from "../auto_consume";
 import {
-  addToMaximize,
   autoEquipToSlot,
   autoForceEquip$3,
   autoOutfit,
@@ -185,6 +185,7 @@ import {
   auto_haveArchaeologistSpade,
   auto_spadeDigsRemaining,
 } from "../iotms/mr2026";
+import { maximizer } from "../maximizer";
 import {
   ed_DelayNC$1,
   edAcquireHP,
@@ -379,7 +380,7 @@ function auto_estimatedAdventuresForChaosButterfly(): number {
       $location`The Castle in the Clouds in the Sky (Ground Floor)`,
     );
     $_auto_estimatedAdventuresForChaosButterfly_expectedItemDropMulti =
-      1 + simValue("Item Drop") / 100;
+      1 + simValue($modifier`Item Drop`) / 100;
     $_static_0 = true;
   }
 
@@ -992,11 +993,11 @@ function L12_filthwormsDo(): boolean {
     ) {
       //helmet is least useful with +40 max MP enchantment.
       if (possessOutfit("frat warrior fatigues")) {
-        addToMaximize(`-"equip beer helmet"`);
+        maximizer.exclude($item`beer helmet`);
       }
       //pants and hat are identical, randomly selected hat for exclusion
       if (possessOutfit("frat boy ensemble")) {
-        addToMaximize(`-"equip orcish baseball cap"`);
+        maximizer.exclude($item`Orcish baseball cap`);
       }
     }
   }
@@ -1120,7 +1121,7 @@ function L12_filthwormsDo(): boolean {
       glandGuaranteed = false;
       if (possessEquipment($item`Retrospecs`)) {
         //preadv would give a 50%item accessory a value of 2500 but when multiple fights are expected in each zone this accessory should be equivalent to 100%item?
-        addToMaximize(`+2500"bonus Retrospecs"`);
+        maximizer.bonus($item`Retrospecs`, 2500);
       }
     }
   }
@@ -1180,7 +1181,8 @@ function L12_filthwormsDo(): boolean {
           possessEquipment($item`broken champagne bottle`) &&
           januaryToteTurnsLeft($item`broken champagne bottle`) > 0
         ) {
-          addToMaximize(`-"equip Broken Champagne Bottle"`); //using this charge is no longer necessary, restore maximizer block that was removed
+          //using this charge is no longer necessary, restore maximizer block that was removed
+          maximizer.exclude($item`broken champagne bottle`);
         }
       }
       //todo if still not glandGuaranteed try to force the use of free kills in combat?
@@ -1297,26 +1299,26 @@ function gremlinsFamiliar(): void {
       equip($slot`familiar`, $item`mini kiwi invisible dirigible`);
       strip_familiar = false;
       //disable maximizer switching of familiar equipment
-      addToMaximize("-familiar");
+      maximizer.raw("-familiar");
     }
     if (possessEquipment($item`tiny consolation ribbon`)) {
       equip($slot`familiar`, $item`tiny consolation ribbon`);
       strip_familiar = false;
       //disable maximizer switching of familiar equipment
-      addToMaximize("-familiar");
+      maximizer.raw("-familiar");
     }
     if (possessEquipment($item`little bitty bathysphere`)) {
       equip($slot`familiar`, $item`little bitty bathysphere`);
       strip_familiar = false;
       //disable maximizer switching of familiar equipment
-      addToMaximize("-familiar");
+      maximizer.raw("-familiar");
     }
   } else if (lookupFamiliarDatafile("gremlins") === Familiar.none) {
     //none of the desired familiars available
     //don't know what familiar will be chosen or what its own equipment does
     strip_familiar = true;
     //maximizer will try to force an equip into familiar slot. So disable maximizer switching of familiar equipment
-    addToMaximize("-familiar");
+    maximizer.raw("-familiar");
   } else {
     //desired familiars will be available. their own equipment or generic weight boosting familiar equipment is beneficial
     strip_familiar = false;
@@ -1324,7 +1326,7 @@ function gremlinsFamiliar(): void {
     for (const fameq of $items`tiny bowler, ant hoe, ant pick, ant pitchfork, ant rake, ant sickle, oversized fish scaler, filthy child leash, plastic pumpkin bucket, little box of fireworks, moveable feast`) {
       const wrapped_fameq: Item = wrap_item(fameq);
       if (possessEquipment(wrapped_fameq)) {
-        addToMaximize(`-"equip ${wrapped_fameq.toString()}"`);
+        maximizer.exclude(wrapped_fameq);
       }
     }
   }
@@ -1418,7 +1420,12 @@ function L12_gremlinsDo(): boolean {
 
   auto_log_info("Doing them gremlins", "blue");
   // ideally we want to survive a single attack
-  addToMaximize("20dr,1da 1000max,-ml,-1000avoid attack");
+  maximizer
+    .weight($modifier`Damage Reduction`, 20)
+    .weight($modifier`Damage Absorption`, 1)
+    .max($modifier`Damage Absorption`, 1000)
+    .weight($modifier`Monster Level`, -1)
+    .weight($modifier`Avoid Attack`, -1000);
   autoForceEquip$3($item`Peridot of Peril`);
   acquireHP();
   if (!bat_wantHowl($location`Over Where the Old Tires Are`)) {

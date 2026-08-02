@@ -16,7 +16,7 @@
     "typecheck": "tsc -b",
     "bundle": "node esbuild.mjs",
     "build": "yarn typecheck && yarn bundle",
-    "lint": "eslint packages && prettier --check .",
+    "lint": "eslint packages && prettier --check . --cache --cache-location node_modules/.cache/prettier",
     "format": "eslint packages --fix --cache --cache-location node_modules/.cache/eslint && prettier --write . --log-level warn --cache --cache-location node_modules/.cache/prettier"
   },
   "devDependencies": {

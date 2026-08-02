@@ -57,6 +57,7 @@ import {
   $item,
   $items,
   $location,
+  $modifier,
   $skill,
   $slot,
   $stat,
@@ -64,11 +65,7 @@ import {
 
 import { autoAdv, autoAdvBypass } from "../auto_adventure";
 import { main as handleChoiceAdv } from "../auto_choice_adv";
-import {
-  addToMaximize,
-  autoEquipToSlot,
-  possessEquipment,
-} from "../auto_equipment";
+import { autoEquipToSlot, possessEquipment } from "../auto_equipment";
 import { canChangeToFamiliar } from "../auto_familiar";
 import {
   auto_have_skill,
@@ -723,7 +720,8 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
     const fire_protestors: number =
       itemAmount($item`Flamin' Whatshisname`) > 0 ? 10 : 3;
     const sleaze_amount: number =
-      numericModifier("sleaze damage") + numericModifier("sleaze spell damage");
+      numericModifier($modifier`Sleaze Damage`) +
+      numericModifier($modifier`Sleaze Spell Damage`);
     const sleaze_protestors: number = squareRoot(sleaze_amount);
     let lynyrd_protestors: number = haveEffect($effect`Musky`) > 0 ? 6 : 3;
     for (const it of $items`lynyrdskin cap, lynyrdskin tunic, lynyrdskin breeches`) {
@@ -789,7 +787,7 @@ export function auto_configureRetrocape(hero: string, tag: string): boolean {
   const settings: string = `${hero},${tag}`;
   setProperty("auto_retrocapeSettings", settings);
   // cut down potential server hits by telling the maximizer to not consider it.
-  addToMaximize(`-"equip unwrapped knock-off retro superhero cape"`);
+  maximizer.exclude($item`unwrapped knock-off retro superhero cape`);
   return true;
 }
 

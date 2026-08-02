@@ -43,6 +43,7 @@ import {
   $item,
   $items,
   $location,
+  $modifier,
   $monster,
   $monsters,
   $phylum,
@@ -598,13 +599,13 @@ export function auto_combatDefaultStage3(
         }
       }
       const coldAttackDamage: number = toInt(
-        numericModifier("cold damage") * coldAttackDamageMultiplier,
+        numericModifier($modifier`Cold Damage`) * coldAttackDamageMultiplier,
       ); //todo add ML damage multiplier
       // Listed from Most to Least Damaging to hopefully cause Death on the turn when the Shell hits.
       if (
         auto_canUse($skill`Saucegeyser`, false) &&
-        numericModifier("Cold Spell Damage") >
-          numericModifier("Hot Spell Damage")
+        numericModifier($modifier`Cold Spell Damage`) >
+          numericModifier($modifier`Hot Spell Damage`)
       ) {
         //100% chance of cold Saucegeyser
         coldSkillToUse = $skill`Saucegeyser`;
@@ -642,8 +643,8 @@ export function auto_combatDefaultStage3(
         //other classes default to regular attack later
       } else if (
         auto_canUse($skill`Saucegeyser`, false) &&
-        numericModifier("Cold Spell Damage") ===
-          numericModifier("Hot Spell Damage")
+        numericModifier($modifier`Cold Spell Damage`) ===
+          numericModifier($modifier`Hot Spell Damage`)
       ) {
         //equal is 50% chance of cold Saucegeyser. "cold > hot" is used higher in priority. "cold < hot" is 100% hot Saucegeyser and not worth using
         coldSkillToUse = $skill`Saucegeyser`;
@@ -787,8 +788,10 @@ export function auto_combatDefaultStage3(
       auto_canUse($skill`Become a Cloud of Mist`) &&
       toInt(getProperty("_vampyreCloakeFormUses")) < 10
     ) {
-      const hot: number = toInt(numericModifier("Hot Resistance"));
-      const stench: number = toInt(numericModifier("Stench Resistance"));
+      const hot: number = toInt(numericModifier($modifier`Hot Resistance`));
+      const stench: number = toInt(
+        numericModifier($modifier`Stench Resistance`),
+      );
 
       if (
         ((hot < 9 && hot % 3 !== 0) || (stench < 9 && stench % 3 !== 0)) &&

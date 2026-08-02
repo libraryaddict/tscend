@@ -101,8 +101,12 @@ export class Maximizer {
     return this;
   }
 
-  exclude(item: Item): this {
-    this.excluded.add(item);
+  exclude(item: Item | Slot): this {
+    if (item instanceof Item) {
+      this.excluded.add(item);
+    } else {
+      this.disabledSlots.add(item);
+    }
     return this;
   }
 

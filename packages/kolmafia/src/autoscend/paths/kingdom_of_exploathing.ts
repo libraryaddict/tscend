@@ -12,6 +12,7 @@ import {
   Item,
   itemAmount,
   Location,
+  Modifier,
   myDaycount,
   myMeat,
   myPath,
@@ -48,7 +49,6 @@ import {
 import { autoAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import {
-  addToMaximize,
   autoEquipToSlot,
   possessEquipment,
   resetMaximize,
@@ -70,6 +70,7 @@ import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { doHottub } from "../iotms/clan";
 import { auto_beachCombHead, auto_canBeachCombHead } from "../iotms/mr2019";
 import { auto_canUseJuneCleaver } from "../iotms/mr2022";
+import { maximizer } from "../maximizer";
 import { equipWarOutfit, haveWarOutfit } from "../quests/level_12";
 import { needDigitalKey } from "../quests/level_13";
 
@@ -157,7 +158,7 @@ function LX_koeInvaderHandlerDo(): boolean {
       (baseDamage *
         (100.0 -
           elemental_resist_value(
-            toInt(offset + simValue(`${el} Resistance`)),
+            toInt(offset + simValue(Modifier.get(`${el} Resistance`))),
           ))) /
       100.0;
   }
@@ -206,7 +207,7 @@ function LX_koeInvaderHandlerDo(): boolean {
         "Attacking the Invader, using June Cleaver and LTS.",
         "blue",
       );
-      addToMaximize(`200 all res, +"equip june cleaver"`);
+      maximizer.weight("all res", 200).equip($item`June cleaver`);
       const ret: boolean = autoAdv($location`The Invader`);
       if (haveEffect($effect`Beaten Up`) > 0) {
         abort("We died to the invader. Do it manually please?");
@@ -249,9 +250,9 @@ function LX_koeInvaderHandlerDo(): boolean {
         "blue",
       );
       // Use maximizer now that we are for sure fighting the Invader
-      addToMaximize("200 all res");
+      maximizer.weight("all res", 200);
       if (hot_source !== Item.none) {
-        addToMaximize(`+"equip ${hot_source.toString()}"`);
+        maximizer.equip(hot_source);
       }
 
       const ret: boolean = autoAdv($location`The Invader`);

@@ -69,6 +69,7 @@ import {
   $familiar,
   $item,
   $items,
+  $modifier,
   $path,
   $skill,
   $slot,
@@ -637,7 +638,7 @@ function __calculate_objective_values(
     }
 
     if (metadata.type === "dwelling") {
-      restored_amount += numericModifier("Bonus Resting HP");
+      restored_amount += numericModifier($modifier`Bonus Resting HP`);
     }
 
     if (
@@ -665,7 +666,7 @@ function __calculate_objective_values(
     }
 
     if (metadata.type === "dwelling") {
-      restored_amount += numericModifier("Bonus Resting MP");
+      restored_amount += numericModifier($modifier`Bonus Resting MP`);
     }
 
     if (
@@ -2446,7 +2447,7 @@ export function freeRestsRemaining(): number {
 export function auto_potentialMaxFreeRests(): number {
   // return the number of free rests we could potentially have if we get all the stuff that gives them from IotMs.
   // we can get the count of "intrinsic" free rests e.g perm'd skills & rests you get just from having something available in run
-  let potential: number = toInt(numericModifier("Free Rests"));
+  let potential: number = toInt(numericModifier($modifier`Free Rests`));
 
   if (auto_canUseJuneCleaver() && !possessEquipment($item`mother's necklace`)) {
     potential += 5;
@@ -2510,13 +2511,17 @@ export function doFreeRest(useCampground?: boolean): boolean {
 
 export function mp_regen(): number {
   return (
-    0.5 * (numericModifier("MP Regen Min") + numericModifier("MP Regen Max"))
+    0.5 *
+    (numericModifier($modifier`MP Regen Min`) +
+      numericModifier($modifier`MP Regen Max`))
   );
 }
 
 function hp_regen(): number {
   return (
-    0.5 * (numericModifier("HP Regen Min") + numericModifier("HP Regen Max"))
+    0.5 *
+    (numericModifier($modifier`HP Regen Min`) +
+      numericModifier($modifier`HP Regen Max`))
   );
 }
 

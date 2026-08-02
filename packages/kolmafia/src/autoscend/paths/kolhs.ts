@@ -43,12 +43,7 @@ import {
   autoDrink,
   stomach_left,
 } from "../auto_consume";
-import {
-  addToMaximize,
-  autoEquip,
-  autoForceEquip,
-  possessEquipment,
-} from "../auto_equipment";
+import { autoEquip, autoForceEquip, possessEquipment } from "../auto_equipment";
 import { LX_freeCombats } from "../auto_powerlevel";
 import {
   auto_log_debug,
@@ -57,6 +52,7 @@ import {
   auto_runChoice,
 } from "../auto_util";
 import { monster_to_location, zone_isAvailable } from "../auto_zone";
+import { maximizer } from "../maximizer";
 
 //Defined in autoscend/paths/kolhs.ash
 export function in_kolhs(): boolean {
@@ -165,7 +161,7 @@ export function kolhs_preadv(place: Location): void {
       place,
     )
   ) {
-    addToMaximize("-hat");
+    maximizer.raw("-hat");
     equip($slot`hat`, Item.none);
   }
   //prepare yearbook camera

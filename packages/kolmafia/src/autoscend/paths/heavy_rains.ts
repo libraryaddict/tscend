@@ -35,6 +35,7 @@ import {
   $item,
   $items,
   $location,
+  $modifier,
   $monster,
   $path,
   $skill,
@@ -45,7 +46,6 @@ import { acquireOrPull, auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdvBypass, autoAdvBypass$1 } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import {
-  addToMaximize,
   autoEquipToSlot,
   equipMaximizedGear,
   possessEquipment,
@@ -64,6 +64,7 @@ import {
   internalQuestStatus,
   setFlavour,
 } from "../auto_util";
+import { maximizer } from "../maximizer";
 import { inAftercore } from "./casual";
 
 //Defined in autoscend/paths/heavy_rains.ash
@@ -356,14 +357,25 @@ export function L13_heavyrains_towerFinal(): boolean {
   effectAblativeArmor(true); //Unimportant effects protect your important one from being removed.
   //Calculate melee/ranged damage. Each element is capped at 40. assume you will be able to deal 40 physical damage.
   cliExecute("outfit Birthday Suit"); //Need to get naked so we can check our stats properly.
-  addToMaximize("1000prismatic damage, +weapon, +offhand");
+  maximizer
+    .weight($modifier`Prismatic Damage`, 1000)
+    .raw("+weapon")
+    .raw("+offhand");
   equipMaximizedGear();
 
-  let hot_dmg: number = toInt(min(40, numericModifier("hot damage")));
-  let cold_dmg: number = toInt(min(40, numericModifier("cold damage")));
-  let stench_dmg: number = toInt(min(40, numericModifier("stench damage")));
-  let sleaze_dmg: number = toInt(min(40, numericModifier("sleaze damage")));
-  let spooky_dmg: number = toInt(min(40, numericModifier("spooky damage")));
+  let hot_dmg: number = toInt(min(40, numericModifier($modifier`Hot Damage`)));
+  let cold_dmg: number = toInt(
+    min(40, numericModifier($modifier`Cold Damage`)),
+  );
+  let stench_dmg: number = toInt(
+    min(40, numericModifier($modifier`Stench Damage`)),
+  );
+  let sleaze_dmg: number = toInt(
+    min(40, numericModifier($modifier`Sleaze Damage`)),
+  );
+  let spooky_dmg: number = toInt(
+    min(40, numericModifier($modifier`Spooky Damage`)),
+  );
   if (auto_have_skill($skill`Cold Shoulder`)) {
     cold_dmg = min(40, 5 + cold_dmg);
   }
@@ -373,22 +385,26 @@ export function L13_heavyrains_towerFinal(): boolean {
     myClass() === $class`Seal Clubber` &&
     auto_have_skill($skill`Lunging Thrust-Smack`)
   ) {
-    addToMaximize("prismatic damage, +weapon, +offhand, +club");
+    maximizer
+      .weight($modifier`Prismatic Damage`)
+      .raw("+weapon")
+      .raw("+offhand")
+      .raw("+club");
     equipMaximizedGear();
     const club_hot_dmg: number = toInt(
-      min(40, 3 * numericModifier("hot damage")),
+      min(40, 3 * numericModifier($modifier`Hot Damage`)),
     );
     let club_cold_dmg: number = toInt(
-      min(40, 3 * numericModifier("cold damage")),
+      min(40, 3 * numericModifier($modifier`Cold Damage`)),
     );
     const club_stench_dmg: number = toInt(
-      min(40, 3 * numericModifier("stench damage")),
+      min(40, 3 * numericModifier($modifier`Stench Damage`)),
     );
     const club_sleaze_dmg: number = toInt(
-      min(40, 3 * numericModifier("sleaze damage")),
+      min(40, 3 * numericModifier($modifier`Sleaze Damage`)),
     );
     const club_spooky_dmg: number = toInt(
-      min(40, 3 * numericModifier("spooky damage")),
+      min(40, 3 * numericModifier($modifier`Spooky Damage`)),
     );
 
     if (auto_have_skill($skill`Cold Shoulder`)) {
@@ -484,7 +500,7 @@ export function L13_heavyrains_towerFinal(): boolean {
     setFlavour($element`sleaze`); //a safe element that does not conflict with offhand items.
     executeFlavour();
     if (spell_extra_element) {
-      addToMaximize("spell damage percent, +weapon");
+      maximizer.weight($modifier`Spell Damage Percent`).raw("+weapon");
       if (itemAmount($item`Rain-Doh green lantern`) > 0) {
         autoEquipToSlot($slot`off-hand`, $item`Rain-Doh green lantern`);
       } else if (itemAmount($item`meteorb`) > 0) {
@@ -493,20 +509,33 @@ export function L13_heavyrains_towerFinal(): boolean {
         autoEquipToSlot($slot`off-hand`, $item`snow mobile`);
       }
     } else {
-      addToMaximize("spell damage percent, +weapon, +offhand");
+      maximizer
+        .weight($modifier`Spell Damage Percent`)
+        .raw("+weapon")
+        .raw("+offhand");
     }
   } else {
     setProperty("auto_rain_king_combat", "attack");
     if (want_club) {
-      addToMaximize("prismatic damage, +weapon, +offhand, +club");
+      maximizer
+        .weight($modifier`Prismatic Damage`)
+        .raw("+weapon")
+        .raw("+offhand")
+        .raw("+club");
     } else {
-      addToMaximize("prismatic damage, +weapon, +offhand");
+      maximizer
+        .weight($modifier`Prismatic Damage`)
+        .raw("+weapon")
+        .raw("+offhand");
     }
   }
   //Rain King strips all equipment other than weapon and offhand.
   //Stripped equipment can only provide you with -ML which is applied before the stripping
   auto_buyUpTo(3, $item`water wings for babies`);
-  addToMaximize("-ml, -weapon, -offhand");
+  maximizer
+    .weight($modifier`Monster Level`, -1)
+    .raw("-weapon")
+    .raw("-offhand");
   equipMaximizedGear();
   //Fight!
   //auto_disableAdventureHandling because we don't want maximize, switch familiar, change buffs, or anything else that might break our specific prepwork.

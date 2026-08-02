@@ -53,6 +53,7 @@ import {
   $item,
   $location,
   $locations,
+  $modifier,
   $monster,
   $servant,
   $skill,
@@ -140,6 +141,7 @@ import {
   auto_haveMayamCalendar,
   auto_haveSeptEmberCenser,
 } from "../iotms/mr2024";
+import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_bhy } from "../paths/bees_hate_you";
@@ -245,17 +247,17 @@ function L9_chasmMaximizeForNoncombat(): void {
     "1000mysticality,1000spell damage,10000 spell damage percent";
   const moxtry: string = "1000moxie,10000sleaze resistance";
   simMaximizeWith(mustry, loc);
-  const musmus: number = simValue("Buffed Muscle");
-  const musflat: number = simValue("Weapon Damage"); //incorrectly includes 15% weapon power
-  const musperc: number = simValue("Weapon Damage Percent");
+  const musmus: number = simValue($modifier`Buffed Muscle`);
+  const musflat: number = simValue($modifier`Weapon Damage`); //incorrectly includes 15% weapon power
+  const musperc: number = simValue($modifier`Weapon Damage Percent`);
   const musscore: number = floor(
     squareRoot(((musmus + musflat) / 15) * (1 + musperc / 100)),
   );
   auto_log_info(`Muscle score: ${musscore}`, "blue");
   simMaximizeWith(mystry, loc);
-  const mysmys: number = simValue("Buffed Mysticality");
-  const mysflat: number = simValue("Spell Damage");
-  const mysperc: number = simValue("Spell Damage Percent");
+  const mysmys: number = simValue($modifier`Buffed Mysticality`);
+  const mysflat: number = simValue($modifier`Spell Damage`);
+  const mysperc: number = simValue($modifier`Spell Damage Percent`);
   const mysscore: number = floor(
     squareRoot(((mysmys + mysflat) / 15) * (1 + mysperc / 100)),
   );
@@ -265,8 +267,8 @@ function L9_chasmMaximizeForNoncombat(): void {
     best = "mys";
   }
   simMaximizeWith(moxtry, loc);
-  const moxmox: number = simValue("Buffed Moxie");
-  const moxres: number = simValue("Sleaze Resistance");
+  const moxmox: number = simValue($modifier`Buffed Moxie`);
+  const moxres: number = simValue($modifier`Sleaze Resistance`);
   const moxscore: number = floor(
     squareRoot((moxmox / 30) * (1 + moxres * 0.69)),
   );
@@ -276,15 +278,23 @@ function L9_chasmMaximizeForNoncombat(): void {
   }
   switch (best) {
     case "mus":
-      addToMaximize(mustry);
+      maximizer
+        .weight($modifier`Muscle`, 1000)
+        .weight($modifier`Weapon Damage`, 1000)
+        .weight($modifier`Weapon Damage Percent`, 10000);
       setProperty("choiceAdventure1345", (1).toString());
       break;
     case "mys":
-      addToMaximize(mystry);
+      maximizer
+        .weight($modifier`Mysticality`, 1000)
+        .weight($modifier`Spell Damage`, 1000)
+        .weight($modifier`Spell Damage Percent`, 10000);
       setProperty("choiceAdventure1345", (2).toString());
       break;
     case "mox":
-      addToMaximize(moxtry);
+      maximizer
+        .weight($modifier`Moxie`, 1000)
+        .weight($modifier`Sleaze Resistance`, 10000);
       setProperty("choiceAdventure1345", (3).toString());
       break;
   }
@@ -399,9 +409,12 @@ export function prepareForSmutOrcs(): void {
     // Always Maximize and choose our default Non-Com First, in case we are wrong about the non-com we MAY have some gear still equipped to help us.
     if (useSpellsInOrcCamp === true) {
       auto_log_info("Preparing to Blast Orcs with Cold Spells!", "blue");
-      addToMaximize(
-        "myst,40spell damage,80spell damage percent,40cold spell damage,-1000 ml",
-      );
+      maximizer
+        .weight($modifier`Mysticality`)
+        .weight($modifier`Spell Damage`, 40)
+        .weight($modifier`Spell Damage Percent`, 80)
+        .weight($modifier`Cold Spell Damage`, 40)
+        .weight($modifier`Monster Level`, -1000);
       buffMaintain$2($effect`Carol of the Hells`, 50, 1, 1);
       buffMaintain$2($effect`Song of Sauce`, 150, 1, 1);
 
@@ -416,9 +429,12 @@ export function prepareForSmutOrcs(): void {
       setProperty("choiceAdventure1345", (0).toString());
     } else {
       auto_log_info("Preparing to Ice-Punch Orcs!", "blue");
-      addToMaximize(
-        "muscle,40weapon damage,60weapon damage percent,40cold damage,-1000 ml",
-      );
+      maximizer
+        .weight($modifier`Muscle`)
+        .weight($modifier`Weapon Damage`, 40)
+        .weight($modifier`Weapon Damage Percent`, 60)
+        .weight($modifier`Cold Damage`, 40)
+        .weight($modifier`Monster Level`, -1000);
       buffMaintain$2($effect`Carol of the Bulls`, 50, 1, 1);
       buffMaintain$2($effect`Song of the North`, 150, 1, 1);
 
@@ -695,10 +711,10 @@ function L9_aBooPeakDo(): boolean {
       0,
       true,
     );
-    let coldResist: number = toInt(simValue("Cold Resistance"));
-    let spookyResist: number = toInt(simValue("Spooky Resistance"));
+    let coldResist: number = toInt(simValue($modifier`Cold Resistance`));
+    let spookyResist: number = toInt(simValue($modifier`Spooky Resistance`));
     const hpDifference: number = toInt(
-      simValue("Maximum HP") - numericModifier("Maximum HP"),
+      simValue($modifier`Maximum HP`) - numericModifier($modifier`Maximum HP`),
     );
     let effectiveCurrentHP: number = myHp();
     //	Do we need to manually adjust for the parrot?
@@ -814,7 +830,7 @@ function L9_aBooPeakDo(): boolean {
 
     const considerHP: number = myMaxhp() + hpDifference;
 
-    let mp_need: number = toInt(20 + simValue("Mana Cost"));
+    let mp_need: number = toInt(20 + simValue($modifier`Mana Cost`));
     if (myHp() - totalDamage > 50) {
       mp_need = mp_need - 20;
     }
@@ -1029,7 +1045,8 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
   }
 
   if (needFood) {
-    let food_drop: number = itemDropModifier() + numericModifier("Food Drop");
+    let food_drop: number =
+      itemDropModifier() + numericModifier($modifier`Food Drop`);
     food_drop -= auto_famModifiers$2("Item Drop");
 
     if (myServant() === $servant`Cat`) {
@@ -1318,7 +1335,9 @@ function L9_oilPeakDo(): boolean {
     }
   }
 
-  addToMaximize(`1000ml ${auto_convertDesiredML(100)}max`);
+  maximizer
+    .weight($modifier`Monster Level`, 1000)
+    .max($modifier`Monster Level`, auto_convertDesiredML(100));
 
   auto_log_info(`Oil Peak with ML: ${monsterLevelAdjustment()}`, "blue");
 

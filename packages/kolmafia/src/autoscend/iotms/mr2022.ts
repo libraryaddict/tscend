@@ -61,7 +61,6 @@ import {
 import { autoAdv, autoAdvBypass, CombatMacroReturns } from "../auto_adventure";
 import { auto_canDrink, spleen_left } from "../auto_consume";
 import {
-  addToMaximize,
   autoEquip,
   autoEquipToSlot,
   possessEquipment,
@@ -95,6 +94,7 @@ import {
   auto_useSkill,
   useItem,
 } from "../combat/auto_combat_util";
+import { maximizer } from "../maximizer";
 import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
 import { in_darkGyffte } from "../paths/dark_gyffte";
 import { in_koe } from "../paths/kingdom_of_exploathing";
@@ -722,7 +722,7 @@ export function auto_configureParka(tag: string): boolean {
   // store the requested setting in a property so we can handle them later
   setProperty("auto_parkaSetting", tag);
   // cut down potential server hits by telling the maximizer to not consider it.
-  addToMaximize(`-"equip ${wrap_item($item`Jurassic Parka`).toString()}"`);
+  maximizer.exclude(wrap_item($item`Jurassic Parka`));
   return true;
 }
 
