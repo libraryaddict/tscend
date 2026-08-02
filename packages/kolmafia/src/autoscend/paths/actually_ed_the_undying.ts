@@ -58,6 +58,7 @@ import {
   $skill,
   $skills,
   $slot,
+  get,
 } from "libram";
 
 import {
@@ -1619,7 +1620,7 @@ export const L9_ed_chasmStartTask: QuestTask = registerQuestTask({
 
 export const L13_ed_towerHandlerTask: QuestTask = registerQuestTask({
   name: "L13_ed_towerHandler",
-  completed: () => !isActuallyEd(),
+  completed: () => !isActuallyEd() || internalQuestStatus("questL13Final") > 11,
   ready: () => true,
   do: L13_ed_towerHandler,
 });
@@ -1630,6 +1631,25 @@ export const L13_ed_councilWarehouseTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: L13_ed_councilWarehouse,
   locations: $location`The Secret Council Warehouse`,
+  desiredEncounters: () => {
+    const needAmount =
+      itemAmount($item`[7965]Holy MacGuffin`) > 0
+        ? 0
+        : 40 - get("warehouseProgress");
+    return [
+      {
+        item: $item`warehouse inventory page`,
+        needAmount:
+          Math.ceil(needAmount - 1) / 8 -
+          itemAmount($item`warehouse inventory page`),
+      },
+      {
+        item: $item`warehouse map page`,
+        needAmount:
+          Math.ceil(needAmount - 1) / 8 - itemAmount($item`warehouse map page`),
+      },
+    ].filter((a) => a.needAmount > 0);
+  },
 });
 
 export function edUnderworldChoiceHandler(choice: number): void {

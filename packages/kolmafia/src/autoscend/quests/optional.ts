@@ -41,7 +41,6 @@ import {
   $item,
   $items,
   $location,
-  $locations,
   $skill,
   $slot,
   $stat,
@@ -248,6 +247,183 @@ export function LX_steelOrgan_condition_slow(): boolean {
   );
 }
 
+const LX_steelOrganGlassesTask: QuestTask = registerQuestTask({
+  name: "LX_steelOrganGlasses",
+  completed: () =>
+    getProperty("questM10Azazel") === "finished" ||
+    itemAmount($item`Azazel's lollipop`) > 0 ||
+    possessEquipment($item`observational glasses`),
+  ready: () =>
+    getProperty("questM10Azazel") === "started" &&
+    itemAmount($item`Azazel's lollipop`) === 0 &&
+    !possessEquipment($item`observational glasses`),
+  do: () => {
+    autoAdv($location`The Laugh Floor`);
+    return true;
+  },
+  locations: $location`The Laugh Floor`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`observational glasses`,
+        needAmount:
+          get("questM10Azazel") === "started" &&
+          itemAmount($item`Azazel's lollipop`) === 0 &&
+          !possessEquipment($item`observational glasses`)
+            ? 1
+            : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
+});
+
+const LX_steelOrganLaughFloorTask: QuestTask = registerQuestTask({
+  name: "LX_steelOrganLaughFloor",
+  completed: () =>
+    getProperty("questM10Azazel") === "finished" ||
+    itemAmount($item`Azazel's tutu`) > 0 ||
+    itemAmount($item`imp air`) >= 5,
+  ready: () =>
+    getProperty("questM10Azazel") === "started" &&
+    itemAmount($item`Azazel's tutu`) === 0 &&
+    itemAmount($item`imp air`) < 5,
+  do: () => {
+    autoAdv($location`The Laugh Floor`);
+    return true;
+  },
+  locations: $location`The Laugh Floor`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`imp air`,
+        needAmount:
+          get("questM10Azazel") === "started" &&
+          itemAmount($item`Azazel's tutu`) === 0
+            ? 5 - itemAmount($item`imp air`)
+            : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
+});
+
+function LX_steelOrganComedyProps(): {
+  jim: number;
+  flargwurm: number;
+  bognort: number;
+  stinkface: number;
+  need: number;
+} {
+  let jim: number = 0;
+  let flargwurm: number = 0;
+  let bognort: number = 0;
+  let stinkface: number = 0;
+  let need: number = 4;
+  if (itemAmount($item`comfy pillow`) > 0) {
+    jim = toInt($item`comfy pillow`);
+    need -= 1;
+  }
+  if (itemAmount($item`booze-soaked cherry`) > 0) {
+    flargwurm = toInt($item`booze-soaked cherry`);
+    need -= 1;
+  }
+  if (itemAmount($item`giant marshmallow`) > 0) {
+    bognort = toInt($item`giant marshmallow`);
+    need -= 1;
+  }
+  if (itemAmount($item`beer-scented teddy bear`) > 0) {
+    stinkface = toInt($item`beer-scented teddy bear`);
+    need -= 1;
+  }
+  if (need > 0) {
+    let cake: number = itemAmount($item`sponge cake`);
+    let paper: number = itemAmount($item`gin-soaked blotter paper`);
+    if (jim === 0 && cake > 0) {
+      jim = toInt($item`sponge cake`);
+      need -= 1;
+      cake -= 1;
+    }
+    if (flargwurm === 0 && cake > 0) {
+      flargwurm = toInt($item`sponge cake`);
+      need -= 1;
+    }
+    if (bognort === 0 && paper > 0) {
+      bognort = toInt($item`gin-soaked blotter paper`);
+      need -= 1;
+      paper -= 1;
+    }
+    if (stinkface === 0 && paper > 0) {
+      stinkface = toInt($item`gin-soaked blotter paper`);
+      need -= 1;
+    }
+  }
+  return { jim, flargwurm, bognort, stinkface, need };
+}
+
+function LX_steelOrganUnicorn(): boolean {
+  const { jim, flargwurm, bognort, stinkface } = LX_steelOrganComedyProps();
+  visitUrl("pandamonium.php?action=sven");
+  visitUrl(
+    `pandamonium.php?action=sven&bandmember=Jim&togive=${jim}&preaction=try`,
+  );
+  visitUrl("pandamonium.php?action=sven");
+  visitUrl(
+    `pandamonium.php?action=sven&bandmember=Flargwurm&togive=${flargwurm}&preaction=try`,
+  );
+  visitUrl("pandamonium.php?action=sven");
+  visitUrl(
+    `pandamonium.php?action=sven&bandmember=Bognort&togive=${bognort}&preaction=try`,
+  );
+  visitUrl("pandamonium.php?action=sven");
+  visitUrl(
+    `pandamonium.php?action=sven&bandmember=Stinkface&togive=${stinkface}&preaction=try`,
+  );
+  return true;
+}
+
+const LX_steelOrganUnicornTask: QuestTask = registerQuestTask({
+  name: "LX_steelOrganUnicorn",
+  completed: () =>
+    getProperty("questM10Azazel") === "finished" ||
+    itemAmount($item`Azazel's unicorn`) > 0,
+  ready: () =>
+    getProperty("questM10Azazel") === "started" &&
+    possessEquipment($item`observational glasses`) &&
+    itemAmount($item`imp air`) >= 5 &&
+    itemAmount($item`Azazel's unicorn`) === 0 &&
+    LX_steelOrganComedyProps().need === 0,
+  do: LX_steelOrganUnicorn,
+});
+
+const LX_steelOrganBackstageTask: QuestTask = registerQuestTask({
+  name: "LX_steelOrganBackstage",
+  completed: () =>
+    getProperty("questM10Azazel") === "finished" ||
+    itemAmount($item`Azazel's tutu`) > 0 ||
+    (itemAmount($item`Azazel's unicorn`) > 0 &&
+      itemAmount($item`bus pass`) >= 5),
+  ready: () =>
+    getProperty("questM10Azazel") === "started" &&
+    itemAmount($item`Azazel's tutu`) === 0 &&
+    possessEquipment($item`observational glasses`) &&
+    itemAmount($item`imp air`) >= 5 &&
+    (itemAmount($item`Azazel's unicorn`) === 0 ||
+      itemAmount($item`bus pass`) < 5),
+  do: () => {
+    autoAdv($location`Infernal Rackets Backstage`);
+    return true;
+  },
+  locations: $location`Infernal Rackets Backstage`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`bus pass`,
+        needAmount:
+          get("questM10Azazel") === "started" &&
+          itemAmount($item`Azazel's tutu`) === 0
+            ? 5 - itemAmount($item`bus pass`)
+            : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
+});
+
 function LX_steelOrganDo(): boolean {
   if ($classes`Ed the Undying, Gelatinous Noob, Vampyre`.includes(myClass())) {
     auto_log_info(
@@ -298,82 +474,16 @@ function LX_steelOrganDo(): boolean {
   }
   if (getProperty("questM10Azazel") === "started") {
     if (
-      (!possessEquipment($item`observational glasses`) ||
-        itemAmount($item`imp air`) < 5) &&
-      itemAmount($item`Azazel's tutu`) === 0
+      runTaskChain([
+        LX_steelOrganGlassesTask,
+        LX_steelOrganLaughFloorTask,
+        LX_steelOrganUnicornTask,
+        LX_steelOrganBackstageTask,
+      ])
     ) {
-      autoAdv($location`The Laugh Floor`);
-    } else if (
-      (itemAmount($item`Azazel's unicorn`) === 0 ||
-        itemAmount($item`bus pass`) < 5) &&
-      itemAmount($item`Azazel's tutu`) === 0
-    ) {
-      let jim: number = 0;
-      let flargwurm: number = 0;
-      let bognort: number = 0;
-      let stinkface: number = 0;
-      let need: number = 4;
-      if (itemAmount($item`comfy pillow`) > 0) {
-        jim = toInt($item`comfy pillow`);
-        need -= 1;
-      }
-      if (itemAmount($item`booze-soaked cherry`) > 0) {
-        flargwurm = toInt($item`booze-soaked cherry`);
-        need -= 1;
-      }
-      if (itemAmount($item`giant marshmallow`) > 0) {
-        bognort = toInt($item`giant marshmallow`);
-        need -= 1;
-      }
-      if (itemAmount($item`beer-scented teddy bear`) > 0) {
-        stinkface = toInt($item`beer-scented teddy bear`);
-        need -= 1;
-      }
-      if (need > 0) {
-        let cake: number = itemAmount($item`sponge cake`);
-        let paper: number = itemAmount($item`gin-soaked blotter paper`);
-        if (jim === 0 && cake > 0) {
-          jim = toInt($item`sponge cake`);
-          need -= 1;
-          cake -= 1;
-        }
-        if (flargwurm === 0 && cake > 0) {
-          flargwurm = toInt($item`sponge cake`);
-          need -= 1;
-        }
-        if (bognort === 0 && paper > 0) {
-          bognort = toInt($item`gin-soaked blotter paper`);
-          need -= 1;
-          paper -= 1;
-        }
-        if (stinkface === 0 && paper > 0) {
-          stinkface = toInt($item`gin-soaked blotter paper`);
-          need -= 1;
-        }
-      }
-
-      if (need === 0 && itemAmount($item`Azazel's unicorn`) === 0) {
-        visitUrl("pandamonium.php?action=sven");
-        visitUrl(
-          `pandamonium.php?action=sven&bandmember=Jim&togive=${jim}&preaction=try`,
-        );
-        visitUrl("pandamonium.php?action=sven");
-        visitUrl(
-          `pandamonium.php?action=sven&bandmember=Flargwurm&togive=${flargwurm}&preaction=try`,
-        );
-        visitUrl("pandamonium.php?action=sven");
-        visitUrl(
-          `pandamonium.php?action=sven&bandmember=Bognort&togive=${bognort}&preaction=try`,
-        );
-        visitUrl("pandamonium.php?action=sven");
-        visitUrl(
-          `pandamonium.php?action=sven&bandmember=Stinkface&togive=${stinkface}&preaction=try`,
-        );
-        return true;
-      }
-
-      autoAdv($location`Infernal Rackets Backstage`);
-    } else if (
+      return true;
+    }
+    if (
       itemAmount($item`Azazel's lollipop`) === 0 &&
       itemAmount($item`Azazel's tutu`) === 0
     ) {
@@ -446,7 +556,26 @@ const LX_steelOrganTask: QuestTask = registerQuestTask({
   completed: () => !get("auto_getSteelOrgan", true),
   ready: () => toBoolean(getProperty("auto_getSteelOrgan")),
   do: LX_steelOrganDo,
-  locations: $locations`The Laugh Floor, Infernal Rackets Backstage`,
+  desiredEncounters: () => {
+    const active =
+      get("questM10Azazel") === "started" &&
+      itemAmount($item`Azazel's tutu`) === 0;
+    return [
+      {
+        item: $item`observational glasses`,
+        needAmount:
+          active && !possessEquipment($item`observational glasses`) ? 1 : 0,
+      },
+      {
+        item: $item`imp air`,
+        needAmount: active ? 5 - itemAmount($item`imp air`) : 0,
+      },
+      {
+        item: $item`bus pass`,
+        needAmount: active ? 5 - itemAmount($item`bus pass`) : 0,
+      },
+    ].filter((a) => a.needAmount > 0);
+  },
 });
 
 export function LX_steelOrgan(): boolean {
@@ -742,6 +871,10 @@ export const LX_galaktikSubQuestTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_galaktikSubQuestDo,
   locations: $location`The Overgrown Lot`,
+  desiredEncounters: () =>
+    $items`fraudwort, shysterweed, swindleblossom`
+      .map((i) => ({ item: i, needAmount: 3 - itemAmount(i) }))
+      .filter((a) => a.needAmount > 0),
 });
 
 export function LX_galaktikSubQuest(): boolean {
@@ -793,6 +926,10 @@ export const LX_pirateOutfitTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_pirateOutfitDo,
   locations: $location`The Obligatory Pirate's Cove`,
+  desiredEncounters: () =>
+    $items`eyepatch, stuffed shoulder parrot, swashbuckling pants`
+      .map((i) => ({ item: i, needAmount: possessEquipment(i) ? 0 : 1 }))
+      .filter((a) => a.needAmount > 0),
 });
 
 export function LX_pirateOutfit(): boolean {
@@ -967,6 +1104,188 @@ export function numPirateInsults(): number {
   return retval;
 }
 
+function LX_joinPirateCrewBarrrneysBarrr(): boolean {
+  auto_log_info("Findin' the Cap'n", "blue");
+  autoOutfit("Swashbuckling Getup");
+  autoAdv($location`Barrrney's Barrr`); // this returns false on the Cap'n Caronch adventures for some reason.
+  return true;
+}
+
+const LX_joinPirateCrewBarrrneysBarrrTask: QuestTask = registerQuestTask({
+  name: "LX_joinPirateCrewBarrrneysBarrr",
+  completed: () => internalQuestStatus("questM12Pirate") > 3,
+  ready: () => [-1, 1, 3].includes(internalQuestStatus("questM12Pirate")),
+  do: LX_joinPirateCrewBarrrneysBarrr,
+  locations: $location`Barrrney's Barrr`,
+});
+
+function LX_joinPirateCrewNoobCave(): boolean {
+  auto_log_info("Nasty Booty time!", "red");
+  return autoAdvBypass$1(
+    "inv_use.php?pwd=&which=3&whichitem=2950",
+    $location`Noob Cave`,
+  );
+}
+
+const LX_joinPirateCrewNoobCaveTask: QuestTask = registerQuestTask({
+  name: "LX_joinPirateCrewNoobCave",
+  completed: () => internalQuestStatus("questM12Pirate") > 0,
+  ready: () => internalQuestStatus("questM12Pirate") === 0,
+  do: LX_joinPirateCrewNoobCave,
+  locations: $location`Noob Cave`,
+});
+
+function LX_joinPirateCrewObligatoryCove(): boolean {
+  if (numPirateInsults() >= 6) {
+    // this is held together with duct tape and hopes and dreams.
+    // it can and will fail but it will have to do for now.
+    auto_log_info("Beer Pong time.", "blue");
+    outfit("Swashbuckling Getup"); //do not use autoOutfit since we use visit_url in tryBeerPong which skips maximizer
+    backupSetting("choiceAdventure187", "0");
+    tryBeerPong();
+    return true;
+  } else {
+    auto_log_info("Insult gathering party.", "blue");
+    addToMaximize("-outfit Swashbuckling Getup");
+    // If we're wearing the pirate outfit already, autoAdv will fail to adventure
+    // in the cove since the zone isn't available unless we remove it (which wouldn't happen until auto_pre_adv runs)
+    autoStripOutfit("Swashbuckling Getup");
+    if (autoAdv($location`The Obligatory Pirate's Cove`)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+const LX_joinPirateCrewObligatoryCoveTask: QuestTask = registerQuestTask({
+  name: "LX_joinPirateCrewObligatoryCove",
+  completed: () => internalQuestStatus("questM12Pirate") > 4,
+  ready: () => internalQuestStatus("questM12Pirate") === 4,
+  do: LX_joinPirateCrewObligatoryCove,
+  locations: $location`The Obligatory Pirate's Cove`,
+});
+
+function LX_joinPirateCrewFratHouseInfiltration(): boolean {
+  auto_log_info("Attempting to infiltrate the frat house", "blue");
+  let infiltrationReady: boolean = false;
+  if (possessOutfit("Frat Boy Ensemble", true)) {
+    auto_log_info("We have the Frat Boy Ensemble, begin infiltration!", "blue");
+    outfit("Frat Boy Ensemble");
+    infiltrationReady = true;
+  } else if (
+    possessEquipment($item`mullet wig`) &&
+    auto_can_equip($item`mullet wig`) &&
+    itemAmount($item`briefcase`) > 0
+  ) {
+    auto_log_info(
+      "We have a mullet wig and a briefcase, begin infiltration!",
+      "blue",
+    );
+    autoForceEquip$3($item`mullet wig`);
+    infiltrationReady = true;
+  } else if (
+    possessEquipment($item`frilly skirt`) &&
+    auto_can_equip($item`frilly skirt`) &&
+    itemAmount($item`hot wing`) > 2
+  ) {
+    auto_log_info(
+      "We have hot wings and a frilly skirt, begin infiltration!",
+      "blue",
+    );
+    autoForceEquip$3($item`frilly skirt`);
+    infiltrationReady = true;
+  }
+
+  if (!infiltrationReady) {
+    function mightGetHotwings(): boolean {
+      return (
+        internalQuestStatus("questL06Friar") < 2 ||
+        (in_lowkeysummer() && !possessEquipment($item`demonic key`))
+      );
+    }
+    const mightCatburgle: boolean =
+      (itemAmount($item`hot wing`) > 2 || mightGetHotwings()) &&
+      (knollAvailable() || possessEquipment($item`frilly skirt`));
+
+    if (!infiltrationReady && !mightCatburgle) {
+      if (itemAmount($item`briefcase`) > 0) {
+        // missing only mullet wig and not expecting Catburgle
+        if (
+          pullXWhenHaveY($item`mullet wig`, 1, 0) &&
+          autoForceEquip$3($item`mullet wig`)
+        ) {
+          infiltrationReady = true;
+        }
+      }
+    }
+
+    if (!infiltrationReady) {
+      if (
+        itemAmount($item`hot wing`) > 2 &&
+        auto_can_equip($item`frilly skirt`)
+      ) {
+        if (knollAvailable() && myMeat() > npcPrice($item`frilly skirt`)) {
+          auto_log_info(
+            "We have hot wings but no frilly skirt. Lets go shopping!",
+            "blue",
+          );
+          auto_buyUpTo(1, $item`frilly skirt`);
+          autoForceEquip$3($item`frilly skirt`);
+          infiltrationReady = true;
+        } else {
+          //frilly skirt is 25% drop from 1 of 3 gym monsters, try pulling it before spending adventures
+          if (
+            pullXWhenHaveY($item`frilly skirt`, 1, 0) &&
+            autoForceEquip$3($item`frilly skirt`)
+          ) {
+            infiltrationReady = true;
+          } else {
+            auto_log_info(
+              "We have hot wings but no frilly skirt. Lets go to the gym!",
+              "blue",
+            );
+            if (internalQuestStatus("questM01Untinker") === -1) {
+              visitUrl(
+                "place.php?whichplace=forestvillage&preaction=screwquest&action=fv_untinker_quest",
+              );
+            }
+            if (autoAdv($location`The Degrassi Knoll Gym`)) {
+              return true;
+            }
+          }
+        }
+      } else if (
+        possessEquipment($item`mullet wig`) &&
+        auto_can_equip($item`mullet wig`)
+      ) {
+        // easiest to get or wait to get a briefcase
+        // todo modify banish list to not banish pygmy headhunters if wanting a briefcase in hardcore?
+        if (
+          !mightCatburgle &&
+          internalQuestStatus("questL04Bat") >= 1 &&
+          toInt(getProperty("hiddenOfficeProgress")) >= 6
+        ) {
+          // briefcase zones already finished and not expecting Catburgle then try to pull it
+          if (
+            pullXWhenHaveY($item`briefcase`, 1, 0) &&
+            autoForceEquip$3($item`mullet wig`)
+          ) {
+            infiltrationReady = true;
+          }
+        }
+      }
+      // else: todo get frat boy ensemble if possible. may not be possible if frat house is (Bombed Back to the Stone Age)
+    }
+  }
+
+  if (infiltrationReady) {
+    if (use(1, $item`Orcish Frat House blueprints`)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function LX_joinPirateCrewDo(): boolean {
   if (toInt(getProperty("lastIslandUnlock")) < myAscensions()) {
     return LX_islandAccess();
@@ -991,164 +1310,16 @@ function LX_joinPirateCrewDo(): boolean {
     auto_buyUpTo(1, $item`The Big Book of Pirate Insults`);
   }
   if (
-    internalQuestStatus("questM12Pirate") === -1 ||
-    internalQuestStatus("questM12Pirate") === 1 ||
-    internalQuestStatus("questM12Pirate") === 3
+    runTaskChain([
+      LX_joinPirateCrewBarrrneysBarrrTask,
+      LX_joinPirateCrewNoobCaveTask,
+      LX_joinPirateCrewObligatoryCoveTask,
+    ])
   ) {
-    auto_log_info("Findin' the Cap'n", "blue");
-    autoOutfit("Swashbuckling Getup");
-    autoAdv($location`Barrrney's Barrr`); // this returns false on the Cap'n Caronch adventures for some reason.
     return true;
-  } else if (internalQuestStatus("questM12Pirate") === 0) {
-    auto_log_info("Nasty Booty time!", "red");
-    if (
-      autoAdvBypass$1(
-        "inv_use.php?pwd=&which=3&whichitem=2950",
-        $location`Noob Cave`,
-      )
-    ) {
-      return true;
-    }
-  } else if (internalQuestStatus("questM12Pirate") === 2) {
-    auto_log_info("Attempting to infiltrate the frat house", "blue");
-    let infiltrationReady: boolean = false;
-    if (possessOutfit("Frat Boy Ensemble", true)) {
-      auto_log_info(
-        "We have the Frat Boy Ensemble, begin infiltration!",
-        "blue",
-      );
-      outfit("Frat Boy Ensemble");
-      infiltrationReady = true;
-    } else if (
-      possessEquipment($item`mullet wig`) &&
-      auto_can_equip($item`mullet wig`) &&
-      itemAmount($item`briefcase`) > 0
-    ) {
-      auto_log_info(
-        "We have a mullet wig and a briefcase, begin infiltration!",
-        "blue",
-      );
-      autoForceEquip$3($item`mullet wig`);
-      infiltrationReady = true;
-    } else if (
-      possessEquipment($item`frilly skirt`) &&
-      auto_can_equip($item`frilly skirt`) &&
-      itemAmount($item`hot wing`) > 2
-    ) {
-      auto_log_info(
-        "We have hot wings and a frilly skirt, begin infiltration!",
-        "blue",
-      );
-      autoForceEquip$3($item`frilly skirt`);
-      infiltrationReady = true;
-    }
-
-    if (!infiltrationReady) {
-      function mightGetHotwings(): boolean {
-        return (
-          internalQuestStatus("questL06Friar") < 2 ||
-          (in_lowkeysummer() && !possessEquipment($item`demonic key`))
-        );
-      }
-      const mightCatburgle: boolean =
-        (itemAmount($item`hot wing`) > 2 || mightGetHotwings()) &&
-        (knollAvailable() || possessEquipment($item`frilly skirt`));
-
-      if (!infiltrationReady && !mightCatburgle) {
-        if (itemAmount($item`briefcase`) > 0) {
-          // missing only mullet wig and not expecting Catburgle
-          if (
-            pullXWhenHaveY($item`mullet wig`, 1, 0) &&
-            autoForceEquip$3($item`mullet wig`)
-          ) {
-            infiltrationReady = true;
-          }
-        }
-      }
-
-      if (!infiltrationReady) {
-        if (
-          itemAmount($item`hot wing`) > 2 &&
-          auto_can_equip($item`frilly skirt`)
-        ) {
-          if (knollAvailable() && myMeat() > npcPrice($item`frilly skirt`)) {
-            auto_log_info(
-              "We have hot wings but no frilly skirt. Lets go shopping!",
-              "blue",
-            );
-            auto_buyUpTo(1, $item`frilly skirt`);
-            autoForceEquip$3($item`frilly skirt`);
-            infiltrationReady = true;
-          } else {
-            //frilly skirt is 25% drop from 1 of 3 gym monsters, try pulling it before spending adventures
-            if (
-              pullXWhenHaveY($item`frilly skirt`, 1, 0) &&
-              autoForceEquip$3($item`frilly skirt`)
-            ) {
-              infiltrationReady = true;
-            } else {
-              auto_log_info(
-                "We have hot wings but no frilly skirt. Lets go to the gym!",
-                "blue",
-              );
-              if (internalQuestStatus("questM01Untinker") === -1) {
-                visitUrl(
-                  "place.php?whichplace=forestvillage&preaction=screwquest&action=fv_untinker_quest",
-                );
-              }
-              if (autoAdv($location`The Degrassi Knoll Gym`)) {
-                return true;
-              }
-            }
-          }
-        } else if (
-          possessEquipment($item`mullet wig`) &&
-          auto_can_equip($item`mullet wig`)
-        ) {
-          // easiest to get or wait to get a briefcase
-          // todo modify banish list to not banish pygmy headhunters if wanting a briefcase in hardcore?
-          if (
-            !mightCatburgle &&
-            internalQuestStatus("questL04Bat") >= 1 &&
-            toInt(getProperty("hiddenOfficeProgress")) >= 6
-          ) {
-            // briefcase zones already finished and not expecting Catburgle then try to pull it
-            if (
-              pullXWhenHaveY($item`briefcase`, 1, 0) &&
-              autoForceEquip$3($item`mullet wig`)
-            ) {
-              infiltrationReady = true;
-            }
-          }
-        }
-        // else: todo get frat boy ensemble if possible. may not be possible if frat house is (Bombed Back to the Stone Age)
-      }
-    }
-
-    if (infiltrationReady) {
-      if (use(1, $item`Orcish Frat House blueprints`)) {
-        return true;
-      }
-    }
-  } else if (internalQuestStatus("questM12Pirate") === 4) {
-    if (numPirateInsults() >= 6) {
-      // this is held together with duct tape and hopes and dreams.
-      // it can and will fail but it will have to do for now.
-      auto_log_info("Beer Pong time.", "blue");
-      outfit("Swashbuckling Getup"); //do not use autoOutfit since we use visit_url in tryBeerPong which skips maximizer
-      backupSetting("choiceAdventure187", "0");
-      tryBeerPong();
-      return true;
-    } else {
-      auto_log_info("Insult gathering party.", "blue");
-      addToMaximize("-outfit Swashbuckling Getup");
-      // If we're wearing the pirate outfit already, autoAdv will fail to adventure
-      // in the cove since the zone isn't available unless we remove it (which wouldn't happen until auto_pre_adv runs)
-      autoStripOutfit("Swashbuckling Getup");
-      if (autoAdv($location`The Obligatory Pirate's Cove`)) {
-        return true;
-      }
-    }
+  }
+  if (internalQuestStatus("questM12Pirate") === 2) {
+    return LX_joinPirateCrewFratHouseInfiltration();
   }
   return false;
 }
@@ -1159,7 +1330,17 @@ export const LX_joinPirateCrewTask: QuestTask = registerQuestTask({
     internalQuestStatus("questM12Pirate") > 4 || !in_lowkeysummer(),
   ready: () => true,
   do: LX_joinPirateCrewDo,
-  locations: $locations`Barrrney's Barrr, Noob Cave, The Degrassi Knoll Gym, The Obligatory Pirate's Cove`,
+  locations: $location`The Degrassi Knoll Gym`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`hot wing`,
+        needAmount:
+          internalQuestStatus("questM12Pirate") === 2
+            ? 3 - itemAmount($item`hot wing`)
+            : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function LX_joinPirateCrew(): boolean {

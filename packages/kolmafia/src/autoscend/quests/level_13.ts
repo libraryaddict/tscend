@@ -77,6 +77,7 @@ import {
   $slot,
   $slots,
   $stat,
+  get,
   have,
 } from "libram";
 
@@ -592,6 +593,16 @@ export const LX_getStarKeyTask: QuestTask = registerQuestTask({
   ready: () => toBoolean(getProperty("auto_getStarKey")),
   do: LX_getStarKeyDo,
   locations: $location`The Hole in the Sky`,
+  desiredEncounters: () =>
+    (
+      [
+        [$item`star`, 8],
+        [$item`line`, 7],
+        [$item`star chart`, 1],
+      ] as [Item, number][]
+    )
+      .map(([i, amount]) => ({ item: i, needAmount: itemAmount(i) - amount }))
+      .filter(({ needAmount }) => needAmount > 0),
 });
 
 export function LX_getStarKey(): boolean {
@@ -1456,6 +1467,15 @@ export const L13_towerNSTowerTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL13Final") > 11,
   ready: () => internalQuestStatus("questL13Final") >= 6,
   do: L13_towerNSTowerDo,
+  desiredEncounters: () => {
+    const status = internalQuestStatus("questL13Final");
+    return [
+      { monster: $monster`wall of skin`, needAmount: status < 7 ? 1 : 0 },
+      { monster: $monster`wall of meat`, needAmount: status < 8 ? 1 : 0 },
+      { monster: $monster`wall of bones`, needAmount: status < 9 ? 1 : 0 },
+      { monster: $monster`Your Shadow`, needAmount: status < 11 ? 1 : 0 },
+    ].filter((a) => a.needAmount > 0);
+  },
 });
 
 export function L13_towerNSTower(): boolean {
@@ -2200,6 +2220,12 @@ export const L13_towerNSFinalTask: QuestTask = registerQuestTask({
   completed: () => inAftercore(),
   ready: () => true,
   do: L13_towerNSFinalDo,
+  desiredEncounters: () => [
+    {
+      monster: $monster`Naughty Sorceress`,
+      needAmount: internalQuestStatus("questL13Final") <= 11 ? 1 : 0,
+    },
+  ],
 });
 
 export function L13_towerNSFinal(): boolean {
@@ -2293,6 +2319,37 @@ export const L13_towerNSNagamarTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: L13_towerNSNagamarDo,
   locations: $location`The VERY Unquiet Garves`,
+  desiredEncounters: () => {
+    const active: boolean =
+      get("auto_wandOfNagamar") &&
+      internalQuestStatus("questL13Final") >= 11 &&
+      internalQuestStatus("questL13Final") <= 12 &&
+      itemAmount($item`Wand of Nagamar`) === 0;
+    if (!active) {
+      return [];
+    }
+    return [
+      {
+        item: $item`ruby W`,
+        needAmount: 1 - (itemAmount($item`ruby W`) + itemAmount($item`WA`)),
+      },
+      {
+        item: $item`metallic A`,
+        needAmount: 1 - (itemAmount($item`metallic A`) + itemAmount($item`WA`)),
+      },
+
+      {
+        item: $item`lowercase N`,
+        needAmount:
+          1 - (itemAmount($item`lowercase N`) + itemAmount($item`ND`)),
+      },
+
+      {
+        item: $item`heavy D`,
+        needAmount: 1 - (itemAmount($item`heavy D`) + itemAmount($item`ND`)),
+      },
+    ].filter((a) => a.needAmount > 0);
+  },
 });
 
 export function L13_towerNSNagamar(): boolean {

@@ -63,6 +63,7 @@ import {
   $skill,
   $slot,
   $stat,
+  get,
 } from "libram";
 
 import { auto_advToReserve, LX_doVacation } from "../../autoscend";
@@ -87,6 +88,7 @@ import {
   auto_is_valid,
   auto_log_info,
   auto_log_warning,
+  auto_recipeIngredients,
   auto_runChoice,
   auto_turbo,
   canSummonMonster,
@@ -103,6 +105,8 @@ import {
 import { zone_isAvailable } from "../auto_zone";
 import { auto_canUse } from "../combat/auto_combat_util";
 import {
+  DesiredDrop,
+  DesiredFights,
   QuestTask,
   registerQuestTask,
   runQuestTask,
@@ -339,6 +343,11 @@ const LX_bitchinMeatcarTask: QuestTask = registerQuestTask({
     LX_bitchinMeatcar_condition(),
   do: LX_bitchinMeatcarDo,
   locations: $location`The Degrassi Knoll Garage`,
+  desiredEncounters: () => {
+    return [...auto_recipeIngredients($item`bitchin' meatcar`, true)]
+      .map(([i, amount]) => ({ item: i, needAmount: amount }))
+      .filter((a) => a.needAmount > 0);
+  },
 });
 
 export function LX_bitchinMeatcar(): boolean {
@@ -598,6 +607,12 @@ const LX_hippyBoatmanTask: QuestTask = registerQuestTask({
     myBasestat(myPrimestat()) >= 25,
   do: LX_hippyBoatmanDo,
   locations: $location`The Old Landfill`,
+  desiredEncounters: () =>
+    itemAmount($item`junk junk`) > 0
+      ? []
+      : $items`old claw-foot bathtub, old clothesline pole, antique cigar sign, Worse Homes and Gardens`
+          .map((it) => ({ item: it, needAmount: 1 - itemAmount(it) }))
+          .filter((a) => a.needAmount > 0),
 });
 
 export function LX_hippyBoatman(): boolean {
@@ -780,6 +795,16 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
     ),
   do: LX_fatLootTokenDo,
   reqAdventures: () => (LX_wantSummonFantasyBandit() ? 5 : 0),
+  desiredEncounters: () => {
+    if (!LX_wantSummonFantasyBandit()) return [];
+
+    return [
+      {
+        monster: $monster`fantasy bandit`,
+        needAmount: 5 - fantasyBanditsFought(),
+      },
+    ].filter((a) => a.needAmount > 0);
+  },
 });
 
 export function LX_fatLootToken(): boolean {
@@ -1383,6 +1408,90 @@ export const LX_dronesOutTask: QuestTask = registerQuestTask({
   ready: () => dronesOut(),
   do: LX_dronesOutDo,
   locations: $locations`The Hole in the Sky, The Middle Chamber, Twin Peak, The Red Zeppelin, The Hidden Bowling Alley, The Batrat and Ratbat Burrow, The Goatlet`,
+  desiredEncounters: () => {
+    const entries: (DesiredDrop | DesiredFights)[] = [];
+    if (needStarKey() && zone_isAvailable($location`The Hole in the Sky`)) {
+      (
+        [
+          [$item`star`, 8],
+          [$item`line`, 7],
+          [$item`star chart`, 1],
+        ] as [Item, number][]
+      )
+        .map(([i, amount]) => ({
+          item: i,
+          needAmount: amount - itemAmount(i),
+        }))
+        .filter(({ needAmount }) => needAmount > 0)
+        .forEach((i) => entries.push(i));
+    }
+    if (
+      get("middleChamberUnlock") &&
+      L11_needTombRatchet() &&
+      zone_isAvailable($location`The Middle Chamber`) &&
+      itemAmount($item`tangle of rat tails`) === 0
+    ) {
+      entries.push({ item: $item`tangle of rat tails`, needAmount: 1 });
+    }
+    if (
+      internalQuestStatus("questL09Topping") >= 2 &&
+      internalQuestStatus("questL09Topping") <= 3 &&
+      hedgeTrimmersNeeded() > 1 &&
+      zone_isAvailable($location`Twin Peak`)
+    ) {
+      entries.push({
+        item: $item`rusty hedge trimmers`,
+        needAmount: hedgeTrimmersNeeded(),
+      });
+    }
+    if (
+      internalQuestStatus("questL11Ron") > 1 &&
+      internalQuestStatus("questL11Ron") < 5 &&
+      zone_isAvailable($location`The Red Zeppelin`) &&
+      auto_is_valid($item`glark cable`)
+    ) {
+      const glarkNeedAmount =
+        5 - (get("_glarkCableUses") + itemAmount($item`glark cable`));
+      if (glarkNeedAmount > 0) {
+        entries.push({
+          item: $item`glark cable`,
+          needAmount: glarkNeedAmount,
+        });
+      }
+    }
+    if (
+      get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6 &&
+      zone_isAvailable($location`The Hidden Bowling Alley`)
+    ) {
+      entries.push({
+        item: $item`bowling ball`,
+        needAmount:
+          6 -
+          get("hiddenBowlingAlleyProgress") -
+          itemAmount($item`bowling ball`),
+      });
+    }
+    if (
+      internalQuestStatus("questL08Trapper") === 1 &&
+      zone_isAvailable($location`The Goatlet`) &&
+      itemAmount($item`goat cheese`) < 3
+    ) {
+      entries.push({
+        item: $item`goat cheese`,
+        needAmount: 3 - itemAmount($item`goat cheese`),
+      });
+    }
+    if (
+      itemAmount($item`stone wool`) === 0 &&
+      haveEffect($effect`Stone-Faced`) === 0 &&
+      canSummonMonster($monster`Baa'baa'bu'ran`) &&
+      internalQuestStatus("questL11Worship") < 3 &&
+      myLevel() >= 11
+    ) {
+      entries.push({ monster: $monster`Baa'baa'bu'ran`, needAmount: 1 });
+    }
+    return entries;
+  },
 });
 
 export function freeCandyFightsLeft(): number {
@@ -1654,6 +1763,15 @@ export const LX_lastChanceTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_lastChanceDo,
   locations: $locations`Cobb's Knob Harem, The Outskirts of Cobb's Knob`,
+  desiredEncounters: () =>
+    get("screechDelay") !== "" && isBanished(toPhylum(get("screechDelay")))
+      ? [
+          {
+            monster: toPhylum(get("screechDelay")),
+            needAmount: Math.max(1, get("screechCombats")),
+          },
+        ]
+      : [],
 });
 
 export function LX_lastChance(): boolean {

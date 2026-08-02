@@ -3254,6 +3254,128 @@ export const LX_summonMonsterTask: QuestTask = registerQuestTask({
   completed: () => false,
   ready: () => true,
   do: LX_summonMonsterDo,
+  desiredEncounters: () => {
+    const encounters: { monster: Monster; needAmount: number }[] = [];
+    if (
+      internalQuestStatus("questL04Bat") === 2 &&
+      (!auto_is_valid($item`sonar-in-a-biscuit`) ||
+        itemAmount($item`sonar-in-a-biscuit`) === 0) &&
+      canSummonMonster($monster`screambat`)
+    ) {
+      encounters.push({ monster: $monster`screambat`, needAmount: 1 });
+    }
+    const oreGoal: Item = toItem(getProperty("trapperOre"));
+    if (
+      get("trapperOre") &&
+      internalQuestStatus("questL08Trapper") < 2 &&
+      auto_haveTrainSet() &&
+      itemAmount(oreGoal) < 2 &&
+      canYellowRay() &&
+      canSummonMonster($monster`mountain man`)
+    ) {
+      encounters.push({ monster: $monster`mountain man`, needAmount: 1 });
+    }
+    if (
+      auto_is_valid($item`smut orc keepsake box`) &&
+      itemAmount($item`smut orc keepsake box`) === 0 &&
+      myLevel() >= 9 &&
+      (lumberCount() < 30 || fastenerCount() < 30) &&
+      canSummonMonster($monster`smut orc pervert`)
+    ) {
+      encounters.push({ monster: $monster`smut orc pervert`, needAmount: 1 });
+    }
+    const gunpowder_left: number = 5 - itemAmount($item`barrel of gunpowder`);
+    if (
+      get("sidequestLighthouseCompleted") === "none" &&
+      gunpowder_left > 0 &&
+      myLevel() >= 12 &&
+      canSummonMonster($monster`lobsterfrogman`) &&
+      !auto_hasAutumnaton()
+    ) {
+      encounters.push({ monster: $monster`lobsterfrogman`, needAmount: 1 });
+    }
+    if (
+      !possessOutfit("Frat Warrior Fatigues") &&
+      auto_warSide() === "fratboy" &&
+      canYellowRay() &&
+      myLevel() >= 9 &&
+      (canSummonMonster($monster`War Frat 151st Infantryman`) ||
+        canSummonMonster($monster`War Frat Mobile Grill Unit`) ||
+        canSummonMonster($monster`Orcish Frat Boy Spy`))
+    ) {
+      encounters.push(
+        { monster: $monster`War Frat 151st Infantryman`, needAmount: 1 },
+        { monster: $monster`War Frat Mobile Grill Unit`, needAmount: 1 },
+        { monster: $monster`Orcish Frat Boy Spy`, needAmount: 1 },
+      );
+    }
+    if (
+      !possessOutfit("War Hippy Fatigues") &&
+      auto_warSide() === "hippy" &&
+      canYellowRay() &&
+      myLevel() >= 12 &&
+      (canSummonMonster($monster`War Hippy Airborne Commander`) ||
+        canSummonMonster($monster`War Hippy Spy`))
+    ) {
+      if (canSummonMonster($monster`War Hippy Airborne Commander`)) {
+        encounters.push({
+          monster: $monster`War Hippy Airborne Commander`,
+          needAmount: 1,
+        });
+      }
+      if (canSummonMonster($monster`War Hippy Spy`)) {
+        encounters.push({ monster: $monster`War Hippy Spy`, needAmount: 1 });
+      }
+    }
+    if (
+      needStarKey() &&
+      itemAmount($item`star`) >= 8 &&
+      itemAmount($item`line`) >= 7 &&
+      canSummonMonster($monster`Astronomer`) &&
+      (inHardcore() || pullsRemaining() < 1)
+    ) {
+      encounters.push({ monster: $monster`Astronomer`, needAmount: 1 });
+    }
+    if (haveSkill($skill`Rain Man`) && myRain() >= 50) {
+      if (
+        needStarKey() &&
+        itemAmount($item`star`) < 8 &&
+        itemAmount($item`line`) >= 7
+      ) {
+        if (canSummonMonster($monster`Family Jewels`)) {
+          encounters.push({ monster: $monster`Family Jewels`, needAmount: 1 });
+        }
+        if (canSummonMonster($monster`Bush`)) {
+          encounters.push({ monster: $monster`Bush`, needAmount: 1 });
+        }
+      }
+      if (
+        needStarKey() &&
+        itemAmount($item`star`) >= 8 &&
+        itemAmount($item`line`) < 7
+      ) {
+        if (canSummonMonster($monster`Trouser Snake`)) {
+          encounters.push({ monster: $monster`Trouser Snake`, needAmount: 1 });
+        }
+        if (canSummonMonster($monster`Box`)) {
+          encounters.push({ monster: $monster`Box`, needAmount: 1 });
+        }
+      }
+      if (
+        needStarKey() &&
+        itemAmount($item`star`) < 8 &&
+        itemAmount($item`line`) < 7
+      ) {
+        if (canSummonMonster($monster`Skinflute`)) {
+          encounters.push({ monster: $monster`Skinflute`, needAmount: 1 });
+        }
+        if (canSummonMonster($monster`Camel's Toe`)) {
+          encounters.push({ monster: $monster`Camel's Toe`, needAmount: 1 });
+        }
+      }
+    }
+    return encounters;
+  },
 });
 
 export function LX_summonMonster(): boolean {
@@ -4113,6 +4235,38 @@ possessed wine rack
 cabinet of Dr. Limpieza
 */
   return false;
+}
+
+export function auto_recipeIngredients(
+  item: Item,
+  onlyMissing: boolean = false,
+  doneAlready: Set<Item> = new Set(),
+): Map<Item, number> {
+  const map: Map<Item, number> = new Map();
+
+  // Uh oh. Weird recipe detected.
+  if (doneAlready.has(item)) return map;
+  doneAlready.add(item);
+
+  const ingreds = getIngredients(item);
+
+  for (const [ing, amount] of Object.entries(ingreds).map(
+    ([item, amount]) => [Item.get(item), amount] as [Item, number],
+  )) {
+    const have = onlyMissing ? itemAmount(item) : 0;
+
+    if (amount <= have) continue;
+
+    map.set(ing, (map.get(ing) ?? 0) + 1);
+
+    const recipe = auto_recipeIngredients(ing, onlyMissing, doneAlready);
+
+    for (const [i, a] of recipe) {
+      map.set(i, (map.get(i) ?? 0) + a * (amount - have));
+    }
+  }
+
+  return map;
 }
 
 export function effectiveDropChance(it: Item, baseDropRate: number): number {

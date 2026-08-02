@@ -552,6 +552,22 @@ export const L9_chasmBuildTask: QuestTask = registerQuestTask({
     toInt(getProperty("chasmBridgeProgress")) < bridgeGoal(),
   do: L9_chasmBuildDo,
   locations: $locations`The Smut Orc Logging Camp`,
+  desiredEncounters: () => {
+    const fastenerNeed: number = bridgeGoal() - fastenerCount();
+    const lumberNeed: number = bridgeGoal() - lumberCount();
+    return [
+      { item: $item`thick caulk`, needAmount: fastenerNeed },
+      { item: $item`long hard screw`, needAmount: fastenerNeed },
+      { item: $item`messy butt joint`, needAmount: fastenerNeed },
+      { item: $item`morningwood plank`, needAmount: lumberNeed },
+      { item: $item`raging hardwood plank`, needAmount: lumberNeed },
+      { item: $item`weirdwood plank`, needAmount: lumberNeed },
+      {
+        item: $item`smut orc keepsake box`,
+        needAmount: Math.ceil(Math.max(fastenerNeed, lumberNeed) / 5),
+      },
+    ].filter((a) => a.needAmount > 0);
+  },
 });
 
 export function L9_chasmBuild(): boolean {
@@ -948,6 +964,20 @@ const L9_aBooPeakTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL09Topping") >= 2,
   do: L9_aBooPeakDo,
   locations: $location`A-Boo Peak`,
+  desiredEncounters: () => {
+    const clue: Item = in_glover()
+      ? $item`glued A-Boo clue`
+      : $item`A-Boo clue`;
+    return [
+      {
+        item: clue,
+        needAmount:
+          toInt(getProperty("auto_aboopending")) +
+          itemAmount(clue) -
+          Math.ceil(get("booPeakProgress") / 34),
+      },
+    ].filter((a) => a.needAmount > 0);
+  },
 });
 
 export function L9_aBooPeak(): boolean {
@@ -1195,6 +1225,13 @@ const L9_twinPeakTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL09Topping") >= 2,
   do: L9_twinPeakDo,
   locations: $location`Twin Peak`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`rusty hedge trimmers`,
+        needAmount: hedgeTrimmersNeeded(),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function L9_twinPeak(): boolean {
@@ -1308,6 +1345,17 @@ const L9_oilPeakTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL09Topping") >= 2,
   do: L9_oilPeakDo,
   locations: $location`Oil Peak`,
+  desiredEncounters: () => {
+    const oilProgress: number = get("twinPeakProgress");
+    const needJar: boolean =
+      (oilProgress & 4) === 0 && itemAmount($item`jar of oil`) === 0;
+    return [
+      {
+        item: $item`bubblin' crude`,
+        needAmount: needJar ? 12 - itemAmount($item`bubblin' crude`) : 0,
+      },
+    ].filter((a) => a.needAmount > 0);
+  },
 });
 
 export function L9_oilPeak(): boolean {

@@ -18,6 +18,7 @@ import {
   $effect,
   $familiar,
   $item,
+  $items,
   $location,
   $monster,
   $skill,
@@ -27,13 +28,14 @@ import {
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
-import { autoOutfit, possessOutfit } from "../auto_equipment";
+import { autoOutfit, possessEquipment, possessOutfit } from "../auto_equipment";
 import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import { canBurnDelay } from "../auto_routing";
 import {
   adjustForYellowRayIfPossible,
   auto_change_mcd,
+  auto_is_valid,
   auto_log_info,
   internalQuestStatus,
 } from "../auto_util";
@@ -97,6 +99,13 @@ export const L5_getEncryptionKeyTask: QuestTask = registerQuestTask({
     !canBurnDelay($location`The Outskirts of Cobb's Knob`),
   do: L5_getEncryptionKeyDo,
   locations: $location`The Outskirts of Cobb's Knob`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`Knob Goblin Encryption Key`,
+        needAmount: 1 - itemAmount($item`Knob Goblin Encryption Key`),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function L5_getEncryptionKey(): boolean {
@@ -164,6 +173,14 @@ export const L5_haremOutfitTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL05Goblin") === 1,
   do: L5_haremOutfitDo,
   locations: $location`Cobb's Knob Harem`,
+  desiredEncounters: () => {
+    const outfit = $items`Knob Goblin harem veil, Knob Goblin harem pants`;
+    if (!outfit.every((i) => auto_is_valid(i))) return [];
+
+    return outfit
+      .map((i) => ({ item: i, needAmount: possessEquipment(i) ? 0 : 1 }))
+      .filter((a) => a.needAmount > 0);
+  },
 });
 
 function L5_goblinKingDo(): boolean {
@@ -231,6 +248,13 @@ export const L5_goblinKingTask: QuestTask = registerQuestTask({
     // delay for You, Robot path
     !robot_delay("outfit"),
   do: L5_goblinKingDo,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $monster`Knob Goblin King`,
+        needAmount: internalQuestStatus("questL05Goblin") > 1 ? 0 : 1,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 function L5_slayTheGoblinKingDo(): boolean {

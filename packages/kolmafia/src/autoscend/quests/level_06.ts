@@ -19,7 +19,15 @@ import {
   toLocation,
   visitUrl,
 } from "kolmafia";
-import { $familiar, $item, $location, $locations, $skill, $slot } from "libram";
+import {
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $locations,
+  $skill,
+  $slot,
+} from "libram";
 
 import { autoAdv } from "../auto_adventure";
 import { autoEquipToSlot } from "../auto_equipment";
@@ -230,6 +238,10 @@ const L6_dakotaFanningTask: QuestTask = registerQuestTask({
     toBoolean(getProperty("auto_dakotaFanning")) && !hiddenTempleUnlocked(),
   do: L6_dakotaFanningDo,
   locations: $locations`The Haunted Conservatory, The Dark Heart of the Woods, Pandamonium Slums`,
+  desiredEncounters: () =>
+    $items`pellet of plant food, heavy-duty bendy straw`
+      .map((i) => ({ item: i, needAmount: 1 - itemAmount(i) }))
+      .filter((i) => i.needAmount > 0),
 });
 
 export function L6_dakotaFanning(): boolean {

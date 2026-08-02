@@ -121,6 +121,13 @@ export const L10_plantThatBeanTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL10Garbage") > 0,
   ready: () => internalQuestStatus("questL10Garbage") === 0,
   do: L10_plantThatBeanDo,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`enchanted bean`,
+        needAmount: 1 - itemAmount($item`enchanted bean`),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function L10_plantThatBean(): boolean {

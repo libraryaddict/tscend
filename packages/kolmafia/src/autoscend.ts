@@ -123,6 +123,7 @@ import {
   $slot,
   $stat,
   get,
+  have,
   haveInCampground,
   Leprecondo,
   set,
@@ -3257,6 +3258,17 @@ const LX_calculateTheUniverseTask: QuestTask = registerQuestTask({
     min(3, toInt(getProperty("skillLevel144"))),
   ready: () => true,
   do: () => LX_calculateTheUniverse(false),
+  desiredEncounters: () =>
+    [
+      {
+        monster: $monster`War Frat 151st Infantryman`,
+        needAmount:
+          !possessOutfit("Frat Warrior Fatigues") &&
+          auto_warSide() === "fratboy"
+            ? 1
+            : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 const rockGardenEndTask: QuestTask = registerQuestTask({
@@ -3330,6 +3342,10 @@ const auto_smallCampgroundGearTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: auto_smallCampgroundGear,
   locations: $locations`Fight in the Dirt, Fight in the Tall Grass`,
+  desiredEncounters: () =>
+    $items`mesquito proboscis, ncle leg, rutabuga bag, senate fly thorax, birdybug antenna, daddy shortlegs leg, kilopede skull`
+      .map((i) => ({ item: i, needAmount: have(i) ? 0 : 1 }))
+      .filter((a) => a.needAmount > 0),
 });
 
 const elfToiletTask: QuestTask = registerQuestTask({
@@ -3375,6 +3391,13 @@ const auto_doPhoneQuestTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: auto_doPhoneQuest,
   locations: () => [auto_availableBrickRift()],
+  desiredEncounters: () =>
+    [
+      {
+        monster: $monster`shadow slab`,
+        needAmount: get("questRufus") === "unstarted" ? 1 : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 const auto_doTempleSummitTask: QuestTask = registerQuestTask({

@@ -40,6 +40,7 @@ import {
   $skill,
   $slot,
   $stat,
+  get,
 } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
@@ -865,6 +866,13 @@ export const chateauPaintingTask: QuestTask = registerQuestTask({
   completed: () => toBoolean(getProperty("chateauMonsterFought")),
   ready: () => true,
   do: chateauPaintingDo,
+  desiredEncounters: () =>
+    [
+      {
+        monster: get("chateauMonster"),
+        needAmount: get("_chateauMonsterFought") ? 0 : 1,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function chateauPainting(): boolean {

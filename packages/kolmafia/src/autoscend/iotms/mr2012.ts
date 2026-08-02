@@ -13,7 +13,7 @@ import {
   toInt,
   toMonster,
 } from "kolmafia";
-import { $effect, $item, $monster, $skill } from "libram";
+import { $effect, $item, $monster, $skill, get } from "libram";
 
 import {
   auto_log_info,
@@ -107,6 +107,13 @@ const handleRainDohTask: QuestTask = registerQuestTask({
     myLevel() > 3 &&
     haveEffect($effect`Ultrahydrated`) === 0,
   do: handleRainDohDo,
+  desiredEncounters: () =>
+    [
+      {
+        monster: get("rainDohMonster"),
+        needAmount: itemAmount($item`Rain-Doh box full of monster`) ? 1 : 0,
+      },
+    ].filter((a) => a.needAmount),
 });
 
 export function handleRainDoh(): boolean {

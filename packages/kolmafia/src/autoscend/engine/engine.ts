@@ -1,20 +1,83 @@
 import { Engine, Task } from "grimoire-kolmafia";
-import { Location } from "kolmafia";
+import {
+  appearanceRates,
+  Item,
+  itemDropsArray,
+  Location,
+  max,
+  Monster,
+  Phylum,
+} from "kolmafia";
 
 import { autoAdv, CombatMacro } from "../auto_adventure";
 import { auto_combatHandler } from "../combat/auto_combat";
 import { auto_edCombatHandler } from "../combat/auto_combat_ed";
+import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 
+export type DesiredDrop = {
+  item: Item;
+  needAmount: number;
+};
+
+export type DesiredFights = {
+  monster: Monster | Phylum | Phylum[] | Monster[];
+  needAmount: number;
+};
+
 export type QuestTask = Task<never, void> & {
-  // Informational only, for future planning/reporting purposes; not read by
-  // the engine and does not replace `do`. Declares the location(s) this
-  // task's `do` may end up visiting. `noob cave` is not included.
+  // For planning/reporting purposes, and to compute the item drop cap
+  // alongside desiredEncounters; does not replace `do`. Declares the
+  // location(s) this task's `do` may end up visiting. `noob cave` is not
+  // included.
   // Should not include any locations in which we don't actually plan to do anything but 'finish' out things. Eg, no fights.
   locations?: Location | Location[] | (() => Location[]);
   // The required adventures for this task, will automatically consume enough for this task to become available. Should return 0 if this task isn't ready
   reqAdventures?: () => number;
+  desiredEncounters?: () => (DesiredDrop | DesiredFights)[];
 };
+
+function taskLocations(task: QuestTask): Location[] {
+  const locs = task.locations;
+  if (locs === undefined) return [];
+  if (typeof locs === "function") return locs();
+  return Array.isArray(locs) ? locs : [locs];
+}
+
+// caps the maximizer's "item drop" so it doesn't chase gear beyond what's
+// needed to cap the task's desired drop(s) at a 100% end-of-fight chance
+function applyItemDropCap(task: QuestTask): void {
+  const desiredItems: Item[] = (task.desiredEncounters?.() ?? [])
+    .filter(
+      (encounter): encounter is DesiredDrop =>
+        "item" in encounter && encounter.needAmount > 0,
+    )
+    .map((encounter) => encounter.item);
+  if (desiredItems.length === 0) return;
+
+  let cap = 0;
+  for (const location of taskLocations(task)) {
+    for (const [monsterName, encounterRate] of Object.entries(
+      appearanceRates(location),
+    )) {
+      if (encounterRate <= 0) continue;
+      const monster = Monster.get(monsterName);
+      for (const drop of itemDropsArray(monster)) {
+        if (
+          drop.rate < 1 ||
+          drop.type !== "" ||
+          !desiredItems.includes(drop.drop)
+        )
+          continue;
+        cap = max(cap, 10000 / drop.rate - 100);
+      }
+    }
+  }
+
+  if (cap > 0) {
+    maximizer.max("item drop", cap);
+  }
+}
 
 export class AutoscendEngine extends Engine<never, QuestTask> {
   lastActed = true;
@@ -52,6 +115,7 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
     const result =
       typeof task.do === "function" ? task.do(this.getContext(task)) : task.do;
     if (result instanceof Location) {
+      applyItemDropCap(task);
       this.lastActed = autoAdv(result, this.defaultCombatHandler());
       return;
     }

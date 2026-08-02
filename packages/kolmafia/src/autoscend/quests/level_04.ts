@@ -16,6 +16,8 @@ import {
   $item,
   $location,
   $locations,
+  $monster,
+  $phylum,
 } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
@@ -211,6 +213,18 @@ const L4_batBeanbatFinalTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL04Bat") >= 4,
   do: L4_batBeanbatFinal,
   locations: $location`The Beanbat Chamber`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`enchanted bean`,
+        needAmount:
+          itemAmount($item`enchanted bean`) === 0 &&
+          internalQuestStatus("questL10Garbage") < 1 &&
+          !isActuallyEd()
+            ? 1
+            : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 function L4_bossBatLair(): boolean {
@@ -254,6 +268,13 @@ const L4_bossBatLairTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL04Bat") >= 3,
   do: L4_bossBatLair,
   locations: $location`The Boss Bat's Lair`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $monster`Boss Bat`,
+        needAmount: internalQuestStatus("questL04Bat") >= 4 ? 0 : 1,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 function L4_batratBurrowAdvanced(): boolean {
@@ -289,6 +310,18 @@ const L4_batratBurrowAdvancedTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL04Bat") >= 2,
   do: L4_batratBurrowAdvanced,
   locations: $locations`The Beanbat Chamber, The Batrat and Ratbat Burrow`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`enchanted bean`,
+        needAmount:
+          itemAmount($item`enchanted bean`) === 0 &&
+          internalQuestStatus("questL10Garbage") < 2 &&
+          !isActuallyEd()
+            ? 1
+            : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 function L4_batratBurrow(): boolean {
@@ -316,6 +349,13 @@ const L4_batratBurrowTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL04Bat") >= 1,
   do: L4_batratBurrow,
   locations: $location`The Batrat and Ratbat Burrow`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $phylum`beast`,
+        needAmount: internalQuestStatus("questL04Bat") >= 2 ? 0 : 1,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 function L4_guanoJunction(): boolean {
@@ -336,6 +376,13 @@ const L4_guanoJunctionTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: L4_guanoJunction,
   locations: $location`Guano Junction`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $phylum`beast`,
+        needAmount: internalQuestStatus("questL04Bat") >= 1 ? 0 : 1,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 function L4_batCaveDo(): boolean {
@@ -379,7 +426,6 @@ export const L4_batCaveTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL04Bat") > 4,
   ready: () => internalQuestStatus("questL04Bat") >= 0,
   do: L4_batCaveDo,
-  locations: $locations`The Bat Hole Entrance, Guano Junction, The Batrat and Ratbat Burrow, The Beanbat Chamber, The Boss Bat's Lair`,
 });
 
 export function L4_batCave(): boolean {

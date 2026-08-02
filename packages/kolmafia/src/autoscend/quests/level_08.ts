@@ -41,6 +41,7 @@ import {
   $element,
   $familiar,
   $item,
+  $items,
   $location,
   $monster,
   $skill,
@@ -75,9 +76,11 @@ import {
   auto_combatModCap,
   auto_forceNextCombat$1,
   auto_forceNextNoncombat,
+  auto_have_skill,
   auto_haveCombatForceSource,
   auto_haveQueuedForcedCombat,
   auto_inRonin,
+  auto_is_valid,
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
@@ -445,6 +448,13 @@ export const L8_mountainManSummonTask: QuestTask = registerQuestTask({
   completed: () => itemAmount(toItem(getProperty("trapperOre"))) >= 3,
   ready: () => true,
   do: L8_mountainManSummonDo,
+  desiredEncounters: () =>
+    [
+      {
+        item: get("trapperOre"),
+        needAmount: 3 - itemAmount(get("trapperOre")),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function L8_mountainManSummon(): boolean {
@@ -477,6 +487,22 @@ const L8_getGoatCheeseTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: L8_getGoatCheese,
   locations: $location`The Goatlet`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`goat cheese`,
+        needAmount: 3 - itemAmount($item`goat cheese`),
+      },
+      {
+        item: $item`glass of goat's milk`,
+        needAmount:
+          auto_is_valid($item`milk of magnesium`) &&
+          (auto_have_skill($skill`Advanced Saucecrafting`) ||
+            itemAmount($item`scrumptious reagent`) > 0)
+            ? 1 - itemAmount($item`glass of goat's milk`)
+            : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 function L8_getMineOres(): boolean {
@@ -543,6 +569,13 @@ const L8_getMineOresTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: L8_getMineOres,
   locations: $location`Itznotyerzitz Mine`,
+  desiredEncounters: () =>
+    [
+      {
+        item: get("trapperOre"),
+        needAmount: 3 - itemAmount(get("trapperOre")),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function itznotyerzitzMineChoiceHandler(choice: number): void {
@@ -817,6 +850,10 @@ const L8_trapperNinjaLairTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: L8_trapperNinjaLairDo,
   locations: $location`Lair of the Ninja Snowmen`,
+  desiredEncounters: () =>
+    $items`ninja carabiner, ninja crampons, ninja rope`
+      .map((i) => ({ item: i, needAmount: 1 - itemAmount(i) }))
+      .filter((i) => i.needAmount > 0),
 });
 
 export function L8_trapperNinjaLair(): boolean {
@@ -949,6 +986,13 @@ export const L8_trapperGroarTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL08Trapper") >= 3,
   do: L8_trapperGroarDo,
   locations: $location`Mist-Shrouded Peak`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $monster`Groar`,
+        needAmount: internalQuestStatus("questL08Trapper") > 4 ? 0 : 1,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function L8_trapperGroar(): boolean {

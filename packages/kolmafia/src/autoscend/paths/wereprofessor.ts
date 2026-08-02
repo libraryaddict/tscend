@@ -429,6 +429,9 @@ const LX_wereprof_getSmashedEquipTask: QuestTask = registerQuestTask({
   ready: () => !is_professor() && !wereprof_haveAllEquipment(),
   do: LX_wereprof_getSmashedEquipDo,
   locations: $locations`The Hidden Hospital, The Castle in the Clouds in the Sky (Top Floor), Noob Cave, The Haunted Pantry, The Thinknerd Warehouse, Vanya's Castle`,
+  desiredEncounters: () => [
+    { item: $item`smashed scientific equipment`, needAmount: 1 },
+  ],
 });
 
 export function LX_wereprof_getSmashedEquip(): boolean {

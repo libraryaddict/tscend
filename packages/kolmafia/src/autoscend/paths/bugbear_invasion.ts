@@ -28,6 +28,7 @@ import {
   $item,
   $location,
   $locations,
+  $monster,
   $path,
   $phylum,
   $skill,
@@ -537,6 +538,14 @@ registerQuestTask({
   ready: () => true,
   do: LX_bugbearKeyOTron,
   locations: $location`The Sleazy Back Alley`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`BURT`,
+        needAmount:
+          itemAmount($item`key-o-tron`) === 0 ? 5 - itemAmount($item`BURT`) : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 const LX_bugbearWasteProcessingTask: QuestTask = registerQuestTask({
@@ -546,6 +555,13 @@ const LX_bugbearWasteProcessingTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_bugbearWasteProcessing,
   locations: $locations`The Sleazy Back Alley, Waste Processing`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $phylum`beast`,
+        needAmount: bugbear_BioDataRemaining($location`Waste Processing`),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 const LX_bugbearMedbayTask: QuestTask = registerQuestTask({
   name: "LX_bugbearMedbay",
@@ -553,6 +569,13 @@ const LX_bugbearMedbayTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_bugbearMedbay,
   locations: $locations`The Spooky Forest, Medbay`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $phylum`beast`,
+        needAmount: bugbear_BioDataRemaining($location`Medbay`),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 const LX_bugbearSonarTask: QuestTask = registerQuestTask({
   name: "LX_bugbearSonar",
@@ -560,6 +583,13 @@ const LX_bugbearSonarTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_bugbearSonar,
   locations: $locations`The Batrat and Ratbat Burrow, Sonar`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $phylum`beast`,
+        needAmount: bugbear_BioDataRemaining($location`Sonar`),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 const LX_bugbearScienceLabTask: QuestTask = registerQuestTask({
   name: "LX_bugbearScienceLab",
@@ -567,6 +597,13 @@ const LX_bugbearScienceLabTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_bugbearScienceLab,
   locations: $locations`Cobb's Knob Laboratory, Science Lab`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $phylum`beast`,
+        needAmount: bugbear_BioDataRemaining($location`Science Lab`),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 const LX_bugbearMorgueTask: QuestTask = registerQuestTask({
   name: "LX_bugbearMorgue",
@@ -574,6 +611,13 @@ const LX_bugbearMorgueTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_bugbearMorgue,
   locations: $locations`The VERY Unquiet Garves, Morgue`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $phylum`beast`,
+        needAmount: bugbear_BioDataRemaining($location`Morgue`),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 const LX_bugbearSpecialOpsTask: QuestTask = registerQuestTask({
   name: "LX_bugbearSpecialOps",
@@ -581,6 +625,13 @@ const LX_bugbearSpecialOpsTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_bugbearSpecialOps,
   locations: $locations`Lair of the Ninja Snowmen, Special Ops`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $phylum`beast`,
+        needAmount: bugbear_BioDataRemaining($location`Special Ops`),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 const LX_bugbearNavigationTask: QuestTask = registerQuestTask({
   name: "LX_bugbearNavigation",
@@ -588,6 +639,13 @@ const LX_bugbearNavigationTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_bugbearNavigation,
   locations: $locations`The Haunted Gallery, Navigation`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $phylum`beast`,
+        needAmount: bugbear_BioDataRemaining($location`Navigation`),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 const LX_bugbearEngineeringTask: QuestTask = registerQuestTask({
   name: "LX_bugbearEngineering",
@@ -595,6 +653,13 @@ const LX_bugbearEngineeringTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_bugbearEngineering,
   locations: $locations`The Penultimate Fantasy Airship, Engineering`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $phylum`beast`,
+        needAmount: bugbear_BioDataRemaining($location`Engineering`),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 const LX_bugbearGalleryTask: QuestTask = registerQuestTask({
   name: "LX_bugbearGallery",
@@ -602,6 +667,13 @@ const LX_bugbearGalleryTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_bugbearGallery,
   locations: $locations`The Hippy Camp (Bombed Back to the Stone Age), The Orcish Frat House (Bombed Back to the Stone Age), Galley`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $phylum`beast`,
+        needAmount: bugbear_BioDataRemaining($location`Galley`),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 function LX_bugbearInvasionFloorsDo(): boolean {
@@ -639,12 +711,26 @@ const LX_bugbearNavigationForceTask: QuestTask = registerQuestTask({
   do: () =>
     internalQuestStatus("questL12War") >= 1 && LX_bugbearNavigationForce(),
   locations: $locations`The Haunted Gallery, Navigation`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $phylum`beast`,
+        needAmount: bugbear_BioDataRemaining($location`Navigation`),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 const LX_bugbearBridgeTask: QuestTask = registerQuestTask({
   name: "LX_bugbearBridge",
   completed: () => !in_bugbear() || internalQuestStatus("questL13Final") > 3,
   ready: () => true,
   do: LX_bugbearBridge,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $monster`Bugbear Captain`,
+        needAmount: internalQuestStatus("questL13Final") > 3 ? 0 : 1,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 function LX_bugbearInvasionFinaleDo(): boolean {

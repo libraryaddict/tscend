@@ -31,10 +31,12 @@ import {
   $item,
   $items,
   $location,
+  $monster,
   $path,
   $skill,
   $slot,
   $stat,
+  get,
 } from "libram";
 
 import {
@@ -272,9 +274,16 @@ const LX_koeInvaderHandlerTask: QuestTask = registerQuestTask({
   // invader drops 10 white pixels so fight it before we do the hedge maze
   // as we need elemental resists for both and we may be able to get enough
   // pixels for the digital key if we still require them.
-  ready: () => !toBoolean(getProperty("spaceInvaderDefeated")),
+  ready: () => !get("spaceInvaderDefeated"),
   do: LX_koeInvaderHandlerDo,
   locations: $location`The Invader`,
+  desiredEncounters: () =>
+    [
+      {
+        monster: $monster`the invader`,
+        needAmount: get("spaceInvaderDefeated") ? 0 : 1,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function LX_koeInvaderHandler(): boolean {

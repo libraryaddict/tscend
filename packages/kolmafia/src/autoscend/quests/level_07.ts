@@ -44,6 +44,8 @@ import {
   $skill,
   $slot,
   $stat,
+  get,
+  have,
 } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
@@ -347,6 +349,13 @@ const L7_defiledNookTask: QuestTask = registerQuestTask({
   completed: () => false,
   ready: () => true,
   do: L7_defiledNookDo,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`evil eye`,
+        needAmount: get("cyrptNookEvilness") > 13 ? 1 : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function L7_defiledNook(): boolean {
@@ -618,6 +627,36 @@ export const L7_cryptTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL07Cyrptic") > 0,
   ready: () => internalQuestStatus("questL07Cyrptic") === 0,
   do: L7_cryptDo,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`evil eye`,
+        needAmount: Math.round((13 - get("cyrptNookEvilness")) / 3),
+      },
+      {
+        item: $item`dieting pill`,
+        needAmount:
+          auto_is_valid($item`dieting pill`) &&
+          spleen_left() >= 3 &&
+          !isActuallyEd() &&
+          !have($item`dieting pill`)
+            ? 1
+            : 0,
+      },
+      {
+        monster: $monster`dirty old lihc`,
+        needAmount: Math.round((13 - get("cyrptNicheEvilness")) / 3),
+      },
+      {
+        monster: $monster`Bonerdagon`,
+        needAmount:
+          itemAmount($item`chest of the Bonerdagon`) < 1 &&
+          get("questL07Cyrptic") !== "finished" &&
+          (get("cyrptTotalEvilness") <= 0 || get("cyrptTotalEvilness") === 999)
+            ? 1
+            : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function L7_crypt(): boolean {
@@ -664,6 +703,13 @@ const L7_overrideTask: QuestTask = registerQuestTask({
       toInt(getProperty("cyrptNicheEvilness")) > 14),
   do: L7_overrideDo,
   locations: $locations`The Defiled Alcove, The Defiled Niche, The Defiled Cranny, The Defiled Nook`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`evil eye`,
+        needAmount: Math.round((13 - get("cyrptNookEvilness")) / 3),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function L7_override(): boolean {

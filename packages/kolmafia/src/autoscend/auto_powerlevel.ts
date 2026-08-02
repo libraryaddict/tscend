@@ -639,6 +639,19 @@ export const LX_freeCombatsTaskTask: QuestTask = registerQuestTask({
     (myAdventures() === 1 + auto_advToReserve() ||
       (in_theSource() && myAdventures() < 10)),
   do: LX_freeCombatsTaskDo,
+  desiredEncounters: () => {
+    return [
+      {
+        monster: $monster`Eldritch Tentacle`,
+        needAmount:
+          (get("_eldritchTentacleFought") ? 0 : 1) +
+          (auto_have_skill($skill`Evoke Eldritch Horror`) &&
+          get("_eldritchHorrorEvoked")
+            ? 0
+            : 1),
+      },
+    ].filter((a) => a.needAmount > 0);
+  },
 });
 
 export function LX_freeCombatsTask(): boolean {

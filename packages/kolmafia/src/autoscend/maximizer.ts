@@ -88,7 +88,10 @@ export class Maximizer {
   }
 
   max(mod: Criterion, amount: number): this {
-    this.maxes.set(criterionName(mod), amount);
+    this.maxes.set(
+      criterionName(mod),
+      Math.max(this.maxes.get(criterionName(mod)) ?? amount, amount),
+    );
     return this;
   }
 
