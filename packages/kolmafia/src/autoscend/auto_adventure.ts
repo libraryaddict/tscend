@@ -1,14 +1,12 @@
 import {
   canWalkFromChoice,
   choiceFollowsFight,
-  containsText,
   currentRound,
   fightFollowsChoice,
   getProperty,
   handlingChoice,
   inMultiFight,
   Item,
-  lastChoice,
   limitMode,
   Location,
   Monster,
@@ -29,8 +27,7 @@ import {
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
-  auto_runCombat,
-  auto_runSomeChoice,
+  auto_resolveEncounters,
   cloversAvailable,
   cloverUsageFinish,
   cloverUsageInit,
@@ -43,7 +40,6 @@ import {
   ed_handleAdventureServant,
   isActuallyEd,
 } from "./paths/actually_ed_the_undying";
-import { in_pokefam } from "./paths/pocket_familiars";
 
 export type CombatMacroReturns =
   | "attack"
@@ -189,14 +185,6 @@ export function autoAdvBypass(
   removeProperty("_auto_combatState");
   setProperty("auto_diag_round", (0).toString());
 
-  if (!option) {
-    if (isActuallyEd()) {
-      option = auto_edCombatHandler;
-    } else {
-      option = auto_combatHandler;
-    }
-  }
-
   if (isActuallyEd()) {
     ed_handleAdventureServant(loc);
   }
@@ -214,47 +202,9 @@ export function autoAdvBypass(
     }
     urlGetFlags /= 2;
   }
-  // handle the initial combat or choice the easy way.
-  let combatPage: string = ">Combat";
-  if (in_pokefam()) {
-    combatPage = ">Fight!";
-  }
-  if (containsText(page, combatPage)) {
-    auto_log_info(`autoAdvBypass has encountered a combat!`, "green");
-    page = auto_runCombat(page, option);
-  } else {
-    const choice_id: number = lastChoice();
-    auto_log_info(
-      `autoAdvBypass has encountered a choice: ${choice_id}`,
-      "green",
-    );
-    page = auto_runSomeChoice(page);
-  }
   // this should handle stuff like Ed's resurrect/fight loop
   // and anything else that chains combats & choices in any order
-  while (
-    fightFollowsChoice() ||
-    choiceFollowsFight() ||
-    inMultiFight() ||
-    handlingChoice()
-  ) {
-    if (
-      (fightFollowsChoice() || inMultiFight()) &&
-      !choiceFollowsFight() &&
-      !handlingChoice()
-    ) {
-      auto_log_info(`autoAdvBypass has encountered a combat!`, "green");
-      page = auto_runCombat(page, option);
-    }
-    if (choiceFollowsFight() || handlingChoice()) {
-      const choice_id: number = lastChoice();
-      auto_log_info(
-        `autoAdvBypass has encountered a choice: ${choice_id}`,
-        "green",
-      );
-      page = auto_runSomeChoice(page);
-    }
-  }
+  auto_resolveEncounters(page, option);
 
   auto_triggerPostAdventure();
   // Encounters that need to generate a false so we handle them manually should go here.
@@ -278,4 +228,20 @@ export function autoAdvBypass$1(
   const urlConvert: Map<number, string> = new Map();
   urlConvert.set(0, url);
   return autoAdvBypass(0, urlConvert, loc, option);
+}
+
+export function handleBetweenStates(page: string): string {
+  const shouldFight = () =>
+    currentRound() === 0 && (inMultiFight() || fightFollowsChoice());
+
+  if (shouldFight()) {
+    page = visitUrl("fight.php");
+  } else if (!handlingChoice() && choiceFollowsFight()) {
+    page = visitUrl("choice.php");
+  }
+
+  if (shouldFight() || (!handlingChoice() && choiceFollowsFight()))
+    page = visitUrl("main.php");
+
+  return page;
 }

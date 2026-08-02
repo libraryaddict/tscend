@@ -192,6 +192,7 @@ import {
   autoAdvBypass$1,
   CombatMacro,
   CombatMacroReturns,
+  handleBetweenStates,
 } from "./auto_adventure";
 import { buffMaintain$2 } from "./auto_buff";
 import { main } from "./auto_choice_adv";
@@ -229,6 +230,8 @@ import { acquireMP, uneffect } from "./auto_restore";
 import { solveDelayZone } from "./auto_routing";
 import { zone_hasLuckyAdventure } from "./auto_zone";
 import { kmailObject } from "./autoscend_record";
+import { auto_combatHandler } from "./combat/auto_combat";
+import { auto_edCombatHandler } from "./combat/auto_combat_ed";
 import {
   auto_canUse,
   banisherCombatAction$1,
@@ -7038,17 +7041,12 @@ export function auto_location_monsters(
 
 let auto_lastChoiceText: string | undefined;
 
-export function auto_runSomeChoice(page: string): string {
-  main(lastChoice(), page);
-
-  return auto_lastChoiceText;
-}
-
 export function auto_runChoice(decision: number, extra?: string): string {
-  if (decision <= 0)
+  if (decision <= 0) {
     abort(
       `Unexpected decision of ${decision} while handling the choice #${lastChoice()}`,
     );
+  }
   let url = `choice.php?whichchoice=${lastChoice()}&option=${decision}`;
 
   if (typeof extra === "string" && extra !== "") {
@@ -7057,6 +7055,61 @@ export function auto_runChoice(decision: number, extra?: string): string {
   const result = visitUrl(url); // defaults to POST, matching run_choice
   auto_lastChoiceText = result;
   return result;
+}
+
+// Shared by autoAdv (adventure.php) and autoAdvBypass (URL-triggered encounters):
+// resolves whatever chain of fights/choices follows from the given page until we're
+// back to a stable, non-combat/non-choice state.
+export function auto_resolveEncounters(
+  text: string,
+  combatMacro: CombatMacro = isActuallyEd()
+    ? auto_edCombatHandler
+    : auto_combatHandler,
+): string {
+  const createState = () => `${myAdventures()}|${currentRound()}`;
+  let tries: number = 0;
+  let lastState = createState();
+
+  while (
+    currentRound() > 0 ||
+    inMultiFight() ||
+    handlingChoice() ||
+    choiceFollowsFight() ||
+    fightFollowsChoice()
+  ) {
+    if (lastState === createState()) {
+      if (tries++ >= 60) {
+        // dump enough to actually diagnose the desync next time instead of guessing at it
+        auto_log_warning(
+          `Stuck loop state: round=${currentRound()} multiFight=${inMultiFight()} handlingChoice=${handlingChoice()} choiceFollowsFight=${choiceFollowsFight()} fightFollowsChoice=${fightFollowsChoice()} lastMonster=${lastMonster()} adv=${myAdventures()}`,
+          "red",
+        );
+        auto_log_warning(`Stuck loop page text: ${text}`, "red");
+        abort(`We appear to be stuck in a loop with no progress`);
+      }
+    } else {
+      lastState = createState();
+      tries = 0;
+    }
+
+    text = handleBetweenStates(text);
+
+    if (currentRound() > 0 || inMultiFight() || fightFollowsChoice()) {
+      if (get("auto_diag_round", 0) > 0) {
+        auto_log_info(`Encountered a combat!`, "green");
+      }
+      text = auto_runCombat(text, combatMacro);
+    } else if (handlingChoice()) {
+      if (get("auto_diag_round", 0) > 0) {
+        auto_log_info(`Encountered a choice: ${lastChoice()}`, "green");
+      }
+      auto_lastChoiceText = undefined;
+      main(lastChoice(), text);
+      text = auto_lastChoiceText ?? text;
+    }
+  }
+
+  return text;
 }
 
 export function auto_adv1(
@@ -7076,61 +7129,13 @@ export function auto_adv1(
     url += "a";
   }
 
-  let text = visitUrl(url);
-  const createState = () => `${myAdventures()}|${currentRound()}`;
-  let tries: number = 0;
-  let lastState = createState();
-
-  while (
-    currentRound() > 0 ||
-    inMultiFight() ||
-    handlingChoice() ||
-    choiceFollowsFight() ||
-    fightFollowsChoice()
-  ) {
-    if (lastState === createState()) {
-      if (tries++ >= 60) {
-        // dump enough to actually diagnose the desync next time instead of guessing at it
-        auto_log_warning(
-          `Stuck loop state: round=${currentRound()} multiFight=${inMultiFight()} handlingChoice=${handlingChoice()} choiceFollowsFight=${choiceFollowsFight()} fightFollowsChoice=${fightFollowsChoice()} lastMonster=${lastMonster()} adv=${myAdventures()} loc=${location}`,
-          "red",
-        );
-        auto_log_warning(`Stuck loop page text: ${text}`, "red");
-        abort(`We appear to be stuck in a loop with no progress`);
-      }
-    } else {
-      lastState = createState();
-      tries = 0;
-    }
-
-    if (currentRound() > 0 || inMultiFight()) {
-      text = auto_runCombat(text, combatMacro);
-    }
-    if (choiceFollowsFight()) {
-      // fight ended but redirected into a choice you haven't loaded yet
-      text = visitUrl("choice.php");
-    }
-    if (handlingChoice()) {
-      auto_lastChoiceText = undefined;
-      main(lastChoice(), text);
-      text = auto_lastChoiceText ?? text;
-    }
-  }
-
+  auto_resolveEncounters(visitUrl(url), combatMacro);
   return true;
 }
 
+// Assumes the page has already been normalized via handleBetweenStates (auto_resolveEncounters
+// does this for both autoAdv and autoAdvBypass) so we're actually looking at a fight round.
 export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
-  if (currentRound() === 0 && inMultiFight()) {
-    auto_log_info(`Multifight time! Let's get that fight started!`);
-    text = visitUrl("fight.php");
-    if (currentRound() === 0 && inMultiFight()) {
-      // fight.php alone doesn't always resume a chained fight (e.g. between
-      // the Naughty Sorceress's forms) - visiting main.php forces mafia to
-      // reparse our actual page and correctly clear/advance the multi-fight state.
-      text = visitUrl("main.php");
-    }
-  }
   while (currentRound() > 0) {
     let action: CombatMacroReturns = combatMacro(
       currentRound(),

@@ -65,7 +65,7 @@ import {
   auto_log_debug,
   auto_log_error,
   auto_log_info,
-  auto_runSomeChoice,
+  auto_resolveEncounters,
   auto_turbo,
   internalQuestStatus,
 } from "./auto_util";
@@ -1004,8 +1004,7 @@ export function preAdvUpdateFamiliar(place: Location): void {
     }
     // only visit the cake-shaped arena if we need to pickup an equipment.
     if (!toBoolean(getProperty("_auto_gnomeArenaVisited")) && visitArena) {
-      const page = visitUrl("arena.php");
-      auto_runSomeChoice(page);
+      auto_resolveEncounters(visitUrl("arena.php"));
       setProperty("_auto_gnomeArenaVisited", "true");
     }
     autoEquipToSlot($slot`familiar`, $item`gnomish housemaid's kgnee`);
