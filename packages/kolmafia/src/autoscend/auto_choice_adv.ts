@@ -828,7 +828,7 @@ function auto_run_choice(choice: number, page: string): boolean {
                 auto_log_info(
                   `User specified option ${choice} in their settings, but that doesn't seem to be available... Using the only option available to select: ${avail[0]}`,
                 );
-                choice = parseInt(avail[0]);
+                choice = parseInt(Object.keys(avail)[0]);
               } else {
                 abort(
                   `Uh oh, we don't think you can use option ${choice} on choice #${lastChoice()}, it has ${JSON.stringify(avail)} options, which yours is not one of.`,
