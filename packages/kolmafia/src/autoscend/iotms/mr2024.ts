@@ -19,7 +19,6 @@ import {
   itemAmount,
   lastChoice,
   min,
-  Modifier,
   Monster,
   myAscensions,
   myBasestat,
@@ -47,6 +46,7 @@ import {
   $familiar,
   $item,
   $location,
+  $modifier,
   $skill,
   $slot,
   AprilingBandHelmet,
@@ -717,7 +717,7 @@ export function auto_buyFromSeptEmberStore(): void {
       // We could have left-hand if our off-hand is strong enough
       const cold_res_from_oh: number = numericModifier(
         equippedItem($slot`off-hand`),
-        Modifier.get("Cold Resistance"),
+        $modifier`Cold Resistance`,
       );
       // McHugeLarge outfit off-hand is +3 cold res when whole outfit equipped, but not reported by Mafia with above check
       const using_mchugelarge_oh: boolean =
@@ -744,7 +744,7 @@ export function auto_buyFromSeptEmberStore(): void {
       // buy mouthwash and use it
       buy($coinmaster`Sept-Ember Censer`, 1, mouthwash);
       auto_log_debug(
-        `Using mouthwash with ${numericModifier(Modifier.get("Cold Resistance"))} cold resistance`,
+        `Using mouthwash with ${numericModifier($modifier`Cold Resistance`)} cold resistance`,
       );
       use(mouthwash);
     }
@@ -789,7 +789,7 @@ function expected_mouthwash_main_substat(cold_res: number): number {
 export function expected_level_after_mouthwash(): number {
   return expected_level_after_mouthwash$2(
     1,
-    numericModifier(Modifier.get("Cold Resistance")),
+    numericModifier($modifier`Cold Resistance`),
   );
 }
 

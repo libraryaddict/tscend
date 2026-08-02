@@ -172,14 +172,14 @@ export function zoo_d2Pulls(): void {
   }
   // Pull enough ML for oil peak, we need a provider function here.
   const ml_target: number = toInt(100.0);
-  simMaximizeWith("monster level");
-  let curr_ml: number = toInt(numericModifier(Modifier.get("Monster Level")));
+  simMaximizeWith((m) => m.weight($modifier`Monster Level`));
+  let curr_ml: number = toInt(numericModifier($modifier`Monster Level`));
   // Function to try pulling an ML item, if it improves our ML by at least 10 over best alternative.
   function try_ml_pull(it: Item): number {
     if (!canEquip(it) || availableAmount(it) > 0 || !auto_is_valid(it)) {
       return 0;
     }
-    const m: Modifier = Modifier.get("Monster Level");
+    const m: Modifier = $modifier`Monster Level`;
     const s: Slot = toSlot(it);
     const alternatives: Map<Item, number> = auto_getAllEquipabble(s);
     const ranked_alternatives: Map<number, Item> = auto_sortedByModifier(

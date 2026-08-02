@@ -6,7 +6,6 @@ import {
   changeMcd,
   cliExecute,
   combatRateModifier,
-  containsText,
   creatableAmount,
   create,
   currentMcd,
@@ -29,7 +28,6 @@ import {
   itemDropModifier,
   Location,
   meatDropModifier,
-  Modifier,
   Monster,
   monsterAttack,
   monsterElement,
@@ -98,7 +96,6 @@ import { auto_canRunBetweenBattleChecks } from "./auto_adventure";
 import { buffMaintain$2 } from "./auto_buff";
 import {
   addBonusToMaximize,
-  addToMaximize,
   auto_equipFreekill,
   autoEquip,
   autoEquipToSlot,
@@ -111,7 +108,6 @@ import {
   equipStatgainIncreasers$2,
   possessEquipment,
   possessOutfit,
-  removeFromMaximize,
   simMaximizeWith,
   simValue,
 } from "./auto_equipment";
@@ -242,7 +238,7 @@ import {
   auto_getItemToEquipHeartstone,
   auto_heartstoneShouldStealHeart,
 } from "./iotms/mr2026";
-import { maximizer } from "./maximizer";
+import { Maximizer, maximizer } from "./maximizer";
 import {
   ed_handleAdventureServant,
   edAcquireHP,
@@ -458,25 +454,26 @@ function auto_ghost_prep(place: Location): void {
     }
   }
 
-  let max_with: string = "";
+  const applyElementalDamageWeights = (m: Maximizer): void => {
+    if (m_hot !== 0) {
+      m.weight($modifier`Hot Damage`, 10 * m_hot);
+    }
+    if (m_cold !== 0) {
+      m.weight($modifier`Cold Damage`, 10 * m_cold);
+    }
+    if (m_spooky !== 0) {
+      m.weight($modifier`Spooky Damage`, 10 * m_spooky);
+    }
+    if (m_sleaze !== 0) {
+      m.weight($modifier`Sleaze Damage`, 10 * m_sleaze);
+    }
+    if (m_stench !== 0) {
+      m.weight($modifier`Stench Damage`, 10 * m_stench);
+    }
+  };
   let bonus: number = 0;
-  if (m_hot !== 0) {
-    max_with += `,${10 * m_hot}hot dmg`;
-  }
-  if (m_cold !== 0) {
-    max_with += `,${10 * m_cold}cold dmg`;
-  }
-  if (m_spooky !== 0) {
-    max_with += `,${10 * m_spooky}spooky dmg`;
-  }
-  if (m_sleaze !== 0) {
-    max_with += `,${10 * m_sleaze}sleaze dmg`;
-  }
-  if (m_stench !== 0) {
-    max_with += `,${10 * m_stench}stench dmg`;
-  }
 
-  simMaximizeWith(max_with);
+  simMaximizeWith(applyElementalDamageWeights);
   if (m_hot !== 0) {
     bonus += toInt(simValue($modifier`Hot Damage`));
   }
@@ -494,7 +491,7 @@ function auto_ghost_prep(place: Location): void {
   }
 
   if (bonus > 9) {
-    addToMaximize(max_with);
+    applyElementalDamageWeights(maximizer);
     return;
   }
 
@@ -576,7 +573,7 @@ function auto_pre_adventure(): boolean {
     pm_updateThrall(place, false); //maybe dismiss Vampieroghi, maybe bind Spice Ghost or Vermincelli
   }
   //save some MP while buffing
-  maximizer.weight($modifier`Mana Cost`, -1000).weight("Tie", -1);
+  maximizer.weight($modifier`Mana Cost`, -1000).require("Tie", false);
   equipMaximizedGear();
 
   if (place === $location`The Smut Orc Logging Camp`) {
@@ -684,7 +681,7 @@ function auto_pre_adventure(): boolean {
   // If we're zootomist, need to level, and we have +xp on our milk, cast it.
   if (in_zootomist() && myLevel() < 13) {
     for (const ef of $effects`Milk of Familiar Kindness, Milk of Familiar Cruelty`) {
-      if (numericModifier(ef, Modifier.get("Familiar Experience")) > 0) {
+      if (numericModifier(ef, $modifier`Familiar Experience`) > 0) {
         buffMaintain$2(ef);
       }
     }
@@ -1144,7 +1141,7 @@ function auto_pre_adventure(): boolean {
   // Also check we're not regenning loads of MP already
   if (
     auto_predictAccordionTurns() >= 8 &&
-    numericModifier(Modifier.get("MP Regen Min")) < 5
+    numericModifier($modifier`MP Regen Min`) < 5
   ) {
     buffMaintain$2($effect`Paul's Passionate Pop Song`);
   }
@@ -1270,7 +1267,7 @@ function auto_pre_adventure(): boolean {
   // if the limit setting has no value then ML has already been given a value indirectly by "exp" in the default maximizer statement
   if (
     getProperty("auto_MLSafetyLimit") !== "" &&
-    !containsText(maximizer.toString(), "ml")
+    !maximizer.has($modifier`Monster Level`)
   ) {
     if (toInt(getProperty("auto_MLSafetyLimit")) === -1) {
       // prevent all ML being equiped if limit is -1 and equip lowest possible ML including going negative
@@ -1283,10 +1280,12 @@ function auto_pre_adventure(): boolean {
       //0max would just tell the maximizer to add +0 value to ML over 0 which is the same as not giving any value for ML
     } else {
       // note: maximizer will allow to go above the max value, ML just won't contribute to the total score after the max value
-      maximizer.max(
-        $modifier`Monster Level`,
-        toInt(getProperty("auto_MLSafetyLimit")),
-      );
+      maximizer
+        .weight($modifier`Monster Level`)
+        .max(
+          $modifier`Monster Level`,
+          toInt(getProperty("auto_MLSafetyLimit")),
+        );
     }
   }
   // Last minute switching for garbage tote. But only if nothing called on januaryToteAcquire this turn.
@@ -1297,10 +1296,11 @@ function auto_pre_adventure(): boolean {
     januaryToteAcquire($item`wad of used tape`);
   }
 
-  removeFromMaximize("-1000mana cost");
+  maximizer.clearWeight($modifier`Mana Cost`);
   // EQUIP MAXIMIZED GEAR
   auto_ghost_prep(place);
   equipMaximizedGear();
+
   auto_handleRetrocape(); // has to be done after equipMaximizedGear otherwise the maximizer reconfigures it
   auto_handleParka(); //same as retrocape above
 

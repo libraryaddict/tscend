@@ -58,7 +58,7 @@ import {
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { auto_beachCombHead } from "../iotms/mr2019";
-import { maximizer } from "../maximizer";
+import { Maximizer, maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_glover } from "../paths/g_lover";
 import { in_wereprof } from "../paths/wereprofessor";
@@ -147,9 +147,18 @@ function auto_tavern(): boolean {
   }
 
   // Tails are a better time saving investment. Add -combat to ensure sim and real maximizer results match
-  simMaximizeWith(
-    `80cold damage 20max,80hot damage 20max,80spooky damage 20max,80stench damage 20max,500ml ${auto_convertDesiredML(max_ml_target)}max,-200combat 25max`,
-  );
+  const applyElementAndMlWeights = (m: Maximizer): void => {
+    m.weight($modifier`Cold Damage`, 80).max($modifier`Cold Damage`, 20);
+    m.weight($modifier`Hot Damage`, 80).max($modifier`Hot Damage`, 20);
+    m.weight($modifier`Spooky Damage`, 80).max($modifier`Spooky Damage`, 20);
+    m.weight($modifier`Stench Damage`, 80).max($modifier`Stench Damage`, 20);
+    m.weight($modifier`Monster Level`, 500).max(
+      $modifier`Monster Level`,
+      auto_convertDesiredML(max_ml_target),
+    );
+    m.weight($modifier`Combat Rate`, -200).max($modifier`Combat Rate`, 25);
+  };
+  simMaximizeWith(applyElementAndMlWeights);
 
   function n_passed(): number {
     // We pass an elemental damage check if we have 20 damage for that element
@@ -169,9 +178,7 @@ function auto_tavern(): boolean {
   for (const it of $items`17-ball, rare oboe`) {
     if (!all_passed()) {
       if (pullXWhenHaveY(it, 1, 0)) {
-        simMaximizeWith(
-          `80cold damage 20max,80hot damage 20max,80spooky damage 20max,80stench damage 20max,500ml ${auto_convertDesiredML(max_ml_target)}max,-200combat 25max`,
-        );
+        simMaximizeWith(applyElementAndMlWeights);
       }
     }
   }

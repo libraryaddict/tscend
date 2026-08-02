@@ -31,7 +31,6 @@ import {
   itemDropModifier,
   Location,
   max,
-  Modifier,
   monsterLevelAdjustment,
   myAdventures,
   myAscensions,
@@ -130,7 +129,6 @@ import {
   equipmentAmount,
   possessEquipment,
   possessUnrestricted,
-  removeFromMaximize,
   resetMaximize,
 } from "../auto_equipment";
 import {
@@ -3349,7 +3347,9 @@ function L11_mauriceSpookyravenDo(): boolean {
     if (is_professor()) {
       // +ML is BAD for professor
       auto_change_mcd(0);
-      removeFromMaximize(`500ml ${auto_convertDesiredML(82)}max`);
+      maximizer
+        .clearWeight($modifier`Monster Level`)
+        .clearMax($modifier`Monster Level`);
     }
 
     if (monsterLevelAdjustment() < 57) {
@@ -3490,8 +3490,8 @@ function L11_redZeppelin(): boolean {
         // double sleaze dmg, +100 sleaze dmg,
         let target_sleaze: number = 400;
         const current_sleaze: number =
-          numericModifier(Modifier.get("Sleaze Damage")) +
-          numericModifier(Modifier.get("Sleaze Spell Damage"));
+          numericModifier($modifier`Sleaze Damage`) +
+          numericModifier($modifier`Sleaze Spell Damage`);
         if (
           possessEquipment($item`candy cane sword cane`) &&
           auto_is_valid($item`candy cane sword cane`)

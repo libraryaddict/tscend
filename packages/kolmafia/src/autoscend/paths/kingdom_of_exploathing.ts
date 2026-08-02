@@ -148,7 +148,7 @@ function LX_koeInvaderHandlerDo(): boolean {
     autoEquipToSlot($slot`off-hand`, $item`meteorb`);
   }
 
-  simMaximizeWith("200 all res", Location.none);
+  simMaximizeWith((m) => m.weight("All Resistance", 200), Location.none);
 
   let damagePerRound: number = 0.0;
   const baseDamage: number = 1.0 - 0.1 * myDaycount();

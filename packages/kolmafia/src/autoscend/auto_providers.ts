@@ -17,7 +17,6 @@ import {
   haveSkill,
   Item,
   itemAmount,
-  length,
   Location,
   min,
   Modifier,
@@ -199,9 +198,14 @@ export function providePlusCombat(
   }
 
   if (doEquips) {
-    const max_1: string = `200combat ${amt}max`;
     if (speculative) {
-      simMaximizeWith(max_1, loc);
+      simMaximizeWith(
+        (m) =>
+          m
+            .weight($modifier`Combat Rate`, 200)
+            .max($modifier`Combat Rate`, amt),
+        loc,
+      );
     } else {
       maximizer
         .weight($modifier`Combat Rate`, 200)
@@ -413,9 +417,10 @@ export function providePlusNonCombat(
   }
 
   if (doEquips) {
-    const max_1: string = `-200combat ${amt}max`;
     if (speculative) {
-      simMaximizeWith(max_1);
+      simMaximizeWith((m) =>
+        m.weight($modifier`Combat Rate`, -200).max($modifier`Combat Rate`, amt),
+      );
     } else {
       maximizer
         .weight($modifier`Combat Rate`, -200)
@@ -695,9 +700,12 @@ export function provideInitiative(
   }
 
   if (doEquips) {
-    const max_1: string = `500initiative ${amt}max`;
     if (speculative) {
-      simMaximizeWith(max_1, loc);
+      simMaximizeWith(
+        (m) =>
+          m.weight($modifier`Initiative`, 500).max($modifier`Initiative`, amt),
+        loc,
+      );
     } else {
       maximizer
         .weight($modifier`Initiative`, 500)
@@ -1040,14 +1048,14 @@ export function provideResistances(
 
   if (doEquips) {
     if (speculative) {
-      let max_1: string = "";
-      for (const [ele, goal] of amt) {
-        if (length(max_1) > 0) {
-          max_1 += ",";
+      simMaximizeWith((m) => {
+        for (const [ele, goal] of amt) {
+          m.weight(Modifier.get(`${ele} resistance`), 2000).max(
+            Modifier.get(`${ele} resistance`),
+            goal,
+          );
         }
-        max_1 += `2000${ele} resistance ${goal}max`;
-      }
-      simMaximizeWith(max_1, loc);
+      }, loc);
     } else {
       for (const [ele, goal] of amt) {
         maximizer
@@ -1332,14 +1340,14 @@ function provideStats(
 
   if (doEquips) {
     if (speculative) {
-      let max_1: string = "";
-      for (const [st, goal] of amt) {
-        if (length(max_1) > 0) {
-          max_1 += ",";
+      simMaximizeWith((m) => {
+        for (const [st, goal] of amt) {
+          m.weight(Modifier.get(st.toString()), 200).max(
+            Modifier.get(st.toString()),
+            goal,
+          );
         }
-        max_1 += `200${st} ${goal}max`;
-      }
-      simMaximizeWith(max_1, loc);
+      }, loc);
     } else {
       for (const [st, goal] of amt) {
         maximizer
@@ -1590,9 +1598,14 @@ function provideMeat(
   }
   // don't craft equipment here. See how much +meat we can get with gear on hand
   if (doEverything) {
-    const max_1: string = `500meat ${amt + 100}max`;
     if (speculative) {
-      simMaximizeWith(max_1, loc);
+      simMaximizeWith(
+        (m) =>
+          m
+            .weight($modifier`Meat Drop`, 500)
+            .max($modifier`Meat Drop`, amt + 100),
+        loc,
+      );
     } else {
       maximizer
         .weight($modifier`Meat Drop`, 500)
@@ -1834,9 +1847,14 @@ function provideMeat(
         $item`loose purse strings`,
       );
     }
-    const max_1: string = `500meat ${amt + 100}max`;
     if (speculative) {
-      simMaximizeWith(max_1, loc);
+      simMaximizeWith(
+        (m) =>
+          m
+            .weight($modifier`Meat Drop`, 500)
+            .max($modifier`Meat Drop`, amt + 100),
+        loc,
+      );
     } else {
       maximizer
         .weight($modifier`Meat Drop`, 500)
@@ -2086,9 +2104,14 @@ function provideItem(
   }
   // don't craft equipment here. See how much +item we can get with gear on hand
   if (doEverything) {
-    const max_1: string = `500item ${amt + 100}max`;
     if (speculative) {
-      simMaximizeWith(max_1, loc);
+      simMaximizeWith(
+        (m) =>
+          m
+            .weight($modifier`Item Drop`, 500)
+            .max($modifier`Item Drop`, amt + 100),
+        loc,
+      );
     } else {
       maximizer
         .weight($modifier`Item Drop`, 500)
@@ -2317,9 +2340,14 @@ function provideItem(
       januaryToteAcquire($item`broken champagne bottle`);
     }
 
-    const max_1: string = `500item ${amt + 100}max`;
     if (speculative) {
-      simMaximizeWith(max_1, loc);
+      simMaximizeWith(
+        (m) =>
+          m
+            .weight($modifier`Item Drop`, 500)
+            .max($modifier`Item Drop`, amt + 100),
+        loc,
+      );
     } else {
       maximizer
         .weight($modifier`Item Drop`, 500)
@@ -2551,9 +2579,14 @@ export function provideFamExp(
   }
   // don't craft equipment here. See how much +fam xp we can get with gear on hand
   if (doEquips || doEverything) {
-    const max_1: string = `1000familiar experience ${amt + 10}max`;
     if (speculative) {
-      simMaximizeWith(max_1, loc);
+      simMaximizeWith(
+        (m) =>
+          m
+            .weight($modifier`Familiar Experience`, 1000)
+            .max($modifier`Familiar Experience`, amt + 10),
+        loc,
+      );
     } else {
       maximizer
         .weight($modifier`Familiar Experience`, 1000)
@@ -2581,7 +2614,7 @@ export function provideFamExp(
 
   function tryEffects$1(effects: Map<Effect, boolean>): boolean {
     for (const eff of effects.keys()) {
-      if (numericModifier(eff, Modifier.get("Familiar Experience")) > 0) {
+      if (numericModifier(eff, $modifier`Familiar Experience`) > 0) {
         if (buffMaintain$2(eff, 0, 1, 1, speculative)) {
           handleEffect(eff);
         }
@@ -2620,9 +2653,14 @@ export function provideFamExp(
     //craft IOTM derivative that gives high fam xp bonus
     auto_latteRefill$4("famxp"); //+3
 
-    const max_1: string = `1000familiar experience ${amt + 100}max`;
     if (speculative) {
-      simMaximizeWith(max_1, loc);
+      simMaximizeWith(
+        (m) =>
+          m
+            .weight($modifier`Familiar Experience`, 1000)
+            .max($modifier`Familiar Experience`, amt + 100),
+        loc,
+      );
     } else {
       maximizer
         .weight($modifier`Familiar Experience`, 1000)

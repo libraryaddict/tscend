@@ -3,6 +3,7 @@ import {
   containsText,
   equip,
   equippedItem,
+  Familiar,
   haveSkill,
   Item,
   itemType,
@@ -17,9 +18,10 @@ import {
 } from "kolmafia";
 import { $familiar, $skill, $slot } from "libram";
 
-import { MaximizerModifier } from "./utils/modifiers";
+import { auto_log_info } from "./auto_util";
+import { MAXIMIZER_ALIASES, MaximizerModifier } from "./utils/modifiers";
 
-type Criterion = Modifier | MaximizerModifier;
+export type Criterion = Modifier | MaximizerModifier;
 
 function criterionName(mod: Criterion): string {
   return mod instanceof Modifier ? mod.name : mod;
@@ -71,15 +73,28 @@ export class Maximizer {
   private readonly maxes = new Map<string, number>();
   private readonly excluded = new Set<Item>();
   private readonly disabledSlots = new Set<Slot>();
-  private forceOneHanded = false;
+  private readonly onlySlots = new Set<Slot>();
+  private readonly switchFamiliars = new Set<Familiar>();
   private readonly custom = new Set<string>();
   private readonly pendingEquip = new Map<Slot, Item>();
   private readonly pendingBonus = new Map<Item, number>();
   private readonly modes = new Map<Item, Set<string>>();
+  private readonly otherRequirements = new Map<MaximizerModifier, boolean>();
+
+  getWeight(mod: Criterion): number {
+    return this.weights.get(criterionName(mod));
+  }
 
   // stacks with earlier weight() calls for the same criterion
   weight(mod: Criterion, amount: number = 1): this {
     const name = criterionName(mod);
+
+    if (this.weights.has(name)) {
+      auto_log_info(
+        `Adding modifier for ${name} on top of ${this.weights.get(name)} + ${amount} = ${this.weights.get(name) + amount}`,
+      );
+    }
+
     this.weights.set(name, (this.weights.get(name) ?? 0) + amount);
     return this;
   }
@@ -109,6 +124,70 @@ export class Maximizer {
     return this;
   }
 
+  include(item: Item): this {
+    this.excluded.delete(item);
+
+    return this;
+  }
+
+  cancelEquip(item: Item): this {
+    for (const [slot, pending] of this.pendingEquip) {
+      if (pending === item) {
+        this.pendingEquip.delete(slot);
+        break;
+      }
+    }
+
+    return this;
+  }
+
+  excludeSlot(slot: Slot): this {
+    this.disabledSlots.add(slot);
+
+    return this;
+  }
+
+  requireSlot(slot: Slot): this {
+    this.onlySlots.add(slot);
+
+    return this;
+  }
+
+  allowSwitch(familiar: Familiar): this {
+    this.switchFamiliars.add(familiar);
+
+    return this;
+  }
+
+  require(modifier: MaximizerModifier, wantsThis: boolean = true): this {
+    this.otherRequirements.set(modifier, wantsThis);
+
+    return this;
+  }
+
+  clearWeight(mod: Criterion): this {
+    this.weights.delete(criterionName(mod));
+
+    return this;
+  }
+
+  clearMin(mod: Criterion): this {
+    this.mins.delete(criterionName(mod));
+
+    return this;
+  }
+
+  clearMax(mod: Criterion): this {
+    this.maxes.delete(criterionName(mod));
+
+    return this;
+  }
+
+  // KoLmafia maximizer debug/verbosity directive
+  debugDump(): this {
+    return this.weight("Dump", 2);
+  }
+
   // bonus() scores every queued mode; equip aborts if more than one is queued
   mode<T extends ModeableItemName>(name: T, value: ModesByItem[T]): this {
     const item = Item.get(name);
@@ -118,42 +197,34 @@ export class Maximizer {
     return this;
   }
 
-  has(text: string): boolean {
-    return containsText(this.toString(), text);
+  hasBonus(item: Item): boolean {
+    return this.pendingBonus.has(item);
   }
 
-  raw(fragment: string): this {
+  has(text: Slot | Criterion | Item): boolean {
+    if (text instanceof Slot) {
+      return this.onlySlots.has(text) || this.disabledSlots.has(text);
+    } else if (text instanceof Item) {
+      return (
+        this.pendingBonus.has(text) ||
+        this.pendingEquip.values().find((a) => a === text) !== undefined
+      );
+    }
+
+    return (
+      this.weights.has(criterionName(text)) ||
+      (typeof text === "string" && this.otherRequirements.has(text))
+    );
+  }
+
+  private raw(fragment: string): this {
     this.custom.add(fragment);
     return this;
   }
 
-  remove(fragment: string): this {
-    this.custom.delete(fragment);
-
-    const excludeMatch = /^-"equip (.+)"$/.exec(fragment);
-    if (excludeMatch) {
-      const name = excludeMatch[1];
-      for (const item of this.excluded) {
-        if (item.toString() === name) {
-          this.excluded.delete(item);
-          break;
-        }
-      }
-    }
-
-    const equipMatch = /^\+"equip (.+)"$/.exec(fragment);
-    if (equipMatch) {
-      const text = equipMatch[1];
-      for (const [slot, item] of this.pendingEquip) {
-        const name = item.toString();
-        if (text === name || text.startsWith(`${name} (`)) {
-          this.pendingEquip.delete(slot);
-          break;
-        }
-      }
-    }
-
-    return this;
+  // Escape hatch for maximizer_parser.ts only; do not call from application logic.
+  applyRawFallback(fragment: string): this {
+    return this.raw(fragment);
   }
 
   clone(): Maximizer {
@@ -168,10 +239,12 @@ export class Maximizer {
     copyMap(from.maxes, this.maxes);
     copySet(from.excluded, this.excluded);
     copySet(from.disabledSlots, this.disabledSlots);
-    this.forceOneHanded = from.forceOneHanded;
+    copySet(from.onlySlots, this.onlySlots);
+    copySet(from.switchFamiliars, this.switchFamiliars);
     copySet(from.custom, this.custom);
     copyMap(from.pendingEquip, this.pendingEquip);
     copyMap(from.pendingBonus, this.pendingBonus);
+    copyMap(from.otherRequirements, this.otherRequirements);
     this.modes.clear();
     for (const [item, itemModes] of from.modes)
       this.modes.set(item, new Set(itemModes));
@@ -184,11 +257,23 @@ export class Maximizer {
     return this;
   }
 
+  // toSlot() always resolves accessories to acc1; pick the first slot not already pending
+  private firstOpenAccessorySlot(): Slot {
+    return (
+      [$slot`acc1`, $slot`acc2`, $slot`acc3`].find(
+        (accSlot) => this.pending(accSlot) === Item.none,
+      ) ?? $slot`acc1`
+    );
+  }
+
   // queues intent to equip; doesn't touch worn equipment until maximize()/simulate() runs
   equip(item: Item, slot?: Slot): boolean {
-    const targetSlot = slot ?? toSlot(item);
+    let targetSlot = slot ?? toSlot(item);
     if (targetSlot === Slot.none) {
       return false;
+    }
+    if (targetSlot === $slot`acc1` && slot === undefined) {
+      targetSlot = this.firstOpenAccessorySlot();
     }
     if (targetSlot === $slot`weapon` && weaponHands(item) > 1) {
       this.pendingEquip.delete($slot`off-hand`);
@@ -221,9 +306,12 @@ export class Maximizer {
     if (item === Item.none) {
       return equip(slot ?? Slot.none, item);
     }
-    const targetSlot = slot ?? toSlot(item);
+    let targetSlot = slot ?? toSlot(item);
     if (targetSlot === Slot.none) {
       return false;
+    }
+    if (targetSlot === $slot`acc1` && slot === undefined) {
+      targetSlot = this.firstOpenAccessorySlot();
     }
 
     if (
@@ -243,7 +331,7 @@ export class Maximizer {
       this.pendingEquip.set(targetSlot, item);
       this.excluded.delete(item);
       if (targetSlot === $slot`off-hand`) {
-        this.forceOneHanded = true;
+        this.otherRequirements.set("1 Handed", true);
       }
       this.disabledSlots.add(targetSlot);
     }
@@ -253,12 +341,23 @@ export class Maximizer {
   toString(): string {
     const terms: string[] = [];
 
-    for (const [name, amount] of this.weights) terms.push(`${amount}${name}`);
-    for (const [name, amount] of this.mins) terms.push(`${name} ${amount}min`);
-    for (const [name, amount] of this.maxes) terms.push(`${name} ${amount}max`);
+    for (const [name, amount] of this.weights) {
+      const displayName = MAXIMIZER_ALIASES[name] ?? name;
+      let term = `${amount !== 1 ? `${amount} ` : ""}${displayName}`;
+      const min = this.mins.get(name);
+      const max = this.maxes.get(name);
+      if (min !== undefined) term += ` ${min} min`;
+      if (max !== undefined) term += ` ${max} max`;
+      terms.push(term);
+    }
     for (const item of this.excluded) terms.push(`-"equip ${item}"`);
     for (const slot of this.disabledSlots) terms.push(`-${slot}`);
-    if (this.forceOneHanded) terms.push("1hand");
+    for (const slot of this.onlySlots) terms.push(`+${slot}`);
+    for (const familiar of this.switchFamiliars)
+      terms.push(`switch ${familiar}`);
+    for (const [term, wantsThis] of this.otherRequirements) {
+      terms.push(`${wantsThis ? `` : "-"}${MAXIMIZER_ALIASES[term] ?? term}`);
+    }
     terms.push(...this.custom);
 
     for (const [item, amount] of this.pendingBonus) {
@@ -289,12 +388,13 @@ export class Maximizer {
       terms.push(`+"equip ${item} (${[...itemModes][0]})"`);
     }
 
-    return terms.join(",");
+    return terms.join(", ");
   }
 
   // equipScope -1 = EQUIP_NOW
-  maximize(): void {
+  maximize(): boolean {
     maximize(this.toString(), 2500, 0, -1, "equip");
+    return true;
   }
 
   simulate(): Map<Slot, Item> {

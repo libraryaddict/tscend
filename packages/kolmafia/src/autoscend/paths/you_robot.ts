@@ -31,7 +31,7 @@ import {
   visitUrl,
   wait,
 } from "kolmafia";
-import { $familiar, $item, $location, $path, $stat } from "libram";
+import { $familiar, $item, $location, $modifier, $path, $stat } from "libram";
 
 import { auto_unreservedAdvRemaining } from "../../autoscend";
 import { canPull, pullXWhenHaveY } from "../auto_acquire";
@@ -65,6 +65,7 @@ import {
 } from "../auto_util";
 import { runTaskChain } from "../engine/engine";
 import { chateaumantegna_available } from "../iotms/mr2015";
+import { Maximizer } from "../maximizer";
 import { L5_slayTheGoblinKingTask } from "../quests/level_05";
 import { L8_trapperSlopeTask } from "../quests/level_08";
 import {
@@ -111,17 +112,26 @@ export function robot_initializeSettings(): void {
   setProperty("auto_paranoia", (1).toString());
 }
 
-export function robot_defaultMaximizeStatement(): string {
+export function robot_buildDefaultMaximize(target: Maximizer): void {
   //custom default maximizer statement for You, Robot.
-  let res: string =
-    "5item,meat,0.5initiative,0.4hp,0.1da 1000max,dr,0.5all res,-fumble,-ml";
+  target
+    .weight($modifier`Item Drop`, 5)
+    .weight($modifier`Meat Drop`)
+    .weight($modifier`Initiative`, 0.5)
+    .weight($modifier`Maximum HP`, 0.4)
+    .weight($modifier`Damage Absorption`, 0.1)
+    .max($modifier`Damage Absorption`, 1000)
+    .weight($modifier`Damage Reduction`)
+    .weight("All Resistance", 0.5)
+    .require("Fumble", false)
+    .weight($modifier`Monster Level`, -1);
   if (myPrimestat() === $stat`Moxie`) {
-    res += ",3mox";
+    target.weight($modifier`Moxie`, 3);
   } else {
-    res += ",mox";
+    target.weight($modifier`Moxie`);
   }
   if (myPrimestat() === $stat`Muscle`) {
-    res += ",3mus";
+    target.weight($modifier`Muscle`, 3);
   }
   if (myPrimestat() === $stat`Mysticality`) {
     if (
@@ -129,7 +139,7 @@ export function robot_defaultMaximizeStatement(): string {
       toInt(getProperty("youRobotLeft")) === 5
     ) {
       //sniper rifle attachment
-      res += ",1.5mys"; //mys robots only want mainstat with lightsaber or sniper
+      target.weight($modifier`Mysticality`, 1.5); //mys robots only want mainstat with lightsaber or sniper
     }
   }
   //weapon handling
@@ -138,24 +148,21 @@ export function robot_defaultMaximizeStatement(): string {
     if (possessEquipment($item`Fourth of May Cosplay Saber`)) {
       autoEquip($item`Fourth of May Cosplay Saber`);
     } else {
-      res += ",0.3weapon damage,0.2weapon damage percent,0.5elemental damage";
-      if (myPrimestat() === $stat`Muscle`) {
-        res += ",melee";
-      } else {
-        res += ",-melee";
-      }
+      target
+        .weight($modifier`Weapon Damage`, 0.3)
+        .weight($modifier`Weapon Damage Percent`, 0.2)
+        .weight("Elemental Damage", 0.5);
+      target.require("Melee", myPrimestat() === $stat`Muscle`);
     }
   }
 
   if (toInt(getProperty("youRobotTop")) === 2) {
     //bird cage. unlocks familiar
-    res += ",2familiar weight";
+    target.weight($modifier`Familiar Weight`, 2);
     if (familiarWeight(myFamiliar()) < 20) {
-      res += ",5familiar exp";
+      target.weight($modifier`Familiar Experience`, 5);
     }
   }
-
-  return res;
 }
 
 function robot_top(choice: number): boolean {

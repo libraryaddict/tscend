@@ -1,12 +1,14 @@
 // @ts-expect-error TS2591 - avoid @types/node in our packages
 import { readFileSync } from "fs";
 import * as eslint from "@eslint/js";
+import type { Rule } from "eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
 import prettier from "eslint-config-prettier";
 import libram, { verifyConstantsSinceRevision } from "eslint-plugin-libram";
 import tseslint from "typescript-eslint";
 import unusedImports from "eslint-plugin-unused-imports";
 import importSort from "eslint-plugin-simple-import-sort";
+import { rule as verifyModifiers } from "./eslint-rules/verify-modifiers.mts";
 
 // KoLmafia revision is taken from package.json, update it there.
 let cachedRevision = 0;
@@ -19,7 +21,7 @@ try {
       "utf-8",
     ),
   );
-} catch (e) {
+} catch {
   // No cached data yet or malformed file
 }
 
@@ -56,6 +58,12 @@ export default defineConfig(
     plugins: {
       "unused-imports": unusedImports,
       "simple-import-sort": importSort,
+      // @typescript-eslint/utils' rule type predates ESLint 10's RuleDefinition shape, hence the cast.
+      local: {
+        rules: {
+          "verify-modifiers": verifyModifiers as unknown as Rule.RuleModule,
+        },
+      },
     },
     files: [
       "packages/**/src/**/*.ts",
@@ -87,6 +95,7 @@ export default defineConfig(
       "simple-import-sort/exports": "error",
       "sort-imports": "off",
       "libram/verify-constants": "error",
+      "local/verify-modifiers": "error",
       "unused-imports/no-unused-imports": "error",
       "no-fallthrough": [
         "error",

@@ -1146,7 +1146,9 @@ function LX_joinPirateCrewObligatoryCove(): boolean {
     return true;
   } else {
     auto_log_info("Insult gathering party.", "blue");
-    maximizer.raw("-outfit Swashbuckling Getup");
+    for (const item of outfitPieces("Swashbuckling Getup")) {
+      maximizer.exclude(item);
+    }
     // If we're wearing the pirate outfit already, autoAdv will fail to adventure
     // in the cove since the zone isn't available unless we remove it (which wouldn't happen until auto_pre_adv runs)
     autoStripOutfit("Swashbuckling Getup");

@@ -99,7 +99,6 @@ import { in_quantumTerrarium } from "./paths/quantum_terrarium";
 import { in_robot } from "./paths/you_robot";
 import { L13_wantsTheD } from "./quests/level_13";
 import { fileAsMap } from "./utils/kolmafiaUtils";
-import { AshMatcher } from "./utils/kolmafiaUtils";
 
 //Defined in autoscend/auto_familiar.ash
 export function is100FamRun(): boolean {
@@ -846,17 +845,15 @@ function autoChooseFamiliar(place: Location): boolean {
   }
   //If a fam was selected that is contrary to the Combat Rate we want, deselect it. Probably won't select it in stat or regen but user should get better free-ish fams if it does
   const famComRate: number = auto_famModifiers$1(famChoice, "Combat Rate");
-  const plusCombatInMaximize: boolean = new AshMatcher(
-    "(?<!-)200 ?combat",
-    maximizer.toString(),
-  ).find();
-  const minusCombatInMaximize: boolean = new AshMatcher(
-    "-200 ?combat",
-    maximizer.toString(),
-  ).find();
-  if (minusCombatInMaximize && famComRate > 0) {
+  if (
+    (maximizer.getWeight($modifier`Combat Rate`) ?? 0) < 0 &&
+    famComRate > 0
+  ) {
     famChoice = Familiar.none;
-  } else if (plusCombatInMaximize && famComRate < 0) {
+  } else if (
+    (maximizer.getWeight($modifier`Combat Rate`) ?? 0) > 0 &&
+    famComRate < 0
+  ) {
     famChoice = Familiar.none;
   }
   // Stats from combats makes runs go faster apparently, except in meatpath

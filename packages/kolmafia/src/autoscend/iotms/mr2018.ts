@@ -61,7 +61,6 @@ import {
   autoEquipToSlot,
   equipStatgainIncreasers$1,
   possessEquipment,
-  removeFromMaximize,
 } from "../auto_equipment";
 import {
   canChangeToFamiliar,
@@ -81,6 +80,7 @@ import {
   wrap_item,
 } from "../auto_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
+import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { is_boris } from "../paths/avatar_of_boris";
@@ -171,7 +171,7 @@ export function januaryToteAcquire(it: Item): boolean {
       it,
     )
   ) {
-    removeFromMaximize(`-"equip ${it}"`);
+    maximizer.include(it);
   }
   //Special handling for if we already have the item on hand. We might want to replace it with itself
   //do not use possessEquipment nor equipmentAmount here, they have special handling for tote foldables that always counts number of january's garbage totes instead of the target item. Resulting in this if always being true.

@@ -905,7 +905,7 @@ export function auto_scepterSkills(): void {
     }
   }
   //see how much mana cost reduction we can get (up to 3mp)
-  simMaximizeWith("-1000mana cost");
+  simMaximizeWith((m) => m.weight($modifier`Mana Cost`, -1000));
 
   const manaCostMaximize: number = toInt(simValue($modifier`Mana Cost`));
   if (!auto_turbo()) {

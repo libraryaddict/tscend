@@ -359,8 +359,8 @@ export function L13_heavyrains_towerFinal(): boolean {
   cliExecute("outfit Birthday Suit"); //Need to get naked so we can check our stats properly.
   maximizer
     .weight($modifier`Prismatic Damage`, 1000)
-    .raw("+weapon")
-    .raw("+offhand");
+    .requireSlot($slot`weapon`)
+    .requireSlot($slot`off-hand`);
   equipMaximizedGear();
 
   let hot_dmg: number = toInt(min(40, numericModifier($modifier`Hot Damage`)));
@@ -387,9 +387,9 @@ export function L13_heavyrains_towerFinal(): boolean {
   ) {
     maximizer
       .weight($modifier`Prismatic Damage`)
-      .raw("+weapon")
-      .raw("+offhand")
-      .raw("+club");
+      .requireSlot($slot`weapon`)
+      .requireSlot($slot`off-hand`)
+      .weight("Club");
     equipMaximizedGear();
     const club_hot_dmg: number = toInt(
       min(40, 3 * numericModifier($modifier`Hot Damage`)),
@@ -500,7 +500,9 @@ export function L13_heavyrains_towerFinal(): boolean {
     setFlavour($element`sleaze`); //a safe element that does not conflict with offhand items.
     executeFlavour();
     if (spell_extra_element) {
-      maximizer.weight($modifier`Spell Damage Percent`).raw("+weapon");
+      maximizer
+        .weight($modifier`Spell Damage Percent`)
+        .requireSlot($slot`weapon`);
       if (itemAmount($item`Rain-Doh green lantern`) > 0) {
         autoEquipToSlot($slot`off-hand`, $item`Rain-Doh green lantern`);
       } else if (itemAmount($item`meteorb`) > 0) {
@@ -511,22 +513,22 @@ export function L13_heavyrains_towerFinal(): boolean {
     } else {
       maximizer
         .weight($modifier`Spell Damage Percent`)
-        .raw("+weapon")
-        .raw("+offhand");
+        .requireSlot($slot`weapon`)
+        .requireSlot($slot`off-hand`);
     }
   } else {
     setProperty("auto_rain_king_combat", "attack");
     if (want_club) {
       maximizer
         .weight($modifier`Prismatic Damage`)
-        .raw("+weapon")
-        .raw("+offhand")
-        .raw("+club");
+        .requireSlot($slot`weapon`)
+        .requireSlot($slot`off-hand`)
+        .weight("Club");
     } else {
       maximizer
         .weight($modifier`Prismatic Damage`)
-        .raw("+weapon")
-        .raw("+offhand");
+        .requireSlot($slot`weapon`)
+        .requireSlot($slot`off-hand`);
     }
   }
   //Rain King strips all equipment other than weapon and offhand.
@@ -534,8 +536,8 @@ export function L13_heavyrains_towerFinal(): boolean {
   auto_buyUpTo(3, $item`water wings for babies`);
   maximizer
     .weight($modifier`Monster Level`, -1)
-    .raw("-weapon")
-    .raw("-offhand");
+    .excludeSlot($slot`weapon`)
+    .excludeSlot($slot`off-hand`);
   equipMaximizedGear();
   //Fight!
   //auto_disableAdventureHandling because we don't want maximize, switch familiar, change buffs, or anything else that might break our specific prepwork.

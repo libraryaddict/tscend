@@ -67,7 +67,6 @@ import { autoAdv, autoLuckyAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import { main as handleChoiceAdv } from "../auto_choice_adv";
 import {
-  addToMaximize,
   autoEquip,
   autoEquipToSlot,
   autoForceEquip$3,
@@ -141,7 +140,7 @@ import {
   auto_haveMayamCalendar,
   auto_haveSeptEmberCenser,
 } from "../iotms/mr2024";
-import { maximizer } from "../maximizer";
+import { Maximizer, maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_bhy } from "../paths/bees_hate_you";
@@ -241,11 +240,22 @@ function L9_chasmMaximizeForNoncombat(): void {
   auto_log_info("Let's assess our scores for blech house", "blue");
   let best: string = "mus";
   const loc: Location = $location`The Smut Orc Logging Camp`;
-  const mustry: string =
-    "1000muscle,1000weapon damage,10000weapon damage percent";
-  const mystry: string =
-    "1000mysticality,1000spell damage,10000 spell damage percent";
-  const moxtry: string = "1000moxie,10000sleaze resistance";
+  const mustry = (m: Maximizer): void => {
+    m.weight($modifier`Muscle`, 1000)
+      .weight($modifier`Weapon Damage`, 1000)
+      .weight($modifier`Weapon Damage Percent`, 10000);
+  };
+  const mystry = (m: Maximizer): void => {
+    m.weight($modifier`Mysticality`, 1000)
+      .weight($modifier`Spell Damage`, 1000)
+      .weight($modifier`Spell Damage Percent`, 10000);
+  };
+  const moxtry = (m: Maximizer): void => {
+    m.weight($modifier`Moxie`, 1000).weight(
+      $modifier`Sleaze Resistance`,
+      10000,
+    );
+  };
   simMaximizeWith(mustry, loc);
   const musmus: number = simValue($modifier`Buffed Muscle`);
   const musflat: number = simValue($modifier`Weapon Damage`); //incorrectly includes 15% weapon power
@@ -692,21 +702,29 @@ function L9_aBooPeakDo(): boolean {
 
     const priorBjorn: Familiar = myBjornedFamiliar();
 
-    let lihcface: string = "";
-    if (
-      isActuallyEd() &&
-      possessEquipment($item`The Crown of Ed the Undying`)
-    ) {
-      lihcface = `-"equip lihc face"`;
-    }
-    let parrot: string =
-      ", switch exotic parrot, switch mu, switch trick-or-treating tot";
-    if (!canChangeFamiliar() || in_avantGuard()) {
-      parrot = "";
-    }
+    const allowResistanceFamiliarSwitches = (m: Maximizer): void => {
+      if (!canChangeFamiliar() || in_avantGuard()) {
+        return;
+      }
+      m.allowSwitch($familiar`Exotic Parrot`)
+        .allowSwitch($familiar`Mu`)
+        .allowSwitch($familiar`Trick-or-Treating Tot`);
+    };
 
     autoMaximize$1(
-      `spooky res, cold res, 0.01hp ${lihcface} -"equip snow suit"${parrot}`,
+      (m) => {
+        m.weight($modifier`Spooky Resistance`)
+          .weight($modifier`Cold Resistance`)
+          .weight($modifier`Maximum HP`, 0.01)
+          .exclude($item`Snow Suit`);
+        if (
+          isActuallyEd() &&
+          possessEquipment($item`The Crown of Ed the Undying`)
+        ) {
+          m.exclude($item`lihc face`);
+        }
+        allowResistanceFamiliarSwitches(m);
+      },
       0,
       0,
       true,
@@ -877,7 +895,11 @@ function L9_aBooPeakDo(): boolean {
       if (0 === haveEffect($effect`Mist Form`)) {
         buffMaintain$2($effect`Spectral Awareness`, 10, 1, 1);
       }
-      addToMaximize(`1000spooky res,1000cold res,10hp${parrot}`);
+      maximizer
+        .weight($modifier`Spooky Resistance`, 1000)
+        .weight($modifier`Cold Resistance`, 1000)
+        .weight($modifier`Maximum HP`, 10);
+      allowResistanceFamiliarSwitches(maximizer);
       adjustEdHat("ml");
 
       buffMaintain$2($effect`Astral Shell`, 10, 1, 1);
@@ -1321,12 +1343,20 @@ function L9_oilPeakDo(): boolean {
     haveEffect($effect`Driving Wastefully`) === 0
   ) {
     const loc: Location = $location`Oil Peak`;
+    const mlAtLeast =
+      (min: number) =>
+      (m: Maximizer): void => {
+        m.weight($modifier`Monster Level`, 1000).min(
+          $modifier`Monster Level`,
+          min,
+        );
+      };
     if (
-      ((simMaximizeWith("1000ml 75min", loc) &&
-        !simMaximizeWith("1000ml 100min", loc)) ||
-        (simMaximizeWith("1000ml 25min", loc) &&
-          !simMaximizeWith("1000ml 50min", loc)) ||
-        !simMaximizeWith("1000ml 11min", loc)) &&
+      ((simMaximizeWith(mlAtLeast(75), loc) &&
+        !simMaximizeWith(mlAtLeast(100), loc)) ||
+        (simMaximizeWith(mlAtLeast(25), loc) &&
+          !simMaximizeWith(mlAtLeast(50), loc)) ||
+        !simMaximizeWith(mlAtLeast(11), loc)) &&
       haveEffect($effect`Driving Wastefully`) === 0
     ) {
       asdonBuff($effect`Driving Recklessly`);

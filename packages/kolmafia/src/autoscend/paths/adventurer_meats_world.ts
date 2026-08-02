@@ -442,7 +442,7 @@ export function LX_attemptPowerLevelMeat(
   }
   // make sure we prioritize getting meat appropriately
   maximizer.weight($modifier`Meat Drop`, 200);
-  autoMaximize("meat drop", false);
+  autoMaximize((m) => m.weight($modifier`Meat Drop`), false);
   handleFamiliar$1(lookupFamiliarDatafile("meat"));
 
   const meatDrop_1: number = toInt(simValue($modifier`Meat Drop`));

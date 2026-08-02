@@ -9,7 +9,6 @@ import {
   itemAmount,
   Location,
   max,
-  Modifier,
   monsterAttack,
   myBuffedstat,
   myLevel,
@@ -26,6 +25,7 @@ import {
   $item,
   $location,
   $locations,
+  $modifier,
   $monster,
   $path,
   $slot,
@@ -662,7 +662,7 @@ function LX_lowkeySummerRemainderDo(): boolean {
     let n_meat_drop_acc_50plus: number = 0;
     for (const [it, n] of auto_getAllEquipabble($slot`acc1`)) {
       if (
-        numericModifier(it, Modifier.get("Meat Drop")) >= 45 ||
+        numericModifier(it, $modifier`Meat Drop`) >= 45 ||
         it === $item`backup camera`
       ) {
         // backup camera isn't always meat

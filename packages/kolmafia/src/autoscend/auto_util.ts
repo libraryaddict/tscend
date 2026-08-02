@@ -213,7 +213,6 @@ import {
   equipmentAmount,
   possessEquipment,
   possessOutfit,
-  removeFromMaximize,
 } from "./auto_equipment";
 import {
   auto_famWeight,
@@ -337,7 +336,7 @@ import {
   auto_canARBSupplyDrop,
   auto_haveARB,
 } from "./iotms/ttt";
-import { maximizer } from "./maximizer";
+import { Maximizer, maximizer } from "./maximizer";
 import { handleServant, isActuallyEd } from "./paths/actually_ed_the_undying";
 import { in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";
@@ -428,33 +427,44 @@ export function needToConsumeForEmergencyRollover(): boolean {
   return myAdventures() < target_adv;
 }
 
-export function autoMaximize(req: string, simulate: boolean): boolean {
+export function autoMaximize(
+  build: (m: Maximizer) => void,
+  simulate: boolean,
+): boolean {
+  const target: Maximizer = new Maximizer();
+  build(target);
+  const req: string = target.toString();
   if (!simulate) {
-    debugMaximize(req, 0);
+    debugMaximize(target, 0);
     tcrs_maximize_with_items(req);
   }
   return maximize(req, simulate);
 }
 
 export function autoMaximize$1(
-  req: string,
+  build: (m: Maximizer) => void,
   maxPrice: number,
   priceLevel: number,
   simulate: boolean,
 ): boolean {
+  const target: Maximizer = new Maximizer();
+  build(target);
+  const req: string = target.toString();
   if (!simulate) {
-    debugMaximize(req, maxPrice);
+    debugMaximize(target, maxPrice);
     tcrs_maximize_with_items(req);
   }
   return maximize(req, maxPrice, priceLevel, simulate);
 }
 
-function debugMaximize(req: string, meat: number): void {
+function debugMaximize(target: Maximizer, meat: number): void {
   //This function will be removed.
-  if (indexOf(req, "-tie") === -1) {
-    req = `${req} -tie`;
+  const debugTarget: Maximizer = target.clone();
+  if (!debugTarget.has("Tie")) {
+    debugTarget.require("Tie", false);
     auto_log_debug("Added -tie to maximize", "red");
   }
+  const req: string = debugTarget.toString();
   auto_log_info(`Desired maximize: ${req}`, "blue");
   let situation: string = ` ${myClass()} ${myPath().name} ${mySign()}`;
   if (inHardcore()) {
@@ -6277,7 +6287,7 @@ export function effectAblativeArmor(passive_dmg_allowed: boolean): void {
   //I am pretty sure non combat skills that give an effect count.
   //but I am labeling them seperate from buffs in case we ever need to split this function.
   //if you have something that reduces the cost of casting buffs, wear it now.
-  maximizer.weight($modifier`Mana Cost`, -1000).weight("Tie", -1);
+  maximizer.weight($modifier`Mana Cost`, -1000).require("Tie", false);
   equipMaximizedGear();
   //Passive damage
   if (passive_dmg_allowed) {
@@ -6567,14 +6577,14 @@ export function auto_burnMP(mpToBurn: number): boolean {
 
   const equipped: Map<number, Item> = auto_saveEquipped();
 
-  maximizer.weight($modifier`Mana Cost`, -1000).weight("Tie", -1);
+  maximizer.weight($modifier`Mana Cost`, -1000).require("Tie", false);
   equipMaximizedGear();
   auto_equipAprilShieldBuff(); //useful additional buffs when equipped
   // record starting MP
   const startingMP: number = myMp();
   cliExecute(`burn ${mpToBurn}`);
   auto_loadEquipped(equipped);
-  removeFromMaximize("-1000mana cost");
+  maximizer.clearWeight($modifier`Mana Cost`);
   return startingMP !== myMp();
 }
 
@@ -6690,13 +6700,13 @@ export function stat_exp_percent(s: Stat): number {
   switch (s) {
     case $stat`Muscle`:
     case $stat`SubMuscle`:
-      return numericModifier(Modifier.get("Muscle Experience Percent"));
+      return numericModifier($modifier`Muscle Experience Percent`);
     case $stat`Mysticality`:
     case $stat`SubMysticality`:
-      return numericModifier(Modifier.get("Mysticality Experience Percent"));
+      return numericModifier($modifier`Mysticality Experience Percent`);
     case $stat`Moxie`:
     case $stat`SubMoxie`:
-      return numericModifier(Modifier.get("Moxie Experience Percent"));
+      return numericModifier($modifier`Moxie Experience Percent`);
   }
   return 0;
 }
@@ -6738,7 +6748,7 @@ export function auto_getListOfNonDamagingFamiliarEquipment(): Map<
   // Have to sort each time because futuristic collar changes
   return auto_sortedByModifier$3(
     valid_and_available,
-    Modifier.get("Familiar Weight"),
+    $modifier`Familiar Weight`,
     true,
   );
 }
@@ -6887,15 +6897,15 @@ export function auto_inRonin(): boolean {
 export function damageModifier(el: Element): Modifier {
   switch (el) {
     case $element`hot`:
-      return Modifier.get("Hot Damage");
+      return $modifier`Hot Damage`;
     case $element`cold`:
-      return Modifier.get("Cold Damage");
+      return $modifier`Cold Damage`;
     case $element`stench`:
-      return Modifier.get("Stench Damage");
+      return $modifier`Stench Damage`;
     case $element`spooky`:
-      return Modifier.get("Spooky Damage");
+      return $modifier`Spooky Damage`;
     case $element`sleaze`:
-      return Modifier.get("Sleaze Damage");
+      return $modifier`Sleaze Damage`;
   }
   return Modifier.none;
 }

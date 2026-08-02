@@ -376,7 +376,7 @@ function auto_estimatedAdventuresForChaosButterfly(): number {
     );
     handleFamiliar("item");
     simMaximizeWith(
-      "20 item",
+      (m) => m.weight($modifier`Item Drop`, 20),
       $location`The Castle in the Clouds in the Sky (Ground Floor)`,
     );
     $_auto_estimatedAdventuresForChaosButterfly_expectedItemDropMulti =
@@ -1299,26 +1299,26 @@ function gremlinsFamiliar(): void {
       equip($slot`familiar`, $item`mini kiwi invisible dirigible`);
       strip_familiar = false;
       //disable maximizer switching of familiar equipment
-      maximizer.raw("-familiar");
+      maximizer.excludeSlot($slot`familiar`);
     }
     if (possessEquipment($item`tiny consolation ribbon`)) {
       equip($slot`familiar`, $item`tiny consolation ribbon`);
       strip_familiar = false;
       //disable maximizer switching of familiar equipment
-      maximizer.raw("-familiar");
+      maximizer.excludeSlot($slot`familiar`);
     }
     if (possessEquipment($item`little bitty bathysphere`)) {
       equip($slot`familiar`, $item`little bitty bathysphere`);
       strip_familiar = false;
       //disable maximizer switching of familiar equipment
-      maximizer.raw("-familiar");
+      maximizer.excludeSlot($slot`familiar`);
     }
   } else if (lookupFamiliarDatafile("gremlins") === Familiar.none) {
     //none of the desired familiars available
     //don't know what familiar will be chosen or what its own equipment does
     strip_familiar = true;
     //maximizer will try to force an equip into familiar slot. So disable maximizer switching of familiar equipment
-    maximizer.raw("-familiar");
+    maximizer.excludeSlot($slot`familiar`);
   } else {
     //desired familiars will be available. their own equipment or generic weight boosting familiar equipment is beneficial
     strip_familiar = false;

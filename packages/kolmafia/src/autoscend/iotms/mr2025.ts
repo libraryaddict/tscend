@@ -32,7 +32,6 @@ import {
   Location,
   max,
   min,
-  Modifier,
   Monster,
   monsterPhylum,
   myBasestat,
@@ -73,6 +72,7 @@ import {
   $items,
   $location,
   $locations,
+  $modifier,
   $monster,
   $path,
   $phyla,
@@ -1044,7 +1044,7 @@ function bestBusk(
       ["Stench Resistance", 0.5],
       ["Spooky Resistance", 0.5],
       [myPrimestat().toString(), 1.5],
-      ["fumble", -1],
+      ["-fumble", 0],
       ["hp", 0.4],
       ["mp", 0.2],
       ["mp regen", 3],
@@ -1500,8 +1500,7 @@ export function auto_waveTheZone(): boolean {
   //Get 30% more meat drop. Only useful if weapon slot has < 30% meat drop
   if (
     myLocation() === $location`The Themthar Hills` &&
-    numericModifier(equippedItem($slot`weapon`), Modifier.get("Meat Drop")) <
-      30.0
+    numericModifier(equippedItem($slot`weapon`), $modifier`Meat Drop`) < 30.0
   ) {
     autoForceEquip$2($item`Monodent of the Sea`, true);
     waveTheZone = true;

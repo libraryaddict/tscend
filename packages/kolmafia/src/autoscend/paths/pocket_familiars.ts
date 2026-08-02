@@ -3,6 +3,7 @@ import {
   getProperty,
   gitExists,
   itemAmount,
+  Modifier,
   myLevel,
   myPath,
   myPrimestat,
@@ -12,10 +13,11 @@ import {
   toInt,
   visitUrl,
 } from "kolmafia";
-import { $item, $items, $path } from "libram";
+import { $item, $items, $modifier, $path } from "libram";
 
 import { possessEquipment } from "../auto_equipment";
 import { auto_log_info, internalQuestStatus } from "../auto_util";
+import { Maximizer } from "../maximizer";
 import { equipWarOutfit, warAdventure } from "../quests/level_12";
 
 // This uses Ezandora's wonderful Helix Fossil script to handle building a team and combat.
@@ -39,13 +41,14 @@ export function pokefam_initializeSettings(): void {
   }
 }
 
-export function pokefam_defaultMaximizeStatement(): string {
+export function pokefam_buildDefaultMaximize(target: Maximizer): void {
   // Combat is completely different in pokefam, so most stuff doesn't matter there
-  let res: string = "5item,meat";
+  target.weight($modifier`Item Drop`, 5).weight($modifier`Meat Drop`);
   if (myLevel() < 13 || toBoolean(getProperty("auto_disregardInstantKarma"))) {
-    res += `,10exp,5${myPrimestat()} experience percent`;
+    target
+      .weight($modifier`Experience`, 10)
+      .weight(Modifier.get(`${myPrimestat()} Experience Percent`), 5);
   }
-  return res;
 }
 
 export function pokefam_getHats(): void {

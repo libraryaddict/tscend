@@ -170,7 +170,7 @@ import {
   auto_remainingCandyCaneSlashes,
 } from "../iotms/mr2023";
 import { beretBusk } from "../iotms/mr2025";
-import { maximizer } from "../maximizer";
+import { Maximizer, maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { is_boris } from "../paths/avatar_of_boris";
@@ -648,7 +648,7 @@ export function beehiveConsider(at_tower: boolean): boolean {
     damage_sources += 2;
   } else {
     // or maybe we just have hot damage already
-    if (numericModifier(Modifier.get("Hot Damage")) > 0) {
+    if (numericModifier($modifier`Hot Damage`) > 0) {
       damage_sources += 1;
     }
   }
@@ -776,7 +776,12 @@ function L13_towerNSContestsDo(): boolean {
         case 1:
           acquireMP(160); // only uses free rests or items on hand by default
 
-          autoMaximize$1(`initiative -"equip snow suit"`, 1500, 0, false);
+          autoMaximize$1(
+            (m) => m.weight($modifier`Initiative`).exclude($item`Snow Suit`),
+            1500,
+            0,
+            false,
+          );
           provideInitiative$2(400, $location`Noob Cave`, true);
           if (
             crowd1Insufficient() &&
@@ -846,7 +851,12 @@ function L13_towerNSContestsDo(): boolean {
       provideStats$2(statGoal, $location`Noob Cave`, true);
       switch (crowd_stat) {
         case $stat`Moxie`:
-          autoMaximize$1(`moxie -"equip snow suit"`, 1500, 0, false);
+          autoMaximize$1(
+            (m) => m.weight($modifier`Moxie`).exclude($item`Snow Suit`),
+            1500,
+            0,
+            false,
+          );
           if (
             haveEffect($effect`Ten out of Ten`) === 0 &&
             auto_is_valid$3($effect`Ten out of Ten`)
@@ -864,7 +874,12 @@ function L13_towerNSContestsDo(): boolean {
           }
           break;
         case $stat`Muscle`:
-          autoMaximize$1(`muscle -"equip snow suit"`, 1500, 0, false);
+          autoMaximize$1(
+            (m) => m.weight($modifier`Muscle`).exclude($item`Snow Suit`),
+            1500,
+            0,
+            false,
+          );
           if (
             haveEffect($effect`Muddled`) === 0 &&
             auto_is_valid$3($effect`Muddled`)
@@ -882,7 +897,12 @@ function L13_towerNSContestsDo(): boolean {
           }
           break;
         case $stat`Mysticality`:
-          autoMaximize$1(`myst -"equip snow suit"`, 1500, 0, false);
+          autoMaximize$1(
+            (m) => m.weight($modifier`Mysticality`).exclude($item`Snow Suit`),
+            1500,
+            0,
+            false,
+          );
           if (
             haveEffect($effect`Uncucumbered`) === 0 &&
             auto_is_valid$3($effect`Uncucumbered`)
@@ -930,13 +950,13 @@ function L13_towerNSContestsDo(): boolean {
       resetMaximize();
       acquireMP(125); // only uses free rests or items on hand by default
 
+      const applyChallengeDamageWeights = (m: Maximizer): void => {
+        m.weight(Modifier.get(`${challenge} Damage`))
+          .weight(Modifier.get(`${challenge} Spell Damage`))
+          .exclude($item`Snow Suit`);
+      };
       if (challenge !== Element.none) {
-        autoMaximize$1(
-          `${challenge} dmg, ${challenge} spell dmg -"equip snow suit"`,
-          1500,
-          0,
-          false,
-        );
+        autoMaximize$1(applyChallengeDamageWeights, 1500, 0, false);
       }
 
       beretBusk(
@@ -1031,12 +1051,7 @@ function L13_towerNSContestsDo(): boolean {
           }
           if (canPull($item`halibut`) && auto_can_equip($item`halibut`)) {
             pullXWhenHaveY($item`halibut`, 1, 0);
-            autoMaximize$1(
-              `${challenge} dmg, ${challenge} spell dmg -"equip snow suit"`,
-              1500,
-              0,
-              false,
-            );
+            autoMaximize$1(applyChallengeDamageWeights, 1500, 0, false);
           }
           break;
         case $element`spooky`:
@@ -1778,7 +1793,7 @@ function L13_towerNSTowerBones(): boolean {
     setProperty("auto_disableFamiliarChanging", true.toString());
   }
   if (myFamiliar() !== Familiar.none) {
-    maximizer.raw("-familiar");
+    maximizer.excludeSlot($slot`familiar`);
     equip($slot`familiar`, Item.none);
     // Try just boosting weight
     for (const [, it] of auto_getListOfNonDamagingFamiliarEquipment()) {

@@ -161,7 +161,7 @@ export function kolhs_preadv(place: Location): void {
       place,
     )
   ) {
-    maximizer.raw("-hat");
+    maximizer.excludeSlot($slot`hat`);
     equip($slot`hat`, Item.none);
   }
   //prepare yearbook camera

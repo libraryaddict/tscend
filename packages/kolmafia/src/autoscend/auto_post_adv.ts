@@ -84,7 +84,6 @@ import {
   autoOutfit,
   equipMaximizedGear,
   possessEquipment,
-  removeFromMaximize,
 } from "./auto_equipment";
 import { pathHasFamiliar } from "./auto_familiar";
 import { acquireHP, acquireMP, uneffect } from "./auto_restore";
@@ -418,7 +417,7 @@ function auto_post_adventure(): boolean {
     return true;
   }
   //save some MP while buffing
-  maximizer.weight($modifier`Mana Cost`, -1000).weight("Tie", -1);
+  maximizer.weight($modifier`Mana Cost`, -1000).require("Tie", false);
   equipMaximizedGear();
 
   if (haveEffect($effect`Cunctatitis`) > 0) {
@@ -1308,7 +1307,7 @@ function auto_post_adventure(): boolean {
     }
   }
   //Remove the mana cost reduction from maximize statement
-  removeFromMaximize("-1000mana cost");
+  maximizer.clearWeight($modifier`Mana Cost`);
   removeProperty("auto_combatDirective");
   removeProperty("auto_digitizeDirective");
   //try to catch infinite loop where we repeatedly try to do the same thing.
