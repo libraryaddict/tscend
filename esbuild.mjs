@@ -259,12 +259,6 @@ await esbuild.build({
   entryPoints: {
     "relay/relay_autoscend": "packages/relay/src/relay_autoscend.ts",
     "scripts/autoscend": "packages/kolmafia/src/index.ts",
-    "scripts/autoscend/auto_choice_adv":
-      "packages/kolmafia/src/autoscend/auto_choice_adv.ts",
-    "scripts/autoscend/auto_post_adv":
-      "packages/kolmafia/src/autoscend/auto_post_adv.ts",
-    "scripts/autoscend/auto_pre_adv":
-      "packages/kolmafia/src/autoscend/auto_pre_adv.ts",
   },
   bundle: true,
   outdir: "dist/",
