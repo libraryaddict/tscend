@@ -297,7 +297,7 @@ function auto_leprecondoBaseValues(): LeprecondoValues {
       } else {
         const key: Effect | Item =
           "effect" in result ? result.effect : (result as Item);
-        score = LEPRECONDO_RESULTS_SCORE.get(key);
+        score = LEPRECONDO_RESULTS_SCORE.get(key) ?? 0;
       }
 
       baseValues[piece] ??= {};
@@ -562,7 +562,7 @@ function auto_leprecondoTarget(doingBedtime: boolean): LeprecondoPiece[] {
 
     for (const piece of candidates) {
       let score = 0;
-      const stats = Object.entries(values[piece]) as [
+      const stats = Object.entries(values[piece] ?? {}) as [
         Leprecondo.Need,
         number,
       ][];
@@ -621,7 +621,7 @@ function auto_leprecondoTarget(doingBedtime: boolean): LeprecondoPiece[] {
         for (const piece of order) {
           if (piece === "empty") continue;
 
-          const stats = Object.entries(values[piece]) as [
+          const stats = Object.entries(values[piece] ?? {}) as [
             Leprecondo.Need,
             number,
           ][];
@@ -885,27 +885,19 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     //record the possible monsters and identify the best one to target
     monOpts.set(i, toMonster(toInt(mons.group(1))));
     // Manual monster specifications
-    if (
-      peridotManuallyDesiredMonsters().has(
-        monOpts.get(i) ?? monOpts.set(i, Monster.none).get(i),
-      )
-    ) {
+    if (peridotManuallyDesiredMonsters().has(monOpts.get(i) ?? Monster.none)) {
       bestmon = i;
       break; // if we've got a force desired monster, don't bother with the rankings any more
     }
     if (
-      zoneRank(monOpts.get(i) ?? monOpts.set(i, Monster.none).get(i), loc) <=
-      zoneRank(
-        monOpts.get(bestmon) ?? monOpts.set(bestmon, Monster.none).get(bestmon),
-        loc,
-      )
+      zoneRank(monOpts.get(i) ?? Monster.none, loc) <=
+      zoneRank(monOpts.get(bestmon) ?? Monster.none, loc)
     ) {
       bestmon = i;
     }
     i += 1;
   }
-  const popChoice: Monster =
-    monOpts.get(bestmon) ?? monOpts.set(bestmon, Monster.none).get(bestmon);
+  const popChoice: Monster = monOpts.get(bestmon) ?? Monster.none;
   if (toInt(popChoice) === 0 || auto_peridotSetZone(loc)) {
     //still nothing found so just peace out. Or we want to set the zone without using an adventure.
     handleTracker({
@@ -964,17 +956,13 @@ function beretPower(
       for (const [, h] of allHats) {
         hatPowers.set(
           hatPowers.size,
-          getPower(h) *
-            (multipliers.get($slot`hat`) ??
-              multipliers.set($slot`hat`, 0).get($slot`hat`)),
+          getPower(h) * (multipliers.get($slot`hat`) ?? 0),
         );
       }
     } else {
       hatPowers.set(
         0,
-        getPower($item`prismatic beret`) *
-          (multipliers.get($slot`hat`) ??
-            multipliers.set($slot`hat`, 0).get($slot`hat`)),
+        getPower($item`prismatic beret`) * (multipliers.get($slot`hat`) ?? 0),
       );
     }
   } else {
@@ -983,9 +971,7 @@ function beretPower(
         hatPowers.set(
           0,
           (hatPowers.get(0) ?? 0) +
-            getPower(h) *
-              (multipliers.get($slot`hat`) ??
-                multipliers.set($slot`hat`, 0).get($slot`hat`)),
+            getPower(h) * (multipliers.get($slot`hat`) ?? 0),
         );
       }
     }
@@ -993,9 +979,7 @@ function beretPower(
   for (const [, p] of allPants) {
     pantPowers.set(
       pantPowers.size,
-      getPower(p) *
-        (multipliers.get($slot`pants`) ??
-          multipliers.set($slot`pants`, 0).get($slot`pants`)),
+      getPower(p) * (multipliers.get($slot`pants`) ?? 0),
     );
   }
   for (const [, s] of allShirts) {
@@ -1004,7 +988,7 @@ function beretPower(
   for (const [, hp] of hatPowers) {
     for (const [, pp] of pantPowers) {
       for (const [, sp] of shirtPowers) {
-        const concat: string = `${auto_have_familiar($familiar`Mad Hatrack`) ? `${(hp / (multipliers.get($slot`hat`) ?? multipliers.set($slot`hat`, 0).get($slot`hat`))).toString()},` : ""}${(pp / (multipliers.get($slot`pants`) ?? multipliers.set($slot`pants`, 0).get($slot`pants`))).toString()},${sp.toString()}`;
+        const concat: string = `${auto_have_familiar($familiar`Mad Hatrack`) ? `${(hp / (multipliers.get($slot`hat`) ?? 0)).toString()},` : ""}${(pp / (multipliers.get($slot`pants`) ?? 0)).toString()},${sp.toString()}`;
         powers.set(concat, hp + pp + sp);
       }
     }
@@ -1053,19 +1037,13 @@ function bestBusk(
       //split effectMultiplier into multiple effects if needed
       for (const [, str] of splitString(effectMultiplier, ";").entries()) {
         numMod = new Map(splitString(str, ":").map((_v, _i) => [_i, _v]));
-        effMulti.set(
-          numMod.get(1) ?? numMod.set(1, "").get(1),
-          toFloat(numMod.get(0) ?? numMod.set(0, "").get(0)),
-        );
+        effMulti.set(numMod.get(1) ?? "", toFloat(numMod.get(0) ?? ""));
       }
     } else if (containsText(effectMultiplier, ":")) {
       numMod = new Map(
         splitString(effectMultiplier, ":").map((_v, _i) => [_i, _v]),
       );
-      effMulti.set(
-        numMod.get(1) ?? numMod.set(1, "").get(1),
-        toFloat(numMod.get(0) ?? numMod.set(0, "").get(0)),
-      );
+      effMulti.set(numMod.get(1) ?? "", toFloat(numMod.get(0) ?? ""));
     } else {
       effMulti.set(effectMultiplier, 5.0);
     }
@@ -1138,19 +1116,12 @@ export function beretBusk(effectMultiplier: string): boolean {
     if (auto_have_familiar($familiar`Mad Hatrack`)) {
       for (const [, hat] of allHats) {
         if (
-          getPower(hat) ===
-            toInt(
-              bestBuskPowersSplit.get(0) ??
-                bestBuskPowersSplit.set(0, "").get(0),
-            ) &&
+          getPower(hat) === toInt(bestBuskPowersSplit.get(0) ?? "") &&
           hat !== $item`prismatic beret`
         ) {
           //equip the hat and put the beret on the Hatrack to be able to busk
           autoForceEquip$2(hat, true);
-          buskPower +=
-            getPower(hat) *
-            (multipliers.get($slot`hat`) ??
-              multipliers.set($slot`hat`, 0).get($slot`hat`));
+          buskPower += getPower(hat) * (multipliers.get($slot`hat`) ?? 0);
           if (useFamiliar($familiar`Mad Hatrack`)) {
             //Force the beret to the Hatrack if we were able to use the Hatrack.
             autoForceEquip($slot`familiar`, $item`prismatic beret`, true);
@@ -1166,48 +1137,28 @@ export function beretBusk(effectMultiplier: string): boolean {
       //equip the beret if it is not equipped anywhere else
       autoForceEquip($slot`hat`, $item`prismatic beret`, true);
       buskPower +=
-        getPower($item`prismatic beret`) *
-        (multipliers.get($slot`hat`) ??
-          multipliers.set($slot`hat`, 0).get($slot`hat`));
+        getPower($item`prismatic beret`) * (multipliers.get($slot`hat`) ?? 0);
     }
   } else {
     //get the power of all hats equipped in Hat Trick
     for (const [, h] of allHats) {
       if (equippedAmount(h) > 0) {
-        buskPower +=
-          getPower(h) *
-          (multipliers.get($slot`hat`) ??
-            multipliers.set($slot`hat`, 0).get($slot`hat`));
+        buskPower += getPower(h) * (multipliers.get($slot`hat`) ?? 0);
       }
     }
   }
   if (allPants.size > 0) {
     //only check if we have pants available
-    if (
-      toInt(
-        bestBuskPowersSplit.get(1 - bestBuskHROffset) ??
-          bestBuskPowersSplit
-            .set(1 - bestBuskHROffset, "")
-            .get(1 - bestBuskHROffset),
-      ) === 0
-    ) {
+    if (toInt(bestBuskPowersSplit.get(1 - bestBuskHROffset) ?? "") === 0) {
       autoForceEquip($slot`pants`, Item.none, true);
     } else {
       for (const [, pant] of allPants) {
         if (
           getPower(pant) ===
-          toInt(
-            bestBuskPowersSplit.get(1 - bestBuskHROffset) ??
-              bestBuskPowersSplit
-                .set(1 - bestBuskHROffset, "")
-                .get(1 - bestBuskHROffset),
-          )
+          toInt(bestBuskPowersSplit.get(1 - bestBuskHROffset) ?? "")
         ) {
           autoForceEquip$2(pant, true);
-          buskPower +=
-            getPower(pant) *
-            (multipliers.get($slot`pants`) ??
-              multipliers.set($slot`pants`, 0).get($slot`pants`));
+          buskPower += getPower(pant) * (multipliers.get($slot`pants`) ?? 0);
           break;
         }
       }
@@ -1215,25 +1166,13 @@ export function beretBusk(effectMultiplier: string): boolean {
   }
   if (allShirts.size > 0) {
     //only check if we have shirts available
-    if (
-      toInt(
-        bestBuskPowersSplit.get(2 - bestBuskHROffset) ??
-          bestBuskPowersSplit
-            .set(2 - bestBuskHROffset, "")
-            .get(2 - bestBuskHROffset),
-      ) === 0
-    ) {
+    if (toInt(bestBuskPowersSplit.get(2 - bestBuskHROffset) ?? "") === 0) {
       autoForceEquip($slot`shirt`, Item.none, true);
     } else {
       for (const [, shirt] of allShirts) {
         if (
           getPower(shirt) ===
-          toInt(
-            bestBuskPowersSplit.get(2 - bestBuskHROffset) ??
-              bestBuskPowersSplit
-                .set(2 - bestBuskHROffset, "")
-                .get(2 - bestBuskHROffset),
-          )
+          toInt(bestBuskPowersSplit.get(2 - bestBuskHROffset) ?? "")
         ) {
           autoForceEquip$2(shirt, true);
           buskPower += getPower(shirt);
@@ -1296,7 +1235,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
   }
 
   function mobiusChoice(opt: string): void {
-    const num: number = choiceMap.get(opt) ?? choiceMap.set(opt, 0).get(opt);
+    const num: number = choiceMap.get(opt) ?? 0;
     handleTracker({
       what: $item`Möbius ring`,
       detail: opt,
@@ -1810,7 +1749,7 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
   const isLastWillingGaze: boolean =
     !bcz_allowStatChange($stat`Mysticality`, refractedGazeCastsUsed + 1) ||
     refractedGazeCastsUsed + 1 >=
-      BCZ.find((s) => s.skill === $skill`BCZ: Refracted Gaze`).limit(
+      BCZ.find((s) => s.skill === $skill`BCZ: Refracted Gaze`)!.limit(
         !get("auto_burndownStatsProgression", false),
       );
   if (
@@ -1955,7 +1894,7 @@ export function auto_bczDelevelPlan(
 
   // If we never found a combination
   if (bestX === -1 || bestY === -1) {
-    return null;
+    return undefined;
   }
 
   const skills: Skill[] = [];
@@ -1970,7 +1909,7 @@ export function auto_bczDelevelPlan(
   const plan: (() => void)[] = [];
 
   for (const skill of skills) {
-    const bcz = BCZ.find((b) => b.skill === skill);
+    const bcz = BCZ.find((b) => b.skill === skill)!;
 
     plan.push(() => {
       if (bcz.gives !== undefined) {

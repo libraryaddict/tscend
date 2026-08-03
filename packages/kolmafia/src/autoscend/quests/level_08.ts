@@ -244,8 +244,7 @@ function getCellToMine(oreGoal: Item): number {
   );
   const num_prev_mined: number = previously_mined.size;
   const lastCell: number = toInt(
-    previously_mined.get(num_prev_mined - 1) ??
-      previously_mined.set(num_prev_mined - 1, "").get(num_prev_mined - 1),
+    previously_mined.get(num_prev_mined - 1) ?? "",
   );
   if (num_prev_mined < 4 && lastCell > 32 && lastCell < 55) {
     // mine the square directly above it
@@ -331,17 +330,14 @@ function getCellToMine(oreGoal: Item): number {
   const numPotentials: number = potentialCells.size;
   // only found one potential, just return it
   if (numPotentials === 1) {
-    return potentialCells.get(0) ?? potentialCells.set(0, 0).get(0);
+    return potentialCells.get(0) ?? 0;
   } else if (numPotentials === 0) {
     abort(
       "Glitch in the matrix. Please report this to the dev team (preferably with a log and screenshot of your mine",
     );
   }
   // found 2 or more potentials, return a random one of them
-  return (
-    potentialCells.get(random(numPotentials)) ??
-    potentialCells.set(random(numPotentials), 0).get(random(numPotentials))
-  );
+  return potentialCells.get(random(numPotentials)) ?? 0;
 }
 
 function L8_getGoatCheese(): boolean {
@@ -450,8 +446,8 @@ export const L8_mountainManSummonTask: QuestTask = registerQuestTask({
   desiredEncounters: () =>
     [
       {
-        item: get("trapperOre"),
-        needAmount: 3 - itemAmount(get("trapperOre")),
+        item: safeGet("trapperOre", Item.none),
+        needAmount: 3 - itemAmount(safeGet("trapperOre", Item.none)),
       },
     ].filter((a) => a.needAmount > 0),
 });
@@ -571,8 +567,8 @@ const L8_getMineOresTask: QuestTask = registerQuestTask({
   desiredEncounters: () =>
     [
       {
-        item: get("trapperOre"),
-        needAmount: 3 - itemAmount(get("trapperOre")),
+        item: safeGet("trapperOre", Item.none),
+        needAmount: 3 - itemAmount(safeGet("trapperOre", Item.none)),
       },
     ].filter((a) => a.needAmount > 0),
 });

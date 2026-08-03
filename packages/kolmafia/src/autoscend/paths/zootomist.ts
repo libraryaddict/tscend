@@ -186,8 +186,7 @@ export function zoo_d2Pulls(): void {
     const islot: number = s === $slot`acc1` ? 2 : 0; // we want to compare to our third best item for accessories
     const curr_best_in_slot: Item =
       ranked_alternatives.size > islot
-        ? (ranked_alternatives.get(islot) ??
-          ranked_alternatives.set(islot, Item.none).get(islot))
+        ? (ranked_alternatives.get(islot) ?? Item.none)
         : Item.none;
     const curr_best_mod: number = numericModifier(curr_best_in_slot, m);
     const improvement: number = numericModifier(it, m) - curr_best_mod;
@@ -524,26 +523,20 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
     for (const [, a] of attrs) {
       intrinsicFams.set(
         fam,
-        (intrinsicFams.get(fam) ?? 0.0) +
-          (intrinsicWeights.get(a) ?? intrinsicWeights.set(a, 0.0).get(a)),
+        (intrinsicFams.get(fam) ?? 0.0) + (intrinsicWeights.get(a) ?? 0.0),
       );
       lbuffFams.set(
         fam,
-        (lbuffFams.get(fam) ?? 0.0) +
-          (lNipWeights.get(a) ?? lNipWeights.set(a, 0.0).get(a)),
+        (lbuffFams.get(fam) ?? 0.0) + (lNipWeights.get(a) ?? 0.0),
       );
       rbuffFams.set(
         fam,
-        (rbuffFams.get(fam) ?? 0.0) +
-          (rNipWeights.get(a) ?? rNipWeights.set(a, 0.0).get(a)),
+        (rbuffFams.get(fam) ?? 0.0) + (rNipWeights.get(a) ?? 0.0),
       );
       kickFams.set(
         fam,
         (kickFams.get(fam) ?? 0.0) +
-          (footWeights.get(footParam.get(a) ?? footParam.set(a, "").get(a)) ??
-            footWeights
-              .set(footParam.get(a) ?? footParam.set(a, "").get(a), 0)
-              .get(footParam.get(a) ?? footParam.set(a, "").get(a))),
+          (footWeights.get(footParam.get(a) ?? "") ?? 0),
       );
     }
   }
@@ -561,7 +554,7 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
           return {
             _k: index,
             _v: value,
-            _expr: -(map.get(value) ?? map.set(value, 0.0).get(value)),
+            _expr: -(map.get(value) ?? 0.0),
           };
         })
         .sort((_a, _b) =>
@@ -667,9 +660,7 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
   }
 
   for (let ifam: number = 0; ifam < punchPotential.size; ifam++) {
-    const fam: Familiar =
-      punchPotential.get(ifam) ??
-      punchPotential.set(ifam, Familiar.none).get(ifam);
+    const fam: Familiar = punchPotential.get(ifam) ?? Familiar.none;
     if (auto_have_familiar(fam) && !used.has(fam)) {
       if (lpunchFam === Familiar.none) {
         lpunchFam = fam;
@@ -683,44 +674,28 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
 
   if (verbose) {
     auto_log_info("Best Right nipple fams", "purple");
-    auto_log_info(
-      `${rbuffFam}:${rbuffFams.get(rbuffFam) ?? rbuffFams.set(rbuffFam, 0.0).get(rbuffFam)}`,
-      "purple",
-    );
+    auto_log_info(`${rbuffFam}:${rbuffFams.get(rbuffFam) ?? 0.0}`, "purple");
     auto_log_info("Best Left nipple fams", "blue");
-    auto_log_info(
-      `${lbuffFam}:${lbuffFams.get(lbuffFam) ?? lbuffFams.set(lbuffFam, 0.0).get(lbuffFam)}`,
-      "blue",
-    );
+    auto_log_info(`${lbuffFam}:${lbuffFams.get(lbuffFam) ?? 0.0}`, "blue");
     auto_log_info("Best Left Foot Fam", "green");
-    auto_log_info(
-      `${lkickFam}:${kickFams.get(lkickFam) ?? kickFams.set(lkickFam, 0.0).get(lkickFam)}`,
-      "green",
-    );
+    auto_log_info(`${lkickFam}:${kickFams.get(lkickFam) ?? 0.0}`, "green");
     auto_log_info("Best Head, Shoulder, and Butt Fam", "orange");
     if (intrinsicFam.size > 0) {
       for (const [, fam] of intrinsicFam) {
-        auto_log_info(
-          `${fam}:${intrinsicFams.get(fam) ?? intrinsicFams.set(fam, 0.0).get(fam)}`,
-          "orange",
-        );
+        auto_log_info(`${fam}:${intrinsicFams.get(fam) ?? 0.0}`, "orange");
       }
     } else {
       auto_log_info("All slots occupied", "orange");
     }
     auto_log_info("Best Right Foot Fam", "green");
-    auto_log_info(
-      `${rkickFam}:${kickFams.get(rkickFam) ?? kickFams.set(rkickFam, 0.0).get(rkickFam)}`,
-      "red",
-    );
+    auto_log_info(`${rkickFam}:${kickFams.get(rkickFam) ?? 0.0}`, "red");
     auto_log_info("Best Left Hand Fam", "red");
     auto_log_info(lpunchFam.toString(), "red");
     auto_log_info("Best Right Hand Fam", "red");
     auto_log_info(rpunchFam.toString(), "red");
   }
 
-  const bestIntrinsicFam: Familiar =
-    intrinsicFam.get(0) ?? intrinsicFam.set(0, Familiar.none).get(0);
+  const bestIntrinsicFam: Familiar = intrinsicFam.get(0) ?? Familiar.none;
   switch (bodyPart) {
     case $_f_ZOOPART_HEAD:
     case $_f_ZOOPART_L_SHOULDER:
@@ -750,7 +725,7 @@ function zoo_getNextPart(): number {
   }
   const bpp: Map<number, number> = zoo_getBodyPartPriority();
   for (let ipart: number = 0; ipart < bpp.size; ipart++) {
-    const part: number = bpp.get(ipart) ?? bpp.set(ipart, 0).get(ipart);
+    const part: number = bpp.get(ipart) ?? 0;
     if (zoo_graftedToPart(part) === Familiar.none) {
       return part;
     }
@@ -825,7 +800,7 @@ export function zoo_graftFam(): boolean {
     auto_log_info(`Grafting a ${fam} to you`, "blue");
     handleTracker({
       what: fam,
-      detail: `Grafted to ${bodyPartName.get(p) ?? bodyPartName.set(p, "").get(p)}`,
+      detail: `Grafted to ${bodyPartName.get(p) ?? ""}`,
       property: "auto_tracker_path",
     });
     refreshStatus();

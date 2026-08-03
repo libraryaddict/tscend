@@ -422,8 +422,7 @@ export function lookupFamiliarDatafile(type_1: string): Familiar {
   if (!familiars_text.size) {
     abort("Could not load /data/autoscend_familiars.txt");
   }
-  for (const [i, _v0] of familiars_text.get(type_1) ??
-    familiars_text.set(type_1, new Map()).get(type_1)) {
+  for (const [i, _v0] of familiars_text.get(type_1) ?? new Map()) {
     for (const [name, _v1] of _v0) {
       const conds = _v1;
       const thisFamiliar: Familiar = toFamiliar(name);
@@ -945,7 +944,7 @@ export function preAdvUpdateFamiliar(place: Location): void {
     );
     for (const [mon, it] of heistDesires) {
       for (const [, mmon] of getMonsters(place).entries()) {
-        if ((apprates.get(mon) ?? apprates.set(mon, 0.0).get(mon)) <= 0) {
+        if ((apprates.get(mon) ?? 0.0) <= 0) {
           //won't show up because banished or req's not fulfilled
           continue;
         }

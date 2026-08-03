@@ -33,21 +33,15 @@ function trackingSplitterFixer(
     splitString(setting, ",").map((_v, _i) => [_i, _v]),
   );
   for (const x of retval.keys()) {
-    if ((retval.get(x) ?? retval.set(x, "").get(x)) === "") {
+    if ((retval.get(x) ?? "") === "") {
       continue;
     }
-    const dayAdder: AshMatcher = new AshMatcher(
-      "[(]",
-      retval.get(x) ?? retval.set(x, "").get(x),
-    );
+    const dayAdder: AshMatcher = new AshMatcher("[(]", retval.get(x) ?? "");
     retval.set(x, dayAdder.replaceAll(`(${day}:`));
     if (getProperty(newSetting) !== "") {
-      set(
-        newSetting,
-        `${getProperty(newSetting)},${retval.get(x) ?? retval.set(x, "").get(x)}`,
-      );
+      set(newSetting, `${getProperty(newSetting)},${retval.get(x) ?? ""}`);
     } else {
-      set(newSetting, retval.get(x) ?? retval.set(x, "").get(x));
+      set(newSetting, retval.get(x) ?? "");
     }
   }
   set(oldSetting, "");

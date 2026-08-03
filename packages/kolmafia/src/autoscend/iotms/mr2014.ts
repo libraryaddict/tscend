@@ -614,10 +614,8 @@ function icehouseMonster(): Monster {
       ]),
     );
     for (let i: number = 0; i < banishMap.size; i++) {
-      if ((banishMap.get(i) ?? banishMap.set(i, "").get(i)) === "ice house") {
-        return toMonster(
-          banishMap.get(i - 1) ?? banishMap.set(i - 1, "").get(i - 1),
-        );
+      if ((banishMap.get(i) ?? "") === "ice house") {
+        return toMonster(banishMap.get(i - 1) ?? "");
       }
     }
   }

@@ -136,28 +136,21 @@ function crystalBallMonster(loc: Location): Monster {
       _v,
     ]),
   );
-  if (
-    (crystalBallPredictions.get(0) ??
-      crystalBallPredictions.set(0, "").get(0)) === ""
-  ) {
+  if ((crystalBallPredictions.get(0) ?? "") === "") {
     return Monster.none; // no prediction
   }
   for (const i of crystalBallPredictions.keys()) {
     const thisPrediction: Map<number, string> = new Map(
-      splitString(
-        crystalBallPredictions.get(i) ??
-          crystalBallPredictions.set(i, "").get(i),
-        ":",
-      ).map((_v, _i) => [_i, _v]),
+      splitString(crystalBallPredictions.get(i) ?? "", ":").map((_v, _i) => [
+        _i,
+        _v,
+      ]),
     ); // turn:location:monster
     // turn: thisPrediction[0].to_int() is useless unless mafia fails to update the property
-    if (
-      toLocation(thisPrediction.get(1) ?? thisPrediction.set(1, "").get(1)) !==
-      loc
-    ) {
+    if (toLocation(thisPrediction.get(1) ?? "") !== loc) {
       continue;
     }
-    return toMonster(thisPrediction.get(2) ?? thisPrediction.set(2, "").get(2));
+    return toMonster(thisPrediction.get(2) ?? "");
   }
   return Monster.none; // no prediction in the location
 }
@@ -229,14 +222,7 @@ export function auto_forceHandleCrystalBall(loc: Location): boolean {
         //some wanted monsters are not sniff targets
         loc,
         false,
-      ).get(predicted_monster) ??
-        auto_combat_appearance_rates(
-          //some wanted monsters are not sniff targets
-          loc,
-          false,
-        )
-          .set(predicted_monster, 0.0)
-          .get(predicted_monster)) < 100
+      ).get(predicted_monster) ?? 0.0) < 100
     ) {
       //other monsters possible
       shouldForceEquip = true; // should not waste the prediction entered in queue
@@ -512,7 +498,7 @@ export function auto_harvestBatteries(): boolean {
   );
 
   for (let pp: number = 0; pp < status.size; pp++) {
-    if (toInt(status.get(pp) ?? status.set(pp, "").get(pp)) > 0) {
+    if (toInt(status.get(pp) ?? "") > 0) {
       cliExecute(`choice.php?pwd&whichchoice=1448&option=1&pp=${pp + 1}`);
     }
   }
@@ -530,10 +516,7 @@ function batteryPoints(battery: Item): number {
     [$item`battery (lantern)`, 5],
     [$item`battery (car)`, 6],
   ]);
-  return (
-    $_batteryPoints_points.get(battery) ??
-    $_batteryPoints_points.set(battery, 0).get(battery)
-  );
+  return $_batteryPoints_points.get(battery) ?? 0;
 }
 // These points represent a quantity of AAAs if all batteries were untinkered.
 function totalBatteryPoints(): number {
@@ -912,7 +895,9 @@ export function auto_fireExtinguisherCharges(): number {
   return get("_fireExtinguisherCharge");
 }
 // returns zone specific skill if in usable zone and hasn't been used yet there this ascension. Otherwise returns empty string
-export function auto_FireExtinguisherCombatSkill(place: Location): Skill {
+export function auto_FireExtinguisherCombatSkill(
+  place: Location,
+): Skill | undefined {
   if (
     auto_fireExtinguisherCharges() < 20 ||
     !auto_is_valid$2($skill`Fire Extinguisher: Zone Specific`)

@@ -1348,11 +1348,7 @@ function loadConsumables(
     ) {
       for (const dish of legendary_noodle_dishes.keys()) {
         blacklist.set(dish, true);
-        blacklist.set(
-          legendary_noodle_dishes.get(dish) ??
-            legendary_noodle_dishes.set(dish, Item.none).get(dish),
-          true,
-        );
+        blacklist.set(legendary_noodle_dishes.get(dish) ?? Item.none, true);
       }
     }
   }
@@ -1678,25 +1674,20 @@ function loadConsumables(
       actions.set(n, MakeConsumeAction(it));
       if (obtain_mode === AUTO_OBTAIN_PULL && !in_small()) {
         // don't penalize pulls in small as want best options to utilize limited organs
-        (
-          actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
-        ).desirability -= 5.0;
+        (actions.get(n) ?? new ConsumeAction()).desirability -= 5.0;
         const user_desirability: number = toFloat(
           getProperty("auto_consumePullDesirability"),
         );
         if (user_desirability > 0.0) {
-          (
-            actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
-          ).desirability = -user_desirability;
+          (actions.get(n) ?? new ConsumeAction()).desirability =
+            -user_desirability;
         }
       }
       if (
         type_1 === AUTO_ORGAN_STOMACH &&
         auto_is_valid($item`Special Seasoning`)
       ) {
-        (
-          actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
-        ).desirability += min(
+        (actions.get(n) ?? new ConsumeAction()).desirability += min(
           1.0,
           (toFloat(itemAmount($item`Special Seasoning`)) * it.fullness) /
             fullness_left(),
@@ -1705,16 +1696,12 @@ function loadConsumables(
       if (obtain_mode === AUTO_OBTAIN_NULL) {
         if (it === $item`spaghetti breakfast`) {
           if (get("_spaghettiBreakfastEaten") || myFullness() > 0) {
-            (
-              actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
-            ).desirability -= 50;
+            (actions.get(n) ?? new ConsumeAction()).desirability -= 50;
           } else {
             auto_log_info(
               "Spaghetti Breakfast available, we should eat that first.",
             );
-            (
-              actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
-            ).desirability += 50;
+            (actions.get(n) ?? new ConsumeAction()).desirability += 50;
           }
         } else if (
           $items`blueberry muffin, bran muffin, chocolate chip muffin`.includes(
@@ -1725,10 +1712,8 @@ function loadConsumables(
             myFullness() === 0 &&
             myLevel() < 13 &&
             toFloat(getProperty("auto_consumeMinAdvPerFill")) <=
-              (actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n))
-                .adventures /
-                (actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n))
-                  .size
+              (actions.get(n) ?? new ConsumeAction()).adventures /
+                (actions.get(n) ?? new ConsumeAction()).size
           ) {
             if (
               !inHardcore() &&
@@ -1740,9 +1725,7 @@ function loadConsumables(
               auto_log_info(
                 `${it.toString()} available, we should eat that first.`,
               );
-              (
-                actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
-              ).desirability += 50;
+              (actions.get(n) ?? new ConsumeAction()).desirability += 50;
             }
           }
         }
@@ -1750,9 +1733,7 @@ function loadConsumables(
       if (obtain_mode === AUTO_OBTAIN_CRAFT) {
         const turns_to_craft: number =
           creatableTurns(it, i + 1, false) - creatableTurns(it, i, false);
-        (
-          actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
-        ).desirability -= turns_to_craft;
+        (actions.get(n) ?? new ConsumeAction()).desirability -= turns_to_craft;
       } else {
         if (
           i === 0 &&
@@ -1763,25 +1744,20 @@ function loadConsumables(
           auto_log_info(
             `If we ate a ${it} we could skip getting a fat loot token...`,
           );
-          (
-            actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
-          ).desirability += keyLimePieDesirabilityBonus;
+          (actions.get(n) ?? new ConsumeAction()).desirability +=
+            keyLimePieDesirabilityBonus;
         }
       }
       // below code not included next to the KLPs because sometime legendary noodles want crafting
       if (
         i === 0 &&
         (it === $item`pheromone cocktail` || legendaryNoodleDishes().has(it)) &&
-        (potentialTurnGain.get(it) ?? potentialTurnGain.set(it, 0.0).get(it)) >
-          0
+        (potentialTurnGain.get(it) ?? 0.0) > 0
       ) {
-        (
-          actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
-        ).desirability +=
-          potentialTurnGain.get(it) ?? potentialTurnGain.set(it, 0.0).get(it);
+        (actions.get(n) ?? new ConsumeAction()).desirability +=
+          potentialTurnGain.get(it) ?? 0.0;
       }
-      (actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)).howtoget =
-        obtain_mode;
+      (actions.get(n) ?? new ConsumeAction()).howtoget = obtain_mode;
     }
   }
 
@@ -1884,10 +1860,8 @@ function loadConsumables(
     for (let i: number = 0; i < daily_special_limit; i++) {
       const n: number = actions.size;
       actions.set(n, MakeConsumeAction(dailySpecial()));
-      (actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)).cafeid =
-        toInt(dailySpecial());
-      (actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)).it =
-        Item.none;
+      (actions.get(n) ?? new ConsumeAction()).cafeid = toInt(dailySpecial());
+      (actions.get(n) ?? new ConsumeAction()).it = Item.none;
     }
   }
 
@@ -2067,12 +2041,9 @@ function auto_bestNightcap(): ConsumeAction {
   }
 
   function desirability(i: number): number {
-    let ret: number = (
-      actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)
-    ).desirability;
+    let ret: number = (actions.get(i) ?? new ConsumeAction()).desirability;
     if (have_ode) {
-      ret += (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i))
-        .size;
+      ret += (actions.get(i) ?? new ConsumeAction()).size;
     }
     if (greenBeersDrinkable > 0) {
       //on Sneaky Pete's Day smaller drink action leaves more space for green beers
@@ -2080,17 +2051,11 @@ function auto_bestNightcap(): ConsumeAction {
         greenBeerAdv *
         min(
           greenBeersDrinkable,
-          max(
-            0,
-            10 -
-              (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i))
-                .size,
-          ),
+          max(0, 10 - (actions.get(i) ?? new ConsumeAction()).size),
         );
       ret += greenBeerabilityBonus;
       if (
-        (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)).it ===
-        $item`astral pilsner`
+        (actions.get(i) ?? new ConsumeAction()).it === $item`astral pilsner`
       ) {
         //astral pilsner's extra advs could make it barely beat larger pulls today due to beers but would still have as much value tomorrow
         ret -= min(5, greenBeerabilityBonus);
@@ -2109,15 +2074,8 @@ function auto_bestNightcap(): ConsumeAction {
 
     if (
       desirability(i) === current_best_desirability &&
-      historicalPrice(
-        (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)).it,
-      ) >=
-        historicalPrice(
-          (
-            actions.get(best) ??
-            actions.set(best, new ConsumeAction()).get(best)
-          ).it,
-        )
+      historicalPrice((actions.get(i) ?? new ConsumeAction()).it) >=
+        historicalPrice((actions.get(best) ?? new ConsumeAction()).it)
     ) {
       // This consumable is just as desirable as the best consumable, but it is more expensive
       continue;
@@ -2127,7 +2085,7 @@ function auto_bestNightcap(): ConsumeAction {
     current_best_desirability = desirability(best);
   }
 
-  return actions.get(best) ?? actions.set(best, new ConsumeAction()).get(best);
+  return actions.get(best) ?? new ConsumeAction();
 }
 
 export function auto_printNightcap(): void {
@@ -2313,15 +2271,8 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
   const desirability_1: Map<number, number> = new Map();
   const space: Map<number, number> = new Map();
   for (let i: number = 0; i < actions.size; i++) {
-    desirability_1.set(
-      i,
-      (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i))
-        .desirability,
-    );
-    space.set(
-      i,
-      (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)).size,
-    );
+    desirability_1.set(i, (actions.get(i) ?? new ConsumeAction()).desirability);
+    space.set(i, (actions.get(i) ?? new ConsumeAction()).size);
   }
 
   const result_1: Map<number, boolean> = knapsack(
@@ -2335,9 +2286,8 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
   let best: number = -1;
   for (const i of result_1.keys()) {
     const tentative_desirability_per_fill: number =
-      (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i))
-        .desirability /
-      (actions.get(i) ?? actions.set(i, new ConsumeAction()).get(i)).size;
+      (actions.get(i) ?? new ConsumeAction()).desirability /
+      (actions.get(i) ?? new ConsumeAction()).size;
     if (tentative_desirability_per_fill > best_desirability_per_fill) {
       best_desirability_per_fill = tentative_desirability_per_fill;
       best = i;
@@ -2347,9 +2297,7 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
   if (best === -1) {
     return MakeConsumeAction(Item.none);
   } else {
-    return (
-      actions.get(best) ?? actions.set(best, new ConsumeAction()).get(best)
-    );
+    return actions.get(best) ?? new ConsumeAction();
   }
 }
 
@@ -2591,10 +2539,7 @@ export function still_targetToOrigin(target: Item): Item {
     [$item`tonic water`, $item`soda water`],
   ]);
   if ($_still_targetToOrigin_originNeeded.has(target)) {
-    return (
-      $_still_targetToOrigin_originNeeded.get(target) ??
-      $_still_targetToOrigin_originNeeded.set(target, Item.none).get(target)
-    );
+    return $_still_targetToOrigin_originNeeded.get(target) ?? Item.none;
   } else {
     auto_log_debug(
       `still_targetToOrigin failed to lookup the item [${target}]`,

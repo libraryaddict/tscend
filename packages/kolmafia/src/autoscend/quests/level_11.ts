@@ -592,10 +592,8 @@ export function LX_unlockHauntedBilliardsRoom(
       true,
     );
     delayKitchen =
-      (resPossible.get($element`hot`) ??
-        resPossible.set($element`hot`, 0).get($element`hot`)) < 9 ||
-      (resPossible.get($element`stench`) ??
-        resPossible.set($element`stench`, 0).get($element`stench`)) < 9;
+      (resPossible.get($element`hot`) ?? 0) < 9 ||
+      (resPossible.get($element`stench`) ?? 0) < 9;
   }
 
   if (delayKitchen && isActuallyEd()) {
@@ -615,7 +613,7 @@ export function LX_unlockHauntedBilliardsRoom(
       false,
     );
     auto_log_info(
-      `Looking for the Billards Room key (Hot/Stench:${resPossible.get($element`hot`) ?? resPossible.set($element`hot`, 0).get($element`hot`)}/${resPossible.get($element`stench`) ?? resPossible.set($element`stench`, 0).get($element`stench`)}): Progress ${getProperty("manorDrawerCount")}/24`,
+      `Looking for the Billards Room key (Hot/Stench:${resPossible.get($element`hot`) ?? 0}/${resPossible.get($element`stench`) ?? 0}): Progress ${getProperty("manorDrawerCount")}/24`,
       "blue",
     );
 
@@ -787,10 +785,7 @@ function LX_unlockManorSecondFloorDo(): boolean {
       auto_is_valid$2($skill`Get a Good Whiff of This Guy`) &&
       (auto_combat_appearance_rates$1($location`The Haunted Library`).get(
         $monster`writing desk`,
-      ) ??
-        auto_combat_appearance_rates$1($location`The Haunted Library`)
-          .set($monster`writing desk`, 0.0)
-          .get($monster`writing desk`)) < 100
+      ) ?? 0.0) < 100
     ) {
       handleFamiliar$1($familiar`Nosy Nose`);
     }
@@ -1006,17 +1001,11 @@ function LX_getLadySpookyravensFinestGownDo(): boolean {
       let ornateRate: number =
         auto_combat_appearance_rates$1($location`The Haunted Bedroom`).get(
           $monster`animated ornate nightstand`,
-        ) ??
-        auto_combat_appearance_rates$1($location`The Haunted Bedroom`)
-          .set($monster`animated ornate nightstand`, 0.0)
-          .get($monster`animated ornate nightstand`);
+        ) ?? 0.0;
       const elegantRate: number =
         auto_combat_appearance_rates$1($location`The Haunted Bedroom`).get(
           $monster`elegant animated nightstand`,
-        ) ??
-        auto_combat_appearance_rates$1($location`The Haunted Bedroom`)
-          .set($monster`elegant animated nightstand`, 0.0)
-          .get($monster`elegant animated nightstand`);
+        ) ?? 0.0;
       if ($location`The Haunted Bedroom`.turnsSpent < 6 && elegantRate !== 0) {
         //non 0 value for elegant before 7 is spurious
         ornateRate += elegantRate; //not a real rate but only correct for the purpose of checking if it is 100
@@ -2480,23 +2469,13 @@ function L11_hiddenCityDo(): boolean {
           haveEffect($effect`Thrice-Cursed`) < turnsUntilElevatorAction + 1 &&
           (auto_combat_appearance_rates$1(
             $location`The Hidden Apartment Building`,
-          ).get($monster`pygmy shaman`) ??
-            auto_combat_appearance_rates$1(
-              $location`The Hidden Apartment Building`,
-            )
-              .set($monster`pygmy shaman`, 0.0)
-              .get($monster`pygmy shaman`)) < 100
+          ).get($monster`pygmy shaman`) ?? 0.0) < 100
         ) {
           handleFamiliar$1($familiar`Nosy Nose`); //whiff increases chance of shamen. the deleveling can also help survive being cursed
         } else if (
           (auto_combat_appearance_rates$1(
             $location`The Hidden Office Building`,
-          ).get($monster`pygmy witch accountant`) ??
-            auto_combat_appearance_rates$1(
-              $location`The Hidden Office Building`,
-            )
-              .set($monster`pygmy witch accountant`, 0.0)
-              .get($monster`pygmy witch accountant`)) >= 20 &&
+          ).get($monster`pygmy witch accountant`) ?? 0.0) >= 20 &&
           itemAmount($item`McClusky file (complete)`) === 0
         ) {
           //once done with curses will want witch accountants
@@ -2601,10 +2580,7 @@ function L11_hiddenCityDo(): boolean {
         auto_is_valid$2($skill`Get a Good Whiff of This Guy`) &&
         (auto_combat_appearance_rates$1(
           $location`The Hidden Office Building`,
-        ).get($monster`pygmy witch accountant`) ??
-          auto_combat_appearance_rates$1($location`The Hidden Office Building`)
-            .set($monster`pygmy witch accountant`, 0.0)
-            .get($monster`pygmy witch accountant`)) < 100
+        ).get($monster`pygmy witch accountant`) ?? 0.0) < 100
       ) {
         handleFamiliar$1($familiar`Nosy Nose`); //whiff increases chance of witch accountant
       }
@@ -2621,10 +2597,7 @@ function L11_hiddenCityDo(): boolean {
       missingMcCluskyFiles() > 0 &&
       (auto_combat_appearance_rates$1(
         $location`The Hidden Apartment Building`,
-      ).get($monster`pygmy witch accountant`) ??
-        auto_combat_appearance_rates$1($location`The Hidden Apartment Building`)
-          .set($monster`pygmy witch accountant`, 0.0)
-          .get($monster`pygmy witch accountant`)) >=
+      ).get($monster`pygmy witch accountant`) ?? 0.0) >=
         missingMcCluskyFiles() * 25
     ) {
       //Hidden Apartment unmodified 25% chance of accountant is better if only 1 missingMcCluskyFiles
@@ -2727,10 +2700,7 @@ function L11_hiddenCityDo(): boolean {
         auto_is_valid$2($skill`Get a Good Whiff of This Guy`) &&
         (auto_combat_appearance_rates$1($location`The Hidden Hospital`).get(
           $monster`pygmy witch surgeon`,
-        ) ??
-          auto_combat_appearance_rates$1($location`The Hidden Hospital`)
-            .set($monster`pygmy witch surgeon`, 0.0)
-            .get($monster`pygmy witch surgeon`)) < 100
+        ) ?? 0.0) < 100
       ) {
         if (
           surgeonGearWanted >= 2 ||
@@ -3826,7 +3796,7 @@ export const L11_shenCopperheadTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL11Shen") >= 0 && !is_professor(),
   do: L11_shenCopperheadDo,
   desiredEncounters: () => {
-    const it: Item = get("shenQuestItem");
+    const it: Item = safeGet("shenQuestItem", Item.none);
     return [
       {
         item: it,

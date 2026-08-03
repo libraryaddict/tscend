@@ -164,10 +164,7 @@ function gnoob_buySkills(): void {
 
     let possible: Map<number, Item> = new Map();
     for (const it of available.keys()) {
-      if (
-        !(blacklist.get(it) ?? blacklist.set(it, false).get(it)) &&
-        it.noobSkill === sk
-      ) {
+      if (!(blacklist.get(it) ?? false) && it.noobSkill === sk) {
         possible.set(possible.size, it);
       }
     }
@@ -191,31 +188,25 @@ function gnoob_buySkills(): void {
     auto_log_info(`Trying to acquire skill ${sk} and considering: `, "green");
     for (let i: number = 0; i < bound; i++) {
       auto_log_info(
-        `${possible.get(i) ?? possible.set(i, Item.none).get(i)}: ${gnoobAbsorbCost(possible.get(i) ?? possible.set(i, Item.none).get(i))} meat`,
+        `${possible.get(i) ?? Item.none}: ${gnoobAbsorbCost(possible.get(i) ?? Item.none)} meat`,
         "blue",
       );
     }
     //get the skill
     for (let i: number = 0; i < bound && !haveSkill(sk); i++) {
-      if (
-        itemAmount(possible.get(i) ?? possible.set(i, Item.none).get(i)) === 0
-      ) {
-        retrieveItem(1, possible.get(i) ?? possible.set(i, Item.none).get(i));
-        if (
-          itemAmount(possible.get(i) ?? possible.set(i, Item.none).get(i)) === 0
-        ) {
+      if (itemAmount(possible.get(i) ?? Item.none) === 0) {
+        retrieveItem(1, possible.get(i) ?? Item.none);
+        if (itemAmount(possible.get(i) ?? Item.none) === 0) {
           auto_log_info(
-            `Failed to acquire [${possible.get(i) ?? possible.set(i, Item.none).get(i)}] for gnoob_buySkills`,
+            `Failed to acquire [${possible.get(i) ?? Item.none}] for gnoob_buySkills`,
           );
           continue;
         }
       }
-      cliExecute(
-        `absorb ${possible.get(i) ?? possible.set(i, Item.none).get(i)}`,
-      );
+      cliExecute(`absorb ${possible.get(i) ?? Item.none}`);
       if (starting_absorb_count === myAbsorbs()) {
         abort(
-          `Tried and failed to absorb [${possible.get(i) ?? possible.set(i, Item.none).get(i)}]. this should not have happened and needs to be fixed`,
+          `Tried and failed to absorb [${possible.get(i) ?? Item.none}]. this should not have happened and needs to be fixed`,
         );
       } else {
         available = gnoob_lister(); //recheck item availability now that one was consumed. necessary for tome handling and NPC stores.

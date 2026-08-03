@@ -771,10 +771,7 @@ function catBurglarHeistDo(): boolean {
   const wannaHeists: Map<Monster, Item> = catBurglarHeistDesires();
 
   if (wannaHeists.has(lastMonster())) {
-    catBurglarHeist$1(
-      wannaHeists.get(lastMonster()) ??
-        wannaHeists.set(lastMonster(), Item.none).get(lastMonster()),
-    );
+    catBurglarHeist$1(wannaHeists.get(lastMonster()) ?? Item.none);
   }
   // don't return true from this, isn't adventuring.
   return false;
@@ -1274,19 +1271,19 @@ function auto_latteRefill(
 
   const wants: Map<number, string> = new Map();
   if (want1 !== "") {
-    if (!(unlocked.get(want1) ?? unlocked.set(want1, false).get(want1))) {
+    if (!(unlocked.get(want1) ?? false)) {
       return false;
     }
     wants.set(wants.size, want1);
   }
   if (want2 !== "") {
-    if (!(unlocked.get(want2) ?? unlocked.set(want2, false).get(want2))) {
+    if (!(unlocked.get(want2) ?? false)) {
       return false;
     }
     wants.set(wants.size, want2);
   }
   if (want3 !== "") {
-    if (!(unlocked.get(want3) ?? unlocked.set(want3, false).get(want3))) {
+    if (!(unlocked.get(want3) ?? false)) {
       return false;
     }
     wants.set(wants.size, want3);
@@ -1307,7 +1304,7 @@ function auto_latteRefill(
       return false;
     }
     want = auto_latteTranslate(want);
-    if (!(unlocked.get(want) ?? unlocked.set(want, false).get(want))) {
+    if (!(unlocked.get(want) ?? false)) {
       return false;
     }
 
@@ -1346,7 +1343,7 @@ function auto_latteRefill(
   }
 
   cliExecute(
-    `latte refill ${wants.get(0) ?? wants.set(0, "").get(0)} ${wants.get(1) ?? wants.set(1, "").get(1)} ${wants.get(2) ?? wants.set(2, "").get(2)}`,
+    `latte refill ${wants.get(0) ?? ""} ${wants.get(1) ?? ""} ${wants.get(2) ?? ""}`,
   );
   return true;
 }

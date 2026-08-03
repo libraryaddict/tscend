@@ -356,17 +356,9 @@ export function plumber_canDealScalingDamage(): boolean {
 
   for (const st of $stats.all()) {
     let level: number;
-    if (
-      possessEquipment(
-        items_lv2.get(st) ?? items_lv2.set(st, Item.none).get(st),
-      )
-    ) {
+    if (possessEquipment(items_lv2.get(st) ?? Item.none)) {
       level = 2;
-    } else if (
-      possessEquipment(
-        items_lv1.get(st) ?? items_lv1.set(st, Item.none).get(st),
-      )
-    ) {
+    } else if (possessEquipment(items_lv1.get(st) ?? Item.none)) {
       level = 1;
     } else {
       continue;
@@ -378,18 +370,10 @@ export function plumber_canDealScalingDamage(): boolean {
 
     level += toInt(plumber_costume() === st);
 
-    if (
-      myMaxpp() >= 2 &&
-      haveSkill(attacks_2pp.get(st) ?? attacks_2pp.set(st, Skill.none).get(st))
-    ) {
+    if (myMaxpp() >= 2 && haveSkill(attacks_2pp.get(st) ?? Skill.none)) {
       return true;
     }
-    if (
-      level >= 3 &&
-      haveSkill(
-        attacks_free.get(st) ?? attacks_free.set(st, Skill.none).get(st),
-      )
-    ) {
+    if (level >= 3 && haveSkill(attacks_free.get(st) ?? Skill.none)) {
       return true;
     }
   }

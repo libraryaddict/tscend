@@ -1534,7 +1534,7 @@ function L13_towerNSTowerSkin(): boolean {
     if (auto_have_familiar(fam)) {
       handleFamiliar$1(fam);
       useFamiliar(fam);
-      damage += fam_damage.get(fam) ?? fam_damage.set(fam, 0).get(fam);
+      damage += fam_damage.get(fam) ?? 0;
       fam_set = true;
       break;
     }
@@ -2048,7 +2048,7 @@ function L13_towerNSFinalDo(): boolean {
         `Skipping burndown of stats, ${myClass()} doesn't have a primary stat, and we didn't account for that.`,
       );
     } else {
-      let delevelPlan: (() => void)[];
+      let delevelPlan: (() => void)[] | undefined;
 
       if (auto_haveBCZ()) {
         delevelPlan = auto_bczDelevelPlan(13);
@@ -2395,7 +2395,7 @@ export const L13_towerNSNagamarTask: QuestTask = registerQuestTask({
   locations: $location`The VERY Unquiet Garves`,
   desiredEncounters: () => {
     const active: boolean =
-      get("auto_wandOfNagamar") &&
+      get("auto_wandOfNagamar", false) &&
       internalQuestStatus("questL13Final") >= 11 &&
       internalQuestStatus("questL13Final") <= 12 &&
       itemAmount($item`Wand of Nagamar`) === 0;

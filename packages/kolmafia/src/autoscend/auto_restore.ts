@@ -220,7 +220,7 @@ function to_string$1(o: __RestorationOptimization, simple: boolean): string {
   }
 
   if (simple) {
-    return `(${o.metadata.name}, hp: ${o.objectiveValues.get("hp_total_restored") ?? o.objectiveValues.set("hp_total_restored", 0.0).get("hp_total_restored")}, mp: ${o.objectiveValues.get("mp_total_restored") ?? o.objectiveValues.set("mp_total_restored", 0.0).get("mp_total_restored")}, negative effects remaining: ${o.objectiveValues.get("negative_status_effects_remaining") ?? o.objectiveValues.set("negative_status_effects_remaining", 0.0).get("negative_status_effects_remaining")})`;
+    return `(${o.metadata.name}, hp: ${o.objectiveValues.get("hp_total_restored") ?? 0.0}, mp: ${o.objectiveValues.get("mp_total_restored") ?? 0.0}, negative effects remaining: ${o.objectiveValues.get("negative_status_effects_remaining") ?? 0.0})`;
   }
 
   const vars_str: string = list_to_string$2(o.vars);
@@ -274,15 +274,12 @@ const $_f___NUNS: string = "the nunnery";
  *
  * Uses an intermediate record for the initial file_to_map, then parses it to make working with __RestorationMetadata friendlier.
  */
-let $___init_restoration_metadata_resotration_filename: string | undefined;
-let $___init_restoration_metadata_negative_effects_filename: string | undefined;
+const $___init_restoration_metadata_resotration_filename: string =
+  "autoscend_restoration.txt";
+const $___init_restoration_metadata_negative_effects_filename: string =
+  "autoscend_negative_effects.txt";
 
 function __init_restoration_metadata(): void {
-  $___init_restoration_metadata_resotration_filename ??=
-    "autoscend_restoration.txt";
-  $___init_restoration_metadata_negative_effects_filename ??=
-    "autoscend_negative_effects.txt";
-
   function parse_effects(
     name: string,
     effects_list: string,
@@ -363,8 +360,7 @@ function __init_restoration_metadata(): void {
     ]);
 
     for (const type_1 of ["item", "skill", "clan", "dwelling", "place"]) {
-      for (const [, _v0] of raw_data.get(type_1) ??
-        raw_data.set(type_1, new Map()).get(type_1)) {
+      for (const [, _v0] of raw_data.get(type_1) ?? new Map()) {
         for (const [name, _v1] of _v0) {
           for (const [hp_restored, _v2] of _v1) {
             for (const [mp_restored, _v3] of _v2) {
@@ -407,22 +403,22 @@ function __init_restoration_metadata(): void {
     }
     // add mp restore to nunnery if did as fratboy
     if (getProperty("sidequestNunsCompleted") === "fratboy") {
-      (
-        $_f___known_restoration_sources.get("the nunnery") ??
-        $_f___known_restoration_sources
-          .set("the nunnery", new __RestorationMetadata())
-          .get("the nunnery")
-      ).mpRestored = 1000;
+      let nunnery = $_f___known_restoration_sources.get("the nunnery");
+      if (nunnery === undefined) {
+        nunnery = new __RestorationMetadata();
+        $_f___known_restoration_sources.set("the nunnery", nunnery);
+      }
+      nunnery.mpRestored = 1000;
     }
 
     if (myPath() === $path`Disguises Delimit`) {
       //shadow has double HP in this path so larger reserve needed
       for (const specialname of ["gauze garter", "filthy poultice"]) {
-        const parsedSpecial: __RestorationMetadata =
-          $_f___known_restoration_sources.get(specialname) ??
-          $_f___known_restoration_sources
-            .set(specialname, new __RestorationMetadata())
-            .get(specialname);
+        let parsedSpecial = $_f___known_restoration_sources.get(specialname);
+        if (parsedSpecial === undefined) {
+          parsedSpecial = new __RestorationMetadata();
+          $_f___known_restoration_sources.set(specialname, parsedSpecial);
+        }
         if (parsedSpecial.hardReserveLimit < 4) {
           continue;
         }
@@ -609,15 +605,9 @@ function __calculate_objective_values(
       __MINIMIZE_KEYS.has(name) ||
       __PRIMARY_SORT_KEYS.has(name)
     ) {
-      return (
-        optimization_parameters.objectiveValues.get(name) ??
-        optimization_parameters.objectiveValues.set(name, 0.0).get(name)
-      );
+      return optimization_parameters.objectiveValues.get(name) ?? 0.0;
     } else if (__VARS_KEYS.has(name)) {
-      return (
-        optimization_parameters.vars.get(name) ??
-        optimization_parameters.vars.set(name, 0.0).get(name)
-      );
+      return optimization_parameters.vars.get(name) ?? 0.0;
     }
     //we must have [name] defined in one of the above keys or it will not be stored/retrieved.
     abort(
@@ -1218,10 +1208,7 @@ function __maximize_restore_options(
     if (start_1 >= 0 && start_1 <= p.size && stop >= 0 && stop <= p.size) {
       let i: number = start_1;
       while (i < stop) {
-        subset.set(
-          subset.size,
-          p.get(i) ?? p.set(i, new __RestorationOptimization()).get(i),
-        );
+        subset.set(subset.size, p.get(i) ?? new __RestorationOptimization());
         i++;
       }
     }
@@ -1242,9 +1229,7 @@ function __maximize_restore_options(
   ): number {
     let sum: number = 0.0;
     for (const [s] of keys) {
-      sum +=
-        (o.objectiveValues.get(s) ?? o.objectiveValues.set(s, 0.0).get(s)) *
-        (value_ranks.get(s) ?? value_ranks.set(s, 0).get(s));
+      sum += (o.objectiveValues.get(s) ?? 0.0) * (value_ranks.get(s) ?? 0);
     }
     return sum;
   }
@@ -1297,8 +1282,7 @@ function __maximize_restore_options(
       while (Bi < B.size) {
         if (
           dominated.has(
-            (B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi))
-              .metadata.name,
+            (B.get(Bi) ?? new __RestorationOptimization()).metadata.name,
           )
         ) {
           Bi++;
@@ -1311,45 +1295,21 @@ function __maximize_restore_options(
           if (r === rank) {
             if (
               ((
-                T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti)
-              ).objectiveValues.get(key) ??
-                (
-                  T.get(Ti) ??
-                  T.set(Ti, new __RestorationOptimization()).get(Ti)
-                ).objectiveValues
-                  .set(key, 0.0)
-                  .get(key)) === -1.0 ||
+                T.get(Ti) ?? new __RestorationOptimization()
+              ).objectiveValues.get(key) ?? 0.0) === -1.0 ||
               ((
-                B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)
-              ).objectiveValues.get(key) ??
-                (
-                  B.get(Bi) ??
-                  B.set(Bi, new __RestorationOptimization()).get(Bi)
-                ).objectiveValues
-                  .set(key, 0.0)
-                  .get(key)) === -1.0
+                B.get(Bi) ?? new __RestorationOptimization()
+              ).objectiveValues.get(key) ?? 0.0) === -1.0
             ) {
               continue; // -1.0 means the key is not applicable to an option, e.g. hp_per_mp_spent on free rests which dont cost mp
             }
             if (
               ((
-                T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti)
-              ).objectiveValues.get(key) ??
-                (
-                  T.get(Ti) ??
-                  T.set(Ti, new __RestorationOptimization()).get(Ti)
-                ).objectiveValues
-                  .set(key, 0.0)
-                  .get(key)) <
+                T.get(Ti) ?? new __RestorationOptimization()
+              ).objectiveValues.get(key) ?? 0.0) <
               ((
-                B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)
-              ).objectiveValues.get(key) ??
-                (
-                  B.get(Bi) ??
-                  B.set(Bi, new __RestorationOptimization()).get(Bi)
-                ).objectiveValues
-                  .set(key, 0.0)
-                  .get(key))
+                B.get(Bi) ?? new __RestorationOptimization()
+              ).objectiveValues.get(key) ?? 0.0)
             ) {
               if (maximize_keys.has(key)) {
                 B_dominance++;
@@ -1358,23 +1318,11 @@ function __maximize_restore_options(
               }
             } else if (
               ((
-                T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti)
-              ).objectiveValues.get(key) ??
-                (
-                  T.get(Ti) ??
-                  T.set(Ti, new __RestorationOptimization()).get(Ti)
-                ).objectiveValues
-                  .set(key, 0.0)
-                  .get(key)) >
+                T.get(Ti) ?? new __RestorationOptimization()
+              ).objectiveValues.get(key) ?? 0.0) >
               ((
-                B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi)
-              ).objectiveValues.get(key) ??
-                (
-                  B.get(Bi) ??
-                  B.set(Bi, new __RestorationOptimization()).get(Bi)
-                ).objectiveValues
-                  .set(key, 0.0)
-                  .get(key))
+                B.get(Bi) ?? new __RestorationOptimization()
+              ).objectiveValues.get(key) ?? 0.0)
             ) {
               if (maximize_keys.has(key)) {
                 T_dominance++;
@@ -1387,14 +1335,12 @@ function __maximize_restore_options(
 
         if (T_dominance > B_dominance) {
           dominated.set(
-            (B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi))
-              .metadata.name,
+            (B.get(Bi) ?? new __RestorationOptimization()).metadata.name,
             true,
           );
         } else if (B_dominance > T_dominance) {
           dominated.set(
-            (T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti))
-              .metadata.name,
+            (T.get(Ti) ?? new __RestorationOptimization()).metadata.name,
             true,
           );
           break;
@@ -1404,17 +1350,13 @@ function __maximize_restore_options(
 
       if (
         !dominated.has(
-          (T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti))
-            .metadata.name,
+          (T.get(Ti) ?? new __RestorationOptimization()).metadata.name,
         )
       ) {
-        M.set(
-          M.size,
-          T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti),
-        );
+        M.set(M.size, T.get(Ti) ?? new __RestorationOptimization());
       } else {
         auto_log_restore_debug(
-          `Removed from consideration: ${to_string$1(T.get(Ti) ?? T.set(Ti, new __RestorationOptimization()).get(Ti), true)}`,
+          `Removed from consideration: ${to_string$1(T.get(Ti) ?? new __RestorationOptimization(), true)}`,
           1,
         );
       }
@@ -1425,17 +1367,13 @@ function __maximize_restore_options(
     while (Bi < B.size) {
       if (
         !dominated.has(
-          (B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi))
-            .metadata.name,
+          (B.get(Bi) ?? new __RestorationOptimization()).metadata.name,
         )
       ) {
-        M.set(
-          M.size,
-          B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi),
-        );
+        M.set(M.size, B.get(Bi) ?? new __RestorationOptimization());
       } else {
         auto_log_restore_debug(
-          `Removed from consideration: ${to_string$1(B.get(Bi) ?? B.set(Bi, new __RestorationOptimization()).get(Bi), true)}`,
+          `Removed from consideration: ${to_string$1(B.get(Bi) ?? new __RestorationOptimization(), true)}`,
           1,
         );
       }
@@ -1502,8 +1440,7 @@ function __maximize_restore_options(
     );
     for (const [, rank] of ranks) {
       const desc: string = __RANKED_GOAL_DESCRIPTIONS.has(rank)
-        ? (__RANKED_GOAL_DESCRIPTIONS.get(rank) ??
-          __RANKED_GOAL_DESCRIPTIONS.set(rank, "").get(rank))
+        ? (__RANKED_GOAL_DESCRIPTIONS.get(rank) ?? "")
         : "whoops, someone changed things and didnt update the descriptions. Bad dev.";
       auto_log_restore_debug(
         `Rank ${rank} optimization, prefer to... ${desc}`,
@@ -1532,8 +1469,7 @@ function __maximize_restore_options(
   ): number {
     const pivot_value: number = toInt(
       weighted_sum(
-        p.get(left_index) ??
-          p.set(left_index, new __RestorationOptimization()).get(left_index),
+        p.get(left_index) ?? new __RestorationOptimization(),
         sort_keys,
         value_ranks,
       ),
@@ -1546,7 +1482,7 @@ function __maximize_restore_options(
       while (l <= r) {
         if (
           weighted_sum(
-            p.get(l) ?? p.set(l, new __RestorationOptimization()).get(l),
+            p.get(l) ?? new __RestorationOptimization(),
             sort_keys,
             value_ranks,
           ) >= pivot_value
@@ -1560,7 +1496,7 @@ function __maximize_restore_options(
       while (r >= l) {
         if (
           weighted_sum(
-            p.get(r) ?? p.set(r, new __RestorationOptimization()).get(r),
+            p.get(r) ?? new __RestorationOptimization(),
             sort_keys,
             value_ranks,
           ) <= pivot_value
@@ -1575,19 +1511,15 @@ function __maximize_restore_options(
         done = true;
       } else {
         const swap: __RestorationOptimization =
-          p.get(l) ?? p.set(l, new __RestorationOptimization()).get(l);
-        p.set(l, p.get(r) ?? p.set(r, new __RestorationOptimization()).get(r));
+          p.get(l) ?? new __RestorationOptimization();
+        p.set(l, p.get(r) ?? new __RestorationOptimization());
         p.set(r, swap);
       }
     }
 
     const swap: __RestorationOptimization =
-      p.get(left_index) ??
-      p.set(left_index, new __RestorationOptimization()).get(left_index);
-    p.set(
-      left_index,
-      p.get(r) ?? p.set(r, new __RestorationOptimization()).get(r),
-    );
+      p.get(left_index) ?? new __RestorationOptimization();
+    p.set(left_index, p.get(r) ?? new __RestorationOptimization());
     p.set(r, swap);
 
     return r;
@@ -1639,9 +1571,7 @@ function __maximize_restore_options(
     for (const [, o] of p) {
       let fail: boolean = false;
       for (const [c_1] of constraint_keys) {
-        if (!(
-          o.constraints.get(c_1) ?? o.constraints.set(c_1, false).get(c_1)
-        )) {
+        if (!(o.constraints.get(c_1) ?? false)) {
           fail = true;
           break;
         }
@@ -1688,10 +1618,7 @@ function __maximize_restore_options(
           useFreeRests,
           metadata,
         );
-        if (
-          o.constraints.get("is_ever_useable") ??
-          o.constraints.set("is_ever_useable", false).get("is_ever_useable")
-        ) {
+        if (o.constraints.get("is_ever_useable") ?? false) {
           $_f___restore_maximizer_cache.set(
             $_f___restore_maximizer_cache.size,
             o,
@@ -1992,15 +1919,8 @@ function __restore(
         }
       }
       use_opportunity_blood_skills(
-        toInt(
-          o.vars.get("hp_restored_per_use") ??
-            o.vars.set("hp_restored_per_use", 0.0).get("hp_restored_per_use"),
-        ),
-        toInt(
-          myHp() +
-            (o.vars.get("hp_total_restored") ??
-              o.vars.set("hp_total_restored", 0.0).get("hp_total_restored")),
-        ),
+        toInt(o.vars.get("hp_restored_per_use") ?? 0.0),
+        toInt(myHp() + (o.vars.get("hp_total_restored") ?? 0.0)),
       );
       success = use_restore(o.metadata, meat_reserve, useFreeRests);
       if (success) {
@@ -2016,10 +1936,8 @@ function __restore(
       // did we have exactly one option and fail to cast rest upside down because we have a back item with +HP/MP?
       if (
         options.size === 1 &&
-        (
-          options.get(0) ??
-          options.set(0, new __RestorationOptimization()).get(0)
-        ).metadata.name === "rest upside down"
+        (options.get(0) ?? new __RestorationOptimization()).metadata.name ===
+          "rest upside down"
       ) {
         const current_back: Item = equippedItem($slot`back`);
         // do we have less than max minus what the back item provides

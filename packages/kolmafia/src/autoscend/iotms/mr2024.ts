@@ -346,9 +346,7 @@ export function dartELRcd(): number {
     ),
   );
   for (const perk of perks.keys()) {
-    if (
-      containsText(perks.get(perk) ?? perks.set(perk, "").get(perk), "impress")
-    ) {
+    if (containsText(perks.get(perk) ?? "", "impress")) {
       cd -= 10;
     }
   }
@@ -362,41 +360,17 @@ export function dartSkill(): Skill {
     ),
   );
   for (const sk of curDartboard.keys()) {
-    if (
-      containsText(
-        curDartboard.get(sk) ?? curDartboard.set(sk, "").get(sk),
-        "butt",
-      )
-    ) {
+    if (containsText(curDartboard.get(sk) ?? "", "butt")) {
       // get more items
       auto_log_info("Going for the butt", "blue");
-      return toSkill(
-        toInt(
-          substring(
-            curDartboard.get(sk) ?? curDartboard.set(sk, "").get(sk),
-            0,
-            4,
-          ),
-        ),
-      );
+      return toSkill(toInt(substring(curDartboard.get(sk) ?? "", 0, 4)));
     } else if (
-      containsText(
-        curDartboard.get(sk) ?? curDartboard.set(sk, "").get(sk),
-        "torso",
-      ) ||
+      containsText(curDartboard.get(sk) ?? "", "torso") ||
       containsText(sk.toString(), "pseudopod")
     ) {
       //get more meat
       auto_log_info("Going for the chest", "blue");
-      return toSkill(
-        toInt(
-          substring(
-            curDartboard.get(sk) ?? curDartboard.set(sk, "").get(sk),
-            0,
-            4,
-          ),
-        ),
-      );
+      return toSkill(toInt(substring(curDartboard.get(sk) ?? "", 0, 4)));
     }
   }
   return toSkill(7513); // If there aren't any darts available return the Darts: Throw at %PART1

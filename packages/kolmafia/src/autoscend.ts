@@ -1284,10 +1284,7 @@ function initializeDay(day: number): void {
         ]),
       );
       const myTea: string = String(
-        teaChoice.get(min(teaChoice.size, myDaycount()) - 1) ??
-          teaChoice
-            .set(min(teaChoice.size, myDaycount()) - 1, "")
-            .get(min(teaChoice.size, myDaycount()) - 1),
+        teaChoice.get(min(teaChoice.size, myDaycount()) - 1) ?? "",
       ).trim();
       if (toItem(myTea) !== Item.none || myTea === "shake") {
         cliExecute(`teatree ${myTea}`);
@@ -1737,8 +1734,7 @@ export function dailyEvents(): boolean {
     }
     if (
       furn.has($item`Crimbough`) &&
-      (furn.get($item`Crimbough`) ??
-        furn.set($item`Crimbough`, 0).get($item`Crimbough`)) === 5 &&
+      (furn.get($item`Crimbough`) ?? 0) === 5 &&
       !get("_crimboTree") &&
       isUnrestricted($item`Crimbough`)
     ) {

@@ -177,88 +177,37 @@ export function snojoFightAvailable(): boolean {
     }
 
     if (
-      toInt(
-        getProperty(
-          `snojo${standard.get(0) ?? standard.set(0, "").get(0)}Wins`,
-        ),
-      ) < 14 &&
-      getProperty("snojoSetting") !==
-        toUpperCase(standard.get(0) ?? standard.set(0, "").get(0))
+      toInt(getProperty(`snojo${standard.get(0) ?? ""}Wins`)) < 14 &&
+      getProperty("snojoSetting") !== toUpperCase(standard.get(0) ?? "")
     ) {
       visitUrl("place.php?whichplace=snojo&action=snojo_controller");
-      auto_runChoice(
-        controls.get(standard.get(0) ?? standard.set(0, "").get(0)) ??
-          controls
-            .set(standard.get(0) ?? standard.set(0, "").get(0), 0)
-            .get(standard.get(0) ?? standard.set(0, "").get(0)),
-      );
+      auto_runChoice(controls.get(standard.get(0) ?? "") ?? 0);
     }
     if (
-      getProperty("snojoSetting") ===
-        toUpperCase(standard.get(0) ?? standard.set(0, "").get(0)) &&
-      toInt(
-        getProperty(
-          `snojo${standard.get(0) ?? standard.set(0, "").get(0)}Wins`,
-        ),
-      ) >= 14 &&
-      getProperty("snojoSetting") !==
-        toUpperCase(standard.get(1) ?? standard.set(1, "").get(1)) &&
-      toInt(
-        getProperty(
-          `snojo${standard.get(1) ?? standard.set(1, "").get(1)}Wins`,
-        ),
-      ) < 14
+      getProperty("snojoSetting") === toUpperCase(standard.get(0) ?? "") &&
+      toInt(getProperty(`snojo${standard.get(0) ?? ""}Wins`)) >= 14 &&
+      getProperty("snojoSetting") !== toUpperCase(standard.get(1) ?? "") &&
+      toInt(getProperty(`snojo${standard.get(1) ?? ""}Wins`)) < 14
     ) {
       visitUrl("place.php?whichplace=snojo&action=snojo_controller");
-      auto_runChoice(
-        controls.get(standard.get(1) ?? standard.set(1, "").get(1)) ??
-          controls
-            .set(standard.get(1) ?? standard.set(1, "").get(1), 0)
-            .get(standard.get(1) ?? standard.set(1, "").get(1)),
-      );
+      auto_runChoice(controls.get(standard.get(1) ?? "") ?? 0);
     }
     if (
-      getProperty("snojoSetting") ===
-        toUpperCase(standard.get(1) ?? standard.set(1, "").get(1)) &&
-      toInt(
-        getProperty(
-          `snojo${standard.get(1) ?? standard.set(1, "").get(1)}Wins`,
-        ),
-      ) >= 14 &&
-      getProperty("snojoSetting") !==
-        toUpperCase(standard.get(2) ?? standard.set(2, "").get(2)) &&
-      toInt(
-        getProperty(
-          `snojo${standard.get(2) ?? standard.set(2, "").get(2)}Wins`,
-        ),
-      ) < 14
+      getProperty("snojoSetting") === toUpperCase(standard.get(1) ?? "") &&
+      toInt(getProperty(`snojo${standard.get(1) ?? ""}Wins`)) >= 14 &&
+      getProperty("snojoSetting") !== toUpperCase(standard.get(2) ?? "") &&
+      toInt(getProperty(`snojo${standard.get(2) ?? ""}Wins`)) < 14
     ) {
       visitUrl("place.php?whichplace=snojo&action=snojo_controller");
-      auto_runChoice(
-        controls.get(standard.get(2) ?? standard.set(2, "").get(2)) ??
-          controls
-            .set(standard.get(2) ?? standard.set(2, "").get(2), 0)
-            .get(standard.get(2) ?? standard.set(2, "").get(2)),
-      );
+      auto_runChoice(controls.get(standard.get(2) ?? "") ?? 0);
     }
     if (
-      getProperty("snojoSetting") ===
-        toUpperCase(standard.get(2) ?? standard.set(2, "").get(2)) &&
-      toInt(
-        getProperty(
-          `snojo${standard.get(2) ?? standard.set(2, "").get(2)}Wins`,
-        ),
-      ) >= 11 &&
-      getProperty("snojoSetting") !==
-        toUpperCase(standard.get(3) ?? standard.set(3, "").get(3))
+      getProperty("snojoSetting") === toUpperCase(standard.get(2) ?? "") &&
+      toInt(getProperty(`snojo${standard.get(2) ?? ""}Wins`)) >= 11 &&
+      getProperty("snojoSetting") !== toUpperCase(standard.get(3) ?? "")
     ) {
       visitUrl("place.php?whichplace=snojo&action=snojo_controller");
-      auto_runChoice(
-        controls.get(standard.get(3) ?? standard.set(3, "").get(3)) ??
-          controls
-            .set(standard.get(3) ?? standard.set(3, "").get(3), 0)
-            .get(standard.get(3) ?? standard.set(3, "").get(3)),
-      );
+      auto_runChoice(controls.get(standard.get(3) ?? "") ?? 0);
     }
   }
 
@@ -429,9 +378,7 @@ export function auto_sourceTerminalEnhanceLeft(): number {
         ]),
       );
       for (const index of chips.keys()) {
-        const chip: string = String(
-          chips.get(index) ?? chips.set(index, "").get(index),
-        ).trim();
+        const chip: string = String(chips.get(index) ?? "").trim();
         if (chip === "CRAM" || chip === "SCRAM") {
           total += 1;
         }
@@ -762,12 +709,9 @@ export function auto_doPrecinct(): boolean {
       let visited: boolean = false;
       for (const index of eggData.keys()) {
         const subEgg: Map<number, string> = new Map(
-          splitString(
-            eggData.get(index) ?? eggData.set(index, "").get(index),
-            ":",
-          ).map((_v, _i) => [_i, _v]),
+          splitString(eggData.get(index) ?? "", ":").map((_v, _i) => [_i, _v]),
         );
-        if (toInt(subEgg.get(0) ?? subEgg.set(0, "").get(0)) === i) {
+        if (toInt(subEgg.get(0) ?? "") === i) {
           visited = true;
           break;
         }
@@ -808,7 +752,7 @@ export function auto_doPrecinct(): boolean {
             for (const index of nameSplit.keys()) {
               killerInfo = replaceString(
                 killerInfo,
-                nameSplit.get(index) ?? nameSplit.set(index, "").get(index),
+                nameSplit.get(index) ?? "",
                 "",
               );
             }
@@ -839,42 +783,36 @@ export function auto_doPrecinct(): boolean {
     const jobGoals: Map<string, boolean> = new Map();
     const locationGoals: Map<string, boolean> = new Map();
     for (const index of eggData.keys()) {
-      if ((eggData.get(index) ?? eggData.set(index, "").get(index)) === "") {
+      if ((eggData.get(index) ?? "") === "") {
         continue;
       }
       const subEgg: Map<number, string> = new Map(
-        splitString(
-          eggData.get(index) ?? eggData.set(index, "").get(index),
-          ":",
-        ).map((_v, _i) => [_i, _v]),
+        splitString(eggData.get(index) ?? "", ":").map((_v, _i) => [_i, _v]),
       );
-      personGoals.set(subEgg.get(2) ?? subEgg.set(2, "").get(2), true);
-      jobGoals.set(subEgg.get(3) ?? subEgg.set(3, "").get(3), true);
-      locationGoals.set(subEgg.get(1) ?? subEgg.set(1, "").get(1), true);
+      personGoals.set(subEgg.get(2) ?? "", true);
+      jobGoals.set(subEgg.get(3) ?? "", true);
+      locationGoals.set(subEgg.get(1) ?? "", true);
     }
 
     auto_log_info("Verifications....", "blue");
     for (const index of eggData.keys()) {
       const subEgg: Map<number, string> = new Map(
-        splitString(
-          eggData.get(index) ?? eggData.set(index, "").get(index),
-          ":",
-        ).map((_v, _i) => [_i, _v]),
+        splitString(eggData.get(index) ?? "", ":").map((_v, _i) => [_i, _v]),
       );
       if (subEgg.size < 4) {
         continue;
       }
       let isTruth: boolean = true;
-      if ((subEgg.get(4) ?? subEgg.set(4, "").get(4)) === "liar") {
+      if ((subEgg.get(4) ?? "") === "liar") {
         isTruth = false;
       }
-      if ((subEgg.get(4) ?? subEgg.set(4, "").get(4)) !== "liar") {
+      if ((subEgg.get(4) ?? "") !== "liar") {
         let hasAnyone: boolean = false;
-        const oldValue: string = subEgg.get(4) ?? subEgg.set(4, "").get(4);
+        const oldValue: string = subEgg.get(4) ?? "";
         for (const goal of personGoals.keys()) {
           const goalMatcher: AshMatcher = new AshMatcher(
             `\\b${goal}\\b`,
-            subEgg.get(4) ?? subEgg.set(4, "").get(4),
+            subEgg.get(4) ?? "",
           );
           if (goalMatcher.find()) {
             hasAnyone = true;
@@ -884,7 +822,7 @@ export function auto_doPrecinct(): boolean {
         for (const goal of jobGoals.keys()) {
           const goalMatcher: AshMatcher = new AshMatcher(
             `\\b${goal}\\b`,
-            subEgg.get(4) ?? subEgg.set(4, "").get(4),
+            subEgg.get(4) ?? "",
           );
           if (goalMatcher.find()) {
             hasAnyone = true;
@@ -893,7 +831,7 @@ export function auto_doPrecinct(): boolean {
         }
         let replaceString_1: string = "liar";
         if (hasAnyone) {
-          replaceString_1 = subEgg.get(4) ?? subEgg.set(4, "").get(4);
+          replaceString_1 = subEgg.get(4) ?? "";
         }
 
         let temp: string = getProperty("auto_eggDetective");
@@ -907,20 +845,18 @@ export function auto_doPrecinct(): boolean {
         );
         subEgg.set(4, replaceString_1);
       }
-      if ((subEgg.get(4) ?? subEgg.set(4, "").get(4)) !== "liar") {
+      if ((subEgg.get(4) ?? "") !== "liar") {
         auto_log_info(
-          `${subEgg.get(2) ?? subEgg.set(2, "").get(2)} is accusing: ${subEgg.get(4) ?? subEgg.set(4, "").get(4)}`,
+          `${subEgg.get(2) ?? ""} is accusing: ${subEgg.get(4) ?? ""}`,
           "blue",
         );
         //Now we need to determine if they are lying or not.
-        const currentLocation: number = toInt(
-          subEgg.get(0) ?? subEgg.set(0, "").get(0),
-        );
+        const currentLocation: number = toInt(subEgg.get(0) ?? "");
         visitUrl(`wham.php?visit=${currentLocation}`, false);
 
         let otherPerson: number = 1;
         let corrupted: boolean = false;
-        const locationName: string = subEgg.get(1) ?? subEgg.set(1, "").get(1);
+        const locationName: string = subEgg.get(1) ?? "";
         while (otherPerson <= 9 && isTruth) {
           if (currentLocation === otherPerson) {
             otherPerson += 1;
@@ -930,15 +866,12 @@ export function auto_doPrecinct(): boolean {
           let currentEgg: Map<number, string> = new Map();
           for (const index_1 of eggData.keys()) {
             const subEgg_1: Map<number, string> = new Map(
-              splitString(
-                eggData.get(index_1) ?? eggData.set(index_1, "").get(index_1),
-                ":",
-              ).map((_v, _i) => [_i, _v]),
+              splitString(eggData.get(index_1) ?? "", ":").map((_v, _i) => [
+                _i,
+                _v,
+              ]),
             );
-            if (
-              toInt(subEgg_1.get(0) ?? subEgg_1.set(0, "").get(0)) ===
-              otherPerson
-            ) {
+            if (toInt(subEgg_1.get(0) ?? "") === otherPerson) {
               currentEgg = subEgg_1;
             }
           }
@@ -963,11 +896,9 @@ export function auto_doPrecinct(): boolean {
                 killerInfo,
               );
               if (goalMatcher.find()) {
-                if (
-                  goal !== (currentEgg.get(3) ?? currentEgg.set(3, "").get(3))
-                ) {
+                if (goal !== (currentEgg.get(3) ?? "")) {
                   auto_log_info(
-                    `Asked about ${currentEgg.get(2) ?? currentEgg.set(2, "").get(2)},${currentEgg.get(3) ?? currentEgg.set(3, "").get(3)} and was told: ${goal}`,
+                    `Asked about ${currentEgg.get(2) ?? ""},${currentEgg.get(3) ?? ""} and was told: ${goal}`,
                     "red",
                   );
                   count_1 += 1;
@@ -988,11 +919,9 @@ export function auto_doPrecinct(): boolean {
                 killerInfo,
               );
               if (goalMatcher.find()) {
-                if (
-                  goal !== (currentEgg.get(1) ?? currentEgg.set(1, "").get(1))
-                ) {
+                if (goal !== (currentEgg.get(1) ?? "")) {
                   auto_log_info(
-                    `Asked about ${currentEgg.get(2) ?? currentEgg.set(2, "").get(2)},${currentEgg.get(1) ?? currentEgg.set(1, "").get(1)} and was told: ${goal}`,
+                    `Asked about ${currentEgg.get(2) ?? ""},${currentEgg.get(1) ?? ""} and was told: ${goal}`,
                     "red",
                   );
                   count_1 += 1;
@@ -1027,37 +956,32 @@ export function auto_doPrecinct(): boolean {
           corrupted = false;
         }
       }
-      if ((subEgg.get(4) ?? subEgg.set(4, "").get(4)) === "liar") {
+      if ((subEgg.get(4) ?? "") === "liar") {
         isTruth = false;
       }
       if (isTruth) {
         auto_log_info(
-          `${subEgg.get(2) ?? subEgg.set(2, "").get(2)} is accusing: ${subEgg.get(4) ?? subEgg.set(4, "").get(4)} and may be telling the truth!`,
+          `${subEgg.get(2) ?? ""} is accusing: ${subEgg.get(4) ?? ""} and may be telling the truth!`,
           "blue",
         );
         //Find person they are accusing and do it.
 
         for (const index_1 of eggData.keys()) {
           const subsubEgg: Map<number, string> = new Map(
-            splitString(
-              eggData.get(index_1) ?? eggData.set(index_1, "").get(index_1),
-              ":",
-            ).map((_v, _i) => [_i, _v]),
+            splitString(eggData.get(index_1) ?? "", ":").map((_v, _i) => [
+              _i,
+              _v,
+            ]),
           );
           if (
-            (subsubEgg.get(2) ?? subsubEgg.set(2, "").get(2)) ===
-              (subEgg.get(4) ?? subEgg.set(4, "").get(4)) ||
-            (subsubEgg.get(3) ?? subsubEgg.set(3, "").get(3)) ===
-              (subEgg.get(4) ?? subEgg.set(4, "").get(4))
+            (subsubEgg.get(2) ?? "") === (subEgg.get(4) ?? "") ||
+            (subsubEgg.get(3) ?? "") === (subEgg.get(4) ?? "")
           ) {
             auto_log_info(
-              `Accusation against: ${subsubEgg.get(2) ?? subsubEgg.set(2, "").get(2)}`,
+              `Accusation against: ${subsubEgg.get(2) ?? ""}`,
               "blue",
             );
-            page = visitUrl(
-              `wham.php?visit=${subsubEgg.get(0) ?? subsubEgg.set(0, "").get(0)}`,
-              false,
-            );
+            page = visitUrl(`wham.php?visit=${subsubEgg.get(0) ?? ""}`, false);
 
             eggMatcher = new AshMatcher(
               "You have been on this case for (\\d+) minute(?:s?)",
@@ -1071,7 +995,7 @@ export function auto_doPrecinct(): boolean {
             }
 
             page = visitUrl(
-              `wham.php?visit=${subsubEgg.get(0) ?? subsubEgg.set(0, "").get(0)}&accuse=${subsubEgg.get(0) ?? subsubEgg.set(0, "").get(0)}`,
+              `wham.php?visit=${subsubEgg.get(0) ?? ""}&accuse=${subsubEgg.get(0) ?? ""}`,
               false,
             );
             const pensionMatcher: AshMatcher = new AshMatcher(
@@ -1416,38 +1340,30 @@ export function rethinkingCandy(
   ) {
     const goal: number = ListFind(synthesis, acquire) % 5;
     for (let i: number = 0; i < simple.size; i++) {
-      const current: number = toInt(
-        simple.get(i) ?? simple.set(i, Item.none).get(i),
-      );
+      const current: number = toInt(simple.get(i) ?? Item.none);
       let startNextIndex: number = i + 1;
-      if (itemAmount(simple.get(i) ?? simple.set(i, Item.none).get(i)) > 1) {
+      if (itemAmount(simple.get(i) ?? Item.none) > 1) {
         startNextIndex = i;
       }
       for (let j: number = startNextIndex; j < simple.size; j++) {
-        const sum: number =
-          (toInt(simple.get(j) ?? simple.set(j, Item.none).get(j)) + current) %
-          5;
+        const sum: number = (toInt(simple.get(j) ?? Item.none) + current) % 5;
         if (sum === goal) {
           if (simulate) {
             auto_log_info(
-              `Possible: ${simple.get(i) ?? simple.set(i, Item.none).get(i)}, ${simple.get(j) ?? simple.set(j, Item.none).get(j)}`,
+              `Possible: ${simple.get(i) ?? Item.none}, ${simple.get(j) ?? Item.none}`,
               "blue",
             );
           }
           if (
-            auto_mall_price(simple.get(i) ?? simple.set(i, Item.none).get(i)) +
-              auto_mall_price(
-                simple.get(j) ?? simple.set(j, Item.none).get(j),
-              ) <
+            auto_mall_price(simple.get(i) ?? Item.none) +
+              auto_mall_price(simple.get(j) ?? Item.none) <
             bestCost
           ) {
             bestCost =
-              auto_mall_price(
-                simple.get(i) ?? simple.set(i, Item.none).get(i),
-              ) +
-              auto_mall_price(simple.get(j) ?? simple.set(j, Item.none).get(j));
-            bestFirst = simple.get(i) ?? simple.set(i, Item.none).get(i);
-            bestSecond = simple.get(j) ?? simple.set(j, Item.none).get(j);
+              auto_mall_price(simple.get(i) ?? Item.none) +
+              auto_mall_price(simple.get(j) ?? Item.none);
+            bestFirst = simple.get(i) ?? Item.none;
+            bestSecond = simple.get(j) ?? Item.none;
           }
         }
       }
@@ -1459,37 +1375,26 @@ export function rethinkingCandy(
   ) {
     const goal: number = ListFind(synthesis, acquire) % 5;
     for (let i: number = 0; i < simple.size; i++) {
-      const current: number = toInt(
-        simple.get(i) ?? simple.set(i, Item.none).get(i),
-      );
+      const current: number = toInt(simple.get(i) ?? Item.none);
       for (let j: number = 0; j < complex.size; j++) {
-        const sum: number =
-          (toInt(complex.get(j) ?? complex.set(j, Item.none).get(j)) +
-            current) %
-          5;
+        const sum: number = (toInt(complex.get(j) ?? Item.none) + current) % 5;
         if (sum === goal) {
           if (simulate) {
             auto_log_info(
-              `Possible: ${simple.get(i) ?? simple.set(i, Item.none).get(i)}, ${complex.get(j) ?? complex.set(j, Item.none).get(j)}`,
+              `Possible: ${simple.get(i) ?? Item.none}, ${complex.get(j) ?? Item.none}`,
               "blue",
             );
           }
           if (
-            auto_mall_price(simple.get(i) ?? simple.set(i, Item.none).get(i)) +
-              auto_mall_price(
-                complex.get(j) ?? complex.set(j, Item.none).get(j),
-              ) <
+            auto_mall_price(simple.get(i) ?? Item.none) +
+              auto_mall_price(complex.get(j) ?? Item.none) <
             bestCost
           ) {
             bestCost =
-              auto_mall_price(
-                simple.get(i) ?? simple.set(i, Item.none).get(i),
-              ) +
-              auto_mall_price(
-                complex.get(j) ?? complex.set(j, Item.none).get(j),
-              );
-            bestFirst = simple.get(i) ?? simple.set(i, Item.none).get(i);
-            bestSecond = complex.get(j) ?? complex.set(j, Item.none).get(j);
+              auto_mall_price(simple.get(i) ?? Item.none) +
+              auto_mall_price(complex.get(j) ?? Item.none);
+            bestFirst = simple.get(i) ?? Item.none;
+            bestSecond = complex.get(j) ?? Item.none;
           }
         }
       }
@@ -1501,43 +1406,30 @@ export function rethinkingCandy(
   ) {
     const goal: number = ListFind(synthesis, acquire) % 5;
     for (let i: number = 0; i < complex.size; i++) {
-      const current: number = toInt(
-        complex.get(i) ?? complex.set(i, Item.none).get(i),
-      );
+      const current: number = toInt(complex.get(i) ?? Item.none);
       let startNextIndex: number = i + 1;
-      if (itemAmount(complex.get(i) ?? complex.set(i, Item.none).get(i)) > 1) {
+      if (itemAmount(complex.get(i) ?? Item.none) > 1) {
         startNextIndex = i;
       }
       for (let j: number = startNextIndex; j < complex.size; j++) {
-        const sum: number =
-          (toInt(complex.get(j) ?? complex.set(j, Item.none).get(j)) +
-            current) %
-          5;
+        const sum: number = (toInt(complex.get(j) ?? Item.none) + current) % 5;
         if (sum === goal) {
           if (simulate) {
             auto_log_info(
-              `Possible: ${complex.get(i) ?? complex.set(i, Item.none).get(i)}, ${complex.get(j) ?? complex.set(j, Item.none).get(j)}`,
+              `Possible: ${complex.get(i) ?? Item.none}, ${complex.get(j) ?? Item.none}`,
               "blue",
             );
           }
           if (
-            auto_mall_price(
-              complex.get(i) ?? complex.set(i, Item.none).get(i),
-            ) +
-              auto_mall_price(
-                complex.get(j) ?? complex.set(j, Item.none).get(j),
-              ) <
+            auto_mall_price(complex.get(i) ?? Item.none) +
+              auto_mall_price(complex.get(j) ?? Item.none) <
             bestCost
           ) {
             bestCost =
-              auto_mall_price(
-                complex.get(i) ?? complex.set(i, Item.none).get(i),
-              ) +
-              auto_mall_price(
-                complex.get(j) ?? complex.set(j, Item.none).get(j),
-              );
-            bestFirst = complex.get(i) ?? complex.set(i, Item.none).get(i);
-            bestSecond = complex.get(j) ?? complex.set(j, Item.none).get(j);
+              auto_mall_price(complex.get(i) ?? Item.none) +
+              auto_mall_price(complex.get(j) ?? Item.none);
+            bestFirst = complex.get(i) ?? Item.none;
+            bestSecond = complex.get(j) ?? Item.none;
           }
         }
       }

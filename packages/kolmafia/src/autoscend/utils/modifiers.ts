@@ -18,7 +18,7 @@ export const MAXIMIZER_MODIFIERS = [
 
 export type MaximizerModifier = (typeof MAXIMIZER_MODIFIERS)[number];
 
-export const MAXIMIZER_ALIASES = {
+export const MAXIMIZER_ALIASES: Record<MaximizerModifier | string, string> = {
   "Damage Reduction": "dr",
   "Damage Absorption": "da",
   Initiative: "init",
@@ -32,4 +32,4 @@ export const MAXIMIZER_ALIASES = {
   Fumble: "fumble",
   "Item Drop": "item drop",
   "Meat Drop": "meat drop",
-} satisfies Record<MaximizerModifier | string, string>;
+};

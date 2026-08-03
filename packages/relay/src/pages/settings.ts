@@ -39,7 +39,7 @@ function buildGroup(
   settingsData: Record<string, SettingEntry[]>,
   collapsed: boolean,
   inheritedColor?: string,
-): RelayGroup | null {
+): RelayGroup | undefined {
   const color = def.color ?? inheritedColor;
   const components: RelayComponent[] = [];
 
@@ -66,7 +66,7 @@ function buildGroup(
     }
   }
 
-  if (components.length === 0) return null;
+  if (components.length === 0) return undefined;
 
   return {
     type: "group",

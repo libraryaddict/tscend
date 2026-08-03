@@ -320,10 +320,7 @@ export function c2t_megg_eggs(): Map<Monster, number> {
     const split: Map<number, string> = new Map(
       splitString(x, ":").map((_v, _i) => [_i, _v]),
     );
-    out.set(
-      toMonster(split.get(0) ?? split.set(0, "").get(0)),
-      toInt(split.get(1) ?? split.set(1, "").get(1)),
-    );
+    out.set(toMonster(split.get(0) ?? ""), toInt(split.get(1) ?? ""));
   }
   return out;
 }

@@ -700,10 +700,7 @@ function ed_KaCost(upgrade: Skill): number {
     [$skill`Even More Elemental Wards`, 30],
   ]);
   if ($_ed_KaCost_kaNeeded.has(upgrade)) {
-    return (
-      $_ed_KaCost_kaNeeded.get(upgrade) ??
-      $_ed_KaCost_kaNeeded.set(upgrade, 0).get(upgrade)
-    );
+    return $_ed_KaCost_kaNeeded.get(upgrade) ?? 0;
   } else {
     return -1;
   }
@@ -844,10 +841,7 @@ function ed_shopping(): boolean {
       [$skill`More Legs`, 48],
     ]);
     if ($_ed_skillID_skillIDs.has(upgrade)) {
-      return (
-        $_ed_skillID_skillIDs.get(upgrade) ??
-        $_ed_skillID_skillIDs.set(upgrade, 0).get(upgrade)
-      );
+      return $_ed_skillID_skillIDs.get(upgrade) ?? 0;
     } else {
       return -1;
     }

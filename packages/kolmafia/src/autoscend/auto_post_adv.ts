@@ -1323,12 +1323,13 @@ function auto_post_adventure(): boolean {
 }
 
 export function auto_runPostAdventure(): boolean {
-  if (!auto_canRunBetweenBattleChecks()) return;
+  if (!auto_canRunBetweenBattleChecks()) return false;
   let ret: boolean = false;
   try {
     ret = auto_post_adventure();
   } catch (e) {
-    auto_log_warning(`${e}${e.stack ? ` - ${e.stack}` : ""}`);
+    const err = e instanceof Error ? e : undefined;
+    auto_log_warning(`${e}${err?.stack ? ` - ${err.stack}` : ""}`);
   } finally {
     if (!ret) {
       auto_log_error(

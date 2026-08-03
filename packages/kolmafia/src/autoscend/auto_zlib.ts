@@ -57,46 +57,30 @@ export function auto_process_kmail(
   let n: number;
   while (k.find()) {
     n = mail.size;
-    (mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).id = toInt(
-      k.group(1),
-    );
-    (mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).type = k.group(2);
-    (mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).fromid = toInt(
-      k.group(3),
-    );
-    (mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).azunixtime = toInt(
-      k.group(4),
-    );
+    mail.set(n, new kmailObject());
+    const m: kmailObject = mail.get(n)!;
+    m.id = toInt(k.group(1));
+    m.type = k.group(2);
+    m.fromid = toInt(k.group(3));
+    m.azunixtime = toInt(k.group(4));
     const mbits: AshMatcher = new AshMatcher(
       "(.*?)\\<center\\>(.+?)$",
       replaceString(k.group(5), "\\'", "'"),
     );
     if (mbits.find()) {
-      (mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).meat = extractMeat(
-        mbits.group(2),
-      );
-      (mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).items = new Map(
+      m.meat = extractMeat(mbits.group(2));
+      m.items = new Map(
         Object.entries(extractItems(mbits.group(2))).map(([_k, _v]) => [
           Item.get(_k),
           _v,
         ]),
       );
-      (mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).message =
-        mbits.group(
-          toInt(
-            (mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).meat > 0 ||
-              (mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).items
-                .size > 0,
-          ),
-        );
+      m.message = mbits.group(toInt(m.meat > 0 || m.items.size > 0));
     } else {
-      (mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).message =
-        k.group(5);
+      m.message = k.group(5);
     }
-    (mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).fromname =
-      k.group(6);
-    (mail.get(n) ?? mail.set(n, new kmailObject()).get(n)).localtime =
-      replaceString(k.group(7), "\\", "");
+    m.fromname = k.group(6);
+    m.localtime = replaceString(k.group(7), "\\", "");
   }
 
   const processed: Map<number, boolean> = new Map();

@@ -106,7 +106,7 @@ const handleRainDohTask: QuestTask = registerQuestTask({
   desiredEncounters: () =>
     [
       {
-        monster: get("rainDohMonster"),
+        monster: safeGet("rainDohMonster", Monster.none),
         needAmount: itemAmount($item`Rain-Doh box full of monster`) ? 1 : 0,
       },
     ].filter((a) => a.needAmount),

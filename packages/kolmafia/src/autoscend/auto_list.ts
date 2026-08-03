@@ -113,7 +113,7 @@ export function ListFind(
   const retval: Map<number, Effect> = List$5(list);
   let at: number = idx;
   while (at < retval.size) {
-    if (what === (retval.get(at) ?? retval.set(at, Effect.none).get(at))) {
+    if (what === (retval.get(at) ?? Effect.none)) {
       return at;
     }
     at = at + 1;

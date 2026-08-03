@@ -93,17 +93,13 @@ export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
       }
       if (
         burnZone === Location.none ||
-        delay <
-          (delayableZones.get(burnZone) ??
-            delayableZones.set(burnZone, 0).get(burnZone))
+        delay < (delayableZones.get(burnZone) ?? 0)
       ) {
         burnZone = loc;
       }
       if (
         loc === $location`The Spooky Forest` &&
-        delay ===
-          (delayableZones.get(burnZone) ??
-            delayableZones.set(burnZone, 0).get(burnZone))
+        delay === (delayableZones.get(burnZone) ?? 0)
       ) {
         // prioritise the Spooky Forest when its delay remaining equals the lowest delay zone
         burnZone = loc;
@@ -250,10 +246,7 @@ export function auto_reserveUndergroundAdventures(): boolean {
     const envs: Map<string, number> = getLastCombatEnvironmentCounts(
       turns_until_next_consult,
     );
-    if (
-      turns_until_next_consult < 12 &&
-      (envs.get("u") ?? envs.set("u", 0).get("u")) > 10
-    ) {
+    if (turns_until_next_consult < 12 && (envs.get("u") ?? 0) > 10) {
       auto_log_debug(
         "Reserving underground adventures as we can still get more Breathitins today.",
       );
@@ -362,10 +355,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
       }
     } else {
       // 12 or more turns until the next CMC consult
-      if (
-        (getLastCombatEnvironmentCounts(9).get("u") ??
-          getLastCombatEnvironmentCounts(9).set("u", 0).get("u")) > 0
-      ) {
+      if ((getLastCombatEnvironmentCounts(9).get("u") ?? 0) > 0) {
         auto_log_debug(
           "Have a CMC consult coming up in 12 or more adventures. Calling a quest function with zoneless encounters.",
         );

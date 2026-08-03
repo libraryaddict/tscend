@@ -412,10 +412,7 @@ function L7_defiledNiche(): boolean {
       auto_is_valid$2($skill`Get a Good Whiff of This Guy`) &&
       (auto_combat_appearance_rates$1($location`The Defiled Niche`).get(
         $monster`dirty old lihc`,
-      ) ??
-        auto_combat_appearance_rates$1($location`The Defiled Niche`)
-          .set($monster`dirty old lihc`, 0.0)
-          .get($monster`dirty old lihc`)) < 100
+      ) ?? 0.0) < 100
     ) {
       let nosyOldLihcs: boolean = false;
       if (get("cyrptNicheEvilness") > 17 + 2 * evilBonus) {

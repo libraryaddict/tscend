@@ -473,7 +473,7 @@ function auto_cargoShortsCanOpenPocket$1(pocket: number): boolean {
   const picked: Map<number, boolean> = new Map(
     Object.entries(pickedPockets()).map(([_k, _v]) => [toInt(_k), _v]),
   );
-  if (picked.get(pocket) ?? picked.set(pocket, false).get(pocket)) {
+  if (picked.get(pocket) ?? false) {
     return false;
   }
 
@@ -662,19 +662,14 @@ function auto_monsterToMap(loc: Location, page: string): Monster {
     //record the possible monsters and identify the best one to target
     monOpts.set(i, toMonster(toInt(mons.group(1))));
     if (
-      zoneRank(monOpts.get(i) ?? monOpts.set(i, Monster.none).get(i), loc) <=
-      zoneRank(
-        monOpts.get(bestmon) ?? monOpts.set(bestmon, Monster.none).get(bestmon),
-        loc,
-      )
+      zoneRank(monOpts.get(i) ?? Monster.none, loc) <=
+      zoneRank(monOpts.get(bestmon) ?? Monster.none, loc)
     ) {
       bestmon = i;
     }
     i += 1;
   }
-  return (
-    monOpts.get(bestmon) ?? monOpts.set(bestmon, Monster.none).get(bestmon)
-  );
+  return monOpts.get(bestmon) ?? Monster.none;
 }
 
 export function cartographyChoiceHandler(choice: number, page: string): void {
@@ -816,8 +811,8 @@ export function auto_handleRetrocape(): boolean {
     return false;
   }
 
-  const hero: string = settings.get(0) ?? settings.set(0, "").get(0);
-  const tag: string = settings.get(1) ?? settings.set(1, "").get(1);
+  const hero: string = settings.get(0) ?? "";
+  const tag: string = settings.get(1) ?? "";
 
   if (
     hero !== "muscle" &&

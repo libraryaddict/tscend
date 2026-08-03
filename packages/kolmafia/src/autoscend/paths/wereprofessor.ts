@@ -271,7 +271,7 @@ function wereprof_buySkills(): void {
         "feed",
       ]) {
         if (containsText(getProperty("beastSkillsAvailable"), sk)) {
-          if ((rpcost.get(sk) ?? rpcost.set(sk, 0).get(sk)) > rp) {
+          if ((rpcost.get(sk) ?? 0) > rp) {
             cantbuy += 1;
             if (
               cantbuy ===

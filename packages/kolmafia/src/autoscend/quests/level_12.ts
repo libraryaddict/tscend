@@ -2443,8 +2443,7 @@ function L12_clearBattlefieldDo(): boolean {
     if (
       camp.has($item`packet of thanksgarden seeds`) &&
       camp.has($item`cornucopia`) &&
-      (camp.get($item`cornucopia`) ??
-        camp.set($item`cornucopia`, 0).get($item`cornucopia`)) > 0 &&
+      (camp.get($item`cornucopia`) ?? 0) > 0 &&
       internalQuestStatus("questL12War") >= 1 &&
       isUnrestricted($item`packet of thanksgarden seeds`)
     ) {

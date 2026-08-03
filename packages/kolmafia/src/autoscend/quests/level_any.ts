@@ -294,10 +294,7 @@ function LX_bitchinMeatcarDo(): boolean {
     enginePartsMissing >= 4 &&
     (auto_combat_appearance_rates$1($location`The Degrassi Knoll Garage`).get(
       $monster`Gnollish Gearhead`,
-    ) ??
-      auto_combat_appearance_rates$1($location`The Degrassi Knoll Garage`)
-        .set($monster`Gnollish Gearhead`, 0.0)
-        .get($monster`Gnollish Gearhead`)) < 77.0
+    ) ?? 0.0) < 77.0
   ) {
     //all parts of the engine are missing and would take a while to acquire from lootboxes at normal appearance rates
     if (pullXWhenHaveY($item`meat engine`, 1, 0)) {

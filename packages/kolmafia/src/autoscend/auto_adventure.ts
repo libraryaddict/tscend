@@ -48,7 +48,8 @@ export type CombatMacroReturns =
   | Item[]
   | Skill
   | Macro
-  | { macro: CombatMacroReturns; detail: string };
+  | { macro: CombatMacroReturns; detail: string }
+  | undefined;
 
 export type CombatMacro = (
   round: number,

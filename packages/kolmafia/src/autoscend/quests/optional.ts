@@ -980,38 +980,62 @@ function beerPong(page: string): string {
   }
 
   const insults: Map<number, r> = new Map();
-  (insults.get(1) ?? insults.set(1, new r()).get(1)).insult =
-    "Arrr, the power of me serve'll flay the skin from yer bones!";
-  (insults.get(1) ?? insults.set(1, new r()).get(1)).retort =
-    "Obviously neither your tongue nor your wit is sharp enough for the job.";
-  (insults.get(2) ?? insults.set(2, new r()).get(2)).insult =
-    "Do ye hear that, ye craven blackguard?  It be the sound of yer doom!";
-  (insults.get(2) ?? insults.set(2, new r()).get(2)).retort =
-    "It can't be any worse than the smell of your breath!";
-  (insults.get(3) ?? insults.set(3, new r()).get(3)).insult =
-    "Suck on <i>this</i>, ye miserable, pestilent wretch!";
-  (insults.get(3) ?? insults.set(3, new r()).get(3)).retort =
-    "That reminds me, tell your wife and sister I had a lovely time last night.";
-  (insults.get(4) ?? insults.set(4, new r()).get(4)).insult =
-    "The streets will run red with yer blood when I'm through with ye!";
-  (insults.get(4) ?? insults.set(4, new r()).get(4)).retort =
-    "I'd've thought yellow would be more your color.";
-  (insults.get(5) ?? insults.set(5, new r()).get(5)).insult =
-    "Yer face is as foul as that of a drowned goat!";
-  (insults.get(5) ?? insults.set(5, new r()).get(5)).retort =
-    "I'm not really comfortable being compared to your girlfriend that way.";
-  (insults.get(6) ?? insults.set(6, new r()).get(6)).insult =
-    "When I'm through with ye, ye'll be crying like a little girl!";
-  (insults.get(6) ?? insults.set(6, new r()).get(6)).retort =
-    "It's an honor to learn from such an expert in the field.";
-  (insults.get(7) ?? insults.set(7, new r()).get(7)).insult =
-    "In all my years I've not seen a more loathsome worm than yerself!";
-  (insults.get(7) ?? insults.set(7, new r()).get(7)).retort =
-    "Amazing!  How do you manage to shave without using a mirror?";
-  (insults.get(8) ?? insults.set(8, new r()).get(8)).insult =
-    "Not a single man has faced me and lived to tell the tale!";
-  (insults.get(8) ?? insults.set(8, new r()).get(8)).retort =
-    "It only seems that way because you haven't learned to count to one.";
+  insults.set(
+    1,
+    new r(
+      "Arrr, the power of me serve'll flay the skin from yer bones!",
+      "Obviously neither your tongue nor your wit is sharp enough for the job.",
+    ),
+  );
+  insults.set(
+    2,
+    new r(
+      "Do ye hear that, ye craven blackguard?  It be the sound of yer doom!",
+      "It can't be any worse than the smell of your breath!",
+    ),
+  );
+  insults.set(
+    3,
+    new r(
+      "Suck on <i>this</i>, ye miserable, pestilent wretch!",
+      "That reminds me, tell your wife and sister I had a lovely time last night.",
+    ),
+  );
+  insults.set(
+    4,
+    new r(
+      "The streets will run red with yer blood when I'm through with ye!",
+      "I'd've thought yellow would be more your color.",
+    ),
+  );
+  insults.set(
+    5,
+    new r(
+      "Yer face is as foul as that of a drowned goat!",
+      "I'm not really comfortable being compared to your girlfriend that way.",
+    ),
+  );
+  insults.set(
+    6,
+    new r(
+      "When I'm through with ye, ye'll be crying like a little girl!",
+      "It's an honor to learn from such an expert in the field.",
+    ),
+  );
+  insults.set(
+    7,
+    new r(
+      "In all my years I've not seen a more loathsome worm than yerself!",
+      "Amazing!  How do you manage to shave without using a mirror?",
+    ),
+  );
+  insults.set(
+    8,
+    new r(
+      "Not a single man has faced me and lived to tell the tale!",
+      "It only seems that way because you haven't learned to count to one.",
+    ),
+  );
 
   while (!containsText(page, "victory laps")) {
     const old_page: string = page;
@@ -1026,27 +1050,12 @@ function beerPong(page: string): string {
     }
 
     for (const i of insults.keys()) {
-      if (
-        containsText(
-          page,
-          (insults.get(i) ?? insults.set(i, new r()).get(i)).insult,
-        )
-      ) {
-        if (
-          containsText(
-            page,
-            (insults.get(i) ?? insults.set(i, new r()).get(i)).retort,
-          )
-        ) {
+      const insult: r = insults.get(i)!;
+      if (containsText(page, insult.insult)) {
+        if (containsText(page, insult.retort)) {
           auto_log_info("Found appropriate retort for insult.", "lime");
-          auto_log_debug(
-            `Insult: ${(insults.get(i) ?? insults.set(i, new r()).get(i)).insult}`,
-            "lime",
-          );
-          auto_log_debug(
-            `Retort: ${(insults.get(i) ?? insults.set(i, new r()).get(i)).retort}`,
-            "lime",
-          );
+          auto_log_debug(`Insult: ${insult.insult}`, "lime");
+          auto_log_debug(`Retort: ${insult.retort}`, "lime");
           page = visitUrl(`beerpong.php?value=Retort!&response=${i}`);
           break;
         } else {
@@ -1054,14 +1063,8 @@ function beerPong(page: string): string {
             "Looks like you needed a retort you haven't learned.",
             "red",
           );
-          auto_log_debug(
-            `Insult: ${(insults.get(i) ?? insults.set(i, new r()).get(i)).insult}`,
-            "lime",
-          );
-          auto_log_debug(
-            `Retort: ${(insults.get(i) ?? insults.set(i, new r()).get(i)).retort}`,
-            "lime",
-          );
+          auto_log_debug(`Insult: ${insult.insult}`, "lime");
+          auto_log_debug(`Retort: ${insult.retort}`, "lime");
           // Give a bad retort
           page = visitUrl("beerpong.php?value=Retort!&response=9");
           return page;
@@ -1552,12 +1555,7 @@ function LX_acquireEpicWeaponDo(): boolean {
     }
   }
 
-  if (
-    itemAmount(
-      $_f_epicWeapons.get(myClass()) ??
-        $_f_epicWeapons.set(myClass(), Item.none).get(myClass()),
-    ) > 0
-  ) {
+  if (itemAmount($_f_epicWeapons.get(myClass()) ?? Item.none) > 0) {
     return false;
   }
 
@@ -1571,23 +1569,12 @@ function LX_acquireEpicWeaponDo(): boolean {
     return false;
   }
 
-  if (
-    itemAmount(
-      $_f_starterWeapons.get(myClass()) ??
-        $_f_starterWeapons.set(myClass(), Item.none).get(myClass()),
-    ) === 0
-  ) {
+  if (itemAmount($_f_starterWeapons.get(myClass()) ?? Item.none) === 0) {
     // make sure we have a starter weapon for the swap.
-    acquireGumItem(
-      $_f_starterWeapons.get(myClass()) ??
-        $_f_starterWeapons.set(myClass(), Item.none).get(myClass()),
-    );
+    acquireGumItem($_f_starterWeapons.get(myClass()) ?? Item.none);
   }
 
-  maximizer.exclude(
-    $_f_starterWeapons.get(myClass()) ??
-      $_f_starterWeapons.set(myClass(), Item.none).get(myClass()),
-  );
+  maximizer.exclude($_f_starterWeapons.get(myClass()) ?? Item.none);
   if (tomb_already_found()) {
     return autoAdvBypass$1("place.php?whichplace=cemetery&action=cem_advtomb");
   }

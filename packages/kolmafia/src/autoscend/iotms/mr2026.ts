@@ -425,7 +425,10 @@ export function auto_heartstoneShouldStealHeart(location?: Location): boolean {
     .flatMap((t) =>
       typeof t === "function" ? t() : !Array.isArray(t) ? [t] : t,
     )
-    .filter((l) => l && l !== Location.none && l !== $location`Noob Cave`);
+    .filter(
+      (l): l is Location =>
+        !!l && l !== Location.none && l !== $location`Noob Cave`,
+    );
 
   if (location && !allLocations.includes(location)) {
     allLocations.push(location);
@@ -721,12 +724,7 @@ export function numBaseLegendaryNoodleDishes(): number {
   let num: number = 0;
   for (const preparedDish of legendaryNoodleDishes().keys()) {
     if (auto_canEat(preparedDish))
-      num += itemAmount(
-        legendaryNoodleDishes().get(preparedDish) ??
-          legendaryNoodleDishes()
-            .set(preparedDish, Item.none)
-            .get(preparedDish),
-      );
+      num += itemAmount(legendaryNoodleDishes().get(preparedDish) ?? Item.none);
   }
   return num;
 }
@@ -738,10 +736,7 @@ export function auto_findBaseLegendaryNoods(): Item {
   }
   for (const it of legendaryNoodleDishes().keys()) {
     if (
-      itemAmount(
-        legendaryNoodleDishes().get(it) ??
-          legendaryNoodleDishes().set(it, Item.none).get(it),
-      ) > 0 &&
+      itemAmount(legendaryNoodleDishes().get(it) ?? Item.none) > 0 &&
       auto_canEat(it)
     ) {
       return it;

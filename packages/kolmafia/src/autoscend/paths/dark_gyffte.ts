@@ -110,11 +110,8 @@ export function bat_wantHowl(loc: Location): boolean {
   );
   for (const i of monsters.keys()) {
     if (
-      !banished.has(monsters.get(i) ?? monsters.set(i, Monster.none).get(i)) &&
-      auto_wantToBanish(
-        monsters.get(i) ?? monsters.set(i, Monster.none).get(i),
-        loc,
-      )
+      !banished.has(monsters.get(i) ?? Monster.none) &&
+      auto_wantToBanish(monsters.get(i) ?? Monster.none, loc)
     ) {
       return true;
     }

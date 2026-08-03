@@ -1015,18 +1015,12 @@ export function zone_delay(loc: Location): generic_t {
       break;
     case $location`The Smut Orc Logging Camp`:
       if (shenZones.has(loc) && get("chasmBridgeProgress") >= bridgeGoal()) {
-        value =
-          3 -
-          (loc.turnsSpent -
-            (shenZones.get(loc) ?? shenZones.set(loc, 0).get(loc)));
+        value = 3 - (loc.turnsSpent - (shenZones.get(loc) ?? 0));
       }
       break;
     case $location`The Hole in the Sky`:
       if (shenZones.has(loc) && !needStarKey()) {
-        value =
-          3 -
-          (loc.turnsSpent -
-            (shenZones.get(loc) ?? shenZones.set(loc, 0).get(loc)));
+        value = 3 - (loc.turnsSpent - (shenZones.get(loc) ?? 0));
       }
       break;
     case $location`The Unquiet Garves`:
@@ -1034,10 +1028,7 @@ export function zone_delay(loc: Location): generic_t {
     case $location`Lair of the Ninja Snowmen`:
     case $location`The Batrat and Ratbat Burrow`:
       if (shenZones.has(loc)) {
-        value =
-          3 -
-          (loc.turnsSpent -
-            (shenZones.get(loc) ?? shenZones.set(loc, 0).get(loc)));
+        value = 3 - (loc.turnsSpent - (shenZones.get(loc) ?? 0));
       }
       break;
     case $location`The Copperhead Club`:
@@ -1953,7 +1944,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
           true,
         );
         for (const [, mob] of getMonsters(loc).entries()) {
-          if ((apprates.get(mob) ?? apprates.set(mob, 0.0).get(mob)) <= 0) {
+          if ((apprates.get(mob) ?? 0.0) <= 0) {
             //won't show up because banished or req's not fulfilled
             continue;
           }

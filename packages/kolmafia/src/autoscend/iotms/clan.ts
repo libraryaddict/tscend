@@ -644,10 +644,7 @@ export function auto_floundryAction(): boolean {
       );
       const myFloundry: Item = toItem(
         String(
-          floundryChoice.get(min(floundryChoice.size, myDaycount()) - 1) ??
-            floundryChoice
-              .set(min(floundryChoice.size, myDaycount()) - 1, "")
-              .get(min(floundryChoice.size, myDaycount()) - 1),
+          floundryChoice.get(min(floundryChoice.size, myDaycount()) - 1) ?? "",
         ).trim(),
       );
       if (auto_floundryAction$1(myFloundry)) {
@@ -677,7 +674,7 @@ function auto_floundryAction$1(it: Item): boolean {
     return false;
   }
   const fish: Map<Item, number> = auto_get_clan_lounge();
-  if ((fish.get(it) ?? fish.set(it, 0).get(it)) > 0) {
+  if ((fish.get(it) ?? 0) > 0) {
     visitUrl(
       `clan_viplounge.php?preaction=buyfloundryitem&whichitem=${toInt(it)}`,
     );

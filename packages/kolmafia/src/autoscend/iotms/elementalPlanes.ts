@@ -27,7 +27,7 @@ export function elementalPlanes_access(ele: Element): boolean {
   const charters: Map<Element, Item> = getCharterIndexable();
   return (
     toBoolean(getProperty(`${ele}AirportAlways`)) &&
-    isUnrestricted(charters.get(ele) ?? charters.set(ele, Item.none).get(ele))
+    isUnrestricted(charters.get(ele) ?? Item.none)
   );
 }
 

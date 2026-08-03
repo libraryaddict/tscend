@@ -417,7 +417,7 @@ function auto_ghost_prep(place: Location): void {
     true,
   );
   for (const [, mob] of getMonsters(place).entries()) {
-    if ((apprates.get(mob) ?? apprates.set(mob, 0.0).get(mob)) <= 0) {
+    if ((apprates.get(mob) ?? 0.0) <= 0) {
       //won't show up because banished or req's not fulfilled
       continue;
     }
@@ -1458,7 +1458,7 @@ function auto_pre_adventure(): boolean {
 }
 
 export function auto_runPreAdventure(): boolean {
-  if (!auto_canRunBetweenBattleChecks()) return;
+  if (!auto_canRunBetweenBattleChecks()) return false;
   let ret: boolean = false;
   try {
     ret = auto_pre_adventure();
@@ -1471,7 +1471,8 @@ export function auto_runPreAdventure(): boolean {
       abort("Trying to adventure with no familiar.");
     }
   } catch (e) {
-    auto_log_warning(`${e}${e.stack ? ` - ${e.stack}` : ""}`);
+    const err = e instanceof Error ? e : undefined;
+    auto_log_warning(`${e}${err?.stack ? ` - ${err.stack}` : ""}`);
   } finally {
     if (!ret) {
       auto_log_error(

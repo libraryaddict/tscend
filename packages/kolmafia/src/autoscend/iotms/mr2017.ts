@@ -679,10 +679,7 @@ function kgbTryEffect(ef: Effect): boolean {
   let tracker: Map<number, string> = new Map(
     splitString(getProperty("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
   );
-  if (
-    tracker.size < 13 ||
-    toInt(tracker.get(0) ?? tracker.set(0, "").get(0)) !== myAscensions()
-  ) {
+  if (tracker.size < 13 || toInt(tracker.get(0) ?? "") !== myAscensions()) {
     set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   tracker = new Map(
@@ -690,7 +687,7 @@ function kgbTryEffect(ef: Effect): boolean {
   );
 
   for (let i: number = 1; i < 13; i++) {
-    if (toEffect(tracker.get(i) ?? tracker.set(i, "").get(i)) === ef) {
+    if (toEffect(tracker.get(i) ?? "") === ef) {
       const button: number = (i + 1) / 2;
       visitUrl(`place.php?whichplace=kgb&action=kgb_tab${button}`, false);
       return true;
@@ -716,10 +713,7 @@ function kgbDiscovery(): boolean {
   let tracker: Map<number, string> = new Map(
     splitString(getProperty("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
   );
-  if (
-    tracker.size < 13 ||
-    toInt(tracker.get(0) ?? tracker.set(0, "").get(0)) !== myAscensions()
-  ) {
+  if (tracker.size < 13 || toInt(tracker.get(0) ?? "") !== myAscensions()) {
     set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   tracker = new Map(
@@ -735,7 +729,7 @@ function kgbDiscovery(): boolean {
     const id: number = toInt(tabCount.group(1));
     const height: number = toInt(tabCount.group(2));
     const index: number = (id - 1) * 2 + height;
-    if (toInt(tracker.get(index) ?? tracker.set(index, "").get(index)) === 0) {
+    if (toInt(tracker.get(index) ?? "") === 0) {
       auto_log_info(`We do not know ${id} of height: ${height}`, "green");
       const curEff: number[] = [];
       for (let i: number = 2296; i <= 2306; i++) {
@@ -755,7 +749,7 @@ function kgbDiscovery(): boolean {
       }
       let newTracker: string = myAscensions().toString();
       for (let i: number = 1; i < 13; i++) {
-        newTracker += `:${tracker.get(i) ?? tracker.set(i, "").get(i)}`;
+        newTracker += `:${tracker.get(i) ?? ""}`;
       }
       set("auto_kgbTracker", newTracker);
       return true;
@@ -1071,7 +1065,7 @@ function kgbDial(dial: number, curVal: number, target: number): boolean {
       }
       count_1++;
     }
-    curVal = dials.get(dial) ?? dials.set(dial, 0).get(dial);
+    curVal = dials.get(dial) ?? 0;
     auto_log_info(`Clicking ${dial} and now: ${curVal}`, "blue");
   }
   return true;

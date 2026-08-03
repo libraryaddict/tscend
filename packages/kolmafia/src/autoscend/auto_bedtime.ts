@@ -624,10 +624,7 @@ function bedtime_pulls_rollover_equip(
         sl = worst_acc_slot;
 
         if (booleanModifier(it, "Single Equip")) {
-          if (
-            equippedAmount(it) > 0 &&
-            (best.get(sl) ?? best.set(sl, Item.none).get(sl)) !== it
-          ) {
+          if (equippedAmount(it) > 0 && (best.get(sl) ?? Item.none) !== it) {
             //we have it equipped but not in the worst slot. So exclude it from optimizing the worst slot.
             continue;
           }
@@ -635,10 +632,7 @@ function bedtime_pulls_rollover_equip(
 
         if (is_watch(it)) {
           //watches conflict with each other. only one watch of any kind can be used
-          if (
-            equippedAmount(it) > 0 &&
-            !is_watch(best.get(sl) ?? best.set(sl, Item.none).get(sl))
-          ) {
+          if (equippedAmount(it) > 0 && !is_watch(best.get(sl) ?? Item.none)) {
             //we have a watch equipped but not in the worst slot. So exclude it from optimizing the worst slot.
             continue;
           }
@@ -651,92 +645,60 @@ function bedtime_pulls_rollover_equip(
         //can we even pull another copy of this accessory?
         if (
           equippedAmount(it) > 0 &&
-          (best.get(sl) ?? best.set(sl, Item.none).get(sl)) !== it &&
+          (best.get(sl) ?? Item.none) !== it &&
           !canPull(it, true)
         ) {
           continue;
         }
 
-        if (
-          rollover_value(it) >
-          rollover_value(best.get(sl) ?? best.set(sl, Item.none).get(sl))
-        ) {
+        if (rollover_value(it) > rollover_value(best.get(sl) ?? Item.none)) {
           best.set(sl, it);
         }
       } else if ($slot`weapon` === sl) {
         //weapon and off-hand slots might conflict and require special handling
         //two or more handed weapons just need to make sure they are better than best weapon and off-hand combined
         if (weaponHands(it) > 1) {
-          if (
-            weaponHands(
-              best.get($slot`weapon`) ??
-                best.set($slot`weapon`, Item.none).get($slot`weapon`),
-            ) > 1
-          ) {
+          if (weaponHands(best.get($slot`weapon`) ?? Item.none) > 1) {
             //if best weapon is already more than 1 handed, must not add off-hand to that weapon
             if (
               rollover_value(it) >
-                rollover_value(
-                  best.get($slot`weapon`) ??
-                    best.set($slot`weapon`, Item.none).get($slot`weapon`),
-                ) &&
+                rollover_value(best.get($slot`weapon`) ?? Item.none) &&
               rollover_value(it) >
-                rollover_value(
-                  best.get($slot`off-hand`) ??
-                    best.set($slot`off-hand`, Item.none).get($slot`off-hand`),
-                )
+                rollover_value(best.get($slot`off-hand`) ?? Item.none)
             ) {
               best.set(sl, it);
             }
           } else if (
             rollover_value(it) >
-            rollover_value(
-              best.get($slot`weapon`) ??
-                best.set($slot`weapon`, Item.none).get($slot`weapon`),
-            ) +
-              rollover_value(
-                best.get($slot`off-hand`) ??
-                  best.set($slot`off-hand`, Item.none).get($slot`off-hand`),
-              )
+            rollover_value(best.get($slot`weapon`) ?? Item.none) +
+              rollover_value(best.get($slot`off-hand`) ?? Item.none)
           ) {
             //for non conflicting slots. calculate normally
             //remember best 1h to compare again when better off-hand slots are found
-            best1hweapon =
-              best.get($slot`weapon`) ??
-              best.set($slot`weapon`, Item.none).get($slot`weapon`);
+            best1hweapon = best.get($slot`weapon`) ?? Item.none;
             //there is no need to change offhand target since we pull one item at a time. in fact we prefer offhand to retain an independent value
             best.set(sl, it);
           }
         } else if (weaponHands(it) === 1) {
           //single handed weapons for the weapon slot
-          if (
-            weaponHands(best.get(sl) ?? best.set(sl, Item.none).get(sl)) > 1
-          ) {
+          if (weaponHands(best.get(sl) ?? Item.none) > 1) {
             //the currently desired best weapon is 2 handed weapon. so we sum it value with best off-hand found thus far
             if (
               rollover_value(it) +
-                rollover_value(
-                  best.get($slot`off-hand`) ??
-                    best.set($slot`off-hand`, Item.none).get($slot`off-hand`),
-                ) >
-              rollover_value(best.get(sl) ?? best.set(sl, Item.none).get(sl))
+                rollover_value(best.get($slot`off-hand`) ?? Item.none) >
+              rollover_value(best.get(sl) ?? Item.none)
             ) {
               best.set(sl, it);
             }
           } else if (
-            rollover_value(it) >
-            rollover_value(best.get(sl) ?? best.set(sl, Item.none).get(sl))
+            rollover_value(it) > rollover_value(best.get(sl) ?? Item.none)
           ) {
             //the currently desired best weapon is 1 handed. So we just compare it to best weapon.
             best.set(sl, it);
-            best1hweapon =
-              best.get($slot`weapon`) ??
-              best.set($slot`weapon`, Item.none).get($slot`weapon`);
+            best1hweapon = best.get($slot`weapon`) ?? Item.none;
           } else if (rollover_value(it) > rollover_value(best1hweapon)) {
             //keep best1hweapon updated even if not best weapon
-            best1hweapon =
-              best.get($slot`weapon`) ??
-              best.set($slot`weapon`, Item.none).get($slot`weapon`);
+            best1hweapon = best.get($slot`weapon`) ?? Item.none;
           }
           //single handed weapons for the off-hand slot
           const weapon_offhand: boolean = haveSkill(
@@ -744,18 +706,15 @@ function bedtime_pulls_rollover_equip(
           );
           const conflict_mainhand: boolean =
             booleanModifier(it, "Single Equip") &&
-            (best.get(sl) ?? best.set(sl, Item.none).get(sl)) === it;
+            (best.get(sl) ?? Item.none) === it;
           const conflict_quantity: boolean =
-            (best.get(sl) ?? best.set(sl, Item.none).get(sl)) === it &&
+            (best.get(sl) ?? Item.none) === it &&
             !canPull(it, true) &&
             itemAmount(it) + equippedAmount(it) < 2;
           if (weapon_offhand && !conflict_mainhand && !conflict_quantity) {
             if (
               rollover_value(it) >
-              rollover_value(
-                best.get($slot`off-hand`) ??
-                  best.set($slot`off-hand`, Item.none).get($slot`off-hand`),
-              )
+              rollover_value(best.get($slot`off-hand`) ?? Item.none)
             ) {
               best.set($slot`off-hand`, it);
             }
@@ -766,8 +725,7 @@ function bedtime_pulls_rollover_equip(
           );
         }
       } else if (
-        rollover_value(it) >
-        rollover_value(best.get(sl) ?? best.set(sl, Item.none).get(sl))
+        rollover_value(it) > rollover_value(best.get(sl) ?? Item.none)
       ) {
         //for non conflicting slots. calculate normally.
         //off-hand might conflict but are resolved at the weapon slot in a way that still requires us to find the best offhand
@@ -775,17 +733,11 @@ function bedtime_pulls_rollover_equip(
         //best off-hand slot can make best remembered 1h weapon better than current best 2h weapon
         if (
           $slot`off-hand` === sl &&
-          weaponHands(
-            best.get($slot`weapon`) ??
-              best.set($slot`weapon`, Item.none).get($slot`weapon`),
-          ) > 1
+          weaponHands(best.get($slot`weapon`) ?? Item.none) > 1
         ) {
           if (
             rollover_value(it) + rollover_value(best1hweapon) >
-            rollover_value(
-              best.get($slot`weapon`) ??
-                best.set($slot`weapon`, Item.none).get($slot`weapon`),
-            )
+            rollover_value(best.get($slot`weapon`) ?? Item.none)
           ) {
             best.set($slot`weapon`, best1hweapon);
           }
@@ -795,18 +747,9 @@ function bedtime_pulls_rollover_equip(
     //time halo is special. cannot have any weapons or off-hand items equipped
     if (
       rollover_value($item`time halo`) >
-      rollover_value(
-        best.get(worst_acc_slot) ??
-          best.set(worst_acc_slot, Item.none).get(worst_acc_slot),
-      ) +
-        rollover_value(
-          best.get($slot`weapon`) ??
-            best.set($slot`weapon`, Item.none).get($slot`weapon`),
-        ) +
-        rollover_value(
-          best.get($slot`off-hand`) ??
-            best.set($slot`off-hand`, Item.none).get($slot`off-hand`),
-        )
+      rollover_value(best.get(worst_acc_slot) ?? Item.none) +
+        rollover_value(best.get($slot`weapon`) ?? Item.none) +
+        rollover_value(best.get($slot`off-hand`) ?? Item.none)
     ) {
       if (
         (possessEquipment($item`time halo`) ||
@@ -830,28 +773,22 @@ function bedtime_pulls_rollover_equip(
       if (extra_debug) {
         //prints out all the items we want. Too messy for normal runs even in debug mode.
         auto_log_debug(
-          `[${sl}] wanted [${best.get(sl) ?? best.set(sl, Item.none).get(sl)}] val = ${rollover_value(best.get(sl) ?? best.set(sl, Item.none).get(sl))}. currently [${equippedItem(sl)}] val = ${rollover_value(equippedItem(sl))}. improvement = ${rollover_improvement(best.get(sl) ?? best.set(sl, Item.none).get(sl), sl)}`,
+          `[${sl}] wanted [${best.get(sl) ?? Item.none}] val = ${rollover_value(best.get(sl) ?? Item.none)}. currently [${equippedItem(sl)}] val = ${rollover_value(equippedItem(sl))}. improvement = ${rollover_improvement(best.get(sl) ?? Item.none, sl)}`,
         );
       }
       //if we already pulled the best item for a slot but maximizer failed to equip our best item into it for some reason then we want to exclude that slot from further attempts.
       const maximizer_fail: boolean =
-        possessEquipment(best.get(sl) ?? best.set(sl, Item.none).get(sl)) &&
-        equippedItem(sl) !== (best.get(sl) ?? best.set(sl, Item.none).get(sl));
+        possessEquipment(best.get(sl) ?? Item.none) &&
+        equippedItem(sl) !== (best.get(sl) ?? Item.none);
       if (maximizer_fail) {
         auto_log_debug(
-          `Bedtime pulls: maximizer is not equipping [${best.get(sl) ?? best.set(sl, Item.none).get(sl)}] into [${sl}] for some reason. Skipping this slot`,
+          `Bedtime pulls: maximizer is not equipping [${best.get(sl) ?? Item.none}] into [${sl}] for some reason. Skipping this slot`,
         );
       } else if (
-        rollover_improvement(
-          best.get(sl) ?? best.set(sl, Item.none).get(sl),
-          sl,
-        ) > very_best_val
+        rollover_improvement(best.get(sl) ?? Item.none, sl) > very_best_val
       ) {
-        very_best = best.get(sl) ?? best.set(sl, Item.none).get(sl);
-        very_best_val = rollover_improvement(
-          best.get(sl) ?? best.set(sl, Item.none).get(sl),
-          sl,
-        );
+        very_best = best.get(sl) ?? Item.none;
+        very_best_val = rollover_improvement(best.get(sl) ?? Item.none, sl);
         very_best_slot = sl;
       }
     }
@@ -1484,19 +1421,13 @@ export function doBedtime(): boolean {
         const tempChoice: Map<number, string> = new Map(
           splitString(
             String(
-              extrudeDays.get(min(extrudeDays.size, myDaycount()) - 1) ??
-                extrudeDays
-                  .set(min(extrudeDays.size, myDaycount()) - 1, "")
-                  .get(min(extrudeDays.size, myDaycount()) - 1),
+              extrudeDays.get(min(extrudeDays.size, myDaycount()) - 1) ?? "",
             ).trim(),
             ";",
           ).map((_v, _i) => [_i, _v]),
         );
         for (let i: number = 0; i < tempChoice.size; i++) {
-          extrudeChoice.set(
-            i,
-            tempChoice.get(i) ?? tempChoice.set(i, "").get(i),
-          );
+          extrudeChoice.set(i, tempChoice.get(i) ?? "");
         }
       }
       let amt: number = extrudeChoice.size;
@@ -1510,10 +1441,7 @@ export function doBedtime(): boolean {
       }
 
       while (count_1 > 0 && itemAmount($item`Source essence`) >= 10) {
-        auto_sourceTerminalExtrude(
-          extrudeChoice.get(3 - count_1) ??
-            extrudeChoice.set(3 - count_1, "").get(3 - count_1),
-        );
+        auto_sourceTerminalExtrude(extrudeChoice.get(3 - count_1) ?? "");
         count_1 -= 1;
       }
     }

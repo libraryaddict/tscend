@@ -307,9 +307,7 @@ export function equipStatgainIncreasers(
   //should be frequently called by consume actions so try not to lose HP or MP, but will equip anyway if argument alwaysEquip is true
   const statMaximizer: Maximizer = new Maximizer();
   for (const st of increaseThisStat.keys()) {
-    if (!(
-      increaseThisStat.get(st) ?? increaseThisStat.set(st, false).get(st)
-    )) {
+    if (!(increaseThisStat.get(st) ?? false)) {
       continue;
     }
     let statWeight: number = 1;
@@ -328,9 +326,7 @@ export function equipStatgainIncreasers(
   let simulatedEquipment: Map<Slot, Item> = statMaximizer.simulate();
   let canIncreaseStatgains: boolean = false;
   for (const st of increaseThisStat.keys()) {
-    if (!(
-      increaseThisStat.get(st) ?? increaseThisStat.set(st, false).get(st)
-    )) {
+    if (!(increaseThisStat.get(st) ?? false)) {
       continue;
     }
     const modifierString: Modifier = Modifier.get(
@@ -348,82 +344,51 @@ export function equipStatgainIncreasers(
   const statgainIncreasers: Map<Slot, Item> = new Map();
   for (const sl of simulatedEquipment.keys()) {
     for (const st of increaseThisStat.keys()) {
-      if (!(
-        increaseThisStat.get(st) ?? increaseThisStat.set(st, false).get(st)
-      )) {
+      if (!(increaseThisStat.get(st) ?? false)) {
         continue;
       }
       if (
         numericModifier(
-          simulatedEquipment.get(sl) ??
-            simulatedEquipment.set(sl, Item.none).get(sl),
+          simulatedEquipment.get(sl) ?? Item.none,
           `${st.toString()} experience percent`,
         ) !== 0
       ) {
-        statgainIncreasers.set(
-          sl,
-          simulatedEquipment.get(sl) ??
-            simulatedEquipment.set(sl, Item.none).get(sl),
-        );
+        statgainIncreasers.set(sl, simulatedEquipment.get(sl) ?? Item.none);
         break;
       }
     }
   }
   //solve incompatible hand slots, since only statgain equipment is taken from simulation which leaves potentially incompatible hand equipment remaining
   if (
-    (statgainIncreasers.get($slot`off-hand`) ??
-      statgainIncreasers
-        .set($slot`off-hand`, Item.none)
-        .get($slot`off-hand`)) !== Item.none &&
-    (statgainIncreasers.get($slot`weapon`) ??
-      statgainIncreasers.set($slot`weapon`, Item.none).get($slot`weapon`)) ===
-      Item.none
+    (statgainIncreasers.get($slot`off-hand`) ?? Item.none) !== Item.none &&
+    (statgainIncreasers.get($slot`weapon`) ?? Item.none) === Item.none
   ) {
     const currentWeaponIncompatibleWithSimulatedOffHand: boolean =
       weaponHands(equippedItem($slot`weapon`)) > 1 ||
-      (toSlot(
-        statgainIncreasers.get($slot`off-hand`) ??
-          statgainIncreasers
-            .set($slot`off-hand`, Item.none)
-            .get($slot`off-hand`),
-      ) === $slot`weapon` &&
-        weaponType(
-          statgainIncreasers.get($slot`off-hand`) ??
-            statgainIncreasers
-              .set($slot`off-hand`, Item.none)
-              .get($slot`off-hand`),
-        ) !== weaponType(equippedItem($slot`weapon`)));
+      (toSlot(statgainIncreasers.get($slot`off-hand`) ?? Item.none) ===
+        $slot`weapon` &&
+        weaponType(statgainIncreasers.get($slot`off-hand`) ?? Item.none) !==
+          weaponType(equippedItem($slot`weapon`)));
     if (currentWeaponIncompatibleWithSimulatedOffHand) {
       //add maximizer simulated compatible weapon
       statgainIncreasers.set(
         $slot`weapon`,
-        simulatedEquipment.get($slot`weapon`) ??
-          simulatedEquipment.set($slot`weapon`, Item.none).get($slot`weapon`),
+        simulatedEquipment.get($slot`weapon`) ?? Item.none,
       );
     }
   } else if (
-    (statgainIncreasers.get($slot`weapon`) ??
-      statgainIncreasers.set($slot`weapon`, Item.none).get($slot`weapon`)) !==
-      Item.none &&
-    (statgainIncreasers.get($slot`off-hand`) ??
-      statgainIncreasers
-        .set($slot`off-hand`, Item.none)
-        .get($slot`off-hand`)) === Item.none &&
+    (statgainIncreasers.get($slot`weapon`) ?? Item.none) !== Item.none &&
+    (statgainIncreasers.get($slot`off-hand`) ?? Item.none) === Item.none &&
     toSlot(equippedItem($slot`off-hand`)) === $slot`weapon`
   ) {
     const currentOffHandIncompatibleWithSimulatedWeapon: boolean =
-      weaponType(
-        statgainIncreasers.get($slot`weapon`) ??
-          statgainIncreasers.set($slot`weapon`, Item.none).get($slot`weapon`),
-      ) !== weaponType(equippedItem($slot`off-hand`));
+      weaponType(statgainIncreasers.get($slot`weapon`) ?? Item.none) !==
+      weaponType(equippedItem($slot`off-hand`));
     if (currentOffHandIncompatibleWithSimulatedWeapon) {
       //add maximizer simulated compatible off-hand
       statgainIncreasers.set(
         $slot`off-hand`,
-        simulatedEquipment.get($slot`off-hand`) ??
-          simulatedEquipment
-            .set($slot`off-hand`, Item.none)
-            .get($slot`off-hand`),
+        simulatedEquipment.get($slot`off-hand`) ?? Item.none,
       );
     }
   }
@@ -435,17 +400,13 @@ export function equipStatgainIncreasers(
   let speculateOneItem: string;
   let speculateAllItems: string = "";
   for (const sl of statgainIncreasers.keys()) {
-    speculateOneItem = `"equip ${sl.toString()} ${(statgainIncreasers.get(sl) ?? statgainIncreasers.set(sl, Item.none).get(sl)).toString()};" `;
+    speculateOneItem = `"equip ${sl.toString()} ${(statgainIncreasers.get(sl) ?? Item.none).toString()};" `;
     cliExecute(`speculate quiet; ${speculateOneItem}`);
     HPlost = toInt(myHp() - simValue($modifier`Buffed HP Maximum`));
     MPlost = toInt(myMp() - simValue($modifier`Buffed MP Maximum`));
     if (HPlost <= 0 && MPlost <= 0) {
       //causes no loss so it can be equipped right now
-      equip(
-        statgainIncreasers.get(sl) ??
-          statgainIncreasers.set(sl, Item.none).get(sl),
-        sl,
-      );
+      equip(statgainIncreasers.get(sl) ?? Item.none, sl);
       continue;
     }
     speculateAllItems += speculateOneItem; //otherwise speculate with all items that have been left out
@@ -508,7 +469,7 @@ export function equipStatgainIncreasers(
   simulatedEquipment.clear();
   simulatedEquipment = hpMpMaximizer.simulate();
   for (const sl of simulatedEquipment.keys()) {
-    speculateOneItem = `"equip ${sl.toString()} ${(simulatedEquipment.get(sl) ?? simulatedEquipment.set(sl, Item.none).get(sl)).toString()};" `;
+    speculateOneItem = `"equip ${sl.toString()} ${(simulatedEquipment.get(sl) ?? Item.none).toString()};" `;
     cliExecute(`speculate quiet; ${speculateOneItem}`);
     if (simValue($modifier`Buffed HP Maximum`) < myHp()) {
       //skip on collateral loss
@@ -517,11 +478,7 @@ export function equipStatgainIncreasers(
     if (simValue($modifier`Buffed MP Maximum`) < myMp()) {
       continue;
     }
-    equip(
-      simulatedEquipment.get(sl) ??
-        simulatedEquipment.set(sl, Item.none).get(sl),
-      sl,
-    );
+    equip(simulatedEquipment.get(sl) ?? Item.none, sl);
   }
   let doEquips: boolean = false;
   if (myMaxhp() >= targetedHP && myMaxmp() >= targetedMP) {
@@ -534,11 +491,7 @@ export function equipStatgainIncreasers(
 
   if (doEquips) {
     for (const sl of statgainIncreasers.keys()) {
-      equip(
-        statgainIncreasers.get(sl) ??
-          statgainIncreasers.set(sl, Item.none).get(sl),
-        sl,
-      );
+      equip(statgainIncreasers.get(sl) ?? Item.none, sl);
     }
   }
 }

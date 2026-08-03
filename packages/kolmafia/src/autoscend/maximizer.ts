@@ -82,7 +82,7 @@ export class Maximizer {
   private readonly otherRequirements = new Map<MaximizerModifier, boolean>();
 
   getWeight(mod: Criterion): number {
-    return this.weights.get(criterionName(mod));
+    return this.weights.get(criterionName(mod)) ?? 0;
   }
 
   // stacks with earlier weight() calls for the same criterion
@@ -91,7 +91,7 @@ export class Maximizer {
 
     if (this.weights.has(name)) {
       auto_log_info(
-        `Adding modifier for ${name} on top of ${this.weights.get(name)} + ${amount} = ${this.weights.get(name) + amount}`,
+        `Adding modifier for ${name} on top of ${this.weights.get(name)} + ${amount} = ${this.weights.get(name)! + amount}`,
       );
     }
 

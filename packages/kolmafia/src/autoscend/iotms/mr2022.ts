@@ -1129,7 +1129,7 @@ export function auto_checkTrainSet(): void {
     trainsetPosition - lastTrainsetConfiguration,
     40,
   );
-  const expectedConfig: string = `${stationInts.get(one) ?? stationInts.set(one, "").get(one)},${stationInts.get(two) ?? stationInts.set(two, "").get(two)},${stationInts.get(three) ?? stationInts.set(three, "").get(three)},${stationInts.get(four) ?? stationInts.set(four, "").get(four)},${stationInts.get(five) ?? stationInts.set(five, "").get(five)},${stationInts.get(six) ?? stationInts.set(six, "").get(six)},${stationInts.get(seven) ?? stationInts.set(seven, "").get(seven)},${stationInts.get(eight) ?? stationInts.set(eight, "").get(eight)}`;
+  const expectedConfig: string = `${stationInts.get(one) ?? ""},${stationInts.get(two) ?? ""},${stationInts.get(three) ?? ""},${stationInts.get(four) ?? ""},${stationInts.get(five) ?? ""},${stationInts.get(six) ?? ""},${stationInts.get(seven) ?? ""},${stationInts.get(eight) ?? ""}`;
 
   let changedTSConfig: boolean;
   if (expectedConfig !== trainsetConfiguration) {

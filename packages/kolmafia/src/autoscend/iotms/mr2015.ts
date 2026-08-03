@@ -13,6 +13,7 @@ import {
   Item,
   itemAmount,
   min,
+  Monster,
   myAdventures,
   myDaycount,
   myHp,
@@ -792,7 +793,7 @@ export function chateaumantegna_nightstandSet(): boolean {
     //If we do not have a telescope, this can happen.
     return false;
   }
-  if (furniture.get(need) ?? furniture.set(need, false).get(need)) {
+  if (furniture.get(need) ?? false) {
     return false;
   }
   if (myMeat() < npcPrice(need)) {
@@ -862,7 +863,7 @@ export const chateauPaintingTask: QuestTask = registerQuestTask({
   desiredEncounters: () =>
     [
       {
-        monster: get("chateauMonster"),
+        monster: safeGet("chateauMonster", Monster.none),
         needAmount: get("_chateauMonsterFought") ? 0 : 1,
       },
     ].filter((a) => a.needAmount > 0),
@@ -1002,9 +1003,7 @@ function deck_cheat(cheat: string): boolean {
   $_deck_cheat_cards.set("myst stat", 70);
   $_deck_cheat_cards.set("mysticality stat", 70);
 
-  const card: number =
-    $_deck_cheat_cards.get(cheat) ??
-    $_deck_cheat_cards.set(cheat, 0).get(cheat);
+  const card: number = $_deck_cheat_cards.get(cheat) ?? 0;
 
   const cheated: Map<number, string> = new Map(
     splitString(getProperty("_deckCardsCheated"), ",").map((_v, _i) => [

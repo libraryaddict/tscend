@@ -52,13 +52,11 @@ function autoscend_needs_update(): boolean {
   return get("auto_need_update", false);
 }
 
-let $_autoscend_migrate_props: Map<number, string> | undefined;
-
 export function autoscend_migrate(): boolean {
-  $_autoscend_migrate_props = fileAsMap("autoscend_properties.txt", [
-    Number,
-    String,
-  ]);
+  const $_autoscend_migrate_props: Map<number, string> = fileAsMap(
+    "autoscend_properties.txt",
+    [Number, String],
+  );
 
   function repo_present(repo: string): boolean {
     return svnExists(repo) || svnInfo(repo).url !== "";

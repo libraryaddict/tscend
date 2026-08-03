@@ -828,10 +828,7 @@ export function banishedMonsters(): Map<Monster, number> {
 
   let i: number = 0;
   while (i < data.size) {
-    retval.set(
-      toMonster(data.get(i) ?? data.set(i, "").get(i)),
-      toInt(data.get(i + 2) ?? data.set(i + 2, "").get(i + 2)),
-    );
+    retval.set(toMonster(data.get(i) ?? ""), toInt(data.get(i + 2) ?? ""));
     i += 3;
   }
 
@@ -1063,8 +1060,7 @@ export function auto_combat_appearance_rates(
   const res_excluding_noncombat: Map<Monster, number> = new Map();
 
   const noncombat_frequency: number =
-    res_including_noncombat.get(Monster.none) ??
-    res_including_noncombat.set(Monster.none, 0.0).get(Monster.none);
+    res_including_noncombat.get(Monster.none) ?? 0.0;
   if (noncombat_frequency === 0 || noncombat_frequency >= 100) {
     return res_including_noncombat;
   }
@@ -1117,14 +1113,11 @@ export function auto_banishesUsedAt(loc: Location): Map<string, boolean> {
     const used: Map<string, boolean> = new Map();
 
     for (let i: number = 0; i + 1 < banishList.size; i = i + 3) {
-      const curMon: Monster = toMonster(
-        banishList.get(i) ?? banishList.set(i, "").get(i),
-      );
-      const curUsed: string =
-        banishList.get(i + 1) ?? banishList.set(i + 1, "").get(i + 1);
+      const curMon: Monster = toMonster(banishList.get(i) ?? "");
+      const curUsed: string = banishList.get(i + 1) ?? "";
 
       for (let j: number = 0; j < atLoc.size; j++) {
-        if ((atLoc.get(j) ?? atLoc.set(j, Monster.none).get(j)) === curMon) {
+        if ((atLoc.get(j) ?? Monster.none) === curMon) {
           used.set(curUsed, true);
         }
       }
@@ -1157,9 +1150,7 @@ export function auto_wantToBanish(enemy: Monster, loc: Location): boolean {
   setLocation(loc);
   const monstersToBanish: Map<Monster, boolean> = auto_getMonsters("banish");
   setLocation(locCache);
-  return (
-    monstersToBanish.get(enemy) ?? monstersToBanish.set(enemy, false).get(enemy)
-  );
+  return monstersToBanish.get(enemy) ?? false;
 }
 
 export function auto_wantToBanish$1(
@@ -1173,10 +1164,7 @@ export function auto_wantToBanish$1(
   setLocation(loc);
   const phylumToBanish: Map<Phylum, boolean> = auto_getPhylum("banish");
   setLocation(locCache);
-  return (
-    phylumToBanish.get(enemyphylum) ??
-    phylumToBanish.set(enemyphylum, false).get(enemyphylum)
-  );
+  return phylumToBanish.get(enemyphylum) ?? false;
 }
 
 function canBanish(enemy: Monster, loc: Location): boolean {
@@ -1329,10 +1317,7 @@ export function auto_wantToFreeRun(enemy: Monster, loc: Location): boolean {
   setLocation(loc);
   const monstersToFreeRun: Map<Monster, boolean> = auto_getMonsters("freerun");
   setLocation(locCache);
-  return (
-    monstersToFreeRun.get(enemy) ??
-    monstersToFreeRun.set(enemy, false).get(enemy)
-  );
+  return monstersToFreeRun.get(enemy) ?? false;
 }
 
 function canFreeRun(enemy: Monster, loc: Location): boolean {
@@ -3692,7 +3677,7 @@ export function fightScienceTentacle(): boolean {
   }
 
   if (
-    (choices.get(1) ?? choices.set(1, "").get(1)) !==
+    (choices.get(1) ?? "") !==
       "Can I fight that tentacle you saved for science?" ||
     abortChoice === 0
   ) {
@@ -3950,10 +3935,7 @@ export function doNumberology(
       "blue",
     );
     if (!doIt) {
-      return (
-        numberology.get(numberwang) ??
-        numberology.set(numberwang, 0).get(numberwang)
-      );
+      return numberology.get(numberwang) ?? 0;
     }
 
     if (goal === "battlefield") {
@@ -3962,7 +3944,7 @@ export function doNumberology(
       pages.set(0, "runskillz.php?pwd&action=Skillz&whichskill=144&quantity=1");
       pages.set(
         1,
-        `choice.php?whichchoice=1103&pwd=&option=1&num=${numberology.get(numberwang) ?? numberology.set(numberwang, 0).get(numberwang)}`,
+        `choice.php?whichchoice=1103&pwd=&option=1&num=${numberology.get(numberwang) ?? 0}`,
       );
       autoAdvBypass(0, pages, $location`Noob Cave`, option);
       handleTracker({
@@ -3976,13 +3958,10 @@ export function doNumberology(
         true,
       );
       visitUrl(
-        `choice.php?whichchoice=1103&pwd=&option=1&num=${numberology.get(numberwang) ?? numberology.set(numberwang, 0).get(numberwang)}`,
+        `choice.php?whichchoice=1103&pwd=&option=1&num=${numberology.get(numberwang) ?? 0}`,
       );
     }
-    return (
-      numberology.get(numberwang) ??
-      numberology.set(numberwang, 0).get(numberwang)
-    );
+    return numberology.get(numberwang) ?? 0;
   }
   return -1;
 }
@@ -4058,9 +4037,7 @@ export function candyEggDeviler(): boolean {
       .map((e) => [e._k, e._v]),
   );
   const candyL: Map<number, Item> = List$8(candyList);
-  return cliExecute(
-    `devilcandyegg ${candyL.get(0) ?? candyL.set(0, Item.none).get(0)}`,
-  );
+  return cliExecute(`devilcandyegg ${candyL.get(0) ?? Item.none}`);
 }
 
 function getCandy(): void {
@@ -5101,8 +5078,7 @@ function auto_getMonsters(category: string): Map<Monster, boolean> {
   if (!monsters_text.size) {
     auto_log_error("Could not load autoscend_monsters.txt. This is bad!");
   }
-  for (const [, _v0] of monsters_text.get(category) ??
-    monsters_text.set(category, new Map()).get(category)) {
+  for (const [, _v0] of monsters_text.get(category) ?? new Map()) {
     for (const [name, _v1] of _v0) {
       const conds = _v1;
       const thisMonster: Monster = toMonster(name);
@@ -5131,8 +5107,7 @@ function auto_getPhylum(category: string): Map<Phylum, boolean> {
   if (!phylum_text.size) {
     auto_log_error("Could not load autoscend_phylums.txt. This is bad!");
   }
-  for (const [, _v0] of phylum_text.get(category) ??
-    phylum_text.set(category, new Map()).get(category)) {
+  for (const [, _v0] of phylum_text.get(category) ?? new Map()) {
     for (const [name, _v1] of _v0) {
       const conds = _v1;
       const thisPhylum: Phylum = toPhylum(name);
@@ -5157,9 +5132,8 @@ export function auto_wantToSniff(enemy: Monster, loc: Location): boolean {
   setLocation(loc);
   const toSniff: Map<Monster, boolean> = auto_getMonsters("sniff");
   if (
-    (toSniff.get(enemy) ?? toSniff.set(enemy, false).get(enemy)) &&
-    (auto_combat_appearance_rates$1(loc).get(enemy) ??
-      auto_combat_appearance_rates$1(loc).set(enemy, 0.0).get(enemy)) < 100
+    (toSniff.get(enemy) ?? false) &&
+    (auto_combat_appearance_rates$1(loc).get(enemy) ?? 0.0) < 100
   ) {
     setLocation(locCache);
     return true;
@@ -5173,7 +5147,7 @@ export function auto_wantToYellowRay(enemy: Monster, loc: Location): boolean {
   setLocation(loc);
   const toSniff: Map<Monster, boolean> = auto_getMonsters("yellowray");
   setLocation(locCache);
-  return toSniff.get(enemy) ?? toSniff.set(enemy, false).get(enemy);
+  return toSniff.get(enemy) ?? false;
 }
 
 export function auto_wantToReplace(enemy: Monster, loc: Location): boolean {
@@ -5181,7 +5155,7 @@ export function auto_wantToReplace(enemy: Monster, loc: Location): boolean {
   setLocation(loc);
   const toReplace: Map<Monster, boolean> = auto_getMonsters("replace");
   setLocation(locCache);
-  return toReplace.get(enemy) ?? toReplace.set(enemy, false).get(enemy);
+  return toReplace.get(enemy) ?? false;
 }
 
 export function auto_wantToCopy(enemy: Monster, loc: Location): boolean {
@@ -5189,12 +5163,12 @@ export function auto_wantToCopy(enemy: Monster, loc: Location): boolean {
   setLocation(loc);
   const toCopy: Map<Monster, boolean> = auto_getMonsters("copy");
   setLocation(locCache);
-  return toCopy.get(enemy) ?? toCopy.set(enemy, false).get(enemy);
+  return toCopy.get(enemy) ?? false;
 }
 
 function auto_wantToCopy$1(enemy: Monster): boolean {
   const toCopy: Map<Monster, boolean> = auto_getMonsters("copy");
-  return toCopy.get(enemy) ?? toCopy.set(enemy, false).get(enemy);
+  return toCopy.get(enemy) ?? false;
 }
 
 export function zoneRank(mon: Monster, loc: Location): number {
@@ -5493,19 +5467,15 @@ function autoFlavour(place: Location): boolean {
     const spellDamage: number = numericModifier(
       `${ele.toString()} Spell Damage`,
     );
-    let scoreDiff: number =
-      (superEffective.get(ele) ?? superEffective.set(ele, 0.0).get(ele)) -
-      bestScore;
+    let scoreDiff: number = (superEffective.get(ele) ?? 0.0) - bestScore;
     scoreDiff = scoreDiff < 0 ? -scoreDiff : scoreDiff;
     if (
-      (ineffective.get(ele) ?? ineffective.set(ele, 0.0).get(ele)) === 0 &&
-      ((superEffective.get(ele) ?? superEffective.set(ele, 0.0).get(ele)) >
-        bestScore ||
+      (ineffective.get(ele) ?? 0.0) === 0 &&
+      ((superEffective.get(ele) ?? 0.0) > bestScore ||
         (scoreDiff < 0.00001 && spellDamage > bestSpellDamage))
     ) {
       flavour = ele;
-      bestScore =
-        superEffective.get(ele) ?? superEffective.set(ele, 0.0).get(ele);
+      bestScore = superEffective.get(ele) ?? 0.0;
       bestSpellDamage = spellDamage;
     }
   }
@@ -5526,9 +5496,7 @@ export function canSimultaneouslyAcquire(needed: Map<Item, number>): boolean {
   let failed: boolean = false;
   function addToAlreadyUsed(amount: number, toAdd: Item): void {
     const needToCraft: number =
-      (alreadyUsed.get(toAdd) ?? alreadyUsed.set(toAdd, 0).get(toAdd)) +
-      amount -
-      itemAmount(toAdd);
+      (alreadyUsed.get(toAdd) ?? 0) + amount - itemAmount(toAdd);
     alreadyUsed.set(toAdd, (alreadyUsed.get(toAdd) ?? 0) + amount);
     if (needToCraft > 0) {
       if (get("autoSatisfyWithStorage") && pullsRemaining() === -1) {
@@ -5592,57 +5560,35 @@ export function knapsack(
    */
   const V: Map<number, Map<number, number>> = new Map();
 
+  function row(i: number): Map<number, number> {
+    let r = V.get(i);
+    if (r === undefined) {
+      r = new Map();
+      V.set(i, r);
+    }
+    return r;
+  }
+
   for (let i_1: number = 0; i_1 <= n; i_1++) {
     for (let w_1: number = 0; w_1 <= maxw; w_1++) {
       if (i_1 === 0 || w_1 === 0) {
-        (V.get(i_1) ?? V.set(i_1, new Map()).get(i_1)).set(w_1, 0);
-      } else if (
-        (weight.get(i_1 - 1) ?? weight.set(i_1 - 1, 0).get(i_1 - 1)) <= w_1
-      ) {
-        (V.get(i_1) ?? V.set(i_1, new Map()).get(i_1)).set(
+        row(i_1).set(w_1, 0);
+      } else if ((weight.get(i_1 - 1) ?? 0) <= w_1) {
+        row(i_1).set(
           w_1,
           max(
-            (val.get(i_1 - 1) ?? val.set(i_1 - 1, 0.0).get(i_1 - 1)) +
-              ((V.get(i_1 - 1) ?? V.set(i_1 - 1, new Map()).get(i_1 - 1)).get(
-                w_1 -
-                  (weight.get(i_1 - 1) ?? weight.set(i_1 - 1, 0).get(i_1 - 1)),
-              ) ??
-                (V.get(i_1 - 1) ?? V.set(i_1 - 1, new Map()).get(i_1 - 1))
-                  .set(
-                    w_1 -
-                      (weight.get(i_1 - 1) ??
-                        weight.set(i_1 - 1, 0).get(i_1 - 1)),
-                    0.0,
-                  )
-                  .get(
-                    w_1 -
-                      (weight.get(i_1 - 1) ??
-                        weight.set(i_1 - 1, 0).get(i_1 - 1)),
-                  )),
-            (V.get(i_1 - 1) ?? V.set(i_1 - 1, new Map()).get(i_1 - 1)).get(
-              w_1,
-            ) ??
-              (V.get(i_1 - 1) ?? V.set(i_1 - 1, new Map()).get(i_1 - 1))
-                .set(w_1, 0.0)
-                .get(w_1),
+            (val.get(i_1 - 1) ?? 0.0) +
+              (row(i_1 - 1).get(w_1 - (weight.get(i_1 - 1) ?? 0)) ?? 0.0),
+            row(i_1 - 1).get(w_1) ?? 0.0,
           ),
         );
       } else {
-        (V.get(i_1) ?? V.set(i_1, new Map()).get(i_1)).set(
-          w_1,
-          (V.get(i_1 - 1) ?? V.set(i_1 - 1, new Map()).get(i_1 - 1)).get(w_1) ??
-            (V.get(i_1 - 1) ?? V.set(i_1 - 1, new Map()).get(i_1 - 1))
-              .set(w_1, 0.0)
-              .get(w_1),
-        );
+        row(i_1).set(w_1, row(i_1 - 1).get(w_1) ?? 0.0);
       }
     }
   }
   // Catch unreachable case (e.g. only 2-fullness foods, targeting 15 stomach)
-  if (
-    ((V.get(n) ?? V.set(n, new Map()).get(n)).get(maxw) ??
-      (V.get(n) ?? V.set(n, new Map()).get(n)).set(maxw, 0.0).get(maxw)) === 0.0
-  ) {
+  if ((row(n).get(maxw) ?? 0.0) === 0.0) {
     return empty;
   }
 
@@ -5656,14 +5602,9 @@ export function knapsack(
     }
     // Did this item change our mind about how many adventures we could generate?
     // If so, we took this item.
-    if (
-      ((V.get(i) ?? V.set(i, new Map()).get(i)).get(w) ??
-        (V.get(i) ?? V.set(i, new Map()).get(i)).set(w, 0.0).get(w)) !==
-      ((V.get(i - 1) ?? V.set(i - 1, new Map()).get(i - 1)).get(w) ??
-        (V.get(i - 1) ?? V.set(i - 1, new Map()).get(i - 1)).set(w, 0.0).get(w))
-    ) {
+    if ((row(i).get(w) ?? 0.0) !== (row(i - 1).get(w) ?? 0.0)) {
       ret.set(i - 1, true);
-      w -= weight.get(i - 1) ?? weight.set(i - 1, 0).get(i - 1);
+      w -= weight.get(i - 1) ?? 0;
       i -= 1;
     } else {
       // do not take element
@@ -5684,8 +5625,7 @@ export function auto_reserveAmount(it: Item): number {
   if (!itemdata.size) {
     auto_log_error("Could not load autoscend_items.txt! This is bad!");
   }
-  for (const [, _v0] of itemdata.get("reserve") ??
-    itemdata.set("reserve", new Map()).get("reserve")) {
+  for (const [, _v0] of itemdata.get("reserve") ?? new Map()) {
     for (const [counteditem, _v1] of _v0) {
       const conds = _v1;
       const m: AshMatcher = new AshMatcher("(\\-?\\d+) (.+)", counteditem);
@@ -6330,13 +6270,9 @@ export function currentPoolSkill(): number {
   );
   return toInt(
     substring(
-      poolskill_command.get(0) ?? poolskill_command.set(0, "").get(0),
-      lastIndexOf(
-        poolskill_command.get(0) ?? poolskill_command.set(0, "").get(0),
-        ":",
-      ) + 2,
-      length(poolskill_command.get(0) ?? poolskill_command.set(0, "").get(0)) -
-        1,
+      poolskill_command.get(0) ?? "",
+      lastIndexOf(poolskill_command.get(0) ?? "", ":") + 2,
+      length(poolskill_command.get(0) ?? "") - 1,
     ),
   );
 }

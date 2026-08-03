@@ -44,7 +44,7 @@ export function fotd_combat_helper(): void {
   );
 
   for (const d of dino_list.keys()) {
-    const dino: string = dino_list.get(d) ?? dino_list.set(d, "").get(d);
+    const dino: string = dino_list.get(d) ?? "";
     if (lastMonster().randomModifiers.includes(dino)) {
       set("_auto_combatFotdDinosaur", dino);
       break;

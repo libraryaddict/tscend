@@ -242,7 +242,7 @@ export function auto_edCombatHandler(
     }
   }
   //use industrial fire extinguisher zone specific skills
-  const extinguisherSkill: Skill =
+  const extinguisherSkill: Skill | undefined =
     auto_FireExtinguisherCombatSkill(myLocation());
   if (extinguisherSkill && haveEquipped($item`industrial fire extinguisher`)) {
     handleTracker({

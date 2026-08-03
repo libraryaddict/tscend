@@ -246,11 +246,10 @@ function lowkey_nextKeyLocation(checkAvailable: boolean): Location {
   }
 
   for (const key of lowKeys.keys()) {
-    const loc: Location =
-      lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key);
+    const loc: Location = lowKeys.get(key) ?? Location.none;
     if (lowkey_needKey(key)) {
       if (!checkAvailable || zone_isAvailable(loc)) {
-        return lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key);
+        return lowKeys.get(key) ?? Location.none;
       }
     }
   }
@@ -268,8 +267,7 @@ export function lowkey_nextAvailableKeyDelayLocation(): Location {
   }
 
   for (const key of lowKeys.keys()) {
-    const loc: Location =
-      lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key);
+    const loc: Location = lowKeys.get(key) ?? Location.none;
     if (
       lowkey_needKey(key) &&
       zone_isAvailable(loc) &&
@@ -288,8 +286,7 @@ function lowkey_keyAdv(key: Item): boolean {
     return false;
   }
 
-  const loc: Location =
-    lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key);
+  const loc: Location = lowKeys.get(key) ?? Location.none;
   if (!zone_isAvailable(loc)) {
     return false;
   }
@@ -487,14 +484,10 @@ export function L13_sorceressDoorLowKey(): boolean {
       let needHigherLevelForKey: boolean = true;
       for (const key of lowKeys.keys()) {
         if (lowkey_needKey(key)) {
-          auto_log_warning(
-            `${lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key)}: ${key}`,
-          );
+          auto_log_warning(`${lowKeys.get(key) ?? Location.none}: ${key}`);
           if (
             myLevel() >=
-            lowkey_levelNeededToUnlockZone(
-              lowKeys.get(key) ?? lowKeys.set(key, Location.none).get(key),
-            )
+            lowkey_levelNeededToUnlockZone(lowKeys.get(key) ?? Location.none)
           ) {
             needHigherLevelForKey = false;
           }

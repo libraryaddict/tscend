@@ -216,7 +216,7 @@ export function auto_combatHandler(
     );
     let idx: number = 0;
     if (round_1 === 0) {
-      if ((actions.get(0) ?? actions.set(0, "").get(0)) !== "start") {
+      if ((actions.get(0) ?? "") !== "start") {
         set("auto_combatDirective", "");
         idx = -1;
       } else {
@@ -224,7 +224,7 @@ export function auto_combatHandler(
       }
     }
     if (idx >= 0) {
-      let doThis: string = actions.get(idx) ?? actions.set(idx, "").get(idx);
+      let doThis: string = actions.get(idx) ?? "";
       while (
         containsText(doThis, "(") &&
         containsText(doThis, ")") &&
@@ -235,11 +235,11 @@ export function auto_combatHandler(
         if (idx >= actions.size) {
           break;
         }
-        doThis = actions.get(idx) ?? actions.set(idx, "").get(idx);
+        doThis = actions.get(idx) ?? "";
       }
       let restore: string = "";
       for (let i: number = idx + 1; i < actions.size; i++) {
-        restore += actions.get(i) ?? actions.set(i, "").get(i);
+        restore += actions.get(i) ?? "";
         if (i + 1 < actions.size) {
           restore += ";";
         }

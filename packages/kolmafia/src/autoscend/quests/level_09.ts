@@ -1120,10 +1120,7 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
       true,
       true,
     );
-    if (
-      (resPossible.get($element`stench`) ??
-        resPossible.set($element`stench`, 0).get($element`stench`)) >= 4
-    ) {
+    if ((resPossible.get($element`stench`) ?? 0) >= 4) {
       if (!speculative) {
         provideResistances(resGoal, $location`Twin Peak`, true, true, false);
       }

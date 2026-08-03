@@ -224,7 +224,7 @@ function pulledToday(it: Item): boolean {
     ]),
   );
   for (const i of allPulls.keys()) {
-    if (toInt(allPulls.get(i) ?? allPulls.set(i, "").get(i)) === toInt(it)) {
+    if (toInt(allPulls.get(i) ?? "") === toInt(it)) {
       return true;
     }
   }

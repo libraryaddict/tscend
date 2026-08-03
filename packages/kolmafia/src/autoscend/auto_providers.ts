@@ -941,10 +941,7 @@ export function provideResistances(
   debugprint_1 += doAll ? " and everything else like spleen." : "";
   auto_log_info(debugprint_1, "blue");
 
-  if (
-    (amt.get($element`stench`) ??
-      amt.set($element`stench`, 0).get($element`stench`)) > 0
-  ) {
+  if ((amt.get($element`stench`) ?? 0) > 0) {
     uneffect($effect`Flared Nostrils`);
   }
 
@@ -984,8 +981,8 @@ export function provideResistances(
   function result$6(ele: Element): number {
     return toInt(
       numericModifier(`${ele} Resistance`) +
-        (delta.get(ele) ?? delta.set(ele, 0).get(ele)) +
-        (gearLoss.get(ele) ?? gearLoss.set(ele, 0).get(ele)),
+        (delta.get(ele) ?? 0) +
+        (gearLoss.get(ele) ?? 0),
     );
   }
 
@@ -1024,7 +1021,7 @@ export function provideResistances(
   }
 
   function pass$6(ele: Element): boolean {
-    return result$6(ele) >= (amt.get(ele) ?? amt.set(ele, 0).get(ele));
+    return result$6(ele) >= (amt.get(ele) ?? 0);
   }
 
   function pass$7(): boolean {
@@ -1148,8 +1145,7 @@ export function provideResistances(
       if (
         auto_haveCoolerYeti() &&
         amt.size === 1 &&
-        (amt.get($element`cold`) ??
-          amt.set($element`cold`, 0).get($element`cold`)) > 0
+        (amt.get($element`cold`) ?? 0) > 0
       ) {
         if (
           ((resfam === $familiar`Mu` || resfam === $familiar`Exotic Parrot`) &&
@@ -1258,7 +1254,7 @@ export function provideResistances$4(
     false,
   );
   for (const [ele, i] of amt) {
-    if ((res.get(ele) ?? res.set(ele, 0).get(ele)) < i) {
+    if ((res.get(ele) ?? 0) < i) {
       return false;
     }
   }
@@ -1284,7 +1280,7 @@ function provideStats(
   const delta: Map<Stat, number> = new Map();
 
   function result$8(st: Stat): number {
-    return myBuffedstat(st) + (delta.get(st) ?? delta.set(st, 0.0).get(st));
+    return myBuffedstat(st) + (delta.get(st) ?? 0.0);
   }
 
   function result$9(): Map<Stat, number> {
@@ -1327,7 +1323,7 @@ function provideStats(
   }
 
   function pass$8(st: Stat): boolean {
-    return result$8(st) >= (amt.get(st) ?? amt.set(st, 0).get(st));
+    return result$8(st) >= (amt.get(st) ?? 0);
   }
 
   function pass$9(): boolean {
@@ -1560,7 +1556,7 @@ export function provideStats$2(
 ): boolean {
   const res: Map<Stat, number> = provideStats$1(amt, doEquips, false);
   for (const [st, i] of amt) {
-    if ((res.get(st) ?? res.set(st, 0.0).get(st)) < i) {
+    if ((res.get(st) ?? 0.0) < i) {
       return false;
     }
   }
