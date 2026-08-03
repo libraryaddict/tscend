@@ -11,6 +11,8 @@ anytime:
       name: "Pulls"
     anytime/prices:
       name: "Prices"
+    anytime/advancement:
+      name: "Advancement"
 iotm:
   name: "Iotm Settings"
   description: "Settings for items bound to accounts"

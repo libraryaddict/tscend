@@ -6631,15 +6631,21 @@ export function turnsUsedByRemainingNCForcesToday(): number {
   return forces;
 }
 
-export function substat_to_level(n: number): number {
-  if (n <= 16) {
+/**
+ * Get the level you would be with this substat
+ */
+export function substat_to_level(substat: number): number {
+  if (substat <= 16) {
     return 1; // All substats less than 16 are level 1, before the formula takes effect
   }
-  return squareRoot(squareRoot(n) - 4) + 1;
+  return squareRoot(squareRoot(substat) - 4) + 1;
 }
 
-export function level_to_min_substat(n: number): number {
-  return ((n - 1) ** 2 + 4) ** 2;
+/**
+ * Get the minimum substat needed to reach a level
+ */
+export function level_to_min_substat(playerLevel: number): number {
+  return ((playerLevel - 1) ** 2 + 4) ** 2;
 }
 
 export function stat_to_substat(s: Stat): Stat {

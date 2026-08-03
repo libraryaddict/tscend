@@ -32,17 +32,20 @@ import {
   min,
   Modifier,
   myAscensions,
+  myBasestat,
   myBuffedstat,
   myClass,
   myDaycount,
   myFamiliar,
   myHp,
+  myLevel,
   myMaxhp,
   myMeat,
   myPrimestat,
   numericModifier,
   propertyExists,
   pullsRemaining,
+  refreshStatus,
   removeProperty,
   retrieveItem,
   Skill,
@@ -126,6 +129,7 @@ import {
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$3,
+  auto_log_debug,
   auto_log_error,
   auto_log_info,
   auto_log_warning,
@@ -145,6 +149,7 @@ import {
   isGuildClass,
   MLDamageToMonsterMultiplier,
   shrugAT,
+  stat_to_substat,
   summonedMonsterToday,
   summonMonster,
   woods_questStart,
@@ -166,7 +171,7 @@ import {
   auto_makeAutumnalAegis,
   auto_remainingCandyCaneSlashes,
 } from "../iotms/mr2023";
-import { beretBusk } from "../iotms/mr2025";
+import { auto_bczDelevelPlan, auto_haveBCZ, beretBusk } from "../iotms/mr2025";
 import { Maximizer, maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_amw } from "../paths/adventurer_meats_world";
@@ -2034,6 +2039,58 @@ function L13_towerNSFinalDo(): boolean {
       "We do not have a Wand of Nagamar but appear to need one. We must lose to the Sausage first...",
       "red",
     );
+  }
+
+  if (get("auto_burndownStatsProgression", false) && myLevel() > 13) {
+    if (myClass().primestat === Stat.none) {
+      auto_log_info(
+        `Skipping burndown of stats, ${myClass()} doesn't have a primary stat, and we didn't account for that.`,
+      );
+    } else {
+      let delevelPlan: (() => void)[];
+
+      if (auto_haveBCZ()) {
+        delevelPlan = auto_bczDelevelPlan(13);
+      }
+
+      // TODO Hotdogs from clan, and maybe combine plans
+
+      if (delevelPlan === undefined) {
+        auto_log_info(
+          `Failed to find a plan to delevel before fighting the NS`,
+        );
+      } else {
+        auto_log_info(
+          `We will perform ${delevelPlan.length} actions to bring us from level ${myLevel()} to level 13`,
+        );
+        const basestat = stat_to_substat(myClass().primestat);
+
+        delevelPlan.forEach((p) => {
+          if (myLevel() <= 13) {
+            abort(
+              `We were about to burn some stats, but unexpectably, we were already level 13.`,
+            );
+          }
+
+          const statsBefore = myBasestat(basestat);
+
+          p();
+
+          if (statsBefore === myBasestat(basestat)) {
+            auto_log_debug(
+              `Refreshing status, we don't seem to have lost any stats...`,
+            );
+            refreshStatus();
+          }
+
+          if (myLevel() < 13) {
+            abort(
+              `We were trying to delevel for the instant karma, but we lost too much stats`,
+            );
+          }
+        });
+      }
+    }
   }
 
   if (in_heavyrains()) {

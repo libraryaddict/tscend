@@ -2,10 +2,6 @@ auto_delayTimer:
   name: "Action Delay"
   type: integer
   description: Sets the delay before each action, default is 1 second(s). It is not recommended to reduce this below 1.
-auto_powerLevelTimer:
-  name: "Powerleveling Delay"
-  type: integer
-  description: Delay in seconds before each time we spend an adv powerleveling. default is 10 sec. lowest valid value is 1.
 auto_stayInRun:
   name: "Stay In Run"
   type: boolean
@@ -30,14 +26,6 @@ auto_save_adv_override:
   name: "Save Adventures Override"
   type: integer
   description: Set an override to amount of adv to save at end of day. Set to -1 to handle this automatically.
-auto_MLSafetyLimit:
-  name: "ML Safety Limit"
-  type: integer
-  description: "If set this will be the (approximate) cap for +ML. WARNING: Certain conditions may require the script to exceed this by a small margin. For best results set this 10 below the maximum ML you can handle. Setting to -1 will cause the lowest possible ML to be equipped, including going negative if possible - this can cause non-optimal gear to be equipped."
-auto_disregardInstantKarma:
-  name: "Disregard Instant Karma"
-  type: boolean
-  description: "When true, the script will not scale back ML after reaching Level 13, if you also set auto_MLSafetyLimit to 999 the script will passively power level. WARNING: You are unlikely to get Instant Karma (This is useful if your run preceeds The Sea, The Basement, or Dungeons)"
 auto_secondPlaceOrBust:
   name: "Second Place Or Bust"
   type: boolean

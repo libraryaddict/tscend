@@ -1,0 +1,20 @@
+auto_powerLevelTimer:
+  name: "Powerleveling Delay"
+  type: integer
+  description: Delay in seconds before each time we spend an adv powerleveling. default is 10 sec. lowest valid value is 1.
+auto_MLSafetyLimit:
+  name: "ML Safety Limit"
+  type: integer
+  description: "If set this will be the (approximate) cap for +ML. WARNING: Certain conditions may require the script to exceed this by a small margin. For best results set this 10 below the maximum ML you can handle. Setting to -1 will cause the lowest possible ML to be equipped, including going negative if possible - this can cause non-optimal gear to be equipped."
+auto_disregardInstantKarma:
+  name: "Disregard Instant Karma"
+  type: boolean
+  description: "When true, the script will not scale back ML after reaching Level 13, if you also set auto_MLSafetyLimit to 999 the script will passively power level. WARNING: You are unlikely to get Instant Karma (This is useful if your run preceeds The Sea, The Basement, or Dungeons)"
+auto_burndownStatsProgression:
+  name: "Burn Stats for Progression"
+  type: boolean
+  description: "When enabled, the script will burn your stats as needed on resources to make your runs faster."
+auto_burndownStatsInstantKarma:
+  name: "Burn Stats for Instant Karma"
+  type: boolean
+  description: "When enabled, the script will, if possible and needed, burn your stats to drop you down to level 13 to qualify for Instant Karma"

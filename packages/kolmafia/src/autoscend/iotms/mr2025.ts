@@ -35,6 +35,7 @@ import {
   Monster,
   monsterPhylum,
   myBasestat,
+  myClass,
   myDaycount,
   myFullness,
   myId,
@@ -1643,7 +1644,7 @@ function auto_bczCastMath(cast: number): number {
   //11, 23, 37, 110, 230, 370, etc. 13th cast follows a different pattern but we will never get there but better to be safe than sorry
 }
 
-function statChange(st: Stat, casts: number): boolean {
+function bcz_allowStatChange(st: Stat, casts: number): boolean {
   let level: number = myLevel();
   if (myLevel() >= 13) {
     level = 13;
@@ -1656,7 +1657,8 @@ function statChange(st: Stat, casts: number): boolean {
       return false;
     case in_amw() && casts >= 5:
       return false;
-    case st === myPrimestat():
+    case st ===
+      (myClass().primestat === Stat.none ? myPrimestat() : myClass().primestat):
       //Don't want to use so many substats we go down too many levels or we have cast more than we really need to/should
       //Don't go beneath our current level or level 13 if we cast the skill
       return (
@@ -1675,72 +1677,113 @@ function statChange(st: Stat, casts: number): boolean {
   }
 }
 
+type BCZSkill = {
+  skill: Skill;
+  stat: Stat;
+  limit: (conserve: boolean) => number;
+  pref: string;
+  gives?: Item;
+};
+
+const BCZ: BCZSkill[] = [
+  {
+    skill: $skill`BCZ: Blood Geyser`,
+    stat: $stat`Muscle`,
+    limit: () => 6,
+    pref: "_bczBloodGeyserCasts",
+  },
+  {
+    skill: $skill`BCZ: Blood Bath`,
+    stat: $stat`Muscle`,
+    limit: () => 6,
+    pref: "_bczBloodBathCasts",
+  },
+  {
+    skill: $skill`BCZ: Create Blood Thinner`,
+    stat: $stat`Muscle`,
+    limit: () => 1,
+    pref: "_bczBloodThinnerCasts",
+    gives: $item`blood thinner`,
+  },
+
+  {
+    skill: $skill`BCZ: Refracted Gaze`,
+    stat: $stat`Mysticality`,
+    limit: (conserve) => (conserve ? 3 : 20),
+    pref: "_bczRefractedGazeCasts",
+  },
+  {
+    skill: $skill`BCZ: Dial it up to 11`,
+    stat: $stat`Mysticality`,
+    limit: () => 3,
+    pref: "_bczDialitupCasts",
+  },
+  {
+    skill: $skill`BCZ: Prepare Spinal Tapas`,
+    stat: $stat`Mysticality`,
+    limit: (conserve) =>
+      Math.min(
+        Math.max(
+          3,
+          get("_bczSpinalTapasCasts") +
+            (itemAmount($item`spinal tapas`) > 0 ? 0 : 1),
+        ),
+        conserve ? 3 : 20,
+      ),
+    pref: "_bczSpinalTapasCasts",
+    gives: $item`spinal tapas`,
+  },
+
+  {
+    skill: $skill`BCZ: Sweat Bullets`,
+    stat: $stat`Moxie`,
+    limit: (conserve) => (conserve ? 6 : 20),
+    pref: "_bczSweatBulletsCasts",
+  },
+  {
+    skill: $skill`BCZ: Craft a Pheromone Cocktail`,
+    stat: $stat`Moxie`,
+    limit: (conserve) =>
+      Math.min(
+        Math.max(6, get("_bczPheromoneCocktailCasts")) +
+          (itemAmount($item`pheromone cocktail`) > 0 ? 0 : 1),
+        conserve ? 6 : 20,
+      ),
+    pref: "_bczPheromoneCocktailCasts",
+    gives: $item`pheromone cocktail`,
+  },
+  {
+    skill: $skill`BCZ: Sweat Equity`,
+    stat: $stat`Moxie`,
+    limit: (conserve) => (conserve ? 2 : 5),
+    pref: "_bczSweatEquityCasts",
+  },
+] as const;
+
 export function auto_wantToBCZ(sk: Skill): boolean {
-  // zootomist doesn't have substats
-  if (!auto_haveBCZ() || !auto_is_valid$2(sk) || in_zootomist()) {
+  if (!auto_haveBCZ() || !auto_is_valid$2(sk) || in_zootomist()) return false;
+  if (currentRound() !== 0 && !auto_canUse(sk)) return false;
+
+  const info = BCZ.find((x) => x.skill === sk);
+
+  if (info === undefined) {
     return false;
   }
-  // If we're in combat, and we can't use it
-  if (currentRound() !== 0 && !auto_canUse(sk)) return;
 
-  const bloodBathCasts: number = get("_bczBloodBathCasts");
-  const bloodGeyserCasts: number = get("_bczBloodGeyserCasts");
-  const bloodThinnerCasts: number = get("_bczBloodThinnerCasts");
-  const dialItUpCasts: number = get("_bczDialitupCasts");
-  const pheromoneCocktailCasts: number = get("_bczPheromoneCocktailCasts");
-  const refractedGazeCasts: number = get("_bczRefractedGazeCasts");
-  const spinalTapasCasts: number = get("_bczSpinalTapasCasts");
-  const sweatBulletsCasts: number = get("_bczSweatBulletsCasts");
-  const sweatEquityCasts: number = get("_bczSweatEquityCasts");
-
-  switch (sk) {
-    case $skill`BCZ: Blood Geyser`:
-      //Muscle Casts
-      return (
-        statChange($stat`Muscle`, bloodGeyserCasts) && bloodGeyserCasts < 6
-      );
-    case $skill`BCZ: Blood Bath`:
-      return statChange($stat`Muscle`, bloodBathCasts) && bloodBathCasts < 6;
-    case $skill`BCZ: Create Blood Thinner`: //should never be cast, but if we want to support in the future, we can
-      if (!canChew($item`blood thinner`)) {
-        return false;
-      }
-      return (
-        statChange($stat`Muscle`, bloodThinnerCasts) && bloodThinnerCasts === 0
-      );
-    case $skill`BCZ: Dial it up to 11`:
-      //Mysticality Casts
-      return statChange($stat`Mysticality`, dialItUpCasts) && dialItUpCasts < 3;
-    case $skill`BCZ: Refracted Gaze`:
-      return (
-        statChange($stat`Mysticality`, refractedGazeCasts) &&
-        refractedGazeCasts < 6
-      );
-    case $skill`BCZ: Prepare Spinal Tapas`:
-      if (!auto_canEat($item`spinal tapas`)) {
-        return false;
-      }
-      return (
-        statChange($stat`Mysticality`, spinalTapasCasts) && spinalTapasCasts < 3
-      );
-    case $skill`BCZ: Sweat Bullets`:
-      //Moxie Casts
-      return (
-        statChange($stat`Moxie`, sweatBulletsCasts) && sweatBulletsCasts < 6
-      );
-    case $skill`BCZ: Sweat Equity`:
-      return statChange($stat`Moxie`, sweatEquityCasts) && sweatEquityCasts < 2;
-    case $skill`BCZ: Craft a Pheromone Cocktail`:
-      if (!auto_canDrink($item`pheromone cocktail`)) {
-        return false;
-      }
-      return (
-        statChange($stat`Moxie`, pheromoneCocktailCasts) &&
-        pheromoneCocktailCasts < 6
-      );
-    default:
+  if (info.gives !== undefined) {
+    if (info.gives.spleen > 0 && !canChew(info.gives)) {
       return false;
+    } else if (info.gives.inebriety > 0 && !auto_canDrink(info.gives)) {
+      return false;
+    } else if (info.gives.fullness > 0 && !auto_canEat(info.gives)) {
+      return false;
+    }
   }
+
+  return (
+    bcz_allowStatChange(info.stat, get(info.pref, 0)) &&
+    get(info.pref, 0) < info.limit(!get("auto_burndownStatsProgression", false))
+  );
 }
 
 export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
@@ -1764,8 +1807,11 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
   // Would we still want to gaze again after this cast? If not, this is the last one we're
   // stat-willing to make today, so reserve it for the star key instead of spending it here.
   const isLastWillingGaze: boolean =
-    !statChange($stat`Mysticality`, refractedGazeCastsUsed + 1) ||
-    refractedGazeCastsUsed + 1 >= 6;
+    !bcz_allowStatChange($stat`Mysticality`, refractedGazeCastsUsed + 1) ||
+    refractedGazeCastsUsed + 1 >=
+      BCZ.find((s) => s.skill === $skill`BCZ: Refracted Gaze`).limit(
+        !get("auto_burndownStatsProgression", false),
+      );
   if (
     onFinalDay &&
     needStarKey() &&
@@ -1849,6 +1895,95 @@ export function auto_getBCZItems(): void {
   }
 
   return;
+}
+
+/**
+ * Creates an array of skill casts required to drop to the desired level.
+ * Tries to minimize substats lost, returns null if it's impossible to
+ * reach the desired level without overshooting.
+ */
+export function auto_bczDelevelPlan(
+  desiredLevel: number,
+  primeStat: Stat = myClass().primestat,
+): (() => void)[] | undefined {
+  const currentSubstats: number = myBasestat(stat_to_substat(primeStat));
+  const minTargetSubstats: number = level_to_min_substat(desiredLevel);
+  const maxTargetSubstats: number = level_to_min_substat(desiredLevel + 1) - 1;
+
+  const minSpend = currentSubstats - maxTargetSubstats;
+  const maxSpend = currentSubstats - minTargetSubstats;
+
+  const [skill1, skill2] = BCZ.filter(
+    (s) => s.stat === primeStat && !s.skill.combat,
+  );
+  const casted1 = get(skill1.pref, 0);
+  const casted2 = get(skill2.pref, 0);
+
+  let bestCost: number = Infinity;
+  let bestX: number = -1;
+  let bestY: number = -1;
+
+  for (let x = 0; x <= 22; x++) {
+    const costSkill1 = auto_bczCastMath(casted1 + x);
+
+    if (costSkill1 > maxSpend) {
+      break;
+    }
+
+    for (let y = 0; y <= 22; y++) {
+      const totalCost = costSkill1 + auto_bczCastMath(casted2 + y);
+
+      if (totalCost > maxSpend) {
+        break; // We've overshot the max budget
+      }
+
+      if (totalCost < minSpend) {
+        continue;
+      }
+
+      // Valid plan found! But this one is worse.
+      if (totalCost >= bestCost) {
+        continue;
+      }
+
+      bestCost = totalCost;
+      bestX = x;
+      bestY = y;
+    }
+  }
+
+  // If we never found a combination
+  if (bestX === -1 || bestY === -1) {
+    return null;
+  }
+
+  const skills: Skill[] = [];
+
+  for (let i = 0; i < bestX; i++) {
+    skills.push(skill1.skill);
+  }
+  for (let i = 0; i < bestY; i++) {
+    skills.push(skill2.skill);
+  }
+
+  const plan: (() => void)[] = [];
+
+  for (const skill of skills) {
+    const bcz = BCZ.find((b) => b.skill === skill);
+
+    plan.push(() => {
+      if (bcz.gives !== undefined) {
+        handleTracker({
+          what: $item`blood cubic zirconia`,
+          detail: bcz.gives.toString(),
+          property: "auto_iotm_claim",
+        });
+      }
+      useSkill(1, skill);
+    });
+  }
+
+  return plan;
 }
 
 function auto_haveShrunkenHead(): boolean {
