@@ -2042,7 +2042,7 @@ function L13_towerNSFinalDo(): boolean {
     );
   }
 
-  if (get("auto_burndownStatsProgression", false) && myLevel() > 13) {
+  if (get("auto_burndownStatsInstantKarma", false) && myLevel() > 13) {
     if (myClass().primestat === Stat.none) {
       auto_log_info(
         `Skipping burndown of stats, ${myClass()} doesn't have a primary stat, and we didn't account for that.`,
