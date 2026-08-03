@@ -49,6 +49,7 @@ import {
   internalQuestStatus,
   isGhost,
   MLDamageToMonsterMultiplier,
+  safeGet,
   stunnable,
 } from "../auto_util";
 import { auto_bowlingBallCombatString } from "../iotms/mr2022";
@@ -458,7 +459,7 @@ export function auto_combatDefaultStage4(
     canUse$3($item`DNA extraction syringe`) &&
     monsterLevelAdjustment() < 150
   ) {
-    if (monsterPhylum(enemy) !== get("dnaSyringe", Phylum.none)) {
+    if (monsterPhylum(enemy) !== safeGet("dnaSyringe", Phylum.none)) {
       return useItem($item`DNA extraction syringe`);
     }
   }

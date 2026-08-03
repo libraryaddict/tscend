@@ -128,6 +128,7 @@ import {
   isFreeMonster,
   isGuildClass,
   meatReserve,
+  safeGet,
   wrap_item,
 } from "../auto_util";
 import { auto_canUse } from "../combat/auto_combat_util";
@@ -881,7 +882,7 @@ export function auto_scepterSkills(): void {
     !get("_aug28Cast") &&
     pathHasFamiliar()
   ) {
-    const hundred_fam: Familiar = get("auto_100familiar", Familiar.none);
+    const hundred_fam: Familiar = safeGet("auto_100familiar", Familiar.none);
     if (
       ((in_avantGuard() && inHardcore()) ||
         (hundred_fam !== Familiar.none &&
@@ -1020,7 +1021,7 @@ export function auto_canHabitat(): boolean {
   }
   if (get("_monsterHabitatsFightsLeft") > 0) {
     // already habitating something but we may not need all 5 of them in certain situations
-    switch (get("_monsterHabitatsMonster", Monster.none)) {
+    switch (safeGet("_monsterHabitatsMonster", Monster.none)) {
       case $monster`fantasy bandit`:
         return fantasyBanditsFought() < 5;
       case $monster`modern zmobie`:
@@ -1039,7 +1040,7 @@ export function auto_habitatTarget(target: Monster): boolean {
     return false;
   }
   if (
-    get("_monsterHabitatsMonster", Monster.none) === target &&
+    safeGet("_monsterHabitatsMonster", Monster.none) === target &&
     get("_monsterHabitatsFightsLeft") > 0
   ) {
     // already habitating this monster
@@ -1077,12 +1078,12 @@ export function auto_habitatTarget(target: Monster): boolean {
         // don't habitat free fights in avant guard
         return (
           !in_avantGuard() &&
-          (get("auto_habitatMonster", Monster.none) === target ||
-            (get("_monsterHabitatsMonster", Monster.none) === target &&
+          (safeGet("auto_habitatMonster", Monster.none) === target ||
+            (safeGet("_monsterHabitatsMonster", Monster.none) === target &&
               get("_monsterHabitatsFightsLeft") === 0))
         );
       default:
-        return get("auto_habitatMonster", Monster.none) === target;
+        return safeGet("auto_habitatMonster", Monster.none) === target;
     }
   }
   return false;
@@ -1094,7 +1095,7 @@ export function auto_habitatFightsLeft(): number {
 
 export function auto_habitatMonster(): Monster {
   if (get("_monsterHabitatsFightsLeft") > 0) {
-    return get("_monsterHabitatsMonster", Monster.none);
+    return safeGet("_monsterHabitatsMonster", Monster.none);
   }
   return Monster.none;
 }
@@ -1260,14 +1261,14 @@ export function auto_RWBBlastTarget(target: Monster): boolean {
       // only worth it if we need 9 or more evilness reduced.
       return get("cyrptNicheEvilness") - 3 * (3 + cyrptEvilBonus()) > 13;
     default:
-      return get("rwbMonster", Monster.none) === target;
+      return safeGet("rwbMonster", Monster.none) === target;
   }
   return false;
 }
 
 export function auto_RWBMonster(): Monster {
   if (get("rwbMonsterCount") < 3) {
-    return get("rwbMonster", Monster.none);
+    return safeGet("rwbMonster", Monster.none);
   }
   return Monster.none;
 }

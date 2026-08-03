@@ -107,6 +107,7 @@ import {
   isArmoryAndLeggeryStoreAvailable,
   isFreeMonster,
   meatReserve,
+  safeGet,
   wrap_item,
 } from "./auto_util";
 import { zone_delay } from "./auto_zone";
@@ -817,7 +818,7 @@ function finalizeMaximize(speculative: boolean = false): void {
   }
   //otherwise miniature crystal ball is handled along with monster goals in pre_adv
 
-  const nextMonster: Monster = get("auto_nextEncounter", Monster.none);
+  const nextMonster: Monster = safeGet("auto_nextEncounter", Monster.none);
   const nextMonsterIsFree: boolean =
     (nextMonster !== Monster.none && isFreeMonster(nextMonster)) ||
     (get("breathitinCharges") > 0 && myLocation().environment === "outdoor");
@@ -832,7 +833,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     const dontSausageBackups: boolean =
       auto_backupTarget() &&
       !$monsters`sausage goblin, Eldritch Tentacle`.includes(
-        get("lastCopyableMonster", Monster.none),
+        safeGet("lastCopyableMonster", Monster.none),
       );
     // also don't equip Kramco when using Map the Monsters as sausage goblins override the NC
     if (saveGoblinForDelay || dontSausageBackups || get("mappingMonsters")) {
@@ -1408,14 +1409,14 @@ export function auto_forceEquipSword(speculative: boolean = false): boolean {
   }
 
   if (
-    get("auto_equipment_override_weapon", Item.none) !== Item.none &&
+    safeGet("auto_equipment_override_weapon", Item.none) !== Item.none &&
     auto_can_equip(
-      get("auto_equipment_override_weapon", Item.none),
+      safeGet("auto_equipment_override_weapon", Item.none),
       $slot`weapon`,
     )
   ) {
     if (
-      itemType(get("auto_equipment_override_weapon", Item.none)) === "sword"
+      itemType(safeGet("auto_equipment_override_weapon", Item.none)) === "sword"
     ) {
       return true;
     } else {

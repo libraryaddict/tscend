@@ -16,6 +16,7 @@ import {
   auto_log_info,
   auto_runChoice,
   handleCopiedMonster,
+  safeGet,
 } from "../auto_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 
@@ -41,7 +42,7 @@ export function auto_reagnimatedGetPart(): void {
 }
 
 function handleRainDohDo(): boolean {
-  const enemy: Monster = get("rainDohMonster", Monster.none);
+  const enemy: Monster = safeGet("rainDohMonster", Monster.none);
   auto_log_info(`Black boxing: ${enemy}`, "blue");
 
   function validate_rainDohBox(): void {

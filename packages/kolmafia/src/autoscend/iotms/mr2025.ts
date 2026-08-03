@@ -121,6 +121,7 @@ import {
   isFreeMonster,
   knapsack,
   level_to_min_substat,
+  safeGet,
   stat_to_substat,
   zoneRank,
 } from "../auto_util";
@@ -2024,7 +2025,7 @@ export function auto_wantToShrunkenHead$1(place: Location): boolean {
     return false;
   }
 
-  const next: Monster = get("auto_nextEncounter", Monster.none);
+  const next: Monster = safeGet("auto_nextEncounter", Monster.none);
   if (next !== Monster.none) {
     //next monster is forced by zone mechanics or some other mechanism
     return auto_wantToShrunkenHead(next);

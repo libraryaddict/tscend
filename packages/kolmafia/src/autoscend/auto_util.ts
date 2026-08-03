@@ -3064,7 +3064,7 @@ function LX_summonMonsterDo(): boolean {
   }
   // summon mountain man if we know the ore we need and still need 2 or more
   // don't summon if we have model train set as it is an easy source of ore
-  const oreGoal: Item = get("trapperOre", Item.none);
+  const oreGoal: Item = safeGet("trapperOre", Item.none);
   if (
     internalQuestStatus("questL08Trapper") < 2 &&
     auto_haveTrainSet() &&
@@ -3251,7 +3251,7 @@ export const LX_summonMonsterTask: QuestTask = registerQuestTask({
     ) {
       encounters.push({ monster: $monster`screambat`, needAmount: 1 });
     }
-    const oreGoal: Item = get("trapperOre", Item.none);
+    const oreGoal: Item = safeGet("trapperOre", Item.none);
     if (
       get("trapperOre") &&
       internalQuestStatus("questL08Trapper") < 2 &&
@@ -4579,7 +4579,7 @@ export function auto_is_valid(it: Item): boolean {
 
 export function auto_is_valid$1(fam: Familiar): boolean {
   if (is100FamRun()) {
-    return get("auto_100familiar", Familiar.none) === fam;
+    return safeGet("auto_100familiar", Familiar.none) === fam;
   }
   if (myPath() === $path`Trendy`) {
     return isTrendy(fam);
@@ -4973,19 +4973,19 @@ export function auto_check_conditions(conds: string): boolean {
           }
           if (
             haveEffect($effect`On the Trail`) > 0 &&
-            get("olfactedMonster", Monster.none) === check_sniffed
+            safeGet("olfactedMonster", Monster.none) === check_sniffed
           ) {
             return true;
           }
           if (
             isActuallyEd() &&
-            get("stenchCursedMonster", Monster.none) === check_sniffed
+            safeGet("stenchCursedMonster", Monster.none) === check_sniffed
           ) {
             return true;
           }
           if (
             is_pete() &&
-            get("makeFriendsMonster", Monster.none) === check_sniffed
+            safeGet("makeFriendsMonster", Monster.none) === check_sniffed
           ) {
             return true;
           }
@@ -4993,26 +4993,26 @@ export function auto_check_conditions(conds: string): boolean {
             $classes`Cow Puncher, Beanslinger, Snake Oiler`.includes(
               myClass(),
             ) &&
-            get("longConMonster", Monster.none) === check_sniffed
+            safeGet("longConMonster", Monster.none) === check_sniffed
           ) {
             return true;
           }
           if (
             in_darkGyffte() &&
-            get("auto_bat_soulmonster", Monster.none) === check_sniffed
+            safeGet("auto_bat_soulmonster", Monster.none) === check_sniffed
           ) {
             return true;
           }
-          if (get("_gallapagosMonster", Monster.none) === check_sniffed) {
+          if (safeGet("_gallapagosMonster", Monster.none) === check_sniffed) {
             return true;
           }
-          if (get("monkeyPointMonster", Monster.none) === check_sniffed) {
+          if (safeGet("monkeyPointMonster", Monster.none) === check_sniffed) {
             return true;
           }
-          if (get("_latteMonster", Monster.none) === check_sniffed) {
+          if (safeGet("_latteMonster", Monster.none) === check_sniffed) {
             return true;
           }
-          if (get("motifMonster", Monster.none) === check_sniffed) {
+          if (safeGet("motifMonster", Monster.none) === check_sniffed) {
             return true;
           }
           return false;
@@ -6768,7 +6768,7 @@ export function auto_wantToFreeKillWithNoDrops(
       return true;
     }
     //This is called in stage2 and auto_purple_candled is set in stage 4 so this should only ever show up on the purple candled enemy
-    if (get("auto_purple_candled", Monster.none) === enemy) {
+    if (safeGet("auto_purple_candled", Monster.none) === enemy) {
       return true;
     }
     return false;
@@ -7131,4 +7131,12 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
   }
 
   return text;
+}
+
+export function safeGet<T>(key: string, fallback: T): T {
+  const value = (get as unknown as (key: string, fallback: T) => T | null)(
+    key,
+    fallback,
+  );
+  return value === null ? fallback : value;
 }

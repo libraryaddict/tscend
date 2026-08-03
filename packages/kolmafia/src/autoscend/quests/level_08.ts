@@ -88,6 +88,7 @@ import {
   canSummonMonster,
   canYellowRay,
   internalQuestStatus,
+  safeGet,
   summonMonster,
 } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
@@ -128,7 +129,7 @@ export function needOre(): boolean {
   if (internalQuestStatus("questL08Trapper") > 2) {
     return false;
   }
-  const oreGoal: Item = get("trapperOre", Item.none);
+  const oreGoal: Item = safeGet("trapperOre", Item.none);
   if (itemAmount(oreGoal) >= 3) {
     return false;
   }
@@ -406,7 +407,7 @@ function L8_mountainManSummonDo(): boolean {
     // step1 = we spoke to trapper to learn what ores he wants
     return false;
   }
-  const oreGoal: Item = get("trapperOre", Item.none);
+  const oreGoal: Item = safeGet("trapperOre", Item.none);
   const current_ore: number = itemAmount(oreGoal);
   if (current_ore >= 3) {
     return false;
@@ -443,7 +444,7 @@ function L8_mountainManSummonDo(): boolean {
 
 export const L8_mountainManSummonTask: QuestTask = registerQuestTask({
   name: "L8_mountainManSummon",
-  completed: () => itemAmount(get("trapperOre", Item.none)) >= 3,
+  completed: () => itemAmount(safeGet("trapperOre", Item.none)) >= 3,
   ready: () => true,
   do: L8_mountainManSummonDo,
   desiredEncounters: () =>
@@ -463,13 +464,13 @@ export function L8_mineOreWorthBurningLuckOn(): boolean {
   if (internalQuestStatus("questL08Trapper") !== 1) {
     return false;
   }
-  const oreGoal: Item = get("trapperOre", Item.none);
+  const oreGoal: Item = safeGet("trapperOre", Item.none);
   if (itemAmount(oreGoal) >= 3) {
     return false;
   }
   if (
     !get("_chateauMonsterFought") &&
-    get("chateauMonster", Monster.none) === $monster`mountain man`
+    safeGet("chateauMonster", Monster.none) === $monster`mountain man`
   ) {
     return false;
   }
@@ -509,13 +510,13 @@ function L8_getMineOres(): boolean {
     return false;
   }
 
-  const oreGoal: Item = get("trapperOre", Item.none);
+  const oreGoal: Item = safeGet("trapperOre", Item.none);
 
   if (itemAmount(oreGoal) >= 3) {
     return false;
   }
 
-  if (get("chateauMonster", Monster.none) === $monster`mountain man`) {
+  if (safeGet("chateauMonster", Monster.none) === $monster`mountain man`) {
     // apparently this is a thing some people do. Lets add the most basic of support.
     return false;
   }
@@ -563,7 +564,7 @@ function L8_getMineOres(): boolean {
 
 const L8_getMineOresTask: QuestTask = registerQuestTask({
   name: "L8_getMineOres",
-  completed: () => itemAmount(get("trapperOre", Item.none)) >= 3,
+  completed: () => itemAmount(safeGet("trapperOre", Item.none)) >= 3,
   ready: () => true,
   do: L8_getMineOres,
   locations: $location`Itznotyerzitz Mine`,
@@ -1161,12 +1162,12 @@ function L8_trapperTalkDo(): boolean {
   if (initial_step === 1) {
     // step1===we know what ore to get. so go get ore and cheese
     if (
-      itemAmount(get("trapperOre", Item.none)) >= 3 &&
+      itemAmount(safeGet("trapperOre", Item.none)) >= 3 &&
       itemAmount($item`goat cheese`) >= 3
     ) {
       // turn in ore and cheese to advance from step1 to step2
       auto_log_info(
-        `Giving Trapper goat cheese and ${get("trapperOre", Item.none)}`,
+        `Giving Trapper goat cheese and ${safeGet("trapperOre", Item.none)}`,
         "blue",
       );
       visitUrl("place.php?whichplace=mclargehuge&action=trappercabin"); // talk to the trapper to advance quest

@@ -92,6 +92,7 @@ import {
   internalQuestStatus,
   isFreeMonster,
   meatReserve,
+  safeGet,
 } from "../auto_util";
 import { monster_to_location, zone_delay } from "../auto_zone";
 import { ConsumeAction } from "../autoscend_record";
@@ -651,7 +652,7 @@ export function auto_wantToSpadeDigSkeleton(loc: Location): boolean {
   const valid_loc: boolean = spadeDelayZones().has(loc);
   const have_digs: boolean = auto_spadeDigsRemaining() > 0;
   const delay_left: boolean = zone_delay(loc)._boolean;
-  const zone_set: boolean = get("lastAdventure", Location.none) === loc;
+  const zone_set: boolean = safeGet("lastAdventure", Location.none) === loc;
   if (valid_loc && have_digs && delay_left && zone_set) {
     return true;
   }

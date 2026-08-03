@@ -76,6 +76,7 @@ import {
   auto_runChoice,
   handleTracker,
   meatReserve,
+  safeGet,
   wrap_item,
 } from "../auto_util";
 import { zone_available } from "../auto_zone";
@@ -1145,7 +1146,7 @@ export function LX_ghostBusting(): boolean {
     }
   }
   // goal & progress specific reasons to skip busting this turn go below.
-  const goal: Location = get("ghostLocation", Location.none);
+  const goal: Location = safeGet("ghostLocation", Location.none);
   if (goal === Location.none) {
     return false;
   }

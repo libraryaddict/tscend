@@ -138,6 +138,7 @@ import {
   needToConsumeForEmergencyRollover,
   ovenHandle,
   pm_updateThrall,
+  safeGet,
   shrugAT,
 } from "./auto_util";
 import { ConsumeAction } from "./autoscend_record";
@@ -2535,7 +2536,7 @@ function auto_breakfastCounterVisitDo(): boolean {
   auto_runChoice(7); // Visit the Breakfast Counter
   if (getProperty("muffinOnOrder") !== "") {
     cliExecute("refresh inv");
-    if (itemAmount(get("muffinOnOrder", Item.none)) > 0) {
+    if (itemAmount(safeGet("muffinOnOrder", Item.none)) > 0) {
       // workaround mafia not clearing the property occasionally
       // see https://kolmafia.us/threads/ordering-a-muffin-at-the-breakfast-counter-doesnt-always-set-the-muffinonorder-property.26072/
       set("muffinOnOrder", "");
@@ -2560,7 +2561,7 @@ export const auto_breakfastCounterVisitTask: QuestTask = registerQuestTask({
     itemAmount($item`earthenware muffin tin`) > 0 ||
     (!get("_muffinOrderedToday") &&
       $items`blueberry muffin, bran muffin, chocolate chip muffin, earthenware muffin tin`.includes(
-        get("muffinOnOrder", Item.none),
+        safeGet("muffinOnOrder", Item.none),
       )),
   do: auto_breakfastCounterVisitDo,
 });
@@ -2774,7 +2775,7 @@ export function consumeStuff(): void {
     // always unequip stooper as only useful for roll over
     if (
       myFamiliar() === $familiar`Stooper` &&
-      get("auto_100familiar", Familiar.none) !== $familiar`Stooper` &&
+      safeGet("auto_100familiar", Familiar.none) !== $familiar`Stooper` &&
       pathAllowsChangingFamiliar()
     ) {
       //check path allows changing of familiars

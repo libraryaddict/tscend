@@ -100,6 +100,7 @@ import {
   isGalaktikAvailable,
   meatReserve,
   preferredLibram,
+  safeGet,
   whatStatSmile,
 } from "./auto_util";
 import { auto_equipAprilShieldBuff } from "./iotms/mr2025";
@@ -1296,7 +1297,7 @@ function auto_post_adventure(): boolean {
     //count how many times in a row we went with no adv spent
     set("_auto_inf_counter", get("_auto_inf_counter", 0) + 1);
     //if last monster changed it means we are doing free combats
-    if (get("_auto_inf_last_monster", Monster.none) !== lastMonster()) {
+    if (safeGet("_auto_inf_last_monster", Monster.none) !== lastMonster()) {
       removeProperty("_auto_inf_counter"); //reset counter
     }
     set("_auto_inf_last_monster", lastMonster());

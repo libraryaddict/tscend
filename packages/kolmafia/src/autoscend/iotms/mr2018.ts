@@ -76,6 +76,7 @@ import {
   handleTracker,
   hasTorso,
   internalQuestStatus,
+  safeGet,
   wrap_item,
 } from "../auto_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
@@ -685,7 +686,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
     }
   }
 
-  const oreGoal: Item = get("trapperOre", Item.none);
+  const oreGoal: Item = safeGet("trapperOre", Item.none);
   if (
     oreGoal !== Item.none &&
     itemAmount(oreGoal) < 3 &&

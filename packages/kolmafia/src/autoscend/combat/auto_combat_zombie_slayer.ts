@@ -14,6 +14,7 @@ import {
   auto_have_skill,
   handleTracker,
   internalQuestStatus,
+  safeGet,
 } from "../auto_util";
 import { in_zombieSlayer } from "../paths/zombie_slayer";
 import { cyrptEvilBonus } from "../quests/level_07";
@@ -90,7 +91,7 @@ export function auto_combatZombieSlayerStage4(
     }
     if (
       enemy === $monster`mountain man` &&
-      itemAmount(get("trapperOre", Item.none)) < 3
+      itemAmount(safeGet("trapperOre", Item.none)) < 3
     ) {
       doSmash = true;
     }

@@ -82,6 +82,7 @@ import {
   hasTorso,
   internalQuestStatus,
   meatReserve,
+  safeGet,
   wrap_item,
 } from "../auto_util";
 import { zone_available, zone_needItem } from "../auto_zone";
@@ -691,7 +692,7 @@ export function utilizeStillsuit(): void {
       );
     }
     if (is100FamRun()) {
-      handleFamiliar$1(get("auto_100familiar", Familiar.none)); //just make extra sure this didnt break 100 familiar runs but familiar should not have been swapped
+      handleFamiliar$1(safeGet("auto_100familiar", Familiar.none)); //just make extra sure this didnt break 100 familiar runs but familiar should not have been swapped
     }
   }
 }
@@ -799,7 +800,7 @@ function auto_autumnatonReadyToQuest(): boolean {
 }
 
 export function auto_autumnatonQuestingIn(): Location {
-  return get("autumnatonQuestLocation", Location.none);
+  return safeGet("autumnatonQuestLocation", Location.none);
 }
 
 function auto_autumnatonCheckForUpgrade(upgrade: string): boolean {

@@ -62,6 +62,7 @@ import {
   handleTracker,
   internalQuestStatus,
   organsFull,
+  safeGet,
   wrap_item,
 } from "../auto_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
@@ -771,7 +772,7 @@ export function chateaumantegna_nightstandSet(): boolean {
   }
   if (myLevel() >= 13) {
     if (get("nsContestants2") === -1) {
-      myStat = get("nsChallenge1", Stat.none);
+      myStat = safeGet("nsChallenge1", Stat.none);
     } else {
       return false;
     }

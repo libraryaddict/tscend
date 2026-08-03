@@ -8,6 +8,7 @@ import {
 import { get } from "libram";
 
 import { settingDefaults } from "../../../kolmafia/src/autoscend/auto_settings";
+import { safeGet } from "../../../kolmafia/src/autoscend/auto_util";
 import {
   RelayComponent,
   RelayGroup,
@@ -99,7 +100,7 @@ function settingGroups(): RelayGroup[] {
 
 function familiarComponents(): RelayComponent[] {
   const components: RelayComponent[] = [];
-  const hundredFam: Familiar = get("auto_100familiar", Familiar.none);
+  const hundredFam: Familiar = safeGet("auto_100familiar", Familiar.none);
   const changeable = turnsPlayed() === 0;
 
   if (hundredFam !== Familiar.none) {

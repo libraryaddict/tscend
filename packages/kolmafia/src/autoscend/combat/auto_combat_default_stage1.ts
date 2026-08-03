@@ -35,6 +35,7 @@ import {
   effectiveDropChance,
   handleTracker,
   isFreeMonster,
+  safeGet,
 } from "../auto_util";
 import { auto_backupTarget } from "../iotms/mr2021";
 import {
@@ -367,7 +368,7 @@ export function auto_combatDefaultStage1(
     return auto_useSkill($skill`%fn, fire a Red, White and Blue Blast`);
   }
 
-  const backedUpMonster: Monster = get("lastCopyableMonster", Monster.none);
+  const backedUpMonster: Monster = safeGet("lastCopyableMonster", Monster.none);
   // reserve last 2 advs for end of day free fights
   const reserveAdvsForFreeFights: boolean =
     myAdventures() < 3 && !isFreeMonster(backedUpMonster);

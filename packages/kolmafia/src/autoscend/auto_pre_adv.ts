@@ -165,6 +165,7 @@ import {
   internalQuestStatus,
   meatReserve,
   pm_updateThrall,
+  safeGet,
   wrap_item,
 } from "./auto_util";
 import {
@@ -633,7 +634,7 @@ function auto_pre_adventure(): boolean {
       }
     } else if (
       place.turnsSpent > 1 &&
-      place !== get("auto_priorLocation", Location.none)
+      place !== safeGet("auto_priorLocation", Location.none)
     ) {
       //When do we consider Song of Cockiness?
       buffMaintain$2($effect`Song of Fortune`, 10, 1, 1);
@@ -717,7 +718,7 @@ function auto_pre_adventure(): boolean {
   if (auto_haveCrystalBall()) {
     if (
       auto_queueIgnore() ||
-      get("auto_nextEncounter", Monster.none) !== Monster.none
+      safeGet("auto_nextEncounter", Monster.none) !== Monster.none
     ) {
       //if already forced by something else, no need to handle your ball
     } else if (!auto_forceHandleCrystalBall(place)) {
@@ -728,11 +729,11 @@ function auto_pre_adventure(): boolean {
   }
 
   const possible_monsters: Map<number, Monster> = new Map();
-  if (get("auto_nextEncounter", Monster.none) !== Monster.none) {
+  if (safeGet("auto_nextEncounter", Monster.none) !== Monster.none) {
     //next monster is forced by zone mechanics or by now locked-in miniature crystal ball
     possible_monsters.set(
       possible_monsters.size,
-      get("auto_nextEncounter", Monster.none),
+      safeGet("auto_nextEncounter", Monster.none),
     );
   } else {
     for (const [, mon] of getMonsters(place).entries()) {
@@ -1042,7 +1043,7 @@ function auto_pre_adventure(): boolean {
     // re-equip a familiar if it's a 100% run just in case something unequipped it
     // looking at you auto_maximizedConsumeStuff()...
     // and L12_themtharHills()...
-    useFamiliar(get("auto_100familiar", Familiar.none));
+    useFamiliar(safeGet("auto_100familiar", Familiar.none));
     auto_log_debug(
       `Re-equipped your ${getProperty("auto_100familiar")} as something had unequipped it. This is bad and should be investigated.`,
     );

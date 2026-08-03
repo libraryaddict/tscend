@@ -50,6 +50,7 @@ import {
   internalQuestStatus,
   isDesertAvailable,
   isGuildClass,
+  safeGet,
 } from "./auto_util";
 import { generic_t } from "./autoscend_record";
 import { expectGhostReport } from "./iotms/mr2016";
@@ -487,7 +488,7 @@ export function zone_needItem(loc: Location): generic_t {
 
   if (
     expectGhostReport() &&
-    loc === get("ghostLocation", Location.none) &&
+    loc === safeGet("ghostLocation", Location.none) &&
     getProperty("questPAGhost") === "started"
   ) {
     value = 0.0;
@@ -520,7 +521,7 @@ export function zone_needItemBooze(loc: Location): generic_t {
 
   if (
     expectGhostReport() &&
-    loc === get("ghostLocation", Location.none) &&
+    loc === safeGet("ghostLocation", Location.none) &&
     getProperty("questPAGhost") === "started"
   ) {
     value = 0.0;
@@ -614,7 +615,7 @@ export function zone_needItemFood(loc: Location): generic_t {
 
   if (
     expectGhostReport() &&
-    loc === get("ghostLocation", Location.none) &&
+    loc === safeGet("ghostLocation", Location.none) &&
     getProperty("questPAGhost") === "started"
   ) {
     value = 0.0;
@@ -896,7 +897,7 @@ export function zone_combatMod(loc: Location): generic_t {
 
   if (
     expectGhostReport() &&
-    loc === get("ghostLocation", Location.none) &&
+    loc === safeGet("ghostLocation", Location.none) &&
     getProperty("questPAGhost") === "started"
   ) {
     value = 0;

@@ -66,6 +66,7 @@ import {
   isFreeMonster,
   isGhost,
   loopHandlerDelayAll,
+  safeGet,
 } from "../auto_util";
 import { elementalPlanes_access } from "../iotms/elementalPlanes";
 import { auto_spoonCombatSkill } from "../iotms/mr2019";
@@ -161,7 +162,7 @@ export function auto_edCombatHandler(
 
   if (
     auto_backupTarget() &&
-    enemy !== get("lastCopyableMonster", Monster.none) &&
+    enemy !== safeGet("lastCopyableMonster", Monster.none) &&
     auto_canUse($skill`Back-Up to your Last Enemy`)
   ) {
     handleTracker({
@@ -170,7 +171,7 @@ export function auto_edCombatHandler(
       property: "auto_replaces",
     });
     handleTracker({
-      what: get("lastCopyableMonster", Monster.none),
+      what: safeGet("lastCopyableMonster", Monster.none),
       detail: $skill`Back-Up to your Last Enemy`.toString(),
       property: "auto_copies",
     });
@@ -335,7 +336,7 @@ export function auto_edCombatHandler(
 
   if (
     auto_canUse($skill`Curse of Stench`) &&
-    get("stenchCursedMonster", Monster.none) !== enemy &&
+    safeGet("stenchCursedMonster", Monster.none) !== enemy &&
     get("_edDefeats") < 3
   ) {
     if (auto_wantToSniff(enemy, myLocation())) {
@@ -351,7 +352,7 @@ export function auto_edCombatHandler(
   if (myLocation() === $location`The Secret Council Warehouse`) {
     if (
       auto_canUse($skill`Curse of Stench`) &&
-      get("stenchCursedMonster", Monster.none) !== enemy &&
+      safeGet("stenchCursedMonster", Monster.none) !== enemy &&
       get("_edDefeats") < 3
     ) {
       let doStench: boolean = false;
@@ -385,7 +386,7 @@ export function auto_edCombatHandler(
   if (myLocation() === $location`The Smut Orc Logging Camp`) {
     if (
       auto_canUse($skill`Curse of Stench`) &&
-      get("stenchCursedMonster", Monster.none) !== enemy &&
+      safeGet("stenchCursedMonster", Monster.none) !== enemy &&
       get("_edDefeats") < 3
     ) {
       let doStench: boolean = false;
