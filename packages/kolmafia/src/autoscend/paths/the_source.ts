@@ -8,12 +8,9 @@ import {
   myDaycount,
   myLevel,
   myPath,
-  setProperty,
-  toInt,
-  toLocation,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $location, $path, $skill } from "libram";
+import { $effect, $item, $location, $path, $skill, get, set } from "libram";
 
 import { autoAdv } from "../auto_adventure";
 import {
@@ -43,19 +40,19 @@ export function in_theSource(): boolean {
 export function theSource_initializeSettings(): boolean {
   if (in_theSource()) {
     //		set_property("auto_lastSpoon", 0);
-    setProperty("auto_getBeehive", true.toString());
-    setProperty("auto_wandOfNagamar", false.toString());
+    set("auto_getBeehive", true);
+    set("auto_wandOfNagamar", false);
   }
   return false;
 }
 
 export function theSource_buySkills(): boolean {
-  if (toInt(getProperty("sourceEnlightenment")) === 0) {
+  if (get("sourceEnlightenment") === 0) {
     return false;
   }
 
   visitUrl("place.php?whichplace=manor1&action=manor1_sourcephone_ring");
-  let enlightenment: number = toInt(getProperty("sourceEnlightenment"));
+  let enlightenment: number = get("sourceEnlightenment");
   while (enlightenment > 0) {
     let option: number = 0;
     if (!haveSkill($skill`Restore`)) {
@@ -144,7 +141,7 @@ export function LX_theSource(): boolean {
     auto_sourceTerminalEnhance("substats");
   }
 
-  const goal: Location = toLocation(getProperty("sourceOracleTarget"));
+  const goal: Location = get("sourceOracleTarget", Location.none);
   if (goal !== Location.none && itemAmount($item`no spoon`) === 0) {
     if (
       goal === $location`The Batrat and Ratbat Burrow` &&
@@ -211,11 +208,11 @@ export function theSource_oracle(): boolean {
     return false;
   }
 
-  if (toLocation(getProperty("sourceOracleTarget")) === Location.none) {
+  if (get("sourceOracleTarget", Location.none) === Location.none) {
     visitUrl("place.php?whichplace=town_wrong&action=townwrong_oracle");
     visitUrl("choice.php?pwd=&whichchoice=1190&option=1");
 
-    switch (toLocation(getProperty("sourceOracleTarget"))) {
+    switch (get("sourceOracleTarget", Location.none)) {
       case $location`The Skeleton Store`:
         startMeatsmithSubQuest();
         break;
@@ -239,7 +236,7 @@ export function LX_attemptPowerLevelTheSource(): boolean {
   if (!in_theSource()) {
     return false;
   }
-  if (toInt(getProperty("lastSecondFloorUnlock")) !== myAscensions()) {
+  if (get("lastSecondFloorUnlock") !== myAscensions()) {
     return false;
   }
   //Banish mahogant, elegant after gown only. (Harold\'s Bell?)

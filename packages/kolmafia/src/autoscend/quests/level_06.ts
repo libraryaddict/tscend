@@ -14,9 +14,6 @@ import {
   myDaycount,
   myMp,
   myPrimestat,
-  toBoolean,
-  toInt,
-  toLocation,
   visitUrl,
 } from "kolmafia";
 import {
@@ -27,6 +24,7 @@ import {
   $locations,
   $skill,
   $slot,
+  get,
 } from "libram";
 
 import { autoAdv } from "../auto_adventure";
@@ -76,7 +74,7 @@ function L6_friarsGetPartsDo(): boolean {
 
   if (
     auto_have_familiar($familiar`Space Jellyfish`) &&
-    toInt(getProperty("_spaceJellyfishDrops")) < 2
+    get("_spaceJellyfishDrops") < 2
   ) {
     handleFamiliar$1($familiar`Space Jellyfish`);
   }
@@ -93,10 +91,11 @@ function L6_friarsGetPartsDo(): boolean {
   if (
     myDaycount() === 1 &&
     !isAboutToPowerlevel() &&
-    !toBoolean(getProperty("auto_getSteelOrgan"))
+    !get("auto_getSteelOrgan", false)
   ) {
-    const forced_loc: Location = toLocation(
-      getProperty("auto_forceNonCombatLocation"),
+    const forced_loc: Location = get(
+      "auto_forceNonCombatLocation",
+      Location.none,
     );
     const forced_here: boolean =
       $locations`The Dark Neck of the Woods, The Dark Elbow of the Woods, The Dark Heart of the Woods`.includes(
@@ -125,9 +124,9 @@ function L6_friarsGetPartsDo(): boolean {
     // delay if we are out of NC forcers and haven't run out of things to do
     if (
       !NCForced &&
-      myDaycount() < toInt(getProperty("auto_runDayCount")) &&
+      myDaycount() < get("auto_runDayCount", 0) &&
       !isAboutToPowerlevel() &&
-      !toBoolean(getProperty("auto_getSteelOrgan"))
+      !get("auto_getSteelOrgan", false)
     ) {
       return false;
     }
@@ -141,9 +140,9 @@ function L6_friarsGetPartsDo(): boolean {
     // delay if we are out of NC forcers and haven't run out of things to do
     if (
       !NCForced &&
-      myDaycount() < toInt(getProperty("auto_runDayCount")) &&
+      myDaycount() < get("auto_runDayCount", 0) &&
       !isAboutToPowerlevel() &&
-      !toBoolean(getProperty("auto_getSteelOrgan"))
+      !get("auto_getSteelOrgan", false)
     ) {
       return false;
     }
@@ -151,7 +150,7 @@ function L6_friarsGetPartsDo(): boolean {
   }
   if (itemAmount($item`box of birthday candles`) === 0) {
     if (
-      toBoolean(getProperty("auto_dakotaFanning")) &&
+      get("auto_dakotaFanning", false) &&
       internalQuestStatus("questM16Temple") < 0
     ) {
       // if we have to do the "Dakota" Fanning quest to unlock the Hidden Temple,
@@ -165,9 +164,9 @@ function L6_friarsGetPartsDo(): boolean {
     // delay if we are out of NC forcers and haven't run out of things to do
     if (
       !NCForced &&
-      myDaycount() < toInt(getProperty("auto_runDayCount")) &&
+      myDaycount() < get("auto_runDayCount", 0) &&
       !isAboutToPowerlevel() &&
-      !toBoolean(getProperty("auto_getSteelOrgan"))
+      !get("auto_getSteelOrgan", false)
     ) {
       return false;
     }
@@ -234,8 +233,7 @@ function L6_dakotaFanningDo(): boolean {
 const L6_dakotaFanningTask: QuestTask = registerQuestTask({
   name: "L6_dakotaFanning",
   completed: () => hiddenTempleUnlocked(),
-  ready: () =>
-    toBoolean(getProperty("auto_dakotaFanning")) && !hiddenTempleUnlocked(),
+  ready: () => get("auto_dakotaFanning", false) && !hiddenTempleUnlocked(),
   do: L6_dakotaFanningDo,
   locations: $locations`The Haunted Conservatory, The Dark Heart of the Woods, Pandamonium Slums`,
   desiredEncounters: () =>

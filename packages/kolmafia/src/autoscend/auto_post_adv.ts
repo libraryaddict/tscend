@@ -47,11 +47,8 @@ import {
   putCloset,
   removeProperty,
   Servant,
-  setProperty,
   Skill,
-  toBoolean,
   toFloat,
-  toInt,
   toMonster,
   use,
   useSkill,
@@ -73,6 +70,8 @@ import {
   $skills,
   $slot,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { auto_buyUpTo, buyableMaintain } from "./auto_acquire";
@@ -127,24 +126,21 @@ import { numPirateInsults } from "./quests/optional";
 
 function auto_beaten_handler(): void {
   if (haveEffect($effect`Beaten Up`) === 0) {
-    setProperty("auto_beatenUpLastAdv", false.toString());
+    set("auto_beatenUpLastAdv", false);
     return; //we are not beaten up. nothing to handle
   }
   if (lastChoice() === 1467) {
     auto_log_info("Getting beaten up here gave us 5 adventures, that's a win.");
     return;
   }
-  setProperty(
-    "auto_beatenUpCount",
-    (toInt(getProperty("auto_beatenUpCount")) + 1).toString(),
-  );
+  set("auto_beatenUpCount", get("auto_beatenUpCount", 0) + 1);
   let loc: string = getProperty("auto_beatenUpLocations");
   if (loc !== "") {
     loc += ",";
   }
   loc += `day:${myDaycount()}:level:${myLevel()}:place:${myLocation()}`;
-  setProperty("auto_beatenUpLocations", loc);
-  setProperty("auto_beatenUpLastAdv", true.toString());
+  set("auto_beatenUpLocations", loc);
+  set("auto_beatenUpLastAdv", true);
 
   buffMaintain$2($effect`They've Got Fleas`);
   if (myLevel() < 11 || getProperty("sidequestJunkyardCompleted") !== "none") {
@@ -158,19 +154,19 @@ function auto_beaten_handler(): void {
       "I got beaten up at the snojo, let's not keep going there and dying....",
       "red",
     );
-    setProperty("_snojoFreeFights", (10).toString());
+    set("_snojoFreeFights", 10);
   } else if (lastMonster() === $monster`ninja snowman assassin`) {
     auto_log_info(
       "I got beaten up by a [ninja snowman assassin]. disabling ninja route",
       "red",
     );
-    setProperty("auto_L8_ninjaAssassinFail", true.toString());
+    set("auto_L8_ninjaAssassinFail", true);
   } else {
     auto_log_warning("I got beaten up", "red");
   }
 
   if (
-    toInt(getProperty("auto_beatenUpCount")) <= 10 &&
+    get("auto_beatenUpCount", 0) <= 10 &&
     myMp() >= mpCost($skill`Tongue of the Walrus`) &&
     auto_have_skill($skill`Tongue of the Walrus`)
   ) {
@@ -207,7 +203,7 @@ function auto_post_adventure(): boolean {
     );
   }
 
-  setProperty("auto_nextEncounter", "");
+  set("auto_nextEncounter", "");
   /* This tracks noncombat-forcers like Clara's Bell and stench jelly, which
    * set our noncombat rate to maximum until we encounter a noncombat.
    * Superlikelies do not reset this effect. There's some complexity here -
@@ -222,9 +218,9 @@ function auto_post_adventure(): boolean {
     // possible to get desired NC when preparing spikes/avalanche. Only log usage if NC was actually forced
     if (
       ((getProperty("auto_forceNonCombatSource") !== "jurassic parka" ||
-        toBoolean(getProperty("auto_parkaSpikesDeployed"))) &&
+        get("auto_parkaSpikesDeployed", false)) &&
         getProperty("auto_forceNonCombatSource") !== "McHugeLarge left ski") ||
-      toBoolean(getProperty("auto_avalancheDeployed"))
+      get("auto_avalancheDeployed", false)
     ) {
       auto_log_info(
         `Encountered forced noncombat: ${getProperty("lastEncounter")}`,
@@ -237,15 +233,15 @@ function auto_post_adventure(): boolean {
         property: "auto_forcedNC",
       });
     }
-    setProperty("auto_forceNonCombatSource", "");
-    setProperty("auto_forceNonCombatLocation", "");
-    setProperty("auto_parkaSpikesDeployed", false.toString());
-    setProperty("auto_avalancheDeployed", false.toString());
+    set("auto_forceNonCombatSource", "");
+    set("auto_forceNonCombatLocation", "");
+    set("auto_parkaSpikesDeployed", false);
+    set("auto_avalancheDeployed", false);
   }
 
   if (
     getProperty("auto_instakillSource") !== "" &&
-    toBoolean(getProperty("auto_instakillSuccess"))
+    get("auto_instakillSuccess", false)
   ) {
     auto_log_info(
       `Successful instakill with: ${getProperty("auto_instakillSource")}`,
@@ -259,8 +255,8 @@ function auto_post_adventure(): boolean {
         property: "auto_instakill",
       });
     }
-    setProperty("auto_instakillSource", "");
-    setProperty("auto_instakillSuccess", false.toString());
+    set("auto_instakillSource", "");
+    set("auto_instakillSuccess", false);
   }
 
   if (haveEffect($effect`Eldritch Attunement`) > 0) {
@@ -272,7 +268,7 @@ function auto_post_adventure(): boolean {
   }
   //We need to do this early, and even if postAdventure handling is done.
   if (in_theSource()) {
-    if (toInt(getProperty("auto_diag_round")) === 0) {
+    if (get("auto_diag_round", 0) === 0) {
       const last: Monster = lastMonster();
       visitUrl("main.php");
       if (last !== lastMonster()) {
@@ -294,13 +290,13 @@ function auto_post_adventure(): boolean {
   }
 
   if (getProperty("lastEncounter") === "Daily Briefing" && in_lta()) {
-    setProperty("_auto_bondBriefing", "started");
+    set("_auto_bondBriefing", "started");
   }
 
   if (
-    toInt(getProperty("_villainLairProgress")) < 999 &&
+    get("_villainLairProgress") < 999 &&
     (getProperty("_villainLairColor") !== "" ||
-      toBoolean(getProperty("_villainLairColorChoiceUsed"))) &&
+      get("_villainLairColorChoiceUsed")) &&
     in_lta() &&
     myLocation() === $location`Super Villain's Lair`
   ) {
@@ -354,10 +350,10 @@ function auto_post_adventure(): boolean {
     itemAmount($item`funky junk key`) > 0
   ) {
     // got a key drop, reset the tracking property.
-    setProperty("auto_junkspritesencountered", (0).toString());
+    set("auto_junkspritesencountered", 0);
   }
 
-  if (toBoolean(getProperty("auto_disableAdventureHandling"))) {
+  if (get("auto_disableAdventureHandling", false)) {
     auto_log_info(
       "Postadventure skipped by standard adventure handler.",
       "green",
@@ -365,26 +361,17 @@ function auto_post_adventure(): boolean {
     return true;
   }
 
-  if (
-    !toBoolean(getProperty("_ballInACupUsed")) &&
-    itemAmount($item`ball-in-a-cup`) > 0
-  ) {
+  if (!get("_ballInACupUsed") && itemAmount($item`ball-in-a-cup`) > 0) {
     use(1, $item`ball-in-a-cup`);
   }
-  if (
-    !toBoolean(getProperty("_setOfJacksUsed")) &&
-    itemAmount($item`set of jacks`) > 0
-  ) {
+  if (!get("_setOfJacksUsed") && itemAmount($item`set of jacks`) > 0) {
     use(1, $item`set of jacks`);
   }
-  if (
-    !toBoolean(getProperty("_hobbyHorseUsed")) &&
-    itemAmount($item`handmade hobby horse`) > 0
-  ) {
+  if (!get("_hobbyHorseUsed") && itemAmount($item`handmade hobby horse`) > 0) {
     use(1, $item`handmade hobby horse`);
   }
   if (
-    !toBoolean(getProperty("_creepyVoodooDollUsed")) &&
+    !get("_creepyVoodooDollUsed") &&
     itemAmount($item`creepy voodoo doll`) > 0
   ) {
     use(1, $item`creepy voodoo doll`);
@@ -446,10 +433,7 @@ function auto_post_adventure(): boolean {
   if (myClass() === $class`Avatar of Sneaky Pete`) {
     buffMaintain$2($effect`All Revved Up`, 25, 1, 10);
     buffMaintain$2($effect`Of Course It Looks Great`, 55, 1, 10);
-    if (
-      auto_have_skill($skill`Throw Party`) &&
-      !toBoolean(getProperty("_petePartyThrown"))
-    ) {
+    if (auto_have_skill($skill`Throw Party`) && !get("_petePartyThrown")) {
       let threshold: number = 50;
       if (
         !possessEquipment($item`Sneaky Pete's leather jacket`) &&
@@ -461,10 +445,7 @@ function auto_post_adventure(): boolean {
         useSkill(1, $skill`Throw Party`);
       }
     }
-    if (
-      auto_have_skill($skill`Incite Riot`) &&
-      !toBoolean(getProperty("_peteRiotIncited"))
-    ) {
+    if (auto_have_skill($skill`Incite Riot`) && !get("_peteRiotIncited")) {
       let threshold: number = -50;
       if (
         !possessEquipment($item`Sneaky Pete's leather jacket`) &&
@@ -492,8 +473,7 @@ function auto_post_adventure(): boolean {
 
     if (
       myMeat() > 5000 &&
-      (myTurncount() >= 50 ||
-        toBoolean(getProperty("falloutShelterChronoUsed")))
+      (myTurncount() >= 50 || get("falloutShelterChronoUsed"))
     ) {
       buffMaintain$2($effect`Rad-Pro Tected`);
     }
@@ -624,9 +604,9 @@ function auto_post_adventure(): boolean {
 
   if (in_theSource()) {
     if (
-      toInt(getProperty("sourceInterval")) > 0 &&
-      toInt(getProperty("sourceInterval")) <= 600 &&
-      toInt(getProperty("sourceAgentsDefeated")) >= 9
+      get("sourceInterval") > 0 &&
+      get("sourceInterval") <= 600 &&
+      get("sourceAgentsDefeated") >= 9
     ) {
       if (
         haveEffect($effect`Song of Bravado`) === 0 &&
@@ -687,7 +667,7 @@ function auto_post_adventure(): boolean {
   if (
     auto_have_skill($skill`Thunderheart`) &&
     myThunder() >= 90 &&
-    myTurncount() - toInt(getProperty("auto_lastthunderturn")) >= 9
+    myTurncount() - get("auto_lastthunderturn", 0) >= 9
   ) {
     useSkill(1, $skill`Thunderheart`);
   }
@@ -711,7 +691,7 @@ function auto_post_adventure(): boolean {
     auto_have_skill($skill`Demand Sandwich`) &&
     myMp() > 85 &&
     myLevel() >= 9 &&
-    toInt(getProperty("_demandSandwich")) < 3
+    get("_demandSandwich") < 3
   ) {
     useSkill(1, $skill`Demand Sandwich`);
   }
@@ -738,7 +718,7 @@ function auto_post_adventure(): boolean {
   const toCast: Skill[] = $skills`Prevent Scurvy and Sobriety, Acquire Rhinestones, Advanced Cocktailcrafting, Advanced Saucecrafting, Communism!, Grab a Cold One, Lunch Break, Pastamastery, Perfect Freeze, Request Sandwich, Spaghetti Breakfast, Summon Alice's Army Cards, Summon Carrot, Summon Confiscated Things, Summon Crimbo Candy, Summon Geeky Gifts, Summon Hilarious Objects, Summon Holiday Fun!, Summon Kokomo Resort Pass, Summon Tasteful Items`;
 
   const buff_familiar: boolean =
-    pathHasFamiliar() && !toBoolean(getProperty("_auto_bad100Familiar"));
+    pathHasFamiliar() && !get("_auto_bad100Familiar", false);
   const regen: number =
     (toFloat(numericModifier($modifier`MP Regen Min`)) +
       toFloat(numericModifier($modifier`MP Regen Max`))) /
@@ -1063,7 +1043,7 @@ function auto_post_adventure(): boolean {
       buffMaintain$2($effect`Curiosity of Br'er Tarrypin`, 50, 1, 2);
     }
     // Only maintain in path with familiars
-    if (pathHasFamiliar() && !toBoolean(getProperty("_auto_bad100Familiar"))) {
+    if (pathHasFamiliar() && !get("_auto_bad100Familiar", false)) {
       buffMaintain$2($effect`Jingle Jangle Jingle`, 120, 1, 2); //familiar acts more often
     }
     buffMaintain$2($effect`A Few Extra Pounds`, 200, 1, 2);
@@ -1109,7 +1089,7 @@ function auto_post_adventure(): boolean {
     }
   }
   // Experience and Powerlevelling Section
-  if (myLevel() < 13 || toBoolean(getProperty("auto_disregardInstantKarma"))) {
+  if (myLevel() < 13 || get("auto_disregardInstantKarma", false)) {
     // +Stat expressions based on mainstat
     if (myPrimestat() === $stat`Muscle`) {
       auto_faceCheck($effect`Patient Smile`);
@@ -1151,7 +1131,7 @@ function auto_post_adventure(): boolean {
     if (
       myDaycount() === 1 &&
       myBjornedFamiliar() !== $familiar`Grim Brother` &&
-      toInt(getProperty("_grimFairyTaleDropsCrown")) === 0 &&
+      get("_grimFairyTaleDropsCrown") === 0 &&
       haveFamiliar($familiar`Grim Brother`) &&
       equippedItem($slot`back`) === $item`Buddy Bjorn` &&
       myFamiliar() !== $familiar`Grim Brother`
@@ -1160,14 +1140,14 @@ function auto_post_adventure(): boolean {
     }
     if (
       myBjornedFamiliar() === $familiar`Grimstone Golem` &&
-      toInt(getProperty("_grimstoneMaskDropsCrown")) === 1 &&
+      get("_grimstoneMaskDropsCrown") === 1 &&
       haveFamiliar($familiar`El Vibrato Megadrone`)
     ) {
       bjornifyFamiliar($familiar`El Vibrato Megadrone`);
     }
     if (
       myBjornedFamiliar() === $familiar`Grim Brother` &&
-      toInt(getProperty("_grimFairyTaleDropsCrown")) >= 1 &&
+      get("_grimFairyTaleDropsCrown") >= 1 &&
       haveFamiliar($familiar`El Vibrato Megadrone`)
     ) {
       bjornifyFamiliar($familiar`El Vibrato Megadrone`);
@@ -1276,10 +1256,7 @@ function auto_post_adventure(): boolean {
     getProperty("lastEncounter") === $monster`modern zmobie`.toString() &&
     haveEffect($effect`Beaten Up`) === 0
   ) {
-    setProperty(
-      "auto_modernzmobiecount",
-      `${toInt(getProperty("auto_modernzmobiecount")) + 1}`,
-    );
+    set("auto_modernzmobiecount", `${get("auto_modernzmobiecount", 0) + 1}`);
     auto_log_info(
       `Fought ${getProperty("auto_modernzmobiecount")} modern zmobies.`,
       "blue",
@@ -1289,12 +1266,12 @@ function auto_post_adventure(): boolean {
   auto_beaten_handler();
 
   if (getProperty("lastEncounter") === "Welcome to the Great Overlook Lodge") {
-    setProperty("auto_shinningStarted", true.toString());
+    set("auto_shinningStarted", true);
   }
 
   if (haveEffect($effect`Disavowed`) > 0) {
     if (getProperty("_auto_bondBriefing") !== "finished") {
-      setProperty("_auto_bondBriefing", "started");
+      set("_auto_bondBriefing", "started");
     }
     if (
       auto_have_skill($skill`Disco Nap`) &&
@@ -1312,28 +1289,25 @@ function auto_post_adventure(): boolean {
   removeProperty("auto_digitizeDirective");
   //try to catch infinite loop where we repeatedly try to do the same thing.
   //works with code found in auto_pre_adv.ash
-  if (mySessionAdv() === toInt(getProperty("_auto_inf_session_adv"))) {
+  if (mySessionAdv() === get("_auto_inf_session_adv", 0)) {
     auto_log_debug(
       "auto_post_adv.js detected that no adventure was spent since last auto_pre_adv.js",
     );
     //count how many times in a row we went with no adv spent
-    setProperty(
-      "_auto_inf_counter",
-      (toInt(getProperty("_auto_inf_counter")) + 1).toString(),
-    );
+    set("_auto_inf_counter", get("_auto_inf_counter", 0) + 1);
     //if last monster changed it means we are doing free combats
-    if (toMonster(getProperty("_auto_inf_last_monster")) !== lastMonster()) {
+    if (get("_auto_inf_last_monster", Monster.none) !== lastMonster()) {
       removeProperty("_auto_inf_counter"); //reset counter
     }
-    setProperty("_auto_inf_last_monster", lastMonster().toString());
+    set("_auto_inf_last_monster", lastMonster());
 
-    if (toInt(getProperty("_auto_inf_counter")) >= 30) {
+    if (get("_auto_inf_counter", 0) >= 30) {
       auto_log_error(
         `no adventure was spent ${getProperty("_auto_inf_counter")} times in a row which suggests we are stuck in an infinite loop. Stopping autoscend`,
       );
       removeProperty("_auto_inf_counter");
-      setProperty("auto_interrupt", true.toString());
-    } else if (toInt(getProperty("_auto_inf_counter")) > 10) {
+      set("auto_interrupt", true);
+    } else if (get("_auto_inf_counter", 0) > 10) {
       auto_log_warning(
         `no adventure was spent ${getProperty("_auto_inf_counter")} times in a row`,
       );
@@ -1359,7 +1333,7 @@ export function auto_runPostAdventure(): boolean {
       auto_log_error(
         "Error running auto_post_adv.js, setting auto_interrupt=true",
       );
-      setProperty("auto_interrupt", true.toString());
+      set("auto_interrupt", true);
     }
   }
   return ret;

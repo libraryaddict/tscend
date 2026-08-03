@@ -40,13 +40,10 @@ import {
   npcPrice,
   outfit,
   sell,
-  setProperty,
   takeCloset,
   toBoolean,
-  toFamiliar,
   toFloat,
   toInt,
-  toMonster,
   use,
   useFamiliar,
   useSkill,
@@ -263,7 +260,7 @@ function copy_warplan(target: WarPlan, source: WarPlan): void {
 export function auto_warSide(): string {
   //returns the side you are fighting for in the form of a string.
   //this is used to check checking mafia's sidequest tracking, as they use these string values to indicate which side completed which quest.
-  if (toBoolean(getProperty("auto_hippyInstead"))) {
+  if (get("auto_hippyInstead", false)) {
     return "hippy";
   } else {
     return "fratboy";
@@ -316,9 +313,9 @@ export function auto_warEnemiesRemaining(): number {
 
   let enemiesRemaining: number;
   if (auto_warSide() === "hippy") {
-    enemiesRemaining = 1000 - toInt(getProperty("fratboysDefeated"));
+    enemiesRemaining = 1000 - get("fratboysDefeated");
   } else {
-    enemiesRemaining = 1000 - toInt(getProperty("hippiesDefeated"));
+    enemiesRemaining = 1000 - get("hippiesDefeated");
   }
   return enemiesRemaining;
 }
@@ -348,10 +345,7 @@ let $_auto_estimatedAdventuresForChaosButterfly_expectedItemDropMulti:
 function auto_estimatedAdventuresForChaosButterfly(): number {
   // Returns an ESTIMATE of how many adventures it will take to acquire a chaos butterfly.
 
-  if (
-    toBoolean(getProperty("chaosButterflyThrown")) ||
-    itemAmount($item`chaos butterfly`) > 0
-  ) {
+  if (get("chaosButterflyThrown") || itemAmount($item`chaos butterfly`) > 0) {
     return 0;
   }
   if (canPull($item`chaos butterfly`)) {
@@ -415,10 +409,7 @@ function auto_estimatedAdventuresForDooks(): number {
   }
   //chaos butterfly calculations
   const advToGetCB: number = auto_estimatedAdventuresForChaosButterfly();
-  if (
-    toBoolean(getProperty("chaosButterflyThrown")) ||
-    itemAmount($item`chaos butterfly`) > 0
-  ) {
+  if (get("chaosButterflyThrown") || itemAmount($item`chaos butterfly`) > 0) {
     advCost_1 -= 15;
   } else if (advToGetCB < 15) {
     advCost_1 = advCost_1 - 15 + advToGetCB;
@@ -480,10 +471,10 @@ export function auto_bestWarPlan(): WarPlan {
     //arena not implemented for hippies yet. TODO implement it then remove this
     considerArena = false;
   }
-  if (toBoolean(getProperty("auto_skipNuns"))) {
+  if (get("auto_skipNuns", false)) {
     considerNuns = false;
   }
-  if (toBoolean(getProperty("auto_ignoreFlyer"))) {
+  if (get("auto_ignoreFlyer", false)) {
     considerArena = false;
   }
   // Calculate the adventure cost of doing each sidequest.
@@ -677,7 +668,7 @@ function equipWarOutfit$1(lock: boolean): void {
 }
 
 export function haveWarOutfit(canWear: boolean = false): boolean {
-  if (!toBoolean(getProperty("auto_hippyInstead"))) {
+  if (!get("auto_hippyInstead", false)) {
     return possessOutfit("Frat Warrior Fatigues", canWear);
   } else {
     return possessOutfit("War Hippy Fatigues", canWear);
@@ -688,12 +679,12 @@ export function haveWarOutfit(canWear: boolean = false): boolean {
 export function warAdventure(): boolean {
   if (
     auto_have_familiar($familiar`Space Jellyfish`) &&
-    toInt(getProperty("_spaceJellyfishDrops")) < 3
+    get("_spaceJellyfishDrops") < 3
   ) {
     handleFamiliar$1($familiar`Space Jellyfish`);
   }
 
-  if (!toBoolean(getProperty("auto_hippyInstead"))) {
+  if (!get("auto_hippyInstead", false)) {
     //Commented out until Green smoke bomb support is added
     if (auto_warEnemiesRemaining() <= 600 && auto_haveGreyGoose()) {
       auto_log_info(
@@ -702,18 +693,12 @@ export function warAdventure(): boolean {
       handleFamiliar$1($familiar`Grey Goose`);
     }
     if (!autoAdv($location`The Battlefield (Frat Uniform)`)) {
-      setProperty(
-        "hippiesDefeated",
-        (toInt(getProperty("hippiesDefeated")) + 1).toString(),
-      );
+      set("hippiesDefeated", get("hippiesDefeated") + 1);
       visitUrl("island.php");
     }
   } else {
     if (!autoAdv($location`The Battlefield (Hippy Uniform)`)) {
-      setProperty(
-        "fratboysDefeated",
-        (toInt(getProperty("fratboysDefeated")) + 1).toString(),
-      );
+      set("fratboysDefeated", get("fratboysDefeated") + 1);
       visitUrl("island.php");
     }
   }
@@ -726,7 +711,7 @@ function L12_getOutfitDo(): boolean {
     // auto_warhippyspy indicates rainman was already used to copy a war hippy spy in heavy rains. if it failed to YR pull missing items
     if (
       getProperty("auto_warhippyspy") === "done" &&
-      toBoolean(getProperty("auto_hippyInstead"))
+      get("auto_hippyInstead", false)
     ) {
       pullXWhenHaveY($item`reinforced beaded headband`, 1, 0);
       pullXWhenHaveY($item`round purple sunglasses`, 1, 0);
@@ -735,7 +720,7 @@ function L12_getOutfitDo(): boolean {
     // auto_orcishfratboyspy indicates rainman was already used to copy an orcish frat boy in heavy rains. if it failed to YR pull missing items
     if (
       getProperty("auto_orcishfratboyspy") === "done" &&
-      !toBoolean(getProperty("auto_hippyInstead"))
+      !get("auto_hippyInstead", false)
     ) {
       pullXWhenHaveY($item`beer helmet`, 1, 0);
       pullXWhenHaveY($item`bejeweled pledge pin`, 1, 0);
@@ -744,7 +729,7 @@ function L12_getOutfitDo(): boolean {
   }
   //softcore pull handling for all other paths. Can't pull gear in LoL
   if (!inHardcore() && !in_heavyrains() && !in_lol()) {
-    if (toBoolean(getProperty("auto_hippyInstead"))) {
+    if (get("auto_hippyInstead", false)) {
       pullXWhenHaveY($item`reinforced beaded headband`, 1, 0);
       pullXWhenHaveY($item`round purple sunglasses`, 1, 0);
       pullXWhenHaveY($item`bullet-proof corduroys`, 1, 0);
@@ -804,16 +789,13 @@ export function L12_getOutfit(): boolean {
 function L12_preOutfitDo(): boolean {
   // if siding with frat and already own [Filthy Hippy Disguise] outfit needed to get the frat boy war outfit
   if (
-    !toBoolean(getProperty("auto_hippyInstead")) &&
+    !get("auto_hippyInstead", false) &&
     possessOutfit("Filthy Hippy Disguise")
   ) {
     return false;
   }
   // if siding with hippies and already own [Frat Boy Ensemble] outfit needed to get the hippy war outfit
-  if (
-    toBoolean(getProperty("auto_hippyInstead")) &&
-    possessOutfit("Frat Boy Ensemble")
-  ) {
+  if (get("auto_hippyInstead", false) && possessOutfit("Frat Boy Ensemble")) {
     return false;
   }
 
@@ -826,15 +808,14 @@ function L12_preOutfitDo(): boolean {
   if (
     haveSkill($skill`Calculate the Universe`) &&
     myDaycount() === 1 &&
-    toInt(getProperty("_universeCalculated")) <
-      min(3, toInt(getProperty("skillLevel144")))
+    get("_universeCalculated") < min(3, get("skillLevel144"))
   ) {
     return false;
   }
   //use a summon if we can guarentee outfit drops via yellow ray
   if (canSummonMonster($monster`Orcish Frat Boy Spy`) && canYellowRay()) {
     let summonTarget: Monster = $monster`War Hippy Spy`;
-    if (!toBoolean(getProperty("auto_hippyInstead"))) {
+    if (!get("auto_hippyInstead", false)) {
       summonTarget = $monster`Orcish Frat Boy Spy`;
     }
     auto_log_info(
@@ -854,7 +835,7 @@ function L12_preOutfitDo(): boolean {
 
   let adventure_status: boolean;
   // fighting for fratboys, adventure in hippy camp for [filthy hippy disguise] outfit to then adventure in frat house for frat war outfit
-  if (!toBoolean(getProperty("auto_hippyInstead"))) {
+  if (!get("auto_hippyInstead", false)) {
     auto_log_info("Trying to acquire a filthy hippy outfit", "blue");
     if (internalQuestStatus("questL12War") === -1) {
       adventure_status = autoAdv($location`The Hippy Camp`);
@@ -886,13 +867,13 @@ export const L12_preOutfitTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL12War") > 0,
   // in softcore you will pull the war outfit, no need to get pre outfit
   ready: () =>
-    toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
+    get("lastIslandUnlock") === myAscensions() &&
     (inHardcore() || in_lol()) &&
     myLevel() >= 9 &&
     !haveWarOutfit(),
   do: L12_preOutfitDo,
   locations: () =>
-    toBoolean(getProperty("auto_hippyInstead"))
+    get("auto_hippyInstead", false)
       ? [
           internalQuestStatus("questL12War") === -1
             ? $location`The Orcish Frat House`
@@ -927,7 +908,7 @@ function L12_startWarDo(): boolean {
     !in_darkGyffte() &&
     myMp() > 50 &&
     haveSkill($skill`Incredible Self-Esteem`) &&
-    !toBoolean(getProperty("_incredibleSelfEsteemCast"))
+    !get("_incredibleSelfEsteemCast")
   ) {
     useSkill(1, $skill`Incredible Self-Esteem`);
   }
@@ -938,7 +919,7 @@ function L12_startWarDo(): boolean {
     autoForceEquip$3($item`candy cane sword cane`);
   }
   // start the war when siding with frat boys
-  if (!toBoolean(getProperty("auto_hippyInstead"))) {
+  if (!get("auto_hippyInstead", false)) {
     auto_log_info("Must save the ferret!!", "blue");
     if (L12_singleNCForWarStart()) {
       auto_forceNextNoncombat($location`Wartime Hippy Camp`);
@@ -969,10 +950,10 @@ export const L12_startWarTask: QuestTask = registerQuestTask({
     !in_koe() &&
     internalQuestStatus("questL12War") === 0 &&
     haveWarOutfit(true) &&
-    toInt(getProperty("lastIslandUnlock")) >= myAscensions(),
+    get("lastIslandUnlock") >= myAscensions(),
   do: L12_startWarDo,
   locations: () =>
-    toBoolean(getProperty("auto_hippyInstead"))
+    get("auto_hippyInstead", false)
       ? [$location`Wartime Frat House`]
       : [$location`Wartime Hippy Camp`],
 });
@@ -987,10 +968,7 @@ function L12_filthwormsDo(): boolean {
   //might want to fight filthworms early to flyer. determining exactly when is overly complex so we are just assuming always.
   //the frat outfits are pretty weak and as such its no big loss if we don't wear it when doing it early.
   function preventFratOutfitsIfNeeded(): void {
-    if (
-      auto_warSide() === "fratboy" &&
-      toInt(getProperty("hippiesDefeated")) < 64
-    ) {
+    if (auto_warSide() === "fratboy" && get("hippiesDefeated") < 64) {
       //helmet is least useful with +40 max MP enchantment.
       if (possessOutfit("frat warrior fatigues")) {
         maximizer.exclude($item`beer helmet`);
@@ -1012,21 +990,10 @@ function L12_filthwormsDo(): boolean {
   }
   //if we can guarentee stealing the stench gland then no point in buffing item drop
   let glandGuaranteed: boolean = true;
-  if (
-    auto_have_skill($skill`Lash of the Cobra`) &&
-    toInt(getProperty("_edLashCount")) < 30
-  ) {
+  if (auto_have_skill($skill`Lash of the Cobra`) && get("_edLashCount") < 30) {
     auto_log_info("Ed will steal stench glands using [Lash of the Cobra]");
   } else if (
-    toInt(
-      //	else if(auto_have_skill($skill[Smash & Graaagh]))
-      //	{
-      //		//only 30 per day, can't find mafia tracking for it so it can't be implemented yet.
-      //		//Needs to be implemented in auto_combat.ash too before uncommenting this block
-      //		auto_log_info("Zombie Master will steal stench glands using [Smash & Graaagh]");
-      //	}
-      getProperty("_xoHugsUsed"),
-    ) < 10 &&
+    get("_xoHugsUsed") < 10 &&
     canChangeToFamiliar($familiar`XO Skeleton`)
   ) {
     auto_log_info("Will steal stench glands using [XO Skeleton]");
@@ -1069,15 +1036,9 @@ function L12_filthwormsDo(): boolean {
         } else {
           delayFilthworms = true;
         }
-      } else if (
-        auto_warSide() === "fratboy" &&
-        toInt(getProperty("hippiesDefeated")) < 64
-      ) {
+      } else if (auto_warSide() === "fratboy" && get("hippiesDefeated") < 64) {
         //frat side has not defeated enough hippies to reach filthworms quest
-        if (
-          toInt(getProperty("flyeredML")) >= 10000 ||
-          !isAboutToPowerlevel()
-        ) {
+        if (get("flyeredML") >= 10000 || !isAboutToPowerlevel()) {
           //if not stalled at flyering wait for battlefield, else can wait for optimal conditions because L12_lastDitchFlyer also waits on isAboutToPowerlevel()
           delayFilthworms = true;
         }
@@ -1093,7 +1054,7 @@ function L12_filthwormsDo(): boolean {
         if (
           quest_planned.doFarm &&
           getProperty("sidequestFarmCompleted") === "none" &&
-          !toBoolean(getProperty("auto_skipL12Farm"))
+          !get("auto_skipL12Farm", false)
         ) {
           //can wait until farm finished
           delayFilthworms = true;
@@ -1151,7 +1112,7 @@ function L12_filthwormsDo(): boolean {
     //last gland
     if (haveEffect($effect`Filthworm Drone Stench`) === 1 && !glandGuaranteed) {
       //running out of effect, failing on the last turn would mean having to start over from The Hatching Chamber
-      if (!toBoolean(getProperty("auto_limitConsume"))) {
+      if (!get("auto_limitConsume", false)) {
         if (
           canChew($item`spooky jelly`) &&
           spleen_left() >= $item`spooky jelly`.spleen &&
@@ -1258,10 +1219,7 @@ export const L12_orchardFinalizeTask: QuestTask = registerQuestTask({
     getProperty("sidequestOrchardCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1,
   ready: () =>
-    !(
-      toInt(getProperty("hippiesDefeated")) < 64 &&
-      !toBoolean(getProperty("auto_hippyInstead"))
-    ) &&
+    !(get("hippiesDefeated") < 64 && !get("auto_hippyInstead", false)) &&
     getProperty("sidequestOrchardCompleted") === "none" &&
     itemAmount($item`heart of the filthworm queen`) > 0,
   do: L12_orchardFinalizeDo,
@@ -1278,21 +1236,21 @@ function gremlinsFamiliar(): void {
     return;
   }
 
-  const hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
+  const hundred_fam: Familiar = get("auto_100familiar", Familiar.none);
   let strip_familiar: boolean = true;
   if (
     hundred_fam !== Familiar.none &&
     (isAttackFamiliar(hundred_fam) || hundred_fam.block)
   ) {
     //in 100% familiar run with an attack or block familiar
-    setProperty("_auto_bad100Familiar", true.toString()); //do not buff bad familiar
+    set("_auto_bad100Familiar", true); //do not buff bad familiar
 
     if (
       getProperty("questS01OldGuy") === "unstarted" &&
-      !toBoolean(getProperty("_auto_seaQuestStartedToday"))
+      !get("_auto_seaQuestStartedToday", false)
     ) {
       //easier to track if we tried today than to track if it is allowed in current path
-      setProperty("_auto_seaQuestStartedToday", true.toString());
+      set("_auto_seaQuestStartedToday", true);
       visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman"); //get bathysphere by starting the sea quest
     }
     if (possessEquipment($item`mini kiwi invisible dirigible`) && !in_iluh()) {
@@ -1388,15 +1346,12 @@ function L12_gremlinsDo(): boolean {
       return false; //delay for You, Robot path
     }
     //if fighting for frat immediately grab it
-    if (!toBoolean(getProperty("auto_hippyInstead"))) {
+    if (!get("auto_hippyInstead", false)) {
       equipWarOutfit();
       visitUrl("bigisland.php?action=junkman&pwd");
     }
     //if fighting for hippies grab magnet when enough fratboys killed
-    if (
-      toBoolean(getProperty("auto_hippyInstead")) &&
-      toInt(getProperty("fratboysDefeated")) >= 192
-    ) {
+    if (get("auto_hippyInstead", false) && get("fratboysDefeated") >= 192) {
       equipWarOutfit();
       visitUrl("bigisland.php?action=junkman&pwd");
     }
@@ -1562,8 +1517,7 @@ export const L12_gremlinsTask: QuestTask = registerQuestTask({
     !in_bhy() &&
     // Only 1 HP as a professor so can't stasis long enough
     (!in_wereprof() || is_werewolf()) &&
-    (!toBoolean(getProperty("auto_hippyInstead")) ||
-      toInt(getProperty("fratboysDefeated")) >= 192) &&
+    (!get("auto_hippyInstead", false) || get("fratboysDefeated") >= 192) &&
     auto_warEnemiesRemaining() > 0,
   do: L12_gremlinsDo,
 });
@@ -1598,7 +1552,7 @@ function L12_sonofaBeachDo(): boolean {
 
   if (
     chateaumantegna_havePainting() &&
-    !toBoolean(getProperty("chateauMonsterFought")) &&
+    !get("chateauMonsterFought", false) &&
     getProperty("chateauMonster") === $monster`lobsterfrogman`.toString()
   ) {
     auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
@@ -1644,12 +1598,12 @@ function L12_sonofaBeachDo(): boolean {
   }
 
   if (itemAmount($item`barrel of gunpowder`) < 4) {
-    setProperty("auto_doCombatCopy", "yes");
+    set("auto_doCombatCopy", "yes");
   }
 
   const retval: boolean = autoAdv($location`Sonofa Beach`);
 
-  setProperty("auto_doCombatCopy", "no");
+  set("auto_doCombatCopy", "no");
   edAcquireHP();
 
   return retval;
@@ -1665,8 +1619,7 @@ export const L12_sonofaBeachTask: QuestTask = registerQuestTask({
     internalQuestStatus("questL12War") === 1 &&
     getProperty("sidequestLighthouseCompleted") === "none" &&
     auto_warEnemiesRemaining() > 0 &&
-    (toInt(getProperty("fratboysDefeated")) >= 64 ||
-      !toBoolean(getProperty("auto_hippyInstead"))) &&
+    (get("fratboysDefeated") >= 64 || !get("auto_hippyInstead", false)) &&
     itemAmount($item`barrel of gunpowder`) < 5,
   do: L12_sonofaBeachDo,
   locations: $location`Sonofa Beach`,
@@ -1716,7 +1669,7 @@ function L12_sonofaPrefixDo(): boolean {
 
   if (
     chateaumantegna_havePainting() &&
-    !toBoolean(getProperty("chateauMonsterFought")) &&
+    !get("chateauMonsterFought", false) &&
     getProperty("chateauMonster") === $monster`lobsterfrogman`.toString()
   ) {
     auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
@@ -1727,7 +1680,7 @@ function L12_sonofaPrefixDo(): boolean {
 
   if (
     auto_backupTarget() &&
-    toMonster(getProperty("lastCopyableMonster")) === $monster`lobsterfrogman`
+    get("lastCopyableMonster", Monster.none) === $monster`lobsterfrogman`
   ) {
     //let LX_burnDelay() run prior to forcing backing up in noob cave
     return false;
@@ -1740,7 +1693,7 @@ function L12_sonofaPrefixDo(): boolean {
     ) {
       try {
         if (itemAmount($item`barrel of gunpowder`) < 4) {
-          setProperty("auto_doCombatCopy", "yes");
+          set("auto_doCombatCopy", "yes");
         }
         if (auto_voteMonster() && !auto_voteMonster(true)) {
           auto_voteMonster(false, $location`Sonofa Beach`);
@@ -1750,8 +1703,8 @@ function L12_sonofaPrefixDo(): boolean {
           return true;
         }
       } finally {
-        setProperty("auto_combatDirective", "");
-        setProperty("auto_doCombatCopy", "no");
+        set("auto_combatDirective", "");
+        set("auto_doCombatCopy", "no");
       }
     }
     return false;
@@ -1811,7 +1764,7 @@ function L12_sonofaPrefixDo(): boolean {
   }
 
   if (itemAmount($item`barrel of gunpowder`) < 4) {
-    setProperty("auto_doCombatCopy", "yes");
+    set("auto_doCombatCopy", "yes");
   }
 
   if (
@@ -1820,19 +1773,16 @@ function L12_sonofaPrefixDo(): boolean {
     isUnrestricted($item`Source terminal`) &&
     getProperty("_sourceTerminalDigitizeMonster") !==
       $monster`lobsterfrogman`.toString() &&
-    toInt(getProperty("_sourceTerminalDigitizeUses")) < 3
+    get("_sourceTerminalDigitizeUses") < 3
   ) {
     resetState();
     return false;
   }
 
   if (possessEquipment($item`"I Voted!" sticker`) && myAdventures() > 15) {
-    if (
-      haveSkill($skill`Meteor Lore`) &&
-      toInt(getProperty("_macrometeoriteUses")) < 10
-    ) {
+    if (haveSkill($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) {
       if (auto_voteMonster()) {
-        setProperty("auto_combatDirective", "start;skill macrometeorite");
+        set("auto_combatDirective", "start;skill macrometeorite");
         autoEquipToSlot($slot`acc3`, $item`"I Voted!" sticker`);
       } else {
         return false;
@@ -1888,10 +1838,7 @@ function L12_sonofaFinishDo(): boolean {
   if (!haveWarOutfit()) {
     return false;
   }
-  if (
-    toInt(getProperty("fratboysDefeated")) < 64 &&
-    toBoolean(getProperty("auto_hippyInstead"))
-  ) {
+  if (get("fratboysDefeated") < 64 && get("auto_hippyInstead", false)) {
     return false;
   }
 
@@ -1925,11 +1872,11 @@ const L12_flyerBackupTask: QuestTask = registerQuestTask({
     get("sidequestArenaCompleted") !== "none",
   ready: () =>
     internalQuestStatus("questL12War") === 1 &&
-    toInt(getProperty("flyeredML")) < 10000 &&
+    get("flyeredML") < 10000 &&
     (itemAmount($item`rock band flyers`) > 0 ||
       itemAmount($item`jam band flyers`) > 0) &&
     toInt(getProperty("choiceAdventure1003")) < 3 &&
-    !toBoolean(getProperty("auto_ignoreFlyer")),
+    !get("auto_ignoreFlyer", false),
   do: L12_flyerBackupDo,
 });
 
@@ -1963,8 +1910,7 @@ function L12_lastDitchFlyerDo(): boolean {
       flyer_gains += 5;
       break;
   }
-  const adv_needed: number =
-    (10000.0 - toFloat(getProperty("flyeredML"))) / flyer_gains;
+  const adv_needed: number = (10000.0 - get("flyeredML")) / flyer_gains;
 
   const plan_do_arena: WarPlan = auto_bestWarPlan();
   plan_do_arena.doArena = true;
@@ -1992,11 +1938,11 @@ export const L12_lastDitchFlyerTask: QuestTask = registerQuestTask({
     getProperty("sidequestArenaCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1,
   ready: () =>
-    !toBoolean(getProperty("auto_ignoreFlyer")) &&
+    !get("auto_ignoreFlyer", false) &&
     auto_bestWarPlan().doArena &&
     internalQuestStatus("questL12War") === 1 &&
     getProperty("sidequestArenaCompleted") === "none" &&
-    toInt(getProperty("flyeredML")) < 10000 &&
+    get("flyeredML") < 10000 &&
     (itemAmount($item`rock band flyers`) > 0 ||
       itemAmount($item`jam band flyers`) > 0) &&
     (myLevel() >= 13 || isAboutToPowerlevel()), //let the powerlevel lock release first so we can do quests that are waiting for optimal conditions.
@@ -2008,18 +1954,18 @@ export function L12_lastDitchFlyer(): boolean {
 }
 
 function L12_flyerFinishDo(): boolean {
-  if (toInt(getProperty("flyeredML")) < 10000) {
+  if (get("flyeredML") < 10000) {
     if (getProperty("sidequestArenaCompleted") !== "none") {
       auto_log_warning(
         "Sidequest Arena detected as completed but flyeredML is not appropriate, fixing.",
         "red",
       );
-      setProperty("flyeredML", (10000).toString());
+      set("flyeredML", 10000);
     } else {
       return false;
     }
   }
-  if (toBoolean(getProperty("auto_ignoreFlyer"))) {
+  if (get("auto_ignoreFlyer", false)) {
     return false;
   }
   if (robot_delay("outfit")) {
@@ -2041,7 +1987,7 @@ function L12_flyerFinishDo(): boolean {
     "We thought we had enough flyeredML, but we don't. Big sadness, let's try that again.",
     "red",
   );
-  setProperty("flyeredML", (9999).toString());
+  set("flyeredML", 9999);
   return false;
 }
 
@@ -2070,14 +2016,13 @@ export function L12_castleTopFloorWorthBurningLuckOn(): boolean {
 
 function L12_themtharHillsDo(): boolean {
   // delay nuns if we have free fights available as it would cap meat drop to 1,000
-  if (toInt(getProperty("breathitinCharges")) > 0 && !isAboutToPowerlevel()) {
+  if (get("breathitinCharges") > 0 && !isAboutToPowerlevel()) {
     return false;
   }
 
   if (
-    (toInt(getProperty("hippiesDefeated")) < 192 &&
-      !toBoolean(getProperty("auto_hippyInstead"))) ||
-    toBoolean(getProperty("auto_skipNuns"))
+    (get("hippiesDefeated") < 192 && !get("auto_hippyInstead", false)) ||
+    get("auto_skipNuns", false)
   ) {
     return false;
   } else {
@@ -2130,7 +2075,7 @@ function L12_themtharHillsDo(): boolean {
       }
       if (
         auto_havePayPhone() &&
-        !toBoolean(getProperty("_shadowAffinityToday")) &&
+        !get("_shadowAffinityToday") &&
         itemAmount($item`Rufus's shadow lodestone`) < 1
       ) {
         bonusMeat += 200;
@@ -2151,7 +2096,7 @@ function L12_themtharHillsDo(): boolean {
           return auto_doPhoneQuest();
         }
       } else {
-        setProperty("auto_delayWar", true.toString());
+        set("auto_delayWar", true);
         return false;
       }
     }
@@ -2191,7 +2136,7 @@ function L12_themtharHillsDo(): boolean {
     meat_need -= 100;
   }
 
-  const famChoice: Familiar = toFamiliar(getProperty("auto_familiarChoice"));
+  const famChoice: Familiar = get("auto_familiarChoice", Familiar.none);
   if (canChangeFamiliar() && famChoice !== Familiar.none) {
     // if we're in a 100% run, this property returns "none" which will unequip our familiar and ruin a 100% run.
     useFamiliar(famChoice);
@@ -2213,14 +2158,14 @@ function L12_themtharHillsDo(): boolean {
     );
 
     const minget: number = 800.0 * (meatDropHave / 100.0);
-    const meatneed: number = 100000 - toInt(getProperty("currentNunneryMeat"));
+    const meatneed: number = 100000 - get("currentNunneryMeat");
     auto_log_info(
       `The min we expect is: ${minget} and we need: ${meatneed}`,
       "blue",
     );
 
     if (minget < meatneed) {
-      const curMeat: number = toInt(getProperty("currentNunneryMeat"));
+      const curMeat: number = get("currentNunneryMeat");
       const advs: number = $location`The Themthar Hills`.turnsSpent;
       const needMeat: number = 100000 - curMeat;
 
@@ -2238,7 +2183,7 @@ function L12_themtharHillsDo(): boolean {
       }
 
       if (failNuns) {
-        setProperty("auto_skipNuns", "true");
+        set("auto_skipNuns", "true");
         return false;
       }
     } else {
@@ -2265,7 +2210,7 @@ function L12_themtharHillsDo(): boolean {
   {
     equipWarOutfit();
 
-    const lastMeat: number = toInt(getProperty("currentNunneryMeat"));
+    const lastMeat: number = get("currentNunneryMeat");
     const myLastMeat: number = myMeat();
     auto_log_info(`Meat drop to start: ${meatDropModifier()}`, "blue");
     if (!autoAdv($location`The Themthar Hills`)) {
@@ -2282,10 +2227,10 @@ function L12_themtharHillsDo(): boolean {
       return true;
     }
 
-    const curMeat: number = toInt(getProperty("currentNunneryMeat"));
+    const curMeat: number = get("currentNunneryMeat");
     if (lastMeat === curMeat) {
       const diffMeat_1: number = myMeat() - myLastMeat;
-      setProperty("currentNunneryMeat", diffMeat_1.toString());
+      set("currentNunneryMeat", diffMeat_1);
     }
 
     const advs: number = $location`The Themthar Hills`.turnsSpent + 1;
@@ -2320,7 +2265,7 @@ function LX_obtainChaosButterfly(): boolean {
   if (in_bhy() || in_pokefam() || in_glover()) {
     return false;
   }
-  if (toBoolean(getProperty("chaosButterflyThrown"))) {
+  if (get("chaosButterflyThrown")) {
     return false;
   }
   if (!isUnrestricted($item`chaos butterfly`)) {
@@ -2332,7 +2277,7 @@ function LX_obtainChaosButterfly(): boolean {
   // Softcore pull
   if (
     canPull($item`chaos butterfly`) &&
-    !toBoolean(getProperty("chaosButterflyThrown")) &&
+    !get("chaosButterflyThrown") &&
     itemAmount($item`chaos butterfly`) === 0
   ) {
     if (pullXWhenHaveY($item`chaos butterfly`, 1, 0)) {
@@ -2346,7 +2291,7 @@ function LX_obtainChaosButterfly(): boolean {
   }
   // Fight possibility giant for chaos butterfly if profitable.
   if (
-    !toBoolean(getProperty("chaosButterflyThrown")) &&
+    !get("chaosButterflyThrown") &&
     itemAmount($item`chaos butterfly`) === 0 &&
     auto_estimatedAdventuresForChaosButterfly() < 15
   ) {
@@ -2366,7 +2311,7 @@ function LX_obtainChaosButterfly(): boolean {
   // adventure somewhere else, our CCS uses the chaos butterfly, and we
   // suddenly realize that we want to complete dooks after all.
   if (
-    !toBoolean(getProperty("chaosButterflyThrown")) &&
+    !get("chaosButterflyThrown") &&
     itemAmount($item`chaos butterfly`) > 0 &&
     !in_pokefam()
   ) {
@@ -2389,13 +2334,10 @@ function LX_obtainChaosButterfly(): boolean {
 
 function L12_farmDo(): boolean {
   if (getProperty("sidequestFarmCompleted") !== "none") {
-    setProperty("auto_skipL12Farm", "true");
+    set("auto_skipL12Farm", "true");
     return false;
   }
-  if (
-    auto_warEnemiesRemaining() === 0 &&
-    toInt(getProperty("auto_L12FarmStage")) < 4
-  ) {
+  if (auto_warEnemiesRemaining() === 0 && get("auto_L12FarmStage", 0) < 4) {
     return false;
   }
   if (internalQuestStatus("questL12War") !== 1) {
@@ -2429,25 +2371,25 @@ function L12_farmDo(): boolean {
       if (autoAdv($location`McMillicancuddy's Barn`)) {
         return true;
       }
-      setProperty("auto_L12FarmStage", "1");
+      set("auto_L12FarmStage", "1");
     // INTENTIONAL LACK OF BREAK
     case 1:
       if (autoAdv($location`McMillicancuddy's Pond`)) {
         return true;
       }
-      setProperty("auto_L12FarmStage", "2");
+      set("auto_L12FarmStage", "2");
     // INTENTIONAL LACK OF BREAK
     case 2:
       if (autoAdv($location`McMillicancuddy's Back 40`)) {
         return true;
       }
-      setProperty("auto_L12FarmStage", "3");
+      set("auto_L12FarmStage", "3");
     // INTENTIONAL LACK OF BREAK
     case 3:
       if (autoAdv($location`McMillicancuddy's Other Back 40`)) {
         return true;
       }
-      setProperty("auto_L12FarmStage", "4");
+      set("auto_L12FarmStage", "4");
     // INTENTIONAL LACK OF BREAK
     case 4:
       equipWarOutfit();
@@ -2471,7 +2413,7 @@ export const L12_farmTask: QuestTask = registerQuestTask({
   completed: () =>
     getProperty("sidequestFarmCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1,
-  ready: () => !toBoolean(getProperty("auto_skipL12Farm")),
+  ready: () => !get("auto_skipL12Farm", false),
   do: L12_farmDo,
   locations: $locations`McMillicancuddy's Barn, McMillicancuddy's Pond, McMillicancuddy's Back 40, McMillicancuddy's Other Back 40, The Castle in the Clouds in the Sky (Ground Floor)`,
   desiredEncounters: () =>
@@ -2494,7 +2436,7 @@ function L12_clearBattlefieldDo(): boolean {
   if (
     !inAftercore() &&
     myInebriety() < inebrietyLimit() &&
-    !toBoolean(getProperty("_gardenHarvested"))
+    !get("_gardenHarvested", false)
   ) {
     const camp: Map<Item, number> = auto_get_campground();
     if (
@@ -2517,9 +2459,9 @@ function L12_clearBattlefieldDo(): boolean {
   if (internalQuestStatus("questL12War") !== 1) {
     return false;
   }
-  let enemies_defeated: number = toInt(getProperty("hippiesDefeated"));
+  let enemies_defeated: number = get("hippiesDefeated");
   if (auto_warSide() === "hippy") {
-    enemies_defeated = toInt(getProperty("fratboysDefeated"));
+    enemies_defeated = get("fratboysDefeated");
   }
   if (enemies_defeated >= 1000) {
     return false; //already done
@@ -2616,8 +2558,8 @@ export const L12_clearBattlefieldTask: QuestTask = registerQuestTask({
   name: "L12_clearBattlefield",
   completed: () =>
     (auto_warSide() === "hippy"
-      ? toInt(getProperty("fratboysDefeated"))
-      : toInt(getProperty("hippiesDefeated"))) >= 1000,
+      ? get("fratboysDefeated")
+      : get("hippiesDefeated")) >= 1000,
   ready: () => true,
   do: L12_clearBattlefieldDo,
 });
@@ -2634,10 +2576,7 @@ function L12_finalizeWarDo(): boolean {
     return false;
   }
 
-  if (
-    toInt(getProperty("hippiesDefeated")) < 1000 &&
-    toInt(getProperty("fratboysDefeated")) < 1000
-  ) {
+  if (get("hippiesDefeated") < 1000 && get("fratboysDefeated") < 1000) {
     return false;
   }
 
@@ -2714,7 +2653,7 @@ function L12_finalizeWarDo(): boolean {
       itemAmount($item`carbonated soy milk`);
     if (have_1 < 5) {
       let need: number = 5 - have_1;
-      if (!toBoolean(getProperty("auto_hippyInstead"))) {
+      if (!get("auto_hippyInstead", false)) {
         need = min(
           need,
           Math.floor($coinmaster`Quartersmaster`.availableTokens / 3),
@@ -2734,7 +2673,7 @@ function L12_finalizeWarDo(): boolean {
     itemAmount($item`filthy poultice`) + itemAmount($item`gauze garter`);
   if (have < 10 && !isActuallyEd()) {
     let need: number = 10 - have;
-    if (!toBoolean(getProperty("auto_hippyInstead"))) {
+    if (!get("auto_hippyInstead", false)) {
       need = min(
         need,
         Math.floor($coinmaster`Quartersmaster`.availableTokens / 2),
@@ -2877,7 +2816,7 @@ export function L12_finalizeWar(): boolean {
 function L12_islandWarDo(): boolean {
   if (
     internalQuestStatus("questL12War") === 0 &&
-    toInt(getProperty("lastIslandUnlock")) !== myAscensions()
+    get("lastIslandUnlock") !== myAscensions()
   ) {
     return LX_islandAccess();
   }
@@ -2885,7 +2824,7 @@ function L12_islandWarDo(): boolean {
     return false; //delay for You, Robot path
   }
   if (getProperty("auto_delayWar") === true.toString()) {
-    setProperty("auto_delayWar", false.toString());
+    set("auto_delayWar", false);
     return false; //delay war at Nuns so we can maybe get the Inhaler
   }
   if (runTaskChain([L12_preOutfitTask, L12_getOutfitTask, L12_startWarTask])) {
@@ -2921,12 +2860,12 @@ export function L12_islandWar(): boolean {
 
 function L12_opportunisticWarStartDo(): boolean {
   // Dinghy the island if we can.
-  if (toInt(getProperty("lastIslandUnlock")) !== myAscensions()) {
+  if (get("lastIslandUnlock") !== myAscensions()) {
     if (availableAmount($item`pirate dinghy`) > 0) {
       use($item`pirate dinghy`);
     }
   }
-  if (toInt(getProperty("lastIslandUnlock")) !== myAscensions()) {
+  if (get("lastIslandUnlock") !== myAscensions()) {
     return false;
   }
   return L12_startWar();

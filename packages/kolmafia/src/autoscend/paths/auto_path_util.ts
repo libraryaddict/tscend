@@ -9,11 +9,9 @@ import {
   myMeat,
   myPath,
   print,
-  setProperty,
-  toBoolean,
   visitUrl,
 } from "kolmafia";
-import { $class, $item, $skill } from "libram";
+import { $class, $item, $skill, get, set } from "libram";
 
 import { initializeSettings } from "../../autoscend";
 import { stomach_left } from "../auto_consume";
@@ -343,7 +341,7 @@ export function auto_buySkills(): boolean {
           noStaggerItem || !haveSkill($skill`Ambidextrous Funkslinging`);
         if (
           cantStagger &&
-          !toBoolean(getProperty("auto_ignoreFlyer")) &&
+          !get("auto_ignoreFlyer", false) &&
           auto_bestWarPlan().doArena
         ) {
           //buy Deft hands = first item throw in the fight staggers
@@ -442,6 +440,6 @@ export function pathDroppedCheck(): void {
     `Path change detected. You were previously ${getProperty("auto_doneInitializePath")} and are now a ${myPath().name}`,
     "red",
   );
-  setProperty("_auto_reinitialize", true.toString());
+  set("_auto_reinitialize", true);
   initializeSettings();
 }

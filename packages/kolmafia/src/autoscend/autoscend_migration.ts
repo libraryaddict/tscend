@@ -4,12 +4,11 @@ import {
   propertyExists,
   removeProperty,
   replaceString,
-  setProperty,
   svnExists,
   svnInfo,
-  toBoolean,
   userConfirm,
 } from "kolmafia";
+import { get, set } from "libram";
 
 import { auto_log_error, auto_log_info, auto_log_warning } from "./auto_util";
 import { fileAsMap } from "./utils/kolmafiaUtils";
@@ -26,14 +25,14 @@ const $_f___migrate_sl_ascend_properties_remove_confirmation: string =
 //Defined in autoscend/autoscend_migration.ash
 export function autoscend_current_version(): string {
   if (!propertyExists("auto_current_version")) {
-    setProperty("auto_current_version", $_f___autoscend_version);
+    set("auto_current_version", $_f___autoscend_version);
   }
   return getProperty("auto_current_version");
 }
 
 function autoscend_previous_version(): string {
   if (!propertyExists("auto_prev_version")) {
-    setProperty("auto_prev_version", "0.0.0");
+    set("auto_prev_version", "0.0.0");
   }
   return getProperty("auto_prev_version");
 }
@@ -43,14 +42,14 @@ function autoscend_needs_update(): boolean {
     autoscend_previous_version() === "0.0.0" ||
     autoscend_current_version() !== $_f___autoscend_version
   ) {
-    if (toBoolean(getProperty("auto_need_update"))) {
+    if (get("auto_need_update", false)) {
       auto_log_info(
         "Forcing migration (partially complete migration or user set flag): auto_need_update => true",
       );
     }
-    setProperty("auto_need_update", true.toString());
+    set("auto_need_update", true);
   }
-  return toBoolean(getProperty("auto_need_update"));
+  return get("auto_need_update", false);
 }
 
 let $_autoscend_migrate_props: Map<number, string> | undefined;
@@ -139,7 +138,7 @@ export function autoscend_migrate(): boolean {
           auto_log_info(
             `Migrating ${old_prop} => ${p} (${getProperty(old_prop)})`,
           );
-          setProperty(p, getProperty(old_prop));
+          set(p, getProperty(old_prop));
         } else if (getProperty(old_prop) !== getProperty(p)) {
           auto_log_warning(
             `Conflict: ${old_prop} (${getProperty(old_prop)}) !== ${p} (${getProperty(p)})`,
@@ -183,9 +182,9 @@ export function autoscend_migrate(): boolean {
   }
 
   function finalize_update(): void {
-    setProperty("auto_need_update", false.toString());
-    setProperty("auto_prev_version", getProperty("auto_current_version"));
-    setProperty("auto_current_version", $_f___autoscend_version);
+    set("auto_need_update", false);
+    set("auto_prev_version", getProperty("auto_current_version"));
+    set("auto_current_version", $_f___autoscend_version);
   }
 
   let all_good: boolean = true;

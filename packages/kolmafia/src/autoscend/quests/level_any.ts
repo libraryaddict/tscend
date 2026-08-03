@@ -38,13 +38,9 @@ import {
   npcPrice,
   outfit,
   outfitPieces,
+  Phylum,
   runTurn,
-  setProperty,
   storageAmount,
-  toBoolean,
-  toFloat,
-  toInt,
-  toLocation,
   toLowerCase,
   toPhylum,
   use,
@@ -64,6 +60,7 @@ import {
   $slot,
   $stat,
   get,
+  set,
 } from "libram";
 
 import { auto_advToReserve, LX_doVacation } from "../../autoscend";
@@ -244,10 +241,7 @@ export function LX_handleIntroAdventures(): void {
 }
 
 export function LX_bitchinMeatcar_condition(): boolean {
-  return (
-    knollAvailable() &&
-    toInt(getProperty("auto_spoonconfirmed")) === myAscensions()
-  );
+  return knollAvailable() && get("auto_spoonconfirmed", 0) === myAscensions();
 }
 
 function LX_bitchinMeatcarDo(): boolean {
@@ -419,7 +413,7 @@ function LX_desertAlternate(): boolean {
   if (in_nuclear()) {
     return LX_hippyBoatman();
   }
-  if (toInt(getProperty("lastDesertUnlock")) === myAscensions()) {
+  if (get("lastDesertUnlock") === myAscensions()) {
     return false;
   }
   if (knollAvailable()) {
@@ -443,9 +437,9 @@ function LX_islandAccessDo(): boolean {
   }
 
   if (
-    toInt(getProperty("lastIslandUnlock")) < myAscensions() &&
+    get("lastIslandUnlock") < myAscensions() &&
     itemAmount($item`pirate dinghy`) > 0 &&
-    !toBoolean(getProperty("_pirateDinghyUsed"))
+    !get("_pirateDinghyUsed")
   ) {
     use(1, $item`pirate dinghy`);
     return true;
@@ -453,7 +447,7 @@ function LX_islandAccessDo(): boolean {
 
   if (
     itemAmount($item`Shore Inc. Ship Trip Scrip`) >= 3 &&
-    toInt(getProperty("lastIslandUnlock")) !== myAscensions() &&
+    get("lastIslandUnlock") !== myAscensions() &&
     myMeat() >= npcPrice($item`dingy planks`) &&
     isGeneralStoreAvailable()
   ) {
@@ -465,9 +459,9 @@ function LX_islandAccessDo(): boolean {
 
   if (
     itemAmount($item`dingy dinghy`) > 0 ||
-    toInt(getProperty("lastIslandUnlock")) === myAscensions()
+    get("lastIslandUnlock") === myAscensions()
   ) {
-    if (toInt(getProperty("lastIslandUnlock")) === myAscensions()) {
+    if (get("lastIslandUnlock") === myAscensions()) {
       let reallyUnlocked: boolean = false;
       for (const it of $items`dingy dinghy, skeletal skiff, yellow submarine, pirate dinghy`) {
         if (itemAmount(it) > 0) {
@@ -485,7 +479,7 @@ function LX_islandAccessDo(): boolean {
           "lastIslandUnlock is incorrect, you have no way to get to the Island. Unless you barrel smashed when that was allowed. Did you barrel smash? Well, correcting....",
           "red",
         );
-        setProperty("lastIslandUnlock", (myAscensions() - 1).toString());
+        set("lastIslandUnlock", myAscensions() - 1);
         return true;
       }
     }
@@ -599,7 +593,7 @@ function LX_hippyBoatmanDo(): boolean {
 const LX_hippyBoatmanTask: QuestTask = registerQuestTask({
   name: "LX_hippyBoatman",
   completed: () =>
-    toInt(getProperty("lastIslandUnlock")) >= myAscensions() ||
+    get("lastIslandUnlock") >= myAscensions() ||
     internalQuestStatus("questM19Hippy") > 3,
   ready: () =>
     itemAmount($item`junk junk`) === 0 &&
@@ -672,16 +666,16 @@ export function oldLandfillChoiceHandler(choice: number): void {
 function LX_lockPickingDo(): boolean {
   // As of r20114, this choice does not work in choice adventure script
   if (itemAmount($item`Boris's key`) === 0) {
-    setProperty("choiceAdventure1414", (1).toString());
+    set("choiceAdventure1414", 1);
   } else if (itemAmount($item`Jarlsberg's key`) === 0) {
-    setProperty("choiceAdventure1414", (2).toString());
+    set("choiceAdventure1414", 2);
   } else if (itemAmount($item`Sneaky Pete's key`) === 0) {
-    setProperty("choiceAdventure1414", (3).toString());
+    set("choiceAdventure1414", 3);
   }
 
   useSkill(1, $skill`Lock Picking`);
   runTurn();
-  return toBoolean(getProperty("lockPicked"));
+  return get("lockPicked");
 }
 
 export const LX_lockPickingTask: QuestTask = registerQuestTask({
@@ -689,7 +683,7 @@ export const LX_lockPickingTask: QuestTask = registerQuestTask({
   completed: () => towerKeyCount(false) >= 3,
   ready: () =>
     auto_have_skill($skill`Lock Picking`) &&
-    !toBoolean(getProperty("lockPicked")) &&
+    !get("lockPicked") &&
     towerKeyCount(false) < 3 &&
     myMp() >= mpCost($skill`Lock Picking`),
   do: LX_lockPickingDo,
@@ -703,7 +697,7 @@ export function estimateDailyDungeonAdvNeeded(): number {
   //estimates the amount of adventures we expect to need to do the daily dungeon. the result is only an estimate and not exact.
   //uses your current tools rather than potential tools. so it does not account for the possibility of pulling something or getting a cubeling drop.
 
-  const progress: number = toFloat(getProperty("_lastDailyDungeonRoom"));
+  const progress: number = get("_lastDailyDungeonRoom");
   let adv_needed: number = 15 - progress;
   if (progress < 5) {
     adv_needed = adv_needed - 2;
@@ -760,7 +754,7 @@ function LX_fatLootTokenDo(): boolean {
   if (LX_dailyDungeonToken()) {
     return true;
   }
-  if (toBoolean(getProperty("dailyDungeonDone")) && myDaycount() > 1) {
+  if (get("dailyDungeonDone") && myDaycount() > 1) {
     //wait until daily dungeon is done before considering doing fantasy realm
     if (fantasyRealmToken()) {
       return true;
@@ -789,10 +783,7 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
   completed: () => false,
   //have enough tokens
   ready: () =>
-    !(
-      towerKeyCount(false) >= 3 &&
-      !toBoolean(getProperty("auto_forceFatLootToken"))
-    ),
+    !(towerKeyCount(false) >= 3 && !get("auto_forceFatLootToken", false)),
   do: LX_fatLootTokenDo,
   reqAdventures: () => (LX_wantSummonFantasyBandit() ? 5 : 0),
   desiredEncounters: () => {
@@ -815,31 +806,31 @@ export function useTonicDjinn(): void {
   //configure and use Tonic Djinn if one was found in the daily dungeon
   if (
     itemAmount($item`tonic djinn`) > 0 &&
-    !toBoolean(getProperty("_tonicDjinn")) &&
+    !get("_tonicDjinn") &&
     auto_is_valid($item`tonic djinn`)
   ) {
     if (myMeat() < 500 + meatReserve()) {
-      setProperty("choiceAdventure778", "1"); // Wealth!
+      set("choiceAdventure778", "1"); // Wealth!
     } else if (disregardInstantKarma()) {
       if (myPrimestat() === $stat`Muscle`) {
-        setProperty("choiceAdventure778", "2");
+        set("choiceAdventure778", "2");
         equipStatgainIncreasers$1($stat`Muscle`, false); // Strength!
       } else if (myPrimestat() === $stat`Mysticality`) {
-        setProperty("choiceAdventure778", "3");
+        set("choiceAdventure778", "3");
         equipStatgainIncreasers$1($stat`Mysticality`, false); // Wisdom!
       } else {
-        setProperty("choiceAdventure778", "4");
+        set("choiceAdventure778", "4");
         equipStatgainIncreasers$1($stat`Moxie`, false); // Panache!
       }
     } else {
-      setProperty("choiceAdventure778", "1"); // Wealth!
+      set("choiceAdventure778", "1"); // Wealth!
     }
     use(1, $item`tonic djinn`);
   }
 }
 
 function LX_dailyDungeonToken(): boolean {
-  if (toBoolean(getProperty("dailyDungeonDone"))) {
+  if (get("dailyDungeonDone")) {
     return false; // already done today
   }
   if (wantCubeling()) {
@@ -929,8 +920,8 @@ function LX_dailyDungeonToken(): boolean {
   auto_log_info("Doing the daily dungeon", "blue");
 
   if (
-    toInt(getProperty("_lastDailyDungeonRoom")) === 4 ||
-    toInt(getProperty("_lastDailyDungeonRoom")) === 9
+    get("_lastDailyDungeonRoom") === 4 ||
+    get("_lastDailyDungeonRoom") === 9
   ) {
     autoEquipToSlot($slot`acc3`, $item`ring of Detect Boring Doors`);
   }
@@ -1208,10 +1199,10 @@ function LX_setWorkshedDo(): boolean {
 
 export const LX_setWorkshedTask: QuestTask = registerQuestTask({
   name: "LX_setWorkshed",
-  completed: () => toBoolean(getProperty("_workshedItemUsed")),
+  completed: () => get("_workshedItemUsed"),
   ready: () =>
     //Don't even try if the workshed has already been changed once
-    !toBoolean(getProperty("_workshedItemUsed")) &&
+    !get("_workshedItemUsed") &&
     //Not usable in certain paths
     have_workshed(),
   do: LX_setWorkshedDo,
@@ -1226,8 +1217,9 @@ function canSetWorkshed(it: Item): boolean {
 }
 
 function LX_ForceNCDo(): boolean {
-  const desiredNCLocation: Location = toLocation(
-    getProperty("auto_forceNonCombatLocation"),
+  const desiredNCLocation: Location = get(
+    "auto_forceNonCombatLocation",
+    Location.none,
   );
   //return the actual item name in case a shorthand is used
   switch (desiredNCLocation) {
@@ -1265,10 +1257,10 @@ export const LX_ForceNCTask: QuestTask = registerQuestTask({
   completed: () => false,
   ready: () =>
     getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
-    toBoolean(getProperty("auto_avalancheDeployed")) &&
+    get("auto_avalancheDeployed", false) &&
     getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
-    toBoolean(getProperty("auto_parkaSpikesDeployed")) &&
-    toLocation(getProperty("auto_forceNonCombatLocation")) !== Location.none,
+    get("auto_parkaSpikesDeployed", false) &&
+    get("auto_forceNonCombatLocation", Location.none) !== Location.none,
   do: LX_ForceNCDo,
 });
 
@@ -1291,26 +1283,25 @@ function LX_dronesOutDo(): boolean {
   ) {
     auto_log_info("Going to HiTS");
     if (
-      toLocation(getProperty("auto_priorLocation")) !==
+      get("auto_priorLocation", Location.none) !==
       $location`The Hole in the Sky`
     ) {
-      setProperty("auto_skipStage2", true.toString());
-      setProperty("auto_skipStage4", true.toString());
+      set("auto_skipStage2", true);
+      set("auto_skipStage4", true);
     }
     return autoAdv($location`The Hole in the Sky`); //Stars and Lines
   }
   if (
-    toBoolean(getProperty("middleChamberUnlock")) &&
+    get("middleChamberUnlock") &&
     L11_needTombRatchet() &&
     itemAmount($item`tangle of rat tails`) >= 1 &&
     zone_isAvailable($location`The Middle Chamber`)
   ) {
     auto_log_info("Going to Middle Chamber");
     if (
-      toLocation(getProperty("auto_priorLocation")) !==
-      $location`The Middle Chamber`
+      get("auto_priorLocation", Location.none) !== $location`The Middle Chamber`
     ) {
-      setProperty("auto_skipStage4", true.toString()); //don't set skipStage2 because rat king
+      set("auto_skipStage4", true); //don't set skipStage2 because rat king
     }
     return autoAdv($location`The Middle Chamber`); //Tomb ratchets
   }
@@ -1322,11 +1313,9 @@ function LX_dronesOutDo(): boolean {
     prepareForTwinPeak(true)
   ) {
     auto_log_info("Going to Twin Peak");
-    if (
-      toLocation(getProperty("auto_priorLocation")) !== $location`Twin Peak`
-    ) {
-      setProperty("auto_skipStage2", true.toString());
-      setProperty("auto_skipStage4", true.toString());
+    if (get("auto_priorLocation", Location.none) !== $location`Twin Peak`) {
+      set("auto_skipStage2", true);
+      set("auto_skipStage4", true);
     }
     return autoAdv($location`Twin Peak`); //Hedge trimmers
   }
@@ -1337,27 +1326,24 @@ function LX_dronesOutDo(): boolean {
   ) {
     auto_log_info("Going to the Red Zeppelin");
     if (
-      toLocation(getProperty("auto_priorLocation")) !==
-      $location`The Red Zeppelin`
+      get("auto_priorLocation", Location.none) !== $location`The Red Zeppelin`
     ) {
-      setProperty("auto_skipStage4", true.toString()); //don't set skipStage2 because glark cables
+      set("auto_skipStage4", true); //don't set skipStage2 because glark cables
     }
     return autoAdv($location`The Red Zeppelin`); //Glark cables
   }
   if (
     !canExtingo &&
-    toInt(getProperty("hiddenBowlingAlleyProgress")) +
-      itemAmount($item`bowling ball`) <
-      6 &&
+    get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6 &&
     zone_isAvailable($location`The Hidden Bowling Alley`)
   ) {
     auto_log_info("Going to the Hidden Bowling Alley");
     if (
-      toLocation(getProperty("auto_priorLocation")) !==
+      get("auto_priorLocation", Location.none) !==
       $location`The Hidden Bowling Alley`
     ) {
-      setProperty("auto_skipStage2", true.toString());
-      setProperty("auto_skipStage4", true.toString());
+      set("auto_skipStage2", true);
+      set("auto_skipStage4", true);
     }
     return autoAdv($location`The Hidden Bowling Alley`); //Bowling balls
   }
@@ -1367,11 +1353,11 @@ function LX_dronesOutDo(): boolean {
   ) {
     auto_log_info("Going to the Batrat and Ratbat Burrow");
     if (
-      toLocation(getProperty("auto_priorLocation")) !==
+      get("auto_priorLocation", Location.none) !==
       $location`The Batrat and Ratbat Burrow`
     ) {
-      setProperty("auto_skipStage2", true.toString());
-      setProperty("auto_skipStage4", true.toString());
+      set("auto_skipStage2", true);
+      set("auto_skipStage4", true);
     }
     return autoAdv($location`The Batrat and Ratbat Burrow`); //Sonar-in-a-Biscuit
   }
@@ -1380,11 +1366,9 @@ function LX_dronesOutDo(): boolean {
     zone_isAvailable($location`The Goatlet`)
   ) {
     auto_log_info("Going to the Goatlet");
-    if (
-      toLocation(getProperty("auto_priorLocation")) !== $location`The Goatlet`
-    ) {
-      setProperty("auto_skipStage2", true.toString());
-      setProperty("auto_skipStage4", true.toString());
+    if (get("auto_priorLocation", Location.none) !== $location`The Goatlet`) {
+      set("auto_skipStage2", true);
+      set("auto_skipStage4", true);
     }
     return autoAdv($location`The Goatlet`); //Goat cheese
   }
@@ -1501,13 +1485,13 @@ export function freeCandyFightsLeft(): number {
   }
   // Map is done
   if (
-    toBoolean(getProperty("_mapToACandyRichBlockUsed")) &&
-    toBoolean(getProperty("_auto_candyMapCompleted"))
+    get("_mapToACandyRichBlockUsed") &&
+    get("_auto_candyMapCompleted", false)
   ) {
     return 0;
   }
   if (
-    !toBoolean(getProperty("_mapToACandyRichBlockUsed")) &&
+    !get("_mapToACandyRichBlockUsed") &&
     itemAmount($item`map to a candy-rich block`) > 0
   ) {
     return 5;
@@ -1524,12 +1508,12 @@ export function freeCandyFightsLeft(): number {
 
 function candyBlockDo(): boolean {
   // Set choice defaults
-  setProperty("choiceAdventure804", "2"); // don't halt on map use
-  setProperty("choiceAdventure806", "1"); // grab the big bowl of candy
+  set("choiceAdventure804", "2"); // don't halt on map use
+  set("choiceAdventure806", "1"); // grab the big bowl of candy
   //Based on freecandy's trickTreatTasks.ts
   if (
-    toBoolean(getProperty("_mapToACandyRichBlockUsed")) &&
-    toBoolean(getProperty("_auto_candyMapCompleted"))
+    get("_mapToACandyRichBlockUsed") &&
+    get("_auto_candyMapCompleted", false)
   ) {
     return false;
   }
@@ -1557,13 +1541,13 @@ function candyBlockDo(): boolean {
   let treated: boolean = false;
 
   if (
-    !toBoolean(getProperty("_mapToACandyRichBlockUsed")) &&
+    !get("_mapToACandyRichBlockUsed") &&
     itemAmount($item`map to a candy-rich block`) > 0
   ) {
     outfit(candyBlockOutfit("treat"));
     use(1, $item`map to a candy-rich block`);
   }
-  if (toBoolean(getProperty("_mapToACandyRichBlockUsed"))) {
+  if (get("_mapToACandyRichBlockUsed")) {
     let blockHtml: string = visitUrl(
       "place.php?whichplace=town&action=town_trickortreat",
     );
@@ -1625,7 +1609,7 @@ function candyBlockDo(): boolean {
       tricked = true;
     }
     if (treated && tricked) {
-      setProperty("_auto_candyMapCompleted", true.toString());
+      set("_auto_candyMapCompleted", true);
       return true;
     }
   }
@@ -1636,8 +1620,7 @@ const candyBlockTask: QuestTask = registerQuestTask({
   name: "candyBlock",
   completed: () =>
     !auto_is_valid($item`map to a candy-rich block`) ||
-    (toBoolean(getProperty("_mapToACandyRichBlockUsed")) &&
-      toBoolean(getProperty("_auto_candyMapCompleted"))),
+    (get("_mapToACandyRichBlockUsed") && get("_auto_candyMapCompleted", false)),
   ready: () => true,
   do: candyBlockDo,
 });
@@ -1705,10 +1688,9 @@ function LX_lastChanceDo(): boolean {
       "Patriotic Eagle's screech banished something we need and we can't adventure anywhere else",
     );
     while (
-      (toInt(getProperty("screechCombats")) > 0 ||
-        banishLoc === Location.none) &&
+      (get("screechCombats") > 0 || banishLoc === Location.none) &&
       myAdventures() > 2 &&
-      isBanished(toPhylum(getProperty("screechDelay")))
+      isBanished(get("screechDelay", Phylum.none))
     ) {
       handleFamiliar$1($familiar`Patriotic Eagle`); //force eagle to be used
       if (runTaskChain([LX_getDigitalKeyTask, LX_getStarKeyTask])) {
@@ -1738,16 +1720,16 @@ function LX_lastChanceDo(): boolean {
         }
       }
     }
-    if (toInt(getProperty("screechCombats")) > 0) {
+    if (get("screechCombats") > 0) {
       auto_log_warning(
         "Couldn't clear screech delay without running out of adventures",
       );
       return false;
     }
-    if (isBanished(toPhylum(getProperty("screechDelay")))) {
+    if (isBanished(get("screechDelay", Phylum.none))) {
       autoAdv(banishLoc); //adventure here to banish goblins or constructs and be able to progress other quests
     }
-    setProperty("screechDelay", "");
+    set("screechDelay", "");
     return true;
   }
   // Need the digital key and star key so if we have nothing to do before the L13 quest, might as well do them here

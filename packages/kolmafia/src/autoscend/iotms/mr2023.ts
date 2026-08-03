@@ -46,13 +46,9 @@ import {
   myPrimestat,
   numericModifier,
   Phylum,
-  setProperty,
   Skill,
-  toBoolean,
-  toFamiliar,
   toInt,
   toLowerCase,
-  toMonster,
   turnsPlayed,
   use,
   useFamiliar,
@@ -74,6 +70,8 @@ import {
   $skill,
   $slot,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { autoAdv, autoAdvBypass } from "../auto_adventure";
@@ -168,14 +166,14 @@ export function rockGardenEnd(): void {
   //while we will probably never get these automatically, should handle them anyway
   if (
     itemAmount($item`molehill mountain`) > 0 &&
-    !toBoolean(getProperty("_molehillMountainUsed"))
+    !get("_molehillMountainUsed")
   ) {
     use(1, $item`molehill mountain`);
   }
 
   if (
     itemAmount($item`strange stalagmite`) > 0 &&
-    !toBoolean(getProperty("_strangeStalagmiteUsed"))
+    !get("_strangeStalagmiteUsed")
   ) {
     // use() aborts the whole script with "Unsupported choice adventure #1491"
     // since this redirects straight into choice.php; visitUrl() bypasses that and
@@ -197,7 +195,7 @@ export function pickRocks(): void {
     return;
   }
   visitUrl("campground.php?action=rgarden1");
-  if (toInt(getProperty("desertExploration")) < 100) {
+  if (get("desertExploration") < 100) {
     visitUrl("campground.php?action=rgarden2");
   }
   visitUrl("campground.php?action=rgarden3");
@@ -245,7 +243,7 @@ export function auto_SITCourse(): void {
   //Get cryptobotanist if under level 8 or switch to insectologist if possible
   if (
     (myLevel() < 8 && !haveSkill($skill`Cryptobotanist`)) ||
-    (!toBoolean(getProperty("_sitCourseCompleted")) &&
+    (!get("_sitCourseCompleted") &&
       myLevel() >= 8 &&
       !haveSkill($skill`Insectologist`))
   ) {
@@ -335,7 +333,7 @@ export function auto_neededShadowBricks(): number {
   }
 
   const currentBricks: number = itemAmount($item`shadow brick`);
-  const bricksUsedToday: number = toInt(getProperty("_shadowBricksUsed"));
+  const bricksUsedToday: number = get("_shadowBricksUsed");
   return max(0, 13 - currentBricks - bricksUsedToday);
 }
 
@@ -375,7 +373,7 @@ export function auto_doPhoneQuest(): boolean {
   }
   // already finished phone quest today
   if (
-    toBoolean(getProperty("_shadowAffinityToday")) &&
+    get("_shadowAffinityToday") &&
     haveEffect($effect`Shadow Affinity`) === 0 &&
     getProperty("questRufus") === "unstarted"
   ) {
@@ -466,7 +464,7 @@ export function auto_haveMonkeyPaw(): boolean {
 
 export function auto_monkeyPawWishesLeft(): number {
   if (auto_haveMonkeyPaw()) {
-    return 5 - toInt(getProperty("_monkeyPawWishesUsed"));
+    return 5 - get("_monkeyPawWishesUsed");
   }
   return 0;
 }
@@ -535,11 +533,11 @@ function auto_currentCinch(): number {
   if (!auto_haveCincho()) {
     return 0;
   }
-  return 100 - toInt(getProperty("_cinchUsed"));
+  return 100 - get("_cinchUsed");
 }
 
 function auto_cinchFromNextRest(): number {
-  let cinchoRestsAlready: number = toInt(getProperty("_cinchoRests"));
+  let cinchoRestsAlready: number = get("_cinchoRests");
   // calculating for how much cinch NEXT rest will give
   cinchoRestsAlready++;
   return auto_cinchFromRestN(cinchoRestsAlready);
@@ -642,7 +640,7 @@ export function shouldCinchoConfetti(): boolean {
 
 function auto_potentialMaxCinchLeft(): number {
   const max_rests: number = auto_potentialMaxFreeRests();
-  const curr_free_rests_used: number = toInt(getProperty("_cinchoRests"));
+  const curr_free_rests_used: number = get("_cinchoRests");
   let cinch: number = auto_currentCinch();
   for (
     let irest: number = curr_free_rests_used + 1;
@@ -676,7 +674,7 @@ function remainingCatalogCredits(): number {
   if (!auto_have2002Catalog()) {
     return 0;
   }
-  if (!toBoolean(getProperty("_2002MrStoreCreditsCollected"))) {
+  if (!get("_2002MrStoreCreditsCollected")) {
     // using item collects credits
     if (in_lol()) {
       //autoscend doesn't always trigger in LoL, switching to specify Replica
@@ -685,7 +683,7 @@ function remainingCatalogCredits(): number {
       use($item`2002 Mr. Store Catalog`);
     }
   }
-  return toInt(getProperty("availableMrStore2002Credits"));
+  return get("availableMrStore2002Credits");
 }
 
 export function auto_haveIdolMicrophone(): boolean {
@@ -776,7 +774,7 @@ export function auto_buyFrom2002MrStore(): void {
   // giant black monolith. Mostly useful at low level for stats
   if (
     haveCampground() &&
-    (myLevel() < 13 || toBoolean(getProperty("auto_disregardInstantKarma"))) &&
+    (myLevel() < 13 || get("auto_disregardInstantKarma", false)) &&
     !(auto_haveSeptEmberCenser() || auto_haveTrainSet()) &&
     !auto_ignoreExperience()
   ) {
@@ -833,7 +831,7 @@ export function auto_buyFrom2002MrStore(): void {
 
 export function auto_useBlackMonolith(): void {
   // done if already used it today
-  if (toBoolean(getProperty("_blackMonolithUsed"))) {
+  if (get("_blackMonolithUsed")) {
     return;
   }
   // done if we don't want stats
@@ -853,7 +851,7 @@ export function auto_dousesRemaining(): number {
   if (availableAmount(fluda) < 1 || !auto_is_valid(fluda)) {
     return 0;
   }
-  return 3 - toInt(getProperty("_douseFoeUses"));
+  return 3 - get("_douseFoeUses");
 }
 
 let $_auto_haveAugustScepter_scepter: Item | undefined;
@@ -875,18 +873,15 @@ export function auto_scepterSkills(): void {
     return;
   }
 
-  if (
-    auto_canUse($skill`Aug. 24th: Waffle Day!`) &&
-    !toBoolean(getProperty("_aug24Cast"))
-  ) {
+  if (auto_canUse($skill`Aug. 24th: Waffle Day!`) && !get("_aug24Cast")) {
     useSkill($skill`Aug. 24th: Waffle Day!`); //get some waffles to hopefully change some bad monsters to better ones
   }
   if (
     auto_canUse($skill`Aug. 28th: Race Your Mouse Day!`) &&
-    !toBoolean(getProperty("_aug28Cast")) &&
+    !get("_aug28Cast") &&
     pathHasFamiliar()
   ) {
-    const hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
+    const hundred_fam: Familiar = get("auto_100familiar", Familiar.none);
     if (
       ((in_avantGuard() && inHardcore()) ||
         (hundred_fam !== Familiar.none &&
@@ -912,8 +907,8 @@ export function auto_scepterSkills(): void {
     if (
       manaCostMaximize < 3 &&
       auto_canUse($skill`Aug. 30th: Beach Day!`) &&
-      !toBoolean(getProperty("_aug30Cast")) &&
-      toInt(getProperty("_augSkillsCast")) < 5
+      !get("_aug30Cast") &&
+      get("_augSkillsCast") < 5
     ) {
       useSkill($skill`Aug. 30th: Beach Day!`); //For -MP (and Rollover Adventures)
     }
@@ -935,31 +930,31 @@ export function auto_scepterRollover(): void {
   if (
     !noWatch &&
     auto_canUse($skill`Aug. 30th: Beach Day!`) &&
-    !toBoolean(getProperty("_aug30Cast")) &&
-    toInt(getProperty("_augSkillsCast")) < 5
+    !get("_aug30Cast") &&
+    get("_augSkillsCast") < 5
   ) {
     useSkill($skill`Aug. 30th: Beach Day!`); //For Rollover adventures (and -MP)
     equipRollover(true);
   }
   //Get mainstats
-  if (toInt(getProperty("_augSkillsCast")) < 5 && myLevel() < 13) {
+  if (get("_augSkillsCast") < 5 && myLevel() < 13) {
     if (
       auto_canUse($skill`Aug. 12th: Elephant Day!`) &&
-      !toBoolean(getProperty("_aug12Cast")) &&
+      !get("_aug12Cast") &&
       myPrimestat() === $stat`Muscle`
     ) {
       useSkill($skill`Aug. 12th: Elephant Day!`); //get muscle stubstats
     }
     if (
       auto_canUse($skill`Aug. 11th: Presidential Joke Day!`) &&
-      !toBoolean(getProperty("_aug11Cast")) &&
+      !get("_aug11Cast") &&
       myPrimestat() === $stat`Mysticality`
     ) {
       useSkill($skill`Aug. 11th: Presidential Joke Day!`); //get mysticality stubstats
     }
     if (
       auto_canUse($skill`Aug. 23rd: Ride the Wind Day!`) &&
-      !toBoolean(getProperty("_aug23Cast")) &&
+      !get("_aug23Cast") &&
       myPrimestat() === $stat`Moxie`
     ) {
       useSkill($skill`Aug. 23rd: Ride the Wind Day!`); //get moxies stubstats
@@ -967,8 +962,8 @@ export function auto_scepterRollover(): void {
   }
   if (
     auto_canUse(Skill.get("Aug. 13th: Left/Off Hander's Day!")) &&
-    !toBoolean(getProperty("_aug13Cast")) &&
-    toInt(getProperty("_augSkillsCast")) < 5 &&
+    !get("_aug13Cast") &&
+    get("_augSkillsCast") < 5 &&
     numericModifier(equippedItem($slot`off-hand`), "Adventures") > 0 &&
     weaponHands(equippedItem($slot`off-hand`)) === 0
   ) {
@@ -976,8 +971,8 @@ export function auto_scepterRollover(): void {
   }
   if (
     auto_canUse($skill`Aug. 27th: Just Because Day!`) &&
-    !toBoolean(getProperty("_aug27Cast")) &&
-    toInt(getProperty("_augSkillsCast")) < 5
+    !get("_aug27Cast") &&
+    get("_augSkillsCast") < 5
   ) {
     useSkill($skill`Aug. 27th: Just Because Day!`); //3 random buffs
   }
@@ -991,8 +986,8 @@ export function auto_lostStomach(force: boolean): void {
   if (
     force &&
     myFullness() > 0 &&
-    toInt(getProperty("_augSkillsCast")) < 5 &&
-    !toBoolean(getProperty("_aug16Cast"))
+    get("_augSkillsCast") < 5 &&
+    !get("_aug16Cast")
   ) {
     useSkill($skill`Aug. 16th: Roller Coaster Day!`);
   }
@@ -1001,8 +996,8 @@ export function auto_lostStomach(force: boolean): void {
     fullness_left() === 0 &&
     inebriety_left() === 0 &&
     myAdventures() < 10 &&
-    toInt(getProperty("_augSkillsCast")) < 5 &&
-    !toBoolean(getProperty("_aug16Cast")) &&
+    get("_augSkillsCast") < 5 &&
+    !get("_aug16Cast") &&
     !force
   ) {
     useSkill($skill`Aug. 16th: Roller Coaster Day!`);
@@ -1019,19 +1014,19 @@ export function auto_canHabitat(): boolean {
   if (!auto_haveBofa()) {
     return false;
   }
-  if (toInt(getProperty("_monsterHabitatsRecalled")) >= 3) {
+  if (get("_monsterHabitatsRecalled") >= 3) {
     // no charges left
     return false;
   }
-  if (toInt(getProperty("_monsterHabitatsFightsLeft")) > 0) {
+  if (get("_monsterHabitatsFightsLeft") > 0) {
     // already habitating something but we may not need all 5 of them in certain situations
-    switch (toMonster(getProperty("_monsterHabitatsMonster"))) {
+    switch (get("_monsterHabitatsMonster", Monster.none)) {
       case $monster`fantasy bandit`:
         return fantasyBanditsFought() < 5;
       case $monster`modern zmobie`:
-        return toInt(getProperty("cyrptAlcoveEvilness")) > 13;
+        return get("cyrptAlcoveEvilness") > 13;
       case $monster`dirty old lihc`:
-        return toInt(getProperty("cyrptNicheEvilness")) > 13;
+        return get("cyrptNicheEvilness") > 13;
       default:
         return false;
     }
@@ -1044,8 +1039,8 @@ export function auto_habitatTarget(target: Monster): boolean {
     return false;
   }
   if (
-    toMonster(getProperty("_monsterHabitatsMonster")) === target &&
-    toInt(getProperty("_monsterHabitatsFightsLeft")) > 0
+    get("_monsterHabitatsMonster", Monster.none) === target &&
+    get("_monsterHabitatsFightsLeft") > 0
   ) {
     // already habitating this monster
     return false;
@@ -1057,19 +1052,13 @@ export function auto_habitatTarget(target: Monster): boolean {
         return fantasyBanditsFought() === 0;
       case $monster`modern zmobie`:
         // only worth it if we need 30 or more evilness reduced.
-        return (
-          toInt(getProperty("cyrptAlcoveEvilness")) -
-            5 * (5 + cyrptEvilBonus()) >
-          13
-        );
+        return get("cyrptAlcoveEvilness") - 5 * (5 + cyrptEvilBonus()) > 13;
       case $monster`dirty old lihc`:
         // only worth it if we need 18 or more evilness reduced.
         // avant guard makes free fights cost a turn. Use DOL in place of tentacle
         return (
           in_avantGuard() &&
-          toInt(getProperty("cyrptNicheEvilness")) -
-            5 * (3 + cyrptEvilBonus()) >
-            13
+          get("cyrptNicheEvilness") - 5 * (3 + cyrptEvilBonus()) > 13
         );
       case $monster`lobsterfrogman`: {
         // only worth it if we need 3+ barrels
@@ -1081,31 +1070,31 @@ export function auto_habitatTarget(target: Monster): boolean {
       case $monster`Eldritch Tentacle`:
         // Max tentacles fought being free is 11, so don't habitat if we've fought more than 6
         // This variable increments at the end of combat, so we need 5 here.
-        if (toInt(getProperty("_eldritchTentaclesFoughtToday")) > 5) {
+        if (get("_eldritchTentaclesFoughtToday") > 5) {
           return false;
         }
 
         // don't habitat free fights in avant guard
         return (
           !in_avantGuard() &&
-          (toMonster(getProperty("auto_habitatMonster")) === target ||
-            (toMonster(getProperty("_monsterHabitatsMonster")) === target &&
-              toInt(getProperty("_monsterHabitatsFightsLeft")) === 0))
+          (get("auto_habitatMonster", Monster.none) === target ||
+            (get("_monsterHabitatsMonster", Monster.none) === target &&
+              get("_monsterHabitatsFightsLeft") === 0))
         );
       default:
-        return toMonster(getProperty("auto_habitatMonster")) === target;
+        return get("auto_habitatMonster", Monster.none) === target;
     }
   }
   return false;
 }
 
 export function auto_habitatFightsLeft(): number {
-  return toInt(getProperty("_monsterHabitatsFightsLeft"));
+  return get("_monsterHabitatsFightsLeft");
 }
 
 export function auto_habitatMonster(): Monster {
-  if (toInt(getProperty("_monsterHabitatsFightsLeft")) > 0) {
-    return toMonster(getProperty("_monsterHabitatsMonster"));
+  if (get("_monsterHabitatsFightsLeft") > 0) {
+    return get("_monsterHabitatsMonster", Monster.none);
   }
   return Monster.none;
 }
@@ -1114,7 +1103,7 @@ export function auto_canCircadianRhythm(): boolean {
   if (!auto_haveBofa()) {
     return false;
   }
-  if (toBoolean(getProperty("_circadianRhythmsRecalled"))) {
+  if (get("_circadianRhythmsRecalled")) {
     return false;
   }
   return true;
@@ -1153,7 +1142,7 @@ function auto_wishFactsLeft(): number {
   if (!auto_haveBofa()) {
     return 0;
   }
-  return 3 - toInt(getProperty("_bookOfFactsWishes"));
+  return 3 - get("_bookOfFactsWishes");
 }
 
 function auto_haveJillOfAllTrades(): boolean {
@@ -1234,11 +1223,7 @@ export function auto_haveEagle(): boolean {
 
 export function auto_forceEagle(famChoice: Familiar): Familiar {
   //Force the Patriotic Eagle if we used a banish recently and can't use one until we burn 11 combats with the Eagle
-  if (
-    auto_haveEagle() &&
-    toInt(getProperty("screechCombats")) > 0 &&
-    !auto_queueIgnore()
-  ) {
+  if (auto_haveEagle() && get("screechCombats") > 0 && !auto_queueIgnore()) {
     auto_log_info("Forcing Patriotic Eagle");
     return $familiar`Patriotic Eagle`;
   }
@@ -1270,25 +1255,19 @@ export function auto_RWBBlastTarget(target: Monster): boolean {
   switch (target) {
     case $monster`modern zmobie`:
       // only worth it if we need 15 or more evilness reduced
-      return (
-        toInt(getProperty("cyrptAlcoveEvilness")) - 3 * (5 + cyrptEvilBonus()) >
-        13
-      );
+      return get("cyrptAlcoveEvilness") - 3 * (5 + cyrptEvilBonus()) > 13;
     case $monster`dirty old lihc`:
       // only worth it if we need 9 or more evilness reduced.
-      return (
-        toInt(getProperty("cyrptNicheEvilness")) - 3 * (3 + cyrptEvilBonus()) >
-        13
-      );
+      return get("cyrptNicheEvilness") - 3 * (3 + cyrptEvilBonus()) > 13;
     default:
-      return toMonster(getProperty("rwbMonster")) === target;
+      return get("rwbMonster", Monster.none) === target;
   }
   return false;
 }
 
 export function auto_RWBMonster(): Monster {
-  if (toInt(getProperty("rwbMonsterCount")) < 3) {
-    return toMonster(getProperty("rwbMonster"));
+  if (get("rwbMonsterCount") < 3) {
+    return get("rwbMonster", Monster.none);
   }
   return Monster.none;
 }
@@ -1475,7 +1454,7 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
   if (!inCombat) {
     if (auto_haveEagle() && useFamiliar(eagle)) {
       if (wantToFreeRun()) {
-        setProperty("auto_forceFreeRun", true.toString());
+        set("auto_forceFreeRun", true);
       }
       if (!autoAdv(loc)) {
         auto_log_debug(
@@ -1629,7 +1608,7 @@ export function auto_remainingBurningLeavesFights(): number {
   if (!auto_haveBurningLeaves()) {
     return 0;
   }
-  return 5 - toInt(getProperty("_leafMonstersFought"));
+  return 5 - get("_leafMonstersFought");
 }
 
 export function auto_fightFlamingLeaflet(): boolean {
@@ -1684,11 +1663,11 @@ export function auto_handleCCSC(): boolean {
   if (
     (place === $location`The Hidden Bowling Alley` &&
       itemAmount($item`bowling ball`) > 0 &&
-      toInt(getProperty("hiddenBowlingAlleyProgress")) < 5 &&
-      !toBoolean(getProperty("candyCaneSwordBowlingAlley"))) ||
+      get("hiddenBowlingAlleyProgress") < 5 &&
+      !get("candyCaneSwordBowlingAlley")) ||
     (place === $location`The Shore, Inc. Travel Agency` &&
       itemAmount($item`forged identification documents`) === 0 &&
-      !toBoolean(getProperty("candyCaneSwordShore"))) ||
+      !get("candyCaneSwordShore")) ||
     (place === $location`The eXtreme Slope` &&
       !possessEquipment($item`eXtreme scarf`) &&
       !possessEquipment($item`snowboarder pants`) &&
@@ -1696,18 +1675,18 @@ export function auto_handleCCSC(): boolean {
     (place === $location`The Copperhead Club` &&
       itemAmount($item`priceless diamond`) === 0 &&
       itemAmount($item`Red Zeppelin ticket`) === 0 &&
-      !toBoolean(getProperty("candyCaneSwordCopperheadClub"))) ||
+      !get("candyCaneSwordCopperheadClub")) ||
     (place === $location`The Defiled Cranny` &&
-      !toBoolean(getProperty("candyCaneSwordDefiledCranny"))) ||
+      !get("candyCaneSwordDefiledCranny")) ||
     (place === $location`The Black Forest` &&
-      !toBoolean(getProperty("candyCaneSwordBlackForest"))) ||
+      !get("candyCaneSwordBlackForest")) ||
     (place === $location`The Hidden Apartment Building` &&
-      !toBoolean(getProperty("candyCaneSwordApartmentBuilding"))) ||
+      !get("candyCaneSwordApartmentBuilding")) ||
     (place === $location`An Overgrown Shrine (Northeast)` &&
-      !toBoolean(getProperty("_candyCaneSwordOvergrownShrine")) &&
-      toInt(getProperty("hiddenOfficeProgress")) > 0) ||
+      !get("_candyCaneSwordOvergrownShrine") &&
+      get("hiddenOfficeProgress") > 0) ||
     (place === $location`The Overgrown Lot` &&
-      !toBoolean(getProperty("_candyCaneSwordOvergrownLot"))) ||
+      !get("_candyCaneSwordOvergrownLot")) ||
     (place === $location`The Penultimate Fantasy Airship` &&
       L10_needUmbrella()) ||
     (place === $location`Wartime Frat House` &&
@@ -1727,5 +1706,5 @@ export function auto_remainingCandyCaneSlashes(): number {
   if (!auto_haveCCSC()) {
     return 0;
   }
-  return 11 - toInt(getProperty("_surprisinglySweetSlashUsed"));
+  return 11 - get("_surprisinglySweetSlashUsed");
 }

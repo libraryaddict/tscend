@@ -23,15 +23,22 @@ import {
   myTurncount,
   removeProperty,
   round,
-  setProperty,
   Stat,
-  toBoolean,
   toInt,
   use,
   visitUrl,
   wait,
 } from "kolmafia";
-import { $familiar, $item, $location, $modifier, $path, $stat } from "libram";
+import {
+  $familiar,
+  $item,
+  $location,
+  $modifier,
+  $path,
+  $stat,
+  get,
+  set,
+} from "libram";
 
 import { auto_unreservedAdvRemaining } from "../../autoscend";
 import { canPull, pullXWhenHaveY } from "../auto_acquire";
@@ -104,12 +111,12 @@ export function robot_initializeSettings(): void {
   if (!in_robot()) {
     return;
   }
-  setProperty("auto_wandOfNagamar", false.toString()); //wand not used in this path
-  setProperty("auto_getSteelOrgan", false.toString()); //robots do not have organs
-  setProperty("auto_getBeehive", true.toString()); //robots are lacking in sources of damage
-  setProperty("auto_getBoningKnife", true.toString()); //robots do not have AoE spells
+  set("auto_wandOfNagamar", false); //wand not used in this path
+  set("auto_getSteelOrgan", false); //robots do not have organs
+  set("auto_getBeehive", true); //robots are lacking in sources of damage
+  set("auto_getBoningKnife", true); //robots do not have AoE spells
   //several quests have tracking issues. confirmed questL08Trapper, questL09Topping, questL07Cyrptic
-  setProperty("auto_paranoia", (1).toString());
+  set("auto_paranoia", 1);
 }
 
 export function robot_buildDefaultMaximize(target: Maximizer): void {
@@ -136,14 +143,14 @@ export function robot_buildDefaultMaximize(target: Maximizer): void {
   if (myPrimestat() === $stat`Mysticality`) {
     if (
       possessEquipment($item`Fourth of May Cosplay Saber`) ||
-      toInt(getProperty("youRobotLeft")) === 5
+      get("youRobotLeft") === 5
     ) {
       //sniper rifle attachment
       target.weight($modifier`Mysticality`, 1.5); //mys robots only want mainstat with lightsaber or sniper
     }
   }
   //weapon handling
-  if (toInt(getProperty("youRobotLeft")) === 4) {
+  if (get("youRobotLeft") === 4) {
     //vice grips. unlocks weapon slot
     if (possessEquipment($item`Fourth of May Cosplay Saber`)) {
       autoEquip($item`Fourth of May Cosplay Saber`);
@@ -156,7 +163,7 @@ export function robot_buildDefaultMaximize(target: Maximizer): void {
     }
   }
 
-  if (toInt(getProperty("youRobotTop")) === 2) {
+  if (get("youRobotTop") === 2) {
     //bird cage. unlocks familiar
     target.weight($modifier`Familiar Weight`, 2);
     if (familiarWeight(myFamiliar()) < 20) {
@@ -168,7 +175,7 @@ export function robot_buildDefaultMaximize(target: Maximizer): void {
 function robot_top(choice: number): boolean {
   //Top Attachment
 
-  if (toInt(getProperty("youRobotTop")) === choice) {
+  if (get("youRobotTop") === choice) {
     return false; //already equipped
   }
 
@@ -248,7 +255,7 @@ function robot_left(choice: number): boolean {
   //Left Arm. this is the weapon hand.
   //kol devs drew it backwards. it says left arm but they drew it as right arm
 
-  if (toInt(getProperty("youRobotLeft")) === choice) {
+  if (get("youRobotLeft") === choice) {
     return false; //already equipped
   }
 
@@ -326,7 +333,7 @@ function robot_right(choice: number): boolean {
   //Right Arm. this is the offhand.
   //kol devs drew it backwards. it says right arm but they drew it as left arm
 
-  if (toInt(getProperty("youRobotRight")) === choice) {
+  if (get("youRobotRight") === choice) {
     return false; //already equipped
   }
 
@@ -403,7 +410,7 @@ function robot_right(choice: number): boolean {
 function robot_bottom(choice: number): boolean {
   //Propulsion System
 
-  if (toInt(getProperty("youRobotBottom")) === choice) {
+  if (get("youRobotBottom") === choice) {
     return false; //already equipped
   }
 
@@ -632,7 +639,7 @@ function robot_skillbuy(): void {
   //once we have unlocked the 2nd spookyraven floor we should get the first maxHP boost.
   //5. [Spatial Compression Functions] = +30 Maximum HP. costs 40 energy
   if (
-    toInt(getProperty("lastSecondFloorUnlock")) === myAscensions() &&
+    get("lastSecondFloorUnlock") === myAscensions() &&
     !robot_cpu(5, false) &&
     myRobotEnergy() > 70
   ) {
@@ -649,7 +656,7 @@ function robot_skillbuy(): void {
   }
   //if we bought [Topology Grid] we are done. shirt helps with surgeonosity which we why we even bother with it
   if (robot_cpu(9, false)) {
-    setProperty("auto_robot_skills_bought", myAscensions().toString());
+    set("auto_robot_skills_bought", myAscensions());
   }
 }
 
@@ -659,8 +666,8 @@ function robot_energy_per_collect(): number {
   //subsequent collections give 15% less each time. compounded exponenetially (this is a good thing for you). final step is rounded to nearest int.
   //there is some slight wobble to it that can cause some inconsistent rounding on kol's side. Thus this is an estimate not an absolute
 
-  const ascension_points: number = toInt(getProperty("youRobotPoints"));
-  const collected_today: number = toInt(getProperty("_energyCollected"));
+  const ascension_points: number = get("youRobotPoints");
+  const collected_today: number = get("_energyCollected");
 
   const raw: number = (25.0 + ascension_points) * 0.85 ** collected_today;
   //only the final step is rounded. it is rounded to the nearest int. not floor, not ceil
@@ -676,9 +683,9 @@ function LX_robot_get_energy(): boolean {
   if (myAdventures() < 1) {
     return false;
   }
-  const start_1: number = toInt(getProperty("_energyCollected"));
+  const start_1: number = get("_energyCollected");
   visitUrl("place.php?whichplace=scrapheap&action=sh_getpower");
-  if (start_1 + 1 !== toInt(getProperty("_energyCollected"))) {
+  if (start_1 + 1 !== get("_energyCollected")) {
     abort("Collect Energy mysteriously failed. Beep Boop.");
   }
   return true;
@@ -724,7 +731,7 @@ export function robot_chronolith_cost(): number {
   //chronolith provides you with 10 adventures per use at variable cost.
   //cost 10 energy +1 per use. after 37 activations price is at x2. after 74 activations price is at x10
   //mafia tracker _chronolithActivations DOES NOT track how many times you used it today. Instead it tracks the extra cost.
-  return 10 + toInt(getProperty("_chronolithActivations"));
+  return 10 + get("_chronolithActivations");
 }
 
 export function robot_get_adv(): void {
@@ -757,7 +764,7 @@ export function robot_get_adv(): void {
 function robot_statbot_cost(): number {
   //statbot 5000 provides you with +5 base stats to a chosen stat for 10 + X. where X is the number of times it was used this ascension.
   //this function returns the current energy cost
-  return 10 + toInt(getProperty("statbotUses"));
+  return 10 + get("statbotUses");
 }
 
 function robot_statbot(target: Stat): boolean {
@@ -778,11 +785,11 @@ function robot_statbot(target: Stat): boolean {
     nn = 3;
   }
 
-  const start_uses: number = toInt(getProperty("statbotUses"));
+  const start_uses: number = get("statbotUses");
   visitUrl("place.php?whichplace=scrapheap&action=sh_upgrade");
   auto_runChoice(nn);
 
-  if (toInt(getProperty("statbotUses")) !== 1 + start_uses) {
+  if (get("statbotUses") !== 1 + start_uses) {
     abort("Using Statbot-5000 mysteriously failed. Beep Boop.");
   }
   return true;
@@ -858,7 +865,7 @@ function LX_robot_level(): boolean {
     }
   }
   //delay checks before we buy stats from statbot 5000
-  if (toInt(getProperty("auto_robot_skills_bought")) !== myAscensions()) {
+  if (get("auto_robot_skills_bought", 0) !== myAscensions()) {
     return false; //we want to preserve our energy to buy skills
   }
   if (
@@ -895,13 +902,10 @@ export function LX_robot_powerlevel(): boolean {
     return false;
   }
 
-  setProperty(
-    "auto_powerLevelAdvCount",
-    (toInt(getProperty("auto_powerLevelAdvCount")) + 1).toString(),
-  );
-  setProperty("auto_powerLevelLastAttempted", myTurncount().toString());
+  set("auto_powerLevelAdvCount", get("auto_powerLevelAdvCount", 0) + 1);
+  set("auto_powerLevelLastAttempted", myTurncount());
   auto_log_warning("I need to powerlevel", "red");
-  let delay: number = toInt(getProperty("auto_powerLevelTimer"));
+  let delay: number = get("auto_powerLevelTimer", 0);
   if (delay === 0) {
     delay = 10;
   }
@@ -921,7 +925,7 @@ export function LX_robot_powerlevel(): boolean {
   //until chronolith cost is 10*income we are gaining adventures with every combat.
   //if gaining adv it is preferable to adv in haunted gallery for XP and adv
   let income: number = 1;
-  if (toInt(getProperty("youRobotTop")) === 3) {
+  if (get("youRobotTop") === 3) {
     income++; //solar panel head attachment installed
   }
   if (robot_cpu(10, false)) {
@@ -978,7 +982,7 @@ function robot_assemble(): boolean {
   //rarely is there something better than solar panel. those edge cases can be handled later
   if (robot_directive_check("outfit")) {
     //we are doing a quest that requires wearing an outfit.
-    if (toInt(getProperty("youRobotTop")) !== 4) {
+    if (get("youRobotTop") !== 4) {
       if (LX_robot_get_scrap(15)) {
         return true;
       }
@@ -988,7 +992,7 @@ function robot_assemble(): boolean {
     robot_directive_check("chasm") &&
     myPrimestat() === $stat`Muscle`
   ) {
-    if (toInt(getProperty("youRobotTop")) !== 8) {
+    if (get("youRobotTop") !== 8) {
       if (LX_robot_get_scrap(40)) {
         return true;
       }
@@ -996,14 +1000,14 @@ function robot_assemble(): boolean {
     robot_top(8); //Snow Blower. Spend 1 energy to deal 100% of your Muscle in Cold damage
   } else if (robot_assemble_want_bird_cage()) {
     //we are doing a quest that requires a familiar
-    if (toInt(getProperty("youRobotTop")) !== 2) {
+    if (get("youRobotTop") !== 2) {
       if (LX_robot_get_scrap(5)) {
         return true;
       }
     }
     robot_top(2); //bird cage. unlock familiar
   } else {
-    if (toInt(getProperty("youRobotTop")) !== 3) {
+    if (get("youRobotTop") !== 3) {
       if (LX_robot_get_scrap(5)) {
         return true;
       }
@@ -1013,8 +1017,8 @@ function robot_assemble(): boolean {
   //"left" arm. weapon slot
   if (robot_assemble_want_sniper()) {
     if (
-      toInt(getProperty("lastSecondFloorUnlock")) === myAscensions() &&
-      toInt(getProperty("youRobotLeft")) !== 5
+      get("lastSecondFloorUnlock") === myAscensions() &&
+      get("youRobotLeft") !== 5
     ) {
       //we already unlocked the 2nd floor so this is actually uregen enough to collect scrap. spend adv on it
       if (LX_robot_get_scrap(30)) {
@@ -1028,7 +1032,7 @@ function robot_assemble(): boolean {
       return true;
     }
   } else {
-    if (toInt(getProperty("youRobotLeft")) !== 4) {
+    if (get("youRobotLeft") !== 4) {
       if (LX_robot_get_scrap(15)) {
         return true;
       }
@@ -1040,14 +1044,14 @@ function robot_assemble(): boolean {
     robot_directive_check("desert") ||
     (robot_directive_check("chasm") && possessEquipment($item`loadstone`))
   ) {
-    if (toInt(getProperty("youRobotRight")) !== 4) {
+    if (get("youRobotRight") !== 4) {
       if (LX_robot_get_scrap(15)) {
         return true;
       }
     }
     robot_right(4); //omni-claw. offhand slot unlock
   } else {
-    if (toInt(getProperty("youRobotRight")) !== 3) {
+    if (get("youRobotRight") !== 3) {
       if (LX_robot_get_scrap(5)) {
         return true;
       }
@@ -1057,7 +1061,7 @@ function robot_assemble(): boolean {
   //propulsion. pants.
   if (robot_directive_check("outfit")) {
     //we are doing a quest that requires wearing an outfit.
-    if (toInt(getProperty("youRobotBottom")) !== 4) {
+    if (get("youRobotBottom") !== 4) {
       if (LX_robot_get_scrap(15)) {
         return true;
       }
@@ -1065,14 +1069,14 @@ function robot_assemble(): boolean {
     robot_bottom(4); //Robo-Legs. pants slot unlocked
   } else if (internalQuestStatus("questL13Final") > 5) {
     //we have started climbing the tower of the [Nautomatic Sorceress]
-    if (toInt(getProperty("youRobotBottom")) !== 6) {
+    if (get("youRobotBottom") !== 6) {
       if (LX_robot_get_scrap(30)) {
         return true;
       }
     }
     robot_bottom(6); //Tank Treads. +50 Maximum HP +10 DR
   } else if (robot_assemble_want_rocket_crotch()) {
-    if (toInt(getProperty("youRobotBottom")) !== 2) {
+    if (get("youRobotBottom") !== 2) {
       if (LX_robot_get_scrap(5)) {
         return true;
       }
@@ -1081,7 +1085,7 @@ function robot_assemble(): boolean {
   } else {
     //all other situations we want init bonus. which is useful on various quests as well as general combat
     //situationally urgent. cheap enough we can just always treat it as uregent and grab the scrap if needed
-    if (toInt(getProperty("youRobotBottom")) !== 3) {
+    if (get("youRobotBottom") !== 3) {
       if (LX_robot_get_scrap(5)) {
         return true;
       }
@@ -1125,8 +1129,8 @@ function robot_assemble_want_rocket_crotch(): boolean {
   if (robot_directive_check("city")) {
     return true; //needed to kill ghosts
   }
-  const left_vice: boolean = toInt(getProperty("youRobotLeft")) === 4; //vice grips. unlock weapon slot
-  const left_sniper: boolean = toInt(getProperty("youRobotLeft")) === 5; //sniper rifle. deal 100% mys damage
+  const left_vice: boolean = get("youRobotLeft") === 4; //vice grips. unlock weapon slot
+  const left_sniper: boolean = get("youRobotLeft") === 5; //sniper rifle. deal 100% mys damage
   if (myPrimestat() === $stat`Mysticality` && !left_vice && !left_sniper) {
     //generally it is only wanted by mys classes who have no other means of attack
     return true;
@@ -1247,10 +1251,9 @@ function robot_directive(): void {
   }
   const directive: string = getProperty("auto_robot_directive");
   //set and remove spookyraven directives: "raven1"
-  const raven1_done: boolean =
-    toInt(getProperty("lastSecondFloorUnlock")) === myAscensions(); //first floor finished
+  const raven1_done: boolean = get("lastSecondFloorUnlock") === myAscensions(); //first floor finished
   if (directive === "" && !raven1_done) {
-    setProperty("auto_robot_directive", "raven1");
+    set("auto_robot_directive", "raven1");
   }
   if (directive === "raven1" && raven1_done) {
     removeProperty("auto_robot_directive");
@@ -1285,11 +1288,10 @@ function robot_directive(): void {
     (castle_ready || castle_done);
   const outfit_riders_done: boolean = slope_done && gob_done && castle_done;
 
-  const island_access: boolean =
-    toInt(getProperty("lastIslandUnlock")) >= myAscensions();
+  const island_access: boolean = get("lastIslandUnlock") >= myAscensions();
   const arena_done: boolean =
     getProperty("sidequestArenaCompleted") !== "none" ||
-    toInt(getProperty("flyeredML")) > 9999 ||
+    get("flyeredML") > 9999 ||
     auto_warSide() === "hippy"; //hippy arena not implemented yet
   const war_can_kill_boss: boolean =
     myPrimestat() !== $stat`Mysticality` ||
@@ -1338,13 +1340,13 @@ function robot_directive(): void {
     removeProperty("auto_robot_directive");
   }
   if (directive === "" && war_ready1 && outfit_riders_check && island_access) {
-    setProperty("auto_robot_directive", "outfit1");
+    set("auto_robot_directive", "outfit1");
   }
   if (directive === "" && war_ready2 && outfit_riders_check) {
-    setProperty("auto_robot_directive", "outfit2");
+    set("auto_robot_directive", "outfit2");
   }
   if (directive === "" && war_ready3 && outfit_riders_check) {
-    setProperty("auto_robot_directive", "outfit3");
+    set("auto_robot_directive", "outfit3");
   }
   //set and remove "desert" and "chasm" directives. we want to chain from desert into chasm if chasm needs offhand
   const desert_ready: boolean = internalQuestStatus("questL11Desert") === 0;
@@ -1353,7 +1355,7 @@ function robot_directive(): void {
     possessEquipment($item`loadstone`) || canPull($item`loadstone`);
   const chasm_ready: boolean =
     internalQuestStatus("questL09Topping") === 0 &&
-    toInt(getProperty("chasmBridgeProgress")) < bridgeGoal() &&
+    get("chasmBridgeProgress") < bridgeGoal() &&
     !shenShouldDelayZone($location`The Smut Orc Logging Camp`);
   const chasm_done: boolean = internalQuestStatus("questL09Topping") > 0;
 
@@ -1362,7 +1364,7 @@ function robot_directive(): void {
   }
   if (directive === "desert" && desert_done) {
     if (chasm_ready && chasm_offhand_slot_needed) {
-      setProperty("auto_robot_directive", "chasm");
+      set("auto_robot_directive", "chasm");
     } else {
       removeProperty("auto_robot_directive");
     }
@@ -1373,10 +1375,10 @@ function robot_directive(): void {
     (chasm_ready || !chasm_offhand_slot_needed || chasm_done)
   ) {
     //we want desert to wait until chasm is ready so we can chain the two. to avoid having to switch offhand
-    setProperty("auto_robot_directive", "desert");
+    set("auto_robot_directive", "desert");
   }
   if (directive === "" && chasm_ready) {
-    setProperty("auto_robot_directive", "chasm");
+    set("auto_robot_directive", "chasm");
   }
   //set and remove "machete" directive. used exclusively by mys classes
   //the need for this might have been obsoleted by updates to leveling functions
@@ -1385,11 +1387,11 @@ function robot_directive(): void {
     internalQuestStatus("questL11Worship") === 4; //we are about to do ziggurat next
   const city_finished: boolean = getProperty("questL11Worship") === "finished";
   const liana_cleared_1: boolean =
-    toInt(getProperty("hiddenApartmentProgress")) > 0 &&
-    toInt(getProperty("hiddenOfficeProgress")) > 0 &&
-    toInt(getProperty("hiddenHospitalProgress")) > 0 &&
-    toInt(getProperty("hiddenBowlingAlleyProgress")) > 0 &&
-    toBoolean(getProperty("auto_openedziggurat"));
+    get("hiddenApartmentProgress") > 0 &&
+    get("hiddenOfficeProgress") > 0 &&
+    get("hiddenHospitalProgress") > 0 &&
+    get("hiddenBowlingAlleyProgress") > 0 &&
+    get("auto_openedziggurat", false);
   if (directive === "machete" && liana_cleared_1) {
     removeProperty("auto_robot_directive");
   }
@@ -1399,7 +1401,7 @@ function robot_directive(): void {
     myPrimestat() === $stat`Mysticality` &&
     !liana_cleared_1
   ) {
-    setProperty("auto_robot_directive", "machete");
+    set("auto_robot_directive", "machete");
   }
   //set and remove city directive. it is used to switch our bottom to rocket crotch for fire damage so we can kill the ghosts
   //TODO refactor the hidden city code from 1 megafunction into modern code. then refactor this directive.
@@ -1412,7 +1414,7 @@ function robot_directive(): void {
     !city_ziggurat_ready &&
     liana_cleared_1
   ) {
-    setProperty("auto_robot_directive", "city");
+    set("auto_robot_directive", "city");
   }
   //set and remove "ml" directive for oil peak and defiled cranny.
   //defiled cranny currently disabled. it is a megafunction that needs to be broken up and refactored into modern code before handling it here.
@@ -1452,7 +1454,7 @@ export function LM_robot(): boolean {
     }
   }
 
-  if (!toBoolean(getProperty("youRobotScavenged"))) {
+  if (!get("youRobotScavenged")) {
     //get the bonus scrap from first scavenging of the day
     if (LX_robot_get_scrap_once()) {
       return true;

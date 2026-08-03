@@ -22,10 +22,8 @@ import {
   myClass,
   myLevel,
   myPrimestat,
-  toBoolean,
   toFloat,
   toInt,
-  toLocation,
 } from "kolmafia";
 import {
   $class,
@@ -37,6 +35,7 @@ import {
   $locations,
   $skill,
   $stat,
+  get,
 } from "libram";
 
 import { fullness_left, inebriety_left } from "./auto_consume";
@@ -191,8 +190,8 @@ export function zone_needItem(loc: Location): generic_t {
       case $location`The Haunted Library`:
         if (
           itemAmount($item`killing jar`) < 1 &&
-          (toInt(getProperty("gnasirProgress")) & 4) === 0 &&
-          toInt(getProperty("desertExploration")) < 100
+          (get("gnasirProgress") & 4) === 0 &&
+          get("desertExploration") < 100
         ) {
           value = 10.0;
         }
@@ -204,14 +203,14 @@ export function zone_needItem(loc: Location): generic_t {
         value = 5.0 * (1.0 + toFloat(getProperty("auto_wineracksencountered")));
         break;
       case $location`The Hidden Park`:
-        if (toInt(getProperty("hiddenTavernUnlock")) < myAscensions()) {
+        if (get("hiddenTavernUnlock") < myAscensions()) {
           value = 20.0;
         }
         break;
       case $location`The Hidden Bowling Alley`:
         if (
           itemAmount($item`bowling ball`) === 0 &&
-          toInt(getProperty("hiddenBowlingAlleyProgress")) < 5
+          get("hiddenBowlingAlleyProgress") < 5
         ) {
           value = 40.0;
         }
@@ -271,12 +270,12 @@ export function zone_needItem(loc: Location): generic_t {
         value = 20.0;
         break;
       case $location`The Smut Orc Logging Camp`:
-        if (toInt(getProperty("chasmBridgeProgress")) < bridgeGoal()) {
+        if (get("chasmBridgeProgress") < bridgeGoal()) {
           value = 10.0;
         }
         break;
       case $location`A-Boo Peak`:
-        if (toInt(getProperty("auto_aboopending")) === 0) {
+        if (get("auto_aboopending", 0) === 0) {
           value = 15.0;
         }
         break;
@@ -285,7 +284,7 @@ export function zone_needItem(loc: Location): generic_t {
         break;
       case $location`Oil Peak`:
         if (
-          (toInt(getProperty("twinPeakProgress")) & 4) === 0 &&
+          (get("twinPeakProgress") & 4) === 0 &&
           itemAmount($item`bubblin' crude`) < 12 &&
           itemAmount($item`jar of oil`) < 1
         ) {
@@ -303,7 +302,7 @@ export function zone_needItem(loc: Location): generic_t {
           itemAmount($item`lowercase N`) === 0 &&
           itemAmount($item`ND`) === 0 &&
           itemAmount($item`Wand of Nagamar`) === 0 &&
-          toBoolean(getProperty("auto_wandOfNagamar"))
+          get("auto_wandOfNagamar", false)
         ) {
           value = 30.0;
         }
@@ -317,15 +316,11 @@ export function zone_needItem(loc: Location): generic_t {
         let getMilk: boolean =
           (haveSkill($skill`Advanced Saucecrafting`) ||
             (myClass() === $class`Sauceror` &&
-              (guildAvailable() ||
-                !toBoolean(getProperty("auto_skipUnlockGuild"))))) &&
+              (guildAvailable() || !get("auto_skipUnlockGuild", false)))) &&
           fullnessLimit() !== 0;
         const milksPerMilk: number = myClass() === $class`Sauceror` ? 3 : 1;
         const milkUsed: number =
-          toBoolean(getProperty("_milkOfMagnesiumUsed")) ||
-          fullness_left() === 0
-            ? 1
-            : 0;
+          get("_milkOfMagnesiumUsed") || fullness_left() === 0 ? 1 : 0;
         if (
           itemAmount($item`milk of magnesium`) +
             milksPerMilk * itemAmount($item`glass of goat's milk`) +
@@ -348,7 +343,7 @@ export function zone_needItem(loc: Location): generic_t {
         break;
       case $location`The Defiled Nook`:
         // Handle for a gravy boat?
-        if (toInt(getProperty("cyrptNookEvilness")) > 14) {
+        if (get("cyrptNookEvilness") > 14) {
           value = 20.0;
         }
         break;
@@ -492,7 +487,7 @@ export function zone_needItem(loc: Location): generic_t {
 
   if (
     expectGhostReport() &&
-    loc === toLocation(getProperty("ghostLocation")) &&
+    loc === get("ghostLocation", Location.none) &&
     getProperty("questPAGhost") === "started"
   ) {
     value = 0.0;
@@ -525,7 +520,7 @@ export function zone_needItemBooze(loc: Location): generic_t {
 
   if (
     expectGhostReport() &&
-    loc === toLocation(getProperty("ghostLocation")) &&
+    loc === get("ghostLocation", Location.none) &&
     getProperty("questPAGhost") === "started"
   ) {
     value = 0.0;
@@ -575,15 +570,11 @@ export function zone_needItemFood(loc: Location): generic_t {
         let getMilk: boolean =
           (haveSkill($skill`Advanced Saucecrafting`) ||
             (myClass() === $class`Sauceror` &&
-              (guildAvailable() ||
-                !toBoolean(getProperty("auto_skipUnlockGuild"))))) &&
+              (guildAvailable() || !get("auto_skipUnlockGuild", false)))) &&
           fullnessLimit() !== 0;
         const milksPerMilk: number = myClass() === $class`Sauceror` ? 3 : 1;
         const milkUsed: number =
-          toBoolean(getProperty("_milkOfMagnesiumUsed")) ||
-          fullness_left() === 0
-            ? 1
-            : 0;
+          get("_milkOfMagnesiumUsed") || fullness_left() === 0 ? 1 : 0;
         if (
           itemAmount($item`milk of magnesium`) +
             milksPerMilk * itemAmount($item`glass of goat's milk`) +
@@ -623,7 +614,7 @@ export function zone_needItemFood(loc: Location): generic_t {
 
   if (
     expectGhostReport() &&
-    loc === toLocation(getProperty("ghostLocation")) &&
+    loc === get("ghostLocation", Location.none) &&
     getProperty("questPAGhost") === "started"
   ) {
     value = 0.0;
@@ -871,9 +862,9 @@ export function zone_combatMod(loc: Location): generic_t {
       break;
     case $location`Super Villain's Lair`:
       if (
-        !toBoolean(getProperty("_villainLairColorChoiceUsed")) ||
-        !toBoolean(getProperty("_villainLairDoorChoiceUsed")) ||
-        !toBoolean(getProperty("_villainLairSymbologyChoiceUsed"))
+        !get("_villainLairColorChoiceUsed") ||
+        !get("_villainLairDoorChoiceUsed") ||
+        !get("_villainLairSymbologyChoiceUsed")
       ) {
         value = -70;
       }
@@ -905,7 +896,7 @@ export function zone_combatMod(loc: Location): generic_t {
 
   if (
     expectGhostReport() &&
-    loc === toLocation(getProperty("ghostLocation")) &&
+    loc === get("ghostLocation", Location.none) &&
     getProperty("questPAGhost") === "started"
   ) {
     value = 0;
@@ -926,7 +917,7 @@ export function zone_delay(loc: Location): generic_t {
     case $location`The Oasis`:
       // Superlikely adventures take priority over all wanderers now.
       if (
-        toInt(getProperty("desertExploration")) < 100 &&
+        get("desertExploration") < 100 &&
         haveEffect($effect`Ultrahydrated`) > 0
       ) {
         value = 5 - loc.turnsSpent;
@@ -1007,7 +998,7 @@ export function zone_delay(loc: Location): generic_t {
       if (
         isGuildClass() &&
         myPrimestat() === $stat`Mysticality` &&
-        !toBoolean(getProperty("auto_skipUnlockGuild"))
+        !get("auto_skipUnlockGuild", false)
       ) {
         value = 5 - loc.turnsSpent;
       }
@@ -1016,16 +1007,13 @@ export function zone_delay(loc: Location): generic_t {
       if (
         isGuildClass() &&
         myPrimestat() === $stat`Moxie` &&
-        !toBoolean(getProperty("auto_skipUnlockGuild"))
+        !get("auto_skipUnlockGuild", false)
       ) {
         value = 5 - loc.turnsSpent;
       }
       break;
     case $location`The Smut Orc Logging Camp`:
-      if (
-        shenZones.has(loc) &&
-        toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal()
-      ) {
+      if (shenZones.has(loc) && get("chasmBridgeProgress") >= bridgeGoal()) {
         value =
           3 -
           (loc.turnsSpent -
@@ -1056,7 +1044,7 @@ export function zone_delay(loc: Location): generic_t {
         internalQuestStatus("questL11Shen") > 0 &&
         internalQuestStatus("questL11Shen") < 8
       ) {
-        value = 5 - (loc.turnsSpent - toInt(getProperty("auto_lastShenTurn")));
+        value = 5 - (loc.turnsSpent - get("auto_lastShenTurn", 0));
       }
       break;
     case $location`The Hallowed Halls`:
@@ -1065,7 +1053,7 @@ export function zone_delay(loc: Location): generic_t {
     case $location`Shop Class`:
       if (kolhs_mandatorySchool()) {
         //KOLHS path specific delay locations
-        value = 40 - toInt(getProperty("_kolhsAdventures")); //shared counter of 40 adv between all 4 zones
+        value = 40 - get("_kolhsAdventures"); //shared counter of 40 adv between all 4 zones
       }
       break;
     case $location`Vanya's Castle`:
@@ -1075,7 +1063,7 @@ export function zone_delay(loc: Location): generic_t {
         (getProperty("8BitColor") === "black" ||
           getProperty("8BitColor") === "")
       ) {
-        value = 5 - toInt(getProperty("8BitBonusTurns"));
+        value = 5 - get("8BitBonusTurns");
       }
       break;
     case $location`The Fungus Plains`:
@@ -1084,7 +1072,7 @@ export function zone_delay(loc: Location): generic_t {
         possessEquipment($item`continuum transfunctioner`) &&
         getProperty("8BitColor") === "red"
       ) {
-        value = 5 - toInt(getProperty("8BitBonusTurns"));
+        value = 5 - get("8BitBonusTurns");
       }
       break;
     case $location`Megalo-City`:
@@ -1093,7 +1081,7 @@ export function zone_delay(loc: Location): generic_t {
         possessEquipment($item`continuum transfunctioner`) &&
         getProperty("8BitColor") === "blue"
       ) {
-        value = 5 - toInt(getProperty("8BitBonusTurns"));
+        value = 5 - get("8BitBonusTurns");
       }
       break;
     case $location`Hero's Field`:
@@ -1102,7 +1090,7 @@ export function zone_delay(loc: Location): generic_t {
         possessEquipment($item`continuum transfunctioner`) &&
         getProperty("8BitColor") === "green"
       ) {
-        value = 5 - toInt(getProperty("8BitBonusTurns"));
+        value = 5 - get("8BitBonusTurns");
       }
       break;
     default:
@@ -1147,7 +1135,7 @@ export function zone_available(loc: Location): boolean {
     case $location`Super Villain's Lair`:
       if (
         in_lta() &&
-        toInt(getProperty("_villainLairProgress")) < 999 &&
+        get("_villainLairProgress") < 999 &&
         getProperty("_auto_bondBriefing") === "started"
       ) {
         retval = true;
@@ -1175,13 +1163,13 @@ export function zone_available(loc: Location): boolean {
       }
       break;
     case $location`The Middle Chamber`:
-      retval = toBoolean(getProperty("middleChamberUnlock"));
+      retval = get("middleChamberUnlock");
       break;
     case $location`The Lower Chambers`:
-      retval = toBoolean(getProperty("lowerChamberUnlock"));
+      retval = get("lowerChamberUnlock");
       break;
     case $location`The Daily Dungeon`:
-      retval = !toBoolean(getProperty("dailyDungeonDone"));
+      retval = !get("dailyDungeonDone");
       break;
     case $location`The Overgrown Lot`:
       if (internalQuestStatus("questM24Doc") >= 0) {
@@ -1291,7 +1279,7 @@ export function zone_available(loc: Location): boolean {
       }
       break;
     case $location`The Hidden Temple`:
-      if (toInt(getProperty("lastTempleUnlock")) === myAscensions()) {
+      if (get("lastTempleUnlock") === myAscensions()) {
         retval = true;
       }
       break;
@@ -1397,7 +1385,7 @@ export function zone_available(loc: Location): boolean {
       }
       break;
     case $location`The Obligatory Pirate's Cove`:
-      if (toInt(getProperty("lastIslandUnlock")) === myAscensions()) {
+      if (get("lastIslandUnlock") === myAscensions()) {
         if (
           getProperty("questL12War") === "unstarted" ||
           getProperty("questL12War") === "finished"
@@ -1410,7 +1398,7 @@ export function zone_available(loc: Location): boolean {
       if (
         (haveOutfit("swashbuckling getup") ||
           possessEquipment($item`pirate fledges`)) &&
-        toInt(getProperty("lastIslandUnlock")) === myAscensions()
+        get("lastIslandUnlock") === myAscensions()
       ) {
         if (
           getProperty("questL12War") === "unstarted" ||
@@ -1424,7 +1412,7 @@ export function zone_available(loc: Location): boolean {
       if (
         (haveOutfit("swashbuckling getup") ||
           possessEquipment($item`pirate fledges`)) &&
-        toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
+        get("lastIslandUnlock") === myAscensions() &&
         internalQuestStatus("questM12Pirate") >= 5
       ) {
         if (
@@ -1439,7 +1427,7 @@ export function zone_available(loc: Location): boolean {
       if (
         (haveOutfit("swashbuckling getup") ||
           possessEquipment($item`pirate fledges`)) &&
-        toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
+        get("lastIslandUnlock") === myAscensions() &&
         internalQuestStatus("questM12Pirate") >= 6
       ) {
         if (
@@ -1454,7 +1442,7 @@ export function zone_available(loc: Location): boolean {
       if (
         (haveOutfit("swashbuckling getup") ||
           possessEquipment($item`pirate fledges`)) &&
-        toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
+        get("lastIslandUnlock") === myAscensions() &&
         getProperty("questM12Pirate") === "finished"
       ) {
         if (
@@ -1479,13 +1467,13 @@ export function zone_available(loc: Location): boolean {
       break;
     case $location`The Orcish Frat House`:
     case $location`The Hippy Camp`:
-      if (toInt(getProperty("lastIslandUnlock")) === myAscensions()) {
+      if (get("lastIslandUnlock") === myAscensions()) {
         retval = true;
       }
       break;
     case $location`The Orcish Frat House (In Disguise)`:
       if (
-        toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
+        get("lastIslandUnlock") === myAscensions() &&
         haveOutfit("Frat Boy Ensemble") &&
         internalQuestStatus("questL12War") !== 0 && //mafia always calls location Wartime with L12 quest
         internalQuestStatus("questL12War") !== 1 //mafia always calls location Wartime with L12 quest
@@ -1495,7 +1483,7 @@ export function zone_available(loc: Location): boolean {
       break;
     case $location`The Hippy Camp (In Disguise)`:
       if (
-        toInt(getProperty("lastIslandUnlock")) === myAscensions() &&
+        get("lastIslandUnlock") === myAscensions() &&
         haveOutfit("Filthy Hippy Disguise") &&
         internalQuestStatus("questL12War") !== 0 && //mafia always calls location Wartime with L12 quest
         internalQuestStatus("questL12War") !== 1 //mafia always calls location Wartime with L12 quest
@@ -1514,7 +1502,7 @@ export function zone_available(loc: Location): boolean {
     case $location`The Battlefield (Frat Uniform)`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
-        toInt(getProperty("hippiesDefeated")) < 1000 &&
+        get("hippiesDefeated") < 1000 &&
         haveOutfit("frat warrior fatigues") &&
         getProperty("questL12War") !== "finished"
       ) {
@@ -1533,7 +1521,7 @@ export function zone_available(loc: Location): boolean {
     case $location`The Battlefield (Hippy Uniform)`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
-        toInt(getProperty("fratboysDefeated")) < 1000 &&
+        get("fratboysDefeated") < 1000 &&
         haveOutfit("war hippy fatigues") &&
         getProperty("questL12War") !== "finished"
       ) {
@@ -1547,7 +1535,7 @@ export function zone_available(loc: Location): boolean {
       if (
         internalQuestStatus("questL12War") >= 1 &&
         (getProperty("sidequestJunkyardCompleted") === "none" ||
-          toInt(getProperty("flyeredML")) < 10000) &&
+          get("flyeredML") < 10000) &&
         getProperty("questL12War") !== "finished"
       ) {
         retval = true;
@@ -1640,12 +1628,12 @@ export function zone_available(loc: Location): boolean {
       }
       break;
     case $location`The Castle in the Clouds in the Sky (Ground Floor)`:
-      if (toInt(getProperty("lastCastleGroundUnlock")) === myAscensions()) {
+      if (get("lastCastleGroundUnlock") === myAscensions()) {
         retval = true;
       }
       break;
     case $location`The Castle in the Clouds in the Sky (Top Floor)`:
-      if (toInt(getProperty("lastCastleTopUnlock")) === myAscensions()) {
+      if (get("lastCastleTopUnlock") === myAscensions()) {
         retval = true;
       }
       break;
@@ -1655,25 +1643,22 @@ export function zone_available(loc: Location): boolean {
       }
       break;
     case $location`The Tunnel of L.O.V.E.`:
-      if (
-        toBoolean(getProperty("loveTunnelAvailable")) &&
-        !toBoolean(getProperty("_loveTunnelUsed"))
-      ) {
+      if (get("loveTunnelAvailable") && !get("_loveTunnelUsed")) {
         retval = true;
       }
       break;
     case $location`Fastest Adventurer Contest`:
-      if (toInt(getProperty("nsContestants1")) > 0) {
+      if (get("nsContestants1") > 0) {
         retval = true;
       }
       break;
     case $location`The Enormous Greater-Than Sign`:
-      if (toInt(getProperty("lastPlusSignUnlock")) < myAscensions()) {
+      if (get("lastPlusSignUnlock") < myAscensions()) {
         retval = true;
       }
       break;
     case $location`The Dungeons of Doom`:
-      if (toInt(getProperty("lastPlusSignUnlock")) === myAscensions()) {
+      if (get("lastPlusSignUnlock") === myAscensions()) {
         retval = true;
       }
       break;
@@ -1685,7 +1670,7 @@ export function zone_available(loc: Location): boolean {
     case $location`Smartest Adventurer Contest`:
     case $location`Strongest Adventurer Contest`:
     case $location`Smoothest Adventurer Contest`:
-      if (toInt(getProperty("nsContestants2")) > 0) {
+      if (get("nsContestants2") > 0) {
         retval = true;
       }
       break;
@@ -1694,7 +1679,7 @@ export function zone_available(loc: Location): boolean {
     case $location`Sleaziest Adventurer Contest`:
     case $location`Spookiest Adventurer Contest`:
     case $location`Stinkiest Adventurer Contest`:
-      if (toInt(getProperty("nsContestants3")) > 0) {
+      if (get("nsContestants3") > 0) {
         retval = true;
       }
       break;
@@ -1732,46 +1717,34 @@ export function zone_available(loc: Location): boolean {
     case $location`Pirates of the Garbage Barges`:
     case $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`:
     case $location`The Toxic Teacups`:
-      retval =
-        toBoolean(getProperty("stenchAirportAlways")) ||
-        toBoolean(getProperty("_stenchAirportToday"));
+      retval = get("stenchAirportAlways") || get("_stenchAirportToday");
       break;
     case $location`The Fun-Guy Mansion`:
     case $location`The Sunken Party Yacht`:
     case $location`Sloppy Seconds Diner`:
-      retval =
-        toBoolean(getProperty("sleazeAirportAlways")) ||
-        toBoolean(getProperty("_sleazeAirportToday"));
+      retval = get("sleazeAirportAlways") || get("_sleazeAirportToday");
       break;
     case $location`The Secret Government Laboratory`:
     case $location`The Deep Dark Jungle`:
     case $location`The Mansion of Dr. Weirdeaux`:
-      retval =
-        toBoolean(getProperty("spookyAirportAlways")) ||
-        toBoolean(getProperty("_spookyAirportToday"));
+      retval = get("spookyAirportAlways") || get("_spookyAirportToday");
       break;
     case $location`The Ice Hotel`:
     case $location`VYKEA`:
     case $location`The Ice Hole`:
-      retval =
-        toBoolean(getProperty("coldAirportAlways")) ||
-        toBoolean(getProperty("_coldAirportToday"));
+      retval = get("coldAirportAlways") || get("_coldAirportToday");
       break;
     case $location`The SMOOCH Army HQ`:
     case $location`LavaCo™ Lamp Factory`:
     case $location`The Velvet / Gold Mine`:
     case $location`The Bubblin' Caldera`:
-      retval =
-        toBoolean(getProperty("hotAirportAlways")) ||
-        toBoolean(getProperty("_hotAirportToday"));
+      retval = get("hotAirportAlways") || get("_hotAirportToday");
       break;
     case $location`The X-32-F Combat Training Snowman`:
-      retval = toBoolean(getProperty("snojoAvailable"));
+      retval = get("snojoAvailable");
       break;
     case $location`Through the Spacegate`:
-      retval =
-        toBoolean(getProperty("spacegateAlways")) ||
-        toBoolean(getProperty("_spacegateToday"));
+      retval = get("spacegateAlways") || get("_spacegateToday");
       break;
     case $location`The Old Landfill`:
       if (internalQuestStatus("questM19Hippy") >= 0) {
@@ -1837,25 +1810,21 @@ export function zone_available(loc: Location): boolean {
       }
       break;
     case $location`Gingerbread Upscale Retail District`:
-      if (toBoolean(getProperty("gingerRetailUnlocked"))) {
+      if (get("gingerRetailUnlocked")) {
         retval =
-          toBoolean(getProperty("gingerbreadCityAvailable")) ||
-          toBoolean(getProperty("_gingerbreadCityToday"));
+          get("gingerbreadCityAvailable") || get("_gingerbreadCityToday");
       }
       break;
     case $location`Gingerbread Sewers`:
-      if (toBoolean(getProperty("gingerSewersUnlocked"))) {
+      if (get("gingerSewersUnlocked")) {
         retval =
-          toBoolean(getProperty("gingerbreadCityAvailable")) ||
-          toBoolean(getProperty("_gingerbreadCityToday"));
+          get("gingerbreadCityAvailable") || get("_gingerbreadCityToday");
       }
       break;
     case $location`Gingerbread Civic Center`:
     case $location`Gingerbread Industrial Zone`:
     case $location`Gingerbread Train Station`:
-      retval =
-        toBoolean(getProperty("gingerbreadCityAvailable")) ||
-        toBoolean(getProperty("_gingerbreadCityToday"));
+      retval = get("gingerbreadCityAvailable") || get("_gingerbreadCityToday");
       break;
     case $location`The Bandit Crossroads`:
       retval = containsText(getProperty("_frAreasUnlocked"), loc.toString());
@@ -1913,14 +1882,11 @@ export function is_ghost_in_zone(loc: Location): boolean {
   {
     switch (loc) {
       case $location`A-Boo Peak`:
-        if (
-          toInt(getProperty("booPeakProgress")) === 0 &&
-          !toBoolean(getProperty("booPeakLit"))
-        ) {
+        if (get("booPeakProgress") === 0 && !get("booPeakLit")) {
           //forced noncombat of lighting the peak
           return false;
         }
-        if (toInt(getProperty("auto_aboopending")) !== 0) {
+        if (get("auto_aboopending", 0) !== 0) {
           //internal tracking by autoscend
           //our next visit to the peak will be The Horror NC adventure
           return false;
@@ -1936,8 +1902,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
       case $location`The Hidden Hospital`:
         //if liana cleared then we can encounter ghost
         return (
-          toInt(getProperty("hiddenHospitalProgress")) > 0 &&
-          toInt(getProperty("hiddenHospitalProgress")) < 7
+          get("hiddenHospitalProgress") > 0 && get("hiddenHospitalProgress") < 7
         );
       case $location`The Hidden Office Building`: {
         const hasMcCluskyFile: boolean =
@@ -1967,7 +1932,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
       case $location`The Hidden Bowling Alley`:
         //if tracker is 6 we used just the right amount of bowling bowls
         return (
-          toInt(getProperty("hiddenBowlingAlleyProgress")) === 6 &&
+          get("hiddenBowlingAlleyProgress") === 6 &&
           availableAmount($item`bowling ball`) > 0
         );
       case $location`A Massive Ziggurat`:

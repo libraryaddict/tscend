@@ -6,12 +6,10 @@ import {
   propertyExists,
   removeProperty,
   renameProperty,
-  setProperty,
   splitString,
-  toBoolean,
-  toInt,
   toLowerCase,
 } from "kolmafia";
+import { get, set } from "libram";
 
 import { auto_log_debug, auto_log_info } from "./auto_util";
 import { AshMatcher } from "./utils/kolmafiaUtils";
@@ -44,15 +42,15 @@ function trackingSplitterFixer(
     );
     retval.set(x, dayAdder.replaceAll(`(${day}:`));
     if (getProperty(newSetting) !== "") {
-      setProperty(
+      set(
         newSetting,
         `${getProperty(newSetting)},${retval.get(x) ?? retval.set(x, "").get(x)}`,
       );
     } else {
-      setProperty(newSetting, retval.get(x) ?? retval.set(x, "").get(x));
+      set(newSetting, retval.get(x) ?? retval.set(x, "").get(x));
     }
   }
-  setProperty(oldSetting, "");
+  set(oldSetting, "");
   return true;
 }
 
@@ -76,10 +74,10 @@ function auto_rename_property(oldprop: string, newprop: string): void {
 function boolFix(p: string): void {
   const p_val: string = getProperty(p);
   if (p_val === "need" || p_val === "yes") {
-    setProperty(p, true.toString());
+    set(p, true);
   }
   if (p_val === "no") {
-    setProperty(p, false.toString());
+    set(p, false);
   }
 }
 
@@ -105,16 +103,16 @@ function auto_settingsUpgrade(): void {
   trackingSplitterFixer("auto_renenutet_day4", 4, "auto_renenutet");
 
   if (getProperty("auto_100familiar") === "yes") {
-    setProperty("auto_100familiar", myFamiliar().toString());
+    set("auto_100familiar", myFamiliar());
   }
   if (getProperty("auto_100familiar") === "no") {
-    setProperty("auto_100familiar", Familiar.none.toString());
+    set("auto_100familiar", Familiar.none);
   }
   if (getProperty("auto_100familiar") === "false") {
-    setProperty("auto_100familiar", Familiar.none.toString());
+    set("auto_100familiar", Familiar.none);
   }
   if (getProperty("auto_killingjar") === "done") {
-    setProperty("auto_killingjar", "finished");
+    set("auto_killingjar", "finished");
   }
 
   boolFix("auto_wandOfNagamar");
@@ -124,37 +122,34 @@ function auto_settingsUpgrade(): void {
   boolFix("auto_grimstoneOrnateDowsingRod");
 
   if (getProperty("auto_abooclover") === "used") {
-    setProperty("auto_abooclover", false.toString());
+    set("auto_abooclover", false);
   }
   if (getProperty("lastPlusSignUnlock") === "true") {
     auto_log_debug(
       "lastPlusSignUnlock was changed to a boolean, fixing...",
       "red",
     );
-    setProperty("lastPlusSignUnlock", myAscensions().toString());
+    set("lastPlusSignUnlock", myAscensions());
   }
   if (getProperty("lastTempleUnlock") === "true") {
     auto_log_debug(
       "lastTempleUnlock was changed to a boolean, fixing...",
       "red",
     );
-    setProperty("lastTempleUnlock", myAscensions().toString());
+    set("lastTempleUnlock", myAscensions());
   }
   if (propertyExists("auto_consumeKeyLimePies")) {
-    setProperty(
-      "auto_dontConsumeKeyLimePies",
-      (!toBoolean(getProperty("auto_consumeKeyLimePies"))).toString(),
-    );
+    set("auto_dontConsumeKeyLimePies", !get("auto_consumeKeyLimePies", false));
   }
   if (propertyExists("auto_alwaysGetSteelOrgan")) {
-    setProperty(
+    set(
       "auto_getSteelOrgan_initialize",
       getProperty("auto_alwaysGetSteelOrgan"),
     );
   }
 
   if (getProperty("auto_debug") === "true") {
-    setProperty("auto_log_level", (3).toString());
+    set("auto_log_level", 3);
   }
   //migrate log level from the string property auto_logLevel to the int property auto_log_level
   if (propertyExists("auto_logLevel")) {
@@ -163,44 +158,44 @@ function auto_settingsUpgrade(): void {
       case "crit":
       case "error":
       case "err":
-        setProperty("auto_log_level", (0).toString());
+        set("auto_log_level", 0);
         break;
       case "warning":
       case "warn":
-        setProperty("auto_log_level", (1).toString());
+        set("auto_log_level", 1);
         break;
       case "info":
-        setProperty("auto_log_level", (2).toString());
+        set("auto_log_level", 2);
         break;
       case "debug":
-        setProperty("auto_log_level", (3).toString());
+        set("auto_log_level", 3);
         break;
     }
   }
   //this supports the default logging level change from info(2) to debug(3)
   //default only effects new users, this migrates current users to the new default level of logging
   if (!propertyExists("logLevelDefaultChangedToDebug")) {
-    setProperty("auto_log_level", (3).toString());
-    setProperty("logLevelDefaultChangedToDebug", true.toString());
+    set("auto_log_level", 3);
+    set("logLevelDefaultChangedToDebug", true);
   }
 }
 
 export function auto_settingsFix(): void {
   //fix settings where user inputted an invalid value
-  if (toInt(getProperty("auto_save_adv_override")) < -1) {
-    setProperty("auto_save_adv_override", (-1).toString()); //values lower than -1 are not valid
+  if (get("auto_save_adv_override", 0) < -1) {
+    set("auto_save_adv_override", -1); //values lower than -1 are not valid
   }
-  if (toInt(getProperty("auto_log_level")) < 0) {
-    setProperty("auto_log_level", (0).toString()); //values lower than 0 are not valid
+  if (get("auto_log_level", 0) < 0) {
+    set("auto_log_level", 0); //values lower than 0 are not valid
   }
-  if (toInt(getProperty("auto_log_level")) > 3) {
-    setProperty("auto_log_level", (3).toString()); //values higher than 3 are not valid
+  if (get("auto_log_level", 0) > 3) {
+    set("auto_log_level", 3); //values higher than 3 are not valid
   }
-  if (toInt(getProperty("auto_log_level_restore")) < 0) {
-    setProperty("auto_log_level_restore", (0).toString()); //values lower than 0 are not valid
+  if (get("auto_log_level_restore", 0) < 0) {
+    set("auto_log_level_restore", 0); //values lower than 0 are not valid
   }
-  if (toInt(getProperty("auto_log_level_restore")) > 2) {
-    setProperty("auto_log_level_restore", (2).toString()); //values higher than 2 are not valid
+  if (get("auto_log_level_restore", 0) > 2) {
+    set("auto_log_level_restore", 2); //values higher than 2 are not valid
   }
 }
 
@@ -335,7 +330,7 @@ function defaultConfig(prop: string, val: string): void {
     auto_log_info(
       `${prop} has no value set. setting it to the default value of ${val}`,
     );
-    setProperty(prop, val);
+    set(prop, val);
   }
 }
 

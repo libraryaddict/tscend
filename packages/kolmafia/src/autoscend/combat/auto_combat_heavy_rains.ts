@@ -6,10 +6,8 @@ import {
   monsterLevelAdjustment,
   myMp,
   myThunder,
-  setProperty,
-  toInt,
 } from "kolmafia";
-import { $item, $monster, $monsters, $skill } from "libram";
+import { $item, $monster, $monsters, $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { auto_have_skill } from "../auto_util";
@@ -58,10 +56,7 @@ export function auto_combatHeavyRainsStage3(
   //Heavy Rain bosses delevel & stun. we only do this to the tougher bosses
   if ($monsters`Big Wisnaqua, The Aquaman, The Rain King`.includes(enemy)) {
     //During round 1 against late bosses set how many [Thunder Bird] we plan to cast during this combat
-    if (
-      round_1 === 1 &&
-      toInt(getProperty("auto_combatHandlerThunderBird")) === 0
-    ) {
+    if (round_1 === 1 && get("auto_combatHandlerThunderBird", 0) === 0) {
       let targetThunderBird: number = 3;
       if (monsterLevelAdjustment() > 80) {
         targetThunderBird++;
@@ -72,10 +67,7 @@ export function auto_combatHeavyRainsStage3(
       if (monsterLevelAdjustment() > 150) {
         targetThunderBird++;
       }
-      setProperty(
-        "auto_combatHandlerThunderBird",
-        targetThunderBird.toString(),
-      );
+      set("auto_combatHandlerThunderBird", targetThunderBird);
     }
     //These bosses are actually stunable. unless their ML is over 150
     if (monsterLevelAdjustment() > 150) {
@@ -85,16 +77,16 @@ export function auto_combatHeavyRainsStage3(
         itemAmount($item`crayon shavings`) > 1 &&
         auto_have_skill($skill`Ambidextrous Funkslinging`)
       ) {
-        setProperty(
+        set(
           "auto_combatHandlerThunderBird",
-          (toInt(getProperty("auto_combatHandlerThunderBird")) - 4).toString(),
+          get("auto_combatHandlerThunderBird", 0) - 4,
         );
         return [$item`crayon shavings`, $item`crayon shavings`];
       }
       if (itemAmount($item`crayon shavings`) > 0) {
-        setProperty(
+        set(
           "auto_combatHandlerThunderBird",
-          (toInt(getProperty("auto_combatHandlerThunderBird")) - 2).toString(),
+          get("auto_combatHandlerThunderBird", 0) - 2,
         );
         return $item`crayon shavings`;
       }
@@ -102,9 +94,9 @@ export function auto_combatHeavyRainsStage3(
       //stunable
       if (auto_canUse($skill`Micrometeorite`)) {
         //stun and delevel 10% (or theoretically up to 25% if it was not used constantly)
-        setProperty(
+        set(
           "auto_combatHandlerThunderBird",
-          (toInt(getProperty("auto_combatHandlerThunderBird")) - 1).toString(),
+          get("auto_combatHandlerThunderBird", 0) - 1,
         );
         return auto_useSkill($skill`Micrometeorite`);
       }
@@ -126,19 +118,16 @@ export function auto_combatHeavyRainsStage3(
       }
     }
     //once done with stunnning, use [Thunder Bird] which delevels but does not stun.
-    if (
-      myThunder() === 0 &&
-      toInt(getProperty("auto_combatHandlerThunderBird")) > 0
-    ) {
-      setProperty("auto_combatHandlerThunderBird", (0).toString());
+    if (myThunder() === 0 && get("auto_combatHandlerThunderBird", 0) > 0) {
+      set("auto_combatHandlerThunderBird", 0);
     }
     if (
-      toInt(getProperty("auto_combatHandlerThunderBird")) > 0 &&
+      get("auto_combatHandlerThunderBird", 0) > 0 &&
       auto_canUse($skill`Thunder Bird`, false)
     ) {
-      setProperty(
+      set(
         "auto_combatHandlerThunderBird",
-        (toInt(getProperty("auto_combatHandlerThunderBird")) - 1).toString(),
+        get("auto_combatHandlerThunderBird", 0) - 1,
       );
       return auto_useSkill($skill`Thunder Bird`, false);
     }

@@ -23,7 +23,6 @@ import {
   Skill,
   Slot,
   splitString,
-  toBoolean,
   toFamiliar,
   toInt,
   toSlot,
@@ -43,6 +42,7 @@ import {
   $path,
   $skill,
   $slot,
+  get,
 } from "libram";
 
 import { auto_doTempleSummit } from "../../autoscend";
@@ -112,11 +112,8 @@ function zoo_specimenPreparationsLeft(): number {
   if (!in_zootomist()) {
     return 0;
   }
-  const zoo_grafts_allowed: number = min(
-    11,
-    toInt(getProperty("zootomistPoints")) + 1,
-  );
-  return zoo_grafts_allowed - toInt(getProperty("zootSpecimensPrepared"));
+  const zoo_grafts_allowed: number = min(11, get("zootomistPoints") + 1);
+  return zoo_grafts_allowed - get("zootSpecimensPrepared");
 }
 
 function zoo_prepareSpecimen(): boolean {
@@ -1121,7 +1118,7 @@ export function LX_zootoFight(): boolean {
     // If we have Mayam, let's get that stone wool and unlock our Mayam.
     if (
       auto_haveMayamCalendar() &&
-      toInt(getProperty("lastTempleAdventures")) < myAscensions()
+      get("lastTempleAdventures") < myAscensions()
     ) {
       if (
         availableAmount($item`stone wool`) < 2 &&
@@ -1145,7 +1142,7 @@ export function LX_zootoFight(): boolean {
 
     if (yellowRayCombatString$1(Monster.none, false) !== undefined) {
       if (
-        toBoolean(getProperty("auto_hippyInstead")) &&
+        get("auto_hippyInstead", false) &&
         !possessOutfit("War Hippy Fatigues")
       ) {
         adjustForYellowRayIfPossible();
@@ -1162,7 +1159,7 @@ export function LX_zootoFight(): boolean {
       if (candyBlock()) {
         return true;
       }
-      if (!toBoolean(getProperty("_mapToACandyRichBlockUsed"))) {
+      if (!get("_mapToACandyRichBlockUsed")) {
         while (itemAmount($item`map to a candy-rich block`) === 0) {
           handleFamiliar$1($familiar`Jill-of-All-Trades`);
           if (L7_defiledNook()) {

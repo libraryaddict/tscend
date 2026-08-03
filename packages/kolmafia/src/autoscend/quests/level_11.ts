@@ -31,6 +31,7 @@ import {
   itemDropModifier,
   Location,
   max,
+  Monster,
   monsterLevelAdjustment,
   myAdventures,
   myAscensions,
@@ -54,17 +55,13 @@ import {
   pullsRemaining,
   random,
   retrieveItem,
-  setProperty,
   splitString,
   squareRoot,
   substring,
   takeCloset,
-  toBoolean,
   toFloat,
   toInt,
-  toItem,
   toLocation,
-  toMonster,
   use,
   visitUrl,
 } from "kolmafia";
@@ -91,6 +88,7 @@ import {
   $slots,
   $stat,
   get,
+  set,
 } from "libram";
 
 import {
@@ -346,12 +344,12 @@ function desertBuffs(): desert_buff_record {
   // There are some other familiars we might choose if nothing affects progress
   if (dbr.fam === Familiar.none) {
     if (
-      toInt(getProperty("_hipsterAdv")) < 7 &&
+      get("_hipsterAdv") < 7 &&
       canChangeToFamiliar($familiar`Artistic Goth Kid`)
     ) {
       dbr.fam = $familiar`Artistic Goth Kid`;
     } else if (
-      toInt(getProperty("_hipsterAdv")) < 7 &&
+      get("_hipsterAdv") < 7 &&
       canChangeToFamiliar($familiar`Mini-Hipster`)
     ) {
       dbr.fam = $familiar`Mini-Hipster`;
@@ -436,8 +434,8 @@ export function shenSnakeLocations(
 }
 
 function shenZonesToAvoidBecauseMaybeSnake(): Location[] {
-  if (toInt(getProperty("shenInitiationDay")) > 0) {
-    const day: number = toInt(getProperty("shenInitiationDay"));
+  if (get("shenInitiationDay") > 0) {
+    const day: number = get("shenInitiationDay");
     const items_returned: number = shenItemsReturnedOrInProgress();
     return shenSnakeLocations(day, items_returned);
   } else {
@@ -568,7 +566,7 @@ export function LX_unlockHauntedBilliardsRoom(
     return false;
   }
 
-  if (toInt(getProperty("manorDrawerCount")) >= 24) {
+  if (get("manorDrawerCount") >= 24) {
     cliExecute("refresh inv");
   }
 
@@ -748,11 +746,11 @@ function LX_unlockManorSecondFloorDo(): boolean {
   //No sense in trying to go to the library if constructs (writing desk) are banished and we already have a killing jar and haven't done the desert yet
   if (
     isBanished($phylum`construct`) &&
-    toInt(getProperty("screechCombats")) > 0 &&
+    get("screechCombats") > 0 &&
     itemAmount($item`killing jar`) > 0 &&
-    (toInt(getProperty("gnasirProgress")) & 4) !== 4
+    (get("gnasirProgress") & 4) !== 4
   ) {
-    setProperty("screechDelay", "construct");
+    set("screechDelay", "construct");
     return false;
   }
 
@@ -777,8 +775,8 @@ function LX_unlockManorSecondFloorDo(): boolean {
   auto_log_info("Well, we need writing desks", "blue");
   auto_log_info("Going to the library!", "blue");
   if (
-    toInt(getProperty("writingDesksDefeated")) <= 3 ||
-    toMonster(getProperty("nosyNoseMonster")) === $monster`writing desk`
+    get("writingDesksDefeated") <= 3 ||
+    get("nosyNoseMonster", Monster.none) === $monster`writing desk`
   ) {
     // nose sniff is weak so probably want fairy familiar first. this condition should change if banshee librarian is added as a YR target for killing jar
     if (
@@ -796,7 +794,7 @@ function LX_unlockManorSecondFloorDo(): boolean {
       handleFamiliar$1($familiar`Nosy Nose`);
     }
   }
-  if (toInt(getProperty("writingDesksDefeated")) <= 3) {
+  if (get("writingDesksDefeated") <= 3) {
     if (
       canSniff($monster`writing desk`, $location`The Haunted Library`) &&
       auto_mapTheMonsters()
@@ -852,8 +850,7 @@ function LX_spookyravenManorFirstFloorDo(): boolean {
 
 export const LX_spookyravenManorFirstFloorTask: QuestTask = registerQuestTask({
   name: "LX_spookyravenManorFirstFloor",
-  completed: () =>
-    toInt(getProperty("lastSecondFloorUnlock")) >= myAscensions(),
+  completed: () => get("lastSecondFloorUnlock") >= myAscensions(),
   ready: () => true,
   do: LX_spookyravenManorFirstFloorDo,
 });
@@ -1144,7 +1141,7 @@ function LX_spookyravenManorSecondFloorDo(): boolean {
 export const LX_spookyravenManorSecondFloorTask: QuestTask = registerQuestTask({
   name: "LX_spookyravenManorSecondFloor",
   completed: () => internalQuestStatus("questM21Dance") > 3,
-  ready: () => toInt(getProperty("lastSecondFloorUnlock")) >= myAscensions(),
+  ready: () => get("lastSecondFloorUnlock") >= myAscensions(),
   do: LX_spookyravenManorSecondFloorDo,
 });
 
@@ -1163,7 +1160,7 @@ export function blackForestChoiceHandler(choice: number): void {
       auto_runChoice(1); // go to You Found Your Thrill (#924)
     }
   } else if (choice === 924) {
-    if (toBoolean(getProperty("auto_getBeehive")) && myAdventures() > 3) {
+    if (get("auto_getBeehive", false) && myAdventures() > 3) {
       auto_runChoice(3); // go to Bee Persistent (#1018)
     } else if (
       !possessEquipment($item`blackberry galoshes`) &&
@@ -1195,14 +1192,14 @@ export function blackForestChoiceHandler(choice: number): void {
     }
   } else if (choice === 1018) {
     // Bee Persistent (The Black Forest)
-    if (toBoolean(getProperty("auto_getBeehive")) && myAdventures() > 2) {
+    if (get("auto_getBeehive", false) && myAdventures() > 2) {
       auto_runChoice(1); // go to Bee Rewarded (#1019)
     } else {
       auto_runChoice(2); // skip
     }
   } else if (choice === 1019) {
     // Bee Rewarded (The Black Forest)
-    if (toBoolean(getProperty("auto_getBeehive"))) {
+    if (get("auto_getBeehive", false)) {
       auto_runChoice(1); // get the beehive
     } else {
       auto_runChoice(2); // skip
@@ -1214,7 +1211,7 @@ export function blackForestChoiceHandler(choice: number): void {
 
 function L11_blackMarketDo(): boolean {
   if (isBanished($phylum`beast`) && get("screechCombats", 0) > 0) {
-    setProperty("screechDelay", "beast");
+    set("screechDelay", "beast");
     return false; // Can't get the reassembled blackbird if beasts are banished
   }
 
@@ -1264,12 +1261,12 @@ function L11_blackMarketDo(): boolean {
   }
 
   if (itemAmount($item`beehive`) > 0) {
-    setProperty("auto_getBeehive", false.toString());
+    set("auto_getBeehive", false);
   }
 
   autoEquipToSlot($slot`acc3`, $item`blackberry galoshes`);
   //If we want the Beehive, and don\'t have enough adventures, this is dangerous.
-  if (toBoolean(getProperty("auto_getBeehive")) && myAdventures() < 3) {
+  if (get("auto_getBeehive", false) && myAdventures() < 3) {
     return false;
   }
   if (
@@ -1339,7 +1336,7 @@ function L11_getBeehiveDo(): boolean {
       "Nevermind, wall of skin already defeated (or we already have a beehiven). We do not need a beehive. Bloop.",
       "blue",
     );
-    setProperty("auto_getBeehive", false.toString());
+    set("auto_getBeehive", false);
     return false;
   }
 
@@ -1358,7 +1355,7 @@ function L11_getBeehiveDo(): boolean {
   }
   const advSpent: boolean = autoAdv($location`The Black Forest`);
   if (itemAmount($item`beehive`) > 0) {
-    setProperty("auto_getBeehive", false.toString());
+    set("auto_getBeehive", false);
   }
   return advSpent;
 }
@@ -1457,9 +1454,9 @@ function L11_mcmuffinDiaryDo(): boolean {
   }
 
   auto_log_info("Getting the McMuffin Diary", "blue");
-  setProperty("auto_considerCCSCShore", false.toString());
+  set("auto_considerCCSCShore", false);
   LX_doVacation();
-  setProperty("auto_considerCCSCShore", true.toString());
+  set("auto_considerCCSCShore", true);
   for (const diary of $items`your father's MacGuffin diary, copy of a jerk adventurer's father's diary`) {
     if (itemAmount(diary) > 0) {
       use(itemAmount(diary), diary);
@@ -1548,7 +1545,7 @@ function L11_aridDesertDo(): boolean {
   if (in_plumber() || in_pokefam()) {
     visitUrl("place.php?whichplace=desertbeach", false);
   }
-  if (toInt(getProperty("desertExploration")) >= 100) {
+  if (get("desertExploration") >= 100) {
     return false; //done exploring
   }
 
@@ -1588,7 +1585,7 @@ function L11_aridDesertDo(): boolean {
 
   const dbr: desert_buff_record = desertBuffs();
   let progress: number = dbr.progress;
-  if (toBoolean(getProperty("bondDesert"))) {
+  if (get("bondDesert")) {
     progress += 2;
   }
   if (getProperty("peteMotorbikeHeadlight") === "Blacklight Bulb") {
@@ -1596,13 +1593,13 @@ function L11_aridDesertDo(): boolean {
     progress += 2;
   }
 
-  if (toBoolean(getProperty("auto_gnasirUnlocked"))) {
+  if (get("auto_gnasirUnlocked", false)) {
     if (LX_spookyravenManorFirstFloor()) {
       // make sure we've actually done the Haunted Library before we want to hand in a killing jar
       return true;
     }
 
-    if ((toInt(getProperty("gnasirProgress")) & 2) !== 2) {
+    if ((get("gnasirProgress") & 2) !== 2) {
       let canBuyPaint: boolean = true;
       if (in_wotsf() || in_nuclear() || is_werewolf()) {
         canBuyPaint = false;
@@ -1626,10 +1623,7 @@ function L11_aridDesertDo(): boolean {
                 "Mafia did not track gnasir Can of Black Paint (0x2). Fixing.",
                 "red",
               );
-              setProperty(
-                "gnasirProgress",
-                (toInt(getProperty("gnasirProgress")) | 2).toString(),
-              );
+              set("gnasirProgress", get("gnasirProgress") | 2);
               return true;
             } else {
               abort(
@@ -1637,15 +1631,12 @@ function L11_aridDesertDo(): boolean {
               );
             }
           } else {
-            if ((toInt(getProperty("gnasirProgress")) & 2) !== 2) {
+            if ((get("gnasirProgress") & 2) !== 2) {
               auto_log_warning(
                 "Mafia did not track gnasir Can of Black Paint (0x2). Fixing.",
                 "red",
               );
-              setProperty(
-                "gnasirProgress",
-                (toInt(getProperty("gnasirProgress")) | 2).toString(),
-              );
+              set("gnasirProgress", get("gnasirProgress") | 2);
             }
           }
         }
@@ -1656,7 +1647,7 @@ function L11_aridDesertDo(): boolean {
 
     if (
       itemAmount($item`killing jar`) > 0 &&
-      (toInt(getProperty("gnasirProgress")) & 4) !== 4
+      (get("gnasirProgress") & 4) !== 4
     ) {
       auto_log_info("Returning the killing jar", "blue");
       auto_visit_gnasir();
@@ -1668,15 +1659,12 @@ function L11_aridDesertDo(): boolean {
         if (itemAmount($item`desert sightseeing pamphlet`) === 0) {
           abort("Returned killing jar but did not return killing jar.");
         } else {
-          if ((toInt(getProperty("gnasirProgress")) & 4) !== 4) {
+          if ((get("gnasirProgress") & 4) !== 4) {
             auto_log_warning(
               "Mafia did not track gnasir Killing Jar (0x4). Fixing.",
               "red",
             );
-            setProperty(
-              "gnasirProgress",
-              (toInt(getProperty("gnasirProgress")) | 4).toString(),
-            );
+            set("gnasirProgress", get("gnasirProgress") | 4);
           }
         }
       }
@@ -1686,7 +1674,7 @@ function L11_aridDesertDo(): boolean {
 
     if (
       itemAmount($item`worm-riding manual page`) >= 15 &&
-      (toInt(getProperty("gnasirProgress")) & 8) !== 8
+      (get("gnasirProgress") & 8) !== 8
     ) {
       auto_log_info("Returning the worm-riding manual pages", "blue");
       auto_visit_gnasir();
@@ -1707,15 +1695,12 @@ function L11_aridDesertDo(): boolean {
           "red",
         );
         cliExecute("refresh all");
-        if ((toInt(getProperty("gnasirProgress")) & 8) !== 8) {
+        if ((get("gnasirProgress") & 8) !== 8) {
           auto_log_warning(
             "Mafia did not track gnasir Worm-Riding Manual Pages (0x8). Fixing.",
             "red",
           );
-          setProperty(
-            "gnasirProgress",
-            (toInt(getProperty("gnasirProgress")) | 8).toString(),
-          );
+          set("gnasirProgress", get("gnasirProgress") | 8);
         }
       }
       return true;
@@ -1723,7 +1708,7 @@ function L11_aridDesertDo(): boolean {
 
     if (
       itemAmount($item`worm-riding hooks`) > 0 &&
-      (toInt(getProperty("gnasirProgress")) & 16) !== 16
+      (get("gnasirProgress") & 16) !== 16
     ) {
       pullXWhenHaveY($item`drum machine`, 1, 0);
       if (itemAmount($item`drum machine`) === 0) {
@@ -1737,8 +1722,8 @@ function L11_aridDesertDo(): boolean {
     }
     // If we have done the Worm-Riding Hooks or the Killing jar, don\'t do this.
     if (
-      100 - toInt(getProperty("desertExploration")) <= 15 &&
-      (toInt(getProperty("gnasirProgress")) & 12) === 0
+      100 - get("desertExploration") <= 15 &&
+      (get("gnasirProgress") & 12) === 0
     ) {
       pullXWhenHaveY($item`killing jar`, 1, 0);
       if (itemAmount($item`killing jar`) > 0) {
@@ -1754,15 +1739,12 @@ function L11_aridDesertDo(): boolean {
               "Returned killing jar (secondary) but did not return killing jar.",
             );
           } else {
-            if ((toInt(getProperty("gnasirProgress")) & 4) !== 4) {
+            if ((get("gnasirProgress") & 4) !== 4) {
               auto_log_warning(
                 "Mafia did not track gnasir Killing Jar (0x4). Fixing.",
                 "red",
               );
-              setProperty(
-                "gnasirProgress",
-                (toInt(getProperty("gnasirProgress")) | 4).toString(),
-              );
+              set("gnasirProgress", get("gnasirProgress") | 4);
             }
           }
         }
@@ -1774,7 +1756,7 @@ function L11_aridDesertDo(): boolean {
 
   if (
     haveEffect($effect`Ultrahydrated`) > 0 ||
-    toInt(getProperty("desertExploration")) === 0
+    get("desertExploration") === 0
   ) {
     auto_log_info("Searching for the pyramid", "blue");
     if (in_heavyrains()) {
@@ -1807,8 +1789,8 @@ function L11_aridDesertDo(): boolean {
     if (
       (inHardcore() || pullsRemaining() === 0) &&
       itemAmount($item`worm-riding hooks`) > 0 &&
-      toInt(getProperty("desertExploration")) <= 100 - 5 * progress &&
-      (toInt(getProperty("gnasirProgress")) & 16) !== 16 &&
+      get("desertExploration") <= 100 - 5 * progress &&
+      (get("gnasirProgress") & 16) !== 16 &&
       itemAmount($item`stone rose`) === 0
     ) {
       if (itemAmount($item`drum machine`) > 0) {
@@ -1821,10 +1803,10 @@ function L11_aridDesertDo(): boolean {
       return true;
     }
 
-    if ((toInt(getProperty("gnasirProgress")) & 1) !== 1) {
+    if ((get("gnasirProgress") & 1) !== 1) {
       const expectedOasisTurns: number = 8 - $location`The Oasis`.turnsSpent;
       const equivProgress: number = expectedOasisTurns * progress;
-      const need_1: number = 100 - toInt(getProperty("desertExploration"));
+      const need_1: number = 100 - get("desertExploration");
       auto_log_info(`expectedOasis: ${expectedOasisTurns}`, "brown");
       auto_log_info(`equivProgress: ${equivProgress}`, "brown");
       auto_log_info(`need: ${need_1}`, "brown");
@@ -1855,8 +1837,8 @@ function L11_aridDesertDo(): boolean {
     if (dbr.famEquip !== Item.none) {
       autoEquipToSlot($slot`familiar`, dbr.famEquip);
     }
-    setProperty("choiceAdventure805", (1).toString());
-    const need: number = 100 - toInt(getProperty("desertExploration"));
+    set("choiceAdventure805", 1);
+    const need: number = 100 - get("desertExploration");
     auto_log_info(`Need for desert: ${need}`, "blue");
     auto_log_info(
       `Worm riding: ${itemAmount($item`worm-riding manual page`)}`,
@@ -1864,21 +1846,21 @@ function L11_aridDesertDo(): boolean {
     );
 
     if (
-      !toBoolean(getProperty("auto_gnasirUnlocked")) &&
+      !get("auto_gnasirUnlocked", false) &&
       $location`The Arid, Extra-Dry Desert`.turnsSpent > 10 &&
-      toInt(getProperty("desertExploration")) > 10
+      get("desertExploration") > 10
     ) {
       auto_log_info(
         "Did not appear to notice that Gnasir unlocked, assuming so at this point.",
         "green",
       );
-      setProperty("auto_gnasirUnlocked", true.toString());
+      set("auto_gnasirUnlocked", true);
     }
 
     if (
-      toBoolean(getProperty("auto_gnasirUnlocked")) &&
+      get("auto_gnasirUnlocked", false) &&
       itemAmount($item`stone rose`) > 0 &&
-      (toInt(getProperty("gnasirProgress")) & 1) !== 1
+      (get("gnasirProgress") & 1) !== 1
     ) {
       auto_log_info("Returning the stone rose", "blue");
       auto_visit_gnasir();
@@ -1890,15 +1872,12 @@ function L11_aridDesertDo(): boolean {
         if (itemAmount($item`desert sightseeing pamphlet`) === 0) {
           abort("Returned stone rose but did not return stone rose.");
         } else {
-          if ((toInt(getProperty("gnasirProgress")) & 1) !== 1) {
+          if ((get("gnasirProgress") & 1) !== 1) {
             auto_log_warning(
               "Mafia did not track gnasir Stone Rose (0x1). Fixing.",
               "red",
             );
-            setProperty(
-              "gnasirProgress",
-              (toInt(getProperty("gnasirProgress")) | 1).toString(),
-            );
+            set("gnasirProgress", get("gnasirProgress") | 1);
           }
         }
       }
@@ -1913,7 +1892,7 @@ function L11_aridDesertDo(): boolean {
         "We've found the gnome!! Sightseeing pamphlets for everyone!",
         "green",
       );
-      setProperty("auto_gnasirUnlocked", true.toString());
+      set("auto_gnasirUnlocked", true);
     }
 
     if (
@@ -1930,15 +1909,12 @@ function L11_aridDesertDo(): boolean {
       );
     }
   } else {
-    const need: number = 100 - toInt(getProperty("desertExploration"));
+    const need: number = 100 - get("desertExploration");
     auto_log_info(
       `Getting some ultrahydrated, I suppose. Desert left: ${need}`,
       "blue",
     );
-    if (
-      !toBoolean(getProperty("oasisAvailable")) &&
-      haveEffect($effect`Ultrahydrated`) === 0
-    ) {
+    if (!get("oasisAvailable") && haveEffect($effect`Ultrahydrated`) === 0) {
       return autoAdv($location`The Arid, Extra-Dry Desert`);
     }
 
@@ -1952,7 +1928,7 @@ function L11_aridDesertDo(): boolean {
         "Could not visit the Oasis for some reason, desertExploration may be incorrect.",
         "red",
       );
-      const initial: number = toInt(getProperty("desertExploration"));
+      const initial: number = get("desertExploration");
       const page: string = visitUrl("place.php?whichplace=desertbeach");
       const desert_matcher: AshMatcher = new AshMatcher(
         'title="[(](\\d+)% explored[)]"',
@@ -1965,7 +1941,7 @@ function L11_aridDesertDo(): boolean {
             `Incorrectly had exploration value of ${initial} when it should be at ${found}. This was corrected. Trying to resume.`,
             "blue",
           );
-          setProperty("desertExploration", found.toString());
+          set("desertExploration", found);
           return true;
         }
         if (!autoAdv($location`The Oasis`)) {
@@ -2131,7 +2107,7 @@ export function hiddenTempleChoiceHandler(choice: number, page: string): void {
     // Such Great Heights
     if (
       itemAmount($item`stone wool`) >= 2 &&
-      toInt(getProperty("lastTempleAdventures")) < myAscensions()
+      get("lastTempleAdventures") < myAscensions()
     ) {
       auto_runChoice(3); // if we have plenty of stone wool, take the adventures first (and reset Mayam)
     } else if (
@@ -2198,7 +2174,7 @@ function L11_hiddenTavernUnlock(force: boolean = false): boolean {
     return false;
   }
 
-  if (myAscensions() === toInt(getProperty("hiddenTavernUnlock"))) {
+  if (myAscensions() === get("hiddenTavernUnlock")) {
     return true;
   }
 
@@ -2211,7 +2187,7 @@ function L11_hiddenTavernUnlock(force: boolean = false): boolean {
     }
   }
 
-  if (myAscensions() > toInt(getProperty("hiddenTavernUnlock"))) {
+  if (myAscensions() > get("hiddenTavernUnlock")) {
     if (itemAmount($item`book of matches`) > 0) {
       use(1, $item`book of matches`);
       return true;
@@ -2242,7 +2218,7 @@ export function hiddenCityChoiceHandler(choice: number): void {
     }
   } else if (choice === 781) {
     // Earthbound and Down (An Overgrown Shrine (Northwest))
-    if (toInt(getProperty("hiddenApartmentProgress")) === 0) {
+    if (get("hiddenApartmentProgress") === 0) {
       auto_runChoice(1); // unlock the Hidden Apartment Building
     } else if (itemAmount($item`moss-covered stone sphere`) > 0) {
       auto_runChoice(2); // get the stone triangle
@@ -2251,7 +2227,7 @@ export function hiddenCityChoiceHandler(choice: number): void {
     }
   } else if (choice === 783) {
     // Water You Dune (An Overgrown Shrine (Southwest))
-    if (toInt(getProperty("hiddenHospitalProgress")) === 0) {
+    if (get("hiddenHospitalProgress") === 0) {
       auto_runChoice(1); // unlock the Hidden Hospital
     } else if (itemAmount($item`dripping stone sphere`) > 0) {
       auto_runChoice(2); // get the stone triangle
@@ -2264,7 +2240,7 @@ export function hiddenCityChoiceHandler(choice: number): void {
   } else if (choice === 785) {
     // Air Apparent (An Overgrown Shrine (Northeast))
 
-    if (toInt(getProperty("hiddenOfficeProgress")) === 0) {
+    if (get("hiddenOfficeProgress") === 0) {
       auto_runChoice(1); // unlock the Hidden Office Building
     } else if (
       itemAmount(
@@ -2290,7 +2266,7 @@ export function hiddenCityChoiceHandler(choice: number): void {
     }
   } else if (choice === 787) {
     // Fire When Ready (An Overgrown Shrine (Southeast))
-    if (toInt(getProperty("hiddenBowlingAlleyProgress")) === 0) {
+    if (get("hiddenBowlingAlleyProgress") === 0) {
       auto_runChoice(1); // unlock the Hidden Bowling Alley
     } else if (itemAmount($item`scorched stone sphere`) > 0) {
       auto_runChoice(2); // get the stone triangle
@@ -2307,7 +2283,7 @@ export function hiddenCityChoiceHandler(choice: number): void {
     }
   } else if (choice === 789) {
     // Where Does The Lone Ranger Take His Garbagester? (The Hidden Park)
-    if (toInt(getProperty("relocatePygmyJanitor")) !== myAscensions()) {
+    if (get("relocatePygmyJanitor") !== myAscensions()) {
       auto_runChoice(2); // Relocate the Pygmy Janitor to the park
     } else {
       auto_runChoice(1); // Get Hidden City zone items
@@ -2395,7 +2371,7 @@ function L11_hiddenCityDo(): boolean {
 
     let canDrinkCursedPunch: boolean =
       auto_canDrink($item`Cursed Punch`) &&
-      !toBoolean(getProperty("auto_limitConsume")) &&
+      !get("auto_limitConsume", false) &&
       !in_tcrs() &&
       !in_small();
     //todo: in_tcrs check quality and size of cursed punch instead of skipping? if that is possible
@@ -2463,7 +2439,7 @@ function L11_hiddenCityDo(): boolean {
           if (canBuyCursedPunch) {
             L11_hiddenTavernUnlock(true);
 
-            if (myAscensions() === toInt(getProperty("hiddenTavernUnlock"))) {
+            if (myAscensions() === get("hiddenTavernUnlock")) {
               shouldForceElevatorAction = true;
             }
           }
@@ -2525,7 +2501,7 @@ function L11_hiddenCityDo(): boolean {
           //once done with curses will want witch accountants
           if (
             itemAmount($item`McClusky file (page 4)`) === 0 ||
-            toMonster(getProperty("nosyNoseMonster")) ===
+            get("nosyNoseMonster", Monster.none) ===
               $monster`pygmy witch accountant`
           ) {
             handleFamiliar$1($familiar`Nosy Nose`);
@@ -2538,10 +2514,7 @@ function L11_hiddenCityDo(): boolean {
         //can drink and inebriety allows it
         if (canDrinkCursedPunch) {
           L11_hiddenTavernUnlock(true);
-          if (
-            myAscensions() === toInt(getProperty("hiddenTavernUnlock")) &&
-            !is_werewolf()
-          ) {
+          if (myAscensions() === get("hiddenTavernUnlock") && !is_werewolf()) {
             auto_buyUpTo(cursesNeeded, $item`Cursed Punch`);
             if (itemAmount($item`Cursed Punch`) < cursesNeeded) {
               abort(
@@ -2552,7 +2525,7 @@ function L11_hiddenCityDo(): boolean {
           }
         }
       } else {
-        setProperty(
+        set(
           "auto_nextEncounter",
           "ancient protector spirit (The Hidden Apartment Building)",
         );
@@ -2669,7 +2642,7 @@ function L11_hiddenCityDo(): boolean {
     }
 
     if (workingHoliday && itemAmount($item`McClusky file (complete)`) > 0) {
-      setProperty(
+      set(
         "auto_nextEncounter",
         "ancient protector spirit (The Hidden Office Building)",
       );
@@ -2680,7 +2653,7 @@ function L11_hiddenCityDo(): boolean {
   if (internalQuestStatus("questL11Spare") === 0) {
     auto_log_info("The idden [sic] bowling alley!", "blue");
     L11_hiddenTavernUnlock(true);
-    if (myAscensions() === toInt(getProperty("hiddenTavernUnlock"))) {
+    if (myAscensions() === get("hiddenTavernUnlock")) {
       if (itemAmount($item`Bowl of Scorpions`) === 0 && !is_werewolf()) {
         //can't access shops as werewolf
         auto_buyUpTo(1, $item`Bowl of Scorpions`);
@@ -2704,19 +2677,13 @@ function L11_hiddenCityDo(): boolean {
         "Attemping to use Map the Monsters to olfact a Pygmy Bowler.",
       );
     }
-    if (
-      auto_canCamelSpit() &&
-      toInt(getProperty("hiddenBowlingAlleyProgress")) < 2
-    ) {
+    if (auto_canCamelSpit() && get("hiddenBowlingAlleyProgress") < 2) {
       auto_log_info(
         "Bringing the Camel to spit on a Pygmy Bowler for bowling balls.",
       );
       handleFamiliar$1($familiar`Melodramedary`);
     }
-    if (
-      auto_haveGreyGoose() &&
-      toInt(getProperty("hiddenBowlingAlleyProgress")) < 3
-    ) {
+    if (auto_haveGreyGoose() && get("hiddenBowlingAlleyProgress") < 3) {
       auto_log_info(
         "Bringing the Grey Goose to emit some drones at a Pygmy Bowler for bowling balls.",
       );
@@ -2724,9 +2691,9 @@ function L11_hiddenCityDo(): boolean {
     }
     if (
       itemAmount($item`bowling ball`) > 0 &&
-      toInt(getProperty("hiddenBowlingAlleyProgress")) === 5
+      get("hiddenBowlingAlleyProgress") === 5
     ) {
-      setProperty(
+      set(
         "auto_nextEncounter",
         "ancient protector spirit (The Hidden Bowling Alley)",
       );
@@ -2766,8 +2733,7 @@ function L11_hiddenCityDo(): boolean {
       ) {
         if (
           surgeonGearWanted >= 2 ||
-          toMonster(getProperty("nosyNoseMonster")) ===
-            $monster`pygmy witch surgeon`
+          get("nosyNoseMonster", Monster.none) === $monster`pygmy witch surgeon`
         ) {
           handleFamiliar$1($familiar`Nosy Nose`); //whiff increases chance of witch accountant
         }
@@ -2808,7 +2774,7 @@ function L11_hiddenCityDo(): boolean {
       buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
       buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
     }
-    setProperty("auto_nextEncounter", "Protector Spectre");
+    set("auto_nextEncounter", "Protector Spectre");
     handleFamiliar("boss");
     const advSpent: boolean = autoAdv($location`A Massive Ziggurat`);
     if (internalQuestStatus("questL11MacGuffin") > 2) {
@@ -2866,8 +2832,7 @@ function L11_hiddenCityZonesNeedPark(): boolean {
     canUseMachete &&
     !possessEquipment($item`antique machete`) &&
     (inHardcore() || in_lol());
-  const needRelocate: boolean =
-    toInt(getProperty("relocatePygmyJanitor")) !== myAscensions();
+  const needRelocate: boolean = get("relocatePygmyJanitor") !== myAscensions();
   return needMachete || needRelocate;
 }
 
@@ -2919,7 +2884,7 @@ function L11_hiddenCityZonesDo(): boolean {
     return autoAdv($location`The Hidden Park`);
   }
 
-  if (toInt(getProperty("breathitinCharges")) > 0) {
+  if (get("breathitinCharges") > 0) {
     // Shrines & Ziggurat are outdoor zones with free combats. Let's not waste Breathitin charges.
     return false;
   }
@@ -2947,8 +2912,8 @@ function L11_hiddenCityZonesNorthwest(): boolean {
 
 const L11_hiddenCityZonesNorthwestTask: QuestTask = registerQuestTask({
   name: "L11_hiddenCityZonesNorthwest",
-  completed: () => toInt(getProperty("hiddenApartmentProgress")) > 0,
-  ready: () => toInt(getProperty("hiddenApartmentProgress")) === 0,
+  completed: () => get("hiddenApartmentProgress") > 0,
+  ready: () => get("hiddenApartmentProgress") === 0,
   do: L11_hiddenCityZonesNorthwest,
   locations: $location`An Overgrown Shrine (Northwest)`,
   desiredEncounters: () =>
@@ -2969,8 +2934,8 @@ function L11_hiddenCityZonesNortheast(): boolean {
 
 const L11_hiddenCityZonesNortheastTask: QuestTask = registerQuestTask({
   name: "L11_hiddenCityZonesNortheast",
-  completed: () => toInt(getProperty("hiddenOfficeProgress")) > 0,
-  ready: () => toInt(getProperty("hiddenOfficeProgress")) === 0,
+  completed: () => get("hiddenOfficeProgress") > 0,
+  ready: () => get("hiddenOfficeProgress") === 0,
   do: L11_hiddenCityZonesNortheast,
   locations: $location`An Overgrown Shrine (Northeast)`,
   desiredEncounters: () =>
@@ -2991,8 +2956,8 @@ function L11_hiddenCityZonesSouthwest(): boolean {
 
 const L11_hiddenCityZonesSouthwestTask: QuestTask = registerQuestTask({
   name: "L11_hiddenCityZonesSouthwest",
-  completed: () => toInt(getProperty("hiddenHospitalProgress")) > 0,
-  ready: () => toInt(getProperty("hiddenHospitalProgress")) === 0,
+  completed: () => get("hiddenHospitalProgress") > 0,
+  ready: () => get("hiddenHospitalProgress") === 0,
   do: L11_hiddenCityZonesSouthwest,
   locations: $location`An Overgrown Shrine (Southwest)`,
   desiredEncounters: () =>
@@ -3013,8 +2978,8 @@ function L11_hiddenCityZonesSoutheast(): boolean {
 
 const L11_hiddenCityZonesSoutheastTask: QuestTask = registerQuestTask({
   name: "L11_hiddenCityZonesSoutheast",
-  completed: () => toInt(getProperty("hiddenBowlingAlleyProgress")) > 0,
-  ready: () => toInt(getProperty("hiddenBowlingAlleyProgress")) === 0,
+  completed: () => get("hiddenBowlingAlleyProgress") > 0,
+  ready: () => get("hiddenBowlingAlleyProgress") === 0,
   do: L11_hiddenCityZonesSoutheast,
   locations: $location`An Overgrown Shrine (Southeast)`,
   desiredEncounters: () =>
@@ -3038,7 +3003,7 @@ function L11_hiddenCityZonesZiggurat(): boolean {
       getProperty("lastEncounter") ===
         "Temple of the Legend in the Hidden City")
   ) {
-    setProperty("auto_openedziggurat", true.toString());
+    set("auto_openedziggurat", true);
   }
   return advSpent;
 }
@@ -3139,13 +3104,13 @@ function L11_mauriceSpookyravenDo(): boolean {
         council();
       }
     } else {
-      setProperty("auto_nonAdvLoc", true.toString());
+      set("auto_nonAdvLoc", true);
       autoAdv($location`Summoning Chamber`);
     }
     return true;
   }
 
-  if (!toBoolean(getProperty("auto_haveoven"))) {
+  if (!get("auto_haveoven", false)) {
     ovenHandle();
   }
 
@@ -3164,7 +3129,7 @@ function L11_mauriceSpookyravenDo(): boolean {
     in_wotsf() ||
     in_bhy() ||
     in_robot() ||
-    (in_nuclear() && !toBoolean(getProperty("auto_haveoven")))
+    (in_nuclear() && !get("auto_haveoven", false))
   ) {
     auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
     // I suppose we can let anyone in without the Spectacles.
@@ -3220,7 +3185,7 @@ function L11_mauriceSpookyravenDo(): boolean {
         "red",
       );
       // This issue is valid as of mafia r16799
-      setProperty("auto_haveoven", false.toString());
+      set("auto_haveoven", false);
       ovenHandle();
       autoCraft(
         "cook",
@@ -3259,11 +3224,8 @@ function L11_mauriceSpookyravenDo(): boolean {
     !possessEquipment($item`unstable fulminate`) &&
     internalQuestStatus("questL11Manor") < 3
   ) {
-    if (
-      isBanished($phylum`construct`) &&
-      toInt(getProperty("screechCombats")) > 0
-    ) {
-      setProperty("screechDelay", "construct");
+    if (isBanished($phylum`construct`) && get("screechCombats") > 0) {
+      set("screechDelay", "construct");
       return false; //No sense in trying to go to the Wine Cellar if constructs (Wine Racks) are banished
     }
 
@@ -3271,10 +3233,7 @@ function L11_mauriceSpookyravenDo(): boolean {
     if (!bat_wantHowl($location`The Haunted Wine Cellar`)) {
       bat_formBats();
     }
-    if (
-      friarsAvailable() &&
-      !toBoolean(getProperty("friarsBlessingReceived"))
-    ) {
+    if (friarsAvailable() && !get("friarsBlessingReceived")) {
       cliExecute("friars booze");
     }
     if (
@@ -3295,11 +3254,8 @@ function L11_mauriceSpookyravenDo(): boolean {
     !possessEquipment($item`unstable fulminate`) &&
     internalQuestStatus("questL11Manor") < 3
   ) {
-    if (
-      isBanished($phylum`undead`) &&
-      toInt(getProperty("screechCombats")) > 0
-    ) {
-      setProperty("screechDelay", "undead");
+    if (isBanished($phylum`undead`) && get("screechCombats") > 0) {
+      set("screechDelay", "undead");
       return false; //No sense in trying to go to the Laundry Room if undead (Cabinet of Dr. Limpieza) are banished
     }
 
@@ -3423,13 +3379,13 @@ function L11_redZeppelin(): boolean {
   }
   // TODO: create lynyrd skin items
 
-  setProperty("choiceAdventure856", (1).toString());
+  set("choiceAdventure856", 1);
   if (auto_haveCCSC()) {
-    setProperty("choiceAdventure857", (2).toString());
+    set("choiceAdventure857", 2);
   } else {
-    setProperty("choiceAdventure857", (1).toString());
+    set("choiceAdventure857", 1);
   }
-  setProperty("choiceAdventure858", (1).toString());
+  set("choiceAdventure858", 1);
   buffMaintain$2($effect`Greasy Peasy`);
   buffMaintain$2($effect`Musky`);
   buffMaintain$2($effect`Blood-Gorged`);
@@ -3470,7 +3426,7 @@ function L11_redZeppelin(): boolean {
   if (
     auto_is_valid($item`lynyrd snare`) &&
     itemAmount($item`lynyrd snare`) > 0 &&
-    toInt(getProperty("_lynyrdSnareUses")) < 3 &&
+    get("_lynyrdSnareUses") < 3 &&
     myHp() > 150
   ) {
     return autoAdvBypass$1(
@@ -3479,7 +3435,7 @@ function L11_redZeppelin(): boolean {
     );
   }
 
-  if (toInt(getProperty("zeppelinProtestors")) < 75 && cloversAvailable() > 0) {
+  if (get("zeppelinProtestors") < 75 && cloversAvailable() > 0) {
     // "zeppelinProtestors" is number killed so far, so it ends when we hit 80
     if (cloversAvailable() >= 3) {
       if (!in_koe() || myDaycount() > 1) {
@@ -3540,11 +3496,11 @@ function L11_redZeppelin(): boolean {
         for (const it of $items`lynyrdskin cap, lynyrdskin tunic, lynyrdskin breeches`) {
           autoEquip(it);
         }
-        setProperty("choiceAdventure866", (1).toString());
+        set("choiceAdventure866", 1);
       } else if (best_protestors === sleaze_protestors) {
-        setProperty("choiceAdventure866", (2).toString());
+        set("choiceAdventure866", 2);
       } else if (best_protestors === fire_protestors) {
-        setProperty("choiceAdventure866", (3).toString());
+        set("choiceAdventure866", 3);
       }
       return autoLuckyAdv($location`A Mob of Zeppelin Protesters`);
     }
@@ -3559,7 +3515,7 @@ function L11_redZeppelin(): boolean {
     auto_changeSnapperPhylum($phylum`dude`);
   }
 
-  const lastProtest: number = toInt(getProperty("zeppelinProtestors"));
+  const lastProtest: number = get("zeppelinProtestors");
   if (
     canSniff(
       $monster`Blue Oyster cultist`,
@@ -3573,19 +3529,16 @@ function L11_redZeppelin(): boolean {
   }
   const retval: boolean = autoAdv($location`A Mob of Zeppelin Protesters`);
   if (!lastAdventureSpecialNC()) {
-    if (lastProtest === toInt(getProperty("zeppelinProtestors"))) {
-      setProperty(
-        "zeppelinProtestors",
-        (toInt(getProperty("zeppelinProtestors")) + 1).toString(),
-      );
+    if (lastProtest === get("zeppelinProtestors")) {
+      set("zeppelinProtestors", get("zeppelinProtestors") + 1);
     }
   } else {
-    setProperty("lastEncounter", "Clear Special NC");
+    set("lastEncounter", "Clear Special NC");
   }
   restoreSetting("choiceAdventure866");
-  setProperty("choiceAdventure856", (2).toString());
-  setProperty("choiceAdventure857", (2).toString());
-  setProperty("choiceAdventure858", (2).toString());
+  set("choiceAdventure856", 2);
+  set("choiceAdventure857", 2);
+  set("choiceAdventure858", 2);
   return retval;
 }
 
@@ -3638,7 +3591,7 @@ function L11_ronCopperhead(): boolean {
       handleFamiliar$1($familiar`Grey Goose`);
     }
     if (internalQuestStatus("questL11Ron") === 4) {
-      setProperty("auto_nextEncounter", 'Ron "The Weasel" Copperhead');
+      set("auto_nextEncounter", 'Ron "The Weasel" Copperhead');
     }
     const retval: boolean = autoAdv($location`The Red Zeppelin`);
     // open red boxes when we get them (not sure if this is the place for this but it'll do for now)
@@ -3672,15 +3625,12 @@ function L11_shenStartQuestDo(): boolean {
       let linec: number = 1;
       for (const z of shenZonesToAvoidBecauseMaybeSnake()) {
         auto_log_info(`${linec++}. ${z}`);
-        setProperty(
+        set(
           "auto_shenZonesTurnsSpent",
           `${getProperty("auto_shenZonesTurnsSpent")}${z}:${z.turnsSpent};`,
         );
       }
-      setProperty(
-        "auto_lastShenTurn",
-        $location`The Copperhead Club`.turnsSpent.toString(),
-      );
+      set("auto_lastShenTurn", $location`The Copperhead Club`.turnsSpent);
     }
     return true;
   }
@@ -3712,7 +3662,7 @@ function L11_shenCopperheadDo(): boolean {
   }
 
   if (isBanished($phylum`dude`) && get("screechCombats", 0) > 0) {
-    setProperty("screechDelay", "dude");
+    set("screechDelay", "dude");
     return false; //Probably should delay the Copperhead Club because dudes are important here
   }
 
@@ -3755,7 +3705,7 @@ function L11_shenCopperheadDo(): boolean {
           behindtheStacheOption = 2;
         }
       }
-      setProperty("choiceAdventure855", behindtheStacheOption.toString());
+      set("choiceAdventure855", behindtheStacheOption);
     }
 
     if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
@@ -3766,10 +3716,7 @@ function L11_shenCopperheadDo(): boolean {
     uneffect($effect`Ur-Kel's Aria of Annoyance`);
     if (autoAdv($location`The Copperhead Club`)) {
       if (containsText(getProperty("lastEncounter"), "Shen Copperhead, ")) {
-        setProperty(
-          "auto_lastShenTurn",
-          $location`The Copperhead Club`.turnsSpent.toString(),
-        );
+        set("auto_lastShenTurn", $location`The Copperhead Club`.turnsSpent);
       }
       return true;
     }
@@ -3781,11 +3728,11 @@ function L11_shenCopperheadDo(): boolean {
     internalQuestStatus("questL11Shen") === 3 ||
     internalQuestStatus("questL11Shen") === 5
   ) {
-    let it: Item = toItem(getProperty("shenQuestItem"));
+    let it: Item = get("shenQuestItem", Item.none);
     if (it === Item.none && isActuallyEd()) {
       // temp workaround until mafia bug is fixed - https://kolmafia.us/showthread.php?23742
       cliExecute("refresh quests");
-      it = toItem(getProperty("shenQuestItem"));
+      it = get("shenQuestItem", Item.none);
     }
     let goal: Location = Location.none;
     switch (it) {
@@ -3815,8 +3762,8 @@ function L11_shenCopperheadDo(): boolean {
     if (!zone_isAvailable(goal)) {
       // handle paths which don't need Tower keys but the World's Biggest Jerk asks for The Eye of the Stars
       if (goal === $location`The Hole in the Sky`) {
-        if (!toBoolean(getProperty("auto_holeinthesky"))) {
-          setProperty("auto_holeinthesky", true.toString());
+        if (!get("auto_holeinthesky", false)) {
+          set("auto_holeinthesky", true);
         }
         return runTaskChain([L10_topFloorTask, L10_holeInTheSkyUnlockTask]);
       }
@@ -3848,7 +3795,7 @@ function L11_shenCopperheadDo(): boolean {
           toInt(internalQuestStatus("questL08Trapper")) === 2 &&
           auto_haveCombatForceSource() &&
           !isAboutToPowerlevel() &&
-          !toBoolean(getProperty("auto_L8_extremeInstead"))
+          !get("auto_L8_extremeInstead", false)
         ) {
           return false;
         }
@@ -3974,7 +3921,7 @@ function L11_palindomeDo(): boolean {
   total = total + itemAmount($item`photograph of a dog`);
 
   if (isBanished($phylum`dude`) && get("screechCombats", 0) > 0) {
-    setProperty("screechDelay", "dude");
+    set("screechDelay", "dude");
     return false; //If new phylum banishers come out, this should be updated.
   }
 
@@ -4033,14 +3980,14 @@ function L11_palindomeDo(): boolean {
     }
     // in normal, we delayed until this was all we had to do. In hardcore we do it earlier.
     provideItem$2(300, $location`Whitey's Grove`, !inHardcore());
-    setProperty("auto_doWhiteys", true.toString());
+    set("auto_doWhiteys", true);
     if (itemAmount($item`white page`) > 0) {
-      setProperty("choiceAdventure940", (1).toString());
+      set("choiceAdventure940", 1);
       if (itemAmount($item`bird rib`) > 0) {
-        setProperty("choiceAdventure940", (2).toString());
+        set("choiceAdventure940", 2);
       }
 
-      if (toInt(getProperty("lastGuildStoreOpen")) < myAscensions()) {
+      if (get("lastGuildStoreOpen") < myAscensions()) {
         auto_log_warning(
           "This is probably no longer needed as of r16907. Please remove me",
           "blue",
@@ -4063,11 +4010,8 @@ function L11_palindomeDo(): boolean {
       return true;
     }
     //Can't do Whitey's Grove if beasts are banished
-    if (
-      isBanished($phylum`beast`) &&
-      toInt(getProperty("screechCombats")) > 0
-    ) {
-      setProperty("screechDelay", "beast");
+    if (isBanished($phylum`beast`) && get("screechCombats") > 0) {
+      set("screechDelay", "beast");
       return false; //If new phylum banishers come out, this should be updated.
     }
     providePlusCombat(15, $location`Whitey's Grove`, false);
@@ -4101,10 +4045,10 @@ function L11_palindomeDo(): boolean {
     total === 0 &&
     !possessEquipment($item`Mega Gem`) &&
     lovemeDone &&
-    (inHardcore() || toBoolean(getProperty("auto_doWhiteys"))) &&
+    (inHardcore() || get("auto_doWhiteys", false)) &&
     itemAmount($item`wet stunt nut stew`) === 0 &&
     (internalQuestStatus("questL11Palindome") >= 3 || isGuildClass()) &&
-    !toBoolean(getProperty("auto_bruteForcePalindome"))
+    !get("auto_bruteForcePalindome", false)
   ) {
     if (itemAmount($item`wet stunt nut stew`) === 0) {
       equipBaseline();
@@ -4157,7 +4101,7 @@ function L11_palindomeDo(): boolean {
           "Oh no, we died from reading a book. I'm going to take a nap.",
           "blue",
         );
-        setProperty("_auto_forcePokefamRestore", true.toString());
+        set("_auto_forcePokefamRestore", true);
         acquireHP();
         bat_reallyPickSkills(20);
       }
@@ -4201,14 +4145,14 @@ function L11_palindomeDo(): boolean {
     autoEquipToSlot($slot`acc2`, $item`Mega Gem`);
     autoEquipToSlot($slot`acc3`, $item`Talisman o' Namsilat`);
     const palinChoice: number = random(3) + 1;
-    setProperty("choiceAdventure131", palinChoice.toString());
+    set("choiceAdventure131", palinChoice);
 
     auto_log_info("War sir is raw!!", "blue");
 
     const pages: Map<number, string> = new Map();
     pages.set(0, "place.php?whichplace=palindome&action=pal_drlabel");
     pages.set(1, `choice.php?pwd&whichchoice=131&option=${palinChoice}`);
-    setProperty("auto_nextEncounter", "Dr. Awkward");
+    set("auto_nextEncounter", "Dr. Awkward");
     //AoSOL buffs
     if (in_aosol()) {
       buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
@@ -4232,7 +4176,7 @@ function L11_palindomeDo(): boolean {
       handleBjornify($familiar`Grimstone Golem`);
     }
     if (internalQuestStatus("questL11Palindome") > 1) {
-      if (!toBoolean(getProperty("auto_bruteForcePalindome"))) {
+      if (!get("auto_bruteForcePalindome", false)) {
         auto_log_error("Palindome failure:");
         auto_log_error("You probably just need to get a Mega Gem to fix this.");
         abort(
@@ -4291,8 +4235,8 @@ function L11_palindomeDo(): boolean {
       }
       if (noseDudesOn) {
         const whiffedBob: boolean =
-          toMonster(getProperty("nosyNoseMonster")) === $monster`Racecar Bob` ||
-          toMonster(getProperty("nosyNoseMonster")) === $monster`Bob Racecar`;
+          get("nosyNoseMonster", Monster.none) === $monster`Racecar Bob` ||
+          get("nosyNoseMonster", Monster.none) === $monster`Bob Racecar`;
         if (
           isBanished($monster`Flock of Stab-bats`) &&
           isBanished($monster`Taco Cat`) &&
@@ -4301,9 +4245,7 @@ function L11_palindomeDo(): boolean {
         ) {
           //only dudes left already
           noseDudesOn = false;
-        } else if (
-          toInt(getProperty("palindomeDudesDefeated")) >= dudesToDown
-        ) {
+        } else if (get("palindomeDudesDefeated") >= dudesToDown) {
           if (dudesToDown >= 10 && whiffedBob) {
             //when looking for photograph of a dog without disposable instant camera
             //the 10th or later dude must be a Bob, keep using the nose if it's tracking Bob
@@ -4312,10 +4254,7 @@ function L11_palindomeDo(): boolean {
             //had enough dudes
             noseDudesOn = false;
           }
-        } else if (
-          toInt(getProperty("palindomeDudesDefeated")) ===
-          dudesToDown - 1
-        ) {
+        } else if (get("palindomeDudesDefeated") === dudesToDown - 1) {
           if (!whiffedBob) {
             //don't need to start sniffing the last dude
             noseDudesOn = false;
@@ -4399,7 +4338,7 @@ function L11_unlockPyramidDo(): boolean {
   visitUrl("place.php?whichplace=desertbeach");
   if (
     internalQuestStatus("questL11Desert") < 1 ||
-    toInt(getProperty("desertExploration")) < 100 ||
+    get("desertExploration") < 100 ||
     internalQuestStatus("questL11Pyramid") > -1
   ) {
     return false;
@@ -4433,7 +4372,7 @@ function L11_unlockPyramidDo(): boolean {
       return true; //actually unlock did not fail.
     }
 
-    const initial: number = toInt(getProperty("desertExploration"));
+    const initial: number = get("desertExploration");
     const page: string = visitUrl("place.php?whichplace=desertbeach");
     const desert_matcher: AshMatcher = new AshMatcher(
       'title="[(](\\d+)% explored[)]"',
@@ -4446,7 +4385,7 @@ function L11_unlockPyramidDo(): boolean {
           `Incorrectly had exploration value of ${initial} when it should be at ${found}. This was corrected. Trying to resume.`,
           "blue",
         );
-        setProperty("desertExploration", found.toString());
+        set("desertExploration", found);
         return true;
       }
       abort(
@@ -4486,7 +4425,7 @@ function L11_unlockEdDo(): boolean {
       "red",
     );
     // Forcing Tavern.
-    setProperty("auto_forceTavern", true.toString());
+    set("auto_forceTavern", true);
     if (L3_tavern()) {
       return true;
     }
@@ -4497,18 +4436,14 @@ function L11_unlockEdDo(): boolean {
     "blue",
   );
 
-  if (!toBoolean(getProperty("middleChamberUnlock"))) {
+  if (!get("middleChamberUnlock")) {
     return autoAdv($location`The Upper Chamber`);
   }
 
   let total: number = itemAmount($item`crumbling wooden wheel`);
   total = total + itemAmount($item`tomb ratchet`);
 
-  if (
-    total >= 10 &&
-    myAdventures() >= 4 &&
-    toBoolean(getProperty("controlRoomUnlock"))
-  ) {
+  if (total >= 10 && myAdventures() >= 4 && get("controlRoomUnlock")) {
     visitUrl("place.php?whichplace=pyramid&action=pyramid_control");
     let x: number = 0;
     while (x < 10) {
@@ -4536,7 +4471,7 @@ function L11_unlockEdDo(): boolean {
     provideItem$2(400, $location`The Middle Chamber`, true);
   }
 
-  if (toBoolean(getProperty("controlRoomUnlock"))) {
+  if (get("controlRoomUnlock")) {
     if (
       !containsText(
         getProperty("auto_banishes"),
@@ -4570,7 +4505,7 @@ function L11_unlockEdDo(): boolean {
     auto_can_equip($item`pro skateboard`) &&
     equipmentAmount($item`pro skateboard`) > 0 &&
     itemAmount($item`tangle of rat tails`) >= 1 &&
-    !toBoolean(getProperty("_epicMcTwistUsed")) &&
+    !get("_epicMcTwistUsed") &&
     !in_pokefam()
   ) {
     auto_log_info("Be like Tony Hawk on a Tomb Rat King!");
@@ -4583,8 +4518,7 @@ function L11_unlockEdDo(): boolean {
 export const L11_unlockEdTask: QuestTask = registerQuestTask({
   name: "L11_unlockEd",
   completed: () =>
-    internalQuestStatus("questL11Pyramid") > 3 ||
-    toBoolean(getProperty("pyramidBombUsed")),
+    internalQuestStatus("questL11Pyramid") > 3 || get("pyramidBombUsed"),
   ready: () => internalQuestStatus("questL11Pyramid") >= 0,
   do: L11_unlockEdDo,
   locations: $locations`The Upper Chamber, The Middle Chamber`,
@@ -4638,8 +4572,8 @@ function L11_defeatEdDo(): boolean {
 
   auto_log_info("Time to waste all of Ed's Ka Coins :(", "blue");
 
-  setProperty("auto_nextEncounter", "Ed the Undying");
-  setProperty("auto_nonAdvLoc", true.toString());
+  set("auto_nextEncounter", "Ed the Undying");
+  set("auto_nonAdvLoc", true);
   autoAdv($location`The Lower Chambers`);
   if (in_pokefam() || in_koe()) {
     cliExecute("refresh inv");
@@ -4656,7 +4590,7 @@ export const L11_defeatEdTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL11Pyramid") > 3,
   ready: () =>
     internalQuestStatus("questL11Pyramid") === 3 &&
-    toBoolean(getProperty("pyramidBombUsed")) &&
+    get("pyramidBombUsed") &&
     myAdventures() - auto_advToReserve() > 7,
   do: L11_defeatEdDo,
   locations: $location`The Lower Chambers`,
@@ -4668,8 +4602,7 @@ export const L11_defeatEdTask: QuestTask = registerQuestTask({
       },
     ].filter((a) => a.needAmount > 0),
   reqAdventures: () =>
-    internalQuestStatus("questL11Pyramid") === 3 &&
-    toBoolean(getProperty("pyramidBombUsed"))
+    internalQuestStatus("questL11Pyramid") === 3 && get("pyramidBombUsed")
       ? 7
       : 0,
 });
@@ -4680,7 +4613,7 @@ export function L11_defeatEd(): boolean {
 
 export function L11_needDrumMachine(): boolean {
   return (
-    (toInt(getProperty("gnasirProgress")) & 16) === 0 &&
+    (get("gnasirProgress") & 16) === 0 &&
     auto_is_valid($item`drum machine`) &&
     !itemAmount($item`drum machine`) &&
     getProperty("questL11Desert") !== "finished"
@@ -4701,6 +4634,6 @@ export function L11_needTombRatchet(): boolean {
   return (
     itemAmount($item`crumbling wooden wheel`) +
       itemAmount($item`tomb ratchet`) <
-      10 && !toBoolean(getProperty("pyramidBombUsed"))
+      10 && !get("pyramidBombUsed")
   );
 }

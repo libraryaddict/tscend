@@ -11,14 +11,21 @@ import {
   myLevel,
   myMp,
   myPath,
-  setProperty,
-  toBoolean,
   toInt,
   use,
   useSkill,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $items, $location, $path, $skill } from "libram";
+import {
+  $effect,
+  $item,
+  $items,
+  $location,
+  $path,
+  $skill,
+  get,
+  set,
+} from "libram";
 
 import { autoAdv } from "../auto_adventure";
 import { itemList, ListInsert } from "../auto_list";
@@ -33,9 +40,9 @@ export function in_lta(): boolean {
 
 export function bond_initializeSettings(): void {
   if (in_lta()) {
-    setProperty("auto_getBeehive", true.toString());
-    setProperty("auto_wandOfNagamar", false.toString());
-    setProperty("auto_familiarChoice", "");
+    set("auto_getBeehive", true);
+    set("auto_wandOfNagamar", false);
+    set("auto_familiarChoice", "");
   }
 }
 
@@ -56,87 +63,81 @@ function bond_buySkills(): boolean {
 
   while (points > 0) {
     const start_1: number = points;
-    if (!toBoolean(getProperty("bondSymbols"))) {
+    if (!get("bondSymbols")) {
       if (points >= 3) {
         auto_log_info("Getting bondSymbols", "blue");
         visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=10&w=s");
         points -= 3;
       }
-    } else if (!toBoolean(getProperty("bondJetpack"))) {
+    } else if (!get("bondJetpack")) {
       if (points >= 3) {
         auto_log_info("Getting bondJetpack", "blue");
         visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=12&w=s");
         points -= 3;
       }
-    } else if (!toBoolean(getProperty("bondMartiniDelivery")) && inHardcore()) {
+    } else if (!get("bondMartiniDelivery") && inHardcore()) {
       if (points >= 1) {
         auto_log_info("Getting bondMartiniDelivery", "blue");
         visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=9&w=p");
         points -= 1;
       }
-    } else if (!toBoolean(getProperty("bondAdv"))) {
+    } else if (!get("bondAdv")) {
       if (points >= 1) {
         visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=1&w=s");
         points -= 1;
       }
-    } else if (
-      !toBoolean(getProperty("bondMartiniPlus")) &&
-      toInt(getProperty("bondPoints")) >= 2
-    ) {
+    } else if (!get("bondMartiniPlus") && get("bondPoints") >= 2) {
       if (points >= 3) {
         auto_log_info("Getting bondMartiniPlus", "blue");
         visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=13&w=p");
         points -= 3;
       }
-    } else if (!toBoolean(getProperty("bondMartiniTurn"))) {
+    } else if (!get("bondMartiniTurn")) {
       if (points >= 1) {
         auto_log_info("Getting bondMartiniTurn", "blue");
         visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=1&w=p");
         points -= 1;
       }
-    } else if (!toBoolean(getProperty("bondDrunk2"))) {
+    } else if (!get("bondDrunk2")) {
       if (points >= 3) {
         auto_log_info("Getting bondDrunk2", "blue");
         visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=11&w=s");
         points -= 3;
       }
-    } else if (!toBoolean(getProperty("bondDrunk1"))) {
+    } else if (!get("bondDrunk1")) {
       if (points >= 2) {
         auto_log_info("Getting bondDrunk1", "blue");
         visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=8&w=s");
         points -= 2;
       }
     } else if (
-      !toBoolean(getProperty("bondBridge")) &&
-      toInt(getProperty("chasmBridgeProgress")) < bridgeGoal() - 2
+      !get("bondBridge") &&
+      get("chasmBridgeProgress") < bridgeGoal() - 2
     ) {
       if (points >= 3) {
         auto_log_info("Getting bondBridge", "blue");
         visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=14&w=s");
         points -= 3;
       }
-    } else if (
-      !toBoolean(getProperty("bondDesert")) &&
-      toInt(getProperty("desertExploration")) < 100
-    ) {
+    } else if (!get("bondDesert") && get("desertExploration") < 100) {
       if (points >= 5) {
         auto_log_info("Getting bondDesert", "blue");
         visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=18&w=s");
         points -= 5;
       }
-    } else if (!toBoolean(getProperty("bondMeat"))) {
+    } else if (!get("bondMeat")) {
       if (points >= 1) {
         auto_log_info("Getting bondMeat", "blue");
         visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=2&w=p");
         points -= 1;
       }
-    } else if (!toBoolean(getProperty("bondItem1"))) {
+    } else if (!get("bondItem1")) {
       if (points >= 1) {
         auto_log_info("Getting bondItem1", "blue");
         visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=3&w=p");
         points -= 1;
       }
-    } else if (!toBoolean(getProperty("bondItem2"))) {
+    } else if (!get("bondItem2")) {
       if (points >= 2) {
         auto_log_info("Getting bondItem2", "blue");
         visitUrl("choice.php?whichchoice=1259&pwd=&option=1&k=6&w=s");
@@ -157,7 +158,7 @@ export function LM_bond(): boolean {
 
   if (
     itemAmount($item`Victor's Spoils`) > 0 &&
-    !toBoolean(getProperty("_victorSpoilsUsed")) &&
+    !get("_victorSpoilsUsed") &&
     myAdventures() < 10
   ) {
     use(1, $item`Victor's Spoils`);
@@ -167,27 +168,27 @@ export function LM_bond(): boolean {
     if (haveSkill($skill`Disco Nap`) && myMp() > mpCost($skill`Disco Nap`)) {
       useSkill(1, $skill`Disco Nap`);
     }
-    setProperty("_auto_bondBriefing", "started");
+    set("_auto_bondBriefing", "started");
   }
 
   if (
     getProperty("_auto_bondBriefing") === "started" &&
-    toInt(getProperty("_villainLairProgress")) >= 999
+    get("_villainLairProgress") >= 999
   ) {
-    setProperty("_auto_bondBriefing", "finished");
+    set("_auto_bondBriefing", "finished");
   }
 
   if (getProperty("_auto_bondBriefing") === "started") {
     const retval: boolean = autoAdv($location`Super Villain's Lair`);
     if (!retval) {
-      setProperty("_auto_bondBriefing", "finished");
+      set("_auto_bondBriefing", "finished");
       bond_buySkills();
     }
     return retval;
   }
 
-  if (toInt(getProperty("_auto_bondLevel")) < myLevel()) {
-    setProperty("_auto_bondLevel", myLevel().toString());
+  if (get("_auto_bondLevel", 0) < myLevel()) {
+    set("_auto_bondLevel", myLevel());
     bond_buySkills();
   }
 

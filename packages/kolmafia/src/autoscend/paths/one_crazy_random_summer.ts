@@ -4,9 +4,8 @@ import {
   haveEffect,
   lastMonster,
   myPath,
-  setProperty,
 } from "kolmafia";
-import { $effect, $path } from "libram";
+import { $effect, $path, set } from "libram";
 
 import { acquireHP } from "../auto_restore";
 import { auto_log_warning, handleTracker } from "../auto_util";
@@ -21,7 +20,7 @@ export function ocrs_postHelper(): boolean {
     return false;
   }
 
-  setProperty("auto_useCleesh", false.toString());
+  set("auto_useCleesh", false);
   return true;
 }
 

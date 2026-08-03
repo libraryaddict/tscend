@@ -8,10 +8,18 @@ import {
   myClass,
   myMaxhp,
   myPath,
-  setProperty,
   toInt,
 } from "kolmafia";
-import { $class, $familiar, $item, $location, $monster, $path } from "libram";
+import {
+  $class,
+  $familiar,
+  $item,
+  $location,
+  $monster,
+  $path,
+  get,
+  set,
+} from "libram";
 
 import { canPull, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
@@ -27,10 +35,10 @@ export function small_initializeSettings(): void {
   if (!in_small()) {
     return;
   }
-  setProperty("auto_wandOfNagamar", true.toString()); //wand  used in this path
-  setProperty("auto_getBeehive", true.toString()); //wall is too difficult without it
-  setProperty("auto_getBoningKnife", true.toString()); //wall is too difficult without it
-  setProperty("auto_getSteelOrgan", false.toString()); //can only consume size 1 drinks
+  set("auto_wandOfNagamar", true); //wand  used in this path
+  set("auto_getBeehive", true); //wall is too difficult without it
+  set("auto_getBoningKnife", true); //wall is too difficult without it
+  set("auto_getSteelOrgan", false); //can only consume size 1 drinks
   if (inHardcore()) {
     //having vastly lower stats and no easy solutions in hardcore means you always die from flyering
     //should be replaced with a more elegant solution where detailed estimation / calculation is done.
@@ -39,19 +47,19 @@ export function small_initializeSettings(): void {
     const MLCap: number = 50;
     const MLSafetyLimit: string = getProperty("auto_MLSafetyLimit");
     if (MLSafetyLimit === "") {
-      setProperty("auto_MLSafetyLimitBackup", "empty");
-      setProperty("auto_MLSafetyLimit", MLCap.toString());
+      set("auto_MLSafetyLimitBackup", "empty");
+      set("auto_MLSafetyLimit", MLCap);
     }
     if (toInt(MLSafetyLimit) > MLCap) {
       // record existing MLSafetyLimit so it can be restored at end of run
-      setProperty("auto_MLSafetyLimitBackup", MLSafetyLimit);
-      setProperty("auto_MLSafetyLimit", MLCap.toString());
+      set("auto_MLSafetyLimitBackup", MLSafetyLimit);
+      set("auto_MLSafetyLimit", MLCap);
     }
     // don't disregard instant karma either. Helps keep ML low
     const disregardKarma: string = getProperty("auto_disregardInstantKarma");
     if (disregardKarma === "true") {
-      setProperty("auto_disregardInstantKarmaBackup", "true");
-      setProperty("auto_disregardInstantKarma", "false");
+      set("auto_disregardInstantKarmaBackup", "true");
+      set("auto_disregardInstantKarma", "false");
     }
   } else {
     if (
@@ -60,7 +68,7 @@ export function small_initializeSettings(): void {
         canPull($item`Deep Dish of Legend`) ||
         canPull($item`Pizza of Legend`))
     ) {
-      setProperty("auto_dontUseCookBookBat", true.toString()); // don't need the CBB in Normal if we can pull a legend food.
+      set("auto_dontUseCookBookBat", true); // don't need the CBB in Normal if we can pull a legend food.
     }
   }
 }
@@ -89,7 +97,7 @@ export function auto_smallCampgroundGear(): boolean {
     return false;
   }
   // don't get campground gear in in Normal and haven't gotten beaten up
-  const beatenUpCount: number = toInt(getProperty("auto_beatenUpCount"));
+  const beatenUpCount: number = get("auto_beatenUpCount", 0);
   if (!inHardcore() && beatenUpCount === 0) {
     return false;
   }

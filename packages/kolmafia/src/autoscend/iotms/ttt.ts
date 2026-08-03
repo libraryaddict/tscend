@@ -1,13 +1,5 @@
-import {
-  alliedRadio,
-  getProperty,
-  itemAmount,
-  myLevel,
-  toBoolean,
-  toInt,
-  use,
-} from "kolmafia";
-import { $item } from "libram";
+import { alliedRadio, getProperty, itemAmount, myLevel, use } from "kolmafia";
+import { $item, get } from "libram";
 
 import { possessEquipment } from "../auto_equipment";
 import {
@@ -63,7 +55,7 @@ export function auto_ARBSupplyDropsLeft(): number {
     return 0;
   }
   const n_backpack_left: number = auto_haveARB()
-    ? 3 - toInt(getProperty("_alliedRadioDropsUsed"))
+    ? 3 - get("_alliedRadioDropsUsed")
     : 0;
   return n_backpack_left + itemAmount($item`handheld Allied radio`);
 }
@@ -82,14 +74,14 @@ export function ARBSupplyDrop(req: string): boolean {
     case "item drop":
     case "item":
     case "materiel intel":
-      if (toBoolean(getProperty("_alliedRadioMaterielIntel"))) {
+      if (get("_alliedRadioMaterielIntel")) {
         return false;
       }
       radio = "materiel intel";
       break;
     case "res":
     case "wsb":
-      if (toBoolean(getProperty("_alliedRadioWildsunBoon"))) {
+      if (get("_alliedRadioWildsunBoon")) {
         return false;
       }
       radio = "wildsun boon";

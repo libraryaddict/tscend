@@ -44,7 +44,6 @@ import {
   putCloset,
   retrieveItem,
   sellPrice,
-  setProperty,
   Skill,
   splitString,
   Stat,
@@ -74,6 +73,8 @@ import {
   $skill,
   $slot,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { auto_mall_price } from "./auto_acquire";
@@ -248,10 +249,10 @@ function to_string$2(
 function auto_log_restore_debug(s: string, level: number): void {
   //restore debug log is extremely girthy and usually not needed. as such it has its own custom setting for displaying it.
   //0 = no extra debugging. 1 = log the stages and their results 2 = log restorer data dump.
-  if (toInt(getProperty("auto_log_level")) < 3) {
+  if (get("auto_log_level", 0) < 3) {
     return; //regular debugging is off. so extra debugging is also off.
   }
-  if (toInt(getProperty("auto_log_level_restore")) >= level) {
+  if (get("auto_log_level_restore", 0) >= level) {
     auto_log_debug(s);
   }
 }
@@ -672,10 +673,10 @@ function __calculate_objective_values(
     if (
       metadata.name === "disco nap" &&
       auto_haveAprilShowerShield() &&
-      toInt(getProperty("_aprilShowerDiscoNap")) < 5 &&
+      get("_aprilShowerDiscoNap") < 5 &&
       myMp() > mpCost($skill`Disco Nap`)
     ) {
-      restored_amount = 100 - 20 * toInt(getProperty("_aprilShowerDiscoNap"));
+      restored_amount = 100 - 20 * get("_aprilShowerDiscoNap");
     }
 
     return restored_amount;
@@ -818,7 +819,7 @@ function __calculate_objective_values(
     } else if (metadata.name === $_f___HOT_TUB) {
       available = hotTubSoaksRemaining();
     } else if (metadata.name === $_f___NUNS) {
-      available = 3 - toInt(getProperty("nunsVisits"));
+      available = 3 - get("nunsVisits");
     }
     return max(0.0, available);
   }
@@ -876,10 +877,7 @@ function __calculate_objective_values(
           $skill`Blood Bond`,
         ) &&
       goal > (9 - hp_regen()) * 10 &&
-      toBoolean(
-        // blood bond drains hp after combat, make sure we dont accidentally kill the player
-        getProperty("auto_restoreUseBloodBond"),
-      );
+      get("auto_restoreUseBloodBond", false);
 
     const bloodBubbleAvailable: boolean =
       auto_have_skill($skill`Blood Bubble`) &&
@@ -1067,7 +1065,7 @@ function __calculate_objective_values(
       const coinmaster_buyable: boolean =
         i.seller !== Coinmaster.none &&
         isAccessible(i.seller) &&
-        toBoolean(getProperty("autoSatisfyWithCoinmasters"));
+        get("autoSatisfyWithCoinmasters");
 
       const can_buy: boolean =
         meat_reserve < myMeat() && (npc_meat_buyable || mall_buyable);
@@ -1083,7 +1081,7 @@ function __calculate_objective_values(
       return hotTubSoaksRemaining() > 0;
     }
     if (metadata.name === $_f___NUNS) {
-      return toInt(getProperty("nunsVisits")) < 3;
+      return get("nunsVisits") < 3;
     }
     return true;
   }
@@ -1763,10 +1761,7 @@ function __restore(
       pathHasFamiliar() &&
       myMaxhp() > hpCost($skill`Blood Bond`) &&
       final_hp > (9 - hp_regen()) * 10 &&
-      toBoolean(
-        // blood bond drains hp after combat, make sure we dont accidentally kill the player
-        getProperty("auto_restoreUseBloodBond"),
-      );
+      get("auto_restoreUseBloodBond", false);
 
     const bloodBubbleAvailable: boolean =
       auto_have_skill($skill`Blood Bubble`) &&
@@ -1869,9 +1864,9 @@ function __restore(
       return doHottub() === pre_soaks - 1;
     }
     if (metadata.name === $_f___NUNS) {
-      const pre_visits: number = toInt(getProperty("nunsVisits"));
+      const pre_visits: number = get("nunsVisits");
       cliExecute("nuns");
-      const post_visits: number = toInt(getProperty("nunsVisits"));
+      const post_visits: number = get("nunsVisits");
       return pre_visits === post_visits - 1;
     }
 
@@ -1947,8 +1942,8 @@ function __restore(
         `Target ${resource_type} => ${goal} - couldnt determine an effective restoration mechanism`,
       );
       if (
-        toBoolean(getProperty("auto_ignoreRestoreFailure")) ||
-        toBoolean(getProperty("_auto_ignoreRestoreFailureToday"))
+        get("auto_ignoreRestoreFailure", false) ||
+        get("_auto_ignoreRestoreFailureToday", false)
       ) {
         auto_log_error("Ignoring the error as per user instructions");
         return false;
@@ -2120,10 +2115,7 @@ export function acquireMP(
   buffMaintain$2($effect`Tingly Tongue`);
   buffMaintain$2($effect`Tingling Insides`);
   buffMaintain$2($effect`Wisdom of the Autumn Years`);
-  if (
-    auto_equipAprilShieldBuff() &&
-    !toBoolean(getProperty("_aprilShowerSimmer"))
-  ) {
+  if (auto_equipAprilShieldBuff() && !get("_aprilShowerSimmer")) {
     //Free mp regen on the first cast of the day with the April Shower Thoughts Shield equipped
     buffMaintain$2($effect`Simmering`);
   }
@@ -2131,10 +2123,7 @@ export function acquireMP(
   // TODO: move this to general effectiveness method
   if (myMaxmp() - myMp() > 300) {
     if (!auto_sausageBlocked()) {
-      if (
-        itemAmount($item`magical sausage`) < 1 &&
-        toInt(getProperty("_sausagesMade")) < 23
-      ) {
+      if (itemAmount($item`magical sausage`) < 1 && get("_sausagesMade") < 23) {
         auto_sausageGrind(1);
       }
       auto_sausageEatEmUp(1); //this involve outfit changes which can lower our maxMP to below what goal was. which would cause infinite loop
@@ -2249,10 +2238,10 @@ export function acquireHP$3(
   }
   // HP is irrelevant in Pocket Familiars, this removes the function to restore HP
   // except in the case of A-Boo Peak, meeting Dr. Awkward, and the hedge maze
-  if (in_pokefam() && !toBoolean(getProperty("_auto_forcePokefamRestore"))) {
+  if (in_pokefam() && !get("_auto_forcePokefamRestore", false)) {
     return false;
   }
-  setProperty("_auto_forcePokefamRestore", false.toString());
+  set("_auto_forcePokefamRestore", false);
   //owning a hand in glove breaks maxHP tracking. need to check possession rather than equipped because unequipping it also breaks it. in fact it causes us to get stuck in an infinite loop of trying to restore hp when already at max HP.
   //mafia devs think it is actually a kol bug so they won't fix it. https://kolmafia.us/showthread.php?25214
   if (possessEquipment($item`Hand in Glove`)) {
@@ -2340,10 +2329,7 @@ export function acquireHP$3(
  * returns the number of times rested today (caller will have to work out if it rested or not)
  */
 export function doRest(useCampground?: boolean): number {
-  if (
-    auto_haveCrimboSkeleton() &&
-    toInt(getProperty("_knuckleboneRests")) < 5
-  ) {
+  if (auto_haveCrimboSkeleton() && get("_knuckleboneRests") < 5) {
     useFamiliar($familiar`Skeleton of Crimbo Past`);
     // We may have lost max hp/mp, so we burn the MP off to let this rest work.
     if (myMp() >= myMaxmp() && myHp() >= myMaxhp()) {
@@ -2420,12 +2406,12 @@ export function doRest(useCampground?: boolean): number {
   } else if (is_professor()) {
     visitUrl("place.php?whichplace=wereprof_cottage&action=wereprof_sleep");
   } else {
-    setProperty("restUsingChateau", false.toString());
+    set("restUsingChateau", false);
     cliExecute("rest");
-    setProperty("restUsingChateau", true.toString());
+    set("restUsingChateau", true);
   }
 
-  return toInt(getProperty("timesRested"));
+  return get("timesRested");
 }
 
 export function haveFreeRestAvailable(): boolean {
@@ -2433,7 +2419,7 @@ export function haveFreeRestAvailable(): boolean {
   if (auto_haveCincho() && auto_nextRestOverCinch()) {
     return false;
   }
-  return toInt(getProperty("timesRested")) < totalFreeRests();
+  return get("timesRested") < totalFreeRests();
 }
 
 export function freeRestsRemaining(): number {
@@ -2441,7 +2427,7 @@ export function freeRestsRemaining(): number {
   if (auto_haveCincho() && auto_nextRestOverCinch()) {
     return 0;
   }
-  return max(0, totalFreeRests() - toInt(getProperty("timesRested")));
+  return max(0, totalFreeRests() - get("timesRested"));
 }
 
 export function auto_potentialMaxFreeRests(): number {
@@ -2500,7 +2486,7 @@ export function doFreeRest(useCampground?: boolean): boolean {
     }
     // resting and success check
     const hpMp_before: number = myHp() + myMp();
-    const rest_count: number = toInt(getProperty("timesRested"));
+    const rest_count: number = get("timesRested");
     const result_1: boolean = doRest(useCampground) > rest_count;
     const hpMp_after: number = myHp() + myMp();
     const success: boolean = hpMp_after > hpMp_before || result_1;

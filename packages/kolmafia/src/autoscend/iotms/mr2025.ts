@@ -46,14 +46,12 @@ import {
   myPrimestat,
   mySpleenUse,
   numericModifier,
-  setProperty,
   shrunkenHeadZombie,
   Skill,
   Slot,
   spleenLimit,
   splitString,
   Stat,
-  toBoolean,
   toFloat,
   toInt,
   toMonster,
@@ -154,10 +152,7 @@ export function auto_haveCyberRealm(): boolean {
   if (!isUnrestricted($item`server room key`)) {
     return false;
   }
-  if (
-    toBoolean(getProperty("crAlways")) ||
-    toBoolean(getProperty("_crToday"))
-  ) {
+  if (get("crAlways") || get("_crToday")) {
     return true;
   }
   return false;
@@ -215,7 +210,7 @@ export function auto_McLargeHugeForcesLeft(): number {
   if (!auto_haveMcHugeLargeSkis()) {
     return 0;
   }
-  const used: number = toInt(getProperty("_mcHugeLargeAvalancheUses"));
+  const used: number = get("_mcHugeLargeAvalancheUses");
   return 3 - used;
 }
 
@@ -223,7 +218,7 @@ export function auto_McLargeHugeSniffsLeft(): number {
   if (!auto_haveMcHugeLargeSkis()) {
     return 0;
   }
-  const used: number = toInt(getProperty("_mcHugeLargeSlashUses"));
+  const used: number = get("_mcHugeLargeSlashUses");
   return 3 - used;
 }
 
@@ -764,7 +759,7 @@ export function auto_tracesTarget(target: Monster): boolean {
 }
 
 export function auto_punchOutsLeft(): number {
-  return toInt(getProperty("preworkoutPowderUses"));
+  return get("preworkoutPowderUses");
 }
 
 export function auto_haveAprilShowerShield(): boolean {
@@ -777,7 +772,7 @@ export function auto_getGlobs(): boolean {
     return false;
   }
   //if breakfast hasn't run yet or they haven't been manually collected
-  if (!toBoolean(getProperty("_aprilShowerGlobsCollected"))) {
+  if (!get("_aprilShowerGlobsCollected")) {
     visitUrl("inventory.php?action=shower");
     return true;
   }
@@ -813,7 +808,7 @@ export function auto_canNorthernExplosionFE(): boolean {
   if (!auto_have_skill($skill`Northern Explosion`)) {
     return false;
   }
-  if (toBoolean(getProperty("_aprilShowerNorthernExplosion"))) {
+  if (get("_aprilShowerNorthernExplosion")) {
     return false;
   }
   return true;
@@ -941,7 +936,7 @@ function auto_havePrismaticBeret(): boolean {
 }
 
 export function canBusk(): boolean {
-  if (toInt(getProperty("_beretBuskingUses")) < 5) {
+  if (get("_beretBuskingUses") < 5) {
     return true;
   }
   return false;
@@ -1025,7 +1020,7 @@ function bestBusk(
   if (!auto_havePrismaticBeret()) {
     return (0).toString();
   }
-  const busksUsed: number = toInt(getProperty("_beretBuskingUses"));
+  const busksUsed: number = get("_beretBuskingUses");
   let highScore: number = 0.0;
   let highScoreString: string = "";
   let effMulti: Map<string, number> = new Map();
@@ -1383,7 +1378,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
     }
   }
   // first clock per day gives 3 adventures, second gives 2
-  if (toInt(getProperty("_clocksUsed")) < 2) {
+  if (get("_clocksUsed") < 2) {
     pos = "Go back and set an alarm";
     if (choiceMap.has(pos)) {
       mobiusChoice(pos);
@@ -1468,7 +1463,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
 }
 
 export function auto_timeCopFights(): number {
-  return toInt(getProperty("_timeCopsFoughtToday"));
+  return get("_timeCopsFoughtToday");
 }
 
 export function auto_haveMonodent(): boolean {
@@ -1481,7 +1476,7 @@ export function auto_waveTheZone(): boolean {
     return false;
   }
   //Already Summoned a Wave today
-  if (toBoolean(getProperty("_seadentWaveUsed"))) {
+  if (get("_seadentWaveUsed")) {
     return false;
   }
 
@@ -1573,7 +1568,7 @@ export function auto_throwLightningRemaining(): number {
     return 0;
   }
 
-  return 11 - toInt(getProperty("_seadentLightningUsed"));
+  return 11 - get("_seadentLightningUsed");
 }
 
 export function auto_haveBCZ(): boolean {
@@ -1688,19 +1683,15 @@ export function auto_wantToBCZ(sk: Skill): boolean {
   // If we're in combat, and we can't use it
   if (currentRound() !== 0 && !auto_canUse(sk)) return;
 
-  const bloodBathCasts: number = toInt(getProperty("_bczBloodBathCasts"));
-  const bloodGeyserCasts: number = toInt(getProperty("_bczBloodGeyserCasts"));
-  const bloodThinnerCasts: number = toInt(getProperty("_bczBloodThinnerCasts"));
-  const dialItUpCasts: number = toInt(getProperty("_bczDialitupCasts"));
-  const pheromoneCocktailCasts: number = toInt(
-    getProperty("_bczPheromoneCocktailCasts"),
-  );
-  const refractedGazeCasts: number = toInt(
-    getProperty("_bczRefractedGazeCasts"),
-  );
-  const spinalTapasCasts: number = toInt(getProperty("_bczSpinalTapasCasts"));
-  const sweatBulletsCasts: number = toInt(getProperty("_bczSweatBulletsCasts"));
-  const sweatEquityCasts: number = toInt(getProperty("_bczSweatEquityCasts"));
+  const bloodBathCasts: number = get("_bczBloodBathCasts");
+  const bloodGeyserCasts: number = get("_bczBloodGeyserCasts");
+  const bloodThinnerCasts: number = get("_bczBloodThinnerCasts");
+  const dialItUpCasts: number = get("_bczDialitupCasts");
+  const pheromoneCocktailCasts: number = get("_bczPheromoneCocktailCasts");
+  const refractedGazeCasts: number = get("_bczRefractedGazeCasts");
+  const spinalTapasCasts: number = get("_bczSpinalTapasCasts");
+  const sweatBulletsCasts: number = get("_bczSweatBulletsCasts");
+  const sweatEquityCasts: number = get("_bczSweatEquityCasts");
 
   switch (sk) {
     case $skill`BCZ: Blood Geyser`:
@@ -1797,7 +1788,7 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
     (myLocation() === $location`A-Boo Peak` &&
       itemAmount($item`A-Boo clue`) * 30 <
         // We would take 2 advs regardless, we don't want to waste our time on a clue we didn't need!
-        toInt(getProperty("booPeakProgress")) - 4) ||
+        get("booPeakProgress") - 4) ||
     (myLocation() === $location`Cobb's Knob Harem` &&
       (speculating ||
         lastMonster() === $monster`Knob Goblin Harem Guard` ||
@@ -1861,10 +1852,7 @@ export function auto_getBCZItems(): void {
 }
 
 function auto_haveShrunkenHead(): boolean {
-  if (
-    toBoolean(getProperty("hasShrunkenHead")) &&
-    auto_is_valid($item`shrunken head`)
-  ) {
+  if (get("hasShrunkenHead") && auto_is_valid($item`shrunken head`)) {
     return true;
   }
   return false;
@@ -1901,7 +1889,7 @@ export function auto_wantToShrunkenHead$1(place: Location): boolean {
     return false;
   }
 
-  const next: Monster = toMonster(getProperty("auto_nextEncounter"));
+  const next: Monster = get("auto_nextEncounter", Monster.none);
   if (next !== Monster.none) {
     //next monster is forced by zone mechanics or some other mechanism
     return auto_wantToShrunkenHead(next);
@@ -1928,10 +1916,10 @@ export function auto_wantSoCP(): void {
   if (!auto_haveCrimboSkeleton()) {
     return;
   }
-  setProperty("auto_preferSoCP", true.toString());
+  set("auto_preferSoCP", true);
   // if amw_wantMeat is true, in meatpath we will (probably) select meat-dropping familiars instead of SoCP
-  if (toInt(getProperty("_knuckleboneDrops")) === 100 || amw_wantMeat()) {
-    setProperty("auto_preferSoCP", false.toString());
+  if (get("_knuckleboneDrops") === 100 || amw_wantMeat()) {
+    set("auto_preferSoCP", false);
     return;
   }
   let amt: number = 0;
@@ -1940,7 +1928,7 @@ export function auto_wantSoCP(): void {
   }
   if (amt > 0.1) {
     //want 10% or fewer of the available mobs to be knucklebone eligible, otherwise why bother with this guy vs fairychauns/fairyballs/fairyeverythings?
-    setProperty("auto_preferSoCP", false.toString());
+    set("auto_preferSoCP", false);
     return;
   }
 

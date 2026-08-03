@@ -4,9 +4,8 @@ import {
   lastMonster,
   Monster,
   myMp,
-  setProperty,
 } from "kolmafia";
-import { $items, $skill, $skills } from "libram";
+import { $items, $skill, $skills, set } from "libram";
 
 import {
   auto_have_skill,
@@ -42,7 +41,7 @@ export function ocrs_combat_helper(page: string): Monster {
       auto_have_skill($skill`CLEESH`) &&
       myMp() > 10
     ) {
-      setProperty("auto_useCleesh", false.toString());
+      set("auto_useCleesh", false);
       combat_status_add("cleesh");
     }
   }
@@ -67,52 +66,52 @@ export function ocrs_combat_helper(page: string): Monster {
       )
     ) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
-      setProperty("_auto_combatState", getProperty("auto_funCombatHandler"));
+      set("_auto_combatState", getProperty("auto_funCombatHandler"));
     }
-    setProperty("auto_funCombatHandler", getProperty("_auto_combatState"));
+    set("auto_funCombatHandler", getProperty("_auto_combatState"));
   }
 
   if (lastMonster().randomModifiers.includes("restless")) {
     if (containsText(page, "moves out of the way")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
-      setProperty("_auto_combatState", getProperty("auto_funCombatHandler"));
+      set("_auto_combatState", getProperty("auto_funCombatHandler"));
     }
     if (containsText(page, "quickly moves out of the way")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
-      setProperty("_auto_combatState", getProperty("auto_funCombatHandler"));
+      set("_auto_combatState", getProperty("auto_funCombatHandler"));
     }
     if (containsText(page, "will have moved by the time")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
-      setProperty("_auto_combatState", getProperty("auto_funCombatHandler"));
+      set("_auto_combatState", getProperty("auto_funCombatHandler"));
     }
 
-    setProperty("auto_funCombatHandler", getProperty("_auto_combatState"));
+    set("auto_funCombatHandler", getProperty("_auto_combatState"));
   }
 
   if (lastMonster().randomModifiers.includes("phase-shifting")) {
     if (containsText(page, "blinks out of existence before")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
-      setProperty("_auto_combatState", getProperty("auto_funCombatHandler"));
+      set("_auto_combatState", getProperty("auto_funCombatHandler"));
     }
-    setProperty("auto_funCombatHandler", getProperty("_auto_combatState"));
+    set("auto_funCombatHandler", getProperty("_auto_combatState"));
   }
 
   if (lastMonster().randomModifiers.includes("cartwheeling")) {
     if (containsText(page, "cartwheels out of the way")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
-      setProperty("_auto_combatState", getProperty("auto_funCombatHandler"));
+      set("_auto_combatState", getProperty("auto_funCombatHandler"));
     }
-    setProperty("auto_funCombatHandler", getProperty("_auto_combatState"));
+    set("auto_funCombatHandler", getProperty("_auto_combatState"));
   }
 
-  setProperty("auto_useCleesh", false.toString());
+  set("auto_useCleesh", false);
   if (lastMonster().randomModifiers.includes("ticking")) {
     if (
       !combat_status_check("cleesh") &&
       auto_have_skill($skill`CLEESH`) &&
       myMp() > 10
     ) {
-      setProperty("auto_useCleesh", true.toString());
+      set("auto_useCleesh", true);
     }
   }
   if (lastMonster().randomModifiers.includes("untouchable")) {
@@ -121,7 +120,7 @@ export function ocrs_combat_helper(page: string): Monster {
       auto_have_skill($skill`CLEESH`) &&
       myMp() > 10
     ) {
-      setProperty("auto_useCleesh", true.toString());
+      set("auto_useCleesh", true);
     }
   }
   return lastMonster();

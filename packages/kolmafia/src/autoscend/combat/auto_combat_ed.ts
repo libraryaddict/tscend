@@ -24,13 +24,9 @@ import {
   myMaxmp,
   myMp,
   removeProperty,
-  setProperty,
   Skill,
-  toBoolean,
   toFloat,
-  toInt,
   toLowerCase,
-  toMonster,
   weaponType,
 } from "kolmafia";
 import {
@@ -46,7 +42,9 @@ import {
   $skill,
   $slot,
   $stat,
+  get,
   Macro,
+  set,
 } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
@@ -115,16 +113,13 @@ export function auto_edCombatHandler(
 
   if (round_1 === 0) {
     removeProperty("_auto_combatState");
-    if (toInt(getProperty("_edDefeats")) === 0) {
-      setProperty(
-        "auto_edCombatCount",
-        (1 + toInt(getProperty("auto_edCombatCount"))).toString(),
-      );
+    if (get("_edDefeats") === 0) {
+      set("auto_edCombatCount", 1 + get("auto_edCombatCount", 0));
     }
     if (!ed_needShop()) {
-      setProperty("auto_edStatus", "dying"); // dying means kill the monster
+      set("auto_edStatus", "dying"); // dying means kill the monster
     } else {
-      setProperty("auto_edStatus", "UNDYING!"); //  Undying means ressurect until it's not free any more
+      set("auto_edStatus", "UNDYING!"); //  Undying means ressurect until it's not free any more
     }
     //log some important info.
     //some stuff is redundant to the pre_adventure function print_footer() so it will not be logged here
@@ -133,23 +128,17 @@ export function auto_edCombatHandler(
       "blue",
     );
   } else {
-    setProperty("auto_combatHP", myHp().toString());
+    set("auto_combatHP", myHp());
   }
 
-  setProperty(
-    "auto_edCombatRoundCount",
-    (1 + toInt(getProperty("auto_edCombatRoundCount"))).toString(),
-  );
+  set("auto_edCombatRoundCount", 1 + get("auto_edCombatRoundCount", 0));
 
   if (
     $locations`The Hippy Camp, The Outskirts of Cobb's Knob, The Spooky Forest`.includes(
       myLocation(),
     )
   ) {
-    if (
-      myMp() < mpCost($skill`Fist of the Mummy`) &&
-      toInt(getProperty("_edDefeats")) < 2
-    ) {
+    if (myMp() < mpCost($skill`Fist of the Mummy`) && get("_edDefeats") < 2) {
       for (const it of $items`holy spring water, spirit beer, sacramental wine`) {
         if (canUse$3(it)) {
           return useItem(it, false);
@@ -158,8 +147,8 @@ export function auto_edCombatHandler(
     }
   }
 
-  if (toInt(getProperty("_edDefeats")) >= 2) {
-    setProperty("auto_edStatus", "dying");
+  if (get("_edDefeats") >= 2) {
+    set("auto_edStatus", "dying");
   }
 
   if (round_1 > 60) {
@@ -167,12 +156,12 @@ export function auto_edCombatHandler(
   }
 
   if ($monsters`LOV Enforcer, LOV Engineer, LOV Equivocator`.includes(enemy)) {
-    setProperty("auto_edStatus", "dying");
+    set("auto_edStatus", "dying");
   }
 
   if (
     auto_backupTarget() &&
-    enemy !== toMonster(getProperty("lastCopyableMonster")) &&
+    enemy !== get("lastCopyableMonster", Monster.none) &&
     auto_canUse($skill`Back-Up to your Last Enemy`)
   ) {
     handleTracker({
@@ -181,7 +170,7 @@ export function auto_edCombatHandler(
       property: "auto_replaces",
     });
     handleTracker({
-      what: toMonster(getProperty("lastCopyableMonster")),
+      what: get("lastCopyableMonster", Monster.none),
       detail: $skill`Back-Up to your Last Enemy`.toString(),
       property: "auto_copies",
     });
@@ -298,36 +287,24 @@ export function auto_edCombatHandler(
   }
 
   if (enemy === $monster`Protagonist`) {
-    setProperty("auto_edStatus", "dying");
+    set("auto_edStatus", "dying");
   }
 
   if (
     myLocation() !== $location`The Battlefield (Frat Uniform)` &&
     myLocation() !== $location`The Battlefield (Hippy Uniform)` &&
-    !toBoolean(getProperty("auto_ignoreFlyer"))
+    !get("auto_ignoreFlyer", false)
   ) {
-    if (
-      canUse$3($item`rock band flyers`) &&
-      toInt(getProperty("flyeredML")) < 10000
-    ) {
-      if (
-        toInt(getProperty("_edDefeats")) < 2 &&
-        getProperty("auto_edStatus") === "dying"
-      ) {
-        setProperty("auto_edStatus", "UNDYING!");
+    if (canUse$3($item`rock band flyers`) && get("flyeredML") < 10000) {
+      if (get("_edDefeats") < 2 && getProperty("auto_edStatus") === "dying") {
+        set("auto_edStatus", "UNDYING!");
         // abuse the ability to flyer the same monster multiple times (optimal!)
       }
       return useItem($item`rock band flyers`);
     }
-    if (
-      canUse$3($item`jam band flyers`) &&
-      toInt(getProperty("flyeredML")) < 10000
-    ) {
-      if (
-        toInt(getProperty("_edDefeats")) < 2 &&
-        getProperty("auto_edStatus") === "dying"
-      ) {
-        setProperty("auto_edStatus", "UNDYING!");
+    if (canUse$3($item`jam band flyers`) && get("flyeredML") < 10000) {
+      if (get("_edDefeats") < 2 && getProperty("auto_edStatus") === "dying") {
+        set("auto_edStatus", "UNDYING!");
         // abuse the ability to flyer the same monster multiple times (optimal!)
       }
       return useItem($item`jam band flyers`);
@@ -336,8 +313,8 @@ export function auto_edCombatHandler(
 
   if (
     canUse$3($item`chaos butterfly`) &&
-    !toBoolean(getProperty("chaosButterflyThrown")) &&
-    !toBoolean(getProperty("auto_skipL12Farm"))
+    !get("chaosButterflyThrown") &&
+    !get("auto_skipL12Farm", false)
   ) {
     return useItem($item`chaos butterfly`);
   }
@@ -348,21 +325,18 @@ export function auto_edCombatHandler(
   ) {
     if (itemAmount($item`Ka coin`) > 0 && myHp() > expectedDamage() + 15) {
       // need to kill the monster without resurrecting to get the bonus meat drop so only use it if we have enough HP to survive a hit
-      setProperty("auto_edStatus", "dying");
+      set("auto_edStatus", "dying");
       return auto_useSkill($skill`Curse of Fortune`);
-    } else if (
-      toInt(getProperty("_edDefeats")) === 0 &&
-      myMaxhp() > expectedDamage() + 15
-    ) {
+    } else if (get("_edDefeats") === 0 && myMaxhp() > expectedDamage() + 15) {
       // suicide to get a full heal, maybe we can Curse and kill after resurrection
-      setProperty("auto_edStatus", "UNDYING!");
+      set("auto_edStatus", "UNDYING!");
     }
   }
 
   if (
     auto_canUse($skill`Curse of Stench`) &&
-    toMonster(getProperty("stenchCursedMonster")) !== enemy &&
-    toInt(getProperty("_edDefeats")) < 3
+    get("stenchCursedMonster", Monster.none) !== enemy &&
+    get("_edDefeats") < 3
   ) {
     if (auto_wantToSniff(enemy, myLocation())) {
       handleTracker({
@@ -377,13 +351,13 @@ export function auto_edCombatHandler(
   if (myLocation() === $location`The Secret Council Warehouse`) {
     if (
       auto_canUse($skill`Curse of Stench`) &&
-      toMonster(getProperty("stenchCursedMonster")) !== enemy &&
-      toInt(getProperty("_edDefeats")) < 3
+      get("stenchCursedMonster", Monster.none) !== enemy &&
+      get("_edDefeats") < 3
     ) {
       let doStench: boolean = false;
       //	Rememeber, we are looking to see if we have enough of the opposite item here.
       if (enemy === $monster`warehouse guard`) {
-        let progress: number = toInt(getProperty("warehouseProgress"));
+        let progress: number = get("warehouseProgress");
         progress = progress + 8 * itemAmount($item`warehouse inventory page`);
         if (progress >= 50) {
           doStench = true;
@@ -391,7 +365,7 @@ export function auto_edCombatHandler(
       }
 
       if (enemy === $monster`warehouse clerk`) {
-        let progress: number = toInt(getProperty("warehouseProgress"));
+        let progress: number = get("warehouseProgress");
         progress = progress + 8 * itemAmount($item`warehouse map page`);
         if (progress >= 50) {
           doStench = true;
@@ -411,8 +385,8 @@ export function auto_edCombatHandler(
   if (myLocation() === $location`The Smut Orc Logging Camp`) {
     if (
       auto_canUse($skill`Curse of Stench`) &&
-      toMonster(getProperty("stenchCursedMonster")) !== enemy &&
-      toInt(getProperty("_edDefeats")) < 3
+      get("stenchCursedMonster", Monster.none) !== enemy &&
+      get("_edDefeats") < 3
     ) {
       let doStench: boolean = false;
       const stenched: string = toLowerCase(getProperty("stenchCursedMonster"));
@@ -474,7 +448,7 @@ export function auto_edCombatHandler(
         property: "auto_yellowRays",
       });
       if (combatAction === $skill`Asdon Martin: Missile Launcher`) {
-        setProperty("_missileLauncherUsed", true.toString());
+        set("_missileLauncherUsed", true);
       }
       return combatAction;
     } else {
@@ -575,7 +549,7 @@ export function auto_edCombatHandler(
     myLocation() === $location`Oil Peak` &&
     canUse$3($item`Duskwalker syringe`)
   ) {
-    const oilProgress: number = toInt(getProperty("twinPeakProgress"));
+    const oilProgress: number = get("twinPeakProgress");
     let wantCrude: boolean = (oilProgress & 4) === 0;
     if (
       itemAmount($item`bubblin' crude`) > 11 ||
@@ -593,7 +567,7 @@ export function auto_edCombatHandler(
     canUse$3($item`glark cable`) &&
     myLocation() === $location`The Red Zeppelin` &&
     internalQuestStatus("questL11Ron") === 3 &&
-    toInt(getProperty("_glarkCableUses")) < 5 &&
+    get("_glarkCableUses") < 5 &&
     getProperty("auto_edStatus") === "dying"
   ) {
     if (
@@ -607,9 +581,9 @@ export function auto_edCombatHandler(
   }
 
   if (
-    !toBoolean(getProperty("edUsedLash")) &&
+    !get("edUsedLash") &&
     auto_canUse($skill`Lash of the Cobra`) &&
-    toInt(getProperty("_edLashCount")) < 30
+    get("_edLashCount") < 30
   ) {
     let doLash: boolean = false;
     if (enemy === $monster`shadow slab`) {
@@ -646,14 +620,14 @@ export function auto_edCombatHandler(
     if (
       enemy === $monster`monstrous boiler` &&
       itemAmount($item`red-hot boilermaker`) < 1 &&
-      toInt(getProperty("booPeakProgress")) > 0
+      get("booPeakProgress") > 0
     ) {
       doLash = true;
     }
     if (
       enemy === $monster`Fitness Giant` &&
       itemAmount($item`pec oil`) < 1 &&
-      toInt(getProperty("booPeakProgress")) > 0
+      get("booPeakProgress") > 0
     ) {
       doLash = true;
     }
@@ -676,7 +650,7 @@ export function auto_edCombatHandler(
     if (
       (enemy === $monster`toothy sklelton` ||
         enemy === $monster`spiny skelelton`) &&
-      toInt(getProperty("cyrptNookEvilness")) > 14 + cyrptEvilBonus(true)
+      get("cyrptNookEvilness") > 14 + cyrptEvilBonus(true)
     ) {
       doLash = true;
     }
@@ -694,10 +668,7 @@ export function auto_edCombatHandler(
     ) {
       doLash = true;
     }
-    if (
-      enemy === $monster`pygmy bowler` &&
-      toInt(getProperty("_edLashCount")) < 26
-    ) {
+    if (enemy === $monster`pygmy bowler` && get("_edLashCount") < 26) {
       doLash = true;
     }
     if (
@@ -782,14 +753,14 @@ export function auto_edCombatHandler(
       doLash = true;
     }
     if (enemy === $monster`warehouse clerk`) {
-      let progress: number = toInt(getProperty("warehouseProgress"));
+      let progress: number = get("warehouseProgress");
       progress = progress + 8 * itemAmount($item`warehouse inventory page`);
       if (progress < 50) {
         doLash = true;
       }
     }
     if (enemy === $monster`warehouse guard`) {
-      let progress: number = toInt(getProperty("warehouseProgress"));
+      let progress: number = get("warehouseProgress");
       progress = progress + 8 * itemAmount($item`warehouse map page`);
       if (progress < 50) {
         doLash = true;
@@ -847,7 +818,7 @@ export function auto_edCombatHandler(
     if (
       enemy === $monster`pygmy janitor` &&
       itemAmount($item`book of matches`) === 0 &&
-      toInt(getProperty("hiddenTavernUnlock")) !== myAscensions()
+      get("hiddenTavernUnlock") !== myAscensions()
     ) {
       doRenenutet = true;
     }
@@ -873,10 +844,7 @@ export function auto_edCombatHandler(
         enemy,
       )
     ) {
-      if (
-        itemAmount($item`A-Boo clue`) <
-        toInt(getProperty("booPeakProgress")) / 30
-      ) {
+      if (itemAmount($item`A-Boo clue`) < get("booPeakProgress") / 30) {
         doRenenutet = true;
       }
     }
@@ -912,7 +880,7 @@ export function auto_edCombatHandler(
       }
       combat_status_add("talismanofrenenutet");
       handleTracker({ what: enemy, property: "auto_renenutet" });
-      setProperty("auto_edStatus", "dying");
+      set("auto_edStatus", "dying");
       return useItem($item`talisman of Renenutet`);
     }
   }
@@ -940,8 +908,8 @@ export function auto_edCombatHandler(
     haveEffect($effect`Everything Looks Red`) === 0 &&
     dartELRcd() <= 40
   ) {
-    setProperty("auto_instakillSource", "darts bullseye");
-    setProperty("auto_instakillSuccess", true.toString());
+    set("auto_instakillSource", "darts bullseye");
+    set("auto_instakillSuccess", true);
     loopHandlerDelayAll();
     return auto_useSkill($skill`Darts: Aim for the Bullseye`);
   }
@@ -956,18 +924,18 @@ export function auto_edCombatHandler(
   if (
     auto_canUse($skill`McHugeLarge Avalanche`) &&
     getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
-    !toBoolean(getProperty("auto_avalancheDeployed"))
+    !get("auto_avalancheDeployed", false)
   ) {
-    setProperty("auto_avalancheDeployed", true.toString());
+    set("auto_avalancheDeployed", true);
     return auto_useSkill($skill`McHugeLarge Avalanche`);
   }
   // prep parka NC forcing if requested
   if (
     auto_canUse($skill`Launch spikolodon spikes`) &&
     getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
-    !toBoolean(getProperty("auto_parkaSpikesDeployed"))
+    !get("auto_parkaSpikesDeployed", false)
   ) {
-    setProperty("auto_parkaSpikesDeployed", true.toString());
+    set("auto_parkaSpikesDeployed", true);
     return auto_useSkill($skill`Launch spikolodon spikes`);
   }
 
@@ -980,15 +948,12 @@ export function auto_edCombatHandler(
       !combat_status_check("batoomerang") &&
       itemAmount($item`replica bat-oomerang`) > 0
     ) {
-      if (toInt(getProperty("auto_batoomerangDay")) !== myDaycount()) {
-        setProperty("auto_batoomerangDay", myDaycount().toString());
-        setProperty("auto_batoomerangUse", (0).toString());
+      if (get("auto_batoomerangDay", 0) !== myDaycount()) {
+        set("auto_batoomerangDay", myDaycount());
+        set("auto_batoomerangUse", 0);
       }
-      if (toInt(getProperty("auto_batoomerangUse")) < 3) {
-        setProperty(
-          "auto_batoomerangUse",
-          (toInt(getProperty("auto_batoomerangUse")) + 1).toString(),
-        );
+      if (get("auto_batoomerangUse", 0) < 3) {
+        set("auto_batoomerangUse", get("auto_batoomerangUse", 0) + 1);
         combat_status_add("batoomerang");
         handleTracker({
           what: enemy,
@@ -1000,10 +965,7 @@ export function auto_edCombatHandler(
       }
     }
 
-    if (
-      canUse$3($item`shadow brick`) &&
-      toInt(getProperty("_shadowBricksUsed")) < 13
-    ) {
+    if (canUse$3($item`shadow brick`) && get("_shadowBricksUsed") < 13) {
       handleTracker({
         what: enemy,
         detail: $item`shadow brick`.toString(),
@@ -1016,7 +978,7 @@ export function auto_edCombatHandler(
     if (
       !combat_status_check("jokesterGun") &&
       equippedItem($slot`weapon`) === $item`The Jokester's gun` &&
-      !toBoolean(getProperty("_firedJokestersGun")) &&
+      !get("_firedJokestersGun") &&
       auto_have_skill($skill`Fire the Jokester's Gun`)
     ) {
       combat_status_add("jokesterGun");
@@ -1045,10 +1007,7 @@ export function auto_edCombatHandler(
         itemAmount($item`rock band flyers`) === 0 &&
         itemAmount($item`jam band flyers`) === 0
       ) {
-        if (
-          !combat_status_check("love stinkbug") &&
-          toBoolean(getProperty("lovebugsUnlocked"))
-        ) {
+        if (!combat_status_check("love stinkbug") && get("lovebugsUnlocked")) {
           combat_status_add("love stinkbug2");
           return $skill`Summon Love Stinkbug`;
         }
@@ -1062,21 +1021,18 @@ export function auto_edCombatHandler(
     return Macro.trySkillRepeat($skill`Mild Curse`);
   }
   //Everfull Dart Holder
-  if (
-    haveEquipped($item`Everfull Dart Holster`) &&
-    toInt(getProperty("_dartsLeft")) > 0
-  ) {
+  if (haveEquipped($item`Everfull Dart Holster`) && get("_dartsLeft") > 0) {
     return auto_useSkill(dartSkill(), false);
   }
   // Don't risk drop forcing if we've already been beaten up twice
-  if (toInt(getProperty("_edDefeats")) < 2) {
+  if (get("_edDefeats") < 2) {
     if (wantToForceDrop(enemy)) {
       const polarVortexAvailable: boolean =
         auto_canUse($skill`Fire Extinguisher: Polar Vortex`, false) &&
         auto_fireExtinguisherCharges() > 10;
       const mildEvilAvailable: boolean =
         auto_canUse($skill`Perpetrate Mild Evil`, false) &&
-        toInt(getProperty("_mildEvilPerpetrated")) < 3;
+        get("_mildEvilPerpetrated") < 3;
       // mild evil only can pick pocket. Use it before fire extinguisher
       if (mildEvilAvailable) {
         handleTracker({

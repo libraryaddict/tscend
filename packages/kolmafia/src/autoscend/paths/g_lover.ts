@@ -2,7 +2,6 @@ import {
   cliExecute,
   containsText,
   Effect,
-  getProperty,
   haveSkill,
   Item,
   itemAmount,
@@ -11,12 +10,10 @@ import {
   myMp,
   myPath,
   putCloset,
-  setProperty,
-  toInt,
   toItem,
   useSkill,
 } from "kolmafia";
-import { $effects, $item, $items, $path, $skill } from "libram";
+import { $effects, $item, $items, $path, $skill, get, set } from "libram";
 //Defined in autoscend/paths/g_lover.ash
 export function in_glover(): boolean {
   return myPath() === $path`G-Lover`;
@@ -30,14 +27,11 @@ export function glover_initializeDay(day: number): void {
 
 export function glover_initializeSettings(): void {
   if (in_glover()) {
-    setProperty("auto_getBeehive", true.toString());
-    setProperty("auto_getBoningKnife", true.toString());
-    setProperty("auto_dakotaFanning", true.toString());
-    setProperty("auto_ignoreFlyer", true.toString());
-    setProperty(
-      "gnasirProgress",
-      (toInt(getProperty("gnasirProgress")) | 16).toString(),
-    );
+    set("auto_getBeehive", true);
+    set("auto_getBoningKnife", true);
+    set("auto_dakotaFanning", true);
+    set("auto_ignoreFlyer", true);
+    set("gnasirProgress", get("gnasirProgress") | 16);
     //Buy Crude Oil Congealer and um... A-Boo Glues.
     if (
       itemAmount($item`crude oil congealer`) === 0 &&

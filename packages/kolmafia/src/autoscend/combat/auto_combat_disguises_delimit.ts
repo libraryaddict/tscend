@@ -1,16 +1,14 @@
 import {
   abort,
-  getProperty,
   min,
   Monster,
   monsterHp,
   myHp,
   myMask,
   numericModifier,
-  setProperty,
   toInt,
 } from "kolmafia";
-import { $modifier, $monster, $skill } from "libram";
+import { $modifier, $monster, $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { auto_log_info } from "../auto_util";
@@ -48,7 +46,7 @@ export function disguises_combat_helper(
       `Failed to identify the mask worn by the monster [${enemy}]. Finish this combat manually then run me again`,
     );
   }
-  setProperty("_auto_combatDisguisesDelimitMask", disguises.toString());
+  set("_auto_combatDisguisesDelimitMask", disguises);
 }
 
 export function auto_combatDisguisesStage1(
@@ -61,9 +59,7 @@ export function auto_combatDisguisesStage1(
     return undefined;
   }
   //some masks are treated like puzzle bosses. requiring either an immediate swap or special action handling
-  const disguises: number = toInt(
-    getProperty("_auto_combatDisguisesDelimitMask"),
-  );
+  const disguises: number = get("_auto_combatDisguisesDelimitMask", 0);
   //mask 7 = bandit mask = +300% enemy defense
   if (disguises === 7 && auto_canUse($skill`Swap Mask`)) {
     return auto_useSkill($skill`Swap Mask`);
@@ -95,9 +91,7 @@ export function auto_combatDisguisesStage5(
     return undefined;
   }
 
-  const disguises: number = toInt(
-    getProperty("_auto_combatDisguisesDelimitMask"),
-  );
+  const disguises: number = get("_auto_combatDisguisesDelimitMask", 0);
   if (disguises === 13) {
     //welding mask
     //reflect damage from spells back to player. kept if mask is changed

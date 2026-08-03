@@ -34,12 +34,10 @@ import {
   npcPrice,
   rainCost,
   setLocation,
-  setProperty,
   Skill,
   Slot,
   soulsauceCost,
   thunderCost,
-  toBoolean,
   toSkill,
   toSlot,
   use,
@@ -54,6 +52,8 @@ import {
   $item,
   $items,
   $skill,
+  get,
+  set,
 } from "libram";
 
 import { acquireTotem, auto_buyUpTo } from "./auto_acquire";
@@ -333,10 +333,7 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Anger Glands`;
       break;
     case $effect`Angry like the Wolf`:
-      if (
-        auto_have_familiar($familiar`Grim Brother`) &&
-        !toBoolean(getProperty("_grimBuff"))
-      ) {
+      if (auto_have_familiar($familiar`Grim Brother`) && !get("_grimBuff")) {
         if (speculative) {
           return true;
         }
@@ -371,7 +368,7 @@ export function buffMaintain$2(
       useItem_1 = $item`fire ant pheromones`;
       break;
     case $effect`Aware of Bees`:
-      if (!toBoolean(getProperty("_aug19Cast"))) {
+      if (!get("_aug19Cast")) {
         useSkill_1 = $skill`Aug. 19th: Honey Bee Awareness Day!`;
       }
       break;
@@ -608,7 +605,7 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Blood Cloak`;
       break;
     case $effect`Cloud of Mosquitos`:
-      if (!toBoolean(getProperty("_aug20Cast"))) {
+      if (!get("_aug20Cast")) {
         useSkill_1 = $skill`Aug. 20th: Mosquito Day!`;
       }
       break;
@@ -903,7 +900,7 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Blood Frenzy`;
       break;
     case $effect`Fresh Breath`:
-      if (!toBoolean(getProperty("_aug6Cast"))) {
+      if (!get("_aug6Cast")) {
         useSkill_1 = $skill`Aug. 6th: Fresh Breath Day!`;
       }
       break;
@@ -988,10 +985,7 @@ export function buffMaintain$2(
       useItem_1 = $item`pile of gritty sand`;
       break;
     case $effect`Grumpy and Ornery`:
-      if (
-        auto_have_familiar($familiar`Grim Brother`) &&
-        !toBoolean(getProperty("_grimBuff"))
-      ) {
+      if (auto_have_familiar($familiar`Grim Brother`) && !get("_grimBuff")) {
         if (speculative) {
           return true;
         }
@@ -1027,7 +1021,7 @@ export function buffMaintain$2(
       useItem_1 = $item`gold star`;
       break;
     case $effect`Hear Me Roar`:
-      if (!toBoolean(getProperty("_aug10Cast"))) {
+      if (!get("_aug10Cast")) {
         useSkill_1 = $skill`Aug. 10th: World Lion Day!`;
       }
       break;
@@ -1131,7 +1125,7 @@ export function buffMaintain$2(
       useItem_1 = $item`Ferrigno's Elixir of Power`;
       break;
     case $effect`Incredibly Well Lit`:
-      if (!toBoolean(getProperty("_aug7Cast"))) {
+      if (!get("_aug7Cast")) {
         useSkill_1 = $skill`Aug. 7th: Lighthouse Day!`;
       }
       break;
@@ -1213,7 +1207,7 @@ export function buffMaintain$2(
       useItem_1 = $item`lodestone`;
       break;
     case $effect`Lost Stomach`:
-      if (!toBoolean(getProperty("_aug16Cast"))) {
+      if (!get("_aug16Cast")) {
         useSkill_1 = $skill`Aug. 16th: Roller Coaster Day!`;
       }
       break;
@@ -1391,7 +1385,7 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Oilsphere`;
       break;
     case $effect`Offhand Remarkable`:
-      if (!toBoolean(getProperty("_aug13Cast"))) {
+      if (!get("_aug13Cast")) {
         useSkill_1 = Skill.get("Aug. 13th: Left/Off Hander's Day!");
       }
       break;
@@ -1689,7 +1683,7 @@ export function buffMaintain$2(
       useItem_1 = $item`cuppa Serendipi tea`;
       break;
     case $effect`Serendipity`:
-      if (!toBoolean(getProperty("_aug18Cast"))) {
+      if (!get("_aug18Cast")) {
         useSkill_1 = $skill`Aug. 18th: Serendipity Day!`;
       }
       break;
@@ -1705,9 +1699,9 @@ export function buffMaintain$2(
         // save and restore our location as shadow rifts have a 80% item drop penalty
         // don't want it unless actually going to a shadow rift
         const savedLoc: Location = myLocation();
-        setProperty("auto_disableAdventureHandling", true.toString());
+        set("auto_disableAdventureHandling", true);
         autoAdv(auto_availableBrickRift());
-        setProperty("auto_disableAdventureHandling", false.toString());
+        set("auto_disableAdventureHandling", false);
         setLocation(savedLoc);
         ret = true;
       }
@@ -1792,10 +1786,7 @@ export function buffMaintain$2(
       useItem_1 = $item`baggie of powdered sugar`;
       break;
     case $effect`Soles of Glass`:
-      if (
-        auto_have_familiar($familiar`Grim Brother`) &&
-        !toBoolean(getProperty("_grimBuff"))
-      ) {
+      if (auto_have_familiar($familiar`Grim Brother`) && !get("_grimBuff")) {
         if (speculative) {
           return true;
         }
@@ -1866,7 +1857,7 @@ export function buffMaintain$2(
       }
       break;
     case $effect`Spirit of the Mountains`:
-      if (!toBoolean(getProperty("_aug1Cast"))) {
+      if (!get("_aug1Cast")) {
         useSkill_1 = $skill`Aug. 1st: Mountain Climbing Day!`;
       }
       break;

@@ -9,7 +9,6 @@ import {
   myClass,
   myDaycount,
   myPrimestat,
-  setProperty,
   use,
   visitUrl,
 } from "kolmafia";
@@ -23,6 +22,7 @@ import {
   $monster,
   $skill,
   $stat,
+  set,
 } from "libram";
 
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
@@ -220,8 +220,8 @@ function L5_goblinKingDo(): boolean {
   if (!in_plumber()) {
     auto_change_mcd(10); // get the Crown from the Goblin King.
   }
-  setProperty("auto_nextEncounter", "Knob Goblin King");
-  setProperty("auto_nonAdvLoc", true.toString());
+  set("auto_nextEncounter", "Knob Goblin King");
+  set("auto_nonAdvLoc", true);
   const advSpent: boolean = autoAdv($location`Throne Room`);
 
   if (

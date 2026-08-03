@@ -1,19 +1,17 @@
 import {
   blackMarketAvailable,
   Familiar,
-  getProperty,
   Item,
   myBasestat,
   myFamiliar,
   myPath,
   myPrimestat,
   print,
-  setProperty,
   toInt,
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $familiar, $item, $location, $path, $phylum, get } from "libram";
+import { $familiar, $item, $location, $path, $phylum, get, set } from "libram";
 
 import { autoAdv } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
@@ -32,7 +30,7 @@ export function in_quantumTerrarium(): boolean {
 }
 
 function qt_turnsToNextQuantumAlignment(): number {
-  return totalTurnsPlayed() - toInt(getProperty("_nextQuantumAlignment"));
+  return totalTurnsPlayed() - get("_nextQuantumAlignment");
 }
 
 function LX_quantumTerrariumDo(): boolean {
@@ -40,7 +38,7 @@ function LX_quantumTerrariumDo(): boolean {
     case $familiar`Machine Elf`:
       // lets order this by familiar ID in ascending order
       // use free fights for experience and abstractions
-      if (toInt(getProperty("_machineTunnelsAdv")) < 5) {
+      if (get("_machineTunnelsAdv") < 5) {
         return autoAdv($location`The Deep Machine Tunnels`);
       }
       break;
@@ -83,7 +81,7 @@ function LX_quantumTerrariumDo(): boolean {
     case $familiar`Melodramedary`:
       if (!(
         internalQuestStatus("questL11Desert") !== 0 ||
-        toInt(getProperty("desertExploration")) >= 100
+        get("desertExploration") >= 100
       )) {
         return L11_aridDesert();
       }
@@ -118,7 +116,7 @@ export function LX_quantumTerrarium(): boolean {
 
 export function qt_initializeSettings(): void {
   if (in_quantumTerrarium()) {
-    setProperty("auto_skipNuns", true.toString()); //Remove when leprechaun swapping is supported at nuns.
+    set("auto_skipNuns", true); //Remove when leprechaun swapping is supported at nuns.
   }
 }
 

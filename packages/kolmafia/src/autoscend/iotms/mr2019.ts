@@ -35,11 +35,9 @@ import {
   myTurncount,
   Phylum,
   removeProperty,
-  setProperty,
   Skill,
   Slot,
   splitString,
-  toBoolean,
   toFloat,
   toInt,
   toLowerCase,
@@ -58,6 +56,8 @@ import {
   $skill,
   $slots,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
@@ -108,7 +108,7 @@ import { cyrptEvilBonus } from "../quests/level_07";
 
 //Defined in autoscend/iotms/mr2019.ash
 function auto_sausageEaten(): number {
-  return toInt(getProperty("_sausagesEaten"));
+  return get("_sausagesEaten");
 }
 
 function auto_sausageLeftToday(): number {
@@ -124,7 +124,7 @@ function auto_sausageMeatPasteNeededForSausage(numSaus: number): number {
 }
 
 export function auto_sausageFightsToday(): number {
-  return toInt(getProperty("_sausageFights"));
+  return get("_sausageFights");
 }
 
 export function auto_sausageBlocked(): boolean {
@@ -155,7 +155,7 @@ export function auto_sausageWanted(): boolean {
   // if adventures not needed yet, leave most sausages to acquireMP()
   if (myAdventures() > 10) {
     // only grind up to one per level in reserve instead of always grinding all the meat that isn't nailed down
-    auto_sausageGrind(myLevel() - toInt(getProperty("_sausagesMade")));
+    auto_sausageGrind(myLevel() - get("_sausagesMade"));
     // it would be a good idea to eat one early on for MP but 2-3 things currently don't allow it:
     // auto_sausageGrind wants 90 turncount and desert unlocked, acquireMP() wants it to restore at least 300 MP
     return false;
@@ -166,7 +166,7 @@ export function auto_sausageWanted(): boolean {
     return false;
   }
 
-  const sausageMade: number = toInt(getProperty("_sausagesMade"));
+  const sausageMade: number = get("_sausagesMade");
   let sausageForBreakfast: number; // estimate up to how many sausages before drinks and food?
   let totalSausageEstimated: number; // estimate up to how many sausages by the time liver and stomach will be full?
   // are there more casings from previous days or copied goblins?
@@ -263,7 +263,7 @@ export function auto_sausageGrind(
     numSaus = casingsOwned;
   }
 
-  const sausMade: number = toInt(getProperty("_sausagesMade"));
+  const sausMade: number = get("_sausagesMade");
   let pastesNeeded: number = 0;
   const pastesAvail: number = itemAmount($item`meat paste`);
   const meatToSave: number = 1000 + meatReserve();
@@ -386,9 +386,9 @@ export function auto_sausageGoblin(
   // x is the number of goblins you've already encountered that day.
   // spoilered by The Dictator in ASS Discord #iotm-discussion
   // intervals are therefore 0, 7, 10, 13, 16, 19, 23, 33, 55, 95, 128...
-  const sausageFights: number = toInt(getProperty("_sausageFights"));
+  const sausageFights: number = get("_sausageFights");
   const numerator: number =
-    totalTurnsPlayed() - toFloat(getProperty("_lastSausageMonsterTurn")) + 1.0;
+    totalTurnsPlayed() - get("_lastSausageMonsterTurn") + 1.0;
   const denominator: number =
     5.0 + sausageFights * 3.0 + max(0.0, sausageFights - 5.0) ** 3.0;
   if (sausageFights > 0 && numerator / denominator < 1.0) {
@@ -400,10 +400,10 @@ export function auto_sausageGoblin(
   }
 
   if (autoEquip(wrap_item($item`Kramco Sausage-o-Matic™`))) {
-    setProperty("auto_nextEncounter", "sausage goblin");
+    set("auto_nextEncounter", "sausage goblin");
     return autoAdv(loc, option);
   }
-  setProperty("auto_nextEncounter", "");
+  set("auto_nextEncounter", "");
   return false;
 }
 
@@ -422,7 +422,7 @@ export function auto_chestXraysRemaining(): number {
     return 0;
   }
 
-  return 3 - toInt(getProperty("_chestXRayUsed"));
+  return 3 - get("_chestXRayUsed");
 }
 
 export function auto_reflexHammersRemaining(): number {
@@ -430,17 +430,14 @@ export function auto_reflexHammersRemaining(): number {
     return 0;
   }
 
-  return 3 - toInt(getProperty("_reflexHammerUsed"));
+  return 3 - get("_reflexHammerUsed");
 }
 
 function pirateRealmAvailable(): boolean {
   if (!isUnrestricted($item`PirateRealm membership packet`)) {
     return false;
   }
-  if (
-    toBoolean(getProperty("prAlways")) ||
-    toBoolean(getProperty("_prToday"))
-  ) {
+  if (get("prAlways") || get("_prToday")) {
     return true;
   }
   return false;
@@ -474,7 +471,7 @@ function auto_saberChoice(choice: string): boolean {
   if (!possessEquipment(saber)) {
     return false;
   }
-  if (toInt(getProperty("_saberMod")) !== 0) {
+  if (get("_saberMod") !== 0) {
     return false;
   }
 
@@ -530,16 +527,16 @@ export function auto_saberChargesAvailable(): number {
   if (!auto_is_valid$2($skill`Use the Force`)) {
     return 0; //if the combat skill is not valid it can not be used even if the saber itself is valid
   }
-  return 5 - toInt(getProperty("_saberForceUses"));
+  return 5 - get("_saberForceUses");
 }
 
 export function auto_combatSaberBanish(): Skill {
-  setProperty("choiceAdventure1387", (1).toString());
+  set("choiceAdventure1387", 1);
   return $skill`Use the Force`;
 }
 
 export function auto_combatSaberYR(): Skill {
-  setProperty("choiceAdventure1387", (3).toString());
+  set("choiceAdventure1387", 3);
   return $skill`Use the Force`;
 }
 
@@ -619,7 +616,7 @@ export function auto_spoonTuneConfirm(): void {
     return;
   }
 
-  if (toInt(getProperty("auto_spoonconfirmed")) === myAscensions()) {
+  if (get("auto_spoonconfirmed", 0) === myAscensions()) {
     return;
   }
 
@@ -640,7 +637,7 @@ export function auto_spoonTuneConfirm(): void {
       "Alright, please go change auto_spoonsign via the autoscend relay script and then rerun.",
     );
   } else {
-    setProperty("auto_spoonconfirmed", myAscensions().toString());
+    set("auto_spoonconfirmed", myAscensions());
   }
 }
 
@@ -682,7 +679,7 @@ function auto_spoonReadyToTuneMoon(): boolean {
 
   if (
     mySign() === "Vole" &&
-    (toInt(getProperty("cyrptAlcoveEvilness")) > 14 + cyrptEvilBonus() ||
+    (get("cyrptAlcoveEvilness") > 14 + cyrptEvilBonus() ||
       getProperty("questL07Cyrptic") === "unstarted")
   ) {
     // we want to stay vole long enough to do the alcove, since the initiative helps
@@ -910,7 +907,7 @@ export function auto_canBeachCombHead(name: string): boolean {
       return false;
     }
   }
-  return toInt(getProperty("_freeBeachWalksUsed")) < 11;
+  return get("_freeBeachWalksUsed") < 11;
 }
 
 export function auto_beachCombHead(name: string): boolean {
@@ -936,13 +933,10 @@ export function auto_beachCombHead(name: string): boolean {
 }
 
 function auto_beachCombFreeUsesLeft(): number {
-  if (
-    !auto_beachCombAvailable() ||
-    toInt(getProperty("_freeBeachWalksUsed")) >= 11
-  ) {
+  if (!auto_beachCombAvailable() || get("_freeBeachWalksUsed") >= 11) {
     return 0;
   }
-  return 11 - toInt(getProperty("_freeBeachWalksUsed"));
+  return 11 - get("_freeBeachWalksUsed");
 }
 
 export function auto_beachUseFreeCombs(): boolean {
@@ -960,7 +954,7 @@ export function auto_beachUseFreeCombs(): boolean {
 export function auto_campawayAvailable(): boolean {
   return (
     isUnrestricted($item`Distant Woods Getaway Brochure`) &&
-    toBoolean(getProperty("getawayCampsiteUnlocked"))
+    get("getawayCampsiteUnlocked")
   );
 }
 
@@ -970,15 +964,13 @@ export function auto_campawayGrabBuffs(): boolean {
   }
 
   const lim: number =
-    4 -
-    toInt(getProperty("_campAwaySmileBuffs")) -
-    toInt(getProperty("_campAwayCloudBuffs"));
+    4 - get("_campAwaySmileBuffs") - get("_campAwayCloudBuffs");
   for (let i: number = 0; i < lim; i++) {
     visitUrl("place.php?whichplace=campaway&action=campaway_sky");
   }
 
   if (
-    toInt(getProperty("_campAwayCloudBuffs")) === 0 &&
+    get("_campAwayCloudBuffs") === 0 &&
     itemAmount($item`campfire smoke`) + creatableAmount($item`campfire smoke`) >
       0
   ) {
@@ -1007,15 +999,11 @@ export function auto_pillKeeperUses(): number {
   if (!auto_havePillKeeper()) {
     return 0;
   }
-  return (
-    spleen_left() / 3 + 1 - toInt(toBoolean(getProperty("_freePillKeeperUsed")))
-  );
+  return spleen_left() / 3 + 1 - toInt(get("_freePillKeeperUsed"));
 }
 
 export function auto_pillKeeperFreeUseAvailable(): boolean {
-  return (
-    auto_havePillKeeper() && !toBoolean(getProperty("_freePillKeeperUsed"))
-  );
+  return auto_havePillKeeper() && !get("_freePillKeeperUsed");
 }
 
 export function auto_pillKeeperAvailable(): boolean {
@@ -1137,7 +1125,7 @@ export function auto_changeSnapperPhylum(toChange: Phylum): boolean {
   ) {
     return false;
   }
-  setProperty("auto_snapperPhylum", toChange.toString());
+  set("auto_snapperPhylum", toChange);
   return true;
 }
 
@@ -1164,7 +1152,7 @@ export function auto_snapperPreAdventure(loc: Location): void {
   }
   // this is mainly in case autoChooseFamiliar switches to the Snapper due to no "better" +item familiars being available
   // It is preferred that you do not rely on this to change phylum in a quest, call changeSnapperPhylum in the quest handling code instead.
-  if (desiredPhylum === "" && toInt(getProperty("redSnapperProgress")) === 0) {
+  if (desiredPhylum === "" && get("redSnapperProgress") === 0) {
     switch (loc) {
       case $location`The Penultimate Fantasy Airship`:
       case $location`The Hidden Park`:

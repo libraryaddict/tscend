@@ -44,7 +44,6 @@ import {
   myThunder,
   Phylum,
   rainCost,
-  setProperty,
   Skill,
   soulsauceCost,
   thunderCost,
@@ -67,6 +66,7 @@ import {
   $skills,
   $slot,
   get,
+  set,
 } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
@@ -189,7 +189,7 @@ export function usedCount(sk: Skill): number {
 }
 
 export function markAsUsed(sk: Skill): void {
-  setProperty(
+  set(
     "_auto_combatState",
     `${getProperty("_auto_combatState")}(sk${toInt(sk).toString()})`,
   );
@@ -197,7 +197,7 @@ export function markAsUsed(sk: Skill): void {
 
 export function markAsUsed$1(it: Item): void {
   if (it !== Item.none) {
-    setProperty(
+    set(
       "_auto_combatState",
       `${getProperty("_auto_combatState")}(it${toInt(it).toString()})`,
     );
@@ -432,7 +432,7 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
   //sniffers are skills that increase the odds of encountering this same monster again in the current zone.
   if (
     auto_canUse($skill`Transcendent Olfaction`, true, inCombat) &&
-    toInt(getProperty("_olfactionsUsed")) < 3 &&
+    get("_olfactionsUsed") < 3 &&
     !isSniffed(enemy, $skill`Transcendent Olfaction`)
   ) {
     return $skill`Transcendent Olfaction`;
@@ -453,14 +453,14 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
   }
   if (
     auto_canUse($skill`Meat Cute`, true, inCombat) &&
-    toInt(getProperty("_meatCuteUsed")) < 5 &&
+    get("_meatCuteUsed") < 5 &&
     !isSniffed(enemy, $skill`Meat Cute`)
   ) {
     return $skill`Meat Cute`; //Meat Golem specific skill
   }
   if (
     auto_canUse($skill`Long Con`, true, inCombat) &&
-    toInt(getProperty("_longConUsed")) < 5 &&
+    get("_longConUsed") < 5 &&
     !isSniffed(enemy, $skill`Long Con`)
   ) {
     return $skill`Long Con`;
@@ -522,7 +522,7 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
   }
   if (
     auto_canUse($skill`Offer Latte to Opponent`, true, inCombat) &&
-    !toBoolean(getProperty("_latteCopyUsed")) &&
+    !get("_latteCopyUsed") &&
     !isSniffed(enemy, $skill`Offer Latte to Opponent`)
   ) {
     return $skill`Offer Latte to Opponent`;
@@ -769,13 +769,13 @@ export function banisherCombatString(
   if (
     inCombat
       ? myFamiliar() === $familiar`Patriotic Eagle` &&
-        toInt(getProperty("screechCombats")) === 0 &&
+        get("screechCombats") === 0 &&
         !in_glover()
       : !in_avantGuard() &&
         pathAllowsChangingFamiliar() &&
         !auto_famKill($familiar`Patriotic Eagle`, loc) &&
         auto_have_familiar($familiar`Patriotic Eagle`) &&
-        toInt(getProperty("screechCombats")) === 0 &&
+        get("screechCombats") === 0 &&
         !in_glover()
   ) {
     return $skill`%fn, Release the Patriotic Screech!`;
@@ -869,7 +869,7 @@ export function banisherCombatAction$1(
       ? auto_have_skill($skill`Throw Latte on Opponent`)
       : possessEquipment($item`latte lovers member's mug`)) &&
     auto_is_valid$2($skill`Throw Latte on Opponent`) &&
-    !toBoolean(getProperty("_latteBanishUsed")) &&
+    !get("_latteBanishUsed") &&
     !used.has("Throw Latte on Opponent") &&
     useFree
   ) {
@@ -881,7 +881,7 @@ export function banisherCombatAction$1(
       ? auto_have_skill($skill`Give Your Opponent the Stinkeye`)
       : possessEquipment($item`stinky cheese eye`)) &&
     auto_is_valid$2($skill`Give Your Opponent the Stinkeye`) &&
-    !toBoolean(getProperty("_stinkyCheeseBanisherUsed")) &&
+    !get("_stinkyCheeseBanisherUsed") &&
     myMp() >= mpCost($skill`Give Your Opponent the Stinkeye`) &&
     useFree
   ) {
@@ -893,7 +893,7 @@ export function banisherCombatAction$1(
       ? auto_have_skill($skill`Creepy Grin`)
       : possessEquipment($item`V for Vivala mask`)) &&
     auto_is_valid$2($skill`Creepy Grin`) &&
-    !toBoolean(getProperty("_vmaskBanisherUsed")) &&
+    !get("_vmaskBanisherUsed") &&
     myMp() >= mpCost($skill`Creepy Grin`) &&
     useFree
   ) {
@@ -903,7 +903,7 @@ export function banisherCombatAction$1(
   if (
     auto_have_skill($skill`Baleful Howl`) &&
     myHp() > hpCost($skill`Baleful Howl`) &&
-    toInt(getProperty("_balefulHowlUses")) < 10 &&
+    get("_balefulHowlUses") < 10 &&
     !used.has("baleful howl") &&
     useFree
   ) {
@@ -948,7 +948,7 @@ export function banisherCombatAction$1(
       : possessEquipment($item`mafia middle finger ring`)) &&
     auto_is_valid$2($skill`Show them your ring`) &&
     canEquip($item`mafia middle finger ring`) &&
-    !toBoolean(getProperty("_mafiaMiddleFingerRingUsed")) &&
+    !get("_mafiaMiddleFingerRingUsed") &&
     myMp() >= mpCost($skill`Show them your ring`) &&
     useFree
   ) {
@@ -1004,7 +1004,7 @@ export function banisherCombatAction$1(
       ? auto_have_skill($skill`Talk About Politics`)
       : possessEquipment($item`Pantsgiving`)) &&
     auto_is_valid$2($skill`Talk About Politics`) &&
-    toInt(getProperty("_pantsgivingBanish")) < 5 &&
+    get("_pantsgivingBanish") < 5 &&
     haveEquipped($item`Pantsgiving`) &&
     !used.has("pantsgiving")
   ) {
@@ -1036,8 +1036,8 @@ export function banisherCombatAction$1(
       ? auto_have_skill($skill`Show your boring familiar pictures`)
       : possessEquipment($item`familiar scrapbook`)) &&
     auto_is_valid$2($skill`Show your boring familiar pictures`) &&
-    (toInt(getProperty("scrapbookCharges")) >= 200 ||
-      (toInt(getProperty("scrapbookCharges")) >= 100 && myLevel() >= 13)) &&
+    (get("scrapbookCharges") >= 200 ||
+      (get("scrapbookCharges") >= 100 && myLevel() >= 13)) &&
     !used.has("Show Your Boring Familiar Pictures") &&
     useFree
   ) {
@@ -1071,7 +1071,7 @@ export function banisherCombatAction$1(
   if (
     auto_have_skill($skill`Snokebomb`) &&
     auto_is_valid$2($skill`Snokebomb`) &&
-    toInt(getProperty("_snokebombUsed")) < 3 &&
+    get("_snokebombUsed") < 3 &&
     myMp() - 20 >= mpCost($skill`Snokebomb`) &&
     !used.has("snokebomb") &&
     useFree
@@ -1125,7 +1125,7 @@ export function banisherCombatAction$1(
       ? auto_have_skill($skill`KGB tranquilizer dart`)
       : possessEquipment($item`Kremlin's Greatest Briefcase`)) &&
     auto_is_valid$2($skill`KGB tranquilizer dart`) &&
-    toInt(getProperty("_kgbTranquilizerDartUses")) < 3 &&
+    get("_kgbTranquilizerDartUses") < 3 &&
     myMp() >= mpCost($skill`KGB tranquilizer dart`) &&
     !used.has("KGB tranquilizer dart") &&
     useFree
@@ -1134,7 +1134,7 @@ export function banisherCombatAction$1(
     if (
       getProperty("sidequestJunkyardCompleted") !== "none" &&
       myDaycount() >= 2 &&
-      toInt(getProperty("_kgbTranquilizerDartUses")) >= 2
+      get("_kgbTranquilizerDartUses") >= 2
     ) {
       useIt = false;
     }
@@ -1149,7 +1149,7 @@ export function banisherCombatAction$1(
       ? auto_have_skill($skill`Monkey Slap`)
       : possessEquipment($item`cursed monkey's paw`)) &&
     auto_is_valid$2($skill`Monkey Slap`) &&
-    toInt(getProperty("_monkeyPawWishesUsed")) === 0 &&
+    get("_monkeyPawWishesUsed") === 0 &&
     !used.has("Monkey Slap")
   ) {
     return $skill`Monkey Slap`;
@@ -1174,7 +1174,7 @@ export function banisherCombatAction$1(
 
   if (
     auto_have_skill($skill`Beancannon`) &&
-    toInt(getProperty("_beancannonUses")) < 5 &&
+    get("_beancannonUses", 0) < 5 &&
     myMp() - 20 >= mpCost($skill`Beancannon`) &&
     !used.has("beancannon")
   ) {
@@ -1198,7 +1198,7 @@ export function banisherCombatAction$1(
     itemAmount($item`human musk`) > 0 &&
     !used.has("human musk") &&
     auto_is_valid($item`human musk`) &&
-    toInt(getProperty("_humanMuskUses")) < 3 &&
+    get("_humanMuskUses") < 3 &&
     useFree
   ) {
     //first 3 are free
@@ -1324,8 +1324,7 @@ export function yellowRayCombatString(
 
   const free_monster: boolean =
     isFreeMonster(target, myLocation()) ||
-    (toInt(getProperty("breathitinCharges")) > 0 &&
-      myLocation().environment === "outdoor");
+    (get("breathitinCharges") > 0 && myLocation().environment === "outdoor");
 
   if (haveEffect($effect`Everything Looks Yellow`) <= 0) {
     if (
@@ -1404,7 +1403,7 @@ export function yellowRayCombatString(
     if (
       itemAmount($item`mayo lance`) > 0 &&
       auto_is_valid($item`mayo lance`) &&
-      toInt(getProperty("mayoLevel")) > 0 &&
+      get("mayoLevel") > 0 &&
       auto_is_valid($item`mayo lance`)
     ) {
       return $item`mayo lance`; // 0 - 145 turns
@@ -1465,7 +1464,7 @@ export function yellowRayCombatString(
   if (
     inCombat
       ? haveSkill($skill`Shocking Lick`)
-      : toInt(getProperty("shockingLickCharges")) > 0 ||
+      : get("shockingLickCharges") > 0 ||
         can_get_battery($item`battery (9-Volt)`)
   ) {
     return $skill`Shocking Lick`;
@@ -1549,7 +1548,7 @@ export function combat_status_add(mark: CombatStatusType): void {
   if (!combat_status_check(mark)) {
     st = `${st}(${mark})`;
   }
-  setProperty("_auto_combatState", st);
+  set("_auto_combatState", st);
 }
 
 export function wantToForceDrop(enemy: Monster): boolean {
@@ -1557,10 +1556,10 @@ export function wantToForceDrop(enemy: Monster): boolean {
   //take into account if a yellow ray has been used. Must have been one that doesn't insta-kill
   const mildEvilAvailable: boolean =
     auto_canUse($skill`Perpetrate Mild Evil`, false) &&
-    toInt(getProperty("_mildEvilPerpetrated")) < 3;
+    get("_mildEvilPerpetrated") < 3;
   const swoopAvailable: boolean =
     auto_canUse($skill`Swoop like a Bat`, true) &&
-    toInt(getProperty("_batWingsSwoopUsed")) < 11;
+    get("_batWingsSwoopUsed") < 11;
 
   let forceDrop: boolean = false;
   //only force 1 scent gland from each filthworm
@@ -1608,7 +1607,7 @@ export function wantToForceDrop(enemy: Monster): boolean {
     // Number of times bowled is 1 less than hiddenBowlingAlleyProgress. Need 5 bowling balls total, 5+1 = 6 needed in this conditional
     if (
       enemy === $monster`pygmy bowler` &&
-      toInt(getProperty("hiddenBowlingAlleyProgress")) +
+      get("hiddenBowlingAlleyProgress") +
         itemAmount($item`bowling ball`) +
         dropsFromYR <
         6
@@ -1642,7 +1641,7 @@ export function wantToForceDrop(enemy: Monster): boolean {
     isActuallyEd() &&
     myLocation() === $location`The Secret Council Warehouse`
   ) {
-    const progress: number = toInt(getProperty("warehouseProgress"));
+    const progress: number = get("warehouseProgress");
     if (enemy === $monster`warehouse guard`) {
       const n_pages: number = itemAmount($item`warehouse map page`);
       const progress_with_pages: number = progress + n_pages * 8;
@@ -1692,7 +1691,7 @@ export function maxRoundsToDouse(enemy: Monster): number {
     auto_warSide() === "hippy"
       ? $item`jam band flyers`
       : $item`rock band flyers`;
-  if (canUse$3(flyer) && toInt(getProperty("flyeredML")) < 10000) {
+  if (canUse$3(flyer) && get("flyeredML") < 10000) {
     rounds -= 1;
   }
   // Or pants removal
@@ -1791,5 +1790,5 @@ function auto_remainingMildEvilUses(): number {
   if (!haveSkill($skill`Perpetrate Mild Evil`)) {
     return 0;
   }
-  return 3 - toInt(getProperty("_mildEvilPerpetrated"));
+  return 3 - get("_mildEvilPerpetrated");
 }

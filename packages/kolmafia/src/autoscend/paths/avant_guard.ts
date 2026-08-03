@@ -7,12 +7,9 @@ import {
   myAscensions,
   myDaycount,
   myPath,
-  setProperty,
-  toBoolean,
-  toInt,
   visitUrl,
 } from "kolmafia";
-import { $familiar, $item, $items, $monster, $path } from "libram";
+import { $familiar, $item, $items, $monster, $path, get, set } from "libram";
 
 import { pullXWhenHaveY } from "../auto_acquire";
 import { possessEquipment } from "../auto_equipment";
@@ -62,10 +59,10 @@ export function ag_initializeSettings(): void {
       // No I don't care about that guy who never binds familiars for <reasons>. He can write & maintain his own ascension script.
       visitUrl("inv_familiar.php?pwd=&which=3&whichitem=11631");
     }
-    setProperty("auto_skipUnlockGuild", true.toString());
-    setProperty("auto_nonAdvLoc", false.toString());
+    set("auto_skipUnlockGuild", true);
+    set("auto_nonAdvLoc", false);
     if (auto_turbo()) {
-      setProperty("auto_skipNuns", "true");
+      set("auto_skipNuns", "true");
     }
   }
 }
@@ -170,7 +167,7 @@ function ag_bgToChat(): Monster {
   } else if (
     itemAmount($item`McClusky file (complete)`) === 0 &&
     itemAmount($item`McClusky file (page 5)`) === 0 &&
-    toInt(getProperty("hiddenOfficeProgress")) < 6
+    get("hiddenOfficeProgress") < 6
   ) {
     mon = $monster`pygmy witch accountant`;
   } else if (
@@ -219,11 +216,11 @@ function ag_bgToChat(): Monster {
     mon = $monster`pygmy bowler`;
   } else if (
     internalQuestStatus("questL12War") === 1 &&
-    !toBoolean(getProperty("auto_hippyInstead"))
+    !get("auto_hippyInstead", false)
   ) {
     mon = $monster`Green Ops Soldier`;
   } else if (
-    !toBoolean(getProperty("auto_hippyInstead")) &&
+    !get("auto_hippyInstead", false) &&
     !haveOutfit("frat warrior fatigures") &&
     internalQuestStatus("questL12War") < 1
   ) {
@@ -231,7 +228,7 @@ function ag_bgToChat(): Monster {
       mon = $monster`War Frat 151st Infantryman`;
     }
   } else if (
-    toBoolean(getProperty("auto_hippyInstead")) &&
+    get("auto_hippyInstead", false) &&
     !haveOutfit("war hippy fatigues") &&
     internalQuestStatus("questL12War") < 1
   ) {

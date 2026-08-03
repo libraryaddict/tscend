@@ -1,16 +1,12 @@
 import {
-  getProperty,
   haveSkill,
   itemAmount,
   myDaycount,
   myPath,
-  setProperty,
-  toBoolean,
-  toInt,
   use,
   visitUrl,
 } from "kolmafia";
-import { $item, $path, $skill } from "libram";
+import { $item, $path, $skill, get, set } from "libram";
 
 import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
 import { equipBaseline } from "../auto_equipment";
@@ -24,7 +20,7 @@ export function in_nuclear(): boolean {
 
 export function nuclear_initializeSettings(): void {
   if (in_nuclear()) {
-    setProperty("auto_getBeehive", true.toString());
+    set("auto_getBeehive", true);
   }
 }
 
@@ -33,16 +29,13 @@ export function nuclear_initializeDay(day: number): void {
     return;
   }
 
-  if (
-    !toBoolean(getProperty("falloutShelterChronoUsed")) &&
-    toInt(getProperty("falloutShelterLevel")) >= 6
-  ) {
+  if (!get("falloutShelterChronoUsed") && get("falloutShelterLevel") >= 6) {
     visitUrl("place.php?whichplace=falloutshelter&action=vault5");
   }
 
   if (
-    !toBoolean(getProperty("falloutShelterCoolingTankUsed")) &&
-    toInt(getProperty("falloutShelterLevel")) >= 8
+    !get("falloutShelterCoolingTankUsed") &&
+    get("falloutShelterLevel") >= 8
   ) {
   }
 
@@ -56,7 +49,7 @@ export function nuclear_initializeDay(day: number): void {
     equipBaseline();
     ovenHandle();
 
-    if (toInt(getProperty("auto_day_init")) < 2) {
+    if (get("auto_day_init", 0) < 2) {
       if (itemAmount($item`gym membership card`) > 0) {
         use(1, $item`gym membership card`);
       }
@@ -69,14 +62,14 @@ export function nuclear_initializeDay(day: number): void {
       pullXWhenHaveY($item`blackberry galoshes`, 1, 0);
     }
   } else if (day === 3) {
-    if (toInt(getProperty("auto_day_init")) < 3) {
+    if (get("auto_day_init", 0) < 3) {
       while (acquireHermitItem($item`11-leaf clover`)) {}
-      setProperty("auto_day_init", (3).toString());
+      set("auto_day_init", 3);
     }
   } else if (day === 4) {
-    if (toInt(getProperty("auto_day_init")) < 4) {
+    if (get("auto_day_init", 0) < 4) {
       while (acquireHermitItem($item`11-leaf clover`)) {}
-      setProperty("auto_day_init", (4).toString());
+      set("auto_day_init", 4);
     }
   }
 }
@@ -139,7 +132,7 @@ Missing: 858, 866
   } else if (
     !haveSkill($skill`Magnetic Ears`) &&
     toBuy === 0 &&
-    toInt(getProperty("falloutShelterLevel")) >= 6
+    get("falloutShelterLevel") >= 6
   ) {
     if (itemAmount($item`rad`) >= 90) {
       toBuy = 873;
@@ -159,7 +152,7 @@ Missing: 858, 866
   } else if (
     !haveSkill($skill`Sucker Fingers`) &&
     toBuy === 0 &&
-    toInt(getProperty("falloutShelterLevel")) >= 6
+    get("falloutShelterLevel") >= 6
   ) {
     if (itemAmount($item`rad`) >= 120) {
       toBuy = 865;
@@ -167,7 +160,7 @@ Missing: 858, 866
   } else if (
     !haveSkill($skill`Squid Glands`) &&
     toBuy === 0 &&
-    toInt(getProperty("falloutShelterLevel")) >= 6
+    get("falloutShelterLevel") >= 6
   ) {
     if (itemAmount($item`rad`) >= 120) {
       toBuy = 875;
@@ -211,7 +204,7 @@ Missing: 858, 866
   } else if (
     !haveSkill($skill`Extremely Punchable Face`) &&
     toBuy === 0 &&
-    toInt(getProperty("falloutShelterLevel")) >= 6
+    get("falloutShelterLevel") >= 6
   ) {
     if (itemAmount($item`rad`) >= 90) {
       toBuy = 876;
@@ -219,7 +212,7 @@ Missing: 858, 866
   } else if (
     !haveSkill($skill`Firefly Abdomen`) &&
     toBuy === 0 &&
-    toInt(getProperty("falloutShelterLevel")) >= 6
+    get("falloutShelterLevel") >= 6
   ) {
     if (itemAmount($item`rad`) >= 90) {
       toBuy = 874;
@@ -227,7 +220,7 @@ Missing: 858, 866
   } else if (
     !haveSkill($skill`Backwards Knees`) &&
     toBuy === 0 &&
-    toInt(getProperty("falloutShelterLevel")) >= 6
+    get("falloutShelterLevel") >= 6
   ) {
     if (itemAmount($item`rad`) >= 120) {
       toBuy = 864;
@@ -235,7 +228,7 @@ Missing: 858, 866
   } else if (
     !haveSkill($skill`Bone Springs`) &&
     toBuy === 0 &&
-    toInt(getProperty("falloutShelterLevel")) >= 6
+    get("falloutShelterLevel") >= 6
   ) {
     if (itemAmount($item`rad`) >= 90) {
       toBuy = 872;

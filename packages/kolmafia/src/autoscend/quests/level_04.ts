@@ -3,9 +3,7 @@ import {
   cliExecute,
   council,
   Element,
-  getProperty,
   itemAmount,
-  toBoolean,
   use,
   visitUrl,
 } from "kolmafia";
@@ -18,6 +16,7 @@ import {
   $locations,
   $monster,
   $phylum,
+  get,
 } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
@@ -93,7 +92,7 @@ function L4_batWingsBatHoleEntrance(): boolean {
 
 const L4_batWingsBatHoleEntranceTask: QuestTask = registerQuestTask({
   name: "L4_batWingsBatHoleEntrance",
-  completed: () => toBoolean(getProperty("batWingsBatHoleEntrance")),
+  completed: () => get("batWingsBatHoleEntrance"),
   ready: () =>
     auto_haveBatWings() && zone_available($location`The Bat Hole Entrance`),
   do: L4_batWingsBatHoleEntrance,
@@ -113,7 +112,7 @@ function L4_batWingsGuanoJunction(): boolean {
 
 const L4_batWingsGuanoJunctionTask: QuestTask = registerQuestTask({
   name: "L4_batWingsGuanoJunction",
-  completed: () => toBoolean(getProperty("batWingsGuanoJunction")),
+  completed: () => get("batWingsGuanoJunction"),
   ready: () =>
     auto_haveBatWings() &&
     zone_available($location`Guano Junction`) &&
@@ -138,7 +137,7 @@ function L4_batWingsBatratBurrow(): boolean {
 
 const L4_batWingsBatratBurrowTask: QuestTask = registerQuestTask({
   name: "L4_batWingsBatratBurrow",
-  completed: () => toBoolean(getProperty("batWingsBatratBurrow")),
+  completed: () => get("batWingsBatratBurrow"),
   ready: () =>
     auto_haveBatWings() &&
     zone_available($location`The Batrat and Ratbat Burrow`),
@@ -159,7 +158,7 @@ function L4_batWingsBeanbatChamber(): boolean {
 
 const L4_batWingsBeanbatChamberTask: QuestTask = registerQuestTask({
   name: "L4_batWingsBeanbatChamber",
-  completed: () => toBoolean(getProperty("batWingsBeanbatChamber")),
+  completed: () => get("batWingsBeanbatChamber"),
   ready: () =>
     auto_haveBatWings() && zone_available($location`The Beanbat Chamber`),
   do: L4_batWingsBeanbatChamber,

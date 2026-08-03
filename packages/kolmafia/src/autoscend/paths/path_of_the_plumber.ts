@@ -14,14 +14,13 @@ import {
   myPath,
   myPrimestat,
   retrieveItem,
-  setProperty,
   Skill,
   Stat,
   toInt,
   toStat,
   visitUrl,
 } from "kolmafia";
-import { $item, $path, $skill, $slot, $stat, $stats } from "libram";
+import { $item, $path, $skill, $slot, $stat, $stats, get, set } from "libram";
 
 import { acquireOrPull, canPull } from "../auto_acquire";
 import { autoEat, fullness_left, prepare_food_xp_multi } from "../auto_consume";
@@ -39,10 +38,10 @@ export function in_plumber(): boolean {
 
 export function plumber_initializeSettings(): boolean {
   if (in_plumber()) {
-    setProperty("auto_getBeehive", true.toString());
-    setProperty("auto_wandOfNagamar", false.toString());
+    set("auto_getBeehive", true);
+    set("auto_wandOfNagamar", false);
     // TODO: Remove when quest handling is correct.
-    setProperty("auto_paranoia", (1).toString());
+    set("auto_paranoia", 1);
   }
   return false;
 }
@@ -202,7 +201,7 @@ function plumber_buyCostume(st: Stat): boolean {
 
   visitUrl("place.php?whichplace=mario&action=mush_costumeshop");
 
-  if (itemAmount($item`coin`) < toInt(getProperty("plumberCostumeCost"))) {
+  if (itemAmount($item`coin`) < get("plumberCostumeCost")) {
     return false;
   }
 

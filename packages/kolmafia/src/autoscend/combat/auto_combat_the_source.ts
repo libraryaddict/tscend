@@ -1,5 +1,4 @@
 import {
-  getProperty,
   haveEffect,
   Monster,
   mpCost,
@@ -7,11 +6,8 @@ import {
   myLocation,
   myMaxhp,
   myMp,
-  setProperty,
-  toBoolean,
-  toInt,
 } from "kolmafia";
-import { $effect, $locations, $monsters, $skill } from "libram";
+import { $effect, $locations, $monsters, $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { auto_have_skill } from "../auto_util";
@@ -89,15 +85,15 @@ export function auto_combatTheSourceStage4(
   if (
     auto_canUse($skill`Portscan`) &&
     myLocation().turnsSpent < 8 &&
-    toInt(getProperty("_sourceTerminalPortscanUses")) < 3 &&
-    !toBoolean(getProperty("_portscanPending"))
+    get("_sourceTerminalPortscanUses") < 3 &&
+    !get("_portscanPending", false)
   ) {
     if (
       $locations`The Castle in the Clouds in the Sky (Ground Floor), The Haunted Bathroom, The Haunted Gallery`.includes(
         myLocation(),
       )
     ) {
-      setProperty("_portscanPending", true.toString());
+      set("_portscanPending", true);
       return auto_useSkill($skill`Portscan`);
     }
   }

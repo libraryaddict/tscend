@@ -26,10 +26,8 @@ import {
   myPath,
   Phylum,
   print,
-  setProperty,
   splitString,
   storageAmount,
-  toBoolean,
   toInt,
   toMonster,
   userConfirm,
@@ -45,6 +43,8 @@ import {
   $paths,
   $phylum,
   $slot,
+  get,
+  set,
 } from "libram";
 
 import { canPull, pullXWhenHaveY } from "../auto_acquire";
@@ -124,19 +124,19 @@ export function considerGrimstoneGolem(bjornCrown: boolean): boolean {
     return false;
   }
 
-  if (bjornCrown && toInt(getProperty("_grimstoneMaskDropsCrown")) !== 0) {
+  if (bjornCrown && get("_grimstoneMaskDropsCrown") !== 0) {
     return false;
   }
 
   if (
-    toInt(getProperty("desertExploration")) >= 70 &&
-    toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal() - 1
+    get("desertExploration") >= 70 &&
+    get("chasmBridgeProgress") >= bridgeGoal() - 1
   ) {
     return false;
   }
 
-  if (toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal() - 1) {
-    if (!toBoolean(getProperty("auto_grimstoneOrnateDowsingRod"))) {
+  if (get("chasmBridgeProgress") >= bridgeGoal() - 1) {
+    if (!get("auto_grimstoneOrnateDowsingRod", false)) {
       return false;
     }
     if (!auto_is_valid($item`grimstone mask`)) {
@@ -147,8 +147,8 @@ export function considerGrimstoneGolem(bjornCrown: boolean): boolean {
     }
   }
 
-  if (toInt(getProperty("desertExploration")) >= 70) {
-    if (!toBoolean(getProperty("auto_grimstoneFancyOilPainting"))) {
+  if (get("desertExploration") >= 70) {
+    if (!get("auto_grimstoneFancyOilPainting", false)) {
       return false;
     }
   }
@@ -192,7 +192,7 @@ export function dna_startAcquire(): boolean {
       cliExecute("camp dnainject");
     }
   }
-  setProperty("auto_day1_dna", "finished");
+  set("auto_day1_dna", "finished");
   if (haveEffect($effect`Human-Weird Thing Hybrid`) !== 2147483647) {
     auto_log_warning(
       "DNA Hybridization failed, perhaps it was due to ML which is annoying us right now.",
@@ -280,7 +280,7 @@ export function dna_generic(): boolean {
   for (const phy of potion.keys()) {
     if (
       getProperty("dnaSyringe") === phy.toString() &&
-      toInt(getProperty("_dnaPotionsMade")) === i
+      get("_dnaPotionsMade") === i
     ) {
       cliExecute("camp dnapotion");
     }
@@ -302,16 +302,13 @@ export function dna_sorceressTest(): boolean {
   if (myLevel() < 13) {
     return false;
   }
-  if (toInt(getProperty("_dnaPotionsMade")) >= 3) {
+  if (get("_dnaPotionsMade") >= 3) {
     return false;
   }
   if (toInt(getProperty("choiceAdventure1003")) < 3) {
     return false;
   }
-  if (
-    getProperty("nsChallenge2") === "" &&
-    toInt(getProperty("telescopeUpgrades")) >= 2
-  ) {
+  if (getProperty("nsChallenge2") === "" && get("telescopeUpgrades") >= 2) {
     ns_crowd3();
   }
 
@@ -358,7 +355,7 @@ export function dna_bedtime(): boolean {
     return false;
   }
   if ($item`Little Geneticist DNA-Splicing Lab`.toString() in getCampground()) {
-    let potionsMade: number = toInt(getProperty("_dnaPotionsMade"));
+    let potionsMade: number = get("_dnaPotionsMade");
     while (potionsMade < 3) {
       cliExecute("camp dnapotion");
       potionsMade += 1;
@@ -370,11 +367,11 @@ export function dna_bedtime(): boolean {
 export function LX_ornateDowsingRod(
   doing_desert_now: boolean = false,
 ): boolean {
-  if (!toBoolean(getProperty("auto_grimstoneOrnateDowsingRod"))) {
+  if (!get("auto_grimstoneOrnateDowsingRod", false)) {
     return false;
   }
   if (
-    toInt(getProperty("desertExploration")) >= 100 ||
+    get("desertExploration") >= 100 ||
     internalQuestStatus("questL11Desert") > 0
   ) {
     // don't need a dowsing rod if we've finished the desert.
@@ -396,7 +393,7 @@ export function LX_ornateDowsingRod(
     //will we be able to pull at any point in the run. not just right now (we might be out of pulls today)
     if (!canChangeToFamiliar($familiar`Grimstone Golem`)) {
       //no golem, or not allowed in path
-      setProperty("auto_grimstoneOrnateDowsingRod", false.toString());
+      set("auto_grimstoneOrnateDowsingRod", false);
       return false;
     }
   }
@@ -446,7 +443,7 @@ export function LX_ornateDowsingRod(
           "I have nothing else to do except the desert. So I am ending the day early",
           "blue",
         );
-        setProperty("_auto_doneToday", true.toString());
+        set("_auto_doneToday", true);
         return true; //want to restart the loop so it can properly exit it and do bedtime.
       }
     }
@@ -495,11 +492,11 @@ registerQuestTask({
   name: "LX_ornateDowsingRod",
   completed: () =>
     !$paths`Legacy of Loathing, Quantum Terrarium`.includes(myPath()) ||
-    !toBoolean(getProperty("auto_grimstoneOrnateDowsingRod")) ||
+    !get("auto_grimstoneOrnateDowsingRod", false) ||
     !auto_is_valid($item`grimstone mask`) ||
     possessEquipment($item`ornate dowsing rod`) ||
     possessEquipment($item`UV-resistant compass`) ||
-    toInt(getProperty("desertExploration")) >= 100 ||
+    get("desertExploration") >= 100 ||
     internalQuestStatus("questL11Desert") > 0,
   ready: () => true,
   do: () => LX_ornateDowsingRod(),
@@ -531,19 +528,19 @@ function fancyOilPaintingDo(): boolean {
     autoAdv($location`The Prince's Kitchen`);
   }
   cliExecute("make fancy oil painting");
-  setProperty("auto_grimstoneFancyOilPainting", false.toString());
+  set("auto_grimstoneFancyOilPainting", false);
   return true;
 }
 
 const fancyOilPaintingTask: QuestTask = registerQuestTask({
   name: "fancyOilPainting",
   completed: () =>
-    !toBoolean(getProperty("auto_grimstoneFancyOilPainting")) ||
+    !get("auto_grimstoneFancyOilPainting", false) ||
     !auto_is_valid($item`grimstone mask`) ||
     !auto_is_valid($item`fancy oil painting`) ||
-    toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal(),
+    get("chasmBridgeProgress") >= bridgeGoal(),
   ready: () =>
-    toInt(getProperty("chasmBridgeProgress")) < bridgeGoal() &&
+    get("chasmBridgeProgress") < bridgeGoal() &&
     myAdventures() > 4 &&
     itemAmount($item`grimstone mask`) > 0 &&
     getCounters("", 0, 6) === "",

@@ -8,12 +8,11 @@ import {
   Item,
   itemAmount,
   myPath,
-  setProperty,
   toLowerCase,
   use,
   visitUrl,
 } from "kolmafia";
-import { $coinmaster, $familiar, $item, $path, $skill } from "libram";
+import { $coinmaster, $familiar, $item, $path, $skill, set } from "libram";
 
 import { is100FamRun, pathHasFamiliar } from "../auto_familiar";
 import {
@@ -31,7 +30,7 @@ export function lol_initializeSettings(): void {
   if (!in_lol()) {
     return;
   }
-  setProperty("auto_wandOfNagamar", true.toString()); //wand  used in this path
+  set("auto_wandOfNagamar", true); //wand  used in this path
 }
 
 export function lol_buyReplicas(): boolean {

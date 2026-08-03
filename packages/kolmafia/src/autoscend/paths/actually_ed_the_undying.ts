@@ -34,11 +34,9 @@ import {
   putCloset,
   removeProperty,
   Servant,
-  setProperty,
   Skill,
   spleenLimit,
   takeCloset,
-  toBoolean,
   toInt,
   use,
   useServant,
@@ -60,6 +58,7 @@ import {
   $skills,
   $slot,
   get,
+  set,
 } from "libram";
 
 import {
@@ -138,30 +137,30 @@ function ed_spleen_limit(): number {
 
 export function ed_initializeSettings(): void {
   if (isActuallyEd()) {
-    setProperty("auto_day1_dna", "finished");
-    setProperty("auto_getBeehive", false.toString());
-    setProperty("auto_getStarKey", false.toString());
-    setProperty("auto_grimstoneFancyOilPainting", false.toString());
-    setProperty("auto_holeinthesky", false.toString());
-    setProperty("auto_lashes", "");
-    setProperty("auto_needLegs", false.toString());
-    setProperty("auto_renenutet", "");
-    setProperty("auto_servantChoice", "");
-    setProperty("auto_wandOfNagamar", false.toString());
+    set("auto_day1_dna", "finished");
+    set("auto_getBeehive", false);
+    set("auto_getStarKey", false);
+    set("auto_grimstoneFancyOilPainting", false);
+    set("auto_holeinthesky", false);
+    set("auto_lashes", "");
+    set("auto_needLegs", false);
+    set("auto_renenutet", "");
+    set("auto_servantChoice", "");
+    set("auto_wandOfNagamar", false);
 
-    setProperty("auto_edSkills", (-1).toString());
-    setProperty("auto_chasmBusted", false.toString());
-    setProperty("auto_renenutetBought", (0).toString());
+    set("auto_edSkills", -1);
+    set("auto_chasmBusted", false);
+    set("auto_renenutetBought", 0);
 
-    setProperty("auto_edCombatCount", (0).toString());
-    setProperty("auto_edCombatRoundCount", (0).toString());
+    set("auto_edCombatCount", 0);
+    set("auto_edCombatRoundCount", 0);
 
-    setProperty("desertExploration", (100).toString());
-    setProperty(
+    set("desertExploration", 100);
+    set(
       "nsTowerDoorKeysUsed",
       "Boris's key,Jarlsberg's key,Sneaky Pete's key,Richard's star key,skeleton key,digital key",
     );
-    setProperty("auto_edServantBugCount", (0).toString());
+    set("auto_edServantBugCount", 0);
   }
 }
 
@@ -186,14 +185,14 @@ export function ed_initializeDay(day: number): void {
     return;
   }
 
-  setProperty("auto_renenutetBought", (0).toString());
+  set("auto_renenutetBought", 0);
 
-  if (!toBoolean(getProperty("breakfastCompleted")) && day !== 1) {
+  if (!get("breakfastCompleted") && day !== 1) {
     cliExecute("breakfast");
   }
 
   if (day === 1) {
-    if (toInt(getProperty("auto_day_init")) < 1) {
+    if (get("auto_day_init", 0) < 1) {
       if (itemAmount($item`transmission from planet Xi`) > 0) {
         use(1, $item`transmission from planet Xi`);
       }
@@ -207,7 +206,7 @@ export function ed_initializeDay(day: number): void {
     equipBaseline();
     ovenHandle();
 
-    if (toInt(getProperty("auto_day_init")) < 2) {
+    if (get("auto_day_init", 0) < 2) {
       if (itemAmount($item`gym membership card`) > 0) {
         use(1, $item`gym membership card`);
       }
@@ -220,7 +219,7 @@ export function ed_initializeDay(day: number): void {
     }
   }
   // ed overrides normal day initialization
-  setProperty("auto_day_init", day.toString());
+  set("auto_day_init", day);
 }
 
 function L13_ed_towerHandler(): boolean {
@@ -354,7 +353,7 @@ function ed_buySkills(): boolean {
   if (!isActuallyEd()) {
     return false;
   }
-  if (myLevel() <= toInt(getProperty("auto_edSkills"))) {
+  if (myLevel() <= get("auto_edSkills", 0)) {
     return false;
   }
   let possEdPoints: number = 0;
@@ -455,8 +454,8 @@ function ed_buySkills(): boolean {
   }
   possEdPoints += imbuePoints;
 
-  if (possEdPoints > toInt(getProperty("edPoints"))) {
-    setProperty("edPoints", possEdPoints.toString());
+  if (possEdPoints > get("edPoints")) {
+    set("edPoints", possEdPoints);
   }
 
   page = visitUrl("place.php?whichplace=edbase&action=edbase_door");
@@ -574,7 +573,7 @@ function ed_buySkills(): boolean {
     handleServant(current);
   }
 
-  setProperty("auto_edSkills", myLevel().toString());
+  set("auto_edSkills", myLevel());
   return true;
 }
 
@@ -597,10 +596,7 @@ function ed_nextUpgrade(): Skill {
   const coins: number = itemAmount($item`Ka coin`);
   const canEat_1: number = (spleenLimit() - mySpleenUse()) / 5;
 
-  if (
-    !haveSkill($skill`Upgraded Legs`) &&
-    toBoolean(getProperty("auto_needLegs"))
-  ) {
+  if (!haveSkill($skill`Upgraded Legs`) && get("auto_needLegs", false)) {
     return $skill`Upgraded Legs`; // 10 Ka
   } else if (!haveSkill($skill`Extra Spleen`) && canEat_1 < 1) {
     return $skill`Extra Spleen`; // 5 Ka
@@ -718,17 +714,14 @@ export function ed_needShop(): boolean {
     return false;
   }
 
-  if (
-    haveSkill($skill`Upgraded Legs`) &&
-    toBoolean(getProperty("auto_needLegs"))
-  ) {
-    setProperty("auto_needLegs", false.toString());
+  if (haveSkill($skill`Upgraded Legs`) && get("auto_needLegs", false)) {
+    set("auto_needLegs", false);
   }
 
   const coins: number = itemAmount($item`Ka coin`);
 
   if (
-    toBoolean(getProperty("auto_needLegs")) &&
+    get("auto_needLegs", false) &&
     coins >= ed_KaCost($skill`Upgraded Legs`)
   ) {
     auto_log_info(
@@ -772,8 +765,8 @@ export function ed_needShop(): boolean {
   ) {
     if (
       itemAmount($item`talisman of Renenutet`) < 1 &&
-      toInt(getProperty("auto_renenutetBought")) < 7 &&
-      coins >= 7 - toInt(getProperty("auto_renenutetBought"))
+      get("auto_renenutetBought", 0) < 7 &&
+      coins >= 7 - get("auto_renenutetBought", 0)
     ) {
       auto_log_info(
         "Ed needs Talismens of Renenutet! UNDYING for a free trip to the Underworld!",
@@ -862,7 +855,7 @@ function ed_shopping(): boolean {
 
   auto_log_info("Time to shop!", "red");
 
-  if (toBoolean(getProperty("auto_pvpEnable")) && !hippyStoneBroken()) {
+  if (get("auto_pvpEnable", false) && !hippyStoneBroken()) {
     visitUrl("peevpee.php?action=smashstone&pwd&confirm=on", true);
     visitUrl("place.php?whichplace=edunder&action=edunder_hippy");
     visitUrl("choice.php?pwd&whichchoice=1057&option=1", true);
@@ -870,13 +863,10 @@ function ed_shopping(): boolean {
 
   let coins: number = itemAmount($item`Ka coin`);
   //Handler for low-powered accounts
-  if (
-    !haveSkill($skill`Upgraded Legs`) &&
-    toBoolean(getProperty("auto_needLegs"))
-  ) {
+  if (!haveSkill($skill`Upgraded Legs`) && get("auto_needLegs", false)) {
     if (coins >= 10) {
       auto_log_info("Buying Upgraded Legs", "green");
-      setProperty("auto_needLegs", false.toString());
+      set("auto_needLegs", false);
       visitUrl("place.php?whichplace=edunder&action=edunder_bodyshop");
       visitUrl("choice.php?pwd&skillid=36&option=1&whichchoice=1052", true);
       visitUrl("choice.php?pwd&option=2&whichchoice=1052", true);
@@ -900,7 +890,7 @@ function ed_shopping(): boolean {
   }
   // buy emergency MP restores.
   if (
-    !toBoolean(getProperty("lovebugsUnlocked")) &&
+    !get("lovebugsUnlocked") &&
     coins >= 1 &&
     itemAmount($item`holy spring water`) === 0 &&
     myMp() < mpCost($skill`Storm of the Scarab`)
@@ -937,7 +927,7 @@ function ed_shopping(): boolean {
     ) {
       while (
         itemAmount($item`talisman of Renenutet`) < 7 &&
-        toInt(getProperty("auto_renenutetBought")) < 7 &&
+        get("auto_renenutetBought", 0) < 7 &&
         coins >= 1
       ) {
         auto_log_info("Buying Talisman of Renenutet", "green");
@@ -945,10 +935,7 @@ function ed_shopping(): boolean {
           "shop.php?pwd=&whichshop=edunder_shopshop&action=buyitem&quantity=1&whichrow=439",
           true,
         );
-        setProperty(
-          "auto_renenutetBought",
-          (1 + toInt(getProperty("auto_renenutetBought"))).toString(),
-        );
+        set("auto_renenutetBought", 1 + get("auto_renenutetBought", 0));
         coins -= 1;
       }
       while (itemAmount($item`linen bandages`) < 8 && coins >= 1) {
@@ -1135,21 +1122,13 @@ function L1_ed_island(): boolean {
   if (myLevel() >= 10 || (myLevel() >= 8 && haveSkill(blocker))) {
     return false;
   }
-  if (
-    myLevel() >= 3 &&
-    myTurncount() >= 2 &&
-    !toBoolean(getProperty("controlPanel9"))
-  ) {
+  if (myLevel() >= 3 && myTurncount() >= 2 && !get("controlPanel9")) {
     visitUrl(
       "place.php?whichplace=airport_spooky_bunker&action=si_controlpanel",
     );
     visitUrl("choice.php?pwd=&whichchoice=986&option=9", true);
   }
-  if (
-    myLevel() >= 3 &&
-    !toBoolean(getProperty("controlPanel9")) &&
-    myTurncount() >= 2
-  ) {
+  if (myLevel() >= 3 && !get("controlPanel9") && myTurncount() >= 2) {
     abort("Damn control panel is not set, WTF!!!");
   }
   //If we get some other CI quest, this might keep triggering, should we flag this?
@@ -1160,7 +1139,7 @@ function L1_ed_island(): boolean {
     !possessEquipment($item`military-grade fingernail clippers`)
   ) {
     elementalPlanes_takeJob($element`spooky`);
-    setProperty("choiceAdventure988", (2).toString());
+    set("choiceAdventure988", 2);
   }
 
   if (itemAmount($item`gore bucket`) > 0) {
@@ -1170,10 +1149,7 @@ function L1_ed_island(): boolean {
   if (itemAmount($item`Personal Ventilation Unit`) > 0) {
     autoEquipToSlot($slot`acc2`, $item`Personal Ventilation Unit`);
   }
-  if (
-    possessEquipment($item`gore bucket`) &&
-    toInt(getProperty("goreCollected")) >= 100
-  ) {
+  if (possessEquipment($item`gore bucket`) && get("goreCollected") >= 100) {
     visitUrl("place.php?whichplace=airport_spooky&action=airport2_radio");
     visitUrl("choice.php?pwd&whichchoice=984&option=1", true);
   }
@@ -1187,12 +1163,12 @@ function L1_ed_island(): boolean {
 
   buffMaintain$2($effect`Experimental Effect G-9`);
   //track that we are farming Ka as Ed
-  setProperty("_auto_farmingKaAsEd", true.toString());
+  set("_auto_farmingKaAsEd", true);
   autoAdv($location`The Secret Government Laboratory`);
   if (itemAmount($item`bottle-opener keycard`) > 0) {
     use(1, $item`bottle-opener keycard`);
   }
-  setProperty("choiceAdventure988", (1).toString());
+  set("choiceAdventure988", 1);
   return true;
 }
 
@@ -1213,7 +1189,7 @@ function L1_ed_islandFallback(): boolean {
     }
   }
   //track that we are farming Ka as Ed
-  setProperty("_auto_farmingKaAsEd", true.toString());
+  set("_auto_farmingKaAsEd", true);
   if (auto_remainingSpeakeasyFreeFights() > 0) {
     return speakeasyCombat();
   }
@@ -1228,9 +1204,9 @@ function L1_ed_islandFallback(): boolean {
   }
   if (elementalPlanes_access($element`hot`)) {
     //Maybe this is a good choice?
-    setProperty("choiceAdventure1094", (5).toString());
+    set("choiceAdventure1094", 5);
     autoAdv($location`The SMOOCH Army HQ`);
-    setProperty("choiceAdventure1094", (2).toString());
+    set("choiceAdventure1094", 2);
     return true;
   }
 
@@ -1247,7 +1223,7 @@ function L1_ed_islandFallback(): boolean {
   if (LX_islandAccess()) {
     return true;
   }
-  if (toInt(getProperty("lastIslandUnlock")) !== myAscensions()) {
+  if (get("lastIslandUnlock") !== myAscensions()) {
     //somehow island was not unlocked!
     //if we fail to unlock the island at this stage our run will be crippled. normally this does not occur.
     //but if initialization fails or if user played some turns before running autoscend this can happen.
@@ -1324,7 +1300,7 @@ function L1_ed_islandFallback(): boolean {
 
     return retVal;
   }
-  setProperty("auto_needLegs", true.toString());
+  set("auto_needLegs", true);
   maximizer.weight($modifier`Monster Level`, -10);
   auto_change_mcd(0);
   return autoAdv($location`The Outskirts of Cobb's Knob`);
@@ -1335,7 +1311,7 @@ export function L9_ed_chasmStart(): boolean {
     return false;
   }
 
-  if (isActuallyEd() && !toBoolean(getProperty("auto_chasmBusted"))) {
+  if (isActuallyEd() && !get("auto_chasmBusted", false)) {
     auto_log_info("It's a troll on a bridge!!!!", "blue");
 
     visitUrl("place.php?whichplace=orc_chasm&action=bridge_done");
@@ -1344,7 +1320,7 @@ export function L9_ed_chasmStart(): boolean {
       $location`The Smut Orc Logging Camp`,
     );
 
-    setProperty("auto_chasmBusted", true.toString());
+    set("auto_chasmBusted", true);
     return true;
   }
   return false;
@@ -1539,7 +1515,7 @@ function LM_ed_miscHousekeepingDo(): boolean {
     takeCloset(closetAmount($item`filthy corduroys`), $item`filthy corduroys`);
   }
 
-  if (!toBoolean(getProperty("breakfastCompleted"))) {
+  if (!get("breakfastCompleted")) {
     cliExecute("breakfast");
   }
 
@@ -1658,27 +1634,19 @@ export function edUnderworldChoiceHandler(choice: number): void {
   if (choice === 1023) {
     // Like a Bat Into Hell
     auto_runChoice(1); // Enter the Underworld
-    auto_log_info(
-      `Ed died in combat ${toInt(getProperty("_edDefeats"))} time(s)`,
-      "blue",
-    );
+    auto_log_info(`Ed died in combat ${get("_edDefeats")} time(s)`, "blue");
     ed_shopping(); // "free" trip to the Underworld, may as well go shopping!
     visitUrl("place.php?whichplace=edunder&action=edunder_leave");
   } else if (choice === 1024) {
     // Like a Bat out of Hell
-    if (
-      toInt(getProperty("_edDefeats")) < toInt(getProperty("edDefeatAbort"))
-    ) {
+    if (get("_edDefeats") < get("edDefeatAbort")) {
       // resurrecting is still free.
       auto_runChoice(1); // UNDYING!
     } else {
       // resurrecting will cost Ka
       auto_runChoice(2); // Accept the cold embrace of death (Return to the Pyramid)
       auto_log_info("Ed died in combat for reals!");
-      setProperty(
-        "auto_beatenUpCount",
-        (toInt(getProperty("auto_beatenUpCount")) + 1).toString(),
-      );
+      set("auto_beatenUpCount", get("auto_beatenUpCount", 0) + 1);
     }
   } else {
     abort("unhandled choice in edUnderworldChoiceHandler");

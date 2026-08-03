@@ -22,9 +22,7 @@ import {
   myPath,
   npcPrice,
   Path,
-  setProperty,
   splitString,
-  toBoolean,
   toInt,
   toItem,
   toLocation,
@@ -33,7 +31,7 @@ import {
   visitUrl,
   wait,
 } from "kolmafia";
-import { $effect, $effects, $item, $items, $location } from "libram";
+import { $effect, $effects, $item, $items, $location, get, set } from "libram";
 
 import { autoAdvBypass$1, CombatMacro } from "../auto_adventure";
 import { inebriety_left } from "../auto_consume";
@@ -71,7 +69,7 @@ export function handleFaxMonster(
   fightIt: boolean,
   option?: CombatMacro,
 ): boolean {
-  if (toBoolean(getProperty("_photocopyUsed"))) {
+  if (get("_photocopyUsed")) {
     return false;
   }
   if (!isUnrestricted($item`deluxe fax machine`)) {
@@ -341,7 +339,7 @@ export function changeClan$2(): number {
 export function hotTubSoaksRemaining(): number {
   // mafia will create popup confirming hottub use if in hidden apartment quest and have a curse
   // don't want to break automation so don't allow hottub use in this condition
-  if (toInt(getProperty("hiddenApartmentProgress")) < 7) {
+  if (get("hiddenApartmentProgress") < 7) {
     // apartment not done, check if we have a curse
     let haveCurse: boolean = false;
     for (const eff of $effects`Once-Cursed, Thrice-Cursed, Twice-Cursed`) {
@@ -354,7 +352,7 @@ export function hotTubSoaksRemaining(): number {
     }
   }
 
-  return 5 - toInt(getProperty("_hotTubSoaks"));
+  return 5 - get("_hotTubSoaks");
 }
 
 export function isHotTubAvailable(): boolean {
@@ -390,7 +388,7 @@ export function canDrinkSpeakeasyDrink(drink_1: Item): boolean {
     return false;
   }
 
-  if (toInt(getProperty("_speakeasyDrinksDrunk")) >= 3) {
+  if (get("_speakeasyDrinksDrunk") >= 3) {
     return false;
   }
 
@@ -425,7 +423,7 @@ export function zataraAvailable(): boolean {
   if (itemAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
   }
-  if (toBoolean(getProperty("_clanFortuneBuffUsed"))) {
+  if (get("_clanFortuneBuffUsed")) {
     return false;
   }
 
@@ -505,7 +503,7 @@ export function zataraSeaside(who: string): boolean {
 
   visitUrl("clan_viplounge.php?preaction=lovetester", false);
   visitUrl(`choice.php?pwd=&whichchoice=1278&option=1&which=${id}`);
-  setProperty("_clanFortuneBuffUsed", true.toString());
+  set("_clanFortuneBuffUsed", true);
   return true;
 }
 
@@ -522,7 +520,7 @@ export function zataraClanmate(): boolean {
     return false;
   }
 
-  if (toInt(getProperty("_clanFortuneConsultUses")) >= 3) {
+  if (get("_clanFortuneConsultUses") >= 3) {
     return false;
   }
   //	string page = visit_url("clan_viplounge.php");
@@ -556,7 +554,7 @@ export function zataraClanmate(): boolean {
     changeClan$2();
   }
   if (getClanName() !== clanName) {
-    setProperty("_clanFortuneConsultUses", (42069).toString());
+    set("_clanFortuneConsultUses", 42069);
     return false;
   }
 
@@ -565,10 +563,7 @@ export function zataraClanmate(): boolean {
   while (attempts < 5) {
     visitUrl("clan_viplounge.php?preaction=lovetester", false);
     let choices: string = "&q1=pizza&q2=batman&q3=thick";
-    if (
-      toBoolean(getProperty("auto_optimizeConsultsInRun")) &&
-      myPath() !== Path.none
-    ) {
+    if (get("auto_optimizeConsultsInRun", false) && myPath() !== Path.none) {
       choices = "&q1=cake&q2=wonderwoman&q3=thick";
     }
     const temp: string = visitUrl(
@@ -582,7 +577,7 @@ export function zataraClanmate(): boolean {
       )
     ) {
       auto_log_warning("No consults left today. Uh oh", "red");
-      setProperty("_clanFortuneConsultUses", (3).toString());
+      set("_clanFortuneConsultUses", 3);
       needWait = false;
       break;
     }
@@ -620,7 +615,7 @@ export function zataraClanmate(): boolean {
 }
 
 export function auto_floundryUse(): boolean {
-  if (!toBoolean(getProperty("_floundryItemUsed"))) {
+  if (!get("_floundryItemUsed")) {
     for (const it of $items`bass clarinet, codpiece, fish hatchet`) {
       if (possessEquipment(it)) {
         use(1, it);
@@ -632,11 +627,11 @@ export function auto_floundryUse(): boolean {
 }
 
 export function auto_floundryAction(): boolean {
-  if (toBoolean(getProperty("_floundryItemCreated"))) {
+  if (get("_floundryItemCreated")) {
     return false;
   }
   if (
-    !toBoolean(getProperty("_floundryItemGot")) &&
+    !get("_floundryItemGot", false) &&
     auto_get_clan_lounge().has($item`Clan Floundry`) &&
     !inAftercore()
   ) {
@@ -658,12 +653,12 @@ export function auto_floundryAction(): boolean {
       if (auto_floundryAction$1(myFloundry)) {
         if (
           $items`bass clarinet, codpiece, fish hatchet`.includes(myFloundry) &&
-          !toBoolean(getProperty("_floundryItemUsed")) &&
+          !get("_floundryItemUsed") &&
           itemAmount(myFloundry) > 0
         ) {
           use(1, myFloundry);
         }
-        setProperty("_floundryItemGot", true.toString());
+        set("_floundryItemGot", true);
         return true;
       } else {
         auto_log_warning(
@@ -678,7 +673,7 @@ export function auto_floundryAction(): boolean {
 }
 
 function auto_floundryAction$1(it: Item): boolean {
-  if (toBoolean(getProperty("_floundryItemCreated"))) {
+  if (get("_floundryItemCreated")) {
     return false;
   }
   const fish: Map<Item, number> = auto_get_clan_lounge();

@@ -18,12 +18,6 @@ import {
   myPath,
   putCloset,
   removeProperty,
-  setProperty,
-  toBoolean,
-  toFamiliar,
-  toInt,
-  toLocation,
-  toMonster,
 } from "kolmafia";
 import {
   $effect,
@@ -34,6 +28,8 @@ import {
   $locations,
   $path,
   $slot,
+  get,
+  set,
 } from "libram";
 
 import { autoAdv } from "../auto_adventure";
@@ -64,7 +60,7 @@ export function kolhs_mandatorySchool(): boolean {
   if (!in_kolhs()) {
     return false; //not in the path so we are not required to attend school
   }
-  return toInt(getProperty("_kolhsAdventures")) < 40;
+  return get("_kolhsAdventures") < 40;
 }
 
 export function kolhs_initializeSettings(): void {
@@ -72,7 +68,7 @@ export function kolhs_initializeSettings(): void {
     return;
   }
 
-  setProperty("kolhs_closetDrink", false.toString());
+  set("kolhs_closetDrink", false);
 }
 
 function kolhs_closetDrink(): void {
@@ -85,10 +81,10 @@ function kolhs_closetDrink(): void {
   if (!canInteract()) {
     return; //we are not in postronin/casual
   }
-  if (toBoolean(getProperty("kolhs_closetDrink"))) {
+  if (get("kolhs_closetDrink", false)) {
     return; //already done this ascension
   }
-  setProperty("kolhs_closetDrink", true.toString());
+  set("kolhs_closetDrink", true);
   //drink one first if needed so they continue to drop.
   let target: Item = $item`can of the cheapest beer`;
   if (myLevel() > 8) {
@@ -166,8 +162,8 @@ export function kolhs_preadv(place: Location): void {
   }
   //prepare yearbook camera
   if (
-    place === toLocation(getProperty("_yearbookCameraTargetLocation")) &&
-    !toBoolean(getProperty("yearbookCameraPending"))
+    place === get("_yearbookCameraTargetLocation", Location.none) &&
+    !get("yearbookCameraPending")
   ) {
     if (equippedAmount($item`Yearbook Club Camera`) === 0) {
       auto_log_warning(
@@ -188,14 +184,14 @@ function LX_kolhs_visitYearbookClub(): boolean {
   //visit to yearbook club. You start the quest on one day and complete it the next day so no point in multiple visits in one day.
   //if you did not finish the quest then it changes. so you need to revisit every day regardless of completion status.
   //on first visit per ascension you acquire the camera. if you already maxed out camera no point in visiting again
-  if (toBoolean(getProperty("_yearbookClubVisitedToday"))) {
+  if (get("_yearbookClubVisitedToday", false)) {
     return false; //already visited today
   }
-  if (toInt(getProperty("_kolhsSavedByTheBell")) > 2) {
+  if (get("_kolhsSavedByTheBell") > 2) {
     return false; //we ran out of saved by the bell NC visits. so we cannot reach it today.
   }
   auto_log_info("Visiting the yearbook club", "blue");
-  setProperty("_NC772_directive", (3).toString()); //NC772 [saved by the bell] should visit yearbook club
+  set("_NC772_directive", 3); //NC772 [saved by the bell] should visit yearbook club
   return autoAdv($location`The Hallowed Halls`); //goto NC772
 }
 
@@ -221,10 +217,10 @@ function LX_kolhs_yearbookCameraQuest(): boolean {
     return true;
   }
   //do we actually need to do the quest?
-  if (toInt(getProperty("yearbookCameraAscensions")) > 20) {
+  if (get("yearbookCameraAscensions") > 20) {
     return false; //already maxed out permanent upgrades
   }
-  if (myAscensions() === toInt(getProperty("lastYearbookCameraAscension"))) {
+  if (myAscensions() === get("lastYearbookCameraAscension")) {
     return false; //already upgraded once this ascension. only one upgrade per ascension can become permanent.
   }
   if (LX_kolhs_visitYearbookClub()) {
@@ -232,11 +228,11 @@ function LX_kolhs_yearbookCameraQuest(): boolean {
     return true;
   }
 
-  if (toBoolean(getProperty("yearbookCameraPending"))) {
+  if (get("yearbookCameraPending")) {
     return false; //we finished the quest today but must wait until tomorrow to turn it in
   }
   //try to get a photograph
-  const target: Monster = toMonster(getProperty("yearbookCameraTarget"));
+  const target: Monster = get("yearbookCameraTarget", Monster.none);
   let adv_target: Location = Location.none;
   for (const loc of monster_to_location(target).keys()) {
     if (zone_isAvailable(loc, true)) {
@@ -244,7 +240,7 @@ function LX_kolhs_yearbookCameraQuest(): boolean {
       break;
     }
   }
-  setProperty("_yearbookCameraTargetLocation", adv_target.toString()); //used by pre_adv to verify camera is actually equipped
+  set("_yearbookCameraTargetLocation", adv_target); //used by pre_adv to verify camera is actually equipped
   if (adv_target === Location.none) {
     return false; //just in case. should not be possible since it picks from reachable locations
   }
@@ -288,7 +284,7 @@ export function kolhsChoiceHandler(choice: number): void {
       case 772: {
         // Saved by the Bell (KOLHS after school)
         //we use directive property. it both tells us what to do, and helps pre-adv do stuff. for example ensure we are not wearing a familiar that is blocking us
-        const target: number = toInt(getProperty("_NC772_directive"));
+        const target: number = get("_NC772_directive", 0);
         removeProperty("_NC772_directive"); //remove it now in case we abort
 
         if (target === 0) {
@@ -299,7 +295,7 @@ export function kolhsChoiceHandler(choice: number): void {
         if (target in availableChoiceOptions()) {
           if (target === 3) {
             //yearbook club should only be visited once daily
-            setProperty("_yearbookClubVisitedToday", true.toString());
+            set("_yearbookClubVisitedToday", true);
           }
           auto_runChoice(target);
         } else {
@@ -321,14 +317,12 @@ export function LM_kolhs(): boolean {
     return false;
   }
 
-  const familiar_target_100: Familiar = toFamiliar(
-    getProperty("auto_100familiar"),
-  );
+  const familiar_target_100: Familiar = get("auto_100familiar", Familiar.none);
   if (
     familiar_target_100 !== Familiar.none &&
     familiar_target_100 !== $familiar`Steam-Powered Cheerleader`
   ) {
-    setProperty("auto_100familiar", Familiar.none.toString());
+    set("auto_100familiar", Familiar.none);
     abort(
       `Detected an attempted 100% familiar run with [${familiar_target_100}] in KOLHS. [Steam Powered Cheerleader] is the only valid 100% familiar run in KOLHS. 100% familiar run disabled. You can run autoscend again to continue`,
     );

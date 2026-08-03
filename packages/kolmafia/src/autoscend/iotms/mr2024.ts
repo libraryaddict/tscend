@@ -27,7 +27,6 @@ import {
   myLevel,
   myPrimestat,
   numericModifier,
-  setProperty,
   Skill,
   splitString,
   substring,
@@ -50,6 +49,8 @@ import {
   $skill,
   $slot,
   AprilingBandHelmet,
+  get,
+  set,
 } from "libram";
 
 import { c2t_apron } from "../../c2t_apron";
@@ -139,7 +140,7 @@ export function consumeBlackAndWhiteApronKit(): boolean {
   ) {
     allowList += ",2063";
   }
-  const oilProgress: number = toInt(getProperty("twinPeakProgress"));
+  const oilProgress: number = get("twinPeakProgress");
   if (
     (oilProgress & 4) === 1 ||
     itemAmount($item`jar of oil`) > 0 ||
@@ -153,7 +154,7 @@ export function consumeBlackAndWhiteApronKit(): boolean {
   ) {
     allowList += ",186";
   }
-  setProperty("c2t_apron_allowlist", allowList);
+  set("c2t_apron_allowlist", allowList);
   // consume the apron kit using c2t's script
   // this will default to consuming food for our current mainstat
   // https://github.com/C2Talon/c2t_apron
@@ -188,7 +189,7 @@ export function auto_getAprilingBandItems(): boolean {
   const have_tuba: boolean = availableAmount($item`Apriling band tuba`) > 0;
   const have_picc: boolean = availableAmount($item`Apriling band piccolo`) > 0;
   function instruments_so_far(): number {
-    return toInt(getProperty("_aprilBandInstruments"));
+    return get("_aprilBandInstruments");
   }
   function track(it: Item): void {
     if (availableAmount(it) > 0) {
@@ -243,7 +244,7 @@ export function auto_playAprilSax(): boolean {
 
 export function auto_playAprilTuba(): boolean {
   cliExecute("aprilband play tuba");
-  return toBoolean(getProperty("noncombatForcerActive"));
+  return get("noncombatForcerActive");
 }
 
 export function auto_setAprilBandNonCombat(): boolean {
@@ -275,7 +276,7 @@ export function auto_AprilSaxLuckyLeft(): number {
   if (availableAmount($item`Apriling band saxophone`) === 0) {
     return 0;
   }
-  return 3 - toInt(getProperty("_aprilBandSaxophoneUses"));
+  return 3 - get("_aprilBandSaxophoneUses");
 }
 
 export function auto_AprilTubaForcesLeft(): number {
@@ -285,7 +286,7 @@ export function auto_AprilTubaForcesLeft(): number {
   if (availableAmount($item`Apriling band tuba`) === 0) {
     return 0;
   }
-  return 3 - toInt(getProperty("_aprilBandTubaUses"));
+  return 3 - get("_aprilBandTubaUses");
 }
 
 export function auto_AprilPiccoloBoostsLeft(): number {
@@ -295,7 +296,7 @@ export function auto_AprilPiccoloBoostsLeft(): number {
   if (availableAmount($item`Apriling band piccolo`) === 0) {
     return 0;
   }
-  return 3 - toInt(getProperty("_aprilBandPiccoloUses"));
+  return 3 - get("_aprilBandPiccoloUses");
 }
 
 export function auto_haveDarts(): boolean {
@@ -637,7 +638,7 @@ export function auto_swoopsRemaining(): number {
   if (!auto_haveBatWings()) {
     return 0;
   }
-  return 11 - toInt(getProperty("_batWingsSwoopUsed"));
+  return 11 - get("_batWingsSwoopUsed");
 }
 
 export function auto_haveSeptEmberCenser(): boolean {
@@ -657,11 +658,11 @@ function remainingEmbers(): number {
   if (!auto_haveSeptEmberCenser()) {
     return 0;
   }
-  if (!toBoolean(getProperty("_septEmberBalanceChecked"))) {
+  if (!get("_septEmberBalanceChecked")) {
     // go to ember shop to check our balance
     use($item`Sept-Ember Censer`);
   }
-  return toInt(getProperty("availableSeptEmbers"));
+  return get("availableSeptEmbers");
 }
 
 export function auto_goingToMouthwashLevel(): boolean {
@@ -674,9 +675,7 @@ export function auto_goingToMouthwashLevel(): boolean {
   if (in_glover() || in_bhy() || in_plumber() || in_amw()) {
     return false;
   }
-  const disregard_karma: boolean = toBoolean(
-    getProperty("auto_disregardInstantKarma"),
-  );
+  const disregard_karma: boolean = get("auto_disregardInstantKarma", false);
   // If we have at least 4 embers remaining, don't overlevel, they can be used for something else
   const happy_to_overlevel: boolean = disregard_karma && remainingEmbers() < 4;
   let want_to_mouthwash_level: boolean = myLevel() < 13 || happy_to_overlevel;
@@ -724,7 +723,7 @@ export function auto_buyFromSeptEmberStore(): void {
         equippedItem($slot`off-hand`) === $item`McHugeLarge left pole`;
       if (using_mchugelarge_oh || cold_res_from_oh > 2.9) {
         const lefty: Skill = Skill.get("Aug. 13th: Left/Off Hander's Day!");
-        if (auto_canUse(lefty) && !toBoolean(getProperty("_aug13Cast"))) {
+        if (auto_canUse(lefty) && !get("_aug13Cast")) {
           useSkill(lefty);
         }
       }
@@ -757,8 +756,8 @@ export function auto_buyFromSeptEmberStore(): void {
   let itemConsidering: Item = $item`structural ember`;
   if (
     remainingEmbers() >= 4 &&
-    toInt(getProperty("chasmBridgeProgress")) < bridgeGoal() &&
-    !toBoolean(getProperty("_structuralEmberUsed")) &&
+    get("chasmBridgeProgress") < bridgeGoal() &&
+    !get("_structuralEmberUsed") &&
     auto_is_valid(itemConsidering)
   ) {
     buy($coinmaster`Sept-Ember Censer`, 1, itemConsidering);
@@ -829,13 +828,13 @@ export function auto_checkTakerSpace(): void {
     return;
   }
   $_auto_checkTakerSpace_ts_letter ??= $item`TakerSpace letter of Marque`;
-  if (!toBoolean(getProperty("_takerSpaceSuppliesDelivered"))) {
+  if (!get("_takerSpaceSuppliesDelivered")) {
     // visit the workshed to get the supplies
     visitUrl("campground.php?action=workshed");
   }
   // unlock the island if we can (6 turn save)
   if (
-    toInt(getProperty("lastIslandUnlock")) < myAscensions() &&
+    get("lastIslandUnlock") < myAscensions() &&
     itemAmount($item`pirate dinghy`) === 0 &&
     creatableAmount($item`pirate dinghy`) > 0
   ) {
@@ -1043,7 +1042,7 @@ function auto_remainingClanPhotoBoothEffects(): number {
   if (!auto_haveClanPhotoBooth()) {
     return 0;
   }
-  return 3 - toInt(getProperty("_photoBoothEffects"));
+  return 3 - get("_photoBoothEffects");
 }
 
 export function auto_getClanPhotoBoothEffect(

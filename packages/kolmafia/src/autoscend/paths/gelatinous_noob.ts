@@ -4,7 +4,6 @@ import {
   cliExecute,
   containsText,
   creatableAmount,
-  getProperty,
   haveSkill,
   isNpcItem,
   isTradeable,
@@ -25,7 +24,7 @@ import {
   toInt,
   visitUrl,
 } from "kolmafia";
-import { $item, $items, $path, $skill, $skills } from "libram";
+import { $item, $items, $path, $skill, $skills, get } from "libram";
 
 import { auto_advToReserve } from "../../autoscend";
 import { auto_buyUpTo, auto_mall_price } from "../auto_acquire";
@@ -98,7 +97,7 @@ function gnoobAbsorbCost(it: Item): number {
     //do not have unrestricted mall access. meaning ronin or hardcore
     if (
       auto_have_skill($skill`Summon Clip Art`) &&
-      toInt(getProperty("_clipartSummons")) < 3 &&
+      get("_clipartSummons") < 3 &&
       isClipartItem(it)
     ) {
       retval = 18; //the price to acquire it is only 2 MP which we can highball as 18 meat at galaktik pricing.
@@ -143,10 +142,9 @@ function gnoob_buySkills(): void {
   let earlyTerm: number =
     max(
       5,
-      toInt(getProperty("_noobSkillCount")) +
-        (myDaycount() - 1) * min(myLevel() + 2, 15),
+      get("_noobSkillCount") + (myDaycount() - 1) * min(myLevel() + 2, 15),
     ) +
-    toInt(getProperty("noobPoints")) +
+    get("noobPoints") +
     2;
 
   for (const sk of $skills`Large Intestine, Small Intestine, Stomach-Like Thing, Rudimentary Alimentary Canal, Central Hypothalamus, Arrogance, Sense of Pride, Sense of Purpose, Retractable Toes, Bendable Knees, Ink Gland, Anger Glands, Basic Self-Worth, Work Ethic, Visual Cortex, Saccade Reflex, Frown Muscles, Powerful Vocal Chords, Optic Nerves, Right Eyeball, Left Eyeball, Thumbs, Index Fingers, Middle Fingers, Ring Fingers, Pinky Fingers, Hot Headedness, Sunglasses, Sense of Sarcasm, Beating Human Heart, Oversized Right Kidney, Anterior Cruciate Ligaments, Achilles Tendons, Kneecaps, Ankle Joints, Hamstrings, Pathological Greed, Sense of Entitlement, Business Acumen, Financial Ambition, The Concept of Property, Bravery Gland, Subcutaneous Fat, Adrenal Gland, Nasal Septum, Hyperactive Amygdala, Nasal Lamina Propria, Right Eyelid, Pinchable Nose, Left Eyelid, Nose Hair, Overalls, Rigid Rib Cage, Rigid Headbone`) {

@@ -31,7 +31,6 @@ import {
   retrieveItem,
   Stat,
   toBoolean,
-  toFamiliar,
   toInt,
   useFamiliar,
   visitUrl,
@@ -49,6 +48,7 @@ import {
   $skill,
   $slot,
   $slots,
+  get,
 } from "libram";
 
 import { auto_buyUpTo } from "./auto_acquire";
@@ -443,7 +443,7 @@ export function providePlusNonCombat(
   // First let's do the peace turkey, only if we haven't already picked a familiar
   if (
     !speculative &&
-    toFamiliar(getProperty("auto_familiarChoice")) === Familiar.none
+    get("auto_familiarChoice", Familiar.none) === Familiar.none
   ) {
     for (const fam of $familiars`Peace Turkey`) {
       if (canChangeToFamiliar(fam)) {
@@ -631,7 +631,7 @@ export function providePlusNonCombat(
   // If we haven't picked a familiar by now consider the disgeist
   if (
     !speculative &&
-    toFamiliar(getProperty("auto_familiarChoice")) === Familiar.none
+    get("auto_familiarChoice", Familiar.none) === Familiar.none
   ) {
     for (const fam of $familiars`Disgeist`) {
       if (canChangeToFamiliar(fam)) {
@@ -810,7 +810,7 @@ export function provideInitiative(
     doEquips &&
     auto_have_familiar($familiar`Grim Brother`) &&
     haveEffect($effect`Soles of Glass`) === 0 &&
-    toBoolean(getProperty("_grimBuff")) === false
+    get("_grimBuff") === false
   ) {
     if (!speculative) {
       // We must visit the familiar's page before we can select the choice.
@@ -882,7 +882,7 @@ export function provideInitiative(
     doEquips &&
     auto_haveCCSC() &&
     haveEffect($effect`Peppermint Rush`) === 0 &&
-    !toBoolean(getProperty("_candyCaneSwordLyle"))
+    !get("_candyCaneSwordLyle")
   ) {
     if (!speculative) {
       equip($item`candy cane sword cane`);
@@ -896,7 +896,7 @@ export function provideInitiative(
 
   if (doEquips && amt >= 400) {
     if (
-      !toBoolean(getProperty("_bowleggedSwaggerUsed")) &&
+      !get("_bowleggedSwaggerUsed") &&
       buffMaintain$2($effect`Bow-Legged Swagger`, 0, 1, 1, speculative)
     ) {
       if (speculative) {
@@ -1903,7 +1903,7 @@ function provideMeat(
     }
     if (
       getProperty("sidequestArenaCompleted") === "fratboy" &&
-      !toBoolean(getProperty("concertVisited")) &&
+      !get("concertVisited") &&
       haveEffect($effect`Winklered`) === 0
     ) {
       if (is_professor()) {
@@ -1934,7 +1934,7 @@ function provideMeat(
     if (
       !in_tcrs() &&
       !in_small() &&
-      !toBoolean(getProperty("auto_limitConsume")) &&
+      !get("auto_limitConsume", false) &&
       haveEffect($effect`Tryptofan`) === 0 &&
       creatableAmount($item`prize turkey`) > 0 &&
       auto_canEat($item`prize turkey`) &&
@@ -2334,7 +2334,7 @@ function provideItem(
 
     if (
       auto_is_valid($item`broken champagne bottle`) &&
-      toInt(getProperty("garbageChampagneCharge")) > 0
+      get("garbageChampagneCharge") > 0
     ) {
       //fold and remove maximizer block on using IOTM with 9 charges a day that doubles item drop chance
       januaryToteAcquire($item`broken champagne bottle`);
@@ -2367,7 +2367,7 @@ function provideItem(
 
   if (doEverything && amt >= 400) {
     if (
-      !toBoolean(getProperty("_steelyEyedSquintUsed")) &&
+      !get("_steelyEyedSquintUsed") &&
       buffMaintain$2($effect`Steely-Eyed Squint`, 0, 1, 1, speculative)
     ) {
       if (speculative) {
@@ -2428,7 +2428,7 @@ function provideItem(
     }
     if (
       getProperty("sidequestArenaCompleted") === "hippy" &&
-      !toBoolean(getProperty("concertVisited")) &&
+      !get("concertVisited") &&
       haveEffect($effect`Dilated Pupils`) === 0
     ) {
       if (is_professor()) {
@@ -2459,7 +2459,7 @@ function provideItem(
     if (
       !in_tcrs() &&
       !in_small() &&
-      !toBoolean(getProperty("auto_limitConsume")) &&
+      !get("auto_limitConsume", false) &&
       haveEffect($effect`Ordained`) === 0 &&
       creatableAmount($item`Smoking Pope`) > 0 &&
       auto_canDrink($item`Smoking Pope`) &&

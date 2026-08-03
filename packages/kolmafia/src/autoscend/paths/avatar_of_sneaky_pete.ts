@@ -5,11 +5,10 @@ import {
   lastChoice,
   myLevel,
   myPath,
-  setProperty,
   toInt,
   visitUrl,
 } from "kolmafia";
-import { $path, $skill } from "libram";
+import { $path, $skill, get, set } from "libram";
 
 import { auto_log_info, auto_runChoice } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
@@ -22,8 +21,8 @@ export function is_pete(): boolean {
 
 export function pete_initializeSettings(): void {
   if (is_pete()) {
-    setProperty("auto_peteSkills", (-1).toString());
-    setProperty("auto_wandOfNagamar", false.toString());
+    set("auto_peteSkills", -1);
+    set("auto_wandOfNagamar", false);
   }
 }
 
@@ -39,7 +38,7 @@ export function pete_buySkills(): void {
     return;
   }
 
-  if (myLevel() <= toInt(getProperty("auto_peteSkills"))) {
+  if (myLevel() <= get("auto_peteSkills", 0)) {
     return;
   }
   // if you have all the skills and the motorcycle is fully upgraded, we're done.
@@ -211,15 +210,15 @@ export function pete_buySkills(): void {
     my_cyclePoints = new AshMatcher("Upping Your Grade", page);
   }
 
-  setProperty("auto_peteSkills", myLevel().toString());
+  set("auto_peteSkills", myLevel());
 }
 
 export function pete_peelOutRemaining(): number {
   if (getProperty("peteMotorbikeTires") === "Racing Slicks") {
-    return 30 - toInt(getProperty("_petePeeledOut"));
+    return 30 - get("_petePeeledOut");
   }
 
-  return 10 - toInt(getProperty("_petePeeledOut"));
+  return 10 - get("_petePeeledOut");
 }
 
 export function LM_pete(): boolean {

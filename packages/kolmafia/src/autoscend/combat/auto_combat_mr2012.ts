@@ -1,14 +1,12 @@
 import {
-  getProperty,
   Monster,
   myClass,
   myFamiliar,
   myMp,
   myPrimestat,
   Skill,
-  toInt,
 } from "kolmafia";
-import { $class, $familiar, $skill, $skills, $stat } from "libram";
+import { $class, $familiar, $skill, $skills, $stat, get } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { auto_have_skill, stunnable } from "../auto_util";
@@ -37,7 +35,7 @@ export function auto_combat_nanorhinoBuff(
   ) {
     return undefined;
   }
-  if (toInt(getProperty("_nanorhinoCharge")) < 100) {
+  if (get("_nanorhinoCharge") < 100) {
     return undefined;
   }
 

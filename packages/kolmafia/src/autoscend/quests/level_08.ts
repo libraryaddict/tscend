@@ -17,6 +17,7 @@ import {
   Item,
   itemAmount,
   jumpChance,
+  Monster,
   myAdventures,
   myDaycount,
   myLevel,
@@ -27,13 +28,9 @@ import {
   outfit,
   print,
   random,
-  setProperty,
   splitString,
   substring,
-  toBoolean,
   toInt,
-  toItem,
-  toMonster,
   visitUrl,
 } from "kolmafia";
 import {
@@ -48,6 +45,7 @@ import {
   $skill,
   $slot,
   get,
+  set,
 } from "libram";
 
 import { canPull, pullXWhenHaveY } from "../auto_acquire";
@@ -130,7 +128,7 @@ export function needOre(): boolean {
   if (internalQuestStatus("questL08Trapper") > 2) {
     return false;
   }
-  const oreGoal: Item = toItem(getProperty("trapperOre"));
+  const oreGoal: Item = get("trapperOre", Item.none);
   if (itemAmount(oreGoal) >= 3) {
     return false;
   }
@@ -378,7 +376,7 @@ function L8_getGoatCheese(): boolean {
   }
   // Actually adventure for cheese
   auto_log_info("Yay for goat cheese!", "blue");
-  if (toInt(getProperty("_sourceTerminalDuplicateUses")) === 0) {
+  if (get("_sourceTerminalDuplicateUses") === 0) {
     auto_sourceTerminalEducate($skill`Extract`, $skill`Duplicate`);
   }
   if (auto_haveGreyGoose() && itemAmount($item`goat cheese`) <= 1) {
@@ -408,7 +406,7 @@ function L8_mountainManSummonDo(): boolean {
     // step1 = we spoke to trapper to learn what ores he wants
     return false;
   }
-  const oreGoal: Item = toItem(getProperty("trapperOre"));
+  const oreGoal: Item = get("trapperOre", Item.none);
   const current_ore: number = itemAmount(oreGoal);
   if (current_ore >= 3) {
     return false;
@@ -425,8 +423,7 @@ function L8_mountainManSummonDo(): boolean {
   if (canSummonMonster($monster`mountain man`) && canYellowRay()) {
     const need_dupe: boolean = current_ore < 1;
     const can_mctwist: boolean =
-      auto_can_equip($item`pro skateboard`) &&
-      !toBoolean(getProperty("_epicMcTwistUsed"));
+      auto_can_equip($item`pro skateboard`) && !get("_epicMcTwistUsed");
     const will_mctwist: boolean = can_mctwist && need_dupe;
     auto_log_info(
       `Trying to summon a mountain man, which we will YR${will_mctwist ? " and McTwist." : "."}`,
@@ -446,7 +443,7 @@ function L8_mountainManSummonDo(): boolean {
 
 export const L8_mountainManSummonTask: QuestTask = registerQuestTask({
   name: "L8_mountainManSummon",
-  completed: () => itemAmount(toItem(getProperty("trapperOre"))) >= 3,
+  completed: () => itemAmount(get("trapperOre", Item.none)) >= 3,
   ready: () => true,
   do: L8_mountainManSummonDo,
   desiredEncounters: () =>
@@ -466,13 +463,13 @@ export function L8_mineOreWorthBurningLuckOn(): boolean {
   if (internalQuestStatus("questL08Trapper") !== 1) {
     return false;
   }
-  const oreGoal: Item = toItem(getProperty("trapperOre"));
+  const oreGoal: Item = get("trapperOre", Item.none);
   if (itemAmount(oreGoal) >= 3) {
     return false;
   }
   if (
     !get("_chateauMonsterFought") &&
-    toMonster(getProperty("chateauMonster")) === $monster`mountain man`
+    get("chateauMonster", Monster.none) === $monster`mountain man`
   ) {
     return false;
   }
@@ -512,13 +509,13 @@ function L8_getMineOres(): boolean {
     return false;
   }
 
-  const oreGoal: Item = toItem(getProperty("trapperOre"));
+  const oreGoal: Item = get("trapperOre", Item.none);
 
   if (itemAmount(oreGoal) >= 3) {
     return false;
   }
 
-  if (toMonster(getProperty("chateauMonster")) === $monster`mountain man`) {
+  if (get("chateauMonster", Monster.none) === $monster`mountain man`) {
     // apparently this is a thing some people do. Lets add the most basic of support.
     return false;
   }
@@ -551,7 +548,7 @@ function L8_getMineOres(): boolean {
       auto_log_info("Mining in Itznotyerzitz Mine for Trapper ore", "blue");
       const cell: number = getCellToMine(oreGoal);
       if (cell !== 0) {
-        setProperty(
+        set(
           "auto_minedCells",
           `${getProperty("auto_minedCells")}${cell.toString()},`,
         );
@@ -566,7 +563,7 @@ function L8_getMineOres(): boolean {
 
 const L8_getMineOresTask: QuestTask = registerQuestTask({
   name: "L8_getMineOres",
-  completed: () => itemAmount(toItem(getProperty("trapperOre"))) >= 3,
+  completed: () => itemAmount(get("trapperOre", Item.none)) >= 3,
   ready: () => true,
   do: L8_getMineOres,
   locations: $location`Itznotyerzitz Mine`,
@@ -662,7 +659,7 @@ function L8_trapperExtreme(): boolean {
     return false;
   }
   // We don't need to force the first NC, it''s superlikely. The other two we can.
-  const currentExtremity: number = toInt(getProperty("currentExtremity"));
+  const currentExtremity: number = get("currentExtremity");
   if (currentExtremity === 1 || currentExtremity === 2) {
     const NCForced: boolean = auto_forceNextNoncombat(
       $location`The eXtreme Slope`,
@@ -749,13 +746,13 @@ function L8_trapperNinjaLairDo(): boolean {
     // try to unlock peak
     return true; // successfully finished this part of the quest
   }
-  if (toBoolean(getProperty("auto_L8_extremeInstead"))) {
+  if (get("auto_L8_extremeInstead", false)) {
     // we want to do extreme path instead
     return false;
   }
-  if (toBoolean(getProperty("auto_L8_ninjaAssassinFail"))) {
+  if (get("auto_L8_ninjaAssassinFail", false)) {
     // we cannot survive against assassins
-    setProperty("auto_L8_extremeInstead", true.toString());
+    set("auto_L8_extremeInstead", true);
     return false;
   }
   // we must use two variables because there are too many special cases. maybe we can survive assassins but not encounter them due to +combat being too low. Copiers and pulls complicate matters. We could copy an assassin even if we cannot encounter it in the lair
@@ -766,7 +763,7 @@ function L8_trapperNinjaLairDo(): boolean {
   ) {
     if (isAboutToPowerlevel()) {
       //if we can't survive and we are powerleveling, do extreme path
-      setProperty("auto_L8_ninjaAssassinFail", true.toString());
+      set("auto_L8_ninjaAssassinFail", true);
       return true;
     } else {
       auto_log_warning(
@@ -818,7 +815,7 @@ function L8_trapperNinjaLairDo(): boolean {
         `Something is keeping us from getting a suitable combat rate for ninja snowman assassin. we can only reach: ${numericModifier($modifier`Combat Rate`)}. Switching to extreme slope route`,
         "red",
       );
-      setProperty("auto_L8_extremeInstead", true.toString());
+      set("auto_L8_extremeInstead", true);
       return true;
     } else {
       auto_log_warning(
@@ -863,7 +860,7 @@ export function L8_trapperNinjaLair(): boolean {
 
 function L8_trapperGroarDo(): boolean {
   // do the peak portion of L8 trapper quest.
-  if (toBoolean(getProperty("_auto_skip_L8_trapperGroar"))) {
+  if (get("_auto_skip_L8_trapperGroar", false)) {
     auto_log_warning(
       "Skipping L8_trapperGroar() today as per _auto_skip_L8_trapperGroar",
     );
@@ -879,7 +876,7 @@ function L8_trapperGroarDo(): boolean {
       `Quest tracking error detected. Mafia thinks we are in step4 of questL08Trapper but we are in fact in step5. Correcting. Current Path = ${myPath().name}`,
       "red",
     );
-    setProperty("questL08Trapper", "step5");
+    set("questL08Trapper", "step5");
     return true;
   }
 
@@ -909,11 +906,11 @@ function L8_trapperGroarDo(): boolean {
     }
     if ($location`Mist-Shrouded Peak`.turnsSpent >= 3) {
       //does not account for possible defeats
-      setProperty("auto_nextEncounter", "Groar");
+      set("auto_nextEncounter", "Groar");
     } else {
-      setProperty("auto_nextEncounter", "panicking Knott Yeti");
+      set("auto_nextEncounter", "panicking Knott Yeti");
     }
-    setProperty("auto_nonAdvLoc", true.toString());
+    set("auto_nonAdvLoc", true);
     // Let's whack some free XP on our Chest Mimic (it's a chaun)
     if (auto_haveChestMimic()) {
       handleFamiliar$1($familiar`Chest Mimic`);
@@ -958,7 +955,7 @@ function L8_trapperGroarDo(): boolean {
 
     if (current_step === 3 || current_step === 4) {
       // boss is still alive yet no adv was spent. most likely scenario is that our cold res was too low. maybe free combat?
-      if (toInt(getProperty("_auto_inf_counter")) > 5) {
+      if (get("_auto_inf_counter", 0) > 5) {
         print(
           "We are stuck trying to adventure in [Mist-shrouded Peak] and failing repeatedly",
           "red",
@@ -1023,7 +1020,7 @@ function L8_trapperPeakDo(): boolean {
     if (provideResistances$4(resGoal, $location`Mist-Shrouded Peak`, true)) {
       equipMaximizedGear();
       visitUrl("place.php?whichplace=mclargehuge&action=cloudypeak"); // unlock peak. advancing to step 4.
-      setProperty("auto_ninjasnowmanassassin", true.toString()); // heavy rains. are we done copying them
+      set("auto_ninjasnowmanassassin", true); // heavy rains. are we done copying them
     } else {
       // TODO get outfit
       // TODO does TCRS have a problem with the outfit still not being enough? look into it
@@ -1037,7 +1034,7 @@ function L8_trapperPeakDo(): boolean {
     }
   }
   // unlock peak using extremeness
-  if (toInt(getProperty("currentExtremity")) >= 3) {
+  if (get("currentExtremity") >= 3) {
     if (auto_haveMcHugeLargeSkis()) {
       equip($slot`back`, $item`McHugeLarge duffel bag`);
       equip($slot`weapon`, $item`McHugeLarge right pole`);
@@ -1081,9 +1078,9 @@ export function L8_forceExtremeInstead(): boolean {
     !auto_canForceNextCombat() &&
     (!auto_haveCombatForceSource() || isAboutToPowerlevel())
   ) {
-    setProperty("auto_L8_extremeInstead", true.toString());
+    set("auto_L8_extremeInstead", true);
   }
-  return toBoolean(getProperty("auto_L8_extremeInstead"));
+  return get("auto_L8_extremeInstead", false);
 }
 
 function L8_trapperSlopeDo(): boolean {
@@ -1111,7 +1108,7 @@ function L8_trapperSlopeDo(): boolean {
   if (
     auto_haveCombatForceSource() &&
     !isAboutToPowerlevel() &&
-    !toBoolean(getProperty("auto_L8_extremeInstead"))
+    !get("auto_L8_extremeInstead", false)
   ) {
     return false; // we want to wait until we can force combats if we have a force source, unless we've decided to go extreme or have totally run out of tasks
   }
@@ -1122,7 +1119,7 @@ function L8_trapperSlopeDo(): boolean {
       return true;
     }
   }
-  if (toBoolean(getProperty("auto_L8_extremeInstead"))) {
+  if (get("auto_L8_extremeInstead", false)) {
     // we decided we do not want to adventure in the ninja lair
     if (L8_trapperExtreme()) {
       // try to climb slope via extreme path
@@ -1164,12 +1161,12 @@ function L8_trapperTalkDo(): boolean {
   if (initial_step === 1) {
     // step1===we know what ore to get. so go get ore and cheese
     if (
-      itemAmount(toItem(getProperty("trapperOre"))) >= 3 &&
+      itemAmount(get("trapperOre", Item.none)) >= 3 &&
       itemAmount($item`goat cheese`) >= 3
     ) {
       // turn in ore and cheese to advance from step1 to step2
       auto_log_info(
-        `Giving Trapper goat cheese and ${toItem(getProperty("trapperOre"))}`,
+        `Giving Trapper goat cheese and ${get("trapperOre", Item.none)}`,
         "blue",
       );
       visitUrl("place.php?whichplace=mclargehuge&action=trappercabin"); // talk to the trapper to advance quest
@@ -1221,7 +1218,7 @@ function L8_trapperQuestDo(): boolean {
   //at end of day last chance to get milk could be more valuable for characters with a stomach than not cancelling banishes used in L7
   if (
     myAdventures() < 7 &&
-    !toBoolean(getProperty("_milkOfMagnesiumUsed")) &&
+    !get("_milkOfMagnesiumUsed") &&
     fullnessLimit() !== 0 &&
     haveSkill($skill`Advanced Saucecrafting`) &&
     L8_getGoatCheese()

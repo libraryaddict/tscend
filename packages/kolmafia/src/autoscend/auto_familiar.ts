@@ -27,9 +27,7 @@ import {
   myMeat,
   myMp,
   numericModifier,
-  setProperty,
   splitString,
-  toBoolean,
   toFamiliar,
   toInt,
   useFamiliar,
@@ -45,6 +43,8 @@ import {
   $locations,
   $modifier,
   $slot,
+  get,
+  set,
 } from "libram";
 
 import {
@@ -104,7 +104,7 @@ import { fileAsMap } from "./utils/kolmafiaUtils";
 export function is100FamRun(): boolean {
   // answers the question of "is this a 100% familiar run"
 
-  if (toFamiliar(getProperty("auto_100familiar")) === Familiar.none) {
+  if (get("auto_100familiar", Familiar.none) === Familiar.none) {
     return false;
   }
   // if you reached this line, then it means that auto_100familiar is set to some specific familiar.
@@ -117,7 +117,7 @@ export function doNotBuffFamiliar100Run(): boolean {
   if (!is100FamRun()) {
     return false;
   }
-  const hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
+  const hundred_fam: Familiar = get("auto_100familiar", Familiar.none);
   //these familiars always harm you and never aid you
   if ($familiars`Black Cat, O.A.F.`.includes(hundred_fam)) {
     return true;
@@ -156,7 +156,7 @@ export function isAttackFamiliar(fam: Familiar): boolean {
     return true;
   }
   if (fam === $familiar`Mini-Adventurer`) {
-    const miniAdvClass: number = toInt(getProperty("miniAdvClass"));
+    const miniAdvClass: number = get("miniAdvClass");
     if (
       miniAdvClass === 1 ||
       (miniAdvClass === 2 && myLevel() >= 5) ||
@@ -236,7 +236,7 @@ export function pathHasFamiliar(): boolean {
     return false;
   }
   //You, Robot has familiars... but only if your head attachment is set to birdcage.
-  if (in_robot() && toInt(getProperty("youRobotTop")) !== 2) {
+  if (in_robot() && get("youRobotTop") !== 2) {
     return false; //our top is not currently set to birdcage so familiars are disabled.
   }
 
@@ -293,7 +293,7 @@ export function canChangeFamiliar(): boolean {
     return false;
   }
 
-  if (toBoolean(getProperty("auto_disableFamiliarChanging"))) {
+  if (get("auto_disableFamiliarChanging", false)) {
     return false;
   }
 
@@ -307,7 +307,7 @@ export function canChangeToFamiliar(target: Familiar): boolean {
     return true;
   }
 
-  if (toBoolean(getProperty("auto_disableFamiliarChanging"))) {
+  if (get("auto_disableFamiliarChanging", false)) {
     return false;
   }
   // if you don't have a familiar, you can't change to it.
@@ -319,7 +319,7 @@ export function canChangeToFamiliar(target: Familiar): boolean {
     return false;
   }
   // You are allowed to change to a familiar if it is also the goal of the current 100% run.
-  if (toFamiliar(getProperty("auto_100familiar")) === target) {
+  if (get("auto_100familiar", Familiar.none) === target) {
     return true;
   }
   //kolhs specific check that needs to go here specifically. can not take familiars >10 lbs base weight into school zone.
@@ -345,7 +345,7 @@ export function canChangeToFamiliar(target: Familiar): boolean {
   if (in_avantGuard()) {
     if ($familiar`Burly Bodyguard` === target) {
       return true; // always allowed
-    } else if (toBoolean(getProperty("auto_nonAdvLoc"))) {
+    } else if (get("auto_nonAdvLoc", false)) {
       if ($familiar`Gelatinous Cubeling` === target && inHardcore()) {
         return true; // don't need Gel Cube in Normal
       } else if ($familiars`Cookbookbat, Mini Kiwi`.includes(target)) {
@@ -413,7 +413,7 @@ export function lookupFamiliarDatafile(type_1: string): Familiar {
 
   auto_log_debug(`lookupFamiliarDatafile is checking for type [${type_1}]`);
   // store what type of fam we are looking for
-  setProperty("auto_lastFamiliarLookupType", type_1);
+  set("auto_lastFamiliarLookupType", type_1);
   const familiars_text: Map<
     string,
     Map<number, Map<string, string>>
@@ -455,7 +455,7 @@ export function handleFamiliar(type_1: string): boolean {
   //This function calls familiar lookupFamiliarDatafile(string type) and if a result is found will send it over to handleFamiliar(familiar fam) so it can be set as our target familiar to be used during pre adventure.
   //we do not want a fallback here. if no matching familiar is found then do nothing here, a familiar will be automatically set in pre adventure
 
-  if (toBoolean(getProperty("auto_disableFamiliarChanging"))) {
+  if (get("auto_disableFamiliarChanging", false)) {
     return false; //familiar changing temporarily disabled.
   }
   if (!pathHasFamiliar() || !pathAllowsChangingFamiliar()) {
@@ -479,7 +479,7 @@ export function handleFamiliar$1(fam: Familiar): boolean {
   if (fam === Familiar.none) {
     return false;
   }
-  if (toFamiliar(getProperty("auto_familiarChoice")) === fam) {
+  if (get("auto_familiarChoice", Familiar.none) === fam) {
     //this should go after $familiar[none] check
     return true; //desired target is already set as the familiar I will be switching to.
   }
@@ -507,29 +507,27 @@ export function handleFamiliar$1(fam: Familiar): boolean {
     return false;
   }
 
-  setProperty("auto_familiarChoice", fam.toString());
-  setProperty("_auto_thisLoopHandleFamiliar", true.toString());
+  set("auto_familiarChoice", fam);
+  set("_auto_thisLoopHandleFamiliar", true);
   return true;
 }
 
 function autoChooseFamiliar(place: Location): boolean {
   //if no familiar target was set this loop. then automatically determine which familiar to use
 
-  if (toBoolean(getProperty("auto_disableFamiliarChanging"))) {
+  if (get("auto_disableFamiliarChanging", false)) {
     return false;
   }
   if (!pathHasFamiliar() || !pathAllowsChangingFamiliar()) {
     return false; //will just error in those paths
   }
-  const familiar_target_100: Familiar = toFamiliar(
-    getProperty("auto_100familiar"),
-  );
+  const familiar_target_100: Familiar = get("auto_100familiar", Familiar.none);
   if (familiar_target_100 !== Familiar.none) {
     return handleFamiliar$1(familiar_target_100); //do not break 100 familiar runs
   }
   // Can only use burly bodyguard, except in non-adventure.php zones. In those, we want the Gelatinous Cubeling for Daily Dungeon drops
   if (in_avantGuard()) {
-    if (toBoolean(getProperty("auto_nonAdvLoc"))) {
+    if (get("auto_nonAdvLoc", false)) {
       if (wantCubeling()) {
         return handleFamiliar$1($familiar`Gelatinous Cubeling`);
       } else {
@@ -598,15 +596,12 @@ function autoChooseFamiliar(place: Location): boolean {
   if (
     $location`The Defiled Cranny` === place &&
     auto_turbo() &&
-    itemAmount($item`dieting pill`) + toInt(getProperty("auto_dietpills")) < 3
+    itemAmount($item`dieting pill`) + get("auto_dietpills", 0) < 3
   ) {
     famChoice = lookupFamiliarDatafile("item"); // get dieting pills faster if in turbo
   }
   // If we're down to 1 evilness left before the boss in the Nook, it doesn't matter if we get an Evil Eye or not.
-  if (
-    $location`The Defiled Nook` === place &&
-    toInt(getProperty("cyrptNookEvilness")) > 14
-  ) {
+  if ($location`The Defiled Nook` === place && get("cyrptNookEvilness") > 14) {
     famChoice = lookupFamiliarDatafile("item");
   }
   // only need +item in the pirates cove if we're faming the outfit (may be farming insults here or getting the key in LKS otherwise)
@@ -629,7 +624,7 @@ function autoChooseFamiliar(place: Location): boolean {
     itemAmount($item`lowercase N`) === 0 &&
     itemAmount($item`ND`) === 0 &&
     itemAmount($item`Wand of Nagamar`) === 0 &&
-    toBoolean(getProperty("auto_wandOfNagamar"))
+    get("auto_wandOfNagamar", false)
   ) {
     famChoice = lookupFamiliarDatafile("item");
   }
@@ -671,16 +666,13 @@ function autoChooseFamiliar(place: Location): boolean {
     famChoice = lookupFamiliarDatafile("item");
   }
   // only use +item in A-Boo Peak when adventuring (so we don't accidentally override resistance familiars when doing The Horror).
-  if (
-    $location`A-Boo Peak` === place &&
-    toInt(getProperty("auto_aboopending")) === 0
-  ) {
+  if ($location`A-Boo Peak` === place && get("auto_aboopending", 0) === 0) {
     famChoice = lookupFamiliarDatafile("item");
   }
   // only need +item at Oil Peak if we need Bubblin' Crude (TODO: it might be useful in HC for food?).
   if (
     $location`Oil Peak` === place &&
-    (toInt(getProperty("twinPeakProgress")) & 4) === 0 &&
+    (get("twinPeakProgress") & 4) === 0 &&
     itemAmount($item`jar of oil`) < 1 &&
     itemAmount($item`bubblin' crude`) < 12
   ) {
@@ -711,15 +703,15 @@ function autoChooseFamiliar(place: Location): boolean {
   if (
     $location`The Haunted Library` === place &&
     itemAmount($item`killing jar`) < 1 &&
-    (toInt(getProperty("gnasirProgress")) & 4) === 0 &&
-    toInt(getProperty("desertExploration")) < 100
+    (get("gnasirProgress") & 4) === 0 &&
+    get("desertExploration") < 100
   ) {
     famChoice = lookupFamiliarDatafile("item");
   }
   // +item helps if we still need the book of matches
   if (
     $location`The Hidden Park` === place &&
-    toInt(getProperty("hiddenTavernUnlock")) !== myAscensions()
+    get("hiddenTavernUnlock") !== myAscensions()
   ) {
     famChoice = lookupFamiliarDatafile("item");
   }
@@ -750,7 +742,7 @@ function autoChooseFamiliar(place: Location): boolean {
   // places where initiative is required to help save adventures.
   if (
     $location`The Defiled Alcove` === place &&
-    toInt(getProperty("cyrptAlcoveEvilness")) > 14
+    get("cyrptAlcoveEvilness") > 14
   ) {
     famChoice = lookupFamiliarDatafile("init");
   }
@@ -860,7 +852,7 @@ function autoChooseFamiliar(place: Location): boolean {
   if (
     famChoice === Familiar.none &&
     !in_amw() &&
-    (myLevel() < 13 || toBoolean(getProperty("auto_disregardInstantKarma")))
+    (myLevel() < 13 || get("auto_disregardInstantKarma", false))
   ) {
     famChoice = lookupFamiliarDatafile("stat");
   }
@@ -895,7 +887,7 @@ export function wantCubeling(): boolean {
   if (!canChangeToFamiliar($familiar`Gelatinous Cubeling`)) {
     return false; //can not use it so we do not want it.
   }
-  if (toInt(getProperty("cubelingProgress")) > 11) {
+  if (get("cubelingProgress") > 11) {
     return false; //cubeling already dropped tools in this ascension. It cannot drop more until you ascend again.
   }
 
@@ -911,14 +903,14 @@ export function wantCubeling(): boolean {
 }
 
 export function preAdvUpdateFamiliar(place: Location): void {
-  if (toBoolean(getProperty("auto_disableFamiliarChanging"))) {
+  if (get("auto_disableFamiliarChanging", false)) {
     return;
   }
   if (!pathHasFamiliar() || !pathAllowsChangingFamiliar()) {
     return; //will just error in those paths
   }
   if (is100FamRun()) {
-    handleFamiliar$1(toFamiliar(getProperty("auto_100familiar"))); //do not break 100 familiar runs
+    handleFamiliar$1(get("auto_100familiar", Familiar.none)); //do not break 100 familiar runs
   }
   //familiar requirement to adventure in a zone, override everything else.
   if (place === $location`The Deep Machine Tunnels`) {
@@ -935,7 +927,7 @@ export function preAdvUpdateFamiliar(place: Location): void {
   }
   //if familiar not set yet, first check stealing familiar
   if (
-    !toBoolean(getProperty("_auto_thisLoopHandleFamiliar")) &&
+    !get("_auto_thisLoopHandleFamiliar", false) &&
     canChangeToFamiliar($familiar`Cat Burglar`) &&
     catBurglarHeistsLeft() > 0
   ) {
@@ -966,12 +958,12 @@ export function preAdvUpdateFamiliar(place: Location): void {
     }
   }
   //if familiar not set choose a familiar using general logic
-  if (!toBoolean(getProperty("_auto_thisLoopHandleFamiliar"))) {
+  if (!get("_auto_thisLoopHandleFamiliar", false)) {
     //check that we didn't already set familiar target this loop
     autoChooseFamiliar(place);
   }
 
-  const famChoice: Familiar = toFamiliar(getProperty("auto_familiarChoice"));
+  const famChoice: Familiar = get("auto_familiarChoice", Familiar.none);
   if (famChoice === Familiar.none) {
     if (getProperty("auto_familiarChoice") === "") {
       abort(
@@ -1003,9 +995,9 @@ export function preAdvUpdateFamiliar(place: Location): void {
       }
     }
     // only visit the cake-shaped arena if we need to pickup an equipment.
-    if (!toBoolean(getProperty("_auto_gnomeArenaVisited")) && visitArena) {
+    if (!get("_auto_gnomeArenaVisited", false) && visitArena) {
       auto_resolveEncounters(visitUrl("arena.php"));
-      setProperty("_auto_gnomeArenaVisited", "true");
+      set("_auto_gnomeArenaVisited", "true");
     }
     autoEquipToSlot($slot`familiar`, $item`gnomish housemaid's kgnee`);
   }

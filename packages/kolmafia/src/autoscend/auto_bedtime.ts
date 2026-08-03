@@ -55,7 +55,6 @@ import {
   print,
   pullsRemaining,
   putCloset,
-  setProperty,
   Skill,
   Slot,
   spleenLimit,
@@ -64,10 +63,8 @@ import {
   stillsAvailable,
   storageAmount,
   stringModifier,
-  toBoolean,
   toFloat,
   toInt,
-  toItem,
   toSlot,
   totalFreeRests,
   use,
@@ -91,6 +88,8 @@ import {
   $slot,
   $slots,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { auto_unreservedAdvRemaining, dailyEvents } from "../autoscend";
@@ -466,7 +465,7 @@ function pullsNeeded(data: string): number {
   if (progress < 4) {
     adv = adv + 6;
     if (
-      toBoolean(getProperty("auto_wandOfNagamar")) &&
+      get("auto_wandOfNagamar", false) &&
       itemAmount($item`Wand of Nagamar`) === 0 &&
       cloversAvailable() === 0
     ) {
@@ -821,9 +820,7 @@ function bedtime_pulls_rollover_equip(
       }
     }
     //find the very best item
-    const extra_debug: boolean = toBoolean(
-      getProperty("_auto_extra_debug_bedtime_pulls"),
-    );
+    const extra_debug: boolean = get("_auto_extra_debug_bedtime_pulls", false);
     for (let sl of $slots`hat, weapon, off-hand, back, shirt, pants, acc1, familiar`) {
       if (sl === $slot`acc1`) {
         sl = worst_acc_slot;
@@ -881,7 +878,7 @@ function bedtime_pulls(): void {
     //out of pulls or in hardcore or in casual.
     return;
   }
-  if (toBoolean(getProperty("auto_bedtime_pulls_skip"))) {
+  if (get("auto_bedtime_pulls_skip", false)) {
     return;
   }
 
@@ -921,7 +918,7 @@ function bedtime_pulls(): void {
     pullXWhenHaveY($item`blackberry galoshes`, 1, 0);
   }
   if (internalQuestStatus("questL11Desert") < 1) {
-    const gnasirProgress: number = toInt(getProperty("gnasirProgress"));
+    const gnasirProgress: number = get("gnasirProgress");
     if ((gnasirProgress & 16) === 0 && auto_is_valid($item`drum machine`)) {
       pullXWhenHaveY($item`drum machine`, 1, 0);
     }
@@ -999,12 +996,8 @@ export function doBedtime(): boolean {
     !in_avantGuard()
   ) {
     handleFamiliar("stat");
-    let oldSeals: number = toInt(getProperty("_sealsSummoned"));
-    while (
-      toInt(getProperty("_sealsSummoned")) < 5 &&
-      !inAftercore() &&
-      myMeat() > 4500
-    ) {
+    let oldSeals: number = get("_sealsSummoned");
+    while (get("_sealsSummoned") < 5 && !inAftercore() && myMeat() > 4500) {
       let summoned: boolean;
       if (myDaycount() === 1 && myLevel() >= 6 && isHermitAvailable()) {
         cliExecute("make figurine of an ancient seal");
@@ -1031,7 +1024,7 @@ export function doBedtime(): boolean {
         handleSealNormal($item`figurine of a wretched-looking seal`);
         summoned = true;
       }
-      const newSeals: number = toInt(getProperty("_sealsSummoned"));
+      const newSeals: number = get("_sealsSummoned");
       if (newSeals === oldSeals && summoned) {
         abort("Unable to summon seals.");
       }
@@ -1039,19 +1032,16 @@ export function doBedtime(): boolean {
     }
   }
 
-  if (toInt(getProperty("auto_priorCharpaneMode")) === 1) {
+  if (get("auto_priorCharpaneMode", 0) === 1) {
     auto_log_info("Resuming Compact Character Mode.");
-    setProperty("auto_priorCharpaneMode", (0).toString());
+    set("auto_priorCharpaneMode", 0);
     visitUrl(
       "account.php?am=1&pwd=&action=flag_compactchar&value=1&ajax=0",
       true,
     );
   }
 
-  if (
-    itemAmount($item`License to Chill`) > 0 &&
-    !toBoolean(getProperty("_licenseToChillUsed"))
-  ) {
+  if (itemAmount($item`License to Chill`) > 0 && !get("_licenseToChillUsed")) {
     use(1, $item`License to Chill`);
   }
 
@@ -1063,17 +1053,14 @@ export function doBedtime(): boolean {
   ) {
     if (myDaycount() === 1) {
       if (itemAmount($item`Rain-Doh indigo cup`) > 0) {
-        auto_log_info(
-          `Copies left: ${5 - toInt(getProperty("_raindohCopiesMade"))}`,
-          "olive",
-        );
+        auto_log_info(`Copies left: ${5 - get("_raindohCopiesMade")}`, "olive");
       }
       if (!inHardcore()) {
         auto_log_info(`Pulls remaining: ${pullsRemaining()}`, "olive");
       }
       if (
         !possessOutfit("frat warrior fatigues") &&
-        !toBoolean(getProperty("auto_hippyInstead"))
+        !get("auto_hippyInstead", false)
       ) {
         auto_log_info(
           "Please consider an orcish frat boy spy (You want Frat Warrior Fatigues).",
@@ -1084,7 +1071,7 @@ export function doBedtime(): boolean {
         }
       } else if (
         !possessOutfit("War Hippy Fatigues") &&
-        toBoolean(getProperty("auto_hippyInstead"))
+        get("auto_hippyInstead", false)
       ) {
         auto_log_info(
           "Please consider a Bailey's Beetle (You want War Hippy Fatigues).",
@@ -1102,12 +1089,12 @@ export function doBedtime(): boolean {
     }
     if (
       auto_have_familiar($familiar`Machine Elf`) &&
-      toInt(getProperty("_machineTunnelsAdv")) < 5 &&
+      get("_machineTunnelsAdv") < 5 &&
       inebriety_left() >= 0 &&
       myAdventures() > 0
     ) {
       auto_log_info(
-        `You have ${5 - toInt(getProperty("_machineTunnelsAdv"))} fights in The Deep Machine Tunnels that you should use!`,
+        `You have ${5 - get("_machineTunnelsAdv")} fights in The Deep Machine Tunnels that you should use!`,
         "blue",
       );
     }
@@ -1129,7 +1116,7 @@ export function doBedtime(): boolean {
   const bottle: Item = wrap_item($item`genie bottle`);
   if (itemAmount(bottle) > 0 && auto_is_valid(bottle)) {
     //we are in bedtime so any wishes we planned to use today were already used. thus even if we can not use pocket wishes in this path we should still make them to avoid waste
-    for (let i: number = toInt(getProperty("_genieWishesUsed")); i < 3; i++) {
+    for (let i: number = get("_genieWishesUsed"); i < 3; i++) {
       makeGeniePocket();
     }
   }
@@ -1145,7 +1132,7 @@ export function doBedtime(): boolean {
 
   if (
     itemAmount($item`infinite BACON machine`) > 0 &&
-    !toBoolean(getProperty("_internetViralVideoBought")) &&
+    !get("_internetViralVideoBought") &&
     !canInteract()
   ) {
     const hasDisintegrate: boolean =
@@ -1170,7 +1157,7 @@ export function doBedtime(): boolean {
     }
   }
 
-  if (friarsAvailable() && !toBoolean(getProperty("friarsBlessingReceived"))) {
+  if (friarsAvailable() && !get("friarsBlessingReceived")) {
     if (pathHasFamiliar()) {
       cliExecute("friars familiar");
     } else {
@@ -1183,7 +1170,7 @@ export function doBedtime(): boolean {
   }
 
   if (
-    !toBoolean(getProperty("_mayoTankSoaked")) &&
+    !get("_mayoTankSoaked") &&
     auto_get_campground().has($item`portable Mayo Clinic`) &&
     isUnrestricted($item`portable Mayo Clinic`)
   ) {
@@ -1192,8 +1179,8 @@ export function doBedtime(): boolean {
 
   if (
     in_nuclear() &&
-    toInt(getProperty("falloutShelterLevel")) >= 3 &&
-    !toBoolean(getProperty("_falloutShelterSpaUsed"))
+    get("falloutShelterLevel") >= 3 &&
+    !get("_falloutShelterSpaUsed")
   ) {
     visitUrl("place.php?whichplace=falloutshelter&action=vault3");
   }
@@ -1211,7 +1198,7 @@ export function doBedtime(): boolean {
 
   if (
     isUnrestricted($item`Clan pool table`) &&
-    toInt(getProperty("_poolGames")) < 3 &&
+    get("_poolGames") < 3 &&
     itemAmount($item`Clan VIP Lounge key`) > 0
   ) {
     visitUrl("clan_viplounge.php?preaction=poolgame&stance=1");
@@ -1223,13 +1210,13 @@ export function doBedtime(): boolean {
   }
   if (
     isUnrestricted($item`colorful plastic ball`) &&
-    !toBoolean(getProperty("_ballpit")) &&
+    !get("_ballpit") &&
     getClanId() !== -1
   ) {
     cliExecute("ballpit");
   }
   if (
-    toInt(getProperty("telescopeUpgrades")) > 0 &&
+    get("telescopeUpgrades") > 0 &&
     internalQuestStatus("questL13Final") < 0
   ) {
     if (
@@ -1266,7 +1253,7 @@ export function doBedtime(): boolean {
     !inAftercore() &&
     !in_tcrs()
   ) {
-    const oreGoal: Item = toItem(getProperty("trapperOre"));
+    const oreGoal: Item = get("trapperOre", Item.none);
     let need: number = 1;
     const haveAdvSmithing: boolean = haveSkill(
       $skill`Super-Advanced Meatsmithing`,
@@ -1297,7 +1284,7 @@ export function doBedtime(): boolean {
     myDaycount() === 1 &&
     auto_is_valid($item`resolution: be more adventurous`) &&
     itemAmount($item`resolution: be more adventurous`) > 0 &&
-    toInt(getProperty("_resolutionAdv")) < 10 &&
+    get("_resolutionAdv") < 10 &&
     !canInteract()
   ) {
     use(1, $item`resolution: be more adventurous`);
@@ -1345,12 +1332,9 @@ export function doBedtime(): boolean {
   }
 
   dailyEvents();
-  if (
-    toInt(getProperty("auto_clanstuff")) < myDaycount() &&
-    getClanId() !== -1
-  ) {
+  if (get("auto_clanstuff", 0) < myDaycount() && getClanId() !== -1) {
     if (
-      toInt(getProperty("_klawSummons")) === 0 &&
+      get("_klawSummons") === 0 &&
       'Mr. Klaw "Skill" Crane Game' in getClanRumpus()
     ) {
       cliExecute("clan_rumpus.php?action=click&spot=3&furni=3");
@@ -1360,28 +1344,25 @@ export function doBedtime(): boolean {
     if (itemAmount($item`Clan VIP Lounge key`) > 0) {
       if (
         isUnrestricted($item`Olympic-sized Clan crate`) &&
-        !toBoolean(getProperty("_olympicSwimmingPool"))
+        !get("_olympicSwimmingPool")
       ) {
         cliExecute("swim noncombat");
       }
       if (
         isUnrestricted($item`Olympic-sized Clan crate`) &&
-        !toBoolean(getProperty("_olympicSwimmingPoolItemFound"))
+        !get("_olympicSwimmingPoolItemFound")
       ) {
         cliExecute("swim item");
       }
-      if (
-        isUnrestricted($item`Clan looking glass`) &&
-        !toBoolean(getProperty("_lookingGlass"))
-      ) {
+      if (isUnrestricted($item`Clan looking glass`) && !get("_lookingGlass")) {
         visitUrl("clan_viplounge.php?action=lookingglass");
       }
-      if (toInt(getProperty("_deluxeKlawSummons")) === 0) {
+      if (get("_deluxeKlawSummons") === 0) {
         cliExecute("clan_viplounge.php?action=klaw");
         cliExecute("clan_viplounge.php?action=klaw");
         cliExecute("clan_viplounge.php?action=klaw");
       }
-      if (!toBoolean(getProperty("_aprilShower"))) {
+      if (!get("_aprilShower")) {
         if (inAftercore()) {
           cliExecute("shower ice");
         } else if (in_glover()) {
@@ -1390,82 +1371,70 @@ export function doBedtime(): boolean {
           cliExecute(`shower ${myPrimestat()}`);
         }
       }
-      if (
-        isUnrestricted($item`Crimbough`) &&
-        !toBoolean(getProperty("_crimboTree"))
-      ) {
+      if (isUnrestricted($item`Crimbough`) && !get("_crimboTree")) {
         cliExecute("crimbotree get");
       }
     }
-    setProperty("auto_clanstuff", `${myDaycount()}`);
+    set("auto_clanstuff", `${myDaycount()}`);
   }
 
   if (
     getProperty("sidequestOrchardCompleted") !== "none" &&
-    !toBoolean(getProperty("_hippyMeatCollected"))
+    !get("_hippyMeatCollected")
   ) {
     visitUrl("shop.php?whichshop=hippy");
   }
 
   if (
     getProperty("sidequestArenaCompleted") !== "none" &&
-    !toBoolean(getProperty("concertVisited"))
+    !get("concertVisited")
   ) {
     cliExecute("concert 2");
   }
   if (inAftercore()) {
-    if (
-      itemAmount($item`The Legendary Beat`) > 0 &&
-      !toBoolean(getProperty("_legendaryBeat"))
-    ) {
+    if (itemAmount($item`The Legendary Beat`) > 0 && !get("_legendaryBeat")) {
       use(1, $item`The Legendary Beat`);
     }
     if (
       auto_have_skill($skill`Summon Clip Art`) &&
-      toInt(getProperty("_clipartSummons")) === 0
+      get("_clipartSummons") === 0
     ) {
       cliExecute("make unbearable light");
     }
     if (
       auto_have_skill($skill`Summon Clip Art`) &&
-      toInt(getProperty("_clipartSummons")) === 1
+      get("_clipartSummons") === 1
     ) {
       cliExecute("make cold-filtered water");
     }
     if (
       auto_have_skill($skill`Summon Clip Art`) &&
-      toInt(getProperty("_clipartSummons")) === 2
+      get("_clipartSummons") === 2
     ) {
       cliExecute("make bucket of wine");
     }
     if (
       itemAmount($item`handmade hobby horse`) > 0 &&
-      !toBoolean(getProperty("_hobbyHorseUsed"))
+      !get("_hobbyHorseUsed")
     ) {
       use(1, $item`handmade hobby horse`);
     }
-    if (
-      itemAmount($item`ball-in-a-cup`) > 0 &&
-      !toBoolean(getProperty("_ballInACupUsed"))
-    ) {
+    if (itemAmount($item`ball-in-a-cup`) > 0 && !get("_ballInACupUsed")) {
       use(1, $item`ball-in-a-cup`);
     }
-    if (
-      itemAmount($item`set of jacks`) > 0 &&
-      !toBoolean(getProperty("_setOfJacksUsed"))
-    ) {
+    if (itemAmount($item`set of jacks`) > 0 && !get("_setOfJacksUsed")) {
       use(1, $item`set of jacks`);
     }
   }
 
-  if (myDaycount() - 5 >= toInt(getProperty("lastAnticheeseDay"))) {
+  if (myDaycount() - 5 >= get("lastAnticheeseDay")) {
     visitUrl("place.php?whichplace=desertbeach&action=db_nukehouse");
   }
 
   if (
     auto_haveWitchess() &&
-    toInt(getProperty("puzzleChampBonus")) === 20 &&
-    !toBoolean(getProperty("_witchessBuff"))
+    get("puzzleChampBonus") === 20 &&
+    !get("_witchessBuff")
   ) {
     visitUrl("campground.php?action=witchess");
     visitUrl("choice.php?whichchoice=1181&pwd=&option=3");
@@ -1501,7 +1470,7 @@ export function doBedtime(): boolean {
     $item`Source terminal`.toString() in getCampground()
   ) {
     if (!inAftercore() && getProperty("auto_extrudeChoice") !== "none") {
-      let count_1: number = 3 - toInt(getProperty("_sourceTerminalExtrudes"));
+      let count_1: number = 3 - get("_sourceTerminalExtrudes");
 
       const extrudeChoice: Map<number, string> = new Map();
       if (getProperty("auto_extrudeChoice") !== "") {
@@ -1547,8 +1516,7 @@ export function doBedtime(): boolean {
         count_1 -= 1;
       }
     }
-    const extrudeLeft: number =
-      3 - toInt(getProperty("_sourceTerminalExtrudes"));
+    const extrudeLeft: number = 3 - get("_sourceTerminalExtrudes");
     if (
       extrudeLeft > 0 &&
       !in_pokefam() &&
@@ -1564,61 +1532,56 @@ export function doBedtime(): boolean {
   auto_burnPowerfulGloveCharges();
 
   if (itemAmount($item`Rain-Doh indigo cup`) > 0) {
-    auto_log_info(
-      `Copies left: ${5 - toInt(getProperty("_raindohCopiesMade"))}`,
-      "olive",
-    );
+    auto_log_info(`Copies left: ${5 - get("_raindohCopiesMade")}`, "olive");
   }
   if (!inHardcore()) {
     auto_log_info(`Pulls remaining: ${pullsRemaining()}`, "olive");
   }
 
   if (haveSkill($skill`Inigo's Incantation of Inspiration`)) {
-    const craftingLeft: number = 5 - toInt(getProperty("_inigosCasts"));
+    const craftingLeft: number = 5 - get("_inigosCasts");
     auto_log_info(`Free Inigo's craftings left: ${craftingLeft}`, "blue");
   }
   if (itemAmount($item`Loathing Legion jackhammer`) > 0) {
-    const craftingLeft: number =
-      3 - toInt(getProperty("_legionJackhammerCrafting"));
+    const craftingLeft: number = 3 - get("_legionJackhammerCrafting");
     auto_log_info(
       `Free Loathing Legion Jackhammer craftings left: ${craftingLeft}`,
       "blue",
     );
   }
   if (itemAmount($item`Thor's Pliers`) > 0) {
-    const craftingLeft: number =
-      10 - toInt(getProperty("_thorsPliersCrafting"));
+    const craftingLeft: number = 10 - get("_thorsPliersCrafting");
     auto_log_info(`Free Thor's Pliers craftings left: ${craftingLeft}`, "blue");
   }
   if (auto_freeCrafts() > 0) {
     auto_log_info(`Free craftings left: ${auto_freeCrafts()}`, "blue");
   }
-  if (toInt(getProperty("timesRested")) < totalFreeRests()) {
+  if (get("timesRested") < totalFreeRests()) {
     auto_log_info(
-      `You have ${totalFreeRests() - toInt(getProperty("timesRested"))} free rests remaining.`,
+      `You have ${totalFreeRests() - get("timesRested")} free rests remaining.`,
       "blue",
     );
   }
   if (
     possessEquipment($item`Kremlin's Greatest Briefcase`) &&
-    toInt(getProperty("_kgbClicksUsed")) < 24
+    get("_kgbClicksUsed") < 24
   ) {
     kgbWasteClicks();
-    const clicks: number = 22 - toInt(getProperty("_kgbClicksUsed"));
+    const clicks: number = 22 - get("_kgbClicksUsed");
     if (clicks > 0) {
       auto_log_info(`You have some KGB clicks (${clicks}) left!`, "green");
     }
   }
   if (
     getProperty("sidequestNunsCompleted") === "fratboy" &&
-    toInt(getProperty("nunsVisits")) < 3
+    get("nunsVisits") < 3
   ) {
     auto_log_info(
-      `You have ${3 - toInt(getProperty("nunsVisits"))} nuns visits left.`,
+      `You have ${3 - get("nunsVisits")} nuns visits left.`,
       "blue",
     );
   }
-  if (toInt(getProperty("libramSummons")) > 0) {
+  if (get("libramSummons") > 0) {
     auto_log_info(
       `Total Libram Summons: ${getProperty("libramSummons")}`,
       "blue",
@@ -1630,7 +1593,7 @@ export function doBedtime(): boolean {
       (itemAmount($item`Golden Mr. Accessory`) +
         storageAmount($item`Golden Mr. Accessory`) +
         closetAmount($item`Golden Mr. Accessory`)) -
-    toInt(getProperty("_smilesOfMrA"));
+    get("_smilesOfMrA");
   if (in_glover()) {
     smiles = 0;
   }
@@ -1644,50 +1607,44 @@ export function doBedtime(): boolean {
 
   if (
     itemAmount($item`CSA fire-starting kit`) > 0 &&
-    !toBoolean(getProperty("_fireStartingKitUsed"))
+    !get("_fireStartingKitUsed")
   ) {
     auto_log_info("Still have a CSA Fire-Starting Kit you can use!", "blue");
   }
   if (
     itemAmount($item`Glenn's golden dice`) > 0 &&
-    !toBoolean(getProperty("_glennGoldenDiceUsed"))
+    !get("_glennGoldenDiceUsed")
   ) {
     auto_log_info(
       "Still have some of Glenn's Golden Dice that you can use!",
       "blue",
     );
   }
-  if (
-    itemAmount($item`License to Chill`) > 0 &&
-    !toBoolean(getProperty("_licenseToChillUsed"))
-  ) {
+  if (itemAmount($item`License to Chill`) > 0 && !get("_licenseToChillUsed")) {
     auto_log_info("You are still licensed enough to be able to chill.", "blue");
   }
 
   if (
     itemAmount($item`School of Hard Knocks Diploma`) > 0 &&
-    !toBoolean(getProperty("_hardKnocksDiplomaUsed"))
+    !get("_hardKnocksDiplomaUsed")
   ) {
     use(1, $item`School of Hard Knocks Diploma`);
   }
 
-  if (
-    !toBoolean(getProperty("_lyleFavored")) &&
-    auto_is_valid$3($effect`Favored by Lyle`)
-  ) {
+  if (!get("_lyleFavored") && auto_is_valid$3($effect`Favored by Lyle`)) {
     visitUrl("place.php?whichplace=monorail&action=monorail_lyle");
   }
 
   if (
-    toBoolean(getProperty("spookyAirportAlways")) &&
+    get("spookyAirportAlways") &&
     !isActuallyEd() &&
-    !toBoolean(getProperty("_controlPanelUsed"))
+    !get("_controlPanelUsed")
   ) {
     visitUrl(
       "place.php?whichplace=airport_spooky_bunker&action=si_controlpanel",
     );
     visitUrl("choice.php?pwd=&whichchoice=986&option=8", true);
-    if (toInt(getProperty("controlPanelOmega")) >= 99) {
+    if (get("controlPanelOmega") >= 99) {
       visitUrl("choice.php?pwd=&whichchoice=986&option=10", true);
     }
   }
@@ -1709,7 +1666,7 @@ export function doBedtime(): boolean {
   let effect_to_wish: Effect = $effect`Frosty`;
   if (getProperty("auto_MLSafetyLimit") !== "" || in_wereprof()) {
     // Professor hates ML
-    if (toInt(getProperty("auto_MLSafetyLimit")) < 25 || in_wereprof()) {
+    if (get("auto_MLSafetyLimit", 0) < 25 || in_wereprof()) {
       // We're adding +25 ML that won't be shrugged. Professor hates ML
       effect_to_wish = $effect`One Very Clear Eye`;
     }
@@ -1718,7 +1675,7 @@ export function doBedtime(): boolean {
     let success: boolean = true;
     // if we unlocked the guild and have a meatcar, unlock Whitey's Grove so we can get bird rib / lion oil
     if (
-      toInt(getProperty("lastGuildStoreOpen")) === myAscensions() &&
+      get("lastGuildStoreOpen") === myAscensions() &&
       itemAmount($item`bitchin' meatcar`) > 0
     ) {
       // start, then finish the meatcar quest
@@ -1807,10 +1764,10 @@ export function doBedtime(): boolean {
     }
     if (
       auto_have_familiar($familiar`Machine Elf`) &&
-      toInt(getProperty("_machineTunnelsAdv")) < 5
+      get("_machineTunnelsAdv") < 5
     ) {
       auto_log_info(
-        `You have ${5 - toInt(getProperty("_machineTunnelsAdv"))} fights in The Deep Machine Tunnels that you should use!`,
+        `You have ${5 - get("_machineTunnelsAdv")} fights in The Deep Machine Tunnels that you should use!`,
         "blue",
       );
     }
@@ -1850,7 +1807,7 @@ export function doBedtime(): boolean {
         auto_log_info(yellowRay_str);
       }
       if (
-        !toBoolean(getProperty("_photocopyUsed")) &&
+        !get("_photocopyUsed") &&
         isUnrestricted($item`deluxe fax machine`) &&
         myAdventures() > 0 &&
         !(is_boris() || is_jarlsberg() || is_pete()) &&
@@ -1868,7 +1825,7 @@ export function doBedtime(): boolean {
     if (
       getWorkshed() === $item`spinning wheel` &&
       isUnrestricted($item`spinning wheel`) &&
-      !toBoolean(getProperty("_spinningWheel"))
+      !get("_spinningWheel")
     ) {
       auto_log_info("Using the spinning wheel in your workshed", "blue");
       visitUrl("campground.php?action=spinningwheel");
@@ -1889,8 +1846,7 @@ export function doBedtime(): boolean {
     if (
       haveSkill($skill`Calculate the Universe`) &&
       auto_is_valid$2($skill`Calculate the Universe`) &&
-      toInt(getProperty("_universeCalculated")) <
-        min(3, toInt(getProperty("skillLevel144")))
+      get("_universeCalculated") < min(3, get("skillLevel144"))
     ) {
       auto_log_info("You can still Calculate the Universe!", "blue");
     }
@@ -1899,11 +1855,11 @@ export function doBedtime(): boolean {
     if (
       isUnrestricted(deck) &&
       itemAmount(deck) > 0 &&
-      toInt(getProperty("_deckCardsDrawn")) < 15 &&
+      get("_deckCardsDrawn") < 15 &&
       auto_is_valid(deck)
     ) {
       auto_log_info(
-        `You have a Deck of Every Card and ${15 - toInt(getProperty("_deckCardsDrawn"))} draws remaining!`,
+        `You have a Deck of Every Card and ${15 - get("_deckCardsDrawn")} draws remaining!`,
         "blue",
       );
     }
@@ -1911,19 +1867,19 @@ export function doBedtime(): boolean {
     if (
       isUnrestricted($item`Time-Spinner`) &&
       itemAmount($item`Time-Spinner`) > 0 &&
-      toInt(getProperty("_timeSpinnerMinutesUsed")) < 10 &&
+      get("_timeSpinnerMinutesUsed") < 10 &&
       auto_is_valid($item`Time-Spinner`)
     ) {
       auto_log_info(
-        `You have ${10 - toInt(getProperty("_timeSpinnerMinutesUsed"))} minutes left to Time-Spinner!`,
+        `You have ${10 - get("_timeSpinnerMinutesUsed")} minutes left to Time-Spinner!`,
         "blue",
       );
     }
 
     if (
       isUnrestricted(wrap_item($item`Chateau Mantegna room key`)) &&
-      !toBoolean(getProperty("_chateauMonsterFought")) &&
-      toBoolean(getProperty("chateauAvailable"))
+      !get("_chateauMonsterFought") &&
+      get("chateauAvailable")
     ) {
       auto_log_info(
         "You can still fight a Chateau Mangtegna Painting today.",
@@ -1932,7 +1888,7 @@ export function doBedtime(): boolean {
     }
 
     if (
-      !toBoolean(getProperty("_streamsCrossed")) &&
+      !get("_streamsCrossed") &&
       possessEquipment($item`protonic accelerator pack`) &&
       auto_is_valid$3($effect`Total Protonic Reversal`)
     ) {
@@ -1941,14 +1897,14 @@ export function doBedtime(): boolean {
 
     if (
       isUnrestricted($item`shrine to the Barrel god`) &&
-      !toBoolean(getProperty("_barrelPrayer")) &&
-      toBoolean(getProperty("barrelShrineUnlocked"))
+      !get("_barrelPrayer") &&
+      get("barrelShrineUnlocked")
     ) {
       auto_log_info("You can still worship the barrel god today.", "blue");
     }
     if (
       isUnrestricted($item`airplane charter: Dinseylandfill`) &&
-      !toBoolean(getProperty("_dinseyGarbageDisposed")) &&
+      !get("_dinseyGarbageDisposed") &&
       elementalPlanes_access($element`stench`)
     ) {
       if (itemAmount($item`bag of park garbage`) > 0 || pullsRemaining() > 0) {
@@ -1960,7 +1916,7 @@ export function doBedtime(): boolean {
     }
     if (
       isUnrestricted($item`airplane charter: That 70s Volcano`) &&
-      !toBoolean(getProperty("_infernoDiscoVisited")) &&
+      !get("_infernoDiscoVisited") &&
       elementalPlanes_access($element`hot`)
     ) {
       if (
@@ -1979,15 +1935,15 @@ export function doBedtime(): boolean {
     }
     if (
       isUnrestricted($item`potted tea tree`) &&
-      !toBoolean(getProperty("_pottedTeaTreeUsed")) &&
+      !get("_pottedTeaTreeUsed") &&
       auto_get_campground().has($item`potted tea tree`)
     ) {
       auto_log_info("You have a tea tree to shake!", "blue");
     }
 
-    if (auto_haveAugustScepter() && toInt(getProperty("_augSkillsCast")) < 5) {
+    if (auto_haveAugustScepter() && get("_augSkillsCast") < 5) {
       auto_log_info(
-        `You still have ${5 - toInt(getProperty("_augSkillsCast"))} August Scepter casts remaining! Perhaps consider casting Aug 13th/30th for more rollover adventures, and/or 7th for a buff for tomorrow?`,
+        `You still have ${5 - get("_augSkillsCast")} August Scepter casts remaining! Perhaps consider casting Aug 13th/30th for more rollover adventures, and/or 7th for a buff for tomorrow?`,
         "blue",
       );
     }

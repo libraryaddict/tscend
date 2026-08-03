@@ -1,6 +1,5 @@
 import {
   combatSkillAvailable,
-  getProperty,
   haveEquipped,
   Monster,
   monsterHp,
@@ -9,7 +8,7 @@ import {
   myMaxhp,
   toInt,
 } from "kolmafia";
-import { $element, $item, $monster, $skill, $stat } from "libram";
+import { $element, $item, $monster, $skill, $stat, get } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { auto_have_skill } from "../auto_util";
@@ -103,10 +102,7 @@ export function auto_combatMeatGolemStage5(
     return auto_useSkill($skill`Meat Cleaver`, true);
   }
   // Darts always welcome
-  if (
-    haveEquipped($item`Everfull Dart Holster`) &&
-    toInt(getProperty("_dartsLeft")) > 0
-  ) {
+  if (haveEquipped($item`Everfull Dart Holster`) && get("_dartsLeft") > 0) {
     return auto_useSkill(dartSkill());
   }
   // Step 1: get base values for each spell

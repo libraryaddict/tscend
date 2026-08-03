@@ -63,13 +63,10 @@ import {
   retrieveItem,
   sellCost,
   sessionStorage,
-  setProperty,
   spleenLimit,
   splitString,
   stillsAvailable,
   substring,
-  toBoolean,
-  toFamiliar,
   toFloat,
   toInt,
   toItem,
@@ -92,6 +89,7 @@ import {
   $slot,
   $stat,
   get,
+  set,
 } from "libram";
 
 import { auto_advToReserve } from "../autoscend";
@@ -294,7 +292,7 @@ export function autoCleanse(): boolean {
   if (
     wantToCleanse &&
     itemAmount($item`spice melange`) > 0 &&
-    !toBoolean(getProperty("spiceMelangeUsed"))
+    !get("spiceMelangeUsed")
   ) {
     handleTracker({
       what: `Cleansed with ${$item`spice melange`}`,
@@ -306,7 +304,7 @@ export function autoCleanse(): boolean {
   if (
     wantToCleanse &&
     itemAmount($item`Ultra Mega Sour Ball`) > 0 &&
-    !toBoolean(getProperty("_ultraMegaSourBallUsed"))
+    !get("_ultraMegaSourBallUsed")
   ) {
     handleTracker({
       what: `Cleansed with ${$item`Ultra Mega Sour Ball`}`,
@@ -318,7 +316,7 @@ export function autoCleanse(): boolean {
   if (
     wantToCleanseLiver &&
     itemAmount($item`alien plant pod`) > 0 &&
-    !toBoolean(getProperty("_alienPlantPodUsed"))
+    !get("_alienPlantPodUsed")
   ) {
     handleTracker({
       what: `Cleansed with ${$item`alien plant pod`}`,
@@ -330,7 +328,7 @@ export function autoCleanse(): boolean {
   if (
     wantToCleanseStomach &&
     itemAmount($item`alien animal milk`) > 0 &&
-    !toBoolean(getProperty("_alienAnimalMilkUsed"))
+    !get("_alienAnimalMilkUsed")
   ) {
     handleTracker({
       what: `Cleansed with ${$item`alien animal milk`}`,
@@ -348,7 +346,7 @@ export function autoDrink(
   silent: boolean = false,
   action?: ConsumeAction,
 ): boolean {
-  if (toBoolean(getProperty("auto_limitConsume"))) {
+  if (get("auto_limitConsume", false)) {
     return false;
   }
 
@@ -515,7 +513,7 @@ function cafeDrinkName(id: number): string {
 }
 
 function autoDrinkCafe(howmany: number, id: number): boolean {
-  if (toBoolean(getProperty("auto_limitConsume"))) {
+  if (get("auto_limitConsume", false)) {
     return false;
   }
   // Note that caller is responsible for calling Ode to Booze,
@@ -540,7 +538,7 @@ function autoDrinkCafe(howmany: number, id: number): boolean {
 }
 
 function autoEatCafe(howmany: number, id: number): boolean {
-  if (toBoolean(getProperty("auto_limitConsume"))) {
+  if (get("auto_limitConsume", false)) {
     return false;
   }
 
@@ -592,7 +590,7 @@ export function autoEat(
   silent: boolean = true,
   action?: ConsumeAction,
 ): boolean {
-  if (toBoolean(getProperty("auto_limitConsume"))) {
+  if (get("auto_limitConsume", false)) {
     return false;
   }
 
@@ -614,15 +612,8 @@ export function autoEat(
   }
   if (
     legendaryNoodleDishes().has(toEat) &&
-    !toBoolean(
-      // This stuff relates to the Legendary Digestion choice adv from eating legendary noods
-      getProperty("auto_forceCombatWithLegendaryNoodles"),
-    ) &&
-    (toBoolean(
-      // check that we aren't forcing combat via amygdala option
-      getProperty("_legendaryNoodlesSpleen"),
-    ) ||
-      spleen_left() < 1)
+    !get("auto_forceCombatWithLegendaryNoodles", false) &&
+    (get("_legendaryNoodlesSpleen") || spleen_left() < 1)
   ) {
     // check that we aren't gonna take the spleen option
     switchToFamXP(400); // we're getting famxp by process of elimination; trying to switch to a fam we want famxp on
@@ -721,13 +712,10 @@ export function autoEat(
         detail = detail !== "" ? `${detail}, Red Rocketed!` : "Red Rocketed!";
         wasReadyToEat = false;
       }
-      if (toInt(getProperty("auto_dietpills")) > 0) {
+      if (get("auto_dietpills", 0) > 0) {
         detail =
           detail !== "" ? `${detail}, Dieting Pilled!` : "Dieting Pilled!";
-        setProperty(
-          "auto_dietpills",
-          (toInt(getProperty("auto_dietpills")) - 1).toString(),
-        );
+        set("auto_dietpills", get("auto_dietpills", 0) - 1);
       }
       if (detail !== "") {
         handleTracker({
@@ -752,10 +740,7 @@ export function acquireMilkOfMagnesiumIfUnused(useAdv: boolean): boolean {
   if (itemAmount($item`milk of magnesium`) > 0) {
     return true;
   }
-  if (
-    toBoolean(getProperty("_milkOfMagnesiumUsed")) ||
-    toBoolean(getProperty("milkOfMagnesiumActive"))
-  ) {
+  if (get("_milkOfMagnesiumUsed") || get("milkOfMagnesiumActive")) {
     return true;
   }
   if (fullnessLimit() === 0) {
@@ -771,7 +756,7 @@ export function acquireMilkOfMagnesiumIfUnused(useAdv: boolean): boolean {
       itemAmount($item`scrumptious reagent`) === 0 &&
       myMp() >= mpCost($skill`Advanced Saucecrafting`)
     ) {
-      if (toInt(getProperty("reagentSummons")) === 0) {
+      if (get("reagentSummons") === 0) {
         useSkill(1, $skill`Advanced Saucecrafting`);
       }
     }
@@ -790,8 +775,8 @@ export function acquireMilkOfMagnesiumIfUnused(useAdv: boolean): boolean {
 
 export function consumeMilkOfMagnesiumIfUnused(): boolean {
   if (
-    toBoolean(getProperty("_milkOfMagnesiumUsed")) ||
-    toBoolean(getProperty("milkOfMagnesiumActive")) ||
+    get("_milkOfMagnesiumUsed") ||
+    get("milkOfMagnesiumActive") ||
     itemAmount($item`milk of magnesium`) < 1
   ) {
     return false;
@@ -838,10 +823,7 @@ function wantDietPill(toEat: Item): boolean {
       pullXWhenHaveY(pill, 1, 0);
       if (itemAmount(pill) > 0) {
         handleTracker({ what: pill, property: "auto_chewed" });
-        setProperty(
-          "auto_dietpills",
-          (toInt(getProperty("auto_dietpills")) + 1).toString(),
-        ); //Track how many dieting pills we have consumed this ascension
+        set("auto_dietpills", get("auto_dietpills", 0) + 1); //Track how many dieting pills we have consumed this ascension
         return chew(1, pill);
       }
     }
@@ -995,7 +977,7 @@ export function canChew(toChew: Item): boolean {
 export function consumptionProgress(): number {
   // returns indicative ratio of adventure organs used
   // if not allowed to consume then consider maximum progress is already reached
-  if (toBoolean(getProperty("auto_limitConsume"))) {
+  if (get("auto_limitConsume", false)) {
     return 1;
   }
 
@@ -1113,7 +1095,7 @@ function autoPrepConsume(action: ConsumeAction): boolean {
 }
 
 function autoConsume(action: ConsumeAction): boolean {
-  if (toBoolean(getProperty("auto_limitConsume"))) {
+  if (get("auto_limitConsume", false)) {
     return false;
   }
 
@@ -1307,8 +1289,8 @@ function loadConsumables(
     blacklist.set(it, true);
   }
   if (
-    (toBoolean(getProperty("auto_dontConsumeLegendPizzas")) && !in_small()) ||
-    (auto_turbo() && toInt(getProperty("cyrptCrannyEvilness")) > 0)
+    (get("auto_dontConsumeLegendPizzas", false) && !in_small()) ||
+    (auto_turbo() && get("cyrptCrannyEvilness") > 0)
   ) {
     for (const it of $items`Pizza of Legend, Calzone of Legend, Deep Dish of Legend`) {
       blacklist.set(it, true);
@@ -1322,7 +1304,7 @@ function loadConsumables(
   }
   if (
     is_professor() ||
-    (is_werewolf() && toInt(getProperty("wereProfessorTransformTurns")) < 50)
+    (is_werewolf() && get("wereProfessorTransformTurns") < 50)
   ) {
     blacklist.set($item`plain calzone`, true); //because 50 turn buff and can only handle +ML as a werewolf, either blacklist altogether or get lucky and eat ASAP as a werewolf
   }
@@ -1459,28 +1441,17 @@ function loadConsumables(
     }
     if (
       it === $item`spaghetti breakfast` &&
-      (myLevel() < 11 ||
-        myFullness() > 0 ||
-        toBoolean(getProperty("_spaghettiBreakfastEaten")))
+      (myLevel() < 11 || myFullness() > 0 || get("_spaghettiBreakfastEaten"))
     ) {
       continue;
     }
-    if (
-      it === $item`Pizza of Legend` &&
-      toBoolean(getProperty("pizzaOfLegendEaten"))
-    ) {
+    if (it === $item`Pizza of Legend` && get("pizzaOfLegendEaten")) {
       continue;
     }
-    if (
-      it === $item`Calzone of Legend` &&
-      toBoolean(getProperty("calzoneOfLegendEaten"))
-    ) {
+    if (it === $item`Calzone of Legend` && get("calzoneOfLegendEaten")) {
       continue;
     }
-    if (
-      it === $item`Deep Dish of Legend` &&
-      toBoolean(getProperty("deepDishOfLegendEaten"))
-    ) {
+    if (it === $item`Deep Dish of Legend` && get("deepDishOfLegendEaten")) {
       continue;
     }
 
@@ -1526,7 +1497,7 @@ function loadConsumables(
     } else if (legendaryNoodleDishes().has(it)) {
       // which is quite good for minimizing daycount. We want that if it's available (except Ed, who has better spleen).
       if (
-        !toBoolean(getProperty("_legendaryNoodlesSpleen")) &&
+        !get("_legendaryNoodlesSpleen") &&
         spleen_left() > 0 &&
         auto_willEatLegendaryNoodles() &&
         !isActuallyEd()
@@ -1562,10 +1533,7 @@ function loadConsumables(
   let keyObtainableFromFR: number = 0;
   let fantasyRealmTurnEstimate: number = 0;
 
-  if (
-    missingHeroKeys > 0 &&
-    !toBoolean(getProperty("auto_dontConsumeKeyLimePies"))
-  ) {
+  if (missingHeroKeys > 0 && !get("auto_dontConsumeKeyLimePies", false)) {
     //will add desirability to consumption and pulling of key lime pies
     function considerNextPie(): void {
       //missing at least 1 key/token, in case it will be only one first consider mainstat pie if possible
@@ -1607,16 +1575,14 @@ function loadConsumables(
       considerNextPie();
     }
     //estimate cost of obtaining keys
-    let keysObtainableFromDailyDungeon: number = toBoolean(
-      getProperty("dailyDungeonDone"),
-    )
+    let keysObtainableFromDailyDungeon: number = get("dailyDungeonDone")
       ? 0
       : 1;
     if (keysObtainableFromDailyDungeon > 0) {
       if (
         itemAmount($item`daily dungeon malware`) > 0 &&
-        !toBoolean(getProperty("_dailyDungeonMalwareUsed")) &&
-        toInt(getProperty("_lastDailyDungeonRoom")) < 14 &&
+        !get("_dailyDungeonMalwareUsed") &&
+        get("_lastDailyDungeonRoom") < 14 &&
         !in_pokefam()
       ) {
         keysObtainableFromDailyDungeon += 1;
@@ -1737,10 +1703,7 @@ function loadConsumables(
       }
       if (obtain_mode === AUTO_OBTAIN_NULL) {
         if (it === $item`spaghetti breakfast`) {
-          if (
-            toBoolean(getProperty("_spaghettiBreakfastEaten")) ||
-            myFullness() > 0
-          ) {
+          if (get("_spaghettiBreakfastEaten") || myFullness() > 0) {
             (
               actions.get(n) ?? actions.set(n, new ConsumeAction()).get(n)
             ).desirability -= 50;
@@ -1914,7 +1877,7 @@ function loadConsumables(
     const daily_special_limit: number =
       1 +
       min(
-        myMeat() / toInt(getProperty("_dailySpecialPrice")),
+        myMeat() / get("_dailySpecialPrice"),
         organLeft$2() / organCost(dailySpecial()),
       );
     for (let i: number = 0; i < daily_special_limit; i++) {
@@ -2088,7 +2051,7 @@ function auto_bestNightcap(): ConsumeAction {
     const disposableBeerMeat: number = max(0, myMeat() - meatReserve());
     greenBeersDrinkable = min(
       ceil(10.0 / $item`green beer`.inebriety),
-      disposableBeerMeat / toInt(getProperty("_dailySpecialPrice")),
+      disposableBeerMeat / get("_dailySpecialPrice"),
     );
     if (greenBeersDrinkable > 0) {
       auto_log_info(
@@ -2210,7 +2173,7 @@ function auto_overdrinkGreenBeers(): void {
         greenBeerAction.it = Item.none;
         const beerMeat: number = myMeat() - (in_wotsf() ? meatReserve() : 0); //extra advs are almost always worth more, but meat is hard to get in wotsf
         const daily_special_limit: number = min(
-          beerMeat / toInt(getProperty("_dailySpecialPrice")),
+          beerMeat / get("_dailySpecialPrice"),
           (inebriety_left() + 11) / dailySpecial().inebriety,
         );
         for (let i: number = 0; i < daily_special_limit; i++) {
@@ -2244,10 +2207,7 @@ function auto_overdrinkGreenBeers(): void {
 
 export function auto_drinkNightcap(): void {
   //function to overdrink a nightcap at the end of day
-  if (
-    toBoolean(getProperty("auto_skipNightcap")) ||
-    toBoolean(getProperty("auto_limitConsume"))
-  ) {
+  if (get("auto_skipNightcap", false) || get("auto_limitConsume", false)) {
     return;
   }
   if (in_darkGyffte()) {
@@ -2445,7 +2405,7 @@ function auto_findBestConsumeAction$1(): ConsumeAction {
 }
 
 export function auto_autoConsumeOne(action: ConsumeAction): boolean {
-  if (toBoolean(getProperty("auto_limitConsume"))) {
+  if (get("auto_limitConsume", false)) {
     return false;
   }
 
@@ -2503,7 +2463,7 @@ export function auto_spleenFamiliarAdvItemsPossessed(): number {
     if (
       itemAmount(it) > 0 &&
       auto_is_valid(it) &&
-      mallPrice(it) < toInt(getProperty("autoBuyPriceLimit"))
+      mallPrice(it) < get("autoBuyPriceLimit")
     ) {
       //even when not mallbuying them we do not want to use exceptionally expensive items
       spleenFamiliarAdvItemsCount += itemAmount(it);
@@ -2538,7 +2498,7 @@ export function auto_chewAdventures(): boolean {
     if (
       itemAmount(it) > 0 &&
       auto_is_valid(it) &&
-      mallPrice(it) < toInt(getProperty("autoBuyPriceLimit"))
+      mallPrice(it) < get("autoBuyPriceLimit")
     ) {
       //do not chew very expensive items even if already in inv
       if (target === Item.none || mallPrice(it) < target_value) {
@@ -2575,14 +2535,14 @@ function auto_breakfastCounterVisitDo(): boolean {
   auto_runChoice(7); // Visit the Breakfast Counter
   if (getProperty("muffinOnOrder") !== "") {
     cliExecute("refresh inv");
-    if (itemAmount(toItem(getProperty("muffinOnOrder"))) > 0) {
+    if (itemAmount(get("muffinOnOrder", Item.none)) > 0) {
       // workaround mafia not clearing the property occasionally
       // see https://kolmafia.us/threads/ordering-a-muffin-at-the-breakfast-counter-doesnt-always-set-the-muffinonorder-property.26072/
-      setProperty("muffinOnOrder", "");
+      set("muffinOnOrder", "");
     }
   }
   if (
-    !toBoolean(getProperty("_muffinOrderedToday")) &&
+    !get("_muffinOrderedToday") &&
     itemAmount($item`earthenware muffin tin`) > 0
   ) {
     auto_log_info("Ordering a bran muffin for tomorrow to keep you regular.");
@@ -2595,12 +2555,12 @@ function auto_breakfastCounterVisitDo(): boolean {
 
 export const auto_breakfastCounterVisitTask: QuestTask = registerQuestTask({
   name: "auto_breakfastCounterVisit",
-  completed: () => toBoolean(getProperty("_muffinOrderedToday")),
+  completed: () => get("_muffinOrderedToday"),
   ready: () =>
     itemAmount($item`earthenware muffin tin`) > 0 ||
-    (!toBoolean(getProperty("_muffinOrderedToday")) &&
+    (!get("_muffinOrderedToday") &&
       $items`blueberry muffin, bran muffin, chocolate chip muffin, earthenware muffin tin`.includes(
-        toItem(getProperty("muffinOnOrder")),
+        get("muffinOnOrder", Item.none),
       )),
   do: auto_breakfastCounterVisitDo,
 });
@@ -2740,7 +2700,7 @@ export function consumeStuff(): void {
     auto_sausageWanted();
   }
 
-  if (toBoolean(getProperty("auto_limitConsume"))) {
+  if (get("auto_limitConsume", false)) {
     return;
   }
 
@@ -2794,7 +2754,7 @@ export function consumeStuff(): void {
     if (
       myLevel() >= 11 &&
       myFullness() === 0 &&
-      !toBoolean(getProperty("_spaghettiBreakfastEaten"))
+      !get("_spaghettiBreakfastEaten")
     ) {
       autoEat(1, $item`spaghetti breakfast`);
     }
@@ -2814,7 +2774,7 @@ export function consumeStuff(): void {
     // always unequip stooper as only useful for roll over
     if (
       myFamiliar() === $familiar`Stooper` &&
-      toFamiliar(getProperty("auto_100familiar")) !== $familiar`Stooper` &&
+      get("auto_100familiar", Familiar.none) !== $familiar`Stooper` &&
       pathAllowsChangingFamiliar()
     ) {
       //check path allows changing of familiars
@@ -2854,7 +2814,7 @@ export function shouldUseSpleenForLowPriority(): boolean {
     $item`dieting pill`.spleen * availableAmount($item`dieting pill`);
   if (
     auto_havePastaWand() &&
-    !toBoolean(getProperty("_legendaryNoodlesSpleen")) &&
+    !get("_legendaryNoodlesSpleen") &&
     fullness_left() > 0
   ) {
     spleen_likely_to_use += 1;
@@ -2868,8 +2828,8 @@ export function isSpleenConsumable(it: Item): boolean {
 }
 
 function auto_getConsumablePriceLimit(): number {
-  const mafia_max: number = toInt(getProperty("autoBuyPriceLimit"));
-  const autoscend_max: number = toInt(getProperty("auto_consumablePriceLimit"));
+  const mafia_max: number = get("autoBuyPriceLimit");
+  const autoscend_max: number = get("auto_consumablePriceLimit", 0);
   if (autoscend_max < 1) {
     return mafia_max;
   }

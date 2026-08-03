@@ -28,10 +28,8 @@ import {
   myPrimestat,
   myTurncount,
   replaceString,
-  setProperty,
   Skill,
   splitString,
-  toBoolean,
   toInt,
   toLocation,
   toLowerCase,
@@ -52,6 +50,8 @@ import {
   $path,
   $skill,
   $slot,
+  get,
+  set,
 } from "libram";
 
 import { auto_mall_price } from "../auto_acquire";
@@ -120,14 +120,14 @@ export function auto_jokesterGunFreeKillAvailable(): boolean {
     return false;
   }
 
-  return !toBoolean(getProperty("_firedJokestersGun"));
+  return !get("_firedJokestersGun");
 }
 
 export function snojoFightAvailable(): boolean {
   if (!isUnrestricted($item`X-32-F snowman crate`)) {
     return false;
   }
-  if (!toBoolean(getProperty("snojoAvailable"))) {
+  if (!get("snojoAvailable")) {
     return false;
   }
   if (in_koe()) {
@@ -268,7 +268,7 @@ export function snojoFightAvailable(): boolean {
     );
     visitUrl("place.php?whichplace=snojo&action=snojo_controller");
   }
-  return toInt(getProperty("_snojoFreeFights")) < 10;
+  return get("_snojoFreeFights") < 10;
 }
 
 let $_auto_haveSourceTerminal_didCheck: boolean | undefined;
@@ -285,7 +285,7 @@ export function auto_haveSourceTerminal(): boolean {
       "place.php?whichplace=falloutshelter&action=vault_term",
     );
     if (containsText(temp, "Source Terminal")) {
-      setProperty("auto_haveSourceTerminal", true.toString());
+      set("auto_haveSourceTerminal", true);
     }
   }
 
@@ -293,7 +293,7 @@ export function auto_haveSourceTerminal(): boolean {
 }
 
 export function isOverdueDigitize(): boolean {
-  if (toInt(getProperty("_sourceTerminalDigitizeUses")) === 0) {
+  if (get("_sourceTerminalDigitizeUses") === 0) {
     return false;
   }
   if (getCounters("Digitize Monster", 1, 200) === "Digitize Monster") {
@@ -364,7 +364,7 @@ export function auto_sourceTerminalExtrude(request: string): boolean {
 
 function auto_sourceTerminalExtrudeLeft(): number {
   if (auto_haveSourceTerminal()) {
-    return 3 - toInt(getProperty("_sourceTerminalExtrudes"));
+    return 3 - get("_sourceTerminalExtrudes");
   }
   return 0;
 }
@@ -417,7 +417,7 @@ export function auto_sourceTerminalEnhance(request: string): boolean {
 }
 export function auto_sourceTerminalEnhanceLeft(): number {
   if (auto_haveSourceTerminal()) {
-    const used: number = toInt(getProperty("_sourceTerminalEnhanceUses"));
+    const used: number = get("_sourceTerminalEnhanceUses");
 
     let total: number = 1;
     if (getProperty("sourceTerminalChips") !== "") {
@@ -457,7 +457,7 @@ export function auto_sourceTerminalEducate(
   }
   if (!containsText(getProperty("sourceTerminalChips"), "DRAM")) {
     second = Skill.none;
-    setProperty("sourceTerminalEducate2", "");
+    set("sourceTerminalEducate2", "");
   }
 
   if (first === Skill.none) {
@@ -508,18 +508,15 @@ function auto_advWitchess(target: string, option?: CombatMacro): boolean {
     return false;
   }
 
-  if (toInt(getProperty("_auto_witchessBattles")) >= 5) {
+  if (get("_auto_witchessBattles", 0) >= 5) {
     return false;
   }
 
-  setProperty(
-    "_auto_witchessBattles",
-    (toInt(getProperty("_auto_witchessBattles")) + 1).toString(),
-  );
+  set("_auto_witchessBattles", get("_auto_witchessBattles", 0) + 1);
 
   let temp: string = visitUrl("campground.php?action=witchess");
   if (!containsText(temp, "Examine the shrink ray")) {
-    setProperty("_auto_witchessBattles", (5).toString());
+    set("_auto_witchessBattles", 5);
     return false;
   }
   temp = visitUrl("choice.php?whichchoice=1181&pwd=&option=1");
@@ -529,16 +526,16 @@ function auto_advWitchess(target: string, option?: CombatMacro): boolean {
   );
   if (witchessMatcher.find()) {
     const consider: number = 5 - toInt(witchessMatcher.group(1)) + 1;
-    if (consider > toInt(getProperty("_auto_witchessBattles"))) {
-      setProperty("_auto_witchessBattles", consider.toString());
+    if (consider > get("_auto_witchessBattles", 0)) {
+      set("_auto_witchessBattles", consider);
     }
   } else {
-    setProperty("_auto_witchessBattles", (5).toString());
+    set("_auto_witchessBattles", 5);
     return false;
   }
   visitUrl("choice.php?pwd=&option=2&whichchoice=1182");
 
-  setProperty("auto_nextEncounter", toMonster(goal).toString());
+  set("auto_nextEncounter", toMonster(goal));
   const pages: Map<number, string> = new Map();
   pages.set(0, "campground.php?action=witchess");
   pages.set(1, "choice.php?whichchoice=1181&pwd=&option=1");
@@ -678,10 +675,10 @@ export function auto_doPrecinct(): boolean {
   if (!isUnrestricted($item`detective school application`)) {
     return false;
   }
-  if (!toBoolean(getProperty("hasDetectiveSchool"))) {
+  if (!get("hasDetectiveSchool")) {
     return false;
   }
-  if (toInt(getProperty("_detectiveCasesCompleted")) >= 3) {
+  if (get("_detectiveCasesCompleted") >= 3) {
     return false;
   }
   if (gitExists("Ezandora-Detective-Solver")) {
@@ -691,7 +688,7 @@ export function auto_doPrecinct(): boolean {
   }
 
   if (getProperty("auto_eggDetective") !== "") {
-    setProperty("auto_eggDetective", "");
+    set("auto_eggDetective", "");
   }
 
   let page: string = visitUrl(
@@ -819,7 +816,7 @@ export function auto_doPrecinct(): boolean {
             auto_log_info(`Jerkwad '${person}' won't say anything!`, "blue");
             generated += ":liar";
           }
-          setProperty(
+          set(
             "auto_eggDetective",
             `${generated},${getProperty("auto_eggDetective")}`,
           );
@@ -900,7 +897,7 @@ export function auto_doPrecinct(): boolean {
 
         let temp: string = getProperty("auto_eggDetective");
         temp = replaceString(temp, oldValue, replaceString_1);
-        setProperty("auto_eggDetective", temp);
+        set("auto_eggDetective", temp);
         eggData = new Map(
           splitString(getProperty("auto_eggDetective"), ",").map((_v, _i) => [
             _i,
@@ -1086,17 +1083,14 @@ export function auto_doPrecinct(): boolean {
                 "green",
               );
             }
-            setProperty("auto_eggDetective", "");
+            set("auto_eggDetective", "");
             return true;
           }
         }
       }
     }
 
-    setProperty(
-      "auto_eggDetective",
-      `${getProperty("auto_eggDetective")}solved`,
-    );
+    set("auto_eggDetective", `${getProperty("auto_eggDetective")}solved`);
     return false;
   }
 
@@ -1104,8 +1098,8 @@ export function auto_doPrecinct(): boolean {
 }
 
 export function expectGhostReport(): boolean {
-  if (totalTurnsPlayed() >= toInt(getProperty("nextParanormalActivity"))) {
-    if (totalTurnsPlayed() > toInt(getProperty("nextParanormalActivity"))) {
+  if (totalTurnsPlayed() >= get("nextParanormalActivity")) {
+    if (totalTurnsPlayed() > get("nextParanormalActivity")) {
       const page: string = visitUrl("charpane.php");
       const myGhost: AshMatcher = new AshMatcher(
         '<tr rel="protonquest">(?:.*?)<b>(.*?)</b>',
@@ -1113,8 +1107,8 @@ export function expectGhostReport(): boolean {
       );
       if (myGhost.find()) {
         const goal: Location = toLocation(myGhost.group(1));
-        setProperty("ghostLocation", goal.toString());
-        setProperty("questPAGhost", "started");
+        set("ghostLocation", goal);
+        set("questPAGhost", "started");
       }
     }
     //<tr rel="protonquest"><td class="small" colspan="2"><div>Investigate the paranormal activity reported at <A class=nounder target=mainpane href=place.php?whichplace=manor1><b>The Haunted Conservatory</b></a>.</div></td></tr>
@@ -1151,7 +1145,7 @@ export function LX_ghostBusting(): boolean {
     }
   }
   // goal & progress specific reasons to skip busting this turn go below.
-  const goal: Location = toLocation(getProperty("ghostLocation"));
+  const goal: Location = get("ghostLocation", Location.none);
   if (goal === Location.none) {
     return false;
   }
@@ -1179,8 +1173,8 @@ export function LX_ghostBusting(): boolean {
     auto_log_error(
       `Failed to unlock the location [${goal}]. skipping this ghost...`,
     );
-    setProperty("questPAGhost", "unstarted");
-    setProperty("ghostLocation", "");
+    set("questPAGhost", "unstarted");
+    set("ghostLocation", "");
     return false;
   }
 
@@ -1212,10 +1206,10 @@ function timeSpinnerRemaining(verify: boolean): number {
   ) {
     return 0; //time-spinner is not available at all. thus we have 0 minutes to utilize
   }
-  let spins_used: number = toInt(getProperty("_timeSpinnerMinutesUsed"));
+  let spins_used: number = get("_timeSpinnerMinutesUsed");
   if (verify) {
     visitUrl("inv_use.php?pwd=&which=3&whichitem=9104"); //visit time-spinner to update remaining minutes
-    const spins_new: number = toInt(getProperty("_timeSpinnerMinutesUsed"));
+    const spins_new: number = get("_timeSpinnerMinutesUsed");
     if (spins_used !== spins_new) {
       auto_log_warning(
         "Detected and corrected erroneous tracking of _timeSpinnerMinutesUsed",
@@ -1367,8 +1361,8 @@ export function rethinkingCandy(
   }
 
   let maxprice: number = 2500;
-  if (toInt(getProperty("auto_maxCandyPrice")) !== 0) {
-    maxprice = toInt(getProperty("auto_maxCandyPrice"));
+  if (get("auto_maxCandyPrice", 0) !== 0) {
+    maxprice = get("auto_maxCandyPrice", 0);
   }
 
   let simpleList: Map<number, Item> = new Map();

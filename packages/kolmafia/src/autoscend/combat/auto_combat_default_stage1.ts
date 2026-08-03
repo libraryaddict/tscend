@@ -1,7 +1,6 @@
 import {
   abort,
   containsText,
-  getProperty,
   haveEffect,
   haveEquipped,
   Item,
@@ -16,8 +15,6 @@ import {
   myMaxhp,
   steal,
   toFloat,
-  toInt,
-  toMonster,
 } from "kolmafia";
 import {
   $classes,
@@ -28,6 +25,7 @@ import {
   $monster,
   $monsters,
   $skill,
+  get,
 } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
@@ -369,9 +367,7 @@ export function auto_combatDefaultStage1(
     return auto_useSkill($skill`%fn, fire a Red, White and Blue Blast`);
   }
 
-  const backedUpMonster: Monster = toMonster(
-    getProperty("lastCopyableMonster"),
-  );
+  const backedUpMonster: Monster = get("lastCopyableMonster", Monster.none);
   // reserve last 2 advs for end of day free fights
   const reserveAdvsForFreeFights: boolean =
     myAdventures() < 3 && !isFreeMonster(backedUpMonster);
@@ -426,7 +422,7 @@ export function auto_combatDefaultStage1(
   //duplicate turns the enemy from a single enemy into a mob containing 2 copies of this enemy. Doubling their stats and doubling their drops
   if (
     auto_canUse($skill`Duplicate`) &&
-    toInt(getProperty("_sourceTerminalDuplicateUses")) === 0 &&
+    get("_sourceTerminalDuplicateUses") === 0 &&
     !inAftercore() &&
     !in_nuclear()
   ) {

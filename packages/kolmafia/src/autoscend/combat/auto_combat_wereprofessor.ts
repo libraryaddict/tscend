@@ -4,12 +4,11 @@ import {
   haveEquipped,
   Monster,
   monsterHp,
-  setProperty,
   splitString,
   toInt,
   toSkill,
 } from "kolmafia";
-import { $effect, $item, $monster, $skill } from "libram";
+import { $effect, $item, $monster, $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { auto_haveCosmicBowlingBall } from "../iotms/mr2022";
@@ -40,7 +39,7 @@ export function auto_combatWereProfessorStage1(
   }
 
   if (is_professor()) {
-    setProperty("auto_skipStage3", true.toString()); //Don't even want to try Stage 3 as a Professor
+    set("auto_skipStage3", true); //Don't even want to try Stage 3 as a Professor
   }
 
   if (enemy === $monster`wall of bones`) {
@@ -97,7 +96,7 @@ export function auto_combatWereProfessorStage5(
       return auto_useSkill($skill`Bite`, true); // elemental damage skill
     } else if (
       haveEquipped($item`Everfull Dart Holster`) &&
-      toInt(getProperty("_dartsLeft")) > 0
+      get("_dartsLeft") > 0
     ) {
       //want dart skill as high as possible for Professor
       return auto_useSkill(dartSkill());
@@ -108,10 +107,7 @@ export function auto_combatWereProfessorStage5(
     return "attack"; //worst case scenario just use this
   }
   if (is_professor()) {
-    if (
-      haveEquipped($item`Everfull Dart Holster`) &&
-      toInt(getProperty("_dartsLeft")) > 0
-    ) {
+    if (haveEquipped($item`Everfull Dart Holster`) && get("_dartsLeft") > 0) {
       //want dart skill as high as possible for Professor
       return auto_useSkill(dartSkill());
     } else if (

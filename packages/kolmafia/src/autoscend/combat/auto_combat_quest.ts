@@ -10,12 +10,9 @@ import {
   myClass,
   myFamiliar,
   removeProperty,
-  setProperty,
   Skill,
-  toBoolean,
-  toInt,
 } from "kolmafia";
-import { $class, $item, $items, $monsters, $skill } from "libram";
+import { $class, $item, $items, $monsters, $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { isAttackFamiliar } from "../auto_familiar";
@@ -66,7 +63,7 @@ export function auto_JunkyardCombatHandler(
 
   auto_log_info(`auto_JunkyardCombatHandler: ${round_1}`, "brown");
   if (round_1 === 0) {
-    setProperty("auto_gremlinMoly", false.toString());
+    set("auto_gremlinMoly", false);
     removeProperty("_auto_combatState");
   }
 
@@ -75,12 +72,12 @@ export function auto_JunkyardCombatHandler(
       enemy,
     )
   ) {
-    setProperty("auto_gremlinMoly", true.toString());
+    set("auto_gremlinMoly", true);
   }
 
   if (
     !combat_status_check("gremlinNeedBanish") &&
-    !toBoolean(getProperty("auto_gremlinMoly")) &&
+    !get("auto_gremlinMoly", false) &&
     isActuallyEd()
   ) {
     combat_status_add("gremlinNeedBanish");
@@ -154,7 +151,7 @@ export function auto_JunkyardCombatHandler(
       const beehiveDamage: number = ceil(
         30 * combatItemDamageMultiplier() * MLDamageToMonsterMultiplier(),
       );
-      if (toBoolean(getProperty("auto_gremlinMoly"))) {
+      if (get("auto_gremlinMoly", false)) {
         //don't kill tool gremlin with beehive
         canBeehiveGremlin =
           !gremlinTakesDamage &&
@@ -179,21 +176,21 @@ export function auto_JunkyardCombatHandler(
     }
   }
 
-  if (toBoolean(getProperty("auto_gremlinMoly"))) {
+  if (get("auto_gremlinMoly", false)) {
     //don't ever stun tool gremlins
     stunner = Skill.none;
   }
   if (
     canUse$3(flyer) &&
-    toInt(getProperty("flyeredML")) < 10000 &&
-    !toBoolean(getProperty("auto_ignoreFlyer"))
+    get("flyeredML") < 10000 &&
+    !get("auto_ignoreFlyer", false)
   ) {
     if (!staggeringFlyer && stunner !== Skill.none && !stunned) {
       combat_status_add("stunned");
       return auto_useSkill(stunner);
     }
     if (isActuallyEd()) {
-      setProperty("auto_edStatus", "UNDYING!");
+      set("auto_edStatus", "UNDYING!");
     }
     if (canSurvive(3.0) || stunned || staggeringFlyer) {
       shouldFlyer = true;
@@ -207,9 +204,9 @@ export function auto_JunkyardCombatHandler(
     }
   }
 
-  if (!toBoolean(getProperty("auto_gremlinMoly"))) {
+  if (!get("auto_gremlinMoly", false)) {
     if (isActuallyEd()) {
-      if (toInt(getProperty("_edDefeats")) >= 2) {
+      if (get("_edDefeats") >= 2) {
         return findBanisher(round_1, enemy, text);
       } else if (
         canUse$3($item`seal tooth`, false) &&
@@ -223,7 +220,7 @@ export function auto_JunkyardCombatHandler(
   }
 
   if (!canSurvive(1.5)) {
-    if (!isActuallyEd() || toInt(getProperty("_edDefeats")) >= 2) {
+    if (!isActuallyEd() || get("_edDefeats") >= 2) {
       abort("I am too weak to safely stasis this gremlin");
     }
   }

@@ -1,19 +1,16 @@
 import {
   abort,
   availableAmount,
-  getProperty,
   haveEffect,
   haveSkill,
   itemAmount,
   lastMonster,
   Monster,
   myLevel,
-  setProperty,
   toBoolean,
   toInt,
-  toMonster,
 } from "kolmafia";
-import { $effect, $item, $monster, $skill, get } from "libram";
+import { $effect, $item, $monster, $skill, get, set } from "libram";
 
 import {
   auto_log_info,
@@ -44,7 +41,7 @@ export function auto_reagnimatedGetPart(): void {
 }
 
 function handleRainDohDo(): boolean {
-  const enemy: Monster = toMonster(getProperty("rainDohMonster"));
+  const enemy: Monster = get("rainDohMonster", Monster.none);
   auto_log_info(`Black boxing: ${enemy}`, "blue");
 
   function validate_rainDohBox(): void {
@@ -62,11 +59,11 @@ function handleRainDohDo(): boolean {
       haveSkill($skill`Rain Man`) &&
       itemAmount($item`barrel of gunpowder`) < 4
     ) {
-      setProperty("auto_doCombatCopy", "yes");
+      set("auto_doCombatCopy", "yes");
     }
     handleCopiedMonster($item`Rain-Doh box full of monster`);
     validate_rainDohBox();
-    setProperty("auto_doCombatCopy", "no");
+    set("auto_doCombatCopy", "no");
     return true;
   }
   if (enemy === $monster`Skinflute`) {
@@ -75,15 +72,13 @@ function handleRainDohDo(): boolean {
 
     if (
       stars < 7 &&
-      toBoolean(
-        toInt(lines < 6) & toInt(toInt(getProperty("_raindohCopiesMade")) < 5),
-      )
+      toBoolean(toInt(lines < 6) & toInt(get("_raindohCopiesMade") < 5))
     ) {
-      setProperty("auto_doCombatCopy", "yes");
+      set("auto_doCombatCopy", "yes");
     }
     handleCopiedMonster($item`Rain-Doh box full of monster`);
     validate_rainDohBox();
-    setProperty("auto_doCombatCopy", "no");
+    set("auto_doCombatCopy", "no");
     return true;
   }
   /*	Should we check for an acceptable monster or just empty the box in that case?

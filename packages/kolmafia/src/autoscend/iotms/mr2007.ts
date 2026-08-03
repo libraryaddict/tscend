@@ -1,5 +1,5 @@
-import { getProperty, haveEquipped, Item, itemAmount, toInt } from "kolmafia";
-import { $item } from "libram";
+import { haveEquipped, Item, itemAmount } from "kolmafia";
+import { $item, get } from "libram";
 
 import { auto_is_valid } from "../auto_util";
 
@@ -36,7 +36,7 @@ export function auto_navelFreeRunChance(): number {
     return 0;
   }
   // https://kol.coldfront.net/thekolwiki/index.php/Navel_ring_of_navel_gazing
-  const navelRunAways: number = toInt(getProperty("_navelRunaways"));
+  const navelRunAways: number = get("_navelRunaways");
   if (navelRunAways < 3) {
     return 100;
   }

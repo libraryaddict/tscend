@@ -19,9 +19,7 @@ import {
   myPrimestat,
   pullsRemaining,
   retrieveItem,
-  setProperty,
   splitString,
-  toBoolean,
   toInt,
 } from "kolmafia";
 import {
@@ -38,6 +36,7 @@ import {
   $slot,
   $stat,
   get,
+  set,
 } from "libram";
 
 import {
@@ -81,12 +80,12 @@ export function in_koe(): boolean {
 
 export function koe_initializeSettings(): boolean {
   if (in_koe()) {
-    setProperty("auto_bruteForcePalindome", inHardcore().toString());
-    setProperty("auto_holeinthesky", false.toString());
-    setProperty("auto_paranoia", (3).toString());
-    setProperty("auto_skipL12Farm", "true");
-    setProperty("auto_grimstoneOrnateDowsingRod", false.toString()); //location not reachable in koe
-    setProperty("auto_grimstoneFancyOilPainting", false.toString()); //location not reachable in koe
+    set("auto_bruteForcePalindome", inHardcore());
+    set("auto_holeinthesky", false);
+    set("auto_paranoia", 3);
+    set("auto_skipL12Farm", "true");
+    set("auto_grimstoneOrnateDowsingRod", false); //location not reachable in koe
+    set("auto_grimstoneFancyOilPainting", false); //location not reachable in koe
     return true;
   }
   return false;
@@ -325,10 +324,7 @@ export function L12_koe_clearBattlefield(): boolean {
     //questL12HippyFrat is used exclusively in koe. it only has the values of: unstarted, started, finished.
     return false;
   }
-  if (
-    toInt(getProperty("hippiesDefeated")) >= 333 ||
-    toInt(getProperty("fratboysDefeated")) >= 333
-  ) {
+  if (get("hippiesDefeated") >= 333 || get("fratboysDefeated") >= 333) {
     return false;
   }
   if (!haveWarOutfit(true)) {
@@ -378,10 +374,7 @@ export function L12_koe_finalizeWar(): boolean {
     //questL12HippyFrat is used exclusively in koe. it only has the values of: unstarted, started, finished.
     return false;
   }
-  if (
-    toInt(getProperty("hippiesDefeated")) < 333 &&
-    toInt(getProperty("fratboysDefeated")) < 333
-  ) {
+  if (get("hippiesDefeated") < 333 && get("fratboysDefeated") < 333) {
     return false; //there are 333 of each enemy in koe. if either side had all 333 defeated then this will not return false here.
   }
   //koe does not have coin masters. there is nothing to sell here.
@@ -410,12 +403,12 @@ export function L13_koe_towerNSNagamar(): boolean {
   if (!in_koe()) {
     return false;
   }
-  if (!toBoolean(getProperty("auto_wandOfNagamar"))) {
+  if (!get("auto_wandOfNagamar", false)) {
     return false; //internal tracking says we do not want wand
   }
   if (itemAmount($item`Wand of Nagamar`) > 0) {
     //if we already have wand we should adjust our internal tracking to say so
-    setProperty("auto_wandOfNagamar", false.toString());
+    set("auto_wandOfNagamar", false);
     return false;
   }
   if (internalQuestStatus("questL13Final") < 11) {
@@ -468,8 +461,6 @@ export function koe_NeedWhitePixels(): boolean {
   if (!needDigitalKey()) {
     return false;
   }
-  const pixels_needed: number = toBoolean(getProperty("spaceInvaderDefeated"))
-    ? 30
-    : 20;
+  const pixels_needed: number = get("spaceInvaderDefeated") ? 30 : 20;
   return itemAmount($item`white pixel`) < pixels_needed;
 }

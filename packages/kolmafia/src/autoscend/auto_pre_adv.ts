@@ -61,14 +61,9 @@ import {
   numericModifier,
   putCloset,
   retrieveItem,
-  setProperty,
   Skill,
   splitString,
-  toBoolean,
-  toFamiliar,
   toInt,
-  toLocation,
-  toMonster,
   use,
   useFamiliar,
 } from "kolmafia";
@@ -87,7 +82,9 @@ import {
   $slot,
   $slots,
   $stat,
+  get,
   have,
+  set,
 } from "libram";
 
 import { speculative_pool_skill } from "../autoscend";
@@ -368,7 +365,7 @@ function auto_ghost_prep(place: Location): void {
   if (in_plumber()) {
     return; //these paths either have their own ghost handling. or can always kill ghosts
   }
-  if (toInt(getProperty("youRobotBottom")) === 2) {
+  if (get("youRobotBottom") === 2) {
     return; //you robot with a rocket crotch. deals fire damage to kill ghosts.
   }
   //a few iconic spells per avatar is ok. no need to be too exhaustive
@@ -502,7 +499,7 @@ function auto_ghost_prep(place: Location): void {
 
 function auto_pre_adventure(): boolean {
   const place: Location = myLocation();
-  if (toBoolean(getProperty("auto_disableAdventureHandling"))) {
+  if (get("auto_disableAdventureHandling", false)) {
     auto_log_info(
       "Preadventure skipped by standard adventure handler.",
       "green",
@@ -636,7 +633,7 @@ function auto_pre_adventure(): boolean {
       }
     } else if (
       place.turnsSpent > 1 &&
-      place !== toLocation(getProperty("auto_priorLocation"))
+      place !== get("auto_priorLocation", Location.none)
     ) {
       //When do we consider Song of Cockiness?
       buffMaintain$2($effect`Song of Fortune`, 10, 1, 1);
@@ -720,7 +717,7 @@ function auto_pre_adventure(): boolean {
   if (auto_haveCrystalBall()) {
     if (
       auto_queueIgnore() ||
-      toMonster(getProperty("auto_nextEncounter")) !== Monster.none
+      get("auto_nextEncounter", Monster.none) !== Monster.none
     ) {
       //if already forced by something else, no need to handle your ball
     } else if (!auto_forceHandleCrystalBall(place)) {
@@ -731,11 +728,11 @@ function auto_pre_adventure(): boolean {
   }
 
   const possible_monsters: Map<number, Monster> = new Map();
-  if (toMonster(getProperty("auto_nextEncounter")) !== Monster.none) {
+  if (get("auto_nextEncounter", Monster.none) !== Monster.none) {
     //next monster is forced by zone mechanics or by now locked-in miniature crystal ball
     possible_monsters.set(
       possible_monsters.size,
-      toMonster(getProperty("auto_nextEncounter")),
+      get("auto_nextEncounter", Monster.none),
     );
   } else {
     for (const [, mon] of getMonsters(place).entries()) {
@@ -884,7 +881,7 @@ function auto_pre_adventure(): boolean {
   if (
     auto_haveMcHugeLargeSkis() &&
     getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
-    !toBoolean(getProperty("auto_avalancheDeployed"))
+    !get("auto_avalancheDeployed", false)
   ) {
     autoForceEquip($slot`acc2`, wrap_item($item`McHugeLarge left ski`));
     // We put it in acc2 so it can't clash with the war accessory in acc3
@@ -893,11 +890,11 @@ function auto_pre_adventure(): boolean {
   if (
     auto_hasParka() &&
     getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
-    !toBoolean(getProperty("auto_parkaSpikesDeployed"))
+    !get("auto_parkaSpikesDeployed", false)
   ) {
     autoForceEquip$3(wrap_item($item`Jurassic Parka`)); //equips parka and forbids maximizer tampering with shirt slot
     //not using auto_configureParka("spikes") so maximizer stays aware of ML from shirt, instead of maximizing with another shirt or no shirt before changing to parka
-    setProperty("auto_parkaSetting", "spikes");
+    set("auto_parkaSetting", "spikes");
     if (getProperty("parkaMode") !== "spikolodon") {
       cliExecute("parka spikolodon");
     }
@@ -1018,7 +1015,7 @@ function auto_pre_adventure(): boolean {
       plumber_equipTool($stat`Moxie`);
     }
     // It is dangerous out there! Take this!
-    const flyeredML: number = toInt(getProperty("flyeredML"));
+    const flyeredML: number = get("flyeredML");
     const have_pill_keeper: boolean =
       possessEquipment($item`Eight Days a Week Pill Keeper`) &&
       isUnrestricted($item`Unopened Eight Days a Week Pill Keeper`);
@@ -1045,7 +1042,7 @@ function auto_pre_adventure(): boolean {
     // re-equip a familiar if it's a 100% run just in case something unequipped it
     // looking at you auto_maximizedConsumeStuff()...
     // and L12_themtharHills()...
-    useFamiliar(toFamiliar(getProperty("auto_100familiar")));
+    useFamiliar(get("auto_100familiar", Familiar.none));
     auto_log_debug(
       `Re-equipped your ${getProperty("auto_100familiar")} as something had unequipped it. This is bad and should be investigated.`,
     );
@@ -1161,7 +1158,7 @@ function auto_pre_adventure(): boolean {
   }
   // NOTE: If we aren't quits before we pass L13, let us gain stats.
   if (
-    (toInt(getProperty("flyeredML")) > 9999 ||
+    (get("flyeredML") > 9999 ||
       internalQuestStatus("questL12War") > 1 ||
       getProperty("sidequestArenaCompleted") !== "none") &&
     myLevel() > 12
@@ -1171,7 +1168,7 @@ function auto_pre_adventure(): boolean {
     purgeML = false;
   }
   // Allow user settable option to override the above settings to not slack off ML
-  if (myLevel() > 12 && toBoolean(getProperty("auto_disregardInstantKarma"))) {
+  if (myLevel() > 12 && get("auto_disregardInstantKarma", false)) {
     doML = true;
     removeML = false;
     purgeML = false;
@@ -1220,21 +1217,18 @@ function auto_pre_adventure(): boolean {
     // Catch when we leave lowMLZone, allow for being "side tracked" by delay burning
     if (
       haveEffect($effect`Driving Intimidatingly`) > 0 &&
-      toInt(getProperty("auto_debuffAsdonDelay")) >= 2
+      get("auto_debuffAsdonDelay", 0) >= 2
     ) {
       auto_log_debug("No Reason to delay Asdon Usage");
       uneffect($effect`Driving Intimidatingly`);
-      setProperty("auto_debuffAsdonDelay", (0).toString());
+      set("auto_debuffAsdonDelay", 0);
     } else if (
       toInt(haveEffect($effect`Driving Intimidatingly`)) === 0 &&
-      toInt(getProperty("auto_debuffAsdonDelay")) >= 0
+      get("auto_debuffAsdonDelay", 0) >= 0
     ) {
-      setProperty("auto_debuffAsdonDelay", (0).toString());
+      set("auto_debuffAsdonDelay", 0);
     } else {
-      setProperty(
-        "auto_debuffAsdonDelay",
-        (toInt(getProperty("auto_debuffAsdonDelay")) + 1).toString(),
-      );
+      set("auto_debuffAsdonDelay", get("auto_debuffAsdonDelay", 0) + 1);
       auto_log_debug(
         `Delaying debuffing Asdon: ${getProperty("auto_debuffAsdonDelay")}`,
       );
@@ -1269,12 +1263,10 @@ function auto_pre_adventure(): boolean {
     getProperty("auto_MLSafetyLimit") !== "" &&
     !maximizer.has($modifier`Monster Level`)
   ) {
-    if (toInt(getProperty("auto_MLSafetyLimit")) === -1) {
+    if (get("auto_MLSafetyLimit", 0) === -1) {
       // prevent all ML being equiped if limit is -1 and equip lowest possible ML including going negative
       maximizer.weight($modifier`Monster Level`, -1000);
-    } else if (
-      toInt(getProperty("auto_MLSafetyLimit")) <= highest_available_mcd()
-    ) {
+    } else if (get("auto_MLSafetyLimit", 0) <= highest_available_mcd()) {
       //mcd can already fill all allowed ML without using equipment slots
       //if the value is 0 adding ML with 0max is useless, it does not stop the maximizer from picking equipment with ML,
       //0max would just tell the maximizer to add +0 value to ML over 0 which is the same as not giving any value for ML
@@ -1282,15 +1274,12 @@ function auto_pre_adventure(): boolean {
       // note: maximizer will allow to go above the max value, ML just won't contribute to the total score after the max value
       maximizer
         .weight($modifier`Monster Level`)
-        .max(
-          $modifier`Monster Level`,
-          toInt(getProperty("auto_MLSafetyLimit")),
-        );
+        .max($modifier`Monster Level`, get("auto_MLSafetyLimit", 0));
     }
   }
   // Last minute switching for garbage tote. But only if nothing called on januaryToteAcquire this turn.
   if (
-    !toBoolean(getProperty("auto_januaryToteAcquireCalledThisTurn")) &&
+    !get("auto_januaryToteAcquireCalledThisTurn", false) &&
     auto_is_valid($item`wad of used tape`)
   ) {
     januaryToteAcquire($item`wad of used tape`);
@@ -1313,7 +1302,7 @@ function auto_pre_adventure(): boolean {
   if (
     place === $location`The Hidden Bowling Alley` &&
     itemAmount($item`bowling ball`) > 0 &&
-    toInt(getProperty("hiddenBowlingAlleyProgress")) < 5
+    get("hiddenBowlingAlleyProgress") < 5
   ) {
     equipStatgainIncreasers$2();
     plumber_forceEquipTool();
@@ -1379,7 +1368,7 @@ function auto_pre_adventure(): boolean {
   // always heal to full HP for Boo Clues
   if (
     $locations`A-Boo Peak`.includes(place) &&
-    toInt(getProperty("auto_aboopending")) !== 0
+    get("auto_aboopending", 0) !== 0
   ) {
     acquireHP();
     if (isActuallyEd()) {
@@ -1452,13 +1441,13 @@ function auto_pre_adventure(): boolean {
 
   utilizeStillsuit();
 
-  setProperty("auto_priorLocation", place.toString());
+  set("auto_priorLocation", place);
   auto_log_info(`Pre Adventure at ${place} done, beep.`, "blue");
   //try to catch infinite loop where we repeatedly try to do the same thing.
   //works with code found in auto_post_adv.ash
-  setProperty("_auto_inf_session_adv", mySessionAdv().toString());
+  set("_auto_inf_session_adv", mySessionAdv());
   //to avoid constant flipping on the MCD. change it right before adventuring
-  const mcd_target: number = toInt(getProperty("auto_mcd_target"));
+  const mcd_target: number = get("auto_mcd_target", 0);
   if (currentMcd() !== mcd_target) {
     changeMcd(mcd_target);
   }
@@ -1487,7 +1476,7 @@ export function auto_runPreAdventure(): boolean {
       auto_log_error(
         "Error running auto_pre_adv.ash, setting auto_interrupt=true",
       );
-      setProperty("auto_interrupt", true.toString());
+      set("auto_interrupt", true);
     }
     auto_interruptCheck("pre/post script");
   }

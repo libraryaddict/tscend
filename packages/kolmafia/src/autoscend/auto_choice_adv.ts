@@ -5,7 +5,6 @@ import {
   canEat,
   containsText,
   equippedAmount,
-  getProperty,
   handlingChoice,
   isWearingOutfit,
   itemAmount,
@@ -16,11 +15,9 @@ import {
   myPrimestat,
   myTurncount,
   runChoice,
-  setProperty,
-  toBoolean,
   toInt,
 } from "kolmafia";
-import { $item, $location, $stat, get } from "libram";
+import { $item, $location, $stat, get, set } from "libram";
 
 import { possessEquipment } from "./auto_equipment";
 import {
@@ -263,13 +260,13 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 163: // Melvil Dewey Would Be Ashamed (The Haunted Library)
         if (in_lar()) {
-          setProperty("_LAR_skipNC163", myTurncount().toString()); // NC in LAR path forced to reoccur if we skip it. Go do something else.
+          set("_LAR_skipNC163", myTurncount()); // NC in LAR path forced to reoccur if we skip it. Go do something else.
         }
         auto_runChoice(4); // skip
         break;
       case 178: // Hammering the Armory (The Penultimate Fantasy Airship)
         if (in_lar()) {
-          setProperty("_LAR_skipNC178", myTurncount().toString()); // NC in LAR path forced to reoccur if we skip it. Go do something else.
+          set("_LAR_skipNC178", myTurncount()); // NC in LAR path forced to reoccur if we skip it. Go do something else.
         }
         auto_runChoice(2); // skip
         break;
@@ -316,7 +313,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         fcleChoiceHandler(choice);
         break;
       case 330: // A Shark's Chum (The Haunted Billiards Room, semi-rarely)
-        if (toInt(getProperty("poolSharkCount")) < 25) {
+        if (get("poolSharkCount") < 25) {
           auto_runChoice(1); // train pool skill
         } else {
           auto_runChoice(2); // fight hustled spectre for cube of billiard chalk
@@ -498,10 +495,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         hiddenCityChoiceHandler(choice);
         break;
       case 793: // The Shore, Inc. Travel Agency. doing a vacation
-        if (
-          options.has(5) &&
-          toBoolean(getProperty("auto_considerCCSCShore"))
-        ) {
+        if (options.has(5) && get("auto_considerCCSCShore", false)) {
           auto_runChoice(5); // 2 Shore scrips, all stats, +wdmg
         } else if (myPrimestat() === $stat`Muscle`) {
           auto_runChoice(1); // muscle stats
@@ -565,7 +559,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 889: // Take a Look, it's in a Book! (Fall) (The Haunted Library)
         if (
           itemAmount($item`dictionary`) === 0 &&
-          toBoolean(getProperty("auto_getDictionary"))
+          get("auto_getDictionary", false)
         ) {
           auto_runChoice(4); // get the dictionary
         } else {
@@ -674,9 +668,9 @@ function auto_run_choice(choice: number, page: string): boolean {
         doghouseChoiceHandler(choice);
         break;
       case 1115: // VYKEA! (VYKEA)
-        if (!toBoolean(getProperty("_VYKEACafeteriaRaided"))) {
+        if (!get("_VYKEACafeteriaRaided")) {
           auto_runChoice(1); // get consumables
-        } else if (!toBoolean(getProperty("_VYKEALoungeRaided"))) {
+        } else if (!get("_VYKEALoungeRaided")) {
           auto_runChoice(4); // get Wal-Mart gift certificates
         } else {
           auto_runChoice(6); // skip
@@ -697,7 +691,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 1310: {
         // Granted a Boon (God Lobster)
-        const goal: number = toInt(getProperty("_auto_lobsterChoice"));
+        const goal: number = get("_auto_lobsterChoice", 0);
         let search: string = "I'd like part of your regalia.";
         if (goal === 2) {
           search = "I'd like a blessing.";
@@ -856,7 +850,7 @@ export function main(choice: number, page: string): void {
       auto_log_error(
         "Error running auto_choice_adv.js, setting auto_interrupt=true",
       );
-      setProperty("auto_interrupt", true.toString());
+      set("auto_interrupt", true);
     }
   }
 }

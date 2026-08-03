@@ -1,6 +1,5 @@
 import {
   create,
-  getProperty,
   haveSkill,
   itemAmount,
   mpCost,
@@ -8,13 +7,11 @@ import {
   myLevel,
   myMp,
   myPath,
-  setProperty,
-  toBoolean,
   toInt,
   useSkill,
   visitUrl,
 } from "kolmafia";
-import { $item, $path, $skill, $skills } from "libram";
+import { $item, $path, $skill, $skills, get, set } from "libram";
 
 import { auto_have_skill, auto_log_info } from "../auto_util";
 import { QuestTask, registerQuestTask } from "../engine/engine";
@@ -29,7 +26,7 @@ export function is_jarlsberg(): boolean {
 export function jarlsberg_initializeSettings(): void {
   if (is_jarlsberg()) {
     auto_log_info("Initializing Avatar of Jarlsberg settings", "blue");
-    setProperty("auto_wandOfNagamar", false.toString());
+    set("auto_wandOfNagamar", false);
   }
 }
 
@@ -45,10 +42,10 @@ export function jarlsberg_buySkills(): void {
   if (!is_jarlsberg()) {
     return;
   }
-  if (myLevel() <= toInt(getProperty("_auto_jarlsbergSkills"))) {
+  if (myLevel() <= get("_auto_jarlsbergSkills", 0)) {
     return;
   }
-  if (toBoolean(getProperty("_auto_completedJarlsbergSkillTree"))) {
+  if (get("_auto_completedJarlsbergSkillTree", false)) {
     //Prevent us from running through the full list of skills checks more than once per day if we already have all skills
     return;
   }
@@ -73,13 +70,13 @@ export function jarlsberg_buySkills(): void {
       if (skillid !== 0) {
         visitUrl(`jarlskills.php?action=getskill&getskid=${skillid}`);
       } else {
-        setProperty("_auto_completedJarlsbergSkillTree", true.toString());
+        set("_auto_completedJarlsbergSkillTree", true);
         return;
       }
     }
   }
 
-  setProperty("_auto_jarlsbergSkills", myLevel().toString());
+  set("_auto_jarlsbergSkills", myLevel());
 }
 
 function LM_jarlsbergDo(): boolean {
@@ -94,7 +91,7 @@ function LM_jarlsbergDo(): boolean {
     useSkill(1, $skill`Egg Man`);
   }
 
-  if (!toBoolean(getProperty("_cosmicSixPackConjured"))) {
+  if (!get("_cosmicSixPackConjured")) {
     create(1, $item`cosmic six-pack`);
   }
 

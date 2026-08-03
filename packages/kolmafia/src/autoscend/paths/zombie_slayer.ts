@@ -16,12 +16,11 @@ import {
   myMeat,
   myMp,
   myPath,
-  setProperty,
   toFloat,
   useSkill,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $path, $skill } from "libram";
+import { $effect, $item, $path, $skill, set } from "libram";
 
 import { autoEat } from "../auto_consume";
 import {
@@ -55,7 +54,7 @@ export function in_zombieSlayer(): boolean {
 export function zombieSlayer_initializeSettings(): void {
   if (in_zombieSlayer()) {
     // No Naughty Sorceress so no need for a wand.
-    setProperty("auto_wandOfNagamar", false.toString());
+    set("auto_wandOfNagamar", false);
   }
 }
 

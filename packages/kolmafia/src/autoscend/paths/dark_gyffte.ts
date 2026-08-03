@@ -27,7 +27,6 @@ import {
   myLocation,
   myPath,
   sell,
-  setProperty,
   Skill,
   toInt,
   toSkill,
@@ -45,6 +44,8 @@ import {
   $skill,
   $skills,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
@@ -77,11 +78,11 @@ export function in_darkGyffte(): boolean {
 
 export function bat_initializeSettings(): void {
   if (in_darkGyffte()) {
-    setProperty("auto_getSteelOrgan", false.toString());
-    setProperty("auto_grimstoneFancyOilPainting", false.toString());
-    setProperty("auto_paranoia", (10).toString());
-    setProperty("auto_wandOfNagamar", false.toString());
-    setProperty("auto_bat_desiredForm", "");
+    set("auto_getSteelOrgan", false);
+    set("auto_grimstoneFancyOilPainting", false);
+    set("auto_paranoia", 10);
+    set("auto_wandOfNagamar", false);
+    set("auto_bat_desiredForm", "");
   }
 }
 // The following functions set the desired form.
@@ -96,7 +97,7 @@ export function bat_wantHowl(loc: Location): boolean {
   if (auto_banishesUsedAt(loc).has("baleful howl")) {
     return false;
   }
-  if (toInt(getProperty("_balefulHowlUses")) >= 10) {
+  if (get("_balefulHowlUses") >= 10) {
     return false;
   }
   if (myHp() <= hpCost($skill`Baleful Howl`)) {
@@ -126,7 +127,7 @@ export function bat_formNone(): boolean {
     return false;
   }
   if (getProperty("auto_bat_desiredForm") !== "") {
-    setProperty("auto_bat_desiredForm", "");
+    set("auto_bat_desiredForm", "");
   }
   return true;
 }
@@ -135,7 +136,7 @@ export function bat_formWolf(speculative: boolean): boolean {
   if (!in_darkGyffte()) {
     return false;
   }
-  setProperty("auto_bat_desiredForm", "wolf");
+  set("auto_bat_desiredForm", "wolf");
   return bat_switchForm($effect`Wolf Form`, speculative);
 }
 
@@ -143,7 +144,7 @@ export function bat_formMist(speculative: boolean = false): boolean {
   if (!in_darkGyffte()) {
     return false;
   }
-  setProperty("auto_bat_desiredForm", "mist");
+  set("auto_bat_desiredForm", "mist");
   return bat_switchForm($effect`Mist Form`, speculative);
 }
 
@@ -151,7 +152,7 @@ export function bat_formBats(speculative: boolean = false): boolean {
   if (!in_darkGyffte()) {
     return false;
   }
-  setProperty("auto_bat_desiredForm", "bats");
+  set("auto_bat_desiredForm", "bats");
   return bat_switchForm($effect`Bats Form`, speculative);
 }
 
@@ -208,32 +209,26 @@ export function bat_formPreAdventure(): boolean {
       auto_log_error(
         `auto_bat_desiredForm was set to bad value: '${desiredForm}'. Should be '', 'wolf', 'mist', or 'bats'.`,
       );
-      setProperty("auto_bat_desiredForm", "");
+      set("auto_bat_desiredForm", "");
       return false;
   }
 }
 
 export function bat_initializeSession(): void {
   if (in_darkGyffte()) {
-    setProperty("auto_mpAutoRecovery", getProperty("mpAutoRecovery"));
-    setProperty(
-      "auto_mpAutoRecoveryTarget",
-      getProperty("mpAutoRecoveryTarget"),
-    );
-    setProperty("mpAutoRecovery", (-0.05).toString());
-    setProperty("mpAutoRecoveryTarget", (0.0).toString());
+    set("auto_mpAutoRecovery", getProperty("mpAutoRecovery"));
+    set("auto_mpAutoRecoveryTarget", getProperty("mpAutoRecoveryTarget"));
+    set("mpAutoRecovery", -0.05);
+    set("mpAutoRecoveryTarget", 0.0);
   }
 }
 
 export function bat_terminateSession(): void {
   if (in_darkGyffte()) {
-    setProperty("mpAutoRecovery", getProperty("auto_mpAutoRecovery"));
-    setProperty("auto_mpAutoRecovery", (0.0).toString());
-    setProperty(
-      "mpAutoRecoveryTarget",
-      getProperty("auto_mpAutoRecoveryTarget"),
-    );
-    setProperty("auto_mpAutoRecoveryTarget", (0.0).toString());
+    set("mpAutoRecovery", getProperty("auto_mpAutoRecovery"));
+    set("auto_mpAutoRecovery", 0.0);
+    set("mpAutoRecoveryTarget", getProperty("auto_mpAutoRecoveryTarget"));
+    set("auto_mpAutoRecoveryTarget", 0.0);
   }
 }
 
@@ -242,10 +237,10 @@ export function bat_initializeDay(day: number): void {
     return;
   }
 
-  if (toInt(getProperty("auto_day_init")) < day) {
-    setProperty("_auto_bat_bloodBank", (0).toString()); // 0: no blood yet, 1: base blood, 2: intimidating blood
-    setProperty("auto_bat_ensorcels", (0).toString());
-    setProperty("auto_bat_soulmonster", "");
+  if (get("auto_day_init", 0) < day) {
+    set("_auto_bat_bloodBank", 0); // 0: no blood yet, 1: base blood, 2: intimidating blood
+    set("auto_bat_ensorcels", 0);
+    set("auto_bat_soulmonster", "");
     bat_tryBloodBank();
     if (bat_shouldPickSkills(20)) {
       bat_reallyPickSkills(20);
@@ -294,11 +289,7 @@ function bat_maxHPCost(sk: Skill): number {
 }
 
 function bat_baseHP(): number {
-  return (
-    20 * min(23, toInt(getProperty("darkGyfftePoints"))) +
-    myBasestat($stat`Muscle`) +
-    20
-  );
+  return 20 * min(23, get("darkGyfftePoints")) + myBasestat($stat`Muscle`) + 20;
 }
 
 function bat_remainingBaseHP(): number {
@@ -904,13 +895,13 @@ export function bat_skillValid(sk: Skill): boolean {
 }
 
 function bat_tryBloodBank(): boolean {
-  const bloodBank: number = toInt(getProperty("_auto_bat_bloodBank"));
+  const bloodBank: number = get("_auto_bat_bloodBank", 0);
   if (
     bloodBank === 0 ||
     (bloodBank === 1 && haveSkill($skill`Intimidating Aura`))
   ) {
     visitUrl("place.php?whichplace=town_right&action=town_bloodbank");
-    setProperty(
+    set(
       "_auto_bat_bloodBank",
       haveSkill($skill`Intimidating Aura`) ? (2).toString() : (1).toString(),
     );

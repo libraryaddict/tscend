@@ -29,12 +29,9 @@ import {
   myMeat,
   myPrimestat,
   random,
-  setProperty,
   splitString,
   Stat,
-  toBoolean,
   toInt,
-  toItem,
   toLowerCase,
   totalTurnsPlayed,
   useFamiliar,
@@ -50,6 +47,8 @@ import {
   $monster,
   $slot,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { autoAdv, autoAdvBypass$1, CombatMacro } from "../auto_adventure";
@@ -115,13 +114,13 @@ export function januaryToteTurnsLeft(it: Item): number {
   if (getRevision() < 18848) {
     switch (it) {
       case $item`deceased crimbo tree`:
-        score = toInt(getProperty("_garbageTreeCharge"));
+        score = get("_garbageTreeCharge", 0);
         break;
       case $item`broken champagne bottle`:
-        score = toInt(getProperty("_garbageChampagneCharge"));
+        score = get("_garbageChampagneCharge", 0);
         break;
       case $item`makeshift garbage shirt`:
-        score = toInt(getProperty("_garbageShirtCharge"));
+        score = get("_garbageShirtCharge", 0);
         break;
     }
     return score;
@@ -129,17 +128,17 @@ export function januaryToteTurnsLeft(it: Item): number {
 
   switch (it) {
     case $item`deceased crimbo tree`:
-      score = toInt(getProperty("garbageTreeCharge"));
+      score = get("garbageTreeCharge");
       break;
     case $item`broken champagne bottle`:
-      score = toInt(getProperty("garbageChampagneCharge"));
+      score = get("garbageChampagneCharge");
       break;
     case $item`makeshift garbage shirt`:
-      score = toInt(getProperty("garbageShirtCharge"));
+      score = get("garbageShirtCharge");
       break;
   }
 
-  if (!toBoolean(getProperty("_garbageItemChanged"))) {
+  if (!get("_garbageItemChanged")) {
     switch (it) {
       case $item`deceased crimbo tree`:
         score += 1000;
@@ -163,7 +162,7 @@ export function januaryToteAcquire(it: Item): boolean {
   }
   //in pre_adventure we routinely switch to wad of used tape. This allows us to avoid switching away from a desired item.
   //can't use adventure count in case of free fights.
-  setProperty("auto_januaryToteAcquireCalledThisTurn", true.toString());
+  set("auto_januaryToteAcquireCalledThisTurn", true);
   //by default resetMaximize() will add a block for not equipping garbage tote items with charges to preserve the charges.
   //If we call januaryToteAcquire for an item we want to remove that block for that item.
   if (
@@ -177,17 +176,17 @@ export function januaryToteAcquire(it: Item): boolean {
   //do not use possessEquipment nor equipmentAmount here, they have special handling for tote foldables that always counts number of january's garbage totes instead of the target item. Resulting in this if always being true.
   if (availableAmount(it) > 0) {
     let leftover_charges: number = 0;
-    if (toBoolean(getProperty("_garbageItemChanged"))) {
+    if (get("_garbageItemChanged")) {
       return true; //item already swapped today eliminating leftover charges. don't replace an item with itself.
     } else {
       //since item was not changed yet, count leftover charges from yesterday.
       //If target item has no charges at all then pretend it has 1 leftover to not replace it with itself.
       switch (it) {
         case $item`deceased crimbo tree`:
-          leftover_charges = toInt(getProperty("garbageTreeCharge"));
+          leftover_charges = get("garbageTreeCharge");
           break;
         case $item`broken champagne bottle`:
-          leftover_charges = toInt(getProperty("garbageChampagneCharge"));
+          leftover_charges = get("garbageChampagneCharge");
           break;
         case $item`tinsel tights`:
           leftover_charges = 1;
@@ -196,7 +195,7 @@ export function januaryToteAcquire(it: Item): boolean {
           leftover_charges = 1;
           break;
         case $item`makeshift garbage shirt`:
-          leftover_charges = toInt(getProperty("garbageShirtCharge"));
+          leftover_charges = get("garbageShirtCharge");
           break;
       }
     }
@@ -272,7 +271,7 @@ export function januaryToteAcquire(it: Item): boolean {
 }
 
 export function auto_godLobsterFightsRemaining(): number {
-  return 3 - toInt(getProperty("_godLobsterFights"));
+  return 3 - get("_godLobsterFights");
 }
 
 export function godLobsterCombat(
@@ -288,7 +287,7 @@ export function godLobsterCombat(
   if (goal < 1 || goal > 3) {
     return false;
   }
-  if (toInt(getProperty("_godLobsterFights")) >= 3) {
+  if (get("_godLobsterFights") >= 3) {
     return false;
   }
   if (it !== Item.none && availableAmount(it) === 0) {
@@ -307,7 +306,7 @@ export function godLobsterCombat(
     equip($slot`familiar`, it);
   }
 
-  setProperty("_auto_lobsterChoice", goal.toString());
+  set("_auto_lobsterChoice", goal);
   return autoAdvBypass$1(
     "main.php?fightgodlobster=1",
     $location`Noob Cave`,
@@ -319,10 +318,7 @@ export function fantasyRealmAvailable(): boolean {
   if (!isUnrestricted($item`FantasyRealm membership packet`)) {
     return false;
   }
-  if (
-    toBoolean(getProperty("frAlways")) ||
-    toBoolean(getProperty("_frToday"))
-  ) {
+  if (get("frAlways") || get("_frToday")) {
     return true;
   }
   return false;
@@ -357,8 +353,7 @@ export function fantasyRealmToken(): boolean {
   }
 
   if (
-    (toBoolean(getProperty("frAlways")) ||
-      toBoolean(getProperty("_frToday"))) &&
+    (get("frAlways") || get("_frToday")) &&
     !possessEquipment($item`FantasyRealm G. E. M.`)
   ) {
     let option: number = 1;
@@ -495,7 +490,7 @@ function songboomSetting$1(option: number): boolean {
   if (itemAmount($item`SongBoom™ BoomBox`) === 0) {
     return false;
   }
-  if (toInt(getProperty("_boomBoxSongsLeft")) === 0) {
+  if (get("_boomBoxSongsLeft") === 0) {
     if (option !== 6) {
       // Always allow turning off the song, if that is really something we want to do.
       return false;
@@ -559,7 +554,7 @@ export function auto_setSongboom(): void {
   if (itemAmount($item`SongBoom™ BoomBox`) === 0) {
     return;
   }
-  if (toInt(getProperty("auto_beatenUpCount")) > 5) {
+  if (get("auto_beatenUpCount", 0) > 5) {
     songboomSetting("dr");
   } else if (
     internalQuestStatus("questL12War") > 0 &&
@@ -574,11 +569,8 @@ export function auto_setSongboom(): void {
     spleen_left() >
       4 *
         min(auto_spleenFamiliarAdvItemsPossessed(), floor(spleen_left() / 4)) &&
-    toInt(
-      //only uses space than can't be filled with adv item
-      getProperty("_boomBoxFights"),
-    ) === 10 &&
-    toInt(getProperty("_boomBoxSongsLeft")) > 3
+    get("_boomBoxFights") === 10 &&
+    get("_boomBoxSongsLeft") > 3
   ) {
     songboomSetting("nightmare");
   } else {
@@ -601,11 +593,9 @@ export function catBurglarHeistsLeft(): number {
   ) {
     return 0;
   }
-  const banked_heists: number = toInt(getProperty("catBurglarBankHeists"));
-  let charge: number = toInt(getProperty("_catBurglarCharge"));
-  const heists_complete: number = toInt(
-    getProperty("_catBurglarHeistsComplete"),
-  );
+  const banked_heists: number = get("catBurglarBankHeists");
+  let charge: number = get("_catBurglarCharge");
+  const heists_complete: number = get("_catBurglarHeistsComplete");
   let heists_left: number = banked_heists - heists_complete;
   charge /= 10;
   while (charge >= 1) {
@@ -695,7 +685,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
     }
   }
 
-  const oreGoal: Item = toItem(getProperty("trapperOre"));
+  const oreGoal: Item = get("trapperOre", Item.none);
   if (
     oreGoal !== Item.none &&
     itemAmount(oreGoal) < 3 &&
@@ -707,7 +697,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
 
   if (
     itemAmount($item`killing jar`) === 0 &&
-    (toInt(getProperty("gnasirProgress")) & 4) === 0 &&
+    (get("gnasirProgress") & 4) === 0 &&
     inHardcore()
   ) {
     wannaHeists.set($monster`banshee librarian`, $item`killing jar`);
@@ -812,7 +802,7 @@ export function cheeseWarMachine(
   if (itemAmount($item`Bastille Battalion control rig`) === 0) {
     return false;
   }
-  if (toInt(getProperty("_bastilleGames")) !== 0) {
+  if (get("_bastilleGames") !== 0) {
     return false;
   }
 
@@ -955,18 +945,15 @@ export function neverendingPartyRemainingFreeFights(): number {
     return 0;
   }
   //daily pass users do not get free fights
-  if (toBoolean(getProperty("_neverendingPartyToday"))) {
+  if (get("_neverendingPartyToday")) {
     return 0;
   }
   //mafia counts how many times you fought there for free, not how many free fights remain.
-  return 10 - toInt(getProperty("_neverendingPartyFreeTurns"));
+  return 10 - get("_neverendingPartyFreeTurns");
 }
 
 export function neverendingPartyAvailable(): boolean {
-  if (
-    !toBoolean(getProperty("neverendingPartyAlways")) &&
-    !toBoolean(getProperty("_neverendingPartyToday"))
-  ) {
+  if (!get("neverendingPartyAlways") && !get("_neverendingPartyToday")) {
     // check mafia properties which track access.
     return false;
   }
@@ -1264,11 +1251,11 @@ function auto_latteRefill(
     return false;
   }
 
-  if (toInt(getProperty("_latteRefillsUsed")) >= 3) {
+  if (get("_latteRefillsUsed") >= 3) {
     return false;
   }
   // don't want to waste banishes
-  if (!toBoolean(getProperty("_latteBanishUsed")) && !force) {
+  if (!get("_latteBanishUsed") && !force) {
     return false;
   }
 
@@ -1381,8 +1368,7 @@ export function auto_latteRefill$4(
 export function auto_haveVotingBooth(): boolean {
   // is_unrestricted instead of auto_is_valid as the enchatments are usable in g lover.
   return (
-    (toBoolean(getProperty("_voteToday")) ||
-      toBoolean(getProperty("voteAlways"))) &&
+    (get("_voteToday") || get("voteAlways")) &&
     isUnrestricted($item`voter registration form`)
   );
 }
@@ -1449,7 +1435,7 @@ export function auto_voteMonster(
   }
   //Some things override this, like a semi-rare?
 
-  if (toInt(getProperty("lastVoteMonsterTurn")) >= totalTurnsPlayed()) {
+  if (get("lastVoteMonsterTurn") >= totalTurnsPlayed()) {
     return false;
   }
   if (totalTurnsPlayed() % 11 !== 1) {
@@ -1463,7 +1449,7 @@ export function auto_voteMonster(
     return false;
   }
 
-  if (freeMon && toInt(getProperty("_voteFreeFights")) >= 3) {
+  if (freeMon && get("_voteFreeFights") >= 3) {
     return false;
   }
 
@@ -1472,10 +1458,10 @@ export function auto_voteMonster(
   }
 
   if (autoEquipToSlot($slot`acc3`, $item`"I Voted!" sticker`)) {
-    setProperty("auto_nextEncounter", getProperty("_voteMonster"));
+    set("auto_nextEncounter", getProperty("_voteMonster"));
     return autoAdv(loc);
   }
-  setProperty("auto_nextEncounter", "");
+  set("auto_nextEncounter", "");
   return false;
 }
 
@@ -1483,10 +1469,10 @@ export function fightClubNap(): boolean {
   if (!isUnrestricted($item`Boxing Day care package`)) {
     return false;
   }
-  if (!toBoolean(getProperty("daycareOpen"))) {
+  if (!get("daycareOpen")) {
     return false;
   }
-  if (toBoolean(getProperty("_daycareNap"))) {
+  if (get("_daycareNap")) {
     return false;
   }
 
@@ -1496,7 +1482,7 @@ export function fightClubNap(): boolean {
   );
   visitUrl("choice.php?pwd=&whichchoice=1334&option=1");
 
-  if (!toBoolean(getProperty("_daycareNap"))) {
+  if (!get("_daycareNap")) {
     abort("fightClubtracking failed");
   }
   //Do I need to leave as well, I think I do...
@@ -1554,10 +1540,10 @@ function fightClubSpa$2(option: number): boolean {
   if (!isUnrestricted($item`Boxing Day care package`)) {
     return false;
   }
-  if (!toBoolean(getProperty("daycareOpen"))) {
+  if (!get("daycareOpen")) {
     return false;
   }
-  if (toBoolean(getProperty("_daycareSpa"))) {
+  if (get("_daycareSpa")) {
     return false;
   }
   if (option === 0) {
@@ -1574,7 +1560,7 @@ function fightClubSpa$2(option: number): boolean {
   visitUrl("choice.php?pwd=&whichchoice=1334&option=2");
   visitUrl(`choice.php?pwd=&whichchoice=1335&option=${option}`);
 
-  if (!toBoolean(getProperty("_daycareSpa"))) {
+  if (!get("_daycareSpa")) {
     abort("fightClubtracking failed");
   }
   //Do I need to leave as well, I think I do...
@@ -1587,10 +1573,10 @@ export function fightClubStats(): boolean {
   if (!isUnrestricted($item`Boxing Day care package`)) {
     return false;
   }
-  if (!toBoolean(getProperty("daycareOpen"))) {
+  if (!get("daycareOpen")) {
     return false;
   }
-  if (toInt(getProperty("_daycareGymScavenges")) > 0) {
+  if (get("_daycareGymScavenges") > 0) {
     return false;
   }
 
@@ -1603,10 +1589,10 @@ export function fightClubStats(): boolean {
   // Scavenge for gym equipment
   visitUrl("choice.php?pwd=&whichchoice=1336&option=2");
 
-  if (toInt(getProperty("_daycareGymScavenges")) !== 1) {
+  if (get("_daycareGymScavenges") !== 1) {
     // Seems like we can't trust KoLmafia to set this for us
     // abort("fightClubtracking failed");
-    setProperty("_daycareGymScavenges", (1).toString());
+    set("_daycareGymScavenges", 1);
   }
   //Do I need to leave as well, I think I do...
   visitUrl("choice.php?pwd=&whichchoice=1334&option=4");

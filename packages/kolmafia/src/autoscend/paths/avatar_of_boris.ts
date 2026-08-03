@@ -1,7 +1,6 @@
 import {
   abort,
   floor,
-  getProperty,
   haveEffect,
   haveSkill,
   itemAmount,
@@ -14,13 +13,21 @@ import {
   myMp,
   myPath,
   numericModifier,
-  setProperty,
   toInt,
   use,
   useSkill,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $modifier, $path, $skill, $stat } from "libram";
+import {
+  $effect,
+  $item,
+  $modifier,
+  $path,
+  $skill,
+  $stat,
+  get,
+  set,
+} from "libram";
 
 import { acquireHermitItem, pullXWhenHaveY } from "../auto_acquire";
 import { autoForceEquip$3, equipBaseline } from "../auto_equipment";
@@ -79,8 +86,8 @@ export function borisAdjustML(): boolean {
 export function boris_initializeSettings(): void {
   if (is_boris()) {
     auto_log_info("Initializing Avatar of Boris settings", "blue");
-    setProperty("auto_borisSkills", (-1).toString());
-    setProperty("auto_wandOfNagamar", false.toString());
+    set("auto_borisSkills", -1);
+    set("auto_wandOfNagamar", false);
     // Mafia r16876 does not see the Boris Helms in storage and will not pull them.
     // We have to force the issue.
     visitUrl("storage.php?action=pull&whichitem1=5648&howmany1=1&pwd");
@@ -93,7 +100,7 @@ export function avatarStandardInitializeDay(day: number): void {
     equipBaseline();
     ovenHandle();
 
-    if (toInt(getProperty("auto_day_init")) < 2) {
+    if (get("auto_day_init", 0) < 2) {
       if (itemAmount($item`gym membership card`) > 0) {
         use(1, $item`gym membership card`);
       }
@@ -106,14 +113,14 @@ export function avatarStandardInitializeDay(day: number): void {
       pullXWhenHaveY($item`blackberry galoshes`, 1, 0);
     }
   } else if (day === 3) {
-    if (toInt(getProperty("auto_day_init")) < 3) {
+    if (get("auto_day_init", 0) < 3) {
       while (acquireHermitItem($item`11-leaf clover`)) {}
-      setProperty("auto_day_init", (3).toString());
+      set("auto_day_init", 3);
     }
   } else if (day === 4) {
-    if (toInt(getProperty("auto_day_init")) < 4) {
+    if (get("auto_day_init", 0) < 4) {
       while (acquireHermitItem($item`11-leaf clover`)) {}
-      setProperty("auto_day_init", (4).toString());
+      set("auto_day_init", 4);
     }
   }
 }
@@ -129,7 +136,7 @@ export function boris_buySkills(): void {
   if (!is_boris()) {
     return;
   }
-  if (myLevel() <= toInt(getProperty("auto_borisSkills"))) {
+  if (myLevel() <= get("auto_borisSkills", 0)) {
     return;
   }
   //if you have these 3 skills then you have all skills
@@ -252,7 +259,7 @@ export function boris_buySkills(): void {
     }
   }
 
-  setProperty("auto_borisSkills", myLevel().toString());
+  set("auto_borisSkills", myLevel());
 }
 
 export function borisDemandSandwich(immediately: boolean): boolean {
@@ -260,7 +267,7 @@ export function borisDemandSandwich(immediately: boolean): boolean {
   if (!is_boris()) {
     return false;
   }
-  if (toInt(getProperty("_demandSandwich")) > 2) {
+  if (get("_demandSandwich") > 2) {
     //max 3 uses a day
     return false;
   }
@@ -270,7 +277,7 @@ export function borisDemandSandwich(immediately: boolean): boolean {
   }
 
   function remainingDaily(): number {
-    return 3 - toInt(getProperty("_demandSandwich"));
+    return 3 - get("_demandSandwich");
   }
   //if can get best sandwich and is forced to get them all now. use ongoing MP regen to get best sandwich
   if (!immediately && myLevel() > 8) {

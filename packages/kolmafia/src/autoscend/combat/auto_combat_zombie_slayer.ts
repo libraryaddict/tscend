@@ -1,14 +1,12 @@
 import {
   containsText,
-  getProperty,
+  Item,
   itemAmount,
   Monster,
   myLevel,
   myLocation,
-  toInt,
-  toItem,
 } from "kolmafia";
-import { $item, $location, $monster, $monsters, $skill } from "libram";
+import { $item, $location, $monster, $monsters, $skill, get } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
@@ -26,7 +24,7 @@ import { auto_canUse, auto_useSkill, canSurvive } from "./auto_combat_util";
 function wantBearHug(enemy: Monster): boolean {
   return (
     auto_canUse($skill`Bear Hug`) &&
-    toInt(getProperty("_bearHugs")) < 10 &&
+    get("_bearHugs") < 10 &&
     !enemy.boss &&
     !containsText(enemy.attributes, "FREE") &&
     enemy.group > 1
@@ -79,7 +77,7 @@ export function auto_combatZombieSlayerStage4(
   // Basically stolen from Ed's Lash targets
   if (
     auto_canUse($skill`Smash & Graaagh`) &&
-    toInt(getProperty("_zombieSmashPocketsUsed")) < 30 &&
+    get("_zombieSmashPocketsUsed") < 30 &&
     canSurvive(2.0)
   ) {
     let doSmash: boolean = false;
@@ -92,7 +90,7 @@ export function auto_combatZombieSlayerStage4(
     }
     if (
       enemy === $monster`mountain man` &&
-      itemAmount(toItem(getProperty("trapperOre"))) < 3
+      itemAmount(get("trapperOre", Item.none)) < 3
     ) {
       doSmash = true;
     }
@@ -114,14 +112,14 @@ export function auto_combatZombieSlayerStage4(
     if (
       enemy === $monster`monstrous boiler` &&
       itemAmount($item`red-hot boilermaker`) < 1 &&
-      toInt(getProperty("booPeakProgress")) > 0
+      get("booPeakProgress") > 0
     ) {
       doSmash = true;
     }
     if (
       enemy === $monster`Fitness Giant` &&
       itemAmount($item`pec oil`) < 1 &&
-      toInt(getProperty("booPeakProgress")) > 0
+      get("booPeakProgress") > 0
     ) {
       doSmash = true;
     }
@@ -144,15 +142,15 @@ export function auto_combatZombieSlayerStage4(
     if (
       enemy === $monster`banshee librarian` &&
       itemAmount($item`killing jar`) < 1 &&
-      toInt(getProperty("desertExploration")) < 100 &&
-      (toInt(getProperty("gnasirProgress")) & 4) === 0
+      get("desertExploration") < 100 &&
+      (get("gnasirProgress") & 4) === 0
     ) {
       doSmash = true;
     }
     if (
       (enemy === $monster`toothy sklelton` ||
         enemy === $monster`spiny skelelton`) &&
-      toInt(getProperty("cyrptNookEvilness")) > 14 + cyrptEvilBonus(true)
+      get("cyrptNookEvilness") > 14 + cyrptEvilBonus(true)
     ) {
       doSmash = true;
     }
@@ -172,7 +170,7 @@ export function auto_combatZombieSlayerStage4(
     }
     if (
       enemy === $monster`pygmy bowler` &&
-      toInt(getProperty("_zombieSmashPocketsUsed")) < 26
+      get("_zombieSmashPocketsUsed") < 26
     ) {
       doSmash = true;
     }

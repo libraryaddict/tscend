@@ -40,14 +40,12 @@ import {
   pullsRemaining,
   putCloset,
   retrieveItem,
-  setProperty,
   shopAmount,
   splitString,
   storageAmount,
   takeCloset,
   takeShop,
   takeStorage,
-  toBoolean,
   toInt,
   toSkill,
   use,
@@ -64,6 +62,7 @@ import {
   $slot,
   $stat,
   get,
+  set,
 } from "libram";
 
 import { auto_canEat, fullness_left } from "./auto_consume";
@@ -206,7 +205,7 @@ export function canPull(it: Item, historical: boolean = false): boolean {
   if (curPrice < 1) {
     return false; //a 0 or a -1 indicates the item is not available.
   }
-  if (curPrice > toInt(getProperty("autoBuyPriceLimit"))) {
+  if (curPrice > get("autoBuyPriceLimit")) {
     return false;
   } else if (curPrice < meat) {
     return true;
@@ -289,7 +288,7 @@ function pullXWhenHaveYCasual(
   if (inAftercore()) {
     takeStorage(storageAmount(it), it);
   }
-  const maxprice: number = toInt(getProperty("autoBuyPriceLimit"));
+  const maxprice: number = get("autoBuyPriceLimit");
   while (itemAmount(it) < howMany && auto_mall_price(it) < maxprice) {
     if (auto_mall_price(it) > myMeat()) {
       abort("Don't have enough meat to restock, big sad");
@@ -331,7 +330,7 @@ export function pullXWhenHaveY(
       const oldPrice: number = toInt(historicalPrice(it) * 1.2);
       const curPrice: number = auto_mall_price(it);
       let meat: number = myStorageMeat();
-      const priceLimit: number = toInt(getProperty("autoBuyPriceLimit"));
+      const priceLimit: number = get("autoBuyPriceLimit");
       let getFromStorage: boolean = true;
       if (canInteract() && meat < curPrice) {
         meat = myMeat() - 5000;
@@ -448,7 +447,7 @@ export function auto_buyUpTo(num: number, it: Item): boolean {
   }
 
   let missing: number = num - itemAmount(it);
-  const maxprice: number = toInt(getProperty("autoBuyPriceLimit"));
+  const maxprice: number = get("autoBuyPriceLimit");
   if (canInteract() && shopAmount(it) > 0 && mallPrice(it) < maxprice) {
     //prefer to buy from yourself
     takeShop(min(missing, shopAmount(it)), it);
@@ -581,10 +580,7 @@ export function acquireHermitItem(it: Item): boolean {
   ) {
     return false;
   }
-  if (
-    it === $item`11-leaf clover` &&
-    toInt(getProperty("_cloversPurchased")) >= 3
-  ) {
+  if (it === $item`11-leaf clover` && get("_cloversPurchased") >= 3) {
     return false;
   }
   if (!isGeneralStoreAvailable()) {
@@ -678,7 +674,7 @@ export function handlePulls(day: number): number {
   }
 
   if (day === 1) {
-    setProperty("lightsOutAutomation", "1");
+    set("lightsOutAutomation", "1");
     // Do starting pulls:
     if (pullsRemaining() !== 20 && !inHardcore() && myTurncount() > 0) {
       auto_log_info(
@@ -702,7 +698,7 @@ export function handlePulls(day: number): number {
         }
       }
       //Make sure we have the legendary pizzas if we want to/can consume them so we take full advantage of the dieting pills
-      if (!toBoolean(getProperty("auto_dontConsumeLegendPizzas"))) {
+      if (!get("auto_dontConsumeLegendPizzas", false)) {
         for (const it of $items`Pizza of Legend, Calzone of Legend, Deep Dish of Legend`) {
           if (auto_canEat(it) && !pulledToday(it)) {
             pullXWhenHaveY(it, 1, 0);
@@ -773,10 +769,7 @@ export function handlePulls(day: number): number {
         if (!hasTorso()) {
           getPeteShirt = false;
         }
-        if (
-          myPrimestat() === $stat`Muscle` &&
-          toBoolean(getProperty("loveTunnelAvailable"))
-        ) {
+        if (myPrimestat() === $stat`Muscle` && get("loveTunnelAvailable")) {
           getPeteShirt = false;
         }
         if (in_glover()) {
@@ -871,7 +864,7 @@ export function handlePulls(day: number): number {
           pullXWhenHaveY($item`numberwang`, 1, 0);
         }
       } else {
-        if (toBoolean(getProperty("barrelShrineUnlocked"))) {
+        if (get("barrelShrineUnlocked")) {
           putCloset(itemAmount($item`fake washboard`), $item`fake washboard`);
         }
       }
@@ -959,7 +952,7 @@ export function handlePulls(day: number): number {
   } else if (day === 2) {
     if (
       closetAmount($item`fake washboard`) === 1 &&
-      toBoolean(getProperty("barrelShrineUnlocked"))
+      get("barrelShrineUnlocked")
     ) {
       takeCloset(1, $item`fake washboard`);
     }
@@ -970,8 +963,7 @@ export function handlePulls(day: number): number {
   // do this regardless of day if we still need to complete the bridge.
   if (
     canPull($item`smut orc keepsake box`) &&
-    toInt(getProperty("chasmBridgeProgress")) +
-      min(lumberCount(), fastenerCount()) <
+    get("chasmBridgeProgress") + min(lumberCount(), fastenerCount()) <
       bridgeGoal()
   ) {
     if (pullXWhenHaveY($item`smut orc keepsake box`, 1, 0)) {
@@ -984,7 +976,7 @@ export function handlePulls(day: number): number {
 
 export function LX_craftAcquireItems(): boolean {
   if (
-    toInt(getProperty("lastGoofballBuy")) !== myAscensions() &&
+    get("lastGoofballBuy") !== myAscensions() &&
     internalQuestStatus("questL03Rat") >= 0
   ) {
     visitUrl("place.php?whichplace=woods");
@@ -1002,7 +994,7 @@ export function LX_craftAcquireItems(): boolean {
     if (
       itemAmount($item`snow berries`) === 3 &&
       myDaycount() === 1 &&
-      toBoolean(getProperty("auto_grimstoneFancyOilPainting"))
+      get("auto_grimstoneFancyOilPainting", false)
     ) {
       cliExecute("make 1 snow cleats");
     }
@@ -1010,11 +1002,11 @@ export function LX_craftAcquireItems(): boolean {
     if (
       itemAmount($item`snow berries`) > 0 &&
       myDaycount() > 1 &&
-      toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal() &&
+      get("chasmBridgeProgress") >= bridgeGoal() &&
       myLevel() >= 9
     ) {
       visitUrl("place.php?whichplace=orc_chasm");
-      if (toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal()) {
+      if (get("chasmBridgeProgress") >= bridgeGoal()) {
         //if(in_hardcore() && isGuildClass())
         if (isGuildClass()) {
           if (
@@ -1220,7 +1212,7 @@ export function LX_craftAcquireItems(): boolean {
     if (
       !possessEquipment(it) &&
       getPower(equippedItem($slot`hat`)) < 140 &&
-      toInt(getProperty("auto_beatenUpCount")) >= 5
+      get("auto_beatenUpCount", 0) >= 5
     ) {
       const choice: number = 1 + toInt(it) - toInt($item`meteortarboard`);
       visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
@@ -1231,7 +1223,7 @@ export function LX_craftAcquireItems(): boolean {
     if (
       !possessEquipment(it) &&
       !possessEquipment($item`KoL Con 13 snowglobe`) &&
-      toInt(getProperty("auto_beatenUpCount")) >= 5
+      get("auto_beatenUpCount", 0) >= 5
     ) {
       const choice: number = 1 + toInt(it) - toInt($item`meteortarboard`);
       visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");

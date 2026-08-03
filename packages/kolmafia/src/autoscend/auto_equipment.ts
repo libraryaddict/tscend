@@ -51,18 +51,15 @@ import {
   outfitPieces,
   retrieveItem,
   setLocation,
-  setProperty,
   Skill,
   Slot,
   splitString,
   Stat,
-  toBoolean,
   toFloat,
   toInt,
   toItem,
   toLocation,
   toLowerCase,
-  toMonster,
   toSlot,
   weaponHands,
   weaponType,
@@ -83,7 +80,9 @@ import {
   $slots,
   $stat,
   $thrall,
+  get,
   have,
+  set,
 } from "libram";
 
 import { consumptionProgress } from "./auto_consume";
@@ -687,10 +686,7 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
     target.weight("Plumber").weight($modifier`Monster Level`, -1);
   } else if (auto_ignoreExperience()) {
     // Nothing to do here
-  } else if (
-    myLevel() < 13 ||
-    toBoolean(getProperty("auto_disregardInstantKarma"))
-  ) {
+  } else if (myLevel() < 13 || get("auto_disregardInstantKarma", false)) {
     //experience scores for the default maximizer statement
 
     if (getProperty("auto_MLSafetyLimit") === "") {
@@ -764,7 +760,7 @@ export function resetMaximize(): void {
   //IOTM [january's garbage tote] specific handling.
   if (isjanuaryToteAvailable()) {
     //preserve leftover charges, prevent mafia halting automation for confirmation.
-    if (!toBoolean(getProperty("_garbageItemChanged"))) {
+    if (!get("_garbageItemChanged")) {
       //did not change tote item today
       for (const it of $items`deceased crimbo tree, broken champagne bottle, tinsel tights, wad of used tape, makeshift garbage shirt`) {
         maximizer.exclude(it);
@@ -821,11 +817,10 @@ function finalizeMaximize(speculative: boolean = false): void {
   }
   //otherwise miniature crystal ball is handled along with monster goals in pre_adv
 
-  const nextMonster: Monster = toMonster(getProperty("auto_nextEncounter"));
+  const nextMonster: Monster = get("auto_nextEncounter", Monster.none);
   const nextMonsterIsFree: boolean =
     (nextMonster !== Monster.none && isFreeMonster(nextMonster)) ||
-    (toInt(getProperty("breathitinCharges")) > 0 &&
-      myLocation().environment === "outdoor");
+    (get("breathitinCharges") > 0 && myLocation().environment === "outdoor");
 
   if (auto_haveKramcoSausageOMatic()) {
     // Save the first 8 sausage goblins for delay burning, if current location isn't itself a delay zone after SoftblockDelay released
@@ -837,24 +832,16 @@ function finalizeMaximize(speculative: boolean = false): void {
     const dontSausageBackups: boolean =
       auto_backupTarget() &&
       !$monsters`sausage goblin, Eldritch Tentacle`.includes(
-        toMonster(getProperty("lastCopyableMonster")),
+        get("lastCopyableMonster", Monster.none),
       );
     // also don't equip Kramco when using Map the Monsters as sausage goblins override the NC
-    if (
-      saveGoblinForDelay ||
-      dontSausageBackups ||
-      toBoolean(getProperty("mappingMonsters"))
-    ) {
+    if (saveGoblinForDelay || dontSausageBackups || get("mappingMonsters")) {
       maximizer.exclude(wrap_item($item`Kramco Sausage-o-Matic™`));
     }
   }
   if (auto_haveMobiusRing()) {
     if (auto_timeCopFights() >= 11) {
-      if (
-        toBoolean(getProperty("mappingMonsters")) ||
-        auto_backupTarget() ||
-        !inHardcore()
-      ) {
+      if (get("mappingMonsters") || auto_backupTarget() || !inHardcore()) {
         // don't equip for non free fights in softcore? (pending allowed conditions like delay zone && none of the monsters in the zone is a sniff/YR target?)
         // don't interfere with backups or Map the Monsters
         maximizer.exclude($item`Möbius ring`);
@@ -867,7 +854,7 @@ function finalizeMaximize(speculative: boolean = false): void {
         mobius_bonus = 1000;
       }
       // if the ring hasn't been primed today, we want to prime it to kick the whole thing off
-      if (!toBoolean(getProperty("_mobiusRingPrimed"))) {
+      if (!get("_mobiusRingPrimed")) {
         addBonusToMaximize($item`Möbius ring`, mobius_bonus);
       } else if (
         !nextMonsterIsFree &&
@@ -886,12 +873,12 @@ function finalizeMaximize(speculative: boolean = false): void {
     }
   }
   if (auto_haveCursedMagnifyingGlass()) {
-    if (toInt(getProperty("cursedMagnifyingGlassCount")) === 13) {
+    if (get("cursedMagnifyingGlassCount") === 13) {
       if (
-        toBoolean(getProperty("mappingMonsters")) ||
+        get("mappingMonsters") ||
         auto_backupTarget() ||
-        (toInt(getProperty("_voidFreeFights")) >= 5 &&
-          toInt(getProperty("cursedMagnifyingGlassCount")) >= 13 &&
+        (get("_voidFreeFights") >= 5 &&
+          get("cursedMagnifyingGlassCount") >= 13 &&
           !inHardcore())
       ) {
         // don't equip for non free fights in softcore? (pending allowed conditions like delay zone && none of the monsters in the zone is a sniff/YR target?)
@@ -900,7 +887,7 @@ function finalizeMaximize(speculative: boolean = false): void {
       }
     } else if (
       !nextMonsterIsFree &&
-      toInt(getProperty("cursedMagnifyingGlassCount")) < 13 &&
+      get("cursedMagnifyingGlassCount") < 13 &&
       solveDelayZone() !== Location.none
     ) {
       // add bonus to charge free fights. charge is added when completing nonfree fights only
@@ -1021,7 +1008,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     }
   }
 
-  if (auto_haveBatWings() && toInt(getProperty("_batWingsFreeFights")) < 5) {
+  if (auto_haveBatWings() && get("_batWingsFreeFights") < 5) {
     addBonusToMaximize($item`bat wings`, 200); // get the 5 free fights
   }
   if (
@@ -1047,7 +1034,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     addBonusToMaximize($item`mafia thumb ring`, 200); // 4% chance +1 adventure
   }
   if (possessEquipment($item`carnivorous potted plant`)) {
-    if (toBoolean(getProperty("mappingMonsters")) || auto_backupTarget()) {
+    if (get("mappingMonsters") || auto_backupTarget()) {
       // don't interfere with backups or Map the Monsters
       // should also block equipping if support is added for Feel Nostalgic, Lecture on relativity, or fax for YR or other special combat actions
       maximizer.exclude($item`carnivorous potted plant`);
@@ -1055,7 +1042,7 @@ function finalizeMaximize(speculative: boolean = false): void {
       ((nextMonster === Monster.none || instakillable(nextMonster)) &&
         !in_pokefam() &&
         getProperty("auto_MLSafetyLimit") === "") ||
-      toInt(getProperty("auto_MLSafetyLimit")) >= 25
+      get("auto_MLSafetyLimit", 0) >= 25
     ) {
       addBonusToMaximize($item`carnivorous potted plant`, 200); // 4% chance free kill but also 25 ML
     }
@@ -1075,7 +1062,7 @@ function finalizeMaximize(speculative: boolean = false): void {
 
   if (auto_canUseJuneCleaver()) {
     if (
-      toInt(getProperty("_juneCleaverFightsLeft")) < myAdventures() * 1.1 ||
+      get("_juneCleaverFightsLeft") < myAdventures() * 1.1 ||
       (fullnessLimit() === 0 && inebrietyLimit() === 0) ||
       consumptionProgress() < 1
     ) {
@@ -1137,7 +1124,7 @@ export function simMaximize(): boolean {
   finalizeMaximize(true);
   const res: boolean = maximize(maximizer.toString(), true);
   maximizer.restore(backup);
-  setProperty("auto_nextEncounter", backupNextMonster);
+  set("auto_nextEncounter", backupNextMonster);
   return res;
 }
 
@@ -1197,7 +1184,7 @@ export function equipMaximizedGear(canError: boolean = false): boolean {
       maximizer.debugDump();
       maximizeResult = maximizeResult || maximizer.maximize();
       maximizer.clearWeight("Dump");
-      if (toBoolean(getProperty("auto_debug_maximizer"))) {
+      if (get("auto_debug_maximizer", false)) {
         abort(
           "NO WEAPON WAS EQUIPPED BY THE MAXIMIZER. REPORT THIS IN DISCORD AND INCLUDE YOUR SESSION LOG! YOU CAN RE-RUN AUTOSCEND AND IT SHOULD RUN OK (possibly).",
         );
@@ -1215,7 +1202,7 @@ export function equipMaximizedGear(canError: boolean = false): boolean {
 
   if (!maximizeResult && !canError) {
     auto_log_error("Error trying to maximize, setting auto_interrupt=true");
-    setProperty("auto_interrupt", true.toString());
+    set("auto_interrupt", true);
   }
   return maximizeResult;
 }
@@ -1421,15 +1408,14 @@ export function auto_forceEquipSword(speculative: boolean = false): boolean {
   }
 
   if (
-    toItem(getProperty("auto_equipment_override_weapon")) !== Item.none &&
+    get("auto_equipment_override_weapon", Item.none) !== Item.none &&
     auto_can_equip(
-      toItem(getProperty("auto_equipment_override_weapon")),
+      get("auto_equipment_override_weapon", Item.none),
       $slot`weapon`,
     )
   ) {
     if (
-      itemType(toItem(getProperty("auto_equipment_override_weapon"))) ===
-      "sword"
+      itemType(get("auto_equipment_override_weapon", Item.none)) === "sword"
     ) {
       return true;
     } else {
@@ -1589,19 +1575,18 @@ export function auto_wantToReserveFreekills(inCombat: boolean = false): {
   let wantFreeKillNowEspecially: boolean = false;
 
   let waitForDesert: boolean = false; //free kills can save turns of Ultrahydrated
-  if (toInt(getProperty("desertExploration")) < 100 && !isActuallyEd()) {
+  if (get("desertExploration") < 100 && !isActuallyEd()) {
     //need to explore desert
     const currentDesertProgressPerTurn: number =
       1 +
-      (toBoolean(getProperty("bondDesert")) ? 2 : 0) +
+      (get("bondDesert") ? 2 : 0) +
       (getProperty("peteMotorbikeHeadlight") === "Blacklight Bulb" ? 2 : 0) +
       (myFamiliar() === $familiar`Melodramedary` ? 1 : 0) +
       2 * min(1, equippedAmount($item`survival knife`)) +
       equippedAmount($item`UV-resistant compass`) +
       2 * equippedAmount($item`ornate dowsing rod`);
     const fightsLeftToExplore: number = ceil(
-      (100 - toInt(getProperty("desertExploration"))) /
-        currentDesertProgressPerTurn,
+      (100 - get("desertExploration")) / currentDesertProgressPerTurn,
     );
     if (
       haveEffect($effect`Ultrahydrated`) > 0 &&
@@ -1615,10 +1600,7 @@ export function auto_wantToReserveFreekills(inCombat: boolean = false): {
   }
 
   let waitForCyrpt: boolean = false; //free kills can get more modern zmobies from 1 turn of a double initiative effect in The Defiled Alcove
-  if (
-    toInt(getProperty("cyrptAlcoveEvilness")) >=
-    18 + cyrptEvilBonus(inCombat)
-  ) {
+  if (get("cyrptAlcoveEvilness") >= 18 + cyrptEvilBonus(inCombat)) {
     //need to do Alcove
     if (
       myLocation() === $location`The Defiled Alcove` &&
@@ -1628,7 +1610,7 @@ export function auto_wantToReserveFreekills(inCombat: boolean = false): {
     } else if (
       auto_have_skill($skill`Bow-Legged Swagger`) &&
       myBasestat(myPrimestat()) >= 35 &&
-      !toBoolean(getProperty("_bowleggedSwaggerUsed"))
+      !get("_bowleggedSwaggerUsed")
     ) {
       waitForCyrpt = true; //near level 7
     }

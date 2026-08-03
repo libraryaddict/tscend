@@ -20,13 +20,11 @@ import {
   myMeat,
   myPrimestat,
   npcPrice,
-  setProperty,
   splitString,
   Stat,
   toBoolean,
   toInt,
   toLowerCase,
-  toStat,
   useSkill,
   visitUrl,
 } from "kolmafia";
@@ -41,6 +39,7 @@ import {
   $slot,
   $stat,
   get,
+  set,
 } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
@@ -98,12 +97,12 @@ export function auto_barrelPrayers(): boolean {
   if (!isUnrestricted($item`shrine to the Barrel god`)) {
     return false;
   }
-  if (toBoolean(getProperty("_barrelPrayer"))) {
+  if (get("_barrelPrayer")) {
     return false;
   }
-  if (!toBoolean(getProperty("barrelShrineUnlocked"))) {
+  if (!get("barrelShrineUnlocked")) {
     visitUrl("da.php");
-    if (!toBoolean(getProperty("barrelShrineUnlocked"))) {
+    if (!get("barrelShrineUnlocked")) {
       return false;
     }
   }
@@ -371,10 +370,7 @@ export function auto_barrelPrayers(): boolean {
         break;
     }
   } else if (isActuallyEd()) {
-    if (
-      elementalPlanes_access($element`spooky`) &&
-      toInt(getProperty("edPoints")) >= 2
-    ) {
+    if (elementalPlanes_access($element`spooky`) && get("edPoints") >= 2) {
       switch (myDaycount()) {
         case 1:
           prayers = new Map([
@@ -487,7 +483,7 @@ export function auto_mayoItems(): boolean {
   if (!isUnrestricted($item`portable Mayo Clinic`)) {
     return false;
   }
-  if (toBoolean(getProperty("_mayoDeviceRented"))) {
+  if (get("_mayoDeviceRented")) {
     return false;
   }
   if (inAftercore()) {
@@ -583,16 +579,12 @@ export function auto_mayoItems(): boolean {
 
 export function chateaumantegna_available(): boolean {
   const chateau_key: Item = wrap_item($item`Chateau Mantegna room key`);
-  if (
-    !in_lol() &&
-    toBoolean(getProperty("chateauAvailable")) &&
-    isUnrestricted(chateau_key)
-  ) {
+  if (!in_lol() && get("chateauAvailable") && isUnrestricted(chateau_key)) {
     return true;
   }
   if (
     in_lol() &&
-    toBoolean(getProperty("replicaChateauAvailable")) &&
+    get("replicaChateauAvailable") &&
     isUnrestricted(chateau_key)
   ) {
     return true;
@@ -621,7 +613,7 @@ export function chateaumantegna_havePainting(): boolean {
       "chateau_paintingnone",
     )
   ) {
-    return !toBoolean(getProperty("_chateauMonsterFought"));
+    return !get("_chateauMonsterFought");
   }
   return false;
 }
@@ -630,7 +622,7 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
   if (!chateaumantegna_available()) {
     return false;
   }
-  if (toBoolean(getProperty("_chateauMonsterFought"))) {
+  if (get("_chateauMonsterFought")) {
     return false;
   }
 
@@ -778,8 +770,8 @@ export function chateaumantegna_nightstandSet(): boolean {
     return false;
   }
   if (myLevel() >= 13) {
-    if (toInt(getProperty("nsContestants2")) === -1) {
-      myStat = toStat(getProperty("nsChallenge1"));
+    if (get("nsContestants2") === -1) {
+      myStat = get("nsChallenge1", Stat.none);
     } else {
       return false;
     }
@@ -821,7 +813,7 @@ function chateauPaintingDo(): boolean {
   if (
     myLevel() >= paintingLevel &&
     chateaumantegna_havePainting() &&
-    !toBoolean(getProperty("chateauMonsterFought")) &&
+    !get("chateauMonsterFought", false) &&
     isActuallyEd() &&
     myDaycount() <= 3
   ) {
@@ -837,7 +829,7 @@ function chateauPaintingDo(): boolean {
     organsFull() &&
     myAdventures() < 10 &&
     chateaumantegna_havePainting() &&
-    !toBoolean(getProperty("chateauMonsterFought")) &&
+    !get("chateauMonsterFought", false) &&
     myDaycount() === 1 &&
     !isActuallyEd()
   ) {
@@ -849,7 +841,7 @@ function chateauPaintingDo(): boolean {
   if (
     myLevel() >= 8 &&
     chateaumantegna_havePainting() &&
-    !toBoolean(getProperty("chateauMonsterFought")) &&
+    !get("chateauMonsterFought", false) &&
     myDaycount() === 2 &&
     !isActuallyEd()
   ) {
@@ -863,7 +855,7 @@ function chateauPaintingDo(): boolean {
 
 export const chateauPaintingTask: QuestTask = registerQuestTask({
   name: "chateauPainting",
-  completed: () => toBoolean(getProperty("chateauMonsterFought")),
+  completed: () => get("chateauMonsterFought", false),
   ready: () => true,
   do: chateauPaintingDo,
   desiredEncounters: () =>
@@ -891,7 +883,7 @@ function deck_draws_left(): number {
   if (myHp() === 0) {
     return 0;
   }
-  return 15 - toInt(getProperty("_deckCardsDrawn"));
+  return 15 - get("_deckCardsDrawn");
 }
 
 let $_deck_cheat_cards: Map<string, number> | undefined;
@@ -1060,12 +1052,9 @@ function deck_cheat(cheat: string): boolean {
     }
     if (!found) {
       if (getProperty("_deckCardsCheated") === "") {
-        setProperty("_deckCardsCheated", card.toString());
+        set("_deckCardsCheated", card);
       } else {
-        setProperty(
-          "_deckCardsCheated",
-          `${getProperty("_deckCardsCheated")},${card}`,
-        );
+        set("_deckCardsCheated", `${getProperty("_deckCardsCheated")},${card}`);
       }
     }
     return true;
@@ -1222,7 +1211,7 @@ export function deck_useScheme(action: string): boolean {
 
   if (action === "farming" || action === "turns") {
     let count_2: number = itemAmount($item`blue mana`);
-    while (count_2 > 0 && toInt(getProperty("_ancestralRecallCasts")) < 10) {
+    while (count_2 > 0 && get("_ancestralRecallCasts") < 10) {
       useSkill(1, $skill`Ancestral Recall`);
       count_2 -= 1;
     }

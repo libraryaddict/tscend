@@ -18,11 +18,8 @@ import {
   myLocation,
   myMaxmp,
   myMp,
-  setProperty,
+  Phylum,
   Skill,
-  toBoolean,
-  toInt,
-  toPhylum,
 } from "kolmafia";
 import {
   $class,
@@ -36,6 +33,7 @@ import {
   $monsters,
   $skill,
   get,
+  set,
 } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
@@ -95,8 +93,8 @@ export function auto_combatDefaultStage4(
 ): CombatMacroReturns {
   // stage 4 = prekill. copy, sing along, flyer and other things that need to be done after delevel but before killing
   //Unskip stage 3
-  if (toBoolean(getProperty("auto_skipStage3"))) {
-    setProperty("auto_skipStage3", false.toString());
+  if (get("auto_skipStage3", false)) {
+    set("auto_skipStage3", false);
   }
   // Path = The Source
   let retval: CombatMacroReturns = auto_combatTheSourceStage4(
@@ -123,7 +121,7 @@ export function auto_combatDefaultStage4(
     return retval;
   }
   // Skip if have drones out
-  if (toBoolean(getProperty("auto_skipStage4"))) {
+  if (get("auto_skipStage4", false)) {
     return undefined;
   }
   //sniffers are skills that increase the odds of encountering this same monster again in the current zone.
@@ -132,7 +130,7 @@ export function auto_combatDefaultStage4(
     if (sniffer !== Skill.none) {
       if (sniffer === $skill`Perceive Soul`) {
         //mafia does not track the target of this skill so we must do so.
-        setProperty("auto_bat_soulmonster", enemy.toString());
+        set("auto_bat_soulmonster", enemy);
       }
       handleTracker({
         what: enemy,
@@ -164,14 +162,14 @@ export function auto_combatDefaultStage4(
   if (
     !haveUsed$1($item`Rain-Doh black box`) &&
     !in_heavyrains() &&
-    toInt(getProperty("_raindohCopiesMade")) < 5 &&
+    get("_raindohCopiesMade") < 5 &&
     !ag_is_bodyguard()
   ) {
     if (
       enemy === $monster`modern zmobie` &&
-      toInt(getProperty("auto_modernzmobiecount")) < 3
+      get("auto_modernzmobiecount", 0) < 3
     ) {
-      setProperty("auto_doCombatCopy", "yes");
+      set("auto_doCombatCopy", "yes");
     }
   }
   if (
@@ -180,9 +178,9 @@ export function auto_combatDefaultStage4(
     enemy !== $monster`gourmet gourami` &&
     !ag_is_bodyguard()
   ) {
-    setProperty("auto_doCombatCopy", "no");
+    set("auto_doCombatCopy", "no");
     markAsUsed$1($item`Rain-Doh black box`); // mark even if not used so we don't spam the error message
-    if (toInt(getProperty("_raindohCopiesMade")) < 5) {
+    if (get("_raindohCopiesMade") < 5) {
       handleTracker({
         what: enemy,
         detail: $item`Rain-Doh black box`.toString(),
@@ -196,14 +194,14 @@ export function auto_combatDefaultStage4(
     );
   }
   if (getProperty("auto_doCombatCopy") === "yes") {
-    setProperty("auto_doCombatCopy", "no");
+    set("auto_doCombatCopy", "no");
   }
   //get 1 additional [fat loot token] per day
   if (myLocation() === $location`The Daily Dungeon`) {
     // If we are in The Daily Dungeon, assume we get 1 token, so only if we need more than 1.
     if (
       towerKeyCount(false) < 2 &&
-      !toBoolean(getProperty("_dailyDungeonMalwareUsed")) &&
+      !get("_dailyDungeonMalwareUsed") &&
       itemAmount($item`daily dungeon malware`) > 0
     ) {
       if (
@@ -218,7 +216,7 @@ export function auto_combatDefaultStage4(
   //iotm monster copier that works by creating wandering copies of the targetted monster
   if (
     auto_canUse($skill`Digitize`) &&
-    toInt(getProperty("_sourceTerminalDigitizeUses")) === 0 &&
+    get("_sourceTerminalDigitizeUses") === 0 &&
     !inAftercore()
   ) {
     if ($monsters`lobsterfrogman`.includes(enemy)) {
@@ -234,7 +232,7 @@ export function auto_combatDefaultStage4(
   }
   if (
     auto_canUse($skill`Digitize`) &&
-    toInt(getProperty("_sourceTerminalDigitizeUses")) < 3 &&
+    get("_sourceTerminalDigitizeUses") < 3 &&
     !inAftercore()
   ) {
     if (getProperty("auto_digitizeDirective") === enemy.toString()) {
@@ -254,7 +252,7 @@ export function auto_combatDefaultStage4(
     if (copier !== Skill.none && auto_canUse(copier)) {
       if (copier === $skill`Blow the Purple Candle!`) {
         //mafia does not track the target of this skill so we must do so.
-        setProperty("auto_purple_candled", enemy.toString());
+        set("auto_purple_candled", enemy);
       }
       handleTracker({
         what: enemy,
@@ -362,10 +360,10 @@ export function auto_combatDefaultStage4(
   }
   if (
     canUse$3(flyer) &&
-    toInt(getProperty("flyeredML")) < 10000 &&
+    get("flyeredML") < 10000 &&
     myLocation() !== $location`The Battlefield (Frat Uniform)` &&
     myLocation() !== $location`The Battlefield (Hippy Uniform)` &&
-    !toBoolean(getProperty("auto_ignoreFlyer"))
+    !get("auto_ignoreFlyer", false)
   ) {
     let shouldFlyer: boolean = false;
     let staggeringFlyer: boolean = false;
@@ -430,8 +428,8 @@ export function auto_combatDefaultStage4(
   //chaos butterfly if thrown in combat once per ascension will accelerate the dooks farm sidequest for the frat-hippy war.
   if (
     canUse$3($item`chaos butterfly`) &&
-    !toBoolean(getProperty("chaosButterflyThrown")) &&
-    !toBoolean(getProperty("auto_skipL12Farm"))
+    !get("chaosButterflyThrown") &&
+    !get("auto_skipL12Farm", false)
   ) {
     if (
       canUse$3($item`Time-Spinner`) &&
@@ -460,7 +458,7 @@ export function auto_combatDefaultStage4(
     canUse$3($item`DNA extraction syringe`) &&
     monsterLevelAdjustment() < 150
   ) {
-    if (monsterPhylum(enemy) !== toPhylum(getProperty("dnaSyringe"))) {
+    if (monsterPhylum(enemy) !== get("dnaSyringe", Phylum.none)) {
       return useItem($item`DNA extraction syringe`);
     }
   }
@@ -532,18 +530,18 @@ export function auto_combatDefaultStage4(
   if (
     auto_canUse($skill`McHugeLarge Avalanche`) &&
     getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
-    !toBoolean(getProperty("auto_avalancheDeployed"))
+    !get("auto_avalancheDeployed", false)
   ) {
-    setProperty("auto_avalancheDeployed", true.toString());
+    set("auto_avalancheDeployed", true);
     return auto_useSkill($skill`McHugeLarge Avalanche`);
   }
   // prep parka NC forcing if requested
   if (
     auto_canUse($skill`Launch spikolodon spikes`) &&
     getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
-    !toBoolean(getProperty("auto_parkaSpikesDeployed"))
+    !get("auto_parkaSpikesDeployed", false)
   ) {
-    setProperty("auto_parkaSpikesDeployed", true.toString());
+    set("auto_parkaSpikesDeployed", true);
     return auto_useSkill($skill`Launch spikolodon spikes`);
   }
   // get extra combat stats

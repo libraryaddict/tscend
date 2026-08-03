@@ -28,8 +28,6 @@ import {
   npcPrice,
   outfit,
   outfitPieces,
-  setProperty,
-  toBoolean,
   toInt,
   toSlot,
   use,
@@ -45,6 +43,7 @@ import {
   $slot,
   $stat,
   get,
+  set,
 } from "libram";
 
 import {
@@ -241,10 +240,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
 }
 
 export function LX_steelOrgan_condition_slow(): boolean {
-  return (
-    !toBoolean(getProperty("auto_slowSteelOrgan")) &&
-    toBoolean(getProperty("auto_getSteelOrgan"))
-  );
+  return !get("auto_slowSteelOrgan", false) && get("auto_getSteelOrgan", false);
 }
 
 const LX_steelOrganGlassesTask: QuestTask = registerQuestTask({
@@ -430,7 +426,7 @@ function LX_steelOrganDo(): boolean {
       `${myClass()} can not use a Steel Organ, turning off setting.`,
       "blue",
     );
-    setProperty("auto_getSteelOrgan", false.toString());
+    set("auto_getSteelOrgan", false);
     return false;
   }
   if (in_nuclear() || in_lta()) {
@@ -438,7 +434,7 @@ function LX_steelOrganDo(): boolean {
       "You could get a Steel Organ for aftercore, but why? We won't help with this deviant and perverse behavior. Turning off setting.",
       "blue",
     );
-    setProperty("auto_getSteelOrgan", false.toString());
+    set("auto_getSteelOrgan", false);
     return false;
   }
 
@@ -448,7 +444,7 @@ function LX_steelOrganDo(): boolean {
     haveSkill($skill`Spleen of Steel`)
   ) {
     auto_log_info("We have a steel organ, turning off the setting.", "blue");
-    setProperty("auto_getSteelOrgan", false.toString());
+    set("auto_getSteelOrgan", false);
     return false;
   }
 
@@ -512,7 +508,7 @@ function LX_steelOrganDo(): boolean {
         "Stuck in the Steel Organ quest and can't continue, moving on.",
         "red",
       );
-      setProperty("auto_getSteelOrgan", false.toString());
+      set("auto_getSteelOrgan", false);
     }
     return true;
   } else if (getProperty("questM10Azazel") === "finished") {
@@ -528,7 +524,7 @@ function LX_steelOrganDo(): boolean {
     const notOverdrunk: boolean = myInebriety() <= inebrietyLimit();
     const notSavingForBilliards: boolean =
       hasSpookyravenLibraryKey() ||
-      toInt(getProperty("lastSecondFloorUnlock")) === myAscensions() ||
+      get("lastSecondFloorUnlock") === myAscensions() ||
       myInebriety() + $item`steel margarita`.inebriety <= 10 ||
       myInebriety() >= 12;
     const notWaitingKOLHS: boolean = !in_kolhs() || myInebriety() > 9;
@@ -554,7 +550,7 @@ function LX_steelOrganDo(): boolean {
 const LX_steelOrganTask: QuestTask = registerQuestTask({
   name: "LX_steelOrgan",
   completed: () => !get("auto_getSteelOrgan", true),
-  ready: () => toBoolean(getProperty("auto_getSteelOrgan")),
+  ready: () => get("auto_getSteelOrgan", false),
   do: LX_steelOrganDo,
   desiredEncounters: () => {
     const active =
@@ -646,7 +642,7 @@ export const LX_guildUnlockTask: QuestTask = registerQuestTask({
     !guildStoreAvailable() &&
     !(
       !(in_picky() || in_lowkeysummer()) &&
-      toBoolean(getProperty("auto_skipUnlockGuild")) &&
+      get("auto_skipUnlockGuild", false) &&
       !(myPrimestat() === $stat`Moxie` && auto_haveTearawayPants())
     ) &&
     //muscle classes cannot unlock guild in grey goo
@@ -753,10 +749,10 @@ function considerGalaktikSubQuest(): void {
   //by default we do not do doc galaktik quest. user can manually enable it via gui for this current ascension.
   //this function considers wheather we should automatically enable it for this ascension.
 
-  if (!toBoolean(getProperty("auto_considerGalaktik"))) {
+  if (!get("auto_considerGalaktik", false)) {
     return; //user must opt in for automatic enabling of galaktik quest when needed
   }
-  if (toBoolean(getProperty("auto_doGalaktik"))) {
+  if (get("auto_doGalaktik", false)) {
     return; //already enabled for this ascension
   }
   if (internalQuestStatus("questM24Doc") !== 0) {
@@ -784,7 +780,7 @@ function considerGalaktikSubQuest(): void {
       "We are so poor we cannot effectively restore anymore. Enabling Galaktik quest for this ascension",
       "red",
     );
-    setProperty("auto_doGalaktik", true.toString());
+    set("auto_doGalaktik", true);
     return;
   }
   if (myMeat() < meatReserve() + 100) {
@@ -792,7 +788,7 @@ function considerGalaktikSubQuest(): void {
       "Our meat reserves are far too low, we still need to save up some for quests. Enabling Galaktik quest for this ascension",
       "red",
     );
-    setProperty("auto_doGalaktik", true.toString());
+    set("auto_doGalaktik", true);
     return;
   }
 }
@@ -854,7 +850,7 @@ function LX_galaktikSubQuestDo(): boolean {
     //questM24Doc is used by mafia to track progress. step1 means you have the flowers and need to turn them in. 0 means started but incomplete.
     return false;
   }
-  if (!toBoolean(getProperty("auto_doGalaktik"))) {
+  if (!get("auto_doGalaktik", false)) {
     return false; //by default we do not want to do this quest.
   }
   if (startGalaktikSubQuest()) {
@@ -886,7 +882,7 @@ export function LX_doingPirates(): boolean {
 }
 
 function LX_pirateOutfitDo(): boolean {
-  if (toInt(getProperty("lastIslandUnlock")) < myAscensions()) {
+  if (get("lastIslandUnlock") < myAscensions()) {
     return LX_islandAccess();
   }
   if (in_lowkeysummer() && !inHardcore()) {
@@ -1265,7 +1261,7 @@ function LX_joinPirateCrewFratHouseInfiltration(): boolean {
         if (
           !mightCatburgle &&
           internalQuestStatus("questL04Bat") >= 1 &&
-          toInt(getProperty("hiddenOfficeProgress")) >= 6
+          get("hiddenOfficeProgress") >= 6
         ) {
           // briefcase zones already finished and not expecting Catburgle then try to pull it
           if (
@@ -1289,7 +1285,7 @@ function LX_joinPirateCrewFratHouseInfiltration(): boolean {
 }
 
 function LX_joinPirateCrewDo(): boolean {
-  if (toInt(getProperty("lastIslandUnlock")) < myAscensions()) {
+  if (get("lastIslandUnlock") < myAscensions()) {
     return LX_islandAccess();
   }
   if (internalQuestStatus("questM12Pirate") > 4) {
@@ -1605,7 +1601,7 @@ export const LX_acquireEpicWeaponTask: QuestTask = registerQuestTask({
   completed: () =>
     !isGuildClass() ||
     internalQuestStatus("questG04Nemesis") > 4 ||
-    (!guildStoreAvailable() && toBoolean(getProperty("auto_skipUnlockGuild"))),
+    (!guildStoreAvailable() && get("auto_skipUnlockGuild", false)),
   ready: () =>
     // no guild access. can't start this quest
     isGuildClass() && guildStoreAvailable(),

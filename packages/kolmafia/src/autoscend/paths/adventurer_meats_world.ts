@@ -1,6 +1,5 @@
 import {
   abort,
-  getProperty,
   itemAmount,
   max,
   meatCost,
@@ -13,10 +12,8 @@ import {
   myMeat,
   myPath,
   pullsRemaining,
-  setProperty,
   Skill,
   Stat,
-  toBoolean,
   toInt,
   turnsPlayed,
   visitUrl,
@@ -29,6 +26,8 @@ import {
   $path,
   $skill,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { pull_meat } from "../auto_acquire";
@@ -61,8 +60,8 @@ export function amw_initializeSettings(): void {
   if (!in_amw()) {
     return;
   }
-  setProperty("auto_wandOfNagamar", false.toString());
-  setProperty("auto_shouldMeatLevel", false.toString());
+  set("auto_wandOfNagamar", false);
+  set("auto_shouldMeatLevel", false);
 }
 // Functions used in bits outside the amw universe
 
@@ -428,13 +427,13 @@ export function LX_attemptPowerLevelMeat(
       "Hmmm, we need to stop being so feisty about quests...",
       "red",
     );
-    setProperty("auto_powerLevelLastLevel", myLevel().toString()); //release softblock until you level up
-    setProperty("auto_powerLevelAdvCount", (0).toString());
+    set("auto_powerLevelLastLevel", myLevel()); //release softblock until you level up
+    set("auto_powerLevelAdvCount", 0);
     return true; //restart the main loop to give those quests a chance to run now that the softblock is released.
   }
   // tells other parts of the script to get more meat in the future (quest ordering, clovering for KGE, pulling meat)
-  if (!toBoolean(getProperty("auto_shouldMeatLevel"))) {
-    setProperty("auto_shouldMeatLevel", "true");
+  if (!get("auto_shouldMeatLevel", false)) {
+    set("auto_shouldMeatLevel", "true");
   }
   // setting the parameter of buyStats to true drastically lowers meat reserve requirements. If it returns true, we were able to reach the next level
   if (amw_buyStats(!skills)) {
@@ -477,7 +476,7 @@ registerQuestTask({
 
 // stricter than amw_wantMeat() because this changes the quest order. If true, levels 4, 5, 7 quests may be done early.
 export function LX_needMeatSkills(): boolean {
-  if (toBoolean(getProperty("auto_shouldMeatLevel")) && myLevel() < 12) {
+  if (get("auto_shouldMeatLevel", false) && myLevel() < 12) {
     return true;
   }
   return false;
@@ -489,7 +488,7 @@ export function LX_needMeatSkills(): boolean {
 function LM_adventurerMeatsWorldDo(): boolean {
   // if we've meatleveled before, we might want to clover for meat or pull it if available
   if (
-    toBoolean(getProperty("auto_shouldMeatLevel")) &&
+    get("auto_shouldMeatLevel", false) &&
     myLevel() < 12 &&
     pullsRemaining() > 5
   ) {
@@ -500,7 +499,7 @@ function LM_adventurerMeatsWorldDo(): boolean {
     }
   }
   if (
-    toBoolean(getProperty("auto_shouldMeatLevel")) &&
+    get("auto_shouldMeatLevel", false) &&
     cloversAvailable() > 1 &&
     myBuffedstat($stat`Moxie`) > 25 &&
     myLevel() < 12 &&

@@ -26,9 +26,7 @@ import {
   myMp,
   numericModifier,
   Phylum,
-  setProperty,
   Skill,
-  toBoolean,
   toInt,
   weaponType,
 } from "kolmafia";
@@ -49,6 +47,8 @@ import {
   $skills,
   $slot,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
@@ -101,8 +101,8 @@ export function auto_combatDefaultStage5(
 ): CombatMacroReturns {
   // stage 5 = kill
   //Unskip stage 4
-  if (toBoolean(getProperty("auto_skipStage4"))) {
-    setProperty("auto_skipStage4", false.toString());
+  if (get("auto_skipStage4", false)) {
+    set("auto_skipStage4", false);
   }
   // Path = Heavy Rains
   let retval: CombatMacroReturns = auto_combatHeavyRainsStage5(
@@ -272,7 +272,7 @@ export function auto_combatDefaultStage5(
   //Everfull Dart Holder- use darts if you have them, unless we are against the naughty sorceress (to avoid dart skill bug)
   if (
     haveEquipped($item`Everfull Dart Holster`) &&
-    toInt(getProperty("_dartsLeft")) > 0 &&
+    get("_dartsLeft") > 0 &&
     !$monsters`Naughty Sorceress, Naughty Sorceress (2)`.includes(enemy)
   ) {
     return auto_useSkill(dartSkill(), false);
@@ -285,7 +285,7 @@ export function auto_combatDefaultStage5(
     (currentFlavour() !== monsterElement(enemy) ||
       currentFlavour() === Element.none)
   ) {
-    setProperty("_auto_combatTracker_MortarRound", round_1.toString());
+    set("_auto_combatTracker_MortarRound", round_1);
     return auto_useSkill($skill`Stuffed Mortar Shell`);
   }
   //Roman Candelabra red candle
@@ -466,9 +466,7 @@ export function auto_combatDefaultStage5(
           costMajor = mpCost($skill`Stream of Sauce`);
         }
         //let mortar deal the killing blow so we get more MP from the exploding curse of weaksauce
-        const mortar_round: number = toInt(
-          getProperty("_auto_combatTracker_MortarRound"),
-        );
+        const mortar_round: number = get("_auto_combatTracker_MortarRound", 0);
         if (
           mortar_round > -1 && //mortar was used this combat
           mortar_round === round_1 - 1 && //mortar will hit this round

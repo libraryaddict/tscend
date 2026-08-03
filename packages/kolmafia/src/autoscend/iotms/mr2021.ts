@@ -28,10 +28,8 @@ import {
   myMeat,
   npcPrice,
   retrieveItem,
-  setProperty,
   Skill,
   splitString,
-  toBoolean,
   toInt,
   toLocation,
   toMonster,
@@ -48,6 +46,8 @@ import {
   $monster,
   $skill,
   $slot,
+  get,
+  set,
 } from "libram";
 
 import { auto_advToReserve } from "../../autoscend";
@@ -179,7 +179,7 @@ function auto_allowCrystalBall(
     return true;
   }
   // next monster forced by mapping overrides any prediction so no need to forbid equipping crystal ball
-  if (toBoolean(getProperty("mappingMonsters"))) {
+  if (get("mappingMonsters")) {
     return true;
   }
   // next monster forced by clover so no need to forbid equipping crystal ball
@@ -245,7 +245,7 @@ export function auto_forceHandleCrystalBall(loc: Location): boolean {
   const crystal_ball: Item = wrap_item($item`miniature crystal ball`);
   if (shouldForceEquip) {
     maximizer.equip(crystal_ball);
-    setProperty("auto_nextEncounter", predicted_monster.toString());
+    set("auto_nextEncounter", predicted_monster);
     return true; //handled
   } else if (!auto_allowCrystalBall(predicted_monster, loc)) {
     maximizer.exclude(crystal_ball);
@@ -264,7 +264,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
   let considerCrystalBallBonus: boolean = false;
   if (
     !auto_queueIgnore() &&
-    toMonster(getProperty("auto_nextEncounter")) === Monster.none &&
+    get("auto_nextEncounter", Monster.none) === Monster.none &&
     !auto_forceHandleCrystalBall(place)
   ) {
     //equipping the crystal ball can't hurt but it is neither forced nor forbidden
@@ -273,11 +273,11 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
   }
 
   const possible_monsters: Map<number, Monster> = new Map();
-  if (toMonster(getProperty("auto_nextEncounter")) !== Monster.none) {
+  if (get("auto_nextEncounter", Monster.none) !== Monster.none) {
     //next monster is forced by zone mechanics or by now locked-in miniature crystal ball
     possible_monsters.set(
       possible_monsters.size,
-      toMonster(getProperty("auto_nextEncounter")),
+      get("auto_nextEncounter", Monster.none),
     );
   } else {
     for (const [, mon] of getMonsters(place).entries()) {
@@ -333,9 +333,7 @@ export function auto_canFeelEnvy(): boolean {
   if (!auto_is_valid$2($skill`Feel Envy`)) {
     return false;
   }
-  return (
-    auto_haveEmotionChipSkills() && toInt(getProperty("_feelEnvyUsed")) < 3
-  );
+  return auto_haveEmotionChipSkills() && get("_feelEnvyUsed") < 3;
 }
 
 export function auto_canFeelHatred(): boolean {
@@ -343,9 +341,7 @@ export function auto_canFeelHatred(): boolean {
   if (!auto_is_valid$2($skill`Feel Hatred`)) {
     return false;
   }
-  return (
-    auto_haveEmotionChipSkills() && toInt(getProperty("_feelHatredUsed")) < 3
-  );
+  return auto_haveEmotionChipSkills() && get("_feelHatredUsed") < 3;
 }
 
 export function auto_haveBackupCamera(): boolean {
@@ -356,17 +352,14 @@ export function auto_haveBackupCamera(): boolean {
 }
 
 export function auto_enableBackupCameraReverser(): void {
-  if (
-    auto_haveBackupCamera() &&
-    !toBoolean(getProperty("backupCameraReverserEnabled"))
-  ) {
+  if (auto_haveBackupCamera() && !get("backupCameraReverserEnabled")) {
     cliExecute("backupcamera reverser on");
   }
 }
 
 export function auto_backupUsesLeft(): number {
   if (auto_haveBackupCamera()) {
-    return 11 + (in_robot() ? 5 : 0) - toInt(getProperty("_backUpUses"));
+    return 11 + (in_robot() ? 5 : 0) - get("_backUpUses");
   }
   return 0;
 }
@@ -381,16 +374,16 @@ export function auto_backupTarget(): boolean {
     return false;
   }
   // don't backup into a fight we just lost. Prevent continuously getting beaten up
-  if (toBoolean(getProperty("auto_beatenUpLastAdv"))) {
+  if (get("auto_beatenUpLastAdv", false)) {
     return false;
   }
   // don't backup if nextAdventure is None as a combat was somewhere that is not a zone
-  if (toLocation(getProperty("nextAdventure")) === Location.none) {
+  if (get("nextAdventure", Location.none) === Location.none) {
     return false;
   }
   // don't backup into oliver's (it won't be free and will waste a free fight and currently also mess up tracking)
   if (
-    toLocation(getProperty("nextAdventure")) ===
+    get("nextAdventure", Location.none) ===
     $location`An Unusually Quiet Barroom Brawl`
   ) {
     return false;
@@ -407,11 +400,10 @@ export function auto_backupTarget(): boolean {
       ? auto_habitatFightsLeft() * (5 + cyrptEvilBonus())
       : 0;
   const wantBackupZmobie: boolean =
-    toInt(getProperty("cyrptAlcoveEvilness")) >
-      14 + cyrptEvilBonus() + habitatZombieEvil &&
+    get("cyrptAlcoveEvilness") > 14 + cyrptEvilBonus() + habitatZombieEvil &&
     internalQuestStatus("questL07Cyrptic") === 0;
 
-  switch (toMonster(getProperty("lastCopyableMonster"))) {
+  switch (get("lastCopyableMonster", Monster.none)) {
     case $monster`lobsterfrogman`:
       if (wantBackupLFM) {
         return true;
@@ -451,8 +443,8 @@ export function auto_backupTarget(): boolean {
       break;
     case $monster`Green Ops Soldier`:
       if (
-        toInt(getProperty("hippiesDefeated")) > 399 &&
-        toInt(getProperty("hippiesDefeated")) < 1000 &&
+        get("hippiesDefeated") > 399 &&
+        get("hippiesDefeated") < 1000 &&
         !in_koe()
       ) {
         return true;
@@ -487,10 +479,10 @@ export function auto_backupToYourLastEnemy(loc: Location): boolean {
   }
 
   if (autoEquipToSlot($slot`acc3`, $item`backup camera`)) {
-    setProperty("auto_nextEncounter", getProperty("lastCopyableMonster"));
+    set("auto_nextEncounter", getProperty("lastCopyableMonster"));
     return autoAdv(loc);
   }
-  setProperty("auto_nextEncounter", "");
+  set("auto_nextEncounter", "");
   return false;
 }
 
@@ -833,7 +825,7 @@ export function have_fireworks_shop(): boolean {
   if (!auto_is_valid($item`clan underground fireworks shop`)) {
     return false;
   }
-  return toBoolean(getProperty("_fireworksShop"));
+  return get("_fireworksShop");
 }
 
 export function auto_buyFireworksHat(): boolean {
@@ -850,7 +842,7 @@ export function auto_buyFireworksHat(): boolean {
     return false;
   }
 
-  if (toBoolean(getProperty("_fireworksShopHatBought"))) {
+  if (get("_fireworksShopHatBought")) {
     return false;
   }
 
@@ -898,7 +890,7 @@ export function auto_buyFireworksHat(): boolean {
   // ML hat is least useful
   // todo: add functionality to simulate acquiring ML instead of just looking at current ML
   if (auto_can_equip($item`fedora-mounted fountain`)) {
-    if (monsterLevelAdjustment() < toInt(getProperty("auto_MLSafetyLimit"))) {
+    if (monsterLevelAdjustment() < get("auto_MLSafetyLimit", 0)) {
       retrieveItem(1, $item`fedora-mounted fountain`);
       return true;
     }
@@ -916,7 +908,7 @@ export function auto_fireExtinguisherCharges(): number {
   if (!auto_haveFireExtinguisher()) {
     return 0;
   }
-  return toInt(getProperty("_fireExtinguisherCharge"));
+  return get("_fireExtinguisherCharge");
 }
 // returns zone specific skill if in usable zone and hasn't been used yet there this ascension. Otherwise returns empty string
 export function auto_FireExtinguisherCombatSkill(place: Location): Skill {
@@ -935,7 +927,7 @@ export function auto_FireExtinguisherCombatSkill(place: Location): Skill {
     $locations`Guano Junction, The Batrat and Ratbat Burrow, The Beanbat Chamber`.includes(
       place,
     ) &&
-    !toBoolean(getProperty("fireExtinguisherBatHoleUsed"))
+    !get("fireExtinguisherBatHoleUsed")
   ) {
     //sonar-in-a-biscuits are used before combat, if available. Knock a wall down if any are still standing
     if (internalQuestStatus("questL04Bat") < 3) {
@@ -945,7 +937,7 @@ export function auto_FireExtinguisherCombatSkill(place: Location): Skill {
 
   if (
     place === $location`Cobb's Knob Harem` &&
-    !toBoolean(getProperty("fireExtinguisherHaremUsed")) &&
+    !get("fireExtinguisherHaremUsed") &&
     !possessOutfit("Knob Goblin Harem Girl Disguise")
   ) {
     return $skill`Fire Extinguisher: Zone Specific`;
@@ -953,15 +945,15 @@ export function auto_FireExtinguisherCombatSkill(place: Location): Skill {
 
   if (
     place === $location`The Defiled Niche` &&
-    !toBoolean(getProperty("fireExtinguisherCyrptUsed"))
+    !get("fireExtinguisherCyrptUsed")
   ) {
     return $skill`Fire Extinguisher: Zone Specific`;
   }
 
   if (
     place === $location`The Smut Orc Logging Camp` &&
-    !toBoolean(getProperty("fireExtinguisherChasmUsed")) &&
-    toInt(getProperty("chasmBridgeProgress")) < bridgeGoal() &&
+    !get("fireExtinguisherChasmUsed") &&
+    get("chasmBridgeProgress") < bridgeGoal() &&
     !auto_hasAutumnaton()
   ) {
     return $skill`Fire Extinguisher: Zone Specific`;
@@ -970,7 +962,7 @@ export function auto_FireExtinguisherCombatSkill(place: Location): Skill {
   if (
     place === $location`The Arid, Extra-Dry Desert` &&
     $location`The Arid, Extra-Dry Desert`.turnsSpent > 0 &&
-    !toBoolean(getProperty("fireExtinguisherDesertUsed")) &&
+    !get("fireExtinguisherDesertUsed") &&
     !auto_haveBofa()
   ) {
     return $skill`Fire Extinguisher: Zone Specific`;
@@ -983,7 +975,7 @@ export function auto_canExtinguisherBeRefilled(): boolean {
   return (
     auto_haveFireExtinguisher() &&
     in_wildfire() &&
-    !toBoolean(getProperty("_fireExtinguisherRefilled"))
+    !get("_fireExtinguisherRefilled")
   );
 }
 
@@ -998,7 +990,7 @@ export function auto_CMCconsultsLeft(): number {
   if (!auto_haveColdMedCabinet()) {
     return 0;
   }
-  let consultsUsed: number = toInt(getProperty("_coldMedicineConsults"));
+  let consultsUsed: number = get("_coldMedicineConsults");
   if (consultsUsed > 5) {
     auto_log_warning(
       "Mafia's tracking of Cold Medicine Cabinet consults today errored (reported > 5 uses today). Reseting to 5.",
@@ -1014,7 +1006,7 @@ function auto_CMCconsultAvailable(): boolean {
     return false;
   }
 
-  const nextConsult: number = toInt(getProperty("_nextColdMedicineConsult"));
+  const nextConsult: number = get("_nextColdMedicineConsult");
   //prior to first use each day, prop value is 0
   if (nextConsult === 0) {
     return true;
@@ -1035,19 +1027,19 @@ export function auto_CMCconsult(): void {
         myLocation() === $location`The Battlefield (Frat Uniform)` &&
         getProperty("sidequestNunsCompleted") === "none"
       ) {
-        const hippiesDefeated: number = toInt(getProperty("hippiesDefeated"));
+        const hippiesDefeated: number = get("hippiesDefeated");
         if (hippiesDefeated <= 208 && auto_bestWarPlan().doNuns) {
           const turnsUntilNuns: number = min(
             16,
             ceil(max(0, 191.0 - hippiesDefeated) / auto_warKillsPerBattle()),
           );
-          if (toInt(getProperty("breathitinCharges")) + 5 >= turnsUntilNuns) {
+          if (get("breathitinCharges") + 5 >= turnsUntilNuns) {
             return false; //may do nuns before breathitin charges get used up
           }
         }
       }
       if (
-        toBoolean(getProperty("auto_hippyInstead")) &&
+        get("auto_hippyInstead", false) &&
         internalQuestStatus("questL12War") === 1 &&
         getProperty("sidequestNunsCompleted") === "none"
       ) {
@@ -1101,9 +1093,9 @@ export function auto_CMCconsult(): void {
     return;
   }
 
-  if (toBoolean(getProperty("_auto_coldMedicineLocked"))) {
+  if (get("_auto_coldMedicineLocked", false)) {
     //haven't visited yet since it was last locked so always visit to update available consults
-    setProperty("_auto_coldMedicineLocked", "false");
+    set("_auto_coldMedicineLocked", "false");
   } else if (
     auto_CMCconsultsLeft() <= 2 &&
     auto_freeCrafts() >= 5 &&
@@ -1167,7 +1159,7 @@ export function auto_CMCconsult(): void {
   }
 
   if (bestOption !== -1) {
-    setProperty("_auto_coldMedicineLocked", "true"); //when taking a consultation, set property as a reminder to always check again next time consultations are unlocked
+    set("_auto_coldMedicineLocked", "true"); //when taking a consultation, set property as a reminder to always check again next time consultations are unlocked
     auto_runChoice(bestOption);
   }
 

@@ -13,11 +13,10 @@ import {
   myTurncount,
   print,
   removeProperty,
-  setProperty,
   Skill,
   visitUrl,
 } from "kolmafia";
-import { $location, Macro } from "libram";
+import { $location, Macro, set } from "libram";
 
 import { auto_runPostAdventure } from "./auto_post_adv";
 import { auto_runPreAdventure } from "./auto_pre_adv";
@@ -104,8 +103,8 @@ export function autoAdv(
   }
 
   removeProperty("_auto_combatState");
-  setProperty("auto_diag_round", (0).toString());
-  setProperty("nextAdventure", loc.toString());
+  set("auto_diag_round", 0);
+  set("nextAdventure", loc);
   if (!option) {
     if (isActuallyEd()) {
       option = auto_edCombatHandler;
@@ -180,10 +179,10 @@ export function autoAdvBypass(
     return false;
   }
 
-  setProperty("nextAdventure", loc.toString());
+  set("nextAdventure", loc);
   auto_triggerPreAdventure();
   removeProperty("_auto_combatState");
-  setProperty("auto_diag_round", (0).toString());
+  set("auto_diag_round", 0);
 
   if (isActuallyEd()) {
     ed_handleAdventureServant(loc);

@@ -15,9 +15,6 @@ import {
   myPath,
   myPrimestat,
   numericModifier,
-  setProperty,
-  toBoolean,
-  toInt,
   towerDoor,
 } from "kolmafia";
 import {
@@ -30,6 +27,8 @@ import {
   $path,
   $slot,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { autoAdv } from "../auto_adventure";
@@ -453,7 +452,7 @@ function LX_findHelpfulLowKey(): boolean {
   // cold spell damage before orcs. Ice Key needs The Icy Peak access
   if (
     internalQuestStatus("questL09Topping") === 0 &&
-    toInt(getProperty("chasmBridgeProgress")) < bridgeGoal()
+    get("chasmBridgeProgress") < bridgeGoal()
   ) {
     if (lowkey_keyAdv($item`ice key`)) {
       return true;
@@ -674,9 +673,8 @@ function LX_lowkeySummerRemainderDo(): boolean {
         return true;
       }
     } else if (
-      !toBoolean(getProperty("auto_skipNuns")) &&
-      (toInt(getProperty("hippiesDefeated")) >= 192 ||
-        toBoolean(getProperty("auto_hippyInstead")))
+      !get("auto_skipNuns", false) &&
+      (get("hippiesDefeated") >= 192 || get("auto_hippyInstead", false))
     ) {
       // about to do nuns. Make sure The Valley is open so we can get the Kekekey.
       // opening Cobb's Knob so we can get the treasury key is already done at higher priority
@@ -831,7 +829,7 @@ function LX_lowkeySummerRemainderDo(): boolean {
         return true;
       }
     } else {
-      setProperty("auto_forceTavern", true.toString());
+      set("auto_forceTavern", true);
       if (L3_tavern()) {
         return true;
       }

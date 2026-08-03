@@ -4,7 +4,6 @@ import {
   cliExecute,
   Familiar,
   floor,
-  getProperty,
   inebrietyLimit,
   itemAmount,
   Location,
@@ -20,9 +19,6 @@ import {
   myThrall,
   myTurncount,
   print,
-  setProperty,
-  toBoolean,
-  toInt,
   toThrall,
   useSkill,
   wait,
@@ -40,6 +36,7 @@ import {
   $stat,
   $thrall,
   get,
+  set,
 } from "libram";
 
 import { auto_advToReserve } from "../autoscend";
@@ -114,7 +111,7 @@ import { candyBlock, freeCandyFightsLeft } from "./quests/level_any";
 
 //Defined in autoscend/auto_powerlevel.ash
 export function isAboutToPowerlevel(): boolean {
-  return toInt(getProperty("auto_powerLevelLastLevel")) === myLevel();
+  return get("auto_powerLevelLastLevel", 0) === myLevel();
 }
 
 export function highestScalingZone(): Location {
@@ -158,8 +155,8 @@ function LX_attemptPowerLevelDo(): boolean {
       "Hmmm, we need to stop being so feisty about quests...",
       "red",
     );
-    setProperty("auto_powerLevelLastLevel", myLevel().toString()); //release softblock until you level up
-    setProperty("auto_powerLevelAdvCount", (0).toString());
+    set("auto_powerLevelLastLevel", myLevel()); //release softblock until you level up
+    set("auto_powerLevelAdvCount", 0);
     return true; //restart the main loop to give those quests a chance to run now that the softblock is released.
   }
 
@@ -175,17 +172,14 @@ function LX_attemptPowerLevelDo(): boolean {
     "red",
   );
 
-  setProperty(
-    "auto_powerLevelAdvCount",
-    (toInt(getProperty("auto_powerLevelAdvCount")) + 1).toString(),
-  );
-  setProperty("auto_powerLevelLastAttempted", myTurncount().toString());
+  set("auto_powerLevelAdvCount", get("auto_powerLevelAdvCount", 0) + 1);
+  set("auto_powerLevelLastAttempted", myTurncount());
 
   handleFamiliar("stat");
   maximizer.weight($modifier`Experience`, 100);
 
   auto_log_warning("I need to powerlevel", "red");
-  let delay: number = toInt(getProperty("auto_powerLevelTimer"));
+  let delay: number = get("auto_powerLevelTimer", 0);
   if (delay === 0) {
     delay = 10;
   }
@@ -209,19 +203,16 @@ function LX_attemptPowerLevelDo(): boolean {
   //The Source path specific powerleveling
   LX_attemptPowerLevelTheSource();
   //August Scepter Power Levelling
-  if (auto_haveAugustScepter() && toInt(getProperty("_augSkillsCast")) < 5) {
+  if (auto_haveAugustScepter() && get("_augSkillsCast") < 5) {
     if (myPrimestat() === $stat`Muscle`) {
-      if (
-        auto_canUse($skill`Aug. 12th: Elephant Day!`) &&
-        !toBoolean(getProperty("_aug12Cast"))
-      ) {
+      if (auto_canUse($skill`Aug. 12th: Elephant Day!`) && !get("_aug12Cast")) {
         useSkill($skill`Aug. 12th: Elephant Day!`);
       }
     }
     if (myPrimestat() === $stat`Mysticality`) {
       if (
         auto_canUse($skill`Aug. 11th: Presidential Joke Day!`) &&
-        !toBoolean(getProperty("_aug11Cast"))
+        !get("_aug11Cast")
       ) {
         useSkill($skill`Aug. 11th: Presidential Joke Day!`);
       }
@@ -229,7 +220,7 @@ function LX_attemptPowerLevelDo(): boolean {
     if (myPrimestat() === $stat`Moxie`) {
       if (
         auto_canUse($skill`Aug. 23rd: Ride the Wind Day!`) &&
-        !toBoolean(getProperty("_aug23Cast"))
+        !get("_aug23Cast")
       ) {
         useSkill($skill`Aug. 23rd: Ride the Wind Day!`);
       }
@@ -265,10 +256,7 @@ function LX_attemptPowerLevelDo(): boolean {
     if (
       myPrimestat() === $stat`Moxie` ||
       myBasestat($stat`Moxie`) < 70 ||
-      toInt(
-        //war outfit requires 70 base mox
-        getProperty("auto_beatenUpCount"),
-      ) > 5
+      get("auto_beatenUpCount", 0) > 5
     ) {
       //if we are getting beaten up we should raise moxie
       goal_count++;
@@ -349,7 +337,7 @@ export function disregardInstantKarma(): boolean {
     return true;
   }
   //auto_disregardInstantKarma is a user configured setting
-  return toBoolean(getProperty("auto_disregardInstantKarma"));
+  return get("auto_disregardInstantKarma", false);
 }
 
 export function auto_freeCombatsRemaining(
@@ -371,17 +359,17 @@ export function auto_freeCombatsRemaining(
 
   logRemainingFights("Remaining Free Fights:");
   if (!in_koe() && canChangeToFamiliar($familiar`Machine Elf`)) {
-    const temp: number = 5 - toInt(getProperty("_machineTunnelsAdv"));
+    const temp: number = 5 - get("_machineTunnelsAdv");
     count_1 += temp;
     logRemainingFights(`Machine Elf = ${temp}`);
   }
   if (snojoFightAvailable()) {
-    const temp: number = 10 - toInt(getProperty("_snojoFreeFights"));
+    const temp: number = 10 - get("_snojoFreeFights");
     count_1 += temp;
     logRemainingFights(`Snojo = ${temp}`);
   }
   if (canChangeToFamiliar($familiar`God Lobster`) && disregardInstantKarma()) {
-    const temp: number = 3 - toInt(getProperty("_godLobsterFights"));
+    const temp: number = 3 - get("_godLobsterFights");
     count_1 += temp;
     logRemainingFights(`God Lobster = ${temp}`);
   }
@@ -390,13 +378,13 @@ export function auto_freeCombatsRemaining(
     count_1 += temp;
     logRemainingFights(`Neverending Party = ${temp}`);
   }
-  if (toBoolean(getProperty("_eldritchTentacleFought")) === false) {
+  if (get("_eldritchTentacleFought") === false) {
     count_1++;
     logRemainingFights("Tent Tentacle = 1");
   }
   if (
     auto_have_skill($skill`Evoke Eldritch Horror`) &&
-    toBoolean(getProperty("_eldritchHorrorEvoked")) === false
+    get("_eldritchHorrorEvoked") === false
   ) {
     count_1++;
     logRemainingFights("Evoke Eldritch = 1");
@@ -508,7 +496,7 @@ export function LX_freeCombats(
   if (
     myClass() === $class`Pastamancer` &&
     toThrall("ver").level > 10 &&
-    toInt(getProperty("_legendaryVermincelliFreeRats")) < 3 &&
+    get("_legendaryVermincelliFreeRats") < 3 &&
     zone_isAvailable(burrow, true) &&
     (appearanceRates(burrow)[$monster`screambat`.toString()] ??= 0.0) < 0.01
   ) {
@@ -527,7 +515,7 @@ export function LX_freeCombats(
 
   if (
     !in_koe() &&
-    toInt(getProperty("_machineTunnelsAdv")) < 5 &&
+    get("_machineTunnelsAdv") < 5 &&
     canChangeToFamiliar($familiar`Machine Elf`)
   ) {
     auto_log_debug(
@@ -569,7 +557,7 @@ export function LX_freeCombats(
 
   if (
     auto_have_skill($skill`Evoke Eldritch Horror`) &&
-    toBoolean(getProperty("_eldritchHorrorEvoked")) === false
+    get("_eldritchHorrorEvoked") === false
   ) {
     auto_log_debug("LX_freeCombats is calling evokeEldritchHorror()");
     if (evokeEldritchHorror()) {
@@ -602,7 +590,7 @@ export function LX_freeCombats(
   }
   // tentacle should be last so it can be backed up, if script wants to
   // see auto_backupTarget()
-  if (toBoolean(getProperty("_eldritchTentacleFought")) === false) {
+  if (get("_eldritchTentacleFought") === false) {
     auto_log_debug("LX_freeCombats is calling fightScienceTentacle()");
     if (fightScienceTentacle()) {
       return true;

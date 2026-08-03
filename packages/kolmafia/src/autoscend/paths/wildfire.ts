@@ -19,13 +19,19 @@ import {
   myPath,
   myWildfireWater,
   npcPrice,
-  setProperty,
-  toBoolean,
-  toInt,
   use,
   visitUrl,
 } from "kolmafia";
-import { $element, $item, $location, $path, $skill, $slot } from "libram";
+import {
+  $element,
+  $item,
+  $location,
+  $path,
+  $skill,
+  $slot,
+  get,
+  set,
+} from "libram";
 
 import { auto_advToReserve } from "../../autoscend";
 import { auto_buyUpTo, pull_meat } from "../auto_acquire";
@@ -65,8 +71,8 @@ export function wildfire_initializeSettings(): void {
   if (!in_wildfire()) {
     return;
   }
-  setProperty("auto_wandOfNagamar", false.toString()); //wand not used in this path
-  setProperty("auto_getBeehive", true.toString()); //fire cannot be reduced from 5 in tower making the fight too difficult without beehive
+  set("auto_wandOfNagamar", false); //wand not used in this path
+  set("auto_getBeehive", true); //fire cannot be reduced from 5 in tower making the fight too difficult without beehive
 }
 
 export function wildfire_groar_check(): boolean {
@@ -133,7 +139,7 @@ function wildfire_rainbarrel(): void {
   if (!in_wildfire()) {
     return;
   }
-  if (toBoolean(getProperty("_wildfireBarrelHarvested"))) {
+  if (get("_wildfireBarrelHarvested")) {
     return; //already collected today
   }
   visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_rainbarrel");
@@ -179,13 +185,13 @@ function wildfire_water_cost(target: string): number {
     );
   }
   let count_1: number = 0;
-  const dusted: boolean = toBoolean(getProperty("wildfireDusted"));
-  const fracked: boolean = toBoolean(getProperty("wildfireFracked"));
-  const sprinkled: boolean = toBoolean(getProperty("wildfireSprinkled"));
+  const dusted: boolean = get("wildfireDusted");
+  const fracked: boolean = get("wildfireFracked");
+  const sprinkled: boolean = get("wildfireSprinkled");
   switch (target) {
     case "hose":
       //how much does having cpt hangk send firefighers to hose down an area cost.
-      return 10 + 10 * toInt(getProperty("_captainHagnkUsed"));
+      return 10 + 10 * get("_captainHagnkUsed");
     case "dust":
       if (dusted) {
         return 0;
@@ -227,7 +233,7 @@ function LX_wildfire_grease_pump(): boolean {
   if (!in_wildfire()) {
     return false;
   }
-  if (toBoolean(getProperty("wildfirePumpGreased"))) {
+  if (get("wildfirePumpGreased")) {
     return false; //already greased
   }
   if (
@@ -245,7 +251,7 @@ function LX_wildfire_grease_pump(): boolean {
     if (myMeat() >= npcPrice($item`pump grease`)) {
       auto_buyUpTo(1, $item`pump grease`);
     } else {
-      if (toInt(getProperty("lastSecondFloorUnlock")) < myAscensions()) {
+      if (get("lastSecondFloorUnlock") < myAscensions()) {
         return false; //go do other stuff until spookyraven second floor is unlocked
       }
       return autoAdv($location`The Haunted Bedroom`); //get enough meat to grease the pump
@@ -255,7 +261,7 @@ function LX_wildfire_grease_pump(): boolean {
   if (itemAmount($item`pump grease`) > 0) {
     //use the grease
     use(1, $item`pump grease`);
-    if (!toBoolean(getProperty("wildfirePumpGreased"))) {
+    if (!get("wildfirePumpGreased")) {
       abort(
         "Failed to use [pump grease] or mafia is tracking it incorrectly. please resolve the issue and run me again",
       );
@@ -309,7 +315,7 @@ function LX_wildfire_dust(): boolean {
   if (!in_wildfire()) {
     return false;
   }
-  if (toBoolean(getProperty("wildfireDusted"))) {
+  if (get("wildfireDusted")) {
     return false; //already done
   }
   //pump water. restart loop if adv were spent
@@ -319,7 +325,7 @@ function LX_wildfire_dust(): boolean {
     auto_log_info("Dusting with Cropduster Dusty");
     visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_cropster");
     auto_runChoice(1);
-    if (!toBoolean(getProperty("wildfireDusted"))) {
+    if (!get("wildfireDusted")) {
       abort(
         "Mysteriously failed to Dust with Cropduster Dusty. fix it and run me again",
       );
@@ -333,7 +339,7 @@ function LX_wildfire_frack(): boolean {
   if (!in_wildfire()) {
     return false;
   }
-  if (toBoolean(getProperty("wildfireFracked"))) {
+  if (get("wildfireFracked")) {
     return false; //already done
   }
   //pump water. restart loop if adv were spent
@@ -343,7 +349,7 @@ function LX_wildfire_frack(): boolean {
     auto_log_info("Fracking with Fracker Dan");
     visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_fracker");
     auto_runChoice(1);
-    if (!toBoolean(getProperty("wildfireFracked"))) {
+    if (!get("wildfireFracked")) {
       abort(
         "Mysteriously failed to Frack with Fracker Dan. fix it and run me again",
       );
@@ -443,7 +449,7 @@ function LX_wildfire_water(): boolean {
   }
 
   if (
-    toBoolean(getProperty("auto_getSteelOrgan")) &&
+    get("auto_getSteelOrgan", false) &&
     getProperty(
       //we want steel margarita
       "questM10Azazel",
@@ -489,7 +495,7 @@ function LX_wildfire_water(): boolean {
     //		}
   }
   //mass watering. waters all areas of a certain type (outdoor, indoor, underground) reducing fire from 5 to 2
-  if (toBoolean(getProperty("wildfirePumpGreased"))) {
+  if (get("wildfirePumpGreased")) {
     //only pump and mass water if you greased the pump
     if (LX_wildfire_dust()) {
       return true;

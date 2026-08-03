@@ -5,10 +5,8 @@ import {
   Location,
   myPath,
   myTurncount,
-  setProperty,
-  toInt,
 } from "kolmafia";
-import { $locations, $path } from "libram";
+import { $locations, $path, get, set } from "libram";
 
 import { zone_needItem } from "../auto_zone";
 import { generic_t } from "../autoscend_record";
@@ -30,21 +28,21 @@ export function lar_safeguard(): boolean {
       repeats === "Putting Off Is Off-Putting" ||
       repeats === "Huzzah!"
     ) {
-      if (toInt(getProperty("_auto_groundhogSkip")) === myTurncount()) {
-        setProperty(
+      if (get("_auto_groundhogSkip", 0) === myTurncount()) {
+        set(
           "_auto_groundhogSkipCounter",
-          (toInt(getProperty("_auto_groundhogSkipCounter")) + 1).toString(),
+          get("_auto_groundhogSkipCounter", 0) + 1,
         );
       }
-      if (toInt(getProperty("_auto_groundhogSkipCounter")) > 6) {
+      if (get("_auto_groundhogSkipCounter", 0) > 6) {
         abort(
           "You are in a non-combat adventure that will infinitely loop. Please spend a turn somewhere else and re-run autoscend.",
         );
       }
-      setProperty("_auto_groundhogSkip", myTurncount().toString());
+      set("_auto_groundhogSkip", myTurncount());
     } else {
-      setProperty("_auto_groundhogSkipCounter", (0).toString());
-      setProperty("_auto_groundhogSkip", (-1).toString());
+      set("_auto_groundhogSkipCounter", 0);
+      set("_auto_groundhogSkip", -1);
     }
   }
   return false;
@@ -57,7 +55,7 @@ export function lar_repeat(loc: Location): boolean {
         loc,
       )
     ) {
-      if (toInt(getProperty("_auto_groundhogSkip")) === myTurncount()) {
+      if (get("_auto_groundhogSkip", 0) === myTurncount()) {
         return false;
       }
     }
@@ -86,8 +84,8 @@ export function lar_abort(loc: Location): boolean {
 export function LM_lar(): boolean {
   //Not best way but just do it...
   if (in_lar()) {
-    if (toInt(getProperty("_sourceTerminalDigitizeUses")) < 3) {
-      setProperty("_sourceTerminalDigitizeUses", (3).toString());
+    if (get("_sourceTerminalDigitizeUses") < 3) {
+      set("_sourceTerminalDigitizeUses", 3);
     }
   }
   return false;

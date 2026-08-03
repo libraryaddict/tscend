@@ -20,8 +20,6 @@ import {
   myRain,
   myThunder,
   numericModifier,
-  setProperty,
-  toBoolean,
   toInt,
   useFamiliar,
   useSkill,
@@ -40,6 +38,8 @@ import {
   $path,
   $skill,
   $slot,
+  get,
+  set,
 } from "libram";
 
 import { acquireOrPull, auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
@@ -75,29 +75,29 @@ export function in_heavyrains(): boolean {
 export function heavyrains_initializeSettings(): void {
   if (in_heavyrains()) {
     //Rain Man (Heavy Rains) Related settings
-    setProperty("auto_holeinthesky", false.toString());
-    setProperty("auto_mountainmen", "");
-    setProperty("auto_ninjasnowmanassassin", false.toString()); //are we done with ninja snowman assassins
-    setProperty("auto_orcishfratboyspy", "");
-    setProperty("auto_warhippyspy", "");
+    set("auto_holeinthesky", false);
+    set("auto_mountainmen", "");
+    set("auto_ninjasnowmanassassin", false); //are we done with ninja snowman assassins
+    set("auto_orcishfratboyspy", "");
+    set("auto_warhippyspy", "");
 
-    setProperty("auto_lastthunder", "100");
-    setProperty("auto_lastthunderturn", "0");
+    set("auto_lastthunder", "100");
+    set("auto_lastthunderturn", "0");
 
-    setProperty("auto_wandOfNagamar", false.toString());
-    setProperty("auto_writingDeskSummon", true.toString());
+    set("auto_wandOfNagamar", false);
+    set("auto_writingDeskSummon", true);
 
-    setProperty("auto_day1_desk", "");
-    setProperty("auto_day1_skills", "");
+    set("auto_day1_desk", "");
+    set("auto_day1_skills", "");
   }
 }
 
 export function heavyrains_initializeDay(day: number): void {
   if (in_heavyrains()) {
     if (day === 1 && getProperty("auto_day1_skills") !== "finished") {
-      setProperty("choiceAdventure967", "1");
-      setProperty("choiceAdventure968", "1");
-      setProperty("choiceAdventure969", "3");
+      set("choiceAdventure967", "1");
+      set("choiceAdventure968", "1");
+      set("choiceAdventure969", "3");
 
       if (itemAmount($item`thunder thigh`) > 0) {
         //Thunder Clap, Thunder Bird, Thunder Strike
@@ -109,7 +109,7 @@ export function heavyrains_initializeDay(day: number): void {
         if (itemAmount($item`thunder thigh`) > 0) {
           visitUrl("choice.php?pwd&whichchoice=967&option=5", true);
         }
-        setProperty("choiceAdventure967", "7");
+        set("choiceAdventure967", "7");
       }
 
       if (itemAmount($item`aquaconda brain`) > 0) {
@@ -122,7 +122,7 @@ export function heavyrains_initializeDay(day: number): void {
         if (itemAmount($item`aquaconda brain`) > 0) {
           visitUrl("choice.php?pwd&whichchoice=968&option=4", true);
         }
-        setProperty("choiceAdventure968", "2");
+        set("choiceAdventure968", "2");
       }
 
       if (itemAmount($item`lightning milk`) > 0) {
@@ -135,13 +135,13 @@ export function heavyrains_initializeDay(day: number): void {
         if (itemAmount($item`lightning milk`) > 0) {
           visitUrl("choice.php?pwd&whichchoice=969&option=7", true);
         }
-        setProperty("choiceAdventure969", "2");
+        set("choiceAdventure969", "2");
       }
 
       if (itemAmount($item`miniature life preserver`) === 0) {
         auto_buyUpTo(1, $item`miniature life preserver`);
       }
-      setProperty("auto_day1_skills", "finished");
+      set("auto_day1_skills", "finished");
       visitUrl("main.php");
     }
   }
@@ -191,7 +191,7 @@ export function heavyrains_buySkills(): boolean {
         skillChoice = 1;
       }
 
-      setProperty("choiceAdventure967", skillChoice.toString());
+      set("choiceAdventure967", skillChoice);
       auto_runChoiceText(page);
       visitUrl("main.php");
       return true;
@@ -223,7 +223,7 @@ export function heavyrains_buySkills(): boolean {
         skillChoice = 1;
       }
 
-      setProperty("choiceAdventure968", skillChoice.toString());
+      set("choiceAdventure968", skillChoice);
       auto_runChoiceText(page);
       visitUrl("main.php");
       return true;
@@ -233,10 +233,7 @@ export function heavyrains_buySkills(): boolean {
       auto_log_info("Trying to use a lightning milk", "blue");
       const page: string = visitUrl("inv_use.php?which=3&whichitem=7646&pwd");
       let skillChoice: number = 8;
-      if (
-        toBoolean(getProperty("_fireworksShop")) &&
-        !haveSkill($skill`Ball Lightning`)
-      ) {
+      if (get("_fireworksShop") && !haveSkill($skill`Ball Lightning`)) {
         skillChoice = 3;
       }
       if (!haveSkill($skill`Lightning Rod`)) {
@@ -257,14 +254,11 @@ export function heavyrains_buySkills(): boolean {
       if (!haveSkill($skill`Lightning Strike`)) {
         skillChoice = 1;
       }
-      if (
-        !toBoolean(getProperty("_fireworksShop")) &&
-        !haveSkill($skill`Ball Lightning`)
-      ) {
+      if (!get("_fireworksShop") && !haveSkill($skill`Ball Lightning`)) {
         skillChoice = 3;
       }
 
-      setProperty("choiceAdventure969", skillChoice.toString());
+      set("choiceAdventure969", skillChoice);
       auto_runChoiceText(page);
       visitUrl("main.php");
       return true;
@@ -496,7 +490,7 @@ export function L13_heavyrains_towerFinal(): boolean {
   }
   //final dressup for the boss
   if (plan_on_spells) {
-    setProperty("auto_rain_king_combat", best_spell);
+    set("auto_rain_king_combat", best_spell);
     setFlavour($element`sleaze`); //a safe element that does not conflict with offhand items.
     executeFlavour();
     if (spell_extra_element) {
@@ -517,7 +511,7 @@ export function L13_heavyrains_towerFinal(): boolean {
         .requireSlot($slot`off-hand`);
     }
   } else {
-    setProperty("auto_rain_king_combat", "attack");
+    set("auto_rain_king_combat", "attack");
     if (want_club) {
       maximizer
         .weight($modifier`Prismatic Damage`)
@@ -543,19 +537,19 @@ export function L13_heavyrains_towerFinal(): boolean {
   //auto_disableAdventureHandling because we don't want maximize, switch familiar, change buffs, or anything else that might break our specific prepwork.
   acquireHP();
   acquireMP(200);
-  setProperty("auto_disableAdventureHandling", true.toString());
+  set("auto_disableAdventureHandling", true);
   autoAdvBypass$1(
     "place.php?whichplace=nstower&action=ns_10_sorcfight",
     $location`Noob Cave`,
   );
-  setProperty("auto_disableAdventureHandling", false.toString());
+  set("auto_disableAdventureHandling", false);
   if (lastMonster() !== $monster`The Rain King`) {
     abort("Failed to start the battle with The Rain King");
   }
   if (haveEffect($effect`Beaten Up`) > 0) {
     abort("The Rain King beat me up! please finish him off manually");
   }
-  if (toBoolean(getProperty("auto_stayInRun"))) {
+  if (get("auto_stayInRun", false)) {
     throw new AutoStopError(
       "User wanted to stay in run (auto_stayInRun), we are done.",
     );

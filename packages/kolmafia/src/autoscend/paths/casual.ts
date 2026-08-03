@@ -2,16 +2,12 @@ import {
   abort,
   canInteract,
   cliExecute,
-  getProperty,
   inCasual,
   mallPrice,
   myAscensions,
   myMeat,
-  setProperty,
-  toBoolean,
-  toInt,
 } from "kolmafia";
-import { $items } from "libram";
+import { $items, get, set } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
 import { auto_log_info, auto_log_warning } from "../auto_util";
@@ -19,15 +15,15 @@ import { L8_trapperPeak } from "../quests/level_08";
 
 //Defined in autoscend/paths/casual.ash
 export function inAftercore(): boolean {
-  return toBoolean(getProperty("kingLiberated"));
+  return get("kingLiberated");
 }
 
 export function casualCheck(): void {
   if (!inCasual()) {
     return;
   }
-  if (toInt(getProperty("_casualAscension")) !== -1) {
-    setProperty("_casualAscension", myAscensions().toString());
+  if (get("_casualAscension", 0) !== -1) {
+    set("_casualAscension", myAscensions());
     auto_log_warning(
       "I think I'm in a casual ascension and should not run. To override:",
       "red",
@@ -75,7 +71,7 @@ export function LM_canInteract(): boolean {
     return false;
   }
 
-  if (toInt(getProperty("lastEmptiedStorage")) !== myAscensions()) {
+  if (get("lastEmptiedStorage") !== myAscensions()) {
     cliExecute("pull all");
   }
   return false;

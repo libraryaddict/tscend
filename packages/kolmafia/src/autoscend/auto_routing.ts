@@ -10,15 +10,12 @@ import {
   myDaycount,
   myLevel,
   outfit,
-  setProperty,
   splitString,
   substring,
-  toBoolean,
-  toInt,
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $item, $location } from "libram";
+import { $item, $location, get, set } from "libram";
 
 import {
   auto_canForceNextCombat,
@@ -147,7 +144,7 @@ export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
 }
 
 export function allowSoftblockDelay(): boolean {
-  return toInt(getProperty("auto_delayLastLevel")) < myLevel();
+  return get("auto_delayLastLevel", 0) < myLevel();
 }
 
 export function canBurnDelay(loc: Location): boolean {
@@ -159,20 +156,12 @@ export function canBurnDelay(loc: Location): boolean {
     return true;
   } else if (auto_haveKramcoSausageOMatic() && auto_sausageFightsToday() < 9) {
     return true;
-  } else if (
-    auto_haveVotingBooth() &&
-    toInt(getProperty("_voteFreeFights")) < 3
-  ) {
+  } else if (auto_haveVotingBooth() && get("_voteFreeFights") < 3) {
     return true;
   } else if (
     auto_haveArchaeologistSpade() &&
     auto_spadeDigsRemaining() === 0 &&
-    myDaycount() <
-      toInt(
-        // on all branches below, we don't return true because we can burn delay
-        // Instead, we return true because we should save zones where we can burn delay until the next day when our resources have refreshed
-        getProperty("auto_runDayCount"),
-      ) &&
+    myDaycount() < get("auto_runDayCount", 0) &&
     spadeDelayZones().has(loc)
   ) {
     // the archaeologist's spade doesn't cleanly burn delay (because users without the PoP etc. might need to use an adv first--and even players using the PoP need to spend a free turn there) and is loc-specific
@@ -180,7 +169,7 @@ export function canBurnDelay(loc: Location): boolean {
     // so, as far as arch spade is concerned, we only want to save the zone and skip it if it's an early day and we're out of digs
     return true;
   } else if (
-    myDaycount() < toInt(getProperty("auto_runDayCount")) &&
+    myDaycount() < get("auto_runDayCount", 0) &&
     (auto_haveVotingBooth() ||
       auto_haveKramcoSausageOMatic() ||
       auto_haveBackupCamera() ||
@@ -192,11 +181,11 @@ export function canBurnDelay(loc: Location): boolean {
 }
 
 function allowSoftblockUndergroundAdvs(): boolean {
-  return toInt(getProperty("auto_cmcConsultLastLevel")) < myLevel();
+  return get("auto_cmcConsultLastLevel", 0) < myLevel();
 }
 
 function allowSoftblockDay2Wait(): boolean {
-  return toInt(getProperty("auto_day2WaitLastLevel")) < myLevel();
+  return get("auto_day2WaitLastLevel", 0) < myLevel();
 }
 
 function getLastCombatEnvironmentCounts(offset: number): Map<string, number> {
@@ -240,7 +229,7 @@ export function auto_reserveUndergroundAdventures(): boolean {
     getWorkshed() !== $item`cold medicine cabinet` &&
     auto_is_valid($item`cold medicine cabinet`) &&
     itemAmount($item`cold medicine cabinet`) > 0 &&
-    !toBoolean(getProperty("_workshedItemUsed")) &&
+    !get("_workshedItemUsed") &&
     (LX_getDesiredWorkshed() === $item`cold medicine cabinet` ||
       LX_getDesiredWorkshed() === Item.none) &&
     haveCampground()
@@ -257,7 +246,7 @@ export function auto_reserveUndergroundAdventures(): boolean {
     myDaycount() < 3
   ) {
     const turns_until_next_consult: number =
-      toInt(getProperty("_nextColdMedicineConsult")) - totalTurnsPlayed();
+      get("_nextColdMedicineConsult") - totalTurnsPlayed();
     const envs: Map<string, number> = getLastCombatEnvironmentCounts(
       turns_until_next_consult,
     );
@@ -293,15 +282,14 @@ export function auto_waitForDay2(): boolean {
 }
 
 function allowSoftblockOutdoorAdvs(): boolean {
-  return toInt(getProperty("auto_breathitinLastLevel")) < myLevel();
+  return get("auto_breathitinLastLevel", 0) < myLevel();
 }
 
 const L9_highLandlordBreathitinTask: QuestTask = registerQuestTask({
   name: "L9_highLandlordBreathitin",
   completed: () => false,
   ready: () => true,
-  do: () =>
-    toInt(getProperty("_auto_lastABooCycleFix")) < 5 && L9_highLandlord(),
+  do: () => get("_auto_lastABooCycleFix", 0) < 5 && L9_highLandlord(),
 });
 
 function auto_earlyRoutingHandlingDo(): boolean {
@@ -313,7 +301,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
   if (
     !in_koe() &&
     internalQuestStatus("questL12War") === 1 &&
-    !toBoolean(getProperty("auto_hippyInstead")) &&
+    !get("auto_hippyInstead", false) &&
     getProperty("sidequestArenaCompleted") !== "fratboy" &&
     availableAmount($item`rock band flyers`) === 0
   ) {
@@ -353,10 +341,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
   }
   // CMC routing for Breathitins
   if (auto_haveColdMedCabinet() && auto_CMCconsultsLeft() > 0) {
-    if (
-      toInt(getProperty("_nextColdMedicineConsult")) - totalTurnsPlayed() <
-      12
-    ) {
+    if (get("_nextColdMedicineConsult") - totalTurnsPlayed() < 12) {
       auto_log_debug(
         "Have a CMC consult coming up in 11 or fewer adventures. Calling a quest function with underground zones.",
       );
@@ -400,7 +385,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
     }
   }
   // Using up Breathitin charges if we have them
-  if (toInt(getProperty("breathitinCharges")) > 0) {
+  if (get("breathitinCharges") > 0) {
     auto_log_debug(
       "Have Breathitin Charges to burn. Calling a quest function with outdoor zones.",
     );
@@ -455,7 +440,7 @@ function auto_softBlockHandlerDo(): boolean {
       "I was trying to avoid delay zones, but I've run out of stuff to do. Releasing softblock.",
       "red",
     );
-    setProperty("auto_delayLastLevel", myLevel().toString());
+    set("auto_delayLastLevel", myLevel());
     return true;
   }
   if (allowSoftblockDay2Wait()) {
@@ -463,7 +448,7 @@ function auto_softBlockHandlerDo(): boolean {
       "I was trying to avoid quests that would benefit from day 2 dailies, but I've run out of stuff to do. Releasing softblock.",
       "red",
     );
-    setProperty("auto_day2WaitLastLevel", myLevel().toString());
+    set("auto_day2WaitLastLevel", myLevel());
     return true;
   }
   if (allowSoftblockUndergroundAdvs()) {
@@ -472,7 +457,7 @@ function auto_softBlockHandlerDo(): boolean {
       "I was trying to avoid underground zones, but I've run out of stuff to do. Releasing softblock.",
       "red",
     );
-    setProperty("auto_cmcConsultLastLevel", myLevel().toString());
+    set("auto_cmcConsultLastLevel", myLevel());
     return true;
   }
   if (allowSoftblockOutdoorAdvs()) {
@@ -481,7 +466,7 @@ function auto_softBlockHandlerDo(): boolean {
       "I was trying to avoid outdoor zones, but I've run out of stuff to do. Releasing softblock.",
       "red",
     );
-    setProperty("auto_breathitinLastLevel", myLevel().toString());
+    set("auto_breathitinLastLevel", myLevel());
     return true;
   }
   return false;

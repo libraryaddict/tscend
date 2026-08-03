@@ -18,9 +18,6 @@ import {
   myMp,
   myPrimestat,
   myTurncount,
-  setProperty,
-  toBoolean,
-  toInt,
   visitUrl,
 } from "kolmafia";
 import {
@@ -34,6 +31,8 @@ import {
   $skill,
   $slot,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { auto_buyUpTo, canPull, pullXWhenHaveY } from "../auto_acquire";
@@ -91,7 +90,7 @@ function L10_plantThatBeanDo(): boolean {
       "I see the beanstalk has already been planted. Fixing questL10Garbage to step1.",
       "blue",
     );
-    setProperty("questL10Garbage", "step1");
+    set("questL10Garbage", "step1");
     return true;
   }
   if (itemAmount($item`enchanted bean`) > 0) {
@@ -135,7 +134,7 @@ export function L10_plantThatBean(): boolean {
 }
 
 function L10_airshipDo(): boolean {
-  if (myTurncount() === toInt(getProperty("_LAR_skipNC178"))) {
+  if (myTurncount() === get("_LAR_skipNC178", 0)) {
     auto_log_info(
       "In LAR path NC178 is forced to reoccur if we skip it. Go do something else.",
     );
@@ -146,7 +145,7 @@ function L10_airshipDo(): boolean {
     isBanished($phylum`dude`) &&
     !possessEquipment($item`amulet of extreme plot significance`)
   ) {
-    setProperty("screechDelay", "dude");
+    set("screechDelay", "dude");
     return false; //Probably should delay the Airship to try for a Quiet Healer
   }
 
@@ -157,7 +156,7 @@ function L10_airshipDo(): boolean {
 
   if (
     myDaycount() === 1 &&
-    toInt(getProperty("_hipsterAdv")) < 7 &&
+    get("_hipsterAdv") < 7 &&
     isUnrestricted($familiar`Artistic Goth Kid`) &&
     auto_have_familiar($familiar`Artistic Goth Kid`)
   ) {
@@ -179,13 +178,13 @@ function L10_airshipDo(): boolean {
     visitUrl("place.php?whichplace=beanstalk");
   }
 
-  if (auto_canHabitat() && toInt(getProperty("breathitinCharges")) < 1) {
+  if (auto_canHabitat() && get("breathitinCharges") < 1) {
     // save turns in the airship with inherently free combats.
-    setProperty("auto_habitatMonster", $monster`Eldritch Tentacle`.toString());
+    set("auto_habitatMonster", $monster`Eldritch Tentacle`);
     if (fightScienceTentacle()) {
       return true;
     } else {
-      setProperty("auto_habitatMonster", "");
+      set("auto_habitatMonster", "");
     }
   }
 
@@ -300,7 +299,7 @@ function L10_basementDo(): boolean {
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
-    myDaycount() < toInt(getProperty("auto_runDayCount")) &&
+    myDaycount() < get("auto_runDayCount", 0) &&
     !isAboutToPowerlevel()
   ) {
     return false;
@@ -394,7 +393,7 @@ function L10_topFloorDo(): boolean {
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
-    myDaycount() < toInt(getProperty("auto_runDayCount")) &&
+    myDaycount() < get("auto_runDayCount", 0) &&
     !isAboutToPowerlevel()
   ) {
     return false;
@@ -494,18 +493,18 @@ export function castleTopFloorChoiceHandler(choice: number): void {
 
 function L10_holeInTheSkyUnlockDo(): boolean {
   if (itemAmount($item`steam-powered model rocketship`) > 0) {
-    setProperty("auto_holeinthesky", false.toString());
+    set("auto_holeinthesky", false);
     return false;
   }
   LX_buyStarKeyParts();
-  const day: number = toInt(getProperty("shenInitiationDay"));
+  const day: number = get("shenInitiationDay");
   const shenLocs: Location[] = shenSnakeLocations(day, 0);
   if (!needStarKey() && !shenLocs.includes($location`The Hole in the Sky`)) {
     // we force auto_holeinthesky to true in L11_shenCopperhead() as Ed if Shen sends us to the Hole in the Sky
     // as otherwise the zone isn't required at all for Ed.
     // Should also handle situations where the player manually got the star key before unlocking Shen.
     // or can buy the star key ingredients out of ronin.
-    setProperty("auto_holeinthesky", false.toString());
+    set("auto_holeinthesky", false);
     return false;
   }
 
@@ -526,7 +525,7 @@ function L10_holeInTheSkyUnlockDo(): boolean {
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
-    myDaycount() < toInt(getProperty("auto_runDayCount")) &&
+    myDaycount() < get("auto_runDayCount", 0) &&
     !isAboutToPowerlevel()
   ) {
     return false;
@@ -543,7 +542,7 @@ export const L10_holeInTheSkyUnlockTask: QuestTask = registerQuestTask({
   // top floor opens at step9. but we want to finish the giant trash quest first before we do hole in the sky.
   ready: () =>
     internalQuestStatus("questL10Garbage") >= 11 &&
-    toBoolean(getProperty("auto_holeinthesky")),
+    get("auto_holeinthesky", false),
   do: L10_holeInTheSkyUnlockDo,
   locations: $location`The Castle in the Clouds in the Sky (Top Floor)`,
 });

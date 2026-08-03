@@ -7,7 +7,7 @@ import {
   toBoolean,
   visitUrl,
 } from "kolmafia";
-import { $element, $item } from "libram";
+import { $element, $item, get } from "libram";
 
 import { auto_log_info } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
@@ -82,7 +82,7 @@ export function elementalPlanes_takeJob(ele: Element): boolean {
     visitUrl(`choice.php?pwd=&whichchoice=1066&option=${choice}`, true);
     return true;
   } else if (ele === $element`cold` && elementalPlanes_access(ele)) {
-    if (toBoolean(getProperty("_walfordQuestStartedToday"))) {
+    if (get("_walfordQuestStartedToday")) {
       return false;
     }
 

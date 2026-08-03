@@ -1,11 +1,5 @@
-import {
-  getProperty,
-  itemAmount,
-  Monster,
-  myLocation,
-  toBoolean,
-} from "kolmafia";
-import { $item, $location, $monster } from "libram";
+import { itemAmount, Monster, myLocation } from "kolmafia";
+import { $item, $location, $monster, get } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { in_lta } from "../paths/license_to_adventure";
@@ -28,19 +22,16 @@ export function auto_combatLicenseToAdventureStage4(
     enemy === $monster`Villainous Minion`
   ) {
     if (
-      !toBoolean(getProperty("_villainLairCanLidUsed")) &&
+      !get("_villainLairCanLidUsed") &&
       itemAmount($item`razor-sharp can lid`) > 0
     ) {
       return $item`razor-sharp can lid`;
     }
-    if (
-      !toBoolean(getProperty("_villainLairWebUsed")) &&
-      itemAmount($item`spider web`) > 0
-    ) {
+    if (!get("_villainLairWebUsed") && itemAmount($item`spider web`) > 0) {
       return $item`spider web`;
     }
     if (
-      !toBoolean(getProperty("_villainLairFirecrackerUsed")) &&
+      !get("_villainLairFirecrackerUsed") &&
       itemAmount($item`Knob Goblin firecracker`) > 0
     ) {
       return $item`Knob Goblin firecracker`;

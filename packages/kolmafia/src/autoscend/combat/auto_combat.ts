@@ -14,16 +14,14 @@ import {
   myHp,
   myLocation,
   removeProperty,
-  setProperty,
   splitString,
   stopCounter,
   substring,
-  toInt,
   toItem,
   toMonster,
   toSkill,
 } from "kolmafia";
-import { $monster, $monsters, $skill } from "libram";
+import { $monster, $monsters, $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { auto_log_info } from "../auto_util";
@@ -94,27 +92,21 @@ function auto_combatInitialize(
 
   switch (enemy) {
     case $monster`Government agent`:
-      setProperty("_portscanPending", false.toString());
+      set("_portscanPending", false);
       stopCounter("portscan.edu");
       break;
     case $monster`possessed wine rack`:
-      setProperty(
-        "auto_wineracksencountered",
-        (toInt(getProperty("auto_wineracksencountered")) + 1).toString(),
-      );
+      set("auto_wineracksencountered", get("auto_wineracksencountered", 0) + 1);
       break;
     case $monster`cabinet of Dr. Limpieza`:
-      setProperty(
-        "auto_cabinetsencountered",
-        (toInt(getProperty("auto_cabinetsencountered")) + 1).toString(),
-      );
+      set("auto_cabinetsencountered", get("auto_cabinetsencountered", 0) + 1);
       break;
     case $monster`junksprite bender`:
     case $monster`junksprite melter`:
     case $monster`junksprite sharpener`:
-      setProperty(
+      set(
         "auto_junkspritesencountered",
-        (toInt(getProperty("auto_junkspritesencountered")) + 1).toString(),
+        get("auto_junkspritesencountered", 0) + 1,
       );
       break;
   }
@@ -122,8 +114,8 @@ function auto_combatInitialize(
   removeProperty("_auto_combatState");
   removeProperty("auto_funCombatHandler"); //ocrs specific tracker
   removeProperty("auto_funPrefix"); //ocrs specific tracker
-  setProperty("auto_combatHandlerThunderBird", "0");
-  setProperty("_auto_combatTracker_MortarRound", (-1).toString()); //tracks which round we used Stuffed Mortar Shell in.
+  set("auto_combatHandlerThunderBird", "0");
+  set("_auto_combatTracker_MortarRound", -1); //tracks which round we used Stuffed Mortar Shell in.
   //log some important info.
   //some stuff is redundant to the pre_adventure function print_footer() so it will not be logged here
   let tolog: string = `auto_combat initialized fighting [${enemy}]: atk = ${monsterAttack()}. def = ${monsterDefense()}. HP = ${monsterHp()}. LA = ${monsterLevelAdjustment()}`;
@@ -177,8 +169,8 @@ export function auto_combatHandler(
 
   auto_combatInitialize(round_1, enemy, text); //reset properties on round 0 of a new combat
 
-  setProperty("auto_combatHP", myHp().toString());
-  setProperty("auto_diag_round", round_1.toString());
+  set("auto_combatHP", myHp());
+  set("auto_diag_round", round_1);
 
   if (in_ocrs()) {
     ocrs_combat_helper(text);
@@ -225,7 +217,7 @@ export function auto_combatHandler(
     let idx: number = 0;
     if (round_1 === 0) {
       if ((actions.get(0) ?? actions.set(0, "").get(0)) !== "start") {
-        setProperty("auto_combatDirective", "");
+        set("auto_combatDirective", "");
         idx = -1;
       } else {
         idx = 1;
@@ -252,7 +244,7 @@ export function auto_combatHandler(
           restore += ";";
         }
       }
-      setProperty("auto_combatDirective", restore);
+      set("auto_combatDirective", restore);
       if (idx < actions.size) {
         return auto_combatDirectiveAction(doThis);
       }

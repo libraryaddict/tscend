@@ -37,12 +37,7 @@ import {
   myPrimestat,
   retrieveItem,
   round,
-  setProperty,
   splitString,
-  toBoolean,
-  toFamiliar,
-  toInt,
-  toLocation,
   toMonster,
   useSkill,
   visitUrl,
@@ -56,6 +51,8 @@ import {
   $skill,
   $slot,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { autoAdv, autoAdvBypass, CombatMacroReturns } from "../auto_adventure";
@@ -138,10 +135,7 @@ export function auto_voidMonster(loc: Location = Location.none): boolean {
     return false; //can't beat the void guys as a professor
   }
   // return false if we've fought the 5 free void monsters already today or we're still charging up the counter
-  if (
-    toInt(getProperty("_voidFreeFights")) >= 5 ||
-    toInt(getProperty("cursedMagnifyingGlassCount")) !== 13
-  ) {
+  if (get("_voidFreeFights") >= 5 || get("cursedMagnifyingGlassCount") !== 13) {
     return false;
   }
 
@@ -150,17 +144,17 @@ export function auto_voidMonster(loc: Location = Location.none): boolean {
   }
 
   if (autoEquip($item`cursed magnifying glass`)) {
-    setProperty("auto_nextEncounter", "void guy"); //which of the 3 is random, but they're all same phylum and free under same conditions
+    set("auto_nextEncounter", "void guy"); //which of the 3 is random, but they're all same phylum and free under same conditions
     return autoAdv(loc);
   }
-  setProperty("auto_nextEncounter", "");
+  set("auto_nextEncounter", "");
   return false;
 }
 
 export function auto_haveCosmicBowlingBall(): boolean {
   // ensure we not only own one but it's in allowed in path and also in inventory for us to do stuff with.
   return (
-    toBoolean(getProperty("hasCosmicBowlingBall")) &&
+    get("hasCosmicBowlingBall") &&
     auto_is_valid($item`cosmic bowling ball`) &&
     availableAmount($item`cosmic bowling ball`) > 0
   );
@@ -180,10 +174,10 @@ export function auto_bowlingBallCombatString(
 
   if (
     place === $location`The Hidden Bowling Alley` &&
-    toInt(getProperty("auto_bowledAtAlley")) !== myAscensions()
+    get("auto_bowledAtAlley", 0) !== myAscensions()
   ) {
     if (!speculation) {
-      setProperty("auto_bowledAtAlley", myAscensions().toString());
+      set("auto_bowledAtAlley", myAscensions());
       auto_log_info(
         "Cosmic Bowling Ball used at Hidden Bowling Alley to advance quest.",
       );
@@ -197,7 +191,7 @@ export function auto_bowlingBallCombatString(
       return auto_useSkill($skill`Bowl Sideways`, !speculation);
     }
     // increase stats if we are farming Ka as Ed
-    if (toBoolean(getProperty("_auto_farmingKaAsEd"))) {
+    if (get("_auto_farmingKaAsEd", false)) {
       return auto_useSkill($skill`Bowl Sideways`, !speculation);
     }
   }
@@ -331,7 +325,7 @@ export function dronesOut(): boolean {
   if (!auto_haveGreyGoose()) {
     return false;
   }
-  if (toInt(getProperty("gooseDronesRemaining")) > 0) {
+  if (get("gooseDronesRemaining") > 0) {
     return true;
   }
   return false;
@@ -352,16 +346,14 @@ export function prioritizeGoose(): void {
       gooseExpectedDrones() < 1) ||
     (internalQuestStatus("questL09Topping") >= 2 &&
       internalQuestStatus("questL09Topping") <= 3 &&
-      toInt(getProperty("twinPeakProgress")) < 15 &&
+      get("twinPeakProgress") < 15 &&
       gooseExpectedDrones() < 2) ||
     (needStarKey() &&
       itemAmount($item`star`) < 7 &&
       itemAmount($item`line`) < 6 &&
       gooseExpectedDrones() < 4) ||
     (internalQuestStatus("questL11Ron") < 5 && gooseExpectedDrones() < 2) ||
-    (toInt(getProperty("hiddenBowlingAlleyProgress")) +
-      itemAmount($item`bowling ball`) <
-      5 &&
+    (get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 5 &&
       gooseExpectedDrones() < 2) ||
     (itemAmount($item`crumbling wooden wheel`) +
       itemAmount($item`tomb ratchet`) <
@@ -369,17 +361,14 @@ export function prioritizeGoose(): void {
       itemAmount($item`tangle of rat tails`) > 0 &&
       gooseExpectedDrones() < 3)
   ) {
-    setProperty("auto_prioritizeGoose", true.toString());
+    set("auto_prioritizeGoose", true);
     return;
   }
-  setProperty("auto_prioritizeGoose", false.toString());
+  set("auto_prioritizeGoose", false);
 }
 
 export function auto_haveMaydayContract(): boolean {
-  if (
-    toBoolean(getProperty("hasMaydayContract")) &&
-    auto_is_valid($item`gaffer's tape`)
-  ) {
+  if (get("hasMaydayContract") && auto_is_valid($item`gaffer's tape`)) {
     // use a potion to check mayday is allowed as auto_is_valid can return false for equipment & consumables in certain paths
     return true;
   }
@@ -398,10 +387,7 @@ export function auto_canUseJuneCleaver(): boolean {
 }
 
 export function auto_juneCleaverAdventure(): boolean {
-  if (
-    !auto_canUseJuneCleaver() ||
-    toInt(getProperty("_juneCleaverFightsLeft")) > 0
-  ) {
+  if (!auto_canUseJuneCleaver() || get("_juneCleaverFightsLeft") > 0) {
     return false;
   }
 
@@ -444,7 +430,7 @@ export function juneCleaverChoiceHandler(choice: number): void {
           disregardInstantKarma() === false)
       ) {
         auto_runChoice(1); // 150 moxie substat
-      } else if (toInt(getProperty("_juneCleaverSkips")) < 5) {
+      } else if (get("_juneCleaverSkips") < 5) {
         auto_runChoice(4); // skip
       } else {
         auto_runChoice(2); // 250 muscle substat
@@ -473,7 +459,7 @@ export function juneCleaverChoiceHandler(choice: number): void {
         (myLevel() < 13 || disregardInstantKarma())
       ) {
         auto_runChoice(3);
-      } else if (toInt(getProperty("_juneCleaverSkips")) < 5) {
+      } else if (get("_juneCleaverSkips") < 5) {
         auto_runChoice(4); // skip
       } else {
         auto_runChoice(2); // accessory, +2 fam exp, +3 stats per fight
@@ -505,7 +491,7 @@ export function juneCleaverChoiceHandler(choice: number): void {
         (myLevel() < 13 || disregardInstantKarma())
       ) {
         auto_runChoice(1); // 250 muscle substat
-      } else if (toInt(getProperty("_juneCleaverSkips")) < 5) {
+      } else if (get("_juneCleaverSkips") < 5) {
         auto_runChoice(4); // skip
       } else {
         auto_runChoice(3); // effect, 30 turns of +3 hot res, +50% init
@@ -572,7 +558,7 @@ export function canUseSweatpants(): boolean {
 }
 
 export function getSweat(): number {
-  return toInt(getProperty("sweat"));
+  return get("sweat");
 }
 
 export function sweatpantsPreAdventure(): void {
@@ -591,7 +577,7 @@ export function sweatpantsPreAdventure(): void {
   }
 
   const sweat: number = getSweat();
-  const liverCleaned: number = toInt(getProperty("_sweatOutSomeBoozeUsed"));
+  const liverCleaned: number = get("_sweatOutSomeBoozeUsed");
 
   if (sweat >= 25 && liverCleaned < 3 && myInebriety() > 0) {
     if (
@@ -606,7 +592,7 @@ export function sweatpantsPreAdventure(): void {
 
   if (sweat >= 95) {
     if (
-      toBoolean(getProperty("auto_pvpEnable")) &&
+      get("auto_pvpEnable", false) &&
       spleen_left() >= 4 * (1 + itemAmount($item`sweat-ade`))
     ) {
       // Our player participates in PVP, let's give them a low-effort spleen item to end the day with, if there's still room.
@@ -629,7 +615,7 @@ export function auto_expectedStillsuitAdvs(): number {
   if (!auto_hasStillSuit()) {
     return 0;
   }
-  const sweat: number = toInt(getProperty("familiarSweat"));
+  const sweat: number = get("familiarSweat");
   // can't consume until at least 10 sweat has been accumulated
   if (sweat < 10) {
     return 0;
@@ -705,7 +691,7 @@ export function utilizeStillsuit(): void {
       );
     }
     if (is100FamRun()) {
-      handleFamiliar$1(toFamiliar(getProperty("auto_100familiar"))); //just make extra sure this didnt break 100 familiar runs but familiar should not have been swapped
+      handleFamiliar$1(get("auto_100familiar", Familiar.none)); //just make extra sure this didnt break 100 familiar runs but familiar should not have been swapped
     }
   }
 }
@@ -720,7 +706,7 @@ export function auto_configureParka(tag: string): boolean {
     return false;
   }
   // store the requested setting in a property so we can handle them later
-  setProperty("auto_parkaSetting", tag);
+  set("auto_parkaSetting", tag);
   // cut down potential server hits by telling the maximizer to not consider it.
   maximizer.exclude(wrap_item($item`Jurassic Parka`));
   return true;
@@ -773,15 +759,13 @@ export function auto_ParkaSpikeForcesLeft(): number {
   if (!auto_hasParka()) {
     return 0;
   }
-  const spike_uses: number = toInt(getProperty("_spikolodonSpikeUses"));
+  const spike_uses: number = get("_spikolodonSpikeUses");
   return 5 - spike_uses;
 }
 
 export function auto_hasAutumnaton(): boolean {
   return (
-    toBoolean(getProperty("hasAutumnaton")) &&
-    auto_is_valid($item`autumn-aton`) &&
-    !in_pokefam()
+    get("hasAutumnaton") && auto_is_valid($item`autumn-aton`) && !in_pokefam()
   );
 }
 // only valid when autumnaton is not currently out on a quest
@@ -815,7 +799,7 @@ function auto_autumnatonReadyToQuest(): boolean {
 }
 
 export function auto_autumnatonQuestingIn(): Location {
-  return toLocation(getProperty("autumnatonQuestLocation"));
+  return get("autumnatonQuestLocation", Location.none);
 }
 
 function auto_autumnatonCheckForUpgrade(upgrade: string): boolean {
@@ -844,15 +828,16 @@ export function auto_autumnatonQuest(): boolean {
   }
   // complete any pending upgrades if haven't checked since last return
   // both of these props reset to 0 at start of day or new life due to "_" at start of them
-  const completedQuestsToday: number = toInt(getProperty("_autumnatonQuests"));
-  const lastQuestUpgradesChecked: number = toInt(
-    getProperty("_auto_lastAutumnatonUpgrade"),
+  const completedQuestsToday: number = get("_autumnatonQuests");
+  const lastQuestUpgradesChecked: number = get(
+    "_auto_lastAutumnatonUpgrade",
+    0,
   );
   if (completedQuestsToday > lastQuestUpgradesChecked) {
     try {
       cliExecute("autumnaton upgrade");
     } catch {}
-    setProperty("_auto_lastAutumnatonUpgrade", completedQuestsToday.toString());
+    set("_auto_lastAutumnatonUpgrade", completedQuestsToday);
   }
   // prioritize getting important upgrades
   if (!auto_autumnatonCheckForUpgrade("leftarm1")) {
@@ -964,7 +949,7 @@ export function auto_autumnatonQuest(): boolean {
     //Cookbookbat materials if you have a Cookbookbat and Autumn Fest Ale+stone wool or Autumn Leaves
     if (
       itemAmount($item`stone wool`) === 0 &&
-      toInt(getProperty("lastTempleAdventures")) < myAscensions()
+      get("lastTempleAdventures") < myAscensions()
     ) {
       if (auto_sendAutumnaton($location`The Hidden Temple`)) {
         return false;
@@ -980,17 +965,14 @@ export function auto_autumnatonQuest(): boolean {
 }
 
 export function auto_hasSpeakEasy(): boolean {
-  return (
-    auto_is_valid($item`deed to Oliver's Place`) &&
-    toBoolean(getProperty("ownsSpeakeasy"))
-  );
+  return auto_is_valid($item`deed to Oliver's Place`) && get("ownsSpeakeasy");
 }
 
 export function auto_remainingSpeakeasyFreeFights(): number {
   if (!auto_hasSpeakEasy()) {
     return 0;
   }
-  return max(3 - toInt(getProperty("_speakeasyFreeFights")), 0);
+  return max(3 - get("_speakeasyFreeFights"), 0);
 }
 
 export function speakeasyCombat(): boolean {
@@ -1028,10 +1010,8 @@ function auto_modifyTrainSet(
 }
 
 export function auto_checkTrainSet(): void {
-  const lastTrainsetConfiguration: number = toInt(
-    getProperty("lastTrainsetConfiguration"),
-  );
-  const trainsetPosition: number = toInt(getProperty("trainsetPosition"));
+  const lastTrainsetConfiguration: number = get("lastTrainsetConfiguration");
+  const trainsetPosition: number = get("trainsetPosition");
   const trainsetConfiguration: string = getProperty("trainsetConfiguration");
   if (!auto_haveTrainSet()) {
     return;
@@ -1137,9 +1117,9 @@ export function auto_checkTrainSet(): void {
   }
   let eight: number = 13; //monster level
   if (
-    (monsterLevelAdjustment() > toInt(getProperty("auto_MLSafetyLimit")) &&
+    (monsterLevelAdjustment() > get("auto_MLSafetyLimit", 0) &&
       getProperty("auto_MLSafetyLimit") !== "") ||
-    toInt(getProperty("auto_MLSafetyLimit")) === -1 ||
+    get("auto_MLSafetyLimit", 0) === -1 ||
     in_plumber()
   ) {
     eight = 9; //cold res, stench dmg

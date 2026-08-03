@@ -34,13 +34,9 @@ import {
   myLocation,
   myMeat,
   myPath,
-  setProperty,
   Slot,
   spleenLimit,
   Stat,
-  toBoolean,
-  toInt,
-  toLocation,
   visitUrl,
 } from "kolmafia";
 import {
@@ -147,7 +143,7 @@ function auto_codpieceOriginalGems(): Item[] {
     return raw.map((s) => Item.get(parseInt(s)));
   }
 
-  setProperty(
+  set(
     "_auto_codpiece_original_gems",
     EternityCodpiece.currentGems()
       .map((g) => g.id)
@@ -220,7 +216,7 @@ export function auto_clubEmBackInTimesRemaining(): number {
     return 0;
   }
 
-  return 5 - toInt(getProperty("_clubEmTimeUsed"));
+  return 5 - get("_clubEmTimeUsed");
 }
 
 export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean {
@@ -276,7 +272,7 @@ export function auto_heartstoneLuckRemaining(): number {
     return 0;
   }
 
-  if (toBoolean(getProperty("_heartstoneLuckUsed"))) {
+  if (get("_heartstoneLuckUsed")) {
     return 0;
   }
   return 1;
@@ -537,7 +533,7 @@ export function auto_spadeDigsRemaining(): number {
     return 0;
   }
 
-  return 11 - toInt(getProperty("_archSpadeDigs"));
+  return 11 - get("_archSpadeDigs");
 }
 
 export function auto_spadeDigItem(): boolean {
@@ -655,7 +651,7 @@ export function auto_wantToSpadeDigSkeleton(loc: Location): boolean {
   const valid_loc: boolean = spadeDelayZones().has(loc);
   const have_digs: boolean = auto_spadeDigsRemaining() > 0;
   const delay_left: boolean = zone_delay(loc)._boolean;
-  const zone_set: boolean = toLocation(getProperty("lastAdventure")) === loc;
+  const zone_set: boolean = get("lastAdventure", Location.none) === loc;
   if (valid_loc && have_digs && delay_left && zone_set) {
     return true;
   }
@@ -774,7 +770,7 @@ export function auto_willEatLegendaryNoodles(): boolean {
   return (
     canEatSomeLegNoods() &&
     auto_canEat($item`Orzo di Riso`) &&
-    !toBoolean(getProperty("auto_limitConsume")) &&
+    !get("auto_limitConsume", false) &&
     get("auto_consumeMinAdvPerFill", 0) <= 4.0 &&
     !in_small() &&
     !in_plumber()
@@ -843,14 +839,11 @@ export function auto_forceCombatLegendaryNoodles(): boolean {
 export function legendaryNoodlesChoiceHandler(): void {
   let target_choice: number;
   // force combats if requested
-  if (toBoolean(getProperty("auto_forceCombatWithLegendaryNoodles"))) {
+  if (get("auto_forceCombatWithLegendaryNoodles", false)) {
     target_choice = 2;
-    setProperty("auto_forceCombatWithLegendaryNoodles", false.toString());
+    set("auto_forceCombatWithLegendaryNoodles", false);
   } else if (
-    !toBoolean(
-      // or use a spleen instead of a stomach
-      getProperty("_legendaryNoodlesSpleen"),
-    ) &&
+    !get("_legendaryNoodlesSpleen") &&
     spleen_left() > 0 &&
     !isActuallyEd()
   ) {

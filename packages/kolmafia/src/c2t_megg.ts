@@ -17,14 +17,13 @@ import {
   myFamiliar,
   nowToInt,
   print,
-  setProperty,
   splitString,
   toInt,
   toMonster,
   useFamiliar,
   visitUrl,
 } from "kolmafia";
-import { $familiar, $item, $slot } from "libram";
+import { $familiar, $item, $slot, get, set } from "libram";
 
 import { AshMatcher } from "./autoscend/utils/kolmafiaUtils";
 
@@ -127,7 +126,7 @@ export function c2t_megg_preAdv(): boolean {
   const last: number = toInt(getProperty(prefLast));
   let limit: number = toInt(getProperty(prefLimit)) * 60000;
   const now: number = nowToInt();
-  const dailyMaxed: boolean = toInt(getProperty("_mimicEggsObtained")) >= 11;
+  const dailyMaxed: boolean = get("_mimicEggsObtained") >= 11;
   //maybe don't need to go
   if (!haveFamiliar(mimic)) {
     return false;
@@ -141,7 +140,7 @@ export function c2t_megg_preAdv(): boolean {
   //30 minutes speed limit to start
   if (limit === 0) {
     limit = 600000;
-    setProperty(prefLimit, (30).toString());
+    set(prefLimit, 30);
   }
   //don't check too often
   if (now - last < limit) {
@@ -267,7 +266,7 @@ function c2t_megg_writeFile(list: Map<string, boolean>): boolean {
   }
   //only write if the list is actually bigger or it's a new day
   if (size <= toInt(getProperty(prefCount))) {
-    setProperty(prefLast, nowToInt().toString());
+    set(prefLast, nowToInt());
     return false;
   }
   //populate int map to sort by number instead of alpha-numerically, simply for neatness sake
@@ -278,8 +277,8 @@ function c2t_megg_writeFile(list: Map<string, boolean>): boolean {
 
   if (bufferToFile(buf, "c2t_megg_maxlist.txt")) {
     c2t_megg_print(`maxed egg list updated with ${size} entries`);
-    setProperty(prefLast, nowToInt().toString());
-    setProperty(prefCount, size.toString());
+    set(prefLast, nowToInt());
+    set(prefCount, size);
     return true;
   } else {
     c2t_megg_print("maxed egg list couldn't be written");

@@ -33,12 +33,9 @@ import {
   myPrimestat,
   myTurncount,
   npcPrice,
-  setProperty,
   splitString,
   Stat,
-  toBoolean,
   toEffect,
-  toFloat,
   toInt,
   toItem,
   toLowerCase,
@@ -60,6 +57,8 @@ import {
   $path,
   $skill,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { autoAdv, autoAdvBypass, CombatMacro } from "../auto_adventure";
@@ -492,7 +491,7 @@ function loveTunnelAcquire$1(
   giftItem: number,
   option: string,
 ): boolean {
-  if (toBoolean(getProperty("_loveTunnelUsed"))) {
+  if (get("_loveTunnelUsed")) {
     return false;
   }
   if (loveEffect < 0 || loveEffect > 4) {
@@ -626,7 +625,7 @@ export function kgbWasteClicks(): boolean {
   if (!auto_is_valid($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
-  if (toInt(getProperty("_kgbClicksUsed")) >= 22) {
+  if (get("_kgbClicksUsed") >= 22) {
     return false;
   }
 
@@ -636,7 +635,7 @@ export function kgbWasteClicks(): boolean {
     clicked++;
   }
   // Yes, this will not be pleasant if we matched our number and each page click changes the buttons.
-  while (toInt(getProperty("_kgbClicksUsed")) < 22 && clicked < 9) {
+  while (get("_kgbClicksUsed") < 22 && clicked < 9) {
     const start_1: number = clicked;
     for (const ef of $effects`Items Are Forever, A View to Some Meat, Light!, The Spy Who Loved XP, Initiative and Let Die, The Living Hitpoints, License to Punch, Goldentongue, Thunderspell`) {
       if (containsText(getProperty("auto_kgbTracker"), `:${toInt(ef)}`)) {
@@ -670,12 +669,12 @@ function kgbTryEffect(ef: Effect): boolean {
   if (!isUnrestricted($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
-  if (toInt(getProperty("_kgbClicksUsed")) >= 22) {
+  if (get("_kgbClicksUsed") >= 22) {
     return false;
   }
 
   if (getProperty("auto_kgbTracker") === "") {
-    setProperty("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
+    set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   let tracker: Map<number, string> = new Map(
     splitString(getProperty("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
@@ -684,7 +683,7 @@ function kgbTryEffect(ef: Effect): boolean {
     tracker.size < 13 ||
     toInt(tracker.get(0) ?? tracker.set(0, "").get(0)) !== myAscensions()
   ) {
-    setProperty("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
+    set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   tracker = new Map(
     splitString(getProperty("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
@@ -707,12 +706,12 @@ function kgbDiscovery(): boolean {
   if (!isUnrestricted($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
-  if (toInt(getProperty("_kgbClicksUsed")) >= 22) {
+  if (get("_kgbClicksUsed") >= 22) {
     return false;
   }
 
   if (getProperty("auto_kgbTracker") === "") {
-    setProperty("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
+    set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   let tracker: Map<number, string> = new Map(
     splitString(getProperty("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
@@ -721,7 +720,7 @@ function kgbDiscovery(): boolean {
     tracker.size < 13 ||
     toInt(tracker.get(0) ?? tracker.set(0, "").get(0)) !== myAscensions()
   ) {
-    setProperty("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
+    set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   tracker = new Map(
     splitString(getProperty("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
@@ -758,7 +757,7 @@ function kgbDiscovery(): boolean {
       for (let i: number = 1; i < 13; i++) {
         newTracker += `:${tracker.get(i) ?? tracker.set(i, "").get(i)}`;
       }
-      setProperty("auto_kgbTracker", newTracker);
+      set("auto_kgbTracker", newTracker);
       return true;
     }
   }
@@ -812,7 +811,7 @@ export function kgbSetup(): boolean {
     return false;
   }
 
-  if (toBoolean(getProperty("_auto_kgbSetup"))) {
+  if (get("_auto_kgbSetup", false)) {
     return false;
   }
 
@@ -820,7 +819,7 @@ export function kgbSetup(): boolean {
     return false;
   }
 
-  setProperty("_auto_kgbSetup", true.toString());
+  set("_auto_kgbSetup", true);
 
   let page: string = visitUrl("place.php?whichplace=kgb");
   if (
@@ -913,8 +912,8 @@ export function kgbSetup(): boolean {
       break;
     }
   }
-  setProperty("auto_kgbAscension", myAscensions().toString());
-  setProperty("auto_kgbButton100", button.toString());
+  set("auto_kgbAscension", myAscensions());
+  set("auto_kgbButton100", button);
 
   if (!kgb_getMartini(page)) {
     auto_log_warning("Failed to get martini", "red");
@@ -933,15 +932,15 @@ export function kgb_getMartini(
   if (!auto_is_valid($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
-  if (toInt(getProperty("_kgbDispenserUses")) >= 3) {
+  if (get("_kgbDispenserUses") >= 3) {
     return false;
   }
 
-  if (!toBoolean(getProperty("_auto_kgbSetup"))) {
+  if (!get("_auto_kgbSetup", false)) {
     kgbSetup();
   }
 
-  if (toInt(getProperty("auto_kgbAscension")) !== myAscensions()) {
+  if (get("auto_kgbAscension", 0) !== myAscensions()) {
     if (!dontCare) {
       auto_log_info(
         "We did not initialize the briefcase this ascension, we do not care",
@@ -955,7 +954,7 @@ export function kgb_getMartini(
     page = visitUrl("place.php?whichplace=kgb");
   }
 
-  if (!toBoolean(getProperty("_kgbDailyStuff"))) {
+  if (!get("_kgbDailyStuff", false)) {
     let flipped: boolean = false;
     if (containsText(page, "handledown")) {
       page = visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
@@ -979,32 +978,29 @@ export function kgb_getMartini(
       visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
     }
 
-    if (!toBoolean(getProperty("_kgbRightDrawerUsed"))) {
+    if (!get("_kgbRightDrawerUsed")) {
       visitUrl("place.php?whichplace=kgb&action=kgb_drawer1", false);
     }
-    if (!toBoolean(getProperty("_kgbLeftDrawerUsed"))) {
+    if (!get("_kgbLeftDrawerUsed")) {
       visitUrl("place.php?whichplace=kgb&action=kgb_drawer2", false);
     }
-    if (!toBoolean(getProperty("_kgbOpened"))) {
+    if (!get("_kgbOpened")) {
       visitUrl("place.php?whichplace=kgb&action=kgb_daily", false);
     }
-    setProperty("_kgbDailyStuff", true.toString());
+    set("_kgbDailyStuff", true);
   }
-  if (toInt(getProperty("_kgbDispenserUses")) >= 3) {
+  if (get("_kgbDispenserUses") >= 3) {
     return false;
   }
 
-  const button: number = toInt(getProperty("auto_kgbButton100"));
+  const button: number = get("auto_kgbButton100", 0);
 
-  while (
-    toInt(getProperty("_kgbDispenserUses")) < 3 &&
-    toInt(getProperty("_kgbClicksUsed")) < 22
-  ) {
-    const served: number = toInt(getProperty("_kgbDispenserUses"));
+  while (get("_kgbDispenserUses") < 3 && get("_kgbClicksUsed") < 22) {
+    const served: number = get("_kgbDispenserUses");
     const have: number = itemAmount($item`splendid martini`);
     page = visitUrl("place.php?whichplace=kgb&action=kgb_dispenser", false);
     if (containsText(page, "Nothing happens.")) {
-      setProperty("_kgbDispenserUses", (3).toString());
+      set("_kgbDispenserUses", 3);
       auto_log_warning("The martini dispenser is empty, weird.", "red");
       return true;
     }
@@ -1014,18 +1010,18 @@ export function kgb_getMartini(
         "green",
       );
       auto_log_info(`Hitting tab modification button: ${button}`, "blue");
-      const oldClicks: number = toInt(getProperty("_kgbClicksUsed"));
+      const oldClicks: number = get("_kgbClicksUsed");
       page = visitUrl(
         `place.php?whichplace=kgb&action=kgb_button${button}`,
         false,
       );
-      const newClicks: number = toInt(getProperty("_kgbClicksUsed"));
+      const newClicks: number = get("_kgbClicksUsed");
       if (newClicks === oldClicks) {
         auto_log_info(
           "_kgbClicksUsed appears to not be tracking, please let the spies in.",
           "red",
         );
-        setProperty("_kgbClicksUSed", (newClicks + 1).toString());
+        set("_kgbClicksUSed", newClicks + 1);
       }
       if (kgb_tabHeight(page) < 11) {
         if (button === 0) {
@@ -1038,7 +1034,7 @@ export function kgb_getMartini(
     if (have === itemAmount($item`splendid martini`) && !dontCare) {
       abort("Failed to get a splendid martini and we cared about it");
     }
-    setProperty("_kgbDispenserUses", (served + 1).toString());
+    set("_kgbDispenserUses", served + 1);
   }
   return true;
 }
@@ -1085,7 +1081,7 @@ export function getSpaceJelly(): boolean {
   if (!canChangeToFamiliar($familiar`Space Jellyfish`)) {
     return false;
   }
-  if (toBoolean(getProperty("_seaJellyHarvested"))) {
+  if (get("_seaJellyHarvested")) {
     return false;
   }
   if (!haveFamiliar($familiar`Space Jellyfish`)) {
@@ -1114,7 +1110,7 @@ export function getSpaceJelly(): boolean {
 }
 
 export function auto_breatheOutsLeft(): number {
-  return toInt(getProperty("_hotJellyUses"));
+  return get("_hotJellyUses");
 }
 
 export function canAsdonBuff(goal: Effect): boolean {
@@ -1134,10 +1130,7 @@ export function canAsdonBuff(goal: Effect): boolean {
   if (getFuel() < 37) {
     return false;
   }
-  if (
-    $effect`Driving Wastefully` === goal &&
-    toFloat(getProperty("oilPeakProgress")) === 0.0
-  ) {
+  if ($effect`Driving Wastefully` === goal && get("oilPeakProgress") === 0.0) {
     return false;
   }
   if (haveEffect(goal) > 0) {
@@ -1216,7 +1209,7 @@ export function asdonAutoFeed(goal: number = -1): boolean {
 
   if (goal === -1) {
     goal = 137;
-    if (toBoolean(getProperty("_missileLauncherUsed"))) {
+    if (get("_missileLauncherUsed")) {
       goal = 87;
     }
   }
@@ -1226,7 +1219,7 @@ export function asdonAutoFeed(goal: number = -1): boolean {
     if (itemAmount(it) > 0) {
       let toFeed: number = min(10, itemAmount(it));
       if (getProperty("auto_ashtonLimit") !== "") {
-        const limit: number = toInt(getProperty("auto_ashtonLimit"));
+        const limit: number = get("auto_ashtonLimit", 0);
         toFeed = max(0, toFeed - limit);
       }
       asdonFeed(it, toFeed);
@@ -1330,19 +1323,16 @@ export function asdonCanMissile(): boolean {
   return (
     auto_get_campground().has($item`Asdon Martin keyfob (on ring)`) &&
     getFuel() >= fuelCost($skill`Asdon Martin: Missile Launcher`) &&
-    !toBoolean(getProperty("_missileLauncherUsed"))
+    !get("_missileLauncherUsed")
   );
 }
 
 export function isHorseryAvailable(): boolean {
-  return (
-    toBoolean(getProperty("horseryAvailable")) &&
-    auto_is_valid($item`Horsery contract`)
-  );
+  return get("horseryAvailable") && auto_is_valid($item`Horsery contract`);
 }
 
 export function horseCost(): number {
-  if (toInt(getProperty("_horseryRented")) > 0) {
+  if (get("_horseryRented", 0) > 0) {
     return 500;
   }
   return 0;
@@ -1397,7 +1387,7 @@ function horseNormalize(horseText: string): string {
 }
 
 function getHorse(type_1: string): boolean {
-  if (!toBoolean(getProperty("horseryAvailable"))) {
+  if (!get("horseryAvailable")) {
     return false;
   }
   type_1 = toLowerCase(type_1);
@@ -1408,38 +1398,38 @@ function getHorse(type_1: string): boolean {
   let choice: number = -1;
   if (
     horseNormalize(type_1) === "normal" ||
-    toInt(getProperty("auto_beatenUpCount")) >= 20
+    get("auto_beatenUpCount", 0) >= 20
   ) {
     if (getProperty("_horsery") === "normal horse") {
       return false;
     }
     choice = 1;
-    setProperty("auto_desiredHorse", "normal");
+    set("auto_desiredHorse", "normal");
   } else if (horseNormalize(type_1) === "dark") {
     if (getProperty("_horsery") === "dark horse") {
       return false;
     }
     choice = 2;
-    setProperty("auto_desiredHorse", "dark");
+    set("auto_desiredHorse", "dark");
   } else if (horseNormalize(type_1) === "crazy") {
     if (containsText(getProperty("_horsery"), "crazy horse")) {
       return false;
     }
     choice = 3;
-    setProperty("auto_desiredHorse", "crazy");
+    set("auto_desiredHorse", "crazy");
   } else if (horseNormalize(type_1) === "pale") {
     if (containsText(getProperty("_horsery"), "pale horse")) {
       return false;
     }
     choice = 4;
-    setProperty("auto_desiredHorse", "pale");
+    set("auto_desiredHorse", "pale");
   } else if (horseNormalize(type_1) === "return") {
     if (getProperty("_horsery") === "") {
       return false;
     }
     choice = 5;
-    setProperty("_horsery", "");
-    setProperty("auto_desiredHorse", "return");
+    set("_horsery", "");
+    set("auto_desiredHorse", "return");
   }
 
   if (choice === -1) {
@@ -1448,35 +1438,32 @@ function getHorse(type_1: string): boolean {
   visitUrl("place.php?whichplace=town_right&action=town_horsery");
   visitUrl(`choice.php?pwd=&whichchoice=1266&option=${choice}`);
   if (choice <= 4) {
-    setProperty(
-      "_horseryRented",
-      (toInt(getProperty("_horseryRented")) + 1).toString(),
-    );
+    set("_horseryRented", get("_horseryRented", 0) + 1);
   }
   return true;
 }
 
 export function horseDefault(): void {
   if (isHorseryAvailable()) {
-    setProperty("auto_desiredHorse", "");
+    set("auto_desiredHorse", "");
   }
 }
 
 export function horseMaintain(): void {
   if (isHorseryAvailable()) {
-    setProperty("auto_desiredHorse", horseNormalize(getProperty("_horsery")));
+    set("auto_desiredHorse", horseNormalize(getProperty("_horsery")));
   }
 }
 
 export function horseNone(): void {
   if (isHorseryAvailable()) {
-    setProperty("auto_desiredHorse", "return");
+    set("auto_desiredHorse", "return");
   }
 }
 
 export function horseDark(): void {
   if (isHorseryAvailable()) {
-    setProperty("auto_desiredHorse", "dark");
+    set("auto_desiredHorse", "dark");
   }
 }
 
@@ -1501,7 +1488,7 @@ export function horsePreAdventure(): boolean {
       `auto_desiredHorse was set to bad value: '${desiredHorse}'. Should be '', 'normal', 'dark', 'crazy', or 'pale'.`,
       "red",
     );
-    setProperty("auto_desiredHorse", "");
+    set("auto_desiredHorse", "");
     return false;
   }
   return getHorse(desiredHorse);
@@ -1519,7 +1506,7 @@ export function auto_wishesAvailable(): number {
   let wishes: number = 0;
   const bottle: Item = wrap_item($item`genie bottle`);
   if (itemAmount(bottle) > 0 && auto_is_valid(bottle)) {
-    wishes += 3 - toInt(getProperty("_genieWishesUsed"));
+    wishes += 3 - get("_genieWishesUsed");
   }
   if (auto_is_valid($item`pocket wish`)) {
     wishes += itemAmount($item`pocket wish`);
@@ -1538,7 +1525,7 @@ export function makeGenieWish(wish: string): boolean {
   if (
     auto_is_valid(bottle) &&
     itemAmount(bottle) > 0 &&
-    toInt(getProperty("_genieWishesUsed")) < 3
+    get("_genieWishesUsed") < 3
   ) {
     wish_provider = toInt(bottle);
   } else if (
@@ -1599,7 +1586,7 @@ export function canGenieCombat(mon: Monster): boolean {
 
   const bottle: Item = wrap_item($item`genie bottle`);
   const haveBottle: boolean = itemAmount(bottle) > 0;
-  const bottleWishesLeft: boolean = toInt(getProperty("_genieWishesUsed")) < 3;
+  const bottleWishesLeft: boolean = get("_genieWishesUsed") < 3;
   const canUseBottle: boolean =
     haveBottle && bottleWishesLeft && auto_is_valid(bottle);
   const havePocket: boolean = itemAmount($item`pocket wish`) > 0;
@@ -1607,7 +1594,7 @@ export function canGenieCombat(mon: Monster): boolean {
   if (!canUseBottle && !canUsePocket) {
     return false;
   }
-  if (toInt(getProperty("_genieFightsUsed")) >= 3) {
+  if (get("_genieFightsUsed") >= 3) {
     return false; // max 3 fights per day
   }
   if (myAdventures() === 0) {
@@ -1635,7 +1622,7 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
 
   auto_log_info(`Using genie to summon ${mon.name}`, "blue");
   const wish: string = `to fight a ${mon}`;
-  const prev_genieFightsUsed: number = toInt(getProperty("_genieFightsUsed"));
+  const prev_genieFightsUsed: number = get("_genieFightsUsed");
   const pages: Map<number, string> = new Map();
   const bottle: Item = wrap_item($item`genie bottle`);
   let wish_provider: number = toInt(bottle);
@@ -1654,7 +1641,7 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
 
   autoAdvBypass(5, pages, $location`Noob Cave`, option);
 
-  if (prev_genieFightsUsed === toInt(getProperty("_genieFightsUsed"))) {
+  if (prev_genieFightsUsed === get("_genieFightsUsed")) {
     failedWishMonsters.set(mon, true);
     auto_log_warning(`Wish: '${wish}' failed`, "red");
     return false;
@@ -1678,7 +1665,7 @@ export function makeGeniePocket(): boolean {
   if (itemAmount(bottle) === 0) {
     return false;
   }
-  if (toInt(getProperty("_genieWishesUsed")) >= 3) {
+  if (get("_genieWishesUsed") >= 3) {
     return false;
   }
 
@@ -1708,16 +1695,13 @@ function spacegateVaccineAvailable(): boolean {
     return false;
   }
 
-  if (
-    !toBoolean(getProperty("spacegateAlways")) ||
-    toBoolean(getProperty("_spacegateToday"))
-  ) {
+  if (!get("spacegateAlways") || get("_spacegateToday")) {
     return false;
   }
   if (!isUnrestricted($item`Spacegate access badge`)) {
     return false;
   }
-  if (toBoolean(getProperty("_spacegateVaccine"))) {
+  if (get("_spacegateVaccine")) {
     return false;
   }
   return true;
@@ -1729,11 +1713,11 @@ function spacegateVaccineAvailable$1(ef: Effect): boolean {
   }
   switch (ef) {
     case $effect`Rainbow Vaccine`:
-      return toBoolean(getProperty("spacegateVaccine1"));
+      return get("spacegateVaccine1");
     case $effect`Broad-Spectrum Vaccine`:
-      return toBoolean(getProperty("spacegateVaccine2"));
+      return get("spacegateVaccine2");
     case $effect`Emotional Vaccine`:
-      return toBoolean(getProperty("spacegateVaccine3"));
+      return get("spacegateVaccine3");
   }
   abort(`autoscend: bad effect passed to spacegateVaccineAvailable:${ef}`);
   return false;
@@ -1772,7 +1756,7 @@ function auto_hasMeteorLore(): boolean {
 }
 
 function auto_macroMeteoritesUsed(): number {
-  return toInt(getProperty("_macrometeoriteUses"));
+  return get("_macrometeoriteUses");
 }
 
 export function auto_macrometeoritesAvailable(): number {

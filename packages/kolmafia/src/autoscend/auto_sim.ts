@@ -12,7 +12,7 @@ import {
   toInt,
   toItem,
 } from "kolmafia";
-import { $familiar, $item, $monster, $skill } from "libram";
+import { $familiar, $item, $monster, $skill, get } from "libram";
 
 import { possessEquipment } from "./auto_equipment";
 import {
@@ -106,7 +106,7 @@ function printSimSuggested(): void {
     "Familiar which speeds up the daily dungeon",
   );
 
-  const maxedPoolSkill: boolean = toInt(getProperty("poolSharkCount")) >= 25;
+  const maxedPoolSkill: boolean = get("poolSharkCount") >= 25;
   formattedSimPrint(
     maxedPoolSkill,
     "Pool Shark",

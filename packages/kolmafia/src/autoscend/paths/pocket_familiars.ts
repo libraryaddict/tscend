@@ -1,6 +1,5 @@
 import {
   cliExecute,
-  getProperty,
   gitExists,
   itemAmount,
   Modifier,
@@ -8,12 +7,9 @@ import {
   myPath,
   myPrimestat,
   retrieveItem,
-  setProperty,
-  toBoolean,
-  toInt,
   visitUrl,
 } from "kolmafia";
-import { $item, $items, $modifier, $path } from "libram";
+import { $item, $items, $modifier, $path, get, set } from "libram";
 
 import { possessEquipment } from "../auto_equipment";
 import { auto_log_info, internalQuestStatus } from "../auto_util";
@@ -29,22 +25,22 @@ export function in_pokefam(): boolean {
 export function pokefam_initializeSettings(): void {
   if (in_pokefam()) {
     // No need to restore HP or MP in Pocket Familiars.
-    setProperty("auto_ignoreRestoreFailure", true.toString());
+    set("auto_ignoreRestoreFailure", true);
     // No need for a beehive as combat is different.
-    setProperty("auto_getBeehive", false.toString());
+    set("auto_getBeehive", false);
     // We can't flyer, but all the sidequests are unlocked, so we can still war as frat
-    setProperty("auto_ignoreFlyer", true.toString());
+    set("auto_ignoreFlyer", true);
     // No Naughty Sorceress so no need for a wand.
-    setProperty("auto_wandOfNagamar", false.toString());
+    set("auto_wandOfNagamar", false);
     // runs are probably going to take at least 3 days, maybe 4 in hardcore
-    setProperty("auto_runDayCount", (3).toString());
+    set("auto_runDayCount", 3);
   }
 }
 
 export function pokefam_buildDefaultMaximize(target: Maximizer): void {
   // Combat is completely different in pokefam, so most stuff doesn't matter there
   target.weight($modifier`Item Drop`, 5).weight($modifier`Meat Drop`);
-  if (myLevel() < 13 || toBoolean(getProperty("auto_disregardInstantKarma"))) {
+  if (myLevel() < 13 || get("auto_disregardInstantKarma", false)) {
     target
       .weight($modifier`Experience`, 10)
       .weight(Modifier.get(`${myPrimestat()} Experience Percent`), 5);
@@ -91,10 +87,7 @@ export function L12_pokefam_clearBattlefield(): boolean {
     return false;
   }
 
-  if (
-    toInt(getProperty("hippiesDefeated")) < 1000 &&
-    toInt(getProperty("fratboysDefeated")) < 1000
-  ) {
+  if (get("hippiesDefeated") < 1000 && get("fratboysDefeated") < 1000) {
     auto_log_info("Doing the wars.", "blue");
     equipWarOutfit();
     return warAdventure();

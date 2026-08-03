@@ -14,8 +14,6 @@ import {
   myPath,
   pullsRemaining,
   replaceString,
-  setProperty,
-  toBoolean,
   toInt,
   toLowerCase,
   use,
@@ -34,6 +32,8 @@ import {
   $phylum,
   $skill,
   $slot,
+  get,
+  set,
 } from "libram";
 
 import { pullXWhenHaveY } from "../auto_acquire";
@@ -78,16 +78,16 @@ export function in_bugbear(): boolean {
 export function bugbear_initializeSettings(): void {
   if (in_bugbear()) {
     // Lair is replaced
-    setProperty("auto_wandOfNagamar", false.toString());
-    setProperty("auto_getBeehive", false.toString());
-    setProperty("auto_holeinthesky", false.toString());
-    setProperty("auto_getStarKey", false.toString());
-    setProperty(
+    set("auto_wandOfNagamar", false);
+    set("auto_getBeehive", false);
+    set("auto_holeinthesky", false);
+    set("auto_getStarKey", false);
+    set(
       "nsTowerDoorKeysUsed",
       "Boris's key,Jarlsberg's key,Sneaky Pete's key,Richard's star key,skeleton key,digital key",
     );
     // banishing beasts / constructs can screw up bugbear hunting
-    setProperty("auto_dontPhylumBanish", true.toString());
+    set("auto_dontPhylumBanish", true);
   }
 }
 
@@ -196,7 +196,7 @@ function bugbear_UnlockMothership(loc: Location): boolean {
   }
 
   if (isBanished($phylum`beast`)) {
-    setProperty("screechDelay", "beast");
+    set("screechDelay", "beast");
     return false; // Can't fight bugbears if beasts are banished
   }
 
@@ -221,7 +221,7 @@ function bugbear_UnlockMothership(loc: Location): boolean {
   }
 
   if (
-    toInt(getProperty("_hipsterAdv")) < 7 &&
+    get("_hipsterAdv") < 7 &&
     isUnrestricted($familiar`Artistic Goth Kid`) &&
     auto_have_familiar($familiar`Artistic Goth Kid`)
   ) {
@@ -362,7 +362,7 @@ function LX_bugbearSpecialOps(): boolean {
   if (
     !possessEquipment($item`fluorescent lightbulb`) &&
     auto_have_skill($skill`Summon Clip Art`) &&
-    toInt(getProperty("tomeSummons")) < 3
+    get("tomeSummons") < 3
   ) {
     cliExecute("make fluorescent lightbulb");
   }
@@ -463,7 +463,7 @@ function LX_bugbearGallery(): boolean {
 }
 
 function LX_bugbearBridge(): boolean {
-  if (toInt(getProperty("mothershipProgress")) !== 3) {
+  if (get("mothershipProgress") !== 3) {
     return false;
   }
 
@@ -525,7 +525,7 @@ function LX_bugbearBridge(): boolean {
     "place.php?whichplace=bugbearship&action=bb_bridge",
   );
 
-  if (toBoolean(getProperty("auto_stayInRun"))) {
+  if (get("auto_stayInRun", false)) {
     throw new AutoStopError(
       "User wanted to stay in run (auto_stayInRun), we are done.",
     );

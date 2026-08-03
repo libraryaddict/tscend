@@ -45,15 +45,11 @@ import {
   pullsRemaining,
   removeProperty,
   retrieveItem,
-  setProperty,
   Skill,
   Stat,
-  toBoolean,
   toElement,
-  toFamiliar,
   toInt,
   toLowerCase,
-  toStat,
   useFamiliar,
   useSkill,
   visitUrl,
@@ -80,6 +76,7 @@ import {
   $stat,
   get,
   have,
+  set,
 } from "libram";
 
 import {
@@ -235,7 +232,7 @@ export function needDigitalKey(): boolean {
 }
 
 export function need8BitPoints(): boolean {
-  if (toInt(getProperty("8BitScore")) >= 10000) {
+  if (get("8BitScore") >= 10000) {
     return false;
   }
   return needDigitalKey();
@@ -280,9 +277,9 @@ export function towerKeyCount(effective: boolean = true): number {
   if (
     effective &&
     itemAmount($item`daily dungeon malware`) > 0 &&
-    !toBoolean(getProperty("_dailyDungeonMalwareUsed")) &&
-    !toBoolean(getProperty("dailyDungeonDone")) &&
-    toInt(getProperty("_lastDailyDungeonRoom")) < 14 &&
+    !get("_dailyDungeonMalwareUsed") &&
+    !get("dailyDungeonDone") &&
+    get("_lastDailyDungeonRoom") < 14 &&
     !in_pokefam()
   ) {
     tokens = tokens + 1;
@@ -291,7 +288,7 @@ export function towerKeyCount(effective: boolean = true): number {
 }
 
 function EightBitScore(): number {
-  const score: number = toInt(getProperty("8BitScore"));
+  const score: number = get("8BitScore");
   return score;
 }
 
@@ -485,7 +482,7 @@ export function LX_buyStarKeyParts(): void {
 function LX_getStarKeyDo(): boolean {
   //needStarKey() checks if you own or have used the star key
   if (!needStarKey()) {
-    setProperty("auto_getStarKey", false.toString());
+    set("auto_getStarKey", false);
     return false;
   }
 
@@ -574,9 +571,9 @@ function LX_getStarKeyDo(): boolean {
   if (auto_have_familiar($familiar`Space Jellyfish`)) {
     handleFamiliar$1($familiar`Space Jellyfish`);
     if (itemAmount($item`star chart`) === 0) {
-      setProperty("choiceAdventure1221", (1).toString());
+      set("choiceAdventure1221", 1);
     } else {
-      setProperty("choiceAdventure1221", (2 + (myAscensions() % 2)).toString());
+      set("choiceAdventure1221", 2 + (myAscensions() % 2));
     }
   }
   if (auto_haveGreyGoose()) {
@@ -591,7 +588,7 @@ function LX_getStarKeyDo(): boolean {
 export const LX_getStarKeyTask: QuestTask = registerQuestTask({
   name: "LX_getStarKey",
   completed: () => !needStarKey(),
-  ready: () => toBoolean(getProperty("auto_getStarKey")),
+  ready: () => get("auto_getStarKey", false),
   do: LX_getStarKeyDo,
   locations: $location`The Hole in the Sky`,
   desiredEncounters: () =>
@@ -663,29 +660,29 @@ export function beehiveConsider(at_tower: boolean): boolean {
   //~ auto_log_info("Investigating chance of towerkilling wall of skin, need 13 damage, expecting to have "+to_string(damage_sources), "blue");
 
   if (damage_sources >= 13) {
-    setProperty("auto_getBeehive", false.toString());
+    set("auto_getBeehive", false);
     return true;
   }
-  setProperty("auto_getBeehive", true.toString());
+  set("auto_getBeehive", true);
   return false;
 }
 
 export function ns_crowd1(): number {
-  if (toInt(getProperty("nsContestants1")) !== 0) {
+  if (get("nsContestants1") !== 0) {
     auto_log_info("Default Test: Initiative", "red");
   }
   return 1;
 }
 
 export function ns_crowd2(): Stat {
-  if (toInt(getProperty("nsContestants2")) !== 0) {
+  if (get("nsContestants2") !== 0) {
     auto_log_info(`Off-Stat Test: ${getProperty("nsChallenge1")}`, "red");
   }
-  return toStat(getProperty("nsChallenge1"));
+  return get("nsChallenge1", Stat.none);
 }
 
 export function ns_crowd3(): Element {
-  if (toInt(getProperty("nsContestants3")) !== 0) {
+  if (get("nsContestants3") !== 0) {
     auto_log_info(`Elemental Test: ${getProperty("nsChallenge2")}`, "red");
   }
   return toElement(getProperty("nsChallenge2"));
@@ -710,9 +707,9 @@ function L13_towerNSContestsDo(): boolean {
   if (
     containsText(visitUrl("place.php?whichplace=nstower"), "ns_02_coronation")
   ) {
-    setProperty("choiceAdventure1020", "1");
-    setProperty("choiceAdventure1021", "1");
-    setProperty("choiceAdventure1022", "1");
+    set("choiceAdventure1020", "1");
+    set("choiceAdventure1021", "1");
+    set("choiceAdventure1022", "1");
     visitUrl("place.php?whichplace=nstower&action=ns_02_coronation");
     visitUrl("choice.php?pwd=&whichchoice=1020&option=1", true);
     visitUrl("choice.php?pwd=&whichchoice=1021&option=1", true);
@@ -749,25 +746,19 @@ function L13_towerNSContestsDo(): boolean {
   if (
     containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_contestbooth")
   ) {
-    if (
-      in_wereprof() &&
-      toInt(getProperty("wereProfessorTransformTurns")) < 48
-    ) {
+    if (in_wereprof() && get("wereProfessorTransformTurns") < 48) {
       visitUrl("place.php?whichplace=nstower&action=ns_01_contestbooth");
       visitUrl("choice.php?pwd=&whichchoice=1003&option=5", true); //want as many turns of werewolf as possible at the contest booth so refresh with this choice
       visitUrl("main.php");
     }
-    if (toInt(getProperty("nsContestants1")) === -1) {
+    if (get("nsContestants1") === -1) {
       resetMaximize();
-      if (
-        !toBoolean(getProperty("_grimBuff")) &&
-        auto_have_familiar($familiar`Grim Brother`)
-      ) {
+      if (!get("_grimBuff") && auto_have_familiar($familiar`Grim Brother`)) {
         cliExecute("grim init");
       }
       if (
-        toInt(getProperty("telescopeUpgrades")) > 0 &&
-        !toBoolean(getProperty("telescopeLookedHigh")) &&
+        get("telescopeUpgrades") > 0 &&
+        !get("telescopeLookedHigh") &&
         auto_is_valid$3($effect`Starry-Eyed`)
       ) {
         cliExecute("telescope high");
@@ -793,7 +784,7 @@ function L13_towerNSContestsDo(): boolean {
             auto_wishForEffectIfNeeded($effect`New and Improved`);
           }
           if (crowd1Insufficient()) {
-            if (toBoolean(getProperty("auto_secondPlaceOrBust"))) {
+            if (get("auto_secondPlaceOrBust", false)) {
               abort(
                 "Not enough initiative for the initiative test, aborting since auto_secondPlaceOrBust=true",
               );
@@ -813,12 +804,9 @@ function L13_towerNSContestsDo(): boolean {
       visitUrl("choice.php?pwd=&whichchoice=1003&option=1", true);
       visitUrl("main.php");
     }
-    if (toInt(getProperty("nsContestants2")) === -1) {
+    if (get("nsContestants2") === -1) {
       resetMaximize();
-      if (
-        !toBoolean(getProperty("_lyleFavored")) &&
-        auto_is_valid$3($effect`Favored by Lyle`)
-      ) {
+      if (!get("_lyleFavored") && auto_is_valid$3($effect`Favored by Lyle`)) {
         visitUrl("place.php?whichplace=monorail&action=monorail_lyle");
       }
       acquireMP(150); // only uses free rests or items on hand by default
@@ -931,7 +919,7 @@ function L13_towerNSContestsDo(): boolean {
       }
 
       if (crowd2Insufficient()) {
-        if (toBoolean(getProperty("auto_secondPlaceOrBust"))) {
+        if (get("auto_secondPlaceOrBust", false)) {
           abort(
             `Not enough ${crowd_stat} for the stat test, aborting since auto_secondPlaceOrBust=true`,
           );
@@ -946,7 +934,7 @@ function L13_towerNSContestsDo(): boolean {
       visitUrl("choice.php?pwd=&whichchoice=1003&option=2", true);
       visitUrl("main.php");
     }
-    if (toInt(getProperty("nsContestants3")) === -1) {
+    if (get("nsContestants3") === -1) {
       resetMaximize();
       acquireMP(125); // only uses free rests or items on hand by default
 
@@ -1122,7 +1110,7 @@ function L13_towerNSContestsDo(): boolean {
       }
 
       if (crowd3Insufficient()) {
-        if (toBoolean(getProperty("auto_secondPlaceOrBust"))) {
+        if (get("auto_secondPlaceOrBust", false)) {
           abort(
             `Not enough ${challenge} for the elemental test, aborting since auto_secondPlaceOrBust=true`,
           );
@@ -1139,20 +1127,20 @@ function L13_towerNSContestsDo(): boolean {
       visitUrl("main.php");
     }
 
-    setProperty("choiceAdventure1003", (4).toString());
+    set("choiceAdventure1003", 4);
     if (
-      toInt(getProperty("nsContestants1")) === 0 &&
-      toInt(getProperty("nsContestants2")) === 0 &&
-      toInt(getProperty("nsContestants3")) === 0
+      get("nsContestants1") === 0 &&
+      get("nsContestants2") === 0 &&
+      get("nsContestants3") === 0
     ) {
       auto_log_info("The NS Challenges are over! Victory is ours!", "blue");
       visitUrl("place.php?whichplace=nstower&action=ns_01_contestbooth");
       visitUrl("choice.php?pwd=&whichchoice=1003&option=4", true);
       visitUrl("main.php");
       if (
-        toInt(getProperty("nsContestants1")) !== 0 ||
-        toInt(getProperty("nsContestants2")) !== 0 ||
-        toInt(getProperty("nsContestants3")) !== 0
+        get("nsContestants1") !== 0 ||
+        get("nsContestants2") !== 0 ||
+        get("nsContestants3") !== 0
       ) {
         if (internalQuestStatus("questL13Final") === 2) {
           if (in_theSource()) {
@@ -1162,7 +1150,7 @@ function L13_towerNSContestsDo(): boolean {
               "Probably encountered a Source Agent during the NS Contestants and Mafia's tracking fails on this. Let's try to correct it...",
               "red",
             );
-            setProperty("questL13Final", "step1");
+            set("questL13Final", "step1");
           } else {
             auto_log_error(
               "Error not recoverable (as not antipicipated) outside of The Source (Source Agents during NS Challenges), aborting.",
@@ -1234,12 +1222,12 @@ function L13_towerNSContestsDo(): boolean {
   }
   auto_log_info("No challenges left!", "green");
   if (in_pokefam()) {
-    if (toInt(getProperty("nsContestants1")) === 0) {
+    if (get("nsContestants1") === 0) {
       return false;
     }
-    setProperty("nsContestants1", (0).toString());
-    setProperty("nsContestants2", (0).toString());
-    setProperty("nsContestants3", (0).toString());
+    set("nsContestants1", 0);
+    set("nsContestants2", 0);
+    set("nsContestants3", 0);
     return true;
   }
   return false;
@@ -1282,7 +1270,7 @@ function L13_towerNSHedgeDo(): boolean {
     containsText(visitUrl("place.php?whichplace=nstower"), "hedgemaze")
   ) {
     //If we got beaten up by the last hedgemaze, mafia might set questL13Final to step5 anyway. Fix that.
-    setProperty("questL13Final", "step4");
+    set("questL13Final", "step4");
     if (haveEffect($effect`Beaten Up`) > 0 || myHp() < 150) {
       auto_log_error(
         "Hedge maze not solved, the mysteries are still there (correcting step5 -> step4)",
@@ -1294,23 +1282,23 @@ function L13_towerNSHedgeDo(): boolean {
     return false;
   }
   // Set this so it aborts if not enough adventures. Otherwise, well, we end up in a loop.
-  setProperty("choiceAdventure1004", "3");
-  setProperty("choiceAdventure1005", "2"); // 'Allo
-  setProperty("choiceAdventure1006", "2"); // One Small Step For Adventurer
-  setProperty("choiceAdventure1007", "2"); // Twisty Little Passages, All Hedge
-  setProperty("choiceAdventure1008", "2"); // Pooling Your Resources
-  setProperty("choiceAdventure1009", "2"); // Gold Ol' 44% Duck
-  setProperty("choiceAdventure1010", "2"); // Another Day, Another Fork
-  setProperty("choiceAdventure1011", "2"); // Of Mouseholes and Manholes
-  setProperty("choiceAdventure1012", "2"); // The Last Temptation
-  setProperty("choiceAdventure1013", "1"); // Masel Tov!
+  set("choiceAdventure1004", "3");
+  set("choiceAdventure1005", "2"); // 'Allo
+  set("choiceAdventure1006", "2"); // One Small Step For Adventurer
+  set("choiceAdventure1007", "2"); // Twisty Little Passages, All Hedge
+  set("choiceAdventure1008", "2"); // Pooling Your Resources
+  set("choiceAdventure1009", "2"); // Gold Ol' 44% Duck
+  set("choiceAdventure1010", "2"); // Another Day, Another Fork
+  set("choiceAdventure1011", "2"); // Of Mouseholes and Manholes
+  set("choiceAdventure1012", "2"); // The Last Temptation
+  set("choiceAdventure1013", "1"); // Masel Tov!
 
   maximize_hedge();
   auto_triggerPreAdventure();
-  setProperty("_auto_forcePokefamRestore", true.toString());
+  set("_auto_forcePokefamRestore", true);
   if (!acquireFullHP()) {
     // couldn't heal so do slow route. May die to fast route
-    setProperty("auto_hedge", "slow");
+    set("auto_hedge", "slow");
   }
   visitUrl("place.php?whichplace=nstower&action=ns_03_hedgemaze");
   if (getProperty("lastEncounter") === "This Maze is... Mazelike...") {
@@ -1421,7 +1409,7 @@ function L13_sorceressDoorDo(): boolean {
       cliExecute("make richard's star key");
     }
     if (itemAmount($item`Richard's star key`) === 0) {
-      if (!toBoolean(getProperty("auto_getStarKey"))) {
+      if (!get("auto_getStarKey", false)) {
         abort(
           "Need Richard's Star Key for the Sorceress door. Perhaps set auto_getStarKey=true ?",
         );
@@ -1521,7 +1509,7 @@ function L13_towerNSTowerSkin(): boolean {
   }
   // Can we kill the tower without a beehive?
   beehiveConsider(true);
-  if (toBoolean(getProperty("auto_getBeehive"))) {
+  if (get("auto_getBeehive", false)) {
     return false;
   }
 
@@ -1625,7 +1613,7 @@ function L13_towerNSTowerSkin(): boolean {
       `I'm trying to towerkill the Wall of Skin, but I don't think I've got enough damage sources. I have ${toInt(damage)}`,
       "red",
     );
-    setProperty("auto_getBeehive", true.toString());
+    set("auto_getBeehive", true);
     auto_log_info(
       "Exiting. Either investigate, or just re-run and we'll get the Beehive.",
       "red",
@@ -1644,7 +1632,7 @@ function L13_towerNSTowerSkin(): boolean {
     $location`Tower Level 1`,
   );
   if (internalQuestStatus("questL13Final") < 7) {
-    setProperty("auto_getBeehive", true.toString());
+    set("auto_getBeehive", true);
     auto_log_warning(
       "I probably failed the Wall of Skin, I assume that I tried without a beehive. Well, I'm going back to get it.",
       "red",
@@ -1700,7 +1688,7 @@ function L13_towerNSTowerBones(): boolean {
   ) {
     abort("auto_towerBreak set to abort here.");
   }
-  const hundred_fam: Familiar = toFamiliar(getProperty("auto_100familiar"));
+  const hundred_fam: Familiar = get("auto_100familiar", Familiar.none);
   const has_boning_knife: boolean =
     itemAmount($item`electric boning knife`) > 0;
 
@@ -1719,17 +1707,17 @@ function L13_towerNSTowerBones(): boolean {
   }
   //should I grab an electric boning knife?
   if (hundred_fam !== Familiar.none && isAttackFamiliar(hundred_fam)) {
-    setProperty("auto_getBoningKnife", true.toString()); //in 100% familiar run with attack familiar we must acquire boning knife
+    set("auto_getBoningKnife", true); //in 100% familiar run with attack familiar we must acquire boning knife
   }
   if (!(haveSkill($skill`Saucegeyser`) || haveSkill($skill`Garbage Nova`))) {
-    setProperty("auto_getBoningKnife", true.toString()); //can not towerkill. get boning knife instead
+    set("auto_getBoningKnife", true); //can not towerkill. get boning knife instead
   }
   if (!uneffect($effect`Scariersauce`)) {
     //passive dmg prevents tower kill. we can not uneffect it so get boning knife instead
-    setProperty("auto_getBoningKnife", true.toString());
+    set("auto_getBoningKnife", true);
   }
 
-  if (toBoolean(getProperty("auto_getBoningKnife"))) {
+  if (get("auto_getBoningKnife", false)) {
     //grab boning knife if we deemed it necessary
     if (
       lar_repeat($location`The Castle in the Clouds in the Sky (Ground Floor)`)
@@ -1790,7 +1778,7 @@ function L13_towerNSTowerBones(): boolean {
     } else {
       useFamiliar(lookupFamiliarDatafile("gremlins")); //delevel with no damage. fallback to none if unavailable
     }
-    setProperty("auto_disableFamiliarChanging", true.toString());
+    set("auto_disableFamiliarChanging", true);
   }
   if (myFamiliar() !== Familiar.none) {
     maximizer.excludeSlot($slot`familiar`);
@@ -1876,7 +1864,7 @@ function L13_towerNSTowerBones(): boolean {
         "Estimate would fail to towerkill Wall of Bones. Reverting to Boning Knife",
         "red",
       );
-      setProperty("auto_getBoningKnife", true.toString());
+      set("auto_getBoningKnife", true);
       return true;
     }
   }
@@ -1892,7 +1880,7 @@ function L13_towerNSTowerBones(): boolean {
       "Failed to towerkill Wall of Bones. Reverting to Boning Knife",
       "red",
     );
-    setProperty("auto_getBoningKnife", true.toString());
+    set("auto_getBoningKnife", true);
   }
   return true;
 }
@@ -1909,13 +1897,13 @@ function L13_towerNSTowerMirror(): boolean {
   ) {
     abort("auto_towerBreak set to abort here.");
   }
-  let confidence: boolean = toBoolean(getProperty("auto_confidence"));
+  let confidence: boolean = get("auto_confidence", false);
   // confidence really just means take the first choice, so necessary in vampyre
   if (in_darkGyffte()) {
     confidence = true;
   }
   const choicenum: string = confidence ? "1" : "2";
-  setProperty("choiceAdventure1015", choicenum);
+  set("choiceAdventure1015", choicenum);
   visitUrl("place.php?whichplace=nstower&action=ns_08_monster4");
   visitUrl(`choice.php?pwd=&whichchoice=1015&option=${choicenum}`, true);
   return true;
@@ -2039,7 +2027,7 @@ function L13_towerNSFinalDo(): boolean {
   //wand acquisition function is called before this function, it turns this propery to false once a wand is acquired.
   //it is also false on all paths that don't want a wand. Thus if it is true it means we do want a wand but didn't get one yet.
   if (
-    toBoolean(getProperty("auto_wandOfNagamar")) &&
+    get("auto_wandOfNagamar", false) &&
     internalQuestStatus("questL13Final") === 11
   ) {
     auto_log_warning(
@@ -2110,21 +2098,21 @@ function L13_towerNSFinalDo(): boolean {
 
   if (internalQuestStatus("questL13Final") < 13) {
     auto_triggerPreAdventure();
-    setProperty("auto_disableAdventureHandling", true.toString());
+    set("auto_disableAdventureHandling", true);
     autoAdvBypass$1(
       "place.php?whichplace=nstower&action=ns_10_sorcfight",
       $location`Noob Cave`,
     );
     if (haveEffect($effect`Beaten Up`) > 0) {
       auto_log_warning("Sorceress beat us up. Wahhh.", "red");
-      setProperty("auto_disableAdventureHandling", false.toString());
+      set("auto_disableAdventureHandling", false);
       return true;
     }
     if (lastMonster() === $monster`Naughty Sorceress`) {
       autoAdv($location`Noob Cave`);
       if (haveEffect($effect`Beaten Up`) > 0) {
         auto_log_warning("Blobbage Sorceress beat us up. Wahhh.", "red");
-        setProperty("auto_disableAdventureHandling", true.toString());
+        set("auto_disableAdventureHandling", true);
         return true;
       }
       autoAdv($location`Noob Cave`);
@@ -2133,32 +2121,32 @@ function L13_towerNSFinalDo(): boolean {
           visitUrl("choice.php");
           if (lastChoice() === 1016) {
             auto_runChoice(1);
-            setProperty("auto_wandOfNagamar", true.toString());
+            set("auto_wandOfNagamar", true);
           } else {
             abort("Expected to start Nagamar side-quest but unable to");
           }
           return true;
         }
         auto_log_warning("We got beat up by a sausage....", "red");
-        setProperty("auto_disableAdventureHandling", false.toString());
+        set("auto_disableAdventureHandling", false);
         return true;
       }
-      setProperty("auto_disableAdventureHandling", false.toString());
+      set("auto_disableAdventureHandling", false);
     }
   }
   // restore ML Safety Limit if this run changed it
   if (propertyExists("auto_MLSafetyLimitBackup")) {
     const MLSafetyLimitBackup: string = getProperty("auto_MLSafetyLimitBackup");
     if (MLSafetyLimitBackup === "empty") {
-      setProperty("auto_MLSafetyLimit", "");
+      set("auto_MLSafetyLimit", "");
     } else {
-      setProperty("auto_MLSafetyLimit", MLSafetyLimitBackup);
+      set("auto_MLSafetyLimit", MLSafetyLimitBackup);
     }
     removeProperty("auto_MLSafetyLimitBackup");
   }
   // restore disregard karma if this run changed it
   if (propertyExists("auto_disregardInstantKarmaBackup")) {
-    setProperty(
+    set(
       "auto_disregardInstantKarma",
       getProperty("auto_disregardInstantKarmaBackup"),
     );
@@ -2166,10 +2154,10 @@ function L13_towerNSFinalDo(): boolean {
   }
 
   if (auto_turbo()) {
-    setProperty("auto_turbo", "false");
+    set("auto_turbo", "false");
   }
 
-  if (toBoolean(getProperty("auto_stayInRun"))) {
+  if (get("auto_stayInRun", false)) {
     throw new AutoStopError(
       "User wanted to stay in run (auto_stayInRun), we are done.",
     );
@@ -2270,14 +2258,14 @@ function L13_towerNSNagamarDo(): boolean {
     return L13_koe_towerNSNagamar();
   }
   if (
-    !toBoolean(getProperty("auto_wandOfNagamar")) ||
+    !get("auto_wandOfNagamar", false) ||
     internalQuestStatus("questL13Final") < 11 ||
     internalQuestStatus("questL13Final") > 12
   ) {
     return false;
   }
   if (itemAmount($item`Wand of Nagamar`) > 0) {
-    setProperty("auto_wandOfNagamar", false.toString());
+    set("auto_wandOfNagamar", false);
     return false;
   }
 
@@ -2389,7 +2377,7 @@ export function L13_wantsTheD(): boolean {
     itemAmount($item`heavy D`) === 0 &&
     itemAmount($item`ND`) === 0 &&
     itemAmount($item`Wand of Nagamar`) === 0 &&
-    toBoolean(getProperty("auto_wandOfNagamar"))
+    get("auto_wandOfNagamar", false)
   );
 }
 

@@ -111,7 +111,6 @@ import {
   rollover,
   round,
   setLocation,
-  setProperty,
   Skill,
   Slot,
   soulsauceCost,
@@ -402,8 +401,7 @@ export function auto_combatModCap(): number {
 }
 
 export function almostRollover(): boolean {
-  const warning_time: number =
-    toInt(getProperty("auto_stopMinutesToRollover")) * 60;
+  const warning_time: number = get("auto_stopMinutesToRollover", 0) * 60;
   const remaining_time: number = rollover() - nowToInt() / 1000;
   if (remaining_time - 300 < warning_time) {
     // Only print debug messages less than 5 minutes before emergency bedtime
@@ -571,7 +569,7 @@ function debugMaximize(target: Maximizer, meat: number): void {
           $items`pirate tract, pirate pamphlet, pirate brochure`.includes(
             entry.item,
           ) &&
-          (myAscensions() !== toInt(getProperty("lastPirateEphemeraReset")) ||
+          (myAscensions() !== get("lastPirateEphemeraReset") ||
             entry.item !== toItem(getProperty("lastPirateEphemera")))
         ) {
           doThis = false;
@@ -700,7 +698,7 @@ export function handleTracker({
 
   entries.push(`(${parts.join(":")})`);
 
-  setProperty(property, entries.join(", "));
+  set(property, entries.join(", "));
 }
 
 export function organsFull(): boolean {
@@ -743,12 +741,12 @@ export function backupSetting(setting: string, newValue: string): boolean {
     }
 
     if (getProperty(`auto_backup_${setting}`) === "") {
-      setProperty(`auto_backup_${setting}`, oldValue);
+      set(`auto_backup_${setting}`, oldValue);
     }
-    setProperty(setting, newValue);
+    set(setting, newValue);
     return true;
   }
-  setProperty(setting, newValue);
+  set(setting, newValue);
   return false;
 }
 
@@ -771,9 +769,9 @@ export function restoreAllSettings(): boolean {
 export function restoreSetting(setting: string): boolean {
   if (getProperty(`auto_backup_${setting}`) !== "") {
     if (getProperty(`auto_backup_${setting}`) === "__BLANK__") {
-      setProperty(setting, "");
+      set(setting, "");
     } else {
-      setProperty(setting, getProperty(`auto_backup_${setting}`));
+      set(setting, getProperty(`auto_backup_${setting}`));
     }
     removeProperty(`auto_backup_${setting}`);
     return true;
@@ -789,17 +787,14 @@ export function loopHandler(
   threshold: number,
 ): boolean {
   if (myTurncount() === toInt(getProperty(turnSetting))) {
-    setProperty(
-      counterSetting,
-      (toInt(getProperty(counterSetting)) + 1).toString(),
-    );
+    set(counterSetting, toInt(getProperty(counterSetting)) + 1);
     if (toInt(getProperty(counterSetting)) > threshold) {
       abort(abortMessage);
     }
     return true;
   } else {
-    setProperty(turnSetting, myTurncount().toString());
-    setProperty(counterSetting, (0).toString());
+    set(turnSetting, myTurncount());
+    set(counterSetting, 0);
   }
   return false;
 }
@@ -809,10 +804,7 @@ function loopHandlerDelay(
   threshold: number = 3,
 ): boolean {
   if (toInt(getProperty(counterSetting)) >= threshold) {
-    setProperty(
-      counterSetting,
-      (toInt(getProperty(counterSetting)) - 1).toString(),
-    );
+    set(counterSetting, toInt(getProperty(counterSetting)) - 1);
     return true;
   }
   return false;
@@ -914,10 +906,7 @@ export function canYellowRay(target: Monster = Monster.none): boolean {
     // Get a yellow rocket if we don't have a parka
     if (
       itemAmount($item`Clan VIP Lounge key`) > 0 &&
-      toBoolean(
-        // Need VIP access
-        getProperty("_fireworksShop"),
-      ) &&
+      get("_fireworksShop") &&
       itemAmount(
         // in a clan that has the Underground Fireworks Shop
         $item`yellow rocket`,
@@ -1021,10 +1010,7 @@ export function canYellowRay(target: Monster = Monster.none): boolean {
         useFamiliar($familiar`Crimbo Shrub`);
         useFamiliar(curr);
       }
-      if (
-        getProperty("shrubGifts") !== "yellow" &&
-        !toBoolean(getProperty("_shrubDecorated"))
-      ) {
+      if (getProperty("shrubGifts") !== "yellow" && !get("_shrubDecorated")) {
         visitUrl("inv_use.php?pwd=&which=3&whichitem=7958");
         visitUrl(
           "choice.php?pwd=&whichchoice=999&option=1&topper=1&lights=1&garland=1&gift=1",
@@ -1033,7 +1019,7 @@ export function canYellowRay(target: Monster = Monster.none): boolean {
     }
 
     if (
-      !toBoolean(getProperty("_internetViralVideoBought")) &&
+      !get("_internetViralVideoBought") &&
       itemAmount(
         //can only buy 1 per day
         $item`BACON`,
@@ -1180,7 +1166,7 @@ export function auto_wantToBanish$1(
   enemyphylum: Phylum,
   loc: Location,
 ): boolean {
-  if (toBoolean(getProperty("auto_dontPhylumBanish"))) {
+  if (get("auto_dontPhylumBanish", false)) {
     return false;
   }
   const locCache: Location = myLocation();
@@ -1324,11 +1310,11 @@ export function adjustForBanishIfPossible$1(
   return false;
 }
 export function auto_forceFreeRun(combat: boolean): boolean {
-  if (toBoolean(getProperty("auto_forceFreeRun")) && combat) {
-    setProperty("auto_forceFreeRun", false.toString()); //want to reset as soon as we see it as true while in combat
+  if (get("auto_forceFreeRun", false) && combat) {
+    set("auto_forceFreeRun", false); //want to reset as soon as we see it as true while in combat
     return true;
   }
-  if (toBoolean(getProperty("auto_forceFreeRun"))) {
+  if (get("auto_forceFreeRun", false)) {
     //don't need to reset it because we haven't taken a turn to freeRun yet
     return true;
   }
@@ -1449,7 +1435,7 @@ export function freeRunCombatAction(
     // TODO add fam weight buffing
     const banderRunsLeft: number =
       floor(auto_famWeight($familiar`Frumious Bandersnatch`) / 5) -
-      toInt(getProperty("_banderRunaways"));
+      get("_banderRunaways");
     if (is_professor()) {
       return undefined;
     }
@@ -1487,7 +1473,7 @@ export function freeRunCombatAction(
     // boots and bander share same counter
     const banderRunsLeft: number =
       floor(auto_famWeight($familiar`Pair of Stomping Boots`) / 5) -
-      toInt(getProperty("_banderRunaways"));
+      get("_banderRunaways");
     if (is_professor()) {
       return undefined;
     }
@@ -1624,7 +1610,7 @@ function adjustForYellowRay(combat_string: CombatMacroReturns): boolean {
   // craft and consume 9-volt battery if we are using shocking lick and don't have any charges already
   if (
     combat_string === $skill`Shocking Lick` &&
-    toInt(getProperty("shockingLickCharges")) < 1
+    get("shockingLickCharges") < 1
   ) {
     if (auto_getBattery($item`battery (9-Volt)`)) {
       use(1, $item`battery (9-Volt)`);
@@ -2209,15 +2195,12 @@ export function elemental_resist(goal: Element): number {
 }
 
 export function preferredLibram(): Skill {
-  if (
-    auto_have_skill($skill`Summon BRICKOs`) &&
-    toInt(getProperty("_brickoEyeSummons")) < 3
-  ) {
+  if (auto_have_skill($skill`Summon BRICKOs`) && get("_brickoEyeSummons") < 3) {
     return $skill`Summon BRICKOs`;
   }
   if (
     auto_have_skill($skill`Summon Party Favor`) &&
-    toInt(getProperty("_favorRareSummons")) < 3
+    get("_favorRareSummons") < 3
   ) {
     return $skill`Summon Party Favor`;
   }
@@ -2328,7 +2311,7 @@ export function whatStatSmile(): Effect {
 export function ovenHandle(): boolean {
   if (
     auto_get_campground().has($item`Dramatic™ range`) &&
-    !toBoolean(getProperty("auto_haveoven"))
+    !get("auto_haveoven", false)
   ) {
     if (
       auto_get_campground().has($item`Certificate of Participation`) &&
@@ -2339,20 +2322,20 @@ export function ovenHandle(): boolean {
       );
     } else {
       auto_log_info("Oven found! We can cook!", "blue");
-      setProperty("auto_haveoven", true.toString());
+      set("auto_haveoven", true);
     }
   }
 
   if (
-    !toBoolean(getProperty("auto_haveoven")) &&
+    !get("auto_haveoven", false) &&
     myMeat() >= npcPrice($item`Dramatic™ range`) + 1000 &&
     isGeneralStoreAvailable()
   ) {
     auto_buyUpTo(1, $item`Dramatic™ range`);
     use(1, $item`Dramatic™ range`);
-    setProperty("auto_haveoven", true.toString());
+    set("auto_haveoven", true);
   }
-  return toBoolean(getProperty("auto_haveoven"));
+  return get("auto_haveoven", false);
 }
 
 export function isGhost(mon: Monster): boolean {
@@ -2398,8 +2381,8 @@ export function cloversAvailable(
     //Get from August Scepter
     if (
       auto_haveAugustScepter() &&
-      toInt(getProperty("_augSkillsCast")) < 5 &&
-      !toBoolean(getProperty("_aug2Cast"))
+      get("_augSkillsCast") < 5 &&
+      !get("_aug2Cast")
     ) {
       numClovers += 1;
     }
@@ -2417,7 +2400,7 @@ export function cloversAvailable(
   // Lucky Lindy, Optimal Dog, Pillkeeper
 
   if (
-    toBoolean(getProperty("auto_wandOfNagamar")) &&
+    get("auto_wandOfNagamar", false) &&
     !override &&
     myDaycount() > 1 &&
     inHardcore()
@@ -2439,8 +2422,8 @@ export function auto_unusedPerishableLuckySources(): number {
   sources += auto_AprilSaxLuckyLeft();
   if (
     auto_haveAugustScepter() &&
-    toInt(getProperty("_augSkillsCast")) < 5 &&
-    !toBoolean(getProperty("_aug2Cast"))
+    get("_augSkillsCast") < 5 &&
+    !get("_aug2Cast")
   ) {
     sources += 1;
   }
@@ -2456,13 +2439,13 @@ export function cloverUsageInit(override: boolean): boolean {
     return true;
   }
 
-  setProperty("auto_luckySource", "none");
+  set("auto_luckySource", "none");
 
   if (auto_heartstoneLuckRemaining() > 0) {
     useSkill($skill`Heartstone: %luck`);
     if (haveEffect($effect`Lucky!`) > 0) {
       auto_log_info("Clover usage initialized, using Heartstone LUCK.");
-      setProperty("auto_luckySource", $item`Heartstone`.toString());
+      set("auto_luckySource", $item`Heartstone`);
       return true;
     } else {
       auto_log_warning("Did not acquire Lucky! after using heartstone LUCK.");
@@ -2472,10 +2455,7 @@ export function cloverUsageInit(override: boolean): boolean {
   if (auto_AprilSaxLuckyLeft() > 0) {
     if (auto_playAprilSax()) {
       auto_log_info("Clover usage initialized, using Apriling sax.");
-      setProperty(
-        "auto_luckySource",
-        $item`Apriling band saxophone`.toString(),
-      );
+      set("auto_luckySource", $item`Apriling band saxophone`);
       return true;
     } else {
       auto_log_warning(
@@ -2486,13 +2466,13 @@ export function cloverUsageInit(override: boolean): boolean {
   //Use August Scepter skill if we can
   if (
     auto_haveAugustScepter() &&
-    toInt(getProperty("_augSkillsCast")) < 5 &&
-    !toBoolean(getProperty("_aug2Cast"))
+    get("_augSkillsCast") < 5 &&
+    !get("_aug2Cast")
   ) {
     useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
     if (haveEffect($effect`Lucky!`) > 0) {
       auto_log_info("Clover usage initialized using August Scepter.");
-      setProperty("auto_luckySource", $item`august scepter`.toString());
+      set("auto_luckySource", $item`august scepter`);
       return true;
     } else {
       auto_log_warning(
@@ -2511,7 +2491,7 @@ export function cloverUsageInit(override: boolean): boolean {
     use(1, $item`11-leaf clover`);
     if (haveEffect($effect`Lucky!`) > 0) {
       auto_log_info("Clover usage initialized using clover.");
-      setProperty("auto_luckySource", $item`11-leaf clover`.toString());
+      set("auto_luckySource", $item`11-leaf clover`);
       return true;
     } else {
       auto_log_warning("Did not acquire Lucky! after using an 11-Leaf Clover");
@@ -2527,10 +2507,7 @@ export function cloverUsageInit(override: boolean): boolean {
       chew(1, $item`[10883]astral energy drink`);
       if (haveEffect($effect`Lucky!`) > 0) {
         auto_log_info("Clover usage initialized using Astral Energy Drink");
-        setProperty(
-          "auto_luckySource",
-          $item`[10883]astral energy drink`.toString(),
-        );
+        set("auto_luckySource", $item`[10883]astral energy drink`);
         return true;
       } else {
         auto_log_warning(
@@ -2586,7 +2563,7 @@ export function cloverUsageFinish(): boolean {
       detail: getProperty("lastEncounter"),
       property: "auto_lucky",
     });
-    setProperty("auto_luckySource", "none");
+    set("auto_luckySource", "none");
   }
   return true;
 }
@@ -2705,10 +2682,10 @@ export function isDesertAvailable(): boolean {
   //Is this workaround still needed or is mafia correctly recognizing desert is available in koe?
   if (in_koe()) {
     auto_log_info("The desert exploded so no need to build a meatcar...");
-    setProperty("lastDesertUnlock", myAscensions().toString());
+    set("lastDesertUnlock", myAscensions());
   }
 
-  return toInt(getProperty("lastDesertUnlock")) === myAscensions();
+  return get("lastDesertUnlock") === myAscensions();
 }
 
 export function inKnollSign(): boolean {
@@ -2829,7 +2806,7 @@ export function stunnable(mon: Monster): boolean {
 
   if (
     $monsters`Naughty Sorceress, Naughty Sorceress (2)`.includes(mon) &&
-    !toBoolean(getProperty("auto_confidence"))
+    !get("auto_confidence", false)
   ) {
     return false;
   }
@@ -2868,16 +2845,16 @@ export function auto_freeCrafts(): number {
     haveSkill($skill`Rapid Prototyping`) &&
     isUnrestricted($item`Crimbot ROM: Rapid Prototyping`)
   ) {
-    retval += 5 - toInt(getProperty("_rapidPrototypingUsed"));
+    retval += 5 - get("_rapidPrototypingUsed");
   }
   if (
     haveSkill($skill`Expert Corner-Cutter`) &&
     isUnrestricted($item`LyleCo Contractor's Manual`)
   ) {
-    retval += 5 - toInt(getProperty("_expertCornerCutterUsed"));
+    retval += 5 - get("_expertCornerCutterUsed");
   }
   retval += haveEffect($effect`Inigo's Incantation of Inspiration`) / 5;
-  retval += toInt(getProperty("homebodylCharges"));
+  retval += get("homebodylCharges");
   //	if(have_skill($skill[Inigo\'s Incantation Of Inspiration]))
   //	{
   //		if(my_mp() > mp_cost($skill[Inigo\'s Incantation Of Inspiration]))
@@ -2906,14 +2883,14 @@ export function isFreeMonster(
     $monsters`angry ghost, annoyed snake, government bureaucrat, slime blob, terrible mutant`.includes(
       mon,
     ) &&
-    toInt(getProperty("_voteFreeFights")) < 3
+    get("_voteFreeFights") < 3
   ) {
     return true;
   }
 
   if (
     $monsters`biker, burnout, jock, party girl, "plain" girl`.includes(mon) &&
-    toInt(getProperty("_neverendingPartyFreeTurns")) < 10
+    get("_neverendingPartyFreeTurns") < 10
   ) {
     return true;
   }
@@ -2925,7 +2902,7 @@ export function isFreeMonster(
   ) {
     if (
       myFamiliar() === $familiar`Machine Elf` &&
-      toInt(getProperty("_machineTunnelsAdv")) < 5 &&
+      get("_machineTunnelsAdv") < 5 &&
       myLocation() === $location`The Deep Machine Tunnels`
     ) {
       return true;
@@ -2934,14 +2911,14 @@ export function isFreeMonster(
 
   if (
     $monster`X-32-F Combat Training Snowman` === mon &&
-    toInt(getProperty("_snojoFreeFights")) < 10
+    get("_snojoFreeFights") < 10
   ) {
     return true;
   }
 
   if (
     $monsters`void guy, void slab, void spider`.includes(mon) &&
-    toInt(getProperty("_voidFreeFights")) < 5
+    get("_voidFreeFights") < 5
   ) {
     return true;
   }
@@ -2953,10 +2930,7 @@ export function isFreeMonster(
     return true;
   }
 
-  if (
-    toInt(getProperty("breathitinCharges")) > 0 &&
-    loc.environment === "outdoor"
-  ) {
+  if (get("breathitinCharges") > 0 && loc.environment === "outdoor") {
     return true;
   }
 
@@ -3044,7 +3018,7 @@ export function auto_deleteMail(msg: kmailObject): boolean {
     if (
       msg.fromid === id &&
       containsText(msg.message, "completed your relationship fortune test") &&
-      toBoolean(getProperty("auto_hideAdultery"))
+      get("auto_hideAdultery", false)
     ) {
       return true;
     }
@@ -3052,7 +3026,7 @@ export function auto_deleteMail(msg: kmailObject): boolean {
   if (
     msg.fromid === 3690803 &&
     containsText(msg.message, "completed your relationship fortune test") &&
-    toBoolean(getProperty("auto_hideAdultery"))
+    get("auto_hideAdultery", false)
   ) {
     return true;
   }
@@ -3090,7 +3064,7 @@ function LX_summonMonsterDo(): boolean {
   }
   // summon mountain man if we know the ore we need and still need 2 or more
   // don't summon if we have model train set as it is an easy source of ore
-  const oreGoal: Item = toItem(getProperty("trapperOre"));
+  const oreGoal: Item = get("trapperOre", Item.none);
   if (
     internalQuestStatus("questL08Trapper") < 2 &&
     auto_haveTrainSet() &&
@@ -3102,8 +3076,7 @@ function LX_summonMonsterDo(): boolean {
     adjustForYellowRayIfPossible();
     const need_dupe: boolean = itemAmount(oreGoal) < 1;
     const can_mctwist: boolean =
-      auto_can_equip($item`pro skateboard`) &&
-      !toBoolean(getProperty("_epicMcTwistUsed"));
+      auto_can_equip($item`pro skateboard`) && !get("_epicMcTwistUsed");
     const will_mctwist: boolean = can_mctwist && need_dupe;
     auto_log_info(
       `Trying to summon a mountain man${will_mctwist ? " which we will McTwist." : "."}`,
@@ -3278,7 +3251,7 @@ export const LX_summonMonsterTask: QuestTask = registerQuestTask({
     ) {
       encounters.push({ monster: $monster`screambat`, needAmount: 1 });
     }
-    const oreGoal: Item = toItem(getProperty("trapperOre"));
+    const oreGoal: Item = get("trapperOre", Item.none);
     if (
       get("trapperOre") &&
       internalQuestStatus("questL08Trapper") < 2 &&
@@ -3406,7 +3379,7 @@ export function summonMonster(
 ): boolean {
   if (!speculative) {
     auto_log_debug(`Trying to summon ${mon}`, "blue");
-    setProperty("auto_nonAdvLoc", true.toString());
+    set("auto_nonAdvLoc", true);
   }
 
   if (!speculative) {
@@ -3535,7 +3508,7 @@ export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
       if (getProperty("cameraMonster") === "") {
         abort(`${itm} has no monster so we can't use it`);
       }
-      if (toBoolean(getProperty("_cameraUsed"))) {
+      if (get("_cameraUsed")) {
         abort(`${itm} already used today. We can not continue`);
       }
       id = toInt(itm);
@@ -3547,7 +3520,7 @@ export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
       if (getProperty("iceSculptureMonster") === "") {
         abort(`${itm} has no monster so we can't use it`);
       }
-      if (toBoolean(getProperty("_iceSculptureUsed"))) {
+      if (get("_iceSculptureUsed")) {
         abort(`${itm} already used today. We can not continue`);
       }
       id = toInt(itm);
@@ -3606,10 +3579,9 @@ export function basicAdjustML(): boolean {
     }
   } else {
     if (
-      (toInt(getProperty("flyeredML")) >= 10000 ||
-        toBoolean(getProperty("auto_ignoreFlyer"))) &&
+      (get("flyeredML") >= 10000 || get("auto_ignoreFlyer", false)) &&
       myLevel() >= 13 &&
-      !toBoolean(getProperty("auto_disregardInstantKarma"))
+      !get("auto_disregardInstantKarma", false)
     ) {
       auto_change_mcd(0);
     } else if (monsterLevelAdjustment() + (10 - currentMcd()) <= 150) {
@@ -3649,15 +3621,12 @@ export function auto_change_mcd(
     best = 11;
   }
   //under level 13 we want to level up. level 14+ we already missed the instant karma, no point in holding back anymore.
-  if (
-    myLevel() === 13 &&
-    !toBoolean(getProperty("auto_disregardInstantKarma"))
-  ) {
+  if (myLevel() === 13 && !get("auto_disregardInstantKarma", false)) {
     if (
       getProperty("questL12War") === "finished" ||
       getProperty("sidequestArenaCompleted") !== "none" ||
-      toInt(getProperty("flyeredML")) >= 10000 ||
-      toBoolean(getProperty("auto_ignoreFlyer"))
+      get("flyeredML") >= 10000 ||
+      get("auto_ignoreFlyer", false)
     ) {
       mcd = 0;
     }
@@ -3665,7 +3634,7 @@ export function auto_change_mcd(
   mcd = min(mcd, best);
   const next: number = max(0, mcd);
 
-  setProperty("auto_mcd_target", next.toString()); // if we return without setting this, we will flip-flop the mcd every adventure...
+  set("auto_mcd_target", next); // if we return without setting this, we will flip-flop the mcd every adventure...
 
   if (next === currentMcd()) {
     return true;
@@ -3682,7 +3651,7 @@ export function evokeEldritchHorror(option?: CombatMacro): boolean {
   if (!haveSkill($skill`Evoke Eldritch Horror`)) {
     return false;
   }
-  if (toBoolean(getProperty("_eldritchHorrorEvoked"))) {
+  if (get("_eldritchHorrorEvoked")) {
     return false;
   }
   if (myMp() < mpCost($skill`Evoke Eldritch Horror`)) {
@@ -3701,7 +3670,7 @@ export function fightScienceTentacle(): boolean {
   if (in_koe() || in_avantGuard()) {
     return false;
   }
-  if (toBoolean(getProperty("_eldritchTentacleFought"))) {
+  if (get("_eldritchTentacleFought")) {
     return false;
   }
 
@@ -3727,14 +3696,14 @@ export function fightScienceTentacle(): boolean {
       "Can I fight that tentacle you saved for science?" ||
     abortChoice === 0
   ) {
-    setProperty("_eldritchTentacleFought", true.toString());
+    set("_eldritchTentacleFought", true);
     visitUrl(`choice.php?whichchoice=1201&pwd=&option=${abortChoice}`);
     return false;
   }
 
-  setProperty("auto_nonAdvLoc", true.toString());
+  set("auto_nonAdvLoc", true);
   visitUrl(`choice.php?whichchoice=1201&pwd=&option=${abortChoice}`);
-  setProperty("auto_nextEncounter", "Eldritch Tentacle");
+  set("auto_nextEncounter", "Eldritch Tentacle");
   const pages: Map<number, string> = new Map();
   pages.set(0, "place.php?whichplace=forestvillage&action=fv_scientist");
   pages.set(1, "choice.php?whichchoice=1201&pwd=&option=1");
@@ -3764,7 +3733,7 @@ export function handleSealNormal(it: Item, option?: CombatMacro): boolean {
   }
 
   if (
-    toInt(getProperty("_sealsSummoned")) < maxSealSummons() &&
+    get("_sealsSummoned") < maxSealSummons() &&
     itemAmount(it) > 0 &&
     itemAmount($item`seal-blubber candle`) >= candles &&
     myLevel() >= level
@@ -3782,7 +3751,7 @@ export function handleSealNormal(it: Item, option?: CombatMacro): boolean {
 }
 export function handleSealAncient(option?: CombatMacro): boolean {
   if (
-    toInt(getProperty("_sealsSummoned")) < maxSealSummons() &&
+    get("_sealsSummoned") < maxSealSummons() &&
     itemAmount($item`figurine of an ancient seal`) > 0 &&
     itemAmount($item`seal-blubber candle`) >= 3
   ) {
@@ -3803,7 +3772,7 @@ export function handleSealElement(
   let page: string = "";
   if (
     flavor === $element`hot` &&
-    toInt(getProperty("_sealsSummoned")) < maxSealSummons() &&
+    get("_sealsSummoned") < maxSealSummons() &&
     itemAmount($item`figurine of a charred seal`) > 0 &&
     itemAmount($item`imbued seal-blubber candle`) > 0
   ) {
@@ -3811,7 +3780,7 @@ export function handleSealElement(
   }
   if (
     flavor === $element`cold` &&
-    toInt(getProperty("_sealsSummoned")) < maxSealSummons() &&
+    get("_sealsSummoned") < maxSealSummons() &&
     itemAmount($item`figurine of a cold seal`) > 0 &&
     itemAmount($item`imbued seal-blubber candle`) > 0
   ) {
@@ -3819,7 +3788,7 @@ export function handleSealElement(
   }
   if (
     flavor === $element`sleaze` &&
-    toInt(getProperty("_sealsSummoned")) < maxSealSummons() &&
+    get("_sealsSummoned") < maxSealSummons() &&
     itemAmount($item`figurine of a slippery seal`) > 0 &&
     itemAmount($item`imbued seal-blubber candle`) > 0
   ) {
@@ -3827,7 +3796,7 @@ export function handleSealElement(
   }
   if (
     flavor === $element`spooky` &&
-    toInt(getProperty("_sealsSummoned")) < maxSealSummons() &&
+    get("_sealsSummoned") < maxSealSummons() &&
     itemAmount($item`figurine of a shadowy seal`) > 0 &&
     itemAmount($item`imbued seal-blubber candle`) > 0
   ) {
@@ -3835,7 +3804,7 @@ export function handleSealElement(
   }
   if (
     flavor === $element`stench` &&
-    toInt(getProperty("_sealsSummoned")) < maxSealSummons() &&
+    get("_sealsSummoned") < maxSealSummons() &&
     itemAmount($item`figurine of a stinking seal`) > 0 &&
     itemAmount($item`imbued seal-blubber candle`) > 0
   ) {
@@ -3845,10 +3814,10 @@ export function handleSealElement(
 }
 
 export function handleBarrelFullOfBarrels(daily: boolean): boolean {
-  if (!toBoolean(getProperty("barrelShrineUnlocked"))) {
+  if (!get("barrelShrineUnlocked")) {
     return false;
   }
-  if (daily && toBoolean(getProperty("_didBarrelBustToday"))) {
+  if (daily && get("_didBarrelBustToday", false)) {
     return false;
   }
   if (!isUnrestricted($item`shrine to the Barrel god`)) {
@@ -3878,12 +3847,12 @@ export function handleBarrelFullOfBarrels(daily: boolean): boolean {
       visitUrl(`choice.php?whichchoice=1099&pwd&option=1&slot=${slotID}`);
     }
   }
-  setProperty("_didBarrelBustToday", true.toString());
+  set("_didBarrelBustToday", true);
   return smashed > 0;
 }
 
 export function use_barrels(): boolean {
-  if (!toBoolean(getProperty("barrelShrineUnlocked"))) {
+  if (!get("barrelShrineUnlocked")) {
     return false;
   }
   if (inAftercore()) {
@@ -3917,7 +3886,7 @@ export function auto_autosell(quantity: number, toSell: Item): boolean {
   if (!in_wotsf() && !in_amw()) {
     return autosell(quantity, toSell);
   }
-  if (toInt(getProperty("totalCharitableDonations")) < 1000000) {
+  if (get("totalCharitableDonations") < 1000000) {
     return autosell(quantity, toSell);
   }
   return false;
@@ -3959,10 +3928,7 @@ export function doNumberology(
   if (!auto_have_skill($skill`Calculate the Universe`)) {
     return -1;
   }
-  if (
-    toInt(getProperty("_universeCalculated")) >=
-    min(3, toInt(getProperty("skillLevel144")))
-  ) {
+  if (get("_universeCalculated") >= min(3, get("skillLevel144"))) {
     return -1;
   }
   if (myMp() < 2) {
@@ -3991,7 +3957,7 @@ export function doNumberology(
     }
 
     if (goal === "battlefield") {
-      setProperty("auto_nonAdvLoc", true.toString());
+      set("auto_nonAdvLoc", true);
       const pages: Map<number, string> = new Map();
       pages.set(0, "runskillz.php?pwd&action=Skillz&whichskill=144&quantity=1");
       pages.set(
@@ -4029,7 +3995,7 @@ export function candyEggDeviler(): boolean {
     //do we have a Candy Egg Deviler?
     return false;
   }
-  if (!(toInt(getProperty("_candyEggsDeviled")) < 3)) {
+  if (!(get("_candyEggsDeviled") < 3)) {
     //already generated our 3 deviled candy eggs today
     return false;
   }
@@ -4039,8 +4005,8 @@ export function candyEggDeviler(): boolean {
   }
   //Below is modified from the synthesis code
   let maxprice: number = 2500;
-  if (toInt(getProperty("auto_maxCandyPrice")) !== 0) {
-    maxprice = toInt(getProperty("auto_maxCandyPrice"));
+  if (get("auto_maxCandyPrice", 0) !== 0) {
+    maxprice = get("auto_maxCandyPrice", 0);
   }
 
   let candyList: Map<number, Item> = new Map();
@@ -4540,9 +4506,9 @@ export function auto_get_campground(): Map<Item, number> {
 
   if (
     campItems.has($item`Source terminal`) &&
-    !toBoolean(getProperty("auto_haveSourceTerminal"))
+    !get("auto_haveSourceTerminal", false)
   ) {
-    setProperty("auto_haveSourceTerminal", true.toString());
+    set("auto_haveSourceTerminal", true);
   }
 
   $_auto_get_campground_didCheck ??= false;
@@ -4552,19 +4518,16 @@ export function auto_get_campground(): Map<Item, number> {
       "place.php?whichplace=falloutshelter&action=vault_term",
     );
     if (containsText(temp, "Source Terminal")) {
-      setProperty("auto_haveSourceTerminal", true.toString());
+      set("auto_haveSourceTerminal", true);
     }
   }
 
-  if (
-    !campItems.has($item`Dramatic™ range`) &&
-    toBoolean(getProperty("auto_haveoven"))
-  ) {
+  if (!campItems.has($item`Dramatic™ range`) && get("auto_haveoven", false)) {
     campItems.set($item`Dramatic™ range`, 1);
   }
   if (
     !campItems.has($item`Source terminal`) &&
-    toBoolean(getProperty("auto_haveSourceTerminal"))
+    get("auto_haveSourceTerminal", false)
   ) {
     campItems.set($item`Source terminal`, 1);
   }
@@ -4616,7 +4579,7 @@ export function auto_is_valid(it: Item): boolean {
 
 export function auto_is_valid$1(fam: Familiar): boolean {
   if (is100FamRun()) {
-    return toFamiliar(getProperty("auto_100familiar")) === fam;
+    return get("auto_100familiar", Familiar.none) === fam;
   }
   if (myPath() === $path`Trendy`) {
     return isTrendy(fam);
@@ -4673,7 +4636,7 @@ export function auto_is_valid$4(str: string): boolean {
 }
 
 function auto_log(s: string, color: string, log_level: number): void {
-  if (log_level > toInt(getProperty("auto_log_level"))) {
+  if (log_level > get("auto_log_level", 0)) {
     return;
   }
   switch (log_level) {
@@ -4706,7 +4669,7 @@ export function auto_log_debug(s: string, color: string = "black"): void {
 }
 
 export function auto_turbo(): boolean {
-  return toBoolean(getProperty("auto_turbo"));
+  return get("auto_turbo", false);
 }
 
 export function auto_can_equip(it: Item, s: Slot = toSlot(it)): boolean {
@@ -5010,19 +4973,19 @@ export function auto_check_conditions(conds: string): boolean {
           }
           if (
             haveEffect($effect`On the Trail`) > 0 &&
-            toMonster(getProperty("olfactedMonster")) === check_sniffed
+            get("olfactedMonster", Monster.none) === check_sniffed
           ) {
             return true;
           }
           if (
             isActuallyEd() &&
-            toMonster(getProperty("stenchCursedMonster")) === check_sniffed
+            get("stenchCursedMonster", Monster.none) === check_sniffed
           ) {
             return true;
           }
           if (
             is_pete() &&
-            toMonster(getProperty("makeFriendsMonster")) === check_sniffed
+            get("makeFriendsMonster", Monster.none) === check_sniffed
           ) {
             return true;
           }
@@ -5030,26 +4993,26 @@ export function auto_check_conditions(conds: string): boolean {
             $classes`Cow Puncher, Beanslinger, Snake Oiler`.includes(
               myClass(),
             ) &&
-            toMonster(getProperty("longConMonster")) === check_sniffed
+            get("longConMonster", Monster.none) === check_sniffed
           ) {
             return true;
           }
           if (
             in_darkGyffte() &&
-            toMonster(getProperty("auto_bat_soulmonster")) === check_sniffed
+            get("auto_bat_soulmonster", Monster.none) === check_sniffed
           ) {
             return true;
           }
-          if (toMonster(getProperty("_gallapagosMonster")) === check_sniffed) {
+          if (get("_gallapagosMonster", Monster.none) === check_sniffed) {
             return true;
           }
-          if (toMonster(getProperty("monkeyPointMonster")) === check_sniffed) {
+          if (get("monkeyPointMonster", Monster.none) === check_sniffed) {
             return true;
           }
-          if (toMonster(getProperty("_latteMonster")) === check_sniffed) {
+          if (get("_latteMonster", Monster.none) === check_sniffed) {
             return true;
           }
-          if (toMonster(getProperty("motifMonster")) === check_sniffed) {
+          if (get("motifMonster", Monster.none) === check_sniffed) {
             return true;
           }
           return false;
@@ -5067,7 +5030,7 @@ export function auto_check_conditions(conds: string): boolean {
         case "tavern":
           // data: Doesn't matter, but put something so I don't have to support dataless conditions
           // True if the hidden tavern has been unlocked this ascension
-          return toInt(getProperty("hiddenTavernUnlock")) >= myAscensions();
+          return get("hiddenTavernUnlock") >= myAscensions();
         case "sgeea": {
           // data: The number of sgeeas you want to have
           // True if you have at least that many sgeeas at your disposal
@@ -5308,7 +5271,7 @@ function auto_interruptZoneCheck(): boolean {
   for (const [, zone] of splitString(interruptZones, ";").entries()) {
     if (toLocation(zone) === myLocation()) {
       interruptedZones += `${currentZone};`;
-      setProperty("auto_interruptedZones", interruptedZones);
+      set("auto_interruptedZones", interruptedZones);
       return true;
     }
   }
@@ -5327,20 +5290,20 @@ export function auto_interruptCheck(
   debug: boolean = true,
 ): void {
   //we check for interrupt at multiple locations. but we only want to set it once per loop in debug mode.
-  if (toBoolean(getProperty("auto_interrupt"))) {
-    setProperty("auto_interrupt", false.toString());
+  if (get("auto_interrupt", false)) {
+    set("auto_interrupt", false);
     restoreAllSettings();
     meatReserveMessage();
     abort("auto_interrupt detected and aborting, auto_interrupt disabled.");
-  } else if (source === "main" && toBoolean(getProperty("auto_stop"))) {
+  } else if (source === "main" && get("auto_stop", false)) {
     //auto_stop is not reset here, only the main script's main() may consume the setting.
     throw new AutoStopError();
   } else if (auto_interruptZoneCheck()) {
     throw new AutoStopError(
       `auto_interruptZones detected, aborting at ${myLocation().toString()}`,
     );
-  } else if (toBoolean(getProperty("auto_debugging")) && debug) {
-    setProperty("auto_interrupt", true.toString());
+  } else if (get("auto_debugging", false) && debug) {
+    set("auto_interrupt", true);
     auto_log_info("auto_debugging detected, auto_interrupt enabled.");
   }
 }
@@ -5369,7 +5332,7 @@ export function setFlavour(ele: Element): boolean {
   if (!auto_have_skill($skill`Flavour of Magic`)) {
     return false;
   }
-  setProperty("_auto_tunedElement", ele.toString());
+  set("_auto_tunedElement", ele);
   return true;
 }
 
@@ -5568,10 +5531,7 @@ export function canSimultaneouslyAcquire(needed: Map<Item, number>): boolean {
       itemAmount(toAdd);
     alreadyUsed.set(toAdd, (alreadyUsed.get(toAdd) ?? 0) + amount);
     if (needToCraft > 0) {
-      if (
-        toBoolean(getProperty("autoSatisfyWithStorage")) &&
-        pullsRemaining() === -1
-      ) {
+      if (get("autoSatisfyWithStorage") && pullsRemaining() === -1) {
         return;
       }
       if (
@@ -5795,7 +5755,7 @@ export function auto_reserveCraftAmount(orig_it: Item): number {
 // ML MANAGEMENT FUNCTIONS
 // Gives us the number we need when comparing to a desired ML or entering a value into a maximizer string.
 export function auto_convertDesiredML(DML: number): number {
-  let DesiredML: number = toInt(getProperty("auto_MLSafetyLimit"));
+  let DesiredML: number = get("auto_MLSafetyLimit", 0);
 
   if (getProperty("auto_MLSafetyLimit") === "") {
     DesiredML = DML;
@@ -5813,7 +5773,7 @@ export function auto_setMCDToCap(): boolean {
   } else {
     // monster_level_adjustment includes the current MCD value, so it must be removed before calculating the new MCD
     const currentMlWithoutMcd: number = monsterLevelAdjustment() - currentMcd();
-    const mlSafetyLimit: number = toInt(getProperty("auto_MLSafetyLimit"));
+    const mlSafetyLimit: number = get("auto_MLSafetyLimit", 0);
 
     if (currentMlWithoutMcd < mlSafetyLimit) {
       // ML is below the cap. Add as much ML with the MCD as possible without exceeding the cap.
@@ -5933,7 +5893,7 @@ export function auto_MaxMLToCap(ToML: number, doAltML: boolean): boolean {
   UrKelCheck(ToML, 24, 10);
   angryAgateCheck(ToML, 24, 10);
   // 20
-  if (isActuallyEd() && !toBoolean(getProperty("auto_needLegs"))) {
+  if (isActuallyEd() && !get("auto_needLegs", false)) {
     tryEffects(new Map([[$effect`Blessing of Serqet`, true]]));
   }
   // 10
@@ -5988,10 +5948,10 @@ function _auto_forceNextNoncombat(
         "Attempted to force a noncombat with [free pillkeeper] but was unable to.",
       );
     }
-    setProperty("auto_forceNonCombatSource", "pillkeeper");
+    set("auto_forceNonCombatSource", "pillkeeper");
     return true;
   } else if (
-    !toBoolean(getProperty("_claraBellUsed")) &&
+    !get("_claraBellUsed") &&
     itemAmount($item`Clara's bell`) > 0 &&
     auto_is_valid($item`Clara's bell`)
   ) {
@@ -6004,7 +5964,7 @@ function _auto_forceNextNoncombat(
         "Attempted to force a noncombat with [Clara's Bell] but was unable to.",
       );
     }
-    setProperty("auto_forceNonCombatSource", "clara's bell");
+    set("auto_forceNonCombatSource", "clara's bell");
     return true;
   } else if (auto_haveCincho() && auto_getCinch(60)) {
     if (speculative) {
@@ -6014,7 +5974,7 @@ function _auto_forceNextNoncombat(
     if (!auto_haveQueuedForcedNonCombat()) {
       abort("Attempted to force a noncombat with [Cincho] but was unable to.");
     }
-    setProperty("auto_forceNonCombatSource", "cincho");
+    set("auto_forceNonCombatSource", "cincho");
     return true;
   } else if (auto_AprilTubaForcesLeft() > 0) {
     if (speculative) {
@@ -6026,11 +5986,11 @@ function _auto_forceNextNoncombat(
         "Attempted to force a noncombat with [Apriling tuba] but was unable to.",
       );
     }
-    setProperty("auto_forceNonCombatSource", "Apriling tuba");
+    set("auto_forceNonCombatSource", "Apriling tuba");
     return true;
   } else if (
     auto_haveMcHugeLargeSkis() &&
-    toInt(getProperty("_mcHugeLargeAvalancheUses")) < 3 &&
+    get("_mcHugeLargeAvalancheUses") < 3 &&
     (!in_wereprof() || !is_professor())
   ) {
     // if we're a professor, we can't use the skis
@@ -6039,13 +5999,13 @@ function _auto_forceNextNoncombat(
     }
     // avalanche require a combat to active
     // this property will cause the left ski to be eqipped and avalanche deployed next combat
-    setProperty("auto_forceNonCombatSource", "McHugeLarge left ski");
+    set("auto_forceNonCombatSource", "McHugeLarge left ski");
     // track desired NC location so we know where to go when avalanche is ready
-    setProperty("auto_forceNonCombatLocation", loc.toString());
+    set("auto_forceNonCombatLocation", loc);
     return true;
   } else if (
     auto_hasParka() &&
-    toInt(getProperty("_spikolodonSpikeUses")) < 5 &&
+    get("_spikolodonSpikeUses") < 5 &&
     hasTorso() &&
     (!in_wereprof() || !is_professor())
   ) {
@@ -6055,9 +6015,9 @@ function _auto_forceNextNoncombat(
     }
     // parka spikes require a combat to active
     // this property will cause the parka to be eqipped and spikes deployed next combat
-    setProperty("auto_forceNonCombatSource", "jurassic parka");
+    set("auto_forceNonCombatSource", "jurassic parka");
     // track desired NC location so we know where to go when parka spikes are preped
-    setProperty("auto_forceNonCombatLocation", loc.toString());
+    set("auto_forceNonCombatLocation", loc);
     return true;
   } else if (auto_canARBSupplyDrop()) {
     if (speculative) {
@@ -6069,7 +6029,7 @@ function _auto_forceNextNoncombat(
         "Attempted to force a noncombat with [Allied Radio Backpack] but was unable to.",
       );
     }
-    setProperty("auto_forceNonCombatSource", "Allied Radio Backpack");
+    set("auto_forceNonCombatSource", "Allied Radio Backpack");
     return true;
   } else if (
     itemAmount($item`stench jelly`) > 0 &&
@@ -6086,7 +6046,7 @@ function _auto_forceNextNoncombat(
         "Attempted to force a noncombat with [Stench Jelly] but was unable to.",
       );
     }
-    setProperty("auto_forceNonCombatSource", "stench jelly");
+    set("auto_forceNonCombatSource", "stench jelly");
     return true;
   } else if (
     auto_pillKeeperAvailable() &&
@@ -6103,7 +6063,7 @@ function _auto_forceNextNoncombat(
         "Attempted to force a noncombat with [not free pillkeeper] but was unable to.",
       );
     }
-    setProperty("auto_forceNonCombatSource", "pillkeeper");
+    set("auto_forceNonCombatSource", "pillkeeper");
     return true;
   }
 
@@ -6141,7 +6101,7 @@ export function auto_forceNextNoncombat(loc: Location): boolean {
 }
 
 export function auto_haveQueuedForcedNonCombat(): boolean {
-  return toBoolean(getProperty("noncombatForcerActive"));
+  return get("noncombatForcerActive");
 }
 // now time for combat forcing!
 export function _auto_forceNextCombat(
@@ -6164,7 +6124,7 @@ export function _auto_forceNextCombat(
         "Attempted to force a combat with legendary pasta noodles but was unable to.",
       );
     }
-    setProperty("auto_forceCombatSource", "legendary noodle dish");
+    set("auto_forceCombatSource", "legendary noodle dish");
     return true;
   }
   return false;
@@ -6198,7 +6158,7 @@ export function auto_haveQueuedForcedCombat(): boolean {
 }
 
 export function auto_numQueuedForcedCombat(): number {
-  return toInt(getProperty("legendaryNoodlesAmygdala"));
+  return get("legendaryNoodlesAmygdala");
 }
 
 export function auto_haveCombatForceSource(): boolean {
@@ -6418,7 +6378,7 @@ export function meatReserve(): number {
   }
   if (
     in_wildfire() &&
-    !toBoolean(getProperty("wildfirePumpGreased")) &&
+    !get("wildfirePumpGreased") &&
     itemAmount($item`pump grease`) === 0
   ) {
     reserve_extra += npcPrice($item`pump grease`);
@@ -6452,12 +6412,7 @@ export function meatReserve(): number {
   //how much do we reserve for gnasir?
   if (
     internalQuestStatus("questL11Desert") < 1 &&
-    (toInt(
-      //bitwise. desert exploration not yet finished
-      getProperty("gnasirProgress"),
-    ) &
-      2) !==
-      2
+    (get("gnasirProgress") & 2) !== 2
   ) {
     //gnasir has not been given black paint yet
     reserve_gnasir += 1000;
@@ -6502,7 +6457,7 @@ export function meatReserve(): number {
     }
   }
   //how much do we reserve for unlocking mysterious island?
-  if (toInt(getProperty("lastIslandUnlock")) < myAscensions()) {
+  if (get("lastIslandUnlock") < myAscensions()) {
     //need to unlock island
     let price_vacation: number = 500;
     if (in_wotsf()) {
@@ -6575,7 +6530,7 @@ export function auto_burnMP(mpToBurn: number): boolean {
 
   if (defaultSkill !== Skill.none) {
     // only set a default skill if we have one
-    setProperty("lastChanceBurn", `cast # ${defaultSkill}`);
+    set("lastChanceBurn", `cast # ${defaultSkill}`);
   }
 
   const equipped: Map<number, Item> = auto_saveEquipped();
@@ -6807,7 +6762,7 @@ export function auto_wantToFreeKillWithNoDrops(
       return true;
     }
     //This is called in stage2 and auto_purple_candled is set in stage 4 so this should only ever show up on the purple candled enemy
-    if (toMonster(getProperty("auto_purple_candled")) === enemy) {
+    if (get("auto_purple_candled", Monster.none) === enemy) {
       return true;
     }
     return false;
@@ -6969,7 +6924,7 @@ export function pm_updateThrall(
     if (
       base_spice &&
       toThrall("spice").level > 10 &&
-      !toBoolean(getProperty("_legendarySpiceGhostFood"))
+      !get("_legendarySpiceGhostFood")
     ) {
       consider = $thrall`Spice Ghost`;
     }

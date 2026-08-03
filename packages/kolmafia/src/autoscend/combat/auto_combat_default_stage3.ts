@@ -28,9 +28,7 @@ import {
   myMaxhp,
   myMp,
   numericModifier,
-  setProperty,
   Skill,
-  toBoolean,
   toInt,
 } from "kolmafia";
 import {
@@ -51,6 +49,8 @@ import {
   $skills,
   $slot,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
@@ -115,13 +115,13 @@ export function auto_combatDefaultStage3(
 ): CombatMacroReturns {
   // stage 3 = debuff: delevel, stun, curse, damage over time
   // Set to false because instakills are in stage 2 and if we get here, it was not successful
-  setProperty("auto_instakillSuccess", false.toString());
+  set("auto_instakillSuccess", false);
   //Unskip stage 2
-  if (toBoolean(getProperty("auto_skipStage2"))) {
-    setProperty("auto_skipStage2", false.toString());
+  if (get("auto_skipStage2", false)) {
+    set("auto_skipStage2", false);
   }
   //Skip stage 3 if set
-  if (toBoolean(getProperty("auto_skipStage3"))) {
+  if (get("auto_skipStage3", false)) {
     return undefined;
   }
   // Path = Heavy Rains
@@ -252,9 +252,7 @@ export function auto_combatDefaultStage3(
     if (
       !canExtingo &&
       enemy === $monster`pygmy bowler` &&
-      toInt(getProperty("hiddenBowlingAlleyProgress")) +
-        itemAmount($item`bowling ball`) <
-        6 &&
+      get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6 &&
       drones
     ) {
       emitDrones = true;
@@ -295,7 +293,7 @@ export function auto_combatDefaultStage3(
   if (
     auto_canUse($skill`Hugs and Kisses!`) &&
     myFamiliar() === $familiar`XO Skeleton` &&
-    toInt(getProperty("_xoHugsUsed")) < 11
+    get("_xoHugsUsed") < 11
   ) {
     let forceDrop: boolean = false;
     if (
@@ -306,7 +304,7 @@ export function auto_combatDefaultStage3(
       forceDrop = true;
     }
     // reserve enough resources to force filthworm drops
-    if (toInt(getProperty("_xoHugsUsed")) < 8) {
+    if (get("_xoHugsUsed") < 8) {
       // snatch a wig if we're lucky
       if (
         enemy === $monster`Burly Sidekick` &&
@@ -352,7 +350,7 @@ export function auto_combatDefaultStage3(
   if (
     wantToDouse(enemy) &&
     round_1 <= maxRoundsToDouse(enemy) &&
-    !toBoolean(getProperty("_douseFoeSuccess"))
+    !get("_douseFoeSuccess")
   ) {
     // dousing can have a low chance of success, so only do it for a while
     const douse: Skill = $skill`Douse Foe`;
@@ -374,10 +372,10 @@ export function auto_combatDefaultStage3(
       auto_fireExtinguisherCharges() > 10;
     const mildEvilAvailable: boolean =
       auto_canUse($skill`Perpetrate Mild Evil`, false) &&
-      toInt(getProperty("_mildEvilPerpetrated")) < 3;
+      get("_mildEvilPerpetrated") < 3;
     const swoopAvailable: boolean =
       auto_canUse($skill`Swoop like a Bat`, true) &&
-      toInt(getProperty("_batWingsSwoopUsed")) < 11;
+      get("_batWingsSwoopUsed") < 11;
     // mild evil and swoop can only pick pocket. Use them before fire extinguisher
     if (swoopAvailable) {
       handleTracker({
@@ -436,7 +434,7 @@ export function auto_combatDefaultStage3(
 
   if (
     $monsters`Naughty Sorceress, Naughty Sorceress (2)`.includes(enemy) &&
-    !toBoolean(getProperty("auto_confidence"))
+    !get("auto_confidence", false)
   ) {
     enemy_la = 151;
   }
@@ -493,7 +491,7 @@ export function auto_combatDefaultStage3(
         canUse$3($item`Daily Affirmation: Keep Free Hate in your Heart`) &&
         inAftercore() &&
         hippyStoneBroken() &&
-        !toBoolean(getProperty("_affirmationHateUsed"))
+        !get("_affirmationHateUsed")
       ) {
         return useItem($item`Daily Affirmation: Keep Free Hate in your Heart`);
       }
@@ -584,7 +582,7 @@ export function auto_combatDefaultStage3(
     if (
       myLocation() === $location`The Smut Orc Logging Camp` &&
       canSurvive(1.0) &&
-      toInt(getProperty("chasmBridgeProgress")) < bridgeGoal()
+      get("chasmBridgeProgress") < bridgeGoal()
     ) {
       const coldMortarShell: boolean =
         auto_canUse($skill`Stuffed Mortar Shell`) &&
@@ -786,7 +784,7 @@ export function auto_combatDefaultStage3(
     if (
       myLocation() === $location`The Haunted Kitchen` &&
       auto_canUse($skill`Become a Cloud of Mist`) &&
-      toInt(getProperty("_vampyreCloakeFormUses")) < 10
+      get("_vampyreCloakeFormUses") < 10
     ) {
       const hot: number = toInt(numericModifier($modifier`Hot Resistance`));
       const stench: number = toInt(
@@ -804,7 +802,7 @@ export function auto_combatDefaultStage3(
     if (
       enemy === $monster`dirty thieving brigand` &&
       auto_canUse($skill`Become a Wolf`) &&
-      toInt(getProperty("_vampyreCloakeFormUses")) < 10
+      get("_vampyreCloakeFormUses") < 10
     ) {
       return auto_useSkill($skill`Become a Wolf`);
     }
@@ -887,7 +885,7 @@ export function auto_combatDefaultStage3(
       myMp() > mpCost($skill`Extract Jelly`) * 3 &&
       canSurvive(2.0) &&
       myFamiliar() === $familiar`Space Jellyfish` &&
-      toInt(getProperty("_spaceJellyfishDrops")) < 3 &&
+      get("_spaceJellyfishDrops") < 3 &&
       $elements`hot, spooky, stench`.includes(monsterElement(enemy))
     ) {
       return auto_useSkill($skill`Extract Jelly`);

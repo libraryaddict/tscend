@@ -37,10 +37,8 @@ import {
   myTurncount,
   npcPrice,
   numericModifier,
-  setProperty,
   squareRoot,
   takeCloset,
-  toBoolean,
   toInt,
   use,
   visitUrl,
@@ -59,6 +57,7 @@ import {
   $skill,
   $slot,
   get,
+  set,
 } from "libram";
 
 import { resetState } from "../../autoscend";
@@ -170,7 +169,7 @@ export const LX_loggingHatchetTask: QuestTask = registerQuestTask({
         !possessEquipment($item`hewn moon-rune spoon`) ||
         !auto_is_valid($item`hewn moon-rune spoon`))) ||
     internalQuestStatus("questL09Topping") > 0 ||
-    toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal(),
+    get("chasmBridgeProgress") >= bridgeGoal(),
   ready: () =>
     canadiaAvailable() &&
     // avoid infinite loop in kolhs. we can not get the hatchet until we finish mandatory school for the day
@@ -207,28 +206,26 @@ function L9_leafletQuestDo(): boolean {
     //checks a user setting as well as current level
     equipStatgainIncreasers$2();
     cliExecute("leaflet"); //also gain +200 substats for each stat
-    if (toBoolean(getProperty("leafletCompleted"))) {
-      setProperty("auto_leaflet_done", true.toString());
+    if (get("leafletCompleted")) {
+      set("auto_leaflet_done", true);
     }
   } else {
     cliExecute("leaflet nomagic"); //no substat gains
-    setProperty("auto_leaflet_done", true.toString()); // we're done here even with no stats
+    set("auto_leaflet_done", true); // we're done here even with no stats
   }
 
-  return toBoolean(getProperty("leafletCompleted"));
+  return get("leafletCompleted");
 }
 
 export const L9_leafletQuestTask: QuestTask = registerQuestTask({
   name: "L9_leafletQuest",
-  completed: () =>
-    toBoolean(getProperty("leafletCompleted")) ||
-    toBoolean(getProperty("auto_leaflet_done")),
+  completed: () => get("leafletCompleted") || get("auto_leaflet_done", false),
   ready: () =>
     myLevel() >= 9 &&
     !isActuallyEd() &&
     !in_koe() &&
-    !toBoolean(getProperty("leafletCompleted")) &&
-    !toBoolean(getProperty("auto_leaflet_done")),
+    !get("leafletCompleted") &&
+    !get("auto_leaflet_done", false),
   do: L9_leafletQuestDo,
 });
 
@@ -292,20 +289,20 @@ function L9_chasmMaximizeForNoncombat(): void {
         .weight($modifier`Muscle`, 1000)
         .weight($modifier`Weapon Damage`, 1000)
         .weight($modifier`Weapon Damage Percent`, 10000);
-      setProperty("choiceAdventure1345", (1).toString());
+      set("choiceAdventure1345", 1);
       break;
     case "mys":
       maximizer
         .weight($modifier`Mysticality`, 1000)
         .weight($modifier`Spell Damage`, 1000)
         .weight($modifier`Spell Damage Percent`, 10000);
-      setProperty("choiceAdventure1345", (2).toString());
+      set("choiceAdventure1345", 2);
       break;
     case "mox":
       maximizer
         .weight($modifier`Moxie`, 1000)
         .weight($modifier`Sleaze Resistance`, 10000);
-      setProperty("choiceAdventure1345", (3).toString());
+      set("choiceAdventure1345", 3);
       break;
   }
 }
@@ -315,7 +312,7 @@ export function bridgeGoal(): number {
 }
 
 export function fastenerCount(): number {
-  let base: number = toInt(getProperty("chasmBridgeProgress"));
+  let base: number = get("chasmBridgeProgress");
   base = base + itemAmount($item`thick caulk`);
   base = base + itemAmount($item`long hard screw`);
   base = base + itemAmount($item`messy butt joint`);
@@ -325,7 +322,7 @@ export function fastenerCount(): number {
 }
 
 export function lumberCount(): number {
-  let base: number = toInt(getProperty("chasmBridgeProgress"));
+  let base: number = get("chasmBridgeProgress");
   base = base + itemAmount($item`morningwood plank`);
   base = base + itemAmount($item`raging hardwood plank`);
   base = base + itemAmount($item`weirdwood plank`);
@@ -342,7 +339,7 @@ function finishBuildingSmutOrcBridgeDo(): boolean {
   }
   // make sure our progress count is correct before we do anything.
   visitUrl(
-    `place.php?whichplace=orc_chasm&action=bridge${toInt(getProperty("chasmBridgeProgress"))}`,
+    `place.php?whichplace=orc_chasm&action=bridge${get("chasmBridgeProgress")}`,
   );
   // finish chasm if we can
   if (auto_canLeapBridge()) {
@@ -351,7 +348,7 @@ function finishBuildingSmutOrcBridgeDo(): boolean {
     visitUrl("place.php?whichplace=highlands&action=highlands_dude");
     return true;
   }
-  if (toInt(getProperty("chasmBridgeProgress")) >= 30) {
+  if (get("chasmBridgeProgress") >= 30) {
     visitUrl("place.php?whichplace=highlands&action=highlands_dude");
     return true;
   }
@@ -363,10 +360,10 @@ export const finishBuildingSmutOrcBridgeTask: QuestTask = registerQuestTask({
   name: "finishBuildingSmutOrcBridge",
   completed: () =>
     internalQuestStatus("questL09Topping") > 0 ||
-    toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal(),
+    get("chasmBridgeProgress") >= bridgeGoal(),
   ready: () =>
     internalQuestStatus("questL09Topping") === 0 &&
-    toInt(getProperty("chasmBridgeProgress")) < bridgeGoal(),
+    get("chasmBridgeProgress") < bridgeGoal(),
   do: finishBuildingSmutOrcBridgeDo,
 });
 
@@ -382,7 +379,7 @@ export function prepareForSmutOrcs(): void {
       "Adventuring at Smut Orc Logging Camp when quest is done. Skipping preparing to maximize zone progress.",
       "blue",
     );
-    setProperty("choiceAdventure1345", (1).toString());
+    set("choiceAdventure1345", 1);
     return;
   }
   // -Combat is useless here since NC is triggered by killing Orcs...So we kill orcs better!
@@ -436,7 +433,7 @@ export function prepareForSmutOrcs(): void {
         "Currently setup for Myst/Spell Damage, option 2: Blast it down with a spell",
         "blue",
       );
-      setProperty("choiceAdventure1345", (0).toString());
+      set("choiceAdventure1345", 0);
     } else {
       auto_log_info("Preparing to Ice-Punch Orcs!", "blue");
       maximizer
@@ -456,13 +453,13 @@ export function prepareForSmutOrcs(): void {
         "Currently setup for Muscle/Weapon Damage, option 1: Kick it down",
         "blue",
       );
-      setProperty("choiceAdventure1345", (0).toString());
+      set("choiceAdventure1345", 0);
     }
   }
   // This adds a tonne of damage and NC progress
   buffMaintain$2($effect`Triple-Sized`);
 
-  if (toInt(getProperty("smutOrcNoncombatProgress")) === 15) {
+  if (get("smutOrcNoncombatProgress") === 15) {
     // If we think the non-com will hit NOW we clear maximizer to keep previous settings from carrying forward
     resetMaximize();
 
@@ -498,19 +495,18 @@ export function prepareForSmutOrcs(): void {
     return;
   }
 
-  let need: number =
-    (bridgeGoal() - toInt(getProperty("chasmBridgeProgress"))) / 5;
+  let need: number = (bridgeGoal() - get("chasmBridgeProgress")) / 5;
   if (need > 0) {
     while (need > 0 && itemAmount($item`snow berries`) >= 2) {
       cliExecute("make 1 snow boards");
       need = need - 1;
       visitUrl(
-        `place.php?whichplace=orc_chasm&action=bridge${toInt(getProperty("chasmBridgeProgress"))}`,
+        `place.php?whichplace=orc_chasm&action=bridge${get("chasmBridgeProgress")}`,
       );
     }
   }
 
-  if (toInt(getProperty("chasmBridgeProgress")) < bridgeGoal()) {
+  if (get("chasmBridgeProgress") < bridgeGoal()) {
     if (fastenerCount() < bridgeGoal()) {
       autoEquip($item`loadstone`);
     }
@@ -572,10 +568,10 @@ export const L9_chasmBuildTask: QuestTask = registerQuestTask({
   name: "L9_chasmBuild",
   completed: () =>
     internalQuestStatus("questL09Topping") > 0 ||
-    toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal(),
+    get("chasmBridgeProgress") >= bridgeGoal(),
   ready: () =>
     internalQuestStatus("questL09Topping") === 0 &&
-    toInt(getProperty("chasmBridgeProgress")) < bridgeGoal(),
+    get("chasmBridgeProgress") < bridgeGoal(),
   do: L9_chasmBuildDo,
   locations: $locations`The Smut Orc Logging Camp`,
   desiredEncounters: () => {
@@ -611,10 +607,9 @@ export function L9_aBooPeakWorthBurningLuckOn(): boolean {
     return false;
   }
   const clueAmt: number =
-    itemAmount($item`A-Boo clue`) +
-    (toBoolean(getProperty("auto_abooclover")) ? 1 : 0);
+    itemAmount($item`A-Boo clue`) + (get("auto_abooclover", false) ? 1 : 0);
 
-  const progressLeft: number = toInt(getProperty("booPeakProgress"));
+  const progressLeft: number = get("booPeakProgress");
 
   // If we would not finish it in 3 fights, 2 would effectively be a clue + adv after all.
   if (clueAmt * 30 + 6 >= progressLeft) {
@@ -646,7 +641,7 @@ function L9_aBooPeakDo(): boolean {
     return false; // We have clues but we can't survive them so not worth trying when we only have 1 hp
   }
 
-  if (toInt(getProperty("booPeakProgress")) > 90) {
+  if (get("booPeakProgress") > 90) {
     auto_log_info(
       `A-Boo Peak (initial): ${getProperty("booPeakProgress")}`,
       "blue",
@@ -674,30 +669,26 @@ function L9_aBooPeakDo(): boolean {
     }
   }
 
-  if (
-    toBoolean(getProperty("auto_abooclover")) &&
-    clueAmt >= toInt(getProperty("booPeakProgress")) / 30
-  ) {
+  if (get("auto_abooclover", false) && clueAmt >= get("booPeakProgress") / 30) {
     // if you get lucky/have enough item drop to get 3 clues while getting to 90% haunted, don't waste a clover getting more.
     auto_log_info(
       "We have enough A-boo clues to clear the peak, lets not waste a clover",
     );
-    setProperty("auto_abooclover", false.toString());
+    set("auto_abooclover", false);
   }
 
   auto_log_info(`A-Boo Peak: ${getProperty("booPeakProgress")}`, "blue");
-  const clueCheck: boolean =
-    clueAmt > 0 || toInt(getProperty("auto_aboopending")) !== 0;
+  const clueCheck: boolean = clueAmt > 0 || get("auto_aboopending", 0) !== 0;
   if (
-    toBoolean(getProperty("auto_abooclover")) &&
-    toInt(getProperty("booPeakProgress")) >= 30 &&
+    get("auto_abooclover", false) &&
+    get("booPeakProgress") >= 30 &&
     booCloversOk
   ) {
     if (autoLuckyAdv($location`A-Boo Peak`)) {
-      setProperty("auto_abooclover", false.toString());
+      set("auto_abooclover", false);
       return true;
     }
-  } else if (clueCheck && toInt(getProperty("booPeakProgress")) > 2) {
+  } else if (clueCheck && get("booPeakProgress") > 2) {
     let doThisBoo: boolean = false;
 
     const priorBjorn: Familiar = myBjornedFamiliar();
@@ -820,21 +811,21 @@ function L9_aBooPeakDo(): boolean {
     );
     let totalDamage: number = estimatedCold + estimatedSpooky;
 
-    if (toInt(getProperty("booPeakProgress")) <= 6) {
+    if (get("booPeakProgress") <= 6) {
       estimatedCold = (estimatedCold * 38) / 463 + 1;
       estimatedSpooky = (estimatedSpooky * 38) / 463 + 1;
       totalDamage = estimatedCold + estimatedSpooky;
-    } else if (toInt(getProperty("booPeakProgress")) <= 12) {
+    } else if (get("booPeakProgress") <= 12) {
       estimatedCold = (estimatedCold * 88) / 463 + 1;
       estimatedSpooky = (estimatedSpooky * 88) / 463 + 1;
       totalDamage = estimatedCold + estimatedSpooky;
-    } else if (toInt(getProperty("booPeakProgress")) <= 20) {
+    } else if (get("booPeakProgress") <= 20) {
       estimatedCold = (estimatedCold * 213) / 463 + 1;
       estimatedSpooky = (estimatedSpooky * 213) / 463 + 1;
       totalDamage = estimatedCold + estimatedSpooky;
     }
 
-    if (toInt(getProperty("booPeakProgress")) <= 20) {
+    if (get("booPeakProgress") <= 20) {
       auto_log_info("Don't need a full A-Boo Clue, adjusting values:", "blue");
       auto_log_info(
         `Expected cold damage: ${estimatedCold} Expected spooky damage: ${estimatedSpooky}`,
@@ -860,7 +851,7 @@ function L9_aBooPeakDo(): boolean {
       15,
     );
 
-    if (toInt(getProperty("booPeakProgress")) === 0) {
+    if (get("booPeakProgress") === 0) {
       doThisBoo = true;
     }
     if (
@@ -920,11 +911,11 @@ function L9_aBooPeakDo(): boolean {
         auto_beachCombHead("spooky");
       }
 
-      setProperty("choiceAdventure611", "1");
+      set("choiceAdventure611", "1");
 
-      if (toInt(getProperty("auto_aboopending")) === 0) {
+      if (get("auto_aboopending", 0) === 0) {
         if (itemAmount(clue) > 0 && use(1, clue)) {
-          setProperty("auto_aboopending", myTurncount().toString());
+          set("auto_aboopending", myTurncount());
         }
       }
       if (canChangeToFamiliar($familiar`Trick-or-Treating Tot`)) {
@@ -963,10 +954,10 @@ function L9_aBooPeakDo(): boolean {
             } catch {}
           }
         } else {
-          setProperty("auto_aboopending", (0).toString());
+          set("auto_aboopending", 0);
         }
       }
-      setProperty("_auto_forcePokefamRestore", true.toString());
+      set("_auto_forcePokefamRestore", true);
       acquireFullHP();
       if (
         myHp() * 4 < myMaxhp() &&
@@ -989,7 +980,7 @@ function L9_aBooPeakDo(): boolean {
     }
 
     autoAdv($location`A-Boo Peak`);
-    setProperty("auto_aboopending", (0).toString());
+    set("auto_aboopending", 0);
 
     return true;
   }
@@ -1010,7 +1001,7 @@ const L9_aBooPeakTask: QuestTask = registerQuestTask({
       {
         item: clue,
         needAmount:
-          toInt(getProperty("auto_aboopending")) +
+          get("auto_aboopending", 0) +
           itemAmount(clue) -
           Math.ceil(get("booPeakProgress") / 34),
       },
@@ -1023,7 +1014,7 @@ export function L9_aBooPeak(): boolean {
 }
 
 export function hedgeTrimmersNeeded(): number {
-  const twinPeakProgress: number = toInt(getProperty("twinPeakProgress"));
+  const twinPeakProgress: number = get("twinPeakProgress");
   const needStench: boolean = (twinPeakProgress & 1) === 0;
   const needFood: boolean = (twinPeakProgress & 2) === 0;
   const needJar: boolean = (twinPeakProgress & 4) === 0;
@@ -1047,7 +1038,7 @@ export function hedgeTrimmersNeeded(): number {
 }
 // returns true if can successfully do one of the tasks at the great overlook lodge NC (606)
 export function prepareForTwinPeak(speculative: boolean): boolean {
-  const progress: number = toInt(getProperty("twinPeakProgress"));
+  const progress: number = get("twinPeakProgress");
   const needStench: boolean = (progress & 1) === 0;
   const needFood: boolean = (progress & 2) === 0;
   const needJar: boolean = (progress & 4) === 0;
@@ -1084,11 +1075,7 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
       food_drop >= 20 &&
       haveEffect($effect`Brother Flying Burrito's Blessing`) === 0
     ) {
-      if (
-        friarsAvailable() &&
-        !toBoolean(getProperty("friarsBlessingReceived")) &&
-        !speculative
-      ) {
+      if (friarsAvailable() && !get("friarsBlessingReceived") && !speculative) {
         cliExecute("friars food");
       }
       if (haveEffect($effect`Brother Flying Burrito's Blessing`) > 0) {
@@ -1148,7 +1135,7 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
 }
 
 function L9_twinPeakDo(): boolean {
-  if (toInt(getProperty("twinPeakProgress")) >= 15) {
+  if (get("twinPeakProgress") >= 15) {
     return false;
   }
 
@@ -1156,8 +1143,7 @@ function L9_twinPeakDo(): boolean {
     hedgeTrimmersNeeded() > 0 &&
     auto_autumnatonCanAdv($location`Twin Peak`) &&
     !isAboutToPowerlevel() &&
-    ($location`Twin Peak`.turnsSpent > 0 ||
-      toInt(getProperty("twinPeakProgress")) > 0)
+    ($location`Twin Peak`.turnsSpent > 0 || get("twinPeakProgress") > 0)
   ) {
     // using trimmers doesn't increment turns_spent, so look at quest status also
     // delay zone to allow autumnaton to grab rusty hedge trimmers
@@ -1165,7 +1151,7 @@ function L9_twinPeakDo(): boolean {
     return false;
   }
   //main lodge NC. we swap around this value multiple times. initially set to 0 to prevent mistakes.
-  setProperty("choiceAdventure606", "0");
+  set("choiceAdventure606", "0");
   //-combat via combining 2 IOTMs. Needs to be moved to providePlusNonCombat
   if (myMp() > 60 || considerGrimstoneGolem(true)) {
     handleBjornify($familiar`Grimstone Golem`);
@@ -1216,7 +1202,7 @@ function L9_twinPeakDo(): boolean {
       abort("Tried using a rusty hedge trimmer but that didn't seem to work");
     }
     auto_log_info(
-      `Hedge trimming situation: ${toInt(getProperty("choiceAdventure606"))}`,
+      `Hedge trimming situation: ${get("choiceAdventure606", 0)}`,
       "green",
     );
     const page: string = visitUrl("main.php");
@@ -1233,7 +1219,7 @@ function L9_twinPeakDo(): boolean {
   }
 
   if (
-    toBoolean(getProperty("auto_shinningStarted")) &&
+    get("auto_shinningStarted", false) &&
     auto_canCamelSpit() &&
     auto_canMapTheMonsters()
   ) {
@@ -1293,7 +1279,7 @@ function L9_oilPeakDo(): boolean {
   }
 
   if (containsText(visitUrl("place.php?whichplace=highlands"), "fire3.gif")) {
-    const oilProgress: number = toInt(getProperty("twinPeakProgress"));
+    const oilProgress: number = get("twinPeakProgress");
     const needJar: boolean =
       (oilProgress & 4) === 0 && itemAmount($item`jar of oil`) === 0;
     if (!needJar || in_bhy()) {
@@ -1373,13 +1359,13 @@ function L9_oilPeakDo(): boolean {
 
   autoAdv($location`Oil Peak`);
   if (getProperty("lastEncounter") === "Unimpressed with Pressure") {
-    setProperty("oilPeakProgress", (0.0).toString());
+    set("oilPeakProgress", 0.0);
     // Brute Force grouping with tavern (if not done) to maximize tangles while we have a high ML.
     auto_log_info(
       "Checking to see if we should do the tavern while we are running high ML.",
       "green",
     );
-    setProperty("auto_forceTavern", true.toString());
+    set("auto_forceTavern", true);
     // Remove Driving Wastefully if we had it
     if (0 < haveEffect($effect`Driving Wastefully`)) {
       uneffect($effect`Driving Wastefully`);
@@ -1418,7 +1404,7 @@ function L9_highLandlordDo(): boolean {
       "blue",
     );
     visitUrl("place.php?whichplace=highlands&action=highlands_dude");
-    setProperty("auto_grimstoneFancyOilPainting", false.toString());
+    set("auto_grimstoneFancyOilPainting", false);
     return true;
   }
 
@@ -1444,8 +1430,8 @@ export const L9_highLandlordTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL09Topping") > 3,
   ready: () =>
     internalQuestStatus("questL09Topping") >= 1 &&
-    toInt(getProperty("chasmBridgeProgress")) >= bridgeGoal() &&
-    (!isActuallyEd() || toBoolean(getProperty("auto_chasmBusted"))),
+    get("chasmBridgeProgress") >= bridgeGoal() &&
+    (!isActuallyEd() || get("auto_chasmBusted", false)),
   do: L9_highLandlordDo,
 });
 

@@ -1,7 +1,6 @@
 import {
   abort,
   containsText,
-  getProperty,
   haveEffect,
   isUnrestricted,
   Item,
@@ -9,13 +8,20 @@ import {
   lastMonster,
   myPath,
   putCloset,
-  setProperty,
   Slot,
-  toBoolean,
   toSlot,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $items, $location, $monster, $path } from "libram";
+import {
+  $effect,
+  $item,
+  $items,
+  $location,
+  $monster,
+  $path,
+  get,
+  set,
+} from "libram";
 
 import { auto_triggerPreAdventure, autoAdvBypass$1 } from "../auto_adventure";
 import { AutoStopError, internalQuestStatus } from "../auto_util";
@@ -28,12 +34,12 @@ export function in_bhy(): boolean {
 
 export function bhy_initializeSettings(): void {
   if (in_bhy()) {
-    setProperty("auto_abooclover", false.toString());
-    setProperty("auto_wandOfNagamar", false.toString());
-    setProperty("auto_hippyInstead", true.toString());
-    setProperty("auto_getBeehive", true.toString());
-    setProperty("auto_getBoningKnife", true.toString());
-    setProperty("auto_ignoreFlyer", true.toString());
+    set("auto_abooclover", false);
+    set("auto_wandOfNagamar", false);
+    set("auto_hippyInstead", true);
+    set("auto_getBeehive", true);
+    set("auto_getBoningKnife", true);
+    set("auto_ignoreFlyer", true);
   }
 }
 
@@ -119,7 +125,7 @@ export function L13_bhy_towerFinal(): boolean {
   }
 
   auto_triggerPreAdventure();
-  setProperty("auto_disableAdventureHandling", true.toString());
+  set("auto_disableAdventureHandling", true);
   autoAdvBypass$1(
     "place.php?whichplace=nstower&action=ns_10_sorcfight",
     $location`Noob Cave`,
@@ -131,7 +137,7 @@ export function L13_bhy_towerFinal(): boolean {
   if (haveEffect($effect`Beaten Up`) > 0) {
     abort("The Guy Made Of Bees beat me up! Please finish him off manually");
   }
-  if (toBoolean(getProperty("auto_stayInRun"))) {
+  if (get("auto_stayInRun", false)) {
     throw new AutoStopError(
       "User wanted to stay in run (auto_stayInRun), we are done.",
     );

@@ -1,5 +1,5 @@
-import { getProperty, Monster, setProperty, toInt } from "kolmafia";
-import { $skill } from "libram";
+import { Monster } from "kolmafia";
+import { $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { handleTracker } from "../auto_util";
@@ -20,12 +20,9 @@ export function auto_combatDarkGyffteStage2(
   if (
     bat_shouldEnsorcel(enemy) &&
     auto_canUse($skill`Ensorcel`) &&
-    toInt(getProperty("auto_bat_ensorcels")) < 3
+    get("auto_bat_ensorcels", 0) < 3
   ) {
-    setProperty(
-      "auto_bat_ensorcels",
-      (toInt(getProperty("auto_bat_ensorcels")) + 1).toString(),
-    );
+    set("auto_bat_ensorcels", get("auto_bat_ensorcels", 0) + 1);
     handleTracker({
       what: enemy,
       detail: $skill`Ensorcel`.toString(),

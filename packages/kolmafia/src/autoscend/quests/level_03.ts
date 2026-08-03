@@ -15,9 +15,7 @@ import {
   myLevel,
   myMp,
   numericModifier,
-  setProperty,
   stringModifier,
-  toBoolean,
   visitUrl,
   wait,
 } from "kolmafia";
@@ -32,6 +30,8 @@ import {
   $modifier,
   $monster,
   $skill,
+  get,
+  set,
 } from "libram";
 
 import { pullXWhenHaveY } from "../auto_acquire";
@@ -192,7 +192,7 @@ function auto_tavern(): boolean {
   let capped: number = 0;
   for (const [ele, choicenum] of eleChoiceCombos) {
     const passed: boolean = simValue(Modifier.get(`${ele} Damage`)) >= 20.0;
-    setProperty(`choiceAdventure${choicenum}`, passed ? "2" : "1");
+    set(`choiceAdventure${choicenum}`, passed ? "2" : "1");
     if (passed) {
       ++capped;
       //adding a 20min argument does not yield better combinations nor avoid giving value to failed elements
@@ -228,7 +228,7 @@ function auto_tavern(): boolean {
     if (charAt(tavern_1, loc) === "0") {
       const actual: number = loc + 1;
       let needReset: boolean = false;
-      setProperty("auto_nonAdvLoc", true.toString());
+      set("auto_nonAdvLoc", true);
 
       if (
         autoAdvBypass$1(
@@ -270,8 +270,8 @@ function auto_tavern(): boolean {
         (in_wereprof() && !($location`Noob Cave`.turnsSpent < 8))
       ) {
         //want 7 turns of Noob Cave in WereProfessor for Smashed Scientific Equipment
-        if (toBoolean(getProperty("auto_newbieOverride"))) {
-          setProperty("auto_newbieOverride", false.toString());
+        if (get("auto_newbieOverride", false)) {
+          set("auto_newbieOverride", false);
         } else {
           abort("We went to the Noob Cave for reals... uh oh");
         }
@@ -288,7 +288,7 @@ function auto_tavern(): boolean {
           "red",
         );
         auto_log_warning("Attempting to reset this issue...", "red");
-        setProperty("tavernLayout", "0000100000000000000000000");
+        set("tavernLayout", "0000100000000000000000000");
         visitUrl("cellar.php");
       }
       return true;
@@ -299,7 +299,7 @@ function auto_tavern(): boolean {
     "red",
   );
   auto_log_warning("Attempting to reset this issue...", "red");
-  setProperty("tavernLayout", "0000100000000000000000000");
+  set("tavernLayout", "0000100000000000000000000");
   wait(5);
   return true;
 }
@@ -344,7 +344,7 @@ function L3_tavernReady(): boolean {
     delayTavern = false;
   }
 
-  if (toBoolean(getProperty("auto_forceTavern"))) {
+  if (get("auto_forceTavern", false)) {
     delayTavern = false;
   }
 

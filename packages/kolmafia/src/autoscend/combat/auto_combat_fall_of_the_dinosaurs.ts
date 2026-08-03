@@ -4,11 +4,10 @@ import {
   getProperty,
   lastMonster,
   Monster,
-  setProperty,
   splitString,
   toInt,
 } from "kolmafia";
-import { $skill } from "libram";
+import { $skill, set } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { in_fotd } from "../paths/fall_of_the_dinosaurs";
@@ -47,7 +46,7 @@ export function fotd_combat_helper(): void {
   for (const d of dino_list.keys()) {
     const dino: string = dino_list.get(d) ?? dino_list.set(d, "").get(d);
     if (lastMonster().randomModifiers.includes(dino)) {
-      setProperty("_auto_combatFotdDinosaur", dino);
+      set("_auto_combatFotdDinosaur", dino);
       break;
     }
   }

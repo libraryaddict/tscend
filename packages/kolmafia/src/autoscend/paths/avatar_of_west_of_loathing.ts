@@ -1,7 +1,6 @@
 import {
   cliExecute,
   Effect,
-  getProperty,
   haveEffect,
   haveSkill,
   itemAmount,
@@ -9,12 +8,20 @@ import {
   myLevel,
   myLocation,
   myPath,
-  setProperty,
   toInt,
   use,
   visitUrl,
 } from "kolmafia";
-import { $class, $effect, $item, $locations, $path, $skill } from "libram";
+import {
+  $class,
+  $effect,
+  $item,
+  $locations,
+  $path,
+  $skill,
+  get,
+  set,
+} from "libram";
 
 import { auto_log_info, autoCraft } from "../auto_util";
 import { AshMatcher } from "../utils/kolmafiaUtils";
@@ -26,8 +33,8 @@ export function in_awol(): boolean {
 
 export function awol_initializeSettings(): boolean {
   if (in_awol()) {
-    setProperty("auto_awolLastSkill", (0).toString());
-    setProperty("auto_getBeehive", true.toString());
+    set("auto_awolLastSkill", 0);
+    set("auto_getBeehive", true);
   }
   return false;
 }
@@ -71,8 +78,8 @@ export function awol_useStuff(): void {
 
   if (
     itemAmount($item`snake oil`) > 0 &&
-    toInt(getProperty("awolMedicine")) < 30 &&
-    toInt(getProperty("awolVenom")) < 30
+    get("awolMedicine") < 30 &&
+    get("awolVenom") < 30
   ) {
     use(1, $item`snake oil`);
   }
@@ -182,13 +189,13 @@ export function awol_buySkills(): boolean {
     return false;
   }
 
-  if (toInt(getProperty("auto_awolLastSkill")) === 0) {
+  if (get("auto_awolLastSkill", 0) === 0) {
     //Catch that Mafia does not see our second/third skillbook at ascension start
     cliExecute("refresh inv");
   }
 
-  if (toInt(getProperty("auto_awolLastSkill")) < myLevel()) {
-    setProperty("auto_awolLastSkill", myLevel().toString());
+  if (get("auto_awolLastSkill", 0) < myLevel()) {
+    set("auto_awolLastSkill", myLevel());
   } else {
     return false;
   }

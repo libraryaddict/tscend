@@ -18,17 +18,15 @@ import {
   itemAmount,
   itemType,
   min,
+  Monster,
   myClass,
   myDaycount,
   myFullness,
   myMaxhp,
   myMp,
   myPrimestat,
-  setProperty,
   splitString,
-  toInt,
   toLowerCase,
-  toMonster,
   use,
   useSkill,
   visitUrl,
@@ -47,6 +45,7 @@ import {
   $stat,
   get,
   have,
+  set,
 } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
@@ -182,7 +181,7 @@ export function cyrptEvilBonus(inCombat: boolean = false): number {
   //returns value of next fight (inCombat: currently) available bonus to evil reduction
   let cyrptBonus: number =
     is_pete() && getProperty("peteMotorbikeCowling") === "Ghost Vacuum" ? 1 : 0;
-  cyrptBonus += toInt(getProperty("_nightmareFuelCharges")) > 0 ? 2 : 0;
+  cyrptBonus += get("_nightmareFuelCharges") > 0 ? 2 : 0;
   if (inCombat) {
     cyrptBonus +=
       equippedItem($slot`back`) ===
@@ -246,13 +245,13 @@ function L7_defiledAlcove(): boolean {
 
   if (
     internalQuestStatus("questL07Cyrptic") !== 0 ||
-    toInt(getProperty("cyrptAlcoveEvilness")) === 0
+    get("cyrptAlcoveEvilness") === 0
   ) {
     return false;
   }
 
   if (
-    toInt(getProperty("cyrptAlcoveEvilness")) > 13 &&
+    get("cyrptAlcoveEvilness") > 13 &&
     auto_habitatMonster() === $monster`modern zmobie`
   ) {
     if (auto_backupUsesLeft() > 0) {
@@ -260,7 +259,7 @@ function L7_defiledAlcove(): boolean {
       return false;
     }
     if (
-      toInt(getProperty("cyrptAlcoveEvilness")) <=
+      get("cyrptAlcoveEvilness") <=
       13 + auto_habitatFightsLeft() * (cyrptEvilBonus() + 5)
     ) {
       // we have enough Habitants to get to 13 or less evilness. Don't need to adventure in this zone.
@@ -277,7 +276,7 @@ function L7_defiledAlcove(): boolean {
     return false;
   }
 
-  if (toInt(getProperty("cyrptAlcoveEvilness")) > 14 + evilBonus) {
+  if (get("cyrptAlcoveEvilness") > 14 + evilBonus) {
     provideInitiative$2(850, $location`The Defiled Alcove`, true);
     maximizer
       .weight($modifier`Initiative`, 100)
@@ -287,13 +286,13 @@ function L7_defiledAlcove(): boolean {
   autoEquip($item`gravy boat`);
   knockOffCapePrep();
 
-  if (toInt(getProperty("cyrptAlcoveEvilness")) >= 16 + evilBonus) {
+  if (get("cyrptAlcoveEvilness") >= 16 + evilBonus) {
     useNightmareFuelIfPossible();
   }
 
   auto_log_info(`The Alcove! (${initiativeModifier()})`, "blue");
-  if (toInt(getProperty("cyrptAlcoveEvilness")) <= 13) {
-    setProperty("auto_nextEncounter", "conjoined zmombie");
+  if (get("cyrptAlcoveEvilness") <= 13) {
+    set("auto_nextEncounter", "conjoined zmombie");
   }
   return autoAdv($location`The Defiled Alcove`);
 }
@@ -308,18 +307,18 @@ function L7_defiledNookDo(): boolean {
   while (
     itemAmount($item`evil eye`) > 0 &&
     auto_is_valid($item`evil eye`) &&
-    toInt(getProperty("cyrptNookEvilness")) > 13
+    get("cyrptNookEvilness") > 13
   ) {
     use(1, $item`evil eye`);
   }
 
   const skip_in_koe: boolean =
     in_koe() &&
-    toInt(getProperty("cyrptNookEvilness")) > 13 &&
+    get("cyrptNookEvilness") > 13 &&
     getProperty("questL12HippyFrat") !== "finished";
 
   if (
-    toInt(getProperty("cyrptNookEvilness")) > 0 &&
+    get("cyrptNookEvilness") > 0 &&
     lar_repeat($location`The Defiled Nook`) &&
     !skip_in_koe
   ) {
@@ -328,15 +327,15 @@ function L7_defiledNookDo(): boolean {
     knockOffCapePrep();
 
     if (
-      toInt(getProperty("cyrptNookEvilness")) > 14 + evilBonus &&
+      get("cyrptNookEvilness") > 14 + evilBonus &&
       auto_is_valid($item`evil eye`)
     ) {
       //evil eyes have 20% drop rate
       provideItem$2(400, $location`The Defiled Nook`, false);
     }
 
-    if (toInt(getProperty("cyrptNookEvilness")) <= 13) {
-      setProperty("auto_nextEncounter", "giant skeelton");
+    if (get("cyrptNookEvilness") <= 13) {
+      set("auto_nextEncounter", "giant skeelton");
     }
     return autoAdv($location`The Defiled Nook`);
   } else if (skip_in_koe) {
@@ -369,11 +368,11 @@ function L7_defiledNiche(): boolean {
   const evilBonus: number = cyrptEvilBonus();
 
   if (
-    toInt(getProperty("cyrptNicheEvilness")) > 13 &&
+    get("cyrptNicheEvilness") > 13 &&
     auto_habitatMonster() === $monster`dirty old lihc`
   ) {
     if (
-      toInt(getProperty("cyrptNicheEvilness")) <=
+      get("cyrptNicheEvilness") <=
       13 + auto_habitatFightsLeft() * (cyrptEvilBonus() + 3)
     ) {
       // we have enough Habitants to get to 13 or less evilness. Don't need to adventure in this zone.
@@ -382,12 +381,12 @@ function L7_defiledNiche(): boolean {
   }
 
   if (
-    toInt(getProperty("cyrptNicheEvilness")) > 0 &&
+    get("cyrptNicheEvilness") > 0 &&
     lar_repeat($location`The Defiled Niche`)
   ) {
     if (
       myDaycount() === 1 &&
-      toInt(getProperty("_hipsterAdv")) < 7 &&
+      get("_hipsterAdv") < 7 &&
       isUnrestricted($familiar`Artistic Goth Kid`) &&
       auto_have_familiar($familiar`Artistic Goth Kid`)
     ) {
@@ -404,7 +403,7 @@ function L7_defiledNiche(): boolean {
 
     if (
       auto_have_familiar($familiar`Space Jellyfish`) &&
-      toInt(getProperty("_spaceJellyfishDrops")) < 3
+      get("_spaceJellyfishDrops") < 3
     ) {
       handleFamiliar$1($familiar`Space Jellyfish`);
     } else if (
@@ -418,12 +417,11 @@ function L7_defiledNiche(): boolean {
           .get($monster`dirty old lihc`)) < 100
     ) {
       let nosyOldLihcs: boolean = false;
-      if (toInt(getProperty("cyrptNicheEvilness")) > 17 + 2 * evilBonus) {
+      if (get("cyrptNicheEvilness") > 17 + 2 * evilBonus) {
         nosyOldLihcs = true; //several dirty old lihc worth of evilness left so want to whiff dirty old lihc if we meet one
       } else if (
-        toMonster(getProperty("nosyNoseMonster")) ===
-          $monster`dirty old lihc` &&
-        toInt(getProperty("cyrptNicheEvilness")) > 14 + evilBonus
+        get("nosyNoseMonster", Monster.none) === $monster`dirty old lihc` &&
+        get("cyrptNicheEvilness") > 14 + evilBonus
       ) {
         nosyOldLihcs = true; //familiar whiff skill is increasing chances of dirty old lihc
       }
@@ -432,22 +430,22 @@ function L7_defiledNiche(): boolean {
       }
     }
 
-    if (toInt(getProperty("cyrptNicheEvilness")) >= 16 + evilBonus) {
+    if (get("cyrptNicheEvilness") >= 16 + evilBonus) {
       useNightmareFuelIfPossible();
     }
 
     auto_log_info("The Niche!", "blue");
     if (
       canSniff($monster`dirty old lihc`, $location`The Defiled Niche`) &&
-      toInt(getProperty("cyrptNicheEvilness")) >= 14 + evilBonus &&
+      get("cyrptNicheEvilness") >= 14 + evilBonus &&
       auto_mapTheMonsters()
     ) {
       auto_log_info(
         "Attemping to use Map the Monsters to olfact a Dirty Old Lihc.",
       );
     }
-    if (toInt(getProperty("cyrptNicheEvilness")) <= 13) {
-      setProperty("auto_nextEncounter", "gargantulihc");
+    if (get("cyrptNicheEvilness") <= 13) {
+      set("auto_nextEncounter", "gargantulihc");
     }
     return autoAdv($location`The Defiled Niche`);
   }
@@ -457,7 +455,7 @@ function L7_defiledNiche(): boolean {
 function L7_defiledCranny(): boolean {
   const evilBonus: number = cyrptEvilBonus();
 
-  if (toInt(getProperty("cyrptCrannyEvilness")) > 0) {
+  if (get("cyrptCrannyEvilness") > 0) {
     if (is_professor()) {
       //don't do if we are the Professor. Death Rattlin' = Beaten Up
       return false;
@@ -477,12 +475,12 @@ function L7_defiledCranny(): boolean {
 
     if (
       auto_have_familiar($familiar`Space Jellyfish`) &&
-      toInt(getProperty("_spaceJellyfishDrops")) < 3
+      get("_spaceJellyfishDrops") < 3
     ) {
       handleFamiliar$1($familiar`Space Jellyfish`);
     }
 
-    if (toInt(getProperty("cyrptCrannyEvilness")) >= 17 + evilBonus) {
+    if (get("cyrptCrannyEvilness") >= 17 + evilBonus) {
       useNightmareFuelIfPossible();
     }
 
@@ -524,8 +522,8 @@ function L7_defiledCranny(): boolean {
       .weight($modifier`Monster Level`, 200)
       .max($modifier`Monster Level`, auto_convertDesiredML(149));
 
-    if (toInt(getProperty("cyrptCrannyEvilness")) <= 13) {
-      setProperty("auto_nextEncounter", "huge ghuol");
+    if (get("cyrptCrannyEvilness") <= 13) {
+      set("auto_nextEncounter", "huge ghuol");
     }
     return autoAdv($location`The Defiled Cranny`);
   }
@@ -567,10 +565,7 @@ function L7_cryptDo(): boolean {
     return true;
   }
   // handle crypt boss
-  if (
-    toInt(getProperty("cyrptTotalEvilness")) <= 0 ||
-    toInt(getProperty("cyrptTotalEvilness")) === 999
-  ) {
+  if (get("cyrptTotalEvilness") <= 0 || get("cyrptTotalEvilness") === 999) {
     if (
       myClass() === $class`Seal Clubber` &&
       auto_have_skill($skill`Iron Palm Technique`) &&
@@ -600,8 +595,8 @@ function L7_cryptDo(): boolean {
       handleFamiliar$1($familiar`Machine Elf`);
     }
     auto_change_mcd(10); // get vertebra to make the necklace.
-    setProperty("auto_nextEncounter", "Bonerdagon");
-    setProperty("auto_nonAdvLoc", true.toString());
+    set("auto_nextEncounter", "Bonerdagon");
+    set("auto_nonAdvLoc", true);
     const tryBoner: boolean = autoAdv($location`Haert of the Cyrpt`);
     council();
     cliExecute("refresh quests");
@@ -671,7 +666,7 @@ export function L7_crypt(): boolean {
 function L7_overrideDo(): boolean {
   const evilBonus: number = cyrptEvilBonus();
   if (
-    toInt(getProperty("cyrptNookEvilness")) > 14 + evilBonus &&
+    get("cyrptNookEvilness") > 14 + evilBonus &&
     isBanished($monster`party skelteon`)
   ) {
     auto_log_info(
@@ -681,7 +676,7 @@ function L7_overrideDo(): boolean {
       return true;
     }
   }
-  if (toInt(getProperty("cyrptNicheEvilness")) > 14 + evilBonus) {
+  if (get("cyrptNicheEvilness") > 14 + evilBonus) {
     const lihcbanihced: boolean =
       isBanished($monster`basic lihc`) ||
       isBanished($monster`senile lihc`) ||
@@ -704,8 +699,7 @@ const L7_overrideTask: QuestTask = registerQuestTask({
   // check if olfaction or banishes are being used for ongoing L7 tasks and give those priority
   ready: () =>
     internalQuestStatus("questL07Cyrptic") === 0 &&
-    (toInt(getProperty("cyrptNookEvilness")) > 14 ||
-      toInt(getProperty("cyrptNicheEvilness")) > 14),
+    (get("cyrptNookEvilness") > 14 || get("cyrptNicheEvilness") > 14),
   do: L7_overrideDo,
   locations: $locations`The Defiled Alcove, The Defiled Niche, The Defiled Cranny, The Defiled Nook`,
   desiredEncounters: () =>

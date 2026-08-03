@@ -33,12 +33,10 @@ import {
   pickedPockets,
   pickPocket,
   pocketMonster,
-  setProperty,
   Skill,
   splitString,
   squareRoot,
   Stat,
-  toBoolean,
   toEffect,
   toInt,
   toItem,
@@ -61,6 +59,8 @@ import {
   $skill,
   $slot,
   $stat,
+  get,
+  set,
 } from "libram";
 
 import { autoAdv, autoAdvBypass } from "../auto_adventure";
@@ -120,7 +120,7 @@ function auto_birdIsValid(): boolean {
     return false;
   }
 
-  if (!toBoolean(getProperty("_canSeekBirds"))) {
+  if (!get("_canSeekBirds")) {
     use(1, $item`Bird-a-Day calendar`);
   }
 
@@ -140,7 +140,7 @@ export function auto_favoriteBirdModifier(mod: string): number {
 }
 
 function auto_birdsSought(): number {
-  return toInt(getProperty("_birdsSoughtToday"));
+  return get("_birdsSoughtToday");
 }
 
 function auto_birdsLeftToday(): number {
@@ -157,7 +157,7 @@ export function auto_birdCanSeek(): boolean {
 
 export function auto_favoriteBirdCanSeek(): boolean {
   // can't seek out your favorite if you already did today
-  if (toBoolean(getProperty("_favoriteBirdVisited"))) {
+  if (get("_favoriteBirdVisited")) {
     return false;
   }
 
@@ -175,7 +175,7 @@ export function auto_powerfulGloveCharges(): number {
   if (!auto_hasPowerfulGlove()) {
     return 0;
   }
-  return 100 - toInt(getProperty("_powerfulGloveBatteryPowerUsed"));
+  return 100 - get("_powerfulGloveBatteryPowerUsed");
 }
 
 function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean {
@@ -210,7 +210,7 @@ function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean {
       auto_log_error(
         "Mafia's Powerful Glove battery tracking was wrong, correcting.",
       );
-      setProperty("_powerfulGloveBatteryPowerUsed", (100).toString());
+      set("_powerfulGloveBatteryPowerUsed", 100);
     }
   }
 
@@ -276,7 +276,7 @@ export function auto_canFightPiranhaPlant(): boolean {
   if (
     auto_is_valid($item`packet of mushroom spores`) &&
     $item`packet of mushroom spores`.toString() in getCampground() &&
-    toInt(getProperty("_mushroomGardenFights")) < numMushroomFights
+    get("_mushroomGardenFights") < numMushroomFights
   ) {
     return true;
   }
@@ -287,7 +287,7 @@ export function auto_canTendMushroomGarden(): boolean {
   if (
     auto_is_valid($item`packet of mushroom spores`) &&
     $item`packet of mushroom spores`.toString() in getCampground() &&
-    !toBoolean(getProperty("_mushroomGardenVisited"))
+    !get("_mushroomGardenVisited")
   ) {
     return true;
   }
@@ -297,7 +297,7 @@ export function auto_canTendMushroomGarden(): boolean {
 export function auto_piranhaPlantFightsRemaining(): number {
   if (auto_canFightPiranhaPlant()) {
     const numMushroomFights: number = in_plumber() ? 5 : 1;
-    return numMushroomFights - toInt(getProperty("_mushroomGardenFights"));
+    return numMushroomFights - get("_mushroomGardenFights");
   }
   return 0;
 }
@@ -342,7 +342,7 @@ export function mushroomGardenChoiceHandler(choice: number): void {
       // limit to growth of 11 for colossal free-range mushroom as any further growth is wasted.
       pick = min(toInt(growth), 11);
     }
-    if (toInt(getProperty("mushroomGardenCropLevel")) >= pick) {
+    if (get("mushroomGardenCropLevel") >= pick) {
       auto_runChoice(2); // pick the mushroom.
     } else {
       auto_runChoice(1); // fertilise the mushroom
@@ -356,13 +356,13 @@ export function auto_getGuzzlrCocktailSet(): boolean {
   if (
     possessEquipment($item`Guzzlr tablet`) &&
     auto_is_valid($item`Guzzlr tablet`) &&
-    !toBoolean(getProperty("auto_skipGuzzlrCocktailSet"))
+    !get("auto_skipGuzzlrCocktailSet", false)
   ) {
     if (
-      toInt(getProperty("guzzlrGoldDeliveries")) >= 5 &&
+      get("guzzlrGoldDeliveries") >= 5 &&
       getProperty("questGuzzlr") === "unstarted" &&
-      toInt(getProperty("_guzzlrPlatinumDeliveries")) === 0 &&
-      !toBoolean(getProperty("_guzzlrQuestAbandoned"))
+      get("_guzzlrPlatinumDeliveries") === 0 &&
+      !get("_guzzlrQuestAbandoned")
     ) {
       auto_log_info(
         "Getting a Guzzlr Cocktail Set (for all the good it will do).",
@@ -381,8 +381,7 @@ export function auto_getGuzzlrCocktailSet(): boolean {
 
 export function auto_canCamelSpit(): boolean {
   return (
-    canChangeToFamiliar($familiar`Melodramedary`) &&
-    toInt(getProperty("camelSpit")) === 100
+    canChangeToFamiliar($familiar`Melodramedary`) && get("camelSpit") === 100
   );
 }
 
@@ -397,7 +396,7 @@ function auto_latheHardwood(toLathe: Item): boolean {
   }
   // if breakfast hasn't run and you haven't grabbed it manually, we won't
   // see the scrap if we don't go grab it ourself. So do that, if needed.
-  if (!toBoolean(getProperty("_spinmasterLatheVisited"))) {
+  if (!get("_spinmasterLatheVisited")) {
     visitUrl("shop.php?whichshop=lathe");
   }
   // can't lathe without hardwood
@@ -459,7 +458,7 @@ function auto_cargoShortsCanOpenPocket(): boolean {
     return false;
   }
 
-  return !toBoolean(getProperty("_cargoPocketEmptied"));
+  return !get("_cargoPocketEmptied");
 }
 
 function auto_cargoShortsCanOpenPocket$1(pocket: number): boolean {
@@ -625,13 +624,13 @@ export function auto_canMapTheMonsters(): boolean {
     haveSkill($skill`Map the Monsters`) &&
     auto_is_valid$2($skill`Map the Monsters`)
   ) {
-    return toInt(getProperty("_monstersMapped")) < 3;
+    return get("_monstersMapped") < 3;
   }
   return false;
 }
 
 export function auto_mapTheMonsters(): boolean {
-  if (toBoolean(getProperty("mappingMonsters"))) {
+  if (get("mappingMonsters")) {
     auto_log_warning(
       "Trying to cast map the monsters but we already have an unused cast pending, skipping.",
       "red",
@@ -785,7 +784,7 @@ export function auto_configureRetrocape(hero: string, tag: string): boolean {
   }
   // store the requested settings in a property so we can handle them later
   const settings: string = `${hero},${tag}`;
-  setProperty("auto_retrocapeSettings", settings);
+  set("auto_retrocapeSettings", settings);
   // cut down potential server hits by telling the maximizer to not consider it.
   maximizer.exclude($item`unwrapped knock-off retro superhero cape`);
   return true;
@@ -801,7 +800,7 @@ export function auto_handleRetrocape(): boolean {
     const capeConfiguration: string = getProperty(
       "retroCapeWashingInstructions",
     );
-    const beatenUpCount: number = toInt(getProperty("auto_beatenUpCount"));
+    const beatenUpCount: number = get("auto_beatenUpCount", 0);
     if (capeConfiguration === "thrill" && beatenUpCount >= 5) {
       // if currently configured for stats and have been getting beaten up, change to stun
       settingsProperty = "heck,hold";
@@ -886,7 +885,7 @@ export function auto_buyCrimboCommerceMallItem(): boolean {
   if (!containsText(output, "Purchases complete.")) {
     abort(`Something went wrong buying ${ghostItemString} from the mall.`);
   } else {
-    setProperty("auto_boughtCommerceGhostItem", ghostItemString);
+    set("auto_boughtCommerceGhostItem", ghostItemString);
   }
   return true;
 }

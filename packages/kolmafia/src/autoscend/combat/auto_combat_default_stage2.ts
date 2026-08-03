@@ -14,11 +14,8 @@ import {
   myLocation,
   myMp,
   myTurncount,
-  setProperty,
   Skill,
   substring,
-  toBoolean,
-  toInt,
   toMonster,
 } from "kolmafia";
 import {
@@ -31,6 +28,8 @@ import {
   $monsters,
   $phylum,
   $skill,
+  get,
+  set,
 } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
@@ -109,7 +108,7 @@ export function auto_combatDefaultStage2(
 ): CombatMacroReturns {
   // stage 2 = enders: escape, replace, instakill, yellowray and other actions that instantly end combat
   // Skip if have auto_skipStage2 is set
-  if (toBoolean(getProperty("auto_skipStage2"))) {
+  if (get("auto_skipStage2", false)) {
     return undefined;
   }
   //If in Avant Guard, want to make sure the enemy is set correctly to the bodyguard
@@ -142,7 +141,7 @@ export function auto_combatDefaultStage2(
     itemAmount($item`daily dungeon malware`) > 0 &&
     auto_is_valid($item`daily dungeon malware`) &&
     towerKeyCount(false) < 2 &&
-    !toBoolean(getProperty("_dailyDungeonMalwareUsed"))
+    !get("_dailyDungeonMalwareUsed")
   ) {
     auto_log_debug(
       "Skipping stage 2 of combat for now as we intend to use Daily Dungeon Malware",
@@ -197,7 +196,7 @@ export function auto_combatDefaultStage2(
     canUse$3($item`glark cable`, true) &&
     myLocation() === $location`The Red Zeppelin` &&
     getProperty("questL11Ron") === "step3" &&
-    toInt(getProperty("_glarkCableUses")) < 5
+    get("_glarkCableUses") < 5
   ) {
     if (
       $monsters`man with the red buttons, red butler, Red Fox, red skeleton`.includes(
@@ -227,8 +226,8 @@ export function auto_combatDefaultStage2(
   }
   //instakill using [Power Pill] which is iotm familiar derivative
   if (
-    toBoolean(getProperty("auto_usePowerPill")) &&
-    toInt(getProperty("_powerPillUses")) < 20 &&
+    get("auto_usePowerPill", false) &&
+    get("_powerPillUses") < 20 &&
     instakillable(enemy)
   ) {
     if (itemAmount($item`power pill`) > 0) {
@@ -243,9 +242,9 @@ export function auto_combatDefaultStage2(
   //instakill using [Pair of Stomping Boots] iotm familiar which will produce spleen consumables
   if (
     myFamiliar() === $familiar`Pair of Stomping Boots` &&
-    toInt(getProperty("_bootStomps")) < 7 &&
+    get("_bootStomps") < 7 &&
     instakillable(enemy) &&
-    toBoolean(getProperty("bootsCharged"))
+    get("bootsCharged")
   ) {
     //neither the below checks nor careAboutDrops are complete enough
     if (
@@ -266,7 +265,7 @@ export function auto_combatDefaultStage2(
       itemAmount($item`tomb ratchet`) <
       10 &&
     auto_canUse($skill`Do an epic McTwist!`) &&
-    !toBoolean(getProperty("_epicMcTwistUsed"))
+    !get("_epicMcTwistUsed")
   ) {
     handleTracker({
       what: enemy,
@@ -281,7 +280,7 @@ export function auto_combatDefaultStage2(
     myDaycount() === 1 &&
     !auto_turbo() &&
     auto_canUse($skill`Do an epic McTwist!`) &&
-    !toBoolean(getProperty("_epicMcTwistUsed"))
+    !get("_epicMcTwistUsed")
   ) {
     handleTracker({
       what: enemy,
@@ -310,7 +309,7 @@ export function auto_combatDefaultStage2(
   // And don't yellow ray if we'll be swooping
   const swoopAvailable: boolean =
     auto_canUse($skill`Swoop like a Bat`, true) &&
-    toInt(getProperty("_batWingsSwoopUsed")) < 11;
+    get("_batWingsSwoopUsed") < 11;
   const willSwoop: boolean =
     auto_swoopLocations().has(myLocation()) && swoopAvailable;
 
@@ -339,7 +338,7 @@ export function auto_combatDefaultStage2(
         combatAction ===
         auto_useSkill($skill`Asdon Martin: Missile Launcher`, false)
       ) {
-        setProperty("_missileLauncherUsed", true.toString());
+        set("_missileLauncherUsed", true);
       }
       return combatAction;
     } else {
@@ -347,9 +346,9 @@ export function auto_combatDefaultStage2(
     }
   }
   //convert enemy into a helpless frog/newt/lizard
-  if (toBoolean(getProperty("auto_useCleesh"))) {
+  if (get("auto_useCleesh", false)) {
     if (auto_canUse($skill`CLEESH`)) {
-      setProperty("auto_useCleesh", false.toString());
+      set("auto_useCleesh", false);
       return auto_useSkill($skill`CLEESH`);
     }
   }
@@ -571,7 +570,7 @@ export function auto_combatDefaultStage2(
     $monsters`smut orc pipelayer, smut orc jacker, smut orc screwer, smut orc nailer`.includes(
       enemy,
     ) &&
-    toInt(getProperty("chasmBridgeProgress")) < bridgeGoal()
+    get("chasmBridgeProgress") < bridgeGoal()
   ) {
     //want to do cold damage in stage3
     if (myAdventures() > 6) {
@@ -612,8 +611,8 @@ export function auto_combatDefaultStage2(
       haveEffect($effect`Everything Looks Red`) === 0 &&
       dartELRcd() <= 40
     ) {
-      setProperty("auto_instakillSource", "darts bullseye");
-      setProperty("auto_instakillSuccess", true.toString());
+      set("auto_instakillSource", "darts bullseye");
+      set("auto_instakillSuccess", true);
       loopHandlerDelayAll();
       return auto_useSkill($skill`Darts: Aim for the Bullseye`);
     }
@@ -649,8 +648,8 @@ export function auto_combatDefaultStage2(
     //Depending on the fam used for instakill, it could be a turn free YR, or it could be turn taking and not a YR, but still give ELY.
     const z_kick: Skill = getZooKickInstaKill();
     if (auto_canUse(z_kick)) {
-      setProperty("auto_instakillSource", "zootomist kick");
-      setProperty("auto_instakillSuccess", true.toString());
+      set("auto_instakillSource", "zootomist kick");
+      set("auto_instakillSuccess", true);
       loopHandlerDelayAll();
       return auto_useSkill(z_kick);
     }
@@ -701,7 +700,7 @@ export function auto_combatDefaultStage2(
 
     if (
       auto_canUse($skill`Shattering Punch`) &&
-      toInt(getProperty("_shatteringPunchUsed")) < 3 &&
+      get("_shatteringPunchUsed") < 3 &&
       !reserveFreekills
     ) {
       if (
@@ -723,7 +722,7 @@ export function auto_combatDefaultStage2(
     }
     if (
       auto_canUse($skill`Gingerbread Mob Hit`) &&
-      !toBoolean(getProperty("_gingerbreadMobHitUsed")) &&
+      !get("_gingerbreadMobHitUsed") &&
       !reserveFreekills &&
       myMp() > 50
     ) {
@@ -740,15 +739,12 @@ export function auto_combatDefaultStage2(
     //		if(!combat_status_check("batoomerang") && (item_amount($item[Replica Bat-oomerang]) > 0) && (get_property("_usedReplicaBatoomerang").to_int() < 3))
     //		THIS IS COPIED TO THE ED SECTION, IF IT IS FIXED, FIX IT THERE TOO!
     if (canUse$3($item`replica bat-oomerang`) && !reserveFreekills) {
-      if (toInt(getProperty("auto_batoomerangDay")) !== myDaycount()) {
-        setProperty("auto_batoomerangDay", myDaycount().toString());
-        setProperty("auto_batoomerangUse", (0).toString());
+      if (get("auto_batoomerangDay", 0) !== myDaycount()) {
+        set("auto_batoomerangDay", myDaycount());
+        set("auto_batoomerangUse", 0);
       }
-      if (toInt(getProperty("auto_batoomerangUse")) < 3) {
-        setProperty(
-          "auto_batoomerangUse",
-          (toInt(getProperty("auto_batoomerangUse")) + 1).toString(),
-        );
+      if (get("auto_batoomerangUse", 0) < 3) {
+        set("auto_batoomerangUse", get("auto_batoomerangUse", 0) + 1);
         handleTracker({
           what: enemy,
           detail: $item`replica bat-oomerang`.toString(),
@@ -761,7 +757,7 @@ export function auto_combatDefaultStage2(
 
     if (
       canUse$3($item`shadow brick`) &&
-      toInt(getProperty("_shadowBricksUsed")) < 13 &&
+      get("_shadowBricksUsed") < 13 &&
       !reserveFreekills
     ) {
       handleTracker({
@@ -786,8 +782,8 @@ export function auto_combatDefaultStage2(
     auto_canUse($skill`Slaughter`) &&
     haveEffect($effect`Everything Looks Red`) === 0
   ) {
-    setProperty("auto_instakillSource", "slaughter");
-    setProperty("auto_instakillSuccess", true.toString());
+    set("auto_instakillSource", "slaughter");
+    set("auto_instakillSuccess", true);
     loopHandlerDelayAll();
     return auto_useSkill($skill`Slaughter`);
   }

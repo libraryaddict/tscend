@@ -12,10 +12,9 @@ import {
   myDaycount,
   myLocation,
   myMp,
-  toInt,
   useSkill,
 } from "kolmafia";
-import { $class, $effect, $item, $location, $skill } from "libram";
+import { $class, $effect, $item, $location, $skill, get } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
 import { buffMaintain$2 } from "../auto_buff";
@@ -171,9 +170,9 @@ export function oldPeoplePlantStuff(): void {
   }
   let addml: boolean = true;
   if (
-    (monsterLevelAdjustment() > toInt(getProperty("auto_MLSafetyLimit")) &&
+    (monsterLevelAdjustment() > get("auto_MLSafetyLimit", 0) &&
       getProperty("auto_MLSafetyLimit") !== "") ||
-    toInt(getProperty("auto_MLSafetyLimit")) === -1
+    get("auto_MLSafetyLimit", 0) === -1
   ) {
     addml = false;
   }

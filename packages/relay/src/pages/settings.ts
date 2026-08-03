@@ -1,13 +1,11 @@
 import {
   entityEncode,
   Familiar,
-  getProperty,
   myAscensions,
   myFamiliar,
-  toFamiliar,
-  toInt,
   turnsPlayed,
 } from "kolmafia";
+import { get } from "libram";
 
 import { settingDefaults } from "../../../kolmafia/src/autoscend/auto_settings";
 import {
@@ -101,7 +99,7 @@ function settingGroups(): RelayGroup[] {
 
 function familiarComponents(): RelayComponent[] {
   const components: RelayComponent[] = [];
-  const hundredFam: Familiar = toFamiliar(getProperty("auto_100familiar"));
+  const hundredFam: Familiar = get("auto_100familiar", Familiar.none);
   const changeable = turnsPlayed() === 0;
 
   if (hundredFam !== Familiar.none) {
@@ -153,7 +151,7 @@ export function settingsPage(): RelayPage {
     } as RelayInterrupt,
     ...familiarComponents(),
     html(
-      myAscensions() === toInt(getProperty("auto_doneInitialize"))
+      myAscensions() === get("auto_doneInitialize", 0)
         ? "Settings have been initialized for current ascension. You may change Post type settings."
         : "Settings have <b>not</b> been initialized for current ascension. Do not change Post type settings.",
     ),

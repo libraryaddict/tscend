@@ -10,13 +10,10 @@ import {
   myMeat,
   myPath,
   npcPrice,
-  setProperty,
   splitString,
-  toBoolean,
-  toInt,
   turnsPlayed,
 } from "kolmafia";
-import { $effect, $item, $locations, $path } from "libram";
+import { $effect, $item, $locations, $path, get, set } from "libram";
 
 import { auto_advToReserve } from "../../autoscend";
 import { auto_buyUpTo } from "../auto_acquire";
@@ -40,9 +37,9 @@ export function wereprof_initializeSettings(): void {
   if (!in_wereprof()) {
     return;
   }
-  setProperty("auto_wandOfNagamar", false.toString()); //wand not used in this path
+  set("auto_wandOfNagamar", false); //wand not used in this path
   // if we banish a phylum while werewolf, we can't undo it while wereprofessor
-  setProperty("auto_dontPhylumBanish", true.toString());
+  set("auto_dontPhylumBanish", true);
   cliExecute("wereprofessor research"); //parse the research bench
 }
 
@@ -70,7 +67,7 @@ function wereprof_buySkills(): void {
   if (!in_wereprof()) {
     return;
   }
-  let rp: number = toInt(getProperty("wereProfessorResearchPoints"));
+  let rp: number = get("wereProfessorResearchPoints");
   if (is_werewolf() || rp < 10) {
     return; // can't access the research bench as a werewolf and don't care about it when we have less than 10 RP
   }
@@ -78,7 +75,7 @@ function wereprof_buySkills(): void {
     cliExecute("wereprofessor research"); //parse the research bench
   }
   let do_skills: boolean = true;
-  if (toInt(getProperty("wereProfessorTransformTurns")) > 3) {
+  if (get("wereProfessorTransformTurns") > 3) {
     do_skills = false; //Want as many RP as possible before looping through the skills
   }
   if (is_professor() && turnsPlayed() === 0) {
@@ -285,7 +282,7 @@ function wereprof_buySkills(): void {
           } else {
             auto_log_info(`Buying ${sk}`, "blue");
             cliExecute(`wereprofessor research ${sk}`);
-            rp = toInt(getProperty("wereProfessorResearchPoints"));
+            rp = get("wereProfessorResearchPoints");
             break; //break on buy to reset the foreach loop to look from the top
           }
         }
@@ -385,7 +382,7 @@ function LM_wereprofDo(): boolean {
   auto_log_info("Getting equipment", "blue");
   wereprof_buyEquip();
 
-  if (!toBoolean(getProperty("auto_haveoven"))) {
+  if (!get("auto_haveoven", false)) {
     //buy an oven ASAP
     auto_log_info("Buying an oven", "blue");
     ovenHandle();
