@@ -4135,7 +4135,7 @@ function L11_palindomeDo(): boolean {
   } else {
     if (pullsRemaining() === 0) {
       // used our pulls today before getting to palindrome. Delay until next day or run out of other stuff to do
-      if (!isAboutToPowerlevel()) {
+      if (!isAboutToPowerlevel() && !inHardcore()) {
         auto_log_debug("Delaying palindrome.");
         return false;
       } else {
