@@ -1585,36 +1585,56 @@ function auto_bczCastMath(cast: number): number {
 }
 
 function bcz_allowStatChange(st: Stat, casts: number): boolean {
-  let level: number = myLevel();
-  if (myLevel() >= 13) {
-    level = 13;
-  }
+  // Level is capped at 13 - beyond that we no longer need to protect it for levelling purposes.
+  const effectiveLevel: number = Math.min(myLevel(), 13);
+
   // disallow casts until level is above a certain threshold
-  switch (true) {
-    case level < 10 && casts >= 3:
-      return false;
-    case level < 11 && casts >= 5:
-      return false;
-    case in_amw() && casts >= 5:
-      return false;
-    case st ===
-      (myClass().primestat === Stat.none ? myPrimestat() : myClass().primestat):
-      //Don't want to use so many substats we go down too many levels or we have cast more than we really need to/should
-      //Don't go beneath our current level or level 13 if we cast the skill
-      return (
-        myBasestat(stat_to_substat(st)) - level_to_min_substat(level) >
-        auto_bczCastMath(casts)
-      );
-    case myBasestat(st) < 70 && casts < 3:
-      //For an offstat that is not yet to 70, allow if the cost is less than 1 full stat in cost. don't cast more than 3 times per day
-      return (
-        myBasestat(stat_to_substat(st)) - myBasestat(st) ** 2 >
-        auto_bczCastMath(casts)
-      );
-    default:
-      //don't go below 70 of the other stats
-      return myBasestat(st) ** 2 - 70 ** 2 > auto_bczCastMath(casts);
+  if (effectiveLevel < 10 && casts >= 3) {
+    return false;
   }
+  if (effectiveLevel < 11 && casts >= 5) {
+    return false;
+  }
+  if (in_amw() && casts >= 5) {
+    return false;
+  }
+
+  // Cost, in substats, of the next cast (i.e. the (casts + 1)th cast of this skill today).
+  const castCost: number = auto_bczCastMath(casts);
+  const primestat: Stat =
+    myClass().primestat === Stat.none ? myPrimestat() : myClass().primestat;
+
+  if (st === primestat) {
+    //Don't want to use so many substats we go down too many levels or we have cast more than we really need to/should
+    //Don't go beneath our current level or level 13 if we cast the skill
+    const currentSubstats: number = myBasestat(stat_to_substat(st));
+    const minSubstatsForLevel: number = level_to_min_substat(effectiveLevel);
+    const surplusSubstats: number = currentSubstats - minSubstatsForLevel;
+    return surplusSubstats > castCost;
+  }
+
+  const currentStat: number = myBasestat(st);
+
+  if (currentStat < 70 && casts < 3) {
+    //For an offstat that is not yet to 70, allow if the cost is less than 1 full stat in cost. don't cast more than 3 times per day
+    const currentSubstats: number = myBasestat(stat_to_substat(st));
+    const substatsAtCurrentStat: number = Math.pow(currentStat, 2);
+    const surplusSubstats: number = currentSubstats - substatsAtCurrentStat;
+    return surplusSubstats > castCost;
+  }
+
+  //don't let an offstat fall more than 70 behind primestat, capping primestat's influence at what level 13 needs
+  const primestatCap: number = Math.floor(Math.sqrt(level_to_min_substat(13)));
+  const cappedPrimestatValue: number = Math.min(
+    myBasestat(primestat),
+    primestatCap,
+  );
+  const offstatFloor: number = Math.max(cappedPrimestatValue - 70, 0);
+  const substatsAtCurrentStat: number = Math.pow(currentStat, 2);
+  const substatsAtOffstatFloor: number = Math.pow(offstatFloor, 2);
+  const surplusSubstats: number =
+    substatsAtCurrentStat - substatsAtOffstatFloor;
+  return surplusSubstats > castCost;
 }
 
 type BCZSkill = {
@@ -1859,19 +1879,28 @@ export function auto_bczDelevelPlan(
   const casted1 = get(skill1.pref, 0);
   const casted2 = get(skill2.pref, 0);
 
+  const skill1Costs: number[] = [0];
+  for (let i = 0; i < 22; i++) {
+    skill1Costs.push(skill1Costs[i] + auto_bczCastMath(casted1 + i));
+  }
+  const skill2Costs: number[] = [0];
+  for (let i = 0; i < 22; i++) {
+    skill2Costs.push(skill2Costs[i] + auto_bczCastMath(casted2 + i));
+  }
+
   let bestCost: number = Infinity;
   let bestX: number = -1;
   let bestY: number = -1;
 
   for (let x = 0; x <= 22; x++) {
-    const costSkill1 = auto_bczCastMath(casted1 + x);
+    const costSkill1 = skill1Costs[x];
 
     if (costSkill1 > maxSpend) {
       break;
     }
 
     for (let y = 0; y <= 22; y++) {
-      const totalCost = costSkill1 + auto_bczCastMath(casted2 + y);
+      const totalCost = costSkill1 + skill2Costs[y];
 
       if (totalCost > maxSpend) {
         break; // We've overshot the max budget
