@@ -442,9 +442,15 @@ function countItemAverageAdvs(
   need: Leprecondo.Need,
   piece: LeprecondoPiece,
 ): number {
-  return getLeprecondoItems(need, piece)
-    .map((i) => getAverageAdventures(i) / (i.fullness + i.inebriety + i.spleen))
-    .reduce((l, r) => l + r, 0);
+  const items = getLeprecondoItems(need, piece);
+
+  return (
+    items
+      .map(
+        (i) => getAverageAdventures(i) / (i.fullness + i.inebriety + i.spleen),
+      )
+      .reduce((l, r) => l + r, 0) / items.length
+  );
 }
 
 // Space the normal diet loop would fill with non-leprecondo stuff that's at least as good as what we have installed
