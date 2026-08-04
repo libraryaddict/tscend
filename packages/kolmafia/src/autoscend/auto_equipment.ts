@@ -148,6 +148,7 @@ import {
 } from "./iotms/mr2025";
 import {
   auto_clubEmBackInTimesRemaining,
+  auto_codpieceFoldGemScores,
   auto_havePastaWand,
 } from "./iotms/mr2026";
 import { Maximizer, maximizer } from "./maximizer";
@@ -1070,6 +1071,9 @@ function finalizeMaximize(speculative: boolean = false): void {
   if (myFamiliar() !== $familiar`Jill-of-All-Trades`) {
     maximizer.cancelEquip($item`LED candle`);
   }
+
+  // Must run last: folds every wanted codpiece gem's own score into the codpiece's score.
+  auto_codpieceFoldGemScores();
 }
 
 export function simMaximize(): boolean {

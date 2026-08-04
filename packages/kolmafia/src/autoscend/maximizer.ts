@@ -201,6 +201,15 @@ export class Maximizer {
     return this.pendingBonus.has(item);
   }
 
+  getBonus(item: Item): number {
+    return this.pendingBonus.get(item) ?? 0;
+  }
+
+  clearBonus(item: Item): this {
+    this.pendingBonus.delete(item);
+    return this;
+  }
+
   has(text: Slot | Criterion | Item): boolean {
     if (text instanceof Slot) {
       return this.onlySlots.has(text) || this.disabledSlots.has(text);

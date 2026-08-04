@@ -457,6 +457,13 @@ function auto_softBlockHandlerDo(): boolean {
     );
     return true;
   }
+  if (allowSoftblock("baseballDiamond")) {
+    releaseSoftblock(
+      "baseballDiamond",
+      "holding off playing baseball to wait for a better lineup",
+    );
+    return true;
+  }
   if (allowSoftblockDay2Wait()) {
     auto_log_warning(
       "I was trying to avoid quests that would benefit from day 2 dailies, but I've run out of stuff to do. Releasing softblock.",

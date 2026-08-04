@@ -153,6 +153,21 @@ export function auto_isInEternityCodpiece(it: Item): boolean {
 
 const CODPIECE_MANAGED_GEMS: Item[] = $items`blood cubic zirconia, Baseball Diamond, Heartstone`;
 
+// Gems folded into the codpiece's score by the most recent auto_codpieceFoldGemScores() call.
+const codpieceFoldedGemsThisPass = new Set<Item>();
+
+// Prefer a spare Heartstone that isn't wanted for stealing a heart this pass over a massive gemstone.
+function auto_codpieceFillerItem(): Item {
+  return (
+    $items`Heartstone, massive gemstone`.find(
+      (i) =>
+        (!codpieceFoldedGemsThisPass.has(i) ||
+          !CODPIECE_MANAGED_GEMS.includes(i)) &&
+        itemAmount(i) > 0,
+    ) ?? Item.none
+  );
+}
+
 // Written once per slot the first time we borrow it, then only ever read.
 function auto_codpieceOriginalGems(): Item[] {
   const raw = getProperty("_auto_codpiece_original_gems").split(",");
@@ -170,22 +185,45 @@ function auto_codpieceOriginalGems(): Item[] {
   return EternityCodpiece.currentGems();
 }
 
+// These gems compete for the same slot, so scoring them individually only lets the
+// maximizer pick one. Folding their scores into the codpiece's instead reflects the
+// true value of wearing all of them at once via its five gem slots.
+export function auto_codpieceFoldGemScores(): void {
+  codpieceFoldedGemsThisPass.clear();
+
+  if (!auto_haveEternityCodpiece()) {
+    return;
+  }
+
+  let codpieceBonus = 0;
+  for (const gem of CODPIECE_MANAGED_GEMS) {
+    const amount = maximizer.getBonus(gem);
+    if (amount <= 0) {
+      continue;
+    }
+    codpieceBonus += amount;
+    maximizer.clearBonus(gem);
+    codpieceFoldedGemsThisPass.add(gem);
+  }
+
+  if (codpieceBonus > 0) {
+    maximizer.bonus($item`The Eternity Codpiece`, codpieceBonus);
+  }
+}
+
 export function auto_codpieceReconcileGem(gem: Item): void {
   if (!CODPIECE_MANAGED_GEMS.includes(gem)) {
     return;
   }
 
-  const wanted: boolean =
-    maximizer.wantsItem(gem) ||
-    maximizer.wantsItem($item`The Eternity Codpiece`);
+  const wanted: boolean = codpieceFoldedGemsThisPass.has(gem);
   const codpieceWorn: boolean = haveEquipped($item`The Eternity Codpiece`);
-  const alreadyActive: boolean =
-    haveEquipped(gem) || auto_isInEternityCodpiece(gem);
+  const inCodpiece: boolean = auto_isInEternityCodpiece(gem);
   const slots: readonly Slot[] = EternityCodpiece.SLOTS;
   const originals: Item[] = auto_codpieceOriginalGems();
 
-  // If we want to wear this
-  if (wanted && codpieceWorn && !alreadyActive) {
+  // If we want to wear this and it's not already socketed or worn elsewhere
+  if (wanted && codpieceWorn && !inCodpiece && !haveEquipped(gem)) {
     // Find the first slot that is unused, or not special
     const emptySlot = slots.find((s) => equippedItem(s) === Item.none);
     const backfillSlot = [...slots]
@@ -205,16 +243,43 @@ export function auto_codpieceReconcileGem(gem: Item): void {
     return;
   }
 
-  if (!wanted && !codpieceWorn) {
+  // If it's socketed but no longer wanted, free the slot back up, whether or not
+  // the codpiece is still worn, so a still-wanted gem can backfill it later.
+  if (!wanted && inCodpiece) {
     const idx = slots.findIndex((s) => equippedItem(s) === gem);
-    if (
-      idx === -1 ||
-      originals[idx] === Item.none ||
-      itemAmount(originals[idx]) === 0
-    ) {
+    if (idx === -1) {
+      return;
+    }
+
+    // Baseball Diamond is always ejected rather than restoring whatever the slot
+    // originally held, since holding it idle isn't worth the slot either way.
+    if (gem === $item`Baseball Diamond`) {
+      equip(slots[idx], auto_codpieceFillerItem());
+      return;
+    }
+
+    if (originals[idx] === Item.none || itemAmount(originals[idx]) === 0) {
       return;
     }
     equip(slots[idx], originals[idx]);
+  }
+}
+
+// Backfills any remaining empty codpiece slots.
+export function auto_codpieceFillEmptySlots(): void {
+  if (!haveEquipped($item`The Eternity Codpiece`)) {
+    return;
+  }
+
+  for (const slot of EternityCodpiece.SLOTS) {
+    if (equippedItem(slot) !== Item.none) {
+      continue;
+    }
+    const filler = auto_codpieceFillerItem();
+    if (filler === Item.none) {
+      return;
+    }
+    equip(slot, filler);
   }
 }
 
@@ -1485,9 +1550,8 @@ function auto_baseballBuildAssignments(team: Monster[]): BaseballAssignment[] {
 function auto_baseballIsSlotZeroLoadBearing(
   assignments: BaseballAssignment[],
 ): boolean {
-  return assignments.some(
-    (a) => a.finisherSlot === 0 || a.normalSlots.includes(0),
-  );
+  // normalSlots are unchecked padding; only the finisher is an actual target.
+  return assignments.some((a) => a.finisherSlot === 0);
 }
 
 export function auto_baseballSlotZeroLoadBearing(): boolean {
@@ -1554,11 +1618,7 @@ export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
     return 0;
   }
 
-  const fillerBonus = auto_baseballZoneAlreadyTapped(loc)
-    ? BASEBALL_FILLER_BONUS_REPEAT_ZONE
-    : BASEBALL_FILLER_BONUS;
-
-  let bonus = 0;
+  let hasWorthyTarget = false;
   for (const [mon, rate] of Object.entries(appearanceRates(loc)).map(
     ([_k, _v]) => [Monster.get(_k), _v] as [Monster, number],
   )) {
@@ -1566,11 +1626,24 @@ export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
       continue;
     }
     if (auto_baseballWorthyTarget(mon, loc)) {
-      return BASEBALL_TARGET_BONUS;
+      hasWorthyTarget = true;
+      break;
     }
-    bonus = Math.max(bonus, fillerBonus);
   }
-  return bonus;
+
+  if (hasWorthyTarget) {
+    return BASEBALL_TARGET_BONUS;
+  }
+
+  // Slots 0-5 are the filler each of the 3 assignments needs, so always keep recruiting
+  // those; past that, only recruit more once we've given up holding out for a target.
+  if (auto_baseball_team().length >= 6 && allowSoftblock("baseballDiamond")) {
+    return 0;
+  }
+
+  return auto_baseballZoneAlreadyTapped(loc)
+    ? BASEBALL_FILLER_BONUS_REPEAT_ZONE
+    : BASEBALL_FILLER_BONUS;
 }
 
 export function auto_baseballWantsSomeFish(
@@ -1595,6 +1668,30 @@ export function auto_baseballWantsSomeFish(
   return !auto_baseballSlotZeroLoadBearing();
 }
 
+function auto_baseballZoneHasUnclaimedTarget(
+  loc: Location,
+  assignments: BaseballAssignment[],
+  team: Monster[],
+): boolean {
+  const claimedFinishers = new Set(
+    assignments.map((a) => team[a.finisherSlot]),
+  );
+  for (const [mon, rate] of Object.entries(appearanceRates(loc)).map(
+    ([_k, _v]) => [Monster.get(_k), _v] as [Monster, number],
+  )) {
+    if (!(rate > 0 && mon.id > 0 && mon.copyable && !mon.boss)) {
+      continue;
+    }
+    if (claimedFinishers.has(mon)) {
+      continue;
+    }
+    if (auto_baseballWorthyTarget(mon, loc)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export function auto_tryPlayBaseball(): boolean {
   const team = auto_baseball_team();
   if (team.length !== 9) {
@@ -1603,7 +1700,12 @@ export function auto_tryPlayBaseball(): boolean {
 
   const assignments = auto_baseballBuildAssignments(team);
   const slotZeroLoadBearing = auto_baseballIsSlotZeroLoadBearing(assignments);
-  if (!slotZeroLoadBearing && assignments.length < 3) {
+  if (
+    !slotZeroLoadBearing &&
+    assignments.length < 3 &&
+    auto_baseballZoneHasUnclaimedTarget(myLocation(), assignments, team) &&
+    allowSoftblock("baseballDiamond")
+  ) {
     return false; // safe to hold out for a better lineup
   }
 

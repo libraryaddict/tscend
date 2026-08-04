@@ -218,7 +218,6 @@ import {
 import {
   auto_bankChestMimicExpForBandit,
   auto_bczRefractedGaze,
-  auto_getItemToEquipBCZ,
   auto_haveCupidBow,
   auto_haveMcHugeLargeSkis,
   auto_haveMonodent,
@@ -231,9 +230,8 @@ import {
 } from "./iotms/mr2025";
 import {
   auto_baseballDiamondMaximizerBonus,
+  auto_codpieceFillEmptySlots,
   auto_codpieceReconcileGem,
-  auto_getItemToEquipBaseballDiamond,
-  auto_getItemToEquipHeartstone,
   auto_heartstoneShouldStealHeart,
 } from "./iotms/mr2026";
 import { Maximizer, maximizer } from "./maximizer";
@@ -835,14 +833,11 @@ function auto_pre_adventure(): boolean {
 
   const baseballDiamondBonus = auto_baseballDiamondMaximizerBonus(place);
   if (baseballDiamondBonus > 0) {
-    addBonusToMaximize(
-      auto_getItemToEquipBaseballDiamond(),
-      baseballDiamondBonus,
-    );
+    addBonusToMaximize($item`Baseball Diamond`, baseballDiamondBonus);
   }
 
   if (place && auto_heartstoneShouldStealHeart(place)) {
-    addBonusToMaximize(auto_getItemToEquipHeartstone(), 30);
+    addBonusToMaximize($item`Heartstone`, 30);
   }
 
   if (in_koe() && possessEquipment($item`low-pressure oxygen tank`)) {
@@ -965,7 +960,11 @@ function auto_pre_adventure(): boolean {
       maximizer.exclude($item`Peridot of Peril`);
     }
 
-    autoEquip(auto_getItemToEquipBCZ());
+    if (possessEquipment($item`The Eternity Codpiece`)) {
+      addBonusToMaximize($item`blood cubic zirconia`, 1000);
+    } else {
+      autoEquip($item`blood cubic zirconia`);
+    }
 
     if (auto_haveMonodent()) {
       addBonusToMaximize($item`Monodent of the Sea`, 700); // nice to have, not mandatory
@@ -1297,6 +1296,7 @@ function auto_pre_adventure(): boolean {
   auto_codpieceReconcileGem($item`blood cubic zirconia`);
   auto_codpieceReconcileGem($item`Baseball Diamond`);
   auto_codpieceReconcileGem($item`Heartstone`);
+  auto_codpieceFillEmptySlots();
 
   cliExecute("checkpoint clear");
   //before guaranteed non combats that give stats, overrule maximized equipment to increase stat gains
