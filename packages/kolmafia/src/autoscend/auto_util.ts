@@ -4551,7 +4551,7 @@ export function auto_is_valid(it: Item): boolean {
     return isTrendy(it);
   }
 
-  return isUnrestricted(it);
+  return isUnrestricted(it) || (currentRound() > 0 && it.combat);
 }
 
 export function auto_is_valid$1(fam: Familiar): boolean {
