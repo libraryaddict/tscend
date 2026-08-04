@@ -329,6 +329,8 @@ import {
   auto_havePastaWand,
   auto_heartstoneLuckRemaining,
   auto_legendaryNoodlesAvailable,
+  auto_sword_of_swords_tracking,
+  auto_swordFamiliarWantsMonsterDrops,
   auto_willEatLegendaryNoodles,
 } from "./iotms/mr2026";
 import {
@@ -6692,6 +6694,15 @@ export function auto_wantToFreeKillWithNoDrops(
     }
     return false;
   }
+  if (enemy.physicalResistance >= 100 && enemy.elementalResistance >= 100) {
+    return true;
+  }
+  if (
+    myFamiliar() === $familiar`Sword of S Words` &&
+    auto_swordFamiliarWantsMonsterDrops(auto_sword_of_swords_tracking(), 100)
+  ) {
+    return false;
+  }
   // many monsters in these zones with similar names
   if (
     (loc === $location`The Battlefield (Frat Uniform)` &&
@@ -6704,9 +6715,6 @@ export function auto_wantToFreeKillWithNoDrops(
     loc === $location`The Battlefield (Hippy Uniform)` &&
     containsText(enemy.toString(), "War Frat")
   ) {
-    return true;
-  }
-  if (enemy.physicalResistance >= 100 && enemy.elementalResistance >= 100) {
     return true;
   }
   // look for specific monsters in zones where some monsters we do care about
@@ -6801,12 +6809,12 @@ export function auto_remainingShantyTurns(): number {
   return turns;
 }
 
-export function rat_locations(): Map<Location, boolean> {
-  const rats: Map<Location, boolean> = new Map();
-  rats.set($location`The Batrat and Ratbat Burrow`, true);
-  rats.set($location`The Typical Tavern Cellar`, true);
-  rats.set($location`The Middle Chamber`, true);
-  return rats;
+export function rat_locations(): Location[] {
+  return [
+    $location`The Batrat and Ratbat Burrow`,
+    $location`The Typical Tavern Cellar`,
+    $location`The Middle Chamber`,
+  ];
 }
 // when updating this function, update the corresponding comment in auto_pre_adv
 // where this gets called to improve readability over there
@@ -6860,7 +6868,7 @@ export function pm_updateThrall(
     if (base_spice) {
       consider = $thrall`Spice Ghost`;
     }
-    if (baseline_ver && ver_level > 10 && rat_locations().has(place)) {
+    if (baseline_ver && ver_level > 10 && rat_locations().includes(place)) {
       consider = $thrall`Vermincelli`;
     } else if (baseline_ver && ver_level < 11 && auto_havePastaWand()) {
       consider = $thrall`Vermincelli`;
