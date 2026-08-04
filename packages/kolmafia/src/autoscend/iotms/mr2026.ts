@@ -40,6 +40,7 @@ import {
   Slot,
   spleenLimit,
   Stat,
+  useFamiliar,
   visitUrl,
 } from "kolmafia";
 import {
@@ -1937,13 +1938,13 @@ export function auto_wantSwordFamiliar(place: Location): boolean {
   if (auto_canTracesBandit() && auto_desires_sword_familiar_drops()) {
     return true;
   }
-  if (!zone_delay(place)._boolean) {
-    return false;
-  }
   if (auto_desires_sword_familiar_drops()) {
-    return true; // already tracking something useful, keep harvesting it
+    return true; // already tracking something useful, keep harvesting it regardless of delay status
   }
-  if (auto_sword_of_swords_switches_left() <= 0) {
+  if (
+    !zone_delay(place)._boolean ||
+    auto_sword_of_swords_switches_left() <= 0
+  ) {
     return false;
   }
   // Is there anything here worth switching our tracked monster to?
@@ -1986,8 +1987,12 @@ export function auto_summonSwordTarget(): boolean {
   }
 
   if (myFamiliar() !== $familiar`Sword of S Words`) {
-    // Get the sword equipped first
-    if (!handleFamiliar$1($familiar`Sword of S Words`)) {
+    // Some summon methods (e.g. the chest mimic's mimic egg) fight immediately via an
+    // item use, bypassing the normal pre_adv familiar switch, so force it right now too.
+    if (
+      !handleFamiliar$1($familiar`Sword of S Words`) ||
+      !useFamiliar($familiar`Sword of S Words`)
+    ) {
       return false;
     }
   }

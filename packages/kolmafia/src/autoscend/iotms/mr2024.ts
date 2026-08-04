@@ -1,15 +1,18 @@
 import {
   abort,
   availableAmount,
+  bufferToFile,
   buy,
   cliExecute,
   containsText,
   creatableAmount,
   create,
+  daycount,
   Effect,
   Element,
   equippedItem,
   Familiar,
+  fileToBuffer,
   getClanId,
   getProperty,
   gitExists,
@@ -27,6 +30,7 @@ import {
   myLevel,
   myPrimestat,
   numericModifier,
+  sessionStorage,
   Skill,
   splitString,
   substring,
@@ -50,17 +54,12 @@ import {
   $skill,
   $slot,
   AprilingBandHelmet,
+  ChestMimic,
   get,
   set,
 } from "libram";
 
 import { c2t_apron } from "../../c2t_apron";
-import {
-  c2t_megg_eggs,
-  c2t_megg_extract,
-  c2t_megg_maxed,
-  c2t_megg_preAdv,
-} from "../../c2t_megg";
 import { autoAdvBypass } from "../auto_adventure";
 import { fullness_left } from "../auto_consume";
 import { equipMaximizedGear, possessEquipment } from "../auto_equipment";
@@ -1115,12 +1114,34 @@ export function auto_haveChestMimic(): boolean {
 }
 
 function auto_haveMeggEgg(mon: Monster): boolean {
-  for (const [megg_mon] of c2t_megg_eggs()) {
-    if (megg_mon === mon) {
-      return true;
-    }
+  return ChestMimic.differentiableQuantity(mon) > 0;
+}
+
+const mimicFile = `c2t_megg_maxlist.txt`;
+
+function auto_couldMakeMeggEgg(mon: Monster): boolean {
+  if (!mon.copyable || mon.boss) return false;
+
+  const buffer = fileToBuffer(mimicFile)
+    .split("\n")
+    .map((s) => parseInt(s));
+
+  if (buffer.includes(mon.id)) return true;
+  if (
+    buffer.length > 100 &&
+    sessionStorage.getItem(`mimic_checked_${daycount()}`) === "true"
+  ) {
+    return false;
   }
-  return false;
+
+  for (const newMon of ChestMimic.getReceivableMonsters()) {
+    if (buffer.includes(newMon.id)) continue;
+    buffer.push(newMon.id);
+  }
+
+  bufferToFile(buffer.join("\n"), mimicFile);
+  sessionStorage.setItem(`mimic_checked_${daycount()}`, "true");
+  return buffer.includes(mon.id);
 }
 
 export function auto_meggFight(mon: Monster, speculative: boolean): boolean {
@@ -1129,10 +1150,9 @@ export function auto_meggFight(mon: Monster, speculative: boolean): boolean {
   }
 
   if (speculative) {
-    c2t_megg_preAdv();
     if (
       auto_haveMeggEgg(mon) ||
-      (c2t_megg_maxed().has(mon) && $familiar`Chest Mimic`.experience >= 100)
+      ($familiar`Chest Mimic`.experience >= 100 && auto_couldMakeMeggEgg(mon))
     ) {
       return true;
     } else {
@@ -1140,9 +1160,8 @@ export function auto_meggFight(mon: Monster, speculative: boolean): boolean {
     }
   }
   if (!auto_haveMeggEgg(mon)) {
-    c2t_megg_preAdv();
     if ($familiar`Chest Mimic`.experience >= 100) {
-      c2t_megg_extract(mon);
+      ChestMimic.receive(mon);
     } else {
       return false;
     }
