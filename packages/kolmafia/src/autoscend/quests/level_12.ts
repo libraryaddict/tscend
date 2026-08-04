@@ -1161,14 +1161,15 @@ function L12_filthwormsDo(): boolean {
 
 export const L12_filthwormsTask: QuestTask = registerQuestTask({
   name: "L12_filthworms",
-  completed: () => internalQuestStatus("questL12War") > 1,
+  completed: () =>
+    internalQuestStatus("questL12War") > 1 ||
+    getProperty("sidequestOrchardCompleted") !== "none" ||
+    in_tcrs() ||
+    in_koe() ||
+    auto_warEnemiesRemaining() <= 0,
   ready: () =>
     internalQuestStatus("questL12War") === 1 &&
-    getProperty("sidequestOrchardCompleted") === "none" &&
-    !in_tcrs() &&
-    !in_koe() &&
-    itemAmount($item`heart of the filthworm queen`) === 0 &&
-    auto_warEnemiesRemaining() > 0,
+    itemAmount($item`heart of the filthworm queen`) === 0,
   do: L12_filthwormsDo,
   locations: () =>
     [
@@ -2255,7 +2256,7 @@ export const L12_themtharHillsTask: QuestTask = registerQuestTask({
     !in_koe() &&
     !in_wotsf(),
   do: L12_themtharHillsDo,
-  locations: $locations`The Themthar Hills`,
+  locations: $location`The Themthar Hills`,
 });
 
 export function L12_themtharHills(): boolean {
@@ -2413,7 +2414,8 @@ export const L12_farmTask: QuestTask = registerQuestTask({
   name: "L12_farm",
   completed: () =>
     getProperty("sidequestFarmCompleted") !== "none" ||
-    internalQuestStatus("questL12War") > 1,
+    internalQuestStatus("questL12War") > 1 ||
+    get("auto_skipL12Farm", false),
   ready: () => !get("auto_skipL12Farm", false),
   do: L12_farmDo,
   locations: $locations`McMillicancuddy's Barn, McMillicancuddy's Pond, McMillicancuddy's Back 40, McMillicancuddy's Other Back 40, The Castle in the Clouds in the Sky (Ground Floor)`,

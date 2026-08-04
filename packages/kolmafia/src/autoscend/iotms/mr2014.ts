@@ -500,7 +500,6 @@ registerQuestTask({
     internalQuestStatus("questL11Desert") > 0,
   ready: () => true,
   do: () => LX_ornateDowsingRod(),
-  locations: $locations`The Prince's Balcony, The Prince's Dance Floor, The Prince's Lounge, The Prince's Kitchen, The Prince's Restroom`,
 });
 
 function fancyOilPaintingDo(): boolean {

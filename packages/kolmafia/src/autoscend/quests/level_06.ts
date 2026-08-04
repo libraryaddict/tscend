@@ -232,7 +232,7 @@ function L6_dakotaFanningDo(): boolean {
 
 const L6_dakotaFanningTask: QuestTask = registerQuestTask({
   name: "L6_dakotaFanning",
-  completed: () => hiddenTempleUnlocked(),
+  completed: () => hiddenTempleUnlocked() || !get("auto_dakotaFanning", false),
   ready: () => get("auto_dakotaFanning", false) && !hiddenTempleUnlocked(),
   do: L6_dakotaFanningDo,
   locations: $locations`The Haunted Conservatory, The Dark Heart of the Woods, Pandamonium Slums`,

@@ -50,7 +50,6 @@ import {
   $familiar,
   $item,
   $location,
-  $locations,
   $modifier,
   $monster,
   $servant,
@@ -573,7 +572,7 @@ export const L9_chasmBuildTask: QuestTask = registerQuestTask({
     internalQuestStatus("questL09Topping") === 0 &&
     get("chasmBridgeProgress") < bridgeGoal(),
   do: L9_chasmBuildDo,
-  locations: $locations`The Smut Orc Logging Camp`,
+  locations: $location`The Smut Orc Logging Camp`,
   desiredEncounters: () => {
     const fastenerNeed: number = bridgeGoal() - fastenerCount();
     const lumberNeed: number = bridgeGoal() - lumberCount();

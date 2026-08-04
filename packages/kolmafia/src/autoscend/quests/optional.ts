@@ -633,12 +633,13 @@ function LX_guildUnlockDo(): boolean {
 
 export const LX_guildUnlockTask: QuestTask = registerQuestTask({
   name: "LX_guildUnlock",
-  completed: () => guildStoreAvailable(),
+  completed: () =>
+    guildStoreAvailable() ||
+    !isGuildClass() ||
+    in_nuclear() ||
+    in_pokefam() ||
+    in_robot(),
   ready: () =>
-    !in_nuclear() &&
-    !in_pokefam() &&
-    !in_robot() &&
-    isGuildClass() &&
     !guildStoreAvailable() &&
     !(
       !(in_picky() || in_lowkeysummer()) &&

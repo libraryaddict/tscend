@@ -1746,7 +1746,6 @@ export const LX_lastChanceTask: QuestTask = registerQuestTask({
   completed: () => false,
   ready: () => true,
   do: LX_lastChanceDo,
-  locations: $locations`Cobb's Knob Harem, The Outskirts of Cobb's Knob`,
   desiredEncounters: () =>
     get("screechDelay") !== "" && isBanished(toPhylum(get("screechDelay")))
       ? [

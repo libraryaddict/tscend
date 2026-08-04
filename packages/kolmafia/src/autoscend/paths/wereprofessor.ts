@@ -422,7 +422,7 @@ function LX_wereprof_getSmashedEquipDo(): boolean {
 
 const LX_wereprof_getSmashedEquipTask: QuestTask = registerQuestTask({
   name: "LX_wereprof_getSmashedEquip",
-  completed: () => !in_wereprof(),
+  completed: () => !in_wereprof() || wereprof_haveAllEquipment(),
   ready: () => !is_professor() && !wereprof_haveAllEquipment(),
   do: LX_wereprof_getSmashedEquipDo,
   locations: $locations`The Hidden Hospital, The Castle in the Clouds in the Sky (Top Floor), Noob Cave, The Haunted Pantry, The Thinknerd Warehouse, Vanya's Castle`,
