@@ -125,16 +125,16 @@ function gnoobAbsorbCost(it: Item): number {
 function gnoob_buySkills(): void {
   //Need to consider skill orders, how to handle when we have starting skills.
 
-  const blacklist: Map<Item, boolean> = new Map();
+  const blacklist: Item[] = [];
 
   if (itemAmount($item`Pick-O-Matic lockpicks`) === 1) {
-    blacklist.set($item`Pick-O-Matic lockpicks`, true); //do not absorb our last lockpick. could have more than 1 in postronin
+    blacklist.push($item`Pick-O-Matic lockpicks`); //do not absorb our last lockpick. could have more than 1 in postronin
   }
   if (
     internalQuestStatus("questL10Garbage") < 2 &&
     itemAmount($item`enchanted bean`) === 1
   ) {
-    blacklist.set($item`enchanted bean`, true); //need to keep our only enchanted bean to be planted
+    blacklist.push($item`enchanted bean`); //need to keep our only enchanted bean to be planted
   }
 
   let available: Map<Item, string> = gnoob_lister();
@@ -164,7 +164,7 @@ function gnoob_buySkills(): void {
 
     let possible: Map<number, Item> = new Map();
     for (const it of available.keys()) {
-      if (!(blacklist.get(it) ?? false) && it.noobSkill === sk) {
+      if (!blacklist.includes(it) && it.noobSkill === sk) {
         possible.set(possible.size, it);
       }
     }

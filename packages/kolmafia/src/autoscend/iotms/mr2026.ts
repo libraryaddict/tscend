@@ -735,7 +735,7 @@ export function auto_spadeDigSkeleton(): boolean {
 export function auto_wantToSpadeDigSkeleton(loc: Location): boolean {
   // haunted kitchen is the only zone that calls auto_spadeDigSkeleton() and does not call this function
   // (because it's the only non-delay zone currently supported)
-  const valid_loc: boolean = spadeDelayZones().has(loc);
+  const valid_loc: boolean = spadeDelayZones().includes(loc);
   const have_digs: boolean = auto_spadeDigsRemaining() > 0;
   const delay_left: boolean = zone_delay(loc)._boolean;
   const zone_set: boolean = safeGet("lastAdventure", Location.none) === loc;
@@ -745,11 +745,8 @@ export function auto_wantToSpadeDigSkeleton(loc: Location): boolean {
   return false;
 }
 
-export function spadeDelayZones(): Map<Location, boolean> {
-  const desired_zones: Map<Location, boolean> = new Map();
-  desired_zones.set($location`The Unquiet Garves`, true);
-  desired_zones.set($location`The Haunted Ballroom`, true);
-  return desired_zones;
+export function spadeDelayZones(): Location[] {
+  return [$location`The Unquiet Garves`, $location`The Haunted Ballroom`];
 }
 
 export function auto_burnRemainingSpadeDigs(): boolean {
@@ -1606,7 +1603,7 @@ const BASEBALL_FILLER_BONUS_REPEAT_ZONE = 8;
 function auto_baseballZoneAlreadyTapped(loc: Location): boolean {
   const team = auto_baseball_team();
   for (const a of auto_baseballBuildAssignments(team)) {
-    if (monster_to_location(team[a.finisherSlot]).has(loc)) {
+    if (monster_to_location(team[a.finisherSlot]).includes(loc)) {
       return true;
     }
   }

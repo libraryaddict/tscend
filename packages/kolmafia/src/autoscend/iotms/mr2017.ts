@@ -1571,7 +1571,7 @@ export function makeGenieWish$1(eff: Effect): boolean {
   return makeGenieWish(`to be ${eff}`) || haveEffect(eff) > 0;
 }
 // Track any failed wishes this run
-const failedWishMonsters: Map<Monster, boolean> = new Map();
+const failedWishMonsters: Monster[] = [];
 
 export function canGenieCombat(mon: Monster): boolean {
   if (!mon.wishable) {
@@ -1603,7 +1603,7 @@ export function canGenieCombat(mon: Monster): boolean {
   if ($monsters`fantasy bandit, modern zmobie`.includes(mon)) {
     return false;
   }
-  if (failedWishMonsters.has(mon)) {
+  if (failedWishMonsters.includes(mon)) {
     return false;
   }
   return true;
@@ -1636,7 +1636,7 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
   autoAdvBypass(5, pages, $location`Noob Cave`, option);
 
   if (prev_genieFightsUsed === get("_genieFightsUsed")) {
-    failedWishMonsters.set(mon, true);
+    failedWishMonsters.push(mon);
     auto_log_warning(`Wish: '${wish}' failed`, "red");
     return false;
   }

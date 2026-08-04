@@ -311,7 +311,7 @@ export function auto_combatDefaultStage2(
     auto_canUse($skill`Swoop like a Bat`, true) &&
     get("_batWingsSwoopUsed") < 11;
   const willSwoop: boolean =
-    auto_swoopLocations().has(myLocation()) && swoopAvailable;
+    auto_swoopLocations().includes(myLocation()) && swoopAvailable;
 
   if (
     ((!combat_status_check("yellowray") &&

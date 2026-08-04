@@ -64,11 +64,11 @@ export function c2t_apron(select: Stat = myPrimestat()): boolean {
     `name="ingredients${meal}\\[\\]"\\s+value="(\\d+)"\\s+data-has="(\\d)"`,
     page,
   );
-  const allowlist: Map<string, boolean> = c2t_apron_allowlist();
+  const allowlist: string[] = c2t_apron_allowlist();
 
   let sendit: string = `choice.php?pwd&whichchoice=1518&option=1&meal=${meal}`;
   while (mat.find()) {
-    if (mat.group(2) === "1" && allowlist.has(mat.group(1))) {
+    if (mat.group(2) === "1" && allowlist.includes(mat.group(1))) {
       sendit += `&ingredients${meal}[]=${mat.group(1)}`;
     }
   }
@@ -88,24 +88,12 @@ export function c2t_apron(select: Stat = myPrimestat()): boolean {
 }
 
 //map of ingredients on the allowlist
-function c2t_apron_allowlist(): Map<string, boolean> {
-  const out: Map<string, boolean> = new Map();
-  let split: Map<number, string> = new Map();
-
-  if (getProperty("c2t_apron_allowlist") !== "") {
-    split = new Map(
-      splitString(getProperty("c2t_apron_allowlist"), ",").map((_v, _i) => [
-        _i,
-        _v,
-      ]),
-    );
+function c2t_apron_allowlist(): string[] {
+  if (getProperty("c2t_apron_allowlist") === "") {
+    return [];
   }
 
-  for (const [, x] of split) {
-    out.set(x, true);
-  }
-
-  return out;
+  return splitString(getProperty("c2t_apron_allowlist"), ",");
 }
 
 //errors

@@ -821,8 +821,7 @@ function L13_towerNSContestsDo(): boolean {
           crowd_stat === $stat`Muscle` &&
           !haveSkill($skill`Preternatural Strength`)
         ) {
-          const requirements: Map<Skill, boolean> = new Map();
-          requirements.set($skill`Preternatural Strength`, true);
+          const requirements: Skill[] = [$skill`Preternatural Strength`];
           auto_log_info(
             "Torporing, since we want to get Preternatural Strength.",
             "blue",

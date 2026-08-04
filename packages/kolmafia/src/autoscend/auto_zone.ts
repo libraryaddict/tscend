@@ -1959,13 +1959,13 @@ export function is_ghost_in_zone(loc: Location): boolean {
   return false;
 }
 
-export function monster_to_location(target: Monster): Map<Location, boolean> {
-  const retval: Map<Location, boolean> = new Map();
+export function monster_to_location(target: Monster): Location[] {
+  const retval: Location[] = [];
   for (const loc of $locations.all()) {
     //check all locations in the game
     for (const [, mon] of getMonsters(loc).entries()) {
       if (target === mon) {
-        retval.set(loc, true);
+        retval.push(loc);
         break;
       }
     }
@@ -1973,14 +1973,14 @@ export function monster_to_location(target: Monster): Map<Location, boolean> {
   return retval;
 }
 
-export function auto_swoopLocations(): Map<Location, boolean> {
-  return new Map([
-    [$location`The Hatching Chamber`, true],
-    [$location`The Feeding Chamber`, true],
-    [$location`The Royal Guard Chamber`, true],
-    [$location`The Hidden Temple`, true],
-    [$location`The Goatlet`, true],
-  ]);
+export function auto_swoopLocations(): Location[] {
+  return [
+    $location`The Hatching Chamber`,
+    $location`The Feeding Chamber`,
+    $location`The Royal Guard Chamber`,
+    $location`The Hidden Temple`,
+    $location`The Goatlet`,
+  ];
 } /*
 	case $location[The Oasis]:
 	case $location[The Arid\, Extra-Dry Desert]:

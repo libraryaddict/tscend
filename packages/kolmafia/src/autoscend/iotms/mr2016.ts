@@ -779,9 +779,9 @@ export function auto_doPrecinct(): boolean {
     auto_log_info("Generating goals...", "blue");
     //At this point we\'ve visited every place and queried everyone. Now we need to determine who is identifying a killer.
     //Extract names and jobs
-    const personGoals: Map<string, boolean> = new Map();
-    const jobGoals: Map<string, boolean> = new Map();
-    const locationGoals: Map<string, boolean> = new Map();
+    const personGoals: string[] = [];
+    const jobGoals: string[] = [];
+    const locationGoals: string[] = [];
     for (const index of eggData.keys()) {
       if ((eggData.get(index) ?? "") === "") {
         continue;
@@ -789,9 +789,18 @@ export function auto_doPrecinct(): boolean {
       const subEgg: Map<number, string> = new Map(
         splitString(eggData.get(index) ?? "", ":").map((_v, _i) => [_i, _v]),
       );
-      personGoals.set(subEgg.get(2) ?? "", true);
-      jobGoals.set(subEgg.get(3) ?? "", true);
-      locationGoals.set(subEgg.get(1) ?? "", true);
+      const person: string = subEgg.get(2) ?? "";
+      if (!personGoals.includes(person)) {
+        personGoals.push(person);
+      }
+      const job: string = subEgg.get(3) ?? "";
+      if (!jobGoals.includes(job)) {
+        jobGoals.push(job);
+      }
+      const location: string = subEgg.get(1) ?? "";
+      if (!locationGoals.includes(location)) {
+        locationGoals.push(location);
+      }
     }
 
     auto_log_info("Verifications....", "blue");
@@ -809,7 +818,7 @@ export function auto_doPrecinct(): boolean {
       if ((subEgg.get(4) ?? "") !== "liar") {
         let hasAnyone: boolean = false;
         const oldValue: string = subEgg.get(4) ?? "";
-        for (const goal of personGoals.keys()) {
+        for (const goal of personGoals) {
           const goalMatcher: AshMatcher = new AshMatcher(
             `\\b${goal}\\b`,
             subEgg.get(4) ?? "",
@@ -819,7 +828,7 @@ export function auto_doPrecinct(): boolean {
             subEgg.set(4, goal);
           }
         }
-        for (const goal of jobGoals.keys()) {
+        for (const goal of jobGoals) {
           const goalMatcher: AshMatcher = new AshMatcher(
             `\\b${goal}\\b`,
             subEgg.get(4) ?? "",
@@ -890,7 +899,7 @@ export function auto_doPrecinct(): boolean {
             //We need to look up the particular person.
             let exact: boolean = false;
             let count_1: number = 0;
-            for (const goal of jobGoals.keys()) {
+            for (const goal of jobGoals) {
               const goalMatcher: AshMatcher = new AshMatcher(
                 `\\b${goal}\\b`,
                 killerInfo,
@@ -913,7 +922,7 @@ export function auto_doPrecinct(): boolean {
 
             exact = false;
             count_1 = 0;
-            for (const goal of locationGoals.keys()) {
+            for (const goal of locationGoals) {
               const goalMatcher: AshMatcher = new AshMatcher(
                 `\\b${goal}\\b`,
                 killerInfo,

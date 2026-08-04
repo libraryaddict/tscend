@@ -235,7 +235,7 @@ function LX_kolhs_yearbookCameraQuest(): boolean {
   //try to get a photograph
   const target: Monster = safeGet("yearbookCameraTarget", Monster.none);
   let adv_target: Location = Location.none;
-  for (const loc of monster_to_location(target).keys()) {
+  for (const loc of monster_to_location(target)) {
     if (zone_isAvailable(loc, true)) {
       adv_target = loc;
       break;

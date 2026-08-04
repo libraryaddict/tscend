@@ -298,7 +298,7 @@ export function autoStripOutfit(toRemove: string): boolean {
 }
 
 export function equipStatgainIncreasers(
-  increaseThisStat: Map<Stat, boolean>,
+  increaseThisStat: Stat[],
   alwaysEquip: boolean,
 ): void {
   if (auto_ignoreExperience()) {
@@ -307,10 +307,7 @@ export function equipStatgainIncreasers(
   //want to equip best equipment that increases specified stat gains including out of combat
   //should be frequently called by consume actions so try not to lose HP or MP, but will equip anyway if argument alwaysEquip is true
   const statMaximizer: Maximizer = new Maximizer();
-  for (const st of increaseThisStat.keys()) {
-    if (!(increaseThisStat.get(st) ?? false)) {
-      continue;
-    }
+  for (const st of increaseThisStat) {
     let statWeight: number = 1;
     if (st === myPrimestat()) {
       if (disregardInstantKarma()) {
@@ -326,10 +323,7 @@ export function equipStatgainIncreasers(
   }
   let simulatedEquipment: Map<Slot, Item> = statMaximizer.simulate();
   let canIncreaseStatgains: boolean = false;
-  for (const st of increaseThisStat.keys()) {
-    if (!(increaseThisStat.get(st) ?? false)) {
-      continue;
-    }
+  for (const st of increaseThisStat) {
     const modifierString: Modifier = Modifier.get(
       `${st.toString()} Experience Percent`,
     );
@@ -344,10 +338,7 @@ export function equipStatgainIncreasers(
   //list only the maximized equipment that increases statgain
   const statgainIncreasers: Map<Slot, Item> = new Map();
   for (const sl of simulatedEquipment.keys()) {
-    for (const st of increaseThisStat.keys()) {
-      if (!(increaseThisStat.get(st) ?? false)) {
-        continue;
-      }
+    for (const st of increaseThisStat) {
       if (
         numericModifier(
           simulatedEquipment.get(sl) ?? Item.none,
@@ -501,70 +492,46 @@ export function equipStatgainIncreasers$1(
   increaseThisStat: Stat,
   alwaysEquip: boolean,
 ): void {
-  const increaseThisStatAggregate: Map<Stat, boolean> = new Map();
-  increaseThisStatAggregate.set(increaseThisStat, true);
-  equipStatgainIncreasers(increaseThisStatAggregate, alwaysEquip);
+  equipStatgainIncreasers([increaseThisStat], alwaysEquip);
 }
 
 export function equipStatgainIncreasers$2(): void {
   if (!disregardInstantKarma()) {
     //exclude primestat if level 13
     if (myPrimestat() === $stat`Muscle`) {
-      equipStatgainIncreasers(
-        new Map([
-          [$stat`Mysticality`, true],
-          [$stat`Moxie`, true],
-        ]),
-        false,
-      );
+      equipStatgainIncreasers([$stat`Mysticality`, $stat`Moxie`], false);
       return;
     } else if (myPrimestat() === $stat`Mysticality`) {
-      equipStatgainIncreasers(
-        new Map([
-          [$stat`Muscle`, true],
-          [$stat`Moxie`, true],
-        ]),
-        false,
-      );
+      equipStatgainIncreasers([$stat`Muscle`, $stat`Moxie`], false);
       return;
     } else if (myPrimestat() === $stat`Moxie`) {
-      equipStatgainIncreasers(
-        new Map([
-          [$stat`Muscle`, true],
-          [$stat`Mysticality`, true],
-        ]),
-        false,
-      );
+      equipStatgainIncreasers([$stat`Muscle`, $stat`Mysticality`], false);
       return;
     }
   }
   equipStatgainIncreasers(
-    new Map([
-      [$stat`Muscle`, true],
-      [$stat`Mysticality`, true],
-      [$stat`Moxie`, true],
-    ]),
+    [$stat`Muscle`, $stat`Mysticality`, $stat`Moxie`],
     false,
   );
 }
 
 export function equipStatgainIncreasersFor(it: Item): void {
   //check what stats a consumable will give and equip increasers for it
-  const increaseThisStat: Map<Stat, boolean> = new Map();
+  const increaseThisStat: Stat[] = [];
   const excludedStat: Stat = disregardInstantKarma()
     ? Stat.none
     : myPrimestat(); //exclude primestat if level 13
   if (it.muscle !== "" && excludedStat !== $stat`Muscle`) {
-    increaseThisStat.set($stat`Muscle`, true);
+    increaseThisStat.push($stat`Muscle`);
   }
   if (it.mysticality !== "" && excludedStat !== $stat`Mysticality`) {
-    increaseThisStat.set($stat`Mysticality`, true);
+    increaseThisStat.push($stat`Mysticality`);
   }
   if (it.moxie !== "" && excludedStat !== $stat`Moxie`) {
-    increaseThisStat.set($stat`Moxie`, true);
+    increaseThisStat.push($stat`Moxie`);
   }
 
-  if (increaseThisStat.size !== 0) {
+  if (increaseThisStat.length !== 0) {
     equipStatgainIncreasers(increaseThisStat, false);
   }
 }
@@ -1409,28 +1376,27 @@ export function auto_getAllEquipabble(s: Slot): Map<Item, number> {
     }
   }
   // Add equipped
-  let my_slots: Map<Slot, boolean> = new Map();
+  let my_slots: Slot[] = [];
   if (ignore_slot) {
-    my_slots = new Map([
-      [$slot`hat`, true],
-      [$slot`weapon`, true],
-      [$slot`off-hand`, true],
-      [$slot`back`, true],
-      [$slot`shirt`, true],
-      [$slot`pants`, true],
-      [$slot`acc1`, true],
-      [$slot`acc2`, true],
-      [$slot`acc3`, true],
-      [$slot`familiar`, true],
-    ]);
+    my_slots = [
+      $slot`hat`,
+      $slot`weapon`,
+      $slot`off-hand`,
+      $slot`back`,
+      $slot`shirt`,
+      $slot`pants`,
+      $slot`acc1`,
+      $slot`acc2`,
+      $slot`acc3`,
+      $slot`familiar`,
+    ];
   } else {
-    my_slots.set(s, true);
+    my_slots.push(s);
     if (s === $slot`acc1`) {
-      my_slots.set($slot`acc2`, true);
-      my_slots.set($slot`acc3`, true);
+      my_slots.push($slot`acc2`, $slot`acc3`);
     }
   }
-  for (const my_slot of my_slots.keys()) {
+  for (const my_slot of my_slots) {
     const it: Item = equippedItem(my_slot);
     valid_and_equippable.set(it, (valid_and_equippable.get(it) ?? 0) + 1);
   }
@@ -1438,35 +1404,35 @@ export function auto_getAllEquipabble(s: Slot): Map<Item, number> {
 }
 
 export function auto_saveEquipped(): Map<number, Item> {
-  let my_slots: Map<Slot, boolean>;
+  let my_slots: Slot[];
   if (in_hattrick()) {
-    my_slots = new Map([
-      [$slot`off-hand`, true],
-      [$slot`weapon`, true],
-      [$slot`back`, true],
-      [$slot`shirt`, true],
-      [$slot`pants`, true],
-      [$slot`acc1`, true],
-      [$slot`acc2`, true],
-      [$slot`acc3`, true],
-      [$slot`familiar`, true],
-    ]);
+    my_slots = [
+      $slot`off-hand`,
+      $slot`weapon`,
+      $slot`back`,
+      $slot`shirt`,
+      $slot`pants`,
+      $slot`acc1`,
+      $slot`acc2`,
+      $slot`acc3`,
+      $slot`familiar`,
+    ];
   } else {
-    my_slots = new Map([
-      [$slot`hat`, true],
-      [$slot`off-hand`, true],
-      [$slot`weapon`, true],
-      [$slot`back`, true],
-      [$slot`shirt`, true],
-      [$slot`pants`, true],
-      [$slot`acc1`, true],
-      [$slot`acc2`, true],
-      [$slot`acc3`, true],
-      [$slot`familiar`, true],
-    ]);
+    my_slots = [
+      $slot`hat`,
+      $slot`off-hand`,
+      $slot`weapon`,
+      $slot`back`,
+      $slot`shirt`,
+      $slot`pants`,
+      $slot`acc1`,
+      $slot`acc2`,
+      $slot`acc3`,
+      $slot`familiar`,
+    ];
   }
   const equipped: Map<number, Item> = new Map();
-  for (const sl of my_slots.keys()) {
+  for (const sl of my_slots) {
     equipped.set(equipped.size, equippedItem(sl));
   }
   return equipped;

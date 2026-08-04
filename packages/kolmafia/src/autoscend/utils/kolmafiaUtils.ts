@@ -130,11 +130,11 @@ export class AshMatcher {
   }
 
   groupNames() {
-    const res = new Map();
+    const res: string[] = [];
     for (const match of this.pattern.source.matchAll(
       /\(\?<([a-zA-Z][a-zA-Z0-9]*)>/g,
     )) {
-      res.set(match[1], true);
+      res.push(match[1]);
     }
     return res;
   }

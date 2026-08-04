@@ -247,12 +247,12 @@ function zoo_graftedFams(): Map<number, Familiar> {
   return fams;
 }
 
-function zoo_graftedIntrinsicFams(): Map<Familiar, boolean> {
-  const fams: Map<Familiar, boolean> = new Map();
+function zoo_graftedIntrinsicFams(): Familiar[] {
+  const fams: Familiar[] = [];
   function check(part: number): void {
     const f: Familiar = zoo_graftedToPart(part);
     if (f !== Familiar.none) {
-      fams.set(f, true);
+      fams.push(f);
     }
   }
   check($_f_ZOOPART_HEAD);
@@ -565,7 +565,7 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
     return ranked_list;
   }
 
-  const used: Map<Familiar, boolean> = new Map();
+  const used: Familiar[] = [];
   const intrinsicFam: Map<number, Familiar> = new Map();
   let lbuffFam: Familiar = zoo_graftedToPart($_f_ZOOPART_L_NIPPLE);
   let rbuffFam: Familiar = zoo_graftedToPart($_f_ZOOPART_R_NIPPLE);
@@ -576,9 +576,9 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
 
   if (rbuffFam === Familiar.none) {
     for (const [, fam] of sortFams(rbuffFams)) {
-      if (!used.has(fam)) {
+      if (!used.includes(fam)) {
         rbuffFam = fam;
-        used.set(fam, true);
+        used.push(fam);
         break;
       }
     }
@@ -586,9 +586,9 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
 
   if (lbuffFam === Familiar.none) {
     for (const [, fam] of sortFams(lbuffFams)) {
-      if (!used.has(fam)) {
+      if (!used.includes(fam)) {
         lbuffFam = fam;
-        used.set(fam, true);
+        used.push(fam);
         break;
       }
     }
@@ -598,7 +598,7 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
     for (const fam of $familiars`Quantum Entangler, Foul Ball, Defective Childrens' Stapler`) {
       if (auto_have_familiar(fam)) {
         lkickFam = fam;
-        used.set(fam, true);
+        used.push(fam);
         break;
       }
     }
@@ -606,9 +606,9 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
 
   if (lkickFam === Familiar.none) {
     for (const [, fam] of sortFams(kickFams)) {
-      if (!used.has(fam)) {
+      if (!used.includes(fam)) {
         lkickFam = fam;
-        used.set(fam, true);
+        used.push(fam);
         break;
       }
     }
@@ -617,12 +617,12 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
   let intrinsic_index: number = 0;
   for (const [, fam] of sortFams(intrinsicFams)) {
     // We only need enough to fill our empty graft slots
-    if (intrinsicFam.size >= 5 - zoo_graftedIntrinsicFams().size) {
+    if (intrinsicFam.size >= 5 - zoo_graftedIntrinsicFams().length) {
       break;
     }
-    if (!used.has(fam)) {
+    if (!used.includes(fam)) {
       intrinsicFam.set(intrinsic_index++, fam);
-      used.set(fam, true); // should probably not add to used if we already have grafts that will prevent this ever being used
+      used.push(fam); // should probably not add to used if we already have grafts that will prevent this ever being used
     }
   }
   // Right kick banishes (cassava and limb are super-banishes, magimech is OK)
@@ -630,7 +630,7 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
     for (const fam of $familiars`Dire Cassava, Phantom Limb, MagiMechTech MicroMechaMech`) {
       if (auto_have_familiar(fam)) {
         rkickFam = fam;
-        used.set(fam, true);
+        used.push(fam);
         break;
       }
     }
@@ -638,9 +638,9 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
   // Backup right kick options
   if (rkickFam === Familiar.none) {
     for (const [, fam] of sortFams(kickFams)) {
-      if (!used.has(fam)) {
+      if (!used.includes(fam)) {
         rkickFam = fam;
-        used.set(fam, true);
+        used.push(fam);
         break;
       }
     }
@@ -661,13 +661,13 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
 
   for (let ifam: number = 0; ifam < punchPotential.size; ifam++) {
     const fam: Familiar = punchPotential.get(ifam) ?? Familiar.none;
-    if (auto_have_familiar(fam) && !used.has(fam)) {
+    if (auto_have_familiar(fam) && !used.includes(fam)) {
       if (lpunchFam === Familiar.none) {
         lpunchFam = fam;
-        used.set(fam, true);
+        used.push(fam);
       } else if (rpunchFam === Familiar.none) {
         rpunchFam = fam;
-        used.set(fam, true);
+        used.push(fam);
       }
     }
   }

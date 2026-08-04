@@ -152,7 +152,7 @@ class $_canUse_SkillSet {
     //this file is utility functions that are only used for combat file.
     // + combat_mana_cost_modifier() (negative value that we would add) is already included by mp_cost()
     public count: number = 0,
-    public skills: Map<Skill, boolean> = new Map(),
+    public skills: Skill[] = [],
   ) {}
 }
 let $_static_1 = false;
@@ -255,95 +255,77 @@ export function auto_canUse(
   if (!$_static_1) {
     $_canUse_exclusives.set(
       $_canUse_exclusives.size,
-      new $_canUse_SkillSet(
-        1,
-        new Map([
-          [$skill`Curse of Vichyssoise`, true],
-          [$skill`Curse of Marinara`, true],
-          [$skill`Curse of the Thousand Islands`, true],
-          [$skill`Curse of Weaksauce`, true],
-        ]),
-      ),
+      new $_canUse_SkillSet(1, [
+        $skill`Curse of Vichyssoise`,
+        $skill`Curse of Marinara`,
+        $skill`Curse of the Thousand Islands`,
+        $skill`Curse of Weaksauce`,
+      ]),
     );
     $_canUse_exclusives.set(
       $_canUse_exclusives.size,
-      new $_canUse_SkillSet(
-        equippedAmount($item`vampyric cloake`),
-        new Map([
-          [$skill`Become a Wolf`, true],
-          [$skill`Become a Cloud of Mist`, true],
-          [$skill`Become a Bat`, true],
-        ]),
-      ),
+      new $_canUse_SkillSet(equippedAmount($item`vampyric cloake`), [
+        $skill`Become a Wolf`,
+        $skill`Become a Cloud of Mist`,
+        $skill`Become a Bat`,
+      ]),
     );
     $_canUse_exclusives.set(
       $_canUse_exclusives.size,
-      new $_canUse_SkillSet(
-        1,
-        new Map([
-          [$skill`Shadow Noodles`, true],
-          [$skill`Entangling Noodles`, true],
-        ]),
-      ),
+      new $_canUse_SkillSet(1, [
+        $skill`Shadow Noodles`,
+        $skill`Entangling Noodles`,
+      ]),
     );
     $_canUse_exclusives.set(
       $_canUse_exclusives.size,
-      new $_canUse_SkillSet(
-        1,
-        new Map([
-          [$skill`Silent Slam`, true],
-          [$skill`Silent Squirt`, true],
-          [$skill`Silent Slice`, true],
-        ]),
-      ),
+      new $_canUse_SkillSet(1, [
+        $skill`Silent Slam`,
+        $skill`Silent Squirt`,
+        $skill`Silent Slice`,
+      ]),
     );
     $_canUse_exclusives.set(
       $_canUse_exclusives.size,
-      new $_canUse_SkillSet(
-        equippedAmount(wrap_item($item`haiku katana`)),
-        new Map([
-          [$skill`The 17 Cuts`, true],
-          [$skill`Falling Leaf Whirlwind`, true],
-          [$skill`Spring Raindrop Attack`, true],
-          [$skill`Summer Siesta`, true],
-          [$skill`Winter's Bite Technique`, true],
-        ]),
-      ),
+      new $_canUse_SkillSet(equippedAmount(wrap_item($item`haiku katana`)), [
+        $skill`The 17 Cuts`,
+        $skill`Falling Leaf Whirlwind`,
+        $skill`Spring Raindrop Attack`,
+        $skill`Summer Siesta`,
+        $skill`Winter's Bite Technique`,
+      ]),
     );
     $_canUse_exclusives.set(
       $_canUse_exclusives.size,
       new $_canUse_SkillSet(
         equippedAmount($item`bottle-rocket crossbow`) +
           equippedAmount($item`replica bottle-rocket crossbow`),
-        new Map([
-          [$skill`Fire red bottle-rocket`, true],
-          [$skill`Fire blue bottle-rocket`, true],
-          [$skill`Fire orange bottle-rocket`, true],
-          [$skill`Fire purple bottle-rocket`, true],
-          [$skill`Fire black bottle-rocket`, true],
-        ]),
+        [
+          $skill`Fire red bottle-rocket`,
+          $skill`Fire blue bottle-rocket`,
+          $skill`Fire orange bottle-rocket`,
+          $skill`Fire purple bottle-rocket`,
+          $skill`Fire black bottle-rocket`,
+        ],
       ),
     );
     $_canUse_exclusives.set(
       $_canUse_exclusives.size,
-      new $_canUse_SkillSet(
-        1,
-        new Map([
-          [$skill`Kodiak Moment`, true],
-          [$skill`Grizzly Scene`, true],
-          [$skill`Bear-Backrub`, true],
-          [$skill`Bear-ly Legal`, true],
-          [$skill`Bear Hug`, true],
-        ]),
-      ),
+      new $_canUse_SkillSet(1, [
+        $skill`Kodiak Moment`,
+        $skill`Grizzly Scene`,
+        $skill`Bear-Backrub`,
+        $skill`Bear-ly Legal`,
+        $skill`Bear Hug`,
+      ]),
     );
     $_static_1 = true;
   }
 
   for (const [, set] of $_canUse_exclusives) {
-    if (set.skills.has(sk)) {
+    if (set.skills.includes(sk)) {
       let total: number = 0;
-      for (const check_1 of set.skills.keys()) {
+      for (const check_1 of set.skills) {
         total += usedCount(check_1);
       }
       if (total >= set.count) {
@@ -814,7 +796,7 @@ export function banisherCombatAction$1(
     useFree = false; // werewolves don't run
   }
   //src/net/sourceforge/kolmafia/session/BanishManager.java
-  const used: Map<string, boolean> = auto_banishesUsedAt(loc);
+  const used: string[] = auto_banishesUsedAt(loc);
   /*	If we have banished anything else in this zone, make sure we do not undo the banishing.
 		mad wino:batter up!:378:skeletal sommelier:KGB tranquilizer dart:381
 		We are not going to worry about turn costs, it probably only matters for older paths anyway.
@@ -841,7 +823,7 @@ export function banisherCombatAction$1(
       ? auto_have_skill($skill`Spring Kick`)
       : possessEquipment($item`spring shoes`)) &&
     auto_is_valid$2($skill`Spring Kick`) &&
-    !used.has("Spring Kick")
+    !used.includes("Spring Kick")
   ) {
     return $skill`Spring Kick`;
   }
@@ -850,7 +832,7 @@ export function banisherCombatAction$1(
     auto_have_skill($skill`Peel Out`) &&
     pete_peelOutRemaining() > 0 &&
     getProperty("peteMotorbikeMuffler") === "Extra-Smelly Muffler" &&
-    !used.has("Peel Out") &&
+    !used.includes("Peel Out") &&
     useFree
   ) {
     return $skill`Peel Out`;
@@ -859,7 +841,7 @@ export function banisherCombatAction$1(
   if (
     auto_have_skill($skill`Howl of the Alpha`) &&
     myMp() > mpCost($skill`Howl of the Alpha`) &&
-    !used.has("Howl of the Alpha")
+    !used.includes("Howl of the Alpha")
   ) {
     return $skill`Howl of the Alpha`;
   }
@@ -870,7 +852,7 @@ export function banisherCombatAction$1(
       : possessEquipment($item`latte lovers member's mug`)) &&
     auto_is_valid$2($skill`Throw Latte on Opponent`) &&
     !get("_latteBanishUsed") &&
-    !used.has("Throw Latte on Opponent") &&
+    !used.includes("Throw Latte on Opponent") &&
     useFree
   ) {
     return $skill`Throw Latte on Opponent`;
@@ -904,7 +886,7 @@ export function banisherCombatAction$1(
     auto_have_skill($skill`Baleful Howl`) &&
     myHp() > hpCost($skill`Baleful Howl`) &&
     get("_balefulHowlUses") < 10 &&
-    !used.has("baleful howl") &&
+    !used.includes("baleful howl") &&
     useFree
   ) {
     loopHandlerDelayAll();
@@ -914,7 +896,7 @@ export function banisherCombatAction$1(
   if (
     auto_have_skill($skill`Thunder Clap`) &&
     myThunder() >= thunderCost($skill`Thunder Clap`) &&
-    !used.has("thunder clap")
+    !used.includes("thunder clap")
   ) {
     return $skill`Thunder Clap`;
   }
@@ -922,7 +904,7 @@ export function banisherCombatAction$1(
     auto_have_skill($skill`Asdon Martin: Spring-Loaded Front Bumper`) &&
     auto_is_valid$2($skill`Asdon Martin: Spring-Loaded Front Bumper`) &&
     getFuel() >= fuelCost($skill`Asdon Martin: Spring-Loaded Front Bumper`) &&
-    !used.has("Spring-Loaded Front Bumper") &&
+    !used.includes("Spring-Loaded Front Bumper") &&
     useFree
   ) {
     if (
@@ -937,7 +919,7 @@ export function banisherCombatAction$1(
   if (
     auto_have_skill($skill`Curse of Vacation`) &&
     myMp() > mpCost($skill`Curse of Vacation`) &&
-    !used.has("curse of vacation")
+    !used.includes("curse of vacation")
   ) {
     return $skill`Curse of Vacation`;
   }
@@ -959,7 +941,7 @@ export function banisherCombatAction$1(
     myFury() >= 5 &&
     (inCombat ? hasClubEquipped() : true) &&
     auto_is_valid$2($skill`Batter Up!`) &&
-    !used.has("batter up!")
+    !used.includes("batter up!")
   ) {
     return $skill`Batter Up!`;
   }
@@ -967,7 +949,7 @@ export function banisherCombatAction$1(
   if (
     inCombat
       ? auto_have_skill($skill`Mark Your Territory`) &&
-        !used.has("Mark Your Territory")
+        !used.includes("Mark Your Territory")
       : auto_is_valid$2($skill`Mark Your Territory`) &&
         (auto_have_skill($skill`Mark Your Territory`) ||
           (availableAmount($item`pheromone cocktail`) > 0 &&
@@ -986,7 +968,7 @@ export function banisherCombatAction$1(
   if (
     auto_have_skill($skill`Banishing Shout`) &&
     myMp() > mpCost($skill`Banishing Shout`) &&
-    !used.has("banishing shout")
+    !used.includes("banishing shout")
   ) {
     return $skill`Banishing Shout`;
   }
@@ -994,7 +976,7 @@ export function banisherCombatAction$1(
     auto_have_skill($skill`Walk Away From Explosion`) &&
     myMp() > mpCost($skill`Walk Away From Explosion`) &&
     haveEffect($effect`Bored With Explosions`) === 0 &&
-    !used.has("walk away from explosion")
+    !used.includes("walk away from explosion")
   ) {
     return $skill`Walk Away From Explosion`;
   }
@@ -1006,7 +988,7 @@ export function banisherCombatAction$1(
     auto_is_valid$2($skill`Talk About Politics`) &&
     get("_pantsgivingBanish") < 5 &&
     haveEquipped($item`Pantsgiving`) &&
-    !used.has("pantsgiving")
+    !used.includes("pantsgiving")
   ) {
     return $skill`Talk About Politics`;
   }
@@ -1018,7 +1000,7 @@ export function banisherCombatAction$1(
     auto_is_valid$2($skill`Heartstone: %banish`) &&
     get("_heartstoneBanishUsed") < 5 &&
     haveEquipped(auto_getItemToEquipHeartstone()) &&
-    !used.has("Heartstone: %banish")
+    !used.includes("Heartstone: %banish")
   ) {
     return $skill`Heartstone: %banish`;
   }
@@ -1026,7 +1008,7 @@ export function banisherCombatAction$1(
     inCombat
       ? auto_have_skill($skill`Reflex Hammer`)
       : auto_reflexHammersRemaining() > 0 &&
-        !used.has("Reflex Hammer") &&
+        !used.includes("Reflex Hammer") &&
         useFree
   ) {
     return $skill`Reflex Hammer`;
@@ -1038,7 +1020,7 @@ export function banisherCombatAction$1(
     auto_is_valid$2($skill`Show your boring familiar pictures`) &&
     (get("scrapbookCharges") >= 200 ||
       (get("scrapbookCharges") >= 100 && myLevel() >= 13)) &&
-    !used.has("Show Your Boring Familiar Pictures") &&
+    !used.includes("Show Your Boring Familiar Pictures") &&
     useFree
   ) {
     return $skill`Show your boring familiar pictures`;
@@ -1049,7 +1031,7 @@ export function banisherCombatAction$1(
       ? auto_have_skill($skill`Bowl a Curveball`)
       : itemAmount($item`cosmic bowling ball`) > 0) &&
     auto_is_valid$2($skill`Bowl a Curveball`) &&
-    !used.has("Bowl a Curveball") &&
+    !used.includes("Bowl a Curveball") &&
     useFree
   ) {
     return $skill`Bowl a Curveball`;
@@ -1058,13 +1040,13 @@ export function banisherCombatAction$1(
   if (
     auto_canFeelHatred() &&
     auto_is_valid$2($skill`Feel Hatred`) &&
-    !used.has("Feel Hatred") &&
+    !used.includes("Feel Hatred") &&
     useFree
   ) {
     return $skill`Feel Hatred`;
   }
 
-  if (auto_have_skill($skill`[7510]Punt`) && !used.has("Punt")) {
+  if (auto_have_skill($skill`[7510]Punt`) && !used.includes("Punt")) {
     return $skill`[7510]Punt`;
   }
 
@@ -1073,7 +1055,7 @@ export function banisherCombatAction$1(
     auto_is_valid$2($skill`Snokebomb`) &&
     get("_snokebombUsed") < 3 &&
     myMp() - 20 >= mpCost($skill`Snokebomb`) &&
-    !used.has("snokebomb") &&
+    !used.includes("snokebomb") &&
     useFree
   ) {
     return $skill`Snokebomb`;
@@ -1081,7 +1063,7 @@ export function banisherCombatAction$1(
 
   if (
     itemAmount($item`stuffed yam stinkbomb`) > 0 &&
-    !used.has("stuffed yam stinkbomb") &&
+    !used.includes("stuffed yam stinkbomb") &&
     auto_is_valid($item`stuffed yam stinkbomb`)
   ) {
     return $item`stuffed yam stinkbomb`;
@@ -1090,7 +1072,7 @@ export function banisherCombatAction$1(
   if (
     inCombat
       ? itemAmount($item`handful of split pea soup`) > 0 &&
-        !used.has("Handful of split pea soup") &&
+        !used.includes("Handful of split pea soup") &&
         auto_is_valid($item`handful of split pea soup`) &&
         useFree
       : itemAmount($item`handful of split pea soup`) > 0 ||
@@ -1102,7 +1084,7 @@ export function banisherCombatAction$1(
   if (
     auto_have_skill($skill`[28021]Punt`) &&
     myMp() > mpCost($skill`[28021]Punt`) &&
-    !used.has("Punt")
+    !used.includes("Punt")
   ) {
     return $skill`[28021]Punt`;
   }
@@ -1112,7 +1094,7 @@ export function banisherCombatAction$1(
     (inCombat ? haveEquipped(saber) : possessEquipment(saber)) &&
     auto_is_valid$2($skill`Use the Force`) &&
     auto_saberChargesAvailable() > 0 &&
-    !used.has("Saber Force")
+    !used.includes("Saber Force")
   ) {
     // can't use the force on uncopyable monsters
     if (enemy === Monster.none || enemy.copyable) {
@@ -1127,7 +1109,7 @@ export function banisherCombatAction$1(
     auto_is_valid$2($skill`KGB tranquilizer dart`) &&
     get("_kgbTranquilizerDartUses") < 3 &&
     myMp() >= mpCost($skill`KGB tranquilizer dart`) &&
-    !used.has("KGB tranquilizer dart") &&
+    !used.includes("KGB tranquilizer dart") &&
     useFree
   ) {
     let useIt: boolean = true;
@@ -1150,7 +1132,7 @@ export function banisherCombatAction$1(
       : possessEquipment($item`cursed monkey's paw`)) &&
     auto_is_valid$2($skill`Monkey Slap`) &&
     get("_monkeyPawWishesUsed") === 0 &&
-    !used.has("Monkey Slap")
+    !used.includes("Monkey Slap")
   ) {
     return $skill`Monkey Slap`;
   }
@@ -1160,7 +1142,7 @@ export function banisherCombatAction$1(
       ? auto_have_skill($skill`Sea *dent: Throw a Lightning Bolt`)
       : possessEquipment($item`Monodent of the Sea`)) &&
     auto_throwLightningRemaining() > 0 &&
-    !used.has("Sea *dent: Throw a Lightning Bolt")
+    !used.includes("Sea *dent: Throw a Lightning Bolt")
   ) {
     return $skill`Sea *dent: Throw a Lightning Bolt`;
   }
@@ -1176,7 +1158,7 @@ export function banisherCombatAction$1(
     auto_have_skill($skill`Beancannon`) &&
     get("_beancannonUses", 0) < 5 &&
     myMp() - 20 >= mpCost($skill`Beancannon`) &&
-    !used.has("beancannon")
+    !used.includes("beancannon")
   ) {
     let haveBeans: boolean = false;
     for (const beancan of $items`Frigid Northern Beans, Heimz Fortified Kidney Beans, Hellfire Spicy Beans, Mixed Garbanzos and Chickpeas, Pork 'n' Pork 'n' Pork 'n' Beans, Shrub's Premium Baked Beans, Tesla's Electroplated Beans, Trader Olaf's Exotic Stinkbeans, World's Blackest-Eyed Peas`) {
@@ -1196,7 +1178,7 @@ export function banisherCombatAction$1(
 
   if (
     itemAmount($item`human musk`) > 0 &&
-    !used.has("human musk") &&
+    !used.includes("human musk") &&
     auto_is_valid($item`human musk`) &&
     get("_humanMuskUses") < 3 &&
     useFree
@@ -1210,7 +1192,7 @@ export function banisherCombatAction$1(
       ? auto_have_skill($skill`Breathe Out`) &&
         auto_is_valid$2($skill`Breathe Out`) &&
         myMp() >= mpCost($skill`Breathe Out`) &&
-        !used.has("breathe out") &&
+        !used.includes("breathe out") &&
         useFree
       : auto_is_valid$2($skill`Breathe Out`) &&
         (auto_have_skill($skill`Breathe Out`) ||
@@ -1226,7 +1208,7 @@ export function banisherCombatAction$1(
       ? auto_have_skill($skill`Punch Out your Foe`) &&
         auto_is_valid$2($skill`Punch Out your Foe`) &&
         myMp() >= mpCost($skill`Punch Out your Foe`) &&
-        !used.has("punch out your foe") &&
+        !used.includes("punch out your foe") &&
         useFree
       : auto_is_valid$2($skill`Punch Out your Foe`) &&
         (auto_have_skill($skill`Punch Out your Foe`) ||
@@ -1252,7 +1234,7 @@ export function banisherCombatAction$1(
 
   if (
     itemAmount($item`Louder Than Bomb`) > keep &&
-    !used.has("louder than bomb") &&
+    !used.includes("louder than bomb") &&
     auto_is_valid($item`Louder Than Bomb`) &&
     useFree
   ) {
@@ -1260,7 +1242,7 @@ export function banisherCombatAction$1(
   }
   if (
     itemAmount($item`tennis ball`) > keep &&
-    !used.has("tennis ball") &&
+    !used.includes("tennis ball") &&
     auto_is_valid($item`tennis ball`) &&
     useFree
   ) {
@@ -1268,7 +1250,7 @@ export function banisherCombatAction$1(
   }
   if (
     itemAmount($item`deathchucks`) > keep &&
-    !used.has("deathchucks") &&
+    !used.includes("deathchucks") &&
     auto_is_valid($item`deathchucks`) &&
     useFree
   ) {
@@ -1276,7 +1258,7 @@ export function banisherCombatAction$1(
   }
   if (
     itemAmount($item`divine champagne popper`) > keep &&
-    !used.has("divine champagne popper") &&
+    !used.includes("divine champagne popper") &&
     auto_is_valid($item`divine champagne popper`) &&
     useFree
   ) {
@@ -1284,7 +1266,7 @@ export function banisherCombatAction$1(
   }
   if (
     itemAmount($item`anchor bomb`) > keep &&
-    !used.has("anchor bomb") &&
+    !used.includes("anchor bomb") &&
     auto_is_valid($item`anchor bomb`) &&
     useFree
   ) {

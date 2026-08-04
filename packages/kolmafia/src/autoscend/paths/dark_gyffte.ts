@@ -94,7 +94,7 @@ export function bat_wantHowl(loc: Location): boolean {
   if (!auto_have_skill($skill`Baleful Howl`)) {
     return false;
   }
-  if (auto_banishesUsedAt(loc).has("baleful howl")) {
+  if (auto_banishesUsedAt(loc).includes("baleful howl")) {
     return false;
   }
   if (get("_balefulHowlUses") >= 10) {
@@ -301,35 +301,31 @@ function bat_remainingBaseHP(): number {
   return baseHP;
 }
 
-function bat_desiredSkills(hpLeft: number): Map<Skill, boolean> {
-  const requirements: Map<Skill, boolean> = new Map();
-  return bat_desiredSkills$1(hpLeft, requirements);
+function bat_desiredSkills(hpLeft: number): Skill[] {
+  return bat_desiredSkills$1(hpLeft, []);
 }
 
-function bat_desiredSkills$1(
-  hpLeft: number,
-  forcedPicks: Map<Skill, boolean>,
-): Map<Skill, boolean> {
+function bat_desiredSkills$1(hpLeft: number, forcedPicks: Skill[]): Skill[] {
   let costSoFar: number = 0;
   const baseHP: number = bat_baseHP();
-  const picks: Map<Skill, boolean> = new Map();
+  const picks: Skill[] = [];
 
   if (getProperty("_auto_bat_bloodBank") !== "2") {
-    forcedPicks.set($skill`Intimidating Aura`, true);
+    forcedPicks.push($skill`Intimidating Aura`);
   }
 
   function addPick(sk: Skill): boolean {
-    if (picks.has(sk)) {
+    if (picks.includes(sk)) {
       return true;
     }
     if (baseHP - costSoFar - bat_maxHPCost(sk) < hpLeft) {
       return false;
     }
     costSoFar += bat_maxHPCost(sk);
-    picks.set(sk, true);
+    picks.push(sk);
     return true;
   }
-  for (const sk of forcedPicks.keys()) {
+  for (const sk of forcedPicks) {
     addPick(sk);
   }
   for (const sk of Skill.get([
@@ -366,13 +362,12 @@ function bat_desiredSkills$1(
 }
 
 export function bat_reallyPickSkills(hpLeft: number): void {
-  const requiredSkills: Map<Skill, boolean> = new Map();
-  bat_reallyPickSkills$1(hpLeft, requiredSkills);
+  bat_reallyPickSkills$1(hpLeft, []);
 }
 
 export function bat_reallyPickSkills$1(
   hpLeft: number,
-  requiredSkills: Map<Skill, boolean>,
+  requiredSkills: Skill[],
 ): void {
   // Why Astral Spirit? When entering a DG run, before exiting the initial
   // noncombat and Torpor, that's what KoLmafia thinks you are.
@@ -382,12 +377,9 @@ export function bat_reallyPickSkills$1(
   // Confirm that we're in Torpor
   visitUrl("campground.php?action=coffin");
 
-  const picks: Map<Skill, boolean> = bat_desiredSkills$1(
-    hpLeft,
-    requiredSkills,
-  );
+  const picks: Skill[] = bat_desiredSkills$1(hpLeft, requiredSkills);
   let url: string = `choice.php?whichchoice=1342&option=2&pwd=${myHash()}`;
-  for (const [sk] of picks) {
+  for (const sk of picks) {
     url += "&sk[]=";
     url += (toInt(sk) - 24000).toString();
   }
@@ -397,16 +389,16 @@ export function bat_reallyPickSkills$1(
 }
 
 function bat_shouldPickSkills(hpLeft: number): boolean {
-  const picks: Map<Skill, boolean> = bat_desiredSkills(hpLeft);
+  const picks: Skill[] = bat_desiredSkills(hpLeft);
 
   for (const sk of $skills.all()) {
     if (bat_maxHPCost(sk) === 0) {
       continue;
     }
 
-    if (picks.has(sk) !== haveSkill(sk)) {
+    if (picks.includes(sk) !== haveSkill(sk)) {
       auto_log_info(
-        `We'd like to make a skill change for ${sk.toString()}, which we ${picks.has(sk) ? "want" : "don't want"} but ${haveSkill(sk) ? "have" : "don't have"}`,
+        `We'd like to make a skill change for ${sk.toString()}, which we ${picks.includes(sk) ? "want" : "don't want"} but ${haveSkill(sk) ? "have" : "don't have"}`,
         "blue",
       );
       return true;

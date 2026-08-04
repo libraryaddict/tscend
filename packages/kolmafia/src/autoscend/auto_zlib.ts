@@ -83,29 +83,29 @@ export function auto_process_kmail(
     m.localtime = replaceString(k.group(7), "\\", "");
   }
 
-  const processed: Map<number, boolean> = new Map();
+  const processed: number[] = [];
   for (const [i, m] of mail) {
     if (functionname(m)) {
-      processed.set(m.id, true);
+      processed.push(m.id);
       mail.delete(i);
     }
   }
   //delete successfully processed mail
-  if (processed.size > 0) {
+  if (processed.length > 0) {
     auto_log_info("Deleting processed mail...", "blue");
     let del: string = "messages.php?the_action=delete&box=Inbox&pwd";
-    for (const k_1 of processed.keys()) {
+    for (const k_1 of processed) {
       del += `&sel${k_1}=on`;
     }
     del = visitUrl(del);
     if (
       containsText(
         del,
-        `${processed.size} message${processed.size > 1 ? "s" : ""} deleted.`,
+        `${processed.length} message${processed.length > 1 ? "s" : ""} deleted.`,
       )
     ) {
       auto_log_info(
-        `${processed.size} message${processed.size > 1 ? "s" : ""} deleted.`,
+        `${processed.length} message${processed.length > 1 ? "s" : ""} deleted.`,
         "blue",
       );
     } else {

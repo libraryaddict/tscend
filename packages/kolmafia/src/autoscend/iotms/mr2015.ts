@@ -659,32 +659,32 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
   return false;
 }
 
-export function chateaumantegna_decorations(): Map<Item, boolean> {
-  const retval: Map<Item, boolean> = new Map();
+export function chateaumantegna_decorations(): Item[] {
+  const retval: Item[] = [];
   if (!chateaumantegna_available()) {
     return retval;
   }
   const chateau: string = toLowerCase(visitUrl("place.php?whichplace=chateau"));
   if (containsText(chateau, "electric muscle stimulator")) {
-    retval.set($item`electric muscle stimulator`, true);
+    retval.push($item`electric muscle stimulator`);
   } else if (containsText(chateau, "foreign language tapes")) {
-    retval.set($item`foreign language tapes`, true);
+    retval.push($item`foreign language tapes`);
   } else if (containsText(chateau, "bowl of potpourri")) {
-    retval.set($item`bowl of potpourri`, true);
+    retval.push($item`bowl of potpourri`);
   }
   if (containsText(chateau, "antler chandelier")) {
-    retval.set($item`antler chandelier`, true);
+    retval.push($item`antler chandelier`);
   } else if (containsText(chateau, "artificial skylight")) {
-    retval.set($item`artificial skylight`, true);
+    retval.push($item`artificial skylight`);
   } else if (containsText(chateau, "ceiling fan")) {
-    retval.set($item`ceiling fan`, true);
+    retval.push($item`ceiling fan`);
   }
   if (containsText(chateau, "continental juice bar")) {
-    retval.set($item`continental juice bar`, true);
+    retval.push($item`continental juice bar`);
   } else if (containsText(chateau, "fancy stationery set")) {
-    retval.set($item`fancy stationery set`, true);
+    retval.push($item`fancy stationery set`);
   } else if (containsText(chateau, "swiss piggy bank")) {
-    retval.set($item`Swiss piggy bank`, true);
+    retval.push($item`Swiss piggy bank`);
   }
   return retval;
 }
@@ -779,7 +779,7 @@ export function chateaumantegna_nightstandSet(): boolean {
     }
   }
 
-  const furniture: Map<Item, boolean> = chateaumantegna_decorations();
+  const furniture: Item[] = chateaumantegna_decorations();
   let need: Item = Item.none;
   if (myStat === $stat`Muscle`) {
     need = $item`electric muscle stimulator`;
@@ -793,7 +793,7 @@ export function chateaumantegna_nightstandSet(): boolean {
     //If we do not have a telescope, this can happen.
     return false;
   }
-  if (furniture.get(need) ?? false) {
+  if (furniture.includes(need)) {
     return false;
   }
   if (myMeat() < npcPrice(need)) {
@@ -1073,72 +1073,63 @@ export function deck_useScheme(action: string): boolean {
     return false;
   }
 
-  let cards: Map<string, boolean> = new Map();
+  let cards: string[] = [];
 
   if (action === "farming") {
-    cards = new Map([
-      ["Ancestral Recall", true],
-      ["Island", true],
-      ["1952 Mickey Mantle", true],
-    ]);
+    cards = ["Ancestral Recall", "Island", "1952 Mickey Mantle"];
   } else if (action === "turns") {
-    cards = new Map([
-      ["Ancestral Recall", true],
-      ["Island", true],
-    ]);
+    cards = ["Ancestral Recall", "Island"];
     if (needOre()) {
-      cards = new Map([
-        ["Ancestral Recall", true],
-        ["Island", true],
-        ["Mine", true],
-      ]);
+      cards = ["Ancestral Recall", "Island", "Mine"];
     }
   } else {
     // First priority is grab a key if we need one.
     const missingHeroKeys: number = 3 - towerKeyCount();
     if (missingHeroKeys > 0) {
-      cards.set("key", true);
+      cards.push("key");
     }
     // Next priority is ore, only if we don't have a train set installed
     if (!auto_haveTrainSet() && needOre()) {
-      cards.set("ore", true);
+      cards.push("ore");
     }
     // Stats are higher priority early on in LoL where we're never gonna need stone wool day1
     if (in_lol() && myLevel() < 4) {
       const mainstat: string = toLowerCase(myPrimestat().toString());
-      cards.set(`${mainstat} stat`, true);
+      cards.push(`${mainstat} stat`);
     }
     // Stone wool
     if (
-      cards.size < 3 &&
+      cards.length < 3 &&
       internalQuestStatus("questL11Worship") < 2 &&
       itemAmount($item`stone wool`) < 2
     ) {
-      cards.set("stone wool", true);
+      cards.push("stone wool");
     }
     // Meat
-    if (cards.size < 3 && myMeat() < 10000 && !in_wotsf()) {
-      cards.set("1952 Mickey Mantle", true);
+    if (cards.length < 3 && myMeat() < 10000 && !in_wotsf()) {
+      cards.push("1952 Mickey Mantle");
     }
-    if (cards.size < 3 && myLevel() < 11) {
+    if (cards.length < 3 && myLevel() < 11) {
       const mainstat: string = toLowerCase(myPrimestat().toString());
-      cards.set(`${mainstat} stat`, true);
+      if (!cards.includes(`${mainstat} stat`)) {
+        cards.push(`${mainstat} stat`);
+      }
     }
   }
 
-  if (cards.size < 3) {
-    cards.set("ancestral recall", true);
+  if (cards.length < 3) {
+    cards.push("ancestral recall");
   }
-  if (cards.size < 3) {
-    cards.set("blue mana", true);
+  if (cards.length < 3) {
+    cards.push("blue mana");
   }
 
-  if (cards.size === 0) {
+  if (cards.length === 0) {
     return false;
   }
 
   let count_1: number = 0;
-  for (const card of cards.keys()) {
+  for (const card of cards) {
     if (
       possessEquipment($item`bass clarinet`) ||
       possessEquipment($item`fish hatchet`) ||

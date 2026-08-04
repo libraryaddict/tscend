@@ -1257,13 +1257,7 @@ function auto_latteRefill(
     return false;
   }
 
-  const unlocked: Map<string, boolean> = new Map();
-  const unlocked_array: Map<number, string> = new Map(
-    splitString(getProperty("latteUnlocks"), ",").map((_v, _i) => [_i, _v]),
-  );
-  for (const [, s] of unlocked_array) {
-    unlocked.set(s, true);
-  }
+  const unlocked: string[] = splitString(getProperty("latteUnlocks"), ",");
 
   want1 = auto_latteTranslate(want1);
   want2 = auto_latteTranslate(want2);
@@ -1271,19 +1265,19 @@ function auto_latteRefill(
 
   const wants: Map<number, string> = new Map();
   if (want1 !== "") {
-    if (!(unlocked.get(want1) ?? false)) {
+    if (!unlocked.includes(want1)) {
       return false;
     }
     wants.set(wants.size, want1);
   }
   if (want2 !== "") {
-    if (!(unlocked.get(want2) ?? false)) {
+    if (!unlocked.includes(want2)) {
       return false;
     }
     wants.set(wants.size, want2);
   }
   if (want3 !== "") {
-    if (!(unlocked.get(want3) ?? false)) {
+    if (!unlocked.includes(want3)) {
       return false;
     }
     wants.set(wants.size, want3);
@@ -1304,7 +1298,7 @@ function auto_latteRefill(
       return false;
     }
     want = auto_latteTranslate(want);
-    if (!(unlocked.get(want) ?? false)) {
+    if (!unlocked.includes(want)) {
       return false;
     }
 

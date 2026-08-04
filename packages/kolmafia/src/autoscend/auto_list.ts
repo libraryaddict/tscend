@@ -164,12 +164,12 @@ function auto_sortedByModifier$1(
 }
 
 export function auto_sortedByModifier$3(
-  map: Map<Item, boolean>,
+  items: Item[],
   m: Modifier,
   high_to_low: boolean,
 ): Map<number, Item> {
   const int_map: Map<Item, number> = new Map();
-  for (const entry of map.keys()) {
+  for (const entry of items) {
     int_map.set(entry, (int_map.get(entry) ?? 0) + 1);
   }
   return auto_sortedByModifier$1(int_map, m, high_to_low);

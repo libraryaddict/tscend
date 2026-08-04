@@ -786,7 +786,7 @@ function auto_pre_adventure(): boolean {
       }
       if (
         auto_havePeridot() &&
-        peridotManuallyDesiredMonsters().has(mon) &&
+        peridotManuallyDesiredMonsters().includes(mon) &&
         !haveUsedPeridot(place)
       ) {
         zoneHasWantedMonsters = true;
@@ -900,17 +900,17 @@ function auto_pre_adventure(): boolean {
   const douse_locs: Location[] = $locations`The Hatching Chamber, The Feeding Chamber, The Royal Guard Chamber`;
   if (
     have(fluda) &&
-    (douse_locs.includes(place) || auto_allRifts().has(place)) &&
+    (douse_locs.includes(place) || auto_allRifts().includes(place)) &&
     auto_dousesRemaining() > 0
   ) {
     autoEquip(fluda);
   }
 
   const bat_wings: Item = $item`bat wings`;
-  const swoop_locs: Map<Location, boolean> = auto_swoopLocations();
+  const swoop_locs: Location[] = auto_swoopLocations();
   if (
     auto_haveBatWings() &&
-    (swoop_locs.has(place) || auto_allRifts().has(place)) &&
+    (swoop_locs.includes(place) || auto_allRifts().includes(place)) &&
     auto_swoopsRemaining() > 0
   ) {
     autoEquip(bat_wings);

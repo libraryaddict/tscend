@@ -172,8 +172,8 @@ class __RestorationMetadata {
     public softReserveLimit: number = 0,
     public hardReserveLimit: number = 0,
     public removesBeatenUp: boolean = false,
-    public removesEffects: Map<Effect, boolean> = new Map(),
-    public givesEffects: Map<Effect, boolean> = new Map(),
+    public removesEffects: Effect[] = [],
+    public givesEffects: Effect[] = [],
     public maximaValues: Map<string, number> = new Map(),
   ) {}
 }
@@ -257,7 +257,7 @@ function auto_log_restore_debug(s: string, level: number): void {
   }
 }
 
-let $_f___all_negative_effects: Map<Effect, boolean> = new Map();
+let $_f___all_negative_effects: Effect[] = [];
 const $_f___known_restoration_sources: Map<string, __RestorationMetadata> =
   new Map();
 const $_f___restore_maximizer_cache: Map<number, __RestorationOptimization> =
@@ -280,12 +280,9 @@ const $___init_restoration_metadata_negative_effects_filename: string =
   "autoscend_negative_effects.txt";
 
 function __init_restoration_metadata(): void {
-  function parse_effects(
-    name: string,
-    effects_list: string,
-  ): Map<Effect, boolean> {
+  function parse_effects(name: string, effects_list: string): Effect[] {
     effects_list = toLowerCase(effects_list);
-    let parsed_effects: Map<Effect, boolean> = new Map();
+    let parsed_effects: Effect[] = [];
 
     if (effects_list === "all negative") {
       parsed_effects = $_f___all_negative_effects;
@@ -293,7 +290,7 @@ function __init_restoration_metadata(): void {
       for (const [, s] of splitString(effects_list, ",").entries()) {
         const e: Effect = toEffect(s);
         if (e !== Effect.none) {
-          parsed_effects.set(e, true);
+          parsed_effects.push(e);
         } else {
           auto_log_warning(
             `Unknown effect found parsing restoration metadata: ${name} removes effect: ${s}`,
@@ -330,10 +327,12 @@ function __init_restoration_metadata(): void {
   }
 
   function init(): void {
-    $_f___all_negative_effects = fileAsMap(
-      $___init_restoration_metadata_negative_effects_filename,
-      [toEffect, toBoolean],
-    );
+    $_f___all_negative_effects = [
+      ...fileAsMap($___init_restoration_metadata_negative_effects_filename, [
+        toEffect,
+        toBoolean,
+      ]).keys(),
+    ];
     //type[idx,name,hp_restored,mp_restored,soft_reserve_limit,hard_reserve_limit,removes_effects,gives_effects]
     const raw_data: Map<
       string,
@@ -384,7 +383,7 @@ function __init_restoration_metadata(): void {
                       parsed.name,
                       removes_effects,
                     );
-                    parsed.removesBeatenUp = parsed.removesEffects.has(
+                    parsed.removesBeatenUp = parsed.removesEffects.includes(
                       $effect`Beaten Up`,
                     );
                     parsed.givesEffects = parse_effects(
@@ -958,8 +957,8 @@ function __calculate_objective_values(
     )) {
       if (
         e !== $effect`Beaten Up` &&
-        $_f___all_negative_effects.has(e) &&
-        !metadata.removesEffects.has(e)
+        $_f___all_negative_effects.includes(e) &&
+        !metadata.removesEffects.includes(e)
       ) {
         negative_effects_active++;
       }
@@ -1236,10 +1235,10 @@ function __maximize_restore_options(
   // return a set of ranks for the given keys (e.g. __OBJECTIVE_RANKS) in ascending order
   function ordered_ranks(weights: Map<string, number>): Map<number, number> {
     let unordered: Map<number, number> = new Map();
-    const value_set: Map<number, boolean> = new Map();
+    const value_set: number[] = [];
     for (const [, w] of weights) {
-      if (!value_set.has(w)) {
-        value_set.set(w, true);
+      if (!value_set.includes(w)) {
+        value_set.push(w);
         unordered.set(unordered.size, w);
       }
     }
@@ -1809,10 +1808,10 @@ function __restore(
     return false;
   }
 
-  function list_to_string(e_list: Map<Effect, boolean>): string {
+  function list_to_string(e_list: Effect[]): string {
     let s: string = "[";
     let first: boolean = true;
-    for (const e of e_list.keys()) {
+    for (const e of e_list) {
       if (first) {
         first = false;
       } else {
@@ -1824,13 +1823,13 @@ function __restore(
     return s;
   }
 
-  function negative_effects(): Map<Effect, boolean> {
-    const negative: Map<Effect, boolean> = new Map();
+  function negative_effects(): Effect[] {
+    const negative: Effect[] = [];
     for (const [e] of Object.entries(myEffects()).map(
       ([_k, _v]) => [Effect.get(_k), _v] as [Effect, number],
     )) {
-      if ($_f___all_negative_effects.has(e)) {
-        negative.set(e, true);
+      if ($_f___all_negative_effects.includes(e)) {
+        negative.push(e);
       }
     }
     return negative;
@@ -2261,13 +2260,13 @@ export function doRest(useCampground?: boolean): number {
     cliExecute("outfit save Backup");
     chateaumantegna_nightstandSet();
 
-    const restBonus: Map<Item, boolean> = chateaumantegna_decorations();
+    const restBonus: Item[] = chateaumantegna_decorations();
     let bonus: Stat = Stat.none;
-    if (restBonus.has($item`electric muscle stimulator`)) {
+    if (restBonus.includes($item`electric muscle stimulator`)) {
       bonus = $stat`Muscle`;
-    } else if (restBonus.has($item`foreign language tapes`)) {
+    } else if (restBonus.includes($item`foreign language tapes`)) {
       bonus = $stat`Mysticality`;
-    } else if (restBonus.has($item`bowl of potpourri`)) {
+    } else if (restBonus.includes($item`bowl of potpourri`)) {
       bonus = $stat`Moxie`;
     }
 

@@ -8,39 +8,39 @@ function eudora_available(): boolean {
   return false;
 }
 
-export function eudora_initializeSettings(): Map<Item, boolean> {
-  const retval: Map<Item, boolean> = new Map();
+export function eudora_initializeSettings(): Item[] {
+  const retval: Item[] = [];
   if (eudora_available()) {
     const eudora_1: string = visitUrl("account.php?tab=correspondence");
     if (
       containsText(eudora_1, "Pen Pal") &&
       isUnrestricted($item`My Own Pen Pal kit`)
     ) {
-      retval.set($item`My Own Pen Pal kit`, true);
+      retval.push($item`My Own Pen Pal kit`);
     }
     if (
       containsText(eudora_1, "GameInformPowerDailyPro Magazine") &&
       isUnrestricted($item`GameInformPowerDailyPro subscription card`)
     ) {
-      retval.set($item`GameInformPowerDailyPro subscription card`, true);
+      retval.push($item`GameInformPowerDailyPro subscription card`);
     }
     if (
       containsText(eudora_1, "Xi Receiver Unit") &&
       isUnrestricted($item`Xi Receiver Unit`)
     ) {
-      retval.set($item`Xi Receiver Unit`, true);
+      retval.push($item`Xi Receiver Unit`);
     }
     if (
       containsText(eudora_1, "New-You Club") &&
       isUnrestricted($item`New-You Club Membership Form`)
     ) {
-      retval.set($item`New-You Club Membership Form`, true);
+      retval.push($item`New-You Club Membership Form`);
     }
     if (
       containsText(eudora_1, "Our Daily Candles") &&
       isUnrestricted($item`Our Daily Candles™ order form`)
     ) {
-      retval.set($item`Our Daily Candles™ order form`, true);
+      retval.push($item`Our Daily Candles™ order form`);
     }
   }
   return retval;

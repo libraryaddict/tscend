@@ -174,7 +174,7 @@ export function canBurnDelay(loc: Location): boolean {
     auto_haveArchaeologistSpade() &&
     auto_spadeDigsRemaining() === 0 &&
     myDaycount() < get("auto_runDayCount", 0) &&
-    spadeDelayZones().has(loc)
+    spadeDelayZones().includes(loc)
   ) {
     // the archaeologist's spade doesn't cleanly burn delay (because users without the PoP etc. might need to use an adv first--and even players using the PoP need to spend a free turn there) and is loc-specific
     // Its delayburn isn't implemented in LX_burnDelay() like the other sources here for that reason, instead implemented directly into the quest functions such that we don't want to consider if we can use arch spade to burn delay

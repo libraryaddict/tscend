@@ -473,8 +473,7 @@ function debugMaximize(target: Maximizer, meat: number): void {
     situation = `Softcore${situation}`;
   }
   situation += ` ${todayToString()} ${timeToString()}`;
-  const acquired: Map<Effect, boolean> = new Map();
-  acquired.set(Effect.none, true);
+  const acquired: Effect[] = [Effect.none];
   let tableDo: string = `<table border=1><tr><td colspan=3>Accepted: Maximizing: ${req}</td><td colspan=3>${situation}</td></tr>`;
   let tableDont: string = `<table border=1><tr><td colspan=3>Rejected: Maximizing: ${req}</td><td colspan=3>${situation}</td></tr>`;
   tableDo +=
@@ -600,7 +599,7 @@ function debugMaximize(target: Maximizer, meat: number): void {
       }
     }
 
-    if (acquired.has(entry.effect) && entry.effect !== Effect.none) {
+    if (acquired.includes(entry.effect) && entry.effect !== Effect.none) {
       doThis = false;
     }
     if (entry.effect !== Effect.none && haveEffect(entry.effect) > 0) {
@@ -616,7 +615,7 @@ function debugMaximize(target: Maximizer, meat: number): void {
 
     if (doThis) {
       //use_skill(1, entry.skill);
-      acquired.set(entry.effect, true);
+      acquired.push(entry.effect);
       output = `USE: ${output}`;
       tableDo += `<tr>${curTable}</tr>`;
     } else {
@@ -1100,8 +1099,8 @@ export function auto_zonePhylumPercent(loc: Location, phyl: Phylum): number {
   return count_1 / total;
 }
 
-export function auto_banishesUsedAt(loc: Location): Map<string, boolean> {
-  function auto_reallyBanishesUsedAt(loc: Location): Map<string, boolean> {
+export function auto_banishesUsedAt(loc: Location): string[] {
+  function auto_reallyBanishesUsedAt(loc: Location): string[] {
     const banished: string = getProperty("banishedMonsters");
     const banishList: Map<number, string> = new Map(
       splitString(banished, ":").map((_v, _i) => [_i, _v]),
@@ -1109,7 +1108,7 @@ export function auto_banishesUsedAt(loc: Location): Map<string, boolean> {
     const atLoc: Map<number, Monster> = new Map(
       getMonsters(loc).map((_v, _i) => [_i, _v]),
     );
-    const used: Map<string, boolean> = new Map();
+    const used: string[] = [];
 
     for (let i: number = 0; i + 1 < banishList.size; i = i + 3) {
       const curMon: Monster = toMonster(banishList.get(i) ?? "");
@@ -1117,7 +1116,7 @@ export function auto_banishesUsedAt(loc: Location): Map<string, boolean> {
 
       for (let j: number = 0; j < atLoc.size; j++) {
         if ((atLoc.get(j) ?? Monster.none) === curMon) {
-          used.set(curUsed, true);
+          used.push(curUsed);
         }
       }
     }
@@ -1129,11 +1128,11 @@ export function auto_banishesUsedAt(loc: Location): Map<string, boolean> {
       loc,
     )
   ) {
-    const gremlinBanishes: Map<string, boolean> = new Map();
+    const gremlinBanishes: string[] = [];
     for (const l of $locations`Next to that Barrel with Something Burning in it, Out by that Rusted-Out Car, Over Where the Old Tires Are, Near an Abandoned Refrigerator`) {
-      const used: Map<string, boolean> = auto_reallyBanishesUsedAt(l);
-      for (const s of used.keys()) {
-        gremlinBanishes.set(s, true);
+      const used: string[] = auto_reallyBanishesUsedAt(l);
+      for (const s of used) {
+        gremlinBanishes.push(s);
       }
     }
     return gremlinBanishes;
@@ -1147,9 +1146,9 @@ export function auto_wantToBanish(enemy: Monster, loc: Location): boolean {
   }
   const locCache: Location = myLocation();
   setLocation(loc);
-  const monstersToBanish: Map<Monster, boolean> = auto_getMonsters("banish");
+  const monstersToBanish: Monster[] = auto_getMonsters("banish");
   setLocation(locCache);
-  return monstersToBanish.get(enemy) ?? false;
+  return monstersToBanish.includes(enemy);
 }
 
 export function auto_wantToBanish$1(
@@ -1161,9 +1160,9 @@ export function auto_wantToBanish$1(
   }
   const locCache: Location = myLocation();
   setLocation(loc);
-  const phylumToBanish: Map<Phylum, boolean> = auto_getPhylum("banish");
+  const phylumToBanish: Phylum[] = auto_getPhylum("banish");
   setLocation(locCache);
-  return phylumToBanish.get(enemyphylum) ?? false;
+  return phylumToBanish.includes(enemyphylum);
 }
 
 function canBanish(enemy: Monster, loc: Location): boolean {
@@ -1314,9 +1313,9 @@ export function auto_wantToFreeRun(enemy: Monster, loc: Location): boolean {
   }
   const locCache: Location = myLocation();
   setLocation(loc);
-  const monstersToFreeRun: Map<Monster, boolean> = auto_getMonsters("freerun");
+  const monstersToFreeRun: Monster[] = auto_getMonsters("freerun");
   setLocation(locCache);
-  return monstersToFreeRun.get(enemy) ?? false;
+  return monstersToFreeRun.includes(enemy);
 }
 
 function canFreeRun(enemy: Monster, loc: Location): boolean {
@@ -5068,8 +5067,8 @@ export function auto_check_conditions(conds: string): boolean {
   return true;
 }
 
-function auto_getMonsters(category: string): Map<Monster, boolean> {
-  const res: Map<Monster, boolean> = new Map();
+function auto_getMonsters(category: string): Monster[] {
+  const res: Monster[] = [];
   const monsters_text: Map<
     string,
     Map<number, Map<string, string>>
@@ -5091,14 +5090,14 @@ function auto_getMonsters(category: string): Map<Monster, boolean> {
       if (!auto_check_conditions(conds)) {
         continue;
       }
-      res.set(thisMonster, true);
+      res.push(thisMonster);
     }
   }
   return res;
 }
 
-function auto_getPhylum(category: string): Map<Phylum, boolean> {
-  const res: Map<Phylum, boolean> = new Map();
+function auto_getPhylum(category: string): Phylum[] {
+  const res: Phylum[] = [];
   const phylum_text: Map<string, Map<number, Map<string, string>>> = fileAsMap(
     "autoscend_phylums.txt",
     [String, Number, String, String],
@@ -5120,7 +5119,7 @@ function auto_getPhylum(category: string): Map<Phylum, boolean> {
       if (!auto_check_conditions(conds)) {
         continue;
       }
-      res.set(thisPhylum, true);
+      res.push(thisPhylum);
     }
   }
   return res;
@@ -5129,9 +5128,9 @@ function auto_getPhylum(category: string): Map<Phylum, boolean> {
 export function auto_wantToSniff(enemy: Monster, loc: Location): boolean {
   const locCache: Location = myLocation();
   setLocation(loc);
-  const toSniff: Map<Monster, boolean> = auto_getMonsters("sniff");
+  const toSniff: Monster[] = auto_getMonsters("sniff");
   if (
-    (toSniff.get(enemy) ?? false) &&
+    toSniff.includes(enemy) &&
     (auto_combat_appearance_rates$1(loc).get(enemy) ?? 0.0) < 100
   ) {
     setLocation(locCache);
@@ -5144,30 +5143,30 @@ export function auto_wantToSniff(enemy: Monster, loc: Location): boolean {
 export function auto_wantToYellowRay(enemy: Monster, loc: Location): boolean {
   const locCache: Location = myLocation();
   setLocation(loc);
-  const toSniff: Map<Monster, boolean> = auto_getMonsters("yellowray");
+  const toSniff: Monster[] = auto_getMonsters("yellowray");
   setLocation(locCache);
-  return toSniff.get(enemy) ?? false;
+  return toSniff.includes(enemy);
 }
 
 export function auto_wantToReplace(enemy: Monster, loc: Location): boolean {
   const locCache: Location = myLocation();
   setLocation(loc);
-  const toReplace: Map<Monster, boolean> = auto_getMonsters("replace");
+  const toReplace: Monster[] = auto_getMonsters("replace");
   setLocation(locCache);
-  return toReplace.get(enemy) ?? false;
+  return toReplace.includes(enemy);
 }
 
 export function auto_wantToCopy(enemy: Monster, loc: Location): boolean {
   const locCache: Location = myLocation();
   setLocation(loc);
-  const toCopy: Map<Monster, boolean> = auto_getMonsters("copy");
+  const toCopy: Monster[] = auto_getMonsters("copy");
   setLocation(locCache);
-  return toCopy.get(enemy) ?? false;
+  return toCopy.includes(enemy);
 }
 
 function auto_wantToCopy$1(enemy: Monster): boolean {
-  const toCopy: Map<Monster, boolean> = auto_getMonsters("copy");
-  return toCopy.get(enemy) ?? false;
+  const toCopy: Monster[] = auto_getMonsters("copy");
+  return toCopy.includes(enemy);
 }
 
 export function zoneRank(mon: Monster, loc: Location): number {
@@ -5398,35 +5397,20 @@ function autoFlavour(place: Location): boolean {
     perfect.set(ele, true);
   }
 
-  function weaknesses(ele: Element): Map<Element, boolean> {
+  function weaknesses(ele: Element): Element[] {
     switch (ele) {
       case $element`cold`:
-        return new Map([
-          [$element`hot`, true],
-          [$element`spooky`, true],
-        ]);
+        return [$element`hot`, $element`spooky`];
       case $element`spooky`:
-        return new Map([
-          [$element`hot`, true],
-          [$element`stench`, true],
-        ]);
+        return [$element`hot`, $element`stench`];
       case $element`hot`:
-        return new Map([
-          [$element`stench`, true],
-          [$element`sleaze`, true],
-        ]);
+        return [$element`stench`, $element`sleaze`];
       case $element`stench`:
-        return new Map([
-          [$element`sleaze`, true],
-          [$element`cold`, true],
-        ]);
+        return [$element`sleaze`, $element`cold`];
       case $element`sleaze`:
-        return new Map([
-          [$element`cold`, true],
-          [$element`spooky`, true],
-        ]);
+        return [$element`cold`, $element`spooky`];
       default:
-        return new Map([[Element.none, true]]);
+        return [Element.none];
     }
   }
 
@@ -5440,7 +5424,7 @@ function autoFlavour(place: Location): boolean {
         ineffective.set(ele, (ineffective.get(ele) ?? 0.0) + chance);
       }
 
-      if (weaknesses(monsterElement(mon)).has(ele)) {
+      if (weaknesses(monsterElement(mon)).includes(ele)) {
         superEffective.set(ele, (superEffective.get(ele) ?? 0.0) + chance);
       } else {
         perfect.set(ele, false);
@@ -5533,7 +5517,7 @@ export function knapsack(
   n: number,
   weight: Map<number, number>,
   val: Map<number, number>,
-): Map<number, boolean> {
+): number[] {
   /*
    * standard implementation of 0-1 Knapsack problem with dynamic programming
    * Time complexity: O(maxw * n)
@@ -5547,7 +5531,7 @@ export function knapsack(
    * Returns: a set of indices that were taken
    */
 
-  const empty: Map<number, boolean> = new Map();
+  const empty: number[] = [];
 
   if (n * maxw >= 100000) {
     auto_log_warning(
@@ -5591,7 +5575,7 @@ export function knapsack(
     return empty;
   }
 
-  const ret: Map<number, boolean> = new Map();
+  const ret: number[] = [];
   // backtrack
   let i: number = n;
   let w: number = maxw;
@@ -5602,7 +5586,7 @@ export function knapsack(
     // Did this item change our mind about how many adventures we could generate?
     // If so, we took this item.
     if ((row(i).get(w) ?? 0.0) !== (row(i - 1).get(w) ?? 0.0)) {
-      ret.set(i - 1, true);
+      ret.push(i - 1);
       w -= weight.get(i - 1) ?? 0;
       i -= 1;
     } else {
@@ -5657,21 +5641,21 @@ export function auto_reserveAmount(it: Item): number {
 
 export function auto_reserveCraftAmount(orig_it: Item): number {
   // Detect infinite loops
-  const its: Map<Item, boolean> = new Map();
+  const its: Item[] = [];
 
   function inner(it: Item): number {
-    if (its.has(it)) {
+    if (its.includes(it)) {
       auto_log_warning(
         `Found dependency loop involving ${it} when trying to craft ${orig_it}, consider adding to reserve list.`,
         "red",
       );
       auto_log_warning("Dependencies (in no particular order):", "red");
-      for (const iit of its.keys()) {
+      for (const iit of its) {
         auto_log_warning(`> ${iit}`, "red");
       }
       return 9999999;
     }
-    its.set(it, true);
+    its.push(it);
     let reserve: number = 0;
     for (const [ing, amt] of Object.entries(getIngredients(it)).map(
       ([_k, _v]) => [Item.get(_k), _v] as [Item, number],
@@ -5686,7 +5670,7 @@ export function auto_reserveCraftAmount(orig_it: Item): number {
         reserve = ingReserve * amt;
       }
     }
-    its.delete(it);
+    its.splice(its.indexOf(it), 1);
     return reserve;
   }
   return inner(orig_it);
@@ -6638,10 +6622,10 @@ export function auto_getListOfNonDamagingFamiliarEquipment(): Map<
   // Returns items of generic familiar equipment that do not cause damage when equipped to a non-damage familiar
   // Sorted by familiar weight boost, highest to lowest
   const base_list: Item[] = $items`astral pet sweater, tiny stillsuit, tiny gold medal, lead necklace, futuristic collar, miniature crystal ball, tiny rake, toy Cupid bow`;
-  const valid_and_available: Map<Item, boolean> = new Map();
+  const valid_and_available: Item[] = [];
   for (const it of base_list) {
     if (auto_is_valid(it) && availableAmount(it) > 0) {
-      valid_and_available.set(it, true);
+      valid_and_available.push(it);
     }
   }
   // Have to sort each time because futuristic collar changes

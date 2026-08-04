@@ -485,7 +485,7 @@ function leprecondoReservedSpace(
 
   const packed = knapsack(requiredSpace, weight.size, weight, desirability);
   let filled = 0;
-  for (const i of packed.keys()) {
+  for (const i of packed) {
     filled += weight.get(i) ?? 0;
   }
   return filled;
@@ -836,25 +836,28 @@ export function auto_havePeridot(): boolean {
   return auto_is_valid(pop) && possessEquipment(pop);
 }
 
-export function peridotManuallyDesiredMonsters(): Map<Monster, boolean> {
+export function peridotManuallyDesiredMonsters(): Monster[] {
   // manually specify some favoured monsters
-  const desired_monsters: Map<Monster, boolean> = new Map();
-  desired_monsters.set($monster`lobsterfrogman`, true);
-  desired_monsters.set($monster`black panther`, true);
-  desired_monsters.set($monster`white lion`, true);
-  desired_monsters.set($monster`monstrous boiler`, true);
-  desired_monsters.set($monster`modern zmobie`, true);
-  desired_monsters.set($monster`dairy goat`, true);
-  desired_monsters.set($monster`writing desk`, true);
+  const desired_monsters: Monster[] = [
+    $monster`lobsterfrogman`,
+    $monster`black panther`,
+    $monster`white lion`,
+    $monster`monstrous boiler`,
+    $monster`modern zmobie`,
+    $monster`dairy goat`,
+    $monster`writing desk`,
+  ];
   // we sniff the two-star, two-line monster, but we want exactly one star chart
   if (itemAmount($item`star chart`) === 0) {
-    desired_monsters.set($monster`Astronomer`, true);
+    desired_monsters.push($monster`Astronomer`);
   }
   // Quest gremlins need IDs because there's multiple
-  desired_monsters.set($monster`erudite gremlin (tool)`, true); // erudite gremlin (tool)
-  desired_monsters.set($monster`batwinged gremlin (tool)`, true); // batwinged gremlin (tool)
-  desired_monsters.set($monster`vegetable gremlin (tool)`, true); // vegetable gremlin (tool)
-  desired_monsters.set($monster`spider gremlin (tool)`, true); // spider gremlin (tool)
+  desired_monsters.push(
+    $monster`erudite gremlin (tool)`, // erudite gremlin (tool)
+    $monster`batwinged gremlin (tool)`, // batwinged gremlin (tool)
+    $monster`vegetable gremlin (tool)`, // vegetable gremlin (tool)
+    $monster`spider gremlin (tool)`, // spider gremlin (tool)
+  );
 
   return desired_monsters;
 }
@@ -871,16 +874,17 @@ export function auto_peridotSetZone(loc: Location): boolean {
     return false;
   }
 
-  const desired_locations: Map<Location, boolean> = new Map();
-  desired_locations.set($location`Sonofa Beach`, true);
-  desired_locations.set($location`The Hatching Chamber`, true);
-  desired_locations.set($location`The Feeding Chamber`, true);
-  desired_locations.set($location`The Royal Guard Chamber`, true);
-  desired_locations.set($location`The Haunted Kitchen`, true);
-  desired_locations.set($location`The Unquiet Garves`, true);
-  desired_locations.set($location`The Haunted Ballroom`, true);
+  const desired_locations: Location[] = [
+    $location`Sonofa Beach`,
+    $location`The Hatching Chamber`,
+    $location`The Feeding Chamber`,
+    $location`The Royal Guard Chamber`,
+    $location`The Haunted Kitchen`,
+    $location`The Unquiet Garves`,
+    $location`The Haunted Ballroom`,
+  ];
 
-  if (desired_locations.has(loc)) {
+  if (desired_locations.includes(loc)) {
     return true;
   }
   return false;
@@ -900,7 +904,9 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     //record the possible monsters and identify the best one to target
     monOpts.set(i, toMonster(toInt(mons.group(1))));
     // Manual monster specifications
-    if (peridotManuallyDesiredMonsters().has(monOpts.get(i) ?? Monster.none)) {
+    if (
+      peridotManuallyDesiredMonsters().includes(monOpts.get(i) ?? Monster.none)
+    ) {
       bestmon = i;
       break; // if we've got a force desired monster, don't bother with the rankings any more
     }

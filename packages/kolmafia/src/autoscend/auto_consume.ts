@@ -1282,53 +1282,53 @@ function loadConsumables(
   const large_owned: Map<Item, number> = new Map();
   const craftables: Map<Item, number> = new Map();
 
-  const blacklist: Map<Item, boolean> = new Map();
-  const craftable_blacklist: Map<Item, boolean> = new Map();
+  const blacklist: Item[] = [];
+  const craftable_blacklist: Item[] = [];
 
   // Step 1: Blacklist items we don't want to consume
   for (const it of $items`Cursed Punch, unidentified drink, bag of QWOP, FantasyRealm turkey leg, FantasyRealm mead, waffle`) {
-    blacklist.set(it, true);
+    blacklist.push(it);
   }
   if (
     (get("auto_dontConsumeLegendPizzas", false) && !in_small()) ||
     (auto_turbo() && get("cyrptCrannyEvilness") > 0)
   ) {
     for (const it of $items`Pizza of Legend, Calzone of Legend, Deep Dish of Legend`) {
-      blacklist.set(it, true);
+      blacklist.push(it);
     }
   }
   if (in_small()) {
     // these items don't get 10x advs and stats in small like most consumables
     for (const it of $items`blueberry muffin, bran muffin, chocolate chip muffin, spaghetti breakfast`) {
-      blacklist.set(it, true);
+      blacklist.push(it);
     }
   }
   if (
     is_professor() ||
     (is_werewolf() && get("wereProfessorTransformTurns") < 50)
   ) {
-    blacklist.set($item`plain calzone`, true); //because 50 turn buff and can only handle +ML as a werewolf, either blacklist altogether or get lucky and eat ASAP as a werewolf
+    blacklist.push($item`plain calzone`); //because 50 turn buff and can only handle +ML as a werewolf, either blacklist altogether or get lucky and eat ASAP as a werewolf
   }
   if (
     itemAmount($item`wet stunt nut stew`) === 0 &&
     !possessEquipment($item`Mega Gem`) &&
     !isActuallyEd()
   ) {
-    blacklist.set($item`wet stew`, true);
+    blacklist.push($item`wet stew`);
   }
   if (internalQuestStatus("questL07Cyrptic") < 1) {
     //don't consume gravy boat
-    craftable_blacklist.set($item`warm gravy`, true);
+    craftable_blacklist.push($item`warm gravy`);
   }
   if (
     LX_doingPirates() &&
     internalQuestStatus("questM12Pirate") <= 2 &&
     itemAmount($item`hot wing`) < 4
   ) {
-    blacklist.set($item`hot wing`, true);
+    blacklist.push($item`hot wing`);
     if (itemAmount($item`Devil's Elbow Hot Sauce`) === 0) {
       //don't use hot wings if pirates quest still needs them
-      craftable_blacklist.set($item`devil hair pasta`, true);
+      craftable_blacklist.push($item`devil hair pasta`);
     }
   }
 
@@ -1337,7 +1337,7 @@ function loadConsumables(
     // consider blacklisting legendary noodles so we have some available for combat forcing if we still need to climb slope and have the wand
     if (numPreparedLegendaryNoodleDishes() === 1) {
       for (const dish of legendary_noodle_dishes.keys()) {
-        blacklist.set(dish, true);
+        blacklist.push(dish);
       }
     } else if (
       numPreparedLegendaryNoodleDishes() < 1 &&
@@ -1347,8 +1347,8 @@ function loadConsumables(
       ) < 2
     ) {
       for (const dish of legendary_noodle_dishes.keys()) {
-        blacklist.set(dish, true);
-        blacklist.set(legendary_noodle_dishes.get(dish) ?? Item.none, true);
+        blacklist.push(dish);
+        blacklist.push(legendary_noodle_dishes.get(dish) ?? Item.none);
       }
     }
   }
@@ -1361,7 +1361,7 @@ function loadConsumables(
       (myPrimestat() === $stat`Muscle` && myBasestat($stat`Muscle`) > 30)
     ) {
       for (const it of $items`tainted milk, rotting beefsteak, firemilk`) {
-        blacklist.set(it, true);
+        blacklist.push(it);
       }
     }
   }
@@ -1369,7 +1369,7 @@ function loadConsumables(
   // tries to get one of everything. So we blacklist everything other
   // than the 'campfire hot dog'
   for (const it of $items`campfire hot dog, campfire beans, campfire coffee, campfire stew, campfire s'more`) {
-    craftable_blacklist.set(it, true);
+    craftable_blacklist.push(it);
   }
   // Blacklist all but the item we can make the most of.
   // This is mostly a workaround for limitations in the knapsack solver.
@@ -1377,32 +1377,30 @@ function loadConsumables(
   // cubes, but can only make 1 of each type of perfect drink? This
   // optimizer will make 1 of exactly 1 drink type. Oh no. Suboptimal.
   // I declare that bug Not My Problem.
-  function add_mutex_craftables(items: Map<Item, boolean>): void {
+  function add_mutex_craftables(items: Item[]): void {
     let best_it: Item = Item.none;
     let best_amount: number = 0;
-    for (const it of items.keys()) {
+    for (const it of items) {
       if (creatableAmount(it) > best_amount) {
         best_it = it;
         best_amount = max(0, creatableAmount(it) - auto_reserveCraftAmount(it));
       }
     }
-    for (const it of items.keys()) {
+    for (const it of items) {
       if (it !== best_it) {
-        craftable_blacklist.set(it, true);
+        craftable_blacklist.push(it);
       }
     }
   }
 
-  add_mutex_craftables(
-    new Map([
-      [$item`perfect cosmopolitan`, true],
-      [$item`perfect old-fashioned`, true],
-      [$item`perfect mimosa`, true],
-      [$item`perfect dark and stormy`, true],
-      [$item`perfect paloma`, true],
-      [$item`perfect negroni`, true],
-    ]),
-  );
+  add_mutex_craftables([
+    $item`perfect cosmopolitan`,
+    $item`perfect old-fashioned`,
+    $item`perfect mimosa`,
+    $item`perfect dark and stormy`,
+    $item`perfect paloma`,
+    $item`perfect negroni`,
+  ]);
   // Step 2: move items to categorized source maps, and add turnsave
 
   const potentialTurnGain: Map<Item, number> = new Map(); // for anything the charges up a banish, YR, sniff, etc.
@@ -1413,7 +1411,7 @@ function loadConsumables(
       continue;
     }
 
-    if (blacklist.has(it) || !auto_is_valid(it)) continue;
+    if (blacklist.includes(it) || !auto_is_valid(it)) continue;
 
     if (!canConsume$1(it)) continue;
 
@@ -1480,7 +1478,7 @@ function loadConsumables(
         min(max(itemAmount(it) - auto_reserveAmount(it), 0), howmany),
       );
     }
-    if (!craftable_blacklist.has(it) && creatableAmount(it) > 0) {
+    if (!craftable_blacklist.includes(it) && creatableAmount(it) > 0) {
       craftables.set(
         it,
         min(howmany, max(0, creatableAmount(it) - auto_reserveCraftAmount(it))),
@@ -2276,7 +2274,7 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
     space.set(i, (actions.get(i) ?? new ConsumeAction()).size);
   }
 
-  const result_1: Map<number, boolean> = knapsack(
+  const result_1: number[] = knapsack(
     remaining_space,
     space.size,
     space,
@@ -2285,7 +2283,7 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
 
   let best_desirability_per_fill: number = 0.0;
   let best: number = -1;
-  for (const i of result_1.keys()) {
+  for (const i of result_1) {
     const tentative_desirability_per_fill: number =
       (actions.get(i) ?? new ConsumeAction()).desirability /
       (actions.get(i) ?? new ConsumeAction()).size;
@@ -2616,11 +2614,7 @@ export function prepare_food_xp_multi(): boolean {
   //get [That's Just Cloud-Talk, Man] +25% all stats experience is already done by dailyEvents()
 
   equipStatgainIncreasers(
-    new Map([
-      [$stat`Muscle`, true],
-      [$stat`Mysticality`, true],
-      [$stat`Moxie`, true],
-    ]),
+    [$stat`Muscle`, $stat`Mysticality`, $stat`Moxie`],
     true,
   );
 

@@ -268,22 +268,8 @@ export function auto_havePayPhone(): boolean {
   );
 }
 
-export function auto_allRifts(): Map<Location, boolean> {
-  return new Map([
-    [$location`Shadow Rift (Desert Beach)`, true],
-    [$location`Shadow Rift (Forest Village)`, true],
-    [$location`Shadow Rift (Mt. McLargeHuge)`, true],
-    [$location`Shadow Rift (Somewhere Over the Beanstalk)`, true],
-    [$location`Shadow Rift (Spookyraven Manor Third Floor)`, true],
-    [$location`Shadow Rift (The 8-Bit Realm)`, true],
-    [$location`Shadow Rift (The Ancient Buried Pyramid)`, true],
-    [$location`Shadow Rift (The Castle in the Clouds in the Sky)`, true],
-    [$location`Shadow Rift (The Distant Woods)`, true],
-    [$location`Shadow Rift (The Hidden City)`, true],
-    [$location`Shadow Rift (The Misspelled Cemetary)`, true],
-    [$location`Shadow Rift (The Nearby Plains)`, true],
-    [$location`Shadow Rift (The Right Side of the Tracks)`, true],
-  ]);
+export function auto_allRifts(): Location[] {
+  return $locations`Shadow Rift (Desert Beach), Shadow Rift (Forest Village), Shadow Rift (Mt. McLargeHuge), Shadow Rift (Somewhere Over the Beanstalk), Shadow Rift (Spookyraven Manor Third Floor), Shadow Rift (The 8-Bit Realm), Shadow Rift (The Ancient Buried Pyramid), Shadow Rift (The Castle in the Clouds in the Sky), Shadow Rift (The Distant Woods), Shadow Rift (The Hidden City), Shadow Rift (The Misspelled Cemetary), Shadow Rift (The Nearby Plains), Shadow Rift (The Right Side of the Tracks)`;
 }
 
 export function auto_availableBrickRift(): Location {
@@ -297,11 +283,11 @@ export function auto_availableBrickRift(): Location {
   }
 
   const riftsWithBricks: Location[] = $locations`Shadow Rift (The Ancient Buried Pyramid), Shadow Rift (The Hidden City), Shadow Rift (The Misspelled Cemetary)`;
-  const riftsWithWishes: Map<Location, boolean> = auto_riftsWithWishes();
+  const riftsWithWishes: Location[] = auto_riftsWithWishes();
   // First loop checks for bricks and wishes if we have BoFA
   if (auto_haveBofa() && auto_wishFactsLeft() > 0) {
     for (const loc of riftsWithBricks) {
-      if (riftsWithWishes.has(loc) && canAdventure(loc)) {
+      if (riftsWithWishes.includes(loc) && canAdventure(loc)) {
         return loc;
       }
     }
@@ -315,12 +301,12 @@ export function auto_availableBrickRift(): Location {
   return Location.none;
 }
 
-function auto_riftsWithWishes(): Map<Location, boolean> {
-  const out: Map<Location, boolean> = new Map();
-  for (const loc of auto_allRifts().keys()) {
+function auto_riftsWithWishes(): Location[] {
+  const out: Location[] = [];
+  for (const loc of auto_allRifts()) {
     for (const m of Monster.get(Object.keys(getLocationMonsters(loc)))) {
       if (itemFact(m) === $item`pocket wish`) {
-        out.set(loc, true);
+        out.push(loc);
         break;
       }
     }
