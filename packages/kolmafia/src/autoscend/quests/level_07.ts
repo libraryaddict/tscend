@@ -7,6 +7,7 @@ import {
   equippedItem,
   expectedDamage,
   floor,
+  fullnessLimit,
   getProperty,
   haveEffect,
   haveFamiliar,
@@ -25,6 +26,7 @@ import {
   myMaxhp,
   myMp,
   myPrimestat,
+  spleenLimit,
   splitString,
   toLowerCase,
   use,
@@ -108,6 +110,7 @@ import { is_pete } from "../paths/avatar_of_sneaky_pete";
 import { in_darkGyffte } from "../paths/dark_gyffte";
 import { in_koe } from "../paths/kingdom_of_exploathing";
 import { lar_repeat } from "../paths/live_ascend_repeat";
+import { in_small } from "../paths/small";
 import { is_professor } from "../paths/wereprofessor";
 import { in_zombieSlayer } from "../paths/zombie_slayer";
 
@@ -705,6 +708,16 @@ const L7_overrideTask: QuestTask = registerQuestTask({
       {
         item: $item`evil eye`,
         needAmount: Math.round((13 - get("cyrptNookEvilness")) / 3),
+      },
+      {
+        item: $item`dieting pill`,
+        needAmount:
+          fullnessLimit() > 3 &&
+          spleenLimit() > 3 &&
+          !isActuallyEd() &&
+          !in_small()
+            ? 2 - itemAmount($item`dieting pill`)
+            : 0,
       },
     ].filter((a) => a.needAmount > 0),
 });

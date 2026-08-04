@@ -82,9 +82,10 @@ import {
   L11_shenCopperhead,
   L11_shenStartQuest,
   L11_talismanOfNamTask,
-  L11_unlockEdTask,
   L11_unlockHiddenCityTask,
+  L11_unlockMiddleChamberTask,
   L11_unlockPyramidTask,
+  L11_unlockUpperChamberTask,
   LX_danceWithLadySpookyravenTask,
   LX_getLadySpookyravensDancingShoesTask,
   LX_getLadySpookyravensFinestGownTask,
@@ -818,7 +819,13 @@ function LX_lowkeySummerRemainderDo(): boolean {
       return true;
     }
     if (internalQuestStatus("questL03Rat") > 2) {
-      if (runTaskChain([L11_unlockEdTask, L11_defeatEdTask])) {
+      if (
+        runTaskChain([
+          L11_unlockUpperChamberTask,
+          L11_unlockMiddleChamberTask,
+          L11_defeatEdTask,
+        ])
+      ) {
         return true;
       }
     } else {

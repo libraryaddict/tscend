@@ -2786,6 +2786,13 @@ export const L11_hiddenCityTask: QuestTask = registerQuestTask({
       );
     }
 
+    if (
+      !possessEquipment($item`attorney's badge`) &&
+      auto_can_equip($item`attorney's badge`)
+    ) {
+      desired.push({ item: $item`attorney's badge`, needAmount: 1 });
+    }
+
     return desired;
   },
 });
@@ -3006,10 +3013,10 @@ export const L11_hiddenCityZonesTask: QuestTask = registerQuestTask({
       {
         item: $item`book of matches`,
         needAmount:
-          itemAmount($item`book of matches`) > 0 ||
-          myAscensions() === get("hiddenTavernUnlock")
-            ? 0
-            : 1,
+          itemAmount($item`book of matches`) === 0 &&
+          myAscensions() < get("hiddenTavernUnlock")
+            ? 1
+            : 0,
       },
     ].filter((a) => a.needAmount > 0),
 });
@@ -3617,6 +3624,15 @@ export const L11_shenStartQuestTask: QuestTask = registerQuestTask({
     (!in_wereprof() || is_werewolf()),
   do: L11_shenStartQuestDo,
   locations: $location`The Copperhead Club`,
+  desiredEncounters: () => [
+    {
+      item: $item`crappy waiter disguise`,
+      needAmount: !in_tcrs()
+        ? // terrible check
+          5 - itemAmount($item`crappy waiter disguise`)
+        : 0,
+    },
+  ],
 });
 
 export function L11_shenStartQuest(): boolean {
@@ -3819,8 +3835,17 @@ const L11_redZeppelinTask: QuestTask = registerQuestTask({
   desiredEncounters: () =>
     [
       {
-        monster: $monster`Blue Oyster cultist`,
-        needAmount: 80 - get("zeppelinProtestors"),
+        item: $item`cigarette lighter`,
+        needAmount: auto_is_valid($item`cigarette lighter`)
+          ? itemAmount($item`cigarette lighter`) -
+            Math.round((80 - get("zeppelinProtestors")) / 3)
+          : 0,
+      },
+      {
+        item: $item`lynyrd snare`,
+        needAmount: auto_is_valid($item`lynyrd snare`)
+          ? 3 - get("_lynyrdSnareUses") - itemAmount($item`lynyrd snare`)
+          : 0,
       },
     ].filter((a) => a.needAmount > 0),
 });
@@ -3835,6 +3860,12 @@ const L11_ronCopperheadTask: QuestTask = registerQuestTask({
       {
         monster: $monster`Ron "The Weasel" Copperhead`,
         needAmount: internalQuestStatus("questL11Ron") > 4 ? 0 : 1,
+      },
+      {
+        item: $item`glark cable`,
+        needAmount: auto_is_valid($item`glark cable`)
+          ? 5 - (get("_glarkCableUses") + itemAmount($item`glark cable`))
+          : 0,
       },
     ].filter((a) => a.needAmount > 0),
 });
@@ -4383,7 +4414,42 @@ export function L11_unlockPyramid(): boolean {
   return runQuestTask(L11_unlockPyramidTask);
 }
 
-function L11_unlockEdDo(): boolean {
+function L11_unlockUpperChamberDo(): boolean {
+  if (isActuallyEd()) {
+    return true;
+  }
+  if (auto_reserveUndergroundAdventures()) {
+    return false;
+  }
+
+  if (internalQuestStatus("questL03Rat") < 2) {
+    auto_log_warning(
+      "Uh oh, didn't do the tavern and we are at the pyramid....",
+      "red",
+    );
+    // Forcing Tavern.
+    set("auto_forceTavern", true);
+    if (L3_tavern()) {
+      return true;
+    }
+  }
+
+  return autoAdv($location`The Upper Chamber`);
+}
+
+export const L11_unlockUpperChamberTask: QuestTask = registerQuestTask({
+  name: "L11_unlockUpperChamber",
+  completed: () => get("middleChamberUnlock"),
+  ready: () => internalQuestStatus("questL11Pyramid") >= 0,
+  do: L11_unlockUpperChamberDo,
+  locations: $location`The Upper Chamber`,
+});
+
+export function L11_unlockUpperChamber(): boolean {
+  return runQuestTask(L11_unlockUpperChamberTask);
+}
+
+function L11_unlockMiddleChamberDo(): boolean {
   if (isActuallyEd()) {
     return true;
   }
@@ -4407,10 +4473,6 @@ function L11_unlockEdDo(): boolean {
     `In the pyramid (W:${itemAmount($item`crumbling wooden wheel`)}) (R:${itemAmount($item`tomb ratchet`)}) (U:${getProperty("controlRoomUnlock")})`,
     "blue",
   );
-
-  if (!get("middleChamberUnlock")) {
-    return autoAdv($location`The Upper Chamber`);
-  }
 
   let total: number = itemAmount($item`crumbling wooden wheel`);
   total = total + itemAmount($item`tomb ratchet`);
@@ -4487,12 +4549,13 @@ function L11_unlockEdDo(): boolean {
   return autoAdv($location`The Middle Chamber`);
 }
 
-export const L11_unlockEdTask: QuestTask = registerQuestTask({
-  name: "L11_unlockEd",
+export const L11_unlockMiddleChamberTask: QuestTask = registerQuestTask({
+  name: "L11_unlockMiddleChamber",
   completed: () =>
     internalQuestStatus("questL11Pyramid") > 3 || get("pyramidBombUsed"),
-  ready: () => internalQuestStatus("questL11Pyramid") >= 0,
-  do: L11_unlockEdDo,
+  ready: () =>
+    internalQuestStatus("questL11Pyramid") >= 0 && get("middleChamberUnlock"),
+  do: L11_unlockMiddleChamberDo,
   locations: $locations`The Upper Chamber, The Middle Chamber`,
   desiredEncounters: () => {
     const remaining: number =
@@ -4506,8 +4569,15 @@ export const L11_unlockEdTask: QuestTask = registerQuestTask({
   },
 });
 
+export function L11_unlockMiddleChamber(): boolean {
+  return runQuestTask(L11_unlockMiddleChamberTask);
+}
+
 export function L11_unlockEd(): boolean {
-  return runQuestTask(L11_unlockEdTask);
+  return runTaskChain([
+    L11_unlockUpperChamberTask,
+    L11_unlockMiddleChamberTask,
+  ]);
 }
 
 function L11_defeatEdDo(): boolean {

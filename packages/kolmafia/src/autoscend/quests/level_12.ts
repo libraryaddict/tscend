@@ -318,7 +318,7 @@ export function auto_warEnemiesRemaining(): number {
   } else {
     enemiesRemaining = 1000 - get("hippiesDefeated");
   }
-  return enemiesRemaining;
+  return Math.max(enemiesRemaining, 0);
 }
 
 export function auto_warKillsPerBattle(): number {
@@ -1166,7 +1166,7 @@ export const L12_filthwormsTask: QuestTask = registerQuestTask({
     getProperty("sidequestOrchardCompleted") !== "none" ||
     in_tcrs() ||
     in_koe() ||
-    auto_warEnemiesRemaining() <= 0,
+    auto_warEnemiesRemaining() === 0,
   ready: () =>
     internalQuestStatus("questL12War") === 1 &&
     itemAmount($item`heart of the filthworm queen`) === 0,
@@ -1611,18 +1611,26 @@ function L12_sonofaBeachDo(): boolean {
   return retval;
 }
 
+export function auto_gunpowderBarrelsWanted(): number {
+  if (
+    get("sidequestLighthouseCompleted") !== "none" ||
+    internalQuestStatus("questL12War") > 1 ||
+    in_koe() ||
+    auto_warEnemiesRemaining() === 0
+  ) {
+    return 0;
+  }
+
+  return Math.max(0, 5 - itemAmount($item`barrel of gunpowder`));
+}
+
 export const L12_sonofaBeachTask: QuestTask = registerQuestTask({
   name: "L12_sonofaBeach",
-  completed: () =>
-    internalQuestStatus("questL12War") > 1 ||
-    get("sidequestLighthouseCompleted") !== "none",
+  completed: () => auto_gunpowderBarrelsWanted() === 0,
   ready: () =>
-    !in_koe() &&
     internalQuestStatus("questL12War") === 1 &&
-    getProperty("sidequestLighthouseCompleted") === "none" &&
-    auto_warEnemiesRemaining() > 0 &&
     (get("fratboysDefeated") >= 64 || !get("auto_hippyInstead", false)) &&
-    itemAmount($item`barrel of gunpowder`) < 5,
+    auto_gunpowderBarrelsWanted() > 0,
   do: L12_sonofaBeachDo,
   locations: $location`Sonofa Beach`,
   desiredEncounters: () =>

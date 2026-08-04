@@ -7,6 +7,7 @@ import {
   canEat,
   canInteract,
   cliExecute,
+  closetAmount,
   cupOf13sTier,
   Effect,
   Element,
@@ -23,10 +24,12 @@ import {
   historicalPrice,
   Item,
   itemAmount,
+  itemDropsArray,
   knollAvailable,
   Location,
   Monster,
   myAdventures,
+  myDaycount,
   myFamiliar,
   myFullness,
   myHash,
@@ -70,6 +73,7 @@ import {
   stomach_left,
 } from "../auto_consume";
 import {
+  auto_have_familiar,
   canChangeToFamiliar,
   pathAllowsChangingFamiliar,
   pathHasFamiliar,
@@ -104,12 +108,19 @@ import { in_plumber } from "../paths/path_of_the_plumber";
 import { in_small } from "../paths/small";
 import { in_tcrs } from "../paths/two_crazy_random_summer";
 import { is_werewolf } from "../paths/wereprofessor";
+import {
+  bridgeGoal,
+  fastenerCount,
+  hedgeTrimmersNeeded,
+  lumberCount,
+} from "../quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "../quests/level_10";
 import {
   L11_needDrumMachine,
   L11_needTombRatchet,
   L11_needWetStew,
 } from "../quests/level_11";
+import { auto_gunpowderBarrelsWanted } from "../quests/level_12";
 import { auto_haveCCSC } from "./mr2023";
 import {
   auto_haveBatWings,
@@ -1618,4 +1629,128 @@ export function auto_baseball_freefight_monster(): Monster {
 
 export function auto_baseball_freefights_left(): number {
   return get("_curveballFightsLeft", 0);
+}
+
+export function auto_have_sword_familiar(): boolean {
+  return auto_have_familiar($familiar`Sword of S Words`);
+}
+
+export function auto_desires_sword_familiar_drops(): boolean {
+  // Returns if the sword familiar is set to a monster that we want the drops of
+  // This does not determine if we want to be using the familiar right now
+  const sMonster = safeGet("swordOfSWordsMonster", Monster.none);
+
+  if (sMonster === Monster.none) {
+    return false;
+  }
+
+  // Amount of days left in this run, always at least 1
+  const daysLeftInRun = Math.max(
+    get("auto_runDayCount", 0) + (myDaycount() - 1),
+    1,
+  );
+
+  // Free kills
+  if (sMonster === $monster`shadow slab`) {
+    // We use 13 a day, subtract the bricks we have on hand and return the total amount of bricks
+    const bricksNeeded =
+      13 * daysLeftInRun -
+      (get("_shadowBricksUsed") + itemAmount($item`shadow brick`));
+
+    if (bricksNeeded > 0) {
+      return true;
+    }
+  }
+
+  // Smut orcs
+  if (
+    $monsters`smut orc jacker, smut orc nailer, smut orc pipelayer, smut orc screwer`.includes(
+      sMonster,
+    )
+  ) {
+    const fastenerNeed: number = bridgeGoal() - fastenerCount();
+    const lumberNeed: number = bridgeGoal() - lumberCount();
+    // We don't actually sword this monster, maybe in the future?
+    if (fastenerNeed > 0 || lumberNeed > 0) {
+      return true;
+    }
+  }
+
+  // Crypt
+  if (
+    $monsters`skeleton astronaut, spiny skelelton, toothy sklelton`.includes(
+      sMonster,
+    ) &&
+    auto_is_valid($item`evil eye`) &&
+    get("cyrptNookEvilness") - itemAmount($item`evil eye`) * 3 > 13
+  ) {
+    return true;
+  }
+
+  // Some free runs
+  if (sMonster === $monster`Green Ops Soldier`) {
+    // A flat 20, because we don't actually sword this monster as of time of writing
+    return itemAmount($item`green smoke bomb`) < 20;
+  }
+
+  // Pyamid of ed
+  if (sMonster === $monster`tomb rat` && L11_needTombRatchet()) {
+    return true;
+  }
+
+  // Aboo peak
+  if (
+    $monsters`Battlie Knight Ghost, Claybender Sorcerer Ghost, Dusken Raider Ghost, Space Tourist Explorer Ghost, Whatsian Commando Ghost`.includes(
+      sMonster,
+    ) &&
+    auto_is_valid($item`A-Boo clue`) &&
+    itemAmount($item`A-Boo clue`) * 30 < get("booPeakProgress") - 2 // We don't value this if we'd get the same outcome with a normal fight
+  ) {
+    return true;
+  }
+
+  // High Peak
+  if (
+    $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`.includes(
+      sMonster,
+    ) &&
+    auto_is_valid($item`rusty hedge trimmers`) &&
+    hedgeTrimmersNeeded() > 0
+  ) {
+    return true;
+  }
+
+  // Lobster man
+  if (
+    sMonster === $monster`lobsterfrogman` &&
+    auto_gunpowderBarrelsWanted() > 0
+  ) {
+    return true;
+  }
+
+  // Bowling ball
+  if (
+    sMonster === $monster`pygmy bowler` &&
+    //
+    5 -
+      Math.max(get("hiddenBowlingAlleyProgress"), 0) -
+      (itemAmount($item`bowling ball`) + closetAmount($item`bowling ball`)) >
+      0
+  ) {
+    return true;
+  }
+
+  // Bat cave
+  if (
+    auto_is_valid($item`sonar-in-a-biscuit`) &&
+    internalQuestStatus("questL04Bat") + itemAmount($item`sonar-in-a-biscuit`) <
+      3 &&
+    itemDropsArray(sMonster).some(
+      (s) => s.drop === $item`sonar-in-a-biscuit` && s.rate > 0,
+    )
+  ) {
+    return true;
+  }
+
+  return false;
 }

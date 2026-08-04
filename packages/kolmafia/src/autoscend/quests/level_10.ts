@@ -48,6 +48,7 @@ import {
 import {
   auto_can_equip,
   auto_forceNextNoncombat,
+  auto_have_skill,
   auto_is_valid,
   auto_log_debug,
   auto_log_info,
@@ -201,6 +202,37 @@ export const L10_airshipTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL10Garbage") >= 1,
   do: L10_airshipDo,
   locations: $location`The Penultimate Fantasy Airship`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`Mohawk wig`,
+        needAmount:
+          !auto_have_skill($skill`Comprehensive Cartography`) &&
+          auto_can_equip($item`Mohawk wig`) &&
+          !possessEquipment($item`Mohawk wig`) &&
+          internalQuestStatus("questL10Garbage") <= 10
+            ? 1
+            : 0,
+      },
+      {
+        item: $item`amulet of extreme plot significance`,
+        needAmount:
+          auto_can_equip($item`amulet of extreme plot significance`) &&
+          !possessEquipment($item`amulet of extreme plot significance`) &&
+          internalQuestStatus("questL10Garbage") <= 6
+            ? 1
+            : 0,
+      },
+      {
+        item: $item`titanium assault umbrella`,
+        needAmount:
+          auto_can_equip($item`titanium assault umbrella`) &&
+          !possessEquipment($item`titanium assault umbrella`) &&
+          internalQuestStatus("questL10Garbage") <= 6
+            ? 1
+            : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function L10_airship(): boolean {

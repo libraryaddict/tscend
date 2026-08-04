@@ -74,7 +74,8 @@ import {
   L11_hiddenCityZones,
   L11_hiddenCityZonesTask,
   L11_mauriceSpookyravenTask,
-  L11_unlockEdTask,
+  L11_unlockMiddleChamberTask,
+  L11_unlockUpperChamberTask,
   LX_unlockHiddenTempleTask,
 } from "./quests/level_11";
 import { L12_filthwormsTask } from "./quests/level_12";
@@ -345,7 +346,8 @@ function auto_earlyRoutingHandlingDo(): boolean {
           L10_basementTask,
           L12_filthwormsTask,
           L11_mauriceSpookyravenTask,
-          L11_unlockEdTask,
+          L11_unlockUpperChamberTask,
+          L11_unlockMiddleChamberTask,
           L7_cryptTask,
           L5_haremOutfitTask,
         ])

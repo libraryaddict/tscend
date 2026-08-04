@@ -26,6 +26,15 @@ export type DesiredFights = {
   needAmount: number;
 };
 
+export type TaskState = {
+  // If there's delay for this task, and if so, how much delay before we change our state
+  delay?: number;
+  // If this task is fine with destroying item drops
+  drops?: boolean;
+  // If this task has the encounters section fully complete
+  encountersComplete?: boolean;
+};
+
 export type QuestTask = Task<never, void> & {
   // For planning/reporting purposes, and to compute the item drop cap
   // alongside desiredEncounters; does not replace `do`. Declares the
@@ -35,6 +44,7 @@ export type QuestTask = Task<never, void> & {
   locations?: Location | Location[] | (() => Location[]);
   // The required adventures for this task, will automatically consume enough for this task to become available. Should return 0 if this task isn't ready
   reqAdventures?: () => number;
+  // The below is not reliable, it currently does not capture every task, just the bigger things
   desiredEncounters?: () => (DesiredDrop | DesiredFights)[];
 };
 
