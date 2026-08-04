@@ -334,6 +334,8 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
         canEat() &&
         canConsume &&
         !in_zombieSlayer() &&
+        countItemAverageAdvs("food", "Omnipot") >=
+          get("auto_consumeMinAdvPerFill", 0.0) &&
         (doingBedtime || !doneOrgans.includes("food")),
       surplus: leprecondoFoodSurplus(doingBedtime),
     },
@@ -341,6 +343,8 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
       active:
         canDrink() &&
         canConsume &&
+        countItemAverageAdvs("booze", "fully-stocked wet bar") >=
+          get("auto_consumeMinAdvPerFill", 0.0) &&
         (doingBedtime || !doneOrgans.includes("booze")),
       surplus: leprecondoBoozeSurplus(doingBedtime),
     },
