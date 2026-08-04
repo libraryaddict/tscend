@@ -1781,7 +1781,6 @@ export function auto_swordFamiliarWantsMonsterDrops(
 
   // Smut orcs
   if (
-    currentlyTracking &&
     $monsters`smut orc jacker, smut orc nailer, smut orc pipelayer, smut orc screwer`.includes(
       sMonster,
     )
@@ -1848,8 +1847,12 @@ export function auto_swordFamiliarWantsMonsterDrops(
 
   // Lobster man
   if (
-    (!auto_haveArchaeologistSpade() ||
-      auto_spadeDigsRemaining() < auto_gunpowderBarrelsWanted()) &&
+    (!auto_havePastaWand() ||
+      !canEat() ||
+      fullness_left() < 1 ||
+      !auto_is_valid($item`Tubetto Gelatto`) ||
+      auto_sword_of_swords_tracking() === $monster`lobsterfrogman` ||
+      get("legendaryNoodlesAmygdala") === 0) &&
     sMonster === $monster`lobsterfrogman` &&
     auto_gunpowderBarrelsWanted() > 0
   ) {
