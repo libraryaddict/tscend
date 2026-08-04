@@ -10,7 +10,6 @@ import {
   Location,
   Monster,
   myTurncount,
-  print,
   removeProperty,
   Skill,
   visitUrl,
@@ -55,13 +54,6 @@ export type CombatMacro = (
   monster: Monster,
   text: string,
 ) => CombatMacroReturns;
-
-function findMacroName(func: unknown): string {
-  const asStr = String(func);
-  const match = asStr.match(/^function ([^( ]+)\(/);
-
-  return match ? match[1] : asStr;
-}
 
 // Mirrors RecoveryManager.isRecoveryPossible()
 export function auto_canRunBetweenBattleChecks(): boolean {
@@ -117,7 +109,6 @@ export function autoAdv(
   // undo all this when (if?) that ever gets fixed
   const previousEncounter: string = getProperty("lastEncounter");
   const turncount: number = myTurncount();
-  print(`Doing combat (${findMacroName(option)})`, "gray");
   auto_interruptCheck("main", false);
   auto_triggerPreAdventure();
   let advReturn: boolean = auto_adv1(loc, option);
