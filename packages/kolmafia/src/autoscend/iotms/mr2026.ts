@@ -1940,13 +1940,13 @@ export function auto_wantSwordFamiliar(place: Location): boolean {
   if (auto_canTracesBandit() && auto_desires_sword_familiar_drops()) {
     return true;
   }
-  if (auto_desires_sword_familiar_drops()) {
-    return true; // already tracking something useful, keep harvesting it regardless of delay status
+  if (!zone_delay(place)._boolean) {
+    return false;
   }
-  if (
-    !zone_delay(place)._boolean ||
-    auto_sword_of_swords_switches_left() <= 0
-  ) {
+  if (auto_desires_sword_familiar_drops()) {
+    return true; // already tracking something useful
+  }
+  if (auto_sword_of_swords_switches_left() <= 0) {
     return false;
   }
   // Is there anything here worth switching our tracked monster to?
