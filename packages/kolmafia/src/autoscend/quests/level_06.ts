@@ -46,6 +46,7 @@ import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { fantasyRealmToken } from "../iotms/mr2018";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_gnoob } from "../paths/gelatinous_noob";
+import { LX_doingPirates } from "./optional";
 
 //Defined in autoscend/quests/level_06.ash
 export function L6_friarsGetParts_condition_hardcore(): boolean {
@@ -185,6 +186,16 @@ export const L6_friarsGetPartsTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL06Friar") >= 0,
   do: L6_friarsGetPartsDo,
   locations: $locations`The Dark Heart of the Woods, The Dark Elbow of the Woods, The Dark Neck of the Woods`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`hot wing`,
+        needAmount:
+          LX_doingPirates() && internalQuestStatus("questM12Pirate") <= 2
+            ? 3 - itemAmount($item`hot wing`)
+            : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function L6_friarsGetParts(): boolean {
@@ -237,9 +248,19 @@ const L6_dakotaFanningTask: QuestTask = registerQuestTask({
   do: L6_dakotaFanningDo,
   locations: $locations`The Haunted Conservatory, The Dark Heart of the Woods, Pandamonium Slums`,
   desiredEncounters: () =>
-    $items`pellet of plant food, heavy-duty bendy straw`
-      .map((i) => ({ item: i, needAmount: 1 - itemAmount(i) }))
-      .filter((i) => i.needAmount > 0),
+    [
+      ...$items`pellet of plant food, heavy-duty bendy straw`.map((i) => ({
+        item: i,
+        needAmount: 1 - itemAmount(i),
+      })),
+      {
+        item: $item`hot wing`,
+        needAmount:
+          LX_doingPirates() && internalQuestStatus("questM12Pirate") <= 2
+            ? 3 - itemAmount($item`hot wing`)
+            : 0,
+      },
+    ].filter((i) => i.needAmount > 0),
 });
 
 export function L6_dakotaFanning(): boolean {

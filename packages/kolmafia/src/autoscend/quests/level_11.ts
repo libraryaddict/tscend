@@ -820,6 +820,15 @@ export const LX_unlockManorSecondFloorTask: QuestTask = registerQuestTask({
             ? 5 - get("writingDesksDefeated")
             : 0,
       },
+      {
+        item: $item`killing jar`,
+        needAmount:
+          itemAmount($item`killing jar`) < 1 &&
+          (get("gnasirProgress") & 4) === 0 &&
+          get("desertExploration") < 100
+            ? 1
+            : 0,
+      },
     ].filter((a) => a.needAmount > 0),
 });
 
@@ -1310,6 +1319,14 @@ export const L11_blackMarketTask: QuestTask = registerQuestTask({
             ? 0
             : 1,
       },
+      {
+        item: $item`blackberry`,
+        needAmount:
+          possessEquipment($item`blackberry galoshes`) ||
+          !auto_can_equip($item`blackberry galoshes`)
+            ? 0
+            : 3 - itemAmount($item`blackberry`),
+      },
     ].filter((a) => a.needAmount > 0),
 });
 
@@ -1357,6 +1374,17 @@ export const L11_getBeehiveTask: QuestTask = registerQuestTask({
   ready: () => blackMarketAvailable() && get("auto_getBeehive", false),
   do: L11_getBeehiveDo,
   locations: $location`The Black Forest`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`blackberry`,
+        needAmount:
+          possessEquipment($item`blackberry galoshes`) ||
+          !auto_can_equip($item`blackberry galoshes`)
+            ? 0
+            : 3 - itemAmount($item`blackberry`),
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 export function L11_getBeehive(): boolean {
@@ -4316,20 +4344,41 @@ export const L11_palindomeTask: QuestTask = registerQuestTask({
     if (internalQuestStatus("questL11Palindome") > 5) {
       return [];
     }
+    const desired: (DesiredDrop | DesiredFights)[] = [];
     const total: number =
       itemAmount($item`photograph of a red nugget`) +
       itemAmount($item`photograph of an ostrich egg`) +
       itemAmount($item`photograph of God`) +
       itemAmount($item`photograph of a dog`);
     if (total < 4 && !possessEquipment($item`Mega Gem`)) {
-      return [
-        {
-          monster: $phylum`dude`,
-          needAmount: 5 - get("palindomeDudesDefeated"),
-        },
-      ].filter((a) => a.needAmount > 0);
+      desired.push({
+        monster: $phylum`dude`,
+        needAmount: 5 - get("palindomeDudesDefeated"),
+      });
     }
-    return [{ monster: $monster`Dr. Awkward`, needAmount: 1 }];
+
+    if (
+      itemAmount($item`stunt nuts`) === 0 &&
+      itemAmount($item`wet stunt nut stew`) === 0
+    ) {
+      desired.push({ item: $item`stunt nuts`, needAmount: 1 });
+    }
+
+    if (
+      (itemAmount($item`lion oil`) === 0 ||
+        itemAmount($item`bird rib`) === 0) &&
+      itemAmount($item`wet stew`) === 0 &&
+      itemAmount($item`wet stunt nut stew`) === 0 &&
+      internalQuestStatus("questL11Palindome") < 5
+    ) {
+      desired.push(
+        ...$items`lion oil, bird rib`
+          .filter((it) => itemAmount(it) === 0)
+          .map((it) => ({ item: it, needAmount: 1 })),
+      );
+    }
+
+    return desired.filter((a) => a.needAmount > 0);
   },
 });
 

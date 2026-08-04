@@ -41,6 +41,7 @@ import {
 } from "../auto_util";
 import { canSurvive } from "../combat/auto_combat_util";
 import {
+  DesiredDrop,
   QuestTask,
   registerQuestTask,
   runQuestTask,
@@ -174,12 +175,27 @@ export const L5_haremOutfitTask: QuestTask = registerQuestTask({
   do: L5_haremOutfitDo,
   locations: $location`Cobb's Knob Harem`,
   desiredEncounters: () => {
+    const desired: DesiredDrop[] = [];
     const outfit = $items`Knob Goblin harem veil, Knob Goblin harem pants`;
-    if (!outfit.every((i) => auto_is_valid(i))) return [];
+    if (outfit.every((i) => auto_is_valid(i))) {
+      desired.push(
+        ...outfit.map((i) => ({
+          item: i,
+          needAmount: possessEquipment(i) ? 0 : 1,
+        })),
+      );
+    }
+    desired.push({
+      item: $item`Knob Goblin perfume`,
+      needAmount:
+        !outfit.every((i) => possessEquipment(i)) &&
+        !haveEffect($effect`Knob Goblin Perfume`) &&
+        itemAmount($item`Knob Goblin perfume`) === 0
+          ? 1
+          : 0,
+    });
 
-    return outfit
-      .map((i) => ({ item: i, needAmount: possessEquipment(i) ? 0 : 1 }))
-      .filter((a) => a.needAmount > 0);
+    return desired.filter((a) => a.needAmount > 0);
   },
 });
 

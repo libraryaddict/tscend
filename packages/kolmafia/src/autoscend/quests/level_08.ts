@@ -87,6 +87,7 @@ import {
   canSniff,
   canSummonMonster,
   canYellowRay,
+  cloversAvailable,
   internalQuestStatus,
   safeGet,
   summonMonster,
@@ -570,6 +571,11 @@ const L8_getMineOresTask: QuestTask = registerQuestTask({
         item: safeGet("trapperOre", Item.none),
         needAmount: 3 - itemAmount(safeGet("trapperOre", Item.none)),
       },
+      ...(!possessOutfit("Mining Gear") && cloversAvailable() === 0
+        ? $items`miner's helmet, 7-Foot Dwarven mattock, miner's pants`
+            .filter((piece) => itemAmount(piece) === 0)
+            .map((piece) => ({ item: piece, needAmount: 1 }))
+        : []),
     ].filter((a) => a.needAmount > 0),
 });
 
@@ -1137,6 +1143,17 @@ export const L8_trapperSlopeTask: QuestTask = registerQuestTask({
   // climbing the slope is step2 of the quest. when you unlock the peak it advances to step3
   ready: () => internalQuestStatus("questL08Trapper") === 2,
   do: L8_trapperSlopeDo,
+  locations: $location`The eXtreme Slope`,
+  desiredEncounters: () =>
+    (!possessOutfit("eXtreme Cold-Weather Gear") &&
+    $items`eXtreme scarf, snowboarder pants, eXtreme mittens`.every((e) =>
+      auto_is_valid(e),
+    )
+      ? $items`eXtreme scarf, snowboarder pants, eXtreme mittens`
+          .filter((piece) => itemAmount(piece) === 0)
+          .map((piece) => ({ item: piece, needAmount: 1 }))
+      : []
+    ).filter((a) => a.needAmount > 0),
 });
 
 export function L8_trapperSlope(): boolean {

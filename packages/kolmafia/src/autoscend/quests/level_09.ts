@@ -1383,7 +1383,12 @@ const L9_oilPeakTask: QuestTask = registerQuestTask({
     return [
       {
         item: $item`bubblin' crude`,
-        needAmount: needJar ? 12 - itemAmount($item`bubblin' crude`) : 0,
+        needAmount:
+          needJar && !in_glover() ? 12 - itemAmount($item`bubblin' crude`) : 0,
+      },
+      {
+        item: $item`jar of oil`,
+        needAmount: needJar && in_glover() ? 1 : 0,
       },
     ].filter((a) => a.needAmount > 0);
   },

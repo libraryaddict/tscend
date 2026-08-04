@@ -84,6 +84,7 @@ import {
   meatReserve,
 } from "../auto_util";
 import {
+  DesiredDrop,
   QuestTask,
   registerQuestTask,
   runQuestTask,
@@ -924,7 +925,7 @@ export const LX_pirateOutfitTask: QuestTask = registerQuestTask({
   do: LX_pirateOutfitDo,
   locations: $location`The Obligatory Pirate's Cove`,
   desiredEncounters: () =>
-    $items`eyepatch, stuffed shoulder parrot, swashbuckling pants`
+    $items`eyepatch, stuffed shoulder parrot, swashbuckling pants, pirate fledges`
       .map((i) => ({ item: i, needAmount: possessEquipment(i) ? 0 : 1 }))
       .filter((a) => a.needAmount > 0),
 });
@@ -1117,6 +1118,13 @@ const LX_joinPirateCrewBarrrneysBarrrTask: QuestTask = registerQuestTask({
   ready: () => [-1, 1, 3].includes(internalQuestStatus("questM12Pirate")),
   do: LX_joinPirateCrewBarrrneysBarrr,
   locations: $location`Barrrney's Barrr`,
+  desiredEncounters: () =>
+    [
+      {
+        item: $item`cocktail napkin`,
+        needAmount: itemAmount($item`cocktail napkin`) === 0 ? 1 : 0,
+      },
+    ].filter((a) => a.needAmount > 0),
 });
 
 function LX_joinPirateCrewNoobCave(): boolean {
@@ -1433,6 +1441,18 @@ const LX_fledglingPirateIsYouTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_fledglingPirateIsYou,
   locations: $location`The F'c'le`,
+  desiredEncounters: () => {
+    if (possessEquipment($item`pirate fledges`)) {
+      return [];
+    }
+    const desired: DesiredDrop[] = [];
+    desired.push(
+      ...$items`ball polish, mizzenmast mop, rigging shampoo`
+        .filter((it) => itemAmount(it) === 0)
+        .map((it) => ({ item: it, needAmount: 1 })),
+    );
+    return desired;
+  },
 });
 const LX_unlockBelowdecksTask: QuestTask = registerQuestTask({
   name: "LX_unlockBelowdecks",
