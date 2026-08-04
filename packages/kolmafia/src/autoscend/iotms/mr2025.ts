@@ -14,6 +14,7 @@ import {
   equip,
   equippedAmount,
   equippedItem,
+  Familiar,
   floor,
   freeCrafts,
   fullnessLimit,
@@ -728,7 +729,8 @@ export function auto_bankChestMimicExpForBandit(): boolean {
     acquiredFantasyRealmToken() ||
     !auto_haveChestMimic() ||
     $familiar`Chest Mimic`.experience >= 100 ||
-    canSummonMonster($monster`fantasy bandit`)
+    canSummonMonster($monster`fantasy bandit`) ||
+    get("auto_familiarChoice", Familiar.none) !== Familiar.none
   ) {
     return false;
   }
