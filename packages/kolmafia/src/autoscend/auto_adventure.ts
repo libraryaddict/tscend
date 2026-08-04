@@ -2,7 +2,6 @@ import {
   canWalkFromChoice,
   choiceFollowsFight,
   currentRound,
-  fightFollowsChoice,
   getProperty,
   handlingChoice,
   inMultiFight,
@@ -228,20 +227,4 @@ export function autoAdvBypass$1(
   const urlConvert: Map<number, string> = new Map();
   urlConvert.set(0, url);
   return autoAdvBypass(0, urlConvert, loc, option);
-}
-
-export function handleBetweenStates(page: string): string {
-  const shouldFight = () =>
-    currentRound() === 0 && (inMultiFight() || fightFollowsChoice());
-
-  if (shouldFight()) {
-    page = visitUrl("fight.php");
-  } else if (!handlingChoice() && choiceFollowsFight()) {
-    page = visitUrl("choice.php");
-  }
-
-  if (shouldFight() || (!handlingChoice() && choiceFollowsFight()))
-    page = visitUrl("main.php");
-
-  return page;
 }

@@ -157,6 +157,7 @@ export function auto_combatDefaultStage4(
       detail: $skill`Get a Good Whiff of This Guy`.toString(),
       property: "auto_sniffs",
     });
+    combat_status_add("sniffed");
     return auto_useSkill($skill`Get a Good Whiff of This Guy`);
   }
   //TODO auto_doCombatCopy property is silly. get rid of it

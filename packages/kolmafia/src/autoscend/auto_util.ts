@@ -191,7 +191,6 @@ import {
   autoAdvBypass$1,
   CombatMacro,
   CombatMacroReturns,
-  handleBetweenStates,
 } from "./auto_adventure";
 import { buffMaintain$2 } from "./auto_buff";
 import { main } from "./auto_choice_adv";
@@ -6989,16 +6988,20 @@ export function auto_resolveEncounters(
       tries = 0;
     }
 
-    text = handleBetweenStates(text);
-
     if (currentRound() > 0 || inMultiFight() || fightFollowsChoice()) {
       if (get("auto_diag_round", 0) > 0) {
         auto_log_info(`Encountered a combat!`, "green");
       }
       text = auto_runCombat(text, combatMacro);
-    } else if (handlingChoice()) {
+    } else if (handlingChoice() || choiceFollowsFight()) {
       if (get("auto_diag_round", 0) > 0) {
         auto_log_info(`Encountered a choice: ${lastChoice()}`, "green");
+      }
+      if (!handlingChoice()) {
+        text = visitUrl("choice.php");
+        if (!handlingChoice()) {
+          text = visitUrl("main.php");
+        }
       }
       auto_lastChoiceText = undefined;
       main(lastChoice(), text);
@@ -7030,15 +7033,27 @@ export function auto_adv1(
   return true;
 }
 
-// Assumes the page has already been normalized via handleBetweenStates (auto_resolveEncounters
-// does this for both autoAdv and autoAdvBypass) so we're actually looking at a fight round.
 export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
-  while (currentRound() > 0) {
-    let action: CombatMacroReturns = combatMacro(
-      currentRound(),
-      lastMonster(),
-      text,
-    );
+  let round = Math.max(0, currentRound() - 1);
+
+  while (currentRound() > 0 || inMultiFight() || fightFollowsChoice()) {
+    if (currentRound() === 0) {
+      text = visitUrl("fight.php");
+      if (currentRound() === 0 && (inMultiFight() || fightFollowsChoice())) {
+        text = visitUrl("main.php");
+      }
+      if (currentRound() === 0 && (inMultiFight() || fightFollowsChoice())) {
+        abort(
+          `Still not in combat after visiting fight.php/main.php (multiFight=${inMultiFight()} fightFollowsChoice=${fightFollowsChoice()})`,
+        );
+      }
+      round = 0;
+      continue;
+    }
+
+    // combat handlers are written 0-indexed (round_1 === 0 is the first round),
+    // matching mafia's FightRequest.getRoundIndex() convention.
+    let action: CombatMacroReturns = combatMacro(round++, lastMonster(), text);
     let macro: Macro;
 
     while (typeof action === "object" && "detail" in action) {
