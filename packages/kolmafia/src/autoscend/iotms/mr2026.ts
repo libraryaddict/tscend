@@ -806,8 +806,9 @@ export function auto_findPreparedLegendaryNoods(): Item {
 export function numBaseLegendaryNoodleDishes(): number {
   let num: number = 0;
   for (const preparedDish of legendaryNoodleDishes().keys()) {
-    if (auto_canEat(preparedDish))
+    if (auto_canEat(preparedDish)) {
       num += itemAmount(legendaryNoodleDishes().get(preparedDish) ?? Item.none);
+    }
   }
   return num;
 }
@@ -1114,7 +1115,7 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
   );
 
   // Add a few items from the war, but only if the war is over and we have duplicates
-  if (get("questL12War") === "finished")
+  if (get("questL12War") === "finished") {
     for (const it of $items`hippy protest button, Lockenstock™ sandals, didgeridooka, wicker shield, oversized pipe, fire poi, Gaia beads, hippy medical kit, flowing hippy skirt, round green sunglasses`) {
       if (itemAmount(it) <= 1) {
         continue;
@@ -1123,6 +1124,7 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
       // Always keep 1
       addIngredient(it, () => itemAmount(it) - 1);
     }
+  }
 
   return cupOfThirteenIngredients;
 }
@@ -1449,8 +1451,9 @@ function auto_baseball_game(plan: Element[]): boolean {
   }
   visitUrl(`choice.php?pwd&whichchoice=1598&option=6`);
 
-  if (auto_baseball_team().length > 0)
+  if (auto_baseball_team().length > 0) {
     abort(`Expected to have played baseball, did not.`);
+  }
   return true;
 }
 

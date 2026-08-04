@@ -111,4 +111,9 @@ export default defineConfig(
     },
   },
   prettier,
+  {
+    rules: {
+      curly: ["error", "multi-line"],
+    },
+  },
 );

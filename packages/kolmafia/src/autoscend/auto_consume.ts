@@ -1409,8 +1409,9 @@ function loadConsumables(
 
   for (const it of $items.all()) {
     // If one of the organs is not 0, or the organ cost is 0 or less (original autoscend behavior)
-    if ((it.fullness !== 0 && it.inebriety !== 0) || organCost(it) <= 0)
+    if ((it.fullness !== 0 && it.inebriety !== 0) || organCost(it) <= 0) {
       continue;
+    }
 
     if (blacklist.has(it) || !auto_is_valid(it)) continue;
 

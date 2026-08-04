@@ -69,8 +69,9 @@ function applyItemDropCap(task: QuestTask): void {
           drop.rate < 1 ||
           drop.type !== "" ||
           !desiredItems.includes(drop.drop)
-        )
+        ) {
           continue;
+        }
         cap = max(cap, 10000 / drop.rate - 100);
       }
     }

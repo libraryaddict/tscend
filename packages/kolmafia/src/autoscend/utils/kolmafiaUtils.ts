@@ -88,10 +88,11 @@ export class AshMatcher {
 
   group(group: number | string = 0) {
     if (!this.match) return "";
-    if (typeof group === "number")
+    if (typeof group === "number") {
       return (this.match as any)[group] !== undefined
         ? (this.match as any)[group]
         : "";
+    }
     return this.match.groups && this.match.groups[group] !== undefined
       ? this.match.groups[group]
       : "";

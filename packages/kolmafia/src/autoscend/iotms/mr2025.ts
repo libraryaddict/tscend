@@ -468,8 +468,9 @@ function leprecondoReservedSpace(
       action.size <= 0 ||
       ownItems.has(action.it) ||
       getAverageAdventures(action.it) / action.size < ownAdvsPerFill
-    )
+    ) {
       continue;
+    }
     weight.set(idx, action.size);
     desirability.set(idx, action.desirability);
     idx++;

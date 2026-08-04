@@ -255,8 +255,9 @@ export class Maximizer {
     copyMap(from.pendingBonus, this.pendingBonus);
     copyMap(from.otherRequirements, this.otherRequirements);
     this.modes.clear();
-    for (const [item, itemModes] of from.modes)
+    for (const [item, itemModes] of from.modes) {
       this.modes.set(item, new Set(itemModes));
+    }
   }
 
   wearOutfit(outfitName: string): this {
@@ -362,8 +363,9 @@ export class Maximizer {
     for (const item of this.excluded) terms.push(`-"equip ${item}"`);
     for (const slot of this.disabledSlots) terms.push(`-${slot}`);
     for (const slot of this.onlySlots) terms.push(`+${slot}`);
-    for (const familiar of this.switchFamiliars)
+    for (const familiar of this.switchFamiliars) {
       terms.push(`switch ${familiar}`);
+    }
     for (const [term, wantsThis] of this.otherRequirements) {
       terms.push(`${wantsThis ? `` : "-"}${MAXIMIZER_ALIASES[term] ?? term}`);
     }
