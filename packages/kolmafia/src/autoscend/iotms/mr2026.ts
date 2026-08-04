@@ -75,10 +75,12 @@ import {
 import {
   auto_have_familiar,
   canChangeToFamiliar,
+  handleFamiliar$1,
   pathAllowsChangingFamiliar,
   pathHasFamiliar,
 } from "../auto_familiar";
 import { haveFreeRestAvailable } from "../auto_restore";
+import { allowSoftblock } from "../auto_routing";
 import {
   auto_get_campground,
   auto_have_skill,
@@ -92,11 +94,13 @@ import {
   auto_wantToSniff,
   auto_wantToYellowRay,
   autoCraft,
+  canSummonMonster,
   handleTracker,
   internalQuestStatus,
   isFreeMonster,
   meatReserve,
   safeGet,
+  summonMonster,
 } from "../auto_util";
 import { monster_to_location, zone_delay } from "../auto_zone";
 import { ConsumeAction } from "../autoscend_record";
@@ -105,6 +109,7 @@ import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_plumber } from "../paths/path_of_the_plumber";
+import { in_quantumTerrarium } from "../paths/quantum_terrarium";
 import { in_small } from "../paths/small";
 import { in_tcrs } from "../paths/two_crazy_random_summer";
 import { is_werewolf } from "../paths/wereprofessor";
@@ -126,8 +131,9 @@ import {
   auto_haveBatWings,
   auto_haveChestMimic,
   auto_haveMayamCalendar,
+  auto_haveSpringShoes,
 } from "./mr2024";
-import { auto_haveMonodent } from "./mr2025";
+import { auto_canTracesBandit, auto_haveMonodent } from "./mr2025";
 
 // This is meant for items that have a date of 2026
 
@@ -1632,18 +1638,35 @@ export function auto_baseball_freefights_left(): number {
 }
 
 export function auto_have_sword_familiar(): boolean {
-  return auto_have_familiar($familiar`Sword of S Words`);
+  return (
+    !in_quantumTerrarium() &&
+    pathHasFamiliar() &&
+    auto_have_familiar($familiar`Sword of S Words`)
+  );
 }
 
-export function auto_desires_sword_familiar_drops(): boolean {
-  // Returns if the sword familiar is set to a monster that we want the drops of
-  // This does not determine if we want to be using the familiar right now
-  const sMonster = safeGet("swordOfSWordsMonster", Monster.none);
+export function auto_sword_of_swords_kills_left(): number {
+  return Math.max(0, 100 - get("_swordOfSWordsKills"));
+}
 
+export function auto_sword_of_swords_switches_left(): number {
+  return 3 - get("_swordOfSWordsMonsterChanged");
+}
+
+export function auto_sword_of_swords_tracking(): Monster {
+  return safeGet("swordOfSWordsMonster", Monster.none);
+}
+
+export function auto_swordFamiliarWantsMonsterDrops(
+  sMonster: Monster,
+  chanceToEncounterMonster: number = 0, // The chance we have of encountering the monster, between 0 to 100, 100 is eg, summons or perildot
+): boolean {
+  // Does not determine if we want to be using the familiar right now.
   if (sMonster === Monster.none) {
     return false;
   }
 
+  const currentlyTracking = auto_sword_of_swords_tracking() === sMonster;
   // Amount of days left in this run, always at least 1
   const daysLeftInRun = Math.max(
     get("auto_runDayCount", 0) + (myDaycount() - 1),
@@ -1664,6 +1687,7 @@ export function auto_desires_sword_familiar_drops(): boolean {
 
   // Smut orcs
   if (
+    currentlyTracking &&
     $monsters`smut orc jacker, smut orc nailer, smut orc pipelayer, smut orc screwer`.includes(
       sMonster,
     )
@@ -1688,13 +1712,21 @@ export function auto_desires_sword_familiar_drops(): boolean {
   }
 
   // Some free runs
-  if (sMonster === $monster`Green Ops Soldier`) {
+  if (
+    (currentlyTracking || chanceToEncounterMonster >= 100) &&
+    !auto_haveSpringShoes() &&
+    sMonster === $monster`Green Ops Soldier`
+  ) {
     // A flat 20, because we don't actually sword this monster as of time of writing
     return itemAmount($item`green smoke bomb`) < 20;
   }
 
   // Pyamid of ed
-  if (sMonster === $monster`tomb rat` && L11_needTombRatchet()) {
+  if (
+    currentlyTracking &&
+    sMonster === $monster`tomb rat` &&
+    L11_needTombRatchet()
+  ) {
     return true;
   }
 
@@ -1722,6 +1754,8 @@ export function auto_desires_sword_familiar_drops(): boolean {
 
   // Lobster man
   if (
+    (!auto_haveArchaeologistSpade() ||
+      auto_spadeDigsRemaining() < auto_gunpowderBarrelsWanted()) &&
     sMonster === $monster`lobsterfrogman` &&
     auto_gunpowderBarrelsWanted() > 0
   ) {
@@ -1742,6 +1776,7 @@ export function auto_desires_sword_familiar_drops(): boolean {
 
   // Bat cave
   if (
+    (currentlyTracking || !auto_haveBatWings()) &&
     auto_is_valid($item`sonar-in-a-biscuit`) &&
     internalQuestStatus("questL04Bat") + itemAmount($item`sonar-in-a-biscuit`) <
       3 &&
@@ -1753,4 +1788,107 @@ export function auto_desires_sword_familiar_drops(): boolean {
   }
 
   return false;
+}
+
+export function auto_desires_sword_familiar_drops(): boolean {
+  // Returns if the sword familiar is currently set to a monster that we want the drops of
+  return auto_swordFamiliarWantsMonsterDrops(auto_sword_of_swords_tracking());
+}
+
+function auto_swordFamiliarWantsToTrack(
+  mon: Monster,
+  chance: number = 0,
+): boolean {
+  // The sword can only copy drops from copyable, non-boss monsters
+  return (
+    mon.copyable &&
+    !mon.boss &&
+    auto_swordFamiliarWantsMonsterDrops(mon, chance)
+  );
+}
+
+export function auto_wantToStartTrackingSwordMonster(
+  enemy: Monster,
+  chance: number = 0,
+): boolean {
+  // Targets the current enemy for future fights - doesn't affect this fight's own drops.
+  if (myFamiliar() !== $familiar`Sword of S Words`) {
+    return false;
+  }
+  if (
+    auto_sword_of_swords_kills_left() <= 0 ||
+    auto_sword_of_swords_switches_left() <= 0
+  ) {
+    return false;
+  }
+  if (auto_sword_of_swords_tracking() === enemy) {
+    return false; // already tracking it
+  }
+  return auto_swordFamiliarWantsToTrack(enemy, chance);
+}
+
+export function auto_wantSwordFamiliar(place: Location): boolean {
+  if (!auto_have_sword_familiar() || auto_sword_of_swords_kills_left() <= 0) {
+    return false;
+  }
+  // Traces/afterimage bandit chains force the same rematch either way, and fantasy bandit's own drop is conditional (never overwritten), so it's free
+  if (auto_canTracesBandit() && auto_desires_sword_familiar_drops()) {
+    return true;
+  }
+  if (!zone_delay(place)._boolean) {
+    return false;
+  }
+  if (auto_desires_sword_familiar_drops()) {
+    return true; // already tracking something useful, keep harvesting it
+  }
+  if (auto_sword_of_swords_switches_left() <= 0) {
+    return false;
+  }
+  // Is there anything here worth switching our tracked monster to?
+  return auto_location_monsters(place).some(
+    ([mon, chance]) =>
+      chance > 0 && auto_swordFamiliarWantsToTrack(mon, chance),
+  );
+}
+
+export function auto_swordFamiliarShouldDelayZone(
+  monsters: Monster[],
+): boolean {
+  // Soft-delay a level's quest-turn-in while we're still farming value.
+  return (
+    monsters.includes(auto_sword_of_swords_tracking()) &&
+    auto_desires_sword_familiar_drops() &&
+    allowSoftblock("swordTracking")
+  );
+}
+
+// Monsters worth spending a spare summon on to bootstrap the sword's first target
+const SWORD_SUMMONABLE_TARGETS: Monster[] = $monsters`shadow slab`;
+
+export function auto_summonSwordTarget(): boolean {
+  if (
+    !auto_have_sword_familiar() ||
+    auto_sword_of_swords_tracking() !== Monster.none ||
+    auto_sword_of_swords_switches_left() <= 0 ||
+    auto_sword_of_swords_kills_left() <= 0
+  ) {
+    return false;
+  }
+
+  const target = SWORD_SUMMONABLE_TARGETS.find(
+    (mon) =>
+      auto_swordFamiliarWantsMonsterDrops(mon, 100) && canSummonMonster(mon),
+  );
+  if (!target) {
+    return false;
+  }
+
+  if (myFamiliar() !== $familiar`Sword of S Words`) {
+    // Get the sword equipped first
+    if (!handleFamiliar$1($familiar`Sword of S Words`)) {
+      return false;
+    }
+  }
+
+  return summonMonster(target);
 }

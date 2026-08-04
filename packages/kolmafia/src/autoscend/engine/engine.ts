@@ -26,15 +26,6 @@ export type DesiredFights = {
   needAmount: number;
 };
 
-export type TaskState = {
-  // If there's delay for this task, and if so, how much delay before we change our state
-  delay?: number;
-  // If this task is fine with destroying item drops
-  drops?: boolean;
-  // If this task has the encounters section fully complete
-  encountersComplete?: boolean;
-};
-
 export type QuestTask = Task<never, void> & {
   // For planning/reporting purposes, and to compute the item drop cap
   // alongside desiredEncounters; does not replace `do`. Declares the

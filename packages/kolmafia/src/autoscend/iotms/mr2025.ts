@@ -37,6 +37,7 @@ import {
   myBasestat,
   myClass,
   myDaycount,
+  myFamiliar,
   myFullness,
   myId,
   myInebriety,
@@ -142,6 +143,7 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 import { acquiredFantasyRealmToken, fantasyBanditsFought } from "./mr2018";
 import { auto_haveChestMimic } from "./mr2024";
 import {
+  auto_desires_sword_familiar_drops,
   auto_haveEternityCodpiece,
   auto_isInEternityCodpiece,
   auto_spadeDigsRemaining,
@@ -1749,6 +1751,13 @@ export function auto_wantToBCZ(sk: Skill): boolean {
 export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
   if (!auto_wantToBCZ($skill`BCZ: Refracted Gaze`)) {
     // we don't want to refract if we don't have the stats.
+    return false;
+  }
+  if (
+    myFamiliar() === $familiar`Sword of S Words` &&
+    auto_desires_sword_familiar_drops()
+  ) {
+    // the sword already overwrites this fight's drop table, so gazing here would be wasted.
     return false;
   }
   if (

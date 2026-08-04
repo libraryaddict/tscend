@@ -54,7 +54,10 @@ import {
 } from "../auto_util";
 import { auto_bowlingBallCombatString } from "../iotms/mr2022";
 import { shouldCinchoConfetti } from "../iotms/mr2023";
-import { auto_heartstoneShouldStealHeart } from "../iotms/mr2026";
+import {
+  auto_heartstoneShouldStealHeart,
+  auto_wantToStartTrackingSwordMonster,
+} from "../iotms/mr2026";
 import { ag_is_bodyguard } from "../paths/avant_guard";
 import { inAftercore } from "../paths/casual";
 import { in_darkGyffte } from "../paths/dark_gyffte";
@@ -264,6 +267,18 @@ export function auto_combatDefaultStage4(
       combat_status_add("copied");
       return auto_useSkill(copier);
     }
+  }
+  //Sword of S Words: lock in the current enemy for future fights' copied drops.
+  if (
+    auto_wantToStartTrackingSwordMonster(enemy, 100) &&
+    auto_canUse($skill`%fn, kill a lot of these guys`)
+  ) {
+    handleTracker({
+      what: enemy,
+      detail: $skill`%fn, kill a lot of these guys`.toString(),
+      property: "auto_otherstuff",
+    });
+    return auto_useSkill($skill`%fn, kill a lot of these guys`);
   }
   //accordion thief mechanic. unlike pickpocket it can be done at any round
   if (

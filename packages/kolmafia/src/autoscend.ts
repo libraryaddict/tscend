@@ -350,6 +350,7 @@ import {
 } from "./autoscend/iotms/mr2025";
 import {
   auto_elfToiletReady,
+  auto_summonSwordTarget,
   auto_useElfToilet,
 } from "./autoscend/iotms/mr2026";
 import { auto_useWardrobe } from "./autoscend/iotms/ttt";
@@ -2527,6 +2528,13 @@ const finishBuildingSmutOrcBridgeMaintenanceTask: QuestTask = registerQuestTask(
   },
 );
 
+const auto_summonSwordTargetTask: QuestTask = registerQuestTask({
+  name: "auto_summonSwordTarget",
+  completed: () => false,
+  ready: () => true,
+  do: auto_summonSwordTarget,
+});
+
 const councilMaintenanceTask: QuestTask = registerQuestTask({
   name: "councilMaintenance",
   completed: () => false,
@@ -3349,6 +3357,7 @@ const doTasksPrelude: QuestTask[] = [
   basicAdjustMLTask,
   zoo_graftFamTask,
   finishBuildingSmutOrcBridgeMaintenanceTask,
+  auto_summonSwordTargetTask,
   councilMaintenanceTask,
   auto_buySkillsTask,
   awol_buySkillsTask,

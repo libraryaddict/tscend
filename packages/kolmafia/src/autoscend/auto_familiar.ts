@@ -82,6 +82,7 @@ import {
 } from "./iotms/mr2023";
 import { auto_haveChestMimic } from "./iotms/mr2024";
 import { auto_haveCupidBow } from "./iotms/mr2025";
+import { auto_wantSwordFamiliar } from "./iotms/mr2026";
 import { maximizer } from "./maximizer";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_wantMeat, in_amw } from "./paths/adventurer_meats_world";
@@ -805,6 +806,14 @@ function autoChooseFamiliar(place: Location): boolean {
     considerGrimstoneGolem(false)
   ) {
     famChoice = $familiar`Grimstone Golem`;
+  }
+  // Sword of S Words overwrites this fight's drop table, so only bring it out when it's worth it.
+  if (
+    famChoice === Familiar.none &&
+    canChangeToFamiliar($familiar`Sword of S Words`) &&
+    auto_wantSwordFamiliar(place)
+  ) {
+    famChoice = $familiar`Sword of S Words`;
   }
   // places where meat drop is desirable due to high meat drop monsters.
   if (

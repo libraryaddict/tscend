@@ -192,6 +192,7 @@ import { getSniffer, isSniffed } from "../combat/auto_combat_util";
 import {
   DesiredDrop,
   DesiredFights,
+  fnTask,
   QuestTask,
   registerQuestTask,
   runQuestTask,
@@ -4632,11 +4633,14 @@ export function L11_unlockMiddleChamber(): boolean {
   return runQuestTask(L11_unlockMiddleChamberTask);
 }
 
+export const L11_unlockEdTask: QuestTask = registerQuestTask(
+  fnTask("L11_unlockEd", () =>
+    runTaskChain([L11_unlockUpperChamberTask, L11_unlockMiddleChamberTask]),
+  ),
+);
+
 export function L11_unlockEd(): boolean {
-  return runTaskChain([
-    L11_unlockUpperChamberTask,
-    L11_unlockMiddleChamberTask,
-  ]);
+  return runQuestTask(L11_unlockEdTask);
 }
 
 function L11_defeatEdDo(): boolean {

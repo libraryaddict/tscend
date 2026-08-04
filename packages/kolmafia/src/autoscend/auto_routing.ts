@@ -144,6 +144,21 @@ export function allowSoftblockDelay(): boolean {
   return get("auto_delayLastLevel", 0) < myLevel();
 }
 
+// Generic companion to the preference-backed allowSoftblockX() family
+const softblockReleaseLevel = new Map<string, number>();
+
+export function allowSoftblock(key: string): boolean {
+  return (softblockReleaseLevel.get(key) ?? 0) < myLevel();
+}
+
+export function releaseSoftblock(key: string, reason: string): void {
+  auto_log_warning(
+    `I was ${reason}, but I've run out of stuff to do. Releasing softblock.`,
+    "red",
+  );
+  softblockReleaseLevel.set(key, myLevel());
+}
+
 export function canBurnDelay(loc: Location): boolean {
   // TODO: Add Digitize (Portscan?) & LOV Enamorang
   if (!zone_delay(loc)._boolean || !allowSoftblockDelay()) {
@@ -433,6 +448,13 @@ function auto_softBlockHandlerDo(): boolean {
       "red",
     );
     set("auto_delayLastLevel", myLevel());
+    return true;
+  }
+  if (allowSoftblock("swordTracking")) {
+    releaseSoftblock(
+      "swordTracking",
+      "holding off finishing a quest to keep farming Sword of S Words tracking value",
+    );
     return true;
   }
   if (allowSoftblockDay2Wait()) {
