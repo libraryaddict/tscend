@@ -73,7 +73,7 @@ import {
   combat_status_add,
   combat_status_check,
   markAsUsed$1,
-  useItems,
+  useItem,
 } from "./auto_combat_util";
 import { auto_combatWereProfessorStage1 } from "./auto_combat_wereprofessor";
 import { auto_combatWildfireStage1 } from "./auto_combat_wildfire";
@@ -147,7 +147,7 @@ export function auto_combatDefaultStage1(
       detail: $item`waffle`.toString(),
       property: "auto_replaces",
     });
-    return useItems($item`waffle`, Item.none);
+    return useItem($item`waffle`);
   }
 
   if (enemy === $monster`Your Shadow`) {

@@ -3,7 +3,6 @@ import {
   haveEffect,
   haveEquipped,
   indexOf,
-  Item,
   itemAmount,
   Monster,
   monsterPhylum,
@@ -94,7 +93,6 @@ import {
   maxRoundsToDouse,
   replaceMonsterCombatString,
   useItem,
-  useItems,
   wantToDouse,
   wantToForceDrop,
   yellowRayCombatString,
@@ -222,7 +220,7 @@ export function auto_combatDefaultStage2(
       detail: $item`cigarette lighter`.toString(),
       property: "auto_instakill",
     });
-    return useItems($item`cigarette lighter`, Item.none);
+    return useItem($item`cigarette lighter`);
   }
   //instakill using [Power Pill] which is iotm familiar derivative
   if (
@@ -766,7 +764,7 @@ export function auto_combatDefaultStage2(
         property: "auto_instakill",
       });
       loopHandlerDelayAll();
-      return useItems($item`shadow brick`, Item.none);
+      return useItem($item`shadow brick`);
     }
   } // instakills
   //wearing [retro superhero cape] iotm set to vampire slicer mode instakills Undead and reduces evilness in Cyrpt zones.

@@ -1482,7 +1482,7 @@ export function replaceMonsterCombatString(
     return $skill`CHEAT CODE: Replace Enemy`;
   }
   if (canUse$3($item`waffle`) && !in_avantGuard()) {
-    return useItems($item`waffle`, Item.none);
+    return useItem($item`waffle`);
   }
   return undefined;
 }

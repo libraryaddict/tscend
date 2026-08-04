@@ -6,7 +6,6 @@ import {
   getProperty,
   haveEffect,
   haveEquipped,
-  Item,
   itemAmount,
   Monster,
   monsterAttack,
@@ -93,7 +92,6 @@ import {
   replaceMonsterCombatString,
   usedCount,
   useItem,
-  useItems,
   wantToForceDrop,
   yellowRayCombatString,
 } from "./auto_combat_util";
@@ -973,7 +971,7 @@ export function auto_edCombatHandler(
         property: "auto_instakill",
       });
       loopHandlerDelayAll();
-      return useItems($item`shadow brick`, Item.none);
+      return useItem($item`shadow brick`);
     }
 
     if (
