@@ -1932,6 +1932,16 @@ function L11_aridDesertDo(): boolean {
       `Getting some ultrahydrated, I suppose. Desert left: ${need}`,
       "blue",
     );
+    if (
+      !get("oasisAvailable") &&
+      $location`The Arid, Extra-Dry Desert`.turnsSpent > 0
+    ) {
+      auto_log_info(
+        `Oasis doesn't seem to be available, but we've been to the desert. Checking it manually...`,
+      );
+      visitUrl(`place.php?whichplace=desertbeach`);
+    }
+
     if (!get("oasisAvailable") && haveEffect($effect`Ultrahydrated`) === 0) {
       return autoAdv($location`The Arid, Extra-Dry Desert`);
     }
