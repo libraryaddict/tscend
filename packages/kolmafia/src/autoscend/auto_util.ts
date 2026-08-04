@@ -4551,6 +4551,7 @@ export function auto_is_valid(it: Item): boolean {
     return isTrendy(it);
   }
 
+  // Combat items are usable even if not in standard. We only return true if we're in combat
   return isUnrestricted(it) || (currentRound() > 0 && it.combat);
 }
 

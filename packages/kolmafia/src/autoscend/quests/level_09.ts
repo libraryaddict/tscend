@@ -50,9 +50,9 @@ import {
   $familiar,
   $item,
   $location,
+  $locations,
   $modifier,
   $monster,
-  $monsters,
   $servant,
   $skill,
   $slot,
@@ -139,7 +139,7 @@ import {
   auto_haveMayamCalendar,
   auto_haveSeptEmberCenser,
 } from "../iotms/mr2024";
-import { auto_swordFamiliarShouldDelayZone } from "../iotms/mr2026";
+import { auto_copierShouldDelayZone } from "../iotms/mr2026";
 import { Maximizer, maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
@@ -1415,13 +1415,9 @@ function L9_highLandlordDo(): boolean {
     return true;
   }
 
-  if (
-    auto_swordFamiliarShouldDelayZone(
-      $monsters`Battlie Knight Ghost, Claybender Sorcerer Ghost, Dusken Raider Ghost, Space Tourist Explorer Ghost, Whatsian Commando Ghost, bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`,
-    )
-  ) {
+  if (auto_copierShouldDelayZone($locations`A-Boo Peak, Twin Peak, Oil Peak`)) {
     auto_log_debug(
-      "Delaying L9 turn-in - Sword of S Words is still tracking this cluster.",
+      "Delaying L9 turn-in - still farming a copier target in this cluster.",
     );
     return false;
   }

@@ -1610,6 +1610,16 @@ function auto_baseballZoneAlreadyTapped(loc: Location): boolean {
   return false;
 }
 
+// Monsters at loc (with their encounter rate) that a copier (sword, baseball diamond, ...)
+// could actually track/target.
+function auto_zoneCopyableMonsters(loc: Location): [Monster, number][] {
+  return Object.entries(appearanceRates(loc))
+    .map(([_k, _v]) => [Monster.get(_k), _v] as [Monster, number])
+    .filter(
+      ([mon, rate]) => rate > 0 && mon.id > 0 && mon.copyable && !mon.boss,
+    );
+}
+
 // Score bonus rather than forcing the item on, so it only wins its equip slot when worth it.
 export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
   if (!auto_have_baseball_diamond()) {
@@ -1619,18 +1629,9 @@ export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
     return 0;
   }
 
-  let hasWorthyTarget = false;
-  for (const [mon, rate] of Object.entries(appearanceRates(loc)).map(
-    ([_k, _v]) => [Monster.get(_k), _v] as [Monster, number],
-  )) {
-    if (!(rate > 0 && mon.id > 0 && mon.copyable && !mon.boss)) {
-      continue;
-    }
-    if (auto_baseballWorthyTarget(mon, loc)) {
-      hasWorthyTarget = true;
-      break;
-    }
-  }
+  const hasWorthyTarget = auto_zoneCopyableMonsters(loc).some(([mon]) =>
+    auto_baseballWorthyTarget(mon, loc),
+  );
 
   if (hasWorthyTarget) {
     return BASEBALL_TARGET_BONUS;
@@ -1677,20 +1678,10 @@ function auto_baseballZoneHasUnclaimedTarget(
   const claimedFinishers = new Set(
     assignments.map((a) => team[a.finisherSlot]),
   );
-  for (const [mon, rate] of Object.entries(appearanceRates(loc)).map(
-    ([_k, _v]) => [Monster.get(_k), _v] as [Monster, number],
-  )) {
-    if (!(rate > 0 && mon.id > 0 && mon.copyable && !mon.boss)) {
-      continue;
-    }
-    if (claimedFinishers.has(mon)) {
-      continue;
-    }
-    if (auto_baseballWorthyTarget(mon, loc)) {
-      return true;
-    }
-  }
-  return false;
+  return auto_zoneCopyableMonsters(loc).some(
+    ([mon]) =>
+      !claimedFinishers.has(mon) && auto_baseballWorthyTarget(mon, loc),
+  );
 }
 
 export function auto_tryPlayBaseball(): boolean {
@@ -1954,14 +1945,44 @@ export function auto_wantSwordFamiliar(place: Location): boolean {
   );
 }
 
-export function auto_swordFamiliarShouldDelayZone(
-  monsters: Monster[],
-): boolean {
+function auto_swordFamiliarShouldDelayZone(monsters: Monster[]): boolean {
   // Soft-delay a level's quest-turn-in while we're still farming value.
   return (
     monsters.includes(auto_sword_of_swords_tracking()) &&
     auto_desires_sword_familiar_drops() &&
     allowSoftblock("swordTracking")
+  );
+}
+
+function auto_baseballShouldDelayZone(
+  zoneMonsters: [Monster, number][],
+): boolean {
+  // Soft-delay a level's quest-turn-in while a recruited teammate here hasn't been played yet.
+  if (auto_baseball_innings_left() <= 0) {
+    return false;
+  }
+  const team = auto_baseball_team();
+  if (team.length === 0) {
+    return false;
+  }
+  // A guaranteed (100%) encounter chance means we'll fight it on our very next adventure
+  // here regardless of when we turn in, so there's nothing left to protect by delaying.
+  const unreliableTargets = new Set(
+    zoneMonsters.filter(([, rate]) => rate < 100).map(([mon]) => mon),
+  );
+  return (
+    auto_baseballBuildAssignments(team).some((a) =>
+      unreliableTargets.has(team[a.finisherSlot]),
+    ) && allowSoftblock("baseballDiamond")
+  );
+}
+
+// Soft-delay leaving these zones (a level's quest-turn-in, typically) while the Sword of S Words or Baseball Diamond is still mid-farm on a monster that only appears here.
+export function auto_copierShouldDelayZone(locs: Location[]): boolean {
+  const zoneMonsters = locs.flatMap(auto_zoneCopyableMonsters);
+  return (
+    auto_swordFamiliarShouldDelayZone(zoneMonsters.map(([mon]) => mon)) ||
+    auto_baseballShouldDelayZone(zoneMonsters)
   );
 }
 

@@ -159,6 +159,13 @@ export function releaseSoftblock(key: string, reason: string): void {
   softblockReleaseLevel.set(key, myLevel());
 }
 
+// A released softblock is a last resort for when we're truly stuck; once a task actually
+// completes we're clearly not stuck anymore, so re-arm every softblock rather than leaving
+// them released for the rest of the level over one unrelated snag.
+export function clearSoftblockLocks(): void {
+  softblockReleaseLevel.clear();
+}
+
 export function canBurnDelay(loc: Location): boolean {
   // TODO: Add Digitize (Portscan?) & LOV Enamorang
   if (!zone_delay(loc)._boolean || !allowSoftblockDelay()) {
