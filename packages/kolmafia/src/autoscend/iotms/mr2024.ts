@@ -44,6 +44,7 @@ import {
   $element,
   $familiar,
   $item,
+  $items,
   $location,
   $modifier,
   $skill,
@@ -928,31 +929,34 @@ function auto_thisClanPhotoBoothHasItem(it: Item): boolean {
   return false;
 }
 
-function auto_thisClanPhotoBoothHasItems(its: Map<Item, boolean>): boolean {
+function auto_thisClanPhotoBoothHasItems(its: Item[]): boolean {
   let success: boolean = true;
-  for (const [it] of its) {
+  for (const it of its) {
     success = success && auto_thisClanPhotoBoothHasItem(it);
   }
   return false;
+}
+
+function auto_clanPhotoboothClaimedEverything(): boolean {
+  return (
+    get("_photoBoothEquipment") >= 3 &&
+    auto_remainingClanPhotoBoothEffects() === 0
+  );
 }
 
 export function auto_getClanPhotoBoothDefaultItems(): boolean {
   if (!auto_haveClanPhotoBooth()) {
     return false;
   }
-  let items_to_claim: Map<Item, boolean>;
+  let items_to_claim: Item[];
   if (!in_hattrick()) {
-    items_to_claim = new Map([
-      [$item`fake arrow-through-the-head`, true],
-      [$item`astronaut helmet`, true],
-      [$item`oversized monocle on a stick`, true],
-    ]);
+    items_to_claim = $items`fake arrow-through-the-head, astronaut helmet, oversized monocle on a stick`;
   } else {
-    items_to_claim = new Map([
-      [$item`feather boa`, true],
-      [$item`astronaut helmet`, true],
-      [$item`oversized monocle on a stick`, true],
-    ]);
+    items_to_claim = $items`feather boa, astronaut helmet, oversized monocle on a stick`;
+  }
+
+  if (auto_clanPhotoboothClaimedEverything()) {
+    return items_to_claim.every((i) => possessEquipment(i));
   }
 
   const orig_clan_id: number = getClanId();
@@ -967,7 +971,7 @@ export function auto_getClanPhotoBoothDefaultItems(): boolean {
     changeClan$2();
   }
   let success: boolean = true;
-  for (const [it] of items_to_claim) {
+  for (const it of items_to_claim) {
     success = success && auto_getClanPhotoBoothItem(it);
   }
   if (orig_clan_id !== getClanId()) {
@@ -985,6 +989,9 @@ function auto_getClanPhotoBoothItem(it: Item): boolean {
   }
   if (availableAmount(it) > 0) {
     return true;
+  }
+  if (auto_clanPhotoboothClaimedEverything()) {
+    return false;
   }
   // Handle whether we want to jump to BAFH for the item
   const orig_clan_id: number = getClanId();
