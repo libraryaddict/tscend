@@ -1921,6 +1921,14 @@ export function auto_wantToStartTrackingSwordMonster(
   return auto_swordFamiliarWantsToTrack(enemy, chance);
 }
 
+export function auto_swordWantsToStopKilling() {
+  if (myFamiliar() !== $familiar`Sword of S Words`) return false;
+
+  if (auto_sword_of_swords_tracking() === Monster.none) return false;
+
+  return !auto_swordFamiliarWantsToTrack(auto_sword_of_swords_tracking(), 100);
+}
+
 export function auto_wantSwordFamiliar(place: Location): boolean {
   if (!auto_have_sword_familiar() || auto_sword_of_swords_kills_left() <= 0) {
     return false;

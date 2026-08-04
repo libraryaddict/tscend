@@ -56,6 +56,8 @@ import { auto_bowlingBallCombatString } from "../iotms/mr2022";
 import { shouldCinchoConfetti } from "../iotms/mr2023";
 import {
   auto_heartstoneShouldStealHeart,
+  auto_sword_of_swords_tracking,
+  auto_swordWantsToStopKilling,
   auto_wantToStartTrackingSwordMonster,
 } from "../iotms/mr2026";
 import { ag_is_bodyguard } from "../paths/avant_guard";
@@ -279,6 +281,17 @@ export function auto_combatDefaultStage4(
       property: "auto_otherstuff",
     });
     return auto_useSkill($skill`%fn, kill a lot of these guys`);
+  }
+  if (
+    auto_swordWantsToStopKilling() &&
+    auto_canUse($skill`%fn, stop killing those guys`)
+  ) {
+    handleTracker({
+      what: auto_sword_of_swords_tracking(),
+      detail: $skill`%fn, stop killing those guys`.toString(),
+      property: "auto_otherstuff",
+    });
+    return auto_useSkill($skill`%fn, stop killing those guys`);
   }
   //accordion thief mechanic. unlike pickpocket it can be done at any round
   if (
