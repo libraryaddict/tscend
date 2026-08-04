@@ -3544,6 +3544,9 @@ function doTasks(): boolean {
 }
 
 function auto_begin(): void {
+  // Setup settings before continuing
+  auto_settings();
+
   if (getAutoAttack() !== 0) {
     const shouldUnset: boolean = userConfirm(
       "You have an auto attack enabled. This can cause issues. Would you like us to disable it? Will default to 'No' in 30 seconds.",
