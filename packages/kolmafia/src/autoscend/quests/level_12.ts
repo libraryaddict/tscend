@@ -58,6 +58,7 @@ import {
   $location,
   $locations,
   $modifier,
+  $modifiers,
   $monster,
   $skill,
   $slot,
@@ -2765,6 +2766,8 @@ function L12_finalizeWarDo(): boolean {
     doRest();
   }
   equipWarOutfit();
+  // This is one of the harder fights, clear modifiers we don't need
+  $modifiers`Item Drop, Meat Drop`.forEach((m) => maximizer.clearWeight(m));
   //AoSOL buffs
   if (in_aosol()) {
     buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
