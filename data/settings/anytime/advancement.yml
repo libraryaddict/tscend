@@ -18,3 +18,7 @@ auto_burndownStatsInstantKarma:
   name: "Burn Stats for Instant Karma"
   type: boolean
   description: "When enabled, the script will, if possible and needed, burn your stats to drop you down to level 13 to qualify for Instant Karma"
+auto_burndownStatsInstantKarmaAbort:
+  name: "Abort if we can't burn down stats"
+  type: boolean
+  description: "When enabled, the script will abort if you are unable to burn down your stats to L13"

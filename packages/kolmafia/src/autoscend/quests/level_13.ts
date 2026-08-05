@@ -2091,6 +2091,10 @@ function L13_towerNSFinalDo(): boolean {
         });
       }
     }
+
+    if (myLevel() !== 13 && get("auto_burndownStatsInstantKarmaAbort", false)) {
+      abort(`Failed to burn stats down to L13, aborting as per user setting.`);
+    }
   }
 
   if (in_heavyrains()) {
