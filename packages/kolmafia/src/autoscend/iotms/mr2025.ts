@@ -1651,12 +1651,27 @@ function bcz_allowStatChange(st: Stat, casts: number): boolean {
     myBasestat(primestat),
     primestatCap,
   );
-  const offstatFloor: number = Math.max(cappedPrimestatValue - 70, 0);
+  const maxDiff = auto_getMinOffstatDelevel(cappedPrimestatValue);
+  const offstatFloor: number = Math.max(cappedPrimestatValue - maxDiff, 0);
   const substatsAtCurrentStat: number = Math.pow(currentStat, 2);
   const substatsAtOffstatFloor: number = Math.pow(offstatFloor, 2);
   const surplusSubstats: number =
     substatsAtCurrentStat - substatsAtOffstatFloor;
   return surplusSubstats > castCost;
+}
+
+function auto_getMinOffstatDelevel(statComparedAgainst: number): number {
+  const diff = get("auto_burndownStatsProgressionDiff", "75%");
+
+  const match = diff.match(/^([\d.]+)(%?)$/);
+  const amount: number = match !== null ? parseFloat(match[1]) : 0.75;
+  const perc = match !== null ? match[1] === "%" : true;
+
+  const newLimit = perc
+    ? statComparedAgainst * amount
+    : statComparedAgainst - amount;
+
+  return Math.max(1, Math.ceil(newLimit));
 }
 
 type BCZSkill = {

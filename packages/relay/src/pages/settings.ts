@@ -23,6 +23,7 @@ interface SettingEntry {
   property: string;
   type: string;
   description: string;
+  default?: string;
   tags: string;
 }
 
@@ -60,7 +61,7 @@ function buildGroup(
         name: setting.name,
         preference: setting.property,
         description: setting.description,
-        default: settingDefaults.get(setting.property),
+        default: setting.default ?? settingDefaults.get(setting.property),
         tags: setting.tags.split(",").filter(Boolean),
       } as RelaySetting);
     }

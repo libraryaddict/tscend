@@ -190,6 +190,7 @@ async function buildSettingsData() {
       property,
       type: value.type,
       description: value.description,
+      default: value.default,
       tags: value.tags
         ? Array.isArray(value.tags)
           ? value.tags.join(",")
