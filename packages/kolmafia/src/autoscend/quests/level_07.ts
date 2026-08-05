@@ -88,7 +88,12 @@ import {
   safeGet,
 } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
-import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import { handleBjornify } from "../iotms/mr2014";
 import { spacegateVaccine } from "../iotms/mr2017";
 import { auto_havePillKeeper } from "../iotms/mr2019";
@@ -250,7 +255,20 @@ function knockOffCapePrep(): void {
   }
 }
 
-function L7_defiledAlcove(): boolean {
+function L7_reserveUndergroundGate(): boolean {
+  // crypt is underground so it will generate breathitins, 5 turns free outside
+  // allow adventuring in Alcove (below) since many backup charges get used for modern zmobies
+  // not delaying better distributes these charges across days
+  if (auto_reserveUndergroundAdventures()) {
+    auto_log_debug(
+      "Delaying remaining crypt zones for cold medicine cabinet usage.",
+    );
+    return false;
+  }
+  return true;
+}
+
+function L7_defiledAlcoveDo(): boolean {
   const evilBonus: number = cyrptEvilBonus();
 
   if (
@@ -307,6 +325,18 @@ function L7_defiledAlcove(): boolean {
   return autoAdv($location`The Defiled Alcove`);
 }
 
+const L7_defiledAlcoveTask: QuestTask = registerQuestTask({
+  name: "L7_defiledAlcove",
+  completed: () => false,
+  ready: () => true,
+  do: L7_defiledAlcoveDo,
+  locations: $location`The Defiled Alcove`,
+});
+
+export function L7_defiledAlcove(): boolean {
+  return runQuestTask(L7_defiledAlcoveTask);
+}
+
 function L7_defiledNookDo(): boolean {
   const evilBonus: number = cyrptEvilBonus();
   // current mafia bug causes us to lose track of the amount of Evil Eyes in inventory so adding a refresh here
@@ -359,8 +389,20 @@ function L7_defiledNookDo(): boolean {
 const L7_defiledNookTask: QuestTask = registerQuestTask({
   name: "L7_defiledNook",
   completed: () => false,
-  ready: () => true,
+  ready: () => {
+    if (!L7_reserveUndergroundGate()) {
+      return false;
+    }
+    if (auto_copierShouldDelayZone($locations`The Defiled Nook`)) {
+      auto_log_debug(
+        "Delaying L7 nook - still farming a copier target in this cluster.",
+      );
+      return false;
+    }
+    return true;
+  },
   do: L7_defiledNookDo,
+  locations: $location`The Defiled Nook`,
   desiredEncounters: () =>
     [
       {
@@ -374,7 +416,7 @@ export function L7_defiledNook(): boolean {
   return runQuestTask(L7_defiledNookTask);
 }
 
-function L7_defiledNiche(): boolean {
+function L7_defiledNicheDo(): boolean {
   const evilBonus: number = cyrptEvilBonus();
 
   if (
@@ -459,7 +501,30 @@ function L7_defiledNiche(): boolean {
   return false;
 }
 
-function L7_defiledCranny(): boolean {
+const L7_defiledNicheTask: QuestTask = registerQuestTask({
+  name: "L7_defiledNiche",
+  completed: () => false,
+  ready: () => {
+    if (!L7_reserveUndergroundGate()) {
+      return false;
+    }
+    if (auto_copierShouldDelayZone($locations`The Defiled Niche`)) {
+      auto_log_debug(
+        "Delaying L7 niche - still farming a copier target in this cluster.",
+      );
+      return false;
+    }
+    return true;
+  },
+  do: L7_defiledNicheDo,
+  locations: $location`The Defiled Niche`,
+});
+
+export function L7_defiledNiche(): boolean {
+  return runQuestTask(L7_defiledNicheTask);
+}
+
+function L7_defiledCrannyDo(): boolean {
   const evilBonus: number = cyrptEvilBonus();
 
   if (get("cyrptCrannyEvilness") > 0) {
@@ -537,12 +602,96 @@ function L7_defiledCranny(): boolean {
   return false;
 }
 
+const L7_defiledCrannyTask: QuestTask = registerQuestTask({
+  name: "L7_defiledCranny",
+  completed: () => false,
+  ready: () => {
+    if (!L7_reserveUndergroundGate()) {
+      return false;
+    }
+    if (auto_copierShouldDelayZone($locations`The Defiled Cranny`)) {
+      auto_log_debug(
+        "Delaying L7 cranny - still farming a copier target in this cluster.",
+      );
+      return false;
+    }
+    return true;
+  },
+  do: L7_defiledCrannyDo,
+  locations: $location`The Defiled Cranny`,
+});
+
+export function L7_defiledCranny(): boolean {
+  return runQuestTask(L7_defiledCrannyTask);
+}
+
 function L7_bonerdagonDefeated(): boolean {
   return (
     itemAmount($item`chest of the Bonerdagon`) === 1 ||
     getProperty("questL07Cyrptic") === "finished"
   );
 }
+
+function L7_bonerdagonDo(): boolean {
+  if (
+    myClass() === $class`Seal Clubber` &&
+    auto_have_skill($skill`Iron Palm Technique`) &&
+    haveEffect($effect`Iron Palms`) === 0
+  ) {
+    //if this was toggled off for retrocape slay the dead it can be toggled back on now
+    useSkill(1, $skill`Iron Palm Technique`);
+  }
+
+  if (myPrimestat() === $stat`Muscle`) {
+    auto_buyUpTo(1, $item`Ben-Gal™ Balm`);
+    buffMaintain$2($effect`Go Get 'Em, Tiger!`);
+    auto_buyUpTo(1, $item`blood of the Wereseal`);
+    buffMaintain$2($effect`Temporary Lycanthropy`);
+  }
+  //AoSOL buffs
+  if (in_aosol()) {
+    buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
+    buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
+    if (auto_haveGreyGoose()) {
+      handleFamiliar$1($familiar`Grey Goose`);
+    }
+  }
+
+  acquireHP();
+  if (auto_have_familiar($familiar`Machine Elf`)) {
+    handleFamiliar$1($familiar`Machine Elf`);
+  }
+  auto_change_mcd(10); // get vertebra to make the necklace.
+  set("auto_nextEncounter", "Bonerdagon");
+  set("auto_nonAdvLoc", true);
+  const tryBoner: boolean = autoAdv($location`Haert of the Cyrpt`);
+  cliExecute("refresh quests");
+  if (L7_bonerdagonDefeated()) {
+    return runQuestTask(L7_cryptFinishTask);
+  }
+  if (!tryBoner) {
+    auto_log_warning(
+      "We tried to kill the Bonerdagon because the cyrpt was defiled but couldn't adventure there and the chest of the bonerdagon is gone so we can't check that. Anyway, we are going to assume the cyrpt is done now.",
+      "red",
+    );
+    return true;
+  }
+  abort("Failed to kill bonerdagon");
+  return true;
+}
+
+const L7_bonerdagonTask: QuestTask = registerQuestTask({
+  name: "L7_bonerdagon",
+  completed: L7_bonerdagonDefeated,
+  ready: () => {
+    if (!L7_reserveUndergroundGate()) {
+      return false;
+    }
+    return get("cyrptTotalEvilness") <= 0 || get("cyrptTotalEvilness") === 999;
+  },
+  do: L7_bonerdagonDo,
+  locations: $location`Haert of the Cyrpt`,
+});
 
 function L7_cryptDo(): boolean {
   if (L7_bonerdagonDefeated()) {
@@ -554,77 +703,13 @@ function L7_cryptDo(): boolean {
 
   cyrptEvilBonus();
 
-  if (L7_defiledAlcove()) {
-    return true;
-  }
-  // delay remaining crypt zones for cold medicine cabinet usage unless we have run out of other stuff to do
-  // crypt is underground so it will generate breathitins, 5 turns free outside
-  // allow adventuring in Alcove (above) since many backup charges get used for modern zmobies
-  // not delaying better distributes these charges across days
-  if (auto_reserveUndergroundAdventures()) {
-    return false;
-  }
-
-  if (L7_defiledNook()) {
-    return true;
-  }
-
-  if (L7_defiledNiche()) {
-    return true;
-  }
-
-  if (L7_defiledCranny()) {
-    return true;
-  }
-  // handle crypt boss
-  if (get("cyrptTotalEvilness") <= 0 || get("cyrptTotalEvilness") === 999) {
-    if (
-      myClass() === $class`Seal Clubber` &&
-      auto_have_skill($skill`Iron Palm Technique`) &&
-      haveEffect($effect`Iron Palms`) === 0
-    ) {
-      //if this was toggled off for retrocape slay the dead it can be toggled back on now
-      useSkill(1, $skill`Iron Palm Technique`);
-    }
-
-    if (myPrimestat() === $stat`Muscle`) {
-      auto_buyUpTo(1, $item`Ben-Gal™ Balm`);
-      buffMaintain$2($effect`Go Get 'Em, Tiger!`);
-      auto_buyUpTo(1, $item`blood of the Wereseal`);
-      buffMaintain$2($effect`Temporary Lycanthropy`);
-    }
-    //AoSOL buffs
-    if (in_aosol()) {
-      buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
-      buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
-      if (auto_haveGreyGoose()) {
-        handleFamiliar$1($familiar`Grey Goose`);
-      }
-    }
-
-    acquireHP();
-    if (auto_have_familiar($familiar`Machine Elf`)) {
-      handleFamiliar$1($familiar`Machine Elf`);
-    }
-    auto_change_mcd(10); // get vertebra to make the necklace.
-    set("auto_nextEncounter", "Bonerdagon");
-    set("auto_nonAdvLoc", true);
-    const tryBoner: boolean = autoAdv($location`Haert of the Cyrpt`);
-    cliExecute("refresh quests");
-    if (L7_bonerdagonDefeated()) {
-      return runQuestTask(L7_cryptFinishTask);
-    }
-    if (!tryBoner) {
-      auto_log_warning(
-        "We tried to kill the Bonerdagon because the cyrpt was defiled but couldn't adventure there and the chest of the bonerdagon is gone so we can't check that. Anyway, we are going to assume the cyrpt is done now.",
-        "red",
-      );
-      return true;
-    }
-    abort("Failed to kill bonerdagon");
-    return true;
-  }
-  return false;
+  return runTaskChain([
+    L7_defiledAlcoveTask,
+    L7_defiledNookTask,
+    L7_defiledNicheTask,
+    L7_defiledCrannyTask,
+    L7_bonerdagonTask,
+  ]);
 }
 
 export function L7_swordWantsCryptMonster(): boolean {
@@ -686,16 +771,6 @@ const L7_cryptFinishTask: QuestTask = registerQuestTask({
   completed: () => get("auto_L07CouncilVisited", false),
   ready: () => {
     if (get("auto_L07CouncilVisited", false) || !L7_bonerdagonDefeated()) {
-      return false;
-    }
-    if (
-      auto_copierShouldDelayZone(
-        $locations`The Defiled Alcove, The Defiled Niche, The Defiled Cranny, The Defiled Nook, Haert of the Cyrpt`,
-      )
-    ) {
-      auto_log_debug(
-        "Delaying L7 turn-in - still farming a copier target in this cluster.",
-      );
       return false;
     }
     return true;

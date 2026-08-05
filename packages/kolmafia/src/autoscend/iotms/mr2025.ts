@@ -1668,7 +1668,7 @@ function auto_getMinOffstatDelevel(statComparedAgainst: number): number {
   const perc = match !== null ? match[1] === "%" : true;
 
   const newLimit = perc
-    ? statComparedAgainst * amount
+    ? statComparedAgainst - statComparedAgainst * amount
     : statComparedAgainst - amount;
 
   return Math.max(1, Math.ceil(newLimit));
