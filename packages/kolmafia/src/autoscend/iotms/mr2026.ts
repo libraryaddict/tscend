@@ -1602,7 +1602,7 @@ function auto_baseballIsSlotZeroLoadBearing(
   return assignments.some((a) => a.finisherSlot === 0);
 }
 
-export function auto_baseballSlotZeroLoadBearing(): boolean {
+function auto_baseballSlotZeroLoadBearing(): boolean {
   const team = auto_baseball_team();
   if (team.length !== 9) {
     return false;
@@ -1669,7 +1669,12 @@ function auto_zoneCopyableMonsters(loc: Location): [Monster, number][] {
 
 // Score bonus rather than forcing the item on, so it only wins its equip slot when worth it.
 export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
-  if (!auto_have_baseball_diamond()) {
+  // We should do a check instead of "how many advs more will we spend?" to wear the baseball if we'd benefit from it
+  if (
+    !auto_have_baseball_diamond() ||
+    (auto_baseball_innings_left() === 0 &&
+      fullness_left() + inebriety_left() > 0)
+  ) {
     return 0;
   }
   if (auto_baseball_team().length === 9 && auto_baseballSlotZeroLoadBearing()) {
