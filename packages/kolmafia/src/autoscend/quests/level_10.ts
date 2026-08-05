@@ -146,7 +146,7 @@ function L10_airshipDo(): boolean {
     isBanished($phylum`dude`) &&
     !possessEquipment($item`amulet of extreme plot significance`)
   ) {
-    set("screechDelay", "dude");
+    set("_auto_screechDelay", "dude");
     return false; //Probably should delay the Airship to try for a Quiet Healer
   }
 

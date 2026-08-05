@@ -192,7 +192,6 @@ import { getSniffer, isSniffed } from "../combat/auto_combat_util";
 import {
   DesiredDrop,
   DesiredFights,
-  fnTask,
   QuestTask,
   registerQuestTask,
   runQuestTask,
@@ -752,7 +751,7 @@ function LX_unlockManorSecondFloorDo(): boolean {
     itemAmount($item`killing jar`) > 0 &&
     (get("gnasirProgress") & 4) !== 4
   ) {
-    set("screechDelay", "construct");
+    set("_auto_screechDelay", "construct");
     return false;
   }
 
@@ -1213,7 +1212,7 @@ export function blackForestChoiceHandler(choice: number): void {
 
 function L11_blackMarketDo(): boolean {
   if (isBanished($phylum`beast`) && get("screechCombats", 0) > 0) {
-    set("screechDelay", "beast");
+    set("_auto_screechDelay", "beast");
     return false; // Can't get the reassembled blackbird if beasts are banished
   }
 
@@ -3078,10 +3077,15 @@ function L11_mauriceSpookyravenAltPathwayActive(): boolean {
 }
 
 function L11_mauriceSpookyravenNormalPathwayReady(): boolean {
-  if (getProperty("spookyravenRecipeUsed") !== "with_glasses") {
+  const recipeUsed = getProperty("spookyravenRecipeUsed");
+  if (recipeUsed === "without_glasses") {
     abort(
       "Did not read Mortar Recipe with the Spookyraven glasses. We can't proceed.",
     );
+  }
+  if (recipeUsed !== "with_glasses") {
+    // Not read yet - let the Mortar task have its turn first.
+    return false;
   }
   if (auto_reserveUndergroundAdventures()) {
     return false;
@@ -3125,20 +3129,24 @@ const L11_mauriceSpookyravenBallroomTask: QuestTask = registerQuestTask({
   locations: $location`The Haunted Ballroom`,
 });
 
-const L11_mauriceSpookyravenMortarTask = fnTask(
-  "L11_mauriceSpookyravenMortar",
-  () => {
-    if (itemAmount($item`recipe: mortar-dissolving solution`) > 0) {
-      return false;
+const L11_mauriceSpookyravenMortarTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenMortar",
+  completed: () => getProperty("spookyravenRecipeUsed") !== "",
+  ready: () => internalQuestStatus("questL11Manor") >= 1,
+  do: () => {
+    if (itemAmount($item`recipe: mortar-dissolving solution`) === 0) {
+      if (possessEquipment($item`Lord Spookyraven's spectacles`)) {
+        equip($slot`acc3`, $item`Lord Spookyraven's spectacles`);
+      }
+      visitUrl("place.php?whichplace=manor4&action=manor4_chamberwall");
+      if (itemAmount($item`recipe: mortar-dissolving solution`) === 0) {
+        abort(`Failed to acquire mortar-dissolving solution`);
+      }
     }
-    if (possessEquipment($item`Lord Spookyraven's spectacles`)) {
-      equip($slot`acc3`, $item`Lord Spookyraven's spectacles`);
-    }
-    visitUrl("place.php?whichplace=manor4&action=manor4_chamberwall");
     use(1, $item`recipe: mortar-dissolving solution`);
     return true;
   },
-);
+});
 
 const L11_mauriceSpookyravenBossTask: QuestTask = registerQuestTask({
   name: "L11_mauriceSpookyravenBoss",
@@ -3187,31 +3195,30 @@ const L11_mauriceSpookyravenBossTask: QuestTask = registerQuestTask({
   locations: $location`Summoning Chamber`,
 });
 
-const L11_mauriceSpookyravenOvenTask = fnTask(
-  "L11_mauriceSpookyravenOven",
-  () => {
-    if (get("auto_haveoven", false)) {
-      return false;
-    }
+const L11_mauriceSpookyravenOvenTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenOven",
+  completed: () => get("auto_haveoven", false),
+  ready: () => !get("auto_haveoven", false),
+  do: () => {
     ovenHandle();
     return true;
   },
-);
+});
 
-const L11_mauriceSpookyravenWineBombTask = fnTask(
-  "L11_mauriceSpookyravenWineBomb",
-  () => {
-    if (itemAmount($item`wine bomb`) !== 1) {
-      return false;
-    }
+const L11_mauriceSpookyravenWineBombTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenWineBomb",
+  completed: () => internalQuestStatus("questL11Manor") >= 3,
+  ready: () =>
+    itemAmount($item`wine bomb`) === 1 &&
+    internalQuestStatus("questL11Manor") < 3,
+  do: () => {
     visitUrl("place.php?whichplace=manor4&action=manor4_chamberwall");
-    if (internalQuestStatus("questL11Manor") === 3) {
-      return true;
+    if (internalQuestStatus("questL11Manor") < 3) {
+      abort("Tried to use the wine bomb but it somehow failed?");
     }
-    abort("Tried to use the wine bomb but it somehow failed?");
     return true;
   },
-);
+});
 
 const L11_mauriceSpookyravenKitchenTask: QuestTask = registerQuestTask({
   name: "L11_mauriceSpookyravenKitchen",
@@ -3311,36 +3318,41 @@ const L11_mauriceSpookyravenStorageRoomTask: QuestTask = registerQuestTask({
   locations: $location`The Haunted Storage Room`,
 });
 
-const L11_mauriceSpookyravenAltPathwayFinishTask = fnTask(
-  "L11_mauriceSpookyravenAltPathwayFinish",
-  () => {
-    if (!L11_mauriceSpookyravenAltPathwayActive()) {
-      return false;
-    }
-    if (
-      itemAmount($item`loosening powder`) === 0 ||
-      itemAmount($item`powdered castoreum`) === 0 ||
-      itemAmount($item`drain dissolver`) === 0 ||
-      itemAmount($item`triple-distilled turpentine`) === 0 ||
-      itemAmount($item`detartrated anhydrous sublicalc`) === 0 ||
-      itemAmount($item`triatomaceous dust`) === 0
-    ) {
-      return false;
-    }
-    visitUrl("place.php?whichplace=manor4&action=manor4_chamberwall");
-    return true;
+const L11_mauriceSpookyravenAltPathwayFinishTask: QuestTask = registerQuestTask(
+  {
+    name: "L11_mauriceSpookyravenAltPathwayFinish",
+    completed: () =>
+      !L11_mauriceSpookyravenAltPathwayActive() ||
+      possessEquipment($item`unstable fulminate`) ||
+      internalQuestStatus("questL11Manor") >= 3,
+    ready: () =>
+      L11_mauriceSpookyravenAltPathwayActive() &&
+      !possessEquipment($item`unstable fulminate`) &&
+      internalQuestStatus("questL11Manor") < 3 &&
+      itemAmount($item`loosening powder`) > 0 &&
+      itemAmount($item`powdered castoreum`) > 0 &&
+      itemAmount($item`drain dissolver`) > 0 &&
+      itemAmount($item`triple-distilled turpentine`) > 0 &&
+      itemAmount($item`detartrated anhydrous sublicalc`) > 0 &&
+      itemAmount($item`triatomaceous dust`) > 0,
+    do: () => {
+      visitUrl("place.php?whichplace=manor4&action=manor4_chamberwall");
+      return true;
+    },
   },
 );
 
-const L11_mauriceSpookyravenFulminateCraftTask = fnTask(
-  "L11_mauriceSpookyravenFulminateCraft",
-  () => {
-    if (
-      itemAmount($item`blasting soda`) !== 1 ||
-      itemAmount($item`bottle of Chateau de Vinegar`) !== 1
-    ) {
-      return false;
-    }
+const L11_mauriceSpookyravenFulminateCraftTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenFulminateCraft",
+  completed: () =>
+    possessEquipment($item`unstable fulminate`) ||
+    internalQuestStatus("questL11Manor") >= 3,
+  ready: () =>
+    !possessEquipment($item`unstable fulminate`) &&
+    internalQuestStatus("questL11Manor") < 3 &&
+    itemAmount($item`blasting soda`) === 1 &&
+    itemAmount($item`bottle of Chateau de Vinegar`) === 1,
+  do: () => {
     auto_log_info(
       "Time to cook up something explosive! Science fair unstable fulminate time!",
       "green",
@@ -3386,7 +3398,7 @@ const L11_mauriceSpookyravenFulminateCraftTask = fnTask(
     }
     return true;
   },
-);
+});
 
 const L11_mauriceSpookyravenWineCellarTask: QuestTask = registerQuestTask({
   name: "L11_mauriceSpookyravenWineCellar",
@@ -3407,7 +3419,7 @@ const L11_mauriceSpookyravenWineCellarTask: QuestTask = registerQuestTask({
       return false;
     }
     if (isBanished($phylum`construct`) && get("screechCombats") > 0) {
-      set("screechDelay", "construct");
+      set("_auto_screechDelay", "construct");
       return false; //No sense in trying to go to the Wine Cellar if constructs (Wine Racks) are banished
     }
     return true;
@@ -3455,7 +3467,7 @@ const L11_mauriceSpookyravenLaundryRoomTask: QuestTask = registerQuestTask({
       return false;
     }
     if (isBanished($phylum`undead`) && get("screechCombats") > 0) {
-      set("screechDelay", "undead");
+      set("_auto_screechDelay", "undead");
       return false; //No sense in trying to go to the Laundry Room if undead (Cabinet of Dr. Limpieza) are banished
     }
     return true;
@@ -3919,7 +3931,7 @@ function L11_shenCopperheadDo(): boolean {
   }
 
   if (isBanished($phylum`dude`) && get("screechCombats", 0) > 0) {
-    set("screechDelay", "dude");
+    set("_auto_screechDelay", "dude");
     return false; //Probably should delay the Copperhead Club because dudes are important here
   }
 
@@ -4193,7 +4205,7 @@ function L11_palindomeDo(): boolean {
   total = total + itemAmount($item`photograph of a dog`);
 
   if (isBanished($phylum`dude`) && get("screechCombats", 0) > 0) {
-    set("screechDelay", "dude");
+    set("_auto_screechDelay", "dude");
     return false; //If new phylum banishers come out, this should be updated.
   }
 
@@ -4283,7 +4295,7 @@ function L11_palindomeDo(): boolean {
     }
     //Can't do Whitey's Grove if beasts are banished
     if (isBanished($phylum`beast`) && get("screechCombats") > 0) {
-      set("screechDelay", "beast");
+      set("_auto_screechDelay", "beast");
       return false; //If new phylum banishers come out, this should be updated.
     }
     providePlusCombat(15, $location`Whitey's Grove`, false);
@@ -4863,11 +4875,15 @@ export function L11_unlockMiddleChamber(): boolean {
   return runQuestTask(L11_unlockMiddleChamberTask);
 }
 
-export const L11_unlockEdTask: QuestTask = registerQuestTask(
-  fnTask("L11_unlockEd", () =>
+export const L11_unlockEdTask: QuestTask = registerQuestTask({
+  name: "L11_unlockEd",
+  completed: () =>
+    get("middleChamberUnlock") &&
+    (internalQuestStatus("questL11Pyramid") > 3 || get("pyramidBombUsed")),
+  ready: () => true,
+  do: () =>
     runTaskChain([L11_unlockUpperChamberTask, L11_unlockMiddleChamberTask]),
-  ),
-);
+});
 
 export function L11_unlockEd(): boolean {
   return runQuestTask(L11_unlockEdTask);
@@ -4888,19 +4904,26 @@ function L11_edZones(): Location[] {
   ].flatMap(taskLocations);
 }
 
-const L11_edTurnInTask = fnTask("L11_edTurnIn", () => {
-  if (get("auto_L11CouncilVisited", false) || !L11_edDefeated()) {
-    return false;
-  }
-  if (auto_copierShouldDelayZone(L11_edZones())) {
-    auto_log_debug(
-      "Delaying L11 turn-in - still farming a copier target in this cluster.",
-    );
-    return false;
-  }
-  council();
-  set("auto_L11CouncilVisited", true);
-  return true;
+const L11_edTurnInTask: QuestTask = registerQuestTask({
+  name: "L11_edTurnIn",
+  completed: () => get("auto_L11CouncilVisited", false),
+  ready: () => {
+    if (get("auto_L11CouncilVisited", false) || !L11_edDefeated()) {
+      return false;
+    }
+    if (auto_copierShouldDelayZone(L11_edZones())) {
+      auto_log_debug(
+        "Delaying L11 turn-in - still farming a copier target in this cluster.",
+      );
+      return false;
+    }
+    return true;
+  },
+  do: () => {
+    council();
+    set("auto_L11CouncilVisited", true);
+    return true;
+  },
 });
 
 function L11_defeatEdDo(): boolean {

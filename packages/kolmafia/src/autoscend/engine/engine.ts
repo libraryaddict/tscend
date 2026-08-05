@@ -215,31 +215,16 @@ export function getIncompleteQuestTasks(): QuestTask[] {
   return getEngine().tasks.filter((task) => !task.completed());
 }
 
-export function fnTask(name: string, fn: () => boolean): QuestTask {
-  return {
-    name,
-    completed: () => false,
-    ready: () => true,
-    do: fn,
-  };
-}
-
-export function alwaysTask(name: string, fn: () => void): QuestTask {
-  return {
-    name,
-    completed: () => false,
-    ready: () => true,
-    do: () => {
-      fn();
-      return false;
-    },
-  };
-}
-
 export function runTaskChain(tasks: QuestTask[]): boolean {
   const engine = new AutoscendEngine(tasks);
   for (const task of engine.tasks) {
     if (!engine.available(task)) {
+      if (task.completed(engine.getContext(task))) {
+        continue;
+      }
+
+      // Task is blocking
+      //      return false;
       continue;
     }
     engine.execute(task);

@@ -1727,7 +1727,7 @@ export function candyBlockOutfit(type_1: string): string {
 }
 function LX_lastChanceDo(): boolean {
   //miscellaneous calls that aren't powerlevelling but need to be done at some point based on certain conditions
-  if (getProperty("screechDelay") !== "") {
+  if (getProperty("_auto_screechDelay") !== "") {
     let banishLoc: Location = Location.none;
     auto_log_warning(
       "Patriotic Eagle's screech banished something we need and we can't adventure anywhere else",
@@ -1735,7 +1735,7 @@ function LX_lastChanceDo(): boolean {
     while (
       (get("screechCombats") > 0 || banishLoc === Location.none) &&
       myAdventures() > 2 &&
-      isBanished(safeGet("screechDelay", Phylum.none))
+      isBanished(safeGet("_auto_screechDelay", Phylum.none))
     ) {
       handleFamiliar$1($familiar`Patriotic Eagle`); //force eagle to be used
       if (runTaskChain([LX_getDigitalKeyTask, LX_getStarKeyTask])) {
@@ -1771,10 +1771,10 @@ function LX_lastChanceDo(): boolean {
       );
       return false;
     }
-    if (isBanished(safeGet("screechDelay", Phylum.none))) {
+    if (isBanished(safeGet("_auto_screechDelay", Phylum.none))) {
       autoAdv(banishLoc); //adventure here to banish goblins or constructs and be able to progress other quests
     }
-    set("screechDelay", "");
+    set("_auto_screechDelay", "");
     return true;
   }
   // Need the digital key and star key so if we have nothing to do before the L13 quest, might as well do them here
@@ -1790,10 +1790,11 @@ export const LX_lastChanceTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_lastChanceDo,
   desiredEncounters: () =>
-    get("screechDelay") !== "" && isBanished(toPhylum(get("screechDelay")))
+    get("_auto_screechDelay") !== "" &&
+    isBanished(toPhylum(get("_auto_screechDelay")))
       ? [
           {
-            monster: toPhylum(get("screechDelay")),
+            monster: toPhylum(get("_auto_screechDelay")),
             needAmount: Math.max(1, get("screechCombats")),
           },
         ]

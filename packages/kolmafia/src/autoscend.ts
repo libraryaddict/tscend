@@ -2068,7 +2068,7 @@ function adventureFailureHandler(): boolean {
 
   if (
     lastMonster() === $monster`crate` &&
-    getProperty("screechDelay") !== "" &&
+    getProperty("_auto_screechDelay") !== "" &&
     in_wereprof() &&
     !($location`Noob Cave`.turnsSpent < 8)
   ) {
