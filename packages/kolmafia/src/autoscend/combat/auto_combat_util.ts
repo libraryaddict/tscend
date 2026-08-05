@@ -1481,6 +1481,23 @@ export function replaceMonsterCombatString(
   ) {
     return $skill`CHEAT CODE: Replace Enemy`;
   }
+  if (
+    (inCombat
+      ? haveSkill($skill`Exercise Liquidity`)
+      : get("auto_exerciseLiquidity", 0) > 0) &&
+    auto_is_valid$2($skill`Exercise Liquidity`)
+  ) {
+    // Mafia doesn't track remaining Exercise Liquidity charges yet, so we track them
+    // ourselves: auto_chewLiquidAsset() increments this, and we decrement it here the
+    // moment we commit to casting it. Remove once mafia adds official tracking.
+    if (inCombat) {
+      set(
+        "auto_exerciseLiquidity",
+        Math.max(0, get("auto_exerciseLiquidity", 0) - 1),
+      );
+    }
+    return $skill`Exercise Liquidity`;
+  }
   if (canUse$3($item`waffle`) && !in_avantGuard()) {
     return useItem($item`waffle`);
   }

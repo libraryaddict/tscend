@@ -3,11 +3,13 @@ import {
   appearanceRates,
   availableAmount,
   availableChoiceOptions,
+  buy,
   canDrink,
   canEat,
   canInteract,
   cliExecute,
   closetAmount,
+  creatableAmount,
   cupOf13sTier,
   Effect,
   Element,
@@ -44,6 +46,7 @@ import {
   visitUrl,
 } from "kolmafia";
 import {
+  $coinmaster,
   $effect,
   $element,
   $elements,
@@ -68,6 +71,7 @@ import {
   auto_canEat,
   AUTO_OBTAIN_NULL,
   AUTO_ORGAN_LIVER,
+  autoChew,
   fullness_left,
   inebriety_left,
   spleen_left,
@@ -137,6 +141,33 @@ import {
 import { auto_canTracesBandit, auto_haveMonodent } from "./mr2025";
 
 // This is meant for items that have a date of 2026
+
+// Mafia doesn't track remaining Exercise Liquidity charges yet, so we bank them ourselves
+// in auto_exerciseLiquidity: incremented here on chew, decremented in
+// replaceMonsterCombatString() when the skill is actually cast. Remove once mafia adds
+// official tracking.
+export function auto_chewLiquidAsset(): boolean {
+  if (
+    !auto_is_valid$2($skill`Exercise Liquidity`) ||
+    !auto_is_valid($item`liquid asset`) ||
+    spleen_left() < $item`liquid asset`.spleen ||
+    creatableAmount($item`liquid asset`) < 1 ||
+    isActuallyEd()
+  ) {
+    return false;
+  }
+
+  if (itemAmount($item`liquid asset`) === 0) {
+    buy($coinmaster`Interesting Coin`, 1, $item`liquid asset`);
+  }
+
+  if (!autoChew(1, $item`liquid asset`)) {
+    return false;
+  }
+
+  set("auto_exerciseLiquidity", get("auto_exerciseLiquidity", 0) + 1);
+  return true;
+}
 
 export function auto_haveEternityCodpiece(): boolean {
   if (

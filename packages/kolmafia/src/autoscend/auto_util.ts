@@ -324,6 +324,7 @@ import {
 import {
   auto_baseball_freefight_monster,
   auto_baseball_freefights_left,
+  auto_chewLiquidAsset,
   auto_forceCombatLegendaryNoodles,
   auto_getItemToEquipHeartstone,
   auto_havePastaWand,
@@ -1644,12 +1645,18 @@ function adjustForReplace(combat_string: CombatMacroReturns): boolean {
   if (combat_string === $skill`CHEAT CODE: Replace Enemy`) {
     return auto_forceEquipPowerfulGlove();
   }
+  if (combat_string === $skill`Exercise Liquidity`) {
+    return true;
+  }
   return false;
 }
 
 export function adjustForReplaceIfPossible(
   target: Monster = Monster.none,
 ): boolean {
+  if (!canReplace(target)) {
+    auto_chewLiquidAsset();
+  }
   if (canReplace(target)) {
     const rep_string: CombatMacroReturns = replaceMonsterCombatString(target);
     auto_log_info(

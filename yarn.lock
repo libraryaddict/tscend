@@ -3014,10 +3014,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kolmafia@npm:5.29121.0":
-  version: 5.29121.0
-  resolution: "kolmafia@npm:5.29121.0"
-  checksum: 10c0/98c24d74952217ef5343753901355840730cbcd5b4d7eb106c0d935a6f5b14f68d67d1ab04ebca747e8087e05646a9e8efa011647393c14f5d6f4fe018e2ab52
+"kolmafia@npm:5.29131.0":
+  version: 5.29131.0
+  resolution: "kolmafia@npm:5.29131.0"
+  checksum: 10c0/b0b20051cf8eeb431a4bc68365294b4f454c3b96ea67ed87392d70b3006a0515c8f3c61809b6f5b89995da728433eeb579abb0d45153e745873261232611ab1f
   languageName: node
   linkType: hard
 
