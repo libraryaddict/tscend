@@ -2871,6 +2871,10 @@ export function isFreeMonster(
     return false;
   }
 
+  if (mon === $monster`time cop` && get("_timeCopsFoughtToday") < 11) {
+    return true;
+  }
+
   if (
     $monsters`angry ghost, annoyed snake, government bureaucrat, slime blob, terrible mutant`.includes(
       mon,
