@@ -1846,13 +1846,8 @@ export function auto_swordFamiliarWantsMonsterDrops(
     const fastenerNeed: number = bridgeGoal() - fastenerCount();
     const lumberNeed: number = bridgeGoal() - lumberCount();
 
-    if ($monsters`smut orc jacker, smut orc pipelayer`.includes(sMonster)) {
-      // Gives lumber
-      if (lumberNeed <= (currentlyTracking ? 0 : 2)) return false;
-    } else {
-      // Gives fasteners
-      if (fastenerNeed <= (currentlyTracking ? 0 : 2)) return false;
-    }
+    if (fastenerNeed <= 0 && lumberNeed <= 0) return false;
+
     return true;
   }
 

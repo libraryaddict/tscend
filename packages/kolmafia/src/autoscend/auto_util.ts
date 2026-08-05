@@ -3261,7 +3261,7 @@ export const LX_summonMonsterTask: QuestTask = registerQuestTask({
       auto_is_valid($item`smut orc keepsake box`) &&
       itemAmount($item`smut orc keepsake box`) === 0 &&
       myLevel() >= 9 &&
-      (lumberCount() < 30 || fastenerCount() < 30) &&
+      (lumberCount() < bridgeGoal() || fastenerCount() < bridgeGoal()) &&
       canSummonMonster($monster`smut orc pervert`)
     ) {
       encounters.push({ monster: $monster`smut orc pervert`, needAmount: 1 });
