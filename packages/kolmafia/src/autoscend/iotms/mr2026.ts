@@ -151,13 +151,20 @@ export function auto_chewLiquidAsset(): boolean {
     !auto_is_valid$2($skill`Exercise Liquidity`) ||
     !auto_is_valid($item`liquid asset`) ||
     spleen_left() < $item`liquid asset`.spleen ||
-    creatableAmount($item`liquid asset`) < 1 ||
     isActuallyEd()
   ) {
     return false;
   }
 
   if (itemAmount($item`liquid asset`) === 0) {
+    if (
+      // Never drop below 1 coin, we gain 3 at RO
+      itemAmount($item`Interesting Coin`) <= 1 ||
+      creatableAmount($item`liquid asset`) < 1
+    ) {
+      return false;
+    }
+
     buy($coinmaster`Interesting Coin`, 1, $item`liquid asset`);
   }
 
