@@ -424,9 +424,13 @@ function auto_heartstoneWordsToAimFor(): string[] {
   if (L10_needAmuletOfPlotSignificance()) words.push("PLOT");
 
   // Copy / YR
+  if (auto_is_valid($item`viral video`)) {
   words.push("TAPE");
+  }
   // Free run + 30 turn banish
+  if (auto_is_valid($item`handful of split pea soup`)) {
   words.push("SOUP");
+  }
 
   if (
     auto_is_valid($item`grim fairy tale`) &&
