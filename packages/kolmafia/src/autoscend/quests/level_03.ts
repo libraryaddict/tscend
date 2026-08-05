@@ -27,6 +27,7 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $modifier,
   $monster,
   $skill,
@@ -48,6 +49,7 @@ import { providePlusCombat, providePlusNonCombat$2 } from "../auto_providers";
 import {
   auto_combatModCap,
   auto_convertDesiredML,
+  auto_log_debug,
   auto_log_info,
   auto_log_warning,
   auto_MaxMLToCap,
@@ -58,6 +60,7 @@ import {
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { auto_beachCombHead } from "../iotms/mr2019";
+import { auto_copierShouldDelayZone } from "../iotms/mr2026";
 import { Maximizer, maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_glover } from "../paths/g_lover";
@@ -307,9 +310,13 @@ function auto_tavern(): boolean {
 function L3_tavernReady(): boolean {
   if (
     internalQuestStatus("questL03Rat") < 0 ||
-    internalQuestStatus("questL03Rat") > 2
+    get("auto_L03CouncilVisited", false)
   ) {
     return false;
+  }
+
+  if (internalQuestStatus("questL03Rat") > 2) {
+    return true;
   }
 
   let mpNeed: number = 0;
@@ -353,7 +360,9 @@ function L3_tavernReady(): boolean {
 
 export const L3_tavernTask: QuestTask = registerQuestTask({
   name: "L3_tavern",
-  completed: () => internalQuestStatus("questL03Rat") > 2,
+  completed: () =>
+    internalQuestStatus("questL03Rat") > 2 &&
+    get("auto_L03CouncilVisited", false),
   ready: L3_tavernReady,
   do: () => {
     if (internalQuestStatus("questL03Rat") < 1) {
@@ -372,12 +381,34 @@ export const L3_tavernTask: QuestTask = registerQuestTask({
       return;
     }
 
-    if (internalQuestStatus("questL03Rat") > 1) {
-      visitUrl("tavern.php?place=barkeep");
-      council();
-    }
+    return runQuestTask(L3_tavernFinishTask);
   },
   locations: $location`The Typical Tavern Cellar`,
+});
+
+const L3_tavernFinishTask: QuestTask = registerQuestTask({
+  name: "L3_tavernFinish",
+  completed: () => get("auto_L03CouncilVisited", false),
+  ready: () => {
+    if (
+      internalQuestStatus("questL03Rat") <= 1 ||
+      get("auto_L03CouncilVisited", false)
+    ) {
+      return false;
+    }
+    if (auto_copierShouldDelayZone($locations`The Typical Tavern Cellar`)) {
+      auto_log_debug(
+        "Delaying L3 turn-in - still farming a copier target in this cluster.",
+      );
+      return false;
+    }
+    return true;
+  },
+  do: () => {
+    visitUrl("tavern.php?place=barkeep");
+    council();
+    set("auto_L03CouncilVisited", true);
+  },
 });
 
 export function L3_tavern(): boolean {

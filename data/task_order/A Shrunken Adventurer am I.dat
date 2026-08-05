@@ -19,6 +19,8 @@ L11_aridDesert	L11_hasUltrahydrated
 L11_shenStartQuest
 # Build the Bridge when we have enough parts as we may want to spend daily resources at the peaks.
 finishBuildingSmutOrcBridge
+# Setup S of Swords familiar tracking, and rush the smut orc camp/crypt if it wants drops there
+LX_swordFamiliarSetup
 # Call quest handlers based on current state if applicable
 auto_earlyRoutingHandling
 # Guild access.

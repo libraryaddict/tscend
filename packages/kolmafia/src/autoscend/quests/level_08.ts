@@ -40,6 +40,7 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $modifier,
   $monster,
   $skill,
@@ -112,6 +113,7 @@ import {
   auto_equipAllMcHugeLarge,
   auto_haveMcHugeLargeSkis,
 } from "../iotms/mr2025";
+import { auto_copierShouldDelayZone } from "../iotms/mr2026";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
 import { L8_slopeCasual } from "../paths/casual";
@@ -1188,11 +1190,6 @@ function L8_trapperTalkDo(): boolean {
       return false; // not enough cheese or ore yet. go get them
     }
   }
-  if (initial_step === 5) {
-    // finish the quest
-    visitUrl("place.php?whichplace=mclargehuge&action=trappercabin");
-    council();
-  }
   // error checking
   if (initial_step === internalQuestStatus("questL08Trapper")) {
     // we failed to advance. try refreshing quests
@@ -1213,10 +1210,35 @@ function L8_trapperTalkDo(): boolean {
 
 const L8_trapperTalkTask: QuestTask = registerQuestTask({
   name: "L8_trapperTalk",
-  completed: () => internalQuestStatus("questL08Trapper") > 5,
-  // only need to talk to trapper at steps 0, 1, and 5
-  ready: () => [0, 1, 5].includes(internalQuestStatus("questL08Trapper")),
+  completed: () => internalQuestStatus("questL08Trapper") > 1,
+  // only need to talk to trapper at steps 0 and 1
+  ready: () => [0, 1].includes(internalQuestStatus("questL08Trapper")),
   do: L8_trapperTalkDo,
+});
+
+const L8_trapperFinishTask: QuestTask = registerQuestTask({
+  name: "L8_trapperFinish",
+  completed: () => internalQuestStatus("questL08Trapper") > 5,
+  ready: () => {
+    if (internalQuestStatus("questL08Trapper") !== 5) {
+      return false;
+    }
+    if (
+      auto_copierShouldDelayZone(
+        $locations`The Goatlet, Itznotyerzitz Mine, Lair of the Ninja Snowmen, Mist-Shrouded Peak, The eXtreme Slope`,
+      )
+    ) {
+      auto_log_debug(
+        "Delaying L8 turn-in - still farming a copier target in this cluster.",
+      );
+      return false;
+    }
+    return true;
+  },
+  do: () => {
+    visitUrl("place.php?whichplace=mclargehuge&action=trappercabin");
+    council();
+  },
 });
 
 export function L8_trapperTalk(): boolean {
@@ -1248,6 +1270,7 @@ function L8_trapperQuestDo(): boolean {
     L8_getMineOresTask,
     L8_trapperSlopeTask,
     L8_trapperGroarTask,
+    L8_trapperFinishTask,
   ]);
 }
 

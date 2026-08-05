@@ -684,7 +684,10 @@ export function auto_combatDefaultStage3(
           enemy === $monster`smut orc jacker`
         ) {
           if (!sniffedLumber) {
-            if (fastenerCount() >= 30 && lumberCount() < 29) {
+            if (
+              fastenerCount() >= bridgeGoal() &&
+              lumberCount() < bridgeGoal() - 1
+            ) {
               useMiniSniff = true;
             } else if (haveFastenerBias && fastenerCount() >= lumberCount()) {
               //will get more fastener from Loadstone
@@ -706,7 +709,10 @@ export function auto_combatDefaultStage3(
           enemy === $monster`smut orc nailer`
         ) {
           if (!sniffedFastener) {
-            if (lumberCount() >= 30 && fastenerCount() < 29) {
+            if (
+              lumberCount() >= bridgeGoal() &&
+              fastenerCount() < bridgeGoal() - 1
+            ) {
               useMiniSniff = true;
             } else if (haveLumberBias && lumberCount() >= fastenerCount()) {
               //will get more lumber from Logging Hatchet

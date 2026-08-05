@@ -47,6 +47,8 @@ import {
 } from "./iotms/mr2021";
 import { auto_haveCursedMagnifyingGlass } from "./iotms/mr2022";
 import {
+  auto_have_baseball_diamond,
+  auto_have_sword_familiar,
   auto_haveArchaeologistSpade,
   auto_spadeDigsRemaining,
   spadeDelayZones,
@@ -56,6 +58,7 @@ import {
   in_lowkeysummer,
   lowkey_nextAvailableKeyDelayLocation,
 } from "./paths/low_key_summer";
+import { in_quantumTerrarium } from "./paths/quantum_terrarium";
 import { L3_tavernTask } from "./quests/level_03";
 import { L4_batCaveTask } from "./quests/level_04";
 import { L5_getEncryptionKeyTask, L5_haremOutfitTask } from "./quests/level_05";
@@ -144,14 +147,18 @@ export function allowSoftblockDelay(): boolean {
   return get("auto_delayLastLevel", 0) < myLevel();
 }
 
-// Generic companion to the preference-backed allowSoftblockX() family
-const softblockReleaseLevel = new Map<string, number>();
+type SoftDelayKey = "swordTracking" | "baseballDiamond";
 
-export function allowSoftblock(key: string): boolean {
-  return (softblockReleaseLevel.get(key) ?? 0) < myLevel();
+// Generic companion to the preference-backed allowSoftblockX() family
+const softblockReleaseLevel = new Map<SoftDelayKey, number>();
+
+export function isSoftBlockInPlace(key: SoftDelayKey): boolean {
+  // We don't soft block if we don't have an interest in that key
+  return (softblockReleaseLevel.get(key) ?? myLevel()) !== myLevel();
 }
 
-export function releaseSoftblock(key: string, reason: string): void {
+export function releaseSoftblock(key: SoftDelayKey, reason: string): void {
+  if (!softblockReleaseLevel.has(key)) return;
   auto_log_warning(
     `I was ${reason}, but I've run out of stuff to do. Releasing softblock.`,
     "red",
@@ -162,8 +169,13 @@ export function releaseSoftblock(key: string, reason: string): void {
 // A released softblock is a last resort for when we're truly stuck; once a task actually
 // completes we're clearly not stuck anymore, so re-arm every softblock rather than leaving
 // them released for the rest of the level over one unrelated snag.
-export function clearSoftblockLocks(): void {
-  softblockReleaseLevel.clear();
+export function setupSoftblockLocks(): void {
+  if (auto_have_sword_familiar() && !in_quantumTerrarium()) {
+    softblockReleaseLevel.set("swordTracking", 0);
+  }
+  if (auto_have_baseball_diamond()) {
+    softblockReleaseLevel.set("baseballDiamond", 0);
+  }
 }
 
 export function canBurnDelay(loc: Location): boolean {
@@ -457,14 +469,14 @@ function auto_softBlockHandlerDo(): boolean {
     set("auto_delayLastLevel", myLevel());
     return true;
   }
-  if (allowSoftblock("swordTracking")) {
+  if (isSoftBlockInPlace("swordTracking")) {
     releaseSoftblock(
       "swordTracking",
       "holding off finishing a quest to keep farming Sword of S Words tracking value",
     );
     return true;
   }
-  if (allowSoftblock("baseballDiamond")) {
+  if (isSoftBlockInPlace("baseballDiamond")) {
     releaseSoftblock(
       "baseballDiamond",
       "holding off playing baseball to wait for a better lineup",

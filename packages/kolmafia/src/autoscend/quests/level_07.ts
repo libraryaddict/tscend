@@ -103,6 +103,12 @@ import {
 } from "../iotms/mr2021";
 import { auto_haveGreyGoose } from "../iotms/mr2022";
 import { auto_habitatFightsLeft, auto_habitatMonster } from "../iotms/mr2023";
+import {
+  auto_copierShouldDelayZone,
+  auto_desires_sword_familiar_drops,
+  auto_swordFamiliarWantsMonsterDrops,
+  auto_swordIsWillingToSwitchTargets,
+} from "../iotms/mr2026";
 import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
@@ -531,11 +537,16 @@ function L7_defiledCranny(): boolean {
   return false;
 }
 
+function L7_bonerdagonDefeated(): boolean {
+  return (
+    itemAmount($item`chest of the Bonerdagon`) === 1 ||
+    getProperty("questL07Cyrptic") === "finished"
+  );
+}
+
 function L7_cryptDo(): boolean {
-  if (itemAmount($item`chest of the Bonerdagon`) === 1) {
-    equipStatgainIncreasers$2();
-    use(1, $item`chest of the Bonerdagon`);
-    return false;
+  if (L7_bonerdagonDefeated()) {
+    return runQuestTask(L7_cryptFinishTask);
   }
   // make sure quest status is correct before we attempt to adventure.
   visitUrl("crypt.php");
@@ -599,34 +610,44 @@ function L7_cryptDo(): boolean {
     set("auto_nextEncounter", "Bonerdagon");
     set("auto_nonAdvLoc", true);
     const tryBoner: boolean = autoAdv($location`Haert of the Cyrpt`);
-    council();
     cliExecute("refresh quests");
-    if (itemAmount($item`chest of the Bonerdagon`) === 1) {
-      equipStatgainIncreasers$2();
-      use(1, $item`chest of the Bonerdagon`);
-      auto_badassBelt(); // mafia doesn't make this any more even if autoCraft = true for some random reason so lets do it manually.
-    } else if (getProperty("questL07Cyrptic") === "finished") {
-      auto_log_warning(
-        "Looks like we don't have the chest of the bonerdagon but KoLmafia marked Cyrpt quest as finished anyway. Probably some weird path shenanigans.",
-        "red",
-      );
-    } else if (!tryBoner) {
+    if (L7_bonerdagonDefeated()) {
+      return runQuestTask(L7_cryptFinishTask);
+    }
+    if (!tryBoner) {
       auto_log_warning(
         "We tried to kill the Bonerdagon because the cyrpt was defiled but couldn't adventure there and the chest of the bonerdagon is gone so we can't check that. Anyway, we are going to assume the cyrpt is done now.",
         "red",
       );
-    } else {
-      abort("Failed to kill bonerdagon");
+      return true;
     }
+    abort("Failed to kill bonerdagon");
     return true;
   }
   return false;
 }
 
+export function L7_swordWantsCryptMonster(): boolean {
+  if (!auto_swordIsWillingToSwitchTargets()) return false;
+  if (in_koe()) {
+    return false; // don't need more evil eyes
+  }
+
+  return (
+    !auto_desires_sword_familiar_drops() &&
+    auto_swordFamiliarWantsMonsterDrops($monster`spiny skelelton`)
+  );
+}
+
 export const L7_cryptTask: QuestTask = registerQuestTask({
   name: "L7_crypt",
-  completed: () => internalQuestStatus("questL07Cyrptic") > 0,
-  ready: () => internalQuestStatus("questL07Cyrptic") === 0,
+  completed: () => get("auto_L07CouncilVisited", false),
+  ready: () => {
+    if (get("auto_L07CouncilVisited", false)) {
+      return false;
+    }
+    return internalQuestStatus("questL07Cyrptic") >= 0;
+  },
   do: L7_cryptDo,
   desiredEncounters: () =>
     [
@@ -658,6 +679,42 @@ export const L7_cryptTask: QuestTask = registerQuestTask({
             : 0,
       },
     ].filter((a) => a.needAmount > 0),
+});
+
+const L7_cryptFinishTask: QuestTask = registerQuestTask({
+  name: "L7_cryptFinish",
+  completed: () => get("auto_L07CouncilVisited", false),
+  ready: () => {
+    if (get("auto_L07CouncilVisited", false) || !L7_bonerdagonDefeated()) {
+      return false;
+    }
+    if (
+      auto_copierShouldDelayZone(
+        $locations`The Defiled Alcove, The Defiled Niche, The Defiled Cranny, The Defiled Nook, Haert of the Cyrpt`,
+      )
+    ) {
+      auto_log_debug(
+        "Delaying L7 turn-in - still farming a copier target in this cluster.",
+      );
+      return false;
+    }
+    return true;
+  },
+  do: () => {
+    council();
+    cliExecute("refresh quests");
+    if (itemAmount($item`chest of the Bonerdagon`) === 1) {
+      equipStatgainIncreasers$2();
+      use(1, $item`chest of the Bonerdagon`);
+      auto_badassBelt(); // mafia doesn't make this any more even if autoCraft = true for some random reason so lets do it manually.
+    } else {
+      auto_log_warning(
+        "Looks like we don't have the chest of the bonerdagon but KoLmafia marked Cyrpt quest as finished anyway. Probably some weird path shenanigans.",
+        "red",
+      );
+    }
+    set("auto_L07CouncilVisited", true);
+  },
 });
 
 export function L7_crypt(): boolean {

@@ -4,6 +4,7 @@ import {
   availableAmount,
   availableChoiceOptions,
   buy,
+  canAdventure,
   canDrink,
   canEat,
   canInteract,
@@ -36,12 +37,14 @@ import {
   myFullness,
   myHash,
   myInebriety,
+  myLevel,
   myLocation,
   myMeat,
   myPath,
   Slot,
   spleenLimit,
   Stat,
+  turnsPlayed,
   useFamiliar,
   visitUrl,
 } from "kolmafia";
@@ -85,7 +88,7 @@ import {
   pathHasFamiliar,
 } from "../auto_familiar";
 import { haveFreeRestAvailable } from "../auto_restore";
-import { allowSoftblock } from "../auto_routing";
+import { isSoftBlockInPlace } from "../auto_routing";
 import {
   auto_get_campground,
   auto_have_skill,
@@ -113,6 +116,7 @@ import { getIncompleteQuestTasks } from "../engine/engine";
 import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
+import { in_koe } from "../paths/kingdom_of_exploathing";
 import { in_plumber } from "../paths/path_of_the_plumber";
 import { in_quantumTerrarium } from "../paths/quantum_terrarium";
 import { in_small } from "../paths/small";
@@ -131,6 +135,7 @@ import {
   L11_needWetStew,
 } from "../quests/level_11";
 import { auto_gunpowderBarrelsWanted } from "../quests/level_12";
+import { auto_haveTrainSet } from "./mr2022";
 import { auto_haveCCSC } from "./mr2023";
 import {
   auto_haveBatWings,
@@ -425,11 +430,11 @@ function auto_heartstoneWordsToAimFor(): string[] {
 
   // Copy / YR
   if (auto_is_valid($item`viral video`)) {
-  words.push("TAPE");
+    words.push("TAPE");
   }
   // Free run + 30 turn banish
   if (auto_is_valid($item`handful of split pea soup`)) {
-  words.push("SOUP");
+    words.push("SOUP");
   }
 
   if (
@@ -1681,7 +1686,10 @@ export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
 
   // Slots 0-5 are the filler each of the 3 assignments needs, so always keep recruiting
   // those; past that, only recruit more once we've given up holding out for a target.
-  if (auto_baseball_team().length >= 6 && allowSoftblock("baseballDiamond")) {
+  if (
+    auto_baseball_team().length >= 8 &&
+    isSoftBlockInPlace("baseballDiamond")
+  ) {
     return 0;
   }
 
@@ -1738,7 +1746,7 @@ export function auto_tryPlayBaseball(): boolean {
     !slotZeroLoadBearing &&
     assignments.length < 3 &&
     auto_baseballZoneHasUnclaimedTarget(myLocation(), assignments, team) &&
-    allowSoftblock("baseballDiamond")
+    isSoftBlockInPlace("baseballDiamond")
   ) {
     return false; // safe to hold out for a better lineup
   }
@@ -1798,7 +1806,7 @@ export function auto_swordFamiliarWantsMonsterDrops(
   chanceToEncounterMonster: number = 0, // The chance we have of encountering the monster, between 0 to 100, 100 is eg, summons or perildot
 ): boolean {
   // Does not determine if we want to be using the familiar right now.
-  if (sMonster === Monster.none) {
+  if (sMonster === Monster.none || sMonster.boss || !sMonster.copyable) {
     return false;
   }
 
@@ -1810,7 +1818,10 @@ export function auto_swordFamiliarWantsMonsterDrops(
   );
 
   // Free kills
-  if (sMonster === $monster`shadow slab`) {
+  if (
+    sMonster === $monster`shadow slab` &&
+    auto_is_valid($item`shadow brick`)
+  ) {
     // We use 13 a day, subtract the bricks we have on hand and return the total amount of bricks
     const bricksNeeded =
       13 * daysLeftInRun -
@@ -1829,10 +1840,15 @@ export function auto_swordFamiliarWantsMonsterDrops(
   ) {
     const fastenerNeed: number = bridgeGoal() - fastenerCount();
     const lumberNeed: number = bridgeGoal() - lumberCount();
-    // We don't actually sword this monster, maybe in the future?
-    if (fastenerNeed > 0 || lumberNeed > 0) {
-      return true;
+
+    if ($monsters`smut orc jacker, smut orc pipelayer`.includes(sMonster)) {
+      // Gives lumber
+      if (lumberNeed <= (currentlyTracking ? 0 : 2)) return false;
+    } else {
+      // Gives fasteners
+      if (fastenerNeed <= (currentlyTracking ? 0 : 2)) return false;
     }
+    return true;
   }
 
   // Crypt
@@ -1841,7 +1857,8 @@ export function auto_swordFamiliarWantsMonsterDrops(
       sMonster,
     ) &&
     auto_is_valid($item`evil eye`) &&
-    get("cyrptNookEvilness") - itemAmount($item`evil eye`) * 3 > 13
+    get("cyrptNookEvilness") - itemAmount($item`evil eye`) * 3 > 16 &&
+    !in_koe()
   ) {
     return true;
   }
@@ -1931,18 +1948,9 @@ export function auto_swordFamiliarWantsMonsterDrops(
 
 export function auto_desires_sword_familiar_drops(): boolean {
   // Returns if the sword familiar is currently set to a monster that we want the drops of
-  return auto_swordFamiliarWantsMonsterDrops(auto_sword_of_swords_tracking());
-}
-
-function auto_swordFamiliarWantsToTrack(
-  mon: Monster,
-  chance: number = 0,
-): boolean {
-  // The sword can only copy drops from copyable, non-boss monsters
-  return (
-    mon.copyable &&
-    !mon.boss &&
-    auto_swordFamiliarWantsMonsterDrops(mon, chance)
+  return auto_swordFamiliarWantsMonsterDrops(
+    auto_sword_of_swords_tracking(),
+    100,
   );
 }
 
@@ -1955,7 +1963,7 @@ export function auto_wantToStartTrackingSwordMonster(
     return false;
   }
   if (
-    auto_sword_of_swords_kills_left() <= 0 ||
+    auto_sword_of_swords_kills_left() <= 10 ||
     auto_sword_of_swords_switches_left() <= 0
   ) {
     return false;
@@ -1963,15 +1971,7 @@ export function auto_wantToStartTrackingSwordMonster(
   if (auto_sword_of_swords_tracking() === enemy) {
     return false; // already tracking it
   }
-  return auto_swordFamiliarWantsToTrack(enemy, chance);
-}
-
-export function auto_swordWantsToStopKilling() {
-  if (myFamiliar() !== $familiar`Sword of S Words`) return false;
-
-  if (auto_sword_of_swords_tracking() === Monster.none) return false;
-
-  return !auto_swordFamiliarWantsToTrack(auto_sword_of_swords_tracking(), 100);
+  return auto_swordFamiliarWantsMonsterDrops(enemy, chance);
 }
 
 export function auto_wantSwordFamiliar(place: Location): boolean {
@@ -1994,7 +1994,7 @@ export function auto_wantSwordFamiliar(place: Location): boolean {
   // Is there anything here worth switching our tracked monster to?
   return auto_location_monsters(place).some(
     ([mon, chance]) =>
-      chance > 0 && auto_swordFamiliarWantsToTrack(mon, chance),
+      chance > 0 && auto_swordFamiliarWantsMonsterDrops(mon, chance),
   );
 }
 
@@ -2003,7 +2003,7 @@ function auto_swordFamiliarShouldDelayZone(monsters: Monster[]): boolean {
   return (
     monsters.includes(auto_sword_of_swords_tracking()) &&
     auto_desires_sword_familiar_drops() &&
-    allowSoftblock("swordTracking")
+    isSoftBlockInPlace("swordTracking")
   );
 }
 
@@ -2026,7 +2026,7 @@ function auto_baseballShouldDelayZone(
   return (
     auto_baseballBuildAssignments(team).some((a) =>
       unreliableTargets.has(team[a.finisherSlot]),
-    ) && allowSoftblock("baseballDiamond")
+    ) && isSoftBlockInPlace("baseballDiamond")
   );
 }
 
@@ -2039,22 +2039,102 @@ export function auto_copierShouldDelayZone(locs: Location[]): boolean {
   );
 }
 
+type SummonSwordTarget = {
+  monsters: Monster[];
+  item: Item;
+  predicate?: () => boolean;
+};
 // Monsters worth spending a spare summon on to bootstrap the sword's first target
-const SWORD_SUMMONABLE_TARGETS: Monster[] = $monsters`shadow slab`;
+const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
+  {
+    monsters: $monsters`shadow slab`,
+    item: $item`shadow brick`,
+    // No predicate, we can't ensure we can visit
+    // TODO In the future, some 'can we defeat this'
+    predicate: () => myLevel() >= 5,
+  },
 
-export function auto_summonSwordTarget(): boolean {
+  {
+    monsters: $monsters`smut orc pipelayer`,
+    item: $item`morningwood plank`,
+    // Trainset already covers it, otherwise if we wouldn't be able to adventure there anyways
+    predicate: () => !auto_haveTrainSet() && myLevel() < 9,
+  },
+
+  {
+    monsters: $monsters`toothy sklelton, spiny skelelton`,
+    item: $item`evil eye`,
+    // If we wouldn't be able to adventure there, and we haven't already decreased the evil somehow
+    predicate: () => myLevel() < 7 && get("cyrptNookEvilness") === 50,
+  },
+];
+
+function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
+  if (!auto_is_valid(target.item)) return false;
+
+  if (target.predicate !== undefined && !target.predicate()) return false;
+
+  const desiredHits = target.monsters.filter(
+    (monster) =>
+      auto_swordFamiliarWantsMonsterDrops(monster, 100) &&
+      canSummonMonster(monster),
+  );
+
+  if (desiredHits.length === 0) return false;
+
+  for (const loc of Location.all()) {
+    if (!canAdventure(loc)) continue;
+
+    const monsters = auto_location_monsters(loc);
+
+    const totalChance = monsters
+      .filter(([m, chance]) => desiredHits.includes(m) && chance > 0)
+      .map(([, chance]) => chance)
+      .reduce((l, r) => l + r, 0);
+
+    // If the total chance ends up being undesirable
+    if (totalChance <= 65) continue;
+
+    // If we don't want a poor chance
+    if (
+      !desiredHits.some(
+        (m) => !auto_swordFamiliarWantsMonsterDrops(m, totalChance),
+      )
+    ) {
+      continue;
+    }
+
+    return false;
+  }
+
+  return true;
+}
+
+export function auto_swordIsWillingToSwitchTargets(): boolean {
   if (
     !auto_have_sword_familiar() ||
-    auto_sword_of_swords_tracking() !== Monster.none ||
+    auto_desires_sword_familiar_drops() ||
     auto_sword_of_swords_switches_left() <= 0 ||
-    auto_sword_of_swords_kills_left() <= 0
+    auto_sword_of_swords_kills_left() <= 10
   ) {
     return false;
   }
 
-  const target = SWORD_SUMMONABLE_TARGETS.find(
-    (mon) =>
-      auto_swordFamiliarWantsMonsterDrops(mon, 100) && canSummonMonster(mon),
+  return true;
+}
+
+export function auto_summonSwordTarget(): boolean {
+  if (in_quantumTerrarium() || !auto_swordIsWillingToSwitchTargets()) {
+    return false;
+  }
+
+  // If we've just started, or we haven't visited the council yet
+  if (turnsPlayed() <= 3 || get("lastCouncilVisit") < Math.min(myLevel(), 13)) {
+    return false;
+  }
+
+  const target = SWORD_SUMMONABLE_TARGETS.find((target) =>
+    auto_summonIsGoodSwordTarget(target),
   );
   if (!target) {
     return false;
@@ -2071,5 +2151,9 @@ export function auto_summonSwordTarget(): boolean {
     }
   }
 
-  return summonMonster(target);
+  const targetMonster: Monster = target.monsters.find((m) =>
+    auto_swordFamiliarWantsMonsterDrops(m, 100),
+  )!;
+
+  return summonMonster(targetMonster);
 }

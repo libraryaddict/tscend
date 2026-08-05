@@ -518,7 +518,7 @@ function auto_MayamClaimWhatever(): boolean {
 
   if (
     !auto_MayamIsUsed("wood") &&
-    (lumberCount() < 30 || fastenerCount() < 30)
+    (lumberCount() < bridgeGoal() || fastenerCount() < bridgeGoal())
   ) {
     ring2 = "wood";
   } else if (!auto_MayamIsUsed("lightning")) {

@@ -19,6 +19,8 @@ L12_flyerFinish
 L12_getOutfit
 L12_startWar
 LX_loggingHatchet
+# Setup S of Swords familiar tracking, and rush the smut orc camp/crypt if it wants drops there
+LX_swordFamiliarSetup
 auto_earlyRoutingHandling
 LX_guildUnlock
 LX_bitchinMeatcar

@@ -131,6 +131,7 @@ import {
   auto_autumnatonCanAdv,
   auto_hasAutumnaton,
   auto_haveGreyGoose,
+  auto_haveTrainSet,
 } from "../iotms/mr2022";
 import { auto_makeMonkeyPawWish$1 } from "../iotms/mr2023";
 import {
@@ -139,7 +140,12 @@ import {
   auto_haveMayamCalendar,
   auto_haveSeptEmberCenser,
 } from "../iotms/mr2024";
-import { auto_copierShouldDelayZone } from "../iotms/mr2026";
+import {
+  auto_copierShouldDelayZone,
+  auto_have_sword_familiar,
+  auto_swordFamiliarWantsMonsterDrops,
+  auto_swordIsWillingToSwitchTargets,
+} from "../iotms/mr2026";
 import { Maximizer, maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
@@ -150,6 +156,7 @@ import { in_gnoob } from "../paths/gelatinous_noob";
 import { in_koe } from "../paths/kingdom_of_exploathing";
 import { kolhs_mandatorySchool } from "../paths/kolhs";
 import { in_plumber } from "../paths/path_of_the_plumber";
+import { in_quantumTerrarium } from "../paths/quantum_terrarium";
 import { is_professor, is_werewolf } from "../paths/wereprofessor";
 import { robot_delay } from "../paths/you_robot";
 import { shenShouldDelayZone } from "./level_11";
@@ -330,6 +337,15 @@ export function lumberCount(): number {
   base = base + 5 * itemAmount($item`smut orc keepsake box`);
 
   return base;
+}
+
+export function L9_swordWantsChasmMonster(): boolean {
+  if (!auto_swordIsWillingToSwitchTargets()) return false;
+
+  return (
+    auto_swordFamiliarWantsMonsterDrops($monster`smut orc pipelayer`, 100) ||
+    auto_swordFamiliarWantsMonsterDrops($monster`smut orc jacker`, 100)
+  );
 }
 
 function finishBuildingSmutOrcBridgeDo(): boolean {
@@ -535,7 +551,14 @@ function L9_chasmBuildDo(): boolean {
     }
   }
 
-  if (shenShouldDelayZone($location`The Smut Orc Logging Camp`)) {
+  if (
+    shenShouldDelayZone($location`The Smut Orc Logging Camp`) &&
+    (auto_haveTrainSet() ||
+      !auto_have_sword_familiar() ||
+      !auto_swordIsWillingToSwitchTargets() ||
+      in_quantumTerrarium() ||
+      !canChangeToFamiliar($familiar`Sword of S Words`))
+  ) {
     auto_log_debug("Delaying Logging Camp in case of Shen.");
     return false;
   }
@@ -1411,29 +1434,40 @@ function L9_highLandlordDo(): boolean {
     return true;
   }
 
-  if (runTaskChain([L9_aBooPeakTask, L9_oilPeakTask, L9_twinPeakTask])) {
+  return runTaskChain([
+    L9_aBooPeakTask,
+    L9_oilPeakTask,
+    L9_twinPeakTask,
+    L9_highLandlordCouncilTask,
+  ]);
+}
+
+const L9_highLandlordCouncilTask: QuestTask = registerQuestTask({
+  name: "L9_highLandlordCouncil",
+  completed: () => internalQuestStatus("questL09Topping") > 3,
+  ready: () => {
+    if (internalQuestStatus("questL09Topping") < 3) {
+      return false;
+    }
+    if (
+      auto_copierShouldDelayZone($locations`A-Boo Peak, Twin Peak, Oil Peak`)
+    ) {
+      auto_log_debug(
+        "Delaying L9 turn-in - still farming a copier target in this cluster.",
+      );
+      return false;
+    }
     return true;
-  }
-
-  if (auto_copierShouldDelayZone($locations`A-Boo Peak, Twin Peak, Oil Peak`)) {
-    auto_log_debug(
-      "Delaying L9 turn-in - still farming a copier target in this cluster.",
-    );
-    return false;
-  }
-
-  if (internalQuestStatus("questL09Topping") === 3) {
+  },
+  do: () => {
     auto_log_info(
       "Aw, sweet, dude! You totally lit all the signal fires!",
       "blue",
     );
     visitUrl("place.php?whichplace=highlands&action=highlands_dude");
     council();
-    return true;
-  }
-
-  return false;
-}
+  },
+});
 
 export const L9_highLandlordTask: QuestTask = registerQuestTask({
   name: "L9_highLandlord",

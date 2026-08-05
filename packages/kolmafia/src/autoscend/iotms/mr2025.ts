@@ -144,7 +144,6 @@ import { AshMatcher } from "../utils/kolmafiaUtils";
 import { acquiredFantasyRealmToken, fantasyBanditsFought } from "./mr2018";
 import { auto_haveChestMimic } from "./mr2024";
 import {
-  auto_desires_sword_familiar_drops,
   auto_haveEternityCodpiece,
   auto_isInEternityCodpiece,
   auto_spadeDigsRemaining,
@@ -1773,8 +1772,9 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
     return false;
   }
   if (
-    myFamiliar() === $familiar`Sword of S Words` &&
-    auto_desires_sword_familiar_drops()
+    safeGet("auto_familiarChoice", Familiar.none) ===
+      $familiar`Sword of S Words` ||
+    myFamiliar() === $familiar`Sword of S Words`
   ) {
     // the sword already overwrites this fight's drop table, so gazing here would be wasted.
     return false;

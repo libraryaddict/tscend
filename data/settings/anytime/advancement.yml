@@ -13,7 +13,7 @@ auto_disregardInstantKarma:
 auto_burndownStatsProgression:
   name: "Burn Stats for Progression"
   type: boolean
-  description: "When enabled, the script will burn your stats as needed on resources to make your runs faster."
+  description: "When enabled, the script will burn your stats as needed on resources to make your runs faster. It's recommended to enable auto_disregardInstantKarma."
 auto_burndownStatsInstantKarma:
   name: "Burn Stats for Instant Karma"
   type: boolean

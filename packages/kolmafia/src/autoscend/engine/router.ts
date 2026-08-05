@@ -1,6 +1,6 @@
 import { abort, myPath } from "kolmafia";
 
-import { clearSoftblockLocks } from "../auto_routing";
+import { setupSoftblockLocks } from "../auto_routing";
 import { auto_log_debug } from "../auto_util";
 import { callRegisteredTaskFunction } from "../task_registry";
 import { fileAsMap } from "../utils/kolmafiaUtils";
@@ -90,7 +90,7 @@ export function runNextTask(
       if (task.completed()) {
         // Real progress happened, not just a last-resort softblock release: give every
         // softblock (sword tracking, baseball diamond, ...) another chance to hold.
-        clearSoftblockLocks();
+        setupSoftblockLocks();
       }
       return true;
     }

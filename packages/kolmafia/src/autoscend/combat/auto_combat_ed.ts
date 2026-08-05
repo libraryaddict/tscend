@@ -78,7 +78,7 @@ import { auto_bowlingBallCombatString } from "../iotms/mr2022";
 import { dartELRcd, dartSkill } from "../iotms/mr2024";
 import { ed_needShop, isActuallyEd } from "../paths/actually_ed_the_undying";
 import { cyrptEvilBonus } from "../quests/level_07";
-import { fastenerCount, lumberCount } from "../quests/level_09";
+import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
 import {
   auto_canUse,
   auto_useSkill,
@@ -391,7 +391,7 @@ export function auto_edCombatHandler(
       const stenched: string = toLowerCase(getProperty("stenchCursedMonster"));
 
       if (
-        fastenerCount() >= 30 &&
+        fastenerCount() >= bridgeGoal() &&
         stenched !== "smut orc pipelayer" &&
         stenched !== "smut orc jacker"
       ) {
@@ -404,7 +404,7 @@ export function auto_edCombatHandler(
         }
       }
       if (
-        lumberCount() >= 30 &&
+        lumberCount() >= bridgeGoal() &&
         stenched !== "smut orc screwer" &&
         stenched !== "smut orc nailer"
       ) {

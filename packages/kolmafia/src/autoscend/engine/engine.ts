@@ -7,6 +7,7 @@ import {
   max,
   Monster,
   Phylum,
+  printHtml,
 } from "kolmafia";
 import { $modifier } from "libram";
 
@@ -39,7 +40,7 @@ export type QuestTask = Task<never, void> & {
   desiredEncounters?: () => (DesiredDrop | DesiredFights)[];
 };
 
-function taskLocations(task: QuestTask): Location[] {
+export function taskLocations(task: QuestTask): Location[] {
   const locs = task.locations;
   if (locs === undefined) return [];
   if (typeof locs === "function") return locs();
@@ -162,6 +163,20 @@ export function findRegisteredQuestTask(name: string): QuestTask | undefined {
 
 export function getAllQuestTasks(): QuestTask[] {
   return getEngine().tasks;
+}
+
+export function printAllTaskQuests(): void {
+  for (const task of getAllQuestTasks()) {
+    const context = getEngine().getContext(task);
+    const isComplete = task.completed(context);
+    const isReady = task.ready && task.ready(context);
+
+    printHtml(
+      `${task.name}: ` +
+        `<font color=${isReady ? "green" : "red"}>${isReady ? "Ready" : "Not Ready"}</font> - ` +
+        `<font color=${isComplete ? "green" : "red"}>${isComplete ? "Complete" : "Incomplete"}</font>`,
+    );
+  }
 }
 
 export function getIncompleteQuestTasks(): QuestTask[] {

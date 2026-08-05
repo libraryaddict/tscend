@@ -10,6 +10,7 @@ import {
   create,
   equip,
   equippedItem,
+  Familiar,
   getOutfits,
   getProperty,
   getWorkshed,
@@ -24,6 +25,7 @@ import {
   lastChoice,
   Location,
   min,
+  Monster,
   mpCost,
   myAdventures,
   myAscensions,
@@ -124,6 +126,12 @@ import { dronesOut } from "../iotms/mr2022";
 import { auto_canHabitat, auto_haveCCSC } from "../iotms/mr2023";
 import { auto_canTracesBandit, auto_tracesUsesLeft } from "../iotms/mr2025";
 import {
+  auto_have_sword_familiar,
+  auto_summonSwordTarget,
+  auto_sword_of_swords_tracking,
+  auto_swordIsWillingToSwitchTargets,
+} from "../iotms/mr2026";
+import {
   ed_DelayNC_DailyDungeon,
   edUnderworldChoiceHandler,
 } from "../paths/actually_ed_the_undying";
@@ -138,10 +146,14 @@ import { picky_startAscension } from "../paths/picky";
 import { in_quantumTerrarium } from "../paths/quantum_terrarium";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { L6_friarsGetParts } from "./level_06";
+import { L7_crypt, L7_swordWantsCryptMonster } from "./level_07";
 import { L8_trapperQuest } from "./level_08";
 import {
+  bridgeGoal,
   fastenerCount,
   hedgeTrimmersNeeded,
+  L9_chasmBuild,
+  L9_swordWantsChasmMonster,
   lumberCount,
   prepareForTwinPeak,
 } from "./level_09";
@@ -796,9 +808,40 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
   },
 });
 
-export function LX_fatLootToken(): boolean {
-  return runQuestTask(LX_fatLootTokenTask);
-}
+registerQuestTask({
+  name: "LX_swordFamiliarSetup",
+  completed: () => !auto_have_sword_familiar() || in_quantumTerrarium(),
+  ready: () =>
+    auto_swordIsWillingToSwitchTargets() &&
+    (!get("_auto_thisLoopHandleFamiliar", false) ||
+      safeGet("auto_familiarChoice", Familiar.none) ===
+        $familiar`Sword of S Words`) &&
+    (L9_swordWantsChasmMonster() || L7_swordWantsCryptMonster()),
+  do: () => {
+    if (
+      auto_sword_of_swords_tracking() === Monster.none &&
+      auto_summonSwordTarget()
+    ) {
+      return true;
+    }
+
+    if (
+      L9_swordWantsChasmMonster() &&
+      handleFamiliar$1($familiar`Sword of S Words`) &&
+      L9_chasmBuild()
+    ) {
+      return true;
+    }
+    if (
+      L7_swordWantsCryptMonster() &&
+      handleFamiliar$1($familiar`Sword of S Words`) &&
+      L7_crypt()
+    ) {
+      return true;
+    }
+    return false;
+  },
+});
 
 export function useTonicDjinn(): void {
   //configure and use Tonic Djinn if one was found in the daily dungeon
@@ -1160,8 +1203,8 @@ function LX_setWorkshedDo(): boolean {
     }
     //once we have enough fasteners and only if we are currently using the model train set
     if (
-      fastenerCount() >= 30 &&
-      lumberCount() >= 30 &&
+      fastenerCount() >= bridgeGoal() &&
+      lumberCount() >= bridgeGoal() &&
       existingShed === $item`model train set`
     ) {
       if (canSetWorkshed($item`Asdon Martin keyfob (on ring)`)) {

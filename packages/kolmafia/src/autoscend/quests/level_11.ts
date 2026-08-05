@@ -197,6 +197,7 @@ import {
   registerQuestTask,
   runQuestTask,
   runTaskChain,
+  taskLocations,
 } from "../engine/engine";
 import {
   considerGrimstoneGolem,
@@ -218,6 +219,7 @@ import {
 } from "../iotms/mr2023";
 import { auto_haveTearawayPants } from "../iotms/mr2024";
 import {
+  auto_copierShouldDelayZone,
   auto_spadeDigSkeleton,
   auto_spadeDigsRemaining,
   auto_wantToSpadeDigSkeleton,
@@ -3064,23 +3066,53 @@ export function L11_hiddenCityZones(): boolean {
   return runQuestTask(L11_hiddenCityZonesTask);
 }
 
-function L11_mauriceSpookyravenDo(): boolean {
-  if (
-    (isActuallyEd() && itemAmount($item`[7962]Eye of Ed`) === 0) ||
-    itemAmount($item`[2286]Eye of Ed`) > 0
-  ) {
-    return true;
-  }
-  if (in_robot() && myLevel() < 13) {
-    return false; //delay fight so we can make sure we are strong enough to beat him
-  }
+function L11_mauriceSpookyravenAltPathwayActive(): boolean {
+  return (
+    !possessEquipment($item`Lord Spookyraven's spectacles`) ||
+    is_boris() ||
+    in_wotsf() ||
+    in_bhy() ||
+    in_robot() ||
+    (in_nuclear() && !get("auto_haveoven", false))
+  );
+}
 
-  if (internalQuestStatus("questL11Manor") < 1) {
+function L11_mauriceSpookyravenNormalPathwayReady(): boolean {
+  if (getProperty("spookyravenRecipeUsed") !== "with_glasses") {
+    abort(
+      "Did not read Mortar Recipe with the Spookyraven glasses. We can't proceed.",
+    );
+  }
+  if (auto_reserveUndergroundAdventures()) {
+    return false;
+  }
+  return true;
+}
+
+function L11_mauriceSpookyravenZones(): Location[] {
+  return [
+    L11_mauriceSpookyravenBallroomTask,
+    L11_mauriceSpookyravenKitchenTask,
+    L11_mauriceSpookyravenConservatoryTask,
+    L11_mauriceSpookyravenBathroomTask,
+    L11_mauriceSpookyravenGalleryTask,
+    L11_mauriceSpookyravenLaboratoryTask,
+    L11_mauriceSpookyravenStorageRoomTask,
+    L11_mauriceSpookyravenWineCellarTask,
+    L11_mauriceSpookyravenLaundryRoomTask,
+    L11_mauriceSpookyravenBoilerRoomTask,
+  ].flatMap(taskLocations);
+}
+
+const L11_mauriceSpookyravenBallroomTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenBallroom",
+  completed: () => internalQuestStatus("questL11Manor") >= 1,
+  ready: () => internalQuestStatus("questL11Manor") < 1,
+  do: () => {
     auto_log_info("Searching for the basement of Spookyraven", "blue");
     if (!lar_repeat($location`The Haunted Ballroom`)) {
       return false;
     }
-
     if (auto_wantToSpadeDigSkeleton($location`The Haunted Ballroom`)) {
       return auto_spadeDigSkeleton();
     }
@@ -3089,19 +3121,44 @@ function L11_mauriceSpookyravenDo(): boolean {
       return false;
     }
     return autoAdv($location`The Haunted Ballroom`);
-  }
-  if (itemAmount($item`recipe: mortar-dissolving solution`) === 0) {
+  },
+  locations: $location`The Haunted Ballroom`,
+});
+
+const L11_mauriceSpookyravenMortarTask = fnTask(
+  "L11_mauriceSpookyravenMortar",
+  () => {
+    if (itemAmount($item`recipe: mortar-dissolving solution`) > 0) {
+      return false;
+    }
     if (possessEquipment($item`Lord Spookyraven's spectacles`)) {
       equip($slot`acc3`, $item`Lord Spookyraven's spectacles`);
     }
     visitUrl("place.php?whichplace=manor4&action=manor4_chamberwall");
     use(1, $item`recipe: mortar-dissolving solution`);
-  }
+    return true;
+  },
+);
 
-  if (internalQuestStatus("questL11Manor") > 2) {
+const L11_mauriceSpookyravenBossTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenBoss",
+  completed: () => internalQuestStatus("questL11Manor") > 3,
+  ready: () => {
+    if (internalQuestStatus("questL11Manor") <= 2) {
+      return false;
+    }
     if (is_professor()) {
       return false; //Can't beat Lord Spookyraven as the Professor
     }
+    if (auto_copierShouldDelayZone(L11_mauriceSpookyravenZones())) {
+      auto_log_debug(
+        "Delaying Manor boss fight - still farming a copier target in this cluster.",
+      );
+      return false;
+    }
+    return true;
+  },
+  do: () => {
     auto_log_info("Down with the tyrant of Spookyraven!", "blue");
     //AoSOL buffs
     if (in_aosol()) {
@@ -3126,62 +3183,164 @@ function L11_mauriceSpookyravenDo(): boolean {
       autoAdv($location`Summoning Chamber`);
     }
     return true;
-  }
+  },
+  locations: $location`Summoning Chamber`,
+});
 
-  if (!get("auto_haveoven", false)) {
+const L11_mauriceSpookyravenOvenTask = fnTask(
+  "L11_mauriceSpookyravenOven",
+  () => {
+    if (get("auto_haveoven", false)) {
+      return false;
+    }
     ovenHandle();
-  }
+    return true;
+  },
+);
 
-  if (itemAmount($item`wine bomb`) === 1) {
+const L11_mauriceSpookyravenWineBombTask = fnTask(
+  "L11_mauriceSpookyravenWineBomb",
+  () => {
+    if (itemAmount($item`wine bomb`) !== 1) {
+      return false;
+    }
     visitUrl("place.php?whichplace=manor4&action=manor4_chamberwall");
     if (internalQuestStatus("questL11Manor") === 3) {
       return true;
-    } else {
-      abort("Tried to use the wine bomb but it somehow failed?");
     }
-  }
+    abort("Tried to use the wine bomb but it somehow failed?");
+    return true;
+  },
+);
 
-  if (
-    !possessEquipment($item`Lord Spookyraven's spectacles`) ||
-    is_boris() ||
-    in_wotsf() ||
-    in_bhy() ||
-    in_robot() ||
-    (in_nuclear() && !get("auto_haveoven", false))
-  ) {
+const L11_mauriceSpookyravenKitchenTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenKitchen",
+  completed: () => itemAmount($item`loosening powder`) > 0,
+  ready: () =>
+    L11_mauriceSpookyravenAltPathwayActive() &&
+    itemAmount($item`loosening powder`) === 0,
+  do: () => {
     auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
     // I suppose we can let anyone in without the Spectacles.
-    if (itemAmount($item`loosening powder`) === 0) {
-      return autoAdv($location`The Haunted Kitchen`);
-    }
-    if (itemAmount($item`powdered castoreum`) === 0) {
-      return autoAdv($location`The Haunted Conservatory`);
-    }
-    if (itemAmount($item`drain dissolver`) === 0) {
-      return autoAdv($location`The Haunted Bathroom`);
-    }
-    if (itemAmount($item`triple-distilled turpentine`) === 0) {
-      return autoAdv($location`The Haunted Gallery`);
-    }
+    return autoAdv($location`The Haunted Kitchen`);
+  },
+  locations: $location`The Haunted Kitchen`,
+});
+
+const L11_mauriceSpookyravenConservatoryTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenConservatory",
+  completed: () => itemAmount($item`powdered castoreum`) > 0,
+  ready: () =>
+    L11_mauriceSpookyravenAltPathwayActive() &&
+    itemAmount($item`loosening powder`) > 0 &&
+    itemAmount($item`powdered castoreum`) === 0,
+  do: () => {
+    auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
+    return autoAdv($location`The Haunted Conservatory`);
+  },
+  locations: $location`The Haunted Conservatory`,
+});
+
+const L11_mauriceSpookyravenBathroomTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenBathroom",
+  completed: () => itemAmount($item`drain dissolver`) > 0,
+  ready: () =>
+    L11_mauriceSpookyravenAltPathwayActive() &&
+    itemAmount($item`loosening powder`) > 0 &&
+    itemAmount($item`powdered castoreum`) > 0 &&
+    itemAmount($item`drain dissolver`) === 0,
+  do: () => {
+    auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
+    return autoAdv($location`The Haunted Bathroom`);
+  },
+  locations: $location`The Haunted Bathroom`,
+});
+
+const L11_mauriceSpookyravenGalleryTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenGallery",
+  completed: () => itemAmount($item`triple-distilled turpentine`) > 0,
+  ready: () =>
+    L11_mauriceSpookyravenAltPathwayActive() &&
+    itemAmount($item`loosening powder`) > 0 &&
+    itemAmount($item`powdered castoreum`) > 0 &&
+    itemAmount($item`drain dissolver`) > 0 &&
+    itemAmount($item`triple-distilled turpentine`) === 0,
+  do: () => {
+    auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
+    return autoAdv($location`The Haunted Gallery`);
+  },
+  locations: $location`The Haunted Gallery`,
+});
+
+const L11_mauriceSpookyravenLaboratoryTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenLaboratory",
+  completed: () => itemAmount($item`detartrated anhydrous sublicalc`) > 0,
+  ready: () =>
+    L11_mauriceSpookyravenAltPathwayActive() &&
+    itemAmount($item`loosening powder`) > 0 &&
+    itemAmount($item`powdered castoreum`) > 0 &&
+    itemAmount($item`drain dissolver`) > 0 &&
+    itemAmount($item`triple-distilled turpentine`) > 0 &&
+    itemAmount($item`detartrated anhydrous sublicalc`) === 0,
+  do: () => {
+    auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
     //3rd floor unlock fix. can manually adv without starting quest. but autoAdv fails until quest is started. so start the quest
     if (internalQuestStatus("questM17Babies") === -1) {
       visitUrl("place.php?whichplace=manor3&action=manor3_ladys"); //talk to 3rd floor ghost to start quest
     }
-    if (itemAmount($item`detartrated anhydrous sublicalc`) === 0) {
-      return autoAdv($location`The Haunted Laboratory`);
-    }
-    if (itemAmount($item`triatomaceous dust`) === 0) {
-      return autoAdv($location`The Haunted Storage Room`);
-    }
+    return autoAdv($location`The Haunted Laboratory`);
+  },
+  locations: $location`The Haunted Laboratory`,
+});
 
+const L11_mauriceSpookyravenStorageRoomTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenStorageRoom",
+  completed: () => itemAmount($item`triatomaceous dust`) > 0,
+  ready: () =>
+    L11_mauriceSpookyravenAltPathwayActive() &&
+    itemAmount($item`loosening powder`) > 0 &&
+    itemAmount($item`powdered castoreum`) > 0 &&
+    itemAmount($item`drain dissolver`) > 0 &&
+    itemAmount($item`triple-distilled turpentine`) > 0 &&
+    itemAmount($item`detartrated anhydrous sublicalc`) > 0 &&
+    itemAmount($item`triatomaceous dust`) === 0,
+  do: () => {
+    auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
+    return autoAdv($location`The Haunted Storage Room`);
+  },
+  locations: $location`The Haunted Storage Room`,
+});
+
+const L11_mauriceSpookyravenAltPathwayFinishTask = fnTask(
+  "L11_mauriceSpookyravenAltPathwayFinish",
+  () => {
+    if (!L11_mauriceSpookyravenAltPathwayActive()) {
+      return false;
+    }
+    if (
+      itemAmount($item`loosening powder`) === 0 ||
+      itemAmount($item`powdered castoreum`) === 0 ||
+      itemAmount($item`drain dissolver`) === 0 ||
+      itemAmount($item`triple-distilled turpentine`) === 0 ||
+      itemAmount($item`detartrated anhydrous sublicalc`) === 0 ||
+      itemAmount($item`triatomaceous dust`) === 0
+    ) {
+      return false;
+    }
     visitUrl("place.php?whichplace=manor4&action=manor4_chamberwall");
     return true;
-  }
+  },
+);
 
-  if (
-    itemAmount($item`blasting soda`) === 1 &&
-    itemAmount($item`bottle of Chateau de Vinegar`) === 1
-  ) {
+const L11_mauriceSpookyravenFulminateCraftTask = fnTask(
+  "L11_mauriceSpookyravenFulminateCraft",
+  () => {
+    if (
+      itemAmount($item`blasting soda`) !== 1 ||
+      itemAmount($item`bottle of Chateau de Vinegar`) !== 1
+    ) {
+      return false;
+    }
     auto_log_info(
       "Time to cook up something explosive! Science fair unstable fulminate time!",
       "green",
@@ -3225,28 +3384,35 @@ function L11_mauriceSpookyravenDo(): boolean {
         }
       }
     }
-  }
+    return true;
+  },
+);
 
-  if (getProperty("spookyravenRecipeUsed") !== "with_glasses") {
-    abort(
-      "Did not read Mortar Recipe with the Spookyraven glasses. We can't proceed.",
-    );
-  }
-
-  if (auto_reserveUndergroundAdventures()) {
-    return false;
-  }
-
-  if (
-    itemAmount($item`bottle of Chateau de Vinegar`) === 0 &&
-    !possessEquipment($item`unstable fulminate`) &&
-    internalQuestStatus("questL11Manor") < 3
-  ) {
+const L11_mauriceSpookyravenWineCellarTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenWineCellar",
+  completed: () =>
+    itemAmount($item`bottle of Chateau de Vinegar`) > 0 ||
+    possessEquipment($item`unstable fulminate`) ||
+    internalQuestStatus("questL11Manor") >= 3,
+  ready: () => {
+    if (
+      L11_mauriceSpookyravenAltPathwayActive() ||
+      itemAmount($item`bottle of Chateau de Vinegar`) > 0 ||
+      possessEquipment($item`unstable fulminate`) ||
+      internalQuestStatus("questL11Manor") >= 3
+    ) {
+      return false;
+    }
+    if (!L11_mauriceSpookyravenNormalPathwayReady()) {
+      return false;
+    }
     if (isBanished($phylum`construct`) && get("screechCombats") > 0) {
       set("screechDelay", "construct");
       return false; //No sense in trying to go to the Wine Cellar if constructs (Wine Racks) are banished
     }
-
+    return true;
+  },
+  do: () => {
     auto_log_info("Searching for vinegar", "blue");
     if (!bat_wantHowl($location`The Haunted Wine Cellar`)) {
       bat_formBats();
@@ -3266,17 +3432,35 @@ function L11_mauriceSpookyravenDo(): boolean {
       );
     }
     return autoAdv($location`The Haunted Wine Cellar`);
-  }
-  if (
-    itemAmount($item`blasting soda`) === 0 &&
-    !possessEquipment($item`unstable fulminate`) &&
-    internalQuestStatus("questL11Manor") < 3
-  ) {
+  },
+  locations: $location`The Haunted Wine Cellar`,
+});
+
+const L11_mauriceSpookyravenLaundryRoomTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenLaundryRoom",
+  completed: () =>
+    itemAmount($item`blasting soda`) > 0 ||
+    possessEquipment($item`unstable fulminate`) ||
+    internalQuestStatus("questL11Manor") >= 3,
+  ready: () => {
+    if (
+      L11_mauriceSpookyravenAltPathwayActive() ||
+      itemAmount($item`blasting soda`) > 0 ||
+      possessEquipment($item`unstable fulminate`) ||
+      internalQuestStatus("questL11Manor") >= 3
+    ) {
+      return false;
+    }
+    if (!L11_mauriceSpookyravenNormalPathwayReady()) {
+      return false;
+    }
     if (isBanished($phylum`undead`) && get("screechCombats") > 0) {
       set("screechDelay", "undead");
       return false; //No sense in trying to go to the Laundry Room if undead (Cabinet of Dr. Limpieza) are banished
     }
-
+    return true;
+  },
+  do: () => {
     auto_log_info("Searching for baking soda, I mean, blasting pop.", "blue");
     if (!bat_wantHowl($location`The Haunted Wine Cellar`)) {
       bat_formBats();
@@ -3294,12 +3478,25 @@ function L11_mauriceSpookyravenDo(): boolean {
       );
     }
     return autoAdv($location`The Haunted Laundry Room`);
-  }
+  },
+  locations: $location`The Haunted Laundry Room`,
+});
 
-  if (
-    possessEquipment($item`unstable fulminate`) &&
-    internalQuestStatus("questL11Manor") < 3
-  ) {
+const L11_mauriceSpookyravenBoilerRoomTask: QuestTask = registerQuestTask({
+  name: "L11_mauriceSpookyravenBoilerRoom",
+  completed: () =>
+    !possessEquipment($item`unstable fulminate`) ||
+    internalQuestStatus("questL11Manor") >= 3,
+  ready: () => {
+    if (
+      !possessEquipment($item`unstable fulminate`) ||
+      internalQuestStatus("questL11Manor") >= 3
+    ) {
+      return false;
+    }
+    if (!L11_mauriceSpookyravenNormalPathwayReady()) {
+      return false;
+    }
     // Zootomist probably wants to wait until D2 in SC for this.
     if (auto_inRonin() && in_zootomist()) {
       if (auto_waitForDay2()) {
@@ -3307,7 +3504,9 @@ function L11_mauriceSpookyravenDo(): boolean {
         return false;
       }
     }
-
+    return true;
+  },
+  do: () => {
     auto_MaxMLToCap(auto_convertDesiredML(82), true);
     maximizer
       .weight($modifier`Monster Level`, 500)
@@ -3338,8 +3537,39 @@ function L11_mauriceSpookyravenDo(): boolean {
 
     auto_log_info("Now we mix and heat it up.", "blue");
     return autoAdv($location`The Haunted Boiler Room`);
+  },
+  locations: $location`The Haunted Boiler Room`,
+});
+
+function L11_mauriceSpookyravenDo(): boolean {
+  if (
+    (isActuallyEd() && itemAmount($item`[7962]Eye of Ed`) === 0) ||
+    itemAmount($item`[2286]Eye of Ed`) > 0
+  ) {
+    return true;
   }
-  return false;
+  if (in_robot() && myLevel() < 13) {
+    return false; //delay fight so we can make sure we are strong enough to beat him
+  }
+
+  return runTaskChain([
+    L11_mauriceSpookyravenBallroomTask,
+    L11_mauriceSpookyravenMortarTask,
+    L11_mauriceSpookyravenBossTask,
+    L11_mauriceSpookyravenOvenTask,
+    L11_mauriceSpookyravenWineBombTask,
+    L11_mauriceSpookyravenKitchenTask,
+    L11_mauriceSpookyravenConservatoryTask,
+    L11_mauriceSpookyravenBathroomTask,
+    L11_mauriceSpookyravenGalleryTask,
+    L11_mauriceSpookyravenLaboratoryTask,
+    L11_mauriceSpookyravenStorageRoomTask,
+    L11_mauriceSpookyravenAltPathwayFinishTask,
+    L11_mauriceSpookyravenFulminateCraftTask,
+    L11_mauriceSpookyravenWineCellarTask,
+    L11_mauriceSpookyravenLaundryRoomTask,
+    L11_mauriceSpookyravenBoilerRoomTask,
+  ]);
 }
 
 export const L11_mauriceSpookyravenTask: QuestTask = registerQuestTask({
@@ -4643,10 +4873,39 @@ export function L11_unlockEd(): boolean {
   return runQuestTask(L11_unlockEdTask);
 }
 
+function L11_edDefeated(): boolean {
+  return (
+    itemAmount($item`[2334]Holy MacGuffin`) > 0 ||
+    getProperty("questL11Pyramid") === "finished"
+  );
+}
+
+function L11_edZones(): Location[] {
+  return [
+    L11_unlockUpperChamberTask,
+    L11_unlockMiddleChamberTask,
+    L11_defeatEdTask,
+  ].flatMap(taskLocations);
+}
+
+const L11_edTurnInTask = fnTask("L11_edTurnIn", () => {
+  if (get("auto_L11CouncilVisited", false) || !L11_edDefeated()) {
+    return false;
+  }
+  if (auto_copierShouldDelayZone(L11_edZones())) {
+    auto_log_debug(
+      "Delaying L11 turn-in - still farming a copier target in this cluster.",
+    );
+    return false;
+  }
+  council();
+  set("auto_L11CouncilVisited", true);
+  return true;
+});
+
 function L11_defeatEdDo(): boolean {
-  if (itemAmount($item`[2334]Holy MacGuffin`) === 1) {
-    council();
-    return true;
+  if (L11_edDefeated()) {
+    return runQuestTask(L11_edTurnInTask);
   }
 
   if (is_professor()) {
@@ -4684,19 +4943,28 @@ function L11_defeatEdDo(): boolean {
     cliExecute("refresh inv");
   }
 
-  if (itemAmount($item`[2334]Holy MacGuffin`) !== 0) {
-    council();
+  if (L11_edDefeated()) {
+    return runQuestTask(L11_edTurnInTask);
   }
   return true;
 }
 
 export const L11_defeatEdTask: QuestTask = registerQuestTask({
   name: "L11_defeatEd",
-  completed: () => internalQuestStatus("questL11Pyramid") > 3,
-  ready: () =>
-    internalQuestStatus("questL11Pyramid") === 3 &&
-    get("pyramidBombUsed") &&
-    myAdventures() - auto_advToReserve() > 7,
+  completed: () => get("auto_L11CouncilVisited", false),
+  ready: () => {
+    if (get("auto_L11CouncilVisited", false)) {
+      return false;
+    }
+    if (L11_edDefeated()) {
+      return true;
+    }
+    return (
+      internalQuestStatus("questL11Pyramid") === 3 &&
+      get("pyramidBombUsed") &&
+      myAdventures() - auto_advToReserve() > 7
+    );
+  },
   do: L11_defeatEdDo,
   locations: $location`The Lower Chambers`,
   desiredEncounters: () =>

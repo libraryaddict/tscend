@@ -171,7 +171,7 @@ import {
   acquireHP,
   invalidateRestoreOptionCache,
 } from "./autoscend/auto_restore";
-import { solveDelayZone } from "./autoscend/auto_routing";
+import { setupSoftblockLocks, solveDelayZone } from "./autoscend/auto_routing";
 import { auto_settings, auto_settingsFix } from "./autoscend/auto_settings";
 import { printSim } from "./autoscend/auto_sim";
 import {
@@ -350,7 +350,6 @@ import {
 } from "./autoscend/iotms/mr2025";
 import {
   auto_elfToiletReady,
-  auto_summonSwordTarget,
   auto_useElfToilet,
 } from "./autoscend/iotms/mr2026";
 import { auto_useWardrobe } from "./autoscend/iotms/ttt";
@@ -668,9 +667,13 @@ export function initializeSettings(): void {
   set("auto_grimstoneOrnateDowsingRod", true);
   set("auto_haveoven", false);
   set("auto_doGalaktik", getProperty("auto_doGalaktik_initialize"));
+  set("auto_L03CouncilVisited", false);
+  set("auto_L05CouncilVisited", false);
+  set("auto_L07CouncilVisited", false);
   set("auto_L8_ninjaAssassinFail", false);
   set("auto_L8_extremeInstead", false);
   set("auto_L9_smutOrcPervert", false);
+  set("auto_L11CouncilVisited", false);
   set("auto_haveSourceTerminal", false);
   set("auto_hedge", "fast");
   set("auto_hippyInstead", false);
@@ -2528,13 +2531,6 @@ const finishBuildingSmutOrcBridgeMaintenanceTask: QuestTask = registerQuestTask(
   },
 );
 
-const auto_summonSwordTargetTask: QuestTask = registerQuestTask({
-  name: "auto_summonSwordTarget",
-  completed: () => false,
-  ready: () => true,
-  do: auto_summonSwordTarget,
-});
-
 const councilMaintenanceTask: QuestTask = registerQuestTask({
   name: "councilMaintenance",
   completed: () => false,
@@ -3357,7 +3353,6 @@ const doTasksPrelude: QuestTask[] = [
   basicAdjustMLTask,
   zoo_graftFamTask,
   finishBuildingSmutOrcBridgeMaintenanceTask,
-  auto_summonSwordTargetTask,
   councilMaintenanceTask,
   auto_buySkillsTask,
   awol_buySkillsTask,
@@ -3555,6 +3550,7 @@ function doTasks(): boolean {
 function auto_begin(): void {
   // Setup settings before continuing
   auto_settings();
+  setupSoftblockLocks();
 
   if (getAutoAttack() !== 0) {
     const shouldUnset: boolean = userConfirm(

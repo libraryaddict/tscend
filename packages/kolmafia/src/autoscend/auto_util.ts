@@ -325,13 +325,12 @@ import {
   auto_baseball_freefight_monster,
   auto_baseball_freefights_left,
   auto_chewLiquidAsset,
+  auto_desires_sword_familiar_drops,
   auto_forceCombatLegendaryNoodles,
   auto_getItemToEquipHeartstone,
   auto_havePastaWand,
   auto_heartstoneLuckRemaining,
   auto_legendaryNoodlesAvailable,
-  auto_sword_of_swords_tracking,
-  auto_swordFamiliarWantsMonsterDrops,
   auto_willEatLegendaryNoodles,
 } from "./iotms/mr2026";
 import {
@@ -389,7 +388,7 @@ import {
   getZooKickYR,
   in_zootomist,
 } from "./paths/zootomist";
-import { fastenerCount, lumberCount } from "./quests/level_09";
+import { bridgeGoal, fastenerCount, lumberCount } from "./quests/level_09";
 import { auto_warSide } from "./quests/level_12";
 import { needStarKey } from "./quests/level_13";
 import { candyBlock } from "./quests/level_any";
@@ -3089,7 +3088,7 @@ function LX_summonMonsterDo(): boolean {
     auto_is_valid($item`smut orc keepsake box`) &&
     itemAmount($item`smut orc keepsake box`) === 0 &&
     myLevel() >= 9 &&
-    (lumberCount() < 30 || fastenerCount() < 30) &&
+    (lumberCount() < bridgeGoal() || fastenerCount() < bridgeGoal()) &&
     canSummonMonster($monster`smut orc pervert`)
   ) {
     // summon pervert here but handling of L9 quest will open box
@@ -4562,8 +4561,7 @@ export function auto_is_valid(it: Item): boolean {
     return isTrendy(it);
   }
 
-  // Combat items are usable even if not in standard. We only return true if we're in combat
-  return isUnrestricted(it) || (currentRound() > 0 && it.combat);
+  return isUnrestricted(it);
 }
 
 export function auto_is_valid$1(fam: Familiar): boolean {
@@ -6711,7 +6709,7 @@ export function auto_wantToFreeKillWithNoDrops(
   }
   if (
     myFamiliar() === $familiar`Sword of S Words` &&
-    auto_swordFamiliarWantsMonsterDrops(auto_sword_of_swords_tracking(), 100)
+    auto_desires_sword_familiar_drops()
   ) {
     return false;
   }

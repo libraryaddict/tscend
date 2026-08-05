@@ -19,15 +19,18 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $monster,
   $skill,
   $stat,
+  get,
   set,
 } from "libram";
 
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
+import { getMinimumAdventuresToMaintain } from "../auto_consume";
 import { autoOutfit, possessEquipment, possessOutfit } from "../auto_equipment";
 import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
@@ -36,6 +39,7 @@ import {
   adjustForYellowRayIfPossible,
   auto_change_mcd,
   auto_is_valid,
+  auto_log_debug,
   auto_log_info,
   internalQuestStatus,
 } from "../auto_util";
@@ -47,6 +51,7 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { auto_copierShouldDelayZone } from "../iotms/mr2026";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
 import { bat_formBats } from "../paths/dark_gyffte";
@@ -200,6 +205,10 @@ export const L5_haremOutfitTask: QuestTask = registerQuestTask({
 });
 
 function L5_goblinKingDo(): boolean {
+  if (L5_goblinKingDefeated()) {
+    return runQuestTask(L5_goblinKingTurnInTask);
+  }
+
   auto_log_info("Death to the gobbo!!", "blue");
   if (!autoOutfit("Knob Goblin Harem Girl Disguise")) {
     abort("Could not put on Knob Goblin Harem Girl Disguise, aborting");
@@ -238,31 +247,36 @@ function L5_goblinKingDo(): boolean {
   }
   set("auto_nextEncounter", "Knob Goblin King");
   set("auto_nonAdvLoc", true);
-  const advSpent: boolean = autoAdv($location`Throne Room`);
+  return autoAdv($location`Throne Room`);
+}
 
-  if (
+function L5_goblinKingDefeated(): boolean {
+  return (
     itemAmount($item`Crown of the Goblin King`) > 0 ||
     itemAmount($item`Glass Balls of the Goblin King`) > 0 ||
     itemAmount($item`Codpiece of the Goblin King`) > 0 ||
     getProperty("questL05Goblin") === "finished" ||
     in_plumber() ||
     itemAmount($item`cursed goblin cape`) > 0
-  ) {
-    council();
-  }
-  return advSpent;
+  );
 }
 
 export const L5_goblinKingTask: QuestTask = registerQuestTask({
   name: "L5_goblinKing",
-  completed: () => internalQuestStatus("questL05Goblin") > 1,
-  ready: () =>
-    internalQuestStatus("questL05Goblin") === 1 &&
-    canSurvive(3.0) &&
-    myAdventures() > 2 &&
-    possessOutfit("Knob Goblin Harem Girl Disguise") &&
-    // delay for You, Robot path
-    !robot_delay("outfit"),
+  completed: () => get("auto_L05CouncilVisited", false),
+  ready: () => {
+    if (L5_goblinKingDefeated()) {
+      return true;
+    }
+    return (
+      internalQuestStatus("questL05Goblin") === 1 &&
+      canSurvive(3.0) &&
+      myAdventures() >= getMinimumAdventuresToMaintain() + 1 &&
+      possessOutfit("Knob Goblin Harem Girl Disguise") &&
+      // delay for You, Robot path
+      !robot_delay("outfit")
+    );
+  },
   do: L5_goblinKingDo,
   desiredEncounters: () =>
     [
@@ -271,6 +285,31 @@ export const L5_goblinKingTask: QuestTask = registerQuestTask({
         needAmount: internalQuestStatus("questL05Goblin") > 1 ? 0 : 1,
       },
     ].filter((a) => a.needAmount > 0),
+});
+
+const L5_goblinKingTurnInTask: QuestTask = registerQuestTask({
+  name: "L5_goblinKingTurnIn",
+  completed: () => get("auto_L05CouncilVisited", false),
+  ready: () => {
+    if (!L5_goblinKingDefeated()) {
+      return false;
+    }
+    if (
+      auto_copierShouldDelayZone(
+        $locations`The Outskirts of Cobb's Knob, Cobb's Knob Harem, Throne Room`,
+      )
+    ) {
+      auto_log_debug(
+        "Delaying L5 turn-in - still farming a copier target in this cluster.",
+      );
+      return false;
+    }
+    return true;
+  },
+  do: () => {
+    council();
+    set("auto_L05CouncilVisited", true);
+  },
 });
 
 function L5_slayTheGoblinKingDo(): boolean {
@@ -284,7 +323,9 @@ function L5_slayTheGoblinKingDo(): boolean {
 
 export const L5_slayTheGoblinKingTask: QuestTask = registerQuestTask({
   name: "L5_slayTheGoblinKing",
-  completed: () => internalQuestStatus("questL05Goblin") > 1,
+  completed: () =>
+    internalQuestStatus("questL05Goblin") > 1 &&
+    get("auto_L05CouncilVisited", false),
   ready: () => true,
   do: L5_slayTheGoblinKingDo,
 });

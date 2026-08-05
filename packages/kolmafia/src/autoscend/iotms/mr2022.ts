@@ -103,6 +103,7 @@ import { in_tcrs } from "../paths/two_crazy_random_summer";
 import { is_professor } from "../paths/wereprofessor";
 import { L8_trapperTalk, needOre } from "../quests/level_08";
 import {
+  bridgeGoal,
   fastenerCount,
   hedgeTrimmersNeeded,
   L9_twinPeak,
@@ -908,7 +909,7 @@ export function auto_autumnatonQuest(): boolean {
     }
   }
   // acquire items to help quests
-  if (fastenerCount() < 30 && lumberCount() < 30) {
+  if (fastenerCount() < bridgeGoal() && lumberCount() < bridgeGoal()) {
     const targetLocation: Location = $location`The Smut Orc Logging Camp`;
     if (
       !auto_autumnatonCanAdv(targetLocation) &&
@@ -1074,7 +1075,7 @@ export function auto_checkTrainSet(): void {
     }
     three = 3; //all stats
     four = 6; //lumber mill
-  } else if (fastenerCount() < 30 || lumberCount() < 30) {
+  } else if (fastenerCount() < bridgeGoal() || lumberCount() < bridgeGoal()) {
     //Double lumber mill to clear orc bridge faster
     two = 6; //lumber mill
     if (myPrimestat() === $stat`Muscle`) {

@@ -16,8 +16,8 @@
     "typecheck": "tsc -b",
     "bundle": "node esbuild.mjs",
     "build": "yarn typecheck && yarn bundle",
-    "lint": "eslint packages && prettier --check . --cache --cache-location node_modules/.cache/prettier",
-    "format": "eslint packages --fix --cache --cache-location node_modules/.cache/eslint && prettier --write . --log-level warn --cache --cache-location node_modules/.cache/prettier"
+    "lint": "eslint packages --cache --cache-location node_modules/.cache/.eslintcache && prettier --check . --cache --cache-location node_modules/.cache/.prettiercache",
+    "format": "eslint packages --fix --cache --cache-location node_modules/.cache/.eslintcache && prettier --write . --cache --cache-location node_modules/.cache/.prettiercache --log-level warn"
   },
   "devDependencies": {
     "@babel/cli": "^7.29.7",

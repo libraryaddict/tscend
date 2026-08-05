@@ -44,6 +44,7 @@ import {
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { fantasyRealmToken } from "../iotms/mr2018";
+import { auto_copierShouldDelayZone } from "../iotms/mr2026";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_gnoob } from "../paths/gelatinous_noob";
 import { LX_doingPirates } from "./optional";
@@ -174,10 +175,7 @@ function L6_friarsGetPartsDo(): boolean {
     return autoAdv($location`The Dark Heart of the Woods`);
   }
 
-  auto_log_info("Finishing friars", "blue");
-  visitUrl("friars.php?action=ritual&pwd");
-  council();
-  return internalQuestStatus("questL06Friar") > 2;
+  return runQuestTask(L6_friarsFinishTask);
 }
 
 export const L6_friarsGetPartsTask: QuestTask = registerQuestTask({
@@ -196,6 +194,37 @@ export const L6_friarsGetPartsTask: QuestTask = registerQuestTask({
             : 0,
       },
     ].filter((a) => a.needAmount > 0),
+});
+
+const L6_friarsFinishTask: QuestTask = registerQuestTask({
+  name: "L6_friarsFinish",
+  completed: () => internalQuestStatus("questL06Friar") > 2,
+  ready: () => {
+    if (
+      itemAmount($item`dodecagram`) === 0 ||
+      itemAmount($item`eldritch butterknife`) === 0 ||
+      itemAmount($item`box of birthday candles`) === 0
+    ) {
+      return false;
+    }
+    if (
+      auto_copierShouldDelayZone(
+        $locations`The Dark Heart of the Woods, The Dark Elbow of the Woods, The Dark Neck of the Woods`,
+      )
+    ) {
+      auto_log_debug(
+        "Delaying L6 turn-in - still farming a copier target in this cluster.",
+      );
+      return false;
+    }
+    return true;
+  },
+  do: () => {
+    auto_log_info("Finishing friars", "blue");
+    visitUrl("friars.php?action=ritual&pwd");
+    council();
+    return internalQuestStatus("questL06Friar") > 2;
+  },
 });
 
 export function L6_friarsGetParts(): boolean {
