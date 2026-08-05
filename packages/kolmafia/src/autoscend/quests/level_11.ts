@@ -3916,6 +3916,36 @@ export const L11_shenStartQuestTask: QuestTask = registerQuestTask({
   ],
 });
 
+function L11_shenWaiterNC():
+  "lantern" | "cocktails" | "ice bucket" | "diamond" {
+  // default to getting unnamed cocktails to turn into Flamin' Whatsisnames.
+  if (
+    itemAmount($item`priceless diamond`) > 0 ||
+    itemAmount($item`Red Zeppelin ticket`) > 0 ||
+    myMeat() > 10000 ||
+    (internalQuestStatus("questL11Shen") === 6 &&
+      itemAmount($item`unnamed cocktail`) > 0)
+  ) {
+    if (getProperty("copperheadClubHazard") !== "lantern") {
+      // got priceless diamond or zeppelin ticket (or we are rich) so lets burn the place down (and make Flamin' Whatsisnames)
+      return "lantern";
+    }
+  } else if (
+    haveEquipped($item`candy cane sword cane`) &&
+    itemAmount($item`priceless diamond`) === 0 &&
+    itemAmount($item`Red Zeppelin ticket`) === 0
+  ) {
+    return "diamond";
+  } else {
+    if (getProperty("copperheadClubHazard") !== "ice") {
+      // knock over the ice bucket & try for the priceless diamond.
+      return "ice bucket";
+    }
+  }
+
+  return "cocktails";
+}
+
 export function L11_shenStartQuest(): boolean {
   return runQuestTask(L11_shenStartQuestTask);
 }
@@ -3949,31 +3979,13 @@ function L11_shenCopperheadDo(): boolean {
       !in_tcrs()
     ) {
       use(1, $item`crappy waiter disguise`);
-      // default to getting unnamed cocktails to turn into Flamin' Whatsisnames.
-      let behindtheStacheOption: number = 4;
-      if (
-        itemAmount($item`priceless diamond`) > 0 ||
-        itemAmount($item`Red Zeppelin ticket`) > 0 ||
-        myMeat() > 10000 ||
-        (internalQuestStatus("questL11Shen") === 6 &&
-          itemAmount($item`unnamed cocktail`) > 0)
-      ) {
-        if (getProperty("copperheadClubHazard") !== "lantern") {
-          // got priceless diamond or zeppelin ticket (or we are rich) so lets burn the place down (and make Flamin' Whatsisnames)
-          behindtheStacheOption = 3;
-        }
-      } else if (
-        haveEquipped($item`candy cane sword cane`) &&
-        itemAmount($item`priceless diamond`) === 0 &&
-        itemAmount($item`Red Zeppelin ticket`) === 0
-      ) {
-        behindtheStacheOption = 5;
-      } else {
-        if (getProperty("copperheadClubHazard") !== "ice") {
-          // knock over the ice bucket & try for the priceless diamond.
-          behindtheStacheOption = 2;
-        }
-      }
+      const behindtheStacheOption = [
+        "gong",
+        "ice bucket",
+        "lantern",
+        "cocktails",
+        "diamond",
+      ].indexOf(L11_shenWaiterNC());
       set("choiceAdventure855", behindtheStacheOption);
     }
 
