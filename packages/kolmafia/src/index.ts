@@ -14,6 +14,7 @@ import {
   meatReserveMessage,
 } from "./autoscend/auto_util";
 import { autoscend_migrate } from "./autoscend/autoscend_migration";
+import { printAllTaskQuests } from "./autoscend/engine/engine";
 import { Args } from "./autoscend/utils/grimoireArgs";
 
 const args = Args.create(
@@ -30,9 +31,9 @@ const args = Args.create(
       help: "This will get expensive for you. This should only be used if you are trying to go for a 1-day and don't care about expenses.",
       setting: "auto_turbo",
     }),
-    tasks: Args.flag({
+    tasks: Args.string({
       key: "tasks",
-      help: "Print off the tasks, used for debugging",
+      help: "Print off the tasks, used for debugging. Usage 'tasks=' where a filter can be provided",
       setting: "",
     }),
   },
@@ -47,6 +48,11 @@ export function main(input: string = ""): void {
 
   if (args.help) {
     Args.showHelp(args);
+    return;
+  }
+
+  if (args.tasks !== undefined) {
+    printAllTaskQuests(args.tasks);
     return;
   }
 

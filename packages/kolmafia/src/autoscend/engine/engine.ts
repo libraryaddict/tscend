@@ -165,16 +165,48 @@ export function getAllQuestTasks(): QuestTask[] {
   return getEngine().tasks;
 }
 
-export function printAllTaskQuests(): void {
+export function printAllTaskQuests(filter: string = ""): void {
+  const groups = {
+    "Complete - Ready": [] as string[],
+    "Complete - Not Ready": [] as string[],
+    "Incomplete - Ready": [] as string[],
+    "Incomplete - Not Ready": [] as string[],
+  };
+
   for (const task of getAllQuestTasks()) {
+    if (!task.name.toLowerCase().includes(filter)) continue;
     const context = getEngine().getContext(task);
     const isComplete = task.completed(context);
-    const isReady = task.ready && task.ready(context);
+    const isReady = task.ready?.(context) ?? false;
+
+    const key =
+      `${isComplete ? "Complete" : "Incomplete"} - ${isReady ? "Ready" : "Not Ready"}` as keyof typeof groups;
+
+    const color =
+      isComplete && isReady
+        ? "darkgreen"
+        : isComplete || isReady
+          ? "green"
+          : "darkred";
+
+    groups[key].push(`<font color=${color}>${task.name}</font>`);
+  }
+
+  for (const tasks of Object.values(groups)) {
+    tasks.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+  }
+
+  for (const [group, tasks] of Object.entries(groups)) {
+    if (tasks.length === 0) continue;
+
+    const [complete, ready] = group.split(" - ");
 
     printHtml(
-      `${task.name}: ` +
-        `<font color=${isReady ? "green" : "red"}>${isReady ? "Ready" : "Not Ready"}</font> - ` +
-        `<font color=${isComplete ? "green" : "red"}>${isComplete ? "Complete" : "Incomplete"}</font>`,
+      `<font color=${complete === "Complete" ? "green" : "red"}>${complete}</font> - ` +
+        `<font color=${ready === "Ready" ? "green" : "red"}>${ready}</font>: ${tasks.join(
+          ", ",
+        )}`,
+      false,
     );
   }
 }
