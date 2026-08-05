@@ -13,8 +13,8 @@ import { $item, $items, $modifier, $path, get, set } from "libram";
 
 import { possessEquipment } from "../auto_equipment";
 import { auto_log_info, internalQuestStatus } from "../auto_util";
-import { Maximizer } from "../maximizer";
 import { equipWarOutfit, warAdventure } from "../quests/level_12";
+import { Maximizer } from "../utils/maximizer";
 
 // This uses Ezandora's wonderful Helix Fossil script to handle building a team and combat.
 //Defined in autoscend/paths/pocket_familiars.ash

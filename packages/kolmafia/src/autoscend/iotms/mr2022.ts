@@ -92,7 +92,6 @@ import {
   auto_useSkill,
   useItem,
 } from "../combat/auto_combat_util";
-import { maximizer } from "../maximizer";
 import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
 import { in_darkGyffte } from "../paths/dark_gyffte";
 import { in_koe } from "../paths/kingdom_of_exploathing";
@@ -110,6 +109,7 @@ import {
   lumberCount,
 } from "../quests/level_09";
 import { needStarKey } from "../quests/level_13";
+import { maximizer } from "../utils/maximizer";
 import { have_fireworks_shop } from "./mr2021";
 import { auto_neededShadowBricks } from "./mr2023";
 

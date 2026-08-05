@@ -72,7 +72,6 @@ import {
 } from "../auto_util";
 import { runTaskChain } from "../engine/engine";
 import { chateaumantegna_available } from "../iotms/mr2015";
-import { Maximizer } from "../maximizer";
 import { L5_slayTheGoblinKingTask } from "../quests/level_05";
 import { L8_trapperSlopeTask } from "../quests/level_08";
 import {
@@ -101,6 +100,7 @@ import {
 } from "../quests/level_12";
 import { LX_islandAccessTask } from "../quests/level_any";
 import { LX_galaktikSubQuest } from "../quests/optional";
+import { Maximizer } from "../utils/maximizer";
 
 //Defined in autoscend/paths/you_robot.ash
 export function in_robot(): boolean {

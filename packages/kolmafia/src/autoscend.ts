@@ -123,7 +123,6 @@ import {
   haveInCampground,
   Leprecondo,
   set,
-  sinceKolmafiaRevision,
 } from "libram";
 
 import {
@@ -173,7 +172,6 @@ import {
 } from "./autoscend/auto_restore";
 import { setupSoftblockLocks, solveDelayZone } from "./autoscend/auto_routing";
 import { auto_settings, auto_settingsFix } from "./autoscend/auto_settings";
-import { printSim } from "./autoscend/auto_sim";
 import {
   adjustForYellowRayIfPossible,
   almostRollover,
@@ -193,7 +191,6 @@ import {
   auto_runChoice,
   auto_unusedPerishableLuckySources,
   autoCraft,
-  AutoStopError,
   backupSetting,
   banishSources,
   basicAdjustML,
@@ -222,7 +219,6 @@ import {
   yellowRaySources,
 } from "./autoscend/auto_util";
 import { zone_isAvailable } from "./autoscend/auto_zone";
-import { autoscend_migrate } from "./autoscend/autoscend_migration";
 import {
   QuestTask,
   registerQuestTask,
@@ -353,7 +349,6 @@ import {
   auto_useElfToilet,
 } from "./autoscend/iotms/mr2026";
 import { auto_useWardrobe } from "./autoscend/iotms/ttt";
-import { maximizer } from "./autoscend/maximizer";
 import {
   ed_initializeDay,
   ed_initializeSession,
@@ -565,6 +560,7 @@ import {
   useTonicDjinn,
 } from "./autoscend/quests/level_any";
 import { houseUpgrade } from "./autoscend/quests/optional";
+import { maximizer } from "./autoscend/utils/maximizer";
 
 // non-thrifty familiars are unusable in thrifty
 /***
@@ -3706,7 +3702,7 @@ function auto_begin(): void {
   }
 }
 
-function print_help_text(): void {
+export function print_help_text(): void {
   printHtml("Thank you for using autoscend!");
   printHtml(
     'If you need to configure or interrupt the script, choose <b>autoscend</b> from the drop-down "run script" menu in your browser.',
@@ -3723,13 +3719,13 @@ function print_help_text(): void {
   printHtml("");
 }
 
-function sad_times(): void {
+export function sad_times(): void {
   printHtml(
     'autoscend (formerly sl_ascend) is under new management. Soolar (the maintainer of sl_ascend) and Jeparo (the most active contributor) have decided to cease development of sl_ascend in response to Jick\'s behavior that has recently <a href="https://www.reddit.com/r/kol/comments/d0cq9s/allegations_of_misconduct_by_asymmetric_members/">come to light</a>. New developers have taken over maintenance and rebranded sl_ascend to autoscend as per Soolar\'s request. Please be patient with us during this transition period. Please see the readme on the <a href="https://github.com/loathers/autoscend">github</a> page for more information.',
   );
 }
 
-function safe_preference_reset_wrapper(level: number): void {
+export function safe_preference_reset_wrapper(level: number): void {
   if (level <= 0) {
     auto_begin();
   } else {
@@ -3740,82 +3736,6 @@ function safe_preference_reset_wrapper(level: number): void {
       if (level === 1) {
         sad_times();
       }
-    }
-  }
-}
-
-export function main(...input: string[]): void {
-  // Rationale for using package.json revision is that if we bumped the kolmafia version, then we clearly are building against newer features.
-
-  // @ts-expect-error TS2304 - 'require' is used for esbuild
-  sinceKolmafiaRevision(require("data:kolmafia_revision") as number); // eslint-disable-line @typescript-eslint/no-require-imports
-
-  backupSetting("printStackOnAbort", true.toString());
-  // parse input
-  if (input.length > 0) {
-    switch ((input[0] ??= "")) {
-      case "sim":
-        // display useful items/skills/perms/etc and if the user has them
-        printSim();
-        return;
-      case "turbo":
-        // gotta go faaaaaast. Doing a double confirm because of the nature of this parameter.
-        if (
-          userConfirm(
-            "This will get expensive for you. This should only be used if you are trying to go for a 1-day and don't care about expenses. Do you really want to do this? Will default to 'No' in 15 seconds.",
-            15000,
-            false,
-          )
-        ) {
-          if (
-            userConfirm(
-              "This will use UMSBs and Spice Melanges if you have them. If you are ok with this, you have 15 seconds to hit 'Yes'",
-              15000,
-              false,
-            )
-          ) {
-            set("auto_turbo", "true");
-            auto_log_info("Ka-chow! Gotta go fast.");
-            break;
-          }
-        }
-      // INTENTIONAL LACK OF BREAK
-      default:
-        auto_log_info(
-          "Running normal autoscend because you didn't enter in a valid parameter",
-        );
-        break;
-    }
-  }
-
-  print_help_text();
-  sad_times();
-  if (
-    !autoscend_migrate() &&
-    !userConfirm(
-      "autoscend might not have upgraded from a previous version correctly, do you want to continue? Will default to true in 10 seconds.",
-      10000,
-      true,
-    )
-  ) {
-    abort("User aborted script after failed migration.");
-  }
-  try {
-    safe_preference_reset_wrapper(3);
-  } catch (e) {
-    if (!(e instanceof AutoStopError)) {
-      throw e;
-    }
-    if (e.message) {
-      print(e.message, "red");
-    }
-  } finally {
-    if (get("auto_stop", false)) {
-      set("auto_stop", false);
-      meatReserveMessage();
-      auto_log_info(
-        "auto_stop detected and quietly exiting, auto_stop disabled.",
-      );
     }
   }
 }

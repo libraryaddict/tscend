@@ -84,9 +84,9 @@ import {
   zoneRank,
 } from "../auto_util";
 import { combat_status_add } from "../combat/auto_combat_util";
-import { maximizer } from "../maximizer";
 import { in_plumber } from "../paths/path_of_the_plumber";
 import { AshMatcher } from "../utils/kolmafiaUtils";
+import { maximizer } from "../utils/maximizer";
 
 // This is meant for items that have a date of 2020
 

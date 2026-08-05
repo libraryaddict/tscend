@@ -10,7 +10,7 @@ import {
 } from "kolmafia";
 
 import { auto_log_error } from "./auto_util";
-import { Criterion, Maximizer } from "./maximizer";
+import { Criterion, Maximizer } from "./utils/maximizer";
 import { MAXIMIZER_MODIFIERS, MaximizerModifier } from "./utils/modifiers";
 
 // Only place in the codebase allowed to interpret a raw maximizer string;

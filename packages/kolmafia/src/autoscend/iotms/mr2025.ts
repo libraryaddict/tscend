@@ -95,7 +95,9 @@ import {
   autoChew,
   canChew,
   getCachedConsumables,
+  inebriety_left,
   spleen_left,
+  stomach_left,
 } from "../auto_consume";
 import {
   autoForceEquip,
@@ -129,7 +131,7 @@ import {
 } from "../auto_util";
 import { auto_canUse, combat_status_add } from "../combat/auto_combat_util";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { amw_wantMeat, in_amw } from "../paths/adventurer_meats_world";
+import { in_amw } from "../paths/adventurer_meats_world";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_darkGyffte } from "../paths/dark_gyffte";
 import { in_hattrick } from "../paths/hattrick";
@@ -2048,21 +2050,43 @@ export function auto_wantSoCP(): void {
   if (!auto_haveCrimboSkeleton()) {
     return;
   }
-  set("auto_preferSoCP", true);
-  // if amw_wantMeat is true, in meatpath we will (probably) select meat-dropping familiars instead of SoCP
-  if (get("_knuckleboneDrops") === 100 || amw_wantMeat()) {
-    set("auto_preferSoCP", false);
-    return;
+  let availableKnuckles: number = itemAmount($item`knucklebone`);
+
+  if (
+    auto_is_valid($item`Smoking Pope`) &&
+    stomach_left() > 0 &&
+    !get("_crimboPastSmokingPope")
+  ) {
+    availableKnuckles -= 5;
   }
+  if (
+    auto_is_valid($item`prize turkey`) &&
+    inebriety_left() > 0 &&
+    !get("_crimboPastPrizeTurkey")
+  ) {
+    availableKnuckles -= 5;
+  }
+  if (
+    auto_is_valid($item`medicinal gruel`) &&
+    !isActuallyEd() &&
+    stomach_left() > 0 &&
+    !get("_crimboPastMedicalGruel")
+  ) {
+    availableKnuckles -= 5;
+  }
+
+  if (
+    availableKnuckles >= 0 &&
+    (!get("auto_farmSoCP", false) || get("_knuckleboneDrops") >= 100)
+  ) {
+    set("auto_preferSoCP", false);
+  }
+
   let amt: number = 0;
   for (const phyl of $phyla`constellation, elemental, hippy, horror, mer-kin, plant, slime, bug`) {
     amt += auto_zonePhylumPercent(myLocation(), phyl);
   }
-  if (amt > 0.1) {
-    //want 10% or fewer of the available mobs to be knucklebone eligible, otherwise why bother with this guy vs fairychauns/fairyballs/fairyeverythings?
-    set("auto_preferSoCP", false);
-    return;
-  }
 
-  return;
+  //want 10% or fewer of the available mobs to be knucklebone eligible, otherwise why bother with this guy vs fairychauns/fairyballs/fairyeverythings?
+  set("auto_preferSoCP", amt <= 0.1);
 }

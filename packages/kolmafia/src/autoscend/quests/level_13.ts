@@ -173,7 +173,6 @@ import {
   auto_remainingCandyCaneSlashes,
 } from "../iotms/mr2023";
 import { auto_bczDelevelPlan, auto_haveBCZ, beretBusk } from "../iotms/mr2025";
-import { Maximizer, maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { is_boris } from "../paths/avatar_of_boris";
@@ -206,6 +205,7 @@ import { in_wereprof } from "../paths/wereprofessor";
 import { in_robot } from "../paths/you_robot";
 import { in_zombieSlayer } from "../paths/zombie_slayer";
 import { in_zootomist } from "../paths/zootomist";
+import { Maximizer, maximizer } from "../utils/maximizer";
 import { shenShouldDelayZone } from "./level_11";
 import { auto_warSide, equipWarOutfit } from "./level_12";
 

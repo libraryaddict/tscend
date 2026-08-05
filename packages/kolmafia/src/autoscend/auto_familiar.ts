@@ -83,7 +83,6 @@ import {
 import { auto_haveChestMimic } from "./iotms/mr2024";
 import { auto_haveCupidBow } from "./iotms/mr2025";
 import { auto_wantSwordFamiliar } from "./iotms/mr2026";
-import { maximizer } from "./maximizer";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_wantMeat, in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";
@@ -101,6 +100,7 @@ import { in_quantumTerrarium } from "./paths/quantum_terrarium";
 import { in_robot } from "./paths/you_robot";
 import { L13_wantsTheD } from "./quests/level_13";
 import { fileAsMap } from "./utils/kolmafiaUtils";
+import { maximizer } from "./utils/maximizer";
 
 //Defined in autoscend/auto_familiar.ash
 export function is100FamRun(): boolean {

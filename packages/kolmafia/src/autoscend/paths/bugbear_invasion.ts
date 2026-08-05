@@ -67,7 +67,7 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { maximizer } from "../maximizer";
+import { maximizer } from "../utils/maximizer";
 import { inAftercore } from "./casual";
 
 //Defined in autoscend/paths/bugbear_invasion.ash

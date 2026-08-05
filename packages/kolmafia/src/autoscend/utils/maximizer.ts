@@ -18,8 +18,8 @@ import {
 } from "kolmafia";
 import { $familiar, $skill, $slot } from "libram";
 
-import { auto_log_info } from "./auto_util";
-import { MAXIMIZER_ALIASES, MaximizerModifier } from "./utils/modifiers";
+import { auto_log_info } from "../auto_util";
+import { MAXIMIZER_ALIASES, MaximizerModifier } from "./modifiers";
 
 export type Criterion = Modifier | MaximizerModifier;
 

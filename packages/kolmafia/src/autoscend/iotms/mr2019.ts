@@ -96,13 +96,13 @@ import {
   wrap_item,
 } from "../auto_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
-import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_darkGyffte } from "../paths/dark_gyffte";
 import { in_lowkeysummer } from "../paths/low_key_summer";
 import { in_plumber } from "../paths/path_of_the_plumber";
 import { in_tcrs } from "../paths/two_crazy_random_summer";
 import { cyrptEvilBonus } from "../quests/level_07";
+import { maximizer } from "../utils/maximizer";
 
 // This is meant for items that have a date of 2019
 

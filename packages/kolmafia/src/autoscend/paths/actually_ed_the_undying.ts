@@ -110,7 +110,6 @@ import {
   auto_remainingSpeakeasyFreeFights,
   speakeasyCombat,
 } from "../iotms/mr2022";
-import { maximizer } from "../maximizer";
 import { tootGetMeat } from "../quests/level_01";
 import {
   LX_unlockHauntedBilliardsRoom,
@@ -119,6 +118,7 @@ import {
 } from "../quests/level_11";
 import { LX_islandAccess } from "../quests/level_any";
 import { AshMatcher } from "../utils/kolmafiaUtils";
+import { maximizer } from "../utils/maximizer";
 
 //Defined in autoscend/paths/actually_ed_the_undying.ash
 export function isActuallyEd(): boolean {

@@ -148,7 +148,6 @@ import {
 } from "./iotms/mr2025";
 import { auto_getDrinkCupOfThirteenForEffect } from "./iotms/mr2026";
 import { ARBSupplyDrop, auto_canARBSupplyDrop } from "./iotms/ttt";
-import { maximizer } from "./maximizer";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_canAfford, in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";
@@ -164,6 +163,7 @@ import { in_small } from "./paths/small";
 import { in_tcrs } from "./paths/two_crazy_random_summer";
 import { in_wereprof, is_professor } from "./paths/wereprofessor";
 import { in_zootomist } from "./paths/zootomist";
+import { maximizer } from "./utils/maximizer";
 
 //Defined in autoscend/auto_providers.ash
 export function providePlusCombat(

@@ -48,8 +48,8 @@ import {
 import { zone_isAvailable } from "../auto_zone";
 import { QuestTask, registerQuestTask } from "../engine/engine";
 import { auto_haveMobiusRing } from "../iotms/mr2025";
-import { maximizer } from "../maximizer";
 import { AshMatcher } from "../utils/kolmafiaUtils";
+import { maximizer } from "../utils/maximizer";
 
 //Defined in autoscend/paths/adventurer_meats_world.ash
 export function in_amw(): boolean {

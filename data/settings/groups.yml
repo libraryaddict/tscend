@@ -18,6 +18,8 @@ iotm:
   description: "Settings for items bound to accounts"
   color: "#22c3a6"
   children:
+    iotm/skeletonofcrimbopast:
+      name: "Skeleton of Crimbo Past (2025)"
     iotm/guzzler:
       name: "Guzzler (2020)"
     iotm/mushroom:

@@ -61,10 +61,10 @@ import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
 import { auto_beachCombHead } from "../iotms/mr2019";
 import { auto_copierShouldDelayZone } from "../iotms/mr2026";
-import { Maximizer, maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_glover } from "../paths/g_lover";
 import { in_wereprof } from "../paths/wereprofessor";
+import { Maximizer, maximizer } from "../utils/maximizer";
 
 //Defined in autoscend/quests/level_03.ash
 function auto_tavern(): boolean {

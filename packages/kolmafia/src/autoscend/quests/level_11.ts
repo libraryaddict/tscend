@@ -224,7 +224,6 @@ import {
   auto_spadeDigsRemaining,
   auto_wantToSpadeDigSkeleton,
 } from "../iotms/mr2026";
-import { maximizer } from "../maximizer";
 import {
   isActuallyEd,
   L9_ed_chasmStart,
@@ -263,6 +262,7 @@ import { in_wildfire } from "../paths/wildfire";
 import { in_robot, robot_delay } from "../paths/you_robot";
 import { in_zootomist } from "../paths/zootomist";
 import { AshMatcher } from "../utils/kolmafiaUtils";
+import { maximizer } from "../utils/maximizer";
 import { L3_tavern } from "./level_03";
 import { L8_trapperNinjaLair } from "./level_08";
 import { L9_chasmBuild } from "./level_09";

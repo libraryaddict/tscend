@@ -339,7 +339,6 @@ import {
   auto_canARBSupplyDrop,
   auto_haveARB,
 } from "./iotms/ttt";
-import { Maximizer, maximizer } from "./maximizer";
 import { handleServant, isActuallyEd } from "./paths/actually_ed_the_undying";
 import { in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";
@@ -394,6 +393,7 @@ import { needStarKey } from "./quests/level_13";
 import { candyBlock } from "./quests/level_any";
 import { AshMatcher } from "./utils/kolmafiaUtils";
 import { fileAsMap } from "./utils/kolmafiaUtils";
+import { Maximizer, maximizer } from "./utils/maximizer";
 
 //A file full of utility functions which we import into autoscend.ash
 

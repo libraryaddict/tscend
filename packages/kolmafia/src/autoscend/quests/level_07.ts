@@ -109,7 +109,6 @@ import {
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
 } from "../iotms/mr2026";
-import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
 import { is_pete } from "../paths/avatar_of_sneaky_pete";
@@ -119,6 +118,7 @@ import { lar_repeat } from "../paths/live_ascend_repeat";
 import { in_small } from "../paths/small";
 import { is_professor } from "../paths/wereprofessor";
 import { in_zombieSlayer } from "../paths/zombie_slayer";
+import { maximizer } from "../utils/maximizer";
 
 //Defined in autoscend/quests/level_07.ash
 export function cyrptChoiceHandler(choice: number): void {

@@ -110,7 +110,6 @@ import {
   auto_spadeDigsRemaining,
   auto_tryPlayBaseball,
 } from "./iotms/mr2026";
-import { maximizer } from "./maximizer";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_canAfford, in_amw } from "./paths/adventurer_meats_world";
 import { in_aosol } from "./paths/avatar_of_shadows_over_loathing";
@@ -124,6 +123,7 @@ import { ocrs_postHelper } from "./paths/one_crazy_random_summer";
 import { in_theSource } from "./paths/the_source";
 import { in_zombieSlayer } from "./paths/zombie_slayer";
 import { numPirateInsults } from "./quests/optional";
+import { maximizer } from "./utils/maximizer";
 
 function auto_beaten_handler(): void {
   if (haveEffect($effect`Beaten Up`) === 0) {

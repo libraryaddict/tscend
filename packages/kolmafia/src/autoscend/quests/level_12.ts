@@ -183,7 +183,6 @@ import {
   auto_haveArchaeologistSpade,
   auto_spadeDigsRemaining,
 } from "../iotms/mr2026";
-import { maximizer } from "../maximizer";
 import {
   ed_DelayNC$1,
   edAcquireHP,
@@ -221,6 +220,7 @@ import { in_wereprof, is_professor, is_werewolf } from "../paths/wereprofessor";
 import { wildfire_warboss_check } from "../paths/wildfire";
 import { robot_delay } from "../paths/you_robot";
 import { in_zombieSlayer } from "../paths/zombie_slayer";
+import { maximizer } from "../utils/maximizer";
 import { LX_islandAccess } from "./level_any";
 
 let $_static_0 = false;

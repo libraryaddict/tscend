@@ -234,7 +234,6 @@ import {
   auto_codpieceReconcileGem,
   auto_heartstoneShouldStealHeart,
 } from "./iotms/mr2026";
-import { Maximizer, maximizer } from "./maximizer";
 import {
   ed_handleAdventureServant,
   edAcquireHP,
@@ -261,6 +260,7 @@ import { in_wereprof, is_professor } from "./paths/wereprofessor";
 import { in_wildfire } from "./paths/wildfire";
 import { in_zootomist } from "./paths/zootomist";
 import { prepareForSmutOrcs, prepareForTwinPeak } from "./quests/level_09";
+import { Maximizer, maximizer } from "./utils/maximizer";
 
 //Calculates MP to acquire at low max mp levels
 //At low max MP, important to keep MP near max, since every saucestorm (etc.) counts

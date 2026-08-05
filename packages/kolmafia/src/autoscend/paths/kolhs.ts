@@ -49,7 +49,7 @@ import {
   safeGet,
 } from "../auto_util";
 import { monster_to_location, zone_isAvailable } from "../auto_zone";
-import { maximizer } from "../maximizer";
+import { maximizer } from "../utils/maximizer";
 
 //Defined in autoscend/paths/kolhs.ash
 export function in_kolhs(): boolean {

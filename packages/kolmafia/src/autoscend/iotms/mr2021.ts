@@ -91,7 +91,6 @@ import {
   wrap_item,
 } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
-import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_gnoob } from "../paths/gelatinous_noob";
 import { in_hattrick } from "../paths/hattrick";
@@ -107,6 +106,7 @@ import { cyrptEvilBonus } from "../quests/level_07";
 import { bridgeGoal } from "../quests/level_09";
 import { auto_bestWarPlan, auto_warKillsPerBattle } from "../quests/level_12";
 import { needStarKey } from "../quests/level_13";
+import { maximizer } from "../utils/maximizer";
 import { acquiredFantasyRealmToken, fantasyBanditsFought } from "./mr2018";
 import { auto_hasAutumnaton } from "./mr2022";
 import {

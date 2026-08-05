@@ -151,7 +151,6 @@ import {
   auto_codpieceFoldGemScores,
   auto_havePastaWand,
 } from "./iotms/mr2026";
-import { Maximizer, maximizer } from "./maximizer";
 import { applyMaximizePreference } from "./maximizer_parser";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { in_amw } from "./paths/adventurer_meats_world";
@@ -177,6 +176,7 @@ import { in_wildfire } from "./paths/wildfire";
 import { in_robot, robot_buildDefaultMaximize } from "./paths/you_robot";
 import { getZooBestPunch, in_zootomist } from "./paths/zootomist";
 import { cyrptEvilBonus } from "./quests/level_07";
+import { Maximizer, maximizer } from "./utils/maximizer";
 
 export function autoEquipToSlot(s: Slot, it: Item): boolean {
   if (!possessEquipment(it) || !auto_can_equip(it)) {

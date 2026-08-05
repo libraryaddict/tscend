@@ -80,7 +80,6 @@ import {
   wrap_item,
 } from "../auto_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
-import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { is_boris } from "../paths/avatar_of_boris";
@@ -95,6 +94,7 @@ import { in_wotsf } from "../paths/way_of_the_surprising_fist";
 import { hedgeTrimmersNeeded } from "../quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "../quests/level_10";
 import { AshMatcher } from "../utils/kolmafiaUtils";
+import { maximizer } from "../utils/maximizer";
 import { auto_havePillKeeper } from "./mr2019";
 
 //	This is meant for items that have a date of 2018.

@@ -97,7 +97,6 @@ import {
   auto_remainingBurningLeavesFights,
 } from "./iotms/mr2023";
 import { auto_haveElfToilet } from "./iotms/mr2026";
-import { maximizer } from "./maximizer";
 import { in_avantGuard } from "./paths/avant_guard";
 import { inAftercore } from "./paths/casual";
 import { in_koe } from "./paths/kingdom_of_exploathing";
@@ -108,6 +107,7 @@ import {
 import { is_professor } from "./paths/wereprofessor";
 import { in_robot, LX_robot_powerlevel } from "./paths/you_robot";
 import { candyBlock, freeCandyFightsLeft } from "./quests/level_any";
+import { maximizer } from "./utils/maximizer";
 
 //Defined in autoscend/auto_powerlevel.ash
 export function isAboutToPowerlevel(): boolean {

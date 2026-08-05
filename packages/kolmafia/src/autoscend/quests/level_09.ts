@@ -146,7 +146,6 @@ import {
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
 } from "../iotms/mr2026";
-import { Maximizer, maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_bhy } from "../paths/bees_hate_you";
@@ -159,6 +158,7 @@ import { in_plumber } from "../paths/path_of_the_plumber";
 import { in_quantumTerrarium } from "../paths/quantum_terrarium";
 import { is_professor, is_werewolf } from "../paths/wereprofessor";
 import { robot_delay } from "../paths/you_robot";
+import { Maximizer, maximizer } from "../utils/maximizer";
 import { shenShouldDelayZone } from "./level_11";
 
 //Defined in autoscend/quests/level_09.ash

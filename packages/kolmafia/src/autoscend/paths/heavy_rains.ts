@@ -64,7 +64,7 @@ import {
   internalQuestStatus,
   setFlavour,
 } from "../auto_util";
-import { maximizer } from "../maximizer";
+import { maximizer } from "../utils/maximizer";
 import { inAftercore } from "./casual";
 
 //Defined in autoscend/paths/heavy_rains.ash

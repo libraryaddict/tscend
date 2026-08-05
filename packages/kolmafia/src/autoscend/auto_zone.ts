@@ -61,7 +61,6 @@ import {
   auto_canTendMushroomGarden,
 } from "./iotms/mr2020";
 import { auto_haveBatWings } from "./iotms/mr2024";
-import { maximizer } from "./maximizer";
 import { bugbear_BioDataRemaining, in_bugbear } from "./paths/bugbear_invasion";
 import { in_koe } from "./paths/kingdom_of_exploathing";
 import { kolhs_mandatorySchool } from "./paths/kolhs";
@@ -83,6 +82,7 @@ import {
   LX_unlockThinknerdWarehouse,
   numPirateInsults,
 } from "./quests/optional";
+import { maximizer } from "./utils/maximizer";
 
 //All functions should fail if the king is liberated?
 //Zone functions come here.

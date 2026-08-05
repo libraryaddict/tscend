@@ -93,7 +93,6 @@ import {
 import { auto_wishesAvailable, makeGenieWish } from "../iotms/mr2017";
 import { januaryToteAcquire } from "../iotms/mr2018";
 import { auto_haveTearawayPants } from "../iotms/mr2024";
-import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { in_darkGyffte } from "../paths/dark_gyffte";
@@ -108,6 +107,7 @@ import { in_picky } from "../paths/picky";
 import { in_pokefam } from "../paths/pocket_familiars";
 import { in_wereprof } from "../paths/wereprofessor";
 import { in_robot } from "../paths/you_robot";
+import { maximizer } from "../utils/maximizer";
 import { L5_slayTheGoblinKing } from "./level_05";
 import { L6_friarsGetParts } from "./level_06";
 import { hasSpookyravenLibraryKey, shenShouldDelayZone } from "./level_11";

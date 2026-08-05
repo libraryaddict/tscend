@@ -113,7 +113,6 @@ import {
 import { monster_to_location, zone_delay } from "../auto_zone";
 import { ConsumeAction } from "../autoscend_record";
 import { getIncompleteQuestTasks } from "../engine/engine";
-import { maximizer } from "../maximizer";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_koe } from "../paths/kingdom_of_exploathing";
@@ -135,6 +134,7 @@ import {
   L11_needWetStew,
 } from "../quests/level_11";
 import { auto_gunpowderBarrelsWanted } from "../quests/level_12";
+import { maximizer } from "../utils/maximizer";
 import { auto_haveTrainSet } from "./mr2022";
 import { auto_haveCCSC } from "./mr2023";
 import {

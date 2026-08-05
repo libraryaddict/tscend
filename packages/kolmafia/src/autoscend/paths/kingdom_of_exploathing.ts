@@ -69,9 +69,9 @@ import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { doHottub } from "../iotms/clan";
 import { auto_beachCombHead, auto_canBeachCombHead } from "../iotms/mr2019";
 import { auto_canUseJuneCleaver } from "../iotms/mr2022";
-import { maximizer } from "../maximizer";
 import { equipWarOutfit, haveWarOutfit } from "../quests/level_12";
 import { needDigitalKey } from "../quests/level_13";
+import { maximizer } from "../utils/maximizer";
 
 //Defined in autoscend/paths/kingdom_of_exploathing.ash
 export function in_koe(): boolean {
