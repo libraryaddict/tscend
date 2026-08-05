@@ -1548,23 +1548,24 @@ function auto_baseballScorchWorthyAnywhere(mon: Monster): boolean {
 function auto_baseballBuildAssignments(team: Monster[]): BaseballAssignment[] {
   const claimed: boolean[] = new Array(team.length).fill(false);
   const assignments: BaseballAssignment[] = [];
+
   let hotAssigned = false;
   let stenchAssigned = false;
   let spookyAssigned = false;
 
-  for (let i = 0; i < team.length; i++) {
-    const unclaimedBefore: number[] = [];
-    for (let j = 0; j < i; j++) {
-      if (!claimed[j]) {
-        unclaimedBefore.push(j);
-      }
-    }
-    if (unclaimedBefore.length < 2) {
+  const isRiskySetupSlot = (mon: Monster): boolean =>
+    (!hotAssigned && auto_baseballScorchWorthyAnywhere(mon)) ||
+    (!stenchAssigned && auto_wantToSniff(mon, myLocation()));
+
+  // Last viable finisher for each element wins, even at an earlier one's expense.
+  for (let i = team.length - 1; i >= 0; i--) {
+    if (claimed[i]) {
       continue;
     }
 
     const mon = team[i];
     let element: Element | undefined;
+
     if (!hotAssigned && auto_baseballScorchWorthyAnywhere(mon)) {
       element = $element`hot`;
     } else if (!stenchAssigned && auto_wantToSniff(mon, myLocation())) {
@@ -1572,16 +1573,27 @@ function auto_baseballBuildAssignments(team: Monster[]): BaseballAssignment[] {
     } else if (!spookyAssigned) {
       element = $element`spooky`;
     }
+
     if (!element) {
       continue;
     }
 
-    const normalSlots = unclaimedBefore.slice(0, 2);
+    const safeSlots: number[] = [];
+    const riskySlots: number[] = [];
+    for (let j = i - 1; j >= 0; j--) {
+      if (!claimed[j]) {
+        (isRiskySetupSlot(team[j]) ? riskySlots : safeSlots).push(j);
+      }
+    }
+    const normalSlots = [...safeSlots, ...riskySlots].slice(0, 2);
+
+    if (normalSlots.length < 2) {
+      continue;
+    }
+
     claimed[i] = true;
     claimed[normalSlots[0]] = true;
     claimed[normalSlots[1]] = true;
-
-    assignments.push({ element, finisherSlot: i, normalSlots });
 
     if (element === $element`hot`) {
       hotAssigned = true;
@@ -1590,7 +1602,11 @@ function auto_baseballBuildAssignments(team: Monster[]): BaseballAssignment[] {
     } else {
       spookyAssigned = true;
     }
+
+    assignments.push({ element, finisherSlot: i, normalSlots });
   }
+
+  assignments.sort((a, b) => a.finisherSlot - b.finisherSlot);
 
   return assignments;
 }
