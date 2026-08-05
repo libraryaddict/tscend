@@ -175,7 +175,9 @@ export function auto_combatDefaultStage2(
   }
   if (
     myFamiliar() === $familiar`Sword of S Words` &&
-    auto_sword_of_swords_tracking() !== Monster.none
+    auto_sword_of_swords_tracking() !== Monster.none &&
+    enemy.copyable &&
+    !enemy.boss
   ) {
     if (
       auto_swordIsWillingToSwitchTargets() &&
