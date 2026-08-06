@@ -3979,13 +3979,10 @@ function L11_shenCopperheadDo(): boolean {
       !in_tcrs()
     ) {
       use(1, $item`crappy waiter disguise`);
-      const behindtheStacheOption = [
-        "gong",
-        "ice bucket",
-        "lantern",
-        "cocktails",
-        "diamond",
-      ].indexOf(L11_shenWaiterNC());
+      const behindtheStacheOption =
+        ["gong", "ice bucket", "lantern", "cocktails", "diamond"].indexOf(
+          L11_shenWaiterNC(),
+        ) + 1;
       set("choiceAdventure855", behindtheStacheOption);
     }
 
