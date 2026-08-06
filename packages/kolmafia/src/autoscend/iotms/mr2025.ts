@@ -1677,7 +1677,7 @@ function auto_getMinOffstatDelevel(statComparedAgainst: number): number {
 type BCZSkill = {
   skill: Skill;
   stat: Stat;
-  limit: (conserve: boolean) => number;
+  limit: (burningForProgression: boolean) => number;
   pref: string;
   gives?: Item;
 };
@@ -1706,7 +1706,7 @@ const BCZ: BCZSkill[] = [
   {
     skill: $skill`BCZ: Refracted Gaze`,
     stat: $stat`Mysticality`,
-    limit: (conserve) => (conserve ? 3 : 20),
+    limit: (burningForProgression) => (burningForProgression ? 20 : 6),
     pref: "_bczRefractedGazeCasts",
   },
   {
@@ -1718,14 +1718,12 @@ const BCZ: BCZSkill[] = [
   {
     skill: $skill`BCZ: Prepare Spinal Tapas`,
     stat: $stat`Mysticality`,
-    limit: (conserve) =>
+    limit: (burningForProgression) =>
+      // We always cast at least 3 times, then we will cast it everytime we run out and it doesn't exceed our limit
       Math.min(
-        Math.max(
-          3,
-          get("_bczSpinalTapasCasts") +
-            (itemAmount($item`spinal tapas`) > 0 ? 0 : 1),
-        ),
-        conserve ? 3 : 20,
+        Math.max(3, get("_bczSpinalTapasCasts")) +
+          (itemAmount($item`spinal tapas`) > 0 ? 0 : 1),
+        burningForProgression ? 20 : 6,
       ),
     pref: "_bczSpinalTapasCasts",
     gives: $item`spinal tapas`,
@@ -1734,17 +1732,18 @@ const BCZ: BCZSkill[] = [
   {
     skill: $skill`BCZ: Sweat Bullets`,
     stat: $stat`Moxie`,
-    limit: (conserve) => (conserve ? 6 : 20),
+    limit: (burningForProgression) => (burningForProgression ? 20 : 6),
     pref: "_bczSweatBulletsCasts",
   },
   {
     skill: $skill`BCZ: Craft a Pheromone Cocktail`,
     stat: $stat`Moxie`,
-    limit: (conserve) =>
+    limit: (burningForProgression) =>
+      // We always cast at least 3 times, then we will cast it everytime we run out and it doesn't exceed our limit
       Math.min(
-        Math.max(6, get("_bczPheromoneCocktailCasts")) +
+        Math.max(3, get("_bczPheromoneCocktailCasts")) +
           (itemAmount($item`pheromone cocktail`) > 0 ? 0 : 1),
-        conserve ? 6 : 20,
+        burningForProgression ? 20 : 6,
       ),
     pref: "_bczPheromoneCocktailCasts",
     gives: $item`pheromone cocktail`,
@@ -1752,7 +1751,7 @@ const BCZ: BCZSkill[] = [
   {
     skill: $skill`BCZ: Sweat Equity`,
     stat: $stat`Moxie`,
-    limit: (conserve) => (conserve ? 2 : 5),
+    limit: (burningForProgression) => (burningForProgression ? 5 : 2),
     pref: "_bczSweatEquityCasts",
   },
 ] as const;
@@ -1779,7 +1778,7 @@ export function auto_wantToBCZ(sk: Skill): boolean {
 
   return (
     bcz_allowStatChange(info.stat, get(info.pref, 0)) &&
-    get(info.pref, 0) < info.limit(!get("auto_burndownStatsProgression", false))
+    get(info.pref, 0) < info.limit(get("auto_burndownStatsProgression", false))
   );
 }
 
@@ -1815,7 +1814,7 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
     !bcz_allowStatChange($stat`Mysticality`, refractedGazeCastsUsed + 1) ||
     refractedGazeCastsUsed + 1 >=
       BCZ.find((s) => s.skill === $skill`BCZ: Refracted Gaze`)!.limit(
-        !get("auto_burndownStatsProgression", false),
+        get("auto_burndownStatsProgression", false),
       );
   if (
     onFinalDay &&
