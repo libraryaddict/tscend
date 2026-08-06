@@ -23,6 +23,7 @@ import {
   currentMcd,
   currentRound,
   Effect,
+  effectModifier,
   Element,
   equip,
   equippedAmount,
@@ -54,6 +55,7 @@ import {
   Item,
   itemAmount,
   itemDropModifier,
+  itemDropsArray,
   itemType,
   knollAvailable,
   lastChoice,
@@ -119,6 +121,7 @@ import {
   squareRoot,
   Stat,
   storageAmount,
+  stringModifier,
   substring,
   Thrall,
   thunderCost,
@@ -7218,4 +7221,59 @@ export function safeGet<T>(key: string, fallback: T): T {
     fallback,
   );
   return value === null ? fallback : value;
+}
+
+const DropMappings = {
+  none: "", // No special rules
+  unknown: "0", // Not spaded?
+  pickpocket_only: "p", // Only gained via pickpocket
+  no_pickpocket: "n", // Can't pickpocket
+  conditional: "c", // Can't always say it'll drop
+  fixed: "f", // Needs a fixed item drop?
+  steal_accordion: "a", // Only via steal accordion
+  multi_drop: "m", // Hobo bosses?
+} as const;
+
+type DropType = keyof typeof DropMappings;
+type DropCode = (typeof DropMappings)[DropType];
+
+const DropNames = Object.fromEntries(
+  Object.entries(DropMappings).map(([name, code]) => [code, name]),
+) as Record<DropCode, DropType>;
+
+type MonsterDrop = { item: Item; flag: DropType; rate: number };
+
+export function getMonsterDrops(monster: Monster): MonsterDrop[] {
+  return itemDropsArray(monster).map((r) => ({
+    item: r.drop,
+    rate: r.rate,
+    flag: DropNames[r.type as DropCode],
+  }));
+}
+
+export function isItemDropControlled(drop: MonsterDrop): boolean {
+  return !(
+    ["pickpocket_only", "steal_accordion", "conditional"] as DropType[]
+  ).includes(drop.flag);
+}
+
+// If this item is ensured
+export function isDropCapped(drop: MonsterDrop): boolean {
+  const rate = drop.rate * (itemDropModifier() / 100);
+
+  return rate >= 100;
+}
+
+export function isDropsCapped(monster: Monster): boolean {
+  return getMonsterDrops(monster).every(
+    (m) =>
+      !isItemDropControlled(m) ||
+      isDropCapped(m) ||
+      // We don't strict for manual potions
+      (m.flag === "conditional" && isManualAvatarPotion(m.item)),
+  );
+}
+
+function isManualAvatarPotion(item: Item): boolean {
+  return stringModifier(effectModifier(item, "Effect"), "Avatar") !== "";
 }
