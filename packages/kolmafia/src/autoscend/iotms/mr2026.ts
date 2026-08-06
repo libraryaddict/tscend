@@ -110,6 +110,7 @@ import {
   isFreeMonster,
   meatReserve,
   safeGet,
+  set_next_fight_is_free,
   summonMonster,
 } from "../auto_util";
 import { monster_to_location, zone_delay } from "../auto_zone";
@@ -727,21 +728,27 @@ export function auto_spadeDigSkeleton(): boolean {
     pages.set(0, use_url);
     pages.set(1, choice_url);
     const loc: Location = myLocation();
-    if (autoAdvBypass(0, pages, $location`Noob Cave`)) {
+    try {
+      set_next_fight_is_free();
+      if (autoAdvBypass(0, pages, $location`Noob Cave`)) {
+        handleTracker({
+          what: SPADE,
+          location: loc,
+          detail: `Dig up a skeleton`,
+          property: "auto_otherstuff",
+        });
+        return true;
+      }
       handleTracker({
         what: SPADE,
         location: loc,
-        detail: `Dig up a skeleton`,
+        detail: "FAILED: Dig up a skeleton",
         property: "auto_otherstuff",
       });
-      return true;
+    } finally {
+      // Reset the flag
+      set_next_fight_is_free(false);
     }
-    handleTracker({
-      what: SPADE,
-      location: loc,
-      detail: "FAILED: Dig up a skeleton",
-      property: "auto_otherstuff",
-    });
   }
   return false;
 }

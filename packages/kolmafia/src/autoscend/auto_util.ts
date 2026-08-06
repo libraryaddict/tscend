@@ -929,6 +929,17 @@ export function prepareYellowRayNextCombat(): boolean {
   return false;
 }
 
+/**
+ * Called when our next fight will be free, but mafia doesn't have tracking for it
+ */
+export function set_next_fight_is_free(isFree: boolean = true) {
+  if (isFree) {
+    set("_auto_current_monster_is_free", isFree);
+  } else {
+    removeProperty("_auto_current_monster_is_free");
+  }
+}
+
 function run_end_of_combat() {
   if (get("_auto_toxicAssetUses", 0) > 0) {
     if (get("_auto_toxicAssetUses", 0) === 1) {
@@ -937,6 +948,7 @@ function run_end_of_combat() {
       set("_auto_toxicAssetUses", get("_auto_toxicAssetUses", 0) - 1);
     }
   }
+  set_next_fight_is_free(false);
 }
 
 export function isYellowRayingNextCombat(): boolean {
@@ -1384,7 +1396,10 @@ export function auto_forceFreeRun(combat: boolean): boolean {
 }
 
 export function auto_wantToFreeRun(enemy: Monster, loc: Location): boolean {
-  if ((appearanceRates(loc)[enemy.toString()] ??= 0.0) <= 0) {
+  if (
+    (appearanceRates(loc)[enemy.toString()] ??= 0.0) <= 0 ||
+    (currentRound() > 0 && isFreeMonster(enemy, loc))
+  ) {
     return false;
   }
   const locCache: Location = myLocation();
@@ -2949,6 +2964,10 @@ export function isFreeMonster(
   //No free fights in Avant Guard. Well, there are, but they now have non-free bodyguards so anything that is free now costs a turn
   if (in_avantGuard()) {
     return false;
+  }
+
+  if (get("_auto_current_monster_is_free", false)) {
+    return true;
   }
 
   if (mon === $monster`time cop` && get("_timeCopsFoughtToday") < 11) {
