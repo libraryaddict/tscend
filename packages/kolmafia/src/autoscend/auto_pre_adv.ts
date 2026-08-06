@@ -261,6 +261,7 @@ import { in_wereprof, is_professor } from "./paths/wereprofessor";
 import { in_wildfire } from "./paths/wildfire";
 import { in_zootomist } from "./paths/zootomist";
 import { prepareForSmutOrcs, prepareForTwinPeak } from "./quests/level_09";
+import { auto_8BitCheckCappingScore } from "./quests/level_13";
 import { Maximizer, maximizer } from "./utils/maximizer";
 
 //Calculates MP to acquire at low max mp levels
@@ -1291,6 +1292,7 @@ function auto_pre_adventure(): boolean {
   // EQUIP MAXIMIZED GEAR
   auto_ghost_prep(place);
   equipMaximizedGear();
+  auto_8BitCheckCappingScore(place);
 
   auto_handleRetrocape(); // has to be done after equipMaximizedGear otherwise the maximizer reconfigures it
   auto_handleParka(); //same as retrocape above

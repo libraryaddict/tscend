@@ -97,7 +97,10 @@ import { in_lowkeysummer } from "./paths/low_key_summer";
 import { in_pokefam } from "./paths/pocket_familiars";
 import { in_quantumTerrarium } from "./paths/quantum_terrarium";
 import { in_robot } from "./paths/you_robot";
-import { L13_wantsTheD } from "./quests/level_13";
+import {
+  auto_8BitCanUseAnyFamiliar as auto_8BitCapsScoreWithoutFamiliar,
+  L13_wantsTheD,
+} from "./quests/level_13";
 import { fileAsMap } from "./utils/kolmafiaUtils";
 import { maximizer } from "./utils/maximizer";
 
@@ -576,7 +579,9 @@ function autoChooseFamiliar(place: Location): boolean {
   if (
     $locations`Guano Junction, The Beanbat Chamber, Cobb's Knob Harem, The Goatlet, Itznotyerzitz Mine, Twin Peak, The Penultimate Fantasy Airship, The Hidden Temple, The Hidden Bowling Alley, The Haunted Wine Cellar, The Haunted Laundry Room, The Copperhead Club, A Mob of Zeppelin Protesters, Whitey's Grove, The Oasis, The Middle Chamber, The Orcish Frat House, The Hippy Camp, The Hatching Chamber, The Feeding Chamber, The Royal Guard Chamber, The Hole in the Sky, Hero's Field, The Degrassi Knoll Garage, The Old Landfill, The Laugh Floor, Infernal Rackets Backstage`.includes(
       place,
-    )
+    ) &&
+    (place !== $location`Hero's Field` ||
+      !auto_8BitCapsScoreWithoutFamiliar($location`Hero's Field`))
   ) {
     famChoice = lookupFamiliarDatafile("item");
   }
@@ -739,7 +744,10 @@ function autoChooseFamiliar(place: Location): boolean {
   if ($location`The Themthar Hills` === place) {
     famChoice = lookupFamiliarDatafile("meat");
   }
-  if ($location`The Fungus Plains` === place) {
+  if (
+    $location`The Fungus Plains` === place &&
+    !auto_8BitCapsScoreWithoutFamiliar($location`The Fungus Plains`)
+  ) {
     famChoice = lookupFamiliarDatafile("meat");
   }
   // places where initiative is required to help save adventures.
@@ -749,7 +757,10 @@ function autoChooseFamiliar(place: Location): boolean {
   ) {
     famChoice = lookupFamiliarDatafile("init");
   }
-  if ($location`Vanya's Castle` === place) {
+  if (
+    $location`Vanya's Castle` === place &&
+    !auto_8BitCapsScoreWithoutFamiliar($location`Vanya's Castle`)
+  ) {
     famChoice = lookupFamiliarDatafile("init");
   }
 

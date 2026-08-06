@@ -42,6 +42,7 @@ import {
   myMaxhp,
   myMeat,
   myPrimestat,
+  myTurncount,
   numericModifier,
   propertyExists,
   pullsRemaining,
@@ -113,6 +114,8 @@ import {
   handleFamiliar$1,
   isAttackFamiliar,
   lookupFamiliarDatafile,
+  pathAllowsChangingFamiliar,
+  pathHasFamiliar,
   preAdvUpdateFamiliar,
 } from "../auto_familiar";
 import {
@@ -420,6 +423,91 @@ const get8BitFatLootTokenTask: QuestTask = registerQuestTask({
 
 export function get8BitFatLootToken(): boolean {
   return runQuestTask(get8BitFatLootTokenTask);
+}
+
+const eightBitLocs: {
+  location: Location;
+  modifier: Modifier;
+  target: number;
+}[] = [
+  {
+    location: $location`Vanya's Castle`,
+    modifier: $modifier`Initiative`,
+    target: 595.6,
+  },
+  {
+    location: $location`Hero's Field`,
+    modifier: $modifier`Item Drop`,
+    target: 395.6,
+  },
+  {
+    location: $location`The Fungus Plains`,
+    modifier: $modifier`Meat Drop`,
+    target: 445.6,
+  },
+];
+const canUseAnyFamiliar: Map<
+  Location,
+  { canUseAnyFamiliar: boolean; computed: number }
+> = new Map();
+
+export function auto_8BitCanUseAnyFamiliar(place: Location): boolean {
+  const compute = canUseAnyFamiliar.get(place);
+
+  return compute !== undefined && compute.canUseAnyFamiliar;
+}
+
+// Updates the cache for future runs, if we actually need to enforce a familiar for the zone
+export function auto_8BitCheckCappingScore(place: Location): void {
+  if (
+    !canChangeFamiliar() ||
+    !pathHasFamiliar() ||
+    !pathAllowsChangingFamiliar()
+  ) {
+    return;
+  }
+
+  const realm = eightBitLocs.find((t) => t.location === place);
+  if (realm === undefined) {
+    return;
+  }
+
+  // Subtract 40 because our fams don't give zeros
+  let meetsTarget = numericModifier(realm.modifier) - 40 >= realm.target;
+
+  const cached = canUseAnyFamiliar.get(place);
+
+  // If we do not meet the target, then we cannot use any familiar
+  if (!meetsTarget) {
+    canUseAnyFamiliar.set(place, {
+      canUseAnyFamiliar: meetsTarget,
+      computed: myTurncount(),
+    });
+    return;
+  }
+
+  if (cached !== undefined && cached.canUseAnyFamiliar === meetsTarget) {
+    cached.computed = myTurncount();
+    return;
+  }
+
+  // At this point, the cache says we can't use any familiar, while we think we might be able to
+  // If not enough turns has elapsed, then don't bother checking
+  if (cached !== undefined && cached.computed + 40 >= myTurncount()) {
+    return;
+  }
+
+  // Switch our familiar, then switch back
+  const current = myFamiliar();
+  useFamiliar($familiar`none`);
+  // Subtract 40 because our fams don't give zeros
+  meetsTarget = numericModifier(realm.modifier) >= realm.target;
+  useFamiliar(current);
+
+  canUseAnyFamiliar.set(place, {
+    canUseAnyFamiliar: meetsTarget,
+    computed: myTurncount(),
+  });
 }
 
 function LX_getDigitalKeyDo(): boolean {
