@@ -63,7 +63,9 @@ import {
   EternityCodpiece,
   get,
   have,
+  isWandererNow,
   set,
+  Wanderer,
 } from "libram";
 
 import { auto_unreservedAdvRemaining } from "../../autoscend";
@@ -1942,6 +1944,20 @@ export function auto_wantSwordFamiliar(place: Location): boolean {
   // Traces/afterimage bandit chains force the same rematch either way, and fantasy bandit's own drop is conditional (never overwritten), so it's free
   if (auto_canTracesBandit() && auto_desires_sword_familiar_drops()) {
     return true;
+  }
+  // Don't bring the sword out if we're about to hit a wanderer
+  if (
+    auto_sword_of_swords_tracking() !== Monster.none &&
+    [
+      Wanderer.Digitize,
+      Wanderer.Enamorang,
+      Wanderer.Familiar,
+      Wanderer.Kramco,
+      Wanderer.Romantic,
+      ...(get("_voteFreeFights") < 3 ? [Wanderer.Vote] : []),
+    ].some((w) => isWandererNow(w))
+  ) {
+    return false;
   }
   if (!zone_delay(place)._boolean) {
     return false;
