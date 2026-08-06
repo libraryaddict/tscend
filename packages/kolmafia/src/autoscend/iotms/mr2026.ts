@@ -165,16 +165,12 @@ export function auto_isInEternityCodpiece(it: Item): boolean {
 
 const CODPIECE_MANAGED_GEMS: Item[] = $items`blood cubic zirconia, Baseball Diamond, Heartstone`;
 
-// Gems folded into the codpiece's score by the most recent auto_codpieceFoldGemScores() call.
-const codpieceFoldedGemsThisPass = new Set<Item>();
-
 // Prefer a spare Heartstone that isn't wanted for stealing a heart this pass over a massive gemstone.
 function auto_codpieceFillerItem(): Item {
   return (
     $items`Heartstone, massive gemstone`.find(
       (i) =>
-        (!codpieceFoldedGemsThisPass.has(i) ||
-          !CODPIECE_MANAGED_GEMS.includes(i)) &&
+        (maximizer.getBonus(i) <= 0 || !CODPIECE_MANAGED_GEMS.includes(i)) &&
         itemAmount(i) > 0,
     ) ?? Item.none
   );
@@ -201,26 +197,15 @@ function auto_codpieceOriginalGems(): Item[] {
 // maximizer pick one. Folding their scores into the codpiece's instead reflects the
 // true value of wearing all of them at once via its five gem slots.
 export function auto_codpieceFoldGemScores(): void {
-  codpieceFoldedGemsThisPass.clear();
-
   if (!auto_haveEternityCodpiece()) {
+    maximizer.clearFoldedBonuses($item`The Eternity Codpiece`);
     return;
   }
 
-  let codpieceBonus = 0;
-  for (const gem of CODPIECE_MANAGED_GEMS) {
-    const amount = maximizer.getBonus(gem);
-    if (amount <= 0) {
-      continue;
-    }
-    codpieceBonus += amount;
-    maximizer.clearBonus(gem);
-    codpieceFoldedGemsThisPass.add(gem);
-  }
-
-  if (codpieceBonus > 0) {
-    maximizer.bonus($item`The Eternity Codpiece`, codpieceBonus);
-  }
+  maximizer.foldBonusesInto(
+    $item`The Eternity Codpiece`,
+    CODPIECE_MANAGED_GEMS,
+  );
 }
 
 export function auto_codpieceReconcileGem(gem: Item): void {
@@ -228,7 +213,7 @@ export function auto_codpieceReconcileGem(gem: Item): void {
     return;
   }
 
-  const wanted: boolean = codpieceFoldedGemsThisPass.has(gem);
+  const wanted: boolean = maximizer.getBonus(gem) > 0;
   const codpieceWorn: boolean = haveEquipped($item`The Eternity Codpiece`);
   const inCodpiece: boolean = auto_isInEternityCodpiece(gem);
   const slots: readonly Slot[] = EternityCodpiece.SLOTS;

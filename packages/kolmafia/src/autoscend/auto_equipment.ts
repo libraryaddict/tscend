@@ -151,6 +151,7 @@ import {
   auto_clubEmBackInTimesRemaining,
   auto_codpieceFoldGemScores,
   auto_havePastaWand,
+  auto_isInEternityCodpiece,
 } from "./iotms/mr2026";
 import { applyMaximizePreference } from "./maximizer_parser";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
@@ -1046,7 +1047,6 @@ function finalizeMaximize(speculative: boolean = false): void {
     maximizer.cancelEquip($item`LED candle`);
   }
 
-  // Must run last: folds every wanted codpiece gem's own score into the codpiece's score.
   auto_codpieceFoldGemScores();
 }
 
@@ -1210,7 +1210,8 @@ export function equipmentAmount(equipment: Item): number {
 }
 
 export function possessEquipment(equipment: Item): boolean {
-  return equipmentAmount(equipment) > 0;
+  // itemAmount/equippedAmount don't see gems socketed into the Eternity Codpiece.
+  return equipmentAmount(equipment) > 0 || auto_isInEternityCodpiece(equipment);
 }
 
 export function possessUnrestricted(it: Item): boolean {

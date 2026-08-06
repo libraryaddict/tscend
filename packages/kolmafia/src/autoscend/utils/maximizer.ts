@@ -80,6 +80,8 @@ export class Maximizer {
   private readonly pendingBonus = new Map<Item, number>();
   private readonly modes = new Map<Item, Set<string>>();
   private readonly otherRequirements = new Map<MaximizerModifier, boolean>();
+  // target -> sources whose bonuses are summed into target's term at toString()-time.
+  private readonly foldedBonusGroups = new Map<Item, Item[]>();
 
   getWeight(mod: Criterion): number {
     return this.weights.get(criterionName(mod)) ?? 0;
@@ -94,7 +96,7 @@ export class Maximizer {
       );
       this.weights.set(name, (this.weights.get(name) ?? 0) + amount);
     } else {
-      if (this.weights.has(name)) {
+      if (this.weights.has(name) && this.weights.get(name) !== amount) {
         auto_log_info(
           `Overwriting maximizer weight for ${name}: ${this.weights.get(name)} => ${amount}`,
         );
@@ -125,7 +127,10 @@ export class Maximizer {
       );
       this.pendingBonus.set(item, (this.pendingBonus.get(item) ?? 0) + amount);
     } else {
-      if (this.pendingBonus.has(item)) {
+      if (
+        this.pendingBonus.has(item) &&
+        this.pendingBonus.get(item) !== amount
+      ) {
         auto_log_info(
           `Overwriting maximizer bonus for ${item}: ${this.pendingBonus.get(item)} => ${amount}`,
         );
@@ -227,6 +232,16 @@ export class Maximizer {
     return this;
   }
 
+  foldBonusesInto(target: Item, sources: Item[]): this {
+    this.foldedBonusGroups.set(target, sources);
+    return this;
+  }
+
+  clearFoldedBonuses(target: Item): this {
+    this.foldedBonusGroups.delete(target);
+    return this;
+  }
+
   has(text: Slot | Criterion | Item): boolean {
     if (text instanceof Slot) {
       return this.onlySlots.has(text) || this.disabledSlots.has(text);
@@ -271,6 +286,10 @@ export class Maximizer {
     copyMap(from.pendingEquip, this.pendingEquip);
     copyMap(from.pendingBonus, this.pendingBonus);
     copyMap(from.otherRequirements, this.otherRequirements);
+    this.foldedBonusGroups.clear();
+    for (const [target, sources] of from.foldedBonusGroups) {
+      this.foldedBonusGroups.set(target, [...sources]);
+    }
     this.modes.clear();
     for (const [item, itemModes] of from.modes) {
       this.modes.set(item, new Set(itemModes));
@@ -388,15 +407,39 @@ export class Maximizer {
     }
     terms.push(...this.custom);
 
-    for (const [item, amount] of this.pendingBonus) {
+    const foldedAway = new Set<Item>();
+    for (const [target, sources] of this.foldedBonusGroups) {
+      foldedAway.add(target);
+      for (const source of sources) foldedAway.add(source);
+    }
+
+    const pushBonusTerm = (item: Item, amount: number): void => {
       const itemModes = this.modes.get(item);
       if (!itemModes || itemModes.size === 0) {
         terms.push(`+${amount}"bonus ${item}"`);
-        continue;
+        return;
       }
       for (const value of itemModes) {
         terms.push(`+${amount}"bonus ${item} (${value})"`);
       }
+    };
+
+    for (const [item, amount] of this.pendingBonus) {
+      if (foldedAway.has(item)) {
+        continue;
+      }
+      pushBonusTerm(item, amount);
+    }
+
+    for (const [target, sources] of this.foldedBonusGroups) {
+      const total = sources.reduce(
+        (sum, source) => sum + (this.pendingBonus.get(source) ?? 0),
+        this.pendingBonus.get(target) ?? 0,
+      );
+      if (total <= 0) {
+        continue;
+      }
+      pushBonusTerm(target, total);
     }
 
     for (const item of this.pendingEquip.values()) {
