@@ -659,19 +659,21 @@ function L9_aBooPeakDo(): boolean {
     }
     clue = $item`glued A-Boo clue`;
   }
-  const clueAmt: number = itemAmount(clue);
+  const clueAmt: number =
+    itemAmount(clue) + (get("auto_aboopending", 0) !== 0 ? 1 : 0);
 
   if (is_professor() && clueAmt >= 3) {
     return false; // We have clues but we can't survive them so not worth trying when we only have 1 hp
   }
 
-  if (get("booPeakProgress") > 90) {
+  if (clueAmt * 30 < get("booPeakProgress")) {
     auto_log_info(
       `A-Boo Peak (initial): ${getProperty("booPeakProgress")}`,
       "blue",
     );
 
-    if (clueAmt < 3) {
+    // If a clue would speed things up
+    if (clueAmt * 30 + 4 < get("booPeakProgress")) {
       // boo clues have 15% drop
       provideItem$2(567, $location`A-Boo Peak`, false);
     }
@@ -702,7 +704,7 @@ function L9_aBooPeakDo(): boolean {
   }
 
   auto_log_info(`A-Boo Peak: ${getProperty("booPeakProgress")}`, "blue");
-  const clueCheck: boolean = clueAmt > 0 || get("auto_aboopending", 0) !== 0;
+  const clueCheck: boolean = clueAmt > 0;
   if (
     get("auto_abooclover", false) &&
     get("booPeakProgress") >= 30 &&
