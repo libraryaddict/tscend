@@ -176,23 +176,6 @@ function auto_codpieceFillerItem(): Item {
   );
 }
 
-// Written once per slot the first time we borrow it, then only ever read.
-function auto_codpieceOriginalGems(): Item[] {
-  const raw = getProperty("_auto_codpiece_original_gems").split(",");
-
-  if (raw.length === 5) {
-    return raw.map((s) => Item.get(parseInt(s)));
-  }
-
-  set(
-    "_auto_codpiece_original_gems",
-    EternityCodpiece.currentGems()
-      .map((g) => g.id)
-      .join(","),
-  );
-  return EternityCodpiece.currentGems();
-}
-
 // These gems compete for the same slot, so scoring them individually only lets the
 // maximizer pick one. Folding their scores into the codpiece's instead reflects the
 // true value of wearing all of them at once via its five gem slots.
@@ -213,11 +196,11 @@ export function auto_codpieceReconcileGem(gem: Item): void {
     return;
   }
 
-  const wanted: boolean = maximizer.getBonus(gem) > 0;
+  const wanted: boolean =
+    maximizer.getBonus(gem) > 0 || gem === $item`Heartstone`; // <3 the stone
   const codpieceWorn: boolean = haveEquipped($item`The Eternity Codpiece`);
   const inCodpiece: boolean = auto_isInEternityCodpiece(gem);
   const slots: readonly Slot[] = EternityCodpiece.SLOTS;
-  const originals: Item[] = auto_codpieceOriginalGems();
 
   // If we want to wear this and it's not already socketed or worn elsewhere
   if (wanted && codpieceWorn && !inCodpiece && !haveEquipped(gem)) {
@@ -225,11 +208,7 @@ export function auto_codpieceReconcileGem(gem: Item): void {
     const emptySlot = slots.find((s) => equippedItem(s) === Item.none);
     const backfillSlot = [...slots]
       .reverse()
-      .find(
-        (s) =>
-          !CODPIECE_MANAGED_GEMS.includes(equippedItem(s)) &&
-          equippedItem(s) === originals[slots.indexOf(s)],
-      );
+      .find((s) => maximizer.getBonus(equippedItem(s)) <= 0);
     const target = emptySlot ?? backfillSlot;
     // If no slot
     if (!target) {
@@ -248,17 +227,18 @@ export function auto_codpieceReconcileGem(gem: Item): void {
       return;
     }
 
-    // Baseball Diamond is always ejected rather than restoring whatever the slot
-    // originally held, since holding it idle isn't worth the slot either way.
-    if (gem === $item`Baseball Diamond`) {
-      equip(slots[idx], auto_codpieceFillerItem());
+    const filler = auto_codpieceFillerItem();
+
+    // Baseball Diamond is always ejected
+    // Since holding it idle isn't worth the slot either way.
+    if (
+      gem !== $item`Baseball Diamond` &&
+      (filler === Item.none || filler === equippedItem(slots[idx]))
+    ) {
       return;
     }
 
-    if (originals[idx] === Item.none || itemAmount(originals[idx]) === 0) {
-      return;
-    }
-    equip(slots[idx], originals[idx]);
+    equip(slots[idx], filler);
   }
 }
 
