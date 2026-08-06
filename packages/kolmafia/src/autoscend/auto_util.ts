@@ -7162,7 +7162,7 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
       if (currentRound() === 0 && (inMultiFight() || fightFollowsChoice())) {
         text = visitUrl("main.php");
       }
-      if (currentRound() === 0) {
+      if (currentRound() === 0 && (inMultiFight() || fightFollowsChoice())) {
         abort(
           `Still not in combat after visiting fight.php/main.php (multiFight=${inMultiFight()} fightFollowsChoice=${fightFollowsChoice()})`,
         );
