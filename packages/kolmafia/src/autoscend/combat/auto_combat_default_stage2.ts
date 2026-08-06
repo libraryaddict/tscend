@@ -211,6 +211,7 @@ export function auto_combatDefaultStage2(
       property: "auto_otherstuff",
     });
     combat_status_add("droptablereplaced");
+    combat_status_add("refractedgazed");
     return auto_useSkill($skill`BCZ: Refracted Gaze`);
   }
   //use industrial fire extinguisher zone specific skills
@@ -354,7 +355,7 @@ export function auto_combatDefaultStage2(
   if (
     ((!combat_status_check("yellowray") &&
       auto_wantToYellowRay(enemy, myLocation())) ||
-      combat_status_check("droptablereplaced")) &&
+      combat_status_check("refractedgazed")) &&
     !willDouse &&
     !willSwoop &&
     !isYellowRayingNextCombat()
