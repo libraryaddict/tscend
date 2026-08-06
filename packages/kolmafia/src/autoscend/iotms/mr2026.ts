@@ -1832,7 +1832,8 @@ export function auto_swordFamiliarWantsMonsterDrops(
       sMonster,
     ) &&
     auto_is_valid($item`evil eye`) &&
-    get("cyrptNookEvilness") - itemAmount($item`evil eye`) * 3 > 16 &&
+    get("cyrptNookEvilness") - itemAmount($item`evil eye`) * 3 >
+      13 + (!currentlyTracking ? 3 : 0) &&
     !in_koe()
   ) {
     return true;
