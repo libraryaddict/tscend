@@ -882,11 +882,16 @@ export function internalQuestStatus(prop: string): number {
   return -1;
 }
 
-export function prepareYellowRayNextCombat(): boolean {
+export function prepareYellowRayNextCombat(
+  estimatedTurnsSaves: number,
+): boolean {
+  const allowedSizedDiet =
+    estimatedTurnsSaves / Math.max(1, get("auto_consumeMinAdvPerFill", 0.0));
   //with values like 10 to 20 turns saved, not checking get_property("auto_consumeMinAdvPerFill").to_float()
   if (
     can_consume() &&
     canChew($item`spooky jelly`) &&
+    allowedSizedDiet >= $item`spooky jelly`.spleen &&
     spleen_left() >= $item`spooky jelly`.spleen &&
     acquireOrPull($item`spooky jelly`) &&
     autoChew(1, $item`spooky jelly`)
@@ -896,6 +901,7 @@ export function prepareYellowRayNextCombat(): boolean {
 
   if (
     can_consume() &&
+    allowedSizedDiet >= $item`mixed berry jelly`.spleen &&
     canChew($item`mixed berry jelly`) &&
     spleen_left() >= $item`mixed berry jelly`.spleen &&
     acquireOrPull($item`mixed berry jelly`) &&
@@ -906,6 +912,7 @@ export function prepareYellowRayNextCombat(): boolean {
 
   if (
     can_consume() &&
+    allowedSizedDiet >= $item`toxic asset`.spleen &&
     canChew($item`toxic asset`) &&
     spleen_left() >= $item`toxic asset`.spleen &&
     (itemAmount($item`toxic asset`) > 0 ||
@@ -918,6 +925,7 @@ export function prepareYellowRayNextCombat(): boolean {
 
   if (
     can_consume() &&
+    allowedSizedDiet >= $item`toast with spooky jelly`.spleen &&
     auto_canEat($item`toast with spooky jelly`) &&
     stomach_left() >= $item`toast with spooky jelly`.fullness &&
     acquireOrPull($item`toast with spooky jelly`) &&

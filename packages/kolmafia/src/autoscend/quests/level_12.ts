@@ -1106,7 +1106,7 @@ function L12_filthwormsDo(): boolean {
     //last gland
     if (haveEffect($effect`Filthworm Drone Stench`) === 1 && !glandGuaranteed) {
       //running out of effect, failing on the last turn would mean having to start over from The Hatching Chamber
-      if (prepareYellowRayNextCombat()) {
+      if (prepareYellowRayNextCombat(15)) {
         auto_log_info(
           "Only one turn left in The Royal Guard Chamber, using forcing next combat to have a YR to avoid having to start over from the beginning",
         );
