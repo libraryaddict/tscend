@@ -332,8 +332,8 @@ export function disregardInstantKarma(): boolean {
   if (inAftercore()) {
     return true;
   }
-  if (myLevel() !== 13) {
-    //under level 13 we wan to get max XP gains. level 14+ we already missed the insta karma, no need to hold back anymore.
+  if (myLevel() < 13) {
+    //under level 13 we want to get max XP gains.
     return true;
   }
   //auto_disregardInstantKarma is a user configured setting

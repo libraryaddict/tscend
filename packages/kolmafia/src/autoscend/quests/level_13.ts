@@ -72,6 +72,7 @@ import {
   $location,
   $locations,
   $modifier,
+  $modifiers,
   $monster,
   $skill,
   $skills,
@@ -1748,6 +1749,10 @@ function L13_towerNSTowerMeat(): boolean {
   ) {
     abort("auto_towerBreak set to abort here.");
   }
+  // Remove unneeded stuff that may make things tough
+  $modifiers`Monster Level, Item Drop, Experience`.forEach((modifier) =>
+    maximizer.clearWeight(modifier),
+  );
   equipBaseline();
   shrugAT($effect`Polka of Plenty`);
   provideMeat$1(526, true, false);
@@ -1901,6 +1906,9 @@ function L13_towerNSTowerBones(): boolean {
     }
   }
 
+  $modifiers`Monster Level, Item Drop, Experience, Meat Drop`.forEach(
+    (modifier) => maximizer.clearWeight(modifier),
+  );
   maximizer
     .weight($modifier`Mysticality`, 100)
     .weight($modifier`Spell Damage Percent`, 60)
@@ -2031,7 +2039,9 @@ function L13_towerNSTowerShadow(): boolean {
     );
     return true;
   }
-
+  $modifiers`Monster Level, Item Drop, Meat Drop, Experience`.forEach(
+    (modifier) => maximizer.clearWeight(modifier),
+  );
   let n_healing_items: number =
     itemAmount($item`gauze garter`) +
     itemAmount($item`filthy poultice`) +
@@ -2224,16 +2234,16 @@ function L13_towerNSFinalDo(): boolean {
   autoEquipToSlot($slot`off-hand`, $item`Oscus's garbage can lid`);
 
   handleFamiliar("boss");
-
+  $modifiers`Monster Level, Item Drop, Meat Drop, Experience`.forEach(
+    (modifier) => maximizer.clearWeight(modifier),
+  );
   maximizer
     .weight($modifier`Damage Reduction`, 10)
     .weight($modifier`Moxie`, 3)
     .weight($modifier`Damage Absorption`, 0.5)
     .max($modifier`Damage Absorption`, 1000)
     .weight($modifier`Monster Level`, -5)
-    .weight($modifier`Maximum HP`, 1.5)
-    .weight($modifier`Item Drop`, 0)
-    .weight($modifier`Meat Drop`, 0);
+    .weight($modifier`Maximum HP`, 1.5);
   autoEquipToSlot($slot`acc2`, $item`attorney's badge`);
   //AoSOL buffs
   if (in_aosol()) {

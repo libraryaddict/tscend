@@ -1176,6 +1176,14 @@ function auto_pre_adventure(): boolean {
     removeML = false;
     purgeML = false;
   }
+  if (
+    myLevel() >= 13 &&
+    internalQuestStatus("questL13Final") >= 7 &&
+    internalQuestStatus("questL13Final") < 14
+  ) {
+    // When we're at the tower
+    doML = false;
+  }
   // Backup Camera copies have double ML applied. Reduce ML to avoid getting beaten up
   if (auto_backupTarget()) {
     doML = false;
