@@ -1724,8 +1724,8 @@ export function auto_tryPlayBaseball(): boolean {
   const slotZeroLoadBearing = auto_baseballIsSlotZeroLoadBearing(assignments);
   if (
     !slotZeroLoadBearing &&
-    assignments.length < 3 &&
-    auto_baseballZoneHasUnclaimedTarget(myLocation(), assignments, team) &&
+    (assignments.length < 3 ||
+      auto_baseballZoneHasUnclaimedTarget(myLocation(), assignments, team)) &&
     isSoftBlockInPlace("baseballDiamond")
   ) {
     return false; // safe to hold out for a better lineup
