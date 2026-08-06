@@ -31,7 +31,6 @@ import {
   toLowerCase,
   use,
   useSkill,
-  visitUrl,
 } from "kolmafia";
 import {
   $class,
@@ -697,9 +696,10 @@ function L7_cryptDo(): boolean {
   if (L7_bonerdagonDefeated()) {
     return runQuestTask(L7_cryptFinishTask);
   }
+
   // make sure quest status is correct before we attempt to adventure.
-  visitUrl("crypt.php");
-  use(1, $item`Evilometer`);
+  //visitUrl("crypt.php");
+  //use(1, $item`Evilometer`);
 
   cyrptEvilBonus();
 
