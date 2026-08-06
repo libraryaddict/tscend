@@ -2095,6 +2095,7 @@ export function auto_wantSoCP(): void {
     (!get("auto_farmSoCP", false) || get("_knuckleboneDrops") >= 100)
   ) {
     set("auto_preferSoCP", false);
+    return;
   }
 
   let amt: number = 0;
