@@ -70,7 +70,6 @@ import {
 import { resetState } from "../../autoscend";
 import {
   acquireHermitItem,
-  acquireOrPull,
   auto_buyUpTo,
   canPull,
   pullXWhenHaveY,
@@ -78,14 +77,6 @@ import {
 } from "../auto_acquire";
 import { autoAdv, autoAdvBypass, autoLuckyAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
-import {
-  auto_canEat,
-  autoChew,
-  autoEat,
-  canChew,
-  spleen_left,
-  stomach_left,
-} from "../auto_consume";
 import {
   autoEquipToSlot,
   autoForceEquip$3,
@@ -135,6 +126,7 @@ import {
   cloversAvailable,
   handleTracker,
   internalQuestStatus,
+  prepareYellowRayNextCombat,
   remainingNCForcesToday,
   safeGet,
   summonMonster,
@@ -1114,30 +1106,13 @@ function L12_filthwormsDo(): boolean {
     //last gland
     if (haveEffect($effect`Filthworm Drone Stench`) === 1 && !glandGuaranteed) {
       //running out of effect, failing on the last turn would mean having to start over from The Hatching Chamber
-      if (!get("auto_limitConsume", false)) {
-        if (
-          canChew($item`spooky jelly`) &&
-          spleen_left() >= $item`spooky jelly`.spleen &&
-          acquireOrPull($item`spooky jelly`) &&
-          autoChew(1, $item`spooky jelly`)
-        ) {
-          auto_log_info(
-            "Only one turn left in The Royal Guard Chamber, using spooky jelly emanations to avoid having to start over from the beginning",
-          );
-          glandGuaranteed = true;
-        } else if (
-          auto_canEat($item`toast with spooky jelly`) &&
-          stomach_left() >= $item`toast with spooky jelly`.fullness &&
-          acquireOrPull($item`toast with spooky jelly`) &&
-          autoEat(1, $item`toast with spooky jelly`)
-        ) {
-          //with values like 10 to 20 turns saved, not checking get_property("auto_consumeMinAdvPerFill").to_float()
-          auto_log_info(
-            "Only one turn left in The Royal Guard Chamber, using spooky jelly toast emanations to avoid having to start over from the beginning",
-          );
-          glandGuaranteed = true;
-        }
+      if (prepareYellowRayNextCombat()) {
+        auto_log_info(
+          "Only one turn left in The Royal Guard Chamber, using forcing next combat to have a YR to avoid having to start over from the beginning",
+        );
+        glandGuaranteed = true;
       }
+
       if (glandGuaranteed) {
         //gland that was not guaranteed is forced now
         if (

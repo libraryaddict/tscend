@@ -181,6 +181,7 @@ import {
 import { LX_calculateTheUniverse } from "../autoscend";
 import {
   acquireHermitItem,
+  acquireOrPull,
   auto_buyUpTo,
   auto_mall_price,
   npcStoreDiscountMulti,
@@ -195,8 +196,12 @@ import {
 import { buffMaintain$2 } from "./auto_buff";
 import { main } from "./auto_choice_adv";
 import {
+  auto_canEat,
   autoChew,
   autoDrink,
+  autoEat,
+  can_consume,
+  canChew,
   fullness_left,
   inebriety_left,
   spleen_left,
@@ -322,6 +327,7 @@ import {
   auto_wantToBCZ,
 } from "./iotms/mr2025";
 import {
+  auto_acquireInterestingItem,
   auto_baseball_freefight_monster,
   auto_baseball_freefights_left,
   auto_chewLiquidAsset,
@@ -876,8 +882,76 @@ export function internalQuestStatus(prop: string): number {
   return -1;
 }
 
+export function prepareYellowRayNextCombat(): boolean {
+  //with values like 10 to 20 turns saved, not checking get_property("auto_consumeMinAdvPerFill").to_float()
+  if (
+    can_consume() &&
+    canChew($item`spooky jelly`) &&
+    spleen_left() >= $item`spooky jelly`.spleen &&
+    acquireOrPull($item`spooky jelly`) &&
+    autoChew(1, $item`spooky jelly`)
+  ) {
+    return true;
+  }
+
+  if (
+    can_consume() &&
+    canChew($item`mixed berry jelly`) &&
+    spleen_left() >= $item`mixed berry jelly`.spleen &&
+    acquireOrPull($item`mixed berry jelly`) &&
+    autoChew(1, $item`mixed berry jelly`)
+  ) {
+    return true;
+  }
+
+  if (
+    can_consume() &&
+    canChew($item`toxic asset`) &&
+    spleen_left() >= $item`toxic asset`.spleen &&
+    (itemAmount($item`toxic asset`) > 0 ||
+      auto_acquireInterestingItem($item`toxic asset`)) &&
+    autoChew(1, $item`toxic asset`)
+  ) {
+    set("_auto_toxicAssetUses", get("_auto_toxicAssetUses", 0) + 1);
+    return true;
+  }
+
+  if (
+    can_consume() &&
+    auto_canEat($item`toast with spooky jelly`) &&
+    stomach_left() >= $item`toast with spooky jelly`.fullness &&
+    acquireOrPull($item`toast with spooky jelly`) &&
+    autoEat(1, $item`toast with spooky jelly`)
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+function run_end_of_combat() {
+  if (get("_auto_toxicAssetUses", 0) > 0) {
+    if (get("_auto_toxicAssetUses", 0) === 1) {
+      removeProperty("_auto_toxicAssetUses");
+    } else {
+      set("_auto_toxicAssetUses", get("_auto_toxicAssetUses", 0) - 1);
+    }
+  }
+}
+
+export function isYellowRayingNextCombat(): boolean {
+  return (
+    get("mixedBerryJellyUses") > 0 ||
+    get("_spookyJellyUses") > 0 ||
+    get("_auto_toxicAssetUses", 0) > 0
+  );
+}
+
 export function canYellowRay(target: Monster = Monster.none): boolean {
   // Use this to determine if it is safe to enter a yellow ray combat.
+  if (isYellowRayingNextCombat()) {
+    return true;
+  }
 
   if (in_pokefam()) {
     return false;
@@ -1615,6 +1689,13 @@ export function adjustForYellowRayIfPossible(
   target: Monster = Monster.none,
 ): boolean {
   if (canYellowRay(target)) {
+    if (isYellowRayingNextCombat()) {
+      auto_log_info(
+        `YR is active for next combat, aiming at (${target})`,
+        "blue",
+      );
+      return true;
+    }
     const yr_string: CombatMacroReturns = yellowRayCombatString(
       target,
       false,
@@ -6995,6 +7076,9 @@ export function auto_resolveEncounters(
         auto_log_info(`Encountered a combat!`, "green");
       }
       text = auto_runCombat(text, combatMacro);
+      if (currentRound() === 0) {
+        run_end_of_combat();
+      }
     } else if (handlingChoice() || choiceFollowsFight()) {
       if (get("auto_diag_round", 0) > 0) {
         auto_log_info(`Encountered a choice: ${lastChoice()}`, "green");

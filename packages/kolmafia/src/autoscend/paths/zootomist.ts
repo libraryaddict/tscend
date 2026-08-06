@@ -64,7 +64,7 @@ import {
   internalQuestStatus,
   summonMonster,
 } from "../auto_util";
-import { yellowRayCombatString$1 } from "../combat/auto_combat_util";
+import { yellowRayCombatString } from "../combat/auto_combat_util";
 import { runTaskChain } from "../engine/engine";
 import { speakeasyCombat } from "../iotms/mr2022";
 import { auto_doPhoneQuest, auto_fightFlamingLeaflet } from "../iotms/mr2023";
@@ -900,7 +900,7 @@ export function getZooKickYR(): Skill {
 
 export function getZooKickSniff(): Skill {
   const haveYR: boolean =
-    yellowRayCombatString$1(Monster.none, false) !== undefined; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
+    yellowRayCombatString(Monster.none, false) !== undefined; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
   if (leftKickHasSniff() && leftKickHasInstaKill() && !haveYR) {
     return $skill`Left %n Kick`;
   }
@@ -931,7 +931,7 @@ export function getZooKickBanish(): Skill {
 
 export function getZooKickInstaKill(): Skill {
   //Only instakill if we can't yellow ray
-  if (yellowRayCombatString$1(Monster.none, false) !== undefined) {
+  if (yellowRayCombatString(Monster.none, false) !== undefined) {
     //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
     return Skill.none;
   }
@@ -1115,7 +1115,7 @@ export function LX_zootoFight(): boolean {
     }
     // should get wishes in Shadow Rift. If not can't do this
 
-    if (yellowRayCombatString$1(Monster.none, false) !== undefined) {
+    if (yellowRayCombatString(Monster.none, false) !== undefined) {
       if (
         get("auto_hippyInstead", false) &&
         !possessOutfit("War Hippy Fatigues")

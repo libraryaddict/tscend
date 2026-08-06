@@ -10,7 +10,6 @@ import {
   canInteract,
   cliExecute,
   closetAmount,
-  creatableAmount,
   cupOf13sTier,
   Effect,
   Element,
@@ -41,6 +40,7 @@ import {
   myLocation,
   myMeat,
   myPath,
+  sellPrice,
   Slot,
   spleenLimit,
   Stat,
@@ -75,6 +75,8 @@ import {
   AUTO_OBTAIN_NULL,
   AUTO_ORGAN_LIVER,
   autoChew,
+  can_consume,
+  canChew,
   fullness_left,
   inebriety_left,
   spleen_left,
@@ -146,41 +148,6 @@ import {
 import { auto_canTracesBandit, auto_haveMonodent } from "./mr2025";
 
 // This is meant for items that have a date of 2026
-
-// Mafia doesn't track remaining Exercise Liquidity charges yet, so we bank them ourselves
-// in auto_exerciseLiquidity: incremented here on chew, decremented in
-// replaceMonsterCombatString() when the skill is actually cast. Remove once mafia adds
-// official tracking.
-export function auto_chewLiquidAsset(): boolean {
-  if (
-    !auto_is_valid$2($skill`Exercise Liquidity`) ||
-    !auto_is_valid($item`liquid asset`) ||
-    spleen_left() < $item`liquid asset`.spleen ||
-    isActuallyEd()
-  ) {
-    return false;
-  }
-
-  if (itemAmount($item`liquid asset`) === 0) {
-    if (
-      // Never drop below 1 coin, we gain 3 at RO
-      itemAmount($item`Interesting Coin`) <= 1 ||
-      creatableAmount($item`liquid asset`) < 1
-    ) {
-      return false;
-    }
-
-    buy($coinmaster`Interesting Coin`, 1, $item`liquid asset`);
-  }
-
-  if (!autoChew(1, $item`liquid asset`)) {
-    return false;
-  }
-
-  set("auto_exerciseLiquidity", get("auto_exerciseLiquidity", 0) + 1);
-  return true;
-}
-
 export function auto_haveEternityCodpiece(): boolean {
   if (
     auto_is_valid($item`The Eternity Codpiece`) &&
@@ -2172,4 +2139,81 @@ export function auto_summonSwordTarget(): boolean {
   )!;
 
   return summonMonster(targetMonster);
+}
+
+export function auto_interestingCoinsSpendable(): number {
+  let pref = get("auto_interestingCoins");
+  if (!/^-?\d+$/.test(pref)) {
+    pref = "1";
+  }
+
+  const match = pref.match(/^(-?)(\d+)$/)!;
+
+  const relative = match !== null && match[1] === "-";
+  const amount = parseInt(match[2]);
+  const coins = itemAmount($item`Interesting Coin`);
+
+  // We can spend only so many coins a day
+  if (relative) {
+    const spentToday = get("_auto_interestingCoinsSpent", 0);
+    // We can spend this many more coins today
+    let canSpendToday = amount - spentToday;
+    // Don't spend more than we have
+    canSpendToday = Math.min(coins, canSpendToday);
+    // Don't go below 0
+    return Math.max(0, canSpendToday);
+  }
+
+  // We can spend as many coins as we have, except for this amount
+  return Math.max(0, coins - amount);
+}
+
+export function auto_acquireInterestingItem(item: Item): boolean {
+  const price = sellPrice($coinmaster`interesting`, item);
+
+  if (price > auto_interestingCoinsSpendable()) {
+    return false;
+  }
+
+  const onHand = itemAmount(item);
+
+  buy($coinmaster`Interesting Coin`, 1, item);
+
+  if (onHand === itemAmount(item)) return false;
+
+  set(
+    "_auto_interestingCoinsSpent",
+    get("_auto_interestingCoinsSpent", 0) + price,
+  );
+  return true;
+}
+
+// Mafia doesn't track remaining Exercise Liquidity charges yet, so we bank them ourselves
+// in auto_exerciseLiquidity: incremented here on chew, decremented in
+// replaceMonsterCombatString() when the skill is actually cast. Remove once mafia adds
+// official tracking.
+export function auto_chewLiquidAsset(): boolean {
+  if (
+    !can_consume() ||
+    !auto_is_valid$2($skill`Exercise Liquidity`) ||
+    !canChew($item`liquid asset`) ||
+    spleen_left() < $item`liquid asset`.spleen ||
+    isActuallyEd()
+  ) {
+    return false;
+  }
+
+  if (
+    itemAmount($item`liquid asset`) === 0 &&
+    !auto_acquireInterestingItem($item`liquid asset`)
+  ) {
+    return false;
+  }
+
+  if (!autoChew(1, $item`liquid asset`)) {
+    return false;
+  }
+
+  set("auto_exerciseLiquidity", get("auto_exerciseLiquidity", 0) + 1);
+  return true;
 }

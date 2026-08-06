@@ -90,6 +90,7 @@ import {
   hasShieldEquipped,
   hasTorso,
   isFreeMonster,
+  isYellowRayingNextCombat,
   loopHandlerDelayAll,
   wrap_item,
 } from "../auto_util";
@@ -1279,7 +1280,7 @@ export function banisherCombatAction$1(
 export function yellowRayCombatString(
   target: Monster,
   inCombat: boolean,
-  noForceDrop: boolean,
+  noForceDrop: boolean = false,
 ): CombatMacroReturns {
   if (in_wildfire() && inCombat && myLocation().fireLevel > 2) {
     //high fire level burns yellow ray items. except for saber's [use the force] as it leads to a noncombat
@@ -1455,13 +1456,6 @@ export function yellowRayCombatString(
   return undefined;
 }
 
-export function yellowRayCombatString$1(
-  target: Monster,
-  inCombat: boolean,
-): CombatMacroReturns {
-  return yellowRayCombatString(target, inCombat, false);
-}
-
 export function replaceMonsterCombatString(
   target: Monster,
   inCombat: boolean = false,
@@ -1562,7 +1556,7 @@ export function wantToForceDrop(enemy: Monster): boolean {
 
   let forceDrop: boolean = false;
   //only force 1 scent gland from each filthworm
-  if (!combat_status_check("yellowray")) {
+  if (!combat_status_check("yellowray") && !isYellowRayingNextCombat()) {
     if (
       enemy === $monster`larval filthworm` &&
       itemAmount($item`filthworm hatchling scent gland`) < 1
@@ -1590,7 +1584,7 @@ export function wantToForceDrop(enemy: Monster): boolean {
     swoopAvailable
   ) {
     let dropsFromYR: number = 0;
-    if (combat_status_check("yellowray")) {
+    if (combat_status_check("yellowray") || isYellowRayingNextCombat()) {
       dropsFromYR = 1;
     }
 

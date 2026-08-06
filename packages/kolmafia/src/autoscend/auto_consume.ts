@@ -204,6 +204,10 @@ import { ctor, fileAsMap } from "./utils/kolmafiaUtils";
 //	Handler for in-run consumption
 //
 
+export function can_consume(): boolean {
+  return !get("auto_limitConsume", false);
+}
+
 //Defined in autoscend/auto_consume.ash
 export function spleen_left(): number {
   return spleenLimit() - mySpleenUse();

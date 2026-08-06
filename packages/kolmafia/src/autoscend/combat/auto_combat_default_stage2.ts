@@ -54,6 +54,7 @@ import {
   instakillable,
   internalQuestStatus,
   isFreeMonster,
+  isYellowRayingNextCombat,
   loopHandlerDelayAll,
   wrap_item,
 } from "../auto_util";
@@ -355,7 +356,8 @@ export function auto_combatDefaultStage2(
       auto_wantToYellowRay(enemy, myLocation())) ||
       combat_status_check("droptablereplaced")) &&
     !willDouse &&
-    !willSwoop
+    !willSwoop &&
+    !isYellowRayingNextCombat()
   ) {
     const combatAction: CombatMacroReturns = yellowRayCombatString(
       enemy,

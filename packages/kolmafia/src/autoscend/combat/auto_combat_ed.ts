@@ -64,6 +64,7 @@ import {
   internalQuestStatus,
   isFreeMonster,
   isGhost,
+  isYellowRayingNextCombat,
   loopHandlerDelayAll,
   safeGet,
 } from "../auto_util";
@@ -430,7 +431,8 @@ export function auto_edCombatHandler(
   //yellowray instantly kills the enemy and makes them drop all items they can drop.
   if (
     !combat_status_check("yellowray") &&
-    auto_wantToYellowRay(enemy, myLocation())
+    auto_wantToYellowRay(enemy, myLocation()) &&
+    !isYellowRayingNextCombat()
   ) {
     const combatAction: CombatMacroReturns = yellowRayCombatString(
       enemy,

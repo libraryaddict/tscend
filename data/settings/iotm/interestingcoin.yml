@@ -1,0 +1,5 @@
+auto_interestingCoins:
+  name: "Use Interesting Coins"
+  type: string
+  description: "Controls how autoscend uses your Interesting Coins. If set to a positive number, autoscend will not go below that number, you'll likely want to keep this at '1' unless speed running or looping, to ensure an extra 2 coins at RO. If set to a negative number '-2' then autoscend will be allowed to spend that many coins a day. Set this to '-0' to disable all spending."
+  default: "1"
