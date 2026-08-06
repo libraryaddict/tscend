@@ -1,4 +1,4 @@
-import { abort, print, userConfirm } from "kolmafia";
+import { print, userConfirm } from "kolmafia";
 import { get, set, sinceKolmafiaRevision } from "libram";
 
 import {
@@ -8,6 +8,7 @@ import {
 } from "./autoscend";
 import { printSim } from "./autoscend/auto_sim";
 import {
+  auto_abort,
   auto_log_info,
   AutoStopError,
   backupSetting,
@@ -104,7 +105,7 @@ export function main(input: string = ""): void {
       true,
     )
   ) {
-    abort("User aborted script after failed migration.");
+    auto_abort("User aborted script after failed migration.");
   }
   try {
     safe_preference_reset_wrapper(3);

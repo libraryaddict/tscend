@@ -71,6 +71,7 @@ import { possessEquipment } from "./auto_equipment";
 import { canChangeFamiliar, pathHasFamiliar } from "./auto_familiar";
 import {
   ATSongList,
+  auto_abort,
   auto_have_skill,
   auto_is_valid,
   auto_log_info,
@@ -291,7 +292,7 @@ function pullXWhenHaveYCasual(
   const maxprice: number = get("autoBuyPriceLimit");
   while (itemAmount(it) < howMany && auto_mall_price(it) < maxprice) {
     if (auto_mall_price(it) > myMeat()) {
-      abort("Don't have enough meat to restock, big sad");
+      auto_abort("Don't have enough meat to restock, big sad");
     }
     if (buy(1, it, maxprice) === 0) {
       auto_log_info(

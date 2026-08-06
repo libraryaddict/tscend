@@ -1,5 +1,4 @@
 import {
-  abort,
   containsText,
   equip,
   equippedItem,
@@ -18,7 +17,7 @@ import {
 } from "kolmafia";
 import { $familiar, $skill, $slot } from "libram";
 
-import { auto_log_info } from "../auto_util";
+import { auto_abort, auto_log_info } from "../auto_util";
 import { MAXIMIZER_ALIASES, MaximizerModifier } from "./modifiers";
 
 export type Criterion = Modifier | MaximizerModifier;
@@ -452,7 +451,7 @@ export class Maximizer {
         continue;
       }
       if (itemModes.size > 1) {
-        abort(
+        auto_abort(
           `Maximizer: multiple modes queued for ${item} (${[...itemModes].join(", ")}), but equipping can only force one.`,
         );
       }

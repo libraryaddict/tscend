@@ -71,6 +71,7 @@ import {
 import { provideItem$2 } from "../auto_providers";
 import { canBurnDelay } from "../auto_routing";
 import {
+  auto_abort,
   auto_can_equip,
   auto_is_valid,
   auto_log_debug,
@@ -1570,7 +1571,7 @@ function LX_acquireEpicWeaponDo(): boolean {
     visitUrl("guild.php?place=scg"); // No really, start the quest.
     cliExecute("refresh quests"); // fixes buggy tracking. confirmed still in mafia r20143
     if (internalQuestStatus("questG04Nemesis") < 0) {
-      abort(
+      auto_abort(
         "Failed to start Nemesis quest. Please start it manually then run me again",
       );
     }

@@ -4722,6 +4722,11 @@ export function auto_is_valid$4(str: string): boolean {
   return isUnrestricted(str);
 }
 
+export function auto_abort(s: string) {
+  auto_log_error(s);
+  abort(s);
+}
+
 function auto_log(s: string, color: string, log_level: number): void {
   if (log_level > get("auto_log_level", 0)) {
     return;
@@ -7157,7 +7162,7 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
       if (currentRound() === 0 && (inMultiFight() || fightFollowsChoice())) {
         text = visitUrl("main.php");
       }
-      if (currentRound() === 0 && (inMultiFight() || fightFollowsChoice())) {
+      if (currentRound() === 0) {
         abort(
           `Still not in combat after visiting fight.php/main.php (multiFight=${inMultiFight()} fightFollowsChoice=${fightFollowsChoice()})`,
         );

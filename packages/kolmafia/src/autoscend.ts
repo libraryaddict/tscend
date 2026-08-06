@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   buy,
   canDrink,
@@ -175,6 +174,7 @@ import { auto_settings, auto_settingsFix } from "./autoscend/auto_settings";
 import {
   adjustForYellowRayIfPossible,
   almostRollover,
+  auto_abort,
   auto_amIRich,
   auto_autosell,
   auto_freeCrafts,
@@ -2059,7 +2059,7 @@ function adventureFailureHandler(): boolean {
           "blue",
         );
         print("set auto_newbieOverride = true", "blue");
-        abort(
+        auto_abort(
           `We have spent ${place.turnsSpent} turns at '${place}' and that is bad... aborting.`,
         );
       }
@@ -2076,7 +2076,7 @@ function adventureFailureHandler(): boolean {
     if (get("auto_newbieOverride", false)) {
       set("auto_newbieOverride", false);
     } else {
-      abort("We went to the Noob Cave for reals... uh oh");
+      auto_abort("We went to the Noob Cave for reals... uh oh");
     }
   } else {
     set("auto_newbieOverride", false);
@@ -2090,7 +2090,9 @@ function beatenUpResolution(): void {
       get("auto_beatenUpCount", 0) > 10 &&
       getProperty("lastEncounter") !== "Poetic Justice"
     ) {
-      abort("We are getting beaten up too much, this is not good. Aborting.");
+      auto_abort(
+        "We are getting beaten up too much, this is not good. Aborting.",
+      );
     }
     acquireHP();
   }
@@ -2117,7 +2119,7 @@ function beatenUpResolution(): void {
     } else {
       cliExecute("refresh all");
       if (haveEffect($effect`Beaten Up`) > 0) {
-        abort(
+        auto_abort(
           "We failed to remove beaten up. Adventuring in the same place that we got beaten in with half stats will just result in us dying again",
         );
       }
@@ -3146,7 +3148,7 @@ const ggooSanityCheckTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: () => {
     if (in_ggoo()) {
-      abort(
+      auto_abort(
         "Should not have gotten here, aborted LA_grey_goo_tasks method allowed return to caller. Uh oh.",
       );
     }
@@ -3562,7 +3564,7 @@ function auto_begin(): void {
   }
 
   if (in_community()) {
-    abort("Community Service is no longer supported.");
+    auto_abort("Community Service is no longer supported.");
   }
 
   if (inBadMoon()) {
@@ -3572,7 +3574,7 @@ function auto_begin(): void {
     const failure: string = nope
       ? "Just no."
       : "Even if you don't understand, it's still no.";
-    abort(failure);
+    auto_abort(failure);
   }
 
   if (!auto_meetsMinimumRequirements()) {
@@ -3587,8 +3589,7 @@ function auto_begin(): void {
         "Aborting to avoid dying a lot and making very little progress. To override:",
         "red",
       );
-      auto_log_warning("set _auto_im_cool_with_dying_a_lot = -1", "red");
-      abort();
+      auto_abort("set _auto_im_cool_with_dying_a_lot = -1");
     }
   }
 
@@ -3598,7 +3599,7 @@ function auto_begin(): void {
   if (myClass().toString() === "Astral Spirit") {
     // my_class() can report Astral Spirit even though it is not a valid class....
     //workaround for this bug specifically https://kolmafia.us/showthread.php?25579
-    abort(
+    auto_abort(
       'Mafia thinks you are an astral spirit. Type "logout" in gCLI and then log back in afterwards. as this is needed to fix this and identify what your class actually is',
     );
   }
@@ -3629,9 +3630,6 @@ function auto_begin(): void {
   backupSetting("autoAntidote", (0).toString());
   backupSetting("dontStopForCounters", true.toString());
   backupSetting("maximizerCombinationLimit", "100000");
-  backupSetting("afterAdventureScript", "js abort('Uh oh')");
-  backupSetting("choiceAdventureScript", "js abort('Uh oh')");
-  backupSetting("betweenBattleScript", "js abort('Uh oh')");
   backupSetting("recoveryScript", "");
   backupSetting("counterScript", "");
   if (!get("auto_disableExcavator", false)) {
