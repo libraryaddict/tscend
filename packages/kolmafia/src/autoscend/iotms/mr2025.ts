@@ -1367,15 +1367,26 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
   }
 
   if (auto_paradoxicity() < 15) {
+    // We prioritize our mainstat a bit more, but otherwise we try to raise our lowest stat
+    const statChoices: [string, number][] = (
+      [
+        ["Mind your own business", $stat`Mysticality`],
+        ["Lift yourself by your bootstraps", $stat`Muscle`],
+        ["Shoot yourself in the foot", $stat`Moxie`],
+      ] as [string, Stat][]
+    ).map(([choice, stat]) => [
+      choice,
+      myBasestat(stat_to_substat(stat)) *
+        (stat === myClass().primestat ? 0.7 : 1),
+    ]);
+    statChoices.sort(([, s1], [, s2]) => s1 - s2);
     // take paradox-increasing options without negative effects in approximate utility order
     // some would have been taken earlier, so taking them here implies they're less useful
     for (const str of [
       "Stop your arch-nemesis as a baby",
       "Borrow meat from your future",
       "Hey, free gun!",
-      "Shoot yourself in the foot",
-      "Mind your own business",
-      "Lift yourself up by your bootstraps",
+      ...statChoices.map(([s]) => s),
       "Draw a goatee on yourself",
       "Go for a nature walk",
       "Steal a cupcake from young Susie",
