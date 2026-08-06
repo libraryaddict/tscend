@@ -346,7 +346,7 @@ import {
   auto_haveARB,
 } from "./iotms/ttt";
 import { handleServant, isActuallyEd } from "./paths/actually_ed_the_undying";
-import { in_amw } from "./paths/adventurer_meats_world";
+import { amw_wantMeat, in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";
 import { borisAdjustML, is_boris } from "./paths/avatar_of_boris";
 import { is_jarlsberg } from "./paths/avatar_of_jarlsberg";
@@ -6510,6 +6510,16 @@ export function meatReserve(): number {
     reserve_island +
     reserve_extra
   );
+}
+
+export function isMeatPoor(
+  requiresSurplusOf: number = get("auto_meat_surplus", 5000),
+) {
+  if (amw_wantMeat()) {
+    return true;
+  }
+
+  return myMeat() - meatReserve() < requiresSurplusOf;
 }
 
 export function auto_wishForEffectIfNeeded(wish: Effect): boolean {

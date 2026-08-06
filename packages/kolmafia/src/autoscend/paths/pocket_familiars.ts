@@ -12,7 +12,7 @@ import {
 import { $item, $items, $modifier, $path, get, set } from "libram";
 
 import { possessEquipment } from "../auto_equipment";
-import { auto_log_info, internalQuestStatus } from "../auto_util";
+import { auto_log_info, internalQuestStatus, isMeatPoor } from "../auto_util";
 import { equipWarOutfit, warAdventure } from "../quests/level_12";
 import { Maximizer } from "../utils/maximizer";
 
@@ -39,7 +39,9 @@ export function pokefam_initializeSettings(): void {
 
 export function pokefam_buildDefaultMaximize(target: Maximizer): void {
   // Combat is completely different in pokefam, so most stuff doesn't matter there
-  target.weight($modifier`Item Drop`, 5).weight($modifier`Meat Drop`);
+  target
+    .weight($modifier`Item Drop`, 5)
+    .weight($modifier`Meat Drop`, isMeatPoor() ? 1 : 0.05);
   if (myLevel() < 13 || get("auto_disregardInstantKarma", false)) {
     target
       .weight($modifier`Experience`, 10)

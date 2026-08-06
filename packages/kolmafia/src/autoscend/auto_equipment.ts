@@ -106,6 +106,7 @@ import {
   instakillable,
   isArmoryAndLeggeryStoreAvailable,
   isFreeMonster,
+  isMeatPoor,
   meatReserve,
   safeGet,
   wrap_item,
@@ -548,7 +549,7 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
 
   target
     .weight($modifier`Item Drop`, 5)
-    .weight($modifier`Meat Drop`)
+    .weight($modifier`Meat Drop`, isMeatPoor() ? 1 : 0.05)
     .weight($modifier`Initiative`, 0.5)
     .weight($modifier`Damage Absorption`, 0.1)
     .max($modifier`Damage Absorption`, 1000)

@@ -715,7 +715,7 @@ function auto_spadeDigAncient(): boolean {
   return false;
 }
 
-export function auto_spadeDigSkeleton(): boolean {
+export function auto_spadeDigSkeleton(place: Location): boolean {
   const SPADE: Item = $item`Archaeologist's Spade`;
   const choice_adv_num: number = 1596;
   const choice_num: number = 3;
@@ -730,7 +730,7 @@ export function auto_spadeDigSkeleton(): boolean {
     const loc: Location = myLocation();
     try {
       set_next_fight_is_free();
-      if (autoAdvBypass(0, pages, $location`Noob Cave`)) {
+      if (autoAdvBypass(0, pages, place)) {
         handleTracker({
           what: SPADE,
           location: loc,
@@ -1962,6 +1962,11 @@ export function auto_wantToStartTrackingSwordMonster(
     return false; // already tracking it
   }
   return auto_swordFamiliarWantsMonsterDrops(enemy, chance);
+}
+
+export function auto_preferSwordFamiliar(place: Location) {
+  if (!auto_have_sword_familiar()) return;
+  set("_auto_preferSwordFam", auto_wantSwordFamiliar(place));
 }
 
 export function auto_wantSwordFamiliar(place: Location): boolean {

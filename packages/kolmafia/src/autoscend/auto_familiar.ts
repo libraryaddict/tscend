@@ -24,7 +24,6 @@ import {
   myFamiliar,
   myLevel,
   myMaxmp,
-  myMeat,
   myMp,
   numericModifier,
   splitString,
@@ -68,6 +67,7 @@ import {
   auto_resolveEncounters,
   auto_turbo,
   internalQuestStatus,
+  isMeatPoor,
   safeGet,
 } from "./auto_util";
 import { considerGrimstoneGolem } from "./iotms/mr2014";
@@ -82,7 +82,6 @@ import {
 } from "./iotms/mr2023";
 import { auto_haveChestMimic } from "./iotms/mr2024";
 import { auto_haveCupidBow } from "./iotms/mr2025";
-import { auto_wantSwordFamiliar } from "./iotms/mr2026";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_wantMeat, in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";
@@ -807,30 +806,21 @@ function autoChooseFamiliar(place: Location): boolean {
   ) {
     famChoice = $familiar`Grimstone Golem`;
   }
-  // Sword of S Words overwrites this fight's drop table, so only bring it out when it's worth it.
-  if (
-    famChoice === Familiar.none &&
-    canChangeToFamiliar($familiar`Sword of S Words`) &&
-    auto_wantSwordFamiliar(place)
-  ) {
-    famChoice = $familiar`Sword of S Words`;
-  }
   // places where meat drop is desirable due to high meat drop monsters.
-  if (
-    $locations`The Boss Bat's Lair, The Icy Peak, The Filthworm Queen's Chamber, Cobb's Knob Treasury`.includes(
-      place,
-    )
-  ) {
-    famChoice = lookupFamiliarDatafile("meat");
-  }
-  if (place === $location`Mist-Shrouded Peak` && place.turnsSpent < 3) {
-    famChoice = lookupFamiliarDatafile("meat"); //not useful for Groar
+  if (isMeatPoor()) {
+    if (
+      $locations`The Boss Bat's Lair, The Icy Peak, The Filthworm Queen's Chamber, Cobb's Knob Treasury`.includes(
+        place,
+      )
+    ) {
+      famChoice = lookupFamiliarDatafile("meat");
+    }
+    if (place === $location`Mist-Shrouded Peak` && place.turnsSpent < 3) {
+      famChoice = lookupFamiliarDatafile("meat"); //not useful for Groar
+    }
   }
   //if critically low on MP and meat. use restore familiar to avoid going bankrupt
-  let poor: boolean = myMeat() < 1000;
-  if (internalQuestStatus("questL11MacGuffin") < 2) {
-    poor = myMeat() < 7000;
-  }
+  const poor: boolean = isMeatPoor(1000);
   if (
     famChoice === Familiar.none &&
     myMaxmp() > 50 &&

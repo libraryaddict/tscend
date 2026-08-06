@@ -6,3 +6,8 @@ auto_maxCandyPrice:
   name: "Max Candy Price"
   type: integer
   description: Max allowable price per candy for Rethinking Candy (default 2500)
+auto_meat_surplus:
+  name: "Meat Surplus"
+  type: integer
+  description: "Tells autoscend to stop worrying about maximizing for meat (unless relevant) when we have a surplus over this amount of meat"
+  default: 5000

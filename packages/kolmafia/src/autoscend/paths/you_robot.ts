@@ -67,6 +67,7 @@ import {
   auto_runChoice,
   cloversAvailable,
   internalQuestStatus,
+  isMeatPoor,
   loopHandlerDelayAll,
   meatReserve,
 } from "../auto_util";
@@ -123,7 +124,7 @@ export function robot_buildDefaultMaximize(target: Maximizer): void {
   //custom default maximizer statement for You, Robot.
   target
     .weight($modifier`Item Drop`, 5)
-    .weight($modifier`Meat Drop`)
+    .weight($modifier`Meat Drop`, isMeatPoor() ? 1 : 0.05)
     .weight($modifier`Initiative`, 0.5)
     .weight($modifier`Maximum HP`, 0.4)
     .weight($modifier`Damage Absorption`, 0.1)

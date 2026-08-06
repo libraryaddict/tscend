@@ -623,7 +623,7 @@ export function LX_unlockHauntedBilliardsRoom(
       auto_spadeDigsRemaining() > 0 &&
       getProperty("lastAdventure") === "The Haunted Kitchen"
     ) {
-      return auto_spadeDigSkeleton();
+      return auto_spadeDigSkeleton($location`The Haunted Kitchen`);
     }
     if (autoAdv($location`The Haunted Kitchen`)) {
       return true;
@@ -3118,7 +3118,7 @@ const L11_mauriceSpookyravenBallroomTask: QuestTask = registerQuestTask({
       return false;
     }
     if (auto_wantToSpadeDigSkeleton($location`The Haunted Ballroom`)) {
-      return auto_spadeDigSkeleton();
+      return auto_spadeDigSkeleton($location`The Haunted Ballroom`);
     }
     if (canBurnDelay($location`The Haunted Ballroom`)) {
       // We'll All Be Flat choice adventure has a delay of 5 adventures.
@@ -4062,7 +4062,7 @@ function L11_shenCopperheadDo(): boolean {
       ) {
         return true;
       } else if (auto_wantToSpadeDigSkeleton(goal)) {
-        return auto_spadeDigSkeleton();
+        return auto_spadeDigSkeleton(goal);
       }
       // similar if statements exist in the L8 quest file (see comments over there)
       // before delayburn because we *want* to fight NSAs if we're going ninja lair, not avoid them by burning delay

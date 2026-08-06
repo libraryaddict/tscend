@@ -233,6 +233,7 @@ import {
   auto_codpieceFillEmptySlots,
   auto_codpieceReconcileGem,
   auto_heartstoneShouldStealHeart,
+  auto_preferSwordFamiliar,
 } from "./iotms/mr2026";
 import {
   ed_handleAdventureServant,
@@ -707,6 +708,7 @@ function auto_pre_adventure(): boolean {
   }
   //evaluate a boolean prop for the familiar files
   auto_wantSoCP();
+  auto_preferSwordFamiliar(place);
   auto_bankChestMimicExpForBandit();
   // Update our familiar after combat modifiers (which can set the familiar), but before Crystal Ball (familiar equip)
   preAdvUpdateFamiliar(place);

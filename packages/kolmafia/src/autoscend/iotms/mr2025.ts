@@ -2066,6 +2066,16 @@ export function auto_wantSoCP(): void {
   }
   let availableKnuckles: number = itemAmount($item`knucklebone`);
 
+  // Only farm for gruel if we don't have enough knuckles to pick it if we wanted gruel
+  if (
+    auto_is_valid($item`medicinal gruel`) &&
+    !isActuallyEd() &&
+    stomach_left() > 0 &&
+    !get("_crimboPastMedicalGruel") &&
+    availableKnuckles < 5
+  ) {
+    availableKnuckles -= 5;
+  }
   if (
     auto_is_valid($item`Smoking Pope`) &&
     stomach_left() > 0 &&
@@ -2080,15 +2090,6 @@ export function auto_wantSoCP(): void {
   ) {
     availableKnuckles -= 5;
   }
-  if (
-    auto_is_valid($item`medicinal gruel`) &&
-    !isActuallyEd() &&
-    stomach_left() > 0 &&
-    !get("_crimboPastMedicalGruel")
-  ) {
-    availableKnuckles -= 5;
-  }
-
   if (
     availableKnuckles >= 0 &&
     (!get("auto_farmSoCP", false) || get("_knuckleboneDrops") >= 100)

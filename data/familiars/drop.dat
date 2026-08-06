@@ -47,6 +47,7 @@ Cookbookbat	item:St. Sneaky Pete's Whey<4;!prop_boolean:auto_dontUseCookBookBat
 #
 # density 1.875 size 4 spleen consumables. boolean autoChooseFamiliar(location place) will already grab the amount needed for spleen
 # Here they are only used to grab extras.
+Sword of S Words	prop_boolean:_auto_preferSwordFam
 Skeleton of Crimbo Past	prop_boolean:auto_preferSoCP
 Grim Brother	prop:_grimFairyTaleDrops<5
 Pair of Stomping Boots	!path:G-Lover;prop:_bootStomps<7
