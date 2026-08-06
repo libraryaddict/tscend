@@ -3131,7 +3131,7 @@ const L11_mauriceSpookyravenBallroomTask: QuestTask = registerQuestTask({
 
 const L11_mauriceSpookyravenMortarTask: QuestTask = registerQuestTask({
   name: "L11_mauriceSpookyravenMortar",
-  completed: () => getProperty("spookyravenRecipeUsed") !== "",
+  completed: () => getProperty("spookyravenRecipeUsed") !== "none",
   ready: () => internalQuestStatus("questL11Manor") >= 1,
   do: () => {
     if (itemAmount($item`recipe: mortar-dissolving solution`) === 0) {
@@ -3346,10 +3346,9 @@ const L11_mauriceSpookyravenFulminateCraftTask: QuestTask = registerQuestTask({
   name: "L11_mauriceSpookyravenFulminateCraft",
   completed: () =>
     possessEquipment($item`unstable fulminate`) ||
+    itemAmount($item`wine bomb`) > 0 ||
     internalQuestStatus("questL11Manor") >= 3,
   ready: () =>
-    !possessEquipment($item`unstable fulminate`) &&
-    internalQuestStatus("questL11Manor") < 3 &&
     itemAmount($item`blasting soda`) === 1 &&
     itemAmount($item`bottle of Chateau de Vinegar`) === 1,
   do: () => {
@@ -3405,6 +3404,7 @@ const L11_mauriceSpookyravenWineCellarTask: QuestTask = registerQuestTask({
   completed: () =>
     itemAmount($item`bottle of Chateau de Vinegar`) > 0 ||
     possessEquipment($item`unstable fulminate`) ||
+    itemAmount($item`wine bomb`) > 0 ||
     internalQuestStatus("questL11Manor") >= 3,
   ready: () => {
     if (
@@ -3453,6 +3453,7 @@ const L11_mauriceSpookyravenLaundryRoomTask: QuestTask = registerQuestTask({
   completed: () =>
     itemAmount($item`blasting soda`) > 0 ||
     possessEquipment($item`unstable fulminate`) ||
+    itemAmount($item`wine bomb`) > 0 ||
     internalQuestStatus("questL11Manor") >= 3,
   ready: () => {
     if (
@@ -3497,13 +3498,10 @@ const L11_mauriceSpookyravenLaundryRoomTask: QuestTask = registerQuestTask({
 const L11_mauriceSpookyravenBoilerRoomTask: QuestTask = registerQuestTask({
   name: "L11_mauriceSpookyravenBoilerRoom",
   completed: () =>
-    !possessEquipment($item`unstable fulminate`) ||
+    itemAmount($item`wine bomb`) > 0 ||
     internalQuestStatus("questL11Manor") >= 3,
   ready: () => {
-    if (
-      !possessEquipment($item`unstable fulminate`) ||
-      internalQuestStatus("questL11Manor") >= 3
-    ) {
+    if (!possessEquipment($item`unstable fulminate`)) {
       return false;
     }
     if (!L11_mauriceSpookyravenNormalPathwayReady()) {
