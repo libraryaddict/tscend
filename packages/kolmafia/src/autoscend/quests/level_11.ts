@@ -3093,21 +3093,6 @@ function L11_mauriceSpookyravenNormalPathwayReady(): boolean {
   return true;
 }
 
-function L11_mauriceSpookyravenZones(): Location[] {
-  return [
-    L11_mauriceSpookyravenBallroomTask,
-    L11_mauriceSpookyravenKitchenTask,
-    L11_mauriceSpookyravenConservatoryTask,
-    L11_mauriceSpookyravenBathroomTask,
-    L11_mauriceSpookyravenGalleryTask,
-    L11_mauriceSpookyravenLaboratoryTask,
-    L11_mauriceSpookyravenStorageRoomTask,
-    L11_mauriceSpookyravenWineCellarTask,
-    L11_mauriceSpookyravenLaundryRoomTask,
-    L11_mauriceSpookyravenBoilerRoomTask,
-  ].flatMap(taskLocations);
-}
-
 const L11_mauriceSpookyravenBallroomTask: QuestTask = registerQuestTask({
   name: "L11_mauriceSpookyravenBallroom",
   completed: () => internalQuestStatus("questL11Manor") >= 1,
@@ -3157,12 +3142,6 @@ const L11_mauriceSpookyravenBossTask: QuestTask = registerQuestTask({
     }
     if (is_professor()) {
       return false; //Can't beat Lord Spookyraven as the Professor
-    }
-    if (auto_copierShouldDelayZone(L11_mauriceSpookyravenZones())) {
-      auto_log_debug(
-        "Delaying Manor boss fight - still farming a copier target in this cluster.",
-      );
-      return false;
     }
     return true;
   },
