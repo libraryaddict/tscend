@@ -1076,7 +1076,7 @@ function L12_filthwormsDo(): boolean {
       glandGuaranteed = false;
       if (possessEquipment($item`Retrospecs`)) {
         //preadv would give a 50%item accessory a value of 2500 but when multiple fights are expected in each zone this accessory should be equivalent to 100%item?
-        maximizer.bonus($item`Retrospecs`, 2500);
+        maximizer.bonus($item`Retrospecs`, 2500, false);
       }
     }
   }

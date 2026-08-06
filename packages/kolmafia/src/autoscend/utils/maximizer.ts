@@ -85,17 +85,23 @@ export class Maximizer {
     return this.weights.get(criterionName(mod)) ?? 0;
   }
 
-  // stacks with earlier weight() calls for the same criterion
-  weight(mod: Criterion, amount: number = 1): this {
+  weight(mod: Criterion, amount: number = 1, add: boolean = false): this {
     const name = criterionName(mod);
 
-    if (this.weights.has(name)) {
+    if (this.weights.has(name) && add) {
       auto_log_info(
-        `Adding modifier for ${name} on top of ${this.weights.get(name)} + ${amount} = ${this.weights.get(name)! + amount}`,
+        `Adding maximizer weight ${name}: ${this.weights.get(name)} + ${amount} = ${this.weights.get(name)! + amount}`,
       );
+      this.weights.set(name, (this.weights.get(name) ?? 0) + amount);
+    } else {
+      if (this.weights.has(name)) {
+        auto_log_info(
+          `Overwriting maximizer weight for ${name}: ${this.weights.get(name)} => ${amount}`,
+        );
+      }
+      this.weights.set(name, amount);
     }
 
-    this.weights.set(name, (this.weights.get(name) ?? 0) + amount);
     return this;
   }
 
@@ -112,9 +118,20 @@ export class Maximizer {
     return this;
   }
 
-  // stacks with earlier bonus() calls for the same item
-  bonus(item: Item, amount: number): this {
-    this.pendingBonus.set(item, (this.pendingBonus.get(item) ?? 0) + amount);
+  bonus(item: Item, amount: number, add: boolean = false): this {
+    if (this.pendingBonus.has(item) && add) {
+      auto_log_info(
+        `Adding maximizer bonus ${item}: ${this.pendingBonus.get(item)} + ${amount} = ${this.pendingBonus.get(item)! + amount}`,
+      );
+      this.pendingBonus.set(item, (this.pendingBonus.get(item) ?? 0) + amount);
+    } else {
+      if (this.pendingBonus.has(item)) {
+        auto_log_info(
+          `Overwriting maximizer bonus for ${item}: ${this.pendingBonus.get(item)} => ${amount}`,
+        );
+      }
+      this.pendingBonus.set(item, amount);
+    }
     return this;
   }
 

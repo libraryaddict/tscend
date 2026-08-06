@@ -82,7 +82,7 @@ function applyTerm(target: Maximizer, token: string): void {
   if (bonus) {
     const item = resolveEquipTarget(bonus[2]);
     if (item !== Item.none) {
-      target.bonus(item, Number(bonus[1]));
+      target.bonus(item, Number(bonus[1]), true);
       return;
     }
   }

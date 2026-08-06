@@ -79,7 +79,9 @@ function applyItemDropCap(task: QuestTask): void {
   }
 
   if (cap > 0) {
-    maximizer.weight($modifier`Item Drop`, 5).max($modifier`Item Drop`, cap);
+    maximizer
+      .weight($modifier`Item Drop`, 5, true)
+      .max($modifier`Item Drop`, cap);
   }
 }
 

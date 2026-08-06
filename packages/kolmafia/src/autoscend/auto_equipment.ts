@@ -709,9 +709,13 @@ export function resetMaximize(): void {
   auto_log_debug(`Resetting maximizer to ${maximizer.toString()}`, "gold");
 }
 
-export function addBonusToMaximize(it: Item, amt: number): void {
+export function addBonusToMaximize(
+  it: Item,
+  amt: number,
+  add: boolean = false,
+): void {
   if (possessEquipment(it) && auto_can_equip(it)) {
-    maximizer.bonus(it, amt);
+    maximizer.bonus(it, amt, add);
   }
 }
 
@@ -938,10 +942,12 @@ function finalizeMaximize(speculative: boolean = false): void {
     myClass() === $class`Pastamancer` &&
     auto_havePastaWand() &&
     myThrall().level < 11 &&
-    (myThrall() === $thrall`Vermincelli` || myThrall() === $thrall`Spice Ghost`)
+    (myThrall() === $thrall`Vermincelli` ||
+      myThrall() === $thrall`Spice Ghost`) &&
+    maximizer.getWeight($modifier`Pasta Thrall Experience`) < 40
   ) {
     // bonus for the thrallxp, if we have a thrall we wanna lvl up
-    maximizer.weight($modifier`Pasta Thrall Experience`, 40);
+    maximizer.weight($modifier`Pasta Thrall Experience`, 40, false);
   }
   // We still need pixels in KoE, badly.
   if (in_koe() && auto_hasPowerfulGlove()) {
