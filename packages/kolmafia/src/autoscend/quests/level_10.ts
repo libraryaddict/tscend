@@ -115,19 +115,28 @@ function L10_plantThatBeanDo(): boolean {
   }
   return false;
 }
-
-export const L10_plantThatBeanTask: QuestTask = registerQuestTask({
-  name: "L10_plantThatBean",
-  completed: () => internalQuestStatus("questL10Garbage") > 0,
-  ready: () => internalQuestStatus("questL10Garbage") === 0,
-  do: L10_plantThatBeanDo,
-  desiredEncounters: () => [
-    {
-      item: $item`enchanted bean`,
-      needAmount: 1 - itemAmount($item`enchanted bean`),
-    },
-  ],
+const L10_rainOnThePlainsTask: QuestTask = registerQuestTask({
+  name: "L10_rainOnThePlains",
+  completed: () => false,
+  ready: () => true,
+  do: L10_rainOnThePlainsDo,
 });
+
+export const L10_plantThatBeanTask: QuestTask = registerQuestTask(
+  L10_rainOnThePlainsTask,
+  {
+    name: "L10_plantThatBean",
+    completed: () => internalQuestStatus("questL10Garbage") > 0,
+    ready: () => internalQuestStatus("questL10Garbage") === 0,
+    do: L10_plantThatBeanDo,
+    desiredEncounters: () => [
+      {
+        item: $item`enchanted bean`,
+        needAmount: 1 - itemAmount($item`enchanted bean`),
+      },
+    ],
+  },
+);
 
 export function L10_plantThatBean(): boolean {
   return runQuestTask(L10_plantThatBeanTask);
@@ -195,43 +204,46 @@ function L10_airshipDo(): boolean {
   return true;
 }
 
-export const L10_airshipTask: QuestTask = registerQuestTask({
-  name: "L10_airship",
-  completed: () => internalQuestStatus("questL10Garbage") > 6,
-  ready: () => internalQuestStatus("questL10Garbage") >= 1,
-  do: L10_airshipDo,
-  locations: $location`The Penultimate Fantasy Airship`,
-  desiredEncounters: () => [
-    {
-      item: $item`Mohawk wig`,
-      needAmount:
-        !auto_have_skill($skill`Comprehensive Cartography`) &&
-        auto_can_equip($item`Mohawk wig`) &&
-        !possessEquipment($item`Mohawk wig`) &&
-        internalQuestStatus("questL10Garbage") <= 10
-          ? 1
-          : 0,
-    },
-    {
-      item: $item`amulet of extreme plot significance`,
-      needAmount:
-        auto_can_equip($item`amulet of extreme plot significance`) &&
-        !possessEquipment($item`amulet of extreme plot significance`) &&
-        internalQuestStatus("questL10Garbage") <= 6
-          ? 1
-          : 0,
-    },
-    {
-      item: $item`titanium assault umbrella`,
-      needAmount:
-        auto_can_equip($item`titanium assault umbrella`) &&
-        !possessEquipment($item`titanium assault umbrella`) &&
-        internalQuestStatus("questL10Garbage") <= 6
-          ? 1
-          : 0,
-    },
-  ],
-});
+export const L10_airshipTask: QuestTask = registerQuestTask(
+  L10_rainOnThePlainsTask,
+  {
+    name: "L10_airship",
+    completed: () => internalQuestStatus("questL10Garbage") > 6,
+    ready: () => internalQuestStatus("questL10Garbage") >= 1,
+    do: L10_airshipDo,
+    locations: $location`The Penultimate Fantasy Airship`,
+    desiredEncounters: () => [
+      {
+        item: $item`Mohawk wig`,
+        needAmount:
+          !auto_have_skill($skill`Comprehensive Cartography`) &&
+          auto_can_equip($item`Mohawk wig`) &&
+          !possessEquipment($item`Mohawk wig`) &&
+          internalQuestStatus("questL10Garbage") <= 10
+            ? 1
+            : 0,
+      },
+      {
+        item: $item`amulet of extreme plot significance`,
+        needAmount:
+          auto_can_equip($item`amulet of extreme plot significance`) &&
+          !possessEquipment($item`amulet of extreme plot significance`) &&
+          internalQuestStatus("questL10Garbage") <= 6
+            ? 1
+            : 0,
+      },
+      {
+        item: $item`titanium assault umbrella`,
+        needAmount:
+          auto_can_equip($item`titanium assault umbrella`) &&
+          !possessEquipment($item`titanium assault umbrella`) &&
+          internalQuestStatus("questL10Garbage") <= 6
+            ? 1
+            : 0,
+      },
+    ],
+  },
+);
 
 export function L10_airship(): boolean {
   return runQuestTask(L10_airshipTask);
@@ -344,13 +356,16 @@ function L10_basementDo(): boolean {
   return true;
 }
 
-export const L10_basementTask: QuestTask = registerQuestTask({
-  name: "L10_basement",
-  completed: () => internalQuestStatus("questL10Garbage") > 7,
-  ready: () => internalQuestStatus("questL10Garbage") === 7,
-  do: L10_basementDo,
-  locations: $location`The Castle in the Clouds in the Sky (Basement)`,
-});
+export const L10_basementTask: QuestTask = registerQuestTask(
+  L10_rainOnThePlainsTask,
+  {
+    name: "L10_basement",
+    completed: () => internalQuestStatus("questL10Garbage") > 7,
+    ready: () => internalQuestStatus("questL10Garbage") === 7,
+    do: L10_basementDo,
+    locations: $location`The Castle in the Clouds in the Sky (Basement)`,
+  },
+);
 
 export function L10_basement(): boolean {
   return runQuestTask(L10_basementTask);
@@ -385,13 +400,16 @@ function L10_groundDo(): boolean {
   return autoAdv($location`The Castle in the Clouds in the Sky (Ground Floor)`);
 }
 
-export const L10_groundTask: QuestTask = registerQuestTask({
-  name: "L10_ground",
-  completed: () => internalQuestStatus("questL10Garbage") > 8,
-  ready: () => internalQuestStatus("questL10Garbage") === 8,
-  do: L10_groundDo,
-  locations: $location`The Castle in the Clouds in the Sky (Ground Floor)`,
-});
+export const L10_groundTask: QuestTask = registerQuestTask(
+  L10_rainOnThePlainsTask,
+  {
+    name: "L10_ground",
+    completed: () => internalQuestStatus("questL10Garbage") > 8,
+    ready: () => internalQuestStatus("questL10Garbage") === 8,
+    do: L10_groundDo,
+    locations: $location`The Castle in the Clouds in the Sky (Ground Floor)`,
+  },
+);
 
 export function L10_ground(): boolean {
   return runQuestTask(L10_groundTask);
@@ -441,15 +459,19 @@ function L10_topFloorDo(): boolean {
   return true;
 }
 
-export const L10_topFloorTask: QuestTask = registerQuestTask({
-  name: "L10_topFloor",
-  completed: () => internalQuestStatus("questL10Garbage") > 10,
-  ready: () =>
-    internalQuestStatus("questL10Garbage") >= 9 &&
-    (!possessEquipment($item`Mohawk wig`) || auto_can_equip($item`Mohawk wig`)),
-  do: L10_topFloorDo,
-  locations: $location`The Castle in the Clouds in the Sky (Top Floor)`,
-});
+export const L10_topFloorTask: QuestTask = registerQuestTask(
+  L10_rainOnThePlainsTask,
+  {
+    name: "L10_topFloor",
+    completed: () => internalQuestStatus("questL10Garbage") > 10,
+    ready: () =>
+      internalQuestStatus("questL10Garbage") >= 9 &&
+      (!possessEquipment($item`Mohawk wig`) ||
+        auto_can_equip($item`Mohawk wig`)),
+    do: L10_topFloorDo,
+    locations: $location`The Castle in the Clouds in the Sky (Top Floor)`,
+  },
+);
 
 export function L10_topFloor(): boolean {
   return runQuestTask(L10_topFloorTask);
@@ -566,16 +588,19 @@ function L10_holeInTheSkyUnlockDo(): boolean {
   return true;
 }
 
-export const L10_holeInTheSkyUnlockTask: QuestTask = registerQuestTask({
-  name: "L10_holeInTheSkyUnlock",
-  completed: () => itemAmount($item`steam-powered model rocketship`) > 0,
-  // top floor opens at step9. but we want to finish the giant trash quest first before we do hole in the sky.
-  ready: () =>
-    internalQuestStatus("questL10Garbage") >= 11 &&
-    get("auto_holeinthesky", false),
-  do: L10_holeInTheSkyUnlockDo,
-  locations: $location`The Castle in the Clouds in the Sky (Top Floor)`,
-});
+export const L10_holeInTheSkyUnlockTask: QuestTask = registerQuestTask(
+  L10_rainOnThePlainsTask,
+  {
+    name: "L10_holeInTheSkyUnlock",
+    completed: () => itemAmount($item`steam-powered model rocketship`) > 0,
+    // top floor opens at step9. but we want to finish the giant trash quest first before we do hole in the sky.
+    ready: () =>
+      internalQuestStatus("questL10Garbage") >= 11 &&
+      get("auto_holeinthesky", false),
+    do: L10_holeInTheSkyUnlockDo,
+    locations: $location`The Castle in the Clouds in the Sky (Top Floor)`,
+  },
+);
 
 export function L10_holeInTheSkyUnlock(): boolean {
   return runQuestTask(L10_holeInTheSkyUnlockTask);
@@ -591,13 +616,6 @@ function L10_rainOnThePlainsDo(): boolean {
     L10_holeInTheSkyUnlockTask,
   ]);
 }
-
-const L10_rainOnThePlainsTask: QuestTask = registerQuestTask({
-  name: "L10_rainOnThePlains",
-  completed: () => false,
-  ready: () => true,
-  do: L10_rainOnThePlainsDo,
-});
 
 export function L10_rainOnThePlains(): boolean {
   return runQuestTask(L10_rainOnThePlainsTask);

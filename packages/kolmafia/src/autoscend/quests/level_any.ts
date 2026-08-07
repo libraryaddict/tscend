@@ -690,12 +690,12 @@ function LX_lockPickingDo(): boolean {
 
 export const LX_lockPickingTask: QuestTask = registerQuestTask({
   name: "LX_lockPicking",
-  completed: () => towerKeyCount(false) >= 3,
+  completed: () =>
+    towerKeyCount(false) >= 3 ||
+    !auto_have_skill($skill`Lock Picking`) ||
+    get("lockPicked"),
   ready: () =>
-    auto_have_skill($skill`Lock Picking`) &&
-    !get("lockPicked") &&
-    towerKeyCount(false) < 3 &&
-    myMp() >= mpCost($skill`Lock Picking`),
+    towerKeyCount(false) < 3 && myMp() >= mpCost($skill`Lock Picking`),
   do: LX_lockPickingDo,
 });
 
@@ -1240,12 +1240,14 @@ function LX_setWorkshedDo(): boolean {
 
 export const LX_setWorkshedTask: QuestTask = registerQuestTask({
   name: "LX_setWorkshed",
-  completed: () => get("_workshedItemUsed"),
-  ready: () =>
+  completed: () =>
     //Don't even try if the workshed has already been changed once
-    !get("_workshedItemUsed") &&
+    get("_workshedItemUsed") ||
     //Not usable in certain paths
-    have_workshed(),
+    have_workshed() ||
+    (LX_getDesiredWorkshed() !== Item.none &&
+      getWorkshed() === LX_getDesiredWorkshed()),
+  ready: () => true,
   do: LX_setWorkshedDo,
 });
 

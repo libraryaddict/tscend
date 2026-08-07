@@ -43,6 +43,7 @@ import {
   $slot,
   $stat,
   get,
+  have,
   set,
 } from "libram";
 
@@ -114,9 +115,20 @@ import { L6_friarsGetParts } from "./level_06";
 import { hasSpookyravenLibraryKey, shenShouldDelayZone } from "./level_11";
 import { LX_islandAccess } from "./level_any";
 
-// All prototypes for this code described in autoscend_header.ash
+const LX_steelOrganTask: QuestTask = registerQuestTask({
+  name: "LX_steelOrgan",
+  completed: () =>
+    !get("auto_getSteelOrgan", true) || get("questM10Azazel") === "completed",
+  ready: () =>
+    get("auto_getSteelOrgan", false) &&
+    internalQuestStatus("questL06Friar") > 2,
+  do: LX_steelOrganDo,
+});
 
-//Defined in autoscend/quests/optional.ash
+export function LX_steelOrgan(): boolean {
+  return runQuestTask(LX_steelOrganTask);
+}
+
 export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
   //unlocks [The Thinknerd Warehouse], returns true if successful or adv is spent
   //much easier to do if you already have torso awaregness
@@ -245,60 +257,39 @@ export function LX_steelOrgan_condition_slow(): boolean {
   return !get("auto_slowSteelOrgan", false) && get("auto_getSteelOrgan", false);
 }
 
-const LX_steelOrganGlassesTask: QuestTask = registerQuestTask({
-  name: "LX_steelOrganGlasses",
-  completed: () =>
-    getProperty("questM10Azazel") === "finished" ||
-    itemAmount($item`Azazel's lollipop`) > 0 ||
-    possessEquipment($item`observational glasses`),
-  ready: () =>
-    getProperty("questM10Azazel") === "started" &&
-    itemAmount($item`Azazel's lollipop`) === 0 &&
-    !possessEquipment($item`observational glasses`),
-  do: () => {
-    autoAdv($location`The Laugh Floor`);
-    return true;
-  },
-  locations: $location`The Laugh Floor`,
-  desiredEncounters: () => [
-    {
-      item: $item`observational glasses`,
-      needAmount:
-        get("questM10Azazel") === "started" &&
-        itemAmount($item`Azazel's lollipop`) === 0 &&
-        !possessEquipment($item`observational glasses`)
-          ? 1
-          : 0,
+const LX_steelOrganLaughFloorTask: QuestTask = registerQuestTask(
+  LX_steelOrganTask,
+  {
+    name: "LX_steelOrganLaughFloor",
+    completed: () =>
+      (have($item`Azazel's unicorn`) || have($item`observational glasses`)) &&
+      (have($item`Azazel's tutu`) || itemAmount($item`imp air`) >= 5),
+    ready: () => getProperty("questM10Azazel") === "started",
+    do: () => {
+      autoAdv($location`The Laugh Floor`);
+      return true;
     },
-  ],
-});
-
-const LX_steelOrganLaughFloorTask: QuestTask = registerQuestTask({
-  name: "LX_steelOrganLaughFloor",
-  completed: () =>
-    getProperty("questM10Azazel") === "finished" ||
-    itemAmount($item`Azazel's tutu`) > 0 ||
-    itemAmount($item`imp air`) >= 5,
-  ready: () =>
-    getProperty("questM10Azazel") === "started" &&
-    itemAmount($item`Azazel's tutu`) === 0 &&
-    itemAmount($item`imp air`) < 5,
-  do: () => {
-    autoAdv($location`The Laugh Floor`);
-    return true;
+    locations: $location`The Laugh Floor`,
+    desiredEncounters: () => [
+      {
+        item: $item`imp air`,
+        needAmount:
+          get("questM10Azazel") === "started" && !have($item`Azazel's tutu`)
+            ? 5 - itemAmount($item`imp air`)
+            : 0,
+      },
+      {
+        item: $item`observational glasses`,
+        needAmount:
+          get("questM10Azazel") === "started" &&
+          itemAmount($item`Azazel's lollipop`) === 0 &&
+          !possessEquipment($item`observational glasses`)
+            ? 1
+            : 0,
+      },
+    ],
   },
-  locations: $location`The Laugh Floor`,
-  desiredEncounters: () => [
-    {
-      item: $item`imp air`,
-      needAmount:
-        get("questM10Azazel") === "started" &&
-        itemAmount($item`Azazel's tutu`) === 0
-          ? 5 - itemAmount($item`imp air`)
-          : 0,
-    },
-  ],
-});
+);
 
 function LX_steelOrganComedyProps(): {
   jim: number;
@@ -374,50 +365,42 @@ function LX_steelOrganUnicorn(): boolean {
   return true;
 }
 
-const LX_steelOrganUnicornTask: QuestTask = registerQuestTask({
-  name: "LX_steelOrganUnicorn",
-  completed: () =>
-    getProperty("questM10Azazel") === "finished" ||
-    itemAmount($item`Azazel's unicorn`) > 0,
-  ready: () =>
-    getProperty("questM10Azazel") === "started" &&
-    possessEquipment($item`observational glasses`) &&
-    itemAmount($item`imp air`) >= 5 &&
-    itemAmount($item`Azazel's unicorn`) === 0 &&
-    LX_steelOrganComedyProps().need === 0,
-  do: LX_steelOrganUnicorn,
-});
-
-const LX_steelOrganBackstageTask: QuestTask = registerQuestTask({
-  name: "LX_steelOrganBackstage",
-  completed: () =>
-    getProperty("questM10Azazel") === "finished" ||
-    itemAmount($item`Azazel's tutu`) > 0 ||
-    (itemAmount($item`Azazel's unicorn`) > 0 &&
-      itemAmount($item`bus pass`) >= 5),
-  ready: () =>
-    getProperty("questM10Azazel") === "started" &&
-    itemAmount($item`Azazel's tutu`) === 0 &&
-    possessEquipment($item`observational glasses`) &&
-    itemAmount($item`imp air`) >= 5 &&
-    (itemAmount($item`Azazel's unicorn`) === 0 ||
-      itemAmount($item`bus pass`) < 5),
-  do: () => {
-    autoAdv($location`Infernal Rackets Backstage`);
-    return true;
+const LX_steelOrganUnicornTurnInTask: QuestTask = registerQuestTask(
+  LX_steelOrganTask,
+  {
+    name: "LX_steelOrganUnicornTurnIn",
+    completed: () => have($item`Azazel's unicorn`),
+    ready: () =>
+      getProperty("questM10Azazel") === "started" &&
+      LX_steelOrganComedyProps().need === 0,
+    do: LX_steelOrganUnicorn,
   },
-  locations: $location`Infernal Rackets Backstage`,
-  desiredEncounters: () => [
-    {
-      item: $item`bus pass`,
-      needAmount:
-        get("questM10Azazel") === "started" &&
-        itemAmount($item`Azazel's tutu`) === 0
+);
+
+const LX_steelOrganBackstageTask: QuestTask = registerQuestTask(
+  LX_steelOrganTask,
+  {
+    name: "LX_steelOrganBackstage",
+    completed: () =>
+      (have($item`Azazel's unicorn`) ||
+        LX_steelOrganComedyProps().need === 0) &&
+      (have($item`Azazel's tutu`) || itemAmount($item`bus pass`) >= 5),
+    ready: () => getProperty("questM10Azazel") === "started",
+    do: () => {
+      autoAdv($location`Infernal Rackets Backstage`);
+      return true;
+    },
+    locations: $location`Infernal Rackets Backstage`,
+    desiredEncounters: () => [
+      {
+        item: $item`bus pass`,
+        needAmount: !have($item`Azazel's unicorn`)
           ? 5 - itemAmount($item`bus pass`)
           : 0,
-    },
-  ],
-});
+      },
+    ],
+  },
+);
 
 function LX_steelOrganDo(): boolean {
   if ($classes`Ed the Undying, Gelatinous Noob, Vampyre`.includes(myClass())) {
@@ -470,9 +453,8 @@ function LX_steelOrganDo(): boolean {
   if (getProperty("questM10Azazel") === "started") {
     if (
       runTaskChain([
-        LX_steelOrganGlassesTask,
         LX_steelOrganLaughFloorTask,
-        LX_steelOrganUnicornTask,
+        LX_steelOrganUnicornTurnInTask,
         LX_steelOrganBackstageTask,
       ])
     ) {
@@ -545,38 +527,6 @@ function LX_steelOrganDo(): boolean {
   }
   return false;
 }
-
-const LX_steelOrganTask: QuestTask = registerQuestTask({
-  name: "LX_steelOrgan",
-  completed: () => !get("auto_getSteelOrgan", true),
-  ready: () => get("auto_getSteelOrgan", false),
-  do: LX_steelOrganDo,
-  desiredEncounters: () => {
-    const active =
-      get("questM10Azazel") === "started" &&
-      itemAmount($item`Azazel's tutu`) === 0;
-    return [
-      {
-        item: $item`observational glasses`,
-        needAmount:
-          active && !possessEquipment($item`observational glasses`) ? 1 : 0,
-      },
-      {
-        item: $item`imp air`,
-        needAmount: active ? 5 - itemAmount($item`imp air`) : 0,
-      },
-      {
-        item: $item`bus pass`,
-        needAmount: active ? 5 - itemAmount($item`bus pass`) : 0,
-      },
-    ];
-  },
-});
-
-export function LX_steelOrgan(): boolean {
-  return runQuestTask(LX_steelOrganTask);
-}
-
 function LX_guildUnlockDo(): boolean {
   let pref: string = "";
   let loc: Location = Location.none;
@@ -878,6 +828,20 @@ export function LX_galaktikSubQuest(): boolean {
   return runQuestTask(LX_galaktikSubQuestTask);
 }
 
+export const LX_pirateQuestTask: QuestTask = registerQuestTask({
+  name: "LX_pirateQuest",
+  completed: () =>
+    internalQuestStatus("questM12Pirate") > 6 || !LX_doingPirates(),
+  ready: () => true,
+  do: () =>
+    runTaskChain([
+      LX_pirateOutfitTask,
+      LX_joinPirateCrewTask,
+      LX_fledglingPirateIsYouTask,
+      LX_unlockBelowdecksTask,
+    ]),
+});
+
 export function LX_doingPirates(): boolean {
   return in_lowkeysummer(); //we are only doing pirates in that path now
 }
@@ -917,17 +881,20 @@ function LX_pirateOutfitDo(): boolean {
   return autoAdv($location`The Obligatory Pirate's Cove`);
 }
 
-export const LX_pirateOutfitTask: QuestTask = registerQuestTask({
-  name: "LX_pirateOutfit",
-  completed: () => possessOutfit("Swashbuckling Getup") || !in_lowkeysummer(),
-  ready: () => true,
-  do: LX_pirateOutfitDo,
-  locations: $location`The Obligatory Pirate's Cove`,
-  desiredEncounters: () =>
-    $items`eyepatch, stuffed shoulder parrot, swashbuckling pants, pirate fledges`.map(
-      (i) => ({ item: i, needAmount: possessEquipment(i) ? 0 : 1 }),
-    ),
-});
+export const LX_pirateOutfitTask: QuestTask = registerQuestTask(
+  LX_pirateQuestTask,
+  {
+    name: "LX_pirateOutfit",
+    completed: () => possessOutfit("Swashbuckling Getup") || !in_lowkeysummer(),
+    ready: () => true,
+    do: LX_pirateOutfitDo,
+    locations: $location`The Obligatory Pirate's Cove`,
+    desiredEncounters: () =>
+      $items`eyepatch, stuffed shoulder parrot, swashbuckling pants, pirate fledges`.map(
+        (i) => ({ item: i, needAmount: possessEquipment(i) ? 0 : 1 }),
+      ),
+  },
+);
 
 export function LX_pirateOutfit(): boolean {
   return runQuestTask(LX_pirateOutfitTask);
@@ -1133,13 +1100,16 @@ function LX_joinPirateCrewNoobCave(): boolean {
   );
 }
 
-const LX_joinPirateCrewNoobCaveTask: QuestTask = registerQuestTask({
-  name: "LX_joinPirateCrewNoobCave",
-  completed: () => internalQuestStatus("questM12Pirate") > 0,
-  ready: () => internalQuestStatus("questM12Pirate") === 0,
-  do: LX_joinPirateCrewNoobCave,
-  locations: $location`Noob Cave`,
-});
+const LX_joinPirateCrewNoobCaveTask: QuestTask = registerQuestTask(
+  LX_pirateQuestTask,
+  {
+    name: "LX_joinPirateCrewNoobCave",
+    completed: () => internalQuestStatus("questM12Pirate") > 0,
+    ready: () => internalQuestStatus("questM12Pirate") === 0,
+    do: LX_joinPirateCrewNoobCave,
+    locations: $location`Noob Cave`,
+  },
+);
 
 function LX_joinPirateCrewObligatoryCove(): boolean {
   if (numPirateInsults() >= 6) {
@@ -1165,13 +1135,16 @@ function LX_joinPirateCrewObligatoryCove(): boolean {
   return false;
 }
 
-const LX_joinPirateCrewObligatoryCoveTask: QuestTask = registerQuestTask({
-  name: "LX_joinPirateCrewObligatoryCove",
-  completed: () => internalQuestStatus("questM12Pirate") > 4,
-  ready: () => internalQuestStatus("questM12Pirate") === 4,
-  do: LX_joinPirateCrewObligatoryCove,
-  locations: $location`The Obligatory Pirate's Cove`,
-});
+const LX_joinPirateCrewObligatoryCoveTask: QuestTask = registerQuestTask(
+  LX_pirateQuestTask,
+  {
+    name: "LX_joinPirateCrewObligatoryCove",
+    completed: () => internalQuestStatus("questM12Pirate") > 4,
+    ready: () => internalQuestStatus("questM12Pirate") === 4,
+    do: LX_joinPirateCrewObligatoryCove,
+    locations: $location`The Obligatory Pirate's Cove`,
+  },
+);
 
 function LX_joinPirateCrewFratHouseInfiltration(): boolean {
   auto_log_info("Attempting to infiltrate the frat house", "blue");
@@ -1332,23 +1305,26 @@ function LX_joinPirateCrewDo(): boolean {
   return false;
 }
 
-export const LX_joinPirateCrewTask: QuestTask = registerQuestTask({
-  name: "LX_joinPirateCrew",
-  completed: () =>
-    internalQuestStatus("questM12Pirate") > 4 || !in_lowkeysummer(),
-  ready: () => true,
-  do: LX_joinPirateCrewDo,
-  locations: $location`The Degrassi Knoll Gym`,
-  desiredEncounters: () => [
-    {
-      item: $item`hot wing`,
-      needAmount:
-        internalQuestStatus("questM12Pirate") === 2
-          ? 3 - itemAmount($item`hot wing`)
-          : 0,
-    },
-  ],
-});
+export const LX_joinPirateCrewTask: QuestTask = registerQuestTask(
+  LX_pirateQuestTask,
+  {
+    name: "LX_joinPirateCrew",
+    completed: () =>
+      internalQuestStatus("questM12Pirate") > 4 || !in_lowkeysummer(),
+    ready: () => true,
+    do: LX_joinPirateCrewDo,
+    locations: $location`The Degrassi Knoll Gym`,
+    desiredEncounters: () => [
+      {
+        item: $item`hot wing`,
+        needAmount:
+          internalQuestStatus("questM12Pirate") === 2
+            ? 3 - itemAmount($item`hot wing`)
+            : 0,
+      },
+    ],
+  },
+);
 
 export function LX_joinPirateCrew(): boolean {
   return runQuestTask(LX_joinPirateCrewTask);
@@ -1431,50 +1407,40 @@ function LX_unlockBelowdecks(): boolean {
   return autoAdv($location`The Poop Deck`);
 }
 
-const LX_fledglingPirateIsYouTask: QuestTask = registerQuestTask({
-  name: "LX_fledglingPirateIsYou",
-  completed: () =>
-    possessEquipment($item`pirate fledges`) || !in_lowkeysummer(),
-  ready: () => true,
-  do: LX_fledglingPirateIsYou,
-  locations: $location`The F'c'le`,
-  desiredEncounters: () => {
-    if (possessEquipment($item`pirate fledges`)) {
-      return [];
-    }
-    const desired: DesiredDrop[] = [];
-    desired.push(
-      ...$items`ball polish, mizzenmast mop, rigging shampoo`
-        .filter((it) => itemAmount(it) === 0)
-        .map((it) => ({ item: it, needAmount: 1 })),
-    );
-    return desired;
+const LX_fledglingPirateIsYouTask: QuestTask = registerQuestTask(
+  LX_pirateQuestTask,
+  {
+    name: "LX_fledglingPirateIsYou",
+    completed: () =>
+      possessEquipment($item`pirate fledges`) || !in_lowkeysummer(),
+    ready: () => true,
+    do: LX_fledglingPirateIsYou,
+    locations: $location`The F'c'le`,
+    desiredEncounters: () => {
+      if (possessEquipment($item`pirate fledges`)) {
+        return [];
+      }
+      const desired: DesiredDrop[] = [];
+      desired.push(
+        ...$items`ball polish, mizzenmast mop, rigging shampoo`
+          .filter((it) => itemAmount(it) === 0)
+          .map((it) => ({ item: it, needAmount: 1 })),
+      );
+      return desired;
+    },
   },
-});
-const LX_unlockBelowdecksTask: QuestTask = registerQuestTask({
-  name: "LX_unlockBelowdecks",
-  completed: () =>
-    internalQuestStatus("questM12Pirate") > 6 || !in_lowkeysummer(),
-  ready: () => true,
-  do: LX_unlockBelowdecks,
-  locations: $location`The Poop Deck`,
-});
-
-function LX_pirateQuestDo(): boolean {
-  return runTaskChain([
-    LX_pirateOutfitTask,
-    LX_joinPirateCrewTask,
-    LX_fledglingPirateIsYouTask,
-    LX_unlockBelowdecksTask,
-  ]);
-}
-
-export const LX_pirateQuestTask: QuestTask = registerQuestTask({
-  name: "LX_pirateQuest",
-  completed: () => internalQuestStatus("questM12Pirate") > 6,
-  ready: () => true,
-  do: LX_pirateQuestDo,
-});
+);
+const LX_unlockBelowdecksTask: QuestTask = registerQuestTask(
+  LX_pirateQuestTask,
+  {
+    name: "LX_unlockBelowdecks",
+    completed: () =>
+      internalQuestStatus("questM12Pirate") > 6 || !in_lowkeysummer(),
+    ready: () => true,
+    do: LX_unlockBelowdecks,
+    locations: $location`The Poop Deck`,
+  },
+);
 
 export function LX_pirateQuest(): boolean {
   return runQuestTask(LX_pirateQuestTask);
@@ -1606,7 +1572,7 @@ export const LX_acquireEpicWeaponTask: QuestTask = registerQuestTask({
   completed: () =>
     !isGuildClass() ||
     internalQuestStatus("questG04Nemesis") > 4 ||
-    (!guildStoreAvailable() && get("auto_skipUnlockGuild", false)),
+    (!guildStoreAvailable() && !get("auto_skipUnlockGuild", false)),
   ready: () =>
     // no guild access. can't start this quest
     isGuildClass() && guildStoreAvailable(),

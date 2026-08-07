@@ -3982,16 +3982,6 @@ export function handleBarrelFullOfBarrels(daily: boolean): boolean {
 }
 
 export function use_barrels(): boolean {
-  if (!get("barrelShrineUnlocked")) {
-    return false;
-  }
-  if (inAftercore()) {
-    return false;
-  }
-  if (in_bhy()) {
-    return false;
-  }
-
   const barrels: Item[] = $items`little firkin, normal barrel, big tun, weathered barrel, dusty barrel, disintegrating barrel, moist barrel, rotting barrel, mouldering barrel, barnacled barrel`;
 
   let retval: boolean = false;

@@ -43,6 +43,7 @@ import {
   $paths,
   $phylum,
   $slot,
+  DNALab,
   get,
   set,
 } from "libram";
@@ -293,7 +294,7 @@ export function dna_generic(): boolean {
 export function dna_sorceressTest(): boolean {
   // FIXME: Can we do this earlier? This isn't even all that useful, to be fair.
   // When is the last time we encounter each of these types?
-  if (!isUnrestricted($item`Little Geneticist DNA-Splicing Lab`)) {
+  if (!DNALab.installed()) {
     return false;
   }
   if (getProperty("dnaSyringe") === Phylum.none.toString()) {

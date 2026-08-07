@@ -492,7 +492,7 @@ export function L8_mineOreWorthBurningLuckOn(): boolean {
 
 const L8_getGoatCheeseTask: QuestTask = registerQuestTask({
   name: "L8_getGoatCheese",
-  completed: () => internalQuestStatus("questL08Trapper") > 1,
+  completed: () => !L8_wantsGoatCheese(),
   ready: () => true,
   do: L8_getGoatCheese,
   locations: $location`The Goatlet`,

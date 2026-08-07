@@ -116,11 +116,19 @@ import {
   $skill,
   $slot,
   $stat,
+  AsdonMartin,
+  BarrelShrine,
+  BurningLeaves,
+  DeckOfEveryCard,
+  DNALab,
   get,
   have,
   haveInCampground,
+  Latte,
   Leprecondo,
   set,
+  SongBoom,
+  Witchess,
 } from "libram";
 
 import {
@@ -181,6 +189,7 @@ import {
   auto_have_skill,
   auto_interruptCheck,
   auto_is_valid,
+  auto_is_valid$1,
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
@@ -306,6 +315,7 @@ import {
   auto_canUseJuneCleaver,
   auto_checkTrainSet,
   auto_hasAutumnaton,
+  auto_haveGreyGoose,
   auto_haveTrainSet,
   auto_juneCleaverAdventure,
   auto_voidMonster,
@@ -2694,17 +2704,18 @@ const oldPeoplePlantStuffTask: QuestTask = registerQuestTask({
 
 const use_barrelsTask: QuestTask = registerQuestTask({
   name: "use_barrels",
-  completed: () => false,
+  completed: () =>
+    inAftercore() ||
+    in_bhy() ||
+    !BarrelShrine.have() ||
+    !isUnrestricted($item`shrine to the Barrel god`),
   ready: () => true,
-  do: () => {
-    use_barrels();
-    return false;
-  },
+  do: () => use_barrels,
 });
 
 const auto_latteRefillTask: QuestTask = registerQuestTask({
   name: "auto_latteRefill",
-  completed: () => false,
+  completed: () => !Latte.have(),
   ready: () => true,
   do: () => {
     auto_latteRefill$4();
@@ -2714,7 +2725,7 @@ const auto_latteRefillTask: QuestTask = registerQuestTask({
 
 const auto_buyCrimboCommerceMallItemTask: QuestTask = registerQuestTask({
   name: "auto_buyCrimboCommerceMallItem",
-  completed: () => false,
+  completed: () => !auto_is_valid$1($familiar`Ghost of Crimbo Commerce`),
   ready: () => true,
   do: () => {
     auto_buyCrimboCommerceMallItem();
@@ -2760,7 +2771,8 @@ const tophatMakerTask: QuestTask = registerQuestTask({
 
 const deck_useSchemeTask: QuestTask = registerQuestTask({
   name: "deck_useScheme",
-  completed: () => false,
+  completed: () =>
+    DeckOfEveryCard.getCardsDrawn() > 0 || !DeckOfEveryCard.have(),
   ready: () => true,
   do: () => {
     deck_useScheme("");
@@ -2780,7 +2792,7 @@ const autosellCrapTask: QuestTask = registerQuestTask({
 
 const asdonAutoFeedTask: QuestTask = registerQuestTask({
   name: "asdonAutoFeed",
-  completed: () => false,
+  completed: () => !AsdonMartin.installed(),
   ready: () => true,
   do: () => {
     asdonAutoFeed();
@@ -2860,7 +2872,9 @@ const auto_checkTrainSetTask: QuestTask = registerQuestTask({
 
 const prioritizeGooseTask: QuestTask = registerQuestTask({
   name: "prioritizeGoose",
-  completed: () => false,
+  completed: () =>
+    !auto_is_valid$1($familiar`Grey Goose`) ||
+    (!auto_haveGreyGoose() && !in_quantumTerrarium()),
   ready: () => true,
   do: () => {
     prioritizeGoose();
@@ -2893,7 +2907,7 @@ const auto_MayamClaimAllTask: QuestTask = registerQuestTask({
 
 const auto_defaultBurnLeavesTask: QuestTask = registerQuestTask({
   name: "auto_defaultBurnLeaves",
-  completed: () => false,
+  completed: () => !BurningLeaves.have(),
   ready: () => true,
   do: () => {
     auto_defaultBurnLeaves();
@@ -3123,14 +3137,16 @@ const LX_theSourceTask: QuestTask = registerQuestTask({
 
 const LX_ghostBustingTask: QuestTask = registerQuestTask({
   name: "LX_ghostBusting",
-  completed: () => false,
+  completed: () =>
+    !auto_is_valid($item`protonic accelerator pack`) &&
+    !auto_is_valid($item`almost-dead walkie-talkie`),
   ready: () => true,
   do: LX_ghostBusting,
 });
 
 const witchessFightsTask: QuestTask = registerQuestTask({
   name: "witchessFights",
-  completed: () => false,
+  completed: () => !Witchess.have() || Witchess.fightsDone() < 5,
   ready: () => true,
   do: witchessFights,
 });
@@ -3171,7 +3187,7 @@ const auto_voteSetupTask: QuestTask = registerQuestTask({
 
 const auto_setSongboomTask: QuestTask = registerQuestTask({
   name: "auto_setSongboom",
-  completed: () => false,
+  completed: () => !SongBoom.have(),
   ready: () => true,
   do: () => {
     auto_setSongboom();
@@ -3238,7 +3254,7 @@ const adventureFailureHandlerTask: QuestTask = registerQuestTask({
 
 const dna_sorceressTestTask: QuestTask = registerQuestTask({
   name: "dna_sorceressTest",
-  completed: () => false,
+  completed: () => !DNALab.installed(),
   ready: () => true,
   do: () => {
     dna_sorceressTest();
@@ -3248,7 +3264,7 @@ const dna_sorceressTestTask: QuestTask = registerQuestTask({
 
 const dna_genericTask: QuestTask = registerQuestTask({
   name: "dna_generic",
-  completed: () => false,
+  completed: () => !DNALab.installed(),
   ready: () => true,
   do: () => {
     dna_generic();

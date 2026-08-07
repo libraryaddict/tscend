@@ -89,6 +89,7 @@ import {
   $slot,
   $stat,
   get,
+  have,
   set,
 } from "libram";
 
@@ -2507,7 +2508,10 @@ function auto_breakfastCounterVisitDo(): boolean {
 
 export const auto_breakfastCounterVisitTask: QuestTask = registerQuestTask({
   name: "auto_breakfastCounterVisit",
-  completed: () => get("_muffinOrderedToday"),
+  completed: () =>
+    get("_muffinOrderedToday") ||
+    (safeGet("muffinOrder", Item.none) === Item.none &&
+      !have($item`earthenware muffin tin`)),
   ready: () =>
     itemAmount($item`earthenware muffin tin`) > 0 ||
     (!get("_muffinOrderedToday") &&
