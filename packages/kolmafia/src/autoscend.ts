@@ -2691,7 +2691,7 @@ const ht_equip_hatsTask: QuestTask = registerQuestTask({
 
 const oldPeoplePlantStuffTask: QuestTask = registerQuestTask({
   name: "oldPeoplePlantStuff",
-  completed: () => !floristAvailable(),
+  completed: () => !get("floristFriarAvailable"),
   ready: () => true,
   do: () => {
     oldPeoplePlantStuff();
