@@ -324,9 +324,34 @@ function L7_defiledAlcoveDo(): boolean {
   return autoAdv($location`The Defiled Alcove`);
 }
 
-const L7_defiledAlcoveTask: QuestTask = registerQuestTask({
+export const L7_cryptTask: QuestTask = registerQuestTask({
+  name: "L7_crypt",
+  completed: () => get("auto_L07CouncilVisited", false),
+  ready: () => internalQuestStatus("questL07Cyrptic") >= 0,
+  do: () => {
+    if (L7_bonerdagonDefeated()) {
+      return runQuestTask(L7_cryptFinishTask);
+    }
+
+    // make sure quest status is correct before we attempt to adventure.
+    //visitUrl("crypt.php");
+    //use(1, $item`Evilometer`);
+
+    cyrptEvilBonus();
+
+    return runTaskChain([
+      L7_defiledAlcoveTask,
+      L7_defiledNookTask,
+      L7_defiledNicheTask,
+      L7_defiledCrannyTask,
+      L7_bonerdagonTask,
+    ]);
+  },
+});
+
+const L7_defiledAlcoveTask: QuestTask = registerQuestTask(L7_cryptTask, {
   name: "L7_defiledAlcove",
-  completed: () => false,
+  completed: () => get("cyrptAlcoveEvilness") === 0,
   ready: () => true,
   do: L7_defiledAlcoveDo,
   locations: $location`The Defiled Alcove`,
@@ -385,9 +410,9 @@ function L7_defiledNookDo(): boolean {
   return false;
 }
 
-const L7_defiledNookTask: QuestTask = registerQuestTask({
+const L7_defiledNookTask: QuestTask = registerQuestTask(L7_cryptTask, {
   name: "L7_defiledNook",
-  completed: () => false,
+  completed: () => get("cyrptNookEvilness") === 0,
   ready: () => {
     if (!L7_reserveUndergroundGate()) {
       return false;
@@ -402,13 +427,12 @@ const L7_defiledNookTask: QuestTask = registerQuestTask({
   },
   do: L7_defiledNookDo,
   locations: $location`The Defiled Nook`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`evil eye`,
-        needAmount: get("cyrptNookEvilness") > 13 ? 1 : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`evil eye`,
+      needAmount: get("cyrptNookEvilness") > 13 ? 1 : 0,
+    },
+  ],
 });
 
 export function L7_defiledNook(): boolean {
@@ -500,9 +524,9 @@ function L7_defiledNicheDo(): boolean {
   return false;
 }
 
-const L7_defiledNicheTask: QuestTask = registerQuestTask({
+const L7_defiledNicheTask: QuestTask = registerQuestTask(L7_cryptTask, {
   name: "L7_defiledNiche",
-  completed: () => false,
+  completed: () => get("cyrptNicheEvilness") === 0,
   ready: () => {
     if (!L7_reserveUndergroundGate()) {
       return false;
@@ -517,6 +541,12 @@ const L7_defiledNicheTask: QuestTask = registerQuestTask({
   },
   do: L7_defiledNicheDo,
   locations: $location`The Defiled Niche`,
+  desiredEncounters: () => [
+    {
+      monster: $monster`dirty old lihc`,
+      needAmount: Math.round((13 - get("cyrptNicheEvilness")) / 3),
+    },
+  ],
 });
 
 export function L7_defiledNiche(): boolean {
@@ -524,86 +554,85 @@ export function L7_defiledNiche(): boolean {
 }
 
 function L7_defiledCrannyDo(): boolean {
+  if (get("cyrptCrannyEvilness") <= 0) {
+    return false;
+  }
+  if (is_professor()) {
+    //don't do if we are the Professor. Death Rattlin' = Beaten Up
+    return false;
+  }
   const evilBonus: number = cyrptEvilBonus();
+  auto_log_info("The Cranny!", "blue");
 
-  if (get("cyrptCrannyEvilness") > 0) {
-    if (is_professor()) {
-      //don't do if we are the Professor. Death Rattlin' = Beaten Up
-      return false;
-    }
-    auto_log_info("The Cranny!", "blue");
+  if (myMp() > 60) {
+    handleBjornify($familiar`Grimstone Golem`);
+  }
 
-    if (myMp() > 60) {
-      handleBjornify($familiar`Grimstone Golem`);
-    }
+  autoEquip($item`gravy boat`);
+  knockOffCapePrep();
 
-    autoEquip($item`gravy boat`);
-    knockOffCapePrep();
+  if (auto_is_valid$3($effect`Emotional Vaccine`)) {
+    spacegateVaccine($effect`Emotional Vaccine`);
+  }
 
-    if (auto_is_valid$3($effect`Emotional Vaccine`)) {
-      spacegateVaccine($effect`Emotional Vaccine`);
-    }
+  if (
+    auto_have_familiar($familiar`Space Jellyfish`) &&
+    get("_spaceJellyfishDrops") < 3
+  ) {
+    handleFamiliar$1($familiar`Space Jellyfish`);
+  }
 
-    if (
-      auto_have_familiar($familiar`Space Jellyfish`) &&
-      get("_spaceJellyfishDrops") < 3
-    ) {
-      handleFamiliar$1($familiar`Space Jellyfish`);
-    }
+  if (get("cyrptCrannyEvilness") >= 17 + evilBonus) {
+    useNightmareFuelIfPossible();
+  }
 
-    if (get("cyrptCrannyEvilness") >= 17 + evilBonus) {
-      useNightmareFuelIfPossible();
-    }
-
-    if (
-      (in_darkGyffte() &&
-        haveSkill($skill`Flock of Bats Form`) &&
-        haveSkill($skill`Sharp Eyes`)) ||
-      auto_turbo()
-    ) {
-      let desiredPills: number = inHardcore() ? 6 : auto_turbo() ? 3 : 4;
-      let dietingPillsUsed: number = 0;
-      if (getProperty("auto_chewed") === "") {
-        dietingPillsUsed = 0;
-      } else {
-        for (const str of splitString(getProperty("auto_chewed"), ",")) {
-          if (containsText(toLowerCase(str), "dieting pill")) {
-            dietingPillsUsed += 1;
-          }
+  if (
+    (in_darkGyffte() &&
+      haveSkill($skill`Flock of Bats Form`) &&
+      haveSkill($skill`Sharp Eyes`)) ||
+    auto_turbo()
+  ) {
+    let desiredPills: number = inHardcore() ? 6 : auto_turbo() ? 3 : 4;
+    let dietingPillsUsed: number = 0;
+    if (getProperty("auto_chewed") === "") {
+      dietingPillsUsed = 0;
+    } else {
+      for (const str of splitString(getProperty("auto_chewed"), ",")) {
+        if (containsText(toLowerCase(str), "dieting pill")) {
+          dietingPillsUsed += 1;
         }
       }
-      if (!auto_turbo()) {
-        desiredPills -= myFullness() / 2;
-      } else {
-        desiredPills -= dietingPillsUsed;
-      }
-      auto_log_info(
-        `We want ${desiredPills} dieting pills and have ${itemAmount($item`dieting pill`)}`,
-        "blue",
-      );
-      if (itemAmount($item`dieting pill`) < desiredPills) {
-        //dieting pills have 10% drop rate
-        provideItem$2(900, $location`The Defiled Cranny`, false);
-      }
     }
-
-    auto_MaxMLToCap(auto_convertDesiredML(149), true);
-
-    maximizer
-      .weight($modifier`Monster Level`, 200)
-      .max($modifier`Monster Level`, auto_convertDesiredML(149));
-
-    if (get("cyrptCrannyEvilness") <= 13) {
-      set("auto_nextEncounter", "huge ghuol");
+    if (!auto_turbo()) {
+      desiredPills -= myFullness() / 2;
+    } else {
+      desiredPills -= dietingPillsUsed;
     }
-    return autoAdv($location`The Defiled Cranny`);
+    auto_log_info(
+      `We want ${desiredPills} dieting pills and have ${itemAmount($item`dieting pill`)}`,
+      "blue",
+    );
+    if (itemAmount($item`dieting pill`) < desiredPills) {
+      //dieting pills have 10% drop rate
+      provideItem$2(900, $location`The Defiled Cranny`, false);
+    }
   }
-  return false;
+
+  auto_MaxMLToCap(auto_convertDesiredML(149), true);
+
+  maximizer
+    .weight($modifier`Monster Level`, 200)
+    .max($modifier`Monster Level`, auto_convertDesiredML(149));
+
+  if (get("cyrptCrannyEvilness") <= 13) {
+    set("auto_nextEncounter", "huge ghuol");
+  }
+  return autoAdv($location`The Defiled Cranny`);
 }
 
-const L7_defiledCrannyTask: QuestTask = registerQuestTask({
+const L7_defiledCrannyTask: QuestTask = registerQuestTask(L7_cryptTask, {
   name: "L7_defiledCranny",
-  completed: () => false,
+  completed: () => get("cyrptCrannyEvilness") === 0,
   ready: () => {
     if (!L7_reserveUndergroundGate()) {
       return false;
@@ -618,6 +647,18 @@ const L7_defiledCrannyTask: QuestTask = registerQuestTask({
   },
   do: L7_defiledCrannyDo,
   locations: $location`The Defiled Cranny`,
+  desiredEncounters: () => [
+    {
+      item: $item`dieting pill`,
+      needAmount:
+        auto_is_valid($item`dieting pill`) &&
+        spleen_left() >= 3 &&
+        !isActuallyEd() &&
+        !have($item`dieting pill`)
+          ? 1
+          : 0,
+    },
+  ],
 });
 
 export function L7_defiledCranny(): boolean {
@@ -679,7 +720,7 @@ function L7_bonerdagonDo(): boolean {
   return true;
 }
 
-const L7_bonerdagonTask: QuestTask = registerQuestTask({
+const L7_bonerdagonTask: QuestTask = registerQuestTask(L7_cryptTask, {
   name: "L7_bonerdagon",
   completed: L7_bonerdagonDefeated,
   ready: () => {
@@ -690,27 +731,18 @@ const L7_bonerdagonTask: QuestTask = registerQuestTask({
   },
   do: L7_bonerdagonDo,
   locations: $location`Haert of the Cyrpt`,
+  desiredEncounters: () => [
+    {
+      monster: $monster`Bonerdagon`,
+      needAmount:
+        itemAmount($item`chest of the Bonerdagon`) < 1 &&
+        get("questL07Cyrptic") !== "finished" &&
+        (get("cyrptTotalEvilness") <= 0 || get("cyrptTotalEvilness") === 999)
+          ? 1
+          : 0,
+    },
+  ],
 });
-
-function L7_cryptDo(): boolean {
-  if (L7_bonerdagonDefeated()) {
-    return runQuestTask(L7_cryptFinishTask);
-  }
-
-  // make sure quest status is correct before we attempt to adventure.
-  //visitUrl("crypt.php");
-  //use(1, $item`Evilometer`);
-
-  cyrptEvilBonus();
-
-  return runTaskChain([
-    L7_defiledAlcoveTask,
-    L7_defiledNookTask,
-    L7_defiledNicheTask,
-    L7_defiledCrannyTask,
-    L7_bonerdagonTask,
-  ]);
-}
 
 export function L7_swordWantsCryptMonster(): boolean {
   if (!auto_swordIsWillingToSwitchTargets()) return false;
@@ -723,48 +755,6 @@ export function L7_swordWantsCryptMonster(): boolean {
     auto_swordFamiliarWantsMonsterDrops($monster`spiny skelelton`)
   );
 }
-
-export const L7_cryptTask: QuestTask = registerQuestTask({
-  name: "L7_crypt",
-  completed: () => get("auto_L07CouncilVisited", false),
-  ready: () => {
-    if (get("auto_L07CouncilVisited", false)) {
-      return false;
-    }
-    return internalQuestStatus("questL07Cyrptic") >= 0;
-  },
-  do: L7_cryptDo,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`evil eye`,
-        needAmount: Math.round((13 - get("cyrptNookEvilness")) / 3),
-      },
-      {
-        item: $item`dieting pill`,
-        needAmount:
-          auto_is_valid($item`dieting pill`) &&
-          spleen_left() >= 3 &&
-          !isActuallyEd() &&
-          !have($item`dieting pill`)
-            ? 1
-            : 0,
-      },
-      {
-        monster: $monster`dirty old lihc`,
-        needAmount: Math.round((13 - get("cyrptNicheEvilness")) / 3),
-      },
-      {
-        monster: $monster`Bonerdagon`,
-        needAmount:
-          itemAmount($item`chest of the Bonerdagon`) < 1 &&
-          get("questL07Cyrptic") !== "finished" &&
-          (get("cyrptTotalEvilness") <= 0 || get("cyrptTotalEvilness") === 999)
-            ? 1
-            : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
-});
 
 const L7_cryptFinishTask: QuestTask = registerQuestTask({
   name: "L7_cryptFinish",
@@ -835,23 +825,22 @@ const L7_overrideTask: QuestTask = registerQuestTask({
     (get("cyrptNookEvilness") > 14 || get("cyrptNicheEvilness") > 14),
   do: L7_overrideDo,
   locations: $locations`The Defiled Alcove, The Defiled Niche, The Defiled Cranny, The Defiled Nook`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`evil eye`,
-        needAmount: Math.round((13 - get("cyrptNookEvilness")) / 3),
-      },
-      {
-        item: $item`dieting pill`,
-        needAmount:
-          fullnessLimit() > 3 &&
-          spleenLimit() > 3 &&
-          !isActuallyEd() &&
-          !in_small()
-            ? 2 - itemAmount($item`dieting pill`)
-            : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`evil eye`,
+      needAmount: Math.round((13 - get("cyrptNookEvilness")) / 3),
+    },
+    {
+      item: $item`dieting pill`,
+      needAmount:
+        fullnessLimit() > 3 &&
+        spleenLimit() > 3 &&
+        !isActuallyEd() &&
+        !in_small()
+          ? 2 - itemAmount($item`dieting pill`)
+          : 0,
+    },
+  ],
 });
 
 export function L7_override(): boolean {

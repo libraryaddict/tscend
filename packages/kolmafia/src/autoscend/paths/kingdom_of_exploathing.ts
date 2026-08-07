@@ -277,13 +277,12 @@ const LX_koeInvaderHandlerTask: QuestTask = registerQuestTask({
   ready: () => !get("spaceInvaderDefeated"),
   do: LX_koeInvaderHandlerDo,
   locations: $location`The Invader`,
-  desiredEncounters: () =>
-    [
-      {
-        monster: $monster`the invader`,
-        needAmount: get("spaceInvaderDefeated") ? 0 : 1,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: $monster`the invader`,
+      needAmount: get("spaceInvaderDefeated") ? 0 : 1,
+    },
+  ],
 });
 
 export function LX_koeInvaderHandler(): boolean {

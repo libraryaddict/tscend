@@ -249,7 +249,14 @@ import {
   useItem,
   yellowRayCombatString,
 } from "./combat/auto_combat_util";
-import { QuestTask, registerQuestTask, runQuestTask } from "./engine/engine";
+import {
+  getIncompleteQuestTasks,
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  taskDesiredEncounters,
+  taskLocations,
+} from "./engine/engine";
 import { auto_get_clan_lounge, handleFaxMonster } from "./iotms/clan";
 import { auto_hasNavelRing, auto_navelFreeRunChance } from "./iotms/mr2007";
 import {
@@ -7215,6 +7222,14 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
   return text;
 }
 
+export function auto_zoneCopyableMonsters(loc: Location): [Monster, number][] {
+  return Object.entries(appearanceRates(loc))
+    .map(([_k, _v]) => [Monster.get(_k), _v] as [Monster, number])
+    .filter(
+      ([mon, rate]) => rate > 0 && mon.id > 0 && mon.copyable && !mon.boss,
+    );
+}
+
 export function safeGet<T>(key: string, fallback: T): T {
   const value = (get as unknown as (key: string, fallback: T) => T | null)(
     key,
@@ -7276,4 +7291,34 @@ export function isDropsCapped(monster: Monster): boolean {
 
 function isManualAvatarPotion(item: Item): boolean {
   return stringModifier(effectModifier(item, "Effect"), "Avatar") !== "";
+}
+
+export function auto_isWorthYellowRaying(mon: Monster, loc: Location): boolean {
+  // Scorcher guarantees every drop from one fight, so YR's target list applies here too.
+  const drops = getMonsterDrops(mon).map((i) => i.item);
+
+  return (
+    auto_wantToYellowRay(mon, loc) ||
+    getIncompleteQuestTasks().some((t) =>
+      taskDesiredEncounters(t).drops.some((f) => drops.includes(f.item)),
+    )
+  );
+}
+export function auto_isWorthSniffing(mon: Monster, loc: Location) {
+  return (
+    auto_isInIncompleteZone(mon) &&
+    (auto_wantToSniff(mon, loc) ||
+      getIncompleteQuestTasks().some((t) =>
+        taskDesiredEncounters(t).fights.some((f) => f.monster === mon),
+      ))
+  );
+}
+
+// Will we encounter this monster again, or is it in an old zone
+export function auto_isInIncompleteZone(mon: Monster) {
+  return getIncompleteQuestTasks().some((t) =>
+    taskLocations(t).some((t) =>
+      auto_location_monsters(t).some(([m, rate]) => rate > 0 && m === mon),
+    ),
+  );
 }

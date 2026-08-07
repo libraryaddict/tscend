@@ -860,13 +860,12 @@ export const chateauPaintingTask: QuestTask = registerQuestTask({
   completed: () => get("chateauMonsterFought", false),
   ready: () => true,
   do: chateauPaintingDo,
-  desiredEncounters: () =>
-    [
-      {
-        monster: safeGet("chateauMonster", Monster.none),
-        needAmount: get("_chateauMonsterFought") ? 0 : 1,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: safeGet("chateauMonster", Monster.none),
+      needAmount: get("_chateauMonsterFought") ? 0 : 1,
+    },
+  ],
 });
 
 export function chateauPainting(): boolean {

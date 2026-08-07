@@ -1619,7 +1619,7 @@ export const L13_ed_councilWarehouseTask: QuestTask = registerQuestTask({
         needAmount:
           Math.ceil(needAmount - 1) / 8 - itemAmount($item`warehouse map page`),
       },
-    ].filter((a) => a.needAmount > 0);
+    ];
   },
 });
 

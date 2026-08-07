@@ -92,13 +92,11 @@ import {
 } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_gnoob } from "../paths/gelatinous_noob";
 import { in_hattrick } from "../paths/hattrick";
 import { in_koe } from "../paths/kingdom_of_exploathing";
 import { in_kolhs } from "../paths/kolhs";
 import { in_lar } from "../paths/live_ascend_repeat";
 import { in_small } from "../paths/small";
-import { in_tcrs } from "../paths/two_crazy_random_summer";
 import { in_wereprof, is_werewolf } from "../paths/wereprofessor";
 import { in_wildfire } from "../paths/wildfire";
 import { in_robot } from "../paths/you_robot";
@@ -813,23 +811,6 @@ export function have_fireworks_shop(): boolean {
 }
 
 export function auto_buyFireworksHat(): boolean {
-  // equipment doesn't give buffs in these paths
-  if (in_gnoob() || in_tcrs()) {
-    return false;
-  }
-  //the damage from all three hats one-shots the professor after a round of combat
-  if (in_wereprof()) {
-    return false;
-  }
-
-  if (!have_fireworks_shop()) {
-    return false;
-  }
-
-  if (get("_fireworksShopHatBought")) {
-    return false;
-  }
-
   if (
     myMeat() < npcPrice($item`porkpie-mounted popper`) + meatReserve() &&
     auto_is_valid($item`porkpie-mounted popper`)

@@ -184,16 +184,15 @@ export const L6_friarsGetPartsTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL06Friar") >= 0,
   do: L6_friarsGetPartsDo,
   locations: $locations`The Dark Heart of the Woods, The Dark Elbow of the Woods, The Dark Neck of the Woods`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`hot wing`,
-        needAmount:
-          LX_doingPirates() && internalQuestStatus("questM12Pirate") <= 2
-            ? 3 - itemAmount($item`hot wing`)
-            : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`hot wing`,
+      needAmount:
+        LX_doingPirates() && internalQuestStatus("questM12Pirate") <= 2
+          ? 3 - itemAmount($item`hot wing`)
+          : 0,
+    },
+  ],
 });
 
 const L6_friarsFinishTask: QuestTask = registerQuestTask({
@@ -276,20 +275,19 @@ const L6_dakotaFanningTask: QuestTask = registerQuestTask({
   ready: () => get("auto_dakotaFanning", false) && !hiddenTempleUnlocked(),
   do: L6_dakotaFanningDo,
   locations: $locations`The Haunted Conservatory, The Dark Heart of the Woods, Pandamonium Slums`,
-  desiredEncounters: () =>
-    [
-      ...$items`pellet of plant food, heavy-duty bendy straw`.map((i) => ({
-        item: i,
-        needAmount: 1 - itemAmount(i),
-      })),
-      {
-        item: $item`hot wing`,
-        needAmount:
-          LX_doingPirates() && internalQuestStatus("questM12Pirate") <= 2
-            ? 3 - itemAmount($item`hot wing`)
-            : 0,
-      },
-    ].filter((i) => i.needAmount > 0),
+  desiredEncounters: () => [
+    ...$items`pellet of plant food, heavy-duty bendy straw`.map((i) => ({
+      item: i,
+      needAmount: 1 - itemAmount(i),
+    })),
+    {
+      item: $item`hot wing`,
+      needAmount:
+        LX_doingPirates() && internalQuestStatus("questM12Pirate") <= 2
+          ? 3 - itemAmount($item`hot wing`)
+          : 0,
+    },
+  ],
 });
 
 export function L6_dakotaFanning(): boolean {

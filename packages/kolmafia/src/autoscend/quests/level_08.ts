@@ -443,16 +443,17 @@ function L8_mountainManSummonDo(): boolean {
 
 export const L8_mountainManSummonTask: QuestTask = registerQuestTask({
   name: "L8_mountainManSummon",
-  completed: () => itemAmount(safeGet("trapperOre", Item.none)) >= 3,
+  completed: () =>
+    itemAmount(safeGet("trapperOre", Item.none)) >= 3 ||
+    internalQuestStatus("questL08Trapper") > 1,
   ready: () => true,
   do: L8_mountainManSummonDo,
-  desiredEncounters: () =>
-    [
-      {
-        item: safeGet("trapperOre", Item.none),
-        needAmount: 3 - itemAmount(safeGet("trapperOre", Item.none)),
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: safeGet("trapperOre", Item.none),
+      needAmount: 3 - itemAmount(safeGet("trapperOre", Item.none)),
+    },
+  ],
 });
 
 export function L8_mountainManSummon(): boolean {
@@ -481,26 +482,25 @@ export function L8_mineOreWorthBurningLuckOn(): boolean {
 
 const L8_getGoatCheeseTask: QuestTask = registerQuestTask({
   name: "L8_getGoatCheese",
-  completed: () => itemAmount($item`goat cheese`) >= 3,
+  completed: () => internalQuestStatus("questL08Trapper") > 1,
   ready: () => true,
   do: L8_getGoatCheese,
   locations: $location`The Goatlet`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`goat cheese`,
-        needAmount: 3 - itemAmount($item`goat cheese`),
-      },
-      {
-        item: $item`glass of goat's milk`,
-        needAmount:
-          auto_is_valid($item`milk of magnesium`) &&
-          (auto_have_skill($skill`Advanced Saucecrafting`) ||
-            itemAmount($item`scrumptious reagent`) > 0)
-            ? 1 - itemAmount($item`glass of goat's milk`)
-            : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`goat cheese`,
+      needAmount: 3 - itemAmount($item`goat cheese`),
+    },
+    {
+      item: $item`glass of goat's milk`,
+      needAmount:
+        auto_is_valid($item`milk of magnesium`) &&
+        (auto_have_skill($skill`Advanced Saucecrafting`) ||
+          itemAmount($item`scrumptious reagent`) > 0)
+          ? 1 - itemAmount($item`glass of goat's milk`)
+          : 0,
+    },
+  ],
 });
 
 function L8_getMineOres(): boolean {
@@ -561,24 +561,32 @@ function L8_getMineOres(): boolean {
   return false;
 }
 
+export function L8_wantsGoatCheese(): boolean {
+  return (
+    itemAmount($item`goat cheese`) < 3 &&
+    internalQuestStatus("questL08Trapper") <= 1
+  );
+}
+
 const L8_getMineOresTask: QuestTask = registerQuestTask({
   name: "L8_getMineOres",
-  completed: () => itemAmount(safeGet("trapperOre", Item.none)) >= 3,
+  completed: () =>
+    itemAmount(safeGet("trapperOre", Item.none)) >= 3 ||
+    internalQuestStatus("questL08Trapper") > 1,
   ready: () => true,
   do: L8_getMineOres,
   locations: $location`Itznotyerzitz Mine`,
-  desiredEncounters: () =>
-    [
-      {
-        item: safeGet("trapperOre", Item.none),
-        needAmount: 3 - itemAmount(safeGet("trapperOre", Item.none)),
-      },
-      ...(!possessOutfit("Mining Gear") && cloversAvailable() === 0
-        ? $items`miner's helmet, 7-Foot Dwarven mattock, miner's pants`
-            .filter((piece) => itemAmount(piece) === 0)
-            .map((piece) => ({ item: piece, needAmount: 1 }))
-        : []),
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: safeGet("trapperOre", Item.none),
+      needAmount: 3 - itemAmount(safeGet("trapperOre", Item.none)),
+    },
+    ...(!possessOutfit("Mining Gear") && cloversAvailable() === 0
+      ? $items`miner's helmet, 7-Foot Dwarven mattock, miner's pants`
+          .filter((piece) => itemAmount(piece) === 0)
+          .map((piece) => ({ item: piece, needAmount: 1 }))
+      : []),
+  ],
 });
 
 export function itznotyerzitzMineChoiceHandler(choice: number): void {
@@ -854,9 +862,10 @@ const L8_trapperNinjaLairTask: QuestTask = registerQuestTask({
   do: L8_trapperNinjaLairDo,
   locations: $location`Lair of the Ninja Snowmen`,
   desiredEncounters: () =>
-    $items`ninja carabiner, ninja crampons, ninja rope`
-      .map((i) => ({ item: i, needAmount: 1 - itemAmount(i) }))
-      .filter((i) => i.needAmount > 0),
+    $items`ninja carabiner, ninja crampons, ninja rope`.map((i) => ({
+      item: i,
+      needAmount: 1 - itemAmount(i),
+    })),
 });
 
 export function L8_trapperNinjaLair(): boolean {
@@ -989,13 +998,12 @@ export const L8_trapperGroarTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL08Trapper") >= 3,
   do: L8_trapperGroarDo,
   locations: $location`Mist-Shrouded Peak`,
-  desiredEncounters: () =>
-    [
-      {
-        monster: $monster`Groar`,
-        needAmount: internalQuestStatus("questL08Trapper") > 4 ? 0 : 1,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: $monster`Groar`,
+      needAmount: internalQuestStatus("questL08Trapper") > 4 ? 0 : 1,
+    },
+  ],
 });
 
 export function L8_trapperGroar(): boolean {
@@ -1147,15 +1155,14 @@ export const L8_trapperSlopeTask: QuestTask = registerQuestTask({
   do: L8_trapperSlopeDo,
   locations: $location`The eXtreme Slope`,
   desiredEncounters: () =>
-    (!possessOutfit("eXtreme Cold-Weather Gear") &&
+    !possessOutfit("eXtreme Cold-Weather Gear") &&
     $items`eXtreme scarf, snowboarder pants, eXtreme mittens`.every((e) =>
       auto_is_valid(e),
     )
       ? $items`eXtreme scarf, snowboarder pants, eXtreme mittens`
           .filter((piece) => itemAmount(piece) === 0)
           .map((piece) => ({ item: piece, needAmount: 1 }))
-      : []
-    ).filter((a) => a.needAmount > 0),
+      : [],
 });
 
 export function L8_trapperSlope(): boolean {
@@ -1169,7 +1176,7 @@ function L8_trapperTalkDo(): boolean {
   if (initial_step === 0) {
     // step0===quest started. we do not know what ores we need yet.
     auto_log_info(
-      "Talkint to the trapper to find out what kind of Ore he wants",
+      "Talking to the trapper to find out what kind of Ore he wants",
       "blue",
     );
     visitUrl("place.php?whichplace=mclargehuge&action=trappercabin"); // talk to the trapper to advance quest

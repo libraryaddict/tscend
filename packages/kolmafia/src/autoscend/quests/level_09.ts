@@ -612,7 +612,7 @@ export const L9_chasmBuildTask: QuestTask = registerQuestTask({
         item: $item`smut orc keepsake box`,
         needAmount: Math.ceil(Math.max(fastenerNeed, lumberNeed) / 5),
       },
-    ].filter((a) => a.needAmount > 0);
+    ];
   },
 });
 
@@ -1031,7 +1031,7 @@ const L9_aBooPeakTask: QuestTask = registerQuestTask({
           itemAmount(clue) -
           Math.ceil(get("booPeakProgress") / 34),
       },
-    ].filter((a) => a.needAmount > 0);
+    ];
   },
 });
 
@@ -1273,13 +1273,12 @@ const L9_twinPeakTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL09Topping") >= 2,
   do: L9_twinPeakDo,
   locations: $location`Twin Peak`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`rusty hedge trimmers`,
-        needAmount: hedgeTrimmersNeeded(),
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`rusty hedge trimmers`,
+      needAmount: hedgeTrimmersNeeded(),
+    },
+  ],
 });
 
 export function L9_twinPeak(): boolean {
@@ -1417,7 +1416,7 @@ const L9_oilPeakTask: QuestTask = registerQuestTask({
         item: $item`jar of oil`,
         needAmount: needJar && in_glover() ? 1 : 0,
       },
-    ].filter((a) => a.needAmount > 0);
+    ];
   },
 });
 

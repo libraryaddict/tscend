@@ -813,25 +813,24 @@ export const LX_unlockManorSecondFloorTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questM20Necklace") >= 3,
   do: LX_unlockManorSecondFloorDo,
   locations: $location`The Haunted Library`,
-  desiredEncounters: () =>
-    [
-      {
-        monster: $monster`writing desk`,
-        needAmount:
-          internalQuestStatus("questM20Necklace") <= 4
-            ? 5 - get("writingDesksDefeated")
-            : 0,
-      },
-      {
-        item: $item`killing jar`,
-        needAmount:
-          itemAmount($item`killing jar`) < 1 &&
-          (get("gnasirProgress") & 4) === 0 &&
-          get("desertExploration") < 100
-            ? 1
-            : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: $monster`writing desk`,
+      needAmount:
+        internalQuestStatus("questM20Necklace") <= 4
+          ? 5 - get("writingDesksDefeated")
+          : 0,
+    },
+    {
+      item: $item`killing jar`,
+      needAmount:
+        itemAmount($item`killing jar`) < 1 &&
+        (get("gnasirProgress") & 4) === 0 &&
+        get("desertExploration") < 100
+          ? 1
+          : 0,
+    },
+  ],
 });
 
 export function LX_unlockManorSecondFloor(): boolean {
@@ -1310,26 +1309,25 @@ export const L11_blackMarketTask: QuestTask = registerQuestTask({
     ),
   do: L11_blackMarketDo,
   locations: $location`The Black Forest`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`black map`,
-        needAmount:
-          internalQuestStatus("questL11Black") > 1 ||
-          blackMarketAvailable() ||
-          itemAmount($item`black map`) > 0
-            ? 0
-            : 1,
-      },
-      {
-        item: $item`blackberry`,
-        needAmount:
-          possessEquipment($item`blackberry galoshes`) ||
-          !auto_can_equip($item`blackberry galoshes`)
-            ? 0
-            : 3 - itemAmount($item`blackberry`),
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`black map`,
+      needAmount:
+        internalQuestStatus("questL11Black") > 1 ||
+        blackMarketAvailable() ||
+        itemAmount($item`black map`) > 0
+          ? 0
+          : 1,
+    },
+    {
+      item: $item`blackberry`,
+      needAmount:
+        possessEquipment($item`blackberry galoshes`) ||
+        !auto_can_equip($item`blackberry galoshes`)
+          ? 0
+          : 3 - itemAmount($item`blackberry`),
+    },
+  ],
 });
 
 export function L11_blackMarket(): boolean {
@@ -1376,17 +1374,16 @@ export const L11_getBeehiveTask: QuestTask = registerQuestTask({
   ready: () => blackMarketAvailable() && get("auto_getBeehive", false),
   do: L11_getBeehiveDo,
   locations: $location`The Black Forest`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`blackberry`,
-        needAmount:
-          possessEquipment($item`blackberry galoshes`) ||
-          !auto_can_equip($item`blackberry galoshes`)
-            ? 0
-            : 3 - itemAmount($item`blackberry`),
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`blackberry`,
+      needAmount:
+        possessEquipment($item`blackberry galoshes`) ||
+        !auto_can_equip($item`blackberry galoshes`)
+          ? 0
+          : 3 - itemAmount($item`blackberry`),
+    },
+  ],
 });
 
 export function L11_getBeehive(): boolean {
@@ -1994,21 +1991,19 @@ const L11_aridDesertTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL11Desert") > 0,
   ready: () => internalQuestStatus("questL11Desert") === 0,
   do: L11_aridDesertDo,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`stone rose`,
-        needAmount:
-          itemAmount($item`stone rose`) === 0 &&
-          (get("gnasirProgress") & 1) === 0
-            ? 1
-            : 0,
-      },
-      {
-        item: $item`worm-riding manual page`,
-        needAmount: 15 - itemAmount($item`worm-riding manual page`),
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`stone rose`,
+      needAmount:
+        itemAmount($item`stone rose`) === 0 && (get("gnasirProgress") & 1) === 0
+          ? 1
+          : 0,
+    },
+    {
+      item: $item`worm-riding manual page`,
+      needAmount: 15 - itemAmount($item`worm-riding manual page`),
+    },
+  ],
 });
 
 export function L11_aridDesert(): boolean {
@@ -2049,17 +2044,16 @@ const LX_killBaaBaaBuranTask: QuestTask = registerQuestTask({
   ready: () => hiddenTempleUnlocked(),
   do: LX_killBaaBaaBuranDo,
   locations: $location`The Hidden Temple`,
-  desiredEncounters: () =>
-    [
-      {
-        monster: $monster`Baa'baa'bu'ran`,
-        needAmount:
-          itemAmount($item`stone wool`) > 0 ||
-          haveEffect($effect`Stone-Faced`) > 0
-            ? 0
-            : 1,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: $monster`Baa'baa'bu'ran`,
+      needAmount:
+        itemAmount($item`stone wool`) > 0 ||
+        haveEffect($effect`Stone-Faced`) > 0
+          ? 0
+          : 1,
+    },
+  ],
 });
 
 export function LX_killBaaBaaBuran(): boolean {
@@ -2935,13 +2929,12 @@ const L11_hiddenCityZonesNorthwestTask: QuestTask = registerQuestTask({
   ready: () => get("hiddenApartmentProgress") === 0,
   do: L11_hiddenCityZonesNorthwest,
   locations: $location`An Overgrown Shrine (Northwest)`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`moss-covered stone sphere`,
-        needAmount: get("hiddenApartmentProgress") < 1 ? 1 : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`moss-covered stone sphere`,
+      needAmount: get("hiddenApartmentProgress") < 1 ? 1 : 0,
+    },
+  ],
 });
 
 function L11_hiddenCityZonesNortheast(): boolean {
@@ -2957,13 +2950,12 @@ const L11_hiddenCityZonesNortheastTask: QuestTask = registerQuestTask({
   ready: () => get("hiddenOfficeProgress") === 0,
   do: L11_hiddenCityZonesNortheast,
   locations: $location`An Overgrown Shrine (Northeast)`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`crackling stone sphere`,
-        needAmount: get("hiddenOfficeProgress") < 1 ? 1 : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`crackling stone sphere`,
+      needAmount: get("hiddenOfficeProgress") < 1 ? 1 : 0,
+    },
+  ],
 });
 
 function L11_hiddenCityZonesSouthwest(): boolean {
@@ -2979,13 +2971,12 @@ const L11_hiddenCityZonesSouthwestTask: QuestTask = registerQuestTask({
   ready: () => get("hiddenHospitalProgress") === 0,
   do: L11_hiddenCityZonesSouthwest,
   locations: $location`An Overgrown Shrine (Southwest)`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`dripping stone sphere`,
-        needAmount: get("hiddenHospitalProgress") < 1 ? 1 : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`dripping stone sphere`,
+      needAmount: get("hiddenHospitalProgress") < 1 ? 1 : 0,
+    },
+  ],
 });
 
 function L11_hiddenCityZonesSoutheast(): boolean {
@@ -3001,13 +2992,12 @@ const L11_hiddenCityZonesSoutheastTask: QuestTask = registerQuestTask({
   ready: () => get("hiddenBowlingAlleyProgress") === 0,
   do: L11_hiddenCityZonesSoutheast,
   locations: $location`An Overgrown Shrine (Southeast)`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`scorched stone sphere`,
-        needAmount: get("hiddenBowlingAlleyProgress") < 1 ? 1 : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`scorched stone sphere`,
+      needAmount: get("hiddenBowlingAlleyProgress") < 1 ? 1 : 0,
+    },
+  ],
 });
 
 function L11_hiddenCityZonesZiggurat(): boolean {
@@ -3033,13 +3023,12 @@ const L11_hiddenCityZonesZigguratTask: QuestTask = registerQuestTask({
   ready: () => !get("auto_openedziggurat", false),
   do: L11_hiddenCityZonesZiggurat,
   locations: $location`A Massive Ziggurat`,
-  desiredEncounters: () =>
-    [
-      {
-        monster: $monster`Protector Spectre`,
-        needAmount: get("auto_openedziggurat") ? 0 : 1,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: $monster`Protector Spectre`,
+      needAmount: get("auto_openedziggurat") ? 0 : 1,
+    },
+  ],
 });
 
 export const L11_hiddenCityZonesTask: QuestTask = registerQuestTask({
@@ -3048,17 +3037,16 @@ export const L11_hiddenCityZonesTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL11Worship") >= 3,
   do: L11_hiddenCityZonesDo,
   locations: $location`The Hidden Park`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`book of matches`,
-        needAmount:
-          itemAmount($item`book of matches`) === 0 &&
-          myAscensions() < get("hiddenTavernUnlock")
-            ? 1
-            : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`book of matches`,
+      needAmount:
+        itemAmount($item`book of matches`) === 0 &&
+        myAscensions() < get("hiddenTavernUnlock")
+          ? 1
+          : 0,
+    },
+  ],
 });
 
 export function L11_hiddenCityZones(): boolean {
@@ -3591,7 +3579,7 @@ export const L11_mauriceSpookyravenTask: QuestTask = registerQuestTask({
         needAmount:
           wantExplosives && itemAmount($item`blasting soda`) === 0 ? 1 : 0,
       },
-    ].filter((a) => a.needAmount > 0);
+    ];
   },
 });
 
@@ -4085,7 +4073,7 @@ export const L11_shenCopperheadTask: QuestTask = registerQuestTask({
         item: it,
         needAmount: it !== Item.none && itemAmount(it) === 0 ? 1 : 0,
       },
-    ].filter((a) => a.needAmount > 0);
+    ];
   },
 });
 
@@ -4099,22 +4087,21 @@ const L11_redZeppelinTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: L11_redZeppelin,
   locations: $location`A Mob of Zeppelin Protesters`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`cigarette lighter`,
-        needAmount: auto_is_valid($item`cigarette lighter`)
-          ? itemAmount($item`cigarette lighter`) -
-            Math.round((80 - get("zeppelinProtestors")) / 3)
-          : 0,
-      },
-      {
-        item: $item`lynyrd snare`,
-        needAmount: auto_is_valid($item`lynyrd snare`)
-          ? 3 - get("_lynyrdSnareUses") - itemAmount($item`lynyrd snare`)
-          : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`cigarette lighter`,
+      needAmount: auto_is_valid($item`cigarette lighter`)
+        ? itemAmount($item`cigarette lighter`) -
+          Math.round((80 - get("zeppelinProtestors")) / 3)
+        : 0,
+    },
+    {
+      item: $item`lynyrd snare`,
+      needAmount: auto_is_valid($item`lynyrd snare`)
+        ? 3 - get("_lynyrdSnareUses") - itemAmount($item`lynyrd snare`)
+        : 0,
+    },
+  ],
 });
 const L11_ronCopperheadTask: QuestTask = registerQuestTask({
   name: "L11_ronCopperhead",
@@ -4122,19 +4109,18 @@ const L11_ronCopperheadTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: L11_ronCopperhead,
   locations: $location`The Red Zeppelin`,
-  desiredEncounters: () =>
-    [
-      {
-        monster: $monster`Ron "The Weasel" Copperhead`,
-        needAmount: internalQuestStatus("questL11Ron") > 4 ? 0 : 1,
-      },
-      {
-        item: $item`glark cable`,
-        needAmount: auto_is_valid($item`glark cable`)
-          ? 5 - (get("_glarkCableUses") + itemAmount($item`glark cable`))
-          : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: $monster`Ron "The Weasel" Copperhead`,
+      needAmount: internalQuestStatus("questL11Ron") > 4 ? 0 : 1,
+    },
+    {
+      item: $item`glark cable`,
+      needAmount: auto_is_valid($item`glark cable`)
+        ? 5 - (get("_glarkCableUses") + itemAmount($item`glark cable`))
+        : 0,
+    },
+  ],
 });
 
 function L11_talismanOfNamDo(): boolean {
@@ -4617,7 +4603,7 @@ export const L11_palindomeTask: QuestTask = registerQuestTask({
       );
     }
 
-    return desired.filter((a) => a.needAmount > 0);
+    return desired;
   },
 });
 
@@ -4853,7 +4839,7 @@ export const L11_unlockMiddleChamberTask: QuestTask = registerQuestTask({
     return [
       { item: $item`crumbling wooden wheel`, needAmount: remaining },
       { item: $item`tomb ratchet`, needAmount: remaining },
-    ].filter((a) => a.needAmount > 0);
+    ];
   },
 });
 
@@ -4976,13 +4962,12 @@ export const L11_defeatEdTask: QuestTask = registerQuestTask({
   },
   do: L11_defeatEdDo,
   locations: $location`The Lower Chambers`,
-  desiredEncounters: () =>
-    [
-      {
-        monster: $monster`Ed the Undying`,
-        needAmount: 1 - itemAmount($item`[2334]Holy MacGuffin`),
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: $monster`Ed the Undying`,
+      needAmount: 1 - itemAmount($item`[2334]Holy MacGuffin`),
+    },
+  ],
   reqAdventures: () =>
     internalQuestStatus("questL11Pyramid") === 3 && get("pyramidBombUsed")
       ? 7

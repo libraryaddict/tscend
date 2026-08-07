@@ -383,26 +383,25 @@ export function useItems(it1: Item, it2: Item, mark: boolean = true): Item[] {
   return [it1, it2];
 }
 
-export function isSniffed(enemy: Monster, sk: Skill): boolean {
+export function isSniffed(enemy: Monster, sk: Skill | Item): boolean {
   let search: string;
   if (sk === $skill`Get a Good Whiff of This Guy`) {
     search = "Nosy Nose";
   } else {
     search = sk.toString();
   }
-  const tracked: string[] = trackedBy(enemy);
-  for (const n of tracked.keys()) {
-    if ((tracked[n] ??= "") === search) {
-      return true;
-    }
-  }
-  return false;
+  return trackedBy(enemy).includes(search);
 }
 
 export function isSniffed$1(enemy: Monster): boolean {
   //checks if the monster enemy is currently sniffed using any of the sniff skills
   for (const sk of $skills`Transcendent Olfaction, Make Friends, Long Con, Perceive Soul, Gallapagosian Mating Call, Monkey Point, Offer Latte to Opponent, Motif, Hunt, McHugeLarge Slash, Left %n Kick, Right %n Kick, Meat Cute`) {
     if (isSniffed(enemy, sk)) {
+      return true;
+    }
+  }
+  for (const other of [$item`Baseball Diamond`].map((s) => s.toString())) {
+    if (trackedBy(enemy).includes(other)) {
       return true;
     }
   }

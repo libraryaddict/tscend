@@ -765,15 +765,14 @@ export const L12_getOutfitTask: QuestTask = registerQuestTask({
   // if you already have the war outfit we don't need to do anything now
   ready: () => internalQuestStatus("questL12War") === 0 && !haveWarOutfit(),
   do: L12_getOutfitDo,
-  desiredEncounters: () =>
-    [
-      {
-        monster: get("auto_hippyInstead")
-          ? $monster`War Hippy Spy`
-          : $monster`Orcish Frat Boy Spy`,
-        needAmount: haveWarOutfit() ? 0 : 1,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: get("auto_hippyInstead")
+        ? $monster`War Hippy Spy`
+        : $monster`Orcish Frat Boy Spy`,
+      needAmount: haveWarOutfit() ? 0 : 1,
+    },
+  ],
 });
 
 export function L12_getOutfit(): boolean {
@@ -878,15 +877,14 @@ export const L12_preOutfitTask: QuestTask = registerQuestTask({
             ? $location`The Hippy Camp`
             : $location`Wartime Hippy Camp`,
         ],
-  desiredEncounters: () =>
-    [
-      {
-        monster: get("auto_hippyInstead")
-          ? $monster`War Hippy Spy`
-          : $monster`Orcish Frat Boy Spy`,
-        needAmount: haveWarOutfit() ? 0 : 1,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: get("auto_hippyInstead")
+        ? $monster`War Hippy Spy`
+        : $monster`Orcish Frat Boy Spy`,
+      needAmount: haveWarOutfit() ? 0 : 1,
+    },
+  ],
 });
 
 export function L12_preOutfit(): boolean {
@@ -1163,13 +1161,12 @@ export const L12_filthwormsTask: QuestTask = registerQuestTask({
         .slice(0, i + 1)
         .every((x) => x === 0),
     ),
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`heart of the filthworm queen`,
-        needAmount: 1 - itemAmount($item`heart of the filthworm queen`),
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`heart of the filthworm queen`,
+      needAmount: 1 - itemAmount($item`heart of the filthworm queen`),
+    },
+  ],
 });
 
 export function L12_filthworms(): boolean {
@@ -1375,6 +1372,27 @@ function L12_gremlinsDo(): boolean {
   ]);
 }
 
+export const L12_gremlinsTask: QuestTask = registerQuestTask({
+  name: "L12_gremlins",
+  completed: () =>
+    internalQuestStatus("questL12War") > 1 ||
+    get("sidequestJunkyardCompleted") !== "none" ||
+    in_koe() ||
+    in_pokefam() ||
+    in_bhy() ||
+    auto_warEnemiesRemaining() === 0,
+  ready: () =>
+    internalQuestStatus("questL12War") === 1 &&
+    // Only 1 HP as a professor so can't stasis long enough
+    (!in_wereprof() || is_werewolf()) &&
+    (!get("auto_hippyInstead", false) || get("fratboysDefeated") >= 192),
+  do: L12_gremlinsDo,
+});
+
+export function L12_gremlins(): boolean {
+  return runQuestTask(L12_gremlinsTask);
+}
+
 function L12_gremlinsHammer(): boolean {
   autoAdv(
     $location`Next to that Barrel with Something Burning in it`,
@@ -1383,21 +1401,18 @@ function L12_gremlinsHammer(): boolean {
   return true;
 }
 
-const L12_gremlinsHammerTask: QuestTask = registerQuestTask({
+const L12_gremlinsHammerTask: QuestTask = registerQuestTask(L12_gremlinsTask, {
   name: "L12_gremlinsHammer",
-  completed: () =>
-    itemAmount($item`molybdenum hammer`) > 0 ||
-    internalQuestStatus("questL12War") > 1,
+  completed: () => itemAmount($item`molybdenum hammer`) > 0,
   ready: () => itemAmount($item`molybdenum hammer`) === 0,
   do: L12_gremlinsHammer,
   locations: $location`Next to that Barrel with Something Burning in it`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`molybdenum hammer`,
-        needAmount: 1 - itemAmount($item`molybdenum hammer`),
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`molybdenum hammer`,
+      needAmount: 1 - itemAmount($item`molybdenum hammer`),
+    },
+  ],
 });
 
 function L12_gremlinsScrewdriver(): boolean {
@@ -1405,44 +1420,44 @@ function L12_gremlinsScrewdriver(): boolean {
   return true;
 }
 
-const L12_gremlinsScrewdriverTask: QuestTask = registerQuestTask({
-  name: "L12_gremlinsScrewdriver",
-  completed: () =>
-    itemAmount($item`molybdenum screwdriver`) > 0 ||
-    internalQuestStatus("questL12War") > 1,
-  ready: () => itemAmount($item`molybdenum screwdriver`) === 0,
-  do: L12_gremlinsScrewdriver,
-  locations: $location`Out by that Rusted-Out Car`,
-  desiredEncounters: () =>
-    [
+const L12_gremlinsScrewdriverTask: QuestTask = registerQuestTask(
+  L12_gremlinsTask,
+  {
+    name: "L12_gremlinsScrewdriver",
+    completed: () => itemAmount($item`molybdenum screwdriver`) > 0,
+    ready: () => itemAmount($item`molybdenum screwdriver`) === 0,
+    do: L12_gremlinsScrewdriver,
+    locations: $location`Out by that Rusted-Out Car`,
+    desiredEncounters: () => [
       {
         item: $item`molybdenum screwdriver`,
         needAmount: 1 - itemAmount($item`molybdenum screwdriver`),
       },
-    ].filter((a) => a.needAmount > 0),
-});
+    ],
+  },
+);
 
 function L12_gremlinsCrescentWrench(): boolean {
   autoAdv($location`Over Where the Old Tires Are`, auto_JunkyardCombatHandler);
   return true;
 }
 
-const L12_gremlinsCrescentWrenchTask: QuestTask = registerQuestTask({
-  name: "L12_gremlinsCrescentWrench",
-  completed: () =>
-    itemAmount($item`molybdenum crescent wrench`) > 0 ||
-    internalQuestStatus("questL12War") > 1,
-  ready: () => itemAmount($item`molybdenum crescent wrench`) === 0,
-  do: L12_gremlinsCrescentWrench,
-  locations: $location`Over Where the Old Tires Are`,
-  desiredEncounters: () =>
-    [
+const L12_gremlinsCrescentWrenchTask: QuestTask = registerQuestTask(
+  L12_gremlinsTask,
+  {
+    name: "L12_gremlinsCrescentWrench",
+    completed: () => itemAmount($item`molybdenum crescent wrench`) > 0,
+    ready: () => itemAmount($item`molybdenum crescent wrench`) === 0,
+    do: L12_gremlinsCrescentWrench,
+    locations: $location`Over Where the Old Tires Are`,
+    desiredEncounters: () => [
       {
         item: $item`molybdenum crescent wrench`,
         needAmount: 1 - itemAmount($item`molybdenum crescent wrench`),
       },
-    ].filter((a) => a.needAmount > 0),
-});
+    ],
+  },
+);
 
 function L12_gremlinsPliers(): boolean {
   autoAdv(
@@ -1452,21 +1467,18 @@ function L12_gremlinsPliers(): boolean {
   return true;
 }
 
-const L12_gremlinsPliersTask: QuestTask = registerQuestTask({
+const L12_gremlinsPliersTask: QuestTask = registerQuestTask(L12_gremlinsTask, {
   name: "L12_gremlinsPliers",
-  completed: () =>
-    itemAmount($item`molybdenum pliers`) > 0 ||
-    internalQuestStatus("questL12War") > 1,
+  completed: () => itemAmount($item`molybdenum pliers`) > 0,
   ready: () => itemAmount($item`molybdenum pliers`) === 0,
   do: L12_gremlinsPliers,
   locations: $location`Near an Abandoned Refrigerator`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`molybdenum pliers`,
-        needAmount: 1 - itemAmount($item`molybdenum pliers`),
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`molybdenum pliers`,
+      needAmount: 1 - itemAmount($item`molybdenum pliers`),
+    },
+  ],
 });
 
 function L12_gremlinsFinish(): boolean {
@@ -1475,34 +1487,17 @@ function L12_gremlinsFinish(): boolean {
   return true;
 }
 
-const L12_gremlinsFinishTask: QuestTask = registerQuestTask({
+const L12_gremlinsFinishTask: QuestTask = registerQuestTask(L12_gremlinsTask, {
   name: "L12_gremlinsFinish",
-  completed: () =>
-    internalQuestStatus("questL12War") > 1 ||
-    get("sidequestJunkyardCompleted") !== "none",
-  ready: () => true,
+  completed: () => false,
+  ready: () =>
+    itemAmount($item`molybdenum screwdriver`) +
+      itemAmount($item`molybdenum crescent wrench`) +
+      itemAmount($item`molybdenum pliers`) +
+      itemAmount($item`molybdenum hammer`) >=
+    4,
   do: L12_gremlinsFinish,
 });
-
-export const L12_gremlinsTask: QuestTask = registerQuestTask({
-  name: "L12_gremlins",
-  completed: () => internalQuestStatus("questL12War") > 1,
-  ready: () =>
-    internalQuestStatus("questL12War") === 1 &&
-    getProperty("sidequestJunkyardCompleted") === "none" &&
-    !in_koe() &&
-    !in_pokefam() &&
-    !in_bhy() &&
-    // Only 1 HP as a professor so can't stasis long enough
-    (!in_wereprof() || is_werewolf()) &&
-    (!get("auto_hippyInstead", false) || get("fratboysDefeated") >= 192) &&
-    auto_warEnemiesRemaining() > 0,
-  do: L12_gremlinsDo,
-});
-
-export function L12_gremlins(): boolean {
-  return runQuestTask(L12_gremlinsTask);
-}
 
 function L12_sonofaBeachDo(): boolean {
   if (
@@ -1609,13 +1604,12 @@ export const L12_sonofaBeachTask: QuestTask = registerQuestTask({
     auto_gunpowderBarrelsWanted() > 0,
   do: L12_sonofaBeachDo,
   locations: $location`Sonofa Beach`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`barrel of gunpowder`,
-        needAmount: 5 - itemAmount($item`barrel of gunpowder`),
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`barrel of gunpowder`,
+      needAmount: auto_gunpowderBarrelsWanted(),
+    },
+  ],
 });
 
 export function L12_sonofaBeach(): boolean {
@@ -1795,13 +1789,12 @@ export const L12_sonofaPrefixTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: L12_sonofaPrefixDo,
   locations: $location`Sonofa Beach`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`barrel of gunpowder`,
-        needAmount: 5 - itemAmount($item`barrel of gunpowder`),
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`barrel of gunpowder`,
+      needAmount: 5 - itemAmount($item`barrel of gunpowder`),
+    },
+  ],
 });
 
 export function L12_sonofaPrefix(): boolean {
@@ -2403,16 +2396,15 @@ export const L12_farmTask: QuestTask = registerQuestTask({
   ready: () => !get("auto_skipL12Farm", false),
   do: L12_farmDo,
   locations: $locations`McMillicancuddy's Barn, McMillicancuddy's Pond, McMillicancuddy's Back 40, McMillicancuddy's Other Back 40, The Castle in the Clouds in the Sky (Ground Floor)`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`chaos butterfly`,
-        needAmount:
-          !get("chaosButterflyThrown") && !itemAmount($item`chaos butterfly`)
-            ? 1
-            : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`chaos butterfly`,
+      needAmount:
+        !get("chaosButterflyThrown") && !itemAmount($item`chaos butterfly`)
+          ? 1
+          : 0,
+    },
+  ],
 });
 
 export function L12_farm(): boolean {
@@ -2786,15 +2778,14 @@ export const L12_finalizeWarTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL12War") > 1,
   ready: () => true,
   do: L12_finalizeWarDo,
-  desiredEncounters: () =>
-    [
-      {
-        monster: get("auto_hippyInstead")
-          ? $monster`The Man`
-          : $monster`The Big Wisniewski`,
-        needAmount: internalQuestStatus("questL12War") <= 0 ? 1 : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: get("auto_hippyInstead")
+        ? $monster`The Man`
+        : $monster`The Big Wisniewski`,
+      needAmount: internalQuestStatus("questL12War") <= 0 ? 1 : 0,
+    },
+  ],
 });
 
 export function L12_finalizeWar(): boolean {

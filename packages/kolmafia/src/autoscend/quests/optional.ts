@@ -260,18 +260,17 @@ const LX_steelOrganGlassesTask: QuestTask = registerQuestTask({
     return true;
   },
   locations: $location`The Laugh Floor`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`observational glasses`,
-        needAmount:
-          get("questM10Azazel") === "started" &&
-          itemAmount($item`Azazel's lollipop`) === 0 &&
-          !possessEquipment($item`observational glasses`)
-            ? 1
-            : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`observational glasses`,
+      needAmount:
+        get("questM10Azazel") === "started" &&
+        itemAmount($item`Azazel's lollipop`) === 0 &&
+        !possessEquipment($item`observational glasses`)
+          ? 1
+          : 0,
+    },
+  ],
 });
 
 const LX_steelOrganLaughFloorTask: QuestTask = registerQuestTask({
@@ -289,17 +288,16 @@ const LX_steelOrganLaughFloorTask: QuestTask = registerQuestTask({
     return true;
   },
   locations: $location`The Laugh Floor`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`imp air`,
-        needAmount:
-          get("questM10Azazel") === "started" &&
-          itemAmount($item`Azazel's tutu`) === 0
-            ? 5 - itemAmount($item`imp air`)
-            : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`imp air`,
+      needAmount:
+        get("questM10Azazel") === "started" &&
+        itemAmount($item`Azazel's tutu`) === 0
+          ? 5 - itemAmount($item`imp air`)
+          : 0,
+    },
+  ],
 });
 
 function LX_steelOrganComedyProps(): {
@@ -409,17 +407,16 @@ const LX_steelOrganBackstageTask: QuestTask = registerQuestTask({
     return true;
   },
   locations: $location`Infernal Rackets Backstage`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`bus pass`,
-        needAmount:
-          get("questM10Azazel") === "started" &&
-          itemAmount($item`Azazel's tutu`) === 0
-            ? 5 - itemAmount($item`bus pass`)
-            : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`bus pass`,
+      needAmount:
+        get("questM10Azazel") === "started" &&
+        itemAmount($item`Azazel's tutu`) === 0
+          ? 5 - itemAmount($item`bus pass`)
+          : 0,
+    },
+  ],
 });
 
 function LX_steelOrganDo(): boolean {
@@ -572,7 +569,7 @@ const LX_steelOrganTask: QuestTask = registerQuestTask({
         item: $item`bus pass`,
         needAmount: active ? 5 - itemAmount($item`bus pass`) : 0,
       },
-    ].filter((a) => a.needAmount > 0);
+    ];
   },
 });
 
@@ -871,9 +868,10 @@ export const LX_galaktikSubQuestTask: QuestTask = registerQuestTask({
   do: LX_galaktikSubQuestDo,
   locations: $location`The Overgrown Lot`,
   desiredEncounters: () =>
-    $items`fraudwort, shysterweed, swindleblossom`
-      .map((i) => ({ item: i, needAmount: 3 - itemAmount(i) }))
-      .filter((a) => a.needAmount > 0),
+    $items`fraudwort, shysterweed, swindleblossom`.map((i) => ({
+      item: i,
+      needAmount: 3 - itemAmount(i),
+    })),
 });
 
 export function LX_galaktikSubQuest(): boolean {
@@ -926,9 +924,9 @@ export const LX_pirateOutfitTask: QuestTask = registerQuestTask({
   do: LX_pirateOutfitDo,
   locations: $location`The Obligatory Pirate's Cove`,
   desiredEncounters: () =>
-    $items`eyepatch, stuffed shoulder parrot, swashbuckling pants, pirate fledges`
-      .map((i) => ({ item: i, needAmount: possessEquipment(i) ? 0 : 1 }))
-      .filter((a) => a.needAmount > 0),
+    $items`eyepatch, stuffed shoulder parrot, swashbuckling pants, pirate fledges`.map(
+      (i) => ({ item: i, needAmount: possessEquipment(i) ? 0 : 1 }),
+    ),
 });
 
 export function LX_pirateOutfit(): boolean {
@@ -1119,13 +1117,12 @@ const LX_joinPirateCrewBarrrneysBarrrTask: QuestTask = registerQuestTask({
   ready: () => [-1, 1, 3].includes(internalQuestStatus("questM12Pirate")),
   do: LX_joinPirateCrewBarrrneysBarrr,
   locations: $location`Barrrney's Barrr`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`cocktail napkin`,
-        needAmount: itemAmount($item`cocktail napkin`) === 0 ? 1 : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`cocktail napkin`,
+      needAmount: itemAmount($item`cocktail napkin`) === 0 ? 1 : 0,
+    },
+  ],
 });
 
 function LX_joinPirateCrewNoobCave(): boolean {
@@ -1342,16 +1339,15 @@ export const LX_joinPirateCrewTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_joinPirateCrewDo,
   locations: $location`The Degrassi Knoll Gym`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`hot wing`,
-        needAmount:
-          internalQuestStatus("questM12Pirate") === 2
-            ? 3 - itemAmount($item`hot wing`)
-            : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`hot wing`,
+      needAmount:
+        internalQuestStatus("questM12Pirate") === 2
+          ? 3 - itemAmount($item`hot wing`)
+          : 0,
+    },
+  ],
 });
 
 export function LX_joinPirateCrew(): boolean {

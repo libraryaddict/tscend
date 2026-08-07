@@ -640,7 +640,7 @@ export const LX_freeCombatsTaskTask: QuestTask = registerQuestTask({
             ? 0
             : 1),
       },
-    ].filter((a) => a.needAmount > 0);
+    ];
   },
 });
 

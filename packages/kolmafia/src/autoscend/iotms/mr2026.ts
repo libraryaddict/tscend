@@ -1,6 +1,5 @@
 import {
   abort,
-  appearanceRates,
   availableAmount,
   availableChoiceOptions,
   buy,
@@ -19,11 +18,13 @@ import {
   extractItems,
   fullnessLimit,
   getProperty,
+  handlingChoice,
   haveCampground,
   haveEquipped,
   heartstoneMiddleLetter,
   heartstoneStringLength,
   historicalPrice,
+  isBanished,
   Item,
   itemAmount,
   itemDropsArray,
@@ -44,7 +45,6 @@ import {
   Slot,
   spleenLimit,
   Stat,
-  turnsPlayed,
   useFamiliar,
   visitUrl,
 } from "kolmafia";
@@ -82,6 +82,7 @@ import {
   can_consume,
   canChew,
   fullness_left,
+  getMinimumAdventuresToMaintain,
   inebriety_left,
   spleen_left,
   stomach_left,
@@ -101,13 +102,17 @@ import {
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$2,
+  auto_isInIncompleteZone,
+  auto_isWorthSniffing,
+  auto_isWorthYellowRaying,
   auto_location_monsters,
   auto_log_error,
+  auto_log_info,
   auto_log_warning,
   auto_runChoice,
+  auto_wantToBanish,
   auto_wantToFreeKillWithNoDrops,
-  auto_wantToSniff,
-  auto_wantToYellowRay,
+  auto_zoneCopyableMonsters,
   autoCraft,
   canSummonMonster,
   handleTracker,
@@ -118,8 +123,9 @@ import {
   set_next_fight_is_free,
   summonMonster,
 } from "../auto_util";
-import { monster_to_location, zone_delay } from "../auto_zone";
+import { zone_delay } from "../auto_zone";
 import { ConsumeAction } from "../autoscend_record";
+import { isSniffed } from "../combat/auto_combat_util";
 import { getIncompleteQuestTasks } from "../engine/engine";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
@@ -146,12 +152,7 @@ import { maximizer } from "../utils/maximizer";
 import { auto_haveKramcoSausageOMatic } from "./mr2019";
 import { auto_haveTrainSet } from "./mr2022";
 import { auto_haveCCSC } from "./mr2023";
-import {
-  auto_haveBatWings,
-  auto_haveChestMimic,
-  auto_haveMayamCalendar,
-  auto_haveSpringShoes,
-} from "./mr2024";
+import { auto_haveBatWings, auto_haveSpringShoes } from "./mr2024";
 import { auto_canTracesBandit, auto_haveMonodent } from "./mr2025";
 
 // This is meant for items that have a date of 2026
@@ -1414,6 +1415,16 @@ export function auto_baseball_innings_left(): number {
   return 3 - get("_baseballInnings");
 }
 
+export function auto_baseball_freefight_monster(): Monster {
+  return auto_baseball_freefights_left() > 0
+    ? get("_curveballMonster", $monster.none)
+    : Monster.none;
+}
+
+export function auto_baseball_freefights_left(): number {
+  return get("_curveballFightsLeft", 0);
+}
+
 export function auto_baseball_team(): Monster[] {
   // Fills to 9; once full, recruiting a new monster bumps slot 0 out.
   return get("baseballTeam")
@@ -1422,249 +1433,307 @@ export function auto_baseball_team(): Monster[] {
     .map((s) => Monster.get(s));
 }
 
-function auto_baseball_game(plan: Element[]): boolean {
-  if (plan.length !== 9) return false;
-
-  if (auto_baseball_innings_left() === 0) return false;
-
-  if (auto_baseball_team().length !== 9) return false;
-
+function auto_playBaseball_game(assignments: BaseballAssignment[]): boolean {
   visitUrl(`inventory.php?pwd=${myHash()}&action=pball`, false);
+
+  if (!handlingChoice()) return false;
 
   const order: Element[] = $elements`hot, cold, spooky, stench, sleaze`;
 
-  for (let i = 0; i < 9; i++) {
-    visitUrl(
-      `choice.php?pwd&whichchoice=1598&option=${order.indexOf(plan[i]) + 1}`,
+  const fillerPriority = new Map<string, number>([
+    [
+      "Garbageball",
+      (auto_is_valid($item`discarded hot dog`) && canEat()) ||
+      (auto_is_valid($item`most of a beer`) && canDrink())
+        ? 100
+        : -1,
+    ],
+    ["Throw Some Smoke", 99], // +5 stats
+    ["Deep Freeze", 98], // +3 DR
+    ["Bacon-Wrapped Slider", 5], // Combat init
+    ["Snowball", 4], // +2-4 MP Regen
+    ["Ghost Pitch", 3], // 3-5 HP Regen
+    ["Slurveball", -2], // Sleaze res
+    ["Bring the Heat", -3], // +5 hot dmg
+    ["Skullball", -4], // Reduced att+def
+    ["Beanball", -5], // Passive stench damage
+  ]);
+
+  const playedCounts = new Map<Element, number>();
+
+  function isSafeToPlay(element: Element, currentSlot: number): boolean {
+    const finisherHere = assignments.find(
+      (a) => a.finisherSlot === currentSlot,
     );
+
+    // If this slot is a finisher, we must play its element.
+    if (finisherHere) {
+      return element === finisherHere.element;
+    }
+
+    // We cannot premature a 3rd element in a normal slot.
+    if ((playedCounts.get(element) ?? 0) === 2) {
+      return false;
+    }
+
+    // Do we have enough slots left for our mandatory setups?
+    let totalNeeded = 0;
+    let availableSlots = 0;
+
+    // Look at all remaining slots after this one
+    for (let k = currentSlot + 1; k < 9; k++) {
+      const futureFinisher = assignments.find((a) => a.finisherSlot === k);
+
+      if (!futureFinisher) {
+        // It's a free slot we can use for setups
+        availableSlots++;
+        continue;
+      }
+
+      // Calculate how many setups this finisher still needs
+      let needed = 2 - (playedCounts.get(futureFinisher.element) ?? 0);
+
+      // If we are playing its setup right now, it needs 1 less!
+      if (element === futureFinisher.element) {
+        needed--;
+      }
+
+      totalNeeded += Math.max(0, needed);
+
+      // If the setups we need are greater than the free slots available before
+      // this finisher, then playing this element would starve us
+      if (totalNeeded > availableSlots) {
+        return false;
+      }
+    }
+
+    return true;
   }
+
+  const team = auto_baseball_team();
+
+  // Play the game
+  for (let i = 0; i < 9; i++) {
+    const options = availableChoiceOptions();
+
+    let bestElement = Element.none;
+    let bestChoice = 0;
+    let highestPriority = -9999;
+
+    for (const element of order) {
+      // If our math says it ruins a finisher, skip it
+      if (!isSafeToPlay(element, i)) continue;
+
+      const choiceNum = order.indexOf(element) + 1;
+
+      // Check our priorities, we default to -1000, which is still better than nothing
+      const priority = fillerPriority.get(options[choiceNum]) ?? -1000;
+
+      // Pick the safe choice with the highest score
+      if (priority > highestPriority) {
+        highestPriority = priority;
+        bestElement = element;
+        bestChoice = choiceNum;
+      }
+    }
+
+    if (bestChoice === 0) {
+      abort(`Failed to find a valid pitch for baseball slot ${i}.`);
+    }
+
+    const chosenText = options[bestChoice];
+    // Track the pitch
+    playedCounts.set(bestElement, (playedCounts.get(bestElement) ?? 0) + 1);
+
+    if (chosenText && !fillerPriority.has(chosenText)) {
+      // TODO Remove before pushing
+      auto_log_info(`Don't recognize baseball pitch: ${chosenText}`);
+    }
+
+    auto_log_info(
+      `Baseball round ${i + 1}, throwing ${bestElement} ball #${playedCounts.get(bestElement)} at ${team[i]}`,
+    );
+    visitUrl(`choice.php?pwd&whichchoice=1598&option=${bestChoice}`);
+  }
+
   visitUrl(`choice.php?pwd&whichchoice=1598&option=6`);
 
   if (auto_baseball_team().length > 0) {
     abort(`Expected to have played baseball, did not.`);
   }
+
   return true;
 }
 
 interface BaseballAssignment {
   element: Element;
+  finisherMonster: Monster;
   finisherSlot: number;
   normalSlots: number[];
 }
 
-function auto_baseballScorchExtras(mon: Monster): boolean {
-  // Extra-copy targets that aren't Yellow Ray candidates
-  if (mon === $monster`shadow slab`) {
-    return auto_haveChestMimic();
-  }
-  if (mon === $monster`dairy goat`) {
-    return !auto_haveMayamCalendar();
-  }
-  if (mon === $monster`beanbat`) {
-    return !auto_haveBatWings();
-  }
-  return $monsters`pygmy bowler, red butler, baa-relief sheep, blackberry bush`.includes(
-    mon,
-  );
-}
-
-export function auto_baseballScorchWorthy(
+function auto_baseballGetDesiredElements(
   mon: Monster,
-  loc: Location,
-): boolean {
-  // Scorcher guarantees every drop from one fight, so YR's target list applies here too.
-  return auto_wantToYellowRay(mon, loc) || auto_baseballScorchExtras(mon);
-}
-
-function auto_baseballWorthyTarget(mon: Monster, loc: Location): boolean {
-  return auto_baseballScorchWorthy(mon, loc) || auto_wantToSniff(mon, loc);
-}
-
-function auto_baseballScorchWorthyAnywhere(mon: Monster): boolean {
-  if (
-    auto_baseballScorchExtras(mon) ||
-    auto_wantToYellowRay(mon, myLocation())
-  ) {
-    return true;
+  loc: Location = myLocation(),
+): Element[] {
+  const elements: Element[] = [];
+  if (auto_isWorthYellowRaying(mon, loc)) {
+    elements.push($element`hot`);
   }
-  return false;
+
+  if (auto_isWorthSniffing(mon, loc)) {
+    elements.push($element`stench`);
+    elements.push($element`spooky`);
+  } else if (auto_haveMonodent() && mon === $monster`some fish`) {
+    elements.push($element`spooky`);
+  }
+  if (
+    !isBanished(mon) &&
+    auto_wantToBanish(mon, loc) &&
+    auto_isInIncompleteZone(mon)
+  ) {
+    elements.push($element`cold`);
+  }
+  return elements;
 }
 
 function auto_baseballBuildAssignments(team: Monster[]): BaseballAssignment[] {
-  const claimed: boolean[] = new Array(team.length).fill(false);
-  const assignments: BaseballAssignment[] = [];
+  const possible: [Element[], number][] = team
+    .map(
+      (mon, slot) =>
+        [slot < 2 ? [] : auto_baseballGetDesiredElements(mon), slot] as [
+          Element[],
+          number,
+        ],
+    )
+    .filter(([eles]) => eles.length > 0);
 
-  let hotAssigned = false;
-  let stenchAssigned = false;
-  let spookyAssigned = false;
+  possible.sort((a, b) => a[1] - b[1]);
 
-  const isRiskySetupSlot = (mon: Monster): boolean =>
-    (!hotAssigned && auto_baseballScorchWorthyAnywhere(mon)) ||
-    (!stenchAssigned && auto_wantToSniff(mon, myLocation()));
-
-  // Last viable finisher for each element wins, even at an earlier one's expense.
-  for (let i = team.length - 1; i >= 0; i--) {
-    if (claimed[i]) {
-      continue;
+  function compareAssignments(
+    a: [Element, number][],
+    b: [Element, number][],
+  ): boolean {
+    if (a.length !== b.length) {
+      return a.length > b.length;
     }
 
-    const mon = team[i];
-    let element: Element | undefined;
+    // Same number of finishers. Prefer earlier finish slots.
+    const aSlots = a.map(([, slot]) => slot);
+    const bSlots = b.map(([, slot]) => slot);
 
-    if (!hotAssigned && auto_baseballScorchWorthyAnywhere(mon)) {
-      element = $element`hot`;
-    } else if (!stenchAssigned && auto_wantToSniff(mon, myLocation())) {
-      element = $element`stench`;
-    } else if (!spookyAssigned) {
-      element = $element`spooky`;
-    }
-
-    if (!element) {
-      continue;
-    }
-
-    const safeSlots: number[] = [];
-    const riskySlots: number[] = [];
-    for (let j = i - 1; j >= 0; j--) {
-      if (!claimed[j]) {
-        (isRiskySetupSlot(team[j]) ? riskySlots : safeSlots).push(j);
+    for (let i = 0; i < aSlots.length; i++) {
+      if (aSlots[i] !== bSlots[i]) {
+        return aSlots[i] < bSlots[i];
       }
     }
-    const normalSlots = [...safeSlots, ...riskySlots].slice(0, 2);
 
-    if (normalSlots.length < 2) {
+    return false;
+  }
+
+  function getLargestGroup(
+    claimed: Element[],
+    startSlot: number,
+  ): [Element, number][] {
+    const candidates = possible.filter((p) => p[1] <= startSlot);
+
+    let best: [Element, number][] = [];
+
+    for (const [eles, slot] of candidates) {
+      for (const ele of eles) {
+        if (claimed.includes(ele)) continue;
+
+        const result = getLargestGroup([...claimed, ele], slot - 1);
+        const candidate = [...result, [ele, slot]] as [Element, number][];
+
+        if (compareAssignments(candidate, best)) {
+          best = candidate;
+        }
+
+        // If this branch already hit the theoretical maximum,
+        // we don't need to explore weaker branches.
+        const maxPossible = Math.floor((startSlot - 1) / 3);
+        if (best.length === maxPossible) {
+          return best;
+        }
+      }
+    }
+
+    return best;
+  }
+
+  const largest = getLargestGroup([], 9);
+
+  const assignments: BaseballAssignment[] = largest.map(
+    ([element, finisherSlot]) => ({
+      element,
+      finisherSlot,
+      finisherMonster: team[finisherSlot],
+      normalSlots: [],
+    }),
+  );
+
+  // Fill unused slots into normal positions.
+  for (let i = 0; i < 9; i++) {
+    if (assignments.some((a) => a.finisherSlot === i)) {
       continue;
     }
 
-    claimed[i] = true;
-    claimed[normalSlots[0]] = true;
-    claimed[normalSlots[1]] = true;
-
-    if (element === $element`hot`) {
-      hotAssigned = true;
-    } else if (element === $element`stench`) {
-      stenchAssigned = true;
-    } else {
-      spookyAssigned = true;
-    }
-
-    assignments.push({ element, finisherSlot: i, normalSlots });
+    assignments.find((a) => a.normalSlots.length < 2)?.normalSlots.push(i);
   }
-
-  assignments.sort((a, b) => a.finisherSlot - b.finisherSlot);
 
   return assignments;
 }
 
-function auto_baseballIsSlotZeroLoadBearing(
-  assignments: BaseballAssignment[],
-): boolean {
-  // normalSlots are unchecked padding; only the finisher is an actual target.
-  return assignments.some((a) => a.finisherSlot === 0);
-}
-
-function auto_baseballSlotZeroLoadBearing(): boolean {
-  const team = auto_baseball_team();
-  if (team.length !== 9) {
-    return false;
-  }
-  return auto_baseballIsSlotZeroLoadBearing(
-    auto_baseballBuildAssignments(team),
-  );
-}
-
-export function auto_baseballPitchPlan(): Element[] | undefined {
-  const team = auto_baseball_team();
-  if (team.length !== 9) {
-    return undefined;
-  }
-
-  const assignments = auto_baseballBuildAssignments(team);
-  const plan: Element[] = new Array(9).fill(Element.none);
-  const claimedSlots = new Set<number>();
-
-  for (const a of assignments) {
-    plan[a.finisherSlot] = a.element;
-    claimedSlots.add(a.finisherSlot);
-    for (const s of a.normalSlots) {
-      plan[s] = a.element;
-      claimedSlots.add(s);
-    }
-  }
-
-  // Leftover slots just repeat an already-active element
-  const fillerElement = assignments[0]?.element ?? $element`stench`;
-  for (let i = 0; i < 9; i++) {
-    if (!claimedSlots.has(i)) {
-      plan[i] = fillerElement;
-    }
-  }
-
-  return plan;
-}
-
-const BASEBALL_TARGET_BONUS = 250;
-const BASEBALL_FILLER_BONUS = 50;
-const BASEBALL_FILLER_BONUS_REPEAT_ZONE = 8;
-
-// Once a zone has already secured a finisher target, don't keep burning filler slots on it.
-function auto_baseballZoneAlreadyTapped(loc: Location): boolean {
-  const team = auto_baseball_team();
-  for (const a of auto_baseballBuildAssignments(team)) {
-    if (monster_to_location(team[a.finisherSlot]).includes(loc)) {
-      return true;
-    }
-  }
-  return false;
-}
-
 // Monsters at loc (with their encounter rate) that a copier (sword, baseball diamond, ...)
 // could actually track/target.
-function auto_zoneCopyableMonsters(loc: Location): [Monster, number][] {
-  return Object.entries(appearanceRates(loc))
-    .map(([_k, _v]) => [Monster.get(_k), _v] as [Monster, number])
-    .filter(
-      ([mon, rate]) => rate > 0 && mon.id > 0 && mon.copyable && !mon.boss,
-    );
-}
 
 // Score bonus rather than forcing the item on, so it only wins its equip slot when worth it.
 export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
-  // We should do a check instead of "how many advs more will we spend?" to wear the baseball if we'd benefit from it
+  if (!auto_have_baseball_diamond()) return 0;
+
   if (
-    !auto_have_baseball_diamond() ||
-    (auto_baseball_innings_left() === 0 &&
-      fullness_left() + inebriety_left() > 0)
+    auto_baseball_innings_left() === 0 &&
+    (!canEat() ||
+      !canDrink() ||
+      (fullness_left() > 0 && inebriety_left() > 0) ||
+      getMinimumAdventuresToMaintain() + 10 > myAdventures())
   ) {
     return 0;
   }
-  if (auto_baseball_team().length === 9 && auto_baseballSlotZeroLoadBearing()) {
-    return 0;
-  }
 
-  const hasWorthyTarget = auto_zoneCopyableMonsters(loc).some(([mon]) =>
-    auto_baseballWorthyTarget(mon, loc),
+  const team = auto_baseball_team();
+  const assignments = auto_baseballBuildAssignments(team);
+
+  const assignedElements = assignments.map((a) => a.element);
+
+  // Is this monster one we want to sniff or YR, and we do not have assignments for already
+  const hasWorthyTarget = auto_zoneCopyableMonsters(loc).some(
+    ([mon]) =>
+      (auto_isWorthYellowRaying(mon, loc) || auto_isWorthSniffing(mon, loc)) &&
+      auto_baseballGetDesiredElements(mon, loc).some(
+        (e) => !assignedElements.includes(e),
+      ),
   );
 
-  if (hasWorthyTarget) {
-    return BASEBALL_TARGET_BONUS;
+  const hasWorthyTargetsInTeam = assignments.length > 0;
+
+  if (hasWorthyTargetsInTeam) {
+    // When our baseball has worthy targets, then we don't wear the baseball if we're adventuring in a zone without a worthy target
+    return hasWorthyTarget ? 250 : 0;
   }
 
-  // Slots 0-5 are the filler each of the 3 assignments needs, so always keep recruiting
-  // those; past that, only recruit more once we've given up holding out for a target.
-  if (
-    auto_baseball_team().length >= 8 &&
-    isSoftBlockInPlace("baseballDiamond")
-  ) {
-    return 0;
+  // When our baseball has no worthy targets in it
+  if (team.length < 6) {
+    // we are filling the baseballs first 6 slots and we avoid the worthy zones
+    return hasWorthyTarget ? 0 : 50;
+  } else {
+    // we'll try to fill the last 3 when we've recruited enough (fillers).
+    return hasWorthyTarget ? 250 : 0;
   }
-
-  return auto_baseballZoneAlreadyTapped(loc)
-    ? BASEBALL_FILLER_BONUS_REPEAT_ZONE
-    : BASEBALL_FILLER_BONUS;
 }
 
-export function auto_baseballWantsSomeFish(
+export function auto_baseballShouldReplaceWithFish(
   loc: Location,
   enemy: Monster,
 ): boolean {
@@ -1674,30 +1743,66 @@ export function auto_baseballWantsSomeFish(
   if (enemy === $monster`some fish`) {
     return false;
   }
-  if (auto_baseballWorthyTarget(enemy, loc)) {
+  if (
+    auto_isWorthYellowRaying(enemy, loc) ||
+    auto_isWorthSniffing(enemy, loc)
+  ) {
     // Already a good target, no need to replace it.
     return false;
   }
 
-  const team = auto_baseball_team();
-  if (team.length < 9) {
-    return true;
-  }
-  return !auto_baseballSlotZeroLoadBearing();
+  return true;
 }
 
-function auto_baseballZoneHasUnclaimedTarget(
-  loc: Location,
+function auto_baseballIsLoadBearing(
   assignments: BaseballAssignment[],
-  team: Monster[],
 ): boolean {
-  const claimedFinishers = new Set(
-    assignments.map((a) => team[a.finisherSlot]),
+  // normalSlots are unchecked padding; only the finisher is an actual target.
+  let start = 0;
+  for (const assignment of assignments) {
+    // We start at slot 1, check if the finisher slot allows 2 slots before it
+    if (start + 2 >= assignment.finisherSlot) {
+      // We don't have enough slots
+      return true;
+    }
+
+    // Add the 3 slots, 2 for the prep, 1 for the finisher
+    start += 3;
+  }
+
+  // Didn't hit true, not load bearing
+  return false;
+}
+
+function auto_baseballShouldPlay(
+  team: Monster[],
+  assignments: BaseballAssignment[],
+): boolean {
+  if (team.length !== 9) {
+    return false;
+  }
+
+  // Exclude the sniffed monster
+  const validAssignments = assignments.filter(
+    (a) =>
+      !isSniffed(a.finisherMonster, $item`Baseball Diamond`) &&
+      a.finisherMonster !== auto_baseball_freefight_monster(),
   );
-  return auto_zoneCopyableMonsters(loc).some(
-    ([mon]) =>
-      !claimedFinishers.has(mon) && auto_baseballWorthyTarget(mon, loc),
-  );
+
+  // Play it when we have 3 assignments
+  if (validAssignments.length === 3) {
+    return true;
+  }
+
+  // Or 2 assignments and we'd lose an assignment if we don't play a game
+  if (
+    validAssignments.length === 2 &&
+    auto_baseballIsLoadBearing(validAssignments)
+  ) {
+    return true;
+  }
+
+  return false;
 }
 
 export function auto_tryPlayBaseball(): boolean {
@@ -1707,18 +1812,12 @@ export function auto_tryPlayBaseball(): boolean {
   }
 
   const assignments = auto_baseballBuildAssignments(team);
-  const slotZeroLoadBearing = auto_baseballIsSlotZeroLoadBearing(assignments);
-  if (
-    !slotZeroLoadBearing &&
-    (assignments.length < 3 ||
-      auto_baseballZoneHasUnclaimedTarget(myLocation(), assignments, team)) &&
-    isSoftBlockInPlace("baseballDiamond")
-  ) {
-    return false; // safe to hold out for a better lineup
+
+  if (!auto_baseballShouldPlay(team, assignments)) {
+    return false;
   }
 
-  const plan = auto_baseballPitchPlan();
-  if (!plan || !auto_baseball_game(plan)) {
+  if (!auto_playBaseball_game(assignments)) {
     return false;
   }
 
@@ -1739,12 +1838,37 @@ export function auto_tryPlayBaseball(): boolean {
   return true;
 }
 
-export function auto_baseball_freefight_monster(): Monster {
-  return get("_curveballMonster", $monster.none);
-}
+// Soft-delay a level's quest-turn-in while a recruited teammate here hasn't been played yet.
+function auto_baseballShouldDelayZone(
+  zoneMonsters: [Monster, number][],
+): boolean {
+  if (auto_baseball_innings_left() <= 0) {
+    return false;
+  }
 
-export function auto_baseball_freefights_left(): number {
-  return get("_curveballFightsLeft", 0);
+  const freeFightsMonster = auto_baseball_freefight_monster();
+
+  if (
+    zoneMonsters.some(
+      ([mon]) =>
+        mon === freeFightsMonster || isSniffed(mon, $item`Baseball Diamond`),
+    )
+  ) {
+    return false;
+  }
+
+  const team = auto_baseball_team();
+  if (team.length === 0) {
+    return false;
+  }
+
+  const assignments = auto_baseballBuildAssignments(team);
+
+  return (
+    assignments.some((assignment) =>
+      zoneMonsters.some(([mon]) => mon === assignment.finisherMonster),
+    ) && isSoftBlockInPlace("baseballDiamond")
+  );
 }
 
 export function auto_have_sword_familiar(): boolean {
@@ -1988,29 +2112,6 @@ function auto_swordFamiliarShouldDelayZone(monsters: Monster[]): boolean {
   );
 }
 
-function auto_baseballShouldDelayZone(
-  zoneMonsters: [Monster, number][],
-): boolean {
-  // Soft-delay a level's quest-turn-in while a recruited teammate here hasn't been played yet.
-  if (auto_baseball_innings_left() <= 0) {
-    return false;
-  }
-  const team = auto_baseball_team();
-  if (team.length === 0) {
-    return false;
-  }
-  // A guaranteed (100%) encounter chance means we'll fight it on our very next adventure
-  // here regardless of when we turn in, so there's nothing left to protect by delaying.
-  const unreliableTargets = new Set(
-    zoneMonsters.filter(([, rate]) => rate < 100).map(([mon]) => mon),
-  );
-  return (
-    auto_baseballBuildAssignments(team).some((a) =>
-      unreliableTargets.has(team[a.finisherSlot]),
-    ) && isSoftBlockInPlace("baseballDiamond")
-  );
-}
-
 // Soft-delay leaving these zones (a level's quest-turn-in, typically) while the Sword of S Words or Baseball Diamond is still mid-farm on a monster that only appears here.
 export function auto_copierShouldDelayZone(locs: Location[]): boolean {
   const zoneMonsters = locs.flatMap(auto_zoneCopyableMonsters);
@@ -2109,8 +2210,8 @@ export function auto_summonSwordTarget(): boolean {
     return false;
   }
 
-  // If we've just started, or we haven't visited the council yet
-  if (turnsPlayed() <= 3 || get("lastCouncilVisit") < Math.min(myLevel(), 13)) {
+  // If we haven't visited the council yet
+  if (get("lastCouncilVisit") < Math.min(myLevel(), 13, 3)) {
     return false;
   }
 

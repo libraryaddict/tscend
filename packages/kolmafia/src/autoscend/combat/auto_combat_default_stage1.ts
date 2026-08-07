@@ -50,7 +50,7 @@ import {
   auto_RWBBlastTarget,
 } from "../iotms/mr2023";
 import { auto_talkToSomeFish, auto_tracesTarget } from "../iotms/mr2025";
-import { auto_baseballWantsSomeFish } from "../iotms/mr2026";
+import { auto_baseballShouldReplaceWithFish } from "../iotms/mr2026";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/avant_guard";
 import { inAftercore } from "../paths/casual";
@@ -435,7 +435,7 @@ export function auto_combatDefaultStage1(
   if (
     (auto_talkToSomeFish(myLocation(), enemy) ||
       // I'm too lazy at this time as this should be harmless, but the baseball check has a lot of overlap it feels like with the normal check
-      (auto_baseballWantsSomeFish(myLocation(), enemy) &&
+      (auto_baseballShouldReplaceWithFish(myLocation(), enemy) &&
         auto_wantToBanish(enemy, myLocation()))) &&
     auto_have_skill($skill`Sea *dent: Talk to Some Fish`)
   ) {

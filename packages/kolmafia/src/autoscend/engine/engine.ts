@@ -40,6 +40,24 @@ export type QuestTask = Task<never, void> & {
   desiredEncounters?: () => (DesiredDrop | DesiredFights)[];
 };
 
+export function taskDesiredEncounters(task: QuestTask): {
+  drops: DesiredDrop[];
+  fights: DesiredFights[];
+} {
+  if (task.desiredEncounters === undefined) return { drops: [], fights: [] };
+
+  const encounters = task.desiredEncounters();
+
+  return {
+    drops: encounters.filter(
+      (encounter): encounter is DesiredDrop => "item" in encounter,
+    ),
+    fights: encounters.filter(
+      (encounter): encounter is DesiredFights => "monster" in encounter,
+    ),
+  };
+}
+
 export function taskLocations(task: QuestTask): Location[] {
   const locs = task.locations;
   if (locs === undefined) return [];
@@ -95,9 +113,6 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
   // choiceAdventureScript to go missing mid-run, breaking choice handling.
   static defaultSettings = {
     ...Engine.defaultSettings,
-    afterAdventureScript: "js abort('Uh oh')",
-    betweenBattleScript: "js abort('Uh oh')",
-    choiceAdventureScript: "js abort('Uh oh')",
     hpAutoRecoveryTarget: "-0.05",
     mpAutoRecoveryTarget: "-0.05",
   };
@@ -136,7 +151,25 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
 let questTasks: QuestTask[] | undefined;
 let engineInstance: AutoscendEngine | undefined;
 
-export function registerQuestTask<T extends QuestTask>(task: T): T {
+export function registerQuestTask<T extends QuestTask>(task: T): T;
+export function registerQuestTask<T extends QuestTask>(
+  parent: QuestTask,
+  child: T,
+): T;
+export function registerQuestTask<T extends QuestTask>(a: QuestTask, b?: T): T {
+  const task = b ?? (a as T);
+  if (b) {
+    const childReady = task.ready;
+    const childCompleted = task.completed;
+    task.ready = (ctx) =>
+      a.ready?.(ctx) !== false && (childReady?.(ctx) ?? true);
+    task.completed = (ctx) => a.completed(ctx) || childCompleted(ctx);
+  }
+  if (task.desiredEncounters) {
+    const desiredEncounters = task.desiredEncounters;
+    task.desiredEncounters = () =>
+      desiredEncounters().filter((t) => t.needAmount > 0);
+  }
   questTasks ??= [];
   questTasks.push(task);
   return task;

@@ -348,9 +348,9 @@ const LX_bitchinMeatcarTask: QuestTask = registerQuestTask({
   do: LX_bitchinMeatcarDo,
   locations: $location`The Degrassi Knoll Garage`,
   desiredEncounters: () => {
-    return [...auto_recipeIngredients($item`bitchin' meatcar`, true)]
-      .map(([i, amount]) => ({ item: i, needAmount: amount }))
-      .filter((a) => a.needAmount > 0);
+    return [...auto_recipeIngredients($item`bitchin' meatcar`, true)].map(
+      ([i, amount]) => ({ item: i, needAmount: amount }),
+    );
   },
 });
 
@@ -540,7 +540,7 @@ function LX_islandAccessDo(): boolean {
 
 export const LX_islandAccessTask: QuestTask = registerQuestTask({
   name: "LX_islandAccess",
-  completed: () => false,
+  completed: () => get("lastIslandUnlock") >= myAscensions(),
   ready: () => !in_koe(),
   do: LX_islandAccessDo,
 });
@@ -614,9 +614,9 @@ const LX_hippyBoatmanTask: QuestTask = registerQuestTask({
   desiredEncounters: () =>
     itemAmount($item`junk junk`) > 0
       ? []
-      : $items`old claw-foot bathtub, old clothesline pole, antique cigar sign, Worse Homes and Gardens`
-          .map((it) => ({ item: it, needAmount: 1 - itemAmount(it) }))
-          .filter((a) => a.needAmount > 0),
+      : $items`old claw-foot bathtub, old clothesline pole, antique cigar sign, Worse Homes and Gardens`.map(
+          (it) => ({ item: it, needAmount: 1 - itemAmount(it) }),
+        ),
 });
 
 export function LX_hippyBoatman(): boolean {
@@ -804,7 +804,7 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
         monster: $monster`fantasy bandit`,
         needAmount: 5 - fantasyBanditsFought(),
       },
-    ].filter((a) => a.needAmount > 0);
+    ];
   },
 });
 

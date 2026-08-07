@@ -686,7 +686,7 @@ export function auto_setLeprecondo(doingBedtime: boolean): boolean {
   }
 
   auto_log_info(
-    `Rearranging Leprecondo: [${installed.join(", ")}] -> [${target.join(", ")}] (${Leprecondo.rearrangesRemaining() - 1} rearranges left)`,
+    `Rearranging Leprecondo: [${installed.join(", ")}] -> [${target.join(", ")}] (${Leprecondo.rearrangesRemaining() - (get("leprecondoInstalled") !== "" ? 1 : 0)} rearranges left)`,
     "blue",
   );
 

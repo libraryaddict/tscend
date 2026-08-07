@@ -416,7 +416,7 @@ function get8BitFatLootTokenDo(): boolean {
 
 const get8BitFatLootTokenTask: QuestTask = registerQuestTask({
   name: "get8BitFatLootToken",
-  completed: () => false,
+  completed: () => internalQuestStatus("questL13Final") > 5,
   ready: () => true,
   do: get8BitFatLootTokenDo,
   locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
@@ -1572,7 +1572,7 @@ export const L13_towerNSTowerTask: QuestTask = registerQuestTask({
       { monster: $monster`wall of meat`, needAmount: status < 8 ? 1 : 0 },
       { monster: $monster`wall of bones`, needAmount: status < 9 ? 1 : 0 },
       { monster: $monster`Your Shadow`, needAmount: status < 11 ? 1 : 0 },
-    ].filter((a) => a.needAmount > 0);
+    ];
   },
 });
 
@@ -2490,7 +2490,9 @@ function L13_towerNSNagamarDo(): boolean {
 
 export const L13_towerNSNagamarTask: QuestTask = registerQuestTask({
   name: "L13_towerNSNagamar",
-  completed: () => false,
+  completed: () =>
+    internalQuestStatus("questL13Final") > 12 ||
+    itemAmount($item`Wand of Nagamar`) > 0,
   ready: () => true,
   do: L13_towerNSNagamarDo,
   locations: $location`The VERY Unquiet Garves`,
@@ -2523,7 +2525,7 @@ export const L13_towerNSNagamarTask: QuestTask = registerQuestTask({
         item: $item`heavy D`,
         needAmount: 1 - (itemAmount($item`heavy D`) + itemAmount($item`ND`)),
       },
-    ].filter((a) => a.needAmount > 0);
+    ];
   },
 });
 

@@ -98,16 +98,15 @@ const LX_quantumTerrariumTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_quantumTerrariumDo,
   locations: $location`The Deep Machine Tunnels`,
-  desiredEncounters: () =>
-    [
-      {
-        monster: $phylum`weird`,
-        needAmount:
-          myFamiliar() === $familiar`Machine Elf`
-            ? 5 - get("_machineTunnelsAdv")
-            : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: $phylum`weird`,
+      needAmount:
+        myFamiliar() === $familiar`Machine Elf`
+          ? 5 - get("_machineTunnelsAdv")
+          : 0,
+    },
+  ],
 });
 
 export function LX_quantumTerrarium(): boolean {

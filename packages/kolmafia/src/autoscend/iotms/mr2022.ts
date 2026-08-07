@@ -1012,12 +1012,14 @@ function auto_modifyTrainSet(
 }
 
 export function auto_checkTrainSet(): void {
-  const lastTrainsetConfiguration: number = get("lastTrainsetConfiguration");
-  const trainsetPosition: number = get("trainsetPosition");
-  const trainsetConfiguration: string = getProperty("trainsetConfiguration");
   if (!auto_haveTrainSet()) {
     return;
   }
+
+  const lastTrainsetConfiguration: number = get("lastTrainsetConfiguration");
+  const trainsetPosition: number = get("trainsetPosition");
+  const trainsetConfiguration: string = getProperty("trainsetConfiguration");
+
   /* A list of what the station numbers are (thanks Zdrvst for compiling this list for your CS script)
 	1: meat
 	2: mp regen

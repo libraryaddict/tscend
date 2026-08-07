@@ -298,12 +298,14 @@ import {
   auto_CMCconsult,
   auto_enableBackupCameraReverser,
   auto_harvestBatteries,
+  have_fireworks_shop,
 } from "./autoscend/iotms/mr2021";
 import {
   auto_autumnatonQuest,
   auto_canUseJuneCleaver,
   auto_checkTrainSet,
   auto_hasAutumnaton,
+  auto_haveTrainSet,
   auto_juneCleaverAdventure,
   auto_voidMonster,
   prioritizeGoose,
@@ -505,6 +507,7 @@ import {
   theSource_initializeSettings,
   theSource_oracle,
 } from "./autoscend/paths/the_source";
+import { in_tcrs } from "./autoscend/paths/two_crazy_random_summer";
 import { in_wotsf } from "./autoscend/paths/way_of_the_surprising_fist";
 import {
   in_wereprof,
@@ -540,7 +543,7 @@ import {
   L8_mountainManSummonTask,
 } from "./autoscend/quests/level_08";
 import {
-  finishBuildingSmutOrcBridge,
+  finishBuildingSmutOrcBridgeTask,
   L9_aBooPeakWorthBurningLuckOn,
 } from "./autoscend/quests/level_09";
 import {
@@ -2516,18 +2519,6 @@ const zoo_graftFamTask: QuestTask = registerQuestTask({
   do: zoo_graftFam,
 });
 
-const finishBuildingSmutOrcBridgeMaintenanceTask: QuestTask = registerQuestTask(
-  {
-    name: "finishBuildingSmutOrcBridgeMaintenance",
-    completed: () => false,
-    ready: () => true,
-    do: () => {
-      finishBuildingSmutOrcBridge();
-      return false;
-    },
-  },
-);
-
 const councilMaintenanceTask: QuestTask = registerQuestTask({
   name: "councilMaintenance",
   completed: () => false,
@@ -2809,7 +2800,8 @@ const auto_spoonTuneMoonTask: QuestTask = registerQuestTask({
   name: "auto_spoonTuneMoon",
   completed: () =>
     !auto_is_valid($item`hewn moon-rune spoon`) ||
-    !possessEquipment($item`hewn moon-rune spoon`),
+    !possessEquipment($item`hewn moon-rune spoon`) ||
+    get("moonTuned"),
   ready: () => true,
   do: () => {
     auto_spoonTuneMoon();
@@ -2829,7 +2821,14 @@ const auto_chapeauTask: QuestTask = registerQuestTask({
 
 const auto_buyFireworksHatTask: QuestTask = registerQuestTask({
   name: "auto_buyFireworksHat",
-  completed: () => false,
+  completed: () =>
+    // equipment doesn't give buffs in these paths
+    in_gnoob() ||
+    in_tcrs() ||
+    //the damage from all three hats one-shots the professor after a round of combat
+    in_wereprof() ||
+    !have_fireworks_shop() ||
+    get("_fireworksShopHatBought"),
   ready: () => true,
   do: () => {
     auto_buyFireworksHat();
@@ -2849,7 +2848,7 @@ const auto_CMCconsultTask: QuestTask = registerQuestTask({
 
 const auto_checkTrainSetTask: QuestTask = registerQuestTask({
   name: "auto_checkTrainSet",
-  completed: () => false,
+  completed: () => !auto_haveTrainSet(),
   ready: () => true,
   do: () => {
     auto_checkTrainSet();
@@ -2952,7 +2951,10 @@ const auto_useLeprecondoDropsTask: QuestTask = registerQuestTask({
 
 const auto_setLeprecondoTask: QuestTask = registerQuestTask({
   name: "auto_setLeprecondo",
-  completed: () => !Leprecondo.have() || !auto_is_valid($item`Leprecondo`),
+  completed: () =>
+    !Leprecondo.have() ||
+    !auto_is_valid($item`Leprecondo`) ||
+    Leprecondo.rearrangesRemaining() === 0,
   ready: () => true,
   do: () => {
     auto_setLeprecondo(false);
@@ -3195,26 +3197,26 @@ const LX_calculateTheUniverseTask: QuestTask = registerQuestTask({
   completed: () => get("_universeCalculated") >= min(3, get("skillLevel144")),
   ready: () => true,
   do: () => LX_calculateTheUniverse(false),
-  desiredEncounters: () =>
-    [
-      {
-        monster: $monster`War Frat 151st Infantryman`,
-        needAmount:
-          !possessOutfit("Frat Warrior Fatigues") &&
-          auto_warSide() === "fratboy"
-            ? 1
-            : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: $monster`War Frat 151st Infantryman`,
+      needAmount:
+        !possessOutfit("Frat Warrior Fatigues") && auto_warSide() === "fratboy"
+          ? 1
+          : 0,
+    },
+  ],
 });
 
 const rockGardenEndTask: QuestTask = registerQuestTask({
   name: "rockGardenEnd",
   completed: () =>
-    $items`strange stalagmite, molehill mountain`.every(
-      (i) => !auto_is_valid(i),
-    ) ||
-    (get("_molehillMountainUsed") && get("_strangeStalagmiteUsed")),
+    (get("_molehillMountainUsed") ||
+      !auto_is_valid($item`molehill mountain`) ||
+      itemAmount($item`molehill mountain`) === 0) &&
+    (get("_strangeStalagmiteUsed") ||
+      !auto_is_valid($item`strange stalagmite`) ||
+      itemAmount($item`strange stalagmite`) === 0),
   ready: () => true,
   do: () => {
     rockGardenEnd();
@@ -3280,9 +3282,9 @@ const auto_smallCampgroundGearTask: QuestTask = registerQuestTask({
   do: auto_smallCampgroundGear,
   locations: $locations`Fight in the Dirt, Fight in the Tall Grass`,
   desiredEncounters: () =>
-    $items`mesquito proboscis, ncle leg, rutabuga bag, senate fly thorax, birdybug antenna, daddy shortlegs leg, kilopede skull`
-      .map((i) => ({ item: i, needAmount: have(i) ? 0 : 1 }))
-      .filter((a) => a.needAmount > 0),
+    $items`mesquito proboscis, ncle leg, rutabuga bag, senate fly thorax, birdybug antenna, daddy shortlegs leg, kilopede skull`.map(
+      (i) => ({ item: i, needAmount: have(i) ? 0 : 1 }),
+    ),
 });
 
 const elfToiletTask: QuestTask = registerQuestTask({
@@ -3328,13 +3330,12 @@ const auto_doPhoneQuestTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: auto_doPhoneQuest,
   locations: () => [auto_availableBrickRift()],
-  desiredEncounters: () =>
-    [
-      {
-        monster: $monster`shadow slab`,
-        needAmount: get("questRufus") === "unstarted" ? 1 : 0,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: $monster`shadow slab`,
+      needAmount: get("questRufus") === "unstarted" ? 1 : 0,
+    },
+  ],
 });
 
 const auto_doTempleSummitTask: QuestTask = registerQuestTask({
@@ -3349,7 +3350,7 @@ const doTasksPrelude: QuestTask[] = [
   resetStateTask,
   basicAdjustMLTask,
   zoo_graftFamTask,
-  finishBuildingSmutOrcBridgeMaintenanceTask,
+  finishBuildingSmutOrcBridgeTask,
   councilMaintenanceTask,
   auto_buySkillsTask,
   awol_buySkillsTask,

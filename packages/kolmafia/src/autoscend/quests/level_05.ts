@@ -105,13 +105,12 @@ export const L5_getEncryptionKeyTask: QuestTask = registerQuestTask({
     !canBurnDelay($location`The Outskirts of Cobb's Knob`),
   do: L5_getEncryptionKeyDo,
   locations: $location`The Outskirts of Cobb's Knob`,
-  desiredEncounters: () =>
-    [
-      {
-        item: $item`Knob Goblin Encryption Key`,
-        needAmount: 1 - itemAmount($item`Knob Goblin Encryption Key`),
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      item: $item`Knob Goblin Encryption Key`,
+      needAmount: 1 - itemAmount($item`Knob Goblin Encryption Key`),
+    },
+  ],
 });
 
 export function L5_getEncryptionKey(): boolean {
@@ -200,7 +199,7 @@ export const L5_haremOutfitTask: QuestTask = registerQuestTask({
           : 0,
     });
 
-    return desired.filter((a) => a.needAmount > 0);
+    return desired;
   },
 });
 
@@ -278,13 +277,12 @@ export const L5_goblinKingTask: QuestTask = registerQuestTask({
     );
   },
   do: L5_goblinKingDo,
-  desiredEncounters: () =>
-    [
-      {
-        monster: $monster`Knob Goblin King`,
-        needAmount: internalQuestStatus("questL05Goblin") > 1 ? 0 : 1,
-      },
-    ].filter((a) => a.needAmount > 0),
+  desiredEncounters: () => [
+    {
+      monster: $monster`Knob Goblin King`,
+      needAmount: internalQuestStatus("questL05Goblin") > 1 ? 0 : 1,
+    },
+  ],
 });
 
 const L5_goblinKingTurnInTask: QuestTask = registerQuestTask({

@@ -824,15 +824,17 @@ function finalizeMaximize(speculative: boolean = false): void {
     }
   }
 
-  if (
-    have($item`Cup of 13s`) &&
-    inebrietyLimit() > 6 &&
-    !in_small() &&
-    !in_plumber()
-  ) {
-    // It gives some booze drops, scale up the bonus by our max liver
-
-    addBonusToMaximize($item`Cup of 13s`, Math.min(40, inebrietyLimit() * 7));
+  if (inebrietyLimit() > 6 && !in_small() && !in_plumber()) {
+    if (have($item`Cup of 13s`)) {
+      // It gives some booze drops, scale up the bonus by our max liver
+      addBonusToMaximize($item`Cup of 13s`, Math.min(40, inebrietyLimit() * 7));
+    }
+    if (have($item`Portable Laughing Stock`)) {
+      const score = 40 - get("_laughingStockFruitDropped", 0) * 6;
+      if (score > 0) {
+        addBonusToMaximize($item`Portable Laughing Stock`, Math.min(40, score));
+      }
+    }
   }
 
   if (in_wereprof() && auto_haveDarts()) {
