@@ -522,9 +522,6 @@ export function auto_heartstoneShouldStealHeart(location: Location): boolean {
     }
   }
 
-  // Only if we have letters already and we're in combat
-  let getRidOfCurrentWord = inCombat && currentWord.length > 1;
-
   for (const word of allWords) {
     if (!word.startsWith(currentWord)) continue;
 
@@ -537,25 +534,19 @@ export function auto_heartstoneShouldStealHeart(location: Location): boolean {
     // If we have less than 5% chance to fulfil this word, we won't mark it as eligable
     if (chance <= 5) continue;
 
-    // If we're speculating
-    if (!inCombat) {
-      // If the current location has nothing for us here
-      if ((locationLetters.get(remainingLetters[0]) ?? 0) <= 0) {
-        // Continue, try find another word
-        continue;
-      }
-
-      return true;
-    } else {
-      // We're not speculating, and we think this word is a good target
-      return true;
+    // If we're speculating && if the current location has nothing for us here
+    if (!inCombat && (locationLetters.get(remainingLetters[0]) ?? 0) <= 0) {
+      // Continue, try find another word
+      continue;
     }
 
-    getRidOfCurrentWord = false;
+    // We're not speculating, and we think this word is a good target
+    return true;
   }
 
-  // At this point, we're either not in combat, or we're in combat but the current monster isn't going to get anywhere good
-  return getRidOfCurrentWord;
+  // We don't have any good outcomes if we go down this route
+  // We'll still use the skill however, if it'd help us get rid of our current word
+  return currentWord.length > (inCombat ? 1 : 0);
 }
 
 export function auto_haveElfToilet(): boolean {
