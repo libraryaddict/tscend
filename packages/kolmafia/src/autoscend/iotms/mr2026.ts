@@ -1401,21 +1401,21 @@ export function auto_getItemToEquipBaseballDiamond(): Item {
   return Item.none;
 }
 
-export function auto_baseball_innings_left(): number {
+export function auto_baseballInningsRemaining(): number {
   return 3 - get("_baseballInnings");
 }
 
-export function auto_baseball_freefight_monster(): Monster {
-  return auto_baseball_freefights_left() > 0
+export function auto_baseballFreefightMonster(): Monster {
+  return auto_baseballFreefightsRemaining() > 0
     ? get("_curveballMonster", $monster.none)
     : Monster.none;
 }
 
-export function auto_baseball_freefights_left(): number {
+export function auto_baseballFreefightsRemaining(): number {
   return get("_curveballFightsLeft", 0);
 }
 
-export function auto_baseball_team(): Monster[] {
+export function auto_baseballRecruits(): Monster[] {
   // Fills to 9; once full, recruiting a new monster bumps slot 0 out.
   return get("baseballTeam")
     .split(",")
@@ -1423,7 +1423,7 @@ export function auto_baseball_team(): Monster[] {
     .map((s) => Monster.get(s));
 }
 
-function auto_playBaseball_game(assignments: BaseballAssignment[]): boolean {
+function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
   visitUrl(`inventory.php?pwd=${myHash()}&action=pball`, false);
 
   if (!handlingChoice()) return false;
@@ -1511,7 +1511,7 @@ function auto_playBaseball_game(assignments: BaseballAssignment[]): boolean {
     return true;
   }
 
-  const team = auto_baseball_team();
+  const team = auto_baseballRecruits();
 
   // Play the game
   for (let i = 0; i < 9; i++) {
@@ -1568,7 +1568,7 @@ function auto_playBaseball_game(assignments: BaseballAssignment[]): boolean {
   }
   visitUrl(`choice.php?pwd&whichchoice=1598&option=6`);
 
-  if (auto_baseball_team().length > 0) {
+  if (auto_baseballRecruits().length > 0) {
     abort(`Expected to have played baseball, did not.`);
   }
 
@@ -1703,7 +1703,7 @@ export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
   if (!auto_have_baseball_diamond()) return 0;
 
   if (
-    auto_baseball_innings_left() === 0 &&
+    auto_baseballInningsRemaining() === 0 &&
     (!canEat() ||
       !canDrink() ||
       (fullness_left() > 0 && inebriety_left() > 0) ||
@@ -1712,7 +1712,7 @@ export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
     return 0;
   }
 
-  const team = auto_baseball_team();
+  const team = auto_baseballRecruits();
   const assignments = auto_baseballBuildAssignments(team);
 
   const assignedElements = assignments.map((a) => a.element);
@@ -1796,7 +1796,7 @@ function auto_baseballShouldPlay(
   const validAssignments = assignments.filter(
     (a) =>
       !isSniffed(a.finisherMonster, $item`Baseball Diamond`) &&
-      a.finisherMonster !== auto_baseball_freefight_monster(),
+      a.finisherMonster !== auto_baseballFreefightMonster(),
   );
 
   // Play it when we have 3 assignments
@@ -1816,7 +1816,7 @@ function auto_baseballShouldPlay(
 }
 
 export function auto_tryPlayBaseball(): boolean {
-  const team = auto_baseball_team();
+  const team = auto_baseballRecruits();
   if (team.length !== 9) {
     return false;
   }
@@ -1827,7 +1827,7 @@ export function auto_tryPlayBaseball(): boolean {
     return false;
   }
 
-  if (!auto_playBaseball_game(assignments)) {
+  if (!auto_playBaseballGame(assignments)) {
     return false;
   }
 
@@ -1838,11 +1838,11 @@ export function auto_tryPlayBaseball(): boolean {
 function auto_baseballShouldDelayZone(
   zoneMonsters: [Monster, number][],
 ): boolean {
-  if (auto_baseball_innings_left() <= 0) {
+  if (auto_baseballInningsRemaining() <= 0) {
     return false;
   }
 
-  const freeFightsMonster = auto_baseball_freefight_monster();
+  const freeFightsMonster = auto_baseballFreefightMonster();
 
   if (
     zoneMonsters.some(
@@ -1853,7 +1853,7 @@ function auto_baseballShouldDelayZone(
     return false;
   }
 
-  const team = auto_baseball_team();
+  const team = auto_baseballRecruits();
   if (team.length === 0) {
     return false;
   }

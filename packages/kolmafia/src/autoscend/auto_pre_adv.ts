@@ -229,8 +229,8 @@ import {
   peridotManuallyDesiredMonsters,
 } from "./iotms/mr2025";
 import {
-  auto_baseball_freefight_monster,
   auto_baseballDiamondMaximizerBonus,
+  auto_baseballFreefightMonster,
   auto_codpieceFillEmptySlots,
   auto_codpieceReconcileGem,
   auto_heartstoneShouldStealHeart,
@@ -973,7 +973,7 @@ function auto_pre_adventure(): boolean {
     }
   } else if (
     auto_haveMonodent() &&
-    auto_baseball_freefight_monster() === $monster`some fish`
+    auto_baseballFreefightMonster() === $monster`some fish`
   ) {
     // Add the monodent for killing some fish, for free, if possible
     addBonusToMaximize($item`Monodent of the Sea`, 80);

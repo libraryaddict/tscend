@@ -337,8 +337,8 @@ import {
 } from "./iotms/mr2025";
 import {
   auto_acquireInterestingItem,
-  auto_baseball_freefight_monster,
-  auto_baseball_freefights_left,
+  auto_baseballFreefightMonster,
+  auto_baseballFreefightsRemaining,
   auto_chewLiquidAsset,
   auto_desires_sword_familiar_drops,
   auto_forceCombatLegendaryNoodles,
@@ -3075,8 +3075,8 @@ export function isFreeMonster(
   }
 
   if (
-    mon === auto_baseball_freefight_monster() &&
-    auto_baseball_freefights_left() > 0
+    mon === auto_baseballFreefightMonster() &&
+    auto_baseballFreefightsRemaining() > 0
   ) {
     return true;
   }
