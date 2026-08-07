@@ -852,6 +852,10 @@ export function auto_combatDefaultStage3(
     ) {
       return auto_useSkill($skill`Tear Away your Pants!`);
     }
+    //If you have throwaway laughing stock equipped, use 20% delevel and stagger
+    if (auto_canUse($skill`Taunt Your Foe`)) {
+      return auto_useSkill($skill`Taunt Your Foe`);
+    }
     // skills from Lathe weapons
     // Ebony Epee
     if (auto_canUse($skill`Disarming Thrust`)) {
