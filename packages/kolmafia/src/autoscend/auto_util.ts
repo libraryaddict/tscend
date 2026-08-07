@@ -142,7 +142,6 @@ import {
   toSkill,
   toSlot,
   toStat,
-  toThrall,
   toUrl,
   turnsPerCast,
   use,
@@ -6968,70 +6967,89 @@ export function pm_updateThrall(
   if (
     myThrall() === $thrall`Vampieroghi` &&
     place === $location`The Hidden Apartment Building` &&
-    auto_have_skill(Skill.get("Dismiss Pasta Thrall"))
+    auto_have_skill($skill`Dismiss Pasta Thrall`)
   ) {
     // vampieroghi can dispell the shaman curse, preventing us from making quest progress
-    useSkill(Skill.get("Dismiss Pasta Thrall"));
+    useSkill($skill`Dismiss Pasta Thrall`);
   }
 
-  const cur: Thrall = myThrall();
-  let consider: Thrall = Thrall.none;
+  const currentThrall: Thrall = myThrall();
+  let desiredThrall: Thrall = Thrall.none;
+
   /*							Cost		L1				L5				L10				L11
-		Vampieroghi			12			1-2 (Dmg, Heal)	Dispel Neg		+60 Max HP		Slight Spooky Resistance
-		Vermincelli			30			2 MP Regen		Dmg, Poison		+30 Max MP		First 3 rats each day free, then very occasionally up to 11
-		Angel Hair Wisp		60			5% init			Block Crits		Block			+20 Mys
+Vampieroghi			12			1-2 (Dmg, Heal)	Dispel Neg		+60 Max HP		Slight Spooky Resistance
+Vermincelli			30			2 MP Regen		Dmg, Poison		+30 Max MP		First 3 rats each day free, then very occasionally up to 11
+Angel Hair Wisp		60			5% init			Block Crits		Block			+20 Mys
 (Undead)Elbow Maraconi		100			Equalize Mus	+2 Weapon Dmg	+10% crit		+20 Mus
-		Penne Dreadful		150			Equalize Mox	Jump Delevel	DR + 10			+20 Mox
-		Spaghetti Elemental	150			+Stats Ceil(/3)	Block First Att	+5 spell dmg	+10 Spooky dmg
-		Lasagmbie			200			20+2 Meat		Spooky Dmg		+10 spooky spell dmg	Occasionally refills MP (capped at 10k, 11/day)
-		Spice Ghost			250			10+1 Item		Spices			Stun Increase	+2 advs to the first food eaten each day with spice ghost active
+Penne Dreadful		150			Equalize Mox	Jump Delevel	DR + 10			+20 Mox
+Spaghetti Elemental	150			+Stats Ceil(/3)	Block First Att	+5 spell dmg	+10 Spooky dmg
+Lasagmbie			200			20+2 Meat		Spooky Dmg		+10 spooky spell dmg	Occasionally refills MP (capped at 10k, 11/day)
+Spice Ghost			250			10+1 Item		Spices			Stun Increase	+2 advs to the first food eaten each day with spice ghost active
 */
-  const baseline_ver: boolean =
-    myMp() >= 1.2 * mpCost(Skill.get("Bind Vermincelli")) &&
-    auto_have_skill(Skill.get("Bind Vermincelli"));
-  const ver_level: number = toThrall("ver").level;
-  const base_spice: boolean =
-    myMp() >= 1.2 * mpCost(Skill.get("Bind Spice Ghost")) &&
-    auto_have_skill(Skill.get("Bind Spice Ghost")) &&
-    myDaycount() > 1 &&
-    toInt(numericModifier($modifier`MP Regen Min`)) > 9;
+
+  const canUseVerm =
+    auto_have_skill($skill`Bind Vermincelli`) &&
+    myMp() >= 1.2 * mpCost($skill`Bind Vermincelli`);
+
+  const vermincelliLevel = $thrall`Vermincelli`.level;
+  const canLevelVermTo11 = vermincelliLevel < 11 && auto_havePastaWand();
+  const canFreeFightRats = vermincelliLevel > 10;
+
+  const canUseSpiceGhost =
+    auto_have_skill($skill`Bind Spice Ghost`) &&
+    (myDaycount() > 1 || !canLevelVermTo11) &&
+    toInt(numericModifier($modifier`MP Regen Min`)) > 9 &&
+    myMp() >= 1.2 * mpCost($skill`Bind Spice Ghost`);
+
   if (going_to_eat) {
     // if we are consuming food and our spice thrall is lvl 11 (with pasta wand or spice whorl), +2 advs 1/day
-    if (
-      base_spice &&
-      toThrall("spice").level > 10 &&
-      !get("_legendarySpiceGhostFood")
-    ) {
-      consider = $thrall`Spice Ghost`;
+    const canUseSpiceGhostFoodBonus =
+      canUseSpiceGhost &&
+      $thrall`Spice Ghost`.level > 10 &&
+      !get("_legendarySpiceGhostFood");
+
+    if (canUseSpiceGhostFoodBonus) {
+      desiredThrall = $thrall`Spice Ghost`;
     }
   } else {
-    if (baseline_ver && cur === Thrall.none) {
-      consider = $thrall`Vermincelli`;
+    const vermNeededForRats = rat_locations().includes(place);
+
+    if (canUseVerm && currentThrall === Thrall.none) {
+      desiredThrall = $thrall`Vermincelli`;
     }
-    if (base_spice) {
-      consider = $thrall`Spice Ghost`;
+
+    if (canUseSpiceGhost) {
+      desiredThrall = $thrall`Spice Ghost`;
     }
-    if (baseline_ver && ver_level > 10 && rat_locations().includes(place)) {
-      consider = $thrall`Vermincelli`;
-    } else if (baseline_ver && ver_level < 11 && auto_havePastaWand()) {
-      consider = $thrall`Vermincelli`;
+
+    if (canUseVerm && canFreeFightRats && vermNeededForRats) {
+      desiredThrall = $thrall`Vermincelli`;
+    } else if (canUseVerm && canLevelVermTo11) {
+      desiredThrall = $thrall`Vermincelli`;
     }
   }
 
-  if (consider !== cur && consider !== Thrall.none) {
-    const toEquip: Skill = toSkill(`Bind ${consider}`);
-    if (toEquip !== Skill.none) {
-      if (myMp() >= mpCost(toEquip)) {
-        useSkill(1, toEquip);
-      }
-    } else {
-      auto_log_warning(
-        "Thrall handler error. Could not generate appropriate skill.",
-        "red",
-      );
-      return false;
-    }
+  const shouldChangeThrall =
+    desiredThrall !== currentThrall && desiredThrall !== Thrall.none;
+
+  if (!shouldChangeThrall) {
+    return true;
   }
+
+  const bindSkill: Skill = toSkill(`Bind ${desiredThrall}`);
+
+  if (bindSkill === Skill.none) {
+    auto_log_warning(
+      "Thrall handler error. Could not generate appropriate skill.",
+      "red",
+    );
+    return false;
+  }
+
+  if (myMp() >= mpCost(bindSkill)) {
+    useSkill(1, bindSkill);
+  }
+
   return true;
 }
 
