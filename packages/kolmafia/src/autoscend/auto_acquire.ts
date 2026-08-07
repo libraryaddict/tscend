@@ -1,6 +1,7 @@
 import {
   abort,
   autosell,
+  availableAmount,
   availableChoiceOptions,
   buy,
   buyUsingStorage,
@@ -120,7 +121,7 @@ import { LX_dolphinKingMap, LX_meatMaid } from "./quests/level_any";
 
 //Defined in autoscend/auto_acquire.ash
 
-export function acquireOrPull(it: Item): boolean {
+export function acquireOrPull(it: Item, speculating: boolean = false): boolean {
   //this function is for when you want to make sure you have 1 of an item
   //if you have one it returns true. if you don't it will craft one. if it can't it will pull it.
 
@@ -130,11 +131,15 @@ export function acquireOrPull(it: Item): boolean {
   if (itemAmount(it) > 0) {
     return true;
   }
-  if (retrieveItem(1, it)) {
+  if (
+    speculating
+      ? availableAmount(it) + creatableAmount(it) > 0
+      : retrieveItem(1, it)
+  ) {
     return true;
   }
   if (canPull(it)) {
-    if (pullXWhenHaveY(it, 1, 0)) {
+    if (speculating || pullXWhenHaveY(it, 1, 0)) {
       return true;
     }
   }
@@ -145,6 +150,7 @@ export function acquireOrPull(it: Item): boolean {
     )
   ) {
     if (canPull($item`metal meteoroid`)) {
+      if (speculating) return true;
       if (pullXWhenHaveY($item`metal meteoroid`, 1, 0)) {
         if (retrieveItem(1, it)) {
           return true;

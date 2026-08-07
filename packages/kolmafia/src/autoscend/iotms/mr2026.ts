@@ -9,6 +9,7 @@ import {
   canInteract,
   cliExecute,
   closetAmount,
+  creatableAmount,
   cupOf13sTier,
   currentRound,
   Effect,
@@ -2263,11 +2264,18 @@ export function auto_interestingCoinsSpendable(): number {
   return Math.max(0, coins - amount);
 }
 
-export function auto_acquireInterestingItem(item: Item): boolean {
+export function auto_acquireInterestingItem(
+  item: Item,
+  speculating: boolean = false,
+): boolean {
   const price = sellPrice($coinmaster`interesting`, item);
 
   if (price > auto_interestingCoinsSpendable()) {
     return false;
+  }
+
+  if (speculating) {
+    return creatableAmount(item) > 0;
   }
 
   const onHand = itemAmount(item);

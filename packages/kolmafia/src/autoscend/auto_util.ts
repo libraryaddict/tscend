@@ -893,6 +893,7 @@ export function internalQuestStatus(prop: string): number {
 
 export function prepareYellowRayNextCombat(
   estimatedTurnsSaves: number,
+  speculating: boolean = false,
 ): boolean {
   const allowedSizedDiet =
     estimatedTurnsSaves / Math.max(1, get("auto_consumeMinAdvPerFill", 0.0));
@@ -902,8 +903,8 @@ export function prepareYellowRayNextCombat(
     canChew($item`spooky jelly`) &&
     allowedSizedDiet >= $item`spooky jelly`.spleen &&
     spleen_left() >= $item`spooky jelly`.spleen &&
-    acquireOrPull($item`spooky jelly`) &&
-    autoChew(1, $item`spooky jelly`)
+    acquireOrPull($item`spooky jelly`, speculating) &&
+    (speculating || autoChew(1, $item`spooky jelly`))
   ) {
     return true;
   }
@@ -913,8 +914,8 @@ export function prepareYellowRayNextCombat(
     allowedSizedDiet >= $item`mixed berry jelly`.spleen &&
     canChew($item`mixed berry jelly`) &&
     spleen_left() >= $item`mixed berry jelly`.spleen &&
-    acquireOrPull($item`mixed berry jelly`) &&
-    autoChew(1, $item`mixed berry jelly`)
+    acquireOrPull($item`mixed berry jelly`, speculating) &&
+    (speculating || autoChew(1, $item`mixed berry jelly`))
   ) {
     return true;
   }
@@ -925,10 +926,13 @@ export function prepareYellowRayNextCombat(
     canChew($item`toxic asset`) &&
     spleen_left() >= $item`toxic asset`.spleen &&
     (itemAmount($item`toxic asset`) > 0 ||
-      auto_acquireInterestingItem($item`toxic asset`)) &&
-    autoChew(1, $item`toxic asset`)
+      auto_acquireInterestingItem($item`toxic asset`),
+    speculating) &&
+    (speculating || autoChew(1, $item`toxic asset`))
   ) {
-    set("_auto_toxicAssetUses", get("_auto_toxicAssetUses", 0) + 1);
+    if (!speculating) {
+      set("_auto_toxicAssetUses", get("_auto_toxicAssetUses", 0) + 1);
+    }
     return true;
   }
 
@@ -937,8 +941,8 @@ export function prepareYellowRayNextCombat(
     allowedSizedDiet >= $item`toast with spooky jelly`.spleen &&
     auto_canEat($item`toast with spooky jelly`) &&
     stomach_left() >= $item`toast with spooky jelly`.fullness &&
-    acquireOrPull($item`toast with spooky jelly`) &&
-    autoEat(1, $item`toast with spooky jelly`)
+    acquireOrPull($item`toast with spooky jelly`, speculating) &&
+    (speculating || autoEat(1, $item`toast with spooky jelly`))
   ) {
     return true;
   }
@@ -1720,28 +1724,34 @@ function adjustForYellowRay(combat_string: CombatMacroReturns): boolean {
 export function adjustForYellowRayIfPossible(
   target: Monster = Monster.none,
 ): boolean {
-  if (canYellowRay(target)) {
-    if (isYellowRayingNextCombat()) {
-      auto_log_info(
-        `YR is active for next combat, aiming at (${target})`,
-        "blue",
-      );
-      return true;
-    }
-    const yr_string: CombatMacroReturns = yellowRayCombatString(
-      target,
-      false,
-      $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
-        target,
-      ),
-    );
+  // No need to prepare
+  if (target !== Monster.none && isDropsCapped(target)) {
+    return true;
+  }
+  if (!canYellowRay(target)) {
+    return false;
+  }
+
+  if (isYellowRayingNextCombat()) {
     auto_log_info(
-      `Adjusting to have YR available for ${target}: ${yr_string}`,
+      `YR is active for next combat, aiming at (${target})`,
       "blue",
     );
-    return adjustForYellowRay(yr_string);
+    return true;
   }
-  return false;
+
+  const yr_string: CombatMacroReturns = yellowRayCombatString(
+    target,
+    false,
+    $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
+      target,
+    ),
+  );
+  auto_log_info(
+    `Adjusting to have YR available for ${target}: ${yr_string}`,
+    "blue",
+  );
+  return adjustForYellowRay(yr_string);
 }
 
 function canReplace(target: Monster): boolean {
@@ -3179,13 +3189,16 @@ function LX_summonMonsterDo(): boolean {
   const oreGoal: Item = safeGet("trapperOre", Item.none);
   if (
     internalQuestStatus("questL08Trapper") < 2 &&
-    auto_haveTrainSet() &&
+    !auto_haveTrainSet() &&
     oreGoal !== Item.none &&
     itemAmount(oreGoal) < 2 &&
     canYellowRay() &&
     canSummonMonster($monster`mountain man`)
   ) {
-    adjustForYellowRayIfPossible();
+    if (!adjustForYellowRayIfPossible($monster`mountain man`)) {
+      // As an arbitary random number
+      prepareYellowRayNextCombat(6);
+    }
     const need_dupe: boolean = itemAmount(oreGoal) < 1;
     const can_mctwist: boolean =
       auto_can_equip($item`pro skateboard`) && !get("_epicMcTwistUsed");
@@ -3248,7 +3261,10 @@ function LX_summonMonsterDo(): boolean {
       canSummonMonster($monster`War Frat Mobile Grill Unit`) ||
       canSummonMonster($monster`Orcish Frat Boy Spy`))
   ) {
-    adjustForYellowRayIfPossible();
+    if (!adjustForYellowRayIfPossible()) {
+      prepareYellowRayNextCombat(12);
+    }
+
     // attempt to use calculate the universe
     if (summonMonster($monster`War Frat 151st Infantryman`)) {
       return true;
@@ -3367,9 +3383,11 @@ export const LX_summonMonsterTask: QuestTask = registerQuestTask({
     if (
       get("trapperOre") &&
       internalQuestStatus("questL08Trapper") < 2 &&
-      auto_haveTrainSet() &&
+      !auto_haveTrainSet() &&
       itemAmount(oreGoal) < 2 &&
-      canYellowRay() &&
+      (isDropsCapped($monster`mountain man`) ||
+        canYellowRay($monster`mountain man`) ||
+        prepareYellowRayNextCombat(6, true)) &&
       canSummonMonster($monster`mountain man`)
     ) {
       encounters.push({ monster: $monster`mountain man`, needAmount: 1 });

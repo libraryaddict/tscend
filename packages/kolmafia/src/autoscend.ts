@@ -211,6 +211,7 @@ import {
   meatReserveMessage,
   needToConsumeForEmergencyRollover,
   ovenHandle,
+  prepareYellowRayNextCombat,
   restoreAllSettings,
   safeGet,
   sniffSources,
@@ -1075,7 +1076,8 @@ export function LX_calculateTheUniverse(speculative: boolean): boolean {
   if (!possessOutfit("Frat Warrior Fatigues") && auto_warSide() === "fratboy") {
     if (
       doNumberology("battlefield", false) !== -1 &&
-      adjustForYellowRayIfPossible($monster`War Frat 151st Infantryman`)
+      (adjustForYellowRayIfPossible($monster`War Frat 151st Infantryman`) ||
+        prepareYellowRayNextCombat(12, speculative))
     ) {
       if (speculative) {
         return true;

@@ -90,6 +90,7 @@ import {
   canYellowRay,
   cloversAvailable,
   internalQuestStatus,
+  prepareYellowRayNextCombat,
   safeGet,
   summonMonster,
 } from "../auto_util";
@@ -420,15 +421,24 @@ function L8_mountainManSummonDo(): boolean {
     return summonMonster($monster`mountain man`);
   }
   // use a summon if we can guarantee it will be enough via pro skateboard and YR
-  if (canSummonMonster($monster`mountain man`) && canYellowRay()) {
+  if (
+    canSummonMonster($monster`mountain man`) &&
+    (canYellowRay($monster`mountain man`) ||
+      prepareYellowRayNextCombat(6, true))
+  ) {
     const need_dupe: boolean = current_ore < 1;
     const can_mctwist: boolean =
       auto_can_equip($item`pro skateboard`) && !get("_epicMcTwistUsed");
     const will_mctwist: boolean = can_mctwist && need_dupe;
+    if (!can_mctwist && need_dupe) return false;
+
     auto_log_info(
       `Trying to summon a mountain man, which we will YR${will_mctwist ? " and McTwist." : "."}`,
     );
-    adjustForYellowRayIfPossible();
+    if (!adjustForYellowRayIfPossible($monster`mountain man`)) {
+      prepareYellowRayNextCombat(6);
+    }
+
     if (will_mctwist) {
       autoEquip($item`pro skateboard`);
       return summonMonster($monster`mountain man`);
