@@ -1951,15 +1951,15 @@ export function auto_wantSwordFamiliar(place: Location): boolean {
   }
   // Don't bring the sword out if we're about to hit a wanderer
   if (
-    (auto_sword_of_swords_tracking() !== Monster.none &&
-      [Wanderer.Digitize, Wanderer.Enamorang, Wanderer.Romantic].some((w) =>
-        isWandererNow(w),
-      )) ||
-    (auto_haveKramcoSausageOMatic() && getKramcoWandererChance() >= 0.9) ||
-    (auto_have_familiar($familiar`Mini-Hipster`) &&
-      canChangeToFamiliar($familiar`Mini-Hipster`) &&
-      isWandererNow(Wanderer.Familiar)) ||
-    (isVoteWandererNow() && possessEquipment($item`"I Voted!" sticker`))
+    auto_sword_of_swords_tracking() !== Monster.none &&
+    ([Wanderer.Digitize, Wanderer.Enamorang, Wanderer.Romantic].some((w) =>
+      isWandererNow(w),
+    ) ||
+      (auto_haveKramcoSausageOMatic() && getKramcoWandererChance() >= 0.9) ||
+      (auto_have_familiar($familiar`Mini-Hipster`) &&
+        canChangeToFamiliar($familiar`Mini-Hipster`) &&
+        isWandererNow(Wanderer.Familiar)) ||
+      (isVoteWandererNow() && possessEquipment($item`"I Voted!" sticker`)))
   ) {
     return false;
   }
