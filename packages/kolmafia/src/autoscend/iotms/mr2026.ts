@@ -62,7 +62,9 @@ import {
   $skill,
   EternityCodpiece,
   get,
+  getKramcoWandererChance,
   have,
+  isVoteWandererNow,
   isWandererNow,
   set,
   Wanderer,
@@ -84,6 +86,7 @@ import {
   spleen_left,
   stomach_left,
 } from "../auto_consume";
+import { possessEquipment } from "../auto_equipment";
 import {
   auto_have_familiar,
   canChangeToFamiliar,
@@ -140,6 +143,7 @@ import {
 } from "../quests/level_11";
 import { auto_gunpowderBarrelsWanted } from "../quests/level_12";
 import { maximizer } from "../utils/maximizer";
+import { auto_haveKramcoSausageOMatic } from "./mr2019";
 import { auto_haveTrainSet } from "./mr2022";
 import { auto_haveCCSC } from "./mr2023";
 import {
@@ -1947,15 +1951,15 @@ export function auto_wantSwordFamiliar(place: Location): boolean {
   }
   // Don't bring the sword out if we're about to hit a wanderer
   if (
-    auto_sword_of_swords_tracking() !== Monster.none &&
-    [
-      Wanderer.Digitize,
-      Wanderer.Enamorang,
-      Wanderer.Familiar,
-      Wanderer.Kramco,
-      Wanderer.Romantic,
-      ...(get("_voteFreeFights") < 3 ? [Wanderer.Vote] : []),
-    ].some((w) => isWandererNow(w))
+    (auto_sword_of_swords_tracking() !== Monster.none &&
+      [Wanderer.Digitize, Wanderer.Enamorang, Wanderer.Romantic].some((w) =>
+        isWandererNow(w),
+      )) ||
+    (auto_haveKramcoSausageOMatic() && getKramcoWandererChance() >= 0.9) ||
+    (auto_have_familiar($familiar`Mini-Hipster`) &&
+      canChangeToFamiliar($familiar`Mini-Hipster`) &&
+      isWandererNow(Wanderer.Familiar)) ||
+    (isVoteWandererNow() && possessEquipment($item`"I Voted!" sticker`))
   ) {
     return false;
   }
