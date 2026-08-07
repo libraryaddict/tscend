@@ -830,8 +830,10 @@ function finalizeMaximize(speculative: boolean = false): void {
       addBonusToMaximize($item`Cup of 13s`, Math.min(40, inebrietyLimit() * 7));
     }
     if (have($item`Portable Laughing Stock`)) {
-      const score = 40 - get("_laughingStockFruitDropped", 0) * 6;
-      if (score > 0) {
+      const score = Math.ceil(
+        40 * (1 - Math.pow(get("_laughingStockFruitDropped", 0) / 7, 3)),
+      );
+      if (score > 1) {
         addBonusToMaximize($item`Portable Laughing Stock`, Math.min(40, score));
       }
     }
