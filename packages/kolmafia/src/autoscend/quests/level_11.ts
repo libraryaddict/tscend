@@ -88,6 +88,7 @@ import {
   $slots,
   $stat,
   get,
+  have,
   set,
 } from "libram";
 
@@ -3187,113 +3188,135 @@ const L11_mauriceSpookyravenWineBombTask: QuestTask = registerQuestTask({
   },
 });
 
-const L11_mauriceSpookyravenKitchenTask: QuestTask = registerQuestTask({
-  name: "L11_mauriceSpookyravenKitchen",
-  completed: () => itemAmount($item`loosening powder`) > 0,
-  ready: () =>
-    L11_mauriceSpookyravenAltPathwayActive() &&
-    itemAmount($item`loosening powder`) === 0,
-  do: () => {
-    auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
-    // I suppose we can let anyone in without the Spectacles.
-    return autoAdv($location`The Haunted Kitchen`);
-  },
-  locations: $location`The Haunted Kitchen`,
-});
+const L11_mauriceSpookyravenAltPathwayTask: QuestTask = {
+  name: "L11_mauriceSpookyravenAltPathway",
+  completed: () =>
+    getProperty("spookyravenRecipeUsed") === "with_glasses" ||
+    have($item`bottle of Chateau de Vinegar`) ||
+    have($item`unstable fulminate`) ||
+    have($item`wine bomb`) ||
+    internalQuestStatus("questL11Manor") >= 3,
+  ready: () => L11_mauriceSpookyravenAltPathwayActive(),
+  do: () => {},
+};
 
-const L11_mauriceSpookyravenConservatoryTask: QuestTask = registerQuestTask({
-  name: "L11_mauriceSpookyravenConservatory",
-  completed: () => itemAmount($item`powdered castoreum`) > 0,
-  ready: () =>
-    L11_mauriceSpookyravenAltPathwayActive() &&
-    itemAmount($item`loosening powder`) > 0 &&
-    itemAmount($item`powdered castoreum`) === 0,
-  do: () => {
-    auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
-    return autoAdv($location`The Haunted Conservatory`);
+const L11_mauriceSpookyravenKitchenTask: QuestTask = registerQuestTask(
+  L11_mauriceSpookyravenAltPathwayTask,
+  {
+    name: "L11_mauriceSpookyravenKitchen",
+    completed: () => itemAmount($item`loosening powder`) > 0,
+    ready: () => itemAmount($item`loosening powder`) === 0,
+    do: () => {
+      auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
+      // I suppose we can let anyone in without the Spectacles.
+      return autoAdv($location`The Haunted Kitchen`);
+    },
+    locations: $location`The Haunted Kitchen`,
   },
-  locations: $location`The Haunted Conservatory`,
-});
+);
 
-const L11_mauriceSpookyravenBathroomTask: QuestTask = registerQuestTask({
-  name: "L11_mauriceSpookyravenBathroom",
-  completed: () => itemAmount($item`drain dissolver`) > 0,
-  ready: () =>
-    L11_mauriceSpookyravenAltPathwayActive() &&
-    itemAmount($item`loosening powder`) > 0 &&
-    itemAmount($item`powdered castoreum`) > 0 &&
-    itemAmount($item`drain dissolver`) === 0,
-  do: () => {
-    auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
-    return autoAdv($location`The Haunted Bathroom`);
+const L11_mauriceSpookyravenConservatoryTask: QuestTask = registerQuestTask(
+  L11_mauriceSpookyravenAltPathwayTask,
+  {
+    name: "L11_mauriceSpookyravenConservatory",
+    completed: () => itemAmount($item`powdered castoreum`) > 0,
+    ready: () =>
+      itemAmount($item`loosening powder`) > 0 &&
+      itemAmount($item`powdered castoreum`) === 0,
+    do: () => {
+      auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
+      return autoAdv($location`The Haunted Conservatory`);
+    },
+    locations: $location`The Haunted Conservatory`,
   },
-  locations: $location`The Haunted Bathroom`,
-});
+);
 
-const L11_mauriceSpookyravenGalleryTask: QuestTask = registerQuestTask({
-  name: "L11_mauriceSpookyravenGallery",
-  completed: () => itemAmount($item`triple-distilled turpentine`) > 0,
-  ready: () =>
-    L11_mauriceSpookyravenAltPathwayActive() &&
-    itemAmount($item`loosening powder`) > 0 &&
-    itemAmount($item`powdered castoreum`) > 0 &&
-    itemAmount($item`drain dissolver`) > 0 &&
-    itemAmount($item`triple-distilled turpentine`) === 0,
-  do: () => {
-    auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
-    return autoAdv($location`The Haunted Gallery`);
+const L11_mauriceSpookyravenBathroomTask: QuestTask = registerQuestTask(
+  L11_mauriceSpookyravenAltPathwayTask,
+  {
+    name: "L11_mauriceSpookyravenBathroom",
+    completed: () => itemAmount($item`drain dissolver`) > 0,
+    ready: () =>
+      itemAmount($item`loosening powder`) > 0 &&
+      itemAmount($item`powdered castoreum`) > 0 &&
+      itemAmount($item`drain dissolver`) === 0,
+    do: () => {
+      auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
+      return autoAdv($location`The Haunted Bathroom`);
+    },
+    locations: $location`The Haunted Bathroom`,
   },
-  locations: $location`The Haunted Gallery`,
-});
+);
 
-const L11_mauriceSpookyravenLaboratoryTask: QuestTask = registerQuestTask({
-  name: "L11_mauriceSpookyravenLaboratory",
-  completed: () => itemAmount($item`detartrated anhydrous sublicalc`) > 0,
-  ready: () =>
-    L11_mauriceSpookyravenAltPathwayActive() &&
-    itemAmount($item`loosening powder`) > 0 &&
-    itemAmount($item`powdered castoreum`) > 0 &&
-    itemAmount($item`drain dissolver`) > 0 &&
-    itemAmount($item`triple-distilled turpentine`) > 0 &&
-    itemAmount($item`detartrated anhydrous sublicalc`) === 0,
-  do: () => {
-    auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
-    //3rd floor unlock fix. can manually adv without starting quest. but autoAdv fails until quest is started. so start the quest
-    if (internalQuestStatus("questM17Babies") === -1) {
-      visitUrl("place.php?whichplace=manor3&action=manor3_ladys"); //talk to 3rd floor ghost to start quest
-    }
-    return autoAdv($location`The Haunted Laboratory`);
+const L11_mauriceSpookyravenGalleryTask: QuestTask = registerQuestTask(
+  L11_mauriceSpookyravenAltPathwayTask,
+  {
+    name: "L11_mauriceSpookyravenGallery",
+    completed: () => itemAmount($item`triple-distilled turpentine`) > 0,
+    ready: () =>
+      itemAmount($item`loosening powder`) > 0 &&
+      itemAmount($item`powdered castoreum`) > 0 &&
+      itemAmount($item`drain dissolver`) > 0 &&
+      itemAmount($item`triple-distilled turpentine`) === 0,
+    do: () => {
+      auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
+      return autoAdv($location`The Haunted Gallery`);
+    },
+    locations: $location`The Haunted Gallery`,
   },
-  locations: $location`The Haunted Laboratory`,
-});
+);
 
-const L11_mauriceSpookyravenStorageRoomTask: QuestTask = registerQuestTask({
-  name: "L11_mauriceSpookyravenStorageRoom",
-  completed: () => itemAmount($item`triatomaceous dust`) > 0,
-  ready: () =>
-    L11_mauriceSpookyravenAltPathwayActive() &&
-    itemAmount($item`loosening powder`) > 0 &&
-    itemAmount($item`powdered castoreum`) > 0 &&
-    itemAmount($item`drain dissolver`) > 0 &&
-    itemAmount($item`triple-distilled turpentine`) > 0 &&
-    itemAmount($item`detartrated anhydrous sublicalc`) > 0 &&
-    itemAmount($item`triatomaceous dust`) === 0,
-  do: () => {
-    auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
-    return autoAdv($location`The Haunted Storage Room`);
+const L11_mauriceSpookyravenLaboratoryTask: QuestTask = registerQuestTask(
+  L11_mauriceSpookyravenAltPathwayTask,
+  {
+    name: "L11_mauriceSpookyravenLaboratory",
+    completed: () => itemAmount($item`detartrated anhydrous sublicalc`) > 0,
+    ready: () =>
+      itemAmount($item`loosening powder`) > 0 &&
+      itemAmount($item`powdered castoreum`) > 0 &&
+      itemAmount($item`drain dissolver`) > 0 &&
+      itemAmount($item`triple-distilled turpentine`) > 0 &&
+      itemAmount($item`detartrated anhydrous sublicalc`) === 0,
+    do: () => {
+      auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
+      //3rd floor unlock fix. can manually adv without starting quest. but autoAdv fails until quest is started. so start the quest
+      if (internalQuestStatus("questM17Babies") === -1) {
+        visitUrl("place.php?whichplace=manor3&action=manor3_ladys"); //talk to 3rd floor ghost to start quest
+      }
+      return autoAdv($location`The Haunted Laboratory`);
+    },
+    locations: $location`The Haunted Laboratory`,
   },
-  locations: $location`The Haunted Storage Room`,
-});
+);
+
+const L11_mauriceSpookyravenStorageRoomTask: QuestTask = registerQuestTask(
+  L11_mauriceSpookyravenAltPathwayTask,
+  {
+    name: "L11_mauriceSpookyravenStorageRoom",
+    completed: () => itemAmount($item`triatomaceous dust`) > 0,
+    ready: () =>
+      itemAmount($item`loosening powder`) > 0 &&
+      itemAmount($item`powdered castoreum`) > 0 &&
+      itemAmount($item`drain dissolver`) > 0 &&
+      itemAmount($item`triple-distilled turpentine`) > 0 &&
+      itemAmount($item`detartrated anhydrous sublicalc`) > 0 &&
+      itemAmount($item`triatomaceous dust`) === 0,
+    do: () => {
+      auto_log_warning("Alternate fulminate pathway... how sad :(", "red");
+      return autoAdv($location`The Haunted Storage Room`);
+    },
+    locations: $location`The Haunted Storage Room`,
+  },
+);
 
 const L11_mauriceSpookyravenAltPathwayFinishTask: QuestTask = registerQuestTask(
+  L11_mauriceSpookyravenAltPathwayTask,
   {
     name: "L11_mauriceSpookyravenAltPathwayFinish",
     completed: () =>
-      !L11_mauriceSpookyravenAltPathwayActive() ||
       possessEquipment($item`unstable fulminate`) ||
       internalQuestStatus("questL11Manor") >= 3,
     ready: () =>
-      L11_mauriceSpookyravenAltPathwayActive() &&
       !possessEquipment($item`unstable fulminate`) &&
       internalQuestStatus("questL11Manor") < 3 &&
       itemAmount($item`loosening powder`) > 0 &&
@@ -3370,16 +3393,11 @@ const L11_mauriceSpookyravenWineCellarTask: QuestTask = registerQuestTask({
   name: "L11_mauriceSpookyravenWineCellar",
   completed: () =>
     itemAmount($item`bottle of Chateau de Vinegar`) > 0 ||
-    possessEquipment($item`unstable fulminate`) ||
-    itemAmount($item`wine bomb`) > 0 ||
+    have($item`unstable fulminate`) ||
+    have($item`wine bomb`) ||
     internalQuestStatus("questL11Manor") >= 3,
   ready: () => {
-    if (
-      L11_mauriceSpookyravenAltPathwayActive() ||
-      itemAmount($item`bottle of Chateau de Vinegar`) > 0 ||
-      possessEquipment($item`unstable fulminate`) ||
-      internalQuestStatus("questL11Manor") >= 3
-    ) {
+    if (L11_mauriceSpookyravenAltPathwayActive()) {
       return false;
     }
     if (!L11_mauriceSpookyravenNormalPathwayReady()) {
