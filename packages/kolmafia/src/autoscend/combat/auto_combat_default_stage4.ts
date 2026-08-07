@@ -551,7 +551,7 @@ export function auto_combatDefaultStage4(
     return auto_useSkill($skill`Cincho: Confetti Extravaganza`);
   }
 
-  if (auto_heartstoneShouldStealHeart()) {
+  if (auto_heartstoneShouldStealHeart(myLocation())) {
     handleTracker({
       what: $skill`Steal Monster's Heart`,
       location: myLocation(),

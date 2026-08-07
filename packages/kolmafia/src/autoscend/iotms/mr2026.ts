@@ -10,6 +10,7 @@ import {
   cliExecute,
   closetAmount,
   cupOf13sTier,
+  currentRound,
   Effect,
   Element,
   entityDecode,
@@ -98,7 +99,6 @@ import { haveFreeRestAvailable } from "../auto_restore";
 import { isSoftBlockInPlace } from "../auto_routing";
 import {
   auto_get_campground,
-  auto_have_skill,
   auto_is_valid,
   auto_is_valid$2,
   auto_isInIncompleteZone,
@@ -124,8 +124,8 @@ import {
 } from "../auto_util";
 import { zone_delay } from "../auto_zone";
 import { ConsumeAction } from "../autoscend_record";
-import { isSniffed } from "../combat/auto_combat_util";
-import { getIncompleteQuestTasks } from "../engine/engine";
+import { auto_canUse, isSniffed } from "../combat/auto_combat_util";
+import { getIncompleteQuestTasks, taskLocations } from "../engine/engine";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_koe } from "../paths/kingdom_of_exploathing";
@@ -451,18 +451,19 @@ function auto_heartstoneWordsToAimFor(): string[] {
  * @param location non-null if we're speculating for equipping heartstone
  * @returns true if we should use the skill, or wear the heartstone for a potential stolen heart
  */
-export function auto_heartstoneShouldStealHeart(location?: Location): boolean {
-  if (location === $location.none || location === $location`Noob Cave`) {
+export function auto_heartstoneShouldStealHeart(location: Location): boolean {
+  const inCombat: boolean = currentRound() > 0;
+  const badLoc =
+    location === $location.none || location === $location`Noob Cave`;
+  if (inCombat && badLoc) {
     return false;
   }
-
-  const inCombat: boolean = !location;
 
   if (
     !auto_haveHeartstone() ||
     !haveEquipped(auto_getItemToEquipHeartstone()) ||
     !auto_is_valid$2($skill`Steal Monster's Heart`) ||
-    (inCombat && !auto_have_skill($skill`Steal Monster's Heart`)) || // If in combat and don't have skill
+    (inCombat && !auto_canUse($skill`Steal Monster's Heart`)) || // If in combat and don't have skill
     get("_lastCombatActions")
       .split(";")
       .includes(`sk${$skill`Steal Monster's Heart`.id}`) // If already used this combat
@@ -477,7 +478,7 @@ export function auto_heartstoneShouldStealHeart(location?: Location): boolean {
 
   let currentWord = get("heartstoneLetters").toUpperCase();
   // Ensure its always a word that's less than 4 chars
-  currentWord = currentWord.slice(Math.floor(currentWord.length / 4) * 4);
+  currentWord = currentWord.slice(currentWord.length % 4);
   currentWord += letter;
   const allWords = auto_heartstoneWordsToAimFor();
 
@@ -489,17 +490,13 @@ export function auto_heartstoneShouldStealHeart(location?: Location): boolean {
   // Get every location of every task we have not finished
   // This is a bit flawed, as it doesn't yet know what words are going to be more efficient to aim for, could be eyeing a d5 task on d1 for example
   const allLocations: Location[] = getIncompleteQuestTasks()
-    .map((t) => t.locations)
-    .filter(Boolean)
-    .flatMap((t) =>
-      typeof t === "function" ? t() : !Array.isArray(t) ? [t] : t,
-    )
+    .flatMap((t) => taskLocations(t))
     .filter(
       (l): l is Location =>
         !!l && l !== Location.none && l !== $location`Noob Cave`,
     );
 
-  if (location && !allLocations.includes(location)) {
+  if (!inCombat && !badLoc && !allLocations.includes(location)) {
     allLocations.push(location);
   }
 
@@ -548,6 +545,9 @@ export function auto_heartstoneShouldStealHeart(location?: Location): boolean {
         continue;
       }
 
+      return true;
+    } else {
+      // We're not speculating, and we think this word is a good target
       return true;
     }
 
