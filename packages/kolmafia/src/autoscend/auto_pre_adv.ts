@@ -229,6 +229,7 @@ import {
   peridotManuallyDesiredMonsters,
 } from "./iotms/mr2025";
 import {
+  auto_baseball_freefight_monster,
   auto_baseballDiamondMaximizerBonus,
   auto_codpieceFillEmptySlots,
   auto_codpieceReconcileGem,
@@ -955,9 +956,7 @@ function auto_pre_adventure(): boolean {
   if (planToPeridot && !wantBCZRefractedGaze) {
     //add a large bonus to Peridot of Peril if the zone has wanted monsters (or we want to set the zone without using an adventure) and we haven't visited there yet
     addBonusToMaximize($item`Peridot of Peril`, 1000);
-  }
-
-  if (wantBCZRefractedGaze) {
+  } else if (wantBCZRefractedGaze) {
     // Peridot doesn't work with refracted gaze, so keep Peridot of Peril off and bring BCZ instead.
     if (auto_havePeridot()) {
       maximizer.exclude($item`Peridot of Peril`);
@@ -972,6 +971,12 @@ function auto_pre_adventure(): boolean {
     if (auto_haveMonodent()) {
       addBonusToMaximize($item`Monodent of the Sea`, 700); // nice to have, not mandatory
     }
+  } else if (
+    auto_haveMonodent() &&
+    auto_baseball_freefight_monster() === $monster`some fish`
+  ) {
+    // Add the monodent for killing some fish, for free, if possible
+    addBonusToMaximize($item`Monodent of the Sea`, 80);
   }
 
   if (
