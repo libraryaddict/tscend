@@ -52,7 +52,6 @@ import {
   $coinmaster,
   $effect,
   $element,
-  $elements,
   $familiar,
   $item,
   $items,
@@ -1438,28 +1437,39 @@ function auto_playBaseball_game(assignments: BaseballAssignment[]): boolean {
 
   if (!handlingChoice()) return false;
 
-  const order: Element[] = $elements`hot, cold, spooky, stench, sleaze`;
+  // The order here matters
+  const finishers: [Element, string][] = [
+    [$element`hot`, "Yellow Ray"],
+    [$element`cold`, "Banish"],
+    [$element`spooky`, "Free Fights"],
+    [$element`Stench`, "Extra Zone Copies"],
+    [$element`sleaze`, "High ML"],
+  ];
 
-  const fillerPriority = new Map<string, number>([
+  const fillerPriority = new Map<string, [number, string]>([
     [
       "Garbageball",
-      (auto_is_valid($item`discarded hot dog`) && canEat()) ||
-      (auto_is_valid($item`most of a beer`) && canDrink())
-        ? 100
-        : -1,
+      [
+        (auto_is_valid($item`discarded hot dog`) && canEat()) ||
+        (auto_is_valid($item`most of a beer`) && canDrink())
+          ? 100
+          : -1,
+        "Food/Drink",
+      ],
     ],
-    ["Throw Some Smoke", 99], // +5 stats
-    ["Deep Freeze", 98], // +3 DR
-    ["Bacon-Wrapped Slider", 5], // Combat init
-    ["Snowball", 4], // +2-4 MP Regen
-    ["Ghost Pitch", 3], // 3-5 HP Regen
-    ["Slurveball", -2], // Sleaze res
-    ["Bring the Heat", -3], // +5 hot dmg
-    ["Skullball", -4], // Reduced att+def
-    ["Beanball", -5], // Passive stench damage
+    ["Throw Some Smoke", [99, "+5 All Stats"]], // +5 stats
+    ["Deep Freeze", [98, "3 DR"]], // +3 DR
+    ["Bacon-Wrapped Slider", [5, "+Init"]], // Combat init
+    ["Snowball", [4, "2-4 MP Regen"]], // +2-4 MP Regen
+    ["Ghost Pitch", [3, "3-5 HP Regen"]], // 3-5 HP Regen
+    ["Slurveball", [-2, "Sleaze Res"]], // Sleaze res
+    ["Bring the Heat", [-3, "Hot Dmg"]], // +5 hot dmg
+    ["Skullball", [-4, "Reduce Enemy Attack/Def"]], // Reduced att+def
+    ["Beanball", [-5, "Passive Stench Dmg"]], // Passive stench damage
   ]);
 
   const playedCounts = new Map<Element, number>();
+  const track: [Monster, string][] = [];
 
   function isSafeToPlay(element: Element, currentSlot: number): boolean {
     const finisherHere = assignments.find(
@@ -1519,43 +1529,52 @@ function auto_playBaseball_game(assignments: BaseballAssignment[]): boolean {
     let bestElement = Element.none;
     let bestChoice = 0;
     let highestPriority = -9999;
+    let gain: string = "???";
 
-    for (const element of order) {
+    for (const [element, eleGain] of finishers) {
       // If our math says it ruins a finisher, skip it
       if (!isSafeToPlay(element, i)) continue;
 
-      const choiceNum = order.indexOf(element) + 1;
+      const choiceNum = finishers.findIndex(([e]) => e === element) + 1;
 
       // Check our priorities, we default to -1000, which is still better than nothing
-      const priority = fillerPriority.get(options[choiceNum]) ?? -1000;
+      const priority: [number, string] = fillerPriority.get(
+        options[choiceNum],
+      ) ?? [-1000, eleGain];
 
       // Pick the safe choice with the highest score
-      if (priority > highestPriority) {
-        highestPriority = priority;
+      if (priority[0] > highestPriority) {
+        highestPriority = priority[0];
         bestElement = element;
         bestChoice = choiceNum;
+        gain = priority[1];
       }
     }
 
     if (bestChoice === 0) {
       abort(`Failed to find a valid pitch for baseball slot ${i}.`);
     }
+    // This was a finisher
+    if (highestPriority === -1000) {
+      track.push([team[i], gain]);
+    }
 
-    const chosenText = options[bestChoice];
     // Track the pitch
     playedCounts.set(bestElement, (playedCounts.get(bestElement) ?? 0) + 1);
 
-    if (chosenText && !fillerPriority.has(chosenText)) {
-      // TODO Remove before pushing
-      auto_log_info(`Don't recognize baseball pitch: ${chosenText}`);
-    }
-
     auto_log_info(
-      `Baseball round ${i + 1}, throwing ${bestElement} ball #${playedCounts.get(bestElement)} at ${team[i]}`,
+      `Baseball round ${i + 1}, throwing ${bestElement} ball #${playedCounts.get(bestElement)} at ${team[i]} for ${gain}`,
     );
     visitUrl(`choice.php?pwd&whichchoice=1598&option=${bestChoice}`);
   }
 
+  for (const [monster, gain] of track) {
+    handleTracker({
+      what: $item`Baseball Diamond`,
+      detail: `${monster} - ${gain}`,
+      property: "auto_otherstuff",
+    });
+  }
   visitUrl(`choice.php?pwd&whichchoice=1598&option=6`);
 
   if (auto_baseball_team().length > 0) {
@@ -1819,20 +1838,6 @@ export function auto_tryPlayBaseball(): boolean {
 
   if (!auto_playBaseball_game(assignments)) {
     return false;
-  }
-
-  for (const a of assignments) {
-    const effect =
-      a.element === $element`hot`
-        ? "Drop Items"
-        : a.element === $element`spooky`
-          ? "Free Fights"
-          : "Extra Zone Copies";
-    handleTracker({
-      what: $item`Baseball Diamond`,
-      detail: `${team[a.finisherSlot]} - ${effect}`,
-      property: "auto_otherstuff",
-    });
   }
 
   return true;
