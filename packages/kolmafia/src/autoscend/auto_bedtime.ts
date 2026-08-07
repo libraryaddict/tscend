@@ -195,7 +195,10 @@ import {
   auto_scepterRollover,
 } from "./iotms/mr2023";
 import { auto_setLeprecondo } from "./iotms/mr2025";
-import { auto_burnRemainingSpadeDigs } from "./iotms/mr2026";
+import {
+  auto_burnRemainingSpadeDigs,
+  auto_chewLiquidAsset,
+} from "./iotms/mr2026";
 import {
   ed_doResting,
   ed_terminateSession,
@@ -329,9 +332,13 @@ function bedtime_spleen(): boolean {
       }
     }
     if (!consumed_this_loop) {
+      consumed_this_loop = auto_chewLiquidAsset(true);
+    }
+    if (!consumed_this_loop) {
       done = true;
     }
   }
+
   return spleen_left() === 0;
 }
 

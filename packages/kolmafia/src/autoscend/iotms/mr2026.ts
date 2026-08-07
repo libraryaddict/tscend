@@ -80,7 +80,6 @@ import {
   AUTO_OBTAIN_NULL,
   AUTO_ORGAN_LIVER,
   autoChew,
-  can_consume,
   canChew,
   fullness_left,
   getMinimumAdventuresToMaintain,
@@ -2295,13 +2294,12 @@ export function auto_acquireInterestingItem(
 // in auto_exerciseLiquidity: incremented here on chew, decremented in
 // replaceMonsterCombatString() when the skill is actually cast. Remove once mafia adds
 // official tracking.
-export function auto_chewLiquidAsset(): boolean {
+export function auto_chewLiquidAsset(doingBedtime: boolean = false): boolean {
   if (
-    !can_consume() ||
     !auto_is_valid$2($skill`Exercise Liquidity`) ||
     !canChew($item`liquid asset`) ||
     spleen_left() < $item`liquid asset`.spleen ||
-    isActuallyEd()
+    (!doingBedtime && isActuallyEd())
   ) {
     return false;
   }
