@@ -53,6 +53,9 @@ import {
   $items,
   $skill,
   get,
+  getSongCount,
+  getSongLimit,
+  isSong,
   set,
 } from "libram";
 
@@ -179,7 +182,11 @@ function buffMaintain(
       equip_changed = true;
     }
   }
-  if (!speculative) {
+  if (
+    !speculative &&
+    // Don't try a song if we can't use a song
+    (haveEffect(buff) || !isSong(buff) || getSongCount() < getSongLimit())
+  ) {
     useSkill(casts, source);
   }
 
