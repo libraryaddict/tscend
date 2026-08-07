@@ -17,6 +17,7 @@ import {
   Familiar,
   floor,
   freeCrafts,
+  freeSmiths,
   fullnessLimit,
   getMonsters,
   getPower,
@@ -358,6 +359,14 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
         (doingBedtime || !doneOrgans.includes("traces")),
       surplus: leprecondoTracesSurplus(doingBedtime),
     },
+    plans: {
+      active:
+        auto_is_valid($item`crafting plans`) && !doneOrgans.includes("plans"),
+      surplus:
+        4 +
+        Math.min(freeCrafts(), freeSmiths()) -
+        (6 + itemAmount($item`crafting plans`)),
+    },
   };
 
   const extraFill = 3;
@@ -406,6 +415,13 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
         "cupcake treadmill": { exercise: 200 },
         "couch and flatscreen": { "dumb entertainment": 200 },
         "UltraDance karaoke machine": { "dumb entertainment": 200 },
+      },
+    },
+    {
+      // Prioritize crafting plans while we're short on free crafts/smiths
+      condition: organs.plans.active,
+      values: {
+        "internet-connected laptop": { "mental stimulation": 120 },
       },
     },
   ];
