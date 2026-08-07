@@ -15,7 +15,6 @@ import {
   experienceBonus,
   Familiar,
   familiarEquippedEquipment,
-  floristAvailable,
   fullnessLimit,
   getAutoAttack,
   getClanRumpus,
