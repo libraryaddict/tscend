@@ -975,6 +975,9 @@ export function zone_delay(loc: Location): generic_t {
     case $location`The Boss Bat's Lair`:
       value = 4 - loc.turnsSpent;
       break;
+    case $location`Mist-Shrouded Peak`:
+      value = 4 - loc.turnsSpent;
+      break;
     case $location`The Outskirts of Cobb's Knob`:
       if (internalQuestStatus("questL05Goblin") < 1) {
         value = 10 - loc.turnsSpent;
@@ -1984,120 +1987,4 @@ export function auto_swoopLocations(): Location[] {
     $location`The Hidden Temple`,
     $location`The Goatlet`,
   ];
-} /*
-	case $location[The Oasis]:
-	case $location[The Arid\, Extra-Dry Desert]:
-	case $location[The Shore\, Inc. Travel Agency]:
-	case $location[The Upper Chamber]:
-	case $location[The Middle Chamber]:
-	case $location[The Lower Chambers]:
-	case $location[The Daily Dungeon]:
-	case $location[The Skeleton Store]:
-	case $location[Madness Bakery]:
-	case $location[The Deep Machine Tunnels]:
-	case $location[Super Villain\'s Lair]:
-	case $location[The Haunted Kitchen]:
-	case $location[The Haunted Conservatory]:
-	case $location[The Haunted Gallery]:
-	case $location[The Haunted Bathroom]:
-	case $location[The Haunted Bedroom]:
-	case $location[The Haunted Ballroom]:
-	case $location[The Haunted Boiler Room]:
-	case $location[The Haunted Laundry Room]:
-	case $location[The Haunted Wine Cellar]:
-	case $location[Summoning Chamber]:
-	case $location[The Hidden Park]:
-	case $location[The Hidden Apartment Building]:
-	case $location[The Hidden Hospital]:
-	case $location[The Hidden Office Building]:
-	case $location[The Hidden Bowling Alley]:
-	case $location[An Overgrown Shrine (Northwest)]:
-	case $location[An Overgrown Shrine (Southwest)]:
-	case $location[An Overgrown Shrine (Northeast)]:
-	case $location[An Overgrown Shrine (Southeast)]:
-	case $location[A Massive Ziggurat]:
-	case $location[The Typical Tavern Cellar]:
-	case $location[The Spooky Forest]:
-	case $location[The Hidden Temple]:
-	case $location[The Black Forest]:
-	case $location[The Beanbat Chamber]:
-	case $location[The Bat Hole Entrance]:
-	case $location[The Batrat And Ratbat Burrow]:
-	case $location[Guano Junction]:
-	case $location[The Boss Bat\'s Lair]:
-	case $location[The VERY Unquiet Garves]:
-	case $location[Inside the Palindome]:
-	case $location[The Outskirts of Cobb\'s Knob]:
-	case $location[Cobb\'s Knob Harem]:
-	case $location[Cobb\'s Knob Treasury]:
-	case $location[Throne Room]:
-	case $location[The Dark Neck of the Woods]:
-	case $location[The Dark Heart of the Woods]:
-	case $location[The Dark Elbow of the Woods]:
-	case $location[Pandamonium Slums]:
-	case $location[The Laugh Floor]:
-	case $location[Infernal Rackets Backstage]:
-	case $location[The Defiled Nook]:
-	case $location[The Defiled Cranny]:
-	case $location[The Defiled Alcove]:
-	case $location[The Defiled Niche]:
-	case $location[Barrrney\'s Barrr]:
-	case $location[The F\'c\'le]:
-	case $location[The Poop Deck]:
-	case $location[Belowdecks]:
-	case $location[The Battlefield (Frat Uniform)]:
-	case $location[Wartime Hippy Camp (Frat Disguise)]:
-	case $location[Next to that Barrel with Something Burning in it]:
-	case $location[Near an Abandoned Refrigerator]:
-	case $location[Over Where the Old Tires Are]:
-	case $location[Out by that Rusted-Out Car]:
-	case $location[The Extreme Slope]:
-	case $location[Lair of the Ninja Snowmen]:
-	case $location[Sonofa Beach]:
-	case $location[The Themthar Hills]:
-	case $location[The Hatching Chamber]:
-	case $location[The Feeding Chamber]:
-	case $location[The Royal Guard Chamber]:
-	case $location[The Filthworm Queen\'s Chamber]:
-	case $location[Noob Cave]:
-	case $location[The Smut Orc Logging Camp]:
-	case $location[A-Boo Peak]:
-	case $location[Twin Peak]:
-	case $location[Oil Peak]:
-	case $location[Itznotyerzitz Mine]:
-	case $location[The Goatlet]:
-	case $location[Mist-Shrouded Peak]:
-	case $location[The Icy Peak]:
-	case $location[The Penultimate Fantasy Airship]:
-	case $location[The Castle in the Clouds in the Sky (Basement)]:
-	case $location[The Castle in the Clouds in the Sky (Ground Floor)]:
-	case $location[The Castle in the Clouds in the Sky (Top Floor)]:
-	case $location[The Hole in the Sky]:
-	case $location[Fastest Adventurer Contest]:
-	case $location[Smartest Adventurer Contest]:
-	case $location[Hottest Adventurer Contest]:
-	case $location[Barf Mountain]:
-	case $location[The Bubblin\' Caldera]:
-	case $location[The X-32-F Combat Training Snowman]:
-	case $location[Through the Spacegate]:
-	case $location[A Maze of Sewer Tunnels]:
-	case $location[The Ice Hotel]:
-	case $location[Whitey\'s Grove]:
-	case $location[Gingerbread Upscale Retail District]:
-	case $location[The Haiku Dungeon]:
-	case $location[The Limerick Dungeon]:
-	case $location[The Skeleton Store]:
-	case $location[The Overgrown Lot]:
-	case $location[The Secret Government Laboratory]:
-	case $location[The Velvet / Gold Mine]:
-	case $location[The Copperhead Club]:
-	case $location[A Mob Of Zeppelin Protesters]:
-	case $location[The Red Zeppelin]:
-	case $location[The Bandit Crossroads]:
-	case $location[The Towering Mountains]:
-	case $location[The Mystic Wood]:
-	case $location[The Putrid Swamp]:
-	case $location[The Cursed Village]:
-	case $location[The Sprawling Cemetary]:
-	default:
-*/
+}
