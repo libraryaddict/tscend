@@ -131,15 +131,15 @@ import {
   zoneRank,
 } from "../../auto_util";
 import { auto_canUse, combat_status_add } from "../../combat/auto_combat_util";
-import { isActuallyEd } from "../../paths/actually_ed_the_undying";
-import { in_amw } from "../../paths/adventurer_meats_world";
-import { in_avantGuard } from "../../paths/avant_guard";
-import { in_darkGyffte } from "../../paths/dark_gyffte";
-import { in_hattrick } from "../../paths/hattrick";
-import { in_kolhs } from "../../paths/kolhs";
-import { in_small } from "../../paths/small";
-import { in_zombieSlayer } from "../../paths/zombie_slayer";
-import { in_zootomist } from "../../paths/zootomist";
+import { in_zombieSlayer } from "../../paths/2012/zombie_slayer";
+import { in_kolhs } from "../../paths/2013/kolhs";
+import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
+import { in_small } from "../../paths/2023/small";
+import { in_avantGuard } from "../../paths/2024/avant_guard";
+import { in_hattrick } from "../../paths/2025/hattrick";
+import { in_zootomist } from "../../paths/2025/zootomist";
+import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 import { L11_needWetStew } from "../../quests/level_11";
 import { needStarKey, towerKeyCount } from "../../quests/level_13";

@@ -77,7 +77,10 @@ import {
 import { auto_bowlingBallCombatString } from "../iotms/2020/mr2022";
 import { dartELRcd, dartSkill } from "../iotms/2020/mr2024";
 import { elementalPlanes_access } from "../iotms/other/elementalPlanes";
-import { ed_needShop, isActuallyEd } from "../paths/actually_ed_the_undying";
+import {
+  ed_needShop,
+  isActuallyEd,
+} from "../paths/2015/actually_ed_the_undying";
 import { cyrptEvilBonus } from "../quests/level_07";
 import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
 import {

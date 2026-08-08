@@ -51,11 +51,11 @@ import {
 } from "../iotms/2020/mr2023";
 import { auto_talkToSomeFish, auto_tracesTarget } from "../iotms/2020/mr2025";
 import { auto_baseballShouldReplaceWithFish } from "../iotms/2020/mr2026";
-import { in_amw } from "../paths/adventurer_meats_world";
-import { ag_is_bodyguard, in_avantGuard } from "../paths/avant_guard";
+import { in_nuclear } from "../paths/2016/nuclear_autumn";
+import { in_plumber } from "../paths/2020/path_of_the_plumber";
+import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
+import { in_amw } from "../paths/2026/adventurer_meats_world";
 import { inAftercore } from "../paths/casual";
-import { in_nuclear } from "../paths/nuclear_autumn";
-import { in_plumber } from "../paths/path_of_the_plumber";
 import { amw_wanttoPP } from "./auto_combat_adventurer_meats_world";
 import { auto_combatBHYStage1 } from "./auto_combat_bees_hate_you";
 import { auto_combatDisguisesStage1 } from "./auto_combat_disguises_delimit";

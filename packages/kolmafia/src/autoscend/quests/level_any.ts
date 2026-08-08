@@ -134,19 +134,19 @@ import {
   auto_sword_of_swords_tracking,
   auto_swordIsWillingToSwitchTargets,
 } from "../iotms/2020/mr2026";
+import { in_bhy } from "../paths/2011/bees_hate_you";
+import { picky_startAscension } from "../paths/2014/picky";
 import {
   ed_DelayNC_DailyDungeon,
   edUnderworldChoiceHandler,
-} from "../paths/actually_ed_the_undying";
-import { in_bhy } from "../paths/bees_hate_you";
-import { bat_reallyPickSkills } from "../paths/dark_gyffte";
-import { gnoob_startAscension } from "../paths/gelatinous_noob";
-import { in_koe } from "../paths/kingdom_of_exploathing";
-import { in_lowkeysummer } from "../paths/low_key_summer";
-import { in_nuclear } from "../paths/nuclear_autumn";
-import { in_plumber } from "../paths/path_of_the_plumber";
-import { picky_startAscension } from "../paths/picky";
-import { in_quantumTerrarium } from "../paths/quantum_terrarium";
+} from "../paths/2015/actually_ed_the_undying";
+import { in_nuclear } from "../paths/2016/nuclear_autumn";
+import { gnoob_startAscension } from "../paths/2017/gelatinous_noob";
+import { bat_reallyPickSkills } from "../paths/2019/dark_gyffte";
+import { in_koe } from "../paths/2019/kingdom_of_exploathing";
+import { in_lowkeysummer } from "../paths/2020/low_key_summer";
+import { in_plumber } from "../paths/2020/path_of_the_plumber";
+import { in_quantumTerrarium } from "../paths/2021/quantum_terrarium";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { L6_friarsGetParts } from "./level_06";
 import { L7_crypt, L7_swordWantsCryptMonster } from "./level_07";

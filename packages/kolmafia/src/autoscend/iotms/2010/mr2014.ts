@@ -72,8 +72,8 @@ import {
   registerQuestTask,
   runQuestTask,
 } from "../../engine/engine";
-import { in_heavyrains } from "../../paths/heavy_rains";
-import { in_robot } from "../../paths/you_robot";
+import { in_heavyrains } from "../../paths/2014/heavy_rains";
+import { in_robot } from "../../paths/2021/you_robot";
 import { bridgeGoal } from "../../quests/level_09";
 import { ns_crowd3 } from "../../quests/level_13";
 import { elementalPlanes_access } from "../other/elementalPlanes";

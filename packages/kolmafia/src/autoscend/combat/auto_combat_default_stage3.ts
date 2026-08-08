@@ -77,11 +77,11 @@ import {
   auto_canNorthernExplosionFE,
   auto_wantToBCZ,
 } from "../iotms/2020/mr2025";
-import { in_avantGuard } from "../paths/avant_guard";
+import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
+import { in_nuclear } from "../paths/2016/nuclear_autumn";
+import { in_robot } from "../paths/2021/you_robot";
+import { in_avantGuard } from "../paths/2024/avant_guard";
 import { inAftercore } from "../paths/casual";
-import { in_nuclear } from "../paths/nuclear_autumn";
-import { in_wotsf } from "../paths/way_of_the_surprising_fist";
-import { in_robot } from "../paths/you_robot";
 import {
   bridgeGoal,
   fastenerCount,

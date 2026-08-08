@@ -149,18 +149,18 @@ import {
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
 } from "../iotms/2020/mr2026";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_avantGuard } from "../paths/avant_guard";
-import { in_bhy } from "../paths/bees_hate_you";
-import { bat_formMist, in_darkGyffte } from "../paths/dark_gyffte";
-import { in_glover } from "../paths/g_lover";
-import { in_gnoob } from "../paths/gelatinous_noob";
-import { in_koe } from "../paths/kingdom_of_exploathing";
-import { kolhs_mandatorySchool } from "../paths/kolhs";
-import { in_plumber } from "../paths/path_of_the_plumber";
-import { in_quantumTerrarium } from "../paths/quantum_terrarium";
-import { is_professor, is_werewolf } from "../paths/wereprofessor";
-import { robot_delay } from "../paths/you_robot";
+import { in_bhy } from "../paths/2011/bees_hate_you";
+import { kolhs_mandatorySchool } from "../paths/2013/kolhs";
+import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { in_gnoob } from "../paths/2017/gelatinous_noob";
+import { in_glover } from "../paths/2018/g_lover";
+import { bat_formMist, in_darkGyffte } from "../paths/2019/dark_gyffte";
+import { in_koe } from "../paths/2019/kingdom_of_exploathing";
+import { in_plumber } from "../paths/2020/path_of_the_plumber";
+import { in_quantumTerrarium } from "../paths/2021/quantum_terrarium";
+import { robot_delay } from "../paths/2021/you_robot";
+import { in_avantGuard } from "../paths/2024/avant_guard";
+import { is_professor, is_werewolf } from "../paths/2024/wereprofessor";
 import { Maximizer, maximizer } from "../utils/maximizer";
 import { shenShouldDelayZone } from "./level_11";
 

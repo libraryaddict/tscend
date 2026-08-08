@@ -102,12 +102,12 @@ import {
   auto_haveHeartstone,
 } from "./iotms/2020/mr2026";
 import { ARBSupplyDrop, auto_canARBSupplyDrop } from "./iotms/other/ttt";
-import { in_bhy } from "./paths/bees_hate_you";
+import { in_bhy } from "./paths/2011/bees_hate_you";
+import { in_wotsf } from "./paths/2011/way_of_the_surprising_fist";
+import { in_heavyrains } from "./paths/2014/heavy_rains";
+import { glover_usable$1 } from "./paths/2018/g_lover";
+import { in_tcrs } from "./paths/2019/two_crazy_random_summer";
 import { inAftercore } from "./paths/casual";
-import { glover_usable$1 } from "./paths/g_lover";
-import { in_heavyrains } from "./paths/heavy_rains";
-import { in_tcrs } from "./paths/two_crazy_random_summer";
-import { in_wotsf } from "./paths/way_of_the_surprising_fist";
 
 //Defined in autoscend/auto_buff.ash
 function buffMaintain(

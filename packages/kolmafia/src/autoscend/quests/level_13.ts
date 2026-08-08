@@ -184,38 +184,44 @@ import {
   auto_haveBCZ,
   beretBusk,
 } from "../iotms/2020/mr2025";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_amw } from "../paths/adventurer_meats_world";
-import { is_boris } from "../paths/avatar_of_boris";
-import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
-import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
-import { is_pete } from "../paths/avatar_of_sneaky_pete";
-import { in_bhy, L13_bhy_towerFinal } from "../paths/bees_hate_you";
-import { in_bugbear } from "../paths/bugbear_invasion";
-import { inAftercore } from "../paths/casual";
-import { bat_reallyPickSkills$1, in_darkGyffte } from "../paths/dark_gyffte";
-import { in_disguises } from "../paths/disguises_delimit";
-import { in_heavyrains, L13_heavyrains_towerFinal } from "../paths/heavy_rains";
+import { in_bhy, L13_bhy_towerFinal } from "../paths/2011/bees_hate_you";
+import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
+import { is_boris } from "../paths/2012/avatar_of_boris";
+import { in_bugbear } from "../paths/2012/bugbear_invasion";
+import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
+import { is_jarlsberg } from "../paths/2013/avatar_of_jarlsberg";
+import { in_kolhs } from "../paths/2013/kolhs";
+import { is_pete } from "../paths/2014/avatar_of_sneaky_pete";
+import {
+  in_heavyrains,
+  L13_heavyrains_towerFinal,
+} from "../paths/2014/heavy_rains";
+import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { in_theSource } from "../paths/2016/the_source";
+import { lar_repeat } from "../paths/2017/live_ascend_repeat";
+import { in_disguises } from "../paths/2018/disguises_delimit";
+import { in_pokefam } from "../paths/2018/pocket_familiars";
+import {
+  bat_reallyPickSkills$1,
+  in_darkGyffte,
+} from "../paths/2019/dark_gyffte";
 import {
   in_koe,
   L13_koe_towerNSNagamar,
-} from "../paths/kingdom_of_exploathing";
-import { in_kolhs } from "../paths/kolhs";
-import { in_lol } from "../paths/legacy_of_loathing";
-import { lar_repeat } from "../paths/live_ascend_repeat";
+} from "../paths/2019/kingdom_of_exploathing";
 import {
   in_lowkeysummer,
   L13_sorceressDoorLowKey,
-} from "../paths/low_key_summer";
-import { in_plumber } from "../paths/path_of_the_plumber";
-import { in_pokefam } from "../paths/pocket_familiars";
-import { in_small } from "../paths/small";
-import { in_theSource } from "../paths/the_source";
-import { in_wotsf } from "../paths/way_of_the_surprising_fist";
-import { in_wereprof } from "../paths/wereprofessor";
-import { in_robot } from "../paths/you_robot";
-import { in_zombieSlayer } from "../paths/zombie_slayer";
-import { in_zootomist } from "../paths/zootomist";
+} from "../paths/2020/low_key_summer";
+import { in_plumber } from "../paths/2020/path_of_the_plumber";
+import { in_robot } from "../paths/2021/you_robot";
+import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
+import { in_lol } from "../paths/2023/legacy_of_loathing";
+import { in_small } from "../paths/2023/small";
+import { in_wereprof } from "../paths/2024/wereprofessor";
+import { in_zootomist } from "../paths/2025/zootomist";
+import { in_amw } from "../paths/2026/adventurer_meats_world";
+import { inAftercore } from "../paths/casual";
 import { Maximizer, maximizer } from "../utils/maximizer";
 import { shenShouldDelayZone } from "./level_11";
 import { auto_warSide, equipWarOutfit } from "./level_12";

@@ -10,7 +10,7 @@ import {
 import { $element, $monster, $monsters, $skill, $slot, $stat } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
-import { in_robot } from "../paths/you_robot";
+import { in_robot } from "../paths/2021/you_robot";
 import {
   auto_canUse,
   auto_useSkill,

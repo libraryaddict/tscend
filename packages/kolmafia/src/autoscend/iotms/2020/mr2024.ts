@@ -87,15 +87,15 @@ import {
   TrackerKey,
 } from "../../auto_util";
 import { auto_canUse } from "../../combat/auto_combat_util";
-import { in_amw } from "../../paths/adventurer_meats_world";
-import { in_bhy } from "../../paths/bees_hate_you";
-import { in_glover } from "../../paths/g_lover";
-import { in_hattrick } from "../../paths/hattrick";
-import { in_koe } from "../../paths/kingdom_of_exploathing";
-import { in_lol } from "../../paths/legacy_of_loathing";
-import { in_lta } from "../../paths/license_to_adventure";
-import { in_plumber } from "../../paths/path_of_the_plumber";
-import { in_zootomist } from "../../paths/zootomist";
+import { in_bhy } from "../../paths/2011/bees_hate_you";
+import { in_lta } from "../../paths/2017/license_to_adventure";
+import { in_glover } from "../../paths/2018/g_lover";
+import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
+import { in_plumber } from "../../paths/2020/path_of_the_plumber";
+import { in_lol } from "../../paths/2023/legacy_of_loathing";
+import { in_hattrick } from "../../paths/2025/hattrick";
+import { in_zootomist } from "../../paths/2025/zootomist";
+import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 import {
   auto_get_clan_lounge,

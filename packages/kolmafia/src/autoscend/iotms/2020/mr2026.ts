@@ -126,14 +126,14 @@ import { zone_delay } from "../../auto_zone";
 import { ConsumeAction } from "../../autoscend_record";
 import { auto_canUse, isSniffed } from "../../combat/auto_combat_util";
 import { getIncompleteQuestTasks, taskLocations } from "../../engine/engine";
-import { isActuallyEd } from "../../paths/actually_ed_the_undying";
-import { in_avantGuard } from "../../paths/avant_guard";
-import { in_koe } from "../../paths/kingdom_of_exploathing";
-import { in_plumber } from "../../paths/path_of_the_plumber";
-import { in_quantumTerrarium } from "../../paths/quantum_terrarium";
-import { in_small } from "../../paths/small";
-import { in_tcrs } from "../../paths/two_crazy_random_summer";
-import { is_werewolf } from "../../paths/wereprofessor";
+import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
+import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
+import { in_plumber } from "../../paths/2020/path_of_the_plumber";
+import { in_quantumTerrarium } from "../../paths/2021/quantum_terrarium";
+import { in_small } from "../../paths/2023/small";
+import { in_avantGuard } from "../../paths/2024/avant_guard";
+import { is_werewolf } from "../../paths/2024/wereprofessor";
 import {
   bridgeGoal,
   fastenerCount,

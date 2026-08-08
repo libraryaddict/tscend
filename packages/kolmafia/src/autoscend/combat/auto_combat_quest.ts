@@ -22,9 +22,9 @@ import {
   combatItemDamageMultiplier,
   MLDamageToMonsterMultiplier,
 } from "../auto_util";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_fotd } from "../paths/fall_of_the_dinosaurs";
-import { glover_usable } from "../paths/g_lover";
+import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { glover_usable } from "../paths/2018/g_lover";
+import { in_fotd } from "../paths/2022/fall_of_the_dinosaurs";
 import { auto_warSide } from "../quests/level_12";
 import { auto_combatHandler } from "./auto_combat";
 import { auto_edCombatHandler } from "./auto_combat_ed";

@@ -126,22 +126,25 @@ import {
   hotTubSoaksRemaining,
   isHotTubAvailable,
 } from "./iotms/other/clan";
-import { edAcquireHP, isActuallyEd } from "./paths/actually_ed_the_undying";
-import { in_amw } from "./paths/adventurer_meats_world";
-import { borisAcquireHP, is_boris } from "./paths/avatar_of_boris";
-import {
-  auto_cheeseWizardAcquireHP,
-  auto_jazzAgentAcquireHP,
-  auto_pigSkinnerAcquireHP,
-} from "./paths/avatar_of_shadows_over_loathing";
-import { bat_reallyPickSkills, in_darkGyffte } from "./paths/dark_gyffte";
-import { in_pokefam } from "./paths/pocket_familiars";
-import { is_professor } from "./paths/wereprofessor";
+import { borisAcquireHP, is_boris } from "./paths/2012/avatar_of_boris";
 import {
   in_zombieSlayer,
   zombieSlayer_acquireHP,
   zombieSlayer_acquireMP,
-} from "./paths/zombie_slayer";
+} from "./paths/2012/zombie_slayer";
+import {
+  edAcquireHP,
+  isActuallyEd,
+} from "./paths/2015/actually_ed_the_undying";
+import { in_pokefam } from "./paths/2018/pocket_familiars";
+import { bat_reallyPickSkills, in_darkGyffte } from "./paths/2019/dark_gyffte";
+import {
+  auto_cheeseWizardAcquireHP,
+  auto_jazzAgentAcquireHP,
+  auto_pigSkinnerAcquireHP,
+} from "./paths/2023/avatar_of_shadows_over_loathing";
+import { is_professor } from "./paths/2024/wereprofessor";
+import { in_amw } from "./paths/2026/adventurer_meats_world";
 import { fileAsMap } from "./utils/kolmafiaUtils";
 
 /**

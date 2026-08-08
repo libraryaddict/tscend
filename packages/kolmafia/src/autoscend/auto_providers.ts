@@ -148,21 +148,21 @@ import {
 import { auto_getDrinkCupOfThirteenForEffect } from "./iotms/2020/mr2026";
 import { zataraAvailable, zataraSeaside } from "./iotms/other/clan";
 import { ARBSupplyDrop, auto_canARBSupplyDrop } from "./iotms/other/ttt";
-import { isActuallyEd } from "./paths/actually_ed_the_undying";
-import { amw_canAfford, in_amw } from "./paths/adventurer_meats_world";
-import { in_avantGuard } from "./paths/avant_guard";
+import { in_heavyrains } from "./paths/2014/heavy_rains";
+import { isActuallyEd } from "./paths/2015/actually_ed_the_undying";
 import {
   bat_formBats,
   bat_formMist,
   bat_formWolf,
   bat_wantHowl,
-} from "./paths/dark_gyffte";
-import { in_heavyrains } from "./paths/heavy_rains";
-import { in_plumber } from "./paths/path_of_the_plumber";
-import { in_small } from "./paths/small";
-import { in_tcrs } from "./paths/two_crazy_random_summer";
-import { in_wereprof, is_professor } from "./paths/wereprofessor";
-import { in_zootomist } from "./paths/zootomist";
+} from "./paths/2019/dark_gyffte";
+import { in_tcrs } from "./paths/2019/two_crazy_random_summer";
+import { in_plumber } from "./paths/2020/path_of_the_plumber";
+import { in_small } from "./paths/2023/small";
+import { in_avantGuard } from "./paths/2024/avant_guard";
+import { in_wereprof, is_professor } from "./paths/2024/wereprofessor";
+import { in_zootomist } from "./paths/2025/zootomist";
+import { amw_canAfford, in_amw } from "./paths/2026/adventurer_meats_world";
 import { maximizer } from "./utils/maximizer";
 
 //Defined in autoscend/auto_providers.ash

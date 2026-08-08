@@ -52,16 +52,16 @@ import {
   runTaskChain,
 } from "../engine/engine";
 import { auto_copierShouldDelayZone } from "../iotms/2020/mr2026";
-import { in_amw } from "../paths/adventurer_meats_world";
-import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
-import { bat_formBats } from "../paths/dark_gyffte";
-import { in_gnoob } from "../paths/gelatinous_noob";
-import { in_heavyrains } from "../paths/heavy_rains";
-import { in_lol } from "../paths/legacy_of_loathing";
-import { in_lowkeysummer } from "../paths/low_key_summer";
-import { in_plumber } from "../paths/path_of_the_plumber";
-import { robot_delay } from "../paths/you_robot";
-import { in_zootomist } from "../paths/zootomist";
+import { in_heavyrains } from "../paths/2014/heavy_rains";
+import { in_gnoob } from "../paths/2017/gelatinous_noob";
+import { bat_formBats } from "../paths/2019/dark_gyffte";
+import { in_lowkeysummer } from "../paths/2020/low_key_summer";
+import { in_plumber } from "../paths/2020/path_of_the_plumber";
+import { robot_delay } from "../paths/2021/you_robot";
+import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
+import { in_lol } from "../paths/2023/legacy_of_loathing";
+import { in_zootomist } from "../paths/2025/zootomist";
+import { in_amw } from "../paths/2026/adventurer_meats_world";
 
 // L5 quest progress notes:
 // unstarted

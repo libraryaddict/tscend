@@ -41,21 +41,21 @@ import { juneCleaverChoiceHandler } from "./iotms/2020/mr2022";
 import { dartChoiceHandler } from "./iotms/2020/mr2024";
 import { mobiusChoiceHandler, peridotChoiceHandler } from "./iotms/2020/mr2025";
 import { legendaryNoodlesChoiceHandler } from "./iotms/2020/mr2026";
+import { in_bhy } from "./paths/2011/bees_hate_you";
+import { is_boris } from "./paths/2012/avatar_of_boris";
+import { in_bugbear } from "./paths/2012/bugbear_invasion";
+import { kolhsChoiceHandler } from "./paths/2013/kolhs";
 import {
   edUnderworldChoiceHandler,
   isActuallyEd,
-} from "./paths/actually_ed_the_undying";
-import { is_boris } from "./paths/avatar_of_boris";
-import { in_bhy } from "./paths/bees_hate_you";
-import { in_bugbear } from "./paths/bugbear_invasion";
-import { bat_reallyPickSkills } from "./paths/dark_gyffte";
-import { in_glover } from "./paths/g_lover";
-import { koe_RationingOutDestruction } from "./paths/kingdom_of_exploathing";
-import { kolhsChoiceHandler } from "./paths/kolhs";
-import { in_lar } from "./paths/live_ascend_repeat";
-import { in_pokefam } from "./paths/pocket_familiars";
-import { in_quantumTerrarium } from "./paths/quantum_terrarium";
-import { robot_choice_adv } from "./paths/you_robot";
+} from "./paths/2015/actually_ed_the_undying";
+import { in_lar } from "./paths/2017/live_ascend_repeat";
+import { in_glover } from "./paths/2018/g_lover";
+import { in_pokefam } from "./paths/2018/pocket_familiars";
+import { bat_reallyPickSkills } from "./paths/2019/dark_gyffte";
+import { koe_RationingOutDestruction } from "./paths/2019/kingdom_of_exploathing";
+import { in_quantumTerrarium } from "./paths/2021/quantum_terrarium";
+import { robot_choice_adv } from "./paths/2021/you_robot";
 import { spookyForestChoiceHandler } from "./quests/level_02";
 import { cyrptChoiceHandler } from "./quests/level_07";
 import {

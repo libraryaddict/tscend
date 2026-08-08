@@ -7,7 +7,7 @@ import {
   handleTracker,
   internalQuestStatus,
 } from "../../auto_util";
-import { in_zootomist } from "../../paths/zootomist";
+import { in_zootomist } from "../../paths/2025/zootomist";
 
 //Defined in autoscend/iotms/ttt.ash
 

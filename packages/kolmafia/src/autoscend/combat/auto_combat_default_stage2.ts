@@ -79,10 +79,10 @@ import {
   auto_wantToStartTrackingSwordMonster,
   wantToClubEmBackInTime,
 } from "../iotms/2020/mr2026";
-import { ag_is_bodyguard, in_avantGuard } from "../paths/avant_guard";
-import { in_bugbear } from "../paths/bugbear_invasion";
+import { in_bugbear } from "../paths/2012/bugbear_invasion";
+import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
+import { getZooKickInstaKill } from "../paths/2025/zootomist";
 import { inAftercore } from "../paths/casual";
-import { getZooKickInstaKill } from "../paths/zootomist";
 import { bridgeGoal } from "../quests/level_09";
 import { towerKeyCount } from "../quests/level_13";
 import { auto_combatDarkGyffteStage2 } from "./auto_combat_dark_gyffte";

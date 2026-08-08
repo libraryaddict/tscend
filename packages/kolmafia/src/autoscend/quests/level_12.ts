@@ -179,43 +179,47 @@ import {
   auto_spadeDigsRemaining,
 } from "../iotms/2020/mr2026";
 import { zataraAvailable } from "../iotms/other/clan";
+import { in_bhy } from "../paths/2011/bees_hate_you";
+import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
+import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
+import { in_heavyrains } from "../paths/2014/heavy_rains";
 import {
   ed_DelayNC$1,
   edAcquireHP,
   isActuallyEd,
-} from "../paths/actually_ed_the_undying";
-import { in_amw } from "../paths/adventurer_meats_world";
-import { in_avantGuard } from "../paths/avant_guard";
-import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
-import { in_bhy } from "../paths/bees_hate_you";
-import { inAftercore } from "../paths/casual";
+} from "../paths/2015/actually_ed_the_undying";
+import { in_gnoob } from "../paths/2017/gelatinous_noob";
+import { in_lar } from "../paths/2017/live_ascend_repeat";
+import { in_disguises } from "../paths/2018/disguises_delimit";
+import { in_glover } from "../paths/2018/g_lover";
+import {
+  in_pokefam,
+  L12_pokefam_clearBattlefield,
+} from "../paths/2018/pocket_familiars";
 import {
   bat_formMist,
   bat_wantHowl,
   in_darkGyffte,
-} from "../paths/dark_gyffte";
-import { in_disguises } from "../paths/disguises_delimit";
-import { in_glover } from "../paths/g_lover";
-import { in_gnoob } from "../paths/gelatinous_noob";
-import { in_heavyrains } from "../paths/heavy_rains";
-import { in_iluh } from "../paths/i_love_u_hate";
+} from "../paths/2019/dark_gyffte";
 import {
   in_koe,
   L12_koe_clearBattlefield,
   L12_koe_finalizeWar,
-} from "../paths/kingdom_of_exploathing";
-import { in_lol } from "../paths/legacy_of_loathing";
-import { in_lar } from "../paths/live_ascend_repeat";
+} from "../paths/2019/kingdom_of_exploathing";
+import { in_tcrs } from "../paths/2019/two_crazy_random_summer";
+import { wildfire_warboss_check } from "../paths/2021/wildfire";
+import { robot_delay } from "../paths/2021/you_robot";
+import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
+import { in_lol } from "../paths/2023/legacy_of_loathing";
+import { in_avantGuard } from "../paths/2024/avant_guard";
+import { in_iluh } from "../paths/2024/i_love_u_hate";
 import {
-  in_pokefam,
-  L12_pokefam_clearBattlefield,
-} from "../paths/pocket_familiars";
-import { in_tcrs } from "../paths/two_crazy_random_summer";
-import { in_wotsf } from "../paths/way_of_the_surprising_fist";
-import { in_wereprof, is_professor, is_werewolf } from "../paths/wereprofessor";
-import { wildfire_warboss_check } from "../paths/wildfire";
-import { robot_delay } from "../paths/you_robot";
-import { in_zombieSlayer } from "../paths/zombie_slayer";
+  in_wereprof,
+  is_professor,
+  is_werewolf,
+} from "../paths/2024/wereprofessor";
+import { in_amw } from "../paths/2026/adventurer_meats_world";
+import { inAftercore } from "../paths/casual";
 import { maximizer } from "../utils/maximizer";
 import { LX_islandAccess } from "./level_any";
 

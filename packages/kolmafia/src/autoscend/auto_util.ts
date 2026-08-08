@@ -357,54 +357,70 @@ import {
   auto_canARBSupplyDrop,
   auto_haveARB,
 } from "./iotms/other/ttt";
-import { handleServant, isActuallyEd } from "./paths/actually_ed_the_undying";
-import { amw_wantMeat, in_amw } from "./paths/adventurer_meats_world";
-import { in_avantGuard } from "./paths/avant_guard";
-import { borisAdjustML, is_boris } from "./paths/avatar_of_boris";
-import { is_jarlsberg } from "./paths/avatar_of_jarlsberg";
-import { in_aosol } from "./paths/avatar_of_shadows_over_loathing";
-import { is_pete, pete_peelOutRemaining } from "./paths/avatar_of_sneaky_pete";
-import { bhy_is_item_valid, bhy_usable, in_bhy } from "./paths/bees_hate_you";
-import { inAftercore } from "./paths/casual";
-import { in_class_act } from "./paths/class_act";
-import { in_class_act_two } from "./paths/class_act_two";
-import { bat_skillValid, in_darkGyffte } from "./paths/dark_gyffte";
-import { glover_usable, in_glover } from "./paths/g_lover";
-import { in_heavyrains, rainManSummon } from "./paths/heavy_rains";
+import {
+  bhy_is_item_valid,
+  bhy_usable,
+  in_bhy,
+} from "./paths/2011/bees_hate_you";
+import { in_wotsf } from "./paths/2011/way_of_the_surprising_fist";
+import { borisAdjustML, is_boris } from "./paths/2012/avatar_of_boris";
+import { in_class_act } from "./paths/2012/class_act";
+import {
+  in_zombieSlayer,
+  zombieSlayer_usable,
+} from "./paths/2012/zombie_slayer";
+import { is_jarlsberg } from "./paths/2013/avatar_of_jarlsberg";
+import { in_class_act_two } from "./paths/2013/class_act_two";
+import { in_kolhs } from "./paths/2013/kolhs";
+import {
+  is_pete,
+  pete_peelOutRemaining,
+} from "./paths/2014/avatar_of_sneaky_pete";
+import { in_heavyrains, rainManSummon } from "./paths/2014/heavy_rains";
+import { in_picky } from "./paths/2014/picky";
+import {
+  handleServant,
+  isActuallyEd,
+} from "./paths/2015/actually_ed_the_undying";
+import { in_ocrs } from "./paths/2015/one_crazy_random_summer";
+import { in_nuclear } from "./paths/2016/nuclear_autumn";
+import { in_lar } from "./paths/2017/live_ascend_repeat";
+import { glover_usable, in_glover } from "./paths/2018/g_lover";
+import { in_pokefam } from "./paths/2018/pocket_familiars";
+import { bat_skillValid, in_darkGyffte } from "./paths/2019/dark_gyffte";
+import { in_koe } from "./paths/2019/kingdom_of_exploathing";
+import { tcrs_maximize_with_items } from "./paths/2019/two_crazy_random_summer";
+import {
+  in_plumber,
+  plumber_skillValid,
+} from "./paths/2020/path_of_the_plumber";
+import { in_wildfire } from "./paths/2021/wildfire";
+import { in_robot, robot_cpu } from "./paths/2021/you_robot";
+import { in_journeyman } from "./paths/2022/journeyman";
+import { in_aosol } from "./paths/2023/avatar_of_shadows_over_loathing";
+import { auto_ItemToReplica, in_lol } from "./paths/2023/legacy_of_loathing";
+import { in_small } from "./paths/2023/small";
+import { in_avantGuard } from "./paths/2024/avant_guard";
 import {
   iluh_famAllowed,
   iluh_foodConsumable,
   in_iluh,
-} from "./paths/i_love_u_hate";
-import { in_journeyman } from "./paths/journeyman";
-import { in_koe } from "./paths/kingdom_of_exploathing";
-import { in_kolhs } from "./paths/kolhs";
-import { auto_ItemToReplica, in_lol } from "./paths/legacy_of_loathing";
-import { in_lar } from "./paths/live_ascend_repeat";
-import { in_nuclear } from "./paths/nuclear_autumn";
-import { in_ocrs } from "./paths/one_crazy_random_summer";
-import { in_plumber, plumber_skillValid } from "./paths/path_of_the_plumber";
-import { in_picky } from "./paths/picky";
-import { in_pokefam } from "./paths/pocket_familiars";
-import { in_small } from "./paths/small";
-import { tcrs_maximize_with_items } from "./paths/two_crazy_random_summer";
-import { in_wotsf } from "./paths/way_of_the_surprising_fist";
+} from "./paths/2024/i_love_u_hate";
 import {
   in_wereprof,
   is_professor,
   is_werewolf,
   wereprof_usable,
-} from "./paths/wereprofessor";
-import { in_wildfire } from "./paths/wildfire";
-import { in_robot, robot_cpu } from "./paths/you_robot";
-import { in_zombieSlayer, zombieSlayer_usable } from "./paths/zombie_slayer";
+} from "./paths/2024/wereprofessor";
 import {
   getZooKickBanish,
   getZooKickInstaKill,
   getZooKickSniff,
   getZooKickYR,
   in_zootomist,
-} from "./paths/zootomist";
+} from "./paths/2025/zootomist";
+import { amw_wantMeat, in_amw } from "./paths/2026/adventurer_meats_world";
+import { inAftercore } from "./paths/casual";
 import { bridgeGoal, fastenerCount, lumberCount } from "./quests/level_09";
 import { auto_warSide } from "./quests/level_12";
 import { needStarKey } from "./quests/level_13";

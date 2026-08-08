@@ -99,14 +99,14 @@ import {
   auto_useSkill,
   useItem,
 } from "../../combat/auto_combat_util";
-import { is_jarlsberg } from "../../paths/avatar_of_jarlsberg";
-import { in_darkGyffte } from "../../paths/dark_gyffte";
-import { in_koe } from "../../paths/kingdom_of_exploathing";
-import { in_plumber } from "../../paths/path_of_the_plumber";
-import { in_pokefam } from "../../paths/pocket_familiars";
-import { in_small } from "../../paths/small";
-import { in_tcrs } from "../../paths/two_crazy_random_summer";
-import { is_professor } from "../../paths/wereprofessor";
+import { is_jarlsberg } from "../../paths/2013/avatar_of_jarlsberg";
+import { in_pokefam } from "../../paths/2018/pocket_familiars";
+import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
+import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
+import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
+import { in_plumber } from "../../paths/2020/path_of_the_plumber";
+import { in_small } from "../../paths/2023/small";
+import { is_professor } from "../../paths/2024/wereprofessor";
 import { L8_trapperTalk, needOre } from "../../quests/level_08";
 import {
   bridgeGoal,

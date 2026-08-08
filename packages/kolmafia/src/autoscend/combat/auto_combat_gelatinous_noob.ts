@@ -2,7 +2,7 @@ import { Monster } from "kolmafia";
 import { $monsters, $skill } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
-import { in_gnoob } from "../paths/gelatinous_noob";
+import { in_gnoob } from "../paths/2017/gelatinous_noob";
 import { auto_canUse, auto_useSkill, haveUsed } from "./auto_combat_util";
 
 //defined in /autoscend/combat/auto_combat_gelatinous_noob.ash

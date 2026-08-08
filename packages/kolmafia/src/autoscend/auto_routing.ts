@@ -53,12 +53,12 @@ import {
   auto_spadeDigsRemaining,
   spadeDelayZones,
 } from "./iotms/2020/mr2026";
-import { in_koe } from "./paths/kingdom_of_exploathing";
+import { in_koe } from "./paths/2019/kingdom_of_exploathing";
 import {
   in_lowkeysummer,
   lowkey_nextAvailableKeyDelayLocation,
-} from "./paths/low_key_summer";
-import { in_quantumTerrarium } from "./paths/quantum_terrarium";
+} from "./paths/2020/low_key_summer";
+import { in_quantumTerrarium } from "./paths/2021/quantum_terrarium";
 import { L3_tavernTask } from "./quests/level_03";
 import { L4_batCaveTask } from "./quests/level_04";
 import { L5_getEncryptionKeyTask, L5_haremOutfitTask } from "./quests/level_05";

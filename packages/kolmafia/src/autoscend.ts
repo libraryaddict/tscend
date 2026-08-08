@@ -362,68 +362,104 @@ import { elementalPlanes_access } from "./autoscend/iotms/other/elementalPlanes"
 import { eudora_initializeSettings } from "./autoscend/iotms/other/eudora";
 import { auto_useWardrobe } from "./autoscend/iotms/other/ttt";
 import {
-  ed_initializeDay,
-  ed_initializeSession,
-  ed_initializeSettings,
-  isActuallyEd,
-} from "./autoscend/paths/actually_ed_the_undying";
-import {
-  amw_initializeSettings,
-  in_amw,
-  LM_adventurerMeatsWorldTask,
-} from "./autoscend/paths/adventurer_meats_world";
-import {
-  auto_buySkills,
-  pathDroppedCheck,
-} from "./autoscend/paths/auto_path_util";
-import {
-  ag_initializeSettings,
-  in_avantGuard,
-} from "./autoscend/paths/avant_guard";
+  bhy_initializeSettings,
+  in_bhy,
+  LM_bhy,
+} from "./autoscend/paths/2011/bees_hate_you";
+import { in_wotsf } from "./autoscend/paths/2011/way_of_the_surprising_fist";
 import {
   boris_buySkills,
   boris_initializeDay,
   boris_initializeSettings,
   is_boris,
   LM_boris,
-} from "./autoscend/paths/avatar_of_boris";
+} from "./autoscend/paths/2012/avatar_of_boris";
+import { bugbear_initializeSettings } from "./autoscend/paths/2012/bugbear_invasion";
+import {
+  in_zombieSlayer,
+  LM_zombieSlayerTask,
+  zombieSlayer_buySkills,
+  zombieSlayer_initializeSettings,
+} from "./autoscend/paths/2012/zombie_slayer";
 import {
   is_jarlsberg,
   jarlsberg_buySkills,
   jarlsberg_initializeDay,
   jarlsberg_initializeSettings,
   LM_jarlsbergTask,
-} from "./autoscend/paths/avatar_of_jarlsberg";
+} from "./autoscend/paths/2013/avatar_of_jarlsberg";
 import {
-  aosol_buySkills,
-  aosol_initializeSettings,
-  aosol_unCurse,
-} from "./autoscend/paths/avatar_of_shadows_over_loathing";
+  in_kolhs,
+  kolhs_initializeSettings,
+  LM_kolhs,
+} from "./autoscend/paths/2013/kolhs";
 import {
   is_pete,
   LM_pete,
   pete_buySkills,
   pete_initializeDay,
   pete_initializeSettings,
-} from "./autoscend/paths/avatar_of_sneaky_pete";
+} from "./autoscend/paths/2014/avatar_of_sneaky_pete";
+import {
+  heavyrains_buySkills,
+  heavyrains_initializeDay,
+  heavyrains_initializeSettings,
+  in_heavyrains,
+} from "./autoscend/paths/2014/heavy_rains";
+import { picky_pulls } from "./autoscend/paths/2014/picky";
+import {
+  ed_initializeDay,
+  ed_initializeSession,
+  ed_initializeSettings,
+  isActuallyEd,
+} from "./autoscend/paths/2015/actually_ed_the_undying";
+import { in_community } from "./autoscend/paths/2015/community_service";
+import {
+  in_ocrs,
+  ocrs_postCombatResolve,
+} from "./autoscend/paths/2015/one_crazy_random_summer";
 import {
   awol_buySkills,
   awol_initializeSettings,
   awol_useStuff,
   in_awol,
-} from "./autoscend/paths/avatar_of_west_of_loathing";
+} from "./autoscend/paths/2016/avatar_of_west_of_loathing";
 import {
-  bhy_initializeSettings,
-  in_bhy,
-  LM_bhy,
-} from "./autoscend/paths/bees_hate_you";
-import { bugbear_initializeSettings } from "./autoscend/paths/bugbear_invasion";
+  in_nuclear,
+  LM_nuclear,
+  nuclear_initializeDay,
+  nuclear_initializeSettings,
+} from "./autoscend/paths/2016/nuclear_autumn";
 import {
-  casualCheck,
-  inAftercore,
-  LM_canInteract,
-} from "./autoscend/paths/casual";
-import { in_community } from "./autoscend/paths/community_service";
+  in_theSource,
+  LX_theSource,
+  theSource_buySkills,
+  theSource_initializeSettings,
+  theSource_oracle,
+} from "./autoscend/paths/2016/the_source";
+import { in_gnoob, LM_gnoob } from "./autoscend/paths/2017/gelatinous_noob";
+import {
+  bond_initializeSettings,
+  in_lta,
+  LM_bond,
+} from "./autoscend/paths/2017/license_to_adventure";
+import {
+  in_lar,
+  lar_safeguard,
+  LM_lar,
+} from "./autoscend/paths/2017/live_ascend_repeat";
+import { disguises_initializeSettings } from "./autoscend/paths/2018/disguises_delimit";
+import {
+  glover_initializeDay,
+  glover_initializeSettings,
+  in_glover,
+  LM_glover,
+} from "./autoscend/paths/2018/g_lover";
+import {
+  in_pokefam,
+  pokefam_getHats,
+  pokefam_initializeSettings,
+} from "./autoscend/paths/2018/pocket_familiars";
 import {
   bat_formNone,
   bat_initializeDay,
@@ -431,123 +467,87 @@ import {
   bat_initializeSettings,
   in_darkGyffte,
   LM_batpath,
-} from "./autoscend/paths/dark_gyffte";
-import { disguises_initializeSettings } from "./autoscend/paths/disguises_delimit";
-import { fotd_initializeSettings } from "./autoscend/paths/fall_of_the_dinosaurs";
-import {
-  glover_initializeDay,
-  glover_initializeSettings,
-  in_glover,
-  LM_glover,
-} from "./autoscend/paths/g_lover";
-import { in_gnoob, LM_gnoob } from "./autoscend/paths/gelatinous_noob";
-import { in_ggoo, LA_grey_goo_tasks } from "./autoscend/paths/grey_goo";
-import { ht_equip_hats, in_hattrick } from "./autoscend/paths/hattrick";
-import {
-  heavyrains_buySkills,
-  heavyrains_initializeDay,
-  heavyrains_initializeSettings,
-  in_heavyrains,
-} from "./autoscend/paths/heavy_rains";
-import { iluh_buyEquiq, in_iluh } from "./autoscend/paths/i_love_u_hate";
+} from "./autoscend/paths/2019/dark_gyffte";
 import {
   in_koe,
   koe_acquire_rmi,
   koe_initializeSettings,
   koe_rmi_count,
-} from "./autoscend/paths/kingdom_of_exploathing";
-import {
-  in_kolhs,
-  kolhs_initializeSettings,
-  LM_kolhs,
-} from "./autoscend/paths/kolhs";
-import {
-  auto_LegacyOfLoathingDailies,
-  in_lol,
-  lol_buyReplicas,
-  lol_initializeSettings,
-} from "./autoscend/paths/legacy_of_loathing";
-import {
-  bond_initializeSettings,
-  in_lta,
-  LM_bond,
-} from "./autoscend/paths/license_to_adventure";
-import {
-  in_lar,
-  lar_safeguard,
-  LM_lar,
-} from "./autoscend/paths/live_ascend_repeat";
-import { lowkey_initializeSettings } from "./autoscend/paths/low_key_summer";
-import {
-  in_nuclear,
-  LM_nuclear,
-  nuclear_initializeDay,
-  nuclear_initializeSettings,
-} from "./autoscend/paths/nuclear_autumn";
-import {
-  in_ocrs,
-  ocrs_postCombatResolve,
-} from "./autoscend/paths/one_crazy_random_summer";
+} from "./autoscend/paths/2019/kingdom_of_exploathing";
+import { in_tcrs } from "./autoscend/paths/2019/two_crazy_random_summer";
+import { in_ggoo, LA_grey_goo_tasks } from "./autoscend/paths/2020/grey_goo";
+import { lowkey_initializeSettings } from "./autoscend/paths/2020/low_key_summer";
 import {
   in_plumber,
   LM_plumber,
   plumber_canDealScalingDamage,
   plumber_equipTool,
   plumber_initializeSettings,
-} from "./autoscend/paths/path_of_the_plumber";
-import { picky_pulls } from "./autoscend/paths/picky";
-import {
-  in_pokefam,
-  pokefam_getHats,
-  pokefam_initializeSettings,
-} from "./autoscend/paths/pocket_familiars";
+} from "./autoscend/paths/2020/path_of_the_plumber";
 import {
   auto_refreshQTFam,
   in_quantumTerrarium,
   qt_initializeSettings,
-} from "./autoscend/paths/quantum_terrarium";
-import {
-  auto_smallCampgroundGear,
-  in_small,
-  small_initializeSettings,
-} from "./autoscend/paths/small";
-import {
-  in_theSource,
-  LX_theSource,
-  theSource_buySkills,
-  theSource_initializeSettings,
-  theSource_oracle,
-} from "./autoscend/paths/the_source";
-import { in_tcrs } from "./autoscend/paths/two_crazy_random_summer";
-import { in_wotsf } from "./autoscend/paths/way_of_the_surprising_fist";
-import {
-  in_wereprof,
-  is_werewolf,
-  wereprof_initializeSettings,
-} from "./autoscend/paths/wereprofessor";
+} from "./autoscend/paths/2021/quantum_terrarium";
 import {
   in_wildfire,
   LA_wildfire,
   LX_wildfire_calculateTheUniverse,
   wildfire_initializeSettings,
-} from "./autoscend/paths/wildfire";
+} from "./autoscend/paths/2021/wildfire";
 import {
   in_robot,
   LA_robot,
   LM_robot,
   robot_initializeSettings,
-} from "./autoscend/paths/you_robot";
+} from "./autoscend/paths/2021/you_robot";
+import { fotd_initializeSettings } from "./autoscend/paths/2022/fall_of_the_dinosaurs";
 import {
-  in_zombieSlayer,
-  LM_zombieSlayerTask,
-  zombieSlayer_buySkills,
-  zombieSlayer_initializeSettings,
-} from "./autoscend/paths/zombie_slayer";
+  aosol_buySkills,
+  aosol_initializeSettings,
+  aosol_unCurse,
+} from "./autoscend/paths/2023/avatar_of_shadows_over_loathing";
+import {
+  auto_LegacyOfLoathingDailies,
+  in_lol,
+  lol_buyReplicas,
+  lol_initializeSettings,
+} from "./autoscend/paths/2023/legacy_of_loathing";
+import {
+  auto_smallCampgroundGear,
+  in_small,
+  small_initializeSettings,
+} from "./autoscend/paths/2023/small";
+import {
+  ag_initializeSettings,
+  in_avantGuard,
+} from "./autoscend/paths/2024/avant_guard";
+import { iluh_buyEquiq, in_iluh } from "./autoscend/paths/2024/i_love_u_hate";
+import {
+  in_wereprof,
+  is_werewolf,
+  wereprof_initializeSettings,
+} from "./autoscend/paths/2024/wereprofessor";
+import { ht_equip_hats, in_hattrick } from "./autoscend/paths/2025/hattrick";
 import {
   in_zootomist,
   LX_zootoFight,
   zoo_graftFam,
-} from "./autoscend/paths/zootomist";
+} from "./autoscend/paths/2025/zootomist";
+import {
+  amw_initializeSettings,
+  in_amw,
+  LM_adventurerMeatsWorldTask,
+} from "./autoscend/paths/2026/adventurer_meats_world";
+import {
+  auto_buySkills,
+  pathDroppedCheck,
+} from "./autoscend/paths/auto_path_util";
+import {
+  casualCheck,
+  inAftercore,
+  LM_canInteract,
+} from "./autoscend/paths/casual";
 import { tootGetMeat, tootOriole } from "./autoscend/quests/level_01";
 import {
   L8_mineOreWorthBurningLuckOn,

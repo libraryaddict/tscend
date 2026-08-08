@@ -19,8 +19,8 @@ import { initializeSettings } from "../../autoscend";
 import { stomach_left } from "../auto_consume";
 import { hasTorso, hasUsefulShirt, meatReserve } from "../auto_util";
 import { auto_bestWarPlan } from "../quests/level_12";
-import { in_aosol } from "./avatar_of_shadows_over_loathing";
-import { in_tcrs } from "./two_crazy_random_summer";
+import { in_tcrs } from "./2019/two_crazy_random_summer";
+import { in_aosol } from "./2023/avatar_of_shadows_over_loathing";
 
 // Functions designed for general utility in any path
 

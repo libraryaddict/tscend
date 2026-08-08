@@ -84,17 +84,17 @@ import {
   registerQuestTask,
   runQuestTask,
 } from "../../engine/engine";
-import { isActuallyEd } from "../../paths/actually_ed_the_undying";
-import { in_avantGuard } from "../../paths/avant_guard";
-import { is_boris } from "../../paths/avatar_of_boris";
-import { in_bhy } from "../../paths/bees_hate_you";
-import { in_darkGyffte } from "../../paths/dark_gyffte";
-import { in_disguises } from "../../paths/disguises_delimit";
-import { in_glover } from "../../paths/g_lover";
-import { in_ocrs } from "../../paths/one_crazy_random_summer";
-import { in_plumber } from "../../paths/path_of_the_plumber";
-import { in_quantumTerrarium } from "../../paths/quantum_terrarium";
-import { in_wotsf } from "../../paths/way_of_the_surprising_fist";
+import { in_bhy } from "../../paths/2011/bees_hate_you";
+import { in_wotsf } from "../../paths/2011/way_of_the_surprising_fist";
+import { is_boris } from "../../paths/2012/avatar_of_boris";
+import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+import { in_ocrs } from "../../paths/2015/one_crazy_random_summer";
+import { in_disguises } from "../../paths/2018/disguises_delimit";
+import { in_glover } from "../../paths/2018/g_lover";
+import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
+import { in_plumber } from "../../paths/2020/path_of_the_plumber";
+import { in_quantumTerrarium } from "../../paths/2021/quantum_terrarium";
+import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { hedgeTrimmersNeeded } from "../../quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
 import { AshMatcher } from "../../utils/kolmafiaUtils";

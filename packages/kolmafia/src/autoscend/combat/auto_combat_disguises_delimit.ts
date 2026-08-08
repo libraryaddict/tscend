@@ -12,7 +12,7 @@ import { $modifier, $monster, $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { auto_log_info } from "../auto_util";
-import { in_disguises } from "../paths/disguises_delimit";
+import { in_disguises } from "../paths/2018/disguises_delimit";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { auto_canUse, auto_useSkill, canSurvive } from "./auto_combat_util";
 

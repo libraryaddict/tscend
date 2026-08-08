@@ -91,15 +91,15 @@ import {
   wrap_item,
 } from "../../auto_util";
 import { isSniffed$1 } from "../../combat/auto_combat_util";
-import { isActuallyEd } from "../../paths/actually_ed_the_undying";
-import { in_hattrick } from "../../paths/hattrick";
-import { in_koe } from "../../paths/kingdom_of_exploathing";
-import { in_kolhs } from "../../paths/kolhs";
-import { in_lar } from "../../paths/live_ascend_repeat";
-import { in_small } from "../../paths/small";
-import { in_wereprof, is_werewolf } from "../../paths/wereprofessor";
-import { in_wildfire } from "../../paths/wildfire";
-import { in_robot } from "../../paths/you_robot";
+import { in_kolhs } from "../../paths/2013/kolhs";
+import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+import { in_lar } from "../../paths/2017/live_ascend_repeat";
+import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
+import { in_wildfire } from "../../paths/2021/wildfire";
+import { in_robot } from "../../paths/2021/you_robot";
+import { in_small } from "../../paths/2023/small";
+import { in_wereprof, is_werewolf } from "../../paths/2024/wereprofessor";
+import { in_hattrick } from "../../paths/2025/hattrick";
 import { cyrptEvilBonus } from "../../quests/level_07";
 import { bridgeGoal } from "../../quests/level_09";
 import {

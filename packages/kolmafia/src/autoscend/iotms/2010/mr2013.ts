@@ -19,7 +19,7 @@ import { auto_buyUpTo } from "../../auto_acquire";
 import { buffMaintain$2 } from "../../auto_buff";
 import { possessEquipment } from "../../auto_equipment";
 import { auto_have_skill, auto_log_warning, autoCraft } from "../../auto_util";
-import { is_professor } from "../../paths/wereprofessor";
+import { is_professor } from "../../paths/2024/wereprofessor";
 
 //	This is meant for items that have a date of 2013
 

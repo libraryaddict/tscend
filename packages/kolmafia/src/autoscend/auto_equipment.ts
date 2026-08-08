@@ -157,29 +157,36 @@ import {
   auto_isInEternityCodpiece,
 } from "./iotms/2020/mr2026";
 import { applyMaximizePreference } from "./maximizer_parser";
-import { isActuallyEd } from "./paths/actually_ed_the_undying";
-import { in_amw } from "./paths/adventurer_meats_world";
-import { in_avantGuard } from "./paths/avant_guard";
-import { borisTrusty, is_boris } from "./paths/avatar_of_boris";
-import { in_bhy } from "./paths/bees_hate_you";
-import { inAftercore } from "./paths/casual";
-import { in_darkGyffte } from "./paths/dark_gyffte";
-import { in_glover } from "./paths/g_lover";
-import { in_gnoob } from "./paths/gelatinous_noob";
-import { in_hattrick } from "./paths/hattrick";
-import { in_heavyrains } from "./paths/heavy_rains";
-import { in_koe, koe_NeedWhitePixels } from "./paths/kingdom_of_exploathing";
-import { in_kolhs } from "./paths/kolhs";
-import { in_plumber } from "./paths/path_of_the_plumber";
+import { in_bhy } from "./paths/2011/bees_hate_you";
+import { borisTrusty, is_boris } from "./paths/2012/avatar_of_boris";
+import { in_kolhs } from "./paths/2013/kolhs";
+import { in_heavyrains } from "./paths/2014/heavy_rains";
+import { isActuallyEd } from "./paths/2015/actually_ed_the_undying";
+import { in_gnoob } from "./paths/2017/gelatinous_noob";
+import { in_glover } from "./paths/2018/g_lover";
 import {
   in_pokefam,
   pokefam_buildDefaultMaximize,
-} from "./paths/pocket_familiars";
-import { in_small } from "./paths/small";
-import { in_wereprof, is_professor, is_werewolf } from "./paths/wereprofessor";
-import { in_wildfire } from "./paths/wildfire";
-import { in_robot, robot_buildDefaultMaximize } from "./paths/you_robot";
-import { getZooBestPunch, in_zootomist } from "./paths/zootomist";
+} from "./paths/2018/pocket_familiars";
+import { in_darkGyffte } from "./paths/2019/dark_gyffte";
+import {
+  in_koe,
+  koe_NeedWhitePixels,
+} from "./paths/2019/kingdom_of_exploathing";
+import { in_plumber } from "./paths/2020/path_of_the_plumber";
+import { in_wildfire } from "./paths/2021/wildfire";
+import { in_robot, robot_buildDefaultMaximize } from "./paths/2021/you_robot";
+import { in_small } from "./paths/2023/small";
+import { in_avantGuard } from "./paths/2024/avant_guard";
+import {
+  in_wereprof,
+  is_professor,
+  is_werewolf,
+} from "./paths/2024/wereprofessor";
+import { in_hattrick } from "./paths/2025/hattrick";
+import { getZooBestPunch, in_zootomist } from "./paths/2025/zootomist";
+import { in_amw } from "./paths/2026/adventurer_meats_world";
+import { inAftercore } from "./paths/casual";
 import { cyrptEvilBonus } from "./quests/level_07";
 import { Maximizer, maximizer } from "./utils/maximizer";
 

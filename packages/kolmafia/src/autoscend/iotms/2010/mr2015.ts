@@ -71,22 +71,22 @@ import {
   registerQuestTask,
   runQuestTask,
 } from "../../engine/engine";
-import { isActuallyEd } from "../../paths/actually_ed_the_undying";
-import { is_boris } from "../../paths/avatar_of_boris";
-import { is_jarlsberg } from "../../paths/avatar_of_jarlsberg";
-import { is_pete } from "../../paths/avatar_of_sneaky_pete";
-import { in_awol } from "../../paths/avatar_of_west_of_loathing";
+import { in_wotsf } from "../../paths/2011/way_of_the_surprising_fist";
+import { is_boris } from "../../paths/2012/avatar_of_boris";
+import { is_jarlsberg } from "../../paths/2013/avatar_of_jarlsberg";
+import { is_pete } from "../../paths/2014/avatar_of_sneaky_pete";
+import { in_heavyrains } from "../../paths/2014/heavy_rains";
+import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+import { in_ocrs } from "../../paths/2015/one_crazy_random_summer";
+import { in_awol } from "../../paths/2016/avatar_of_west_of_loathing";
+import { in_nuclear } from "../../paths/2016/nuclear_autumn";
+import { in_theSource } from "../../paths/2016/the_source";
+import { in_gnoob } from "../../paths/2017/gelatinous_noob";
+import { in_lta } from "../../paths/2017/license_to_adventure";
+import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
+import { in_quantumTerrarium } from "../../paths/2021/quantum_terrarium";
+import { in_lol } from "../../paths/2023/legacy_of_loathing";
 import { inAftercore } from "../../paths/casual";
-import { in_gnoob } from "../../paths/gelatinous_noob";
-import { in_heavyrains } from "../../paths/heavy_rains";
-import { in_koe } from "../../paths/kingdom_of_exploathing";
-import { in_lol } from "../../paths/legacy_of_loathing";
-import { in_lta } from "../../paths/license_to_adventure";
-import { in_nuclear } from "../../paths/nuclear_autumn";
-import { in_ocrs } from "../../paths/one_crazy_random_summer";
-import { in_quantumTerrarium } from "../../paths/quantum_terrarium";
-import { in_theSource } from "../../paths/the_source";
-import { in_wotsf } from "../../paths/way_of_the_surprising_fist";
 import { needOre } from "../../quests/level_08";
 import { towerKeyCount } from "../../quests/level_13";
 import { auto_haveTrainSet } from "../2020/mr2022";

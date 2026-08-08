@@ -17,7 +17,7 @@ import {
   internalQuestStatus,
 } from "../auto_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
-import { in_koe } from "../paths/kingdom_of_exploathing";
+import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 
 //Defined in autoscend/quests/level_02.ash
 export function spookyForestChoiceHandler(choice: number): void {

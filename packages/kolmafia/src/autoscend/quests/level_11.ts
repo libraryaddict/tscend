@@ -230,43 +230,50 @@ import {
   auto_spadeDigsRemaining,
   auto_wantToSpadeDigSkeleton,
 } from "../iotms/2020/mr2026";
+import { in_bhy } from "../paths/2011/bees_hate_you";
+import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
+import { is_boris } from "../paths/2012/avatar_of_boris";
+import { in_heavyrains } from "../paths/2014/heavy_rains";
+import { in_picky } from "../paths/2014/picky";
 import {
   isActuallyEd,
   L9_ed_chasmStart,
-} from "../paths/actually_ed_the_undying";
-import { in_amw } from "../paths/adventurer_meats_world";
-import { in_avantGuard } from "../paths/avant_guard";
-import { is_boris } from "../paths/avatar_of_boris";
-import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
-import { in_bhy } from "../paths/bees_hate_you";
+} from "../paths/2015/actually_ed_the_undying";
+import { in_ocrs } from "../paths/2015/one_crazy_random_summer";
+import { in_nuclear } from "../paths/2016/nuclear_autumn";
+import { lar_repeat } from "../paths/2017/live_ascend_repeat";
+import { in_glover } from "../paths/2018/g_lover";
+import { in_pokefam } from "../paths/2018/pocket_familiars";
 import {
   bat_formBats,
   bat_reallyPickSkills,
   bat_wantHowl,
   in_darkGyffte,
-} from "../paths/dark_gyffte";
-import { in_glover } from "../paths/g_lover";
-import { in_heavyrains } from "../paths/heavy_rains";
-import { in_koe } from "../paths/kingdom_of_exploathing";
-import { in_lol } from "../paths/legacy_of_loathing";
-import { lar_repeat } from "../paths/live_ascend_repeat";
-import { in_lowkeysummer } from "../paths/low_key_summer";
-import { in_nuclear } from "../paths/nuclear_autumn";
-import { in_ocrs } from "../paths/one_crazy_random_summer";
-import { in_plumber, plumber_equipTool } from "../paths/path_of_the_plumber";
-import { in_picky } from "../paths/picky";
-import { in_pokefam } from "../paths/pocket_familiars";
+} from "../paths/2019/dark_gyffte";
+import { in_koe } from "../paths/2019/kingdom_of_exploathing";
+import { in_tcrs } from "../paths/2019/two_crazy_random_summer";
+import { in_lowkeysummer } from "../paths/2020/low_key_summer";
+import {
+  in_plumber,
+  plumber_equipTool,
+} from "../paths/2020/path_of_the_plumber";
 import {
   in_quantumTerrarium,
   qt_FamiliarSwap,
-} from "../paths/quantum_terrarium";
-import { in_small } from "../paths/small";
-import { in_tcrs } from "../paths/two_crazy_random_summer";
-import { in_wotsf } from "../paths/way_of_the_surprising_fist";
-import { in_wereprof, is_professor, is_werewolf } from "../paths/wereprofessor";
-import { in_wildfire } from "../paths/wildfire";
-import { in_robot, robot_delay } from "../paths/you_robot";
-import { in_zootomist } from "../paths/zootomist";
+} from "../paths/2021/quantum_terrarium";
+import { in_wildfire } from "../paths/2021/wildfire";
+import { in_robot, robot_delay } from "../paths/2021/you_robot";
+import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
+import { in_lol } from "../paths/2023/legacy_of_loathing";
+import { in_small } from "../paths/2023/small";
+import { in_avantGuard } from "../paths/2024/avant_guard";
+import {
+  in_wereprof,
+  is_professor,
+  is_werewolf,
+} from "../paths/2024/wereprofessor";
+import { in_zootomist } from "../paths/2025/zootomist";
+import { in_amw } from "../paths/2026/adventurer_meats_world";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { maximizer } from "../utils/maximizer";
 import { L3_tavern } from "./level_03";

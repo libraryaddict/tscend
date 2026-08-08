@@ -10,7 +10,7 @@ import {
 import { $skill, set } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
-import { in_fotd } from "../paths/fall_of_the_dinosaurs";
+import { in_fotd } from "../paths/2022/fall_of_the_dinosaurs";
 import {
   auto_canUse,
   auto_useSkill,

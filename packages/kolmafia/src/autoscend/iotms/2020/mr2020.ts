@@ -84,7 +84,7 @@ import {
   zoneRank,
 } from "../../auto_util";
 import { combat_status_add } from "../../combat/auto_combat_util";
-import { in_plumber } from "../../paths/path_of_the_plumber";
+import { in_plumber } from "../../paths/2020/path_of_the_plumber";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 import { maximizer } from "../../utils/maximizer";
 

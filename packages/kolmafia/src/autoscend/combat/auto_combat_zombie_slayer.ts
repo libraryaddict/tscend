@@ -16,7 +16,7 @@ import {
   internalQuestStatus,
   safeGet,
 } from "../auto_util";
-import { in_zombieSlayer } from "../paths/zombie_slayer";
+import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
 import { cyrptEvilBonus } from "../quests/level_07";
 import { auto_canUse, auto_useSkill, canSurvive } from "./auto_combat_util";
 

@@ -100,11 +100,11 @@ import {
   registerQuestTask,
   runQuestTask,
 } from "../../engine/engine";
-import { isActuallyEd } from "../../paths/actually_ed_the_undying";
-import { in_darkGyffte } from "../../paths/dark_gyffte";
-import { in_lowkeysummer } from "../../paths/low_key_summer";
-import { in_plumber } from "../../paths/path_of_the_plumber";
-import { in_tcrs } from "../../paths/two_crazy_random_summer";
+import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
+import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
+import { in_lowkeysummer } from "../../paths/2020/low_key_summer";
+import { in_plumber } from "../../paths/2020/path_of_the_plumber";
 import { cyrptEvilBonus } from "../../quests/level_07";
 import { maximizer } from "../../utils/maximizer";
 

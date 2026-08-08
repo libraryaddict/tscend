@@ -10,7 +10,7 @@ import { $class, $familiar, $skill, $skills, $stat, get } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { auto_have_skill, stunnable } from "../auto_util";
-import { in_glover } from "../paths/g_lover";
+import { in_glover } from "../paths/2018/g_lover";
 import {
   auto_canUse,
   auto_useSkill,

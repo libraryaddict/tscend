@@ -10,7 +10,7 @@ import { $class, $elements, $item, $monster, $monsters, $skill } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { currentFlavour } from "../auto_util";
-import { in_wildfire } from "../paths/wildfire";
+import { in_wildfire } from "../paths/2021/wildfire";
 import { auto_canUse, auto_useSkill } from "./auto_combat_util";
 
 //Path specific combat handling for wildfire

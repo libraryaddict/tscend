@@ -128,21 +128,21 @@ import {
   auto_throwLightningRemaining,
 } from "../iotms/2020/mr2025";
 import { auto_getItemToEquipHeartstone } from "../iotms/2020/mr2026";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_avantGuard } from "../paths/avant_guard";
-import { pete_peelOutRemaining } from "../paths/avatar_of_sneaky_pete";
-import { inAftercore } from "../paths/casual";
-import { in_glover } from "../paths/g_lover";
-import { plumber_ppCost } from "../paths/path_of_the_plumber";
-import { in_pokefam } from "../paths/pocket_familiars";
-import { is_werewolf } from "../paths/wereprofessor";
-import { in_wildfire } from "../paths/wildfire";
+import { pete_peelOutRemaining } from "../paths/2014/avatar_of_sneaky_pete";
+import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { in_glover } from "../paths/2018/g_lover";
+import { in_pokefam } from "../paths/2018/pocket_familiars";
+import { plumber_ppCost } from "../paths/2020/path_of_the_plumber";
+import { in_wildfire } from "../paths/2021/wildfire";
+import { in_avantGuard } from "../paths/2024/avant_guard";
+import { is_werewolf } from "../paths/2024/wereprofessor";
 import {
   getZooKickBanish,
   getZooKickSniff,
   getZooKickYR,
   in_zootomist,
-} from "../paths/zootomist";
+} from "../paths/2025/zootomist";
+import { inAftercore } from "../paths/casual";
 import { hedgeTrimmersNeeded } from "../quests/level_09";
 import { auto_warSide } from "../quests/level_12";
 import { AshMatcher } from "../utils/kolmafiaUtils";

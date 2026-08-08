@@ -240,30 +240,34 @@ import {
 } from "./iotms/2020/mr2026";
 import { get_floundry_locations } from "./iotms/other/clan";
 import {
+  borisTrusty,
+  borisWastedMP,
+  is_boris,
+} from "./paths/2012/avatar_of_boris";
+import { kolhs_preadv } from "./paths/2013/kolhs";
+import {
   ed_handleAdventureServant,
   edAcquireHP,
   edAcquireHP$1,
   isActuallyEd,
-} from "./paths/actually_ed_the_undying";
-import { in_amw } from "./paths/adventurer_meats_world";
-import { ag_bgChat } from "./paths/avant_guard";
-import { borisTrusty, borisWastedMP, is_boris } from "./paths/avatar_of_boris";
-import { in_aosol } from "./paths/avatar_of_shadows_over_loathing";
-import { inAftercore } from "./paths/casual";
-import { bat_formPreAdventure, in_darkGyffte } from "./paths/dark_gyffte";
-import { in_koe } from "./paths/kingdom_of_exploathing";
-import { kolhs_preadv } from "./paths/kolhs";
-import { lar_abort } from "./paths/live_ascend_repeat";
+} from "./paths/2015/actually_ed_the_undying";
+import { lar_abort } from "./paths/2017/live_ascend_repeat";
+import { in_pokefam, pokefam_makeTeam } from "./paths/2018/pocket_familiars";
+import { bat_formPreAdventure, in_darkGyffte } from "./paths/2019/dark_gyffte";
+import { in_koe } from "./paths/2019/kingdom_of_exploathing";
+import { in_tcrs } from "./paths/2019/two_crazy_random_summer";
 import {
   in_plumber,
   plumber_equipTool,
   plumber_forceEquipTool,
-} from "./paths/path_of_the_plumber";
-import { in_pokefam, pokefam_makeTeam } from "./paths/pocket_familiars";
-import { in_tcrs } from "./paths/two_crazy_random_summer";
-import { in_wereprof, is_professor } from "./paths/wereprofessor";
-import { in_wildfire } from "./paths/wildfire";
-import { in_zootomist } from "./paths/zootomist";
+} from "./paths/2020/path_of_the_plumber";
+import { in_wildfire } from "./paths/2021/wildfire";
+import { in_aosol } from "./paths/2023/avatar_of_shadows_over_loathing";
+import { ag_bgChat } from "./paths/2024/avant_guard";
+import { in_wereprof, is_professor } from "./paths/2024/wereprofessor";
+import { in_zootomist } from "./paths/2025/zootomist";
+import { in_amw } from "./paths/2026/adventurer_meats_world";
+import { inAftercore } from "./paths/casual";
 import { prepareForSmutOrcs, prepareForTwinPeak } from "./quests/level_09";
 import { auto_8BitCheckCappingScore } from "./quests/level_13";
 import { Maximizer, maximizer } from "./utils/maximizer";

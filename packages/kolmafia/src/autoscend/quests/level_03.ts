@@ -61,9 +61,9 @@ import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/2010/mr2014";
 import { auto_beachCombHead } from "../iotms/2010/mr2019";
 import { auto_copierShouldDelayZone } from "../iotms/2020/mr2026";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_glover } from "../paths/g_lover";
-import { in_wereprof } from "../paths/wereprofessor";
+import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { in_glover } from "../paths/2018/g_lover";
+import { in_wereprof } from "../paths/2024/wereprofessor";
 import { Maximizer, maximizer } from "../utils/maximizer";
 
 //Defined in autoscend/quests/level_03.ash

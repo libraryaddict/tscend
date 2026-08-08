@@ -13,7 +13,7 @@ import {
   auto_log_warning,
   isFreeMonster,
 } from "../auto_util";
-import { in_ocrs } from "../paths/one_crazy_random_summer";
+import { in_ocrs } from "../paths/2015/one_crazy_random_summer";
 import {
   combat_status_add,
   combat_status_check,

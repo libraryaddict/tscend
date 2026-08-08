@@ -18,7 +18,7 @@ import {
   is_professor,
   is_werewolf,
   wereprof_oculus,
-} from "../paths/wereprofessor";
+} from "../paths/2024/wereprofessor";
 import {
   auto_canUse,
   auto_useSkill,

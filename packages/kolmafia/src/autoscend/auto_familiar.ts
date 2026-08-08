@@ -88,21 +88,21 @@ import {
 } from "./iotms/2020/mr2023";
 import { auto_haveChestMimic } from "./iotms/2020/mr2024";
 import { auto_haveCupidBow } from "./iotms/2020/mr2025";
-import { isActuallyEd } from "./paths/actually_ed_the_undying";
-import { amw_wantMeat, in_amw } from "./paths/adventurer_meats_world";
-import { in_avantGuard } from "./paths/avant_guard";
-import { is_boris } from "./paths/avatar_of_boris";
-import { is_jarlsberg } from "./paths/avatar_of_jarlsberg";
-import { is_pete } from "./paths/avatar_of_sneaky_pete";
-import { in_bhy } from "./paths/bees_hate_you";
-import { in_darkGyffte } from "./paths/dark_gyffte";
-import { in_heavyrains } from "./paths/heavy_rains";
-import { kolhs_mandatorySchool } from "./paths/kolhs";
-import { in_lta } from "./paths/license_to_adventure";
-import { in_lowkeysummer } from "./paths/low_key_summer";
-import { in_pokefam } from "./paths/pocket_familiars";
-import { in_quantumTerrarium } from "./paths/quantum_terrarium";
-import { in_robot } from "./paths/you_robot";
+import { in_bhy } from "./paths/2011/bees_hate_you";
+import { is_boris } from "./paths/2012/avatar_of_boris";
+import { is_jarlsberg } from "./paths/2013/avatar_of_jarlsberg";
+import { kolhs_mandatorySchool } from "./paths/2013/kolhs";
+import { is_pete } from "./paths/2014/avatar_of_sneaky_pete";
+import { in_heavyrains } from "./paths/2014/heavy_rains";
+import { isActuallyEd } from "./paths/2015/actually_ed_the_undying";
+import { in_lta } from "./paths/2017/license_to_adventure";
+import { in_pokefam } from "./paths/2018/pocket_familiars";
+import { in_darkGyffte } from "./paths/2019/dark_gyffte";
+import { in_lowkeysummer } from "./paths/2020/low_key_summer";
+import { in_quantumTerrarium } from "./paths/2021/quantum_terrarium";
+import { in_robot } from "./paths/2021/you_robot";
+import { in_avantGuard } from "./paths/2024/avant_guard";
+import { amw_wantMeat, in_amw } from "./paths/2026/adventurer_meats_world";
 import {
   auto_8BitCanUseAnyFamiliar as auto_8BitCapsScoreWithoutFamiliar,
   L13_wantsTheD,

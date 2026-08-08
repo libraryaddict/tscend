@@ -1,6 +1,6 @@
 import { inHardcore } from "kolmafia";
 
-import { LX_needMeatSkills } from "./paths/adventurer_meats_world";
+import { LX_needMeatSkills } from "./paths/2026/adventurer_meats_world";
 import { L6_friarsGetParts_condition_hardcore } from "./quests/level_06";
 import { L11_hasUltrahydrated } from "./quests/level_11";
 import { LX_steelOrgan_condition_slow } from "./quests/optional";

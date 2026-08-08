@@ -110,18 +110,21 @@ import {
   auto_spadeDigsRemaining,
   auto_tryPlayBaseball,
 } from "./iotms/2020/mr2026";
-import { isActuallyEd } from "./paths/actually_ed_the_undying";
-import { amw_canAfford, in_amw } from "./paths/adventurer_meats_world";
-import { in_aosol } from "./paths/avatar_of_shadows_over_loathing";
-import { awol_walkBuff, in_awol } from "./paths/avatar_of_west_of_loathing";
-import { in_bugbear } from "./paths/bugbear_invasion";
+import { in_bugbear } from "./paths/2012/bugbear_invasion";
+import { in_zombieSlayer } from "./paths/2012/zombie_slayer";
+import { in_heavyrains } from "./paths/2014/heavy_rains";
+import { isActuallyEd } from "./paths/2015/actually_ed_the_undying";
+import { ocrs_postHelper } from "./paths/2015/one_crazy_random_summer";
+import {
+  awol_walkBuff,
+  in_awol,
+} from "./paths/2016/avatar_of_west_of_loathing";
+import { in_nuclear } from "./paths/2016/nuclear_autumn";
+import { in_theSource } from "./paths/2016/the_source";
+import { in_lta } from "./paths/2017/license_to_adventure";
+import { in_aosol } from "./paths/2023/avatar_of_shadows_over_loathing";
+import { amw_canAfford, in_amw } from "./paths/2026/adventurer_meats_world";
 import { inAftercore } from "./paths/casual";
-import { in_heavyrains } from "./paths/heavy_rains";
-import { in_lta } from "./paths/license_to_adventure";
-import { in_nuclear } from "./paths/nuclear_autumn";
-import { ocrs_postHelper } from "./paths/one_crazy_random_summer";
-import { in_theSource } from "./paths/the_source";
-import { in_zombieSlayer } from "./paths/zombie_slayer";
 import { numPirateInsults } from "./quests/optional";
 import { maximizer } from "./utils/maximizer";
 

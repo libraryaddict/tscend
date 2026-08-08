@@ -116,15 +116,15 @@ import {
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
 } from "../iotms/2020/mr2026";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
-import { is_pete } from "../paths/avatar_of_sneaky_pete";
-import { in_darkGyffte } from "../paths/dark_gyffte";
-import { in_koe } from "../paths/kingdom_of_exploathing";
-import { lar_repeat } from "../paths/live_ascend_repeat";
-import { in_small } from "../paths/small";
-import { is_professor } from "../paths/wereprofessor";
-import { in_zombieSlayer } from "../paths/zombie_slayer";
+import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
+import { is_pete } from "../paths/2014/avatar_of_sneaky_pete";
+import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { lar_repeat } from "../paths/2017/live_ascend_repeat";
+import { in_darkGyffte } from "../paths/2019/dark_gyffte";
+import { in_koe } from "../paths/2019/kingdom_of_exploathing";
+import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
+import { in_small } from "../paths/2023/small";
+import { is_professor } from "../paths/2024/wereprofessor";
 import { maximizer } from "../utils/maximizer";
 
 //Defined in autoscend/quests/level_07.ash

@@ -44,11 +44,11 @@ import {
   auto_log_warning,
   handleTracker,
 } from "../../auto_util";
-import { is_boris } from "../../paths/avatar_of_boris";
-import { is_jarlsberg } from "../../paths/avatar_of_jarlsberg";
-import { is_pete } from "../../paths/avatar_of_sneaky_pete";
+import { is_boris } from "../../paths/2012/avatar_of_boris";
+import { is_jarlsberg } from "../../paths/2013/avatar_of_jarlsberg";
+import { is_pete } from "../../paths/2014/avatar_of_sneaky_pete";
+import { in_glover } from "../../paths/2018/g_lover";
 import { inAftercore } from "../../paths/casual";
-import { in_glover } from "../../paths/g_lover";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/iotms/clan.ash

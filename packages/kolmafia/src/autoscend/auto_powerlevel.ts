@@ -97,15 +97,15 @@ import {
 } from "./iotms/2020/mr2023";
 import { auto_haveElfToilet } from "./iotms/2020/mr2026";
 import { elementalPlanes_access } from "./iotms/other/elementalPlanes";
-import { in_avantGuard } from "./paths/avant_guard";
-import { inAftercore } from "./paths/casual";
-import { in_koe } from "./paths/kingdom_of_exploathing";
 import {
   in_theSource,
   LX_attemptPowerLevelTheSource,
-} from "./paths/the_source";
-import { is_professor } from "./paths/wereprofessor";
-import { in_robot, LX_robot_powerlevel } from "./paths/you_robot";
+} from "./paths/2016/the_source";
+import { in_koe } from "./paths/2019/kingdom_of_exploathing";
+import { in_robot, LX_robot_powerlevel } from "./paths/2021/you_robot";
+import { in_avantGuard } from "./paths/2024/avant_guard";
+import { is_professor } from "./paths/2024/wereprofessor";
+import { inAftercore } from "./paths/casual";
 import { candyBlock, freeCandyFightsLeft } from "./quests/level_any";
 import { maximizer } from "./utils/maximizer";
 

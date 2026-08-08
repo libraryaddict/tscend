@@ -132,11 +132,11 @@ import {
   wrap_item,
 } from "../../auto_util";
 import { auto_canUse } from "../../combat/auto_combat_util";
-import { in_avantGuard } from "../../paths/avant_guard";
-import { in_lol } from "../../paths/legacy_of_loathing";
-import { in_pokefam } from "../../paths/pocket_familiars";
-import { in_small } from "../../paths/small";
-import { in_wereprof, is_werewolf } from "../../paths/wereprofessor";
+import { in_pokefam } from "../../paths/2018/pocket_familiars";
+import { in_lol } from "../../paths/2023/legacy_of_loathing";
+import { in_small } from "../../paths/2023/small";
+import { in_avantGuard } from "../../paths/2024/avant_guard";
+import { in_wereprof, is_werewolf } from "../../paths/2024/wereprofessor";
 import { cyrptEvilBonus } from "../../quests/level_07";
 import { L10_needUmbrella } from "../../quests/level_10";
 import { fantasyBanditsFought } from "../2010/mr2018";

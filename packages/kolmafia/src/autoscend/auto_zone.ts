@@ -61,13 +61,16 @@ import {
   auto_canTendMushroomGarden,
 } from "./iotms/2020/mr2020";
 import { auto_haveBatWings } from "./iotms/2020/mr2024";
-import { bugbear_BioDataRemaining, in_bugbear } from "./paths/bugbear_invasion";
-import { in_koe } from "./paths/kingdom_of_exploathing";
-import { kolhs_mandatorySchool } from "./paths/kolhs";
-import { in_lta } from "./paths/license_to_adventure";
-import { in_lar } from "./paths/live_ascend_repeat";
-import { in_plumber } from "./paths/path_of_the_plumber";
-import { in_robot } from "./paths/you_robot";
+import {
+  bugbear_BioDataRemaining,
+  in_bugbear,
+} from "./paths/2012/bugbear_invasion";
+import { kolhs_mandatorySchool } from "./paths/2013/kolhs";
+import { in_lta } from "./paths/2017/license_to_adventure";
+import { in_lar } from "./paths/2017/live_ascend_repeat";
+import { in_koe } from "./paths/2019/kingdom_of_exploathing";
+import { in_plumber } from "./paths/2020/path_of_the_plumber";
+import { in_robot } from "./paths/2021/you_robot";
 import { L8_forceExtremeInstead, L8_trapperTalk } from "./quests/level_08";
 import { bridgeGoal } from "./quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "./quests/level_10";

@@ -51,12 +51,12 @@ import { considerGrimstoneGolem, handleBjornify } from "../iotms/2010/mr2014";
 import { auto_haveGreyGoose } from "../iotms/2020/mr2022";
 import { auto_makeMonkeyPawWish$1 } from "../iotms/2020/mr2023";
 import { auto_haveBatWings, auto_haveChestMimic } from "../iotms/2020/mr2024";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_amw } from "../paths/adventurer_meats_world";
-import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
-import { bat_formBats } from "../paths/dark_gyffte";
-import { in_koe } from "../paths/kingdom_of_exploathing";
-import { in_lol } from "../paths/legacy_of_loathing";
+import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { bat_formBats } from "../paths/2019/dark_gyffte";
+import { in_koe } from "../paths/2019/kingdom_of_exploathing";
+import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
+import { in_lol } from "../paths/2023/legacy_of_loathing";
+import { in_amw } from "../paths/2026/adventurer_meats_world";
 import { shenShouldDelayZone } from "./level_11";
 
 //Defined in autoscend/quests/level_04.ash

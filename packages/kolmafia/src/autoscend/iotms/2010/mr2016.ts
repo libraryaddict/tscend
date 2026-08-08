@@ -80,16 +80,16 @@ import {
   wrap_item,
 } from "../../auto_util";
 import { zone_available } from "../../auto_zone";
-import { is_boris } from "../../paths/avatar_of_boris";
-import { is_jarlsberg } from "../../paths/avatar_of_jarlsberg";
+import { is_boris } from "../../paths/2012/avatar_of_boris";
+import { is_jarlsberg } from "../../paths/2013/avatar_of_jarlsberg";
+import { in_nuclear } from "../../paths/2016/nuclear_autumn";
+import { in_gnoob } from "../../paths/2017/gelatinous_noob";
+import { in_lta } from "../../paths/2017/license_to_adventure";
+import { in_pokefam } from "../../paths/2018/pocket_familiars";
+import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
+import { in_lol } from "../../paths/2023/legacy_of_loathing";
+import { is_professor } from "../../paths/2024/wereprofessor";
 import { inAftercore } from "../../paths/casual";
-import { in_gnoob } from "../../paths/gelatinous_noob";
-import { in_koe } from "../../paths/kingdom_of_exploathing";
-import { in_lol } from "../../paths/legacy_of_loathing";
-import { in_lta } from "../../paths/license_to_adventure";
-import { in_nuclear } from "../../paths/nuclear_autumn";
-import { in_pokefam } from "../../paths/pocket_familiars";
-import { is_professor } from "../../paths/wereprofessor";
 import { startHippyBoatmanSubQuest } from "../../quests/level_any";
 import {
   startArmorySubQuest,

@@ -3,7 +3,7 @@ import { $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
 import { handleTracker } from "../auto_util";
-import { bat_shouldEnsorcel } from "../paths/dark_gyffte";
+import { bat_shouldEnsorcel } from "../paths/2019/dark_gyffte";
 import { auto_canUse, auto_useSkill } from "./auto_combat_util";
 
 //Path specific combat handling for dark gyffte

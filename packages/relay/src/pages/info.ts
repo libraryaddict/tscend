@@ -10,7 +10,7 @@ import {
 import { $locations } from "libram";
 
 import { autoscend_current_version } from "../../../kolmafia/src/autoscend/autoscend_migration";
-import { isActuallyEd } from "../../../kolmafia/src/autoscend/paths/actually_ed_the_undying";
+import { isActuallyEd } from "../../../kolmafia/src/autoscend/paths/2015/actually_ed_the_undying";
 import { RelayPage } from "../../../shared/src/relayTypes";
 import { html } from "../relayUtils";
 

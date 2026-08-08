@@ -36,7 +36,7 @@ import { auto_edCombatHandler } from "./combat/auto_combat_ed";
 import {
   ed_handleAdventureServant,
   isActuallyEd,
-} from "./paths/actually_ed_the_undying";
+} from "./paths/2015/actually_ed_the_undying";
 
 export type CombatMacroReturns =
   | "attack"

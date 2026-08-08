@@ -177,27 +177,34 @@ import {
   drinkSpeakeasyDrink,
   isSpeakeasyDrink,
 } from "./iotms/other/clan";
-import { ed_eatStuff, isActuallyEd } from "./paths/actually_ed_the_undying";
-import { amw_buyAdv, in_amw } from "./paths/adventurer_meats_world";
-import { borisDemandSandwich, is_boris } from "./paths/avatar_of_boris";
-import { is_jarlsberg } from "./paths/avatar_of_jarlsberg";
-import { inAftercore } from "./paths/casual";
-import { bat_consumption, in_darkGyffte } from "./paths/dark_gyffte";
-import { in_kolhs, kolhs_consume } from "./paths/kolhs";
-import { bondDrinks, in_lta } from "./paths/license_to_adventure";
-import { in_nuclear } from "./paths/nuclear_autumn";
-import { in_plumber } from "./paths/path_of_the_plumber";
-import { in_pokefam } from "./paths/pocket_familiars";
-import { in_quantumTerrarium } from "./paths/quantum_terrarium";
-import { in_small } from "./paths/small";
+import { in_wotsf } from "./paths/2011/way_of_the_surprising_fist";
+import { borisDemandSandwich, is_boris } from "./paths/2012/avatar_of_boris";
+import { in_zombieSlayer } from "./paths/2012/zombie_slayer";
+import { is_jarlsberg } from "./paths/2013/avatar_of_jarlsberg";
+import { in_kolhs, kolhs_consume } from "./paths/2013/kolhs";
+import {
+  ed_eatStuff,
+  isActuallyEd,
+} from "./paths/2015/actually_ed_the_undying";
+import { in_nuclear } from "./paths/2016/nuclear_autumn";
+import { bondDrinks, in_lta } from "./paths/2017/license_to_adventure";
+import { in_pokefam } from "./paths/2018/pocket_familiars";
+import { bat_consumption, in_darkGyffte } from "./paths/2019/dark_gyffte";
 import {
   in_tcrs,
   tcrs_expectedAdvPerFill,
-} from "./paths/two_crazy_random_summer";
-import { in_wotsf } from "./paths/way_of_the_surprising_fist";
-import { in_wereprof, is_professor, is_werewolf } from "./paths/wereprofessor";
-import { in_robot, robot_get_adv } from "./paths/you_robot";
-import { in_zombieSlayer } from "./paths/zombie_slayer";
+} from "./paths/2019/two_crazy_random_summer";
+import { in_plumber } from "./paths/2020/path_of_the_plumber";
+import { in_quantumTerrarium } from "./paths/2021/quantum_terrarium";
+import { in_robot, robot_get_adv } from "./paths/2021/you_robot";
+import { in_small } from "./paths/2023/small";
+import {
+  in_wereprof,
+  is_professor,
+  is_werewolf,
+} from "./paths/2024/wereprofessor";
+import { amw_buyAdv, in_amw } from "./paths/2026/adventurer_meats_world";
+import { inAftercore } from "./paths/casual";
 import { hasSpookyravenLibraryKey } from "./quests/level_11";
 import { towerKeyCount } from "./quests/level_13";
 import { estimateDailyDungeonAdvNeeded } from "./quests/level_any";

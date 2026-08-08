@@ -82,12 +82,12 @@ import {
   meatReserve,
   wrap_item,
 } from "../../auto_util";
-import { isActuallyEd } from "../../paths/actually_ed_the_undying";
+import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+import { glover_usable$1, in_glover } from "../../paths/2018/g_lover";
+import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
+import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
+import { in_wereprof, is_professor } from "../../paths/2024/wereprofessor";
 import { inAftercore } from "../../paths/casual";
-import { in_darkGyffte } from "../../paths/dark_gyffte";
-import { glover_usable$1, in_glover } from "../../paths/g_lover";
-import { in_koe } from "../../paths/kingdom_of_exploathing";
-import { in_wereprof, is_professor } from "../../paths/wereprofessor";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //	This is meant for items that have a date of 2017.
