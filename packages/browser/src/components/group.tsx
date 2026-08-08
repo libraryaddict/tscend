@@ -10,10 +10,12 @@ function Group({
   group,
   search,
   validator,
+  lastSaved,
 }: {
   group: RelayGroup;
   search: string;
   validator: Validator;
+  lastSaved: number;
 }): React.JSX.Element | null {
   const [open, setOpen] = useState(false);
 
@@ -72,11 +74,16 @@ function Group({
                     group={subgroup}
                     search={search}
                     validator={validator}
+                    lastSaved={lastSaved}
                   />
                 ))}
               </div>
             ) : null}
-            <SettingsTable settings={visible} validator={validator} />
+            <SettingsTable
+              settings={visible}
+              validator={validator}
+              lastSaved={lastSaved}
+            />
           </div>
         </div>
       ) : null}

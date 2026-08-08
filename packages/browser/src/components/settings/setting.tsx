@@ -15,10 +15,12 @@ function Setting({
   validator: Validator;
 }): React.JSX.Element {
   const [valid, setValid] = useState(validator.isValid(button));
+  const [unsaved, setUnsaved] = useState(button.value !== button.previousValue);
 
   button.setValue = (val) => {
     button.value = val;
     validator.updateSetting(button);
+    setUnsaved(button.value !== button.previousValue);
   };
 
   validator.addSetting(button, setValid);
@@ -27,6 +29,7 @@ function Setting({
     <tr className="userPreference" data-name={button.name}>
       <td className="setting">
         {button.name}
+        {unsaved ? <small className="unsavedLabel">Unsaved</small> : null}
         <div className="settingNameHover">{button.preference}</div>
       </td>
       <td className={valid ? "settingInput" : "settingInput invalid-setting"}>

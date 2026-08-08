@@ -307,6 +307,12 @@ input.stringcontainer:focus {
   visibility: visible;
 }
 
+.unsavedLabel {
+  display: block;
+  color: rgba($accent, 0.55);
+  font-size: 0.75rem;
+}
+
 .hoverBox {
   position: relative;
   white-space: nowrap;

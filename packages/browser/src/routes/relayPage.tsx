@@ -24,6 +24,7 @@ function RelayPage({
   components: RelayComponent[];
 }): React.JSX.Element {
   const [search, setSearch] = useState("");
+  const [lastSaved, setLastSaved] = useState(0);
   const query = search.trim();
 
   const allSettings = collectSettings(components);
@@ -62,6 +63,7 @@ function RelayPage({
           key={`Table ${index}`}
           settings={visible}
           validator={validator}
+          lastSaved={lastSaved}
         />
       );
     }
@@ -74,6 +76,7 @@ function RelayPage({
             group={batch as RelayGroup}
             search={query}
             validator={validator}
+            lastSaved={lastSaved}
           />
         );
       case "html": {
@@ -134,6 +137,7 @@ function RelayPage({
             for (const notif of notifs) {
               addNotification(notif);
             }
+            setLastSaved((v) => v + 1);
           })
         }
       />

@@ -7,9 +7,11 @@ import Setting from "./setting";
 function SettingsTable({
   settings,
   validator,
+  lastSaved: saveVersion,
 }: {
   settings: ComponentSetting[];
   validator: Validator;
+  lastSaved: number;
 }): React.JSX.Element | null {
   if (settings.length === 0) {
     return null;
@@ -20,7 +22,7 @@ function SettingsTable({
       <tbody>
         {settings.map((setting) => (
           <Setting
-            key={setting.preference}
+            key={`${setting.preference}-${saveVersion}`}
             button={setting}
             validator={validator}
           />
