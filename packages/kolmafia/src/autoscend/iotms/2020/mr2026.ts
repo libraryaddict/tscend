@@ -1433,13 +1433,13 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
     [$element`hot`, "Yellow Ray"],
     [$element`cold`, "Banish"],
     [$element`spooky`, "Free Fights"],
-    [$element`Stench`, "Extra Zone Copies"],
+    [$element`stench`, "Extra Zone Copies"],
     [$element`sleaze`, "High ML"],
   ];
 
   const fillerPriority = new Map<string, [number, string]>([
     [
-      "Garbageball",
+      "Throw a Garbageball",
       [
         (auto_is_valid($item`discarded hot dog`) && canEat()) ||
         (auto_is_valid($item`most of a beer`) && canDrink())
@@ -1449,14 +1449,14 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
       ],
     ],
     ["Throw Some Smoke", [99, "+5 All Stats"]], // +5 stats
-    ["Deep Freeze", [98, "3 DR"]], // +3 DR
-    ["Bacon-Wrapped Slider", [5, "+Init"]], // Combat init
-    ["Snowball", [4, "2-4 MP Regen"]], // +2-4 MP Regen
-    ["Ghost Pitch", [3, "3-5 HP Regen"]], // 3-5 HP Regen
-    ["Slurveball", [-2, "Sleaze Res"]], // Sleaze res
+    ["Throw One in the Deep Freeze", [98, "3 DR"]], // +3 DR
+    ["Throw a Bacon-Wrapped Slider", [5, "+Init"]], // Combat init
+    ["Throw a Snow Ball", [4, "2-4 MP Regen"]], // +2-4 MP Regen
+    ["Throw a Ghost Pitch", [3, "3-5 HP Regen"]], // 3-5 HP Regen
+    ["Throw a Slurve", [-2, "Sleaze Res"]], // Sleaze res
     ["Bring the Heat", [-3, "Hot Dmg"]], // +5 hot dmg
-    ["Skullball", [-4, "Reduce Enemy Attack/Def"]], // Reduced att+def
-    ["Beanball", [-5, "Passive Stench Dmg"]], // Passive stench damage
+    ["Draw a Skull on the Ball", [-4, "Reduce Enemy Attack/Def"]], // Reduced att+def
+    ["Throw a Beanball", [-5, "Passive Stench Dmg"]], // Passive stench damage
   ]);
 
   const playedCounts = new Map<Element, number>();
