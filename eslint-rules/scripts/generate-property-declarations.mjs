@@ -27,7 +27,7 @@ const TYPE_INFO = {
   phylum: { ts: "Phylum", import: "Phylum" },
 };
 
-async function main() {
+export async function main() {
   const files = (
     await fs.readdir(SETTINGS_DIR, { recursive: true, withFileTypes: true })
   ).filter(
@@ -123,19 +123,21 @@ declare module "kolmafia" {
   console.log(`Wrote ${OUT_FILE}`);
 }
 
-if (process.argv.includes("--watch")) {
-  await main();
+if (import.meta.url === `file://${process.argv[1]}`) {
+  if (process.argv.includes("--watch")) {
+    await main();
 
-  let pending = null;
-  const rerun = () => {
-    clearTimeout(pending);
-    pending = setTimeout(() => main().catch(console.error), 100);
-  };
+    let pending = null;
+    const rerun = () => {
+      clearTimeout(pending);
+      pending = setTimeout(() => main().catch(console.error), 100);
+    };
 
-  console.log(`Watching ${SETTINGS_DIR} for changes...`);
-  watch(SETTINGS_DIR, { recursive: true }, (_event, filename) => {
-    if (filename?.endsWith(".yml")) rerun();
-  });
-} else {
-  await main();
+    console.log(`Watching ${SETTINGS_DIR} for changes...`);
+    watch(SETTINGS_DIR, { recursive: true }, (_event, filename) => {
+      if (filename?.endsWith(".yml")) rerun();
+    });
+  } else {
+    await main();
+  }
 }
