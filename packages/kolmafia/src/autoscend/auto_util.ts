@@ -7184,14 +7184,7 @@ export function auto_adv1(
   if (!canAdventure(location)) return false;
   if (!prepareForAdventure(location)) return false; // unlocks the zone (sonar, Batcave, etc.)
 
-  let url: string = toUrl(location);
-  if (
-    location === $location`The Lower Chambers` &&
-    get("pyramidBombUsed") &&
-    !url.endsWith("a")
-  ) {
-    url += "a";
-  }
+  const url: string = toUrl(location);
 
   auto_resolveEncounters(visitUrl(url), combatMacro);
   return true;
