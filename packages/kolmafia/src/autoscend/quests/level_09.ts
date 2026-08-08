@@ -555,6 +555,14 @@ function L9_chasmBuildDo(): boolean {
   }
 
   if (
+    Math.min(fastenerCount(), lumberCount()) < bridgeGoal() &&
+    auto_copierShouldDelayZone($locations`The Smut Orc Logging Camp`)
+  ) {
+    auto_log_debug("Delaying L9 Chasm - still farming a copier target.");
+    return false;
+  }
+
+  if (
     shenShouldDelayZone($location`The Smut Orc Logging Camp`) &&
     (auto_haveTrainSet() ||
       !auto_have_sword_familiar() ||
@@ -651,6 +659,10 @@ export function L9_aBooPeakWorthBurningLuckOn(): boolean {
 }
 
 function L9_aBooPeakDo(): boolean {
+  if (auto_copierShouldDelayZone($locations`A-Boo Peak`)) {
+    auto_log_debug("Delaying L9 A-Boo Peak - still farming a copier target.");
+    return false;
+  }
   if (containsText(visitUrl("place.php?whichplace=highlands"), "fire1.gif")) {
     return false;
   }
@@ -1161,6 +1173,14 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
 }
 
 function L9_twinPeakDo(): boolean {
+  if (
+    hedgeTrimmersNeeded() > 0 &&
+    auto_copierShouldDelayZone($locations`Twin Peak`)
+  ) {
+    auto_log_debug("Delaying L9 Twin Peak - still farming a copier target.");
+    return false;
+  }
+
   if (get("twinPeakProgress") >= 15) {
     return false;
   }
@@ -1289,6 +1309,7 @@ export function L9_twinPeak(): boolean {
 }
 
 function L9_oilPeakDo(): boolean {
+  // We deliberately don't do a delay check here, who knows how you buffed...
   auto_MaxMLToCap(auto_convertDesiredML(100), false);
 
   if (
@@ -1451,14 +1472,6 @@ const L9_highLandlordCouncilTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL09Topping") > 3,
   ready: () => {
     if (internalQuestStatus("questL09Topping") < 3) {
-      return false;
-    }
-    if (
-      auto_copierShouldDelayZone($locations`A-Boo Peak, Twin Peak, Oil Peak`)
-    ) {
-      auto_log_debug(
-        "Delaying L9 turn-in - still farming a copier target in this cluster.",
-      );
       return false;
     }
     return true;

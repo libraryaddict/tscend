@@ -95,6 +95,7 @@ import {
   pathAllowsChangingFamiliar,
   pathHasFamiliar,
 } from "../../auto_familiar";
+import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { haveFreeRestAvailable } from "../../auto_restore";
 import { isSoftBlockInPlace } from "../../auto_routing";
 import {
@@ -2110,6 +2111,7 @@ function auto_swordFamiliarShouldDelayZone(monsters: Monster[]): boolean {
 
 // Soft-delay leaving these zones (a level's quest-turn-in, typically) while the Sword of S Words or Baseball Diamond is still mid-farm on a monster that only appears here.
 export function auto_copierShouldDelayZone(locs: Location[]): boolean {
+  if (isAboutToPowerlevel()) return false;
   const zoneMonsters = locs.flatMap(auto_zoneCopyableMonsters);
   return (
     auto_swordFamiliarShouldDelayZone(zoneMonsters.map(([mon]) => mon)) ||
