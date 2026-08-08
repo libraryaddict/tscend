@@ -3947,7 +3947,7 @@ export function handleBarrelFullOfBarrels(daily: boolean): boolean {
   if (!get("barrelShrineUnlocked")) {
     return false;
   }
-  if (daily && get("_didBarrelBustToday", false)) {
+  if (daily && get("_auto_didBarrelBustToday", false)) {
     return false;
   }
   if (!isUnrestricted($item`shrine to the Barrel god`)) {
@@ -3977,7 +3977,7 @@ export function handleBarrelFullOfBarrels(daily: boolean): boolean {
       visitUrl(`choice.php?whichchoice=1099&pwd&option=1&slot=${slotID}`);
     }
   }
-  set("_didBarrelBustToday", true);
+  set("_auto_didBarrelBustToday", true);
   return smashed > 0;
 }
 

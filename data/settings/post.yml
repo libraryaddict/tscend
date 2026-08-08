@@ -32,7 +32,7 @@ auto_dontPhylumBanish:
   description: If false will banish enemy phyla. Banishing should save some turns, but can interfere with the routing, and may mess up later banishes / tracks.
 auto_runDayCount:
   name: "Expected Day Count"
-  type: integer
+  type: int
   description: How many days do you think your run will take? Defaults to 2.
 auto_chasmBusted:
   name: "Orc Chasm Bridge Trolled"
@@ -44,7 +44,7 @@ auto_day1_dna:
   description: "'finished' if we have hybridized ourselves at the start of Ascension."
 auto_day_init:
   name: "Day Initialized"
-  type: string
+  type: int
   description: Current daycount if we finished initializing today.
 auto_getBoningKnife:
   name: "Get Boning Knife"
@@ -68,15 +68,15 @@ auto_hedge:
   description: "'fast' or 'slow', determining how quickly we want to finish the Hedge Maze."
 auto_powerLevelLastLevel:
   name: "Last Powerleveling Level"
-  type: string
+  type: int
   description: Last Level that we had nothing to do.
 auto_powerLevelAdvCount:
   name: "Powerleveling Adventure Count"
-  type: string
+  type: int
   description: Adventures count of times we had nothing to do.
 auto_powerLevelLastAttempted:
   name: "Last Powerleveling Adventure"
-  type: string
+  type: int
   description: Last adventure that we did nothing on.
 auto_skipNuns:
   name: "Mysterious Island War: Skip Nuns Quest"
@@ -84,43 +84,43 @@ auto_skipNuns:
   description: Skip nuns quest this ascension?
 auto_100familiar:
   name: "100% Familiar"
-  type: string
+  type: familiar
   description: If a familiar type, do not allow familiar switching (for 100% runs). Otherwise, can be none or blank.
 auto_beatenUpCount:
   name: "Beaten Up Count"
-  type: integer
+  type: int
   description: How many times were we beaten up this ascension. Affects ML and whether we try to heal or abort when we get beaten up.
 auto_doneInitialize:
   name: "Last Initialized Ascension"
-  type: integer
+  type: int
   description: Indicates last ascension that we initialized with the script.
 auto_noSnakeOil:
   name: "Last Snake Oil Extraction Day"
-  type: integer
+  type: int
   description: Last day that we could no longer Extract Oil.
 auto_renenutetBought:
   name: "Talismans Of Renenutet Bought"
-  type: integer
+  type: int
   description: Number of Talisman of Renenutet's bought on last tracking.
 auto_batoomerangDay:
   name: "Bat-oomerang Tracker Day"
-  type: integer
+  type: int
   description: Part of Replica Bat-oomerang Tracker
 auto_batoomerangUse:
   name: "Bat-oomerang Tracker Use"
-  type: integer
+  type: int
   description: Part of Replica Bat-oomerang Tracker
 _auto_lastABooConsider:
   name: "Last A-Boo Peak Consideration"
-  type: integer
+  type: int
   description: Last turn that we considered doing A-Boo Peak
 _auto_lastABooCycleFix:
   name: "A-Boo Peak Loop Fix Tracker"
-  type: integer
+  type: int
   description: Tracker to prevent us infinitely looping on A-Boo Peak
 _auto_witchessBattles:
   name: "Witchess Battle Tracker"
-  type: integer
+  type: int
   description: Tracker for Witchess Combats (yes, this is actually needed).
 auto_needLegs:
   name: "Need Legs Before Ka Farming"
@@ -144,5 +144,5 @@ auto_L8_extremeInstead:
   description: True means we want to adventure in the extreme slope path instead of the ninja snowmen lair this ascension.
 auto_aboopending:
   name: "Pending A-Boo Clue Turn"
-  type: integer
+  type: int
   description: The last turn of a pending A-Boo Clue. 0 if no clue active.

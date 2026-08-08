@@ -22,13 +22,13 @@ export function casualCheck(): void {
   if (!inCasual()) {
     return;
   }
-  if (get("_casualAscension", 0) !== -1) {
-    set("_casualAscension", myAscensions());
+  if (get("_auto_casualAscension", 0) !== -1) {
+    set("_auto_casualAscension", myAscensions());
     auto_log_warning(
       "I think I'm in a casual ascension and should not run. To override:",
       "red",
     );
-    auto_log_warning("set _casualAscension = -1", "red");
+    auto_log_warning("set _auto_casualAscension = -1", "red");
     abort();
   }
 }

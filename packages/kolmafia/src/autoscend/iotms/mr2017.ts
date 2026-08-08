@@ -948,7 +948,7 @@ export function kgb_getMartini(
     page = visitUrl("place.php?whichplace=kgb");
   }
 
-  if (!get("_kgbDailyStuff", false)) {
+  if (!get("_kgbOpened", false)) {
     let flipped: boolean = false;
     if (containsText(page, "handledown")) {
       page = visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
@@ -981,7 +981,6 @@ export function kgb_getMartini(
     if (!get("_kgbOpened")) {
       visitUrl("place.php?whichplace=kgb&action=kgb_daily", false);
     }
-    set("_kgbDailyStuff", true);
   }
   if (get("_kgbDispenserUses") >= 3) {
     return false;
@@ -1015,7 +1014,7 @@ export function kgb_getMartini(
           "_kgbClicksUsed appears to not be tracking, please let the spies in.",
           "red",
         );
-        set("_kgbClicksUSed", newClicks + 1);
+        set("_kgbClicksUsed", newClicks + 1);
       }
       if (kgb_tabHeight(page) < 11) {
         if (button === 0) {
@@ -1326,7 +1325,7 @@ export function isHorseryAvailable(): boolean {
 }
 
 export function horseCost(): number {
-  if (get("_horseryRented", 0) > 0) {
+  if (get("_auto_horseryRented", 0) > 0) {
     return 500;
   }
   return 0;
@@ -1432,7 +1431,7 @@ function getHorse(type_1: string): boolean {
   visitUrl("place.php?whichplace=town_right&action=town_horsery");
   visitUrl(`choice.php?pwd=&whichchoice=1266&option=${choice}`);
   if (choice <= 4) {
-    set("_horseryRented", get("_horseryRented", 0) + 1);
+    set("_auto_horseryRented", get("_auto_horseryRented", 0) + 1);
   }
   return true;
 }

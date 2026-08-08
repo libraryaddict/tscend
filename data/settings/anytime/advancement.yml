@@ -1,10 +1,10 @@
 auto_powerLevelTimer:
   name: "Powerleveling Delay"
-  type: integer
+  type: int
   description: Delay in seconds before each time we spend an adv powerleveling. default is 10 sec. lowest valid value is 1.
 auto_MLSafetyLimit:
   name: "ML Safety Limit"
-  type: integer
+  type: int
   description: "If set this will be the (approximate) cap for +ML. WARNING: Certain conditions may require the script to exceed this by a small margin. For best results set this 10 below the maximum ML you can handle. Setting to -1 will cause the lowest possible ML to be equipped, including going negative if possible - this can cause non-optimal gear to be equipped."
 auto_disregardInstantKarma:
   name: "Disregard Instant Karma"

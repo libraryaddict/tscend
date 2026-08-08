@@ -2412,11 +2412,7 @@ export function L12_farm(): boolean {
 }
 
 function L12_clearBattlefieldDo(): boolean {
-  if (
-    !inAftercore() &&
-    myInebriety() < inebrietyLimit() &&
-    !get("_gardenHarvested", false)
-  ) {
+  if (!inAftercore() && myInebriety() < inebrietyLimit()) {
     const camp: Map<Item, number> = auto_get_campground();
     if (
       camp.has($item`packet of thanksgarden seeds`) &&

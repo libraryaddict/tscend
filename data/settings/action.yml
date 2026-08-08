@@ -12,7 +12,7 @@ auto_debugging:
   description: Every time you run the script it will perform one adventure and then stop by setting auto_interrupt = true
 auto_paranoia:
   name: "Quest Paranoia"
-  type: integer
+  type: int
   description: If quest tracking is broken enable this. It determines how often should we refresh quests. measured in adventures. -1 is never. 1 = every single adventure
 auto_inv_paranoia:
   name: "Inventory Paranoia"

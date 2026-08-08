@@ -115,13 +115,13 @@ export function januaryToteTurnsLeft(it: Item): number {
   if (getRevision() < 18848) {
     switch (it) {
       case $item`deceased crimbo tree`:
-        score = get("_garbageTreeCharge", 0);
+        score = get("garbageTreeCharge", 0);
         break;
       case $item`broken champagne bottle`:
-        score = get("_garbageChampagneCharge", 0);
+        score = get("garbageChampagneCharge", 0);
         break;
       case $item`makeshift garbage shirt`:
-        score = get("_garbageShirtCharge", 0);
+        score = get("garbageShirtCharge", 0);
         break;
     }
     return score;

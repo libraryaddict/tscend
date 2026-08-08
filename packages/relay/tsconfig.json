@@ -6,6 +6,9 @@
     "lib": ["ESNext"],
     "types": ["node"]
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "../../eslint-rules/generated/internal-properties.d.ts"
+  ],
   "references": [{ "path": "../kolmafia" }, { "path": "../shared" }]
 }

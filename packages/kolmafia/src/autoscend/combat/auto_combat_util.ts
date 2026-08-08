@@ -1156,7 +1156,7 @@ export function banisherCombatAction$1(
 
   if (
     auto_have_skill($skill`Beancannon`) &&
-    get("_beancannonUses", 0) < 5 &&
+    get("_beanCannonUses", 0) < 5 &&
     myMp() - 20 >= mpCost($skill`Beancannon`) &&
     !used.includes("beancannon")
   ) {

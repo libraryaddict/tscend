@@ -9,6 +9,7 @@ import tseslint from "typescript-eslint";
 import unusedImports from "eslint-plugin-unused-imports";
 import importSort from "eslint-plugin-simple-import-sort";
 import { rule as verifyModifiers } from "./eslint-rules/verify-modifiers.mts";
+import { rule as verifyProperties } from "./eslint-rules/verify-properties.mts";
 
 // KoLmafia revision is taken from package.json, update it there.
 let cachedRevision = 0;
@@ -62,6 +63,7 @@ export default defineConfig(
       local: {
         rules: {
           "verify-modifiers": verifyModifiers as unknown as Rule.RuleModule,
+          "verify-properties": verifyProperties as unknown as Rule.RuleModule,
         },
       },
     },
@@ -96,6 +98,7 @@ export default defineConfig(
       "sort-imports": "off",
       "libram/verify-constants": "error",
       "local/verify-modifiers": "error",
+      "local/verify-properties": "error",
       "unused-imports/no-unused-imports": "error",
       "no-fallthrough": [
         "error",

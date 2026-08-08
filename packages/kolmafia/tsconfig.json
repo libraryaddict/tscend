@@ -6,6 +6,9 @@
     "lib": ["ESNext"],
     "types": []
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "../../eslint-rules/generated/internal-properties.d.ts"
+  ],
   "references": [{ "path": "../shared" }]
 }

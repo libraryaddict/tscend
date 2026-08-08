@@ -1005,7 +1005,7 @@ function deck_cheat(cheat: string): boolean {
   const card: number = $_deck_cheat_cards.get(cheat) ?? 0;
 
   const cheated: Map<number, string> = new Map(
-    splitString(getProperty("_deckCardsCheated"), ",").map((_v, _i) => [
+    splitString(getProperty("_auto_deckCardsCheated"), ",").map((_v, _i) => [
       _i,
       _v,
     ]),
@@ -1039,7 +1039,7 @@ function deck_cheat(cheat: string): boolean {
     // If mafia is not tracking cheats, we can track them here.
     let found: boolean = false;
     const cheated_1: Map<number, string> = new Map(
-      splitString(getProperty("_deckCardsCheated"), ",").map((_v, _i) => [
+      splitString(getProperty("_auto_deckCardsCheated"), ",").map((_v, _i) => [
         _i,
         _v,
       ]),
@@ -1050,10 +1050,13 @@ function deck_cheat(cheat: string): boolean {
       }
     }
     if (!found) {
-      if (getProperty("_deckCardsCheated") === "") {
-        set("_deckCardsCheated", card);
+      if (getProperty("_auto_deckCardsCheated") === "") {
+        set("_auto_deckCardsCheated", card);
       } else {
-        set("_deckCardsCheated", `${getProperty("_deckCardsCheated")},${card}`);
+        set(
+          "_auto_deckCardsCheated",
+          `${getProperty("_auto_deckCardsCheated")},${card}`,
+        );
       }
     }
     return true;

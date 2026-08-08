@@ -1,0 +1,406 @@
+auto_alienLanguage:
+  type: boolean
+auto_alwaysGetSteelOrgan:
+  type: string
+auto_aosolLastSkill:
+  type: int
+auto_avalancheDeployed:
+  type: boolean
+auto_awolLastSkill:
+  type: int
+auto_banishes:
+  type: string
+auto_bat_desiredForm:
+  type: string
+auto_bat_ensorcels:
+  type: int
+auto_bat_soulmonster:
+  type: string
+auto_beatenUpLastAdv:
+  type: boolean
+auto_beatenUpLocations:
+  type: string
+auto_borisSkills:
+  type: int
+auto_boughtCommerceGhostItem:
+  type: item
+auto_bowledAtAlley:
+  type: int
+auto_breathitinLastLevel:
+  type: int
+auto_bruteForcePalindome:
+  type: boolean
+auto_cabinetsencountered:
+  type: int
+auto_chewed:
+  type: string
+auto_cmcConsultLastLevel:
+  type: int
+auto_combatHandlerThunderBird:
+  type: int
+auto_combatHP:
+  type: int
+auto_considerCCSCShore:
+  type: boolean
+auto_consumeKeyLimePies:
+  type: boolean
+auto_copies:
+  type: string
+auto_current_version:
+  type: string
+auto_dakotaFanning:
+  type: boolean
+auto_day1_desk:
+  type: string
+auto_day1_skills:
+  type: string
+auto_day2WaitLastLevel:
+  type: int
+auto_debuffAsdonDelay:
+  type: int
+auto_debug:
+  type: string
+auto_delayLastLevel:
+  type: int
+auto_delayWar:
+  type: boolean
+auto_desiredHorse:
+  type: string
+auto_diag_round:
+  type: int
+auto_dietpills:
+  type: int
+auto_digitizeDirective:
+  type: string
+auto_disregardInstantKarmaBackup:
+  type: string
+auto_doCombatCopy:
+  type: string
+auto_doneInitializePath:
+  type: string
+auto_dontUseCookBookBat:
+  type: boolean
+auto_doWhiteys:
+  type: boolean
+auto_drunken:
+  type: string
+auto_eaten:
+  type: string
+auto_edCombatCount:
+  type: int
+auto_edCombatRoundCount:
+  type: int
+auto_edServantBugCount:
+  type: int
+auto_edSkills:
+  type: int
+auto_edStatus:
+  type: string
+auto_eggDetective:
+  type: string
+auto_exerciseLiquidity:
+  type: int
+auto_familiarChoice:
+  type: familiar
+auto_forceCombatSource:
+  type: string
+auto_forceCombatWithLegendaryNoodles:
+  type: boolean
+auto_forceFreeRun:
+  type: boolean
+auto_forceNonCombatLocation:
+  type: location
+auto_forceNonCombatSource:
+  type: string
+auto_forceNonCombatTurn:
+  type: int
+auto_forceTavern:
+  type: boolean
+auto_freeruns:
+  type: string
+auto_funCombatHandler:
+  type: string
+auto_funPrefix:
+  type: string
+auto_funTracker:
+  type: string
+auto_getDictionary:
+  type: boolean
+auto_gremlinMoly:
+  type: boolean
+auto_habitatMonster:
+  type: string
+auto_haveSourceTerminal:
+  type: boolean
+auto_ignoreCombat:
+  type: string
+auto_instakill:
+  type: string
+auto_instakillSource:
+  type: string
+auto_instakillSuccess:
+  type: boolean
+auto_interruptedZones:
+  type: string
+auto_iotm_claim:
+  type: string
+auto_januaryToteAcquireCalledThisTurn:
+  type: boolean
+auto_junkspritesencountered:
+  type: int
+auto_kgbAscension:
+  type: int
+auto_kgbButton100:
+  type: int
+auto_kgbTracker:
+  type: string
+auto_killingjar:
+  type: string
+auto_L03CouncilVisited:
+  type: boolean
+auto_L05CouncilVisited:
+  type: boolean
+auto_L07CouncilVisited:
+  type: boolean
+auto_L11CouncilVisited:
+  type: boolean
+auto_L12FarmStage:
+  type: string
+auto_L9_smutOrcPervert:
+  type: boolean
+auto_lashes:
+  type: string
+auto_last_mallcached:
+  type: string
+auto_lastFamiliarLookupType:
+  type: string
+auto_lastShenTurn:
+  type: int
+auto_lastthunder:
+  type: string
+auto_lastthunderturn:
+  type: string
+auto_leaflet_done:
+  type: boolean
+auto_logLevel:
+  type: string
+auto_lucky:
+  type: string
+auto_luckySource:
+  type: string
+auto_mapperidot:
+  type: string
+auto_mcd_target:
+  type: int
+auto_minedCells:
+  type: string
+auto_MLSafetyLimitBackup:
+  type: string
+auto_modernzmobiecount:
+  type: int
+auto_mountainmen:
+  type: string
+auto_mpAutoRecovery:
+  type: float
+auto_mpAutoRecoveryTarget:
+  type: float
+auto_need_update:
+  type: boolean
+auto_nextEncounter:
+  type: string
+auto_ninjasnowmanassassin:
+  type: boolean
+auto_nonAdvLoc:
+  type: boolean
+auto_openedziggurat:
+  type: boolean
+auto_orcishfratboyspy:
+  type: string
+auto_otherstuff:
+  type: string
+auto_paranoia_counter:
+  type: int
+auto_parkaSetting:
+  type: string
+auto_parkaSpikesDeployed:
+  type: boolean
+auto_peteSkills:
+  type: int
+auto_powerfulglove:
+  type: string
+auto_preferSoCP:
+  type: boolean
+auto_prev_version:
+  type: string
+auto_priorCharpaneMode:
+  type: int
+auto_prioritizeGoose:
+  type: boolean
+auto_priorLocation:
+  type: location
+auto_pulls:
+  type: string
+auto_purple_candled:
+  type: string
+auto_rain_king_combat:
+  type: string
+auto_renenutet:
+  type: string
+auto_replaces:
+  type: string
+auto_retrocapeSettings:
+  type: string
+auto_robot_directive:
+  type: string
+auto_robot_skills_bought:
+  type: int
+auto_servantChoice:
+  type: string
+auto_shenZonesTurnsSpent:
+  type: string
+auto_shinningStarted:
+  type: boolean
+auto_shouldMeatLevel:
+  type: boolean
+auto_skipL12Farm:
+  type: boolean
+auto_skipStage2:
+  type: boolean
+auto_skipStage3:
+  type: boolean
+auto_skipStage4:
+  type: boolean
+auto_smileAt:
+  type: string
+auto_snapperPhylum:
+  type: string
+auto_sniffs:
+  type: string
+auto_spoonconfirmed:
+  type: int
+auto_tracker_path:
+  type: string
+auto_turbo:
+  type: boolean
+auto_useCleesh:
+  type: boolean
+auto_usePowerPill:
+  type: boolean
+auto_warhippyspy:
+  type: string
+auto_wineracksencountered:
+  type: int
+auto_wishes:
+  type: string
+auto_writingDeskSummon:
+  type: boolean
+auto_yellowRays:
+  type: string
+_auto_AwkwardBeatenUp:
+  type: int
+_auto_bad100Familiar:
+  type: boolean
+_auto_bat_bloodBank:
+  type: int
+_auto_bondBriefing:
+  type: string
+_auto_bondLevel:
+  type: int
+_auto_candyMapCompleted:
+  type: boolean
+_auto_casualAscension:
+  type: int
+_auto_coldMedicineLocked:
+  type: string
+_auto_combatDisguisesDelimitMask:
+  type: int
+_auto_combatFotdDinosaur:
+  type: string
+_auto_combatState:
+  type: string
+_auto_combatTracker_MortarRound:
+  type: int
+_auto_completedJarlsbergSkillTree:
+  type: boolean
+_auto_current_monster_is_free:
+  type: boolean
+_auto_deckCardsCheated:
+  type: string
+_auto_didBarrelBustToday:
+  type: boolean
+_auto_doneToday:
+  type: boolean
+_auto_extra_debug_bedtime_pulls:
+  type: boolean
+_auto_farmingKaAsEd:
+  type: boolean
+_auto_forcePokefamRestore:
+  type: boolean
+_auto_gnomeArenaVisited:
+  type: boolean
+_auto_groundhogSkip:
+  type: int
+_auto_groundhogSkipCounter:
+  type: int
+_auto_horseryRented:
+  type: int
+_auto_im_cool_with_dying_a_lot:
+  type: int
+_auto_inf_counter:
+  type: int
+_auto_inf_last_monster:
+  type: monster
+_auto_inf_session_adv:
+  type: int
+_auto_interestingCoinsSpent:
+  type: int
+_auto_jarlsbergSkills:
+  type: int
+_auto_kgbSetup:
+  type: boolean
+_auto_lastAutumnatonUpgrade:
+  type: int
+_auto_leprecondoDoneWith:
+  type: string
+_auto_lobsterChoice:
+  type: int
+_auto_organSpace:
+  type: float
+_auto_override_tooManyAdv:
+  type: int
+_auto_preferSwordFam:
+  type: boolean
+_auto_reinitialize:
+  type: boolean
+_auto_screechDelay:
+  type: string
+_auto_seaQuestStartedToday:
+  type: boolean
+_auto_skip_L8_trapperGroar:
+  type: boolean
+_auto_thisLoopHandleFamiliar:
+  type: boolean
+_auto_toxicAssetUses:
+  type: int
+_auto_tunedElement:
+  type: string
+_LAR_skipNC163:
+  type: int
+_LAR_skipNC178:
+  type: int
+_NC772_directive:
+  type: int
+_portscanPending:
+  type: boolean
+_yearbookCameraTargetLocation:
+  type: location
+_yearbookClubVisitedToday:
+  type: boolean
+c2t_apron_allowlist:
+  type: string
+chateauMonsterFought:
+  type: boolean
+kolhs_closetDrink:
+  type: boolean
+logLevelDefaultChangedToDebug:
+  type: boolean

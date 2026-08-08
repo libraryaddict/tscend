@@ -631,7 +631,7 @@ export function auto_floundryAction(): boolean {
     return false;
   }
   if (
-    !get("_floundryItemGot", false) &&
+    !get("_floundryItemCreated", false) &&
     auto_get_clan_lounge().has($item`Clan Floundry`) &&
     !inAftercore()
   ) {
@@ -655,7 +655,6 @@ export function auto_floundryAction(): boolean {
         ) {
           use(1, myFloundry);
         }
-        set("_floundryItemGot", true);
         return true;
       } else {
         auto_log_warning(
