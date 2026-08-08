@@ -46,8 +46,8 @@ import {
   set,
 } from "libram";
 
-import { CombatMacroReturns } from "../auto_adventure";
-import { possessEquipment } from "../auto_equipment";
+import { CombatMacroReturns } from "../../auto_adventure";
+import { possessEquipment } from "../../auto_equipment";
 import {
   auto_have_skill,
   auto_log_error,
@@ -67,22 +67,22 @@ import {
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
   safeGet,
-} from "../auto_util";
-import { auto_spoonCombatSkill } from "../iotms/2010/mr2019";
+} from "../../auto_util";
+import { auto_spoonCombatSkill } from "../../iotms/2010/mr2019";
 import {
   auto_backupTarget,
   auto_fireExtinguisherCharges,
   auto_FireExtinguisherCombatSkill,
-} from "../iotms/2020/mr2021";
-import { auto_bowlingBallCombatString } from "../iotms/2020/mr2022";
-import { dartELRcd, dartSkill } from "../iotms/2020/mr2024";
-import { elementalPlanes_access } from "../iotms/other/elementalPlanes";
+} from "../../iotms/2020/mr2021";
+import { auto_bowlingBallCombatString } from "../../iotms/2020/mr2022";
+import { dartELRcd, dartSkill } from "../../iotms/2020/mr2024";
+import { elementalPlanes_access } from "../../iotms/other/elementalPlanes";
 import {
   ed_needShop,
   isActuallyEd,
-} from "../paths/2015/actually_ed_the_undying";
-import { cyrptEvilBonus } from "../quests/level_07";
-import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
+} from "../../paths/2015/actually_ed_the_undying";
+import { cyrptEvilBonus } from "../../quests/level_07";
+import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 import {
   auto_canUse,
   auto_useSkill,
@@ -98,7 +98,7 @@ import {
   useItem,
   wantToForceDrop,
   yellowRayCombatString,
-} from "./auto_combat_util";
+} from "../auto_combat_util";
 
 //Path specific combat handling for Actually Ed the Undying
 

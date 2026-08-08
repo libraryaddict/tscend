@@ -10,11 +10,11 @@ import {
 } from "kolmafia";
 import { $element, $item, $monster, $skill, $stat, get } from "libram";
 
-import { CombatMacroReturns } from "../auto_adventure";
-import { auto_have_skill } from "../auto_util";
-import { dartSkill } from "../iotms/2020/mr2024";
-import { in_amw } from "../paths/2026/adventurer_meats_world";
-import { auto_canUse, auto_useSkill, canSurvive } from "./auto_combat_util";
+import { CombatMacroReturns } from "../../auto_adventure";
+import { auto_have_skill } from "../../auto_util";
+import { dartSkill } from "../../iotms/2020/mr2024";
+import { in_amw } from "../../paths/2026/adventurer_meats_world";
+import { auto_canUse, auto_useSkill, canSurvive } from "../auto_combat_util";
 
 //defined in /autoscend/combat/auto_combat_adventurer_meats_world.ash
 export function amw_wanttoPP(): boolean {

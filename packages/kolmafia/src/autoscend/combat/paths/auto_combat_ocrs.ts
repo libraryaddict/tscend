@@ -12,14 +12,14 @@ import {
   auto_log_error,
   auto_log_warning,
   isFreeMonster,
-} from "../auto_util";
-import { in_ocrs } from "../paths/2015/one_crazy_random_summer";
+} from "../../auto_util";
+import { in_ocrs } from "../../paths/2015/one_crazy_random_summer";
 import {
   combat_status_add,
   combat_status_check,
   markAsUsed,
   markAsUsed$1,
-} from "./auto_combat_util";
+} from "../auto_combat_util";
 
 //Path specific combat handling for One Crazy Random Summer
 

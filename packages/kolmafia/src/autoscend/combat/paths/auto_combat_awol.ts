@@ -1,7 +1,7 @@
 import { containsText, myDaycount, myTurncount } from "kolmafia";
 import { get, set } from "libram";
 
-import { combat_status_add, combat_status_check } from "./auto_combat_util";
+import { combat_status_add, combat_status_check } from "../auto_combat_util";
 
 //Path specific combat handling functions for Avatar of West of Loathing
 

@@ -64,8 +64,6 @@ import { inAftercore } from "../paths/casual";
 import { auto_warSide } from "../quests/level_12";
 import { towerKeyCount } from "../quests/level_13";
 import { numPirateInsults } from "../quests/optional";
-import { auto_combatLicenseToAdventureStage4 } from "./auto_combat_license_to_adventure";
-import { auto_combatTheSourceStage4 } from "./auto_combat_the_source";
 import {
   auto_canUse,
   auto_useSkill,
@@ -83,8 +81,10 @@ import {
   useItem,
   useItems,
 } from "./auto_combat_util";
-import { auto_combatWereProfessorStage4 } from "./auto_combat_wereprofessor";
-import { auto_combatZombieSlayerStage4 } from "./auto_combat_zombie_slayer";
+import { auto_combatLicenseToAdventureStage4 } from "./paths/auto_combat_license_to_adventure";
+import { auto_combatTheSourceStage4 } from "./paths/auto_combat_the_source";
+import { auto_combatWereProfessorStage4 } from "./paths/auto_combat_wereprofessor";
+import { auto_combatZombieSlayerStage4 } from "./paths/auto_combat_zombie_slayer";
 
 //defined in /autoscend/combat/auto_combat_default_stage4.ash
 export function auto_combatDefaultStage4(

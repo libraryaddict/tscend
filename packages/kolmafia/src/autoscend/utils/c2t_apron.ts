@@ -15,7 +15,7 @@ import {
 } from "kolmafia";
 import { $item, $stat } from "libram";
 
-import { AshMatcher } from "./autoscend/utils/kolmafiaUtils";
+import { AshMatcher } from "./kolmafiaUtils";
 
 //c2t apron
 //c2t

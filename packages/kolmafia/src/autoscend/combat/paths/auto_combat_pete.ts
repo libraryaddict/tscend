@@ -1,9 +1,9 @@
 import { equippedItem, Monster, myAudience, myClass } from "kolmafia";
 import { $class, $items, $skill, $slot } from "libram";
 
-import { CombatMacroReturns } from "../auto_adventure";
-import { disregardInstantKarma } from "../auto_powerlevel";
-import { auto_canUse, auto_useSkill, canSurvive } from "./auto_combat_util";
+import { CombatMacroReturns } from "../../auto_adventure";
+import { disregardInstantKarma } from "../../auto_powerlevel";
+import { auto_canUse, auto_useSkill, canSurvive } from "../auto_combat_util";
 
 //Path specific combat handling for Avatar of Sneaky Pete
 

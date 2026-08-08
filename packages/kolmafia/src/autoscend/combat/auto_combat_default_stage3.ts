@@ -90,8 +90,6 @@ import {
 } from "../quests/level_09";
 import { L11_needTombRatchet } from "../quests/level_11";
 import { needStarKey } from "../quests/level_13";
-import { auto_combatMeatGolemStage3 } from "./auto_combat_adventurer_meats_world";
-import { auto_combatHeavyRainsStage3 } from "./auto_combat_heavy_rains";
 import {
   auto_canUse,
   auto_useSkill,
@@ -108,7 +106,9 @@ import {
   wantToDouse,
   wantToForceDrop,
 } from "./auto_combat_util";
-import { auto_combatZombieSlayerStage3 } from "./auto_combat_zombie_slayer";
+import { auto_combatMeatGolemStage3 } from "./paths/auto_combat_adventurer_meats_world";
+import { auto_combatHeavyRainsStage3 } from "./paths/auto_combat_heavy_rains";
+import { auto_combatZombieSlayerStage3 } from "./paths/auto_combat_zombie_slayer";
 
 //defined in /autoscend/combat/auto_combat_default_stage3.ash
 export function auto_combatDefaultStage3(

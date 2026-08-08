@@ -134,7 +134,7 @@ import {
 } from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
 import { WarPlan } from "../autoscend_record";
-import { auto_JunkyardCombatHandler } from "../combat/auto_combat_quest";
+import { auto_JunkyardCombatHandler } from "../combat/paths/auto_combat_quest";
 import {
   QuestTask,
   registerQuestTask,

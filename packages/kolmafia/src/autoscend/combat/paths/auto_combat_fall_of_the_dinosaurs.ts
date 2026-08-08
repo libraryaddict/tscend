@@ -9,14 +9,14 @@ import {
 } from "kolmafia";
 import { $skill, set } from "libram";
 
-import { CombatMacroReturns } from "../auto_adventure";
-import { in_fotd } from "../paths/2022/fall_of_the_dinosaurs";
+import { CombatMacroReturns } from "../../auto_adventure";
+import { in_fotd } from "../../paths/2022/fall_of_the_dinosaurs";
 import {
   auto_canUse,
   auto_useSkill,
   canSurvive,
   haveUsed,
-} from "./auto_combat_util";
+} from "../auto_combat_util";
 
 //Path specific combat handling for Fall of the Dinosaurs
 

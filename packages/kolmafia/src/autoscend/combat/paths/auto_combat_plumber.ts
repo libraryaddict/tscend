@@ -1,8 +1,8 @@
 import { equippedAmount, Monster, myClass, myLocation, myPp } from "kolmafia";
 import { $class, $item, $location, $skill } from "libram";
 
-import { CombatMacroReturns } from "../auto_adventure";
-import { auto_canUse, auto_useSkill } from "./auto_combat_util";
+import { CombatMacroReturns } from "../../auto_adventure";
+import { auto_canUse, auto_useSkill } from "../auto_combat_util";
 
 //Path specific combat handling for path of the plumber
 

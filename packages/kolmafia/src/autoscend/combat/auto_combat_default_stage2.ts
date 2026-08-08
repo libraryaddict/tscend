@@ -85,7 +85,6 @@ import { getZooKickInstaKill } from "../paths/2025/zootomist";
 import { inAftercore } from "../paths/casual";
 import { bridgeGoal } from "../quests/level_09";
 import { towerKeyCount } from "../quests/level_13";
-import { auto_combatDarkGyffteStage2 } from "./auto_combat_dark_gyffte";
 import {
   auto_canUse,
   auto_useSkill,
@@ -103,6 +102,7 @@ import {
   wantToForceDrop,
   yellowRayCombatString,
 } from "./auto_combat_util";
+import { auto_combatDarkGyffteStage2 } from "./paths/auto_combat_dark_gyffte";
 
 //defined in /autoscend/combat/auto_combat_default_stage2.ash
 export function auto_combatDefaultStage2(

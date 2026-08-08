@@ -9,14 +9,14 @@ import {
 } from "kolmafia";
 import { $element, $monster, $monsters, $skill, $slot, $stat } from "libram";
 
-import { CombatMacroReturns } from "../auto_adventure";
-import { in_robot } from "../paths/2021/you_robot";
+import { CombatMacroReturns } from "../../auto_adventure";
+import { in_robot } from "../../paths/2021/you_robot";
 import {
   auto_canUse,
   auto_useSkill,
   canSurvive,
   turns_to_kill,
-} from "./auto_combat_util";
+} from "../auto_combat_util";
 
 //defined in /autoscend/combat/auto_combat_you_robot.ash
 export function auto_combat_robot_stage5(

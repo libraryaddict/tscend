@@ -59,7 +59,6 @@ import {
   set,
 } from "libram";
 
-import { c2t_apron } from "../../../c2t_apron";
 import { autoAdvBypass } from "../../auto_adventure";
 import { fullness_left } from "../../auto_consume";
 import { equipMaximizedGear, possessEquipment } from "../../auto_equipment";
@@ -97,6 +96,7 @@ import { in_hattrick } from "../../paths/2025/hattrick";
 import { in_zootomist } from "../../paths/2025/zootomist";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
+import { c2t_apron } from "../../utils/c2t_apron";
 import {
   auto_get_clan_lounge,
   canReturnToCurrentClan,

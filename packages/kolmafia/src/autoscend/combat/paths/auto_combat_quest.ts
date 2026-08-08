@@ -14,20 +14,19 @@ import {
 } from "kolmafia";
 import { $class, $item, $items, $monsters, $skill, get, set } from "libram";
 
-import { CombatMacroReturns } from "../auto_adventure";
-import { isAttackFamiliar } from "../auto_familiar";
+import { CombatMacroReturns } from "../../auto_adventure";
+import { isAttackFamiliar } from "../../auto_familiar";
 import {
   auto_have_skill,
   auto_log_info,
   combatItemDamageMultiplier,
   MLDamageToMonsterMultiplier,
-} from "../auto_util";
-import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
-import { glover_usable } from "../paths/2018/g_lover";
-import { in_fotd } from "../paths/2022/fall_of_the_dinosaurs";
-import { auto_warSide } from "../quests/level_12";
-import { auto_combatHandler } from "./auto_combat";
-import { auto_edCombatHandler } from "./auto_combat_ed";
+} from "../../auto_util";
+import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+import { glover_usable } from "../../paths/2018/g_lover";
+import { in_fotd } from "../../paths/2022/fall_of_the_dinosaurs";
+import { auto_warSide } from "../../quests/level_12";
+import { auto_combatHandler } from "../auto_combat";
 import {
   auto_canUse,
   auto_useSkill,
@@ -40,7 +39,8 @@ import {
   haveUsed,
   useItem,
   useItems,
-} from "./auto_combat_util";
+} from "../auto_combat_util";
+import { auto_edCombatHandler } from "./auto_combat_ed";
 
 // This file is for quest specific combat handling.
 // the junkyard gremlin quest

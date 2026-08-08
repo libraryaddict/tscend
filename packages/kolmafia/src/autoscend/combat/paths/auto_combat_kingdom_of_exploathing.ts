@@ -10,13 +10,13 @@ import {
 } from "kolmafia";
 import { $elements, $item, $monster, $skill } from "libram";
 
-import { CombatMacroReturns } from "../auto_adventure";
+import { CombatMacroReturns } from "../../auto_adventure";
 import {
   auto_canUse,
   auto_useSkill,
   canUse$3,
   useItem,
-} from "./auto_combat_util";
+} from "../auto_combat_util";
 
 //Path specific combat handling for Kingdom of Exploathing
 

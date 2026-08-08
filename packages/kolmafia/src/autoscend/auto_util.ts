@@ -236,7 +236,6 @@ import { solveDelayZone } from "./auto_routing";
 import { zone_hasLuckyAdventure } from "./auto_zone";
 import { kmailObject } from "./autoscend_record";
 import { auto_combatHandler } from "./combat/auto_combat";
-import { auto_edCombatHandler } from "./combat/auto_combat_ed";
 import {
   auto_canUse,
   banisherCombatAction$1,
@@ -248,6 +247,7 @@ import {
   useItem,
   yellowRayCombatString,
 } from "./combat/auto_combat_util";
+import { auto_edCombatHandler } from "./combat/paths/auto_combat_ed";
 import {
   getIncompleteQuestTasks,
   QuestTask,

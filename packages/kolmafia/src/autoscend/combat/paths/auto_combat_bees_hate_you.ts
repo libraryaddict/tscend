@@ -1,8 +1,8 @@
 import { abort, Monster } from "kolmafia";
 import { $item, $monster } from "libram";
 
-import { CombatMacroReturns } from "../auto_adventure";
-import { canUse$3, useItem } from "./auto_combat_util";
+import { CombatMacroReturns } from "../../auto_adventure";
+import { canUse$3, useItem } from "../auto_combat_util";
 
 //Path specific combat handling for Bees Hate You
 

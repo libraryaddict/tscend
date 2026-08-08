@@ -30,15 +30,11 @@ import { in_awol } from "../paths/2016/avatar_of_west_of_loathing";
 import { in_pokefam } from "../paths/2018/pocket_familiars";
 import { in_wildfire } from "../paths/2021/wildfire";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
-import { awol_combat_helper } from "./auto_combat_awol";
 import { auto_combatDefaultStage1 } from "./auto_combat_default_stage1";
 import { auto_combatDefaultStage2 } from "./auto_combat_default_stage2";
 import { auto_combatDefaultStage3 } from "./auto_combat_default_stage3";
 import { auto_combatDefaultStage4 } from "./auto_combat_default_stage4";
 import { auto_combatDefaultStage5 } from "./auto_combat_default_stage5";
-import { disguises_combat_helper } from "./auto_combat_disguises_delimit";
-import { fotd_combat_helper } from "./auto_combat_fall_of_the_dinosaurs";
-import { ocrs_combat_helper } from "./auto_combat_ocrs";
 import {
   auto_canUse,
   auto_useSkill,
@@ -46,6 +42,10 @@ import {
   CombatStatusType,
   defaultRoundLimit,
 } from "./auto_combat_util";
+import { awol_combat_helper } from "./paths/auto_combat_awol";
+import { disguises_combat_helper } from "./paths/auto_combat_disguises_delimit";
+import { fotd_combat_helper } from "./paths/auto_combat_fall_of_the_dinosaurs";
+import { ocrs_combat_helper } from "./paths/auto_combat_ocrs";
 
 //header file for combat
 //combat utilities

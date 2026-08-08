@@ -13,7 +13,7 @@ import { $modifier } from "libram";
 
 import { autoAdv, CombatMacro } from "../auto_adventure";
 import { auto_combatHandler } from "../combat/auto_combat";
-import { auto_edCombatHandler } from "../combat/auto_combat_ed";
+import { auto_edCombatHandler } from "../combat/paths/auto_combat_ed";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { maximizer } from "../utils/maximizer";
 

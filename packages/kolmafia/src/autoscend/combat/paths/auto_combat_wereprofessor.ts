@@ -10,15 +10,15 @@ import {
 } from "kolmafia";
 import { $effect, $item, $monster, $skill, get, set } from "libram";
 
-import { CombatMacroReturns } from "../auto_adventure";
-import { auto_haveCosmicBowlingBall } from "../iotms/2020/mr2022";
-import { dartSkill } from "../iotms/2020/mr2024";
+import { CombatMacroReturns } from "../../auto_adventure";
+import { auto_haveCosmicBowlingBall } from "../../iotms/2020/mr2022";
+import { dartSkill } from "../../iotms/2020/mr2024";
 import {
   in_wereprof,
   is_professor,
   is_werewolf,
   wereprof_oculus,
-} from "../paths/2024/wereprofessor";
+} from "../../paths/2024/wereprofessor";
 import {
   auto_canUse,
   auto_useSkill,
@@ -26,7 +26,7 @@ import {
   haveUsed,
   markAsUsed,
   useItem,
-} from "./auto_combat_util";
+} from "../auto_combat_util";
 
 //defined in /autoscend/combat/auto_combat_wereprofessor.ash
 export function auto_combatWereProfessorStage1(

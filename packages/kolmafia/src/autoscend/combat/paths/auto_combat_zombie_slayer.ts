@@ -8,17 +8,17 @@ import {
 } from "kolmafia";
 import { $item, $location, $monster, $monsters, $skill, get } from "libram";
 
-import { CombatMacroReturns } from "../auto_adventure";
-import { possessEquipment } from "../auto_equipment";
+import { CombatMacroReturns } from "../../auto_adventure";
+import { possessEquipment } from "../../auto_equipment";
 import {
   auto_have_skill,
   handleTracker,
   internalQuestStatus,
   safeGet,
-} from "../auto_util";
-import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
-import { cyrptEvilBonus } from "../quests/level_07";
-import { auto_canUse, auto_useSkill, canSurvive } from "./auto_combat_util";
+} from "../../auto_util";
+import { in_zombieSlayer } from "../../paths/2012/zombie_slayer";
+import { cyrptEvilBonus } from "../../quests/level_07";
+import { auto_canUse, auto_useSkill, canSurvive } from "../auto_combat_util";
 
 //Path specific combat handling for Zombie Slayer
 

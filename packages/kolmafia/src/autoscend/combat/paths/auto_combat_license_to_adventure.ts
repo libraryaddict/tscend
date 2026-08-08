@@ -1,9 +1,9 @@
 import { itemAmount, Monster, myLocation } from "kolmafia";
 import { $item, $location, $monster, get } from "libram";
 
-import { CombatMacroReturns } from "../auto_adventure";
-import { in_lta } from "../paths/2017/license_to_adventure";
-import { canSurvive } from "./auto_combat_util";
+import { CombatMacroReturns } from "../../auto_adventure";
+import { in_lta } from "../../paths/2017/license_to_adventure";
+import { canSurvive } from "../auto_combat_util";
 
 //Path specific combat handling for license to adventure
 

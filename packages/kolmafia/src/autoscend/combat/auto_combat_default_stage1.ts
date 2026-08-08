@@ -56,15 +56,6 @@ import { in_plumber } from "../paths/2020/path_of_the_plumber";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
 import { inAftercore } from "../paths/casual";
-import { amw_wanttoPP } from "./auto_combat_adventurer_meats_world";
-import { auto_combatBHYStage1 } from "./auto_combat_bees_hate_you";
-import { auto_combatDisguisesStage1 } from "./auto_combat_disguises_delimit";
-import { auto_combatFallOfTheDinosaursStage1 } from "./auto_combat_fall_of_the_dinosaurs";
-import { auto_combatHeavyRainsStage1 } from "./auto_combat_heavy_rains";
-import { auto_combatExploathingStage1 } from "./auto_combat_kingdom_of_exploathing";
-import { auto_combat_nanorhinoBuff } from "./auto_combat_mr2012";
-import { auto_combatPeteStage1 } from "./auto_combat_pete";
-import { auto_combatTheSourceStage1 } from "./auto_combat_the_source";
 import {
   auto_canUse,
   auto_useSkill,
@@ -75,8 +66,17 @@ import {
   markAsUsed$1,
   useItem,
 } from "./auto_combat_util";
-import { auto_combatWereProfessorStage1 } from "./auto_combat_wereprofessor";
-import { auto_combatWildfireStage1 } from "./auto_combat_wildfire";
+import { amw_wanttoPP } from "./paths/auto_combat_adventurer_meats_world";
+import { auto_combatBHYStage1 } from "./paths/auto_combat_bees_hate_you";
+import { auto_combatDisguisesStage1 } from "./paths/auto_combat_disguises_delimit";
+import { auto_combatFallOfTheDinosaursStage1 } from "./paths/auto_combat_fall_of_the_dinosaurs";
+import { auto_combatHeavyRainsStage1 } from "./paths/auto_combat_heavy_rains";
+import { auto_combatExploathingStage1 } from "./paths/auto_combat_kingdom_of_exploathing";
+import { auto_combat_nanorhinoBuff } from "./paths/auto_combat_mr2012";
+import { auto_combatPeteStage1 } from "./paths/auto_combat_pete";
+import { auto_combatTheSourceStage1 } from "./paths/auto_combat_the_source";
+import { auto_combatWereProfessorStage1 } from "./paths/auto_combat_wereprofessor";
+import { auto_combatWildfireStage1 } from "./paths/auto_combat_wildfire";
 
 //defined in /autoscend/combat/auto_combat_default_stage1.ash
 export function auto_combatDefaultStage1(

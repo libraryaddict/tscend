@@ -32,7 +32,7 @@ import {
 } from "./auto_util";
 import { zone_isAvailable } from "./auto_zone";
 import { auto_combatHandler } from "./combat/auto_combat";
-import { auto_edCombatHandler } from "./combat/auto_combat_ed";
+import { auto_edCombatHandler } from "./combat/paths/auto_combat_ed";
 import {
   ed_handleAdventureServant,
   isActuallyEd,

@@ -68,12 +68,6 @@ import { auto_canNorthernExplosionFE } from "../iotms/2020/mr2025";
 import { in_glover } from "../paths/2018/g_lover";
 import { getZooBestPunch } from "../paths/2025/zootomist";
 import { inAftercore } from "../paths/casual";
-import { auto_combatMeatGolemStage5 } from "./auto_combat_adventurer_meats_world";
-import { auto_combatDisguisesStage5 } from "./auto_combat_disguises_delimit";
-import { auto_combatFallOfTheDinosaursStage5 } from "./auto_combat_fall_of_the_dinosaurs";
-import { auto_combatGelatinousNoobStage5 } from "./auto_combat_gelatinous_noob";
-import { auto_combatHeavyRainsStage5 } from "./auto_combat_heavy_rains";
-import { auto_combatPlumberStage5 } from "./auto_combat_plumber";
 import {
   auto_canUse,
   auto_useSkill,
@@ -89,9 +83,15 @@ import {
   usedCount,
   useItem,
 } from "./auto_combat_util";
-import { auto_combatWereProfessorStage5 } from "./auto_combat_wereprofessor";
-import { auto_combat_robot_stage5 } from "./auto_combat_you_robot";
-import { auto_combatZombieSlayerStage5 } from "./auto_combat_zombie_slayer";
+import { auto_combatMeatGolemStage5 } from "./paths/auto_combat_adventurer_meats_world";
+import { auto_combatDisguisesStage5 } from "./paths/auto_combat_disguises_delimit";
+import { auto_combatFallOfTheDinosaursStage5 } from "./paths/auto_combat_fall_of_the_dinosaurs";
+import { auto_combatGelatinousNoobStage5 } from "./paths/auto_combat_gelatinous_noob";
+import { auto_combatHeavyRainsStage5 } from "./paths/auto_combat_heavy_rains";
+import { auto_combatPlumberStage5 } from "./paths/auto_combat_plumber";
+import { auto_combatWereProfessorStage5 } from "./paths/auto_combat_wereprofessor";
+import { auto_combat_robot_stage5 } from "./paths/auto_combat_you_robot";
+import { auto_combatZombieSlayerStage5 } from "./paths/auto_combat_zombie_slayer";
 
 //defined in /autoscend/combat/auto_combat_default_stage5.ash
 export function auto_combatDefaultStage5(
