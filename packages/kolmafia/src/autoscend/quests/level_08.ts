@@ -101,20 +101,23 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { elementalPlanes_access } from "../iotms/elementalPlanes";
-import { adjustEdHat } from "../iotms/mr2015";
-import { auto_sourceTerminalEducate } from "../iotms/mr2016";
-import { catBurglarHeistsLeft } from "../iotms/mr2018";
-import { auto_mapTheMonsters } from "../iotms/mr2020";
-import { auto_haveGreyGoose, auto_haveTrainSet } from "../iotms/mr2022";
-import { auto_getCitizenZone, auto_lostStomach } from "../iotms/mr2023";
-import { auto_haveChestMimic, auto_haveMayamCalendar } from "../iotms/mr2024";
+import { adjustEdHat } from "../iotms/2010/mr2015";
+import { auto_sourceTerminalEducate } from "../iotms/2010/mr2016";
+import { catBurglarHeistsLeft } from "../iotms/2010/mr2018";
+import { auto_mapTheMonsters } from "../iotms/2020/mr2020";
+import { auto_haveGreyGoose, auto_haveTrainSet } from "../iotms/2020/mr2022";
+import { auto_getCitizenZone, auto_lostStomach } from "../iotms/2020/mr2023";
+import {
+  auto_haveChestMimic,
+  auto_haveMayamCalendar,
+} from "../iotms/2020/mr2024";
 import {
   auto_canEquipAllMcHugeLarge,
   auto_equipAllMcHugeLarge,
   auto_haveMcHugeLargeSkis,
-} from "../iotms/mr2025";
-import { auto_copierShouldDelayZone } from "../iotms/mr2026";
+} from "../iotms/2020/mr2025";
+import { auto_copierShouldDelayZone } from "../iotms/2020/mr2026";
+import { elementalPlanes_access } from "../iotms/other/elementalPlanes";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
 import { L8_slopeCasual } from "../paths/casual";

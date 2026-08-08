@@ -112,19 +112,22 @@ import {
   wrap_item,
 } from "./auto_util";
 import { zone_delay } from "./auto_zone";
-import { auto_jokesterGunFreeKillAvailable } from "./iotms/mr2016";
-import { isjanuaryToteAvailable, januaryToteTurnsLeft } from "./iotms/mr2018";
+import { auto_jokesterGunFreeKillAvailable } from "./iotms/2010/mr2016";
+import {
+  isjanuaryToteAvailable,
+  januaryToteTurnsLeft,
+} from "./iotms/2010/mr2018";
 import {
   auto_chestXraysRemaining,
   auto_haveKramcoSausageOMatic,
   auto_sausageFightsToday,
-} from "./iotms/mr2019";
-import { auto_hasPowerfulGlove } from "./iotms/mr2020";
+} from "./iotms/2010/mr2019";
+import { auto_hasPowerfulGlove } from "./iotms/2020/mr2020";
 import {
   auto_backupTarget,
   auto_haveCrystalBall,
   simulatePreAdvForCrystalBall,
-} from "./iotms/mr2021";
+} from "./iotms/2020/mr2021";
 import {
   auto_canUseJuneCleaver,
   auto_expectedStillsuitAdvs,
@@ -132,13 +135,13 @@ import {
   auto_haveCursedMagnifyingGlass,
   canUseSweatpants,
   getSweat,
-} from "./iotms/mr2022";
-import { auto_haveBurningLeaves } from "./iotms/mr2023";
+} from "./iotms/2020/mr2022";
+import { auto_haveBurningLeaves } from "./iotms/2020/mr2023";
 import {
   auto_haveBatWings,
   auto_haveDarts,
   auto_haveSpringShoes,
-} from "./iotms/mr2024";
+} from "./iotms/2020/mr2024";
 import {
   auto_getItemToEquipBCZ,
   auto_haveCupidBow,
@@ -146,13 +149,13 @@ import {
   auto_timeCopFights,
   auto_timeIsAStripPossible,
   auto_wantToBCZ,
-} from "./iotms/mr2025";
+} from "./iotms/2020/mr2025";
 import {
   auto_clubEmBackInTimesRemaining,
   auto_codpieceFoldGemScores,
   auto_havePastaWand,
   auto_isInEternityCodpiece,
-} from "./iotms/mr2026";
+} from "./iotms/2020/mr2026";
 import { applyMaximizePreference } from "./maximizer_parser";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { in_amw } from "./paths/adventurer_meats_world";

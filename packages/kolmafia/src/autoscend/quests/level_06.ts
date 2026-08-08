@@ -42,9 +42,9 @@ import {
   turnsUsedByRemainingNCForcesToday,
 } from "../auto_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
-import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
-import { fantasyRealmToken } from "../iotms/mr2018";
-import { auto_copierShouldDelayZone } from "../iotms/mr2026";
+import { considerGrimstoneGolem, handleBjornify } from "../iotms/2010/mr2014";
+import { fantasyRealmToken } from "../iotms/2010/mr2018";
+import { auto_copierShouldDelayZone } from "../iotms/2020/mr2026";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_gnoob } from "../paths/gelatinous_noob";
 import { LX_doingPirates } from "./optional";

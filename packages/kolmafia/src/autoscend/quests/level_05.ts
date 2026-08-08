@@ -51,7 +51,7 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { auto_copierShouldDelayZone } from "../iotms/mr2026";
+import { auto_copierShouldDelayZone } from "../iotms/2020/mr2026";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
 import { bat_formBats } from "../paths/dark_gyffte";

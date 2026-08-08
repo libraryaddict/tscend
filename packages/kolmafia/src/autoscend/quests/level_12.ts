@@ -141,27 +141,29 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { zataraAvailable } from "../iotms/clan";
-import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
+import { considerGrimstoneGolem, handleBjornify } from "../iotms/2010/mr2014";
 import {
   chateaumantegna_havePainting,
   chateaumantegna_usePainting,
-} from "../iotms/mr2015";
-import { auto_sourceTerminalEducate, timeSpinnerCombat } from "../iotms/mr2016";
+} from "../iotms/2010/mr2015";
+import {
+  auto_sourceTerminalEducate,
+  timeSpinnerCombat,
+} from "../iotms/2010/mr2016";
 import {
   auto_haveVotingBooth,
   auto_voteMonster,
   januaryToteTurnsLeft,
   neverendingPartyCombat,
   songboomSetting,
-} from "../iotms/mr2018";
-import { auto_sausageGoblin } from "../iotms/mr2019";
-import { auto_cargoShortsOpenPocket } from "../iotms/mr2020";
+} from "../iotms/2010/mr2018";
+import { auto_sausageGoblin } from "../iotms/2010/mr2019";
+import { auto_cargoShortsOpenPocket } from "../iotms/2020/mr2020";
 import {
   auto_backupTarget,
   auto_fireExtinguisherCharges,
-} from "../iotms/mr2021";
-import { auto_hasAutumnaton, auto_haveGreyGoose } from "../iotms/mr2022";
+} from "../iotms/2020/mr2021";
+import { auto_hasAutumnaton, auto_haveGreyGoose } from "../iotms/2020/mr2022";
 import {
   auto_doPhoneQuest,
   auto_dousesRemaining,
@@ -169,13 +171,14 @@ import {
   auto_haveAugustScepter,
   auto_haveCCSC,
   auto_havePayPhone,
-} from "../iotms/mr2023";
-import { auto_swoopsRemaining } from "../iotms/mr2024";
-import { auto_havePeridot, haveUsedPeridot } from "../iotms/mr2025";
+} from "../iotms/2020/mr2023";
+import { auto_swoopsRemaining } from "../iotms/2020/mr2024";
+import { auto_havePeridot, haveUsedPeridot } from "../iotms/2020/mr2025";
 import {
   auto_haveArchaeologistSpade,
   auto_spadeDigsRemaining,
-} from "../iotms/mr2026";
+} from "../iotms/2020/mr2026";
+import { zataraAvailable } from "../iotms/other/clan";
 import {
   ed_DelayNC$1,
   edAcquireHP,

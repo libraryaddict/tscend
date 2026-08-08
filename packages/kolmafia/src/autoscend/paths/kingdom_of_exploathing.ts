@@ -66,9 +66,12 @@ import {
   setFlavour,
 } from "../auto_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
-import { doHottub } from "../iotms/clan";
-import { auto_beachCombHead, auto_canBeachCombHead } from "../iotms/mr2019";
-import { auto_canUseJuneCleaver } from "../iotms/mr2022";
+import {
+  auto_beachCombHead,
+  auto_canBeachCombHead,
+} from "../iotms/2010/mr2019";
+import { auto_canUseJuneCleaver } from "../iotms/2020/mr2022";
+import { doHottub } from "../iotms/other/clan";
 import { equipWarOutfit, haveWarOutfit } from "../quests/level_12";
 import { needDigitalKey } from "../quests/level_13";
 import { maximizer } from "../utils/maximizer";

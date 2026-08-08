@@ -1,7 +1,7 @@
 import { haveEquipped, Item, itemAmount } from "kolmafia";
 import { $item, get } from "libram";
 
-import { auto_is_valid } from "../auto_util";
+import { auto_is_valid } from "../../auto_util";
 
 //	This is meant for items that have a date of 2007
 

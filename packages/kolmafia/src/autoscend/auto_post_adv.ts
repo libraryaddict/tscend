@@ -103,13 +103,13 @@ import {
   safeGet,
   whatStatSmile,
 } from "./auto_util";
-import { auto_equipAprilShieldBuff } from "./iotms/mr2025";
+import { auto_equipAprilShieldBuff } from "./iotms/2020/mr2025";
 import {
   auto_haveArchaeologistSpade,
   auto_spadeDigItem,
   auto_spadeDigsRemaining,
   auto_tryPlayBaseball,
-} from "./iotms/mr2026";
+} from "./iotms/2020/mr2026";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_canAfford, in_amw } from "./paths/adventurer_meats_world";
 import { in_aosol } from "./paths/avatar_of_shadows_over_loathing";

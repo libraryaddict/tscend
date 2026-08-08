@@ -95,37 +95,37 @@ import {
   meatReserve,
 } from "./auto_util";
 import {
-  doHottub,
-  hotTubSoaksRemaining,
-  isHotTubAvailable,
-} from "./iotms/clan";
-import {
   chateaumantegna_available,
   chateaumantegna_decorations,
   chateaumantegna_nightstandSet,
-} from "./iotms/mr2015";
+} from "./iotms/2010/mr2015";
 import {
   auto_campawayAvailable,
   auto_sausageBlocked,
   auto_sausageEatEmUp,
   auto_sausageGrind,
-} from "./iotms/mr2019";
+} from "./iotms/2010/mr2019";
 import {
   auto_canUseJuneCleaver,
   canUseSweatpants,
   getSweat,
-} from "./iotms/mr2022";
+} from "./iotms/2020/mr2022";
 import {
   auto_haveBurningLeaves,
   auto_haveCincho,
   auto_nextRestOverCinch,
-} from "./iotms/mr2023";
+} from "./iotms/2020/mr2023";
 import {
   auto_equipAprilShieldBuff,
   auto_haveAprilShowerShield,
   auto_haveCrimboSkeleton,
-} from "./iotms/mr2025";
-import { auto_elfToiletReady, auto_useElfToilet } from "./iotms/mr2026";
+} from "./iotms/2020/mr2025";
+import { auto_elfToiletReady, auto_useElfToilet } from "./iotms/2020/mr2026";
+import {
+  doHottub,
+  hotTubSoaksRemaining,
+  isHotTubAvailable,
+} from "./iotms/other/clan";
 import { edAcquireHP, isActuallyEd } from "./paths/actually_ed_the_undying";
 import { in_amw } from "./paths/adventurer_meats_world";
 import { borisAcquireHP, is_boris } from "./paths/avatar_of_boris";

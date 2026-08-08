@@ -61,10 +61,10 @@ import {
   stunnable,
 } from "../auto_util";
 import { zone_combatMod } from "../auto_zone";
-import { auto_spoonCombatSkill } from "../iotms/mr2019";
-import { auto_haveCosmicBowlingBall } from "../iotms/mr2022";
-import { auto_haveDarts, dartSkill } from "../iotms/mr2024";
-import { auto_canNorthernExplosionFE } from "../iotms/mr2025";
+import { auto_spoonCombatSkill } from "../iotms/2010/mr2019";
+import { auto_haveCosmicBowlingBall } from "../iotms/2020/mr2022";
+import { auto_haveDarts, dartSkill } from "../iotms/2020/mr2024";
+import { auto_canNorthernExplosionFE } from "../iotms/2020/mr2025";
 import { inAftercore } from "../paths/casual";
 import { in_glover } from "../paths/g_lover";
 import { getZooBestPunch } from "../paths/zootomist";

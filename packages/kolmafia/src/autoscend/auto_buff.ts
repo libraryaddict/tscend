@@ -85,23 +85,23 @@ import {
   auto_powerfulGloveCharges,
   auto_powerfulGloveNoncombat,
   auto_powerfulGloveStats,
-} from "./iotms/mr2020";
-import { auto_haveEmotionChipSkills } from "./iotms/mr2021";
+} from "./iotms/2020/mr2020";
+import { auto_haveEmotionChipSkills } from "./iotms/2020/mr2021";
 import {
   auto_availableBrickRift,
   auto_haveIdolMicrophone,
-} from "./iotms/mr2023";
+} from "./iotms/2020/mr2023";
 import {
   auto_equipAprilShieldBuff,
   auto_getItemToEquipBCZ,
   auto_haveBCZ,
   auto_unequipAprilShieldBuff,
-} from "./iotms/mr2025";
+} from "./iotms/2020/mr2025";
 import {
   auto_getItemToEquipHeartstone,
   auto_haveHeartstone,
-} from "./iotms/mr2026";
-import { ARBSupplyDrop, auto_canARBSupplyDrop } from "./iotms/ttt";
+} from "./iotms/2020/mr2026";
+import { ARBSupplyDrop, auto_canARBSupplyDrop } from "./iotms/other/ttt";
 import { in_bhy } from "./paths/bees_hate_you";
 import { inAftercore } from "./paths/casual";
 import { glover_usable$1 } from "./paths/g_lover";

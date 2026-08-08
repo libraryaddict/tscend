@@ -63,10 +63,10 @@ import {
   set,
 } from "libram";
 
-import { autoAdv, autoAdvBypass } from "../auto_adventure";
-import { main as handleChoiceAdv } from "../auto_choice_adv";
-import { autoEquipToSlot, possessEquipment } from "../auto_equipment";
-import { canChangeToFamiliar } from "../auto_familiar";
+import { autoAdv, autoAdvBypass } from "../../auto_adventure";
+import { main as handleChoiceAdv } from "../../auto_choice_adv";
+import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
+import { canChangeToFamiliar } from "../../auto_familiar";
 import {
   auto_have_skill,
   auto_is_valid,
@@ -82,11 +82,11 @@ import {
   poolSkillPracticeGains,
   wrap_item,
   zoneRank,
-} from "../auto_util";
-import { combat_status_add } from "../combat/auto_combat_util";
-import { in_plumber } from "../paths/path_of_the_plumber";
-import { AshMatcher } from "../utils/kolmafiaUtils";
-import { maximizer } from "../utils/maximizer";
+} from "../../auto_util";
+import { combat_status_add } from "../../combat/auto_combat_util";
+import { in_plumber } from "../../paths/path_of_the_plumber";
+import { AshMatcher } from "../../utils/kolmafiaUtils";
+import { maximizer } from "../../utils/maximizer";
 
 // This is meant for items that have a date of 2020
 

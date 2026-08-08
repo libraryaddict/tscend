@@ -70,18 +70,24 @@ import {
   isMeatPoor,
   safeGet,
 } from "./auto_util";
-import { considerGrimstoneGolem } from "./iotms/mr2014";
-import { auto_checkFamiliarMummery, mummifyFamiliar$2 } from "./iotms/mr2017";
-import { catBurglarHeistDesires, catBurglarHeistsLeft } from "./iotms/mr2018";
-import { auto_hasStillSuit, auto_haveGreyGoose } from "./iotms/mr2022";
+import { considerGrimstoneGolem } from "./iotms/2010/mr2014";
+import {
+  auto_checkFamiliarMummery,
+  mummifyFamiliar$2,
+} from "./iotms/2010/mr2017";
+import {
+  catBurglarHeistDesires,
+  catBurglarHeistsLeft,
+} from "./iotms/2010/mr2018";
+import { auto_hasStillSuit, auto_haveGreyGoose } from "./iotms/2020/mr2022";
 import {
   auto_availableBrickRift,
   auto_forceEagle,
   auto_handleJillOfAllTrades,
   auto_haveCCSC,
-} from "./iotms/mr2023";
-import { auto_haveChestMimic } from "./iotms/mr2024";
-import { auto_haveCupidBow } from "./iotms/mr2025";
+} from "./iotms/2020/mr2023";
+import { auto_haveChestMimic } from "./iotms/2020/mr2024";
+import { auto_haveCupidBow } from "./iotms/2020/mr2025";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_wantMeat, in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";

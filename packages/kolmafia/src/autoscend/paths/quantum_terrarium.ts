@@ -20,7 +20,7 @@ import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
 import {
   auto_godLobsterFightsRemaining,
   godLobsterCombat,
-} from "../iotms/mr2018";
+} from "../iotms/2010/mr2018";
 import { L11_aridDesert, L11_blackMarket } from "../quests/level_11";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 

@@ -59,16 +59,16 @@ import {
   set,
 } from "libram";
 
-import { c2t_apron } from "../../c2t_apron";
-import { autoAdvBypass } from "../auto_adventure";
-import { fullness_left } from "../auto_consume";
-import { equipMaximizedGear, possessEquipment } from "../auto_equipment";
+import { c2t_apron } from "../../../c2t_apron";
+import { autoAdvBypass } from "../../auto_adventure";
+import { fullness_left } from "../../auto_consume";
+import { equipMaximizedGear, possessEquipment } from "../../auto_equipment";
 import {
   auto_have_familiar,
   auto_wantFamXP,
   switchToFamXP,
-} from "../auto_familiar";
-import { provideResistances } from "../auto_providers";
+} from "../../auto_familiar";
+import { provideResistances } from "../../auto_providers";
 import {
   auto_get_campground,
   auto_ignoreExperience,
@@ -85,18 +85,18 @@ import {
   stat_to_substat,
   substat_to_level,
   TrackerKey,
-} from "../auto_util";
-import { auto_canUse } from "../combat/auto_combat_util";
-import { in_amw } from "../paths/adventurer_meats_world";
-import { in_bhy } from "../paths/bees_hate_you";
-import { in_glover } from "../paths/g_lover";
-import { in_hattrick } from "../paths/hattrick";
-import { in_koe } from "../paths/kingdom_of_exploathing";
-import { in_lol } from "../paths/legacy_of_loathing";
-import { in_lta } from "../paths/license_to_adventure";
-import { in_plumber } from "../paths/path_of_the_plumber";
-import { in_zootomist } from "../paths/zootomist";
-import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
+} from "../../auto_util";
+import { auto_canUse } from "../../combat/auto_combat_util";
+import { in_amw } from "../../paths/adventurer_meats_world";
+import { in_bhy } from "../../paths/bees_hate_you";
+import { in_glover } from "../../paths/g_lover";
+import { in_hattrick } from "../../paths/hattrick";
+import { in_koe } from "../../paths/kingdom_of_exploathing";
+import { in_lol } from "../../paths/legacy_of_loathing";
+import { in_lta } from "../../paths/license_to_adventure";
+import { in_plumber } from "../../paths/path_of_the_plumber";
+import { in_zootomist } from "../../paths/zootomist";
+import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 import {
   auto_get_clan_lounge,
   canReturnToCurrentClan,
@@ -104,7 +104,7 @@ import {
   changeClan$2,
   getBAFHID,
   isWhitelistedToBAFH,
-} from "./clan";
+} from "../other/clan";
 import { auto_getCitizenZone$1, auto_haveCincho } from "./mr2023";
 import { auto_openMcLargeHugeSkis, beretBusk } from "./mr2025";
 

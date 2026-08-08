@@ -71,9 +71,9 @@ import {
   Wanderer,
 } from "libram";
 
-import { auto_unreservedAdvRemaining } from "../../autoscend";
-import { auto_buyUpTo, auto_hermit } from "../auto_acquire";
-import { autoAdvBypass } from "../auto_adventure";
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
+import { auto_buyUpTo, auto_hermit } from "../../auto_acquire";
+import { autoAdvBypass } from "../../auto_adventure";
 import {
   auto_autoConsumeOne,
   auto_canEat,
@@ -86,17 +86,17 @@ import {
   inebriety_left,
   spleen_left,
   stomach_left,
-} from "../auto_consume";
-import { possessEquipment } from "../auto_equipment";
+} from "../../auto_consume";
+import { possessEquipment } from "../../auto_equipment";
 import {
   auto_have_familiar,
   canChangeToFamiliar,
   handleFamiliar$1,
   pathAllowsChangingFamiliar,
   pathHasFamiliar,
-} from "../auto_familiar";
-import { haveFreeRestAvailable } from "../auto_restore";
-import { isSoftBlockInPlace } from "../auto_routing";
+} from "../../auto_familiar";
+import { haveFreeRestAvailable } from "../../auto_restore";
+import { isSoftBlockInPlace } from "../../auto_routing";
 import {
   auto_get_campground,
   auto_is_valid,
@@ -121,34 +121,34 @@ import {
   safeGet,
   set_next_fight_is_free,
   summonMonster,
-} from "../auto_util";
-import { zone_delay } from "../auto_zone";
-import { ConsumeAction } from "../autoscend_record";
-import { auto_canUse, isSniffed } from "../combat/auto_combat_util";
-import { getIncompleteQuestTasks, taskLocations } from "../engine/engine";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_avantGuard } from "../paths/avant_guard";
-import { in_koe } from "../paths/kingdom_of_exploathing";
-import { in_plumber } from "../paths/path_of_the_plumber";
-import { in_quantumTerrarium } from "../paths/quantum_terrarium";
-import { in_small } from "../paths/small";
-import { in_tcrs } from "../paths/two_crazy_random_summer";
-import { is_werewolf } from "../paths/wereprofessor";
+} from "../../auto_util";
+import { zone_delay } from "../../auto_zone";
+import { ConsumeAction } from "../../autoscend_record";
+import { auto_canUse, isSniffed } from "../../combat/auto_combat_util";
+import { getIncompleteQuestTasks, taskLocations } from "../../engine/engine";
+import { isActuallyEd } from "../../paths/actually_ed_the_undying";
+import { in_avantGuard } from "../../paths/avant_guard";
+import { in_koe } from "../../paths/kingdom_of_exploathing";
+import { in_plumber } from "../../paths/path_of_the_plumber";
+import { in_quantumTerrarium } from "../../paths/quantum_terrarium";
+import { in_small } from "../../paths/small";
+import { in_tcrs } from "../../paths/two_crazy_random_summer";
+import { is_werewolf } from "../../paths/wereprofessor";
 import {
   bridgeGoal,
   fastenerCount,
   hedgeTrimmersNeeded,
   lumberCount,
-} from "../quests/level_09";
-import { L10_needAmuletOfPlotSignificance } from "../quests/level_10";
+} from "../../quests/level_09";
+import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
 import {
   L11_needDrumMachine,
   L11_needTombRatchet,
   L11_needWetStew,
-} from "../quests/level_11";
-import { auto_gunpowderBarrelsWanted } from "../quests/level_12";
-import { maximizer } from "../utils/maximizer";
-import { auto_haveKramcoSausageOMatic } from "./mr2019";
+} from "../../quests/level_11";
+import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
+import { maximizer } from "../../utils/maximizer";
+import { auto_haveKramcoSausageOMatic } from "../2010/mr2019";
 import { auto_haveTrainSet } from "./mr2022";
 import { auto_haveCCSC } from "./mr2023";
 import { auto_haveBatWings, auto_haveSpringShoes } from "./mr2024";

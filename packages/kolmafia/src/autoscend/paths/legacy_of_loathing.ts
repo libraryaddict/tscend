@@ -18,8 +18,11 @@ import { is100FamRun, pathHasFamiliar } from "../auto_familiar";
 import {
   auto_sourceTerminalEducate,
   auto_sourceTerminalRequest,
-} from "../iotms/mr2016";
-import { auto_buyFrom2002MrStore, auto_scepterSkills } from "../iotms/mr2023";
+} from "../iotms/2010/mr2016";
+import {
+  auto_buyFrom2002MrStore,
+  auto_scepterSkills,
+} from "../iotms/2020/mr2023";
 
 //Defined in autoscend/paths/legacy_of_loathing.ash
 export function in_lol(): boolean {

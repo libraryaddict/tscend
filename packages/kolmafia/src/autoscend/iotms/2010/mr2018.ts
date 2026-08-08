@@ -51,22 +51,22 @@ import {
   set,
 } from "libram";
 
-import { autoAdv, autoAdvBypass$1, CombatMacro } from "../auto_adventure";
+import { autoAdv, autoAdvBypass$1, CombatMacro } from "../../auto_adventure";
 import {
   auto_spleenFamiliarAdvItemsPossessed,
   spleen_left,
-} from "../auto_consume";
+} from "../../auto_consume";
 import {
   autoEquipToSlot,
   equipStatgainIncreasers$1,
   possessEquipment,
-} from "../auto_equipment";
+} from "../../auto_equipment";
 import {
   canChangeToFamiliar,
   handleFamiliar$1,
   is100FamRun,
-} from "../auto_familiar";
-import { isAboutToPowerlevel } from "../auto_powerlevel";
+} from "../../auto_familiar";
+import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import {
   auto_is_valid,
   auto_is_valid$1,
@@ -78,23 +78,27 @@ import {
   internalQuestStatus,
   safeGet,
   wrap_item,
-} from "../auto_util";
-import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_avantGuard } from "../paths/avant_guard";
-import { is_boris } from "../paths/avatar_of_boris";
-import { in_bhy } from "../paths/bees_hate_you";
-import { in_darkGyffte } from "../paths/dark_gyffte";
-import { in_disguises } from "../paths/disguises_delimit";
-import { in_glover } from "../paths/g_lover";
-import { in_ocrs } from "../paths/one_crazy_random_summer";
-import { in_plumber } from "../paths/path_of_the_plumber";
-import { in_quantumTerrarium } from "../paths/quantum_terrarium";
-import { in_wotsf } from "../paths/way_of_the_surprising_fist";
-import { hedgeTrimmersNeeded } from "../quests/level_09";
-import { L10_needAmuletOfPlotSignificance } from "../quests/level_10";
-import { AshMatcher } from "../utils/kolmafiaUtils";
-import { maximizer } from "../utils/maximizer";
+} from "../../auto_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+} from "../../engine/engine";
+import { isActuallyEd } from "../../paths/actually_ed_the_undying";
+import { in_avantGuard } from "../../paths/avant_guard";
+import { is_boris } from "../../paths/avatar_of_boris";
+import { in_bhy } from "../../paths/bees_hate_you";
+import { in_darkGyffte } from "../../paths/dark_gyffte";
+import { in_disguises } from "../../paths/disguises_delimit";
+import { in_glover } from "../../paths/g_lover";
+import { in_ocrs } from "../../paths/one_crazy_random_summer";
+import { in_plumber } from "../../paths/path_of_the_plumber";
+import { in_quantumTerrarium } from "../../paths/quantum_terrarium";
+import { in_wotsf } from "../../paths/way_of_the_surprising_fist";
+import { hedgeTrimmersNeeded } from "../../quests/level_09";
+import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
+import { AshMatcher } from "../../utils/kolmafiaUtils";
+import { maximizer } from "../../utils/maximizer";
 import { auto_havePillKeeper } from "./mr2019";
 
 //	This is meant for items that have a date of 2018.

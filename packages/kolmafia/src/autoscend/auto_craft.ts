@@ -13,7 +13,7 @@ import {
 import { $item, $items } from "libram";
 
 import { auto_is_valid, auto_log_debug, auto_log_warning } from "./auto_util";
-import { hasLegionKnife } from "./iotms/mr2011";
+import { hasLegionKnife } from "./iotms/2010/mr2011";
 
 //Defined in autoscend/auto_craft.ash
 function is_foldable(target: Item): boolean {

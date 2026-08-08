@@ -69,34 +69,34 @@ import {
 import { zone_isAvailable } from "./auto_zone";
 import { auto_canUse } from "./combat/auto_combat_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "./engine/engine";
-import { elementalPlanes_access } from "./iotms/elementalPlanes";
-import { handleBjornify } from "./iotms/mr2014";
-import { chateaumantegna_available } from "./iotms/mr2015";
-import { snojoFightAvailable, timeSpinnerAdventure } from "./iotms/mr2016";
+import { handleBjornify } from "./iotms/2010/mr2014";
+import { chateaumantegna_available } from "./iotms/2010/mr2015";
+import { snojoFightAvailable, timeSpinnerAdventure } from "./iotms/2010/mr2016";
 import {
   godLobsterCombat,
   neverendingPartyAvailable,
   neverendingPartyCombat,
   neverendingPartyRemainingFreeFights,
-} from "./iotms/mr2018";
-import { auto_changeSnapperPhylum } from "./iotms/mr2019";
+} from "./iotms/2010/mr2018";
+import { auto_changeSnapperPhylum } from "./iotms/2010/mr2019";
 import {
   auto_canFightPiranhaPlant,
   auto_canTendMushroomGarden,
   auto_mushroomGardenHandler,
   auto_piranhaPlantFightsRemaining,
-} from "./iotms/mr2020";
+} from "./iotms/2020/mr2020";
 import {
   auto_hasSpeakEasy,
   auto_remainingSpeakeasyFreeFights,
-} from "./iotms/mr2022";
+} from "./iotms/2020/mr2022";
 import {
   auto_fightFlamingLeaflet,
   auto_haveAugustScepter,
   auto_haveBurningLeaves,
   auto_remainingBurningLeavesFights,
-} from "./iotms/mr2023";
-import { auto_haveElfToilet } from "./iotms/mr2026";
+} from "./iotms/2020/mr2023";
+import { auto_haveElfToilet } from "./iotms/2020/mr2026";
+import { elementalPlanes_access } from "./iotms/other/elementalPlanes";
 import { in_avantGuard } from "./paths/avant_guard";
 import { inAftercore } from "./paths/casual";
 import { in_koe } from "./paths/kingdom_of_exploathing";

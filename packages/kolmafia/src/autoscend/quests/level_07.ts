@@ -93,26 +93,29 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { handleBjornify } from "../iotms/mr2014";
-import { spacegateVaccine } from "../iotms/mr2017";
-import { auto_havePillKeeper } from "../iotms/mr2019";
+import { handleBjornify } from "../iotms/2010/mr2014";
+import { spacegateVaccine } from "../iotms/2010/mr2017";
+import { auto_havePillKeeper } from "../iotms/2010/mr2019";
 import {
   auto_configureRetrocape,
   auto_hasRetrocape,
   auto_mapTheMonsters,
-} from "../iotms/mr2020";
+} from "../iotms/2020/mr2020";
 import {
   auto_backupUsesLeft,
   auto_FireExtinguisherCombatSkill,
-} from "../iotms/mr2021";
-import { auto_haveGreyGoose } from "../iotms/mr2022";
-import { auto_habitatFightsLeft, auto_habitatMonster } from "../iotms/mr2023";
+} from "../iotms/2020/mr2021";
+import { auto_haveGreyGoose } from "../iotms/2020/mr2022";
+import {
+  auto_habitatFightsLeft,
+  auto_habitatMonster,
+} from "../iotms/2020/mr2023";
 import {
   auto_copierShouldDelayZone,
   auto_desires_sword_familiar_drops,
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
-} from "../iotms/mr2026";
+} from "../iotms/2020/mr2026";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";
 import { is_pete } from "../paths/avatar_of_sneaky_pete";

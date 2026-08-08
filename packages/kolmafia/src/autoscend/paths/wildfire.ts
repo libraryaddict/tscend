@@ -50,12 +50,12 @@ import {
   setFlavour,
 } from "../auto_util";
 import { zone_available } from "../auto_zone";
-import { auto_saberChargesAvailable } from "../iotms/mr2019";
+import { auto_saberChargesAvailable } from "../iotms/2010/mr2019";
 import {
   auto_canExtinguisherBeRefilled,
   auto_fireExtinguisherCharges,
   auto_haveFireExtinguisher,
-} from "../iotms/mr2021";
+} from "../iotms/2020/mr2021";
 import {
   LX_spookyravenManorFirstFloor,
   LX_unlockHauntedBilliardsRoom,

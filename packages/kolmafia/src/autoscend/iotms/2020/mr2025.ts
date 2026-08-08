@@ -89,7 +89,7 @@ import {
   set,
 } from "libram";
 
-import { main as handleChoiceAdv } from "../auto_choice_adv";
+import { main as handleChoiceAdv } from "../../auto_choice_adv";
 import {
   auto_canDrink,
   auto_canEat,
@@ -99,19 +99,19 @@ import {
   inebriety_left,
   spleen_left,
   stomach_left,
-} from "../auto_consume";
+} from "../../auto_consume";
 import {
   autoForceEquip,
   autoForceEquip$2,
   possessEquipment,
   powerMultipliers,
-} from "../auto_equipment";
+} from "../../auto_equipment";
 import {
   auto_have_familiar,
   handleFamiliar$1,
   pathHasFamiliar,
-} from "../auto_familiar";
-import { isAboutToPowerlevel } from "../auto_powerlevel";
+} from "../../auto_familiar";
+import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import {
   auto_have_skill,
   auto_is_valid,
@@ -129,22 +129,25 @@ import {
   safeGet,
   stat_to_substat,
   zoneRank,
-} from "../auto_util";
-import { auto_canUse, combat_status_add } from "../combat/auto_combat_util";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_amw } from "../paths/adventurer_meats_world";
-import { in_avantGuard } from "../paths/avant_guard";
-import { in_darkGyffte } from "../paths/dark_gyffte";
-import { in_hattrick } from "../paths/hattrick";
-import { in_kolhs } from "../paths/kolhs";
-import { in_small } from "../paths/small";
-import { in_zombieSlayer } from "../paths/zombie_slayer";
-import { in_zootomist } from "../paths/zootomist";
-import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
-import { L11_needWetStew } from "../quests/level_11";
-import { needStarKey, towerKeyCount } from "../quests/level_13";
-import { AshMatcher } from "../utils/kolmafiaUtils";
-import { acquiredFantasyRealmToken, fantasyBanditsFought } from "./mr2018";
+} from "../../auto_util";
+import { auto_canUse, combat_status_add } from "../../combat/auto_combat_util";
+import { isActuallyEd } from "../../paths/actually_ed_the_undying";
+import { in_amw } from "../../paths/adventurer_meats_world";
+import { in_avantGuard } from "../../paths/avant_guard";
+import { in_darkGyffte } from "../../paths/dark_gyffte";
+import { in_hattrick } from "../../paths/hattrick";
+import { in_kolhs } from "../../paths/kolhs";
+import { in_small } from "../../paths/small";
+import { in_zombieSlayer } from "../../paths/zombie_slayer";
+import { in_zootomist } from "../../paths/zootomist";
+import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
+import { L11_needWetStew } from "../../quests/level_11";
+import { needStarKey, towerKeyCount } from "../../quests/level_13";
+import { AshMatcher } from "../../utils/kolmafiaUtils";
+import {
+  acquiredFantasyRealmToken,
+  fantasyBanditsFought,
+} from "../2010/mr2018";
 import { auto_haveChestMimic } from "./mr2024";
 import {
   auto_haveEternityCodpiece,

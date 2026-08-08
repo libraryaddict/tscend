@@ -60,20 +60,20 @@ import {
   set,
 } from "libram";
 
-import { auto_buyUpTo } from "../auto_acquire";
-import { autoAdv, CombatMacro } from "../auto_adventure";
+import { auto_buyUpTo } from "../../auto_acquire";
+import { autoAdv, CombatMacro } from "../../auto_adventure";
 import {
   auto_canEat,
   consumptionProgress,
   spleen_left,
   stomach_left,
-} from "../auto_consume";
+} from "../../auto_consume";
 import {
   autoEquip,
   equipMaximizedGear,
   possessEquipment,
-} from "../auto_equipment";
-import { canChangeToFamiliar } from "../auto_familiar";
+} from "../../auto_equipment";
+import { canChangeToFamiliar } from "../../auto_familiar";
 import {
   auto_burnMP,
   auto_can_equip,
@@ -94,15 +94,19 @@ import {
   loopHandlerDelayAll,
   meatReserve,
   wrap_item,
-} from "../auto_util";
-import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_darkGyffte } from "../paths/dark_gyffte";
-import { in_lowkeysummer } from "../paths/low_key_summer";
-import { in_plumber } from "../paths/path_of_the_plumber";
-import { in_tcrs } from "../paths/two_crazy_random_summer";
-import { cyrptEvilBonus } from "../quests/level_07";
-import { maximizer } from "../utils/maximizer";
+} from "../../auto_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+} from "../../engine/engine";
+import { isActuallyEd } from "../../paths/actually_ed_the_undying";
+import { in_darkGyffte } from "../../paths/dark_gyffte";
+import { in_lowkeysummer } from "../../paths/low_key_summer";
+import { in_plumber } from "../../paths/path_of_the_plumber";
+import { in_tcrs } from "../../paths/two_crazy_random_summer";
+import { cyrptEvilBonus } from "../../quests/level_07";
+import { maximizer } from "../../utils/maximizer";
 
 // This is meant for items that have a date of 2019
 

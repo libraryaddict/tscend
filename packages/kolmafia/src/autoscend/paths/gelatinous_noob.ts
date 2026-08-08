@@ -34,8 +34,8 @@ import {
   auto_log_info,
   internalQuestStatus,
 } from "../auto_util";
-import { isSpeakeasyDrink } from "../iotms/clan";
-import { isClipartItem } from "../iotms/mr2011";
+import { isClipartItem } from "../iotms/2010/mr2011";
+import { isSpeakeasyDrink } from "../iotms/other/clan";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/gelatinous_noob.ash

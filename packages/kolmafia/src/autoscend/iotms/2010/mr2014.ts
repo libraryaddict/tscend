@@ -48,17 +48,17 @@ import {
   set,
 } from "libram";
 
-import { canPull, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv } from "../auto_adventure";
-import { main as handleChoiceAdv } from "../auto_choice_adv";
-import { fullness_left, inebriety_left } from "../auto_consume";
-import { possessEquipment } from "../auto_equipment";
+import { canPull, pullXWhenHaveY } from "../../auto_acquire";
+import { autoAdv } from "../../auto_adventure";
+import { main as handleChoiceAdv } from "../../auto_choice_adv";
+import { fullness_left, inebriety_left } from "../../auto_consume";
+import { possessEquipment } from "../../auto_equipment";
 import {
   canChangeFamiliar,
   canChangeToFamiliar,
   handleFamiliar$1,
-} from "../auto_familiar";
-import { isAboutToPowerlevel } from "../auto_powerlevel";
+} from "../../auto_familiar";
+import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import {
   auto_can_equip,
   auto_is_valid,
@@ -66,13 +66,17 @@ import {
   auto_log_warning,
   auto_runChoice,
   internalQuestStatus,
-} from "../auto_util";
-import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
-import { in_heavyrains } from "../paths/heavy_rains";
-import { in_robot } from "../paths/you_robot";
-import { bridgeGoal } from "../quests/level_09";
-import { ns_crowd3 } from "../quests/level_13";
-import { elementalPlanes_access } from "./elementalPlanes";
+} from "../../auto_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+} from "../../engine/engine";
+import { in_heavyrains } from "../../paths/heavy_rains";
+import { in_robot } from "../../paths/you_robot";
+import { bridgeGoal } from "../../quests/level_09";
+import { ns_crowd3 } from "../../quests/level_13";
+import { elementalPlanes_access } from "../other/elementalPlanes";
 
 //	This is meant for items that have a date of 2014.
 //	Handling: Bjorn, Little Geneticist DNA-Splicing Lab, Xi-Receiver Unit

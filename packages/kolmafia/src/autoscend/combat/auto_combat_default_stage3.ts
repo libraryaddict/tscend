@@ -63,17 +63,20 @@ import {
   isGhost,
   stunnable,
 } from "../auto_util";
-import { auto_fireExtinguisherCharges } from "../iotms/mr2021";
+import { auto_fireExtinguisherCharges } from "../iotms/2020/mr2021";
 import {
   auto_autumnatonQuestingIn,
   dronesOut,
   gooseExpectedDrones,
-} from "../iotms/mr2022";
+} from "../iotms/2020/mr2022";
 import {
   auto_dousesRemaining,
   auto_remainingCandyCaneSlashes,
-} from "../iotms/mr2023";
-import { auto_canNorthernExplosionFE, auto_wantToBCZ } from "../iotms/mr2025";
+} from "../iotms/2020/mr2023";
+import {
+  auto_canNorthernExplosionFE,
+  auto_wantToBCZ,
+} from "../iotms/2020/mr2025";
 import { in_avantGuard } from "../paths/avant_guard";
 import { inAftercore } from "../paths/casual";
 import { in_nuclear } from "../paths/nuclear_autumn";

@@ -42,7 +42,7 @@ import { LX_attemptPowerLevel } from "../auto_powerlevel";
 import { auto_log_warning, internalQuestStatus } from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
 import { QuestTask, registerQuestTask, runTaskChain } from "../engine/engine";
-import { canDrinkSpeakeasyDrink } from "../iotms/clan";
+import { canDrinkSpeakeasyDrink } from "../iotms/other/clan";
 import { L2_mosquitoTask } from "../quests/level_02";
 import { L3_tavern, L3_tavernTask } from "../quests/level_03";
 import { L4_batCaveTask } from "../quests/level_04";

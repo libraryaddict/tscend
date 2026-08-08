@@ -256,14 +256,16 @@ import {
   taskDesiredEncounters,
   taskLocations,
 } from "./engine/engine";
-import { auto_get_clan_lounge, handleFaxMonster } from "./iotms/clan";
-import { auto_hasNavelRing, auto_navelFreeRunChance } from "./iotms/mr2007";
+import {
+  auto_hasNavelRing,
+  auto_navelFreeRunChance,
+} from "./iotms/2010/mr2007";
 import {
   expectGhostReport,
   haveGhostReport,
   isOverdueDigitize,
   timeSpinnerCombat,
-} from "./iotms/mr2016";
+} from "./iotms/2010/mr2016";
 import {
   asdonBuff,
   auto_breatheOutsLeft,
@@ -272,8 +274,8 @@ import {
   canGenieCombat,
   makeGenieCombat,
   makeGenieWish$1,
-} from "./iotms/mr2017";
-import { auto_latteDropAvailable, auto_voteMonster } from "./iotms/mr2018";
+} from "./iotms/2010/mr2017";
+import { auto_latteDropAvailable, auto_voteMonster } from "./iotms/2010/mr2018";
 import {
   auto_havePillKeeper,
   auto_pillKeeper$1,
@@ -281,18 +283,18 @@ import {
   auto_pillKeeperFreeUseAvailable,
   auto_pillKeeperUses,
   auto_sausageGoblin,
-} from "./iotms/mr2019";
+} from "./iotms/2010/mr2019";
 import {
   auto_cargoShortsOpenPocket$2,
   auto_configureRetrocape,
   auto_forceEquipPowerfulGlove,
   auto_hasRetrocape,
-} from "./iotms/mr2020";
+} from "./iotms/2020/mr2020";
 import {
   auto_backupTarget,
   auto_backupUsesLeft,
   auto_getBattery,
-} from "./iotms/mr2021";
+} from "./iotms/2020/mr2021";
 import {
   auto_configureParka,
   auto_fightLocketMonster,
@@ -304,7 +306,7 @@ import {
   auto_monsterInLocket,
   auto_ParkaSpikeForcesLeft,
   auto_voidMonster,
-} from "./iotms/mr2022";
+} from "./iotms/2020/mr2022";
 import {
   auto_canHabitat,
   auto_cinchForcesLeft,
@@ -315,7 +317,7 @@ import {
   auto_haveMonkeyPaw,
   auto_makeMonkeyPawWish,
   auto_monkeyPawWishesLeft,
-} from "./iotms/mr2023";
+} from "./iotms/2020/mr2023";
 import {
   auto_AprilSaxLuckyLeft,
   auto_AprilTubaForcesLeft,
@@ -325,7 +327,7 @@ import {
   auto_meggFight,
   auto_playAprilSax,
   auto_playAprilTuba,
-} from "./iotms/mr2024";
+} from "./iotms/2020/mr2024";
 import {
   auto_equipAprilShieldBuff,
   auto_getItemToEquipBCZ,
@@ -334,7 +336,7 @@ import {
   auto_McLargeHugeForcesLeft,
   auto_punchOutsLeft,
   auto_wantToBCZ,
-} from "./iotms/mr2025";
+} from "./iotms/2020/mr2025";
 import {
   auto_acquireInterestingItem,
   auto_baseballFreefightMonster,
@@ -347,13 +349,14 @@ import {
   auto_heartstoneLuckRemaining,
   auto_legendaryNoodlesAvailable,
   auto_willEatLegendaryNoodles,
-} from "./iotms/mr2026";
+} from "./iotms/2020/mr2026";
+import { auto_get_clan_lounge, handleFaxMonster } from "./iotms/other/clan";
 import {
   ARBSupplyDrop,
   auto_ARBSupplyDropsLeft,
   auto_canARBSupplyDrop,
   auto_haveARB,
-} from "./iotms/ttt";
+} from "./iotms/other/ttt";
 import { handleServant, isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_wantMeat, in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";

@@ -50,23 +50,23 @@ import {
   set,
 } from "libram";
 
-import { auto_advToReserve } from "../../autoscend";
-import { pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv } from "../auto_adventure";
+import { auto_advToReserve } from "../../../autoscend";
+import { pullXWhenHaveY } from "../../auto_acquire";
+import { autoAdv } from "../../auto_adventure";
 import {
   autoChew,
   fullness_left,
   inebriety_left,
   stomach_left,
-} from "../auto_consume";
-import { canUntinker, untinker } from "../auto_craft";
+} from "../../auto_consume";
+import { canUntinker, untinker } from "../../auto_craft";
 import {
   autoEquipToSlot,
   possessEquipment,
   possessOutfit,
-} from "../auto_equipment";
-import { haveSpleenFamiliar, pathHasFamiliar } from "../auto_familiar";
-import { providePlusCombat, providePlusNonCombat } from "../auto_providers";
+} from "../../auto_equipment";
+import { haveSpleenFamiliar, pathHasFamiliar } from "../../auto_familiar";
+import { providePlusCombat, providePlusNonCombat } from "../../auto_providers";
 import {
   auto_can_equip,
   auto_combat_appearance_rates,
@@ -89,23 +89,29 @@ import {
   meatReserve,
   safeGet,
   wrap_item,
-} from "../auto_util";
-import { isSniffed$1 } from "../combat/auto_combat_util";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { in_hattrick } from "../paths/hattrick";
-import { in_koe } from "../paths/kingdom_of_exploathing";
-import { in_kolhs } from "../paths/kolhs";
-import { in_lar } from "../paths/live_ascend_repeat";
-import { in_small } from "../paths/small";
-import { in_wereprof, is_werewolf } from "../paths/wereprofessor";
-import { in_wildfire } from "../paths/wildfire";
-import { in_robot } from "../paths/you_robot";
-import { cyrptEvilBonus } from "../quests/level_07";
-import { bridgeGoal } from "../quests/level_09";
-import { auto_bestWarPlan, auto_warKillsPerBattle } from "../quests/level_12";
-import { needStarKey } from "../quests/level_13";
-import { maximizer } from "../utils/maximizer";
-import { acquiredFantasyRealmToken, fantasyBanditsFought } from "./mr2018";
+} from "../../auto_util";
+import { isSniffed$1 } from "../../combat/auto_combat_util";
+import { isActuallyEd } from "../../paths/actually_ed_the_undying";
+import { in_hattrick } from "../../paths/hattrick";
+import { in_koe } from "../../paths/kingdom_of_exploathing";
+import { in_kolhs } from "../../paths/kolhs";
+import { in_lar } from "../../paths/live_ascend_repeat";
+import { in_small } from "../../paths/small";
+import { in_wereprof, is_werewolf } from "../../paths/wereprofessor";
+import { in_wildfire } from "../../paths/wildfire";
+import { in_robot } from "../../paths/you_robot";
+import { cyrptEvilBonus } from "../../quests/level_07";
+import { bridgeGoal } from "../../quests/level_09";
+import {
+  auto_bestWarPlan,
+  auto_warKillsPerBattle,
+} from "../../quests/level_12";
+import { needStarKey } from "../../quests/level_13";
+import { maximizer } from "../../utils/maximizer";
+import {
+  acquiredFantasyRealmToken,
+  fantasyBanditsFought,
+} from "../2010/mr2018";
 import { auto_hasAutumnaton } from "./mr2022";
 import {
   auto_habitatFightsLeft,

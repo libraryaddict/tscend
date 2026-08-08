@@ -176,16 +176,18 @@ import {
 } from "./auto_zone";
 import { generic_t } from "./autoscend_record";
 import { auto_canUse } from "./combat/auto_combat_util";
-import { get_floundry_locations } from "./iotms/clan";
-import { horsePreAdventure } from "./iotms/mr2017";
+import { horsePreAdventure } from "./iotms/2010/mr2017";
 import {
   auto_latteDropName,
   auto_latteDropWanted,
   isFantasyRealm,
   januaryToteAcquire,
-} from "./iotms/mr2018";
-import { auto_sausageGoblin, auto_snapperPreAdventure } from "./iotms/mr2019";
-import { auto_handleRetrocape } from "./iotms/mr2020";
+} from "./iotms/2010/mr2018";
+import {
+  auto_sausageGoblin,
+  auto_snapperPreAdventure,
+} from "./iotms/2010/mr2019";
+import { auto_handleRetrocape } from "./iotms/2020/mr2020";
 import {
   auto_backupTarget,
   auto_fireExtinguisherCharges,
@@ -194,7 +196,7 @@ import {
   auto_haveCrystalBall,
   auto_haveFireExtinguisher,
   have_fireworks_shop,
-} from "./iotms/mr2021";
+} from "./iotms/2020/mr2021";
 import {
   auto_handleParka,
   auto_hasParka,
@@ -202,19 +204,19 @@ import {
   auto_monsterInLocket,
   sweatpantsPreAdventure,
   utilizeStillsuit,
-} from "./iotms/mr2022";
+} from "./iotms/2020/mr2022";
 import {
   auto_allRifts,
   auto_availableBrickRift,
   auto_dousesRemaining,
   auto_handleCCSC,
-} from "./iotms/mr2023";
+} from "./iotms/2020/mr2023";
 import {
   auto_haveBatWings,
   auto_haveDarts,
   auto_swoopsRemaining,
   dartEleDmg,
-} from "./iotms/mr2024";
+} from "./iotms/2020/mr2024";
 import {
   auto_bankChestMimicExpForBandit,
   auto_bczRefractedGaze,
@@ -227,7 +229,7 @@ import {
   auto_wantToShrunkenHead$1,
   haveUsedPeridot,
   peridotManuallyDesiredMonsters,
-} from "./iotms/mr2025";
+} from "./iotms/2020/mr2025";
 import {
   auto_baseballDiamondMaximizerBonus,
   auto_baseballFreefightMonster,
@@ -235,7 +237,8 @@ import {
   auto_codpieceReconcileGem,
   auto_heartstoneShouldStealHeart,
   auto_preferSwordFamiliar,
-} from "./iotms/mr2026";
+} from "./iotms/2020/mr2026";
+import { get_floundry_locations } from "./iotms/other/clan";
 import {
   ed_handleAdventureServant,
   edAcquireHP,

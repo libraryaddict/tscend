@@ -116,21 +116,24 @@ import {
   acquiredFantasyRealmToken,
   fantasyBanditsFought,
   fantasyRealmToken,
-} from "../iotms/mr2018";
+} from "../iotms/2010/mr2018";
 import {
   auto_backupUsesLeft,
   auto_fireExtinguisherCharges,
   auto_haveBackupCamera,
-} from "../iotms/mr2021";
-import { dronesOut } from "../iotms/mr2022";
-import { auto_canHabitat, auto_haveCCSC } from "../iotms/mr2023";
-import { auto_canTracesBandit, auto_tracesUsesLeft } from "../iotms/mr2025";
+} from "../iotms/2020/mr2021";
+import { dronesOut } from "../iotms/2020/mr2022";
+import { auto_canHabitat, auto_haveCCSC } from "../iotms/2020/mr2023";
+import {
+  auto_canTracesBandit,
+  auto_tracesUsesLeft,
+} from "../iotms/2020/mr2025";
 import {
   auto_have_sword_familiar,
   auto_summonSwordTarget,
   auto_sword_of_swords_tracking,
   auto_swordIsWillingToSwitchTargets,
-} from "../iotms/mr2026";
+} from "../iotms/2020/mr2026";
 import {
   ed_DelayNC_DailyDungeon,
   edUnderworldChoiceHandler,

@@ -1,6 +1,6 @@
 import { inHardcore } from "kolmafia";
 
-import { auto_hasPowerfulGlove } from "../../../kolmafia/src/autoscend/iotms/mr2020";
+import { auto_hasPowerfulGlove } from "../../../kolmafia/src/autoscend/iotms/2020/mr2020";
 import { isActuallyEd } from "../../../kolmafia/src/autoscend/paths/actually_ed_the_undying";
 import { in_ocrs } from "../../../kolmafia/src/autoscend/paths/one_crazy_random_summer";
 import {

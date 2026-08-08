@@ -54,16 +54,16 @@ import {
   set,
 } from "libram";
 
-import { auto_mall_price } from "../auto_acquire";
-import { autoAdv, autoAdvBypass, CombatMacro } from "../auto_adventure";
-import { spleen_left } from "../auto_consume";
+import { auto_mall_price } from "../../auto_acquire";
+import { autoAdv, autoAdvBypass, CombatMacro } from "../../auto_adventure";
+import { spleen_left } from "../../auto_consume";
 import {
   autoForceEquip,
   autoForceEquip$3,
   possessEquipment,
-} from "../auto_equipment";
-import { List$1, List$8, ListFind } from "../auto_list";
-import { acquireHP, mp_regen } from "../auto_restore";
+} from "../../auto_equipment";
+import { List$1, List$8, ListFind } from "../../auto_list";
+import { acquireHP, mp_regen } from "../../auto_restore";
 import {
   auto_can_equip,
   auto_get_campground,
@@ -78,25 +78,25 @@ import {
   meatReserve,
   safeGet,
   wrap_item,
-} from "../auto_util";
-import { zone_available } from "../auto_zone";
-import { is_boris } from "../paths/avatar_of_boris";
-import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
-import { inAftercore } from "../paths/casual";
-import { in_gnoob } from "../paths/gelatinous_noob";
-import { in_koe } from "../paths/kingdom_of_exploathing";
-import { in_lol } from "../paths/legacy_of_loathing";
-import { in_lta } from "../paths/license_to_adventure";
-import { in_nuclear } from "../paths/nuclear_autumn";
-import { in_pokefam } from "../paths/pocket_familiars";
-import { is_professor } from "../paths/wereprofessor";
-import { startHippyBoatmanSubQuest } from "../quests/level_any";
+} from "../../auto_util";
+import { zone_available } from "../../auto_zone";
+import { is_boris } from "../../paths/avatar_of_boris";
+import { is_jarlsberg } from "../../paths/avatar_of_jarlsberg";
+import { inAftercore } from "../../paths/casual";
+import { in_gnoob } from "../../paths/gelatinous_noob";
+import { in_koe } from "../../paths/kingdom_of_exploathing";
+import { in_lol } from "../../paths/legacy_of_loathing";
+import { in_lta } from "../../paths/license_to_adventure";
+import { in_nuclear } from "../../paths/nuclear_autumn";
+import { in_pokefam } from "../../paths/pocket_familiars";
+import { is_professor } from "../../paths/wereprofessor";
+import { startHippyBoatmanSubQuest } from "../../quests/level_any";
 import {
   startArmorySubQuest,
   startGalaktikSubQuest,
   startMeatsmithSubQuest,
-} from "../quests/optional";
-import { AshMatcher } from "../utils/kolmafiaUtils";
+} from "../../quests/optional";
+import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //	This is meant for items that have a date of 2016.
 //	Handling: Witchess Set, Snojo, Source Terminal, Protonic Accelerator Pack

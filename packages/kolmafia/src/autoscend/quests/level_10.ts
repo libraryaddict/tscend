@@ -63,11 +63,11 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
-import { auto_sourceTerminalEducate } from "../iotms/mr2016";
-import { auto_changeSnapperPhylum } from "../iotms/mr2019";
-import { auto_canHabitat } from "../iotms/mr2023";
-import { auto_haveSpringShoes } from "../iotms/mr2024";
+import { considerGrimstoneGolem, handleBjornify } from "../iotms/2010/mr2014";
+import { auto_sourceTerminalEducate } from "../iotms/2010/mr2016";
+import { auto_changeSnapperPhylum } from "../iotms/2010/mr2019";
+import { auto_canHabitat } from "../iotms/2020/mr2023";
+import { auto_haveSpringShoes } from "../iotms/2020/mr2024";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { is_boris } from "../paths/avatar_of_boris";
 import { bat_formBats } from "../paths/dark_gyffte";

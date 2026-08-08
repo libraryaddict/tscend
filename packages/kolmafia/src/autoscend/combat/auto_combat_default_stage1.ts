@@ -37,7 +37,7 @@ import {
   isFreeMonster,
   safeGet,
 } from "../auto_util";
-import { auto_backupTarget } from "../iotms/mr2021";
+import { auto_backupTarget } from "../iotms/2020/mr2021";
 import {
   auto_canCircadianRhythm,
   auto_canHabitat,
@@ -48,9 +48,9 @@ import {
   auto_habitatTarget,
   auto_remainingCandyCaneSlashes,
   auto_RWBBlastTarget,
-} from "../iotms/mr2023";
-import { auto_talkToSomeFish, auto_tracesTarget } from "../iotms/mr2025";
-import { auto_baseballShouldReplaceWithFish } from "../iotms/mr2026";
+} from "../iotms/2020/mr2023";
+import { auto_talkToSomeFish, auto_tracesTarget } from "../iotms/2020/mr2025";
+import { auto_baseballShouldReplaceWithFish } from "../iotms/2020/mr2026";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/avant_guard";
 import { inAftercore } from "../paths/casual";

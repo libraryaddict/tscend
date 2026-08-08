@@ -53,14 +53,14 @@ import {
   safeGet,
 } from "./auto_util";
 import { generic_t } from "./autoscend_record";
-import { expectGhostReport } from "./iotms/mr2016";
-import { auto_voteMonster } from "./iotms/mr2018";
-import { auto_sausageGoblin } from "./iotms/mr2019";
+import { expectGhostReport } from "./iotms/2010/mr2016";
+import { auto_voteMonster } from "./iotms/2010/mr2018";
+import { auto_sausageGoblin } from "./iotms/2010/mr2019";
 import {
   auto_canFightPiranhaPlant,
   auto_canTendMushroomGarden,
-} from "./iotms/mr2020";
-import { auto_haveBatWings } from "./iotms/mr2024";
+} from "./iotms/2020/mr2020";
+import { auto_haveBatWings } from "./iotms/2020/mr2024";
 import { bugbear_BioDataRemaining, in_bugbear } from "./paths/bugbear_invasion";
 import { in_koe } from "./paths/kingdom_of_exploathing";
 import { kolhs_mandatorySchool } from "./paths/kolhs";

@@ -52,9 +52,9 @@ import {
   safeGet,
   stunnable,
 } from "../auto_util";
-import { auto_bowlingBallCombatString } from "../iotms/mr2022";
-import { shouldCinchoConfetti } from "../iotms/mr2023";
-import { auto_heartstoneShouldStealHeart } from "../iotms/mr2026";
+import { auto_bowlingBallCombatString } from "../iotms/2020/mr2022";
+import { shouldCinchoConfetti } from "../iotms/2020/mr2023";
+import { auto_heartstoneShouldStealHeart } from "../iotms/2020/mr2026";
 import { ag_is_bodyguard } from "../paths/avant_guard";
 import { inAftercore } from "../paths/casual";
 import { in_darkGyffte } from "../paths/dark_gyffte";

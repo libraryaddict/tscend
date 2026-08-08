@@ -47,7 +47,7 @@ import {
 } from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
 import { QuestTask, registerQuestTask } from "../engine/engine";
-import { auto_haveMobiusRing } from "../iotms/mr2025";
+import { auto_haveMobiusRing } from "../iotms/2020/mr2025";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { maximizer } from "../utils/maximizer";
 

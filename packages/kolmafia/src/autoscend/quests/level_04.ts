@@ -47,10 +47,10 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
-import { auto_haveGreyGoose } from "../iotms/mr2022";
-import { auto_makeMonkeyPawWish$1 } from "../iotms/mr2023";
-import { auto_haveBatWings, auto_haveChestMimic } from "../iotms/mr2024";
+import { considerGrimstoneGolem, handleBjornify } from "../iotms/2010/mr2014";
+import { auto_haveGreyGoose } from "../iotms/2020/mr2022";
+import { auto_makeMonkeyPawWish$1 } from "../iotms/2020/mr2023";
+import { auto_haveBatWings, auto_haveChestMimic } from "../iotms/2020/mr2024";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { in_aosol } from "../paths/avatar_of_shadows_over_loathing";

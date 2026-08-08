@@ -34,25 +34,25 @@ import {
   runQuestTask,
   runTaskChain,
 } from "./engine/engine";
-import { auto_haveVotingBooth } from "./iotms/mr2018";
+import { auto_haveVotingBooth } from "./iotms/2010/mr2018";
 import {
   auto_haveKramcoSausageOMatic,
   auto_sausageFightsToday,
-} from "./iotms/mr2019";
+} from "./iotms/2010/mr2019";
 import {
   auto_backupUsesLeft,
   auto_CMCconsultsLeft,
   auto_haveBackupCamera,
   auto_haveColdMedCabinet,
-} from "./iotms/mr2021";
-import { auto_haveCursedMagnifyingGlass } from "./iotms/mr2022";
+} from "./iotms/2020/mr2021";
+import { auto_haveCursedMagnifyingGlass } from "./iotms/2020/mr2022";
 import {
   auto_have_baseball_diamond,
   auto_have_sword_familiar,
   auto_haveArchaeologistSpade,
   auto_spadeDigsRemaining,
   spadeDelayZones,
-} from "./iotms/mr2026";
+} from "./iotms/2020/mr2026";
 import { in_koe } from "./paths/kingdom_of_exploathing";
 import {
   in_lowkeysummer,

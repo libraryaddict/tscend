@@ -59,26 +59,26 @@ import {
   wrap_item,
 } from "../auto_util";
 import { auto_swoopLocations } from "../auto_zone";
-import { auto_jokesterGunFreeKillAvailable } from "../iotms/mr2016";
-import { auto_chestXraysRemaining } from "../iotms/mr2019";
-import { auto_FireExtinguisherCombatSkill } from "../iotms/mr2021";
+import { auto_jokesterGunFreeKillAvailable } from "../iotms/2010/mr2016";
+import { auto_chestXraysRemaining } from "../iotms/2010/mr2019";
+import { auto_FireExtinguisherCombatSkill } from "../iotms/2020/mr2021";
 import {
   auto_dousesRemaining,
   auto_habitatMonster,
   wantToThrowGravel,
-} from "../iotms/mr2023";
-import { dartELRcd } from "../iotms/mr2024";
+} from "../iotms/2020/mr2023";
+import { dartELRcd } from "../iotms/2020/mr2024";
 import {
   auto_bczRefractedGaze,
   auto_wantToBCZ,
   auto_wantToShrunkenHead,
-} from "../iotms/mr2025";
+} from "../iotms/2020/mr2025";
 import {
   auto_sword_of_swords_tracking,
   auto_swordIsWillingToSwitchTargets,
   auto_wantToStartTrackingSwordMonster,
   wantToClubEmBackInTime,
-} from "../iotms/mr2026";
+} from "../iotms/2020/mr2026";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/avant_guard";
 import { in_bugbear } from "../paths/bugbear_invasion";
 import { inAftercore } from "../paths/casual";

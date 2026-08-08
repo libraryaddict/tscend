@@ -33,9 +33,9 @@ import {
 } from "kolmafia";
 import { $effect, $effects, $item, $items, $location, get, set } from "libram";
 
-import { autoAdvBypass$1, CombatMacro } from "../auto_adventure";
-import { inebriety_left } from "../auto_consume";
-import { possessEquipment } from "../auto_equipment";
+import { autoAdvBypass$1, CombatMacro } from "../../auto_adventure";
+import { inebriety_left } from "../../auto_consume";
+import { possessEquipment } from "../../auto_equipment";
 import {
   auto_interruptCheck,
   auto_log_debug,
@@ -43,13 +43,13 @@ import {
   auto_log_info,
   auto_log_warning,
   handleTracker,
-} from "../auto_util";
-import { is_boris } from "../paths/avatar_of_boris";
-import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
-import { is_pete } from "../paths/avatar_of_sneaky_pete";
-import { inAftercore } from "../paths/casual";
-import { in_glover } from "../paths/g_lover";
-import { AshMatcher } from "../utils/kolmafiaUtils";
+} from "../../auto_util";
+import { is_boris } from "../../paths/avatar_of_boris";
+import { is_jarlsberg } from "../../paths/avatar_of_jarlsberg";
+import { is_pete } from "../../paths/avatar_of_sneaky_pete";
+import { inAftercore } from "../../paths/casual";
+import { in_glover } from "../../paths/g_lover";
+import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/iotms/clan.ash
 export function auto_get_clan_lounge(): Map<Item, number> {

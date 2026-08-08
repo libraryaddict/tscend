@@ -29,8 +29,8 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { auto_haveAugustScepter } from "../iotms/mr2023";
-import { auto_haveBatWings } from "../iotms/mr2024";
+import { auto_haveAugustScepter } from "../iotms/2020/mr2023";
+import { auto_haveBatWings } from "../iotms/2020/mr2024";
 import { L3_tavernTask } from "../quests/level_03";
 import { L5_goblinKingTask } from "../quests/level_05";
 import { L7_cryptTask } from "../quests/level_07";

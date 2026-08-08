@@ -162,19 +162,14 @@ import {
   wrap_item,
 } from "./auto_util";
 import { auto_process_kmail } from "./auto_zlib";
-import { doHottub, hotTubSoaksRemaining, zataraSeaside } from "./iotms/clan";
-import {
-  elementalPlanes_access,
-  elementalPlanes_takeJob,
-} from "./iotms/elementalPlanes";
-import { dna_bedtime } from "./iotms/mr2014";
+import { dna_bedtime } from "./iotms/2010/mr2014";
 import {
   auto_haveSourceTerminal,
   auto_haveWitchess,
   auto_sourceTerminalEnhance,
   auto_sourceTerminalEnhanceLeft,
   auto_sourceTerminalExtrude,
-} from "./iotms/mr2016";
+} from "./iotms/2010/mr2016";
 import {
   canGenieCombat,
   getSpaceJelly,
@@ -182,10 +177,10 @@ import {
   loveTunnelAcquire,
   makeGeniePocket,
   spacegateVaccine,
-} from "./iotms/mr2017";
-import { januaryToteAcquire } from "./iotms/mr2018";
-import { auto_beachUseFreeCombs } from "./iotms/mr2019";
-import { auto_burnPowerfulGloveCharges } from "./iotms/mr2020";
+} from "./iotms/2010/mr2017";
+import { januaryToteAcquire } from "./iotms/2010/mr2018";
+import { auto_beachUseFreeCombs } from "./iotms/2010/mr2019";
+import { auto_burnPowerfulGloveCharges } from "./iotms/2020/mr2020";
 import {
   auto_haveAugustScepter,
   auto_haveMonkeyPaw,
@@ -193,12 +188,21 @@ import {
   auto_makeMonkeyPawWish$1,
   auto_monkeyPawWishesLeft,
   auto_scepterRollover,
-} from "./iotms/mr2023";
-import { auto_setLeprecondo } from "./iotms/mr2025";
+} from "./iotms/2020/mr2023";
+import { auto_setLeprecondo } from "./iotms/2020/mr2025";
 import {
   auto_burnRemainingSpadeDigs,
   auto_chewLiquidAsset,
-} from "./iotms/mr2026";
+} from "./iotms/2020/mr2026";
+import {
+  doHottub,
+  hotTubSoaksRemaining,
+  zataraSeaside,
+} from "./iotms/other/clan";
+import {
+  elementalPlanes_access,
+  elementalPlanes_takeJob,
+} from "./iotms/other/elementalPlanes";
 import {
   ed_doResting,
   ed_terminateSession,

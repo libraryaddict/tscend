@@ -17,8 +17,12 @@ import {
   auto_runChoice,
   handleCopiedMonster,
   safeGet,
-} from "../auto_util";
-import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
+} from "../../auto_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+} from "../../engine/engine";
 
 //	This is meant for items that have a date of 2012
 

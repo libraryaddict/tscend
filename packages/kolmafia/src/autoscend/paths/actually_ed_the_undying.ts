@@ -96,20 +96,20 @@ import {
   ovenHandle,
 } from "../auto_util";
 import { QuestTask, registerQuestTask, runTaskChain } from "../engine/engine";
-import {
-  elementalPlanes_access,
-  elementalPlanes_takeJob,
-} from "../iotms/elementalPlanes";
-import { adjustEdHat } from "../iotms/mr2015";
+import { adjustEdHat } from "../iotms/2010/mr2015";
 import {
   neverendingPartyAvailable,
   neverendingPartyCombat,
-} from "../iotms/mr2018";
-import { auto_campawayAvailable } from "../iotms/mr2019";
+} from "../iotms/2010/mr2018";
+import { auto_campawayAvailable } from "../iotms/2010/mr2019";
 import {
   auto_remainingSpeakeasyFreeFights,
   speakeasyCombat,
-} from "../iotms/mr2022";
+} from "../iotms/2020/mr2022";
+import {
+  elementalPlanes_access,
+  elementalPlanes_takeJob,
+} from "../iotms/other/elementalPlanes";
 import { tootGetMeat } from "../quests/level_01";
 import {
   LX_unlockHauntedBilliardsRoom,

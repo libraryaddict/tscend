@@ -92,9 +92,9 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { auto_wishesAvailable, makeGenieWish } from "../iotms/mr2017";
-import { januaryToteAcquire } from "../iotms/mr2018";
-import { auto_haveTearawayPants } from "../iotms/mr2024";
+import { auto_wishesAvailable, makeGenieWish } from "../iotms/2010/mr2017";
+import { januaryToteAcquire } from "../iotms/2010/mr2018";
+import { auto_haveTearawayPants } from "../iotms/2020/mr2024";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { in_darkGyffte } from "../paths/dark_gyffte";

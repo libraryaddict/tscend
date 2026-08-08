@@ -68,15 +68,15 @@ import {
   loopHandlerDelayAll,
   safeGet,
 } from "../auto_util";
-import { elementalPlanes_access } from "../iotms/elementalPlanes";
-import { auto_spoonCombatSkill } from "../iotms/mr2019";
+import { auto_spoonCombatSkill } from "../iotms/2010/mr2019";
 import {
   auto_backupTarget,
   auto_fireExtinguisherCharges,
   auto_FireExtinguisherCombatSkill,
-} from "../iotms/mr2021";
-import { auto_bowlingBallCombatString } from "../iotms/mr2022";
-import { dartELRcd, dartSkill } from "../iotms/mr2024";
+} from "../iotms/2020/mr2021";
+import { auto_bowlingBallCombatString } from "../iotms/2020/mr2022";
+import { dartELRcd, dartSkill } from "../iotms/2020/mr2024";
+import { elementalPlanes_access } from "../iotms/other/elementalPlanes";
 import { ed_needShop, isActuallyEd } from "../paths/actually_ed_the_undying";
 import { cyrptEvilBonus } from "../quests/level_07";
 import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";

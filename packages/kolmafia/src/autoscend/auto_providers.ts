@@ -103,13 +103,12 @@ import {
 } from "./auto_util";
 import { zone_needItemBooze, zone_needItemFood } from "./auto_zone";
 import { generic_t } from "./autoscend_record";
-import { zataraAvailable, zataraSeaside } from "./iotms/clan";
-import { handleBjornify } from "./iotms/mr2014";
+import { handleBjornify } from "./iotms/2010/mr2014";
 import {
   auto_sourceTerminalEnhance,
   auto_sourceTerminalEnhanceLeft,
   rethinkingCandy,
-} from "./iotms/mr2016";
+} from "./iotms/2010/mr2016";
 import {
   asdonBuff,
   canAsdonBuff,
@@ -118,36 +117,37 @@ import {
   horseMaintain,
   horseNone,
   isHorseryAvailable,
-} from "./iotms/mr2017";
+} from "./iotms/2010/mr2017";
 import {
   auto_latteRefill$4,
   januaryToteAcquire,
   songboomSetting,
-} from "./iotms/mr2018";
+} from "./iotms/2010/mr2018";
 import {
   auto_beachCombHead,
   auto_beachCombHeadEffect,
   auto_canBeachCombHead,
-} from "./iotms/mr2019";
+} from "./iotms/2010/mr2019";
 import {
   auto_birdModifier,
   auto_favoriteBirdModifier,
   auto_hasPowerfulGlove,
-} from "./iotms/mr2020";
-import { auto_haveCCSC } from "./iotms/mr2023";
+} from "./iotms/2020/mr2020";
+import { auto_haveCCSC } from "./iotms/2020/mr2023";
 import {
   auto_haveAprilingBandHelmet,
   auto_setAprilBandCombat,
   auto_setAprilBandNonCombat,
-} from "./iotms/mr2024";
+} from "./iotms/2020/mr2024";
 import {
   auto_haveCoolerYeti,
   auto_haveCyberRealm,
   beretBusk,
   canBusk,
-} from "./iotms/mr2025";
-import { auto_getDrinkCupOfThirteenForEffect } from "./iotms/mr2026";
-import { ARBSupplyDrop, auto_canARBSupplyDrop } from "./iotms/ttt";
+} from "./iotms/2020/mr2025";
+import { auto_getDrinkCupOfThirteenForEffect } from "./iotms/2020/mr2026";
+import { zataraAvailable, zataraSeaside } from "./iotms/other/clan";
+import { ARBSupplyDrop, auto_canARBSupplyDrop } from "./iotms/other/ttt";
 import { isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_canAfford, in_amw } from "./paths/adventurer_meats_world";
 import { in_avantGuard } from "./paths/avant_guard";

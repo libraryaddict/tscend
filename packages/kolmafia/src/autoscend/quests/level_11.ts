@@ -203,11 +203,17 @@ import {
   considerGrimstoneGolem,
   handleBjornify,
   LX_ornateDowsingRod,
-} from "../iotms/mr2014";
-import { auto_sourceTerminalEducate } from "../iotms/mr2016";
-import { auto_beachCombHead, auto_changeSnapperPhylum } from "../iotms/mr2019";
-import { auto_canCamelSpit, auto_mapTheMonsters } from "../iotms/mr2020";
-import { auto_haveGreyGoose, auto_haveMaydayContract } from "../iotms/mr2022";
+} from "../iotms/2010/mr2014";
+import { auto_sourceTerminalEducate } from "../iotms/2010/mr2016";
+import {
+  auto_beachCombHead,
+  auto_changeSnapperPhylum,
+} from "../iotms/2010/mr2019";
+import { auto_canCamelSpit, auto_mapTheMonsters } from "../iotms/2020/mr2020";
+import {
+  auto_haveGreyGoose,
+  auto_haveMaydayContract,
+} from "../iotms/2020/mr2022";
 import {
   auto_getCitizenZone,
   auto_habitatFightsLeft,
@@ -216,14 +222,14 @@ import {
   auto_lostStomach,
   auto_makeMonkeyPawWish$1,
   auto_monkeyPawWishesLeft,
-} from "../iotms/mr2023";
-import { auto_haveTearawayPants } from "../iotms/mr2024";
+} from "../iotms/2020/mr2023";
+import { auto_haveTearawayPants } from "../iotms/2020/mr2024";
 import {
   auto_copierShouldDelayZone,
   auto_spadeDigSkeleton,
   auto_spadeDigsRemaining,
   auto_wantToSpadeDigSkeleton,
-} from "../iotms/mr2026";
+} from "../iotms/2020/mr2026";
 import {
   isActuallyEd,
   L9_ed_chasmStart,

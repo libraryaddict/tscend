@@ -43,14 +43,14 @@ import {
   set,
 } from "libram";
 
-import { auto_buyUpTo } from "../auto_acquire";
-import { autoAdv, autoAdvBypass$1, CombatMacro } from "../auto_adventure";
-import { possessEquipment } from "../auto_equipment";
+import { auto_buyUpTo } from "../../auto_acquire";
+import { autoAdv, autoAdvBypass$1, CombatMacro } from "../../auto_adventure";
+import { possessEquipment } from "../../auto_equipment";
 import {
   canChangeToFamiliar,
   handleFamiliar$1,
   pathHasFamiliar,
-} from "../auto_familiar";
+} from "../../auto_familiar";
 import {
   auto_autosell,
   auto_get_campground,
@@ -65,29 +65,33 @@ import {
   organsFull,
   safeGet,
   wrap_item,
-} from "../auto_util";
-import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { is_boris } from "../paths/avatar_of_boris";
-import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
-import { is_pete } from "../paths/avatar_of_sneaky_pete";
-import { in_awol } from "../paths/avatar_of_west_of_loathing";
-import { inAftercore } from "../paths/casual";
-import { in_gnoob } from "../paths/gelatinous_noob";
-import { in_heavyrains } from "../paths/heavy_rains";
-import { in_koe } from "../paths/kingdom_of_exploathing";
-import { in_lol } from "../paths/legacy_of_loathing";
-import { in_lta } from "../paths/license_to_adventure";
-import { in_nuclear } from "../paths/nuclear_autumn";
-import { in_ocrs } from "../paths/one_crazy_random_summer";
-import { in_quantumTerrarium } from "../paths/quantum_terrarium";
-import { in_theSource } from "../paths/the_source";
-import { in_wotsf } from "../paths/way_of_the_surprising_fist";
-import { needOre } from "../quests/level_08";
-import { towerKeyCount } from "../quests/level_13";
-import { elementalPlanes_access } from "./elementalPlanes";
+} from "../../auto_util";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+} from "../../engine/engine";
+import { isActuallyEd } from "../../paths/actually_ed_the_undying";
+import { is_boris } from "../../paths/avatar_of_boris";
+import { is_jarlsberg } from "../../paths/avatar_of_jarlsberg";
+import { is_pete } from "../../paths/avatar_of_sneaky_pete";
+import { in_awol } from "../../paths/avatar_of_west_of_loathing";
+import { inAftercore } from "../../paths/casual";
+import { in_gnoob } from "../../paths/gelatinous_noob";
+import { in_heavyrains } from "../../paths/heavy_rains";
+import { in_koe } from "../../paths/kingdom_of_exploathing";
+import { in_lol } from "../../paths/legacy_of_loathing";
+import { in_lta } from "../../paths/license_to_adventure";
+import { in_nuclear } from "../../paths/nuclear_autumn";
+import { in_ocrs } from "../../paths/one_crazy_random_summer";
+import { in_quantumTerrarium } from "../../paths/quantum_terrarium";
+import { in_theSource } from "../../paths/the_source";
+import { in_wotsf } from "../../paths/way_of_the_surprising_fist";
+import { needOre } from "../../quests/level_08";
+import { towerKeyCount } from "../../quests/level_13";
+import { auto_haveTrainSet } from "../2020/mr2022";
+import { elementalPlanes_access } from "../other/elementalPlanes";
 import { auto_sourceTerminalEducate } from "./mr2016";
-import { auto_haveTrainSet } from "./mr2022";
 
 //	This is meant for items that have a date of 2015
 //	Handling: shrine to the Barrel God, Chateau Mantegna Room Key, Deck of Every Card

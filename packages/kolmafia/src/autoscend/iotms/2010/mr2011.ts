@@ -7,8 +7,8 @@ import {
 } from "kolmafia";
 import { $item, $items } from "libram";
 
-import { canPull, pullXWhenHaveY } from "../auto_acquire";
-import { auto_log_warning } from "../auto_util";
+import { canPull, pullXWhenHaveY } from "../../auto_acquire";
+import { auto_log_warning } from "../../auto_util";
 
 //	This is meant for items that have a date of 2011
 

@@ -149,23 +149,21 @@ import {
   registerQuestTask,
   runQuestTask,
 } from "./engine/engine";
-import {
-  canDrinkSpeakeasyDrink,
-  drinkSpeakeasyDrink,
-  isSpeakeasyDrink,
-} from "./iotms/clan";
-import { isClipartItem } from "./iotms/mr2011";
-import { fantasyRealmAvailable } from "./iotms/mr2018";
+import { isClipartItem } from "./iotms/2010/mr2011";
+import { fantasyRealmAvailable } from "./iotms/2010/mr2018";
 import {
   auto_haveKramcoSausageOMatic,
   auto_sausageWanted,
-} from "./iotms/mr2019";
-import { auto_CMCconsultsLeft, have_fireworks_shop } from "./iotms/mr2021";
-import { auto_expectedStillsuitAdvs, auto_hasStillSuit } from "./iotms/mr2022";
+} from "./iotms/2010/mr2019";
+import { auto_CMCconsultsLeft, have_fireworks_shop } from "./iotms/2020/mr2021";
+import {
+  auto_expectedStillsuitAdvs,
+  auto_hasStillSuit,
+} from "./iotms/2020/mr2022";
 import {
   auto_haveSeptEmberCenser,
   consumeBlackAndWhiteApronKit,
-} from "./iotms/mr2024";
+} from "./iotms/2020/mr2024";
 import {
   auto_cupOfThirteenBestConsumeAction,
   auto_havePastaWand,
@@ -173,7 +171,12 @@ import {
   legendaryNoodleDishes,
   numBaseLegendaryNoodleDishes,
   numPreparedLegendaryNoodleDishes,
-} from "./iotms/mr2026";
+} from "./iotms/2020/mr2026";
+import {
+  canDrinkSpeakeasyDrink,
+  drinkSpeakeasyDrink,
+  isSpeakeasyDrink,
+} from "./iotms/other/clan";
 import { ed_eatStuff, isActuallyEd } from "./paths/actually_ed_the_undying";
 import { amw_buyAdv, in_amw } from "./paths/adventurer_meats_world";
 import { borisDemandSandwich, is_boris } from "./paths/avatar_of_boris";

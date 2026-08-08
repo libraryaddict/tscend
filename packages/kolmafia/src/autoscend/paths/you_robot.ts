@@ -72,7 +72,7 @@ import {
   meatReserve,
 } from "../auto_util";
 import { runTaskChain } from "../engine/engine";
-import { chateaumantegna_available } from "../iotms/mr2015";
+import { chateaumantegna_available } from "../iotms/2010/mr2015";
 import { L5_slayTheGoblinKingTask } from "../quests/level_05";
 import { L8_trapperSlopeTask } from "../quests/level_08";
 import {

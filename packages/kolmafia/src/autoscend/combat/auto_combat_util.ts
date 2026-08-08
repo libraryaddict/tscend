@@ -97,37 +97,37 @@ import {
 import {
   asdonCanMissile,
   auto_macrometeoritesAvailable,
-} from "../iotms/mr2017";
+} from "../iotms/2010/mr2017";
 import {
   auto_combatSaberBanish,
   auto_combatSaberYR,
   auto_reflexHammersRemaining,
   auto_saberChargesAvailable,
-} from "../iotms/mr2019";
+} from "../iotms/2010/mr2019";
 import {
   auto_hasRetrocape,
   auto_powerfulGloveReplacesAvailable,
-} from "../iotms/mr2020";
+} from "../iotms/2020/mr2020";
 import {
   auto_canFeelEnvy,
   auto_canFeelHatred,
   auto_fireExtinguisherCharges,
   can_get_battery,
-} from "../iotms/mr2021";
-import { auto_hasParka, getSweat } from "../iotms/mr2022";
+} from "../iotms/2020/mr2021";
+import { auto_hasParka, getSweat } from "../iotms/2020/mr2022";
 import {
   auto_haveEagle,
   auto_isShadowRiftMonster,
   auto_monkeyPawWishesLeft,
   auto_neededShadowBricks,
-} from "../iotms/mr2023";
-import { auto_haveRoman } from "../iotms/mr2024";
+} from "../iotms/2020/mr2023";
+import { auto_haveRoman } from "../iotms/2020/mr2024";
 import {
   auto_canNorthernExplosionFE,
   auto_McLargeHugeSniffsLeft,
   auto_throwLightningRemaining,
-} from "../iotms/mr2025";
-import { auto_getItemToEquipHeartstone } from "../iotms/mr2026";
+} from "../iotms/2020/mr2025";
+import { auto_getItemToEquipHeartstone } from "../iotms/2020/mr2026";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { pete_peelOutRemaining } from "../paths/avatar_of_sneaky_pete";

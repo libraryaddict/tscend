@@ -1,5 +1,5 @@
 // @ts-expect-error TS2591 - avoid @types/node in our packages
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import * as eslint from "@eslint/js";
 import type { Rule } from "eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
@@ -39,6 +39,11 @@ if (cachedRevision < KOLMAFIA_VERSION) {
   try {
     // Rational is that the plugin will always perform a http request when invoking this function, etag header may be neglibable, but we want to skip it if possible
     await verifyConstantsSinceRevision(KOLMAFIA_VERSION);
+    // Write the version out, so we don't check it again
+    writeFileSync(
+      "node_modules/eslint-plugin-libram/data/revision.json",
+      KOLMAFIA_VERSION.toString(),
+    );
   } catch (error) {
     console.warn("Could not refresh libram eslint's data:", error);
   }

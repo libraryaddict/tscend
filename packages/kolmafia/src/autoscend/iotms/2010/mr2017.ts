@@ -61,14 +61,14 @@ import {
   set,
 } from "libram";
 
-import { autoAdv, autoAdvBypass, CombatMacro } from "../auto_adventure";
-import { possessEquipment } from "../auto_equipment";
+import { autoAdv, autoAdvBypass, CombatMacro } from "../../auto_adventure";
+import { possessEquipment } from "../../auto_equipment";
 import {
   canChangeFamiliar,
   canChangeToFamiliar,
   lookupFamiliarDatafile,
   pathHasFamiliar,
-} from "../auto_familiar";
+} from "../../auto_familiar";
 import {
   auto_get_campground,
   auto_is_valid,
@@ -81,14 +81,14 @@ import {
   isGeneralStoreAvailable,
   meatReserve,
   wrap_item,
-} from "../auto_util";
-import { isActuallyEd } from "../paths/actually_ed_the_undying";
-import { inAftercore } from "../paths/casual";
-import { in_darkGyffte } from "../paths/dark_gyffte";
-import { glover_usable$1, in_glover } from "../paths/g_lover";
-import { in_koe } from "../paths/kingdom_of_exploathing";
-import { in_wereprof, is_professor } from "../paths/wereprofessor";
-import { AshMatcher } from "../utils/kolmafiaUtils";
+} from "../../auto_util";
+import { isActuallyEd } from "../../paths/actually_ed_the_undying";
+import { inAftercore } from "../../paths/casual";
+import { in_darkGyffte } from "../../paths/dark_gyffte";
+import { glover_usable$1, in_glover } from "../../paths/g_lover";
+import { in_koe } from "../../paths/kingdom_of_exploathing";
+import { in_wereprof, is_professor } from "../../paths/wereprofessor";
+import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //	This is meant for items that have a date of 2017.
 

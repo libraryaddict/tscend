@@ -167,16 +167,23 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { fightClubSpa$1 } from "../iotms/mr2018";
-import { auto_beachCombHead } from "../iotms/mr2019";
-import { auto_backupUsesLeft, auto_haveBackupCamera } from "../iotms/mr2021";
-import { auto_haveGreyGoose } from "../iotms/mr2022";
+import { fightClubSpa$1 } from "../iotms/2010/mr2018";
+import { auto_beachCombHead } from "../iotms/2010/mr2019";
+import {
+  auto_backupUsesLeft,
+  auto_haveBackupCamera,
+} from "../iotms/2020/mr2021";
+import { auto_haveGreyGoose } from "../iotms/2020/mr2022";
 import {
   auto_getCitizenZone$1,
   auto_makeAutumnalAegis,
   auto_remainingCandyCaneSlashes,
-} from "../iotms/mr2023";
-import { auto_bczDelevelPlan, auto_haveBCZ, beretBusk } from "../iotms/mr2025";
+} from "../iotms/2020/mr2023";
+import {
+  auto_bczDelevelPlan,
+  auto_haveBCZ,
+  beretBusk,
+} from "../iotms/2020/mr2025";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_amw } from "../paths/adventurer_meats_world";
 import { is_boris } from "../paths/avatar_of_boris";

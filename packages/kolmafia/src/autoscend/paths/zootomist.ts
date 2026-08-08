@@ -66,8 +66,11 @@ import {
 } from "../auto_util";
 import { yellowRayCombatString } from "../combat/auto_combat_util";
 import { runTaskChain } from "../engine/engine";
-import { speakeasyCombat } from "../iotms/mr2022";
-import { auto_doPhoneQuest, auto_fightFlamingLeaflet } from "../iotms/mr2023";
+import { speakeasyCombat } from "../iotms/2020/mr2022";
+import {
+  auto_doPhoneQuest,
+  auto_fightFlamingLeaflet,
+} from "../iotms/2020/mr2023";
 import {
   auto_AprilPiccoloBoostsLeft,
   auto_haveMayamCalendar,
@@ -75,7 +78,7 @@ import {
   auto_MayamClaim,
   auto_MayamIsUsed,
   auto_playAprilPiccolo,
-} from "../iotms/mr2024";
+} from "../iotms/2020/mr2024";
 import { L5_getEncryptionKey } from "../quests/level_05";
 import { L7_defiledNook } from "../quests/level_07";
 import {

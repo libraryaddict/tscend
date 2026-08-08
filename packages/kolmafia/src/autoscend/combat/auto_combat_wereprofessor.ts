@@ -11,8 +11,8 @@ import {
 import { $effect, $item, $monster, $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
-import { auto_haveCosmicBowlingBall } from "../iotms/mr2022";
-import { dartSkill } from "../iotms/mr2024";
+import { auto_haveCosmicBowlingBall } from "../iotms/2020/mr2022";
+import { dartSkill } from "../iotms/2020/mr2024";
 import {
   in_wereprof,
   is_professor,

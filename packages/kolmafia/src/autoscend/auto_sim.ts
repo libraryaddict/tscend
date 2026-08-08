@@ -18,7 +18,7 @@ import { possessEquipment } from "./auto_equipment";
 import {
   auto_haveCombatLoversLocket,
   auto_monsterInLocket,
-} from "./iotms/mr2022";
+} from "./iotms/2020/mr2022";
 
 //Defined in autoscend/auto_sim.ash
 export function printSim(): void {

@@ -117,35 +117,38 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { considerGrimstoneGolem, handleBjornify } from "../iotms/mr2014";
-import { adjustEdHat } from "../iotms/mr2015";
-import { asdonBuff } from "../iotms/mr2017";
-import { januaryToteAcquire } from "../iotms/mr2018";
-import { auto_beachCombHead, auto_canBeachCombHead } from "../iotms/mr2019";
+import { considerGrimstoneGolem, handleBjornify } from "../iotms/2010/mr2014";
+import { adjustEdHat } from "../iotms/2010/mr2015";
+import { asdonBuff } from "../iotms/2010/mr2017";
+import { januaryToteAcquire } from "../iotms/2010/mr2018";
+import {
+  auto_beachCombHead,
+  auto_canBeachCombHead,
+} from "../iotms/2010/mr2019";
 import {
   auto_canCamelSpit,
   auto_canMapTheMonsters,
   auto_mapTheMonsters,
-} from "../iotms/mr2020";
+} from "../iotms/2020/mr2020";
 import {
   auto_autumnatonCanAdv,
   auto_hasAutumnaton,
   auto_haveGreyGoose,
   auto_haveTrainSet,
-} from "../iotms/mr2022";
-import { auto_makeMonkeyPawWish$1 } from "../iotms/mr2023";
+} from "../iotms/2020/mr2022";
+import { auto_makeMonkeyPawWish$1 } from "../iotms/2020/mr2023";
 import {
   auto_canLeapBridge,
   auto_haveBatWings,
   auto_haveMayamCalendar,
   auto_haveSeptEmberCenser,
-} from "../iotms/mr2024";
+} from "../iotms/2020/mr2024";
 import {
   auto_copierShouldDelayZone,
   auto_have_sword_familiar,
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
-} from "../iotms/mr2026";
+} from "../iotms/2020/mr2026";
 import { isActuallyEd } from "../paths/actually_ed_the_undying";
 import { in_avantGuard } from "../paths/avant_guard";
 import { in_bhy } from "../paths/bees_hate_you";

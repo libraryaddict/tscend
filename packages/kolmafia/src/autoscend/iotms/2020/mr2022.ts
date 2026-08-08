@@ -55,20 +55,27 @@ import {
   set,
 } from "libram";
 
-import { autoAdv, autoAdvBypass, CombatMacroReturns } from "../auto_adventure";
-import { auto_canDrink, spleen_left } from "../auto_consume";
+import {
+  autoAdv,
+  autoAdvBypass,
+  CombatMacroReturns,
+} from "../../auto_adventure";
+import { auto_canDrink, spleen_left } from "../../auto_consume";
 import {
   autoEquip,
   autoEquipToSlot,
   possessEquipment,
-} from "../auto_equipment";
+} from "../../auto_equipment";
 import {
   auto_have_familiar,
   handleFamiliar$1,
   is100FamRun,
   pathAllowsChangingFamiliar,
-} from "../auto_familiar";
-import { disregardInstantKarma, isAboutToPowerlevel } from "../auto_powerlevel";
+} from "../../auto_familiar";
+import {
+  disregardInstantKarma,
+  isAboutToPowerlevel,
+} from "../../auto_powerlevel";
 import {
   auto_can_equip,
   auto_get_campground,
@@ -84,32 +91,32 @@ import {
   meatReserve,
   safeGet,
   wrap_item,
-} from "../auto_util";
-import { zone_available, zone_needItem } from "../auto_zone";
-import { generic_t } from "../autoscend_record";
+} from "../../auto_util";
+import { zone_available, zone_needItem } from "../../auto_zone";
+import { generic_t } from "../../autoscend_record";
 import {
   auto_canUse,
   auto_useSkill,
   useItem,
-} from "../combat/auto_combat_util";
-import { is_jarlsberg } from "../paths/avatar_of_jarlsberg";
-import { in_darkGyffte } from "../paths/dark_gyffte";
-import { in_koe } from "../paths/kingdom_of_exploathing";
-import { in_plumber } from "../paths/path_of_the_plumber";
-import { in_pokefam } from "../paths/pocket_familiars";
-import { in_small } from "../paths/small";
-import { in_tcrs } from "../paths/two_crazy_random_summer";
-import { is_professor } from "../paths/wereprofessor";
-import { L8_trapperTalk, needOre } from "../quests/level_08";
+} from "../../combat/auto_combat_util";
+import { is_jarlsberg } from "../../paths/avatar_of_jarlsberg";
+import { in_darkGyffte } from "../../paths/dark_gyffte";
+import { in_koe } from "../../paths/kingdom_of_exploathing";
+import { in_plumber } from "../../paths/path_of_the_plumber";
+import { in_pokefam } from "../../paths/pocket_familiars";
+import { in_small } from "../../paths/small";
+import { in_tcrs } from "../../paths/two_crazy_random_summer";
+import { is_professor } from "../../paths/wereprofessor";
+import { L8_trapperTalk, needOre } from "../../quests/level_08";
 import {
   bridgeGoal,
   fastenerCount,
   hedgeTrimmersNeeded,
   L9_twinPeak,
   lumberCount,
-} from "../quests/level_09";
-import { needStarKey } from "../quests/level_13";
-import { maximizer } from "../utils/maximizer";
+} from "../../quests/level_09";
+import { needStarKey } from "../../quests/level_13";
+import { maximizer } from "../../utils/maximizer";
 import { have_fireworks_shop } from "./mr2021";
 import { auto_neededShadowBricks } from "./mr2023";
 

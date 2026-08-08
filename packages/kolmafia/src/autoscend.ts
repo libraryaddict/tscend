@@ -235,30 +235,23 @@ import {
 } from "./autoscend/engine/engine";
 import { runNextTask } from "./autoscend/engine/router";
 import {
-  auto_floundryAction,
-  auto_get_clan_lounge,
-  zataraClanmate,
-} from "./autoscend/iotms/clan";
-import { elementalPlanes_access } from "./autoscend/iotms/elementalPlanes";
-import { eudora_initializeSettings } from "./autoscend/iotms/eudora";
-import {
   makeStartingSmiths,
   oldPeoplePlantStuff,
-} from "./autoscend/iotms/mr2013";
+} from "./autoscend/iotms/2010/mr2013";
 import {
   dna_generic,
   dna_sorceressTest,
   dna_startAcquire,
   handleBjornify,
   icehouseUserErrorProtection,
-} from "./autoscend/iotms/mr2014";
+} from "./autoscend/iotms/2010/mr2014";
 import {
   auto_barrelPrayers,
   chateaumantegna_havePainting,
   chateaumantegna_useDesk,
   chateaumantegna_usePainting,
   deck_useScheme,
-} from "./autoscend/iotms/mr2015";
+} from "./autoscend/iotms/2010/mr2015";
 import {
   auto_chapeau,
   auto_doPrecinct,
@@ -267,7 +260,7 @@ import {
   isOverdueDigitize,
   LX_ghostBusting,
   witchessFights,
-} from "./autoscend/iotms/mr2016";
+} from "./autoscend/iotms/2010/mr2016";
 import {
   asdonAutoFeed,
   horseDefault,
@@ -275,7 +268,7 @@ import {
   kgbSetup,
   loveTunnelAcquire,
   makeGeniePocket,
-} from "./autoscend/iotms/mr2017";
+} from "./autoscend/iotms/2010/mr2017";
 import {
   auto_haveVotingBooth,
   auto_latteRefill$4,
@@ -286,7 +279,7 @@ import {
   fightClubNap,
   fightClubStats,
   neverendingPartyAvailable,
-} from "./autoscend/iotms/mr2018";
+} from "./autoscend/iotms/2010/mr2018";
 import {
   auto_beachCombHead,
   auto_campawayGrabBuffs,
@@ -294,13 +287,13 @@ import {
   auto_sausageGoblin,
   auto_spoonTuneConfirm,
   auto_spoonTuneMoon,
-} from "./autoscend/iotms/mr2019";
+} from "./autoscend/iotms/2010/mr2019";
 import {
   auto_birdOfTheDay,
   auto_buyCrimboCommerceMallItem,
   auto_getGuzzlrCocktailSet,
   auto_latheAppropriateWeapon,
-} from "./autoscend/iotms/mr2020";
+} from "./autoscend/iotms/2020/mr2020";
 import {
   auto_backupTarget,
   auto_backupToYourLastEnemy,
@@ -309,7 +302,7 @@ import {
   auto_enableBackupCameraReverser,
   auto_harvestBatteries,
   have_fireworks_shop,
-} from "./autoscend/iotms/mr2021";
+} from "./autoscend/iotms/2020/mr2021";
 import {
   auto_autumnatonQuest,
   auto_canUseJuneCleaver,
@@ -320,7 +313,7 @@ import {
   auto_juneCleaverAdventure,
   auto_voidMonster,
   prioritizeGoose,
-} from "./autoscend/iotms/mr2022";
+} from "./autoscend/iotms/2020/mr2022";
 import {
   auto_availableBrickRift,
   auto_buyFrom2002MrStore,
@@ -335,7 +328,7 @@ import {
   auto_useBlackMonolith,
   pickRocks,
   rockGardenEnd,
-} from "./autoscend/iotms/mr2023";
+} from "./autoscend/iotms/2020/mr2023";
 import {
   auto_buyFromSeptEmberStore,
   auto_getAprilingBandItems,
@@ -344,7 +337,7 @@ import {
   auto_haveMayamCalendar,
   auto_MayamAllUsed,
   auto_MayamClaimAll,
-} from "./autoscend/iotms/mr2024";
+} from "./autoscend/iotms/2020/mr2024";
 import {
   auto_getBCZItems,
   auto_getGlobs,
@@ -355,12 +348,19 @@ import {
   auto_useLeprecondoDrops,
   auto_wantToBCZ,
   auto_waveTheZone,
-} from "./autoscend/iotms/mr2025";
+} from "./autoscend/iotms/2020/mr2025";
 import {
   auto_elfToiletReady,
   auto_useElfToilet,
-} from "./autoscend/iotms/mr2026";
-import { auto_useWardrobe } from "./autoscend/iotms/ttt";
+} from "./autoscend/iotms/2020/mr2026";
+import {
+  auto_floundryAction,
+  auto_get_clan_lounge,
+  zataraClanmate,
+} from "./autoscend/iotms/other/clan";
+import { elementalPlanes_access } from "./autoscend/iotms/other/elementalPlanes";
+import { eudora_initializeSettings } from "./autoscend/iotms/other/eudora";
+import { auto_useWardrobe } from "./autoscend/iotms/other/ttt";
 import {
   ed_initializeDay,
   ed_initializeSession,

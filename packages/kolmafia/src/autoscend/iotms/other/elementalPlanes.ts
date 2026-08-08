@@ -9,8 +9,8 @@ import {
 } from "kolmafia";
 import { $element, $item, get } from "libram";
 
-import { auto_log_info } from "../auto_util";
-import { AshMatcher } from "../utils/kolmafiaUtils";
+import { auto_log_info } from "../../auto_util";
+import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/iotms/auto_elementalPlanes.ash
 function getCharterIndexable(): Map<Element, Item> {

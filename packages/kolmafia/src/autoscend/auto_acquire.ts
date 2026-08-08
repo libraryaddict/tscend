@@ -93,11 +93,11 @@ import {
   wrap_item,
 } from "./auto_util";
 import { auto_canUse } from "./combat/auto_combat_util";
-import { auto_floundryUse, isSpeakeasyDrink } from "./iotms/clan";
-import { pullLegionKnife } from "./iotms/mr2011";
-import { auto_mayoItems } from "./iotms/mr2015";
-import { pantogramPants } from "./iotms/mr2017";
-import { auto_checkTakerSpace } from "./iotms/mr2024";
+import { pullLegionKnife } from "./iotms/2010/mr2011";
+import { auto_mayoItems } from "./iotms/2010/mr2015";
+import { pantogramPants } from "./iotms/2010/mr2017";
+import { auto_checkTakerSpace } from "./iotms/2020/mr2024";
+import { auto_floundryUse, isSpeakeasyDrink } from "./iotms/other/clan";
 import { in_amw } from "./paths/adventurer_meats_world";
 import { ag_pulls } from "./paths/avant_guard";
 import { inAftercore } from "./paths/casual";

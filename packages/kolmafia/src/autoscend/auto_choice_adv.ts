@@ -30,17 +30,17 @@ import {
   internalQuestStatus,
   poolSkillPracticeGains,
 } from "./auto_util";
-import { auto_reagnimatedGetPart } from "./iotms/mr2012";
-import { doghouseChoiceHandler } from "./iotms/mr2015";
-import { neverendingPartyChoiceHandler } from "./iotms/mr2018";
+import { auto_reagnimatedGetPart } from "./iotms/2010/mr2012";
+import { doghouseChoiceHandler } from "./iotms/2010/mr2015";
+import { neverendingPartyChoiceHandler } from "./iotms/2010/mr2018";
 import {
   cartographyChoiceHandler,
   mushroomGardenChoiceHandler,
-} from "./iotms/mr2020";
-import { juneCleaverChoiceHandler } from "./iotms/mr2022";
-import { dartChoiceHandler } from "./iotms/mr2024";
-import { mobiusChoiceHandler, peridotChoiceHandler } from "./iotms/mr2025";
-import { legendaryNoodlesChoiceHandler } from "./iotms/mr2026";
+} from "./iotms/2020/mr2020";
+import { juneCleaverChoiceHandler } from "./iotms/2020/mr2022";
+import { dartChoiceHandler } from "./iotms/2020/mr2024";
+import { mobiusChoiceHandler, peridotChoiceHandler } from "./iotms/2020/mr2025";
+import { legendaryNoodlesChoiceHandler } from "./iotms/2020/mr2026";
 import {
   edUnderworldChoiceHandler,
   isActuallyEd,

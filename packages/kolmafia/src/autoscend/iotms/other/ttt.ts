@@ -1,13 +1,13 @@
 import { alliedRadio, getProperty, itemAmount, myLevel, use } from "kolmafia";
 import { $item, get } from "libram";
 
-import { possessEquipment } from "../auto_equipment";
+import { possessEquipment } from "../../auto_equipment";
 import {
   auto_is_valid,
   handleTracker,
   internalQuestStatus,
-} from "../auto_util";
-import { in_zootomist } from "../paths/zootomist";
+} from "../../auto_util";
+import { in_zootomist } from "../../paths/zootomist";
 
 //Defined in autoscend/iotms/ttt.ash
 

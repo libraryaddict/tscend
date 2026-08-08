@@ -74,9 +74,9 @@ import {
   set,
 } from "libram";
 
-import { autoAdv, autoAdvBypass } from "../auto_adventure";
-import { main as handleChoiceAdv } from "../auto_choice_adv";
-import { fullness_left, inebriety_left } from "../auto_consume";
+import { autoAdv, autoAdvBypass } from "../../auto_adventure";
+import { main as handleChoiceAdv } from "../../auto_choice_adv";
+import { fullness_left, inebriety_left } from "../../auto_consume";
 import {
   addBonusToMaximize,
   equipRollover,
@@ -85,7 +85,7 @@ import {
   possessOutfit,
   simMaximizeWith,
   simValue,
-} from "../auto_equipment";
+} from "../../auto_equipment";
 import {
   auto_have_familiar,
   auto_needsGoodFamiliarEquipment,
@@ -95,16 +95,16 @@ import {
   is100FamRun,
   isAttackFamiliar,
   pathHasFamiliar,
-} from "../auto_familiar";
-import { disregardInstantKarma } from "../auto_powerlevel";
+} from "../../auto_familiar";
+import { disregardInstantKarma } from "../../auto_powerlevel";
 import {
   auto_potentialMaxFreeRests,
   doFreeRest,
   haveAnyIotmAlternativeRestSiteAvailable,
   haveFreeRestAvailable,
   uneffect,
-} from "../auto_restore";
-import { solveDelayZone } from "../auto_routing";
+} from "../../auto_restore";
+import { solveDelayZone } from "../../auto_routing";
 import {
   auto_can_equip,
   auto_canForceNextNoncombat,
@@ -130,16 +130,16 @@ import {
   meatReserve,
   safeGet,
   wrap_item,
-} from "../auto_util";
-import { auto_canUse } from "../combat/auto_combat_util";
-import { in_avantGuard } from "../paths/avant_guard";
-import { in_lol } from "../paths/legacy_of_loathing";
-import { in_pokefam } from "../paths/pocket_familiars";
-import { in_small } from "../paths/small";
-import { in_wereprof, is_werewolf } from "../paths/wereprofessor";
-import { cyrptEvilBonus } from "../quests/level_07";
-import { L10_needUmbrella } from "../quests/level_10";
-import { fantasyBanditsFought } from "./mr2018";
+} from "../../auto_util";
+import { auto_canUse } from "../../combat/auto_combat_util";
+import { in_avantGuard } from "../../paths/avant_guard";
+import { in_lol } from "../../paths/legacy_of_loathing";
+import { in_pokefam } from "../../paths/pocket_familiars";
+import { in_small } from "../../paths/small";
+import { in_wereprof, is_werewolf } from "../../paths/wereprofessor";
+import { cyrptEvilBonus } from "../../quests/level_07";
+import { L10_needUmbrella } from "../../quests/level_10";
+import { fantasyBanditsFought } from "../2010/mr2018";
 import { auto_haveTrainSet } from "./mr2022";
 import {
   auto_goingToMouthwashLevel,
