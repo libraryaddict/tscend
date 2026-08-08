@@ -1,7 +1,6 @@
 import { abort, myPath } from "kolmafia";
 
 import { setupSoftblockLocks } from "../auto_routing";
-import { auto_log_debug } from "../auto_util";
 import { callRegisteredTaskFunction } from "../task_registry";
 import { fileAsMap } from "../utils/kolmafiaUtils";
 import { AutoscendEngine, findRegisteredQuestTask, QuestTask } from "./engine";
@@ -80,8 +79,8 @@ export function runNextTask(
   prefixTasks: QuestTask[] = [],
 ): boolean {
   const engine = getPathEngine(path, prefixTasks);
-  for (const [i, task] of engine.tasks.entries()) {
-    auto_log_debug(`Attempting to execute task ${i} ${task.name}`);
+  for (const [, task] of engine.tasks.entries()) {
+    //auto_log_debug(`Attempting to execute task ${i} ${task.name}`);
     if (!engine.available(task)) {
       continue;
     }

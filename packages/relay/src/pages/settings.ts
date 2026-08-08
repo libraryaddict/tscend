@@ -10,6 +10,7 @@ import { get } from "libram";
 import { settingDefaults } from "../../../kolmafia/src/autoscend/auto_settings";
 import { safeGet } from "../../../kolmafia/src/autoscend/auto_util";
 import {
+  DropdownValue,
   RelayComponent,
   RelayGroup,
   RelayInterrupt,
@@ -25,6 +26,7 @@ interface SettingEntry {
   description: string;
   default?: string;
   tags: string;
+  dropdown?: DropdownValue[] | string[];
 }
 
 interface GroupDef {
@@ -56,13 +58,20 @@ function buildGroup(
 
   if (settings?.length) {
     for (const setting of settings) {
+      const type = setting.dropdown
+        ? "dropdown"
+        : setting.type === "boolean"
+          ? "boolean"
+          : "string";
+
       components.push({
-        type: setting.type === "boolean" ? "boolean" : "string",
+        type,
         name: setting.name,
         preference: setting.property,
         description: setting.description,
         default: setting.default ?? settingDefaults.get(setting.property),
         tags: setting.tags.split(",").filter(Boolean),
+        ...(type === "dropdown" ? { dropdown: setting.dropdown } : {}),
       } as RelaySetting);
     }
   }

@@ -191,6 +191,7 @@ async function buildSettingsData() {
       type: value.type,
       description: value.description,
       default: value.default,
+      dropdown: value.dropdown,
       tags: value.tags
         ? Array.isArray(value.tags)
           ? value.tags.join(",")

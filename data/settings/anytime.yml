@@ -33,7 +33,16 @@ auto_secondPlaceOrBust:
 auto_log_level:
   name: "Log Level"
   type: int
-  description: "valid choices: 0 = error. 1 = warning. 2 = info. 3 = debug. Sets the level of logging which autoscend will output to gCLI and session log. Defaults to 3 (debug)."
+  dropdown:
+    - value: "0"
+      display: "Error"
+    - value: "1"
+      display: "Warning"
+    - value: "2"
+      display: "Info"
+    - value: "3"
+      display: "Debug"
+  description: "Sets the level of logging which autoscend will output to gCLI and session log. Defaults to 3 (debug)."
 auto_log_level_restore:
   name: "Restore Log Level"
   type: int
