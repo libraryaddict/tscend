@@ -1427,7 +1427,10 @@ export function yellowRayCombatString(
     return $skill`Asdon Martin: Missile Launcher`;
   }
 
-  if (auto_canNorthernExplosionFE()) {
+  if (
+    auto_canNorthernExplosionFE() &&
+    auto_canUse($skill`Northern Explosion`)
+  ) {
     //With April Shower Thoughts Shield
     return $skill`Northern Explosion`;
   }
