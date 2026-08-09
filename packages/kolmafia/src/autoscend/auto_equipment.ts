@@ -764,7 +764,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     // Save the first 8 sausage goblins for delay burning, if current location isn't itself a delay zone after SoftblockDelay released
     const saveGoblinForDelay: boolean =
       auto_sausageFightsToday() < 8 &&
-      !zone_delay(myLocation())._boolean &&
+      !zone_delay(myLocation()).shouldDelay &&
       solveDelayZone() !== Location.none;
     // don't interfere with backups unless they're equivalent or worse
     const dontSausageBackups: boolean =
@@ -801,7 +801,7 @@ function finalizeMaximize(speculative: boolean = false): void {
           // time cop chance is conjectured to be a flat chance, doubling every 5 paradoxicity, starting at 2%
           // we probably want to target 15 for 16% chance
           myLocation(),
-        )._boolean
+        ).shouldDelay
       ) {
         addBonusToMaximize($item`Möbius ring`, 200);
       } else if (auto_timeIsAStripPossible()) {

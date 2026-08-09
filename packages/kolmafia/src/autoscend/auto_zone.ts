@@ -52,7 +52,6 @@ import {
   isGuildClass,
   safeGet,
 } from "./auto_util";
-import { generic_t } from "./autoscend_record";
 import { expectGhostReport } from "./iotms/2010/mr2016";
 import { auto_voteMonster } from "./iotms/2010/mr2018";
 import { auto_sausageGoblin } from "./iotms/2010/mr2019";
@@ -127,20 +126,24 @@ export function zone_isAvailable(
 export function zone_delayable(): Map<Location, number> {
   const retval: Map<Location, number> = new Map();
   for (const loc of $locations.all()) {
-    const locValue: generic_t = zone_delay(loc);
-    if (locValue._boolean && zone_isAvailable(loc)) {
-      retval.set(loc, locValue._int);
+    const { shouldDelay, delayRemaining } = zone_delay(loc);
+    if (shouldDelay && zone_isAvailable(loc)) {
+      retval.set(loc, delayRemaining);
     }
   }
   return retval;
 }
 // generic_t is defined in autoscend_record.ash
 
-export function zone_needItem(loc: Location): generic_t {
+export function zone_needItem(loc: Location): {
+  needItem: boolean;
+  needScore: number;
+} {
   // attempting to list these in descending order in relation to the quest they relate to
   // (so L13 quest stuff first then L12 then L11 and so on).
-  const retval: generic_t = new generic_t();
   let value: number = 0.0;
+  let needScore: number = 0;
+  let needItem: boolean = false;
   {
     switch (loc) {
       case $location`Hero's Field`:
@@ -438,12 +441,12 @@ export function zone_needItem(loc: Location): generic_t {
 
         break;
       case $location`Barf Mountain`:
-        retval._float = 15.0;
+        needScore = 15.0;
         break;
       case $location`The Velvet / Gold Mine`:
         if (!canYellowRay()) {
           //Just a guess
-          retval._float = 10.0;
+          needScore = 10.0;
         }
         break;
       case $location`The Haunted Pantry`:
@@ -455,14 +458,14 @@ export function zone_needItem(loc: Location): generic_t {
       // Bugbear Invasion Locations
       case $location`Waste Processing`:
         if (!possessEquipment($item`bugbear communicator badge`)) {
-          retval._float = 20.0;
+          needScore = 20.0;
         }
         break;
       case $location`Science Lab`:
-        retval._float = 30.0;
+        needScore = 30.0;
         break;
       case $location`Engineering`:
-        retval._float = 50.0;
+        needScore = 50.0;
         break;
       // End Bugbear Invasion Locations
       // A Shrunken Adventurer Am I (Small) Locations
@@ -484,7 +487,6 @@ export function zone_needItem(loc: Location): generic_t {
         break;
       // End Shadow Rifts
       default:
-        retval._error = true;
         break;
     }
   }
@@ -498,27 +500,28 @@ export function zone_needItem(loc: Location): generic_t {
   }
 
   if (value !== 0.0) {
-    retval._boolean = true;
-    retval._float = 10000.0 / value;
+    needItem = true;
+    needScore = 10000.0 / value;
 
     if (in_lar()) {
-      retval._float = 5000.0 / value;
+      needScore = 5000.0 / value;
     }
-    retval._float -= 100.0;
+    needScore -= 100.0;
   }
-  return retval;
+  return { needItem, needScore };
 }
 
-export function zone_needItemBooze(loc: Location): generic_t {
+export function zone_needItemBooze(loc: Location): {
+  needsItem: boolean;
+  score: number;
+} {
   // these matching a location case in zone_needItem will be called if the general item bonus could not be reached
-  const retval: generic_t = new generic_t();
   let value: number = 0.0;
   switch (loc) {
     case $location`The Haunted Wine Cellar`:
       value = 5.0 * (1.0 + toFloat(getProperty("auto_wineracksencountered")));
       break;
     default:
-      retval._error = true;
       break;
   }
 
@@ -530,21 +533,26 @@ export function zone_needItemBooze(loc: Location): generic_t {
     value = 0.0;
   }
 
+  let needBoozeScore: number = 0;
   if (value !== 0.0) {
-    retval._boolean = true;
-    retval._float = 10000.0 / value;
+    needBoozeScore = 10000.0 / value;
 
     if (in_lar()) {
-      retval._float = 5000.0 / value;
+      needBoozeScore = 5000.0 / value;
     }
-    retval._float -= 100.0;
+    needBoozeScore -= 100.0;
   }
-  return retval;
+  return {
+    needsItem: value !== 0,
+    score: needBoozeScore,
+  };
 }
 
-export function zone_needItemFood(loc: Location): generic_t {
+export function zone_needItemFood(loc: Location): {
+  needsItem: boolean;
+  score: number;
+} {
   // these matching a location case in zone_needItem will be called if the general item bonus could not be reached
-  const retval: generic_t = new generic_t();
   let value: number = 0.0;
   {
     switch (loc) {
@@ -611,7 +619,6 @@ export function zone_needItemFood(loc: Location): generic_t {
       case $location`The Skeleton Store`:
         break;
       default:
-        retval._error = true;
         break;
     }
   }
@@ -624,34 +631,40 @@ export function zone_needItemFood(loc: Location): generic_t {
     value = 0.0;
   }
 
+  let needScore: number = 0;
+
   if (value !== 0.0) {
-    retval._boolean = true;
-    retval._float = 10000.0 / value;
+    needScore = 10000.0 / value;
 
     if (in_lar()) {
-      retval._float = 5000.0 / value;
+      needScore = 5000.0 / value;
     }
-    retval._float -= 100.0;
+    needScore -= 100.0;
   }
-  return retval;
+  return {
+    needsItem: value !== 0.0,
+    score: needScore,
+  };
 }
 
-export function zone_combatMod(loc: Location): generic_t {
+export function zone_combatMod(loc: Location): {
+  doCombatModifiers: boolean;
+  desiredModifier: number;
+} {
   // attempting to list these in descending order in relation to the quest they relate to
   // (so L13 quest stuff first then L12 then L11 and so on).
-  const retval: generic_t = new generic_t();
-  const delay: generic_t = zone_delay(loc);
-  let value: number = 0;
+  const { shouldDelay } = zone_delay(loc);
+  let desiredModifier: number = 0;
   switch (loc) {
     case $location`The Orcish Frat House`:
     case $location`The Hippy Camp`:
       if (myLevel() >= 9) {
-        value = -85;
+        desiredModifier = -85;
       }
       break;
     case $location`Wartime Frat House`:
     case $location`Wartime Hippy Camp`:
-      value = -80;
+      desiredModifier = -80;
       break;
     case $location`Sonofa Beach`:
       //when wanderer replacing strategy is about to be used, combat modifier is useless. these are the replaced wanderers
@@ -659,62 +672,62 @@ export function zone_combatMod(loc: Location): generic_t {
         auto_voteMonster() &&
         maximizer.willEquip($item`"I Voted!" sticker`)
       ) {
-        value = 0;
+        desiredModifier = 0;
         break;
       }
       if (
         auto_sausageGoblin() &&
         maximizer.willEquip($item`Kramco Sausage-o-Matic™`)
       ) {
-        value = 0;
+        desiredModifier = 0;
         break;
       }
 
       //otherwise if no wanderer replace
-      value = 90;
+      desiredModifier = 90;
       break;
     case $location`The Upper Chamber`:
-      value = -85;
+      desiredModifier = -85;
       break;
     case $location`The Haunted Billiards Room`:
-      value = -85;
+      desiredModifier = -85;
       break;
     case $location`The Haunted Gallery`:
       if (
-        delay._int === 0 ||
+        !shouldDelay ||
         !containsText(getProperty("relayCounters"), "Garden Banished")
       ) {
-        value = -80;
+        desiredModifier = -80;
       }
       break;
     case $location`The Haunted Bathroom`:
-      if (delay._int === 0) {
-        value = -90;
+      if (!shouldDelay) {
+        desiredModifier = -90;
       }
       break;
     case $location`The Haunted Ballroom`:
-      if (delay._int === 0 && loc.turnsSpent > 0) {
-        value = -90;
+      if (!shouldDelay && loc.turnsSpent > 0) {
+        desiredModifier = -90;
       }
       break;
     case $location`The Hidden Park`:
-      value = -85;
+      desiredModifier = -85;
       break;
     case $location`The Hidden Temple`:
       if (haveEffect($effect`Stone-Faced`) === 0) {
-        value = -90;
+        desiredModifier = -90;
       }
       break;
     case $location`A Mob of Zeppelin Protesters`:
       if (internalQuestStatus("questL11Ron") >= 1) {
-        value = -70;
+        desiredModifier = -70;
       }
       break;
     case $location`The Black Forest`:
       if (internalQuestStatus("questL13Final") < 6) {
-        value = 5;
+        desiredModifier = 5;
       } else if (internalQuestStatus("questL13Final") === 6) {
-        value = -95;
+        desiredModifier = -95;
       }
       break;
     case $location`Inside the Palindome`:
@@ -724,31 +737,31 @@ export function zone_combatMod(loc: Location): generic_t {
           itemAmount($item`photograph of God`) === 0) &&
         internalQuestStatus("questL11Palindome") <= 2
       ) {
-        value = -70;
+        desiredModifier = -70;
       } else if (
         3 <= internalQuestStatus("questL11Palindome") &&
         internalQuestStatus("questL11Palindome") <= 4
       ) {
-        value = 25;
+        desiredModifier = 25;
       }
       break;
     case $location`Whitey's Grove`:
       if (L11_needWetStew()) {
-        value = 15;
+        desiredModifier = 15;
       }
       break;
     case $location`The Penultimate Fantasy Airship`:
       if (
-        delay._int === 0 ||
+        !shouldDelay ||
         (auto_haveBatWings() && availableAmount($item`S.O.C.K.`) === 0)
       ) {
-        value = -80;
+        desiredModifier = -80;
       } else if (
         in_bugbear() &&
         bugbear_BioDataRemaining($location`Engineering`) > 0
       ) {
         // When hunting bugbears, we want normal combats, not NC combats
-        value = 10;
+        desiredModifier = 10;
       } else {
         //Let us not worry about throttling the Airship
         //value = 20;
@@ -757,17 +770,17 @@ export function zone_combatMod(loc: Location): generic_t {
     case $location`The Castle in the Clouds in the Sky (Basement)`:
     case $location`The Castle in the Clouds in the Sky (Ground Floor)`:
     case $location`The Castle in the Clouds in the Sky (Top Floor)`:
-      value = -95;
+      desiredModifier = -95;
       break;
     case $location`Twin Peak`:
-      value = -85;
+      desiredModifier = -85;
       break;
     case $location`The eXtreme Slope`:
-      value = -95;
+      desiredModifier = -95;
       break;
     case $location`Itznotyerzitz Mine`:
       if (!possessOutfit("Mining Gear") && cloversAvailable() === 0) {
-        value = -90;
+        desiredModifier = -90;
       }
       break;
     case $location`Lair of the Ninja Snowmen`:
@@ -776,17 +789,17 @@ export function zone_combatMod(loc: Location): generic_t {
         !L8_forceExtremeInstead() &&
         itemAmount($item`ninja carabiner`) === 0
       ) {
-        value = 80;
+        desiredModifier = 80;
       }
       break;
     case $location`The Dark Neck of the Woods`:
     case $location`The Dark Heart of the Woods`:
     case $location`The Dark Elbow of the Woods`:
-      value = -95;
+      desiredModifier = -95;
       break;
     case $location`The Defiled Cranny`:
     case $location`The Defiled Alcove`:
-      value = -85;
+      desiredModifier = -85;
       break;
     case $location`The Typical Tavern Cellar`:
       //We could cut it off early if the Rat Faucet is the last one
@@ -794,34 +807,34 @@ export function zone_combatMod(loc: Location): generic_t {
       //actual desired value for combat or non combat is decided by level_03.ash based on elemental damage bonus
       break;
     case $location`The Spooky Forest`:
-      if (delay._int === 0) {
-        value = -85;
+      if (!shouldDelay) {
+        desiredModifier = -85;
       }
       break;
     case $location`The Laugh Floor`:
       if (itemAmount($item`Azazel's lollipop`) < 1) {
-        value = toInt(15.0);
+        desiredModifier = toInt(15.0);
       }
       break;
     case $location`Infernal Rackets Backstage`:
       if (itemAmount($item`Azazel's unicorn`) < 1) {
-        value = -70;
+        desiredModifier = -70;
       }
       break;
     case $location`Barrrney's Barrr`:
       if (numPirateInsults() >= 6) {
-        value = -80;
+        desiredModifier = -80;
       } else {
-        value = 20;
+        desiredModifier = 20;
       }
       break;
     case $location`The F'c'le`:
       if (!possessEquipment($item`pirate fledges`)) {
-        value = 20;
+        desiredModifier = 20;
       }
       break;
     case $location`The Poop Deck`:
-      value = -80;
+      desiredModifier = -80;
       break;
     case $location`The Obligatory Pirate's Cove`:
       if (!possessOutfit("Swashbuckling Getup")) {
@@ -829,31 +842,31 @@ export function zone_combatMod(loc: Location): generic_t {
           itemAmount($item`The Big Book of Pirate Insults`) > 0 &&
           numPirateInsults() < 3
         ) {
-          value = 0; // fights can give both outfit pieces and insults. better not start avoiding fights until first insults learned
+          desiredModifier = 0; // fights can give both outfit pieces and insults. better not start avoiding fights until first insults learned
         } else {
-          value = -60;
+          desiredModifier = -60;
         }
       } else if (numPirateInsults() < 8) {
-        value = 40;
+        desiredModifier = 40;
       }
       break;
     case $location`The Knob Shaft`:
-      value = 15;
+      desiredModifier = 15;
       break;
     case $location`South of the Border`:
-      value = 50;
+      desiredModifier = 50;
       break;
     case $location`The Icy Peak`:
-      value = 15;
+      desiredModifier = 15;
       break;
     case $location`Pandamonium Slums`:
-      value = 5;
+      desiredModifier = 5;
       break;
     case $location`The Haunted Pantry`:
-      value = 20;
+      desiredModifier = 20;
       break;
     case $location`Cobb's Knob Treasury`:
-      value = 15;
+      desiredModifier = 15;
       break;
     case $location`The VERY Unquiet Garves`:
       if (
@@ -861,7 +874,7 @@ export function zone_combatMod(loc: Location): generic_t {
         internalQuestStatus("questL13Final") === 12 &&
         !in_koe()
       ) {
-        value = -100;
+        desiredModifier = -100;
       }
       break;
     case $location`Super Villain's Lair`:
@@ -870,32 +883,31 @@ export function zone_combatMod(loc: Location): generic_t {
         !get("_villainLairDoorChoiceUsed") ||
         !get("_villainLairSymbologyChoiceUsed")
       ) {
-        value = -70;
+        desiredModifier = -70;
       }
       break;
     case $location`Through the Spacegate`:
-      value = 5;
+      desiredModifier = 5;
       break;
     case $location`The Ice Hotel`:
-      value = -85;
+      desiredModifier = -85;
       break;
     // Bugbear Invasion Locations
     case $location`Sonar`:
-      value = -70;
+      desiredModifier = -70;
       break;
     case $location`Morgue`:
       if (itemAmount($item`bugbear autopsy tweezers`) > 0) {
-        value = -70;
+        desiredModifier = -70;
       }
       break;
     // End Bugbear Invasion Locations
     default:
-      retval._error = true;
       break;
   }
 
   if (in_lar()) {
-    value = 0;
+    desiredModifier = 0;
   }
 
   if (
@@ -903,19 +915,20 @@ export function zone_combatMod(loc: Location): generic_t {
     loc === safeGet("ghostLocation", Location.none) &&
     getProperty("questPAGhost") === "started"
   ) {
-    value = 0;
+    desiredModifier = 0;
   }
 
-  if (value !== 0) {
-    retval._boolean = true;
-    retval._int = value;
-  }
-  return retval;
+  return {
+    doCombatModifiers: desiredModifier !== 0,
+    desiredModifier,
+  };
 }
 
-export function zone_delay(loc: Location): generic_t {
-  const retval: generic_t = new generic_t();
-  let value: number = 0;
+export function zone_delay(loc: Location): {
+  shouldDelay: boolean;
+  delayRemaining: number;
+} {
+  let delayRemaining: number = 0;
   const shenZones: Map<Location, number> = getShenZonesTurnsSpent();
   switch (loc) {
     case $location`The Oasis`:
@@ -924,23 +937,23 @@ export function zone_delay(loc: Location): generic_t {
         get("desertExploration") < 100 &&
         haveEffect($effect`Ultrahydrated`) > 0
       ) {
-        value = 5 - loc.turnsSpent;
+        delayRemaining = 5 - loc.turnsSpent;
       }
       break;
     case $location`The Upper Chamber`:
-      value = 5 - loc.turnsSpent;
+      delayRemaining = 5 - loc.turnsSpent;
       break;
     case $location`The Middle Chamber`:
-      value = 10 - loc.turnsSpent;
+      delayRemaining = 10 - loc.turnsSpent;
       break;
     case $location`The Haunted Gallery`:
-      value = 5 - loc.turnsSpent;
+      delayRemaining = 5 - loc.turnsSpent;
       break;
     case $location`The Haunted Bathroom`:
-      value = 5 - loc.turnsSpent;
+      delayRemaining = 5 - loc.turnsSpent;
       break;
     case $location`The Haunted Ballroom`:
-      value = 5 - loc.turnsSpent;
+      delayRemaining = 5 - loc.turnsSpent;
       break;
     case $location`The Hidden Park`:
       if (
@@ -948,58 +961,56 @@ export function zone_delay(loc: Location): generic_t {
         !possessEquipment($item`muculent machete`) &&
         inHardcore()
       ) {
-        value = 6 - loc.turnsSpent;
+        delayRemaining = 6 - loc.turnsSpent;
       }
       break;
     case $location`The Hidden Apartment Building`:
       if (internalQuestStatus("questL11Curses") < 2) {
         if (loc.turnsSpent < 9) {
-          value = 8 - loc.turnsSpent;
+          delayRemaining = 8 - loc.turnsSpent;
         } else {
-          value = 7 - ((loc.turnsSpent - 9) % 8);
+          delayRemaining = 7 - ((loc.turnsSpent - 9) % 8);
         }
       }
       break;
     case $location`The Hidden Office Building`:
       if (internalQuestStatus("questL11Business") < 2) {
         if (loc.turnsSpent < 6) {
-          value = 5 - loc.turnsSpent;
+          delayRemaining = 5 - loc.turnsSpent;
         } else {
-          value = 4 - ((loc.turnsSpent - 6) % 5);
+          delayRemaining = 4 - ((loc.turnsSpent - 6) % 5);
         }
       }
       break;
     case $location`The Spooky Forest`:
-      value = 5 - loc.turnsSpent;
+      delayRemaining = 5 - loc.turnsSpent;
       break;
     case $location`The Boss Bat's Lair`:
-      value = 4 - loc.turnsSpent;
+      delayRemaining = 4 - loc.turnsSpent;
       break;
     case $location`Mist-Shrouded Peak`:
-      value = 4 - loc.turnsSpent;
+      delayRemaining = 4 - loc.turnsSpent;
       break;
     case $location`The Outskirts of Cobb's Knob`:
       if (internalQuestStatus("questL05Goblin") < 1) {
-        value = 10 - loc.turnsSpent;
-      } else {
-        retval._error = true;
+        delayRemaining = 10 - loc.turnsSpent;
       }
       break;
     case $location`The Penultimate Fantasy Airship`:
       if (getProperty("questL10Garbage") === "step2") {
-        value = 5 - loc.turnsSpent;
+        delayRemaining = 5 - loc.turnsSpent;
       } else if (getProperty("questL10Garbage") === "step3") {
-        value = 10 - loc.turnsSpent;
+        delayRemaining = 10 - loc.turnsSpent;
       } else if (getProperty("questL10Garbage") === "step4") {
-        value = 15 - loc.turnsSpent;
+        delayRemaining = 15 - loc.turnsSpent;
       } else if (getProperty("questL10Garbage") === "step5") {
-        value = 20 - loc.turnsSpent;
+        delayRemaining = 20 - loc.turnsSpent;
       } else if (getProperty("questL10Garbage") === "step6") {
-        value = 25 - loc.turnsSpent;
+        delayRemaining = 25 - loc.turnsSpent;
       }
       break;
     case $location`The Castle in the Clouds in the Sky (Ground Floor)`:
-      value = 10 - loc.turnsSpent;
+      delayRemaining = 10 - loc.turnsSpent;
       break;
     case $location`The Haunted Pantry`:
       if (
@@ -1007,7 +1018,7 @@ export function zone_delay(loc: Location): generic_t {
         myPrimestat() === $stat`Mysticality` &&
         !get("auto_skipUnlockGuild", false)
       ) {
-        value = 5 - loc.turnsSpent;
+        delayRemaining = 5 - loc.turnsSpent;
       }
       break;
     case $location`The Sleazy Back Alley`:
@@ -1016,17 +1027,17 @@ export function zone_delay(loc: Location): generic_t {
         myPrimestat() === $stat`Moxie` &&
         !get("auto_skipUnlockGuild", false)
       ) {
-        value = 5 - loc.turnsSpent;
+        delayRemaining = 5 - loc.turnsSpent;
       }
       break;
     case $location`The Smut Orc Logging Camp`:
       if (shenZones.has(loc) && get("chasmBridgeProgress") >= bridgeGoal()) {
-        value = 3 - (loc.turnsSpent - (shenZones.get(loc) ?? 0));
+        delayRemaining = 3 - (loc.turnsSpent - (shenZones.get(loc) ?? 0));
       }
       break;
     case $location`The Hole in the Sky`:
       if (shenZones.has(loc) && !needStarKey()) {
-        value = 3 - (loc.turnsSpent - (shenZones.get(loc) ?? 0));
+        delayRemaining = 3 - (loc.turnsSpent - (shenZones.get(loc) ?? 0));
       }
       break;
     case $location`The Unquiet Garves`:
@@ -1034,7 +1045,7 @@ export function zone_delay(loc: Location): generic_t {
     case $location`Lair of the Ninja Snowmen`:
     case $location`The Batrat and Ratbat Burrow`:
       if (shenZones.has(loc)) {
-        value = 3 - (loc.turnsSpent - (shenZones.get(loc) ?? 0));
+        delayRemaining = 3 - (loc.turnsSpent - (shenZones.get(loc) ?? 0));
       }
       break;
     case $location`The Copperhead Club`:
@@ -1042,7 +1053,7 @@ export function zone_delay(loc: Location): generic_t {
         internalQuestStatus("questL11Shen") > 0 &&
         internalQuestStatus("questL11Shen") < 8
       ) {
-        value = 5 - (loc.turnsSpent - get("auto_lastShenTurn", 0));
+        delayRemaining = 5 - (loc.turnsSpent - get("auto_lastShenTurn", 0));
       }
       break;
     case $location`The Hallowed Halls`:
@@ -1051,7 +1062,7 @@ export function zone_delay(loc: Location): generic_t {
     case $location`Shop Class`:
       if (kolhs_mandatorySchool()) {
         //KOLHS path specific delay locations
-        value = 40 - get("_kolhsAdventures"); //shared counter of 40 adv between all 4 zones
+        delayRemaining = 40 - get("_kolhsAdventures"); //shared counter of 40 adv between all 4 zones
       }
       break;
     case $location`Vanya's Castle`:
@@ -1061,7 +1072,7 @@ export function zone_delay(loc: Location): generic_t {
         (getProperty("8BitColor") === "black" ||
           getProperty("8BitColor") === "")
       ) {
-        value = 5 - get("8BitBonusTurns");
+        delayRemaining = 5 - get("8BitBonusTurns");
       }
       break;
     case $location`The Fungus Plains`:
@@ -1070,7 +1081,7 @@ export function zone_delay(loc: Location): generic_t {
         possessEquipment($item`continuum transfunctioner`) &&
         getProperty("8BitColor") === "red"
       ) {
-        value = 5 - get("8BitBonusTurns");
+        delayRemaining = 5 - get("8BitBonusTurns");
       }
       break;
     case $location`Megalo-City`:
@@ -1079,7 +1090,7 @@ export function zone_delay(loc: Location): generic_t {
         possessEquipment($item`continuum transfunctioner`) &&
         getProperty("8BitColor") === "blue"
       ) {
-        value = 5 - get("8BitBonusTurns");
+        delayRemaining = 5 - get("8BitBonusTurns");
       }
       break;
     case $location`Hero's Field`:
@@ -1088,19 +1099,18 @@ export function zone_delay(loc: Location): generic_t {
         possessEquipment($item`continuum transfunctioner`) &&
         getProperty("8BitColor") === "green"
       ) {
-        value = 5 - get("8BitBonusTurns");
+        delayRemaining = 5 - get("8BitBonusTurns");
       }
       break;
     default:
-      retval._error = true;
       break;
   }
 
-  if (value > 0) {
-    retval._boolean = true;
-    retval._int = value;
-  }
-  return retval;
+  delayRemaining = Math.max(0, delayRemaining);
+  return {
+    shouldDelay: delayRemaining > 0,
+    delayRemaining,
+  };
 }
 
 export function zone_available(loc: Location): boolean {

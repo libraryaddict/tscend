@@ -180,7 +180,7 @@ export function setupSoftblockLocks(): void {
 
 export function canBurnDelay(loc: Location): boolean {
   // TODO: Add Digitize (Portscan?) & LOV Enamorang
-  if (!zone_delay(loc)._boolean || !allowSoftblockDelay()) {
+  if (!zone_delay(loc).shouldDelay || !allowSoftblockDelay()) {
     return false;
   }
   if (auto_haveBackupCamera() && auto_backupUsesLeft() > 0) {

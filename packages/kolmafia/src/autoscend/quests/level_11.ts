@@ -1106,7 +1106,7 @@ function LX_getLadySpookyravensPowderPuffDo(): boolean {
 
   auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
 
-  if (!zone_delay($location`The Haunted Bathroom`)._boolean) {
+  if (!zone_delay($location`The Haunted Bathroom`).shouldDelay) {
     const NCForced: boolean = auto_forceNextNoncombat(
       $location`The Haunted Bathroom`,
     );
@@ -2404,7 +2404,7 @@ function L11_hiddenCityDo(): boolean {
     auto_log_info("The idden [sic] apartment!", "blue");
 
     let elevatorAction: boolean =
-      !zone_delay($location`The Hidden Apartment Building`)._boolean ||
+      !zone_delay($location`The Hidden Apartment Building`).shouldDelay ||
       auto_haveQueuedForcedNonCombat();
 
     let canDrinkCursedPunch: boolean =
@@ -2507,7 +2507,7 @@ function L11_hiddenCityDo(): boolean {
 
       const turnsUntilElevatorAction: number = zone_delay(
         $location`The Hidden Apartment Building`,
-      )._int;
+      ).delayRemaining;
 
       if (
         auto_have_familiar($familiar`Nosy Nose`) &&
@@ -2579,9 +2579,9 @@ function L11_hiddenCityDo(): boolean {
       }
     }
 
-    const turnsUntilWorkingHoliday: number = zone_delay(
+    const turnsUntilWorkingHoliday = zone_delay(
       $location`The Hidden Office Building`,
-    )._int;
+    ).delayRemaining;
     let workingHoliday: boolean =
       turnsUntilWorkingHoliday === 0 || auto_haveQueuedForcedNonCombat();
 

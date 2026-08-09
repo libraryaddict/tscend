@@ -102,7 +102,6 @@ import {
   shrugAT,
 } from "./auto_util";
 import { zone_needItemBooze, zone_needItemFood } from "./auto_zone";
-import { generic_t } from "./autoscend_record";
 import { handleBjornify } from "./iotms/2010/mr2014";
 import {
   auto_sourceTerminalEnhance,
@@ -2284,28 +2283,30 @@ function provideItem(
     }
   }
   //check specific item drop bonus
-  const itemFoodNeed: generic_t = zone_needItemFood(loc);
-  const itemBoozeNeed: generic_t = zone_needItemBooze(loc);
+  const { needsItem: needsFoodItem, score: needFoodItemScore } =
+    zone_needItemFood(loc);
+  const { needsItem: needsBoozeItem, score: needBoozeScore } =
+    zone_needItemBooze(loc);
 
   if (
-    itemFoodNeed._boolean &&
-    result$2() + simValue($modifier`Food Drop`) < itemFoodNeed._float
+    needsFoodItem &&
+    result$2() + simValue($modifier`Food Drop`) < needFoodItemScore
   ) {
     auto_log_debug("Trying food drop supplements");
     //max at start of an expression with item and food drop is ineffective in combining them, have to let the maximizer try to add on top
     maximizer
       .weight($modifier`Food Drop`, 49)
-      .max($modifier`Food Drop`, ceil(itemFoodNeed._float));
+      .max($modifier`Food Drop`, ceil(needFoodItemScore));
     simMaximize();
   }
   if (
-    itemBoozeNeed._boolean &&
-    result$2() + simValue($modifier`Booze Drop`) < itemBoozeNeed._float
+    needsBoozeItem &&
+    result$2() + simValue($modifier`Booze Drop`) < needBoozeScore
   ) {
     auto_log_debug("Trying booze drop supplements");
     maximizer
       .weight($modifier`Booze Drop`, 49)
-      .max($modifier`Booze Drop`, ceil(itemBoozeNeed._float));
+      .max($modifier`Booze Drop`, ceil(needBoozeScore));
     simMaximize();
     //no zone item yet needs both food and booze, bottle of Chateau de Vinegar exception is a cooking ingredient but doesn't use food drop bonus
   }

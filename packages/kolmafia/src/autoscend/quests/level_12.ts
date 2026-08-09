@@ -133,7 +133,6 @@ import {
   wrap_item,
 } from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
-import { WarPlan } from "../autoscend_record";
 import { auto_JunkyardCombatHandler } from "../combat/paths/auto_combat_quest";
 import {
   QuestTask,
@@ -243,7 +242,16 @@ War finished & side defeated:
 [The Hippy Camp (Bombed Back to the Stone Age)]
 */
 //###########################################
-
+class WarPlan {
+  constructor(
+    public doArena: boolean = false,
+    public doJunkyard: boolean = false,
+    public doLighthouse: boolean = false,
+    public doOrchard: boolean = false,
+    public doNuns: boolean = false,
+    public doFarm: boolean = false,
+  ) {}
+}
 //Defined in autoscend/quests/level_12.ash
 function copy_warplan(target: WarPlan, source: WarPlan): void {
   //record A = B; does not copy the contents of B into record A, it instead copies memory references. Thus A merely becomes an alias for B and changing one changes the other as well.

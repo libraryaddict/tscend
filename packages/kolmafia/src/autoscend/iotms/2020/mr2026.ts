@@ -721,7 +721,7 @@ export function auto_wantToSpadeDigSkeleton(loc: Location): boolean {
   // (because it's the only non-delay zone currently supported)
   const valid_loc: boolean = spadeDelayZones().includes(loc);
   const have_digs: boolean = auto_spadeDigsRemaining() > 0;
-  const delay_left: boolean = zone_delay(loc)._boolean;
+  const delay_left: boolean = zone_delay(loc).shouldDelay;
   const zone_set: boolean = safeGet("lastAdventure", Location.none) === loc;
   if (valid_loc && have_digs && delay_left && zone_set) {
     return true;
@@ -2084,7 +2084,7 @@ export function auto_wantSwordFamiliar(place: Location): boolean {
   ) {
     return false;
   }
-  if (!zone_delay(place)._boolean) {
+  if (!zone_delay(place).shouldDelay) {
     return false;
   }
   if (auto_desires_sword_familiar_drops()) {

@@ -107,7 +107,7 @@ export function fightingDesiredTaskMonster(monster: Monster): boolean {
 // caps the maximizer's "item drop" so it doesn't chase gear beyond what's
 // needed to cap the task's desired drop(s) at a 100% end-of-fight chance
 // Although, this isn't in use due to concerns about unexpected fights (eg, wanderers)
-function applyItemDropCap(task: QuestTask): void {
+export function applyItemDropCap(task: QuestTask): void {
   const desiredItems: Item[] = (task.desiredEncounters?.() ?? [])
     .filter(
       (encounter): encounter is DesiredDrop =>

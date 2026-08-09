@@ -6851,7 +6851,6 @@ export function auto_roughExpectedTurnsLeftToday(): number {
 }
 
 // look for specific monsters in zones where some monsters we do care about
-const monstersWithNothingGoodAboutThem: Monster[] = Monster.get([]);
 const freekillWithNoDropsMonsters: Monster[] = Monster.get([
   // The Haunted Bathroom
   "claw-foot bathtub",

@@ -994,7 +994,7 @@ export function auto_combatDefaultStage5(
         }
         if (
           auto_canUse($skill`Knife In The Darkness`, true) &&
-          zone_combatMod(myLocation())._int < 0
+          zone_combatMod(myLocation()).desiredModifier < 0
         ) {
           attackMajor = auto_useSkill($skill`Knife In The Darkness`, true);
           attackMinor = auto_useSkill($skill`Knife In The Darkness`, true);

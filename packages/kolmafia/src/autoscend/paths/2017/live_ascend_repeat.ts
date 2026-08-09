@@ -9,7 +9,6 @@ import {
 import { $locations, $path, get, set } from "libram";
 
 import { zone_needItem } from "../../auto_zone";
-import { generic_t } from "../../autoscend_record";
 
 //Defined in autoscend/paths/live_ascend_repeat.ash
 export function in_lar(): boolean {
@@ -65,15 +64,15 @@ export function lar_repeat(loc: Location): boolean {
 
 export function lar_abort(loc: Location): boolean {
   if (in_lar()) {
-    const itemNeed: generic_t = zone_needItem(loc);
-    if (!itemNeed._boolean) {
+    const { needItem, needScore } = zone_needItem(loc);
+    if (!needItem) {
       return true;
     }
     //These should be places that we would not consider overriding with a YR.
     for (const place of $locations`The F'c'le, The Hole in the Sky`) {
-      if (place === loc && itemDropModifier() < itemNeed._float) {
+      if (place === loc && itemDropModifier() < needScore) {
         abort(
-          `Not enough +item drop (${itemNeed._float}) for ${loc} only have: ${itemDropModifier()}`,
+          `Not enough +item drop (${needScore}) for ${loc} only have: ${itemDropModifier()}`,
         );
       }
     }

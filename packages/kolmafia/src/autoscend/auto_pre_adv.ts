@@ -174,7 +174,6 @@ import {
   zone_combatMod,
   zone_needItem,
 } from "./auto_zone";
-import { generic_t } from "./autoscend_record";
 import { auto_canUse } from "./combat/auto_combat_util";
 import { horsePreAdventure } from "./iotms/2010/mr2017";
 import {
@@ -706,14 +705,14 @@ function auto_pre_adventure(): boolean {
   const burningDelay: boolean = auto_burningDelay();
   const gettingLucky: boolean = auto_gettingLucky();
   const forcedNonCombat: boolean = auto_haveQueuedForcedNonCombat();
-  const combatModifier: generic_t = zone_combatMod(place);
+  const { doCombatModifiers, desiredModifier } = zone_combatMod(place);
   if (
-    combatModifier._boolean &&
+    doCombatModifiers &&
     !auto_queueIgnore() &&
     !auto_haveQueuedForcedCombat()
   ) {
     //forced nc is included in queue ignore
-    acquireCombatMods(combatModifier._int, true);
+    acquireCombatMods(desiredModifier, true);
   }
   //evaluate a boolean prop for the familiar files
   auto_wantSoCP();
@@ -1145,9 +1144,9 @@ function auto_pre_adventure(): boolean {
     //Baa'baa'bu'ran is probably the only Lucky adventure that will need item drop
     mayNeedItem = false;
   }
-  const itemNeed: generic_t = zone_needItem(place);
-  if (mayNeedItem && itemNeed._boolean) {
-    const capped: boolean = provideItem$2(ceil(itemNeed._float), place, false);
+  const { needItem, needScore } = zone_needItem(place);
+  if (mayNeedItem && needItem) {
+    const capped: boolean = provideItem$2(ceil(needScore), place, false);
     if (!capped && auto_haveCupidBow()) {
       addBonusToMaximize($item`toy Cupid bow`, 400);
     }

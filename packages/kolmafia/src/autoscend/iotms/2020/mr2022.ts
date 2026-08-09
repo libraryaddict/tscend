@@ -93,7 +93,6 @@ import {
   wrap_item,
 } from "../../auto_util";
 import { zone_available, zone_needItem } from "../../auto_zone";
-import { generic_t } from "../../autoscend_record";
 import {
   auto_canUse,
   auto_useSkill,
@@ -207,9 +206,9 @@ export function auto_bowlingBallCombatString(
   // determine if we want more item or meat bonus
   if (auto_canUse($skill`Bowl Straight Up`)) {
     // increase item bonus if not item capped in current zone
-    const itemNeed: generic_t = zone_needItem(place);
-    if (itemNeed._boolean) {
-      if (itemDropModifier() < itemNeed._float) {
+    const { needItem, needScore } = zone_needItem(place);
+    if (needItem) {
+      if (itemDropModifier() < needScore) {
         return auto_useSkill($skill`Bowl Straight Up`, !speculation);
       }
     }
