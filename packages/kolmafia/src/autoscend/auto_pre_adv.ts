@@ -234,7 +234,7 @@ import {
   auto_baseballFreefightMonster,
   auto_codpieceFillEmptySlots,
   auto_codpieceReconcileGem,
-  auto_heartstoneShouldStealHeart,
+  auto_heartstoneShouldEquipForStealHeart,
   auto_preferSwordFamiliar,
 } from "./iotms/2020/mr2026";
 import { get_floundry_locations } from "./iotms/other/clan";
@@ -846,7 +846,7 @@ function auto_pre_adventure(): boolean {
     addBonusToMaximize($item`Baseball Diamond`, baseballDiamondBonus);
   }
 
-  if (place && auto_heartstoneShouldStealHeart(place)) {
+  if (place && auto_heartstoneShouldEquipForStealHeart(place)) {
     addBonusToMaximize($item`Heartstone`, 30);
   }
 

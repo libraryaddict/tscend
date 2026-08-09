@@ -1867,7 +1867,9 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
       (speculating || monsterPhylum() !== $phylum`beast`)) ||
     (myLocation() === $location`Whitey's Grove` &&
       L11_needWetStew() &&
-      (speculating || monsterPhylum() !== $phylum`beast`)) ||
+      (speculating ||
+        auto_haveMonodent() ||
+        monsterPhylum() !== $phylum`beast`)) ||
     (myLocation() === $location`The Hidden Apartment Building` &&
       (speculating ||
         lastMonster() === $monster`pygmy shaman` ||

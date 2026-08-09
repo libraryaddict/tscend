@@ -56,7 +56,7 @@ import { auto_bowlingBallCombatString } from "../iotms/2020/mr2022";
 import { shouldCinchoConfetti } from "../iotms/2020/mr2023";
 import {
   auto_heartstoneCurrentWord,
-  auto_heartstoneShouldStealHeart,
+  auto_heartstoneShouldStealHeartInCombat,
 } from "../iotms/2020/mr2026";
 import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
 import { in_heavyrains } from "../paths/2014/heavy_rains";
@@ -554,7 +554,7 @@ export function auto_combatDefaultStage4(
     return auto_useSkill($skill`Cincho: Confetti Extravaganza`);
   }
 
-  if (auto_heartstoneShouldStealHeart(myLocation())) {
+  if (auto_heartstoneShouldStealHeartInCombat()) {
     handleTracker({
       what: $skill`Steal Monster's Heart`,
       location: myLocation(),

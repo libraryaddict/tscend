@@ -11,7 +11,6 @@ import {
   closetAmount,
   creatableAmount,
   cupOf13sTier,
-  currentRound,
   Effect,
   Element,
   entityDecode,
@@ -458,23 +457,11 @@ export function auto_heartstoneCurrentWord(): string {
   return currentWord;
 }
 
-/**
- *
- * @param location non-null if we're speculating for equipping heartstone
- * @returns true if we should use the skill, or wear the heartstone for a potential stolen heart
- */
-export function auto_heartstoneShouldStealHeart(location: Location): boolean {
-  const inCombat: boolean = currentRound() > 0;
-  const badLoc =
-    location === $location.none || location === $location`Noob Cave`;
-  if (!inCombat && badLoc) {
-    return false;
-  }
-
+export function auto_heartstoneShouldStealHeartInCombat(): boolean {
   if (
     !auto_haveHeartstone() ||
     !auto_is_valid$2($skill`Steal Monster's Heart`) ||
-    (inCombat && !auto_canUse($skill`Steal Monster's Heart`)) || // If in combat and don't have skill
+    !auto_canUse($skill`Steal Monster's Heart`) ||
     get("_lastCombatActions")
       .split(";")
       .includes(`sk${$skill`Steal Monster's Heart`.id}`) // If already used this combat
@@ -482,22 +469,120 @@ export function auto_heartstoneShouldStealHeart(location: Location): boolean {
     return false;
   }
 
-  const letter = inCombat ? heartstoneMiddleLetter().toUpperCase() : "";
+  const letter = heartstoneMiddleLetter().toUpperCase();
 
   // If we can't steal a heart
-  if (inCombat && letter === "") return false;
+  if (letter === "") return false;
 
-  let currentWord = auto_heartstoneCurrentWord();
-  currentWord += letter;
+  const currentWord = auto_heartstoneCurrentWord();
   const allWords = auto_heartstoneWordsToAimFor();
 
-  // If this will sastify a word
-  if (currentWord.length >= 4 && allWords.includes(currentWord)) {
+  // If this letter alone will sastify a word, always take it
+  if (allWords.includes(currentWord + letter)) {
     return true;
   }
 
-  // Get every location of every task we have not finished
-  // This is a bit flawed, as it doesn't yet know what words are going to be more efficient to aim for, could be eyeing a d5 task on d1 for example
+  const { letterChances } = auto_heartstoneLetterChances();
+
+  let currentWordIsStillOnTrack = false;
+
+  for (const word of allWords) {
+    if (!word.startsWith(currentWord)) continue;
+
+    const missingLetters = word.substring(currentWord.length).split("");
+
+    let snipedALetter: boolean = false;
+    // We have 100% chance of the current letter, so we don't check it
+    if (missingLetters[0] === letter) {
+      missingLetters.shift();
+      snipedALetter = true;
+    }
+
+    const worstChanceOfAnyMissingLetter = missingLetters
+      .map((l) => letterChances.get(l) ?? 0)
+      .reduce((worst, chance) => Math.min(worst, chance), 1000);
+
+    // Less than 5% chance of ever finding one of the missing letters -> not on track
+    if (worstChanceOfAnyMissingLetter <= 5) continue;
+
+    // We sniped the letter, which means if we steal this monster, we'd have progress
+    if (snipedALetter) {
+      return true;
+    }
+
+    currentWordIsStillOnTrack = true;
+  }
+
+  // The current word is valid, but, we would lose progress if we stole this letter
+  if (currentWordIsStillOnTrack) {
+    return false;
+  }
+
+  // The current word is a lost cause, return true if there's actually a word.
+  return currentWord.length > 0;
+}
+
+export function auto_heartstoneShouldEquipForStealHeart(
+  location: Location,
+): boolean {
+  if (location === $location.none || location === $location`Noob Cave`) {
+    return false;
+  }
+
+  if (
+    !auto_haveHeartstone() ||
+    !auto_is_valid$2($skill`Steal Monster's Heart`)
+  ) {
+    return false;
+  }
+
+  const currentWord = auto_heartstoneCurrentWord();
+  const allWords = auto_heartstoneWordsToAimFor();
+
+  const { letterChances, currentLocationLetters } =
+    auto_heartstoneLetterChances(location);
+
+  // Would fighting here plausibly give us progress towards a target word?
+  // Is the current string leading to something?
+  let currentWordPossible = false;
+
+  for (const word of allWords) {
+    if (!word.startsWith(currentWord)) continue;
+
+    const missingLetters = word.substring(currentWord.length).split("");
+
+    const worstChanceOfAnyMissingLetter = missingLetters
+      .map((l) => letterChances.get(l) ?? 0)
+      .reduce((worst, chance) => Math.min(worst, chance), 1000);
+
+    // Less than 5% chance of ever finding one of the missing letters -> not achievable
+    if (worstChanceOfAnyMissingLetter <= 5) continue;
+
+    // The current word is clearly possible
+    currentWordPossible = true;
+
+    // If no letters here to be gained
+    if ((currentLocationLetters.get(missingLetters[0]) ?? 0) <= 0) {
+      continue;
+    }
+    // We would gain progress here
+    return true;
+  }
+
+  // No candidate word we can make progress on here -> only worth it to dump
+  // (fill with garbage) an existing word so we can start fresh next time
+  return currentWord.length > 0 && !currentWordPossible;
+}
+
+/**
+ * Compiles the chance of encountering each heartstone letter across every location tied to an incomplete quest task, optionally also tracking the chances specific to a single `location` of interest.
+ *
+ * This is a bit flawed, as it doesn't yet know what words are going to be more efficient to aim for, could be eyeing a d5 task on d1 for example.
+ */
+function auto_heartstoneLetterChances(location?: Location): {
+  letterChances: Map<string, number>;
+  currentLocationLetters: Map<string, number>;
+} {
   const allLocations: Location[] = getIncompleteQuestTasks()
     .flatMap((t) => taskLocations(t))
     .filter(
@@ -505,14 +590,18 @@ export function auto_heartstoneShouldStealHeart(location: Location): boolean {
         !!l && l !== Location.none && l !== $location`Noob Cave`,
     );
 
-  if (!inCombat && !badLoc && !allLocations.includes(location)) {
+  if (
+    location &&
+    location !== Location.none &&
+    location !== $location`Noob Cave` &&
+    !allLocations.includes(location)
+  ) {
     allLocations.push(location);
   }
 
   const currentLocationLetters: Map<string, number> = new Map();
   const letterChances: Map<string, number> = new Map();
 
-  // Compile a map of chances for the letter to be sastified via a combat
   for (const loc of allLocations) {
     if (loc.combatPercent <= 0) continue;
 
@@ -534,34 +623,7 @@ export function auto_heartstoneShouldStealHeart(location: Location): boolean {
     }
   }
 
-  for (const word of allWords) {
-    if (!word.startsWith(currentWord)) continue;
-
-    const remainingLetters = word.substring(currentWord.length).split("");
-
-    const chance = remainingLetters
-      .map((l) => letterChances.get(l) ?? 0)
-      .reduce((l, r) => Math.min(l, r), 1000);
-
-    // If we have less than 5% chance to fulfil this word, we won't mark it as eligable
-    if (chance <= 5) continue;
-
-    // If we're speculating && if the current location has nothing for us here
-    if (
-      !inCombat &&
-      (currentLocationLetters.get(remainingLetters[0]) ?? 0) <= 0
-    ) {
-      // Continue, try find another word
-      continue;
-    }
-
-    // We're not speculating, and we think this word is a good target
-    return true;
-  }
-
-  // We don't have any good outcomes if we go down this route
-  // We'll still use the skill however, if it'd help us get rid of our current word
-  return currentWord.length > (inCombat ? 1 : 0);
+  return { letterChances, currentLocationLetters };
 }
 
 export function auto_haveElfToilet(): boolean {
