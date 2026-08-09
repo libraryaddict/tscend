@@ -128,7 +128,10 @@ import {
   auto_McLargeHugeSniffsLeft,
   auto_throwLightningRemaining,
 } from "../iotms/2020/mr2025";
-import { auto_getItemToEquipHeartstone } from "../iotms/2020/mr2026";
+import {
+  auto_chewLiquidAsset,
+  auto_getItemToEquipHeartstone,
+} from "../iotms/2020/mr2026";
 import { pete_peelOutRemaining } from "../paths/2014/avatar_of_sneaky_pete";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { in_glover } from "../paths/2018/g_lover";
@@ -1463,6 +1466,14 @@ export function replaceMonsterCombatString(
   if (in_pokefam()) {
     return undefined;
   }
+  // We prioritize this skill as the other resources can be used for other stuff
+  if (auto_have_skill($skill`Exercise Liquidity`) && inCombat) {
+    // Mafia doesn't track remaining Exercise Liquidity charges yet, so we track them
+    // ourselves: auto_chewLiquidAsset() increments this, and we decrement it here the
+    // moment we commit to casting it. Remove once mafia adds official tracking.
+    set("auto_exerciseLiquidity", get("auto_exerciseLiquidity") - 1);
+    return $skill`Exercise Liquidity`;
+  }
   if (
     auto_macrometeoritesAvailable() > 0 &&
     auto_is_valid$2($skill`Macrometeorite`)
@@ -1475,26 +1486,17 @@ export function replaceMonsterCombatString(
   ) {
     return $skill`CHEAT CODE: Replace Enemy`;
   }
-  if (
-    (inCombat
-      ? haveSkill($skill`Exercise Liquidity`)
-      : get("auto_exerciseLiquidity", 0) > 0) &&
-    auto_is_valid$2($skill`Exercise Liquidity`)
-  ) {
-    // Mafia doesn't track remaining Exercise Liquidity charges yet, so we track them
-    // ourselves: auto_chewLiquidAsset() increments this, and we decrement it here the
-    // moment we commit to casting it. Remove once mafia adds official tracking.
-    if (inCombat) {
-      set(
-        "auto_exerciseLiquidity",
-        Math.max(0, get("auto_exerciseLiquidity", 0) - 1),
-      );
-    }
-    return $skill`Exercise Liquidity`;
-  }
   if (canUse$3($item`waffle`) && !in_avantGuard()) {
     return useItem($item`waffle`);
   }
+  if (
+    !inCombat &&
+    auto_is_valid$2($skill`Exercise Liquidity`) &&
+    (get("auto_exerciseLiquidity") > 0 || auto_chewLiquidAsset(false, true))
+  ) {
+    return $skill`Exercise Liquidity`;
+  }
+
   return undefined;
 }
 

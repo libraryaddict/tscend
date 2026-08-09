@@ -2296,7 +2296,10 @@ export function auto_acquireInterestingItem(
 // in auto_exerciseLiquidity: incremented here on chew, decremented in
 // replaceMonsterCombatString() when the skill is actually cast. Remove once mafia adds
 // official tracking.
-export function auto_chewLiquidAsset(doingBedtime: boolean = false): boolean {
+export function auto_chewLiquidAsset(
+  doingBedtime: boolean = false,
+  speculative: boolean = false,
+): boolean {
   if (
     !auto_is_valid$2($skill`Exercise Liquidity`) ||
     !canChew($item`liquid asset`) ||
@@ -2308,10 +2311,12 @@ export function auto_chewLiquidAsset(doingBedtime: boolean = false): boolean {
 
   if (
     itemAmount($item`liquid asset`) === 0 &&
-    !auto_acquireInterestingItem($item`liquid asset`)
+    !auto_acquireInterestingItem($item`liquid asset`, speculative)
   ) {
     return false;
   }
+
+  if (speculative) return true;
 
   if (!autoChew(1, $item`liquid asset`)) {
     return false;

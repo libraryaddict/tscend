@@ -1789,7 +1789,11 @@ function adjustForReplace(combat_string: CombatMacroReturns): boolean {
     return auto_forceEquipPowerfulGlove();
   }
   if (combat_string === $skill`Exercise Liquidity`) {
-    return true;
+    if (get("auto_exerciseLiquidity", 0) > 0) {
+      return true;
+    }
+
+    return auto_chewLiquidAsset();
   }
   return false;
 }
@@ -1798,17 +1802,15 @@ export function adjustForReplaceIfPossible(
   target: Monster = Monster.none,
 ): boolean {
   if (!canReplace(target)) {
-    auto_chewLiquidAsset();
+    return false;
   }
-  if (canReplace(target)) {
-    const rep_string: CombatMacroReturns = replaceMonsterCombatString(target);
-    auto_log_info(
-      `Adjusting to have replace available for ${target}: ${rep_string}`,
-      "blue",
-    );
-    return adjustForReplace(rep_string);
-  }
-  return false;
+
+  const rep_string: CombatMacroReturns = replaceMonsterCombatString(target);
+  auto_log_info(
+    `Adjusting to have replace available for ${target}: ${rep_string}`,
+    "blue",
+  );
+  return adjustForReplace(rep_string);
 }
 
 export function canSniff(enemy: Monster, loc: Location): boolean {
