@@ -241,6 +241,7 @@ import {
   banisherCombatAction$1,
   banisherCombatString,
   canUse$3,
+  combat_status_check,
   getCopier,
   getSniffer,
   replaceMonsterCombatString,
@@ -249,6 +250,7 @@ import {
 } from "./combat/auto_combat_util";
 import { auto_edCombatHandler } from "./combat/paths/auto_combat_ed";
 import {
+  fightingDesiredTaskMonster,
   getIncompleteQuestTasks,
   QuestTask,
   registerQuestTask,
@@ -5228,12 +5230,13 @@ export function auto_check_conditions(conds: string): boolean {
   return true;
 }
 
+const monsters_text: Map<string, Map<number, Map<string, string>>> = fileAsMap(
+  "autoscend_monsters.txt",
+  [String, Number, String, String],
+);
+
 function auto_getMonsters(category: string): Monster[] {
   const res: Monster[] = [];
-  const monsters_text: Map<
-    string,
-    Map<number, Map<string, string>>
-  > = fileAsMap("autoscend_monsters.txt", [String, Number, String, String]);
   if (!monsters_text.size) {
     auto_log_error("Could not load autoscend_monsters.txt. This is bad!");
   }
@@ -5257,12 +5260,12 @@ function auto_getMonsters(category: string): Monster[] {
   return res;
 }
 
+const phylum_text: Map<string, Map<number, Map<string, string>>> = fileAsMap(
+  "autoscend_phylums.txt",
+  [String, Number, String, String],
+);
 function auto_getPhylum(category: string): Phylum[] {
   const res: Phylum[] = [];
-  const phylum_text: Map<string, Map<number, Map<string, string>>> = fileAsMap(
-    "autoscend_phylums.txt",
-    [String, Number, String, String],
-  );
   if (!phylum_text.size) {
     auto_log_error("Could not load autoscend_phylums.txt. This is bad!");
   }
@@ -5761,11 +5764,12 @@ export function knapsack(
   return ret;
 }
 
+const itemdata: Map<string, Map<number, Map<string, string>>> = fileAsMap(
+  "autoscend_items.txt",
+  [String, Number, String, String],
+);
+
 export function auto_reserveAmount(it: Item): number {
-  const itemdata: Map<string, Map<number, Map<string, string>>> = fileAsMap(
-    "autoscend_items.txt",
-    [String, Number, String, String],
-  );
   if (!itemdata.size) {
     auto_log_error("Could not load autoscend_items.txt! This is bad!");
   }
@@ -6846,12 +6850,60 @@ export function auto_roughExpectedTurnsLeftToday(): number {
   return curr + floor(stom * eat_val + liv * drink_val + spl * spl_val);
 }
 
-let $_auto_wantToFreeKillWithNoDrops_targets: Monster[] | undefined;
+// look for specific monsters in zones where some monsters we do care about
+const monstersWithNothingGoodAboutThem: Monster[] = Monster.get([]);
+const freekillWithNoDropsMonsters: Monster[] = Monster.get([
+  // The Haunted Bathroom
+  "claw-foot bathtub",
+  "malevolent hair clog",
+  "toilet papergeist",
+  // The Haunted Gallery
+  "cubist bull",
+  "empty suit of armor",
+  "guy with a pitchfork, and his wife",
+  // The Haunted Bedroom
+  // The Haunted Wine Cellar
+  "skeletal sommelier",
+  // The Haunted Laundry Room
+  "plaid ghost",
+  "possessed laundry press",
+  // The Haunted Boiler Room
+  "coaltergeist",
+  "steam elemental",
+  // The 8-bit realm
+  "Octorok",
+  "Keese",
+  "Tektite",
+  "Zol",
+  "Blader",
+  "Met",
+  "Tackle Fire",
+  "Blooper",
+  "Bullet Bill",
+  "Buzzy Beetle",
+  "Goomba",
+  "Koopa Troopa",
+  "fleaman",
+  "ghost",
+  "medusa",
+  "animated mahogany nightstand",
+  "animated ornate nightstand",
+  "animated rustic nightstand",
+  "elegant animated nightstand",
+  "Wardr&ouml;b nightstand",
+]);
 
 export function auto_wantToFreeKillWithNoDrops(
   loc: Location,
   enemy: Monster,
 ): boolean {
+  if (
+    combat_status_check("refractedgazed") ||
+    (myFamiliar() !== $familiar`Sword of S Words` &&
+      combat_status_check("droptablereplaced"))
+  ) {
+    return false;
+  }
   // only want certain enemies to free-kill in Avant Guard
   if (in_avantGuard()) {
     if (enemy.physicalResistance >= 100 && enemy.elementalResistance >= 100) {
@@ -6887,47 +6939,50 @@ export function auto_wantToFreeKillWithNoDrops(
     return true;
   }
   // look for specific monsters in zones where some monsters we do care about
-  $_auto_wantToFreeKillWithNoDrops_targets ??= Monster.get([
-    // The Haunted Bathroom
-    "claw-foot bathtub",
-    "malevolent hair clog",
-    "toilet papergeist",
-    // The Haunted Gallery
-    "cubist bull",
-    "empty suit of armor",
-    "guy with a pitchfork, and his wife",
-    // The Haunted Bedroom
-    "animated mahogany nightstand",
-    "animated ornate nightstand",
-    "animated rustic nightstand",
-    "elegant animated nightstand",
-    "Wardr&ouml;b nightstand",
-    // The Haunted Wine Cellar
-    "skeletal sommelier",
-    // The Haunted Laundry Room
-    "plaid ghost",
-    "possessed laundry press",
-    // The Haunted Boiler Room
-    "coaltergeist",
-    "steam elemental",
-    // The 8-bit realm
-    "Octorok",
-    "Keese",
-    "Tektite",
-    "Zol",
-    "Blader",
-    "Met",
-    "Tackle Fire",
-    "Blooper",
-    "Bullet Bill",
-    "Buzzy Beetle",
-    "Goomba",
-    "Koopa Troopa",
-    "fleaman",
-    "ghost",
-    "medusa",
-  ]);
-  return $_auto_wantToFreeKillWithNoDrops_targets.includes(enemy);
+  return freekillWithNoDropsMonsters.includes(enemy);
+}
+
+// If the monster is one we don't really care about, and we're fine if we end up fighting something else random
+export function auto_wantToAvoidMonster(
+  loc: Location,
+  enemy: Monster,
+): boolean {
+  // If we did something to the monster and we don't want to undo it
+  if (
+    combat_status_check("refractedgazed") ||
+    (myFamiliar() !== $familiar`Sword of S Words` &&
+      combat_status_check("droptablereplaced"))
+  ) {
+    return false;
+  }
+  //This is called in stage2 and auto_purple_candled is set in stage 4 so this should only ever show up on the purple candled enemy
+  if (safeGet("auto_purple_candled", Monster.none) === enemy) {
+    return false;
+  }
+  // don't avoid inherently free fights
+  if (isFreeMonster(enemy, loc)) {
+    return false;
+  }
+  // need hippy / frat kills
+  if (
+    loc === $location`The Battlefield (Frat Uniform)` ||
+    loc === $location`The Battlefield (Hippy Uniform)`
+  ) {
+    return false;
+  }
+  // need the choices
+  if (loc === $location`The Haunted Bedroom`) {
+    return false;
+  }
+  // If a task explicitly registered this monster as a desired target
+  if (fightingDesiredTaskMonster(enemy)) {
+    return false;
+  }
+
+  return (
+    auto_getMonsters("freerun").includes(enemy) ||
+    auto_getMonsters("banish").includes(enemy)
+  );
 }
 
 export function auto_ignoreExperience(): boolean {

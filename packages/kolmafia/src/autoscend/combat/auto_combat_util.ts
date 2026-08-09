@@ -2,6 +2,7 @@ import {
   availableAmount,
   canEquip,
   containsText,
+  currentRound,
   elementalResistance,
   equippedAmount,
   equippedItem,
@@ -210,7 +211,7 @@ let $_canUse_exclusives: Map<number, $_canUse_SkillSet> | undefined;
 export function auto_canUse(
   sk: Skill,
   onlyOnce: boolean = true, // assume onlyOnce unless specified otherwise
-  inCombat: boolean = true, //assume we are in combat unless specified otherwise
+  inCombat: boolean = currentRound() > 0, //assume we are in combat unless specified otherwise
 ): boolean {
   if (onlyOnce && haveUsed(sk)) {
     return false;

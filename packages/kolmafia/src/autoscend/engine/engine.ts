@@ -65,6 +65,45 @@ export function taskLocations(task: QuestTask): Location[] {
   return Array.isArray(locs) ? locs : [locs];
 }
 
+export function isMonsterEncounter(
+  encounter: DesiredDrop | DesiredFights,
+): encounter is DesiredFights {
+  return "monster" in encounter;
+}
+export function isItemEncounter(
+  encounter: DesiredDrop | DesiredFights,
+): encounter is DesiredDrop {
+  return "monster" in encounter;
+}
+
+/**
+ * If we're fighting against a monster that the current executing tasks do care about. Doesn't mean we don't care about the monster, eg, wanderer
+ */
+export function fightingDesiredTaskMonster(monster: Monster): boolean {
+  if (monster.boss) return true;
+  const drops = getMonsterDrops(monster).map((i) => i.item);
+
+  return getExecutingQuestTasks().some(
+    (t) =>
+      t.desiredEncounters &&
+      t.desiredEncounters().some((e) => {
+        if (isMonsterEncounter(e)) {
+          const arr = Array.isArray(e.monster) ? e.monster : [e.monster];
+
+          if (arr[0] instanceof Phylum) {
+            return arr.includes(monster.phylum);
+          }
+
+          return arr.includes(
+            arr[0] instanceof Phylum ? monster.phylum : monster,
+          );
+        } else if (isItemEncounter(e)) {
+          return drops.includes(e.item);
+        }
+      }),
+  );
+}
+
 // caps the maximizer's "item drop" so it doesn't chase gear beyond what's
 // needed to cap the task's desired drop(s) at a 100% end-of-fight chance
 // Although, this isn't in use due to concerns about unexpected fights (eg, wanderers)
@@ -180,7 +219,13 @@ export function registerQuestTask<T extends QuestTask>(a: QuestTask, b?: T): T {
   if (task.desiredEncounters) {
     const desiredEncounters = task.desiredEncounters;
     task.desiredEncounters = () =>
-      desiredEncounters().filter((t) => t.needAmount > 0);
+      desiredEncounters().filter(
+        (t) =>
+          t.needAmount > 0 &&
+          (!isMonsterEncounter(t) ||
+            !Array.isArray(t.monster) ||
+            t.monster.length > 0),
+      );
   }
   questTasks ??= [];
   questTasks.push(task);

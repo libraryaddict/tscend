@@ -980,10 +980,14 @@ function auto_pre_adventure(): boolean {
     }
   } else if (
     auto_haveMonodent() &&
-    auto_baseballFreefightMonster() === $monster`some fish`
+    auto_baseballFreefightMonster() === $monster`some fish` &&
+    zoneHasUnwantedMonsters
   ) {
     // Add the monodent for killing some fish, for free, if possible
-    addBonusToMaximize($item`Monodent of the Sea`, 80);
+    addBonusToMaximize(
+      $item`Monodent of the Sea`,
+      zoneHasWantedMonsters ? 80 : 200,
+    );
   }
 
   if (

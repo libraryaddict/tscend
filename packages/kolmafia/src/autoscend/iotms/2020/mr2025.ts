@@ -118,12 +118,11 @@ import {
   auto_is_valid$2,
   auto_log_info,
   auto_runChoice,
-  auto_wantToFreeKillWithNoDrops,
+  auto_wantToAvoidMonster,
   auto_zonePhylumPercent,
   canSummonMonster,
   handleTracker,
   internalQuestStatus,
-  isFreeMonster,
   knapsack,
   level_to_min_substat,
   safeGet,
@@ -1515,30 +1514,14 @@ export function auto_waveTheZone(): boolean {
 export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
   // returns true if we want to cast Talk to Some Fish. Not intended to exhaustivly list all valid targets
   // also, this is not actually a free fight, but this is a safe listing of targets
-
   if (!auto_haveMonodent()) {
     return false;
   }
   if (!auto_is_valid$2($skill`Sea *dent: Talk to Some Fish`)) {
     return false;
   }
-  // don't use Talk to Some Fish against inherently free fights
-  if (isFreeMonster(enemy, loc)) {
-    return false;
-  }
   // don't try and use the skill if we have already turned them into some fish
   if (enemy === $monster`some fish`) {
-    return false;
-  }
-  // need hippy / frat kills
-  if (
-    loc === $location`The Battlefield (Frat Uniform)` ||
-    loc === $location`The Battlefield (Hippy Uniform)`
-  ) {
-    return false;
-  }
-  // need chained fights
-  if (loc === $location`The Haunted Bedroom`) {
     return false;
   }
   // some fish has no meat drop, so this doesn't take familiar meat modifiers into account
@@ -1550,7 +1533,7 @@ export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
     return true;
   }
 
-  return auto_wantToFreeKillWithNoDrops(loc, enemy);
+  return auto_wantToAvoidMonster(loc, enemy);
 }
 
 export function auto_throwLightningRemaining(): number {
