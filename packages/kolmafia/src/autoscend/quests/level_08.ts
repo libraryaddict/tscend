@@ -126,6 +126,7 @@ import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
 import { is_professor } from "../paths/2024/wereprofessor";
 import { L8_slopeCasual } from "../paths/casual";
 import { AshMatcher } from "../utils/kolmafiaUtils";
+import { maximizer } from "../utils/maximizer";
 import { L7_override } from "./level_07";
 import { shenShouldDelayZone } from "./level_11";
 
@@ -939,7 +940,10 @@ function L8_trapperGroarDo(): boolean {
     }
     set("auto_nonAdvLoc", true);
     // Let's whack some free XP on our Chest Mimic (it's a chaun)
-    if (auto_haveChestMimic()) {
+    if (
+      auto_haveChestMimic() &&
+      maximizer.getWeight($modifier`Meat Drop`) > 0.1
+    ) {
       handleFamiliar$1($familiar`Chest Mimic`);
       provideFamExp$2(50, $location`Mist-Shrouded Peak`, true, false);
     }

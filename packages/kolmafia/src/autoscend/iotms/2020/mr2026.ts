@@ -153,7 +153,12 @@ import { auto_haveKramcoSausageOMatic } from "../2010/mr2019";
 import { auto_haveTrainSet } from "./mr2022";
 import { auto_haveCCSC } from "./mr2023";
 import { auto_haveBatWings, auto_haveSpringShoes } from "./mr2024";
-import { auto_canTracesBandit, auto_haveMonodent } from "./mr2025";
+import {
+  auto_bczRefractedGaze,
+  auto_canTracesBandit,
+  auto_haveMonodent,
+  haveUsedPeridot,
+} from "./mr2025";
 
 // This is meant for items that have a date of 2026
 export function auto_haveEternityCodpiece(): boolean {
@@ -444,6 +449,15 @@ function auto_heartstoneWordsToAimFor(): string[] {
   return words;
 }
 
+export function auto_heartstoneCurrentWord(): string {
+  let currentWord = get("heartstoneLetters").toUpperCase();
+  // Ensure its always a word that's less than 4 chars
+  currentWord = currentWord.slice(
+    currentWord.length - (currentWord.length % 4),
+  );
+  return currentWord;
+}
+
 /**
  *
  * @param location non-null if we're speculating for equipping heartstone
@@ -473,11 +487,7 @@ export function auto_heartstoneShouldStealHeart(location: Location): boolean {
   // If we can't steal a heart
   if (inCombat && letter === "") return false;
 
-  let currentWord = get("heartstoneLetters").toUpperCase();
-  // Ensure its always a word that's less than 4 chars
-  currentWord = currentWord.slice(
-    currentWord.length - (currentWord.length % 4),
-  );
+  let currentWord = auto_heartstoneCurrentWord();
   currentWord += letter;
   const allWords = auto_heartstoneWordsToAimFor();
 
@@ -2068,6 +2078,23 @@ export function auto_preferSwordFamiliar(place: Location) {
 
 export function auto_wantSwordFamiliar(place: Location): boolean {
   if (!auto_have_sword_familiar() || auto_sword_of_swords_kills_left() <= 0) {
+    return false;
+  }
+  // If no drops here
+  if (
+    auto_location_monsters(place).every(
+      ([mon, rate]) => !mon.copyable || mon.boss || rate <= 0,
+    )
+  ) {
+    return false;
+  }
+  // If we plan to refracted gaze at this location
+  if (
+    auto_bczRefractedGaze(
+      // If we're going to peridot
+      haveEquipped($item`Peridot of Peril`) && !haveUsedPeridot(place),
+    )
+  ) {
     return false;
   }
   // Traces/afterimage bandit chains force the same rematch either way, and fantasy bandit's own drop is conditional (never overwritten), so it's free

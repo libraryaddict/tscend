@@ -14,6 +14,7 @@ import {
   $item,
   $location,
   $locations,
+  $modifier,
   $monster,
   $phylum,
   get,
@@ -57,6 +58,7 @@ import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
 import { in_lol } from "../paths/2023/legacy_of_loathing";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
+import { maximizer } from "../utils/maximizer";
 import { shenShouldDelayZone } from "./level_11";
 
 //Defined in autoscend/quests/level_04.ash
@@ -245,7 +247,10 @@ function L4_bossBatLair(): boolean {
   const batskinBelt: number = itemAmount($item`batskin belt`);
   auto_change_mcd(4); // get the pants from the Boss Bat.
   // Let's whack some free XP on our Chest Mimic (it's a chaun)
-  if (auto_haveChestMimic()) {
+  if (
+    auto_haveChestMimic() &&
+    maximizer.getWeight($modifier`Meat Drop`) > 0.1
+  ) {
     handleFamiliar$1($familiar`Chest Mimic`);
     provideFamExp$2(50, $location`The Boss Bat's Lair`, true, false);
   }

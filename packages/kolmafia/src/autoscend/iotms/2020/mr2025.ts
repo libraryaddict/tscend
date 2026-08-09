@@ -149,9 +149,11 @@ import {
 } from "../2010/mr2018";
 import { auto_haveChestMimic } from "./mr2024";
 import {
+  auto_desires_sword_familiar_drops,
   auto_haveEternityCodpiece,
   auto_isInEternityCodpiece,
   auto_spadeDigsRemaining,
+  auto_sword_of_swords_tracking,
 } from "./mr2026";
 
 // This is meant for items that have a date of 2025
@@ -1801,9 +1803,10 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
     return false;
   }
   if (
-    safeGet("auto_familiarChoice", Familiar.none) ===
-      $familiar`Sword of S Words` ||
-    myFamiliar() === $familiar`Sword of S Words`
+    currentRound() > 0 &&
+    myFamiliar() === $familiar`Sword of S Words` &&
+    (auto_desires_sword_familiar_drops() ||
+      auto_sword_of_swords_tracking() !== Monster.none)
   ) {
     // the sword already overwrites this fight's drop table, so gazing here would be wasted.
     return false;

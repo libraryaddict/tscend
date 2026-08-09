@@ -54,7 +54,10 @@ import {
 } from "../auto_util";
 import { auto_bowlingBallCombatString } from "../iotms/2020/mr2022";
 import { shouldCinchoConfetti } from "../iotms/2020/mr2023";
-import { auto_heartstoneShouldStealHeart } from "../iotms/2020/mr2026";
+import {
+  auto_heartstoneCurrentWord,
+  auto_heartstoneShouldStealHeart,
+} from "../iotms/2020/mr2026";
 import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
 import { in_heavyrains } from "../paths/2014/heavy_rains";
 import { in_darkGyffte } from "../paths/2019/dark_gyffte";
@@ -555,7 +558,7 @@ export function auto_combatDefaultStage4(
     handleTracker({
       what: $skill`Steal Monster's Heart`,
       location: myLocation(),
-      detail: `${lastMonster()}: ${get("heartstoneLetters")}[${heartstoneMiddleLetter()}]`,
+      detail: `${lastMonster()}: ${auto_heartstoneCurrentWord()}[${heartstoneMiddleLetter()}]`,
       property: "auto_otherstuff",
     });
     return auto_useSkill($skill`Steal Monster's Heart`);

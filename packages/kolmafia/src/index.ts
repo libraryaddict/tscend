@@ -1,5 +1,5 @@
 import { print, userConfirm } from "kolmafia";
-import { get, set, sinceKolmafiaRevision } from "libram";
+import { $monster, get, set, sinceKolmafiaRevision } from "libram";
 
 import {
   print_help_text,
@@ -12,6 +12,7 @@ import {
   auto_log_info,
   AutoStopError,
   backupSetting,
+  canSummonMonster,
   meatReserveMessage,
 } from "./autoscend/auto_util";
 import { autoscend_migrate } from "./autoscend/autoscend_migration";
@@ -48,6 +49,7 @@ export function main(input: string = ""): void {
   Args.fill(args, input);
 
   if (args.help) {
+    print(JSON.stringify(canSummonMonster($monster`fantasy bandit`)));
     Args.showHelp(args);
     return;
   }
