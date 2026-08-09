@@ -404,3 +404,5 @@ kolhs_closetDrink:
   type: boolean
 logLevelDefaultChangedToDebug:
   type: boolean
+_autoSkipNextAdventure:
+  type: boolean

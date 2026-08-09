@@ -3,6 +3,7 @@
 import type { Familiar, Item, Location, Monster } from "kolmafia";
 
 type BooleanProperty =
+  | "_autoSkipNextAdventure"
   | "_auto_bad100Familiar"
   | "_auto_candyMapCompleted"
   | "_auto_completedJarlsbergSkillTree"

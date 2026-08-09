@@ -14,7 +14,7 @@ import {
   Skill,
   visitUrl,
 } from "kolmafia";
-import { $location, Macro, set } from "libram";
+import { $location, get, Macro, set } from "libram";
 
 import { auto_runPostAdventure } from "./auto_post_adv";
 import { auto_runPreAdventure } from "./auto_pre_adv";
@@ -111,7 +111,9 @@ export function autoAdv(
   const turncount: number = myTurncount();
   auto_interruptCheck("main", false);
   auto_triggerPreAdventure();
-  let advReturn: boolean = auto_adv1(loc, option);
+  let advReturn: boolean =
+    get("_autoSkipNextAdventure", false) || auto_adv1(loc, option);
+  removeProperty("_autoSkipNextAdventure");
   auto_triggerPostAdventure();
   if (!advReturn) {
     auto_interruptCheck("main", false);
