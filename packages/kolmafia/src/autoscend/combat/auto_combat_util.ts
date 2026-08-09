@@ -13,6 +13,7 @@ import {
   haveEffect,
   haveEquipped,
   haveSkill,
+  heartstoneMiddleLetter,
   hpCost,
   isBanished,
   Item,
@@ -131,6 +132,8 @@ import {
 import {
   auto_chewLiquidAsset,
   auto_getItemToEquipHeartstone,
+  auto_heartstoneCurrentWord,
+  auto_heartstoneShouldStealHeartInCombat,
 } from "../iotms/2020/mr2026";
 import { pete_peelOutRemaining } from "../paths/2014/avatar_of_sneaky_pete";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
@@ -1790,4 +1793,18 @@ function auto_remainingMildEvilUses(): number {
     return 0;
   }
   return 3 - get("_mildEvilPerpetrated");
+}
+
+export function auto_shouldHeartstoneStealInstead(): boolean {
+  if (auto_heartstoneShouldStealHeartInCombat()) {
+    handleTracker({
+      what: $skill`Steal Monster's Heart`,
+      location: myLocation(),
+      detail: `${lastMonster()}: ${auto_heartstoneCurrentWord()}[${heartstoneMiddleLetter(lastMonster())}]`,
+      property: "auto_otherstuff",
+    });
+    return true;
+  }
+
+  return false;
 }

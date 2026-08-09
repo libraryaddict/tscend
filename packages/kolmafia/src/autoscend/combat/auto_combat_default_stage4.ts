@@ -3,10 +3,8 @@ import {
   getProperty,
   haveEffect,
   haveEquipped,
-  heartstoneMiddleLetter,
   Item,
   itemAmount,
-  lastMonster,
   Monster,
   monsterElement,
   monsterHp,
@@ -54,10 +52,6 @@ import {
 } from "../auto_util";
 import { auto_bowlingBallCombatString } from "../iotms/2020/mr2022";
 import { shouldCinchoConfetti } from "../iotms/2020/mr2023";
-import {
-  auto_heartstoneCurrentWord,
-  auto_heartstoneShouldStealHeartInCombat,
-} from "../iotms/2020/mr2026";
 import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
 import { in_heavyrains } from "../paths/2014/heavy_rains";
 import { in_darkGyffte } from "../paths/2019/dark_gyffte";
@@ -69,6 +63,7 @@ import { towerKeyCount } from "../quests/level_13";
 import { numPirateInsults } from "../quests/optional";
 import {
   auto_canUse,
+  auto_shouldHeartstoneStealInstead,
   auto_useSkill,
   canSurvive,
   canUse$3,
@@ -99,6 +94,9 @@ export function auto_combatDefaultStage4(
   //Unskip stage 3
   if (get("auto_skipStage3", false)) {
     set("auto_skipStage3", false);
+  }
+  if (auto_shouldHeartstoneStealInstead()) {
+    return auto_useSkill($skill`Steal Monster's Heart`);
   }
   // Path = The Source
   let retval: CombatMacroReturns = auto_combatTheSourceStage4(
@@ -552,16 +550,6 @@ export function auto_combatDefaultStage4(
   // get extra combat stats
   if (shouldCinchoConfetti() && canSurvive(5.0)) {
     return auto_useSkill($skill`Cincho: Confetti Extravaganza`);
-  }
-
-  if (auto_heartstoneShouldStealHeartInCombat()) {
-    handleTracker({
-      what: $skill`Steal Monster's Heart`,
-      location: myLocation(),
-      detail: `${lastMonster()}: ${auto_heartstoneCurrentWord()}[${heartstoneMiddleLetter(lastMonster())}]`,
-      property: "auto_otherstuff",
-    });
-    return auto_useSkill($skill`Steal Monster's Heart`);
   }
 
   return undefined;

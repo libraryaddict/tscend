@@ -58,6 +58,7 @@ import { in_amw } from "../paths/2026/adventurer_meats_world";
 import { inAftercore } from "../paths/casual";
 import {
   auto_canUse,
+  auto_shouldHeartstoneStealInstead,
   auto_useSkill,
   canSurvive,
   canUse$3,
@@ -378,6 +379,9 @@ export function auto_combatDefaultStage1(
     auto_canUse($skill`Back-Up to your Last Enemy`) &&
     !reserveAdvsForFreeFights
   ) {
+    if (auto_shouldHeartstoneStealInstead()) {
+      return auto_useSkill($skill`Steal Monster's Heart`);
+    }
     handleTracker({
       what: enemy,
       detail: $skill`Back-Up to your Last Enemy`.toString(),
@@ -439,6 +443,9 @@ export function auto_combatDefaultStage1(
         auto_wantToBanish(enemy, myLocation()))) &&
     auto_have_skill($skill`Sea *dent: Talk to Some Fish`)
   ) {
+    if (auto_shouldHeartstoneStealInstead()) {
+      return auto_useSkill($skill`Steal Monster's Heart`);
+    }
     handleTracker({
       what: enemy,
       location: myLocation(),
