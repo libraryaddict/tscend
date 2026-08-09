@@ -119,6 +119,10 @@ export class Maximizer {
     return this;
   }
 
+  getMax(mod: Criterion): number | undefined {
+    return this.maxes.get(criterionName(mod));
+  }
+
   bonus(item: Item, amount: number, add: boolean = false): this {
     if (this.pendingBonus.has(item) && add) {
       auto_log_info(

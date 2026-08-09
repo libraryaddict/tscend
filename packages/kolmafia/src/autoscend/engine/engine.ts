@@ -2,7 +2,6 @@ import { Engine, Task } from "grimoire-kolmafia";
 import {
   appearanceRates,
   Item,
-  itemDropsArray,
   Location,
   max,
   Monster,
@@ -12,6 +11,7 @@ import {
 import { $modifier } from "libram";
 
 import { autoAdv, CombatMacro } from "../auto_adventure";
+import { getMonsterDrops, isItemDropControlled } from "../auto_util";
 import { auto_combatHandler } from "../combat/auto_combat";
 import { auto_edCombatHandler } from "../combat/paths/auto_combat_ed";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
@@ -67,6 +67,7 @@ export function taskLocations(task: QuestTask): Location[] {
 
 // caps the maximizer's "item drop" so it doesn't chase gear beyond what's
 // needed to cap the task's desired drop(s) at a 100% end-of-fight chance
+// Although, this isn't in use due to concerns about unexpected fights (eg, wanderers)
 function applyItemDropCap(task: QuestTask): void {
   const desiredItems: Item[] = (task.desiredEncounters?.() ?? [])
     .filter(
@@ -83,11 +84,12 @@ function applyItemDropCap(task: QuestTask): void {
     )) {
       if (encounterRate <= 0) continue;
       const monster = Monster.get(monsterName);
-      for (const drop of itemDropsArray(monster)) {
+      for (const drop of getMonsterDrops(monster)) {
         if (
           drop.rate < 1 ||
-          drop.type !== "" ||
-          !desiredItems.includes(drop.drop)
+          drop.rate >= 100 ||
+          !isItemDropControlled(drop) ||
+          !desiredItems.includes(drop.item)
         ) {
           continue;
         }
@@ -96,8 +98,9 @@ function applyItemDropCap(task: QuestTask): void {
     }
   }
 
-  if (cap > 0) {
+  if (cap > 0 && cap > (maximizer.getMax($modifier`Item Drop`) ?? 0)) {
     maximizer
+      // Add a lil extra weight on the drop
       .weight($modifier`Item Drop`, 5, true)
       .max($modifier`Item Drop`, cap);
   }
@@ -105,6 +108,7 @@ function applyItemDropCap(task: QuestTask): void {
 
 export class AutoscendEngine extends Engine<never, QuestTask> {
   lastActed = true;
+  executing: QuestTask[] = [];
 
   // grimoire's initPropertiesManager() forces these to its own defaults on
   // every engine construction, which happens on every runTaskChain call now
@@ -133,18 +137,26 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
   setCombat(): void {}
 
   do(task: QuestTask): void {
-    const result =
-      typeof task.do === "function" ? task.do(this.getContext(task)) : task.do;
-    if (result instanceof Location) {
-      applyItemDropCap(task);
-      this.lastActed = autoAdv(result, this.defaultCombatHandler());
-      return;
+    try {
+      // Adds the current task to the stack
+      this.executing.push(task);
+      const result =
+        typeof task.do === "function"
+          ? task.do(this.getContext(task))
+          : task.do;
+      if (result instanceof Location) {
+        this.lastActed = autoAdv(result, this.defaultCombatHandler());
+        return;
+      }
+      if (typeof result === "boolean") {
+        this.lastActed = result;
+        return;
+      }
+      this.lastActed = true;
+    } finally {
+      // Pops the stack
+      this.executing.pop();
     }
-    if (typeof result === "boolean") {
-      this.lastActed = result;
-      return;
-    }
-    this.lastActed = true;
   }
 }
 
@@ -198,6 +210,11 @@ export function findRegisteredQuestTask(name: string): QuestTask | undefined {
 
 export function getAllQuestTasks(): QuestTask[] {
   return getEngine().tasks;
+}
+
+// Returns the tasks that are currently executing, this includes the parents in the stack, the stack may have conflicting information on locations
+export function getExecutingQuestTasks(): QuestTask[] {
+  return getEngine().executing;
 }
 
 export function printAllTaskQuests(filter: string = ""): void {
