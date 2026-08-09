@@ -558,7 +558,7 @@ export function auto_combatDefaultStage4(
     handleTracker({
       what: $skill`Steal Monster's Heart`,
       location: myLocation(),
-      detail: `${lastMonster()}: ${auto_heartstoneCurrentWord()}[${heartstoneMiddleLetter()}]`,
+      detail: `${lastMonster()}: ${auto_heartstoneCurrentWord()}[${heartstoneMiddleLetter(lastMonster())}]`,
       property: "auto_otherstuff",
     });
     return auto_useSkill($skill`Steal Monster's Heart`);

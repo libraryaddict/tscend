@@ -30,6 +30,7 @@ import {
   itemAmount,
   itemDropsArray,
   knollAvailable,
+  lastMonster,
   Location,
   Monster,
   myAdventures,
@@ -469,7 +470,7 @@ export function auto_heartstoneShouldStealHeartInCombat(): boolean {
     return false;
   }
 
-  const letter = heartstoneMiddleLetter().toUpperCase();
+  const letter = heartstoneMiddleLetter(lastMonster()).toUpperCase();
 
   // If we can't steal a heart
   if (letter === "") return false;
