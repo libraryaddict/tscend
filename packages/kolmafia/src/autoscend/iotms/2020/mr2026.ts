@@ -309,10 +309,7 @@ export function auto_haveHeartstone(): boolean {
   if (!auto_is_valid($item`Heartstone`)) {
     return false;
   }
-  if (availableAmount($item`Heartstone`) > 0) {
-    return true;
-  }
-  if (auto_isInEternityCodpiece($item`Heartstone`)) {
+  if (possessEquipment($item`Heartstone`)) {
     return true;
   }
   return false;
@@ -456,13 +453,13 @@ export function auto_heartstoneShouldStealHeart(location: Location): boolean {
   const inCombat: boolean = currentRound() > 0;
   const badLoc =
     location === $location.none || location === $location`Noob Cave`;
-  if (inCombat && badLoc) {
+  if (!inCombat && badLoc) {
     return false;
   }
 
   if (
     !auto_haveHeartstone() ||
-    !haveEquipped(auto_getItemToEquipHeartstone()) ||
+    (inCombat && !haveEquipped(auto_getItemToEquipHeartstone())) ||
     !auto_is_valid$2($skill`Steal Monster's Heart`) ||
     (inCombat && !auto_canUse($skill`Steal Monster's Heart`)) || // If in combat and don't have skill
     get("_lastCombatActions")
@@ -501,7 +498,7 @@ export function auto_heartstoneShouldStealHeart(location: Location): boolean {
     allLocations.push(location);
   }
 
-  const locationLetters: Map<string, number> = new Map();
+  const currentLocationLetters: Map<string, number> = new Map();
   const letterChances: Map<string, number> = new Map();
 
   // Compile a map of chances for the letter to be sastified via a combat
@@ -513,12 +510,15 @@ export function auto_heartstoneShouldStealHeart(location: Location): boolean {
 
       const letter = heartstoneMiddleLetter(monster);
 
-      if (!letter) continue;
+      if (letter === "") continue;
 
       letterChances.set(letter, (letterChances.get(letter) ?? 0) + chance);
 
       if (loc === location) {
-        locationLetters.set(letter, chance);
+        currentLocationLetters.set(
+          letter,
+          (currentLocationLetters.get(letter) ?? 0) + chance,
+        );
       }
     }
   }
@@ -530,13 +530,16 @@ export function auto_heartstoneShouldStealHeart(location: Location): boolean {
 
     const chance = remainingLetters
       .map((l) => letterChances.get(l) ?? 0)
-      .reduce((l, r) => Math.min(l, r), 0);
+      .reduce((l, r) => Math.min(l, r), 1000);
 
     // If we have less than 5% chance to fulfil this word, we won't mark it as eligable
     if (chance <= 5) continue;
 
     // If we're speculating && if the current location has nothing for us here
-    if (!inCombat && (locationLetters.get(remainingLetters[0]) ?? 0) <= 0) {
+    if (
+      !inCombat &&
+      (currentLocationLetters.get(remainingLetters[0]) ?? 0) <= 0
+    ) {
       // Continue, try find another word
       continue;
     }
