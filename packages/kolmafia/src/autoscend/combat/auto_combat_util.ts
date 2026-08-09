@@ -402,7 +402,7 @@ export function isSniffed(enemy: Monster, sk: Skill | Item): boolean {
 
 export function isSniffed$1(enemy: Monster): boolean {
   //checks if the monster enemy is currently sniffed using any of the sniff skills
-  for (const sk of $skills`Transcendent Olfaction, Make Friends, Long Con, Perceive Soul, Gallapagosian Mating Call, Monkey Point, Offer Latte to Opponent, Motif, Hunt, McHugeLarge Slash, Left %n Kick, Right %n Kick, Meat Cute`) {
+  for (const sk of $skills`Transcendent Olfaction, Make Friends, Long Con, Perceive Soul, Gallapagosian Mating Call, Monkey Point, Offer Latte to Opponent, Motif, Hunt, McHugeLarge Slash, Left %n Kick, Right %n Kick, Meat Cute, Get a Good Whiff of This Guy`) {
     if (isSniffed(enemy, sk)) {
       return true;
     }
