@@ -6900,8 +6900,9 @@ export function auto_wantToFreeKillWithNoDrops(
 ): boolean {
   if (
     combat_status_check("refractedgazed") ||
-    (myFamiliar() !== $familiar`Sword of S Words` &&
-      combat_status_check("droptablereplaced"))
+    combat_status_check("droptablereplaced") ||
+    (myFamiliar() === $familiar`Sword of S Words` &&
+      auto_desires_sword_familiar_drops())
   ) {
     return false;
   }

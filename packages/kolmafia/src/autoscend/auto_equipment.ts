@@ -153,6 +153,7 @@ import {
 import {
   auto_clubEmBackInTimesRemaining,
   auto_codpieceFoldGemScores,
+  auto_desires_sword_familiar_drops,
   auto_havePastaWand,
   auto_isInEternityCodpiece,
 } from "./iotms/2020/mr2026";
@@ -1631,7 +1632,13 @@ export function auto_equipFreekill(): void {
   } else if (sweatBulletsAvailable && !maximizer.has($slot`acc3`)) {
     auto_log_info("Man, we about to sweat bullets up in here. Equipping BCZ.");
     autoEquipToSlot($slot`acc3`, bcz);
-  } else if (clubBackAvailable && !maximizer.has($slot`weapon`)) {
+  } else if (
+    clubBackAvailable &&
+    !maximizer.has($slot`weapon`) &&
+    (safeGet("auto_familiarChoice", Familiar.none) !==
+      $familiar`Sword of S Words` ||
+      !auto_desires_sword_familiar_drops())
+  ) {
     // club back is last because it destroys drops, so we may choose to not use it
     auto_log_info(
       "They may not be seals, but we're gonna kill them last week. Equipping Legendary Seal Clubbing Club.",
