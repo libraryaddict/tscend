@@ -122,6 +122,7 @@ import {
   safeGet,
   set_next_fight_is_free,
   summonMonster,
+  TrackerKey,
 } from "../../auto_util";
 import { zone_delay } from "../../auto_zone";
 import { ConsumeAction } from "../../autoscend_record";
@@ -1507,12 +1508,12 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
   if (!handlingChoice()) return false;
 
   // The order here matters
-  const finishers: [Element, string][] = [
-    [$element`hot`, "Yellow Ray"],
-    [$element`cold`, "Banish"],
-    [$element`spooky`, "Free Fights"],
-    [$element`stench`, "Extra Zone Copies"],
-    [$element`sleaze`, "High ML"],
+  const finishers: [Element, string, TrackerKey | undefined][] = [
+    [$element`hot`, "Yellow Ray", "auto_yellowRays"],
+    [$element`cold`, "Banish", "auto_banishes"],
+    [$element`spooky`, "Free Fights", "auto_instakill"],
+    [$element`stench`, "Extra Zone Copies", "auto_copies"],
+    [$element`sleaze`, "High ML", undefined],
   ];
 
   const fillerPriority = new Map<string, [number, string]>([
@@ -1538,7 +1539,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
   ]);
 
   const playedCounts = new Map<Element, number>();
-  const track: [Monster, string][] = [];
+  const track: [Monster, string, TrackerKey | undefined][] = [];
 
   function isSafeToPlay(element: Element, currentSlot: number): boolean {
     const finisherHere = assignments.find(
@@ -1599,8 +1600,9 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
     let bestChoice = 0;
     let highestPriority = -9999;
     let gain: string = "???";
+    let trackerKey: TrackerKey | undefined = undefined;
 
-    for (const [element, eleGain] of finishers) {
+    for (const [element, eleGain, key] of finishers) {
       // If our math says it ruins a finisher, skip it
       if (!isSafeToPlay(element, i)) continue;
 
@@ -1617,6 +1619,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
         bestElement = element;
         bestChoice = choiceNum;
         gain = priority[1];
+        trackerKey = key;
       }
     }
 
@@ -1625,7 +1628,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
     }
     // This was a finisher
     if (highestPriority === -1000) {
-      track.push([team[i], gain]);
+      track.push([team[i], gain, trackerKey]);
     }
 
     // Track the pitch
@@ -1637,12 +1640,16 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
     visitUrl(`choice.php?pwd&whichchoice=1598&option=${bestChoice}`);
   }
 
-  for (const [monster, gain] of track) {
-    handleTracker({
-      what: $item`Baseball Diamond`,
-      detail: `${monster} - ${gain}`,
-      property: "auto_otherstuff",
-    });
+  for (const [monster, gain, trackerKey] of track) {
+    for (const key of ["auto_otherstuff", trackerKey]) {
+      if (!key) continue;
+
+      handleTracker({
+        what: $item`Baseball Diamond`,
+        detail: `${monster} - ${gain}`,
+        property: key as TrackerKey,
+      });
+    }
   }
   visitUrl(`choice.php?pwd&whichchoice=1598&option=6`);
 
