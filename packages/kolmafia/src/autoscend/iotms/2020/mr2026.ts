@@ -459,7 +459,6 @@ export function auto_heartstoneShouldStealHeart(location: Location): boolean {
 
   if (
     !auto_haveHeartstone() ||
-    (inCombat && !haveEquipped(auto_getItemToEquipHeartstone())) ||
     !auto_is_valid$2($skill`Steal Monster's Heart`) ||
     (inCombat && !auto_canUse($skill`Steal Monster's Heart`)) || // If in combat and don't have skill
     get("_lastCombatActions")
@@ -476,7 +475,9 @@ export function auto_heartstoneShouldStealHeart(location: Location): boolean {
 
   let currentWord = get("heartstoneLetters").toUpperCase();
   // Ensure its always a word that's less than 4 chars
-  currentWord = currentWord.slice(currentWord.length % 4);
+  currentWord = currentWord.slice(
+    currentWord.length - (currentWord.length % 4),
+  );
   currentWord += letter;
   const allWords = auto_heartstoneWordsToAimFor();
 

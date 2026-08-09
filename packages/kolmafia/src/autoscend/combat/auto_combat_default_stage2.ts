@@ -74,6 +74,7 @@ import {
   auto_wantToShrunkenHead,
 } from "../iotms/2020/mr2025";
 import {
+  auto_heartstoneShouldStealHeart,
   auto_sword_of_swords_tracking,
   auto_swordIsWillingToSwitchTargets,
   auto_wantToStartTrackingSwordMonster,
@@ -127,6 +128,14 @@ export function auto_combatDefaultStage2(
         ) + 30,
       ),
     );
+  }
+  //if we want to steal heart in stage 4 then we should delay stage 2 until we do so.
+  //we do not want to steal heart now because we should do stage 3 first to stun and/or debuff the enemy first before olfacting.
+  if (auto_heartstoneShouldStealHeart(myLocation())) {
+    auto_log_debug(
+      `Skipping stage 2 of combat for now as we intend to steal the heart of  [${enemy}]`,
+    );
+    return undefined;
   }
   //if we want to olfact in stage 4 then we should delay stage 2 until we olfact.
   //we do not want to olfact now because we should do stage 3 first to stun and/or debuff the enemy first before olfacting.
