@@ -585,7 +585,7 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
     target.weight("HP Regen", isActuallyEd() ? 6 : 3);
   }
   if (in_bhy()) {
-    target.weight("Beeosity");
+    target.require("Beeosity");
   }
   //weapon handling
   if (is_boris()) {
@@ -618,7 +618,7 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
 
   const primeStat: Stat = myPrimestat();
   if (in_plumber()) {
-    target.weight("Plumber").weight($modifier`Monster Level`, -1);
+    target.require("Plumber").weight($modifier`Monster Level`, -1);
   } else if (auto_ignoreExperience()) {
     // Nothing to do here
   } else if (myLevel() < 13 || get("auto_disregardInstantKarma", false)) {
