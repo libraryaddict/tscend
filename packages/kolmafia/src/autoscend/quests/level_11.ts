@@ -152,6 +152,7 @@ import {
   canBurnDelay,
 } from "../auto_routing";
 import {
+  adjustForYellowRayIfPossible,
   auto_can_equip,
   auto_canForceNextCombat,
   auto_canForceNextNoncombat,
@@ -177,12 +178,16 @@ import {
   backupSetting,
   canSniff,
   canSummonMonster,
+  canYellowRay,
   cloversAvailable,
+  getMonsterDrops,
   internalQuestStatus,
+  isDropCapped,
   isGuildClass,
   lastAdventureSpecialNC,
   meatReserve,
   ovenHandle,
+  prepareYellowRayNextCombat,
   restoreSetting,
   safeGet,
   summonMonster,
@@ -1821,13 +1826,32 @@ function L11_aridDesertDo(): boolean {
       (inHardcore() || pullsRemaining() === 0) &&
       itemAmount($item`worm-riding hooks`) > 0 &&
       get("desertExploration") <= 100 - 5 * progress &&
-      (get("gnasirProgress") & 16) !== 16 &&
-      itemAmount($item`stone rose`) === 0
+      (get("gnasirProgress") & 16) !== 16
     ) {
       if (itemAmount($item`drum machine`) > 0) {
         auto_log_info("Found the drums, now we use them!", "blue");
         use(1, $item`drum machine`);
       } else {
+        const drumDrop = getMonsterDrops($monster`blur`).find(
+          (d) => d.item === $item`drum machine`,
+        );
+        const dropCapped = drumDrop !== undefined && isDropCapped(drumDrop);
+        if (
+          ((get("gnasirProgress") & 1) !== 0 ||
+            itemAmount($item`stone rose`) > 0 ||
+            get("desertExploration") <= 100 - 5 * progress) &&
+          canSummonMonster($monster`blur`) &&
+          (dropCapped || canYellowRay($monster`blur`))
+        ) {
+          auto_log_info("Summoning the blur to get a drum machine!", "blue");
+          if (!dropCapped && !adjustForYellowRayIfPossible($monster`blur`)) {
+            prepareYellowRayNextCombat(6);
+          }
+
+          if (summonMonster($monster`blur`)) {
+            return true;
+          }
+        }
         auto_log_info("Off to find the drums!", "blue");
         autoAdv($location`The Oasis`);
       }
