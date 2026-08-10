@@ -163,7 +163,7 @@ export function kolhs_preadv(place: Location): void {
     )
   ) {
     maximizer.excludeSlot($slot`hat`);
-    equip($slot`hat`, Item.none);
+    equip($slot`hat`, $item.none);
   }
   //prepare yearbook camera
   if (
@@ -238,7 +238,7 @@ function LX_kolhs_yearbookCameraQuest(): boolean {
   }
   //try to get a photograph
   const target: Monster = safeGet("yearbookCameraTarget");
-  let adv_target: Location = Location.none;
+  let adv_target: Location = $location.none;
   for (const loc of monster_to_location(target)) {
     if (zone_isAvailable(loc, true)) {
       adv_target = loc;
@@ -246,7 +246,7 @@ function LX_kolhs_yearbookCameraQuest(): boolean {
     }
   }
   set("_yearbookCameraTargetLocation", adv_target); //used by pre_adv to verify camera is actually equipped
-  if (adv_target === Location.none) {
+  if (adv_target === $location.none) {
     return false; //just in case. should not be possible since it picks from reachable locations
   }
 
@@ -324,10 +324,10 @@ export function LM_kolhs(): boolean {
 
   const familiar_target_100: Familiar = safeGet("auto_100familiar");
   if (
-    familiar_target_100 !== Familiar.none &&
+    familiar_target_100 !== $familiar.none &&
     familiar_target_100 !== $familiar`Steam-Powered Cheerleader`
   ) {
-    set("auto_100familiar", Familiar.none);
+    set("auto_100familiar", $familiar.none);
     abort(
       `Detected an attempted 100% familiar run with [${familiar_target_100}] in KOLHS. [Steam Powered Cheerleader] is the only valid 100% familiar run in KOLHS. 100% familiar run disabled. You can run autoscend again to continue`,
     );

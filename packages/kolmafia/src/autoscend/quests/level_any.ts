@@ -24,7 +24,6 @@ import {
   lastChoice,
   Location,
   min,
-  Monster,
   mpCost,
   myAdventures,
   myAscensions,
@@ -39,7 +38,6 @@ import {
   npcPrice,
   outfit,
   outfitPieces,
-  Phylum,
   runTurn,
   storageAmount,
   toLowerCase,
@@ -819,7 +817,7 @@ registerQuestTask({
     (L9_swordWantsChasmMonster() || L7_swordWantsCryptMonster()),
   do: () => {
     if (
-      auto_sword_of_swords_tracking() === Monster.none &&
+      auto_sword_of_swords_tracking() === $monster.none &&
       auto_summonSwordTarget()
     ) {
       return true;
@@ -1142,7 +1140,7 @@ export function LX_getDesiredWorkshed(): Item {
     case "auto":
     default:
       // auto_workshed is invalid or none/false/whatever to say don't do this
-      return Item.none;
+      return $item.none;
   }
 }
 
@@ -1153,7 +1151,7 @@ function LX_setWorkshedDo(): boolean {
   //Check to make sure we can use the workshed item and that it isn't already in the campground. If already in campground, return false also
   //These first 2 ifs are only used if something valid other than auto is specified. Otherwise we go to the auto
   if (
-    desiredShed !== Item.none &&
+    desiredShed !== $item.none &&
     auto_is_valid(desiredShed) &&
     existingShed !== desiredShed &&
     itemAmount(desiredShed) > 0
@@ -1161,13 +1159,13 @@ function LX_setWorkshedDo(): boolean {
     use(1, desiredShed);
     return true;
   }
-  if (existingShed === desiredShed && existingShed !== Item.none) {
+  if (existingShed === desiredShed && existingShed !== $item.none) {
     return false;
   }
   //Auto workshed changing
-  if (desiredShed === Item.none) {
+  if (desiredShed === $item.none) {
     //Check if there is an existing shed. We only want to go into this if statement once to use the best available workshed
-    if (existingShed === Item.none) {
+    if (existingShed === $item.none) {
       if (canSetWorkshed($item`model train set`)) {
         use(1, $item`model train set`);
         auto_log_info("Installed your model train set");
@@ -1245,7 +1243,7 @@ export const LX_setWorkshedTask: QuestTask = registerQuestTask({
     get("_workshedItemUsed") ||
     //Not usable in certain paths
     have_workshed() ||
-    (LX_getDesiredWorkshed() !== Item.none &&
+    (LX_getDesiredWorkshed() !== $item.none &&
       getWorkshed() === LX_getDesiredWorkshed()),
   ready: () => true,
   do: LX_setWorkshedDo,
@@ -1262,7 +1260,7 @@ function canSetWorkshed(it: Item): boolean {
 function LX_ForceNCDo(): boolean {
   const desiredNCLocation: Location = get(
     "auto_forceNonCombatLocation",
-    Location.none,
+    $location.none,
   );
   //return the actual item name in case a shorthand is used
   switch (desiredNCLocation) {
@@ -1303,7 +1301,7 @@ export const LX_ForceNCTask: QuestTask = registerQuestTask({
     get("auto_avalancheDeployed", false) &&
     getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
     get("auto_parkaSpikesDeployed", false) &&
-    safeGet("auto_forceNonCombatLocation") !== Location.none,
+    safeGet("auto_forceNonCombatLocation") !== $location.none,
   do: LX_ForceNCDo,
 });
 
@@ -1715,12 +1713,12 @@ export function candyBlockOutfit(type_1: string): string {
 function LX_lastChanceDo(): boolean {
   //miscellaneous calls that aren't powerlevelling but need to be done at some point based on certain conditions
   if (getProperty("_auto_screechDelay") !== "") {
-    let banishLoc: Location = Location.none;
+    let banishLoc: Location = $location.none;
     auto_log_warning(
       "Patriotic Eagle's screech banished something we need and we can't adventure anywhere else",
     );
     while (
-      (get("screechCombats") > 0 || banishLoc === Location.none) &&
+      (get("screechCombats") > 0 || banishLoc === $location.none) &&
       myAdventures() > 2 &&
       isBanished(safeGet("_auto_screechDelay"))
     ) {
@@ -1777,7 +1775,7 @@ export const LX_lastChanceTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_lastChanceDo,
   desiredEncounters: () =>
-    safeGet("_auto_screechDelay") !== Phylum.none &&
+    safeGet("_auto_screechDelay") !== $phylum.none &&
     isBanished(safeGet("_auto_screechDelay"))
       ? [
           {

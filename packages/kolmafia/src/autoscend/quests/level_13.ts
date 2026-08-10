@@ -921,7 +921,7 @@ function L13_towerNSContestsDo(): boolean {
           break;
       }
       // Adjust us to the initiative familiar selected in provideInitiative().
-      preAdvUpdateFamiliar(Location.none);
+      preAdvUpdateFamiliar($location.none);
 
       visitUrl("place.php?whichplace=nstower&action=ns_01_contestbooth");
       visitUrl("choice.php?pwd=&whichchoice=1003&option=1", true);
@@ -1065,7 +1065,7 @@ function L13_towerNSContestsDo(): boolean {
           .weight(Modifier.get(`${challenge} Spell Damage`))
           .exclude($item`Snow Suit`);
       };
-      if (challenge !== Element.none) {
+      if (challenge !== $element.none) {
         autoMaximize$1(applyChallengeDamageWeights, 1500, 0, false);
       }
 
@@ -1298,7 +1298,7 @@ function L13_towerNSContestsDo(): boolean {
   }
 
   if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_crowd2")) {
-    let toCompete: Location = Location.none;
+    let toCompete: Location = $location.none;
     switch (getProperty("nsChallenge1")) {
       case "Mysticality":
         toCompete = $location`Smartest Adventurer Contest`;
@@ -1310,7 +1310,7 @@ function L13_towerNSContestsDo(): boolean {
         toCompete = $location`Strongest Adventurer Contest`;
         break;
     }
-    if (toCompete === Location.none) {
+    if (toCompete === $location.none) {
       abort("nsChallenge1 is invalid. This is a severe error.");
     }
     autoAdv(toCompete);
@@ -1318,7 +1318,7 @@ function L13_towerNSContestsDo(): boolean {
   }
 
   if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_crowd3")) {
-    let toCompete: Location = Location.none;
+    let toCompete: Location = $location.none;
     switch (getProperty("nsChallenge2")) {
       case "cold":
         toCompete = $location`Coldest Adventurer Contest`;
@@ -1336,7 +1336,7 @@ function L13_towerNSContestsDo(): boolean {
         toCompete = $location`Stinkiest Adventurer Contest`;
         break;
     }
-    if (toCompete === Location.none) {
+    if (toCompete === $location.none) {
       abort("nsChallenge1 is invalid. This is a severe error.");
     }
     autoAdv(toCompete);
@@ -1370,9 +1370,9 @@ function maximize_hedge(): void {
   const third: Element = ns_hedge3();
   const resGoal: Map<Element, number> = new Map();
   if (
-    first === Element.none ||
-    second === Element.none ||
-    third === Element.none
+    first === $element.none ||
+    second === $element.none ||
+    third === $element.none
   ) {
     for (const ele of $elements`hot, cold, stench, sleaze, spooky`) {
       resGoal.set(ele, 9);
@@ -1832,7 +1832,7 @@ function L13_towerNSTowerBones(): boolean {
     );
   }
   //should I grab an electric boning knife?
-  if (hundred_fam !== Familiar.none && isAttackFamiliar(hundred_fam)) {
+  if (hundred_fam !== $familiar.none && isAttackFamiliar(hundred_fam)) {
     set("auto_getBoningKnife", true); //in 100% familiar run with attack familiar we must acquire boning knife
   }
   if (!(haveSkill($skill`Saucegeyser`) || haveSkill($skill`Garbage Nova`))) {
@@ -1906,9 +1906,9 @@ function L13_towerNSTowerBones(): boolean {
     }
     set("auto_disableFamiliarChanging", true);
   }
-  if (myFamiliar() !== Familiar.none) {
+  if (myFamiliar() !== $familiar.none) {
     maximizer.excludeSlot($slot`familiar`);
-    equip($slot`familiar`, Item.none);
+    equip($slot`familiar`, $item.none);
     // Try just boosting weight
     for (const [, it] of auto_getListOfNonDamagingFamiliarEquipment()) {
       if (canEquip(myFamiliar(), it)) {
@@ -1945,7 +1945,7 @@ function L13_towerNSTowerBones(): boolean {
   equipMaximizedGear();
   for (const s of $slots`acc1, acc2, acc3`) {
     if (equippedItem(s) === $item`Hand in Glove`) {
-      equip(s, Item.none);
+      equip(s, $item.none);
     }
   }
 
@@ -2168,7 +2168,7 @@ function L13_towerNSFinalDo(): boolean {
   }
 
   if (get("auto_burndownStatsInstantKarma", false) && myLevel() > 13) {
-    if (myClass().primestat === Stat.none) {
+    if (myClass().primestat === $stat.none) {
       auto_log_info(
         `Skipping burndown of stats, ${myClass()} doesn't have a primary stat, and we didn't account for that.`,
       );

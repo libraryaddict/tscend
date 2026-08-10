@@ -1,6 +1,8 @@
-// Known-valid values for $modifier`...` / $modifiers`...` (libram's KoLmafia Modifier lookup).
-// KoLmafia has no data source for these like it does for items/effects/etc, so this list is
-// maintained by hand. Seeded from every value already used in packages/ - add to it as needed.
+// Known-valid values for $modifier`...`/$modifiers`...`, $stat`...`/$stats`...`,
+// $element`...`/$elements`...`, and $slot`...`/$slots`...` (libram's KoLmafia lookups).
+// KoLmafia has no data source for these like it does for items/effects/etc, so these lists are
+// maintained by hand. Modifiers seeded from every value already used in packages/ - add to it as
+// needed.
 export const modifiers = [
   "Absorb Adventures",
   "Absorb Stats",
@@ -260,4 +262,59 @@ export const modifiers = [
   "Weapon Damage Percent",
   "Weapon Drop",
   "Wiki Name",
+] as const;
+
+export const stats = [
+  "Muscle",
+  "Mysticality",
+  "Moxie",
+  "SubMuscle",
+  "SubMysticality",
+  "SubMoxie",
+] as const;
+
+export const elements = [
+  "cold",
+  "hot",
+  "sleaze",
+  "spooky",
+  "stench",
+  "slime",
+  "supercold",
+  "bad spelling",
+  "shadow",
+] as const;
+
+export const slots = [
+  "hat",
+  "weapon",
+  "holster",
+  "off-hand",
+  "back",
+  "shirt",
+  "pants",
+  "acc1",
+  "acc2",
+  "acc3",
+  "familiar",
+  "crown-of-thrones",
+  "sticker1",
+  "sticker2",
+  "sticker3",
+  "card-sleeve",
+  "folder1",
+  "folder2",
+  "folder3",
+  "folder4",
+  "folder5",
+  "buddy-bjorn",
+  "bootskin",
+  "bootspur",
+  "codpiece1",
+  "codpiece2",
+  "codpiece3",
+  "codpiece4",
+  "codpiece5",
+  "fakehand",
+  "hats",
 ] as const;

@@ -309,12 +309,12 @@ export function handleServant(who: Servant): boolean {
   if (!isActuallyEd()) {
     return false;
   }
-  if (who === Servant.none) {
+  if (who === $servant.none) {
     //use_servant($servant[none]);
     return false;
   }
   if (!haveServant(who)) {
-    if (myServant() === Servant.none) {
+    if (myServant() === $servant.none) {
       //might have encounted bug in KoL. Try to work around it
       //bug happens when level 7 or great scribe is active when logged out of KoL
       //symptom is active servant is $servant[none] and can't change it
@@ -513,7 +513,7 @@ function ed_buySkills(): boolean {
 
     const current: Servant = myServant();
     while (imbuePoints > 0) {
-      let tryImbue: Servant = Servant.none;
+      let tryImbue: Servant = $servant.none;
       if (haveServant($servant`Priest`) && $servant`Priest`.experience < 81) {
         tryImbue = $servant`Priest`;
       } else if (haveServant($servant`Cat`) && $servant`Cat`.experience < 199) {
@@ -563,7 +563,7 @@ function ed_buySkills(): boolean {
         }
       }
 
-      if (tryImbue !== Servant.none) {
+      if (tryImbue !== $servant.none) {
         if (handleServant(tryImbue)) {
           auto_log_info(
             `Trying to imbue ${tryImbue} with glorious wisdom!!`,
@@ -675,7 +675,7 @@ function ed_nextUpgrade(): Skill {
   ) {
     return $skill`Bone Spikes`; // 20 Ka
   }
-  return Skill.none;
+  return $skill.none;
 }
 
 let $_ed_KaCost_kaNeeded: Map<Skill, number> | undefined;

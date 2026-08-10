@@ -1,7 +1,6 @@
 import {
   blackMarketAvailable,
   Familiar,
-  Item,
   myBasestat,
   myFamiliar,
   myPath,
@@ -53,7 +52,7 @@ function LX_quantumTerrariumDo(): boolean {
           // 33 advs worth of +10 stats/combat is better than 1.5*70 to all 3 stats
           if (!possessEquipment($item`God Lobster's Scepter`)) {
             // fight it with no equipment to get the Scepter
-            return godLobsterCombat(Item.none, 1);
+            return godLobsterCombat($item.none, 1);
           } else {
             // fight it with the Scepter for the stats buff
             return godLobsterCombat($item`God Lobster's Scepter`, 2);
@@ -143,7 +142,7 @@ function qt_FamiliarAvailable(fam: Familiar): boolean {
 
 export function qt_FamiliarSwap(fam: Familiar): boolean {
   //Swap/designate next familiar swap if possible.
-  if (fam === Familiar.none) {
+  if (fam === $familiar.none) {
     print(`${fam.toString()} is not a valid familiar, weird behaviour.`);
     return false;
   } else if (qt_FamiliarAvailable(fam)) {

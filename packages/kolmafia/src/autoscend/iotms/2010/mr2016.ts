@@ -399,16 +399,16 @@ export function auto_sourceTerminalEducate(
   if (in_pokefam()) {
     return false;
   }
-  if (first === Skill.none) {
+  if (first === $skill.none) {
     first = second;
-    second = Skill.none;
+    second = $skill.none;
   }
   if (!containsText(getProperty("sourceTerminalChips"), "DRAM")) {
-    second = Skill.none;
+    second = $skill.none;
     set("sourceTerminalEducate2", "");
   }
 
-  if (first === Skill.none) {
+  if (first === $skill.none) {
     return false;
   }
 
@@ -1080,7 +1080,7 @@ export function LX_ghostBusting(): boolean {
   }
   // goal & progress specific reasons to skip busting this turn go below.
   const goal: Location = safeGet("ghostLocation");
-  if (goal === Location.none) {
+  if (goal === $location.none) {
     return false;
   }
   if (
@@ -1340,8 +1340,8 @@ export function rethinkingCandy(
   const complex: Map<number, Item> = List$8(complexList);
 
   let bestCost: number = 2 * maxprice;
-  let bestFirst: Item = Item.none;
-  let bestSecond: Item = Item.none;
+  let bestFirst: Item = $item.none;
+  let bestSecond: Item = $item.none;
   if (
     $effects`Synthesis: Hot, Synthesis: Cold, Synthesis: Pungent, Synthesis: Scary, Synthesis: Greasy`.includes(
       acquire,
@@ -1349,30 +1349,30 @@ export function rethinkingCandy(
   ) {
     const goal: number = ListFind(synthesis, acquire) % 5;
     for (let i: number = 0; i < simple.size; i++) {
-      const current: number = toInt(simple.get(i) ?? Item.none);
+      const current: number = toInt(simple.get(i) ?? $item.none);
       let startNextIndex: number = i + 1;
-      if (itemAmount(simple.get(i) ?? Item.none) > 1) {
+      if (itemAmount(simple.get(i) ?? $item.none) > 1) {
         startNextIndex = i;
       }
       for (let j: number = startNextIndex; j < simple.size; j++) {
-        const sum: number = (toInt(simple.get(j) ?? Item.none) + current) % 5;
+        const sum: number = (toInt(simple.get(j) ?? $item.none) + current) % 5;
         if (sum === goal) {
           if (simulate) {
             auto_log_info(
-              `Possible: ${simple.get(i) ?? Item.none}, ${simple.get(j) ?? Item.none}`,
+              `Possible: ${simple.get(i) ?? $item.none}, ${simple.get(j) ?? $item.none}`,
               "blue",
             );
           }
           if (
-            auto_mall_price(simple.get(i) ?? Item.none) +
-              auto_mall_price(simple.get(j) ?? Item.none) <
+            auto_mall_price(simple.get(i) ?? $item.none) +
+              auto_mall_price(simple.get(j) ?? $item.none) <
             bestCost
           ) {
             bestCost =
-              auto_mall_price(simple.get(i) ?? Item.none) +
-              auto_mall_price(simple.get(j) ?? Item.none);
-            bestFirst = simple.get(i) ?? Item.none;
-            bestSecond = simple.get(j) ?? Item.none;
+              auto_mall_price(simple.get(i) ?? $item.none) +
+              auto_mall_price(simple.get(j) ?? $item.none);
+            bestFirst = simple.get(i) ?? $item.none;
+            bestSecond = simple.get(j) ?? $item.none;
           }
         }
       }
@@ -1384,26 +1384,26 @@ export function rethinkingCandy(
   ) {
     const goal: number = ListFind(synthesis, acquire) % 5;
     for (let i: number = 0; i < simple.size; i++) {
-      const current: number = toInt(simple.get(i) ?? Item.none);
+      const current: number = toInt(simple.get(i) ?? $item.none);
       for (let j: number = 0; j < complex.size; j++) {
-        const sum: number = (toInt(complex.get(j) ?? Item.none) + current) % 5;
+        const sum: number = (toInt(complex.get(j) ?? $item.none) + current) % 5;
         if (sum === goal) {
           if (simulate) {
             auto_log_info(
-              `Possible: ${simple.get(i) ?? Item.none}, ${complex.get(j) ?? Item.none}`,
+              `Possible: ${simple.get(i) ?? $item.none}, ${complex.get(j) ?? $item.none}`,
               "blue",
             );
           }
           if (
-            auto_mall_price(simple.get(i) ?? Item.none) +
-              auto_mall_price(complex.get(j) ?? Item.none) <
+            auto_mall_price(simple.get(i) ?? $item.none) +
+              auto_mall_price(complex.get(j) ?? $item.none) <
             bestCost
           ) {
             bestCost =
-              auto_mall_price(simple.get(i) ?? Item.none) +
-              auto_mall_price(complex.get(j) ?? Item.none);
-            bestFirst = simple.get(i) ?? Item.none;
-            bestSecond = complex.get(j) ?? Item.none;
+              auto_mall_price(simple.get(i) ?? $item.none) +
+              auto_mall_price(complex.get(j) ?? $item.none);
+            bestFirst = simple.get(i) ?? $item.none;
+            bestSecond = complex.get(j) ?? $item.none;
           }
         }
       }
@@ -1415,30 +1415,30 @@ export function rethinkingCandy(
   ) {
     const goal: number = ListFind(synthesis, acquire) % 5;
     for (let i: number = 0; i < complex.size; i++) {
-      const current: number = toInt(complex.get(i) ?? Item.none);
+      const current: number = toInt(complex.get(i) ?? $item.none);
       let startNextIndex: number = i + 1;
-      if (itemAmount(complex.get(i) ?? Item.none) > 1) {
+      if (itemAmount(complex.get(i) ?? $item.none) > 1) {
         startNextIndex = i;
       }
       for (let j: number = startNextIndex; j < complex.size; j++) {
-        const sum: number = (toInt(complex.get(j) ?? Item.none) + current) % 5;
+        const sum: number = (toInt(complex.get(j) ?? $item.none) + current) % 5;
         if (sum === goal) {
           if (simulate) {
             auto_log_info(
-              `Possible: ${complex.get(i) ?? Item.none}, ${complex.get(j) ?? Item.none}`,
+              `Possible: ${complex.get(i) ?? $item.none}, ${complex.get(j) ?? $item.none}`,
               "blue",
             );
           }
           if (
-            auto_mall_price(complex.get(i) ?? Item.none) +
-              auto_mall_price(complex.get(j) ?? Item.none) <
+            auto_mall_price(complex.get(i) ?? $item.none) +
+              auto_mall_price(complex.get(j) ?? $item.none) <
             bestCost
           ) {
             bestCost =
-              auto_mall_price(complex.get(i) ?? Item.none) +
-              auto_mall_price(complex.get(j) ?? Item.none);
-            bestFirst = complex.get(i) ?? Item.none;
-            bestSecond = complex.get(j) ?? Item.none;
+              auto_mall_price(complex.get(i) ?? $item.none) +
+              auto_mall_price(complex.get(j) ?? $item.none);
+            bestFirst = complex.get(i) ?? $item.none;
+            bestSecond = complex.get(j) ?? $item.none;
           }
         }
       }
@@ -1447,7 +1447,7 @@ export function rethinkingCandy(
     return false;
   }
 
-  if (bestFirst !== Item.none) {
+  if (bestFirst !== $item.none) {
     auto_log_info(
       `Best case: ${bestFirst}, ${bestSecond}: ${bestCost}`,
       "green",

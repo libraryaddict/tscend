@@ -1,5 +1,4 @@
 import {
-  Familiar,
   Item,
   Modifier,
   outfitPieces,
@@ -8,6 +7,7 @@ import {
   toItem,
   toSlot,
 } from "kolmafia";
+import { $familiar, $item, $slot } from "libram";
 
 import { auto_log_error } from "./auto_util";
 import { Criterion, Maximizer } from "./utils/maximizer";
@@ -49,21 +49,21 @@ function tokenize(text: string): string[] {
 
 function resolveEquipTarget(text: string): Item {
   const direct = toItem(text);
-  if (direct !== Item.none) {
+  if (direct !== $item.none) {
     return direct;
   }
   const modeMatch = /^(.+)\s+\([^)]*\)$/.exec(text);
   if (modeMatch) {
     return toItem(modeMatch[1]);
   }
-  return Item.none;
+  return $item.none;
 }
 
 function applyTerm(target: Maximizer, token: string): void {
   const equipExclude = /^-"equip (.+)"$/.exec(token);
   if (equipExclude) {
     const item = resolveEquipTarget(equipExclude[1]);
-    if (item !== Item.none) {
+    if (item !== $item.none) {
       target.exclude(item);
       return;
     }
@@ -72,7 +72,7 @@ function applyTerm(target: Maximizer, token: string): void {
   const equipForce = /^\+"equip (.+)"$/.exec(token);
   if (equipForce) {
     const item = resolveEquipTarget(equipForce[1]);
-    if (item !== Item.none) {
+    if (item !== $item.none) {
       target.equip(item);
       return;
     }
@@ -81,7 +81,7 @@ function applyTerm(target: Maximizer, token: string): void {
   const bonus = /^\+(\d+(?:\.\d+)?)"bonus (.+)"$/.exec(token);
   if (bonus) {
     const item = resolveEquipTarget(bonus[2]);
-    if (item !== Item.none) {
+    if (item !== $item.none) {
       target.bonus(item, Number(bonus[1]), true);
       return;
     }
@@ -104,7 +104,7 @@ function applyTerm(target: Maximizer, token: string): void {
   const switchFamiliar = /^switch\s+(.+)$/i.exec(token);
   if (switchFamiliar) {
     const familiar = toFamiliar(switchFamiliar[1]);
-    if (familiar !== Familiar.none) {
+    if (familiar !== $familiar.none) {
       target.allowSwitch(familiar);
       return;
     }
@@ -113,7 +113,7 @@ function applyTerm(target: Maximizer, token: string): void {
   const signedSlot = /^([+-])\s*(.+)$/.exec(token);
   if (signedSlot) {
     const slot: Slot = toSlot(signedSlot[2]);
-    if (slot !== Slot.none) {
+    if (slot !== $slot.none) {
       if (signedSlot[1] === "+") {
         target.requireSlot(slot);
       } else {

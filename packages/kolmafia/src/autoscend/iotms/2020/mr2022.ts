@@ -132,7 +132,7 @@ export function auto_haveCursedMagnifyingGlass(): boolean {
   return false;
 }
 
-export function auto_voidMonster(loc: Location = Location.none): boolean {
+export function auto_voidMonster(loc: Location = $location.none): boolean {
   // Cursed Magnifying Glass gives a void monster combat every 13 turns. The first 5 are free fights
   // _voidFreeFights counts up from 0 and stays at 5 once all free fights are completed for the day
   if (!auto_haveCursedMagnifyingGlass()) {
@@ -147,7 +147,7 @@ export function auto_voidMonster(loc: Location = Location.none): boolean {
     return false;
   }
 
-  if (loc === Location.none) {
+  if (loc === $location.none) {
     return true;
   }
 
@@ -682,7 +682,7 @@ export function utilizeStillsuit(): void {
         return anyFamiliar;
       }
     }
-    return Familiar.none;
+    return $familiar.none;
   }
   const chosenStillsuitFamiliar: Familiar = sweetestSweatFamiliar();
   if (

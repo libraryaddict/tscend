@@ -366,7 +366,7 @@ export function autoDrink(
     return false;
   }
 
-  if (toDrink === Item.none || howMany <= 0) {
+  if (toDrink === $item.none || howMany <= 0) {
     return false;
   }
   const isSpeakeasy: boolean = isSpeakeasyDrink(toDrink);
@@ -610,7 +610,7 @@ export function autoEat(
     return false;
   }
 
-  if (toEat === Item.none || howMany <= 0) {
+  if (toEat === $item.none || howMany <= 0) {
     return false;
   }
   if (toEat === $item`Black and White Apron Meal Kit`) {
@@ -1036,7 +1036,7 @@ export const AUTO_OBTAIN_BUY: number = 103;
 
 function consumable_name(action: ConsumeAction): string {
   let name: string = "<name not found>";
-  if (action.it !== Item.none) {
+  if (action.it !== $item.none) {
     name = action.it.toString();
   } else if (action.organ === AUTO_ORGAN_LIVER) {
     name = cafeDrinkName(action.cafeid);
@@ -1129,7 +1129,7 @@ function autoConsume(action: ConsumeAction): boolean {
     } else if (action.organ === AUTO_ORGAN_STOMACH) {
       return autoEatCafe(1, action.cafeid);
     }
-  } else if (action.it !== Item.none) {
+  } else if (action.it !== $item.none) {
     if (action.organ === AUTO_ORGAN_LIVER) {
       return autoDrink(1, action.it, false, action);
     } else if (action.organ === AUTO_ORGAN_STOMACH) {
@@ -1363,7 +1363,7 @@ function loadConsumables(
     ) {
       for (const dish of legendary_noodle_dishes.keys()) {
         blacklist.push(dish);
-        blacklist.push(legendary_noodle_dishes.get(dish) ?? Item.none);
+        blacklist.push(legendary_noodle_dishes.get(dish) ?? $item.none);
       }
     }
   }
@@ -1393,7 +1393,7 @@ function loadConsumables(
   // optimizer will make 1 of exactly 1 drink type. Oh no. Suboptimal.
   // I declare that bug Not My Problem.
   function add_mutex_craftables(items: Item[]): void {
-    let best_it: Item = Item.none;
+    let best_it: Item = $item.none;
     let best_amount: number = 0;
     for (const it of items) {
       if (creatableAmount(it) > best_amount) {
@@ -1863,7 +1863,7 @@ function loadConsumables(
     return false;
   }
   // Add daily special
-  if (dailySpecial() !== Item.none && canConsume(dailySpecial(), false)) {
+  if (dailySpecial() !== $item.none && canConsume(dailySpecial(), false)) {
     // specials are always consumable even if they would be restricted as regular consumables.
     const daily_special_limit: number =
       1 +
@@ -1875,7 +1875,7 @@ function loadConsumables(
       const n: number = actions.size;
       actions.set(n, MakeConsumeAction(dailySpecial()));
       (actions.get(n) ?? new ConsumeAction()).cafeid = toInt(dailySpecial());
-      (actions.get(n) ?? new ConsumeAction()).it = Item.none;
+      (actions.get(n) ?? new ConsumeAction()).it = $item.none;
     }
   }
 
@@ -1890,7 +1890,7 @@ function loadConsumables(
         actions.set(
           actions.size,
           new ConsumeAction(
-            Item.none,
+            $item.none,
             -3,
             size,
             adv,
@@ -1911,7 +1911,7 @@ function loadConsumables(
         actions.set(
           actions.size,
           new ConsumeAction(
-            Item.none,
+            $item.none,
             -1,
             size,
             adv,
@@ -1929,7 +1929,7 @@ function loadConsumables(
         actions.set(
           actions.size,
           new ConsumeAction(
-            Item.none,
+            $item.none,
             -2,
             size,
             adv,
@@ -1947,7 +1947,7 @@ function loadConsumables(
         actions.set(
           actions.size,
           new ConsumeAction(
-            Item.none,
+            $item.none,
             -3,
             size,
             adv,
@@ -2000,7 +2000,7 @@ function loadConsumables(
         actions.set(
           actions.size,
           new ConsumeAction(
-            Item.none,
+            $item.none,
             -3,
             size,
             adv,
@@ -2143,7 +2143,7 @@ function auto_overdrinkGreenBeers(): void {
         const greenBeerAction: ConsumeAction =
           MakeConsumeAction(dailySpecial());
         greenBeerAction.cafeid = toInt(dailySpecial());
-        greenBeerAction.it = Item.none;
+        greenBeerAction.it = $item.none;
         const beerMeat: number = myMeat() - (in_wotsf() ? meatReserve() : 0); //extra advs are almost always worth more, but meat is hard to get in wotsf
         const daily_special_limit: number = min(
           beerMeat / get("_dailySpecialPrice"),
@@ -2274,7 +2274,7 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
     return 0;
   }
   if (organLeft() === 0) {
-    return MakeConsumeAction(Item.none);
+    return MakeConsumeAction($item.none);
   }
 
   const actions: Map<number, ConsumeAction> = new Map();
@@ -2309,7 +2309,7 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
   }
 
   if (best === -1) {
-    return MakeConsumeAction(Item.none);
+    return MakeConsumeAction($item.none);
   } else {
     return actions.get(best) ?? new ConsumeAction();
   }
@@ -2317,7 +2317,7 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
 
 function auto_findBestConsumeAction$1(): ConsumeAction {
   if (stomach_left() === 0 && inebriety_left() === 0) {
-    return MakeConsumeAction(Item.none);
+    return MakeConsumeAction($item.none);
   }
   // if one organ is full and the other isn't, return the not full one
   if (stomach_left() === 0 && inebriety_left() > 0) {
@@ -2351,11 +2351,11 @@ function auto_findBestConsumeAction$1(): ConsumeAction {
   let drink_desirability_per_fill: number = 0.0;
   let food_desirability_per_fill: number = 0.0;
   // leave desirability at 0 if an action wasn't found
-  if (bestDrinkAction.it !== Item.none || bestDrinkAction.cafeid !== 0) {
+  if (bestDrinkAction.it !== $item.none || bestDrinkAction.cafeid !== 0) {
     drink_desirability_per_fill =
       bestDrinkAction.desirability / bestDrinkAction.size;
   }
-  if (bestFoodAction.it !== Item.none || bestFoodAction.cafeid !== 0) {
+  if (bestFoodAction.it !== $item.none || bestFoodAction.cafeid !== 0) {
     food_desirability_per_fill =
       bestFoodAction.desirability / bestFoodAction.size;
   }
@@ -2372,7 +2372,7 @@ export function auto_autoConsumeOne(action: ConsumeAction): boolean {
     return false;
   }
 
-  if (action.it === Item.none && action.cafeid === 0) {
+  if (action.it === $item.none && action.cafeid === 0) {
     auto_log_info("auto_autoConsumeOne: Nothing found to consume", "blue");
     return false;
   }
@@ -2454,7 +2454,7 @@ export function auto_chewAdventures(): boolean {
     return false; //they are all size 4
   }
 
-  let target: Item = Item.none;
+  let target: Item = $item.none;
   let target_value: number = 0;
 
   function chooseCheapestTarget(it: Item): void {
@@ -2464,7 +2464,7 @@ export function auto_chewAdventures(): boolean {
       mallPrice(it) < get("autoBuyPriceLimit")
     ) {
       //do not chew very expensive items even if already in inv
-      if (target === Item.none || mallPrice(it) < target_value) {
+      if (target === $item.none || mallPrice(it) < target_value) {
         target = it;
         target_value = mallPrice(it);
       }
@@ -2474,14 +2474,14 @@ export function auto_chewAdventures(): boolean {
   for (const it of $items`Unconscious Collective Dream Jar, grim fairy tale, powdered gold, groose grease`) {
     chooseCheapestTarget(it);
   }
-  if (myLevel() >= 4 && target === Item.none) {
+  if (myLevel() >= 4 && target === $item.none) {
     for (const it of $items`beastly paste, bug paste, cosmic paste, oily paste, demonic paste, gooey paste, elemental paste, Crimbo paste, fishy paste, goblin paste, hippy paste, hobo paste, indescribably horrible paste, greasy paste, Mer-kin paste, orc paste, penguin paste, pirate paste, chlorophyll paste, slimy paste, ectoplasmic paste, strange paste, agua de vida`) {
       chooseCheapestTarget(it);
     }
   }
 
   const oldSpleenUse: number = mySpleenUse();
-  if (target !== Item.none) {
+  if (target !== $item.none) {
     if (!autoChew(1, target)) {
       //the actual chewing attempt
       auto_log_warning(`Mysteriously failed to chew [${target}]`, "red");
@@ -2520,7 +2520,7 @@ export const auto_breakfastCounterVisitTask: QuestTask = registerQuestTask({
   name: "auto_breakfastCounterVisit",
   completed: () =>
     get("_muffinOrderedToday") ||
-    (safeGet("muffinOnOrder") === Item.none &&
+    (safeGet("muffinOnOrder") === $item.none &&
       !have($item`earthenware muffin tin`)),
   ready: () =>
     itemAmount($item`earthenware muffin tin`) > 0 ||
@@ -2556,13 +2556,13 @@ export function still_targetToOrigin(target: Item): Item {
     [$item`tonic water`, $item`soda water`],
   ]);
   if ($_still_targetToOrigin_originNeeded.has(target)) {
-    return $_still_targetToOrigin_originNeeded.get(target) ?? Item.none;
+    return $_still_targetToOrigin_originNeeded.get(target) ?? $item.none;
   } else {
     auto_log_debug(
       `still_targetToOrigin failed to lookup the item [${target}]`,
     );
   }
-  return Item.none;
+  return $item.none;
 }
 
 export function stillReachable(): boolean {

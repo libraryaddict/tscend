@@ -139,7 +139,7 @@ function bugbear_UnlockMothership(loc: Location): boolean {
     return false;
   }
 
-  let unlockLocation: Location = Location.none;
+  let unlockLocation: Location = $location.none;
   switch (loc) {
     case $location`Waste Processing`:
       unlockLocation = $location`The Sleazy Back Alley`;

@@ -155,7 +155,7 @@ function buffMaintain(
   let equip_changed: boolean = false;
   const equipped: Map<number, Item> = auto_saveEquipped();
   const equip_slot: Slot = toSlot(mustEquip);
-  if (mustEquip !== Item.none) {
+  if (mustEquip !== $item.none) {
     if (
       !possessEquipment(mustEquip) ||
       !auto_is_valid(
@@ -288,11 +288,11 @@ export function buffMaintain$2(
   turns: number = 1,
   speculative: boolean = false,
 ): boolean {
-  let useSkill_1: Skill = Skill.none;
-  let useItem_1: Item = Item.none;
-  let mustEquip: Item = Item.none;
+  let useSkill_1: Skill = $skill.none;
+  let useItem_1: Item = $item.none;
+  let mustEquip: Item = $item.none;
 
-  if (buff === Effect.none) {
+  if (buff === $effect.none) {
     return false;
   }
 
@@ -489,7 +489,7 @@ export function buffMaintain$2(
       }
       break;
     case $effect`Bloody Potato Bits`:
-      useSkill_1 = Skill.none;
+      useSkill_1 = $skill.none;
       break;
     case $effect`Bloodstain-Resistant`:
       useItem_1 = $item`bloodstain stick`;
@@ -823,16 +823,16 @@ export function buffMaintain$2(
       useItem_1 = $item`roasted vegetable focaccia`;
       break;
     case $effect`Feeling Lonely`:
-      useSkill_1 = Skill.none;
+      useSkill_1 = $skill.none;
       break;
     case $effect`Feeling Excited`:
-      useSkill_1 = Skill.none;
+      useSkill_1 = $skill.none;
       break;
     case $effect`Feeling Nervous`:
-      useSkill_1 = Skill.none;
+      useSkill_1 = $skill.none;
       break;
     case $effect`Feeling Peaceful`:
-      useSkill_1 = Skill.none;
+      useSkill_1 = $skill.none;
       break;
     case $effect`Feeling Punchy`:
       useItem_1 = $item`Punching Potion`;
@@ -1158,7 +1158,7 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Intimidating Mien`;
       break;
     case $effect`Invisible Avatar`:
-      useSkill_1 = Skill.none;
+      useSkill_1 = $skill.none;
       break;
     case $effect`Irresistible Resolve`:
       useItem_1 = $item`resolution: be sexier`;
@@ -1249,7 +1249,7 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Knowing Smile`;
       break;
     case $effect`Macaroni Coating`:
-      useSkill_1 = Skill.none;
+      useSkill_1 = $skill.none;
       break;
     case $effect`The Magic of LOV`:
       useItem_1 = $item`LOV Elixir #6`;
@@ -1415,7 +1415,7 @@ export function buffMaintain$2(
       useItem_1 = $item`Bettie page`;
       break;
     case $effect`Pasta Eyeball`:
-      useSkill_1 = Skill.none;
+      useSkill_1 = $skill.none;
       break;
     case $effect`Pasta Oneness`:
       useSkill_1 = $skill`Manicotti Meditation`;
@@ -1448,7 +1448,7 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Paul's Passionate Pop Song`;
       break;
     case $effect`Penne Fedora`:
-      useSkill_1 = Skill.none;
+      useSkill_1 = $skill.none;
       break;
     case $effect`Peppermint Bite`:
       useItem_1 = $item`Crimbo peppermint bark`;
@@ -1762,7 +1762,7 @@ export function buffMaintain$2(
       useItem_1 = $item`giant giant moth dust`;
       break;
     case $effect`Slinking Noodle Glob`:
-      useSkill_1 = Skill.none;
+      useSkill_1 = $skill.none;
       break;
     case $effect`Slippery as a Seal`:
       if (auto_have_skill($skill`Seal Clubbing Frenzy`)) {
@@ -2058,7 +2058,7 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Tricky Timpani`;
       break;
     case $effect`Triple-Sized`:
-      useSkill_1 = Skill.none;
+      useSkill_1 = $skill.none;
       break;
     case $effect`Truly Gritty`:
       useItem_1 = $item`true grit`;
@@ -2152,7 +2152,7 @@ export function buffMaintain$2(
       useItem_1 = $item`goblin water`;
       break;
     case $effect`Whispering Strands`:
-      useSkill_1 = Skill.none;
+      useSkill_1 = $skill.none;
       break;
     case $effect`Who's Going to Pay This Drunken Sailor?`:
       useSkill_1 = $skill`Who's Going to Pay This Drunken Sailor?`;
@@ -2242,7 +2242,7 @@ export function buffMaintain$2(
           haveEffect($effect`Grand Blessing of the War Snapper`) === 0 &&
           haveEffect($effect`Blessing of the War Snapper`) === 0
         ) {
-          useSkill_1 = Skill.none;
+          useSkill_1 = $skill.none;
         }
         break;
       case $effect`Boon of She-Who-Was`:
@@ -2252,7 +2252,7 @@ export function buffMaintain$2(
           haveEffect($effect`Grand Blessing of She-Who-Was`) === 0 &&
           haveEffect($effect`Blessing of She-Who-Was`) === 0
         ) {
-          useSkill_1 = Skill.none;
+          useSkill_1 = $skill.none;
         }
         break;
       case $effect`Boon of the Storm Tortoise`:
@@ -2262,11 +2262,11 @@ export function buffMaintain$2(
           haveEffect($effect`Grand Blessing of the Storm Tortoise`) === 0 &&
           haveEffect($effect`Blessing of the Storm Tortoise`) === 0
         ) {
-          useSkill_1 = Skill.none;
+          useSkill_1 = $skill.none;
         }
         break;
       case $effect`Disdain of the War Snapper`:
-        useSkill_1 = Skill.none;
+        useSkill_1 = $skill.none;
         if (
           haveEffect($effect`Glorious Blessing of the War Snapper`) === 0 &&
           haveEffect($effect`Grand Blessing of the War Snapper`) === 0 &&
@@ -2279,18 +2279,18 @@ export function buffMaintain$2(
           haveEffect($effect`Grand Blessing of the Storm Tortoise`) !== 0 ||
           haveEffect($effect`Blessing of the Storm Tortoise`) !== 0
         ) {
-          useSkill_1 = Skill.none;
+          useSkill_1 = $skill.none;
         }
         if (
           haveEffect($effect`Glorious Blessing of She-Who-Was`) !== 0 ||
           haveEffect($effect`Grand Blessing of She-Who-Was`) !== 0 ||
           haveEffect($effect`Blessing of She-Who-Was`) !== 0
         ) {
-          useSkill_1 = Skill.none;
+          useSkill_1 = $skill.none;
         }
         break;
       case $effect`Disdain of She-Who-Was`:
-        useSkill_1 = Skill.none;
+        useSkill_1 = $skill.none;
         if (
           haveEffect($effect`Glorious Blessing of She-Who-Was`) === 0 &&
           haveEffect($effect`Grand Blessing of She-Who-Was`) === 0 &&
@@ -2303,11 +2303,11 @@ export function buffMaintain$2(
           haveEffect($effect`Grand Blessing of the Storm Tortoise`) !== 0 ||
           haveEffect($effect`Blessing of the Storm Tortoise`) !== 0
         ) {
-          useSkill_1 = Skill.none;
+          useSkill_1 = $skill.none;
         }
         break;
       case $effect`Disdain of the Storm Tortoise`:
-        useSkill_1 = Skill.none;
+        useSkill_1 = $skill.none;
         if (
           haveEffect($effect`Glorious Blessing of the Storm Tortoise`) === 0 &&
           haveEffect($effect`Grand Blessing of the Storm Tortoise`) === 0 &&
@@ -2322,7 +2322,7 @@ export function buffMaintain$2(
       case $effect`Disdain of She-Who-Was`:
         useSkill_1 = $skill`Blessing of She-Who-Was`;
         if (haveEffect($effect`Disdain of the War Snapper`) > 0) {
-          useSkill_1 = Skill.none;
+          useSkill_1 = $skill.none;
         }
         break;
       case $effect`Disdain of the Storm Tortoise`:
@@ -2331,7 +2331,7 @@ export function buffMaintain$2(
           haveEffect($effect`Disdain of She-Who-Was`) > 0 ||
           haveEffect($effect`Disdain of the War Snapper`) > 0
         ) {
-          useSkill_1 = Skill.none;
+          useSkill_1 = $skill.none;
         }
         break;
       case $effect`Disdain of the War Snapper`:
@@ -2401,10 +2401,10 @@ export function buffMaintain$2(
     }
   }
 
-  if (useItem_1 !== Item.none) {
+  if (useItem_1 !== $item.none) {
     return buffMaintain$1(useItem_1, buff, casts, turns, speculative);
   }
-  if (useSkill_1 !== Skill.none) {
+  if (useSkill_1 !== $skill.none) {
     return buffMaintain(
       useSkill_1,
       buff,

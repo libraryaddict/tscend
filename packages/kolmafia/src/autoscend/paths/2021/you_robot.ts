@@ -832,7 +832,7 @@ function robot_stat_wanted(): Stat {
     return $stat`Mysticality`;
   }
 
-  return Stat.none;
+  return $stat.none;
 }
 
 function LX_robot_level(): boolean {
@@ -877,7 +877,7 @@ function LX_robot_level(): boolean {
   }
   //if we reached this point we are actually willing to use statbot 5000 to buy 5 stat points.
   const target: Stat = robot_stat_wanted();
-  if (target !== Stat.none) {
+  if (target !== $stat.none) {
     if (robot_statbot(target)) {
       return true;
     }
@@ -939,12 +939,12 @@ export function LX_robot_powerlevel(): boolean {
   }
   //raise individual stats
   const target: Stat = robot_stat_wanted();
-  if (target !== Stat.none) {
+  if (target !== $stat.none) {
     // use spare clovers to powerlevel mainstat if you have spare clovers
     if (myLevel() < 13 && cloversAvailable() > 0 && !canInteract()) {
       //do not waste all clovers in postronin
       //Determine where to go for clover stats, do not worry about clover failures
-      let whereTo: Location = Location.none;
+      let whereTo: Location = $location.none;
       switch (target) {
         case $stat`Muscle`:
           whereTo = $location`The Haunted Gallery`;

@@ -7,7 +7,6 @@ import {
   haveSkill,
   hiddenTempleUnlocked,
   inHardcore,
-  Item,
   itemAmount,
   Location,
   myBasestat,
@@ -71,7 +70,7 @@ function L6_friarsGetPartsDo(): boolean {
   }
 
   if (equippedItem($slot`shirt`) === $item`tunac`) {
-    autoEquipToSlot($slot`shirt`, Item.none);
+    autoEquipToSlot($slot`shirt`, $item.none);
   }
 
   if (
@@ -97,7 +96,7 @@ function L6_friarsGetPartsDo(): boolean {
   ) {
     const forced_loc: Location = get(
       "auto_forceNonCombatLocation",
-      Location.none,
+      $location.none,
     );
     const forced_here: boolean =
       $locations`The Dark Neck of the Woods, The Dark Elbow of the Woods, The Dark Heart of the Woods`.includes(

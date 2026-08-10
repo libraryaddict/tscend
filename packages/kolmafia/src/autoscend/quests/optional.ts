@@ -156,7 +156,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
     return false;
   }
 
-  let target_shirt: Item = Item.none;
+  let target_shirt: Item = $item.none;
   let hasShirt: boolean = false;
   //one time initial scan of inventory
   for (const it of Item.get(Object.keys(getInventory()))) {
@@ -529,7 +529,7 @@ function LX_steelOrganDo(): boolean {
 }
 function LX_guildUnlockDo(): boolean {
   let pref: string = "";
-  let loc: Location = Location.none;
+  let loc: Location = $location.none;
   if (myPrimestat() === $stat`Moxie` && auto_haveTearawayPants()) {
     //Can bypass moxie test if we have the Tearaway Pants
     if (autoForceEquip$3($item`tearaway pants`)) {
@@ -555,7 +555,7 @@ function LX_guildUnlockDo(): boolean {
       }
       break;
   }
-  if (loc !== Location.none) {
+  if (loc !== $location.none) {
     if (getProperty(pref) !== "started") {
       visitUrl("guild.php?place=challenge");
     }
@@ -1539,7 +1539,7 @@ function LX_acquireEpicWeaponDo(): boolean {
     }
   }
 
-  if (itemAmount($_f_epicWeapons.get(myClass()) ?? Item.none) > 0) {
+  if (itemAmount($_f_epicWeapons.get(myClass()) ?? $item.none) > 0) {
     return false;
   }
 
@@ -1553,12 +1553,12 @@ function LX_acquireEpicWeaponDo(): boolean {
     return false;
   }
 
-  if (itemAmount($_f_starterWeapons.get(myClass()) ?? Item.none) === 0) {
+  if (itemAmount($_f_starterWeapons.get(myClass()) ?? $item.none) === 0) {
     // make sure we have a starter weapon for the swap.
-    acquireGumItem($_f_starterWeapons.get(myClass()) ?? Item.none);
+    acquireGumItem($_f_starterWeapons.get(myClass()) ?? $item.none);
   }
 
-  maximizer.exclude($_f_starterWeapons.get(myClass()) ?? Item.none);
+  maximizer.exclude($_f_starterWeapons.get(myClass()) ?? $item.none);
   if (tomb_already_found()) {
     return autoAdvBypass$1("place.php?whichplace=cemetery&action=cem_advtomb");
   }

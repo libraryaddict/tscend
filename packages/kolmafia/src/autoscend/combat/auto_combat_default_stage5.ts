@@ -2,7 +2,6 @@ import {
   abort,
   buffedHitStat,
   containsText,
-  Element,
   equippedItem,
   getProperty,
   haveEffect,
@@ -207,7 +206,7 @@ export function auto_combatDefaultStage5(
   ) {
     //shoot ghost 3 times provoking retaliation, then trap ghost skill unlocks which instawins combat.
     const stunner: Skill = getStunner(enemy);
-    if (stunner !== Skill.none) {
+    if (stunner !== $skill.none) {
       combat_status_add("stunned");
       return auto_useSkill(stunner);
     }
@@ -283,7 +282,7 @@ export function auto_combatDefaultStage5(
     myClass() === $class`Sauceror` &&
     canSurvive(2.0) &&
     (currentFlavour() !== monsterElement(enemy) ||
-      currentFlavour() === Element.none)
+      currentFlavour() === $element.none)
   ) {
     set("_auto_combatTracker_MortarRound", round_1);
     return auto_useSkill($skill`Stuffed Mortar Shell`);
@@ -614,7 +613,7 @@ export function auto_combatDefaultStage5(
           attackMajor = auto_useSkill($skill`Fry`, false);
           costMajor = mpCost($skill`Fry`);
         } else if (
-          monsterElement(enemy) !== Element.none &&
+          monsterElement(enemy) !== $element.none &&
           auto_canUse($skill`Grill`, false)
         ) {
           attackMajor = auto_useSkill($skill`Grill`, false);
@@ -1015,7 +1014,7 @@ export function auto_combatDefaultStage5(
         break;
       case $class`Zootomist`: {
         const punch: Skill = getZooBestPunch(enemy);
-        if (punch === Skill.none) {
+        if (punch === $skill.none) {
           return "attack";
         }
         attackMajor = auto_useSkill(punch, false);

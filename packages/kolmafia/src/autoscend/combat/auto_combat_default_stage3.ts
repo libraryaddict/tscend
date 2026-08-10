@@ -590,7 +590,7 @@ export function auto_combatDefaultStage3(
       const coldMortarShell: boolean =
         auto_canUse($skill`Stuffed Mortar Shell`) &&
         haveEffect($effect`Spirit of Peppermint`) !== 0;
-      let coldSkillToUse: Skill = Skill.none;
+      let coldSkillToUse: Skill = $skill.none;
       let coldAttackDamageMultiplier: number = 1;
       if (myClass() === $class`Seal Clubber`) {
         if (auto_canUse($skill`Lunging Thrust-Smack`, false)) {
@@ -659,7 +659,7 @@ export function auto_combatDefaultStage3(
       let MPreservedForColdSpells: number = coldMortarShell
         ? mpCost($skill`Stuffed Mortar Shell`)
         : 0;
-      if (coldSkillToUse !== Skill.none) {
+      if (coldSkillToUse !== $skill.none) {
         MPreservedForColdSpells += mpCost(coldSkillToUse);
       }
       // Mating Call has unlimited uses and a small effect so unlike other sniff skills there is no reason not to use it here to balance bridge parts except MP cost
@@ -745,7 +745,7 @@ export function auto_combatDefaultStage3(
 
       if (coldMortarShell) {
         return auto_useSkill($skill`Stuffed Mortar Shell`);
-      } else if (coldSkillToUse !== Skill.none) {
+      } else if (coldSkillToUse !== $skill.none) {
         return auto_useSkill(coldSkillToUse, false);
       } else if (
         !in_robot() &&
@@ -849,7 +849,7 @@ export function auto_combatDefaultStage3(
       ((getProperty("auto_forceNonCombatSource") === "" &&
         !(
           auto_wantToSniff(enemy, myLocation()) &&
-          getSniffer(enemy) !== Skill.none
+          getSniffer(enemy) !== $skill.none
         )) ||
         monsterPhylum() === $phylum`plant`)
     ) {
@@ -1012,7 +1012,7 @@ export function auto_combatDefaultStage3(
     (!canSurvive(5.0) || $monsters`Groar`.includes(enemy))
   ) {
     const stunner: Skill = getStunner(enemy);
-    if (stunner !== Skill.none) {
+    if (stunner !== $skill.none) {
       combat_status_add("stunned");
       return auto_useSkill(stunner);
     }

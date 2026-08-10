@@ -51,7 +51,7 @@ export function pullLegionKnife(): boolean {
   if (hasLegionKnife()) {
     return true; //already have it
   }
-  let target: Item = Item.none;
+  let target: Item = $item.none;
   for (const it of Item.get(
     Object.keys(getRelated($item`Loathing Legion knife`, "fold")),
   )) {
@@ -60,7 +60,7 @@ export function pullLegionKnife(): boolean {
       break;
     }
   }
-  if (target === Item.none) {
+  if (target === $item.none) {
     return false; //we do not have the item to pull
   }
   const start_amt: number = itemAmount(target);

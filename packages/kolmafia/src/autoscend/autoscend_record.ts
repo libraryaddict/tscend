@@ -1,4 +1,5 @@
 import { Item } from "kolmafia";
+import { $item } from "libram";
 
 //From Zlib Stuff
 export class kmailObject {
@@ -18,7 +19,7 @@ export class kmailObject {
 export class ConsumeAction {
   constructor(
     // exactly one of these is non-none
-    public it: Item = Item.none,
+    public it: Item = $item.none,
     public cafeid: number = 0,
 
     public size: number = 0, // how much of organ is used

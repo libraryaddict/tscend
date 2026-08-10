@@ -164,24 +164,24 @@ export function auto_combatDefaultStage1(
       );
     }
     const ambi: boolean = auto_have_skill($skill`Ambidextrous Funkslinging`);
-    let hand_1: Item = Item.none;
-    let hand_2: Item = Item.none;
+    let hand_1: Item = $item.none;
+    let hand_2: Item = $item.none;
     const icup: Item = $item`Rain-Doh indigo cup`; //restore 20% of max HP. only once per combat
     if (canUse$3(icup)) {
-      if (myMaxhp() > 500 && hand_1 === Item.none) {
+      if (myMaxhp() > 500 && hand_1 === $item.none) {
         markAsUsed$1(icup);
         hand_1 = icup;
-      } else if (ambi && myMaxhp() > 250 && hand_1 === Item.none) {
+      } else if (ambi && myMaxhp() > 250 && hand_1 === $item.none) {
         markAsUsed$1(icup);
         hand_1 = icup;
       }
     }
     //items which can be used multiple times per combat
     for (const it of $items`gauze garter, filthy poultice, red pixel potion`) {
-      if (hand_1 === Item.none && itemAmount(it) > 0) {
+      if (hand_1 === $item.none && itemAmount(it) > 0) {
         hand_1 = it;
       }
-      if (hand_2 === Item.none) {
+      if (hand_2 === $item.none) {
         if (itemAmount(it) > 1) {
           hand_2 = it;
         } else if (itemAmount(it) > 0 && hand_1 !== it) {
@@ -190,10 +190,10 @@ export function auto_combatDefaultStage1(
       }
     }
 
-    if (ambi && hand_1 !== Item.none && hand_2 !== Item.none) {
+    if (ambi && hand_1 !== $item.none && hand_2 !== $item.none) {
       return [hand_1, hand_2];
     }
-    if (hand_1 !== Item.none) {
+    if (hand_1 !== $item.none) {
       return [hand_1];
     }
     if (itemAmount($item`scented massage oil`) === 0) {

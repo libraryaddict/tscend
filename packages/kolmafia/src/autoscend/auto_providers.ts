@@ -15,7 +15,6 @@ import {
   haveEffect,
   haveEquipped,
   haveSkill,
-  Item,
   itemAmount,
   Location,
   min,
@@ -177,7 +176,7 @@ export function providePlusCombat(
   );
   //if the fam is important enough to add, it will be caught in preAdvUpdateFamiliar
   if (auto_famModifiers$2("Combat Rate") < 0) {
-    useFamiliar(Familiar.none);
+    useFamiliar($familiar.none);
   }
 
   const alreadyHave: number = numericModifier($modifier`Combat Rate`);
@@ -395,7 +394,7 @@ export function providePlusNonCombat(
   );
   //if the fam is important enough to add, it will be caught in preAdvUpdateFamiliar
   if (auto_famModifiers$2("Combat Rate") > 0) {
-    useFamiliar(Familiar.none);
+    useFamiliar($familiar.none);
   }
   // numeric_modifier will return -combat as a negative value and +combat as a positive value
   // so we will need to invert the return values otherwise this will be wrong (since amt is supposed to be positive).
@@ -441,7 +440,7 @@ export function providePlusNonCombat(
     return result$5();
   }
   // First let's do the peace turkey, only if we haven't already picked a familiar
-  if (!speculative && safeGet("auto_familiarChoice") === Familiar.none) {
+  if (!speculative && safeGet("auto_familiarChoice") === $familiar.none) {
     for (const fam of $familiars`Peace Turkey`) {
       if (canChangeToFamiliar(fam)) {
         useFamiliar(fam);
@@ -626,7 +625,7 @@ export function providePlusNonCombat(
     return result$5();
   }
   // If we haven't picked a familiar by now consider the disgeist
-  if (!speculative && safeGet("auto_familiarChoice") === Familiar.none) {
+  if (!speculative && safeGet("auto_familiarChoice") === $familiar.none) {
     for (const fam of $familiars`Disgeist`) {
       if (canChangeToFamiliar(fam)) {
         useFamiliar(fam);
@@ -947,7 +946,7 @@ export function provideResistances(
     let unequipsString: string = "";
     for (const sl of $slots`hat, weapon, off-hand, back, shirt, pants, acc1, acc2, acc3, familiar`) {
       //simulate removing all gear regardless of individual res modifiers, must account for familiar weight or outfit bonus
-      if (equippedItem(sl) !== Item.none) {
+      if (equippedItem(sl) !== $item.none) {
         unequipsString += `unequip ${sl}; `;
       }
     }
@@ -1119,14 +1118,14 @@ export function provideResistances(
   }
 
   if (doEquips && canChangeFamiliar()) {
-    let resfam: Familiar = Familiar.none;
+    let resfam: Familiar = $familiar.none;
     for (const fam of $familiars`Trick-or-Treating Tot, Mu, Exotic Parrot`) {
       if (auto_have_familiar(fam)) {
         resfam = fam;
         break;
       }
     }
-    if (resfam !== Familiar.none) {
+    if (resfam !== $familiar.none) {
       //Buff fam weight early
       buffMaintain$2($effect`Leash of Linguini`);
       buffMaintain$2($effect`Thoughtful Empathy`);
@@ -1617,8 +1616,8 @@ function provideMeat(
     // fam isn't equipped immediatly even if we aren't speculating
     // so add bonus from fam regardless of speculation
     const target: Familiar = lookupFamiliarDatafile("meat");
-    if (target !== Familiar.none && target !== myFamiliar()) {
-      delta += auto_famModifiers(target, "Meat Drop", Item.none);
+    if (target !== $familiar.none && target !== myFamiliar()) {
+      delta += auto_famModifiers(target, "Meat Drop", $item.none);
       auto_log_debug(
         `With using familiar: ${target} we can get to ${result$3()}`,
       );
@@ -2124,8 +2123,8 @@ function provideItem(
     // fam isn't equipped immediatly even if we aren't speculating
     // so add bonus from fam regardless of speculation
     const target: Familiar = lookupFamiliarDatafile("item");
-    if (target !== Familiar.none && target !== myFamiliar()) {
-      delta += auto_famModifiers(target, "Item Drop", Item.none);
+    if (target !== $familiar.none && target !== myFamiliar()) {
+      delta += auto_famModifiers(target, "Item Drop", $item.none);
       auto_log_debug(
         `With using familiar: ${target} we can get to ${result$2()}`,
       );

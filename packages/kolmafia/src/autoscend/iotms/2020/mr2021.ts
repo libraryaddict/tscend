@@ -141,7 +141,7 @@ function crystalBallMonster(loc: Location): Monster {
     ]),
   );
   if ((crystalBallPredictions.get(0) ?? "") === "") {
-    return Monster.none; // no prediction
+    return $monster.none; // no prediction
   }
   for (const i of crystalBallPredictions.keys()) {
     const thisPrediction: Map<number, string> = new Map(
@@ -156,7 +156,7 @@ function crystalBallMonster(loc: Location): Monster {
     }
     return toMonster(thisPrediction.get(2) ?? "");
   }
-  return Monster.none; // no prediction in the location
+  return $monster.none; // no prediction in the location
 }
 
 function auto_allowCrystalBall(
@@ -173,7 +173,7 @@ function auto_allowCrystalBall(
     return false;
   }
   // allowed elsewhere if no prediction
-  if (predicted_monster === Monster.none) {
+  if (predicted_monster === $monster.none) {
     return true;
   }
   // next monster forced by mapping overrides any prediction so no need to forbid equipping crystal ball
@@ -210,7 +210,7 @@ export function auto_forceHandleCrystalBall(loc: Location): boolean {
   const predicted_monster: Monster = crystalBallMonster(loc);
 
   let shouldForceEquip: boolean = false;
-  if (predicted_monster !== Monster.none) {
+  if (predicted_monster !== $monster.none) {
     if (
       (auto_wantToSniff(predicted_monster, loc) ||
         isSniffed$1(
@@ -255,7 +255,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
   let considerCrystalBallBonus: boolean = false;
   if (
     !auto_queueIgnore() &&
-    safeGet("auto_nextEncounter") === Monster.none &&
+    safeGet("auto_nextEncounter") === $monster.none &&
     !auto_forceHandleCrystalBall(place)
   ) {
     //equipping the crystal ball can't hurt but it is neither forced nor forbidden
@@ -264,7 +264,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
   }
 
   const possible_monsters: Map<number, Monster> = new Map();
-  if (safeGet("auto_nextEncounter") !== Monster.none) {
+  if (safeGet("auto_nextEncounter") !== $monster.none) {
     //next monster is forced by zone mechanics or by now locked-in miniature crystal ball
     possible_monsters.set(
       possible_monsters.size,
@@ -369,7 +369,7 @@ export function auto_backupTarget(): boolean {
     return false;
   }
   // don't backup if nextAdventure is None as a combat was somewhere that is not a zone
-  if (safeGet("nextAdventure") === Location.none) {
+  if (safeGet("nextAdventure") === $location.none) {
     return false;
   }
   // don't backup into oliver's (it won't be free and will waste a free fight and currently also mess up tracking)
@@ -463,7 +463,7 @@ export function auto_backupToYourLastEnemy(loc: Location): boolean {
     !auto_haveBackupCamera() ||
     auto_backupUsesLeft() === 0 ||
     !auto_backupTarget() ||
-    loc === Location.none
+    loc === $location.none
   ) {
     return false;
   }
@@ -1082,7 +1082,7 @@ export function auto_CMCconsult(): void {
   }
 
   let bestOption: number = -1;
-  let consumableBought: Item = Item.none;
+  let consumableBought: Item = $item.none;
   const page: string = visitUrl("campground.php?action=workshed");
   if (containsText(page, "Breathitin")) {
     auto_log_info("Buying Breathitin pill from CMC", "blue");

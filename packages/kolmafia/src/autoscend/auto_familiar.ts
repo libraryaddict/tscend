@@ -41,6 +41,7 @@ import {
   $location,
   $locations,
   $modifier,
+  $monster,
   $slot,
   get,
   set,
@@ -114,7 +115,7 @@ import { maximizer } from "./utils/maximizer";
 export function is100FamRun(): boolean {
   // answers the question of "is this a 100% familiar run"
 
-  if (safeGet("auto_100familiar") === Familiar.none) {
+  if (safeGet("auto_100familiar") === $familiar.none) {
     return false;
   }
   // if you reached this line, then it means that auto_100familiar is set to some specific familiar.
@@ -223,7 +224,7 @@ export function auto_famKill(fam: Familiar, place: Location): boolean {
     }
     //Mafia doesn't output the expected damage of the familiar so going with the highest possible for most users (NPZR)
     if (
-      mon !== Monster.none &&
+      mon !== $monster.none &&
       monsterHp(mon) < floor(1.5 * (auto_famWeight(fam) + 3)) + passiveDamage
     ) {
       return true;
@@ -365,7 +366,7 @@ export function canChangeToFamiliar(target: Familiar): boolean {
     return false;
   }
   // Don't allow switching to a target of none.
-  if (target === Familiar.none) {
+  if (target === $familiar.none) {
     return false;
   }
   // You are allowed to use your /current/ familiar in Quantum Terrarium runs.
@@ -397,7 +398,7 @@ export function findNonRockFamiliarInTerrarium(): Familiar {
       return fam;
     }
   }
-  return Familiar.none;
+  return $familiar.none;
 }
 
 let $_findRockFamiliarInTerrarium_petRockFamiliars: Familiar[] | undefined;
@@ -414,7 +415,7 @@ export function findRockFamiliarInTerrarium(): Familiar {
       return fam;
     }
   }
-  return Familiar.none;
+  return $familiar.none;
 }
 
 export function lookupFamiliarDatafile(type_1: string): Familiar {
@@ -435,7 +436,7 @@ export function lookupFamiliarDatafile(type_1: string): Familiar {
     for (const [name, _v1] of _v0) {
       const conds = _v1;
       const thisFamiliar: Familiar = toFamiliar(name);
-      if (thisFamiliar === Familiar.none) {
+      if (thisFamiliar === $familiar.none) {
         if (name !== "none") {
           auto_log_error(
             `lookupFamiliarDatafile failed to convert string [${name}] to familiar`,
@@ -457,7 +458,7 @@ export function lookupFamiliarDatafile(type_1: string): Familiar {
   }
   //no suitable familiars found in datafile
   auto_log_debug(`Could not find any "${type_1}" type familiars!`);
-  return Familiar.none;
+  return $familiar.none;
 }
 
 export function handleFamiliar(type_1: string): boolean {
@@ -473,7 +474,7 @@ export function handleFamiliar(type_1: string): boolean {
 
   const target: Familiar = lookupFamiliarDatafile(type_1);
 
-  if (target !== Familiar.none) {
+  if (target !== $familiar.none) {
     return handleFamiliar$1(target);
   }
   return false;
@@ -485,7 +486,7 @@ export function handleFamiliar$1(fam: Familiar): boolean {
   if (!pathHasFamiliar() || !pathAllowsChangingFamiliar()) {
     return false;
   }
-  if (fam === Familiar.none) {
+  if (fam === $familiar.none) {
     return false;
   }
   if (safeGet("auto_familiarChoice") === fam) {
@@ -531,7 +532,7 @@ function autoChooseFamiliar(place: Location): boolean {
     return false; //will just error in those paths
   }
   const familiar_target_100: Familiar = safeGet("auto_100familiar");
-  if (familiar_target_100 !== Familiar.none) {
+  if (familiar_target_100 !== $familiar.none) {
     return handleFamiliar$1(familiar_target_100); //do not break 100 familiar runs
   }
   // Can only use burly bodyguard, except in non-adventure.php zones. In those, we want the Gelatinous Cubeling for Daily Dungeon drops
@@ -550,7 +551,7 @@ function autoChooseFamiliar(place: Location): boolean {
     return handleFamiliar$1($familiar`Burly Bodyguard`);
   }
   //High priority checks that are too complicated for the datafile
-  let famChoice: Familiar = Familiar.none;
+  let famChoice: Familiar = $familiar.none;
   // Blackbird/Crow cut turns in the Black Forest but we only need to equip them
   // if we don't have them in inventory.
   if ($location`The Black Forest` === place) {
@@ -770,7 +771,7 @@ function autoChooseFamiliar(place: Location): boolean {
   famChoice = auto_forceEagle(famChoice); // force Patriotic Eagle if we have a >0 combats until we can screech again
   //Gelatinous Cubeling drops items that save turns in the daily dungeon
   if (
-    famChoice === Familiar.none &&
+    famChoice === $familiar.none &&
     wantCubeling() &&
     lookupFamiliarDatafile("item") !== $familiar`Gelatinous Cubeling`
   ) {
@@ -779,7 +780,7 @@ function autoChooseFamiliar(place: Location): boolean {
   }
   //grab spleen consumables early if you do not have enough such items to fill up your spleen. Extras will be handled by "drop" datafile
   //Should take around 10 combats to grab enough on day 1 and on subsequent days you should already have them from previous days.
-  if (famChoice === Familiar.none) {
+  if (famChoice === $familiar.none) {
     const available_spleen_items_size: number =
       4 * auto_spleenFamiliarAdvItemsPossessed();
 
@@ -810,7 +811,7 @@ function autoChooseFamiliar(place: Location): boolean {
   }
   //[grimstone mask] for an [ornate dowsing rod] for the desert. if still needed
   if (
-    famChoice === Familiar.none &&
+    famChoice === $familiar.none &&
     canChangeToFamiliar($familiar`Grimstone Golem`) &&
     !possessEquipment($item`ornate dowsing rod`) &&
     itemAmount($item`odd silver coin`) < 5 &&
@@ -836,7 +837,7 @@ function autoChooseFamiliar(place: Location): boolean {
   //if critically low on MP and meat. use restore familiar to avoid going bankrupt
   const poor: boolean = isMeatPoor(1000);
   if (
-    famChoice === Familiar.none &&
+    famChoice === $familiar.none &&
     myMaxmp() > 50 &&
     myMp() * 5 < myMaxmp() &&
     poor
@@ -844,11 +845,11 @@ function autoChooseFamiliar(place: Location): boolean {
     famChoice = lookupFamiliarDatafile("regen");
   }
   //in meatpath, prioritize meat if meat is a constraint
-  if (in_amw() && famChoice === Familiar.none && amw_wantMeat()) {
+  if (in_amw() && famChoice === $familiar.none && amw_wantMeat()) {
     famChoice = lookupFamiliarDatafile("meat");
   }
   //select the best familiar that drops items directly. Will prioritize useful items and awesome+ food and drink and then other drops.
-  if (famChoice === Familiar.none) {
+  if (famChoice === $familiar.none) {
     famChoice = lookupFamiliarDatafile("drop");
   }
   //If a fam was selected that is contrary to the Combat Rate we want, deselect it. Probably won't select it in stat or regen but user should get better free-ish fams if it does
@@ -857,27 +858,27 @@ function autoChooseFamiliar(place: Location): boolean {
     (maximizer.getWeight($modifier`Combat Rate`) ?? 0) < 0 &&
     famComRate > 0
   ) {
-    famChoice = Familiar.none;
+    famChoice = $familiar.none;
   } else if (
     (maximizer.getWeight($modifier`Combat Rate`) ?? 0) > 0 &&
     famComRate < 0
   ) {
-    famChoice = Familiar.none;
+    famChoice = $familiar.none;
   }
   // Stats from combats makes runs go faster apparently, except in meatpath
   if (
-    famChoice === Familiar.none &&
+    famChoice === $familiar.none &&
     !in_amw() &&
     (myLevel() < 13 || get("auto_disregardInstantKarma", false))
   ) {
     famChoice = lookupFamiliarDatafile("stat");
   }
   // fallback to regen if nothing else. At worst the player will have something like a Ghuol Whelp or Starfish.
-  if (famChoice === Familiar.none) {
+  if (famChoice === $familiar.none) {
     famChoice = lookupFamiliarDatafile("regen");
   }
   // in legacy of loathing, may only have 1 of the 2004 fams
-  if (famChoice === Familiar.none) {
+  if (famChoice === $familiar.none) {
     for (const fam of $familiars`Jill-O-Lantern, Hand Turkey, Crimbo Elf`) {
       if (canChangeToFamiliar(fam)) {
         famChoice = fam;
@@ -934,11 +935,11 @@ export function preAdvUpdateFamiliar(place: Location): void {
   }
   // Can't take familiars with you to FantasyRealm
   if (place === $location`The Bandit Crossroads`) {
-    if (myFamiliar() === Familiar.none) {
+    if (myFamiliar() === $familiar.none) {
       //avoid mafia error from trying to change none into none.
       return;
     }
-    useFamiliar(Familiar.none);
+    useFamiliar($familiar.none);
     return; //no familiar means no equipment, we are done.
   }
   //if familiar not set yet, first check stealing familiar
@@ -980,7 +981,7 @@ export function preAdvUpdateFamiliar(place: Location): void {
   }
 
   const famChoice: Familiar = safeGet("auto_familiarChoice");
-  if (famChoice === Familiar.none) {
+  if (famChoice === $familiar.none) {
     if (getProperty("auto_familiarChoice") === "") {
       abort(
         "void preAdvUpdateFamiliar failed because property auto_familiarChoice is empty for some reason",
@@ -1069,7 +1070,7 @@ export function auto_famWeight(
   include_equip: boolean = true,
 ): number {
   let famEquipWeight: number = 0;
-  if (fam === Familiar.none) {
+  if (fam === $familiar.none) {
     return 0;
   }
   if (!include_equip) {
@@ -1085,7 +1086,7 @@ export function auto_famModifiers(
   mod: string,
   famEquip: Item,
 ): number {
-  if (fam === Familiar.none) {
+  if (fam === $familiar.none) {
     return 0.0;
   }
   return numericModifier(fam, mod, auto_famWeight(fam, false), famEquip);

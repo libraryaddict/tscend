@@ -527,7 +527,7 @@ function loveTunnelAcquire$1(
   }
 
   let statValue: number = 4;
-  if (statItem === Stat.none) {
+  if (statItem === $stat.none) {
     if (in_darkGyffte() && possessEquipment($item`vampyric cloake`)) {
       statItem = $stat`Muscle`;
     } else {

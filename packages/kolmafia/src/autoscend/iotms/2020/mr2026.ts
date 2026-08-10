@@ -61,6 +61,7 @@ import {
   $monster,
   $monsters,
   $skill,
+  $stat,
   EternityCodpiece,
   get,
   getKramcoWandererChance,
@@ -185,7 +186,7 @@ function auto_codpieceFillerItem(): Item {
       (i) =>
         (maximizer.getBonus(i) <= 0 || !CODPIECE_MANAGED_GEMS.includes(i)) &&
         itemAmount(i) > 0,
-    ) ?? Item.none
+    ) ?? $item.none
   );
 }
 
@@ -218,7 +219,7 @@ export function auto_codpieceReconcileGem(gem: Item): void {
   // If we want to wear this and it's not already socketed or worn elsewhere
   if (wanted && codpieceWorn && !inCodpiece && !haveEquipped(gem)) {
     // Find the first slot that is unused, or not special
-    const emptySlot = slots.find((s) => equippedItem(s) === Item.none);
+    const emptySlot = slots.find((s) => equippedItem(s) === $item.none);
     const backfillSlot = [...slots]
       .reverse()
       .find((s) => maximizer.getBonus(equippedItem(s)) <= 0);
@@ -246,7 +247,7 @@ export function auto_codpieceReconcileGem(gem: Item): void {
     // Since holding it idle isn't worth the slot either way.
     if (
       gem !== $item`Baseball Diamond` &&
-      (filler === Item.none || filler === equippedItem(slots[idx]))
+      (filler === $item.none || filler === equippedItem(slots[idx]))
     ) {
       return;
     }
@@ -262,11 +263,11 @@ export function auto_codpieceFillEmptySlots(): void {
   }
 
   for (const slot of EternityCodpiece.SLOTS) {
-    if (equippedItem(slot) !== Item.none) {
+    if (equippedItem(slot) !== $item.none) {
       continue;
     }
     const filler = auto_codpieceFillerItem();
-    if (filler === Item.none) {
+    if (filler === $item.none) {
       return;
     }
     equip(slot, filler);
@@ -331,7 +332,7 @@ export function auto_getItemToEquipHeartstone(): Item {
   if (auto_haveHeartstone()) {
     return $item`Heartstone`;
   }
-  return Item.none;
+  return $item.none;
 }
 
 export function auto_heartstoneLuckRemaining(): number {
@@ -589,12 +590,12 @@ function auto_heartstoneLetterChances(location?: Location): {
     .flatMap((t) => taskLocations(t))
     .filter(
       (l): l is Location =>
-        !!l && l !== Location.none && l !== $location`Noob Cave`,
+        !!l && l !== $location.none && l !== $location`Noob Cave`,
     );
 
   if (
     location &&
-    location !== Location.none &&
+    location !== $location.none &&
     location !== $location`Noob Cave` &&
     !allLocations.includes(location)
   ) {
@@ -696,7 +697,7 @@ export function auto_spadeDigItem(): boolean {
         _v,
       ]),
     );
-    let my_drop: Item = Item.none;
+    let my_drop: Item = $item.none;
     let total_items_dropped: number = 0;
     for (const [it, n] of drops) {
       my_drop = it;
@@ -859,14 +860,16 @@ export function auto_findPreparedLegendaryNoods(): Item {
       return it;
     }
   }
-  return Item.none;
+  return $item.none;
 }
 
 export function numBaseLegendaryNoodleDishes(): number {
   let num: number = 0;
   for (const preparedDish of legendaryNoodleDishes().keys()) {
     if (auto_canEat(preparedDish)) {
-      num += itemAmount(legendaryNoodleDishes().get(preparedDish) ?? Item.none);
+      num += itemAmount(
+        legendaryNoodleDishes().get(preparedDish) ?? $item.none,
+      );
     }
   }
   return num;
@@ -875,17 +878,17 @@ export function numBaseLegendaryNoodleDishes(): number {
 // returns the legendary dish the noods are crafted into
 export function auto_findBaseLegendaryNoods(): Item {
   if (itemAmount($item`legendary noodles`) < 1) {
-    return Item.none;
+    return $item.none;
   }
   for (const it of legendaryNoodleDishes().keys()) {
     if (
-      itemAmount(legendaryNoodleDishes().get(it) ?? Item.none) > 0 &&
+      itemAmount(legendaryNoodleDishes().get(it) ?? $item.none) > 0 &&
       auto_canEat(it)
     ) {
       return it;
     }
   }
-  return Item.none;
+  return $item.none;
 }
 
 function canEatSomeLegNoods(): boolean {
@@ -920,10 +923,10 @@ export function auto_legendaryNoodlesAvailable(): boolean {
   if (stomach_left() < 1 || !auto_willEatLegendaryNoodles()) {
     return false;
   }
-  if (auto_findPreparedLegendaryNoods() !== Item.none) {
+  if (auto_findPreparedLegendaryNoods() !== $item.none) {
     return true;
   }
-  if (auto_findBaseLegendaryNoods() !== Item.none) {
+  if (auto_findBaseLegendaryNoods() !== $item.none) {
     return true;
   }
   return false;
@@ -939,7 +942,7 @@ export function auto_forceCombatLegendaryNoodles(): boolean {
   let action: ConsumeAction;
   // select a dish and then create a record, prioritizing dishes that are already crafted first
   const prospective_dish: Item = auto_findPreparedLegendaryNoods();
-  if (prospective_dish !== Item.none) {
+  if (prospective_dish !== $item.none) {
     action = new ConsumeAction(
       prospective_dish,
       0,
@@ -951,7 +954,7 @@ export function auto_forceCombatLegendaryNoodles(): boolean {
     );
   } else {
     const prospective_dish_1: Item = auto_findBaseLegendaryNoods();
-    if (prospective_dish_1 !== Item.none) {
+    if (prospective_dish_1 !== $item.none) {
       action = new ConsumeAction(
         prospective_dish_1,
         0,
@@ -1023,8 +1026,8 @@ function getCupOfThirteenData(item: Item): CupOfThirteenData {
   const extraScore = valuableness - adventures;
 
   const index = heartstoneStringLength(entityDecode(item.name)) % 13;
-  let effect: Effect = Effect.none;
-  let stat: Stat = Stat.none;
+  let effect: Effect = $effect.none;
+  let stat: Stat = $stat.none;
 
   if (extraScore > 0) {
     switch (index) {
@@ -1043,8 +1046,8 @@ function getCupOfThirteenData(item: Item): CupOfThirteenData {
     }
   }
 
-  const statAmount = stat !== Stat.none ? extraScore * 50 : 0;
-  const effectTurns = effect !== Effect.none ? extraScore * 20 : 0;
+  const statAmount = stat !== $stat.none ? extraScore * 50 : 0;
+  const effectTurns = effect !== $effect.none ? extraScore * 20 : 0;
 
   return new CupOfThirteenData(
     item,
@@ -1251,7 +1254,7 @@ function auto_bestCupOfThirteenAction(
       // If we're looking for an effect, prefer the one with the longest duration when both of the ingredients has the requested effect
       // We don't care if these are dragged to the bottom
       if (
-        reqEffect !== Effect.none &&
+        reqEffect !== $effect.none &&
         a.effect === reqEffect &&
         a.effect === b.effect &&
         a.effectDuration !== b.effectDuration
@@ -1283,7 +1286,7 @@ function auto_bestCupOfThirteenAction(
   let usedAdvs = 0;
 
   // If we require an effect
-  if (reqEffect !== Effect.none) {
+  if (reqEffect !== $effect.none) {
     sortIngredients();
     // Find an ingredient that we can use
     const effect = ingredients.find(
@@ -1333,7 +1336,7 @@ function auto_bestCupOfThirteenAction(
 
 function auto_cupOfThirteenConsumeAction(
   pick: CupOfThirteenIngredient[],
-  effect: Effect = Effect.none,
+  effect: Effect = $effect.none,
 ): ConsumeAction {
   // Get the raw adv gain
   const advs: number = Math.min(
@@ -1342,7 +1345,7 @@ function auto_cupOfThirteenConsumeAction(
   );
   // Boost the value if we're looking for this effect
   const value =
-    effect !== Effect.none && pick.some((i) => i.data.effect === effect)
+    effect !== $effect.none && pick.some((i) => i.data.effect === effect)
       ? 10
       : 0;
 
@@ -1432,7 +1435,7 @@ export function auto_cupOfThirteenBestConsumeAction():
     return undefined;
   }
 
-  const action = auto_bestCupOfThirteenAction(Effect.none);
+  const action = auto_bestCupOfThirteenAction($effect.none);
 
   if (!action) {
     return undefined;
@@ -1477,7 +1480,7 @@ export function auto_getItemToEquipBaseballDiamond(): Item {
   if (auto_have_baseball_diamond()) {
     return $item`Baseball Diamond`;
   }
-  return Item.none;
+  return $item.none;
 }
 
 export function auto_baseballInningsRemaining(): number {
@@ -1487,7 +1490,7 @@ export function auto_baseballInningsRemaining(): number {
 export function auto_baseballFreefightMonster(): Monster {
   return auto_baseballFreefightsRemaining() > 0
     ? safeGet("_curveballMonster")
-    : Monster.none;
+    : $monster.none;
 }
 
 export function auto_baseballFreefightsRemaining(): number {
@@ -1596,7 +1599,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
   for (let i = 0; i < 9; i++) {
     const options = availableChoiceOptions();
 
-    let bestElement = Element.none;
+    let bestElement = $element.none;
     let bestChoice = 0;
     let highestPriority = -9999;
     let gain: string = "???";
@@ -1977,7 +1980,7 @@ export function auto_swordFamiliarWantsMonsterDrops(
   chanceToEncounterMonster: number = 0, // The chance we have of encountering the monster, between 0 to 100, 100 is eg, summons or perildot
 ): boolean {
   // Does not determine if we want to be using the familiar right now.
-  if (sMonster === Monster.none || sMonster.boss || !sMonster.copyable) {
+  if (sMonster === $monster.none || sMonster.boss || !sMonster.copyable) {
     return false;
   }
 
@@ -2173,7 +2176,7 @@ export function auto_wantSwordFamiliar(place: Location): boolean {
   }
   // Don't bring the sword out if we're about to hit a wanderer
   if (
-    auto_sword_of_swords_tracking() !== Monster.none &&
+    auto_sword_of_swords_tracking() !== $monster.none &&
     ([Wanderer.Digitize, Wanderer.Enamorang, Wanderer.Romantic].some((w) =>
       isWandererNow(w),
     ) ||

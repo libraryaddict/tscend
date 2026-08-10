@@ -85,7 +85,7 @@ export function auto_triggerPostAdventure(): void {
 // TODO: seems to return false even if it adventures successfully but doesn't cost an adventure (mafia issue?)
 //Defined in autoscend/auto_adventure.ash
 export function autoAdv(
-  loc: Location = Location.none,
+  loc: Location = $location.none,
   option?: CombatMacro,
 ): boolean {
   //num is ignored

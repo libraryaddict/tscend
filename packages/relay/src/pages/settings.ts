@@ -5,7 +5,7 @@ import {
   myFamiliar,
   turnsPlayed,
 } from "kolmafia";
-import { get } from "libram";
+import { $familiar, get } from "libram";
 
 import { settingDefaults } from "../../../kolmafia/src/autoscend/auto_settings";
 import { safeGet } from "../../../kolmafia/src/autoscend/auto_util";
@@ -113,7 +113,7 @@ function familiarComponents(): RelayComponent[] {
   const hundredFam: Familiar = safeGet("auto_100familiar");
   const changeable = turnsPlayed() === 0;
 
-  if (hundredFam !== Familiar.none) {
+  if (hundredFam !== $familiar.none) {
     components.push(
       html(
         `100% familiar is set to <b>${entityEncode(`${hundredFam}`)}</b>.${

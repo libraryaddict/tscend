@@ -11,7 +11,6 @@ import {
   inHardcore,
   Item,
   itemAmount,
-  Location,
   Modifier,
   myDaycount,
   myMeat,
@@ -154,7 +153,7 @@ function LX_koeInvaderHandlerDo(): boolean {
     autoEquipToSlot($slot`off-hand`, $item`meteorb`);
   }
 
-  simMaximizeWith((m) => m.weight("All Resistance", 200), Location.none);
+  simMaximizeWith((m) => m.weight("All Resistance", 200), $location.none);
 
   let damagePerRound: number = 0.0;
   const baseDamage: number = 1.0 - 0.1 * myDaycount();
@@ -228,7 +227,7 @@ function LX_koeInvaderHandlerDo(): boolean {
     auto_is_valid$2($skill`Weapon of the Pastalord`)
   ) {
     let sources: number = 2;
-    let hot_source: Item = Item.none;
+    let hot_source: Item = $item.none;
     if (
       itemAmount($item`big hot pepper`) > 0 &&
       auto_is_valid($item`big hot pepper`)
@@ -257,7 +256,7 @@ function LX_koeInvaderHandlerDo(): boolean {
       );
       // Use maximizer now that we are for sure fighting the Invader
       maximizer.weight("All Resistance", 200);
-      if (hot_source !== Item.none) {
+      if (hot_source !== $item.none) {
         maximizer.equip(hot_source);
       }
 
@@ -298,7 +297,7 @@ export function LX_koeInvaderHandler(): boolean {
 
 function koe_L12FoodSelect(): Item {
   //selects a desireable food item to toss at enemies during L12 war quest battlefield in koe
-  let food_item: Item = Item.none;
+  let food_item: Item = $item.none;
   for (const it of $items`pie man was not meant to eat, spaghetti with Skullheads, gnocchetti di Nietzsche, spaghetti con calaveras, space chowder, spaghetti with ghost balls, crudles, agnolotti arboli, shells a la shellfish, linguini immondizia bianco, fettucini Inconnu, ghuol guolash, suggestive strozzapreti, fusilli marrownarrow`) {
     if (itemAmount(it) > 0) {
       food_item = it;
@@ -312,7 +311,7 @@ export function koe_RationingOutDestruction(): void {
   //this function handles choiceAdventure1391 Rationing out Destruction.
   //a koe specific event where you sacrifice food items to score battlefield kills during the L12 quest.
   const food_item: Item = koe_L12FoodSelect();
-  if (food_item === Item.none) {
+  if (food_item === $item.none) {
     abort(
       "I am at the choice adventure and do not know what food I should kill my enemies with during L12 war quest",
     );
@@ -352,7 +351,7 @@ export function L12_koe_clearBattlefield(): boolean {
   if (itemAmount($item`space chowder`) === 0 && koe_rmi_count() > 4) {
     retrieveItem(1, $item`space chowder`);
   }
-  if (koe_L12FoodSelect() === Item.none) {
+  if (koe_L12FoodSelect() === $item.none) {
     abort(
       "I was unable to acquire a good food item to kill my enemies with in the L12 war quest",
     );

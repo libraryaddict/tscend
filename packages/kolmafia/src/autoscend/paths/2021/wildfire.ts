@@ -157,7 +157,7 @@ function wildfire_refillExtinguiser(): void {
     return; //biggest skill uses 20 charge. No need to charge if we still have at least that much
   }
   //need extinguisher equiped for it to be refilled
-  let old: Item = Item.none;
+  let old: Item = $item.none;
   if (!haveEquipped($item`industrial fire extinguisher`)) {
     old = equippedItem($slot`weapon`);
     equip($slot`weapon`, $item`industrial fire extinguisher`);
@@ -169,7 +169,7 @@ function wildfire_refillExtinguiser(): void {
   visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_captain");
   auto_runChoice(3);
   //equip prior weapon
-  if (old !== Item.none) {
+  if (old !== $item.none) {
     equip($slot`weapon`, old);
   }
 }

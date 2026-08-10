@@ -52,7 +52,6 @@ import {
   outfitPieces,
   retrieveItem,
   setLocation,
-  Skill,
   Slot,
   splitString,
   Stat,
@@ -75,6 +74,7 @@ import {
   $location,
   $locations,
   $modifier,
+  $monster,
   $monsters,
   $path,
   $skill,
@@ -207,11 +207,14 @@ export function autoEquipToSlot(s: Slot, it: Item): boolean {
   }
   // This logic lets us force the equipping of multiple accessories with minimal conflict
   const acc1_empty: boolean =
-    maximizer.pending($slot`acc1`) === Item.none && !maximizer.has($slot`acc1`);
+    maximizer.pending($slot`acc1`) === $item.none &&
+    !maximizer.has($slot`acc1`);
   const acc2_empty: boolean =
-    maximizer.pending($slot`acc2`) === Item.none && !maximizer.has($slot`acc2`);
+    maximizer.pending($slot`acc2`) === $item.none &&
+    !maximizer.has($slot`acc2`);
   const acc3_empty: boolean =
-    maximizer.pending($slot`acc3`) === Item.none && !maximizer.has($slot`acc3`);
+    maximizer.pending($slot`acc3`) === $item.none &&
+    !maximizer.has($slot`acc3`);
   if (itemType(it) === "accessory" && s === $slot`acc3` && !acc3_empty) {
     if (acc2_empty) {
       s = $slot`acc2`;
@@ -242,7 +245,7 @@ export function autoForceEquip(
   it: Item,
   noMaximize: boolean = false,
 ): boolean {
-  if (it === Item.none) {
+  if (it === $item.none) {
     return equip(s, it);
   }
   if (!possessEquipment(it) || !auto_can_equip(it)) {
@@ -302,11 +305,11 @@ export function autoStripOutfit(toRemove: string): boolean {
   auto_log_info(`Removing your ${toRemove} outfit as requested.`, "blue");
   for (const [, piece] of outfit_pieces) {
     if (toSlot(piece) !== $slot`acc1`) {
-      equip(toSlot(piece), Item.none);
+      equip(toSlot(piece), $item.none);
     } else {
       for (const accSlot of $slots`acc1, acc2, acc3`) {
         if (equippedItem(accSlot) === piece) {
-          equip(accSlot, Item.none);
+          equip(accSlot, $item.none);
           break;
         }
       }
@@ -359,46 +362,46 @@ export function equipStatgainIncreasers(
     for (const st of increaseThisStat) {
       if (
         numericModifier(
-          simulatedEquipment.get(sl) ?? Item.none,
+          simulatedEquipment.get(sl) ?? $item.none,
           `${st.toString()} experience percent`,
         ) !== 0
       ) {
-        statgainIncreasers.set(sl, simulatedEquipment.get(sl) ?? Item.none);
+        statgainIncreasers.set(sl, simulatedEquipment.get(sl) ?? $item.none);
         break;
       }
     }
   }
   //solve incompatible hand slots, since only statgain equipment is taken from simulation which leaves potentially incompatible hand equipment remaining
   if (
-    (statgainIncreasers.get($slot`off-hand`) ?? Item.none) !== Item.none &&
-    (statgainIncreasers.get($slot`weapon`) ?? Item.none) === Item.none
+    (statgainIncreasers.get($slot`off-hand`) ?? $item.none) !== $item.none &&
+    (statgainIncreasers.get($slot`weapon`) ?? $item.none) === $item.none
   ) {
     const currentWeaponIncompatibleWithSimulatedOffHand: boolean =
       weaponHands(equippedItem($slot`weapon`)) > 1 ||
-      (toSlot(statgainIncreasers.get($slot`off-hand`) ?? Item.none) ===
+      (toSlot(statgainIncreasers.get($slot`off-hand`) ?? $item.none) ===
         $slot`weapon` &&
-        weaponType(statgainIncreasers.get($slot`off-hand`) ?? Item.none) !==
+        weaponType(statgainIncreasers.get($slot`off-hand`) ?? $item.none) !==
           weaponType(equippedItem($slot`weapon`)));
     if (currentWeaponIncompatibleWithSimulatedOffHand) {
       //add maximizer simulated compatible weapon
       statgainIncreasers.set(
         $slot`weapon`,
-        simulatedEquipment.get($slot`weapon`) ?? Item.none,
+        simulatedEquipment.get($slot`weapon`) ?? $item.none,
       );
     }
   } else if (
-    (statgainIncreasers.get($slot`weapon`) ?? Item.none) !== Item.none &&
-    (statgainIncreasers.get($slot`off-hand`) ?? Item.none) === Item.none &&
+    (statgainIncreasers.get($slot`weapon`) ?? $item.none) !== $item.none &&
+    (statgainIncreasers.get($slot`off-hand`) ?? $item.none) === $item.none &&
     toSlot(equippedItem($slot`off-hand`)) === $slot`weapon`
   ) {
     const currentOffHandIncompatibleWithSimulatedWeapon: boolean =
-      weaponType(statgainIncreasers.get($slot`weapon`) ?? Item.none) !==
+      weaponType(statgainIncreasers.get($slot`weapon`) ?? $item.none) !==
       weaponType(equippedItem($slot`off-hand`));
     if (currentOffHandIncompatibleWithSimulatedWeapon) {
       //add maximizer simulated compatible off-hand
       statgainIncreasers.set(
         $slot`off-hand`,
-        simulatedEquipment.get($slot`off-hand`) ?? Item.none,
+        simulatedEquipment.get($slot`off-hand`) ?? $item.none,
       );
     }
   }
@@ -410,13 +413,13 @@ export function equipStatgainIncreasers(
   let speculateOneItem: string;
   let speculateAllItems: string = "";
   for (const sl of statgainIncreasers.keys()) {
-    speculateOneItem = `"equip ${sl.toString()} ${(statgainIncreasers.get(sl) ?? Item.none).toString()};" `;
+    speculateOneItem = `"equip ${sl.toString()} ${(statgainIncreasers.get(sl) ?? $item.none).toString()};" `;
     cliExecute(`speculate quiet; ${speculateOneItem}`);
     HPlost = toInt(myHp() - simValue($modifier`Buffed HP Maximum`));
     MPlost = toInt(myMp() - simValue($modifier`Buffed MP Maximum`));
     if (HPlost <= 0 && MPlost <= 0) {
       //causes no loss so it can be equipped right now
-      equip(statgainIncreasers.get(sl) ?? Item.none, sl);
+      equip(statgainIncreasers.get(sl) ?? $item.none, sl);
       continue;
     }
     speculateAllItems += speculateOneItem; //otherwise speculate with all items that have been left out
@@ -451,7 +454,7 @@ export function equipStatgainIncreasers(
     .max($modifier`Maximum MP`, targetedMP);
   for (const sl of statgainIncreasers.keys()) {
     hpMpMaximizer.excludeSlot(sl); //ignore slots where statgain increasers should be equipped
-    const statgainItem: Item = statgainIncreasers.get(sl) ?? Item.none;
+    const statgainItem: Item = statgainIncreasers.get(sl) ?? $item.none;
     if (toSlot(statgainItem) === $slot`weapon`) {
       //ignore slots that will be incompatible
       if (weaponHands(statgainItem) > 1) {
@@ -461,7 +464,7 @@ export function equipStatgainIncreasers(
     }
     if (
       sl === $slot`off-hand` &&
-      (statgainIncreasers.get($slot`weapon`) ?? Item.none) === Item.none
+      (statgainIncreasers.get($slot`weapon`) ?? $item.none) === $item.none
     ) {
       hpMpMaximizer.require("1 Handed"); //ignore incompatible weapons
     }
@@ -479,7 +482,7 @@ export function equipStatgainIncreasers(
   simulatedEquipment.clear();
   simulatedEquipment = hpMpMaximizer.simulate();
   for (const sl of simulatedEquipment.keys()) {
-    speculateOneItem = `"equip ${sl.toString()} ${(simulatedEquipment.get(sl) ?? Item.none).toString()};" `;
+    speculateOneItem = `"equip ${sl.toString()} ${(simulatedEquipment.get(sl) ?? $item.none).toString()};" `;
     cliExecute(`speculate quiet; ${speculateOneItem}`);
     if (simValue($modifier`Buffed HP Maximum`) < myHp()) {
       //skip on collateral loss
@@ -488,7 +491,7 @@ export function equipStatgainIncreasers(
     if (simValue($modifier`Buffed MP Maximum`) < myMp()) {
       continue;
     }
-    equip(simulatedEquipment.get(sl) ?? Item.none, sl);
+    equip(simulatedEquipment.get(sl) ?? $item.none, sl);
   }
   let doEquips: boolean = false;
   if (myMaxhp() >= targetedHP && myMaxmp() >= targetedMP) {
@@ -501,7 +504,7 @@ export function equipStatgainIncreasers(
 
   if (doEquips) {
     for (const sl of statgainIncreasers.keys()) {
-      equip(statgainIncreasers.get(sl) ?? Item.none, sl);
+      equip(statgainIncreasers.get(sl) ?? $item.none, sl);
     }
   }
 }
@@ -537,7 +540,7 @@ export function equipStatgainIncreasersFor(it: Item): void {
   //check what stats a consumable will give and equip increasers for it
   const increaseThisStat: Stat[] = [];
   const excludedStat: Stat = disregardInstantKarma()
-    ? Stat.none
+    ? $stat.none
     : myPrimestat(); //exclude primestat if level 13
   if (it.muscle !== "" && excludedStat !== $stat`Muscle`) {
     increaseThisStat.push($stat`Muscle`);
@@ -676,7 +679,7 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
     const encounters = auto_location_monsters(myLocation());
     const monsters = encounters.map((m) => m[0]);
     const nextEncounter = safeGet("auto_nextEncounter");
-    if (nextEncounter !== Monster.none) {
+    if (nextEncounter !== $monster.none) {
       monsters.push(nextEncounter);
     }
 
@@ -842,7 +845,7 @@ function finalizeMaximize(speculative: boolean = false): void {
 
   const nextMonster: Monster = safeGet("auto_nextEncounter");
   const nextMonsterIsFree: boolean =
-    (nextMonster !== Monster.none && isFreeMonster(nextMonster)) ||
+    (nextMonster !== $monster.none && isFreeMonster(nextMonster)) ||
     (get("breathitinCharges") > 0 && myLocation().environment === "outdoor");
 
   if (auto_haveKramcoSausageOMatic()) {
@@ -850,7 +853,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     const saveGoblinForDelay: boolean =
       auto_sausageFightsToday() < 8 &&
       !zone_delay(myLocation()).shouldDelay &&
-      solveDelayZone() !== Location.none;
+      solveDelayZone() !== $location.none;
     // don't interfere with backups unless they're equivalent or worse
     const dontSausageBackups: boolean =
       auto_backupTarget() &&
@@ -911,7 +914,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     } else if (
       !nextMonsterIsFree &&
       get("cursedMagnifyingGlassCount") < 13 &&
-      solveDelayZone() !== Location.none
+      solveDelayZone() !== $location.none
     ) {
       // add bonus to charge free fights. charge is added when completing nonfree fights only
       // also we can pre-charge it for the next day once we have used our 5 free fights.
@@ -1069,7 +1072,7 @@ function finalizeMaximize(speculative: boolean = false): void {
       // should also block equipping if support is added for Feel Nostalgic, Lecture on relativity, or fax for YR or other special combat actions
       maximizer.exclude($item`carnivorous potted plant`);
     } else if (
-      ((nextMonster === Monster.none || instakillable(nextMonster)) &&
+      ((nextMonster === $monster.none || instakillable(nextMonster)) &&
         !in_pokefam() &&
         getProperty("auto_MLSafetyLimit") === "") ||
       get("auto_MLSafetyLimit", 0) >= 25
@@ -1113,13 +1116,13 @@ function finalizeMaximize(speculative: boolean = false): void {
 
   if (
     !in_plumber() &&
-    maximizer.pending($slot`weapon`) === Item.none &&
+    maximizer.pending($slot`weapon`) === $item.none &&
     !maximizer.has($slot`weapon`) &&
     myPrimestat() !== $stat`Mysticality`
   ) {
     if (myClass() === $class`Seal Clubber` && in_glover()) {
       maximizer.weight("Club");
-    } else if (in_zootomist() && getZooBestPunch() !== Skill.none) {
+    } else if (in_zootomist() && getZooBestPunch() !== $skill.none) {
       // Nothing to do here. Should be a more general case of "classes that never attack with weapon"?
     } else {
       maximizer.weight("Effective");
@@ -1196,11 +1199,11 @@ export function equipMaximizedGear(canError: boolean = false): boolean {
   // below code is to help diagnose, debug and workaround the intermittent issue where the maximizer fails to equip anything in hand slots
   // if this is confirmed as fixed by mafia devs, remove the below code.
   if (
-    equippedItem($slot`weapon`) === Item.none &&
+    equippedItem($slot`weapon`) === $item.none &&
     myPath() !== $path`Way of the Surprising Fist`
   ) {
     // do we actually have a weapon we can equip?
-    let equippableWeapon: Item = Item.none;
+    let equippableWeapon: Item = $item.none;
     for (const it of Item.get(Object.keys(getInventory()))) {
       if (toSlot(it) === $slot`weapon` && canEquip(it)) {
         // found a weapon and we should be able to equip it.
@@ -1208,7 +1211,7 @@ export function equipMaximizedGear(canError: boolean = false): boolean {
         break;
       }
     }
-    if (equippableWeapon !== Item.none) {
+    if (equippableWeapon !== $item.none) {
       auto_log_error(
         "It looks like the maximizer didn't equip any weapons for you. Lets dump some debugging info to help the KolMafia devs look into this.",
       );
@@ -1221,7 +1224,7 @@ export function equipMaximizedGear(canError: boolean = false): boolean {
           "NO WEAPON WAS EQUIPPED BY THE MAXIMIZER. REPORT THIS IN DISCORD AND INCLUDE YOUR SESSION LOG! YOU CAN RE-RUN AUTOSCEND AND IT SHOULD RUN OK (possibly).",
         );
       }
-      if (equippedItem($slot`weapon`) === Item.none) {
+      if (equippedItem($slot`weapon`) === $item.none) {
         // workaround. equip a weapon & re-running maximizer appears to fix the issue.
         equip(equippableWeapon);
         maximizeResult = maximizeResult || maximizer.maximize();
@@ -1269,7 +1272,7 @@ export function equipOverrides(): void {
     );
     for (const [, item_str] of overrides_split) {
       const it: Item = toItem(item_str);
-      if (it === Item.none) {
+      if (it === $item.none) {
         auto_log_warning(
           `"${item_str}" does not properly convert to an item (found in auto_equipment_override_${slot_str})`,
           "red",
@@ -1294,7 +1297,7 @@ export function equipOverrides(): void {
 }
 
 export function equipmentAmount(equipment: Item): number {
-  if (equipment === Item.none) {
+  if (equipment === $item.none) {
     return 0;
   }
 
@@ -1388,9 +1391,9 @@ export function equipRollover(silent: boolean): void {
   if (auto_have_familiar($familiar`Left-Hand Man`)) {
     to_max += ",switch Left-Hand Man";
   }
-  if (myFamiliar() === Familiar.none) {
+  if (myFamiliar() === $familiar.none) {
     const anyFam: Familiar = findNonRockFamiliarInTerrarium();
-    if (anyFam !== Familiar.none) {
+    if (anyFam !== $familiar.none) {
       to_max += `,switch ${anyFam.toString()}`;
     }
   }
@@ -1406,13 +1409,13 @@ export function equipRollover(silent: boolean): void {
 }
 
 export function auto_forceEquipSword(speculative: boolean = false): boolean {
-  let swordToEquip: Item = Item.none;
+  let swordToEquip: Item = $item.none;
   // use the ebony epee if we have it
   if (possessEquipment($item`ebony epee`)) {
     swordToEquip = $item`ebony epee`;
   }
 
-  if (swordToEquip === Item.none) {
+  if (swordToEquip === $item.none) {
     // check for some swords that we might have acquired in run already. Yes machetes are actually swords.
     for (const it of $items`antique machete, black sword, broken sword, cardboard katana, cardboard wakizashi, Knob Goblin deluxe scimitar, Knob Goblin scimitar, lupine sword, muculent machete, serpentine sword, vorpal blade, white sword, sweet ninja sword, Drowsy Sword, ridiculously huge sword`) {
       if (possessEquipment(it) && auto_can_equip(it)) {
@@ -1423,7 +1426,7 @@ export function auto_forceEquipSword(speculative: boolean = false): boolean {
   }
 
   if (
-    swordToEquip === Item.none &&
+    swordToEquip === $item.none &&
     isArmoryAndLeggeryStoreAvailable() &&
     myMeat() > 49
   ) {
@@ -1435,13 +1438,13 @@ export function auto_forceEquipSword(speculative: boolean = false): boolean {
     }
   }
 
-  if (swordToEquip === Item.none) {
+  if (swordToEquip === $item.none) {
     //we do not want to force equip none and then report success.
     return false;
   }
 
   if (
-    safeGet("auto_equipment_override_weapon") !== Item.none &&
+    safeGet("auto_equipment_override_weapon") !== $item.none &&
     auto_can_equip(safeGet("auto_equipment_override_weapon"), $slot`weapon`)
   ) {
     if (itemType(safeGet("auto_equipment_override_weapon")) === "sword") {
@@ -1467,7 +1470,7 @@ export function is_watch(it: Item): boolean {
 }
 
 export function auto_getAllEquipabble(s: Slot): Map<Item, number> {
-  const ignore_slot: boolean = s === Slot.none;
+  const ignore_slot: boolean = s === $slot.none;
   s = s === $slot`acc2` || s === $slot`acc3` ? $slot`acc1` : s; // all accessories checked against slot 1
   const valid_and_equippable: Map<Item, number> = new Map();
   for (const [it, n] of Object.entries(getInventory()).map(
@@ -1551,7 +1554,7 @@ export function auto_loadEquipped(loadEquip: Map<number, Item>): boolean {
   }
   for (const [, it] of loadEquip) {
     //remove off-hand if we need to equip a 2 handed weapon from our saved load out
-    if (it === Item.none) {
+    if (it === $item.none) {
       continue;
     }
     if (

@@ -19,7 +19,6 @@ import {
   myPath,
   npcPrice,
   retrieveItem,
-  Skill,
   stringModifier,
   toInt,
   visitUrl,
@@ -188,25 +187,25 @@ function gnoob_buySkills(): void {
     auto_log_info(`Trying to acquire skill ${sk} and considering: `, "green");
     for (let i: number = 0; i < bound; i++) {
       auto_log_info(
-        `${possible.get(i) ?? Item.none}: ${gnoobAbsorbCost(possible.get(i) ?? Item.none)} meat`,
+        `${possible.get(i) ?? $item.none}: ${gnoobAbsorbCost(possible.get(i) ?? $item.none)} meat`,
         "blue",
       );
     }
     //get the skill
     for (let i: number = 0; i < bound && !haveSkill(sk); i++) {
-      if (itemAmount(possible.get(i) ?? Item.none) === 0) {
-        retrieveItem(1, possible.get(i) ?? Item.none);
-        if (itemAmount(possible.get(i) ?? Item.none) === 0) {
+      if (itemAmount(possible.get(i) ?? $item.none) === 0) {
+        retrieveItem(1, possible.get(i) ?? $item.none);
+        if (itemAmount(possible.get(i) ?? $item.none) === 0) {
           auto_log_info(
-            `Failed to acquire [${possible.get(i) ?? Item.none}] for gnoob_buySkills`,
+            `Failed to acquire [${possible.get(i) ?? $item.none}] for gnoob_buySkills`,
           );
           continue;
         }
       }
-      cliExecute(`absorb ${possible.get(i) ?? Item.none}`);
+      cliExecute(`absorb ${possible.get(i) ?? $item.none}`);
       if (starting_absorb_count === myAbsorbs()) {
         abort(
-          `Tried and failed to absorb [${possible.get(i) ?? Item.none}]. this should not have happened and needs to be fixed`,
+          `Tried and failed to absorb [${possible.get(i) ?? $item.none}]. this should not have happened and needs to be fixed`,
         );
       } else {
         available = gnoob_lister(); //recheck item availability now that one was consumed. necessary for tome handling and NPC stores.
@@ -237,7 +236,7 @@ function gnoob_lister(goal: string = ""): Map<Item, string> {
       //speakeasy drinks are instantly drank which does not work for gnoob
       canGet = false;
     }
-    if (canGet && it.noobSkill !== Skill.none && !haveSkill(it.noobSkill)) {
+    if (canGet && it.noobSkill !== $skill.none && !haveSkill(it.noobSkill)) {
       let result_1: string = stringModifier(
         it.noobSkill.toString(),
         "Modifiers",

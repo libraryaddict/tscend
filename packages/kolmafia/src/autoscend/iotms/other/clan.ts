@@ -21,7 +21,6 @@ import {
   myMeat,
   myPath,
   npcPrice,
-  Path,
   splitString,
   toInt,
   toItem,
@@ -31,7 +30,16 @@ import {
   visitUrl,
   wait,
 } from "kolmafia";
-import { $effect, $effects, $item, $items, $location, get, set } from "libram";
+import {
+  $effect,
+  $effects,
+  $item,
+  $items,
+  $location,
+  $path,
+  get,
+  set,
+} from "libram";
 
 import { autoAdvBypass$1, CombatMacro } from "../../auto_adventure";
 import { inebriety_left } from "../../auto_consume";
@@ -563,7 +571,7 @@ export function zataraClanmate(): boolean {
   while (attempts < 5) {
     visitUrl("clan_viplounge.php?preaction=lovetester", false);
     let choices: string = "&q1=pizza&q2=batman&q3=thick";
-    if (get("auto_optimizeConsultsInRun", false) && myPath() !== Path.none) {
+    if (get("auto_optimizeConsultsInRun", false) && myPath() !== $path.none) {
       choices = "&q1=cake&q2=wonderwoman&q3=thick";
     }
     const temp: string = visitUrl(

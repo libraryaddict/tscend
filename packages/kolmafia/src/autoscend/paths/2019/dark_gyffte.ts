@@ -39,6 +39,7 @@ import {
   $effects,
   $item,
   $items,
+  $monster,
   $path,
   $phylum,
   $skill,
@@ -110,8 +111,8 @@ export function bat_wantHowl(loc: Location): boolean {
   );
   for (const i of monsters.keys()) {
     if (
-      !banished.has(monsters.get(i) ?? Monster.none) &&
-      auto_wantToBanish(monsters.get(i) ?? Monster.none, loc)
+      !banished.has(monsters.get(i) ?? $monster.none) &&
+      auto_wantToBanish(monsters.get(i) ?? $monster.none, loc)
     ) {
       return true;
     }

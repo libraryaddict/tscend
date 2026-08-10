@@ -287,10 +287,10 @@ import { L10_holeInTheSkyUnlockTask, L10_topFloorTask } from "./level_10";
 
 class desert_buff_record {
   constructor(
-    public weapon: Item = Item.none,
-    public offhand: Item = Item.none,
-    public famEquip: Item = Item.none,
-    public fam: Familiar = Familiar.none,
+    public weapon: Item = $item.none,
+    public offhand: Item = $item.none,
+    public famEquip: Item = $item.none,
+    public fam: Familiar = $familiar.none,
     public progress: number = 0,
   ) {}
 }
@@ -308,10 +308,10 @@ function desertBuffs(): desert_buff_record {
   const odrValid: boolean = possessUnrestricted($item`ornate dowsing rod`);
   const knifeValid: boolean = possessUnrestricted($item`survival knife`);
 
-  dbr.fam = Familiar.none;
-  dbr.famEquip = Item.none;
-  dbr.offhand = Item.none;
-  dbr.weapon = Item.none;
+  dbr.fam = $familiar.none;
+  dbr.famEquip = $item.none;
+  dbr.offhand = $item.none;
+  dbr.weapon = $item.none;
   // No contention for weapon so always use survival knife if we have it
   if (knifeValid) {
     dbr.weapon = $item`survival knife`;
@@ -363,7 +363,7 @@ function desertBuffs(): desert_buff_record {
     }
   }
   // There are some other familiars we might choose if nothing affects progress
-  if (dbr.fam === Familiar.none) {
+  if (dbr.fam === $familiar.none) {
     if (
       get("_hipsterAdv") < 7 &&
       canChangeToFamiliar($familiar`Artistic Goth Kid`)
@@ -1875,20 +1875,20 @@ function L11_aridDesertDo(): boolean {
       }
     }
 
-    if (dbr.fam !== Familiar.none) {
+    if (dbr.fam !== $familiar.none) {
       if (in_quantumTerrarium()) {
         qt_FamiliarSwap(dbr.fam);
       } else {
         handleFamiliar$1(dbr.fam);
       }
     }
-    if (dbr.weapon !== Item.none) {
+    if (dbr.weapon !== $item.none) {
       autoEquipToSlot($slot`weapon`, dbr.weapon);
     }
-    if (dbr.offhand !== Item.none) {
+    if (dbr.offhand !== $item.none) {
       autoEquipToSlot($slot`off-hand`, dbr.offhand);
     }
-    if (dbr.famEquip !== Item.none) {
+    if (dbr.famEquip !== $item.none) {
       autoEquipToSlot($slot`familiar`, dbr.famEquip);
     }
     set("choiceAdventure805", 1);
@@ -4024,12 +4024,12 @@ function L11_shenCopperheadDo(): boolean {
     internalQuestStatus("questL11Shen") === 5
   ) {
     let it: Item = safeGet("shenQuestItem");
-    if (it === Item.none && isActuallyEd()) {
+    if (it === $item.none && isActuallyEd()) {
       // temp workaround until mafia bug is fixed - https://kolmafia.us/showthread.php?23742
       cliExecute("refresh quests");
       it = safeGet("shenQuestItem");
     }
-    let goal: Location = Location.none;
+    let goal: Location = $location.none;
     switch (it) {
       case $item`The Stankara Stone`:
         goal = $location`The Batrat and Ratbat Burrow`;
@@ -4050,7 +4050,7 @@ function L11_shenCopperheadDo(): boolean {
         goal = $location`The Unquiet Garves`;
         break;
     }
-    if (goal === Location.none) {
+    if (goal === $location.none) {
       abort("Could not parse Shen event");
     }
 
@@ -4123,7 +4123,7 @@ export const L11_shenCopperheadTask: QuestTask = registerQuestTask({
     return [
       {
         item: it,
-        needAmount: it !== Item.none && itemAmount(it) === 0 ? 1 : 0,
+        needAmount: it !== $item.none && itemAmount(it) === 0 ? 1 : 0,
       },
     ];
   },
@@ -4966,7 +4966,7 @@ function L11_defeatEdDo(): boolean {
   if (baseML > 150) {
     for (const s of $slots`acc1, acc2, acc3`) {
       if (equippedItem(s) === $item`Hand in Glove`) {
-        equip(s, Item.none);
+        equip(s, $item.none);
       }
     }
     uneffect($effect`Ur-Kel's Aria of Annoyance`);

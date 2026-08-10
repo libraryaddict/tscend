@@ -167,6 +167,7 @@ import {
   $monster,
   $monsters,
   $path,
+  $phylum,
   $servant,
   $skill,
   $skills,
@@ -461,7 +462,7 @@ export function almostRollover(): boolean {
 export function needToConsumeForEmergencyRollover(): boolean {
   let max_bonus_adv: number = round(numericModifier($modifier`Adventures`));
   for (const [, rec] of maximize("adventures", 0, 0, true, true).entries()) {
-    if (rec.item !== Item.none) {
+    if (rec.item !== $item.none) {
       max_bonus_adv += toInt(rec.score);
     }
   }
@@ -519,7 +520,7 @@ function debugMaximize(target: Maximizer, meat: number): void {
     situation = `Softcore${situation}`;
   }
   situation += ` ${todayToString()} ${timeToString()}`;
-  const acquired: Effect[] = [Effect.none];
+  const acquired: Effect[] = [$effect.none];
   let tableDo: string = `<table border=1><tr><td colspan=3>Accepted: Maximizing: ${req}</td><td colspan=3>${situation}</td></tr>`;
   let tableDont: string = `<table border=1><tr><td colspan=3>Rejected: Maximizing: ${req}</td><td colspan=3>${situation}</td></tr>`;
   tableDo +=
@@ -533,17 +534,17 @@ function debugMaximize(target: Maximizer, meat: number): void {
     entry.display = replaceString(entry.display, "<html>", "");
     entry.display = replaceString(entry.display, "</html>", "");
 
-    if (entry.skill !== Skill.none) {
+    if (entry.skill !== $skill.none) {
       output += `Skill(${entry.skill}) `;
     }
     if (entry.command !== "") {
       output += `Command(${entry.command}) `;
     }
     const display: string = `Display(${entry.display}) `;
-    if (entry.item !== Item.none) {
+    if (entry.item !== $item.none) {
       output += `Item(${entry.item}) `;
     }
-    if (entry.effect !== Effect.none) {
+    if (entry.effect !== $effect.none) {
       output += `Effect(${entry.effect}) `;
     }
     output += `Score(${entry.score})`;
@@ -561,7 +562,7 @@ function debugMaximize(target: Maximizer, meat: number): void {
     if (indexOf(entry.display, "<font color=gray>") !== -1) {
       doThis = false;
     }
-    if (entry.skill !== Skill.none) {
+    if (entry.skill !== $skill.none) {
       if (turnsPerCast(entry.skill) <= 0) {
         doThis = false;
       }
@@ -585,7 +586,7 @@ function debugMaximize(target: Maximizer, meat: number): void {
       }
     } else {
       //If not a skill, is it an item?
-      if (entry.item !== Item.none) {
+      if (entry.item !== $item.none) {
         if (indexOf(entry.display, "drink ") === 0) {
           doThis = false;
         }
@@ -645,10 +646,10 @@ function debugMaximize(target: Maximizer, meat: number): void {
       }
     }
 
-    if (acquired.includes(entry.effect) && entry.effect !== Effect.none) {
+    if (acquired.includes(entry.effect) && entry.effect !== $effect.none) {
       doThis = false;
     }
-    if (entry.effect !== Effect.none && haveEffect(entry.effect) > 0) {
+    if (entry.effect !== $effect.none && haveEffect(entry.effect) > 0) {
       doThis = false;
     }
 
@@ -726,7 +727,7 @@ export function handleTracker({
 }): void {
   const parts: string[] = [myDaycount().toString(), safeString(String(what))];
 
-  if (location && location !== Location.none) {
+  if (location && location !== $location.none) {
     parts.push(safeString(location.toString()));
   }
 
@@ -1009,7 +1010,7 @@ export function isYellowRayingNextCombat(): boolean {
   );
 }
 
-export function canYellowRay(target: Monster = Monster.none): boolean {
+export function canYellowRay(target: Monster = $monster.none): boolean {
   // Use this to determine if it is safe to enter a yellow ray combat.
   if (isYellowRayingNextCombat()) {
     return true;
@@ -1196,13 +1197,13 @@ export function auto_combat_appearance_rates(
   const res_excluding_noncombat: Map<Monster, number> = new Map();
 
   const noncombat_frequency: number =
-    res_including_noncombat.get(Monster.none) ?? 0.0;
+    res_including_noncombat.get($monster.none) ?? 0.0;
   if (noncombat_frequency === 0 || noncombat_frequency >= 100) {
     return res_including_noncombat;
   }
 
   for (const [mob, freq] of res_including_noncombat) {
-    if (mob !== Monster.none) {
+    if (mob !== $monster.none) {
       res_excluding_noncombat.set(
         mob,
         (freq / (100 - noncombat_frequency)) * 100,
@@ -1253,7 +1254,7 @@ export function auto_banishesUsedAt(loc: Location): string[] {
       const curUsed: string = banishList.get(i + 1) ?? "";
 
       for (let j: number = 0; j < atLoc.size; j++) {
-        if ((atLoc.get(j) ?? Monster.none) === curMon) {
+        if ((atLoc.get(j) ?? $monster.none) === curMon) {
           used.push(curUsed);
         }
       }
@@ -1751,10 +1752,10 @@ function adjustForYellowRay(combat_string: CombatMacroReturns): boolean {
 }
 
 export function adjustForYellowRayIfPossible(
-  target: Monster = Monster.none,
+  target: Monster = $monster.none,
 ): boolean {
   // No need to prepare
-  if (target !== Monster.none && isDropsCapped(target)) {
+  if (target !== $monster.none && isDropsCapped(target)) {
     return true;
   }
   if (!canYellowRay(target)) {
@@ -1807,7 +1808,7 @@ function adjustForReplace(combat_string: CombatMacroReturns): boolean {
 }
 
 export function adjustForReplaceIfPossible(
-  target: Monster = Monster.none,
+  target: Monster = $monster.none,
 ): boolean {
   if (!canReplace(target)) {
     return false;
@@ -1825,7 +1826,7 @@ export function canSniff(enemy: Monster, loc: Location): boolean {
   if (!auto_wantToSniff(enemy, loc)) {
     return false;
   }
-  return getSniffer(enemy, false) !== Skill.none;
+  return getSniffer(enemy, false) !== $skill.none;
 }
 
 export function adjustForSniffingIfPossible(target: Monster): boolean {
@@ -1836,7 +1837,7 @@ export function adjustForSniffingIfPossible(target: Monster): boolean {
   if (sniffer === $skill`Monkey Point`) {
     return autoEquip($item`cursed monkey's paw`);
   }
-  if (sniffer !== Skill.none) {
+  if (sniffer !== $skill.none) {
     return acquireMP(mpCost(sniffer));
   }
   return false;
@@ -2355,7 +2356,7 @@ export function preferredLibram(): Skill {
   if (auto_have_skill($skill`Summon Taffy`)) {
     return $skill`Summon Taffy`;
   }
-  return Skill.none;
+  return $skill.none;
 }
 
 export function lastAdventureSpecialNC(): boolean {
@@ -2450,7 +2451,7 @@ export function whatStatSmile(): Effect {
     case $class`Accordion Thief`:
       return $effect`Knowing Smile`;
   }
-  return Effect.none;
+  return $effect.none;
 }
 
 export function ovenHandle(): boolean {
@@ -3017,7 +3018,7 @@ export function auto_freeCrafts(): number {
 
 export function isFreeMonster(
   mon: Monster,
-  loc: Location = Location.none,
+  loc: Location = $location.none,
 ): boolean {
   //No free fights in Avant Guard. Well, there are, but they now have non-free bodyguards so anything that is free now costs a turn
   if (in_avantGuard()) {
@@ -3221,7 +3222,7 @@ function LX_summonMonsterDo(): boolean {
   if (
     internalQuestStatus("questL08Trapper") < 2 &&
     !auto_haveTrainSet() &&
-    oreGoal !== Item.none &&
+    oreGoal !== $item.none &&
     itemAmount(oreGoal) < 2 &&
     canYellowRay() &&
     canSummonMonster($monster`mountain man`)
@@ -4203,7 +4204,7 @@ export function candyEggDeviler(): boolean {
       .map((e) => [e._k, e._v]),
   );
   const candyL: Map<number, Item> = List$8(candyList);
-  return cliExecute(`devilcandyegg ${candyL.get(0) ?? Item.none}`);
+  return cliExecute(`devilcandyegg ${candyL.get(0) ?? $item.none}`);
 }
 
 function getCandy(): void {
@@ -4409,7 +4410,7 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
       item_modifier += numericModifier($modifier`Candy Drop`);
     }
     if (
-      toSlot(it) !== Slot.none &&
+      toSlot(it) !== $slot.none &&
       $slots`hat, shirt, weapon, off-hand, pants, acc1, acc2, acc3, back`.includes(
         toSlot(it),
       )
@@ -4905,7 +4906,7 @@ export function auto_check_conditions(conds: string): boolean {
           // You must be the given class
           // As a precaution, autoscend aborts if to_class returns $class[none]
           const req_class: Class = toClass(condition_data);
-          if (req_class === Class.none) {
+          if (req_class === $class.none) {
             abort(`"${condition_data}" does not properly convert to a class!`);
           }
           return req_class === myClass();
@@ -4915,7 +4916,7 @@ export function auto_check_conditions(conds: string): boolean {
           // Your mainstat must be the given stat
           // As a precaution, autoscend aborts if to_stat returns $stat[none]
           const req_mainstat: Stat = toStat(condition_data);
-          if (req_mainstat === Stat.none) {
+          if (req_mainstat === $stat.none) {
             abort(`"${condition_data}" does not properly convert to a stat!`);
           }
           return req_mainstat === myPrimestat();
@@ -4943,7 +4944,7 @@ export function auto_check_conditions(conds: string): boolean {
           // You must have the given skill
           // As a precaution, autoscend aborts if to_skill returns $skill[none]
           const req_skill: Skill = toSkill(condition_data);
-          if (req_skill === Skill.none) {
+          if (req_skill === $skill.none) {
             abort(`"${condition_data}" does not properly convert to a skill!`);
           }
           return auto_have_skill(req_skill);
@@ -4953,7 +4954,7 @@ export function auto_check_conditions(conds: string): boolean {
           // You must have at least one turn of the given effect
           // As a precaution, autoscend aborts if to_effect returns $effect[none]
           const req_effect: Effect = toEffect(condition_data);
-          if (req_effect === Effect.none) {
+          if (req_effect === $effect.none) {
             abort(
               `"${condition_data}" does not properly convert to an effect!`,
             );
@@ -4972,7 +4973,7 @@ export function auto_check_conditions(conds: string): boolean {
             abort(`"${condition_data}" is not a proper item condition format!`);
           }
           const req_item: Item = toItem(m5.group(1));
-          if (req_item === Item.none) {
+          if (req_item === $item.none) {
             abort(`"${m5.group(1)}" does not properly convert to an item!`);
           }
           return compare_numbers(
@@ -4994,7 +4995,7 @@ export function auto_check_conditions(conds: string): boolean {
           }
           const todrop_item: Item = toItem(m7.group(2));
           const base_drop_chance: number = toFloat(m7.group(1));
-          if (todrop_item === Item.none) {
+          if (todrop_item === $item.none) {
             abort(`"${m7.group(1)}" does not properly convert to an item!`);
           }
           return effectiveDropChance(todrop_item, base_drop_chance) >= 100;
@@ -5010,7 +5011,7 @@ export function auto_check_conditions(conds: string): boolean {
           // As a precaution, autoscend aborts if to_familiar returns $familiar[none]
           // Unless the text is literall "none" (case sensitive)
           const req_familiar: Familiar = toFamiliar(condition_data);
-          if (req_familiar === Familiar.none && condition_data !== "none") {
+          if (req_familiar === $familiar.none && condition_data !== "none") {
             abort(
               `"${condition_data}" does not properly convert to a familiar!`,
             );
@@ -5022,7 +5023,7 @@ export function auto_check_conditions(conds: string): boolean {
           // You must own this familiar, and it must be legal
           // As a precaution, autoscend aborts if to_familiar returns $familiar[none]
           const havefamiliar: Familiar = toFamiliar(condition_data);
-          if (havefamiliar === Familiar.none) {
+          if (havefamiliar === $familiar.none) {
             abort(
               `"${condition_data}" does not properly convert to a familiar!`,
             );
@@ -5034,7 +5035,7 @@ export function auto_check_conditions(conds: string): boolean {
           // You must be in this location (if you want to check for elsewhere, temporarily set_location)
           // As a precaution, autoscend aborts if to_location returns $location[none]
           const req_loc: Location = toLocation(condition_data);
-          if (req_loc === Location.none) {
+          if (req_loc === $location.none) {
             abort(
               `"${condition_data}" does not properly convert to a location!`,
             );
@@ -5054,7 +5055,7 @@ export function auto_check_conditions(conds: string): boolean {
             );
           }
           const loc: Location = toLocation(m6.group(1));
-          if (loc === Location.none) {
+          if (loc === $location.none) {
             abort(
               `"${condition_data}" does not properly convert to a location!`,
             );
@@ -5114,7 +5115,7 @@ export function auto_check_conditions(conds: string): boolean {
           // True if that monster has been sniffed by any olfaction-like
           // As a precaution, autoscend will abort if to_monster returns $monster[none]
           const check_sniffed: Monster = toMonster(condition_data);
-          if (check_sniffed === Monster.none) {
+          if (check_sniffed === $monster.none) {
             abort(
               `"${condition_data}" does not properly convert to a monster!`,
             );
@@ -5251,7 +5252,7 @@ function auto_getMonsters(category: string): Monster[] {
     for (const [name, _v1] of _v0) {
       const conds = _v1;
       const thisMonster: Monster = toMonster(name);
-      if (thisMonster === Monster.none) {
+      if (thisMonster === $monster.none) {
         auto_log_warning(
           `"${name}" does not convert to a monster properly!`,
           "red",
@@ -5280,7 +5281,7 @@ function auto_getPhylum(category: string): Phylum[] {
     for (const [name, _v1] of _v0) {
       const conds = _v1;
       const thisPhylum: Phylum = toPhylum(name);
-      if (thisPhylum === Phylum.none) {
+      if (thisPhylum === $phylum.none) {
         auto_log_warning(
           `"${name}" does not convert to a phylum properly!`,
           "red",
@@ -5376,15 +5377,15 @@ export function auto_badassBelt(): boolean {
       equippedAmount($item`skull of the Bonerdagon`) > 0)
   ) {
     if (haveEquipped($item`skull of the Bonerdagon`)) {
-      equip($slot`off-hand`, Item.none);
+      equip($slot`off-hand`, $item.none);
     }
     if (haveEquipped($item`batskin belt`)) {
       if (equippedItem($slot`acc1`) === $item`batskin belt`) {
-        equip($slot`acc1`, Item.none);
+        equip($slot`acc1`, $item.none);
       } else if (equippedItem($slot`acc2`) === $item`batskin belt`) {
-        equip($slot`acc2`, Item.none);
+        equip($slot`acc2`, $item.none);
       } else if (equippedItem($slot`acc3`) === $item`batskin belt`) {
-        equip($slot`acc3`, Item.none);
+        equip($slot`acc3`, $item.none);
       }
     }
     return create(1, $item`badass belt`);
@@ -5468,7 +5469,7 @@ export function currentFlavour(): Element {
     return $element`spooky`;
   }
 
-  return Element.none;
+  return $element.none;
 }
 
 export function setFlavour(ele: Element): boolean {
@@ -5493,7 +5494,7 @@ export function executeFlavour(): boolean {
   const ele: Element = toElement(getProperty("_auto_tunedElement"));
   if (ele !== currentFlavour()) {
     switch (ele) {
-      case Element.none:
+      case $element.none:
         return useSkill(1, $skill`Spirit of Nothing`);
       case $element`hot`:
         return useSkill(1, $skill`Spirit of Cayenne`);
@@ -5524,18 +5525,18 @@ function autoFlavour(place: Location): boolean {
     case $location`Dreadsylvanian Castle`:
     case $location`Dreadsylvanian Village`:
       // dread is complicated
-      return setFlavour(Element.none);
+      return setFlavour($element.none);
   }
 
   if (in_ocrs()) {
     // monsters can randomly be any element in OCRS
-    setFlavour(Element.none);
+    setFlavour($element.none);
     return true;
   }
 
   switch (place) {
     case $location`The Ancient Hobo Burial Ground`: // Everything here is immune to elemental damage
-      setFlavour(Element.none);
+      setFlavour($element.none);
       return true;
     case $location`The Ice Hotel`:
       if (
@@ -5581,12 +5582,12 @@ function autoFlavour(place: Location): boolean {
       case $element`sleaze`:
         return [$element`cold`, $element`spooky`];
       default:
-        return [Element.none];
+        return [$element.none];
     }
   }
 
   function handle_monster(mon: Monster, chance: number): void {
-    if (chance === 0 || mon === Monster.none) {
+    if (chance === 0 || mon === $monster.none) {
       return;
     }
 
@@ -5613,7 +5614,7 @@ function autoFlavour(place: Location): boolean {
     handle_monster($monster`sausage goblin`, 0.5);
   }
 
-  let flavour: Element = Element.none;
+  let flavour: Element = $element.none;
   let bestScore: number = -1;
   let bestSpellDamage: number = -99999;
 
@@ -5792,7 +5793,7 @@ export function auto_reserveAmount(it: Item): number {
         continue;
       }
       const curr: Item = toItem(m.group(2));
-      if (curr === Item.none) {
+      if (curr === $item.none) {
         auto_log_warning(
           `"${m.group(2)}" does not convert to an item properly!`,
           "red",
@@ -6166,7 +6167,7 @@ function _auto_forceNextNoncombat(
 }
 
 export function auto_canForceNextNoncombat(): boolean {
-  return _auto_forceNextNoncombat(Location.none, true);
+  return _auto_forceNextNoncombat($location.none, true);
 }
 
 export function auto_forceNextNoncombat(loc: Location): boolean {
@@ -6226,7 +6227,7 @@ export function _auto_forceNextCombat(
 }
 
 export function auto_canForceNextCombat(): boolean {
-  return _auto_forceNextCombat(Location.none, true);
+  return _auto_forceNextCombat($location.none, true);
 }
 
 export function auto_forceNextCombat$1(loc: Location): boolean {
@@ -6621,7 +6622,7 @@ export function auto_burnMP(mpToBurn: number): boolean {
   // burn command only extends existing buffs
   // set default skill to cast so MP is burned if we don't have any active buffs
   // only consider the default stating buffs for the 6 standard classes
-  let defaultSkill: Skill = Skill.none;
+  let defaultSkill: Skill = $skill.none;
   for (const sk of $skills`Sauce Contemplation, Seal Clubbing Frenzy, Patience of the Tortoise, Manicotti Meditation, Disco Aerobics, Moxie of the Mariachi`) {
     if (haveSkill(sk)) {
       defaultSkill = sk;
@@ -6629,7 +6630,7 @@ export function auto_burnMP(mpToBurn: number): boolean {
     }
   }
 
-  if (defaultSkill !== Skill.none) {
+  if (defaultSkill !== $skill.none) {
     // only set a default skill if we have one
     set("lastChanceBurn", `cast # ${defaultSkill}`);
   }
@@ -7029,7 +7030,7 @@ export function damageModifier(el: Element): Modifier {
     case $element`sleaze`:
       return $modifier`Sleaze Damage`;
   }
-  return Modifier.none;
+  return $modifier.none;
 }
 
 export function auto_remainingShantyTurns(): number {
@@ -7063,7 +7064,7 @@ export function pm_updateThrall(
   }
 
   const currentThrall: Thrall = myThrall();
-  let desiredThrall: Thrall = Thrall.none;
+  let desiredThrall: Thrall = $thrall.none;
 
   /*							Cost		L1				L5				L10				L11
 Vampieroghi			12			1-2 (Dmg, Heal)	Dispel Neg		+60 Max HP		Slight Spooky Resistance
@@ -7103,7 +7104,7 @@ Spice Ghost			250			10+1 Item		Spices			Stun Increase	+2 advs to the first food 
   } else {
     const vermNeededForRats = rat_locations().includes(place);
 
-    if (canUseVerm && currentThrall === Thrall.none) {
+    if (canUseVerm && currentThrall === $thrall.none) {
       desiredThrall = $thrall`Vermincelli`;
     }
 
@@ -7119,7 +7120,7 @@ Spice Ghost			250			10+1 Item		Spices			Stun Increase	+2 advs to the first food 
   }
 
   const shouldChangeThrall =
-    desiredThrall !== currentThrall && desiredThrall !== Thrall.none;
+    desiredThrall !== currentThrall && desiredThrall !== $thrall.none;
 
   if (!shouldChangeThrall) {
     return true;
@@ -7127,7 +7128,7 @@ Spice Ghost			250			10+1 Item		Spices			Stun Increase	+2 advs to the first food 
 
   const bindSkill: Skill = toSkill(`Bind ${desiredThrall}`);
 
-  if (bindSkill === Skill.none) {
+  if (bindSkill === $skill.none) {
     auto_log_warning(
       "Thrall handler error. Could not generate appropriate skill.",
       "red",
@@ -7331,12 +7332,12 @@ export function auto_zoneCopyableMonsters(loc: Location): [Monster, number][] {
 }
 
 const noneByProperty = new Map<string, unknown>([
-  ...locationProperties.map((key) => [key, Location.none] as const),
-  ...monsterProperties.map((key) => [key, Monster.none] as const),
-  ...familiarProperties.map((key) => [key, Familiar.none] as const),
-  ...itemProperties.map((key) => [key, Item.none] as const),
-  ...statProperties.map((key) => [key, Stat.none] as const),
-  ...phylumProperties.map((key) => [key, Phylum.none] as const),
+  ...locationProperties.map((key) => [key, $location.none] as const),
+  ...monsterProperties.map((key) => [key, $monster.none] as const),
+  ...familiarProperties.map((key) => [key, $familiar.none] as const),
+  ...itemProperties.map((key) => [key, $item.none] as const),
+  ...statProperties.map((key) => [key, $stat.none] as const),
+  ...phylumProperties.map((key) => [key, $phylum.none] as const),
 ]);
 
 export function safeGet(key: (typeof locationProperties)[number]): Location;

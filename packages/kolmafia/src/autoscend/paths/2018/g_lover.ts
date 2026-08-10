@@ -57,7 +57,7 @@ export function glover_usable(it: string): boolean {
   }
   const checkItem: Item = toItem(it);
   if (
-    checkItem !== Item.none &&
+    checkItem !== $item.none &&
     Item.get([
       "SpinMaster&trade; lathe", // it works since there's no "use" link
       "&quot;I Voted!&quot; sticker", // free fights still work for I voted! sticker

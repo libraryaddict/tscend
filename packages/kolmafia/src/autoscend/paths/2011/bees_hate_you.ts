@@ -8,7 +8,6 @@ import {
   lastMonster,
   myPath,
   putCloset,
-  Slot,
   toSlot,
   visitUrl,
 } from "kolmafia";
@@ -19,6 +18,7 @@ import {
   $location,
   $monster,
   $path,
+  $slot,
   get,
   set,
 } from "libram";
@@ -86,7 +86,7 @@ export function bhy_is_item_valid(it: Item): boolean {
       "bhy_is_item_valid(item it) should never be called outside of bees hate you path.",
     );
   }
-  if (toSlot(it) !== Slot.none) {
+  if (toSlot(it) !== $slot.none) {
     return isUnrestricted(it); //this is equipment. equipment can be worn. you take backlash damage from it
   }
   if (

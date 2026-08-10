@@ -117,7 +117,7 @@ export function isAboutToPowerlevel(): boolean {
 export function highestScalingZone(): Location {
   if (myAdventures() > 2 && is_professor()) {
     //only give a scaling location as professor if at bedtime
-    return Location.none;
+    return $location.none;
   }
   //all scaling zones have monster level = my_buffedstat($stat[moxie]) + monster_level_adjustment() + enemy_value. up to a cap
   //returns the zone with the highest enemy_value which we can adventure in
@@ -145,7 +145,7 @@ export function highestScalingZone(): Location {
     //+5 enemy value
     return $location`Sloppy Seconds Diner`;
   }
-  return Location.none;
+  return $location.none;
 }
 
 function LX_attemptPowerLevelDo(): boolean {
@@ -232,7 +232,7 @@ function LX_attemptPowerLevelDo(): boolean {
   if (scalezone === $location`The Neverending Party`) {
     return neverendingPartyCombat();
   }
-  if (scalezone !== Location.none) {
+  if (scalezone !== $location.none) {
     return autoAdv(scalezone);
   }
   if (timeSpinnerAdventure()) {
@@ -320,7 +320,7 @@ export const LX_attemptPowerLevelTask: QuestTask = registerQuestTask({
       highestScalingZone(),
       $location`The Haunted Bedroom`,
       $location`The Haunted Gallery`,
-    ].filter((loc) => loc !== Location.none),
+    ].filter((loc) => loc !== $location.none),
 });
 
 export function LX_attemptPowerLevel(): boolean {

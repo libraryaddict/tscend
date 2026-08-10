@@ -222,7 +222,7 @@ export function auto_edCombatHandler(
   ) {
     //shoot ghost 3 times provoking retaliation, then trap ghost skill unlocks which instawins combat.
     const stunner: Skill = getStunner(enemy);
-    if (stunner !== Skill.none) {
+    if (stunner !== $skill.none) {
       combat_status_add("stunned");
       return auto_useSkill(stunner);
     }

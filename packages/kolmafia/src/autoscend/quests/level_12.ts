@@ -1229,7 +1229,7 @@ function gremlinsFamiliar(): void {
   const hundred_fam: Familiar = safeGet("auto_100familiar");
   let strip_familiar: boolean = true;
   if (
-    hundred_fam !== Familiar.none &&
+    hundred_fam !== $familiar.none &&
     (isAttackFamiliar(hundred_fam) || hundred_fam.block)
   ) {
     //in 100% familiar run with an attack or block familiar
@@ -1261,7 +1261,7 @@ function gremlinsFamiliar(): void {
       //disable maximizer switching of familiar equipment
       maximizer.excludeSlot($slot`familiar`);
     }
-  } else if (lookupFamiliarDatafile("gremlins") === Familiar.none) {
+  } else if (lookupFamiliarDatafile("gremlins") === $familiar.none) {
     //none of the desired familiars available
     //don't know what familiar will be chosen or what its own equipment does
     strip_familiar = true;
@@ -1279,7 +1279,7 @@ function gremlinsFamiliar(): void {
     }
   }
   if (strip_familiar) {
-    equip($slot`familiar`, Item.none); //strip familiar equipment to avoid passive dmg
+    equip($slot`familiar`, $item.none); //strip familiar equipment to avoid passive dmg
   }
 }
 
@@ -1920,7 +1920,7 @@ function L12_lastDitchFlyerDo(): boolean {
   if (scalezone === $location`The Neverending Party`) {
     return neverendingPartyCombat();
   }
-  if (scalezone !== Location.none) {
+  if (scalezone !== $location.none) {
     return autoAdv(scalezone);
   }
   return false;
@@ -2131,7 +2131,7 @@ function L12_themtharHillsDo(): boolean {
   }
 
   const famChoice: Familiar = safeGet("auto_familiarChoice");
-  if (canChangeFamiliar() && famChoice !== Familiar.none) {
+  if (canChangeFamiliar() && famChoice !== $familiar.none) {
     // if we're in a 100% run, this property returns "none" which will unequip our familiar and ruin a 100% run.
     useFamiliar(famChoice);
   }

@@ -178,7 +178,7 @@ export function canPull(it: Item, historical: boolean = false): boolean {
       return false;
     }
   }
-  if (it === Item.none) {
+  if (it === $item.none) {
     return false;
   }
   if (!isUnrestricted(it)) {
@@ -283,7 +283,7 @@ function pullXWhenHaveYCasual(
   if (!canInteract()) {
     return false;
   }
-  if (it === Item.none) {
+  if (it === $item.none) {
     return false;
   }
   if (!auto_is_valid(it)) {

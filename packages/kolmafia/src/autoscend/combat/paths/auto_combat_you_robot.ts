@@ -1,13 +1,20 @@
 import {
   abort,
   equippedItem,
-  Item,
   Monster,
   monsterElement,
   monsterHp,
   myBuffedstat,
 } from "kolmafia";
-import { $element, $monster, $monsters, $skill, $slot, $stat } from "libram";
+import {
+  $element,
+  $item,
+  $monster,
+  $monsters,
+  $skill,
+  $slot,
+  $stat,
+} from "libram";
 
 import { CombatMacroReturns } from "../../auto_adventure";
 import { in_robot } from "../../paths/2021/you_robot";
@@ -82,7 +89,7 @@ export function auto_combat_robot_stage5(
     }
   }
 
-  if (equippedItem($slot`weapon`) === Item.none) {
+  if (equippedItem($slot`weapon`) === $item.none) {
     abort("Robot does not know how to fight this enemy. Beep Boop.");
   }
   return undefined;

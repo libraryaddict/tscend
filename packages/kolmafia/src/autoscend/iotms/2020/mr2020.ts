@@ -56,6 +56,7 @@ import {
   $items,
   $location,
   $modifier,
+  $monster,
   $skill,
   $slot,
   $stat,
@@ -187,7 +188,7 @@ function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean {
     return false;
   }
 
-  let old: Item = Item.none;
+  let old: Item = $item.none;
   if (!haveEquipped($item`Powerful Glove`)) {
     old = equippedItem($slot`acc3`);
     equip($slot`acc3`, $item`Powerful Glove`);
@@ -195,7 +196,7 @@ function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean {
 
   const ret: boolean = useSkill(1, sk);
 
-  if (old !== Item.none) {
+  if (old !== $item.none) {
     equip($slot`acc3`, old);
   }
 
@@ -416,7 +417,7 @@ function auto_latheHardwood(toLathe: Item): boolean {
 }
 
 export function auto_latheAppropriateWeapon(): boolean {
-  let toLathe: Item = Item.none;
+  let toLathe: Item = $item.none;
 
   switch (myPrimestat()) {
     case $stat`Muscle`:
@@ -520,13 +521,13 @@ function auto_cargoShortsCanOpenPocket$6(s: string): boolean {
   const m: AshMatcher = new AshMatcher("^d+$", s);
   if (m.find()) {
     return auto_cargoShortsCanOpenPocket$1(toInt(s));
-  } else if (toItem(s) !== Item.none) {
+  } else if (toItem(s) !== $item.none) {
     return auto_cargoShortsCanOpenPocket$2(toItem(s));
-  } else if (toMonster(s) !== Monster.none) {
+  } else if (toMonster(s) !== $monster.none) {
     return auto_cargoShortsCanOpenPocket$3(toMonster(s));
-  } else if (toEffect(s) !== Effect.none) {
+  } else if (toEffect(s) !== $effect.none) {
     return auto_cargoShortsCanOpenPocket$4(toEffect(s));
-  } else if (toStat(s) !== Stat.none) {
+  } else if (toStat(s) !== $stat.none) {
     return auto_cargoShortsCanOpenPocket$5(toStat(s));
   }
 
@@ -606,13 +607,13 @@ function auto_cargoShortsOpenPocket$5(s: string): boolean {
   const m: AshMatcher = new AshMatcher("^d+$", s);
   if (m.find()) {
     return auto_cargoShortsOpenPocket(toInt(s));
-  } else if (toItem(s) !== Item.none) {
+  } else if (toItem(s) !== $item.none) {
     return auto_cargoShortsOpenPocket$1(toItem(s));
-  } else if (toMonster(s) !== Monster.none) {
+  } else if (toMonster(s) !== $monster.none) {
     return auto_cargoShortsOpenPocket$2(toMonster(s), false);
-  } else if (toEffect(s) !== Effect.none) {
+  } else if (toEffect(s) !== $effect.none) {
     return auto_cargoShortsOpenPocket$3(toEffect(s));
-  } else if (toStat(s) !== Stat.none) {
+  } else if (toStat(s) !== $stat.none) {
     return auto_cargoShortsOpenPocket$4(toStat(s));
   }
 
@@ -662,14 +663,14 @@ function auto_monsterToMap(loc: Location, page: string): Monster {
     //record the possible monsters and identify the best one to target
     monOpts.set(i, toMonster(toInt(mons.group(1))));
     if (
-      zoneRank(monOpts.get(i) ?? Monster.none, loc) <=
-      zoneRank(monOpts.get(bestmon) ?? Monster.none, loc)
+      zoneRank(monOpts.get(i) ?? $monster.none, loc) <=
+      zoneRank(monOpts.get(bestmon) ?? $monster.none, loc)
     ) {
       bestmon = i;
     }
     i += 1;
   }
-  return monOpts.get(bestmon) ?? Monster.none;
+  return monOpts.get(bestmon) ?? $monster.none;
 }
 
 export function cartographyChoiceHandler(choice: number, page: string): void {
@@ -743,7 +744,7 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
   } else if (choice === 1435) {
     // Leading Yourself Right to Them (Map the Monsters)
     const enemy: Monster = auto_monsterToMap(myLocation(), page);
-    if (enemy !== Monster.none) {
+    if (enemy !== $monster.none) {
       handleTracker({
         what: $skill`Map the Monsters`,
         detail: enemy.toString(),

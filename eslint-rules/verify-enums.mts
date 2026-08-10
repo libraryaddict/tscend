@@ -1,18 +1,25 @@
 import { ESLintUtils } from "@typescript-eslint/utils";
 import type { Position, TemplateElement } from "estree";
 
-import { modifiers } from "./modifiers.mts";
+import { elements, modifiers, slots, stats } from "./enums.mts";
 
 const createRule = ESLintUtils.RuleCreator(
   (name) =>
     `https://github.com/libraryaddict/autoscend/blob/main/eslint-rules/${name}.mts`,
 );
 
+// $singular`...` isn't split on commas, $plural`...` is.
+const tags: { singular: string; plural: string; data: readonly string[] }[] = [
+  { singular: "modifier", plural: "modifiers", data: modifiers },
+  { singular: "stat", plural: "stats", data: stats },
+  { singular: "element", plural: "elements", data: elements },
+  { singular: "slot", plural: "slots", data: slots },
+];
+
 type Options = [
   {
     ignoreCapitalization?: boolean;
     ignoreUnrecognized?: boolean;
-    data?: string[];
   },
 ];
 
@@ -20,14 +27,22 @@ type MessageIds =
   "unrecognizedValue" | "shouldBeCapitalized" | "invalidSeparator";
 
 export const rule = createRule<Options, MessageIds>({
-  name: "verify-modifiers",
+  name: "verify-enums",
   create(context) {
     const sourceCode = context.sourceCode;
     const options = context.options[0];
 
-    const data: readonly string[] = options?.data ?? modifiers;
-    const caseMap = new Map(
-      data.map((name) => [name.toLowerCase(), name] as const),
+    const tagByName = new Map(
+      tags.flatMap(({ singular, plural, data }) => {
+        // Every libram $-tag has a "none" singleton, even though it isn't listed in the data.
+        const caseMap = new Map(
+          ["none", ...data].map((name) => [name.toLowerCase(), name] as const),
+        );
+        return [
+          [singular, { isPlural: false, caseMap }] as const,
+          [plural, { isPlural: true, caseMap }] as const,
+        ];
+      }),
     );
 
     function positionAdd(position: Position, offset: number) {
@@ -82,8 +97,10 @@ export const rule = createRule<Options, MessageIds>({
         // For now just don't check constants if they contain other template literal expressions
         if (node.quasi.expressions.length > 0) return;
         const tagText = sourceCode.getText(node.tag);
-        if (tagText !== "$modifier" && tagText !== "$modifiers") return;
-        const isPlural = tagText === "$modifiers";
+        if (!tagText.startsWith("$")) return;
+        const tagInfo = tagByName.get(tagText.slice(1));
+        if (!tagInfo) return;
+        const { isPlural, caseMap } = tagInfo;
 
         for (const quasi of node.quasi.quasis) {
           const segments = isPlural
@@ -150,12 +167,12 @@ export const rule = createRule<Options, MessageIds>({
   meta: {
     docs: {
       description:
-        "Verify $modifier`...` / $modifiers`...` values against the known modifier list.",
+        "Verify $modifier`...`, $stat`...`, $element`...`, $slot`...` (and their plural forms) against known value lists.",
     },
     messages: {
-      unrecognizedValue: `Unrecognized modifier "{{actual}}".`,
-      shouldBeCapitalized: `Modifier "{{actual}}" should be capitalized "{{expected}}".`,
-      invalidSeparator: `Modifier constants should be separated by a comma and space.`,
+      unrecognizedValue: `Unrecognized value "{{actual}}".`,
+      shouldBeCapitalized: `Value "{{actual}}" should be capitalized "{{expected}}".`,
+      invalidSeparator: `Values should be separated by a comma and space.`,
     },
     fixable: "code",
     type: "suggestion",
@@ -170,10 +187,6 @@ export const rule = createRule<Options, MessageIds>({
           ignoreUnrecognized: {
             type: "boolean",
             default: false,
-          },
-          data: {
-            type: "array",
-            items: { type: "string" },
           },
         },
         additionalProperties: false,

@@ -280,7 +280,7 @@ export function auto_godLobsterFightsRemaining(): number {
 }
 
 export function godLobsterCombat(
-  it: Item = Item.none,
+  it: Item = $item.none,
   goal: number = 3,
   option?: CombatMacro,
 ): boolean {
@@ -295,7 +295,7 @@ export function godLobsterCombat(
   if (get("_godLobsterFights") >= 3) {
     return false;
   }
-  if (it !== Item.none && availableAmount(it) === 0) {
+  if (it !== $item.none && availableAmount(it) === 0) {
     return false;
   }
   if (goal === 1 && it === $item`God Lobster's Crown`) {
@@ -307,7 +307,7 @@ export function godLobsterCombat(
     useFamiliar($familiar`God Lobster`);
   }
 
-  if (equippedItem($slot`familiar`) !== it && it !== Item.none) {
+  if (equippedItem($slot`familiar`) !== it && it !== $item.none) {
     equip($slot`familiar`, it);
   }
 
@@ -692,7 +692,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
 
   const oreGoal: Item = safeGet("trapperOre");
   if (
-    oreGoal !== Item.none &&
+    oreGoal !== $item.none &&
     itemAmount(oreGoal) < 3 &&
     internalQuestStatus("questL08Trapper") < 2 &&
     inHardcore()
@@ -775,7 +775,7 @@ function catBurglarHeistDo(): boolean {
   const wannaHeists: Map<Monster, Item> = catBurglarHeistDesires();
 
   if (wannaHeists.has(lastMonster())) {
-    catBurglarHeist$1(wannaHeists.get(lastMonster()) ?? Item.none);
+    catBurglarHeist$1(wannaHeists.get(lastMonster()) ?? $item.none);
   }
   // don't return true from this, isn't adventuring.
   return false;
@@ -1003,7 +1003,7 @@ export function neverendingPartyChoiceHandler(choice: number): void {
     auto_runChoice(1); // Take your leave (get quest reward)
   } else if (choice === 1324) {
     // It Hasn't Ended, It's Just Paused
-    let buff: Effect = Effect.none;
+    let buff: Effect = $effect.none;
     switch (myPrimestat()) {
       case $stat`Muscle`:
         buff = $effect`Spiced Up`;
@@ -1018,7 +1018,7 @@ export function neverendingPartyChoiceHandler(choice: number): void {
     if (in_glover()) {
       // Can't use any of the buffs, may as well fight
       auto_runChoice(5); // Pick a fight (fight a random monster from the zone)
-    } else if (buff !== Effect.none && haveEffect(buff) < 9) {
+    } else if (buff !== $effect.none && haveEffect(buff) < 9) {
       // Get the +mainstat% buff if we don't have enough turns of it to get us to the next scheduled NC.
       switch (myPrimestat()) {
         case $stat`Muscle`:
@@ -1321,14 +1321,14 @@ function auto_latteRefill(
   tryAddWant("item");
   tryAddWant("meat");
 
-  if (myFamiliar() !== Familiar.none) {
+  if (myFamiliar() !== $familiar.none) {
     tryAddWant("famweight");
   }
 
   tryAddWant("exp");
   tryAddWant("grass");
 
-  if (myFamiliar() !== Familiar.none) {
+  if (myFamiliar() !== $familiar.none) {
     tryAddWant("famxp");
   }
   // just to make sure we have at least 3 ingredients
@@ -1421,7 +1421,7 @@ export function auto_voteSetup(
 
 export function auto_voteMonster(
   freeMon: boolean = false,
-  loc: Location = Location.none,
+  loc: Location = $location.none,
 ): boolean {
   if (!auto_haveVotingBooth()) {
     return false;
@@ -1449,7 +1449,7 @@ export function auto_voteMonster(
     return false;
   }
 
-  if (loc === Location.none) {
+  if (loc === $location.none) {
     return true;
   }
 

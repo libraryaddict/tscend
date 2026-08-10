@@ -2,11 +2,11 @@
 // Do not edit by hand - run `yarn generate:properties` to update.
 import {
   familiarProperties as libramFamiliarProperties,
-  locationProperties as libramLocationProperties,
   itemProperties as libramItemProperties,
+  locationProperties as libramLocationProperties,
   monsterProperties as libramMonsterProperties,
-  statProperties as libramStatProperties,
   phylumProperties as libramPhylumProperties,
+  statProperties as libramStatProperties,
 } from "libram";
 
 export const familiarProperties = [
@@ -15,17 +15,17 @@ export const familiarProperties = [
   "auto_familiarChoice",
 ] as const;
 
+export const itemProperties = [
+  ...libramItemProperties,
+  "auto_boughtCommerceGhostItem",
+  "auto_equipment_override_weapon",
+] as const;
+
 export const locationProperties = [
   ...libramLocationProperties,
   "_yearbookCameraTargetLocation",
   "auto_forceNonCombatLocation",
   "auto_priorLocation",
-] as const;
-
-export const itemProperties = [
-  ...libramItemProperties,
-  "auto_boughtCommerceGhostItem",
-  "auto_equipment_override_weapon",
 ] as const;
 
 export const monsterProperties = [
@@ -37,9 +37,9 @@ export const monsterProperties = [
   "auto_purple_candled",
 ] as const;
 
-export const statProperties = [...libramStatProperties] as const;
-
 export const phylumProperties = [
   ...libramPhylumProperties,
   "_auto_screechDelay",
 ] as const;
+
+export const statProperties = [...libramStatProperties] as const;

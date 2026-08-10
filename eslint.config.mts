@@ -8,7 +8,8 @@ import libram, { verifyConstantsSinceRevision } from "eslint-plugin-libram";
 import tseslint from "typescript-eslint";
 import unusedImports from "eslint-plugin-unused-imports";
 import importSort from "eslint-plugin-simple-import-sort";
-import { rule as verifyModifiers } from "./eslint-rules/verify-modifiers.mts";
+import { rule as verifyEnums } from "./eslint-rules/verify-enums.mts";
+import { rule as verifyNone } from "./eslint-rules/verify-none.mts";
 import { rule as verifyProperties } from "./eslint-rules/verify-properties.mts";
 
 // KoLmafia revision is taken from package.json, update it there.
@@ -67,7 +68,8 @@ export default defineConfig(
       // @typescript-eslint/utils' rule type predates ESLint 10's RuleDefinition shape, hence the cast.
       local: {
         rules: {
-          "verify-modifiers": verifyModifiers as unknown as Rule.RuleModule,
+          "verify-enums": verifyEnums as unknown as Rule.RuleModule,
+          "verify-none": verifyNone as unknown as Rule.RuleModule,
           "verify-properties": verifyProperties as unknown as Rule.RuleModule,
         },
       },
@@ -103,7 +105,8 @@ export default defineConfig(
       "simple-import-sort/exports": "error",
       "sort-imports": "off",
       "libram/verify-constants": "error",
-      "local/verify-modifiers": "error",
+      "local/verify-enums": "error",
+      "local/verify-none": "error",
       "local/verify-properties": "error",
       "unused-imports/no-unused-imports": "error",
       "no-fallthrough": [

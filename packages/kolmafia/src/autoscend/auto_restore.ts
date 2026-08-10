@@ -7,7 +7,6 @@ import {
   ceil,
   cliExecute,
   closetAmount,
-  Coinmaster,
   creatableAmount,
   dispensaryAvailable,
   Effect,
@@ -63,6 +62,7 @@ import {
 } from "kolmafia";
 import {
   $class,
+  $coinmaster,
   $effect,
   $effects,
   $familiar,
@@ -292,7 +292,7 @@ function __init_restoration_metadata(): void {
     } else if (effects_list !== "none" && effects_list !== "") {
       for (const [, s] of splitString(effects_list, ",").entries()) {
         const e: Effect = toEffect(s);
-        if (e !== Effect.none) {
+        if (e !== $effect.none) {
           parsed_effects.push(e);
         } else {
           auto_log_warning(
@@ -751,7 +751,7 @@ function __calculate_objective_values(
       return 0.0;
     }
     const i: Item = toItem(metadata.name);
-    if (i.seller !== Coinmaster.none) {
+    if (i.seller !== $coinmaster.none) {
       return sellPrice(i.seller, i);
     }
     return 0.0;
@@ -943,7 +943,7 @@ function __calculate_objective_values(
     }
     const i: Item = toItem(metadata.name);
 
-    if (i.seller !== Coinmaster.none) {
+    if (i.seller !== $coinmaster.none) {
       return -1.0;
     }
 
@@ -1055,7 +1055,7 @@ function __calculate_objective_values(
       const mall_buyable: boolean = canInteract() && auto_mall_price(i) > 0;
       const npc_meat_buyable: boolean = npcPrice(i) > 0;
       const coinmaster_buyable: boolean =
-        i.seller !== Coinmaster.none &&
+        i.seller !== $coinmaster.none &&
         isAccessible(i.seller) &&
         get("autoSatisfyWithCoinmasters");
 
@@ -1696,7 +1696,7 @@ function __restore(
       auto_have_skill($skill`Blood Bubble`) &&
       myMaxhp() > hpCost($skill`Blood Bubble`);
 
-    let blood_skill: Skill = Skill.none;
+    let blood_skill: Skill = $skill.none;
     if (bloodBondAvailable && bloodBubbleAvailable) {
       if (haveEffect($effect`Blood Bond`) > haveEffect($effect`Blood Bubble`)) {
         blood_skill = $skill`Blood Bubble`;
@@ -2264,7 +2264,7 @@ export function doRest(useCampground?: boolean): number {
     chateaumantegna_nightstandSet();
 
     const restBonus: Item[] = chateaumantegna_decorations();
-    let bonus: Stat = Stat.none;
+    let bonus: Stat = $stat.none;
     if (restBonus.includes($item`electric muscle stimulator`)) {
       bonus = $stat`Muscle`;
     } else if (restBonus.includes($item`foreign language tapes`)) {
@@ -2274,8 +2274,8 @@ export function doRest(useCampground?: boolean): number {
     }
 
     let closet: boolean = false;
-    let grab: Item = Item.none;
-    let replace_1: Item = Item.none;
+    let grab: Item = $item.none;
+    let replace_1: Item = $item.none;
     switch (bonus) {
       case $stat`Muscle`:
         replace_1 = equippedItem($slot`off-hand`);
@@ -2292,7 +2292,7 @@ export function doRest(useCampground?: boolean): number {
     }
 
     if (
-      grab !== Item.none &&
+      grab !== $item.none &&
       possessEquipment(grab) &&
       replace_1 !== grab &&
       canEquip(grab)
@@ -2314,7 +2314,7 @@ export function doRest(useCampground?: boolean): number {
 
     cliExecute("rest chateau");
 
-    if (replace_1 !== grab && replace_1 !== Item.none) {
+    if (replace_1 !== grab && replace_1 !== $item.none) {
       equip(replace_1);
     }
     cliExecute("outfit Backup");

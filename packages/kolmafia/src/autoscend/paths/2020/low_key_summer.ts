@@ -250,19 +250,19 @@ function lowkey_levelNeededToUnlockZone(loc: Location): number {
 // order is subjective
 function lowkey_nextKeyLocation(checkAvailable: boolean): Location {
   if (!in_lowkeysummer()) {
-    return Location.none;
+    return $location.none;
   }
 
   for (const key of lowKeys.keys()) {
-    const loc: Location = lowKeys.get(key) ?? Location.none;
+    const loc: Location = lowKeys.get(key) ?? $location.none;
     if (lowkey_needKey(key)) {
       if (!checkAvailable || zone_isAvailable(loc)) {
-        return lowKeys.get(key) ?? Location.none;
+        return lowKeys.get(key) ?? $location.none;
       }
     }
   }
 
-  return Location.none;
+  return $location.none;
 }
 
 function lowkey_nextAvailableKeyLocation(): Location {
@@ -271,11 +271,11 @@ function lowkey_nextAvailableKeyLocation(): Location {
 
 export function lowkey_nextAvailableKeyDelayLocation(): Location {
   if (!in_lowkeysummer()) {
-    return Location.none;
+    return $location.none;
   }
 
   for (const key of lowKeys.keys()) {
-    const loc: Location = lowKeys.get(key) ?? Location.none;
+    const loc: Location = lowKeys.get(key) ?? $location.none;
     if (
       lowkey_needKey(key) &&
       zone_isAvailable(loc) &&
@@ -286,7 +286,7 @@ export function lowkey_nextAvailableKeyDelayLocation(): Location {
     }
   }
 
-  return Location.none;
+  return $location.none;
 }
 
 function lowkey_keyAdv(key: Item): boolean {
@@ -294,7 +294,7 @@ function lowkey_keyAdv(key: Item): boolean {
     return false;
   }
 
-  const loc: Location = lowKeys.get(key) ?? Location.none;
+  const loc: Location = lowKeys.get(key) ?? $location.none;
   if (!zone_isAvailable(loc)) {
     return false;
   }
@@ -485,17 +485,17 @@ export function L13_sorceressDoorLowKey(): boolean {
 
   const loc: Location = lowkey_nextAvailableKeyLocation();
 
-  if (loc === Location.none) {
+  if (loc === $location.none) {
     const remaining: number = lowkey_keysRemaining();
     if (remaining > 0) {
       auto_log_warning("Unable to adventure for remaining low keys");
       let needHigherLevelForKey: boolean = true;
       for (const key of lowKeys.keys()) {
         if (lowkey_needKey(key)) {
-          auto_log_warning(`${lowKeys.get(key) ?? Location.none}: ${key}`);
+          auto_log_warning(`${lowKeys.get(key) ?? $location.none}: ${key}`);
           if (
             myLevel() >=
-            lowkey_levelNeededToUnlockZone(lowKeys.get(key) ?? Location.none)
+            lowkey_levelNeededToUnlockZone(lowKeys.get(key) ?? $location.none)
           ) {
             needHigherLevelForKey = false;
           }
@@ -933,7 +933,7 @@ function LX_lowkeySummerRemainderDo(): boolean {
   }
   // If literally nothing better to do, go find some of the keys we don't actually care about but have to find anyway.
   const loc: Location = lowkey_nextAvailableKeyLocation();
-  if (loc !== Location.none && autoAdv(loc)) {
+  if (loc !== $location.none && autoAdv(loc)) {
     return true;
   }
   if (

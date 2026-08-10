@@ -117,7 +117,7 @@ export function auto_combatDefaultStage2(
     return undefined;
   }
   //If in Avant Guard, want to make sure the enemy is set correctly to the bodyguard
-  let guardee: Monster = Monster.none;
+  let guardee: Monster = $monster.none;
   if (in_avantGuard() && ag_is_bodyguard()) {
     guardee = toMonster(
       substring(
@@ -141,7 +141,7 @@ export function auto_combatDefaultStage2(
   //we do not want to olfact now because we should do stage 3 first to stun and/or debuff the enemy first before olfacting.
   if (
     auto_wantToSniff(enemy, myLocation()) &&
-    getSniffer(enemy) !== Skill.none &&
+    getSniffer(enemy) !== $skill.none &&
     !ag_is_bodyguard()
   ) {
     auto_log_debug(
@@ -186,7 +186,7 @@ export function auto_combatDefaultStage2(
   }
   if (
     myFamiliar() === $familiar`Sword of S Words` &&
-    auto_sword_of_swords_tracking() !== Monster.none &&
+    auto_sword_of_swords_tracking() !== $monster.none &&
     enemy.copyable &&
     !enemy.boss
   ) {

@@ -189,8 +189,8 @@ export function zoo_d2Pulls(): void {
     const islot: number = s === $slot`acc1` ? 2 : 0; // we want to compare to our third best item for accessories
     const curr_best_in_slot: Item =
       ranked_alternatives.size > islot
-        ? (ranked_alternatives.get(islot) ?? Item.none)
-        : Item.none;
+        ? (ranked_alternatives.get(islot) ?? $item.none)
+        : $item.none;
     const curr_best_mod: number = numericModifier(curr_best_in_slot, m);
     const improvement: number = numericModifier(it, m) - curr_best_mod;
     if (improvement > 10) {
@@ -238,7 +238,7 @@ function zoo_graftedToPart(bodyPart: number): Familiar {
     case $_f_ZOOPART_R_FOOT:
       return toFamiliar(toInt(getProperty("zootGraftedFootRightFamiliar")));
     default:
-      return Familiar.none;
+      return $familiar.none;
   }
 }
 
@@ -254,7 +254,7 @@ function zoo_graftedIntrinsicFams(): Familiar[] {
   const fams: Familiar[] = [];
   function check(part: number): void {
     const f: Familiar = zoo_graftedToPart(part);
-    if (f !== Familiar.none) {
+    if (f !== $familiar.none) {
       fams.push(f);
     }
   }
@@ -267,7 +267,7 @@ function zoo_graftedIntrinsicFams(): Familiar[] {
 }
 
 function zoo_isGrafted(f: Familiar): boolean {
-  if (f === Familiar.none) {
+  if (f === $familiar.none) {
     return false;
   }
   for (const [, fam] of zoo_graftedFams()) {
@@ -577,7 +577,7 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
   let lpunchFam: Familiar = zoo_graftedToPart($_f_ZOOPART_L_HAND);
   let rpunchFam: Familiar = zoo_graftedToPart($_f_ZOOPART_R_HAND);
 
-  if (rbuffFam === Familiar.none) {
+  if (rbuffFam === $familiar.none) {
     for (const [, fam] of sortFams(rbuffFams)) {
       if (!used.includes(fam)) {
         rbuffFam = fam;
@@ -587,7 +587,7 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
     }
   }
 
-  if (lbuffFam === Familiar.none) {
+  if (lbuffFam === $familiar.none) {
     for (const [, fam] of sortFams(lbuffFams)) {
       if (!used.includes(fam)) {
         lbuffFam = fam;
@@ -597,7 +597,7 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
     }
   }
 
-  if (lkickFam === Familiar.none) {
+  if (lkickFam === $familiar.none) {
     for (const fam of $familiars`Quantum Entangler, Foul Ball, Defective Childrens' Stapler`) {
       if (auto_have_familiar(fam)) {
         lkickFam = fam;
@@ -607,7 +607,7 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
     }
   }
 
-  if (lkickFam === Familiar.none) {
+  if (lkickFam === $familiar.none) {
     for (const [, fam] of sortFams(kickFams)) {
       if (!used.includes(fam)) {
         lkickFam = fam;
@@ -629,7 +629,7 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
     }
   }
   // Right kick banishes (cassava and limb are super-banishes, magimech is OK)
-  if (rkickFam === Familiar.none) {
+  if (rkickFam === $familiar.none) {
     for (const fam of $familiars`Dire Cassava, Phantom Limb, MagiMechTech MicroMechaMech`) {
       if (auto_have_familiar(fam)) {
         rkickFam = fam;
@@ -639,7 +639,7 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
     }
   }
   // Backup right kick options
-  if (rkickFam === Familiar.none) {
+  if (rkickFam === $familiar.none) {
     for (const [, fam] of sortFams(kickFams)) {
       if (!used.includes(fam)) {
         rkickFam = fam;
@@ -663,12 +663,12 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
   }
 
   for (let ifam: number = 0; ifam < punchPotential.size; ifam++) {
-    const fam: Familiar = punchPotential.get(ifam) ?? Familiar.none;
+    const fam: Familiar = punchPotential.get(ifam) ?? $familiar.none;
     if (auto_have_familiar(fam) && !used.includes(fam)) {
-      if (lpunchFam === Familiar.none) {
+      if (lpunchFam === $familiar.none) {
         lpunchFam = fam;
         used.push(fam);
-      } else if (rpunchFam === Familiar.none) {
+      } else if (rpunchFam === $familiar.none) {
         rpunchFam = fam;
         used.push(fam);
       }
@@ -698,7 +698,7 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
     auto_log_info(rpunchFam.toString(), "red");
   }
 
-  const bestIntrinsicFam: Familiar = intrinsicFam.get(0) ?? Familiar.none;
+  const bestIntrinsicFam: Familiar = intrinsicFam.get(0) ?? $familiar.none;
   switch (bodyPart) {
     case $_f_ZOOPART_HEAD:
     case $_f_ZOOPART_L_SHOULDER:
@@ -719,7 +719,7 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
     case $_f_ZOOPART_R_FOOT:
       return rkickFam;
   }
-  return Familiar.none;
+  return $familiar.none;
 }
 
 function zoo_getNextPart(): number {
@@ -729,7 +729,7 @@ function zoo_getNextPart(): number {
   const bpp: Map<number, number> = zoo_getBodyPartPriority();
   for (let ipart: number = 0; ipart < bpp.size; ipart++) {
     const part: number = bpp.get(ipart) ?? 0;
-    if (zoo_graftedToPart(part) === Familiar.none) {
+    if (zoo_graftedToPart(part) === $familiar.none) {
       return part;
     }
   }
@@ -738,7 +738,7 @@ function zoo_getNextPart(): number {
 
 function zoo_getNextFam(): Familiar {
   if (!in_zootomist() || myLevel() > 11) {
-    return Familiar.none;
+    return $familiar.none;
   }
   return zoo_getBestFam(zoo_getNextPart(), false);
 }
@@ -784,7 +784,7 @@ export function zoo_graftFam(): boolean {
   while (zoo_getNextPart() !== $_f_ZOOPART_NONE) {
     const p: number = zoo_getNextPart();
     const existing_graft: Familiar = zoo_graftedToPart(p);
-    if (existing_graft !== Familiar.none) {
+    if (existing_graft !== $familiar.none) {
       continue;
     }
     const fam: Familiar = zoo_getBestFam(p, false);
@@ -795,7 +795,7 @@ export function zoo_graftFam(): boolean {
       zoo_boostWeight(fam, next_graft_weight);
       return false;
     }
-    equip(fam, Item.none); //unequip fam equipment to not lose it, just in case
+    equip(fam, $item.none); //unequip fam equipment to not lose it, just in case
     visitUrl("place.php?whichplace=graftinglab&action=graftinglab_chamber");
     visitUrl(
       `choice.php?pwd=&whichchoice=1553&option=1&slot=${p}&fam=${toInt(fam)}`,
@@ -898,24 +898,24 @@ export function getZooKickYR(): Skill {
   if (isYR$1(toInt(getProperty("zootGraftedFootRightFamiliar")))) {
     return $skill`Right %n Kick`;
   }
-  return Skill.none;
+  return $skill.none;
 }
 
 export function getZooKickSniff(): Skill {
   const haveYR: boolean =
-    yellowRayCombatString(Monster.none, false) !== undefined; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
+    yellowRayCombatString($monster.none, false) !== undefined; //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
   if (leftKickHasSniff() && leftKickHasInstaKill() && !haveYR) {
     return $skill`Left %n Kick`;
   }
   if (rightKickHasSniff() && rightKickHasInstaKill() && !haveYR) {
     return $skill`Right %n Kick`;
   }
-  return Skill.none;
+  return $skill.none;
 }
 
 export function getZooKickBanish(): Skill {
   if (haveEffect($effect`Everything Looks Blue`) > 0) {
-    return Skill.none;
+    return $skill.none;
   }
   function isBanish(fam_id: number): boolean {
     const fam: Familiar = toFamiliar(fam_id);
@@ -929,32 +929,32 @@ export function getZooKickBanish(): Skill {
   if (isBanish(toInt(getProperty("zootGraftedFootRightFamiliar")))) {
     return $skill`Right %n Kick`;
   }
-  return Skill.none;
+  return $skill.none;
 }
 
 export function getZooKickInstaKill(): Skill {
   //Only instakill if we can't yellow ray
-  if (yellowRayCombatString(Monster.none, false) !== undefined) {
+  if (yellowRayCombatString($monster.none, false) !== undefined) {
     //Could potentially Yellow Ray. We want false because the item might not be bought/equipped
-    return Skill.none;
+    return $skill.none;
   }
   //uncomment return $skill[kick] and comment return $skill[none] if you want us to auto use your instakill. Not recommended
   if (leftKickHasInstaKill()) {
     //return $skill[left %n kick];
-    return Skill.none;
+    return $skill.none;
   }
   if (rightKickHasInstaKill()) {
     //return $skill[right %n kick];
-    return Skill.none;
+    return $skill.none;
   }
-  return Skill.none;
+  return $skill.none;
 }
 
 export function getZooBestPunch(m: Monster = $monster`fluffy bunny`): Skill {
   if (haveSkill($skill`Left %n Punch`)) {
     return $skill`Left %n Punch`;
   } else {
-    return Skill.none;
+    return $skill.none;
   }
 }
 
@@ -1118,7 +1118,7 @@ export function LX_zootoFight(): boolean {
     }
     // should get wishes in Shadow Rift. If not can't do this
 
-    if (yellowRayCombatString(Monster.none, false) !== undefined) {
+    if (yellowRayCombatString($monster.none, false) !== undefined) {
       if (
         get("auto_hippyInstead", false) &&
         !possessOutfit("War Hippy Fatigues")

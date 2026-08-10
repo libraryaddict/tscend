@@ -39,24 +39,24 @@ export function auto_combat_nanorhinoBuff(
     return undefined;
   }
 
-  let target: Skill = Skill.none;
+  let target: Skill = $skill.none;
   let target_mark: boolean = false;
 
   switch (myPrimestat()) {
     case $stat`Muscle`: //get [Nanobrawny]: Muscle +25%, Weapon Damage +10, Regenerate 4-8 HP per Adventure
       if (
-        target === Skill.none &&
+        target === $skill.none &&
         in_glover() &&
         auto_canUse($skill`Lunge Smack`) &&
         canSurvive(4.0)
       ) {
         target = $skill`Lunge Smack`;
       }
-      if (target === Skill.none && auto_canUse($skill`Shell Up`)) {
+      if (target === $skill.none && auto_canUse($skill`Shell Up`)) {
         target = $skill`Shell Up`; //6MP. bonus based on blessing. blocks enemy this round even if they are immune to stagger
       }
       if (
-        target === Skill.none &&
+        target === $skill.none &&
         stunnable(enemy) &&
         auto_canUse($skill`Club Foot`) &&
         myClass() === $class`Seal Clubber` &&
@@ -64,7 +64,7 @@ export function auto_combat_nanorhinoBuff(
       ) {
         target = $skill`Club Foot`; //8MP. 3-5 enemy defense debuff. seal clubbers also stuns enemy
       }
-      if (target === Skill.none && canSurvive(4.0)) {
+      if (target === $skill.none && canSurvive(4.0)) {
         //choose the cheapest skill available
         for (const sk of $skills`Toss, Clobber, Lunge Smack, Thrust-Smack, Headbutt, Kneebutt, Lunging Thrust-Smack, Club Foot, Shieldbutt, Spirit Snap, Cavalcade of Fury, Northern Explosion, Spectral Snapper`) {
           if (auto_canUse(sk)) {
@@ -78,7 +78,7 @@ export function auto_combat_nanorhinoBuff(
       break;
     case $stat`Moxie`: //get [Nanoballsy]: Moxie +25%, +20% Combat Initiative, +30% Pickpocket Chance
       if (
-        target === Skill.none &&
+        target === $skill.none &&
         myClass() === $class`Disco Bandit` &&
         auto_have_skill($skill`Disco State of Mind`) &&
         auto_have_skill($skill`Flashy Dancer`) &&
@@ -91,7 +91,7 @@ export function auto_combat_nanorhinoBuff(
           }
         }
       }
-      if (target === Skill.none && auto_canUse($skill`Accordion Bash`)) {
+      if (target === $skill.none && auto_canUse($skill`Accordion Bash`)) {
         //stunner that deals no damage
         target = $skill`Accordion Bash`;
         target_mark = true;
@@ -99,11 +99,11 @@ export function auto_combat_nanorhinoBuff(
       if (!canSurvive(4.0)) {
         break; //too risky to continue
       }
-      if (target === Skill.none && auto_canUse($skill`Cadenza`)) {
+      if (target === $skill.none && auto_canUse($skill`Cadenza`)) {
         target = $skill`Cadenza`; //costs 0MP.
         target_mark = true;
       }
-      if (target === Skill.none) {
+      if (target === $skill.none) {
         //choose the cheapest skill available
         for (const sk of $skills`Sing, Suckerpunch, Disco Eye-Poke, Dissonant Riff`) {
           if (auto_canUse(sk)) {
@@ -115,7 +115,7 @@ export function auto_combat_nanorhinoBuff(
   }
   //regardless of whether we found a suitable skill or not, we only want to try once per combat.
   combat_status_add("nanorhino_buffed");
-  if (target !== Skill.none) {
+  if (target !== $skill.none) {
     return auto_useSkill(target, target_mark);
   }
   return undefined;

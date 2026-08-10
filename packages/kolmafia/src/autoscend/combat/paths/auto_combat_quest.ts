@@ -132,7 +132,7 @@ export function auto_JunkyardCombatHandler(
     isAttackFamiliar(myFamiliar()) || monsterHp() < 0.8 * monsterHp(enemy);
   let shouldFlyer: boolean = false;
   let staggeringFlyer: boolean = false;
-  let flyerWith: Item = Item.none;
+  let flyerWith: Item = $item.none;
 
   if (
     myClass() === $class`Disco Bandit` &&
@@ -178,14 +178,14 @@ export function auto_JunkyardCombatHandler(
 
   if (get("auto_gremlinMoly", false)) {
     //don't ever stun tool gremlins
-    stunner = Skill.none;
+    stunner = $skill.none;
   }
   if (
     canUse$3(flyer) &&
     get("flyeredML") < 10000 &&
     !get("auto_ignoreFlyer", false)
   ) {
-    if (!staggeringFlyer && stunner !== Skill.none && !stunned) {
+    if (!staggeringFlyer && stunner !== $skill.none && !stunned) {
       combat_status_add("stunned");
       return auto_useSkill(stunner);
     }
@@ -196,7 +196,7 @@ export function auto_JunkyardCombatHandler(
       shouldFlyer = true;
     }
     if (shouldFlyer) {
-      if (flyerWith !== Item.none) {
+      if (flyerWith !== $item.none) {
         return useItems(flyer, flyerWith);
       } else {
         return useItem(flyer);

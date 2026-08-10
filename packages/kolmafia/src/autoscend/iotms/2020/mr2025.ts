@@ -14,7 +14,6 @@ import {
   equip,
   equippedAmount,
   equippedItem,
-  Familiar,
   floor,
   freeCrafts,
   freeSmiths,
@@ -757,7 +756,7 @@ export function auto_bankChestMimicExpForBandit(): boolean {
     !auto_haveChestMimic() ||
     $familiar`Chest Mimic`.experience >= 100 ||
     canSummonMonster($monster`fantasy bandit`) ||
-    get("auto_familiarChoice", Familiar.none) !== Familiar.none
+    get("auto_familiarChoice", $familiar.none) !== $familiar.none
   ) {
     return false;
   }
@@ -824,7 +823,7 @@ export function auto_equipAprilShieldBuff(): boolean {
   //force equip the shield if this is called
   if (weaponHands(equippedItem($slot`weapon`)) > 1) {
     //if a 2 handed weapon is equipped, unequip it
-    equip(Item.none, $slot`weapon`);
+    equip($item.none, $slot`weapon`);
   }
   return autoForceEquip$2($item`April Shower Thoughts shield`, true);
 }
@@ -833,7 +832,7 @@ export function auto_unequipAprilShieldBuff(): boolean {
   //Because Empathy gets replaced by Thoughtful Empathy when cast with the Shield equipped,
   //we need to make sure this is unequipped if we want to have both Empathy and Thoughtful Empathy
   if (haveEquipped($item`April Shower Thoughts shield`)) {
-    return autoForceEquip($slot`off-hand`, Item.none, true);
+    return autoForceEquip($slot`off-hand`, $item.none, true);
   }
   return true;
 }
@@ -926,20 +925,20 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     monOpts.set(i, toMonster(toInt(mons.group(1))));
     // Manual monster specifications
     if (
-      peridotManuallyDesiredMonsters().includes(monOpts.get(i) ?? Monster.none)
+      peridotManuallyDesiredMonsters().includes(monOpts.get(i) ?? $monster.none)
     ) {
       bestmon = i;
       break; // if we've got a force desired monster, don't bother with the rankings any more
     }
     if (
-      zoneRank(monOpts.get(i) ?? Monster.none, loc) <=
-      zoneRank(monOpts.get(bestmon) ?? Monster.none, loc)
+      zoneRank(monOpts.get(i) ?? $monster.none, loc) <=
+      zoneRank(monOpts.get(bestmon) ?? $monster.none, loc)
     ) {
       bestmon = i;
     }
     i += 1;
   }
-  const popChoice: Monster = monOpts.get(bestmon) ?? Monster.none;
+  const popChoice: Monster = monOpts.get(bestmon) ?? $monster.none;
   if (toInt(popChoice) === 0 || auto_peridotSetZone(loc)) {
     //still nothing found so just peace out. Or we want to set the zone without using an adventure.
     handleTracker({
@@ -1099,7 +1098,7 @@ function bestBusk(
       ),
     );
     for (const [eff] of buskingEffects) {
-      if (eff !== Effect.none) {
+      if (eff !== $effect.none) {
         for (const [mod, multi] of effMulti) {
           score += numericModifier(eff, mod) * multi;
         }
@@ -1192,7 +1191,7 @@ export function beretBusk(effectMultiplier: string): boolean {
   if (allPants.size > 0) {
     //only check if we have pants available
     if (toInt(bestBuskPowersSplit.get(1 - bestBuskHROffset) ?? "") === 0) {
-      autoForceEquip($slot`pants`, Item.none, true);
+      autoForceEquip($slot`pants`, $item.none, true);
     } else {
       for (const [, pant] of allPants) {
         if (
@@ -1209,7 +1208,7 @@ export function beretBusk(effectMultiplier: string): boolean {
   if (allShirts.size > 0) {
     //only check if we have shirts available
     if (toInt(bestBuskPowersSplit.get(2 - bestBuskHROffset) ?? "") === 0) {
-      autoForceEquip($slot`shirt`, Item.none, true);
+      autoForceEquip($slot`shirt`, $item.none, true);
     } else {
       for (const [, shirt] of allShirts) {
         if (
@@ -1575,7 +1574,7 @@ export function auto_getItemToEquipBCZ(): Item {
   if (auto_haveBCZ()) {
     return $item`blood cubic zirconia`;
   }
-  return Item.none;
+  return $item.none;
 }
 
 function auto_BCZEquipped(): boolean {
@@ -1639,7 +1638,7 @@ function bcz_allowStatChange(st: Stat, casts: number): boolean {
   // Cost, in substats, of the next cast (i.e. the (casts + 1)th cast of this skill today).
   const castCost: number = auto_bczCastMath(casts);
   const primestat: Stat =
-    myClass().primestat === Stat.none ? myPrimestat() : myClass().primestat;
+    myClass().primestat === $stat.none ? myPrimestat() : myClass().primestat;
 
   if (st === primestat) {
     //Don't want to use so many substats we go down too many levels or we have cast more than we really need to/should
@@ -1806,7 +1805,7 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
     currentRound() > 0 &&
     myFamiliar() === $familiar`Sword of S Words` &&
     (auto_desires_sword_familiar_drops() ||
-      auto_sword_of_swords_tracking() !== Monster.none)
+      auto_sword_of_swords_tracking() !== $monster.none)
   ) {
     // the sword already overwrites this fight's drop table, so gazing here would be wasted.
     return false;
@@ -2056,7 +2055,7 @@ export function auto_wantToShrunkenHead$1(place: Location): boolean {
   }
 
   const next: Monster = safeGet("auto_nextEncounter");
-  if (next !== Monster.none) {
+  if (next !== $monster.none) {
     //next monster is forced by zone mechanics or some other mechanism
     return auto_wantToShrunkenHead(next);
   } else {

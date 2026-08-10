@@ -45,7 +45,6 @@ import {
   myTurncount,
   putCloset,
   removeProperty,
-  Servant,
   Skill,
   toMonster,
   use,
@@ -64,6 +63,7 @@ import {
   $modifier,
   $monster,
   $monsters,
+  $servant,
   $skill,
   $skills,
   $slot,
@@ -488,7 +488,7 @@ function auto_post_adventure(): boolean {
 
   if (isActuallyEd()) {
     if ($location`The Shore, Inc. Travel Agency` !== myLocation()) {
-      if (myServant() !== Servant.none) {
+      if (myServant() !== $servant.none) {
         buffMaintain$2($effect`Purr of the Feline`, 10, 1, 10);
       }
 
@@ -676,7 +676,7 @@ function auto_post_adventure(): boolean {
 
   if (in_awol()) {
     const awolDesired: Effect = awol_walkBuff();
-    if (awolDesired !== Effect.none) {
+    if (awolDesired !== $effect.none) {
       if (!inAftercore()) {
         let awolMP: number = 85;
         if (myClass() === $class`Beanslinger`) {
@@ -736,7 +736,7 @@ function auto_post_adventure(): boolean {
       }
     }
     // TODO: 'Get Big' is a pretty good skill
-    if (libram !== Skill.none && myMp() - mpCost(libram) > 25) {
+    if (libram !== $skill.none && myMp() - mpCost(libram) > 25) {
       useSkill(1, libram);
     }
 
@@ -794,7 +794,7 @@ function auto_post_adventure(): boolean {
       }
     }
 
-    if (libram !== Skill.none && myMp() - mpCost(libram) > 32) {
+    if (libram !== $skill.none && myMp() - mpCost(libram) > 32) {
       useSkill(1, libram);
     }
 
@@ -866,7 +866,7 @@ function auto_post_adventure(): boolean {
       }
     }
 
-    if (libram !== Skill.none && myMp() - mpCost(libram) > 40) {
+    if (libram !== $skill.none && myMp() - mpCost(libram) > 40) {
       useSkill(1, libram);
     }
     //		buffMaintain($effect[Prayer of Seshat], 5, 1, 10);
@@ -896,7 +896,7 @@ function auto_post_adventure(): boolean {
     }
     //		buffMaintain($effect[Rotten Memories], 100, 1, 10);
 
-    if (libram !== Skill.none && myMp() - mpCost(libram) > 80) {
+    if (libram !== $skill.none && myMp() - mpCost(libram) > 80) {
       useSkill(1, libram);
     }
 
@@ -973,7 +973,7 @@ function auto_post_adventure(): boolean {
       }
     }
 
-    if (libram !== Skill.none && myMp() - mpCost(libram) > 32) {
+    if (libram !== $skill.none && myMp() - mpCost(libram) > 32) {
       auto_log_info(
         `Mymp: ${myMp()} of ${myMaxmp()} and cost: ${mpCost(libram)}`,
         "blue",
@@ -1074,7 +1074,7 @@ function auto_post_adventure(): boolean {
       }
     }
 
-    if (libram !== Skill.none && myMp() - mpCost(libram) > 80) {
+    if (libram !== $skill.none && myMp() - mpCost(libram) > 80) {
       useSkill(1, libram);
     }
 

@@ -122,9 +122,9 @@ declare module "kolmafia" {
 
   // Class-typed properties (familiar/location/item/monster/stat/phylum), merged with libram's
   // own same-named arrays, so safeGet() has one array per type covering both.
-  const classTypes = Object.keys(TYPE_INFO).filter(
-    (type) => TYPE_INFO[type].import,
-  );
+  const classTypes = Object.keys(TYPE_INFO)
+    .filter((type) => TYPE_INFO[type].import)
+    .sort();
   const libramAlias = (type) =>
     `libram${type[0].toUpperCase()}${type.slice(1)}Properties`;
   const libramImport = classTypes

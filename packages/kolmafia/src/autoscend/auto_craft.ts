@@ -80,8 +80,8 @@ function untinkerable(target: Item): boolean {
   return craftType(target) === "Meatpasting";
 }
 
-export function canUntinker(target: Item = Item.none): boolean {
-  if (target === Item.none) {
+export function canUntinker(target: Item = $item.none): boolean {
+  if (target === $item.none) {
     //do we possess the means to untinker.
     if (
       hasLegionKnife() &&

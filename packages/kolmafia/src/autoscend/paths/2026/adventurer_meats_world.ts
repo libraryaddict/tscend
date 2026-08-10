@@ -205,7 +205,7 @@ function amw_calculateReserve(): number {
 
 class amw_statAmount {
   constructor(
-    public st: Stat = Stat.none,
+    public st: Stat = $stat.none,
     public amount: number = 0,
   ) {}
 }

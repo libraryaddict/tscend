@@ -128,7 +128,7 @@ export function auto_combatDefaultStage4(
   //sniffers are skills that increase the odds of encountering this same monster again in the current zone.
   if (auto_wantToSniff(enemy, myLocation()) && !ag_is_bodyguard()) {
     const sniffer: Skill = getSniffer(enemy);
-    if (sniffer !== Skill.none) {
+    if (sniffer !== $skill.none) {
       if (sniffer === $skill`Perceive Soul`) {
         //mafia does not track the target of this skill so we must do so.
         set("auto_bat_soulmonster", enemy);
@@ -251,7 +251,7 @@ export function auto_combatDefaultStage4(
   //iotm monster duplicator that creates a chained fight of the current monster
   if (auto_wantToCopy(enemy, myLocation()) && !ag_is_bodyguard()) {
     const copier: Skill = getCopier(enemy);
-    if (copier !== Skill.none && auto_canUse(copier)) {
+    if (copier !== $skill.none && auto_canUse(copier)) {
       if (copier === $skill`Blow the Purple Candle!`) {
         //mafia does not track the target of this skill so we must do so.
         set("auto_purple_candled", enemy);
@@ -318,14 +318,14 @@ export function auto_combatDefaultStage4(
     }
   }
   //winking is a monster copier familiar skill. they share a daily counter
-  let wink_skill: Skill = Skill.none;
+  let wink_skill: Skill = $skill.none;
   if (auto_canUse($skill`Wink at`)) {
     wink_skill = $skill`Wink at`;
   }
   if (auto_canUse($skill`Fire a badly romantic arrow`)) {
     wink_skill = $skill`Fire a badly romantic arrow`;
   }
-  if (wink_skill !== Skill.none) {
+  if (wink_skill !== $skill.none) {
     //we can wink / romatic arrow
     if ($monsters`lobsterfrogman, modern zmobie`.includes(enemy)) {
       return auto_useSkill(wink_skill);
@@ -369,7 +369,7 @@ export function auto_combatDefaultStage4(
   ) {
     let shouldFlyer: boolean = false;
     let staggeringFlyer: boolean = false;
-    let flyerWith: Item = Item.none;
+    let flyerWith: Item = $item.none;
     if (
       myClass() === $class`Disco Bandit` &&
       auto_have_skill($skill`Deft Hands`) &&
@@ -411,7 +411,7 @@ export function auto_combatDefaultStage4(
     if (!staggeringFlyer && stunnable(enemy)) {
       const stunner: Skill = getStunner(enemy);
       stunned = combat_status_check("stunned");
-      if (stunner !== Skill.none && !stunned) {
+      if (stunner !== $skill.none && !stunned) {
         combat_status_add("stunned");
         return auto_useSkill(stunner);
       }
@@ -420,7 +420,7 @@ export function auto_combatDefaultStage4(
       shouldFlyer = true;
     }
     if (shouldFlyer) {
-      if (flyerWith !== Item.none) {
+      if (flyerWith !== $item.none) {
         return useItems(flyer, flyerWith);
       } else {
         return useItem(flyer);

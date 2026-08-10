@@ -221,7 +221,7 @@ export function auto_getAprilingBandItems(): boolean {
 export function auto_playAprilPiccolo(): boolean {
   const f: Familiar = myFamiliar();
   let success: boolean = false;
-  if (f !== Familiar.none) {
+  if (f !== $familiar.none) {
     const startexp: number = f.experience;
     cliExecute("aprilband play piccolo");
     success = f.experience > startexp;

@@ -40,6 +40,7 @@ import {
   $item,
   $location,
   $locations,
+  $monster,
   $paths,
   $phylum,
   $slot,
@@ -211,7 +212,7 @@ export function dna_generic(): boolean {
   if (!isUnrestricted($item`Little Geneticist DNA-Splicing Lab`)) {
     return false;
   }
-  if (getProperty("dnaSyringe") === Phylum.none.toString()) {
+  if (getProperty("dnaSyringe") === $phylum.none.toString()) {
     return false;
   }
 
@@ -301,7 +302,7 @@ export function dna_sorceressTest(): boolean {
   if (!DNALab.installed()) {
     return false;
   }
-  if (getProperty("dnaSyringe") === Phylum.none.toString()) {
+  if (getProperty("dnaSyringe") === $phylum.none.toString()) {
     return false;
   }
   if (myLevel() < 13) {
@@ -356,7 +357,7 @@ export function dna_bedtime(): boolean {
   if (!isUnrestricted($item`Little Geneticist DNA-Splicing Lab`)) {
     return false;
   }
-  if (getProperty("dnaSyringe") === Phylum.none.toString()) {
+  if (getProperty("dnaSyringe") === $phylum.none.toString()) {
     return false;
   }
   if ($item`Little Geneticist DNA-Splicing Lab`.toString() in getCampground()) {
@@ -609,7 +610,7 @@ const $_f_importantMonsters: Monster[] = Monster.get([
 function icehouseMonster(): Monster {
   visitUrl("museum.php?action=icehouse");
   if (!containsText(getProperty("banishedMonsters"), "ice house")) {
-    return Monster.none;
+    return $monster.none;
   } else {
     const banishMap: Map<number, string> = new Map(
       splitString(getProperty("banishedMonsters"), ":").map((_v, _i) => [
@@ -623,11 +624,11 @@ function icehouseMonster(): Monster {
       }
     }
   }
-  return Monster.none;
+  return $monster.none;
 }
 
 export function icehouseUserErrorProtection(): boolean {
-  if (icehouseMonster() === Monster.none) {
+  if (icehouseMonster() === $monster.none) {
     return true;
   } else if ($_f_importantMonsters.includes(icehouseMonster())) {
     if (

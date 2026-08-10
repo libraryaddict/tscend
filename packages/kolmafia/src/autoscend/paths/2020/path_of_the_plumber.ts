@@ -225,9 +225,9 @@ function plumber_buyCostume(st: Stat): boolean {
 
 class plumber_buyable {
   constructor(
-    public it: Item = Item.none,
-    public sk: Skill = Skill.none,
-    public costume: Stat = Stat.none,
+    public it: Item = $item.none,
+    public sk: Skill = $skill.none,
+    public costume: Stat = $stat.none,
   ) {}
 }
 
@@ -251,7 +251,7 @@ function plumber_buyableCostume(costume: Stat): plumber_buyable {
 
 function plumber_buyableIsNothing(zb: plumber_buyable): boolean {
   return (
-    zb.it === Item.none && zb.sk === Skill.none && zb.costume === Stat.none
+    zb.it === $item.none && zb.sk === $skill.none && zb.costume === $stat.none
   );
 }
 
@@ -305,11 +305,11 @@ export function plumber_nothingToBuy(): boolean {
 
 function plumber_buyStuff(): boolean {
   const next: plumber_buyable = plumber_nextBuyable();
-  if (next.sk !== Skill.none) {
+  if (next.sk !== $skill.none) {
     return plumber_buySkill(next.sk);
-  } else if (next.it !== Item.none) {
+  } else if (next.it !== $item.none) {
     return plumber_buyEquipment(next.it);
-  } else if (next.costume !== Stat.none) {
+  } else if (next.costume !== $stat.none) {
     return plumber_buyCostume(next.costume);
   } else {
     return false;
@@ -360,9 +360,9 @@ export function plumber_canDealScalingDamage(): boolean {
 
   for (const st of $stats.all()) {
     let level: number;
-    if (possessEquipment(items_lv2.get(st) ?? Item.none)) {
+    if (possessEquipment(items_lv2.get(st) ?? $item.none)) {
       level = 2;
-    } else if (possessEquipment(items_lv1.get(st) ?? Item.none)) {
+    } else if (possessEquipment(items_lv1.get(st) ?? $item.none)) {
       level = 1;
     } else {
       continue;
@@ -374,10 +374,10 @@ export function plumber_canDealScalingDamage(): boolean {
 
     level += toInt(plumber_costume() === st);
 
-    if (myMaxpp() >= 2 && haveSkill(attacks_2pp.get(st) ?? Skill.none)) {
+    if (myMaxpp() >= 2 && haveSkill(attacks_2pp.get(st) ?? $skill.none)) {
       return true;
     }
-    if (level >= 3 && haveSkill(attacks_free.get(st) ?? Skill.none)) {
+    if (level >= 3 && haveSkill(attacks_free.get(st) ?? $skill.none)) {
       return true;
     }
   }

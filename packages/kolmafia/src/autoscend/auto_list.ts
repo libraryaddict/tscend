@@ -1,4 +1,5 @@
 import { abort, Effect, Item, Modifier, numericModifier } from "kolmafia";
+import { $effect } from "libram";
 
 // familiar, int, item, effect, location defined. Define the rest at some point.
 //	All lists have the construct type[int] and are 0-indexed, like nature intended.
@@ -113,7 +114,7 @@ export function ListFind(
   const retval: Map<number, Effect> = List$5(list);
   let at: number = idx;
   while (at < retval.size) {
-    if (what === (retval.get(at) ?? Effect.none)) {
+    if (what === (retval.get(at) ?? $effect.none)) {
       return at;
     }
     at = at + 1;

@@ -2,12 +2,11 @@ import {
   abort,
   cliExecute,
   haveEffect,
-  Item,
   mallPrice,
   maximize,
   myPath,
 } from "kolmafia";
-import { $path } from "libram";
+import { $item, $path } from "libram";
 //Defined in autoscend/paths/two_crazy_random_summer.ash
 export function in_tcrs(): boolean {
   return myPath() === $path`Two Crazy Random Summer`;
@@ -46,7 +45,7 @@ export function tcrs_maximize_with_items(maximizerString: string): boolean {
     false,
   ).entries()) {
     if (
-      rec.item !== Item.none &&
+      rec.item !== $item.none &&
       rec.item.fullness === 0 &&
       rec.item.inebriety === 0 &&
       0 === haveEffect(rec.effect) &&

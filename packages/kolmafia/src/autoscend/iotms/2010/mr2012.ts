@@ -90,7 +90,7 @@ function handleRainDohDo(): boolean {
 	huge swarm of ghuol whelps, modern zmobie, mountain man
 	*/
   //If doesn\'t match a special condition
-  if (enemy !== Monster.none) {
+  if (enemy !== $monster.none) {
     handleCopiedMonster($item`Rain-Doh box full of monster`);
     validate_rainDohBox();
     return true;

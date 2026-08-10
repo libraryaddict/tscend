@@ -13,7 +13,6 @@ import {
   equippedAmount,
   equippedItem,
   experienceBonus,
-  Familiar,
   getMonsters,
   getProperty,
   haveEffect,
@@ -357,7 +356,7 @@ function print_footer(): void {
     ) {
       //we always want to print the core slots
       next_line += `${sl}=[${equippedItem(sl)}]. `;
-    } else if (equippedItem(sl) !== Item.none) {
+    } else if (equippedItem(sl) !== $item.none) {
       //other slots should only be printed if they contain something
       next_line += `${sl}=[${equippedItem(sl)}]. `;
     }
@@ -724,7 +723,7 @@ function auto_pre_adventure(): boolean {
 
   let considerCrystalBallBonus: boolean = false;
   if (auto_haveCrystalBall()) {
-    if (auto_queueIgnore() || safeGet("auto_nextEncounter") !== Monster.none) {
+    if (auto_queueIgnore() || safeGet("auto_nextEncounter") !== $monster.none) {
       //if already forced by something else, no need to handle your ball
     } else if (!auto_forceHandleCrystalBall(place)) {
       //equipping the crystal ball can't hurt but it is neither forced nor forbidden
@@ -734,7 +733,7 @@ function auto_pre_adventure(): boolean {
   }
 
   const possible_monsters: Map<number, Monster> = new Map();
-  if (safeGet("auto_nextEncounter") !== Monster.none) {
+  if (safeGet("auto_nextEncounter") !== $monster.none) {
     //next monster is forced by zone mechanics or by now locked-in miniature crystal ball
     possible_monsters.set(
       possible_monsters.size,
@@ -1053,7 +1052,7 @@ function auto_pre_adventure(): boolean {
   kolhs_preadv(place);
   ag_bgChat();
 
-  if (is100FamRun() && myFamiliar() === Familiar.none) {
+  if (is100FamRun() && myFamiliar() === $familiar.none) {
     // re-equip a familiar if it's a 100% run just in case something unequipped it
     // looking at you auto_maximizedConsumeStuff()...
     // and L12_themtharHills()...
@@ -1353,7 +1352,7 @@ function auto_pre_adventure(): boolean {
     isWearingOutfit("Filthy Hippy Disguise") &&
     place === $location`The Hippy Camp`
   ) {
-    equip($slot`pants`, Item.none);
+    equip($slot`pants`, $item.none);
     putCloset(itemAmount($item`filthy corduroys`), $item`filthy corduroys`);
     if (isWearingOutfit("Filthy Hippy Disguise")) {
       abort(
@@ -1489,7 +1488,7 @@ export function auto_runPreAdventure(): boolean {
     if (
       pathHasFamiliar() &&
       canChangeFamiliar() &&
-      myFamiliar() === Familiar.none &&
+      myFamiliar() === $familiar.none &&
       !isFantasyRealm(myLocation())
     ) {
       abort("Trying to adventure with no familiar.");

@@ -143,7 +143,7 @@ export function LX_theSource(): boolean {
   }
 
   const goal: Location = safeGet("sourceOracleTarget");
-  if (goal !== Location.none && itemAmount($item`no spoon`) === 0) {
+  if (goal !== $location.none && itemAmount($item`no spoon`) === 0) {
     if (
       goal === $location`The Batrat and Ratbat Burrow` &&
       internalQuestStatus("questL04Bat") < 1
@@ -209,7 +209,7 @@ export function theSource_oracle(): boolean {
     return false;
   }
 
-  if (safeGet("sourceOracleTarget") === Location.none) {
+  if (safeGet("sourceOracleTarget") === $location.none) {
     visitUrl("place.php?whichplace=town_wrong&action=townwrong_oracle");
     visitUrl("choice.php?pwd=&whichchoice=1190&option=1");
 

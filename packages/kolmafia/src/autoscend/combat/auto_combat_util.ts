@@ -204,7 +204,7 @@ export function markAsUsed(sk: Skill): void {
 }
 
 export function markAsUsed$1(it: Item): void {
-  if (it !== Item.none) {
+  if (it !== $item.none) {
     set(
       "_auto_combatState",
       `${getProperty("_auto_combatState")}(it${toInt(it).toString()})`,
@@ -522,7 +522,7 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
     return z_kick;
   }
 
-  return Skill.none;
+  return $skill.none;
 }
 
 export function getCopier(enemy: Monster, inCombat: boolean = true): Skill {
@@ -546,7 +546,7 @@ export function getCopier(enemy: Monster, inCombat: boolean = true): Skill {
   ) {
     return $skill`%fn, fire a Red, White and Blue Blast`;
   }
-  return Skill.none;
+  return $skill.none;
 }
 
 export function getStunner(enemy: Monster): Skill {
@@ -671,7 +671,7 @@ export function getStunner(enemy: Monster): Skill {
     return $skill`Mind Bullets`;
   }
 
-  return Skill.none;
+  return $skill.none;
 }
 
 export function enemyCanBlocksSkills(): boolean {
@@ -1104,7 +1104,7 @@ export function banisherCombatAction$1(
     !used.includes("Saber Force")
   ) {
     // can't use the force on uncopyable monsters
-    if (enemy === Monster.none || enemy.copyable) {
+    if (enemy === $monster.none || enemy.copyable) {
       return auto_combatSaberBanish();
     }
   }
@@ -1296,7 +1296,7 @@ export function yellowRayCombatString(
       auto_saberChargesAvailable() > 0
     ) {
       // can't use the force on uncopyable monsters
-      if (target === Monster.none || (target.copyable && !noForceDrop)) {
+      if (target === $monster.none || (target.copyable && !noForceDrop)) {
         return auto_combatSaberYR();
       }
     } else {
@@ -1306,7 +1306,7 @@ export function yellowRayCombatString(
 
   if (in_zootomist() && haveEffect($effect`Everything Looks Yellow`) <= 0) {
     const kick: Skill = getZooKickYR();
-    if (kick !== Skill.none) {
+    if (kick !== $skill.none) {
       return kick;
     }
   }
@@ -1448,7 +1448,7 @@ export function yellowRayCombatString(
     auto_saberChargesAvailable() > 0
   ) {
     // can't use the force on uncopyable monsters
-    if (target === Monster.none || (target.copyable && !noForceDrop)) {
+    if (target === $monster.none || (target.copyable && !noForceDrop)) {
       return auto_combatSaberYR();
     }
   }

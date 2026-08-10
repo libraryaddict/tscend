@@ -101,7 +101,7 @@ export function awol_walkBuff(): Effect {
     !haveSkill($skill`Walk: Prideful Strut`) &&
     !haveSkill($skill`Walk: Cautious Prowl`)
   ) {
-    return Effect.none;
+    return $effect.none;
   }
   //If we only have one skill, might as well use that one
   if (

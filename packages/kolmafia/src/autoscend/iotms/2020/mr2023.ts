@@ -274,12 +274,12 @@ export function auto_allRifts(): Location[] {
 
 export function auto_availableBrickRift(): Location {
   if (!auto_havePayPhone()) {
-    return Location.none;
+    return $location.none;
   }
 
   if (in_avantGuard() && !auto_haveQueuedForcedNonCombat()) {
     //if no NC forced, don't adventure in zone
-    return Location.none;
+    return $location.none;
   }
 
   const riftsWithBricks: Location[] = $locations`Shadow Rift (The Ancient Buried Pyramid), Shadow Rift (The Hidden City), Shadow Rift (The Misspelled Cemetary)`;
@@ -298,7 +298,7 @@ export function auto_availableBrickRift(): Location {
       return loc;
     }
   }
-  return Location.none;
+  return $location.none;
 }
 
 function auto_riftsWithWishes(): Location[] {
@@ -353,7 +353,7 @@ export function auto_doPhoneQuest(): boolean {
   }
   // only accept and do quest if we can get bricks or force a noncombat
   if (
-    auto_availableBrickRift() === Location.none ||
+    auto_availableBrickRift() === $location.none ||
     !auto_canForceNextNoncombat()
   ) {
     return false;
@@ -871,7 +871,7 @@ export function auto_scepterSkills(): void {
     const hundred_fam: Familiar = safeGet("auto_100familiar");
     if (
       ((in_avantGuard() && inHardcore()) ||
-        (hundred_fam !== Familiar.none &&
+        (hundred_fam !== $familiar.none &&
           (isAttackFamiliar(hundred_fam) || hundred_fam.block))) &&
       haveFamiliar(findRockFamiliarInTerrarium())
     ) {
@@ -1083,7 +1083,7 @@ export function auto_habitatMonster(): Monster {
   if (get("_monsterHabitatsFightsLeft") > 0) {
     return safeGet("_monsterHabitatsMonster");
   }
-  return Monster.none;
+  return $monster.none;
 }
 
 export function auto_canCircadianRhythm(): boolean {
@@ -1228,7 +1228,7 @@ export function auto_canRWBBlast(): boolean {
     //Already have ELRWB
     return false;
   }
-  if (auto_habitatMonster() !== Monster.none) {
+  if (auto_habitatMonster() !== $monster.none) {
     //don't want to RWB Blast a Habitated monster
     return false;
   }
@@ -1256,7 +1256,7 @@ export function auto_RWBMonster(): Monster {
   if (get("rwbMonsterCount") < 3) {
     return safeGet("rwbMonster");
   }
-  return Monster.none;
+  return $monster.none;
 }
 
 function activeCitZoneMod(): string {
@@ -1384,7 +1384,7 @@ function citizenZones(goal: string): Map<Location, boolean> {
     //prismatic resistance
     return new Map([[$location`The Outskirts of Cobb's Knob`, true]]);
   }
-  return new Map([[Location.none, true]]);
+  return new Map([[$location.none, true]]);
 }
 export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
   if (!auto_haveEagle()) return false;

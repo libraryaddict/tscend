@@ -89,7 +89,7 @@ export function ag_bgChat(): void {
     return;
   }
 
-  if (ag_bgToChat() === Monster.none) {
+  if (ag_bgToChat() === $monster.none) {
     return;
   }
   // go to page to determine if bodyguard is ready to chat
@@ -114,7 +114,7 @@ export function ag_bgChat(): void {
 
 function ag_bgToChat(): Monster {
   let surgeonGearWanted: number = 0;
-  let mon: Monster = Monster.none;
+  let mon: Monster = $monster.none;
 
   for (const it of $items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`) {
     if (!possessEquipment(it) && auto_can_equip(it)) {

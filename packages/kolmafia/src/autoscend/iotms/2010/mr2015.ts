@@ -520,7 +520,7 @@ export function auto_mayoItems(): boolean {
   } else if (in_heavyrains() && !inHardcore()) {
     switch (myDaycount()) {
       case 1:
-        mayos = new Map([[Item.none, true]]);
+        mayos = new Map([[$item.none, true]]);
         break;
       case 2:
         mayos = new Map([[$item`miracle whip`, true]]);
@@ -535,13 +535,13 @@ export function auto_mayoItems(): boolean {
   } else if (in_gnoob()) {
     switch (myDaycount()) {
       default:
-        mayos = new Map([[Item.none, true]]);
+        mayos = new Map([[$item.none, true]]);
         break;
     }
   } else if (in_lta()) {
     switch (myDaycount()) {
       default:
-        mayos = new Map([[Item.none, true]]);
+        mayos = new Map([[$item.none, true]]);
         break;
     }
   } else {
@@ -570,7 +570,7 @@ export function auto_mayoItems(): boolean {
         continue;
       }
     }
-    if (mayo === Item.none) {
+    if (mayo === $item.none) {
       return false;
     }
     if (itemAmount(mayo) === 0) {
@@ -768,7 +768,7 @@ export function chateaumantegna_nightstandSet(): boolean {
   }
 
   let myStat: Stat = myPrimestat();
-  if (myStat === Stat.none) {
+  if (myStat === $stat.none) {
     return false;
   }
   if (inAftercore()) {
@@ -783,7 +783,7 @@ export function chateaumantegna_nightstandSet(): boolean {
   }
 
   const furniture: Item[] = chateaumantegna_decorations();
-  let need: Item = Item.none;
+  let need: Item = $item.none;
   if (myStat === $stat`Muscle`) {
     need = $item`electric muscle stimulator`;
   } else if (myStat === $stat`Mysticality`) {
@@ -792,7 +792,7 @@ export function chateaumantegna_nightstandSet(): boolean {
     need = $item`bowl of potpourri`;
   }
 
-  if (need === Item.none) {
+  if (need === $item.none) {
     //If we do not have a telescope, this can happen.
     return false;
   }

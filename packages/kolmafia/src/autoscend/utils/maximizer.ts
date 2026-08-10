@@ -15,7 +15,7 @@ import {
   weaponHands,
   weaponType,
 } from "kolmafia";
-import { $familiar, $skill, $slot } from "libram";
+import { $familiar, $item, $skill, $slot } from "libram";
 
 import { auto_abort, auto_log_info } from "../auto_util";
 import { MAXIMIZER_ALIASES, MaximizerModifier } from "./modifiers";
@@ -310,7 +310,7 @@ export class Maximizer {
   private firstOpenAccessorySlot(): Slot {
     return (
       [$slot`acc1`, $slot`acc2`, $slot`acc3`].find(
-        (accSlot) => this.pending(accSlot) === Item.none,
+        (accSlot) => this.pending(accSlot) === $item.none,
       ) ?? $slot`acc1`
     );
   }
@@ -318,7 +318,7 @@ export class Maximizer {
   // queues intent to equip; doesn't touch worn equipment until maximize()/simulate() runs
   equip(item: Item, slot?: Slot): boolean {
     let targetSlot = slot ?? toSlot(item);
-    if (targetSlot === Slot.none) {
+    if (targetSlot === $slot.none) {
       return false;
     }
     if (targetSlot === $slot`acc1` && slot === undefined) {
@@ -337,7 +337,7 @@ export class Maximizer {
   }
 
   pending(slot: Slot): Item {
-    return this.pendingEquip.get(slot) ?? Item.none;
+    return this.pendingEquip.get(slot) ?? $item.none;
   }
 
   willEquip(item: Item, slot?: Slot): boolean {
@@ -352,11 +352,11 @@ export class Maximizer {
 
   // equips immediately; unless lock is false, also locks the slot so maximize() won't override it
   forceEquip(item: Item, slot?: Slot, lock: boolean = true): boolean {
-    if (item === Item.none) {
-      return equip(slot ?? Slot.none, item);
+    if (item === $item.none) {
+      return equip(slot ?? $slot.none, item);
     }
     let targetSlot = slot ?? toSlot(item);
-    if (targetSlot === Slot.none) {
+    if (targetSlot === $slot.none) {
       return false;
     }
     if (targetSlot === $slot`acc1` && slot === undefined) {
@@ -370,7 +370,7 @@ export class Maximizer {
       if (lock) {
         this.pendingEquip.delete($slot`weapon`);
       }
-      equip($slot`weapon`, Item.none);
+      equip($slot`weapon`, $item.none);
     }
 
     if (!equip(targetSlot, item)) {
@@ -446,7 +446,7 @@ export class Maximizer {
     }
 
     for (const item of this.pendingEquip.values()) {
-      if (item === Item.none) {
+      if (item === $item.none) {
         continue;
       }
       const itemModes = this.modes.get(item);
@@ -488,11 +488,11 @@ export class Maximizer {
       }
 
       const item = entry.item;
-      if (item === Item.none) {
+      if (item === $item.none) {
         continue;
       }
       let slot = toSlot(item);
-      if (slot === Slot.none) {
+      if (slot === $slot.none) {
         continue;
       }
 
@@ -502,7 +502,7 @@ export class Maximizer {
             !offhandPicked &&
             haveSkill($skill`Double-Fisted Skull Smashing`) &&
             weaponType(item) ===
-              weaponType(result.get($slot`weapon`) ?? Item.none) &&
+              weaponType(result.get($slot`weapon`) ?? $item.none) &&
             itemType(item) !== "chefstaff"
           ) {
             slot = $slot`off-hand`;
@@ -535,15 +535,15 @@ export class Maximizer {
         }
       } else if (
         slot === $slot`acc1` &&
-        (result.get($slot`acc1`) ?? Item.none) !== Item.none
+        (result.get($slot`acc1`) ?? $item.none) !== $item.none
       ) {
         slot =
-          (result.get($slot`acc2`) ?? Item.none) !== Item.none
+          (result.get($slot`acc2`) ?? $item.none) !== $item.none
             ? $slot`acc3`
             : $slot`acc2`;
       }
 
-      if ((result.get(slot) ?? Item.none) !== Item.none) {
+      if ((result.get(slot) ?? $item.none) !== $item.none) {
         continue;
       }
       result.set(slot, item);

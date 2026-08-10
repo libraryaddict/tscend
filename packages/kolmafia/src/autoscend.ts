@@ -46,7 +46,6 @@ import {
   meatDropModifier,
   min,
   minstrelInstrument,
-  Monster,
   monsterLevelAdjustment,
   mpCost,
   myAdventures,
@@ -84,7 +83,6 @@ import {
   spleenLimit,
   splitString,
   squareRoot,
-  Stat,
   storageAmount,
   substring,
   todayToString,
@@ -597,12 +595,12 @@ export function initializeSettings(): void {
   if (!reinitialize && myAscensions() === get("auto_doneInitialize", 0)) {
     return; //already initialized settings this ascension
   }
-  setLocation(Location.none);
+  setLocation($location.none);
   invalidateRestoreOptionCache();
 
   if (!reinitialize) {
-    set("auto_100familiar", Familiar.none);
-    if (myFamiliar() !== Familiar.none && pathAllowsChangingFamiliar()) {
+    set("auto_100familiar", $familiar.none);
+    if (myFamiliar() !== $familiar.none && pathAllowsChangingFamiliar()) {
       //If we can't control familiar changes, no point setting 100% familiar data
       const userAnswer: boolean = userConfirm(
         "Familiar already set, is this a 100% familiar run? Will default to 'No' in 15 seconds.",
@@ -614,7 +612,7 @@ export function initializeSettings(): void {
       }
     }
     //check for a workshed
-    if (getWorkshed() !== Item.none) {
+    if (getWorkshed() !== $item.none) {
       const userAnswer: boolean = userConfirm(
         "Workshed already set, do you want Autoscend to handle your workshed? Will default to 'Yes' in 15 seconds.",
         15000,
@@ -845,7 +843,7 @@ function LX_burnDelayDo(): boolean {
   let sausageGoblinAvailable: boolean = auto_sausageGoblin();
   const backupTargetAvailable: boolean = auto_backupTarget();
   const voidMonsterAvailable: boolean = auto_voidMonster();
-  const habitatingMonsters: boolean = auto_habitatMonster() !== Monster.none;
+  const habitatingMonsters: boolean = auto_habitatMonster() !== $monster.none;
   // if we're a plumber and we're still stuck doing a flat 15 damage per attack
   // then a scaling monster is probably going to be a bad time
   if (in_plumber() && !plumber_canDealScalingDamage()) {
@@ -870,7 +868,7 @@ function LX_burnDelayDo(): boolean {
     // Voting monsters are inherently free (the ones we fight anyway).
     // don't fight them if we're going to backup because they will overwrite the monster we want to backup
     const voterZone: Location = solveDelayZone(get("breathitinCharges") > 0);
-    if (voterZone !== Location.none) {
+    if (voterZone !== $location.none) {
       auto_log_info(
         `Fighting a free ${getProperty("_voteMonster")} in ${voterZone.toString()} to burn delay!`,
         "green",
@@ -890,7 +888,7 @@ function LX_burnDelayDo(): boolean {
       isFreeMonster(safeGet("_sourceTerminalDigitizeMonster")) &&
         get("breathitinCharges") > 0,
     );
-    if (digitizeZone === Location.none) {
+    if (digitizeZone === $location.none) {
       // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
       // and we likely want to fight it. Noob Cave is available from turn 0 & is not outdoors so Breathitin won't trigger.
       digitizeZone = $location`Noob Cave`;
@@ -911,7 +909,7 @@ function LX_burnDelayDo(): boolean {
       isFreeMonster(safeGet("lastCopyableMonster")) &&
       get("breathitinCharges") > 0;
     let backupZone: Location = solveDelayZone(skipOutdoorZones);
-    if (backupZone === Location.none && skipOutdoorZones && !in_koe()) {
+    if (backupZone === $location.none && skipOutdoorZones && !in_koe()) {
       // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
       // and we likely want to fight it. Noob Cave is available from turn 0 & is not outdoors so Breathitin won't trigger.
       backupZone = $location`Noob Cave`;
@@ -929,7 +927,7 @@ function LX_burnDelayDo(): boolean {
   if (sausageGoblinAvailable) {
     // Sausage Goblins are inherently free
     const goblinZone: Location = solveDelayZone(get("breathitinCharges") > 0);
-    if (goblinZone !== Location.none) {
+    if (goblinZone !== $location.none) {
       auto_log_info(
         `Fighting a Sausage Goblin in ${goblinZone.toString()} to burn delay!`,
         "green",
@@ -943,7 +941,7 @@ function LX_burnDelayDo(): boolean {
   if (voidMonsterAvailable) {
     // Void monsters are inherently free (the ones we fight anyway).
     const voidZone: Location = solveDelayZone(get("breathitinCharges") > 0);
-    if (voidZone !== Location.none) {
+    if (voidZone !== $location.none) {
       auto_log_info(
         `Fighting a Void monster in ${voidZone.toString()} to burn delay!`,
         "green",
@@ -958,7 +956,7 @@ function LX_burnDelayDo(): boolean {
     const habitatZone: Location = solveDelayZone(
       isFreeMonster(auto_habitatMonster()) && get("breathitinCharges") > 0,
     );
-    if (habitatZone !== Location.none) {
+    if (habitatZone !== $location.none) {
       auto_log_info(
         `Might be fighting a ${auto_habitatMonster()} in ${habitatZone.toString()} to burn delay!`,
         "green",
@@ -1046,12 +1044,12 @@ function LX_bestLuckyBurnLocation(): Location {
       return loc;
     }
   }
-  return Location.none;
+  return $location.none;
 }
 
 function LX_burnUnusedLuckDo(): boolean {
   const luckyLoc: Location = LX_bestLuckyBurnLocation();
-  if (luckyLoc === Location.none) {
+  if (luckyLoc === $location.none) {
     return false;
   }
   auto_log_info(
@@ -1110,36 +1108,36 @@ function tophatMaker(): boolean {
   ) {
     return false;
   }
-  let reEquip: Item = Item.none;
+  let reEquip: Item = $item.none;
 
   if (possessEquipment($item`Mark IV Steam-Hat`)) {
     if (equippedItem($slot`hat`) === $item`Mark IV Steam-Hat`) {
       reEquip = $item`Mark V Steam-Hat`;
-      equip($slot`hat`, Item.none);
+      equip($slot`hat`, $item.none);
     }
     autoCraft("combine", 1, $item`brass gear`, $item`Mark IV Steam-Hat`);
   } else if (possessEquipment($item`Mark III Steam-Hat`)) {
     if (equippedItem($slot`hat`) === $item`Mark III Steam-Hat`) {
       reEquip = $item`Mark IV Steam-Hat`;
-      equip($slot`hat`, Item.none);
+      equip($slot`hat`, $item.none);
     }
     autoCraft("combine", 1, $item`brass gear`, $item`Mark III Steam-Hat`);
   } else if (possessEquipment($item`Mark II Steam-Hat`)) {
     if (equippedItem($slot`hat`) === $item`Mark II Steam-Hat`) {
       reEquip = $item`Mark III Steam-Hat`;
-      equip($slot`hat`, Item.none);
+      equip($slot`hat`, $item.none);
     }
     autoCraft("combine", 1, $item`brass gear`, $item`Mark II Steam-Hat`);
   } else if (possessEquipment($item`Mark I Steam-Hat`)) {
     if (equippedItem($slot`hat`) === $item`Mark I Steam-Hat`) {
       reEquip = $item`Mark II Steam-Hat`;
-      equip($slot`hat`, Item.none);
+      equip($slot`hat`, $item.none);
     }
     autoCraft("combine", 1, $item`brass gear`, $item`Mark I Steam-Hat`);
   } else if (possessEquipment($item`brown felt tophat`)) {
     if (equippedItem($slot`hat`) === $item`brown felt tophat`) {
       reEquip = $item`Mark I Steam-Hat`;
-      equip($slot`hat`, Item.none);
+      equip($slot`hat`, $item.none);
     }
     autoCraft("combine", 1, $item`brass gear`, $item`brown felt tophat`);
   } else {
@@ -1147,7 +1145,7 @@ function tophatMaker(): boolean {
   }
 
   auto_log_info("Mark Steam-Hat upgraded!", "blue");
-  if (reEquip !== Item.none) {
+  if (reEquip !== $item.none) {
     equip($slot`hat`, reEquip);
   }
   return true;
@@ -1300,7 +1298,7 @@ function initializeDay(day: number): void {
       const myTea: string = String(
         teaChoice.get(min(teaChoice.size, myDaycount()) - 1) ?? "",
       ).trim();
-      if (toItem(myTea) !== Item.none || myTea === "shake") {
+      if (toItem(myTea) !== $item.none || myTea === "shake") {
         cliExecute(`teatree ${myTea}`);
       }
     } else if (day === 1 && auto_is_valid($item`potted tea tree`)) {
@@ -1505,7 +1503,7 @@ function initializeDay(day: number): void {
 
       equipBaseline();
 
-      handleBjornify(Familiar.none);
+      handleBjornify($familiar.none);
       handleBjornify($familiar`El Vibrato Megadrone`);
 
       visitUrl("guild.php?place=challenge");
@@ -2472,7 +2470,7 @@ export function resetState(): void {
 
   if (
     canChangeToFamiliar($familiar`Left-Hand Man`) &&
-    familiarEquippedEquipment($familiar`Left-Hand Man`) !== Item.none
+    familiarEquippedEquipment($familiar`Left-Hand Man`) !== $item.none
   ) {
     // Leaving something equipped on the Left-Hand man like the Latte is currently bugged in mafia
     // as it will show any skills the equipment gives as available even when you have a completely different familiar
@@ -2482,13 +2480,13 @@ export function resetState(): void {
       "blue",
     );
     useFamiliar($familiar`Left-Hand Man`);
-    equip($slot`familiar`, Item.none);
+    equip($slot`familiar`, $item.none);
   }
 
   for (const it of $items`staph of homophones, sword behind inappropriate prepositions`) {
     // these screw with text in the game which breaks mafia's parsing in a lot of places.
     if (haveEquipped(it)) {
-      equip(Item.none, toSlot(it));
+      equip($item.none, toSlot(it));
     }
   }
   for (const eff of $effects`Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo, Yes\, Can Haz`) {
@@ -3106,13 +3104,13 @@ const cheeseWarMachineAndLoveTunnelTask: QuestTask = registerQuestTask({
     if (myTurncount() >= turnGoal) {
       switch (myDaycount()) {
         case 1:
-          loveTunnelAcquire(true, Stat.none, true, 1, true, 3);
+          loveTunnelAcquire(true, $stat.none, true, 1, true, 3);
           break;
         case 2:
-          loveTunnelAcquire(true, Stat.none, true, 3, true, 1);
+          loveTunnelAcquire(true, $stat.none, true, 3, true, 1);
           break;
         default:
-          loveTunnelAcquire(true, Stat.none, true, 2, true, 1);
+          loveTunnelAcquire(true, $stat.none, true, 2, true, 1);
           break;
       }
     }

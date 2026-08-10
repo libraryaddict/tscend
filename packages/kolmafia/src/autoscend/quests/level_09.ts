@@ -1108,7 +1108,7 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
         $familiar`Baby Gravy Fairy`,
         "Item Drop",
         $servant`Cat`.level,
-        Item.none,
+        $item.none,
       );
     }
     if (

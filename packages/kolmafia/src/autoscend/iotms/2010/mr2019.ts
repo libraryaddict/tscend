@@ -54,6 +54,7 @@ import {
   $modifier,
   $phylum,
   $skill,
+  $slot,
   $slots,
   $stat,
   get,
@@ -375,7 +376,7 @@ export function auto_haveKramcoSausageOMatic(): boolean {
 }
 
 export function auto_sausageGoblin(
-  loc: Location = Location.none,
+  loc: Location = $location.none,
   option?: CombatMacro,
 ): boolean {
   // Sausage Goblins have super low encounter priority so they will be overriden
@@ -399,7 +400,7 @@ export function auto_sausageGoblin(
     return false;
   }
 
-  if (loc === Location.none) {
+  if (loc === $location.none) {
     return true;
   }
 
@@ -554,7 +555,7 @@ export function auto_spoonCombatSkill(): Skill {
       return $skill`Festoon Buffoon`;
     default:
       abort("Invalid mainstat, what?");
-      return Skill.none; // needed or mafia complains about missing return value
+      return $skill.none; // needed or mafia complains about missing return value
   }
 }
 
@@ -762,10 +763,10 @@ export function auto_spoonTuneMoon(): boolean {
     return false;
   }
 
-  let wasspoon: Slot = Slot.none;
+  let wasspoon: Slot = $slot.none;
   for (const sl of $slots`acc1, acc2, acc3`) {
     if (equippedItem(sl) === $item`hewn moon-rune spoon`) {
-      equip(sl, Item.none);
+      equip(sl, $item.none);
       wasspoon = sl;
       break;
     }
@@ -810,7 +811,7 @@ export function auto_spoonTuneMoon(): boolean {
     );
   }
 
-  if (wasspoon !== Slot.none) {
+  if (wasspoon !== $slot.none) {
     equip(wasspoon, $item`hewn moon-rune spoon`);
   }
 
@@ -891,7 +892,7 @@ function auto_beachCombHeadEffectFromNum(num: number): Effect {
   auto_log_error(
     `Invalid number ${num} provided to auto_beachCombHeadEffectFromNum`,
   );
-  return Effect.none;
+  return $effect.none;
 }
 
 export function auto_beachCombHeadEffect(name: string): Effect {
@@ -1125,7 +1126,7 @@ export function auto_changeSnapperPhylum(toChange: Phylum): boolean {
 
   if (
     !canChangeToFamiliar($familiar`Red-Nosed Snapper`) ||
-    toChange === Phylum.none
+    toChange === $phylum.none
   ) {
     return false;
   }
@@ -1139,7 +1140,7 @@ export function auto_snapperPreAdventure(loc: Location): void {
   }
 
   let desiredPhylum: string = getProperty("auto_snapperPhylum");
-  if (desiredPhylum !== "" && toPhylum(desiredPhylum) === Phylum.none) {
+  if (desiredPhylum !== "" && toPhylum(desiredPhylum) === $phylum.none) {
     auto_log_warning(
       `auto_snapperPhylum was set to bad value: ${desiredPhylum}. Should be a valid phylum.`,
       "red",

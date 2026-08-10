@@ -3,7 +3,6 @@ import {
   getProperty,
   getWorkshed,
   haveCampground,
-  Item,
   itemAmount,
   Location,
   max,
@@ -88,7 +87,7 @@ import { LX_fatLootTokenTask, LX_getDesiredWorkshed } from "./quests/level_any";
 //Defined in autoscend/auto_routing.ash
 export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
   const delayableZones: Map<Location, number> = zone_delayable();
-  let burnZone: Location = Location.none;
+  let burnZone: Location = $location.none;
   if (delayableZones.size > 0) {
     // find the delayable zone with the lowest delay left.
     for (const [loc, delay] of delayableZones) {
@@ -96,7 +95,7 @@ export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
         continue;
       }
       if (
-        burnZone === Location.none ||
+        burnZone === $location.none ||
         delay < (delayableZones.get(burnZone) ?? 0)
       ) {
         burnZone = loc;
@@ -115,7 +114,7 @@ export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
     prepForMegaloCity();
   }
 
-  if (burnZone !== Location.none) {
+  if (burnZone !== $location.none) {
     return burnZone;
   }
   // These are locations that aren't 1:1 turn savings, but can still be useful
@@ -262,7 +261,7 @@ export function auto_reserveUndergroundAdventures(): boolean {
     itemAmount($item`cold medicine cabinet`) > 0 &&
     !get("_workshedItemUsed") &&
     (LX_getDesiredWorkshed() === $item`cold medicine cabinet` ||
-      LX_getDesiredWorkshed() === Item.none) &&
+      LX_getDesiredWorkshed() === $item.none) &&
     haveCampground()
   ) {
     auto_log_debug(

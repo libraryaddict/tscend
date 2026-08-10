@@ -1,5 +1,4 @@
 import {
-  Familiar,
   getProperty,
   myAscensions,
   myFamiliar,
@@ -9,7 +8,7 @@ import {
   splitString,
   toLowerCase,
 } from "kolmafia";
-import { get, set } from "libram";
+import { $familiar, get, set } from "libram";
 
 import { auto_log_debug, auto_log_info } from "./auto_util";
 import { AshMatcher } from "./utils/kolmafiaUtils";
@@ -100,10 +99,10 @@ function auto_settingsUpgrade(): void {
     set("auto_100familiar", myFamiliar());
   }
   if (getProperty("auto_100familiar") === "no") {
-    set("auto_100familiar", Familiar.none);
+    set("auto_100familiar", $familiar.none);
   }
   if (getProperty("auto_100familiar") === "false") {
-    set("auto_100familiar", Familiar.none);
+    set("auto_100familiar", $familiar.none);
   }
   if (getProperty("auto_killingjar") === "done") {
     set("auto_killingjar", "finished");
