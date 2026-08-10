@@ -19,7 +19,6 @@ import {
   itemAmount,
   itemType,
   min,
-  Monster,
   myClass,
   myDaycount,
   myFullness,
@@ -495,7 +494,7 @@ function L7_defiledNicheDo(): boolean {
       if (get("cyrptNicheEvilness") > 17 + 2 * evilBonus) {
         nosyOldLihcs = true; //several dirty old lihc worth of evilness left so want to whiff dirty old lihc if we meet one
       } else if (
-        safeGet("nosyNoseMonster", Monster.none) === $monster`dirty old lihc` &&
+        safeGet("nosyNoseMonster") === $monster`dirty old lihc` &&
         get("cyrptNicheEvilness") > 14 + evilBonus
       ) {
         nosyOldLihcs = true; //familiar whiff skill is increasing chances of dirty old lihc

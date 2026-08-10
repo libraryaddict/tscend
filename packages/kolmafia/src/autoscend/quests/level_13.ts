@@ -801,7 +801,7 @@ export function ns_crowd2(): Stat {
   if (get("nsContestants2") !== 0) {
     auto_log_info(`Off-Stat Test: ${getProperty("nsChallenge1")}`, "red");
   }
-  return safeGet("nsChallenge1", Stat.none);
+  return safeGet("nsChallenge1");
 }
 
 export function ns_crowd3(): Element {
@@ -1814,7 +1814,7 @@ function L13_towerNSTowerBones(): boolean {
   ) {
     abort("auto_towerBreak set to abort here.");
   }
-  const hundred_fam: Familiar = safeGet("auto_100familiar", Familiar.none);
+  const hundred_fam: Familiar = safeGet("auto_100familiar");
   const has_boning_knife: boolean =
     itemAmount($item`electric boning knife`) > 0;
 

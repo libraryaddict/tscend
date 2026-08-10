@@ -32,4 +32,5 @@ export const MAXIMIZER_ALIASES: Record<MaximizerModifier | string, string> = {
   Fumble: "fumble",
   "Item Drop": "item drop",
   "Meat Drop": "meat drop",
+  Tie: "tie",
 };

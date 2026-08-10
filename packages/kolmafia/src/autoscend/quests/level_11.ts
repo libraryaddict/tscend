@@ -31,7 +31,6 @@ import {
   itemDropModifier,
   Location,
   max,
-  Monster,
   monsterLevelAdjustment,
   myAdventures,
   myAscensions,
@@ -796,7 +795,7 @@ function LX_unlockManorSecondFloorDo(): boolean {
   auto_log_info("Going to the library!", "blue");
   if (
     get("writingDesksDefeated") <= 3 ||
-    safeGet("nosyNoseMonster", Monster.none) === $monster`writing desk`
+    safeGet("nosyNoseMonster") === $monster`writing desk`
   ) {
     // nose sniff is weak so probably want fairy familiar first. this condition should change if banshee librarian is added as a YR target for killing jar
     if (
@@ -2553,8 +2552,7 @@ function L11_hiddenCityDo(): boolean {
           //once done with curses will want witch accountants
           if (
             itemAmount($item`McClusky file (page 4)`) === 0 ||
-            safeGet("nosyNoseMonster", Monster.none) ===
-              $monster`pygmy witch accountant`
+            safeGet("nosyNoseMonster") === $monster`pygmy witch accountant`
           ) {
             handleFamiliar$1($familiar`Nosy Nose`);
           }
@@ -2776,8 +2774,7 @@ function L11_hiddenCityDo(): boolean {
       ) {
         if (
           surgeonGearWanted >= 2 ||
-          safeGet("nosyNoseMonster", Monster.none) ===
-            $monster`pygmy witch surgeon`
+          safeGet("nosyNoseMonster") === $monster`pygmy witch surgeon`
         ) {
           handleFamiliar$1($familiar`Nosy Nose`); //whiff increases chance of witch accountant
         }
@@ -4026,11 +4023,11 @@ function L11_shenCopperheadDo(): boolean {
     internalQuestStatus("questL11Shen") === 3 ||
     internalQuestStatus("questL11Shen") === 5
   ) {
-    let it: Item = safeGet("shenQuestItem", Item.none);
+    let it: Item = safeGet("shenQuestItem");
     if (it === Item.none && isActuallyEd()) {
       // temp workaround until mafia bug is fixed - https://kolmafia.us/showthread.php?23742
       cliExecute("refresh quests");
-      it = safeGet("shenQuestItem", Item.none);
+      it = safeGet("shenQuestItem");
     }
     let goal: Location = Location.none;
     switch (it) {
@@ -4122,7 +4119,7 @@ export const L11_shenCopperheadTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL11Shen") >= 0 && !is_professor(),
   do: L11_shenCopperheadDo,
   desiredEncounters: () => {
-    const it: Item = safeGet("shenQuestItem", Item.none);
+    const it: Item = safeGet("shenQuestItem");
     return [
       {
         item: it,
@@ -4546,8 +4543,8 @@ function L11_palindomeDo(): boolean {
       }
       if (noseDudesOn) {
         const whiffedBob: boolean =
-          safeGet("nosyNoseMonster", Monster.none) === $monster`Racecar Bob` ||
-          safeGet("nosyNoseMonster", Monster.none) === $monster`Bob Racecar`;
+          safeGet("nosyNoseMonster") === $monster`Racecar Bob` ||
+          safeGet("nosyNoseMonster") === $monster`Bob Racecar`;
         if (
           isBanished($monster`Flock of Stab-bats`) &&
           isBanished($monster`Taco Cat`) &&

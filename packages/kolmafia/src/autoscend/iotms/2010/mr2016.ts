@@ -1079,7 +1079,7 @@ export function LX_ghostBusting(): boolean {
     }
   }
   // goal & progress specific reasons to skip busting this turn go below.
-  const goal: Location = safeGet("ghostLocation", Location.none);
+  const goal: Location = safeGet("ghostLocation");
   if (goal === Location.none) {
     return false;
   }

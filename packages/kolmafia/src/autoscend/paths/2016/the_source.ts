@@ -142,7 +142,7 @@ export function LX_theSource(): boolean {
     auto_sourceTerminalEnhance("substats");
   }
 
-  const goal: Location = safeGet("sourceOracleTarget", Location.none);
+  const goal: Location = safeGet("sourceOracleTarget");
   if (goal !== Location.none && itemAmount($item`no spoon`) === 0) {
     if (
       goal === $location`The Batrat and Ratbat Burrow` &&
@@ -209,11 +209,11 @@ export function theSource_oracle(): boolean {
     return false;
   }
 
-  if (safeGet("sourceOracleTarget", Location.none) === Location.none) {
+  if (safeGet("sourceOracleTarget") === Location.none) {
     visitUrl("place.php?whichplace=town_wrong&action=townwrong_oracle");
     visitUrl("choice.php?pwd=&whichchoice=1190&option=1");
 
-    switch (safeGet("sourceOracleTarget", Location.none)) {
+    switch (safeGet("sourceOracleTarget")) {
       case $location`The Skeleton Store`:
         startMeatsmithSubQuest();
         break;

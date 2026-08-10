@@ -13,7 +13,6 @@ import {
   Item,
   itemAmount,
   min,
-  Monster,
   myAdventures,
   myDaycount,
   myHp,
@@ -777,7 +776,7 @@ export function chateaumantegna_nightstandSet(): boolean {
   }
   if (myLevel() >= 13) {
     if (get("nsContestants2") === -1) {
-      myStat = safeGet("nsChallenge1", Stat.none);
+      myStat = safeGet("nsChallenge1");
     } else {
       return false;
     }
@@ -866,7 +865,7 @@ export const chateauPaintingTask: QuestTask = registerQuestTask({
   do: chateauPaintingDo,
   desiredEncounters: () => [
     {
-      monster: safeGet("chateauMonster", Monster.none),
+      monster: safeGet("chateauMonster"),
       needAmount: get("_chateauMonsterFought") ? 0 : 1,
     },
   ],

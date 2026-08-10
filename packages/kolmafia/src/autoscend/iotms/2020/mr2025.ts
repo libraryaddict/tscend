@@ -2055,7 +2055,7 @@ export function auto_wantToShrunkenHead$1(place: Location): boolean {
     return false;
   }
 
-  const next: Monster = safeGet("auto_nextEncounter", Monster.none);
+  const next: Monster = safeGet("auto_nextEncounter");
   if (next !== Monster.none) {
     //next monster is forced by zone mechanics or some other mechanism
     return auto_wantToShrunkenHead(next);

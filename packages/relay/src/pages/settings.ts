@@ -110,7 +110,7 @@ function settingGroups(): RelayGroup[] {
 
 function familiarComponents(): RelayComponent[] {
   const components: RelayComponent[] = [];
-  const hundredFam: Familiar = safeGet("auto_100familiar", Familiar.none);
+  const hundredFam: Familiar = safeGet("auto_100familiar");
   const changeable = turnsPlayed() === 0;
 
   if (hundredFam !== Familiar.none) {

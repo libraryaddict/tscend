@@ -800,7 +800,7 @@ export function auto_wantToSpadeDigSkeleton(loc: Location): boolean {
   const valid_loc: boolean = spadeDelayZones().includes(loc);
   const have_digs: boolean = auto_spadeDigsRemaining() > 0;
   const delay_left: boolean = zone_delay(loc).shouldDelay;
-  const zone_set: boolean = safeGet("lastAdventure", Location.none) === loc;
+  const zone_set: boolean = safeGet("lastAdventure") === loc;
   if (valid_loc && have_digs && delay_left && zone_set) {
     return true;
   }
@@ -1486,7 +1486,7 @@ export function auto_baseballInningsRemaining(): number {
 
 export function auto_baseballFreefightMonster(): Monster {
   return auto_baseballFreefightsRemaining() > 0
-    ? get("_curveballMonster", $monster.none)
+    ? safeGet("_curveballMonster")
     : Monster.none;
 }
 
@@ -1969,7 +1969,7 @@ export function auto_sword_of_swords_switches_left(): number {
 }
 
 export function auto_sword_of_swords_tracking(): Monster {
-  return safeGet("swordOfSWordsMonster", Monster.none);
+  return safeGet("swordOfSWordsMonster");
 }
 
 export function auto_swordFamiliarWantsMonsterDrops(

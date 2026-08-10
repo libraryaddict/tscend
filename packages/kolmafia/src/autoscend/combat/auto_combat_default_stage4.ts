@@ -16,7 +16,6 @@ import {
   myLocation,
   myMaxmp,
   myMp,
-  Phylum,
   Skill,
 } from "kolmafia";
 import {
@@ -461,7 +460,7 @@ export function auto_combatDefaultStage4(
     canUse$3($item`DNA extraction syringe`) &&
     monsterLevelAdjustment() < 150
   ) {
-    if (monsterPhylum(enemy) !== safeGet("dnaSyringe", Phylum.none)) {
+    if (monsterPhylum(enemy) !== safeGet("dnaSyringe")) {
       return useItem($item`DNA extraction syringe`);
     }
   }

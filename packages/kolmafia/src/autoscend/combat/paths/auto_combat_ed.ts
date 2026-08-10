@@ -164,7 +164,7 @@ export function auto_edCombatHandler(
 
   if (
     auto_backupTarget() &&
-    enemy !== safeGet("lastCopyableMonster", Monster.none) &&
+    enemy !== safeGet("lastCopyableMonster") &&
     auto_canUse($skill`Back-Up to your Last Enemy`)
   ) {
     handleTracker({
@@ -173,7 +173,7 @@ export function auto_edCombatHandler(
       property: "auto_replaces",
     });
     handleTracker({
-      what: safeGet("lastCopyableMonster", Monster.none),
+      what: safeGet("lastCopyableMonster"),
       detail: $skill`Back-Up to your Last Enemy`.toString(),
       property: "auto_copies",
     });
@@ -338,7 +338,7 @@ export function auto_edCombatHandler(
 
   if (
     auto_canUse($skill`Curse of Stench`) &&
-    safeGet("stenchCursedMonster", Monster.none) !== enemy &&
+    safeGet("stenchCursedMonster") !== enemy &&
     get("_edDefeats") < 3
   ) {
     if (auto_wantToSniff(enemy, myLocation())) {
@@ -354,7 +354,7 @@ export function auto_edCombatHandler(
   if (myLocation() === $location`The Secret Council Warehouse`) {
     if (
       auto_canUse($skill`Curse of Stench`) &&
-      safeGet("stenchCursedMonster", Monster.none) !== enemy &&
+      safeGet("stenchCursedMonster") !== enemy &&
       get("_edDefeats") < 3
     ) {
       let doStench: boolean = false;
@@ -388,7 +388,7 @@ export function auto_edCombatHandler(
   if (myLocation() === $location`The Smut Orc Logging Camp`) {
     if (
       auto_canUse($skill`Curse of Stench`) &&
-      safeGet("stenchCursedMonster", Monster.none) !== enemy &&
+      safeGet("stenchCursedMonster") !== enemy &&
       get("_edDefeats") < 3
     ) {
       let doStench: boolean = false;

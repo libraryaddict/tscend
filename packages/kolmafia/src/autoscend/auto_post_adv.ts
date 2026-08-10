@@ -43,12 +43,10 @@ import {
   mySoulsauce,
   myThunder,
   myTurncount,
-  numericModifier,
   putCloset,
   removeProperty,
   Servant,
   Skill,
-  toFloat,
   toMonster,
   use,
   useSkill,
@@ -85,7 +83,7 @@ import {
   possessEquipment,
 } from "./auto_equipment";
 import { pathHasFamiliar } from "./auto_familiar";
-import { acquireHP, acquireMP, uneffect } from "./auto_restore";
+import { acquireHP, acquireMP, mp_regen, uneffect } from "./auto_restore";
 import {
   auto_have_skill,
   auto_haveQueuedForcedNonCombat,
@@ -723,10 +721,7 @@ function auto_post_adventure(): boolean {
 
   const buff_familiar: boolean =
     pathHasFamiliar() && !get("_auto_bad100Familiar", false);
-  const regen: number =
-    (toFloat(numericModifier($modifier`MP Regen Min`)) +
-      toFloat(numericModifier($modifier`MP Regen Max`))) /
-    2.0;
+  const regen: number = mp_regen();
 
   if (myMaxmp() < 50) {
     buffMaintain$2($effect`The Magical Mojomuscular Melody`, 3, 1, 5);
@@ -1300,7 +1295,7 @@ function auto_post_adventure(): boolean {
     //count how many times in a row we went with no adv spent
     set("_auto_inf_counter", get("_auto_inf_counter", 0) + 1);
     //if last monster changed it means we are doing free combats
-    if (safeGet("_auto_inf_last_monster", Monster.none) !== lastMonster()) {
+    if (safeGet("_auto_inf_last_monster") !== lastMonster()) {
       removeProperty("_auto_inf_counter"); //reset counter
     }
     set("_auto_inf_last_monster", lastMonster());

@@ -255,7 +255,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
   let considerCrystalBallBonus: boolean = false;
   if (
     !auto_queueIgnore() &&
-    safeGet("auto_nextEncounter", Monster.none) === Monster.none &&
+    safeGet("auto_nextEncounter") === Monster.none &&
     !auto_forceHandleCrystalBall(place)
   ) {
     //equipping the crystal ball can't hurt but it is neither forced nor forbidden
@@ -264,11 +264,11 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
   }
 
   const possible_monsters: Map<number, Monster> = new Map();
-  if (safeGet("auto_nextEncounter", Monster.none) !== Monster.none) {
+  if (safeGet("auto_nextEncounter") !== Monster.none) {
     //next monster is forced by zone mechanics or by now locked-in miniature crystal ball
     possible_monsters.set(
       possible_monsters.size,
-      safeGet("auto_nextEncounter", Monster.none),
+      safeGet("auto_nextEncounter"),
     );
   } else {
     for (const [, mon] of getMonsters(place).entries()) {
@@ -369,13 +369,12 @@ export function auto_backupTarget(): boolean {
     return false;
   }
   // don't backup if nextAdventure is None as a combat was somewhere that is not a zone
-  if (safeGet("nextAdventure", Location.none) === Location.none) {
+  if (safeGet("nextAdventure") === Location.none) {
     return false;
   }
   // don't backup into oliver's (it won't be free and will waste a free fight and currently also mess up tracking)
   if (
-    safeGet("nextAdventure", Location.none) ===
-    $location`An Unusually Quiet Barroom Brawl`
+    safeGet("nextAdventure") === $location`An Unusually Quiet Barroom Brawl`
   ) {
     return false;
   }
@@ -394,7 +393,7 @@ export function auto_backupTarget(): boolean {
     get("cyrptAlcoveEvilness") > 14 + cyrptEvilBonus() + habitatZombieEvil &&
     internalQuestStatus("questL07Cyrptic") === 0;
 
-  switch (safeGet("lastCopyableMonster", Monster.none)) {
+  switch (safeGet("lastCopyableMonster")) {
     case $monster`lobsterfrogman`:
       if (wantBackupLFM) {
         return true;

@@ -1,6 +1,5 @@
 import {
   containsText,
-  Item,
   itemAmount,
   Monster,
   myLevel,
@@ -91,7 +90,7 @@ export function auto_combatZombieSlayerStage4(
     }
     if (
       enemy === $monster`mountain man` &&
-      itemAmount(safeGet("trapperOre", Item.none)) < 3
+      itemAmount(safeGet("trapperOre")) < 3
     ) {
       doSmash = true;
     }

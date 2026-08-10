@@ -690,7 +690,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
     }
   }
 
-  const oreGoal: Item = safeGet("trapperOre", Item.none);
+  const oreGoal: Item = safeGet("trapperOre");
   if (
     oreGoal !== Item.none &&
     itemAmount(oreGoal) < 3 &&

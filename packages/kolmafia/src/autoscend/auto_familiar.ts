@@ -114,7 +114,7 @@ import { maximizer } from "./utils/maximizer";
 export function is100FamRun(): boolean {
   // answers the question of "is this a 100% familiar run"
 
-  if (safeGet("auto_100familiar", Familiar.none) === Familiar.none) {
+  if (safeGet("auto_100familiar") === Familiar.none) {
     return false;
   }
   // if you reached this line, then it means that auto_100familiar is set to some specific familiar.
@@ -127,7 +127,7 @@ export function doNotBuffFamiliar100Run(): boolean {
   if (!is100FamRun()) {
     return false;
   }
-  const hundred_fam: Familiar = safeGet("auto_100familiar", Familiar.none);
+  const hundred_fam: Familiar = safeGet("auto_100familiar");
   //these familiars always harm you and never aid you
   if ($familiars`Black Cat, O.A.F.`.includes(hundred_fam)) {
     return true;
@@ -329,7 +329,7 @@ export function canChangeToFamiliar(target: Familiar): boolean {
     return false;
   }
   // You are allowed to change to a familiar if it is also the goal of the current 100% run.
-  if (safeGet("auto_100familiar", Familiar.none) === target) {
+  if (safeGet("auto_100familiar") === target) {
     return true;
   }
   //kolhs specific check that needs to go here specifically. can not take familiars >10 lbs base weight into school zone.
@@ -488,7 +488,7 @@ export function handleFamiliar$1(fam: Familiar): boolean {
   if (fam === Familiar.none) {
     return false;
   }
-  if (safeGet("auto_familiarChoice", Familiar.none) === fam) {
+  if (safeGet("auto_familiarChoice") === fam) {
     //this should go after $familiar[none] check
     return true; //desired target is already set as the familiar I will be switching to.
   }
@@ -530,10 +530,7 @@ function autoChooseFamiliar(place: Location): boolean {
   if (!pathHasFamiliar() || !pathAllowsChangingFamiliar()) {
     return false; //will just error in those paths
   }
-  const familiar_target_100: Familiar = safeGet(
-    "auto_100familiar",
-    Familiar.none,
-  );
+  const familiar_target_100: Familiar = safeGet("auto_100familiar");
   if (familiar_target_100 !== Familiar.none) {
     return handleFamiliar$1(familiar_target_100); //do not break 100 familiar runs
   }
@@ -929,7 +926,7 @@ export function preAdvUpdateFamiliar(place: Location): void {
     return; //will just error in those paths
   }
   if (is100FamRun()) {
-    handleFamiliar$1(safeGet("auto_100familiar", Familiar.none)); //do not break 100 familiar runs
+    handleFamiliar$1(safeGet("auto_100familiar")); //do not break 100 familiar runs
   }
   //familiar requirement to adventure in a zone, override everything else.
   if (place === $location`The Deep Machine Tunnels`) {
@@ -982,7 +979,7 @@ export function preAdvUpdateFamiliar(place: Location): void {
     autoChooseFamiliar(place);
   }
 
-  const famChoice: Familiar = safeGet("auto_familiarChoice", Familiar.none);
+  const famChoice: Familiar = safeGet("auto_familiarChoice");
   if (famChoice === Familiar.none) {
     if (getProperty("auto_familiarChoice") === "") {
       abort(

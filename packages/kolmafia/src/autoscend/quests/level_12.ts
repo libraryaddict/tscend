@@ -1226,7 +1226,7 @@ function gremlinsFamiliar(): void {
     return;
   }
 
-  const hundred_fam: Familiar = safeGet("auto_100familiar", Familiar.none);
+  const hundred_fam: Familiar = safeGet("auto_100familiar");
   let strip_familiar: boolean = true;
   if (
     hundred_fam !== Familiar.none &&
@@ -1675,7 +1675,7 @@ function L12_sonofaPrefixDo(): boolean {
 
   if (
     auto_backupTarget() &&
-    safeGet("lastCopyableMonster", Monster.none) === $monster`lobsterfrogman`
+    safeGet("lastCopyableMonster") === $monster`lobsterfrogman`
   ) {
     //let LX_burnDelay() run prior to forcing backing up in noob cave
     return false;
@@ -2130,7 +2130,7 @@ function L12_themtharHillsDo(): boolean {
     meat_need -= 100;
   }
 
-  const famChoice: Familiar = safeGet("auto_familiarChoice", Familiar.none);
+  const famChoice: Familiar = safeGet("auto_familiarChoice");
   if (canChangeFamiliar() && famChoice !== Familiar.none) {
     // if we're in a 100% run, this property returns "none" which will unequip our familiar and ruin a 100% run.
     useFamiliar(famChoice);

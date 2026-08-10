@@ -15,7 +15,7 @@ auto_bat_desiredForm:
 auto_bat_ensorcels:
   type: int
 auto_bat_soulmonster:
-  type: string
+  type: monster
 auto_beatenUpLastAdv:
   type: boolean
 auto_beatenUpLocations:
@@ -129,7 +129,7 @@ auto_getDictionary:
 auto_gremlinMoly:
   type: boolean
 auto_habitatMonster:
-  type: string
+  type: monster
 auto_haveSourceTerminal:
   type: boolean
 auto_ignoreCombat:
@@ -207,7 +207,7 @@ auto_mpAutoRecoveryTarget:
 auto_need_update:
   type: boolean
 auto_nextEncounter:
-  type: string
+  type: monster
 auto_ninjasnowmanassassin:
   type: boolean
 auto_nonAdvLoc:
@@ -241,7 +241,7 @@ auto_priorLocation:
 auto_pulls:
   type: string
 auto_purple_candled:
-  type: string
+  type: monster
 auto_rain_king_combat:
   type: string
 auto_renenutet:
@@ -373,7 +373,7 @@ _auto_preferSwordFam:
 _auto_reinitialize:
   type: boolean
 _auto_screechDelay:
-  type: string
+  type: phylum
 _auto_seaQuestStartedToday:
   type: boolean
 _auto_skip_L8_trapperGroar:

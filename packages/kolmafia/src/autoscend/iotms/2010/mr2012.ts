@@ -46,7 +46,7 @@ export function auto_reagnimatedGetPart(): void {
 }
 
 function handleRainDohDo(): boolean {
-  const enemy: Monster = safeGet("rainDohMonster", Monster.none);
+  const enemy: Monster = safeGet("rainDohMonster");
   auto_log_info(`Black boxing: ${enemy}`, "blue");
 
   function validate_rainDohBox(): void {
@@ -110,7 +110,7 @@ const handleRainDohTask: QuestTask = registerQuestTask({
   desiredEncounters: () =>
     [
       {
-        monster: safeGet("rainDohMonster", Monster.none),
+        monster: safeGet("rainDohMonster"),
         needAmount: itemAmount($item`Rain-Doh box full of monster`) ? 1 : 0,
       },
     ].filter((a) => a.needAmount),

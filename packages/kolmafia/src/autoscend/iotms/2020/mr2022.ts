@@ -699,7 +699,7 @@ export function utilizeStillsuit(): void {
       );
     }
     if (is100FamRun()) {
-      handleFamiliar$1(safeGet("auto_100familiar", Familiar.none)); //just make extra sure this didnt break 100 familiar runs but familiar should not have been swapped
+      handleFamiliar$1(safeGet("auto_100familiar")); //just make extra sure this didnt break 100 familiar runs but familiar should not have been swapped
     }
   }
 }
@@ -807,7 +807,7 @@ function auto_autumnatonReadyToQuest(): boolean {
 }
 
 export function auto_autumnatonQuestingIn(): Location {
-  return safeGet("autumnatonQuestLocation", Location.none);
+  return safeGet("autumnatonQuestLocation");
 }
 
 function auto_autumnatonCheckForUpgrade(upgrade: string): boolean {

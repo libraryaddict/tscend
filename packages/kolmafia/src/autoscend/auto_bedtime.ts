@@ -1202,7 +1202,7 @@ export function doBedtime(): boolean {
     !inAftercore() &&
     !in_tcrs()
   ) {
-    const oreGoal: Item = safeGet("trapperOre", Item.none);
+    const oreGoal: Item = safeGet("trapperOre");
     let need: number = 1;
     const haveAdvSmithing: boolean = haveSkill(
       $skill`Super-Advanced Meatsmithing`,

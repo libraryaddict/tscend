@@ -259,6 +259,14 @@ import {
   taskLocations,
 } from "./engine/engine";
 import {
+  familiarProperties,
+  itemProperties,
+  locationProperties,
+  monsterProperties,
+  phylumProperties,
+  statProperties,
+} from "./generated/property-types";
+import {
   auto_hasNavelRing,
   auto_navelFreeRunChance,
 } from "./iotms/2010/mr2007";
@@ -3209,7 +3217,7 @@ function LX_summonMonsterDo(): boolean {
   }
   // summon mountain man if we know the ore we need and still need 2 or more
   // don't summon if we have model train set as it is an easy source of ore
-  const oreGoal: Item = safeGet("trapperOre", Item.none);
+  const oreGoal: Item = safeGet("trapperOre");
   if (
     internalQuestStatus("questL08Trapper") < 2 &&
     !auto_haveTrainSet() &&
@@ -3402,7 +3410,7 @@ export const LX_summonMonsterTask: QuestTask = registerQuestTask({
     ) {
       encounters.push({ monster: $monster`screambat`, needAmount: 1 });
     }
-    const oreGoal: Item = safeGet("trapperOre", Item.none);
+    const oreGoal: Item = safeGet("trapperOre");
     if (
       get("trapperOre") &&
       internalQuestStatus("questL08Trapper") < 2 &&
@@ -4714,7 +4722,7 @@ export function auto_is_valid(it: Item): boolean {
 
 export function auto_is_valid$1(fam: Familiar): boolean {
   if (is100FamRun()) {
-    return safeGet("auto_100familiar", Familiar.none) === fam;
+    return safeGet("auto_100familiar") === fam;
   }
   if (myPath() === $path`Trendy`) {
     return isTrendy(fam);
@@ -5113,46 +5121,43 @@ export function auto_check_conditions(conds: string): boolean {
           }
           if (
             haveEffect($effect`On the Trail`) > 0 &&
-            safeGet("olfactedMonster", Monster.none) === check_sniffed
+            safeGet("olfactedMonster") === check_sniffed
           ) {
             return true;
           }
           if (
             isActuallyEd() &&
-            safeGet("stenchCursedMonster", Monster.none) === check_sniffed
+            safeGet("stenchCursedMonster") === check_sniffed
           ) {
             return true;
           }
-          if (
-            is_pete() &&
-            safeGet("makeFriendsMonster", Monster.none) === check_sniffed
-          ) {
+          if (is_pete() && safeGet("makeFriendsMonster") === check_sniffed) {
             return true;
           }
           if (
             $classes`Cow Puncher, Beanslinger, Snake Oiler`.includes(
               myClass(),
             ) &&
-            safeGet("longConMonster", Monster.none) === check_sniffed
+            safeGet("longConMonster") === check_sniffed
           ) {
             return true;
           }
           if (
             in_darkGyffte() &&
-            safeGet("auto_bat_soulmonster", Monster.none) === check_sniffed
+            safeGet("auto_bat_soulmonster") === check_sniffed
           ) {
             return true;
           }
-          if (safeGet("_gallapagosMonster", Monster.none) === check_sniffed) {
+          if (safeGet("_gallapagosMonster") === check_sniffed) {
             return true;
           }
-          if (safeGet("monkeyPointMonster", Monster.none) === check_sniffed) {
+          if (safeGet("monkeyPointMonster") === check_sniffed) {
             return true;
           }
-          if (safeGet("_latteMonster", Monster.none) === check_sniffed) {
+          if (safeGet("_latteMonster") === check_sniffed) {
             return true;
           }
-          if (safeGet("motifMonster", Monster.none) === check_sniffed) {
+          if (safeGet("motifMonster") === check_sniffed) {
             return true;
           }
           return false;
@@ -6912,7 +6917,7 @@ export function auto_wantToFreeKillWithNoDrops(
       return true;
     }
     //This is called in stage2 and auto_purple_candled is set in stage 4 so this should only ever show up on the purple candled enemy
-    if (safeGet("auto_purple_candled", Monster.none) === enemy) {
+    if (safeGet("auto_purple_candled") === enemy) {
       return true;
     }
     return false;
@@ -6958,7 +6963,7 @@ export function auto_wantToAvoidMonster(
     return false;
   }
   //This is called in stage2 and auto_purple_candled is set in stage 4 so this should only ever show up on the purple candled enemy
-  if (safeGet("auto_purple_candled", Monster.none) === enemy) {
+  if (safeGet("auto_purple_candled") === enemy) {
     return false;
   }
   // don't avoid inherently free fights
@@ -7325,11 +7330,32 @@ export function auto_zoneCopyableMonsters(loc: Location): [Monster, number][] {
     );
 }
 
-export function safeGet<T>(key: string, fallback: T): T {
-  const value = (get as unknown as (key: string, fallback: T) => T | null)(
-    key,
-    fallback,
-  );
+const noneByProperty = new Map<string, unknown>([
+  ...locationProperties.map((key) => [key, Location.none] as const),
+  ...monsterProperties.map((key) => [key, Monster.none] as const),
+  ...familiarProperties.map((key) => [key, Familiar.none] as const),
+  ...itemProperties.map((key) => [key, Item.none] as const),
+  ...statProperties.map((key) => [key, Stat.none] as const),
+  ...phylumProperties.map((key) => [key, Phylum.none] as const),
+]);
+
+export function safeGet(key: (typeof locationProperties)[number]): Location;
+export function safeGet(key: (typeof monsterProperties)[number]): Monster;
+export function safeGet(key: (typeof familiarProperties)[number]): Familiar;
+export function safeGet(key: (typeof itemProperties)[number]): Item;
+export function safeGet(key: (typeof statProperties)[number]): Stat;
+export function safeGet(key: (typeof phylumProperties)[number]): Phylum;
+export function safeGet(key: string): unknown {
+  const fallback = noneByProperty.get(key);
+
+  if (fallback === undefined) {
+    abort(`safeGet: unrecognized property "${key}"`);
+  }
+
+  const value = (
+    get as unknown as (key: string, fallback: unknown) => unknown | null
+  )(key, fallback);
+
   return value === null ? fallback : value;
 }
 

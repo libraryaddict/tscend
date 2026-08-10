@@ -887,7 +887,7 @@ function LX_burnDelayDo(): boolean {
     // Digitize Wanderers will happen regardless so prioritize handling them.
     // hopefully they don't overwrite something we want to backup.
     let digitizeZone: Location = solveDelayZone(
-      isFreeMonster(safeGet("_sourceTerminalDigitizeMonster", Monster.none)) &&
+      isFreeMonster(safeGet("_sourceTerminalDigitizeMonster")) &&
         get("breathitinCharges") > 0,
     );
     if (digitizeZone === Location.none) {
@@ -908,7 +908,7 @@ function LX_burnDelayDo(): boolean {
 
   if (backupTargetAvailable) {
     const skipOutdoorZones: boolean =
-      isFreeMonster(safeGet("lastCopyableMonster", Monster.none)) &&
+      isFreeMonster(safeGet("lastCopyableMonster")) &&
       get("breathitinCharges") > 0;
     let backupZone: Location = solveDelayZone(skipOutdoorZones);
     if (backupZone === Location.none && skipOutdoorZones && !in_koe()) {
@@ -3477,7 +3477,7 @@ function doTasks(): boolean {
   if (myFamiliar() === $familiar`Stooper` && pathAllowsChangingFamiliar()) {
     auto_log_info("Avoiding stooper stupor...", "blue");
     const fam: Familiar = is100FamRun()
-      ? safeGet("auto_100familiar", Familiar.none)
+      ? safeGet("auto_100familiar")
       : findNonRockFamiliarInTerrarium();
     useFamiliar(fam);
   }
@@ -3691,7 +3691,7 @@ function auto_begin(): void {
   if (myFamiliar() === $familiar`Stooper` && pathAllowsChangingFamiliar()) {
     auto_log_info("Avoiding stooper stupor...", "blue");
     const fam: Familiar = is100FamRun()
-      ? safeGet("auto_100familiar", Familiar.none)
+      ? safeGet("auto_100familiar")
       : findNonRockFamiliarInTerrarium();
     useFamiliar(fam);
   }

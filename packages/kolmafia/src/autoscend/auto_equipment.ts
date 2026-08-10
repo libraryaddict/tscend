@@ -756,7 +756,7 @@ function finalizeMaximize(speculative: boolean = false): void {
   }
   //otherwise miniature crystal ball is handled along with monster goals in pre_adv
 
-  const nextMonster: Monster = safeGet("auto_nextEncounter", Monster.none);
+  const nextMonster: Monster = safeGet("auto_nextEncounter");
   const nextMonsterIsFree: boolean =
     (nextMonster !== Monster.none && isFreeMonster(nextMonster)) ||
     (get("breathitinCharges") > 0 && myLocation().environment === "outdoor");
@@ -771,7 +771,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     const dontSausageBackups: boolean =
       auto_backupTarget() &&
       !$monsters`sausage goblin, Eldritch Tentacle`.includes(
-        safeGet("lastCopyableMonster", Monster.none),
+        safeGet("lastCopyableMonster"),
       );
     // also don't equip Kramco when using Map the Monsters as sausage goblins override the NC
     if (saveGoblinForDelay || dontSausageBackups || get("mappingMonsters")) {
@@ -1357,15 +1357,10 @@ export function auto_forceEquipSword(speculative: boolean = false): boolean {
   }
 
   if (
-    safeGet("auto_equipment_override_weapon", Item.none) !== Item.none &&
-    auto_can_equip(
-      safeGet("auto_equipment_override_weapon", Item.none),
-      $slot`weapon`,
-    )
+    safeGet("auto_equipment_override_weapon") !== Item.none &&
+    auto_can_equip(safeGet("auto_equipment_override_weapon"), $slot`weapon`)
   ) {
-    if (
-      itemType(safeGet("auto_equipment_override_weapon", Item.none)) === "sword"
-    ) {
+    if (itemType(safeGet("auto_equipment_override_weapon")) === "sword") {
       return true;
     } else {
       auto_log_debug(
@@ -1635,8 +1630,7 @@ export function auto_equipFreekill(): void {
   } else if (
     clubBackAvailable &&
     !maximizer.has($slot`weapon`) &&
-    (safeGet("auto_familiarChoice", Familiar.none) !==
-      $familiar`Sword of S Words` ||
+    (safeGet("auto_familiarChoice") !== $familiar`Sword of S Words` ||
       !auto_desires_sword_familiar_drops())
   ) {
     // club back is last because it destroys drops, so we may choose to not use it

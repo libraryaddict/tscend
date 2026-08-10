@@ -2498,7 +2498,7 @@ function auto_breakfastCounterVisitDo(): boolean {
   auto_runChoice(7); // Visit the Breakfast Counter
   if (getProperty("muffinOnOrder") !== "") {
     cliExecute("refresh inv");
-    if (itemAmount(safeGet("muffinOnOrder", Item.none)) > 0) {
+    if (itemAmount(safeGet("muffinOnOrder")) > 0) {
       // workaround mafia not clearing the property occasionally
       // see https://kolmafia.us/threads/ordering-a-muffin-at-the-breakfast-counter-doesnt-always-set-the-muffinonorder-property.26072/
       set("muffinOnOrder", "");
@@ -2520,13 +2520,13 @@ export const auto_breakfastCounterVisitTask: QuestTask = registerQuestTask({
   name: "auto_breakfastCounterVisit",
   completed: () =>
     get("_muffinOrderedToday") ||
-    (safeGet("muffinOrder", Item.none) === Item.none &&
+    (safeGet("muffinOnOrder") === Item.none &&
       !have($item`earthenware muffin tin`)),
   ready: () =>
     itemAmount($item`earthenware muffin tin`) > 0 ||
     (!get("_muffinOrderedToday") &&
       $items`blueberry muffin, bran muffin, chocolate chip muffin, earthenware muffin tin`.includes(
-        safeGet("muffinOnOrder", Item.none),
+        safeGet("muffinOnOrder"),
       )),
   do: auto_breakfastCounterVisitDo,
 });
@@ -2733,7 +2733,7 @@ export function consumeStuff(): void {
     // always unequip stooper as only useful for roll over
     if (
       myFamiliar() === $familiar`Stooper` &&
-      safeGet("auto_100familiar", Familiar.none) !== $familiar`Stooper` &&
+      safeGet("auto_100familiar") !== $familiar`Stooper` &&
       pathAllowsChangingFamiliar()
     ) {
       //check path allows changing of familiars

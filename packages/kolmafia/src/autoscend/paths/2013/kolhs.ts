@@ -167,7 +167,7 @@ export function kolhs_preadv(place: Location): void {
   }
   //prepare yearbook camera
   if (
-    place === safeGet("_yearbookCameraTargetLocation", Location.none) &&
+    place === safeGet("_yearbookCameraTargetLocation") &&
     !get("yearbookCameraPending")
   ) {
     if (equippedAmount($item`Yearbook Club Camera`) === 0) {
@@ -237,7 +237,7 @@ function LX_kolhs_yearbookCameraQuest(): boolean {
     return false; //we finished the quest today but must wait until tomorrow to turn it in
   }
   //try to get a photograph
-  const target: Monster = safeGet("yearbookCameraTarget", Monster.none);
+  const target: Monster = safeGet("yearbookCameraTarget");
   let adv_target: Location = Location.none;
   for (const loc of monster_to_location(target)) {
     if (zone_isAvailable(loc, true)) {
@@ -322,10 +322,7 @@ export function LM_kolhs(): boolean {
     return false;
   }
 
-  const familiar_target_100: Familiar = safeGet(
-    "auto_100familiar",
-    Familiar.none,
-  );
+  const familiar_target_100: Familiar = safeGet("auto_100familiar");
   if (
     familiar_target_100 !== Familiar.none &&
     familiar_target_100 !== $familiar`Steam-Powered Cheerleader`

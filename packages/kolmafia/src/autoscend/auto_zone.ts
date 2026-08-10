@@ -493,7 +493,7 @@ export function zone_needItem(loc: Location): {
 
   if (
     expectGhostReport() &&
-    loc === safeGet("ghostLocation", Location.none) &&
+    loc === safeGet("ghostLocation") &&
     getProperty("questPAGhost") === "started"
   ) {
     value = 0.0;
@@ -527,7 +527,7 @@ export function zone_needItemBooze(loc: Location): {
 
   if (
     expectGhostReport() &&
-    loc === safeGet("ghostLocation", Location.none) &&
+    loc === safeGet("ghostLocation") &&
     getProperty("questPAGhost") === "started"
   ) {
     value = 0.0;
@@ -625,7 +625,7 @@ export function zone_needItemFood(loc: Location): {
 
   if (
     expectGhostReport() &&
-    loc === safeGet("ghostLocation", Location.none) &&
+    loc === safeGet("ghostLocation") &&
     getProperty("questPAGhost") === "started"
   ) {
     value = 0.0;
@@ -912,7 +912,7 @@ export function zone_combatMod(loc: Location): {
 
   if (
     expectGhostReport() &&
-    loc === safeGet("ghostLocation", Location.none) &&
+    loc === safeGet("ghostLocation") &&
     getProperty("questPAGhost") === "started"
   ) {
     desiredModifier = 0;
