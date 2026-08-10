@@ -1553,7 +1553,7 @@ const L11_getUVCompassTask: QuestTask = registerQuestTask({
     possessEquipment($item`UV-resistant compass`) ||
     //impossible to get compass in this path. [The Shore, Inc] is unavailable
     in_koe(),
-  ready: () => auto_can_equip($item`UV-resistant compass`) && is_professor(),
+  ready: () => auto_can_equip($item`UV-resistant compass`) && !is_werewolf(),
   do: L11_getUVCompassDo,
 });
 
