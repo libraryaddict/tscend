@@ -9,6 +9,7 @@ import {
   equip,
   equippedAmount,
   equippedItem,
+  expectedDamage,
   Familiar,
   familiarWeight,
   fullnessLimit,
@@ -67,6 +68,7 @@ import {
 import {
   $class,
   $effect,
+  $elements,
   $familiar,
   $item,
   $items,
@@ -91,7 +93,7 @@ import {
   findNonRockFamiliarInTerrarium,
   pathHasFamiliar,
 } from "./auto_familiar";
-import { disregardInstantKarma } from "./auto_powerlevel";
+import { disregardInstantKarma, isAboutToPowerlevel } from "./auto_powerlevel";
 import { solveDelayZone } from "./auto_routing";
 import {
   auto_burnMP,
@@ -99,6 +101,7 @@ import {
   auto_have_skill,
   auto_ignoreExperience,
   auto_is_valid,
+  auto_location_monsters,
   auto_log_debug,
   auto_log_error,
   auto_log_info,
@@ -163,7 +166,9 @@ import { borisTrusty, is_boris } from "./paths/2012/avatar_of_boris";
 import { in_kolhs } from "./paths/2013/kolhs";
 import { in_heavyrains } from "./paths/2014/heavy_rains";
 import { isActuallyEd } from "./paths/2015/actually_ed_the_undying";
+import { in_ocrs } from "./paths/2015/one_crazy_random_summer";
 import { in_gnoob } from "./paths/2017/gelatinous_noob";
+import { in_disguises } from "./paths/2018/disguises_delimit";
 import { in_glover } from "./paths/2018/g_lover";
 import {
   in_pokefam,
@@ -559,16 +564,15 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
     return;
   }
 
-  target
-    .weight($modifier`Item Drop`, 5)
-    .weight($modifier`Meat Drop`, isMeatPoor() ? 1 : 0.05)
-    .weight($modifier`Initiative`, 0.5)
-    .weight($modifier`Damage Absorption`, 0.1)
-    .max($modifier`Damage Absorption`, 1000)
-    .weight($modifier`Damage Reduction`)
-    .weight("All Resistance", 0.5)
-    .weight("Mainstat", 1.5)
-    .require("Fumble", false);
+  target.weight($modifier`Item Drop`, 5);
+  target.weight($modifier`Meat Drop`, isMeatPoor() ? 1 : 0.05);
+  target.weight($modifier`Initiative`, 0.5);
+  target.weight($modifier`Damage Absorption`, 0.1);
+  target.max($modifier`Damage Absorption`, 1000);
+  target.weight($modifier`Damage Reduction`);
+  target.weight("All Resistance", 0.5);
+  target.weight("Mainstat", 1.5);
+  target.require("Fumble", false);
 
   if (myPrimestat() !== $stat`Moxie`) {
     target.weight($modifier`Moxie`);
@@ -657,6 +661,86 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
       target
         .weight($modifier`Mysticality Experience`, 10)
         .weight($modifier`Mysticality Experience Percent`, 3);
+    }
+  }
+
+  // If we're doing smarter maximize, in a location we recognize
+  if (
+    get("auto_maximize_smarter") &&
+    !$locations`Noob Cave, none`.includes(myLocation()) &&
+    !in_hattrick() &&
+    !in_avantGuard() &&
+    !in_disguises() &&
+    !in_ocrs()
+  ) {
+    const encounters = auto_location_monsters(myLocation());
+    const monsters = encounters.map((m) => m[0]);
+    const nextEncounter = safeGet("auto_nextEncounter");
+    if (nextEncounter !== Monster.none) {
+      monsters.push(nextEncounter);
+    }
+
+    // Set the max init we'll be seeking
+    if (monsters.length > 0 && myLocation().combatPercent > 0) {
+      // We want a max of the highest init at the location, plus a hundred
+      target.max(
+        $modifier`Initiative`,
+        100 +
+          monsters.reduce(
+            (prev, monster) => Math.max(prev, monster.baseInitiative),
+            0,
+          ),
+      );
+
+      const monsterElements =
+        $elements`cold, hot, sleaze, spooky, stench`.filter((e) =>
+          monsters.some((m) => m.attackElements.includes(e)),
+        );
+
+      if (monsterElements.length <= 1) {
+        target.clearWeight("All Resistance");
+
+        if (monsterElements.length === 1) {
+          target.weight(Modifier.get(`${monsterElements[0]} Resistance`), 1.5);
+        }
+      }
+
+      // The code below isn't very thought out, there's plenty of room for improvement. It's pretty conservative.
+      if (
+        // If we're trying to powerlevel, we don't want to remove our stats
+        !isAboutToPowerlevel() &&
+        monsters.every(
+          (m) =>
+            // If no monsters are scaling
+            !m.attributes.includes("Scale") &&
+            // If they would do less than 10% of our health
+            m.baseAttack < Math.min(10, myMaxhp() * 0.01) &&
+            // If we have twice their base defense
+            m.baseDefense * 2 < expectedDamage(m),
+        )
+      ) {
+        // Then we don't need to buff our mainstat.
+        // We don't need to apply DA or DR
+        // But rather than remove it altogether, we simply lower the weight
+        target.weight("Mainstat", 0.1);
+        target.weight($modifier`Damage Absorption`, 0.01);
+        target.weight($modifier`Damage Reduction`, 0.1);
+
+        if (myPrimestat() !== $stat`Moxie`) {
+          target.weight($modifier`Moxie`, 0.1);
+        }
+
+        if (myPrimestat() === $stat`Mysticality`) {
+          target
+            .weight($modifier`Spell Damage`, 0.025)
+            .weight($modifier`Spell Damage Percent`, 0.175);
+        } else {
+          target
+            .weight($modifier`Weapon Damage`, 0.15)
+            .weight($modifier`Weapon Damage Percent`, 0.075);
+          // Elemental damage is handy enough that we don't want to remove it
+        }
+      }
     }
   }
 }

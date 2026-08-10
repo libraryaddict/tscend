@@ -1,3 +1,7 @@
+auto_maximize_smarter:
+  name: "Smarter Maximize"
+  type: boolean
+  description: "Tells maximizer to try be smarter by applying limits to what it considers to be unimportant resources, for a new player, the setting is best left turned off as this setting aims at removing some of safety guidelines"
 auto_maximize_baseline:
   name: "Maximizer Baseline"
   type: string
@@ -20,7 +24,7 @@ auto_equipment_override_shirt:
   tags: [equipment]
 auto_equipment_override_weapon:
   name: "Weapon Override"
-  type: string
+  type: item
   description: A semicolon separated list of overrides for the weapon slot.
   tags: [equipment]
 auto_equipment_override_off-hand:
