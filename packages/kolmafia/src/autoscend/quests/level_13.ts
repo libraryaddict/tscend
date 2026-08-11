@@ -447,17 +447,17 @@ const eightBitLocs: {
   {
     location: $location`Vanya's Castle`,
     modifier: $modifier`Initiative`,
-    target: 595.6,
+    target: 600,
   },
   {
     location: $location`Hero's Field`,
     modifier: $modifier`Item Drop`,
-    target: 395.6,
+    target: 400,
   },
   {
     location: $location`The Fungus Plains`,
     modifier: $modifier`Meat Drop`,
-    target: 445.6,
+    target: 450,
   },
 ];
 const canUseAnyFamiliar: Map<

@@ -590,13 +590,13 @@ function auto_pre_adventure(): boolean {
 
   if (place === $location`Vanya's Castle`) {
     provideInitiative$2(600, $location`Vanya's Castle`, true);
-    maximizer
-      .weight($modifier`Initiative`, 200)
-      .max($modifier`Initiative`, 800);
+    maximizer.weight($modifier`Initiative`, 200);
+    maximizer.max($modifier`Initiative`, 600);
   }
   if (place === $location`The Fungus Plains`) {
     provideMeat$2(450, $location`The Fungus Plains`, true);
-    maximizer.weight($modifier`Meat Drop`, 200).max($modifier`Meat Drop`, 550);
+    maximizer.weight($modifier`Meat Drop`, 200);
+    maximizer.max($modifier`Meat Drop`, 450);
   }
   if (place === $location`Megalo-City`) {
     buffMaintain$2($effect`Ghostly Shell`, 30, 1, 1); //+80 DA. 6 MP
@@ -608,7 +608,9 @@ function auto_pre_adventure(): boolean {
   }
   if (place === $location`Hero's Field`) {
     provideItem$2(400, $location`Hero's Field`, true);
-    maximizer.weight($modifier`Item Drop`, 200).max($modifier`Item Drop`, 500);
+    maximizer.weight($modifier`Item Drop`, 200);
+    // We don't cap our item drop, we sometimes drag wanderers in here
+    // maximizer.max($modifier`Item Drop`, 400);
   }
 
   let junkyardML: boolean = false;
