@@ -18,6 +18,8 @@ iotm:
   description: "Settings for items bound to accounts"
   color: "#22c3a6"
   children:
+    iotm/clan:
+      name: "Clan VIP Lounge"
     iotm/interestingcoin:
       name: "Interesting Coins (2026)"
     iotm/skeletonofcrimbopast:
@@ -28,8 +30,6 @@ iotm:
       name: "Mushroom Garden (2020)"
     iotm/moonspoon:
       name: "Moon Rune Spoon (2019)"
-    iotm/fortune:
-      name: "Clan Fortune Teller (2018)"
     iotm/ashton:
       name: "Ashton Martin (2017)"
     iotm/floundry:

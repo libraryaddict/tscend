@@ -37,6 +37,7 @@ import {
   $items,
   $location,
   $path,
+  Clan,
   get,
   set,
 } from "libram";
@@ -217,63 +218,73 @@ export function get_floundry_locations(): Map<Location, boolean> {
   return $_get_floundry_locations_floundryLocations;
 }
 
-export function getBAFHID(): number {
-  return 90485;
-}
+let whitelists: Clan[];
+let lastChecked: number = 0;
 
-function isWhitelistedToClan(clanID: number): boolean {
-  const page: string = visitUrl("clan_signup.php");
-  const clan_matcher: AshMatcher = new AshMatcher(
-    "<option value=(\\d\\d\\d+)>(.*?)</option>",
-    page,
-  );
-  while (clan_matcher.find()) {
-    if (toInt(clan_matcher.group(1)) === clanID) {
-      //~ auto_log_debug("Found clan " + clanID + " and name: " + clan_matcher.group(2));
-      return true;
-    }
+function getClans(): Clan[] {
+  if (lastChecked + 60_000 > Date.now()) {
+    return whitelists;
   }
-  return false;
+
+  whitelists = Clan.getWhitelisted();
+  lastChecked = Date.now();
+  return whitelists;
 }
 
-export function isWhitelistedToBAFH(): boolean {
-  return isWhitelistedToClan(getBAFHID());
+function normalizeClanName(name: string): string {
+  return name.toLowerCase().trim();
 }
 
-function whitelistedClanToID(clanName: string): number {
-  const page: string = visitUrl("clan_signup.php");
-  const clan_matcher: AshMatcher = new AshMatcher(
-    "<option value=(\\d\\d\\d+)>(.*?)</option>",
-    page,
-  );
-  let clanID: number = 0;
-  while (clan_matcher.find()) {
-    if (clan_matcher.group(2) === clanName) {
-      clanID = toInt(clan_matcher.group(1));
-      auto_log_debug(
-        `Found clan ${clan_matcher.group(1)} and name: ${clan_matcher.group(2)}`,
-      );
-      break;
-    }
-  }
-  return clanID;
+function findClan(name: string): Clan | undefined {
+  const target: string = normalizeClanName(name);
+  return getClans().find((c) => normalizeClanName(c.name) === target);
 }
 
 export function canReturnToCurrentClan(): boolean {
-  return isWhitelistedToClan(getClanId());
+  return findClan(getClanName()) !== undefined;
 }
 
-function changeClan(clanName: string): number {
+// User's auto_clanVIPLounge preference, else The Average Clan if we're
+// already there, else Bonus Adventures from Hell.
+export function getAwayClanName(): string {
+  const preferred: string = get("auto_clanVIPLounge").trim();
+  if (preferred !== "") {
+    return preferred;
+  }
+  return getClanName() === "The Average Clan"
+    ? "The Average Clan"
+    : "Bonus Adventures from Hell";
+}
+
+export function isInAwayClan(): boolean {
+  return (
+    normalizeClanName(getClanName()) === normalizeClanName(getAwayClanName())
+  );
+}
+
+export function isWhitelistedToAwayClan(): boolean {
+  return findClan(getAwayClanName()) !== undefined;
+}
+
+export function canJumpToAwayClan(): boolean {
+  return isWhitelistedToAwayClan() && canReturnToCurrentClan();
+}
+
+export function changeClan(clanIdOrName: string | number): number {
   const canReturn: boolean = canReturnToCurrentClan();
 
-  const toClan: number = whitelistedClanToID(clanName);
+  const toClan: Clan | undefined =
+    typeof clanIdOrName === "number"
+      ? getClans().find((c) => c.id === clanIdOrName)
+      : findClan(clanIdOrName);
 
-  if (toClan === 0) {
+  if (!toClan) {
     auto_log_warning(
       "Do not have a whitelist to destination clan, can not change clans.",
     );
     return 0;
   }
+
   if (!canReturn) {
     auto_log_warning(
       "Do not have a whitelist to our own clan, can not change clans.",
@@ -282,66 +293,20 @@ function changeClan(clanName: string): number {
   }
 
   const oldClan: number = getClanId();
-  if (toClan === oldClan) {
+  if (toClan.id === oldClan) {
     auto_log_debug(
-      `Already in this clan, no need to try to change (${toClan})`,
+      `Already in this clan, no need to try to change (${toClan.name})`,
       "red",
     );
     return oldClan;
   }
 
-  visitUrl(
-    `showclan.php?pwd=&recruiter=1&action=joinclan&apply=Apply+to+this+Clan&confirm=on&whichclan=${toClan}`,
-    true,
-  );
+  Clan.join(toClan.id);
 
   if (getClanId() === oldClan) {
     auto_log_error("Clan change failed");
   }
   return getClanId();
-}
-
-export function changeClan$1(toClan: number): number {
-  //Returns new clan ID (or old one if it failed)
-
-  const oldClan: number = getClanId();
-  if (toClan === oldClan) {
-    auto_log_debug(
-      `Already in this clan, no need to try to change (${toClan})`,
-      "red",
-    );
-    return oldClan;
-  }
-
-  const page: string = visitUrl("clan_signup.php");
-  if (!containsText(page, `option value=${oldClan}>`)) {
-    auto_log_warning(
-      "Do not have a whitelist to our own clan, can not change clans.",
-    );
-    return 0;
-  }
-  if (!containsText(page, `option value=${toClan}>`)) {
-    auto_log_warning(
-      "Do not have a whitelist to destination clan, can not change clans.",
-    );
-    return 0;
-  }
-
-  visitUrl(
-    `showclan.php?pwd=&recruiter=1&action=joinclan&apply=Apply+to+this+Clan&confirm=on&whichclan=${toClan}`,
-    true,
-  );
-
-  if (getClanId() === oldClan) {
-    auto_log_error("Clan change failed");
-  }
-  return getClanId();
-}
-
-export function changeClan$2(): number {
-  //To BAFH
-  // to BAFH
-  return changeClan$1(getBAFHID());
 }
 
 export function hotTubSoaksRemaining(): number {
@@ -515,6 +480,43 @@ export function zataraSeaside(who: string): boolean {
   return true;
 }
 
+const knownConsultBots: ReadonlyMap<string, number> = new Map([
+  ["OnlyFax", 3690803],
+  ["AverageChat", 3095601],
+]);
+
+function getDefaultConsultBot(defaultClan: string): string {
+  return normalizeClanName(defaultClan) === "the average clan"
+    ? "AverageChat"
+    : "OnlyFax";
+}
+
+function toResolvedPlayer(id: number): { player: number; name: string } {
+  return { player: id, name: getPlayerName(id) };
+}
+
+function resolveConsultPlayer(
+  requestedPlayer: string,
+): { player: number; name: string } | undefined {
+  for (const [botName, id] of knownConsultBots) {
+    if (
+      botName.toLowerCase() === requestedPlayer.toLowerCase() ||
+      id.toString() === requestedPlayer
+    ) {
+      return { player: id, name: botName };
+    }
+  }
+
+  if (/^\d+$/.test(requestedPlayer)) {
+    return toResolvedPlayer(parseInt(requestedPlayer));
+  }
+
+  const playerId: string = getPlayerId(requestedPlayer);
+  return /^\d{2,}$/.test(playerId)
+    ? toResolvedPlayer(parseInt(playerId))
+    : undefined;
+}
+
 export function zataraClanmate(): boolean {
   if (itemAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
@@ -531,22 +533,18 @@ export function zataraClanmate(): boolean {
   if (get("_clanFortuneConsultUses") >= 3) {
     return false;
   }
-  //	string page = visit_url("clan_viplounge.php");
-  //	if(!contains_text(page, "lovetester"))
-  //	{
-  //		set_property("_clanFortuneConsultUses", 3);
-  //		return false;
-  //	}
-  //	set_property("_clanFortuneConsultUses", get_property("_clanFortuneConsultUses").to_int() + 1);
 
-  let attempts: number = 0;
-  let player: number = 3690803;
-  const consultOverrideName: string = getProperty("auto_consultChoice");
-  let name: string = getPlayerName(player);
-  if (consultOverrideName !== "") {
-    name = consultOverrideName;
-    player = toInt(getPlayerId(consultOverrideName));
+  const defaultClan: string = getAwayClanName();
+  const requestedPlayer: string = get(
+    "auto_consultChoice",
+    getDefaultConsultBot(defaultClan),
+  ).trim();
+
+  const resolved = resolveConsultPlayer(requestedPlayer);
+  if (!resolved) {
+    return false;
   }
+  const { player, name } = resolved;
 
   if (!isOnline(name)) {
     // consult will not return in reasonable timeframe
@@ -554,19 +552,15 @@ export function zataraClanmate(): boolean {
   }
 
   const oldClan: number = getClanId();
-  let clanName: string = getProperty("auto_consultClan");
-  if (clanName !== "") {
-    changeClan(clanName);
-  } else {
-    clanName = "Bonus Adventures from Hell";
-    changeClan$2();
-  }
+  const clanName: string = get("auto_consultClan", defaultClan);
+  changeClan(clanName);
   if (getClanName() !== clanName) {
     set("_clanFortuneConsultUses", 42069);
     return false;
   }
 
   let needWait: boolean = true;
+  let attempts: number = 0;
 
   while (attempts < 5) {
     visitUrl("clan_viplounge.php?preaction=lovetester", false);
@@ -615,7 +609,7 @@ export function zataraClanmate(): boolean {
     wait(5);
   }
 
-  changeClan$1(oldClan);
+  changeClan(oldClan);
   if (needWait) {
     wait(10);
   }

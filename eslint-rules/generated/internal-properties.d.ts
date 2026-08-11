@@ -254,6 +254,7 @@ type StringProperty =
   | "auto_blacklistFamiliar"
   | "auto_burndownStatsProgressionDiff"
   | "auto_chewed"
+  | "auto_clanVIPLounge"
   | "auto_combatDirective"
   | "auto_consultChoice"
   | "auto_consultClan"

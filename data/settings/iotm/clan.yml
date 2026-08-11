@@ -1,3 +1,7 @@
+auto_clanVIPLounge:
+  description: "The name or ID of the clan you want to use for VIP lounge stuff, this supports a very limited subset of iotms. Will fallback to 'The Average Clan' if you happen to be in there."
+  default: "Bonus Adventures from Hell"
+  type: string
 auto_hideAdultery:
   name: "Hide Zatara Consults"
   type: boolean
@@ -11,10 +15,11 @@ auto_optimizeConsultsInRun:
 auto_consultClan:
   name: "Zatara Consult Clan"
   type: string
-  description: The clan name of the player you want to do Zatara consults with.
+  description: The clan you want to do Zatara consults in. Defaults to 'auto_clanVIPLounge' unless configured.
   tags: ["fortune teller"]
 auto_consultChoice:
   name: "Zatara Consult Player"
   type: string
-  description: The name of the player you want to do Zatara consults with.
+  description: The name of the player you want to do Zatara consults with. Is automatically handled in 'The Average Clan' and 'Bonus Adventures from Hell'
   tags: ["fortune teller"]
+  default: OnlyFax

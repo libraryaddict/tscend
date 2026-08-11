@@ -99,11 +99,10 @@ import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 import { c2t_apron } from "../../utils/c2t_apron";
 import {
   auto_get_clan_lounge,
-  canReturnToCurrentClan,
-  changeClan$1,
-  changeClan$2,
-  getBAFHID,
-  isWhitelistedToBAFH,
+  canJumpToAwayClan,
+  changeClan,
+  getAwayClanName,
+  isInAwayClan,
 } from "../other/clan";
 import { auto_getCitizenZone$1, auto_haveCincho } from "./mr2023";
 import { auto_openMcLargeHugeSkis, beretBusk } from "./mr2025";
@@ -872,12 +871,6 @@ export function auto_checkTakerSpace(): void {
 }
 
 function auto_haveClanPhotoBoothHere(): boolean {
-  if (availableAmount($item`Clan VIP Lounge key`) === 0) {
-    return false;
-  }
-  if (!auto_is_valid($item`photo booth sized crate`)) {
-    return false;
-  }
   return auto_get_clan_lounge().has($item`photo booth sized crate`);
 }
 
@@ -888,9 +881,10 @@ function auto_haveClanPhotoBooth(): boolean {
   if (!auto_is_valid($item`photo booth sized crate`)) {
     return false;
   }
-  const bafh_available: boolean =
-    isWhitelistedToBAFH() && canReturnToCurrentClan(); // bafh has it fully stocked
-  return bafh_available || auto_haveClanPhotoBoothHere();
+  if (auto_haveClanPhotoBoothHere()) {
+    return true;
+  }
+  return canJumpToAwayClan(); // away clan has it fully stocked
 }
 
 function auto_isClanPhotoBoothItem(it: Item): boolean {
@@ -914,8 +908,8 @@ function auto_isClanPhotoBoothItem(it: Item): boolean {
 function auto_thisClanPhotoBoothHasItem(it: Item): boolean {
   // This should work but it's not implemented by Mafia, sounds like it won't be
   //~ return (auto_get_clan_lounge() contains it)
-  // Instead just assume BAFH has everything, everyone else has nothing that needs unlocking
-  if (getClanId() === getBAFHID()) {
+  // Instead just assume our away clan has everything, everyone else has nothing that needs unlocking
+  if (isInAwayClan()) {
     return auto_isClanPhotoBoothItem(it);
   }
   switch (it) {
@@ -943,6 +937,90 @@ function auto_clanPhotoboothClaimedEverything(): boolean {
   );
 }
 
+// Claims a single item, assuming we're already wherever we need to be.
+function auto_claimClanPhotoBoothItem(it: Item): boolean {
+  if (!auto_isClanPhotoBoothItem(it)) {
+    return false;
+  }
+  if (availableAmount(it) > 0) {
+    return true;
+  }
+  if (auto_clanPhotoboothClaimedEverything()) {
+    return false;
+  }
+  cliExecute(`photobooth item ${it.toString()}`);
+  handleTracker({
+    what: "Clan Photo Booth",
+    detail: `Claimed ${it}`,
+    property: "auto_iotm_claim",
+  });
+  return availableAmount(it) > 0;
+}
+
+function auto_remainingClanPhotoBoothEffects(): number {
+  if (!auto_haveClanPhotoBooth()) {
+    return 0;
+  }
+  return 3 - get("_photoBoothEffects");
+}
+
+// Claims an effect, assuming we're already wherever we need to be.
+function auto_claimClanPhotoBoothEffect(
+  ef_string: string,
+  n_times: number,
+): boolean {
+  n_times = min(n_times, auto_remainingClanPhotoBoothEffects());
+  if (n_times < 1) {
+    return false;
+  }
+
+  const west_ef: Effect = $effect`Wild and Westy!`;
+  const tower_ef: Effect = $effect`Towering Muscles`;
+  const space_ef: Effect = $effect`Spaced Out`;
+  const west_string: string = toLowerCase(west_ef.toString());
+  const tower_string: string = toLowerCase(tower_ef.toString());
+  const space_string: string = toLowerCase(space_ef.toString());
+
+  switch (toLowerCase(ef_string)) {
+    case "wild":
+    case west_string:
+      for (let i: number = 0; i < n_times; i++) {
+        cliExecute("photobooth effect wild");
+        handleTracker({
+          what: "Clan Photo Booth",
+          detail: `Claimed ${west_ef}`,
+          property: "auto_iotm_claim",
+        });
+      }
+      return toBoolean(haveEffect(west_ef));
+    case "tower":
+    case tower_string:
+      for (let i: number = 0; i < n_times; i++) {
+        cliExecute("photobooth effect tower");
+        handleTracker({
+          what: "Clan Photo Booth",
+          detail: `Claimed ${tower_ef}`,
+          property: "auto_iotm_claim",
+        });
+      }
+      return toBoolean(haveEffect(tower_ef));
+    case "space":
+    case space_string:
+      for (let i: number = 0; i < n_times; i++) {
+        cliExecute("photobooth effect space");
+        handleTracker({
+          what: "Clan Photo Booth",
+          detail: `Claimed ${space_ef}`,
+          property: "auto_iotm_claim",
+        });
+      }
+      return toBoolean(haveEffect(space_ef));
+  }
+  auto_log_error(`Invalid effect string for photo booth ${ef_string}`);
+  return false;
+}
+
+// Claims the default items and the daily "space" effect together
 export function auto_getClanPhotoBoothDefaultItems(): boolean {
   if (!auto_haveClanPhotoBooth()) {
     return false;
@@ -958,152 +1036,28 @@ export function auto_getClanPhotoBoothDefaultItems(): boolean {
     return items_to_claim.every((i) => possessEquipment(i));
   }
 
-  const orig_clan_id: number = getClanId();
-  const in_bafh: boolean = orig_clan_id === getBAFHID();
-  const bafh_available: boolean =
-    isWhitelistedToBAFH() && canReturnToCurrentClan(); // bafh has it fully stocked
-  if (
-    bafh_available &&
-    !in_bafh &&
-    !auto_thisClanPhotoBoothHasItems(items_to_claim)
-  ) {
-    changeClan$2();
-  }
-  let success: boolean = true;
-  for (const it of items_to_claim) {
-    success = success && auto_getClanPhotoBoothItem(it);
-  }
-  if (orig_clan_id !== getClanId()) {
-    changeClan$1(orig_clan_id);
-  }
-  return success;
-}
+  const needAway =
+    !auto_haveClanPhotoBoothHere() ||
+    !auto_thisClanPhotoBoothHasItems(items_to_claim);
 
-function auto_getClanPhotoBoothItem(it: Item): boolean {
-  if (!auto_haveClanPhotoBooth()) {
-    return false;
-  }
-  if (!auto_isClanPhotoBoothItem(it)) {
-    return false;
-  }
-  if (availableAmount(it) > 0) {
-    return true;
-  }
-  if (auto_clanPhotoboothClaimedEverything()) {
-    return false;
-  }
-  // Handle whether we want to jump to BAFH for the item
-  const orig_clan_id: number = getClanId();
-  const in_bafh: boolean = orig_clan_id === getBAFHID();
-  const bafh_available: boolean =
-    isWhitelistedToBAFH() && canReturnToCurrentClan(); // bafh has it fully stocked
-  if (bafh_available && !in_bafh && !auto_thisClanPhotoBoothHasItem(it)) {
-    changeClan$2();
-  }
-  // Actually claim the item
-  cliExecute(`photobooth item ${it.toString()}`);
-  handleTracker({
-    what: "Clan Photo Booth",
-    detail: `Claimed ${it}`,
-    property: "auto_iotm_claim",
-  });
-  // Go home if we BAFH'd it
-  if (orig_clan_id !== getClanId()) {
-    changeClan$1(orig_clan_id);
-  }
+  const origClanId: number = getClanId();
 
-  if (availableAmount(it) > 0) {
-    return true;
-  }
-  return false;
-}
+  try {
+    if (needAway && !isInAwayClan() && canJumpToAwayClan()) {
+      changeClan(getAwayClanName());
+    }
 
-function auto_remainingClanPhotoBoothEffects(): number {
-  if (!auto_haveClanPhotoBooth()) {
-    return 0;
+    let success: boolean = true;
+    for (const it of items_to_claim) {
+      success = success && auto_claimClanPhotoBoothItem(it);
+    }
+    auto_claimClanPhotoBoothEffect("space", 3);
+    return success;
+  } finally {
+    if (getClanId() !== origClanId) {
+      changeClan(origClanId);
+    }
   }
-  return 3 - get("_photoBoothEffects");
-}
-
-export function auto_getClanPhotoBoothEffect(
-  ef_string: string,
-  n_times: number,
-): boolean {
-  if (availableAmount($item`Clan VIP Lounge key`) === 0) {
-    return false;
-  }
-  if (!auto_is_valid($item`photo booth sized crate`)) {
-    return false;
-  }
-
-  n_times = min(n_times, auto_remainingClanPhotoBoothEffects());
-  if (n_times < 1) {
-    return false;
-  }
-  // Handle whether we want to jump to BAFH
-  const orig_clan_id: number = getClanId();
-  const bafh_available: boolean =
-    isWhitelistedToBAFH() && canReturnToCurrentClan(); // bafh has it fully stocked
-
-  if (!auto_haveClanPhotoBoothHere() && bafh_available) {
-    changeClan$2(); // Jump to BAFH
-  }
-
-  let success: boolean = false;
-  const west_ef: Effect = $effect`Wild and Westy!`;
-  const tower_ef: Effect = $effect`Towering Muscles`;
-  const space_ef: Effect = $effect`Spaced Out`;
-  const west_string: string = toLowerCase(west_ef.toString());
-  const tower_string: string = toLowerCase(tower_ef.toString());
-  const space_string: string = toLowerCase(space_ef.toString());
-  switch (toLowerCase(ef_string)) {
-    case "wild":
-    case west_string:
-      for (let i: number = 0; i < n_times; i++) {
-        cliExecute("photobooth effect wild");
-        handleTracker({
-          what: "Clan Photo Booth",
-          detail: `Claimed ${west_ef}`,
-          property: "auto_iotm_claim",
-        });
-      }
-      success = toBoolean(haveEffect(west_ef));
-      break;
-    case "tower":
-    case tower_string:
-      for (let i: number = 0; i < n_times; i++) {
-        cliExecute("photobooth effect tower");
-        handleTracker({
-          what: "Clan Photo Booth",
-          detail: `Claimed ${tower_ef}`,
-          property: "auto_iotm_claim",
-        });
-      }
-      success = toBoolean(haveEffect(tower_ef));
-      break;
-    case "space":
-    case space_string:
-      for (let i: number = 0; i < n_times; i++) {
-        cliExecute("photobooth effect space");
-        handleTracker({
-          what: "Clan Photo Booth",
-          detail: `Claimed ${space_ef}`,
-          property: "auto_iotm_claim",
-        });
-      }
-      success = toBoolean(haveEffect(space_ef));
-      break;
-  }
-  // Go home if we BAFH'd it
-  if (orig_clan_id !== getClanId()) {
-    changeClan$1(orig_clan_id);
-  }
-
-  if (success) {
-    return true;
-  }
-  auto_log_error(`Invalid effect string for photo booth ${ef_string}`);
-  return false;
 }
 
 export function auto_haveChestMimic(): boolean {

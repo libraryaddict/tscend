@@ -331,7 +331,6 @@ import {
   auto_buyFromSeptEmberStore,
   auto_getAprilingBandItems,
   auto_getClanPhotoBoothDefaultItems,
-  auto_getClanPhotoBoothEffect,
   auto_haveMayamCalendar,
   auto_MayamAllUsed,
   auto_MayamClaimAll,
@@ -1327,7 +1326,6 @@ function initializeDay(day: number): void {
 
   auto_MayamClaimAll(); // Want Mayam before booth to decide if we want a feather boa given yamtility.
   auto_getClanPhotoBoothDefaultItems();
-  auto_getClanPhotoBoothEffect("space", 3);
 
   auto_initBurningLeaves();
 
