@@ -3,6 +3,7 @@
 import { spawn } from "child_process";
 
 import { main as generateProperties } from "../eslint-rules/scripts/generate-property-declarations.mjs";
+import { main as sortInternal } from "../eslint-rules/scripts/sort-internal-yml.mjs";
 
 function run(command, args) {
   return new Promise((resolve, reject) => {
@@ -10,17 +11,19 @@ function run(command, args) {
     child.on("error", reject);
     child.on("exit", (code) => {
       if (code === 0) resolve();
-      else
+      else {
         reject(
           new Error(`${command} ${args.join(" ")} exited with code ${code}`),
         );
+      }
     });
   });
 }
 
-await generateProperties();
-
 try {
+  await sortInternal();
+  await generateProperties();
+
   await run("yarn", [
     "eslint",
     "packages",

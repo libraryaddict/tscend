@@ -5,16 +5,27 @@ import { parseDocument } from "yaml";
 const path = fileURLToPath(
   new URL("../../data/settings/internal.yml", import.meta.url),
 );
-const doc = parseDocument(readFileSync(path, "utf8"));
 
-doc.contents.items.sort((a, b) => {
-  const aKey = String(a.key);
-  const bKey = String(b.key);
+export async function main() {
+  const existing = readFileSync(path, "utf8");
+  const doc = parseDocument(existing);
 
-  const priority = (key) =>
-    key.startsWith("auto_") || key.includes("*auto*") ? 0 : 1;
+  doc.contents.items.sort((a, b) => {
+    const aKey = String(a.key);
+    const bKey = String(b.key);
 
-  return priority(aKey) - priority(bKey) || aKey.localeCompare(bKey);
-});
+    const priority = (key) =>
+      key.startsWith("auto_") || key.includes("*auto*") ? 0 : 1;
 
-writeFileSync(path, doc.toString());
+    return priority(aKey) - priority(bKey) || aKey.localeCompare(bKey);
+  });
+
+  const sorted = doc.toString();
+  if (sorted === existing) return;
+
+  writeFileSync(path, sorted);
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  await main();
+}
