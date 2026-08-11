@@ -368,6 +368,8 @@ _auto_organSpace:
   type: float
 _auto_override_tooManyAdv:
   type: int
+_auto_preferChestMimic:
+  type: boolean
 _auto_preferSwordFam:
   type: boolean
 _auto_reinitialize:
@@ -384,6 +386,8 @@ _auto_toxicAssetUses:
   type: int
 _auto_tunedElement:
   type: string
+_autoSkipNextAdventure:
+  type: boolean
 _LAR_skipNC163:
   type: int
 _LAR_skipNC178:
@@ -403,6 +407,4 @@ chateauMonsterFought:
 kolhs_closetDrink:
   type: boolean
 logLevelDefaultChangedToDebug:
-  type: boolean
-_autoSkipNextAdventure:
   type: boolean

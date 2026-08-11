@@ -16,6 +16,7 @@ type BooleanProperty =
   | "_auto_gnomeArenaVisited"
   | "_auto_ignoreRestoreFailureToday"
   | "_auto_kgbSetup"
+  | "_auto_preferChestMimic"
   | "_auto_preferSwordFam"
   | "_auto_reinitialize"
   | "_auto_seaQuestStartedToday"

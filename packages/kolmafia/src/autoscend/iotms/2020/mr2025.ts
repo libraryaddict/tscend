@@ -49,6 +49,7 @@ import {
   myPrimestat,
   mySpleenUse,
   numericModifier,
+  removeProperty,
   shrunkenHeadZombie,
   Skill,
   Slot,
@@ -105,11 +106,7 @@ import {
   possessEquipment,
   powerMultipliers,
 } from "../../auto_equipment";
-import {
-  auto_have_familiar,
-  handleFamiliar$1,
-  pathHasFamiliar,
-} from "../../auto_familiar";
+import { auto_have_familiar, pathHasFamiliar } from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import {
   auto_have_skill,
@@ -750,7 +747,7 @@ export function auto_tracesUsesLeft(): number {
 }
 
 // Bank Chest Mimic experience toward the 100 needed to extract a fantasy bandit egg.
-export function auto_bankChestMimicExpForBandit(): boolean {
+export function auto_bankChestMimicExpForBandit(): void {
   if (
     acquiredFantasyRealmToken() ||
     !auto_haveChestMimic() ||
@@ -758,9 +755,11 @@ export function auto_bankChestMimicExpForBandit(): boolean {
     canSummonMonster($monster`fantasy bandit`) ||
     get("auto_familiarChoice", $familiar.none) !== $familiar.none
   ) {
-    return false;
+    removeProperty("_auto_preferChestMimic");
+    return;
   }
-  return handleFamiliar$1($familiar`Chest Mimic`);
+
+  set("_auto_preferChestMimic", true);
 }
 
 // Chew banked phosphor traces up to 4 charges

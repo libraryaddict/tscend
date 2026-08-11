@@ -49,6 +49,7 @@ Cookbookbat	item:St. Sneaky Pete's Whey<4;!prop_boolean:auto_dontUseCookBookBat
 # Here they are only used to grab extras.
 Sword of S Words	prop_boolean:_auto_preferSwordFam
 Skeleton of Crimbo Past	prop_boolean:auto_preferSoCP
+Chest Mimic	prop_boolean:_auto_preferChestMimic
 Grim Brother	prop:_grimFairyTaleDrops<5
 Pair of Stomping Boots	!path:G-Lover;prop:_bootStomps<7
 Baby Sandworm	prop:_aguaDrops<5
