@@ -136,12 +136,11 @@ function auto_beaten_handler(): void {
     return;
   }
   set("auto_beatenUpCount", get("auto_beatenUpCount", 0) + 1);
-  let loc: string = getProperty("auto_beatenUpLocations");
-  if (loc !== "") {
-    loc += ",";
-  }
-  loc += `day:${myDaycount()}:level:${myLevel()}:place:${myLocation()}`;
-  set("auto_beatenUpLocations", loc);
+  handleTracker({
+    what: myLocation().toString(),
+    detail: `Level ${myLevel()}`,
+    property: "auto_beatenUpLocations",
+  });
   set("auto_beatenUpLastAdv", true);
 
   buffMaintain$2($effect`They've Got Fleas`);

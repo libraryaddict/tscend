@@ -44,12 +44,6 @@ function trackedSections(): TrackingSection[] {
     });
   }
 
-  sections.push({
-    title: "Beaten Up",
-    text: "",
-    property: "auto_beatenUpLocations",
-  });
-
   return sections;
 }
 

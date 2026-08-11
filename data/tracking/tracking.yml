@@ -114,3 +114,8 @@ otherStuff:
   title: "Other Stuff"
   property: "auto_otherstuff"
   columns: ["Event", "Location", "Detail", "Turn"]
+
+beatenUp:
+  title: "Beaten Up"
+  property: "auto_beatenUpLocations"
+  columns: ["Location", "Detail", "Turn"]

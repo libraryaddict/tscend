@@ -266,6 +266,7 @@ import {
   monsterProperties,
   phylumProperties,
   statProperties,
+  TrackerKey,
 } from "./generated/property-types";
 import {
   auto_hasNavelRing,
@@ -685,34 +686,7 @@ function safeString(input: string): string {
   return input.replaceAll(/[\\,:]/g, (match) => `\\${match}`);
 }
 
-export type TrackerKey =
-  | "auto_banishes"
-  | "auto_baseball"
-  | "auto_chewed"
-  | "auto_copies"
-  | "auto_drunken"
-  | "auto_eaten"
-  | "auto_forcedNC"
-  | "auto_forceNonCombatSource"
-  | "auto_freeruns"
-  | "auto_funPrefix"
-  | "auto_funTracker"
-  | "auto_instakill"
-  | "auto_instakillSource"
-  | "auto_iotm_claim"
-  | "auto_lashes"
-  | "auto_lucky"
-  | "auto_luckySource"
-  | "auto_mapperidot"
-  | "auto_otherstuff"
-  | "auto_powerfulglove"
-  | "auto_pulls"
-  | "auto_renenutet"
-  | "auto_replaces"
-  | "auto_sniffs"
-  | "auto_tracker_path"
-  | "auto_wishes"
-  | "auto_yellowRays";
+export type { TrackerKey };
 
 export function handleTracker({
   what,
