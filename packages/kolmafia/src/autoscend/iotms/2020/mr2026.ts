@@ -393,9 +393,7 @@ function auto_heartstoneWordsToAimFor(): string[] {
     words.push("STEW");
   }
 
-  if (L11_needTombRatchet()) {
-    words.push("TOMB");
-  }
+  // TOMB hasn't performed well, especially when we need 10.
 
   if (
     itemAmount($item`enchanted bean`) === 0 &&
