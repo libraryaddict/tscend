@@ -644,21 +644,21 @@ function equipWarOutfit$1(lock: boolean): void {
   //sometimes we wear the outfit. visit url. fail and want to continue on to do another quest instead of aborting or returning true.
   //in such cases we want lock to be false
 
-  let parts: Map<Item, boolean>;
+  let parts: Item[];
   if (auto_warSide() === "hippy") {
-    parts = new Map([
-      [$item`reinforced beaded headband`, true],
-      [$item`bullet-proof corduroys`, true],
-      [$item`round purple sunglasses`, true],
-    ]);
+    parts = [
+      $item`reinforced beaded headband`,
+      $item`bullet-proof corduroys`,
+      $item`round purple sunglasses`,
+    ];
   } else {
-    parts = new Map([
-      [$item`beer helmet`, true],
-      [$item`distressed denim pants`, true],
-      [$item`bejeweled pledge pin`, true],
-    ]);
+    parts = [
+      $item`beer helmet`,
+      $item`distressed denim pants`,
+      $item`bejeweled pledge pin`,
+    ];
   }
-  for (const it of parts.keys()) {
+  for (const it of parts) {
     if (itemAmount(it) === 0 && equippedAmount(it) === 0) {
       if (closetAmount(it) > 0) {
         takeCloset(1, it);
@@ -961,8 +961,8 @@ export const L12_startWarTask: QuestTask = registerQuestTask({
   do: L12_startWarDo,
   locations: () =>
     get("auto_hippyInstead", false)
-      ? [$location`Wartime Frat House`]
-      : [$location`Wartime Hippy Camp`],
+      ? $locations`Wartime Frat House`
+      : $locations`Wartime Hippy Camp`,
 });
 
 export function L12_startWar(): boolean {

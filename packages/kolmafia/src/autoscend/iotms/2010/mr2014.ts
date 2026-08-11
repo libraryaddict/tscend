@@ -216,74 +216,42 @@ export function dna_generic(): boolean {
     return false;
   }
 
-  let potion: Map<Phylum, boolean>;
+  let potion: Phylum[];
 
   if (in_heavyrains()) {
     switch (myDaycount()) {
       case 1:
-        potion = new Map([
-          [$phylum`construct`, true],
-          [$phylum`construct`, true],
-          [$phylum`fish`, true],
-        ]);
+        potion = [$phylum`construct`, $phylum`fish`];
         break;
       case 2:
-        potion = new Map([
-          [$phylum`fish`, true],
-          [$phylum`constellation`, true],
-          [$phylum`dude`, true],
-        ]);
+        potion = [$phylum`fish`, $phylum`constellation`, $phylum`dude`];
         break;
       case 3:
-        potion = new Map([
-          [$phylum`construct`, true],
-          [$phylum`humanoid`, true],
-          [$phylum`dude`, true],
-        ]);
+        potion = [$phylum`construct`, $phylum`humanoid`, $phylum`dude`];
         break;
       default:
-        potion = new Map([
-          [$phylum`humanoid`, true],
-          [$phylum`construct`, true],
-          [$phylum`dude`, true],
-        ]);
+        potion = [$phylum`humanoid`, $phylum`construct`, $phylum`dude`];
         break;
     }
   } else {
     switch (myDaycount()) {
       case 1:
-        potion = new Map([
-          [$phylum`construct`, true],
-          [$phylum`construct`, true],
-          [$phylum`fish`, true],
-        ]);
+        potion = [$phylum`construct`, $phylum`fish`];
         break;
       case 2:
-        potion = new Map([
-          [$phylum`fish`, true],
-          [$phylum`constellation`, true],
-          [$phylum`dude`, true],
-        ]);
+        potion = [$phylum`fish`, $phylum`constellation`, $phylum`dude`];
         break;
       case 3:
-        potion = new Map([
-          [$phylum`construct`, true],
-          [$phylum`humanoid`, true],
-          [$phylum`dude`, true],
-        ]);
+        potion = [$phylum`construct`, $phylum`humanoid`, $phylum`dude`];
         break;
       default:
-        potion = new Map([
-          [$phylum`humanoid`, true],
-          [$phylum`construct`, true],
-          [$phylum`dude`, true],
-        ]);
+        potion = [$phylum`humanoid`, $phylum`construct`, $phylum`dude`];
         break;
     }
   }
 
   let i: number = 0;
-  for (const phy of potion.keys()) {
+  for (const phy of potion) {
     if (
       getProperty("dnaSyringe") === phy.toString() &&
       get("_dnaPotionsMade") === i

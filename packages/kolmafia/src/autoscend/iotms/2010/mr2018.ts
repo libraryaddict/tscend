@@ -402,38 +402,38 @@ export function fantasyRealmToken(): boolean {
   return autoAdv($location`The Bandit Crossroads`);
 }
 
-function allFantasyRealmLocations(): Map<Location, boolean> {
-  return new Map([
-    [$location`The Bandit Crossroads`, true],
-    [$location`The Cursed Village`, true],
-    [$location`The Evil Cathedral`, true],
-    [$location`The Archwizard's Tower`, true],
-    [$location`The Cursed Village Thieves' Guild`, true],
-    [$location`The Towering Mountains`, true],
-    [$location`The Foreboding Cave`, true],
-    [$location`The Lair of the Phoenix`, true],
-    [$location`The Old Rubee Mine`, true],
-    [$location`The Ogre Chieftain's Keep`, true],
-    [$location`The Master Thief's Chalet`, true],
-    [$location`The Mystic Wood`, true],
-    [$location`The Faerie Cyrkle`, true],
-    [$location`The Spider Queen's Lair`, true],
-    [$location`The Druidic Campsite`, true],
-    [$location`The Ley Nexus`, true],
-    [$location`The Putrid Swamp`, true],
-    [$location`Near the Witch's House`, true],
-    [$location`The Troll Fortress`, true],
-    [$location`The Dragon's Moor`, true],
-    [$location`The Sprawling Cemetery`, true],
-    [$location`The Labyrinthine Crypt`, true],
-    [$location`The Barrow Mounds`, true],
-    [$location`The Ghoul King's Catacomb`, true],
-    [$location`Duke Vampire's Chateau`, true],
-  ]);
+function allFantasyRealmLocations(): Location[] {
+  return [
+    $location`The Bandit Crossroads`,
+    $location`The Cursed Village`,
+    $location`The Evil Cathedral`,
+    $location`The Archwizard's Tower`,
+    $location`The Cursed Village Thieves' Guild`,
+    $location`The Towering Mountains`,
+    $location`The Foreboding Cave`,
+    $location`The Lair of the Phoenix`,
+    $location`The Old Rubee Mine`,
+    $location`The Ogre Chieftain's Keep`,
+    $location`The Master Thief's Chalet`,
+    $location`The Mystic Wood`,
+    $location`The Faerie Cyrkle`,
+    $location`The Spider Queen's Lair`,
+    $location`The Druidic Campsite`,
+    $location`The Ley Nexus`,
+    $location`The Putrid Swamp`,
+    $location`Near the Witch's House`,
+    $location`The Troll Fortress`,
+    $location`The Dragon's Moor`,
+    $location`The Sprawling Cemetery`,
+    $location`The Labyrinthine Crypt`,
+    $location`The Barrow Mounds`,
+    $location`The Ghoul King's Catacomb`,
+    $location`Duke Vampire's Chateau`,
+  ];
 }
 
 export function isFantasyRealm(loc: Location): boolean {
-  return allFantasyRealmLocations().has(loc);
+  return allFantasyRealmLocations().includes(loc);
 }
 
 export function songboomSetting(goal: string): boolean {

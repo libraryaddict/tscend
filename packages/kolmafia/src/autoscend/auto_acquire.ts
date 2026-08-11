@@ -1066,7 +1066,7 @@ export function LX_craftAcquireItems(): boolean {
   ) {
     let buyAntiqueAccordion: boolean = false;
 
-    for (const SongCheck of ATSongList().keys()) {
+    for (const SongCheck of ATSongList()) {
       if (haveSkill(toSkill(SongCheck))) {
         buyAntiqueAccordion = true;
       }

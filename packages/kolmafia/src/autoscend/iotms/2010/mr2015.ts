@@ -33,6 +33,7 @@ import {
   $element,
   $familiar,
   $item,
+  $items,
   $location,
   $monster,
   $skill,
@@ -115,363 +116,193 @@ export function auto_barrelPrayers(): boolean {
     return false;
   }
 
-  let prayers: Map<string, boolean> = new Map();
+  let prayers: string[] = [];
 
   if (in_lta()) {
     switch (myDaycount()) {
       case 1:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Protection", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Protection", "Vigor"];
         break;
       case 2:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-          ["Protection", true],
-        ]);
+        prayers = ["Glamour", "Vigor", "Protection"];
         break;
       case 3:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
       case 4:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
     }
   } else if (in_nuclear()) {
     switch (myDaycount()) {
       case 1:
-        prayers = new Map([
-          ["Vigor", true],
-          ["Glamour", true],
-        ]);
+        prayers = ["Vigor", "Glamour"];
         break;
       case 2:
-        prayers = new Map([
-          ["Vigor", true],
-          ["Glamour", true],
-        ]);
+        prayers = ["Vigor", "Glamour"];
         break;
       case 3:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Vigor"];
         break;
       case 4:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Vigor"];
         break;
     }
   } else if (in_theSource()) {
     switch (myDaycount()) {
       case 1:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-          ["Protection", true],
-        ]);
+        prayers = ["Glamour", "Vigor", "Protection"];
         break;
       case 2:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
       case 3:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
       case 4:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
     }
   } else if (in_awol()) {
     switch (myDaycount()) {
       case 1:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-          ["Protection", true],
-        ]);
+        prayers = ["Glamour", "Vigor", "Protection"];
         break;
       case 2:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
       case 3:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
       case 4:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
     }
   } else if (is_boris()) {
     switch (myDaycount()) {
       case 1:
-        prayers = new Map([["none", true]]);
+        prayers = ["none"];
         break;
       case 2:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Vigor"];
         break;
       case 3:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Vigor"];
         break;
       case 4:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Vigor"];
         break;
     }
   } else if (is_pete()) {
     switch (myDaycount()) {
       case 1:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-          ["Protection", true],
-        ]);
+        prayers = ["Glamour", "Vigor", "Protection"];
         break;
       case 2:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
       case 3:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
       case 4:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
     }
   } else if (is_jarlsberg()) {
     switch (myDaycount()) {
       case 1:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-          ["Protection", true],
-        ]);
+        prayers = ["Glamour", "Vigor", "Protection"];
         break;
       case 2:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
       case 3:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
       case 4:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
     }
   } else if (in_wotsf()) {
     switch (myDaycount()) {
       case 1:
-        prayers = new Map([["none", true]]);
+        prayers = ["none"];
         break;
       case 2:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Vigor"];
         break;
       case 3:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Vigor"];
         break;
       case 4:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Vigor"];
         break;
     }
   } else if (in_heavyrains()) {
     switch (myDaycount()) {
       case 1:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Vigor"];
         break;
       case 2:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Vigor"];
         break;
       case 3:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Vigor"];
         break;
       case 4:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Vigor"];
         break;
     }
   } else if (isActuallyEd()) {
     if (elementalPlanes_access($element`spooky`) && get("edPoints") >= 2) {
       switch (myDaycount()) {
         case 1:
-          prayers = new Map([
-            ["Protection", true],
-            ["Glamour", true],
-            ["Vigor", true],
-          ]);
+          prayers = ["Protection", "Glamour", "Vigor"];
           break;
         case 2:
-          prayers = new Map([
-            ["Protection", true],
-            ["Glamour", true],
-            ["Vigor", true],
-          ]);
+          prayers = ["Protection", "Glamour", "Vigor"];
           break;
         case 3:
-          prayers = new Map([
-            ["Protection", true],
-            ["Glamour", true],
-            ["Vigor", true],
-          ]);
+          prayers = ["Protection", "Glamour", "Vigor"];
           break;
         case 4:
-          prayers = new Map([
-            ["Protection", true],
-            ["Glamour", true],
-            ["Vigor", true],
-          ]);
+          prayers = ["Protection", "Glamour", "Vigor"];
           break;
       }
     } else {
       switch (myDaycount()) {
         case 1:
-          prayers = new Map([
-            ["Glamour", true],
-            ["Vigor", true],
-            ["Protection", true],
-          ]);
+          prayers = ["Glamour", "Vigor", "Protection"];
           break;
         case 2:
-          prayers = new Map([
-            ["Protection", true],
-            ["Glamour", true],
-            ["Vigor", true],
-          ]);
+          prayers = ["Protection", "Glamour", "Vigor"];
           break;
         case 3:
-          prayers = new Map([
-            ["Protection", true],
-            ["Glamour", true],
-            ["Vigor", true],
-          ]);
+          prayers = ["Protection", "Glamour", "Vigor"];
           break;
         case 4:
-          prayers = new Map([
-            ["Protection", true],
-            ["Glamour", true],
-            ["Vigor", true],
-          ]);
+          prayers = ["Protection", "Glamour", "Vigor"];
           break;
       }
     }
   } else {
     switch (myDaycount()) {
       case 1:
-        prayers = new Map([
-          ["Glamour", true],
-          ["Protection", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Glamour", "Protection", "Vigor"];
         break;
       case 2:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
       case 3:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
       case 4:
-        prayers = new Map([
-          ["Protection", true],
-          ["Glamour", true],
-          ["Vigor", true],
-        ]);
+        prayers = ["Protection", "Glamour", "Vigor"];
         break;
     }
   }
 
-  for (const prayer of prayers.keys()) {
+  for (const prayer of prayers) {
     if (prayer === "none") {
       return false;
     }
@@ -501,67 +332,55 @@ export function auto_mayoItems(): boolean {
     return false;
   }
 
-  let mayos: Map<Item, boolean> = new Map();
+  let mayos: Item[] = [];
   if (is_boris()) {
     switch (myDaycount()) {
       case 1:
-        mayos = new Map([[$item`tomayohawk-style reflex hammer`, true]]);
+        mayos = $items`tomayohawk-style reflex hammer`;
         break;
       case 2:
-        mayos = new Map([[$item`mayo lance`, true]]);
-        break;
       case 3:
-        mayos = new Map([[$item`mayo lance`, true]]);
-        break;
       case 4:
-        mayos = new Map([[$item`mayo lance`, true]]);
+        mayos = $items`mayo lance`;
         break;
     }
   } else if (in_heavyrains() && !inHardcore()) {
     switch (myDaycount()) {
       case 1:
-        mayos = new Map([[$item.none, true]]);
+        mayos = [$item.none];
         break;
       case 2:
-        mayos = new Map([[$item`miracle whip`, true]]);
+        mayos = $items`miracle whip`;
         break;
       case 3:
-        mayos = new Map([[$item`sphygmayomanometer`, true]]);
-        break;
       case 4:
-        mayos = new Map([[$item`sphygmayomanometer`, true]]);
+        mayos = $items`sphygmayomanometer`;
         break;
     }
   } else if (in_gnoob()) {
     switch (myDaycount()) {
       default:
-        mayos = new Map([[$item.none, true]]);
+        mayos = [$item.none];
         break;
     }
   } else if (in_lta()) {
     switch (myDaycount()) {
       default:
-        mayos = new Map([[$item.none, true]]);
+        mayos = [$item.none];
         break;
     }
   } else {
     switch (myDaycount()) {
       case 1:
-        mayos = new Map([[$item`mayo lance`, true]]);
-        break;
       case 2:
-        mayos = new Map([[$item`mayo lance`, true]]);
-        break;
       case 3:
-        mayos = new Map([[$item`mayo lance`, true]]);
-        break;
       case 4:
-        mayos = new Map([[$item`mayo lance`, true]]);
+        mayos = $items`mayo lance`;
         break;
     }
   }
 
-  for (const mayo of mayos.keys()) {
+  for (const mayo of mayos) {
     if (mayo === $item`mayo lance`) {
       if (haveFamiliar($familiar`Crimbo Shrub`)) {
         continue;

@@ -1319,84 +1319,84 @@ function auto_citizenZonePrep(goal: string): boolean {
   return true;
 }
 
-function citizenZones(goal: string): Map<Location, boolean> {
+function citizenZones(goal: string): Location[] {
   if (goal === "meat") {
-    return new Map([
-      [$location`The Battlefield (Frat Uniform)`, true],
-      [$location`The Battlefield (Hippy Uniform)`, true],
-      [$location`The Hidden Hospital`, true],
-      [$location`The Haunted Bathroom`, true],
-      [$location`The Castle in the Clouds in the Sky (Basement)`, true],
-      [$location`Lair of the Ninja Snowmen`, true],
-      [$location`The Defiled Cranny`, true],
-      [$location`The Laugh Floor`, true],
-      [$location`The Batrat and Ratbat Burrow`, true],
-      [$location`The Sleazy Back Alley`, true],
-    ]);
+    return [
+      $location`The Battlefield (Frat Uniform)`,
+      $location`The Battlefield (Hippy Uniform)`,
+      $location`The Hidden Hospital`,
+      $location`The Haunted Bathroom`,
+      $location`The Castle in the Clouds in the Sky (Basement)`,
+      $location`Lair of the Ninja Snowmen`,
+      $location`The Defiled Cranny`,
+      $location`The Laugh Floor`,
+      $location`The Batrat and Ratbat Burrow`,
+      $location`The Sleazy Back Alley`,
+    ];
   }
   if (goal === "item") {
-    return new Map([
-      [$location`The Haunted Laundry Room`, true],
-      [$location`Whitey's Grove`, true],
-      [$location`The Icy Peak`, true],
-      [$location`Itznotyerzitz Mine`, true],
-      [$location`The Dark Heart of the Woods`, true],
-      [$location`The Hidden Temple`, true],
-      [$location`The Haunted Library`, true],
-      [$location`The Bat Hole Entrance`, true],
-      [$location`Noob Cave`, true],
-    ]);
+    return [
+      $location`The Haunted Laundry Room`,
+      $location`Whitey's Grove`,
+      $location`The Icy Peak`,
+      $location`Itznotyerzitz Mine`,
+      $location`The Dark Heart of the Woods`,
+      $location`The Hidden Temple`,
+      $location`The Haunted Library`,
+      $location`The Bat Hole Entrance`,
+      $location`Noob Cave`,
+    ];
   }
   if (goal === "init") {
-    return new Map([
-      [$location`The Feeding Chamber`, true],
-      [$location`An Unusually Quiet Barroom Brawl`, true],
-      [$location`Oil Peak`, true],
-      [$location`Cobb's Knob Kitchens`, true],
-      [$location`The VERY Unquiet Garves`, true],
-      [$location`The Haunted Kitchen`, true],
-    ]);
+    return [
+      $location`The Feeding Chamber`,
+      $location`An Unusually Quiet Barroom Brawl`,
+      $location`Oil Peak`,
+      $location`Cobb's Knob Kitchens`,
+      $location`The VERY Unquiet Garves`,
+      $location`The Haunted Kitchen`,
+    ];
   }
   if (goal === "mp") {
-    return new Map([
-      [$location`The Upper Chamber`, true],
-      [$location`Inside the Palindome`, true],
-      [$location`A-Boo Peak`, true],
-      [$location`The Hippy Camp`, true],
-      [$location`Megalo-City`, true],
-      [$location`Shadow Rift`, true],
-      [$location`Vanya's Castle`, true],
-      [$location`The Hatching Chamber`, true],
-      [$location`Wartime Hippy Camp (Frat Disguise)`, true],
-      [$location`The Orcish Frat House`, true],
-      [$location`The Middle Chamber`, true],
-      [$location`The Black Forest`, true],
-      [$location`The Haunted Ballroom`, true],
-      [$location`The Red Zeppelin`, true],
-      [$location`The Hidden Park`, true],
-      [$location`Twin Peak`, true],
-      [$location`The Smut Orc Logging Camp`, true],
-      [$location`The Daily Dungeon`, true],
-      [$location`The Spooky Forest`, true],
-    ]);
+    return [
+      $location`The Upper Chamber`,
+      $location`Inside the Palindome`,
+      $location`A-Boo Peak`,
+      $location`The Hippy Camp`,
+      $location`Megalo-City`,
+      $location`Shadow Rift`,
+      $location`Vanya's Castle`,
+      $location`The Hatching Chamber`,
+      $location`Wartime Hippy Camp (Frat Disguise)`,
+      $location`The Orcish Frat House`,
+      $location`The Middle Chamber`,
+      $location`The Black Forest`,
+      $location`The Haunted Ballroom`,
+      $location`The Red Zeppelin`,
+      $location`The Hidden Park`,
+      $location`Twin Peak`,
+      $location`The Smut Orc Logging Camp`,
+      $location`The Daily Dungeon`,
+      $location`The Spooky Forest`,
+    ];
   }
   if (goal === "spec") {
     //prismatic resistance
-    return new Map([[$location`The Outskirts of Cobb's Knob`, true]]);
+    return $locations`The Outskirts of Cobb's Knob`;
   }
-  return new Map([[$location.none, true]]);
+  return [$location.none];
 }
 export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
   if (!auto_haveEagle()) return false;
 
   const eagle: Familiar = $familiar`Patriotic Eagle`;
   //zones are approximately organized by autoscend level quest structure
-  const meatZones: Map<Location, boolean> = citizenZones("meat");
-  const itemZones: Map<Location, boolean> = citizenZones("item");
-  const initZones: Map<Location, boolean> = citizenZones("init");
+  const meatZones: Location[] = citizenZones("meat");
+  const itemZones: Location[] = citizenZones("item");
+  const initZones: Location[] = citizenZones("init");
   //mp zones are organized by 20-30 mp regen then 10-15 mp regen and then approximately autoscend level quest structure
-  const mpZones: Map<Location, boolean> = citizenZones("mp");
-  const specZones: Map<Location, boolean> = citizenZones("spec");
+  const mpZones: Location[] = citizenZones("mp");
+  const specZones: Location[] = citizenZones("spec");
   activeCitZoneMod();
   let goal: string;
 
@@ -1405,7 +1405,7 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
   }
   //set goal for tracking
   if (
-    specZones.has(loc) &&
+    specZones.includes(loc) &&
     auto_goingToMouthwashLevel() &&
     expected_level_after_mouthwash() < 13 &&
     turnsPlayed() === 0
@@ -1413,13 +1413,13 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
     //only want spec to get cold res for septEmberCenser usage and only if we don't get to L13. Don't want to do this outside of D1
     //ideally also have spring away or some other free run
     goal = "spec";
-  } else if (meatZones.has(loc)) {
+  } else if (meatZones.includes(loc)) {
     goal = "meat";
-  } else if (itemZones.has(loc)) {
+  } else if (itemZones.includes(loc)) {
     goal = "item";
-  } else if (initZones.has(loc)) {
+  } else if (initZones.includes(loc)) {
     goal = "init";
-  } else if (mpZones.has(loc)) {
+  } else if (mpZones.includes(loc)) {
     goal = "mp";
   } else {
     //if for some reason we make it into the location getCitizenZone and it's not in any of the defined zones, get the item buff
@@ -1465,13 +1465,13 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
 export function auto_getCitizenZone$1(goal: string): boolean {
   if (!auto_haveEagle()) return false;
 
-  const zones: Map<Location, boolean> = citizenZones(goal);
+  const zones: Location[] = citizenZones(goal);
 
   if (!auto_citizenZonePrep(goal)) {
     return false;
   }
 
-  for (const loc of zones.keys()) {
+  for (const loc of zones) {
     if (!canAdventure(loc)) {
       continue;
     }

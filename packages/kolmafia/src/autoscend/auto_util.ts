@@ -4501,37 +4501,37 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
   return max(0, retval);
 }
 
-export function ATSongList(): Map<Effect, boolean> {
+export function ATSongList(): Effect[] {
   // This List contains ALL AT songs in order from Most to Least Important as to determine what effect to shrug off.
-  const songs: Map<Effect, boolean> = new Map([
-    [$effect`Inigo's Incantation of Inspiration`, true],
-    [$effect`The Ballad of Richie Thingfinder`, true],
-    [$effect`Chorale of Companionship`, true],
+  const songs: Effect[] = [
+    $effect`Inigo's Incantation of Inspiration`,
+    $effect`The Ballad of Richie Thingfinder`,
+    $effect`Chorale of Companionship`,
     // under normal circumstances we should never get this, but if we do we want to keep it
-    [$effect`Dirge of Dreadfulness (Remastered)`, true],
-    [$effect`Ode to Booze`, true],
-    [$effect`Ur-Kel's Aria of Annoyance`, true],
-    [$effect`Carlweather's Cantata of Confrontation`, true],
-    [$effect`The Sonata of Sneakiness`, true],
-    [$effect`Fat Leon's Phat Loot Lyric`, true],
-    [$effect`Polka of Plenty`, true],
-    [$effect`Psalm of Pointiness`, true],
-    [$effect`Aloysius' Antiphon of Aptitude`, true],
-    [$effect`Paul's Passionate Pop Song`, true],
-    [$effect`Donho's Bubbly Ballad`, true],
-    [$effect`Prelude of Precision`, true],
-    [$effect`Elron's Explosive Etude`, true],
-    [$effect`Benetton's Medley of Diversity`, true],
-    [$effect`Dirge of Dreadfulness`, true],
-    [$effect`Stevedave's Shanty of Superiority`, true],
-    [$effect`Brawnee's Anthem of Absorption`, true],
-    [$effect`Jackasses' Symphony of Destruction`, true],
-    [$effect`Power Ballad of the Arrowsmith`, true],
-    [$effect`Cletus's Canticle of Celerity`, true],
-    [$effect`Cringle's Curative Carol`, true],
-    [$effect`The Magical Mojomuscular Melody`, true],
-    [$effect`The Moxious Madrigal`, true],
-  ]);
+    $effect`Dirge of Dreadfulness (Remastered)`,
+    $effect`Ode to Booze`,
+    $effect`Ur-Kel's Aria of Annoyance`,
+    $effect`Carlweather's Cantata of Confrontation`,
+    $effect`The Sonata of Sneakiness`,
+    $effect`Fat Leon's Phat Loot Lyric`,
+    $effect`Polka of Plenty`,
+    $effect`Psalm of Pointiness`,
+    $effect`Aloysius' Antiphon of Aptitude`,
+    $effect`Paul's Passionate Pop Song`,
+    $effect`Donho's Bubbly Ballad`,
+    $effect`Prelude of Precision`,
+    $effect`Elron's Explosive Etude`,
+    $effect`Benetton's Medley of Diversity`,
+    $effect`Dirge of Dreadfulness`,
+    $effect`Stevedave's Shanty of Superiority`,
+    $effect`Brawnee's Anthem of Absorption`,
+    $effect`Jackasses' Symphony of Destruction`,
+    $effect`Power Ballad of the Arrowsmith`,
+    $effect`Cletus's Canticle of Celerity`,
+    $effect`Cringle's Curative Carol`,
+    $effect`The Magical Mojomuscular Melody`,
+    $effect`The Moxious Madrigal`,
+  ];
 
   return songs;
 }
@@ -4582,7 +4582,7 @@ export function shrugAT(anticipated: Effect): void {
 
   let count_1: number = 1;
 
-  for (const ATsong of ATSongList().keys()) {
+  for (const ATsong of ATSongList()) {
     if (haveEffect(ATsong) > 0) {
       count_1 += 1;
       if (count_1 > maxSongs) {
@@ -5361,9 +5361,9 @@ export function zoneRank(mon: Monster, loc: Location): number {
   return 4;
 }
 
-export function total_items(items: Map<Item, boolean>): number {
+export function total_items(items: Item[]): number {
   let total: number = 0;
-  for (const it of items.keys()) {
+  for (const it of items) {
     total += itemAmount(it);
   }
   return total;
@@ -5941,8 +5941,8 @@ function angryAgateCheck(
 //	doAltML is a variable that will be referenced when increasing ML via alternative methods such as Asdon Martin, they should be entered in their respective order
 //		Ur-kel's may need new entries in this case due to its variance
 export function auto_MaxMLToCap(ToML: number, doAltML: boolean): boolean {
-  function tryEffects(effects: Map<Effect, boolean>): void {
-    for (const eff of effects.keys()) {
+  function tryEffects(effects: Effect[]): void {
+    for (const eff of effects) {
       if (
         monsterLevelAdjustment() + numericModifier(eff, "Monster Level") <=
         auto_convertDesiredML(ToML)
@@ -5953,20 +5953,18 @@ export function auto_MaxMLToCap(ToML: number, doAltML: boolean): boolean {
   }
   // 5 * level ML up to + 75
   if (auto_wantToBCZ($skill`BCZ: Blood Bath`)) {
-    tryEffects(new Map([[$effect`Bloodbathed`, true]]));
+    tryEffects($effects`Bloodbathed`);
   }
   // ToML >= U >= 30
   UrKelCheck(ToML, auto_convertDesiredML(ToML), 30);
   angryAgateCheck(ToML, auto_convertDesiredML(ToML), 30);
   // 30
   // Start with the biggest and drill down for max ML
-  tryEffects(
-    new Map([
-      [$effect`Ceaseless Snarling`, true],
-      [$effect`Punchable Face`, true],
-      [$effect`Zomg WTF`, true],
-    ]),
-  );
+  tryEffects([
+    $effect`Ceaseless Snarling`,
+    $effect`Punchable Face`,
+    $effect`Zomg WTF`,
+  ]);
   // 29 >= U >= 25
   UrKelCheck(ToML, 29, 25);
   angryAgateCheck(ToML, 29, 25);
@@ -5975,36 +5973,29 @@ export function auto_MaxMLToCap(ToML: number, doAltML: boolean): boolean {
     asdonBuff($effect`Driving Recklessly`);
   }
   if (doAltML) {
-    tryEffects(
-      new Map([
-        [$effect`Litterbug`, true],
-        [$effect`Sweetbreads Flambé`, true],
-      ]),
-    );
+    tryEffects($effects`Litterbug, Sweetbreads Flambé`);
   }
   if (in_amw()) {
-    tryEffects(new Map([[$effect`Hamming It Up`, true]]));
+    tryEffects($effects`Hamming It Up`);
   }
   // 24 >= U >= 10
   UrKelCheck(ToML, 24, 10);
   angryAgateCheck(ToML, 24, 10);
   // 20
   if (isActuallyEd() && !get("auto_needLegs", false)) {
-    tryEffects(new Map([[$effect`Blessing of Serqet`, true]]));
+    tryEffects($effects`Blessing of Serqet`);
   }
   // 10
-  tryEffects(
-    new Map([
-      [$effect`Pride of the Puffin`, true],
-      [$effect`Drescher's Annoying Noise`, true],
-    ]),
-  );
+  tryEffects([
+    $effect`Pride of the Puffin`,
+    $effect`Drescher's Annoying Noise`,
+  ]);
   if (doAltML) {
-    tryEffects(new Map([[$effect`Tortious`, true]]));
+    tryEffects($effects`Tortious`);
   }
 
   if (in_amw()) {
-    tryEffects(new Map([[$effect`Acting Jerky`, true]]));
+    tryEffects($effects`Acting Jerky`);
   }
   // <10
   //If we can't get 10 turns of Ur-Kel's, and we aren't being forced to pile on the ML, it probably isn't worth it.
@@ -6266,52 +6257,52 @@ export function auto_haveCombatForceSource(): boolean {
 // Function to Predict how many turns we will get from an AT buff
 export function auto_predictAccordionTurns(): number {
   // List of all Accordions for AT usage
-  const All_Accordions: Map<Item, boolean> = new Map([
-    [$item`accord ion`, true],
-    [$item`accordion file`, true],
-    [$item`Accordion of Jordion`, true],
-    [$item`aerogel accordion`, true],
-    [$item`antique accordion`, true],
-    [$item`accordionoid rocca`, true],
-    [$item`alarm accordion`, true],
-    [$item`autocalliope`, true],
-    [$item`Bal-musette accordion`, true],
-    [$item`baritone accordion`, true],
-    [$item`beer-battered accordion`, true],
-    [$item`bone bandoneon`, true],
-    [$item`Cajun accordion`, true],
-    [$item`calavera concertina`, true],
-    [$item`ghost accordion`, true],
-    [$item`guancertina`, true],
-    [$item`mama's squeezebox`, true],
-    [$item`non-Euclidean non-accordion`, true],
-    [$item`peace accordion`, true],
-    [$item`pentatonic accordion`, true],
-    [$item`pygmy concertinette`, true],
-    [$item`quirky accordion`, true],
-    [$item`Rock and Roll Legend`, true],
-    [$item`Shakespeare's Sister's Accordion`, true],
-    [$item`Skipper's accordion`, true],
-    [$item`Squeezebox of the Ages`, true],
-    [$item`stolen accordion`, true],
-    [$item`The Trickster's Trikitixa`, true],
-    [$item`toy accordion`, true],
-    [$item`warbear exhaust manifold`, true],
-    [$item`zombie accordion`, true],
-  ]);
+  const All_Accordions: Item[] = [
+    $item`accord ion`,
+    $item`accordion file`,
+    $item`Accordion of Jordion`,
+    $item`aerogel accordion`,
+    $item`antique accordion`,
+    $item`accordionoid rocca`,
+    $item`alarm accordion`,
+    $item`autocalliope`,
+    $item`Bal-musette accordion`,
+    $item`baritone accordion`,
+    $item`beer-battered accordion`,
+    $item`bone bandoneon`,
+    $item`Cajun accordion`,
+    $item`calavera concertina`,
+    $item`ghost accordion`,
+    $item`guancertina`,
+    $item`mama's squeezebox`,
+    $item`non-Euclidean non-accordion`,
+    $item`peace accordion`,
+    $item`pentatonic accordion`,
+    $item`pygmy concertinette`,
+    $item`quirky accordion`,
+    $item`Rock and Roll Legend`,
+    $item`Shakespeare's Sister's Accordion`,
+    $item`Skipper's accordion`,
+    $item`Squeezebox of the Ages`,
+    $item`stolen accordion`,
+    $item`The Trickster's Trikitixa`,
+    $item`toy accordion`,
+    $item`warbear exhaust manifold`,
+    $item`zombie accordion`,
+  ];
   // List of Accordions that Non-AT classes can use
-  const NonAT_Accordions: Map<Item, boolean> = new Map([
-    [$item`aerogel accordion`, true],
-    [$item`antique accordion`, true],
-    [$item`toy accordion`, true],
-  ]);
+  const NonAT_Accordions: Item[] = [
+    $item`aerogel accordion`,
+    $item`antique accordion`,
+    $item`toy accordion`,
+  ];
   // Choose list to use based on Class
-  const accordions: Map<Item, boolean> =
+  const accordions: Item[] =
     myClass() === $class`Accordion Thief` ? All_Accordions : NonAT_Accordions;
 
   let CurrentBestTurns: number = 0;
 
-  for (const squeezebox of accordions.keys()) {
+  for (const squeezebox of accordions) {
     // Verify that we have the accordion and that it is allowed to be use in path
     if (equipmentAmount(squeezebox) > 0 && auto_is_valid(squeezebox)) {
       const expTurns: number = toInt(

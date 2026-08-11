@@ -279,8 +279,8 @@ export function providePlusCombat(
     );
   }
 
-  function tryEffects$5(effects: Map<Effect, boolean>): boolean {
-    for (const eff of effects.keys()) {
+  function tryEffects$5(effects: Effect[]): boolean {
+    for (const eff of effects) {
       if (buffMaintain$2(eff, 0, 1, 1, speculative)) {
         handleEffect$4(eff);
       }
@@ -296,29 +296,27 @@ export function providePlusCombat(
     shrugAT($effect`Carlweather's Cantata of Confrontation`);
   }
   if (
-    tryEffects$5(
-      new Map([
-        [$effect`Musk of the Moose`, true],
-        [$effect`Carlweather's Cantata of Confrontation`, true],
-        [$effect`Milk of Familiar Kindness`, true],
-        [$effect`Attracting Snakes`, true],
-        [$effect`Crunchy Steps`, true],
-        [$effect`Blinking Belly`, true],
-        [$effect`Song of Battle`, true],
-        [$effect`Frown`, true],
-        [$effect`Angry`, true],
-        [$effect`Screaming!  SCREAMING!  AAAAAAAH!`, true],
-        [$effect`Coffeesphere`, true],
-        [$effect`Unmuffled`, true],
-      ]),
-    )
+    tryEffects$5([
+      $effect`Musk of the Moose`,
+      $effect`Carlweather's Cantata of Confrontation`,
+      $effect`Milk of Familiar Kindness`,
+      $effect`Attracting Snakes`,
+      $effect`Crunchy Steps`,
+      $effect`Blinking Belly`,
+      $effect`Song of Battle`,
+      $effect`Frown`,
+      $effect`Angry`,
+      $effect`Screaming!  SCREAMING!  AAAAAAAH!`,
+      $effect`Coffeesphere`,
+      $effect`Unmuffled`,
+    ])
   ) {
     return result$4();
   }
 
   if (in_amw() && amw_canAfford($skill`Act Jerky`)) {
     // meatpath only
-    if (tryEffects$5(new Map([[$effect`Acting Jerky`, true]]))) {
+    if (tryEffects$5($effects`Acting Jerky`)) {
       return result$4();
     }
   }
@@ -334,20 +332,18 @@ export function providePlusCombat(
   }
   // More limited effects
   if (
-    tryEffects$5(
-      new Map([
-        [$effect`Taunt of Horus`, true],
-        [$effect`Patent Aggression`, true],
-        [$effect`Lion in Ambush`, true],
-        [$effect`Everything Must Go!`, true],
-        [$effect`Hippy Stench`, true],
-        [$effect`High Colognic`, true],
-        [$effect`Celestial Saltiness`, true],
-        [$effect`Simply Irresistible`, true],
-        [$effect`Crunching Leaves`, true],
-        [$effect`Romantically Roused`, true],
-      ]),
-    )
+    tryEffects$5([
+      $effect`Taunt of Horus`,
+      $effect`Patent Aggression`,
+      $effect`Lion in Ambush`,
+      $effect`Everything Must Go!`,
+      $effect`Hippy Stench`,
+      $effect`High Colognic`,
+      $effect`Celestial Saltiness`,
+      $effect`Simply Irresistible`,
+      $effect`Crunching Leaves`,
+      $effect`Romantically Roused`,
+    ])
   ) {
     return result$4();
   }
@@ -360,7 +356,7 @@ export function providePlusCombat(
   }
 
   if (myMeat() > 100 + meatReserve()) {
-    tryEffects$5(new Map([[$effect`Waking the Dead`, true]]));
+    tryEffects$5($effects`Waking the Dead`);
   }
 
   if (pass$4()) {
@@ -502,8 +498,8 @@ export function providePlusNonCombat(
     );
   }
 
-  function tryEffects$6(effects: Map<Effect, boolean>): boolean {
-    for (const eff of effects.keys()) {
+  function tryEffects$6(effects: Effect[]): boolean {
+    for (const eff of effects) {
       if (buffMaintain$2(eff, 0, 1, 1, speculative)) {
         handleEffect$5(eff);
       }
@@ -516,7 +512,7 @@ export function providePlusNonCombat(
   // Now handle buffs that cost MP, items or other resources
 
   if (in_amw() && amw_canAfford($skill`Dark Meat`)) {
-    if (tryEffects$6(new Map([[$effect`Darkened Meat`, true]]))) {
+    if (tryEffects$6($effects`Darkened Meat`)) {
       return result$5();
     }
   }
@@ -525,40 +521,36 @@ export function providePlusNonCombat(
     shrugAT($effect`The Sonata of Sneakiness`);
   }
   if (
-    tryEffects$6(
-      new Map([
-        [$effect`Shelter of Shed`, true],
-        [$effect`Brooding`, true],
-        [$effect`Muffled`, true],
-        [$effect`Smooth Movements`, true],
-        [$effect`The Sonata of Sneakiness`, true],
-        [$effect`Milk of Familiar Cruelty`, true],
-        [$effect`Hiding From Seekers`, true],
-        [$effect`Ultra-Soft Steps`, true],
-        [$effect`Song of Solitude`, true],
-        [$effect`Inked Well`, true],
-        [$effect`Bent Knees`, true],
-        [$effect`Extended Toes`, true],
-        [$effect`Ink Cloud`, true],
-        [$effect`Cloak of Shadows`, true],
-        [$effect`Chocolatesphere`, true],
-        [$effect`Disquiet Riot`, true],
-      ]),
-    )
+    tryEffects$6([
+      $effect`Shelter of Shed`,
+      $effect`Brooding`,
+      $effect`Muffled`,
+      $effect`Smooth Movements`,
+      $effect`The Sonata of Sneakiness`,
+      $effect`Milk of Familiar Cruelty`,
+      $effect`Hiding From Seekers`,
+      $effect`Ultra-Soft Steps`,
+      $effect`Song of Solitude`,
+      $effect`Inked Well`,
+      $effect`Bent Knees`,
+      $effect`Extended Toes`,
+      $effect`Ink Cloud`,
+      $effect`Cloak of Shadows`,
+      $effect`Chocolatesphere`,
+      $effect`Disquiet Riot`,
+    ])
   ) {
     return result$5();
   }
 
   if (-1.0 * auto_birdModifier("Combat Rate") > 0) {
-    if (tryEffects$6(new Map([[$effect`Blessing of the Bird`, true]]))) {
+    if (tryEffects$6($effects`Blessing of the Bird`)) {
       return result$5();
     }
   }
 
   if (-1.0 * auto_favoriteBirdModifier("Combat Rate") > 0) {
-    if (
-      tryEffects$6(new Map([[$effect`Blessing of your favorite Bird`, true]]))
-    ) {
+    if (tryEffects$6($effects`Blessing of your favorite Bird`)) {
       return result$5();
     }
   }
@@ -574,22 +566,20 @@ export function providePlusNonCombat(
   }
 
   if (
-    tryEffects$6(
-      new Map([
-        [$effect`Ashen`, true],
-        [$effect`Predjudicetidigitation`, true],
-        [$effect`Patent Invisibility`, true],
-        [$effect`Ministrations in the Dark`, true],
-        [$effect`Fresh Scent`, true],
-        [$effect`Become Superficially interested`, true],
-        [$effect`Gummed Shoes`, true],
-        [$effect`Simply Invisible`, true],
-        [$effect`Inky Camouflage`, true],
-        [$effect`Celestial Camouflage`, true],
-        [$effect`Feeling Lonely`, true],
-        [$effect`Feeling Sneaky`, true],
-      ]),
-    )
+    tryEffects$6([
+      $effect`Ashen`,
+      $effect`Predjudicetidigitation`,
+      $effect`Patent Invisibility`,
+      $effect`Ministrations in the Dark`,
+      $effect`Fresh Scent`,
+      $effect`Become Superficially interested`,
+      $effect`Gummed Shoes`,
+      $effect`Simply Invisible`,
+      $effect`Inky Camouflage`,
+      $effect`Celestial Camouflage`,
+      $effect`Feeling Lonely`,
+      $effect`Feeling Sneaky`,
+    ])
   ) {
     return result$5();
   }
@@ -613,15 +603,12 @@ export function providePlusNonCombat(
     if (!speculative) {
       retrieveItem(1, $item`blooper ink`);
     }
-    if (tryEffects$6(new Map([[$effect`Blooper Inked`, true]]))) {
+    if (tryEffects$6($effects`Blooper Inked`)) {
       return result$5();
     }
   }
   // Glove charges are a limited per-day resource, lets do this last so we don't waste possible uses of Replace Enemy
-  if (
-    auto_hasPowerfulGlove() &&
-    tryEffects$6(new Map([[$effect`Invisible Avatar`, true]]))
-  ) {
+  if (auto_hasPowerfulGlove() && tryEffects$6($effects`Invisible Avatar`)) {
     return result$5();
   }
   // If we haven't picked a familiar by now consider the disgeist
@@ -734,8 +721,8 @@ export function provideInitiative(
     );
   }
 
-  function tryEffects$2(effects: Map<Effect, boolean>): boolean {
-    for (const eff of effects.keys()) {
+  function tryEffects$2(effects: Effect[]): boolean {
+    for (const eff of effects) {
       if (buffMaintain$2(eff, 0, 1, 1, speculative)) {
         handleEffect$1(eff);
       }
@@ -747,23 +734,21 @@ export function provideInitiative(
   }
 
   if (
-    tryEffects$2(
-      new Map([
-        //organized by %/mp and %. Skills
-        [$effect`Living Fast`, true], //100%, 5mp
-        [$effect`Stretched`, true], //75%, 10mp
-        [$effect`Slippery as a Seal`, true], //+50%, 5mp
-        [$effect`Cletus's Canticle of Celerity`, true], //20%, 4mp
-        [$effect`Springy Fusilli`, true], //40%, 10mp
-        [$effect`Soulerskates`, true], //30%, 25 soulsauce
-        [$effect`Bone Springs`, true], //20%, 10mp
-        [$effect`Walberg's Dim Bulb`, true], //10%, 5mp
-        [$effect`Suspicious Gaze`, true], //10%, 10mp
-        [$effect`Song of Slowness`, true], //50%, 100mp
-        [$effect`Nearly Silent Hunting`, true], //25%, 50mp
-        [$effect`Your Fifteen Minutes`, true], //15%, 50mp
-      ]),
-    )
+    tryEffects$2([
+      //organized by %/mp and %. Skills
+      $effect`Living Fast`, //100%, 5mp
+      $effect`Stretched`, //75%, 10mp
+      $effect`Slippery as a Seal`, //+50%, 5mp
+      $effect`Cletus's Canticle of Celerity`, //20%, 4mp
+      $effect`Springy Fusilli`, //40%, 10mp
+      $effect`Soulerskates`, //30%, 25 soulsauce
+      $effect`Bone Springs`, //20%, 10mp
+      $effect`Walberg's Dim Bulb`, //10%, 5mp
+      $effect`Suspicious Gaze`, //10%, 10mp
+      $effect`Song of Slowness`, //50%, 100mp
+      $effect`Nearly Silent Hunting`, //25%, 50mp
+      $effect`Your Fifteen Minutes`, //15%, 50mp
+    ])
   ) {
     return result$1();
   }
@@ -786,15 +771,13 @@ export function provideInitiative(
   }
 
   if (auto_birdModifier("Initiative") > 0) {
-    if (tryEffects$2(new Map([[$effect`Blessing of the Bird`, true]]))) {
+    if (tryEffects$2($effects`Blessing of the Bird`)) {
       return result$1();
     }
   }
 
   if (auto_favoriteBirdModifier("Initiative") > 0) {
-    if (
-      tryEffects$2(new Map([[$effect`Blessing of your favorite Bird`, true]]))
-    ) {
+    if (tryEffects$2($effects`Blessing of your favorite Bird`)) {
       return result$1();
     }
   }
@@ -819,29 +802,29 @@ export function provideInitiative(
     }
   }
 
-  let ef_to_try: Map<Effect, boolean> = new Map([
+  let ef_to_try: Effect[] = [
     //organized by %/turn and %. Items
-    [$effect`Clear Ears, Can't Lose`, true], //100%, 80 turns
-    [$effect`Poppy Performance`, true], //100%, 30 turns
-    [$effect`Patent Alacrity`, true], //100%, 20 turns
-    [$effect`Fishy, Oily`, true], //60%, 40 turns
-    [$effect`Alacri Tea`, true], //50%, 30 turns
-    [$effect`Adorable Lookout`, true], //30%, 10 turns
-    [$effect`All Fired Up`, true], //30%, 10 turns
-    [$effect`Ticking Clock`, true], //30%, 10 turns
-    [$effect`Well-Swabbed Ear`, true], //30%, 10 turns
-    [$effect`Human-Insect Hybrid`, true], //25%, 30 turns
-    [$effect`Sepia Tan`, true], //20%, 25 turns
-    [$effect`The Glistening`, true], //20%, 15 turns
-    [$effect`Sugar Rush`, true], //20%, 1-15 turns
-  ]); // eff_to_try
+    $effect`Clear Ears, Can't Lose`, //100%, 80 turns
+    $effect`Poppy Performance`, //100%, 30 turns
+    $effect`Patent Alacrity`, //100%, 20 turns
+    $effect`Fishy, Oily`, //60%, 40 turns
+    $effect`Alacri Tea`, //50%, 30 turns
+    $effect`Adorable Lookout`, //30%, 10 turns
+    $effect`All Fired Up`, //30%, 10 turns
+    $effect`Ticking Clock`, //30%, 10 turns
+    $effect`Well-Swabbed Ear`, //30%, 10 turns
+    $effect`Human-Insect Hybrid`, //25%, 30 turns
+    $effect`Sepia Tan`, //20%, 25 turns
+    $effect`The Glistening`, //20%, 15 turns
+    $effect`Sugar Rush`, //20%, 1-15 turns
+  ]; // eff_to_try
   if (tryEffects$2(ef_to_try)) {
     return result$1();
   }
 
   if (canInteract()) {
     // Not worth making in HC
-    ef_to_try = new Map([[$effect`Provocative Perkiness`, true]]);
+    ef_to_try = $effects`Provocative Perkiness`;
     if (tryEffects$2(ef_to_try)) {
       return result$1();
     }
@@ -1070,8 +1053,8 @@ export function provideResistances(
     return result$7();
   }
 
-  function tryEffects$7(effects: Map<Effect, boolean>): boolean {
-    for (const eff of effects.keys()) {
+  function tryEffects$7(effects: Effect[]): boolean {
+    for (const eff of effects) {
       let effectMatters: boolean = false;
       for (const ele of amt.keys()) {
         if (!pass$6(ele) && numericModifier(eff, `${ele} Resistance`) > 0) {
@@ -1092,20 +1075,18 @@ export function provideResistances(
   }
   // effects from skills
   if (
-    tryEffects$7(
-      new Map([
-        [$effect`Elemental Saucesphere`, true],
-        [$effect`Astral Shell`, true],
-        [$effect`Hide of Sobek`, true],
-        [$effect`Spectral Awareness`, true],
-        [$effect`Scariersauce`, true],
-        [$effect`Scarysauce`, true],
-        [$effect`Blessing of the Bird`, true],
-        [$effect`Blessing of your favorite Bird`, true],
-        [$effect`Feeling Peaceful`, true],
-        [$effect`Shifted Reality`, true],
-      ]),
-    )
+    tryEffects$7([
+      $effect`Elemental Saucesphere`,
+      $effect`Astral Shell`,
+      $effect`Hide of Sobek`,
+      $effect`Spectral Awareness`,
+      $effect`Scariersauce`,
+      $effect`Scarysauce`,
+      $effect`Blessing of the Bird`,
+      $effect`Blessing of your favorite Bird`,
+      $effect`Feeling Peaceful`,
+      $effect`Shifted Reality`,
+    ])
   ) {
     return result$7();
   }
@@ -1173,33 +1154,31 @@ export function provideResistances(
   if (doEquips) {
     // effects from items that we'd have to buy or have found, organized by cost per res/all res as of 8/2/25
     if (
-      tryEffects$7(
-        new Map([
-          [$effect`Minor Invulnerability`, true], //+3 all res, 5 meat/adv, 33 meat/res, 6.7 meat/all res
-          [$effect`Incredibly Healthy`, true], //+3 all res, 78.6 meat/adv, 131 meat/res, 26.2 meat/all res
-          [$effect`Oiled-Up`, true], //+2 all res, 14.6 meat/adv, 196 meat/res, 29.2 meat/all res
-          [$effect`Well-Oiled`, true], //+1 all res, 78.6 meat/adv, 393 meat/res, 78.6 meat/all res
-          [$effect`Red Door Syndrome`, true], //+2 all res, 100 meat/adv, 500 meat/res, 100 meat/all res
-          [$effect`Covered in the Rainbow`, true], //+2 all res, 15 meat/adv, 600 meat/res, 120 meat/all res
-          [$effect`Egged On`, true], //+3 all res, 625 meat/adv, 2083 meat/res, 417 meat/all res
-          [$effect`Flame-Retardant Trousers`, true], //+1 hot res, 20 meat/adv, 100 meat/res
-          [$effect`Fireproof Lips`, true], //+9 hot res, 1100 meat/adv, 1222 meat/res
-          [$effect`Insulated Trousers`, true], //+1 cold res, 20 meat/adv, 100 meat/res
-          [$effect`Fever From the Flavor`, true], //+9 cold res, 1774 meat/adv, 1971 meat/res
-          [$effect`Neutered Nostrils`, true], //+2 stench res, 10 meat/adv, 50 meat/res
-          [$effect`Smelly Pants`, true], //+1 stench res, 20 meat/adv, 100 meat/res
-          [$effect`Temporarily Filtered`, true], //+5 stench res, 91.25 meat/adv, 365 meat/res
-          [$effect`Twangy`, true], //+4 stench/sleaze res, 70 meat/adv, 525 meat/res, 263 meat/both res
-          [$effect`Can't Smell Nothin'`, true], //+9 stench res, 1000 meat/adv, 1111 meat/res
-          [$effect`Balls of Ectoplasm`, true], //+1 spooky res, 10 meat/adv, 100 meat/res
-          [$effect`Spookypants`, true], //+1 spooky res, 20 meat/adv, 100 meat/res
-          [$effect`Hyphemariffic`, true], //+9 spooky res, 1717 meat/adv, 1907 meat/res
-          [$effect`Gritty`, true], //+3 spooky res, 490 meat/adv, 3266 meat/res
-          [$effect`Sleaze-Resistant Trousers`, true], //+1 sleaze res, 20 meat/adv, 100 meat/res
-          [$effect`Hyperoffended`, true], //+9 sleaze res, 1391 meat/adv, 1545 meat/res
-          [$effect`Too Shamed`, true], //+3 sleaze res, 425 meat/adv, 2833 meat/res
-        ]),
-      )
+      tryEffects$7([
+        $effect`Minor Invulnerability`, //+3 all res, 5 meat/adv, 33 meat/res, 6.7 meat/all res
+        $effect`Incredibly Healthy`, //+3 all res, 78.6 meat/adv, 131 meat/res, 26.2 meat/all res
+        $effect`Oiled-Up`, //+2 all res, 14.6 meat/adv, 196 meat/res, 29.2 meat/all res
+        $effect`Well-Oiled`, //+1 all res, 78.6 meat/adv, 393 meat/res, 78.6 meat/all res
+        $effect`Red Door Syndrome`, //+2 all res, 100 meat/adv, 500 meat/res, 100 meat/all res
+        $effect`Covered in the Rainbow`, //+2 all res, 15 meat/adv, 600 meat/res, 120 meat/all res
+        $effect`Egged On`, //+3 all res, 625 meat/adv, 2083 meat/res, 417 meat/all res
+        $effect`Flame-Retardant Trousers`, //+1 hot res, 20 meat/adv, 100 meat/res
+        $effect`Fireproof Lips`, //+9 hot res, 1100 meat/adv, 1222 meat/res
+        $effect`Insulated Trousers`, //+1 cold res, 20 meat/adv, 100 meat/res
+        $effect`Fever From the Flavor`, //+9 cold res, 1774 meat/adv, 1971 meat/res
+        $effect`Neutered Nostrils`, //+2 stench res, 10 meat/adv, 50 meat/res
+        $effect`Smelly Pants`, //+1 stench res, 20 meat/adv, 100 meat/res
+        $effect`Temporarily Filtered`, //+5 stench res, 91.25 meat/adv, 365 meat/res
+        $effect`Twangy`, //+4 stench/sleaze res, 70 meat/adv, 525 meat/res, 263 meat/both res
+        $effect`Can't Smell Nothin'`, //+9 stench res, 1000 meat/adv, 1111 meat/res
+        $effect`Balls of Ectoplasm`, //+1 spooky res, 10 meat/adv, 100 meat/res
+        $effect`Spookypants`, //+1 spooky res, 20 meat/adv, 100 meat/res
+        $effect`Hyphemariffic`, //+9 spooky res, 1717 meat/adv, 1907 meat/res
+        $effect`Gritty`, //+3 spooky res, 490 meat/adv, 3266 meat/res
+        $effect`Sleaze-Resistant Trousers`, //+1 sleaze res, 20 meat/adv, 100 meat/res
+        $effect`Hyperoffended`, //+9 sleaze res, 1391 meat/adv, 1545 meat/res
+        $effect`Too Shamed`, //+3 sleaze res, 425 meat/adv, 2833 meat/res
+      ])
     ) {
       return result$7();
     }
@@ -1207,16 +1186,14 @@ export function provideResistances(
 
   if (doAll) {
     if (shouldUseSpleenForLowPriority() && auto_haveCyberRealm()) {
-      if (tryEffects$7(new Map([[$effect`Cyber Resist x2000`, true]]))) {
+      if (tryEffects$7($effects`Cyber Resist x2000`)) {
         return result$7();
       }
     }
     if (
-      tryEffects$7(
-        new Map([
-          [$effect`Wildsun Boon`, true], //+3 all res, 100 advs, 1/day
-        ]),
-      )
+      tryEffects$7([
+        $effect`Wildsun Boon`, //+3 all res, 100 advs, 1/day
+      ])
     ) {
       return result$7();
     }
@@ -1355,8 +1332,8 @@ function provideStats(
     return result$9();
   }
 
-  function tryEffects$8(effects: Map<Effect, boolean>): boolean {
-    for (const eff of effects.keys()) {
+  function tryEffects$8(effects: Effect[]): boolean {
+    for (const eff of effects) {
       let effectMatters: boolean = false;
       for (const st of amt.keys()) {
         if (
@@ -1381,55 +1358,53 @@ function provideStats(
   }
 
   if (
-    tryEffects$8(
-      new Map([
-        // muscle effects
-        [$effect`Juiced and Loose`, true], //+50% mus. nuclear autumn only. 3 MP/adv
-        [$effect`Quiet Determination`, true], //+25% mus. facial expression. 1 MP/adv
-        [$effect`Rage of the Reindeer`, true], //+10% mus. +10 weapon dmg. 1 MP/adv
-        [$effect`Strength of the Tortoise`, true], //+10 mus. 0.2 MP/adv.
-        [$effect`Disco over Matter`, true], //+10 mus. 0.2 MP/adv.
-        [$effect`Power Ballad of the Arrowsmith`, true], //+10 mus. +20 maxHP. song. 5 MP (duration varies).
-        [$effect`Seal Clubbing Frenzy`, true], //+2 mus. 0.2 MP/adv
-        [$effect`Patience of the Tortoise`, true], //+1 mus. +3 maxHP. 0.2 MP/adv
-        // myst effects
-        [$effect`Mind Vision`, true], //+50% mys. nuclear autumn only. 3 MP/adv
-        [$effect`Quiet Judgement`, true], //+25% mys. facial expression. 1 MP/adv
-        [$effect`Tubes of Universal Meat`, true], //+10 mys. 0.2 MP/adv.
-        [$effect`Mariachi Moisture`, true], //+10 mus. 0.2 MP/adv.
-        [$effect`The Magical Mojomuscular Melody`, true], //+10 mys. +20 maxMP. song. 3 MP (duration varies).
-        [$effect`Pasta Oneness`, true], //+2 mys. 0.2 MP/adv
-        [$effect`Saucemastery`, true], //+1 mys. +3 maxMP. 0.2 MP/adv
-        // moxie effects
-        [$effect`Impeccable Coiffure`, true], //+50% mox. nuclear autumn only. 3 MP/adv
-        [$effect`Song of Bravado`, true], //+15% all. NOT a song. 10 MP/adv
-        [$effect`Slippery as a Seal`, true], //+10 mox. 0.2 MP/adv.
-        [$effect`Lubricating Sauce`, true], //+10 mox. 0.2 MP/adv.
-        [$effect`The Moxious Madrigal`, true], //+10 mox. song. 2 MP (duration varies).
-        [$effect`Disco State of Mind`, true], //+2 mox. 0.2 MP/adv
-        [$effect`Mariachi Mood`, true], //+1 mox. +3 maxHP. 0.2 MP/adv
-        // all-stat effects
-        [$effect`Cheerled`, true], //+50% all. Class=Pig Skinner
-        [$effect`Big`, true], //+20% all. 1.5 MP/adv
-        [$effect`Song of Bravado`, true], //+15% all. NOT a song. 10 MP/adv
-        [$effect`Stevedave's Shanty of Superiority`, true], //+10% all. song. 30 MP (duration varies).
-        [$effect`Ultraheart`, true], //+50% all, heartstone, 5/day.
-        // varying effects
-        [$effect`Blessing of the Bird`, true],
-        [$effect`Blessing of your favorite Bird`, true],
-        [$effect`Feeling Excited`, true],
-      ]),
-    )
+    tryEffects$8([
+      // muscle effects
+      $effect`Juiced and Loose`, //+50% mus. nuclear autumn only. 3 MP/adv
+      $effect`Quiet Determination`, //+25% mus. facial expression. 1 MP/adv
+      $effect`Rage of the Reindeer`, //+10% mus. +10 weapon dmg. 1 MP/adv
+      $effect`Strength of the Tortoise`, //+10 mus. 0.2 MP/adv.
+      $effect`Disco over Matter`, //+10 mus. 0.2 MP/adv.
+      $effect`Power Ballad of the Arrowsmith`, //+10 mus. +20 maxHP. song. 5 MP (duration varies).
+      $effect`Seal Clubbing Frenzy`, //+2 mus. 0.2 MP/adv
+      $effect`Patience of the Tortoise`, //+1 mus. +3 maxHP. 0.2 MP/adv
+      // myst effects
+      $effect`Mind Vision`, //+50% mys. nuclear autumn only. 3 MP/adv
+      $effect`Quiet Judgement`, //+25% mys. facial expression. 1 MP/adv
+      $effect`Tubes of Universal Meat`, //+10 mys. 0.2 MP/adv.
+      $effect`Mariachi Moisture`, //+10 mus. 0.2 MP/adv.
+      $effect`The Magical Mojomuscular Melody`, //+10 mys. +20 maxMP. song. 3 MP (duration varies).
+      $effect`Pasta Oneness`, //+2 mys. 0.2 MP/adv
+      $effect`Saucemastery`, //+1 mys. +3 maxMP. 0.2 MP/adv
+      // moxie effects
+      $effect`Impeccable Coiffure`, //+50% mox. nuclear autumn only. 3 MP/adv
+      $effect`Song of Bravado`, //+15% all. NOT a song. 10 MP/adv
+      $effect`Slippery as a Seal`, //+10 mox. 0.2 MP/adv.
+      $effect`Lubricating Sauce`, //+10 mox. 0.2 MP/adv.
+      $effect`The Moxious Madrigal`, //+10 mox. song. 2 MP (duration varies).
+      $effect`Disco State of Mind`, //+2 mox. 0.2 MP/adv
+      $effect`Mariachi Mood`, //+1 mox. +3 maxHP. 0.2 MP/adv
+      // all-stat effects
+      $effect`Cheerled`, //+50% all. Class=Pig Skinner
+      $effect`Big`, //+20% all. 1.5 MP/adv
+      $effect`Song of Bravado`, //+15% all. NOT a song. 10 MP/adv
+      $effect`Stevedave's Shanty of Superiority`, //+10% all. song. 30 MP (duration varies).
+      $effect`Ultraheart`, //+50% all, heartstone, 5/day.
+      // varying effects
+      $effect`Blessing of the Bird`,
+      $effect`Blessing of your favorite Bird`,
+      $effect`Feeling Excited`,
+    ])
   ) {
     return result$9();
   }
 
   if (auto_have_skill($skill`Quiet Desperation`)) {
     //+25% mox. facial expression. 1 MP/adv
-    tryEffects$8(new Map([[$effect`Quiet Desperation`, true]]));
+    tryEffects$8($effects`Quiet Desperation`);
   } else {
     //+10 mox. facial expression. 1 MP/adv
-    tryEffects$8(new Map([[$effect`Disco Smirk`, true]]));
+    tryEffects$8($effects`Disco Smirk`);
   }
 
   if (pass$9()) {
@@ -1438,81 +1413,79 @@ function provideStats(
   // buffs from items
   if (doEquips) {
     if (
-      tryEffects$8(
-        new Map([
-          // muscle effects
-          [$effect`Browbeaten`, true],
-          [$effect`Extra Backbone`, true],
-          [$effect`Extreme Muscle Relaxation`, true],
-          [$effect`Faboooo`, true],
-          [$effect`Feroci Tea`, true],
-          [$effect`Fishy Fortification`, true],
-          [$effect`Football Eyes`, true],
-          [$effect`Go Get 'Em, Tiger!`, true],
-          [$effect`Lycanthropy, Eh?`, true],
-          [$effect`Marinated`, true],
-          [$effect`Phorcefullness`, true],
-          [$effect`Rainy Soul Miasma`, true],
-          [$effect`Savage Beast Inside`, true],
-          [$effect`Steroid Boost`, true],
-          [$effect`Spiky Hair`, true],
-          [$effect`Sugar Rush`, true],
-          [$effect`Superheroic`, true],
-          [$effect`Temporary Lycanthropy`, true],
-          [$effect`Truly Gritty`, true],
-          [$effect`Vital`, true],
-          [$effect`Woad Warrior`, true],
-          // myst effects
-          [$effect`Up To 11`, true],
-          [$effect`Baconstoned`, true],
-          [$effect`Erudite`, true],
-          [$effect`Far Out`, true],
-          [$effect`Glittering Eyelashes`, true],
-          [$effect`Liquidy Smoky`, true],
-          [$effect`Marinated`, true],
-          [$effect`Mystically Oiled`, true],
-          [$effect`OMG WTF`, true],
-          [$effect`Paging Betty`, true],
-          [$effect`Rainy Soul Miasma`, true],
-          [$effect`Ready to Snap`, true],
-          [$effect`Rosewater Mark`, true],
-          [$effect`Seeing Colors`, true],
-          [$effect`Sweet, Nuts`, true],
-          // moxie effects
-          [$effect`Almost Cool`, true],
-          [$effect`Bandersnatched`, true],
-          [$effect`Busy Bein' Delicious`, true],
-          [$effect`Butt-Rock Hair`, true],
-          [$effect`Funky Coal Patina`, true],
-          [$effect`Liquidy Smoky`, true],
-          [$effect`Locks Like the Raven`, true],
-          [$effect`Lycanthropy, Eh?`, true],
-          [$effect`Memories of Puppy Love`, true],
-          [$effect`Newt Gets In Your Eyes`, true],
-          [$effect`Notably Lovely`, true],
-          [$effect`Oiled Skin`, true],
-          [$effect`Radiating Black Body™`, true],
-          [$effect`Spiky Hair`, true],
-          [$effect`Sugar Rush`, true],
-          [$effect`Superhuman Sarcasm`, true],
-          [$effect`Unrunnable Face`, true],
-          [$effect`Gaffe Free`, true],
-          [$effect`Poppy Performance`, true],
-          // all-stat effects
-          [$effect`Confidence of the Votive`, true],
-          [$effect`Pyrite Pride`, true],
-          [$effect`Human-Human Hybrid`, true],
-          [$effect`Industrial Strength Starch`, true],
-          [$effect`Mutated`, true],
-          [$effect`Seriously Mutated`, true],
-          [$effect`Pill Power`, true],
-          [$effect`Slightly Larger Than Usual`, true],
-          [$effect`Standard Issue Bravery`, true],
-          [$effect`Tomato Power`, true],
-          [$effect`Vital`, true],
-          [$effect`Triple-Sized`, true],
-        ]),
-      )
+      tryEffects$8([
+        // muscle effects
+        $effect`Browbeaten`,
+        $effect`Extra Backbone`,
+        $effect`Extreme Muscle Relaxation`,
+        $effect`Faboooo`,
+        $effect`Feroci Tea`,
+        $effect`Fishy Fortification`,
+        $effect`Football Eyes`,
+        $effect`Go Get 'Em, Tiger!`,
+        $effect`Lycanthropy, Eh?`,
+        $effect`Marinated`,
+        $effect`Phorcefullness`,
+        $effect`Rainy Soul Miasma`,
+        $effect`Savage Beast Inside`,
+        $effect`Steroid Boost`,
+        $effect`Spiky Hair`,
+        $effect`Sugar Rush`,
+        $effect`Superheroic`,
+        $effect`Temporary Lycanthropy`,
+        $effect`Truly Gritty`,
+        $effect`Vital`,
+        $effect`Woad Warrior`,
+        // myst effects
+        $effect`Up To 11`,
+        $effect`Baconstoned`,
+        $effect`Erudite`,
+        $effect`Far Out`,
+        $effect`Glittering Eyelashes`,
+        $effect`Liquidy Smoky`,
+        $effect`Marinated`,
+        $effect`Mystically Oiled`,
+        $effect`OMG WTF`,
+        $effect`Paging Betty`,
+        $effect`Rainy Soul Miasma`,
+        $effect`Ready to Snap`,
+        $effect`Rosewater Mark`,
+        $effect`Seeing Colors`,
+        $effect`Sweet, Nuts`,
+        // moxie effects
+        $effect`Almost Cool`,
+        $effect`Bandersnatched`,
+        $effect`Busy Bein' Delicious`,
+        $effect`Butt-Rock Hair`,
+        $effect`Funky Coal Patina`,
+        $effect`Liquidy Smoky`,
+        $effect`Locks Like the Raven`,
+        $effect`Lycanthropy, Eh?`,
+        $effect`Memories of Puppy Love`,
+        $effect`Newt Gets In Your Eyes`,
+        $effect`Notably Lovely`,
+        $effect`Oiled Skin`,
+        $effect`Radiating Black Body™`,
+        $effect`Spiky Hair`,
+        $effect`Sugar Rush`,
+        $effect`Superhuman Sarcasm`,
+        $effect`Unrunnable Face`,
+        $effect`Gaffe Free`,
+        $effect`Poppy Performance`,
+        // all-stat effects
+        $effect`Confidence of the Votive`,
+        $effect`Pyrite Pride`,
+        $effect`Human-Human Hybrid`,
+        $effect`Industrial Strength Starch`,
+        $effect`Mutated`,
+        $effect`Seriously Mutated`,
+        $effect`Pill Power`,
+        $effect`Slightly Larger Than Usual`,
+        $effect`Standard Issue Bravery`,
+        $effect`Tomato Power`,
+        $effect`Vital`,
+        $effect`Triple-Sized`,
+      ])
     ) {
       return result$9();
     }
@@ -1636,8 +1609,8 @@ function provideMeat(
       `We ${speculative ? "can gain" : "just gained"} ${eff.toString()}, now we have ${result$3()}`,
     );
   }
-  function tryEffects$4(effects: Map<Effect, boolean>): boolean {
-    for (const eff of effects.keys()) {
+  function tryEffects$4(effects: Effect[]): boolean {
+    for (const eff of effects) {
       if (buffMaintain$2(eff, 0, 1, 1, speculative)) {
         handleEffect$3(eff);
       }
@@ -1649,12 +1622,10 @@ function provideMeat(
   }
   // unlimited skills
   if (
-    tryEffects$4(
-      new Map([
-        [$effect`Polka of Plenty`, true], //50% meat
-        [$effect`Disco Leer`, true], //10% meat
-      ]),
-    )
+    tryEffects$4([
+      $effect`Polka of Plenty`, //50% meat
+      $effect`Disco Leer`, //10% meat
+    ])
   ) {
     if (pass$3()) {
       return result$3();
@@ -1685,7 +1656,7 @@ function provideMeat(
   }
   if (auto_birdModifier("Meat Drop") > 0) {
     //Can be 20/40/60/80/100% meat drop
-    if (tryEffects$4(new Map([[$effect`Blessing of the Bird`, true]]))) {
+    if (tryEffects$4($effects`Blessing of the Bird`)) {
       if (pass$3()) {
         return result$3();
       }
@@ -1693,9 +1664,7 @@ function provideMeat(
   }
   if (auto_favoriteBirdModifier("Meat Drop") > 0) {
     //Can be 20/40/60/80/100% meat drop
-    if (
-      tryEffects$4(new Map([[$effect`Blessing of your favorite Bird`, true]]))
-    ) {
+    if (tryEffects$4($effects`Blessing of your favorite Bird`)) {
       if (pass$3()) {
         return result$3();
       }
@@ -1716,11 +1685,9 @@ function provideMeat(
       }
     }
     if (
-      tryEffects$4(
-        new Map([
-          [$effect`Purr of the Feline`, true], //makes the maid 5 levels higher
-        ]),
-      )
+      tryEffects$4([
+        $effect`Purr of the Feline`, //makes the maid 5 levels higher
+      ])
     ) {
       if (pass$3()) {
         return result$3();
@@ -1729,28 +1696,28 @@ function provideMeat(
   }
   songboomSetting("meat"); //30% meat
   // items
-  let ef_to_try: Map<Effect, boolean> = new Map([
-    [$effect`Flapper Dancin'`, true], //100% meat
-    [$effect`Heightened Senses`, true], //50% meat, 25% item drop
-    [$effect`Big Meat Big Prizes`, true], //50% meat
-    [$effect`Human-Constellation Hybrid`, true], //50% meat
-    [$effect`Patent Avarice`, true], //50% meat
-    [$effect`Earning Interest`, true], //50% meat
-    [$effect`Bet Your Autumn Dollar`, true], //50% meat
-    [$effect`The Grass...  Is Blue...`, true], //40% meat, 20% item
-    [$effect`Sweat Equity`, true], //40% meat
-    [$effect`Greedy Resolve`, true], //30% meat
-    [$effect`Tubes of Universal Meat`, true], //30% meat
-    [$effect`Worth Your Salt`, true], //25% meat, max hp +25
-    [$effect`Human-Fish Hybrid`, true], //10 fam
-    [$effect`Human-Humanoid Hybrid`, true], //20% meat, 10% all stats
-    [$effect`Heart of Pink`, true], //20% meat, +3 all stats
-    [$effect`Kindly Resolve`, true], //5 fam weight
-    [$effect`Human-Machine Hybrid`, true], //5 fam weight, DA +50, DR 5
-    [$effect`Only Dogs Love a Drunken Sailor`, true], //5 fam weight, rivalrous with item drop
-    [$effect`Sweet Heart`, true], // Muscle +X, +2X% meat
-    [$effect`So You Can Work More...`, true], //10% meat
-  ]); // ef_to_try
+  let ef_to_try: Effect[] = [
+    $effect`Flapper Dancin'`, //100% meat
+    $effect`Heightened Senses`, //50% meat, 25% item drop
+    $effect`Big Meat Big Prizes`, //50% meat
+    $effect`Human-Constellation Hybrid`, //50% meat
+    $effect`Patent Avarice`, //50% meat
+    $effect`Earning Interest`, //50% meat
+    $effect`Bet Your Autumn Dollar`, //50% meat
+    $effect`The Grass...  Is Blue...`, //40% meat, 20% item
+    $effect`Sweat Equity`, //40% meat
+    $effect`Greedy Resolve`, //30% meat
+    $effect`Tubes of Universal Meat`, //30% meat
+    $effect`Worth Your Salt`, //25% meat, max hp +25
+    $effect`Human-Fish Hybrid`, //10 fam
+    $effect`Human-Humanoid Hybrid`, //20% meat, 10% all stats
+    $effect`Heart of Pink`, //20% meat, +3 all stats
+    $effect`Kindly Resolve`, //5 fam weight
+    $effect`Human-Machine Hybrid`, //5 fam weight, DA +50, DR 5
+    $effect`Only Dogs Love a Drunken Sailor`, //5 fam weight, rivalrous with item drop
+    $effect`Sweet Heart`, // Muscle +X, +2X% meat
+    $effect`So You Can Work More...`, //10% meat
+  ]; // ef_to_try
 
   if (tryEffects$4(ef_to_try)) {
     if (pass$3()) {
@@ -1760,7 +1727,7 @@ function provideMeat(
 
   if (canInteract()) {
     // Not worth making in HC
-    ef_to_try = new Map([[$effect`Cranberry Cordiality`, true]]);
+    ef_to_try = $effects`Cranberry Cordiality`;
     if (tryEffects$4(ef_to_try)) {
       if (pass$3()) {
         return result$3();
@@ -1788,7 +1755,7 @@ function provideMeat(
   }
   if (!in_wereprof()) {
     //wereprof doesn't like +ML effects outside of Werewolf
-    if (tryEffects$4(new Map([[$effect`Frosty`, true]]))) {
+    if (tryEffects$4($effects`Frosty`)) {
       //200% meat, 100% item, 100% init, 25 ML
       if (pass$3()) {
         return result$3();
@@ -1862,14 +1829,12 @@ function provideMeat(
   // Use limited resources like Inhaler
   if (doEverything) {
     if (
-      tryEffects$4(
-        new Map([
-          [$effect`Shadow Waters`, true], //200% meat, 100% item, 100% init, -10% combat
-          [$effect`Sinuses For Miles`, true], //200% meat
-          [$effect`Car-Charged`, true], //100% meat, 100% item, 5-10MP, 50% init, 50% spell dmg, +3 stats per fight
-          [$effect`Incredibly Well Lit`, true], //100% meat, 50% item
-        ]),
-      )
+      tryEffects$4([
+        $effect`Shadow Waters`, //200% meat, 100% item, 100% init, -10% combat
+        $effect`Sinuses For Miles`, //200% meat
+        $effect`Car-Charged`, //100% meat, 100% item, 5-10MP, 50% init, 50% spell dmg, +3 stats per fight
+        $effect`Incredibly Well Lit`, //100% meat, 50% item
+      ])
     ) {
       if (pass$3()) {
         return result$3();
@@ -2146,8 +2111,8 @@ function provideItem(
     );
   }
 
-  function tryEffects$3(effects: Map<Effect, boolean>): boolean {
-    for (const eff of effects.keys()) {
+  function tryEffects$3(effects: Effect[]): boolean {
+    for (const eff of effects) {
       if (buffMaintain$2(eff, 0, 1, 1, speculative)) {
         handleEffect$2(eff);
       }
@@ -2163,20 +2128,18 @@ function provideItem(
   }
 
   if (in_amw() && amw_canAfford($skill`Beef Goggles`)) {
-    if (tryEffects$3(new Map([[$effect`Beef Goggles`, true]]))) {
+    if (tryEffects$3($effects`Beef Goggles`)) {
       // meatpath only
       return result$2();
     }
   }
   // unlimited skills
   if (
-    tryEffects$3(
-      new Map([
-        [$effect`Fat Leon's Phat Loot Lyric`, true], //20% item
-        [$effect`Singer's Faithful Ocelot`, true], //10% item
-        [$effect`Who's Going to Pay This Drunken Sailor?`, true], //25% item, rivalrous with +5 lb fam weight
-      ]),
-    )
+    tryEffects$3([
+      $effect`Fat Leon's Phat Loot Lyric`, //20% item
+      $effect`Singer's Faithful Ocelot`, //10% item
+      $effect`Who's Going to Pay This Drunken Sailor?`, //25% item, rivalrous with +5 lb fam weight
+    ])
   ) {
     return result$2();
   }
@@ -2202,46 +2165,42 @@ function provideItem(
 
   if (auto_birdModifier("Item Drop") > 0) {
     //Can be 10/20/30/40/50% item drop
-    if (tryEffects$3(new Map([[$effect`Blessing of the Bird`, true]]))) {
+    if (tryEffects$3($effects`Blessing of the Bird`)) {
       return result$2();
     }
   }
 
   if (auto_favoriteBirdModifier("Item Drop") > 0) {
     //Can be 10/20/30/40/50% item drop
-    if (
-      tryEffects$3(new Map([[$effect`Blessing of your favorite Bird`, true]]))
-    ) {
+    if (tryEffects$3($effects`Blessing of your favorite Bird`)) {
       return result$2();
     }
   }
   // items
   if (
-    tryEffects$3(
-      new Map([
-        [$effect`Unusual Perspective`, true], //50% item
-        [$effect`Five Sticky Fingers`, true], //50% item
-        [$effect`Spitting Rhymes`, true], //50% item
-        [$effect`Wet and Greedy`, true], //25% item
-        [$effect`Serendipi Tea`, true], //25% item
-        [$effect`Glowing Hands`, true], //25% item
-        [$effect`Eagle Eyes`, true], //20% item
-        [$effect`Juiced and Jacked`, true], //20% item
-        [$effect`The Grass...  Is Blue...`, true], //40% meat, 20% item
-        [$effect`Joyful Resolve`, true], //15% item
-        [$effect`Lubricating Sauce`, true], //15% item
-        [$effect`Fortunate Resolve`, true], //10% item
-        [$effect`Human-Human Hybrid`, true], //10% item
-        [$effect`Heart of Lavender`, true], //10% item
-      ]),
-    )
+    tryEffects$3([
+      $effect`Unusual Perspective`, //50% item
+      $effect`Five Sticky Fingers`, //50% item
+      $effect`Spitting Rhymes`, //50% item
+      $effect`Wet and Greedy`, //25% item
+      $effect`Serendipi Tea`, //25% item
+      $effect`Glowing Hands`, //25% item
+      $effect`Eagle Eyes`, //20% item
+      $effect`Juiced and Jacked`, //20% item
+      $effect`The Grass...  Is Blue...`, //40% meat, 20% item
+      $effect`Joyful Resolve`, //15% item
+      $effect`Lubricating Sauce`, //15% item
+      $effect`Fortunate Resolve`, //10% item
+      $effect`Human-Human Hybrid`, //10% item
+      $effect`Heart of Lavender`, //10% item
+    ])
   ) {
     return result$2();
   }
 
   if (!in_wereprof()) {
     //wereprof doesn't like +ML effects outside of Werewolf
-    if (tryEffects$3(new Map([[$effect`Frosty`, true]]))) {
+    if (tryEffects$3($effects`Frosty`)) {
       //200% meat, 100% item, 100% init, 25 ML
       return result$2();
     }
@@ -2375,15 +2334,13 @@ function provideItem(
   // Use limited resources
   if (doEverything) {
     if (
-      tryEffects$3(
-        new Map([
-          [$effect`Shadow Waters`, true], //200% meat, 100% item, 100% init, -10% combat
-          [$effect`One Very Clear Eye`, true], //100% item
-          [$effect`Car-Charged`, true], //100% meat, 100% item, 5-10MP, 50% init, 50% spell dmg, +3 stats per fight
-          [$effect`Incredibly Well Lit`, true], //100% meat, 50% item
-          [$effect`Crunching Leaves`, true], //25% item, +5 combat
-        ]),
-      )
+      tryEffects$3([
+        $effect`Shadow Waters`, //200% meat, 100% item, 100% init, -10% combat
+        $effect`One Very Clear Eye`, //100% item
+        $effect`Car-Charged`, //100% meat, 100% item, 5-10MP, 50% init, 50% spell dmg, +3 stats per fight
+        $effect`Incredibly Well Lit`, //100% meat, 50% item
+        $effect`Crunching Leaves`, //25% item, +5 combat
+      ])
     ) {
       if (pass$2()) {
         return result$2();
@@ -2603,8 +2560,8 @@ export function provideFamExp(
     );
   }
 
-  function tryEffects$1(effects: Map<Effect, boolean>): boolean {
-    for (const eff of effects.keys()) {
+  function tryEffects$1(effects: Effect[]): boolean {
+    for (const eff of effects) {
       if (numericModifier(eff, $modifier`Familiar Experience`) > 0) {
         if (buffMaintain$2(eff, 0, 1, 1, speculative)) {
           handleEffect(eff);
@@ -2619,23 +2576,19 @@ export function provideFamExp(
   // If we're zootomist, need to level, and we have +xp on our milk, cast it.
   if (in_zootomist() && myLevel() < 13) {
     if (
-      tryEffects$1(
-        new Map([
-          [$effect`Milk of Familiar Kindness`, true],
-          [$effect`Milk of Familiar Cruelty`, true],
-        ]),
-      )
+      tryEffects$1([
+        $effect`Milk of Familiar Kindness`,
+        $effect`Milk of Familiar Cruelty`,
+      ])
     ) {
       return result();
     }
   }
   // unlimited skills
   if (
-    tryEffects$1(
-      new Map([
-        [$effect`Curiosity of Br'er Tarrypin`, true], //+1
-      ]),
-    )
+    tryEffects$1([
+      $effect`Curiosity of Br'er Tarrypin`, //+1
+    ])
   ) {
     return result();
   }
@@ -2676,7 +2629,7 @@ export function provideFamExp(
       itemAmount($item`pulled blue taffy`) > 0
     ) {
       auto_log_info("Getting Blue Swayed");
-      if ((gotSwayed = tryEffects$1(new Map([[$effect`Blue Swayed`, true]])))) {
+      if ((gotSwayed = tryEffects$1($effects`Blue Swayed`))) {
         //+X/5, decreasing by 5 every 5 turns so keeping it separate
         if (pass()) {
           return result();
@@ -2687,7 +2640,7 @@ export function provideFamExp(
       fullness_left() > 2 &&
       itemAmount($item`roasted vegetable focaccia`) > 0
     ) {
-      if (tryEffects$1(new Map([[$effect`Feeling Fancy`, true]]))) {
+      if (tryEffects$1($effects`Feeling Fancy`)) {
         //+10
         if (pass()) {
           return result();
@@ -2696,17 +2649,15 @@ export function provideFamExp(
     }
     candyEggDeviler(); //try to get a deviled candy egg
     if (
-      tryEffects$1(
-        new Map([
-          [$effect`Best Pals`, true], //+1
-          [$effect`Warm Shoulders`, true], //+5
-          [$effect`Shortly Hydrated`, true], //+5
-          [$effect`Candied Devil`, true], //+5
-          [$effect`Black Tongue`, true], //+2
-          [$effect`Green Tongue`, true], //+2
-          [$effect`Heart of White`, true], //+1
-        ]),
-      )
+      tryEffects$1([
+        $effect`Best Pals`, //+1
+        $effect`Warm Shoulders`, //+5
+        $effect`Shortly Hydrated`, //+5
+        $effect`Candied Devil`, //+5
+        $effect`Black Tongue`, //+2
+        $effect`Green Tongue`, //+2
+        $effect`Heart of White`, //+1
+      ])
     ) {
       if (pass()) {
         return result();

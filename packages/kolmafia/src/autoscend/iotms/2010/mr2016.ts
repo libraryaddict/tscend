@@ -1271,26 +1271,26 @@ export function rethinkingCandy(
     return false;
   }
 
-  const synthesisList: Map<Effect, boolean> = new Map([
-    [$effect`Synthesis: Hot`, true],
-    [$effect`Synthesis: Cold`, true],
-    [$effect`Synthesis: Pungent`, true],
-    [$effect`Synthesis: Scary`, true],
-    [$effect`Synthesis: Greasy`, true],
-    [$effect`Synthesis: Strong`, true],
-    [$effect`Synthesis: Smart`, true],
-    [$effect`Synthesis: Cool`, true],
-    [$effect`Synthesis: Hardy`, true],
-    [$effect`Synthesis: Energy`, true],
-    [$effect`Synthesis: Greed`, true],
-    [$effect`Synthesis: Collection`, true],
-    [$effect`Synthesis: Movement`, true],
-    [$effect`Synthesis: Learning`, true],
-    [$effect`Synthesis: Style`, true],
-  ]);
+  const synthesisList: Effect[] = [
+    $effect`Synthesis: Hot`,
+    $effect`Synthesis: Cold`,
+    $effect`Synthesis: Pungent`,
+    $effect`Synthesis: Scary`,
+    $effect`Synthesis: Greasy`,
+    $effect`Synthesis: Strong`,
+    $effect`Synthesis: Smart`,
+    $effect`Synthesis: Cool`,
+    $effect`Synthesis: Hardy`,
+    $effect`Synthesis: Energy`,
+    $effect`Synthesis: Greed`,
+    $effect`Synthesis: Collection`,
+    $effect`Synthesis: Movement`,
+    $effect`Synthesis: Learning`,
+    $effect`Synthesis: Style`,
+  ];
   const synthesis: Map<number, Effect> = List$1(synthesisList);
 
-  if (!synthesisList.has(acquire)) {
+  if (!synthesisList.includes(acquire)) {
     return false;
   }
 

@@ -259,13 +259,10 @@ function auto_haveReminiscedMonster(mon: Monster): boolean {
 }
 
 export function auto_monsterInLocket(mon: Monster): boolean {
-  const captured: Map<Monster, boolean> = new Map(
-    Object.entries(getLocketMonsters()).map(([_k, _v]) => [
-      Monster.get(_k),
-      _v,
-    ]),
+  const captured: Monster[] = Object.keys(getLocketMonsters()).map((_k) =>
+    Monster.get(_k),
   );
-  return captured.has(mon);
+  return captured.includes(mon);
 }
 
 export function auto_fightLocketMonster(

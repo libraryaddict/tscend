@@ -102,19 +102,19 @@ export function auto_smallCampgroundGear(): boolean {
     return false;
   }
 
-  const dirtGear: Map<Item, boolean> = new Map([
-    [$item`mesquito proboscis`, true],
-    [$item`ncle leg`, true],
-    [$item`rutabuga bag`, true],
-    [$item`senate fly thorax`, true],
-  ]);
-  const tallGrassGear: Map<Item, boolean> = new Map([
-    [$item`birdybug antenna`, true],
-    [$item`daddy shortlegs leg`, true],
-    [$item`kilopede skull`, true],
-  ]);
-  function haveGear(gear: Map<Item, boolean>): boolean {
-    for (const it of gear.keys()) {
+  const dirtGear: Item[] = [
+    $item`mesquito proboscis`,
+    $item`ncle leg`,
+    $item`rutabuga bag`,
+    $item`senate fly thorax`,
+  ];
+  const tallGrassGear: Item[] = [
+    $item`birdybug antenna`,
+    $item`daddy shortlegs leg`,
+    $item`kilopede skull`,
+  ];
+  function haveGear(gear: Item[]): boolean {
+    for (const it of gear) {
       if (itemAmount(it) === 0 && !haveEquipped(it)) {
         return false;
       }

@@ -493,12 +493,7 @@ function bat_creatable_amount(desired: Item): number {
       }
       return min(
         itemAmount($item`blood bag`),
-        total_items(
-          new Map([
-            [$item`batgut`, true],
-            [$item`ratgut`, true],
-          ]),
-        ),
+        total_items([$item`batgut`, $item`ratgut`]),
       );
     case $item`blood-soaked sponge cake`:
       for (const it of $items`gauze garter, filthy poultice`) {
@@ -510,12 +505,7 @@ function bat_creatable_amount(desired: Item): number {
       }
       return min(
         itemAmount($item`blood bag`),
-        total_items(
-          new Map([
-            [$item`gauze garter`, true],
-            [$item`filthy poultice`, true],
-          ]),
-        ),
+        total_items([$item`gauze garter`, $item`filthy poultice`]),
       );
     case $item`dusty bottle of blood`:
       for (const it of $items`dusty bottle of Merlot, dusty bottle of Port, dusty bottle of Pinot Noir, dusty bottle of Zinfandel, dusty bottle of Marsala, dusty bottle of Muscat`) {
@@ -527,16 +517,14 @@ function bat_creatable_amount(desired: Item): number {
       }
       return min(
         itemAmount($item`blood bag`),
-        total_items(
-          new Map([
-            [$item`dusty bottle of Merlot`, true],
-            [$item`dusty bottle of Port`, true],
-            [$item`dusty bottle of Pinot Noir`, true],
-            [$item`dusty bottle of Zinfandel`, true],
-            [$item`dusty bottle of Marsala`, true],
-            [$item`dusty bottle of Muscat`, true],
-          ]),
-        ),
+        total_items([
+          $item`dusty bottle of Merlot`,
+          $item`dusty bottle of Port`,
+          $item`dusty bottle of Pinot Noir`,
+          $item`dusty bottle of Zinfandel`,
+          $item`dusty bottle of Marsala`,
+          $item`dusty bottle of Muscat`,
+        ]),
       );
     case $item`vampagne`:
       for (const it of $items`carbonated soy milk, Monstar energy beverage`) {
@@ -548,19 +536,17 @@ function bat_creatable_amount(desired: Item): number {
       }
       return min(
         itemAmount($item`blood bag`),
-        total_items(
-          new Map([
-            [$item`carbonated soy milk`, true],
-            [$item`Monstar energy beverage`, true],
-          ]),
-        ),
+        total_items([
+          $item`carbonated soy milk`,
+          $item`Monstar energy beverage`,
+        ]),
       );
   }
   auto_log_warning(`Hmm, ${desired} isn't a Vampyre consumable`, "red");
   return 0;
 }
 
-function bat_multicraft(mode: string, options: Map<Item, boolean>): boolean {
+function bat_multicraft(mode: string, options: Item[]): boolean {
   if (!in_darkGyffte()) {
     return false;
   }
@@ -568,7 +554,7 @@ function bat_multicraft(mode: string, options: Map<Item, boolean>): boolean {
     return false;
   }
 
-  for (const ingredient of options.keys()) {
+  for (const ingredient of options) {
     if (itemAmount(ingredient) > 0) {
       if (craft(mode, 1, $item`blood bag`, ingredient) > 0) {
         return true;
@@ -596,41 +582,26 @@ function bat_cook(desired: Item): boolean {
     case $item`Red Russian`:
       return create(1, desired);
     case $item`actual blood sausage`:
-      return bat_multicraft(
-        "cook",
-        new Map([
-          [$item`batgut`, true],
-          [$item`ratgut`, true],
-        ]),
-      );
+      return bat_multicraft("cook", [$item`batgut`, $item`ratgut`]);
     case $item`blood-soaked sponge cake`:
-      return bat_multicraft(
-        "cook",
-        new Map([
-          [$item`filthy poultice`, true],
-          [$item`gauze garter`, true],
-        ]),
-      );
+      return bat_multicraft("cook", [
+        $item`filthy poultice`,
+        $item`gauze garter`,
+      ]);
     case $item`dusty bottle of blood`:
-      return bat_multicraft(
-        "cocktail",
-        new Map([
-          [$item`dusty bottle of Merlot`, true],
-          [$item`dusty bottle of Port`, true],
-          [$item`dusty bottle of Pinot Noir`, true],
-          [$item`dusty bottle of Zinfandel`, true],
-          [$item`dusty bottle of Marsala`, true],
-          [$item`dusty bottle of Muscat`, true],
-        ]),
-      );
+      return bat_multicraft("cocktail", [
+        $item`dusty bottle of Merlot`,
+        $item`dusty bottle of Port`,
+        $item`dusty bottle of Pinot Noir`,
+        $item`dusty bottle of Zinfandel`,
+        $item`dusty bottle of Marsala`,
+        $item`dusty bottle of Muscat`,
+      ]);
     case $item`vampagne`:
-      return bat_multicraft(
-        "cocktail",
-        new Map([
-          [$item`carbonated soy milk`, true],
-          [$item`Monstar energy beverage`, true],
-        ]),
-      );
+      return bat_multicraft("cocktail", [
+        $item`carbonated soy milk`,
+        $item`Monstar energy beverage`,
+      ]);
   }
   auto_log_warning(`Hmm, ${desired} isn't a Vampyre consumable`, "red");
   return false;
@@ -692,8 +663,8 @@ export function bat_consumption(): boolean {
     );
   }
 
-  function consume_first(its: Map<Item, boolean>): boolean {
-    for (const it of its.keys()) {
+  function consume_first(its: Item[]): boolean {
+    for (const it of its) {
       if (availableAmount(it) === 0) {
         //try to pull it if we don't have any on hand. Preferable to crafting when possible
         pullXWhenHaveY(it, 1, 0);
@@ -776,12 +747,12 @@ export function bat_consumption(): boolean {
   }
   // attempt to fill organs with best consumables all the time, don't wait to be at low adventure count
   if (inebriety_left() > 0) {
-    if (consume_first(new Map([[$item`vampagne`, true]]))) {
+    if (consume_first($items`vampagne`)) {
       return true;
     }
   }
   if (fullness_left() > 0) {
-    if (consume_first(new Map([[$item`blood-soaked sponge cake`, true]]))) {
+    if (consume_first($items`blood-soaked sponge cake`)) {
       return true;
     }
   }
@@ -791,44 +762,38 @@ export function bat_consumption(): boolean {
     // don't auto consume bottle of Sanguiovese or bloodstick unless we're down to one adventure
     if (inebriety_left() > 0 && fullness_left() > 0) {
       if (
-        consume_first(
-          new Map([
-            [$item`vampagne`, true],
-            [$item`blood-soaked sponge cake`, true],
-            [$item`dusty bottle of blood`, true],
-            [$item`blood roll-up`, true],
-            [$item`Red Russian`, true],
-            [$item`blood snowcone`, true],
-            [$item`mulled blood`, true],
-            [$item`actual blood sausage`, true],
-          ]),
-        )
+        consume_first([
+          $item`vampagne`,
+          $item`blood-soaked sponge cake`,
+          $item`dusty bottle of blood`,
+          $item`blood roll-up`,
+          $item`Red Russian`,
+          $item`blood snowcone`,
+          $item`mulled blood`,
+          $item`actual blood sausage`,
+        ])
       ) {
         return true;
       }
     } else if (inebriety_left() > 0) {
       if (
-        consume_first(
-          new Map([
-            [$item`vampagne`, true],
-            [$item`dusty bottle of blood`, true],
-            [$item`Red Russian`, true],
-            [$item`mulled blood`, true],
-          ]),
-        )
+        consume_first([
+          $item`vampagne`,
+          $item`dusty bottle of blood`,
+          $item`Red Russian`,
+          $item`mulled blood`,
+        ])
       ) {
         return true;
       }
     } else if (fullness_left() > 0) {
       if (
-        consume_first(
-          new Map([
-            [$item`blood-soaked sponge cake`, true],
-            [$item`blood roll-up`, true],
-            [$item`blood snowcone`, true],
-            [$item`actual blood sausage`, true],
-          ]),
-        )
+        consume_first([
+          $item`blood-soaked sponge cake`,
+          $item`blood roll-up`,
+          $item`blood snowcone`,
+          $item`actual blood sausage`,
+        ])
       ) {
         return true;
       }
@@ -837,12 +802,12 @@ export function bat_consumption(): boolean {
 
   if (myAdventures() <= 1) {
     if (fullness_left() > 0) {
-      if (consume_first(new Map([[$item`bloodstick`, true]]))) {
+      if (consume_first($items`bloodstick`)) {
         return true;
       }
     }
     if (inebriety_left() > 0) {
-      if (consume_first(new Map([[$item`bottle of Sanguiovese`, true]]))) {
+      if (consume_first($items`bottle of Sanguiovese`)) {
         return true;
       }
     }

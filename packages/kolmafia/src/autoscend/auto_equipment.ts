@@ -1510,35 +1510,35 @@ export function auto_getAllEquipabble(s: Slot): Map<Item, number> {
 }
 
 export function auto_saveEquipped(): Map<number, Item> {
-  let my_slots: Map<Slot, boolean>;
+  let my_slots: Slot[];
   if (in_hattrick()) {
-    my_slots = new Map([
-      [$slot`off-hand`, true],
-      [$slot`weapon`, true],
-      [$slot`back`, true],
-      [$slot`shirt`, true],
-      [$slot`pants`, true],
-      [$slot`acc1`, true],
-      [$slot`acc2`, true],
-      [$slot`acc3`, true],
-      [$slot`familiar`, true],
-    ]);
+    my_slots = [
+      $slot`off-hand`,
+      $slot`weapon`,
+      $slot`back`,
+      $slot`shirt`,
+      $slot`pants`,
+      $slot`acc1`,
+      $slot`acc2`,
+      $slot`acc3`,
+      $slot`familiar`,
+    ];
   } else {
-    my_slots = new Map([
-      [$slot`hat`, true],
-      [$slot`off-hand`, true],
-      [$slot`weapon`, true],
-      [$slot`back`, true],
-      [$slot`shirt`, true],
-      [$slot`pants`, true],
-      [$slot`acc1`, true],
-      [$slot`acc2`, true],
-      [$slot`acc3`, true],
-      [$slot`familiar`, true],
-    ]);
+    my_slots = [
+      $slot`hat`,
+      $slot`off-hand`,
+      $slot`weapon`,
+      $slot`back`,
+      $slot`shirt`,
+      $slot`pants`,
+      $slot`acc1`,
+      $slot`acc2`,
+      $slot`acc3`,
+      $slot`familiar`,
+    ];
   }
   const equipped: Map<number, Item> = new Map();
-  for (const sl of my_slots.keys()) {
+  for (const sl of my_slots) {
     equipped.set(equipped.size, equippedItem(sl));
   }
   return equipped;

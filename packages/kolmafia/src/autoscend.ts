@@ -2216,96 +2216,93 @@ function autosellCrap(): boolean {
     return false; // don't bother trying to autosell in Adventurer Meats World
   }
   // Function to sell all of our items, optionally keeping some.
-  function sell_except(
-    n_to_keep: number,
-    items_to_sell: Map<Item, boolean>,
-  ): void {
-    for (const it of items_to_sell.keys()) {
+  function sell_except(n_to_keep: number, items_to_sell: Item[]): void {
+    for (const it of items_to_sell) {
       if (itemAmount(it) > n_to_keep) {
         auto_autosell(min(10, itemAmount(it) - n_to_keep), it);
       }
     }
   }
   // keep none of these
-  let items_considered: Map<Item, boolean> = new Map([
-    [$item`dense meat stack`, true],
-    [$item`meat stack`, true], //quest rewards that are better off as meat. If we ever need it we can freely recreate them at no loss.
-    [$item`blue money bag`, true],
-    [$item`red money bag`, true],
-    [$item`white money bag`, true], //vampyre path boss rewards and major source of meat in run.
-    [$item`space blanket`, true], //can be inside MayDay package. Only purpose is to sell for meat
-    [$item`void stone`, true],
-  ]); //dropped by Void Fights when Cursed Magnifying Glass is equiped. Only purpose is to sell for meat
+  let items_considered: Item[] = [
+    $item`dense meat stack`,
+    $item`meat stack`, //quest rewards that are better off as meat. If we ever need it we can freely recreate them at no loss.
+    $item`blue money bag`,
+    $item`red money bag`,
+    $item`white money bag`, //vampyre path boss rewards and major source of meat in run.
+    $item`space blanket`, //can be inside MayDay package. Only purpose is to sell for meat
+    $item`void stone`,
+  ]; //dropped by Void Fights when Cursed Magnifying Glass is equiped. Only purpose is to sell for meat
 
   sell_except(0, items_considered);
 
-  sell_except(2, new Map([[$item`elegant nightstick`, true]])); //keeping 2 nightsticks in stock for double fisting
+  sell_except(2, $items`elegant nightstick`); //keeping 2 nightsticks in stock for double fisting
   // below this point are items we only want to sell if we are desperate for meat.
   if (auto_amIRich()) {
     return false;
   }
   // Keep none
-  items_considered = new Map([
-    [$item`anticheese`, true],
-    [$item`awful poetry journal`, true],
-    [$item`Azurite`, true],
-    [$item`beach glass bead`, true],
-    [$item`beer bomb`, true],
-    [$item`bit-o-cactus`, true],
-    [$item`clay peace-sign bead`, true],
-    [$item`clockwork key`, true],
-    [$item`cocoa eggshell fragment`, true],
-    [$item`datastick`, true],
-    [$item`decorative fountain`, true],
-    [$item`dense meat stack`, true],
-    [$item`empty Cloaca-Cola bottle`, true],
-    [$item`enchanted barbell`, true],
-    [$item`Eye Agate`, true],
-    [$item`fancy bath salts`, true],
-    [$item`frigid ninja stars`, true],
-    [$item`Feng Shui for Big Dumb Idiots`, true],
-    [$item`Frat Army FGF`, true],
-    [$item`giant moxie weed`, true],
-    [$item`half of a gold tooth`, true],
-    [$item`headless sparrow`, true],
-    [$item`keel-haulin' knife`, true],
-    [$item`Knob Goblin pants`, true],
-    [$item`Knob Goblin scimitar`, true],
-    [$item`Knob Goblin tongs`, true],
-    [$item`Kokomo Resort Pass`, true],
-    [$item`Lapis Lazuli`, true],
-    [$item`leftovers of indeterminate origin`, true],
-    [$item`Mad Train wine`, true],
-    [$item`mangled squirrel`, true],
-    [$item`margarita`, true],
-    [$item`meat paste`, true],
-    [$item`mineapple`, true],
-    [$item`moxie weed`, true],
-    [$item`PADL Phone`, true],
-    [$item`patchouli incense stick`, true],
-    [$item`phat turquoise bead`, true],
-    [$item`photoprotoneutron torpedo`, true],
-    [$item`plot hole`, true],
-    [$item`procrastination potion`, true],
-    [$item`rat carcass`, true],
-    [$item`sausage bomb`, true],
-    [$item`sea honeydew`, true],
-    [$item`sea lychee`, true],
-    [$item`sea persimmon`, true],
-    [$item`sea tangelo`, true],
-    [$item`shiny hood ornament`, true],
-    [$item`slingshot`, true],
-    [$item`smelted roe`, true],
-    [$item`spicy jumping bean burrito`, true],
-    [$item`spicy bean burrito`, true],
-    [$item`spooky stick`, true],
-    [$item`strongness elixir`, true],
-    [$item`sunken chest`, true],
-    [$item`tambourine bells`, true],
-    [$item`tequila sunrise`, true],
-    [$item`Uncle Jick's Brownie Mix`, true],
-    [$item`windchimes`, true],
-  ]);
+  items_considered = [
+    $item`anticheese`,
+    $item`awful poetry journal`,
+    $item`Azurite`,
+    $item`beach glass bead`,
+    $item`beer bomb`,
+    $item`bit-o-cactus`,
+    $item`clay peace-sign bead`,
+    $item`clockwork key`,
+    $item`cocoa eggshell fragment`,
+    $item`datastick`,
+    $item`decorative fountain`,
+    $item`dense meat stack`,
+    $item`empty Cloaca-Cola bottle`,
+    $item`enchanted barbell`,
+    $item`Eye Agate`,
+    $item`fancy bath salts`,
+    $item`frigid ninja stars`,
+    $item`Feng Shui for Big Dumb Idiots`,
+    $item`Frat Army FGF`,
+    $item`giant moxie weed`,
+    $item`half of a gold tooth`,
+    $item`headless sparrow`,
+    $item`keel-haulin' knife`,
+    $item`Knob Goblin pants`,
+    $item`Knob Goblin scimitar`,
+    $item`Knob Goblin tongs`,
+    $item`Kokomo Resort Pass`,
+    $item`Lapis Lazuli`,
+    $item`leftovers of indeterminate origin`,
+    $item`Mad Train wine`,
+    $item`mangled squirrel`,
+    $item`margarita`,
+    $item`meat paste`,
+    $item`mineapple`,
+    $item`moxie weed`,
+    $item`PADL Phone`,
+    $item`patchouli incense stick`,
+    $item`phat turquoise bead`,
+    $item`photoprotoneutron torpedo`,
+    $item`plot hole`,
+    $item`procrastination potion`,
+    $item`rat carcass`,
+    $item`sausage bomb`,
+    $item`sea honeydew`,
+    $item`sea lychee`,
+    $item`sea persimmon`,
+    $item`sea tangelo`,
+    $item`shiny hood ornament`,
+    $item`slingshot`,
+    $item`smelted roe`,
+    $item`spicy jumping bean burrito`,
+    $item`spicy bean burrito`,
+    $item`spooky stick`,
+    $item`strongness elixir`,
+    $item`sunken chest`,
+    $item`tambourine bells`,
+    $item`tequila sunrise`,
+    $item`Uncle Jick's Brownie Mix`,
+    $item`windchimes`,
+  ];
 
   sell_except(0, items_considered);
 
@@ -2314,32 +2311,26 @@ function autosellCrap(): boolean {
   }
   // Pixels, keep all in KoE, none otherwise (black and red saved for red pixel potions)
   if (!in_koe()) {
-    items_considered = new Map([
-      [$item`blue pixel`, true],
-      [$item`green pixel`, true],
-      [$item`white pixel`, true],
-    ]);
+    items_considered = [
+      $item`blue pixel`,
+      $item`green pixel`,
+      $item`white pixel`,
+    ];
     sell_except(0, items_considered);
   }
   // Keep none
-  items_considered = new Map([
-    [$item`Imp Ale`, true],
-    [$item`shot of grapefruit schnapps`, true],
-    [$item`shot of orange schnapps`, true],
-    [$item`shot of tomato schnapps`, true],
-  ]);
+  items_considered = [
+    $item`Imp Ale`,
+    $item`shot of grapefruit schnapps`,
+    $item`shot of orange schnapps`,
+    $item`shot of tomato schnapps`,
+  ];
   sell_except(0, items_considered);
   // Keep one
-  items_considered = new Map([
-    [$item`big hot pepper`, true],
-    [$item`chaos butterfly`, true],
-  ]);
+  items_considered = [$item`big hot pepper`, $item`chaos butterfly`];
   sell_except(1, items_considered);
   // Keep three
-  items_considered = new Map([
-    [$item`energized spores`, true],
-    [$item`hot wing`, true],
-  ]);
+  items_considered = [$item`energized spores`, $item`hot wing`];
   sell_except(3, items_considered);
 
   return true;

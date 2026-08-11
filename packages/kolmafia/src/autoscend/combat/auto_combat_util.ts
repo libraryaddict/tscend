@@ -407,7 +407,7 @@ export function isSniffed$1(enemy: Monster): boolean {
       return true;
     }
   }
-  for (const other of [$item`Baseball Diamond`].map((s) => s.toString())) {
+  for (const other of $items`Baseball Diamond`.map((s) => s.toString())) {
     if (trackedBy(enemy).includes(other)) {
       return true;
     }

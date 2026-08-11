@@ -74,11 +74,11 @@ export function ListInsert(
 //end of item[int]
 //start of effect[int]
 
-export function List$1(data: Map<Effect, boolean>): Map<number, Effect> {
+export function List$1(data: Effect[]): Map<number, Effect> {
   const retval: Map<number, Effect> = new Map();
   let index: number = 0;
 
-  for (const el of data.keys()) {
+  for (const el of data) {
     retval.set(index, el);
     index = index + 1;
   }

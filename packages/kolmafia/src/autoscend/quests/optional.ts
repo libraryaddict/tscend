@@ -39,6 +39,7 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $skill,
   $slot,
   $stat,
@@ -601,11 +602,11 @@ export const LX_guildUnlockTask: QuestTask = registerQuestTask({
   locations: () => {
     switch (myPrimestat()) {
       case $stat`Muscle`:
-        return [$location`The Outskirts of Cobb's Knob`];
+        return $locations`The Outskirts of Cobb's Knob`;
       case $stat`Mysticality`:
-        return [$location`The Haunted Pantry`];
+        return $locations`The Haunted Pantry`;
       case $stat`Moxie`:
-        return [$location`The Sleazy Back Alley`];
+        return $locations`The Sleazy Back Alley`;
       default:
         return [];
     }
