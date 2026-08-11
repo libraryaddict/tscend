@@ -106,6 +106,7 @@ function L4_batWingsGuanoJunction(): boolean {
   auto_log_info("Wearing bat wings to get a free sonar-in-a-biscuit", "green");
   handleTracker({
     what: $item`bat wings`,
+    location: $location`Guano Junction`,
     detail: $item`sonar-in-a-biscuit`.toString(),
     property: "auto_otherstuff",
   });
@@ -131,6 +132,7 @@ function L4_batWingsBatratBurrow(): boolean {
   );
   handleTracker({
     what: $item`bat wings`,
+    location: $location`The Batrat and Ratbat Burrow`,
     detail: $item`sonar-in-a-biscuit`.toString(),
     property: "auto_otherstuff",
   });
@@ -152,6 +154,7 @@ function L4_batWingsBeanbatChamber(): boolean {
   auto_log_info("Wearing bat wings to get a free enchanted bean", "green");
   handleTracker({
     what: $item`bat wings`,
+    location: $location`The Beanbat Chamber`,
     detail: $item`enchanted bean`.toString(),
     property: "auto_otherstuff",
   });

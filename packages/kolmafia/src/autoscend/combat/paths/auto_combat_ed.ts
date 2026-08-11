@@ -474,6 +474,7 @@ export function auto_edCombatHandler(
       combat_status_add("banisher");
       handleTracker({
         what: enemy,
+        location: myLocation(),
         detail: banishAction.toString(),
         property: "auto_banishes",
       });

@@ -747,6 +747,7 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
     if (enemy !== $monster.none) {
       handleTracker({
         what: $skill`Map the Monsters`,
+        location: myLocation(),
         detail: enemy.toString(),
         property: "auto_mapperidot",
       });

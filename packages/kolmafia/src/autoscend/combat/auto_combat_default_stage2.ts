@@ -510,6 +510,7 @@ export function auto_combatDefaultStage2(
 
       handleTracker({
         what: enemy,
+        location: myLocation(),
         detail: banishAction.toString(),
         property: "auto_banishes",
       });

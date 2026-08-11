@@ -725,6 +725,7 @@ export function auto_spadeDigItem(): boolean {
     }
     handleTracker({
       what: SPADE,
+      location: myLocation(),
       detail: "FAILED: Dig up something nearby",
       property: "auto_otherstuff",
     });
@@ -746,6 +747,7 @@ function auto_spadeDigAncient(): boolean {
       // check we actually have fewer digs left now before returning
       handleTracker({
         what: SPADE,
+        location: myLocation(),
         detail: "Dig up something ancient",
         property: "auto_otherstuff",
       });

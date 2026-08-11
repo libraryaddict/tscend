@@ -720,6 +720,7 @@ export function findBanisher(
     auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
     handleTracker({
       what: enemy,
+      location: myLocation(),
       detail: banishAction.toString(),
       property: "auto_banishes",
     });

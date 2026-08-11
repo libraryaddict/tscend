@@ -494,6 +494,7 @@ export function auto_makeMonkeyPawWish$1(wish: Item): boolean {
   if (success) {
     handleTracker({
       what: $item`cursed monkey's paw`,
+      location: myLocation(),
       detail: wish.toString(),
       property: "auto_wishes",
     });

@@ -271,7 +271,7 @@ function buffMaintain$1(
       chew(uses, source);
       handleTracker({
         what: source,
-        location: myLocation(),
+        detail: myLocation().toString(),
         property: "auto_chewed",
       });
     } else {
