@@ -150,10 +150,7 @@ export function allowSoftblockDelay(): boolean {
 }
 
 type SoftDelayKey =
-  | "swordTracking"
-  | "baseballDiamond"
-  | "8bitRealm"
-  | "legendaryPasta";
+  "swordTracking" | "baseballDiamond" | "8bitRealm" | "legendaryPasta";
 
 // Generic companion to the preference-backed allowSoftblockX() family
 const softblockReleaseLevel = new Map<SoftDelayKey, number>();
