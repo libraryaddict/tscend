@@ -1121,11 +1121,11 @@ function finalizeMaximize(speculative: boolean = false): void {
     myPrimestat() !== $stat`Mysticality`
   ) {
     if (myClass() === $class`Seal Clubber` && in_glover()) {
-      maximizer.weight("Club");
+      maximizer.require("Club");
     } else if (in_zootomist() && getZooBestPunch() !== $skill.none) {
       // Nothing to do here. Should be a more general case of "classes that never attack with weapon"?
     } else {
-      maximizer.weight("Effective");
+      maximizer.require("Effective");
     }
   }
 

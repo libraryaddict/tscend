@@ -18,11 +18,16 @@ import {
 import { $familiar, $item, $skill, $slot } from "libram";
 
 import { auto_abort, auto_log_info } from "../auto_util";
-import { MAXIMIZER_ALIASES, MaximizerModifier } from "./modifiers";
+import {
+  AllMaximizerModifier,
+  MAXIMIZER_ALIASES,
+  UnweightMaximizerModifier,
+  WeightedMaximizerModifier,
+} from "./modifiers";
 
-export type Criterion = Modifier | MaximizerModifier;
+export type Criterion = Modifier | WeightedMaximizerModifier;
 
-function criterionName(mod: Criterion): string {
+function criterionName(mod: Criterion | AllMaximizerModifier): string {
   return mod instanceof Modifier ? mod.name : mod;
 }
 
@@ -78,7 +83,7 @@ export class Maximizer {
   private readonly pendingEquip = new Map<Slot, Item>();
   private readonly pendingBonus = new Map<Item, number>();
   private readonly modes = new Map<Item, Set<string>>();
-  private readonly otherRequirements = new Map<MaximizerModifier, boolean>();
+  private readonly otherRequirements = new Map<AllMaximizerModifier, boolean>();
   // target -> sources whose bonuses are summed into target's term at toString()-time.
   private readonly foldedBonusGroups = new Map<Item, Item[]>();
 
@@ -184,7 +189,10 @@ export class Maximizer {
     return this;
   }
 
-  require(modifier: MaximizerModifier, wantsThis: boolean = true): this {
+  require(
+    modifier: UnweightMaximizerModifier,
+    wantsThis: boolean = true,
+  ): this {
     this.otherRequirements.set(modifier, wantsThis);
 
     return this;
@@ -245,7 +253,7 @@ export class Maximizer {
     return this;
   }
 
-  has(text: Slot | Criterion | Item): boolean {
+  has(text: Slot | Criterion | UnweightMaximizerModifier | Item): boolean {
     if (text instanceof Slot) {
       return this.onlySlots.has(text) || this.disabledSlots.has(text);
     } else if (text instanceof Item) {

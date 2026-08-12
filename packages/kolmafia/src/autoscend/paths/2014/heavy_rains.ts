@@ -387,7 +387,7 @@ export function L13_heavyrains_towerFinal(): boolean {
       .weight($modifier`Prismatic Damage`)
       .requireSlot($slot`weapon`)
       .requireSlot($slot`off-hand`)
-      .weight("Club");
+      .require("Club");
     equipMaximizedGear();
     const club_hot_dmg: number = toInt(
       min(40, 3 * numericModifier($modifier`Hot Damage`)),
@@ -521,7 +521,7 @@ export function L13_heavyrains_towerFinal(): boolean {
         .weight($modifier`Prismatic Damage`)
         .requireSlot($slot`weapon`)
         .requireSlot($slot`off-hand`)
-        .weight("Club");
+        .require("Club");
     } else {
       maximizer
         .weight($modifier`Prismatic Damage`)

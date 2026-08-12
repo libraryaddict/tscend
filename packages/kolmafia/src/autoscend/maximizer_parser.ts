@@ -11,19 +11,27 @@ import { $familiar, $item, $slot } from "libram";
 
 import { auto_log_error } from "./auto_util";
 import { Criterion, Maximizer } from "./utils/maximizer";
-import { MAXIMIZER_MODIFIERS, MaximizerModifier } from "./utils/modifiers";
+import {
+  AllMaximizerModifier,
+  COMBINED_MAXIMIZER_MODIFIERS,
+  UnweightMaximizerModifier,
+  WEIGHTED_MAXIMIZER_MODIFIERS,
+  WeightedMaximizerModifier,
+} from "./utils/modifiers";
 
 // Only place in the codebase allowed to interpret a raw maximizer string;
 // everywhere else should build on the Maximizer class directly.
 
 // Frankly I have no idea if this will work, but I'm not sure anyone else is going to use the script, so meh.
 
-function findMaximizerModifier(name: string): MaximizerModifier | undefined {
+function findMaximizerModifier(name: string): AllMaximizerModifier | undefined {
   const lower = name.trim().toLowerCase();
-  return MAXIMIZER_MODIFIERS.find((mod) => mod.toLowerCase() === lower);
+  return COMBINED_MAXIMIZER_MODIFIERS.find(
+    (mod) => mod.toLowerCase() === lower,
+  );
 }
 
-function resolveCriterion(name: string): Criterion {
+function resolveCriterion(name: string): Criterion | AllMaximizerModifier {
   return findMaximizerModifier(name) ?? Modifier.get(name);
 }
 
@@ -133,9 +141,9 @@ function applyTerm(target: Maximizer, token: string): void {
     const mod = resolveCriterion(minMax[1]);
     const amount = Number(minMax[2]);
     if (minMax[3].toLowerCase() === "min") {
-      target.min(mod, amount);
+      target.min(mod as Criterion, amount);
     } else {
-      target.max(mod, amount);
+      target.max(mod as Criterion, amount);
     }
     return;
   }
@@ -148,21 +156,32 @@ function applyTerm(target: Maximizer, token: string): void {
 
   const numericWeight = /^([+-]?\d+(?:\.\d+)?)\s*(.+)$/.exec(token);
   if (numericWeight) {
-    target.weight(resolveCriterion(numericWeight[2]), Number(numericWeight[1]));
-    return;
-  }
-
-  if (signedSlot) {
-    // sign present but not a recognized slot, treat as a signed boolean criterion
     target.weight(
-      resolveCriterion(signedSlot[2]),
-      signedSlot[1] === "+" ? 1 : -1,
+      resolveCriterion(numericWeight[2]) as Criterion,
+      Number(numericWeight[1]),
     );
     return;
   }
 
+  if (signedSlot) {
+    const criterion = resolveCriterion(signedSlot[2]);
+    const requires = signedSlot[1] !== "-";
+    // sign present but not a recognized slot, treat as a signed boolean criterion
+    if (
+      criterion instanceof Modifier ||
+      WEIGHTED_MAXIMIZER_MODIFIERS.includes(
+        criterion as WeightedMaximizerModifier,
+      )
+    ) {
+      target.weight(criterion as Criterion, requires ? 1 : -1);
+    } else {
+      target.require(criterion as UnweightMaximizerModifier, requires);
+    }
+    return;
+  }
+
   if (token !== "") {
-    target.weight(resolveCriterion(token));
+    target.require(token as UnweightMaximizerModifier);
     return;
   }
 }
