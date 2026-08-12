@@ -108,6 +108,7 @@ import {
   internalQuestStatus,
   isGuildClass,
   loopHandler,
+  safeGet,
   setFlavour,
 } from "../auto_util";
 import { auto_canUse } from "../combat/auto_combat_util";
@@ -543,53 +544,55 @@ function L9_chasmBuildDo(): boolean {
     return true;
   }
 
-  if (
-    auto_inRonin() ||
-    auto_haveMayamCalendar() ||
-    auto_haveSeptEmberCenser()
-  ) {
-    if (auto_waitForDay2()) {
-      auto_log_debug("Delaying Logging Camp waiting for day 2.");
+  if (safeGet("auto_familiarChoice") !== $familiar`Sword of S Words`) {
+    if (
+      auto_inRonin() ||
+      auto_haveMayamCalendar() ||
+      auto_haveSeptEmberCenser()
+    ) {
+      if (auto_waitForDay2()) {
+        auto_log_debug("Delaying Logging Camp waiting for day 2.");
+        return false;
+      }
+    }
+
+    if (
+      Math.min(fastenerCount(), lumberCount()) < bridgeGoal() &&
+      auto_copierShouldDelayZone($locations`The Smut Orc Logging Camp`)
+    ) {
+      auto_log_debug("Delaying L9 Chasm - still farming a copier target.");
       return false;
     }
-  }
 
-  if (
-    Math.min(fastenerCount(), lumberCount()) < bridgeGoal() &&
-    auto_copierShouldDelayZone($locations`The Smut Orc Logging Camp`)
-  ) {
-    auto_log_debug("Delaying L9 Chasm - still farming a copier target.");
-    return false;
-  }
+    if (
+      shenShouldDelayZone($location`The Smut Orc Logging Camp`) &&
+      (auto_haveTrainSet() ||
+        !auto_have_sword_familiar() ||
+        !auto_swordIsWillingToSwitchTargets() ||
+        in_quantumTerrarium() ||
+        !canChangeToFamiliar($familiar`Sword of S Words`))
+    ) {
+      auto_log_debug("Delaying Logging Camp in case of Shen.");
+      return false;
+    }
+    if (robot_delay("chasm")) {
+      return false; //delay for You, Robot path
+    }
+    if (
+      auto_hasAutumnaton() &&
+      !isAboutToPowerlevel() &&
+      $location`The Smut Orc Logging Camp`.turnsSpent > 0 &&
+      (fastenerCount() < bridgeGoal() || lumberCount() < bridgeGoal())
+    ) {
+      // delay zone to allow autumnaton to grab bridge parts
+      // unless we have ran out of other stuff to do
+      return false;
+    }
 
-  if (
-    shenShouldDelayZone($location`The Smut Orc Logging Camp`) &&
-    (auto_haveTrainSet() ||
-      !auto_have_sword_familiar() ||
-      !auto_swordIsWillingToSwitchTargets() ||
-      in_quantumTerrarium() ||
-      !canChangeToFamiliar($familiar`Sword of S Words`))
-  ) {
-    auto_log_debug("Delaying Logging Camp in case of Shen.");
-    return false;
-  }
-  if (robot_delay("chasm")) {
-    return false; //delay for You, Robot path
-  }
-  if (
-    auto_hasAutumnaton() &&
-    !isAboutToPowerlevel() &&
-    $location`The Smut Orc Logging Camp`.turnsSpent > 0 &&
-    (fastenerCount() < bridgeGoal() || lumberCount() < bridgeGoal())
-  ) {
-    // delay zone to allow autumnaton to grab bridge parts
-    // unless we have ran out of other stuff to do
-    return false;
-  }
-
-  if (LX_loggingHatchet()) {
-    // turn free, might save some adventures. May as well get it if we can.
-    return true;
+    if (LX_loggingHatchet()) {
+      // turn free, might save some adventures. May as well get it if we can.
+      return true;
+    }
   }
 
   auto_log_info("Chasm time", "blue");
