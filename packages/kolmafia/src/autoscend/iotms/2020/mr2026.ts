@@ -2218,7 +2218,10 @@ export function auto_wantSwordFamiliar(place: Location): boolean {
   ) {
     return false;
   }
-  if (!zone_delay(place).shouldDelay) {
+  if (
+    !zone_delay(place).shouldDelay &&
+    place !== $location`The Haunted Kitchen`
+  ) {
     return false;
   }
   if (auto_desires_sword_familiar_drops()) {
