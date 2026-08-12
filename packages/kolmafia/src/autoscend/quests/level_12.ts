@@ -1577,91 +1577,6 @@ function L12_sonofaBeachDo(): boolean {
   ) {
     return true;
   }
-  if (!in_lar()) {
-    const combat_bonus: number = providePlusCombat(
-      auto_combatModCap(),
-      $location`Sonofa Beach`,
-      true,
-      true,
-    );
-    if (combat_bonus <= 0.0) {
-      auto_log_warning(
-        `Something is keeping us from getting a suitable combat rate for [Lobsterfrogmen] in [Sonofa Beach]. we have: ${combat_bonus}`,
-        "red",
-      );
-      resetState();
-      return false;
-    }
-  }
-
-  if (itemAmount($item`barrel of gunpowder`) < 4) {
-    set("auto_doCombatCopy", "yes");
-  }
-
-  const retval: boolean = autoAdv($location`Sonofa Beach`);
-
-  set("auto_doCombatCopy", "no");
-  edAcquireHP();
-
-  return retval;
-}
-
-export function auto_gunpowderBarrelsWanted(): number {
-  if (
-    get("sidequestLighthouseCompleted") !== "none" ||
-    internalQuestStatus("questL12War") > 1 ||
-    in_koe() ||
-    auto_warEnemiesRemaining() === 0
-  ) {
-    return 0;
-  }
-
-  return Math.max(0, 5 - itemAmount($item`barrel of gunpowder`));
-}
-
-export const L12_sonofaBeachTask: QuestTask = registerQuestTask({
-  name: "L12_sonofaBeach",
-  completed: () => auto_gunpowderBarrelsWanted() === 0,
-  ready: () =>
-    internalQuestStatus("questL12War") === 1 &&
-    (get("fratboysDefeated") >= 64 || !get("auto_hippyInstead", false)) &&
-    auto_gunpowderBarrelsWanted() > 0,
-  do: L12_sonofaBeachDo,
-  locations: $location`Sonofa Beach`,
-  desiredEncounters: () => [
-    {
-      item: $item`barrel of gunpowder`,
-      needAmount: auto_gunpowderBarrelsWanted(),
-    },
-  ],
-});
-
-export function L12_sonofaBeach(): boolean {
-  return runQuestTask(L12_sonofaBeachTask);
-}
-
-function L12_sonofaPrefixDo(): boolean {
-  // this appears to be a copy & paste of L12_sonofaBeach() with some small changes
-  // for Vote Monster/Macrometeor shenanigans. Need to refactor this so only the relevant code remains.
-
-  if (
-    internalQuestStatus("questL12War") !== 1 ||
-    getProperty("sidequestLighthouseCompleted") !== "none"
-  ) {
-    return false;
-  }
-  if (
-    (!legendaryPastaSoftblockInPlace() ||
-      auto_gunpowderBarrelsWanted() <= 0 ||
-      auto_haveQueuedForcedCombat()) &&
-    L12_sonofaFinish()
-  ) {
-    return true;
-  }
-
-  if (in_koe()) {
-    return false;
-  }
 
   if (
     getProperty("_sourceTerminalDigitizeMonster") ===
@@ -1671,20 +1586,6 @@ function L12_sonofaPrefixDo(): boolean {
   }
   if (itemAmount($item`barrel of gunpowder`) >= 4 && !auto_voteMonster()) {
     return false;
-  }
-  if (itemAmount($item`barrel of gunpowder`) >= 5) {
-    return false;
-  }
-
-  if (
-    chateaumantegna_havePainting() &&
-    !get("chateauMonsterFought", false) &&
-    getProperty("chateauMonster") === $monster`lobsterfrogman`.toString()
-  ) {
-    auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
-    if (chateaumantegna_usePainting()) {
-      return true;
-    }
   }
 
   if (
@@ -1717,25 +1618,6 @@ function L12_sonofaPrefixDo(): boolean {
       }
     }
     return false;
-  }
-
-  if (
-    isActuallyEd() &&
-    itemAmount($item`talisman of Horus`) === 0 &&
-    haveEffect($effect`Taunt of Horus`) === 0
-  ) {
-    return false;
-  }
-
-  if (in_koe()) {
-    return false;
-  }
-  //Seriously? http://alliancefromhell.com/viewtopic.php?t=1338
-  if (itemAmount($item`wool hat`) === 1) {
-    pulverizeThing($item`wool hat`);
-  }
-  if (itemAmount($item`goatskin umbrella`) === 1) {
-    pulverizeThing($item`goatskin umbrella`);
   }
 
   let CForced: boolean = false;
@@ -1806,28 +1688,45 @@ function L12_sonofaPrefixDo(): boolean {
     auto_log_error("Failed to adventure in [Sonofa Beach]");
     resetState();
   }
+
+  set("auto_doCombatCopy", "no");
   edAcquireHP();
+
   return retval;
 }
 
-export const L12_sonofaPrefixTask: QuestTask = registerQuestTask({
-  name: "L12_sonofaPrefix",
-  completed: () =>
+export function auto_gunpowderBarrelsWanted(): number {
+  if (
+    get("sidequestLighthouseCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1 ||
-    getProperty("sidequestLighthouseCompleted") !== "none",
-  ready: () => true,
-  do: L12_sonofaPrefixDo,
+    in_koe() ||
+    auto_warEnemiesRemaining() === 0
+  ) {
+    return 0;
+  }
+
+  return Math.max(0, 5 - itemAmount($item`barrel of gunpowder`));
+}
+
+export const L12_sonofaBeachTask: QuestTask = registerQuestTask({
+  name: "L12_sonofaBeach",
+  completed: () => auto_gunpowderBarrelsWanted() === 0,
+  ready: () =>
+    internalQuestStatus("questL12War") === 1 &&
+    (get("fratboysDefeated") >= 64 || !get("auto_hippyInstead", false)) &&
+    auto_gunpowderBarrelsWanted() > 0,
+  do: L12_sonofaBeachDo,
   locations: $location`Sonofa Beach`,
   desiredEncounters: () => [
     {
       item: $item`barrel of gunpowder`,
-      needAmount: 5 - itemAmount($item`barrel of gunpowder`),
+      needAmount: auto_gunpowderBarrelsWanted(),
     },
   ],
 });
 
-export function L12_sonofaPrefix(): boolean {
-  return runQuestTask(L12_sonofaPrefixTask);
+export function L12_sonofaBeach(): boolean {
+  return runQuestTask(L12_sonofaBeachTask);
 }
 
 function L12_sonofaFinishDo(): boolean {

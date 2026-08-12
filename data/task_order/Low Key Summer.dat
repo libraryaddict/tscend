@@ -8,7 +8,7 @@ LX_setWorkshed
 LX_galaktikSubQuest
 L9_leafletQuest
 L5_findKnob
-L12_sonofaPrefix
+L12_sonofaBeach
 # burn any unused Lucky! (Heartstone/Apriling sax/August scepter) before bedtime
 LX_burnUnusedLuck
 LX_burnDelay
@@ -27,7 +27,7 @@ LX_setWorkshed
 LX_galaktikSubQuest
 L9_leafletQuest
 L5_findKnob
-L12_sonofaPrefix
+L12_sonofaBeach
 LX_burnDelay
 LX_summonMonster
 # Lock in the Shen zones as soon as we can as it (potentially) unlocks a bunch of stuff.
