@@ -117,6 +117,7 @@ import {
   preAdvUpdateFamiliar,
 } from "./auto_familiar";
 import {
+  provideFamExp$3,
   provideInitiative$2,
   provideItem$2,
   provideMeat$2,
@@ -721,6 +722,12 @@ function auto_pre_adventure(): boolean {
   auto_bankChestMimicExpForBandit();
   // Update our familiar after combat modifiers (which can set the familiar), but before Crystal Ball (familiar equip)
   preAdvUpdateFamiliar(place);
+  if (
+    myFamiliar() === $familiar`Sword of S Words` &&
+    myFamiliar().experience < 200
+  ) {
+    provideFamExp$3(50, false, false);
+  }
   ed_handleAdventureServant(place);
 
   let considerCrystalBallBonus: boolean = false;
