@@ -446,6 +446,22 @@ function auto_heartstoneWordsToAimFor(): string[] {
       words.push("SLOW");
     }
   }
+
+  // Some item drop
+  words.push(
+    "WIDE",
+    "BETA",
+    "FIVE",
+    "FAST",
+    "RAVE",
+    "GAME",
+    "EVER",
+    "HAVE",
+    "RAIN",
+    "SEEN",
+    "FOOL",
+    "HELD",
+  );
   return words;
 }
 
