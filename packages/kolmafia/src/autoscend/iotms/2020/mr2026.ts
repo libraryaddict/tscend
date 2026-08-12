@@ -2472,7 +2472,7 @@ export function wantToThrowCoinAtEm(loc: Location, enemy: Monster): boolean {
   // returns true if we want to throw interesting coin, based off wantToThrowGravel
   // eslint-disable-next-line local/verify-properties
   if (get("_interestingCoinHeads", false)) {
-    return true;
+    return false;
   }
 
   if (isFreeMonster(enemy, loc)) {
