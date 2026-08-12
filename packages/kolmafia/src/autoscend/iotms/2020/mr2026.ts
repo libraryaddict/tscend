@@ -2419,11 +2419,16 @@ export function auto_acquireInterestingItem(
 
   if (onHand === itemAmount(item)) return false;
 
+  auto_spendInterestingCoins(price);
+
+  return true;
+}
+
+export function auto_spendInterestingCoins(count: number) {
   set(
     "_auto_interestingCoinsSpent",
-    get("_auto_interestingCoinsSpent", 0) + price,
+    get("_auto_interestingCoinsSpent", 0) + count,
   );
-  return true;
 }
 
 // Mafia doesn't track remaining Exercise Liquidity charges yet, so we bank them ourselves
@@ -2458,4 +2463,27 @@ export function auto_chewLiquidAsset(
 
   set("auto_exerciseLiquidity", get("auto_exerciseLiquidity", 0) + 1);
   return true;
+}
+
+export function wantToThrowCoinAtEm(loc: Location, enemy: Monster): boolean {
+  // returns true if we want to throw interesting coin, based off wantToThrowGravel
+  // eslint-disable-next-line local/verify-properties
+  if (get("_interestingCoinHeads", false)) {
+    return true;
+  }
+
+  if (isFreeMonster(enemy, loc)) {
+    // don't use free kills against inherently free fights
+    return false;
+  }
+
+  if (canInteract()) {
+    return false;
+  }
+
+  if (auto_interestingCoinsSpendable() <= 0) {
+    return false;
+  }
+
+  return auto_wantToFreeKillWithNoDrops(loc, enemy);
 }

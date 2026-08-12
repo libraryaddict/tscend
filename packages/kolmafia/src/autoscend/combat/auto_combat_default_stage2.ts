@@ -75,10 +75,12 @@ import {
 } from "../iotms/2020/mr2025";
 import {
   auto_heartstoneShouldStealHeartInCombat,
+  auto_spendInterestingCoins,
   auto_sword_of_swords_tracking,
   auto_swordIsWillingToSwitchTargets,
   auto_wantToStartTrackingSwordMonster,
   wantToClubEmBackInTime,
+  wantToThrowCoinAtEm,
 } from "../iotms/2020/mr2026";
 import { in_bugbear } from "../paths/2012/bugbear_invasion";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
@@ -412,6 +414,18 @@ export function auto_combatDefaultStage2(
       });
       return auto_useSkill($skill`Club 'Em Back in Time`);
     }
+  }
+  if (
+    wantToThrowCoinAtEm(myLocation(), enemy) &&
+    canUse$3($item`Interesting Coin`)
+  ) {
+    handleTracker({
+      what: enemy,
+      detail: $item`Interesting Coin`.toString(),
+      property: "auto_instakill",
+    });
+    auto_spendInterestingCoins(1);
+    return $item`Interesting Coin`;
   }
   //throw gravel to free kill the enemy but don't get any items
   if (wantToThrowGravel(myLocation(), enemy)) {
