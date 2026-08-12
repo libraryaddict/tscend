@@ -1729,7 +1729,12 @@ export function adjustForYellowRayIfPossible(
   target: Monster = $monster.none,
 ): boolean {
   // No need to prepare
-  if (target !== $monster.none && isDropsCapped(target)) {
+  if (
+    target !== $monster.none &&
+    isDropsCapped(target) &&
+    !combat_status_check("droptablereplaced") &&
+    !combat_status_check("refractedgazed")
+  ) {
     return true;
   }
   if (!canYellowRay(target)) {
