@@ -175,6 +175,7 @@ import {
   zone_needItem,
 } from "./auto_zone";
 import { auto_canUse } from "./combat/auto_combat_util";
+import { getDesiredItemDrop, getNeededItemDrop } from "./engine/engine";
 import { horsePreAdventure } from "./iotms/2010/mr2017";
 import {
   auto_latteDropName,
@@ -236,6 +237,7 @@ import {
   auto_codpieceReconcileGem,
   auto_heartstoneShouldEquipForStealHeart,
   auto_preferSwordFamiliar,
+  auto_sword_of_swords_tracking,
 } from "./iotms/2020/mr2026";
 import { get_floundry_locations } from "./iotms/other/clan";
 import {
@@ -1149,7 +1151,39 @@ function auto_pre_adventure(): boolean {
     //Baa'baa'bu'ran is probably the only Lucky adventure that will need item drop
     mayNeedItem = false;
   }
-  const { needItem, needScore } = zone_needItem(place);
+  let { needItem, needScore } = zone_needItem(place);
+
+  let taskItemDrop = getNeededItemDrop();
+
+  const otherTargetsToCheck: Monster[] = [];
+
+  if (myFamiliar() === $familiar`Sword of S Words`) {
+    otherTargetsToCheck.push(auto_sword_of_swords_tracking());
+  }
+  otherTargetsToCheck.push(safeGet("auto_nextEncounter"));
+
+  for (const monster of otherTargetsToCheck) {
+    if (!monster || monster === $monster.none) continue;
+
+    const drop = getDesiredItemDrop(monster);
+    if (!drop) continue;
+    taskItemDrop = Math.max(taskItemDrop ?? 0, drop);
+  }
+
+  if (taskItemDrop) {
+    if (taskItemDrop > needScore || !needItem) {
+      needItem = true;
+      needScore = taskItemDrop;
+    }
+
+    const itemWeight = Math.ceil(Math.max(taskItemDrop, needScore) / 40);
+
+    // Start weighting the item drop when we really want it
+    if (itemWeight > maximizer.getWeight($modifier`Item Drop`)) {
+      maximizer.weight($modifier`Item Drop`, itemWeight);
+    }
+  }
+
   if (mayNeedItem && needItem) {
     const capped: boolean = provideItem$2(ceil(needScore), place, false);
     if (!capped && auto_haveCupidBow()) {

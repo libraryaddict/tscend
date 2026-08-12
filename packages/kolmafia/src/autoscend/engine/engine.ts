@@ -104,6 +104,66 @@ export function fightingDesiredTaskMonster(monster: Monster): boolean {
   );
 }
 
+/**
+ * Finds the item drop needed for a monster, if any incomplete task still wants one of its drops.
+ */
+export function getDesiredItemDrop(monster: Monster): number | undefined {
+  const desiredItems = getIncompleteQuestTasks().flatMap(
+    (task) => taskDesiredEncounters(task).drops,
+  );
+  if (desiredItems.length === 0) return undefined;
+
+  let needed: number | undefined;
+
+  for (const drop of getMonsterDrops(monster)) {
+    if (
+      drop.rate < 1 ||
+      drop.rate >= 100 ||
+      !isItemDropControlled(drop) ||
+      !desiredItems.some((desired) => desired.item === drop.item)
+    ) {
+      continue;
+    }
+    needed = max(needed ?? 0, 10000 / drop.rate);
+  }
+
+  return needed;
+}
+
+export function getNeededItemDrop(): number | undefined {
+  let needed: number | undefined;
+
+  for (const task of getExecutingQuestTasks()) {
+    const desiredItems = taskDesiredEncounters(task).drops.map(
+      (drop) => drop.item,
+    );
+    if (desiredItems.length === 0) continue;
+
+    for (const location of taskLocations(task)) {
+      for (const [monsterName, encounterRate] of Object.entries(
+        appearanceRates(location),
+      )) {
+        if (encounterRate <= 0) continue;
+        const monster = Monster.get(monsterName);
+
+        for (const drop of getMonsterDrops(monster)) {
+          if (
+            drop.rate < 1 ||
+            drop.rate >= 100 ||
+            !isItemDropControlled(drop) ||
+            !desiredItems.includes(drop.item)
+          ) {
+            continue;
+          }
+          needed = max(needed ?? 0, 10000 / drop.rate);
+        }
+      }
+    }
+  }
+
+  return needed;
+}
+
 // caps the maximizer's "item drop" so it doesn't chase gear beyond what's
 // needed to cap the task's desired drop(s) at a 100% end-of-fight chance
 // Although, this isn't in use due to concerns about unexpected fights (eg, wanderers)
@@ -132,7 +192,7 @@ export function applyItemDropCap(task: QuestTask): void {
         ) {
           continue;
         }
-        cap = max(cap, 10000 / drop.rate - 100);
+        cap = max(cap, 10000 / drop.rate);
       }
     }
   }
