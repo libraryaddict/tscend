@@ -1569,6 +1569,14 @@ function L12_sonofaBeachDo(): boolean {
     pulverizeThing($item`goatskin umbrella`);
   }
 
+  if (
+    (!legendaryPastaSoftblockInPlace() ||
+      auto_gunpowderBarrelsWanted() <= 0 ||
+      auto_haveQueuedForcedCombat()) &&
+    L12_sonofaFinish()
+  ) {
+    return true;
+  }
   if (!in_lar()) {
     const combat_bonus: number = providePlusCombat(
       auto_combatModCap(),
