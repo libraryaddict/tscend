@@ -363,9 +363,9 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
       active:
         auto_is_valid($item`crafting plans`) && !doneOrgans.includes("plans"),
       surplus:
-        4 +
-        Math.min(freeCrafts(), freeSmiths()) -
-        (6 + itemAmount($item`crafting plans`)),
+        Math.min(freeCrafts(), freeSmiths()) +
+        itemAmount($item`crafting plans`) -
+        6,
     },
   };
 
