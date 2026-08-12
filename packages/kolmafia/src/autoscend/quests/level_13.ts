@@ -516,12 +516,9 @@ const canUseAnyFamiliar: Map<
 > = new Map();
 
 export function auto_8BitCanUseAnyFamiliar(place: Location): boolean {
-  const compute = canUseAnyFamiliar.get(place);
-
-  return compute !== undefined && compute.canUseAnyFamiliar;
+  return canUseAnyFamiliar.get(place)?.canUseAnyFamiliar ?? true;
 }
 
-// Updates the cache for future runs, if we actually need to enforce a familiar for the zone
 export function auto_8BitCheckCappingScore(place: Location): void {
   if (
     !canChangeFamiliar() ||
@@ -535,58 +532,40 @@ export function auto_8BitCheckCappingScore(place: Location): void {
   if (realm === undefined) {
     return;
   }
-  const usingAnyFamAtm = auto_8BitCanUseAnyFamiliar(place);
-
-  let meetsTarget =
-    numericModifier(realm.modifier) -
-      // If we've checked this before, and it said we could, assume we're already wearing the 'any' familiar
-      (usingAnyFamAtm ? 0 : -40) >=
-    realm.target;
 
   const cached = canUseAnyFamiliar.get(place);
-  // If we do not meet the target, then we cannot use 'any' familiar
-  // Or if we've computed it recently, and it said we couldn't. This check is 'free'
-  if (
-    !meetsTarget ||
-    (cached && cached.computed - myTurncount() < 5 && !cached.canUseAnyFamiliar)
-  ) {
+
+  if (cached && !cached.canUseAnyFamiliar) {
+    if (myTurncount() - cached.computed < 5) {
+      return;
+    }
     canUseAnyFamiliar.set(place, {
-      canUseAnyFamiliar: false,
+      canUseAnyFamiliar: true,
       computed: myTurncount(),
     });
+    auto_log_info(
+      `Giving 'any' familiar another shot at ${place}, let's bail out and figure out our equipment again...`,
+    );
+    set("_autoSkipNextAdventure", true);
     return;
   }
 
-  // If the results are upchanged, update the cache and do nothing
-  if (cached !== undefined && cached.canUseAnyFamiliar === meetsTarget) {
-    cached.computed = myTurncount();
+  const current = numericModifier(realm.modifier);
+  if (current >= realm.target) {
+    auto_log_info(
+      `We're capping the target ${realm.modifier} ${realm.target} at ${place} with our ${current} without requiring certain familiars.`,
+    );
     return;
   }
-
-  // Switch our familiar, then switch back
-  const current = myFamiliar();
-  useFamiliar($familiar`none`);
-  meetsTarget = numericModifier(realm.modifier) >= realm.target;
-  useFamiliar(current);
 
   canUseAnyFamiliar.set(place, {
-    canUseAnyFamiliar: meetsTarget,
+    canUseAnyFamiliar: false,
     computed: myTurncount(),
   });
-
-  // The results changed, tell autoscend to cancel our next adventure.
-  if (meetsTarget !== usingAnyFamAtm) {
-    if (meetsTarget) {
-      auto_log_info(
-        `Computed that we could be using any familiar, let's bail out and figure out our equipment again...`,
-      );
-    } else {
-      auto_log_info(
-        `Computed that we cannot be using 'any' familiar, let's bail out and use the correct familiar.`,
-      );
-    }
-    set("_autoSkipNextAdventure", true);
-  }
+  auto_log_info(
+    `We're not capping the target ${realm.modifier} ${realm.target} at ${place} with our ${current}, falling back to the ideal familiar.`,
+  );
+  set("_autoSkipNextAdventure", true);
 }
 
 function LX_getDigitalKeyDo(): boolean {
