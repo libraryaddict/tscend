@@ -89,6 +89,7 @@ import {
   $slot,
   $stat,
   get,
+  getAverageAdventures,
   have,
   set,
 } from "libram";
@@ -1511,9 +1512,14 @@ function loadConsumables(
         !get("_legendaryNoodlesSpleen") &&
         spleen_left() > 0 &&
         auto_willEatLegendaryNoodles() &&
-        !isActuallyEd()
+        !isActuallyEd() &&
+        // We only consume it when we're running out of organs
+        myFullness() >= Math.min(7, fullnessLimit() - 4)
       ) {
-        potentialTurnGain.set(it, 20.0); // not actually 20, but we almost certainly want to consume it
+        potentialTurnGain.set(
+          it,
+          (potentialTurnGain.get(it) ?? getAverageAdventures(it)) * 2,
+        ); // not actually 20, but we almost certainly want to consume it
         // doing the auto_willEatLegendaryNoodles() to exclude paths that might be too weird to assume this
       } else if (auto_wantFamXP(400)) {
         potentialTurnGain.set(it, 0.75); // arbitrary, but probably good enough
