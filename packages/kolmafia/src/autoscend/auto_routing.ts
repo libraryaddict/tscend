@@ -146,7 +146,7 @@ export function allowSoftblockDelay(): boolean {
   return get("auto_delayLastLevel", 0) < myLevel();
 }
 
-type SoftDelayKey = "swordTracking" | "baseballDiamond";
+type SoftDelayKey = "swordTracking" | "baseballDiamond" | "8bitRealm";
 
 // Generic companion to the preference-backed allowSoftblockX() family
 const softblockReleaseLevel = new Map<SoftDelayKey, number>();
@@ -169,6 +169,7 @@ export function releaseSoftblock(key: SoftDelayKey, reason: string): void {
 // completes we're clearly not stuck anymore, so re-arm every softblock rather than leaving
 // them released for the rest of the level over one unrelated snag.
 export function setupSoftblockLocks(): void {
+  softblockReleaseLevel.set("8bitRealm", 0);
   if (auto_have_sword_familiar() && !in_quantumTerrarium()) {
     softblockReleaseLevel.set("swordTracking", 0);
   }
@@ -466,6 +467,13 @@ function auto_softBlockHandlerDo(): boolean {
       "red",
     );
     set("auto_delayLastLevel", myLevel());
+    return true;
+  }
+  if (isSoftBlockInPlace("8bitRealm")) {
+    releaseSoftblock(
+      "8bitRealm",
+      "holding off 8bit realm to maximize our score",
+    );
     return true;
   }
   if (isSoftBlockInPlace("swordTracking")) {

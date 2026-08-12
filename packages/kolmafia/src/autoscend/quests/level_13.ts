@@ -126,6 +126,7 @@ import {
   provideStats$2,
 } from "../auto_providers";
 import { acquireFullHP, acquireMP, uneffect } from "../auto_restore";
+import { isSoftBlockInPlace } from "../auto_routing";
 import {
   auto_can_equip,
   auto_equalizeStats,
@@ -373,26 +374,46 @@ function EightBitRealmHandler(): boolean {
   }
   switch (color) {
     case "black":
+      if (EightBitOnCooldown($location`Vanya's Castle`)) {
+        return false;
+      }
       // limited buff that is helpful for 3 of 4 8-bit zones
       buffMaintain$2($effect`Shadow Waters`);
-      adv_spent = autoAdv($location`Vanya's Castle`);
+      adv_spent = autoAdv($location`Vanya's Castle`, undefined, () =>
+        EightBitBelowTarget($location`Vanya's Castle`),
+      );
       break;
     case "red":
+      if (EightBitOnCooldown($location`The Fungus Plains`)) {
+        return false;
+      }
       // limited buff that is helpful for 3 of 4 8-bit zones
       buffMaintain$2($effect`Shadow Waters`);
       if (meatDropModifier() < 395) {
         auto_getCitizenZone$1("meat");
       }
-      adv_spent = autoAdv($location`The Fungus Plains`);
+      adv_spent = autoAdv($location`The Fungus Plains`, undefined, () =>
+        EightBitBelowTarget($location`The Fungus Plains`),
+      );
       break;
     case "blue":
+      if (EightBitOnCooldown($location`Megalo-City`)) {
+        return false;
+      }
       prepForMegaloCity();
-      adv_spent = autoAdv($location`Megalo-City`);
+      adv_spent = autoAdv($location`Megalo-City`, undefined, () =>
+        EightBitBelowTarget($location`Megalo-City`),
+      );
       break;
     case "green":
+      if (EightBitOnCooldown($location`Hero's Field`)) {
+        return false;
+      }
       // limited buff that is helpful for 3 of 4 8-bit zones
       buffMaintain$2($effect`Shadow Waters`);
-      adv_spent = autoAdv($location`Hero's Field`);
+      adv_spent = autoAdv($location`Hero's Field`, undefined, () =>
+        EightBitBelowTarget($location`Hero's Field`),
+      );
       break;
     default:
       abort("Property 8BitColor not set to a valid value");
@@ -459,7 +480,36 @@ const eightBitLocs: {
     modifier: $modifier`Meat Drop`,
     target: 450,
   },
+  {
+    location: $location`Megalo-City`,
+    modifier: $modifier`Damage Absorption`,
+    target: 600,
+  },
 ];
+
+const eightBitLastFailedTurn: Map<Location, number> = new Map();
+
+function EightBitOnCooldown(loc: Location): boolean {
+  if (!isSoftBlockInPlace("8bitRealm")) {
+    return false;
+  }
+  const lastFailed = eightBitLastFailedTurn.get(loc);
+  return lastFailed !== undefined && myTurncount() - lastFailed < 20;
+}
+
+// checked via autoAdv's skipAdventureIf, after prep gear is equipped
+function EightBitBelowTarget(loc: Location): boolean {
+  if (!isSoftBlockInPlace("8bitRealm")) {
+    return false;
+  }
+  const realm = eightBitLocs.find((t) => t.location === loc);
+  if (realm === undefined || numericModifier(realm.modifier) >= realm.target) {
+    return false;
+  }
+  eightBitLastFailedTurn.set(loc, myTurncount());
+  return true;
+}
+
 const canUseAnyFamiliar: Map<
   Location,
   { canUseAnyFamiliar: boolean; computed: number }

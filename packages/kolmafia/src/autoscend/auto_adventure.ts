@@ -87,6 +87,8 @@ export function auto_triggerPostAdventure(): void {
 export function autoAdv(
   loc: Location = $location.none,
   option?: CombatMacro,
+  // Runs after pre-adventure prep; true skips this adventure, same as _autoSkipNextAdventure.
+  shouldSkipAdventure?: () => boolean,
 ): boolean {
   //num is ignored
   if (!zone_isAvailable(loc, true)) {
@@ -112,7 +114,9 @@ export function autoAdv(
   auto_interruptCheck("main", false);
   auto_triggerPreAdventure();
   let advReturn: boolean =
-    get("_autoSkipNextAdventure", false) || auto_adv1(loc, option);
+    get("_autoSkipNextAdventure", false) ||
+    (shouldSkipAdventure?.() ?? false) ||
+    auto_adv1(loc, option);
   removeProperty("_autoSkipNextAdventure");
   auto_triggerPostAdventure();
   if (!advReturn) {
