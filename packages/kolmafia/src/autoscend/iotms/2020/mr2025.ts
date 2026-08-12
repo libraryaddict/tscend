@@ -878,6 +878,19 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
     $monster`spider gremlin (tool)`, // spider gremlin (tool)
   );
 
+  if (
+    safeGet("auto_familiarChoice") === $familiar`Sword of S Words` &&
+    Math.min(lumberCount(), fastenerCount()) < bridgeGoal()
+  ) {
+    if (lumberCount() > fastenerCount()) {
+      desired_monsters.push($monster`smut orc pipelayer`);
+      desired_monsters.push($monster`smut orc jacker`);
+    } else {
+      desired_monsters.push($monster`smut orc screwer`);
+      desired_monsters.push($monster`smut orc nailer`);
+    }
+  }
+
   return desired_monsters;
 }
 

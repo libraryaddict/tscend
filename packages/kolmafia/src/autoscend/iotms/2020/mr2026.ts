@@ -2038,15 +2038,14 @@ export function auto_swordFamiliarWantsMonsterDrops(
 
   // Smut orcs
   if (
-    $monsters`smut orc jacker, smut orc nailer, smut orc pipelayer, smut orc screwer`.includes(
-      sMonster,
-    )
+    $monsters`smut orc pipelayer, smut orc jacker`.includes(sMonster) &&
+    lumberCount() < bridgeGoal()
   ) {
-    const fastenerNeed: number = bridgeGoal() - fastenerCount();
-    const lumberNeed: number = bridgeGoal() - lumberCount();
-
-    if (fastenerNeed <= 0 && lumberNeed <= 0) return false;
-
+    return true;
+  } else if (
+    $monsters`smut orc screwer, smut orc nailer`.includes(sMonster) &&
+    fastenerCount() < bridgeGoal()
+  ) {
     return true;
   }
 

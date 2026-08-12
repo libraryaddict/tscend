@@ -964,7 +964,9 @@ function auto_pre_adventure(): boolean {
     auto_havePeridot() &&
     !haveUsedPeridot(place) &&
     (zoneHasWantedMonsters || auto_peridotSetZone(place));
-  const wantBCZRefractedGaze: boolean = auto_bczRefractedGaze(planToPeridot);
+  const wantBCZRefractedGaze: boolean =
+    safeGet("auto_familiarChoice") !== $familiar`Sword of S Words` &&
+    auto_bczRefractedGaze(planToPeridot);
 
   if (planToPeridot && !wantBCZRefractedGaze) {
     //add a large bonus to Peridot of Peril if the zone has wanted monsters (or we want to set the zone without using an adventure) and we haven't visited there yet
