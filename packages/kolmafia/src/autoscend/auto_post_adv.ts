@@ -86,6 +86,7 @@ import { pathHasFamiliar } from "./auto_familiar";
 import { acquireHP, acquireMP, mp_regen, uneffect } from "./auto_restore";
 import {
   auto_have_skill,
+  auto_haveQueuedForcedCombat,
   auto_haveQueuedForcedNonCombat,
   auto_ignoreExperience,
   auto_is_valid,
@@ -325,7 +326,8 @@ function auto_post_adventure(): boolean {
       auto_spadeDigItem();
     } else if (
       myLocation() === $location`Sonofa Beach` &&
-      itemAmount($item`barrel of gunpowder`) < 5
+      itemAmount($item`barrel of gunpowder`) < 5 &&
+      !auto_haveQueuedForcedCombat()
     ) {
       //dig until we should have 5 barrels or we're out of digs
       const barrelCount: number = itemAmount($item`barrel of gunpowder`);
