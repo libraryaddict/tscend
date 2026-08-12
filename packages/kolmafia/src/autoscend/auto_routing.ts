@@ -46,9 +46,12 @@ import {
 } from "./iotms/2020/mr2021";
 import { auto_haveCursedMagnifyingGlass } from "./iotms/2020/mr2022";
 import {
+  auto_findBaseLegendaryNoods,
+  auto_findPreparedLegendaryNoods,
   auto_have_baseball_diamond,
   auto_have_sword_familiar,
   auto_haveArchaeologistSpade,
+  auto_havePastaWand,
   auto_spadeDigsRemaining,
   spadeDelayZones,
 } from "./iotms/2020/mr2026";
@@ -146,7 +149,11 @@ export function allowSoftblockDelay(): boolean {
   return get("auto_delayLastLevel", 0) < myLevel();
 }
 
-type SoftDelayKey = "swordTracking" | "baseballDiamond" | "8bitRealm";
+type SoftDelayKey =
+  | "swordTracking"
+  | "baseballDiamond"
+  | "8bitRealm"
+  | "legendaryPasta";
 
 // Generic companion to the preference-backed allowSoftblockX() family
 const softblockReleaseLevel = new Map<SoftDelayKey, number>();
@@ -165,6 +172,12 @@ export function releaseSoftblock(key: SoftDelayKey, reason: string): void {
   softblockReleaseLevel.set(key, myLevel());
 }
 
+// Silently drops a softlock (no "ran out of stuff to do" log) for callers whose own
+// condition resolved on its own rather than us giving up as a last resort.
+export function clearSoftblock(key: SoftDelayKey): void {
+  softblockReleaseLevel.delete(key);
+}
+
 // A released softblock is a last resort for when we're truly stuck; once a task actually
 // completes we're clearly not stuck anymore, so re-arm every softblock rather than leaving
 // them released for the rest of the level over one unrelated snag.
@@ -175,6 +188,14 @@ export function setupSoftblockLocks(): void {
   }
   if (auto_have_baseball_diamond()) {
     softblockReleaseLevel.set("baseballDiamond", 0);
+  }
+  if (
+    auto_havePastaWand() &&
+    itemAmount($item`legendary noodles`) > 0 &&
+    auto_findBaseLegendaryNoods() === $item.none &&
+    auto_findPreparedLegendaryNoods() === $item.none
+  ) {
+    softblockReleaseLevel.set("legendaryPasta", 0);
   }
 }
 
@@ -487,6 +508,13 @@ function auto_softBlockHandlerDo(): boolean {
     releaseSoftblock(
       "baseballDiamond",
       "holding off playing baseball to wait for a better lineup",
+    );
+    return true;
+  }
+  if (isSoftBlockInPlace("legendaryPasta")) {
+    releaseSoftblock(
+      "legendaryPasta",
+      "holding off finishing the Sonofa Beach war to look for something to turn our legendary noodles into a legendary dish",
     );
     return true;
   }

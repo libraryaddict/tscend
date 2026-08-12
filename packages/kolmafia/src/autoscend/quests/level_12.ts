@@ -176,6 +176,7 @@ import { auto_havePeridot, haveUsedPeridot } from "../iotms/2020/mr2025";
 import {
   auto_haveArchaeologistSpade,
   auto_spadeDigsRemaining,
+  legendaryPastaSoftblockInPlace,
 } from "../iotms/2020/mr2026";
 import { zataraAvailable } from "../iotms/other/clan";
 import { in_bhy } from "../paths/2011/bees_hate_you";
@@ -1641,7 +1642,12 @@ function L12_sonofaPrefixDo(): boolean {
   ) {
     return false;
   }
-  if (L12_sonofaFinish()) {
+  if (
+    (!legendaryPastaSoftblockInPlace() ||
+      auto_gunpowderBarrelsWanted() <= 0 ||
+      auto_haveQueuedForcedCombat()) &&
+    L12_sonofaFinish()
+  ) {
     return true;
   }
 

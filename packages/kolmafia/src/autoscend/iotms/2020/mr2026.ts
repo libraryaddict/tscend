@@ -98,7 +98,7 @@ import {
 } from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { haveFreeRestAvailable } from "../../auto_restore";
-import { isSoftBlockInPlace } from "../../auto_routing";
+import { clearSoftblock, isSoftBlockInPlace } from "../../auto_routing";
 import {
   auto_get_campground,
   auto_is_valid,
@@ -917,6 +917,20 @@ export function auto_willEatLegendaryNoodles(): boolean {
     !in_small() &&
     !in_plumber()
   );
+}
+
+export function legendaryPastaSoftblockInPlace(): boolean {
+  if (!isSoftBlockInPlace("legendaryPasta")) {
+    return false;
+  }
+  if (
+    auto_findBaseLegendaryNoods() !== $item.none ||
+    auto_findPreparedLegendaryNoods() !== $item.none
+  ) {
+    clearSoftblock("legendaryPasta");
+    return false;
+  }
+  return true;
 }
 
 export function auto_legendaryNoodlesAvailable(): boolean {
