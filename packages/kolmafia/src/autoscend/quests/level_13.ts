@@ -2188,7 +2188,8 @@ function L13_towerNSFinalDo(): boolean {
   //it is also false on all paths that don't want a wand. Thus if it is true it means we do want a wand but didn't get one yet.
   if (
     get("auto_wandOfNagamar", false) &&
-    internalQuestStatus("questL13Final") === 11
+    internalQuestStatus("questL13Final") === 11 &&
+    itemAmount($item`Wand of Nagamar`) === 0
   ) {
     auto_log_warning(
       "We do not have a Wand of Nagamar but appear to need one. We must lose to the Sausage first...",
@@ -2248,7 +2249,16 @@ function L13_towerNSFinalDo(): boolean {
     }
 
     if (myLevel() !== 13 && get("auto_burndownStatsInstantKarmaAbort", false)) {
-      abort(`Failed to burn stats down to L13, aborting as per user setting.`);
+      cliExecute("refresh status");
+      if (myLevel() !== 13) {
+        abort(
+          `Failed to burn stats down to L13, aborting as per user setting.`,
+        );
+      } else {
+        auto_log_info(
+          `We thought we were not level 13, but after refreshing, we are, weird. No harm done!`,
+        );
+      }
     }
   }
 
