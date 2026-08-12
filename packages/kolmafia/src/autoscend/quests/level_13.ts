@@ -15,6 +15,7 @@ import {
   equip,
   equippedItem,
   Familiar,
+  floor,
   getProperty,
   gnomadsAvailable,
   haveEffect,
@@ -49,6 +50,7 @@ import {
   refreshStatus,
   removeProperty,
   retrieveItem,
+  round,
   Skill,
   Stat,
   toElement,
@@ -464,21 +466,25 @@ const eightBitLocs: {
   location: Location;
   modifier: Modifier;
   target: number;
+  familiarType?: string;
 }[] = [
   {
     location: $location`Vanya's Castle`,
     modifier: $modifier`Initiative`,
     target: 600,
+    familiarType: "init",
   },
   {
     location: $location`Hero's Field`,
     modifier: $modifier`Item Drop`,
     target: 400,
+    familiarType: "item",
   },
   {
     location: $location`The Fungus Plains`,
     modifier: $modifier`Meat Drop`,
     target: 450,
+    familiarType: "meat",
   },
   {
     location: $location`Megalo-City`,
@@ -486,6 +492,46 @@ const eightBitLocs: {
     target: 600,
   },
 ];
+
+// Every 8-Bit Realm fight scores a base 100, plus up to 300 more that scales linearly to 0 over the
+// 1000 points of `modifier` short of `target`, with the total rounded to the nearest 10.
+function eightBitFightScore(current: number, target: number): number {
+  const bonus = 300 * max(0, min(1, 1 - (target - current) / 1000));
+  return round((100 + bonus) / 10) * 10;
+}
+
+function eightBitNextScoreMilestone(): number {
+  return (floor(EightBitScore() / 10000) + 1) * 10000;
+}
+
+// Compares turns needed to reach our next 8-Bit score milestone with vs without the zone's ideal familiar.
+// We only want to require the familiar if it actually saves us a whole turn getting there.
+function eightBitFamiliarSavesATurn(
+  realm: (typeof eightBitLocs)[number],
+): boolean {
+  if (realm.familiarType === undefined) {
+    return true;
+  }
+
+  const idealFamiliar = lookupFamiliarDatafile(realm.familiarType);
+  if (idealFamiliar === $familiar.none) {
+    return true;
+  }
+
+  const startingFamiliar = myFamiliar();
+  useFamiliar($familiar.none);
+  const withoutFamiliar = numericModifier(realm.modifier);
+  useFamiliar(idealFamiliar);
+  const withFamiliar = numericModifier(realm.modifier);
+  useFamiliar(startingFamiliar);
+
+  const remaining = eightBitNextScoreMilestone() - EightBitScore();
+  const turnsWithout =
+    remaining / eightBitFightScore(withoutFamiliar, realm.target);
+  const turnsWith = remaining / eightBitFightScore(withFamiliar, realm.target);
+
+  return ceil(turnsWithout) > ceil(turnsWith);
+}
 
 const eightBitLastFailedTurn: Map<Location, number> = new Map();
 
@@ -554,6 +600,13 @@ export function auto_8BitCheckCappingScore(place: Location): void {
   if (current >= realm.target) {
     auto_log_info(
       `We're capping the target ${realm.modifier} ${realm.target} at ${place} with our ${current} without requiring certain familiars.`,
+    );
+    return;
+  }
+
+  if (!eightBitFamiliarSavesATurn(realm)) {
+    auto_log_info(
+      `We're not capping the target ${realm.modifier} ${realm.target} at ${place} with our ${current}, but the ideal familiar wouldn't save us a turn towards our next 8bit score milestone, so we won't require it.`,
     );
     return;
   }
