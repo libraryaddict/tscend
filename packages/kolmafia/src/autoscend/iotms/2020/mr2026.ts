@@ -2087,7 +2087,7 @@ export function auto_swordFamiliarWantsMonsterDrops(
       sMonster,
     ) &&
     auto_is_valid($item`A-Boo clue`) &&
-    itemAmount($item`A-Boo clue`) * 30 < get("booPeakProgress") - 2 // We don't value this if we'd get the same outcome with a normal fight
+    (1 + itemAmount($item`A-Boo clue`)) * 30 < get("booPeakProgress") - 2 // We don't value this if we'd get the same outcome with a normal fight
   ) {
     return true;
   }
