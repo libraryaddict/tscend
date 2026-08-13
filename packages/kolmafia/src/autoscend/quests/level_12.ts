@@ -1584,9 +1584,6 @@ function L12_sonofaBeachDo(): boolean {
   ) {
     return false;
   }
-  if (itemAmount($item`barrel of gunpowder`) >= 4 && !auto_voteMonster()) {
-    return false;
-  }
 
   if (
     auto_backupTarget() &&
@@ -1596,28 +1593,25 @@ function L12_sonofaBeachDo(): boolean {
     return false;
   }
 
-  if (!auto_get_campground().has($item`Source terminal`)) {
-    if (
-      (auto_voteMonster() || auto_sausageGoblin()) &&
-      adjustForReplaceIfPossible()
-    ) {
-      try {
-        if (itemAmount($item`barrel of gunpowder`) < 4) {
-          set("auto_doCombatCopy", "yes");
-        }
-        if (auto_voteMonster() && !auto_voteMonster(true)) {
-          auto_voteMonster(false, $location`Sonofa Beach`);
-          return true;
-        } else if (auto_sausageGoblin() && !auto_haveVotingBooth()) {
-          auto_sausageGoblin($location`Sonofa Beach`);
-          return true;
-        }
-      } finally {
-        set("auto_combatDirective", "");
-        set("auto_doCombatCopy", "no");
+  if (
+    (auto_voteMonster() || auto_sausageGoblin()) &&
+    adjustForReplaceIfPossible()
+  ) {
+    try {
+      if (itemAmount($item`barrel of gunpowder`) < 4) {
+        set("auto_doCombatCopy", "yes");
       }
+      if (auto_voteMonster() && !auto_voteMonster(true)) {
+        auto_voteMonster(false, $location`Sonofa Beach`);
+        return true;
+      } else if (auto_sausageGoblin() && !auto_haveVotingBooth()) {
+        auto_sausageGoblin($location`Sonofa Beach`);
+        return true;
+      }
+    } finally {
+      set("auto_combatDirective", "");
+      set("auto_doCombatCopy", "no");
     }
-    return false;
   }
 
   let CForced: boolean = false;
