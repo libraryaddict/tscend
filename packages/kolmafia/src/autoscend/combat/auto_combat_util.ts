@@ -693,9 +693,14 @@ export function enemyCanBlocksSkills(): boolean {
 
 export function canSurvive(mult: number, add_1: number = 0): boolean {
   let damage: number = expectedDamage();
-  damage *= toInt(mult);
+
+  if (lastMonster() === $monster`wall of meat`) {
+    damage = myMaxhp() * 0.17;
+  }
+
+  damage *= mult;
   damage += add_1;
-  return damage < myHp();
+  return Math.ceil(damage) < myHp();
 }
 
 export function hasClubEquipped(): boolean {
