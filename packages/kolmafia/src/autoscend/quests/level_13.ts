@@ -1863,6 +1863,8 @@ function L13_towerNSTowerMeat(): boolean {
   $modifiers`Monster Level, Item Drop, Experience`.forEach((modifier) =>
     maximizer.clearWeight(modifier),
   );
+  // Wall of meat does percentage damage
+  maximizer.weight($modifier`Maximum HP`, -10);
   equipBaseline();
   shrugAT($effect`Polka of Plenty`);
   provideMeat$1(526, true, false);
