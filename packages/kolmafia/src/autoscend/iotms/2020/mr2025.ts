@@ -85,6 +85,7 @@ import {
   $stat,
   get,
   getAverageAdventures,
+  have,
   Leprecondo,
   PeridotOfPeril,
   set,
@@ -1875,7 +1876,10 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
     (myLocation() === $location`The Penultimate Fantasy Airship` &&
       internalQuestStatus("questL10Garbage") >= 4 &&
       itemAmount($item`Mohawk wig`) < 1 &&
-      itemAmount($item`amulet of extreme plot significance`) < 1) ||
+      itemAmount($item`amulet of extreme plot significance`) < 1 &&
+      (speculating ||
+        lastMonster() === $monster`some fish` ||
+        !$monsters`Burly Sidekick, Quiet Healer`.includes(lastMonster()))) ||
     (myLocation() === $location`The Battlefield (Frat Uniform)` &&
       get("_bczRefractedGazeCasts") < 2) || // Only use refracted gaze on the battlefield if we've used it less than 2 times
     (myLocation() === $location`A-Boo Peak` &&
@@ -1898,6 +1902,9 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
         auto_haveMonodent() ||
         monsterPhylum() !== $phylum`beast`)) ||
     (myLocation() === $location`The Hidden Apartment Building` &&
+      !have($item`McClusky file (complete)`) &&
+      !have($item`McClusky file (page 5)`) &&
+      internalQuestStatus("questL11Business") < 10 &&
       (speculating ||
         lastMonster() === $monster`pygmy shaman` ||
         lastMonster() === $monster`some fish`)) ||
