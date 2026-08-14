@@ -907,30 +907,34 @@ export function prepareYellowRayNextCombat(
     return true;
   }
 
-  if (
+  const canJelly =
     can_consume() &&
     allowedSizedDiet >= $item`mixed berry jelly`.spleen &&
     canChew($item`mixed berry jelly`) &&
-    spleen_left() >= $item`mixed berry jelly`.spleen &&
-    acquireOrPull($item`mixed berry jelly`, speculating) &&
-    (speculating || autoChew(1, $item`mixed berry jelly`))
-  ) {
-    return true;
-  }
+    spleen_left() >= $item`mixed berry jelly`.spleen;
 
   if (
+    (!canJelly || itemAmount($item`mixed berry jelly`) === 0) &&
     can_consume() &&
     allowedSizedDiet >= $item`toxic asset`.spleen &&
     canChew($item`toxic asset`) &&
     spleen_left() >= $item`toxic asset`.spleen &&
     (itemAmount($item`toxic asset`) > 0 ||
-      auto_acquireInterestingItem($item`toxic asset`),
+      auto_acquireInterestingItem($item`toxic asset`, speculating),
     speculating) &&
     (speculating || autoChew(1, $item`toxic asset`))
   ) {
     if (!speculating) {
       set("_auto_toxicAssetUses", get("_auto_toxicAssetUses", 0) + 1);
     }
+    return true;
+  }
+
+  if (
+    canJelly &&
+    acquireOrPull($item`mixed berry jelly`, speculating) &&
+    (speculating || autoChew(1, $item`mixed berry jelly`))
+  ) {
     return true;
   }
 
