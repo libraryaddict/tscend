@@ -177,7 +177,7 @@ export function auto_isInEternityCodpiece(it: Item): boolean {
   return EternityCodpiece.currentGems().includes(it);
 }
 
-const CODPIECE_MANAGED_GEMS: Item[] = $items`blood cubic zirconia, Baseball Diamond, Heartstone`;
+const CODPIECE_MANAGED_GEMS: Item[] = $items`blood cubic zirconia, Baseball Diamond, Heartstone, Peridot of Peril`;
 
 // Prefer a spare Heartstone that isn't wanted for stealing a heart this pass over a massive gemstone.
 function auto_codpieceFillerItem(): Item {

@@ -1364,6 +1364,7 @@ function auto_pre_adventure(): boolean {
   auto_codpieceReconcileGem($item`blood cubic zirconia`);
   auto_codpieceReconcileGem($item`Baseball Diamond`);
   auto_codpieceReconcileGem($item`Heartstone`);
+  auto_codpieceReconcileGem($item`Peridot of Peril`);
   auto_codpieceFillEmptySlots();
 
   cliExecute("checkpoint clear");
