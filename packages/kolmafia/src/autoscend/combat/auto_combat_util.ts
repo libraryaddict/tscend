@@ -171,9 +171,11 @@ export function defaultRoundLimit(): number {
 }
 
 export function haveUsed(sk: Skill): boolean {
-  return containsText(
-    getProperty("_auto_combatState"),
-    `(sk${toInt(sk).toString()})`,
+  return (
+    containsText(
+      getProperty("_auto_combatState"),
+      `(sk${toInt(sk).toString()})`,
+    ) || getProperty("_auto_combatState").split(";").includes(`sk${sk.id}`)
   );
 }
 

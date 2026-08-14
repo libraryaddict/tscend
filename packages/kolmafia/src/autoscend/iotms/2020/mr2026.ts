@@ -475,14 +475,7 @@ export function auto_heartstoneCurrentWord(): string {
 }
 
 export function auto_heartstoneShouldStealHeartInCombat(): boolean {
-  if (
-    !auto_haveHeartstone() ||
-    !auto_is_valid$2($skill`Steal Monster's Heart`) ||
-    !auto_canUse($skill`Steal Monster's Heart`) ||
-    get("_lastCombatActions")
-      .split(";")
-      .includes(`sk${$skill`Steal Monster's Heart`.id}`) // If already used this combat
-  ) {
+  if (!auto_haveHeartstone() || !auto_canUse($skill`Steal Monster's Heart`)) {
     return false;
   }
 
