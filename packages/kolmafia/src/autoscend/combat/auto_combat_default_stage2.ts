@@ -93,6 +93,7 @@ import {
   auto_useSkill,
   banisherCombatAction$1,
   banisherCombatString,
+  canSurvive,
   canUse$3,
   combat_status_add,
   combat_status_check,
@@ -417,14 +418,18 @@ export function auto_combatDefaultStage2(
   }
   if (
     wantToThrowCoinAtEm(myLocation(), enemy) &&
-    canUse$3($item`Interesting Coin`)
+    canUse$3($item`Interesting Coin`) &&
+    canSurvive(4)
   ) {
-    handleTracker({
-      what: enemy,
-      detail: $item`Interesting Coin`.toString(),
-      property: "auto_instakill",
-    });
-    auto_spendInterestingCoins(1);
+    // Dont tr
+    if (!get("auto_instakill").includes("Interesting Coin")) {
+      handleTracker({
+        what: enemy,
+        detail: $item`Interesting Coin`.toString(),
+        property: "auto_instakill",
+      });
+      auto_spendInterestingCoins(1);
+    }
     return $item`Interesting Coin`;
   }
   //throw gravel to free kill the enemy but don't get any items
