@@ -1624,6 +1624,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
   }
 
   const team = auto_baseballRecruits();
+  let lastRetry = -1;
 
   // Play the game
   for (let i = 0; i < 9; i++) {
@@ -1657,7 +1658,15 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
     }
 
     if (bestChoice === 0) {
-      abort(`Failed to find a valid pitch for baseball slot ${i}.`);
+      if (lastRetry !== i) {
+        lastRetry = i;
+        visitUrl("choice.php");
+        i--;
+        continue;
+      }
+      abort(
+        `Failed to find a valid pitch for baseball slot ${i}. Available options are ${availableChoiceOptions()}`,
+      );
     }
     // This was a finisher
     if (highestPriority === -1000) {
@@ -2274,7 +2283,17 @@ const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
     monsters: $monsters`smut orc pipelayer`,
     item: $item`morningwood plank`,
     // Trainset already covers it, otherwise if we wouldn't be able to adventure there anyways
-    predicate: () => !auto_haveTrainSet() && myLevel() < 9,
+    predicate: () =>
+      !auto_haveTrainSet() && myLevel() < 9 && lumberCount() + 3 < bridgeGoal(),
+  },
+  {
+    monsters: $monsters`smut orc screwer`,
+    item: $item`morningwood plank`,
+    // Trainset already covers it, otherwise if we wouldn't be able to adventure there anyways
+    predicate: () =>
+      !auto_haveTrainSet() &&
+      myLevel() < 9 &&
+      fastenerCount() + 3 < bridgeGoal(),
   },
 
   {
