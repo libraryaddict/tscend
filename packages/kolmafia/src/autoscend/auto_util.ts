@@ -14,7 +14,6 @@ import {
   changeMcd,
   chew,
   choiceFollowsFight,
-  Class,
   cliExecute,
   cliExecuteOutput,
   containsText,
@@ -43,7 +42,6 @@ import {
   haveCampground,
   haveEffect,
   haveEquipped,
-  haveOutfit,
   haveSkill,
   inBadMoon,
   indexOf,
@@ -127,11 +125,8 @@ import {
   thunderCost,
   timeToString,
   toBoolean,
-  toClass,
   todayToString,
-  toEffect,
   toElement,
-  toFamiliar,
   toFloat,
   toInt,
   toItem,
@@ -141,7 +136,6 @@ import {
   toPhylum,
   toSkill,
   toSlot,
-  toStat,
   toUrl,
   turnsPerCast,
   use,
@@ -205,7 +199,6 @@ import {
   autoEat,
   can_consume,
   canChew,
-  fullness_left,
   inebriety_left,
   spleen_left,
   stomach_left,
@@ -287,7 +280,7 @@ import {
   makeGenieCombat,
   makeGenieWish$1,
 } from "./iotms/2010/mr2017";
-import { auto_latteDropAvailable, auto_voteMonster } from "./iotms/2010/mr2018";
+import { auto_voteMonster } from "./iotms/2010/mr2018";
 import {
   auto_havePillKeeper,
   auto_pillKeeper$1,
@@ -437,6 +430,7 @@ import { bridgeGoal, fastenerCount, lumberCount } from "./quests/level_09";
 import { auto_warSide } from "./quests/level_12";
 import { needStarKey } from "./quests/level_13";
 import { candyBlock } from "./quests/level_any";
+import { auto_check_conditions } from "./utils/auto_conditions";
 import { AshMatcher } from "./utils/kolmafiaUtils";
 import { fileAsMap } from "./utils/kolmafiaUtils";
 import { Maximizer, maximizer } from "./utils/maximizer";
@@ -4835,388 +4829,6 @@ export function auto_can_equip(it: Item, s: Slot = toSlot(it)): boolean {
 
   return auto_is_valid(it) && canEquip(it);
 }
-// Conditionals are formatted as "<condition type>:<data>"
-// Multiple conditionals can be added separated by a semicolon (;) with NO SPACES
-// Conditionals can be prepended with a ! to indicate that they must be FALSE
-// See the switch statement for valid condition types and a description of their data
-export function auto_check_conditions(conds: string): boolean {
-  if (conds === "") {
-    return true;
-  }
-
-  const conditions: Map<number, string> = new Map(
-    splitString(conds, ";").map((_v, _i) => [_i, _v]),
-  );
-
-  function compare_numbers(
-    num1: number,
-    num2: number,
-    comparison: string,
-  ): boolean {
-    switch (comparison) {
-      case "=":
-      case "==":
-        return num1 === num2;
-      case ">":
-        return num1 > num2;
-      case "<":
-        return num1 < num2;
-      case ">=":
-        return num1 >= num2;
-      case "<=":
-        return num1 <= num2;
-      default:
-        abort(`"${comparison}" is not a valid comparison operator!`);
-    }
-    return false;
-  }
-  // does not account for !, the loop does that
-  function check_condition(cond: string): boolean {
-    const m: AshMatcher = new AshMatcher("^(\\w+):(.+)$", cond);
-    if (!m.find()) {
-      abort(`"${cond}" is not proper condition formatting!`);
-    }
-    const condition_type: string = m.group(1);
-    const condition_data: string = m.group(2);
-    {
-      switch (condition_type) {
-        case "class": {
-          // data: The text name of the class, as used by to_class()
-          // You must be the given class
-          // As a precaution, autoscend aborts if to_class returns $class[none]
-          const req_class: Class = toClass(condition_data);
-          if (req_class === $class.none) {
-            abort(`"${condition_data}" does not properly convert to a class!`);
-          }
-          return req_class === myClass();
-        }
-        case "mainstat": {
-          // data: The text name of the mainstat, as used by to_stat()
-          // Your mainstat must be the given stat
-          // As a precaution, autoscend aborts if to_stat returns $stat[none]
-          const req_mainstat: Stat = toStat(condition_data);
-          if (req_mainstat === $stat.none) {
-            abort(`"${condition_data}" does not properly convert to a stat!`);
-          }
-          return req_mainstat === myPrimestat();
-        }
-        case "path": {
-          // data: The text name of the path, as returned by my_path().name
-          // You must be currently on that path
-          // No safety checking possible here, so hopefully you don't misspell anything
-          return condition_data === myPath().name;
-        }
-        case "pathid": {
-          // data: The int id name of the path, as returned by my_path().id
-          // You must be currently on that path
-          // As a precaution, autoscend aborts if to_int returns 0
-          const req_pathid: number = toInt(condition_data);
-          if (req_pathid === 0) {
-            abort(
-              `"${condition_data}" does not properly convert to a path id!`,
-            );
-          }
-          return req_pathid === myPath().id;
-        }
-        case "skill": {
-          // data: Text name of the skill, as used by to_skill()
-          // You must have the given skill
-          // As a precaution, autoscend aborts if to_skill returns $skill[none]
-          const req_skill: Skill = toSkill(condition_data);
-          if (req_skill === $skill.none) {
-            abort(`"${condition_data}" does not properly convert to a skill!`);
-          }
-          return auto_have_skill(req_skill);
-        }
-        case "effect": {
-          // data: Text name of the effect, as used by to_effect()
-          // You must have at least one turn of the given effect
-          // As a precaution, autoscend aborts if to_effect returns $effect[none]
-          const req_effect: Effect = toEffect(condition_data);
-          if (req_effect === $effect.none) {
-            abort(
-              `"${condition_data}" does not properly convert to an effect!`,
-            );
-          }
-          return haveEffect(req_effect) > 0;
-        }
-        case "item": {
-          // data: <item name><comparison operator><value>
-          // The number of that item you have must compare properly
-          // As a precaution, autoscend aborts if to_item returns $item[none]
-          const m5: AshMatcher = new AshMatcher(
-            "([^=<>]+)([=<>]+)(.+)",
-            condition_data,
-          );
-          if (!m5.find()) {
-            abort(`"${condition_data}" is not a proper item condition format!`);
-          }
-          const req_item: Item = toItem(m5.group(1));
-          if (req_item === $item.none) {
-            abort(`"${m5.group(1)}" does not properly convert to an item!`);
-          }
-          return compare_numbers(
-            itemAmount(req_item) + equippedAmount(req_item),
-            toInt(m5.group(3)),
-            m5.group(2),
-          );
-        }
-        case "itemdropcapped": {
-          // data: <value><equal sign separator><item name>
-          // The chance of getting the item at the end of the fight from that base drop rate value must be 100
-          // As a precaution, autoscend aborts if to_item returns $item[none]
-          const m7: AshMatcher = new AshMatcher(
-            "([^=<>]+)=(.+)",
-            condition_data,
-          );
-          if (!m7.find()) {
-            abort(`"${condition_data}" is not a proper item condition format!`);
-          }
-          const todrop_item: Item = toItem(m7.group(2));
-          const base_drop_chance: number = toFloat(m7.group(1));
-          if (todrop_item === $item.none) {
-            abort(`"${m7.group(1)}" does not properly convert to an item!`);
-          }
-          return effectiveDropChance(todrop_item, base_drop_chance) >= 100;
-        }
-        case "outfit":
-          // data: The outfit name as used by have_outfit
-          // You must have the given outfit
-          // No safety checking here possible, at least not conveniently
-          return haveOutfit(condition_data);
-        case "familiar": {
-          // data: Text name of the familiar, as used by to_familiar()
-          // You must be currently using this familiar
-          // As a precaution, autoscend aborts if to_familiar returns $familiar[none]
-          // Unless the text is literall "none" (case sensitive)
-          const req_familiar: Familiar = toFamiliar(condition_data);
-          if (req_familiar === $familiar.none && condition_data !== "none") {
-            abort(
-              `"${condition_data}" does not properly convert to a familiar!`,
-            );
-          }
-          return myFamiliar() === req_familiar;
-        }
-        case "havefamiliar": {
-          // data: Text name of the familiar, as used by to_familiar()
-          // You must own this familiar, and it must be legal
-          // As a precaution, autoscend aborts if to_familiar returns $familiar[none]
-          const havefamiliar: Familiar = toFamiliar(condition_data);
-          if (havefamiliar === $familiar.none) {
-            abort(
-              `"${condition_data}" does not properly convert to a familiar!`,
-            );
-          }
-          return auto_have_familiar(havefamiliar);
-        }
-        case "loc": {
-          // data: Text name of the location, as used by to_location()
-          // You must be in this location (if you want to check for elsewhere, temporarily set_location)
-          // As a precaution, autoscend aborts if to_location returns $location[none]
-          const req_loc: Location = toLocation(condition_data);
-          if (req_loc === $location.none) {
-            abort(
-              `"${condition_data}" does not properly convert to a location!`,
-            );
-          }
-          return myLocation() === req_loc;
-        }
-        case "turnsspent": {
-          // data: <location><comparison operator><integer value>
-          // As a precaution, autoscend aborts if to_location returns $location[none]
-          const m6: AshMatcher = new AshMatcher(
-            "([^=<>]+)([=<>]+)(.+)",
-            condition_data,
-          );
-          if (!m6.find()) {
-            abort(
-              `"${condition_data}" is not a proper turnsspent condition format!`,
-            );
-          }
-          const loc: Location = toLocation(m6.group(1));
-          if (loc === $location.none) {
-            abort(
-              `"${condition_data}" does not properly convert to a location!`,
-            );
-          }
-          if (!["=", "=="].includes(m6.group(2))) {
-            return compare_numbers(
-              loc.turnsSpent,
-              toInt(m6.group(3)),
-              m6.group(2),
-            );
-          }
-          return loc.turnsSpent === toInt(m6.group(3));
-        }
-        case "prop": {
-          // data: <propname><comparison operator><value>
-          // >/</>=/<= only supported for integer properties!
-          const m2: AshMatcher = new AshMatcher(
-            "([^=<>]+)([=<>]+)(.+)",
-            condition_data,
-          );
-          if (!m2.find()) {
-            abort(`"${condition_data}" is not a proper prop condition format!`);
-          }
-          const prop: string = getProperty(m2.group(1));
-          if (!["=", "=="].includes(m2.group(2))) {
-            return compare_numbers(
-              toInt(prop),
-              toInt(m2.group(3)),
-              m2.group(2),
-            );
-          }
-          return prop === m2.group(3);
-        }
-        case "prop_boolean":
-          // data: <propname>
-          // gets propname and converts to a boolean
-          return toBoolean(getProperty(condition_data));
-        case "quest": {
-          // data: <questpropname><comparison operator><value>
-          // like prop, but with > and < and >= and <= and uses internalQuestStatus
-          // the value to compare to should always be an integer
-          const m3: AshMatcher = new AshMatcher(
-            "([^=<>]+)([=<>]+)(.+)",
-            condition_data,
-          );
-          if (!m3.find()) {
-            abort(
-              `"${condition_data}" is not a proper quest condition format!`,
-            );
-          }
-          const quest_state: number = internalQuestStatus(m3.group(1));
-          const compare_to: number = toInt(m3.group(3));
-          return compare_numbers(quest_state, compare_to, m3.group(2));
-        }
-        case "sniffed": {
-          // data: Text name of the monster, as used by to_monster()
-          // True if that monster has been sniffed by any olfaction-like
-          // As a precaution, autoscend will abort if to_monster returns $monster[none]
-          const check_sniffed: Monster = toMonster(condition_data);
-          if (check_sniffed === $monster.none) {
-            abort(
-              `"${condition_data}" does not properly convert to a monster!`,
-            );
-          }
-          if (
-            haveEffect($effect`On the Trail`) > 0 &&
-            safeGet("olfactedMonster") === check_sniffed
-          ) {
-            return true;
-          }
-          if (
-            isActuallyEd() &&
-            safeGet("stenchCursedMonster") === check_sniffed
-          ) {
-            return true;
-          }
-          if (is_pete() && safeGet("makeFriendsMonster") === check_sniffed) {
-            return true;
-          }
-          if (
-            $classes`Cow Puncher, Beanslinger, Snake Oiler`.includes(
-              myClass(),
-            ) &&
-            safeGet("longConMonster") === check_sniffed
-          ) {
-            return true;
-          }
-          if (
-            in_darkGyffte() &&
-            safeGet("auto_bat_soulmonster") === check_sniffed
-          ) {
-            return true;
-          }
-          if (safeGet("_gallapagosMonster") === check_sniffed) {
-            return true;
-          }
-          if (safeGet("monkeyPointMonster") === check_sniffed) {
-            return true;
-          }
-          if (safeGet("_latteMonster") === check_sniffed) {
-            return true;
-          }
-          if (safeGet("motifMonster") === check_sniffed) {
-            return true;
-          }
-          return false;
-        }
-        case "expectghostreport":
-          // data: Doesn't matter, but put something so I don't have to support dataless conditions
-          // True when you expect a protonic ghost report
-          // Pretty much just for the protonic accelerator pack
-          return expectGhostReport();
-        case "latte":
-          // data: Doesn't matter, but put something so I don't have to support dataless conditions
-          // True when there is a latte unlock available in the area (that you don't have, of course)
-          // Pretty much just for the latte
-          return auto_latteDropAvailable(myLocation());
-        case "tavern":
-          // data: Doesn't matter, but put something so I don't have to support dataless conditions
-          // True if the hidden tavern has been unlocked this ascension
-          return get("hiddenTavernUnlock") >= myAscensions();
-        case "sgeea": {
-          // data: The number of sgeeas you want to have
-          // True if you have at least that many sgeeas at your disposal
-          const sgeeas: number = toInt(condition_data);
-          return itemAmount($item`soft green echo eyedrop antidote`) >= sgeeas;
-        }
-        case "day": {
-          // data: The day to check for
-          // True if we are currently on that day
-          const day: number = toInt(condition_data);
-          return myDaycount() === day;
-        }
-        case "ML": {
-          const m4: AshMatcher = new AshMatcher("([=<>]+)(.+)", condition_data);
-          if (!m4.find()) {
-            abort(`"${condition_data}" is not a proper ML condition format!`);
-          }
-          return compare_numbers(
-            monsterLevelAdjustment(),
-            toInt(m4.group(2)),
-            m4.group(1),
-          );
-        }
-        case "consume": {
-          // data: eat\drink\chew
-          // True if we can eat\drink\chew anything today
-          switch (condition_data) {
-            case "eat":
-              return fullness_left() > 0;
-            case "drink":
-              return inebriety_left() > 0;
-            case "chew":
-              return spleen_left() > 0;
-            default: {
-              abort(`Invalid consume type "${condition_type}" found!`);
-            }
-          }
-          break;
-        }
-        default:
-          abort(`Invalid condition type "${condition_type}" found!`);
-      }
-    }
-  }
-
-  for (const [, cond] of conditions) {
-    const m: AshMatcher = new AshMatcher("^(!?)(.+)$", cond);
-    if (!m.find()) {
-      abort(`"${cond}" is not a proper condition!`);
-    }
-    const invert: boolean = m.group(1) === "!";
-    const success: boolean = check_condition(m.group(2));
-
-    if (success === invert) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
 const monsters_text: Map<string, Map<number, Map<string, string>>> = fileAsMap(
   "autoscend_monsters.txt",
   [String, Number, String, String],

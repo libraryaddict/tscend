@@ -47,6 +47,7 @@ import {
   set,
 } from "libram";
 
+import { auto_check_conditions } from "./utils/auto_conditions";
 import {
   auto_spleenFamiliarAdvItemsPossessed,
   spleen_left,
@@ -58,7 +59,6 @@ import {
   possessOutfit,
 } from "./auto_equipment";
 import {
-  auto_check_conditions,
   auto_combat_appearance_rates,
   auto_combat_appearance_rates$1,
   auto_is_valid$1,
