@@ -461,7 +461,7 @@ export function auto_bestWarPlan(): WarPlan {
   const considerLighthouse: boolean = true;
   let considerOrchard: boolean = true;
   let considerNuns: boolean = true;
-  const considerFarm: boolean = true;
+  const considerFarm: boolean = !get("auto_skipL12Farm", false);
 
   if (in_bhy() || in_pokefam()) {
     considerArena = false;
@@ -493,7 +493,9 @@ export function auto_bestWarPlan(): WarPlan {
   const advCostLighthouse: number = 10; //placeholder estimate. TODO actual math
   const advCostOrchard: number = 10; //placeholder estimate. TODO actual math
   const advCostNuns: number = 20; //placeholder estimate. TODO actual math
-  const advCostFarm: number = auto_estimatedAdventuresForDooks();
+  const advCostFarm: number = considerFarm
+    ? auto_estimatedAdventuresForDooks()
+    : 0;
   // Start with the sidequests already completed.
   // Greedily add the sidequest that saves the most adventures, breaking
   // early if no sidequest saves any adventures.
