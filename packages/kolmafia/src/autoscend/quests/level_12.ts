@@ -1572,10 +1572,9 @@ function L12_sonofaBeachDo(): boolean {
   }
 
   if (
-    (!legendaryPastaSoftblockInPlace() ||
-      auto_gunpowderBarrelsWanted() <= 0 ||
-      auto_haveQueuedForcedCombat()) &&
-    L12_sonofaFinish()
+    L12_sonofaFinish() ||
+    auto_gunpowderBarrelsWanted() <= 0 ||
+    (!auto_haveQueuedForcedCombat() && legendaryPastaSoftblockInPlace())
   ) {
     return true;
   }
