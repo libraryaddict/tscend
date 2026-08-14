@@ -894,7 +894,7 @@ export function prepareYellowRayNextCombat(
   speculating: boolean = false,
 ): boolean {
   const allowedSizedDiet =
-    estimatedTurnsSaves / Math.max(1, get("auto_consumeMinAdvPerFill", 0.0));
+    estimatedTurnsSaves / Math.max(3, get("auto_consumeMinAdvPerFill", 0.0));
   //with values like 10 to 20 turns saved, not checking get_property("auto_consumeMinAdvPerFill").to_float()
   if (
     can_consume() &&
@@ -920,8 +920,7 @@ export function prepareYellowRayNextCombat(
     canChew($item`toxic asset`) &&
     spleen_left() >= $item`toxic asset`.spleen &&
     (itemAmount($item`toxic asset`) > 0 ||
-      auto_acquireInterestingItem($item`toxic asset`, speculating),
-    speculating) &&
+      auto_acquireInterestingItem($item`toxic asset`, speculating)) &&
     (speculating || autoChew(1, $item`toxic asset`))
   ) {
     if (!speculating) {
