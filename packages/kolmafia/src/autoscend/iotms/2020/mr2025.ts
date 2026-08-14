@@ -85,7 +85,6 @@ import {
   $stat,
   get,
   getAverageAdventures,
-  have,
   Leprecondo,
   PeridotOfPeril,
   set,
@@ -1930,17 +1929,6 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
     loc === $location`Whitey's Grove` &&
     L11_needWetStew() &&
     (speculating || auto_haveMonodent() || monsterPhylum() !== $phylum`beast`)
-  ) {
-    return true;
-  }
-  if (
-    loc === $location`The Hidden Apartment Building` &&
-    !have($item`McClusky file (complete)`) &&
-    !have($item`McClusky file (page 5)`) &&
-    internalQuestStatus("questL11Business") < 10 &&
-    (speculating ||
-      lastMonster() === $monster`pygmy shaman` ||
-      lastMonster() === $monster`some fish`)
   ) {
     return true;
   }
