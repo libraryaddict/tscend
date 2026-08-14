@@ -1748,13 +1748,18 @@ function auto_baseballBuildAssignments(team: Monster[]): BaseballAssignment[] {
       return a.length > b.length;
     }
 
-    // Same number of finishers. Prefer earlier finish slots.
+    // Same number of finishers. Prefer earlier finish slots if its the same monster, otherwise later
     const aSlots = a.map(([, slot]) => slot);
     const bSlots = b.map(([, slot]) => slot);
 
     for (let i = 0; i < aSlots.length; i++) {
       if (aSlots[i] !== bSlots[i]) {
-        return aSlots[i] < bSlots[i];
+        // If its the same monster, prefer earlier slots
+        if (team[aSlots[i]] === team[bSlots[i]]) {
+          return aSlots[i] < bSlots[i];
+        }
+        // If its not the same, prefer latter (we'd get better targets perhaps)
+        return aSlots[i] > bSlots[i];
       }
     }
 
