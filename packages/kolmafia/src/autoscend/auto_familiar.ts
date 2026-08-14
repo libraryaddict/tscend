@@ -47,7 +47,6 @@ import {
   set,
 } from "libram";
 
-import { auto_check_conditions } from "./utils/auto_conditions";
 import {
   auto_spleenFamiliarAdvItemsPossessed,
   spleen_left,
@@ -108,6 +107,7 @@ import {
   auto_8BitCanUseAnyFamiliar as auto_8BitCapsScoreWithoutFamiliar,
   L13_wantsTheD,
 } from "./quests/level_13";
+import { auto_check_conditions } from "./utils/auto_conditions";
 import { fileAsMap } from "./utils/kolmafiaUtils";
 import { maximizer } from "./utils/maximizer";
 

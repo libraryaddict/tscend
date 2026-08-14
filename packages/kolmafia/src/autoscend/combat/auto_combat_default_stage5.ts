@@ -23,6 +23,7 @@ import {
   myLocation,
   myMaxhp,
   myMp,
+  myPrimestat,
   numericModifier,
   Phylum,
   Skill,
@@ -279,7 +280,9 @@ export function auto_combatDefaultStage5(
   //mortar shell is amazing. it really should not be limited to sauceror only.
   if (
     auto_canUse($skill`Stuffed Mortar Shell`) &&
-    myClass() === $class`Sauceror` &&
+    ((myPrimestat() === $stat`Mysticality` &&
+      (monsterHp() > 120 || !auto_canUse($skill`Saucestorm`))) ||
+      myClass() === $class`Sauceror`) &&
     canSurvive(2.0) &&
     (currentFlavour() !== monsterElement(enemy) ||
       currentFlavour() === $element.none)
