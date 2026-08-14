@@ -1869,62 +1869,108 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
     return false;
   }
   const speculating: boolean = currentRound() === 0;
+  const loc = myLocation();
+
   if (
-    (myLocation() === $location`The Smut Orc Logging Camp` &&
-      lumberCount() < bridgeGoal() &&
-      fastenerCount() < bridgeGoal()) ||
-    (myLocation() === $location`The Penultimate Fantasy Airship` &&
-      internalQuestStatus("questL10Garbage") >= 4 &&
-      itemAmount($item`Mohawk wig`) < 1 &&
-      itemAmount($item`amulet of extreme plot significance`) < 1 &&
-      (speculating ||
-        lastMonster() === $monster`some fish` ||
-        !$monsters`Burly Sidekick, Quiet Healer`.includes(lastMonster()))) ||
-    (myLocation() === $location`The Battlefield (Frat Uniform)` &&
-      get("_bczRefractedGazeCasts") < 2) || // Only use refracted gaze on the battlefield if we've used it less than 2 times
-    (myLocation() === $location`A-Boo Peak` &&
-      itemAmount($item`A-Boo clue`) * 30 <
-        // We would take 2 advs regardless, we don't want to waste our time on a clue we didn't need!
-        get("booPeakProgress") - 4) ||
-    (myLocation() === $location`Cobb's Knob Harem` &&
-      (speculating ||
-        lastMonster() === $monster`Knob Goblin Harem Guard` ||
-        lastMonster() === $monster`some fish`)) ||
-    (myLocation() === $location`Twin Peak` &&
-      itemAmount($item`rusty hedge trimmers`) < 4) ||
-    (myLocation() === $location`The Black Forest` &&
-      !blackMarketAvailable() &&
-      itemAmount($item`reassembled blackbird`) === 0 &&
-      (speculating || monsterPhylum() !== $phylum`beast`)) ||
-    (myLocation() === $location`Whitey's Grove` &&
-      L11_needWetStew() &&
-      (speculating ||
-        auto_haveMonodent() ||
-        monsterPhylum() !== $phylum`beast`)) ||
-    (myLocation() === $location`The Hidden Apartment Building` &&
-      !have($item`McClusky file (complete)`) &&
-      !have($item`McClusky file (page 5)`) &&
-      internalQuestStatus("questL11Business") < 10 &&
-      (speculating ||
-        lastMonster() === $monster`pygmy shaman` ||
-        lastMonster() === $monster`some fish`)) ||
-    (myLocation() === $location`The Defiled Nook` &&
-      (speculating ||
-        lastMonster() === $monster`party skelteon` ||
-        lastMonster() === $monster`some fish`)) ||
-    (myLocation() === $location`The Hole in the Sky` &&
-      needStarKey() &&
-      (speculating ||
-        (lastMonster() === $monster`Astronomer` &&
-          (itemAmount($item`star chart`) > 0 ||
-            auto_have_skill($skill`Sea *dent: Talk to Some Fish`))) ||
-        monsterPhylum() === $phylum`constellation` ||
-        lastMonster() === $monster`some fish`)) ||
-    (myLocation() === $location`Guano Junction` &&
-      internalQuestStatus("questL04Bat") < 3)
+    loc === $location`The Smut Orc Logging Camp` &&
+    lumberCount() < bridgeGoal() &&
+    fastenerCount() < bridgeGoal()
   ) {
     return true;
   }
+  if (
+    loc === $location`The Penultimate Fantasy Airship` &&
+    internalQuestStatus("questL10Garbage") >= 4 &&
+    itemAmount($item`Mohawk wig`) < 1 &&
+    itemAmount($item`amulet of extreme plot significance`) < 1 &&
+    (speculating ||
+      lastMonster() === $monster`some fish` ||
+      !$monsters`Burly Sidekick, Quiet Healer`.includes(lastMonster()))
+  ) {
+    return true;
+  }
+  if (
+    loc === $location`The Battlefield (Frat Uniform)` &&
+    get("_bczRefractedGazeCasts") < 2
+  ) {
+    // Only use refracted gaze on the battlefield if we've used it less than 2 times
+    return true;
+  }
+  if (
+    loc === $location`A-Boo Peak` &&
+    itemAmount($item`A-Boo clue`) * 30 <
+      // We would take 2 advs regardless, we don't want to waste our time on a clue we didn't need!
+      get("booPeakProgress") - 4
+  ) {
+    return true;
+  }
+  if (
+    loc === $location`Cobb's Knob Harem` &&
+    (speculating ||
+      lastMonster() === $monster`Knob Goblin Harem Guard` ||
+      lastMonster() === $monster`some fish`)
+  ) {
+    return true;
+  }
+  if (
+    loc === $location`Twin Peak` &&
+    itemAmount($item`rusty hedge trimmers`) < 4
+  ) {
+    return true;
+  }
+  if (
+    loc === $location`The Black Forest` &&
+    !blackMarketAvailable() &&
+    itemAmount($item`reassembled blackbird`) === 0 &&
+    (speculating || monsterPhylum() !== $phylum`beast`)
+  ) {
+    return true;
+  }
+  if (
+    loc === $location`Whitey's Grove` &&
+    L11_needWetStew() &&
+    (speculating || auto_haveMonodent() || monsterPhylum() !== $phylum`beast`)
+  ) {
+    return true;
+  }
+  if (
+    loc === $location`The Hidden Apartment Building` &&
+    !have($item`McClusky file (complete)`) &&
+    !have($item`McClusky file (page 5)`) &&
+    internalQuestStatus("questL11Business") < 10 &&
+    (speculating ||
+      lastMonster() === $monster`pygmy shaman` ||
+      lastMonster() === $monster`some fish`)
+  ) {
+    return true;
+  }
+  if (
+    loc === $location`The Defiled Nook` &&
+    (speculating ||
+      lastMonster() === $monster`party skelteon` ||
+      lastMonster() === $monster`some fish`)
+  ) {
+    return true;
+  }
+  if (
+    loc === $location`The Hole in the Sky` &&
+    needStarKey() &&
+    (speculating ||
+      (lastMonster() === $monster`Astronomer` &&
+        (itemAmount($item`star chart`) > 0 ||
+          auto_have_skill($skill`Sea *dent: Talk to Some Fish`))) ||
+      monsterPhylum() === $phylum`constellation` ||
+      lastMonster() === $monster`some fish`)
+  ) {
+    return true;
+  }
+  if (
+    loc === $location`Guano Junction` &&
+    internalQuestStatus("questL04Bat") < 3
+  ) {
+    return true;
+  }
+
   return false;
 }
 
