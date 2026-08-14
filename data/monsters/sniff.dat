@@ -4,8 +4,8 @@ cabinet of Dr. Limpieza
 Dairy Goat	loc:The Goatlet;item:goat cheese<3
 Pygmy Bowler
 Pygmy Witch Surgeon
-pygmy witch accountant	loc:The Hidden Office Building
-pygmy witch accountant	loc:The Hidden Apartment Building;effect:Thrice-Cursed
+pygmy witch accountant	loc:The Hidden Office Building;item:McClusky file (complete)<1;item:McClusky file (page 5)<1;!prop:questL11Business=finished
+pygmy witch accountant	loc:The Hidden Apartment Building;effect:Thrice-Cursed;item:McClusky file (complete)<1;item:McClusky file (page 5)<1;!prop:questL11Business=finished
 Pygmy Janitor	loc:The Hidden Park;!tavern:true;!itemdropcapped:20=book of matches
 Tomb Rat
 Bob Racecar	!sniffed:Racecar Bob

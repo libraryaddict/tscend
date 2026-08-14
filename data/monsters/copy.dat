@@ -1,8 +1,8 @@
 Pygmy Bowler	prop:hiddenBowlingAlleyProgress<4
 Bob Racecar
 Racecar Bob
-pygmy witch accountant	loc:The Hidden Office Building
-pygmy witch accountant	loc:The Hidden Apartment Building;effect:Thrice-Cursed
+pygmy witch accountant	loc:The Hidden Office Building;item:McClusky file (complete)<1;item:McClusky file (page 5)<1;!prop:questL11Business=finished
+pygmy witch accountant	loc:The Hidden Apartment Building;effect:Thrice-Cursed;item:McClusky file (complete)<1;item:McClusky file (page 5)<1;!prop:questL11Business=finished
 Camel's Toe	item:star<7;item:line<6
 Skinflute	item:star<7;item:line<6
 Swarm of Ghuol Whelps	prop:cyrptCrannyEvilness>17
