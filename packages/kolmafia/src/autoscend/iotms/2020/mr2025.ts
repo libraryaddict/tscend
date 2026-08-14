@@ -76,6 +76,7 @@ import {
   $locations,
   $modifier,
   $monster,
+  $monsters,
   $path,
   $phyla,
   $phylum,
@@ -150,6 +151,8 @@ import {
   auto_isInEternityCodpiece,
   auto_spadeDigsRemaining,
   auto_sword_of_swords_tracking,
+  auto_swordFamiliarWantsMonsterDrops,
+  auto_swordIsWillingToSwitchTargets,
 } from "./mr2026";
 
 // This is meant for items that have a date of 2025
@@ -880,15 +883,28 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
 
   if (
     safeGet("auto_familiarChoice") === $familiar`Sword of S Words` &&
-    Math.min(lumberCount(), fastenerCount()) < bridgeGoal()
+    auto_swordIsWillingToSwitchTargets()
   ) {
-    if (lumberCount() > fastenerCount()) {
-      desired_monsters.push($monster`smut orc pipelayer`);
-      desired_monsters.push($monster`smut orc jacker`);
-    } else {
-      desired_monsters.push($monster`smut orc screwer`);
-      desired_monsters.push($monster`smut orc nailer`);
+    const swordMonsters: Monster[] = [];
+    const smutMonsters = $monsters`smut orc pipelayer, smut orc jacker, smut orc screwer, smut orc nailer`;
+
+    // If we do not want every smut orc
+    if (
+      !smutMonsters.every((m) => auto_swordFamiliarWantsMonsterDrops(m, 100))
+    ) {
+      // Then we will consider peridot'ing a smut orc
+      swordMonsters.push(...smutMonsters);
     }
+
+    swordMonsters.push(...$monsters`spiny skelelton, toothy sklelton`);
+    swordMonsters.push(
+      ...$monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`,
+    );
+    swordMonsters.push($monster`shadow slab`);
+
+    desired_monsters.push(
+      ...swordMonsters.filter((m) => auto_swordFamiliarWantsMonsterDrops(m)),
+    );
   }
 
   return desired_monsters;
