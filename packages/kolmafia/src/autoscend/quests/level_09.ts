@@ -384,7 +384,11 @@ export const finishBuildingSmutOrcBridgeTask: QuestTask = registerQuestTask({
     get("chasmBridgeProgress") >= bridgeGoal(),
   ready: () =>
     internalQuestStatus("questL09Topping") === 0 &&
-    get("chasmBridgeProgress") < bridgeGoal(),
+    get("chasmBridgeProgress") < bridgeGoal() &&
+    lumberCount() > get("chasmBridgeProgress") &&
+    fastenerCount() > get("chasmBridgeProgress") &&
+    lumberCount() >= bridgeGoal() &&
+    fastenerCount() >= bridgeGoal(),
   do: finishBuildingSmutOrcBridgeDo,
 });
 
