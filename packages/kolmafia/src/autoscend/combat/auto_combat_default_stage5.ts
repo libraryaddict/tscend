@@ -269,11 +269,13 @@ export function auto_combatDefaultStage5(
   if (auto_canUse($skill`Surprisingly Sweet Stab`)) {
     return auto_useSkill($skill`Surprisingly Sweet Stab`);
   }
-  //Everfull Dart Holder- use darts if you have them, unless we are against the naughty sorceress (to avoid dart skill bug)
+  //Everfull Dart Holder- use darts if you have them, unless we are against the naughty sorceress (to avoid dart skill bug) or wall of meat (not much damage)
   if (
     haveEquipped($item`Everfull Dart Holster`) &&
     get("_dartsLeft") > 0 &&
-    !$monsters`Naughty Sorceress, Naughty Sorceress (2)`.includes(enemy)
+    !$monsters`Naughty Sorceress, Naughty Sorceress (2), wall of meat`.includes(
+      enemy,
+    )
   ) {
     return auto_useSkill(dartSkill(), false);
   }
