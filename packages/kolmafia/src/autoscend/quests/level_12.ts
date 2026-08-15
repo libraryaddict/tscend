@@ -1571,12 +1571,15 @@ function L12_sonofaBeachDo(): boolean {
     pulverizeThing($item`goatskin umbrella`);
   }
 
+  if (L12_sonofaFinish()) {
+    return true;
+  }
+
   if (
-    L12_sonofaFinish() ||
     auto_gunpowderBarrelsWanted() <= 0 ||
     (!auto_haveQueuedForcedCombat() && legendaryPastaSoftblockInPlace())
   ) {
-    return true;
+    return false;
   }
 
   if (
