@@ -286,7 +286,7 @@ export function auto_combatDefaultStage3(
     if (emitDrones) {
       handleTracker({
         what: enemy,
-        detail: $skill`Emit Matter Duplicating Drones`.toString(),
+        detail: $skill`Emit Matter Duplicating Drones`,
         property: "auto_otherstuff",
       });
       return auto_useSkill($skill`Emit Matter Duplicating Drones`);
@@ -343,7 +343,7 @@ export function auto_combatDefaultStage3(
     if (forceDrop) {
       handleTracker({
         what: enemy,
-        detail: $skill`Hugs and Kisses!`.toString(),
+        detail: $skill`Hugs and Kisses!`,
         property: "auto_otherstuff",
       });
       return auto_useSkill($skill`Hugs and Kisses!`);
@@ -362,7 +362,7 @@ export function auto_combatDefaultStage3(
     if (douseAvailable) {
       handleTracker({
         what: enemy,
-        detail: douse.toString(),
+        detail: douse,
         property: "auto_otherstuff",
       });
       return auto_useSkill(douse);
@@ -383,7 +383,7 @@ export function auto_combatDefaultStage3(
     if (swoopAvailable) {
       handleTracker({
         what: enemy,
-        detail: $skill`Swoop like a Bat`.toString(),
+        detail: $skill`Swoop like a Bat`,
         property: "auto_otherstuff",
       });
       return auto_useSkill($skill`Swoop like a Bat`);
@@ -391,7 +391,7 @@ export function auto_combatDefaultStage3(
     if (mildEvilAvailable) {
       handleTracker({
         what: enemy,
-        detail: $skill`Perpetrate Mild Evil`.toString(),
+        detail: $skill`Perpetrate Mild Evil`,
         property: "auto_otherstuff",
       });
       return auto_useSkill($skill`Perpetrate Mild Evil`);
@@ -399,7 +399,7 @@ export function auto_combatDefaultStage3(
     if (polarVortexAvailable) {
       handleTracker({
         what: enemy,
-        detail: $skill`Fire Extinguisher: Polar Vortex`.toString(),
+        detail: $skill`Fire Extinguisher: Polar Vortex`,
         property: "auto_otherstuff",
       });
       return auto_useSkill($skill`Fire Extinguisher: Polar Vortex`);

@@ -249,7 +249,7 @@ export function auto_edCombatHandler(
   if (extinguisherSkill && haveEquipped($item`industrial fire extinguisher`)) {
     handleTracker({
       what: enemy,
-      detail: extinguisherSkill.toString(),
+      detail: extinguisherSkill,
       property: "auto_otherstuff",
     });
     return extinguisherSkill;
@@ -1042,7 +1042,7 @@ export function auto_edCombatHandler(
       if (mildEvilAvailable) {
         handleTracker({
           what: enemy,
-          detail: $skill`Perpetrate Mild Evil`.toString(),
+          detail: $skill`Perpetrate Mild Evil`,
           property: "auto_otherstuff",
         });
         return auto_useSkill($skill`Perpetrate Mild Evil`);
@@ -1050,7 +1050,7 @@ export function auto_edCombatHandler(
       if (polarVortexAvailable) {
         handleTracker({
           what: enemy,
-          detail: $skill`Fire Extinguisher: Polar Vortex`.toString(),
+          detail: $skill`Fire Extinguisher: Polar Vortex`,
           property: "auto_otherstuff",
         });
         return auto_useSkill($skill`Fire Extinguisher: Polar Vortex`);

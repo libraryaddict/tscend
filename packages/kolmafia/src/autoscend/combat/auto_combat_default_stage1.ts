@@ -321,8 +321,9 @@ export function auto_combatDefaultStage1(
     !ag_is_bodyguard()
   ) {
     handleTracker({
-      what: $skill`Recall Facts: %phylum Circadian Rhythms`,
-      detail: monsterPhylum(enemy).toString(),
+      what: monsterPhylum(enemy),
+      location: myLocation(),
+      detail: $skill`Recall Facts: %phylum Circadian Rhythms`,
       property: "auto_otherstuff",
     });
     return auto_useSkill($skill`Recall Facts: %phylum Circadian Rhythms`);
@@ -413,8 +414,9 @@ export function auto_combatDefaultStage1(
     auto_canUse($skill`%fn, spit on them!`)
   ) {
     handleTracker({
-      what: $skill`%fn, spit on them!`,
-      detail: enemy.toString(),
+      what: enemy.toString(),
+      location: myLocation(),
+      detail: $skill`%fn, spit on them!`,
       property: "auto_otherstuff",
     });
     return auto_useSkill($skill`%fn, spit on them!`, true);
@@ -449,7 +451,7 @@ export function auto_combatDefaultStage1(
     handleTracker({
       what: enemy,
       location: myLocation(),
-      detail: $skill`Sea *dent: Talk to Some Fish`.toString(),
+      detail: $skill`Sea *dent: Talk to Some Fish`,
       property: "auto_otherstuff",
     });
     return auto_useSkill($skill`Sea *dent: Talk to Some Fish`);

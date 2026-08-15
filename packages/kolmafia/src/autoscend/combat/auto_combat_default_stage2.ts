@@ -182,7 +182,7 @@ export function auto_combatDefaultStage2(
     handleTracker({
       what: enemy,
       location: myLocation(),
-      detail: `${$familiar`Sword of S Words`.toString()} - ${$skill`%fn, kill a lot of these guys`.toString()}`,
+      detail: $skill`%fn, kill a lot of these guys`,
       property: "auto_otherstuff",
     });
     return auto_useSkill($skill`%fn, kill a lot of these guys`);
@@ -199,7 +199,7 @@ export function auto_combatDefaultStage2(
     ) {
       handleTracker({
         what: auto_sword_of_swords_tracking(),
-        detail: `${$familiar`Sword of S Words`.toString()} - ${$skill`%fn, stop killing those guys`.toString()}`,
+        detail: $skill`%fn, stop killing those guys`,
         property: "auto_otherstuff",
       });
       return auto_useSkill($skill`%fn, stop killing those guys`);
@@ -220,7 +220,7 @@ export function auto_combatDefaultStage2(
     handleTracker({
       what: enemy,
       location: myLocation(),
-      detail: $skill`BCZ: Refracted Gaze`.toString(),
+      detail: $skill`BCZ: Refracted Gaze`,
       property: "auto_otherstuff",
     });
     combat_status_add("droptablereplaced");
@@ -238,7 +238,7 @@ export function auto_combatDefaultStage2(
     //below is temp workaround for https://github.com/loathers/autoscend/issues/1011
     handleTracker({
       what: enemy,
-      detail: extinguisherSkill.toString(),
+      detail: extinguisherSkill,
       property: "auto_otherstuff",
     });
     return extinguisherSkill;
@@ -321,7 +321,7 @@ export function auto_combatDefaultStage2(
   ) {
     handleTracker({
       what: enemy,
-      detail: $skill`Do an epic McTwist!`.toString(),
+      detail: $skill`Do an epic McTwist!`,
       property: "auto_otherstuff",
     });
     return auto_useSkill($skill`Do an epic McTwist!`);
@@ -336,7 +336,7 @@ export function auto_combatDefaultStage2(
   ) {
     handleTracker({
       what: enemy,
-      detail: $skill`Do an epic McTwist!`.toString(),
+      detail: $skill`Do an epic McTwist!`,
       property: "auto_otherstuff",
     });
     return auto_useSkill($skill`Do an epic McTwist!`);
@@ -344,8 +344,8 @@ export function auto_combatDefaultStage2(
 
   if (auto_wantToShrunkenHead(enemy)) {
     handleTracker({
-      what: $skill`Prepare to reanimate your Foe`,
-      detail: enemy.toString(),
+      what: enemy,
+      detail: $skill`Prepare to reanimate your Foe`,
       property: "auto_otherstuff",
     });
     return auto_useSkill($skill`Prepare to reanimate your Foe`);

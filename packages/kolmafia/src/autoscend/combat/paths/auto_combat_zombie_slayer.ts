@@ -263,7 +263,7 @@ export function auto_combatZombieSlayerStage4(
     if (doSmash) {
       handleTracker({
         what: enemy,
-        detail: $skill`Smash & Graaagh`.toString(),
+        detail: $skill`Smash & Graaagh`,
         property: "auto_otherstuff",
       });
       return auto_useSkill($skill`Smash & Graaagh`);

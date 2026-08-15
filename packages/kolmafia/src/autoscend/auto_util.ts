@@ -690,7 +690,7 @@ export function handleTracker({
 }: {
   what: string | Monster | Phylum | Item | Familiar | Skill;
   location?: Location;
-  detail?: string;
+  detail?: string | Skill;
   property: TrackerKey;
 }): void {
   const parts: string[] = [myDaycount().toString(), safeString(String(what))];
@@ -700,7 +700,7 @@ export function handleTracker({
   }
 
   if (detail !== undefined) {
-    parts.push(safeString(detail));
+    parts.push(safeString(detail.toString()));
   }
 
   parts.push(myTurncount().toString());

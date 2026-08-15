@@ -1806,9 +1806,9 @@ function auto_remainingMildEvilUses(): number {
 export function auto_shouldHeartstoneStealInstead(): boolean {
   if (auto_heartstoneShouldStealHeartInCombat()) {
     handleTracker({
-      what: $skill`Steal Monster's Heart`,
+      what: lastMonster(),
       location: myLocation(),
-      detail: `${lastMonster()}: ${auto_heartstoneCurrentWord()}[${heartstoneMiddleLetter(lastMonster())}]`,
+      detail: `${$skill`Steal Monster's Heart`}: ${auto_heartstoneCurrentWord()}[${heartstoneMiddleLetter(lastMonster())}]`,
       property: "auto_otherstuff",
     });
     return true;
