@@ -6531,6 +6531,22 @@ export function auto_wantToFreeKillWithNoDrops(
   ) {
     return true;
   }
+  // Desert, doesn't destroy the pages!
+  if (
+    haveEffect($effect`Ultrahydrated`) &&
+    // If its fire ants, ensure we don't want the food drop
+    ((enemy === $monster`swarm of fire ants` &&
+      (!can_consume() ||
+        fullnessLimit() <= 0 ||
+        !auto_is_valid($item`Formica e Pepe`) ||
+        itemAmount($item`hot honey ant`) >=
+          itemAmount($item`legendary noodles`))) ||
+      $monsters`giant giant giant centipede, cactuary, rock scorpion, plaque of locusts`.includes(
+        enemy,
+      ))
+  ) {
+    return true;
+  }
   // look for specific monsters in zones where some monsters we do care about
   return freekillWithNoDropsMonsters.includes(enemy);
 }
