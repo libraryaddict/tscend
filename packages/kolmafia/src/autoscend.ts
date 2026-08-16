@@ -2695,19 +2695,20 @@ const use_barrelsTask: QuestTask = registerQuestTask({
     in_bhy() ||
     !BarrelShrine.have() ||
     !isUnrestricted($item`shrine to the Barrel god`),
-  ready: () => true,
+  ready: () =>
+    $items`little firkin, normal barrel, big tun, weathered barrel, dusty barrel, disintegrating barrel, moist barrel, rotting barrel, mouldering barrel, barnacled barrel`.some(
+      (i) => itemAmount(i) > 0 && itemAmount(i) < 10,
+    ),
   do: () => {
     const barrels: Item[] = $items`little firkin, normal barrel, big tun, weathered barrel, dusty barrel, disintegrating barrel, moist barrel, rotting barrel, mouldering barrel, barnacled barrel`;
 
-    let retval: boolean = false;
     for (const it of barrels) {
       if (itemAmount(it) === 0 || itemAmount(it) >= 10) continue;
 
       use(itemAmount(it), it);
-      retval = true;
     }
 
-    return retval;
+    return true;
   },
 });
 
