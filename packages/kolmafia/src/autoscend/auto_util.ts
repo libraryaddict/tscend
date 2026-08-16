@@ -919,8 +919,7 @@ export function prepareYellowRayNextCombat(
     allowedSizedDiet >= $item`toxic asset`.spleen &&
     canChew($item`toxic asset`) &&
     spleen_left() >= $item`toxic asset`.spleen &&
-    (itemAmount($item`toxic asset`) > 0 ||
-      auto_acquireInterestingItem($item`toxic asset`, speculating)) &&
+    auto_acquireInterestingItem($item`toxic asset`, speculating) &&
     (speculating || autoChew(1, $item`toxic asset`))
   ) {
     if (!speculating) {

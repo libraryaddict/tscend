@@ -2422,14 +2422,14 @@ export function auto_acquireInterestingItem(
   item: Item,
   speculating: boolean = false,
 ): boolean {
+  if (itemAmount(item) > 0) {
+    return true;
+  }
+
   const price = sellPrice($coinmaster`interesting`, item);
 
   if (price > auto_interestingCoinsSpendable()) {
     return false;
-  }
-
-  if (itemAmount(item) > 0) {
-    return true;
   }
 
   if (speculating) {
@@ -2477,10 +2477,7 @@ export function auto_chewLiquidAsset(
     return false;
   }
 
-  if (
-    itemAmount($item`liquid asset`) === 0 &&
-    !auto_acquireInterestingItem($item`liquid asset`, speculative)
-  ) {
+  if (!auto_acquireInterestingItem($item`liquid asset`, speculative)) {
     return false;
   }
 
