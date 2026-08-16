@@ -232,6 +232,7 @@ import {
 } from "./autoscend/engine/engine";
 import { runNextTask } from "./autoscend/engine/router";
 import {
+  auto_haveFlorist,
   makeStartingSmiths,
   oldPeoplePlantStuff,
 } from "./autoscend/iotms/2010/mr2013";
@@ -2680,7 +2681,7 @@ const ht_equip_hatsTask: QuestTask = registerQuestTask({
 
 const oldPeoplePlantStuffTask: QuestTask = registerQuestTask({
   name: "oldPeoplePlantStuff",
-  completed: () => !get("floristFriarAvailable"),
+  completed: () => !auto_haveFlorist(),
   ready: () => true,
   do: () => {
     oldPeoplePlantStuff();

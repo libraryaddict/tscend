@@ -13,10 +13,9 @@ import {
   myLocation,
   myMp,
   myPath,
-  Path,
   useSkill,
 } from "kolmafia";
-import { $class, $effect, $item, $location, $skill, get } from "libram";
+import { $class, $effect, $item, $location, $path, $skill, get } from "libram";
 
 import { auto_buyUpTo } from "../../auto_acquire";
 import { buffMaintain$2 } from "../../auto_buff";
@@ -162,8 +161,12 @@ function didWePlantHere(loc: Location): boolean {
   return false;
 }
 
+export function auto_haveFlorist() {
+  return myPath() !== $path`Standard` && floristAvailable();
+}
+
 export function oldPeoplePlantStuff(): void {
-  if (myPath() === Path.get("Standard") || !floristAvailable()) {
+  if (!auto_haveFlorist()) {
     return;
   }
 
