@@ -92,6 +92,7 @@ import {
   canChangeToFamiliar,
   findNonRockFamiliarInTerrarium,
   findRockFamiliarInTerrarium,
+  handleFamiliar$1,
   is100FamRun,
   isAttackFamiliar,
   pathHasFamiliar,
@@ -1440,7 +1441,7 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
     return false;
   }
   if (!inCombat) {
-    if (auto_haveEagle() && useFamiliar(eagle)) {
+    if (auto_haveEagle() && handleFamiliar$1(eagle)) {
       if (wantToFreeRun()) {
         set("auto_forceFreeRun", true);
       }
