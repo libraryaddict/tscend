@@ -1,5 +1,6 @@
 import {
   cliExecute,
+  floristAvailable,
   getFloristPlants,
   getProperty,
   itemAmount,
@@ -160,7 +161,7 @@ function didWePlantHere(loc: Location): boolean {
 }
 
 export function oldPeoplePlantStuff(): void {
-  if (!get(`floristFriarAvailable`)) {
+  if (!floristAvailable()) {
     return;
   }
 
