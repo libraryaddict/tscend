@@ -734,6 +734,8 @@ export function initializeSettings(): void {
   set("auto_dontUseCookBookBat", false);
   set("auto_dietpills", 0);
   set("_auto_candyMapCompleted", false);
+  removeProperty("auto_exerciseLiquidity");
+  removeProperty("_auto_toxicAssetUses");
   beehiveConsider(false);
 
   eudora_initializeSettings();

@@ -4,13 +4,11 @@ import {
   guildStoreAvailable,
   haveSkill,
   itemAmount,
-  myAscensions,
   myClass,
   myLevel,
   myMeat,
   myPath,
   print,
-  removeProperty,
   visitUrl,
 } from "kolmafia";
 import { $class, $item, $skill, get, set } from "libram";
@@ -432,9 +430,6 @@ export function pathDroppedCheck(): void {
   //this will also trigger when some paths break ronin
   if (myPath().name === getProperty("auto_doneInitializePath")) {
     return; //our current path is the same one we last initialized as
-  }
-  if (get("auto_doneInitialize", 0) !== myAscensions()) {
-    removeProperty("auto_exerciseLiquidity");
   }
   if (getProperty("auto_doneInitializePath") === "") {
     //this setting has not been set. this means the run started with an older version of autoscend that did not have this setting
