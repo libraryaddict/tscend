@@ -387,6 +387,12 @@ export function getIncompleteQuestTasks(): QuestTask[] {
   return getEngine().tasks.filter((task) => !task.completed());
 }
 
+export function isComplete(tasks: QuestTask | QuestTask[]): boolean {
+  return (Array.isArray(tasks) ? tasks : [tasks]).every((t) =>
+    t.completed(getEngine().getContext(t)),
+  );
+}
+
 export function runTaskChain(tasks: QuestTask[]): boolean {
   const engine = new AutoscendEngine(tasks);
   for (const task of engine.tasks) {

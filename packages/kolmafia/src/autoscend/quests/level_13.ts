@@ -165,6 +165,7 @@ import {
 import { zone_isAvailable } from "../auto_zone";
 import { auto_canUse } from "../combat/auto_combat_util";
 import {
+  isComplete,
   QuestTask,
   registerQuestTask,
   runQuestTask,
@@ -1544,7 +1545,9 @@ export const L13_towerNSHedgeTask: QuestTask = registerQuestTask({
 });
 
 function L13_sorceressDoorDo(): boolean {
-  if (runTaskChain([LX_getStarKeyTask, LX_getDigitalKeyTask])) {
+  const taskChain = [LX_getStarKeyTask, LX_getDigitalKeyTask];
+
+  if (runTaskChain(taskChain)) {
     // should attempt Star Key first as 8-bit zones can be progressed with backups etc.
     return true;
   }
@@ -1552,6 +1555,8 @@ function L13_sorceressDoorDo(): boolean {
   if (in_lowkeysummer()) {
     return L13_sorceressDoorLowKey();
   }
+
+  if (!isComplete(taskChain)) return false;
 
   const page: string = visitUrl("place.php?whichplace=nstower_door");
   if (containsText(page, "ns_lock6")) {
