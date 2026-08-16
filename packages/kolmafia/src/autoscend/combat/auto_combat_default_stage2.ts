@@ -136,7 +136,7 @@ export function auto_combatDefaultStage2(
   //we do not want to steal heart now because we should do stage 3 first to stun and/or debuff the enemy first before olfacting.
   if (auto_heartstoneShouldStealHeartInCombat()) {
     auto_log_debug(
-      `Skipping stage 2 of combat for now as we intend to steal the heart of  [${enemy}]`,
+      `Skipping stage 2 of combat for now as we intend to steal the heart of [${enemy}]`,
     );
     return undefined;
   }
@@ -173,40 +173,43 @@ export function auto_combatDefaultStage2(
   if (retval !== undefined) {
     return retval;
   }
-  //Sword of S Words: lock in the current enemy for future fights' copied drops.
-  if (
-    !combat_status_check("droptablereplaced") &&
-    auto_wantToStartTrackingSwordMonster(enemy, 100) &&
-    auto_canUse($skill`%fn, kill a lot of these guys`)
-  ) {
-    handleTracker({
-      what: enemy,
-      location: myLocation(),
-      detail: $skill`%fn, kill a lot of these guys`,
-      property: "auto_otherstuff",
-    });
-    return auto_useSkill($skill`%fn, kill a lot of these guys`);
-  }
-  if (
-    myFamiliar() === $familiar`Sword of S Words` &&
-    auto_sword_of_swords_tracking() !== $monster.none &&
-    enemy.copyable &&
-    !enemy.boss
-  ) {
+  if (myFamiliar() === $familiar`Sword of S Words`) {
+    //Sword of S Words: lock in the current enemy for future fights' copied drops.
     if (
-      auto_swordIsWillingToSwitchTargets() &&
-      auto_canUse($skill`%fn, stop killing those guys`)
+      !combat_status_check("droptablereplaced") &&
+      auto_wantToStartTrackingSwordMonster(enemy, 100) &&
+      auto_canUse($skill`%fn, kill a lot of these guys`)
     ) {
       handleTracker({
-        what: auto_sword_of_swords_tracking(),
-        detail: $skill`%fn, stop killing those guys`,
+        what: enemy,
+        location: myLocation(),
+        detail: $skill`%fn, kill a lot of these guys`,
         property: "auto_otherstuff",
       });
-      return auto_useSkill($skill`%fn, stop killing those guys`);
+      return auto_useSkill($skill`%fn, kill a lot of these guys`);
     }
+    if (
+      auto_sword_of_swords_tracking() !== $monster.none &&
+      enemy.copyable &&
+      !enemy.boss
+    ) {
+      if (
+        auto_swordIsWillingToSwitchTargets() &&
+        auto_canUse($skill`%fn, stop killing those guys`)
+      ) {
+        handleTracker({
+          what: auto_sword_of_swords_tracking(),
+          detail: $skill`%fn, stop killing those guys`,
+          property: "auto_otherstuff",
+        });
+        return auto_useSkill($skill`%fn, stop killing those guys`);
+      }
 
-    // As we're replacing the drops, add the flag
-    combat_status_add("droptablereplaced");
+      // As we're replacing the drops, add the flag
+      if (!combat_status_check("droptablereplaced")) {
+        combat_status_add("droptablereplaced");
+      }
+    }
   }
   //Refracted Gaze sets drop table of monster to EVERYTHING else in zone so YRs are great
   //Monsters might be banished/freeran from/replaced because they are now useful so need to handle that too
