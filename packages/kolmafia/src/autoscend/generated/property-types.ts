@@ -31,7 +31,6 @@ export const locationProperties = [
 
 export const monsterProperties = [
   ...libramMonsterProperties,
-  "_auto_inf_last_monster",
   "auto_bat_soulmonster",
   "auto_habitatMonster",
   "auto_nextEncounter",

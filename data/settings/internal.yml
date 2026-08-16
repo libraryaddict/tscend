@@ -346,12 +346,6 @@ _auto_horseryRented:
   type: int
 _auto_im_cool_with_dying_a_lot:
   type: int
-_auto_inf_counter:
-  type: int
-_auto_inf_last_monster:
-  type: monster
-_auto_inf_session_adv:
-  type: int
 _auto_interestingCoinsSpent:
   type: int
 _auto_jarlsbergSkills:

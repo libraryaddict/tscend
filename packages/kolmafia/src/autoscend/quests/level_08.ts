@@ -124,6 +124,7 @@ import { robot_delay } from "../paths/2021/you_robot";
 import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
 import { is_professor } from "../paths/2024/wereprofessor";
 import { L8_slopeCasual } from "../paths/casual";
+import { checkIfRepeating, getRepeats } from "../utils/infiniteAdvDetector";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { maximizer } from "../utils/maximizer";
 import { L7_override } from "./level_07";
@@ -985,7 +986,7 @@ function L8_trapperGroarDo(): boolean {
 
     if (current_step === 3 || current_step === 4) {
       // boss is still alive yet no adv was spent. most likely scenario is that our cold res was too low. maybe free combat?
-      if (get("_auto_inf_counter", 0) > 5) {
+      if (checkIfRepeating() && getRepeats() > 5) {
         print(
           "We are stuck trying to adventure in [Mist-shrouded Peak] and failing repeatedly",
           "red",

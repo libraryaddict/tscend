@@ -2,6 +2,7 @@ import { abort, myPath } from "kolmafia";
 
 import { setupSoftblockLocks } from "../auto_routing";
 import { callRegisteredTaskFunction } from "../task_registry";
+import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { fileAsMap } from "../utils/kolmafiaUtils";
 import { AutoscendEngine, findRegisteredQuestTask, QuestTask } from "./engine";
 
@@ -78,21 +79,25 @@ export function runNextTask(
   path: string = myPath().name,
   prefixTasks: QuestTask[] = [],
 ): boolean {
-  const engine = getPathEngine(path, prefixTasks);
-  for (const [, task] of engine.tasks.entries()) {
-    //auto_log_debug(`Attempting to execute task ${i} ${task.name}`);
-    if (!engine.available(task)) {
-      continue;
-    }
-    engine.execute(task);
-    if (engine.lastSuccessfulTask) {
-      if (task.completed()) {
-        // Real progress happened, not just a last-resort softblock release: give every
-        // softblock (sword tracking, baseball diamond, ...) another chance to hold.
-        setupSoftblockLocks();
+  try {
+    const engine = getPathEngine(path, prefixTasks);
+    for (const [, task] of engine.tasks.entries()) {
+      //auto_log_debug(`Attempting to execute task ${i} ${task.name}`);
+      if (!engine.available(task)) {
+        continue;
       }
-      return true;
+      engine.execute(task);
+      if (engine.lastSuccessfulTask) {
+        if (task.completed()) {
+          // Real progress happened, not just a last-resort softblock release: give every
+          // softblock (sword tracking, baseball diamond, ...) another chance to hold.
+          setupSoftblockLocks();
+        }
+        return true;
+      }
     }
+    return false;
+  } finally {
+    abortIfRepeating();
   }
-  return false;
 }

@@ -19,6 +19,7 @@ import {
 import { auto_combatHandler } from "../combat/auto_combat";
 import { auto_edCombatHandler } from "../combat/paths/auto_combat_ed";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { maximizer } from "../utils/maximizer";
 
 export type DesiredDrop = {
@@ -268,6 +269,7 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
 
     if (task === this.lastSuccessfulTask) {
       auto_log_debug(`> Executed ${task.name}`);
+      abortIfRepeating();
     }
   }
 }

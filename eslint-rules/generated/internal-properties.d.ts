@@ -150,8 +150,6 @@ type IntProperty =
   | "_auto_groundhogSkipCounter"
   | "_auto_horseryRented"
   | "_auto_im_cool_with_dying_a_lot"
-  | "_auto_inf_counter"
-  | "_auto_inf_session_adv"
   | "_auto_interestingCoinsSpent"
   | "_auto_jarlsbergSkills"
   | "_auto_lastABooConsider"
@@ -230,7 +228,6 @@ type LocationProperty =
   | "auto_priorLocation";
 
 type MonsterProperty =
-  | "_auto_inf_last_monster"
   | "auto_bat_soulmonster"
   | "auto_habitatMonster"
   | "auto_nextEncounter"

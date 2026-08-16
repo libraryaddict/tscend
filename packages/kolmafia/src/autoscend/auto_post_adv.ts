@@ -39,7 +39,6 @@ import {
   myPrimestat,
   myRain,
   myServant,
-  mySessionAdv,
   mySoulsauce,
   myThunder,
   myTurncount,
@@ -99,7 +98,6 @@ import {
   isGalaktikAvailable,
   meatReserve,
   preferredLibram,
-  safeGet,
   whatStatSmile,
 } from "./auto_util";
 import { auto_equipAprilShieldBuff } from "./iotms/2020/mr2025";
@@ -1288,34 +1286,6 @@ function auto_post_adventure(): boolean {
   removeProperty("auto_combatDirective");
   removeProperty("auto_digitizeDirective");
   //try to catch infinite loop where we repeatedly try to do the same thing.
-  //works with code found in auto_pre_adv.ash
-  if (mySessionAdv() === get("_auto_inf_session_adv", 0)) {
-    auto_log_debug(
-      "auto_post_adv.js detected that no adventure was spent since last auto_pre_adv.js",
-    );
-    //count how many times in a row we went with no adv spent
-    set("_auto_inf_counter", get("_auto_inf_counter", 0) + 1);
-    //if last monster changed it means we are doing free combats
-    if (safeGet("_auto_inf_last_monster") !== lastMonster()) {
-      removeProperty("_auto_inf_counter"); //reset counter
-    }
-    set("_auto_inf_last_monster", lastMonster());
-
-    if (get("_auto_inf_counter", 0) >= 30) {
-      auto_log_error(
-        `no adventure was spent ${getProperty("_auto_inf_counter")} times in a row which suggests we are stuck in an infinite loop. Stopping autoscend`,
-      );
-      removeProperty("_auto_inf_counter");
-      set("auto_interrupt", true);
-    } else if (get("_auto_inf_counter", 0) > 10) {
-      auto_log_warning(
-        `no adventure was spent ${getProperty("_auto_inf_counter")} times in a row`,
-      );
-    }
-  } else {
-    //clear values
-    removeProperty("_auto_inf_counter");
-  }
 
   auto_log_info("Post Adventure done, beep.", "purple");
   return true;

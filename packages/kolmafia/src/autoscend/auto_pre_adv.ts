@@ -51,7 +51,6 @@ import {
   myPath,
   myPrimestat,
   myServant,
-  mySessionAdv,
   mySign,
   mySoulsauce,
   myThrall,
@@ -271,6 +270,7 @@ import { in_amw } from "./paths/2026/adventurer_meats_world";
 import { inAftercore } from "./paths/casual";
 import { prepareForSmutOrcs, prepareForTwinPeak } from "./quests/level_09";
 import { auto_8BitCheckCappingScore } from "./quests/level_13";
+import { abortIfRepeating } from "./utils/infiniteAdvDetector";
 import { Maximizer, maximizer } from "./utils/maximizer";
 
 //Calculates MP to acquire at low max mp levels
@@ -1513,9 +1513,7 @@ function auto_pre_adventure(): boolean {
 
   set("auto_priorLocation", place);
   auto_log_info(`Pre Adventure at ${place} done, beep.`, "blue");
-  //try to catch infinite loop where we repeatedly try to do the same thing.
-  //works with code found in auto_post_adv.ash
-  set("_auto_inf_session_adv", mySessionAdv());
+  abortIfRepeating();
   //to avoid constant flipping on the MCD. change it right before adventuring
   const mcd_target: number = get("auto_mcd_target", 0);
   if (currentMcd() !== mcd_target) {
