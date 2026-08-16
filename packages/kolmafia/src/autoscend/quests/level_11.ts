@@ -1858,15 +1858,25 @@ function L11_aridDesertDo(): boolean {
     }
 
     if ((get("gnasirProgress") & 1) !== 1) {
+      // We can turn a stone rose in for 15% progress
       const expectedOasisTurns: number = 8 - $location`The Oasis`.turnsSpent;
-      const equivProgress: number = expectedOasisTurns * progress;
-      const need_1: number = 100 - get("desertExploration");
-      auto_log_info(`expectedOasis: ${expectedOasisTurns}`, "brown");
-      auto_log_info(`equivProgress: ${equivProgress}`, "brown");
-      auto_log_info(`need: ${need_1}`, "brown");
+      const desertProgressRemaining: number = 100 - get("desertExploration");
+      let oasisProgressPerTurn =
+        Math.min(15, desertProgressRemaining) / expectedOasisTurns;
+      // Round it to one decimal place
+      if (oasisProgressPerTurn % 1 > 0) {
+        oasisProgressPerTurn = Math.round(oasisProgressPerTurn * 10) / 10;
+      }
+
+      auto_log_info(
+        `Expected Oasis turns for a Stone Rose: ${expectedOasisTurns}`,
+      );
+      auto_log_info(
+        `Oasis would give progress per turn: ${oasisProgressPerTurn}`,
+      );
+      auto_log_info(`Desert progress per turn: ${progress}`, "brown");
       if (
-        need_1 <= 15 &&
-        15 >= equivProgress &&
+        oasisProgressPerTurn >= progress &&
         itemAmount($item`stone rose`) === 0
       ) {
         auto_log_info("It seems raisinable to hunt a Stone Rose. Beep", "blue");
