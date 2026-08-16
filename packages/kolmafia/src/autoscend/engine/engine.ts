@@ -11,7 +11,11 @@ import {
 import { $modifier } from "libram";
 
 import { autoAdv, CombatMacro } from "../auto_adventure";
-import { getMonsterDrops, isItemDropControlled } from "../auto_util";
+import {
+  auto_log_debug,
+  getMonsterDrops,
+  isItemDropControlled,
+} from "../auto_util";
 import { auto_combatHandler } from "../combat/auto_combat";
 import { auto_edCombatHandler } from "../combat/paths/auto_combat_ed";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
@@ -206,7 +210,7 @@ export function applyItemDropCap(task: QuestTask): void {
 }
 
 export class AutoscendEngine extends Engine<never, QuestTask> {
-  lastActed = true;
+  lastSuccessfulTask?: QuestTask;
   executing: QuestTask[] = [];
 
   // grimoire's initPropertiesManager() forces these to its own defaults on
@@ -239,22 +243,31 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
     try {
       // Adds the current task to the stack
       this.executing.push(task);
+      // As we're going deeper into the stack, unset any success stories
+      this.lastSuccessfulTask = undefined;
       const result =
         typeof task.do === "function"
           ? task.do(this.getContext(task))
           : task.do;
+
       if (result instanceof Location) {
-        this.lastActed = autoAdv(result, this.defaultCombatHandler());
-        return;
+        if (autoAdv(result, this.defaultCombatHandler())) {
+          this.lastSuccessfulTask = task;
+        }
+      } else if (typeof result === "boolean") {
+        if (result && !this.lastSuccessfulTask) {
+          this.lastSuccessfulTask = task;
+        }
+      } else if (!this.lastSuccessfulTask) {
+        this.lastSuccessfulTask = task;
       }
-      if (typeof result === "boolean") {
-        this.lastActed = result;
-        return;
-      }
-      this.lastActed = true;
     } finally {
       // Pops the stack
       this.executing.pop();
+    }
+
+    if (task === this.lastSuccessfulTask) {
+      auto_log_debug(`> Executed ${task.name}`);
     }
   }
 }
@@ -306,7 +319,7 @@ export function runQuestTask(task: QuestTask): boolean {
     return false;
   }
   engine.execute(registered);
-  return engine.lastActed;
+  return engine.lastSuccessfulTask !== undefined;
 }
 
 export function findRegisteredQuestTask(name: string): QuestTask | undefined {
@@ -385,7 +398,7 @@ export function runTaskChain(tasks: QuestTask[]): boolean {
       continue;
     }
     engine.execute(task);
-    if (engine.lastActed) {
+    if (engine.lastSuccessfulTask) {
       return true;
     }
   }

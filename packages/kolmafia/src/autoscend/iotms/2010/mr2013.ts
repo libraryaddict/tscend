@@ -12,6 +12,8 @@ import {
   myDaycount,
   myLocation,
   myMp,
+  myPath,
+  Path,
   useSkill,
 } from "kolmafia";
 import { $class, $effect, $item, $location, $skill, get } from "libram";
@@ -161,7 +163,7 @@ function didWePlantHere(loc: Location): boolean {
 }
 
 export function oldPeoplePlantStuff(): void {
-  if (!floristAvailable()) {
+  if (myPath() === Path.get("Standard") || !floristAvailable()) {
     return;
   }
 

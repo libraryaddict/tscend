@@ -85,7 +85,7 @@ export function runNextTask(
       continue;
     }
     engine.execute(task);
-    if (engine.lastActed) {
+    if (engine.lastSuccessfulTask) {
       if (task.completed()) {
         // Real progress happened, not just a last-resort softblock release: give every
         // softblock (sword tracking, baseball diamond, ...) another chance to hold.
