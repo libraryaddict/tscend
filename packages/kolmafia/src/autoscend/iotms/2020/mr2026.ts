@@ -2428,15 +2428,25 @@ export function auto_acquireInterestingItem(
     return false;
   }
 
+  if (itemAmount(item) > 0) {
+    return true;
+  }
+
   if (speculating) {
     return creatableAmount(item) > 0;
   }
 
-  const onHand = itemAmount(item);
-
   buy($coinmaster`Interesting Coin`, 1, item);
 
-  if (onHand === itemAmount(item)) return false;
+  if (itemAmount(item) === 0) {
+    return false;
+  }
+
+  handleTracker({
+    what: `Spend your Interesting Coins`,
+    detail: `Claimed ${item.toString()}`,
+    property: "auto_iotm_claim",
+  });
 
   auto_spendInterestingCoins(price);
 
