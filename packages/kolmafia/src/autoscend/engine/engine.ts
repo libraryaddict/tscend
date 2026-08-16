@@ -1,5 +1,6 @@
 import { Engine, Task } from "grimoire-kolmafia";
 import {
+  abort,
   appearanceRates,
   Item,
   Location,
@@ -10,15 +11,12 @@ import {
 } from "kolmafia";
 import { $modifier } from "libram";
 
-import { autoAdv, CombatMacro } from "../auto_adventure";
+import { autoAdv } from "../auto_adventure";
 import {
   auto_log_debug,
   getMonsterDrops,
   isItemDropControlled,
 } from "../auto_util";
-import { auto_combatHandler } from "../combat/auto_combat";
-import { auto_edCombatHandler } from "../combat/paths/auto_combat_ed";
-import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { maximizer } from "../utils/maximizer";
 
@@ -229,10 +227,6 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
     super(tasks, { ccs: "" });
   }
 
-  defaultCombatHandler(): CombatMacro {
-    return isActuallyEd() ? auto_edCombatHandler : auto_combatHandler;
-  }
-
   // Quest tasks manage their own combat/logging via autoAdv, not grimoire's
   // combat/outfit/acquire machinery, so grimoire's per-execute "Executing X"
   // print and autoattack/CCS churn are just noise here.
@@ -242,17 +236,24 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
 
   do(task: QuestTask): void {
     try {
+      if (this.executing.length === 0) {
+        // As we're going deeper into the stack, unset any success stories
+        this.lastSuccessfulTask = undefined;
+      }
+      if (!this.available(task)) {
+        abort(
+          `We were trying to execute a task that is not available: ${task.name}, our current task stack is ${this.executing.map((t) => t.name).join(" > ")}`,
+        );
+      }
       // Adds the current task to the stack
       this.executing.push(task);
-      // As we're going deeper into the stack, unset any success stories
-      this.lastSuccessfulTask = undefined;
       const result =
         typeof task.do === "function"
           ? task.do(this.getContext(task))
           : task.do;
 
       if (result instanceof Location) {
-        if (autoAdv(result, this.defaultCombatHandler())) {
+        if (autoAdv(result)) {
           this.lastSuccessfulTask = task;
         }
       } else if (typeof result === "boolean") {
@@ -274,7 +275,7 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
   }
 }
 
-let questTasks: QuestTask[] | undefined;
+const questTasks: QuestTask[] = [];
 let engineInstance: AutoscendEngine | undefined;
 
 export function registerQuestTask<T extends QuestTask>(task: T): T;
@@ -283,6 +284,10 @@ export function registerQuestTask<T extends QuestTask>(
   child: T,
 ): T;
 export function registerQuestTask<T extends QuestTask>(a: QuestTask, b?: T): T {
+  if (engineInstance) {
+    abort(`Attempted to register task ${a.name} after engine was constructed.`);
+  }
+
   const task = b ?? (a as T);
   if (b) {
     const childReady = task.ready;
@@ -302,21 +307,23 @@ export function registerQuestTask<T extends QuestTask>(a: QuestTask, b?: T): T {
             t.monster.length > 0),
       );
   }
-  questTasks ??= [];
   questTasks.push(task);
   return task;
 }
 
-function getEngine(): AutoscendEngine {
+export function getEngine(): AutoscendEngine {
   if (!engineInstance) {
-    engineInstance = new AutoscendEngine(questTasks ?? []);
+    engineInstance = new AutoscendEngine(questTasks);
   }
   return engineInstance;
 }
 
 export function runQuestTask(task: QuestTask): boolean {
   const engine = getEngine();
-  const registered = engine.tasks_by_name.get(task.name) ?? task;
+  const registered = findRegisteredQuestTask(task.name);
+  if (!registered) {
+    abort(`Attempted to run quest task ${task.name} which was not registered.`);
+  }
   if (!engine.available(registered)) {
     return false;
   }
@@ -329,7 +336,7 @@ export function findRegisteredQuestTask(name: string): QuestTask | undefined {
 }
 
 export function getAllQuestTasks(): QuestTask[] {
-  return getEngine().tasks;
+  return questTasks;
 }
 
 // Returns the tasks that are currently executing, this includes the parents in the stack, the stack may have conflicting information on locations
@@ -394,19 +401,12 @@ export function isComplete(tasks: QuestTask | QuestTask[]): boolean {
 }
 
 export function runTaskChain(tasks: QuestTask[]): boolean {
-  const engine = new AutoscendEngine(tasks);
-  for (const task of engine.tasks) {
-    if (!engine.available(task)) {
-      if (task.completed(engine.getContext(task))) {
-        continue;
-      }
-
-      // Task is blocking
-      //      return false;
+  for (const task of tasks) {
+    if (!getEngine().available(task)) {
       continue;
     }
-    engine.execute(task);
-    if (engine.lastSuccessfulTask) {
+    getEngine().execute(task);
+    if (getEngine().lastSuccessfulTask) {
       return true;
     }
   }

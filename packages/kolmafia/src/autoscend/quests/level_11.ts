@@ -2951,6 +2951,24 @@ function L11_hiddenCityZonesDo(): boolean {
   ]);
 }
 
+export const L11_hiddenCityZonesTask: QuestTask = registerQuestTask({
+  name: "L11_hiddenCityZones",
+  completed: () => internalQuestStatus("questL11Worship") > 4,
+  ready: () => internalQuestStatus("questL11Worship") >= 3,
+  do: L11_hiddenCityZonesDo,
+  locations: $location`The Hidden Park`,
+  desiredEncounters: () => [
+    {
+      item: $item`book of matches`,
+      needAmount:
+        itemAmount($item`book of matches`) === 0 &&
+        myAscensions() < get("hiddenTavernUnlock")
+          ? 1
+          : 0,
+    },
+  ],
+});
+
 function L11_hiddenCityZonesNorthwest(): boolean {
   if (!L11_hiddenCityZonesEquipForShrine()) {
     return false;
@@ -2958,19 +2976,22 @@ function L11_hiddenCityZonesNorthwest(): boolean {
   return autoAdv($location`An Overgrown Shrine (Northwest)`);
 }
 
-const L11_hiddenCityZonesNorthwestTask: QuestTask = registerQuestTask({
-  name: "L11_hiddenCityZonesNorthwest",
-  completed: () => get("hiddenApartmentProgress") > 0,
-  ready: () => get("hiddenApartmentProgress") === 0,
-  do: L11_hiddenCityZonesNorthwest,
-  locations: $location`An Overgrown Shrine (Northwest)`,
-  desiredEncounters: () => [
-    {
-      item: $item`moss-covered stone sphere`,
-      needAmount: get("hiddenApartmentProgress") < 1 ? 1 : 0,
-    },
-  ],
-});
+const L11_hiddenCityZonesNorthwestTask: QuestTask = registerQuestTask(
+  L11_hiddenCityZonesTask,
+  {
+    name: "L11_hiddenCityZonesNorthwest",
+    completed: () => get("hiddenApartmentProgress") > 0,
+    ready: () => get("hiddenApartmentProgress") === 0,
+    do: L11_hiddenCityZonesNorthwest,
+    locations: $location`An Overgrown Shrine (Northwest)`,
+    desiredEncounters: () => [
+      {
+        item: $item`moss-covered stone sphere`,
+        needAmount: get("hiddenApartmentProgress") < 1 ? 1 : 0,
+      },
+    ],
+  },
+);
 
 function L11_hiddenCityZonesNortheast(): boolean {
   if (!L11_hiddenCityZonesEquipForShrine()) {
@@ -2979,19 +3000,22 @@ function L11_hiddenCityZonesNortheast(): boolean {
   return autoAdv($location`An Overgrown Shrine (Northeast)`);
 }
 
-const L11_hiddenCityZonesNortheastTask: QuestTask = registerQuestTask({
-  name: "L11_hiddenCityZonesNortheast",
-  completed: () => get("hiddenOfficeProgress") > 0,
-  ready: () => get("hiddenOfficeProgress") === 0,
-  do: L11_hiddenCityZonesNortheast,
-  locations: $location`An Overgrown Shrine (Northeast)`,
-  desiredEncounters: () => [
-    {
-      item: $item`crackling stone sphere`,
-      needAmount: get("hiddenOfficeProgress") < 1 ? 1 : 0,
-    },
-  ],
-});
+const L11_hiddenCityZonesNortheastTask: QuestTask = registerQuestTask(
+  L11_hiddenCityZonesTask,
+  {
+    name: "L11_hiddenCityZonesNortheast",
+    completed: () => get("hiddenOfficeProgress") > 0,
+    ready: () => get("hiddenOfficeProgress") === 0,
+    do: L11_hiddenCityZonesNortheast,
+    locations: $location`An Overgrown Shrine (Northeast)`,
+    desiredEncounters: () => [
+      {
+        item: $item`crackling stone sphere`,
+        needAmount: get("hiddenOfficeProgress") < 1 ? 1 : 0,
+      },
+    ],
+  },
+);
 
 function L11_hiddenCityZonesSouthwest(): boolean {
   if (!L11_hiddenCityZonesEquipForShrine()) {
@@ -3000,19 +3024,22 @@ function L11_hiddenCityZonesSouthwest(): boolean {
   return autoAdv($location`An Overgrown Shrine (Southwest)`);
 }
 
-const L11_hiddenCityZonesSouthwestTask: QuestTask = registerQuestTask({
-  name: "L11_hiddenCityZonesSouthwest",
-  completed: () => get("hiddenHospitalProgress") > 0,
-  ready: () => get("hiddenHospitalProgress") === 0,
-  do: L11_hiddenCityZonesSouthwest,
-  locations: $location`An Overgrown Shrine (Southwest)`,
-  desiredEncounters: () => [
-    {
-      item: $item`dripping stone sphere`,
-      needAmount: get("hiddenHospitalProgress") < 1 ? 1 : 0,
-    },
-  ],
-});
+const L11_hiddenCityZonesSouthwestTask: QuestTask = registerQuestTask(
+  L11_hiddenCityZonesTask,
+  {
+    name: "L11_hiddenCityZonesSouthwest",
+    completed: () => get("hiddenHospitalProgress") > 0,
+    ready: () => get("hiddenHospitalProgress") === 0,
+    do: L11_hiddenCityZonesSouthwest,
+    locations: $location`An Overgrown Shrine (Southwest)`,
+    desiredEncounters: () => [
+      {
+        item: $item`dripping stone sphere`,
+        needAmount: get("hiddenHospitalProgress") < 1 ? 1 : 0,
+      },
+    ],
+  },
+);
 
 function L11_hiddenCityZonesSoutheast(): boolean {
   if (!L11_hiddenCityZonesEquipForShrine()) {
@@ -3021,19 +3048,22 @@ function L11_hiddenCityZonesSoutheast(): boolean {
   return autoAdv($location`An Overgrown Shrine (Southeast)`);
 }
 
-const L11_hiddenCityZonesSoutheastTask: QuestTask = registerQuestTask({
-  name: "L11_hiddenCityZonesSoutheast",
-  completed: () => get("hiddenBowlingAlleyProgress") > 0,
-  ready: () => get("hiddenBowlingAlleyProgress") === 0,
-  do: L11_hiddenCityZonesSoutheast,
-  locations: $location`An Overgrown Shrine (Southeast)`,
-  desiredEncounters: () => [
-    {
-      item: $item`scorched stone sphere`,
-      needAmount: get("hiddenBowlingAlleyProgress") < 1 ? 1 : 0,
-    },
-  ],
-});
+const L11_hiddenCityZonesSoutheastTask: QuestTask = registerQuestTask(
+  L11_hiddenCityZonesTask,
+  {
+    name: "L11_hiddenCityZonesSoutheast",
+    completed: () => get("hiddenBowlingAlleyProgress") > 0,
+    ready: () => get("hiddenBowlingAlleyProgress") === 0,
+    do: L11_hiddenCityZonesSoutheast,
+    locations: $location`An Overgrown Shrine (Southeast)`,
+    desiredEncounters: () => [
+      {
+        item: $item`scorched stone sphere`,
+        needAmount: get("hiddenBowlingAlleyProgress") < 1 ? 1 : 0,
+      },
+    ],
+  },
+);
 
 function L11_hiddenCityZonesZiggurat(): boolean {
   if (!L11_hiddenCityZonesEquipForShrine()) {
@@ -3052,37 +3082,22 @@ function L11_hiddenCityZonesZiggurat(): boolean {
   return advSpent;
 }
 
-const L11_hiddenCityZonesZigguratTask: QuestTask = registerQuestTask({
-  name: "L11_hiddenCityZonesZiggurat",
-  completed: () => get("auto_openedziggurat", false),
-  ready: () => !get("auto_openedziggurat", false),
-  do: L11_hiddenCityZonesZiggurat,
-  locations: $location`A Massive Ziggurat`,
-  desiredEncounters: () => [
-    {
-      monster: $monster`Protector Spectre`,
-      needAmount: get("auto_openedziggurat") ? 0 : 1,
-    },
-  ],
-});
-
-export const L11_hiddenCityZonesTask: QuestTask = registerQuestTask({
-  name: "L11_hiddenCityZones",
-  completed: () => internalQuestStatus("questL11Worship") > 4,
-  ready: () => internalQuestStatus("questL11Worship") >= 3,
-  do: L11_hiddenCityZonesDo,
-  locations: $location`The Hidden Park`,
-  desiredEncounters: () => [
-    {
-      item: $item`book of matches`,
-      needAmount:
-        itemAmount($item`book of matches`) === 0 &&
-        myAscensions() < get("hiddenTavernUnlock")
-          ? 1
-          : 0,
-    },
-  ],
-});
+const L11_hiddenCityZonesZigguratTask: QuestTask = registerQuestTask(
+  L11_hiddenCityZonesTask,
+  {
+    name: "L11_hiddenCityZonesZiggurat",
+    completed: () => get("auto_openedziggurat", false),
+    ready: () => !get("auto_openedziggurat", false),
+    do: L11_hiddenCityZonesZiggurat,
+    locations: $location`A Massive Ziggurat`,
+    desiredEncounters: () => [
+      {
+        monster: $monster`Protector Spectre`,
+        needAmount: get("auto_openedziggurat") ? 0 : 1,
+      },
+    ],
+  },
+);
 
 export function L11_hiddenCityZones(): boolean {
   return runQuestTask(L11_hiddenCityZonesTask);

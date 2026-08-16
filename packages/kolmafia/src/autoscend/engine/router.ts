@@ -4,7 +4,7 @@ import { setupSoftblockLocks } from "../auto_routing";
 import { callRegisteredTaskFunction } from "../task_registry";
 import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { fileAsMap } from "../utils/kolmafiaUtils";
-import { AutoscendEngine, findRegisteredQuestTask, QuestTask } from "./engine";
+import { findRegisteredQuestTask, getEngine, QuestTask } from "./engine";
 
 function legacyTask(name: string): QuestTask {
   return {
@@ -59,35 +59,24 @@ export function buildTaskOrder(path: string = myPath().name): QuestTask[] {
   return ordered;
 }
 
-// Cached per path so grimoire's per-task state (e.g. attempt counts backing `limit`) persists across ticks instead of resetting each call.
-const engineCache = new Map<string, AutoscendEngine>();
-
-function getPathEngine(
-  path: string,
-  prefixTasks: QuestTask[],
-): AutoscendEngine {
-  let engine = engineCache.get(path);
-  if (!engine) {
-    engine = new AutoscendEngine([...prefixTasks, ...buildTaskOrder(path)]);
-    engineCache.set(path, engine);
-  }
-  return engine;
-}
-
 // Drop-in replacement for autoscend.ts's process_tasks(): if a task doesn't actually act, moves on rather than stopping. prefixTasks run ahead of the file-driven order.
 export function runNextTask(
   path: string = myPath().name,
   prefixTasks: QuestTask[] = [],
 ): boolean {
+  const ordered: QuestTask[] = [...prefixTasks, ...buildTaskOrder(path)];
   try {
-    const engine = getPathEngine(path, prefixTasks);
-    for (const [, task] of engine.tasks.entries()) {
+    for (const task of ordered) {
+      if (!getEngine().tasks_by_name.get(task.name)) {
+        abort(`Attempted to run unregistered task ${task.name}`);
+      }
+
       //auto_log_debug(`Attempting to execute task ${i} ${task.name}`);
-      if (!engine.available(task)) {
+      if (!getEngine().available(task)) {
         continue;
       }
-      engine.execute(task);
-      if (engine.lastSuccessfulTask) {
+      getEngine().execute(task);
+      if (getEngine().lastSuccessfulTask) {
         if (task.completed()) {
           // Real progress happened, not just a last-resort softblock release: give every
           // softblock (sword tracking, baseball diamond, ...) another chance to hold.
