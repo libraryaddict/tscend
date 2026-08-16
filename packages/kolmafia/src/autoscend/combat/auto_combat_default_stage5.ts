@@ -10,6 +10,7 @@ import {
   hpCost,
   itemAmount,
   itemType,
+  max,
   Monster,
   monsterDefense,
   monsterElement,
@@ -32,6 +33,7 @@ import {
 } from "kolmafia";
 import {
   $class,
+  $classes,
   $effect,
   $element,
   $elements,
@@ -65,9 +67,12 @@ import { auto_spoonCombatSkill } from "../iotms/2010/mr2019";
 import { auto_haveCosmicBowlingBall } from "../iotms/2020/mr2022";
 import { auto_haveDarts, dartSkill } from "../iotms/2020/mr2024";
 import { auto_canNorthernExplosionFE } from "../iotms/2020/mr2025";
+import { in_nuclear } from "../paths/2016/nuclear_autumn";
 import { in_glover } from "../paths/2018/g_lover";
+import { in_robot } from "../paths/2021/you_robot";
 import { getZooBestPunch } from "../paths/2025/zootomist";
 import { inAftercore } from "../paths/casual";
+import { bridgeGoal } from "../quests/level_09";
 import {
   auto_canUse,
   auto_useSkill,
@@ -152,6 +157,124 @@ export function auto_combatDefaultStage5(
   retval = auto_combatMeatGolemStage5(round_1, enemy, text);
   if (retval !== undefined) {
     return retval;
+  }
+
+  if (
+    myLocation() === $location`The Smut Orc Logging Camp` &&
+    canSurvive(1.0) &&
+    get("chasmBridgeProgress") < bridgeGoal()
+  ) {
+    const coldMortarShell: boolean =
+      auto_canUse($skill`Stuffed Mortar Shell`) &&
+      haveEffect($effect`Spirit of Peppermint`) !== 0;
+    let coldSkillToUse: Skill = $skill.none;
+    let coldAttackDamageMultiplier: number = 1;
+    if (myClass() === $class`Seal Clubber`) {
+      if (auto_canUse($skill`Lunging Thrust-Smack`, false)) {
+        coldAttackDamageMultiplier = 3; //triple elemental bonus
+      } else if (auto_canUse($skill`Thrust-Smack`, false)) {
+        coldAttackDamageMultiplier = 2; //double elemental bonus
+      }
+    }
+    const coldAttackDamage: number = toInt(
+      numericModifier($modifier`Cold Damage`) * coldAttackDamageMultiplier,
+    ); //todo add ML damage multiplier
+    // Listed from Most to Least Damaging to hopefully cause Death on the turn when the Shell hits.
+    if (
+      auto_canUse($skill`Saucegeyser`, false) &&
+      numericModifier($modifier`Cold Spell Damage`) >
+        numericModifier($modifier`Hot Spell Damage`)
+    ) {
+      //100% chance of cold Saucegeyser
+      coldSkillToUse = $skill`Saucegeyser`;
+    } else if (auto_canUse($skill`Saucecicle`, false)) {
+      coldSkillToUse = $skill`Saucecicle`;
+    } else if (
+      auto_canUse($skill`Cannelloni Cannon`, false) &&
+      haveEffect($effect`Spirit of Peppermint`) !== 0
+    ) {
+      coldSkillToUse = $skill`Cannelloni Cannon`;
+    } else if (
+      auto_canUse($skill`Northern Explosion`, false) &&
+      !auto_canNorthernExplosionFE()
+    ) {
+      coldSkillToUse = $skill`Northern Explosion`;
+    } else if (
+      monsterLevelAdjustment() < -65 &&
+      auto_canUse($skill`Saucestorm`, false)
+    ) {
+      //in extreme case where orcs are reduced to few HP by -ML Saucestorm is better than 50% chance of cold Saucegeyser
+      //todo compare actual damage predictions instead
+      coldSkillToUse = $skill`Saucestorm`;
+    } else if (coldAttackDamage > 3 * max(1, 69 + monsterLevelAdjustment())) {
+      //cold bonus weapon attack can also be better than 50% chance of cold Saucegeyser
+      //todo compare actual damage predictions instead
+      if (myClass() === $class`Seal Clubber`) {
+        if (auto_canUse($skill`Lunging Thrust-Smack`, false)) {
+          coldSkillToUse = $skill`Lunging Thrust-Smack`; //triple elemental bonus
+        } else if (auto_canUse($skill`Thrust-Smack`, false)) {
+          coldSkillToUse = $skill`Thrust-Smack`; //double elemental bonus
+        } else if (auto_canUse($skill`Lunge Smack`, false)) {
+          coldSkillToUse = $skill`Lunge Smack`;
+        }
+      }
+      //other classes default to regular attack later
+    } else if (
+      auto_canUse($skill`Saucegeyser`, false) &&
+      numericModifier($modifier`Cold Spell Damage`) ===
+        numericModifier($modifier`Hot Spell Damage`)
+    ) {
+      //equal is 50% chance of cold Saucegeyser. "cold > hot" is used higher in priority. "cold < hot" is 100% hot Saucegeyser and not worth using
+      coldSkillToUse = $skill`Saucegeyser`;
+    } else if (in_nuclear() && auto_canUse($skill`Throat Refrigerant`, false)) {
+      coldSkillToUse = $skill`Throat Refrigerant`;
+    }
+
+    if (coldMortarShell) {
+      return auto_useSkill($skill`Stuffed Mortar Shell`);
+    } else if (coldSkillToUse !== $skill.none) {
+      return auto_useSkill(coldSkillToUse, false);
+    } else if (
+      !in_robot() &&
+      $classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief`.includes(
+        myClass(),
+      )
+    ) {
+      if (
+        coldAttackDamage > 69 + monsterLevelAdjustment() &&
+        coldAttackDamage > 0
+      ) {
+        //if cold damage bonus > their health make sure an attack that uses elemental bonus gets to be used
+        if (myClass() === $class`Seal Clubber`) {
+          if (auto_canUse($skill`Lunging Thrust-Smack`, false)) {
+            return auto_useSkill($skill`Lunging Thrust-Smack`, false); //triple elemental bonus
+          } else if (auto_canUse($skill`Thrust-Smack`, false)) {
+            return auto_useSkill($skill`Thrust-Smack`, false); //double elemental bonus
+          } else if (auto_canUse($skill`Lunge Smack`, false)) {
+            return auto_useSkill($skill`Lunge Smack`, false);
+          } else {
+            return "attack";
+          }
+        } else {
+          return "attack";
+        }
+      } else if (
+        monsterLevelAdjustment() <= -25 &&
+        auto_canUse($skill`Saucestorm`, false)
+      ) {
+        //todo check predicted damage instead of arbitrary values
+        auto_log_warning(
+          "None of the best [cold] skills available against smut orcs but trying weaker alternative in view of the negative monster level.",
+          "red",
+        );
+        return auto_useSkill($skill`Saucestorm`, false);
+      } else {
+        auto_log_warning(
+          "None of our preferred [cold] skills available against smut orcs. Engaging in Fisticuffs.",
+          "red",
+        );
+      }
+    }
   }
   //with loofah, you can stagger and deal cold or hot damage
   if (

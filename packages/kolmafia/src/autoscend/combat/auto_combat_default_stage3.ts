@@ -33,7 +33,6 @@ import {
 } from "kolmafia";
 import {
   $class,
-  $classes,
   $effect,
   $element,
   $elements,
@@ -56,7 +55,6 @@ import {
 import { CombatMacroReturns } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
 import {
-  auto_log_warning,
   auto_wantToSniff,
   handleTracker,
   internalQuestStatus,
@@ -79,7 +77,6 @@ import {
 } from "../iotms/2020/mr2025";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { in_nuclear } from "../paths/2016/nuclear_autumn";
-import { in_robot } from "../paths/2021/you_robot";
 import { in_avantGuard } from "../paths/2024/avant_guard";
 import { inAftercore } from "../paths/casual";
 import {
@@ -740,52 +737,6 @@ export function auto_combatDefaultStage3(
             property: "auto_sniffs",
           });
           return auto_useSkill($skill`Gallapagosian Mating Call`, false);
-        }
-      }
-
-      if (coldMortarShell) {
-        return auto_useSkill($skill`Stuffed Mortar Shell`);
-      } else if (coldSkillToUse !== $skill.none) {
-        return auto_useSkill(coldSkillToUse, false);
-      } else if (
-        !in_robot() &&
-        $classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief`.includes(
-          myClass(),
-        )
-      ) {
-        if (
-          coldAttackDamage > 69 + monsterLevelAdjustment() &&
-          coldAttackDamage > 0
-        ) {
-          //if cold damage bonus > their health make sure an attack that uses elemental bonus gets to be used
-          if (myClass() === $class`Seal Clubber`) {
-            if (auto_canUse($skill`Lunging Thrust-Smack`, false)) {
-              return auto_useSkill($skill`Lunging Thrust-Smack`, false); //triple elemental bonus
-            } else if (auto_canUse($skill`Thrust-Smack`, false)) {
-              return auto_useSkill($skill`Thrust-Smack`, false); //double elemental bonus
-            } else if (auto_canUse($skill`Lunge Smack`, false)) {
-              return auto_useSkill($skill`Lunge Smack`, false);
-            } else {
-              return "attack";
-            }
-          } else {
-            return "attack";
-          }
-        } else if (
-          monsterLevelAdjustment() <= -25 &&
-          auto_canUse($skill`Saucestorm`, false)
-        ) {
-          //todo check predicted damage instead of arbitrary values
-          auto_log_warning(
-            "None of the best [cold] skills available against smut orcs but trying weaker alternative in view of the negative monster level.",
-            "red",
-          );
-          return auto_useSkill($skill`Saucestorm`, false);
-        } else {
-          auto_log_warning(
-            "None of our preferred [cold] skills available against smut orcs. Engaging in Fisticuffs.",
-            "red",
-          );
         }
       }
     }
