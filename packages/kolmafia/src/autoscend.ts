@@ -222,7 +222,6 @@ import {
   restoreAllSettings,
   safeGet,
   sniffSources,
-  use_barrels,
   yellowRaySources,
 } from "./autoscend/auto_util";
 import { zone_isAvailable } from "./autoscend/auto_zone";
@@ -2697,7 +2696,19 @@ const use_barrelsTask: QuestTask = registerQuestTask({
     !BarrelShrine.have() ||
     !isUnrestricted($item`shrine to the Barrel god`),
   ready: () => true,
-  do: () => use_barrels,
+  do: () => {
+    const barrels: Item[] = $items`little firkin, normal barrel, big tun, weathered barrel, dusty barrel, disintegrating barrel, moist barrel, rotting barrel, mouldering barrel, barnacled barrel`;
+
+    let retval: boolean = false;
+    for (const it of barrels) {
+      if (itemAmount(it) === 0 || itemAmount(it) >= 10) continue;
+
+      use(itemAmount(it), it);
+      retval = true;
+    }
+
+    return retval;
+  },
 });
 
 const auto_latteRefillTask: QuestTask = registerQuestTask({

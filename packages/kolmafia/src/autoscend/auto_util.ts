@@ -3988,20 +3988,6 @@ export function handleBarrelFullOfBarrels(daily: boolean): boolean {
   set("_auto_didBarrelBustToday", true);
   return smashed > 0;
 }
-
-export function use_barrels(): boolean {
-  const barrels: Item[] = $items`little firkin, normal barrel, big tun, weathered barrel, dusty barrel, disintegrating barrel, moist barrel, rotting barrel, mouldering barrel, barnacled barrel`;
-
-  let retval: boolean = false;
-  for (const it of barrels) {
-    if (itemAmount(it) < 10) {
-      retval = toBoolean(toInt(retval) | toInt(itemAmount(it) > 0));
-      use(itemAmount(it), it);
-    }
-  }
-  return retval;
-}
-
 export function auto_autosell(quantity: number, toSell: Item): boolean {
   if (myMeat() > 100000) {
     return false;
