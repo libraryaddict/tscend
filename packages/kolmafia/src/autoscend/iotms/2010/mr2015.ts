@@ -417,6 +417,8 @@ export function chateaumantegna_available(): boolean {
 }
 
 export function chateaumantegna_useDesk(): void {
+  if (get("_chateauDeskHarvested")) return;
+
   if (chateaumantegna_available()) {
     const chateau: string = visitUrl("place.php?whichplace=chateau");
     if (containsText(chateau, "chateau_desk1")) {
