@@ -6,6 +6,7 @@ import {
   mallPrice,
   myAscensions,
   myMeat,
+  pullsRemaining,
 } from "kolmafia";
 import { $items, get, set } from "libram";
 
@@ -15,7 +16,7 @@ import { L8_trapperPeak } from "../quests/level_08";
 
 //Defined in autoscend/paths/casual.ash
 export function inAftercore(): boolean {
-  return get("kingLiberated");
+  return get("kingLiberated") || pullsRemaining() < 0;
 }
 
 export function casualCheck(): void {
