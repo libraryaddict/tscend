@@ -2249,10 +2249,17 @@ export function auto_wantSwordFamiliar(place: Location): boolean {
 
 function auto_swordFamiliarShouldDelayZone(monsters: Monster[]): boolean {
   // Soft-delay a level's quest-turn-in while we're still farming value.
+  if (monsters.includes(auto_sword_of_swords_tracking())) {
+    return (
+      isSoftBlockInPlace("swordTracking") && auto_desires_sword_familiar_drops()
+    );
+  }
+
+  // If the sword wants this target in the future, but is currently not willing to switch targets
   return (
-    monsters.includes(auto_sword_of_swords_tracking()) &&
-    auto_desires_sword_familiar_drops() &&
-    isSoftBlockInPlace("swordTracking")
+    isSoftBlockInPlace("swordTrackingFutureTarget") &&
+    !auto_swordIsWillingToSwitchTargets() &&
+    monsters.some((m) => auto_swordFamiliarWantsMonsterDrops(m))
   );
 }
 

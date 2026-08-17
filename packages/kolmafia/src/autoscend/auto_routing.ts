@@ -150,7 +150,11 @@ export function allowSoftblockDelay(): boolean {
 }
 
 type SoftDelayKey =
-  "swordTracking" | "baseballDiamond" | "8bitRealm" | "legendaryPasta";
+  | "swordTrackingFutureTarget"
+  | "swordTracking"
+  | "baseballDiamond"
+  | "8bitRealm"
+  | "legendaryPasta";
 
 // Generic companion to the preference-backed allowSoftblockX() family
 const softblockReleaseLevel = new Map<SoftDelayKey, number>();
@@ -182,6 +186,7 @@ export function setupSoftblockLocks(): void {
   softblockReleaseLevel.set("8bitRealm", 0);
   if (auto_have_sword_familiar() && !in_quantumTerrarium()) {
     softblockReleaseLevel.set("swordTracking", 0);
+    softblockReleaseLevel.set("swordTrackingFutureTarget", 0);
   }
   if (auto_have_baseball_diamond()) {
     softblockReleaseLevel.set("baseballDiamond", 0);
@@ -491,6 +496,13 @@ function auto_softBlockHandlerDo(): boolean {
     releaseSoftblock(
       "8bitRealm",
       "holding off 8bit realm to maximize our score",
+    );
+    return true;
+  }
+  if (isSoftBlockInPlace("swordTrackingFutureTarget")) {
+    releaseSoftblock(
+      "swordTrackingFutureTarget",
+      "holding off finishing a quest to keep Sword of S Words tracking value for a future target",
     );
     return true;
   }
