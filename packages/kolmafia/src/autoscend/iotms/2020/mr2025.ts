@@ -112,14 +112,16 @@ import {
 import { auto_have_familiar, pathHasFamiliar } from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import {
-  auto_getMonsters,
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$2,
   auto_log_info,
   auto_runChoice,
+  auto_wantToBanish,
+  auto_wantToFreeRun,
   auto_zonePhylumPercent,
   canSummonMonster,
+  freeRunCombatAction,
   handleTracker,
   internalQuestStatus,
   isFreeMonster,
@@ -131,6 +133,7 @@ import {
 } from "../../auto_util";
 import {
   auto_canUse,
+  banisherCombatAction$1,
   combat_status_add,
   combat_status_check,
 } from "../../combat/auto_combat_util";
@@ -1560,10 +1563,27 @@ export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
     return false;
   }
 
-  return (
-    auto_getMonsters("freerun").includes(enemy) ||
-    auto_getMonsters("banish").includes(enemy)
-  );
+  // If we're going to gaze, always talk
+  if (auto_bczRefractedGaze(false, loc)) {
+    return true;
+  }
+
+  if (auto_wantToBanish(enemy, loc)) {
+    // If we have a banish available, don't replace
+    return banisherCombatAction$1(enemy, loc, currentRound() > 0) === undefined;
+  }
+
+  // If we're not free running, then don't replace
+  if (!auto_wantToFreeRun(enemy, loc)) {
+    return false;
+  }
+
+  // If we have a free run available, don't replace
+  if (freeRunCombatAction(enemy, loc, currentRound() > 0) === undefined) {
+    return false;
+  }
+
+  return true;
 }
 // If this target can be considered for 'talk to some fish'
 export function auto_isPotentialTalkToSomeFishTarget(

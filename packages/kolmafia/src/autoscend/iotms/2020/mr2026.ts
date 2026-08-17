@@ -11,6 +11,7 @@ import {
   closetAmount,
   creatableAmount,
   cupOf13sTier,
+  currentRound,
   Effect,
   Element,
   entityDecode,
@@ -113,9 +114,11 @@ import {
   auto_runChoice,
   auto_wantToBanish,
   auto_wantToFreeKillWithNoDrops,
+  auto_wantToFreeRun,
   auto_zoneCopyableMonsters,
   autoCraft,
   canSummonMonster,
+  freeRunCombatAction,
   handleTracker,
   internalQuestStatus,
   isFreeMonster,
@@ -1887,6 +1890,14 @@ export function auto_baseballShouldReplaceWithFish(
     auto_isWorthSniffing(enemy, loc)
   ) {
     // Already a good target, no need to replace it.
+    return false;
+  }
+  // If we can free run on this monster, don't switch to some fish
+  if (
+    !isFreeMonster($monster`some fish`) &&
+    auto_wantToFreeRun(enemy, loc) &&
+    freeRunCombatAction(enemy, loc, currentRound() > 0) !== undefined
+  ) {
     return false;
   }
 
