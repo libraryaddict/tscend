@@ -1900,7 +1900,10 @@ export function auto_wantToBCZ(sk: Skill): boolean {
   );
 }
 
-export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
+export function auto_bczRefractedGaze(
+  planToPeridot: boolean = false,
+  location: Location = myLocation(),
+): boolean {
   if (!auto_wantToBCZ($skill`BCZ: Refracted Gaze`)) {
     // we don't want to refract if we don't have the stats.
     return false;
@@ -1916,9 +1919,9 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
   }
   if (
     auto_havePeridot() &&
-    !haveUsedPeridot(myLocation()) &&
+    !haveUsedPeridot(location) &&
     planToPeridot && // Only fallthrough if we explicitly plan to peridot
-    (!auto_haveMonodent() || myLocation() !== $location`The Hole in the Sky`)
+    (!auto_haveMonodent() || location !== $location`The Hole in the Sky`)
   ) {
     //Will undoubtedly want Peridot in these locations
     //Other sources of issue (pocket wishes/mimic eggs) are fought in Noob Cave
@@ -1938,23 +1941,22 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
   if (
     onFinalDay &&
     needStarKey() &&
-    myLocation() !== $location`The Hole in the Sky` &&
+    location !== $location`The Hole in the Sky` &&
     isLastWillingGaze
   ) {
     return false;
   }
   const speculating: boolean = currentRound() === 0;
-  const loc = myLocation();
 
   if (
-    loc === $location`The Smut Orc Logging Camp` &&
+    location === $location`The Smut Orc Logging Camp` &&
     lumberCount() < bridgeGoal() &&
     fastenerCount() < bridgeGoal()
   ) {
     return true;
   }
   if (
-    loc === $location`The Penultimate Fantasy Airship` &&
+    location === $location`The Penultimate Fantasy Airship` &&
     internalQuestStatus("questL10Garbage") >= 4 &&
     itemAmount($item`Mohawk wig`) < 1 &&
     itemAmount($item`amulet of extreme plot significance`) < 1 &&
@@ -1965,14 +1967,14 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
     return true;
   }
   if (
-    loc === $location`The Battlefield (Frat Uniform)` &&
+    location === $location`The Battlefield (Frat Uniform)` &&
     get("_bczRefractedGazeCasts") < 2
   ) {
     // Only use refracted gaze on the battlefield if we've used it less than 2 times
     return true;
   }
   if (
-    loc === $location`A-Boo Peak` &&
+    location === $location`A-Boo Peak` &&
     itemAmount($item`A-Boo clue`) * 30 <
       // We would take 2 advs regardless, we don't want to waste our time on a clue we didn't need!
       get("booPeakProgress") - 4
@@ -1980,7 +1982,7 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
     return true;
   }
   if (
-    loc === $location`Cobb's Knob Harem` &&
+    location === $location`Cobb's Knob Harem` &&
     (speculating ||
       lastMonster() === $monster`Knob Goblin Harem Guard` ||
       lastMonster() === $monster`some fish`)
@@ -1988,13 +1990,13 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
     return true;
   }
   if (
-    loc === $location`Twin Peak` &&
+    location === $location`Twin Peak` &&
     itemAmount($item`rusty hedge trimmers`) < 4
   ) {
     return true;
   }
   if (
-    loc === $location`The Black Forest` &&
+    location === $location`The Black Forest` &&
     !blackMarketAvailable() &&
     itemAmount($item`reassembled blackbird`) === 0 &&
     (speculating || monsterPhylum() !== $phylum`beast`)
@@ -2002,34 +2004,42 @@ export function auto_bczRefractedGaze(planToPeridot: boolean = false): boolean {
     return true;
   }
   if (
-    loc === $location`Whitey's Grove` &&
+    location === $location`Whitey's Grove` &&
     L11_needWetStew() &&
     (speculating || auto_haveMonodent() || monsterPhylum() !== $phylum`beast`)
   ) {
     return true;
   }
   if (
-    loc === $location`The Defiled Nook` &&
+    location === $location`The Defiled Nook` &&
     (speculating ||
       lastMonster() === $monster`party skelteon` ||
       lastMonster() === $monster`some fish`)
   ) {
     return true;
   }
-  if (
-    loc === $location`The Hole in the Sky` &&
-    needStarKey() &&
-    (speculating ||
-      (lastMonster() === $monster`Astronomer` &&
-        (itemAmount($item`star chart`) > 0 ||
-          auto_have_skill($skill`Sea *dent: Talk to Some Fish`))) ||
+  if (location === $location`The Hole in the Sky` && needStarKey()) {
+    if (speculating) {
+      return true;
+    }
+
+    if (
+      lastMonster() === $monster`Astronomer` &&
+      (itemAmount($item`star chart`) > 0 ||
+        auto_have_skill($skill`Sea *dent: Talk to Some Fish`))
+    ) {
+      return true;
+    }
+
+    if (
       monsterPhylum() === $phylum`constellation` ||
-      lastMonster() === $monster`some fish`)
-  ) {
-    return true;
+      lastMonster() === $monster`some fish`
+    ) {
+      return true;
+    }
   }
   if (
-    loc === $location`Guano Junction` &&
+    location === $location`Guano Junction` &&
     internalQuestStatus("questL04Bat") < 3
   ) {
     return true;

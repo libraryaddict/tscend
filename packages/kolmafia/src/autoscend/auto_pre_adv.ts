@@ -966,7 +966,7 @@ function auto_pre_adventure(): boolean {
     (zoneHasWantedMonsters || auto_peridotSetZone(place));
   const wantBCZRefractedGaze: boolean =
     safeGet("auto_familiarChoice") !== $familiar`Sword of S Words` &&
-    auto_bczRefractedGaze(planToPeridot);
+    auto_bczRefractedGaze(planToPeridot, place);
 
   if (planToPeridot && !wantBCZRefractedGaze) {
     //add a large bonus to Peridot of Peril if the zone has wanted monsters (or we want to set the zone without using an adventure) and we haven't visited there yet
@@ -978,7 +978,7 @@ function auto_pre_adventure(): boolean {
     }
 
     if (possessEquipment($item`The Eternity Codpiece`)) {
-      addBonusToMaximize($item`blood cubic zirconia`, 1000);
+      addBonusToMaximize($item`blood cubic zirconia`, 1000000);
     } else {
       autoEquip($item`blood cubic zirconia`);
     }
