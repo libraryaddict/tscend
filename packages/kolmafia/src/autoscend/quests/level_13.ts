@@ -186,6 +186,7 @@ import {
 import {
   auto_bczDelevelPlan,
   auto_haveBCZ,
+  auto_wantToBCZ,
   beretBusk,
 } from "../iotms/2020/mr2025";
 import { in_bhy, L13_bhy_towerFinal } from "../paths/2011/bees_hate_you";
@@ -794,7 +795,11 @@ function LX_getStarKeyDo(): boolean {
 export const LX_getStarKeyTask: QuestTask = registerQuestTask({
   name: "LX_getStarKey",
   completed: () => !needStarKey(),
-  ready: () => get("auto_getStarKey", false),
+  ready: () =>
+    get("auto_getStarKey", false) &&
+    (!auto_haveBCZ() ||
+      auto_wantToBCZ($skill`BCZ: Refracted Gaze`) ||
+      !isSoftBlockInPlace("8bitRealm")),
   do: LX_getStarKeyDo,
   locations: $location`The Hole in the Sky`,
   desiredEncounters: () =>
