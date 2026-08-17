@@ -82,6 +82,7 @@ import {
   myLevel,
   myLightning,
   myLocation,
+  myMaxmp,
   myMeat,
   myMp,
   myPath,
@@ -6637,11 +6638,17 @@ Spice Ghost			250			10+1 Item		Spices			Stun Increase	+2 advs to the first food 
   const canLevelVermTo11 = vermincelliLevel < 11 && auto_havePastaWand();
   const canFreeFightRats = vermincelliLevel > 10;
 
+  // If our active thrall is vermin, and we've used the guaranteed free fights already. Then we should switch to spice ghost
+  const shouldCastSpice =
+    vermincelliLevel >= 11 &&
+    get("_legendaryVermincelliFreeRats") >= 3 &&
+    myMaxmp() > mpCost($skill`Bind Spice Ghost`) * 1.2 &&
+    myThrall() === $thrall`Vermincelli`;
   const canUseSpiceGhost =
     auto_have_skill($skill`Bind Spice Ghost`) &&
     (myDaycount() > 1 || !canLevelVermTo11) &&
     toInt(numericModifier($modifier`MP Regen Min`)) > 9 &&
-    myMp() >= 1.2 * mpCost($skill`Bind Spice Ghost`);
+    (shouldCastSpice || myMp() >= 1.2 * mpCost($skill`Bind Spice Ghost`));
 
   if (going_to_eat) {
     // if we are consuming food and our spice thrall is lvl 11 (with pasta wand or spice whorl), +2 advs 1/day
@@ -6690,6 +6697,12 @@ Spice Ghost			250			10+1 Item		Spices			Stun Increase	+2 advs to the first food 
 
   if (myMp() >= mpCost(bindSkill)) {
     useSkill(1, bindSkill);
+  } else if (shouldCastSpice && bindSkill === $skill`Bind Spice Ghost`) {
+    acquireMP(mpCost(bindSkill));
+
+    if (myMp() >= mpCost(bindSkill)) {
+      useSkill(1, bindSkill);
+    }
   }
 
   return true;
