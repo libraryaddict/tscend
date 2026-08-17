@@ -6496,6 +6496,23 @@ export function auto_wantToFreeKillWithNoDrops(
   if (enemy.physicalResistance >= 100 && enemy.elementalResistance >= 100) {
     return true;
   }
+  // Desert, doesn't destroy the pages!
+  if (
+    haveEffect($effect`Ultrahydrated`) &&
+    // If its fire ants, ensure we don't want the food drop
+    ((enemy === $monster`swarm of fire ants` &&
+      (!can_consume() ||
+        haveEffect($effect`Ultrahydrated`) === 1 ||
+        fullnessLimit() <= 0 ||
+        !auto_is_valid($item`Formica e Pepe`) ||
+        itemAmount($item`hot honey ant`) >=
+          itemAmount($item`legendary noodles`))) ||
+      $monsters`giant giant giant centipede, cactuary, rock scorpion, plaque of locusts`.includes(
+        enemy,
+      ))
+  ) {
+    return true;
+  }
   if (
     myFamiliar() === $familiar`Sword of S Words` &&
     auto_desires_sword_familiar_drops()
@@ -6513,22 +6530,6 @@ export function auto_wantToFreeKillWithNoDrops(
   if (
     loc === $location`The Battlefield (Hippy Uniform)` &&
     containsText(enemy.toString(), "War Frat")
-  ) {
-    return true;
-  }
-  // Desert, doesn't destroy the pages!
-  if (
-    haveEffect($effect`Ultrahydrated`) &&
-    // If its fire ants, ensure we don't want the food drop
-    ((enemy === $monster`swarm of fire ants` &&
-      (!can_consume() ||
-        fullnessLimit() <= 0 ||
-        !auto_is_valid($item`Formica e Pepe`) ||
-        itemAmount($item`hot honey ant`) >=
-          itemAmount($item`legendary noodles`))) ||
-      $monsters`giant giant giant centipede, cactuary, rock scorpion, plaque of locusts`.includes(
-        enemy,
-      ))
   ) {
     return true;
   }
