@@ -1637,13 +1637,13 @@ function L11_aridDesertDo(): boolean {
   }
 
   const dbr: desert_buff_record = desertBuffs();
-  let progress: number = dbr.progress;
+  let progressPerAdv: number = dbr.progress;
   if (get("bondDesert")) {
-    progress += 2;
+    progressPerAdv += 2;
   }
   if (getProperty("peteMotorbikeHeadlight") === "Blacklight Bulb") {
     //TODO verify spelling on this string
-    progress += 2;
+    progressPerAdv += 2;
   }
 
   if (get("auto_gnasirUnlocked", false)) {
@@ -1842,7 +1842,7 @@ function L11_aridDesertDo(): boolean {
     if (
       (inHardcore() || pullsRemaining() === 0) &&
       itemAmount($item`worm-riding hooks`) > 0 &&
-      get("desertExploration") <= 100 - 5 * progress &&
+      get("desertExploration") <= 100 - 5 * progressPerAdv &&
       (get("gnasirProgress") & 16) !== 16
     ) {
       if (itemAmount($item`drum machine`) > 0) {
@@ -1856,7 +1856,7 @@ function L11_aridDesertDo(): boolean {
         if (
           ((get("gnasirProgress") & 1) !== 0 ||
             itemAmount($item`stone rose`) > 0 ||
-            get("desertExploration") <= 100 - 5 * progress) &&
+            get("desertExploration") <= 100 - 5 * progressPerAdv) &&
           canSummonMonster($monster`blur`) &&
           (dropCapped || canYellowRay($monster`blur`))
         ) {
@@ -1877,27 +1877,51 @@ function L11_aridDesertDo(): boolean {
 
     if ((get("gnasirProgress") & 1) !== 1) {
       // We can turn a stone rose in for 15% progress
-      const expectedOasisTurns: number = 8 - $location`The Oasis`.turnsSpent;
-      const desertProgressRemaining: number = 100 - get("desertExploration");
-      let oasisProgressPerTurn =
-        Math.min(15, desertProgressRemaining) / expectedOasisTurns;
-      // Round it to one decimal place
-      if (oasisProgressPerTurn % 1 > 0) {
-        oasisProgressPerTurn = Math.round(oasisProgressPerTurn * 10) / 10;
+      const remaining = 100 - get("desertExploration");
+      const pages = itemAmount($item`worm-riding manual page`);
+      const oasisTurns = 8 - $location`The Oasis`.turnsSpent;
+      let desertExpectedTurns = remaining / progressPerAdv;
+
+      if (pages < 15) {
+        // Average pages per successful drop:
+        // first drop = 1, later drops = 2.5
+        const averagePagesPerDrop = pages === 0 ? 1 : 2.5;
+
+        // Average adventures between successful drops.
+        // 25%, 50%, 75%, 100% gives 2.3125 adventures/drop.
+        const adventuresPerDrop = 2.3125;
+
+        const adventuresForPages =
+          ((15 - pages) / averagePagesPerDrop) * adventuresPerDrop;
+
+        // The progress after the pages
+        const progressAfterPages = Math.max(0, remaining - 30);
+        desertExpectedTurns = Math.min(
+          desertExpectedTurns,
+          adventuresForPages + progressAfterPages / progressPerAdv,
+        );
       }
 
+      desertExpectedTurns = Math.ceil(desertExpectedTurns * 10) / 10;
+
+      // This logic is a little wrong, it doesn't take into account pages when it says desert would take this long
+      const oasisExpectedTurns =
+        Math.ceil(
+          (oasisTurns + Math.max(0, remaining - 15) / progressPerAdv) * 10,
+        ) / 10;
+
       auto_log_info(
-        `Expected Oasis turns for a Stone Rose: ${expectedOasisTurns}`,
+        `Expected turns if hunting in Oasis for a Stone Rose: ${oasisExpectedTurns}`,
       );
       auto_log_info(
-        `Oasis would give progress per turn: ${oasisProgressPerTurn}`,
+        `Expected turns if hunting in Desert: ${desertExpectedTurns}`,
+        "brown",
       );
-      auto_log_info(`Desert progress per turn: ${progress}`, "brown");
       if (
-        oasisProgressPerTurn >= progress &&
-        itemAmount($item`stone rose`) === 0
+        itemAmount($item`stone rose`) === 0 &&
+        Math.ceil(desertExpectedTurns) > Math.ceil(oasisExpectedTurns)
       ) {
-        auto_log_info("It seems raisinable to hunt a Stone Rose. Beep", "blue");
+        auto_log_info("Rose is better than Desert.", "blue");
         autoAdv($location`The Oasis`);
         return true;
       }
