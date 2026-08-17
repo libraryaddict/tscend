@@ -3008,6 +3008,15 @@ export function isFreeMonster(
   }
 
   if (
+    myThrall() === $thrall`Vermincelli` &&
+    myThrall().level >= 11 &&
+    mon.attributes.split(" ").includes("RAT") &&
+    get("_legendaryVermincelliFreeRats") < 3
+  ) {
+    return true;
+  }
+
+  if (
     $monsters`angry ghost, annoyed snake, government bureaucrat, slime blob, terrible mutant`.includes(
       mon,
     ) &&

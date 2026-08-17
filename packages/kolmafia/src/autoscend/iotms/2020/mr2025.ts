@@ -48,6 +48,7 @@ import {
   myPath,
   myPrimestat,
   mySpleenUse,
+  myThrall,
   numericModifier,
   removeProperty,
   shrunkenHeadZombie,
@@ -83,6 +84,7 @@ import {
   $skill,
   $slot,
   $stat,
+  $thrall,
   get,
   getAverageAdventures,
   Leprecondo,
@@ -1600,6 +1602,16 @@ export function auto_isPotentialTalkToSomeFishTarget(
 
   // don't avoid inherently free fights
   if (isFreeMonster(enemy, loc)) {
+    return false;
+  }
+
+  // Avoid when we're trying to kill rats for free
+  if (
+    myThrall() === $thrall`Vermincelli` &&
+    myThrall().level >= 11 &&
+    enemy.attributes.split(" ").includes("RAT") &&
+    get("_legendaryVermincelliFreeRats") < 11
+  ) {
     return false;
   }
 
