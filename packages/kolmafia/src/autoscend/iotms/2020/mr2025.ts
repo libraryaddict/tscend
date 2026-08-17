@@ -110,23 +110,29 @@ import {
 import { auto_have_familiar, pathHasFamiliar } from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import {
+  auto_getMonsters,
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$2,
   auto_log_info,
   auto_runChoice,
-  auto_wantToAvoidMonster,
   auto_zonePhylumPercent,
   canSummonMonster,
   handleTracker,
   internalQuestStatus,
+  isFreeMonster,
   knapsack,
   level_to_min_substat,
   safeGet,
   stat_to_substat,
   zoneRank,
 } from "../../auto_util";
-import { auto_canUse, combat_status_add } from "../../combat/auto_combat_util";
+import {
+  auto_canUse,
+  combat_status_add,
+  combat_status_check,
+} from "../../combat/auto_combat_util";
+import { fightingDesiredTaskMonster } from "../../engine/engine";
 import { in_zombieSlayer } from "../../paths/2012/zombie_slayer";
 import { in_kolhs } from "../../paths/2013/kolhs";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
@@ -1547,6 +1553,20 @@ export function auto_waveTheZone(): boolean {
 }
 
 export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
+  if (!auto_isPotentialTalkToSomeFishTarget(loc, enemy)) {
+    return false;
+  }
+
+  return (
+    auto_getMonsters("freerun").includes(enemy) ||
+    auto_getMonsters("banish").includes(enemy)
+  );
+}
+// If this target can be considered for 'talk to some fish'
+export function auto_isPotentialTalkToSomeFishTarget(
+  loc: Location,
+  enemy: Monster,
+): boolean {
   // returns true if we want to cast Talk to Some Fish. Not intended to exhaustivly list all valid targets
   // also, this is not actually a free fight, but this is a safe listing of targets
   if (!auto_haveMonodent()) {
@@ -1563,12 +1583,49 @@ export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
   if (loc === $location`The Fungus Plains`) {
     return false;
   }
+
+  // need hippy / frat kills
+  if (
+    $locations`The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
+      myLocation(),
+    )
+  ) {
+    return false;
+  }
+  // need the choices
+  if (loc === $location`The Haunted Bedroom`) {
+    return false;
+  }
+
+  // don't avoid inherently free fights
+  if (isFreeMonster(enemy, loc)) {
+    return false;
+  }
+
+  // If a task explicitly registered this monster as a desired target
+  if (fightingDesiredTaskMonster(enemy)) {
+    return false;
+  }
+  //This is called in stage2 and auto_purple_candled is set in stage 4 so this should only ever show up on the purple candled enemy
+  if (safeGet("auto_purple_candled") === enemy) {
+    return false;
+  }
+
+  // If we did something to the monster and we don't want to undo it
+  if (
+    combat_status_check("refractedgazed") ||
+    (myFamiliar() !== $familiar`Sword of S Words` &&
+      combat_status_check("droptablereplaced"))
+  ) {
+    return false;
+  }
+
   //bcz has great synergy with talk to some fish to get all the drops in a zone
   if (auto_bczRefractedGaze() && auto_BCZEquipped()) {
     return true;
   }
 
-  return auto_wantToAvoidMonster(loc, enemy);
+  return true;
 }
 
 export function auto_throwLightningRemaining(): number {

@@ -244,7 +244,6 @@ import {
 } from "./combat/auto_combat_util";
 import { auto_edCombatHandler } from "./combat/paths/auto_combat_ed";
 import {
-  fightingDesiredTaskMonster,
   getIncompleteQuestTasks,
   QuestTask,
   registerQuestTask,
@@ -4822,7 +4821,7 @@ const monsters_text: Map<string, Map<number, Map<string, string>>> = fileAsMap(
   [String, Number, String, String],
 );
 
-function auto_getMonsters(category: string): Monster[] {
+export function auto_getMonsters(category: string): Monster[] {
   const res: Monster[] = [];
   if (!monsters_text.size) {
     auto_log_error("Could not load autoscend_monsters.txt. This is bad!");
@@ -6535,49 +6534,6 @@ export function auto_wantToFreeKillWithNoDrops(
   }
   // look for specific monsters in zones where some monsters we do care about
   return freekillWithNoDropsMonsters.includes(enemy);
-}
-
-// If the monster is one we don't really care about, and we're fine if we end up fighting something else random
-export function auto_wantToAvoidMonster(
-  loc: Location,
-  enemy: Monster,
-): boolean {
-  // If we did something to the monster and we don't want to undo it
-  if (
-    combat_status_check("refractedgazed") ||
-    (myFamiliar() !== $familiar`Sword of S Words` &&
-      combat_status_check("droptablereplaced"))
-  ) {
-    return false;
-  }
-  //This is called in stage2 and auto_purple_candled is set in stage 4 so this should only ever show up on the purple candled enemy
-  if (safeGet("auto_purple_candled") === enemy) {
-    return false;
-  }
-  // don't avoid inherently free fights
-  if (isFreeMonster(enemy, loc)) {
-    return false;
-  }
-  // need hippy / frat kills
-  if (
-    loc === $location`The Battlefield (Frat Uniform)` ||
-    loc === $location`The Battlefield (Hippy Uniform)`
-  ) {
-    return false;
-  }
-  // need the choices
-  if (loc === $location`The Haunted Bedroom`) {
-    return false;
-  }
-  // If a task explicitly registered this monster as a desired target
-  if (fightingDesiredTaskMonster(enemy)) {
-    return false;
-  }
-
-  return (
-    auto_getMonsters("freerun").includes(enemy) ||
-    auto_getMonsters("banish").includes(enemy)
-  );
 }
 
 export function auto_ignoreExperience(): boolean {

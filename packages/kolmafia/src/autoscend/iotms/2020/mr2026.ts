@@ -159,6 +159,7 @@ import {
   auto_bczRefractedGaze,
   auto_canTracesBandit,
   auto_haveMonodent,
+  auto_isPotentialTalkToSomeFishTarget,
   haveUsedPeridot,
 } from "./mr2025";
 
@@ -1876,6 +1877,9 @@ export function auto_baseballShouldReplaceWithFish(
     return false;
   }
   if (enemy === $monster`some fish`) {
+    return false;
+  }
+  if (!auto_isPotentialTalkToSomeFishTarget(loc, enemy)) {
     return false;
   }
   if (

@@ -1069,6 +1069,20 @@ export const LX_getLadySpookyravensFinestGownTask: QuestTask =
     ready: () => internalQuestStatus("questM21Dance") === 1,
     do: LX_getLadySpookyravensFinestGownDo,
     locations: $location`The Haunted Bedroom`,
+    desiredEncounters: () => [
+      {
+        monster: $monster`animated ornate nightstand`,
+        needAmount:
+          2 -
+          ((!possessEquipment($item`Lord Spookyraven's spectacles`) ? 1 : 0) +
+            Math.min(1, itemAmount($item`disposable instant camera`))),
+      },
+      {
+        // Gown
+        monster: $monster`elegant animated nightstand`,
+        needAmount: 1,
+      },
+    ],
   });
 
 export function LX_getLadySpookyravensFinestGown(): boolean {
