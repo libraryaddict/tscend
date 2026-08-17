@@ -850,6 +850,12 @@ export function auto_canNorthernExplosionFE(): boolean {
   if (get("_aprilShowerNorthernExplosion")) {
     return false;
   }
+  if (
+    currentRound() > 0 &&
+    equippedAmount($item`April Shower Thoughts shield`) === 0
+  ) {
+    return false;
+  }
   return true;
 }
 
