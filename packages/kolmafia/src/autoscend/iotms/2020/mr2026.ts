@@ -2131,8 +2131,8 @@ export function auto_swordFamiliarWantsMonsterDrops(
   // Bowling ball
   if (
     sMonster === $monster`pygmy bowler` &&
-    //
-    5 -
+    // Opening it will get us to progress of 1, then we subtract 5 from that
+    6 -
       Math.max(get("hiddenBowlingAlleyProgress"), 0) -
       (itemAmount($item`bowling ball`) + closetAmount($item`bowling ball`)) >
       0

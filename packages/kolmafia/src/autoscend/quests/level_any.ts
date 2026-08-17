@@ -103,6 +103,7 @@ import { auto_canUse } from "../combat/auto_combat_util";
 import {
   DesiredDrop,
   DesiredFights,
+  isAvailable,
   QuestTask,
   registerQuestTask,
   runQuestTask,
@@ -123,6 +124,7 @@ import { auto_canHabitat, auto_haveCCSC } from "../iotms/2020/mr2023";
 import {
   auto_canTracesBandit,
   auto_tracesUsesLeft,
+  haveUsedPeridot,
 } from "../iotms/2020/mr2025";
 import {
   auto_have_sword_familiar,
@@ -159,9 +161,11 @@ import {
 import { L10_basement, L10_holeInTheSkyUnlock, L10_topFloor } from "./level_10";
 import {
   L11_getBeehive,
+  L11_hiddenBowlingAlleyTask,
   L11_hiddenCity,
   L11_mauriceSpookyraven,
   L11_needTombRatchet,
+  L11_swordWantsBowlingMonster,
   LX_getLadySpookyravensPowderPuff,
   LX_unlockHauntedLibrary,
   LX_unlockManorSecondFloor,
@@ -814,7 +818,9 @@ registerQuestTask({
     auto_swordIsWillingToSwitchTargets() &&
     (!get("_auto_thisLoopHandleFamiliar", false) ||
       safeGet("auto_familiarChoice") === $familiar`Sword of S Words`) &&
-    (L9_swordWantsChasmMonster() || L7_swordWantsCryptMonster()),
+    (L9_swordWantsChasmMonster() ||
+      L7_swordWantsCryptMonster() ||
+      L11_swordWantsBowlingMonster()),
   do: () => {
     if (
       auto_sword_of_swords_tracking() === $monster.none &&
@@ -834,6 +840,19 @@ registerQuestTask({
       L7_swordWantsCryptMonster() &&
       handleFamiliar$1($familiar`Sword of S Words`) &&
       L7_crypt()
+    ) {
+      return true;
+    }
+    if (
+      possessEquipment($item`Peridot of Peril`) &&
+      !haveUsedPeridot($location`The Hidden Bowling Alley`) &&
+      L11_swordWantsBowlingMonster() &&
+      // Has no bowling done yet
+      itemAmount($item`bowling ball`) === 0 &&
+      get("hiddenBowlingAlleyProgress") === 1 &&
+      isAvailable(L11_hiddenBowlingAlleyTask) &&
+      handleFamiliar$1($familiar`Sword of S Words`) &&
+      runQuestTask(L11_hiddenBowlingAlleyTask)
     ) {
       return true;
     }

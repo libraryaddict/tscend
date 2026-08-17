@@ -400,6 +400,10 @@ export function isComplete(tasks: QuestTask | QuestTask[]): boolean {
   );
 }
 
+export function isAvailable(task: QuestTask): boolean {
+  return getEngine().available(task);
+}
+
 export function runTaskChain(tasks: QuestTask[]): boolean {
   for (const task of tasks) {
     if (!getEngine().available(task)) {

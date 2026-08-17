@@ -228,10 +228,14 @@ import {
   auto_monkeyPawWishesLeft,
 } from "../iotms/2020/mr2023";
 import { auto_haveTearawayPants } from "../iotms/2020/mr2024";
+import { auto_havePeridot, haveUsedPeridot } from "../iotms/2020/mr2025";
 import {
   auto_copierShouldDelayZone,
+  auto_desires_sword_familiar_drops,
   auto_spadeDigSkeleton,
   auto_spadeDigsRemaining,
+  auto_swordFamiliarWantsMonsterDrops,
+  auto_swordIsWillingToSwitchTargets,
   auto_wantToSpadeDigSkeleton,
 } from "../iotms/2020/mr2026";
 import { in_bhy } from "../paths/2011/bees_hate_you";
@@ -2392,481 +2396,73 @@ export function hiddenCityChoiceHandler(choice: number): void {
   }
 }
 
-function L11_hiddenCityDo(): boolean {
-  if (itemAmount($item`[2180]ancient amulet`) === 1) {
-    return true;
-  } else if (itemAmount($item`[7963]ancient amulet`) === 0 && isActuallyEd()) {
-    return true;
-  }
-
-  if (
-    internalQuestStatus("questL11Curses") > 1 ||
-    itemAmount($item`moss-covered stone sphere`) > 0
-  ) {
-    uneffect($effect`Thrice-Cursed`);
-  }
-  //can we handle this zone?
-  if (!in_pokefam() && !in_darkGyffte() && !in_aosol() && !in_wereprof()) {
-    if (!acquireHP()) {
-      //try to restore HP to max.
-      auto_log_warning(
-        "Delaying hidden city because we are unable to restore HP",
-      );
-      return false; //could not heal HP. we should go do something else first
-    }
-  }
-  if (in_robot() && myLevel() < 13) {
-    return false;
-  }
-
-  const weapon_ghost_dmg: number = toInt(
-    numericModifier($modifier`Hot Damage`) +
-      numericModifier($modifier`Cold Damage`) +
-      numericModifier($modifier`Stench Damage`) +
-      numericModifier($modifier`Sleaze Damage`) +
-      numericModifier($modifier`Spooky Damage`),
-  );
-  if (
-    !in_robot() &&
-    !in_darkGyffte() &&
-    weapon_ghost_dmg < 20 &&
-    !acquireMP(
-      //we can not rely on melee/ranged weapon to kill the ghost
-      30,
-      0,
-    )
-  ) {
-    //try getting some MP, relying on a spell to kill them instead. TODO verify we have a spell
-    auto_log_warning(
-      "We can not reliably kill Specters in hidden city due to a shortage of MP and elemental weapon dmg. Delaying zone",
-      "red",
-    );
-    return false;
-  }
-
-  if (
-    internalQuestStatus("questL11Curses") === 0 &&
-    haveEffect($effect`Ancient Fortitude`) === 0
-  ) {
-    auto_log_info("The idden [sic] apartment!", "blue");
-
-    let elevatorAction: boolean =
-      !zone_delay($location`The Hidden Apartment Building`).shouldDelay ||
-      auto_haveQueuedForcedNonCombat();
-
-    let canDrinkCursedPunch: boolean =
-      auto_canDrink($item`Cursed Punch`) &&
-      !get("auto_limitConsume", false) &&
-      !in_tcrs() &&
-      !in_small();
-    //todo: in_tcrs check quality and size of cursed punch instead of skipping? if that is possible
-
-    let cursesNeeded: number = 3;
-    if (haveEffect($effect`Once-Cursed`) > 0) {
-      cursesNeeded = 2;
-    }
-    if (haveEffect($effect`Twice-Cursed`) > 0) {
-      cursesNeeded = 1;
-    }
-    if (auto_haveCCSC()) {
-      cursesNeeded -= 1;
-    }
-    //able to drink, enough liver?
-    if (canDrinkCursedPunch) {
-      let inebrietyAllowedForPunch: number = inebriety_left();
-      if (in_quantumTerrarium() && myFamiliar() === $familiar`Stooper`) {
-        //in QT the limit is lower or else will be overdrunk when Stooper changes
-        inebrietyAllowedForPunch -= 1;
-      }
-
-      if (
-        inebrietyAllowedForPunch <
-        cursesNeeded * $item`Cursed Punch`.inebriety
-      ) {
-        canDrinkCursedPunch = false;
-      }
-    }
-
-    if (
-      !elevatorAction &&
-      $location`The Hidden Apartment Building`.turnsSpent <= 4 &&
-      auto_canForceNextNoncombat()
-    ) {
-      //should we try to force the noncombat?
-      let shouldForceElevatorAction: boolean = false;
-
-      if (
-        haveEffect($effect`Thrice-Cursed`) > 0 ||
-        (haveEffect($effect`Twice-Cursed`) > 0 && auto_haveCCSC())
-      ) {
-        shouldForceElevatorAction = true;
-      } else if (canDrinkCursedPunch) {
-        if (toFloat(getProperty("auto_consumeMinAdvPerFill")) !== 0) {
-          //try to respect user setting for cursed punch while there is apartment delay
-          //give it at least +1 adv that it saves fighting a pygmy shaman
-          const advPerFillFromCursedPunch: number = toInt(
-            (expectedAdventuresFrom($item`Cursed Punch`) + 1) /
-              $item`Cursed Punch`.inebriety,
-          );
-          if (
-            advPerFillFromCursedPunch <
-            toFloat(getProperty("auto_consumeMinAdvPerFill"))
-          ) {
-            canDrinkCursedPunch = false;
-          }
-        }
-        //can drink and inebriety allows it
-        if (canDrinkCursedPunch) {
-          const canBuyCursedPunch: boolean =
-            myMeat() >= cursesNeeded * 500 * npcStoreDiscountMulti() &&
-            !is_werewolf(); //can't buy cursed punch as a werewolf
-
-          if (canBuyCursedPunch) {
-            L11_hiddenTavernUnlock(true);
-
-            if (myAscensions() === get("hiddenTavernUnlock")) {
-              shouldForceElevatorAction = true;
-            }
-          }
-        }
-      }
-
-      if (shouldForceElevatorAction) {
-        elevatorAction = auto_forceNextNoncombat(
-          $location`The Hidden Apartment Building`,
-        );
-        // delay if we are out of NC forcers and haven't run out of things to do
-        if (
-          !elevatorAction &&
-          myDaycount() < get("auto_runDayCount", 0) &&
-          !isAboutToPowerlevel()
-        ) {
-          return false;
-        }
-      }
-    }
-
-    if (!elevatorAction) {
-      auto_log_info(
-        `Hidden Apartment Progress: ${getProperty("hiddenApartmentProgress")}`,
-        "blue",
-      );
-
-      const turnsUntilElevatorAction: number = zone_delay(
-        $location`The Hidden Apartment Building`,
-      ).delayRemaining;
-
-      if (
-        auto_have_familiar($familiar`Nosy Nose`) &&
-        auto_is_valid$2($skill`Get a Good Whiff of This Guy`)
-      ) {
-        if (
-          haveEffect($effect`Thrice-Cursed`) < turnsUntilElevatorAction + 1 &&
-          (auto_combat_appearance_rates$1(
-            $location`The Hidden Apartment Building`,
-          ).get($monster`pygmy shaman`) ?? 0.0) < 100
-        ) {
-          handleFamiliar$1($familiar`Nosy Nose`); //whiff increases chance of shamen. the deleveling can also help survive being cursed
-        } else if (
-          (auto_combat_appearance_rates$1(
-            $location`The Hidden Office Building`,
-          ).get($monster`pygmy witch accountant`) ?? 0.0) >= 20 &&
-          itemAmount($item`McClusky file (complete)`) === 0
-        ) {
-          //once done with curses will want witch accountants
-          if (
-            itemAmount($item`McClusky file (page 4)`) === 0 ||
-            safeGet("nosyNoseMonster") === $monster`pygmy witch accountant`
-          ) {
-            handleFamiliar$1($familiar`Nosy Nose`);
-          }
-        }
-      }
-      return autoAdv($location`The Hidden Apartment Building`);
-    } else {
-      if (haveEffect($effect`Thrice-Cursed`) === 0) {
-        //can drink and inebriety allows it
-        if (canDrinkCursedPunch) {
-          L11_hiddenTavernUnlock(true);
-          if (myAscensions() === get("hiddenTavernUnlock") && !is_werewolf()) {
-            auto_buyUpTo(cursesNeeded, $item`Cursed Punch`);
-            if (itemAmount($item`Cursed Punch`) < cursesNeeded) {
-              abort(
-                "Could not acquire Cursed Punch, unable to deal with Hidden Apartment Properly",
-              );
-            }
-            autoDrink(cursesNeeded, $item`Cursed Punch`);
-          }
-        }
-      } else {
-        set(
-          "auto_nextEncounter",
-          "ancient protector spirit (The Hidden Apartment Building)",
-        );
-      }
-      auto_log_info(
-        `Hidden Apartment Progress: ${getProperty("hiddenApartmentProgress")}`,
-        "blue",
-      );
-      return autoAdv($location`The Hidden Apartment Building`);
-    }
-  }
-
-  if (
-    internalQuestStatus("questL11Business") === 0 &&
-    myAdventures() + $location`The Hidden Office Building`.turnsSpent >= 11
-  ) {
-    auto_log_info("The idden [sic] office!", "blue");
-
-    if (creatableAmount($item`McClusky file (complete)`) > 0) {
-      create(1, $item`McClusky file (complete)`);
-      if (itemAmount($item`McClusky file (complete)`) === 0) {
-        abort("Failed to create $item[McClusky file (complete)]");
-      }
-    }
-
-    const turnsUntilWorkingHoliday = zone_delay(
-      $location`The Hidden Office Building`,
-    ).delayRemaining;
-    let workingHoliday: boolean =
-      turnsUntilWorkingHoliday === 0 || auto_haveQueuedForcedNonCombat();
-
-    if (
-      turnsUntilWorkingHoliday > 1 &&
-      itemAmount($item`McClusky file (complete)`) > 0 &&
-      auto_canForceNextNoncombat()
-    ) {
-      if (auto_forceNextNoncombat($location`The Hidden Office Building`)) {
-        //how many delay turns should this save to be considered?
-        workingHoliday = true;
-      } else if (
-        myDaycount() < get("auto_runDayCount", 0) &&
-        !isAboutToPowerlevel()
-      ) {
-        // delay if we are out of NC forcers and haven't run out of things to do
-        return false;
-      }
-    }
-
-    function missingMcCluskyFiles(): number {
-      //files are obtained in order
-      if (itemAmount($item`McClusky file (complete)`) > 0) {
-        return 0;
-      } else if (itemAmount($item`McClusky file (page 5)`) > 0) {
-        return 0;
-      } else if (itemAmount($item`McClusky file (page 4)`) > 0) {
-        return 1;
-      } else if (itemAmount($item`McClusky file (page 3)`) > 0) {
-        return 2;
-      } else if (itemAmount($item`McClusky file (page 2)`) > 0) {
-        return 3;
-      } else if (itemAmount($item`McClusky file (page 1)`) > 0) {
-        return 4;
-      } else {
-        return 5;
-      }
-    }
-
-    if (!workingHoliday && missingMcCluskyFiles() > 0) {
-      //need more accountants
-      if (
-        auto_have_familiar($familiar`Nosy Nose`) &&
-        auto_is_valid$2($skill`Get a Good Whiff of This Guy`) &&
-        (auto_combat_appearance_rates$1(
-          $location`The Hidden Office Building`,
-        ).get($monster`pygmy witch accountant`) ?? 0.0) < 100
-      ) {
-        handleFamiliar$1($familiar`Nosy Nose`); //whiff increases chance of witch accountant
-      }
-    }
-
-    auto_log_info(
-      `Hidden Office Progress: ${getProperty("hiddenOfficeProgress")}`,
-      "blue",
-    );
-
-    if (
-      workingHoliday &&
-      itemAmount($item`boring binder clip`) > 0 &&
-      missingMcCluskyFiles() > 0 &&
-      (auto_combat_appearance_rates$1(
-        $location`The Hidden Apartment Building`,
-      ).get($monster`pygmy witch accountant`) ?? 0.0) >=
-        missingMcCluskyFiles() * 25
-    ) {
-      //Hidden Apartment unmodified 25% chance of accountant is better if only 1 missingMcCluskyFiles
-      //office noncombat is already one guaranteed accountant so with more missingMcCluskyFiles only go Apartment if better rate
-      auto_log_info(
-        "About to meet the boss in the Hidden Office. Trying to gather missing files in the Apartment instead to save delay.",
-        "blue",
-      );
-      if (
-        auto_have_familiar($familiar`Nosy Nose`) &&
-        auto_is_valid$2($skill`Get a Good Whiff of This Guy`)
-      ) {
-        handleFamiliar$1($familiar`Nosy Nose`); //whiff increases chance of witch accountant
-      }
-      return autoAdv($location`The Hidden Apartment Building`);
-    }
-
-    if (workingHoliday && itemAmount($item`McClusky file (complete)`) > 0) {
-      set(
-        "auto_nextEncounter",
-        "ancient protector spirit (The Hidden Office Building)",
-      );
-    }
-    return autoAdv($location`The Hidden Office Building`);
-  }
-
-  if (internalQuestStatus("questL11Spare") === 0) {
-    auto_log_info("The idden [sic] bowling alley!", "blue");
-    L11_hiddenTavernUnlock(true);
-    if (myAscensions() === get("hiddenTavernUnlock")) {
-      if (itemAmount($item`Bowl of Scorpions`) === 0 && !is_werewolf()) {
-        //can't access shops as werewolf
-        auto_buyUpTo(1, $item`Bowl of Scorpions`);
-        if (in_ocrs()) {
-          auto_buyUpTo(3, $item`Bowl of Scorpions`);
-        }
-      }
-    }
-
-    buffMaintain$2($effect`Fishy Whiskers`);
-    auto_log_info(
-      `Hidden Bowling Alley Progress: ${getProperty("hiddenBowlingAlleyProgress")}`,
-      "blue",
-    );
-    if (
-      canSniff($monster`pygmy bowler`, $location`The Hidden Bowling Alley`) &&
-      itemAmount($item`bowling ball`) < 1 &&
-      auto_mapTheMonsters()
-    ) {
-      auto_log_info(
-        "Attemping to use Map the Monsters to olfact a Pygmy Bowler.",
-      );
-    }
-    if (auto_canCamelSpit() && get("hiddenBowlingAlleyProgress") < 2) {
-      auto_log_info(
-        "Bringing the Camel to spit on a Pygmy Bowler for bowling balls.",
-      );
-      handleFamiliar$1($familiar`Melodramedary`);
-    }
-    if (auto_haveGreyGoose() && get("hiddenBowlingAlleyProgress") < 3) {
-      auto_log_info(
-        "Bringing the Grey Goose to emit some drones at a Pygmy Bowler for bowling balls.",
-      );
-      handleFamiliar$1($familiar`Grey Goose`);
-    }
-    if (
-      itemAmount($item`bowling ball`) > 0 &&
-      get("hiddenBowlingAlleyProgress") === 5
-    ) {
-      set(
-        "auto_nextEncounter",
-        "ancient protector spirit (The Hidden Bowling Alley)",
-      );
-    }
-    return autoAdv($location`The Hidden Bowling Alley`);
-  }
-
-  if (internalQuestStatus("questL11Doctor") === 0) {
-    if (itemAmount($item`dripping stone sphere`) > 0) {
-      return true;
-    }
-    auto_log_info("The idden [sic] ospital!", "blue");
-
-    autoEquip($item`bloodied surgical dungarees`);
-    autoEquip($item`half-size scalpel`);
-    autoEquip($item`surgical apron`);
-    autoEquipToSlot($slot`acc3`, $item`head mirror`);
-    autoEquipToSlot($slot`acc2`, $item`surgical mask`);
-
-    let surgeonGearWanted: number = 0;
-    for (const it of $items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`) {
-      if (!possessEquipment(it) && auto_can_equip(it)) {
-        surgeonGearWanted += 1;
-      }
-    }
-    if (surgeonGearWanted > 0) {
-      //need more surgeons?
-      if (
-        auto_have_familiar($familiar`Nosy Nose`) &&
-        auto_is_valid$2($skill`Get a Good Whiff of This Guy`) &&
-        (auto_combat_appearance_rates$1($location`The Hidden Hospital`).get(
-          $monster`pygmy witch surgeon`,
-        ) ?? 0.0) < 100
-      ) {
-        if (
-          surgeonGearWanted >= 2 ||
-          safeGet("nosyNoseMonster") === $monster`pygmy witch surgeon`
-        ) {
-          handleFamiliar$1($familiar`Nosy Nose`); //whiff increases chance of witch accountant
-        }
-      }
-    }
-    auto_log_info(
-      `Hidden Hospital Progress: ${getProperty("hiddenHospitalProgress")}`,
-      "blue",
-    );
-    return autoAdv($location`The Hidden Hospital`);
-  }
-
-  if (itemAmount($item`moss-covered stone sphere`) > 0) {
-    auto_log_info("Getting the stone triangles", "blue");
-    return autoAdv($location`An Overgrown Shrine (Northwest)`);
-  }
-
-  if (itemAmount($item`crackling stone sphere`) > 0) {
-    auto_log_info("Getting the stone triangles", "blue");
-    return autoAdv($location`An Overgrown Shrine (Northeast)`);
-  }
-
-  if (itemAmount($item`dripping stone sphere`) > 0) {
-    auto_log_info("Getting the stone triangles", "blue");
-    return autoAdv($location`An Overgrown Shrine (Southwest)`);
-  }
-
-  if (itemAmount($item`scorched stone sphere`) > 0) {
-    auto_log_info("Getting the stone triangles", "blue");
-    return autoAdv($location`An Overgrown Shrine (Southeast)`);
-  }
-
-  if (itemAmount($item`stone triangle`) === 4) {
-    auto_log_info("Fighting the out-of-work spirit", "blue");
-    acquireHP();
-    //AoSOL buffs
-    if (in_aosol()) {
-      buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
-      buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
-    }
-    set("auto_nextEncounter", "Protector Spectre");
-    handleFamiliar("boss");
-    const advSpent: boolean = autoAdv($location`A Massive Ziggurat`);
-    if (internalQuestStatus("questL11MacGuffin") > 2) {
-      // Actually Ed finishes this quest when all 3 parts of the staff are returned
-      council();
-    }
-    return advSpent;
-  }
-
-  return false;
-}
-
 export const L11_hiddenCityTask: QuestTask = registerQuestTask({
   name: "L11_hiddenCity",
-  completed: () => internalQuestStatus("questL11Worship") > 4,
+  completed: () =>
+    internalQuestStatus("questL11Worship") > 4 ||
+    itemAmount($item`[2180]ancient amulet`) > 0 ||
+    (isActuallyEd() && itemAmount($item`[7963]ancient amulet`) > 0),
   ready: () => internalQuestStatus("questL11Worship") >= 3,
-  do: L11_hiddenCityDo,
-  locations: $locations`The Hidden Apartment Building, The Hidden Office Building, The Hidden Bowling Alley, The Hidden Hospital, An Overgrown Shrine (Northwest), An Overgrown Shrine (Northeast), An Overgrown Shrine (Southwest), An Overgrown Shrine (Southeast), A Massive Ziggurat`,
+  do: () => {
+    if (
+      internalQuestStatus("questL11Curses") > 1 ||
+      itemAmount($item`moss-covered stone sphere`) > 0
+    ) {
+      uneffect($effect`Thrice-Cursed`);
+    }
+    //can we handle this zone?
+    if (!in_pokefam() && !in_darkGyffte() && !in_aosol() && !in_wereprof()) {
+      if (!acquireHP()) {
+        //try to restore HP to max.
+        auto_log_warning(
+          "Delaying hidden city because we are unable to restore HP",
+        );
+        return false; //could not heal HP. we should go do something else first
+      }
+    }
+    if (in_robot() && myLevel() < 13) {
+      return false;
+    }
+
+    const weapon_ghost_dmg: number = toInt(
+      numericModifier($modifier`Hot Damage`) +
+        numericModifier($modifier`Cold Damage`) +
+        numericModifier($modifier`Stench Damage`) +
+        numericModifier($modifier`Sleaze Damage`) +
+        numericModifier($modifier`Spooky Damage`),
+    );
+    if (
+      !in_robot() &&
+      !in_darkGyffte() &&
+      weapon_ghost_dmg < 20 &&
+      !acquireMP(
+        //we can not rely on melee/ranged weapon to kill the ghost
+        30,
+        0,
+      )
+    ) {
+      //try getting some MP, relying on a spell to kill them instead. TODO verify we have a spell
+      auto_log_warning(
+        "We can not reliably kill Specters in hidden city due to a shortage of MP and elemental weapon dmg. Delaying zone",
+        "red",
+      );
+      return false;
+    }
+
+    return runTaskChain([
+      L11_hiddenApartmentTask,
+      L11_hiddenOfficeTask,
+      L11_hiddenBowlingAlleyTask,
+      L11_hiddenHospitalTask,
+      L11_overgrownShrineNorthwestTask,
+      L11_overgrownShrineNortheastTask,
+      L11_overgrownShrineSouthwestTask,
+      L11_overgrownShrineSoutheastTask,
+      L11_massiveZigguratTask,
+    ]);
+  },
   desiredEncounters: () => {
     const desired: (DesiredDrop | DesiredFights)[] = [];
-
-    if (internalQuestStatus("questL11Worship") <= 4) {
-      desired.push({
-        monster: $monster`Protector Spectre`,
-        needAmount: 1,
-      });
-    }
 
     if (itemAmount($item`McClusky file (complete)`) === 0) {
       desired.push(
@@ -2890,8 +2486,522 @@ export const L11_hiddenCityTask: QuestTask = registerQuestTask({
   },
 });
 
+function L11_hiddenApartmentDo(): boolean {
+  auto_log_info("The idden [sic] apartment!", "blue");
+
+  let elevatorAction: boolean =
+    !zone_delay($location`The Hidden Apartment Building`).shouldDelay ||
+    auto_haveQueuedForcedNonCombat();
+
+  let canDrinkCursedPunch: boolean =
+    auto_canDrink($item`Cursed Punch`) &&
+    !get("auto_limitConsume", false) &&
+    !in_tcrs() &&
+    !in_small();
+  //todo: in_tcrs check quality and size of cursed punch instead of skipping? if that is possible
+
+  let cursesNeeded: number = 3;
+  if (haveEffect($effect`Once-Cursed`) > 0) {
+    cursesNeeded = 2;
+  }
+  if (haveEffect($effect`Twice-Cursed`) > 0) {
+    cursesNeeded = 1;
+  }
+  if (auto_haveCCSC()) {
+    cursesNeeded -= 1;
+  }
+  //able to drink, enough liver?
+  if (canDrinkCursedPunch) {
+    let inebrietyAllowedForPunch: number = inebriety_left();
+    if (in_quantumTerrarium() && myFamiliar() === $familiar`Stooper`) {
+      //in QT the limit is lower or else will be overdrunk when Stooper changes
+      inebrietyAllowedForPunch -= 1;
+    }
+
+    if (
+      inebrietyAllowedForPunch <
+      cursesNeeded * $item`Cursed Punch`.inebriety
+    ) {
+      canDrinkCursedPunch = false;
+    }
+  }
+
+  if (
+    !elevatorAction &&
+    $location`The Hidden Apartment Building`.turnsSpent <= 4 &&
+    auto_canForceNextNoncombat()
+  ) {
+    //should we try to force the noncombat?
+    let shouldForceElevatorAction: boolean = false;
+
+    if (
+      haveEffect($effect`Thrice-Cursed`) > 0 ||
+      (haveEffect($effect`Twice-Cursed`) > 0 && auto_haveCCSC())
+    ) {
+      shouldForceElevatorAction = true;
+    } else if (canDrinkCursedPunch) {
+      if (toFloat(getProperty("auto_consumeMinAdvPerFill")) !== 0) {
+        //try to respect user setting for cursed punch while there is apartment delay
+        //give it at least +1 adv that it saves fighting a pygmy shaman
+        const advPerFillFromCursedPunch: number = toInt(
+          (expectedAdventuresFrom($item`Cursed Punch`) + 1) /
+            $item`Cursed Punch`.inebriety,
+        );
+        if (
+          advPerFillFromCursedPunch <
+          toFloat(getProperty("auto_consumeMinAdvPerFill"))
+        ) {
+          canDrinkCursedPunch = false;
+        }
+      }
+      //can drink and inebriety allows it
+      if (canDrinkCursedPunch) {
+        const canBuyCursedPunch: boolean =
+          myMeat() >= cursesNeeded * 500 * npcStoreDiscountMulti() &&
+          !is_werewolf(); //can't buy cursed punch as a werewolf
+
+        if (canBuyCursedPunch) {
+          L11_hiddenTavernUnlock(true);
+
+          if (myAscensions() === get("hiddenTavernUnlock")) {
+            shouldForceElevatorAction = true;
+          }
+        }
+      }
+    }
+
+    if (shouldForceElevatorAction) {
+      elevatorAction = auto_forceNextNoncombat(
+        $location`The Hidden Apartment Building`,
+      );
+      // delay if we are out of NC forcers and haven't run out of things to do
+      if (
+        !elevatorAction &&
+        myDaycount() < get("auto_runDayCount", 0) &&
+        !isAboutToPowerlevel()
+      ) {
+        return false;
+      }
+    }
+  }
+
+  if (!elevatorAction) {
+    auto_log_info(
+      `Hidden Apartment Progress: ${getProperty("hiddenApartmentProgress")}`,
+      "blue",
+    );
+
+    const turnsUntilElevatorAction: number = zone_delay(
+      $location`The Hidden Apartment Building`,
+    ).delayRemaining;
+
+    if (
+      auto_have_familiar($familiar`Nosy Nose`) &&
+      auto_is_valid$2($skill`Get a Good Whiff of This Guy`)
+    ) {
+      if (
+        haveEffect($effect`Thrice-Cursed`) < turnsUntilElevatorAction + 1 &&
+        (auto_combat_appearance_rates$1(
+          $location`The Hidden Apartment Building`,
+        ).get($monster`pygmy shaman`) ?? 0.0) < 100
+      ) {
+        handleFamiliar$1($familiar`Nosy Nose`); //whiff increases chance of shamen. the deleveling can also help survive being cursed
+      } else if (
+        (auto_combat_appearance_rates$1(
+          $location`The Hidden Office Building`,
+        ).get($monster`pygmy witch accountant`) ?? 0.0) >= 20 &&
+        itemAmount($item`McClusky file (complete)`) === 0
+      ) {
+        //once done with curses will want witch accountants
+        if (
+          itemAmount($item`McClusky file (page 4)`) === 0 ||
+          safeGet("nosyNoseMonster") === $monster`pygmy witch accountant`
+        ) {
+          handleFamiliar$1($familiar`Nosy Nose`);
+        }
+      }
+    }
+    return autoAdv($location`The Hidden Apartment Building`);
+  } else {
+    if (haveEffect($effect`Thrice-Cursed`) === 0) {
+      //can drink and inebriety allows it
+      if (canDrinkCursedPunch) {
+        L11_hiddenTavernUnlock(true);
+        if (myAscensions() === get("hiddenTavernUnlock") && !is_werewolf()) {
+          auto_buyUpTo(cursesNeeded, $item`Cursed Punch`);
+          if (itemAmount($item`Cursed Punch`) < cursesNeeded) {
+            abort(
+              "Could not acquire Cursed Punch, unable to deal with Hidden Apartment Properly",
+            );
+          }
+          autoDrink(cursesNeeded, $item`Cursed Punch`);
+        }
+      }
+    } else {
+      set(
+        "auto_nextEncounter",
+        "ancient protector spirit (The Hidden Apartment Building)",
+      );
+    }
+    auto_log_info(
+      `Hidden Apartment Progress: ${getProperty("hiddenApartmentProgress")}`,
+      "blue",
+    );
+    return autoAdv($location`The Hidden Apartment Building`);
+  }
+}
+
+const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
+  L11_hiddenCityTask,
+  {
+    name: "L11_hiddenApartment",
+    completed: () =>
+      internalQuestStatus("questL11Curses") > 0 ||
+      haveEffect($effect`Ancient Fortitude`) > 0,
+    ready: () => internalQuestStatus("questL11Curses") === 0,
+    do: L11_hiddenApartmentDo,
+    locations: $location`The Hidden Apartment Building`,
+  },
+);
+
+function L11_hiddenOfficeDo(): boolean {
+  auto_log_info("The idden [sic] office!", "blue");
+
+  if (creatableAmount($item`McClusky file (complete)`) > 0) {
+    create(1, $item`McClusky file (complete)`);
+    if (itemAmount($item`McClusky file (complete)`) === 0) {
+      abort("Failed to create $item[McClusky file (complete)]");
+    }
+  }
+
+  const turnsUntilWorkingHoliday = zone_delay(
+    $location`The Hidden Office Building`,
+  ).delayRemaining;
+  let workingHoliday: boolean =
+    turnsUntilWorkingHoliday === 0 || auto_haveQueuedForcedNonCombat();
+
+  if (
+    turnsUntilWorkingHoliday > 1 &&
+    itemAmount($item`McClusky file (complete)`) > 0 &&
+    auto_canForceNextNoncombat()
+  ) {
+    if (auto_forceNextNoncombat($location`The Hidden Office Building`)) {
+      //how many delay turns should this save to be considered?
+      workingHoliday = true;
+    } else if (
+      myDaycount() < get("auto_runDayCount", 0) &&
+      !isAboutToPowerlevel()
+    ) {
+      // delay if we are out of NC forcers and haven't run out of things to do
+      return false;
+    }
+  }
+
+  function missingMcCluskyFiles(): number {
+    //files are obtained in order
+    if (itemAmount($item`McClusky file (complete)`) > 0) {
+      return 0;
+    } else if (itemAmount($item`McClusky file (page 5)`) > 0) {
+      return 0;
+    } else if (itemAmount($item`McClusky file (page 4)`) > 0) {
+      return 1;
+    } else if (itemAmount($item`McClusky file (page 3)`) > 0) {
+      return 2;
+    } else if (itemAmount($item`McClusky file (page 2)`) > 0) {
+      return 3;
+    } else if (itemAmount($item`McClusky file (page 1)`) > 0) {
+      return 4;
+    } else {
+      return 5;
+    }
+  }
+
+  if (!workingHoliday && missingMcCluskyFiles() > 0) {
+    //need more accountants
+    if (
+      auto_have_familiar($familiar`Nosy Nose`) &&
+      auto_is_valid$2($skill`Get a Good Whiff of This Guy`) &&
+      (auto_combat_appearance_rates$1(
+        $location`The Hidden Office Building`,
+      ).get($monster`pygmy witch accountant`) ?? 0.0) < 100
+    ) {
+      handleFamiliar$1($familiar`Nosy Nose`); //whiff increases chance of witch accountant
+    }
+  }
+
+  auto_log_info(
+    `Hidden Office Progress: ${getProperty("hiddenOfficeProgress")}`,
+    "blue",
+  );
+
+  if (
+    workingHoliday &&
+    itemAmount($item`boring binder clip`) > 0 &&
+    missingMcCluskyFiles() > 0 &&
+    (auto_combat_appearance_rates$1(
+      $location`The Hidden Apartment Building`,
+    ).get($monster`pygmy witch accountant`) ?? 0.0) >=
+      missingMcCluskyFiles() * 25
+  ) {
+    //Hidden Apartment unmodified 25% chance of accountant is better if only 1 missingMcCluskyFiles
+    //office noncombat is already one guaranteed accountant so with more missingMcCluskyFiles only go Apartment if better rate
+    auto_log_info(
+      "About to meet the boss in the Hidden Office. Trying to gather missing files in the Apartment instead to save delay.",
+      "blue",
+    );
+    if (
+      auto_have_familiar($familiar`Nosy Nose`) &&
+      auto_is_valid$2($skill`Get a Good Whiff of This Guy`)
+    ) {
+      handleFamiliar$1($familiar`Nosy Nose`); //whiff increases chance of witch accountant
+    }
+    return autoAdv($location`The Hidden Apartment Building`);
+  }
+
+  if (workingHoliday && itemAmount($item`McClusky file (complete)`) > 0) {
+    set(
+      "auto_nextEncounter",
+      "ancient protector spirit (The Hidden Office Building)",
+    );
+  }
+  return autoAdv($location`The Hidden Office Building`);
+}
+
+const L11_hiddenOfficeTask: QuestTask = registerQuestTask(L11_hiddenCityTask, {
+  name: "L11_hiddenOffice",
+  completed: () => internalQuestStatus("questL11Business") > 0,
+  ready: () =>
+    internalQuestStatus("questL11Curses") === 0 &&
+    myAdventures() + $location`The Hidden Office Building`.turnsSpent >= 11,
+  do: L11_hiddenOfficeDo,
+  locations: $locations`The Hidden Office Building, The Hidden Apartment Building`,
+});
+
+function L11_hiddenBowlingAlleyDo(): boolean {
+  auto_log_info("The idden [sic] bowling alley!", "blue");
+  L11_hiddenTavernUnlock(true);
+  if (myAscensions() === get("hiddenTavernUnlock")) {
+    if (itemAmount($item`Bowl of Scorpions`) === 0 && !is_werewolf()) {
+      //can't access shops as werewolf
+      auto_buyUpTo(1, $item`Bowl of Scorpions`);
+      if (in_ocrs()) {
+        auto_buyUpTo(3, $item`Bowl of Scorpions`);
+      }
+    }
+  }
+  if (
+    itemAmount($item`bowling ball`) > 0 &&
+    get("hiddenBowlingAlleyProgress") === 5
+  ) {
+    set(
+      "auto_nextEncounter",
+      "ancient protector spirit (The Hidden Bowling Alley)",
+    );
+  }
+
+  buffMaintain$2($effect`Fishy Whiskers`);
+  auto_log_info(
+    `Hidden Bowling Alley Progress: ${getProperty("hiddenBowlingAlleyProgress")}`,
+    "blue",
+  );
+  if (
+    (!auto_havePeridot() ||
+      haveUsedPeridot($location`The Hidden Bowling Alley`)) &&
+    canSniff($monster`pygmy bowler`, $location`The Hidden Bowling Alley`) &&
+    itemAmount($item`bowling ball`) < 1 &&
+    auto_mapTheMonsters()
+  ) {
+    auto_log_info(
+      "Attemping to use Map the Monsters to olfact a Pygmy Bowler.",
+    );
+  }
+  if (
+    !get("_auto_thisLoopHandleFamiliar") &&
+    auto_canCamelSpit() &&
+    get("hiddenBowlingAlleyProgress") < 2
+  ) {
+    auto_log_info(
+      "Bringing the Camel to spit on a Pygmy Bowler for bowling balls.",
+    );
+    handleFamiliar$1($familiar`Melodramedary`);
+  }
+  if (
+    !get("_auto_thisLoopHandleFamiliar") &&
+    auto_haveGreyGoose() &&
+    get("hiddenBowlingAlleyProgress") < 3
+  ) {
+    auto_log_info(
+      "Bringing the Grey Goose to emit some drones at a Pygmy Bowler for bowling balls.",
+    );
+    handleFamiliar$1($familiar`Grey Goose`);
+  }
+  return autoAdv($location`The Hidden Bowling Alley`);
+}
+
+export const L11_hiddenBowlingAlleyTask: QuestTask = registerQuestTask(
+  L11_hiddenCityTask,
+  {
+    name: "L11_hiddenBowlingAlley",
+    completed: () => internalQuestStatus("questL11Spare") > 0,
+    ready: () => internalQuestStatus("questL11Spare") === 0,
+    do: L11_hiddenBowlingAlleyDo,
+    locations: $location`The Hidden Bowling Alley`,
+  },
+);
+
+function L11_hiddenHospitalDo(): boolean {
+  if (itemAmount($item`dripping stone sphere`) > 0) {
+    return true;
+  }
+  auto_log_info("The idden [sic] ospital!", "blue");
+
+  autoEquip($item`bloodied surgical dungarees`);
+  autoEquip($item`half-size scalpel`);
+  autoEquip($item`surgical apron`);
+  autoEquipToSlot($slot`acc3`, $item`head mirror`);
+  autoEquipToSlot($slot`acc2`, $item`surgical mask`);
+
+  let surgeonGearWanted: number = 0;
+  for (const it of $items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`) {
+    if (!possessEquipment(it) && auto_can_equip(it)) {
+      surgeonGearWanted += 1;
+    }
+  }
+  if (surgeonGearWanted > 0) {
+    //need more surgeons?
+    if (
+      auto_have_familiar($familiar`Nosy Nose`) &&
+      auto_is_valid$2($skill`Get a Good Whiff of This Guy`) &&
+      (auto_combat_appearance_rates$1($location`The Hidden Hospital`).get(
+        $monster`pygmy witch surgeon`,
+      ) ?? 0.0) < 100
+    ) {
+      if (
+        surgeonGearWanted >= 2 ||
+        safeGet("nosyNoseMonster") === $monster`pygmy witch surgeon`
+      ) {
+        handleFamiliar$1($familiar`Nosy Nose`); //whiff increases chance of witch accountant
+      }
+    }
+  }
+  auto_log_info(
+    `Hidden Hospital Progress: ${getProperty("hiddenHospitalProgress")}`,
+    "blue",
+  );
+  return autoAdv($location`The Hidden Hospital`);
+}
+
+const L11_hiddenHospitalTask: QuestTask = registerQuestTask(
+  L11_hiddenCityTask,
+  {
+    name: "L11_hiddenHospital",
+    completed: () => internalQuestStatus("questL11Doctor") > 0,
+    ready: () => internalQuestStatus("questL11Doctor") === 0,
+    do: L11_hiddenHospitalDo,
+    locations: $location`The Hidden Hospital`,
+  },
+);
+
+const L11_overgrownShrineNorthwestTask: QuestTask = registerQuestTask(
+  L11_hiddenCityTask,
+  {
+    name: "L11_overgrownShrineNorthwest",
+    completed: () => itemAmount($item`moss-covered stone sphere`) === 0,
+    ready: () => get("hiddenApartmentProgress") >= 8,
+    do: () => {
+      auto_log_info("Getting the stone triangles", "blue");
+      return autoAdv($location`An Overgrown Shrine (Northwest)`);
+    },
+    locations: $location`An Overgrown Shrine (Northwest)`,
+  },
+);
+
+const L11_overgrownShrineNortheastTask: QuestTask = registerQuestTask(
+  L11_hiddenCityTask,
+  {
+    name: "L11_overgrownShrineNortheast",
+    completed: () => get("hiddenOfficeProgress") >= 8,
+    ready: () => true,
+    do: () => {
+      auto_log_info("Getting the stone triangles", "blue");
+      return autoAdv($location`An Overgrown Shrine (Northeast)`);
+    },
+    locations: $location`An Overgrown Shrine (Northeast)`,
+  },
+);
+
+const L11_overgrownShrineSouthwestTask: QuestTask = registerQuestTask(
+  L11_hiddenCityTask,
+  {
+    name: "L11_overgrownShrineSouthwest",
+    completed: () => get("hiddenHospitalProgress") >= 8,
+    ready: () => true,
+    do: () => {
+      auto_log_info("Getting the stone triangles", "blue");
+      return autoAdv($location`An Overgrown Shrine (Southwest)`);
+    },
+    locations: $location`An Overgrown Shrine (Southwest)`,
+  },
+);
+
+const L11_overgrownShrineSoutheastTask: QuestTask = registerQuestTask(
+  L11_hiddenCityTask,
+  {
+    name: "L11_overgrownShrineSoutheast",
+    completed: () => internalQuestStatus("hiddenBowlingAlleyProgress") >= 8,
+    ready: () => true,
+    do: () => {
+      auto_log_info("Getting the stone triangles", "blue");
+      return autoAdv($location`An Overgrown Shrine (Southeast)`);
+    },
+    locations: $location`An Overgrown Shrine (Southeast)`,
+  },
+);
+
+const L11_massiveZigguratTask: QuestTask = registerQuestTask(
+  L11_hiddenCityTask,
+  {
+    name: "L11_massiveZiggurat",
+    completed: () => itemAmount($item`stone triangle`) < 4,
+    ready: () => true,
+    do: () => {
+      auto_log_info("Fighting the out-of-work spirit", "blue");
+      acquireHP();
+      //AoSOL buffs
+      if (in_aosol()) {
+        buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
+        buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
+      }
+      set("auto_nextEncounter", "Protector Spectre");
+      handleFamiliar("boss");
+      const advSpent: boolean = autoAdv($location`A Massive Ziggurat`);
+      if (internalQuestStatus("questL11MacGuffin") > 2) {
+        // Actually Ed finishes this quest when all 3 parts of the staff are returned
+        council();
+      }
+      return advSpent;
+    },
+    locations: $location`A Massive Ziggurat`,
+    desiredEncounters: () => [
+      {
+        monster: $monster`Protector Spectre`,
+        needAmount: 1,
+      },
+    ],
+  },
+);
+
 export function L11_hiddenCity(): boolean {
   return runQuestTask(L11_hiddenCityTask);
+}
+
+export function L11_swordWantsBowlingMonster(): boolean {
+  if (!auto_swordIsWillingToSwitchTargets()) return false;
+
+  return (
+    !auto_desires_sword_familiar_drops() &&
+    auto_swordFamiliarWantsMonsterDrops($monster`pygmy bowler`)
+  );
 }
 
 function L11_hiddenCityZonesCanUseMachete(): boolean {
