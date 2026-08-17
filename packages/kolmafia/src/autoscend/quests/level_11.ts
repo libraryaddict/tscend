@@ -3849,24 +3849,26 @@ function L11_redZeppelin(): boolean {
     backupSetting("choiceAdventure866", (2).toString());
   }
 
-  maximizer
-    .weight($modifier`Sleaze Damage`, 100)
-    .weight($modifier`Sleaze Spell Damage`, 100);
-  if (auto_is_valid$3($effect`Oiled, Slick`)) {
-    auto_beachCombHead("sleaze");
-  }
-  for (const sl of $slots`acc1, acc2, acc3`) {
-    if (
-      numericModifier(equippedItem(sl), "sleaze damage") +
-        numericModifier(equippedItem(sl), "sleaze spell damage") <
-      60
-    ) {
+  if (get("zeppelinProtestors") < 79) {
+    maximizer
+      .weight($modifier`Sleaze Damage`, 100)
+      .weight($modifier`Sleaze Spell Damage`, 100);
+    if (auto_is_valid$3($effect`Oiled, Slick`)) {
+      auto_beachCombHead("sleaze");
+    }
+    for (const sl of $slots`acc1, acc2, acc3`) {
       if (
-        itemAmount($item`mini kiwi`) >= 2 &&
-        equipmentAmount($item`mini kiwi bikini`) < 3 &&
-        auto_is_valid($item`mini kiwi bikini`)
+        numericModifier(equippedItem(sl), "sleaze damage") +
+          numericModifier(equippedItem(sl), "sleaze spell damage") <
+        60
       ) {
-        create(1, $item`mini kiwi bikini`);
+        if (
+          itemAmount($item`mini kiwi`) >= 2 &&
+          equipmentAmount($item`mini kiwi bikini`) < 3 &&
+          auto_is_valid($item`mini kiwi bikini`)
+        ) {
+          create(1, $item`mini kiwi bikini`);
+        }
       }
     }
   }
@@ -3956,7 +3958,7 @@ function L11_redZeppelin(): boolean {
     }
   }
 
-  if (auto_waitForDay2()) {
+  if (get("zeppelinProtestors") < 80 && auto_waitForDay2()) {
     auto_log_debug("Delaying zeppelin protestors waiting for day 2 clovers.");
     return false;
   }
