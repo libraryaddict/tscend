@@ -227,7 +227,7 @@ import {
 import { auto_sortedByModifier$3, List$8 } from "./auto_list";
 import { providePlusCombat, providePlusNonCombat$3 } from "./auto_providers";
 import { acquireMP, uneffect } from "./auto_restore";
-import { solveDelayZone } from "./auto_routing";
+import { isAnySoftBlockReleased, solveDelayZone } from "./auto_routing";
 import { zone_hasLuckyAdventure } from "./auto_zone";
 import { kmailObject } from "./autoscend_record";
 import { auto_combatHandler } from "./combat/auto_combat";
@@ -280,7 +280,7 @@ import {
   makeGenieCombat,
   makeGenieWish$1,
 } from "./iotms/2010/mr2017";
-import { auto_voteMonster } from "./iotms/2010/mr2018";
+import { auto_voteMonster, catBurglarHeistsLeft } from "./iotms/2010/mr2018";
 import {
   auto_havePillKeeper,
   auto_pillKeeper$1,
@@ -346,10 +346,13 @@ import {
   auto_acquireInterestingItem,
   auto_baseballFreefightMonster,
   auto_baseballFreefightsRemaining,
+  auto_baseballInningsRemaining,
+  auto_baseballRecruits,
   auto_chewLiquidAsset,
   auto_desires_sword_familiar_drops,
   auto_forceCombatLegendaryNoodles,
   auto_getItemToEquipHeartstone,
+  auto_have_baseball_diamond,
   auto_havePastaWand,
   auto_heartstoneLuckRemaining,
   auto_legendaryNoodlesAvailable,
@@ -3207,27 +3210,10 @@ function LX_summonMonsterDo(): boolean {
     internalQuestStatus("questL08Trapper") < 2 &&
     !auto_haveTrainSet() &&
     oreGoal !== $item.none &&
-    itemAmount(oreGoal) < 2 &&
-    canYellowRay() &&
-    canSummonMonster($monster`mountain man`)
+    itemAmount(oreGoal) < 3 &&
+    auto_summonMountainMan()
   ) {
-    if (!adjustForYellowRayIfPossible($monster`mountain man`)) {
-      // As an arbitary random number
-      prepareYellowRayNextCombat(6);
-    }
-    const need_dupe: boolean = itemAmount(oreGoal) < 1;
-    const can_mctwist: boolean =
-      auto_can_equip($item`pro skateboard`) && !get("_epicMcTwistUsed");
-    const will_mctwist: boolean = can_mctwist && need_dupe;
-    auto_log_info(
-      `Trying to summon a mountain man${will_mctwist ? " which we will McTwist." : "."}`,
-    );
-    if (will_mctwist) {
-      autoEquip($item`pro skateboard`);
-    }
-    if (summonMonster($monster`mountain man`)) {
-      return true;
-    }
+    return true;
   }
 
   if (
@@ -3617,6 +3603,163 @@ export function summonMonster(
   }
 
   return false;
+}
+
+// won't summon at all if we need an extra ore drop but can't guarantee one via Cat Burglar or YR+McTwist
+export function auto_summonMountainMan(
+  canDelayIfNotCapped: boolean = !isAnySoftBlockReleased(),
+): boolean {
+  if (!canSummonMonster($monster`mountain man`)) {
+    return false;
+  }
+  const oreGoal: Item = safeGet("trapperOre");
+  if (oreGoal === $item.none) return false;
+  const drops = getMonsterDrops($monster`mountain man`).filter(
+    (d) => oreGoal === d.item,
+  );
+  const dropCount = drops.length;
+
+  const neededDropCount = 3 - itemAmount(oreGoal);
+  if (neededDropCount <= 0) return false;
+
+  // The count of ores that will drop without further interaction required from us
+  const oresAlreadyDropping: number = drops.filter((d) =>
+    isDropCapped(d),
+  ).length;
+  let oresAcquired: number = oresAlreadyDropping;
+  let shouldUseKitten: boolean = false;
+  let shouldYR: boolean = false;
+  let shouldMcTwist: boolean = false;
+  let shouldBaseballYR: boolean = false;
+  const willUse: string[] = [];
+
+  if (oresAlreadyDropping > 0) {
+    willUse.push(
+      `We can naturally drop ${oresAlreadyDropping} of the ${neededDropCount} ${oreGoal}${neededDropCount !== 1 ? "s" : ""} we need`,
+    );
+  }
+
+  // If we can use the kitten to get every ore, then do so, we do this deliberately because if we can save a YR, then save it.
+  if (
+    oresAcquired < neededDropCount &&
+    oresAcquired + catBurglarHeistsLeft() >= oresAcquired
+  ) {
+    const burgleOres = Math.min(
+      catBurglarHeistsLeft(),
+      neededDropCount - oresAcquired,
+    );
+    willUse.push(
+      `We will Kitten Burglar Heist for an extra ${burgleOres} ${oreGoal}${burgleOres !== 1 ? "s" : ""}`,
+    );
+    oresAcquired += catBurglarHeistsLeft();
+    shouldUseKitten = true;
+  }
+
+  // Use a YR if we need more ores and we did not cap the drop
+  if (oresAcquired < neededDropCount && oresAlreadyDropping < dropCount) {
+    willUse.push(`We will Yellow Ray for an extra ${dropCount} ${oreGoal}`);
+    oresAcquired += dropCount - oresAlreadyDropping;
+    shouldYR = true;
+  }
+
+  // If we didn't use the kitten, and still need ores
+  if (
+    !shouldUseKitten &&
+    neededDropCount < oresAcquired &&
+    catBurglarHeistsLeft() > 0
+  ) {
+    const burgleOres = Math.min(
+      catBurglarHeistsLeft(),
+      neededDropCount - oresAcquired,
+    );
+    willUse.push(
+      `We will Kitten Burglar Heist for an extra ${burgleOres} ${oreGoal}${burgleOres !== 1 ? "s" : ""}`,
+    );
+    oresAcquired += catBurglarHeistsLeft();
+    shouldUseKitten = true;
+  }
+
+  // If we could use baseball diamond to grab the ores, then, do so, delay if needed
+  if (
+    oresAcquired < neededDropCount &&
+    auto_have_baseball_diamond() &&
+    auto_baseballInningsRemaining() > 0
+  ) {
+    // We still need to fill the diamond out, delay
+    if (canDelayIfNotCapped && auto_baseballRecruits.length < 7) {
+      return false;
+    }
+    willUse.push(
+      `We will baseball diamond YR for ${drops.length} ${oreGoal}${drops.length !== 1 ? "s" : ""}`,
+    );
+    oresAcquired += drops.length;
+    shouldBaseballYR = true;
+  }
+
+  if (
+    (shouldYR || oresAlreadyDropping > 0) &&
+    oresAcquired < neededDropCount &&
+    auto_can_equip($item`pro skateboard`) &&
+    !get("_epicMcTwistUsed")
+  ) {
+    const wouldGain = shouldYR ? drops.length : oresAlreadyDropping;
+    willUse.push(
+      `We will '${$skill`Do an epic McTwist!`}' for ${wouldGain} ${oreGoal}${wouldGain !== 1 ? "s" : ""}`,
+    );
+    oresAcquired += wouldGain;
+    shouldMcTwist = true;
+  }
+
+  if (
+    oresAcquired < neededDropCount &&
+    (canDelayIfNotCapped || oresAcquired <= 0)
+  ) {
+    return false;
+  }
+
+  auto_log_info(
+    `Trying to summon a mountain man to gain ${neededDropCount} ${oreGoal}${neededDropCount !== 1 ? "s" : ""}`,
+  );
+
+  willUse.forEach((s) => auto_log_info(s));
+
+  // If we failed to setup a YR
+  if (
+    shouldYR &&
+    !adjustForYellowRayIfPossible($monster`mountain man`) &&
+    !prepareYellowRayNextCombat(6)
+  ) {
+    return false;
+  }
+  if (shouldMcTwist && !autoEquip($item`pro skateboard`)) {
+    auto_log_info(
+      `Failed to equip pro skatebard so we can ${$skill`Do an epic McTwist!`} for Mountain Man`,
+    );
+    // If we can quietly exit
+    if (!isYellowRayingNextCombat()) {
+      return false;
+    }
+    auto_log_info(`But we're continuing regardless, we've already setup a YR.`);
+  }
+  if (shouldBaseballYR && !autoEquip($item`Baseball Diamond`)) {
+    auto_log_info(`Failed to equip baseball diamond for Mountain Man`);
+    // If we can quietly exit
+    if (!isYellowRayingNextCombat()) {
+      return false;
+    }
+    auto_log_info(`But we're continuing regardless, we've already setup a YR.`);
+  }
+
+  if (shouldUseKitten && !handleFamiliar$1($familiar`Cat Burglar`)) {
+    auto_log_info(`Failed to use the familiar Cat Burglar for Mountain Man`);
+    // If we can quietly exit
+    if (!isYellowRayingNextCombat()) {
+      return false;
+    }
+    auto_log_info(`But we're continuing regardless, we've already setup a YR.`);
+  }
+
+  return summonMonster($monster`mountain man`);
 }
 
 export function summonedMonsterToday(mon: Monster): boolean {
@@ -4570,9 +4713,8 @@ export function auto_get_campground(): Map<Item, number> {
   //Wrapper for get_campground(), primarily deals with the oven issue in Ed.
   //Also uses Garden item as identifier for the garden in addition to what get_campground() does
 
-  if (isActuallyEd()) {
-    const empty: Map<Item, number> = new Map();
-    return empty;
+  if (!haveCampground()) {
+    return new Map();
   }
   const campItems: Map<Item, number> = new Map(
     Object.entries(getCampground()).map(([_k, _v]) => [Item.get(_k), _v]),
@@ -4829,12 +4971,7 @@ export function auto_can_equip(it: Item, s: Slot = toSlot(it)): boolean {
 const monsters_text: Map<
   string,
   Map<number, Map<string, string[]>>
-> = fileAsMap("autoscend_monsters.txt", [
-  String,
-  Number,
-  String,
-  "string[]",
-]);
+> = fileAsMap("autoscend_monsters.txt", [String, Number, String, "string[]"]);
 
 export function auto_getMonsters(category: string): Monster[] {
   const res: Monster[] = [];
@@ -4861,15 +4998,10 @@ export function auto_getMonsters(category: string): Monster[] {
   return res;
 }
 
-const phylum_text: Map<
-  string,
-  Map<number, Map<string, string[]>>
-> = fileAsMap("autoscend_phylums.txt", [
-  String,
-  Number,
-  String,
-  "string[]",
-]);
+const phylum_text: Map<string, Map<number, Map<string, string[]>>> = fileAsMap(
+  "autoscend_phylums.txt",
+  [String, Number, String, "string[]"],
+);
 function auto_getPhylum(category: string): Phylum[] {
   const res: Phylum[] = [];
   if (!phylum_text.size) {

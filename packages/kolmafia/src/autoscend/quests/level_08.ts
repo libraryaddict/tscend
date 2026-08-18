@@ -52,7 +52,6 @@ import { canPull, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv, autoLuckyAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import {
-  autoEquip,
   autoForceEquip,
   autoOutfit,
   equipMaximizedGear,
@@ -69,8 +68,6 @@ import {
 import { acquireHP$3 } from "../auto_restore";
 import { auto_waitForDay2 } from "../auto_routing";
 import {
-  adjustForYellowRayIfPossible,
-  auto_can_equip,
   auto_canForceNextCombat,
   auto_combatModCap,
   auto_forceNextCombat$1,
@@ -84,14 +81,11 @@ import {
   auto_log_info,
   auto_log_warning,
   auto_runChoice,
+  auto_summonMountainMan,
   canSniff,
-  canSummonMonster,
-  canYellowRay,
   cloversAvailable,
   internalQuestStatus,
-  prepareYellowRayNextCombat,
   safeGet,
-  summonMonster,
 } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
 import {
@@ -102,7 +96,6 @@ import {
 } from "../engine/engine";
 import { adjustEdHat } from "../iotms/2010/mr2015";
 import { auto_sourceTerminalEducate } from "../iotms/2010/mr2016";
-import { catBurglarHeistsLeft } from "../iotms/2010/mr2018";
 import { auto_mapTheMonsters } from "../iotms/2020/mr2020";
 import { auto_haveGreyGoose, auto_haveTrainSet } from "../iotms/2020/mr2022";
 import { auto_getCitizenZone, auto_lostStomach } from "../iotms/2020/mr2023";
@@ -412,47 +405,10 @@ function L8_mountainManSummonDo(): boolean {
     return false;
   }
   const oreGoal: Item = safeGet("trapperOre");
-  const current_ore: number = itemAmount(oreGoal);
-  if (current_ore >= 3) {
+  if (itemAmount(oreGoal) >= 3) {
     return false;
   }
-  // use a summon if we can guarantee it will be enough via cat burglar
-  if (canSummonMonster($monster`mountain man`) && catBurglarHeistsLeft() > 1) {
-    auto_log_info(
-      "Trying to summon a mountain man, which the cat will then burgle, hopefully.",
-    );
-    handleFamiliar$1($familiar`Cat Burglar`);
-    return summonMonster($monster`mountain man`);
-  }
-  // use a summon if we can guarantee it will be enough via pro skateboard and YR
-  if (
-    canSummonMonster($monster`mountain man`) &&
-    (canYellowRay($monster`mountain man`) ||
-      prepareYellowRayNextCombat(6, true))
-  ) {
-    const need_dupe: boolean = current_ore < 1;
-    const can_mctwist: boolean =
-      auto_can_equip($item`pro skateboard`) && !get("_epicMcTwistUsed");
-    const will_mctwist: boolean = can_mctwist && need_dupe;
-    if (!can_mctwist && need_dupe) return false;
-
-    auto_log_info(
-      `Trying to summon a mountain man, which we will YR${will_mctwist ? " and McTwist." : "."}`,
-    );
-    if (!adjustForYellowRayIfPossible($monster`mountain man`)) {
-      prepareYellowRayNextCombat(6);
-    }
-
-    if (will_mctwist) {
-      autoEquip($item`pro skateboard`);
-      return summonMonster($monster`mountain man`);
-    } else if (!need_dupe) {
-      return summonMonster($monster`mountain man`);
-    } else {
-      return false; // if we need to dupe drops but can't, don't summon.
-    }
-  }
-  return false;
+  return auto_summonMountainMan();
 }
 
 export const L8_mountainManSummonTask: QuestTask = registerQuestTask({

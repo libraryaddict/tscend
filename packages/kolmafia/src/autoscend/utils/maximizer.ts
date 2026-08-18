@@ -27,6 +27,16 @@ import {
 
 export type Criterion = Modifier | WeightedMaximizerModifier;
 
+// Implemented by IOTMs that hold several sub-items which should score and
+// equip as one (e.g. gems socketed into the Eternity Codpiece). sources() and
+// slots() are queried live, so returning [] is how a registrant goes inactive.
+export interface SlotContainer {
+  name(): string;
+  containerHolder(): Item;
+  holdableItems(): Item[];
+  slots(): readonly Slot[];
+}
+
 function criterionName(mod: Criterion | AllMaximizerModifier): string {
   return mod instanceof Modifier ? mod.name : mod;
 }
@@ -84,8 +94,7 @@ export class Maximizer {
   private readonly pendingBonus = new Map<Item, number>();
   private readonly modes = new Map<Item, Set<string>>();
   private readonly otherRequirements = new Map<AllMaximizerModifier, boolean>();
-  // target -> sources whose bonuses are summed into target's term at toString()-time.
-  private readonly foldedBonusGroups = new Map<Item, Item[]>();
+  private readonly slotContainers: SlotContainer[] = [];
 
   getWeight(mod: Criterion): number {
     return this.weights.get(criterionName(mod)) ?? 0;
@@ -243,14 +252,23 @@ export class Maximizer {
     return this;
   }
 
-  foldBonusesInto(target: Item, sources: Item[]): this {
-    this.foldedBonusGroups.set(target, sources);
+  // Called once before anything else queues a bonus()/equip()
+  registerSlotContainer(container: SlotContainer): this {
+    // If not registered yet
+    if (this.slotContainers.every((c) => c.name() !== container.name())) {
+      this.slotContainers.push(container);
+    }
     return this;
   }
 
-  clearFoldedBonuses(target: Item): this {
-    this.foldedBonusGroups.delete(target);
-    return this;
+  private getOwnableContainer(item: Item): SlotContainer | undefined {
+    return this.slotContainers.find((container) =>
+      container.holdableItems().includes(item),
+    );
+  }
+
+  isContainableItem(item: Item): boolean {
+    return this.getOwnableContainer(item) !== undefined;
   }
 
   has(text: Slot | Criterion | UnweightMaximizerModifier | Item): boolean {
@@ -297,10 +315,8 @@ export class Maximizer {
     copyMap(from.pendingEquip, this.pendingEquip);
     copyMap(from.pendingBonus, this.pendingBonus);
     copyMap(from.otherRequirements, this.otherRequirements);
-    this.foldedBonusGroups.clear();
-    for (const [target, sources] of from.foldedBonusGroups) {
-      this.foldedBonusGroups.set(target, [...sources]);
-    }
+    this.slotContainers.length = 0;
+    this.slotContainers.push(...from.slotContainers);
     this.modes.clear();
     for (const [item, itemModes] of from.modes) {
       this.modes.set(item, new Set(itemModes));
@@ -323,8 +339,47 @@ export class Maximizer {
     );
   }
 
+  private firstOpenContainerSlot(container: SlotContainer): Slot | undefined {
+    const slots = container.slots();
+    return slots.find((s) => this.pending(s) === $item.none);
+  }
+
+  // Contained items (e.g. codpiece gems) have no gear slot of their own; they can
+  // only be queued once their container is holderReady, then get parked in one
+  // of the container's slots. If the container can't be readied, this returns
+  // false and the caller falls back to equipping the item on its own.
+  private tryContainerEquip(
+    item: Item,
+    slot: Slot | undefined,
+    holderReady: (holder: Item) => boolean,
+  ): boolean {
+    if (slot) {
+      return false;
+    }
+    const container = this.getOwnableContainer(item);
+    const containerSlot = container && this.firstOpenContainerSlot(container);
+    if (
+      !container ||
+      !containerSlot ||
+      !holderReady(container.containerHolder())
+    ) {
+      return false;
+    }
+    this.pendingEquip.set(containerSlot, item);
+    return true;
+  }
+
   // queues intent to equip; doesn't touch worn equipment until maximize()/simulate() runs
   equip(item: Item, slot?: Slot): boolean {
+    if (
+      this.tryContainerEquip(
+        item,
+        slot,
+        (holder) => this.willEquip(holder) || this.equip(holder),
+      )
+    ) {
+      return true;
+    }
     let targetSlot = slot ?? toSlot(item);
     if (targetSlot === $slot.none) {
       return false;
@@ -358,11 +413,32 @@ export class Maximizer {
     return (this.pendingBonus.get(item) ?? 0) > 0 || this.willEquip(item);
   }
 
+  // holder is ready if it was already forceEquip()'d and locked into place
+  private isForceLocked(item: Item): boolean {
+    return [...this.pendingEquip].some(
+      ([slotUsed, pending]) =>
+        pending === item && this.disabledSlots.has(slotUsed),
+    );
+  }
+
   // equips immediately; unless lock is false, also locks the slot so maximize() won't override it
   forceEquip(item: Item, slot?: Slot, lock: boolean = true): boolean {
     if (item === $item.none) {
       return equip(slot ?? $slot.none, item);
     }
+
+    if (
+      this.tryContainerEquip(
+        item,
+        slot,
+        (holder) =>
+          this.isForceLocked(holder) ||
+          this.forceEquip(holder, undefined, lock),
+      )
+    ) {
+      return true;
+    }
+
     let targetSlot = slot ?? toSlot(item);
     if (targetSlot === $slot.none) {
       return false;
@@ -418,10 +494,24 @@ export class Maximizer {
     }
     terms.push(...this.custom);
 
-    const foldedAway = new Set<Item>();
-    for (const [target, sources] of this.foldedBonusGroups) {
-      foldedAway.add(target);
-      for (const source of sources) foldedAway.add(source);
+    const containerHolders = new Set<Item>();
+    const containerGems = new Set<Item>();
+    for (const container of this.slotContainers) {
+      containerHolders.add(container.containerHolder());
+      container.holdableItems().forEach((i) => containerGems.add(i));
+    }
+
+    // Only gems actually parked in a container's own slots this turn (not merely
+    // container-managed) should be withheld from their own "+equip" term below -
+    // one that lost the socket race falls back to a real gear slot and still needs it.
+    const socketedGems = new Set<Item>();
+    for (const container of this.slotContainers) {
+      for (const slot of container.slots()) {
+        const socketed = this.pending(slot);
+        if (socketed !== $item.none) {
+          socketedGems.add(socketed);
+        }
+      }
     }
 
     const pushBonusTerm = (item: Item, amount: number): void => {
@@ -436,25 +526,32 @@ export class Maximizer {
     };
 
     for (const [item, amount] of this.pendingBonus) {
-      if (foldedAway.has(item)) {
+      if (containerHolders.has(item) || containerGems.has(item)) {
         continue;
       }
       pushBonusTerm(item, amount);
     }
 
-    for (const [target, sources] of this.foldedBonusGroups) {
-      const total = sources.reduce(
-        (sum, source) => sum + (this.pendingBonus.get(source) ?? 0),
-        this.pendingBonus.get(target) ?? 0,
-      );
-      if (total <= 0) {
+    for (const container of this.slotContainers) {
+      const target = container.containerHolder();
+      const totalBonus = container
+        .holdableItems()
+        .reduce(
+          (sum, source) => sum + (this.pendingBonus.get(source) ?? 0),
+          this.pendingBonus.get(target) ?? 0,
+        );
+      if (totalBonus <= 0) {
         continue;
       }
-      pushBonusTerm(target, total);
+      pushBonusTerm(target, totalBonus);
     }
 
     for (const item of this.pendingEquip.values()) {
-      if (item === $item.none) {
+      if (
+        item === $item.none ||
+        containerHolders.has(item) ||
+        socketedGems.has(item)
+      ) {
         continue;
       }
       const itemModes = this.modes.get(item);
@@ -468,6 +565,16 @@ export class Maximizer {
         );
       }
       terms.push(`+"equip ${item} (${[...itemModes][0]})"`);
+    }
+
+    for (const container of this.slotContainers) {
+      const target = container.containerHolder();
+      const wantsEquip =
+        this.willEquip(target) ||
+        container.holdableItems().some((source) => this.willEquip(source));
+      if (wantsEquip) {
+        terms.push(`+"equip ${target}"`);
+      }
     }
 
     return terms.join(", ");

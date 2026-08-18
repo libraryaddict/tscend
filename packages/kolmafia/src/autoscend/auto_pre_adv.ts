@@ -977,11 +977,7 @@ function auto_pre_adventure(): boolean {
       maximizer.exclude($item`Peridot of Peril`);
     }
 
-    if (possessEquipment($item`The Eternity Codpiece`)) {
-      addBonusToMaximize($item`blood cubic zirconia`, 1000000);
-    } else {
-      autoEquip($item`blood cubic zirconia`);
-    }
+    autoEquip($item`blood cubic zirconia`);
 
     if (auto_haveMonodent()) {
       addBonusToMaximize($item`Monodent of the Sea`, 700); // nice to have, not mandatory

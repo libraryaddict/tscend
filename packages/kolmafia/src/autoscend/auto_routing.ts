@@ -159,9 +159,13 @@ type SoftDelayKey =
 // Generic companion to the preference-backed allowSoftblockX() family
 const softblockReleaseLevel = new Map<SoftDelayKey, number>();
 
+export function isAnySoftBlockReleased(): boolean {
+  return [...softblockReleaseLevel.values()].some((lvl) => lvl >= myLevel());
+}
+
 export function isSoftBlockInPlace(key: SoftDelayKey): boolean {
   // We don't soft block if we don't have an interest in that key
-  return (softblockReleaseLevel.get(key) ?? myLevel()) !== myLevel();
+  return (softblockReleaseLevel.get(key) ?? myLevel()) < myLevel();
 }
 
 export function releaseSoftblock(key: SoftDelayKey, reason: string): void {

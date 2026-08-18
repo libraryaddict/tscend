@@ -155,7 +155,7 @@ import {
 } from "./iotms/2020/mr2025";
 import {
   auto_clubEmBackInTimesRemaining,
-  auto_codpieceFoldGemScores,
+  auto_codpieceRegisterSlotContainer,
   auto_desires_sword_familiar_drops,
   auto_havePastaWand,
   auto_isInEternityCodpiece,
@@ -204,6 +204,12 @@ export function autoEquipToSlot(s: Slot, it: Item): boolean {
   if (maximizer.willEquip(it)) {
     auto_log_warning(`Ignoring duplicate equip of accessory ${it}`);
     return true;
+  }
+  // Contained items (e.g. codpiece gems) are socketed, not worn, so they
+  // don't claim an accessory slot of their own.
+  if (maximizer.isContainableItem(it)) {
+    auto_log_info(`Equipping ${it} (contained)`, "gold");
+    return maximizer.equip(it);
   }
   // This logic lets us force the equipping of multiple accessories with minimal conflict
   const acc1_empty: boolean =
@@ -805,6 +811,10 @@ export function resetMaximize(): void {
     }
   }
 
+  // Registered before any other code queues a bonus()/equip() for a managed
+  // gem this turn, so a gem is never mistaken for wanting its own slot.
+  auto_codpieceRegisterSlotContainer();
+
   auto_log_debug(`Resetting maximizer to ${maximizer.toString()}`, "gold");
 }
 
@@ -1149,8 +1159,6 @@ function finalizeMaximize(speculative: boolean = false): void {
   if (myFamiliar() !== $familiar`Jill-of-All-Trades`) {
     maximizer.cancelEquip($item`LED candle`);
   }
-
-  auto_codpieceFoldGemScores();
 }
 
 export function simMaximize(): boolean {

@@ -197,16 +197,14 @@ function auto_codpieceFillerItem(): Item {
 // These gems compete for the same slot, so scoring them individually only lets the
 // maximizer pick one. Folding their scores into the codpiece's instead reflects the
 // true value of wearing all of them at once via its five gem slots.
-export function auto_codpieceFoldGemScores(): void {
-  if (!auto_haveEternityCodpiece()) {
-    maximizer.clearFoldedBonuses($item`The Eternity Codpiece`);
-    return;
-  }
-
-  maximizer.foldBonusesInto(
-    $item`The Eternity Codpiece`,
-    CODPIECE_MANAGED_GEMS,
-  );
+export function auto_codpieceRegisterSlotContainer(): void {
+  maximizer.registerSlotContainer({
+    name: () => "The Eternity Codpiece",
+    containerHolder: () => $item`The Eternity Codpiece`,
+    holdableItems: () =>
+      auto_haveEternityCodpiece() ? CODPIECE_MANAGED_GEMS : [],
+    slots: () => EternityCodpiece.SLOTS,
+  });
 }
 
 export function auto_codpieceReconcileGem(gem: Item): void {
@@ -214,8 +212,7 @@ export function auto_codpieceReconcileGem(gem: Item): void {
     return;
   }
 
-  const wanted: boolean =
-    maximizer.getBonus(gem) > 0 || gem === $item`Heartstone`; // <3 the stone
+  const wanted: boolean = maximizer.wantsItem(gem) || gem === $item`Heartstone`; // <3 the stone
   const codpieceWorn: boolean = haveEquipped($item`The Eternity Codpiece`);
   const inCodpiece: boolean = auto_isInEternityCodpiece(gem);
   const slots: readonly Slot[] = EternityCodpiece.SLOTS;
@@ -226,7 +223,11 @@ export function auto_codpieceReconcileGem(gem: Item): void {
     const emptySlot = slots.find((s) => equippedItem(s) === $item.none);
     const backfillSlot = [...slots]
       .reverse()
-      .find((s) => maximizer.getBonus(equippedItem(s)) <= 0);
+      .find(
+        (s) =>
+          maximizer.getBonus(equippedItem(s)) <= 0 &&
+          !maximizer.willEquip(equippedItem(s)),
+      );
     const target = emptySlot ?? backfillSlot;
     // If no slot
     if (!target) {
