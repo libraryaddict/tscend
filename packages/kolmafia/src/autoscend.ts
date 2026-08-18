@@ -636,113 +636,11 @@ export function initializeSettings(): void {
 
   icehouseUserErrorProtection();
 
-  set("auto_abooclover", true);
-  set("auto_aboopending", 0);
-  set("auto_avalancheDeployed", false);
-  set("auto_banishes", "");
-  set("auto_batoomerangDay", 0);
-  set("auto_beatenUpCount", 0);
-  set("auto_beatenUpLastAdv", false);
-  removeProperty("auto_beatenUpLocations");
-  set("auto_getBeehive", false);
-  set("auto_bruteForcePalindome", false);
-  set("auto_doWhiteys", false);
-  set("auto_cabinetsencountered", 0);
-  set("auto_chasmBusted", true);
-  set("auto_chewed", "");
-  set("auto_clanstuff", "0");
-  set("auto_considerCCSCShore", true);
-  set("auto_copies", "");
-  set("auto_dakotaFanning", false);
-  set("auto_day_init", 0);
-  set("auto_day1_dna", "");
-  set("auto_day2WaitLastLevel", "0");
-  set("auto_debuffAsdonDelay", 0);
-  set("auto_disableAdventureHandling", false);
-  set("auto_doCombatCopy", "no");
-  set("auto_dontPhylumBanish", false);
-  set("auto_runDayCount", 2);
-  set("auto_drunken", "");
-  set("auto_eaten", "");
   set("auto_familiarChoice", "");
-  removeProperty("auto_forcedNC");
   set("auto_forceNonCombatLocation", "");
-  set("auto_forceNonCombatSource", "");
-  set("auto_forceNonCombatTurn", -1);
-  set("auto_forceTavern", false);
-  set("auto_freeruns", "");
-  set("auto_funTracker", "");
-  set("auto_getBoningKnife", false);
-  set("auto_getStarKey", true);
   set("auto_getSteelOrgan", getProperty("auto_getSteelOrgan_initialize"));
-  set("auto_gnasirUnlocked", false);
-  set("auto_grimstoneFancyOilPainting", true);
-  set("auto_grimstoneOrnateDowsingRod", true);
-  set("auto_haveoven", false);
   set("auto_doGalaktik", getProperty("auto_doGalaktik_initialize"));
-  set("auto_L03CouncilVisited", false);
-  set("auto_L05CouncilVisited", false);
-  set("auto_L07CouncilVisited", false);
-  set("auto_L8_ninjaAssassinFail", false);
-  set("auto_L8_extremeInstead", false);
-  set("auto_L9_smutOrcPervert", false);
-  set("auto_L11CouncilVisited", false);
-  set("auto_haveSourceTerminal", false);
-  set("auto_hedge", "fast");
-  set("auto_hippyInstead", false);
-  set("auto_holeinthesky", true);
-  set("auto_ignoreCombat", "");
-  set("auto_ignoreFlyer", false);
-  set("auto_instakill", "");
-  set("auto_instakillSource", "");
-  set("auto_instakillSuccess", false);
-  set("auto_interruptedZones", "");
-  set("auto_iotm_claim", "");
-  set("auto_leaflet_done", false);
-  set("auto_lucky", "");
-  set("auto_luckySource", "none");
-  set("auto_mapperidot", "");
   set("auto_modernzmobiecount", "");
-  set("auto_powerfulglove", "");
-  set("auto_otherstuff", "");
-  set("auto_paranoia", -1);
-  set("auto_paranoia_counter", 0);
-  set("auto_parkaSpikesDeployed", false);
-  set("auto_priorCharpaneMode", "0");
-  set("auto_powerLevelAdvCount", "0");
-  set("auto_powerLevelLastAttempted", "0");
-  set("auto_pulls", "");
-  removeProperty("auto_shenZonesTurnsSpent");
-  removeProperty("auto_lastShenTurn");
-  set("auto_sniffs", "");
-  set("auto_stopMinutesToRollover", "5");
-  set("auto_tracker_path", "");
-  set("auto_wandOfNagamar", true);
-  set("auto_wineracksencountered", 0);
-  set("auto_wishes", "");
-  set("auto_writingDeskSummon", false);
-  set("auto_yellowRays", "");
-  set("auto_replaces", "");
-  set("auto_skipNuns", "false");
-  set("auto_skipL12Farm", "false");
-  set("auto_L12FarmStage", "0");
-  set("choiceAdventure1003", 0);
-  set("auto_junkspritesencountered", 0);
-  set("auto_openedziggurat", false);
-  removeProperty("auto_minedCells");
-  removeProperty("auto_shinningStarted");
-  removeProperty("auto_boughtCommerceGhostItem");
-  removeProperty("auto_saveMargarita");
-  removeProperty("auto_csDoWheel");
-  removeProperty("auto_hccsTurnSave");
-  removeProperty("auto_hccsNoConcludeDay");
-  removeProperty("auto_saveSausage");
-  removeProperty("auto_saveVintage");
-  set("auto_dontUseCookBookBat", false);
-  set("auto_dietpills", 0);
-  set("_auto_candyMapCompleted", false);
-  removeProperty("auto_exerciseLiquidity");
-  removeProperty("_auto_toxicAssetUses");
   beehiveConsider(false);
 
   eudora_initializeSettings();
@@ -779,7 +677,6 @@ export function initializeSettings(): void {
 
   set("auto_doneInitializePath", myPath().name); //which path we initialized as
   set("auto_doneInitialize", myAscensions());
-  removeProperty("_auto_reinitialize");
 }
 
 function initializeSession(): void {
@@ -1226,12 +1123,7 @@ function initializeDay(day: number): void {
     visitUrl("peevpee.php?place=fight");
   }
 
-  if (get("auto_day_init", 0) < day) {
-    set("auto_powerLevelLastLevel", "0");
-    set("auto_delayLastLevel", "0");
-    set("auto_cmcConsultLastLevel", "0");
-    set("auto_breathitinLastLevel", "0");
-    set("_auto_candyMapCompleted", false);
+  if (get("auto_day_init", 0) < day) {   
     auto_settingsApplyResets("day");
   }
 

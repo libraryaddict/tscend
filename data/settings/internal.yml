@@ -6,10 +6,14 @@ auto_aosolLastSkill:
   type: int
 auto_avalancheDeployed:
   type: boolean
+  default: false
+  resets: ascend
 auto_awolLastSkill:
   type: int
 auto_banishes:
   type: string
+  default: ""
+  resets: ascend
 auto_bat_desiredForm:
   type: string
 auto_bat_ensorcels:
@@ -18,50 +22,76 @@ auto_bat_soulmonster:
   type: monster
 auto_beatenUpLastAdv:
   type: boolean
+  default: false
+  resets: ascend
 auto_beatenUpLocations:
   type: string
+  resets: ascend
 auto_borisSkills:
   type: int
 auto_boughtCommerceGhostItem:
   type: item
+  resets: ascend
 auto_bowledAtAlley:
   type: int
 auto_breathitinLastLevel:
   type: int
+  default: 0
+  resets: day
 auto_bruteForcePalindome:
   type: boolean
+  default: false
+  resets: ascend
 auto_cabinetsencountered:
   type: int
+  default: 0
+  resets: ascend
 auto_chewed:
   type: string
+  default: ""
+  resets: ascend
 auto_cmcConsultLastLevel:
   type: int
+  default: 0
+  resets: day
 auto_combatHandlerThunderBird:
   type: int
 auto_combatHP:
   type: int
 auto_considerCCSCShore:
   type: boolean
+  default: true
+  resets: ascend
 auto_consumeKeyLimePies:
   type: boolean
 auto_copies:
   type: string
+  default: ""
+  resets: ascend
 auto_current_version:
   type: string
 auto_dakotaFanning:
   type: boolean
+  default: false
+  resets: ascend
 auto_day1_desk:
   type: string
 auto_day1_skills:
   type: string
 auto_day2WaitLastLevel:
   type: int
+  default: 0
+  resets: ascend
 auto_debuffAsdonDelay:
   type: int
+  default: 0
+  resets: ascend
 auto_debug:
   type: string
 auto_delayLastLevel:
   type: int
+  default: 0
+  resets: day
 auto_delayWar:
   type: boolean
 auto_desiredHorse:
@@ -70,22 +100,34 @@ auto_diag_round:
   type: int
 auto_dietpills:
   type: int
+  default: 0
+  resets: ascend
 auto_digitizeDirective:
   type: string
 auto_disregardInstantKarmaBackup:
   type: string
 auto_doCombatCopy:
   type: string
+  default: "no"
+  resets: ascend
 auto_doneInitializePath:
   type: string
 auto_dontUseCookBookBat:
   type: boolean
+  default: false
+  resets: ascend
 auto_doWhiteys:
   type: boolean
+  default: false
+  resets: ascend
 auto_drunken:
   type: string
+  default: ""
+  resets: ascend
 auto_eaten:
   type: string
+  default: ""
+  resets: ascend
 auto_edCombatCount:
   type: int
 auto_edCombatRoundCount:
@@ -100,6 +142,7 @@ auto_eggDetective:
   type: string
 auto_exerciseLiquidity:
   type: int
+  resets: ascend
 auto_familiarChoice:
   type: familiar
 auto_forceCombatSource:
@@ -112,18 +155,28 @@ auto_forceNonCombatLocation:
   type: location
 auto_forceNonCombatSource:
   type: string
+  default: ""
+  resets: ascend
 auto_forceNonCombatTurn:
   type: int
+  default: -1
+  resets: ascend
 auto_forceTavern:
   type: boolean
+  default: false
+  resets: ascend
 auto_freeruns:
   type: string
+  default: ""
+  resets: ascend
 auto_funCombatHandler:
   type: string
 auto_funPrefix:
   type: string
 auto_funTracker:
   type: string
+  default: ""
+  resets: ascend
 auto_getDictionary:
   type: boolean
 auto_gremlinMoly:
@@ -132,22 +185,38 @@ auto_habitatMonster:
   type: monster
 auto_haveSourceTerminal:
   type: boolean
+  default: false
+  resets: ascend
 auto_ignoreCombat:
   type: string
+  default: ""
+  resets: ascend
 auto_instakill:
   type: string
+  default: ""
+  resets: ascend
 auto_instakillSource:
   type: string
+  default: ""
+  resets: ascend
 auto_instakillSuccess:
   type: boolean
+  default: false
+  resets: ascend
 auto_interruptedZones:
   type: string
+  default: ""
+  resets: ascend
 auto_iotm_claim:
   type: string
+  default: ""
+  resets: ascend
 auto_januaryToteAcquireCalledThisTurn:
   type: boolean
 auto_junkspritesencountered:
   type: int
+  default: 0
+  resets: ascend
 auto_kgbAscension:
   type: int
 auto_kgbButton100:
@@ -158,16 +227,28 @@ auto_killingjar:
   type: string
 auto_L03CouncilVisited:
   type: boolean
+  default: false
+  resets: ascend
 auto_L05CouncilVisited:
   type: boolean
+  default: false
+  resets: ascend
 auto_L07CouncilVisited:
   type: boolean
+  default: false
+  resets: ascend
 auto_L11CouncilVisited:
   type: boolean
+  default: false
+  resets: ascend
 auto_L12FarmStage:
   type: string
+  default: "0"
+  resets: ascend
 auto_L9_smutOrcPervert:
   type: boolean
+  default: false
+  resets: ascend
 auto_lashes:
   type: string
 auto_last_mallcached:
@@ -176,24 +257,34 @@ auto_lastFamiliarLookupType:
   type: string
 auto_lastShenTurn:
   type: int
+  resets: ascend
 auto_lastthunder:
   type: string
 auto_lastthunderturn:
   type: string
 auto_leaflet_done:
   type: boolean
+  default: false
+  resets: ascend
 auto_logLevel:
   type: string
 auto_lucky:
   type: string
+  default: ""
+  resets: ascend
 auto_luckySource:
   type: string
+  default: "none"
+  resets: ascend
 auto_mapperidot:
   type: string
+  default: ""
+  resets: ascend
 auto_mcd_target:
   type: int
 auto_minedCells:
   type: string
+  resets: ascend
 auto_MLSafetyLimitBackup:
   type: string
 auto_modernzmobiecount:
@@ -214,32 +305,46 @@ auto_nonAdvLoc:
   type: boolean
 auto_openedziggurat:
   type: boolean
+  default: false
+  resets: ascend
 auto_orcishfratboyspy:
   type: string
 auto_otherstuff:
   type: string
+  default: ""
+  resets: ascend
 auto_paranoia_counter:
   type: int
+  default: 0
+  resets: ascend
 auto_parkaSetting:
   type: string
 auto_parkaSpikesDeployed:
   type: boolean
+  default: false
+  resets: ascend
 auto_peteSkills:
   type: int
 auto_powerfulglove:
   type: string
+  default: ""
+  resets: ascend
 auto_preferSoCP:
   type: boolean
 auto_prev_version:
   type: string
 auto_priorCharpaneMode:
   type: int
+  default: 0
+  resets: ascend
 auto_prioritizeGoose:
   type: boolean
 auto_priorLocation:
   type: location
 auto_pulls:
   type: string
+  default: ""
+  resets: ascend
 auto_purple_candled:
   type: monster
 auto_rain_king_combat:
@@ -248,6 +353,8 @@ auto_renenutet:
   type: string
 auto_replaces:
   type: string
+  default: ""
+  resets: ascend
 auto_retrocapeSettings:
   type: string
 auto_robot_directive:
@@ -258,12 +365,16 @@ auto_servantChoice:
   type: string
 auto_shenZonesTurnsSpent:
   type: string
+  resets: ascend
 auto_shinningStarted:
   type: boolean
+  resets: ascend
 auto_shouldMeatLevel:
   type: boolean
 auto_skipL12Farm:
   type: boolean
+  default: false
+  resets: ascend
 auto_skipStage2:
   type: boolean
 auto_skipStage3:
@@ -276,10 +387,14 @@ auto_snapperPhylum:
   type: string
 auto_sniffs:
   type: string
+  default: ""
+  resets: ascend
 auto_spoonconfirmed:
   type: int
 auto_tracker_path:
   type: string
+  default: ""
+  resets: ascend
 auto_turbo:
   type: boolean
 auto_useCleesh:
@@ -290,12 +405,20 @@ auto_warhippyspy:
   type: string
 auto_wineracksencountered:
   type: int
+  default: 0
+  resets: ascend
 auto_wishes:
   type: string
+  default: ""
+  resets: ascend
 auto_writingDeskSummon:
   type: boolean
+  default: false
+  resets: ascend
 auto_yellowRays:
   type: string
+  default: ""
+  resets: ascend
 _auto_AwkwardBeatenUp:
   type: int
 _auto_bad100Familiar:
@@ -308,6 +431,8 @@ _auto_bondLevel:
   type: int
 _auto_candyMapCompleted:
   type: boolean
+  default: false
+  resets: day
 _auto_casualAscension:
   type: int
 _auto_coldMedicineLocked:
@@ -368,6 +493,7 @@ _auto_preferSwordFam:
   type: boolean
 _auto_reinitialize:
   type: boolean
+  resets: ascend
 _auto_screechDelay:
   type: phylum
 _auto_seaQuestStartedToday:
@@ -378,6 +504,7 @@ _auto_thisLoopHandleFamiliar:
   type: boolean
 _auto_toxicAssetUses:
   type: int
+  resets: ascend
 _auto_tunedElement:
   type: string
 _autoSkipNextAdventure:
@@ -402,3 +529,28 @@ kolhs_closetDrink:
   type: boolean
 logLevelDefaultChangedToDebug:
   type: boolean
+auto_forcedNC:
+  type: string
+  resets: ascend
+choiceAdventure1003:
+  type: int
+  default: 0
+  resets: ascend
+auto_saveMargarita:
+  type: string
+  resets: ascend
+auto_csDoWheel:
+  type: string
+  resets: ascend
+auto_hccsTurnSave:
+  type: string
+  resets: ascend
+auto_hccsNoConcludeDay:
+  type: string
+  resets: ascend
+auto_saveSausage:
+  type: string
+  resets: ascend
+auto_saveVintage:
+  type: string
+  resets: ascend

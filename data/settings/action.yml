@@ -14,6 +14,8 @@ auto_paranoia:
   name: "Quest Paranoia"
   type: int
   description: If quest tracking is broken enable this. It determines how often should we refresh quests. measured in adventures. -1 is never. 1 = every single adventure
+  default: -1
+  resets: ascend
 auto_inv_paranoia:
   name: "Inventory Paranoia"
   type: boolean
@@ -26,6 +28,8 @@ auto_disableAdventureHandling:
   name: "Disable Pre & Post Adv Scripts"
   type: boolean
   description: When true this prevents preadventure and postadventure scripts from running. resets every loop.
+  default: false
+  resets: ascend
 auto_disableFamiliarChanging:
   name: "Disable Familiar Changing"
   type: boolean

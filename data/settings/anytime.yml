@@ -75,14 +75,20 @@ auto_stopMinutesToRollover:
   name: "Rollover Abort Time"
   type: int
   description: How many minutes before rollover do we need to start getting ready for bed?
+  default: 5
+  resets: ascend
 auto_abooclover:
   name: "Use Clover At A-Boo Peak"
   type: boolean
   description: Are we considering using a clover at A-Boo Peak?
+  default: true
+  resets: ascend
 auto_clanstuff:
   name: "Last 'end of day' for Clan"
   type: int
   description: What was the last day we did 'end of day' clan stuff.
+  default: 0
+  resets: ascend
 _auto_ignoreRestoreFailureToday:
   name: "Ignore Restore Failure Today"
   type: boolean

@@ -218,7 +218,8 @@ type IntProperty =
   | "auto_save_adv_override"
   | "auto_spoonconfirmed"
   | "auto_stopMinutesToRollover"
-  | "auto_wineracksencountered";
+  | "auto_wineracksencountered"
+  | "choiceAdventure1003";
 
 type ItemProperty =
   "auto_boughtCommerceGhostItem" | "auto_equipment_override_weapon";
@@ -258,6 +259,7 @@ type StringProperty =
   | "auto_consultChoice"
   | "auto_consultClan"
   | "auto_copies"
+  | "auto_csDoWheel"
   | "auto_current_version"
   | "auto_day1_desk"
   | "auto_day1_dna"
@@ -283,10 +285,13 @@ type StringProperty =
   | "auto_floundryChoice"
   | "auto_forceCombatSource"
   | "auto_forceNonCombatSource"
+  | "auto_forcedNC"
   | "auto_freeruns"
   | "auto_funCombatHandler"
   | "auto_funPrefix"
   | "auto_funTracker"
+  | "auto_hccsNoConcludeDay"
+  | "auto_hccsTurnSave"
   | "auto_hedge"
   | "auto_ignoreCombat"
   | "auto_instakill"
@@ -320,6 +325,9 @@ type StringProperty =
   | "auto_replaces"
   | "auto_retrocapeSettings"
   | "auto_robot_directive"
+  | "auto_saveMargarita"
+  | "auto_saveSausage"
+  | "auto_saveVintage"
   | "auto_servantChoice"
   | "auto_shenZonesTurnsSpent"
   | "auto_smileAt"
