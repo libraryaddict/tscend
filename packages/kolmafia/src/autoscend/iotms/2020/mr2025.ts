@@ -1988,9 +1988,15 @@ export function auto_bczRefractedGaze(
   }
   if (
     location === $location`The Battlefield (Frat Uniform)` &&
-    get("_bczRefractedGazeCasts") < 2
+    get("auto_otherstuff")
+      .split(", ")
+      .filter(
+        (s) =>
+          s.includes($skill`BCZ: Refracted Gaze`.toString()) &&
+          s.includes(location.toString()),
+      ).length < get("auto_refractedGazeBattlefield", 2)
   ) {
-    // Only use refracted gaze on the battlefield if we've used it less than 2 times
+    // Only use refracted gaze on the battlefield once
     return true;
   }
   if (

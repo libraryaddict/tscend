@@ -1,0 +1,5 @@
+auto_refractedGazeBattlefield:
+  name: "Refacted Gaze: Battlefield"
+  type: int
+  description: "The max amount of times we can use 'BCZ: Refacted Gaze' on the island war battlefield for easy items. This has little relevancy for your runs, well kitted players can disable this."
+  default: 2

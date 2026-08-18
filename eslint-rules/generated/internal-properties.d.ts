@@ -211,6 +211,7 @@ type IntProperty =
   | "auto_powerLevelLastLevel"
   | "auto_powerLevelTimer"
   | "auto_priorCharpaneMode"
+  | "auto_refractedGazeBattlefield"
   | "auto_renenutetBought"
   | "auto_robot_skills_bought"
   | "auto_runDayCount"
