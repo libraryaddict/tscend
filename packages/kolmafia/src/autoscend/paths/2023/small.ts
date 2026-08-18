@@ -56,10 +56,10 @@ export function small_initializeSettings(): void {
       set("auto_MLSafetyLimit", MLCap);
     }
     // don't disregard instant karma either. Helps keep ML low
-    const disregardKarma: string = getProperty("auto_disregardInstantKarma");
-    if (disregardKarma === "true") {
-      set("auto_disregardInstantKarmaBackup", "true");
-      set("auto_disregardInstantKarma", "false");
+    const disregardKarma: boolean = get("auto_disregardInstantKarma");
+    if (disregardKarma) {
+      set("auto_disregardInstantKarmaBackup", true);
+      set("auto_disregardInstantKarma", false);
     }
   } else {
     if (

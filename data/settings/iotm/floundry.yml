@@ -2,3 +2,4 @@ auto_floundryChoice:
   name: "Floundry Item"
   type: string
   description: Force floundry usage. Must use the item name (Use ; to separate by daycount, leave blank to skip a day).
+  default: ""

@@ -1543,7 +1543,7 @@ function L12_sonofaBeachDo(): boolean {
 
   if (
     chateaumantegna_havePainting() &&
-    !get("chateauMonsterFought", false) &&
+    !get("_chateauMonsterFought", false) &&
     getProperty("chateauMonster") === $monster`lobsterfrogman`.toString()
   ) {
     auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
@@ -2088,7 +2088,7 @@ function L12_themtharHillsDo(): boolean {
       }
 
       if (failNuns) {
-        set("auto_skipNuns", "true");
+        set("auto_skipNuns", true);
         return false;
       }
     } else {
@@ -2239,7 +2239,7 @@ function LX_obtainChaosButterfly(): boolean {
 
 function L12_farmDo(): boolean {
   if (getProperty("sidequestFarmCompleted") !== "none") {
-    set("auto_skipL12Farm", "true");
+    set("auto_skipL12Farm", true);
     return false;
   }
   if (auto_warEnemiesRemaining() === 0 && get("auto_L12FarmStage", 0) < 4) {
@@ -2276,25 +2276,25 @@ function L12_farmDo(): boolean {
       if (autoAdv($location`McMillicancuddy's Barn`)) {
         return true;
       }
-      set("auto_L12FarmStage", "1");
+      set("auto_L12FarmStage", 1);
     // INTENTIONAL LACK OF BREAK
     case 1:
       if (autoAdv($location`McMillicancuddy's Pond`)) {
         return true;
       }
-      set("auto_L12FarmStage", "2");
+      set("auto_L12FarmStage", 2);
     // INTENTIONAL LACK OF BREAK
     case 2:
       if (autoAdv($location`McMillicancuddy's Back 40`)) {
         return true;
       }
-      set("auto_L12FarmStage", "3");
+      set("auto_L12FarmStage", 3);
     // INTENTIONAL LACK OF BREAK
     case 3:
       if (autoAdv($location`McMillicancuddy's Other Back 40`)) {
         return true;
       }
-      set("auto_L12FarmStage", "4");
+      set("auto_L12FarmStage", 4);
     // INTENTIONAL LACK OF BREAK
     case 4:
       equipWarOutfit();

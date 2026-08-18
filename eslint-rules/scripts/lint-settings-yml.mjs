@@ -2,6 +2,7 @@
 // - internal.yml's top-level keys are sorted (auto_-prefixed first, then alphabetically)
 // - every setting entry's fields are reordered into a single canonical order, and only
 //   recognized fields are allowed
+// - every setting entry outside of groups.yml and internal.yml has a "default" (warning only)
 //
 // Usage: node eslint-rules/scripts/lint-settings-yml.mjs
 import { readFileSync, writeFileSync } from "node:fs";
@@ -44,6 +45,7 @@ export async function main() {
   );
 
   const errors = [];
+  const warnings = [];
   let changedFiles = 0;
 
   for (const file of files) {
@@ -71,6 +73,13 @@ export async function main() {
         continue;
       }
 
+      if (
+        relativePath !== INTERNAL_FILE &&
+        !fields.some((field) => String(field.key) === "default")
+      ) {
+        warnings.push(`${relativePath}: "${property}" is missing a "default"`);
+      }
+
       fields.sort(
         (a, b) =>
           FIELD_ORDER.indexOf(String(a.key)) -
@@ -91,6 +100,12 @@ export async function main() {
 
   if (changedFiles > 0) {
     console.log(`Reordered fields in ${changedFiles} file(s)`);
+  }
+
+  if (warnings.length > 0) {
+    console.warn(
+      `Warning: settings missing a "default":\n${warnings.join("\n")}`,
+    );
   }
 
   if (errors.length > 0) {

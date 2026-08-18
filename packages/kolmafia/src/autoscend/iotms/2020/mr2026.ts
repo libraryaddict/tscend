@@ -19,7 +19,6 @@ import {
   equippedItem,
   extractItems,
   fullnessLimit,
-  getProperty,
   handlingChoice,
   haveCampground,
   haveEquipped,
@@ -344,7 +343,7 @@ export function auto_heartstoneLuckRemaining(): number {
   if (!auto_haveHeartstone()) {
     return 0;
   }
-  if (getProperty("heartstoneLuckUnlocked") !== "true") {
+  if (!get("heartstoneLuckUnlocked")) {
     return 0;
   }
 

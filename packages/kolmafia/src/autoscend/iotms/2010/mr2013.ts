@@ -13,6 +13,7 @@ import {
   myLocation,
   myMp,
   myPath,
+  toInt,
   useSkill,
 } from "kolmafia";
 import { $class, $effect, $item, $location, $path, $skill, get } from "libram";
@@ -175,9 +176,9 @@ export function oldPeoplePlantStuff(): void {
   }
   let addml: boolean = true;
   if (
-    (monsterLevelAdjustment() > get("auto_MLSafetyLimit", 0) &&
+    (monsterLevelAdjustment() > toInt(get("auto_MLSafetyLimit")) &&
       getProperty("auto_MLSafetyLimit") !== "") ||
-    get("auto_MLSafetyLimit", 0) === -1
+    toInt(get("auto_MLSafetyLimit")) === -1
   ) {
     addml = false;
   }

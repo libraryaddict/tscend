@@ -89,7 +89,7 @@ export function koe_initializeSettings(): boolean {
     set("auto_bruteForcePalindome", inHardcore());
     set("auto_holeinthesky", false);
     set("auto_paranoia", 3);
-    set("auto_skipL12Farm", "true");
+    set("auto_skipL12Farm", true);
     set("auto_grimstoneOrnateDowsingRod", false); //location not reachable in koe
     set("auto_grimstoneFancyOilPainting", false); //location not reachable in koe
     return true;

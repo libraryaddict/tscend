@@ -1019,7 +1019,7 @@ export function preAdvUpdateFamiliar(place: Location): void {
     // only visit the cake-shaped arena if we need to pickup an equipment.
     if (!get("_auto_gnomeArenaVisited", false) && visitArena) {
       auto_resolveEncounters(visitUrl("arena.php"));
-      set("_auto_gnomeArenaVisited", "true");
+      set("_auto_gnomeArenaVisited", true);
     }
     autoEquipToSlot($slot`familiar`, $item`gnomish housemaid's kgnee`);
   }

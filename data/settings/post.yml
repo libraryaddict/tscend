@@ -2,6 +2,7 @@ auto_getSteelOrgan:
   name: "Get Steel Organ"
   type: boolean
   description: Get Steel Organ in this ascension?
+  default: false
 auto_getBeehive:
   name: "Get Beehive"
   type: boolean
@@ -126,6 +127,7 @@ auto_100familiar:
   name: "100% Familiar"
   type: familiar
   description: If a familiar type, do not allow familiar switching (for 100% runs). Otherwise, can be none or blank.
+  default: ""
 auto_beatenUpCount:
   name: "Beaten Up Count"
   type: int
@@ -136,14 +138,17 @@ auto_doneInitialize:
   name: "Last Initialized Ascension"
   type: int
   description: Indicates last ascension that we initialized with the script.
+  default: 0
 auto_noSnakeOil:
   name: "Last Snake Oil Extraction Day"
   type: int
   description: Last day that we could no longer Extract Oil.
+  default: 0
 auto_renenutetBought:
   name: "Talismans Of Renenutet Bought"
   type: int
   description: Number of Talisman of Renenutet's bought on last tracking.
+  default: 0
 auto_batoomerangDay:
   name: "Bat-oomerang Tracker Day"
   type: int
@@ -154,22 +159,27 @@ auto_batoomerangUse:
   name: "Bat-oomerang Tracker Use"
   type: int
   description: Part of Replica Bat-oomerang Tracker
+  default: 0
 _auto_lastABooConsider:
   name: "Last A-Boo Peak Consideration"
   type: int
   description: Last turn that we considered doing A-Boo Peak
+  default: 0
 _auto_lastABooCycleFix:
   name: "A-Boo Peak Loop Fix Tracker"
   type: int
   description: Tracker to prevent us infinitely looping on A-Boo Peak
+  default: 0
 _auto_witchessBattles:
   name: "Witchess Battle Tracker"
   type: int
   description: Tracker for Witchess Combats (yes, this is actually needed).
+  default: 0
 auto_needLegs:
   name: "Need Legs Before Ka Farming"
   type: boolean
   description: In Ed, do we require getting legs before trying to Ka farm?
+  default: false
 auto_haveoven:
   name: "Have Oven"
   type: boolean
@@ -180,6 +190,7 @@ auto_doGalaktik:
   name: "Galaktik Sidequest"
   type: boolean
   description: Do Galaktik optional sidequest this ascension?
+  default: false
 auto_L8_ninjaAssassinFail:
   name: "Avoid Ninja Snowmen Assassins"
   type: boolean

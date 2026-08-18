@@ -2,3 +2,4 @@ auto_mushroomGardenGrowth:
   name: "Mushroom Garden Pick"
   type: int
   description: Picks the mushroom when growth reaches the given value (or higher). Defaults to 1 to pick every day, capped at 11.
+  default: 1

@@ -62,7 +62,7 @@ export function ag_initializeSettings(): void {
     set("auto_skipUnlockGuild", true);
     set("auto_nonAdvLoc", false);
     if (auto_turbo()) {
-      set("auto_skipNuns", "true");
+      set("auto_skipNuns", true);
     }
   }
 }

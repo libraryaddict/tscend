@@ -1708,10 +1708,10 @@ function L13_towerNSTowerSkin(): boolean {
   }
   auto_log_info("Time to fight the Wall of Skins!", "blue");
   if (
-    toLowerCase(getProperty("auto_towerBreak")) === "wall of skin" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "wallofskin" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "skin" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "level 1"
+    toLowerCase(get("auto_towerBreak")) === "wall of skin" ||
+    toLowerCase(get("auto_towerBreak")) === "wallofskin" ||
+    toLowerCase(get("auto_towerBreak")) === "skin" ||
+    toLowerCase(get("auto_towerBreak")) === "level 1"
   ) {
     abort("auto_towerBreak set to abort here.");
   }
@@ -1862,10 +1862,10 @@ function L13_towerNSTowerMeat(): boolean {
     return false;
   }
   if (
-    toLowerCase(getProperty("auto_towerBreak")) === "wall of meat" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "wallofmeat" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "meat" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "level 2"
+    toLowerCase(get("auto_towerBreak")) === "wall of meat" ||
+    toLowerCase(get("auto_towerBreak")) === "wallofmeat" ||
+    toLowerCase(get("auto_towerBreak")) === "meat" ||
+    toLowerCase(get("auto_towerBreak")) === "level 2"
   ) {
     abort("auto_towerBreak set to abort here.");
   }
@@ -1901,10 +1901,10 @@ function L13_towerNSTowerBones(): boolean {
     return false;
   }
   if (
-    toLowerCase(getProperty("auto_towerBreak")) === "wall of bones" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "wallofbones" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "bones" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "level 3"
+    toLowerCase(get("auto_towerBreak")) === "wall of bones" ||
+    toLowerCase(get("auto_towerBreak")) === "wallofbones" ||
+    toLowerCase(get("auto_towerBreak")) === "bones" ||
+    toLowerCase(get("auto_towerBreak")) === "level 3"
   ) {
     abort("auto_towerBreak set to abort here.");
   }
@@ -2115,8 +2115,8 @@ function L13_towerNSTowerMirror(): boolean {
     return false;
   }
   if (
-    toLowerCase(getProperty("auto_towerBreak")) === "mirror" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "level 4"
+    toLowerCase(get("auto_towerBreak")) === "mirror" ||
+    toLowerCase(get("auto_towerBreak")) === "level 4"
   ) {
     abort("auto_towerBreak set to abort here.");
   }
@@ -2146,9 +2146,9 @@ function L13_towerNSTowerShadow(): boolean {
   }
 
   if (
-    toLowerCase(getProperty("auto_towerBreak")) === "shadow" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "the shadow" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "level 5"
+    toLowerCase(get("auto_towerBreak")) === "shadow" ||
+    toLowerCase(get("auto_towerBreak")) === "the shadow" ||
+    toLowerCase(get("auto_towerBreak")) === "level 5"
   ) {
     abort("auto_towerBreak set to abort here.");
   }
@@ -2228,12 +2228,12 @@ function L13_towerNSTowerShadow(): boolean {
 
 function L13_towerNSFinalDo(): boolean {
   if (
-    toLowerCase(getProperty("auto_towerBreak")) === "naughty sorceress" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "the naughty sorceress" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "ns" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "sorceress" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "level 6" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "chamber"
+    toLowerCase(get("auto_towerBreak")) === "naughty sorceress" ||
+    toLowerCase(get("auto_towerBreak")) === "the naughty sorceress" ||
+    toLowerCase(get("auto_towerBreak")) === "ns" ||
+    toLowerCase(get("auto_towerBreak")) === "sorceress" ||
+    toLowerCase(get("auto_towerBreak")) === "level 6" ||
+    toLowerCase(get("auto_towerBreak")) === "chamber"
   ) {
     abort("auto_towerBreak set to abort here.");
   }
@@ -2437,15 +2437,12 @@ function L13_towerNSFinalDo(): boolean {
   }
   // restore disregard karma if this run changed it
   if (propertyExists("auto_disregardInstantKarmaBackup")) {
-    set(
-      "auto_disregardInstantKarma",
-      getProperty("auto_disregardInstantKarmaBackup"),
-    );
+    set("auto_disregardInstantKarma", get("auto_disregardInstantKarmaBackup"));
     removeProperty("auto_disregardInstantKarmaBackup");
   }
 
   if (auto_turbo()) {
-    set("auto_turbo", "false");
+    set("auto_turbo", false);
   }
 
   if (get("auto_stayInRun", false)) {

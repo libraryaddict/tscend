@@ -1085,7 +1085,7 @@ function finalizeMaximize(speculative: boolean = false): void {
       ((nextMonster === $monster.none || instakillable(nextMonster)) &&
         !in_pokefam() &&
         getProperty("auto_MLSafetyLimit") === "") ||
-      get("auto_MLSafetyLimit", 0) >= 25
+      toInt(get("auto_MLSafetyLimit")) >= 25
     ) {
       addBonusToMaximize($item`carnivorous potted plant`, 200); // 4% chance free kill but also 25 ML
     }

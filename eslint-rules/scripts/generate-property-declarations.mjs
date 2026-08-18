@@ -57,6 +57,9 @@ function defaultMatchesType(type, value) {
       return typeof value === "number";
     case "string":
       return typeof value === "string";
+    case "item":
+    case "familiar":
+      return typeof value === "string";
     default:
       return false;
   }

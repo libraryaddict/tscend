@@ -1326,10 +1326,10 @@ function auto_pre_adventure(): boolean {
     getProperty("auto_MLSafetyLimit") !== "" &&
     !maximizer.has($modifier`Monster Level`)
   ) {
-    if (get("auto_MLSafetyLimit", 0) === -1) {
+    if (toInt(get("auto_MLSafetyLimit")) === -1) {
       // prevent all ML being equiped if limit is -1 and equip lowest possible ML including going negative
       maximizer.weight($modifier`Monster Level`, -1000);
-    } else if (get("auto_MLSafetyLimit", 0) <= highest_available_mcd()) {
+    } else if (toInt(get("auto_MLSafetyLimit")) <= highest_available_mcd()) {
       //mcd can already fill all allowed ML without using equipment slots
       //if the value is 0 adding ML with 0max is useless, it does not stop the maximizer from picking equipment with ML,
       //0max would just tell the maximizer to add +0 value to ML over 0 which is the same as not giving any value for ML
@@ -1337,7 +1337,7 @@ function auto_pre_adventure(): boolean {
       // note: maximizer will allow to go above the max value, ML just won't contribute to the total score after the max value
       maximizer
         .weight($modifier`Monster Level`)
-        .max($modifier`Monster Level`, get("auto_MLSafetyLimit", 0));
+        .max($modifier`Monster Level`, toInt(get("auto_MLSafetyLimit")));
     }
   }
   // Last minute switching for garbage tote. But only if nothing called on januaryToteAcquire this turn.

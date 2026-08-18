@@ -1111,7 +1111,7 @@ export function LX_meatMaid(): boolean {
 }
 
 export function LX_getDesiredWorkshed(): Item {
-  const currentWorkshed: string = toLowerCase(getProperty("auto_workshed"));
+  const currentWorkshed: string = toLowerCase(get("auto_workshed"));
   //return the actual item name in case a shorthand is used
   switch (currentWorkshed) {
     case "takerspace":

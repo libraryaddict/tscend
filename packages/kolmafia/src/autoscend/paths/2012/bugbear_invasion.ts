@@ -475,12 +475,12 @@ function LX_bugbearBridge(): boolean {
   }
 
   if (
-    toLowerCase(getProperty("auto_towerBreak")) === "naughty sorceress" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "the naughty sorceress" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "ns" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "sorceress" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "level 6" ||
-    toLowerCase(getProperty("auto_towerBreak")) === "chamber"
+    toLowerCase(get("auto_towerBreak")) === "naughty sorceress" ||
+    toLowerCase(get("auto_towerBreak")) === "the naughty sorceress" ||
+    toLowerCase(get("auto_towerBreak")) === "ns" ||
+    toLowerCase(get("auto_towerBreak")) === "sorceress" ||
+    toLowerCase(get("auto_towerBreak")) === "level 6" ||
+    toLowerCase(get("auto_towerBreak")) === "chamber"
   ) {
     abort("auto_towerBreak set to abort here.");
   }

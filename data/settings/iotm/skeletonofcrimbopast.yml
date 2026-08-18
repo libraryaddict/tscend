@@ -2,3 +2,4 @@ auto_farmSoCP:
   name: "Farm Skeleton of Crimbo Past knucklebones"
   type: boolean
   description: "If true, prefers Skeleton of Crimbo Past until 100 knucklebones have been farmed"
+  default: false

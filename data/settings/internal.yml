@@ -1,7 +1,5 @@
 auto_alienLanguage:
   type: boolean
-auto_alwaysGetSteelOrgan:
-  type: string
 auto_aosolLastSkill:
   type: int
 auto_avalancheDeployed:
@@ -62,17 +60,10 @@ auto_considerCCSCShore:
   type: boolean
   default: true
   resets: ascend
-auto_consumeKeyLimePies:
-  type: boolean
 auto_copies:
   type: string
   default: ""
   resets: ascend
-auto_csDoWheel:
-  type: string
-  resets: ascend
-auto_current_version:
-  type: string
 auto_dakotaFanning:
   type: boolean
   default: false
@@ -89,8 +80,6 @@ auto_debuffAsdonDelay:
   type: int
   default: 0
   resets: ascend
-auto_debug:
-  type: string
 auto_delayLastLevel:
   type: int
   default: 0
@@ -108,7 +97,7 @@ auto_dietpills:
 auto_digitizeDirective:
   type: string
 auto_disregardInstantKarmaBackup:
-  type: string
+  type: boolean
 auto_doCombatCopy:
   type: string
   default: "no"
@@ -163,10 +152,6 @@ auto_forceNonCombatSource:
   type: string
   default: ""
   resets: ascend
-auto_forceNonCombatTurn:
-  type: int
-  default: -1
-  resets: ascend
 auto_forceTavern:
   type: boolean
   default: false
@@ -192,16 +177,6 @@ auto_habitatMonster:
 auto_haveSourceTerminal:
   type: boolean
   default: false
-  resets: ascend
-auto_hccsNoConcludeDay:
-  type: string
-  resets: ascend
-auto_hccsTurnSave:
-  type: string
-  resets: ascend
-auto_ignoreCombat:
-  type: string
-  default: ""
   resets: ascend
 auto_instakill:
   type: string
@@ -235,8 +210,6 @@ auto_kgbButton100:
   type: int
 auto_kgbTracker:
   type: string
-auto_killingjar:
-  type: string
 auto_L03CouncilVisited:
   type: boolean
   default: false
@@ -254,12 +227,8 @@ auto_L11CouncilVisited:
   default: false
   resets: ascend
 auto_L12FarmStage:
-  type: string
-  default: "0"
-  resets: ascend
-auto_L9_smutOrcPervert:
-  type: boolean
-  default: false
+  type: int
+  default: 0
   resets: ascend
 auto_lashes:
   type: string
@@ -269,17 +238,16 @@ auto_lastFamiliarLookupType:
   type: string
 auto_lastShenTurn:
   type: int
+  default: 0
   resets: ascend
 auto_lastthunder:
-  type: string
+  type: int
 auto_lastthunderturn:
-  type: string
+  type: int
 auto_leaflet_done:
   type: boolean
   default: false
   resets: ascend
-auto_logLevel:
-  type: string
 auto_lucky:
   type: string
   default: ""
@@ -307,8 +275,6 @@ auto_mpAutoRecovery:
   type: float
 auto_mpAutoRecoveryTarget:
   type: float
-auto_need_update:
-  type: boolean
 auto_nextEncounter:
   type: monster
 auto_ninjasnowmanassassin:
@@ -343,8 +309,6 @@ auto_powerfulglove:
   resets: ascend
 auto_preferSoCP:
   type: boolean
-auto_prev_version:
-  type: string
 auto_priorCharpaneMode:
   type: int
   default: 0
@@ -373,15 +337,6 @@ auto_robot_directive:
   type: string
 auto_robot_skills_bought:
   type: int
-auto_saveMargarita:
-  type: string
-  resets: ascend
-auto_saveSausage:
-  type: string
-  resets: ascend
-auto_saveVintage:
-  type: string
-  resets: ascend
 auto_servantChoice:
   type: string
 auto_shenZonesTurnsSpent:
@@ -389,6 +344,7 @@ auto_shenZonesTurnsSpent:
   resets: ascend
 auto_shinningStarted:
   type: boolean
+  default: false
   resets: ascend
 auto_shouldMeatLevel:
   type: boolean
@@ -457,7 +413,7 @@ _auto_candyMapCompleted:
 _auto_casualAscension:
   type: int
 _auto_coldMedicineLocked:
-  type: string
+  type: boolean
 _auto_combatDisguisesDelimitMask:
   type: int
 _auto_combatFotdDinosaur:
@@ -514,6 +470,7 @@ _auto_preferSwordFam:
   type: boolean
 _auto_reinitialize:
   type: boolean
+  default: false
   resets: ascend
 _auto_screechDelay:
   type: phylum
@@ -544,13 +501,10 @@ _yearbookClubVisitedToday:
   type: boolean
 c2t_apron_allowlist:
   type: string
-chateauMonsterFought:
-  type: boolean
 choiceAdventure1003:
   type: int
   default: 0
   resets: ascend
 kolhs_closetDrink:
   type: boolean
-logLevelDefaultChangedToDebug:
-  type: boolean
+  default: false

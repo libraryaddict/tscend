@@ -1323,7 +1323,7 @@ export function doBedtime(): boolean {
         cliExecute("crimbotree get");
       }
     }
-    set("auto_clanstuff", `${myDaycount()}`);
+    set("auto_clanstuff", myDaycount());
   }
 
   if (
@@ -1605,7 +1605,7 @@ export function doBedtime(): boolean {
   let effect_to_wish: Effect = $effect`Frosty`;
   if (getProperty("auto_MLSafetyLimit") !== "" || in_wereprof()) {
     // Professor hates ML
-    if (get("auto_MLSafetyLimit", 0) < 25 || in_wereprof()) {
+    if (toInt(get("auto_MLSafetyLimit")) < 25 || in_wereprof()) {
       // We're adding +25 ML that won't be shrugged. Professor hates ML
       effect_to_wish = $effect`One Very Clear Eye`;
     }

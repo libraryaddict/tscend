@@ -2,14 +2,17 @@ auto_interrupt:
   name: "Auto Interrupt"
   type: boolean
   description: Script will abort after the next action is finished (instead of mid turn which can cause problems). Will be reset to false after every time it is used.
+  default: false
 auto_stop:
   name: "Auto Stop"
   type: boolean
   description: Script will gracefully stop (not abort) before or after attempting to adventure somewhere, but not during the pre or post adventure script. This is an alternative to abort, where you do not want to kill the entire script chain. Eg, when you're calling autoscend as part of your day in an advanced setup.
+  default: false
 auto_debugging:
   name: "Debugging Stop"
   type: boolean
   description: Every time you run the script it will perform one adventure and then stop by setting auto_interrupt = true
+  default: false
 auto_paranoia:
   name: "Quest Paranoia"
   type: int
@@ -25,6 +28,7 @@ auto_newbieOverride:
   name: "Newbie Override"
   type: boolean
   description: If true will override newbie block once then set itself to false. Newbie block is enabled used when you fight a crate (please report crate fighting) or when you spent too many adventures in a zone
+  default: false
 auto_disableAdventureHandling:
   name: "Disable Pre & Post Adv Scripts"
   type: boolean
@@ -35,11 +39,14 @@ auto_disableFamiliarChanging:
   name: "Disable Familiar Changing"
   type: boolean
   description: When true this prevents familiar changes. resets every loop.
+  default: false
 auto_combatDirective:
   name: "Combat Directive"
   type: string
   description: An action to execute at the start of next combat. resets every loop.
+  default: ""
 auto_interruptZones:
   name: "Interrupt Zones"
   type: string
   description: Semicolon-separated list of zones to abort in before starting the first adventure.
+  default: ""

@@ -7,22 +7,27 @@ auto_stayInRun:
   name: "Stay In Run"
   type: boolean
   description: If true, we stop when the King can be freed but do not free the King. Paths with a choice at liberation time will always stayInRun regardless of this setting.
+  default: false
 auto_confidence:
   name: "Use Confidence Buff"
   type: boolean
   description: If true, we'll get the confidence buff instead of breaking the mirror. Good if your combat suite isn't very fleshed out yet, since it makes the Naughty Sorceress dramatically easier.
+  default: false
 auto_blacklistFamiliar:
   name: "Blacklist Familiars"
   type: string
   description: A semi-colon separated string of familiar names that we do not want to use. They still may get used but this will minimize their usage.
+  default: ""
 auto_considerGalaktik:
   name: "Consider Galaktik"
   type: boolean
   description: When true autoscend may automatically enable galaktik quest for this run if it decides it is needed.
+  default: false
 auto_skipUnlockGuild:
   name: "Skip Unlocking Guild"
   type: boolean
   description: When true, don't unlock the guild.
+  default: false
 auto_save_adv_override:
   name: "Save Adventures Override"
   type: int
@@ -32,6 +37,7 @@ auto_secondPlaceOrBust:
   name: "Second Place Or Bust"
   type: boolean
   description: When true, abort before each tower test if we can't get to second place.
+  default: false
 auto_log_level:
   name: "Log Level"
   type: int
@@ -55,26 +61,32 @@ auto_restoreUseBloodBond:
   name: "Use Blood Bond For Restores"
   type: boolean
   description: Whether to use extra hp to cast blood bond. Blood bond has a recurring HP drain, set to false if you are worried about getting killed or wasting resources healing. Defaults to false.
+  default: false
 auto_forceFatLootToken:
   name: "Force Fat Loot Token"
   type: boolean
   description: force grabbing the fat loot tokens from daily dungeon and fantasy realm every day even if you already have enough for this run. This is mainly for new accounts who want to get the cubeling and/or skillbooks.
+  default: false
 auto_pvpEnable:
   name: "Enable PVP"
   type: boolean
   description: Break the hippy stone to unlock PvP? This may also let autoscend collect low-effort PVP items.
+  default: false
 auto_towerBreak:
   name: "Tower Break Location"
   type: string
   description: Where should we break in the tower? (e.g. wall of skin, wall of bones, shadow, ns). Blank by default.
+  default: ""
 auto_ignoreRestoreFailure:
   name: "Ignore Restore Failure"
   type: boolean
   description: if true we will always ignore failure to restore MP or HP and just continue playing
+  default: false
 auto_workshed:
   name: "Workshed Item"
   type: string
   description: What workshed item should we initialize with? If blank or invalid, we will change workshed based on priorities. There are some shorthands or you can use the full name of the workshed item. Some worksheds are not implemented so unless you are certain you want to deviate, use auto.
+  default: ""
 auto_stopMinutesToRollover:
   name: "Rollover Abort Time"
   type: int
@@ -97,7 +109,9 @@ _auto_ignoreRestoreFailureToday:
   name: "Ignore Restore Failure Today"
   type: boolean
   description: if true we will for today only ignore failure to restore MP or HP and just continue playing
+  default: false
 auto_aosol_dontUnCurse:
   name: "Keep Cursed Items (AoSOL)"
   type: boolean
   description: "Avatar of Shadows Over Loathing: if true will keep all cursed items."
+  default: false

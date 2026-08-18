@@ -14,12 +14,14 @@
   },
   "scripts": {
     "lint:settings": "node eslint-rules/scripts/lint-settings-yml.mjs",
+    "report:unused-settings": "node scripts/report-unused-settings.mjs",
     "generate:properties": "node eslint-rules/scripts/generate-property-declarations.mjs",
     "watch:properties": "node eslint-rules/scripts/generate-property-declarations.mjs --watch",
     "typecheck": "yarn generate:properties && tsc -b",
     "bundle": "yarn generate:properties && node esbuild.mjs",
     "build": "node scripts/build.mjs",
     "lint": "yarn generate:properties && yarn lint:settings && eslint packages --cache --cache-location node_modules/.cache/.eslintcache && prettier --check . --cache --cache-location node_modules/.cache/.prettiercache",
+    "clean:lint": "rm -f node_modules/.cache/.eslintcache node_modules/.cache/.prettiercache",
     "format": "node scripts/format.mjs"
   },
   "devDependencies": {

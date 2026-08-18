@@ -114,7 +114,7 @@ function auto_combatInitialize(
   removeProperty("_auto_combatState");
   removeProperty("auto_funCombatHandler"); //ocrs specific tracker
   removeProperty("auto_funPrefix"); //ocrs specific tracker
-  set("auto_combatHandlerThunderBird", "0");
+  set("auto_combatHandlerThunderBird", 0);
   set("_auto_combatTracker_MortarRound", -1); //tracks which round we used Stuffed Mortar Shell in.
   //log some important info.
   //some stuff is redundant to the pre_adventure function print_footer() so it will not be logged here

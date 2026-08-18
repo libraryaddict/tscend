@@ -860,7 +860,7 @@ export function auto_buyFireworksHat(): boolean {
   // ML hat is least useful
   // todo: add functionality to simulate acquiring ML instead of just looking at current ML
   if (auto_can_equip($item`fedora-mounted fountain`)) {
-    if (monsterLevelAdjustment() < get("auto_MLSafetyLimit", 0)) {
+    if (monsterLevelAdjustment() < toInt(get("auto_MLSafetyLimit"))) {
       retrieveItem(1, $item`fedora-mounted fountain`);
       return true;
     }
@@ -1067,7 +1067,7 @@ export function auto_CMCconsult(): void {
 
   if (get("_auto_coldMedicineLocked", false)) {
     //haven't visited yet since it was last locked so always visit to update available consults
-    set("_auto_coldMedicineLocked", "false");
+    set("_auto_coldMedicineLocked", false);
   } else if (
     auto_CMCconsultsLeft() <= 2 &&
     auto_freeCrafts() >= 5 &&
@@ -1131,7 +1131,7 @@ export function auto_CMCconsult(): void {
   }
 
   if (bestOption !== -1) {
-    set("_auto_coldMedicineLocked", "true"); //when taking a consultation, set property as a reminder to always check again next time consultations are unlocked
+    set("_auto_coldMedicineLocked", true); //when taking a consultation, set property as a reminder to always check again next time consultations are unlocked
     auto_runChoice(bestOption);
   }
 

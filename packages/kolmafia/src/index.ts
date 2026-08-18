@@ -14,9 +14,9 @@ import {
   backupSetting,
   meatReserveMessage,
 } from "./autoscend/auto_util";
-import { autoscend_migrate } from "./autoscend/autoscend_migration";
 import { printAllTaskQuests } from "./autoscend/engine/engine";
 import { Args } from "./autoscend/utils/grimoireArgs";
+import { fixMigration } from "./autoscend/utils/migration";
 
 const args = Args.create(
   "autoscend",
@@ -98,7 +98,7 @@ export function main(input: string = ""): void {
   print_help_text();
   sad_times();
   if (
-    !autoscend_migrate() &&
+    !fixMigration() &&
     !userConfirm(
       "autoscend might not have upgraded from a previous version correctly, do you want to continue? Will default to true in 10 seconds.",
       10000,

@@ -638,8 +638,8 @@ export function initializeSettings(): void {
 
   set("auto_familiarChoice", "");
   set("auto_forceNonCombatLocation", "");
-  set("auto_getSteelOrgan", getProperty("auto_getSteelOrgan_initialize"));
-  set("auto_doGalaktik", getProperty("auto_doGalaktik_initialize"));
+  set("auto_getSteelOrgan", get("auto_getSteelOrgan_initialize"));
+  set("auto_doGalaktik", get("auto_doGalaktik_initialize"));
   set("auto_modernzmobiecount", "");
   beehiveConsider(false);
 
@@ -799,10 +799,13 @@ function LX_burnDelayDo(): boolean {
       digitizeZone = $location`Noob Cave`;
     }
     auto_log_info(
-      `Fighting a ${getProperty("_sourceTerminalDigitizeMonster")} in ${digitizeZone.toString()} to burn delay!`,
+      `Fighting a ${get("_sourceTerminalDigitizeMonster")} in ${digitizeZone.toString()} to burn delay!`,
       "green",
     );
-    set("auto_nextEncounter", getProperty("_sourceTerminalDigitizeMonster"));
+    set(
+      "auto_nextEncounter",
+      safeGet("_sourceTerminalDigitizeMonster").toString(),
+    );
     if (autoAdv(digitizeZone)) {
       return true;
     }
@@ -1302,27 +1305,19 @@ function initializeDay(day: number): void {
     if (get("auto_day_init", 0) < 1) {
       auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
       if (
-        containsText(
-          getProperty("sourceTerminalEnquiryKnown"),
-          "monsters.enq",
-        ) &&
+        containsText(get("sourceTerminalEnquiryKnown"), "monsters.enq") &&
         in_pokefam()
       ) {
         auto_sourceTerminalRequest("enquiry monsters.enq");
       } else if (
-        containsText(
-          getProperty("sourceTerminalEnquiryKnown"),
-          "familiar.enq",
-        ) &&
+        containsText(get("sourceTerminalEnquiryKnown"), "familiar.enq") &&
         pathHasFamiliar()
       ) {
         auto_sourceTerminalRequest("enquiry familiar.enq");
-      } else if (
-        containsText(getProperty("sourceTerminalEnquiryKnown"), "stats.enq")
-      ) {
+      } else if (containsText(get("sourceTerminalEnquiryKnown"), "stats.enq")) {
         auto_sourceTerminalRequest("enquiry stats.enq");
       } else if (
-        containsText(getProperty("sourceTerminalEnquiryKnown"), "protect.enq")
+        containsText(get("sourceTerminalEnquiryKnown"), "protect.enq")
       ) {
         auto_sourceTerminalRequest("enquiry protect.enq");
       }
@@ -2238,8 +2233,8 @@ function autosellCrap(): boolean {
 
 function print_header(): void {
   if (myThunder() > get("auto_lastthunder", 0)) {
-    set("auto_lastthunderturn", `${myTurncount()}`);
-    set("auto_lastthunder", `${myThunder()}`);
+    set("auto_lastthunderturn", myTurncount());
+    set("auto_lastthunder", myThunder());
   }
   if (inHardcore()) {
     auto_log_info(

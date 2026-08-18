@@ -433,7 +433,7 @@ export function LX_attemptPowerLevelMeat(
   }
   // tells other parts of the script to get more meat in the future (quest ordering, clovering for KGE, pulling meat)
   if (!get("auto_shouldMeatLevel", false)) {
-    set("auto_shouldMeatLevel", "true");
+    set("auto_shouldMeatLevel", true);
   }
   // setting the parameter of buyStats to true drastically lowers meat reserve requirements. If it returns true, we were able to reach the next level
   if (amw_buyStats(!skills)) {

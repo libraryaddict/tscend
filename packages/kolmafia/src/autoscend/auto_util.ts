@@ -5581,7 +5581,7 @@ export function auto_reserveCraftAmount(orig_it: Item): number {
 // ML MANAGEMENT FUNCTIONS
 // Gives us the number we need when comparing to a desired ML or entering a value into a maximizer string.
 export function auto_convertDesiredML(DML: number): number {
-  let DesiredML: number = get("auto_MLSafetyLimit", 0);
+  let DesiredML: number = toInt(get("auto_MLSafetyLimit"));
 
   if (getProperty("auto_MLSafetyLimit") === "") {
     DesiredML = DML;
@@ -5599,7 +5599,7 @@ export function auto_setMCDToCap(): boolean {
   } else {
     // monster_level_adjustment includes the current MCD value, so it must be removed before calculating the new MCD
     const currentMlWithoutMcd: number = monsterLevelAdjustment() - currentMcd();
-    const mlSafetyLimit: number = get("auto_MLSafetyLimit", 0);
+    const mlSafetyLimit: number = toInt(get("auto_MLSafetyLimit"));
 
     if (currentMlWithoutMcd < mlSafetyLimit) {
       // ML is below the cap. Add as much ML with the MCD as possible without exceeding the cap.

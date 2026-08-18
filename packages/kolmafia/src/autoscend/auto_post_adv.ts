@@ -1254,7 +1254,7 @@ function auto_post_adventure(): boolean {
     getProperty("lastEncounter") === $monster`modern zmobie`.toString() &&
     haveEffect($effect`Beaten Up`) === 0
   ) {
-    set("auto_modernzmobiecount", `${get("auto_modernzmobiecount", 0) + 1}`);
+    set("auto_modernzmobiecount", get("auto_modernzmobiecount", 0) + 1);
     auto_log_info(
       `Fought ${getProperty("auto_modernzmobiecount")} modern zmobies.`,
       "blue",

@@ -639,7 +639,7 @@ function chateauPaintingDo(): boolean {
   if (
     myLevel() >= paintingLevel &&
     chateaumantegna_havePainting() &&
-    !get("chateauMonsterFought", false) &&
+    !get("_chateauMonsterFought", false) &&
     isActuallyEd() &&
     myDaycount() <= 3
   ) {
@@ -655,7 +655,7 @@ function chateauPaintingDo(): boolean {
     organsFull() &&
     myAdventures() < 10 &&
     chateaumantegna_havePainting() &&
-    !get("chateauMonsterFought", false) &&
+    !get("_chateauMonsterFought", false) &&
     myDaycount() === 1 &&
     !isActuallyEd()
   ) {
@@ -667,7 +667,7 @@ function chateauPaintingDo(): boolean {
   if (
     myLevel() >= 8 &&
     chateaumantegna_havePainting() &&
-    !get("chateauMonsterFought", false) &&
+    !get("_chateauMonsterFought", false) &&
     myDaycount() === 2 &&
     !isActuallyEd()
   ) {
@@ -681,7 +681,7 @@ function chateauPaintingDo(): boolean {
 
 export const chateauPaintingTask: QuestTask = registerQuestTask({
   name: "chateauPainting",
-  completed: () => get("chateauMonsterFought", false),
+  completed: () => get("_chateauMonsterFought", false),
   ready: () => true,
   do: chateauPaintingDo,
   desiredEncounters: () => [

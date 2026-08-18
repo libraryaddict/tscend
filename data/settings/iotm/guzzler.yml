@@ -2,3 +2,4 @@ auto_skipGuzzlrCocktailSet:
   name: "Skip Guzzlr Cocktail Quest"
   type: boolean
   description: If true will not accept and abandon a Platinum Guzzlr quest for the cocktail set.
+  default: false

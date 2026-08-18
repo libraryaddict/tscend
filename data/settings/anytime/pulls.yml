@@ -2,6 +2,7 @@ auto_consumePullDesirability:
   name: "Pull Desirability Weight"
   type: float
   description: This value is used as a rough estimate of how much a pull is "worth" when the consumption algorithm is considering using pulls. Higher values will make it more conservative and vice-versa. Defaults to 5.0.
+  default: 5.0
 auto_bedtime_pulls_skip:
   name: "Skip Bedtime Pulls"
   type: boolean

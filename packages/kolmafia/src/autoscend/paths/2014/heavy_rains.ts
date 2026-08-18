@@ -85,8 +85,8 @@ export function heavyrains_initializeSettings(): void {
     set("auto_orcishfratboyspy", "");
     set("auto_warhippyspy", "");
 
-    set("auto_lastthunder", "100");
-    set("auto_lastthunderturn", "0");
+    set("auto_lastthunder", 100);
+    set("auto_lastthunderturn", 0);
 
     set("auto_wandOfNagamar", false);
     set("auto_writingDeskSummon", true);

@@ -1,4 +1,5 @@
 auto_extrudeChoice:
   name: "Source Terminal: Extrude Choice"
   type: string
-  description: ": separated by day, ; separated by order. For Source Terminal. Use food, booze. Defaults to booze for any empty fields."
+  description: ": separated by day, ; separated by order. For Source Terminal. Use food, booze. If set to a non-empty string, will default to booze for any empty fields."
+  default: ""

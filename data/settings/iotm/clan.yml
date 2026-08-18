@@ -6,16 +6,19 @@ auto_hideAdultery:
   name: "Hide Zatara Consults"
   type: boolean
   description: When true, automatically deletes Zatara Consults from Kmails during end of day cleanup.
+  default: false
   tags: ["fortune teller"]
 auto_optimizeConsultsInRun:
   name: "Optimize Zatara Consults"
   type: boolean
   description: When true, optimize our consults in run to get Ascension relevant rewards.
+  default: false
   tags: ["fortune teller"]
 auto_consultClan:
   name: "Zatara Consult Clan"
   type: string
   description: The clan you want to do Zatara consults in. Defaults to 'auto_clanVIPLounge' unless configured.
+  default: ""
   tags: ["fortune teller"]
 auto_consultChoice:
   name: "Zatara Consult Player"

@@ -64,8 +64,19 @@ function typeCategory(type: string): string {
   return type;
 }
 
-// Best-effort: only judges literals and `Thing.none`-style defaults; everything else
-// (variables, function calls, ternaries, ...) is left unchecked.
+// Class-typed properties (familiar/location/item/monster/phylum/stat) are stored by name
+// under the hood, so a raw string literal is the normal, correct way to set/read them.
+const classCategories = new Set([
+  "familiar",
+  "location",
+  "item",
+  "monster",
+  "phylum",
+  "stat",
+]);
+
+// Best-effort: only judges literals, template strings, and `Thing.none`-style defaults;
+// everything else (variables, function calls, ternaries, ...) is left unchecked.
 function inferCategory(node: Expression): string | null {
   if (node.type === "Literal") {
     if (typeof node.value === "boolean") return "boolean";
@@ -73,6 +84,10 @@ function inferCategory(node: Expression): string | null {
     if (typeof node.value === "string") return "string";
     return null;
   }
+
+  // Template strings (e.g. `${someInt}`) always coerce their value to a string, so
+  // stringifying a number/boolean by hand into one is the same bug as passing "3" or "true".
+  if (node.type === "TemplateLiteral") return "string";
 
   if (
     node.type === "MemberExpression" &&
@@ -85,6 +100,14 @@ function inferCategory(node: Expression): string | null {
   }
 
   return null;
+}
+
+function isEmptyStringLiteral(node: Expression): boolean {
+  if (node.type === "Literal") return node.value === "";
+  if (node.type === "TemplateLiteral") {
+    return node.expressions.length === 0 && node.quasis[0].value.cooked === "";
+  }
+  return false;
 }
 
 export const rule = createRule<Options, MessageIds>({
@@ -146,14 +169,18 @@ export const rule = createRule<Options, MessageIds>({
         if (inferred === null) return;
 
         const expected = typeCategory(registeredType);
-        // KoL properties are always stored as strings under the hood, so a raw string value
-        // (e.g. "", "true", "3") is always valid regardless of nominal type. Only flag
-        // concrete, conflicting non-string types (e.g. a Location default for a Familiar).
-        if (
-          inferred !== expected &&
-          inferred !== "string" &&
-          expected !== "string"
-        ) {
+        // "" is the codebase's universal "unset"/clear sentinel (see defaultConfig in
+        // auto_settings.ts), so it's always valid regardless of nominal type. Otherwise, a
+        // string literal is only valid for class-typed properties, which are stored by name
+        // (e.g. set("...", "Bonerdagon") for a Monster) - a boolean/int/float property given a
+        // string like "true" or "3" is a real bug, not a legitimate raw-string write.
+        const isClearSentinel =
+          inferred === "string" && isEmptyStringLiteral(valueArg as Expression);
+        const allowedAsString =
+          inferred === "string" &&
+          (isClearSentinel || classCategories.has(expected));
+
+        if (inferred !== expected && !allowedAsString) {
           context.report({
             node: valueArg,
             messageId: "typeMismatch",

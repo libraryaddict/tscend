@@ -38,6 +38,7 @@ import {
   retrieveItem,
   round,
   splitString,
+  toInt,
   toMonster,
   useSkill,
   visitUrl,
@@ -1124,9 +1125,9 @@ export function auto_checkTrainSet(): void {
   }
   let eight: number = 13; //monster level
   if (
-    (monsterLevelAdjustment() > get("auto_MLSafetyLimit", 0) &&
+    (monsterLevelAdjustment() > toInt(get("auto_MLSafetyLimit")) &&
       getProperty("auto_MLSafetyLimit") !== "") ||
-    get("auto_MLSafetyLimit", 0) === -1 ||
+    toInt(get("auto_MLSafetyLimit")) === -1 ||
     in_plumber()
   ) {
     eight = 9; //cold res, stench dmg

@@ -19,6 +19,13 @@ export const familiarProperties = [
 export const itemProperties = [
   ...libramItemProperties,
   "auto_boughtCommerceGhostItem",
+  "auto_equipment_override_acc",
+  "auto_equipment_override_back",
+  "auto_equipment_override_familiar",
+  "auto_equipment_override_hat",
+  "auto_equipment_override_off-hand",
+  "auto_equipment_override_pants",
+  "auto_equipment_override_shirt",
   "auto_equipment_override_weapon",
 ] as const;
 
