@@ -14,7 +14,6 @@ import {
   equippedItem,
   experienceBonus,
   getMonsters,
-  getProperty,
   haveEffect,
   haveEquipped,
   inebrietyLimit,
@@ -558,10 +557,7 @@ function auto_pre_adventure(): boolean {
     retrieveItem(1, $item`red rocket`);
   }
 
-  if (
-    getProperty("_bittycar") === "" &&
-    itemAmount($item`BittyCar MeatCar`) > 0
-  ) {
+  if (get("_bittycar") === "" && itemAmount($item`BittyCar MeatCar`) > 0) {
     use(1, $item`BittyCar MeatCar`);
   }
 
@@ -893,7 +889,7 @@ function auto_pre_adventure(): boolean {
 
   if (
     auto_haveMcHugeLargeSkis() &&
-    getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
+    get("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
     !get("auto_avalancheDeployed", false)
   ) {
     autoForceEquip($slot`acc2`, wrap_item($item`McHugeLarge left ski`));
@@ -902,13 +898,13 @@ function auto_pre_adventure(): boolean {
 
   if (
     auto_hasParka() &&
-    getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
+    get("auto_forceNonCombatSource") === "jurassic parka" &&
     !get("auto_parkaSpikesDeployed", false)
   ) {
     autoForceEquip$3(wrap_item($item`Jurassic Parka`)); //equips parka and forbids maximizer tampering with shirt slot
     //not using auto_configureParka("spikes") so maximizer stays aware of ML from shirt, instead of maximizing with another shirt or no shirt before changing to parka
     set("auto_parkaSetting", "spikes");
-    if (getProperty("parkaMode") !== "spikolodon") {
+    if (get("parkaMode") !== "spikolodon") {
       cliExecute("parka spikolodon");
     }
   }
@@ -1067,7 +1063,7 @@ function auto_pre_adventure(): boolean {
     // and L12_themtharHills()...
     useFamiliar(safeGet("auto_100familiar"));
     auto_log_debug(
-      `Re-equipped your ${getProperty("auto_100familiar")} as something had unequipped it. This is bad and should be investigated.`,
+      `Re-equipped your ${safeGet("auto_100familiar")} as something had unequipped it. This is bad and should be investigated.`,
     );
   }
 
@@ -1215,7 +1211,7 @@ function auto_pre_adventure(): boolean {
   if (
     (get("flyeredML") > 9999 ||
       internalQuestStatus("questL12War") > 1 ||
-      getProperty("sidequestArenaCompleted") !== "none") &&
+      get("sidequestArenaCompleted") !== "none") &&
     myLevel() > 12
   ) {
     doML = false;
@@ -1293,7 +1289,7 @@ function auto_pre_adventure(): boolean {
     } else {
       set("auto_debuffAsdonDelay", get("auto_debuffAsdonDelay", 0) + 1);
       auto_log_debug(
-        `Delaying debuffing Asdon: ${getProperty("auto_debuffAsdonDelay")}`,
+        `Delaying debuffing Asdon: ${get("auto_debuffAsdonDelay")}`,
       );
     }
 
@@ -1323,7 +1319,7 @@ function auto_pre_adventure(): boolean {
   // Here we give a limited value to ML if +/-ML is not specifically called in the current maximizer string. This does not enforce the limit.
   // if the limit setting has no value then ML has already been given a value indirectly by "exp" in the default maximizer statement
   if (
-    getProperty("auto_MLSafetyLimit") !== "" &&
+    get("auto_MLSafetyLimit") !== "" &&
     !maximizer.has($modifier`Monster Level`)
   ) {
     if (toInt(get("auto_MLSafetyLimit")) === -1) {
@@ -1413,7 +1409,7 @@ function auto_pre_adventure(): boolean {
     );
   } else {
     // Last minute MCD alterations if Limit set, otherwise trust maximizer
-    if (getProperty("auto_MLSafetyLimit") !== "" && !removeML) {
+    if (get("auto_MLSafetyLimit") !== "" && !removeML) {
       auto_setMCDToCap();
     }
 

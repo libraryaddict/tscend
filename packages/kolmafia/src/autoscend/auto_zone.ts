@@ -5,7 +5,6 @@ import {
   containsText,
   fullnessLimit,
   getMonsters,
-  getProperty,
   gnomadsAvailable,
   guildAvailable,
   haveEffect,
@@ -22,7 +21,6 @@ import {
   myClass,
   myLevel,
   myPrimestat,
-  toFloat,
   toInt,
 } from "kolmafia";
 import {
@@ -204,10 +202,10 @@ export function zone_needItem(loc: Location): {
         }
         break;
       case $location`The Haunted Laundry Room`:
-        value = 5.0 * (1.0 + toFloat(getProperty("auto_cabinetsencountered")));
+        value = 5.0 * (1.0 + get("auto_cabinetsencountered"));
         break;
       case $location`The Haunted Wine Cellar`:
-        value = 5.0 * (1.0 + toFloat(getProperty("auto_wineracksencountered")));
+        value = 5.0 * (1.0 + get("auto_wineracksencountered"));
         break;
       case $location`The Hidden Park`:
         if (get("hiddenTavernUnlock") < myAscensions()) {
@@ -433,8 +431,7 @@ export function zone_needItem(loc: Location): {
         }
         break;
       case $location`The Old Landfill`:
-        value =
-          5.0 * (1.0 + toFloat(getProperty("auto_junkspritesencountered")));
+        value = 5.0 * (1.0 + get("auto_junkspritesencountered"));
         break;
       case $location`The Deep Machine Tunnels`:
         value = 30.0; //Just a guess.
@@ -494,7 +491,7 @@ export function zone_needItem(loc: Location): {
   if (
     expectGhostReport() &&
     loc === safeGet("ghostLocation") &&
-    getProperty("questPAGhost") === "started"
+    get("questPAGhost") === "started"
   ) {
     value = 0.0;
   }
@@ -519,7 +516,7 @@ export function zone_needItemBooze(loc: Location): {
   let value: number = 0.0;
   switch (loc) {
     case $location`The Haunted Wine Cellar`:
-      value = 5.0 * (1.0 + toFloat(getProperty("auto_wineracksencountered")));
+      value = 5.0 * (1.0 + get("auto_wineracksencountered"));
       break;
     default:
       break;
@@ -528,7 +525,7 @@ export function zone_needItemBooze(loc: Location): {
   if (
     expectGhostReport() &&
     loc === safeGet("ghostLocation") &&
-    getProperty("questPAGhost") === "started"
+    get("questPAGhost") === "started"
   ) {
     value = 0.0;
   }
@@ -557,7 +554,7 @@ export function zone_needItemFood(loc: Location): {
   {
     switch (loc) {
       case $location`The Haunted Laundry Room`:
-        value = 5.0 * (1.0 + toFloat(getProperty("auto_cabinetsencountered")));
+        value = 5.0 * (1.0 + get("auto_cabinetsencountered"));
         break;
       case $location`Inside the Palindome`:
         if (
@@ -626,7 +623,7 @@ export function zone_needItemFood(loc: Location): {
   if (
     expectGhostReport() &&
     loc === safeGet("ghostLocation") &&
-    getProperty("questPAGhost") === "started"
+    get("questPAGhost") === "started"
   ) {
     value = 0.0;
   }
@@ -695,7 +692,7 @@ export function zone_combatMod(loc: Location): {
     case $location`The Haunted Gallery`:
       if (
         !shouldDelay ||
-        !containsText(getProperty("relayCounters"), "Garden Banished")
+        !containsText(get("relayCounters"), "Garden Banished")
       ) {
         desiredModifier = -80;
       }
@@ -913,7 +910,7 @@ export function zone_combatMod(loc: Location): {
   if (
     expectGhostReport() &&
     loc === safeGet("ghostLocation") &&
-    getProperty("questPAGhost") === "started"
+    get("questPAGhost") === "started"
   ) {
     desiredModifier = 0;
   }
@@ -997,15 +994,15 @@ export function zone_delay(loc: Location): {
       }
       break;
     case $location`The Penultimate Fantasy Airship`:
-      if (getProperty("questL10Garbage") === "step2") {
+      if (get("questL10Garbage") === "step2") {
         delayRemaining = 5 - loc.turnsSpent;
-      } else if (getProperty("questL10Garbage") === "step3") {
+      } else if (get("questL10Garbage") === "step3") {
         delayRemaining = 10 - loc.turnsSpent;
-      } else if (getProperty("questL10Garbage") === "step4") {
+      } else if (get("questL10Garbage") === "step4") {
         delayRemaining = 15 - loc.turnsSpent;
-      } else if (getProperty("questL10Garbage") === "step5") {
+      } else if (get("questL10Garbage") === "step5") {
         delayRemaining = 20 - loc.turnsSpent;
-      } else if (getProperty("questL10Garbage") === "step6") {
+      } else if (get("questL10Garbage") === "step6") {
         delayRemaining = 25 - loc.turnsSpent;
       }
       break;
@@ -1069,8 +1066,7 @@ export function zone_delay(loc: Location): {
       if (
         need8BitPoints() &&
         possessEquipment($item`continuum transfunctioner`) &&
-        (getProperty("8BitColor") === "black" ||
-          getProperty("8BitColor") === "")
+        (get("8BitColor") === "black" || get("8BitColor") === "")
       ) {
         delayRemaining = 5 - get("8BitBonusTurns");
       }
@@ -1079,7 +1075,7 @@ export function zone_delay(loc: Location): {
       if (
         need8BitPoints() &&
         possessEquipment($item`continuum transfunctioner`) &&
-        getProperty("8BitColor") === "red"
+        get("8BitColor") === "red"
       ) {
         delayRemaining = 5 - get("8BitBonusTurns");
       }
@@ -1088,7 +1084,7 @@ export function zone_delay(loc: Location): {
       if (
         need8BitPoints() &&
         possessEquipment($item`continuum transfunctioner`) &&
-        getProperty("8BitColor") === "blue"
+        get("8BitColor") === "blue"
       ) {
         delayRemaining = 5 - get("8BitBonusTurns");
       }
@@ -1097,7 +1093,7 @@ export function zone_delay(loc: Location): {
       if (
         need8BitPoints() &&
         possessEquipment($item`continuum transfunctioner`) &&
-        getProperty("8BitColor") === "green"
+        get("8BitColor") === "green"
       ) {
         delayRemaining = 5 - get("8BitBonusTurns");
       }
@@ -1144,7 +1140,7 @@ export function zone_available(loc: Location): boolean {
       if (
         in_lta() &&
         get("_villainLairProgress") < 999 &&
-        getProperty("_auto_bondBriefing") === "started"
+        get("_auto_bondBriefing") === "started"
       ) {
         retval = true;
       }
@@ -1337,7 +1333,7 @@ export function zone_available(loc: Location): boolean {
       }
       break;
     case $location`The VERY Unquiet Garves`:
-      if (getProperty("questL07Cyrptic") === "finished") {
+      if (get("questL07Cyrptic") === "finished") {
         retval = true;
       }
       break;
@@ -1372,7 +1368,7 @@ export function zone_available(loc: Location): boolean {
     case $location`The Dark Elbow of the Woods`:
       if (
         internalQuestStatus("questL06Friar") >= 0 &&
-        getProperty("questL06Friar") !== "finished"
+        get("questL06Friar") !== "finished"
       ) {
         retval = true;
       }
@@ -1395,8 +1391,8 @@ export function zone_available(loc: Location): boolean {
     case $location`The Obligatory Pirate's Cove`:
       if (get("lastIslandUnlock") === myAscensions()) {
         if (
-          getProperty("questL12War") === "unstarted" ||
-          getProperty("questL12War") === "finished"
+          get("questL12War") === "unstarted" ||
+          get("questL12War") === "finished"
         ) {
           retval = true;
         }
@@ -1409,8 +1405,8 @@ export function zone_available(loc: Location): boolean {
         get("lastIslandUnlock") === myAscensions()
       ) {
         if (
-          getProperty("questL12War") === "unstarted" ||
-          getProperty("questL12War") === "finished"
+          get("questL12War") === "unstarted" ||
+          get("questL12War") === "finished"
         ) {
           retval = true;
         }
@@ -1424,8 +1420,8 @@ export function zone_available(loc: Location): boolean {
         internalQuestStatus("questM12Pirate") >= 5
       ) {
         if (
-          getProperty("questL12War") === "unstarted" ||
-          getProperty("questL12War") === "finished"
+          get("questL12War") === "unstarted" ||
+          get("questL12War") === "finished"
         ) {
           retval = true;
         }
@@ -1439,8 +1435,8 @@ export function zone_available(loc: Location): boolean {
         internalQuestStatus("questM12Pirate") >= 6
       ) {
         if (
-          getProperty("questL12War") === "unstarted" ||
-          getProperty("questL12War") === "finished"
+          get("questL12War") === "unstarted" ||
+          get("questL12War") === "finished"
         ) {
           retval = true;
         }
@@ -1451,11 +1447,11 @@ export function zone_available(loc: Location): boolean {
         (haveOutfit("swashbuckling getup") ||
           possessEquipment($item`pirate fledges`)) &&
         get("lastIslandUnlock") === myAscensions() &&
-        getProperty("questM12Pirate") === "finished"
+        get("questM12Pirate") === "finished"
       ) {
         if (
-          getProperty("questL12War") === "unstarted" ||
-          getProperty("questL12War") === "finished"
+          get("questL12War") === "unstarted" ||
+          get("questL12War") === "finished"
         ) {
           retval = true;
         }
@@ -1512,7 +1508,7 @@ export function zone_available(loc: Location): boolean {
         internalQuestStatus("questL12War") >= 1 &&
         get("hippiesDefeated") < 1000 &&
         haveOutfit("frat warrior fatigues") &&
-        getProperty("questL12War") !== "finished"
+        get("questL12War") !== "finished"
       ) {
         retval = true;
       }
@@ -1531,7 +1527,7 @@ export function zone_available(loc: Location): boolean {
         internalQuestStatus("questL12War") >= 1 &&
         get("fratboysDefeated") < 1000 &&
         haveOutfit("war hippy fatigues") &&
-        getProperty("questL12War") !== "finished"
+        get("questL12War") !== "finished"
       ) {
         retval = true;
       }
@@ -1542,9 +1538,9 @@ export function zone_available(loc: Location): boolean {
     case $location`Out by that Rusted-Out Car`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
-        (getProperty("sidequestJunkyardCompleted") === "none" ||
+        (get("sidequestJunkyardCompleted") === "none" ||
           get("flyeredML") < 10000) &&
-        getProperty("questL12War") !== "finished"
+        get("questL12War") !== "finished"
       ) {
         retval = true;
       }
@@ -1557,8 +1553,8 @@ export function zone_available(loc: Location): boolean {
     case $location`The Themthar Hills`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
-        getProperty("sidequestNunsCompleted") === "none" &&
-        getProperty("questL12War") !== "finished"
+        get("sidequestNunsCompleted") === "none" &&
+        get("questL12War") !== "finished"
       ) {
         retval = true;
       }
@@ -1566,8 +1562,8 @@ export function zone_available(loc: Location): boolean {
     case $location`The Hatching Chamber`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
-        getProperty("sidequestOrchardCompleted") === "none" &&
-        getProperty("questL12War") !== "finished"
+        get("sidequestOrchardCompleted") === "none" &&
+        get("questL12War") !== "finished"
       ) {
         retval = true;
       }
@@ -1575,9 +1571,9 @@ export function zone_available(loc: Location): boolean {
     case $location`The Feeding Chamber`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
-        getProperty("sidequestOrchardCompleted") === "none" &&
+        get("sidequestOrchardCompleted") === "none" &&
         haveEffect($effect`Filthworm Larva Stench`) > 0 &&
-        getProperty("questL12War") !== "finished"
+        get("questL12War") !== "finished"
       ) {
         retval = true;
       }
@@ -1585,9 +1581,9 @@ export function zone_available(loc: Location): boolean {
     case $location`The Royal Guard Chamber`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
-        getProperty("sidequestOrchardCompleted") === "none" &&
+        get("sidequestOrchardCompleted") === "none" &&
         haveEffect($effect`Filthworm Drone Stench`) > 0 &&
-        getProperty("questL12War") !== "finished"
+        get("questL12War") !== "finished"
       ) {
         retval = true;
       }
@@ -1595,10 +1591,10 @@ export function zone_available(loc: Location): boolean {
     case $location`The Filthworm Queen's Chamber`:
       if (
         internalQuestStatus("questL12War") >= 1 &&
-        getProperty("sidequestOrchardCompleted") === "none" &&
+        get("sidequestOrchardCompleted") === "none" &&
         itemAmount($item`heart of the filthworm queen`) === 0 &&
         haveEffect($effect`Filthworm Guard Stench`) > 0 &&
-        getProperty("questL12War") !== "finished"
+        get("questL12War") !== "finished"
       ) {
         retval = true;
       }
@@ -1692,32 +1688,32 @@ export function zone_available(loc: Location): boolean {
       }
       break;
     case $location`Tower Level 1`:
-      if (getProperty("questL13Final") === "step6") {
+      if (get("questL13Final") === "step6") {
         retval = true;
       }
       break;
     case $location`Tower Level 2`:
-      if (getProperty("questL13Final") === "step7") {
+      if (get("questL13Final") === "step7") {
         retval = true;
       }
       break;
     case $location`Tower Level 3`:
-      if (getProperty("questL13Final") === "step8") {
+      if (get("questL13Final") === "step8") {
         retval = true;
       }
       break;
     case $location`Tower Level 4`:
-      if (getProperty("questL13Final") === "step9") {
+      if (get("questL13Final") === "step9") {
         retval = true;
       }
       break;
     case $location`Tower Level 5`:
-      if (getProperty("questL13Final") === "step10") {
+      if (get("questL13Final") === "step10") {
         retval = true;
       }
       break;
     case $location`The Naughty Sorceress' Chamber`:
-      if (getProperty("questL13Final") === "step11") {
+      if (get("questL13Final") === "step11") {
         retval = true;
       }
       break;
@@ -1835,22 +1831,22 @@ export function zone_available(loc: Location): boolean {
       retval = get("gingerbreadCityAvailable") || get("_gingerbreadCityToday");
       break;
     case $location`The Bandit Crossroads`:
-      retval = containsText(getProperty("_frAreasUnlocked"), loc.toString());
+      retval = containsText(get("_frAreasUnlocked"), loc.toString());
       break;
     case $location`The Towering Mountains`:
-      retval = containsText(getProperty("_frAreasUnlocked"), loc.toString());
+      retval = containsText(get("_frAreasUnlocked"), loc.toString());
       break;
     case $location`The Mystic Wood`:
-      retval = containsText(getProperty("_frAreasUnlocked"), loc.toString());
+      retval = containsText(get("_frAreasUnlocked"), loc.toString());
       break;
     case $location`The Putrid Swamp`:
-      retval = containsText(getProperty("_frAreasUnlocked"), loc.toString());
+      retval = containsText(get("_frAreasUnlocked"), loc.toString());
       break;
     case $location`The Cursed Village`:
-      retval = containsText(getProperty("_frAreasUnlocked"), loc.toString());
+      retval = containsText(get("_frAreasUnlocked"), loc.toString());
       break;
     case $location`The Sprawling Cemetery`:
-      retval = containsText(getProperty("_frAreasUnlocked"), loc.toString());
+      retval = containsText(get("_frAreasUnlocked"), loc.toString());
       break;
     case $location`Monorail Work Site`:
       retval = false;

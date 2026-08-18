@@ -3,7 +3,6 @@ import {
   availableAmount,
   buy,
   containsText,
-  getProperty,
   haveFamiliar,
   Item,
   itemAmount,
@@ -12,7 +11,7 @@ import {
   use,
   visitUrl,
 } from "kolmafia";
-import { $coinmaster, $familiar, $item, $path, $skill, set } from "libram";
+import { $coinmaster, $familiar, $item, $path, $skill, get, set } from "libram";
 
 import { is100FamRun, pathHasFamiliar } from "../../auto_familiar";
 import {
@@ -276,19 +275,14 @@ export function lol_buyReplicas(): boolean {
       // initialize
       auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
       if (
-        containsText(
-          getProperty("sourceTerminalEnquiryKnown"),
-          "familiar.enq",
-        ) &&
+        containsText(get("sourceTerminalEnquiryKnown"), "familiar.enq") &&
         pathHasFamiliar()
       ) {
         auto_sourceTerminalRequest("enquiry familiar.enq");
-      } else if (
-        containsText(getProperty("sourceTerminalEnquiryKnown"), "stats.enq")
-      ) {
+      } else if (containsText(get("sourceTerminalEnquiryKnown"), "stats.enq")) {
         auto_sourceTerminalRequest("enquiry stats.enq");
       } else if (
-        containsText(getProperty("sourceTerminalEnquiryKnown"), "protect.enq")
+        containsText(get("sourceTerminalEnquiryKnown"), "protect.enq")
       ) {
         auto_sourceTerminalRequest("enquiry protect.enq");
       }

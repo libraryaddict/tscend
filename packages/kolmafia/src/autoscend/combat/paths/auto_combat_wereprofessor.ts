@@ -1,5 +1,4 @@
 import {
-  getProperty,
   haveEffect,
   haveEquipped,
   Monster,
@@ -64,10 +63,7 @@ export function auto_combatWereProfessorStage4(
     return undefined;
   }
 
-  for (const str of splitString(
-    getProperty("wereProfessorAdvancedResearch"),
-    ",",
-  )) {
+  for (const str of splitString(get("wereProfessorAdvancedResearch"), ",")) {
     if (toInt(str) === enemy.id) {
       return undefined;
     }

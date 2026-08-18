@@ -2,7 +2,6 @@ import {
   cliExecute,
   containsText,
   fullnessLimit,
-  getProperty,
   Item,
   itemAmount,
   myFullness,
@@ -13,7 +12,7 @@ import {
   Stat,
   visitUrl,
 } from "kolmafia";
-import { $item, $stat } from "libram";
+import { $item, $stat, get } from "libram";
 
 import { AshMatcher } from "./kolmafiaUtils";
 
@@ -89,11 +88,11 @@ export function c2t_apron(select: Stat = myPrimestat()): boolean {
 
 //map of ingredients on the allowlist
 function c2t_apron_allowlist(): string[] {
-  if (getProperty("c2t_apron_allowlist") === "") {
+  if (get("c2t_apron_allowlist") === "") {
     return [];
   }
 
-  return splitString(getProperty("c2t_apron_allowlist"), ",");
+  return splitString(get("c2t_apron_allowlist"), ",");
 }
 
 //errors

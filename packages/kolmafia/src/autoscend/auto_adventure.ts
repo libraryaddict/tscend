@@ -2,7 +2,6 @@ import {
   canWalkFromChoice,
   choiceFollowsFight,
   currentRound,
-  getProperty,
   handlingChoice,
   inMultiFight,
   Item,
@@ -109,7 +108,7 @@ export function autoAdv(
   // adv1 can erroneously return false for "choiceless" non-combats
   // see https://kolmafia.us/showthread.php?25370-adv1-returns-false-for-quot-choiceless-quot-choice-adventures
   // undo all this when (if?) that ever gets fixed
-  const previousEncounter: string = getProperty("lastEncounter");
+  const previousEncounter: string = get("lastEncounter");
   const turncount: number = myTurncount();
   auto_interruptCheck("main", false);
   auto_triggerPreAdventure();
@@ -125,9 +124,9 @@ export function autoAdv(
       "adv1 returned false for some reason. Did we actually adventure though?",
       "blue",
     );
-    if (getProperty("lastEncounter") !== previousEncounter) {
+    if (get("lastEncounter") !== previousEncounter) {
       auto_log_debug(
-        `Looks like we may have adventured, lastEncounter was ${previousEncounter}, now ${getProperty("lastEncounter")}`,
+        `Looks like we may have adventured, lastEncounter was ${previousEncounter}, now ${get("lastEncounter")}`,
         "blue",
       );
       advReturn = true;
@@ -204,13 +203,13 @@ export function autoAdvBypass(
 
   auto_triggerPostAdventure();
   // Encounters that need to generate a false so we handle them manually should go here.
-  if (getProperty("lastEncounter") === "Travel to a Recent Fight") {
+  if (get("lastEncounter") === "Travel to a Recent Fight") {
     return false;
   }
-  if (getProperty("lastEncounter") === "Rationing out Destruction") {
+  if (get("lastEncounter") === "Rationing out Destruction") {
     return false;
   }
-  if (getProperty("lastEncounter") === "Rainy Fax Dreams on your Wedding Day") {
+  if (get("lastEncounter") === "Rainy Fax Dreams on your Wedding Day") {
     return false;
   }
   return true;

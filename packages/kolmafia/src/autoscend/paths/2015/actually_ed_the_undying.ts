@@ -8,7 +8,6 @@ import {
   containsText,
   council,
   equippedAmount,
-  getProperty,
   haveServant,
   haveSkill,
   hippyStoneBroken,
@@ -286,12 +285,12 @@ function L13_ed_councilWarehouse(): boolean {
       $item`warehouse inventory page`,
     );
   }
-  if (getProperty("lastEncounter") === "You Found It!") {
+  if (get("lastEncounter") === "You Found It!") {
     council();
     auto_log_info("McMuffin is found!", "blue");
-    auto_log_info(`Ed Combats: ${getProperty("auto_edCombatCount")}`, "blue");
+    auto_log_info(`Ed Combats: ${get("auto_edCombatCount")}`, "blue");
     auto_log_info(
-      `Ed Combat Rounds: ${getProperty("auto_edCombatRoundCount")}`,
+      `Ed Combat Rounds: ${get("auto_edCombatRoundCount")}`,
       "blue",
     );
 
@@ -1019,7 +1018,7 @@ export function ed_handleAdventureServant(loc: Location): void {
     if (
       !haveSkill($skill`Gift of the Maid`) &&
       haveServant($servant`Maid`) &&
-      getProperty("sidequestNunsCompleted") === "none"
+      get("sidequestNunsCompleted") === "none"
     ) {
       myServant_1 = $servant`Maid`;
     } else if (
@@ -1444,7 +1443,7 @@ export function edAcquireHP$1(goal: number): boolean {
 function LM_ed_setupDo(): boolean {
   ed_buySkills();
 
-  if (getProperty("edPiece") !== "hyena") {
+  if (get("edPiece") !== "hyena") {
     if (elementalPlanes_access($element`spooky`) || myLevel() >= 5) {
       adjustEdHat("ml");
     } else {

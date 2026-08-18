@@ -23,7 +23,6 @@ import {
   equippedItem,
   Familiar,
   fullnessLimit,
-  getProperty,
   gnomadsAvailable,
   guildStoreAvailable,
   handlingChoice,
@@ -672,7 +671,7 @@ export function autoEat(
     if (
       auto_get_campground().has($item`portable Mayo Clinic`) &&
       myMeat() - meatReserve() > npcPrice($item`Mayoflex`) &&
-      getProperty("mayoInMouth") === "" &&
+      get("mayoInMouth") === "" &&
       auto_is_valid($item`portable Mayo Clinic`)
     ) {
       auto_buyUpTo(1, $item`Mayoflex`);
@@ -1609,9 +1608,9 @@ function loadConsumables(
     if (fantasyRealmAvailable()) {
       keyObtainableFromFR = 1;
       fantasyRealmTurnEstimate = 5;
-      if (containsText(getProperty("_frMonstersKilled"), "fantasy bandit")) {
+      if (containsText(get("_frMonstersKilled"), "fantasy bandit")) {
         for (const [, it] of splitString(
-          getProperty("_frMonstersKilled"),
+          get("_frMonstersKilled"),
           ",",
         ).entries()) {
           if (containsText(it, "fantasy bandit")) {
@@ -1695,9 +1694,7 @@ function loadConsumables(
       if (obtain_mode === AUTO_OBTAIN_PULL && !in_small()) {
         // don't penalize pulls in small as want best options to utilize limited organs
         (actions.get(n) ?? new ConsumeAction()).desirability -= 5.0;
-        const user_desirability: number = toFloat(
-          getProperty("auto_consumePullDesirability"),
-        );
+        const user_desirability: number = get("auto_consumePullDesirability");
         if (user_desirability > 0.0) {
           (actions.get(n) ?? new ConsumeAction()).desirability =
             -user_desirability;
@@ -1731,7 +1728,7 @@ function loadConsumables(
           if (
             myFullness() === 0 &&
             myLevel() < 13 &&
-            toFloat(getProperty("auto_consumeMinAdvPerFill")) <=
+            get("auto_consumeMinAdvPerFill") <=
               (actions.get(n) ?? new ConsumeAction()).adventures /
                 (actions.get(n) ?? new ConsumeAction()).size
           ) {
@@ -2403,9 +2400,9 @@ export function auto_autoConsumeOne(action: ConsumeAction): boolean {
     `auto_autoConsumeOne: Planning to execute ${to_pretty_string(action)}`,
     "blue",
   );
-  if (best_adv_per_fill < toFloat(getProperty("auto_consumeMinAdvPerFill"))) {
+  if (best_adv_per_fill < get("auto_consumeMinAdvPerFill")) {
     auto_log_warning(
-      `auto_autoConsumeOne: Will not consume, min adventures per full ${best_adv_per_fill} is less than auto_consumeMinAdvPerFill ${getProperty("auto_consumeMinAdvPerFill")}`,
+      `auto_autoConsumeOne: Will not consume, min adventures per full ${best_adv_per_fill} is less than auto_consumeMinAdvPerFill ${get("auto_consumeMinAdvPerFill")}`,
     );
     return false;
   }
@@ -2502,7 +2499,7 @@ function auto_breakfastCounterVisitDo(): boolean {
   );
   visitUrl("place.php?whichplace=monorail&action=monorail_downtown");
   auto_runChoice(7); // Visit the Breakfast Counter
-  if (getProperty("muffinOnOrder") !== "") {
+  if (safeGet("muffinOnOrder") !== $item.none) {
     cliExecute("refresh inv");
     if (itemAmount(safeGet("muffinOnOrder")) > 0) {
       // workaround mafia not clearing the property occasionally

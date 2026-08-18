@@ -8,7 +8,6 @@ import {
   expectedDamage,
   floor,
   fullnessLimit,
-  getProperty,
   haveEffect,
   haveFamiliar,
   haveSkill,
@@ -155,10 +154,10 @@ export function cyrptChoiceHandler(choice: number): void {
     ) {
       let desiredPills: number = inHardcore() ? 6 : auto_turbo() ? 3 : 4;
       let dietingPillsUsed: number = 0;
-      if (getProperty("auto_chewed") === "") {
+      if (get("auto_chewed") === "") {
         dietingPillsUsed = 0;
       } else {
-        for (const str of splitString(getProperty("auto_chewed"), ",")) {
+        for (const str of splitString(get("auto_chewed"), ",")) {
           if (containsText(toLowerCase(str), "dieting pill")) {
             dietingPillsUsed += 1;
           }
@@ -196,15 +195,15 @@ export function cyrptChoiceHandler(choice: number): void {
 export function cyrptEvilBonus(inCombat: boolean = false): number {
   //returns value of next fight (inCombat: currently) available bonus to evil reduction
   let cyrptBonus: number =
-    is_pete() && getProperty("peteMotorbikeCowling") === "Ghost Vacuum" ? 1 : 0;
+    is_pete() && get("peteMotorbikeCowling") === "Ghost Vacuum" ? 1 : 0;
   cyrptBonus += get("_nightmareFuelCharges") > 0 ? 2 : 0;
   if (inCombat) {
     cyrptBonus +=
       equippedItem($slot`back`) ===
         $item`unwrapped knock-off retro superhero cape` &&
       auto_is_valid$2($skill`Slay the Dead`) &&
-      getProperty("retroCapeSuperhero") === "vampire" &&
-      getProperty("retroCapeWashingInstructions") === "kill" &&
+      get("retroCapeSuperhero") === "vampire" &&
+      get("retroCapeWashingInstructions") === "kill" &&
       itemType(equippedItem($slot`weapon`)) === "sword"
         ? 1
         : 0;
@@ -381,7 +380,7 @@ function L7_defiledNookDo(): boolean {
   const skip_in_koe: boolean =
     in_koe() &&
     get("cyrptNookEvilness") > 13 &&
-    getProperty("questL12HippyFrat") !== "finished";
+    get("questL12HippyFrat") !== "finished";
 
   if (
     get("cyrptNookEvilness") > 0 &&
@@ -596,10 +595,10 @@ function L7_defiledCrannyDo(): boolean {
   ) {
     let desiredPills: number = inHardcore() ? 6 : auto_turbo() ? 3 : 4;
     let dietingPillsUsed: number = 0;
-    if (getProperty("auto_chewed") === "") {
+    if (get("auto_chewed") === "") {
       dietingPillsUsed = 0;
     } else {
-      for (const str of splitString(getProperty("auto_chewed"), ",")) {
+      for (const str of splitString(get("auto_chewed"), ",")) {
         if (containsText(toLowerCase(str), "dieting pill")) {
           dietingPillsUsed += 1;
         }
@@ -670,7 +669,7 @@ export function L7_defiledCranny(): boolean {
 function L7_bonerdagonDefeated(): boolean {
   return (
     itemAmount($item`chest of the Bonerdagon`) === 1 ||
-    getProperty("questL07Cyrptic") === "finished"
+    get("questL07Cyrptic") === "finished"
   );
 }
 

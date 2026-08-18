@@ -1,13 +1,12 @@
 import {
   abort,
   containsText,
-  getProperty,
   lastMonster,
   Monster,
   splitString,
   toInt,
 } from "kolmafia";
-import { $skill, set } from "libram";
+import { $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../../auto_adventure";
 import { in_fotd } from "../../paths/2022/fall_of_the_dinosaurs";
@@ -63,7 +62,7 @@ export function auto_combatFallOfTheDinosaursStage1(
   }
   // Only get 1 combat round with Velociraptor
 
-  const dino: string = getProperty("_auto_combatFotdDinosaur");
+  const dino: string = get("_auto_combatFotdDinosaur");
   if (dino === "velociraptor") {
     return "attack"; // TODO - needs some logic to determine best auto-kill method -whether that be saucestorm, saucegeyser or attack with weapon
   }
@@ -81,7 +80,7 @@ export function auto_combatFallOfTheDinosaursStage5(
     return undefined;
   }
 
-  const dino: string = getProperty("_auto_combatFotdDinosaur");
+  const dino: string = get("_auto_combatFotdDinosaur");
   if (dino === "archelon") {
     // reflects damage from spells back to player.
     if (enemy.physicalResistance >= 80 && !haveUsed($skill`Silent Treatment`)) {

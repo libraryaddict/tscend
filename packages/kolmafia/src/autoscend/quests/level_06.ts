@@ -3,7 +3,6 @@ import {
   cliExecute,
   council,
   equippedItem,
-  getProperty,
   haveSkill,
   hiddenTempleUnlocked,
   inHardcore,
@@ -38,6 +37,7 @@ import {
   baseNCForcesToday,
   internalQuestStatus,
   isGuildClass,
+  safeGet,
   turnsUsedByRemainingNCForcesToday,
 } from "../auto_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
@@ -94,10 +94,7 @@ function L6_friarsGetPartsDo(): boolean {
     !isAboutToPowerlevel() &&
     !get("auto_getSteelOrgan", false)
   ) {
-    const forced_loc: Location = get(
-      "auto_forceNonCombatLocation",
-      $location.none,
-    );
+    const forced_loc: Location = safeGet("auto_forceNonCombatLocation");
     const forced_here: boolean =
       $locations`The Dark Neck of the Woods, The Dark Elbow of the Woods, The Dark Heart of the Woods`.includes(
         forced_loc,
@@ -244,7 +241,7 @@ function L6_dakotaFanningDo(): boolean {
   }
 
   if (itemAmount($item`heavy-duty bendy straw`) === 0) {
-    if (getProperty("questL06Friar") !== "finished") {
+    if (get("questL06Friar") !== "finished") {
       autoAdv($location`The Dark Heart of the Woods`);
     } else {
       autoAdv($location`Pandamonium Slums`);
@@ -262,7 +259,7 @@ function L6_dakotaFanningDo(): boolean {
   }
 
   visitUrl("place.php?whichplace=woods&action=woods_dakota");
-  if (getProperty("questM16Temple") !== "finished") {
+  if (get("questM16Temple") !== "finished") {
     abort("Could not finish Dakota Fanning quest, aborting.");
   }
   return true;

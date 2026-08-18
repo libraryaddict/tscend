@@ -1,6 +1,5 @@
 import {
   abort,
-  getProperty,
   itemDropModifier,
   Location,
   myPath,
@@ -17,7 +16,7 @@ export function in_lar(): boolean {
 
 export function lar_safeguard(): boolean {
   if (in_lar()) {
-    const repeats: string = getProperty("lastEncounter");
+    const repeats: string = get("lastEncounter");
     if (
       repeats === "Skull, Skull, Skull" ||
       repeats === "Urning Your Keep" ||

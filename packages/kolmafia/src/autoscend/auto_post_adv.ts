@@ -5,7 +5,6 @@ import {
   Effect,
   equippedItem,
   familiarWeight,
-  getProperty,
   guildStoreAvailable,
   haveEffect,
   haveFamiliar,
@@ -143,7 +142,7 @@ function auto_beaten_handler(): void {
   set("auto_beatenUpLastAdv", true);
 
   buffMaintain$2($effect`They've Got Fleas`);
-  if (myLevel() < 11 || getProperty("sidequestJunkyardCompleted") !== "none") {
+  if (myLevel() < 11 || get("sidequestJunkyardCompleted") !== "none") {
     //don't risk blocking effect persisting in gremlins quest
     //try to avoid getting beaten up again
     buffMaintain$2($effect`Everything Is Bananas`);
@@ -196,10 +195,10 @@ function auto_post_adventure(): boolean {
       "The Too-Much Booze Blues",
       "What's that smell?",
       "Hey, baby.  Wanna wrestle?",
-    ].includes(getProperty("lastEncounter"))
+    ].includes(get("lastEncounter"))
   ) {
     abort(
-      `Adventured while drunk and got drunken stupor NC: ${getProperty("lastEncounter")}`,
+      `Adventured while drunk and got drunken stupor NC: ${get("lastEncounter")}`,
     );
   }
 
@@ -212,24 +211,24 @@ function auto_post_adventure(): boolean {
    * noncombat-forcer in those cases.*/
 
   if (
-    getProperty("auto_forceNonCombatSource") !== "" &&
+    get("auto_forceNonCombatSource") !== "" &&
     !auto_haveQueuedForcedNonCombat()
   ) {
     // possible to get desired NC when preparing spikes/avalanche. Only log usage if NC was actually forced
     if (
-      ((getProperty("auto_forceNonCombatSource") !== "jurassic parka" ||
+      ((get("auto_forceNonCombatSource") !== "jurassic parka" ||
         get("auto_parkaSpikesDeployed", false)) &&
-        getProperty("auto_forceNonCombatSource") !== "McHugeLarge left ski") ||
+        get("auto_forceNonCombatSource") !== "McHugeLarge left ski") ||
       get("auto_avalancheDeployed", false)
     ) {
       auto_log_info(
-        `Encountered forced noncombat: ${getProperty("lastEncounter")}`,
+        `Encountered forced noncombat: ${get("lastEncounter")}`,
         "blue",
       );
       handleTracker({
-        what: getProperty("auto_forceNonCombatSource"),
+        what: get("auto_forceNonCombatSource"),
         location: myLocation(),
-        detail: getProperty("lastEncounter"),
+        detail: get("lastEncounter"),
         property: "auto_forcedNC",
       });
     }
@@ -240,18 +239,18 @@ function auto_post_adventure(): boolean {
   }
 
   if (
-    getProperty("auto_instakillSource") !== "" &&
+    get("auto_instakillSource") !== "" &&
     get("auto_instakillSuccess", false)
   ) {
     auto_log_info(
-      `Successful instakill with: ${getProperty("auto_instakillSource")}`,
+      `Successful instakill with: ${get("auto_instakillSource")}`,
       "blue",
     );
-    if (toMonster(getProperty("lastEncounter")) === lastMonster()) {
+    if (toMonster(get("lastEncounter")) === lastMonster()) {
       //only track the combat part of a combat+NC encounter (like everfull dart perks)
       handleTracker({
-        what: getProperty("lastEncounter"),
-        detail: getProperty("auto_instakillSource"),
+        what: get("lastEncounter"),
+        detail: get("auto_instakillSource"),
         property: "auto_instakill",
       });
     }
@@ -289,14 +288,13 @@ function auto_post_adventure(): boolean {
     }
   }
 
-  if (getProperty("lastEncounter") === "Daily Briefing" && in_lta()) {
+  if (get("lastEncounter") === "Daily Briefing" && in_lta()) {
     set("_auto_bondBriefing", "started");
   }
 
   if (
     get("_villainLairProgress") < 999 &&
-    (getProperty("_villainLairColor") !== "" ||
-      get("_villainLairColorChoiceUsed")) &&
+    (get("_villainLairColor") !== "" || get("_villainLairColorChoiceUsed")) &&
     in_lta() &&
     myLocation() === $location`Super Villain's Lair`
   ) {
@@ -1241,34 +1239,34 @@ function auto_post_adventure(): boolean {
   //Should we create a separate function to track these? How many are we going to track?
   if (
     lastMonster() === $monster`writing desk` &&
-    getProperty("lastEncounter") === $monster`writing desk`.toString() &&
+    get("lastEncounter") === $monster`writing desk`.toString() &&
     haveEffect($effect`Beaten Up`) === 0
   ) {
     auto_log_info(
-      `Fought ${getProperty("writingDesksDefeated")} writing desks.`,
+      `Fought ${get("writingDesksDefeated")} writing desks.`,
       "blue",
     );
   }
   if (
     lastMonster() === $monster`modern zmobie` &&
-    getProperty("lastEncounter") === $monster`modern zmobie`.toString() &&
+    get("lastEncounter") === $monster`modern zmobie`.toString() &&
     haveEffect($effect`Beaten Up`) === 0
   ) {
     set("auto_modernzmobiecount", get("auto_modernzmobiecount", 0) + 1);
     auto_log_info(
-      `Fought ${getProperty("auto_modernzmobiecount")} modern zmobies.`,
+      `Fought ${get("auto_modernzmobiecount")} modern zmobies.`,
       "blue",
     );
   }
 
   auto_beaten_handler();
 
-  if (getProperty("lastEncounter") === "Welcome to the Great Overlook Lodge") {
+  if (get("lastEncounter") === "Welcome to the Great Overlook Lodge") {
     set("auto_shinningStarted", true);
   }
 
   if (haveEffect($effect`Disavowed`) > 0) {
-    if (getProperty("_auto_bondBriefing") !== "finished") {
+    if (get("_auto_bondBriefing") !== "finished") {
       set("_auto_bondBriefing", "started");
     }
     if (

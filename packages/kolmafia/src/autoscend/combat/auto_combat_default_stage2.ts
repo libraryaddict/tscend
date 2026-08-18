@@ -1,5 +1,4 @@
 import {
-  getProperty,
   haveEffect,
   haveEquipped,
   indexOf,
@@ -56,6 +55,7 @@ import {
   isFreeMonster,
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
+  safeGet,
   wrap_item,
 } from "../auto_util";
 import { auto_swoopLocations } from "../auto_zone";
@@ -124,11 +124,8 @@ export function auto_combatDefaultStage2(
   if (in_avantGuard() && ag_is_bodyguard()) {
     guardee = toMonster(
       substring(
-        getProperty("lastEncounter"),
-        indexOf(
-          getProperty("lastEncounter"),
-          " acting as the bodyguard to a ",
-        ) + 30,
+        get("lastEncounter"),
+        indexOf(get("lastEncounter"), " acting as the bodyguard to a ") + 30,
       ),
     );
   }
@@ -250,7 +247,7 @@ export function auto_combatDefaultStage2(
   if (
     canUse$3($item`glark cable`, true) &&
     myLocation() === $location`The Red Zeppelin` &&
-    getProperty("questL11Ron") === "step3" &&
+    get("questL11Ron") === "step3" &&
     get("_glarkCableUses") < 5
   ) {
     if (
@@ -270,7 +267,7 @@ export function auto_combatDefaultStage2(
   if (
     canUse$3($item`cigarette lighter`) &&
     myLocation() === $location`A Mob of Zeppelin Protesters` &&
-    getProperty("questL11Ron") === "step1"
+    get("questL11Ron") === "step1"
   ) {
     handleTracker({
       what: enemy,
@@ -652,7 +649,7 @@ export function auto_combatDefaultStage2(
   } else if ($monsters`lobsterfrogman`.includes(enemy)) {
     if (
       auto_have_skill($skill`Digitize`) &&
-      getProperty("_sourceTerminalDigitizeMonster") !== enemy.toString()
+      safeGet("_sourceTerminalDigitizeMonster") !== enemy
     ) {
       couldInstaKill = false;
     }

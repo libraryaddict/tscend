@@ -3,7 +3,6 @@ import {
   availableAmount,
   containsText,
   council,
-  getProperty,
   haveOutfit,
   Item,
   itemAmount,
@@ -191,7 +190,7 @@ function lowkey_needKey(key: Item): boolean {
 
   return (
     availableAmount(key) === 0 &&
-    !containsText(getProperty("nsTowerDoorKeysUsed"), key.toString())
+    !containsText(get("nsTowerDoorKeysUsed"), key.toString())
   );
 }
 
@@ -510,8 +509,8 @@ export function L13_sorceressDoorLowKey(): boolean {
     // Unlock door
     council(); // make sure all quests have been handed in or turning the door knob will be blocked.
     if (
-      getProperty("questL11MacGuffin") !== "finished" ||
-      getProperty("questL12War") !== "finished"
+      get("questL11MacGuffin") !== "finished" ||
+      get("questL12War") !== "finished"
     ) {
       // should not start consuming the keys if any quests got held up somehow
       return false;
@@ -651,7 +650,7 @@ function LX_lowkeySummerRemainderDo(): boolean {
       }
       if (
         internalQuestStatus("questL12War") === 1 &&
-        getProperty("sidequestLighthouseCompleted") === "none"
+        get("sidequestLighthouseCompleted") === "none"
       ) {
         if (lowkey_keyAdv($item`music box key`)) {
           return true;

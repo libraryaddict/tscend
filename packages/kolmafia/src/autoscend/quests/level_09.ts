@@ -14,7 +14,6 @@ import {
   Familiar,
   floor,
   friarsAvailable,
-  getProperty,
   handlingChoice,
   haveEffect,
   haveSkill,
@@ -686,10 +685,7 @@ function L9_aBooPeakDo(): boolean {
   }
 
   if (clueAmt * 30 < get("booPeakProgress")) {
-    auto_log_info(
-      `A-Boo Peak (initial): ${getProperty("booPeakProgress")}`,
-      "blue",
-    );
+    auto_log_info(`A-Boo Peak (initial): ${get("booPeakProgress")}`, "blue");
 
     // If a clue would speed things up
     if (clueAmt * 30 + 4 < get("booPeakProgress")) {
@@ -722,7 +718,7 @@ function L9_aBooPeakDo(): boolean {
     set("auto_abooclover", false);
   }
 
-  auto_log_info(`A-Boo Peak: ${getProperty("booPeakProgress")}`, "blue");
+  auto_log_info(`A-Boo Peak: ${get("booPeakProgress")}`, "blue");
   const clueCheck: boolean = clueAmt > 0;
   if (
     get("auto_abooclover", false) &&
@@ -978,7 +974,7 @@ function L9_aBooPeakDo(): boolean {
       try {
         autoAdv($location`A-Boo Peak`);
       } finally {
-        if (getProperty("lastEncounter") !== "The Horror...") {
+        if (get("lastEncounter") !== "The Horror...") {
           auto_log_warning(
             "Wandering adventure interrupt of A-Boo Peak, refreshing inventory.",
             "red",
@@ -991,7 +987,7 @@ function L9_aBooPeakDo(): boolean {
               "Dusken Raider Ghost",
               "Space Tourist Explorer Ghost",
               "Whatsian Commando Ghost",
-            ].includes(getProperty("lastEncounter"))
+            ].includes(get("lastEncounter"))
           ) {
             //clue usage probably failed somehow
             try {
@@ -1408,7 +1404,7 @@ function L9_oilPeakDo(): boolean {
   auto_log_info(`Oil Peak with ML: ${monsterLevelAdjustment()}`, "blue");
 
   autoAdv($location`Oil Peak`);
-  if (getProperty("lastEncounter") === "Unimpressed with Pressure") {
+  if (get("lastEncounter") === "Unimpressed with Pressure") {
     set("oilPeakProgress", 0.0);
     // Brute Force grouping with tavern (if not done) to maximize tangles while we have a high ML.
     auto_log_info(

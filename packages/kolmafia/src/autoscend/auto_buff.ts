@@ -10,7 +10,6 @@ import {
   create,
   Effect,
   equippedAmount,
-  getProperty,
   haveEffect,
   historicalPrice,
   hpCost,
@@ -1329,7 +1328,7 @@ export function buffMaintain$2(
       useSkill_1 = $skill`The Moxious Madrigal`;
       break;
     case $effect`Muffled`:
-      if (getProperty("peteMotorbikeMuffler") === "Extra-Quiet Muffler") {
+      if (get("peteMotorbikeMuffler") === "Extra-Quiet Muffler") {
         useSkill_1 = $skill`Rev Engine`;
       }
       break;
@@ -2094,7 +2093,7 @@ export function buffMaintain$2(
       }
       break;
     case $effect`Unmuffled`:
-      if (getProperty("peteMotorbikeMuffler") === "Extra-Loud Muffler") {
+      if (get("peteMotorbikeMuffler") === "Extra-Loud Muffler") {
         useSkill_1 = $skill`Rev Engine`;
       }
       break;

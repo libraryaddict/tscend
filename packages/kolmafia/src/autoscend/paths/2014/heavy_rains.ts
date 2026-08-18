@@ -3,7 +3,6 @@ import {
   cliExecute,
   containsText,
   equip,
-  getProperty,
   haveEffect,
   haveSkill,
   inebrietyLimit,
@@ -98,7 +97,7 @@ export function heavyrains_initializeSettings(): void {
 
 export function heavyrains_initializeDay(day: number): void {
   if (in_heavyrains()) {
-    if (day === 1 && getProperty("auto_day1_skills") !== "finished") {
+    if (day === 1 && get("auto_day1_skills") !== "finished") {
       set("choiceAdventure967", "1");
       set("choiceAdventure968", "1");
       set("choiceAdventure969", "3");

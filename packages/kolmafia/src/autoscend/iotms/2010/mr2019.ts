@@ -10,7 +10,6 @@ import {
   Effect,
   equip,
   equippedItem,
-  getProperty,
   haveFamiliar,
   indexOf,
   isUnrestricted,
@@ -94,6 +93,7 @@ import {
   isDesertAvailable,
   loopHandlerDelayAll,
   meatReserve,
+  safeGet,
   wrap_item,
 } from "../../auto_util";
 import {
@@ -560,7 +560,7 @@ export function auto_spoonCombatSkill(): Skill {
 }
 
 function auto_spoonGetDesiredSign(): string {
-  const spoonsign: string = toLowerCase(getProperty("auto_spoonsign"));
+  const spoonsign: string = toLowerCase(get("auto_spoonsign"));
 
   function statSign(musc: string, myst: string, mox: string): string {
     switch (myPrimestat()) {
@@ -685,14 +685,14 @@ function auto_spoonReadyToTuneMoon(): boolean {
   if (
     mySign() === "Vole" &&
     (get("cyrptAlcoveEvilness") > 14 + cyrptEvilBonus() ||
-      getProperty("questL07Cyrptic") === "unstarted")
+      get("questL07Cyrptic") === "unstarted")
   ) {
     // we want to stay vole long enough to do the alcove, since the initiative helps
     return false;
   }
 
   if (inKnollSign() && !toKnoll) {
-    if (getProperty("questM01Untinker") !== "finished") {
+    if (get("questM01Untinker") !== "finished") {
       // just finish the untinker quest if we can, it's free.
       visitUrl(
         "place.php?whichplace=forestvillage&preaction=screwquest&action=fv_untinker_quest",
@@ -905,7 +905,7 @@ export function auto_canBeachCombHead(name: string): boolean {
   }
   const head: number = auto_beachCombHeadNumFrom(name);
   for (const [, usedHead] of splitString(
-    getProperty("_beachHeadsUsed"),
+    get("_beachHeadsUsed"),
     ",",
   ).entries()) {
     if (head.toString() === usedHead) {
@@ -1139,7 +1139,7 @@ export function auto_snapperPreAdventure(loc: Location): void {
     return;
   }
 
-  let desiredPhylum: string = getProperty("auto_snapperPhylum");
+  let desiredPhylum: string = get("auto_snapperPhylum");
   if (desiredPhylum !== "" && toPhylum(desiredPhylum) === $phylum.none) {
     auto_log_warning(
       `auto_snapperPhylum was set to bad value: ${desiredPhylum}. Should be a valid phylum.`,
@@ -1149,7 +1149,7 @@ export function auto_snapperPreAdventure(loc: Location): void {
     return;
   }
 
-  if (getProperty("redSnapperPhylum") === desiredPhylum) {
+  if (safeGet("redSnapperPhylum") === toPhylum(desiredPhylum)) {
     auto_log_debug(
       `Red-Nosed Snapper is already guiding you towards ${desiredPhylum}`,
     );

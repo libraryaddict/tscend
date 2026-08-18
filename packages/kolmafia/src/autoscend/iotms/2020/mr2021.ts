@@ -7,7 +7,6 @@ import {
   containsText,
   craft,
   getMonsters,
-  getProperty,
   haveEffect,
   haveFamiliar,
   haveSkill,
@@ -135,10 +134,7 @@ function crystalBallMonster(loc: Location): Monster {
   // returns a monster if the crystal ball predicts one in the location
 
   const crystalBallPredictions: Map<number, string> = new Map(
-    splitString(getProperty("crystalBallPredictions"), "[|]").map((_v, _i) => [
-      _i,
-      _v,
-    ]),
+    splitString(get("crystalBallPredictions"), "[|]").map((_v, _i) => [_i, _v]),
   );
   if ((crystalBallPredictions.get(0) ?? "") === "") {
     return $monster.none; // no prediction
@@ -381,7 +377,7 @@ export function auto_backupTarget(): boolean {
   // determine if we want to backup
   const wantBackupLFM: boolean =
     itemAmount($item`barrel of gunpowder`) < 5 &&
-    getProperty("sidequestLighthouseCompleted") === "none" &&
+    get("sidequestLighthouseCompleted") === "none" &&
     internalQuestStatus("questL12War") === 1 &&
     !auto_hasAutumnaton() &&
     !in_koe();
@@ -469,7 +465,7 @@ export function auto_backupToYourLastEnemy(loc: Location): boolean {
   }
 
   if (autoEquipToSlot($slot`acc3`, $item`backup camera`)) {
-    set("auto_nextEncounter", getProperty("lastCopyableMonster"));
+    set("auto_nextEncounter", safeGet("lastCopyableMonster"));
     return autoAdv(loc);
   }
   set("auto_nextEncounter", "");
@@ -484,20 +480,14 @@ function auto_havePowerPlant(): boolean {
 }
 
 export function auto_harvestBatteries(): boolean {
-  if (
-    !auto_havePowerPlant() ||
-    getProperty("_pottedPowerPlant") === "0,0,0,0,0,0,0"
-  ) {
+  if (!auto_havePowerPlant() || get("_pottedPowerPlant") === "0,0,0,0,0,0,0") {
     return false;
   }
   // Stolen straight from mafia's breakfast handling.
   cliExecute(`inv_use.php?pwd&whichitem=${toInt($item`potted power plant`)}`);
 
   const status: Map<number, string> = new Map(
-    splitString(getProperty("_pottedPowerPlant"), ",").map((_v, _i) => [
-      _i,
-      _v,
-    ]),
+    splitString(get("_pottedPowerPlant"), ",").map((_v, _i) => [_i, _v]),
   );
 
   for (let pp: number = 0; pp < status.size; pp++) {
@@ -997,7 +987,7 @@ export function auto_CMCconsult(): void {
       }
       if (
         myLocation() === $location`The Battlefield (Frat Uniform)` &&
-        getProperty("sidequestNunsCompleted") === "none"
+        get("sidequestNunsCompleted") === "none"
       ) {
         const hippiesDefeated: number = get("hippiesDefeated");
         if (hippiesDefeated <= 208 && auto_bestWarPlan().doNuns) {
@@ -1013,11 +1003,11 @@ export function auto_CMCconsult(): void {
       if (
         get("auto_hippyInstead", false) &&
         internalQuestStatus("questL12War") === 1 &&
-        getProperty("sidequestNunsCompleted") === "none"
+        get("sidequestNunsCompleted") === "none"
       ) {
         if (
           auto_bestWarPlan().doNuns &&
-          (getProperty("sidequestOrchardCompleted") !== "none" ||
+          (get("sidequestOrchardCompleted") !== "none" ||
             !auto_bestWarPlan().doOrchard)
         ) {
           return false; //war started and about to start nuns as hippy anytime?

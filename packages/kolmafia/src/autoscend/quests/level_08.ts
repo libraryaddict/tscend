@@ -9,7 +9,6 @@ import {
   equip,
   expectedDamage,
   fullnessLimit,
-  getProperty,
   haveEffect,
   haveEquipped,
   haveSkill,
@@ -159,7 +158,7 @@ function getCellToMine(oreGoal: Item): number {
 
   function parseMineLayout(): Map<number, Item> {
     const minedCells: Map<number, Item> = new Map();
-    const mineLayout: string = getProperty("mineLayout1");
+    const mineLayout: string = get("mineLayout1");
     if (mineLayout !== "") {
       for (const [, str] of splitString(
         substring(mineLayout, 1),
@@ -235,13 +234,13 @@ function getCellToMine(oreGoal: Item): number {
   }
   // - Simplest case, a fresh mine cavern
   const mineLayout: string = visitUrl("mining.php?mine=1");
-  if (getProperty("auto_minedCells") === "") {
+  if (get("auto_minedCells") === "") {
     // pick a random column to start between 2-5
     return 50 + random(4); // using 50 as we're in row 6 to start and random returns from 0 to range-1. Hence 6 * 8 + 2
   }
   // - If we have started mining a cavern, lets continue mining the same column upwards until row 3
   const previously_mined: Map<number, string> = new Map(
-    splitString(getProperty("auto_minedCells"), ",").map((_v, _i) => [_i, _v]),
+    splitString(get("auto_minedCells"), ",").map((_v, _i) => [_i, _v]),
   );
   const num_prev_mined: number = previously_mined.size;
   const lastCell: number = toInt(
@@ -518,10 +517,7 @@ function L8_getMineOres(): boolean {
       auto_log_info("Mining in Itznotyerzitz Mine for Trapper ore", "blue");
       const cell: number = getCellToMine(oreGoal);
       if (cell !== 0) {
-        set(
-          "auto_minedCells",
-          `${getProperty("auto_minedCells")}${cell.toString()},`,
-        );
+        set("auto_minedCells", `${get("auto_minedCells")}${cell.toString()},`);
         visitUrl(`mining.php?mine=1&which=${cell.toString()}&pwd`);
         return true;
       }

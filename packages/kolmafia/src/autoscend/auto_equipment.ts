@@ -55,7 +55,6 @@ import {
   Slot,
   splitString,
   Stat,
-  toFloat,
   toInt,
   toItem,
   toLocation,
@@ -637,7 +636,7 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
   } else if (myLevel() < 13 || get("auto_disregardInstantKarma", false)) {
     //experience scores for the default maximizer statement
 
-    if (getProperty("auto_MLSafetyLimit") === "") {
+    if (get("auto_MLSafetyLimit") === "") {
       //"exp" includes bonus from "ml" sources and values mainstat experience with a variable? score comparable to 0.25ML?
       //in general "10exp" gives a score equivalent to "15(primeStat) experience"
       //"exp" does not value "+(offstat) experience"
@@ -655,17 +654,14 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
   }
   if (myBasestat(primeStat) > 122) {
     //>= level 12 or almost there, more offstat experience may be needed for the war outfit (requires 70 mox and 70 mys)
-    if (
-      myBasestat($stat`Moxie`) < 70 &&
-      getProperty("warProgress") !== "finished"
-    ) {
+    if (myBasestat($stat`Moxie`) < 70 && get("warProgress") !== "finished") {
       target
         .weight($modifier`Moxie Experience`, 10)
         .weight($modifier`Moxie Experience Percent`, 3);
     }
     if (
       myBasestat($stat`Mysticality`) < 70 &&
-      getProperty("warProgress") !== "finished"
+      get("warProgress") !== "finished"
     ) {
       target
         .weight($modifier`Mysticality Experience`, 10)
@@ -757,13 +753,13 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
 export function resetMaximize(): void {
   maximizer.dispose();
 
-  const pref: string = getProperty("auto_maximize_baseline"); //user configured override baseline statement.
+  const pref: string = get("auto_maximize_baseline");
   if (
     pref === "" ||
     toLowerCase(pref) === "default" ||
     toLowerCase(pref) === "disabled"
   ) {
-    buildDefaultMaximizeStatement(maximizer); //automatically generated baseline statement
+    buildDefaultMaximizeStatement(maximizer);
   } else {
     const parts: string[] = pref.split("{default}");
     for (let i = 0; i < parts.length; i++) {
@@ -969,7 +965,7 @@ function finalizeMaximize(speculative: boolean = false): void {
         _v,
       ]),
     );
-    const advresearch: string = getProperty("wereProfessorAdvancedResearch");
+    const advresearch: string = get("wereProfessorAdvancedResearch");
     let nooculus: boolean = false;
     let monseen: number = 0;
     let totalmob: number = 0;
@@ -1084,7 +1080,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     } else if (
       ((nextMonster === $monster.none || instakillable(nextMonster)) &&
         !in_pokefam() &&
-        getProperty("auto_MLSafetyLimit") === "") ||
+        get("auto_MLSafetyLimit") === "") ||
       toInt(get("auto_MLSafetyLimit")) >= 25
     ) {
       addBonusToMaximize($item`carnivorous potted plant`, 200); // 4% chance free kill but also 25 ML
@@ -1119,7 +1115,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     }
   }
 
-  if (myLocation() === toLocation(getProperty("_seadentWaveZone"))) {
+  if (myLocation() === toLocation(get("_seadentWaveZone"))) {
     //Don't want to spend an extra turn if we don't have to
     maximizer.equip($item`Monodent of the Sea`);
   }
@@ -1163,7 +1159,7 @@ function finalizeMaximize(speculative: boolean = false): void {
 
 export function simMaximize(): boolean {
   const backup: Maximizer = maximizer.clone();
-  const backupNextMonster: string = getProperty("auto_nextEncounter");
+  const backupNextMonster: Monster = safeGet("auto_nextEncounter");
   finalizeMaximize(true);
   const res: boolean = maximize(maximizer.toString(), true);
   maximizer.restore(backup);
@@ -1393,9 +1389,9 @@ export function equipRollover(silent: boolean): void {
   if (
     hippyStoneBroken() &&
     myPath() !== $path`Oxygenarian` &&
-    toFloat(getProperty("auto_bedtime_pulls_pvp_multi")) > 0
+    get("auto_bedtime_pulls_pvp_multi") > 0
   ) {
-    to_max += `,${getProperty("auto_bedtime_pulls_pvp_multi")}fites`;
+    to_max += `,${get("auto_bedtime_pulls_pvp_multi")}fites`;
   }
   if (auto_have_familiar($familiar`Trick-or-Treating Tot`)) {
     to_max += ",switch Trick-or-Treating Tot";
@@ -1622,7 +1618,7 @@ export function auto_wantToReserveFreekills(inCombat: boolean = false): {
     const currentDesertProgressPerTurn: number =
       1 +
       (get("bondDesert") ? 2 : 0) +
-      (getProperty("peteMotorbikeHeadlight") === "Blacklight Bulb" ? 2 : 0) +
+      (get("peteMotorbikeHeadlight") === "Blacklight Bulb" ? 2 : 0) +
       (myFamiliar() === $familiar`Melodramedary` ? 1 : 0) +
       2 * min(1, equippedAmount($item`survival knife`)) +
       equippedAmount($item`UV-resistant compass`) +

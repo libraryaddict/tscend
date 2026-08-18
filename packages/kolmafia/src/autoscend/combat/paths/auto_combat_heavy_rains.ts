@@ -1,6 +1,5 @@
 import {
   abort,
-  getProperty,
   itemAmount,
   Monster,
   monsterLevelAdjustment,
@@ -144,7 +143,7 @@ export function auto_combatHeavyRainsStage5(
   // stage 5 = kill
   // Heavy Rains Final Boss. strips you of positive effects every time it hits you. Capped at 40 damage per source per element.
   if (enemy.toString() === "The Rain King") {
-    if (getProperty("auto_rain_king_combat") === "attack") {
+    if (get("auto_rain_king_combat") === "attack") {
       if (auto_canUse($skill`Lunging Thrust-Smack`, false)) {
         return auto_useSkill($skill`Lunging Thrust-Smack`, false);
       }
@@ -157,19 +156,19 @@ export function auto_combatHeavyRainsStage5(
       return "attack";
     }
     if (
-      getProperty("auto_rain_king_combat") === "saucestorm" &&
+      get("auto_rain_king_combat") === "saucestorm" &&
       auto_canUse($skill`Saucestorm`, false)
     ) {
       return auto_useSkill($skill`Saucestorm`, false);
     }
     if (
-      getProperty("auto_rain_king_combat") === "weapon_of_the_pastalord" &&
+      get("auto_rain_king_combat") === "weapon_of_the_pastalord" &&
       auto_canUse($skill`Weapon of the Pastalord`, false)
     ) {
       return auto_useSkill($skill`Weapon of the Pastalord`, false);
     }
     if (
-      getProperty("auto_rain_king_combat") === "turtleini" &&
+      get("auto_rain_king_combat") === "turtleini" &&
       auto_canUse($skill`Turtleini`, false)
     ) {
       return auto_useSkill($skill`Turtleini`, false);

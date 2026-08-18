@@ -1,6 +1,5 @@
 import {
   availableAmount,
-  getProperty,
   getWorkshed,
   haveCampground,
   itemAmount,
@@ -257,7 +256,7 @@ function getLastCombatEnvironmentCounts(offset: number): Map<string, number> {
   ]);
   const environments: Map<number, string> = new Map(
     splitString(
-      substring(getProperty("lastCombatEnvironments"), max(offset, 0), 20),
+      substring(get("lastCombatEnvironments"), max(offset, 0), 20),
       "",
     ).map((_v, _i) => [_i, _v]),
   );
@@ -357,7 +356,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
     !in_koe() &&
     internalQuestStatus("questL12War") === 1 &&
     !get("auto_hippyInstead", false) &&
-    getProperty("sidequestArenaCompleted") !== "fratboy" &&
+    get("sidequestArenaCompleted") !== "fratboy" &&
     availableAmount($item`rock band flyers`) === 0
   ) {
     outfit("frat warrior fatigues"); // don't use the equipOutfit func here since this is just temporary, we don't want to adventure like this.

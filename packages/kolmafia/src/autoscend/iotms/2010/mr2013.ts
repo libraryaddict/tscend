@@ -2,7 +2,6 @@ import {
   cliExecute,
   floristAvailable,
   getFloristPlants,
-  getProperty,
   itemAmount,
   knollAvailable,
   Location,
@@ -177,7 +176,7 @@ export function oldPeoplePlantStuff(): void {
   let addml: boolean = true;
   if (
     (monsterLevelAdjustment() > toInt(get("auto_MLSafetyLimit")) &&
-      getProperty("auto_MLSafetyLimit") !== "") ||
+      get("auto_MLSafetyLimit") !== "") ||
     toInt(get("auto_MLSafetyLimit")) === -1
   ) {
     addml = false;

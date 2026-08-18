@@ -1,5 +1,5 @@
 auto_ashtonLimit:
   name: "Asdon Martin Fuel, Item Reserves"
-  type: int
+  type: string
   description: If set, makes sure you save X of an item before feeding it to the Asdon Martin (ignores Soda Bread).
-  default: 0
+  default: ""

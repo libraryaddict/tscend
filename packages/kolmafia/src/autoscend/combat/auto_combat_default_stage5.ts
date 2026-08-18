@@ -3,7 +3,6 @@ import {
   buffedHitStat,
   containsText,
   equippedItem,
-  getProperty,
   haveEffect,
   haveEquipped,
   haveSkill,
@@ -777,8 +776,8 @@ export function auto_combatDefaultStage5(
         } else if (
           auto_canUse($skill`Flash Headlight`) &&
           enemy.physicalResistance >= 80 &&
-          (getProperty("peteMotorbikeHeadlight") === "Party Bulb" ||
-            (getProperty("peteMotorbikeHeadlight") === "Blacklight Bulb" &&
+          (get("peteMotorbikeHeadlight") === "Party Bulb" ||
+            (get("peteMotorbikeHeadlight") === "Blacklight Bulb" &&
               monsterElement(enemy) !== $element`sleaze`))
         ) {
           attackMinor = auto_useSkill($skill`Flash Headlight`);

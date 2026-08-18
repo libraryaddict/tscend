@@ -72,3 +72,65 @@ export function isKnownProperty(name: string): boolean {
     knownPatterns.some((pattern) => pattern.test(name))
   );
 }
+
+// Value category get() returns for libram-known properties. Our own properties
+// (data/settings/**/*.yml) are looked up via internalProperties instead.
+const libramPropertyCategories = new Map<string, string>([
+  ...propertyTypes.booleanProperties.map((name): [string, string] => [
+    name,
+    "boolean",
+  ]),
+  ...[
+    ...propertyTypes.numericProperties,
+    ...propertyTypes.monsterNumericProperties,
+    ...propertyTypes.familiarNumericProperties,
+    ...propertyTypes.itemNumericProperties,
+  ].map((name): [string, string] => [name, "number"]),
+  ...propertyTypes.stringProperties.map((name): [string, string] => [
+    name,
+    "string",
+  ]),
+  ...propertyTypes.numericOrStringProperties.map((name): [string, string] => [
+    name,
+    "string",
+  ]),
+  ...propertyTypes.locationProperties.map((name): [string, string] => [
+    name,
+    "location",
+  ]),
+  ...propertyTypes.monsterProperties.map((name): [string, string] => [
+    name,
+    "monster",
+  ]),
+  ...propertyTypes.familiarProperties.map((name): [string, string] => [
+    name,
+    "familiar",
+  ]),
+  ...propertyTypes.statProperties.map((name): [string, string] => [
+    name,
+    "stat",
+  ]),
+  ...propertyTypes.phylumProperties.map((name): [string, string] => [
+    name,
+    "phylum",
+  ]),
+  ...propertyTypes.itemProperties.map((name): [string, string] => [
+    name,
+    "item",
+  ]),
+]);
+
+const primitiveCategories = new Set(["boolean", "number", "string"]);
+
+export function primitiveGetCategory(name: string): string | undefined {
+  const ourType = internalProperties.get(name);
+  if (ourType !== undefined) {
+    return ourType === "int" || ourType === "float" ? "number" : ourType;
+  }
+
+  return libramPropertyCategories.get(name);
+}
+
+export function isNonPrimitiveGetCategory(category: string): boolean {
+  return !primitiveCategories.has(category);
+}

@@ -1,7 +1,6 @@
 import {
   cliExecute,
   containsText,
-  getProperty,
   haveEffect,
   haveEquipped,
   Item,
@@ -75,7 +74,7 @@ function wereprof_buySkills(): void {
   if (is_werewolf() || rp < 10) {
     return; // can't access the research bench as a werewolf and don't care about it when we have less than 10 RP
   }
-  if (getProperty("beastSkillsAvailable") === "") {
+  if (get("beastSkillsAvailable") === "") {
     cliExecute("wereprofessor research"); //parse the research bench
   }
   let do_skills: boolean = true;
@@ -90,8 +89,8 @@ function wereprof_buySkills(): void {
     organsFull() &&
     myAdventures() <= auto_advToReserve() &&
     !(
-      containsText(getProperty("beastSkillsKnown"), "stomach3") &&
-      containsText(getProperty("beastSkillsKnown"), "liver3")
+      containsText(get("beastSkillsKnown"), "stomach3") &&
+      containsText(get("beastSkillsKnown"), "liver3")
     )
   ) {
     auto_log_info("Need more organs", "blue");
@@ -274,12 +273,11 @@ function wereprof_buySkills(): void {
         "howl",
         "feed",
       ]) {
-        if (containsText(getProperty("beastSkillsAvailable"), sk)) {
+        if (containsText(get("beastSkillsAvailable"), sk)) {
           if ((rpcost.get(sk) ?? 0) > rp) {
             cantbuy += 1;
             if (
-              cantbuy ===
-              splitString(getProperty("beastSkillsAvailable"), ",").length
+              cantbuy === splitString(get("beastSkillsAvailable"), ",").length
             ) {
               return; //return if we can't buy any beast skills
             }
@@ -407,7 +405,7 @@ export function LM_wereprof(): boolean {
 }
 
 function LX_wereprof_getSmashedEquipDo(): boolean {
-  const alreadySmashedLocs: string = getProperty("antiScientificMethod");
+  const alreadySmashedLocs: string = get("antiScientificMethod");
   //There's a couple other locations, but we shouldn't EVER visit them
   for (const sl of $locations`The Hidden Hospital, The Castle in the Clouds in the Sky (Top Floor), Noob Cave, The Haunted Pantry, The Thinknerd Warehouse, Vanya's Castle`) {
     if (

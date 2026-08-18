@@ -265,7 +265,7 @@ const LX_steelOrganLaughFloorTask: QuestTask = registerQuestTask(
     completed: () =>
       (have($item`Azazel's unicorn`) || have($item`observational glasses`)) &&
       (have($item`Azazel's tutu`) || itemAmount($item`imp air`) >= 5),
-    ready: () => getProperty("questM10Azazel") === "started",
+    ready: () => get("questM10Azazel") === "started",
     do: () => {
       autoAdv($location`The Laugh Floor`);
       return true;
@@ -372,7 +372,7 @@ const LX_steelOrganUnicornTurnInTask: QuestTask = registerQuestTask(
     name: "LX_steelOrganUnicornTurnIn",
     completed: () => have($item`Azazel's unicorn`),
     ready: () =>
-      getProperty("questM10Azazel") === "started" &&
+      get("questM10Azazel") === "started" &&
       LX_steelOrganComedyProps().need === 0,
     do: LX_steelOrganUnicorn,
   },
@@ -386,7 +386,7 @@ const LX_steelOrganBackstageTask: QuestTask = registerQuestTask(
       (have($item`Azazel's unicorn`) ||
         LX_steelOrganComedyProps().need === 0) &&
       (have($item`Azazel's tutu`) || itemAmount($item`bus pass`) >= 5),
-    ready: () => getProperty("questM10Azazel") === "started",
+    ready: () => get("questM10Azazel") === "started",
     do: () => {
       autoAdv($location`Infernal Rackets Backstage`);
       return true;
@@ -436,13 +436,13 @@ function LX_steelOrganDo(): boolean {
     return L6_friarsGetParts();
   }
 
-  if (getProperty("questM10Azazel") !== "finished") {
+  if (get("questM10Azazel") !== "finished") {
     auto_log_info("I am hungry for some steel.", "blue");
   }
   // typically getting steel organ means this is a long run, might as well use all options to get +item as sources refresh each day
   provideItem$2(567, $location`The Laugh Floor`, true);
 
-  if (getProperty("questM10Azazel") === "unstarted") {
+  if (get("questM10Azazel") === "unstarted") {
     visitUrl("pandamonium.php");
     visitUrl("pandamonium.php?action=moan");
     visitUrl("pandamonium.php?action=infe");
@@ -451,7 +451,7 @@ function LX_steelOrganDo(): boolean {
     visitUrl("pandamonium.php?action=beli");
     visitUrl("pandamonium.php?action=mourn");
   }
-  if (getProperty("questM10Azazel") === "started") {
+  if (get("questM10Azazel") === "started") {
     if (
       runTaskChain([
         LX_steelOrganLaughFloorTask,
@@ -493,7 +493,7 @@ function LX_steelOrganDo(): boolean {
       set("auto_getSteelOrgan", false);
     }
     return true;
-  } else if (getProperty("questM10Azazel") === "finished") {
+  } else if (get("questM10Azazel") === "finished") {
     auto_log_info("Considering Steel Organ consumption.....", "blue");
     if (
       itemAmount($item`steel lasagna`) > 0 &&

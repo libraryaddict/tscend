@@ -528,7 +528,7 @@ function LX_wildfire_spookyravenManorFirstFloor(): boolean {
   if (
     !auto_haveFireExtinguisher() &&
     doing_haunted_library &&
-    containsText(getProperty("auto_beatenUpLocations"), "The Haunted Library")
+    containsText(get("auto_beatenUpLocations"), "The Haunted Library")
   ) {
     LX_wildfire_hose($location`The Haunted Library`, 3); //to make combat easier
   }

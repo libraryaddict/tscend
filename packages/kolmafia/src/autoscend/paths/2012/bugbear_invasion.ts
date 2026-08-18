@@ -226,7 +226,7 @@ function bugbear_UnlockMothership(loc: Location): boolean {
     auto_have_familiar($familiar`Artistic Goth Kid`)
   ) {
     // TODO: Use crayon shavings to copy
-    auto_log_info(`Hipster Adv: ${getProperty("_hipsterAdv")}`, "blue");
+    auto_log_info(`Hipster Adv: ${get("_hipsterAdv")}`, "blue");
     handleFamiliar$1($familiar`Artistic Goth Kid`);
   }
 

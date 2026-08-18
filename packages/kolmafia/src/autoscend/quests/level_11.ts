@@ -17,7 +17,6 @@ import {
   equippedItem,
   Familiar,
   friarsAvailable,
-  getProperty,
   haveEffect,
   haveEquipped,
   haveSkill,
@@ -58,7 +57,6 @@ import {
   squareRoot,
   substring,
   takeCloset,
-  toFloat,
   toInt,
   toLocation,
   use,
@@ -508,11 +506,12 @@ export function shenShouldDelayZone(loc: Location): boolean {
 
 export function getShenZonesTurnsSpent(): Map<Location, number> {
   const delayValues: Map<Location, number> = new Map();
-  if (getProperty("auto_shenZonesTurnsSpent") !== "") {
+  if (get("auto_shenZonesTurnsSpent") !== "") {
     const zones: Map<number, string> = new Map(
-      splitString(getProperty("auto_shenZonesTurnsSpent"), ";").map(
-        (_v, _i) => [_i, _v],
-      ),
+      splitString(get("auto_shenZonesTurnsSpent"), ";").map((_v, _i) => [
+        _i,
+        _v,
+      ]),
     );
     for (const [, zone] of zones) {
       const loc: Location = toLocation(substring(zone, 0, indexOf(zone, ":")));
@@ -637,13 +636,13 @@ export function LX_unlockHauntedBilliardsRoom(
       false,
     );
     auto_log_info(
-      `Looking for the Billards Room key (Hot/Stench:${resPossible.get($element`hot`) ?? 0}/${resPossible.get($element`stench`) ?? 0}): Progress ${getProperty("manorDrawerCount")}/24`,
+      `Looking for the Billards Room key (Hot/Stench:${resPossible.get($element`hot`) ?? 0}/${resPossible.get($element`stench`) ?? 0}): Progress ${get("manorDrawerCount")}/24`,
       "blue",
     );
 
     if (
       auto_spadeDigsRemaining() > 0 &&
-      getProperty("lastAdventure") === "The Haunted Kitchen"
+      safeGet("lastAdventure") === $location`The Haunted Kitchen`
     ) {
       return auto_spadeDigSkeleton($location`The Haunted Kitchen`);
     }
@@ -1278,7 +1277,7 @@ function L11_blackMarketDo(): boolean {
   }
 
   auto_log_info(
-    `Must find the Black Market: ${getProperty("blackForestProgress")}`,
+    `Must find the Black Market: ${get("blackForestProgress")}`,
     "blue",
   );
   if (
@@ -1641,7 +1640,7 @@ function L11_aridDesertDo(): boolean {
   if (get("bondDesert")) {
     progressPerAdv += 2;
   }
-  if (getProperty("peteMotorbikeHeadlight") === "Blacklight Bulb") {
+  if (get("peteMotorbikeHeadlight") === "Blacklight Bulb") {
     //TODO verify spelling on this string
     progressPerAdv += 2;
   }
@@ -1993,7 +1992,7 @@ function L11_aridDesertDo(): boolean {
 
     autoAdv($location`The Arid, Extra-Dry Desert`);
 
-    if (containsText(getProperty("lastEncounter"), "A Sietch in Time")) {
+    if (containsText(get("lastEncounter"), "A Sietch in Time")) {
       auto_log_info(
         "We've found the gnome!! Sightseeing pamphlets for everyone!",
         "green",
@@ -2001,9 +2000,7 @@ function L11_aridDesertDo(): boolean {
       set("auto_gnasirUnlocked", true);
     }
 
-    if (
-      containsText(getProperty("lastEncounter"), "He Got His Just Desserts")
-    ) {
+    if (containsText(get("lastEncounter"), "He Got His Just Desserts")) {
       takeCloset(closetAmount($item`beer helmet`), $item`beer helmet`);
       takeCloset(
         closetAmount($item`distressed denim pants`),
@@ -2564,17 +2561,14 @@ function L11_hiddenApartmentDo(): boolean {
     ) {
       shouldForceElevatorAction = true;
     } else if (canDrinkCursedPunch) {
-      if (toFloat(getProperty("auto_consumeMinAdvPerFill")) !== 0) {
+      if (get("auto_consumeMinAdvPerFill") !== 0) {
         //try to respect user setting for cursed punch while there is apartment delay
         //give it at least +1 adv that it saves fighting a pygmy shaman
         const advPerFillFromCursedPunch: number = toInt(
           (expectedAdventuresFrom($item`Cursed Punch`) + 1) /
             $item`Cursed Punch`.inebriety,
         );
-        if (
-          advPerFillFromCursedPunch <
-          toFloat(getProperty("auto_consumeMinAdvPerFill"))
-        ) {
+        if (advPerFillFromCursedPunch < get("auto_consumeMinAdvPerFill")) {
           canDrinkCursedPunch = false;
         }
       }
@@ -2611,7 +2605,7 @@ function L11_hiddenApartmentDo(): boolean {
 
   if (!elevatorAction) {
     auto_log_info(
-      `Hidden Apartment Progress: ${getProperty("hiddenApartmentProgress")}`,
+      `Hidden Apartment Progress: ${get("hiddenApartmentProgress")}`,
       "blue",
     );
 
@@ -2668,7 +2662,7 @@ function L11_hiddenApartmentDo(): boolean {
       );
     }
     auto_log_info(
-      `Hidden Apartment Progress: ${getProperty("hiddenApartmentProgress")}`,
+      `Hidden Apartment Progress: ${get("hiddenApartmentProgress")}`,
       "blue",
     );
     return autoAdv($location`The Hidden Apartment Building`);
@@ -2754,7 +2748,7 @@ function L11_hiddenOfficeDo(): boolean {
   }
 
   auto_log_info(
-    `Hidden Office Progress: ${getProperty("hiddenOfficeProgress")}`,
+    `Hidden Office Progress: ${get("hiddenOfficeProgress")}`,
     "blue",
   );
 
@@ -2825,7 +2819,7 @@ function L11_hiddenBowlingAlleyDo(): boolean {
 
   buffMaintain$2($effect`Fishy Whiskers`);
   auto_log_info(
-    `Hidden Bowling Alley Progress: ${getProperty("hiddenBowlingAlleyProgress")}`,
+    `Hidden Bowling Alley Progress: ${get("hiddenBowlingAlleyProgress")}`,
     "blue",
   );
   if (
@@ -2909,7 +2903,7 @@ function L11_hiddenHospitalDo(): boolean {
     }
   }
   auto_log_info(
-    `Hidden Hospital Progress: ${getProperty("hiddenHospitalProgress")}`,
+    `Hidden Hospital Progress: ${get("hiddenHospitalProgress")}`,
     "blue",
   );
   return autoAdv($location`The Hidden Hospital`);
@@ -3229,11 +3223,9 @@ function L11_hiddenCityZonesZiggurat(): boolean {
   }
   const advSpent: boolean = autoAdv($location`A Massive Ziggurat`);
   if (
-    getProperty("lastEncounter") ===
-      "Legend of the Temple in the Hidden City" ||
+    get("lastEncounter") === "Legend of the Temple in the Hidden City" ||
     (isActuallyEd() &&
-      getProperty("lastEncounter") ===
-        "Temple of the Legend in the Hidden City")
+      get("lastEncounter") === "Temple of the Legend in the Hidden City")
   ) {
     set("auto_openedziggurat", true);
   }
@@ -3273,7 +3265,7 @@ function L11_mauriceSpookyravenAltPathwayActive(): boolean {
 }
 
 function L11_mauriceSpookyravenNormalPathwayReady(): boolean {
-  const recipeUsed = getProperty("spookyravenRecipeUsed");
+  const recipeUsed = get("spookyravenRecipeUsed");
   if (recipeUsed === "without_glasses") {
     abort(
       "Did not read Mortar Recipe with the Spookyraven glasses. We can't proceed.",
@@ -3312,7 +3304,7 @@ const L11_mauriceSpookyravenBallroomTask: QuestTask = registerQuestTask({
 
 const L11_mauriceSpookyravenMortarTask: QuestTask = registerQuestTask({
   name: "L11_mauriceSpookyravenMortar",
-  completed: () => getProperty("spookyravenRecipeUsed") !== "none",
+  completed: () => get("spookyravenRecipeUsed") !== "none",
   ready: () => internalQuestStatus("questL11Manor") >= 1,
   do: () => {
     if (itemAmount($item`recipe: mortar-dissolving solution`) === 0) {
@@ -3398,7 +3390,7 @@ const L11_mauriceSpookyravenWineBombTask: QuestTask = registerQuestTask({
 const L11_mauriceSpookyravenAltPathwayTask: QuestTask = {
   name: "L11_mauriceSpookyravenAltPathway",
   completed: () =>
-    getProperty("spookyravenRecipeUsed") === "with_glasses" ||
+    get("spookyravenRecipeUsed") === "with_glasses" ||
     have($item`bottle of Chateau de Vinegar`) ||
     have($item`unstable fulminate`) ||
     have($item`wine bomb`) ||
@@ -4079,7 +4071,7 @@ function L11_shenStartQuestDo(): boolean {
         auto_log_info(`${linec++}. ${z}`);
         set(
           "auto_shenZonesTurnsSpent",
-          `${getProperty("auto_shenZonesTurnsSpent")}${z}:${z.turnsSpent};`,
+          `${get("auto_shenZonesTurnsSpent")}${z}:${z.turnsSpent};`,
         );
       }
       set("auto_lastShenTurn", $location`The Copperhead Club`.turnsSpent);
@@ -4118,7 +4110,7 @@ function L11_shenWaiterNC():
     (internalQuestStatus("questL11Shen") === 6 &&
       itemAmount($item`unnamed cocktail`) > 0)
   ) {
-    if (getProperty("copperheadClubHazard") !== "lantern") {
+    if (get("copperheadClubHazard") !== "lantern") {
       // got priceless diamond or zeppelin ticket (or we are rich) so lets burn the place down (and make Flamin' Whatsisnames)
       return "lantern";
     }
@@ -4129,7 +4121,7 @@ function L11_shenWaiterNC():
   ) {
     return "diamond";
   } else {
-    if (getProperty("copperheadClubHazard") !== "ice") {
+    if (get("copperheadClubHazard") !== "ice") {
       // knock over the ice bucket & try for the priceless diamond.
       return "ice bucket";
     }
@@ -4185,7 +4177,7 @@ function L11_shenCopperheadDo(): boolean {
     maximizer.weight($modifier`Monster Level`, -10);
     uneffect($effect`Ur-Kel's Aria of Annoyance`);
     if (autoAdv($location`The Copperhead Club`)) {
-      if (containsText(getProperty("lastEncounter"), "Shen Copperhead, ")) {
+      if (containsText(get("lastEncounter"), "Shen Copperhead, ")) {
         set("auto_lastShenTurn", $location`The Copperhead Club`.turnsSpent);
       }
       return true;
@@ -4281,7 +4273,7 @@ function L11_shenCopperheadDo(): boolean {
 
   if (internalQuestStatus("questL11Shen") < 8) {
     abort(
-      `Shen should be done with but tracking is not complete! Status: ${getProperty("questL11Shen")}`,
+      `Shen should be done with but tracking is not complete! Status: ${get("questL11Shen")}`,
     );
   }
   //Now have a Copperhead Charm
@@ -4485,7 +4477,7 @@ function L11_palindomeDo(): boolean {
       pages.set(0, "inv_use.php?pwd&which=3&whichitem=7555");
       pages.set(
         1,
-        `choice.php?pwd&whichchoice=940&option=${getProperty("choiceAdventure940")}`,
+        `choice.php?pwd&whichchoice=940&option=${get("choiceAdventure940")}`,
       );
       if (autoAdvBypass(0, pages, $location`Whitey's Grove`)) {
       }
@@ -4971,7 +4963,7 @@ function L11_unlockMiddleChamberDo(): boolean {
   }
 
   auto_log_info(
-    `In the pyramid (W:${itemAmount($item`crumbling wooden wheel`)}) (R:${itemAmount($item`tomb ratchet`)}) (U:${getProperty("controlRoomUnlock")})`,
+    `In the pyramid (W:${itemAmount($item`crumbling wooden wheel`)}) (R:${itemAmount($item`tomb ratchet`)}) (U:${get("controlRoomUnlock")})`,
     "blue",
   );
 
@@ -5008,15 +5000,9 @@ function L11_unlockMiddleChamberDo(): boolean {
 
   if (get("controlRoomUnlock")) {
     if (
-      !containsText(
-        getProperty("auto_banishes"),
-        $monster`tomb servant`.toString(),
-      ) &&
-      !containsText(
-        getProperty("auto_banishes"),
-        $monster`tomb asp`.toString(),
-      ) &&
-      getProperty("olfactedMonster") !== $monster`tomb rat`.toString()
+      !containsText(get("auto_banishes"), $monster`tomb servant`.toString()) &&
+      !containsText(get("auto_banishes"), $monster`tomb asp`.toString()) &&
+      safeGet("olfactedMonster") !== $monster`tomb rat`
     ) {
       return autoAdv($location`The Upper Chamber`);
     }
@@ -5091,7 +5077,7 @@ export function L11_unlockEd(): boolean {
 function L11_edDefeated(): boolean {
   return (
     itemAmount($item`[2334]Holy MacGuffin`) > 0 ||
-    getProperty("questL11Pyramid") === "finished"
+    get("questL11Pyramid") === "finished"
   );
 }
 
@@ -5210,7 +5196,7 @@ export function L11_needDrumMachine(): boolean {
     (get("gnasirProgress") & 16) === 0 &&
     auto_is_valid($item`drum machine`) &&
     !itemAmount($item`drum machine`) &&
-    getProperty("questL11Desert") !== "finished"
+    get("questL11Desert") !== "finished"
   );
 }
 

@@ -9,7 +9,6 @@ import {
   Familiar,
   fuelCost,
   getFuel,
-  getProperty,
   haveEffect,
   haveFamiliar,
   haveSkill,
@@ -105,7 +104,7 @@ function auto_hasMummingTrunk(): boolean {
 
 //Defined in autoscend/iotms/mr2017.ash
 export function auto_checkFamiliarMummery(fam: Familiar): boolean {
-  if (containsText(getProperty("_mummeryMods"), fam.toString())) {
+  if (containsText(get("_mummeryMods"), fam.toString())) {
     return false;
   }
   return true;
@@ -166,7 +165,7 @@ function mummifyFamiliar(fam: Familiar, bonus: string): boolean {
   }
 
   if (
-    containsText(getProperty("_mummeryUses"), goal.toString()) ||
+    containsText(get("_mummeryUses"), goal.toString()) ||
     goal < 1 ||
     goal >= 8
   ) {
@@ -638,7 +637,7 @@ export function kgbWasteClicks(): boolean {
   while (get("_kgbClicksUsed") < 22 && clicked < 9) {
     const start_1: number = clicked;
     for (const ef of $effects`Items Are Forever, A View to Some Meat, Light!, The Spy Who Loved XP, Initiative and Let Die, The Living Hitpoints, License to Punch, Goldentongue, Thunderspell`) {
-      if (containsText(getProperty("auto_kgbTracker"), `:${toInt(ef)}`)) {
+      if (containsText(get("auto_kgbTracker"), `:${toInt(ef)}`)) {
         kgbTryEffect(ef);
         clicked++;
         if ($effects`Items Are Forever, A View to Some Meat`.includes(ef)) {
@@ -673,17 +672,17 @@ function kgbTryEffect(ef: Effect): boolean {
     return false;
   }
 
-  if (getProperty("auto_kgbTracker") === "") {
+  if (get("auto_kgbTracker") === "") {
     set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   let tracker: Map<number, string> = new Map(
-    splitString(getProperty("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
+    splitString(get("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
   );
   if (tracker.size < 13 || toInt(tracker.get(0) ?? "") !== myAscensions()) {
     set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   tracker = new Map(
-    splitString(getProperty("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
+    splitString(get("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
   );
 
   for (let i: number = 1; i < 13; i++) {
@@ -707,17 +706,17 @@ function kgbDiscovery(): boolean {
     return false;
   }
 
-  if (getProperty("auto_kgbTracker") === "") {
+  if (get("auto_kgbTracker") === "") {
     set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   let tracker: Map<number, string> = new Map(
-    splitString(getProperty("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
+    splitString(get("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
   );
   if (tracker.size < 13 || toInt(tracker.get(0) ?? "") !== myAscensions()) {
     set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   tracker = new Map(
-    splitString(getProperty("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
+    splitString(get("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
   );
 
   const page: string = visitUrl("place.php?whichplace=kgb", false);
@@ -1211,8 +1210,8 @@ export function asdonAutoFeed(goal: number = -1): boolean {
   for (const it of $items`a little sump'm sump'm, ancient frozen dinner, antique packet of ketchup, backwoods screwdriver, bag of GORP, ballroom blintz, bean burrito, bilge wine, bottle of laundry sherry, bowl of cottage cheese, black forest ham, cactus fruit, CSA scoutmaster's "water", enchanted bean burrito, giant heirloom grape tomato, gin and tonic, haggis-wrapped haggis-stuffed haggis, ice-cold Willer, insanely spicy bean burrito, insanely spicy enchanted bean burrito, insanely spicy jumping bean burrito, jumping bean burrito, jungle floor wax, loaf of soda bread, margarita, McLeod's Hard Haggis-Ade, mimosette, Mornington crescent roll, open sauce, pink pony, roll in the hay, screwdriver, slap and tickle, slip 'n' slide, snifter of thoroughly aged brandy, spicy bean burrito, spicy enchanted bean burrito, spicy jumping bean burrito, stolen sushi, strawberry daiquiri, tequila sunrise, tequila sunset, Typical Tavern swill, vodka and tonic, water purification pills, zmobie`) {
     if (itemAmount(it) > 0) {
       let toFeed: number = min(10, itemAmount(it));
-      if (getProperty("auto_ashtonLimit") !== "") {
-        const limit: number = get("auto_ashtonLimit", 0);
+      if (get("auto_ashtonLimit") !== "") {
+        const limit: number = toInt(get("auto_ashtonLimit"));
         toFeed = max(0, toFeed - limit);
       }
       asdonFeed(it, toFeed);
@@ -1393,31 +1392,31 @@ function getHorse(type_1: string): boolean {
     horseNormalize(type_1) === "normal" ||
     get("auto_beatenUpCount", 0) >= 20
   ) {
-    if (getProperty("_horsery") === "normal horse") {
+    if (get("_horsery") === "normal horse") {
       return false;
     }
     choice = 1;
     set("auto_desiredHorse", "normal");
   } else if (horseNormalize(type_1) === "dark") {
-    if (getProperty("_horsery") === "dark horse") {
+    if (get("_horsery") === "dark horse") {
       return false;
     }
     choice = 2;
     set("auto_desiredHorse", "dark");
   } else if (horseNormalize(type_1) === "crazy") {
-    if (containsText(getProperty("_horsery"), "crazy horse")) {
+    if (containsText(get("_horsery"), "crazy horse")) {
       return false;
     }
     choice = 3;
     set("auto_desiredHorse", "crazy");
   } else if (horseNormalize(type_1) === "pale") {
-    if (containsText(getProperty("_horsery"), "pale horse")) {
+    if (containsText(get("_horsery"), "pale horse")) {
       return false;
     }
     choice = 4;
     set("auto_desiredHorse", "pale");
   } else if (horseNormalize(type_1) === "return") {
-    if (getProperty("_horsery") === "") {
+    if (get("_horsery") === "") {
       return false;
     }
     choice = 5;
@@ -1444,7 +1443,7 @@ export function horseDefault(): void {
 
 export function horseMaintain(): void {
   if (isHorseryAvailable()) {
-    set("auto_desiredHorse", horseNormalize(getProperty("_horsery")));
+    set("auto_desiredHorse", horseNormalize(get("_horsery")));
   }
 }
 
@@ -1465,7 +1464,7 @@ export function horsePreAdventure(): boolean {
     return false;
   }
 
-  const desiredHorse: string = getProperty("auto_desiredHorse");
+  const desiredHorse: string = get("auto_desiredHorse");
   if (desiredHorse === "") {
     return false;
   }

@@ -128,7 +128,6 @@ import {
   toBoolean,
   todayToString,
   toElement,
-  toFloat,
   toInt,
   toItem,
   toLocation,
@@ -613,7 +612,7 @@ function debugMaximize(target: Maximizer, meat: number): void {
             entry.item,
           ) &&
           (myAscensions() !== get("lastPirateEphemeraReset") ||
-            entry.item !== toItem(getProperty("lastPirateEphemera")))
+            entry.item !== toItem(get("lastPirateEphemera")))
         ) {
           doThis = false;
         }
@@ -835,10 +834,10 @@ export function loopHandlerDelayAll(): boolean {
 export function banishedMonsters(): Map<Monster, number> {
   const retval: Map<Monster, number> = new Map();
   const data: Map<number, string> = new Map(
-    splitString(getProperty("banishedMonsters"), ":").map((_v, _i) => [_i, _v]),
+    splitString(get("banishedMonsters"), ":").map((_v, _i) => [_i, _v]),
   );
 
-  if (getProperty("banishedMonsters") === "") {
+  if (get("banishedMonsters") === "") {
     return retval;
   }
 
@@ -1117,7 +1116,7 @@ export function canYellowRay(target: Monster = $monster.none): boolean {
         useFamiliar($familiar`Crimbo Shrub`);
         useFamiliar(curr);
       }
-      if (getProperty("shrubGifts") !== "yellow" && !get("_shrubDecorated")) {
+      if (get("shrubGifts") !== "yellow" && !get("_shrubDecorated")) {
         visitUrl("inv_use.php?pwd=&which=3&whichitem=7958");
         visitUrl(
           "choice.php?pwd=&whichchoice=999&option=1&topper=1&lights=1&garland=1&gift=1",
@@ -1213,7 +1212,7 @@ export function auto_zonePhylumPercent(loc: Location, phyl: Phylum): number {
 
 export function auto_banishesUsedAt(loc: Location): string[] {
   function auto_reallyBanishesUsedAt(loc: Location): string[] {
-    const banished: string = getProperty("banishedMonsters");
+    const banished: string = get("banishedMonsters");
     const banishList: Map<number, string> = new Map(
       splitString(banished, ":").map((_v, _i) => [_i, _v]),
     );
@@ -2380,7 +2379,7 @@ export function lastAdventureSpecialNC(): boolean {
         "More Like... Hurtle",
         "Musk! Musk! Musk!",
         "Silent Strolling",
-      ].includes(getProperty("lastEncounter"))
+      ].includes(get("lastEncounter"))
     ) {
       return true;
     }
@@ -2406,7 +2405,7 @@ export function lastAdventureSpecialNC(): boolean {
       "Are They Made of Real Dogs?",
       "Gunbowwowder",
       "It Isn't a Poodle",
-    ].includes(getProperty("lastEncounter"))
+    ].includes(get("lastEncounter"))
   ) {
     return true;
   }
@@ -2667,7 +2666,7 @@ export function cloverUsageRestart(): boolean {
       "Bath Time",
       "Delicious Sprouts",
       "Hypnotic Master",
-    ].includes(getProperty("lastEncounter"))
+    ].includes(get("lastEncounter"))
   ) {
     //got interrupted and should adventure again in same location
     return true;
@@ -2682,9 +2681,9 @@ export function cloverUsageFinish(): boolean {
     );
   } else {
     handleTracker({
-      what: getProperty("auto_luckySource"),
+      what: get("auto_luckySource"),
       location: myLocation(),
-      detail: getProperty("lastEncounter"),
+      detail: get("lastEncounter"),
       property: "auto_lucky",
     });
     set("auto_luckySource", "none");
@@ -3154,8 +3153,8 @@ export function auto_deleteMail(msg: kmailObject): boolean {
   ) {
     return true;
   }
-  if (getProperty("auto_consultChoice") !== "") {
-    const id: number = toInt(getPlayerId(getProperty("auto_consultChoice")));
+  if (get("auto_consultChoice") !== "") {
+    const id: number = toInt(getPlayerId(get("auto_consultChoice")));
     if (
       msg.fromid === id &&
       containsText(msg.message, "completed your relationship fortune test") &&
@@ -3239,13 +3238,13 @@ function LX_summonMonsterDo(): boolean {
     );
   }
   if (
-    getProperty("sidequestLighthouseCompleted") === "none" &&
+    get("sidequestLighthouseCompleted") === "none" &&
     gunpowder_left > 0 &&
     myLevel() >= 12 &&
     canSummonMonster($monster`lobsterfrogman`) &&
     (canCopyLFM() || gunpowder_left === 1) &&
     !(auto_habitatMonster() === $monster`lobsterfrogman`) &&
-    getProperty("lastEncounter") !== $monster`lobsterfrogman`.toString() &&
+    get("lastEncounter") !== $monster`lobsterfrogman`.toString() &&
     !auto_hasAutumnaton()
   ) {
     if (summonMonster($monster`lobsterfrogman`)) {
@@ -3383,7 +3382,7 @@ export const LX_summonMonsterTask: QuestTask = registerQuestTask({
     }
     const oreGoal: Item = safeGet("trapperOre");
     if (
-      get("trapperOre") &&
+      oreGoal !== $item.none &&
       internalQuestStatus("questL08Trapper") < 2 &&
       !auto_haveTrainSet() &&
       itemAmount(oreGoal) < 2 &&
@@ -3763,7 +3762,7 @@ export function auto_summonMountainMan(
 }
 
 export function summonedMonsterToday(mon: Monster): boolean {
-  const copiedMonsters: string = getProperty("auto_copies");
+  const copiedMonsters: string = get("auto_copies");
   const searchString: string = `(${myDaycount()}:${mon.toString()}`;
   return containsText(copiedMonsters, searchString);
 }
@@ -3782,19 +3781,19 @@ export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
     case $item`print screen button`:
       return handleCopiedMonster($item`screencapped monster`, option);
     case $item`Rain-Doh box full of monster`:
-      if (getProperty("rainDohMonster") === "") {
+      if (safeGet("rainDohMonster") === $monster.none) {
         abort(`${itm} has no monster so we can't use it`);
       }
       id = toInt(itm);
       break;
     case $item`Spooky Putty monster`:
-      if (getProperty("spookyPuttyMonster") === "") {
+      if (safeGet("spookyPuttyMonster") === $monster.none) {
         abort(`${itm} has no monster so we can't use it`);
       }
       id = toInt(itm);
       break;
     case $item`shaking 4-d camera`:
-      if (getProperty("cameraMonster") === "") {
+      if (safeGet("cameraMonster") === $monster.none) {
         abort(`${itm} has no monster so we can't use it`);
       }
       if (get("_cameraUsed")) {
@@ -3806,7 +3805,7 @@ export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
       if (itemAmount(itm) === 0) {
         abort(`We do not have any ${itm}`);
       }
-      if (getProperty("iceSculptureMonster") === "") {
+      if (safeGet("iceSculptureMonster") === $monster.none) {
         abort(`${itm} has no monster so we can't use it`);
       }
       if (get("_iceSculptureUsed")) {
@@ -3815,7 +3814,7 @@ export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
       id = toInt(itm);
       break;
     case $item`screencapped monster`:
-      if (getProperty("screencappedMonster") === "") {
+      if (safeGet("screencappedMonster") === $monster.none) {
         abort(`${itm} has no monster so we can't use it`);
       }
       id = toInt(itm);
@@ -3912,8 +3911,8 @@ export function auto_change_mcd(
   //under level 13 we want to level up. level 14+ we already missed the instant karma, no point in holding back anymore.
   if (myLevel() === 13 && !get("auto_disregardInstantKarma", false)) {
     if (
-      getProperty("questL12War") === "finished" ||
-      getProperty("sidequestArenaCompleted") !== "none" ||
+      get("questL12War") === "finished" ||
+      get("sidequestArenaCompleted") !== "none" ||
       get("flyeredML") >= 10000 ||
       get("auto_ignoreFlyer", false)
     ) {
@@ -5136,8 +5135,8 @@ export function meatReserveMessage(): void {
 
 function auto_interruptZoneCheck(): boolean {
   const currentZone: string = myLocation().toString();
-  const interruptZones: string = getProperty("auto_interruptZones");
-  let interruptedZones: string = getProperty("auto_interruptedZones");
+  const interruptZones: string = get("auto_interruptZones");
+  let interruptedZones: string = get("auto_interruptedZones");
   if (interruptZones === "" || interruptedZones.includes(currentZone)) {
     return false;
   }
@@ -5215,13 +5214,13 @@ export function executeFlavour(): boolean {
     return false;
   }
 
-  if (getProperty("_auto_tunedElement") === "") {
+  if (get("_auto_tunedElement") === "") {
     autoFlavour(myLocation());
   }
-  if (getProperty("_auto_tunedElement") === "") {
+  if (get("_auto_tunedElement") === "") {
     return false;
   }
-  const ele: Element = toElement(getProperty("_auto_tunedElement"));
+  const ele: Element = toElement(get("_auto_tunedElement"));
   if (ele !== currentFlavour()) {
     switch (ele) {
       case $element.none:
@@ -5583,7 +5582,7 @@ export function auto_reserveCraftAmount(orig_it: Item): number {
 export function auto_convertDesiredML(DML: number): number {
   let DesiredML: number = toInt(get("auto_MLSafetyLimit"));
 
-  if (getProperty("auto_MLSafetyLimit") === "") {
+  if (get("auto_MLSafetyLimit") === "") {
     DesiredML = DML;
   }
 
@@ -5593,7 +5592,7 @@ export function auto_convertDesiredML(DML: number): number {
 export function auto_setMCDToCap(): boolean {
   let targetMcd: number;
 
-  if (getProperty("auto_MLSafetyLimit") === "") {
+  if (get("auto_MLSafetyLimit") === "") {
     // No ML limit was given, so use the max MCD value
     targetMcd = 11;
   } else {
@@ -5627,7 +5626,7 @@ function UrKelCheck(
     monsterLevelAdjustment() + 2 * myLevel() <= auto_convertDesiredML(UrKelToML)
   ) {
     if (
-      getProperty("auto_MLSafetyLimit") === "" ||
+      get("auto_MLSafetyLimit") === "" ||
       (2 * myLevel() <= UrKelUpperLimit && 2 * myLevel() >= UrKelLowerLimit)
     ) {
       shrugAT($effect`Ur-Kel's Aria of Annoyance`);
@@ -5656,7 +5655,7 @@ function angryAgateCheck(
       auto_convertDesiredML(angryAgateToML)
   ) {
     if (
-      getProperty("auto_MLSafetyLimit") === "" ||
+      get("auto_MLSafetyLimit") === "" ||
       (3 * myLevel() <= angryAgateUpperLimit &&
         3 * myLevel() >= angryAgateLowerLimit)
     ) {
@@ -5900,7 +5899,7 @@ export function auto_forceNextNoncombat(loc: Location): boolean {
     return true;
   }
   if (_auto_forceNextNoncombat(loc)) {
-    const forceNCMethod: string = getProperty("auto_forceNonCombatSource");
+    const forceNCMethod: string = get("auto_forceNonCombatSource");
     if (forceNCMethod === "jurassic parka") {
       auto_log_info(
         `Next noncombat adventure will be forced with ${forceNCMethod}`,
@@ -5960,7 +5959,7 @@ export function auto_forceNextCombat$1(loc: Location): boolean {
     return true;
   }
   if (_auto_forceNextCombat(loc)) {
-    const forceCMethod: string = getProperty("auto_forceCombatSource");
+    const forceCMethod: string = get("auto_forceCombatSource");
     auto_log_info(
       `Next combat adventure has been forced with ${forceCMethod}`,
       "blue",
@@ -6253,7 +6252,7 @@ export function meatReserve(): number {
   ) {
     //the copperhead part tries for a priceless diamond, but if it's over without getting one
     if (
-      (getProperty("questL11Shen") === "finished" ||
+      (get("questL11Shen") === "finished" ||
         $location`The Copperhead Club`.turnsSpent >= 15) &&
       itemAmount($item`priceless diamond`) < 1
     ) {
@@ -6551,7 +6550,7 @@ export function auto_roughExpectedTurnsLeftToday(): number {
   if (myInebriety() > inebrietyLimit()) {
     return 0;
   }
-  const min_adv: number = toFloat(getProperty("auto_consumeMinAdvPerFill"));
+  const min_adv: number = get("auto_consumeMinAdvPerFill");
   const use_min_adv: boolean = min_adv > 0.0;
   const p: Path = myPath();
   const eat_val: number = use_min_adv ? min_adv : 3.0;

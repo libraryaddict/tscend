@@ -1,5 +1,4 @@
 import {
-  getProperty,
   haveEffect,
   haveSkill,
   itemAmount,
@@ -165,7 +164,7 @@ export function LX_theSource(): boolean {
     }
     if (
       goal === $location`The VERY Unquiet Garves` &&
-      getProperty("questL07Cyrptic") !== "finished"
+      get("questL07Cyrptic") !== "finished"
     ) {
       return false;
     }

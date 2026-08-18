@@ -14,7 +14,6 @@ import {
   Familiar,
   fileToBuffer,
   getClanId,
-  getProperty,
   gitExists,
   handlingChoice,
   haveEffect,
@@ -340,9 +339,10 @@ export function dartChoiceHandler(
 export function dartELRcd(): number {
   let cd: number = 50; // base cd is 50 turns
   const perks: Map<number, string> = new Map(
-    splitString(toLowerCase(getProperty("everfullDartPerks")), ",").map(
-      (_v, _i) => [_i, _v],
-    ),
+    splitString(toLowerCase(get("everfullDartPerks")), ",").map((_v, _i) => [
+      _i,
+      _v,
+    ]),
   );
   for (const perk of perks.keys()) {
     if (containsText(perks.get(perk) ?? "", "impress")) {
@@ -354,9 +354,10 @@ export function dartELRcd(): number {
 
 export function dartSkill(): Skill {
   const curDartboard: Map<number, string> = new Map(
-    splitString(toLowerCase(getProperty("_currentDartboard")), ",").map(
-      (_v, _i) => [_i, _v],
-    ),
+    splitString(toLowerCase(get("_currentDartboard")), ",").map((_v, _i) => [
+      _i,
+      _v,
+    ]),
   );
   for (const sk of curDartboard.keys()) {
     if (containsText(curDartboard.get(sk) ?? "", "butt")) {
@@ -376,7 +377,7 @@ export function dartSkill(): Skill {
 }
 
 export function dartEleDmg(): boolean {
-  const perks: string = toLowerCase(getProperty("everfullDartPerks"));
+  const perks: string = toLowerCase(get("everfullDartPerks"));
   if (containsText(perks, "add ")) {
     // Only ele dmg perks have "add " in their perk description so as long as we have 1, we are good
     return true;
@@ -397,10 +398,7 @@ export function auto_haveMayamCalendar(): boolean {
 
 export function auto_MayamIsUsed(glyph: string): boolean {
   const used: Map<number, string> = new Map(
-    splitString(getProperty("_mayamSymbolsUsed"), ",").map((_v, _i) => [
-      _i,
-      _v,
-    ]),
+    splitString(get("_mayamSymbolsUsed"), ",").map((_v, _i) => [_i, _v]),
   );
   for (const [, str] of used) {
     if (glyph === str) {

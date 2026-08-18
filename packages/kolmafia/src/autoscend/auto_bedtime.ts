@@ -504,8 +504,7 @@ function rollover_value(it: Item): number {
   let retval: number = numericModifier(it, "adventures");
   if (hippyStoneBroken() && myPath() !== $path`Oxygenarian`) {
     retval +=
-      toFloat(getProperty("auto_bedtime_pulls_pvp_multi")) *
-      numericModifier(it, "PvP Fights");
+      get("auto_bedtime_pulls_pvp_multi") * numericModifier(it, "PvP Fights");
   }
   if (it === $item`your cowboy boots`) {
     //your cowboy boot's add-ons are considered seperate items in their own slots
@@ -547,9 +546,7 @@ function rollover_improvement(it: Item, sl: Slot): number {
 }
 
 function bedtime_pulls_rollover_equip(
-  desirability_1: number = toFloat(
-    getProperty("auto_bedtime_pulls_min_desirability"),
-  ),
+  desirability_1: number = toFloat(get("auto_bedtime_pulls_min_desirability")),
 ): void {
   //scan through all pullable items for items that have a better rollover adv gain than currently best equipped item.
   // can't pull gear in Legacy of Loathing
@@ -834,15 +831,12 @@ function bedtime_pulls(): void {
     //this run looks like it will take a couple more days, give priority to good rollover equipment before other pulls
     const desirability_1: number = max(
       5.0,
-      toFloat(getProperty("auto_bedtime_pulls_min_desirability")),
+      get("auto_bedtime_pulls_min_desirability"),
     );
     bedtime_pulls_rollover_equip(desirability_1);
   }
 
-  if (
-    toFloat(getProperty("auto_bedtime_pulls_min_desirability")) <= 5.0 &&
-    !in_lol()
-  ) {
+  if (get("auto_bedtime_pulls_min_desirability") <= 5.0 && !in_lol()) {
     if (storageAmount($item`potato alarm clock`) > 0) {
       pullXWhenHaveY($item`potato alarm clock`, 1, 0);
     }
@@ -885,7 +879,7 @@ function bedtime_pulls(): void {
 export function doBedtime(): boolean {
   auto_log_info(`Starting bedtime: Pulls Left: ${pullsRemaining()}`, "blue");
 
-  if (getProperty("lastEncounter") === "Like a Bat Into Hell") {
+  if (get("lastEncounter") === "Like a Bat Into Hell") {
     abort(
       "Our last encounter was UNDYING and we ended up trying to bedtime and failed.",
     );
@@ -1167,10 +1161,7 @@ export function doBedtime(): boolean {
     get("telescopeUpgrades") > 0 &&
     internalQuestStatus("questL13Final") < 0
   ) {
-    if (
-      getProperty("telescopeLookedHigh") === "false" &&
-      auto_is_valid$3($effect`Starry-Eyed`)
-    ) {
+    if (!get("telescopeLookedHigh") && auto_is_valid$3($effect`Starry-Eyed`)) {
       cliExecute("telescope high");
     }
   }
@@ -1272,10 +1263,7 @@ export function doBedtime(): boolean {
 
   dna_bedtime();
 
-  if (
-    getProperty("_grimBuff") === "false" &&
-    auto_have_familiar($familiar`Grim Brother`)
-  ) {
+  if (!get("_grimBuff") && auto_have_familiar($familiar`Grim Brother`)) {
     visitUrl("choice.php?pwd=&whichchoice=835&option=1", true);
   }
 
@@ -1327,16 +1315,13 @@ export function doBedtime(): boolean {
   }
 
   if (
-    getProperty("sidequestOrchardCompleted") !== "none" &&
+    get("sidequestOrchardCompleted") !== "none" &&
     !get("_hippyMeatCollected")
   ) {
     visitUrl("shop.php?whichshop=hippy");
   }
 
-  if (
-    getProperty("sidequestArenaCompleted") !== "none" &&
-    !get("concertVisited")
-  ) {
+  if (get("sidequestArenaCompleted") !== "none" && !get("concertVisited")) {
     cliExecute("concert 2");
   }
   if (inAftercore()) {
@@ -1417,16 +1402,13 @@ export function doBedtime(): boolean {
     isUnrestricted($item`Source terminal`) &&
     $item`Source terminal`.toString() in getCampground()
   ) {
-    if (!inAftercore() && getProperty("auto_extrudeChoice") !== "none") {
+    if (!inAftercore() && get("auto_extrudeChoice") !== "none") {
       let count_1: number = 3 - get("_sourceTerminalExtrudes");
 
       const extrudeChoice: Map<number, string> = new Map();
-      if (getProperty("auto_extrudeChoice") !== "") {
+      if (get("auto_extrudeChoice") !== "") {
         const extrudeDays: Map<number, string> = new Map(
-          splitString(getProperty("auto_extrudeChoice"), ":").map((_v, _i) => [
-            _i,
-            _v,
-          ]),
+          splitString(get("auto_extrudeChoice"), ":").map((_v, _i) => [_i, _v]),
         );
         const tempChoice: Map<number, string> = new Map(
           splitString(
@@ -1511,20 +1493,14 @@ export function doBedtime(): boolean {
       auto_log_info(`You have some KGB clicks (${clicks}) left!`, "green");
     }
   }
-  if (
-    getProperty("sidequestNunsCompleted") === "fratboy" &&
-    get("nunsVisits") < 3
-  ) {
+  if (get("sidequestNunsCompleted") === "fratboy" && get("nunsVisits") < 3) {
     auto_log_info(
       `You have ${3 - get("nunsVisits")} nuns visits left.`,
       "blue",
     );
   }
   if (get("libramSummons") > 0) {
-    auto_log_info(
-      `Total Libram Summons: ${getProperty("libramSummons")}`,
-      "blue",
-    );
+    auto_log_info(`Total Libram Summons: ${get("libramSummons")}`, "blue");
   }
 
   let smiles: number =
@@ -1537,8 +1513,8 @@ export function doBedtime(): boolean {
     smiles = 0;
   }
   if (smiles > 0) {
-    if (getProperty("auto_smileAt") !== "") {
-      cliExecute(`/cast ${smiles} the smile @ ${getProperty("auto_smileAt")}`);
+    if (get("auto_smileAt") !== "") {
+      cliExecute(`/cast ${smiles} the smile @ ${get("auto_smileAt")}`);
     } else {
       auto_log_info(`You have ${smiles} smiles of Mr. A remaining.`, "blue");
     }
@@ -1603,7 +1579,7 @@ export function doBedtime(): boolean {
   // Use up any cursed monkey paw wishes on Frosty (+100% item, +100% meat, +25 ML)
   // Unless we're limiting ML, then do One Very Clear Eye
   let effect_to_wish: Effect = $effect`Frosty`;
-  if (getProperty("auto_MLSafetyLimit") !== "" || in_wereprof()) {
+  if (get("auto_MLSafetyLimit") !== "" || in_wereprof()) {
     // Professor hates ML
     if (toInt(get("auto_MLSafetyLimit")) < 25 || in_wereprof()) {
       // We're adding +25 ML that won't be shrugged. Professor hates ML
@@ -1889,7 +1865,7 @@ export function doBedtime(): boolean {
 
     meatReserveMessage();
 
-    if (getProperty("spadingData") !== "") {
+    if (get("spadingData") !== "") {
       cliExecute("spade autoconfirm");
     }
 

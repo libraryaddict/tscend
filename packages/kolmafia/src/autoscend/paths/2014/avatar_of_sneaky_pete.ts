@@ -1,6 +1,5 @@
 import {
   abort,
-  getProperty,
   haveSkill,
   lastChoice,
   myLevel,
@@ -46,12 +45,12 @@ export function pete_buySkills(): void {
     haveSkill($skill`Natural Dancer`) &&
     haveSkill($skill`Flash Headlight`) &&
     haveSkill($skill`Walk Away From Explosion`) &&
-    getProperty("peteMotorbikeCowling") !== "" &&
-    getProperty("peteMotorbikeTires") !== "" &&
-    getProperty("peteMotorbikeMuffler") !== "" &&
-    getProperty("peteMotorbikeGasTank") !== "" &&
-    getProperty("peteMotorbikeHeadlight") !== "" &&
-    getProperty("peteMotorbikeSeat") !== ""
+    get("peteMotorbikeCowling") !== "" &&
+    get("peteMotorbikeTires") !== "" &&
+    get("peteMotorbikeMuffler") !== "" &&
+    get("peteMotorbikeGasTank") !== "" &&
+    get("peteMotorbikeHeadlight") !== "" &&
+    get("peteMotorbikeSeat") !== ""
   ) {
     return;
   }
@@ -172,22 +171,22 @@ export function pete_buySkills(): void {
     auto_log_info("Found Upping Your Grade", "blue");
     let firstChoice: number = -1;
     let secondChoice: number = -1;
-    if (getProperty("peteMotorbikeCowling") === "") {
+    if (get("peteMotorbikeCowling") === "") {
       firstChoice = 4;
       secondChoice = 3;
-    } else if (getProperty("peteMotorbikeTires") === "") {
+    } else if (get("peteMotorbikeTires") === "") {
       firstChoice = 1;
       secondChoice = 1;
-    } else if (getProperty("peteMotorbikeMuffler") === "") {
+    } else if (get("peteMotorbikeMuffler") === "") {
       firstChoice = 5;
       secondChoice = 2;
-    } else if (getProperty("peteMotorbikeGasTank") === "") {
+    } else if (get("peteMotorbikeGasTank") === "") {
       firstChoice = 2;
       secondChoice = 2;
-    } else if (getProperty("peteMotorbikeHeadlight") === "") {
+    } else if (get("peteMotorbikeHeadlight") === "") {
       firstChoice = 3;
       secondChoice = 3;
-    } else if (getProperty("peteMotorbikeSeat") === "") {
+    } else if (get("peteMotorbikeSeat") === "") {
       firstChoice = 6;
       secondChoice = 1;
       auto_runChoice(6);
@@ -214,7 +213,7 @@ export function pete_buySkills(): void {
 }
 
 export function pete_peelOutRemaining(): number {
-  if (getProperty("peteMotorbikeTires") === "Racing Slicks") {
+  if (get("peteMotorbikeTires") === "Racing Slicks") {
     return 30 - get("_petePeeledOut");
   }
 

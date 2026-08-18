@@ -1,6 +1,5 @@
 import {
   expectedDamage,
-  getProperty,
   haveEquipped,
   inHardcore,
   Item,
@@ -45,7 +44,7 @@ export function small_initializeSettings(): void {
     //set_property("auto_ignoreFlyer", true);
     //cap ML to 50 to help avoid getting beaten up
     const MLCap: number = 50;
-    const MLSafetyLimit: string = getProperty("auto_MLSafetyLimit");
+    const MLSafetyLimit: string = get("auto_MLSafetyLimit");
     if (MLSafetyLimit === "") {
       set("auto_MLSafetyLimitBackup", "empty");
       set("auto_MLSafetyLimit", MLCap);

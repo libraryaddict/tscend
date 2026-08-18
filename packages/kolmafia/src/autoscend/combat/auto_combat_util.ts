@@ -9,7 +9,6 @@ import {
   expectedDamage,
   fuelCost,
   getFuel,
-  getProperty,
   haveEffect,
   haveEquipped,
   haveSkill,
@@ -172,24 +171,19 @@ export function defaultRoundLimit(): number {
 
 export function haveUsed(sk: Skill): boolean {
   return (
-    containsText(
-      getProperty("_auto_combatState"),
-      `(sk${toInt(sk).toString()})`,
-    ) || getProperty("_auto_combatState").split(";").includes(`sk${sk.id}`)
+    containsText(get("_auto_combatState"), `(sk${toInt(sk).toString()})`) ||
+    get("_auto_combatState").split(";").includes(`sk${sk.id}`)
   );
 }
 
 export function haveUsed$1(it: Item): boolean {
-  return containsText(
-    getProperty("_auto_combatState"),
-    `(it${toInt(it).toString()})`,
-  );
+  return containsText(get("_auto_combatState"), `(it${toInt(it).toString()})`);
 }
 
 export function usedCount(sk: Skill): number {
   const m: AshMatcher = new AshMatcher(
     `(sk${toInt(sk).toString()})`,
-    getProperty("_auto_combatState"),
+    get("_auto_combatState"),
   );
   let count_1: number = 0;
   while (m.find()) {
@@ -201,7 +195,7 @@ export function usedCount(sk: Skill): number {
 export function markAsUsed(sk: Skill): void {
   set(
     "_auto_combatState",
-    `${getProperty("_auto_combatState")}(sk${toInt(sk).toString()})`,
+    `${get("_auto_combatState")}(sk${toInt(sk).toString()})`,
   );
 }
 
@@ -209,7 +203,7 @@ export function markAsUsed$1(it: Item): void {
   if (it !== $item.none) {
     set(
       "_auto_combatState",
-      `${getProperty("_auto_combatState")}(it${toInt(it).toString()})`,
+      `${get("_auto_combatState")}(it${toInt(it).toString()})`,
     );
   }
 }
@@ -659,8 +653,7 @@ export function getStunner(enemy: Monster): Skill {
   // From Designer Sweatpants. Use when have nearly full sweat or when losing combat
   if (
     auto_canUse($skill`Sweat Flood`) &&
-    (getSweat() > 98 ||
-      containsText(getProperty("_auto_combatState"), "last attempt"))
+    (getSweat() > 98 || containsText(get("_auto_combatState"), "last attempt"))
   ) {
     return $skill`Sweat Flood`;
   }
@@ -846,7 +839,7 @@ export function banisherCombatAction$1(
   if (
     auto_have_skill($skill`Peel Out`) &&
     pete_peelOutRemaining() > 0 &&
-    getProperty("peteMotorbikeMuffler") === "Extra-Smelly Muffler" &&
+    get("peteMotorbikeMuffler") === "Extra-Smelly Muffler" &&
     !used.includes("Peel Out") &&
     useFree
   ) {
@@ -922,12 +915,7 @@ export function banisherCombatAction$1(
     !used.includes("Spring-Loaded Front Bumper") &&
     useFree
   ) {
-    if (
-      !containsText(
-        getProperty("banishedMonsters"),
-        "Spring-Loaded Front Bumper",
-      )
-    ) {
+    if (!containsText(get("banishedMonsters"), "Spring-Loaded Front Bumper")) {
       return $skill`Asdon Martin: Spring-Loaded Front Bumper`;
     }
   }
@@ -1129,7 +1117,7 @@ export function banisherCombatAction$1(
   ) {
     let useIt: boolean = true;
     if (
-      getProperty("sidequestJunkyardCompleted") !== "none" &&
+      get("sidequestJunkyardCompleted") !== "none" &&
       myDaycount() >= 2 &&
       get("_kgbTranquilizerDartUses") >= 2
     ) {
@@ -1243,7 +1231,7 @@ export function banisherCombatAction$1(
   }
 
   let keep: number = 1;
-  if (getProperty("sidequestJunkyardCompleted") !== "none") {
+  if (get("sidequestJunkyardCompleted") !== "none") {
     keep = 0;
   }
 
@@ -1406,7 +1394,7 @@ export function yellowRayCombatString(
       return $item`mayo lance`; // 0 - 145 turns
     }
     if (
-      getProperty("peteMotorbikeHeadlight") === "Ultrabright Yellow Bulb" &&
+      get("peteMotorbikeHeadlight") === "Ultrabright Yellow Bulb" &&
       auto_have_skill($skill`Flash Headlight`) &&
       myMp() >= mpCost($skill`Flash Headlight`)
     ) {
@@ -1428,7 +1416,7 @@ export function yellowRayCombatString(
         ? myFamiliar() === $familiar`Crimbo Shrub`
         : auto_have_familiar($familiar`Crimbo Shrub`)) &&
       auto_is_valid$2($skill`Open a Big Yellow Present`) &&
-      getProperty("shrubGifts") === "yellow"
+      get("shrubGifts") === "yellow"
     ) {
       return $skill`Open a Big Yellow Present`; // 149 turns
     }
@@ -1550,11 +1538,11 @@ export type CombatStatusType =
   | "unstoppable";
 
 export function combat_status_check(mark: CombatStatusType): boolean {
-  return containsText(getProperty("_auto_combatState"), mark);
+  return containsText(get("_auto_combatState"), mark);
 }
 
 export function combat_status_add(mark: CombatStatusType): void {
-  let st: string = getProperty("_auto_combatState");
+  let st: string = get("_auto_combatState");
   if (!combat_status_check(mark)) {
     st = `${st}(${mark})`;
   }

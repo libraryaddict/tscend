@@ -1,7 +1,6 @@
 import {
   equip,
   equippedAmount,
-  getProperty,
   Item,
   myPath,
   numericModifier,
@@ -38,7 +37,7 @@ export function ht_equip_hats(): boolean {
     }
     //Only check to not equip these if MLSafetyLimit is not set or is not set low (-ML hats)
     if (
-      getProperty("auto_MLSafetyLimit") === "" ||
+      get("auto_MLSafetyLimit") === "" ||
       toInt(get("auto_MLSafetyLimit")) >= 25
     ) {
       if (numericModifier(it, "Monster Level") < 0) {

@@ -1,13 +1,12 @@
 import {
   entityEncode,
-  getProperty,
   Location,
   myAscensions,
   myDaycount,
   myPath,
   myTurncount,
 } from "kolmafia";
-import { $locations } from "libram";
+import { $locations, get } from "libram";
 
 import { isActuallyEd } from "../../../kolmafia/src/autoscend/paths/2015/actually_ed_the_undying";
 import { autoscend_current_version } from "../../../kolmafia/src/autoscend/utils/migration";
@@ -31,9 +30,9 @@ export function infoPage(): RelayPage {
   ];
 
   if (isActuallyEd()) {
-    tiles.push(infoTile("Combats", getProperty("auto_edCombatCount")));
+    tiles.push(infoTile("Combats", get("auto_edCombatCount").toString()));
     tiles.push(
-      infoTile("Combat Rounds", getProperty("auto_edCombatRoundCount")),
+      infoTile("Combat Rounds", get("auto_edCombatRoundCount").toString()),
     );
   }
 

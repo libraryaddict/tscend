@@ -1,6 +1,5 @@
 import {
   containsText,
-  getProperty,
   haveOutfit,
   itemAmount,
   Monster,
@@ -150,7 +149,7 @@ function ag_bgToChat(): Monster {
     mon = $monster`beanbat`;
   } else if (
     itemAmount($item`molybdenum magnet`) > 0 &&
-    getProperty("sidequestJunkyardCompleted") === "none"
+    get("sidequestJunkyardCompleted") === "none"
   ) {
     if (itemAmount($item`molybdenum hammer`) === 0) {
       mon = $monster`batwinged gremlin (tool)`;
@@ -201,7 +200,7 @@ function ag_bgToChat(): Monster {
     mon = $monster`animated ornate nightstand`;
   } else if (
     !haveOutfit("Knob Goblin Harem Girl Disguise") &&
-    getProperty("questL05Goblin") !== "finished"
+    get("questL05Goblin") !== "finished"
   ) {
     mon = $monster`Knob Goblin Harem Girl`;
   } else if (
@@ -267,7 +266,7 @@ export function LM_avantGuard(): boolean {
 }
 
 export function ag_is_bodyguard(): boolean {
-  if (containsText(getProperty("lastEncounter"), "bodyguard to")) {
+  if (containsText(get("lastEncounter"), "bodyguard to")) {
     return true;
   }
 

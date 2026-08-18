@@ -1,5 +1,4 @@
 import {
-  getProperty,
   haveEffect,
   haveSkill,
   inHardcore,
@@ -172,13 +171,13 @@ export function LM_bond(): boolean {
   }
 
   if (
-    getProperty("_auto_bondBriefing") === "started" &&
+    get("_auto_bondBriefing") === "started" &&
     get("_villainLairProgress") >= 999
   ) {
     set("_auto_bondBriefing", "finished");
   }
 
-  if (getProperty("_auto_bondBriefing") === "started") {
+  if (get("_auto_bondBriefing") === "started") {
     const retval: boolean = autoAdv($location`Super Villain's Lair`);
     if (!retval) {
       set("_auto_bondBriefing", "finished");
@@ -192,7 +191,7 @@ export function LM_bond(): boolean {
     bond_buySkills();
   }
 
-  if (getProperty("_auto_bondBriefing") === "finished") {
+  if (get("_auto_bondBriefing") === "finished") {
     return false;
   }
 

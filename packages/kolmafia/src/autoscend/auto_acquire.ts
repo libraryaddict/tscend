@@ -14,7 +14,6 @@ import {
   equippedAmount,
   equippedItem,
   getPower,
-  getProperty,
   haveSkill,
   hermit,
   historicalPrice,
@@ -225,10 +224,7 @@ function pulledToday(it: Item): boolean {
   //autoscend property "auto_pulls" tracks pulls made by the script as "(" + my_daycount() + ":" + it
   //kolmafia property "_roninStoragePulls" tracks all pulls made with kolmafia today since 2022 changed to daily limit of one pull for each item
   const allPulls: Map<number, string> = new Map(
-    splitString(getProperty("_roninStoragePulls"), ",").map((_v, _i) => [
-      _i,
-      _v,
-    ]),
+    splitString(get("_roninStoragePulls"), ",").map((_v, _i) => [_i, _v]),
   );
   for (const i of allPulls.keys()) {
     if (toInt(allPulls.get(i) ?? "") === toInt(it)) {
@@ -907,10 +903,7 @@ export function handlePulls(day: number): number {
       if (
         itemAmount($item`Boris's key`) === 0 &&
         auto_canEat($item`Boris's key lime pie`) &&
-        !containsText(
-          getProperty("nsTowerDoorKeysUsed"),
-          $item`Boris's key`.toString(),
-        )
+        !containsText(get("nsTowerDoorKeysUsed"), $item`Boris's key`.toString())
       ) {
         pullXWhenHaveY($item`Boris's key lime pie`, 1, 0);
       }
@@ -918,7 +911,7 @@ export function handlePulls(day: number): number {
         itemAmount($item`Sneaky Pete's key`) === 0 &&
         auto_canEat($item`Sneaky Pete's key lime pie`) &&
         !containsText(
-          getProperty("nsTowerDoorKeysUsed"),
+          get("nsTowerDoorKeysUsed"),
           $item`Sneaky Pete's key`.toString(),
         )
       ) {
@@ -928,7 +921,7 @@ export function handlePulls(day: number): number {
         itemAmount($item`Jarlsberg's key`) === 0 &&
         auto_canEat($item`Jarlsberg's key lime pie`) &&
         !containsText(
-          getProperty("nsTowerDoorKeysUsed"),
+          get("nsTowerDoorKeysUsed"),
           $item`Jarlsberg's key`.toString(),
         )
       ) {

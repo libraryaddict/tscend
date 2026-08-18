@@ -393,7 +393,7 @@ export function L12_koe_finalizeWar(): boolean {
   if (!retval) {
     abort("failed to fight the final boss of the frat-hippy war");
   }
-  if (getProperty("questL12War") !== "finished") {
+  if (get("questL12War") !== "finished") {
     //only place this property is used in koe is when you turn in the quest to council.
     //which results in Preference questL12War changed from unstarted to finished
     abort(

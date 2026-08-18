@@ -1,4 +1,4 @@
-import { alliedRadio, getProperty, itemAmount, myLevel, use } from "kolmafia";
+import { alliedRadio, itemAmount, myLevel, use } from "kolmafia";
 import { $item, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
@@ -19,7 +19,7 @@ export function auto_useWardrobe(): void {
     return;
   }
   // check one of the 3 prefs which get set when wardrobe is used each day
-  if (getProperty("_futuristicHatModifier") !== "") {
+  if (get("_futuristicHatModifier") !== "") {
     return;
   }
   // wait for level 5 to get an upgraded wardrobe

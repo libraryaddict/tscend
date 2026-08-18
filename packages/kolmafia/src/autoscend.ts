@@ -19,7 +19,6 @@ import {
   getAutoAttack,
   getClanRumpus,
   getDwelling,
-  getProperty,
   getRevision,
   getWorkshed,
   gitInfo,
@@ -86,7 +85,6 @@ import {
   storageAmount,
   substring,
   todayToString,
-  toFloat,
   toInt,
   toItem,
   toSlot,
@@ -111,6 +109,7 @@ import {
   $location,
   $locations,
   $monster,
+  $phylum,
   $skill,
   $slot,
   $stat,
@@ -775,10 +774,10 @@ function LX_burnDelayDo(): boolean {
     const voterZone: Location = solveDelayZone(get("breathitinCharges") > 0);
     if (voterZone !== $location.none) {
       auto_log_info(
-        `Fighting a free ${getProperty("_voteMonster")} in ${voterZone.toString()} to burn delay!`,
+        `Fighting a free ${safeGet("_voteMonster")} in ${voterZone.toString()} to burn delay!`,
         "green",
       );
-      set("auto_nextEncounter", getProperty("_voteMonster"));
+      set("auto_nextEncounter", safeGet("_voteMonster").toString());
       if (auto_voteMonster(true, voterZone)) {
         return true;
       }
@@ -799,7 +798,7 @@ function LX_burnDelayDo(): boolean {
       digitizeZone = $location`Noob Cave`;
     }
     auto_log_info(
-      `Fighting a ${get("_sourceTerminalDigitizeMonster")} in ${digitizeZone.toString()} to burn delay!`,
+      `Fighting a ${safeGet("_sourceTerminalDigitizeMonster")} in ${digitizeZone.toString()} to burn delay!`,
       "green",
     );
     set(
@@ -824,7 +823,7 @@ function LX_burnDelayDo(): boolean {
     }
 
     auto_log_info(
-      `Fighting a ${getProperty("lastCopyableMonster")} in ${backupZone.toString()} to burn delay!`,
+      `Fighting a ${safeGet("lastCopyableMonster")} in ${backupZone.toString()} to burn delay!`,
       "green",
     );
     if (auto_backupToYourLastEnemy(backupZone)) {
@@ -1192,12 +1191,9 @@ function initializeDay(day: number): void {
     auto_get_campground().has($item`potted tea tree`) &&
     !inAftercore()
   ) {
-    if (getProperty("auto_teaChoice") !== "") {
+    if (get("auto_teaChoice") !== "") {
       const teaChoice: Map<number, string> = new Map(
-        splitString(getProperty("auto_teaChoice"), ";").map((_v, _i) => [
-          _i,
-          _v,
-        ]),
+        splitString(get("auto_teaChoice"), ";").map((_v, _i) => [_i, _v]),
       );
       const myTea: string = String(
         teaChoice.get(min(teaChoice.size, myDaycount()) - 1) ?? "",
@@ -1289,7 +1285,7 @@ function initializeDay(day: number): void {
   // Bulk cache mall prices
   if (!inHardcore() && get("auto_day_init", 0) < day) {
     auto_log_info("Bulk caching mall prices for consumables");
-    if (getProperty("auto_last_mallcached") !== todayToString()) {
+    if (get("auto_last_mallcached") !== todayToString()) {
       mallPrices("food");
       mallPrices("booze");
       set("auto_last_mallcached", todayToString()); //should not cache food,booze again after starting a new ascension on the same day
@@ -1808,7 +1804,7 @@ const Lsc_flyerSealsTask: QuestTask = registerQuestTask({
     get("flyeredML") < 10000 &&
     (itemAmount($item`rock band flyers`) > 0 ||
       itemAmount($item`jam band flyers`) > 0) &&
-    toInt(getProperty("choiceAdventure1003")) < 3,
+    get("choiceAdventure1003") < 3,
   do: Lsc_flyerSealsDo,
 });
 
@@ -1975,7 +1971,7 @@ function adventureFailureHandler(): boolean {
 
   if (
     lastMonster() === $monster`crate` &&
-    getProperty("_auto_screechDelay") !== "" &&
+    safeGet("_auto_screechDelay") !== $phylum.none &&
     in_wereprof() &&
     !($location`Noob Cave`.turnsSpent < 8)
   ) {
@@ -1995,7 +1991,7 @@ function beatenUpResolution(): void {
   if (haveEffect($effect`Beaten Up`) > 0) {
     if (
       get("auto_beatenUpCount", 0) > 10 &&
-      getProperty("lastEncounter") !== "Poetic Justice"
+      get("lastEncounter") !== "Poetic Justice"
     ) {
       auto_abort(
         "We are getting beaten up too much, this is not good. Aborting.",
@@ -2007,7 +2003,7 @@ function beatenUpResolution(): void {
   if (haveEffect($effect`Beaten Up`) > 0) {
     if (
       haveEffect($effect`Beaten Up`) === 2 &&
-      getProperty("lastEncounter") === "Dr. Awkward" &&
+      get("lastEncounter") === "Dr. Awkward" &&
       internalQuestStatus("questL11Palindome") > 5
     ) {
       //beaten up by the quest item when unlocking Dr. Awkward, not by failing a fight
@@ -2098,7 +2094,7 @@ function autosellCrap(): boolean {
     use(1, $item`handful of tips`);
   }
   if (itemAmount($item`Stock Certificate`) > 0) {
-    const turns: string = getProperty("stockCertificateTurns");
+    const turns: string = get("stockCertificateTurns");
     if (turns !== "") {
       const earliestTurns: number = toInt((splitString(turns, ",")[0] ??= ""));
       if (totalTurnsPlayed() - earliestTurns >= 500) {
@@ -2253,7 +2249,7 @@ function print_header(): void {
     get("flyeredML") < 10000 &&
     !get("auto_ignoreFlyer", false)
   ) {
-    auto_log_info(`Still flyering: ${getProperty("flyeredML")}`, "blue");
+    auto_log_info(`Still flyering: ${get("flyeredML")}`, "blue");
   }
   auto_log_info(
     `Encounter: ${combatRateModifier()}   Exp Bonus: ${experienceBonus()}`,
@@ -2295,7 +2291,7 @@ function print_header(): void {
   }
   if (equippedItem($slot`familiar`) === $item`Snow Suit`) {
     auto_log_info(
-      `Snow suit usage: ${getProperty("_snowSuitCount")} carrots: ${getProperty("_carrotNoseDrops")}`,
+      `Snow suit usage: ${get("_snowSuitCount")} carrots: ${get("_carrotNoseDrops")}`,
       "blue",
     );
   }
@@ -2307,7 +2303,7 @@ function print_header(): void {
   }
   if (isActuallyEd()) {
     auto_log_info(
-      `Ka Coins: ${itemAmount($item`Ka coin`)} Lashes used: ${getProperty("_edLashCount")}`,
+      `Ka Coins: ${itemAmount($item`Ka coin`)} Lashes used: ${get("_edLashCount")}`,
       "green",
     );
   }
@@ -2784,7 +2780,7 @@ const auto_useWardrobeTask: QuestTask = registerQuestTask({
   completed: () =>
     itemAmount($item`wardrobe-o-matic`) === 0 ||
     !auto_is_valid($item`wardrobe-o-matic`) ||
-    getProperty("_futuristicHatModifier") !== "",
+    get("_futuristicHatModifier") !== "",
   ready: () => true,
   do: () => {
     auto_useWardrobe();
@@ -2899,7 +2895,7 @@ const dna_startAcquireTask: QuestTask = registerQuestTask({
   name: "dna_startAcquire",
   completed: () =>
     !isUnrestricted($item`Little Geneticist DNA-Splicing Lab`) ||
-    getProperty("auto_day1_dna") === "finished" ||
+    get("auto_day1_dna") === "finished" ||
     myDaycount() !== 1,
   ready: () => true,
   do: dna_startAcquire,
@@ -3399,7 +3395,7 @@ function doTasks(): boolean {
       return false;
     }
     // How much organ space was available the last time we were here?
-    const previous_space: number = toFloat(getProperty("_auto_organSpace"));
+    const previous_space: number = get("_auto_organSpace");
     const organ_space_change: number = organ_space - previous_space;
     auto_log_debug(`${previous_space} previous space`, "blue");
     auto_log_debug(`${organ_space_change} organ space change`, "blue");

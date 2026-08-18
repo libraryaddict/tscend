@@ -6,7 +6,6 @@ import {
   council,
   equip,
   equippedAmount,
-  getProperty,
   haveSkill,
   inHardcore,
   isBanished,
@@ -169,7 +168,7 @@ function L10_airshipDo(): boolean {
     isUnrestricted($familiar`Artistic Goth Kid`) &&
     auto_have_familiar($familiar`Artistic Goth Kid`)
   ) {
-    auto_log_info(`Hipster Adv: ${getProperty("_hipsterAdv")}`, "blue");
+    auto_log_info(`Hipster Adv: ${get("_hipsterAdv")}`, "blue");
     handleFamiliar$1($familiar`Artistic Goth Kid`);
   }
 

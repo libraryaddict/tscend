@@ -8,7 +8,6 @@ import {
   getClanName,
   getPlayerId,
   getPlayerName,
-  getProperty,
   haveEffect,
   isOnline,
   isUnrestricted,
@@ -52,6 +51,7 @@ import {
   auto_log_info,
   auto_log_warning,
   handleTracker,
+  safeGet,
 } from "../../auto_util";
 import { is_boris } from "../../paths/2012/avatar_of_boris";
 import { is_jarlsberg } from "../../paths/2013/avatar_of_jarlsberg";
@@ -101,7 +101,7 @@ export function handleFaxMonster(
   auto_log_info(`Using fax machine to summon ${enemy.name}`, "blue");
 
   if (itemAmount($item`photocopied monster`) !== 0) {
-    if (getProperty("photocopyMonster") === enemy.toString()) {
+    if (safeGet("photocopyMonster") === enemy) {
       auto_log_info("We already have the copy! Let's jam!", "blue");
       if (fightIt) {
         handleTracker({
@@ -161,7 +161,7 @@ function checkFax(enemy: Monster): boolean {
     cliExecute("fax receive");
   }
 
-  if (getProperty("photocopyMonster") === enemy.toString()) {
+  if (safeGet("photocopyMonster") === enemy) {
     return true;
   }
 
@@ -637,12 +637,9 @@ export function auto_floundryAction(): boolean {
     auto_get_clan_lounge().has($item`Clan Floundry`) &&
     !inAftercore()
   ) {
-    if (getProperty("auto_floundryChoice") !== "") {
+    if (get("auto_floundryChoice") !== "") {
       const floundryChoice: Map<number, string> = new Map(
-        splitString(getProperty("auto_floundryChoice"), ";").map((_v, _i) => [
-          _i,
-          _v,
-        ]),
+        splitString(get("auto_floundryChoice"), ";").map((_v, _i) => [_i, _v]),
       );
       const myFloundry: Item = toItem(
         String(

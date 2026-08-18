@@ -20,7 +20,6 @@ import {
   fullnessLimit,
   getMonsters,
   getPower,
-  getProperty,
   handlingChoice,
   haveEffect,
   haveEquipped,
@@ -767,7 +766,7 @@ export function auto_bankChestMimicExpForBandit(): void {
     !auto_haveChestMimic() ||
     $familiar`Chest Mimic`.experience >= 100 ||
     canSummonMonster($monster`fantasy bandit`) ||
-    get("auto_familiarChoice", $familiar.none) !== $familiar.none
+    safeGet("auto_familiarChoice") !== $familiar.none
   ) {
     removeProperty("_auto_preferChestMimic");
     return;
@@ -1273,7 +1272,7 @@ export function beretBusk(effectMultiplier: string): boolean {
     handleTracker({
       what: $item`prismatic beret`,
       location: myLocation(),
-      detail: `Beret busk ${getProperty("_beretBuskingUses")} at ${buskPower} power`,
+      detail: `Beret busk ${get("_beretBuskingUses")} at ${buskPower} power`,
       property: "auto_otherstuff",
     });
     return true;

@@ -1,6 +1,5 @@
 import {
   ceil,
-  getProperty,
   haveEffect,
   haveEquipped,
   Item,
@@ -176,7 +175,7 @@ export function auto_combatDefaultStage4(
   }
   if (
     canUse$3($item`Rain-Doh black box`) &&
-    getProperty("auto_doCombatCopy") === "yes" &&
+    get("auto_doCombatCopy") === "yes" &&
     enemy !== $monster`gourmet gourami` &&
     !ag_is_bodyguard()
   ) {
@@ -195,7 +194,7 @@ export function auto_combatDefaultStage4(
       "red",
     );
   }
-  if (getProperty("auto_doCombatCopy") === "yes") {
+  if (get("auto_doCombatCopy") === "yes") {
     set("auto_doCombatCopy", "no");
   }
   //get 1 additional [fat loot token] per day
@@ -222,7 +221,7 @@ export function auto_combatDefaultStage4(
     !inAftercore()
   ) {
     if ($monsters`lobsterfrogman`.includes(enemy)) {
-      if (getProperty("_sourceTerminalDigitizeMonster") !== enemy.toString()) {
+      if (safeGet("_sourceTerminalDigitizeMonster") !== enemy) {
         handleTracker({
           what: enemy,
           detail: $skill`Digitize`.toString(),
@@ -237,8 +236,8 @@ export function auto_combatDefaultStage4(
     get("_sourceTerminalDigitizeUses") < 3 &&
     !inAftercore()
   ) {
-    if (getProperty("auto_digitizeDirective") === enemy.toString()) {
-      if (getProperty("_sourceTerminalDigitizeMonster") !== enemy.toString()) {
+    if (get("auto_digitizeDirective") === enemy.toString()) {
+      if (safeGet("_sourceTerminalDigitizeMonster") !== enemy) {
         handleTracker({
           what: enemy,
           detail: $skill`Digitize`.toString(),
@@ -531,7 +530,7 @@ export function auto_combatDefaultStage4(
   // prep avalanche if requested
   if (
     auto_canUse($skill`McHugeLarge Avalanche`) &&
-    getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
+    get("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
     !get("auto_avalancheDeployed", false)
   ) {
     set("auto_avalancheDeployed", true);
@@ -540,7 +539,7 @@ export function auto_combatDefaultStage4(
   // prep parka NC forcing if requested
   if (
     auto_canUse($skill`Launch spikolodon spikes`) &&
-    getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
+    get("auto_forceNonCombatSource") === "jurassic parka" &&
     !get("auto_parkaSpikesDeployed", false)
   ) {
     set("auto_parkaSpikesDeployed", true);

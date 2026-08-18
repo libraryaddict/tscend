@@ -1,5 +1,4 @@
 import {
-  getProperty,
   gnomadsAvailable,
   guildStoreAvailable,
   haveSkill,
@@ -331,7 +330,7 @@ export function auto_buySkills(): boolean {
         myLevel() >= 12 &&
         myMeat() >= 500 &&
         !haveSkill($skill`Deft Hands`) &&
-        getProperty("sidequestArenaCompleted") === "none"
+        get("sidequestArenaCompleted") === "none"
       ) {
         //safe flyering
         const noStaggerItem: boolean =
@@ -428,16 +427,16 @@ export function auto_buySkills(): boolean {
 export function pathDroppedCheck(): void {
   //detect path drops and reinitialize with settings appropriate for the new path
   //this will also trigger when some paths break ronin
-  if (myPath().name === getProperty("auto_doneInitializePath")) {
+  if (myPath().name === get("auto_doneInitializePath")) {
     return; //our current path is the same one we last initialized as
   }
-  if (getProperty("auto_doneInitializePath") === "") {
+  if (get("auto_doneInitializePath") === "") {
     //this setting has not been set. this means the run started with an older version of autoscend that did not have this setting
     //a path of none would have returned "None" not "". This is only backwards support and can be deleted in the future.
     return;
   }
   print(
-    `Path change detected. You were previously ${getProperty("auto_doneInitializePath")} and are now a ${myPath().name}`,
+    `Path change detected. You were previously ${get("auto_doneInitializePath")} and are now a ${myPath().name}`,
     "red",
   );
   set("_auto_reinitialize", true);

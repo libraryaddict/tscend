@@ -3,7 +3,6 @@ import {
   creatableAmount,
   equippedAmount,
   equippedItem,
-  getProperty,
   haveEquipped,
   haveSkill,
   Item,
@@ -195,7 +194,7 @@ function plumber_buyEquipment(it: Item): boolean {
 }
 
 function plumber_costume(): Stat {
-  return toStat(getProperty("plumberCostumeWorn"));
+  return toStat(get("plumberCostumeWorn"));
 }
 
 function plumber_buyCostume(st: Stat): boolean {

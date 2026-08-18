@@ -5,7 +5,6 @@ import {
   council,
   Effect,
   Element,
-  getProperty,
   haveEffect,
   haveSkill,
   lastMonster,
@@ -82,10 +81,7 @@ function auto_tavern(): boolean {
     abort("Quest not yet started, talk to Bart Ender and re-run.");
   }
 
-  auto_log_info(
-    `In the tavern! Layout: ${getProperty("tavernLayout")}`,
-    "blue",
-  );
+  auto_log_info(`In the tavern! Layout: ${get("tavernLayout")}`, "blue");
   const locations: number[] = [3, 2, 1, 0, 5, 10, 15, 20, 16, 21];
   // infrequent compounding issue, reset maximizer
   resetMaximize();
@@ -215,11 +211,11 @@ function auto_tavern(): boolean {
     providePlusCombat(20, $location`Noob Cave`);
   }
 
-  let tavern_1: string = getProperty("tavernLayout");
+  let tavern_1: string = get("tavernLayout", "");
   if (tavern_1 === "0000000000000000000000000") {
     // visit cellar then refresh layout property
     visitUrl("cellar.php");
-    tavern_1 = getProperty("tavernLayout");
+    tavern_1 = get("tavernLayout", "");
     if (tavern_1 === "0000000000000000000000000") {
       abort(
         "Invalid Tavern Configuration, could not visit cellar and repair. Uh oh...",
@@ -279,7 +275,7 @@ function auto_tavern(): boolean {
           abort("We went to the Noob Cave for reals... uh oh");
         }
       }
-      if (getProperty("lastEncounter") === "Like a Bat Into Hell") {
+      if (get("lastEncounter") === "Like a Bat Into Hell") {
         abort(
           "Got stuck undying while trying to do the tavern. Must handle manualy and then resume.",
         );

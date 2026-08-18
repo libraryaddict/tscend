@@ -8,7 +8,6 @@ import {
   Familiar,
   getCampground,
   getCounters,
-  getProperty,
   handlingChoice,
   haveEffect,
   haveFamiliar,
@@ -67,6 +66,7 @@ import {
   auto_log_warning,
   auto_runChoice,
   internalQuestStatus,
+  safeGet,
 } from "../../auto_util";
 import {
   QuestTask,
@@ -166,7 +166,7 @@ export function dna_startAcquire(): boolean {
   if (!isUnrestricted($item`Little Geneticist DNA-Splicing Lab`)) {
     return false;
   }
-  if (getProperty("auto_day1_dna") === "finished" || myDaycount() !== 1) {
+  if (get("auto_day1_dna") === "finished" || myDaycount() !== 1) {
     return false;
   }
   if (haveEffect($effect`Human-Weird Thing Hybrid`) > 9999) {
@@ -176,7 +176,7 @@ export function dna_startAcquire(): boolean {
     return false;
   }
 
-  if (getProperty("dnaSyringe") === $phylum`weird`.toString()) {
+  if (safeGet("dnaSyringe") === $phylum`weird`) {
     cliExecute("camp dnainject");
   } else {
     if (!canChangeToFamiliar($familiar`Machine Elf`)) {
@@ -212,7 +212,7 @@ export function dna_generic(): boolean {
   if (!isUnrestricted($item`Little Geneticist DNA-Splicing Lab`)) {
     return false;
   }
-  if (getProperty("dnaSyringe") === $phylum.none.toString()) {
+  if (safeGet("dnaSyringe") === $phylum.none) {
     return false;
   }
 
@@ -252,10 +252,7 @@ export function dna_generic(): boolean {
 
   let i: number = 0;
   for (const phy of potion) {
-    if (
-      getProperty("dnaSyringe") === phy.toString() &&
-      get("_dnaPotionsMade") === i
-    ) {
+    if (safeGet("dnaSyringe") === phy && get("_dnaPotionsMade") === i) {
       cliExecute("camp dnapotion");
     }
     i = i + 1;
@@ -270,7 +267,7 @@ export function dna_sorceressTest(): boolean {
   if (!DNALab.installed()) {
     return false;
   }
-  if (getProperty("dnaSyringe") === $phylum.none.toString()) {
+  if (safeGet("dnaSyringe") === $phylum.none) {
     return false;
   }
   if (myLevel() < 13) {
@@ -279,40 +276,40 @@ export function dna_sorceressTest(): boolean {
   if (get("_dnaPotionsMade") >= 3) {
     return false;
   }
-  if (toInt(getProperty("choiceAdventure1003")) < 3) {
+  if (toInt(get("choiceAdventure1003")) < 3) {
     return false;
   }
-  if (getProperty("nsChallenge2") === "" && get("telescopeUpgrades") >= 2) {
+  if (get("nsChallenge2") === "" && get("telescopeUpgrades") >= 2) {
     ns_crowd3();
   }
 
   if (
-    getProperty("dnaSyringe") === $phylum`plant`.toString() &&
-    getProperty("nsChallenge2") === $element`cold`.toString() &&
+    safeGet("dnaSyringe") === $phylum`plant` &&
+    get("nsChallenge2") === $element`cold`.toString() &&
     itemAmount($item`Gene Tonic: Plant`) === 0
   ) {
     cliExecute("camp dnainject");
   } else if (
-    getProperty("dnaSyringe") === $phylum`demon`.toString() &&
-    getProperty("nsChallenge2") === $element`hot`.toString() &&
+    safeGet("dnaSyringe") === $phylum`demon` &&
+    get("nsChallenge2") === $element`hot`.toString() &&
     itemAmount($item`Gene Tonic: Demon`) === 0
   ) {
     cliExecute("camp dnainject");
   } else if (
-    getProperty("dnaSyringe") === $phylum`slime`.toString() &&
-    getProperty("nsChallenge2") === $element`sleaze`.toString() &&
+    safeGet("dnaSyringe") === $phylum`slime` &&
+    get("nsChallenge2") === $element`sleaze`.toString() &&
     itemAmount($item`Gene Tonic: Slime`) === 0
   ) {
     cliExecute("camp dnainject");
   } else if (
-    getProperty("dnaSyringe") === $phylum`undead`.toString() &&
-    getProperty("nsChallenge2") === $element`spooky`.toString() &&
+    safeGet("dnaSyringe") === $phylum`undead` &&
+    get("nsChallenge2") === $element`spooky`.toString() &&
     itemAmount($item`Gene Tonic: Undead`) === 0
   ) {
     cliExecute("camp dnainject");
   } else if (
-    getProperty("dnaSyringe") === $phylum`hobo`.toString() &&
-    getProperty("nsChallenge2") === $element`stench`.toString() &&
+    safeGet("dnaSyringe") === $phylum`hobo` &&
+    get("nsChallenge2") === $element`stench`.toString() &&
     itemAmount($item`Gene Tonic: Hobo`) === 0
   ) {
     cliExecute("camp dnainject");
@@ -325,7 +322,7 @@ export function dna_bedtime(): boolean {
   if (!isUnrestricted($item`Little Geneticist DNA-Splicing Lab`)) {
     return false;
   }
-  if (getProperty("dnaSyringe") === $phylum.none.toString()) {
+  if (safeGet("dnaSyringe") === $phylum.none) {
     return false;
   }
   if ($item`Little Geneticist DNA-Splicing Lab`.toString() in getCampground()) {
@@ -577,14 +574,11 @@ const $_f_importantMonsters: Monster[] = Monster.get([
 
 function icehouseMonster(): Monster {
   visitUrl("museum.php?action=icehouse");
-  if (!containsText(getProperty("banishedMonsters"), "ice house")) {
+  if (!containsText(get("banishedMonsters"), "ice house")) {
     return $monster.none;
   } else {
     const banishMap: Map<number, string> = new Map(
-      splitString(getProperty("banishedMonsters"), ":").map((_v, _i) => [
-        _i,
-        _v,
-      ]),
+      splitString(get("banishedMonsters"), ":").map((_v, _i) => [_i, _v]),
     );
     for (let i: number = 0; i < banishMap.size; i++) {
       if ((banishMap.get(i) ?? "") === "ice house") {

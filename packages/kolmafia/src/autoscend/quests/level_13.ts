@@ -16,7 +16,6 @@ import {
   equippedItem,
   Familiar,
   floor,
-  getProperty,
   gnomadsAvailable,
   haveEffect,
   haveEquipped,
@@ -233,7 +232,7 @@ import { auto_warSide, equipWarOutfit } from "./level_12";
 
 //Defined in autoscend/quests/level_13.ash
 export function needStarKey(): boolean {
-  if (containsText(getProperty("nsTowerDoorKeysUsed"), "star key")) {
+  if (containsText(get("nsTowerDoorKeysUsed"), "star key")) {
     return false;
   }
   if (
@@ -249,7 +248,7 @@ export function needDigitalKey(): boolean {
   if (isActuallyEd()) {
     return false;
   }
-  if (containsText(getProperty("nsTowerDoorKeysUsed"), "digital key")) {
+  if (containsText(get("nsTowerDoorKeysUsed"), "digital key")) {
     return false;
   }
   if (itemAmount($item`digital key`) > 0) {
@@ -277,26 +276,20 @@ export function towerKeyCount(effective: boolean = true): number {
   let tokens: number = itemAmount($item`fat loot token`);
   if (
     itemAmount($item`Boris's key`) > 0 ||
-    containsText(
-      getProperty("nsTowerDoorKeysUsed"),
-      $item`Boris's key`.toString(),
-    )
+    containsText(get("nsTowerDoorKeysUsed"), $item`Boris's key`.toString())
   ) {
     tokens = tokens + 1;
   }
   if (
     itemAmount($item`Jarlsberg's key`) > 0 ||
-    containsText(
-      getProperty("nsTowerDoorKeysUsed"),
-      $item`Jarlsberg's key`.toString(),
-    )
+    containsText(get("nsTowerDoorKeysUsed"), $item`Jarlsberg's key`.toString())
   ) {
     tokens = tokens + 1;
   }
   if (
     itemAmount($item`Sneaky Pete's key`) > 0 ||
     containsText(
-      getProperty("nsTowerDoorKeysUsed"),
+      get("nsTowerDoorKeysUsed"),
       $item`Sneaky Pete's key`.toString(),
     )
   ) {
@@ -367,7 +360,7 @@ function EightBitRealmHandler(): boolean {
   //Preparing for each zone is handled in auto_pre_adv.ash
   let adv_spent: boolean = false;
 
-  const color: string = getProperty("8BitColor");
+  const color: string = get("8BitColor");
   if (
     internalQuestStatus("questL02Larva") < 0 &&
     internalQuestStatus("questG02Whitecastle") < 0 &&
@@ -674,7 +667,7 @@ export function LX_getDigitalKey(): boolean {
 export function LX_buyStarKeyParts(): void {
   if (
     itemAmount($item`Richard's star key`) > 0 ||
-    containsText(getProperty("nsTowerDoorKeysUsed"), "Richard's star key")
+    containsText(get("nsTowerDoorKeysUsed"), "Richard's star key")
   ) {
     return; //already have it
   }
@@ -753,7 +746,7 @@ function LX_getStarKeyDo(): boolean {
   if (
     itemAmount($item`Richard's star key`) === 0 &&
     creatableAmount($item`Richard's star key`) > 0 &&
-    !containsText(getProperty("nsTowerDoorKeysUsed"), "Richard's star key")
+    !containsText(get("nsTowerDoorKeysUsed"), "Richard's star key")
   ) {
     return create(1, $item`Richard's star key`);
   }
@@ -887,31 +880,31 @@ export function ns_crowd1(): number {
 
 export function ns_crowd2(): Stat {
   if (get("nsContestants2") !== 0) {
-    auto_log_info(`Off-Stat Test: ${getProperty("nsChallenge1")}`, "red");
+    auto_log_info(`Off-Stat Test: ${safeGet("nsChallenge1")}`, "red");
   }
   return safeGet("nsChallenge1");
 }
 
 export function ns_crowd3(): Element {
   if (get("nsContestants3") !== 0) {
-    auto_log_info(`Elemental Test: ${getProperty("nsChallenge2")}`, "red");
+    auto_log_info(`Elemental Test: ${get("nsChallenge2")}`, "red");
   }
-  return toElement(getProperty("nsChallenge2"));
+  return toElement(get("nsChallenge2"));
 }
 
 export function ns_hedge1(): Element {
-  auto_log_info(`Hedge Maze 1: ${getProperty("nsChallenge3")}`, "red");
-  return toElement(getProperty("nsChallenge3"));
+  auto_log_info(`Hedge Maze 1: ${get("nsChallenge3")}`, "red");
+  return toElement(get("nsChallenge3"));
 }
 
 export function ns_hedge2(): Element {
-  auto_log_info(`Hedge Maze 2: ${getProperty("nsChallenge4")}`, "red");
-  return toElement(getProperty("nsChallenge4"));
+  auto_log_info(`Hedge Maze 2: ${get("nsChallenge4")}`, "red");
+  return toElement(get("nsChallenge4"));
 }
 
 export function ns_hedge3(): Element {
-  auto_log_info(`Hedge Maze 3: ${getProperty("nsChallenge5")}`, "red");
-  return toElement(getProperty("nsChallenge5"));
+  auto_log_info(`Hedge Maze 3: ${get("nsChallenge5")}`, "red");
+  return toElement(get("nsChallenge5"));
 }
 
 function L13_towerNSContestsDo(): boolean {
@@ -929,8 +922,8 @@ function L13_towerNSContestsDo(): boolean {
   }
   //if you do not have a telescope you need to actually visit the contest booth once to find out what element and offstat is needed
   if (
-    getProperty("nsChallenge1") === "none" ||
-    getProperty("nsChallenge2") === "none"
+    safeGet("nsChallenge1") === $stat`none` ||
+    get("nsChallenge2") === "none"
   ) {
     visitUrl("place.php?whichplace=nstower&action=ns_01_contestbooth");
   }
@@ -987,7 +980,7 @@ function L13_towerNSContestsDo(): boolean {
           provideInitiative$2(400, $location`Noob Cave`, true);
           if (
             crowd1Insufficient() &&
-            getProperty("sidequestArenaCompleted") === "fratboy"
+            get("sidequestArenaCompleted") === "fratboy"
           ) {
             cliExecute("concert White-boy Angst");
           }
@@ -1387,7 +1380,7 @@ function L13_towerNSContestsDo(): boolean {
 
   if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_crowd2")) {
     let toCompete: Location = $location.none;
-    switch (getProperty("nsChallenge1")) {
+    switch (safeGet("nsChallenge1")) {
       case "Mysticality":
         toCompete = $location`Smartest Adventurer Contest`;
         break;
@@ -1407,7 +1400,7 @@ function L13_towerNSContestsDo(): boolean {
 
   if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_crowd3")) {
     let toCompete: Location = $location.none;
-    switch (getProperty("nsChallenge2")) {
+    switch (get("nsChallenge2")) {
       case "cold":
         toCompete = $location`Coldest Adventurer Contest`;
         break;
@@ -1511,12 +1504,12 @@ function L13_towerNSHedgeDo(): boolean {
     set("auto_hedge", "slow");
   }
   visitUrl("place.php?whichplace=nstower&action=ns_03_hedgemaze");
-  if (getProperty("lastEncounter") === "This Maze is... Mazelike...") {
+  if (get("lastEncounter") === "This Maze is... Mazelike...") {
     auto_runChoice(2);
     abort("May not have enough adventures for the hedge maze. Failing");
   }
 
-  if (getProperty("auto_hedge") === "slow") {
+  if (get("auto_hedge") === "slow") {
     visitUrl("choice.php?pwd=&whichchoice=1005&option=1", true);
     visitUrl("choice.php?pwd=&whichchoice=1006&option=1", true);
     visitUrl("choice.php?pwd=&whichchoice=1007&option=1", true);
@@ -1526,7 +1519,7 @@ function L13_towerNSHedgeDo(): boolean {
     visitUrl("choice.php?pwd=&whichchoice=1011&option=1", true);
     visitUrl("choice.php?pwd=&whichchoice=1012&option=1", true);
     visitUrl("choice.php?pwd=&whichchoice=1013&option=1", true);
-  } else if (getProperty("auto_hedge") === "fast") {
+  } else if (get("auto_hedge") === "fast") {
     visitUrl("choice.php?pwd=&whichchoice=1005&option=2", true);
     visitUrl("choice.php?pwd=&whichchoice=1008&option=2", true);
     visitUrl("choice.php?pwd=&whichchoice=1011&option=2", true);
@@ -2408,7 +2401,7 @@ function L13_towerNSFinalDo(): boolean {
       }
       autoAdv($location`Noob Cave`);
       if (haveEffect($effect`Beaten Up`) > 0) {
-        if (getProperty("lastEncounter") === "The Naughty Sorceress (3)") {
+        if (get("lastEncounter") === "The Naughty Sorceress (3)") {
           visitUrl("choice.php");
           if (lastChoice() === 1016) {
             auto_runChoice(1);
@@ -2427,7 +2420,7 @@ function L13_towerNSFinalDo(): boolean {
   }
   // restore ML Safety Limit if this run changed it
   if (propertyExists("auto_MLSafetyLimitBackup")) {
-    const MLSafetyLimitBackup: string = getProperty("auto_MLSafetyLimitBackup");
+    const MLSafetyLimitBackup: string = get("auto_MLSafetyLimitBackup");
     if (MLSafetyLimitBackup === "empty") {
       set("auto_MLSafetyLimit", "");
     } else {

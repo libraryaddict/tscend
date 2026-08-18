@@ -275,12 +275,9 @@ export function auto_have_familiar(fam: Familiar): boolean {
   }
   //handle blacklisting of familiars by users
   const blacklist: Map<Familiar, number> = new Map();
-  if (getProperty("auto_blacklistFamiliar") !== "") {
+  if (get("auto_blacklistFamiliar") !== "") {
     const noFams: Map<number, string> = new Map(
-      splitString(getProperty("auto_blacklistFamiliar"), ";").map((_v, _i) => [
-        _i,
-        _v,
-      ]),
+      splitString(get("auto_blacklistFamiliar"), ";").map((_v, _i) => [_i, _v]),
     );
     for (const [, fam_1] of noFams) {
       blacklist.set(toFamiliar(fam_1.trim()), 1);
@@ -987,13 +984,13 @@ export function preAdvUpdateFamiliar(place: Location): void {
 
   const famChoice: Familiar = safeGet("auto_familiarChoice");
   if (famChoice === $familiar.none) {
-    if (getProperty("auto_familiarChoice") === "") {
+    if (safeGet("auto_familiarChoice") === $familiar`none`) {
       abort(
         "void preAdvUpdateFamiliar failed because property auto_familiarChoice is empty for some reason",
       );
     }
     abort(
-      `void preAdvUpdateFamiliar failed to convert auto_familiarChoice of [${getProperty("auto_familiarChoice")}] into a $familiar`,
+      `void preAdvUpdateFamiliar failed to convert auto_familiarChoice of [${safeGet("auto_familiarChoice")}] into a $familiar`,
     );
   }
 

@@ -2,7 +2,6 @@ import {
   abort,
   ceil,
   containsText,
-  getProperty,
   Item,
   Monster,
   monsterHp,
@@ -210,7 +209,7 @@ export function auto_JunkyardCombatHandler(
         return findBanisher(round_1, enemy, text);
       } else if (
         canUse$3($item`seal tooth`, false) &&
-        getProperty("auto_edStatus") === "UNDYING!"
+        get("auto_edStatus") === "UNDYING!"
       ) {
         return useItem($item`seal tooth`, false);
       }

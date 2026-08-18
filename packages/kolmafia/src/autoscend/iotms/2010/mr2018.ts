@@ -8,7 +8,6 @@ import {
   equippedItem,
   Familiar,
   floor,
-  getProperty,
   getRevision,
   gitExists,
   haveEffect,
@@ -248,7 +247,7 @@ export function januaryToteAcquire(it: Item): boolean {
   if (choice === 7) {
     //can only get one letter per ascension
     if (
-      getProperty("questM22Shirt") !== "unstarted" ||
+      get("questM22Shirt") !== "unstarted" ||
       itemAmount($item`Letter for Melvign the Gnome`) > 0
     ) {
       return false;
@@ -330,11 +329,8 @@ export function fantasyRealmAvailable(): boolean {
 }
 
 export function fantasyBanditsFought(): number {
-  if (containsText(getProperty("_frMonstersKilled"), "fantasy bandit")) {
-    for (const [, it] of splitString(
-      getProperty("_frMonstersKilled"),
-      ",",
-    ).entries()) {
+  if (containsText(get("_frMonstersKilled"), "fantasy bandit")) {
+    for (const [, it] of splitString(get("_frMonstersKilled"), ",").entries()) {
       if (containsText(it, "fantasy bandit")) {
         const count_1: number = toInt((splitString(it, ":")[1] ??= ""));
         return count_1;
@@ -505,7 +501,7 @@ function songboomSetting$1(option: number): boolean {
     return false;
   }
 
-  const currentSong: string = getProperty("boomBoxSong");
+  const currentSong: string = get("boomBoxSong");
   if (option === 1 && currentSong === "Eye of the Giger") {
     return false;
   } else if (option === 2 && currentSong === "Food Vibrations") {
@@ -546,7 +542,7 @@ function songboomSetting$1(option: number): boolean {
     boomsLeft--;
   }
   auto_log_info(
-    `Change successful to ${getProperty("boomBoxSong")}. We have ${boomsLeft} SongBoom BoomBoxen songens left!`,
+    `Change successful to ${get("boomBoxSong")}. We have ${boomsLeft} SongBoom BoomBoxen songens left!`,
     "green",
   );
   return true;
@@ -658,7 +654,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
 
   if (
     !canChangeToFamiliar($familiar`XO Skeleton`) &&
-    getProperty("sidequestOrchardCompleted") === "none"
+    get("sidequestOrchardCompleted") === "none"
   ) {
     // Can't hugpocket? 1 turn filthworms is still a thing you can do!
     if (
@@ -743,7 +739,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
   }
 
   if (
-    getProperty("questL11Shen") === "finished" &&
+    get("questL11Shen") === "finished" &&
     internalQuestStatus("questL11Ron") === 1 &&
     catBurglarHeistsLeft() >= 2
   ) {
@@ -962,7 +958,7 @@ export function neverendingPartyAvailable(): boolean {
   if (!auto_is_valid($item`Neverending Party invitation envelope`)) {
     return false;
   }
-  if (getProperty("_questPartyFair") === "finished") {
+  if (get("_questPartyFair") === "finished") {
     // Can't adventure if the quest is complete for the day.
     return false;
   }
@@ -1196,7 +1192,7 @@ export function auto_latteDropAvailable(l: Location): boolean {
   if (latteDrop === "") {
     return false;
   }
-  return !containsText(getProperty("latteUnlocks"), latteDrop);
+  return !containsText(get("latteUnlocks"), latteDrop);
 }
 
 export function auto_latteDropWanted(l: Location): boolean {
@@ -1261,7 +1257,7 @@ function auto_latteRefill(
     return false;
   }
 
-  const unlocked: string[] = splitString(getProperty("latteUnlocks"), ",");
+  const unlocked: string[] = splitString(get("latteUnlocks"), ",");
 
   want1 = auto_latteTranslate(want1);
   want2 = auto_latteTranslate(want2);
@@ -1389,7 +1385,7 @@ export function auto_voteSetup(
   if (!auto_haveVotingBooth()) {
     return false;
   }
-  if (getProperty("_voteModifier") !== "") {
+  if (get("_voteModifier") !== "") {
     return false;
   }
   if (possessEquipment($item`"I Voted!" sticker`)) {
@@ -1426,7 +1422,7 @@ export function auto_voteMonster(
   if (!auto_haveVotingBooth()) {
     return false;
   }
-  if (getProperty("_voteModifier") === "") {
+  if (get("_voteModifier") === "") {
     return false;
   }
   //Some things override this, like a semi-rare?
@@ -1454,7 +1450,7 @@ export function auto_voteMonster(
   }
 
   if (autoEquipToSlot($slot`acc3`, $item`"I Voted!" sticker`)) {
-    set("auto_nextEncounter", getProperty("_voteMonster"));
+    set("auto_nextEncounter", safeGet("_voteMonster").toString());
     return autoAdv(loc);
   }
   set("auto_nextEncounter", "");

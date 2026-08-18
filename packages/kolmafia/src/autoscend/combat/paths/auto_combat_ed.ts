@@ -3,7 +3,6 @@ import {
   containsText,
   equippedItem,
   expectedDamage,
-  getProperty,
   haveEffect,
   haveEquipped,
   itemAmount,
@@ -25,7 +24,6 @@ import {
   removeProperty,
   Skill,
   toFloat,
-  toLowerCase,
   weaponType,
 } from "kolmafia";
 import {
@@ -207,9 +205,8 @@ export function auto_edCombatHandler(
   if (auto_canUse($skill`Sing Along`)) {
     //ed can easily survive singing along thanks to undying. and healing him is essentially free.
     if (
-      getProperty("boomBoxSong") === "Remainin' Alive" ||
-      (getProperty("boomBoxSong") === "Total Eclipse of Your Meat" &&
-        canSurvive(2.0))
+      get("boomBoxSong") === "Remainin' Alive" ||
+      (get("boomBoxSong") === "Total Eclipse of Your Meat" && canSurvive(2.0))
     ) {
       return auto_useSkill($skill`Sing Along`);
     }
@@ -259,17 +256,17 @@ export function auto_edCombatHandler(
   if ($monsters`lobsterfrogman`.includes(enemy)) {
     if (
       auto_have_skill($skill`Digitize`) &&
-      getProperty("_sourceTerminalDigitizeMonster") !== enemy.toString()
+      safeGet("_sourceTerminalDigitizeMonster") !== enemy
     ) {
       doInstaKill = false;
     }
   }
 
-  if (getProperty("auto_edStatus") === "UNDYING!") {
+  if (get("auto_edStatus") === "UNDYING!") {
     if (auto_canUse($skill`Summon Love Gnats`)) {
       return auto_useSkill($skill`Summon Love Gnats`);
     }
-  } else if (getProperty("auto_edStatus") === "dying") {
+  } else if (get("auto_edStatus") === "dying") {
     let doStunner: boolean = true;
 
     if (monsterLevelAdjustment() > 50 && canSurvive(1.15)) {
@@ -299,14 +296,14 @@ export function auto_edCombatHandler(
     !get("auto_ignoreFlyer", false)
   ) {
     if (canUse$3($item`rock band flyers`) && get("flyeredML") < 10000) {
-      if (get("_edDefeats") < 2 && getProperty("auto_edStatus") === "dying") {
+      if (get("_edDefeats") < 2 && get("auto_edStatus") === "dying") {
         set("auto_edStatus", "UNDYING!");
         // abuse the ability to flyer the same monster multiple times (optimal!)
       }
       return useItem($item`rock band flyers`);
     }
     if (canUse$3($item`jam band flyers`) && get("flyeredML") < 10000) {
-      if (get("_edDefeats") < 2 && getProperty("auto_edStatus") === "dying") {
+      if (get("_edDefeats") < 2 && get("auto_edStatus") === "dying") {
         set("auto_edStatus", "UNDYING!");
         // abuse the ability to flyer the same monster multiple times (optimal!)
       }
@@ -392,12 +389,12 @@ export function auto_edCombatHandler(
       get("_edDefeats") < 3
     ) {
       let doStench: boolean = false;
-      const stenched: string = toLowerCase(getProperty("stenchCursedMonster"));
+      const stenched: Monster = safeGet("stenchCursedMonster");
 
       if (
         fastenerCount() >= bridgeGoal() &&
-        stenched !== "smut orc pipelayer" &&
-        stenched !== "smut orc jacker"
+        stenched !== $monster`smut orc pipelayer` &&
+        stenched !== $monster`smut orc jacker`
       ) {
         //	Sniff 100% lumber
         if (
@@ -409,8 +406,8 @@ export function auto_edCombatHandler(
       }
       if (
         lumberCount() >= bridgeGoal() &&
-        stenched !== "smut orc screwer" &&
-        stenched !== "smut orc nailer"
+        stenched !== $monster`smut orc screwer` &&
+        stenched !== $monster`smut orc nailer`
       ) {
         //	Sniff 100% fastener
         if (
@@ -573,7 +570,7 @@ export function auto_edCombatHandler(
     myLocation() === $location`The Red Zeppelin` &&
     internalQuestStatus("questL11Ron") === 3 &&
     get("_glarkCableUses") < 5 &&
-    getProperty("auto_edStatus") === "dying"
+    get("auto_edStatus") === "dying"
   ) {
     if (
       $monsters`man with the red buttons, red butler, Red Fox, red skeleton`.includes(
@@ -706,7 +703,7 @@ export function auto_edCombatHandler(
         !possessEquipment($item`filthy knitted dread sack`) ||
         !possessEquipment($item`filthy corduroys`)
       ) {
-        if (getProperty("auto_edStatus") !== "dying") {
+        if (get("auto_edStatus") !== "dying") {
           doLash = true;
         }
       }
@@ -894,7 +891,7 @@ export function auto_edCombatHandler(
     canUse$3($item`cigarette lighter`) &&
     myLocation() === $location`A Mob of Zeppelin Protesters` &&
     internalQuestStatus("questL11Ron") === 1 &&
-    getProperty("auto_edStatus") === "dying"
+    get("auto_edStatus") === "dying"
   ) {
     return useItem($item`cigarette lighter`);
     // insta-kills protestors and removes an additional 5-7 (optimal!)
@@ -928,7 +925,7 @@ export function auto_edCombatHandler(
   // prep avalanche if requested
   if (
     auto_canUse($skill`McHugeLarge Avalanche`) &&
-    getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
+    get("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
     !get("auto_avalancheDeployed", false)
   ) {
     set("auto_avalancheDeployed", true);
@@ -937,7 +934,7 @@ export function auto_edCombatHandler(
   // prep parka NC forcing if requested
   if (
     auto_canUse($skill`Launch spikolodon spikes`) &&
-    getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
+    get("auto_forceNonCombatSource") === "jurassic parka" &&
     !get("auto_parkaSpikesDeployed", false)
   ) {
     set("auto_parkaSpikesDeployed", true);
@@ -1005,7 +1002,7 @@ export function auto_edCombatHandler(
     }
   }
 
-  if (getProperty("auto_edStatus") === "UNDYING!") {
+  if (get("auto_edStatus") === "UNDYING!") {
     // We're taking a trip to the underworld. Either we want to abuse resurrection or we want to go shopping
     if (myLocation() === $location`The Secret Government Laboratory`) {
       if (
@@ -1099,7 +1096,7 @@ export function auto_edCombatHandler(
     fightStat > monsterDefense() &&
     round_1 < 20 &&
     canSurvive(1.1) &&
-    getProperty("auto_edStatus") === "UNDYING!"
+    get("auto_edStatus") === "UNDYING!"
   ) {
     return "attack";
   }
@@ -1143,7 +1140,7 @@ export function auto_edCombatHandler(
     fightStat > monsterDefense() &&
     round_1 < 20 &&
     canSurvive(1.1) &&
-    getProperty("auto_edStatus") === "dying"
+    get("auto_edStatus") === "dying"
   ) {
     auto_log_warning(
       `Attacking with weapon because we don't have enough MP. Expected damage: ${expectedDamage()}, current hp: ${myHp()}`,

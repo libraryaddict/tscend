@@ -5,7 +5,6 @@ import {
   equip,
   equippedAmount,
   Familiar,
-  getProperty,
   haveEffect,
   Item,
   itemAmount,
@@ -178,7 +177,7 @@ export function kolhs_preadv(place: Location): void {
       autoForceEquip($slot`acc2`, $item`Yearbook Club Camera`);
       if (equippedAmount($item`Yearbook Club Camera`) === 0) {
         abort(
-          `Correction failed, please report this. Manually photograph a [${getProperty("yearbookCameraTarget")}] then run me again`,
+          `Correction failed, please report this. Manually photograph a [${safeGet("yearbookCameraTarget")}] then run me again`,
         );
       }
     }

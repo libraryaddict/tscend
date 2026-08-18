@@ -2,7 +2,6 @@ import {
   abort,
   cliExecute,
   craftType,
-  getProperty,
   getRelated,
   Item,
   itemAmount,
@@ -10,7 +9,7 @@ import {
   toInt,
   visitUrl,
 } from "kolmafia";
-import { $item, $items } from "libram";
+import { $item, $items, get } from "libram";
 
 import { auto_is_valid, auto_log_debug, auto_log_warning } from "./auto_util";
 import { hasLegionKnife } from "./iotms/2010/mr2011";
@@ -89,7 +88,7 @@ export function canUntinker(target: Item = $item.none): boolean {
     ) {
       return true; //universal screwdriver can be used to untinker items
     }
-    return getProperty("questM01Untinker") === "finished";
+    return get("questM01Untinker") === "finished";
   }
   if (!canUntinker()) {
     auto_log_debug(
@@ -128,7 +127,7 @@ export function untinker(target: Item, amount: number = 1): boolean {
   const start_amt: number = itemAmount(target);
   const LLUS: Item = $item`Loathing Legion universal screwdriver`;
 
-  if (getProperty("questM01Untinker") === "finished") {
+  if (get("questM01Untinker") === "finished") {
     if (untinker_all) {
       visitUrl(
         `place.php?whichplace=forestvillage&action=fv_untinker&pwd=&preaction=untinker&whichitem=${toInt(target)}&untinkerall=on`,

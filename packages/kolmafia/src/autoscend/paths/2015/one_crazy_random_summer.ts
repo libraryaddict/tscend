@@ -1,11 +1,5 @@
-import {
-  containsText,
-  getProperty,
-  haveEffect,
-  lastMonster,
-  myPath,
-} from "kolmafia";
-import { $effect, $path, set } from "libram";
+import { containsText, haveEffect, lastMonster, myPath } from "kolmafia";
+import { $effect, $path, get, set } from "libram";
 
 import { acquireHP } from "../../auto_restore";
 import { auto_log_warning, handleTracker } from "../../auto_util";
@@ -27,10 +21,10 @@ export function ocrs_postHelper(): boolean {
 export function ocrs_postCombatResolve(): boolean {
   if (haveEffect($effect`Beaten Up`) > 0 && in_ocrs()) {
     if (
-      containsText(getProperty("auto_funPrefix"), "annoying") ||
-      containsText(getProperty("auto_funPrefix"), "phase-shifting") ||
-      containsText(getProperty("auto_funPrefix"), "restless") ||
-      containsText(getProperty("auto_funPrefix"), "ticking")
+      containsText(get("auto_funPrefix"), "annoying") ||
+      containsText(get("auto_funPrefix"), "phase-shifting") ||
+      containsText(get("auto_funPrefix"), "restless") ||
+      containsText(get("auto_funPrefix"), "ticking")
     ) {
       auto_log_warning(
         "Probably beaten up by FUN! Trying to recover instead of aborting",
@@ -38,7 +32,7 @@ export function ocrs_postCombatResolve(): boolean {
       );
       handleTracker({
         what: lastMonster(),
-        detail: getProperty("auto_funPrefix"),
+        detail: get("auto_funPrefix"),
         property: "auto_funTracker",
       });
       acquireHP();

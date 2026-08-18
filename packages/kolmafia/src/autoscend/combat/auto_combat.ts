@@ -2,7 +2,6 @@ import {
   abort,
   cliExecute,
   containsText,
-  getProperty,
   gitExists,
   indexOf,
   lastMonster,
@@ -193,13 +192,13 @@ export function auto_combatHandler(
   if (
     in_avantGuard() &&
     ag_is_bodyguard() &&
-    getProperty("_auto_combatState") !== "(it11311)"
+    get("_auto_combatState") !== "(it11311)"
   ) {
     enemy = toMonster(
       substring(
-        getProperty("lastEncounter"),
+        get("lastEncounter"),
         0,
-        indexOf(getProperty("lastEncounter"), " acting as"),
+        indexOf(get("lastEncounter"), " acting as"),
       ),
     );
   }
@@ -207,12 +206,9 @@ export function auto_combatHandler(
   disguises_combat_helper(round_1, enemy, text); //disguise delimit mask identification
   fotd_combat_helper(); //fall of the dinosaurs dino identification
 
-  if (getProperty("auto_combatDirective") !== "") {
+  if (get("auto_combatDirective") !== "") {
     const actions: Map<number, string> = new Map(
-      splitString(getProperty("auto_combatDirective"), ";").map((_v, _i) => [
-        _i,
-        _v,
-      ]),
+      splitString(get("auto_combatDirective"), ";").map((_v, _i) => [_i, _v]),
     );
     let idx: number = 0;
     if (round_1 === 0) {

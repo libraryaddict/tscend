@@ -5,7 +5,6 @@ import {
   cliExecute,
   containsText,
   familiarWeight,
-  getProperty,
   haveFamiliar,
   inHardcore,
   itemAmount,
@@ -569,7 +568,7 @@ export function robot_cpu(choice: number, want_buy: boolean = true): boolean {
       );
   }
 
-  if (containsText(getProperty("youRobotCPUUpgrades"), upgrade)) {
+  if (containsText(get("youRobotCPUUpgrades"), upgrade)) {
     return true; //I already have it
   } else if (!want_buy) {
     return false; //we only wanted to check if we have it. we do not.
@@ -1143,7 +1142,7 @@ function robot_assemble_want_bird_cage(): boolean {
   //do we want to switch our top attachment to [bird cage] to unlock familiar?
   //to prevent issues. our autoscend functions related to familiars say we do not have familiars at all if we do not have a [bird cage] already
   //as such you should use mafia's have_familiar(familiar name) function to check availability.
-  if (getProperty("auto_robot_directive") === "desert") {
+  if (get("auto_robot_directive") === "desert") {
     if (haveFamiliar($familiar`Melodramedary`)) {
       return true; //+1%p desert exploration. it is great
     } else if (
@@ -1250,7 +1249,7 @@ function robot_directive(): void {
     removeProperty("auto_robot_directive");
     return;
   }
-  const directive: string = getProperty("auto_robot_directive");
+  const directive: string = get("auto_robot_directive");
   //set and remove spookyraven directives: "raven1"
   const raven1_done: boolean = get("lastSecondFloorUnlock") === myAscensions(); //first floor finished
   if (directive === "" && !raven1_done) {
@@ -1267,13 +1266,13 @@ function robot_directive(): void {
   const slope_ready: boolean =
     inHardcore() && internalQuestStatus("questL08Trapper") === 2;
   const slope_done: boolean = inHardcore()
-    ? getProperty("questL08Trapper") === "finished"
+    ? get("questL08Trapper") === "finished"
     : true; //softcore always considered done
 
   const gob_ready: boolean =
     internalQuestStatus("questL05Goblin") === 1 &&
     possessOutfit("Knob Goblin Harem Girl Disguise");
-  const gob_done: boolean = getProperty("questL05Goblin") === "finished";
+  const gob_done: boolean = get("questL05Goblin") === "finished";
 
   const castle_ready: boolean =
     internalQuestStatus("questL10Garbage") === 9 ||
@@ -1281,7 +1280,7 @@ function robot_directive(): void {
   const castle_wig_route: boolean =
     possessEquipment($item`Mohawk wig`) || !inHardcore();
   const castle_done: boolean =
-    !castle_wig_route || getProperty("questL10Garbage") === "finished";
+    !castle_wig_route || get("questL10Garbage") === "finished";
 
   const outfit_riders_check: boolean =
     (slope_ready || slope_done) &&
@@ -1291,7 +1290,7 @@ function robot_directive(): void {
 
   const island_access: boolean = get("lastIslandUnlock") >= myAscensions();
   const arena_done: boolean =
-    getProperty("sidequestArenaCompleted") !== "none" ||
+    get("sidequestArenaCompleted") !== "none" ||
     get("flyeredML") > 9999 ||
     auto_warSide() === "hippy"; //hippy arena not implemented yet
   const war_can_kill_boss: boolean =
@@ -1319,7 +1318,7 @@ function robot_directive(): void {
     war_can_kill_boss &&
     war_battlefield_cleared;
   const war_started: boolean = internalQuestStatus("questL12War") === 1; //L12 war started. 0 is for war QUEST started but NOT the war itself
-  const war_finished: boolean = getProperty("questL12War") === "finished";
+  const war_finished: boolean = get("questL12War") === "finished";
   if (
     directive === "outfit1" &&
     outfit_riders_done &&
@@ -1386,7 +1385,7 @@ function robot_directive(): void {
   const city_ready: boolean = internalQuestStatus("questL11Worship") === 3; //we unlocked the hidden city
   const city_ziggurat_ready: boolean =
     internalQuestStatus("questL11Worship") === 4; //we are about to do ziggurat next
-  const city_finished: boolean = getProperty("questL11Worship") === "finished";
+  const city_finished: boolean = get("questL11Worship") === "finished";
   const liana_cleared_1: boolean =
     get("hiddenApartmentProgress") > 0 &&
     get("hiddenOfficeProgress") > 0 &&
@@ -1426,7 +1425,7 @@ function robot_directive_check(check_1: string): boolean {
   if (!in_robot()) {
     removeProperty("auto_robot_directive");
   }
-  return containsText(getProperty("auto_robot_directive"), check_1);
+  return containsText(get("auto_robot_directive"), check_1);
 }
 
 export function robot_delay(check_1: string): boolean {
@@ -1477,7 +1476,7 @@ export function LA_robot(): boolean {
     return true;
   }
   //directives must be done first. we do not want to waste time with those attachments
-  const directive: string = getProperty("auto_robot_directive");
+  const directive: string = get("auto_robot_directive");
   if (directive === "raven1") {
     //unlock first floor of spookyraven manor
     //force ignoring the delay for 9 hot & 9 stench res setting so we can get through the kitchen

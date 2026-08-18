@@ -452,15 +452,15 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
     return false;
   }
 
-  if (getProperty("chateauMonster") === $monster`lobsterfrogman`.toString()) {
+  if (safeGet("chateauMonster") === $monster`lobsterfrogman`) {
     if (itemAmount($item`barrel of gunpowder`) >= 5) {
       return false;
     }
-    if (getProperty("sidequestLighthouseCompleted") !== "none") {
+    if (get("sidequestLighthouseCompleted") !== "none") {
       return false;
     }
   }
-  if (getProperty("chateauMonster") === $monster`Bram the Stoker`.toString()) {
+  if (safeGet("chateauMonster") === $monster`Bram the Stoker`) {
     if (
       haveEquipped($item`Bram's choker`) ||
       itemAmount($item`Bram's choker`) > 0
@@ -468,7 +468,7 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
       return false;
     }
   }
-  if (getProperty("chateauMonster") === $monster`mountain man`.toString()) {
+  if (safeGet("chateauMonster") === $monster`mountain man`) {
     if (!needOre()) {
       return false;
     }
@@ -829,10 +829,7 @@ function deck_cheat(cheat: string): boolean {
   const card: number = $_deck_cheat_cards.get(cheat) ?? 0;
 
   const cheated: Map<number, string> = new Map(
-    splitString(getProperty("_auto_deckCardsCheated"), ",").map((_v, _i) => [
-      _i,
-      _v,
-    ]),
+    splitString(get("_auto_deckCardsCheated"), ",").map((_v, _i) => [_i, _v]),
   );
   for (const [, cheat_1] of cheated) {
     if (toInt(cheat_1) === card) {
@@ -863,10 +860,7 @@ function deck_cheat(cheat: string): boolean {
     // If mafia is not tracking cheats, we can track them here.
     let found: boolean = false;
     const cheated_1: Map<number, string> = new Map(
-      splitString(getProperty("_auto_deckCardsCheated"), ",").map((_v, _i) => [
-        _i,
-        _v,
-      ]),
+      splitString(get("_auto_deckCardsCheated"), ",").map((_v, _i) => [_i, _v]),
     );
     for (const [, cheat_1] of cheated_1) {
       if (toInt(cheat_1) === card) {
@@ -874,12 +868,12 @@ function deck_cheat(cheat: string): boolean {
       }
     }
     if (!found) {
-      if (getProperty("_auto_deckCardsCheated") === "") {
+      if (get("_auto_deckCardsCheated") === "") {
         set("_auto_deckCardsCheated", card);
       } else {
         set(
           "_auto_deckCardsCheated",
-          `${getProperty("_auto_deckCardsCheated")},${card}`,
+          `${get("_auto_deckCardsCheated")},${card}`,
         );
       }
     }
@@ -1043,24 +1037,21 @@ export function adjustEdHat(goal: string): boolean {
   }
   let option: number = -1;
   goal = toLowerCase(goal);
-  if (
-    (goal === "muscle" || goal === "bear") &&
-    getProperty("edPiece") !== "bear"
-  ) {
+  if ((goal === "muscle" || goal === "bear") && get("edPiece") !== "bear") {
     option = 1;
   } else if (
     (goal === "myst" || goal === "mysticality" || goal === "owl") &&
-    getProperty("edPiece") !== "owl"
+    get("edPiece") !== "owl"
   ) {
     option = 2;
   } else if (
     (goal === "moxie" || goal === "puma") &&
-    getProperty("edPiece") !== "puma"
+    get("edPiece") !== "puma"
   ) {
     option = 3;
   } else if (
     (goal === "ml" || goal === "hyena") &&
-    getProperty("edPiece") !== "hyena"
+    get("edPiece") !== "hyena"
   ) {
     option = 4;
   } else if (
@@ -1069,7 +1060,7 @@ export function adjustEdHat(goal: string): boolean {
       goal === "items" ||
       goal === "drops" ||
       goal === "mouse") &&
-    getProperty("edPiece") !== "mouse"
+    get("edPiece") !== "mouse"
   ) {
     option = 5;
   } else if (
@@ -1078,12 +1069,12 @@ export function adjustEdHat(goal: string): boolean {
       goal === "miss" ||
       goal === "dodge" ||
       goal === "weasel") &&
-    getProperty("edPiece") !== "weasel"
+    get("edPiece") !== "weasel"
   ) {
     option = 6;
   } else if (
     (goal === "breathe" || goal === "underwater" || goal === "fish") &&
-    getProperty("edPiece") !== "fish"
+    get("edPiece") !== "fish"
   ) {
     option = 7;
   }

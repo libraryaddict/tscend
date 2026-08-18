@@ -12,7 +12,6 @@ import {
   familiarWeight,
   getAutumnatonLocations,
   getLocketMonsters,
-  getProperty,
   haveEffect,
   haveEquipped,
   haveFamiliar,
@@ -235,7 +234,7 @@ function auto_CombatLoversLocketCharges(): number {
     return 0;
   }
 
-  const locketMonstersFought: string = getProperty("_locketMonstersFought");
+  const locketMonstersFought: string = get("_locketMonstersFought");
   // check if we haven't found any yet
   if (locketMonstersFought === "") {
     return 3;
@@ -246,10 +245,7 @@ function auto_CombatLoversLocketCharges(): number {
 
 function auto_haveReminiscedMonster(mon: Monster): boolean {
   const idList: Map<number, string> = new Map(
-    splitString(getProperty("_locketMonstersFought"), ",").map((_v, _i) => [
-      _i,
-      _v,
-    ]),
+    splitString(get("_locketMonstersFought"), ",").map((_v, _i) => [_i, _v]),
   );
   for (const [, id] of idList) {
     if (toMonster(id) === mon) {
@@ -473,8 +469,8 @@ export function juneCleaverChoiceHandler(choice: number): void {
       break;
     case 1471: // Lost and Found
       if (
-        getProperty("sidequestNunsCompleted") === "none" &&
-        getProperty("auto_skipNuns") === "false" &&
+        get("sidequestNunsCompleted") === "none" &&
+        !get("auto_skipNuns") &&
         itemAmount($item`savings bond`) === 0
       ) {
         auto_runChoice(1); // potion, 30 turns of 50% meat
@@ -722,10 +718,10 @@ export function auto_handleParka(): boolean {
   if (!auto_hasParka() || !hasTorso()) {
     return false;
   }
-  const dino: string = getProperty("auto_parkaSetting");
+  const dino: string = get("auto_parkaSetting");
   let tempDino: string = dino;
   if (dino === "") {
-    if (getProperty("parkaMode") === "") {
+    if (get("parkaMode") === "") {
       // if currently configured for stats and have been getting beaten up, change to stun
       tempDino = "kachungasaur";
     } else {
@@ -752,13 +748,13 @@ export function auto_handleParka(): boolean {
     tempDino = "pterodactyl";
   }
   // avoid uselessly reconfiguring the parka
-  if (getProperty("parkaMode") !== tempDino) {
+  if (get("parkaMode") !== tempDino) {
     cliExecute(`parka ${tempDino}`);
   }
   const parka: Item = wrap_item($item`Jurassic Parka`);
   equip(parka); // already configured, just equip
 
-  return getProperty("parkaMode") === tempDino && haveEquipped(parka);
+  return get("parkaMode") === tempDino && haveEquipped(parka);
 }
 
 export function auto_ParkaSpikeForcesLeft(): number {
@@ -809,7 +805,7 @@ export function auto_autumnatonQuestingIn(): Location {
 }
 
 function auto_autumnatonCheckForUpgrade(upgrade: string): boolean {
-  const currentUpgrades: string = getProperty("autumnatonUpgrades");
+  const currentUpgrades: string = get("autumnatonUpgrades");
   if (containsText(currentUpgrades, upgrade)) {
     return true;
   }
@@ -897,7 +893,7 @@ export function auto_autumnatonQuest(): boolean {
     auto_autumnatonCheckForUpgrade("leftarm1") &&
     auto_autumnatonCheckForUpgrade("rightarm1") &&
     itemAmount($item`barrel of gunpowder`) < 5 &&
-    getProperty("sidequestLighthouseCompleted") === "none" &&
+    get("sidequestLighthouseCompleted") === "none" &&
     !in_koe()
   ) {
     const targetLocation: Location = $location`Sonofa Beach`;
@@ -943,7 +939,7 @@ export function auto_autumnatonQuest(): boolean {
   }
   // acquire more shadow bricks
   if (auto_neededShadowBricks() > 0) {
-    const ingress: string = getProperty("shadowRiftIngress");
+    const ingress: string = get("shadowRiftIngress");
     if (["cemetery", "hiddencity", "pyramid"].includes(ingress)) {
       if (auto_sendAutumnaton($location`Shadow Rift`)) {
         return false;
@@ -951,7 +947,7 @@ export function auto_autumnatonQuest(): boolean {
     }
   }
   // a location of last resort for those without shadow rifts
-  if (getProperty("shadowRiftIngress") === "") {
+  if (get("shadowRiftIngress") === "") {
     //Cookbookbat materials if you have a Cookbookbat and Autumn Fest Ale+stone wool or Autumn Leaves
     if (
       itemAmount($item`stone wool`) === 0 &&
@@ -1022,7 +1018,7 @@ export function auto_checkTrainSet(): void {
 
   const lastTrainsetConfiguration: number = get("lastTrainsetConfiguration");
   const trainsetPosition: number = get("trainsetPosition");
-  const trainsetConfiguration: string = getProperty("trainsetConfiguration");
+  const trainsetConfiguration: string = get("trainsetConfiguration");
 
   /* A list of what the station numbers are (thanks Zdrvst for compiling this list for your CS script)
 	1: meat
@@ -1126,7 +1122,7 @@ export function auto_checkTrainSet(): void {
   let eight: number = 13; //monster level
   if (
     (monsterLevelAdjustment() > toInt(get("auto_MLSafetyLimit")) &&
-      getProperty("auto_MLSafetyLimit") !== "") ||
+      get("auto_MLSafetyLimit") !== "") ||
     toInt(get("auto_MLSafetyLimit")) === -1 ||
     in_plumber()
   ) {

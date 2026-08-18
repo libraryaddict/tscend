@@ -15,7 +15,6 @@ import {
   floor,
   getCampground,
   getDwelling,
-  getProperty,
   haveEffect,
   haveSkill,
   hpCost,
@@ -404,7 +403,7 @@ function __init_restoration_metadata(): void {
       }
     }
     // add mp restore to nunnery if did as fratboy
-    if (getProperty("sidequestNunsCompleted") === "fratboy") {
+    if (get("sidequestNunsCompleted") === "fratboy") {
       let nunnery = $_f___known_restoration_sources.get("the nunnery");
       if (nunnery === undefined) {
         nunnery = new __RestorationMetadata();
@@ -719,7 +718,7 @@ function __calculate_objective_values(
       if (dispensaryAvailable() || blackMarketAvailable()) {
         meat_per_mp = 8.0; // Knob Goblin seltzer or Black cherry soda at 80 meat/10 MP
       }
-      if (getProperty("questM24Doc") === "finished") {
+      if (get("questM24Doc") === "finished") {
         meat_per_mp = 6.0; // Doc Galaktik's Invigorating Tonic reduced to 60 meat/10 MP
       }
       if (auto_have_skill($skill`Five Finger Discount`)) {
@@ -1041,7 +1040,7 @@ function __calculate_objective_values(
       return isHotTubAvailable();
     }
     if (metadata.name === $_f___NUNS) {
-      return getProperty("sidequestNunsCompleted") !== "none";
+      return get("sidequestNunsCompleted") !== "none";
     }
     return true;
   }

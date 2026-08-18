@@ -11,7 +11,6 @@ import {
   equip,
   equippedAmount,
   Familiar,
-  getProperty,
   haveEffect,
   haveEquipped,
   haveSkill,
@@ -282,22 +281,22 @@ function auto_warSideQuestsDone(): number {
 
   let sidequests_done: number = 0;
 
-  if (getProperty("sidequestArenaCompleted") === auto_warSide()) {
+  if (get("sidequestArenaCompleted") === auto_warSide()) {
     sidequests_done++;
   }
-  if (getProperty("sidequestJunkyardCompleted") === auto_warSide()) {
+  if (get("sidequestJunkyardCompleted") === auto_warSide()) {
     sidequests_done++;
   }
-  if (getProperty("sidequestLighthouseCompleted") === auto_warSide()) {
+  if (get("sidequestLighthouseCompleted") === auto_warSide()) {
     sidequests_done++;
   }
-  if (getProperty("sidequestOrchardCompleted") === auto_warSide()) {
+  if (get("sidequestOrchardCompleted") === auto_warSide()) {
     sidequests_done++;
   }
-  if (getProperty("sidequestNunsCompleted") === auto_warSide()) {
+  if (get("sidequestNunsCompleted") === auto_warSide()) {
     sidequests_done++;
   }
-  if (getProperty("sidequestFarmCompleted") === auto_warSide()) {
+  if (get("sidequestFarmCompleted") === auto_warSide()) {
     sidequests_done++;
   }
 
@@ -308,13 +307,12 @@ function auto_warSideQuestsState(): WarPlan {
   // Returns a record indicating current completion state of the war sidequests.
 
   const ret: WarPlan = new WarPlan();
-  ret.doArena = getProperty("sidequestArenaCompleted") === auto_warSide();
-  ret.doJunkyard = getProperty("sidequestJunkyardCompleted") === auto_warSide();
-  ret.doLighthouse =
-    getProperty("sidequestLighthouseCompleted") === auto_warSide();
-  ret.doOrchard = getProperty("sidequestOrchardCompleted") === auto_warSide();
-  ret.doNuns = getProperty("sidequestNunsCompleted") === auto_warSide();
-  ret.doFarm = getProperty("sidequestFarmCompleted") === auto_warSide();
+  ret.doArena = get("sidequestArenaCompleted") === auto_warSide();
+  ret.doJunkyard = get("sidequestJunkyardCompleted") === auto_warSide();
+  ret.doLighthouse = get("sidequestLighthouseCompleted") === auto_warSide();
+  ret.doOrchard = get("sidequestOrchardCompleted") === auto_warSide();
+  ret.doNuns = get("sidequestNunsCompleted") === auto_warSide();
+  ret.doFarm = get("sidequestFarmCompleted") === auto_warSide();
   return ret;
 }
 
@@ -340,7 +338,7 @@ function auto_warKillsPerBattle$1(sidequests: number): number {
 
   let kills: number = 2 ** sidequests;
   // Avatar of Sneaky Pete has a motorbike mod that gives +3 kills/battle.
-  if (getProperty("peteMotorbikeCowling") === "Rocket Launcher") {
+  if (get("peteMotorbikeCowling") === "Rocket Launcher") {
     kills += 3;
   }
   //License to Adventure Path specific check
@@ -721,17 +719,14 @@ function L12_getOutfitDo(): boolean {
   //heavy rains softcore pull handling
   if (!inHardcore() && in_heavyrains()) {
     // auto_warhippyspy indicates rainman was already used to copy a war hippy spy in heavy rains. if it failed to YR pull missing items
-    if (
-      getProperty("auto_warhippyspy") === "done" &&
-      get("auto_hippyInstead", false)
-    ) {
+    if (get("auto_warhippyspy") === "done" && get("auto_hippyInstead", false)) {
       pullXWhenHaveY($item`reinforced beaded headband`, 1, 0);
       pullXWhenHaveY($item`round purple sunglasses`, 1, 0);
       pullXWhenHaveY($item`bullet-proof corduroys`, 1, 0);
     }
     // auto_orcishfratboyspy indicates rainman was already used to copy an orcish frat boy in heavy rains. if it failed to YR pull missing items
     if (
-      getProperty("auto_orcishfratboyspy") === "done" &&
+      get("auto_orcishfratboyspy") === "done" &&
       !get("auto_hippyInstead", false)
     ) {
       pullXWhenHaveY($item`beer helmet`, 1, 0);
@@ -1037,7 +1032,7 @@ function L12_filthwormsDo(): boolean {
       //yellow ray is on cooldown for now, we may be able to delay filthworms task until next yellow ray
       let delayFilthworms: boolean = false;
 
-      if (getProperty("questL11MacGuffin") !== "finished") {
+      if (get("questL11MacGuffin") !== "finished") {
         //level 11 quest not finished, filthworms can wait
         if (isAboutToPowerlevel()) {
           auto_log_info(
@@ -1054,16 +1049,13 @@ function L12_filthwormsDo(): boolean {
         }
       } else if (auto_warSide() === "hippy") {
         const quest_planned: WarPlan = auto_bestWarPlan();
-        if (
-          quest_planned.doNuns &&
-          getProperty("sidequestNunsCompleted") === "none"
-        ) {
+        if (quest_planned.doNuns && get("sidequestNunsCompleted") === "none") {
           //can wait until nuns finished
           delayFilthworms = true;
         }
         if (
           quest_planned.doFarm &&
-          getProperty("sidequestFarmCompleted") === "none" &&
+          get("sidequestFarmCompleted") === "none" &&
           !get("auto_skipL12Farm", false)
         ) {
           //can wait until farm finished
@@ -1155,7 +1147,7 @@ export const L12_filthwormsTask: QuestTask = registerQuestTask({
   name: "L12_filthworms",
   completed: () =>
     internalQuestStatus("questL12War") > 1 ||
-    getProperty("sidequestOrchardCompleted") !== "none" ||
+    get("sidequestOrchardCompleted") !== "none" ||
     in_tcrs() ||
     in_koe() ||
     auto_warEnemiesRemaining() === 0,
@@ -1209,11 +1201,11 @@ function L12_orchardFinalizeDo(): boolean {
 export const L12_orchardFinalizeTask: QuestTask = registerQuestTask({
   name: "L12_orchardFinalize",
   completed: () =>
-    getProperty("sidequestOrchardCompleted") !== "none" ||
+    get("sidequestOrchardCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1,
   ready: () =>
     !(get("hippiesDefeated") < 64 && !get("auto_hippyInstead", false)) &&
-    getProperty("sidequestOrchardCompleted") === "none" &&
+    get("sidequestOrchardCompleted") === "none" &&
     itemAmount($item`heart of the filthworm queen`) > 0,
   do: L12_orchardFinalizeDo,
 });
@@ -1239,7 +1231,7 @@ function gremlinsFamiliar(): void {
     set("_auto_bad100Familiar", true); //do not buff bad familiar
 
     if (
-      getProperty("questS01OldGuy") === "unstarted" &&
+      get("questS01OldGuy") === "unstarted" &&
       !get("_auto_seaQuestStartedToday", false)
     ) {
       //easier to track if we tried today than to track if it is allowed in current path
@@ -1543,8 +1535,8 @@ function L12_sonofaBeachDo(): boolean {
 
   if (
     chateaumantegna_havePainting() &&
-    !get("_chateauMonsterFought", false) &&
-    getProperty("chateauMonster") === $monster`lobsterfrogman`.toString()
+    !get("_chateauMonsterFought") &&
+    safeGet("chateauMonster") === $monster`lobsterfrogman`
   ) {
     auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
     if (chateaumantegna_usePainting()) {
@@ -1582,10 +1574,7 @@ function L12_sonofaBeachDo(): boolean {
     return false;
   }
 
-  if (
-    getProperty("_sourceTerminalDigitizeMonster") ===
-    $monster`lobsterfrogman`.toString()
-  ) {
+  if (safeGet("_sourceTerminalDigitizeMonster") === $monster`lobsterfrogman`) {
     return false;
   }
 
@@ -1660,8 +1649,7 @@ function L12_sonofaBeachDo(): boolean {
     myMp() < mpCost($skill`Digitize`) &&
     auto_get_campground().has($item`Source terminal`) &&
     isUnrestricted($item`Source terminal`) &&
-    getProperty("_sourceTerminalDigitizeMonster") !==
-      $monster`lobsterfrogman`.toString() &&
+    safeGet("_sourceTerminalDigitizeMonster") !== $monster`lobsterfrogman` &&
     get("_sourceTerminalDigitizeUses") < 3
   ) {
     resetState();
@@ -1730,7 +1718,7 @@ export function L12_sonofaBeach(): boolean {
 function L12_sonofaFinishDo(): boolean {
   if (
     internalQuestStatus("questL12War") !== 1 ||
-    getProperty("sidequestLighthouseCompleted") !== "none"
+    get("sidequestLighthouseCompleted") !== "none"
   ) {
     return false;
   }
@@ -1756,7 +1744,7 @@ function L12_sonofaFinishDo(): boolean {
 export const L12_sonofaFinishTask: QuestTask = registerQuestTask({
   name: "L12_sonofaFinish",
   completed: () =>
-    getProperty("sidequestLighthouseCompleted") !== "none" ||
+    get("sidequestLighthouseCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1,
   ready: () => true,
   do: L12_sonofaFinishDo,
@@ -1780,7 +1768,7 @@ const L12_flyerBackupTask: QuestTask = registerQuestTask({
     get("flyeredML") < 10000 &&
     (itemAmount($item`rock band flyers`) > 0 ||
       itemAmount($item`jam band flyers`) > 0) &&
-    toInt(getProperty("choiceAdventure1003")) < 3 &&
+    toInt(get("choiceAdventure1003")) < 3 &&
     !get("auto_ignoreFlyer", false),
   do: L12_flyerBackupDo,
 });
@@ -1840,13 +1828,13 @@ function L12_lastDitchFlyerDo(): boolean {
 export const L12_lastDitchFlyerTask: QuestTask = registerQuestTask({
   name: "L12_lastDitchFlyer",
   completed: () =>
-    getProperty("sidequestArenaCompleted") !== "none" ||
+    get("sidequestArenaCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1,
   ready: () =>
     !get("auto_ignoreFlyer", false) &&
     auto_bestWarPlan().doArena &&
     internalQuestStatus("questL12War") === 1 &&
-    getProperty("sidequestArenaCompleted") === "none" &&
+    get("sidequestArenaCompleted") === "none" &&
     get("flyeredML") < 10000 &&
     (itemAmount($item`rock band flyers`) > 0 ||
       itemAmount($item`jam band flyers`) > 0) &&
@@ -1860,7 +1848,7 @@ export function L12_lastDitchFlyer(): boolean {
 
 function L12_flyerFinishDo(): boolean {
   if (get("flyeredML") < 10000) {
-    if (getProperty("sidequestArenaCompleted") !== "none") {
+    if (get("sidequestArenaCompleted") !== "none") {
       auto_log_warning(
         "Sidequest Arena detected as completed but flyeredML is not appropriate, fixing.",
         "red",
@@ -2125,10 +2113,7 @@ function L12_themtharHillsDo(): boolean {
     if (lastMonster() !== $monster`dirty thieving brigand`) {
       return true;
     }
-    if (
-      getProperty("lastEncounter") !==
-      $monster`dirty thieving brigand`.toString()
-    ) {
+    if (get("lastEncounter") !== $monster`dirty thieving brigand`.toString()) {
       return true;
     }
 
@@ -2153,7 +2138,7 @@ export const L12_themtharHillsTask: QuestTask = registerQuestTask({
     get("sidequestNunsCompleted") !== "none",
   ready: () =>
     internalQuestStatus("questL12War") === 1 &&
-    getProperty("sidequestNunsCompleted") === "none" &&
+    get("sidequestNunsCompleted") === "none" &&
     auto_warEnemiesRemaining() > 0 &&
     !in_tcrs() &&
     !in_koe() &&
@@ -2238,7 +2223,7 @@ function LX_obtainChaosButterfly(): boolean {
 }
 
 function L12_farmDo(): boolean {
-  if (getProperty("sidequestFarmCompleted") !== "none") {
+  if (get("sidequestFarmCompleted") !== "none") {
     set("auto_skipL12Farm", true);
     return false;
   }
@@ -2299,7 +2284,7 @@ function L12_farmDo(): boolean {
     case 4:
       equipWarOutfit();
       visitUrl("bigisland.php?place=farm&action=farmer&pwd");
-      if (getProperty("sidequestFarmCompleted") !== "none") {
+      if (get("sidequestFarmCompleted") !== "none") {
         return true;
       }
       abort(
@@ -2308,7 +2293,7 @@ function L12_farmDo(): boolean {
   }
   // This really should not happen. Maybe if auto_L12FarmStage is in an invalid state (not 0-4).
   abort(
-    `I am confused about where I am in the dooks. Please report this. auto_L12FarmStage=${getProperty("auto_L12FarmStage")}`,
+    `I am confused about where I am in the dooks. Please report this. auto_L12FarmStage=${get("auto_L12FarmStage")}`,
   );
   return false;
 }
@@ -2316,7 +2301,7 @@ function L12_farmDo(): boolean {
 export const L12_farmTask: QuestTask = registerQuestTask({
   name: "L12_farm",
   completed: () =>
-    getProperty("sidequestFarmCompleted") !== "none" ||
+    get("sidequestFarmCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1 ||
     get("auto_skipL12Farm", false),
   ready: () => !get("auto_skipL12Farm", false),
@@ -2724,7 +2709,7 @@ function L12_islandWarDo(): boolean {
   if (robot_delay("outfit")) {
     return false; //delay for You, Robot path
   }
-  if (getProperty("auto_delayWar") === true.toString()) {
+  if (get("auto_delayWar")) {
     set("auto_delayWar", false);
     return false; //delay war at Nuns so we can maybe get the Inhaler
   }

@@ -4,7 +4,6 @@ import {
   equippedAmount,
   equippedItem,
   expectedDamage,
-  getProperty,
   haveEffect,
   haveEquipped,
   haveSkill,
@@ -331,7 +330,7 @@ export function auto_combatDefaultStage3(
       if (
         $item`sonar-in-a-biscuit`.toString() in itemDrops(enemy) &&
         itemDrops(enemy).size <= 2 &&
-        getProperty("questL04Bat") !== "finished"
+        get("questL04Bat") !== "finished"
       ) {
         forceDrop = true;
       }
@@ -797,7 +796,7 @@ export function auto_combatDefaultStage3(
     //If you have tearaway pants equipped, use its skill
     if (
       auto_canUse($skill`Tear Away your Pants!`) &&
-      ((getProperty("auto_forceNonCombatSource") === "" &&
+      ((get("auto_forceNonCombatSource") === "" &&
         !(
           auto_wantToSniff(enemy, myLocation()) &&
           getSniffer(enemy) !== $skill.none
@@ -875,14 +874,14 @@ export function auto_combatDefaultStage3(
     if (auto_canUse($skill`Sing Along`)) {
       //15% devel, but no stun.
 
-      if (canSurvive(2.0) && getProperty("boomBoxSong") === "Remainin' Alive") {
+      if (canSurvive(2.0) && get("boomBoxSong") === "Remainin' Alive") {
         return auto_useSkill($skill`Sing Along`);
       }
       //this is for increasing meat income. gain +25 meat per monster, at the cost of letting it act once. If healing is too costly this can be a net loss of meat. until a full cost calculator is made, limit to under 10 HP damage and no more than 20% of your remaining HP.
 
       if (
         canSurvive(5.0) &&
-        getProperty("boomBoxSong") === "Total Eclipse of Your Meat" &&
+        get("boomBoxSong") === "Total Eclipse of Your Meat" &&
         expectedDamage() < 10 &&
         !in_wotsf()
       ) {
@@ -892,7 +891,7 @@ export function auto_combatDefaultStage3(
 
       if (
         canSurvive(3.0) &&
-        getProperty("boomBoxSong") === "Total Eclipse of Your Meat" &&
+        get("boomBoxSong") === "Total Eclipse of Your Meat" &&
         $monsters`dirty thieving brigand, wall of meat`.includes(enemy)
       ) {
         return auto_useSkill($skill`Sing Along`);

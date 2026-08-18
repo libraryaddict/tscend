@@ -9,6 +9,7 @@ import tseslint from "typescript-eslint";
 import unusedImports from "eslint-plugin-unused-imports";
 import importSort from "eslint-plugin-simple-import-sort";
 import { rule as verifyEnums } from "./eslint-rules/verify-enums.mts";
+import { rule as verifyGetPrimitive } from "./eslint-rules/verify-get-primitive.mts";
 import { rule as verifyNone } from "./eslint-rules/verify-none.mts";
 import { rule as verifyProperties } from "./eslint-rules/verify-properties.mts";
 
@@ -69,6 +70,8 @@ export default defineConfig(
       local: {
         rules: {
           "verify-enums": verifyEnums as unknown as Rule.RuleModule,
+          "verify-get-primitive":
+            verifyGetPrimitive as unknown as Rule.RuleModule,
           "verify-none": verifyNone as unknown as Rule.RuleModule,
           "verify-properties": verifyProperties as unknown as Rule.RuleModule,
         },
@@ -106,6 +109,7 @@ export default defineConfig(
       "sort-imports": "off",
       "libram/verify-constants": "error",
       "local/verify-enums": "error",
+      "local/verify-get-primitive": "warn",
       "local/verify-none": "error",
       "local/verify-properties": "error",
       "unused-imports/no-unused-imports": "error",

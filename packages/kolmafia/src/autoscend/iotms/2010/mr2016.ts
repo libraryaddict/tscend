@@ -249,7 +249,7 @@ export function isOverdueDigitize(): boolean {
   if (getCounters("Digitize Monster", 1, 200) === "Digitize Monster") {
     return false;
   }
-  if (containsText(getProperty("_tempRelayCounters"), "Digitize Monster")) {
+  if (containsText(get("_tempRelayCounters"), "Digitize Monster")) {
     return false;
   }
   if (getCounters("Digitize Monster", 0, 0) === "Digitize Monster") {
@@ -358,9 +358,7 @@ export function auto_sourceTerminalEnhance(request: string): boolean {
       return false;
   }
 
-  if (
-    containsText(getProperty("sourceTerminalEnhanceKnown"), `${actual}.enh`)
-  ) {
+  if (containsText(get("sourceTerminalEnhanceKnown"), `${actual}.enh`)) {
     return auto_sourceTerminalRequest(`enhance ${actual}.enh`);
   }
   return false;
@@ -370,12 +368,9 @@ export function auto_sourceTerminalEnhanceLeft(): number {
     const used: number = get("_sourceTerminalEnhanceUses");
 
     let total: number = 1;
-    if (getProperty("sourceTerminalChips") !== "") {
+    if (get("sourceTerminalChips") !== "") {
       const chips: Map<number, string> = new Map(
-        splitString(getProperty("sourceTerminalChips"), ",").map((_v, _i) => [
-          _i,
-          _v,
-        ]),
+        splitString(get("sourceTerminalChips"), ",").map((_v, _i) => [_i, _v]),
       );
       for (const index of chips.keys()) {
         const chip: string = String(chips.get(index) ?? "").trim();
@@ -403,7 +398,7 @@ export function auto_sourceTerminalEducate(
     first = second;
     second = $skill.none;
   }
-  if (!containsText(getProperty("sourceTerminalChips"), "DRAM")) {
+  if (!containsText(get("sourceTerminalChips"), "DRAM")) {
     second = $skill.none;
     set("sourceTerminalEducate2", "");
   }
@@ -416,12 +411,12 @@ export function auto_sourceTerminalEducate(
   const secondSkill: string = `${toLowerCase(second.toString())}.edu`;
 
   if (
-    getProperty("sourceTerminalEducate1") === firstSkill ||
-    getProperty("sourceTerminalEducate2") === firstSkill
+    get("sourceTerminalEducate1") === firstSkill ||
+    get("sourceTerminalEducate2") === firstSkill
   ) {
     if (
-      getProperty("sourceTerminalEducate1") === secondSkill ||
-      getProperty("sourceTerminalEducate2") === secondSkill ||
+      get("sourceTerminalEducate1") === secondSkill ||
+      get("sourceTerminalEducate2") === secondSkill ||
       secondSkill === "none.edu"
     ) {
       return true;
@@ -585,8 +580,8 @@ export function witchessFights(): boolean {
     }
     case 2: {
       if (
-        getProperty("sidequestNunsCompleted") === "none" &&
-        getProperty("auto_skipNuns") === "false" &&
+        get("sidequestNunsCompleted") === "none" &&
+        !get("auto_skipNuns") &&
         itemAmount($item`jumping horseradish`) === 0
       ) {
         return auto_advWitchess("meat");
@@ -595,8 +590,8 @@ export function witchessFights(): boolean {
     }
     case 3: {
       if (
-        getProperty("sidequestNunsCompleted") === "none" &&
-        getProperty("auto_skipNuns") === "false" &&
+        get("sidequestNunsCompleted") === "none" &&
+        !get("auto_skipNuns") &&
         itemAmount($item`jumping horseradish`) === 0
       ) {
         return auto_advWitchess("meat");
@@ -605,8 +600,8 @@ export function witchessFights(): boolean {
     }
     case 4: {
       if (
-        getProperty("sidequestNunsCompleted") === "none" &&
-        getProperty("auto_skipNuns") === "false" &&
+        get("sidequestNunsCompleted") === "none" &&
+        !get("auto_skipNuns") &&
         itemAmount($item`jumping horseradish`) === 0
       ) {
         return auto_advWitchess("meat");
@@ -635,7 +630,7 @@ export function auto_doPrecinct(): boolean {
     return true;
   }
 
-  if (getProperty("auto_eggDetective") !== "") {
+  if (get("auto_eggDetective") !== "") {
     set("auto_eggDetective", "");
   }
 
@@ -697,12 +692,9 @@ export function auto_doPrecinct(): boolean {
     return false;
   }
 
-  while (!containsText(getProperty("auto_eggDetective"), "solved")) {
+  while (!containsText(get("auto_eggDetective"), "solved")) {
     let eggData: Map<number, string> = new Map(
-      splitString(getProperty("auto_eggDetective"), ",").map((_v, _i) => [
-        _i,
-        _v,
-      ]),
+      splitString(get("auto_eggDetective"), ",").map((_v, _i) => [_i, _v]),
     );
     let i: number = 1;
     while (i <= 9) {
@@ -761,20 +753,14 @@ export function auto_doPrecinct(): boolean {
             auto_log_info(`Jerkwad '${person}' won't say anything!`, "blue");
             generated += ":liar";
           }
-          set(
-            "auto_eggDetective",
-            `${generated},${getProperty("auto_eggDetective")}`,
-          );
+          set("auto_eggDetective", `${generated},${get("auto_eggDetective")}`);
         }
       }
       i += 1;
     }
 
     eggData = new Map(
-      splitString(getProperty("auto_eggDetective"), ",").map((_v, _i) => [
-        _i,
-        _v,
-      ]),
+      splitString(get("auto_eggDetective"), ",").map((_v, _i) => [_i, _v]),
     );
     auto_log_info("Generating goals...", "blue");
     //At this point we\'ve visited every place and queried everyone. Now we need to determine who is identifying a killer.
@@ -843,14 +829,11 @@ export function auto_doPrecinct(): boolean {
           replaceString_1 = subEgg.get(4) ?? "";
         }
 
-        let temp: string = getProperty("auto_eggDetective");
+        let temp: string = get("auto_eggDetective");
         temp = replaceString(temp, oldValue, replaceString_1);
         set("auto_eggDetective", temp);
         eggData = new Map(
-          splitString(getProperty("auto_eggDetective"), ",").map((_v, _i) => [
-            _i,
-            _v,
-          ]),
+          splitString(get("auto_eggDetective"), ",").map((_v, _i) => [_i, _v]),
         );
         subEgg.set(4, replaceString_1);
       }
@@ -1024,7 +1007,7 @@ export function auto_doPrecinct(): boolean {
       }
     }
 
-    set("auto_eggDetective", `${getProperty("auto_eggDetective")}solved`);
+    set("auto_eggDetective", `${get("auto_eggDetective")}solved`);
     return false;
   }
 
@@ -1047,7 +1030,7 @@ export function expectGhostReport(): boolean {
     }
     //<tr rel="protonquest"><td class="small" colspan="2"><div>Investigate the paranormal activity reported at <A class=nounder target=mainpane href=place.php?whichplace=manor1><b>The Haunted Conservatory</b></a>.</div></td></tr>
 
-    if (getProperty("questPAGhost") === "unstarted") {
+    if (get("questPAGhost") === "unstarted") {
       return true;
     }
   }
@@ -1055,12 +1038,12 @@ export function expectGhostReport(): boolean {
 }
 
 export function haveGhostReport(): boolean {
-  if (getProperty("questPAGhost") === "unstarted") {
+  if (get("questPAGhost") === "unstarted") {
     return false;
   }
   if (
-    getProperty("questPAGhost") === "started" &&
-    getProperty("ghostLocation") !== ""
+    get("questPAGhost") === "started" &&
+    safeGet("ghostLocation") !== $location.none
   ) {
     return true;
   }
@@ -1070,11 +1053,11 @@ export function haveGhostReport(): boolean {
 export function LX_ghostBusting(): boolean {
   //a function for busting or killing ghosts associated with [Protonic Accelerator Pack].
   //do not check if we have the IOTM because [Almost-dead_walkie-talkie] gives access to these ghosts without the proton pack.
-  if (getProperty("questPAGhost") === "unstarted") {
+  if (get("questPAGhost") === "unstarted") {
     if (!expectGhostReport()) {
       return false;
     }
-    if (getProperty("questPAGhost") === "unstarted") {
+    if (get("questPAGhost") === "unstarted") {
       return false;
     }
   }
@@ -1210,7 +1193,7 @@ export function timeSpinnerCombat(
     });
     return true;
   }
-  if (getProperty("lastEncounter") === "Travel to a Recent Fight") {
+  if (get("lastEncounter") === "Travel to a Recent Fight") {
     visitUrl("choice.php?pwd&whichchoice=1196&option=2");
   } else {
     abort(

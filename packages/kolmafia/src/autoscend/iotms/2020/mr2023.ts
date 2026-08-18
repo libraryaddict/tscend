@@ -17,7 +17,6 @@ import {
   getCampground,
   getDwelling,
   getLocationMonsters,
-  getProperty,
   handlingChoice,
   haveCampground,
   haveEffect,
@@ -330,7 +329,7 @@ function auto_getPhoneQuest(): boolean {
     return false;
   }
 
-  if (getProperty("questRufus") !== "unstarted") {
+  if (get("questRufus") !== "unstarted") {
     // already started quest
     return true;
   }
@@ -345,7 +344,7 @@ function auto_getPhoneQuest(): boolean {
     handleChoiceAdv(lastChoice(), phoneText);
   }
 
-  return getProperty("questRufus") !== "unstarted";
+  return get("questRufus") !== "unstarted";
 }
 
 export function auto_doPhoneQuest(): boolean {
@@ -363,7 +362,7 @@ export function auto_doPhoneQuest(): boolean {
   if (
     get("_shadowAffinityToday") &&
     haveEffect($effect`Shadow Affinity`) === 0 &&
-    getProperty("questRufus") === "unstarted"
+    get("questRufus") === "unstarted"
   ) {
     return false;
   }
@@ -404,7 +403,7 @@ export function auto_doPhoneQuest(): boolean {
     abort("Failed to get Rufus quest from cursed phone.");
   }
   // finish quest
-  if (getProperty("questRufus") === "step1") {
+  if (get("questRufus") === "step1") {
     // use() aborts the whole script with "Unsupported choice adventure #1500"
     // since this redirects straight into choice.php; visitUrl() bypasses that and
     // lets the real choice dispatcher handle it instead.
@@ -414,7 +413,7 @@ export function auto_doPhoneQuest(): boolean {
     if (handlingChoice()) {
       handleChoiceAdv(lastChoice(), phoneText);
     }
-    if (getProperty("questRufus") !== "unstarted") {
+    if (get("questRufus") !== "unstarted") {
       abort("Failed to finish Rufus quest from cursed phone.");
     }
     return true;
@@ -1052,8 +1051,8 @@ export function auto_habitatTarget(target: Monster): boolean {
       case $monster`lobsterfrogman`: {
         // only worth it if we need 3+ barrels
         const sonofa_complete: boolean =
-          getProperty("sidequestLighthouseCompleted") === "hippy" ||
-          getProperty("sidequestLighthouseCompleted") === "fratboy";
+          get("sidequestLighthouseCompleted") === "hippy" ||
+          get("sidequestLighthouseCompleted") === "fratboy";
         return !sonofa_complete && itemAmount($item`barrel of gunpowder`) < 4;
       }
       case $monster`Eldritch Tentacle`:
@@ -1143,7 +1142,7 @@ function auto_haveJillOfAllTrades(): boolean {
 
 function getParsedCandleMode(): string {
   // returns candle mode which matches our familiar categories
-  switch (getProperty("ledCandleMode")) {
+  switch (get("ledCandleMode")) {
     case "disco":
       return "item";
     case "ultraviolet":
@@ -1168,7 +1167,7 @@ export function auto_handleJillOfAllTrades(): void {
 
   const currentMode: string = getParsedCandleMode();
   // want to configure jill to have bonus of whatever fam type we last looked up
-  const desiredCandleMode: string = getProperty("auto_lastFamiliarLookupType");
+  const desiredCandleMode: string = get("auto_lastFamiliarLookupType");
 
   auto_log_debug(
     `Jill current mode: ${currentMode} and desired is ${desiredCandleMode}`,
@@ -1267,9 +1266,7 @@ function activeCitZoneMod(): string {
     return "";
   }
   visitUrl("desc_effect.php?whicheffect=9391a5f7577e30ac3af6309804da6944"); // visit url to refresh Mafia's _citizenZoneMods preference
-  const activeCitZoneMod_1: string = toLowerCase(
-    getProperty("_citizenZoneMods"),
-  );
+  const activeCitZoneMod_1: string = toLowerCase(get("_citizenZoneMods"));
   return activeCitZoneMod_1;
 }
 

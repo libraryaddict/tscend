@@ -81,6 +81,7 @@ import {
   handleTracker,
   internalQuestStatus,
   poolSkillPracticeGains,
+  safeGet,
   wrap_item,
   zoneRank,
 } from "../../auto_util";
@@ -100,7 +101,7 @@ function auto_haveBirdADayCalendar(): boolean {
 }
 
 export function auto_birdOfTheDay(): boolean {
-  if (auto_haveBirdADayCalendar() && getProperty("_birdOfTheDay") === "") {
+  if (auto_haveBirdADayCalendar() && get("_birdOfTheDay") === "") {
     auto_log_info("What a beautiful morning! What's today's bird?");
     return use(1, $item`Bird-a-Day calendar`);
   }
@@ -337,9 +338,9 @@ export function auto_mushroomGardenHandler(): boolean {
 
 export function mushroomGardenChoiceHandler(choice: number): void {
   if (choice === 1410) {
-    const growth: string = getProperty("auto_mushroomGardenGrowth");
+    const growth: number = get("auto_mushroomGardenGrowth");
     let pick: number = 1;
-    if (growth !== "") {
+    if (getProperty("auto_mushroomGardenGrowth") !== "") {
       // limit to growth of 11 for colossal free-range mushroom as any further growth is wasted.
       pick = min(toInt(growth), 11);
     }
@@ -361,7 +362,7 @@ export function auto_getGuzzlrCocktailSet(): boolean {
   ) {
     if (
       get("guzzlrGoldDeliveries") >= 5 &&
-      getProperty("questGuzzlr") === "unstarted" &&
+      get("questGuzzlr") === "unstarted" &&
       get("_guzzlrPlatinumDeliveries") === 0 &&
       !get("_guzzlrQuestAbandoned")
     ) {
@@ -792,7 +793,7 @@ export function auto_handleRetrocape(): boolean {
     return false;
   }
 
-  let settingsProperty: string = getProperty("auto_retrocapeSettings");
+  let settingsProperty: string = get("auto_retrocapeSettings");
   if (settingsProperty === "") {
     const capeConfiguration: string = getProperty(
       "retroCapeWashingInstructions",
@@ -841,8 +842,8 @@ export function auto_handleRetrocape(): boolean {
   }
   // avoid uselessly reconfiguring the cape
   if (
-    getProperty("retroCapeSuperhero") !== tempHero ||
-    getProperty("retroCapeWashingInstructions") !== tag
+    get("retroCapeSuperhero") !== tempHero ||
+    get("retroCapeWashingInstructions") !== tag
   ) {
     // retrocape [muscle | mysticality | moxie | vampire | heck | robot] [hold | thrill | kiss | kill]
     cliExecute(`retrocape ${tempHero} ${tag}`); // configures and equips
@@ -850,8 +851,8 @@ export function auto_handleRetrocape(): boolean {
     equip($item`unwrapped knock-off retro superhero cape`); // already configured, just equip
   }
   return (
-    getProperty("retroCapeSuperhero") === tempHero &&
-    getProperty("retroCapeWashingInstructions") === tag &&
+    get("retroCapeSuperhero") === tempHero &&
+    get("retroCapeWashingInstructions") === tag &&
     haveEquipped($item`unwrapped knock-off retro superhero cape`)
   );
 }
@@ -861,28 +862,26 @@ export function auto_buyCrimboCommerceMallItem(): boolean {
     return false;
   }
 
-  const ghostItemString: string = getProperty("commerceGhostItem");
-  if (ghostItemString === "") {
+  const ghostItem: Item = safeGet("commerceGhostItem");
+  if (ghostItem === $item.none) {
     // haven't triggered the greedy ghost message at least once yet.
     return false;
   }
 
-  if (getProperty("auto_boughtCommerceGhostItem") === ghostItemString) {
+  if (safeGet("auto_boughtCommerceGhostItem") === ghostItem) {
     // already bought the item.
     return false;
   }
 
   auto_log_info(
-    `Commerce Ghost wants us to buy a ${ghostItemString} which will give us roughly ${myLevel() * 25} substats in the next combat with it.`,
+    `Commerce Ghost wants us to buy a ${ghostItem} which will give us roughly ${myLevel() * 25} substats in the next combat with it.`,
   );
 
-  const output: string = cliExecuteOutput(
-    `buy from mall [${toInt(toItem(ghostItemString))}]`,
-  );
+  const output: string = cliExecuteOutput(`buy from mall [${ghostItem}]`);
   if (!containsText(output, "Purchases complete.")) {
-    abort(`Something went wrong buying ${ghostItemString} from the mall.`);
+    abort(`Something went wrong buying ${ghostItem} from the mall.`);
   } else {
-    set("auto_boughtCommerceGhostItem", ghostItemString);
+    set("auto_boughtCommerceGhostItem", ghostItem);
   }
   return true;
 }

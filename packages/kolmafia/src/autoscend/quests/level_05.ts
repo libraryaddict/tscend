@@ -1,7 +1,6 @@
 import {
   abort,
   council,
-  getProperty,
   haveEffect,
   haveSkill,
   itemAmount,
@@ -254,7 +253,7 @@ function L5_goblinKingDefeated(): boolean {
     itemAmount($item`Crown of the Goblin King`) > 0 ||
     itemAmount($item`Glass Balls of the Goblin King`) > 0 ||
     itemAmount($item`Codpiece of the Goblin King`) > 0 ||
-    getProperty("questL05Goblin") === "finished" ||
+    get("questL05Goblin") === "finished" ||
     in_plumber() ||
     itemAmount($item`cursed goblin cape`) > 0
   );

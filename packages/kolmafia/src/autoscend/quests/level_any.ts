@@ -11,7 +11,6 @@ import {
   equip,
   equippedItem,
   getOutfits,
-  getProperty,
   getWorkshed,
   guildStoreAvailable,
   handlingChoice,
@@ -323,7 +322,7 @@ function LX_bitchinMeatcarDo(): boolean {
   //if you reached this point then it means you need to spend adventures to acquire more parts
   auto_log_info("Farming for a Bitchin' Meatcar", "blue");
   //start untinker quest if possible to gain access to hostile dgrassi knoll
-  if (getProperty("questM01Untinker") === "unstarted") {
+  if (get("questM01Untinker") === "unstarted") {
     visitUrl(
       "place.php?whichplace=forestvillage&preaction=screwquest&action=fv_untinker_quest",
     );
@@ -481,7 +480,7 @@ function LX_islandAccessDo(): boolean {
           reallyUnlocked = true;
         }
       }
-      if (getProperty("peteMotorbikeGasTank") === "Extra-Buoyant Tank") {
+      if (get("peteMotorbikeGasTank") === "Extra-Buoyant Tank") {
         reallyUnlocked = true;
       }
       if (internalQuestStatus("questM19Hippy") >= 3) {
@@ -562,10 +561,10 @@ function startHippyBoatmanSubQuestDo(): boolean {
 
 export const startHippyBoatmanSubQuestTask: QuestTask = registerQuestTask({
   name: "startHippyBoatmanSubQuest",
-  completed: () => getProperty("questM19Hippy") !== "unstarted" || in_koe(),
+  completed: () => get("questM19Hippy") !== "unstarted" || in_koe(),
   ready: () =>
     myBasestat(myPrimestat()) >= 25 &&
-    getProperty("questM19Hippy") === "unstarted" &&
+    get("questM19Hippy") === "unstarted" &&
     !in_koe(),
   do: startHippyBoatmanSubQuestDo,
 });
@@ -936,10 +935,7 @@ function LX_dailyDungeonToken(): boolean {
   ) {
     let skeleton_key_amt_needed: number = 2;
     if (
-      containsText(
-        getProperty("nsTowerDoorKeysUsed"),
-        $item`skeleton key`.toString(),
-      )
+      containsText(get("nsTowerDoorKeysUsed"), $item`skeleton key`.toString())
     ) {
       skeleton_key_amt_needed--;
     }
@@ -1022,7 +1018,7 @@ export function dailyDungeonChoiceHandler(
         itemAmount($item`skeleton key`) > 1 ||
         (itemAmount($item`skeleton key`) > 0 &&
           containsText(
-            getProperty("nsTowerDoorKeysUsed"),
+            get("nsTowerDoorKeysUsed"),
             $item`skeleton key`.toString(),
           ))
       ) {
@@ -1100,7 +1096,7 @@ const LX_meatMaidTask: QuestTask = registerQuestTask({
     haveCampgroundMaid() &&
     knollAvailable() &&
     myDaycount() === 1 &&
-    getProperty("questL07Cyrptic") === "finished" &&
+    get("questL07Cyrptic") === "finished" &&
     itemAmount($item`smart skull`) > 0 &&
     itemAmount($item`disembodied brain`) > 0,
   do: LX_meatMaidDo,
@@ -1277,10 +1273,7 @@ function canSetWorkshed(it: Item): boolean {
 }
 
 function LX_ForceNCDo(): boolean {
-  const desiredNCLocation: Location = get(
-    "auto_forceNonCombatLocation",
-    $location.none,
-  );
+  const desiredNCLocation: Location = safeGet("auto_forceNonCombatLocation");
   //return the actual item name in case a shorthand is used
   switch (desiredNCLocation) {
     case $location`The Dark Neck of the Woods`:
@@ -1316,9 +1309,9 @@ export const LX_ForceNCTask: QuestTask = registerQuestTask({
   name: "LX_ForceNC",
   completed: () => false,
   ready: () =>
-    getProperty("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
+    get("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
     get("auto_avalancheDeployed", false) &&
-    getProperty("auto_forceNonCombatSource") === "jurassic parka" &&
+    get("auto_forceNonCombatSource") === "jurassic parka" &&
     get("auto_parkaSpikesDeployed", false) &&
     safeGet("auto_forceNonCombatLocation") !== $location.none,
   do: LX_ForceNCDo,
@@ -1546,7 +1539,7 @@ export function freeCandyFightsLeft(): number {
     return 5;
   }
   visitUrl("place.php?whichplace=town&action=town_trickortreat");
-  const block: string = getProperty("_trickOrTreatBlock");
+  const block: string = get("_trickOrTreatBlock");
   const m: AshMatcher = new AshMatcher("D", block);
   let n_unused_dark: number = 0;
   while (m.find()) {
@@ -1731,7 +1724,7 @@ export function candyBlockOutfit(type_1: string): string {
 }
 function LX_lastChanceDo(): boolean {
   //miscellaneous calls that aren't powerlevelling but need to be done at some point based on certain conditions
-  if (getProperty("_auto_screechDelay") !== "") {
+  if (safeGet("_auto_screechDelay") !== $phylum.none) {
     let banishLoc: Location = $location.none;
     auto_log_warning(
       "Patriotic Eagle's screech banished something we need and we can't adventure anywhere else",

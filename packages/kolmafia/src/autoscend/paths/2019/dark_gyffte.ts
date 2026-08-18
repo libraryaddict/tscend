@@ -6,7 +6,6 @@ import {
   create,
   Effect,
   getMonsters,
-  getProperty,
   haveEffect,
   haveSkill,
   hpCost,
@@ -124,7 +123,7 @@ export function bat_formNone(): boolean {
   if (!in_darkGyffte()) {
     return false;
   }
-  if (getProperty("auto_bat_desiredForm") !== "") {
+  if (get("auto_bat_desiredForm") !== "") {
     set("auto_bat_desiredForm", "");
   }
   return true;
@@ -192,7 +191,7 @@ export function bat_formPreAdventure(): boolean {
     return false;
   }
 
-  const desiredForm: string = getProperty("auto_bat_desiredForm");
+  const desiredForm: string = get("auto_bat_desiredForm");
   switch (desiredForm) {
     case "wolf":
       return bat_switchForm($effect`Wolf Form`);
@@ -214,8 +213,8 @@ export function bat_formPreAdventure(): boolean {
 
 export function bat_initializeSession(): void {
   if (in_darkGyffte()) {
-    set("auto_mpAutoRecovery", getProperty("mpAutoRecovery"));
-    set("auto_mpAutoRecoveryTarget", getProperty("mpAutoRecoveryTarget"));
+    set("auto_mpAutoRecovery", get("mpAutoRecovery"));
+    set("auto_mpAutoRecoveryTarget", get("mpAutoRecoveryTarget"));
     set("mpAutoRecovery", -0.05);
     set("mpAutoRecoveryTarget", 0.0);
   }
@@ -223,9 +222,9 @@ export function bat_initializeSession(): void {
 
 export function bat_terminateSession(): void {
   if (in_darkGyffte()) {
-    set("mpAutoRecovery", getProperty("auto_mpAutoRecovery"));
+    set("mpAutoRecovery", get("auto_mpAutoRecovery"));
     set("auto_mpAutoRecovery", 0.0);
-    set("mpAutoRecoveryTarget", getProperty("auto_mpAutoRecoveryTarget"));
+    set("mpAutoRecoveryTarget", get("auto_mpAutoRecoveryTarget"));
     set("auto_mpAutoRecoveryTarget", 0.0);
   }
 }
@@ -311,7 +310,7 @@ function bat_desiredSkills$1(hpLeft: number, forcedPicks: Skill[]): Skill[] {
   const baseHP: number = bat_baseHP();
   const picks: Skill[] = [];
 
-  if (getProperty("_auto_bat_bloodBank") !== "2") {
+  if (get("_auto_bat_bloodBank") !== 2) {
     forcedPicks.push($skill`Intimidating Aura`);
   }
 
@@ -416,7 +415,7 @@ function bat_haveEnsorcelee(): boolean {
     return false;
   }
 
-  return getProperty("ensorcelee") !== "";
+  return get("ensorcelee") !== "";
 }
 
 export function bat_shouldEnsorcel(m: Monster): boolean {

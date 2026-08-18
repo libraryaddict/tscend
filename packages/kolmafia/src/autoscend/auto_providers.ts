@@ -11,7 +11,6 @@ import {
   equippedItem,
   Familiar,
   floor,
-  getProperty,
   haveEffect,
   haveEquipped,
   haveSkill,
@@ -240,7 +239,7 @@ export function providePlusCombat(
     }
   }
 
-  if (getProperty("_horsery") === "dark horse") {
+  if (get("_horsery") === "dark horse") {
     if (!speculative) {
       horseNone();
     }
@@ -467,7 +466,7 @@ export function providePlusNonCombat(
   if (
     isHorseryAvailable() &&
     myMeat() > horseCost() &&
-    getProperty("_horsery") !== "dark horse"
+    get("_horsery") !== "dark horse"
   ) {
     if (!speculative) {
       horseDark();
@@ -1856,7 +1855,7 @@ function provideMeat(
       }
     }
     if (
-      getProperty("sidequestArenaCompleted") === "fratboy" &&
+      get("sidequestArenaCompleted") === "fratboy" &&
       !get("concertVisited") &&
       haveEffect($effect`Winklered`) === 0
     ) {
@@ -2375,7 +2374,7 @@ function provideItem(
       }
     }
     if (
-      getProperty("sidequestArenaCompleted") === "hippy" &&
+      get("sidequestArenaCompleted") === "hippy" &&
       !get("concertVisited") &&
       haveEffect($effect`Dilated Pupils`) === 0
     ) {
