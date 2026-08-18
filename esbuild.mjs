@@ -164,7 +164,8 @@ async function readYaml(filePath) {
   return parse(await fs.readFile(filePath, "utf8"));
 }
 
-// Record<groupPath, {name, property, type, description, tags}[]>
+// Record<groupPath, {name, property, type, description, tags}[]>, plus each property's
+// {default?, resets?}, pulled from the same yml in one pass.
 async function buildSettingsData() {
   const dir = "data/settings";
   const yamlFiles = (
@@ -173,7 +174,8 @@ async function buildSettingsData() {
     (f) => f.isFile() && f.name.endsWith(".yml") && f.name !== "groups.yml",
   );
 
-  const result = {};
+  const settingsData = {};
+  const settingExtras = {};
 
   for (const file of yamlFiles) {
     const relativePath = path.relative(
@@ -185,46 +187,62 @@ async function buildSettingsData() {
 
     if (!data) continue;
 
-    result[groupPath] = Object.entries(data).map(([property, value]) => ({
-      name: value.name,
-      property,
-      type: value.type,
-      description: value.description,
-      default: value.default,
-      dropdown: value.dropdown,
-      tags: value.tags
-        ? Array.isArray(value.tags)
-          ? value.tags.join(",")
-          : value.tags
-        : "",
-    }));
+    settingsData[groupPath] = Object.entries(data).map(([property, value]) => {
+      if (value.default !== undefined || value.resets !== undefined) {
+        settingExtras[property] = {
+          ...(value.default !== undefined && {
+            default: String(value.default),
+          }),
+          ...(value.resets !== undefined && { resets: value.resets }),
+        };
+      }
+
+      return {
+        name: value.name,
+        property,
+        type: value.type,
+        description: value.description,
+        default: value.default,
+        dropdown: value.dropdown,
+        tags: value.tags
+          ? Array.isArray(value.tags)
+            ? value.tags.join(",")
+            : value.tags
+          : "",
+      };
+    });
   }
 
-  return result;
+  return { settingsData, settingExtras };
 }
 
-const [browserBuild, settingsData, settingGroups, tracking, packageJson] =
-  await Promise.all([
-    esbuild.build({
-      entryPoints: {
-        "react/script": "packages/browser/src/index.tsx",
-        "react/main": "packages/browser/src/css/app.scss",
-      },
-      bundle: true,
-      outdir: "dist",
-      platform: "browser",
-      format: "iife",
-      write: false, // Do not write to disk
-      minify: true,
-      jsx: "automatic",
-      plugins: [sassPlugin()],
-    }),
-    buildSettingsData(),
-    readYaml("data/settings/groups.yml"),
-    readYaml("data/tracking/tracking.yml"),
-    fs.readFile("package.json", "utf8").then(JSON.parse),
-    fs.cp("data/resources", "dist", { recursive: true }),
-  ]);
+const [
+  browserBuild,
+  { settingsData, settingExtras },
+  settingGroups,
+  tracking,
+  packageJson,
+] = await Promise.all([
+  esbuild.build({
+    entryPoints: {
+      "react/script": "packages/browser/src/index.tsx",
+      "react/main": "packages/browser/src/css/app.scss",
+    },
+    bundle: true,
+    outdir: "dist",
+    platform: "browser",
+    format: "iife",
+    write: false, // Do not write to disk
+    minify: true,
+    jsx: "automatic",
+    plugins: [sassPlugin()],
+  }),
+  buildSettingsData(),
+  readYaml("data/settings/groups.yml"),
+  readYaml("data/tracking/tracking.yml"),
+  fs.readFile("package.json", "utf8").then(JSON.parse),
+  fs.cp("data/resources", "dist", { recursive: true }),
+]);
 
 const outputText = (name) =>
   browserBuild.outputFiles.find((f) => f.path === path.resolve("dist", name))
@@ -247,6 +265,10 @@ const dataSources = {
   },
   setting_groups: {
     contents: JSON.stringify(settingGroups),
+    loader: "json",
+  },
+  setting_extras: {
+    contents: JSON.stringify(settingExtras),
     loader: "json",
   },
   tracking: {

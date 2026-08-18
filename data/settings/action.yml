@@ -20,6 +20,7 @@ auto_inv_paranoia:
   name: "Inventory Paranoia"
   type: boolean
   description: If item drop tracking is broken enable this. It will refresh inventory every loop.
+  default: false
 auto_newbieOverride:
   name: "Newbie Override"
   type: boolean

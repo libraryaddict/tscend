@@ -2,6 +2,7 @@ auto_delayTimer:
   name: "Action Delay"
   type: int
   description: Sets the delay before each action, default is 1 second(s). It is not recommended to reduce this below 1.
+  default: 1
 auto_stayInRun:
   name: "Stay In Run"
   type: boolean
@@ -26,6 +27,7 @@ auto_save_adv_override:
   name: "Save Adventures Override"
   type: int
   description: Set an override to amount of adv to save at end of day. Set to -1 to handle this automatically.
+  default: -1
 auto_secondPlaceOrBust:
   name: "Second Place Or Bust"
   type: boolean
@@ -43,10 +45,12 @@ auto_log_level:
     - value: "3"
       display: "Debug"
   description: "Sets the level of logging which autoscend will output to gCLI and session log. Defaults to 3 (debug)."
+  default: 3
 auto_log_level_restore:
   name: "Restore Log Level"
   type: int
   description: "valid choices: 0 = no extra debugging. 1 = log the stages and their results 2 = log restorer data dump. Sets the level of extra debug logging which autoscend restore code will output to gCLI and session log. Defaults to 0. Note that this is just for extra debugging."
+  default: 0
 auto_restoreUseBloodBond:
   name: "Use Blood Bond For Restores"
   type: boolean

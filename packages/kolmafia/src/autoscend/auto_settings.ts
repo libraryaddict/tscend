@@ -11,11 +11,15 @@ import {
 import { $familiar, get, set } from "libram";
 
 import { auto_log_debug, auto_log_info } from "./auto_util";
-import {
-  settingDefaults as ymlSettingDefaults,
-  settingResets,
-} from "./generated/property-types";
 import { AshMatcher } from "./utils/kolmafiaUtils";
+
+const settingExtras =
+  // @ts-expect-error TS2591
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require("data:setting_extras") as Record<
+    string,
+    { default?: string; resets?: "day" | "ascend" }
+  >;
 
 //# These functions are used to either upgrade format on properties. delete obsolete properties. or set default values for new properties
 
@@ -331,23 +335,10 @@ function defaultConfig(prop: string, val: string): void {
   }
 }
 
-const hardcodedSettingDefaults: ReadonlyMap<string, string> = new Map([
-  ["auto_delayTimer", "1"],
-  ["auto_abooclover", "true"], //Are we considering using a clover at A-Boo Peak?
-  ["auto_consumablePriceLimit", "12000"], // Max mall price for consumables to eat/drink (also won't exceed mafia's autobuy limit).
-  ["auto_paranoia", "-1"],
-  ["auto_inv_paranoia", "false"],
-  ["auto_save_adv_override", "-1"],
-  ["auto_log_level", "3"],
-  ["auto_log_level_restore", "0"],
-  ["auto_bedtime_pulls_skip", "false"],
-  ["auto_bedtime_pulls_pvp_multi", "0.3"],
-  ["auto_bedtime_pulls_min_desirability", "1.0"],
-]);
-
 export const settingDefaults: ReadonlyMap<string, string> = new Map([
-  ...hardcodedSettingDefaults,
-  ...ymlSettingDefaults,
+  ...Object.entries(settingExtras).flatMap(([property, extra]) =>
+    extra.default !== undefined ? [[property, extra.default] as const] : [],
+  ),
 ]);
 
 function auto_settingsDefaults(): void {
@@ -359,8 +350,8 @@ function auto_settingsDefaults(): void {
 
 // Define if a setting is reset in the .yml files
 export function auto_settingsApplyResets(...kind: ("day" | "ascend")[]): void {
-  for (const [prop, resets] of settingResets) {
-    if (!kind.includes(resets)) continue;
+  for (const [prop, extra] of Object.entries(settingExtras)) {
+    if (extra.resets === undefined || !kind.includes(extra.resets)) continue;
 
     const val = settingDefaults.get(prop);
     if (val === undefined) {

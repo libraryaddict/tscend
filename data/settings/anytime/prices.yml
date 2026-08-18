@@ -2,6 +2,7 @@ auto_consumablePriceLimit:
   name: "Consumable Price Limit"
   type: int
   description: Max price of consumables to eat (including pulls). Will still not go above mafia autobuy limit.
+  default: 12000
 auto_maxCandyPrice:
   name: "Max Candy Price"
   type: int
