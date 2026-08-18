@@ -1994,7 +1994,7 @@ export function auto_bczRefractedGaze(
         (s) =>
           s.includes($skill`BCZ: Refracted Gaze`.toString()) &&
           s.includes(location.toString()),
-      ).length < get("auto_refractedGazeBattlefield", 2)
+      ).length < get("auto_bcz_battlefieldGaze", 2)
   ) {
     // Only use refracted gaze on the battlefield once
     return true;
