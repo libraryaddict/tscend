@@ -1,3 +1,4 @@
+import * as kolmafia from "kolmafia";
 import {
   abort,
   Class,
@@ -20,7 +21,6 @@ import {
   myPath,
   myPrimestat,
   Skill,
-  splitString,
   Stat,
   toBoolean,
   toClass,
@@ -34,6 +34,7 @@ import {
   toSkill,
   toStat,
 } from "kolmafia";
+import * as libram from "libram";
 import {
   $class,
   $classes,
@@ -435,6 +436,17 @@ registerCondition("consume", {
   },
 });
 
+registerCondition("js", {
+  // data: A script that must eval to true/false, has libram and kolmafia exposure
+  check(data) {
+    return new Function(
+      "kolmafia",
+      "libram",
+      `with (kolmafia) { with (libram) { return (${data})}}`,
+    )(kolmafia, libram)();
+  },
+});
+
 // does not account for !, auto_check_conditions does that
 function check_condition(cond: string): boolean {
   const m = cond.match(/^(\w+):(.+)$/);
@@ -456,11 +468,7 @@ export function auto_check_conditions(conds: string): boolean {
     return true;
   }
 
-  const conditions: Map<number, string> = new Map(
-    splitString(conds, ";").map((_v, _i) => [_i, _v]),
-  );
-
-  for (const [, cond] of conditions) {
+  for (const cond of conds.split(";")) {
     const m = cond.match(/^(!?)(.+)$/);
     if (!m) {
       abort(`"${cond}" is not a proper condition!`);
