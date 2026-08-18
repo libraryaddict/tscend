@@ -3,6 +3,7 @@ import {
   myAscensions,
   myFamiliar,
   propertyExists,
+  propertyHasDefault,
   removeProperty,
   renameProperty,
   splitString,
@@ -327,12 +328,25 @@ function auto_settingsDelete(): void {
 
 function defaultConfig(prop: string, val: string): void {
   //this function is used to configure default values. it only makes a change if the current value is nothing
-  if (!propertyExists(prop)) {
-    auto_log_info(
-      `${prop} has no value set. setting it to the default value of ${val}`,
-    );
-    set(prop, val);
+  if (propertyExists(prop)) {
+    if (val !== "") {
+      return;
+    }
+
+    // We don't set an empty string, remove it if we did
+    if (!propertyHasDefault(prop) && val === "" && getProperty(prop) === "") {
+      auto_log_info(`Removed empty string default for ${prop}`);
+      removeProperty(prop);
+    }
+    return;
+  } else if (val === "") {
+    return;
   }
+
+  auto_log_info(
+    `${prop} has no value set. setting it to the default value of ${val}`,
+  );
+  set(prop, val);
 }
 
 export const settingDefaults: ReadonlyMap<string, string> = new Map([
