@@ -3,7 +3,7 @@
 import { spawn } from "child_process";
 
 import { main as generateProperties } from "../eslint-rules/scripts/generate-property-declarations.mjs";
-import { main as sortInternal } from "../eslint-rules/scripts/sort-internal-yml.mjs";
+import { main as lintSettings } from "../eslint-rules/scripts/lint-settings-yml.mjs";
 
 function run(command, args) {
   return new Promise((resolve, reject) => {
@@ -21,7 +21,7 @@ function run(command, args) {
 }
 
 try {
-  await sortInternal();
+  await lintSettings();
   await generateProperties();
 
   await run("yarn", [

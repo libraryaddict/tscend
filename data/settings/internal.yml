@@ -68,6 +68,9 @@ auto_copies:
   type: string
   default: ""
   resets: ascend
+auto_csDoWheel:
+  type: string
+  resets: ascend
 auto_current_version:
   type: string
 auto_dakotaFanning:
@@ -149,6 +152,9 @@ auto_forceCombatSource:
   type: string
 auto_forceCombatWithLegendaryNoodles:
   type: boolean
+auto_forcedNC:
+  type: string
+  resets: ascend
 auto_forceFreeRun:
   type: boolean
 auto_forceNonCombatLocation:
@@ -186,6 +192,12 @@ auto_habitatMonster:
 auto_haveSourceTerminal:
   type: boolean
   default: false
+  resets: ascend
+auto_hccsNoConcludeDay:
+  type: string
+  resets: ascend
+auto_hccsTurnSave:
+  type: string
   resets: ascend
 auto_ignoreCombat:
   type: string
@@ -361,6 +373,15 @@ auto_robot_directive:
   type: string
 auto_robot_skills_bought:
   type: int
+auto_saveMargarita:
+  type: string
+  resets: ascend
+auto_saveSausage:
+  type: string
+  resets: ascend
+auto_saveVintage:
+  type: string
+  resets: ascend
 auto_servantChoice:
   type: string
 auto_shenZonesTurnsSpent:
@@ -525,32 +546,11 @@ c2t_apron_allowlist:
   type: string
 chateauMonsterFought:
   type: boolean
-kolhs_closetDrink:
-  type: boolean
-logLevelDefaultChangedToDebug:
-  type: boolean
-auto_forcedNC:
-  type: string
-  resets: ascend
 choiceAdventure1003:
   type: int
   default: 0
   resets: ascend
-auto_saveMargarita:
-  type: string
-  resets: ascend
-auto_csDoWheel:
-  type: string
-  resets: ascend
-auto_hccsTurnSave:
-  type: string
-  resets: ascend
-auto_hccsNoConcludeDay:
-  type: string
-  resets: ascend
-auto_saveSausage:
-  type: string
-  resets: ascend
-auto_saveVintage:
-  type: string
-  resets: ascend
+kolhs_closetDrink:
+  type: boolean
+logLevelDefaultChangedToDebug:
+  type: boolean

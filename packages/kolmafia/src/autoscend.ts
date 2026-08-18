@@ -1123,7 +1123,7 @@ function initializeDay(day: number): void {
     visitUrl("peevpee.php?place=fight");
   }
 
-  if (get("auto_day_init", 0) < day) {   
+  if (get("auto_day_init", 0) < day) {
     auto_settingsApplyResets("day");
   }
 
