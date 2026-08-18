@@ -175,7 +175,11 @@ import {
   invalidateRestoreOptionCache,
 } from "./autoscend/auto_restore";
 import { setupSoftblockLocks, solveDelayZone } from "./autoscend/auto_routing";
-import { auto_settings, auto_settingsFix } from "./autoscend/auto_settings";
+import {
+  auto_settings,
+  auto_settingsApplyResets,
+  auto_settingsFix,
+} from "./autoscend/auto_settings";
 import {
   adjustForYellowRayIfPossible,
   almostRollover,
@@ -596,6 +600,9 @@ export function initializeSettings(): void {
   }
   setLocation($location.none);
   invalidateRestoreOptionCache();
+
+  // Reset our day and 'ascend'
+  auto_settingsApplyResets("day", "ascend");
 
   if (!reinitialize) {
     set("auto_100familiar", $familiar.none);
@@ -1225,6 +1232,7 @@ function initializeDay(day: number): void {
     set("auto_cmcConsultLastLevel", "0");
     set("auto_breathitinLastLevel", "0");
     set("_auto_candyMapCompleted", false);
+    auto_settingsApplyResets("day");
   }
 
   if (

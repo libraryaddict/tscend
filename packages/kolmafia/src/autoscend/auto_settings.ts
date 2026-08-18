@@ -11,6 +11,10 @@ import {
 import { $familiar, get, set } from "libram";
 
 import { auto_log_debug, auto_log_info } from "./auto_util";
+import {
+  settingDefaults as ymlSettingDefaults,
+  settingResets,
+} from "./generated/property-types";
 import { AshMatcher } from "./utils/kolmafiaUtils";
 
 //# These functions are used to either upgrade format on properties. delete obsolete properties. or set default values for new properties
@@ -327,7 +331,7 @@ function defaultConfig(prop: string, val: string): void {
   }
 }
 
-export const settingDefaults: ReadonlyMap<string, string> = new Map([
+const hardcodedSettingDefaults: ReadonlyMap<string, string> = new Map([
   ["auto_delayTimer", "1"],
   ["auto_abooclover", "true"], //Are we considering using a clover at A-Boo Peak?
   ["auto_consumablePriceLimit", "12000"], // Max mall price for consumables to eat/drink (also won't exceed mafia's autobuy limit).
@@ -341,10 +345,29 @@ export const settingDefaults: ReadonlyMap<string, string> = new Map([
   ["auto_bedtime_pulls_min_desirability", "1.0"],
 ]);
 
+export const settingDefaults: ReadonlyMap<string, string> = new Map([
+  ...hardcodedSettingDefaults,
+  ...ymlSettingDefaults,
+]);
+
 function auto_settingsDefaults(): void {
   //set default values for settings which have not yet been configured
   for (const [prop, val] of settingDefaults) {
     defaultConfig(prop, val);
+  }
+}
+
+// Define if a setting is reset in the .yml files
+export function auto_settingsApplyResets(...kind: ("day" | "ascend")[]): void {
+  for (const [prop, resets] of settingResets) {
+    if (!kind.includes(resets)) continue;
+
+    const val = settingDefaults.get(prop);
+    if (val === undefined) {
+      removeProperty(prop);
+    } else {
+      set(prop, val);
+    }
   }
 }
 

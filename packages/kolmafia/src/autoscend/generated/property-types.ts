@@ -70,3 +70,14 @@ export const trackerKeys = [
   "auto_yellowRays",
 ] as const;
 export type TrackerKey = (typeof trackerKeys)[number];
+
+export const settingDefaults: ReadonlyMap<string, string> = new Map([
+  ["auto_burndownStatsProgressionDiff", "75%"],
+  ["auto_clanVIPLounge", "Bonus Adventures from Hell"],
+  ["auto_consultChoice", "OnlyFax"],
+  ["auto_interestingCoins", "1"],
+  ["auto_meat_surplus", "5000"],
+  ["auto_refractedGazeBattlefield", "2"],
+]);
+
+export const settingResets: ReadonlyMap<string, "day" | "ascend"> = new Map([]);
