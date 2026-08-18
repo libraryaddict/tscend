@@ -4826,10 +4826,15 @@ export function auto_can_equip(it: Item, s: Slot = toSlot(it)): boolean {
 
   return auto_is_valid(it) && canEquip(it);
 }
-const monsters_text: Map<string, Map<number, Map<string, string>>> = fileAsMap(
-  "autoscend_monsters.txt",
-  [String, Number, String, String],
-);
+const monsters_text: Map<
+  string,
+  Map<number, Map<string, string[]>>
+> = fileAsMap("autoscend_monsters.txt", [
+  String,
+  Number,
+  String,
+  "string[]",
+]);
 
 export function auto_getMonsters(category: string): Monster[] {
   const res: Monster[] = [];
@@ -4856,10 +4861,15 @@ export function auto_getMonsters(category: string): Monster[] {
   return res;
 }
 
-const phylum_text: Map<string, Map<number, Map<string, string>>> = fileAsMap(
-  "autoscend_phylums.txt",
-  [String, Number, String, String],
-);
+const phylum_text: Map<
+  string,
+  Map<number, Map<string, string[]>>
+> = fileAsMap("autoscend_phylums.txt", [
+  String,
+  Number,
+  String,
+  "string[]",
+]);
 function auto_getPhylum(category: string): Phylum[] {
   const res: Phylum[] = [];
   if (!phylum_text.size) {
@@ -5360,9 +5370,9 @@ export function knapsack(
   return ret;
 }
 
-const itemdata: Map<string, Map<number, Map<string, string>>> = fileAsMap(
+const itemdata: Map<string, Map<number, Map<string, string[]>>> = fileAsMap(
   "autoscend_items.txt",
-  [String, Number, String, String],
+  [String, Number, String, "string[]"],
 );
 
 export function auto_reserveAmount(it: Item): number {

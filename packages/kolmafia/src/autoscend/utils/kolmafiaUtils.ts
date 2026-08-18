@@ -10,7 +10,11 @@ export function ctor<T>(target: new (...args: string[]) => T): CtorLeaf<T> {
 }
 
 type Schema<T = any> =
-  StringConstructor | NumberConstructor | ((raw: string) => T) | CtorLeaf<T>;
+  | StringConstructor
+  | NumberConstructor
+  | "string[]"
+  | ((raw: string) => T)
+  | CtorLeaf<T>;
 
 type Value<C> =
   C extends CtorLeaf<infer T>
@@ -19,9 +23,19 @@ type Value<C> =
       ? string
       : C extends NumberConstructor
         ? number
-        : C extends (raw: string) => infer T
-          ? T
-          : never;
+        : C extends "string[]"
+          ? string[]
+          : C extends (raw: string) => infer T
+            ? T
+            : never;
+
+// "string[]" and CtorLeaf consume all remaining columns; everything else is
+// a `(raw: string) => T` conversion of the single column at `depth`.
+function resolveLeaf(leaf: Schema, parts: string[], depth: number): any {
+  if (leaf === "string[]") return parts.slice(depth);
+  if (leaf instanceof CtorLeaf) return new leaf.ctor(...parts.slice(depth));
+  return (leaf as (raw: string) => any)(parts[depth] ?? "");
+}
 
 // One Map<key, ...> layer per schema entry; the last entry is the leaf value, not a key.
 type NestedMap<S extends readonly Schema[]> = S extends readonly [
@@ -57,13 +71,7 @@ export function fileAsMap<
         continue;
       }
 
-      const leaf = schema[depth];
-      current.set(
-        key,
-        leaf instanceof CtorLeaf
-          ? new leaf.ctor(...parts.slice(depth))
-          : (leaf as (raw: string) => any)(parts[depth] ?? ""),
-      );
+      current.set(key, resolveLeaf(schema[depth], parts, depth));
     }
   }
 

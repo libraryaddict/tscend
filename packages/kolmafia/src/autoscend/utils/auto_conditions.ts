@@ -63,7 +63,7 @@ import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { in_darkGyffte } from "../paths/2019/dark_gyffte";
 
 // Conditionals are formatted as "<condition type>:<data>"
-// Multiple conditionals can be added separated by a semicolon (;) with NO SPACES
+// Multiple conditionals are passed as separate array elements
 // Conditionals can be prepended with a ! to indicate that they must be FALSE
 // See the registered condition handlers below for valid condition types and a description of their data
 interface ConditionHandler {
@@ -463,12 +463,8 @@ function check_condition(cond: string): boolean {
   return handler.check(condition_data);
 }
 
-export function auto_check_conditions(conds: string): boolean {
-  if (conds === "") {
-    return true;
-  }
-
-  for (const cond of conds.split(";")) {
+export function auto_check_conditions(conds: string[]): boolean {
+  for (const cond of conds) {
     const m = cond.match(/^(!?)(.+)$/);
     if (!m) {
       abort(`"${cond}" is not a proper condition!`);

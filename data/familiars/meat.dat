@@ -1,7 +1,7 @@
 # Wanna get that jar
-Angry Jung Man	prop:_jungDrops<1;day:1
+Angry Jung Man	prop:_jungDrops<1	day:1
 # Wanna get grimstone mask
-Grimstone Golem	prop:_grimstoneMaskDrops<1;day:1
+Grimstone Golem	prop:_grimstoneMaskDrops<1	day:1
 # Wanna get yummy chewables
 Golden Monkey	prop:_powderedGoldDrops<3
 Bloovian Groose	prop:_grooseDrops<3
@@ -10,7 +10,7 @@ Grim Brother	prop:_grimFairyTaleDrops<3
 # Wanna build up heists
 Cat Burglar	prop:_catBurglarCharge<30
 # Mini Kiwi for turn gen in 11 Things path
-Mini Kiwi	path:11 Things I Hate About U;item:mini kiwi<=8
+Mini Kiwi	path:11 Things I Hate About U	item:mini kiwi<=8
 # Wanna get booze ingredients
 Robortender
 # Might as well get tales of spelunking

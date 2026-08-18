@@ -1,5 +1,5 @@
 Banshee Librarian	item:Killing Jar>0
-Beefy Bodyguard Bat	loc:The Boss Bat's Lair;turnsspent:The Boss Bat's Lair>=4;!path:Heavy Rains;!path:Actually Ed the Undying;!path:Pocket Familiars;!path:Dark Gyffte;!path:Path of the Plumber;!pathid:41;!path:Wildfire;!path:Fall of the Dinosaurs;!path:Avatar of Shadows Over Loathing;!path:Legacy of Loathing;!path:WereProfessor
+Beefy Bodyguard Bat	loc:The Boss Bat's Lair	turnsspent:The Boss Bat's Lair>=4	!path:Heavy Rains	!path:Actually Ed the Undying	!path:Pocket Familiars	!path:Dark Gyffte	!path:Path of the Plumber	!pathid:41	!path:Wildfire	!path:Fall of the Dinosaurs	!path:Avatar of Shadows Over Loathing	!path:Legacy of Loathing	!path:WereProfessor
 Knob Goblin Madam	item:Knob Goblin Perfume>0
 Bookbat
 Craven Carven Raven
@@ -10,28 +10,28 @@ Mad Wino
 Plaid Ghost
 Possessed Laundry Press
 Sabre-Toothed Goat
-Senile Lihc	loc:The Defiled Niche;prop:cyrptNicheEvilness>14
+Senile Lihc	loc:The Defiled Niche	prop:cyrptNicheEvilness>14
 Skeletal Sommelier
-Slick Lihc	loc:The Defiled Niche;prop:cyrptNicheEvilness>14
+Slick Lihc	loc:The Defiled Niche	prop:cyrptNicheEvilness>14
 White Chocolate Golem
 Stone Temple Pirate	item:Eyepatch>0
 Crusty Pirate
 Chatty Pirate
-party skelteon	loc:The Defiled Nook;prop:cyrptNookEvilness>14
-basic lihc	loc:The Defiled Niche;prop:cyrptNicheEvilness>14
+party skelteon	loc:The Defiled Nook	prop:cyrptNookEvilness>14
+basic lihc	loc:The Defiled Niche	prop:cyrptNicheEvilness>14
 # lobsterfrogman (todo: add more wanderers)
-Government Agent	loc:Sonofa Beach;item:barrel of gunpowder<5;prop:sidequestLighthouseCompleted=none
-Terrible Mutant	loc:Sonofa Beach;item:barrel of gunpowder<5;prop:sidequestLighthouseCompleted=none
-Government Bureaucrat	loc:Sonofa Beach;item:barrel of gunpowder<5;prop:sidequestLighthouseCompleted=none
-Slime Blob	loc:Sonofa Beach;item:barrel of gunpowder<5;prop:sidequestLighthouseCompleted=none
-Angry Ghost	loc:Sonofa Beach;item:barrel of gunpowder<5;prop:sidequestLighthouseCompleted=none
-Annoyed Snake	loc:Sonofa Beach;item:barrel of gunpowder<5;prop:sidequestLighthouseCompleted=none
-Sausage Goblin	loc:Sonofa Beach;item:barrel of gunpowder<5;prop:sidequestLighthouseCompleted=none
+Government Agent	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
+Terrible Mutant	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
+Government Bureaucrat	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
+Slime Blob	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
+Angry Ghost	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
+Annoyed Snake	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
+Sausage Goblin	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
 # Bugbear Invasion Mothership
-scavenger bugbear	path:Bugbear Invasion;loc:Waste Processing
-bugaboo	path:Bugbear Invasion;loc:Morgue;item:bugbear autopsy tweezers<1
-bugbear scientist	path:Bugbear Invasion;loc:Science Lab;item:quantum nanopolymer spider web<1
-liquid metal bugbear	path:Bugbear Invasion:loc:Engineering;item:drone self-destruct chip<1
+scavenger bugbear	path:Bugbear Invasion	loc:Waste Processing
+bugaboo	path:Bugbear Invasion	loc:Morgue	item:bugbear autopsy tweezers<1
+bugbear scientist	path:Bugbear Invasion	loc:Science Lab	item:quantum nanopolymer spider web<1
+liquid metal bugbear	path:Bugbear Invasion:loc:Engineering	item:drone self-destruct chip<1
 Battlesuit Bugbear Type	path:Bugbear Invasion:loc:Engineering
-ancient unspeakable bugbear	path:Bugbear Invasion;loc:Navigation
-trendy bugbear chef	path:Bugbear Invasion;loc:Galley
+ancient unspeakable bugbear	path:Bugbear Invasion	loc:Navigation
+trendy bugbear chef	path:Bugbear Invasion	loc:Galley

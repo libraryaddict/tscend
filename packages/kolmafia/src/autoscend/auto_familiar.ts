@@ -427,8 +427,13 @@ export function lookupFamiliarDatafile(type_1: string): Familiar {
   set("auto_lastFamiliarLookupType", type_1);
   const familiars_text: Map<
     string,
-    Map<number, Map<string, string>>
-  > = fileAsMap("autoscend_familiars.txt", [String, Number, String, String]);
+    Map<number, Map<string, string[]>>
+  > = fileAsMap("autoscend_familiars.txt", [
+    String,
+    Number,
+    String,
+    "string[]",
+  ]);
   if (!familiars_text.size) {
     abort("Could not load /data/autoscend_familiars.txt");
   }
