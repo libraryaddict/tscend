@@ -246,9 +246,17 @@ export function canReturnToCurrentClan(): boolean {
 
 // User's auto_clanVIPLounge preference, else The Average Clan if we're
 // already there, else Bonus Adventures from Hell.
-export function getAwayClanName(): string {
-  const preferred: string = get("auto_clanVIPLounge").trim();
-  if (preferred !== "") {
+export function getAwayClanName(
+  preferred: string = get("auto_clanVIPLounge"),
+): string {
+  // If the clan name does not exist, then fall back to our native defaults
+  if (preferred === "") {
+    preferred = get("auto_clanVIPLounge");
+  }
+
+  preferred = preferred.trim();
+
+  if (preferred !== "auto") {
     return preferred;
   }
   return getClanName() === "The Average Clan"
@@ -534,10 +542,11 @@ export function zataraClanmate(): boolean {
     return false;
   }
 
-  const defaultClan: string = getAwayClanName();
+  const oldClan: number = getClanId();
+  const consultClan: string = getAwayClanName(get("auto_consultClan"));
   const requestedPlayer: string = get(
     "auto_consultChoice",
-    getDefaultConsultBot(defaultClan),
+    getDefaultConsultBot(consultClan),
   ).trim();
 
   const resolved = resolveConsultPlayer(requestedPlayer);
@@ -551,10 +560,8 @@ export function zataraClanmate(): boolean {
     return false;
   }
 
-  const oldClan: number = getClanId();
-  const clanName: string = get("auto_consultClan", defaultClan);
-  changeClan(clanName);
-  if (getClanName() !== clanName) {
+  changeClan(consultClan);
+  if (getClanName() !== consultClan && getClanId().toString() !== consultClan) {
     set("_clanFortuneConsultUses", 42069);
     return false;
   }

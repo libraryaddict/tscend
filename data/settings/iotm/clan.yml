@@ -1,7 +1,7 @@
 auto_clanVIPLounge:
   type: string
-  description: "The name or ID of the clan you want to use for VIP lounge stuff, this supports a very limited subset of iotms. Will fallback to 'The Average Clan' if you happen to be in there."
-  default: "Bonus Adventures from Hell"
+  description: 'The name or ID of the clan you want to use for VIP lounge stuff, this supports a very limited subset of iotms. Set to "auto" to use "The Average Clan" if you happen to be in there, otherwise "Bonus Adventures from Hell".'
+  default: "auto"
 auto_hideAdultery:
   name: "Hide Zatara Consults"
   type: boolean
