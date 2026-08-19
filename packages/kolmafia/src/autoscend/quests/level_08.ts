@@ -81,6 +81,7 @@ import {
   auto_log_warning,
   auto_runChoice,
   auto_summonMountainMan,
+  auto_summonMountainManIsDelaying,
   canSniff,
   cloversAvailable,
   internalQuestStatus,
@@ -501,6 +502,12 @@ function L8_getMineOres(): boolean {
   if (auto_haveTrainSet() && itemAmount(oreGoal) < 3) {
     return false; //will get ore organically through the train set so no need to adventure for it
   }
+
+  if (auto_summonMountainManIsDelaying()) {
+    // mountain man summon is deliberately waiting (e.g. to fill out the baseball diamond), don't burn a clover here
+    return false;
+  }
+
   // try to clover for the ore
   if (autoLuckyAdv($location`Itznotyerzitz Mine`)) {
     return true;

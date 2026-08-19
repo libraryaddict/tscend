@@ -325,6 +325,7 @@ import {
 import {
   auto_AprilSaxLuckyLeft,
   auto_AprilTubaForcesLeft,
+  auto_chestMimicPendingFor,
   auto_haveAprilingBandHelmet,
   auto_haveRoman,
   auto_haveSpringShoes,
@@ -3605,22 +3606,45 @@ export function summonMonster(
   return false;
 }
 
+// "pass": summoned a mountain man this turn
+// "delay": held off summoning because waiting should get us a better ore payout
+// "fail": held off summoning with no reason to expect waiting will help
+type MountainManSummonResult = "pass" | "delay" | "fail";
+
 // won't summon at all if we need an extra ore drop but can't guarantee one via Cat Burglar or YR+McTwist
 export function auto_summonMountainMan(
   canDelayIfNotCapped: boolean = !isAnySoftBlockReleased(),
 ): boolean {
+  return auto_summonMountainManImpl(canDelayIfNotCapped, false) === "pass";
+}
+
+// true if auto_summonMountainMan() would currently hold off summoning to wait for a better payout,
+// rather than because it can't summon at all. Never attempts a summon itself.
+export function auto_summonMountainManIsDelaying(): boolean {
+  return (
+    auto_summonMountainManImpl(!isAnySoftBlockReleased(), true) === "delay"
+  );
+}
+
+function auto_summonMountainManImpl(
+  canDelayIfNotCapped: boolean,
+  speculating: boolean,
+): MountainManSummonResult {
   if (!canSummonMonster($monster`mountain man`)) {
-    return false;
+    if (auto_chestMimicPendingFor($monster`mountain man`)) {
+      return "delay";
+    }
+    return "fail";
   }
   const oreGoal: Item = safeGet("trapperOre");
-  if (oreGoal === $item.none) return false;
+  if (oreGoal === $item.none) return "fail";
   const drops = getMonsterDrops($monster`mountain man`).filter(
     (d) => oreGoal === d.item,
   );
   const dropCount = drops.length;
 
   const neededDropCount = 3 - itemAmount(oreGoal);
-  if (neededDropCount <= 0) return false;
+  if (neededDropCount <= 0) return "fail";
 
   // The count of ores that will drop without further interaction required from us
   const oresAlreadyDropping: number = drops.filter((d) =>
@@ -3689,13 +3713,9 @@ export function auto_summonMountainMan(
       const baseballAssignments = auto_baseballBuildAssignments(
         auto_baseballRecruits(),
       ).filter((m) => m.element !== $element`hot`);
-      // We still need to fill the diamond out, delay
-      if (
-        canDelayIfNotCapped &&
-        // If this wouldn't be the last monster, or there's no good assignments yet
-        (auto_baseballRecruits.length < 8 || baseballAssignments.length < 1)
-      ) {
-        return false;
+      // Still filling out the diamond, or this wouldn't be the last monster in it - wait
+      if (auto_baseballRecruits.length < 8 || baseballAssignments.length < 1) {
+        return "delay";
       }
     }
     willUse.push(
@@ -3723,8 +3743,11 @@ export function auto_summonMountainMan(
     oresAcquired < neededDropCount &&
     (canDelayIfNotCapped || oresAcquired <= 0)
   ) {
-    return false;
+    return "delay";
   }
+
+  // We'd summon at this point, but this call was only checking the verdict
+  if (speculating) return "pass";
 
   auto_log_info(
     `Trying to summon a mountain man to gain ${neededDropCount} ${oreGoal}${neededDropCount !== 1 ? "s" : ""}`,
@@ -3738,7 +3761,7 @@ export function auto_summonMountainMan(
     !adjustForYellowRayIfPossible($monster`mountain man`) &&
     !prepareYellowRayNextCombat(6)
   ) {
-    return false;
+    return "fail";
   }
   if (shouldMcTwist && !autoEquip($item`pro skateboard`)) {
     auto_log_info(
@@ -3746,7 +3769,7 @@ export function auto_summonMountainMan(
     );
     // If we can quietly exit
     if (!isYellowRayingNextCombat()) {
-      return false;
+      return "fail";
     }
     auto_log_info(`But we're continuing regardless, we've already setup a YR.`);
   }
@@ -3754,7 +3777,7 @@ export function auto_summonMountainMan(
     auto_log_info(`Failed to equip baseball diamond for Mountain Man`);
     // If we can quietly exit
     if (!isYellowRayingNextCombat()) {
-      return false;
+      return "fail";
     }
     auto_log_info(`But we're continuing regardless, we've already setup a YR.`);
   }
@@ -3763,12 +3786,12 @@ export function auto_summonMountainMan(
     auto_log_info(`Failed to use the familiar Cat Burglar for Mountain Man`);
     // If we can quietly exit
     if (!isYellowRayingNextCombat()) {
-      return false;
+      return "fail";
     }
     auto_log_info(`But we're continuing regardless, we've already setup a YR.`);
   }
 
-  return summonMonster($monster`mountain man`);
+  return summonMonster($monster`mountain man`) ? "pass" : "fail";
 }
 
 export function summonedMonsterToday(mon: Monster): boolean {
