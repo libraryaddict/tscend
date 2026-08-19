@@ -775,9 +775,9 @@ function L12_getOutfitDo(): boolean {
 
 export const L12_getOutfitTask: QuestTask = registerQuestTask({
   name: "L12_getOutfit",
-  completed: () => internalQuestStatus("questL12War") > 0,
+  completed: () => internalQuestStatus("questL12War") > 0 || haveWarOutfit(),
   // if you already have the war outfit we don't need to do anything now
-  ready: () => internalQuestStatus("questL12War") === 0 && !haveWarOutfit(),
+  ready: () => internalQuestStatus("questL12War") === 0,
   do: L12_getOutfitDo,
   desiredEncounters: () => [
     {
@@ -871,13 +871,12 @@ function L12_preOutfitDo(): boolean {
 
 export const L12_preOutfitTask: QuestTask = registerQuestTask({
   name: "L12_preOutfit",
-  completed: () => internalQuestStatus("questL12War") > 0,
+  completed: () => internalQuestStatus("questL12War") > 0 || haveWarOutfit(),
   // in softcore you will pull the war outfit, no need to get pre outfit
   ready: () =>
     get("lastIslandUnlock") === myAscensions() &&
     (inHardcore() || in_lol()) &&
-    myLevel() >= 9 &&
-    !haveWarOutfit(),
+    myLevel() >= 9,
   do: L12_preOutfitDo,
   locations: () =>
     get("auto_hippyInstead", false)
