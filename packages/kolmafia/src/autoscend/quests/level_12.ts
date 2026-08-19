@@ -218,6 +218,7 @@ import {
   is_werewolf,
 } from "../paths/2024/wereprofessor";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
+import { bluevsred_isRed } from "../paths/2026/red_vs_blue";
 import { inAftercore } from "../paths/casual";
 import { maximizer } from "../utils/maximizer";
 import { LX_islandAccess } from "./level_any";
@@ -412,7 +413,7 @@ function auto_estimatedAdventuresForDooks(): number {
   advCost_1 -= $location`McMillicancuddy's Back 40`.turnsSpent;
   advCost_1 -= $location`McMillicancuddy's Other Back 40`.turnsSpent;
   //these paths cannot use butterfly
-  if (in_bhy() || in_pokefam() || in_glover()) {
+  if (in_bhy() || in_pokefam() || in_glover() || bluevsred_isRed()) {
     return advCost_1;
   }
   //chaos butterfly calculations

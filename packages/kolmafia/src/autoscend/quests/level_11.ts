@@ -139,6 +139,7 @@ import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   provideItem$2,
   providePlusCombat,
+  providePlusNonCombat,
   provideResistances,
   provideResistances$4,
 } from "../auto_providers";
@@ -155,6 +156,7 @@ import {
   auto_canForceNextNoncombat,
   auto_change_mcd,
   auto_combat_appearance_rates$1,
+  auto_combatModCap,
   auto_convertDesiredML,
   auto_forceNextNoncombat,
   auto_haveCombatForceSource,
@@ -280,6 +282,10 @@ import {
 } from "../paths/2024/wereprofessor";
 import { in_zootomist } from "../paths/2025/zootomist";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
+import {
+  bluevsred_isRed,
+  in_bluevsred,
+} from "../paths/2026/red_vs_blue";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { maximizer } from "../utils/maximizer";
 import { L3_tavern } from "./level_03";
@@ -5004,9 +5010,17 @@ function L11_unlockMiddleChamberDo(): boolean {
     }
     return true;
   }
-  if (total < 10) {
-    // tomb ratchets have 20% drop rate
-    provideItem$2(400, $location`The Middle Chamber`, true);
+  // Crumbling wooden wheels are more consistent for Blue vs. Red
+  if (in_bluevsred()) {
+    if (!get("controlRoomUnlock")) {
+      // Blue team can't fight tomb rats
+      if (bluevsred_isRed() && total < 10) {
+        provideItem$2(400, $location`The Middle Chamber`, true);
+      }
+      autoAdv($location`The Middle Chamber`);
+    }
+    providePlusNonCombat(auto_combatModCap(), $location`The Upper Chamber`, true);
+    return autoAdv($location`The Upper Chamber`);
   }
 
   if (get("controlRoomUnlock")) {
@@ -5017,6 +5031,11 @@ function L11_unlockMiddleChamberDo(): boolean {
     ) {
       return autoAdv($location`The Upper Chamber`);
     }
+  }
+
+  if (total < 10) {
+    // tomb ratchets have 20% drop rate
+    provideItem$2(400, $location`The Middle Chamber`, true);
   }
 
   if (

@@ -539,6 +539,7 @@ import {
   in_amw,
   LM_adventurerMeatsWorldTask,
 } from "./autoscend/paths/2026/adventurer_meats_world";
+import { bluevsred_initializeSettings } from "./autoscend/paths/2026/red_vs_blue";
 import {
   auto_buySkills,
   pathDroppedCheck,
@@ -670,6 +671,7 @@ export function initializeSettings(): void {
   fotd_initializeSettings();
   lol_initializeSettings();
   small_initializeSettings();
+  bluevsred_initializeSettings();
   wereprof_initializeSettings();
   ag_initializeSettings();
   amw_initializeSettings();
