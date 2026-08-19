@@ -282,10 +282,7 @@ import {
 } from "../paths/2024/wereprofessor";
 import { in_zootomist } from "../paths/2025/zootomist";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
-import {
-  bluevsred_isRed,
-  in_bluevsred,
-} from "../paths/2026/red_vs_blue";
+import { bluevsred_isRed, in_bluevsred } from "../paths/2026/red_vs_blue";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { maximizer } from "../utils/maximizer";
 import { L3_tavern } from "./level_03";
@@ -2795,7 +2792,8 @@ const L11_hiddenOfficeTask: QuestTask = registerQuestTask(L11_hiddenCityTask, {
   name: "L11_hiddenOffice",
   completed: () => internalQuestStatus("questL11Business") > 0,
   ready: () =>
-    internalQuestStatus("questL11Curses") === 0 &&
+    (internalQuestStatus("questL11Curses") > 0 ||
+      haveEffect($effect`Ancient Fortitude`) > 0) &&
     myAdventures() + $location`The Hidden Office Building`.turnsSpent >= 11,
   do: L11_hiddenOfficeDo,
   locations: $locations`The Hidden Office Building, The Hidden Apartment Building`,
@@ -5019,7 +5017,11 @@ function L11_unlockMiddleChamberDo(): boolean {
       }
       autoAdv($location`The Middle Chamber`);
     }
-    providePlusNonCombat(auto_combatModCap(), $location`The Upper Chamber`, true);
+    providePlusNonCombat(
+      auto_combatModCap(),
+      $location`The Upper Chamber`,
+      true,
+    );
     return autoAdv($location`The Upper Chamber`);
   }
 
