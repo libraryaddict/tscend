@@ -343,6 +343,7 @@ import {
 } from "./iotms/2020/mr2025";
 import {
   auto_acquireInterestingItem,
+  auto_baseballBuildAssignments,
   auto_baseballFreefightMonster,
   auto_baseballFreefightsRemaining,
   auto_baseballInningsRemaining,
@@ -3684,9 +3685,18 @@ export function auto_summonMountainMan(
     auto_have_baseball_diamond() &&
     auto_baseballInningsRemaining() > 0
   ) {
-    // We still need to fill the diamond out, delay
-    if (canDelayIfNotCapped && auto_baseballRecruits.length < 7) {
-      return false;
+    if (canDelayIfNotCapped) {
+      const baseballAssignments = auto_baseballBuildAssignments(
+        auto_baseballRecruits(),
+      ).filter((m) => m.element !== $element`hot`);
+      // We still need to fill the diamond out, delay
+      if (
+        canDelayIfNotCapped &&
+        // If this wouldn't be the last monster, or there's no good assignments yet
+        (auto_baseballRecruits.length < 8 || baseballAssignments.length < 1)
+      ) {
+        return false;
+      }
     }
     willUse.push(
       `We will baseball diamond YR for ${drops.length} ${oreGoal}${drops.length !== 1 ? "s" : ""}`,

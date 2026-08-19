@@ -1731,7 +1731,9 @@ function auto_baseballGetDesiredElements(
   return elements;
 }
 
-function auto_baseballBuildAssignments(team: Monster[]): BaseballAssignment[] {
+export function auto_baseballBuildAssignments(
+  team: Monster[],
+): BaseballAssignment[] {
   const possible: [Element[], number][] = team
     .map(
       (mon, slot) =>
