@@ -1106,7 +1106,7 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
 
   // We always ensure legendary noodles has a chance to be eaten
   // Start with the amount of legendary noodles we have
-  let keepReserved = availableAmount($item`legendary noodles`);
+  let keepReserved = itemAmount($item`legendary noodles`);
 
   // Reserve 3 more if future noodle summons are available
   if (

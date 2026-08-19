@@ -1,7 +1,6 @@
 import {
   abort,
   autosell,
-  availableAmount,
   availableChoiceOptions,
   buy,
   buyUsingStorage,
@@ -132,7 +131,7 @@ export function acquireOrPull(it: Item, speculating: boolean = false): boolean {
   }
   if (
     speculating
-      ? availableAmount(it) + creatableAmount(it) > 0
+      ? itemAmount(it) + equippedAmount(it) + creatableAmount(it) > 0
       : retrieveItem(1, it)
   ) {
     return true;
