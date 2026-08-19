@@ -339,8 +339,8 @@ function allowSoftblockOutdoorAdvs(): boolean {
   return get("auto_breathitinLastLevel", 0) < myLevel();
 }
 
-const L9_highLandlordBreathitinTask: QuestTask = registerQuestTask({
-  name: "L9_highLandlordBreathitin",
+const L9_highLandlordTask: QuestTask = registerQuestTask({
+  name: "L9_highLandlord",
   completed: () => false,
   ready: () => true,
   do: () => get("_auto_lastABooCycleFix", 0) < 5 && L9_highLandlord(),
@@ -448,7 +448,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
         L5_getEncryptionKeyTask,
         L10_airshipTask,
         L9_chasmBuildTask,
-        L9_highLandlordBreathitinTask,
+        L9_highLandlordTask,
         L6_friarsGetPartsTask,
       ])
     ) {

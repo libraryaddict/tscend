@@ -115,7 +115,6 @@ import {
   $stat,
   AsdonMartin,
   BarrelShrine,
-  BurningLeaves,
   DeckOfEveryCard,
   DNALab,
   get,
@@ -191,6 +190,7 @@ import {
   auto_interruptCheck,
   auto_is_valid,
   auto_is_valid$1,
+  auto_is_valid$2,
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
@@ -300,8 +300,10 @@ import {
   auto_backupToYourLastEnemy,
   auto_buyFireworksHat,
   auto_CMCconsult,
+  auto_CMCconsultsLeft,
   auto_enableBackupCameraReverser,
   auto_harvestBatteries,
+  auto_haveColdMedCabinet,
   have_fireworks_shop,
 } from "./autoscend/iotms/2020/mr2021";
 import {
@@ -321,6 +323,7 @@ import {
   auto_defaultBurnLeaves,
   auto_doPhoneQuest,
   auto_habitatMonster,
+  auto_haveBurningLeaves,
   auto_havePayPhone,
   auto_initBurningLeaves,
   auto_lostStomach,
@@ -2720,7 +2723,9 @@ const auto_spoonTuneMoonTask: QuestTask = registerQuestTask({
 
 const auto_chapeauTask: QuestTask = registerQuestTask({
   name: "auto_chapeau",
-  completed: () => false,
+  completed: () =>
+    !auto_is_valid$2($skill`Ceci N'Est Pas Un Chapeau`) ||
+    possessEquipment($item`no hat`),
   ready: () => true,
   do: () => {
     auto_chapeau();
@@ -2747,7 +2752,12 @@ const auto_buyFireworksHatTask: QuestTask = registerQuestTask({
 
 const auto_CMCconsultTask: QuestTask = registerQuestTask({
   name: "auto_CMCconsult",
-  completed: () => false,
+  completed: () =>
+    ((!canInteract() && pullsRemaining() === 0) ||
+      $items`Fleshazole™, Homebodyl™, Breathitin™`.every(
+        (i) => !auto_is_valid(i),
+      )) &&
+    (!auto_haveColdMedCabinet() || auto_CMCconsultsLeft() === 0),
   ready: () => true,
   do: () => {
     auto_CMCconsult();
@@ -2792,7 +2802,7 @@ const auto_useWardrobeTask: QuestTask = registerQuestTask({
 
 const auto_MayamClaimAllTask: QuestTask = registerQuestTask({
   name: "auto_MayamClaimAll",
-  completed: () => false,
+  completed: () => !auto_haveMayamCalendar() || auto_MayamAllUsed(),
   ready: () => true,
   do: () => {
     auto_MayamClaimAll();
@@ -2802,7 +2812,7 @@ const auto_MayamClaimAllTask: QuestTask = registerQuestTask({
 
 const auto_defaultBurnLeavesTask: QuestTask = registerQuestTask({
   name: "auto_defaultBurnLeaves",
-  completed: () => !BurningLeaves.have(),
+  completed: () => !auto_haveBurningLeaves(),
   ready: () => true,
   do: () => {
     auto_defaultBurnLeaves();

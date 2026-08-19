@@ -1538,7 +1538,7 @@ function L13_towerNSHedgeDo(): boolean {
 export const L13_towerNSHedgeTask: QuestTask = registerQuestTask({
   name: "L13_towerNSHedge",
   completed: () => internalQuestStatus("questL13Final") > 4,
-  ready: () => true,
+  ready: () => internalQuestStatus("questL13Final") === 4,
   do: L13_towerNSHedgeDo,
 });
 

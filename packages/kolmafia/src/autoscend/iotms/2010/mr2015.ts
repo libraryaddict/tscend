@@ -681,7 +681,8 @@ function chateauPaintingDo(): boolean {
 
 export const chateauPaintingTask: QuestTask = registerQuestTask({
   name: "chateauPainting",
-  completed: () => get("_chateauMonsterFought", false),
+  completed: () =>
+    get("_chateauMonsterFought", false) || !chateaumantegna_available(),
   ready: () => true,
   do: chateauPaintingDo,
   desiredEncounters: () => [
