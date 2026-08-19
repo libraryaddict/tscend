@@ -1470,10 +1470,6 @@ export function replaceMonsterCombatString(
   }
   // We prioritize this skill as the other resources can be used for other stuff
   if (auto_have_skill($skill`Exercise Liquidity`) && inCombat) {
-    // Mafia doesn't track remaining Exercise Liquidity charges yet, so we track them
-    // ourselves: auto_chewLiquidAsset() increments this, and we decrement it here the
-    // moment we commit to casting it. Remove once mafia adds official tracking.
-    set("auto_exerciseLiquidity", get("auto_exerciseLiquidity") - 1);
     return $skill`Exercise Liquidity`;
   }
   if (
@@ -1494,7 +1490,9 @@ export function replaceMonsterCombatString(
   if (
     !inCombat &&
     auto_is_valid$2($skill`Exercise Liquidity`) &&
-    (get("auto_exerciseLiquidity") > 0 || auto_chewLiquidAsset(false, true))
+    // eslint-disable-next-line local/verify-properties
+    (get("exerciseLiquidityCharges", 0) > 0 ||
+      auto_chewLiquidAsset(false, true))
   ) {
     return $skill`Exercise Liquidity`;
   }

@@ -926,9 +926,6 @@ export function prepareYellowRayNextCombat(
     auto_acquireInterestingItem($item`toxic asset`, speculating) &&
     (speculating || autoChew(1, $item`toxic asset`))
   ) {
-    if (!speculating) {
-      set("_auto_toxicAssetUses", get("_auto_toxicAssetUses", 0) + 1);
-    }
     return true;
   }
 
@@ -966,13 +963,6 @@ export function set_next_fight_is_free(isFree: boolean = true) {
 }
 
 function run_end_of_combat() {
-  if (get("_auto_toxicAssetUses", 0) > 0) {
-    if (get("_auto_toxicAssetUses", 0) === 1) {
-      removeProperty("_auto_toxicAssetUses");
-    } else {
-      set("_auto_toxicAssetUses", get("_auto_toxicAssetUses", 0) - 1);
-    }
-  }
   set_next_fight_is_free(false);
 }
 
@@ -980,7 +970,8 @@ export function isYellowRayingNextCombat(): boolean {
   return (
     get("mixedBerryJellyUses") > 0 ||
     get("_spookyJellyUses") > 0 ||
-    get("_auto_toxicAssetUses", 0) > 0
+    // eslint-disable-next-line local/verify-properties
+    get("toxicAssetCharges", 0) > 0
   );
 }
 
@@ -1777,7 +1768,8 @@ function adjustForReplace(combat_string: CombatMacroReturns): boolean {
     return auto_forceEquipPowerfulGlove();
   }
   if (combat_string === $skill`Exercise Liquidity`) {
-    if (get("auto_exerciseLiquidity", 0) > 0) {
+    // eslint-disable-next-line local/verify-properties
+    if (get("exerciseLiquidityCharges", 0) > 0) {
       return true;
     }
 
