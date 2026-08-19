@@ -5,6 +5,7 @@ import {
   council,
   Effect,
   Element,
+  getProperty,
   haveEffect,
   haveSkill,
   lastMonster,
@@ -14,6 +15,7 @@ import {
   myLevel,
   myMp,
   numericModifier,
+  setProperty,
   stringModifier,
   visitUrl,
   wait,
@@ -81,7 +83,10 @@ function auto_tavern(): boolean {
     abort("Quest not yet started, talk to Bart Ender and re-run.");
   }
 
-  auto_log_info(`In the tavern! Layout: ${get("tavernLayout")}`, "blue");
+  auto_log_info(
+    `In the tavern! Layout: ${getProperty("tavernLayout")}`,
+    "blue",
+  );
   const locations: number[] = [3, 2, 1, 0, 5, 10, 15, 20, 16, 21];
   // infrequent compounding issue, reset maximizer
   resetMaximize();
@@ -211,11 +216,11 @@ function auto_tavern(): boolean {
     providePlusCombat(20, $location`Noob Cave`);
   }
 
-  let tavern_1: string = get("tavernLayout", "");
+  let tavern_1: string = getProperty("tavernLayout");
   if (tavern_1 === "0000000000000000000000000") {
     // visit cellar then refresh layout property
     visitUrl("cellar.php");
-    tavern_1 = get("tavernLayout", "");
+    tavern_1 = getProperty("tavernLayout");
     if (tavern_1 === "0000000000000000000000000") {
       abort(
         "Invalid Tavern Configuration, could not visit cellar and repair. Uh oh...",
@@ -287,7 +292,7 @@ function auto_tavern(): boolean {
           "red",
         );
         auto_log_warning("Attempting to reset this issue...", "red");
-        set("tavernLayout", "0000100000000000000000000");
+        setProperty("tavernLayout", "0000100000000000000000000");
         visitUrl("cellar.php");
       }
       return true;
@@ -298,7 +303,7 @@ function auto_tavern(): boolean {
     "red",
   );
   auto_log_warning("Attempting to reset this issue...", "red");
-  set("tavernLayout", "0000100000000000000000000");
+  setProperty("tavernLayout", "0000100000000000000000000");
   wait(5);
   return true;
 }
