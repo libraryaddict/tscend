@@ -2230,13 +2230,6 @@ function L13_towerNSFinalDo(): boolean {
   ) {
     abort("auto_towerBreak set to abort here.");
   }
-  //state 11 means ready to fight sorceress. state 12 means lost to her due to lack of wand thus unlocking bear verb orgy
-  if (
-    internalQuestStatus("questL13Final") < 11 ||
-    internalQuestStatus("questL13Final") > 12
-  ) {
-    return false;
-  }
   if (in_robot()) {
     abort(
       "Automatic killing of nautomatic sauceress not implemented. Please kill her manually",
@@ -2514,8 +2507,8 @@ function L13_towerNSFinalDo(): boolean {
 
 export const L13_towerNSFinalTask: QuestTask = registerQuestTask({
   name: "L13_towerNSFinal",
-  completed: () => inAftercore(),
-  ready: () => true,
+  completed: () => inAftercore() || internalQuestStatus("questL13Final") > 12,
+  ready: () => internalQuestStatus("questL13Final") >= 11,
   do: L13_towerNSFinalDo,
   desiredEncounters: () => [
     {
@@ -2540,7 +2533,6 @@ function L13_towerNSNagamarDo(): boolean {
   }
   if (
     !get("auto_wandOfNagamar", false) ||
-    internalQuestStatus("questL13Final") < 11 ||
     internalQuestStatus("questL13Final") > 12
   ) {
     return false;
@@ -2615,7 +2607,7 @@ export const L13_towerNSNagamarTask: QuestTask = registerQuestTask({
   completed: () =>
     internalQuestStatus("questL13Final") > 12 ||
     itemAmount($item`Wand of Nagamar`) > 0,
-  ready: () => true,
+  ready: () => internalQuestStatus("questL13Final") >= 11,
   do: L13_towerNSNagamarDo,
   locations: $location`The VERY Unquiet Garves`,
   desiredEncounters: () => {
@@ -2678,7 +2670,7 @@ function L13_towerAscentDo(): boolean {
 const L13_towerAscentTask: QuestTask = registerQuestTask({
   name: "L13_towerAscent",
   completed: () => inAftercore(),
-  ready: () => true,
+  ready: () => internalQuestStatus("questL13Final") >= 0,
   do: L13_towerAscentDo,
 });
 

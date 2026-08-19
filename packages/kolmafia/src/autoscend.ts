@@ -1013,13 +1013,6 @@ export function LX_calculateTheUniverse(speculative: boolean): boolean {
 }
 
 function tophatMaker(): boolean {
-  if (
-    !knollAvailable() ||
-    itemAmount($item`brass gear`) === 0 ||
-    possessEquipment($item`Mark V Steam-Hat`)
-  ) {
-    return false;
-  }
   let reEquip: Item = $item.none;
 
   if (possessEquipment($item`Mark IV Steam-Hat`)) {
@@ -2659,8 +2652,8 @@ const LM_bhyTask: QuestTask = registerQuestTask({
 
 const tophatMakerTask: QuestTask = registerQuestTask({
   name: "tophatMaker",
-  completed: () => false,
-  ready: () => true,
+  completed: () => possessEquipment($item`Mark V Steam-Hat`),
+  ready: () => knollAvailable() && itemAmount($item`brass gear`) > 0,
   do: () => {
     tophatMaker();
     return false;

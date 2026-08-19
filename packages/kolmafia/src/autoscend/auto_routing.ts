@@ -340,7 +340,7 @@ function allowSoftblockOutdoorAdvs(): boolean {
 }
 
 const L9_highLandlordTask: QuestTask = registerQuestTask({
-  name: "L9_highLandlord",
+  name: "L9_highLandlordRouting",
   completed: () => false,
   ready: () => true,
   do: () => get("_auto_lastABooCycleFix", 0) < 5 && L9_highLandlord(),

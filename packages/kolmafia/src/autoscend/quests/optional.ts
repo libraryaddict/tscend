@@ -626,21 +626,16 @@ function startArmorySubQuestDo(): boolean {
     return false;
   }
 
-  if (internalQuestStatus("questM25Armorer") === -1) {
-    visitUrl("shop.php?whichshop=armory");
-    visitUrl("shop.php?whichshop=armory&action=talk");
-    visitUrl("choice.php?pwd=&whichchoice=1065&option=1");
-    if (internalQuestStatus("questM25Armorer") > -1) {
-      return true;
-    }
-  }
-  return false;
+  visitUrl("shop.php?whichshop=armory");
+  visitUrl("shop.php?whichshop=armory&action=talk");
+  visitUrl("choice.php?pwd=&whichchoice=1065&option=1");
+  return internalQuestStatus("questM25Armorer") > -1;
 }
 
 export const startArmorySubQuestTask: QuestTask = registerQuestTask({
   name: "startArmorySubQuest",
   completed: () => internalQuestStatus("questM25Armorer") > -1,
-  ready: () => true,
+  ready: () => internalQuestStatus("questM25Armorer") === -1,
   do: startArmorySubQuestDo,
 });
 
@@ -815,7 +810,7 @@ function LX_galaktikSubQuestDo(): boolean {
 export const LX_galaktikSubQuestTask: QuestTask = registerQuestTask({
   name: "LX_galaktikSubQuest",
   completed: () => internalQuestStatus("questM24Doc") > 1,
-  ready: () => true,
+  ready: () => internalQuestStatus("questM24Doc") >= 0,
   do: LX_galaktikSubQuestDo,
   locations: $location`The Overgrown Lot`,
   desiredEncounters: () =>
@@ -1079,19 +1074,22 @@ function LX_joinPirateCrewBarrrneysBarrr(): boolean {
   return true;
 }
 
-const LX_joinPirateCrewBarrrneysBarrrTask: QuestTask = registerQuestTask({
-  name: "LX_joinPirateCrewBarrrneysBarrr",
-  completed: () => internalQuestStatus("questM12Pirate") > 3,
-  ready: () => [-1, 1, 3].includes(internalQuestStatus("questM12Pirate")),
-  do: LX_joinPirateCrewBarrrneysBarrr,
-  locations: $location`Barrrney's Barrr`,
-  desiredEncounters: () => [
-    {
-      item: $item`cocktail napkin`,
-      needAmount: itemAmount($item`cocktail napkin`) === 0 ? 1 : 0,
-    },
-  ],
-});
+const LX_joinPirateCrewBarrrneysBarrrTask: QuestTask = registerQuestTask(
+  LX_pirateQuestTask,
+  {
+    name: "LX_joinPirateCrewBarrrneysBarrr",
+    completed: () => internalQuestStatus("questM12Pirate") > 3,
+    ready: () => [-1, 1, 3].includes(internalQuestStatus("questM12Pirate")),
+    do: LX_joinPirateCrewBarrrneysBarrr,
+    locations: $location`Barrrney's Barrr`,
+    desiredEncounters: () => [
+      {
+        item: $item`cocktail napkin`,
+        needAmount: itemAmount($item`cocktail napkin`) === 0 ? 1 : 0,
+      },
+    ],
+  },
+);
 
 function LX_joinPirateCrewNoobCave(): boolean {
   auto_log_info("Nasty Booty time!", "red");
@@ -1540,10 +1538,6 @@ function LX_acquireEpicWeaponDo(): boolean {
     }
   }
 
-  if (itemAmount($_f_epicWeapons.get(myClass()) ?? $item.none) > 0) {
-    return false;
-  }
-
   if (internalQuestStatus("questG04Nemesis") === 4) {
     visitUrl("guild.php?place=scg");
     return true;
@@ -1573,7 +1567,8 @@ export const LX_acquireEpicWeaponTask: QuestTask = registerQuestTask({
   completed: () =>
     !isGuildClass() ||
     internalQuestStatus("questG04Nemesis") > 4 ||
-    (!guildStoreAvailable() && !get("auto_skipUnlockGuild", false)),
+    (!guildStoreAvailable() && !get("auto_skipUnlockGuild", false)) ||
+    itemAmount($_f_epicWeapons.get(myClass()) ?? $item.none) > 0,
   ready: () =>
     // no guild access. can't start this quest
     isGuildClass() && guildStoreAvailable(),
