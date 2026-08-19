@@ -2267,7 +2267,7 @@ export function auto_wantSoCP(): void {
   if (
     auto_is_valid($item`medicinal gruel`) &&
     !isActuallyEd() &&
-    stomach_left() > 0 &&
+    spleen_left() > 0 &&
     !get("_crimboPastMedicalGruel") &&
     availableKnuckles < 5
   ) {
@@ -2275,14 +2275,14 @@ export function auto_wantSoCP(): void {
   }
   if (
     auto_is_valid($item`Smoking Pope`) &&
-    stomach_left() > 0 &&
+    inebriety_left() > 0 &&
     !get("_crimboPastSmokingPope")
   ) {
     availableKnuckles -= 5;
   }
   if (
     auto_is_valid($item`prize turkey`) &&
-    inebriety_left() > 0 &&
+    stomach_left() > 0 &&
     !get("_crimboPastPrizeTurkey")
   ) {
     availableKnuckles -= 5;
