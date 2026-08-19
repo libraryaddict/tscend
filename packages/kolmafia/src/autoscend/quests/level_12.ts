@@ -871,12 +871,12 @@ function L12_preOutfitDo(): boolean {
 
 export const L12_preOutfitTask: QuestTask = registerQuestTask({
   name: "L12_preOutfit",
-  completed: () => internalQuestStatus("questL12War") > 0 || haveWarOutfit(),
+  completed: () =>
+    internalQuestStatus("questL12War") > 0 ||
+    haveWarOutfit() ||
+    (!inHardcore() && !in_lol()),
   // in softcore you will pull the war outfit, no need to get pre outfit
-  ready: () =>
-    get("lastIslandUnlock") === myAscensions() &&
-    (inHardcore() || in_lol()) &&
-    myLevel() >= 9,
+  ready: () => get("lastIslandUnlock") === myAscensions() && myLevel() >= 9,
   do: L12_preOutfitDo,
   locations: () =>
     get("auto_hippyInstead", false)
@@ -1746,7 +1746,7 @@ export const L12_sonofaFinishTask: QuestTask = registerQuestTask({
   completed: () =>
     get("sidequestLighthouseCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1,
-  ready: () => true,
+  ready: () => internalQuestStatus("questL12War") === 1,
   do: L12_sonofaFinishDo,
 });
 
@@ -2304,7 +2304,8 @@ export const L12_farmTask: QuestTask = registerQuestTask({
     get("sidequestFarmCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1 ||
     get("auto_skipL12Farm", false),
-  ready: () => !get("auto_skipL12Farm", false),
+  ready: () =>
+    !get("auto_skipL12Farm", false) && internalQuestStatus("questL12War") === 1,
   do: L12_farmDo,
   locations: $locations`McMillicancuddy's Barn, McMillicancuddy's Pond, McMillicancuddy's Back 40, McMillicancuddy's Other Back 40, The Castle in the Clouds in the Sky (Ground Floor)`,
   desiredEncounters: () => [
@@ -2445,7 +2446,7 @@ export const L12_clearBattlefieldTask: QuestTask = registerQuestTask({
     (auto_warSide() === "hippy"
       ? get("fratboysDefeated")
       : get("hippiesDefeated")) >= 1000,
-  ready: () => true,
+  ready: () => internalQuestStatus("questL12War") === 1,
   do: L12_clearBattlefieldDo,
 });
 
@@ -2457,10 +2458,6 @@ function L12_finalizeWarDo(): boolean {
   if (in_koe()) {
     return L12_koe_finalizeWar();
   }
-  if (internalQuestStatus("questL12War") !== 1) {
-    return false;
-  }
-
   if (get("hippiesDefeated") < 1000 && get("fratboysDefeated") < 1000) {
     return false;
   }
@@ -2683,7 +2680,7 @@ function L12_finalizeWarDo(): boolean {
 export const L12_finalizeWarTask: QuestTask = registerQuestTask({
   name: "L12_finalizeWar",
   completed: () => internalQuestStatus("questL12War") > 1,
-  ready: () => true,
+  ready: () => internalQuestStatus("questL12War") === 1,
   do: L12_finalizeWarDo,
   desiredEncounters: () => [
     {
