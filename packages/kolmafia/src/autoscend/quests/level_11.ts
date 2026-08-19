@@ -2925,7 +2925,7 @@ const L11_overgrownShrineNorthwestTask: QuestTask = registerQuestTask(
   {
     name: "L11_overgrownShrineNorthwest",
     completed: () => itemAmount($item`moss-covered stone sphere`) === 0,
-    ready: () => get("hiddenApartmentProgress") >= 8,
+    ready: () => itemAmount($item`moss-covered stone sphere`) > 0,
     do: () => {
       auto_log_info("Getting the stone triangles", "blue");
       return autoAdv($location`An Overgrown Shrine (Northwest)`);
@@ -2939,7 +2939,7 @@ const L11_overgrownShrineNortheastTask: QuestTask = registerQuestTask(
   {
     name: "L11_overgrownShrineNortheast",
     completed: () => get("hiddenOfficeProgress") >= 8,
-    ready: () => true,
+    ready: () => itemAmount($item`crackling stone sphere`) > 0,
     do: () => {
       auto_log_info("Getting the stone triangles", "blue");
       return autoAdv($location`An Overgrown Shrine (Northeast)`);
@@ -2953,7 +2953,7 @@ const L11_overgrownShrineSouthwestTask: QuestTask = registerQuestTask(
   {
     name: "L11_overgrownShrineSouthwest",
     completed: () => get("hiddenHospitalProgress") >= 8,
-    ready: () => true,
+    ready: () => itemAmount($item`dripping stone sphere`) > 0,
     do: () => {
       auto_log_info("Getting the stone triangles", "blue");
       return autoAdv($location`An Overgrown Shrine (Southwest)`);
@@ -2967,7 +2967,7 @@ const L11_overgrownShrineSoutheastTask: QuestTask = registerQuestTask(
   {
     name: "L11_overgrownShrineSoutheast",
     completed: () => internalQuestStatus("hiddenBowlingAlleyProgress") >= 8,
-    ready: () => true,
+    ready: () => itemAmount($item`scorched stone sphere`) > 0,
     do: () => {
       auto_log_info("Getting the stone triangles", "blue");
       return autoAdv($location`An Overgrown Shrine (Southeast)`);
