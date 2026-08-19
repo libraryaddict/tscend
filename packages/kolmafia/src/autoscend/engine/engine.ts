@@ -345,6 +345,8 @@ export function getExecutingQuestTasks(): QuestTask[] {
 }
 
 export function printAllTaskQuests(filter: string = ""): void {
+  filter = filter.toLowerCase();
+
   const groups = {
     "Complete - Ready": [] as string[],
     "Complete - Not Ready": [] as string[],
