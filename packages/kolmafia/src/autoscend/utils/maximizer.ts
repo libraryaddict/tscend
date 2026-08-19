@@ -17,7 +17,7 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $skill, $slot } from "libram";
 
-import { auto_abort, auto_log_info } from "../auto_util";
+import { auto_abort, auto_log_debug, auto_log_info } from "../auto_util";
 import {
   AllMaximizerModifier,
   MAXIMIZER_ALIASES,
@@ -363,8 +363,14 @@ export class Maximizer {
       !containerSlot ||
       !holderReady(container.containerHolder())
     ) {
+      auto_log_debug(
+        `Maximizer: container equip of ${item} failed - container=${container?.name() ?? "none"}, containerSlot=${containerSlot ?? "none"}`,
+      );
       return false;
     }
+    auto_log_debug(
+      `Maximizer: queuing ${item} into ${container.name()} slot ${containerSlot}`,
+    );
     this.pendingEquip.set(containerSlot, item);
     return true;
   }
@@ -582,8 +588,70 @@ export class Maximizer {
 
   // equipScope -1 = EQUIP_NOW
   maximize(): boolean {
+    if (this.slotContainers.length > 0) {
+      auto_log_debug(
+        `Maximizer: pending container slots before maximize: ${[
+          ...this.pendingEquip,
+        ]
+          .filter(([slot]) =>
+            this.slotContainers.some((c) => c.slots().includes(slot)),
+          )
+          .map(([slot, item]) => `${slot}=${item}`)
+          .join(", ")}`,
+      );
+    }
     maximize(this.toString(), 2500, 0, -1, "equip");
+    this.applyContainerSlots();
     return true;
+  }
+
+  // The native maximizer doesn't know how to socket items into container slots
+  // (e.g. codpiece1-5), so we have to equip those ourselves once the container
+  // holder itself has been equipped.
+  private applyContainerSlots(): void {
+    for (const container of this.slotContainers) {
+      const slots = container.slots();
+
+      // We only care about which items end up in the container, not which
+      // slot they land in, so leave a slot alone if its current item is
+      // still wanted somewhere - that avoids unequipping a gem just to
+      // re-equip an identical one into a different slot.
+      const desiredCounts = new Map<Item, number>();
+      for (const slot of slots) {
+        const item = this.pending(slot);
+        if (item !== $item.none) {
+          desiredCounts.set(item, (desiredCounts.get(item) ?? 0) + 1);
+        }
+      }
+
+      const openSlots: Slot[] = [];
+      for (const slot of slots) {
+        const current = equippedItem(slot);
+        const remaining = desiredCounts.get(current) ?? 0;
+        if (current !== $item.none && remaining > 0) {
+          desiredCounts.set(current, remaining - 1);
+        } else {
+          openSlots.push(slot);
+        }
+      }
+
+      for (const slot of openSlots) {
+        const item = [...desiredCounts].find(([, count]) => count > 0)?.[0];
+        if (!item) {
+          continue;
+        }
+        desiredCounts.set(item, (desiredCounts.get(item) ?? 0) - 1);
+
+        const current = equippedItem(slot);
+        auto_log_debug(
+          `Maximizer: applying ${container.name()} slot ${slot}: ${current} -> ${item}`,
+        );
+        const ok = equip(slot, item);
+        auto_log_debug(
+          `Maximizer: equip(${slot}, ${item}) returned ${ok}, now equipped: ${equippedItem(slot)}`,
+        );
+      }
+    }
   }
 
   simulate(): Map<Slot, Item> {
