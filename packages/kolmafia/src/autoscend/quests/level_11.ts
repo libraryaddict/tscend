@@ -2861,7 +2861,18 @@ export const L11_hiddenBowlingAlleyTask: QuestTask = registerQuestTask(
   {
     name: "L11_hiddenBowlingAlley",
     completed: () => internalQuestStatus("questL11Spare") > 0,
-    ready: () => internalQuestStatus("questL11Spare") === 0,
+    ready: () => {
+      if (internalQuestStatus("questL11Spare") > 0) {
+        return false;
+      }
+      if (auto_copierShouldDelayZone($locations`The Hidden Bowling Alley`)) {
+        auto_log_debug(
+          "Delaying L11 Hidden Bowling Alley - sword wants a pygmy bowler but isn't willing to switch targets yet.",
+        );
+        return false;
+      }
+      return true;
+    },
     do: L11_hiddenBowlingAlleyDo,
     locations: $location`The Hidden Bowling Alley`,
   },
