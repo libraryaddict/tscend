@@ -282,7 +282,11 @@ import {
 } from "../paths/2024/wereprofessor";
 import { in_zootomist } from "../paths/2025/zootomist";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
-import { bluevsred_isRed, in_bluevsred } from "../paths/2026/red_vs_blue";
+import {
+  bluevsred_isBlue,
+  bluevsred_isRed,
+  in_bluevsred,
+} from "../paths/2026/red_vs_blue";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { maximizer } from "../utils/maximizer";
 import { L3_tavern } from "./level_03";
@@ -3037,8 +3041,14 @@ export function L11_swordWantsBowlingMonster(): boolean {
   );
 }
 
-function L11_hiddenCityZonesCanUseMachete(): boolean {
-  return !is_boris() && !in_wotsf() && !in_pokefam() && !in_avantGuard();
+export function L11_hiddenCityZonesCanUseMachete(): boolean {
+  return (
+    !is_boris() &&
+    !in_wotsf() &&
+    !in_pokefam() &&
+    !in_avantGuard() &&
+    !(in_bluevsred() && bluevsred_isBlue())
+  );
 }
 
 function L11_hiddenCityZonesNeedPark(): boolean {
@@ -3052,7 +3062,7 @@ function L11_hiddenCityZonesNeedPark(): boolean {
 }
 
 function L11_hiddenCityZonesEquipMachete(): boolean {
-  if (in_avantGuard()) {
+  if (!L11_hiddenCityZonesCanUseMachete()) {
     return false; //combats aren't free so no point in equipping a Machete
   }
   if (auto_can_equip($item`antique machete`)) {

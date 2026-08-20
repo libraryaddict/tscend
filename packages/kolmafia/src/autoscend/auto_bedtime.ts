@@ -202,7 +202,6 @@ import {
   elementalPlanes_access,
   elementalPlanes_takeJob,
 } from "./iotms/other/elementalPlanes";
-import { in_wotsf } from "./paths/2011/way_of_the_surprising_fist";
 import { is_boris } from "./paths/2012/avatar_of_boris";
 import { is_jarlsberg } from "./paths/2013/avatar_of_jarlsberg";
 import { is_pete } from "./paths/2014/avatar_of_sneaky_pete";
@@ -228,6 +227,7 @@ import { in_avantGuard } from "./paths/2024/avant_guard";
 import { in_wereprof, is_werewolf } from "./paths/2024/wereprofessor";
 import { amw_buyAdv, in_amw } from "./paths/2026/adventurer_meats_world";
 import { inAftercore } from "./paths/casual";
+import { L11_hiddenCityZonesCanUseMachete } from "./quests/level_11";
 import {
   ns_crowd1,
   ns_crowd2,
@@ -844,7 +844,7 @@ function bedtime_pulls(): void {
 
   if (
     itemAmount($item`muculent machete`) === 0 &&
-    !(is_boris() || in_wotsf() || in_pokefam() || in_lol())
+    L11_hiddenCityZonesCanUseMachete()
   ) {
     // no need in paths where can't use machete
     pullXWhenHaveY($item`antique machete`, 1, 0);
