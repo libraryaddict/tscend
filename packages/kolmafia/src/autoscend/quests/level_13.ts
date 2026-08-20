@@ -1381,13 +1381,13 @@ function L13_towerNSContestsDo(): boolean {
   if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_crowd2")) {
     let toCompete: Location = $location.none;
     switch (safeGet("nsChallenge1")) {
-      case "Mysticality":
+      case $stat`Mysticality`:
         toCompete = $location`Smartest Adventurer Contest`;
         break;
-      case "Moxie":
+      case $stat`Moxie`:
         toCompete = $location`Smoothest Adventurer Contest`;
         break;
-      case "Muscle":
+      case $stat`Muscle`:
         toCompete = $location`Strongest Adventurer Contest`;
         break;
     }

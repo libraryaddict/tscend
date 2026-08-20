@@ -17,8 +17,32 @@ type MessageIds = "nonPrimitiveGet" | "nonPrimitiveComparedToString";
 // Item/Stat/Phylum, so a non-primitive result is the intended, common case there - unlike
 // get(), where it means a bypass of the typed helpers. safeGet() only earns a warning when
 // its non-primitive result is compared against a string literal, which can never be true.
+// A switch's `case` labels and Array#includes()/indexOf() membership checks use the same
+// strict-equality comparison, so those are the same bug in a different shape.
 function isComparedToStringLiteral(node: TSESTree.Node): boolean {
   const parent = node.parent;
+  if (parent?.type === "SwitchStatement" && parent.discriminant === node) {
+    return parent.cases.some(
+      (c) => c.test?.type === "Literal" && typeof c.test.value === "string",
+    );
+  }
+
+  if (
+    parent?.type === "CallExpression" &&
+    parent.arguments[0] === node &&
+    parent.callee.type === "MemberExpression" &&
+    parent.callee.property.type === "Identifier" &&
+    ["includes", "indexOf"].includes(parent.callee.property.name)
+  ) {
+    const array = parent.callee.object;
+    return (
+      array.type === "ArrayExpression" &&
+      array.elements.some(
+        (e) => e?.type === "Literal" && typeof e.value === "string",
+      )
+    );
+  }
+
   if (parent?.type !== "BinaryExpression") return false;
   if (!["==", "===", "!=", "!=="].includes(parent.operator)) return false;
 
