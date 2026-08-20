@@ -3659,28 +3659,34 @@ function auto_summonMountainManImpl(
     willUse.push(
       `We can naturally drop ${oresAlreadyDropping} of the ${neededDropCount} ${oreGoal}${neededDropCount !== 1 ? "s" : ""} we need`,
     );
+  } else {
+    willUse.push(
+      `We can't naturally drop the ${neededDropCount} ${oreGoal}${neededDropCount !== 1 ? "s" : ""} that we need`,
+    );
   }
 
   // If we can use the kitten to get every ore, then do so, we do this deliberately because if we can save a YR, then save it.
   if (
+    catBurglarHeistsLeft() > 0 &&
     oresAcquired < neededDropCount &&
     oresAcquired + catBurglarHeistsLeft() >= oresAcquired
   ) {
-    const burgleOres = Math.min(
+    const willGive = Math.min(
       catBurglarHeistsLeft(),
       neededDropCount - oresAcquired,
     );
     willUse.push(
-      `We will Kitten Burglar Heist for an extra ${burgleOres} ${oreGoal}${burgleOres !== 1 ? "s" : ""}`,
+      `We will Kitten Burglar Heist for an extra ${willGive} ${oreGoal}${willGive !== 1 ? "s" : ""} = ${oresAcquired + willGive}`,
     );
-    oresAcquired += catBurglarHeistsLeft();
+    oresAcquired += willGive;
     shouldUseKitten = true;
   }
 
   // Use a YR if we need more ores and we did not cap the drop
   if (oresAcquired < neededDropCount && oresAlreadyDropping < dropCount) {
-    willUse.push(`We will Yellow Ray for an extra ${dropCount} ${oreGoal}`);
-    oresAcquired += dropCount - oresAlreadyDropping;
+    const wouldGain = dropCount - oresAlreadyDropping;
+    willUse.push(`We will Yellow Ray for an extra ${wouldGain} ${oreGoal}`);
+    oresAcquired += wouldGain;
     shouldYR = true;
   }
 
@@ -3690,12 +3696,12 @@ function auto_summonMountainManImpl(
     neededDropCount < oresAcquired &&
     catBurglarHeistsLeft() > 0
   ) {
-    const burgleOres = Math.min(
+    const willGive = Math.min(
       catBurglarHeistsLeft(),
       neededDropCount - oresAcquired,
     );
     willUse.push(
-      `We will Kitten Burglar Heist for an extra ${burgleOres} ${oreGoal}${burgleOres !== 1 ? "s" : ""}`,
+      `We will Kitten Burglar Heist for an extra ${willGive} ${oreGoal}${willGive !== 1 ? "s" : ""} = ${oresAcquired + willGive}`,
     );
     oresAcquired += catBurglarHeistsLeft();
     shouldUseKitten = true;
@@ -3716,10 +3722,11 @@ function auto_summonMountainManImpl(
         return "delay";
       }
     }
+    const willGive = drops.length - oresAlreadyDropping;
     willUse.push(
-      `We will baseball diamond YR for ${drops.length} ${oreGoal}${drops.length !== 1 ? "s" : ""}`,
+      `We will baseball diamond YR for an extra ${willGive} ${oreGoal}${willGive !== 1 ? "s" : ""} = ${oresAcquired + willGive}`,
     );
-    oresAcquired += drops.length;
+    oresAcquired += willGive;
     shouldBaseballYR = true;
   }
 
@@ -3729,26 +3736,25 @@ function auto_summonMountainManImpl(
     auto_can_equip($item`pro skateboard`) &&
     !get("_epicMcTwistUsed")
   ) {
-    const wouldGain = shouldYR ? drops.length : oresAlreadyDropping;
+    const willGive = shouldYR ? drops.length : oresAlreadyDropping;
     willUse.push(
-      `We will '${$skill`Do an epic McTwist!`}' for ${wouldGain} ${oreGoal}${wouldGain !== 1 ? "s" : ""}`,
+      `We will '${$skill`Do an epic McTwist!`}' for an extra ${willGive} ${oreGoal}${willGive !== 1 ? "s" : ""} = ${oresAcquired + willGive}`,
     );
-    oresAcquired += wouldGain;
+    oresAcquired += willGive;
     shouldMcTwist = true;
   }
 
-  if (
-    oresAcquired < neededDropCount &&
-    (canDelayIfNotCapped || oresAcquired <= 0)
-  ) {
+  if (oresAcquired < neededDropCount && canDelayIfNotCapped) {
     return "delay";
   }
+
+  if (oresAcquired === 0) return "fail";
 
   // We'd summon at this point, but this call was only checking the verdict
   if (speculating) return "pass";
 
   auto_log_info(
-    `Trying to summon a mountain man to gain ${neededDropCount} ${oreGoal}${neededDropCount !== 1 ? "s" : ""}`,
+    `We need ${neededDropCount} ${oreGoal}${neededDropCount !== 1 ? "s" : ""}, trying to summon a mountain man`,
   );
 
   willUse.forEach((s) => auto_log_info(s));

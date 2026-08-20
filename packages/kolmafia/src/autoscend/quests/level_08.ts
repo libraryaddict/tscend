@@ -490,7 +490,10 @@ function L8_getMineOres(): boolean {
     return false;
   }
 
-  L8_mountainManSummon();
+  if (L8_mountainManSummon()) {
+    return true;
+  }
+
   // in softcore we want to pull an ore
   if (canPull(oreGoal)) {
     pullXWhenHaveY(oreGoal, 1, itemAmount(oreGoal));
