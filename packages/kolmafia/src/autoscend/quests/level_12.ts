@@ -476,10 +476,6 @@ export function auto_bestWarPlan(): WarPlan {
   if (in_glover()) {
     considerArena = false;
   }
-  if (auto_warSide() === "hippy") {
-    //arena not implemented for hippies yet. TODO implement it then remove this
-    considerArena = false;
-  }
   if (get("auto_skipNuns", false)) {
     considerNuns = false;
   }
@@ -1838,7 +1834,8 @@ export const L12_lastDitchFlyerTask: QuestTask = registerQuestTask({
     get("flyeredML") < 10000 &&
     (itemAmount($item`rock band flyers`) > 0 ||
       itemAmount($item`jam band flyers`) > 0) &&
-    (myLevel() >= 13 || isAboutToPowerlevel()), //let the powerlevel lock release first so we can do quests that are waiting for optimal conditions.
+    (myLevel() >= 13 || isAboutToPowerlevel()) && //let the powerlevel lock release first so we can do quests that are waiting for optimal conditions.
+    !(get("auto_hippyInstead", false) && get("fratboysDefeated") < 458), //Does hippy side have access to arena yet?
   do: L12_lastDitchFlyerDo,
 });
 
@@ -1892,7 +1889,8 @@ export const L12_flyerFinishTask: QuestTask = registerQuestTask({
   ready: () =>
     internalQuestStatus("questL12War") === 1 &&
     (itemAmount($item`rock band flyers`) > 0 ||
-      itemAmount($item`jam band flyers`) > 0),
+      itemAmount($item`jam band flyers`) > 0) &&
+    !(get("auto_hippyInstead", false) && get("fratboysDefeated") < 458), //Does hippy side have access to arena yet?
   do: L12_flyerFinishDo,
 });
 

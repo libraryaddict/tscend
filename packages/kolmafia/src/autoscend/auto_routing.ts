@@ -364,6 +364,21 @@ function auto_earlyRoutingHandlingDo(): boolean {
     // Just make sure the other two quests are started too
     visitUrl("bigisland.php?place=lighthouse&action=pyro&pwd");
     visitUrl("bigisland.php?action=junkman&pwd");
+    return true;
+  }
+
+  // Check we have flyers if war hippy and war is progressed, first because takes no turns.
+  if (
+    !in_koe() &&
+    internalQuestStatus("questL12War") === 1 &&
+    get("auto_hippyInstead", false) &&
+    get("fratboysDefeated") >= 458 &&
+    get("sidequestArenaCompleted") !== "hippy" &&
+    availableAmount($item`jam band flyers`) === 0
+  ) {
+    outfit("war hippy fatigues"); // don't use the equipOutfit func here since this is just temporary, we don't want to adventure like this.
+    visitUrl("bigisland.php?place=concert&pwd");
+    return true;
   }
   // force forcing non-combats.
   if (auto_canForceNextNoncombat()) {
