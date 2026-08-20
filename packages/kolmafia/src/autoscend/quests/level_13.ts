@@ -1418,7 +1418,7 @@ function L13_towerNSContestsDo(): boolean {
         break;
     }
     if (toCompete === $location.none) {
-      abort("nsChallenge1 is invalid. This is a severe error.");
+      abort("nsChallenge2 is invalid. This is a severe error.");
     }
     autoAdv(toCompete);
     return true;
