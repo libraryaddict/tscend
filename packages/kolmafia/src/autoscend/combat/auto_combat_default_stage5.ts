@@ -58,7 +58,6 @@ import {
   auto_log_info,
   auto_log_warning,
   currentFlavour,
-  handleTracker,
   isGhost,
   stunnable,
 } from "../auto_util";
@@ -164,11 +163,6 @@ export function auto_combatDefaultStage5(
     wantToClubAcrossBattlefield(myLocation(), enemy) &&
     auto_canUse($skill`Club 'Em Across the Battlefield`)
   ) {
-    handleTracker({
-      what: enemy,
-      detail: $skill`Club 'Em Across the Battlefield`.toString(),
-      property: "auto_otherstuff",
-    });
     return auto_useSkill($skill`Club 'Em Across the Battlefield`);
   }
 

@@ -9,6 +9,7 @@ import {
   isWearingOutfit,
   itemAmount,
   lastChoice,
+  lastMonster,
   Monster,
   myLevel,
   myLocation,
@@ -18,7 +19,7 @@ import {
   runChoice,
   toInt,
 } from "kolmafia";
-import { $item, $location, $stat, get, set } from "libram";
+import { $item, $location, $monster, $skill, $stat, get, set } from "libram";
 
 import { possessEquipment } from "./auto_equipment";
 import {
@@ -29,6 +30,7 @@ import {
   auto_monsterHasWantedDrop,
   auto_runChoice,
   currentPoolSkill,
+  handleTracker,
   internalQuestStatus,
   poolSkillPracticeGains,
 } from "./auto_util";
@@ -824,10 +826,23 @@ function auto_run_choice(choice: number, page: string): boolean {
                 return false;
               }) ?? victimIds[0];
 
+            const impacted =
+              Monster.all().find((m) => m.id === best) ?? $monster`none`;
+
+            handleTracker({
+              what: lastMonster(),
+              detail: `${$skill`Club 'Em Across the Battlefield`.toString()} into '${impacted}'`,
+              property: "auto_otherstuff",
+            });
             auto_runChoice(1, `victim=${best}`);
             break;
           }
 
+          handleTracker({
+            what: lastMonster(),
+            detail: `${$skill`Club 'Em Across the Battlefield`}`,
+            property: "auto_otherstuff",
+          });
           auto_runChoice(2);
           break;
         }
