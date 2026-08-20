@@ -96,6 +96,7 @@ import { in_zootomist } from "../../paths/2025/zootomist";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 import { c2t_apron } from "../../utils/c2t_apron";
+import { maximizer } from "../../utils/maximizer";
 import {
   auto_get_clan_lounge,
   canJumpToAwayClan,
@@ -682,6 +683,7 @@ export function auto_buyFromSeptEmberStore(): void {
         buy($coinmaster`Sept-Ember Censer`, 1, bember);
       }
 
+      maximizer.dispose();
       provideResistances(resGoal, $location`Noob Cave`, true, true, false);
       equipMaximizedGear();
       // We could have left-hand if our off-hand is strong enough
