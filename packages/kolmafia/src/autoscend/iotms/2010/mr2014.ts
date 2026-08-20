@@ -49,7 +49,7 @@ import {
 } from "libram";
 
 import { canPull, pullXWhenHaveY } from "../../auto_acquire";
-import { autoAdv } from "../../auto_adventure";
+import { auto_canRunBetweenBattleChecks, autoAdv } from "../../auto_adventure";
 import { main as handleChoiceAdv } from "../../auto_choice_adv";
 import { fullness_left, inebriety_left } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
@@ -590,6 +590,9 @@ function icehouseMonster(): Monster {
 }
 
 export function icehouseUserErrorProtection(): boolean {
+  if (!auto_is_valid($item`ice house`) || !auto_canRunBetweenBattleChecks()) {
+    return true;
+  }
   if (icehouseMonster() === $monster.none) {
     return true;
   } else if ($_f_importantMonsters.includes(icehouseMonster())) {

@@ -9,7 +9,7 @@ import { generateHTML } from "./relayUtils";
 
 export function main(): void {
   auto_settings();
-  initializeSettings();
+  initializeSettings(true);
 
   write(generateHTML([settingsPage(), trackedPage(), infoPage()]));
 }

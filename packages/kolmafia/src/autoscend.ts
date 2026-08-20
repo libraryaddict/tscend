@@ -137,7 +137,11 @@ import {
   pullXWhenHaveY,
   pulverizeThing,
 } from "./autoscend/auto_acquire";
-import { autoAdv, autoLuckyAdv } from "./autoscend/auto_adventure";
+import {
+  auto_canRunBetweenBattleChecks,
+  autoAdv,
+  autoLuckyAdv,
+} from "./autoscend/auto_adventure";
 import { doBedtime } from "./autoscend/auto_bedtime";
 import { buffMaintain$2 } from "./autoscend/auto_buff";
 import {
@@ -589,7 +593,7 @@ import { maximizer } from "./autoscend/utils/maximizer";
 //this file contains its own header. so it needs to be imported early
 
 //Defined in autoscend.ash
-export function initializeSettings(): void {
+export function initializeSettings(calledFromRelay: boolean = false): void {
   if (inAftercore()) {
     return;
   }
@@ -612,22 +616,26 @@ export function initializeSettings(): void {
     set("auto_100familiar", $familiar.none);
     if (myFamiliar() !== $familiar.none && pathAllowsChangingFamiliar()) {
       //If we can't control familiar changes, no point setting 100% familiar data
-      const userAnswer: boolean = userConfirm(
-        "Familiar already set, is this a 100% familiar run? Will default to 'No' in 15 seconds.",
-        15000,
-        false,
-      );
+      const userAnswer: boolean =
+        !calledFromRelay &&
+        userConfirm(
+          "Familiar already set, is this a 100% familiar run? Will default to 'No' in 15 seconds.",
+          15000,
+          false,
+        );
       if (userAnswer) {
         set("auto_100familiar", myFamiliar());
       }
     }
     //check for a workshed
     if (getWorkshed() !== $item.none) {
-      const userAnswer: boolean = userConfirm(
-        "Workshed already set, do you want Autoscend to handle your workshed? Will default to 'Yes' in 15 seconds.",
-        15000,
-        true,
-      );
+      const userAnswer: boolean =
+        !calledFromRelay &&
+        userConfirm(
+          "Workshed already set, do you want Autoscend to handle your workshed? Will default to 'Yes' in 15 seconds.",
+          15000,
+          true,
+        );
       if (userAnswer) {
         set("auto_workshed", "auto");
       } else {
@@ -647,7 +655,9 @@ export function initializeSettings(): void {
   set("auto_modernzmobiecount", "");
   beehiveConsider(false);
 
-  eudora_initializeSettings();
+  if (auto_canRunBetweenBattleChecks()) {
+    eudora_initializeSettings();
+  }
   heavyrains_initializeSettings();
   awol_initializeSettings();
   aosol_initializeSettings();

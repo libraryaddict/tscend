@@ -1,47 +1,57 @@
-import { containsText, isUnrestricted, Item, visitUrl } from "kolmafia";
+import { entityEncode, isUnrestricted, Item, visitUrl } from "kolmafia";
 import { $item } from "libram";
+
 //Defined in autoscend/iotms/auto_eudora.ash
-function eudora_available(): boolean {
-  if (containsText(visitUrl("account.php"), "tab=correspondence")) {
-    return true;
-  }
-  return false;
-}
+
+type Eudora = {
+  kolName: string;
+  mafiaName?: string;
+  item: Item;
+};
+
+const eudoras: Eudora[] = [
+  {
+    kolName: "Pen Pal",
+    mafiaName: "Penpal",
+    item: $item`My Own Pen Pal kit`,
+  },
+  {
+    kolName: "GameInformPowerDailyPro Magazine",
+    item: $item`GameInformPowerDailyPro subscription card`,
+  },
+  {
+    kolName: "Xi Receiver Unit",
+    item: $item`Xi Receiver Unit`,
+  },
+  {
+    kolName: "New-You Club",
+    item: $item`New-You Club Membership Form`,
+  },
+  {
+    kolName: "Our Daily Candles",
+    item: $item`Our Daily Candles™ order form`,
+  },
+  {
+    kolName: "Black & White Apron",
+    item: $item`Black and White Apron Enrollment Form`,
+  },
+];
 
 export function eudora_initializeSettings(): Item[] {
   const retval: Item[] = [];
-  if (eudora_available()) {
-    const eudora_1: string = visitUrl("account.php?tab=correspondence");
+
+  const eudoraPage = visitUrl("account.php?tab=correspondence");
+
+  for (const eudora of eudoras) {
     if (
-      containsText(eudora_1, "Pen Pal") &&
-      isUnrestricted($item`My Own Pen Pal kit`)
+      !eudoraPage.includes(`">${entityEncode(eudora.kolName)}</option>`) ||
+      !isUnrestricted(eudora.item)
     ) {
-      retval.push($item`My Own Pen Pal kit`);
+      continue;
     }
-    if (
-      containsText(eudora_1, "GameInformPowerDailyPro Magazine") &&
-      isUnrestricted($item`GameInformPowerDailyPro subscription card`)
-    ) {
-      retval.push($item`GameInformPowerDailyPro subscription card`);
-    }
-    if (
-      containsText(eudora_1, "Xi Receiver Unit") &&
-      isUnrestricted($item`Xi Receiver Unit`)
-    ) {
-      retval.push($item`Xi Receiver Unit`);
-    }
-    if (
-      containsText(eudora_1, "New-You Club") &&
-      isUnrestricted($item`New-You Club Membership Form`)
-    ) {
-      retval.push($item`New-You Club Membership Form`);
-    }
-    if (
-      containsText(eudora_1, "Our Daily Candles") &&
-      isUnrestricted($item`Our Daily Candles™ order form`)
-    ) {
-      retval.push($item`Our Daily Candles™ order form`);
-    }
+
+    retval.push(eudora.item);
   }
+
   return retval;
 }
