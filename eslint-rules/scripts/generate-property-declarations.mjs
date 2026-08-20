@@ -19,6 +19,18 @@ const TRACKING_FILE = "data/tracking/tracking.yml";
 const OUT_FILE = "eslint-rules/generated/internal-properties.d.ts";
 const RUNTIME_OUT_FILE =
   "packages/kolmafia/src/autoscend/generated/property-types.ts";
+const LIBRAM_PROPERTY_TYPES_FILE = "node_modules/libram/dist/propertyTypes.js";
+
+// yml `type:` -> the array in libram's propertyTypes.js that its get()/set() consult to
+// decide how to convert a property's stored string. Libram has no notion of our own
+// auto_* properties, so without this patch get("auto_someBoolProp") (no default) can't
+// tell it's a boolean and just returns the raw "true"/"false" string.
+const LIBRAM_ARRAY_FOR_TYPE = {
+  boolean: "booleanProperties",
+  int: "numericProperties",
+  float: "numericProperties",
+  string: "stringProperties",
+};
 
 // yml `type:` -> [TS type, kolmafia class import needed]
 const TYPE_INFO = {
@@ -96,6 +108,47 @@ function validateSetting(file, property, value, errors) {
   }
 }
 
+// Splices our own auto_* boolean/int/float/string property names into libram's own
+// booleanProperties/numericProperties/stringProperties arrays, so libram's isBooleanProperty()
+// etc. - and therefore get()/set() - recognize them at runtime, not just at compile time.
+async function patchLibramPropertyTypes(byType) {
+  let content = await fs.readFile(LIBRAM_PROPERTY_TYPES_FILE, "utf8");
+  const original = content;
+
+  const namesByArray = new Map();
+  for (const [type, arrayName] of Object.entries(LIBRAM_ARRAY_FOR_TYPE)) {
+    if (!namesByArray.has(arrayName)) namesByArray.set(arrayName, new Set());
+    for (const name of byType.get(type) ?? []) {
+      namesByArray.get(arrayName).add(name);
+    }
+  }
+
+  for (const [arrayName, names] of namesByArray) {
+    const pattern = new RegExp(`export const ${arrayName} = (\\[[^\\]]*\\]);`);
+    const match = content.match(pattern);
+    if (!match) {
+      throw new Error(
+        `Could not find libram's "${arrayName}" array to patch in ${LIBRAM_PROPERTY_TYPES_FILE} - has libram changed its format?`,
+      );
+    }
+
+    const existing = JSON.parse(match[1]);
+    const existingSet = new Set(existing);
+    const additions = [...names].filter((name) => !existingSet.has(name));
+    const merged = [...existing, ...additions];
+
+    content = content.replace(
+      pattern,
+      `export const ${arrayName} = ${JSON.stringify(merged)};`,
+    );
+  }
+
+  if (content === original) return;
+
+  await fs.writeFile(LIBRAM_PROPERTY_TYPES_FILE, content);
+  console.log(`Patched ${LIBRAM_PROPERTY_TYPES_FILE}`);
+}
+
 export async function main() {
   const files = (
     await fs.readdir(SETTINGS_DIR, { recursive: true, withFileTypes: true })
@@ -126,6 +179,8 @@ export async function main() {
   if (errors.length > 0) {
     throw new Error(`Invalid data/settings yml:\n${errors.join("\n")}`);
   }
+
+  await patchLibramPropertyTypes(byType);
 
   const types = [...byType.keys()].sort();
   const unionName = (type) =>
