@@ -5015,7 +5015,7 @@ function L11_unlockMiddleChamberDo(): boolean {
       if (bluevsred_isRed() && total < 10) {
         provideItem$2(400, $location`The Middle Chamber`, true);
       }
-      autoAdv($location`The Middle Chamber`);
+      return autoAdv($location`The Middle Chamber`);
     }
     providePlusNonCombat(
       auto_combatModCap(),
