@@ -235,10 +235,7 @@ type LocationProperty =
   | "auto_priorLocation";
 
 type MonsterProperty =
-  | "auto_bat_soulmonster"
-  | "auto_habitatMonster"
-  | "auto_nextEncounter"
-  | "auto_purple_candled";
+  "auto_bat_soulmonster" | "auto_habitatMonster" | "auto_nextEncounter";
 
 type PhylumProperty = "_auto_screechDelay";
 

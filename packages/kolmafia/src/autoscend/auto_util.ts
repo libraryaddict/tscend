@@ -358,6 +358,7 @@ import {
   auto_heartstoneLuckRemaining,
   auto_legendaryNoodlesAvailable,
   auto_willEatLegendaryNoodles,
+  isOverdueClubIntoNextWeek,
 } from "./iotms/2020/mr2026";
 import { auto_get_clan_lounge, handleFaxMonster } from "./iotms/other/clan";
 import {
@@ -1822,6 +1823,9 @@ export function adjustForCopyIfPossible(target: Monster): boolean {
   if (copier === $skill`%fn, fire a Red, White and Blue Blast`) {
     handleFamiliar$1($familiar`Patriotic Eagle`);
   }
+  if (copier === $skill`Club 'Em Into Next Week`) {
+    return autoEquip($item`legendary seal-clubbing club`);
+  }
   return false;
 }
 
@@ -2176,6 +2180,7 @@ export function copySources(): number {
   // Back-Up to your Last Enemy: Equipment
   // Rain-Doh black box: Item
   // Digitize: Skill
+  // Club 'Em Into Next Week: Skill
   // Blow the Purple Candle!: Equipment
   // Look at auto_util.ash: summonMonster
   // Summons (Calculate the Universe, Cargo Shorts and Burly Bodyguard in AG are all overly specialised)
@@ -2187,7 +2192,7 @@ export function copySources(): number {
   // Wishing: Item
 
   let count_1: number = 0;
-  for (const sk of $skills`Macrometeorite, Recall Facts: Monster Habitats, Digitize, Rain Man`) {
+  for (const sk of $skills`Macrometeorite, Recall Facts: Monster Habitats, Digitize, Club 'Em Into Next Week, Rain Man`) {
     if (auto_have_skill(sk)) {
       count_1 += 1;
       continue;
@@ -3100,6 +3105,7 @@ export function auto_burningDelay(): boolean {
   if (
     (auto_voteMonster(true) ||
       isOverdueDigitize() ||
+      isOverdueClubIntoNextWeek() ||
       auto_sausageGoblin() ||
       auto_backupTarget() ||
       auto_voidMonster()) &&
@@ -3523,7 +3529,7 @@ export function summonMonster(
       autoEquip($item`combat lover's locket`);
     }
     // Equip a copier if we want to copy it
-    if (auto_wantToCopy$1(mon)) {
+    if (auto_wantToCopy(mon)) {
       auto_log_info(
         `We want to copy the ${mon} so adjusting for our equipment if possible.`,
       );
@@ -5082,24 +5088,30 @@ export function auto_wantToReplace(enemy: Monster, loc: Location): boolean {
   return toReplace.includes(enemy);
 }
 
-export function auto_wantToCopy(enemy: Monster, loc: Location): boolean {
-  const locCache: Location = myLocation();
-  setLocation(loc);
-  const toCopy: Monster[] = auto_getMonsters("copy");
-  setLocation(locCache);
-  return toCopy.includes(enemy);
-}
+export function auto_wantToCopy(enemy: Monster, loc?: Location): boolean {
+  if (enemy.boss || !enemy.copyable) {
+    return false;
+  }
 
-function auto_wantToCopy$1(enemy: Monster): boolean {
-  const toCopy: Monster[] = auto_getMonsters("copy");
-  return toCopy.includes(enemy);
+  const locCache: Location = myLocation();
+  try {
+    if (loc) {
+      setLocation(loc);
+    }
+    const toCopy: Monster[] = auto_getMonsters("copy");
+    return toCopy.includes(enemy);
+  } finally {
+    if (loc) {
+      setLocation(locCache);
+    }
+  }
 }
 
 export function zoneRank(mon: Monster, loc: Location): number {
   if (auto_wantToYellowRay(mon, loc)) {
     return 1;
   }
-  if (auto_wantToCopy$1(mon)) {
+  if (auto_wantToCopy(mon)) {
     return 2;
   }
   if (auto_wantToSniff(mon, loc)) {
@@ -6662,8 +6674,8 @@ export function auto_wantToFreeKillWithNoDrops(
     if (enemy.physicalResistance >= 100 && enemy.elementalResistance >= 100) {
       return true;
     }
-    //This is called in stage2 and auto_purple_candled is set in stage 4 so this should only ever show up on the purple candled enemy
-    if (safeGet("auto_purple_candled") === enemy) {
+    //This is called in stage2 and _chainedPurpleCandleMonster is set in stage 4 so this should only ever show up on the purple candled enemy
+    if (safeGet("_chainedPurpleCandleMonster") === enemy) {
       return true;
     }
     return false;

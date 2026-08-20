@@ -355,6 +355,7 @@ import {
 import {
   auto_elfToiletReady,
   auto_useElfToilet,
+  isOverdueClubIntoNextWeek,
 } from "./autoscend/iotms/2020/mr2026";
 import {
   auto_floundryAction,
@@ -753,6 +754,7 @@ function LX_burnDelayDo(): boolean {
   const backupTargetAvailable: boolean = auto_backupTarget();
   const voidMonsterAvailable: boolean = auto_voidMonster();
   const habitatingMonsters: boolean = auto_habitatMonster() !== $monster.none;
+  const clubEmNextWeekNext: boolean = isOverdueClubIntoNextWeek();
   // if we're a plumber and we're still stuck doing a flat 15 damage per attack
   // then a scaling monster is probably going to be a bad time
   if (in_plumber() && !plumber_canDealScalingDamage()) {
@@ -811,6 +813,28 @@ function LX_burnDelayDo(): boolean {
       safeGet("_sourceTerminalDigitizeMonster").toString(),
     );
     if (autoAdv(digitizeZone)) {
+      return true;
+    }
+    set("auto_nextEncounter", "");
+  }
+  if (clubEmNextWeekNext) {
+    // Digitize Wanderers will happen regardless so prioritize handling them.
+    // hopefully they don't overwrite something we want to backup.
+    let clubEmZone: Location = solveDelayZone(
+      isFreeMonster(safeGet("clubEmNextWeekMonster")) &&
+        get("breathitinCharges") > 0,
+    );
+    if (clubEmZone === $location.none) {
+      // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
+      // and we likely want to fight it. Noob Cave is available from turn 0 & is not outdoors so Breathitin won't trigger.
+      clubEmZone = $location`Noob Cave`;
+    }
+    auto_log_info(
+      `Fighting a ${safeGet("clubEmNextWeekMonster")} in ${clubEmZone.toString()} to burn delay!`,
+      "green",
+    );
+    set("auto_nextEncounter", safeGet("clubEmNextWeekMonster").toString());
+    if (autoAdv(clubEmZone)) {
       return true;
     }
     set("auto_nextEncounter", "");
@@ -2325,7 +2349,6 @@ export function resetState(): void {
   set("_auto_tunedElement", ""); // Flavour of Magic elemental alignment
   set("auto_nextEncounter", ""); // monster that was expected last turn
   set("auto_habitatMonster", ""); // monster we want to cast Recall Facts: Monster Habitats
-  set("auto_purple_candled", ""); //monster we want to cast Blow the Purple Candle
   set("auto_nonAdvLoc", false); // location is a non-adventure.php location
 
   if (doNotBuffFamiliar100Run()) {

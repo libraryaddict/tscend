@@ -416,6 +416,7 @@ export function auto_combatDefaultStage2(
       return auto_useSkill($skill`Club 'Em Back in Time`);
     }
   }
+
   if (
     wantToThrowCoinAtEm(myLocation(), enemy) &&
     canUse$3($item`Interesting Coin`) &&

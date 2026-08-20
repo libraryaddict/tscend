@@ -130,6 +130,7 @@ import {
 } from "../iotms/2020/mr2025";
 import {
   auto_chewLiquidAsset,
+  auto_clubIntoNextWeekTimesRemaining,
   auto_getItemToEquipHeartstone,
   auto_heartstoneCurrentWord,
   auto_heartstoneShouldStealHeartInCombat,
@@ -541,6 +542,15 @@ export function getCopier(enemy: Monster, inCombat: boolean = true): Skill {
     enemy.copyable
   ) {
     return $skill`%fn, fire a Red, White and Blue Blast`;
+  }
+  if (
+    auto_clubIntoNextWeekTimesRemaining() > 0 &&
+    (!inCombat ||
+      auto_canUse($skill`Club 'Em Into Next Week`, true, inCombat)) &&
+    !enemy.boss &&
+    enemy.copyable
+  ) {
+    return $skill`Club 'Em Into Next Week`;
   }
   return $skill.none;
 }

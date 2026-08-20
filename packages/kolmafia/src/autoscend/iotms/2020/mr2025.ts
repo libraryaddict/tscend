@@ -1638,8 +1638,8 @@ export function auto_isPotentialTalkToSomeFishTarget(
   if (fightingDesiredTaskMonster(enemy)) {
     return false;
   }
-  //This is called in stage2 and auto_purple_candled is set in stage 4 so this should only ever show up on the purple candled enemy
-  if (safeGet("auto_purple_candled") === enemy) {
+  //This is called in stage2 and _chainedPurpleCandleMonster is set in stage 4 so this should only ever show up on the purple candled enemy
+  if (safeGet("_chainedPurpleCandleMonster") === enemy) {
     return false;
   }
 

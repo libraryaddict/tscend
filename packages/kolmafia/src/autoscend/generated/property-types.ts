@@ -41,7 +41,6 @@ export const monsterProperties = [
   "auto_bat_soulmonster",
   "auto_habitatMonster",
   "auto_nextEncounter",
-  "auto_purple_candled",
 ] as const;
 
 export const phylumProperties = [

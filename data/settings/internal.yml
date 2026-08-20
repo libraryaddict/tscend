@@ -321,8 +321,6 @@ auto_pulls:
   type: string
   default: ""
   resets: ascend
-auto_purple_candled:
-  type: monster
 auto_rain_king_combat:
   type: string
 auto_renenutet:

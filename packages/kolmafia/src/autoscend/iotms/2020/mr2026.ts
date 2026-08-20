@@ -68,6 +68,7 @@ import {
   have,
   isVoteWandererNow,
   isWandererNow,
+  LegendarySealClubbingClub,
   set,
   Wanderer,
 } from "libram";
@@ -112,6 +113,7 @@ import {
   auto_log_warning,
   auto_runChoice,
   auto_wantToBanish,
+  auto_wantToCopy,
   auto_wantToFreeKillWithNoDrops,
   auto_wantToFreeRun,
   auto_zoneCopyableMonsters,
@@ -119,6 +121,7 @@ import {
   canSummonMonster,
   freeRunCombatAction,
   handleTracker,
+  instakillable,
   internalQuestStatus,
   isFreeMonster,
   meatReserve,
@@ -280,13 +283,10 @@ export function auto_codpieceFillEmptySlots(): void {
 
 //Defined in autoscend/iotms/mr2026.ash
 function auto_haveLegendarySealClubbingClub(): boolean {
-  if (
+  return (
     auto_is_valid($item`legendary seal-clubbing club`) &&
-    availableAmount($item`legendary seal-clubbing club`) > 0
-  ) {
-    return true;
-  }
-  return false;
+    possessEquipment($item`legendary seal-clubbing club`)
+  );
 }
 
 export function auto_clubEmBackInTimesRemaining(): number {
@@ -294,7 +294,7 @@ export function auto_clubEmBackInTimesRemaining(): number {
     return 0;
   }
 
-  return 5 - get("_clubEmTimeUsed");
+  return LegendarySealClubbingClub.clubBackInTimeAvailable();
 }
 
 export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean {
@@ -314,6 +314,37 @@ export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean {
   }
 
   return auto_wantToFreeKillWithNoDrops(loc, enemy);
+}
+
+export function auto_clubIntoNextWeekTimesRemaining(): number {
+  if (
+    !auto_haveLegendarySealClubbingClub() ||
+    !auto_is_valid$2($skill`Club 'Em Into Next Week`)
+  ) {
+    return 0;
+  }
+
+  return LegendarySealClubbingClub.clubIntoNextWeekAvailable();
+}
+
+export function auto_wantToClubIntoNextWeek(
+  loc: Location,
+  enemy: Monster,
+): boolean {
+  if (
+    !auto_is_valid$2($skill`Club 'Em Into Next Week`) ||
+    auto_clubIntoNextWeekTimesRemaining() === 0 ||
+    safeGet("clubEmNextWeekMonster") !== $monster.none ||
+    !instakillable(enemy)
+  ) {
+    return false;
+  }
+
+  return auto_wantToCopy(enemy, loc);
+}
+
+export function isOverdueClubIntoNextWeek(): boolean {
+  return LegendarySealClubbingClub.turnsUntilNextWeekFight() <= 0;
 }
 
 export function auto_haveHeartstone(): boolean {

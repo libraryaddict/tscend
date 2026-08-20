@@ -251,10 +251,6 @@ export function auto_combatDefaultStage4(
   if (auto_wantToCopy(enemy, myLocation()) && !ag_is_bodyguard()) {
     const copier: Skill = getCopier(enemy);
     if (copier !== $skill.none && auto_canUse(copier)) {
-      if (copier === $skill`Blow the Purple Candle!`) {
-        //mafia does not track the target of this skill so we must do so.
-        set("auto_purple_candled", enemy);
-      }
       handleTracker({
         what: enemy,
         detail: copier.toString(),
