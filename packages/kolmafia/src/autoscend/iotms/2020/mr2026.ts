@@ -111,6 +111,7 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
+  auto_monsterHasWantedDrop,
   auto_runChoice,
   auto_wantToBanish,
   auto_wantToCopy,
@@ -345,6 +346,46 @@ export function auto_wantToClubIntoNextWeek(
 
 export function isOverdueClubIntoNextWeek(): boolean {
   return LegendarySealClubbingClub.turnsUntilNextWeekFight() <= 0;
+}
+
+export function auto_clubAcrossBattlefieldTimesRemaining(): number {
+  if (
+    !auto_haveLegendarySealClubbingClub() ||
+    !auto_is_valid$2($skill`Club 'Em Across the Battlefield`)
+  ) {
+    return 0;
+  }
+
+  return LegendarySealClubbingClub.clubAcrossBattlefieldAvailable();
+}
+
+export function wantToClubAcrossBattlefield(
+  loc: Location,
+  enemy: Monster,
+): boolean {
+  if (auto_clubAcrossBattlefieldTimesRemaining() === 0) {
+    return false;
+  }
+
+  // needs another monster in the zone whose drop we actually want
+  return auto_location_monsters(loc).some(
+    ([mon, rate]) =>
+      rate > 0 && mon !== enemy && auto_monsterHasWantedDrop(mon),
+  );
+}
+
+export function auto_wantToEquipClubAcrossBattlefield(loc: Location): boolean {
+  if (auto_clubAcrossBattlefieldTimesRemaining() === 0) {
+    return false;
+  }
+
+  // equipping in advance is only worth it if there are at least 2 monsters
+  // in the zone we want the drops of, since we may end up fighting the desired encounter
+  const wantedMonsterCount: number = auto_location_monsters(loc).filter(
+    ([mon, rate]) => rate > 0 && auto_monsterHasWantedDrop(mon),
+  ).length;
+
+  return wantedMonsterCount >= 2;
 }
 
 export function auto_haveHeartstone(): boolean {

@@ -58,6 +58,7 @@ import {
   auto_log_info,
   auto_log_warning,
   currentFlavour,
+  handleTracker,
   isGhost,
   stunnable,
 } from "../auto_util";
@@ -66,6 +67,7 @@ import { auto_spoonCombatSkill } from "../iotms/2010/mr2019";
 import { auto_haveCosmicBowlingBall } from "../iotms/2020/mr2022";
 import { auto_haveDarts, dartSkill } from "../iotms/2020/mr2024";
 import { auto_canNorthernExplosionFE } from "../iotms/2020/mr2025";
+import { wantToClubAcrossBattlefield } from "../iotms/2020/mr2026";
 import { in_nuclear } from "../paths/2016/nuclear_autumn";
 import { in_glover } from "../paths/2018/g_lover";
 import { in_robot } from "../paths/2021/you_robot";
@@ -156,6 +158,18 @@ export function auto_combatDefaultStage5(
   retval = auto_combatMeatGolemStage5(round_1, enemy, text);
   if (retval !== undefined) {
     return retval;
+  }
+
+  if (
+    wantToClubAcrossBattlefield(myLocation(), enemy) &&
+    auto_canUse($skill`Club 'Em Across the Battlefield`)
+  ) {
+    handleTracker({
+      what: enemy,
+      detail: $skill`Club 'Em Across the Battlefield`.toString(),
+      property: "auto_otherstuff",
+    });
+    return auto_useSkill($skill`Club 'Em Across the Battlefield`);
   }
 
   if (

@@ -9,6 +9,7 @@ import {
   isWearingOutfit,
   itemAmount,
   lastChoice,
+  Monster,
   myLevel,
   myLocation,
   myMeat,
@@ -25,6 +26,7 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
+  auto_monsterHasWantedDrop,
   auto_runChoice,
   currentPoolSkill,
   internalQuestStatus,
@@ -805,6 +807,30 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 1566: //Summon a wave
         auto_runChoice(1);
+        break;
+      case 1589: // Club 'Em Across the Battlefield
+        {
+          const victimIds: number[] = [
+            ...page.matchAll(/name=['"]?victim['"]?\s+value=['"]?(\d+)['"]?/g),
+          ].map((v) => parseInt(v[1]));
+
+          if (victimIds.length > 0) {
+            const best =
+              victimIds.find((v) => {
+                try {
+                  // Don't error on unknown monster
+                  return auto_monsterHasWantedDrop(Monster.get(v));
+                } catch {}
+                return false;
+              }) ?? victimIds[0];
+
+            auto_runChoice(1, `victim=${best}`);
+            break;
+          }
+
+          auto_runChoice(2);
+          break;
+        }
         break;
       case 1599: // Legendary Digestion: if we aren't forcing combat, by default use spleen, else take famxp
         legendaryNoodlesChoiceHandler();

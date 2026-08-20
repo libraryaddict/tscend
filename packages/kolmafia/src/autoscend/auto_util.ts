@@ -7158,6 +7158,15 @@ function isManualAvatarPotion(item: Item): boolean {
   return stringModifier(effectModifier(item, "Effect"), "Avatar") !== "";
 }
 
+export function auto_monsterHasWantedDrop(mon: Monster): boolean {
+  const drops = getMonsterDrops(mon)
+    .filter((d) => isItemDropControlled(d))
+    .map((d) => d.item);
+  return getIncompleteQuestTasks().some((t) =>
+    taskDesiredEncounters(t).drops.some((f) => drops.includes(f.item)),
+  );
+}
+
 export function auto_isWorthYellowRaying(mon: Monster, loc: Location): boolean {
   // Scorcher guarantees every drop from one fight, so YR's target list applies here too.
   const drops = getMonsterDrops(mon).map((i) => i.item);

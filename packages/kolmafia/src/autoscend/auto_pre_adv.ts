@@ -236,6 +236,7 @@ import {
   auto_heartstoneShouldEquipForStealHeart,
   auto_preferSwordFamiliar,
   auto_sword_of_swords_tracking,
+  auto_wantToEquipClubAcrossBattlefield,
 } from "./iotms/2020/mr2026";
 import { get_floundry_locations } from "./iotms/other/clan";
 import {
@@ -842,6 +843,10 @@ function auto_pre_adventure(): boolean {
         break;
       }
     }
+  }
+  // Equip the legendary seal-clubbing club if there are enough monster drops to be worth clubbing across the battlefield for
+  if (auto_wantToEquipClubAcrossBattlefield(place)) {
+    addBonusToMaximize($item`legendary seal-clubbing club`, 400);
   }
 
   const baseballDiamondBonus = auto_baseballDiamondMaximizerBonus(place);
