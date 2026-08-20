@@ -447,6 +447,7 @@ export function L8_mineOreWorthBurningLuckOn(): boolean {
   if (auto_haveTrainSet()) {
     return false;
   }
+  if (auto_summonMountainManIsDelaying()) return false;
   return true;
 }
 
