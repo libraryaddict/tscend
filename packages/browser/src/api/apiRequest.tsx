@@ -51,7 +51,7 @@ async function callJsonApi(request: JsonApiRequest): Promise<JsonApiResponse> {
 
   if (!response.ok) {
     addNotification(`HTTP Request Failed.`);
-    throw `HTTP ${response.status}`;
+    throw new Error(`HTTP ${response.status}`);
   }
 
   const json = await response.json();

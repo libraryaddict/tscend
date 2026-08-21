@@ -1,5 +1,6 @@
 import { inHardcore } from "kolmafia";
 
+import { auto_abort } from "./auto_util";
 import { LX_needMeatSkills } from "./paths/2026/adventurer_meats_world";
 import { L6_friarsGetParts_condition_hardcore } from "./quests/level_06";
 import { L11_hasUltrahydrated } from "./quests/level_11";
@@ -20,7 +21,7 @@ const taskFunctionRegistry: Record<string, () => boolean> = {
 export function callRegisteredTaskFunction(name: string): boolean {
   const fn = taskFunctionRegistry[name];
   if (!fn) {
-    throw `Task "${name}" is not registered in task registry.`;
+    auto_abort(`Task "${name}" is not registered in task registry.`);
   }
   return fn();
 }

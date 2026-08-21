@@ -4961,7 +4961,7 @@ export function auto_is_valid$4(str: string): boolean {
   return isUnrestricted(str);
 }
 
-export function auto_abort(s: string) {
+export function auto_abort(s: string): never {
   auto_log_error(s);
   abort(s);
 }
