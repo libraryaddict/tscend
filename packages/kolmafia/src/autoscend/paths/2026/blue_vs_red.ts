@@ -46,9 +46,13 @@ for (const byId of (
     return "";
   }
   for (const [monsterId, [, colorIfBlue, colorIfRed]] of byId) {
+    let blue = sanitize(colorIfBlue);
+    let red = sanitize(colorIfRed);
+    if (blue === "") blue = red;
+    if (red === "") red = blue;
     bluevsred_monsterColors.set(monsterId, {
-      blue: sanitize(colorIfBlue),
-      red: sanitize(colorIfRed),
+      blue: blue,
+      red: red,
     });
   }
 }
@@ -58,9 +62,9 @@ function bluevsred_colorFor(monsterId: number, team: "blue" | "red"): string {
   return colors ? colors[team] : "";
 }
 
-export function bluevsred_willEncounterNC(monster: Monster): boolean {
+export function bluevsred_willEncounterFight(monster: Monster): boolean {
   if (!in_bluevsred()) {
-    return false;
+    return true;
   }
 
   const ourTeam = bluevsred_isBlue() ? "blue" : "red";
@@ -75,5 +79,5 @@ export function bluevsred_willEncounterNC(monster: Monster): boolean {
     bluevsred_colorFor(monster.id, ourTeam) ||
     bluevsred_colorFor(monster.id, otherTeam);
 
-  return color ? color === ourTeam : true;
+  return color ? color !== ourTeam : false;
 }

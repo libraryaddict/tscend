@@ -430,6 +430,7 @@ import {
   in_zootomist,
 } from "./paths/2025/zootomist";
 import { amw_wantMeat, in_amw } from "./paths/2026/adventurer_meats_world";
+import { bluevsred_willEncounterFight } from "./paths/2026/blue_vs_red";
 import { inAftercore } from "./paths/casual";
 import { bridgeGoal, fastenerCount, lumberCount } from "./quests/level_09";
 import { auto_warSide } from "./quests/level_12";
@@ -3064,7 +3065,8 @@ export function isFreeMonster(
 
   if (
     $monster`drunk pygmy` === mon &&
-    itemAmount($item`Bowl of Scorpions`) > 0
+    itemAmount($item`Bowl of Scorpions`) > 0 &&
+    bluevsred_willEncounterFight(mon)
   ) {
     return true;
   }
@@ -3087,7 +3089,11 @@ export function isFreeMonster(
     return true;
   }
 
-  if (containsText(toLowerCase(mon.attributes), "free")) {
+  if (
+    containsText(toLowerCase(mon.attributes), "free") &&
+    ((currentRound() > 0 && mon === lastMonster()) ||
+      bluevsred_willEncounterFight(mon))
+  ) {
     return true;
   }
 
