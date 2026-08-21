@@ -1779,6 +1779,20 @@ function auto_baseballGetDesiredElements(
   } else if (auto_haveMonodent() && mon === $monster`some fish`) {
     elements.push($element`spooky`);
   }
+  // They're not free on blue team
+  if (
+    !bluevsred_willEncounterFight($monster`dense liana`) &&
+    // If we're not done with dense lianas
+    ([
+      "questL11Curses",
+      "questL11Business",
+      "questL11Doctor",
+      "questL11Spare",
+    ].some((s) => internalQuestStatus(s) < 0) ||
+      internalQuestStatus("questL11Worship") < 3)
+  ) {
+    elements.push($element`spooky`);
+  }
   if (
     !isBanished(mon) &&
     auto_wantToBanish(mon, loc) &&
