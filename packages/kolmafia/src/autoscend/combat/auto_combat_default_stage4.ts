@@ -39,6 +39,7 @@ import {
   auto_have_skill,
   auto_log_warning,
   auto_wantToCopy,
+  auto_wantToCreateWanderer,
   auto_wantToSniff,
   combatItemDamageMultiplier,
   handleTracker,
@@ -70,6 +71,7 @@ import {
   getCopier,
   getSniffer,
   getStunner,
+  getWandererCreator,
   haveUsed,
   haveUsed$1,
   isSniffed,
@@ -260,6 +262,19 @@ export function auto_combatDefaultStage4(
       return auto_useSkill(copier);
     }
   }
+  //queues the current monster as a delayed wanderer instead of chaining an immediate fight
+  if (auto_wantToCreateWanderer(myLocation(), enemy) && !ag_is_bodyguard()) {
+    const wandererSkill: Skill = getWandererCreator(enemy);
+    if (wandererSkill !== $skill.none && auto_canUse(wandererSkill)) {
+      handleTracker({
+        what: enemy,
+        detail: wandererSkill.toString(),
+        property: "auto_copies",
+      });
+      combat_status_add("copied");
+      return auto_useSkill(wandererSkill);
+    }
+  }
   //accordion thief mechanic. unlike pickpocket it can be done at any round
   if (
     auto_canUse($skill`Steal Accordion`) &&
@@ -310,20 +325,6 @@ export function auto_combatDefaultStage4(
   ) {
     if (itemAmount($item`seal tooth`) > 0) {
       return $item`seal tooth`;
-    }
-  }
-  //winking is a monster copier familiar skill. they share a daily counter
-  let wink_skill: Skill = $skill.none;
-  if (auto_canUse($skill`Wink at`)) {
-    wink_skill = $skill`Wink at`;
-  }
-  if (auto_canUse($skill`Fire a badly romantic arrow`)) {
-    wink_skill = $skill`Fire a badly romantic arrow`;
-  }
-  if (wink_skill !== $skill.none) {
-    //we can wink / romatic arrow
-    if ($monsters`lobsterfrogman, modern zmobie`.includes(enemy)) {
-      return auto_useSkill(wink_skill);
     }
   }
   //insults are used as part of the pirates quest

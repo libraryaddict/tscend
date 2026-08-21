@@ -11,6 +11,7 @@ import {
   council,
   creatableAmount,
   create,
+  currentRound,
   Element,
   equip,
   equippedAmount,
@@ -28,6 +29,7 @@ import {
   Item,
   itemAmount,
   itemDropModifier,
+  lastMonster,
   Location,
   max,
   monsterLevelAdjustment,
@@ -193,10 +195,15 @@ import {
 } from "../auto_util";
 import { zone_delay, zone_isAvailable } from "../auto_zone";
 import { ConsumeAction } from "../autoscend_record";
-import { getSniffer, isSniffed } from "../combat/auto_combat_util";
+import {
+  getSniffer,
+  isSniffed,
+  replaceMonsterCombatString,
+} from "../combat/auto_combat_util";
 import {
   DesiredDrop,
   DesiredFights,
+  isAvailable,
   QuestTask,
   registerQuestTask,
   runQuestTask,
@@ -230,10 +237,11 @@ import {
 import { auto_haveTearawayPants } from "../iotms/2020/mr2024";
 import { auto_havePeridot, haveUsedPeridot } from "../iotms/2020/mr2025";
 import {
+  auto_clubIntoNextWeekTimesRemaining,
   auto_copierShouldDelayZone,
-  auto_desires_sword_familiar_drops,
   auto_spadeDigSkeleton,
   auto_spadeDigsRemaining,
+  auto_sword_of_swords_tracking,
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
   auto_wantToSpadeDigSkeleton,
@@ -285,6 +293,7 @@ import { in_amw } from "../paths/2026/adventurer_meats_world";
 import {
   bluevsred_isBlue,
   bluevsred_isRed,
+  bluevsred_willEncounterFight,
   in_bluevsred,
 } from "../paths/2026/blue_vs_red";
 import { AshMatcher } from "../utils/kolmafiaUtils";
@@ -2827,6 +2836,15 @@ function L11_hiddenBowlingAlleyDo(): boolean {
       "auto_nextEncounter",
       "ancient protector spirit (The Hidden Bowling Alley)",
     );
+  } else if (
+    // If we're not going to bowling ball it
+    itemAmount($item`bowling ball`) === 0 &&
+    // If we still want to sword some monsters
+    L11_wantsPygmyBowlerWandererHunt(true) &&
+    // If we're not even ensured of our next fight
+    safeGet("auto_nextEncounter") === $monster.none
+  ) {
+    return false;
   }
 
   buffMaintain$2($effect`Fishy Whiskers`);
@@ -3036,12 +3054,34 @@ export function L11_hiddenCity(): boolean {
   return runQuestTask(L11_hiddenCityTask);
 }
 
-export function L11_swordWantsBowlingMonster(): boolean {
-  if (!auto_swordIsWillingToSwitchTargets()) return false;
+export function L11_swordWantsBowlingMonster(
+  ignoreWillingToSwitch: boolean = false,
+): boolean {
+  if (!auto_swordFamiliarWantsMonsterDrops($monster`pygmy bowler`, 101)) {
+    return false;
+  }
 
+  if (auto_sword_of_swords_tracking() === $monster`pygmy bowler`) return true;
+
+  if (ignoreWillingToSwitch) return true;
+
+  return auto_swordIsWillingToSwitchTargets();
+}
+
+export function L11_wantsPygmyBowlerWandererHunt(
+  ignoreWillingToSwitch: boolean = false,
+): boolean {
   return (
-    !auto_desires_sword_familiar_drops() &&
-    auto_swordFamiliarWantsMonsterDrops($monster`pygmy bowler`)
+    L11_swordWantsBowlingMonster(ignoreWillingToSwitch) &&
+    (auto_clubIntoNextWeekTimesRemaining() > 0 ||
+      safeGet("clubEmNextWeekMonster") !== $monster.none) &&
+    replaceMonsterCombatString($monster`pygmy bowler`) !== undefined &&
+    // We give it an extra chance if we had gotten a ball already
+    itemAmount($item`bowling ball`) + get("hiddenBowlingAlleyProgress") <= 3 &&
+    isAvailable(L11_hiddenBowlingAlleyTask) &&
+    !bluevsred_willEncounterFight($monster`pygmy bowler`) &&
+    (ignoreWillingToSwitch || auto_swordIsWillingToSwitchTargets()) &&
+    (currentRound() === 0 || lastMonster() !== $monster`pygmy bowler`)
   );
 }
 

@@ -90,9 +90,11 @@ import {
   handleTracker,
   hasShieldEquipped,
   hasTorso,
+  instakillable,
   isFreeMonster,
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
+  safeGet,
   wrap_item,
 } from "../auto_util";
 import {
@@ -522,7 +524,10 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
   return $skill.none;
 }
 
-export function getCopier(enemy: Monster, inCombat: boolean = true): Skill {
+export function getCopier(
+  enemy: Monster,
+  inCombat: boolean = currentRound() > 0,
+): Skill {
   if (
     (auto_haveRoman() && haveEffect($effect`Everything Looks Purple`) === 0) ||
     (haveEquipped($item`Roman Candelabra`) &&
@@ -543,14 +548,35 @@ export function getCopier(enemy: Monster, inCombat: boolean = true): Skill {
   ) {
     return $skill`%fn, fire a Red, White and Blue Blast`;
   }
+  return $skill.none;
+}
+
+// Unlike the other copiers, this queues a delayed wanderer instead of an
+// immediate fight.
+export function getWandererCreator(
+  enemy: Monster,
+  inCombat: boolean = currentRound() > 0,
+): Skill {
+  if (enemy.boss || !enemy.copyable) {
+    return $skill.none;
+  }
   if (
+    instakillable(enemy) &&
     auto_clubIntoNextWeekTimesRemaining() > 0 &&
-    (!inCombat ||
-      auto_canUse($skill`Club 'Em Into Next Week`, true, inCombat)) &&
-    !enemy.boss &&
-    enemy.copyable
+    safeGet("clubEmNextWeekMonster") === $monster.none &&
+    (!inCombat || auto_canUse($skill`Club 'Em Into Next Week`, true, inCombat))
   ) {
     return $skill`Club 'Em Into Next Week`;
+  }
+  // Wink at / Fire a badly romantic arrow are the same Obtuse Angel skill at
+  // different familiar weights, sharing one daily use and one queued monster.
+  if (safeGet("romanticTarget") === $monster.none) {
+    if (auto_canUse($skill`Fire a badly romantic arrow`, true, inCombat)) {
+      return $skill`Fire a badly romantic arrow`;
+    }
+    if (auto_canUse($skill`Wink at`, true, inCombat)) {
+      return $skill`Wink at`;
+    }
   }
   return $skill.none;
 }
@@ -1544,7 +1570,8 @@ export type CombatStatusType =
   | "jokesterGun"
   | "love stinkbug"
   | "love stinkbug2"
-  | "unstoppable";
+  | "unstoppable"
+  | "pygmyBowlerHuntGiveUp";
 
 export function combat_status_check(mark: CombatStatusType): boolean {
   return containsText(get("_auto_combatState"), mark);

@@ -238,6 +238,7 @@ import {
   combat_status_check,
   getCopier,
   getSniffer,
+  getWandererCreator,
   replaceMonsterCombatString,
   useItem,
   yellowRayCombatString,
@@ -433,6 +434,7 @@ import { amw_wantMeat, in_amw } from "./paths/2026/adventurer_meats_world";
 import { bluevsred_willEncounterFight } from "./paths/2026/blue_vs_red";
 import { inAftercore } from "./paths/casual";
 import { bridgeGoal, fastenerCount, lumberCount } from "./quests/level_09";
+import { L11_wantsPygmyBowlerWandererHunt } from "./quests/level_11";
 import { auto_warSide } from "./quests/level_12";
 import { needStarKey } from "./quests/level_13";
 import { candyBlock } from "./quests/level_any";
@@ -1782,6 +1784,7 @@ function adjustForReplace(combat_string: CombatMacroReturns): boolean {
 
 export function adjustForReplaceIfPossible(
   target: Monster = $monster.none,
+  amount: number = 1,
 ): boolean {
   if (!canReplace(target)) {
     return false;
@@ -1824,10 +1827,35 @@ export function adjustForCopyIfPossible(target: Monster): boolean {
   if (copier === $skill`%fn, fire a Red, White and Blue Blast`) {
     handleFamiliar$1($familiar`Patriotic Eagle`);
   }
-  if (copier === $skill`Club 'Em Into Next Week`) {
+  return false;
+}
+
+export function adjustForWandererCreatorIfPossible(target: Monster): boolean {
+  const wanderer: Skill = getWandererCreator(target, false);
+  if (wanderer === $skill`Club 'Em Into Next Week`) {
     return autoEquip($item`legendary seal-clubbing club`);
   }
+  if (
+    wanderer === $skill`Fire a badly romantic arrow` ||
+    wanderer === $skill`Wink at`
+  ) {
+    handleFamiliar$1($familiar`Obtuse Angel`);
+  }
   return false;
+}
+
+export function auto_wantToCreateWanderer(
+  loc: Location,
+  enemy: Monster,
+): boolean {
+  if (!instakillable(enemy)) {
+    return false;
+  }
+
+  return (
+    L11_wantsPygmyBowlerWandererHunt() ||
+    auto_getMonsters("wanderer").includes(enemy)
+  );
 }
 
 export function banishSources(): number {

@@ -232,6 +232,7 @@ import {
   yellowRaySources,
 } from "./autoscend/auto_util";
 import { zone_isAvailable } from "./autoscend/auto_zone";
+import { replaceMonsterCombatString } from "./autoscend/combat/auto_combat_util";
 import {
   QuestTask,
   registerQuestTask,
@@ -566,6 +567,7 @@ import {
   finishBuildingSmutOrcBridgeTask,
   L9_aBooPeakWorthBurningLuckOn,
 } from "./autoscend/quests/level_09";
+import { L11_wantsPygmyBowlerWandererHunt } from "./autoscend/quests/level_11";
 import {
   auto_warSide,
   L12_castleTopFloorWorthBurningLuckOn,
@@ -830,10 +832,16 @@ function LX_burnDelayDo(): boolean {
   if (clubEmNextWeekNext) {
     // Digitize Wanderers will happen regardless so prioritize handling them.
     // hopefully they don't overwrite something we want to backup.
-    let clubEmZone: Location = solveDelayZone(
-      isFreeMonster(safeGet("clubEmNextWeekMonster")) &&
-        get("breathitinCharges") > 0,
-    );
+    let clubEmZone: Location =
+      L11_wantsPygmyBowlerWandererHunt() &&
+      replaceMonsterCombatString(safeGet("clubEmNextWeekMonster")) !==
+        undefined &&
+      handleFamiliar$1($familiar`Sword of S Words`)
+        ? $location`The Hidden Bowling Alley`
+        : solveDelayZone(
+            isFreeMonster(safeGet("clubEmNextWeekMonster")) &&
+              get("breathitinCharges") > 0,
+          );
     if (clubEmZone === $location.none) {
       // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
       // and we likely want to fight it. Noob Cave is available from turn 0 & is not outdoors so Breathitin won't trigger.

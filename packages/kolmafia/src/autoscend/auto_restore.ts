@@ -2237,7 +2237,7 @@ export function acquireHP$3(
     __restore("hp", goal, meat_reserve, useFreeRests);
   }
 
-  return myHp() >= goal;
+  return myHp() >= Math.min(goal, myMaxhp());
 }
 /*
  * Use a rest (can consume adventures if no free rests remain). Also attempts to maximize

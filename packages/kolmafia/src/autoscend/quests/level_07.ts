@@ -39,6 +39,7 @@ import {
   $locations,
   $modifier,
   $monster,
+  $monsters,
   $skill,
   $slot,
   $stat,
@@ -753,7 +754,9 @@ export function L7_swordWantsCryptMonster(): boolean {
 
   return (
     !auto_desires_sword_familiar_drops() &&
-    auto_swordFamiliarWantsMonsterDrops($monster`spiny skelelton`)
+    $monsters`spiny skelelton, toothy sklelton`.some((m) =>
+      auto_swordFamiliarWantsMonsterDrops(m),
+    )
   );
 }
 

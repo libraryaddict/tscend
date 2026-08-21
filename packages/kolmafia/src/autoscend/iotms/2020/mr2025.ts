@@ -353,7 +353,10 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
         countItemAverageAdvs("food", "Omnipot") >=
           get("auto_consumeMinAdvPerFill", 0.0) &&
         (doingBedtime || !doneOrgans.includes("food")),
-      surplus: leprecondoFoodSurplus(doingBedtime),
+      surplus:
+        doingBedtime || !doneOrgans.includes("food")
+          ? leprecondoFoodSurplus(doingBedtime)
+          : 0,
     },
     booze: {
       active:
@@ -362,7 +365,10 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
         countItemAverageAdvs("booze", "fully-stocked wet bar") >=
           get("auto_consumeMinAdvPerFill", 0.0) &&
         (doingBedtime || !doneOrgans.includes("booze")),
-      surplus: leprecondoBoozeSurplus(doingBedtime),
+      surplus:
+        doingBedtime || !doneOrgans.includes("booze")
+          ? leprecondoBoozeSurplus(doingBedtime)
+          : 0,
     },
     traces: {
       active:

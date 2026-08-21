@@ -130,6 +130,7 @@ import {
   adjustForFreeRunIfPossible,
   adjustForReplaceIfPossible,
   adjustForSniffingIfPossible,
+  adjustForWandererCreatorIfPossible,
   adjustForYellowRayIfPossible,
   auto_burningDelay,
   auto_burnMP,
@@ -143,6 +144,7 @@ import {
   auto_haveQueuedForcedNonCombat,
   auto_interruptCheck,
   auto_is_valid,
+  auto_location_monsters,
   auto_log_debug,
   auto_log_error,
   auto_log_info,
@@ -154,6 +156,7 @@ import {
   auto_wantToBanish,
   auto_wantToBanish$1,
   auto_wantToCopy,
+  auto_wantToCreateWanderer,
   auto_wantToFreeRun,
   auto_wantToReplace,
   auto_wantToSniff,
@@ -267,8 +270,10 @@ import { ag_bgChat } from "./paths/2024/avant_guard";
 import { in_wereprof, is_professor } from "./paths/2024/wereprofessor";
 import { in_zootomist } from "./paths/2025/zootomist";
 import { in_amw } from "./paths/2026/adventurer_meats_world";
+import { bluevsred_willEncounterFight } from "./paths/2026/blue_vs_red";
 import { inAftercore } from "./paths/casual";
 import { prepareForSmutOrcs, prepareForTwinPeak } from "./quests/level_09";
+import { L11_wantsPygmyBowlerWandererHunt } from "./quests/level_11";
 import { auto_8BitCheckCappingScore } from "./quests/level_13";
 import { abortIfRepeating } from "./utils/infiniteAdvDetector";
 import { Maximizer, maximizer } from "./utils/maximizer";
@@ -794,6 +799,10 @@ function auto_pre_adventure(): boolean {
         adjustForCopyIfPossible(mon);
         zoneHasWantedMonsters = true;
       }
+      if (auto_wantToCreateWanderer(place, mon)) {
+        adjustForWandererCreatorIfPossible(mon);
+        zoneHasWantedMonsters = true;
+      }
       if (auto_wantToSniff(mon, place)) {
         adjustForSniffingIfPossible(mon);
         zoneHasWantedMonsters = true;
@@ -805,6 +814,29 @@ function auto_pre_adventure(): boolean {
       ) {
         zoneHasWantedMonsters = true;
       }
+    }
+  }
+  if (
+    place === $location`The Hidden Bowling Alley` &&
+    safeGet("clubEmNextWeekMonster") !== $monster.none &&
+    bluevsred_willEncounterFight(safeGet("clubEmNextWeekMonster")) &&
+    safeGet("clubEmNextWeekMonster") === safeGet("auto_nextEncounter") &&
+    L11_wantsPygmyBowlerWandererHunt()
+  ) {
+    auto_log_info(
+      "Preparing to replace-hunt for a pygmy bowler via the forced wanderer fight.",
+      "blue",
+    );
+    for (const [monster] of auto_location_monsters(place)) {
+      if (
+        monster === $monster`pygmy bowler` ||
+        bluevsred_willEncounterFight(monster)
+      ) {
+        continue;
+      }
+
+      adjustForReplaceIfPossible(monster);
+      adjustForBanishIfPossible(monster, place);
     }
   }
   if (considerCrystalBallBonus) {
@@ -964,7 +996,8 @@ function auto_pre_adventure(): boolean {
   const planToPeridot =
     auto_havePeridot() &&
     !haveUsedPeridot(place) &&
-    (zoneHasWantedMonsters || auto_peridotSetZone(place));
+    (zoneHasWantedMonsters || auto_peridotSetZone(place)) &&
+    !L11_wantsPygmyBowlerWandererHunt(true);
   const wantBCZRefractedGaze: boolean =
     safeGet("auto_familiarChoice") !== $familiar`Sword of S Words` &&
     auto_bczRefractedGaze(planToPeridot, place);

@@ -114,7 +114,6 @@ import {
   auto_monsterHasWantedDrop,
   auto_runChoice,
   auto_wantToBanish,
-  auto_wantToCopy,
   auto_wantToFreeKillWithNoDrops,
   auto_wantToFreeRun,
   auto_zoneCopyableMonsters,
@@ -143,6 +142,7 @@ import { in_quantumTerrarium } from "../../paths/2021/quantum_terrarium";
 import { in_small } from "../../paths/2023/small";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { is_werewolf } from "../../paths/2024/wereprofessor";
+import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import {
   bridgeGoal,
   fastenerCount,
@@ -328,22 +328,6 @@ export function auto_clubIntoNextWeekTimesRemaining(): number {
   return LegendarySealClubbingClub.clubIntoNextWeekAvailable();
 }
 
-export function auto_wantToClubIntoNextWeek(
-  loc: Location,
-  enemy: Monster,
-): boolean {
-  if (
-    !auto_is_valid$2($skill`Club 'Em Into Next Week`) ||
-    auto_clubIntoNextWeekTimesRemaining() === 0 ||
-    safeGet("clubEmNextWeekMonster") !== $monster.none ||
-    !instakillable(enemy)
-  ) {
-    return false;
-  }
-
-  return auto_wantToCopy(enemy, loc);
-}
-
 export function isOverdueClubIntoNextWeek(): boolean {
   return LegendarySealClubbingClub.turnsUntilNextWeekFight() <= 0;
 }
@@ -363,6 +347,8 @@ export function wantToClubAcrossBattlefield(
   loc: Location,
   enemy: Monster,
 ): boolean {
+  if (!instakillable(enemy)) return false;
+
   if (auto_clubAcrossBattlefieldTimesRemaining() === 0) {
     return false;
   }
@@ -2150,6 +2136,9 @@ export function auto_swordFamiliarWantsMonsterDrops(
     $monsters`skeleton astronaut, spiny skelelton, toothy sklelton`.includes(
       sMonster,
     ) &&
+    ((currentRound() > 0 && sMonster === lastMonster()) ||
+      bluevsred_willEncounterFight(sMonster) ||
+      currentlyTracking) &&
     auto_is_valid($item`evil eye`) &&
     get("cyrptNookEvilness") - itemAmount($item`evil eye`) * 3 >
       13 + (!currentlyTracking ? 3 : 0) &&

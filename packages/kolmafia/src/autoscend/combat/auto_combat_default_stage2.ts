@@ -2,6 +2,7 @@ import {
   haveEffect,
   haveEquipped,
   indexOf,
+  isBanished,
   itemAmount,
   Monster,
   monsterPhylum,
@@ -36,6 +37,7 @@ import {
   auto_forceFreeRun,
   auto_have_skill,
   auto_is_valid,
+  auto_location_monsters,
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
@@ -87,6 +89,7 @@ import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
 import { getZooKickInstaKill } from "../paths/2025/zootomist";
 import { inAftercore } from "../paths/casual";
 import { bridgeGoal } from "../quests/level_09";
+import { L11_wantsPygmyBowlerWandererHunt } from "../quests/level_11";
 import { towerKeyCount } from "../quests/level_13";
 import {
   auto_canUse,
@@ -107,6 +110,70 @@ import {
   yellowRayCombatString,
 } from "./auto_combat_util";
 import { auto_combatDarkGyffteStage2 } from "./paths/auto_combat_dark_gyffte";
+
+function pygmyBowlerHuntCombatAction(enemy: Monster): CombatMacroReturns {
+  if (enemy === $monster`pygmy bowler`) {
+    return undefined; // got it, let normal combat handling take over
+  }
+  if (myFamiliar() !== $familiar`Sword of S Words`) {
+    return undefined; // Uh oh. We should've been wearing the familiar
+  }
+  // Get all monsters in the zone
+  const allMonstersInZone = auto_location_monsters(
+    $location`The Hidden Bowling Alley`,
+  )
+    .filter(([monster, rate]) => rate > 0 && !isBanished(monster))
+    .map(([m]) => m);
+
+  if (
+    // If bowler is in here for some reason
+    !allMonstersInZone.includes($monster`pygmy bowler`) ||
+    combat_status_check("pygmyBowlerHuntGiveUp") ||
+    (allMonstersInZone.length === 1 && combat_status_check("banisher"))
+  ) {
+    return undefined;
+  }
+  const banishAction: CombatMacroReturns = banisherCombatAction$1(
+    enemy,
+    myLocation(),
+    true,
+  );
+  if (
+    banishAction !== undefined &&
+    allMonstersInZone.includes(enemy) &&
+    !isBanished(enemy) &&
+    // At 2, we'd have a 100% chance to get a bowler on replace
+    allMonstersInZone.length >= 3
+  ) {
+    combat_status_add("banisher");
+    handleTracker({
+      what: enemy,
+      detail: banishAction.toString(),
+      property: "auto_banishes",
+    });
+    return banishAction;
+  }
+  const replaceAction: CombatMacroReturns = replaceMonsterCombatString(
+    enemy,
+    true,
+  );
+  if (
+    replaceAction !== undefined &&
+    // If we have a 100% chance to get bowler, or, we haven't done a banish yet anyways
+    (allMonstersInZone.length === (allMonstersInZone.includes(enemy) ? 2 : 1) ||
+      !combat_status_check("banisher"))
+  ) {
+    combat_status_add("replacer");
+    handleTracker({
+      what: enemy,
+      detail: replaceAction.toString(),
+      property: "auto_replaces",
+    });
+    return replaceAction;
+  }
+  combat_status_add("pygmyBowlerHuntGiveUp");
+  return undefined; // business as usual - resources exhausted
+}
 
 //defined in /autoscend/combat/auto_combat_default_stage2.ash
 export function auto_combatDefaultStage2(
@@ -169,6 +236,15 @@ export function auto_combatDefaultStage2(
   );
   if (retval !== undefined) {
     return retval;
+  }
+  if (
+    myLocation() === $location`The Hidden Bowling Alley` &&
+    L11_wantsPygmyBowlerWandererHunt()
+  ) {
+    const huntAction: CombatMacroReturns = pygmyBowlerHuntCombatAction(enemy);
+    if (huntAction !== undefined) {
+      return huntAction;
+    }
   }
   if (myFamiliar() === $familiar`Sword of S Words`) {
     //Sword of S Words: lock in the current enemy for future fights' copied drops.
