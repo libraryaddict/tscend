@@ -547,7 +547,7 @@ import {
   in_amw,
   LM_adventurerMeatsWorldTask,
 } from "./autoscend/paths/2026/adventurer_meats_world";
-import { bluevsred_initializeSettings } from "./autoscend/paths/2026/red_vs_blue";
+import { bluevsred_initializeSettings } from "./autoscend/paths/2026/blue_vs_red";
 import {
   auto_buySkills,
   pathDroppedCheck,

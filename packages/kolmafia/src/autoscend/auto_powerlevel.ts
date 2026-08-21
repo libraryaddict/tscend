@@ -105,7 +105,7 @@ import { in_koe } from "./paths/2019/kingdom_of_exploathing";
 import { in_robot, LX_robot_powerlevel } from "./paths/2021/you_robot";
 import { in_avantGuard } from "./paths/2024/avant_guard";
 import { is_professor } from "./paths/2024/wereprofessor";
-import { in_bluevsred } from "./paths/2026/red_vs_blue";
+import { in_bluevsred } from "./paths/2026/blue_vs_red";
 import { inAftercore } from "./paths/casual";
 import { candyBlock, freeCandyFightsLeft } from "./quests/level_any";
 import { maximizer } from "./utils/maximizer";

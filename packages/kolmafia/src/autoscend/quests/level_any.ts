@@ -85,6 +85,7 @@ import {
   auto_recipeIngredients,
   auto_runChoice,
   auto_turbo,
+  canReplace,
   canSummonMonster,
   have_workshed,
   haveCampgroundMaid,
@@ -144,6 +145,7 @@ import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 import { in_lowkeysummer } from "../paths/2020/low_key_summer";
 import { in_plumber } from "../paths/2020/path_of_the_plumber";
 import { in_quantumTerrarium } from "../paths/2021/quantum_terrarium";
+import { bluevsred_willEncounterNC } from "../paths/2026/blue_vs_red";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { L6_friarsGetParts } from "./level_06";
 import { L7_crypt, L7_swordWantsCryptMonster } from "./level_07";
@@ -846,7 +848,9 @@ registerQuestTask({
       possessEquipment($item`Peridot of Peril`) &&
       !haveUsedPeridot($location`The Hidden Bowling Alley`) &&
       L11_swordWantsBowlingMonster() &&
-      // Has no bowling done yet
+      // Has no bowling done yet &&
+      (canReplace($monster`pygmy bowler`) ||
+        !bluevsred_willEncounterNC($monster`pygmy bowler`)) &&
       itemAmount($item`bowling ball`) === 0 &&
       get("hiddenBowlingAlleyProgress") === 1 &&
       isAvailable(L11_hiddenBowlingAlleyTask) &&
@@ -1381,7 +1385,8 @@ function LX_dronesOutDo(): boolean {
   if (
     !canExtingo &&
     get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6 &&
-    zone_isAvailable($location`The Hidden Bowling Alley`)
+    zone_isAvailable($location`The Hidden Bowling Alley`) &&
+    !bluevsred_willEncounterNC($monster`pygmy bowler`)
   ) {
     auto_log_info("Going to the Hidden Bowling Alley");
     if (safeGet("auto_priorLocation") !== $location`The Hidden Bowling Alley`) {
@@ -1487,7 +1492,8 @@ export const LX_dronesOutTask: QuestTask = registerQuestTask({
     }
     if (
       get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6 &&
-      zone_isAvailable($location`The Hidden Bowling Alley`)
+      zone_isAvailable($location`The Hidden Bowling Alley`) &&
+      !bluevsred_willEncounterNC($monster`pygmy bowler`)
     ) {
       entries.push({
         item: $item`bowling ball`,

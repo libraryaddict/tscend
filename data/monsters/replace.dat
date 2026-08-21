@@ -35,3 +35,6 @@ liquid metal bugbear	path:Bugbear Invasion:loc:Engineering	item:drone self-destr
 Battlesuit Bugbear Type	path:Bugbear Invasion:loc:Engineering
 ancient unspeakable bugbear	path:Bugbear Invasion	loc:Navigation
 trendy bugbear chef	path:Bugbear Invasion	loc:Galley
+drunk pygmy	loc:The Hidden Bowling Alley	item:Bowl of Scorpions<1	item:bowling ball<1
+drunk pygmy	loc:The Hidden Bowling Alley	prop:_drunkPygmyBanishes>10	item:bowling ball<1
+pygmy orderlies	loc:The Hidden Bowling Alley	item:bowling ball<1

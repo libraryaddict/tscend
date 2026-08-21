@@ -1,0 +1,5 @@
+# First column is what type of path data this is
+# Second column is the line number
+# For "bluevsred": third column is monster ID, fourth is monster name,
+# fifth is the color it appears as to the blue team, sixth is the color it appears as to the red team
+# Either color column may be blank if that team's color hasn't been reported

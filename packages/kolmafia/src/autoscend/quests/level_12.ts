@@ -218,7 +218,7 @@ import {
   is_werewolf,
 } from "../paths/2024/wereprofessor";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
-import { bluevsred_isRed } from "../paths/2026/red_vs_blue";
+import { bluevsred_isRed } from "../paths/2026/blue_vs_red";
 import { inAftercore } from "../paths/casual";
 import { maximizer } from "../utils/maximizer";
 import { LX_islandAccess } from "./level_any";

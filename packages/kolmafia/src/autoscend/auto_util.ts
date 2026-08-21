@@ -1755,7 +1755,7 @@ export function adjustForYellowRayIfPossible(
   return adjustForYellowRay(yr_string);
 }
 
-function canReplace(target: Monster): boolean {
+export function canReplace(target: Monster): boolean {
   //Use this to determine if it is safe to enter a replace monster combat.
   return replaceMonsterCombatString(target) !== undefined;
 }

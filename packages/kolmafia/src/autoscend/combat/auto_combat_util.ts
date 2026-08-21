@@ -1473,7 +1473,7 @@ export function yellowRayCombatString(
 
 export function replaceMonsterCombatString(
   target: Monster,
-  inCombat: boolean = false,
+  inCombat: boolean = currentRound() > 0,
 ): CombatMacroReturns {
   if (in_pokefam()) {
     return undefined;
@@ -1502,6 +1502,7 @@ export function replaceMonsterCombatString(
     auto_is_valid$2($skill`Exercise Liquidity`) &&
     // eslint-disable-next-line local/verify-properties
     (get("exerciseLiquidityCharges", 0) > 0 ||
+      // We always speculate here, we prepare elsewhere
       auto_chewLiquidAsset(false, true))
   ) {
     return $skill`Exercise Liquidity`;

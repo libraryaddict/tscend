@@ -286,7 +286,7 @@ import {
   bluevsred_isBlue,
   bluevsred_isRed,
   in_bluevsred,
-} from "../paths/2026/red_vs_blue";
+} from "../paths/2026/blue_vs_red";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { maximizer } from "../utils/maximizer";
 import { L3_tavern } from "./level_03";
@@ -2807,7 +2807,11 @@ function L11_hiddenBowlingAlleyDo(): boolean {
   auto_log_info("The idden [sic] bowling alley!", "blue");
   L11_hiddenTavernUnlock(true);
   if (myAscensions() === get("hiddenTavernUnlock")) {
-    if (itemAmount($item`Bowl of Scorpions`) === 0 && !is_werewolf()) {
+    if (
+      itemAmount($item`Bowl of Scorpions`) === 0 &&
+      !is_werewolf() &&
+      get("_drunkPygmyBanishes") < 11
+    ) {
       //can't access shops as werewolf
       auto_buyUpTo(1, $item`Bowl of Scorpions`);
       if (in_ocrs()) {

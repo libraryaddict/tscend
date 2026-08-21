@@ -1,0 +1,493 @@
+# monster ID	monster name	Color if you're blue	Color if you're red.
+1	spooky vampire	blue	blue
+3	dodecapede	blue	red
+5	apathetic lizardman	blue	red
+29	skleleton		blue
+30	ghuol		red
+31	zmobie		red
+32	lihc		blue
+33	zobmie	red	
+35	Bread Golem		red
+36	Yeast Beast		red
+37	Weretaco		red
+39	Chowder Golem		blue
+40	Smart Skelton		blue
+41	albino bat		red
+42	doughbat	blue	
+43	baseball bat	blue	blue
+44	regular old bat		red
+45	skullbat	red	
+46	briefcase bat	blue	
+47	perpendicular bat		red
+48	beanbat	blue	
+49	Boss Bat	red	red
+51	drunken rat	red	
+52	filthy hippy		red
+53	dirty hippy		blue
+54	crusty hippy		blue
+55	filthy hippy Vegan chef		red
+56	dirty hippy Vegan chef		red
+57	crusty hippy Vegan chef		blue
+58	filthy hippy jewelry maker		blue
+59	dirty hippy jewelry maker		red
+60	crusty hippy jewelry maker		blue
+61	grave rober	blue	blue
+62	Orcish Frat Boy (Music Lover)		blue
+63	Orcish Frat Boy (Paddler)		blue
+64	Orcish Frat Boy (Pledge)		red
+65	whitesnake	red	red
+66	white lion		blue
+67	white chocolate golem		red
+68	Knight in White Satin		blue
+69	dairy ooze		red
+70	sabre-toothed lime	blue	red
+71	pencil golem	blue	red
+72	giant giant moth	blue	red
+73	mayonnaise wasp	blue	red
+75	vampire clam		red
+78	Knob Goblin Harem Girl	red	red
+80	Knob Goblin Bean Counter		blue
+81	Knob Goblin King	blue	blue
+82	drunk goat	blue	blue
+83	dairy goat	red	red
+84	sabre-toothed goat	blue	blue
+100	Ninja Snowman (Mask)		blue
+108	bugbear-in-the-box		blue
+110	disease-in-the-box		red
+111	scary clown		red
+112	creepy clown		blue
+113	Goomba	red	red
+114	Tektite	red	red
+116	Koopa Troopa	blue	blue
+117	Octorok	red	red
+118	Blooper	blue	blue
+119	Keese	blue	blue
+120	Zol		blue
+121	Bullet Bill	blue	blue
+122	W imp	red	red
+123	P imp		blue
+124	L imp	blue	blue
+125	G imp	red	red
+126	Demoninja	red	red
+127	Fallen Archfiend		blue
+128	Hellion	red	red
+130	Drab Bard	red	red
+131	Racecar Bob	red	red
+132	Bob Racecar	blue	blue
+133	Flock of Stab-bats	blue	blue
+134	Taco Cat	blue	blue
+135	Tan Gnat	red	
+136	Evil Olive	red	
+137	Ninja Snowman (Hilt)		red
+145	possessed can of tomatoes	red	red
+146	fiendish can of asparagus		blue
+147	undead elbow macaroni	red	red
+149	pine bat		blue
+150	batrat	red	red
+151	ratbat	blue	blue
+152	sleeping Knob Goblin Guard	blue	blue
+153	Knob Goblin Assistant Chef	red	red
+154	Sub-Assistant Knob Mad Scientist	blue	blue
+155	Knob Goblin Barbecue Team	red	red
+156	big creepy spider		red
+157	completely different spider		blue
+159	rushing bum		red
+160	Protagonist	red	red
+161	Quiet Healer	red	red
+165	Spunky Princess	blue	blue
+166	Burly Sidekick	blue	blue
+167	Irritating Series of Random Encounters	blue	blue
+170	Procrastination Giant	blue	blue
+171	Possibility Giant	red	red
+172	Furry Giant		red
+173	Raver Giant	red	red
+174	Goth Giant	blue	blue
+175	MagiMechTech MechaMech	red	red
+176	Alphabet Giant		red
+178	One-Eyed Willie	red	
+180	Family Jewels	blue	
+182	Pork Sword	blue	blue
+183	Hooded Warrior	red	
+184	Astronomer		red
+185	spiny skelelton	red	red
+186	toothy sklelton	blue	blue
+187	giant skeelton	blue	blue
+189	gluttonous ghuol	red	red
+190	gaunt ghuol	blue	blue
+191	huge ghuol	blue	blue
+192	senile lihc	blue	blue
+193	slick lihc	blue	blue
+194	gargantulihc	blue	blue
+195	grave rober zmobie	blue	
+196	corpulent zobmie	red	red
+197	conjoined zmombie	blue	blue
+198	Bonerdagon	red	red
+199	warwelf	red	red
+200	wolfman	blue	blue
+201	spooky mummy	red	red
+202	bar	blue	blue
+210	Your Shadow	blue	red
+220	acid blob		red
+221	swarm of killer bees		red
+222	mind flayer		blue
+223	Quantum Mechanic		blue
+224	large kobold		blue
+225	poutine ooze	blue	blue
+226	cloud of disembodied whiskers		blue
+227	axe handle	red	
+228	forest spirit	red	
+234	lumberjill	blue	
+235	lumberjuan	blue	
+236	lumberjack supervisor	red	
+263	Knob Goblin Elite Guard Captain	blue	
+273	Buzzy Beetle	red	red
+281	hung-over half-orc hobo		red
+282	overdone flame-broiled meat blob		blue
+283	mimic	red	red
+284	Lesser Fruit Golem		blue
+285	shaky clown		red
+286	Baron von Ratsworth	red	
+338	Ninja Snowman (Chopsticks)	blue	blue
+339	Ninja Snowman Janitor	red	red
+340	Ninja Snowman Weaponmaster	red	red
+342	triffid	red	red
+350	vampire bat	red	
+351	Burrowing Bishop	red	
+352	Twig and Berries	red	
+370	ghost miner		red
+372	possessed silverware drawer	red	red
+373	demonic icebox	blue	blue
+374	paper towelgeist	blue	blue
+377	skullery maid	red	red
+378	zombie chef	red	red
+383	chalkdust wraith	red	red
+386	pooltergeist	blue	blue
+387	bookbat		blue
+388	banshee librarian	red	red
+389	malevolent hair clog	red	red
+390	toilet papergeist	blue	blue
+393	cubist bull	red	red
+394	guy with a pitchfork, and his wife	blue	blue
+395	empty suit of armor	red	red
+396	remains of a jilted mistress		red
+397	knight (Wolf)		red
+398	knight (Snake)	blue	
+400	claw-foot bathtub	blue 	blue
+401	zombie waltzers	red	red
+402	tapdancing skeleton	red	red
+403	ghastly organist		red
+404	floating platter of hors d'oeuvres	blue	blue
+405	writing desk	blue	blue
+408	Skelter Butleton, the Butler Skeleton		blue
+409	Orcish Frat Boy Spy		red
+410	War Hippy Dread Squad	blue	blue
+411	War Hippy Infantryman		blue
+412	War Hippy Sky Captain		red
+413	War Hippy Fire Spinner		red
+414	black adder	red	red
+415	black widow	red	red
+416	black panther	blue	blue
+418	blackberry bush	red	red
+419	War Hippy Spy		red
+420	War Frat Kegrider	red	red
+421	Panty Raider Frat Boy	red	
+423	War Frat 151st Infantryman	red	red
+442	ancient protector spirit (The Hidden Apartment Building)	blue	blue
+443	ancient protector spirit (The Hidden Hospital)	blue	blue
+444	ancient protector spirit (The Hidden Office Building)	red	red
+445	ancient protector spirit (The Hidden Bowling Alley)	red	red
+447	pygmy headhunter	red	red
+448	pygmy assault squad	blue	blue
+449	pygmy blowgunner	red	red
+450	Protector Spectre	red	red
+453	Dr. Awkward	red	red
+456	swarm of scarab beatles	blue	
+457	plaque of locusts	red	red
+458	giant sandworm	blue	red
+459	oasis monster	red	red
+460	blur	red	red
+461	swarm of fire ants	red	red
+462	giant giant giant centipede	blue	blue
+463	rock scorpion	red	red
+464	Lord Spookyraven		blue
+465	cactuary	blue	blue
+467	tomb rat	blue	blue
+468	tomb servant	red	red
+469	tomb asp	blue	blue
+473	Ed the Undying	blue	blue
+475	dirty thieving brigand	red	red
+477	larval filthworm	blue	blue
+478	filthworm drone	blue	blue
+479	filthworm royal guard	red	red
+480	queen filthworm	red	red
+481	War Hippy (space) cadet	red	red
+482	War Hippy drill sergeant		blue
+483	War Hippy Baker		red
+484	War Hippy Rigger	blue	blue
+485	War Hippy F.R.O.G.		red
+486	War Hippy Green Gourmet		blue
+487	War Hippy Elite Rigger		blue
+488	Mobile Armored Sweat Lodge		red
+489	War Hippy Airborne Commander	red	red
+490	War Hippy Homeopath		red
+491	War Hippy Naturopathic Homeopath		blue
+492	Green Ops Soldier		red
+493	War Hippy Windtalker		blue
+494	War Hippy Shaman		blue
+495	War Hippy Elder Shaman		blue
+496	War Hippy Elite Fire Spinner	blue	blue
+497	War Frat 500th Infantrygentleman	red	
+498	War Frat 110th Infantryman	blue	
+499	War Frat 151st Captain	red	red 
+500	War Frat Elite 500th Captain	red	
+501	War Frat Elite 110th Captain	red	
+502	War Frat Grill Sergeant	blue	
+503	War Frat Senior Grill Sergeant	blue	
+504	Heavy Kegtank	blue	
+505	War Frat Wartender	blue	
+506	War Frat Elite Wartender	red	
+507	Elite Beer Bongadier	blue	
+508	Sorority Nurse	red	
+509	Sorority Operator	blue	
+510	Naughty Sorority Nurse	blue	
+517	Monty Basingstoke-Pratt, IV	red	
+518	Brutus, the toga-clad lout	blue	
+519	Danglin' Chad	red	
+520	War Frat Streaker	blue	
+527	War Pledge	red	
+528	Frat Warrior drill sergeant	blue	
+529	lobsterfrogman	red	red
+530	Knob Goblin Embezzler	blue	red
+535	Box	red	red
+536	Muff		blue
+537	Bush		blue
+538	Flange	blue	blue
+539	Beaver		blue
+540	Little Man in the Canoe		blue
+541	Camel's Toe		red
+542	Honey Pot	blue	blue
+543	Axe Wound	red	red
+544	generic duck	red	red
+545	The Big Wisniewski		red
+546	erudite gremlin	blue	blue
+547	erudite gremlin (tool)	blue	blue
+548	batwinged gremlin		red
+549	batwinged gremlin (tool)	red	red
+550	vegetable gremlin	blue	blue
+551	vegetable gremlin (tool)	blue	blue
+552	spider gremlin		red
+553	spider gremlin (tool)	red	red
+554	A.M.C. gremlin		red
+555	The Man	blue	
+556	frozen duck	red	
+557	figure-skating duck	blue	
+558	scorched duck	blue	
+559	fire-breathing duck	red	
+560	greasy duck	red	
+561	rotund duck	blue	
+562	swamp duck	blue	
+563	rattlin' duck	red	
+564	vampire duck		red
+565	zombie duck		blue
+566	drunk duck	blue	
+567	mean drunk duck	red	
+568	boaraffe		blue
+571	beefy bodyguard bat	blue	blue
+572	Iiti Kitty	blue	blue
+574	rolling stone	blue	blue
+575	tomb bat	blue	blue
+596	swamp entity	red	
+713	possessed wine rack	red 	red
+714	skeletal sommelier	blue	blue
+763	giant squid		blue
+772	Mer-kin burglar		red
+793	Spawn of Wally	blue	red
+794	broodling seal		red
+796	hermetic seal		red
+801	navy seal		red
+809	hustled spectre		red
+810	rotten dolphin thief	blue	
+884	Spaghetti Elemental (Volcanic Cave)		blue
+890	Spaghetti Demon		blue
+934	lowercase B	red	red
+935	swarm of lowercase As		red
+936	lowercase H		red
+937	uppercase Q		blue
+938	lowercase K	blue	blue
+950	ghost	blue	blue
+951	fleaman	red	red
+952	medusa	blue	blue
+977	suckubus		red
+978	inkubus		red
+979	Pr Imp		red
+980	BL Imp		red
+981	CH Imp		blue
+982	serialbus		blue
+983	Victor the Insult Comic Hellhound		red
+984	Larry of the Field of Signs		blue
+985	Carbuncle Top		blue
+995	bunch of drunken rats	blue	red
+996	drunken rat king	blue	blue
+997	tomb rat king	blue	
+1010	screambat	blue	red
+1061	Knob Goblin Harem Guard	blue	blue
+1062	Knob Goblin Madam	blue	blue
+1063	Knob Goblin Accountant		blue
+1064	Knob Goblin MBA		red
+1070	modern zmobie	blue	red
+1071	dirty old lihc	red	red
+1072	swarm of ghuol whelps	blue	red
+1073	big swarm of ghuol whelps	blue	red
+1074	giant swarm of ghuol whelps	blue	red
+1110	tumbleweed		red
+1149	sleepy 7-Foot Dwarf		red
+1150	dopey 7-Foot Dwarf		blue
+1151	grumpy 7-Foot Dwarf		blue
+1153	mountain man	red	red
+1154	eXtreme cross-country hippy		blue
+1155	eXtreme Orcish snowboarder		blue
+1156	sk8 gnome		red
+1157	Groar	blue	blue
+1159	stone temple pirate		red
+1160	baa-relief sheep		blue
+1161	craven carven raven		red
+1162	clan of cave bars		red
+1163	Baa'baa'bu'ran		red
+1185	ninja snowman assassin	blue	
+1201	Black Crayon Crimbo Elf		red
+1202	Black Crayon Mer-kin		red
+1204	Black Crayon Penguin	blue	
+1228	panicking Knott Yeti	red	red
+1230	smut orc jacker	red	red
+1231	smut orc pipelayer	blue	blue
+1232	smut orc nailer	red	red
+1233	smut orc screwer	blue	blue
+1234	smut orc pervert	blue	red
+1235	oil slick		red
+1236	oil tycoon		blue
+1237	oil baron		red
+1238	oil cartel		blue
+1240	Bubblemint Twins	red	red
+1241	Big Wheelin' Twins	blue	
+1242	Mismatched Twins	red	red
+1243	Creepy Ginger Twin		blue
+1244	Troll Twins		blue
+1245	spider (duck?) topiary animal		red
+1246	bearpig topiary animal	blue	
+1247	elephant (meatcar?) topiary animal	red	
+1254	Claybender Sorcerer Ghost	blue	blue
+1255	Dusken Raider Ghost	red	
+1256	Space Tourist Explorer Ghost	red	red
+1257	Battlie Knight Ghost	blue	blue
+1258	Whatsian Commando Ghost		red
+1290	salaminder		red
+1332	Fitness Giant	blue	blue
+1333	Neckbeard Giant	blue	blue
+1334	Foodie Giant	red	red
+1335	Renaissance Giant	blue	blue
+1336	Punk Rock Giant	blue	blue
+1337	Steampunk Giant	red	red
+1341	huge mosquito	blue	
+1426	dense liana	blue	blue
+1427	pygmy janitor	red	red
+1428	pygmy shaman	red	red
+1429	pygmy witch surgeon	red	red
+1430	pygmy witch accountant	blue	blue
+1431	drunk pygmy	red	red
+1432	pygmy bowler	blue	blue
+1433	pygmy witch nurse	blue	blue
+1434	pygmy witch lawyer		blue
+1435	pygmy orderlies	blue	blue
+1436	junksprite sharpener		red
+1437	junksprite bender		blue
+1438	junksprite melter		blue
+1439	Doctor Oh, the Junksprite Boss		red
+1510	Copperhead Club bartender	red	red
+1511	Mob Penguin Capo	red	red
+1512	ninja dressed as a waiter	blue	blue
+1513	waiter dressed as a ninja	red	red
+1514	Frozen Solid Snake	blue	blue
+1515	The Frattlesnake		red
+1516	The Snake With Like Ten Heads		red
+1517	Batsnake	red	red
+1518	Burning Snake of Fire	red	red
+1519	Snakeleton	red	red
+1520	man with the red buttons	red	red
+1521	red skeleton	blue	blue
+1522	red butler		blue
+1523	Red Herring		blue
+1524	Red Snapper		red
+1525	Red Fox		red
+1526	lynyrd skinner		blue
+1527	fleet woodsman		blue
+1528	Blue Oyster cultist	red	red
+1529	eagle	blue	blue
+1530	Jefferson pilot	red	red
+1531	Ron "The Weasel" Copperhead	red	red
+1532	fan dancer	blue	blue
+1533	lynyrd	blue	red
+1540	Wardröb nightstand	red	red
+1541	animated mahogany nightstand	blue	blue
+1542	animated ornate nightstand	red	red
+1543	animated rustic nightstand		blue
+1544	elegant animated nightstand	blue	blue
+1545	cosmetics wraith	red	red
+1552	stuffed moose head		blue
+1553	full-length mirror		red
+1554	ancestral Spookyraven portrait		blue
+1555	sheet ghost		red
+1556	monstrous boiler	blue	blue
+1557	steam elemental		blue
+1558	coaltergeist	red	red
+1559	Bram the Stoker		red
+1560	plaid ghost	red	red
+1561	cabinet of Dr. Limpieza	blue	blue
+1562	possessed laundry press	red	red
+1563	mad wino	red	red
+1565	Stephen Spookyraven		red
+1576	black magic woman	red	red
+1577	black friar	blue	blue
+1590	white elephant		red
+1673	Tasmanian Dervish	blue	blue
+1677	Mr. Loathing		blue
+1681	The Mastermind	red	
+1685	Seannery the Conman		red
+1689	The Lavalier	blue	blue
+1697	Odorous Humongous	red	red
+1701	Arthur Frankenstein		blue
+1705	Leonard		red
+1706	wall of meat	red	red
+1707	wall of skin	blue	blue
+1708	wall of bones	red	red
+1743	swarm of skulls		blue
+1744	factory-irregular skeleton		red
+1745	remaindered skeleton		red
+1746	novelty tropical skeleton		blue
+1780	The Unknown Accordion Thief		red
+1974	Eldritch Tentacle	blue	red
+2060	fantasy bandit	red	red
+2104	sausage goblin		red
+2153	basic lihc	red	red
+2154	party skelteon	red	red
+2155	musical fruit bat	red	red
+2156	magical fruit bat	blue	blue
+2249	gator-human hybrid		blue
+2250	gangster's moll		red
+2251	traveling hobo		red
+2252	goblin flapper		blue
+2253	undercover prohibition agent		red
+2268	Met	blue	blue
+2269	Tackle Fire	red	red
+2270	Blader	blue	blue
+2453	Embering Hulk	Blue	
+2454	redhat hacker	Red 	
+2456	greenhat hacker		blue
+2460	ICE barrier	Blue	
+2461	corruption quarantine		blue
+2470	zombie process		blue
+2471	botfly	Blue 	blue
+2473	ICE man	Red	red
+2497	time cop	blue	red
+2499	some fish	blue	red
+2539	Scarlet Sorceress		red
+2540	Sapphire Sorceress	blue	
