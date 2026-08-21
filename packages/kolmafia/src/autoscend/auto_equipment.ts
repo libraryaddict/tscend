@@ -1115,7 +1115,10 @@ function finalizeMaximize(speculative: boolean = false): void {
     }
   }
 
-  if (myLocation() === toLocation(get("_seadentWaveZone"))) {
+  if (
+    get("_seadentWaveZone") !== "" &&
+    myLocation() === toLocation(get("_seadentWaveZone"))
+  ) {
     //Don't want to spend an extra turn if we don't have to
     maximizer.equip($item`Monodent of the Sea`);
   }
