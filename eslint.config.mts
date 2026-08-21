@@ -124,6 +124,7 @@ export default defineConfig(
           args: "none",
         },
       ],
+      "no-throw-literal": "error",
     },
   },
   prettier,
