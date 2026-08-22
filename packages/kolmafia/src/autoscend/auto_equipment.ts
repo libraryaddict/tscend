@@ -636,21 +636,26 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
   } else if (myLevel() < 13 || get("auto_disregardInstantKarma", false)) {
     //experience scores for the default maximizer statement
 
+    const weightMulti = myLevel() < 13 ? 1 : 0.5;
+
     if (get("auto_MLSafetyLimit") === "") {
       //"exp" includes bonus from "ml" sources and values mainstat experience with a variable? score comparable to 0.25ML?
       //in general "10exp" gives a score equivalent to "15(primeStat) experience"
       //"exp" does not value "+(offstat) experience"
-      target.weight($modifier`Experience`, 10);
+      target.weight($modifier`Experience`, 10 * weightMulti);
     } else {
       //a value is given for ML safety limit
       //use "(primeStat) experience" instead of "exp" in the hope that it will not include ML however this is not consistently true
       //the conditions under which it still adds value to ML are unclear (level? not ronin? volleyball familiar??)
       //the maximizer score for limited ML is added later by pre_adv
       //pre_adv will tell the maximizer to not value ML over the safety limit (though enforcing that limit is not possible with the maximizer syntax and scoring system)
-      target.weight(Modifier.get(`${primeStat} Experience`), 15);
+      target.weight(Modifier.get(`${primeStat} Experience`), 15 * weightMulti);
     }
     //TODO the score to give to experience VS percent depends on how much experience is expected from fights
-    target.weight(Modifier.get(`${primeStat} Experience Percent`), 5);
+    target.weight(
+      Modifier.get(`${primeStat} Experience Percent`),
+      weightMulti * 5,
+    );
   }
   if (myBasestat(primeStat) > 122) {
     //>= level 12 or almost there, more offstat experience may be needed for the war outfit (requires 70 mox and 70 mys)
