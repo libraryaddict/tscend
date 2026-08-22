@@ -1590,19 +1590,33 @@ export function auto_baseballRecruits(): Monster[] {
     .map((s) => Monster.get(s));
 }
 
+interface TrackerEntry {
+  element: Element;
+  gain: string;
+  trackerKey: TrackerKey | undefined;
+}
+
+function finisher(
+  element: Element,
+  gain: string,
+  trackerKey?: TrackerKey,
+): TrackerEntry {
+  return { element, gain, trackerKey };
+}
+
+// The order here matters
+const baseballFinishers: TrackerEntry[] = [
+  finisher($element`hot`, "Yellow Ray", "auto_yellowRays"),
+  finisher($element`cold`, "Banish", "auto_banishes"),
+  finisher($element`spooky`, "Free Fights", "auto_instakill"),
+  finisher($element`stench`, "Extra Zone Copies", "auto_copies"),
+  finisher($element`sleaze`, "High ML"),
+];
+
 function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
   visitUrl(`inventory.php?pwd=${myHash()}&action=pball`, false);
 
   if (!handlingChoice()) return false;
-
-  // The order here matters
-  const finishers: [Element, string, TrackerKey | undefined][] = [
-    [$element`hot`, "Yellow Ray", "auto_yellowRays"],
-    [$element`cold`, "Banish", "auto_banishes"],
-    [$element`spooky`, "Free Fights", "auto_instakill"],
-    [$element`stench`, "Extra Zone Copies", "auto_copies"],
-    [$element`sleaze`, "High ML", undefined],
-  ];
 
   const fillerPriority = new Map<string, [number, string]>([
     [
@@ -1627,7 +1641,11 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
   ]);
 
   const playedCounts = new Map<Element, number>();
-  const track: [Monster, string, TrackerKey | undefined][] = [];
+  const track: {
+    monster: Monster;
+    gain: string;
+    trackerKey: TrackerKey | undefined;
+  }[] = [];
 
   function isSafeToPlay(element: Element, currentSlot: number): boolean {
     const finisherHere = assignments.find(
@@ -1691,11 +1709,16 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
     let gain: string = "???";
     let trackerKey: TrackerKey | undefined = undefined;
 
-    for (const [element, eleGain, key] of finishers) {
+    for (const {
+      element,
+      gain: eleGain,
+      trackerKey: key,
+    } of baseballFinishers) {
       // If our math says it ruins a finisher, skip it
       if (!isSafeToPlay(element, i)) continue;
 
-      const choiceNum = finishers.findIndex(([e]) => e === element) + 1;
+      const choiceNum =
+        baseballFinishers.findIndex((f) => f.element === element) + 1;
 
       // Check our priorities, we default to -1000, which is still better than nothing
       const priority: [number, string] = fillerPriority.get(
@@ -1725,7 +1748,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
     }
     // This was a finisher
     if (highestPriority === -1000) {
-      track.push([team[i], gain, trackerKey]);
+      track.push({ monster: team[i], gain, trackerKey });
     }
 
     // Track the pitch
@@ -1737,14 +1760,18 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
     visitUrl(`choice.php?pwd&whichchoice=1598&option=${bestChoice}`);
   }
 
-  for (const [monster, gain, trackerKey] of track) {
-    for (const key of ["auto_otherstuff", trackerKey]) {
-      if (!key) continue;
+  for (const { monster, gain, trackerKey } of track) {
+    handleTracker({
+      what: $item`Baseball Diamond`,
+      detail: `${monster} - ${gain}`,
+      property: "auto_otherstuff",
+    });
 
+    if (trackerKey) {
       handleTracker({
-        what: $item`Baseball Diamond`,
-        detail: `${monster} - ${gain}`,
-        property: key as TrackerKey,
+        what: monster,
+        detail: $item`Baseball Diamond`.toString(),
+        property: trackerKey,
       });
     }
   }
@@ -1844,6 +1871,13 @@ export function auto_baseballBuildAssignments(
     return false;
   }
 
+  // Each finisher needs 2 prior throws of its own element; sorted by slot,
+  // the ith finisher must have slot >= 3*i - 1 to leave room for those.
+  function isFeasibleAssignment(candidate: [Element, number][]): boolean {
+    const slots = candidate.map(([, slot]) => slot).sort((a, b) => a - b);
+    return slots.every((slot, index) => slot >= 3 * (index + 1) - 1);
+  }
+
   function getLargestGroup(
     claimed: Element[],
     startSlot: number,
@@ -1859,7 +1893,10 @@ export function auto_baseballBuildAssignments(
         const result = getLargestGroup([...claimed, ele], slot - 1);
         const candidate = [...result, [ele, slot]] as [Element, number][];
 
-        if (compareAssignments(candidate, best)) {
+        if (
+          isFeasibleAssignment(candidate) &&
+          compareAssignments(candidate, best)
+        ) {
           best = candidate;
         }
 
@@ -2039,6 +2076,17 @@ export function auto_tryPlayBaseball(): boolean {
 
   if (!auto_baseballShouldPlay(team, assignments)) {
     return false;
+  }
+
+  auto_log_info("Baseball gameplan:");
+  for (const a of assignments) {
+    const gain =
+      baseballFinishers.find((f) => f.element === a.element)?.gain ??
+      a.element.toString();
+
+    auto_log_info(
+      `- Slot ${a.finisherSlot}: finish ${a.element} on ${a.finisherMonster} for ${gain}`,
+    );
   }
 
   if (!auto_playBaseballGame(assignments)) {
