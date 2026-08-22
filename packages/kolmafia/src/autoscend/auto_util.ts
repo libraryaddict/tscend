@@ -6734,7 +6734,7 @@ export function auto_wantToFreeKillWithNoDrops(
         fullnessLimit() <= 0 ||
         !auto_is_valid($item`Formica e Pepe`) ||
         itemAmount($item`hot honey ant`) >=
-          itemAmount($item`legendary noodles`))) ||
+          Math.min(2, itemAmount($item`legendary noodles`)))) ||
       $monsters`giant giant giant centipede, cactuary, rock scorpion, plaque of locusts`.includes(
         enemy,
       ))

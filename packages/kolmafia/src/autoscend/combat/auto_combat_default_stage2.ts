@@ -281,6 +281,7 @@ export function auto_combatDefaultStage2(
       // As we're replacing the drops, add the flag
       if (!combat_status_check("droptablereplaced")) {
         combat_status_add("droptablereplaced");
+        combat_status_add("droptablereplacedbysword");
       }
     }
   }
@@ -521,7 +522,9 @@ export function auto_combatDefaultStage2(
   // Free run before banishing for a few monsters
   if (
     !combat_status_check("banishercheck") &&
-    !combat_status_check("droptablereplaced") &&
+    (!combat_status_check("droptablereplaced") ||
+      // We're fine with destroying the sword's drops
+      combat_status_check("droptablereplacedbysword")) &&
     auto_wantToBanish(enemy, myLocation())
   ) {
     const freeRunAction: CombatMacroReturns = freeRunCombatStringPreBanish(
@@ -542,7 +545,9 @@ export function auto_combatDefaultStage2(
   if (
     !combat_status_check("banishercheck") &&
     !combat_status_check("phylumbanishercheck") &&
-    !combat_status_check("droptablereplaced") &&
+    (!combat_status_check("droptablereplaced") ||
+      // We're fine with destroying the sword's drops
+      combat_status_check("droptablereplacedbysword")) &&
     auto_wantToBanish$1(monsterPhylum(enemy), myLocation()) &&
     auto_habitatMonster() !== enemy
   ) {
@@ -569,7 +574,9 @@ export function auto_combatDefaultStage2(
   // Free run in Avant Guard from Bodyguard before banishing for a few monsters
   if (
     !combat_status_check("banishercheck") &&
-    !combat_status_check("droptablereplaced") &&
+    (!combat_status_check("droptablereplaced") ||
+      // We're fine with destroying the sword's drops
+      combat_status_check("droptablereplacedbysword")) &&
     auto_wantToBanish(guardee, myLocation())
   ) {
     const freeRunAction: CombatMacroReturns = freeRunCombatStringPreBanish(
@@ -591,7 +598,9 @@ export function auto_combatDefaultStage2(
   if (
     !combat_status_check("banishercheck") &&
     !combat_status_check("phylumbanishercheck") &&
-    !combat_status_check("droptablereplaced") &&
+    (!combat_status_check("droptablereplaced") ||
+      // We're fine with destroying the sword's drops
+      combat_status_check("droptablereplacedbysword")) &&
     auto_wantToBanish(enemy, myLocation()) &&
     !ag_is_bodyguard()
   ) {
@@ -620,7 +629,9 @@ export function auto_combatDefaultStage2(
   // Free run from monsters we want to banish/phylumbanish but are unable to, or monsters on the free run list
   if (
     !combat_status_check("freeruncheck") &&
-    !combat_status_check("droptablereplaced") &&
+    (!combat_status_check("droptablereplaced") ||
+      // We're fine with destroying the sword's drops
+      combat_status_check("droptablereplacedbysword")) &&
     (auto_wantToFreeRun(enemy, myLocation()) ||
       auto_forceFreeRun(true) ||
       auto_wantToBanish(enemy, myLocation()) ||
@@ -657,7 +668,9 @@ export function auto_combatDefaultStage2(
 
   if (
     !combat_status_check("replacercheck") &&
-    !combat_status_check("droptablereplaced") &&
+    (!combat_status_check("droptablereplaced") ||
+      // We're fine with destroying the sword's drops
+      combat_status_check("droptablereplacedbysword")) &&
     auto_wantToReplace(enemy, myLocation())
   ) {
     const combatAction: CombatMacroReturns = replaceMonsterCombatString(

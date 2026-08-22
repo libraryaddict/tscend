@@ -1652,8 +1652,8 @@ export function auto_isPotentialTalkToSomeFishTarget(
   // If we did something to the monster and we don't want to undo it
   if (
     combat_status_check("refractedgazed") ||
-    (myFamiliar() !== $familiar`Sword of S Words` &&
-      combat_status_check("droptablereplaced"))
+    (combat_status_check("droptablereplaced") &&
+      !combat_status_check("droptablereplacedbysword"))
   ) {
     return false;
   }
