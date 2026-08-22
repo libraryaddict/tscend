@@ -160,6 +160,7 @@ import {
   auto_desires_sword_familiar_drops,
   auto_havePastaWand,
   auto_isInEternityCodpiece,
+  wantToClubEmBackInTime,
 } from "./iotms/2020/mr2026";
 import { applyMaximizePreference } from "./maximizer_parser";
 import { in_bhy } from "./paths/2011/bees_hate_you";
@@ -1741,7 +1742,10 @@ export function auto_equipFreekill(): void {
     clubBackAvailable &&
     !maximizer.has($slot`weapon`) &&
     (safeGet("auto_familiarChoice") !== $familiar`Sword of S Words` ||
-      !auto_desires_sword_familiar_drops())
+      !auto_desires_sword_familiar_drops()) &&
+    auto_location_monsters(myLocation()).some(([m]) =>
+      wantToClubEmBackInTime(myLocation(), m),
+    )
   ) {
     // club back is last because it destroys drops, so we may choose to not use it
     auto_log_info(
