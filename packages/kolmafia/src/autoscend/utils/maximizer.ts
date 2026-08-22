@@ -1,21 +1,31 @@
 import {
+  booleanModifier,
   containsText,
+  currentMcd,
   equip,
   equippedItem,
   Familiar,
+  haveEffect,
   haveSkill,
   Item,
   itemType,
   maximize,
   Modifier,
+  myBasestat,
   myFamiliar,
+  myLocation,
+  numericModifier,
+  numericsModifier,
   outfitPieces,
   Slot,
+  Stat,
+  stringModifier,
+  stringsModifier,
   toSlot,
   weaponHands,
   weaponType,
 } from "kolmafia";
-import { $familiar, $item, $skill, $slot } from "libram";
+import { $familiar, $item, $skill, $slot, get, getActiveEffects } from "libram";
 
 import { auto_abort, auto_log_debug, auto_log_info } from "../auto_util";
 import {
@@ -79,6 +89,32 @@ function copyMap<K, V>(from: Map<K, V>, into: Map<K, V>): void {
 function copySet<T>(from: Set<T>, into: Set<T>): void {
   into.clear();
   for (const value of from) into.add(value);
+}
+
+function mapsEqual<K, V>(a: Map<K, V>, b: Map<K, V>): boolean {
+  if (a.size !== b.size) return false;
+  for (const [key, value] of a) {
+    if (!b.has(key) || b.get(key) !== value) return false;
+  }
+  return true;
+}
+
+function setsEqual<T>(a: Set<T>, b: Set<T>): boolean {
+  if (a.size !== b.size) return false;
+  for (const value of a) if (!b.has(value)) return false;
+  return true;
+}
+
+function modesEqual(
+  a: Map<Item, Set<string>>,
+  b: Map<Item, Set<string>>,
+): boolean {
+  if (a.size !== b.size) return false;
+  for (const [item, values] of a) {
+    const otherValues = b.get(item);
+    if (!otherValues || !setsEqual(values, otherValues)) return false;
+  }
+  return true;
 }
 
 export class Maximizer {
@@ -321,6 +357,25 @@ export class Maximizer {
     for (const [item, itemModes] of from.modes) {
       this.modes.set(item, new Set(itemModes));
     }
+  }
+
+  equals(other: Maximizer): boolean {
+    return (
+      mapsEqual(this.weights, other.weights) &&
+      mapsEqual(this.mins, other.mins) &&
+      mapsEqual(this.maxes, other.maxes) &&
+      setsEqual(this.excluded, other.excluded) &&
+      setsEqual(this.disabledSlots, other.disabledSlots) &&
+      setsEqual(this.onlySlots, other.onlySlots) &&
+      setsEqual(this.switchFamiliars, other.switchFamiliars) &&
+      setsEqual(this.custom, other.custom) &&
+      mapsEqual(this.pendingEquip, other.pendingEquip) &&
+      mapsEqual(this.pendingBonus, other.pendingBonus) &&
+      mapsEqual(this.otherRequirements, other.otherRequirements) &&
+      modesEqual(this.modes, other.modes) &&
+      this.slotContainers.length === other.slotContainers.length &&
+      this.slotContainers.every((c, i) => c === other.slotContainers[i])
+    );
   }
 
   wearOutfit(outfitName: string): this {
@@ -600,8 +655,20 @@ export class Maximizer {
           .join(", ")}`,
       );
     }
+
+    const accountState = generateAccountState("maximize");
+    if (!shouldInvokeMaximizer(this, accountState)) {
+      auto_log_debug("Maximizer: skipping maximize(), nothing changed");
+      return true;
+    }
+
     maximize(this.toString(), 2500, 0, -1, "equip");
     this.applyContainerSlots();
+
+    lastMaximizerInvocation = {
+      maximizer: this.clone(),
+      accountState: generateAccountState("maximize"),
+    };
     return true;
   }
 
@@ -744,3 +811,50 @@ export class Maximizer {
 }
 
 export let maximizer: Maximizer = new Maximizer();
+
+let lastMaximizerInvocation: { maximizer: Maximizer; accountState: string } = {
+  maximizer: new Maximizer(),
+  accountState: "",
+};
+
+function generateAccountState(calledBy: string): string {
+  return `${calledBy}|${Slot.all()
+    .map((s) => `${s}:${equippedItem(s)}`)
+    .join(
+      ",",
+    )}|${get("_concoctionDatabaseRefreshes")}|${currentMcd()}|${getActiveEffects()
+    .map((e) => `${e}:${haveEffect(e)}`)
+    .join(",")}|${myLocation()}|${Stat.all()
+    .map((s) => myBasestat(s))
+    // Yes, the modifier thing is dumb, but it's a catchall!
+    .join(",")}|${Modifier.all()
+    .map((m) => modifierValue(m))
+    .join(",")}`;
+}
+
+function modifierValue(modifier: Modifier): unknown {
+  switch (modifier.type) {
+    case "boolean":
+      return booleanModifier(modifier);
+    case "string":
+      return stringModifier(modifier);
+    case "multinumeric":
+      return numericsModifier(modifier);
+    case "multistring":
+      return stringsModifier(modifier);
+    case "numeric":
+      return numericModifier(modifier);
+    default:
+      return "???";
+  }
+}
+
+function shouldInvokeMaximizer(
+  maximizer: Maximizer,
+  accountState: string,
+): boolean {
+  return (
+    lastMaximizerInvocation.accountState !== accountState ||
+    !maximizer.equals(lastMaximizerInvocation.maximizer)
+  );
+}
