@@ -6145,6 +6145,7 @@ export function effectAblativeArmor(passive_dmg_allowed: boolean): void {
   //if you have something that reduces the cost of casting buffs, wear it now.
   maximizer.weight($modifier`Mana Cost`, -1000).require("Tie", false);
   equipMaximizedGear();
+  maximizer.clearWeight($modifier`Mana Cost`);
   //Passive damage
   if (passive_dmg_allowed) {
     buffMaintain$2($effect`Spiky Shell`); //8 MP
