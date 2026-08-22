@@ -25,6 +25,7 @@ import {
   isWearingOutfit,
   Item,
   itemAmount,
+  itemDropModifier,
   itemType,
   Location,
   max,
@@ -114,6 +115,7 @@ import {
   wrap_item,
 } from "./auto_util";
 import { zone_delay } from "./auto_zone";
+import { getNeededItemDrop } from "./engine/engine";
 import { auto_jokesterGunFreeKillAvailable } from "./iotms/2010/mr2016";
 import {
   isjanuaryToteAvailable,
@@ -1144,7 +1146,11 @@ function finalizeMaximize(speculative: boolean = false): void {
     }
   }
 
-  if (auto_haveCupidBow() && !maximizer.hasBonus($item`toy Cupid bow`)) {
+  if (
+    auto_haveCupidBow() &&
+    !maximizer.hasBonus($item`toy Cupid bow`) &&
+    (getNeededItemDrop() ?? 0) > itemDropModifier()
+  ) {
     // Small bonus here, we have a big bonus in pre_adv if we need a drop we can't cap.
     addBonusToMaximize($item`toy Cupid bow`, 100);
   }
