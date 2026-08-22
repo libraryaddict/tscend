@@ -1309,7 +1309,7 @@ function adjustForBanish(combat_string: CombatMacroReturns): boolean {
     return autoEquip($item`Pantsgiving`);
   }
   if (combat_string === $skill`Heartstone: %banish`) {
-    return autoEquip(auto_getItemToEquipHeartstone());
+    return autoEquip($item`Heartstone`);
   }
   if (combat_string === $skill`Reflex Hammer`) {
     return autoEquip($item`Lil' Doctor™ bag`);
@@ -6726,26 +6726,28 @@ export function auto_wantToFreeKillWithNoDrops(
   }
   // Desert, doesn't destroy the pages!
   if (
-    haveEffect($effect`Ultrahydrated`) &&
+    get("desertExploration") < 99 &&
+    myLocation() === $location`The Arid, Extra-Dry Desert`
+  ) {
     // If its fire ants, ensure we don't want the food drop
-    ((enemy === $monster`swarm of fire ants` &&
-      (!can_consume() ||
+    if (enemy === $monster`swarm of fire ants`) {
+      if (
+        !can_consume() ||
         haveEffect($effect`Ultrahydrated`) === 1 ||
         fullnessLimit() <= 0 ||
         !auto_is_valid($item`Formica e Pepe`) ||
         itemAmount($item`hot honey ant`) >=
-          Math.min(2, itemAmount($item`legendary noodles`)))) ||
+          Math.min(2, itemAmount($item`legendary noodles`))
+      ) {
+        return true;
+      }
+    } else if (
       $monsters`giant giant giant centipede, cactuary, rock scorpion, plaque of locusts`.includes(
         enemy,
-      ))
-  ) {
-    return true;
-  }
-  if (
-    myFamiliar() === $familiar`Sword of S Words` &&
-    auto_desires_sword_familiar_drops()
-  ) {
-    return false;
+      )
+    ) {
+      return true;
+    }
   }
   // many monsters in these zones with similar names
   if (

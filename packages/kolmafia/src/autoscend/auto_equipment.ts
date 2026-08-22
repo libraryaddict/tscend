@@ -6,6 +6,7 @@ import {
   ceil,
   cliExecute,
   containsText,
+  currentRound,
   equip,
   equippedAmount,
   equippedItem,
@@ -147,7 +148,6 @@ import {
   auto_haveSpringShoes,
 } from "./iotms/2020/mr2024";
 import {
-  auto_getItemToEquipBCZ,
   auto_haveCupidBow,
   auto_haveMobiusRing,
   auto_timeCopFights,
@@ -1622,7 +1622,9 @@ export function powerMultipliers(): Map<Slot, number> {
   return multiplier;
 }
 
-export function auto_wantToReserveFreekills(inCombat: boolean = false): {
+export function auto_wantToReserveFreekills(
+  inCombat: boolean = currentRound() > 0,
+): {
   reserveFreekills: boolean;
   wantFreeKillNowEspecially: boolean;
 } {
@@ -1703,7 +1705,6 @@ export function auto_equipFreekill(): void {
   const dartHolster: Item = $item`Everfull Dart Holster`;
   const doctorBag: Item = $item`Lil' Doctor™ bag`;
   const joksterGun: Item = $item`The Jokester's gun`;
-  const bcz: Item = auto_getItemToEquipBCZ();
   const legendClub: Item = $item`legendary seal-clubbing club`;
 
   const { reserveFreekills, wantFreeKillNowEspecially } =
@@ -1737,7 +1738,7 @@ export function auto_equipFreekill(): void {
     autoEquipToSlot($slot`weapon`, joksterGun);
   } else if (sweatBulletsAvailable && !maximizer.has($slot`acc3`)) {
     auto_log_info("Man, we about to sweat bullets up in here. Equipping BCZ.");
-    autoEquipToSlot($slot`acc3`, bcz);
+    autoEquipToSlot($slot`acc3`, $item`blood cubic zirconia`);
   } else if (
     clubBackAvailable &&
     !maximizer.has($slot`weapon`) &&
