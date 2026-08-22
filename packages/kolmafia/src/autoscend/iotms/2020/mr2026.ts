@@ -1720,7 +1720,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
         continue;
       }
       abort(
-        `Failed to find a valid pitch for baseball slot ${i}. Available options are ${JSON.stringify(options)}, our finisher plan was ${JSON.stringify(finishers)}`,
+        `Failed to find a valid pitch for baseball slot ${i}. Available options are ${JSON.stringify(options)}, our finisher plan was ${JSON.stringify(assignments)}`,
       );
     }
     // This was a finisher
