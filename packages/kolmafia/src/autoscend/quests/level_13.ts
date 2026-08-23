@@ -305,6 +305,13 @@ export function towerKeyCount(effective: boolean = true): number {
   ) {
     tokens = tokens + 1;
   }
+  if (
+    effective &&
+    auto_have_skill($skill`Lock Picking`) &&
+    !get("lockPicked")
+  ) {
+    tokens += 1;
+  }
   return tokens;
 }
 

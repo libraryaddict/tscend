@@ -3549,7 +3549,7 @@ export function summonMonster(
 
 export function summonMonsterCount(
   mon: Monster,
-  speculative: boolean = false,
+  speculative: boolean = true,
 ): number {
   let summonSources: number = 0;
   if (!speculative) {

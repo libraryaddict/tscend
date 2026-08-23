@@ -127,6 +127,7 @@ import {
 import { auto_haveRoman } from "../iotms/2020/mr2024";
 import {
   auto_canNorthernExplosionFE,
+  auto_getReservedTraces,
   auto_McLargeHugeSniffsLeft,
   auto_throwLightningRemaining,
 } from "../iotms/2020/mr2025";
@@ -547,6 +548,9 @@ export function getCopier(
     enemy.copyable
   ) {
     return $skill`%fn, fire a Red, White and Blue Blast`;
+  }
+  if (get("phosphorTracesUses") > auto_getReservedTraces()) {
+    return $skill`Create an Afterimage`;
   }
   return $skill.none;
 }

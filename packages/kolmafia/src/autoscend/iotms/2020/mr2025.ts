@@ -24,6 +24,7 @@ import {
   haveEffect,
   haveEquipped,
   inebrietyLimit,
+  inHardcore,
   isUnrestricted,
   Item,
   itemAmount,
@@ -128,6 +129,7 @@ import {
   level_to_min_substat,
   safeGet,
   stat_to_substat,
+  summonMonsterCount,
   zoneRank,
 } from "../../auto_util";
 import {
@@ -153,6 +155,7 @@ import { AshMatcher } from "../../utils/kolmafiaUtils";
 import {
   acquiredFantasyRealmToken,
   fantasyBanditsFought,
+  fantasyRealmAvailable,
 } from "../2010/mr2018";
 import { auto_haveChestMimic } from "./mr2024";
 import {
@@ -747,7 +750,7 @@ export function auto_useLeprecondoDrops(): boolean {
   while (availableAmount($item`crafting plans`) > 0 && freeCrafts() < 2) {
     use($item`crafting plans`);
   }
-  auto_stockTracesBandit();
+  auto_stockTracesBandit(false);
   return true;
 }
 
@@ -761,6 +764,36 @@ export function auto_canTracesBandit(): boolean {
   );
 }
 
+/**
+ * We reserve 4 traces for fantasy bandit, unless we don't need them. We assume we're always doing daily dungeon
+ * This function isn't feature complete, it doesn't cover other situations where we don't need traces, like backup camera. This is intended for a quick hack for using traces in standard runs
+ * @returns Amount of traces reserved for bandits
+ */
+export function auto_getReservedTraces(): number {
+  if (
+    fantasyRealmAvailable() ||
+    !inHardcore() ||
+    internalQuestStatus("questL13Final") > 5
+  ) {
+    return 0;
+  }
+
+  let keys = towerKeyCount();
+  if (get("_lastDailyDungeonRoom") < 15) {
+    keys++;
+  }
+  if (
+    get("_lastDailyDungeonRoom") < 10 &&
+    !get("candyCaneSwordDailyDungeon") &&
+    auto_is_valid($item`candy cane`)
+  ) {
+    keys++;
+  }
+  if (keys >= 3) return 0;
+
+  return 4;
+}
+
 export function auto_tracesUsesLeft(): number {
   return get("phosphorTracesUses");
 }
@@ -770,8 +803,8 @@ export function auto_bankChestMimicExpForBandit(): void {
   if (
     acquiredFantasyRealmToken() ||
     !auto_haveChestMimic() ||
-    $familiar`Chest Mimic`.experience >= 100 ||
-    canSummonMonster($monster`fantasy bandit`) ||
+    fantasyRealmAvailable() ||
+    summonMonsterCount($monster`fantasy bandit`) >= 1 ||
     safeGet("auto_familiarChoice") !== $familiar.none
   ) {
     removeProperty("_auto_preferChestMimic");
@@ -784,16 +817,18 @@ export function auto_bankChestMimicExpForBandit(): void {
 // Chew banked phosphor traces up to 4 charges
 // Gated on auto_canTracesBandit (not just auto_wantTracesBandit) so this doesn't compete with other spleen items until we're actually about to use it.
 // Any earlier banking happens for free via leftover end of day spleen instead (see bedtime_spleen).
-function auto_stockTracesBandit(): void {
+function auto_stockTracesBandit(canPreferSummons: boolean): void {
+  const summons = summonMonsterCount($monster`fantasy bandit`, true);
+  const tracesNeeded = canPreferSummons ? 5 - summons : 4;
   if (
     !auto_canTracesBandit() ||
-    auto_tracesUsesLeft() >= 4 ||
+    auto_tracesUsesLeft() >= tracesNeeded ||
     !canSummonMonster($monster`fantasy bandit`)
   ) {
     return;
   }
   while (
-    auto_tracesUsesLeft() < 4 &&
+    auto_tracesUsesLeft() < tracesNeeded &&
     canChew($item`phosphor traces`) &&
     availableAmount($item`phosphor traces`) > 0 &&
     spleen_left() >= $item`phosphor traces`.spleen
