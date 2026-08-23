@@ -1722,6 +1722,7 @@ function adjustForYellowRay(combat_string: CombatMacroReturns): boolean {
 
 export function adjustForYellowRayIfPossible(
   target: Monster = $monster.none,
+  speculative: boolean = false,
 ): boolean {
   // No need to prepare
   if (
@@ -1751,6 +1752,7 @@ export function adjustForYellowRayIfPossible(
       target,
     ),
   );
+  if (speculative) return yr_string !== undefined;
   auto_log_info(
     `Adjusting to have YR available for ${target}: ${yr_string}`,
     "blue",
@@ -3542,6 +3544,14 @@ export function summonMonster(
   mon: Monster,
   speculative: boolean = false,
 ): boolean {
+  return summonMonsterCount(mon, speculative) > 0;
+}
+
+export function summonMonsterCount(
+  mon: Monster,
+  speculative: boolean = false,
+): number {
+  let summonSources: number = 0;
   if (!speculative) {
     auto_log_debug(`Trying to summon ${mon}`, "blue");
     set("auto_nonAdvLoc", true);
@@ -3578,7 +3588,8 @@ export function summonMonster(
         `${speculative ? "Can" : "Did"} summon ${mon} via calculate the universe`,
         "blue",
       );
-      return true;
+      summonSources++;
+      if (!speculative) return summonSources;
     }
   }
   if (rainManSummon(mon, speculative)) {
@@ -3586,7 +3597,8 @@ export function summonMonster(
       `${speculative ? "Can" : "Did"} summon ${mon} via rain man`,
       "blue",
     );
-    return true;
+    summonSources++;
+    if (!speculative) return summonSources;
   }
   // todo add support for Baa'baa'bu'ran with deck of every card sheep card
   if (timeSpinnerCombat(mon, speculative)) {
@@ -3594,7 +3606,8 @@ export function summonMonster(
       `${speculative ? "Can" : "Did"} summon ${mon} via time spinner`,
       "blue",
     );
-    return true;
+    summonSources++;
+    if (!speculative) return summonSources;
   }
   // methods which can only summon monsters should be attempted first
   if (auto_meggFight(mon, speculative)) {
@@ -3602,7 +3615,11 @@ export function summonMonster(
       `${speculative ? "Can" : "Did"} summon ${mon} via chest mimics`,
       "blue",
     );
-    return true;
+    summonSources += Math.floor(
+      ($familiar`Chest Mimic`.experience - (speculative ? 100 : 0)) / 100,
+    );
+
+    if (!speculative) return summonSources;
   }
 
   if (auto_fightLocketMonster(mon, speculative)) {
@@ -3610,14 +3627,16 @@ export function summonMonster(
       `${speculative ? "Can" : "Did"} summon ${mon} via combat lover's locket`,
       "blue",
     );
-    return true;
+    summonSources++;
+    if (!speculative) return summonSources;
   }
   if (handleFaxMonster(mon, !speculative)) {
     auto_log_debug(
       `${speculative ? "Can" : "Did"} summon ${mon} via fax`,
       "blue",
     );
-    return true;
+    summonSources++;
+    if (!speculative) return summonSources;
   }
   // methods which can do more than summon monsters
   if (auto_cargoShortsOpenPocket$2(mon, speculative)) {
@@ -3625,17 +3644,27 @@ export function summonMonster(
       `${speculative ? "Can" : "Did"} summon ${mon} via cargo shorts`,
       "blue",
     );
-    return true;
+    summonSources++;
+    if (!speculative) return summonSources;
   }
   if (speculative && canGenieCombat(mon)) {
     auto_log_debug(`Can summon ${mon} via wishing`, "blue");
-    return true;
+    let wishesAvailable = itemAmount($item`pocket wish`);
+
+    if (
+      itemAmount($item`genie bottle`) > 0 &&
+      auto_is_valid($item`genie bottle`)
+    ) {
+      wishesAvailable += 3 - get("_genieWishesUsed");
+    }
+    summonSources += Math.min(wishesAvailable, 3) - get("_genieFightsUsed");
   } else if (!speculative && makeGenieCombat(mon)) {
     auto_log_debug(`Did summon ${mon} via wishing`, "blue");
-    return true;
+    summonSources++;
+    if (!speculative) return summonSources;
   }
 
-  return false;
+  return summonSources;
 }
 
 // "pass": summoned a mountain man this turn

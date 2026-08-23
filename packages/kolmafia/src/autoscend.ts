@@ -1026,7 +1026,7 @@ export function LX_burnUnusedLuck(): boolean {
 
 export function LX_calculateTheUniverse(speculative: boolean): boolean {
   if (in_wildfire()) {
-    return LX_wildfire_calculateTheUniverse();
+    return LX_wildfire_calculateTheUniverse(speculative);
   }
   if (myMp() < mpCost($skill`Calculate the Universe`)) {
     return false;
@@ -1038,7 +1038,10 @@ export function LX_calculateTheUniverse(speculative: boolean): boolean {
   if (!possessOutfit("Frat Warrior Fatigues") && auto_warSide() === "fratboy") {
     if (
       doNumberology("battlefield", false) !== -1 &&
-      (adjustForYellowRayIfPossible($monster`War Frat 151st Infantryman`) ||
+      (adjustForYellowRayIfPossible(
+        $monster`War Frat 151st Infantryman`,
+        speculative,
+      ) ||
         prepareYellowRayNextCombat(12, speculative))
     ) {
       if (speculative) {
@@ -1049,6 +1052,8 @@ export function LX_calculateTheUniverse(speculative: boolean): boolean {
     }
     return false; //we want 151 and can get it in general. but not right now. so save it for later
   }
+
+  if (speculative) return false;
 
   doNumberology("adventures3");
   return false; //we do not want to restart the loop as all we're doing is generating 3 adventures

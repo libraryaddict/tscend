@@ -108,7 +108,7 @@ export function wildfire_warboss_check(): boolean {
   return false;
 }
 
-export function LX_wildfire_calculateTheUniverse(): boolean {
+export function LX_wildfire_calculateTheUniverse(speculate: boolean): boolean {
   //in wildfire calculate the universe always summons in a fire 5 zone which 100% burns all dropped items. unless conditional drops
   //yellow ray items still burn up. the only exception is [use the force] because it brings you to a noncombat to give you the items
   if (!in_wildfire()) {
@@ -124,11 +124,16 @@ export function LX_wildfire_calculateTheUniverse(): boolean {
     auto_saberChargesAvailable() > 0
   ) {
     if (doNumberology("battlefield", false) !== -1) {
+      if (speculate) {
+        return true;
+      }
       autoEquipToSlot($slot`weapon`, $item`Fourth of May Cosplay Saber`);
       return doNumberology("battlefield") !== -1;
     }
     return false; //we want 151 and can get it in general. but not right now. so save it for later
   }
+
+  if (speculate) return false;
 
   doNumberology("adventures3");
   return false; //we do not want to restart the loop as all we're doing is generating 3 adventures
