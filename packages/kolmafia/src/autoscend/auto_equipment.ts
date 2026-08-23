@@ -1702,10 +1702,6 @@ export function auto_equipFreekill(): void {
   }
 
   auto_log_info("Looking for an equipment with free kills available...");
-  const dartHolster: Item = $item`Everfull Dart Holster`;
-  const doctorBag: Item = $item`Lil' Doctor™ bag`;
-  const joksterGun: Item = $item`The Jokester's gun`;
-  const legendClub: Item = $item`legendary seal-clubbing club`;
 
   const { reserveFreekills, wantFreeKillNowEspecially } =
     auto_wantToReserveFreekills();
@@ -1727,18 +1723,18 @@ export function auto_equipFreekill(): void {
     auto_log_info(
       "We don't have ELR so let's hit a bullseye. Equipping Everful Dart holster.",
     );
-    autoEquipToSlot($slot`acc3`, dartHolster);
+    addBonusToMaximize($item`Everfull Dart Holster`, 400, true);
   } else if (chestXrayAvailable && !maximizer.has($slot`acc3`)) {
     auto_log_info(
       "We still have Chest X-Rays available. Equipping Lil' Doctor bag.",
     );
-    autoEquipToSlot($slot`acc3`, doctorBag);
+    addBonusToMaximize($item`Lil' Doctor™ bag`, 400, true);
   } else if (fireGunAvailable && !maximizer.has($slot`weapon`)) {
     auto_log_info("Let's be a jokester. Equipping The Jokester's gun.");
-    autoEquipToSlot($slot`weapon`, joksterGun);
+    addBonusToMaximize($item`The Jokester's gun`, 400, true);
   } else if (sweatBulletsAvailable && !maximizer.has($slot`acc3`)) {
     auto_log_info("Man, we about to sweat bullets up in here. Equipping BCZ.");
-    autoEquipToSlot($slot`acc3`, $item`blood cubic zirconia`);
+    addBonusToMaximize($item`blood cubic zirconia`, 400, true);
   } else if (
     clubBackAvailable &&
     !maximizer.has($slot`weapon`) &&
@@ -1752,7 +1748,7 @@ export function auto_equipFreekill(): void {
     auto_log_info(
       "They may not be seals, but we're gonna kill them last week. Equipping Legendary Seal Clubbing Club.",
     );
-    autoEquipToSlot($slot`weapon`, legendClub);
+    addBonusToMaximize($item`legendary seal-clubbing club`, 400, true);
   } else {
     auto_log_info(
       "No free kill sources found to equip, maybe you have some others, but we'll let combat figure that out.",
