@@ -71,7 +71,12 @@ import {
 } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
-import { auto_canDrink, inebriety_left, spleen_left } from "../auto_consume";
+import {
+  auto_canDrink,
+  canChew,
+  inebriety_left,
+  spleen_left,
+} from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
 import {
   auto_famKill,
@@ -85,6 +90,7 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_log_info,
+  auto_turbo,
   auto_wantToBanish,
   auto_wantToBanish$1,
   handleTracker,
@@ -144,6 +150,7 @@ import { in_glover } from "../paths/2018/g_lover";
 import { in_pokefam } from "../paths/2018/pocket_familiars";
 import { plumber_ppCost } from "../paths/2020/path_of_the_plumber";
 import { in_wildfire } from "../paths/2021/wildfire";
+import { in_small } from "../paths/2023/small";
 import { in_avantGuard } from "../paths/2024/avant_guard";
 import { is_werewolf } from "../paths/2024/wereprofessor";
 import {
@@ -550,6 +557,19 @@ export function getCopier(
     return $skill`%fn, fire a Red, White and Blue Blast`;
   }
   if (get("phosphorTracesUses") > auto_getReservedTraces()) {
+    return $skill`Create an Afterimage`;
+  } else if (
+    !isActuallyEd() &&
+    !in_small() &&
+    // Only chew traces if we're in turbo mode
+    auto_turbo() &&
+    !inCombat &&
+    itemAmount($item`phosphor traces`) > 0 &&
+    spleen_left() >= $item`phosphor traces`.spleen &&
+    canChew($item`phosphor traces`) &&
+    auto_is_valid($item`phosphor traces`) &&
+    auto_is_valid$2($skill`Create an Afterimage`)
+  ) {
     return $skill`Create an Afterimage`;
   }
   return $skill.none;

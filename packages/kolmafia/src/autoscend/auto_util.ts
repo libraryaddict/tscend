@@ -1829,6 +1829,12 @@ export function adjustForCopyIfPossible(target: Monster): boolean {
   if (copier === $skill`%fn, fire a Red, White and Blue Blast`) {
     handleFamiliar$1($familiar`Patriotic Eagle`);
   }
+  if (
+    copier === $skill`Create an Afterimage` &&
+    get("phosphorTracesUses") === 0
+  ) {
+    return autoChew(1, $item`phosphor traces`);
+  }
   return false;
 }
 
