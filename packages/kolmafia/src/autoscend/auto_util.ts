@@ -7210,9 +7210,11 @@ export function getMonsterDrops(monster: Monster): MonsterDrop[] {
 }
 
 export function isItemDropControlled(drop: MonsterDrop): boolean {
-  return !(
-    ["pickpocket_only", "steal_accordion", "conditional"] as DropType[]
-  ).includes(drop.flag);
+  return (
+    drop.rate >= 1 &&
+    (drop.rate < 100 || drop.flag !== "conditional") &&
+    !(["pickpocket_only", "steal_accordion"] as DropType[]).includes(drop.flag)
+  );
 }
 
 // If this item is ensured
