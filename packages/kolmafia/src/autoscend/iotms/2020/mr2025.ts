@@ -34,7 +34,6 @@ import {
   max,
   min,
   Monster,
-  monsterPhylum,
   myBasestat,
   myClass,
   myDaycount,
@@ -80,7 +79,6 @@ import {
   $monsters,
   $path,
   $phyla,
-  $phylum,
   $skill,
   $slot,
   $stat,
@@ -122,6 +120,7 @@ import {
   auto_zonePhylumPercent,
   canSummonMonster,
   freeRunCombatAction,
+  getMonsterDrops,
   handleTracker,
   internalQuestStatus,
   isFreeMonster,
@@ -139,6 +138,7 @@ import {
   combat_status_check,
 } from "../../combat/auto_combat_util";
 import { fightingDesiredTaskMonster } from "../../engine/engine";
+import { in_bhy } from "../../paths/2011/bees_hate_you";
 import { in_zombieSlayer } from "../../paths/2012/zombie_slayer";
 import { in_kolhs } from "../../paths/2013/kolhs";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
@@ -1969,6 +1969,12 @@ export function auto_bczRefractedGaze(
     return false;
   }
   if (
+    combat_status_check("choiceMonster") ||
+    safeGet("auto_familiarChoice") === $familiar`Sword of S Words`
+  ) {
+    return false;
+  }
+  if (
     currentRound() > 0 &&
     myFamiliar() === $familiar`Sword of S Words` &&
     (auto_desires_sword_familiar_drops() ||
@@ -1977,17 +1983,9 @@ export function auto_bczRefractedGaze(
     // the sword already overwrites this fight's drop table, so gazing here would be wasted.
     return false;
   }
-  if (
-    auto_havePeridot() &&
-    !haveUsedPeridot(location) &&
-    planToPeridot && // Only fallthrough if we explicitly plan to peridot
-    (!auto_haveMonodent() || location !== $location`The Hole in the Sky`)
-  ) {
-    //Will undoubtedly want Peridot in these locations
-    //Other sources of issue (pocket wishes/mimic eggs) are fought in Noob Cave
-    //Don't have support for the Crepe Paper Parachute Cape but that also causes issues
-    return false;
-  }
+  planToPeridot =
+    auto_havePeridot() && !haveUsedPeridot(location) && planToPeridot;
+
   const onFinalDay: boolean = myDaycount() >= get("auto_runDayCount", 0);
   const refractedGazeCastsUsed: number = get("_bczRefractedGazeCasts");
   // Would we still want to gaze again after this cast? If not, this is the last one we're
@@ -2006,109 +2004,300 @@ export function auto_bczRefractedGaze(
   ) {
     return false;
   }
-  const speculating: boolean = currentRound() === 0;
+  const isSpeculating: boolean = currentRound() === 0;
+  // The current monster we could be fighting
+  const canMonodent = isSpeculating
+    ? auto_haveMonodent()
+    : auto_canUse($skill`Sea *dent: Talk to Some Fish`);
 
-  if (
-    location === $location`The Smut Orc Logging Camp` &&
-    lumberCount() < bridgeGoal() &&
-    fastenerCount() < bridgeGoal()
-  ) {
-    return true;
-  }
-  if (
-    location === $location`The Penultimate Fantasy Airship` &&
-    internalQuestStatus("questL10Garbage") >= 4 &&
-    itemAmount($item`Mohawk wig`) < 1 &&
-    itemAmount($item`amulet of extreme plot significance`) < 1 &&
-    (speculating ||
-      lastMonster() === $monster`some fish` ||
-      !$monsters`Burly Sidekick, Quiet Healer`.includes(lastMonster()))
-  ) {
-    return true;
-  }
-  if (
-    location === $location`The Battlefield (Frat Uniform)` &&
-    get("auto_otherstuff")
-      .split(", ")
-      .filter(
-        (s) =>
-          s.includes($skill`BCZ: Refracted Gaze`.toString()) &&
-          s.includes(location.toString()),
-      ).length < get("auto_bcz_battlefieldGaze", 2)
-  ) {
-    // Only use refracted gaze on the battlefield once
-    return true;
-  }
-  if (
-    location === $location`A-Boo Peak` &&
-    itemAmount($item`A-Boo clue`) * 30 <
-      // We would take 2 advs regardless, we don't want to waste our time on a clue we didn't need!
-      get("booPeakProgress") - 4
-  ) {
-    return true;
-  }
-  if (
-    location === $location`Cobb's Knob Harem` &&
-    (speculating ||
-      lastMonster() === $monster`Knob Goblin Harem Guard` ||
-      lastMonster() === $monster`some fish`)
-  ) {
-    return true;
-  }
-  if (
-    location === $location`Twin Peak` &&
-    itemAmount($item`rusty hedge trimmers`) < 4
-  ) {
-    return true;
-  }
-  if (
-    location === $location`The Black Forest` &&
-    !blackMarketAvailable() &&
-    itemAmount($item`reassembled blackbird`) === 0 &&
-    (speculating || monsterPhylum() !== $phylum`beast`)
-  ) {
-    return true;
-  }
-  if (
-    location === $location`Whitey's Grove` &&
-    L11_needWetStew() &&
-    (speculating || auto_haveMonodent() || monsterPhylum() !== $phylum`beast`)
-  ) {
-    return true;
-  }
-  if (
-    location === $location`The Defiled Nook` &&
-    (speculating ||
-      lastMonster() === $monster`party skelteon` ||
-      lastMonster() === $monster`some fish`)
-  ) {
-    return true;
-  }
-  if (location === $location`The Hole in the Sky` && needStarKey()) {
-    if (speculating) {
+  // If we plan to peridot, then we should avoid gazing if we'd get the outcome we want regardless
+  // If we want drops from multiple monsters, then if we can use monodent, we can ignore the peridot
+  // As we can't drop anything from the monster we do a gaze on, we must return false if we can't monodent and we're fighting the one we want drops from
+
+  switch (location) {
+    case $location`The Smut Orc Logging Camp`: {
+      // If we're going to peridot, we have a good reason!
+      if (planToPeridot) {
+        return false;
+      }
+
+      const needsScrews = fastenerCount() < bridgeGoal();
+      const needsPlanks = lumberCount() < bridgeGoal();
+
+      if (!needsScrews && !needsPlanks) return false;
+
+      if (isSpeculating) return true;
+
+      const fasten = $monsters`smut orc screwer, smut orc nailer`;
+      const plans = $monsters`smut orc pipelayer, smut orc jacker`;
+
+      // If unexpected
+      if (
+        !fasten.includes(lastMonster()) &&
+        !plans.includes(lastMonster()) &&
+        lastMonster() !== $monster`some fish`
+      ) {
+        return false;
+      }
+
+      // If it's pointless to monodent away or gaze, we'd finish on this one
+      if (
+        fasten.includes(lastMonster()) &&
+        needsScrews &&
+        fastenerCount() + 1 >= bridgeGoal() &&
+        !needsPlanks
+      ) {
+        return false;
+      }
+      if (
+        plans.includes(lastMonster()) &&
+        needsPlanks &&
+        lumberCount() + 1 >= bridgeGoal() &&
+        !needsScrews
+      ) {
+        return false;
+      }
+
+      // If we can't monodent away, and we don't need the other monsters but do need this
+      if (
+        !canMonodent &&
+        ((!needsPlanks && fasten.includes(lastMonster())) ||
+          (!needsScrews && plans.includes(lastMonster())))
+      ) {
+        return false;
+      }
+
       return true;
     }
+    case $location`The Penultimate Fantasy Airship`: {
+      // We're only doing fallthrough here, as a target of chance
+      if (planToPeridot) {
+        return false;
+      }
+      if (internalQuestStatus("questL10Garbage") < 4) return false;
+      // If we do have at least one, don't gaze
+      if (
+        $items`Mohawk wig, amulet of extreme plot significance`.some((i) =>
+          possessEquipment(i),
+        )
+      ) {
+        return false;
+      }
 
-    if (
-      lastMonster() === $monster`Astronomer` &&
-      (itemAmount($item`star chart`) > 0 ||
-        auto_have_skill($skill`Sea *dent: Talk to Some Fish`))
-    ) {
+      if (isSpeculating) return true;
+
+      // Only if we're fighting these
+      return $monsters`some fish, Irritating Series of Random Encounters, MagiMechTech MechaMech, Protagonist, Spunky Princess`.includes(
+        lastMonster(),
+      );
+    }
+    case $location`The Battlefield (Frat Uniform)`: {
+      // We can't monodent here, we'd gain no progress
+      if (planToPeridot) {
+        return false;
+      }
+      // Try to limit by tracking
+      if (
+        get("auto_otherstuff")
+          .split(", ")
+          .filter(
+            (s) =>
+              s.includes($skill`BCZ: Refracted Gaze`.toString()) &&
+              s.includes(location.toString()),
+          ).length < get("auto_bcz_battlefieldGaze", 2)
+      ) {
+        // Only use refracted gaze on the battlefield X times
+        return true;
+      }
+      return false;
+    }
+    case $location`A-Boo Peak`: {
+      if (
+        itemAmount($item`A-Boo clue`) * 30 >=
+        // We would take 2 advs regardless, we don't want to waste our time on a clue we didn't need!
+        get("booPeakProgress") - 4
+      ) {
+        return false;
+      }
+
+      return (
+        isSpeculating ||
+        $monsters`some fish, Battlie Knight Ghost, Claybender Sorcerer Ghost, Dusken Raider Ghost, Space Tourist Explorer Ghost, Whatsian Commando Ghost`.includes(
+          lastMonster(),
+        )
+      );
+    }
+    case $location`Cobb's Knob Harem`: {
+      // We don't want to be wasteful with the gazes, we can avoid it
+      if (planToPeridot) {
+        return false;
+      }
+      // If we're not hunting for the outfit
+      if (
+        $items`Knob Goblin harem veil, Knob Goblin harem pants`.every((i) =>
+          possessEquipment(i),
+        )
+      ) {
+        return false;
+      }
+
+      // Ensure we're not fighting the monster we are trying to drop
+      return (
+        isSpeculating ||
+        $monsters`Knob Goblin Harem Guard, Knob Goblin Madam, some fish`.includes(
+          lastMonster(),
+        )
+      );
+    }
+    case $location`Twin Peak`: {
+      // If we're not going to monodent, though, this is sub-optimal
+      if (planToPeridot && !canMonodent) {
+        return false;
+      }
+      const twinStatus = get("twinPeakProgress");
+      const trimmersNeeded =
+        4 - [1, 2, 4, 8].filter((bit) => (twinStatus & bit) !== 0).length;
+
+      if (itemAmount($item`rusty hedge trimmers`) >= trimmersNeeded) {
+        return false;
+      }
+
+      if (isSpeculating) {
+        return true;
+      }
+
+      const others = $monsters`some fish, Big Wheelin' Twins, Bubblemint Twins, Creepy Ginger Twin, Troll Twins, Mismatched Twins`;
+      const drops = $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`;
+
+      if (!others.includes(lastMonster()) && !drops.includes(lastMonster())) {
+        return false;
+      }
+
+      return canMonodent || others.includes(lastMonster());
+    }
+    case $location`The Black Forest`: {
+      if (blackMarketAvailable()) return false;
+
+      if (
+        itemAmount(
+          in_bhy() ? $item`reconstituted crow` : $item`reassembled blackbird`,
+        ) > 0
+      ) {
+        return false;
+      }
+
+      const want = (
+        !in_bhy()
+          ? $items`sunken eyes, broken wings`
+          : $items`bird brain, busted wings`
+      ).filter((i) => itemAmount(i) === 0);
+
+      if (want.length === 0) return false;
+
+      if (planToPeridot) return false;
+
+      if (isSpeculating) return true;
+
+      if (
+        !$monsters`some fish, black adder, black friar, black magic woman, black panther, black widow`.includes(
+          lastMonster(),
+        )
+      ) {
+        return false;
+      }
+
+      // If the monster doesn't give something we want (We don't monodent here)
+      return getMonsterDrops(lastMonster()).every(
+        (i) => !want.includes(i.item),
+      );
+    }
+    case $location`Whitey's Grove`: {
+      if (!L11_needWetStew()) return false;
+
+      const need = $items`bird rib, lion oil`.filter(
+        (i) => itemAmount(i) === 0,
+      );
+      // we're going to be fighting it or we don't need it
+      if (need.length <= (planToPeridot ? 1 : 0)) {
+        return false;
+      }
+      // If we're speculating
+      if (isSpeculating) return true;
+
+      // If its an unexpected encounter
+      if (
+        !$monsters`Knight in White Satin, white chocolate golem, white lion, whitesnake, some fish`.includes(
+          lastMonster(),
+        )
+      ) {
+        return false;
+      }
+
+      const gives = getMonsterDrops(lastMonster()).filter((d) =>
+        need.includes(d.item),
+      ).length;
+
+      // If we'd get what we want regardless
+      if (gives === need.length) {
+        return false;
+      }
+
+      // Only return true if we can monodent, or it's not what we want
+      return canMonodent || gives === 0;
+    }
+    case $location`The Defiled Nook`: {
+      // Only if its not a waste
+      if (itemAmount($item`evil eye`) * -3 + get("cyrptNookEvilness") <= 14) {
+        return false;
+      }
+      if (isSpeculating) {
+        return true;
+      }
+
+      const evilEyes = $monsters`spiny skelelton, toothy sklelton`;
+
+      if (!canMonodent && evilEyes.includes(lastMonster())) return false;
+
+      // If its an expected monster
+      return (
+        evilEyes.includes(lastMonster()) ||
+        $monsters`party skelteon, some fish`.includes(lastMonster())
+      );
+    }
+    case $location`The Hole in the Sky`: {
+      if (!needStarKey()) {
+        return false;
+      }
+
+      if (isSpeculating) {
+        return true;
+      }
+
+      if (
+        !$monsters`some fish, Astronomer, Axe Wound, Beaver, Box, Burrowing Bishop, Bush, Camel's Toe, Family Jewels, Flange, Honey Pot, Hooded Warrior, Junk, Little Man in the Canoe, Muff, One-Eyed Willie, Pork Sword, Skinflute, Trouser Snake, Twig and Berries`.includes(
+          lastMonster(),
+        )
+      ) {
+        return false;
+      }
+
+      if (lastMonster() === $monster`Astronomer`) {
+        return canMonodent || itemAmount($item`star chart`) > 0;
+      }
+
       return true;
     }
+    case $location`Guano Junction`: {
+      if (internalQuestStatus("questL04Bat") >= 4) return false;
 
-    if (
-      monsterPhylum() === $phylum`constellation` ||
-      lastMonster() === $monster`some fish`
-    ) {
-      return true;
+      // We're fishing for sonars
+      return (
+        isSpeculating ||
+        $monsters`some fish, screambat, batbugbear, vampire bat, skullbat, baseball bat, briefcase bat, perpendicular bat, doughbat`.includes(
+          lastMonster(),
+        )
+      );
     }
-  }
-  if (
-    location === $location`Guano Junction` &&
-    internalQuestStatus("questL04Bat") < 3
-  ) {
-    return true;
   }
 
   return false;
