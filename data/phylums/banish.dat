@@ -1,4 +1,4 @@
-dude	loc:The Black Forest
+dude	loc:The Black Forest	item:reassembled blackbird<1	item:reconstituted crow<1
 dude	loc:Twin Peak
 dude	loc:The Red Zeppelin	item:Glark Cable>2
 dude	loc:Whitey's Grove	quest:questL11Palindome<=3
