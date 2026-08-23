@@ -1014,18 +1014,16 @@ function auto_pre_adventure(): boolean {
     autoEquip($item`blood cubic zirconia`);
 
     if (auto_haveMonodent()) {
-      addBonusToMaximize($item`Monodent of the Sea`, 700); // nice to have, not mandatory
+      addBonusToMaximize($item`Monodent of the Sea`, 1700); // nice to have, not mandatory
     }
   } else if (
     auto_haveMonodent() &&
     auto_baseballFreefightMonster() === $monster`some fish` &&
-    zoneHasUnwantedMonsters
+    zoneHasUnwantedMonsters &&
+    !planToPeridot
   ) {
     // Add the monodent for killing some fish, for free, if possible
-    addBonusToMaximize(
-      $item`Monodent of the Sea`,
-      zoneHasWantedMonsters ? 80 : 200,
-    );
+    addBonusToMaximize($item`Monodent of the Sea`, 200);
   }
 
   if (
