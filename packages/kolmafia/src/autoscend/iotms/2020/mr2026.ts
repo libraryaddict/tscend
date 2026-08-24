@@ -992,9 +992,6 @@ export function auto_willEatLegendaryNoodles(): boolean {
 }
 
 export function legendaryPastaSoftblockInPlace(): boolean {
-  if (!isSoftBlockInPlace("legendaryPasta")) {
-    return false;
-  }
   if (
     auto_findBaseLegendaryNoods() !== $item.none ||
     auto_findPreparedLegendaryNoods() !== $item.none
@@ -1002,7 +999,8 @@ export function legendaryPastaSoftblockInPlace(): boolean {
     clearSoftblock("legendaryPasta");
     return false;
   }
-  return true;
+
+  return isSoftBlockInPlace("legendaryPasta");
 }
 
 export function auto_legendaryNoodlesAvailable(): boolean {
@@ -2423,15 +2421,15 @@ function auto_swordFamiliarShouldDelayZone(monsters: Monster[]): boolean {
   // Soft-delay a level's quest-turn-in while we're still farming value.
   if (monsters.includes(auto_sword_of_swords_tracking())) {
     return (
-      isSoftBlockInPlace("swordTracking") && auto_desires_sword_familiar_drops()
+      auto_desires_sword_familiar_drops() && isSoftBlockInPlace("swordTracking")
     );
   }
 
   // If the sword wants this target in the future, but is currently not willing to switch targets
   return (
-    isSoftBlockInPlace("swordTrackingFutureTarget") &&
     !auto_swordIsWillingToSwitchTargets() &&
-    monsters.some((m) => auto_swordFamiliarWantsMonsterDrops(m))
+    monsters.some((m) => auto_swordFamiliarWantsMonsterDrops(m)) &&
+    isSoftBlockInPlace("swordTrackingFutureTarget")
   );
 }
 
@@ -2443,8 +2441,8 @@ function auto_swordUnavailableShouldDelayZone(locs: Location[]): boolean {
     return false;
   }
   return (
-    isSoftBlockInPlace("swordBurningZone") &&
-    locs.some((loc) => auto_wantSwordFamiliar(loc, true))
+    locs.some((loc) => auto_wantSwordFamiliar(loc, true)) &&
+    isSoftBlockInPlace("swordBurningZone")
   );
 }
 
