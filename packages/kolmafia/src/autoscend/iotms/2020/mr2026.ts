@@ -58,6 +58,7 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $monster,
   $monsters,
   $skill,
@@ -2385,7 +2386,9 @@ export function auto_wantSwordFamiliar(place: Location): boolean {
   }
   if (
     !zone_delay(place).shouldDelay &&
-    place !== $location`The Haunted Kitchen`
+    !$locations`The Haunted Kitchen, The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
+      place,
+    )
   ) {
     return false;
   }
@@ -2503,9 +2506,7 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
     // If we don't want a poor chance
     if (
       !desiredHits.some(
-        (m) =>
-          bluevsred_willEncounterFight(m) &&
-          !auto_swordFamiliarWantsMonsterDrops(m, totalChance),
+        (m) => !auto_swordFamiliarWantsMonsterDrops(m, totalChance),
       )
     ) {
       continue;
