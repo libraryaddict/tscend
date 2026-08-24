@@ -1646,6 +1646,12 @@ export function freeRunCombatAction(
   ) {
     return $item`handful of split pea soup`;
   }
+  if (!inAftercore() && myLocation().environment === "underwater") {
+    // 80% chance to freerun when underwater
+    if (canUse$3($item`ink bladder`) && itemAmount($item`ink bladder`) > 0) {
+      return useItem($item`ink bladder`);
+    }
+  }
   //Non-standard free-runs
   if (!inAftercore()) {
     for (const it of $items`giant eraser`) {
