@@ -1668,9 +1668,19 @@ export function auto_isPotentialTalkToSomeFishTarget(
   // We progress faster if we fight the black monsters
   if (
     loc === $location`The Black Forest` &&
-    $monsters`black adder, black friar, black magic woman, black panther, black widow, blackberry bush`.includes(
+    $monsters`black adder, black friar, black magic woman, black panther, black widow`.includes(
       enemy,
     )
+  ) {
+    return false;
+  }
+
+  // If we're trying to get those blackberries
+  if (
+    enemy === $monster`blackberry bush` &&
+    itemAmount($item`blackberry`) < 3 &&
+    !possessEquipment($item`blackberry galoshes`) &&
+    auto_is_valid($item`blackberry galoshes`)
   ) {
     return false;
   }
