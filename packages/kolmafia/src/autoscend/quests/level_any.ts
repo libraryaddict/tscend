@@ -128,6 +128,7 @@ import {
 import {
   auto_have_sword_familiar,
   auto_summonSwordTarget,
+  auto_sword_of_swords_tracking,
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
 } from "../iotms/2020/mr2026";
@@ -865,6 +866,10 @@ registerQuestTask({
       handleFamiliar$1($familiar`Sword of S Words`) &&
       runQuestTask(L11_hiddenBowlingAlleyTask)
     ) {
+      return true;
+    }
+
+    if (auto_summonSwordTarget()) {
       return true;
     }
     return false;

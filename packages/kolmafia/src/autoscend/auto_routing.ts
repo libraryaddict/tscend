@@ -149,6 +149,7 @@ export function allowSoftblockDelay(): boolean {
 }
 
 type SoftDelayKey =
+  | "swordBurningZone"
   | "swordTrackingFutureTarget"
   | "swordTracking"
   | "baseballDiamond"
@@ -198,6 +199,7 @@ export function setupSoftblockLocks(): void {
   if (auto_have_sword_familiar() && !in_quantumTerrarium()) {
     softblockReleaseLevel.set("swordTracking", 0);
     softblockReleaseLevel.set("swordTrackingFutureTarget", 0);
+    softblockReleaseLevel.set("swordBurningZone", 0);
   }
   if (auto_have_baseball_diamond()) {
     softblockReleaseLevel.set("baseballDiamond", 0);
@@ -550,6 +552,14 @@ function auto_softBlockHandlerDo(): boolean {
     releaseSoftblockOrSkip(
       "swordTracking",
       "holding off finishing a quest to keep farming Sword of S Words tracking value",
+    )
+  ) {
+    return true;
+  }
+  if (
+    releaseSoftblockOrSkip(
+      "swordBurningZone",
+      "holding off finishing a quest to keep this zone available for when the Sword of S Words becomes usable again",
     )
   ) {
     return true;

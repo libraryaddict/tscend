@@ -2329,7 +2329,7 @@ export function auto_wantToStartTrackingSwordMonster(
     return false;
   }
   if (
-    auto_sword_of_swords_kills_left() <= 10 ||
+    auto_sword_of_swords_kills_left() <= 0 ||
     auto_sword_of_swords_switches_left() <= 0
   ) {
     return false;
@@ -2345,8 +2345,14 @@ export function auto_preferSwordFamiliar(place: Location) {
   set("_auto_preferSwordFam", auto_wantSwordFamiliar(place));
 }
 
-export function auto_wantSwordFamiliar(place: Location): boolean {
-  if (!auto_have_sword_familiar() || auto_sword_of_swords_kills_left() <= 0) {
+export function auto_wantSwordFamiliar(
+  place: Location,
+  ignoreDailyBudget: boolean = false,
+): boolean {
+  if (!auto_have_sword_familiar()) {
+    return false;
+  }
+  if (!ignoreDailyBudget && auto_sword_of_swords_kills_left() <= 0) {
     return false;
   }
   // If no drops here
@@ -2395,7 +2401,7 @@ export function auto_wantSwordFamiliar(place: Location): boolean {
   if (auto_desires_sword_familiar_drops()) {
     return true; // already tracking something useful
   }
-  if (auto_sword_of_swords_switches_left() <= 0) {
+  if (!ignoreDailyBudget && auto_sword_of_swords_switches_left() <= 0) {
     return false;
   }
   // Is there anything here worth switching our tracked monster to?
@@ -2421,13 +2427,27 @@ function auto_swordFamiliarShouldDelayZone(monsters: Monster[]): boolean {
   );
 }
 
+function auto_swordUnavailableShouldDelayZone(locs: Location[]): boolean {
+  if (
+    auto_desires_sword_familiar_drops() ||
+    auto_swordIsWillingToSwitchTargets()
+  ) {
+    return false;
+  }
+  return (
+    isSoftBlockInPlace("swordBurningZone") &&
+    locs.some((loc) => auto_wantSwordFamiliar(loc, true))
+  );
+}
+
 // Soft-delay leaving these zones (a level's quest-turn-in, typically) while the Sword of S Words or Baseball Diamond is still mid-farm on a monster that only appears here.
 export function auto_copierShouldDelayZone(locs: Location[]): boolean {
   if (isAboutToPowerlevel()) return false;
   const zoneMonsters = locs.flatMap(auto_zoneCopyableMonsters);
   return (
     auto_swordFamiliarShouldDelayZone(zoneMonsters.map(([mon]) => mon)) ||
-    auto_baseballShouldDelayZone(zoneMonsters)
+    auto_baseballShouldDelayZone(zoneMonsters) ||
+    auto_swordUnavailableShouldDelayZone(locs)
   );
 }
 
@@ -2523,7 +2543,7 @@ export function auto_swordIsWillingToSwitchTargets(): boolean {
     !auto_have_sword_familiar() ||
     auto_desires_sword_familiar_drops() ||
     auto_sword_of_swords_switches_left() <= 0 ||
-    auto_sword_of_swords_kills_left() <= 10
+    auto_sword_of_swords_kills_left() <= 0
   ) {
     return false;
   }
