@@ -38,7 +38,11 @@ import { auto_buyUpTo, canPull, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import { autoEquip, possessEquipment } from "../auto_equipment";
-import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
+import {
+  auto_have_familiar,
+  canChangeToFamiliar,
+  handleFamiliar$1,
+} from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   auto_reserveUndergroundAdventures,
@@ -70,7 +74,7 @@ import { auto_canHabitat } from "../iotms/2020/mr2023";
 import { auto_haveSpringShoes } from "../iotms/2020/mr2024";
 import {
   auto_desires_sword_familiar_drops,
-  auto_sword_of_swords_tracking,
+  auto_swordFamiliarWantsMonsterDrops,
 } from "../iotms/2020/mr2026";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { is_boris } from "../paths/2012/avatar_of_boris";
@@ -165,9 +169,12 @@ function L10_airshipDo(): boolean {
   }
 
   if (
-    auto_sword_of_swords_tracking() === $monster`giant squid` &&
-    isSoftBlockInPlace("swordTracking") &&
-    auto_desires_sword_familiar_drops()
+    // If the sword fam isn't desiring the drops, then it's in a bad state and can be skipped
+    auto_desires_sword_familiar_drops() &&
+    get("auto_attemptToBladdermax") &&
+    auto_swordFamiliarWantsMonsterDrops($monster`giant squid`, 100) &&
+    canChangeToFamiliar($familiar`Sword of S Words`) &&
+    isSoftBlockInPlace("swordTracking")
   ) {
     auto_log_debug(
       "Delaying L10 airship - still farming ink bladders via Giant Squid.",
