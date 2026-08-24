@@ -174,6 +174,7 @@ import {
 import { auto_swoopsRemaining } from "../iotms/2020/mr2024";
 import { auto_havePeridot, haveUsedPeridot } from "../iotms/2020/mr2025";
 import {
+  auto_copierShouldDelayZone,
   auto_haveArchaeologistSpade,
   auto_spadeDigsRemaining,
   legendaryPastaSoftblockInPlace,
@@ -268,7 +269,7 @@ function copy_warplan(target: WarPlan, source: WarPlan): void {
   target.doFarm = source.doFarm;
 }
 
-export function auto_warSide(): string {
+export function auto_warSide(): "hippy" | "fratboy" {
   //returns the side you are fighting for in the form of a string.
   //this is used to check checking mafia's sidequest tracking, as they use these string values to indicate which side completed which quest.
   if (get("auto_hippyInstead", false)) {
@@ -2418,26 +2419,38 @@ function L12_clearBattlefieldDo(): boolean {
     return false; //we are waiting for a sidequest to finish first
   }
 
-  if (enemies_defeated < 64 && auto_is_valid($item`stuffing fluffer`)) {
-    if (
-      itemAmount($item`stuffing fluffer`) === 0 &&
-      itemAmount($item`cashew`) >= 3
-    ) {
-      create(1, $item`stuffing fluffer`);
-    }
-    if (
-      itemAmount($item`stuffing fluffer`) === 0 &&
-      itemAmount($item`cornucopia`) > 0 &&
-      auto_is_valid($item`cornucopia`)
-    ) {
-      return use(1, $item`cornucopia`);
-    }
-    if (itemAmount($item`stuffing fluffer`) > 0) {
-      auto_log_info(
-        "Detonating a [Stuffing Fluffer] which should kill 36-46 soldiers on each side.",
-        "blue",
-      );
-      return use(1, $item`stuffing fluffer`);
+  if (
+    auto_copierShouldDelayZone(
+      auto_warSide() !== "hippy"
+        ? $locations`The Battlefield (Frat Uniform)`
+        : $locations`The Battlefield (Hippy Uniform)`,
+    )
+  ) {
+    return false;
+  }
+
+  {
+    if (enemies_defeated < 64 && auto_is_valid($item`stuffing fluffer`)) {
+      if (
+        itemAmount($item`stuffing fluffer`) === 0 &&
+        itemAmount($item`cashew`) >= 3
+      ) {
+        create(1, $item`stuffing fluffer`);
+      }
+      if (
+        itemAmount($item`stuffing fluffer`) === 0 &&
+        itemAmount($item`cornucopia`) > 0 &&
+        auto_is_valid($item`cornucopia`)
+      ) {
+        return use(1, $item`cornucopia`);
+      }
+      if (itemAmount($item`stuffing fluffer`) > 0) {
+        auto_log_info(
+          "Detonating a [Stuffing Fluffer] which should kill 36-46 soldiers on each side.",
+          "blue",
+        );
+        return use(1, $item`stuffing fluffer`);
+      }
     }
   }
 

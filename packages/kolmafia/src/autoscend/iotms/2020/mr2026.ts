@@ -2447,9 +2447,9 @@ export function auto_copierShouldDelayZone(locs: Location[]): boolean {
   if (isAboutToPowerlevel()) return false;
   const zoneMonsters = locs.flatMap(auto_zoneCopyableMonsters);
   return (
+    auto_swordUnavailableShouldDelayZone(locs) ||
     auto_swordFamiliarShouldDelayZone(zoneMonsters.map(([mon]) => mon)) ||
-    auto_baseballShouldDelayZone(zoneMonsters) ||
-    auto_swordUnavailableShouldDelayZone(locs)
+    auto_baseballShouldDelayZone(zoneMonsters)
   );
 }
 
