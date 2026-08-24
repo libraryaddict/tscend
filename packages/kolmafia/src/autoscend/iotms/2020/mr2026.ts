@@ -59,6 +59,7 @@ import {
   $items,
   $location,
   $locations,
+  $modifier,
   $monster,
   $monsters,
   $skill,
@@ -190,7 +191,13 @@ const CODPIECE_MANAGED_GEMS: Item[] = $items`blood cubic zirconia, Baseball Diam
 // Prefer a spare Heartstone that isn't wanted for stealing a heart this pass over a massive gemstone.
 function auto_codpieceFillerItem(): Item {
   return (
-    $items`Heartstone, massive gemstone`.find(
+    [
+      // If for some reason, you have a gem, then you'd doubtlessly prioritize it whenever we need more than a little meat
+      ...(maximizer.getWeight($modifier`Meat Drop`) > 1
+        ? [$item`incredibly dense meat gem`]
+        : []),
+      ...$items`Heartstone, massive gemstone, incredibly dense meat gem`, // TODO Fallback to the possible gems instead of assuming they have the gems available
+    ].find(
       (i) =>
         (maximizer.getBonus(i) <= 0 || !CODPIECE_MANAGED_GEMS.includes(i)) &&
         itemAmount(i) > 0,
