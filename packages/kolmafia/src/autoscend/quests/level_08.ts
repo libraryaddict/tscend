@@ -370,7 +370,8 @@ function L8_getGoatCheese(): boolean {
   if (
     auto_haveMayamCalendar() &&
     ((get("lastTempleAdventures") !== myAscensions() &&
-      itemAmount($item`goat cheese`) === 1) ||
+      itemAmount($item`goat cheese`) === 1 &&
+      internalQuestStatus("questL11Worship") < 3) ||
       itemAmount($item`goat cheese`) === 2)
   ) {
     if (auto_waitForDay2()) {
