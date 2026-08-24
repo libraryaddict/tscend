@@ -73,7 +73,7 @@ import {
 import { CombatMacroReturns } from "../auto_adventure";
 import {
   auto_canDrink,
-  canChew,
+  auto_canChew,
   inebriety_left,
   spleen_left,
 } from "../auto_consume";
@@ -566,7 +566,7 @@ export function getCopier(
     !inCombat &&
     itemAmount($item`phosphor traces`) > 0 &&
     spleen_left() >= $item`phosphor traces`.spleen &&
-    canChew($item`phosphor traces`) &&
+    auto_canChew($item`phosphor traces`) &&
     auto_is_valid($item`phosphor traces`) &&
     auto_is_valid$2($skill`Create an Afterimage`)
   ) {

@@ -37,7 +37,7 @@ import {
   auto_forceFreeRun,
   auto_have_skill,
   auto_is_valid,
-  auto_location_monsters,
+  auto_locationMonsters,
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
@@ -78,7 +78,7 @@ import {
 import {
   auto_heartstoneShouldStealHeartInCombat,
   auto_spendInterestingCoins,
-  auto_sword_of_swords_tracking,
+  auto_swordOfSwordsTracking,
   auto_swordIsWillingToSwitchTargets,
   auto_wantToStartTrackingSwordMonster,
   wantToClubEmBackInTime,
@@ -119,7 +119,7 @@ function pygmyBowlerHuntCombatAction(enemy: Monster): CombatMacroReturns {
     return undefined; // Uh oh. We should've been wearing the familiar
   }
   // Get all monsters in the zone
-  const allMonstersInZone = auto_location_monsters(
+  const allMonstersInZone = auto_locationMonsters(
     $location`The Hidden Bowling Alley`,
   )
     .filter(([monster, rate]) => rate > 0 && !isBanished(monster))
@@ -262,7 +262,7 @@ export function auto_combatDefaultStage2(
       return auto_useSkill($skill`%fn, kill a lot of these guys`);
     }
     if (
-      auto_sword_of_swords_tracking() !== $monster.none &&
+      auto_swordOfSwordsTracking() !== $monster.none &&
       enemy.copyable &&
       !enemy.boss
     ) {
@@ -271,7 +271,7 @@ export function auto_combatDefaultStage2(
         auto_canUse($skill`%fn, stop killing those guys`)
       ) {
         handleTracker({
-          what: auto_sword_of_swords_tracking(),
+          what: auto_swordOfSwordsTracking(),
           detail: $skill`%fn, stop killing those guys`,
           property: "auto_otherstuff",
         });

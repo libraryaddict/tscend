@@ -244,7 +244,7 @@ import {
   auto_copierShouldDelayZone,
   auto_spadeDigSkeleton,
   auto_spadeDigsRemaining,
-  auto_sword_of_swords_tracking,
+  auto_swordOfSwordsTracking,
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
   auto_wantToSpadeDigSkeleton,
@@ -3090,7 +3090,7 @@ export function L11_swordWantsBowlingMonster(
     return false;
   }
 
-  if (auto_sword_of_swords_tracking() === $monster`pygmy bowler`) return true;
+  if (auto_swordOfSwordsTracking() === $monster`pygmy bowler`) return true;
 
   if (ignoreWillingToSwitch) return true;
 

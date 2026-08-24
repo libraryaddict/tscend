@@ -92,10 +92,10 @@ import {
 
 import { main as handleChoiceAdv } from "../../auto_choice_adv";
 import {
+  auto_canChew,
   auto_canDrink,
   auto_canEat,
   autoChew,
-  canChew,
   getCachedConsumables,
   inebriety_left,
   spleen_left,
@@ -160,13 +160,13 @@ import {
 } from "../2010/mr2018";
 import { auto_haveChestMimic } from "./mr2024";
 import {
-  auto_desires_sword_familiar_drops,
   auto_haveEternityCodpiece,
   auto_isInEternityCodpiece,
   auto_spadeDigsRemaining,
-  auto_sword_of_swords_tracking,
+  auto_swordFamiliarLikesCurrentTarget,
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
+  auto_swordOfSwordsTracking,
 } from "./mr2026";
 
 // This is meant for items that have a date of 2025
@@ -830,7 +830,7 @@ function auto_stockTracesBandit(canPreferSummons: boolean): void {
   }
   while (
     auto_tracesUsesLeft() < tracesNeeded &&
-    canChew($item`phosphor traces`) &&
+    auto_canChew($item`phosphor traces`) &&
     availableAmount($item`phosphor traces`) > 0 &&
     spleen_left() >= $item`phosphor traces`.spleen
   ) {
@@ -1975,7 +1975,7 @@ export function auto_wantToBCZ(sk: Skill): boolean {
   }
 
   if (info.gives !== undefined) {
-    if (info.gives.spleen > 0 && !canChew(info.gives)) {
+    if (info.gives.spleen > 0 && !auto_canChew(info.gives)) {
       return false;
     } else if (info.gives.inebriety > 0 && !auto_canDrink(info.gives)) {
       return false;
@@ -2007,8 +2007,8 @@ export function auto_bczRefractedGaze(
   if (
     currentRound() > 0 &&
     myFamiliar() === $familiar`Sword of S Words` &&
-    (auto_desires_sword_familiar_drops() ||
-      auto_sword_of_swords_tracking() !== $monster.none)
+    (auto_swordFamiliarLikesCurrentTarget() ||
+      auto_swordOfSwordsTracking() !== $monster.none)
   ) {
     // the sword already overwrites this fight's drop table, so gazing here would be wasted.
     return false;

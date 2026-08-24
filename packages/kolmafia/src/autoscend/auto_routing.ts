@@ -47,10 +47,10 @@ import { auto_haveCursedMagnifyingGlass } from "./iotms/2020/mr2022";
 import {
   auto_findBaseLegendaryNoods,
   auto_findPreparedLegendaryNoods,
-  auto_have_baseball_diamond,
-  auto_have_sword_familiar,
   auto_haveArchaeologistSpade,
+  auto_haveBaseballDiamond,
   auto_havePastaWand,
+  auto_haveSwordFamiliar,
   auto_spadeDigsRemaining,
   spadeDelayZones,
 } from "./iotms/2020/mr2026";
@@ -196,12 +196,12 @@ export function clearSoftblock(key: SoftDelayKey): void {
 // them released for the rest of the level over one unrelated snag.
 export function setupSoftblockLocks(): void {
   softblockReleaseLevel.set("8bitRealm", 0);
-  if (auto_have_sword_familiar() && !in_quantumTerrarium()) {
+  if (auto_haveSwordFamiliar() && !in_quantumTerrarium()) {
     softblockReleaseLevel.set("swordTracking", 0);
     softblockReleaseLevel.set("swordTrackingFutureTarget", 0);
     softblockReleaseLevel.set("swordBurningZone", 0);
   }
-  if (auto_have_baseball_diamond()) {
+  if (auto_haveBaseballDiamond()) {
     softblockReleaseLevel.set("baseballDiamond", 0);
   }
   if (

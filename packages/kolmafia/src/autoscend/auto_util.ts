@@ -195,12 +195,12 @@ import {
 import { buffMaintain$2 } from "./auto_buff";
 import { main } from "./auto_choice_adv";
 import {
+  auto_canChew,
   auto_canEat,
   autoChew,
   autoDrink,
   autoEat,
   can_consume,
-  canChew,
   inebriety_left,
   spleen_left,
   stomach_left,
@@ -354,13 +354,13 @@ import {
   auto_baseballInningsRemaining,
   auto_baseballRecruits,
   auto_chewLiquidAsset,
-  auto_desires_sword_familiar_drops,
   auto_forceCombatLegendaryNoodles,
   auto_getItemToEquipHeartstone,
-  auto_have_baseball_diamond,
+  auto_haveBaseballDiamond,
   auto_havePastaWand,
   auto_heartstoneLuckRemaining,
   auto_legendaryNoodlesAvailable,
+  auto_swordFamiliarLikesCurrentTarget,
   auto_willEatLegendaryNoodles,
   isOverdueClubIntoNextWeek,
 } from "./iotms/2020/mr2026";
@@ -909,7 +909,7 @@ export function prepareYellowRayNextCombat(
   //with values like 10 to 20 turns saved, not checking get_property("auto_consumeMinAdvPerFill").to_float()
   if (
     can_consume() &&
-    canChew($item`spooky jelly`) &&
+    auto_canChew($item`spooky jelly`) &&
     allowedSizedDiet >= $item`spooky jelly`.spleen &&
     spleen_left() >= $item`spooky jelly`.spleen &&
     acquireOrPull($item`spooky jelly`, speculating) &&
@@ -921,14 +921,14 @@ export function prepareYellowRayNextCombat(
   const canJelly =
     can_consume() &&
     allowedSizedDiet >= $item`mixed berry jelly`.spleen &&
-    canChew($item`mixed berry jelly`) &&
+    auto_canChew($item`mixed berry jelly`) &&
     spleen_left() >= $item`mixed berry jelly`.spleen;
 
   if (
     (!canJelly || itemAmount($item`mixed berry jelly`) === 0) &&
     can_consume() &&
     allowedSizedDiet >= $item`toxic asset`.spleen &&
-    canChew($item`toxic asset`) &&
+    auto_canChew($item`toxic asset`) &&
     spleen_left() >= $item`toxic asset`.spleen &&
     auto_acquireInterestingItem($item`toxic asset`, speculating) &&
     (speculating || autoChew(1, $item`toxic asset`))
@@ -3788,7 +3788,7 @@ function auto_summonMountainManImpl(
   // If we could use baseball diamond to grab the ores, then, do so, delay if needed
   if (
     oresAcquired < neededDropCount &&
-    auto_have_baseball_diamond() &&
+    auto_haveBaseballDiamond() &&
     auto_baseballInningsRemaining() > 0
   ) {
     if (canDelayIfNotCapped) {
@@ -6750,7 +6750,7 @@ export function auto_wantToFreeKillWithNoDrops(
     combat_status_check("refractedgazed") ||
     combat_status_check("droptablereplaced") ||
     (myFamiliar() === $familiar`Sword of S Words` &&
-      auto_desires_sword_familiar_drops())
+      auto_swordFamiliarLikesCurrentTarget())
   ) {
     return false;
   }
@@ -6999,9 +6999,7 @@ export function auto_meetsMinimumRequirements(): boolean {
   return haveSkill($skill`Saucestorm`) && haveSkill($skill`Cannelloni Cocoon`);
 }
 
-export function auto_location_monsters(
-  location: Location,
-): [Monster, number][] {
+export function auto_locationMonsters(location: Location): [Monster, number][] {
   return Object.entries(appearanceRates(location)).map(([k, v]) => [
     Monster.get(k),
     v,
@@ -7281,7 +7279,7 @@ export function auto_isWorthSniffing(mon: Monster, loc: Location) {
 export function auto_isInIncompleteZone(mon: Monster) {
   return getIncompleteQuestTasks().some((t) =>
     taskLocations(t).some((t) =>
-      auto_location_monsters(t).some(([m, rate]) => rate > 0 && m === mon),
+      auto_locationMonsters(t).some(([m, rate]) => rate > 0 && m === mon),
     ),
   );
 }

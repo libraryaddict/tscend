@@ -563,7 +563,7 @@ const canUseAnyFamiliar: Map<
   { canUseAnyFamiliar: boolean; computed: number }
 > = new Map();
 
-export function auto_8BitCanUseAnyFamiliar(place: Location): boolean {
+export function auto_8BitCapsScoreWithoutFamiliar(place: Location): boolean {
   return canUseAnyFamiliar.get(place)?.canUseAnyFamiliar ?? true;
 }
 

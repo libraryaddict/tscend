@@ -126,11 +126,11 @@ import {
   haveUsedPeridot,
 } from "../iotms/2020/mr2025";
 import {
-  auto_have_sword_familiar,
+  auto_haveSwordFamiliar,
   auto_summonSwordTarget,
-  auto_sword_of_swords_tracking,
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
+  auto_swordOfSwordsTracking,
 } from "../iotms/2020/mr2026";
 import { in_bhy } from "../paths/2011/bees_hate_you";
 import { picky_startAscension } from "../paths/2014/picky";
@@ -815,7 +815,7 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
 
 registerQuestTask({
   name: "LX_swordFamiliarSetup",
-  completed: () => !auto_have_sword_familiar() || in_quantumTerrarium(),
+  completed: () => !auto_haveSwordFamiliar() || in_quantumTerrarium(),
   ready: () =>
     auto_swordIsWillingToSwitchTargets() &&
     (!get("_auto_thisLoopHandleFamiliar", false) ||
@@ -833,7 +833,7 @@ registerQuestTask({
       return false;
     }
     if (
-      auto_sword_of_swords_tracking() === $monster.none &&
+      auto_swordOfSwordsTracking() === $monster.none &&
       auto_summonSwordTarget()
     ) {
       return true;

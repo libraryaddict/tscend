@@ -102,7 +102,7 @@ import {
   auto_have_skill,
   auto_ignoreExperience,
   auto_is_valid,
-  auto_location_monsters,
+  auto_locationMonsters,
   auto_log_debug,
   auto_log_error,
   auto_log_info,
@@ -157,7 +157,7 @@ import {
 import {
   auto_clubEmBackInTimesRemaining,
   auto_codpieceRegisterSlotContainer,
-  auto_desires_sword_familiar_drops,
+  auto_swordFamiliarLikesCurrentTarget,
   auto_havePastaWand,
   auto_isInEternityCodpiece,
   wantToClubEmBackInTime,
@@ -689,7 +689,7 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
     !in_disguises() &&
     !in_ocrs()
   ) {
-    const encounters = auto_location_monsters(myLocation());
+    const encounters = auto_locationMonsters(myLocation());
     const monsters = encounters.map((m) => m[0]);
     const nextEncounter = safeGet("auto_nextEncounter");
     if (nextEncounter !== $monster.none) {
@@ -1742,8 +1742,8 @@ export function auto_equipFreekill(): void {
     clubBackAvailable &&
     !maximizer.has($slot`weapon`) &&
     (safeGet("auto_familiarChoice") !== $familiar`Sword of S Words` ||
-      !auto_desires_sword_familiar_drops()) &&
-    auto_location_monsters(myLocation()).some(([m]) =>
+      !auto_swordFamiliarLikesCurrentTarget()) &&
+    auto_locationMonsters(myLocation()).some(([m]) =>
       wantToClubEmBackInTime(myLocation(), m),
     )
   ) {

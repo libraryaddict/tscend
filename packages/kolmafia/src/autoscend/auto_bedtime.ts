@@ -101,10 +101,10 @@ import {
 import { buffMaintain$2 } from "./auto_buff";
 import {
   acquireMilkOfMagnesiumIfUnused,
+  auto_canChew,
   auto_drinkNightcap,
   auto_printNightcap,
   autoChew,
-  canChew,
   consumeMilkOfMagnesiumIfUnused,
   distill,
   fullness_left,
@@ -325,7 +325,7 @@ function bedtime_spleen(): boolean {
     let consumed_this_loop: boolean = false;
     for (const it of to_try) {
       if (
-        canChew(it) &&
+        auto_canChew(it) &&
         availableAmount(it) > 0 &&
         it.spleen <= spleen_left()
       ) {

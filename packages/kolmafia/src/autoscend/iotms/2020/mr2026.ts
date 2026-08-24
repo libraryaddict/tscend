@@ -79,11 +79,11 @@ import { auto_buyUpTo, auto_hermit } from "../../auto_acquire";
 import { autoAdvBypass } from "../../auto_adventure";
 import {
   auto_autoConsumeOne,
+  auto_canChew,
   auto_canEat,
   AUTO_OBTAIN_NULL,
   AUTO_ORGAN_LIVER,
   autoChew,
-  canChew,
   fullness_left,
   getMinimumAdventuresToMaintain,
   inebriety_left,
@@ -108,7 +108,7 @@ import {
   auto_isInIncompleteZone,
   auto_isWorthSniffing,
   auto_isWorthYellowRaying,
-  auto_location_monsters,
+  auto_locationMonsters,
   auto_log_error,
   auto_log_info,
   auto_log_warning,
@@ -355,7 +355,7 @@ export function wantToClubAcrossBattlefield(
   }
 
   // needs another monster in the zone whose drop we actually want
-  return auto_location_monsters(loc).some(
+  return auto_locationMonsters(loc).some(
     ([mon, rate]) =>
       rate > 0 && mon !== enemy && auto_monsterHasWantedDrop(mon),
   );
@@ -368,7 +368,7 @@ export function auto_wantToEquipClubAcrossBattlefield(loc: Location): boolean {
 
   // equipping in advance is only worth it if there are at least 2 monsters
   // in the zone we want the drops of, since we may end up fighting the desired encounter
-  const wantedMonsterCount: number = auto_location_monsters(loc).filter(
+  const wantedMonsterCount: number = auto_locationMonsters(loc).filter(
     ([mon, rate]) => rate > 0 && auto_monsterHasWantedDrop(mon),
   ).length;
 
@@ -678,7 +678,7 @@ function auto_heartstoneLetterChances(location?: Location): {
   for (const loc of allLocations) {
     if (loc.combatPercent <= 0) continue;
 
-    for (const [monster, chance] of auto_location_monsters(loc)) {
+    for (const [monster, chance] of auto_locationMonsters(loc)) {
       if (chance <= 0 || monster.boss) continue;
 
       const letter = heartstoneMiddleLetter(monster);
@@ -1541,7 +1541,7 @@ export function auto_cupOfThirteenBestConsumeAction():
   return action;
 }
 
-export function auto_have_baseball_diamond(): boolean {
+export function auto_haveBaseballDiamond(): boolean {
   if (!auto_is_valid($item`Baseball Diamond`)) {
     return false;
   }
@@ -1561,7 +1561,7 @@ export function auto_getItemToEquipBaseballDiamond(): Item {
   ) {
     return $item`The Eternity Codpiece`;
   }
-  if (auto_have_baseball_diamond()) {
+  if (auto_haveBaseballDiamond()) {
     return $item`Baseball Diamond`;
   }
   return $item.none;
@@ -1797,16 +1797,14 @@ function auto_baseballGetDesiredElements(
   const elements: Element[] = [];
   if (
     auto_isWorthYellowRaying(mon, loc) &&
-    (auto_sword_of_swords_tracking() !== mon ||
-      auto_sword_of_swords_kills_left() <= 0)
+    (auto_swordOfSwordsTracking() !== mon || auto_swordOfSwordsKillsLeft() <= 0)
   ) {
     elements.push($element`hot`);
   }
 
   if (
     auto_isWorthSniffing(mon, loc) &&
-    (auto_sword_of_swords_tracking() !== mon ||
-      auto_sword_of_swords_kills_left() <= 0)
+    (auto_swordOfSwordsTracking() !== mon || auto_swordOfSwordsKillsLeft() <= 0)
   ) {
     elements.push($element`stench`);
     elements.push($element`spooky`);
@@ -1947,7 +1945,7 @@ export function auto_baseballBuildAssignments(
 
 // Score bonus rather than forcing the item on, so it only wins its equip slot when worth it.
 export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
-  if (!auto_have_baseball_diamond()) return 0;
+  if (!auto_haveBaseballDiamond()) return 0;
 
   if (
     auto_baseballInningsRemaining() === 0 &&
@@ -1994,7 +1992,7 @@ export function auto_baseballShouldReplaceWithFish(
   loc: Location,
   enemy: Monster,
 ): boolean {
-  if (!auto_have_baseball_diamond() || !auto_haveMonodent()) {
+  if (!auto_haveBaseballDiamond() || !auto_haveMonodent()) {
     return false;
   }
   if (enemy === $monster`some fish`) {
@@ -2136,7 +2134,7 @@ function auto_baseballShouldDelayZone(
   );
 }
 
-export function auto_have_sword_familiar(): boolean {
+export function auto_haveSwordFamiliar(): boolean {
   return (
     !in_quantumTerrarium() &&
     pathHasFamiliar() &&
@@ -2144,15 +2142,15 @@ export function auto_have_sword_familiar(): boolean {
   );
 }
 
-export function auto_sword_of_swords_kills_left(): number {
+export function auto_swordOfSwordsKillsLeft(): number {
   return Math.max(0, 100 - get("_swordOfSWordsKills"));
 }
 
-export function auto_sword_of_swords_switches_left(): number {
+export function auto_swordOfSwordSwitchesLeft(): number {
   return 3 - get("_swordOfSWordsMonsterChanged");
 }
 
-export function auto_sword_of_swords_tracking(): Monster {
+export function auto_swordOfSwordsTracking(): Monster {
   return safeGet("swordOfSWordsMonster");
 }
 
@@ -2165,7 +2163,7 @@ export function auto_swordFamiliarWantsMonsterDrops(
     return false;
   }
 
-  const currentlyTracking = auto_sword_of_swords_tracking() === sMonster;
+  const currentlyTracking = auto_swordOfSwordsTracking() === sMonster;
   // Amount of days left in this run, always at least 1
   const daysLeftInRun = Math.max(
     get("auto_runDayCount", 0) + (myDaycount() - 1),
@@ -2263,7 +2261,7 @@ export function auto_swordFamiliarWantsMonsterDrops(
       !canEat() ||
       fullness_left() < 1 ||
       !auto_is_valid($item`Tubetto Gelatto`) ||
-      auto_sword_of_swords_tracking() === $monster`lobsterfrogman` ||
+      auto_swordOfSwordsTracking() === $monster`lobsterfrogman` ||
       get("legendaryNoodlesAmygdala") === 0) &&
     sMonster === $monster`lobsterfrogman` &&
     auto_gunpowderBarrelsWanted() > 0
@@ -2318,12 +2316,9 @@ export function auto_swordFamiliarWantsMonsterDrops(
   return false;
 }
 
-export function auto_desires_sword_familiar_drops(): boolean {
+export function auto_swordFamiliarLikesCurrentTarget(): boolean {
   // Returns if the sword familiar is currently set to a monster that we want the drops of
-  return auto_swordFamiliarWantsMonsterDrops(
-    auto_sword_of_swords_tracking(),
-    100,
-  );
+  return auto_swordFamiliarWantsMonsterDrops(auto_swordOfSwordsTracking(), 100);
 }
 
 export function auto_wantToStartTrackingSwordMonster(
@@ -2335,19 +2330,19 @@ export function auto_wantToStartTrackingSwordMonster(
     return false;
   }
   if (
-    auto_sword_of_swords_kills_left() <= 0 ||
-    auto_sword_of_swords_switches_left() <= 0
+    auto_swordOfSwordsKillsLeft() <= 0 ||
+    auto_swordOfSwordSwitchesLeft() <= 0
   ) {
     return false;
   }
-  if (auto_sword_of_swords_tracking() === enemy) {
+  if (auto_swordOfSwordsTracking() === enemy) {
     return false; // already tracking it
   }
   return auto_swordFamiliarWantsMonsterDrops(enemy, chance);
 }
 
 export function auto_preferSwordFamiliar(place: Location) {
-  if (!auto_have_sword_familiar()) return;
+  if (!auto_haveSwordFamiliar()) return;
   set("_auto_preferSwordFam", auto_wantSwordFamiliar(place));
 }
 
@@ -2355,15 +2350,15 @@ export function auto_wantSwordFamiliar(
   place: Location,
   ignoreDailyBudget: boolean = false,
 ): boolean {
-  if (!auto_have_sword_familiar()) {
+  if (!auto_haveSwordFamiliar()) {
     return false;
   }
-  if (!ignoreDailyBudget && auto_sword_of_swords_kills_left() <= 0) {
+  if (!ignoreDailyBudget && auto_swordOfSwordsKillsLeft() <= 0) {
     return false;
   }
   // If no drops here
   if (
-    auto_location_monsters(place).every(
+    auto_locationMonsters(place).every(
       ([mon, rate]) => !mon.copyable || mon.boss || rate <= 0,
     )
   ) {
@@ -2379,12 +2374,12 @@ export function auto_wantSwordFamiliar(
     return false;
   }
   // Traces/afterimage bandit chains force the same rematch either way, and fantasy bandit's own drop is conditional (never overwritten), so it's free
-  if (auto_canTracesBandit() && auto_desires_sword_familiar_drops()) {
+  if (auto_canTracesBandit() && auto_swordFamiliarLikesCurrentTarget()) {
     return true;
   }
   // Don't bring the sword out if we're about to hit a wanderer
   if (
-    auto_sword_of_swords_tracking() !== $monster.none &&
+    auto_swordOfSwordsTracking() !== $monster.none &&
     ([Wanderer.Digitize, Wanderer.Enamorang, Wanderer.Romantic].some((w) =>
       isWandererNow(w),
     ) ||
@@ -2404,14 +2399,14 @@ export function auto_wantSwordFamiliar(
   ) {
     return false;
   }
-  if (auto_desires_sword_familiar_drops()) {
+  if (auto_swordFamiliarLikesCurrentTarget()) {
     return true; // already tracking something useful
   }
-  if (!ignoreDailyBudget && auto_sword_of_swords_switches_left() <= 0) {
+  if (!ignoreDailyBudget && auto_swordOfSwordSwitchesLeft() <= 0) {
     return false;
   }
   // Is there anything here worth switching our tracked monster to?
-  return auto_location_monsters(place).some(
+  return auto_locationMonsters(place).some(
     ([mon, chance]) =>
       chance > 0 && auto_swordFamiliarWantsMonsterDrops(mon, chance),
   );
@@ -2419,9 +2414,10 @@ export function auto_wantSwordFamiliar(
 
 function auto_swordFamiliarShouldDelayZone(monsters: Monster[]): boolean {
   // Soft-delay a level's quest-turn-in while we're still farming value.
-  if (monsters.includes(auto_sword_of_swords_tracking())) {
+  if (monsters.includes(auto_swordOfSwordsTracking())) {
     return (
-      auto_desires_sword_familiar_drops() && isSoftBlockInPlace("swordTracking")
+      auto_swordFamiliarLikesCurrentTarget() &&
+      isSoftBlockInPlace("swordTracking")
     );
   }
 
@@ -2435,7 +2431,7 @@ function auto_swordFamiliarShouldDelayZone(monsters: Monster[]): boolean {
 
 function auto_swordUnavailableShouldDelayZone(locs: Location[]): boolean {
   if (
-    auto_desires_sword_familiar_drops() ||
+    auto_swordFamiliarLikesCurrentTarget() ||
     auto_swordIsWillingToSwitchTargets()
   ) {
     return false;
@@ -2519,7 +2515,7 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
   for (const loc of Location.all()) {
     if (!canAdventure(loc)) continue;
 
-    const monsters = auto_location_monsters(loc);
+    const monsters = auto_locationMonsters(loc);
 
     const totalChance = monsters
       .filter(([m, chance]) => desiredHits.includes(m) && chance > 0)
@@ -2546,10 +2542,10 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
 
 export function auto_swordIsWillingToSwitchTargets(): boolean {
   if (
-    !auto_have_sword_familiar() ||
-    auto_desires_sword_familiar_drops() ||
-    auto_sword_of_swords_switches_left() <= 0 ||
-    auto_sword_of_swords_kills_left() <= 0
+    !auto_haveSwordFamiliar() ||
+    auto_swordFamiliarLikesCurrentTarget() ||
+    auto_swordOfSwordSwitchesLeft() <= 0 ||
+    auto_swordOfSwordsKillsLeft() <= 0
   ) {
     return false;
   }
@@ -2669,7 +2665,7 @@ export function auto_chewLiquidAsset(
 ): boolean {
   if (
     !auto_is_valid$2($skill`Exercise Liquidity`) ||
-    !canChew($item`liquid asset`) ||
+    !auto_canChew($item`liquid asset`) ||
     spleen_left() < $item`liquid asset`.spleen ||
     (!doingBedtime && isActuallyEd())
   ) {

@@ -144,7 +144,7 @@ import {
   auto_haveQueuedForcedNonCombat,
   auto_interruptCheck,
   auto_is_valid,
-  auto_location_monsters,
+  auto_locationMonsters,
   auto_log_debug,
   auto_log_error,
   auto_log_info,
@@ -238,7 +238,7 @@ import {
   auto_codpieceReconcileGem,
   auto_heartstoneShouldEquipForStealHeart,
   auto_preferSwordFamiliar,
-  auto_sword_of_swords_tracking,
+  auto_swordOfSwordsTracking,
   auto_wantToEquipClubAcrossBattlefield,
 } from "./iotms/2020/mr2026";
 import { get_floundry_locations } from "./iotms/other/clan";
@@ -827,7 +827,7 @@ function auto_pre_adventure(): boolean {
       "Preparing to replace-hunt for a pygmy bowler via the forced wanderer fight.",
       "blue",
     );
-    for (const [monster] of auto_location_monsters(place)) {
+    for (const [monster] of auto_locationMonsters(place)) {
       if (
         monster === $monster`pygmy bowler` ||
         bluevsred_willEncounterFight(monster)
@@ -1188,7 +1188,7 @@ function auto_pre_adventure(): boolean {
   const otherTargetsToCheck: Monster[] = [];
 
   if (myFamiliar() === $familiar`Sword of S Words`) {
-    otherTargetsToCheck.push(auto_sword_of_swords_tracking());
+    otherTargetsToCheck.push(auto_swordOfSwordsTracking());
   }
   otherTargetsToCheck.push(safeGet("auto_nextEncounter"));
 

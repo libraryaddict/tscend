@@ -577,7 +577,7 @@ function autoEatCafe(howmany: number, id: number): boolean {
 }
 
 export function autoChew(howMany: number, toChew: Item): boolean {
-  if (!canChew(toChew)) {
+  if (!auto_canChew(toChew)) {
     return false;
   }
   if (spleen_left() < toChew.spleen * howMany) {
@@ -976,7 +976,7 @@ export function auto_canEat(
   return meetsMinAdvPerFillReq(toEat);
 }
 
-export function canChew(toChew: Item): boolean {
+export function auto_canChew(toChew: Item): boolean {
   if (!auto_is_valid(toChew)) {
     return false;
   }

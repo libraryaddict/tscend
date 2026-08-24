@@ -104,7 +104,7 @@ import { in_robot } from "./paths/2021/you_robot";
 import { in_avantGuard } from "./paths/2024/avant_guard";
 import { amw_wantMeat, in_amw } from "./paths/2026/adventurer_meats_world";
 import {
-  auto_8BitCanUseAnyFamiliar as auto_8BitCapsScoreWithoutFamiliar,
+  auto_8BitCapsScoreWithoutFamiliar,
   L13_wantsTheD,
 } from "./quests/level_13";
 import { auto_check_conditions } from "./utils/auto_conditions";

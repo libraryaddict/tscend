@@ -145,7 +145,7 @@ import {
 } from "../iotms/2020/mr2024";
 import {
   auto_copierShouldDelayZone,
-  auto_have_sword_familiar,
+  auto_haveSwordFamiliar,
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
 } from "../iotms/2020/mr2026";
@@ -567,7 +567,7 @@ function L9_chasmBuildDo(): boolean {
     if (
       shenShouldDelayZone($location`The Smut Orc Logging Camp`) &&
       (auto_haveTrainSet() ||
-        !auto_have_sword_familiar() ||
+        !auto_haveSwordFamiliar() ||
         !auto_swordIsWillingToSwitchTargets() ||
         in_quantumTerrarium() ||
         !canChangeToFamiliar($familiar`Sword of S Words`))
