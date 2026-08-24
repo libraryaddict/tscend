@@ -1583,7 +1583,7 @@ export function auto_waveTheZone(): boolean {
   if (
     !inAftercore() &&
     myLocation() === $location`The Penultimate Fantasy Airship` &&
-    itemAmount($item`ink bladder`) > 19 &&
+    itemAmount($item`ink bladder`) >= 16 &&
     $location`The Penultimate Fantasy Airship`.turnsSpent < 3
   ) {
     autoForceEquip$2($item`Monodent of the Sea`, true);
