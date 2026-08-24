@@ -3628,7 +3628,7 @@ export function summonMonsterCount(
       "blue",
     );
     summonSources += Math.floor(
-      ($familiar`Chest Mimic`.experience - (speculative ? 100 : 0)) / 100,
+      ($familiar`Chest Mimic`.experience + (speculative ? 0 : 100)) / 100,
     );
 
     if (!speculative) return summonSources;
