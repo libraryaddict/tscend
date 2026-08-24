@@ -210,7 +210,10 @@ export function autoEquipToSlot(s: Slot, it: Item): boolean {
   // Contained items (e.g. codpiece gems) are socketed, not worn, so they
   // don't claim an accessory slot of their own.
   if (maximizer.isContainableItem(it)) {
-    auto_log_info(`Equipping ${it} (contained)`, "gold");
+    auto_log_info(
+      `Equipping ${it} (${maximizer.getOwnableContainer(it)?.containerHolder})`,
+      "gold",
+    );
     return maximizer.equip(it);
   }
   // This logic lets us force the equipping of multiple accessories with minimal conflict

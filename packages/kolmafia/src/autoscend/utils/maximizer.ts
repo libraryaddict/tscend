@@ -297,7 +297,7 @@ export class Maximizer {
     return this;
   }
 
-  private getOwnableContainer(item: Item): SlotContainer | undefined {
+  getOwnableContainer(item: Item): SlotContainer | undefined {
     return this.slotContainers.find((container) =>
       container.holdableItems().includes(item),
     );
