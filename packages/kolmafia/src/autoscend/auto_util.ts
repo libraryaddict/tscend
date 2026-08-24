@@ -1466,11 +1466,29 @@ export function freeRunCombatStringPreBanish(
     if (
       canUse$3($item`short writ of habeas corpus`) &&
       itemAmount($item`short writ of habeas corpus`) > 0 &&
-      $monsters`pygmy orderlies, pygmy witch lawyer, pygmy witch nurse`.includes(
-        enemy,
-      )
+      enemy.name.split(" ").includes("pygmy") &&
+      canFreeRun(enemy, myLocation())
     ) {
       return useItem($item`short writ of habeas corpus`);
+    }
+  }
+
+  return undefined;
+}
+
+export function hasFreeRunQueued(): Skill | Item | undefined {
+  // If we have a free run queued up that we should use ASAP as it has a cooldown
+  if (auto_haveSpringShoes() && auto_is_valid$2($skill`Spring Away`)) {
+    return $skill`Spring Away`;
+  }
+
+  if (auto_haveRoman() && auto_is_valid$2($skill`Blow the Green Candle!`)) {
+    return $skill`Blow the Green Candle!`;
+  }
+
+  for (const it of $items`green smoke bomb, tattered scrap of paper, GOTO`) {
+    if (canUse$3(it) && itemAmount(it) > 0) {
+      return it;
     }
   }
 

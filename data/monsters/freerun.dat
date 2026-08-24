@@ -44,6 +44,15 @@ floating platter of hors d'oeuvres
 boaraffe
 pygmy assault squad
 pygmy blowgunner
+pygmy orderlies
+pygmy witch lawyer
+pygmy witch nurse
+Pygmy headhunter
+pygmy witch accountant	loc:The Hidden Office Building	item:McClusky file (complete)=1
+pygmy witch accountant	loc:The Hidden Office Building	item:McClusky file (page 5)=1
+pygmy witch accountant	loc:The Hidden Office Building	prop:questL11Business=finished
+pygmy shaman	loc:The Hidden Apartment Building	effect:Thrice-Cursed
+pygmy shaman	loc:The Hidden Apartment Building	prop:hiddenApartmentProgress>6
 Copperhead Club bartender
 fan dancer
 Mob Penguin Capo
