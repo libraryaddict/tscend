@@ -1,4 +1,4 @@
-Pygmy Bowler	js:questStep("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
+Pygmy Bowler	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
 Bob Racecar
 Racecar Bob
 pygmy witch accountant	loc:The Hidden Office Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
