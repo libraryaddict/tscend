@@ -171,9 +171,11 @@ import {
   $stats,
   $thrall,
   get,
+  LegendarySealClubbingClub,
   Macro,
   set,
 } from "libram";
+import { BadlyRomanticArrow } from "libram/dist/resources/2011/ObtuseAngel";
 
 import { LX_calculateTheUniverse } from "../autoscend";
 import {
@@ -316,6 +318,7 @@ import {
   auto_canHabitat,
   auto_cinchForcesLeft,
   auto_getCinch,
+  auto_habitatFightsLeft,
   auto_habitatMonster,
   auto_haveAugustScepter,
   auto_haveCincho,
@@ -7281,4 +7284,20 @@ export function auto_isInIncompleteZone(mon: Monster) {
       auto_location_monsters(t).some(([m, rate]) => rate > 0 && m === mon),
     ),
   );
+}
+
+export function auto_wandererFightsLeft(mon: Monster): number {
+  let fights = 0;
+
+  if (auto_habitatMonster() === mon) fights += auto_habitatFightsLeft();
+  if (
+    LegendarySealClubbingClub.clubIntoNextWeekMonster() === mon &&
+    LegendarySealClubbingClub.turnsUntilNextWeekFight() >= 0
+  ) {
+    fights++;
+  }
+
+  if (BadlyRomanticArrow.copiedMonster() === mon) fights++;
+
+  return fights;
 }

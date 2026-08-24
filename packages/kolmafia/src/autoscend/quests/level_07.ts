@@ -81,6 +81,7 @@ import {
   auto_MaxMLToCap,
   auto_runChoice,
   auto_turbo,
+  auto_wandererFightsLeft,
   canSniff,
   internalQuestStatus,
   safeGet,
@@ -105,10 +106,6 @@ import {
   auto_FireExtinguisherCombatSkill,
 } from "../iotms/2020/mr2021";
 import { auto_haveGreyGoose } from "../iotms/2020/mr2022";
-import {
-  auto_habitatFightsLeft,
-  auto_habitatMonster,
-} from "../iotms/2020/mr2023";
 import {
   auto_copierShouldDelayZone,
   auto_desires_sword_familiar_drops,
@@ -281,7 +278,7 @@ function L7_defiledAlcoveDo(): boolean {
 
   if (
     get("cyrptAlcoveEvilness") > 13 &&
-    auto_habitatMonster() === $monster`modern zmobie`
+    auto_wandererFightsLeft($monster`modern zmobie`) > 0
   ) {
     if (auto_backupUsesLeft() > 0) {
       // do something else if we have modern zmobie Habitants & can backup. Don't need to adventure in this zone.
@@ -289,7 +286,9 @@ function L7_defiledAlcoveDo(): boolean {
     }
     if (
       get("cyrptAlcoveEvilness") <=
-      13 + auto_habitatFightsLeft() * (cyrptEvilBonus() + 5)
+      13 +
+        auto_wandererFightsLeft($monster`modern zmobie`) *
+          (cyrptEvilBonus() + 5)
     ) {
       // we have enough Habitants to get to 13 or less evilness. Don't need to adventure in this zone.
       return false;
@@ -446,11 +445,13 @@ function L7_defiledNicheDo(): boolean {
 
   if (
     get("cyrptNicheEvilness") > 13 &&
-    auto_habitatMonster() === $monster`dirty old lihc`
+    auto_wandererFightsLeft($monster`dirty old lihc`) > 0
   ) {
     if (
       get("cyrptNicheEvilness") <=
-      13 + auto_habitatFightsLeft() * (cyrptEvilBonus() + 3)
+      13 +
+        auto_wandererFightsLeft($monster`dirty old lihc`) *
+          (cyrptEvilBonus() + 3)
     ) {
       // we have enough Habitants to get to 13 or less evilness. Don't need to adventure in this zone.
       return false;

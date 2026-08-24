@@ -137,9 +137,11 @@ import {
   handleFamiliar$1,
   is100FamRun,
   pathAllowsChangingFamiliar,
+  pathHasFamiliar,
 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
+  provideFamExp$3,
   provideItem$2,
   providePlusCombat,
   providePlusNonCombat,
@@ -3167,6 +3169,15 @@ function L11_hiddenCityZonesEquipForShrine(): boolean {
   }
   if (!canUseMachete && auto_haveTearawayPants()) {
     autoForceEquip$3($item`tearaway pants`);
+  }
+  if (pathHasFamiliar()) {
+    maximizer.weight($modifier`Familiar Experience`, 25);
+
+    const noVinesCleared =
+      $locations`An Overgrown Shrine (Northwest), An Overgrown Shrine (Southwest), An Overgrown Shrine (Northeast), An Overgrown Shrine (Southeast)`.every(
+        (l) => liana_cleared(l),
+      );
+    provideFamExp$3(25, true, noVinesCleared);
   }
   return true;
 }

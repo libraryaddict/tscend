@@ -120,6 +120,7 @@ import {
   auto_log_info,
   auto_log_warning,
   auto_totalEffectWishesAvailable,
+  auto_wandererFightsLeft,
   canSummonMonster,
   canYellowRay,
   cloversAvailable,
@@ -1571,10 +1572,8 @@ function L12_sonofaBeachDo(): boolean {
   }
 
   if (
-    auto_gunpowderBarrelsWanted() === 1 &&
-    [safeGet("clubEmNextWeekMonster"), safeGet("romanticTarget")].includes(
-      $monster`lobsterfrogman`,
-    )
+    auto_gunpowderBarrelsWanted() <=
+    auto_wandererFightsLeft($monster`lobsterfrogman`)
   ) {
     return false;
   }

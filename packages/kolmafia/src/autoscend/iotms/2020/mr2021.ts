@@ -79,6 +79,7 @@ import {
   auto_log_warning,
   auto_queueIgnore,
   auto_runChoice,
+  auto_wandererFightsLeft,
   auto_wantToBanish,
   auto_wantToBanish$1,
   auto_wantToReplace,
@@ -112,11 +113,7 @@ import {
   fantasyBanditsFought,
 } from "../2010/mr2018";
 import { auto_hasAutumnaton } from "./mr2022";
-import {
-  auto_habitatFightsLeft,
-  auto_habitatMonster,
-  auto_haveBofa,
-} from "./mr2023";
+import { auto_habitatMonster, auto_haveBofa } from "./mr2023";
 
 // This is meant for items that have a date of 2021
 
@@ -376,14 +373,17 @@ export function auto_backupTarget(): boolean {
   }
   // determine if we want to backup
   const wantBackupLFM: boolean =
-    itemAmount($item`barrel of gunpowder`) < 5 &&
+    auto_wandererFightsLeft($monster`lobsterfrogman`) +
+      itemAmount($item`barrel of gunpowder`) <
+      5 &&
     get("sidequestLighthouseCompleted") === "none" &&
     internalQuestStatus("questL12War") === 1 &&
     !auto_hasAutumnaton() &&
     !in_koe();
   const habitatZombieEvil: number =
-    auto_habitatMonster() === $monster`modern zmobie`
-      ? auto_habitatFightsLeft() * (5 + cyrptEvilBonus())
+    auto_wandererFightsLeft($monster`modern zmobie`) > 0
+      ? auto_wandererFightsLeft($monster`modern zmobie`) *
+        (5 + cyrptEvilBonus())
       : 0;
   const wantBackupZmobie: boolean =
     get("cyrptAlcoveEvilness") > 14 + cyrptEvilBonus() + habitatZombieEvil &&
