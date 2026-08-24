@@ -3099,6 +3099,7 @@ export function L11_wantsPygmyBowlerWandererHunt(
   ignoreWillingToSwitch: boolean = false,
 ): boolean {
   return (
+    bluevsred_isBlue() &&
     L11_swordWantsBowlingMonster(ignoreWillingToSwitch) &&
     (auto_clubIntoNextWeekTimesRemaining() > 0 ||
       safeGet("clubEmNextWeekMonster") !== $monster.none) &&
