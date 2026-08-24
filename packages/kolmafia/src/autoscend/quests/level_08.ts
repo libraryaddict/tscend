@@ -17,6 +17,7 @@ import {
   itemAmount,
   jumpChance,
   myAdventures,
+  myAscensions,
   myDaycount,
   myLevel,
   myMaxhp,
@@ -366,7 +367,12 @@ function L8_getGoatCheese(): boolean {
     return false;
   }
   // Condider softblocking until day 2 for Mayam
-  if (auto_haveMayamCalendar() && itemAmount($item`goat cheese`) === 2) {
+  if (
+    auto_haveMayamCalendar() &&
+    ((get("lastTempleAdventures") !== myAscensions() &&
+      itemAmount($item`goat cheese`) === 1) ||
+      itemAmount($item`goat cheese`) === 2)
+  ) {
     if (auto_waitForDay2()) {
       auto_log_debug("Delaying Goatlet waiting for day 2.");
       return false;
