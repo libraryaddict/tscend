@@ -331,6 +331,7 @@ import {
   auto_AprilTubaForcesLeft,
   auto_chestMimicPendingFor,
   auto_haveAprilingBandHelmet,
+  auto_haveBatWings,
   auto_haveRoman,
   auto_haveSpringShoes,
   auto_meggFight,
@@ -437,7 +438,10 @@ import { amw_wantMeat, in_amw } from "./paths/2026/adventurer_meats_world";
 import { bluevsred_willEncounterFight } from "./paths/2026/blue_vs_red";
 import { inAftercore } from "./paths/casual";
 import { bridgeGoal, fastenerCount, lumberCount } from "./quests/level_09";
-import { L11_wantsPygmyBowlerWandererHunt } from "./quests/level_11";
+import {
+  L11_wantsPygmyBowlerWandererHunt,
+  shenShouldDelayZone,
+} from "./quests/level_11";
 import { auto_warSide } from "./quests/level_12";
 import { needStarKey } from "./quests/level_13";
 import { candyBlock } from "./quests/level_any";
@@ -3265,6 +3269,17 @@ function LX_summonMonsterDo(): boolean {
     internalQuestStatus("questL04Bat") === 2 &&
     (!auto_is_valid($item`sonar-in-a-biscuit`) ||
       itemAmount($item`sonar-in-a-biscuit`) === 0) &&
+    // If we have no bat wings left
+    (!auto_haveBatWings() ||
+      (get("batWingsGuanoJunction") && get("batWingsBatratBurrow"))) &&
+    // If we're not going to backfarm for the enchanted bean
+    (internalQuestStatus("questL10Garbage") > 0 ||
+      itemAmount($item`enchanted bean`) > 0) &&
+    // If we're not going to map our way to a bat
+    (!auto_have_skill($skill`Comprehensive Cartography`) ||
+      get("lastCartographyGuanoJunction") === myAscensions()) &&
+    // If shen does not want this zone
+    !shenShouldDelayZone($location`The Batrat and Ratbat Burrow`) &&
     canSummonMonster($monster`screambat`)
   ) {
     if (summonMonster($monster`screambat`)) {
