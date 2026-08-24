@@ -157,12 +157,20 @@ type SoftDelayKey =
 
 // Generic companion to the preference-backed allowSoftblockX() family
 const softblockReleaseLevel = new Map<SoftDelayKey, number>();
+// Counter to tell when the last time we called a softlock was
+let softblockCheckPass = 0;
+const softblockLastCheckedPass = new Map<SoftDelayKey, number>();
+
+export function advanceSoftblockCheckPass(): void {
+  softblockCheckPass++;
+}
 
 export function isAnySoftBlockReleased(): boolean {
   return [...softblockReleaseLevel.values()].some((lvl) => lvl >= myLevel());
 }
 
 export function isSoftBlockInPlace(key: SoftDelayKey): boolean {
+  softblockLastCheckedPass.set(key, softblockCheckPass);
   // We don't soft block if we don't have an interest in that key
   return (softblockReleaseLevel.get(key) ?? myLevel()) < myLevel();
 }
@@ -497,6 +505,18 @@ export function auto_earlyRoutingHandling(): boolean {
   return runQuestTask(auto_earlyRoutingHandlingTask);
 }
 
+function releaseSoftblockOrSkip(key: SoftDelayKey, reason: string): boolean {
+  const wasCheckedThisPass =
+    softblockLastCheckedPass.get(key) === softblockCheckPass;
+  if (!isSoftBlockInPlace(key)) return false;
+  if (!wasCheckedThisPass) {
+    clearSoftblock(key);
+    return false;
+  }
+  releaseSoftblock(key, reason);
+  return true;
+}
+
 function auto_softBlockHandlerDo(): boolean {
   // "catch all" function to release softblocks one by one.
   // updating this will be less 'scary' than updating n task order files any time we make a change
@@ -510,39 +530,44 @@ function auto_softBlockHandlerDo(): boolean {
     set("auto_delayLastLevel", myLevel());
     return true;
   }
-  if (isSoftBlockInPlace("8bitRealm")) {
-    releaseSoftblock(
+  if (
+    releaseSoftblockOrSkip(
       "8bitRealm",
       "holding off 8bit realm to maximize our score",
-    );
+    )
+  ) {
     return true;
   }
-  if (isSoftBlockInPlace("swordTrackingFutureTarget")) {
-    releaseSoftblock(
+  if (
+    releaseSoftblockOrSkip(
       "swordTrackingFutureTarget",
       "holding off finishing a quest to keep Sword of S Words tracking value for a future target",
-    );
+    )
+  ) {
     return true;
   }
-  if (isSoftBlockInPlace("swordTracking")) {
-    releaseSoftblock(
+  if (
+    releaseSoftblockOrSkip(
       "swordTracking",
       "holding off finishing a quest to keep farming Sword of S Words tracking value",
-    );
+    )
+  ) {
     return true;
   }
-  if (isSoftBlockInPlace("baseballDiamond")) {
-    releaseSoftblock(
+  if (
+    releaseSoftblockOrSkip(
       "baseballDiamond",
       "holding off playing baseball to wait for a better lineup",
-    );
+    )
+  ) {
     return true;
   }
-  if (isSoftBlockInPlace("legendaryPasta")) {
-    releaseSoftblock(
+  if (
+    releaseSoftblockOrSkip(
       "legendaryPasta",
       "holding off finishing the Sonofa Beach war to look for something to turn our legendary noodles into a legendary dish",
-    );
+    )
+  ) {
     return true;
   }
   if (allowSoftblockDay2Wait()) {

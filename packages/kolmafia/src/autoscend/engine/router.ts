@@ -1,6 +1,9 @@
 import { abort, myPath } from "kolmafia";
 
-import { setupSoftblockLocks } from "../auto_routing";
+import {
+  advanceSoftblockCheckPass,
+  setupSoftblockLocks,
+} from "../auto_routing";
 import { callRegisteredTaskFunction } from "../task_registry";
 import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { fileAsMap } from "../utils/kolmafiaUtils";
@@ -65,6 +68,7 @@ export function runNextTask(
   prefixTasks: QuestTask[] = [],
 ): boolean {
   const ordered: QuestTask[] = [...prefixTasks, ...buildTaskOrder(path)];
+  advanceSoftblockCheckPass();
   try {
     for (const task of ordered) {
       if (!getEngine().tasks_by_name.get(task.name)) {
