@@ -128,7 +128,6 @@ import {
 import {
   auto_have_sword_familiar,
   auto_summonSwordTarget,
-  auto_sword_of_swords_tracking,
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
 } from "../iotms/2020/mr2026";
@@ -145,7 +144,7 @@ import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 import { in_lowkeysummer } from "../paths/2020/low_key_summer";
 import { in_plumber } from "../paths/2020/path_of_the_plumber";
 import { in_quantumTerrarium } from "../paths/2021/quantum_terrarium";
-import { bluevsred_willEncounterFight as bluevsred_willNotEncounterNC } from "../paths/2026/blue_vs_red";
+import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
 import { AshMatcher } from "../utils/kolmafiaUtils";
 import { L6_friarsGetParts } from "./level_06";
 import { L7_crypt, L7_swordWantsCryptMonster } from "./level_07";
@@ -858,7 +857,7 @@ registerQuestTask({
       !haveUsedPeridot($location`The Hidden Bowling Alley`) &&
       L11_swordWantsBowlingMonster() &&
       // We refuse to try this if we'd get a NC
-      bluevsred_willNotEncounterNC($monster`pygmy bowler`) &&
+      bluevsred_willEncounterFight($monster`pygmy bowler`) &&
       // Has no bowling done yet
       itemAmount($item`bowling ball`) === 0 &&
       get("hiddenBowlingAlleyProgress") === 1 &&
@@ -1395,7 +1394,7 @@ function LX_dronesOutDo(): boolean {
     !canExtingo &&
     get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6 &&
     zone_isAvailable($location`The Hidden Bowling Alley`) &&
-    bluevsred_willNotEncounterNC($monster`pygmy bowler`)
+    bluevsred_willEncounterFight($monster`pygmy bowler`)
   ) {
     auto_log_info("Going to the Hidden Bowling Alley");
     if (safeGet("auto_priorLocation") !== $location`The Hidden Bowling Alley`) {
@@ -1502,7 +1501,7 @@ export const LX_dronesOutTask: QuestTask = registerQuestTask({
     if (
       get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6 &&
       zone_isAvailable($location`The Hidden Bowling Alley`) &&
-      bluevsred_willNotEncounterNC($monster`pygmy bowler`)
+      bluevsred_willEncounterFight($monster`pygmy bowler`)
     ) {
       entries.push({
         item: $item`bowling ball`,
