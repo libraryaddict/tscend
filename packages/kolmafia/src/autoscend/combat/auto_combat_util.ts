@@ -72,8 +72,8 @@ import {
 
 import { CombatMacroReturns } from "../auto_adventure";
 import {
-  auto_canDrink,
   auto_canChew,
+  auto_canDrink,
   inebriety_left,
   spleen_left,
 } from "../auto_consume";

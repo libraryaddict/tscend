@@ -244,9 +244,9 @@ import {
   auto_copierShouldDelayZone,
   auto_spadeDigSkeleton,
   auto_spadeDigsRemaining,
-  auto_swordOfSwordsTracking,
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
+  auto_swordOfSwordsTracking,
   auto_wantToSpadeDigSkeleton,
 } from "../iotms/2020/mr2026";
 import { in_bhy } from "../paths/2011/bees_hate_you";

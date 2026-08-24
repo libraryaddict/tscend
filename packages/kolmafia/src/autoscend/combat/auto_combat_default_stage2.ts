@@ -78,8 +78,8 @@ import {
 import {
   auto_heartstoneShouldStealHeartInCombat,
   auto_spendInterestingCoins,
-  auto_swordOfSwordsTracking,
   auto_swordIsWillingToSwitchTargets,
+  auto_swordOfSwordsTracking,
   auto_wantToStartTrackingSwordMonster,
   wantToClubEmBackInTime,
   wantToThrowCoinAtEm,

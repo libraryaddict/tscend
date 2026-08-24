@@ -157,9 +157,9 @@ import {
 import {
   auto_clubEmBackInTimesRemaining,
   auto_codpieceRegisterSlotContainer,
-  auto_swordFamiliarLikesCurrentTarget,
   auto_havePastaWand,
   auto_isInEternityCodpiece,
+  auto_swordFamiliarLikesCurrentTarget,
   wantToClubEmBackInTime,
 } from "./iotms/2020/mr2026";
 import { applyMaximizePreference } from "./maximizer_parser";
