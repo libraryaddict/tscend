@@ -34,6 +34,7 @@ type BooleanProperty =
   | "auto_abooclover"
   | "auto_alienLanguage"
   | "auto_aosol_dontUnCurse"
+  | "auto_attemptToBladdermax"
   | "auto_avalancheDeployed"
   | "auto_beatenUpLastAdv"
   | "auto_bedtime_pulls_skip"

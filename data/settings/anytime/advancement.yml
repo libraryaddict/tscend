@@ -33,3 +33,8 @@ auto_burndownStatsInstantKarmaAbort:
   type: boolean
   description: "When enabled, the script will abort if you are unable to burn down your stats to L13"
   default: false
+auto_attemptToBladdermax:
+  name: "Attempt to bladdermax for faster runs"
+  type: boolean
+  description: "When enabled, will attempt to fight the Giant Squid, setting up the sword to track it so that we can start dropping ink bladders. The fight is hard!"
+  default: false

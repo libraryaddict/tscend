@@ -2289,6 +2289,25 @@ export function auto_swordFamiliarWantsMonsterDrops(
     return true;
   }
 
+  // Ink bladders, a useful underwater free run with the monodent
+  if (
+    auto_haveMonodent() &&
+    sMonster === $monster`giant squid` &&
+    internalQuestStatus("questL10Garbage") < 7 &&
+    bluevsred_willEncounterFight($monster`giant squid`)
+  ) {
+    const bladders = itemAmount($item`ink bladder`);
+    // We're assuming 25 turns to get there
+    let fightsLeft = 25 - $location`The Penultimate Fantasy Airship`.turnsSpent;
+    // Subtract the remaining NCs
+    fightsLeft -= 7 - internalQuestStatus("questL10Garbage");
+
+    // Return if we still want more bladders
+    if (bladders < fightsLeft) {
+      return true;
+    }
+  }
+
   return false;
 }
 
@@ -2423,7 +2442,12 @@ const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
     // TODO In the future, some 'can we defeat this'
     predicate: () => myLevel() >= 5,
   },
-
+  {
+    monsters: $monsters`giant squid`,
+    item: $item`ink bladder`,
+    predicate: () =>
+      auto_haveMonodent() && myLevel() >= 11 && get("auto_attemptToBladdermax"),
+  },
   {
     monsters: $monsters`smut orc pipelayer`,
     item: $item`morningwood plank`,
@@ -2456,6 +2480,7 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
 
   const desiredHits = target.monsters.filter(
     (monster) =>
+      bluevsred_willEncounterFight(monster) &&
       auto_swordFamiliarWantsMonsterDrops(monster, 100) &&
       canSummonMonster(monster),
   );
@@ -2478,7 +2503,9 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
     // If we don't want a poor chance
     if (
       !desiredHits.some(
-        (m) => !auto_swordFamiliarWantsMonsterDrops(m, totalChance),
+        (m) =>
+          bluevsred_willEncounterFight(m) &&
+          !auto_swordFamiliarWantsMonsterDrops(m, totalChance),
       )
     ) {
       continue;
@@ -2531,8 +2558,10 @@ export function auto_summonSwordTarget(): boolean {
     }
   }
 
-  const targetMonster: Monster = target.monsters.find((m) =>
-    auto_swordFamiliarWantsMonsterDrops(m, 100),
+  const targetMonster: Monster = target.monsters.find(
+    (m) =>
+      bluevsred_willEncounterFight(m) &&
+      auto_swordFamiliarWantsMonsterDrops(m, 100),
   )!;
 
   return summonMonster(targetMonster);

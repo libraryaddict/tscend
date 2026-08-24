@@ -129,6 +129,7 @@ import {
   auto_have_sword_familiar,
   auto_summonSwordTarget,
   auto_sword_of_swords_tracking,
+  auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
 } from "../iotms/2020/mr2026";
 import { in_bhy } from "../paths/2011/bees_hate_you";
@@ -821,7 +822,8 @@ registerQuestTask({
       safeGet("auto_familiarChoice") === $familiar`Sword of S Words`) &&
     (L9_swordWantsChasmMonster() ||
       L7_swordWantsCryptMonster() ||
-      L11_swordWantsBowlingMonster()),
+      L11_swordWantsBowlingMonster() ||
+      auto_swordFamiliarWantsMonsterDrops($monster`giant squid`, 100)),
   do: () => {
     // If we can setup bowling alley, do that instead, even if it means we miss some drops
     if (

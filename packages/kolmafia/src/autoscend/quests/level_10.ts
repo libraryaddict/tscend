@@ -43,6 +43,7 @@ import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   auto_reserveUndergroundAdventures,
   canBurnDelay,
+  isSoftBlockInPlace,
 } from "../auto_routing";
 import {
   auto_can_equip,
@@ -67,6 +68,10 @@ import { auto_sourceTerminalEducate } from "../iotms/2010/mr2016";
 import { auto_changeSnapperPhylum } from "../iotms/2010/mr2019";
 import { auto_canHabitat } from "../iotms/2020/mr2023";
 import { auto_haveSpringShoes } from "../iotms/2020/mr2024";
+import {
+  auto_desires_sword_familiar_drops,
+  auto_sword_of_swords_tracking,
+} from "../iotms/2020/mr2026";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { is_boris } from "../paths/2012/avatar_of_boris";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
@@ -157,6 +162,17 @@ function L10_airshipDo(): boolean {
   ) {
     set("_auto_screechDelay", "dude");
     return false; //Probably should delay the Airship to try for a Quiet Healer
+  }
+
+  if (
+    auto_sword_of_swords_tracking() === $monster`giant squid` &&
+    isSoftBlockInPlace("swordTracking") &&
+    auto_desires_sword_familiar_drops()
+  ) {
+    auto_log_debug(
+      "Delaying L10 airship - still farming ink bladders via Giant Squid.",
+    );
+    return false;
   }
 
   auto_log_info("The Penultimate Fantasy Airship - unlocking Castle.", "blue");

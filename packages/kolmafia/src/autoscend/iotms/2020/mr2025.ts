@@ -148,6 +148,7 @@ import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { in_hattrick } from "../../paths/2025/hattrick";
 import { in_zootomist } from "../../paths/2025/zootomist";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
+import { inAftercore } from "../../paths/casual";
 import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 import { L11_needWetStew } from "../../quests/level_11";
 import { needStarKey, towerKeyCount } from "../../quests/level_13";
@@ -1575,6 +1576,15 @@ export function auto_waveTheZone(): boolean {
   if (
     myLocation() === $location`The Themthar Hills` &&
     numericModifier(equippedItem($slot`weapon`), $modifier`Meat Drop`) < 30.0
+  ) {
+    autoForceEquip$2($item`Monodent of the Sea`, true);
+    waveTheZone = true;
+  }
+  if (
+    !inAftercore() &&
+    myLocation() === $location`The Penultimate Fantasy Airship` &&
+    itemAmount($item`ink bladder`) > 19 &&
+    $location`The Penultimate Fantasy Airship`.turnsSpent < 3
   ) {
     autoForceEquip$2($item`Monodent of the Sea`, true);
     waveTheZone = true;
