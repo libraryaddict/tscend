@@ -1570,6 +1570,15 @@ function L12_sonofaBeachDo(): boolean {
     return false;
   }
 
+  if (
+    auto_gunpowderBarrelsWanted() === 1 &&
+    [safeGet("clubEmNextWeekMonster"), safeGet("romanticTarget")].includes(
+      $monster`lobsterfrogman`,
+    )
+  ) {
+    return false;
+  }
+
   if (safeGet("_sourceTerminalDigitizeMonster") === $monster`lobsterfrogman`) {
     return false;
   }
