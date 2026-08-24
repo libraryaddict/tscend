@@ -1665,6 +1665,16 @@ export function auto_isPotentialTalkToSomeFishTarget(
     return false;
   }
 
+  // We progress faster if we fight the black monsters
+  if (
+    loc === $location`The Black Forest` &&
+    $monsters`black adder, black friar, black magic woman, black panther, black widow, blackberry bush`.includes(
+      enemy,
+    )
+  ) {
+    return false;
+  }
+
   // Avoid when we're trying to kill rats for free
   if (
     myThrall() === $thrall`Vermincelli` &&
