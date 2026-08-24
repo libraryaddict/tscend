@@ -136,6 +136,7 @@ import {
   handleFamiliar,
   handleFamiliar$1,
   is100FamRun,
+  pathAllowsChangingFamiliar,
 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
@@ -1377,6 +1378,32 @@ export const L11_blackMarketTask: QuestTask = registerQuestTask({
         !auto_can_equip($item`blackberry galoshes`)
           ? 0
           : 3 - itemAmount($item`blackberry`),
+    },
+    {
+      item: !in_bhy() ? $item`broken wings` : $item`busted wings`,
+      needAmount:
+        (pathAllowsChangingFamiliar() ? 1 : 0) -
+        (itemAmount(!in_bhy() ? $item`broken wings` : $item`busted wings`) +
+          (canChangeToFamiliar(
+            !in_bhy()
+              ? $familiar`Reassembled Blackbird`
+              : $familiar`Reconstituted Crow`,
+          )
+            ? 1
+            : 0)),
+    },
+    {
+      item: !in_bhy() ? $item`sunken eyes` : $item`bird brain`,
+      needAmount:
+        (pathAllowsChangingFamiliar() ? 1 : 0) -
+        (itemAmount(!in_bhy() ? $item`sunken eyes` : $item`bird brain`) +
+          (canChangeToFamiliar(
+            !in_bhy()
+              ? $familiar`Reassembled Blackbird`
+              : $familiar`Reconstituted Crow`,
+          )
+            ? 1
+            : 0)),
     },
   ],
 });
