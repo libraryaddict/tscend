@@ -1797,11 +1797,19 @@ function auto_baseballGetDesiredElements(
   loc: Location = myLocation(),
 ): Element[] {
   const elements: Element[] = [];
-  if (auto_isWorthYellowRaying(mon, loc)) {
+  if (
+    auto_isWorthYellowRaying(mon, loc) &&
+    (auto_sword_of_swords_tracking() !== mon ||
+      auto_sword_of_swords_kills_left() <= 0)
+  ) {
     elements.push($element`hot`);
   }
 
-  if (auto_isWorthSniffing(mon, loc)) {
+  if (
+    auto_isWorthSniffing(mon, loc) &&
+    (auto_sword_of_swords_tracking() !== mon ||
+      auto_sword_of_swords_kills_left() <= 0)
+  ) {
     elements.push($element`stench`);
     elements.push($element`spooky`);
   } else if (auto_haveMonodent() && mon === $monster`some fish`) {
