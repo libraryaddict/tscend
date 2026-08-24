@@ -57,12 +57,6 @@ auto_chasmBusted:
   description: Has the orc chasm bridge been 'trolled yet? Ed only.
   default: true
   resets: ascend
-auto_day1_dna:
-  name: "Day 1 DNA Hybridization"
-  type: string
-  description: "'finished' if we have hybridized ourselves at the start of Ascension."
-  default: ""
-  resets: ascend
 auto_day_init:
   name: "Day Initialized"
   type: int
@@ -139,42 +133,6 @@ auto_doneInitialize:
   type: int
   description: Indicates last ascension that we initialized with the script.
   default: 0
-auto_noSnakeOil:
-  name: "Last Snake Oil Extraction Day"
-  type: int
-  description: Last day that we could no longer Extract Oil.
-  default: 0
-auto_renenutetBought:
-  name: "Talismans Of Renenutet Bought"
-  type: int
-  description: Number of Talisman of Renenutet's bought on last tracking.
-  default: 0
-auto_batoomerangDay:
-  name: "Bat-oomerang Tracker Day"
-  type: int
-  description: Part of Replica Bat-oomerang Tracker
-  default: 0
-  resets: ascend
-auto_batoomerangUse:
-  name: "Bat-oomerang Tracker Use"
-  type: int
-  description: Part of Replica Bat-oomerang Tracker
-  default: 0
-_auto_lastABooConsider:
-  name: "Last A-Boo Peak Consideration"
-  type: int
-  description: Last turn that we considered doing A-Boo Peak
-  default: 0
-_auto_lastABooCycleFix:
-  name: "A-Boo Peak Loop Fix Tracker"
-  type: int
-  description: Tracker to prevent us infinitely looping on A-Boo Peak
-  default: 0
-_auto_witchessBattles:
-  name: "Witchess Battle Tracker"
-  type: int
-  description: Tracker for Witchess Combats (yes, this is actually needed).
-  default: 0
 auto_needLegs:
   name: "Need Legs Before Ka Farming"
   type: boolean
@@ -202,10 +160,4 @@ auto_L8_extremeInstead:
   type: boolean
   description: True means we want to adventure in the extreme slope path instead of the ninja snowmen lair this ascension.
   default: false
-  resets: ascend
-auto_aboopending:
-  name: "Pending A-Boo Clue Turn"
-  type: int
-  description: The last turn of a pending A-Boo Clue. 0 if no clue active.
-  default: 0
   resets: ascend

@@ -1,3 +1,8 @@
+auto_aboopending:
+  name: "Pending A-Boo Clue Turn"
+  type: int
+  description: The last turn of a pending A-Boo Clue. 0 if no clue active.
+  resets: ascend
 auto_alienLanguage:
   type: boolean
 auto_aosolLastSkill:
@@ -18,6 +23,15 @@ auto_bat_ensorcels:
   type: int
 auto_bat_soulmonster:
   type: monster
+auto_batoomerangDay:
+  name: "Bat-oomerang Tracker Day"
+  type: int
+  description: Part of Replica Bat-oomerang Tracker
+  resets: ascend
+auto_batoomerangUse:
+  name: "Bat-oomerang Tracker Use"
+  type: int
+  description: Part of Replica Bat-oomerang Tracker
 auto_beatenUpLastAdv:
   type: boolean
   default: false
@@ -70,6 +84,11 @@ auto_dakotaFanning:
   resets: ascend
 auto_day1_desk:
   type: string
+auto_day1_dna:
+  name: "Day 1 DNA Hybridization"
+  type: string
+  description: "'finished' if we have hybridized ourselves at the start of Ascension."
+  resets: ascend
 auto_day1_skills:
   type: string
 auto_day2WaitLastLevel:
@@ -281,6 +300,10 @@ auto_ninjasnowmanassassin:
   type: boolean
 auto_nonAdvLoc:
   type: boolean
+auto_noSnakeOil:
+  name: "Last Snake Oil Extraction Day"
+  type: int
+  description: Last day that we could no longer Extract Oil.
 auto_openedziggurat:
   type: boolean
   default: false
@@ -325,6 +348,10 @@ auto_rain_king_combat:
   type: string
 auto_renenutet:
   type: string
+auto_renenutetBought:
+  name: "Talismans Of Renenutet Bought"
+  type: int
+  description: Number of Talisman of Renenutet's bought on last tracking.
 auto_replaces:
   type: string
   default: ""
@@ -406,7 +433,6 @@ _auto_bondLevel:
   type: int
 _auto_candyMapCompleted:
   type: boolean
-  default: false
   resets: day
 _auto_casualAscension:
   type: int
@@ -452,6 +478,14 @@ _auto_jarlsbergSkills:
   type: int
 _auto_kgbSetup:
   type: boolean
+_auto_lastABooConsider:
+  name: "Last A-Boo Peak Consideration"
+  type: int
+  description: Last turn that we considered doing A-Boo Peak
+_auto_lastABooCycleFix:
+  name: "A-Boo Peak Loop Fix Tracker"
+  type: int
+  description: Tracker to prevent us infinitely looping on A-Boo Peak
 _auto_lastAutumnatonUpgrade:
   type: int
 _auto_leprecondoDoneWith:
@@ -483,6 +517,10 @@ _auto_toxicAssetUses:
   resets: ascend
 _auto_tunedElement:
   type: string
+_auto_witchessBattles:
+  name: "Witchess Battle Tracker"
+  type: int
+  description: Tracker for Witchess Combats (yes, this is actually needed).
 _autoSkipNextAdventure:
   type: boolean
 _LAR_skipNC163:
