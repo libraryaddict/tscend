@@ -17,6 +17,7 @@ import {
   myMp,
   myPrimestat,
   myTurncount,
+  toLocation,
   visitUrl,
 } from "kolmafia";
 import {
@@ -72,10 +73,8 @@ import { auto_sourceTerminalEducate } from "../iotms/2010/mr2016";
 import { auto_changeSnapperPhylum } from "../iotms/2010/mr2019";
 import { auto_canHabitat } from "../iotms/2020/mr2023";
 import { auto_haveSpringShoes } from "../iotms/2020/mr2024";
-import {
-  auto_desires_sword_familiar_drops,
-  auto_swordFamiliarWantsMonsterDrops,
-} from "../iotms/2020/mr2026";
+import { auto_haveMonodent } from "../iotms/2020/mr2025";
+import { auto_swordFamiliarWantsMonsterDrops } from "../iotms/2020/mr2026";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { is_boris } from "../paths/2012/avatar_of_boris";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
@@ -83,6 +82,7 @@ import { in_gnoob } from "../paths/2017/gelatinous_noob";
 import { lar_repeat } from "../paths/2017/live_ascend_repeat";
 import { bat_formBats } from "../paths/2019/dark_gyffte";
 import { in_koe } from "../paths/2019/kingdom_of_exploathing";
+import { inAftercore } from "../paths/casual";
 import { L4_batCave } from "./level_04";
 import { shenShouldDelayZone, shenSnakeLocations } from "./level_11";
 import { LX_buyStarKeyParts, needStarKey } from "./level_13";
@@ -170,10 +170,16 @@ function L10_airshipDo(): boolean {
 
   if (
     // If the sword fam isn't desiring the drops, then it's in a bad state and can be skipped
-    auto_desires_sword_familiar_drops() &&
-    get("auto_attemptToBladdermax") &&
-    auto_swordFamiliarWantsMonsterDrops($monster`giant squid`, 100) &&
     canChangeToFamiliar($familiar`Sword of S Words`) &&
+    auto_haveMonodent() &&
+    (auto_swordFamiliarWantsMonsterDrops($monster`giant squid`, 100) ||
+      (!inAftercore() &&
+        itemAmount($item`ink bladder`) > 5 &&
+        auto_haveMonodent() &&
+        get("_seadentWaveUsed") &&
+        toLocation(get("_seadentWaveZone")) !==
+          $location`The Penultimate Fantasy Airship`)) &&
+    get("auto_attemptToBladdermax") &&
     isSoftBlockInPlace("swordTracking")
   ) {
     auto_log_debug(
