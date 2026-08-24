@@ -6,6 +6,14 @@ Punk Rock Giant
 Raver Giant
 Steampunk Giant
 Irritating Series of Random Encounters
+Burly Sidekick	item:Mohawk Wig>0
+Quiet Healer	item:amulet of extreme plot significance>0
+# The umbrella can be replaced with the amulet, but it can't be the other way around
+Spunky Princess	item:titanium assault umbrella>0
+Spunky Princess	item:unbreakable umbrella>0
+Spunky Princess	item:amulet of extreme plot significance>0
+MagiMechTech MechaMech	item:metallic A>0
+MagiMechTech MechaMech	prop:auto_wandOfNagamar=false
 Protagonist	!class:Ed the Undying
 bar
 spooky mummy
