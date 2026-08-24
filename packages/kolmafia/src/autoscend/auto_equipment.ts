@@ -1049,9 +1049,12 @@ function finalizeMaximize(speculative: boolean = false): void {
     } else if (myMeat() < meatReserve()) {
       // those fruit drops can autosell for a lot
       addBonusToMaximize($item`spring shoes`, 200);
-    } else if (myHp() < 0.5 * myMaxhp() && myHp() > 0) {
+    } else if (
+      myHp() < 0.5 * Math.min(is_werewolf() ? 10000 : 1000, myMaxhp()) &&
+      myHp() > 0
+    ) {
       addBonusToMaximize($item`spring shoes`, 200); // bonus to heal in wereprof as the werewolf after transition from Professor
-    } else {
+    } else if (myMp() < 150 || myMp() < myMaxmp() * 0.9) {
       // just add a little bonus for the MP generation
       addBonusToMaximize($item`spring shoes`, 50);
     }
