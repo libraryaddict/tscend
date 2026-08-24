@@ -4264,41 +4264,7 @@ function L11_shenCopperheadDo(): boolean {
     return false; //Probably should delay the Copperhead Club because dudes are important here
   }
 
-  if (
-    internalQuestStatus("questL11Shen") === 2 ||
-    internalQuestStatus("questL11Shen") === 4 ||
-    internalQuestStatus("questL11Shen") === 6
-  ) {
-    if (is_professor()) {
-      return false; //can't do Copperhead Club as a Professor but can do other parts of Shen quest
-    }
-    if (
-      itemAmount($item`crappy waiter disguise`) > 0 &&
-      haveEffect($effect`Crappily Disguised as a Waiter`) === 0 &&
-      !in_tcrs()
-    ) {
-      use(1, $item`crappy waiter disguise`);
-      const behindtheStacheOption =
-        ["gong", "ice bucket", "lantern", "cocktails", "diamond"].indexOf(
-          L11_shenWaiterNC(),
-        ) + 1;
-      set("choiceAdventure855", behindtheStacheOption);
-    }
-
-    if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
-      auto_changeSnapperPhylum($phylum`dude`);
-    }
-    // monster level increases zone damage
-    maximizer.weight($modifier`Monster Level`, -10);
-    uneffect($effect`Ur-Kel's Aria of Annoyance`);
-    if (autoAdv($location`The Copperhead Club`)) {
-      if (containsText(get("lastEncounter"), "Shen Copperhead, ")) {
-        set("auto_lastShenTurn", $location`The Copperhead Club`.turnsSpent);
-      }
-      return true;
-    }
-    return false;
-  }
+  let zoneUnavailable = false;
 
   if (
     internalQuestStatus("questL11Shen") === 1 ||
@@ -4338,13 +4304,17 @@ function L11_shenCopperheadDo(): boolean {
 
     if (!zone_isAvailable(goal)) {
       // handle paths which don't need Tower keys but the World's Biggest Jerk asks for The Eye of the Stars
-      if (goal === $location`The Hole in the Sky`) {
+      if (
+        goal === $location`The Hole in the Sky` &&
+        (isAvailable(L10_topFloorTask) ||
+          isAvailable(L10_holeInTheSkyUnlockTask))
+      ) {
         if (!get("auto_holeinthesky", false)) {
           set("auto_holeinthesky", true);
         }
         return runTaskChain([L10_topFloorTask, L10_holeInTheSkyUnlockTask]);
       }
-      return false;
+      zoneUnavailable = true;
     } else {
       // If we haven't completed the top floor, try to complete it.
       if (
@@ -4374,17 +4344,65 @@ function L11_shenCopperheadDo(): boolean {
           !isAboutToPowerlevel() &&
           !get("auto_L8_extremeInstead", false)
         ) {
-          return false;
+          zoneUnavailable = true;
         }
       }
       if (canBurnDelay(goal)) {
         // Snakes have variable delay of 3-5 adventures but we can burn at least 3 of that.
-        return false;
+        zoneUnavailable = true;
       }
 
-      return autoAdv(goal);
+      if (!zoneUnavailable) {
+        return autoAdv(goal);
+      }
     }
   }
+
+  const meetings = Math.floor(internalQuestStatus("questL11Ron") / 2);
+  const turnsUntilMeeting =
+    (meetings + 1) * 5 - $location`The Copperhead Club`.turnsSpent;
+
+  if (
+    internalQuestStatus("questL11Shen") === 2 ||
+    internalQuestStatus("questL11Shen") === 4 ||
+    internalQuestStatus("questL11Shen") === 6 ||
+    (internalQuestStatus("questL11Shen") < 6 && turnsUntilMeeting > 1)
+  ) {
+    if (auto_copierShouldDelayZone($locations`The Copperhead Club`)) {
+      return false;
+    }
+    if (is_professor()) {
+      return false; //can't do Copperhead Club as a Professor but can do other parts of Shen quest
+    }
+    if (
+      itemAmount($item`crappy waiter disguise`) > 0 &&
+      haveEffect($effect`Crappily Disguised as a Waiter`) === 0 &&
+      !in_tcrs()
+    ) {
+      use(1, $item`crappy waiter disguise`);
+      const behindtheStacheOption =
+        ["gong", "ice bucket", "lantern", "cocktails", "diamond"].indexOf(
+          L11_shenWaiterNC(),
+        ) + 1;
+      set("choiceAdventure855", behindtheStacheOption);
+    }
+
+    if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
+      auto_changeSnapperPhylum($phylum`dude`);
+    }
+    // monster level increases zone damage
+    maximizer.weight($modifier`Monster Level`, -10);
+    uneffect($effect`Ur-Kel's Aria of Annoyance`);
+    if (autoAdv($location`The Copperhead Club`)) {
+      if (containsText(get("lastEncounter"), "Shen Copperhead, ")) {
+        set("auto_lastShenTurn", $location`The Copperhead Club`.turnsSpent);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  if (zoneUnavailable) return false;
 
   if (internalQuestStatus("questL11Shen") < 8) {
     abort(
