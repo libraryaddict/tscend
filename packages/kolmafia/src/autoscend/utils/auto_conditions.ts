@@ -436,14 +436,18 @@ registerCondition("consume", {
   },
 });
 
+// kolmafia is external to the bundle, so this require() hits the game's real module
+// loader fresh each check() instead of the namespace object captured at script load.
+declare function require(id: string): typeof kolmafia;
+
 registerCondition("js", {
   // data: A script that must eval to true/false, has libram and kolmafia exposure
   check(data) {
     return new Function(
       "kolmafia",
       "libram",
-      `with (kolmafia) { with (libram) { return (${data})}}`,
-    )(kolmafia, libram)();
+      `with (kolmafia) { with (libram) { return (${data}) } }`,
+    )(require("kolmafia"), libram);
   },
 });
 
