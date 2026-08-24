@@ -54,6 +54,7 @@ import { buffMaintain$2 } from "../auto_buff";
 import {
   auto_spleenFamiliarAdvItemsPossessed,
   autoChew,
+  shouldUseSpleenForLowPriority,
   spleen_left,
 } from "../auto_consume";
 import {
@@ -657,7 +658,9 @@ const L7_defiledCrannyTask: QuestTask = registerQuestTask(L7_cryptTask, {
         auto_is_valid($item`dieting pill`) &&
         spleen_left() >= 3 &&
         !isActuallyEd() &&
-        !have($item`dieting pill`)
+        !have($item`dieting pill`) &&
+        (!get("auto_dontConsumeLegendPizzas", false) ||
+          shouldUseSpleenForLowPriority())
           ? 1
           : 0,
     },
