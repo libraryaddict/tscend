@@ -1852,6 +1852,13 @@ function L11_aridDesertDo(): boolean {
   }
 
   if (
+    !haveEffect($effect`Ultrahydrated`) &&
+    auto_copierShouldDelayZone($locations`The Arid\, Extra-Dry Desert`)
+  ) {
+    return false;
+  }
+
+  if (
     haveEffect($effect`Ultrahydrated`) > 0 ||
     get("desertExploration") === 0
   ) {

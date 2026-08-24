@@ -2443,6 +2443,7 @@ function auto_swordUnavailableShouldDelayZone(locs: Location[]): boolean {
 }
 
 // Soft-delay leaving these zones (a level's quest-turn-in, typically) while the Sword of S Words or Baseball Diamond is still mid-farm on a monster that only appears here.
+// TODO This is currently hardcoded, need to switch it to checking against a task's location
 export function auto_copierShouldDelayZone(locs: Location[]): boolean {
   if (isAboutToPowerlevel()) return false;
   const zoneMonsters = locs.flatMap(auto_zoneCopyableMonsters);

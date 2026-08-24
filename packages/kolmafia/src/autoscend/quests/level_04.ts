@@ -52,6 +52,7 @@ import { considerGrimstoneGolem, handleBjornify } from "../iotms/2010/mr2014";
 import { auto_haveGreyGoose } from "../iotms/2020/mr2022";
 import { auto_makeMonkeyPawWish$1 } from "../iotms/2020/mr2023";
 import { auto_haveBatWings, auto_haveChestMimic } from "../iotms/2020/mr2024";
+import { auto_copierShouldDelayZone } from "../iotms/2020/mr2026";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { bat_formBats } from "../paths/2019/dark_gyffte";
 import { in_koe } from "../paths/2019/kingdom_of_exploathing";
@@ -234,6 +235,8 @@ function L4_bossBatLair(): boolean {
   if (auto_reserveUndergroundAdventures() && !in_lol()) {
     return false;
   }
+
+  if (auto_copierShouldDelayZone($locations`The Boss Bat's Lair`)) return false;
 
   provideMeat$2(50, $location`The Boss Bat's Lair`, false);
   //AoSOL buffs
