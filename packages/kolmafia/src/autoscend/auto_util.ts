@@ -329,9 +329,9 @@ import {
 import {
   auto_AprilSaxLuckyLeft,
   auto_AprilTubaForcesLeft,
-  auto_chestMimicPendingFor,
   auto_haveAprilingBandHelmet,
   auto_haveBatWings,
+  auto_haveChestMimic,
   auto_haveRoman,
   auto_haveSpringShoes,
   auto_meggFight,
@@ -3729,9 +3729,9 @@ type MountainManSummonResult = "pass" | "delay" | "fail";
 
 // won't summon at all if we need an extra ore drop but can't guarantee one via Cat Burglar or YR+McTwist
 export function auto_summonMountainMan(
-  canDelayIfNotCapped: boolean = !isAnySoftBlockReleased(),
+  canDelay: boolean = !isAnySoftBlockReleased(),
 ): boolean {
-  return auto_summonMountainManImpl(canDelayIfNotCapped, false) === "pass";
+  return auto_summonMountainManImpl(canDelay, false) === "pass";
 }
 
 // true if auto_summonMountainMan() would currently hold off summoning to wait for a better payout,
@@ -3743,11 +3743,12 @@ export function auto_summonMountainManIsDelaying(): boolean {
 }
 
 function auto_summonMountainManImpl(
-  canDelayIfNotCapped: boolean,
+  canDelay: boolean,
   speculating: boolean,
 ): MountainManSummonResult {
   if (!canSummonMonster($monster`mountain man`)) {
-    if (auto_chestMimicPendingFor($monster`mountain man`)) {
+    // If we could still gain the exp for mimic
+    if (auto_haveChestMimic() && canChangeToFamiliar($familiar`Chest Mimic`)) {
       return "delay";
     }
     return "fail";
@@ -3831,7 +3832,7 @@ function auto_summonMountainManImpl(
     auto_haveBaseballDiamond() &&
     auto_baseballInningsRemaining() > 0
   ) {
-    if (canDelayIfNotCapped) {
+    if (canDelay) {
       const baseballAssignments = auto_baseballBuildAssignments(
         auto_baseballRecruits(),
       ).filter((m) => m.element !== $element`hot`);
@@ -3862,7 +3863,7 @@ function auto_summonMountainManImpl(
     shouldMcTwist = true;
   }
 
-  if (oresAcquired < neededDropCount && canDelayIfNotCapped) {
+  if (oresAcquired < neededDropCount && canDelay) {
     return "delay";
   }
 

@@ -2198,15 +2198,17 @@ export function auto_swordFamiliarWantsMonsterDrops(
     }
   }
 
-  // Smut orcs
+  // Smut orcs, we still prioritize the other monster if we have no switches left
   if (
     $monsters`smut orc pipelayer, smut orc jacker`.includes(sMonster) &&
-    lumberCount() < bridgeGoal()
+    (lumberCount() < bridgeGoal() ||
+      (fastenerCount() < bridgeGoal() && auto_swordOfSwordSwitchesLeft() === 0))
   ) {
     return true;
   } else if (
-    $monsters`smut orc screwer, smut orc nailer`.includes(sMonster) &&
-    fastenerCount() < bridgeGoal()
+    ($monsters`smut orc screwer, smut orc nailer`.includes(sMonster) &&
+      fastenerCount() < bridgeGoal()) ||
+    (lumberCount() < bridgeGoal() && auto_swordOfSwordSwitchesLeft() === 0)
   ) {
     return true;
   }
