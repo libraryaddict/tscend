@@ -79,6 +79,7 @@ import {
   auto_abort,
   auto_combat_appearance_rates$1,
   auto_have_skill,
+  auto_haveQueuedForcedNonCombat,
   auto_is_valid,
   auto_log_info,
   auto_log_warning,
@@ -1340,10 +1341,7 @@ export const LX_ForceNCTask: QuestTask = registerQuestTask({
   name: "LX_ForceNC",
   completed: () => false,
   ready: () =>
-    get("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
-    get("auto_avalancheDeployed", false) &&
-    get("auto_forceNonCombatSource") === "jurassic parka" &&
-    get("auto_parkaSpikesDeployed", false) &&
+    auto_haveQueuedForcedNonCombat() &&
     safeGet("auto_forceNonCombatLocation") !== $location.none,
   do: LX_ForceNCDo,
 });

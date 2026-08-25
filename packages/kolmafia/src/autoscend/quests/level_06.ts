@@ -31,6 +31,7 @@ import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   auto_abort,
   auto_forceNextNoncombat,
+  auto_haveQueuedForcedNonCombat,
   auto_log_debug,
   auto_log_info,
   auto_roughExpectedTurnsLeftToday,
@@ -105,7 +106,11 @@ function L6_friarsGetPartsDo(): boolean {
     // Probably need to make sure we still have other stuff to do? Softblock?
     // Could probably then make this run every day.
     const total_daily_forces: number = baseNCForcesToday();
-    if (!forced_here && total_daily_forces > 0 && !running_low_on_turns) {
+    if (
+      (!auto_haveQueuedForcedNonCombat() || !forced_here) &&
+      total_daily_forces > 0 &&
+      !running_low_on_turns
+    ) {
       auto_log_debug(
         "Friars: delaying to save NC forces for later today.",
         "blue",
