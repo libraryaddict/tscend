@@ -1026,7 +1026,12 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     i += 1;
   }
   const popChoice: Monster = monOpts.get(bestmon) ?? $monster.none;
-  if (toInt(popChoice) === 0 || auto_peridotSetZone(loc)) {
+  if (
+    toInt(popChoice) === 0 ||
+    auto_peridotSetZone(loc) ||
+    // If we'd prefer no monster at all
+    zoneRank(popChoice, loc) >= zoneRank($monster.none, loc)
+  ) {
     //still nothing found so just peace out. Or we want to set the zone without using an adventure.
     handleTracker({
       what: $item`Peridot of Peril`,
