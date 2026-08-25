@@ -3573,7 +3573,9 @@ function auto_begin(): void {
   }
 
   LX_handleIntroAdventures(); // handle early non-combats in challenge paths.
-  cliExecute("refresh all");
+  if (!get("auto_skipRefreshAll")) {
+    cliExecute("refresh all");
+  }
 
   if (myClass().toString() === "Astral Spirit") {
     // my_class() can report Astral Spirit even though it is not a valid class....

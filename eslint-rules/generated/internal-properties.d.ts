@@ -109,6 +109,7 @@ type BooleanProperty =
   | "auto_skipL12Farm"
   | "auto_skipNightcap"
   | "auto_skipNuns"
+  | "auto_skipRefreshAll"
   | "auto_skipStage2"
   | "auto_skipStage3"
   | "auto_skipStage4"

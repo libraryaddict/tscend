@@ -115,3 +115,8 @@ auto_aosol_dontUnCurse:
   type: boolean
   description: "Avatar of Shadows Over Loathing: if true will keep all cursed items."
   default: false
+auto_skipRefreshAll:
+  name: "Skip Refresh All"
+  type: boolean
+  description: "When toggled, skips the 'refresh all' that we run when the script starts, useful for constant restarts!"
+  default: false
