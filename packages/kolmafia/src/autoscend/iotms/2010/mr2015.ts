@@ -88,6 +88,7 @@ import { in_quantumTerrarium } from "../../paths/2021/quantum_terrarium";
 import { in_lol } from "../../paths/2023/legacy_of_loathing";
 import { inAftercore } from "../../paths/casual";
 import { needOre } from "../../quests/level_08";
+import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 import { towerKeyCount } from "../../quests/level_13";
 import { auto_haveTrainSet } from "../2020/mr2022";
 import { elementalPlanes_access } from "../other/elementalPlanes";
@@ -453,7 +454,7 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
   }
 
   if (safeGet("chateauMonster") === $monster`lobsterfrogman`) {
-    if (itemAmount($item`barrel of gunpowder`) >= 5) {
+    if (auto_gunpowderBarrelsWanted() <= 0) {
       return false;
     }
     if (get("sidequestLighthouseCompleted") !== "none") {

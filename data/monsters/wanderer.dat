@@ -1,3 +1,5 @@
 # This impacts skills that turn monsters into wanderers, eg, Club em into next week
-lobsterfrogman
-modern zmobie
+# We're presuming that we'd want to turn 1 fight into 2.
+lobsterfrogman	item:barrel of gunpowder<4	prop:sidequestLighthouseCompleted=none
+# At 19 we might as well fight a normal monster
+modern zmobie	prop:cyrptAlcoveEvilness>19

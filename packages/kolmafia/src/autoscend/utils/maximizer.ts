@@ -638,6 +638,20 @@ export class Maximizer {
       }
     }
 
+    // We add the gems to 'exclude' so that maximizer doesn't try to steal the gems
+    for (const gem of containerGems) {
+      // Already excluded
+      if (this.excluded.has(gem)) continue;
+      // If not being actively considered
+      if (
+        ![...this.pendingEquip.values()].includes(gem) &&
+        !this.pendingBonus.has(gem)
+      ) {
+        continue;
+      }
+      terms.push(`-"equip ${gem}"`);
+    }
+
     return terms.join(", ");
   }
 

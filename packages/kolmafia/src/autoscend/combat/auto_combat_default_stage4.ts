@@ -57,7 +57,7 @@ import { in_darkGyffte } from "../paths/2019/dark_gyffte";
 import { in_plumber } from "../paths/2020/path_of_the_plumber";
 import { ag_is_bodyguard } from "../paths/2024/avant_guard";
 import { inAftercore } from "../paths/casual";
-import { auto_warSide } from "../quests/level_12";
+import { auto_gunpowderBarrelsWanted, auto_warSide } from "../quests/level_12";
 import { towerKeyCount } from "../quests/level_13";
 import { numPirateInsults } from "../quests/optional";
 import {
@@ -222,7 +222,10 @@ export function auto_combatDefaultStage4(
     get("_sourceTerminalDigitizeUses") === 0 &&
     !inAftercore()
   ) {
-    if ($monsters`lobsterfrogman`.includes(enemy)) {
+    if (
+      $monsters`lobsterfrogman`.includes(enemy) &&
+      auto_gunpowderBarrelsWanted() > 1
+    ) {
       if (safeGet("_sourceTerminalDigitizeMonster") !== enemy) {
         handleTracker({
           what: enemy,

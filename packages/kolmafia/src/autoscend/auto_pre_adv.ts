@@ -799,10 +799,6 @@ function auto_pre_adventure(): boolean {
         adjustForCopyIfPossible(mon);
         zoneHasWantedMonsters = true;
       }
-      if (auto_wantToCreateWanderer(place, mon)) {
-        adjustForWandererCreatorIfPossible(mon);
-        zoneHasWantedMonsters = true;
-      }
       if (auto_wantToSniff(mon, place)) {
         adjustForSniffingIfPossible(mon);
         zoneHasWantedMonsters = true;
@@ -814,6 +810,12 @@ function auto_pre_adventure(): boolean {
       ) {
         zoneHasWantedMonsters = true;
       }
+    }
+  }
+  // We process this differently, we don't care if the monster is unnatural
+  for (const [, mon] of possible_monsters) {
+    if (auto_wantToCreateWanderer(place, mon)) {
+      adjustForWandererCreatorIfPossible(mon);
     }
   }
   if (

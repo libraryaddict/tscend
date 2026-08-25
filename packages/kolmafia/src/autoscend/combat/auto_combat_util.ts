@@ -67,6 +67,7 @@ import {
   $skills,
   $slot,
   get,
+  LegendarySealClubbingClub,
   set,
 } from "libram";
 
@@ -587,7 +588,8 @@ export function getWandererCreator(
   if (
     instakillable(enemy) &&
     auto_clubIntoNextWeekTimesRemaining() > 0 &&
-    safeGet("clubEmNextWeekMonster") === $monster.none &&
+    (safeGet("clubEmNextWeekMonster") === $monster.none ||
+      LegendarySealClubbingClub.turnsUntilNextWeekFight() <= 0) &&
     (!inCombat || auto_canUse($skill`Club 'Em Into Next Week`, true, inCombat))
   ) {
     return $skill`Club 'Em Into Next Week`;

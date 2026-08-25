@@ -90,6 +90,7 @@ import { getZooKickInstaKill } from "../paths/2025/zootomist";
 import { inAftercore } from "../paths/casual";
 import { bridgeGoal } from "../quests/level_09";
 import { L11_wantsPygmyBowlerWandererHunt } from "../quests/level_11";
+import { auto_gunpowderBarrelsWanted } from "../quests/level_12";
 import { towerKeyCount } from "../quests/level_13";
 import {
   auto_canUse,
@@ -736,7 +737,10 @@ export function auto_combatDefaultStage2(
     if (myAdventures() > 6) {
       couldInstaKill = false;
     }
-  } else if ($monsters`lobsterfrogman`.includes(enemy)) {
+  } else if (
+    $monsters`lobsterfrogman`.includes(enemy) &&
+    auto_gunpowderBarrelsWanted() > 1
+  ) {
     if (
       auto_have_skill($skill`Digitize`) &&
       safeGet("_sourceTerminalDigitizeMonster") !== enemy

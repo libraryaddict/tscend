@@ -1573,8 +1573,11 @@ function L12_sonofaBeachDo(): boolean {
   }
 
   if (
-    auto_gunpowderBarrelsWanted() <=
-    auto_wandererFightsLeft($monster`lobsterfrogman`)
+    auto_wandererFightsLeft($monster`lobsterfrogman`) > 0 &&
+    auto_gunpowderBarrelsWanted() > 0 &&
+    (auto_wandererFightsLeft($monster`lobsterfrogman`) >=
+      auto_gunpowderBarrelsWanted() ||
+      !auto_haveQueuedForcedCombat())
   ) {
     return false;
   }

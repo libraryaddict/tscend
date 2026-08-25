@@ -139,6 +139,7 @@ import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { in_wereprof, is_werewolf } from "../../paths/2024/wereprofessor";
 import { cyrptEvilBonus } from "../../quests/level_07";
 import { L10_needUmbrella } from "../../quests/level_10";
+import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 import { fantasyBanditsFought } from "../2010/mr2018";
 import { auto_haveTrainSet } from "./mr2022";
 import {
@@ -1053,7 +1054,7 @@ export function auto_habitatTarget(target: Monster): boolean {
         const sonofa_complete: boolean =
           get("sidequestLighthouseCompleted") === "hippy" ||
           get("sidequestLighthouseCompleted") === "fratboy";
-        return !sonofa_complete && itemAmount($item`barrel of gunpowder`) < 4;
+        return !sonofa_complete && auto_gunpowderBarrelsWanted() > 1;
       }
       case $monster`Eldritch Tentacle`:
         // Max tentacles fought being free is 11, so don't habitat if we've fought more than 6

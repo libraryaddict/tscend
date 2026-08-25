@@ -104,6 +104,7 @@ import { cyrptEvilBonus } from "../../quests/level_07";
 import { bridgeGoal } from "../../quests/level_09";
 import {
   auto_bestWarPlan,
+  auto_gunpowderBarrelsWanted,
   auto_warKillsPerBattle,
 } from "../../quests/level_12";
 import { needStarKey } from "../../quests/level_13";
@@ -373,9 +374,9 @@ export function auto_backupTarget(): boolean {
   }
   // determine if we want to backup
   const wantBackupLFM: boolean =
-    auto_wandererFightsLeft($monster`lobsterfrogman`) +
-      itemAmount($item`barrel of gunpowder`) <
-      5 &&
+    auto_gunpowderBarrelsWanted() -
+      auto_wandererFightsLeft($monster`lobsterfrogman`) >
+      0 &&
     get("sidequestLighthouseCompleted") === "none" &&
     internalQuestStatus("questL12War") === 1 &&
     !auto_hasAutumnaton() &&

@@ -23,6 +23,7 @@ import {
   registerQuestTask,
   runQuestTask,
 } from "../../engine/engine";
+import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 
 //	This is meant for items that have a date of 2012
 
@@ -60,10 +61,7 @@ function handleRainDohDo(): boolean {
   }
 
   if (enemy === $monster`lobsterfrogman`) {
-    if (
-      haveSkill($skill`Rain Man`) &&
-      itemAmount($item`barrel of gunpowder`) < 4
-    ) {
+    if (haveSkill($skill`Rain Man`) && auto_gunpowderBarrelsWanted() > 1) {
       set("auto_doCombatCopy", "yes");
     }
     handleCopiedMonster($item`Rain-Doh box full of monster`);

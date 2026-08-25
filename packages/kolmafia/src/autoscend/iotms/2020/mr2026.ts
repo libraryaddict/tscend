@@ -110,10 +110,12 @@ import {
   auto_isWorthSniffing,
   auto_isWorthYellowRaying,
   auto_locationMonsters,
+  auto_log_debug,
   auto_log_error,
   auto_log_info,
   auto_log_warning,
   auto_monsterHasWantedDrop,
+  auto_queueIgnore,
   auto_runChoice,
   auto_wantToBanish,
   auto_wantToFreeKillWithNoDrops,
@@ -245,6 +247,7 @@ export function auto_codpieceReconcileGem(gem: Item): void {
       return;
     }
 
+    auto_log_debug(`Slotting ${gem} into ${target}`);
     equip(target, gem);
     return;
   }
@@ -268,6 +271,9 @@ export function auto_codpieceReconcileGem(gem: Item): void {
       return;
     }
 
+    auto_log_debug(
+      `Ejecting ${gem} from ${slots[idx]} and replacing it with ${filler}`,
+    );
     equip(slots[idx], filler);
   }
 }
@@ -2268,10 +2274,9 @@ export function auto_swordFamiliarWantsMonsterDrops(
       !canEat() ||
       fullness_left() < 1 ||
       !auto_is_valid($item`Tubetto Gelatto`) ||
-      auto_swordOfSwordsTracking() === $monster`lobsterfrogman` ||
-      get("legendaryNoodlesAmygdala") === 0) &&
+      auto_swordOfSwordsTracking() === $monster`lobsterfrogman`) &&
     sMonster === $monster`lobsterfrogman` &&
-    auto_gunpowderBarrelsWanted() > 0
+    auto_gunpowderBarrelsWanted() > 3
   ) {
     return true;
   }
@@ -2377,6 +2382,14 @@ export function auto_wantSwordFamiliar(
       // If we're going to peridot
       haveEquipped($item`Peridot of Peril`) && !haveUsedPeridot(place),
     )
+  ) {
+    return false;
+  }
+  // We don't want to force the sword for wanderers or forced fights
+  if (
+    auto_queueIgnore() ||
+    (safeGet("auto_nextEncounter") !== $monster`none` &&
+      !auto_wantToFreeKillWithNoDrops(place, safeGet("auto_nextEncounter")))
   ) {
     return false;
   }
